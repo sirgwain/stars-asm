@@ -1,0 +1,45 @@
+/*
+FGetMouseMove  (utilgen)
+  addr: 0009:4146  len=153
+  sig:  int16_t FGetMouseMove(POINT *ppt)
+  params:
+    POINT *          ppt            [BP+0x6]
+  locals:
+    MSG              msg            [BP-0x14]
+
+  stats: blocks=0  labels=0
+*/
+L_4146:
+
+L_4152:
+    branch PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0x0 ? L_417c : L_4176
+
+L_4176:
+    return 0x1
+
+L_417c:
+    goto L_41c3
+
+
+L_4185:
+    ppt->x = part[6:2](msg)
+    ppt->y = (loword((uint32_t)(words(part[6:2](msg), part[8:2](msg)) >> 0x10)) & 0xffff)
+    branch msg.message == 0x202 ? L_41ba : L_41b4
+
+L_41b4:
+    return 0x1
+
+L_41ba:
+    return 0x0
+
+
+L_41c3:
+    branch msg.message == 0x200 ? L_4185 : L_41cb
+
+L_41cb:
+    branch msg.message != 0x202 ? L_4152 : L_41d0
+
+L_41d0:
+
+
+

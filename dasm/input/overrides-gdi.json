@@ -1,0 +1,3705 @@
+{
+  "functions": [
+    {
+      "name": "AbortDoc",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AddFontResource",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnimatePalette",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "PALETTEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Arc",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BitBlt",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Chord",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CloseMetaFile",
+      "ret": "HMETAFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CombineRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CopyMetaFile",
+      "ret": "HMETAFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMETAFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateBitmap",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateBitmapIndirect",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "BITMAP FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateBrushIndirect",
+      "ret": "HBRUSH",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LOGBRUSH FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateCompatibleBitmap",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateCompatibleDC",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDC",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDIBPatternBrush",
+      "ret": "HBRUSH",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDIBitmap",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "BITMAPINFOHEADER FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg5",
+          "ctype": "BITMAPINFO FAR*"
+        },
+        {
+          "name": "arg6",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDiscardableBitmap",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateEllipticRgn",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateEllipticRgnIndirect",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateFont",
+      "ret": "HFONT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg10",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg11",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg12",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg13",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg14",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateFontIndirect",
+      "ret": "HFONT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LOGFONT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateHatchBrush",
+      "ret": "HBRUSH",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateIC",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateMetaFile",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePalette",
+      "ret": "HPALETTE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LOGPALETTE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePatternBrush",
+      "ret": "HBRUSH",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePen",
+      "ret": "HPEN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePenIndirect",
+      "ret": "HPEN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LOGPEN FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePolyPolygonRgn",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePolygonRgn",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateRectRgn",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateRectRgnIndirect",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateRoundRectRgn",
+      "ret": "HRGN",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateScalableFontResource",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateSolidBrush",
+      "ret": "HBRUSH",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DPtoLP",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeleteDC",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeleteMetaFile",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMETAFILE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeleteObject",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGDIOBJ"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Ellipse",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EndDoc",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EndPage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumFontFamilies",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "FONTENUMPROC"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumFonts",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "OLDFONTENUMPROC"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumMetaFile",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HMETAFILE"
+        },
+        {
+          "name": "arg3",
+          "ctype": "MFENUMPROC"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumObjects",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "GOBJENUMPROC"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EqualRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Escape",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExcludeClipRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExtFloodFill",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "COLORREF"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExtTextOut",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg7",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FillRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HBRUSH"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FloodFill",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FrameRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HBRUSH"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetAspectRatioFilter",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetAspectRatioFilterEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBitmapBits",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBitmapDimension",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBitmapDimensionEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBkColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBkMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBoundsRect",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "hdc",
+          "ctype": "HDC"
+        },
+        {
+          "name": "lprcbounds",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBrushOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetBrushOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCharABCWidths",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "ABC FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCharWidth",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCurrentPosition",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCurrentPositionEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDCOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDIBits",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg6",
+          "ctype": "BITMAPINFO FAR*"
+        },
+        {
+          "name": "arg7",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDeviceCaps",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetEnvironment",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetFontData",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetGlyphOutline",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "GLYPHMETRICS FAR*"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg7",
+          "ctype": "MAT2 FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetKerningPairs",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "KERNINGPAIR FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMapMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMetaFile",
+      "ret": "HMETAFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMetaFileBits",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMETAFILE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNearestColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNearestPaletteIndex",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetObject",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGDIOBJ"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetOutlineTextMetrics",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "OUTLINETEXTMETRIC FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPaletteEntries",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "PALETTEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPixel",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPolyFillMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetROP2",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetRasterizerCaps",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RASTERIZER_STATUS FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetRgnBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetStockObject",
+      "ret": "HGDIOBJ",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetStretchBltMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemPaletteEntries",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "PALETTEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemPaletteUse",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextAlign",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextCharacterExtra",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextExtent",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextExtentPoint",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextFace",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTextMetrics",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "TEXTMETRIC FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetViewportExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetViewportExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetViewportOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetViewportOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IntersectClipRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InvertRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsGDIObject",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGDIOBJ"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LPtoDP",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LineDDA",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LINEDDAPROC"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LineTo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MoveTo",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MoveToEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MulDiv",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetClipRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetViewportOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetViewportOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetWindowOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetWindowOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PaintRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PatBlt",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Pie",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PlayMetaFile",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HMETAFILE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PlayMetaFileRecord",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HANDLETABLE FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "METARECORD FAR*"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PolyPolygon",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Polygon",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Polyline",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PtInRegion",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PtVisible",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "QueryAbort",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RectInRegion",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RectVisible",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Rectangle",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RemoveFontResource",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ResizePalette",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RestoreDC",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RoundRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SaveDC",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScaleViewportExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScaleViewportExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScaleWindowExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScaleWindowExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SelectClipRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SelectObject",
+      "ret": "HGDIOBJ",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HGDIOBJ"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetAbortProc",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "ABORTPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBitmapBits",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBitmapDimension",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBitmapDimensionEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBkColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBkMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBoundsRect",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "hdc",
+          "ctype": "HDC"
+        },
+        {
+          "name": "lprcbounds",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetBrushOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetDIBits",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg6",
+          "ctype": "BITMAPINFO FAR*"
+        },
+        {
+          "name": "arg7",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetDIBitsToDevice",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg10",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg11",
+          "ctype": "BITMAPINFO FAR*"
+        },
+        {
+          "name": "arg12",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetEnvironment",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMapMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMapperFlags",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMetaFileBits",
+      "ret": "HMETAFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMetaFileBitsBetter",
+      "ret": "HMETAFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetPaletteEntries",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "PALETTEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetPixel",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetPolyFillMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetROP2",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetRectRgn",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetStretchBltMode",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSystemPaletteUse",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetTextAlign",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetTextCharacterExtra",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetTextColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COLORREF"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetTextJustification",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetViewportExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetViewportExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetViewportOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetViewportOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowExt",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowExtEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "SIZE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowOrg",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowOrgEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SpoolFile",
+      "ret": "HANDLE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StartDoc",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "DOCINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StartPage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StretchBlt",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg10",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg11",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StretchDIBits",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg10",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg11",
+          "ctype": "LPBITMAPINFO"
+        },
+        {
+          "name": "arg12",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg13",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TextOut",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnrealizeObject",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGDIOBJ"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UpdateColors",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    }
+  ]
+}

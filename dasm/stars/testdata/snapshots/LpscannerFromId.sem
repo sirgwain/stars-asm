@@ -1,0 +1,13 @@
+/*
+LpscannerFromId  (parts)
+  addr: 0002:518a  len=33
+  sig:  SCANNER * LpscannerFromId(int16_t id)
+  params:
+    int16_t          id             [BP+0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_518a:
+
+L_51a5:
+    return &rgscanner[id]

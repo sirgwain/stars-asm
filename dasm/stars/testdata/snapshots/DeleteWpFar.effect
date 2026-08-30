@@ -1,0 +1,101 @@
+/*
+DeleteWpFar  (ship)
+  addr: 000b:9e28  len=444
+  sig:  void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+    int16_t          iDel           [BP+0xa]
+    int16_t          fRecycle       [BP+0xc]
+  locals:
+    ORDER            ord            [BP-0x14]
+
+  stats: blocks=0  labels=0
+*/
+block L_9e28:
+  insts 0..6  off 0x9e28..0x9e36
+  succs: L_9e3a, L_9ef2
+  effects:
+    9e35  branch load([bp+fRecycle]) == 0x0 ? L_9ef2 : L_9e3a
+
+block L_9e3a:
+  insts 8..9  off 0x9e3a..0x9e3f
+  preds: L_9e28
+  succs: L_9e43, L_9ebf
+  effects:
+    9e3e  branch load([bp+iDel]) == 0x56 ? L_9ebf : L_9e43
+
+block L_9e43:
+  insts 11..13  off 0x9e43..0x9e4c
+  preds: L_9e3a
+  succs: L_9e50, L_9ebf
+  effects:
+    9e4b  branch load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) == 0x2 ? L_9ebf : L_9e50
+
+block L_9e50:
+  insts 15..48  off 0x9e50..0x9eb2
+  preds: L_9e43
+  succs: L_9eb6, L_9ec7
+  effects:
+    9e81  store[2] ss:[bp-0x18] = (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
+    9e84  store[2] ss:[bp-0x16] = load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
+    9e8e  store[2] ss:[bp-0x1c] = load(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword((0x12 * load([bp+iDel]))))])
+    9e91  store[2] ss:[bp-0x1a] = load(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword((0x12 * load([bp+iDel]))))+0x2])
+    9eb1  branch load(load(ss:[bp-0x16]):[(load(ss:[bp-0x18]) + loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0xffff) * 0x12)))]) != load(ss:[bp-0x1c]) ? L_9ec7 : L_9eb6
+
+block L_9eb6:
+  insts 50..51  off 0x9eb6..0x9ebb
+  preds: L_9e50
+  succs: L_9ebf, L_9ec7
+  effects:
+    9eba  branch load(load(ss:[bp-0x16]):[(load(ss:[bp-0x18]) + loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0xffff) * 0x12)))+0x2]) != load(ss:[bp-0x1a]) ? L_9ec7 : L_9ebf
+
+block L_9ebf:
+  insts 53..54  off 0x9ebf..0x9ec6
+  preds: L_9e3a, L_9e43, L_9eb6
+  succs: L_9ef2
+  effects:
+    9ebf  store[2] [bp+fRecycle] = 0x0
+    9ec4  goto L_9ef2
+
+block L_9ec7:
+  insts 55..73  off 0x9ec7..0x9ef1
+  preds: L_9e50, L_9eb6
+  succs: L_9ef2
+  effects:
+    9eeb  copy[0x12] *addr(ss:[addr([bp-ord])]) = *addr(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword((0x12 * load([bp+iDel]))))])
+
+block L_9ef2:
+  insts 74..115  off 0x9ef2..0x9f65
+  preds: L_9e28, L_9ebf, L_9ec7
+  succs: L_9f69, L_9fca
+  effects:
+    9f1b  store[2] ss:[bp-0x18] = (load@9f08/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
+    9f1e  store[2] ss:[bp-0x16] = load@9f0c/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
+    9f42  store[2] ss:[bp-0x1c] = (load@9f35/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
+    9f45  store[2] ss:[bp-0x1a] = load@9f39/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
+    9f58  call fmemmove(farptr(load(ss:[bp-0x1a]), (load(ss:[bp-0x1c]) + loword((0x12 * load([bp+iDel]))))), farptr(load(ss:[bp-0x16]), (load(ss:[bp-0x18]) + loword(((load([bp+iDel]) + 0x1) * 0x12)))), loword((((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) - load([bp+iDel])) + 0xffff) * 0x12))) -> callresult(void *)
+    9f64  branch load([bp+fRecycle]) == 0x0 ? L_9fca : L_9f69
+
+block L_9f69:
+  insts 117..151  off 0x9f69..0x9fc9
+  preds: L_9ef2
+  succs: L_9fde
+  effects:
+    9f93  copy[0x12] *addr(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0xffff) * 0x12)))]) = *addr(0x25:[addr([bp-ord])])
+    9fad  store[2] ss:[bp-0x18] = (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
+    9fb0  store[2] ss:[bp-0x16] = load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
+    9fc7  goto L_9fde
+
+block L_9fca:
+  insts 152..156  off 0x9fca..0x9fdd
+  preds: L_9ef2
+  succs: L_9fde
+  effects:
+    9fcd  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62] = (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) - 0x1)
+    9fd9  store[1] byte farseg(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]))+0x3] = (load(byte farseg(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]))+0x3]) - 0x1)
+
+block L_9fde:
+  insts 157..161  off 0x9fde..0x9fe3
+  preds: L_9f69, L_9fca
+  effects:
+    9fe3  return

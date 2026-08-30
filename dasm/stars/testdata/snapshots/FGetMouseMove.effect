@@ -1,0 +1,98 @@
+/*
+FGetMouseMove  (utilgen)
+  addr: 0009:4146  len=153
+  sig:  int16_t FGetMouseMove(POINT *ppt)
+  params:
+    POINT *          ppt            [BP+0x6]
+  locals:
+    MSG              msg            [BP-0x14]
+
+  stats: blocks=0  labels=0
+*/
+block L_4146:
+  insts 0..4  off 0x4146..0x4151
+  succs: L_4152
+
+block L_4152:
+  insts 6..20  off 0x4152..0x4172
+  preds: L_4146, L_4182, L_41cb, L_41d3, L_41d6
+  succs: L_4176, L_417c
+  effects:
+    4169  call PeekMessage(farptr(ss, addr([bp-msg])), 0x0, 0x0, 0x0, 0x1) -> callresult(int16_t)
+    4171  branch callresult(int16_t) != 0x0 ? L_417c : L_4176
+
+block L_4176:
+  insts 22..23  off 0x4176..0x417b
+  preds: L_4152
+  succs: L_41d9
+  effects:
+    4179  goto L_41d9
+
+block L_417c:
+  insts 24..25  off 0x417c..0x4181
+  preds: L_4152
+  succs: L_41c3
+  effects:
+    417f  goto L_41c3
+
+block L_4182:
+  insts 26..26  off 0x4182..0x4184
+  succs: L_4152
+
+block L_4185:
+  insts 27..40  off 0x4185..0x41b0
+  preds: L_41c3, L_41cb, L_41d0
+  succs: L_41b4, L_41ba
+  effects:
+    418e  store[2] 0x25:[load([bp+ppt])] = load@4185/src([bp-msg+0x6])
+    4199  call __aFulshr(words(load([bp-msg+0x6]), load([bp-msg+0x8])), 0x10) -> callresult(uint32_t)
+    41a7  store[2] 0x25:[load([bp+ppt])+0x2] = (loword(callresult(uint32_t)) & 0xffff)
+    41af  branch load([bp-msg+0x2]) == 0x202 ? L_41ba : L_41b4
+
+block L_41b4:
+  insts 42..43  off 0x41b4..0x41b9
+  preds: L_4185
+  succs: L_41d9
+  effects:
+    41b7  goto L_41d9
+
+block L_41ba:
+  insts 44..44  off 0x41ba..0x41bc
+  preds: L_4185
+  succs: L_41d9
+
+block L_41bd:
+  insts 45..45  off 0x41bd..0x41bf
+  succs: L_41d9
+
+block L_41c3:
+  insts 46..47  off 0x41c3..0x41c7
+  preds: L_417c
+  succs: L_4185, L_41cb
+  effects:
+    41c6  branch load([bp-msg+0x2]) == 0x200 ? L_4185 : L_41cb
+
+block L_41cb:
+  insts 49..50  off 0x41cb..0x41cf
+  preds: L_41c3
+  succs: L_4152, L_4185
+  effects:
+    41ce  branch load([bp-msg+0x2]) != 0x202 ? L_4152 : L_41d0
+
+block L_41d0:
+  insts 51..51  off 0x41d0..0x41d2
+  succs: L_4185
+
+block L_41d3:
+  insts 52..52  off 0x41d3..0x41d5
+  succs: L_4152
+
+block L_41d6:
+  insts 53..53  off 0x41d6..0x41d8
+  succs: L_4152
+
+block L_41d9:
+  insts 54..58  off 0x41d9..0x41de
+  preds: L_4176, L_41b4, L_41ba, L_41bd
+  effects:
+    41de  return merge(Join: L_41d9, (L_4176:0x1, L_41b4:0x1, L_41ba:0x0))

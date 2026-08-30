@@ -1,0 +1,18 @@
+/*
+LpscannerFromId  (parts)
+  addr: 0002:518a  len=33
+  sig:  SCANNER * LpscannerFromId(int16_t id)
+  params:
+    int16_t          id             [BP+0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_518a:
+  insts 0..10  off 0x518a..0x51a4
+  succs: L_51a5
+
+block L_51a5:
+  insts 12..16  off 0x51a5..0x51aa
+  preds: L_518a
+  effects:
+    51aa  return farptr(0x2, (0x768 + loword((0x38 * load([bp+id])))))

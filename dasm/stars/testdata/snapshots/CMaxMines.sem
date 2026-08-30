@@ -1,0 +1,39 @@
+/*
+CMaxMines  (planet)
+  addr: 000a:7248  len=187
+  sig:  int16_t CMaxMines(PLANET *lppl, int16_t iplr)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    int16_t          iEff           [BP-0xc]
+    int32_t          lPopMax        [BP-0xa]
+    int32_t          cMax           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_7248:
+    lPopMax = CalcPlanetMaxPop(lppl->id, iplr)
+    iEff = GetRaceStat(rgplr[iplr], rsMineOperate)
+    cMax = (int32_t)((uint32_t)(lPopMax * sext16to32(iEff)) / 0x64)
+    branch HIWORD(cMax) > 0x0 ? L_72ca : L_72b2
+
+L_72b2:
+    branch HIWORD(cMax) < 0x0 ? L_72c0 : L_72b7
+
+L_72b7:
+    branch LOWORD(cMax) >= 0xa ? L_72ca : L_72c0
+
+L_72c0:
+    cMax = 0xa
+
+L_72ca:
+    branch GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh ? L_72f4 : L_72ea
+
+L_72ea:
+    cMax = 0x0
+
+L_72f4:
+
+L_72fd:
+    return LOWORD(cMax)

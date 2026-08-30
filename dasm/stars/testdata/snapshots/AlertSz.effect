@@ -1,0 +1,73 @@
+/*
+AlertSz  (utilgen)
+  addr: 0009:2160  len=189
+  sig:  int16_t AlertSz(char *sz, MessageBoxType mbType)
+  params:
+    char *           sz             [BP+0x6]
+    MessageBoxType   mbType         [BP+0x8]
+  locals:
+    char[256]        szT            [BP-0x102]
+
+  stats: blocks=0  labels=0
+*/
+block L_2160:
+  insts 0..10  off 0x2160..0x2178
+  succs: L_217c, L_21a3
+  effects:
+    2177  branch ((load([ini+0xa]) >> 0xe) & 0x1) != 0x0 ? L_21a3 : L_217c
+
+block L_217c:
+  insts 12..17  off 0x217c..0x218b
+  preds: L_2160
+  succs: L_218f, L_21f7
+  effects:
+    218a  branch ((load([ini+0xa]) >> 0xf) & 0x1) == 0x0 ? L_21f7 : L_218f
+
+block L_218f:
+  insts 19..25  off 0x218f..0x219f
+  preds: L_217c
+  succs: L_21a3, L_21f7
+  effects:
+    219e  branch ((((load([ini+0xa]) >> 0x1) >> 0x1) >> 0x1) & 0x1) == 0x0 ? L_21f7 : L_21a3
+
+block L_21a3:
+  insts 27..50  off 0x21a3..0x21d8
+  preds: L_2160, L_218f
+  succs: L_21dc, L_21e2
+  effects:
+    21b9  call _wsprintf(farptr(ss, addr([bp-szT])), farptr(0x25, 0x137b), load([bp+sz]), 0x25) -> callresult(int16_t)
+    21d7  branch ((load([ini+0xa]) >> 0xe) & 0x1) == 0x0 ? L_21e2 : L_21dc
+
+block L_21dc:
+  insts 52..53  off 0x21dc..0x21e1
+  preds: L_21a3
+  succs: L_21e5
+  effects:
+    21df  goto L_21e5
+
+block L_21e2:
+  insts 54..54  off 0x21e2..0x21e4
+  preds: L_21a3
+  succs: L_21e5
+
+block L_21e5:
+  insts 55..59  off 0x21e5..0x21f3
+  preds: L_21dc, L_21e2
+  succs: L_2217
+  effects:
+    21e6  call OutputSz(merge(Join: L_21e5, (L_21dc:0x7, L_21e2:0x6)), farptr(ss, addr([bp-szT]))) -> callresult(void)
+    21f1  goto L_2217
+
+block L_21f7:
+  insts 60..72  off 0x21f7..0x2216
+  preds: L_217c, L_218f
+  succs: L_2217
+  effects:
+    21f7  call GetFocus() -> callresult(HWND)
+    220f  call MessageBox(callresult(HWND), farptr(0x25, load([bp+sz])), farptr(0x25, 0x1385), load([bp+mbType])) -> callresult(int16_t)
+
+block L_2217:
+  insts 74..78  off 0x2217..0x221c
+  preds: L_21e5, L_21f7
+  effects:
+    221c  return merge(Join: L_2217, (L_21e5:0x6, L_21f7:callresult(int16_t)))

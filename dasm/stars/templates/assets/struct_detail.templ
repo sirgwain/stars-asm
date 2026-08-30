@@ -1,0 +1,12 @@
+{{- define "struct.detail" -}}
+{{- if .TypedefName -}}
+typedef {{.Kind}} {{.TagName}} {
+{{.Body -}}
+} {{.TypedefName}}; /* size={{hex .Size}} */
+{{- else -}}
+{{.Kind}} {{.TagName}} {
+{{.Body -}}
+}; /* size={{hex .Size}} */
+{{- end }}
+{{- end -}}
+{{ template "struct.detail" . }}

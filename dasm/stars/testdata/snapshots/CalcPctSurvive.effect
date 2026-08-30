@@ -1,0 +1,148 @@
+/*
+CalcPctSurvive  (util)
+  addr: 0008:02f6  len=432
+  sig:  void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    float *          ppct           [BP+0xa]
+    float *          ppctSmart      [BP+0xc]
+  locals:
+    PART             part           [BP-0x14]
+    float            pct            [BP-0xc]
+    int32_t          cDefenses      [BP-0x8]
+    int16_t          iPlrSav        [BP-0x4]
+    block 0008:0369  len=0x107
+      int16_t          cMax           [BP-0x16]
+
+  stats: blocks=1  labels=0
+*/
+block L_02f6:
+  insts 0..6  off 0x02f6..0x0304
+  succs: L_0308, L_0317
+  effects:
+    0303  branch load([bp+ppctSmart]) == 0x0 ? L_0317 : L_0308
+
+block L_0308:
+  insts 8..16  off 0x0308..0x0316
+  preds: L_02f6
+  succs: L_0317
+  effects:
+    0313  store[4] dword 0x25:[load([bp+ppctSmart])] = 1
+
+block L_0317:
+  insts 17..19  off 0x0317..0x0320
+  preds: L_02f6, L_0308
+  succs: L_0324, L_0487
+  effects:
+    031f  branch load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) == 0xffff ? L_0487 : L_0324
+
+block L_0324:
+  insts 21..27  off 0x0324..0x0339
+  preds: L_0317
+  succs: L_033d, L_0345
+  effects:
+    0338  branch (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff) != 0x0 ? L_0345 : L_033d
+
+block L_033d:
+  insts 29..30  off 0x033d..0x0341
+  preds: L_0324
+  succs: L_0345, L_0487
+  effects:
+    0340  branch (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0x0) == 0x0 ? L_0487 : L_0345
+
+block L_0345:
+  insts 32..42  off 0x0345..0x0365
+  preds: L_0324, L_033d
+  succs: L_0369, L_0473
+  effects:
+    0348  store[2] [bp-iPlrSav] = load([idPlayer])
+    0352  store[2] [idPlayer] = load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])
+    0359  call FGetBestDefensePart(addr([bp-part])) -> callresult(int16_t)
+    0364  branch callresult(int16_t) == 0x0 ? L_0473 : L_0369
+
+block L_0369:
+  insts 44..63  off 0x0369..0x03a4
+  preds: L_0345
+  succs: L_03a8, L_03bf
+  effects:
+    037a  store[2] [bp-cDefenses] = (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff)
+    037d  store[2] [bp-cDefenses+0x2] = (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0x0)
+    0391  call CMaxOperableDefenses(farptr(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x0) -> callresult(int16_t)
+    0399  store[2] [bp-cMax] = callresult(int16_t)
+    03a3  branch signhiword(load([bp-cMax])) > load([bp-cDefenses+0x2]) ? L_03bf : L_03a8
+
+block L_03a8:
+  insts 65..65  off 0x03a8..0x03a9
+  preds: L_0369
+  succs: L_03ad, L_03b5
+  effects:
+    03a8  branch signhiword(load([bp-cMax])) < load([bp-cDefenses+0x2]) ? L_03b5 : L_03ad
+
+block L_03ad:
+  insts 67..68  off 0x03ad..0x03b1
+  preds: L_03a8
+  succs: L_03b5, L_03bf
+  effects:
+    03b0  branch load([bp-cMax]) >= load([bp-cDefenses]) ? L_03bf : L_03b5
+
+block L_03b5:
+  insts 70..73  off 0x03b5..0x03be
+  preds: L_03a8, L_03ad
+  succs: L_03bf
+  effects:
+    03b9  store[2] [bp-cDefenses] = load([bp-cMax])
+    03bc  store[2] [bp-cDefenses+0x2] = signhiword(load([bp-cMax]))
+
+block L_03bf:
+  insts 74..117  off 0x03bf..0x0416
+  preds: L_0369, L_03ad, L_03b5
+  succs: L_041a, L_047e
+  effects:
+    03da  store[2] ss:[bp-0x1e] = load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34])
+    03dd  store[2] ss:[bp-0x1c] = signhiword(load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]))
+    03fe  call pow((1 - ((double)load(dword ss:[bp-0x1e]) / 1000)), (double)load(dword [bp-cDefenses])) -> callresult(double)
+    040c  store[4] dword [bp-pct] = callresult(double)
+    0415  branch load([bp+ppctSmart]) == 0x0 ? L_047e : L_041a
+
+block L_041a:
+  insts 119..163  off 0x041a..0x046f
+  preds: L_03bf
+  succs: L_047e
+  effects:
+    0435  store[2] ss:[bp-0x1e] = load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34])
+    0438  store[2] ss:[bp-0x1c] = signhiword(load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]))
+    0459  call pow((1 - ((double)load(dword ss:[bp-0x1e]) / 2000)), (double)load(dword [bp-cDefenses])) -> callresult(double)
+    046c  store[4] dword 0x25:[load([bp+ppctSmart])] = callresult(double)
+
+block L_0470:
+  insts 164..164  off 0x0470..0x0472
+  succs: L_047e
+
+block L_0473:
+  insts 165..170  off 0x0473..0x047d
+  preds: L_0345
+  succs: L_047e
+  effects:
+    0479  store[4] dword [bp-pct] = 1
+
+block L_047e:
+  insts 171..173  off 0x047e..0x0486
+  preds: L_03bf, L_041a, L_0470, L_0473
+  succs: L_0492
+  effects:
+    0481  store[2] [idPlayer] = load([bp-iPlrSav])
+    0484  goto L_0492
+
+block L_0487:
+  insts 174..179  off 0x0487..0x0491
+  preds: L_0317, L_033d
+  succs: L_0492
+  effects:
+    048d  store[4] dword [bp-pct] = 1
+
+block L_0492:
+  insts 180..193  off 0x0492..0x04a5
+  preds: L_047e, L_0487
+  effects:
+    049c  store[4] dword 0x25:[load([bp+ppct])] = load(dword [bp-pct])
+    04a5  return

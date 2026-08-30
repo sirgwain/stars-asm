@@ -1,0 +1,234 @@
+/*
+FLookupOrbitingXfer  (util)
+  addr: 0008:24fa  len=484
+  sig:  int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip)
+  params:
+    int16_t          idPlanet       [BP+0x6]
+    int16_t          iNth           [BP+0x8]
+    XFER *           pxf            [BP+0xa]
+    int16_t          idSkip         [BP+0xc]
+  locals:
+    THING *          lpthMac        [BP-0x10]
+    FLEET *          lpfl           [BP-0xc]
+    THING *          lpth           [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_24fa:
+  insts 0..6  off 0x24fa..0x2509
+  succs: L_250d, L_2513
+  effects:
+    2508  branch load([cFleet]) > 0x0 ? L_2513 : L_250d
+
+block L_250d:
+  insts 8..9  off 0x250d..0x2512
+  preds: L_24fa
+  succs: L_26d8
+  effects:
+    2510  goto L_26d8
+
+block L_2513:
+  insts 10..11  off 0x2513..0x2519
+  preds: L_24fa
+  succs: L_251d, L_2606
+  effects:
+    2518  branch load([cFleet]) == 0x0 ? L_2606 : L_251d
+
+block L_251d:
+  insts 13..14  off 0x251d..0x2524
+  preds: L_2513
+  succs: L_2529
+  effects:
+    251d  store[2] [bp-i] = 0x0
+    2522  goto L_2529
+
+block L_2525:
+  insts 15..15  off 0x2525..0x2528
+  preds: L_2564, L_2573, L_258a, L_25a4, L_25ad, L_2603
+  succs: L_2529
+  effects:
+    2525  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_2529:
+  insts 16..18  off 0x2529..0x2530
+  preds: L_251d, L_2525
+  succs: L_2534, L_2606
+  effects:
+    252f  branch load([bp-i]) >= load([cFleet]) ? L_2606 : L_2534
+
+block L_2534:
+  insts 20..32  off 0x2534..0x2558
+  preds: L_2529
+  succs: L_255c, L_2564
+  effects:
+    254e  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])
+    2551  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])
+    2557  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]) != 0x0 ? L_2564 : L_255c
+
+block L_255c:
+  insts 34..35  off 0x255c..0x2560
+  preds: L_2534
+  succs: L_2564, L_2606
+  effects:
+    255f  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_2606 : L_2564
+
+block L_2564:
+  insts 37..40  off 0x2564..0x256f
+  preds: L_2534, L_255c
+  succs: L_2525, L_2573
+  effects:
+    256e  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x6]) != load([bp+idPlanet]) ? L_2525 : L_2573
+
+block L_2573:
+  insts 42..45  off 0x2573..0x257d
+  preds: L_2564
+  succs: L_2525, L_2581
+  effects:
+    257c  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) == load([bp+idSkip]) ? L_2525 : L_2581
+
+block L_2581:
+  insts 47..48  off 0x2581..0x2586
+  preds: L_2573
+  succs: L_258a, L_25ad
+  effects:
+    2585  branch load([bp+idSkip]) == 0xffff ? L_25ad : L_258a
+
+block L_258a:
+  insts 50..57  off 0x258a..0x25a0
+  preds: L_2581
+  succs: L_2525, L_25a4
+  effects:
+    259f  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x8]) != load([sel]) ? L_2525 : L_25a4
+
+block L_25a4:
+  insts 59..60  off 0x25a4..0x25a9
+  preds: L_258a
+  succs: L_2525, L_25ad
+  effects:
+    25a8  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0xa]) != load([sel+0x2]) ? L_2525 : L_25ad
+
+block L_25ad:
+  insts 62..65  off 0x25ad..0x25b8
+  preds: L_2581, L_25a4
+  succs: L_2525, L_25bc
+  effects:
+    25b0  store[2] [bp+iNth] = (load@25b0/dst([bp+iNth]) - 0x1)
+    25b7  branch load@25ad/src([bp+iNth]) != 0x0 ? L_2525 : L_25bc
+
+block L_25bc:
+  insts 67..68  off 0x25bc..0x25c1
+  preds: L_25ad
+  succs: L_25c5, L_25fd
+  effects:
+    25c0  branch load([bp+pxf]) == 0x0 ? L_25fd : L_25c5
+
+block L_25c5:
+  insts 70..93  off 0x25c5..0x25fc
+  preds: L_25bc
+  succs: L_25fd
+  effects:
+    25dc  copy[0x7c] *addr(0x25:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpfl+0x2]):[load([bp-lpfl])])
+    25ed  store[2] 0x25:[load([bp+pxf])+0x2] = 0x2
+    25fb  store[2] 0x25:[load([bp+pxf])] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))])
+
+block L_25fd:
+  insts 94..95  off 0x25fd..0x2602
+  preds: L_25bc, L_25c5
+  succs: L_26d8
+  effects:
+    2600  goto L_26d8
+
+block L_2603:
+  insts 96..96  off 0x2603..0x2605
+  succs: L_2525
+
+block L_2606:
+  insts 97..110  off 0x2606..0x2630
+  preds: L_2513, L_2529, L_255c
+  succs: L_26c4
+  effects:
+    260d  store[2] [bp-lpth] = load([lpThings])
+    2610  store[2] [bp-lpth+0x2] = load([lpThings+0x2])
+    2613  store[2] ss:[bp-0x14] = load([lpThings])
+    2616  store[2] ss:[bp-0x12] = load([lpThings+0x2])
+    2628  store[2] [bp-lpthMac] = (load(ss:[bp-0x14]) + loword((0x12 * load([cThing]))))
+    262b  store[2] [bp-lpthMac+0x2] = load(ss:[bp-0x12])
+    262e  goto L_26c4
+
+block L_2631:
+  insts 111..117  off 0x2631..0x2643
+  preds: L_26c4
+  succs: L_2647, L_26c0
+  effects:
+    2642  branch ((load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))]) >> 0xd) & 0x7) != 0x1 ? L_26c0 : L_2647
+
+block L_2647:
+  insts 119..126  off 0x2647..0x265d
+  preds: L_2631
+  succs: L_2661, L_26c0
+  effects:
+    265c  branch load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2]) != load([sel]) ? L_26c0 : L_2661
+
+block L_2661:
+  insts 128..129  off 0x2661..0x2666
+  preds: L_2647
+  succs: L_266a, L_26c0
+  effects:
+    2665  branch load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4]) != load([sel+0x2]) ? L_26c0 : L_266a
+
+block L_266a:
+  insts 131..134  off 0x266a..0x2675
+  preds: L_2661
+  succs: L_2679, L_26c0
+  effects:
+    266d  store[2] [bp+iNth] = (load@266d/dst([bp+iNth]) - 0x1)
+    2674  branch load@266a/src([bp+iNth]) != 0x0 ? L_26c0 : L_2679
+
+block L_2679:
+  insts 136..137  off 0x2679..0x267e
+  preds: L_266a
+  succs: L_2682, L_26ba
+  effects:
+    267d  branch load([bp+pxf]) == 0x0 ? L_26ba : L_2682
+
+block L_2682:
+  insts 139..162  off 0x2682..0x26b9
+  preds: L_2679
+  succs: L_26ba
+  effects:
+    2699  copy[0x12] *addr(0x25:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpth+0x2]):[load([bp-lpth])])
+    26aa  store[2] 0x25:[load([bp+pxf])+0x2] = 0x8
+    26b8  store[2] 0x25:[load([bp+pxf])] = load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))])
+
+block L_26ba:
+  insts 163..164  off 0x26ba..0x26bf
+  preds: L_2679, L_2682
+  succs: L_26d8
+  effects:
+    26bd  goto L_26d8
+
+block L_26c0:
+  insts 165..165  off 0x26c0..0x26c3
+  preds: L_2631, L_2647, L_2661, L_266a
+  succs: L_26c4
+  effects:
+    26c0  store[2] [bp-lpth] = (load([bp-lpth]) + 0x12)
+
+block L_26c4:
+  insts 166..169  off 0x26c4..0x26ce
+  preds: L_2606, L_26c0
+  succs: L_2631, L_26d2
+  effects:
+    26cd  branch load([bp-lpth]) < load([bp-lpthMac]) ? L_2631 : L_26d2
+
+block L_26d2:
+  insts 171..171  off 0x26d2..0x26d7
+  preds: L_26c4
+  succs: L_26d8
+
+block L_26d8:
+  insts 173..177  off 0x26d8..0x26dd
+  preds: L_250d, L_25fd, L_26ba, L_26d2
+  effects:
+    26dd  return merge(Join: L_26d8, (L_250d:0x0, L_25fd:0x1, L_26ba:0x1, L_26d2:0x0))

@@ -1,0 +1,490 @@
+{
+  "functions": [
+    {
+      "name": "ClassFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpclass",
+          "ctype": "CLASSENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ClassNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpclass",
+          "ctype": "CLASSENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalEntryHandle",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpglobal",
+          "ctype": "GLOBALENTRY FAR*"
+        },
+        {
+          "name": "hitem",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalEntryModule",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpglobal",
+          "ctype": "GLOBALENTRY FAR*"
+        },
+        {
+          "name": "hmodule",
+          "ctype": "HMODULE"
+        },
+        {
+          "name": "wseg",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpglobal",
+          "ctype": "GLOBALENTRY FAR*"
+        },
+        {
+          "name": "wflags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalHandleToSel",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "hmem",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpglobalinfo",
+          "ctype": "GLOBALINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpglobal",
+          "ctype": "GLOBALENTRY FAR*"
+        },
+        {
+          "name": "wflags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InterruptRegister",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "lpfnintcallback",
+          "ctype": "FARPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InterruptUnRegister",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lplocal",
+          "ctype": "LOCALENTRY FAR*"
+        },
+        {
+          "name": "hheap",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lplocal",
+          "ctype": "LOCALINFO FAR*"
+        },
+        {
+          "name": "hheap",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lplocal",
+          "ctype": "LOCALENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MemManInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpenhmode",
+          "ctype": "MEMMANINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MemoryRead",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "wsel",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "dwoffset",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "lpbuffer",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "dwcb",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MemoryWrite",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "wsel",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "dwoffset",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "lpbuffer",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "dwcb",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ModuleFindHandle",
+      "ret": "HMODULE",
+      "params": [
+        {
+          "name": "lpmodule",
+          "ctype": "MODULEENTRY FAR*"
+        },
+        {
+          "name": "hmodule",
+          "ctype": "HMODULE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ModuleFindName",
+      "ret": "HMODULE",
+      "params": [
+        {
+          "name": "lpmodule",
+          "ctype": "MODULEENTRY FAR*"
+        },
+        {
+          "name": "lpstrname",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ModuleFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpmodule",
+          "ctype": "MODULEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ModuleNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpmodule",
+          "ctype": "MODULEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NotifyRegister",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "lpfn",
+          "ctype": "LPFNNOTIFYCALLBACK"
+        },
+        {
+          "name": "wflags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NotifyUnRegister",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StackTraceCSIPFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpstacktrace",
+          "ctype": "STACKTRACEENTRY FAR*"
+        },
+        {
+          "name": "wss",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "wcs",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "wip",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "wbp",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StackTraceFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpstacktrace",
+          "ctype": "STACKTRACEENTRY FAR*"
+        },
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "StackTraceNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpstacktrace",
+          "ctype": "STACKTRACEENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SystemHeapInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpsysheap",
+          "ctype": "SYSHEAPINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskFindHandle",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lptask",
+          "ctype": "TASKENTRY FAR*"
+        },
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskFirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lptask",
+          "ctype": "TASKENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskGetCSIP",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskNext",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lptask",
+          "ctype": "TASKENTRY FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskSetCSIP",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "wcs",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "wip",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TaskSwitch",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "dwnewcsip",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TerminateApp",
+      "ret": "void",
+      "params": [
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "wflags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TimerCount",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lptimer",
+          "ctype": "TIMERINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    }
+  ]
+}

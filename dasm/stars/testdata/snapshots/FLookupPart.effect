@@ -1,0 +1,1981 @@
+/*
+FLookupPart  (parts)
+  addr: 0002:524e  len=3695
+  sig:  int16_t FLookupPart(PART *ppart)
+  params:
+    PART *           ppart          [BP+0x6]
+  locals:
+    HS               hs             [BP-0x8]
+    int16_t          raMajor        [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_524e:
+  insts 0..21  off 0x524e..0x5286
+  succs: L_6019
+  effects:
+    5268  call GetRaceStat((0x59a2 + loword((0xc0 * load([idPlayer])))), 0xe) -> callresult(int16_t)
+    5270  store[2] [bp-raMajor] = callresult(int16_t)
+    527b  store[2] [bp-hs] = load(0x25:[load([bp+ppart])])
+    527e  store[2] [bp-hs+0x2] = load(0x25:[load([bp+ppart])+0x2])
+    5284  goto L_6019
+
+block L_5287:
+  insts 22..23  off 0x5287..0x528c
+  preds: L_6091, L_6099
+  succs: L_60b7
+  effects:
+    528a  goto L_60b7
+
+block L_528d:
+  insts 24..27  off 0x528d..0x5297
+  preds: L_6019
+  succs: L_529b, L_52a1
+  effects:
+    5296  branch (load([bp-hs+0x2]) & 0xff) < 0x10 ? L_52a1 : L_529b
+
+block L_529b:
+  insts 29..30  off 0x529b..0x52a0
+  preds: L_528d
+  succs: L_60b7
+  effects:
+    529e  goto L_60b7
+
+block L_52a1:
+  insts 31..42  off 0x52a1..0x52c2
+  preds: L_528d
+  succs: L_52c6, L_609c
+  effects:
+    52b6  store[2] 0x25:[load([bp+ppart])+0x4] = (0x0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x4e)))
+    52b9  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    52c1  branch load([idPlayer]) == 0xffff ? L_609c : L_52c6
+
+block L_52c6:
+  insts 44..47  off 0x52c6..0x52d0
+  preds: L_52a1
+  succs: L_52d4, L_52e6
+  effects:
+    52cf  branch (load([bp-hs+0x2]) & 0xff) != 0x0 ? L_52e6 : L_52d4
+
+block L_52d4:
+  insts 49..50  off 0x52d4..0x52d9
+  preds: L_52c6
+  succs: L_52dd, L_52e6
+  effects:
+    52d8  branch load([bp-raMajor]) == 0x0 ? L_52e6 : L_52dd
+
+block L_52dd:
+  insts 52..53  off 0x52dd..0x52e2
+  preds: L_52d4
+  succs: L_60b7
+  effects:
+    52e0  goto L_60b7
+
+block L_52e6:
+  insts 54..57  off 0x52e6..0x52f0
+  preds: L_52c6, L_52d4
+  succs: L_52f4, L_5302
+  effects:
+    52ef  branch (load([bp-hs+0x2]) & 0xff) < 0xb ? L_5302 : L_52f4
+
+block L_52f4:
+  insts 59..62  off 0x52f4..0x52fe
+  preds: L_52e6
+  succs: L_5302, L_5310
+  effects:
+    52fd  branch (load([bp-hs+0x2]) & 0xff) <= 0xf ? L_5310 : L_5302
+
+block L_5302:
+  insts 64..67  off 0x5302..0x530c
+  preds: L_52e6, L_52f4
+  succs: L_5310, L_533a
+  effects:
+    530b  branch (load([bp-hs+0x2]) & 0xff) != 0xa ? L_533a : L_5310
+
+block L_5310:
+  insts 69..79  off 0x5310..0x532d
+  preds: L_52f4, L_5302
+  succs: L_5331, L_533a
+  effects:
+    5321  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x7) -> callresult(int16_t)
+    532c  branch callresult(int16_t) == 0x0 ? L_533a : L_5331
+
+block L_5331:
+  insts 81..82  off 0x5331..0x5336
+  preds: L_5310
+  succs: L_60b7
+  effects:
+    5334  goto L_60b7
+
+block L_533a:
+  insts 83..86  off 0x533a..0x5344
+  preds: L_5302, L_5310
+  succs: L_5348, L_5356
+  effects:
+    5343  branch (load([bp-hs+0x2]) & 0xff) == 0xf ? L_5356 : L_5348
+
+block L_5348:
+  insts 88..91  off 0x5348..0x5352
+  preds: L_533a
+  succs: L_5356, L_5380
+  effects:
+    5351  branch (load([bp-hs+0x2]) & 0xff) != 0x2 ? L_5380 : L_5356
+
+block L_5356:
+  insts 93..103  off 0x5356..0x5373
+  preds: L_533a, L_5348
+  succs: L_5377, L_5380
+  effects:
+    5367  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x0) -> callresult(int16_t)
+    5372  branch callresult(int16_t) != 0x0 ? L_5380 : L_5377
+
+block L_5377:
+  insts 105..106  off 0x5377..0x537c
+  preds: L_5356
+  succs: L_60b7
+  effects:
+    537a  goto L_60b7
+
+block L_5380:
+  insts 107..110  off 0x5380..0x538a
+  preds: L_5348, L_5356
+  succs: L_538e, L_53b8
+  effects:
+    5389  branch (load([bp-hs+0x2]) & 0xff) != 0x7 ? L_53b8 : L_538e
+
+block L_538e:
+  insts 112..122  off 0x538e..0x53ab
+  preds: L_5380
+  succs: L_53af, L_53b8
+  effects:
+    539f  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x7) -> callresult(int16_t)
+    53aa  branch callresult(int16_t) != 0x0 ? L_53b8 : L_53af
+
+block L_53af:
+  insts 124..125  off 0x53af..0x53b4
+  preds: L_538e
+  succs: L_60b7
+  effects:
+    53b2  goto L_60b7
+
+block L_53b8:
+  insts 126..130  off 0x53b8..0x53c7
+  preds: L_5380, L_538e
+  succs: L_53cb, L_609c
+  effects:
+    53bb  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    53c6  branch callresult(int16_t) == 0x0 ? L_609c : L_53cb
+
+block L_53cb:
+  insts 132..133  off 0x53cb..0x53d0
+  preds: L_53b8
+  succs: L_60b7
+  effects:
+    53ce  goto L_60b7
+
+block L_53d1:
+  insts 134..134  off 0x53d1..0x53d3
+  succs: L_609c
+
+block L_53d4:
+  insts 135..138  off 0x53d4..0x53de
+  preds: L_6029
+  succs: L_53e2, L_53e8
+  effects:
+    53dd  branch (load([bp-hs+0x2]) & 0xff) < 0xa ? L_53e8 : L_53e2
+
+block L_53e2:
+  insts 140..141  off 0x53e2..0x53e7
+  preds: L_53d4
+  succs: L_60b7
+  effects:
+    53e5  goto L_60b7
+
+block L_53e8:
+  insts 142..155  off 0x53e8..0x540d
+  preds: L_53d4
+  succs: L_5411, L_5423
+  effects:
+    53fd  store[2] 0x25:[load([bp+ppart])+0x4] = (0xae8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5400  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    540c  branch (load@5403/src([bp-hs+0x2]) & 0xff) != 0x4 ? L_5423 : L_5411
+
+block L_5411:
+  insts 157..158  off 0x5411..0x5416
+  preds: L_53e8
+  succs: L_541a, L_5423
+  effects:
+    5415  branch load([bp-raMajor]) == 0x1 ? L_5423 : L_541a
+
+block L_541a:
+  insts 160..161  off 0x541a..0x541f
+  preds: L_5411
+  succs: L_60b7
+  effects:
+    541d  goto L_60b7
+
+block L_5423:
+  insts 162..165  off 0x5423..0x542d
+  preds: L_53e8, L_5411
+  succs: L_5431, L_5443
+  effects:
+    542c  branch (load([bp-hs+0x2]) & 0xff) != 0x3 ? L_5443 : L_5431
+
+block L_5431:
+  insts 167..168  off 0x5431..0x5436
+  preds: L_5423
+  succs: L_543a, L_5443
+  effects:
+    5435  branch load([bp-raMajor]) == 0x4 ? L_5443 : L_543a
+
+block L_543a:
+  insts 170..171  off 0x543a..0x543f
+  preds: L_5431
+  succs: L_60b7
+  effects:
+    543d  goto L_60b7
+
+block L_5443:
+  insts 172..176  off 0x5443..0x5452
+  preds: L_5423, L_5431
+  succs: L_5456, L_609c
+  effects:
+    5446  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5451  branch callresult(int16_t) == 0x0 ? L_609c : L_5456
+
+block L_5456:
+  insts 178..179  off 0x5456..0x545b
+  preds: L_5443
+  succs: L_60b7
+  effects:
+    5459  goto L_60b7
+
+block L_545c:
+  insts 180..180  off 0x545c..0x545e
+  succs: L_609c
+
+block L_545f:
+  insts 181..184  off 0x545f..0x5469
+  preds: L_6089
+  succs: L_546d, L_5473
+  effects:
+    5468  branch (load([bp-hs+0x2]) & 0xff) < 0x20 ? L_5473 : L_546d
+
+block L_546d:
+  insts 186..187  off 0x546d..0x5472
+  preds: L_545f
+  succs: L_60b7
+  effects:
+    5470  goto L_60b7
+
+block L_5473:
+  insts 188..199  off 0x5473..0x5494
+  preds: L_545f
+  succs: L_5498, L_609c
+  effects:
+    5488  store[2] 0x25:[load([bp+ppart])+0x4] = (0x29f0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
+    548b  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5493  branch load([idPlayer]) == 0xffff ? L_609c : L_5498
+
+block L_5498:
+  insts 201..204  off 0x5498..0x54a2
+  preds: L_5473
+  succs: L_54a6, L_54b4
+  effects:
+    54a1  branch (load([bp-hs+0x2]) & 0xff) == 0xe ? L_54b4 : L_54a6
+
+block L_54a6:
+  insts 206..209  off 0x54a6..0x54b0
+  preds: L_5498
+  succs: L_54b4, L_54c6
+  effects:
+    54af  branch (load([bp-hs+0x2]) & 0xff) != 0x1f ? L_54c6 : L_54b4
+
+block L_54b4:
+  insts 211..212  off 0x54b4..0x54b9
+  preds: L_5498, L_54a6
+  succs: L_54bd, L_54c6
+  effects:
+    54b8  branch load([bp-raMajor]) == 0x0 ? L_54c6 : L_54bd
+
+block L_54bd:
+  insts 214..215  off 0x54bd..0x54c2
+  preds: L_54b4
+  succs: L_60b7
+  effects:
+    54c0  goto L_60b7
+
+block L_54c6:
+  insts 216..219  off 0x54c6..0x54d0
+  preds: L_54a6, L_54b4
+  succs: L_54d4, L_54e2
+  effects:
+    54cf  branch (load([bp-hs+0x2]) & 0xff) == 0x19 ? L_54e2 : L_54d4
+
+block L_54d4:
+  insts 221..224  off 0x54d4..0x54de
+  preds: L_54c6
+  succs: L_54e2, L_54f4
+  effects:
+    54dd  branch (load([bp-hs+0x2]) & 0xff) != 0x3 ? L_54f4 : L_54e2
+
+block L_54e2:
+  insts 226..227  off 0x54e2..0x54e7
+  preds: L_54c6, L_54d4
+  succs: L_54eb, L_54f4
+  effects:
+    54e6  branch load([bp-raMajor]) == 0x4 ? L_54f4 : L_54eb
+
+block L_54eb:
+  insts 229..230  off 0x54eb..0x54f0
+  preds: L_54e2
+  succs: L_60b7
+  effects:
+    54ee  goto L_60b7
+
+block L_54f4:
+  insts 231..234  off 0x54f4..0x54fe
+  preds: L_54d4, L_54e2
+  succs: L_5502, L_552c
+  effects:
+    54fd  branch (load([bp-hs+0x2]) & 0xff) == 0x16 ? L_552c : L_5502
+
+block L_5502:
+  insts 236..239  off 0x5502..0x550c
+  preds: L_54f4
+  succs: L_5510, L_552c
+  effects:
+    550b  branch (load([bp-hs+0x2]) & 0xff) == 0x17 ? L_552c : L_5510
+
+block L_5510:
+  insts 241..244  off 0x5510..0x551a
+  preds: L_5502
+  succs: L_551e, L_552c
+  effects:
+    5519  branch (load([bp-hs+0x2]) & 0xff) == 0x14 ? L_552c : L_551e
+
+block L_551e:
+  insts 246..249  off 0x551e..0x5528
+  preds: L_5510
+  succs: L_552c, L_5556
+  effects:
+    5527  branch (load([bp-hs+0x2]) & 0xff) != 0x18 ? L_5556 : L_552c
+
+block L_552c:
+  insts 251..261  off 0x552c..0x5549
+  preds: L_54f4, L_5502, L_5510, L_551e
+  succs: L_554d, L_5556
+  effects:
+    553d  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x9) -> callresult(int16_t)
+    5548  branch callresult(int16_t) == 0x0 ? L_5556 : L_554d
+
+block L_554d:
+  insts 263..264  off 0x554d..0x5552
+  preds: L_552c
+  succs: L_60b7
+  effects:
+    5550  goto L_60b7
+
+block L_5556:
+  insts 265..268  off 0x5556..0x5560
+  preds: L_551e, L_552c
+  succs: L_5564, L_5580
+  effects:
+    555f  branch (load([bp-hs+0x2]) & 0xff) == 0x14 ? L_5580 : L_5564
+
+block L_5564:
+  insts 270..273  off 0x5564..0x556e
+  preds: L_5556
+  succs: L_5572, L_5580
+  effects:
+    556d  branch (load([bp-hs+0x2]) & 0xff) == 0x16 ? L_5580 : L_5572
+
+block L_5572:
+  insts 275..278  off 0x5572..0x557c
+  preds: L_5564
+  succs: L_5580, L_55aa
+  effects:
+    557b  branch (load([bp-hs+0x2]) & 0xff) != 0x18 ? L_55aa : L_5580
+
+block L_5580:
+  insts 280..290  off 0x5580..0x559d
+  preds: L_5556, L_5564, L_5572
+  succs: L_55a1, L_55aa
+  effects:
+    5591  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x2) -> callresult(int16_t)
+    559c  branch callresult(int16_t) != 0x0 ? L_55aa : L_55a1
+
+block L_55a1:
+  insts 292..293  off 0x55a1..0x55a6
+  preds: L_5580
+  succs: L_60b7
+  effects:
+    55a4  goto L_60b7
+
+block L_55aa:
+  insts 294..297  off 0x55aa..0x55b4
+  preds: L_5572, L_5580
+  succs: L_55b8, L_55c6
+  effects:
+    55b3  branch (load([bp-hs+0x2]) & 0xff) == 0xa ? L_55c6 : L_55b8
+
+block L_55b8:
+  insts 299..302  off 0x55b8..0x55c2
+  preds: L_55aa
+  succs: L_55c6, L_55d8
+  effects:
+    55c1  branch (load([bp-hs+0x2]) & 0xff) != 0x8 ? L_55d8 : L_55c6
+
+block L_55c6:
+  insts 304..305  off 0x55c6..0x55cb
+  preds: L_55aa, L_55b8
+  succs: L_55cf, L_55d8
+  effects:
+    55ca  branch load([bp-raMajor]) == 0x2 ? L_55d8 : L_55cf
+
+block L_55cf:
+  insts 307..308  off 0x55cf..0x55d4
+  preds: L_55c6
+  succs: L_60b7
+  effects:
+    55d2  goto L_60b7
+
+block L_55d8:
+  insts 309..312  off 0x55d8..0x55e2
+  preds: L_55b8, L_55c6
+  succs: L_55e6, L_55f8
+  effects:
+    55e1  branch (load([bp-hs+0x2]) & 0xff) != 0xc ? L_55f8 : L_55e6
+
+block L_55e6:
+  insts 314..315  off 0x55e6..0x55eb
+  preds: L_55d8
+  succs: L_55ef, L_55f8
+  effects:
+    55ea  branch load([bp-raMajor]) == 0x1 ? L_55f8 : L_55ef
+
+block L_55ef:
+  insts 317..318  off 0x55ef..0x55f4
+  preds: L_55e6
+  succs: L_60b7
+  effects:
+    55f2  goto L_60b7
+
+block L_55f8:
+  insts 319..322  off 0x55f8..0x5602
+  preds: L_55d8, L_55e6
+  succs: L_5606, L_5618
+  effects:
+    5601  branch (load([bp-hs+0x2]) & 0xff) != 0x12 ? L_5618 : L_5606
+
+block L_5606:
+  insts 324..325  off 0x5606..0x560b
+  preds: L_55f8
+  succs: L_560f, L_5618
+  effects:
+    560a  branch load([bp-raMajor]) == 0x1 ? L_5618 : L_560f
+
+block L_560f:
+  insts 327..328  off 0x560f..0x5614
+  preds: L_5606
+  succs: L_60b7
+  effects:
+    5612  goto L_60b7
+
+block L_5618:
+  insts 329..332  off 0x5618..0x5622
+  preds: L_55f8, L_5606
+  succs: L_5626, L_5634
+  effects:
+    5621  branch (load([bp-hs+0x2]) & 0xff) == 0x1b ? L_5634 : L_5626
+
+block L_5626:
+  insts 334..337  off 0x5626..0x5630
+  preds: L_5618
+  succs: L_5634, L_5646
+  effects:
+    562f  branch (load([bp-hs+0x2]) & 0xff) != 0x1c ? L_5646 : L_5634
+
+block L_5634:
+  insts 339..340  off 0x5634..0x5639
+  preds: L_5618, L_5626
+  succs: L_563d, L_5646
+  effects:
+    5638  branch load([bp-raMajor]) == 0x5 ? L_5646 : L_563d
+
+block L_563d:
+  insts 342..343  off 0x563d..0x5642
+  preds: L_5634
+  succs: L_60b7
+  effects:
+    5640  goto L_60b7
+
+block L_5646:
+  insts 344..348  off 0x5646..0x5655
+  preds: L_5626, L_5634
+  succs: L_5659, L_609c
+  effects:
+    5649  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5654  branch callresult(int16_t) == 0x0 ? L_609c : L_5659
+
+block L_5659:
+  insts 350..351  off 0x5659..0x565e
+  preds: L_5646
+  succs: L_60b7
+  effects:
+    565c  goto L_60b7
+
+block L_565f:
+  insts 352..352  off 0x565f..0x5661
+  succs: L_609c
+
+block L_5662:
+  insts 353..356  off 0x5662..0x566c
+  preds: L_6069
+  succs: L_5670, L_5676
+  effects:
+    566b  branch (load([bp-hs+0x2]) & 0xff) < 0x5 ? L_5676 : L_5670
+
+block L_5670:
+  insts 358..359  off 0x5670..0x5675
+  preds: L_5662
+  succs: L_60b7
+  effects:
+    5673  goto L_60b7
+
+block L_5676:
+  insts 360..371  off 0x5676..0x5697
+  preds: L_5662
+  succs: L_569b, L_609c
+  effects:
+    568b  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4872 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
+    568e  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5696  branch load([idPlayer]) == 0xffff ? L_609c : L_569b
+
+block L_569b:
+  insts 373..376  off 0x569b..0x56a5
+  preds: L_5676
+  succs: L_56a9, L_56b7
+  effects:
+    56a4  branch (load([bp-hs+0x2]) & 0xff) == 0x1 ? L_56b7 : L_56a9
+
+block L_56a9:
+  insts 378..381  off 0x56a9..0x56b3
+  preds: L_569b
+  succs: L_56b7, L_56de
+  effects:
+    56b2  branch (load([bp-hs+0x2]) & 0xff) != 0x3 ? L_56de : L_56b7
+
+block L_56b7:
+  insts 383..393  off 0x56b7..0x56d4
+  preds: L_569b, L_56a9
+  succs: L_56d8, L_56de
+  effects:
+    56c8  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x3) -> callresult(int16_t)
+    56d3  branch callresult(int16_t) != 0x0 ? L_56de : L_56d8
+
+block L_56d8:
+  insts 395..396  off 0x56d8..0x56dd
+  preds: L_56b7
+  succs: L_60b7
+  effects:
+    56db  goto L_60b7
+
+block L_56de:
+  insts 397..400  off 0x56de..0x56e8
+  preds: L_56a9, L_56b7
+  succs: L_56ec, L_609c
+  effects:
+    56e7  branch (load([bp-hs+0x2]) & 0xff) != 0x4 ? L_609c : L_56ec
+
+block L_56ec:
+  insts 402..403  off 0x56ec..0x56f1
+  preds: L_56de
+  succs: L_56f5, L_609c
+  effects:
+    56f0  branch load([bp-raMajor]) == 0x8 ? L_609c : L_56f5
+
+block L_56f5:
+  insts 405..406  off 0x56f5..0x56fa
+  preds: L_56ec
+  succs: L_60b7
+  effects:
+    56f8  goto L_60b7
+
+block L_56fb:
+  insts 407..407  off 0x56fb..0x56fd
+  succs: L_609c
+
+block L_56fe:
+  insts 408..411  off 0x56fe..0x5708
+  preds: L_6031
+  succs: L_570c, L_5712
+  effects:
+    5707  branch (load([bp-hs+0x2]) & 0xff) < 0xc ? L_5712 : L_570c
+
+block L_570c:
+  insts 413..414  off 0x570c..0x5711
+  preds: L_56fe
+  succs: L_60b7
+  effects:
+    570f  goto L_60b7
+
+block L_5712:
+  insts 415..428  off 0x5712..0x5737
+  preds: L_56fe
+  succs: L_573b, L_574d
+  effects:
+    5727  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4e0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    572a  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5736  branch (load@572d/src([bp-hs+0x2]) & 0xff) != 0x7 ? L_574d : L_573b
+
+block L_573b:
+  insts 430..431  off 0x573b..0x5740
+  preds: L_5712
+  succs: L_5744, L_574d
+  effects:
+    573f  branch load([bp-raMajor]) == 0x1 ? L_574d : L_5744
+
+block L_5744:
+  insts 433..434  off 0x5744..0x5749
+  preds: L_573b
+  succs: L_60b7
+  effects:
+    5747  goto L_60b7
+
+block L_574d:
+  insts 435..438  off 0x574d..0x5757
+  preds: L_5712, L_573b
+  succs: L_575b, L_576d
+  effects:
+    5756  branch (load([bp-hs+0x2]) & 0xff) != 0x6 ? L_576d : L_575b
+
+block L_575b:
+  insts 440..441  off 0x575b..0x5760
+  preds: L_574d
+  succs: L_5764, L_576d
+  effects:
+    575f  branch load([bp-raMajor]) == 0x4 ? L_576d : L_5764
+
+block L_5764:
+  insts 443..444  off 0x5764..0x5769
+  preds: L_575b
+  succs: L_60b7
+  effects:
+    5767  goto L_60b7
+
+block L_576d:
+  insts 445..449  off 0x576d..0x577c
+  preds: L_574d, L_575b
+  succs: L_5780, L_609c
+  effects:
+    5770  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    577b  branch callresult(int16_t) == 0x0 ? L_609c : L_5780
+
+block L_5780:
+  insts 451..452  off 0x5780..0x5785
+  preds: L_576d
+  succs: L_60b7
+  effects:
+    5783  goto L_60b7
+
+block L_5786:
+  insts 453..453  off 0x5786..0x5788
+  succs: L_609c
+
+block L_5789:
+  insts 454..457  off 0x5789..0x5793
+  preds: L_6071
+  succs: L_5797, L_579d
+  effects:
+    5792  branch (load([bp-hs+0x2]) & 0xff) < 0x11 ? L_579d : L_5797
+
+block L_5797:
+  insts 459..460  off 0x5797..0x579c
+  preds: L_5789
+  succs: L_60b7
+  effects:
+    579a  goto L_60b7
+
+block L_579d:
+  insts 461..472  off 0x579d..0x57be
+  preds: L_5789
+  succs: L_57c2, L_609c
+  effects:
+    57b2  store[2] 0x25:[load([bp+ppart])+0x4] = (0xd04 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    57b5  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    57bd  branch load([idPlayer]) == 0xffff ? L_609c : L_57c2
+
+block L_57c2:
+  insts 474..478  off 0x57c2..0x57d1
+  preds: L_579d
+  succs: L_57d5, L_57db
+  effects:
+    57c5  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    57d0  branch callresult(int16_t) == 0x0 ? L_57db : L_57d5
+
+block L_57d5:
+  insts 480..481  off 0x57d5..0x57da
+  preds: L_57c2
+  succs: L_60b7
+  effects:
+    57d8  goto L_60b7
+
+block L_57db:
+  insts 482..486  off 0x57db..0x57e9
+  preds: L_57c2
+  succs: L_57ed, L_57f3
+  effects:
+    57e1  goto L_5841
+    57e8  branch load([bp-raMajor]) == 0x1 ? L_57f3 : L_57ed
+
+block L_57ed:
+  insts 488..489  off 0x57ed..0x57f2
+  preds: L_57db
+  succs: L_60b7
+  effects:
+    57f0  goto L_60b7
+
+block L_57f3:
+  insts 490..492  off 0x57f3..0x57fb
+  preds: L_57db
+  succs: L_57ff, L_5805
+  effects:
+    57f3  goto L_5874
+    57fa  branch load([bp-raMajor]) == 0x5 ? L_5805 : L_57ff
+
+block L_57ff:
+  insts 494..495  off 0x57ff..0x5804
+  preds: L_57f3
+  succs: L_60b7
+  effects:
+    5802  goto L_60b7
+
+block L_5805:
+  insts 496..498  off 0x5805..0x580d
+  preds: L_57f3
+  succs: L_5811, L_5817
+  effects:
+    5805  goto L_5874
+    580c  branch load([bp-raMajor]) == 0x7 ? L_5817 : L_5811
+
+block L_5811:
+  insts 500..501  off 0x5811..0x5816
+  preds: L_5805
+  succs: L_60b7
+  effects:
+    5814  goto L_60b7
+
+block L_5817:
+  insts 502..504  off 0x5817..0x581f
+  preds: L_5805
+  succs: L_5823, L_5829
+  effects:
+    5817  goto L_5874
+    581e  branch load([bp-raMajor]) == 0x0 ? L_5829 : L_5823
+
+block L_5823:
+  insts 506..507  off 0x5823..0x5828
+  preds: L_5817
+  succs: L_60b7
+  effects:
+    5826  goto L_60b7
+
+block L_5829:
+  insts 508..510  off 0x5829..0x5831
+  preds: L_5817
+  succs: L_5835, L_609c
+  effects:
+    5829  goto L_5874
+    5830  branch load([bp-raMajor]) == 0x4 ? L_609c : L_5835
+
+block L_5835:
+  insts 512..513  off 0x5835..0x583a
+  preds: L_5829
+  succs: L_60b7
+  effects:
+    5838  goto L_60b7
+
+block L_583b:
+  insts 514..514  off 0x583b..0x583d
+  succs: L_609c
+
+block L_5841:
+  insts 515..516  off 0x5841..0x5845
+  succs: L_5849, L_609c
+
+block L_5849:
+  insts 518..537  off 0x5849..0x5873
+  preds: L_5841
+  succs: L_609c
+
+block L_5874:
+  insts 538..538  off 0x5874..0x5876
+  succs: L_609c
+
+block L_5877:
+  insts 539..542  off 0x5877..0x5881
+  preds: L_6079
+  succs: L_5885, L_588b
+  effects:
+    5880  branch (load([bp-hs+0x2]) & 0xff) < 0xb ? L_588b : L_5885
+
+block L_5885:
+  insts 544..545  off 0x5885..0x588a
+  preds: L_5877
+  succs: L_60b7
+  effects:
+    5888  goto L_60b7
+
+block L_588b:
+  insts 546..557  off 0x588b..0x58ac
+  preds: L_5877
+  succs: L_58b0, L_609c
+  effects:
+    58a0  store[2] 0x25:[load([bp+ppart])+0x4] = (0x109a + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    58a3  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    58ab  branch load([idPlayer]) == 0xffff ? L_609c : L_58b0
+
+block L_58b0:
+  insts 559..563  off 0x58b0..0x58bf
+  preds: L_588b
+  succs: L_58c3, L_58c9
+  effects:
+    58b3  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    58be  branch callresult(int16_t) == 0x0 ? L_58c9 : L_58c3
+
+block L_58c3:
+  insts 565..566  off 0x58c3..0x58c8
+  preds: L_58b0
+  succs: L_60b7
+  effects:
+    58c6  goto L_60b7
+
+block L_58c9:
+  insts 567..570  off 0x58c9..0x58d3
+  preds: L_58b0
+  succs: L_58d7, L_58e9
+  effects:
+    58d2  branch (load([bp-hs+0x2]) & 0xff) != 0x0 ? L_58e9 : L_58d7
+
+block L_58d7:
+  insts 572..573  off 0x58d7..0x58dc
+  preds: L_58c9
+  succs: L_58e0, L_58e9
+  effects:
+    58db  branch load([bp-raMajor]) != 0x8 ? L_58e9 : L_58e0
+
+block L_58e0:
+  insts 575..576  off 0x58e0..0x58e5
+  preds: L_58d7
+  succs: L_60b7
+  effects:
+    58e3  goto L_60b7
+
+block L_58e9:
+  insts 577..580  off 0x58e9..0x58f3
+  preds: L_58c9, L_58d7
+  succs: L_58f7, L_609c
+  effects:
+    58f2  branch (load([bp-hs+0x2]) & 0xff) != 0x1 ? L_609c : L_58f7
+
+block L_58f7:
+  insts 582..583  off 0x58f7..0x58fc
+  preds: L_58e9
+  succs: L_5900, L_609c
+  effects:
+    58fb  branch load([bp-raMajor]) == 0x8 ? L_609c : L_5900
+
+block L_5900:
+  insts 585..586  off 0x5900..0x5905
+  preds: L_58f7
+  succs: L_60b7
+  effects:
+    5903  goto L_60b7
+
+block L_5906:
+  insts 587..587  off 0x5906..0x5908
+  succs: L_609c
+
+block L_5909:
+  insts 588..591  off 0x5909..0x5913
+  preds: L_6061
+  succs: L_5917, L_591d
+  effects:
+    5912  branch (load([bp-hs+0x2]) & 0xff) < 0x10 ? L_591d : L_5917
+
+block L_5917:
+  insts 593..594  off 0x5917..0x591c
+  preds: L_5909
+  succs: L_60b7
+  effects:
+    591a  goto L_60b7
+
+block L_591d:
+  insts 595..606  off 0x591d..0x593e
+  preds: L_5909
+  succs: L_5942, L_609c
+  effects:
+    5932  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4d8a + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
+    5935  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    593d  branch load([idPlayer]) == 0xffff ? L_609c : L_5942
+
+block L_5942:
+  insts 608..611  off 0x5942..0x594c
+  preds: L_591d
+  succs: L_5950, L_598c
+  effects:
+    594b  branch (load([bp-hs+0x2]) & 0xff) < 0x7 ? L_598c : L_5950
+
+block L_5950:
+  insts 613..616  off 0x5950..0x595a
+  preds: L_5942
+  succs: L_595e, L_598c
+  effects:
+    5959  branch (load([bp-hs+0x2]) & 0xff) > 0xf ? L_598c : L_595e
+
+block L_595e:
+  insts 618..621  off 0x595e..0x5968
+  preds: L_5950
+  succs: L_596c, L_609c
+  effects:
+    5967  branch (load([bp-hs+0x2]) & 0xff) == 0x9 ? L_609c : L_596c
+
+block L_596c:
+  insts 623..626  off 0x596c..0x5976
+  preds: L_595e
+  succs: L_597a, L_609c
+  effects:
+    5975  branch (load([bp-hs+0x2]) & 0xff) == 0xc ? L_609c : L_597a
+
+block L_597a:
+  insts 628..629  off 0x597a..0x597f
+  preds: L_596c
+  succs: L_5983, L_609c
+  effects:
+    597e  branch load([bp-raMajor]) == 0x6 ? L_609c : L_5983
+
+block L_5983:
+  insts 631..632  off 0x5983..0x5988
+  preds: L_597a
+  succs: L_60b7
+  effects:
+    5986  goto L_60b7
+
+block L_5989:
+  insts 633..633  off 0x5989..0x598b
+  succs: L_609c
+
+block L_598c:
+  insts 634..637  off 0x598c..0x5996
+  preds: L_5942, L_5950
+  succs: L_599a, L_609c
+  effects:
+    5995  branch (load([bp-hs+0x2]) & 0xff) < 0x0 ? L_609c : L_599a
+
+block L_599a:
+  insts 639..642  off 0x599a..0x59a4
+  preds: L_598c
+  succs: L_59a8, L_609c
+  effects:
+    59a3  branch (load([bp-hs+0x2]) & 0xff) > 0x6 ? L_609c : L_59a8
+
+block L_59a8:
+  insts 644..645  off 0x59a8..0x59ad
+  preds: L_599a
+  succs: L_59b1, L_59d3
+  effects:
+    59ac  branch load([bp-raMajor]) == 0x7 ? L_59d3 : L_59b1
+
+block L_59b1:
+  insts 647..650  off 0x59b1..0x59bb
+  preds: L_59a8
+  succs: L_59bf, L_59cd
+  effects:
+    59ba  branch (load([bp-hs+0x2]) & 0xff) == 0x1 ? L_59cd : L_59bf
+
+block L_59bf:
+  insts 652..655  off 0x59bf..0x59c9
+  preds: L_59b1
+  succs: L_59cd, L_59d3
+  effects:
+    59c8  branch (load([bp-hs+0x2]) & 0xff) < 0x4 ? L_59d3 : L_59cd
+
+block L_59cd:
+  insts 657..658  off 0x59cd..0x59d2
+  preds: L_59b1, L_59bf
+  succs: L_60b7
+  effects:
+    59d0  goto L_60b7
+
+block L_59d3:
+  insts 659..660  off 0x59d3..0x59d8
+  preds: L_59a8, L_59bf
+  succs: L_59dc, L_609c
+  effects:
+    59d7  branch load([bp-raMajor]) != 0x0 ? L_609c : L_59dc
+
+block L_59dc:
+  insts 662..663  off 0x59dc..0x59e1
+  preds: L_59d3
+  succs: L_60b7
+  effects:
+    59df  goto L_60b7
+
+block L_59e2:
+  insts 664..664  off 0x59e2..0x59e4
+  succs: L_609c
+
+block L_59e5:
+  insts 665..668  off 0x59e5..0x59ef
+  preds: L_6059
+  succs: L_59f3, L_59f9
+  effects:
+    59ee  branch (load([bp-hs+0x2]) & 0xff) < 0xa ? L_59f9 : L_59f3
+
+block L_59f3:
+  insts 670..671  off 0x59f3..0x59f8
+  preds: L_59e5
+  succs: L_60b7
+  effects:
+    59f6  goto L_60b7
+
+block L_59f9:
+  insts 672..683  off 0x59f9..0x5a1a
+  preds: L_59e5
+  succs: L_5a1e, L_609c
+  effects:
+    5a0e  store[2] 0x25:[load([bp+ppart])+0x4] = (0x12ec + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5a11  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5a19  branch load([idPlayer]) == 0xffff ? L_609c : L_5a1e
+
+block L_5a1e:
+  insts 685..688  off 0x5a1e..0x5a28
+  preds: L_59f9
+  succs: L_5a2c, L_5a8e
+  effects:
+    5a27  branch (load([bp-hs+0x2]) & 0xff) == 0x0 ? L_5a8e : L_5a2c
+
+block L_5a2c:
+  insts 690..693  off 0x5a2c..0x5a36
+  preds: L_5a1e
+  succs: L_5a3a, L_5a8e
+  effects:
+    5a35  branch (load([bp-hs+0x2]) & 0xff) == 0x2 ? L_5a8e : L_5a3a
+
+block L_5a3a:
+  insts 695..698  off 0x5a3a..0x5a44
+  preds: L_5a2c
+  succs: L_5a48, L_5a8e
+  effects:
+    5a43  branch (load([bp-hs+0x2]) & 0xff) == 0x3 ? L_5a8e : L_5a48
+
+block L_5a48:
+  insts 700..703  off 0x5a48..0x5a52
+  preds: L_5a3a
+  succs: L_5a56, L_5a8e
+  effects:
+    5a51  branch (load([bp-hs+0x2]) & 0xff) == 0x4 ? L_5a8e : L_5a56
+
+block L_5a56:
+  insts 705..708  off 0x5a56..0x5a60
+  preds: L_5a48
+  succs: L_5a64, L_5a8e
+  effects:
+    5a5f  branch (load([bp-hs+0x2]) & 0xff) == 0x5 ? L_5a8e : L_5a64
+
+block L_5a64:
+  insts 710..713  off 0x5a64..0x5a6e
+  preds: L_5a56
+  succs: L_5a72, L_5a8e
+  effects:
+    5a6d  branch (load([bp-hs+0x2]) & 0xff) == 0x6 ? L_5a8e : L_5a72
+
+block L_5a72:
+  insts 715..718  off 0x5a72..0x5a7c
+  preds: L_5a64
+  succs: L_5a80, L_5a8e
+  effects:
+    5a7b  branch (load([bp-hs+0x2]) & 0xff) == 0x8 ? L_5a8e : L_5a80
+
+block L_5a80:
+  insts 720..723  off 0x5a80..0x5a8a
+  preds: L_5a72
+  succs: L_5a8e, L_5aa0
+  effects:
+    5a89  branch (load([bp-hs+0x2]) & 0xff) != 0x9 ? L_5aa0 : L_5a8e
+
+block L_5a8e:
+  insts 725..726  off 0x5a8e..0x5a93
+  preds: L_5a1e, L_5a2c, L_5a3a, L_5a48, L_5a56, L_5a64, L_5a72, L_5a80
+  succs: L_5a97, L_5aa0
+  effects:
+    5a92  branch load([bp-raMajor]) == 0x5 ? L_5aa0 : L_5a97
+
+block L_5a97:
+  insts 728..729  off 0x5a97..0x5a9c
+  preds: L_5a8e
+  succs: L_60b7
+  effects:
+    5a9a  goto L_60b7
+
+block L_5aa0:
+  insts 730..733  off 0x5aa0..0x5aaa
+  preds: L_5a80, L_5a8e
+  succs: L_5aae, L_5ac9
+  effects:
+    5aa9  branch (load([bp-hs+0x2]) & 0xff) != 0x7 ? L_5ac9 : L_5aae
+
+block L_5aae:
+  insts 735..736  off 0x5aae..0x5ab3
+  preds: L_5aa0
+  succs: L_5ab7, L_5ac9
+  effects:
+    5ab2  branch load([bp-raMajor]) == 0x5 ? L_5ac9 : L_5ab7
+
+block L_5ab7:
+  insts 738..739  off 0x5ab7..0x5abc
+  preds: L_5aae
+  succs: L_5ac0, L_5ac9
+  effects:
+    5abb  branch load([bp-raMajor]) == 0x4 ? L_5ac9 : L_5ac0
+
+block L_5ac0:
+  insts 741..742  off 0x5ac0..0x5ac5
+  preds: L_5ab7
+  succs: L_60b7
+  effects:
+    5ac3  goto L_60b7
+
+block L_5ac9:
+  insts 743..746  off 0x5ac9..0x5ad3
+  preds: L_5aa0, L_5aae, L_5ab7
+  succs: L_5ad7, L_609c
+  effects:
+    5ad2  branch (load([bp-hs+0x2]) & 0xff) != 0x1 ? L_609c : L_5ad7
+
+block L_5ad7:
+  insts 748..749  off 0x5ad7..0x5adc
+  preds: L_5ac9
+  succs: L_5ae0, L_609c
+  effects:
+    5adb  branch load([bp-raMajor]) != 0x2 ? L_609c : L_5ae0
+
+block L_5ae0:
+  insts 751..752  off 0x5ae0..0x5ae5
+  preds: L_5ad7
+  succs: L_60b7
+  effects:
+    5ae3  goto L_60b7
+
+block L_5ae6:
+  insts 753..753  off 0x5ae6..0x5ae8
+  succs: L_609c
+
+block L_5ae9:
+  insts 754..757  off 0x5ae9..0x5af3
+  preds: L_6051
+  succs: L_5af7, L_5afd
+  effects:
+    5af2  branch (load([bp-hs+0x2]) & 0xff) < 0x8 ? L_5afd : L_5af7
+
+block L_5af7:
+  insts 759..760  off 0x5af7..0x5afc
+  preds: L_5ae9
+  succs: L_60b7
+  effects:
+    5afa  goto L_60b7
+
+block L_5afd:
+  insts 761..772  off 0x5afd..0x5b1e
+  preds: L_5ae9
+  succs: L_5b22, L_609c
+  effects:
+    5b12  store[2] 0x25:[load([bp+ppart])+0x4] = (0x1508 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5b15  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5b1d  branch load([idPlayer]) == 0xffff ? L_609c : L_5b22
+
+block L_5b22:
+  insts 774..777  off 0x5b22..0x5b2c
+  preds: L_5afd
+  succs: L_5b30, L_5b68
+  effects:
+    5b2b  branch (load([bp-hs+0x2]) & 0xff) == 0x2 ? L_5b68 : L_5b30
+
+block L_5b30:
+  insts 779..782  off 0x5b30..0x5b3a
+  preds: L_5b22
+  succs: L_5b3e, L_5b68
+  effects:
+    5b39  branch (load([bp-hs+0x2]) & 0xff) == 0x3 ? L_5b68 : L_5b3e
+
+block L_5b3e:
+  insts 784..787  off 0x5b3e..0x5b48
+  preds: L_5b30
+  succs: L_5b4c, L_5b68
+  effects:
+    5b47  branch (load([bp-hs+0x2]) & 0xff) == 0x4 ? L_5b68 : L_5b4c
+
+block L_5b4c:
+  insts 789..792  off 0x5b4c..0x5b56
+  preds: L_5b3e
+  succs: L_5b5a, L_5b68
+  effects:
+    5b55  branch (load([bp-hs+0x2]) & 0xff) == 0x0 ? L_5b68 : L_5b5a
+
+block L_5b5a:
+  insts 794..797  off 0x5b5a..0x5b64
+  preds: L_5b4c
+  succs: L_5b68, L_5b92
+  effects:
+    5b63  branch (load([bp-hs+0x2]) & 0xff) != 0x5 ? L_5b92 : L_5b68
+
+block L_5b68:
+  insts 799..809  off 0x5b68..0x5b85
+  preds: L_5b22, L_5b30, L_5b3e, L_5b4c, L_5b5a
+  succs: L_5b89, L_5b92
+  effects:
+    5b79  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x9) -> callresult(int16_t)
+    5b84  branch callresult(int16_t) == 0x0 ? L_5b92 : L_5b89
+
+block L_5b89:
+  insts 811..812  off 0x5b89..0x5b8e
+  preds: L_5b68
+  succs: L_60b7
+  effects:
+    5b8c  goto L_60b7
+
+block L_5b92:
+  insts 813..816  off 0x5b92..0x5b9c
+  preds: L_5b5a, L_5b68
+  succs: L_5ba0, L_5bae
+  effects:
+    5b9b  branch (load([bp-hs+0x2]) & 0xff) == 0x0 ? L_5bae : L_5ba0
+
+block L_5ba0:
+  insts 818..821  off 0x5ba0..0x5baa
+  preds: L_5b92
+  succs: L_5bae, L_5bd8
+  effects:
+    5ba9  branch (load([bp-hs+0x2]) & 0xff) != 0x5 ? L_5bd8 : L_5bae
+
+block L_5bae:
+  insts 823..833  off 0x5bae..0x5bcb
+  preds: L_5b92, L_5ba0
+  succs: L_5bcf, L_5bd8
+  effects:
+    5bbf  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x2) -> callresult(int16_t)
+    5bca  branch callresult(int16_t) != 0x0 ? L_5bd8 : L_5bcf
+
+block L_5bcf:
+  insts 835..836  off 0x5bcf..0x5bd4
+  preds: L_5bae
+  succs: L_60b7
+  effects:
+    5bd2  goto L_60b7
+
+block L_5bd8:
+  insts 837..840  off 0x5bd8..0x5be2
+  preds: L_5ba0, L_5bae
+  succs: L_5be6, L_5bf8
+  effects:
+    5be1  branch (load([bp-hs+0x2]) & 0xff) != 0x7 ? L_5bf8 : L_5be6
+
+block L_5be6:
+  insts 842..843  off 0x5be6..0x5beb
+  preds: L_5bd8
+  succs: L_5bef, L_5bf8
+  effects:
+    5bea  branch load([bp-raMajor]) == 0x3 ? L_5bf8 : L_5bef
+
+block L_5bef:
+  insts 845..846  off 0x5bef..0x5bf4
+  preds: L_5be6
+  succs: L_60b7
+  effects:
+    5bf2  goto L_60b7
+
+block L_5bf8:
+  insts 847..851  off 0x5bf8..0x5c07
+  preds: L_5bd8, L_5be6
+  succs: L_5c0b, L_609c
+  effects:
+    5bfb  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5c06  branch callresult(int16_t) == 0x0 ? L_609c : L_5c0b
+
+block L_5c0b:
+  insts 853..854  off 0x5c0b..0x5c10
+  preds: L_5bf8
+  succs: L_60b7
+  effects:
+    5c0e  goto L_60b7
+
+block L_5c11:
+  insts 855..855  off 0x5c11..0x5c13
+  succs: L_609c
+
+block L_5c14:
+  insts 856..859  off 0x5c14..0x5c1e
+  preds: L_6021
+  succs: L_5c22, L_5c28
+  effects:
+    5c1d  branch (load([bp-hs+0x2]) & 0xff) < 0x10 ? L_5c28 : L_5c22
+
+block L_5c22:
+  insts 861..862  off 0x5c22..0x5c27
+  preds: L_5c14
+  succs: L_60b7
+  effects:
+    5c25  goto L_60b7
+
+block L_5c28:
+  insts 863..874  off 0x5c28..0x5c49
+  preds: L_5c14
+  succs: L_5c4d, L_609c
+  effects:
+    5c3d  store[2] 0x25:[load([bp+ppart])+0x4] = (0x768 + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
+    5c40  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5c48  branch load([idPlayer]) == 0xffff ? L_609c : L_5c4d
+
+block L_5c4d:
+  insts 876..879  off 0x5c4d..0x5c57
+  preds: L_5c28
+  succs: L_5c5b, L_5c77
+  effects:
+    5c56  branch (load([bp-hs+0x2]) & 0xff) == 0x7 ? L_5c77 : L_5c5b
+
+block L_5c5b:
+  insts 881..884  off 0x5c5b..0x5c65
+  preds: L_5c4d
+  succs: L_5c69, L_5c77
+  effects:
+    5c64  branch (load([bp-hs+0x2]) & 0xff) == 0x8 ? L_5c77 : L_5c69
+
+block L_5c69:
+  insts 886..889  off 0x5c69..0x5c73
+  preds: L_5c5b
+  succs: L_5c77, L_5ca1
+  effects:
+    5c72  branch (load([bp-hs+0x2]) & 0xff) != 0xc ? L_5ca1 : L_5c77
+
+block L_5c77:
+  insts 891..901  off 0x5c77..0x5c94
+  preds: L_5c4d, L_5c5b, L_5c69
+  succs: L_5c98, L_5ca1
+  effects:
+    5c88  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0xa) -> callresult(int16_t)
+    5c93  branch callresult(int16_t) == 0x0 ? L_5ca1 : L_5c98
+
+block L_5c98:
+  insts 903..904  off 0x5c98..0x5c9d
+  preds: L_5c77
+  succs: L_60b7
+  effects:
+    5c9b  goto L_60b7
+
+block L_5ca1:
+  insts 905..908  off 0x5ca1..0x5cab
+  preds: L_5c69, L_5c77
+  succs: L_5caf, L_5ccb
+  effects:
+    5caa  branch (load([bp-hs+0x2]) & 0xff) == 0x6 ? L_5ccb : L_5caf
+
+block L_5caf:
+  insts 910..913  off 0x5caf..0x5cb9
+  preds: L_5ca1
+  succs: L_5cbd, L_5ccb
+  effects:
+    5cb8  branch (load([bp-hs+0x2]) & 0xff) == 0x5 ? L_5ccb : L_5cbd
+
+block L_5cbd:
+  insts 915..918  off 0x5cbd..0x5cc7
+  preds: L_5caf
+  succs: L_5ccb, L_609c
+  effects:
+    5cc6  branch (load([bp-hs+0x2]) & 0xff) != 0xe ? L_609c : L_5ccb
+
+block L_5ccb:
+  insts 920..921  off 0x5ccb..0x5cd0
+  preds: L_5ca1, L_5caf, L_5cbd
+  succs: L_5cd4, L_609c
+  effects:
+    5ccf  branch load([bp-raMajor]) == 0x1 ? L_609c : L_5cd4
+
+block L_5cd4:
+  insts 923..924  off 0x5cd4..0x5cd9
+  preds: L_5ccb
+  succs: L_60b7
+  effects:
+    5cd7  goto L_60b7
+
+block L_5cda:
+  insts 925..925  off 0x5cda..0x5cdc
+  succs: L_609c
+
+block L_5cdd:
+  insts 926..929  off 0x5cdd..0x5ce7
+  preds: L_6039
+  succs: L_5ceb, L_5cf1
+  effects:
+    5ce6  branch (load([bp-hs+0x2]) & 0xff) < 0x18 ? L_5cf1 : L_5ceb
+
+block L_5ceb:
+  insts 931..932  off 0x5ceb..0x5cf0
+  preds: L_5cdd
+  succs: L_60b7
+  effects:
+    5cee  goto L_60b7
+
+block L_5cf1:
+  insts 933..946  off 0x5cf1..0x5d16
+  preds: L_5cdd
+  succs: L_5d1a, L_5d29
+  effects:
+    5d06  store[2] 0x25:[load([bp+ppart])+0x4] = (0x2450 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
+    5d09  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5d15  branch (load@5d0c/src([bp-hs+0x2]) & 0xff) != 0x2 ? L_5d29 : L_5d1a
+
+block L_5d1a:
+  insts 948..949  off 0x5d1a..0x5d1f
+  preds: L_5cf1
+  succs: L_5d23, L_5d29
+  effects:
+    5d1e  branch load([bp-raMajor]) == 0x4 ? L_5d29 : L_5d23
+
+block L_5d23:
+  insts 951..952  off 0x5d23..0x5d28
+  preds: L_5d1a
+  succs: L_60b7
+  effects:
+    5d26  goto L_60b7
+
+block L_5d29:
+  insts 953..956  off 0x5d29..0x5d33
+  preds: L_5cf1, L_5d1a
+  succs: L_5d37, L_5d45
+  effects:
+    5d32  branch (load([bp-hs+0x2]) & 0xff) == 0x10 ? L_5d45 : L_5d37
+
+block L_5d37:
+  insts 958..961  off 0x5d37..0x5d41
+  preds: L_5d29
+  succs: L_5d45, L_5d57
+  effects:
+    5d40  branch (load([bp-hs+0x2]) & 0xff) != 0xe ? L_5d57 : L_5d45
+
+block L_5d45:
+  insts 963..964  off 0x5d45..0x5d4a
+  preds: L_5d29, L_5d37
+  succs: L_5d4e, L_5d57
+  effects:
+    5d49  branch load([bp-raMajor]) == 0x2 ? L_5d57 : L_5d4e
+
+block L_5d4e:
+  insts 966..967  off 0x5d4e..0x5d53
+  preds: L_5d45
+  succs: L_60b7
+  effects:
+    5d51  goto L_60b7
+
+block L_5d57:
+  insts 968..972  off 0x5d57..0x5d66
+  preds: L_5d37, L_5d45
+  succs: L_5d6a, L_609c
+  effects:
+    5d5a  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5d65  branch callresult(int16_t) == 0x0 ? L_609c : L_5d6a
+
+block L_5d6a:
+  insts 974..975  off 0x5d6a..0x5d6f
+  preds: L_5d57
+  succs: L_60b7
+  effects:
+    5d6d  goto L_60b7
+
+block L_5d70:
+  insts 976..976  off 0x5d70..0x5d72
+  succs: L_609c
+
+block L_5d73:
+  insts 977..980  off 0x5d73..0x5d7d
+  preds: L_6041
+  succs: L_5d81, L_5d87
+  effects:
+    5d7c  branch (load([bp-hs+0x2]) & 0xff) < 0xc ? L_5d87 : L_5d81
+
+block L_5d81:
+  insts 982..983  off 0x5d81..0x5d86
+  preds: L_5d73
+  succs: L_60b7
+  effects:
+    5d84  goto L_60b7
+
+block L_5d87:
+  insts 984..995  off 0x5d87..0x5da8
+  preds: L_5d73
+  succs: L_5dac, L_609c
+  effects:
+    5d9c  store[2] 0x25:[load([bp+ppart])+0x4] = (0x2180 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
+    5d9f  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5da7  branch load([idPlayer]) == 0xffff ? L_609c : L_5dac
+
+block L_5dac:
+  insts 997..1001  off 0x5dac..0x5dbb
+  preds: L_5d87
+  succs: L_5dbf, L_609c
+  effects:
+    5daf  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5dba  branch callresult(int16_t) == 0x0 ? L_609c : L_5dbf
+
+block L_5dbf:
+  insts 1003..1004  off 0x5dbf..0x5dc4
+  preds: L_5dac
+  succs: L_60b7
+  effects:
+    5dc2  goto L_60b7
+
+block L_5dc5:
+  insts 1005..1005  off 0x5dc5..0x5dc7
+  succs: L_609c
+
+block L_5dc8:
+  insts 1006..1009  off 0x5dc8..0x5dd2
+  preds: L_6049
+  succs: L_5dd6, L_5ddc
+  effects:
+    5dd1  branch (load([bp-hs+0x2]) & 0xff) < 0xf ? L_5ddc : L_5dd6
+
+block L_5dd6:
+  insts 1011..1012  off 0x5dd6..0x5ddb
+  preds: L_5dc8
+  succs: L_60b7
+  effects:
+    5dd9  goto L_60b7
+
+block L_5ddc:
+  insts 1013..1024  off 0x5ddc..0x5dfd
+  preds: L_5dc8
+  succs: L_5e01, L_609c
+  effects:
+    5df1  store[2] 0x25:[load([bp+ppart])+0x4] = (0x1e1a + loword(((load([bp-hs+0x2]) & 0xff) * 0x3a)))
+    5df4  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5dfc  branch load([idPlayer]) == 0xffff ? L_609c : L_5e01
+
+block L_5e01:
+  insts 1026..1029  off 0x5e01..0x5e0b
+  preds: L_5ddc
+  succs: L_5e0f, L_5e2f
+  effects:
+    5e0a  branch (load([bp-hs+0x2]) & 0xff) < 0xa ? L_5e2f : L_5e0f
+
+block L_5e0f:
+  insts 1031..1034  off 0x5e0f..0x5e19
+  preds: L_5e01
+  succs: L_5e1d, L_5e2f
+  effects:
+    5e18  branch (load([bp-hs+0x2]) & 0xff) > 0xe ? L_5e2f : L_5e1d
+
+block L_5e1d:
+  insts 1036..1037  off 0x5e1d..0x5e22
+  preds: L_5e0f
+  succs: L_5e26, L_5e2f
+  effects:
+    5e21  branch load([bp-raMajor]) != 0x4 ? L_5e2f : L_5e26
+
+block L_5e26:
+  insts 1039..1040  off 0x5e26..0x5e2b
+  preds: L_5e1d
+  succs: L_60b7
+  effects:
+    5e29  goto L_60b7
+
+block L_5e2f:
+  insts 1041..1044  off 0x5e2f..0x5e39
+  preds: L_5e01, L_5e0f, L_5e1d
+  succs: L_5e3d, L_5e4f
+  effects:
+    5e38  branch (load([bp-hs+0x2]) & 0xff) != 0x9 ? L_5e4f : L_5e3d
+
+block L_5e3d:
+  insts 1046..1047  off 0x5e3d..0x5e42
+  preds: L_5e2f
+  succs: L_5e46, L_5e4f
+  effects:
+    5e41  branch load([bp-raMajor]) == 0x3 ? L_5e4f : L_5e46
+
+block L_5e46:
+  insts 1049..1050  off 0x5e46..0x5e4b
+  preds: L_5e3d
+  succs: L_60b7
+  effects:
+    5e49  goto L_60b7
+
+block L_5e4f:
+  insts 1051..1055  off 0x5e4f..0x5e5e
+  preds: L_5e2f, L_5e3d
+  succs: L_5e62, L_609c
+  effects:
+    5e52  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5e5d  branch callresult(int16_t) == 0x0 ? L_609c : L_5e62
+
+block L_5e62:
+  insts 1057..1058  off 0x5e62..0x5e67
+  preds: L_5e4f
+  succs: L_60b7
+  effects:
+    5e65  goto L_60b7
+
+block L_5e68:
+  insts 1059..1059  off 0x5e68..0x5e6a
+  succs: L_609c
+
+block L_5e6b:
+  insts 1060..1063  off 0x5e6b..0x5e75
+  preds: L_6091, L_6096
+  succs: L_5e79, L_5e7f
+  effects:
+    5e74  branch (load([bp-hs+0x2]) & 0xff) < 0xf ? L_5e7f : L_5e79
+
+block L_5e79:
+  insts 1065..1066  off 0x5e79..0x5e7e
+  preds: L_5e6b
+  succs: L_60b7
+  effects:
+    5e7c  goto L_60b7
+
+block L_5e7f:
+  insts 1067..1078  off 0x5e7f..0x5ea0
+  preds: L_5e6b
+  succs: L_5ea4, L_609c
+  effects:
+    5e94  store[2] 0x25:[load([bp+ppart])+0x4] = (0x16b8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5e97  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5e9f  branch load([idPlayer]) == 0xffff ? L_609c : L_5ea4
+
+block L_5ea4:
+  insts 1080..1083  off 0x5ea4..0x5eae
+  preds: L_5e7f
+  succs: L_5eb2, L_5ef7
+  effects:
+    5ead  branch (load([bp-hs+0x2]) & 0xff) < 0x0 ? L_5ef7 : L_5eb2
+
+block L_5eb2:
+  insts 1085..1088  off 0x5eb2..0x5ebc
+  preds: L_5ea4
+  succs: L_5ec0, L_5ef7
+  effects:
+    5ebb  branch (load([bp-hs+0x2]) & 0xff) > 0x8 ? L_5ef7 : L_5ec0
+
+block L_5ec0:
+  insts 1090..1093  off 0x5ec0..0x5ecc
+  preds: L_5eb2
+  succs: L_5ed0, L_5ef7
+  effects:
+    5ecb  branch load(farseg(load(dword 0x25:[load([bp+ppart])+0x4])):[faroff(load(dword 0x25:[load([bp+ppart])+0x4]))+0x34]) >= 0x0 ? L_5ef7 : L_5ed0
+
+block L_5ed0:
+  insts 1095..1105  off 0x5ed0..0x5eed
+  preds: L_5ec0
+  succs: L_5ef1, L_5ef7
+  effects:
+    5ee1  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0xa) -> callresult(int16_t)
+    5eec  branch callresult(int16_t) == 0x0 ? L_5ef7 : L_5ef1
+
+block L_5ef1:
+  insts 1107..1108  off 0x5ef1..0x5ef6
+  preds: L_5ed0
+  succs: L_60b7
+  effects:
+    5ef4  goto L_60b7
+
+block L_5ef7:
+  insts 1109..1112  off 0x5ef7..0x5f01
+  preds: L_5ea4, L_5eb2, L_5ec0, L_5ed0
+  succs: L_5f05, L_5f22
+  effects:
+    5f00  branch (load([bp-hs+0x2]) & 0xff) < 0x0 ? L_5f22 : L_5f05
+
+block L_5f05:
+  insts 1114..1117  off 0x5f05..0x5f0f
+  preds: L_5ef7
+  succs: L_5f13, L_5f22
+  effects:
+    5f0e  branch (load([bp-hs+0x2]) & 0xff) > 0x8 ? L_5f22 : L_5f13
+
+block L_5f13:
+  insts 1119..1120  off 0x5f13..0x5f18
+  preds: L_5f05
+  succs: L_5f1c, L_5f22
+  effects:
+    5f17  branch load([bp-raMajor]) != 0x8 ? L_5f22 : L_5f1c
+
+block L_5f1c:
+  insts 1122..1123  off 0x5f1c..0x5f21
+  preds: L_5f13
+  succs: L_60b7
+  effects:
+    5f1f  goto L_60b7
+
+block L_5f22:
+  insts 1124..1127  off 0x5f22..0x5f2c
+  preds: L_5ef7, L_5f05, L_5f13
+  succs: L_5f30, L_5f4d
+  effects:
+    5f2b  branch (load([bp-hs+0x2]) & 0xff) < 0x9 ? L_5f4d : L_5f30
+
+block L_5f30:
+  insts 1129..1132  off 0x5f30..0x5f3a
+  preds: L_5f22
+  succs: L_5f3e, L_5f4d
+  effects:
+    5f39  branch (load([bp-hs+0x2]) & 0xff) > 0xd ? L_5f4d : L_5f3e
+
+block L_5f3e:
+  insts 1134..1135  off 0x5f3e..0x5f43
+  preds: L_5f30
+  succs: L_5f47, L_5f4d
+  effects:
+    5f42  branch load([bp-raMajor]) != 0x8 ? L_5f4d : L_5f47
+
+block L_5f47:
+  insts 1137..1138  off 0x5f47..0x5f4c
+  preds: L_5f3e
+  succs: L_60b7
+  effects:
+    5f4a  goto L_60b7
+
+block L_5f4d:
+  insts 1139..1142  off 0x5f4d..0x5f57
+  preds: L_5f22, L_5f30, L_5f3e
+  succs: L_5f5b, L_5f7b
+  effects:
+    5f56  branch (load([bp-hs+0x2]) & 0xff) < 0xb ? L_5f7b : L_5f5b
+
+block L_5f5b:
+  insts 1144..1147  off 0x5f5b..0x5f65
+  preds: L_5f4d
+  succs: L_5f69, L_5f7b
+  effects:
+    5f64  branch (load([bp-hs+0x2]) & 0xff) > 0xd ? L_5f7b : L_5f69
+
+block L_5f69:
+  insts 1149..1150  off 0x5f69..0x5f6e
+  preds: L_5f5b
+  succs: L_5f72, L_5f7b
+  effects:
+    5f6d  branch load([bp-raMajor]) != 0x2 ? L_5f7b : L_5f72
+
+block L_5f72:
+  insts 1152..1153  off 0x5f72..0x5f77
+  preds: L_5f69
+  succs: L_60b7
+  effects:
+    5f75  goto L_60b7
+
+block L_5f7b:
+  insts 1154..1158  off 0x5f7b..0x5f8a
+  preds: L_5f4d, L_5f5b, L_5f69
+  succs: L_5f8e, L_609c
+  effects:
+    5f7e  call FShouldPartBeHidden(load([bp+ppart])) -> callresult(int16_t)
+    5f89  branch callresult(int16_t) == 0x0 ? L_609c : L_5f8e
+
+block L_5f8e:
+  insts 1160..1161  off 0x5f8e..0x5f93
+  preds: L_5f7b
+  succs: L_60b7
+  effects:
+    5f91  goto L_60b7
+
+block L_5f94:
+  insts 1162..1162  off 0x5f94..0x5f96
+  succs: L_609c
+
+block L_5f97:
+  insts 1163..1166  off 0x5f97..0x5fa1
+  preds: L_6081
+  succs: L_5fa5, L_5fab
+  effects:
+    5fa0  branch (load([bp-hs+0x2]) & 0xff) < 0x14 ? L_5fab : L_5fa5
+
+block L_5fa5:
+  insts 1168..1169  off 0x5fa5..0x5faa
+  preds: L_5f97
+  succs: L_60b7
+  effects:
+    5fa8  goto L_60b7
+
+block L_5fab:
+  insts 1170..1181  off 0x5fab..0x5fcc
+  preds: L_5f97
+  succs: L_5fd0, L_609c
+  effects:
+    5fc0  store[2] 0x25:[load([bp+ppart])+0x4] = (0x19e2 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5fc3  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5fcb  branch load([idPlayer]) == 0xffff ? L_609c : L_5fd0
+
+block L_5fd0:
+  insts 1183..1186  off 0x5fd0..0x5fda
+  preds: L_5fab
+  succs: L_5fde, L_609c
+  effects:
+    5fd9  branch (load([bp-hs+0x2]) & 0xff) < 0x0 ? L_609c : L_5fde
+
+block L_5fde:
+  insts 1188..1191  off 0x5fde..0x5fe8
+  preds: L_5fd0
+  succs: L_5fec, L_609c
+  effects:
+    5fe7  branch (load([bp-hs+0x2]) & 0xff) > 0x7 ? L_609c : L_5fec
+
+block L_5fec:
+  insts 1193..1203  off 0x5fec..0x6009
+  preds: L_5fde
+  succs: L_600d, L_609c
+  effects:
+    5ffd  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([idPlayer])))), 0x1) -> callresult(int16_t)
+    6008  branch callresult(int16_t) != 0x0 ? L_609c : L_600d
+
+block L_600d:
+  insts 1205..1206  off 0x600d..0x6012
+  preds: L_5fec
+  succs: L_60b7
+  effects:
+    6010  goto L_60b7
+
+block L_6013:
+  insts 1207..1207  off 0x6013..0x6015
+  succs: L_609c
+
+block L_6019:
+  insts 1208..1209  off 0x6019..0x601d
+  preds: L_524e
+  succs: L_528d, L_6021
+  effects:
+    601c  branch load([bp-hs]) == 0x1 ? L_528d : L_6021
+
+block L_6021:
+  insts 1211..1212  off 0x6021..0x6025
+  preds: L_6019
+  succs: L_5c14, L_6029
+  effects:
+    6024  branch load([bp-hs]) == 0x2 ? L_5c14 : L_6029
+
+block L_6029:
+  insts 1214..1215  off 0x6029..0x602d
+  preds: L_6021
+  succs: L_53d4, L_6031
+  effects:
+    602c  branch load([bp-hs]) == 0x4 ? L_53d4 : L_6031
+
+block L_6031:
+  insts 1217..1218  off 0x6031..0x6035
+  preds: L_6029
+  succs: L_56fe, L_6039
+  effects:
+    6034  branch load([bp-hs]) == 0x8 ? L_56fe : L_6039
+
+block L_6039:
+  insts 1220..1221  off 0x6039..0x603d
+  preds: L_6031
+  succs: L_5cdd, L_6041
+  effects:
+    603c  branch load([bp-hs]) == 0x10 ? L_5cdd : L_6041
+
+block L_6041:
+  insts 1223..1224  off 0x6041..0x6045
+  preds: L_6039
+  succs: L_5d73, L_6049
+  effects:
+    6044  branch load([bp-hs]) == 0x20 ? L_5d73 : L_6049
+
+block L_6049:
+  insts 1226..1227  off 0x6049..0x604d
+  preds: L_6041
+  succs: L_5dc8, L_6051
+  effects:
+    604c  branch load([bp-hs]) == 0x40 ? L_5dc8 : L_6051
+
+block L_6051:
+  insts 1229..1230  off 0x6051..0x6055
+  preds: L_6049
+  succs: L_5ae9, L_6059
+  effects:
+    6054  branch load([bp-hs]) == 0x80 ? L_5ae9 : L_6059
+
+block L_6059:
+  insts 1232..1233  off 0x6059..0x605d
+  preds: L_6051
+  succs: L_59e5, L_6061
+  effects:
+    605c  branch load([bp-hs]) == 0x100 ? L_59e5 : L_6061
+
+block L_6061:
+  insts 1235..1236  off 0x6061..0x6065
+  preds: L_6059
+  succs: L_5909, L_6069
+  effects:
+    6064  branch load([bp-hs]) == 0x200 ? L_5909 : L_6069
+
+block L_6069:
+  insts 1238..1239  off 0x6069..0x606d
+  preds: L_6061
+  succs: L_5662, L_6071
+  effects:
+    606c  branch load([bp-hs]) == 0x400 ? L_5662 : L_6071
+
+block L_6071:
+  insts 1241..1242  off 0x6071..0x6075
+  preds: L_6069
+  succs: L_5789, L_6079
+  effects:
+    6074  branch load([bp-hs]) == 0x800 ? L_5789 : L_6079
+
+block L_6079:
+  insts 1244..1245  off 0x6079..0x607d
+  preds: L_6071
+  succs: L_5877, L_6081
+  effects:
+    607c  branch load([bp-hs]) == 0x1000 ? L_5877 : L_6081
+
+block L_6081:
+  insts 1247..1248  off 0x6081..0x6085
+  preds: L_6079
+  succs: L_5f97, L_6089
+  effects:
+    6084  branch load([bp-hs]) == 0x2000 ? L_5f97 : L_6089
+
+block L_6089:
+  insts 1250..1251  off 0x6089..0x608d
+  preds: L_6081
+  succs: L_545f, L_6091
+  effects:
+    608c  branch load([bp-hs]) == 0x4000 ? L_545f : L_6091
+
+block L_6091:
+  insts 1253..1254  off 0x6091..0x6095
+  preds: L_6089
+  succs: L_5287, L_5e6b
+  effects:
+    6094  branch load([bp-hs]) != 0x8000 ? L_5287 : L_6096
+
+block L_6096:
+  insts 1255..1255  off 0x6096..0x6098
+  succs: L_5e6b
+
+block L_6099:
+  insts 1256..1256  off 0x6099..0x609b
+  succs: L_5287
+
+block L_609c:
+  insts 1257..1265  off 0x609c..0x60b6
+  preds: L_52a1, L_53b8, L_53d1, L_5443, L_545c, L_5473, L_5646, L_565f, L_5676, L_56de, L_56ec, L_56fb, L_576d, L_5786, L_579d, L_5829, L_583b, L_5841, L_5849, L_5874, L_588b, L_58e9, L_58f7, L_5906, L_591d, L_595e, L_596c, L_597a, L_5989, L_598c, L_599a, L_59d3, L_59e2, L_59f9, L_5ac9, L_5ad7, L_5ae6, L_5afd, L_5bf8, L_5c11, L_5c28, L_5cbd, L_5ccb, L_5cda, L_5d57, L_5d70, L_5d87, L_5dac, L_5dc5, L_5ddc, L_5e4f, L_5e68, L_5e7f, L_5f7b, L_5f94, L_5fab, L_5fd0, L_5fde, L_5fec, L_6013
+  succs: L_60b7
+  effects:
+    60ac  call TechStatus(farptr(load(0x25:[load([bp+ppart])+0x6]), (load(0x25:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)
+
+block L_60b7:
+  insts 1267..1271  off 0x60b7..0x60bc
+  preds: L_5287, L_529b, L_52dd, L_5331, L_5377, L_53af, L_53cb, L_53e2, L_541a, L_543a, L_5456, L_546d, L_54bd, L_54eb, L_554d, L_55a1, L_55cf, L_55ef, L_560f, L_563d, L_5659, L_5670, L_56d8, L_56f5, L_570c, L_5744, L_5764, L_5780, L_5797, L_57d5, L_57ed, L_57ff, L_5811, L_5823, L_5835, L_5885, L_58c3, L_58e0, L_5900, L_5917, L_5983, L_59cd, L_59dc, L_59f3, L_5a97, L_5ac0, L_5ae0, L_5af7, L_5b89, L_5bcf, L_5bef, L_5c0b, L_5c22, L_5c98, L_5cd4, L_5ceb, L_5d23, L_5d4e, L_5d6a, L_5d81, L_5dbf, L_5dd6, L_5e26, L_5e46, L_5e62, L_5e79, L_5ef1, L_5f1c, L_5f47, L_5f72, L_5f8e, L_5fa5, L_600d, L_609c
+  effects:
+    60bc  return merge(Join: L_60b7, (L_5287:0x0, L_529b:0x0, L_52dd:0xffff, L_5331:0xffff, L_5377:0xffff, L_53af:0xffff, L_53cb:0xffff, L_53e2:0x0, L_541a:0xffff, L_543a:0xffff, L_5456:0xffff, L_546d:0x0, L_54bd:0xffff, L_54eb:0xffff, L_554d:0xffff, L_55a1:0xffff, L_55cf:0xffff, L_55ef:0xffff, L_560f:0xffff, L_563d:0xffff, L_5659:0xffff, L_5670:0x0, L_56d8:0xffff, L_56f5:0xffff, L_570c:0x0, L_5744:0xffff, L_5764:0xffff, L_5780:0xffff, L_5797:0x0, L_57d5:0xffff, L_57ed:0xffff, L_57ff:0xffff, L_5811:0xffff, L_5823:0xffff, L_5835:0xffff, L_5885:0x0, L_58c3:0xffff, L_58e0:0xffff, L_5900:0xffff, L_5917:0x0, L_5983:0xffff, L_59cd:0xffff, L_59dc:0xffff, L_59f3:0x0, L_5a97:0xffff, L_5ac0:0xffff, L_5ae0:0xffff, L_5af7:0x0, L_5b89:0xffff, L_5bcf:0xffff, L_5bef:0xffff, L_5c0b:0xffff, L_5c22:0x0, L_5c98:0xffff, L_5cd4:0xffff, L_5ceb:0x0, L_5d23:0xffff, L_5d4e:0xffff, L_5d6a:0xffff, L_5d81:0x0, L_5dbf:0xffff, L_5dd6:0x0, L_5e26:0xffff, L_5e46:0xffff, L_5e62:0xffff, L_5e79:0x0, L_5ef1:0xffff, L_5f1c:0xffff, L_5f47:0xffff, L_5f72:0xffff, L_5f8e:0xffff, L_5fa5:0x0, L_600d:0xffff, L_609c:callresult(int16_t)))

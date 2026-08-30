@@ -1,0 +1,114 @@
+/*
+FLookupOrbitingXfer  (util)
+  addr: 0008:24fa  len=484
+  sig:  int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip)
+  params:
+    int16_t          idPlanet       [BP+0x6]
+    int16_t          iNth           [BP+0x8]
+    XFER *           pxf            [BP+0xa]
+    int16_t          idSkip         [BP+0xc]
+  locals:
+    THING *          lpthMac        [BP-0x10]
+    FLEET *          lpfl           [BP-0xc]
+    THING *          lpth           [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_24fa:
+    branch cFleet > 0x0 ? L_2513 : L_250d
+
+L_250d:
+    return 0x0
+
+L_2513:
+    branch cFleet == 0x0 ? L_2606 : L_251d
+
+L_251d:
+    i = 0x0
+    goto L_2529
+
+L_2525:
+    i = (i + 0x1)
+
+L_2529:
+    branch i >= cFleet ? L_2606 : L_2534
+
+L_2534:
+    lpfl = rglpfl[i]
+    branch LOWORD(rglpfl[i]) != 0x0 ? L_2564 : L_255c
+
+L_255c:
+    branch *(rglpfl[i]+0x2) == 0x0 ? L_2606 : L_2564
+
+L_2564:
+    branch lpfl->idPlanet != idPlanet ? L_2525 : L_2573
+
+L_2573:
+    branch LOWORD(lpfl) == idSkip ? L_2525 : L_2581
+
+L_2581:
+    branch idSkip == 0xffff ? L_25ad : L_258a
+
+L_258a:
+    branch lpfl->pt.x != sel.pt.x ? L_2525 : L_25a4
+
+L_25a4:
+    branch lpfl->pt.y != sel.pt.y ? L_2525 : L_25ad
+
+L_25ad:
+    t_25ad = iNth
+    iNth = (iNth - 0x1)
+    branch t_25ad != 0x0 ? L_2525 : L_25bc
+
+L_25bc:
+    branch pxf == 0x0 ? L_25fd : L_25c5
+
+L_25c5:
+    pxf->fl = *lpfl
+    pxf->grobj = grobjFleet
+    pxf->id = LOWORD(lpfl)
+
+L_25fd:
+    return 0x1
+
+
+L_2606:
+    lpth = lpThings
+    lpthMac = &lpThings[cThing]
+    goto L_26c4
+
+L_2631:
+    branch lpth->ith != ithMineralPacket ? L_26c0 : L_2647
+
+L_2647:
+    branch lpth->pt.x != sel.pt.x ? L_26c0 : L_2661
+
+L_2661:
+    branch lpth->pt.y != sel.pt.y ? L_26c0 : L_266a
+
+L_266a:
+    t_266a = iNth
+    iNth = (iNth - 0x1)
+    branch t_266a != 0x0 ? L_26c0 : L_2679
+
+L_2679:
+    branch pxf == 0x0 ? L_26ba : L_2682
+
+L_2682:
+    pxf->th = *lpth
+    pxf->grobj = grobjThing
+    pxf->id = LOWORD(lpth)
+
+L_26ba:
+    return 0x1
+
+L_26c0:
+    lpth = (lpth + 0x1)
+
+L_26c4:
+    branch LOWORD(lpth) < LOWORD(lpthMac) ? L_2631 : L_26d2
+
+L_26d2:
+    return 0x0
+

@@ -1,0 +1,13 @@
+{{ range .Blocks -}}
+{{ $block := . -}}
+{{ with sourceComments $.SourceFile $.SourceLines .Off -}}
+{{ $label := printf "%s:" $block.Label -}}
+{{ range . -}}
+{{ asmCommentLine $label . }}
+{{ $label = "" -}}
+{{ end -}}
+{{ else -}}
+{{ .Label }}:
+{{ end -}}
+{{ template "dump_asm_block_insts" blockInstsView $ $block }}
+{{ end }}

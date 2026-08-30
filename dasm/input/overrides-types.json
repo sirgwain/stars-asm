@@ -1,0 +1,150 @@
+{
+  "types": [
+    { "name": "jmp_buf", "canonical": "int16_t[9]" },
+    { "name": "ENV", "canonical": "jmp_buf" },
+
+    { "name": "__p", "canonical": "void far *" },
+    { "name": "BOOL", "canonical": "int16_t" },
+    { "name": "BYTE", "canonical": "uint8_t" },
+    { "name": "COLORREF", "canonical": "uint32_t" },
+    { "name": "DWORD", "canonical": "uint32_t" },
+    { "name": "HACCEL", "canonical": "uint16_t" },
+    { "name": "HANDLE", "canonical": "uint16_t" },
+    { "name": "HBITMAP", "canonical": "uint16_t" },
+    { "name": "HBRUSH", "canonical": "uint16_t" },
+    { "name": "HCURSOR", "canonical": "uint16_t" },
+    { "name": "HDC", "canonical": "uint16_t" },
+    { "name": "HFILE", "canonical": "uint16_t" },
+    { "name": "HFONT", "canonical": "uint16_t" },
+    { "name": "HGDIOBJ", "canonical": "uint16_t" },
+    { "name": "HGLOBAL", "canonical": "uint16_t" },
+    { "name": "HICON", "canonical": "uint16_t" },
+    { "name": "HINSTANCE", "canonical": "uint16_t" },
+    { "name": "HLOCAL", "canonical": "uint16_t" },
+    { "name": "HMENU", "canonical": "uint16_t" },
+    { "name": "HMODULE", "canonical": "uint16_t" },
+    { "name": "HPALETTE", "canonical": "uint16_t" },
+    { "name": "HPEN", "canonical": "uint16_t" },
+    { "name": "HRGN", "canonical": "uint16_t" },
+    { "name": "HRSRC", "canonical": "uint16_t" },
+    { "name": "HTASK", "canonical": "uint16_t" },
+    { "name": "HWND", "canonical": "uint16_t" },
+    { "name": "INT", "canonical": "int16_t" },
+    { "name": "LONG", "canonical": "int32_t" },
+    { "name": "LPARAM", "canonical": "int32_t" },
+    { "name": "LPBITMAPINFO", "canonical": "BITMAPINFO far *" },
+    { "name": "LPCSTR", "canonical": "const char far *" },
+    { "name": "LPCSTR", "canonical": "const char far *" },
+    { "name": "LPCVOID", "canonical": "const void far *" },
+    { "name": "LPSTR", "canonical": "char far *" },
+    { "name": "LPSTR", "canonical": "char far *" },
+    { "name": "LPVOID", "canonical": "void far *" },
+    { "name": "LPVOID", "canonical": "void far *" },
+    { "name": "LRESULT", "canonical": "int32_t" },
+    { "name": "PCSTR", "canonical": "const char far *" },
+    { "name": "POINT", "canonical": "POINT" },
+    { "name": "PSTR", "canonical": "char far *" },
+    { "name": "RECT", "canonical": "RECT" },
+    { "name": "UINT", "canonical": "uint16_t" },
+    { "name": "WORD", "canonical": "uint16_t" },
+    { "name": "WPARAM", "canonical": "uint16_t" },
+
+    {
+      "name": "FARPROC",
+      "funcptr": {
+        "ptr_class": "far",
+        "callconv": "pascal",
+        "ret": "int32_t",
+        "params": []
+      }
+    },
+    {
+      "name": "TIMERPROC",
+      "funcptr": {
+        "ptr_class": "far",
+        "callconv": "pascal",
+        "ret": "int32_t",
+        "params": []
+      }
+    },
+    {
+      "name": "QSORTCOMPARE",
+      "funcptr": {
+        "ptr_class": "far",
+        "callconv": "cdecl",
+        "ret": "int16_t",
+        "params": [
+          { "name": "lhs", "ctype": "const void *" },
+          { "name": "rhs", "ctype": "const void *" }
+        ]
+      }
+    },
+    {
+      "name": "DLGPROC",
+      "funcptr": {
+        "ptr_class": "far",
+        "callconv": "pascal",
+        "ret": "BOOL",
+        "params": [
+          { "name": "hwnd", "ctype": "HWND" },
+          { "name": "msg", "ctype": "UINT" },
+          { "name": "wParam", "ctype": "WPARAM" },
+          { "name": "lParam", "ctype": "LPARAM" }
+        ]
+      }
+    },
+    {
+      "name": "WNDPROC",
+      "funcptr": {
+        "ptr_class": "far",
+        "callconv": "pascal",
+        "ret": "LRESULT",
+        "params": [
+          { "name": "hwnd", "ctype": "HWND" },
+          { "name": "msg", "ctype": "UINT" },
+          { "name": "wParam", "ctype": "WPARAM" },
+          { "name": "lParam", "ctype": "LPARAM" }
+        ]
+      }
+    }
+  ],
+  "type_override_rules": [
+    { "prefix": "cr", "ctype": "COLORREF" },
+    { "prefix": "env", "ctype": "ENV" },
+    { "prefix": "haccel", "ctype": "HACCEL" },
+    { "prefix": "hbmp", "ctype": "HBITMAP" },
+    { "prefix": "hbr", "ctype": "HBRUSH" },
+    { "prefix": "hcur", "ctype": "HCURSOR" },
+    { "prefix": "hdc", "ctype": "HDC" },
+    { "prefix": "hdib", "ctype": "HGLOBAL" },
+    { "prefix": "hfont", "ctype": "HFONT" },
+    { "prefix": "hglobal", "ctype": "HGLOBAL" },
+    { "prefix": "hicon", "ctype": "HICON" },
+    { "prefix": "hinst", "ctype": "HINSTANCE" },
+    { "prefix": "hlocal", "ctype": "HLOCAL" },
+    { "prefix": "hmenu", "ctype": "HMENU" },
+    { "prefix": "hmodule", "ctype": "HMODULE" },
+    { "prefix": "hpal", "ctype": "HPALETTE" },
+    { "prefix": "hpen", "ctype": "HPEN" },
+    { "prefix": "hrgn", "ctype": "HRGN" },
+    { "prefix": "htask", "ctype": "HTASK" },
+    { "prefix": "hwnd", "ctype": "HWND" },
+    { "prefix": "lpfn", "ctype": "FARPROC" },
+    { "prefix": "lpproc", "ctype": "FARPROC" },
+    { "prefix": "penv", "ctype": "ENV *" },
+    { "name": "rghstCat", "ctype": "HullSlotType[14]" },
+    { "name": "rgidsCat", "ctype": "StringId[14]" },
+    { "name": "rgmapBuildBmps", "ctype": "HullSlotType[21]" }
+  ],
+
+  "struct_overrides": [
+    { "struct": "_btlplan", "field": "szName", "ctype": "char[32]" },
+    { "struct": "_player", "field": "rgTech", "ctype": "int8_t[6]" },
+    { "struct": "_player", "field": "rgmdRelation", "ctype": "int8_t[16]" },
+    { "struct": "_rpt", "prefix": "hwnd", "ctype": "HWND" },
+    { "struct": "_drawcir", "prefix": "hdc", "ctype": "HDC" },
+    { "struct": "_tutor", "prefix": "hwnd", "ctype": "HWND" },
+    { "struct": "_btnt", "prefix": "hwnd", "ctype": "HWND" },
+    { "struct": "_btnt", "prefix": "hdc", "ctype": "HDC" }
+  ]
+}

@@ -1,0 +1,13 @@
+#ifndef STARS_DECOMPILED_STRUCTS_H
+#define STARS_DECOMPILED_STRUCTS_H
+
+#include <stdint.h>
+#include <windows.h>
+
+{{range $i, $s := .Structs}}
+{{- if $i }}
+{{- end }}
+{{ template "struct.detail" $s }}
+{{ end }}
+
+#endif

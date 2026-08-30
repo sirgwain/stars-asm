@@ -1,0 +1,5 @@
+typedef enum {{.Name}} {
+{{- range .Values }}
+    {{.Name}} = {{.Value}},
+{{- end }}
+} {{.Name}};

@@ -1,0 +1,19 @@
+/*
+SzVersion  (stars)
+  addr: 0004:1212  len=64
+  sig:  char * SzVersion()
+
+  stats: blocks=0  labels=0
+*/
+block L_1212:
+  insts 0..24  off 0x1212..0x124b
+  succs: L_124c
+  effects:
+    122b  call PszGetCompressedString(0x22d) -> callresult(char *)
+    123e  call _wsprintf(farptr(0x25, 0x57a4), farptr(0x25, callresult(char *)), 0x2, 0x3c, 0x6a) -> callresult(int16_t)
+
+block L_124c:
+  insts 26..30  off 0x124c..0x1251
+  preds: L_1212
+  effects:
+    1251  return 0x57a4

@@ -1,0 +1,23 @@
+/*
+PushRandom  (utilgen)
+  addr: 0009:1440  len=98
+  sig:  void PushRandom(int32_t lNew1, int32_t lNew2)
+  params:
+    int32_t          lNew1          [BP+0x6]
+    int32_t          lNew2          [BP+0xa]
+
+  stats: blocks=0  labels=0
+*/
+block L_1440:
+  insts 0..36  off 0x1440..0x14a1
+  effects:
+    145a  store[2] 0x25:[(((load([cRandStack]) << 0x1) << 0x1) << 0x1)+0x5238] = load([lRandSeed1])
+    145e  store[2] 0x25:[(((load([cRandStack]) << 0x1) << 0x1) << 0x1)+0x523a] = load([lRandSeed1+0x2])
+    1477  store[2] 0x25:[(0x5238 + (((load([cRandStack]) << 0x1) << 0x1) << 0x1))+0x4] = load([lRandSeed2])
+    147a  store[2] 0x25:[(0x5238 + (((load([cRandStack]) << 0x1) << 0x1) << 0x1))+0x6] = load([lRandSeed2+0x2])
+    147d  store[2] [cRandStack] = (load([cRandStack]) + 0x1)
+    1488  store[2] [lRandSeed1] = load([bp+lNew1])
+    148b  store[2] [lRandSeed1+0x2] = load([bp+lNew1+0x2])
+    1495  store[2] [lRandSeed2] = load([bp+lNew2])
+    1498  store[2] [lRandSeed2+0x2] = load([bp+lNew2+0x2])
+    14a1  return

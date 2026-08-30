@@ -1,0 +1,275 @@
+/*
+About  (stars)
+  addr: 0004:1252  len=716
+  sig:  int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    WMType           message        [BP+0xc]
+    uint16_t         wParam         [BP+0xa]
+    int32_t          lParam         [BP+0x6]
+  locals:
+    RECT             rc             [BP-0xa]
+    block 0004:12D1  len=0x15B
+      HWND             hwndCtl        [BP-0x10]
+      int16_t          i              [BP-0xe]
+      HDC              hdc            [BP-0xc]
+    block 0004:14A3  len=0x3C
+      int16_t() *      lpProc         [BP-0xe]
+
+  stats: blocks=2  labels=0
+*/
+block L_1252:
+  insts 0..6  off 0x1252..0x1260
+  succs: L_14e5
+  effects:
+    125e  goto L_14e5
+
+block L_1261:
+  insts 7..31  off 0x1261..0x12a8
+  preds: L_14f5
+  succs: L_1516
+  effects:
+    1261  store[2] [iAbout1st] = 0xfff5
+    1267  store[2] [iAboutPartial] = 0x0
+    1274  call GetDlgItem(load@126d/src([bp+hwnd]), 0x401) -> callresult(HWND)
+    127a  call SzVersion() -> callresult(char *)
+    1283  call SetWindowText(callresult(HWND), farptr(0x25, callresult(char *))) -> callresult(void)
+    129b  call SetTimer(load@1288/src([bp+hwnd]), 0xe, 0x32, farptr(0x0, 0x0)) -> callresult(uint16_t)
+    12a0  store[2] [uTimerId] = callresult(uint16_t)
+    12a6  goto L_1516
+
+block L_12a9:
+  insts 32..46  off 0x12a9..0x12d0
+  preds: L_14e5
+  succs: L_1516
+  effects:
+    12b3  call GetClientRect(load([bp+hwnd]), farptr(ss, addr([bp-rc]))) -> callresult(void)
+    12c6  call FillRect(load([bp+wParam]), farptr(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    12ce  goto L_1516
+
+block L_12d1:
+  insts 47..55  off 0x12d1..0x12ed
+  preds: L_1505
+  succs: L_12f1, L_130c
+  effects:
+    12d8  call GetDlgItem(load([bp+hwnd]), 0x41f) -> callresult(HWND)
+    12dd  store[2] [bp-hwndCtl] = callresult(HWND)
+    12e0  store[2] [iAboutPartial] = (load@12e0/dst([iAboutPartial]) + 0x2)
+    12ec  branch load@12e8/dst([iAboutPartial]) < load([dyArial8]) ? L_130c : L_12f1
+
+block L_12f1:
+  insts 57..60  off 0x12f1..0x1302
+  preds: L_12d1
+  succs: L_1306, L_130c
+  effects:
+    12f1  store[2] [iAboutPartial] = 0x0
+    12f7  store[2] [iAbout1st] = (load@12f7/dst([iAbout1st]) + 0x1)
+    1301  branch load@12fc/dst([iAbout1st]) <= 0x4e ? L_130c : L_1306
+
+block L_1306:
+  insts 62..62  off 0x1306..0x130b
+  preds: L_12f1
+  succs: L_130c
+  effects:
+    1306  store[2] [iAbout1st] = 0xfff5
+
+block L_130c:
+  insts 63..102  off 0x130c..0x138c
+  preds: L_12d1, L_12f1, L_1306
+  succs: L_1391
+  effects:
+    1316  call GetClientRect(load@130c/src([bp-hwndCtl]), farptr(ss, addr([bp-rc]))) -> callresult(void)
+    131e  call GetDC(load@131b/src([bp-hwndCtl])) -> callresult(HDC)
+    1323  store[2] [bp-hdc] = callresult(HDC)
+    132d  call SelectObject(load@1326/src([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    1339  call SetBkMode(load@1332/src([bp-hdc]), 0x2) -> callresult(int16_t)
+    1349  call SetBkColor(load@133e/src([bp-hdc]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
+    1359  call SetTextColor(load@134e/src([bp-hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+    136f  call IntersectClipRect(load@135e/src([bp-hdc]), 0x0, 0x0, load([bp-rc+0x4]), load([bp-rc+0x6])) -> callresult(int16_t)
+    1377  store[2] [bp-rc+0x2] = (load@1377/dst([bp-rc+0x2]) - load([iAboutPartial]))
+    1381  store[2] [bp-rc+0x6] = (load@137a/src([bp-rc+0x2]) + load([dyArial8]))
+    1387  store[2] [bp-i] = load([iAbout1st])
+    138a  goto L_1391
+
+block L_138d:
+  insts 103..103  off 0x138d..0x1390
+  preds: L_13e3
+  succs: L_1391
+  effects:
+    138d  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1391:
+  insts 104..107  off 0x1391..0x139b
+  preds: L_130c, L_138d
+  succs: L_139f, L_13fa
+  effects:
+    139a  branch load([bp-i]) >= (load([iAbout1st]) + 0xa) ? L_13fa : L_139f
+
+block L_139f:
+  insts 109..110  off 0x139f..0x13a4
+  preds: L_1391
+  succs: L_13a8, L_13d7
+  effects:
+    13a3  branch load([bp-i]) < 0x0 ? L_13d7 : L_13a8
+
+block L_13a8:
+  insts 112..113  off 0x13a8..0x13ad
+  preds: L_139f
+  succs: L_13b1, L_13d7
+  effects:
+    13ac  branch load([bp-i]) >= 0x4d ? L_13d7 : L_13b1
+
+block L_13b1:
+  insts 115..128  off 0x13b1..0x13d6
+  preds: L_13a8
+  succs: L_13e3
+  effects:
+    13bc  call PszGetCompressedString((load([bp-i]) + 0x277)) -> callresult(char *)
+    13cc  call RcCtrTextOut(load([bp-hdc]), addr([bp-rc]), callresult(char *), 0xffff) -> callresult(void)
+    13d4  goto L_13e3
+
+block L_13d7:
+  insts 129..130  off 0x13d7..0x13dc
+  preds: L_139f, L_13a8
+  succs: L_13e3, L_13fa
+  effects:
+    13db  branch load([bp-i]) >= 0x4d ? L_13fa : L_13dd
+
+block L_13dd:
+  insts 131..131  off 0x13dd..0x13df
+  succs: L_13e3
+
+block L_13e0:
+  insts 132..132  off 0x13e0..0x13e2
+  succs: L_13fa
+
+block L_13e3:
+  insts 133..141  off 0x13e3..0x13f9
+  preds: L_13b1, L_13d7, L_13dd
+  succs: L_138d
+  effects:
+    13f2  call OffsetRect(farptr(ss, addr([bp-rc])), 0x0, load([dyArial8])) -> callresult(void)
+    13f7  goto L_138d
+
+block L_13fa:
+  insts 142..157  off 0x13fa..0x142b
+  preds: L_1391, L_13d7, L_13e0
+  succs: L_1510
+  effects:
+    13fa  store[2] [bp-rc+0x6] = 0x3e8
+    140d  call FillRect(load@13ff/src([bp-hdc]), farptr(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    1419  call SelectClipRgn(load@1412/src([bp-hdc]), 0x0) -> callresult(int16_t)
+    1424  call ReleaseDC(load([bp+hwnd]), load@1421/src([bp-hdc])) -> callresult(int16_t)
+    1429  goto L_1510
+
+block L_142c:
+  insts 158..165  off 0x142c..0x1444
+  preds: L_14ed
+  succs: L_1448, L_1510
+  effects:
+    1435  call __aFulshr(words(load([bp+lParam]), load([bp+lParam+0x2])), 0x10) -> callresult(uint32_t)
+    1443  branch (loword(callresult(uint32_t)) & 0xffff) != 0x6 ? L_1510 : L_1448
+
+block L_1448:
+  insts 167..172  off 0x1448..0x145d
+  preds: L_142c
+  succs: L_1516
+  effects:
+    1453  call SetBkColor(load([bp+wParam]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
+    145b  goto L_1516
+
+block L_145e:
+  insts 173..173  off 0x145e..0x1460
+  succs: L_1510
+
+block L_1461:
+  insts 174..175  off 0x1461..0x1466
+  preds: L_14fd
+  succs: L_146a, L_1473
+  effects:
+    1465  branch load([bp+wParam]) == 0x1 ? L_1473 : L_146a
+
+block L_146a:
+  insts 177..178  off 0x146a..0x146f
+  preds: L_1461
+  succs: L_1473, L_149a
+  effects:
+    146e  branch load([bp+wParam]) != 0x2 ? L_149a : L_1473
+
+block L_1473:
+  insts 180..189  off 0x1473..0x1496
+  preds: L_1461, L_146a
+  succs: L_1516
+  effects:
+    147a  call KillTimer(load@1473/src([bp+hwnd]), load([uTimerId])) -> callresult(int16_t)
+    147f  store[2] [uTimerId] = 0x0
+    148c  call EndDialog(load@1485/src([bp+hwnd]), 0x1) -> callresult(void)
+    1494  goto L_1516
+
+block L_149a:
+  insts 190..191  off 0x149a..0x149f
+  preds: L_146a
+  succs: L_14a3, L_1510
+  effects:
+    149e  branch load([bp+wParam]) != 0x76 ? L_1510 : L_14a3
+
+block L_14a3:
+  insts 193..212  off 0x14a3..0x14de
+  preds: L_149a
+  succs: L_1510
+  effects:
+    14af  call MakeProcInstance(farptr(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(int32_t() *)
+    14b4  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
+    14b7  store[2] [bp-lpProc+0x2] = farseg(callresult(int32_t() *))
+    14cf  call DialogBox(load@14ba/src([hInst]), words(0x0, 0x61), load([bp+hwnd]), farptr(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
+    14da  call FreeProcInstance(farptr(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
+
+block L_14df:
+  insts 213..213  off 0x14df..0x14e1
+  succs: L_1510
+
+block L_14e5:
+  insts 214..215  off 0x14e5..0x14e9
+  preds: L_1252
+  succs: L_12a9, L_14ed
+  effects:
+    14e8  branch load([bp+message]) == 0x14 ? L_12a9 : L_14ed
+
+block L_14ed:
+  insts 217..218  off 0x14ed..0x14f1
+  preds: L_14e5
+  succs: L_142c, L_14f5
+  effects:
+    14f0  branch load([bp+message]) == 0x19 ? L_142c : L_14f5
+
+block L_14f5:
+  insts 220..221  off 0x14f5..0x14f9
+  preds: L_14ed
+  succs: L_1261, L_14fd
+  effects:
+    14f8  branch load([bp+message]) == 0x110 ? L_1261 : L_14fd
+
+block L_14fd:
+  insts 223..224  off 0x14fd..0x1501
+  preds: L_14f5
+  succs: L_1461, L_1505
+  effects:
+    1500  branch load([bp+message]) == 0x111 ? L_1461 : L_1505
+
+block L_1505:
+  insts 226..227  off 0x1505..0x1509
+  preds: L_14fd
+  succs: L_12d1, L_1510
+  effects:
+    1508  branch load([bp+message]) == 0x113 ? L_12d1 : L_1510
+
+block L_1510:
+  insts 230..230  off 0x1510..0x1515
+  preds: L_13fa, L_142c, L_145e, L_149a, L_14a3, L_14df, L_1505
+  succs: L_1516
+
+block L_1516:
+  insts 232..236  off 0x1516..0x151d
+  preds: L_1261, L_12a9, L_1448, L_1473, L_1510
+  effects:
+    151b  return merge(Join: L_1516, (L_1261:0x1, L_12a9:0x1, L_1448:load(0x25:[0x0010]), L_1473:0x1, L_1510:0x0))

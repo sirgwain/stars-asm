@@ -1,0 +1,17 @@
+/*
+PushRandom  (utilgen)
+  addr: 0009:1440  len=98
+  sig:  void PushRandom(int32_t lNew1, int32_t lNew2)
+  params:
+    int32_t          lNew1          [BP+0x6]
+    int32_t          lNew2          [BP+0xa]
+
+  stats: blocks=0  labels=0
+*/
+L_1440:
+    rglRandStack[cRandStack][0x0] = lRandSeed1
+    rglRandStack[cRandStack][0x1] = lRandSeed2
+    cRandStack = (cRandStack + 0x1)
+    lRandSeed1 = lNew1
+    lRandSeed2 = lNew2
+    return

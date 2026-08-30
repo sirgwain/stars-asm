@@ -1,0 +1,574 @@
+/*
+FCreateStuff  (init)
+  addr: 0001:0014  len=2718
+  sig:  int16_t FCreateStuff()
+  locals:
+    int16_t          dx             [BP-0xc]
+    HBITMAP          hbmp           [BP-0xa]
+    int16_t          i              [BP-0x8]
+    int16_t          dy             [BP-0x6]
+    int16_t          fFailed        [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_0014:
+  insts 0..15  off 0x0014..0x0040
+  succs: L_0044, L_004e
+  effects:
+    001d  store[2] [bp-fFailed] = 0x0
+    0026  call GetSystemMetrics(0x0) -> callresult(int16_t)
+    002b  store[2] [bp-dx] = callresult(int16_t)
+    0032  call GetSystemMetrics(0x1) -> callresult(int16_t)
+    0037  store[2] [bp-dy] = callresult(int16_t)
+    003f  branch load([bp-dx]) < 0x320 ? L_004e : L_0044
+
+block L_0044:
+  insts 17..18  off 0x0044..0x004a
+  preds: L_0014
+  succs: L_004e, L_005d
+  effects:
+    0049  branch load([bp-dy]) >= 0x258 ? L_005d : L_004e
+
+block L_004e:
+  insts 20..24  off 0x004e..0x005c
+  preds: L_0014, L_0044
+  succs: L_00af
+  effects:
+    0057  store[2] [gd] = ((load([gd]) & 0x3fff) | 0x0)
+    005a  goto L_00af
+
+block L_005d:
+  insts 25..26  off 0x005d..0x0063
+  preds: L_0044
+  succs: L_0067, L_0071
+  effects:
+    0062  branch load([bp-dx]) < 0x400 ? L_0071 : L_0067
+
+block L_0067:
+  insts 28..29  off 0x0067..0x006d
+  preds: L_005d
+  succs: L_0071, L_0080
+  effects:
+    006c  branch load([bp-dy]) >= 0x300 ? L_0080 : L_0071
+
+block L_0071:
+  insts 31..35  off 0x0071..0x007f
+  preds: L_005d, L_0067
+  succs: L_00af
+  effects:
+    007a  store[2] [gd] = ((load([gd]) & 0x3fff) | 0x4000)
+    007d  goto L_00af
+
+block L_0080:
+  insts 36..37  off 0x0080..0x0086
+  preds: L_0067
+  succs: L_008a, L_0094
+  effects:
+    0085  branch load([bp-dx]) < 0x457 ? L_0094 : L_008a
+
+block L_008a:
+  insts 39..40  off 0x008a..0x0090
+  preds: L_0080
+  succs: L_0094, L_00a3
+  effects:
+    008f  branch load([bp-dy]) >= 0x378 ? L_00a3 : L_0094
+
+block L_0094:
+  insts 42..46  off 0x0094..0x00a2
+  preds: L_0080, L_008a
+  succs: L_00af
+  effects:
+    009d  store[2] [gd] = ((load([gd]) & 0x3fff) | 0x8000)
+    00a0  goto L_00af
+
+block L_00a3:
+  insts 47..50  off 0x00a3..0x00ae
+  preds: L_008a
+  succs: L_00af
+  effects:
+    00ac  store[2] [gd] = ((load([gd]) & 0x3fff) | 0xc000)
+
+block L_00af:
+  insts 51..439  off 0x00af..0x04b6
+  preds: L_004e, L_0071, L_0094, L_00a3
+  succs: L_04f1
+  effects:
+    00b8  store[2] [gd] = ((load@00af/src([gd]) & 0xff7f) | 0x0)
+    00c4  store[2] [gd] = ((load@00bb/src([gd]) & 0xfbff) | 0x0)
+    00d2  copy[0xc0] *addr([vplr]) = *addr([vrgplrDef])
+    00e7  call CreateRectRgn(0xfff6, 0xfff6, 0x7d0, 0x7d0) -> callresult(HRGN)
+    00ec  store[2] [hrgnHuge] = callresult(HRGN)
+    00ff  call CreateRectRgn(0x0, 0x0, 0xa, 0xa) -> callresult(HRGN)
+    0104  store[2] [hrgnScratch] = callresult(HRGN)
+    010f  call HbrGet(words(0x0, 0xff00)) -> callresult(HBRUSH)
+    0117  store[2] [hbrShip] = callresult(HBRUSH)
+    0122  call HbrGet(words(0x0, 0xffff)) -> callresult(HBRUSH)
+    012a  store[2] [hbrStarbase] = callresult(HBRUSH)
+    0135  call HbrGet(words(0xff, 0x0)) -> callresult(HBRUSH)
+    013d  store[2] [hbrBBlue] = callresult(HBRUSH)
+    0148  call HbrGet(words(0x0, 0xff)) -> callresult(HBRUSH)
+    0150  store[2] [hbrEnemy] = callresult(HBRUSH)
+    015b  call HbrGet(words(0x0, 0xffff)) -> callresult(HBRUSH)
+    0163  store[2] [hbrSelect] = callresult(HBRUSH)
+    016e  call HbrGet(words(0x0, 0xff)) -> callresult(HBRUSH)
+    0176  store[2] [hbrRed] = callresult(HBRUSH)
+    0181  call HbrGet(words(0x7f, 0x0)) -> callresult(HBRUSH)
+    0189  store[2] [hbrBlue] = callresult(HBRUSH)
+    0194  call HbrGet(words(0x0, 0x7f00)) -> callresult(HBRUSH)
+    019c  store[2] [hbrGreen] = callresult(HBRUSH)
+    01a7  call HbrGet(words(0x0, 0x7f)) -> callresult(HBRUSH)
+    01af  store[2] [hbrRadar] = callresult(HBRUSH)
+    01ba  call HbrGet(words(0x7f, 0x7f)) -> callresult(HBRUSH)
+    01c2  store[2] [hbrPurple] = callresult(HBRUSH)
+    01cd  call HbrGet(words(0x9f, 0xffff)) -> callresult(HBRUSH)
+    01d5  store[2] [hbrTooltip] = callresult(HBRUSH)
+    01d8  store[2] [hbrRadarNear] = 0x0
+    01e6  call HbrGet(words(0xff, 0x0)) -> callresult(HBRUSH)
+    01ee  store[2] [rghbrMineral] = callresult(HBRUSH)
+    01f9  call HbrGet(words(0x0, 0x7f00)) -> callresult(HBRUSH)
+    0201  store[2] [rghbrMineral+0x2] = callresult(HBRUSH)
+    020c  call HbrGet(words(0x0, 0xffff)) -> callresult(HBRUSH)
+    0214  store[2] [rghbrMineral+0x4] = callresult(HBRUSH)
+    021f  call HbrGet(words(0xff, 0xffff)) -> callresult(HBRUSH)
+    0227  store[2] [rghbrMineral+0x6] = callresult(HBRUSH)
+    0232  call HbrGet(words(0x0, 0xff)) -> callresult(HBRUSH)
+    023a  store[2] [rghbrMineral+0x8] = callresult(HBRUSH)
+    0245  call HbrGet(words(0x7f, 0x0)) -> callresult(HBRUSH)
+    024d  store[2] [rghbrPlanetAttr] = callresult(HBRUSH)
+    0258  call HbrGet(words(0xff, 0x0)) -> callresult(HBRUSH)
+    0260  store[2] [rghbrPlanetAttr+0x2] = callresult(HBRUSH)
+    026b  call HbrGet(words(0x0, 0x7f)) -> callresult(HBRUSH)
+    0273  store[2] [rghbrPlanetAttr+0x4] = callresult(HBRUSH)
+    027e  call HbrGet(words(0x0, 0xff)) -> callresult(HBRUSH)
+    0286  store[2] [rghbrPlanetAttr+0x6] = callresult(HBRUSH)
+    0291  call HbrGet(words(0x0, 0x7f00)) -> callresult(HBRUSH)
+    0299  store[2] [rghbrPlanetAttr+0x8] = callresult(HBRUSH)
+    02a4  call HbrGet(words(0x0, 0xff00)) -> callresult(HBRUSH)
+    02ac  store[2] [rghbrPlanetAttr+0xa] = callresult(HBRUSH)
+    02b7  call HbrGet(words(0xff, 0x0)) -> callresult(HBRUSH)
+    02bf  store[2] [rghbrMinSum] = callresult(HBRUSH)
+    02ca  call HbrGet(words(0x7f, 0x0)) -> callresult(HBRUSH)
+    02d2  store[2] [rghbrMinSum+0x2] = callresult(HBRUSH)
+    02dd  call HbrGet(words(0x0, 0xff00)) -> callresult(HBRUSH)
+    02e5  store[2] [rghbrMinSum+0x4] = callresult(HBRUSH)
+    02f0  call HbrGet(words(0x0, 0x7f00)) -> callresult(HBRUSH)
+    02f8  store[2] [rghbrMinSum+0x6] = callresult(HBRUSH)
+    0303  call HbrGet(words(0x0, 0xffff)) -> callresult(HBRUSH)
+    030b  store[2] [rghbrMinSum+0x8] = callresult(HBRUSH)
+    0316  call HbrGet(words(0x0, 0x7f7f)) -> callresult(HBRUSH)
+    031e  store[2] [rghbrMinSum+0xa] = callresult(HBRUSH)
+    0329  call HbrGet(words(0x0, 0xff)) -> callresult(HBRUSH)
+    0331  store[2] [rghbrMinSum+0xc] = callresult(HBRUSH)
+    033c  call HbrGet(words(0x0, 0x7f)) -> callresult(HBRUSH)
+    0344  store[2] [rghbrMinSum+0xe] = callresult(HBRUSH)
+    034f  call HbrGet(words(0x0, 0xffff)) -> callresult(HBRUSH)
+    0357  store[2] [hbrYellow] = callresult(HBRUSH)
+    0362  call HbrGet(words(0x0, 0x7f7f)) -> callresult(HBRUSH)
+    036a  store[2] [hbrDkYellow] = callresult(HBRUSH)
+    0375  call HbrGet(words(0xc0, 0xc0c0)) -> callresult(HBRUSH)
+    037d  store[2] [hbrLightGray] = callresult(HBRUSH)
+    0388  call HbrGet(words(0x80, 0x8080)) -> callresult(HBRUSH)
+    0390  store[2] [hbrGray] = callresult(HBRUSH)
+    03a3  call CreatePen(0x0, 0x1, words(0x0, 0xff00)) -> callresult(HPEN)
+    03a8  store[2] [hpenShip] = callresult(HPEN)
+    03bb  call CreatePen(0x0, 0x1, words(0x0, 0x7f00)) -> callresult(HPEN)
+    03c0  store[2] [hpenDkGreen] = callresult(HPEN)
+    03d3  call CreatePen(0x0, 0x1, words(0xff, 0x0)) -> callresult(HPEN)
+    03d8  store[2] [hpenStarbase] = callresult(HPEN)
+    03eb  call CreatePen(0x0, 0x1, words(0x0, 0xff)) -> callresult(HPEN)
+    03f0  store[2] [hpenEnemy] = callresult(HPEN)
+    0403  call CreatePen(0x2, 0x1, words(0x7f, 0x7f7f)) -> callresult(HPEN)
+    0408  store[2] [hpenMassPath] = callresult(HPEN)
+    041b  call CreatePen(0x0, 0x1, words(0x0, 0x7f)) -> callresult(HPEN)
+    0420  store[2] [hpenRadar] = callresult(HPEN)
+    0423  store[2] [hpenRadarNear] = 0x0
+    0439  call CreatePen(0x0, 0x1, words(0x7f, 0x0)) -> callresult(HPEN)
+    043e  store[2] [hpenDkBlue] = callresult(HPEN)
+    0451  call CreatePen(0x0, 0x1, words(0x0, 0xffff)) -> callresult(HPEN)
+    0456  store[2] [hpenYellow] = callresult(HPEN)
+    0469  call CreatePen(0x0, 0x1, words(0x0, 0x7f7f)) -> callresult(HPEN)
+    046e  store[2] [hpenDkYellow] = callresult(HPEN)
+    0481  call CreatePen(0x0, 0x1, words(0x7f, 0x7f)) -> callresult(HPEN)
+    0486  store[2] [hpenDkPurple] = callresult(HPEN)
+    0494  call LoadBitmap(load([hInst]), farptr(0x25, 0x5e6)) -> callresult(HBITMAP)
+    0499  store[2] [bp-hbmp] = callresult(HBITMAP)
+    049f  call CreatePatternBrush(load@049c/src([bp-hbmp])) -> callresult(HBRUSH)
+    04a4  store[2] [hbr50Screen] = callresult(HBRUSH)
+    04aa  call DeleteObject(load@04a7/src([bp-hbmp])) -> callresult(int16_t)
+    04af  store[2] [bp-i] = 0x0
+    04b4  goto L_04f1
+
+block L_04b7:
+  insts 440..457  off 0x04b7..0x04f0
+  preds: L_04f1
+  succs: L_04f1
+  effects:
+    04cc  call LoadBitmap(load([hInst]), farptr(0x0, ((load([bp-i]) + 0x1cc) | 0x0))) -> callresult(HBITMAP)
+    04d1  store[2] [bp-hbmp] = callresult(HBITMAP)
+    04d7  call CreatePatternBrush(load@04d4/src([bp-hbmp])) -> callresult(HBRUSH)
+    04e1  store[2] 0x25:[(load([bp-i]) << 0x1)+0x591e] = callresult(HBRUSH)
+    04e8  call DeleteObject(load@04e5/src([bp-hbmp])) -> callresult(int16_t)
+    04ed  store[2] [bp-i] = (load@04ed/dst([bp-i]) + 0x1)
+
+block L_04f1:
+  insts 458..459  off 0x04f1..0x04f6
+  preds: L_00af, L_04b7
+  succs: L_04b7, L_04fa
+  effects:
+    04f5  branch load([bp-i]) < 0x3 ? L_04b7 : L_04fa
+
+block L_04fa:
+  insts 461..606  off 0x04fa..0x069f
+  preds: L_04f1
+  succs: L_06a3, L_06b7
+  effects:
+    0505  call LoadBitmap(load@04fa/src([hInst]), farptr(0x25, 0x5f2)) -> callresult(HBITMAP)
+    050a  store[2] [bp-hbmp] = callresult(HBITMAP)
+    0510  call CreatePatternBrush(load@050d/src([bp-hbmp])) -> callresult(HBRUSH)
+    0515  store[2] [hbrCargo] = callresult(HBRUSH)
+    051b  call DeleteObject(load@0518/src([bp-hbmp])) -> callresult(int16_t)
+    052b  call LoadBitmap(load@0520/src([hInst]), farptr(0x25, 0x5fb)) -> callresult(HBITMAP)
+    0530  store[2] [bp-hbmp] = callresult(HBITMAP)
+    0536  call CreatePatternBrush(load@0533/src([bp-hbmp])) -> callresult(HBRUSH)
+    053b  store[2] [hbrDock] = callresult(HBRUSH)
+    0541  call DeleteObject(load@053e/src([bp-hbmp])) -> callresult(int16_t)
+    0551  call LoadCursor(load@0546/src([hInst]), farptr(0x25, 0x603)) -> callresult(HCURSOR)
+    0556  store[2] [hcurScanner] = callresult(HCURSOR)
+    0564  call LoadCursor(load@0559/src([hInst]), farptr(0x25, 0x60e)) -> callresult(HCURSOR)
+    0569  store[2] [hcurScanAdd] = callresult(HCURSOR)
+    0577  call LoadCursor(load@056c/src([hInst]), farptr(0x25, 0x619)) -> callresult(HCURSOR)
+    057c  store[2] [hcurOpenGrab] = callresult(HCURSOR)
+    058a  call LoadCursor(load@057f/src([hInst]), farptr(0x25, 0x625)) -> callresult(HCURSOR)
+    058f  store[2] [hcurCloseGrab] = callresult(HCURSOR)
+    059e  call LoadCursor(load@0592/src([hInst]), farptr(0x0, 0x7a)) -> callresult(HCURSOR)
+    05a3  store[2] [hcurTrashCan] = callresult(HCURSOR)
+    05b2  call LoadCursor(load@05a6/src([hInst]), farptr(0x0, 0x79)) -> callresult(HCURSOR)
+    05b7  store[2] [hcurNoWay] = callresult(HCURSOR)
+    05c6  call LoadCursor(load@05ba/src([hInst]), farptr(0x0, 0x102)) -> callresult(HCURSOR)
+    05cb  store[2] [hcurResizeWE] = callresult(HCURSOR)
+    05da  call LoadCursor(load@05ce/src([hInst]), farptr(0x0, 0x104)) -> callresult(HCURSOR)
+    05df  store[2] [hcurResizeNS] = callresult(HCURSOR)
+    05ee  call LoadCursor(load@05e2/src([hInst]), farptr(0x0, 0x107)) -> callresult(HCURSOR)
+    05f3  store[2] [hcurResize4Way] = callresult(HCURSOR)
+    0602  call LoadCursor(load@05f6/src([hInst]), farptr(0x0, 0x108)) -> callresult(HCURSOR)
+    0607  store[2] [hcurArrowHelp] = callresult(HCURSOR)
+    0616  call LoadCursor(load@060a/src([hInst]), farptr(0x0, 0x109)) -> callresult(HCURSOR)
+    061b  store[2] [hcurHand] = callresult(HCURSOR)
+    0629  call LoadBitmap(load@061e/src([hInst]), farptr(0x25, 0x632)) -> callresult(HBITMAP)
+    062e  store[2] [hbmpScanner] = callresult(HBITMAP)
+    063d  call LoadBitmap(load@0631/src([hInst]), farptr(0x0, 0x58)) -> callresult(HBITMAP)
+    0642  store[2] [hbmpScanShip] = callresult(HBITMAP)
+    0650  call LoadBitmap(load@0645/src([hInst]), farptr(0x25, 0x63d)) -> callresult(HBITMAP)
+    0655  store[2] [hbmpUnknownPlanet] = callresult(HBITMAP)
+    0664  call LoadBitmap(load@0658/src([hInst]), farptr(0x0, 0xf9)) -> callresult(HBITMAP)
+    0669  store[2] [hbmpNumbers] = callresult(HBITMAP)
+    0670  call HdibLoadBigResource(0x70) -> callresult(HGLOBAL)
+    0678  store[2] [hdibPlanets] = callresult(HGLOBAL)
+    067f  call HdibLoadBigResource(0x57) -> callresult(HGLOBAL)
+    0687  store[2] [hdibThings] = callresult(HGLOBAL)
+    068e  call HdibLoadBigResource(0xb2) -> callresult(HGLOBAL)
+    0696  store[2] [hdibToolbar] = callresult(HGLOBAL)
+    069e  branch load([hdibPlanets]) == 0x0 ? L_06b7 : L_06a3
+
+block L_06a3:
+  insts 608..609  off 0x06a3..0x06a9
+  preds: L_04fa
+  succs: L_06ad, L_06b7
+  effects:
+    06a8  branch load([hdibThings]) == 0x0 ? L_06b7 : L_06ad
+
+block L_06ad:
+  insts 611..612  off 0x06ad..0x06b3
+  preds: L_06a3
+  succs: L_06b7, L_06bc
+  effects:
+    06b2  branch load([hdibToolbar]) != 0x0 ? L_06bc : L_06b7
+
+block L_06b7:
+  insts 614..614  off 0x06b7..0x06bb
+  preds: L_04fa, L_06a3, L_06ad
+  succs: L_06bc
+  effects:
+    06b7  store[2] [bp-fFailed] = 0x1
+
+block L_06bc:
+  insts 615..616  off 0x06bc..0x06c3
+  preds: L_06ad, L_06b7
+  succs: L_0720
+  effects:
+    06bc  store[2] [bp-i] = 0x0
+    06c1  goto L_0720
+
+block L_06c4:
+  insts 617..628  off 0x06c4..0x06e7
+  preds: L_0720
+  succs: L_06eb, L_06f0
+  effects:
+    06cb  call HdibLoadBigResource((load([bp-i]) + 0x228)) -> callresult(HGLOBAL)
+    06d8  store[2] 0x25:[(load([bp-i]) << 0x1)+0x4b6e] = callresult(HGLOBAL)
+    06e6  branch load(0x25:[(load([bp-i]) << 0x1)+0x4b6e]) != 0x0 ? L_06f0 : L_06eb
+
+block L_06eb:
+  insts 630..630  off 0x06eb..0x06ef
+  preds: L_06c4
+  succs: L_06f0
+  effects:
+    06eb  store[2] [bp-fFailed] = 0x1
+
+block L_06f0:
+  insts 631..642  off 0x06f0..0x0713
+  preds: L_06c4, L_06eb
+  succs: L_0717, L_071c
+  effects:
+    06f7  call HdibLoadBigResource((load([bp-i]) + 0x22d)) -> callresult(HGLOBAL)
+    0704  store[2] 0x25:[(load([bp-i]) << 0x1)+0x5160] = callresult(HGLOBAL)
+    0712  branch load(0x25:[(load([bp-i]) << 0x1)+0x5160]) != 0x0 ? L_071c : L_0717
+
+block L_0717:
+  insts 644..644  off 0x0717..0x071b
+  preds: L_06f0
+  succs: L_071c
+  effects:
+    0717  store[2] [bp-fFailed] = 0x1
+
+block L_071c:
+  insts 645..645  off 0x071c..0x071f
+  preds: L_06f0, L_0717
+  succs: L_0720
+  effects:
+    071c  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0720:
+  insts 646..647  off 0x0720..0x0725
+  preds: L_06bc, L_071c
+  succs: L_06c4, L_0729
+  effects:
+    0724  branch load([bp-i]) < 0x5 ? L_06c4 : L_0729
+
+block L_0729:
+  insts 649..650  off 0x0729..0x0730
+  preds: L_0720
+  succs: L_0761
+  effects:
+    0729  store[2] [bp-i] = 0x0
+    072e  goto L_0761
+
+block L_0731:
+  insts 651..662  off 0x0731..0x0754
+  preds: L_0761
+  succs: L_0758, L_075d
+  effects:
+    0738  call HdibLoadBigResource((load([bp-i]) + 0x1f4)) -> callresult(HGLOBAL)
+    0745  store[2] 0x25:[(load([bp-i]) << 0x1)+0x258e] = callresult(HGLOBAL)
+    0753  branch load(0x25:[(load([bp-i]) << 0x1)+0x258e]) != 0x0 ? L_075d : L_0758
+
+block L_0758:
+  insts 664..664  off 0x0758..0x075c
+  preds: L_0731
+  succs: L_075d
+  effects:
+    0758  store[2] [bp-fFailed] = 0x1
+
+block L_075d:
+  insts 665..665  off 0x075d..0x0760
+  preds: L_0731, L_0758
+  succs: L_0761
+  effects:
+    075d  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0761:
+  insts 666..667  off 0x0761..0x0766
+  preds: L_0729, L_075d
+  succs: L_0731, L_076a
+  effects:
+    0765  branch load([bp-i]) < 0x7 ? L_0731 : L_076a
+
+block L_076a:
+  insts 669..898  off 0x076a..0x0a03
+  preds: L_0761
+  succs: L_0a07, L_0a7f
+  effects:
+    076e  call HpalFromDib(load([rghdibShips+0x6])) -> callresult(HPALETTE)
+    0776  store[2] [vhpal] = callresult(HPALETTE)
+    077d  call HdibLoadBigResource(0x85) -> callresult(HGLOBAL)
+    0785  store[2] [hdibRaces] = callresult(HGLOBAL)
+    078c  call HdibLoadBigResource(0x50) -> callresult(HGLOBAL)
+    0794  store[2] [hdibRacesT] = callresult(HGLOBAL)
+    079b  call HdibLoadBigResource(0x4f) -> callresult(HGLOBAL)
+    07a3  store[2] [hdibRacesX] = callresult(HGLOBAL)
+    07b2  call LoadBitmap(load@07a6/src([hInst]), farptr(0x0, 0x77)) -> callresult(HBITMAP)
+    07b7  store[2] [hbmpBackBld] = callresult(HBITMAP)
+    07c6  call LoadBitmap(load@07ba/src([hInst]), farptr(0x0, 0x86)) -> callresult(HBITMAP)
+    07cb  store[2] [hbmpMsg] = callresult(HBITMAP)
+    07da  call LoadBitmap(load@07ce/src([hInst]), farptr(0x0, 0xc7)) -> callresult(HBITMAP)
+    07df  store[2] [hbmpMono] = callresult(HBITMAP)
+    07e6  call HdibLoadBigResource(0x437) -> callresult(HGLOBAL)
+    07ee  store[2] [hdibPlaque] = callresult(HGLOBAL)
+    07fc  call LoadIcon(load@07f1/src([hInst]), farptr(0x25, 0x64e)) -> callresult(HICON)
+    0801  store[2] [hiconStars] = callresult(HICON)
+    080f  call LoadIcon(load@0804/src([hInst]), farptr(0x25, 0x657)) -> callresult(HICON)
+    0814  store[2] [hiconHost] = callresult(HICON)
+    0822  call LoadIcon(load@0817/src([hInst]), farptr(0x25, 0x65f)) -> callresult(HICON)
+    0827  store[2] [hiconWait] = callresult(HICON)
+    0835  call LoadIcon(load@082a/src([hInst]), farptr(0x25, 0x667)) -> callresult(HICON)
+    083a  store[2] [rghiconVCR] = callresult(HICON)
+    0848  call LoadIcon(load@083d/src([hInst]), farptr(0x25, 0x670)) -> callresult(HICON)
+    084d  store[2] [rghiconVCR+0x2] = callresult(HICON)
+    085b  call LoadIcon(load@0850/src([hInst]), farptr(0x25, 0x679)) -> callresult(HICON)
+    0860  store[2] [rghiconVCR+0x4] = callresult(HICON)
+    086e  call LoadIcon(load@0863/src([hInst]), farptr(0x25, 0x682)) -> callresult(HICON)
+    0873  store[2] [rghiconVCR+0x6] = callresult(HICON)
+    0881  call LoadIcon(load@0876/src([hInst]), farptr(0x25, 0x68b)) -> callresult(HICON)
+    0886  store[2] [rghiconVCR+0x8] = callresult(HICON)
+    0894  call LoadIcon(load@0889/src([hInst]), farptr(0x25, 0x694)) -> callresult(HICON)
+    0899  store[2] [rghiconVCR+0xa] = callresult(HICON)
+    08a7  call LoadIcon(load@089c/src([hInst]), farptr(0x25, 0x69d)) -> callresult(HICON)
+    08ac  store[2] [rghiconVCR+0xc] = callresult(HICON)
+    08b7  call LpAlloc(0x7d00, 0x4) -> callresult(void *)
+    08bf  store[2] [lpLog] = faroff(callresult(void *))
+    08c2  store[2] [lpLog+0x2] = farseg(callresult(void *))
+    08ce  call LpAlloc(0xffc8, 0x2) -> callresult(void *)
+    08d6  store[2] [lpMsg] = faroff(callresult(void *))
+    08d9  store[2] [lpMsg+0x2] = farseg(callresult(void *))
+    08e9  call MakeProcInstance(farptr(0xffff, 0x1d72), load@08e5/src([hInst])) -> callresult(int32_t() *)
+    08ee  store[2] [lpfnFakeComboProc] = faroff(callresult(int32_t() *))
+    08f1  store[2] [lpfnFakeComboProc+0x2] = farseg(callresult(int32_t() *))
+    0901  call MakeProcInstance(farptr(0x8e1, 0x1df0), load@08fd/src([hInst])) -> callresult(int32_t() *)
+    0906  store[2] [lpfnFakeCEProc] = faroff(callresult(int32_t() *))
+    0909  store[2] [lpfnFakeCEProc+0x2] = farseg(callresult(int32_t() *))
+    0919  call MakeProcInstance(farptr(0xffff, 0xa700), load@0915/src([hInst])) -> callresult(int32_t() *)
+    091e  store[2] [lpfnFakeEditProc] = faroff(callresult(int32_t() *))
+    0921  store[2] [lpfnFakeEditProc+0x2] = farseg(callresult(int32_t() *))
+    0931  call MakeProcInstance(farptr(0xffff, 0x6758), load@092d/src([hInst])) -> callresult(int32_t() *)
+    0936  store[2] [lpfnFakeListProc] = faroff(callresult(int32_t() *))
+    0939  store[2] [lpfnFakeListProc+0x2] = farseg(callresult(int32_t() *))
+    0949  call MakeProcInstance(farptr(0xffff, 0x7716), load@0945/src([hInst])) -> callresult(int32_t() *)
+    094e  store[2] [lpfnHostTimerProc] = faroff(callresult(int32_t() *))
+    0951  store[2] [lpfnHostTimerProc+0x2] = farseg(callresult(int32_t() *))
+    0961  call MakeProcInstance(farptr(0xffff, 0x1ed8), load@095d/src([hInst])) -> callresult(int32_t() *)
+    0966  store[2] [lpfnBrowserDlgProc] = faroff(callresult(int32_t() *))
+    0969  store[2] [lpfnBrowserDlgProc+0x2] = farseg(callresult(int32_t() *))
+    0979  call MakeProcInstance(farptr(0xffff, 0x18), load@0975/src([hInst])) -> callresult(int32_t() *)
+    097e  store[2] [lpfnReportDlgProc] = faroff(callresult(int32_t() *))
+    0981  store[2] [lpfnReportDlgProc+0x2] = farseg(callresult(int32_t() *))
+    0991  call MakeProcInstance(farptr(0x7e9, 0x647e), load@098d/src([hInst])) -> callresult(int32_t() *)
+    0996  store[2] [lpfnGaugeDlgProc] = faroff(callresult(int32_t() *))
+    0999  store[2] [lpfnGaugeDlgProc+0x2] = farseg(callresult(int32_t() *))
+    099d  call GetDiskSerialNumber() -> callresult(uint32_t)
+    09aa  call LpAlloc(0x800, 0x9) -> callresult(void *)
+    09b2  store[2] [lpb2k] = faroff(callresult(void *))
+    09b5  store[2] [lpb2k+0x2] = farseg(callresult(void *))
+    09c1  call LpAlloc(0x800, 0x9) -> callresult(void *)
+    09c9  store[2] [vlprgidMisc] = faroff(callresult(void *))
+    09cc  store[2] [vlprgidMisc+0x2] = farseg(callresult(void *))
+    09d8  call LpAlloc(0x800, 0x9) -> callresult(void *)
+    09e0  store[2] [vlprgidPlanet] = faroff(callresult(void *))
+    09e3  store[2] [vlprgidPlanet+0x2] = farseg(callresult(void *))
+    09ef  call LpAlloc(0x800, 0x9) -> callresult(void *)
+    09f7  store[2] [vlprgidFleet] = faroff(callresult(void *))
+    09fa  store[2] [vlprgidFleet+0x2] = farseg(callresult(void *))
+    0a02  branch load([bp-fFailed]) != 0x0 ? L_0a7f : L_0a07
+
+block L_0a07:
+  insts 900..901  off 0x0a07..0x0a0d
+  preds: L_076a
+  succs: L_0a11, L_0a7f
+  effects:
+    0a0c  branch load([hbmpScanner]) == 0x0 ? L_0a7f : L_0a11
+
+block L_0a11:
+  insts 903..904  off 0x0a11..0x0a17
+  preds: L_0a07
+  succs: L_0a1b, L_0a7f
+  effects:
+    0a16  branch load([hbmpUnknownPlanet]) == 0x0 ? L_0a7f : L_0a1b
+
+block L_0a1b:
+  insts 906..907  off 0x0a1b..0x0a21
+  preds: L_0a11
+  succs: L_0a25, L_0a7f
+  effects:
+    0a20  branch load([hbmpBackBld]) == 0x0 ? L_0a7f : L_0a25
+
+block L_0a25:
+  insts 909..910  off 0x0a25..0x0a2b
+  preds: L_0a1b
+  succs: L_0a2f, L_0a7f
+  effects:
+    0a2a  branch load([hdibRaces]) == 0x0 ? L_0a7f : L_0a2f
+
+block L_0a2f:
+  insts 912..913  off 0x0a2f..0x0a35
+  preds: L_0a25
+  succs: L_0a39, L_0a7f
+  effects:
+    0a34  branch load([hdibRacesT]) == 0x0 ? L_0a7f : L_0a39
+
+block L_0a39:
+  insts 915..916  off 0x0a39..0x0a3f
+  preds: L_0a2f
+  succs: L_0a43, L_0a7f
+  effects:
+    0a3e  branch load([hdibRacesX]) == 0x0 ? L_0a7f : L_0a43
+
+block L_0a43:
+  insts 918..919  off 0x0a43..0x0a49
+  preds: L_0a39
+  succs: L_0a4d, L_0a7f
+  effects:
+    0a48  branch load([hbmpMono]) == 0x0 ? L_0a7f : L_0a4d
+
+block L_0a4d:
+  insts 921..922  off 0x0a4d..0x0a53
+  preds: L_0a43
+  succs: L_0a57, L_0a7f
+  effects:
+    0a52  branch load([hbmpScanShip]) == 0x0 ? L_0a7f : L_0a57
+
+block L_0a57:
+  insts 924..925  off 0x0a57..0x0a5d
+  preds: L_0a4d
+  succs: L_0a61, L_0a7f
+  effects:
+    0a5c  branch load([hbmpMsg]) == 0x0 ? L_0a7f : L_0a61
+
+block L_0a61:
+  insts 927..928  off 0x0a61..0x0a67
+  preds: L_0a57
+  succs: L_0a6b, L_0a7f
+  effects:
+    0a66  branch load([hiconHost]) == 0x0 ? L_0a7f : L_0a6b
+
+block L_0a6b:
+  insts 930..931  off 0x0a6b..0x0a71
+  preds: L_0a61
+  succs: L_0a75, L_0a7f
+  effects:
+    0a70  branch load([hiconStars]) == 0x0 ? L_0a7f : L_0a75
+
+block L_0a75:
+  insts 933..934  off 0x0a75..0x0a7b
+  preds: L_0a6b
+  succs: L_0a7f, L_0aa6
+  effects:
+    0a7a  branch load([hiconWait]) != 0x0 ? L_0aa6 : L_0a7f
+
+block L_0a7f:
+  insts 936..950  off 0x0a7f..0x0aa5
+  preds: L_076a, L_0a07, L_0a11, L_0a1b, L_0a25, L_0a2f, L_0a39, L_0a43, L_0a4d, L_0a57, L_0a61, L_0a6b, L_0a75
+  succs: L_0aac
+  effects:
+    0a8f  call PszFormatIds(0x17, farptr(0x0, 0x0)) -> callresult(char *)
+    0a98  call AlertSz(callresult(char *), 0x10) -> callresult(int16_t)
+    0aa3  goto L_0aac
+
+block L_0aa6:
+  insts 951..951  off 0x0aa6..0x0aab
+  preds: L_0a75
+  succs: L_0aac
+
+block L_0aac:
+  insts 953..957  off 0x0aac..0x0ab1
+  preds: L_0a7f, L_0aa6
+  effects:
+    0ab1  return merge(Join: L_0aac, (L_0a7f:0x0, L_0aa6:0x1))

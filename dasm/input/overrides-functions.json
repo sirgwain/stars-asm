@@ -1,0 +1,968 @@
+{
+  "functions": [
+    { "name": "HbrGet", "ret": "HBRUSH", "params": [{ "name": "cr", "ctype": "COLORREF" }], "callconv": "stdcall" },
+    { "name": "HpalFromDib", "ret": "HPALETTE", "params": [{ "name": "hdib", "ctype": "HGLOBAL" }], "callconv": "stdcall" },
+    { "name": "HpalBlackReserved", "ret": "HPALETTE", "params": [], "callconv": "stdcall" },
+    {
+      "name": "DibFromBitmap",
+      "ret": "HGLOBAL",
+      "params": [
+        { "name": "hbm", "ctype": "uint16_t" },
+        { "name": "biStyle", "ctype": "uint32_t" },
+        { "name": "biBits", "ctype": "uint16_t" },
+        { "name": "hpal", "ctype": "HPALETTE" }
+      ],
+      "callconv": "stdcall"
+    },
+    { "name": "HdibLoadBigResource", "ret": "HGLOBAL", "params": [{ "name": "idb", "ctype": "int16_t" }], "callconv": "stdcall" },
+    {
+      "name": "HfontPrinterCreate",
+      "ret": "HFONT",
+      "params": [
+        { "name": "hdc", "ctype": "HDC" },
+        { "name": "iSize", "ctype": "int16_t" },
+        { "name": "pdyFont", "ctype": "int16_t *" }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "GetWindowLong",
+      "ret": "FARPROC",
+      "params": [
+        { "name": "arg1", "ctype": "HWND" },
+        { "name": "arg2", "ctype": "int16_t" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "__aFulmul",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "a",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "b",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "__aFuldiv",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "a",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "b",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "__aFldiv",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "a",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "b",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "__aFulrem",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "a",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "b",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "__aFlrem",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "a",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "b",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "__aFlshl",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "val",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "shift",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "dxax_cx"
+    },
+    {
+      "name": "__aFlshr",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "val",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "shift",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "dxax_cx"
+    },
+    {
+      "name": "__aFulshr",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "val",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "shift",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "dxax_cx"
+    },
+    {
+      "name": "__access",
+      "rename": "access",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "path",
+          "ctype": "char *"
+        },
+        {
+          "name": "mode",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__dos_findfirst",
+      "rename": "dos_findfirst",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "path",
+          "ctype": "const char *"
+        },
+        {
+          "name": "attrib",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "find",
+          "ctype": "void *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__dos_getdiskfree",
+      "rename": "dos_getdiskfree",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "drive",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "diskfree",
+          "ctype": "void *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__filelength",
+      "rename": "filelength",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "handle",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__itoa",
+      "rename": "itoa",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "value",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "buffer",
+          "ctype": "char *"
+        },
+        {
+          "name": "radix",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__lseek",
+      "rename": "lseek",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "handle",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "offset",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "origin",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__mkdir",
+      "rename": "mkdir",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "path",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__setjmp",
+      "rename": "setjmp",
+      "ret": "int16_t",
+      "params": [{ "name": "env", "ctype": "int16_t *" }],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_longjmp",
+      "rename": "longjmp",
+      "ret": "void",
+      "params": [
+        { "name": "env", "ctype": "int16_t *" },
+        { "name": "value", "ctype": "int16_t" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__strcmpi",
+      "rename": "strcmpi",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const char *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__strdate",
+      "rename": "strdate",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "buf",
+          "ctype": "char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__strlwr",
+      "rename": "strlwr",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__strnicmp",
+      "rename": "strnicmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const char *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const char *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__strtime",
+      "rename": "strtime",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "buf",
+          "ctype": "char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__tell",
+      "rename": "tell",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "handle",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_sqrt",
+      "rename": "sqrt",
+      "ret": "double",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "double"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__aFfcompp",
+      "ret": "void",
+      "params": [],
+      "callconv": "stdcall"
+    },
+    {
+      "name": "_pow",
+      "rename": "pow",
+      "ret": "double",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "double"
+        },
+        {
+          "name": "y",
+          "ctype": "double"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_abs",
+      "rename": "abs",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_atoi",
+      "rename": "atoi",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_atan2",
+      "rename": "atan2",
+      "ret": "double",
+      "params": [
+        {
+          "name": "y",
+          "ctype": "double"
+        },
+        {
+          "name": "x",
+          "ctype": "double"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_bsearch",
+      "rename": "bsearch",
+      "ret": "void *",
+      "params": [
+        {
+          "name": "key",
+          "ctype": "const void *"
+        },
+        {
+          "name": "base",
+          "ctype": "const void *"
+        },
+        {
+          "name": "nmemb",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "size",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "compare",
+          "ctype": "QSORTCOMPARE"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_cos",
+      "rename": "cos",
+      "ret": "double",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "double"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_labs",
+      "rename": "labs",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_lclose",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hfile",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_lread",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "hfile",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "buffer",
+          "ctype": "void *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_lwrite",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "hfile",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "buffer",
+          "ctype": "const void *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_memcmp",
+      "rename": "memcmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const void *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const void *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_memcpy",
+      "rename": "memcpy",
+      "ret": "void *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void *"
+        },
+        {
+          "name": "src",
+          "ctype": "const void *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_memmove",
+      "rename": "memmove",
+      "ret": "void *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void *"
+        },
+        {
+          "name": "src",
+          "ctype": "const void *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_memset",
+      "rename": "memset",
+      "ret": "void *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void *"
+        },
+        {
+          "name": "value",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_qsort",
+      "rename": "qsort",
+      "ret": "void",
+      "params": [
+        {
+          "name": "base",
+          "ctype": "void *"
+        },
+        {
+          "name": "nmemb",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "size",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "compare",
+          "ctype": "QSORTCOMPARE"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_remove",
+      "rename": "remove",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "path",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_rename",
+      "rename": "rename",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "oldpath",
+          "ctype": "const char *"
+        },
+        {
+          "name": "newpath",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_sin",
+      "rename": "sin",
+      "ret": "double",
+      "params": [
+        {
+          "name": "x",
+          "ctype": "double"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strcat",
+      "rename": "strcat",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "char *"
+        },
+        {
+          "name": "src",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strchr",
+      "rename": "strchr",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "const char *"
+        },
+        {
+          "name": "ch",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strcmp",
+      "rename": "strcmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const char *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strcpy",
+      "rename": "strcpy",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "char *"
+        },
+        {
+          "name": "src",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strlen",
+      "rename": "strlen",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "const char *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strncpy",
+      "rename": "strncpy",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "char *"
+        },
+        {
+          "name": "src",
+          "ctype": "const char *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "_strrchr",
+      "rename": "strrchr",
+      "ret": "char *",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "const char *"
+        },
+        {
+          "name": "ch",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__ftol",
+      "ret": "int32_t",
+      "params": [],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fmemmove",
+      "rename": "fmemmove",
+      "ret": "void far *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void far *"
+        },
+        {
+          "name": "src",
+          "ctype": "const void far *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fmemcmp",
+      "rename": "fmemcmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const void far *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const void far *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fmemcpy",
+      "rename": "fmemcpy",
+      "ret": "void far *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void far *"
+        },
+        {
+          "name": "src",
+          "ctype": "const void far *"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fmemset",
+      "rename": "fmemset",
+      "ret": "void far *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "void far *"
+        },
+        {
+          "name": "value",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "count",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fstrlen",
+      "rename": "fstrlen",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "s",
+          "ctype": "const char far *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fstrcpy",
+      "rename": "fstrcpy",
+      "ret": "char far *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "char far *"
+        },
+        {
+          "name": "src",
+          "ctype": "const char far *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fstrcat",
+      "rename": "fstrcat",
+      "ret": "char far *",
+      "params": [
+        {
+          "name": "dest",
+          "ctype": "char far *"
+        },
+        {
+          "name": "src",
+          "ctype": "const char far *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fstrcmp",
+      "rename": "fstrcmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const char far *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const char far *"
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "__fstricmp",
+      "rename": "fstricmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lhs",
+          "ctype": "const char far *"
+        },
+        {
+          "name": "rhs",
+          "ctype": "const char far *"
+        }
+      ],
+      "callconv": "cdecl"
+    }
+  ]
+}

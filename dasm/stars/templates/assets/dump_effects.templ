@@ -1,0 +1,24 @@
+{{ range $i, $block := .Blocks -}}
+{{ if $i }}
+{{ end -}}
+block {{ $block.Label }}:
+  insts {{ $block.Insts }}  off {{ $block.Offsets }}
+{{- if $block.Preds }}
+  preds: {{ join $block.Preds ", " }}
+{{- end }}
+{{- if $block.Succs }}
+  succs: {{ join $block.Succs ", " }}
+{{- end }}
+{{- if $.Options.ShowAsm }}
+  instrs:
+{{- range highlightText "nasm" (renderAsmBlock $ $block) $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if $block.Effects }}
+  effects:
+{{- range highlightLines "c" $block.Effects $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{ end -}}

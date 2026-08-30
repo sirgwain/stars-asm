@@ -1,0 +1,272 @@
+/*
+FCreateStuff  (init)
+  addr: 0001:0014  len=2718
+  sig:  int16_t FCreateStuff()
+  locals:
+    int16_t          dx             [BP-0xc]
+    HBITMAP          hbmp           [BP-0xa]
+    int16_t          i              [BP-0x8]
+    int16_t          dy             [BP-0x6]
+    int16_t          fFailed        [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_0014:
+    fFailed = 0x0
+    dx = GetSystemMetrics(SM_CXSCREEN)
+    dy = GetSystemMetrics(SM_CYSCREEN)
+    branch dx < 0x320 ? L_004e : L_0044
+
+L_0044:
+    branch dy >= 0x258 ? L_005d : L_004e
+
+L_004e:
+    gd.mdScreenSize = 0x0
+    goto L_00af
+
+L_005d:
+    branch dx < 0x400 ? L_0071 : L_0067
+
+L_0067:
+    branch dy >= 0x300 ? L_0080 : L_0071
+
+L_0071:
+    gd.mdScreenSize = 0x1
+    goto L_00af
+
+L_0080:
+    branch dx < 0x457 ? L_0094 : L_008a
+
+L_008a:
+    branch dy >= 0x378 ? L_00a3 : L_0094
+
+L_0094:
+    gd.mdScreenSize = 0x2
+    goto L_00af
+
+L_00a3:
+    gd.mdScreenSize = 0x3
+
+L_00af:
+    gd.fNoIdleChecks = 0x0
+    gd.fAisDone = 0x0
+    vplr = part[0:192](vrgplrDef)
+    hrgnHuge = CreateRectRgn(0xfff6, 0xfff6, 0x7d0, 0x7d0)
+    hrgnScratch = CreateRectRgn(0x0, 0x0, 0xa, 0xa)
+    hbrShip = HbrGet(0xff00)
+    hbrStarbase = HbrGet(0xffff)
+    hbrBBlue = HbrGet(0xff0000)
+    hbrEnemy = HbrGet(0xff)
+    hbrSelect = HbrGet(0xffff)
+    hbrRed = HbrGet(0xff)
+    hbrBlue = HbrGet(0x7f0000)
+    hbrGreen = HbrGet(0x7f00)
+    hbrRadar = HbrGet(0x7f)
+    hbrPurple = HbrGet(0x7f007f)
+    hbrTooltip = HbrGet(0x9fffff)
+    hbrRadarNear = 0x0
+    LOWORD(rghbrMineral) = HbrGet(0xff0000)
+    HIWORD(rghbrMineral) = HbrGet(0x7f00)
+    part[4:2](rghbrMineral) = HbrGet(0xffff)
+    part[6:2](rghbrMineral) = HbrGet(0xffffff)
+    part[8:2](rghbrMineral) = HbrGet(0xff)
+    LOWORD(rghbrPlanetAttr) = HbrGet(0x7f0000)
+    HIWORD(rghbrPlanetAttr) = HbrGet(0xff0000)
+    part[4:2](rghbrPlanetAttr) = HbrGet(0x7f)
+    part[6:2](rghbrPlanetAttr) = HbrGet(0xff)
+    part[8:2](rghbrPlanetAttr) = HbrGet(0x7f00)
+    part[10:2](rghbrPlanetAttr) = HbrGet(0xff00)
+    LOWORD(rghbrMinSum) = HbrGet(0xff0000)
+    HIWORD(rghbrMinSum) = HbrGet(0x7f0000)
+    part[4:2](rghbrMinSum) = HbrGet(0xff00)
+    part[6:2](rghbrMinSum) = HbrGet(0x7f00)
+    part[8:2](rghbrMinSum) = HbrGet(0xffff)
+    part[10:2](rghbrMinSum) = HbrGet(0x7f7f)
+    part[12:2](rghbrMinSum) = HbrGet(0xff)
+    part[14:2](rghbrMinSum) = HbrGet(0x7f)
+    hbrYellow = HbrGet(0xffff)
+    hbrDkYellow = HbrGet(0x7f7f)
+    hbrLightGray = HbrGet(0xc0c0c0)
+    hbrGray = HbrGet(0x808080)
+    hpenShip = CreatePen(0x0, 0x1, 0xff00)
+    hpenDkGreen = CreatePen(0x0, 0x1, 0x7f00)
+    hpenStarbase = CreatePen(0x0, 0x1, 0xff0000)
+    hpenEnemy = CreatePen(0x0, 0x1, 0xff)
+    hpenMassPath = CreatePen(0x2, 0x1, 0x7f7f7f)
+    hpenRadar = CreatePen(0x0, 0x1, 0x7f)
+    hpenRadarNear = 0x0
+    hpenDkBlue = CreatePen(0x0, 0x1, 0x7f0000)
+    hpenYellow = CreatePen(0x0, 0x1, 0xffff)
+    hpenDkYellow = CreatePen(0x0, 0x1, 0x7f7f)
+    hpenDkPurple = CreatePen(0x0, 0x1, 0x7f007f)
+    hbmp = LoadBitmap(hInst, "Screen50Bmp")
+    hbr50Screen = CreatePatternBrush(hbmp)
+    call DeleteObject(hbmp) -> callresult(int16_t)
+    i = 0x0
+    goto L_04f1
+
+L_04b7:
+    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE(((i + 0x1cc) | 0x0)))
+    rghbrPat[i] = CreatePatternBrush(hbmp)
+    call DeleteObject(hbmp) -> callresult(int16_t)
+    i = (i + 0x1)
+
+L_04f1:
+    branch i < 0x3 ? L_04b7 : L_04fa
+
+L_04fa:
+    hbmp = LoadBitmap(hInst, "CargoBmp")
+    hbrCargo = CreatePatternBrush(hbmp)
+    call DeleteObject(hbmp) -> callresult(int16_t)
+    hbmp = LoadBitmap(hInst, "DockBmp")
+    hbrDock = CreatePatternBrush(hbmp)
+    call DeleteObject(hbmp) -> callresult(int16_t)
+    hcurScanner = LoadCursor(hInst, "ScannerCur")
+    hcurScanAdd = LoadCursor(hInst, "ScannerAdd")
+    hcurOpenGrab = LoadCursor(hInst, "OpenGrabCur")
+    hcurCloseGrab = LoadCursor(hInst, "CloseGrabCur")
+    hcurTrashCan = LoadCursor(hInst, MAKEINTRESOURCE(0x7a))
+    hcurNoWay = LoadCursor(hInst, MAKEINTRESOURCE(0x79))
+    hcurResizeWE = LoadCursor(hInst, MAKEINTRESOURCE(0x102))
+    hcurResizeNS = LoadCursor(hInst, MAKEINTRESOURCE(0x104))
+    hcurResize4Way = LoadCursor(hInst, MAKEINTRESOURCE(0x107))
+    hcurArrowHelp = LoadCursor(hInst, MAKEINTRESOURCE(0x108))
+    hcurHand = LoadCursor(hInst, MAKEINTRESOURCE(0x109))
+    hbmpScanner = LoadBitmap(hInst, "ScannerBmp")
+    hbmpScanShip = LoadBitmap(hInst, MAKEINTRESOURCE(0x58))
+    hbmpUnknownPlanet = LoadBitmap(hInst, "UnknownPlanetBmp")
+    hbmpNumbers = LoadBitmap(hInst, MAKEINTRESOURCE(0xf9))
+    hdibPlanets = HdibLoadBigResource(0x70)
+    hdibThings = HdibLoadBigResource(0x57)
+    hdibToolbar = HdibLoadBigResource(0xb2)
+    branch hdibPlanets == 0x0 ? L_06b7 : L_06a3
+
+L_06a3:
+    branch hdibThings == 0x0 ? L_06b7 : L_06ad
+
+L_06ad:
+    branch hdibToolbar != 0x0 ? L_06bc : L_06b7
+
+L_06b7:
+    fFailed = 0x1
+
+L_06bc:
+    i = 0x0
+    goto L_0720
+
+L_06c4:
+    rghdibShips[i] = HdibLoadBigResource(part[12:0](szBrowser[i]))
+    branch rghdibShips[i] != 0x0 ? L_06f0 : L_06eb
+
+L_06eb:
+    fFailed = 0x1
+
+L_06f0:
+    rghdibShipsT[i] = HdibLoadBigResource(part[3:0](szTitle[i]))
+    branch rghdibShipsT[i] != 0x0 ? L_071c : L_0717
+
+L_0717:
+    fFailed = 0x1
+
+L_071c:
+    i = (i + 0x1)
+
+L_0720:
+    branch i < 0x5 ? L_06c4 : L_0729
+
+L_0729:
+    i = 0x0
+    goto L_0761
+
+L_0731:
+    rghdibInventory[i] = HdibLoadBigResource(part[8:0](szMine[i]))
+    branch rghdibInventory[i] != 0x0 ? L_075d : L_0758
+
+L_0758:
+    fFailed = 0x1
+
+L_075d:
+    i = (i + 0x1)
+
+L_0761:
+    branch i < 0x7 ? L_0731 : L_076a
+
+L_076a:
+    vhpal = HpalFromDib(part[6:2](rghdibShips))
+    hdibRaces = HdibLoadBigResource(0x85)
+    hdibRacesT = HdibLoadBigResource(0x50)
+    hdibRacesX = HdibLoadBigResource(0x4f)
+    hbmpBackBld = LoadBitmap(hInst, MAKEINTRESOURCE(0x77))
+    hbmpMsg = LoadBitmap(hInst, MAKEINTRESOURCE(0x86))
+    hbmpMono = LoadBitmap(hInst, MAKEINTRESOURCE(0xc7))
+    hdibPlaque = HdibLoadBigResource(0x437)
+    hiconStars = LoadIcon(hInst, "StarsIco")
+    hiconHost = LoadIcon(hInst, "HostIco")
+    hiconWait = LoadIcon(hInst, "WaitIco")
+    LOWORD(rghiconVCR) = LoadIcon(hInst, "Bang1Ico")
+    HIWORD(rghiconVCR) = LoadIcon(hInst, "Bang2Ico")
+    part[4:2](rghiconVCR) = LoadIcon(hInst, "Bang3Ico")
+    part[6:2](rghiconVCR) = LoadIcon(hInst, "Torp1Ico")
+    part[8:2](rghiconVCR) = LoadIcon(hInst, "Torp2Ico")
+    part[10:2](rghiconVCR) = LoadIcon(hInst, "Torp3Ico")
+    part[12:2](rghiconVCR) = LoadIcon(hInst, "Torp4Ico")
+    lpLog = LpAlloc(0x7d00, htLog)
+    lpMsg = LpAlloc(0xffc8, htMsg)
+    lpfnFakeComboProc = MakeProcInstance(FakeComboProc, hInst)
+    lpfnFakeCEProc = MakeProcInstance(FakeCEProc, hInst)
+    lpfnFakeEditProc = MakeProcInstance(FakeEditProc, hInst)
+    lpfnFakeListProc = MakeProcInstance(FakeListProc, hInst)
+    lpfnHostTimerProc = MakeProcInstance(HostTimerProc, hInst)
+    lpfnBrowserDlgProc = MakeProcInstance(BrowserDlg, hInst)
+    lpfnReportDlgProc = MakeProcInstance(ReportDlg, hInst)
+    lpfnGaugeDlgProc = MakeProcInstance(ProgressGaugeDlg, hInst)
+    call GetDiskSerialNumber() -> callresult(uint32_t)
+    lpb2k = LpAlloc(0x800, htPerm)
+    vlprgidMisc = LpAlloc(0x800, htPerm)
+    vlprgidPlanet = LpAlloc(0x800, htPerm)
+    vlprgidFleet = LpAlloc(0x800, htPerm)
+    branch fFailed != 0x0 ? L_0a7f : L_0a07
+
+L_0a07:
+    branch hbmpScanner == 0x0 ? L_0a7f : L_0a11
+
+L_0a11:
+    branch hbmpUnknownPlanet == 0x0 ? L_0a7f : L_0a1b
+
+L_0a1b:
+    branch hbmpBackBld == 0x0 ? L_0a7f : L_0a25
+
+L_0a25:
+    branch hdibRaces == 0x0 ? L_0a7f : L_0a2f
+
+L_0a2f:
+    branch hdibRacesT == 0x0 ? L_0a7f : L_0a39
+
+L_0a39:
+    branch hdibRacesX == 0x0 ? L_0a7f : L_0a43
+
+L_0a43:
+    branch hbmpMono == 0x0 ? L_0a7f : L_0a4d
+
+L_0a4d:
+    branch hbmpScanShip == 0x0 ? L_0a7f : L_0a57
+
+L_0a57:
+    branch hbmpMsg == 0x0 ? L_0a7f : L_0a61
+
+L_0a61:
+    branch hiconHost == 0x0 ? L_0a7f : L_0a6b
+
+L_0a6b:
+    branch hiconStars == 0x0 ? L_0a7f : L_0a75
+
+L_0a75:
+    branch hiconWait != 0x0 ? L_0aa6 : L_0a7f
+
+L_0a7f:
+    call AlertSz(PszFormatIds(idsUnableLoadBitmaps, 0x0), MB_ICONHAND) -> callresult(int16_t)
+    return 0x0
+
+L_0aa6:
+    return 0x1
+

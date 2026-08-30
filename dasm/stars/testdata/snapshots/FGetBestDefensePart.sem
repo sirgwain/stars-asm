@@ -1,0 +1,54 @@
+/*
+FGetBestDefensePart  (planet)
+  addr: 000a:21f6  len=214
+  sig:  int16_t FGetBestDefensePart(PART *ppart)
+  params:
+    PART *           ppart          [BP+0x6]
+  locals:
+    PART             part           [BP-0xe]
+    int16_t          i              [BP-0x6]
+    int16_t          fRet           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_21f6:
+    fRet = 0x1
+    part.hs.grhst = hstPlanetary
+    part.hs.iItem = 0x9
+    i = 0x0
+    goto L_2250
+
+L_221d:
+    i = (i + 0x1)
+    ss:[bp-0x10] = part.hs.iItem
+    ss:[bp-0x12] = ((HIWORD(part) + 0x1) & 0xff)
+    part.hs.iItem = 0x0
+    HIWORD(part) = (HIWORD(part) | ss:[bp-0x12])
+
+L_2250:
+    branch i >= 0x5 ? L_2273 : L_2259
+
+L_2259:
+    branch FLookupPart(&part) != 0x1 ? L_2273 : L_226a
+
+L_226a:
+
+
+
+L_2273:
+    branch i <= 0x0 ? L_2283 : L_227c
+
+L_227c:
+    i = (i - 0x1)
+    goto L_2288
+
+L_2283:
+    fRet = 0x0
+
+L_2288:
+    HIWORD(part) = ((HIWORD(part) & 0xff00) | ((i + 0x9) & 0xff))
+    call FLookupPart(&part) -> callresult(int16_t)
+    *ppart = part
+
+L_22c6:
+    return fRet

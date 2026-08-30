@@ -1,0 +1,400 @@
+/*
+DropSalvage  (battle)
+  addr: 001f:24dc  len=1142
+  sig:  void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt)
+  params:
+    THING * *        plpth          [BP+0x6]
+    int32_t *        rgwtMinerals   [BP+0x8]
+    int16_t          iplr           [BP+0xc]
+    POINT *          ppt            [BP+0xe]
+  locals:
+    THING *          lpth           [BP-0x10]
+    int16_t          i              [BP-0xc]
+    int32_t          wt             [BP-0xa]
+    int32_t          wtTotal        [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_24dc:
+  insts 0..13  off 0x24dc..0x2504
+  succs: L_2509
+  effects:
+    24ed  store[2] [bp-lpth] = load(0x25:[load([bp+plpth])])
+    24f0  store[2] [bp-lpth+0x2] = load(0x25:[load([bp+plpth])+0x2])
+    24f3  store[2] [bp-wtTotal] = 0x0
+    24f8  store[2] [bp-wtTotal+0x2] = 0x0
+    24fd  store[2] [bp-i] = 0x0
+    2502  goto L_2509
+
+block L_2505:
+  insts 14..14  off 0x2505..0x2508
+  preds: L_2514, L_252d, L_2532, L_2538
+  succs: L_2509
+  effects:
+    2505  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_2509:
+  insts 15..17  off 0x2509..0x2510
+  preds: L_24dc, L_2505
+  succs: L_2514, L_253b
+  effects:
+    250f  branch load([bp-i]) >= load([game+0xa]) ? L_253b : L_2514
+
+block L_2514:
+  insts 19..26  off 0x2514..0x2529
+  preds: L_2509
+  succs: L_2505, L_252d
+  effects:
+    2528  branch load(0x25:[load([bp+ppt])]) != load(0x25:[((load([bp-i]) << 0x1) << 0x1)+0x2f40]) ? L_2505 : L_252d
+
+block L_252d:
+  insts 28..29  off 0x252d..0x2531
+  preds: L_2514
+  succs: L_2505, L_294c
+  effects:
+    2530  branch load(0x25:[load([bp+ppt])+0x2]) == load(0x25:[((load([bp-i]) << 0x1) << 0x1)+0x2f42]) ? L_294c : L_2532
+
+block L_2532:
+  insts 30..30  off 0x2532..0x2534
+  succs: L_2505
+
+block L_2535:
+  insts 31..31  off 0x2535..0x2537
+  succs: L_294c
+
+block L_2538:
+  insts 32..32  off 0x2538..0x253a
+  succs: L_2505
+
+block L_253b:
+  insts 33..34  off 0x253b..0x2542
+  preds: L_2509
+  succs: L_2565
+  effects:
+    253b  store[2] [bp-i] = 0x0
+    2540  goto L_2565
+
+block L_2543:
+  insts 35..46  off 0x2543..0x2564
+  preds: L_2565, L_256b
+  succs: L_2565
+  effects:
+    255b  store[2] [bp-wtTotal] = (load([bp-wtTotal]) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]))
+    255e  store[2] [bp-wtTotal+0x2] = (load([bp-wtTotal+0x2]) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]))
+    2561  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_2565:
+  insts 47..48  off 0x2565..0x256a
+  preds: L_253b, L_2543
+  succs: L_2543, L_25cb
+  effects:
+    2569  branch load([bp-i]) >= 0x3 ? L_25cb : L_256b
+
+block L_256b:
+  insts 49..49  off 0x256b..0x256d
+  succs: L_2543
+
+block L_256e:
+  insts 50..50  off 0x256e..0x2570
+  succs: L_25cb
+
+block L_2571:
+  insts 51..52  off 0x2571..0x2578
+  preds: L_25d4
+  succs: L_25c2
+  effects:
+    2571  store[2] [bp-i] = 0x0
+    2576  goto L_25c2
+
+block L_2579:
+  insts 53..79  off 0x2579..0x25c1
+  preds: L_25c2
+  succs: L_25c2
+  effects:
+    257d  call Random(0xa) -> callresult(int16_t)
+    2599  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))] = callresult(int16_t)
+    259c  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = signhiword(callresult(int16_t))
+    25b8  store[2] [bp-wtTotal] = (load([bp-wtTotal]) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]))
+    25bb  store[2] [bp-wtTotal+0x2] = (load([bp-wtTotal+0x2]) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]))
+    25be  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_25c2:
+  insts 80..81  off 0x25c2..0x25c7
+  preds: L_2571, L_2579
+  succs: L_2579, L_25cb
+  effects:
+    25c6  branch load([bp-i]) < 0x3 ? L_2579 : L_25cb
+
+block L_25cb:
+  insts 83..84  off 0x25cb..0x25d0
+  preds: L_2565, L_256e, L_25c2
+  succs: L_25d4, L_25dd
+  effects:
+    25cf  branch load([bp-wtTotal]) != 0x0 ? L_25dd : L_25d4
+
+block L_25d4:
+  insts 86..87  off 0x25d4..0x25d9
+  preds: L_25cb
+  succs: L_2571, L_25dd
+  effects:
+    25d8  branch load([bp-wtTotal+0x2]) == 0x0 ? L_2571 : L_25dd
+
+block L_25dd:
+  insts 89..90  off 0x25dd..0x25e2
+  preds: L_25cb, L_25d4
+  succs: L_25e6, L_2657
+  effects:
+    25e1  branch load([bp-lpth]) != 0x0 ? L_2657 : L_25e6
+
+block L_25e6:
+  insts 92..93  off 0x25e6..0x25eb
+  preds: L_25dd
+  succs: L_25ef, L_2657
+  effects:
+    25ea  branch load([bp-lpth+0x2]) != 0x0 ? L_2657 : L_25ef
+
+block L_25ef:
+  insts 95..103  off 0x25ef..0x2609
+  preds: L_25e6
+  succs: L_260d, L_2619
+  effects:
+    25f6  call LpthNew(load([bp+iplr]), 0x1) -> callresult(THING *)
+    25fe  store[2] [bp-lpth] = faroff(callresult(THING *))
+    2601  store[2] [bp-lpth+0x2] = farseg(callresult(THING *))
+    2608  branch load([bp-lpth]) != 0x0 ? L_2619 : L_260d
+
+block L_260d:
+  insts 105..106  off 0x260d..0x2612
+  preds: L_25ef
+  succs: L_2619, L_294c
+  effects:
+    2611  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_2613
+
+block L_2613:
+  insts 107..107  off 0x2613..0x2615
+  succs: L_2619
+
+block L_2616:
+  insts 108..108  off 0x2616..0x2618
+  succs: L_294c
+
+block L_2619:
+  insts 109..127  off 0x2619..0x2656
+  preds: L_25ef, L_260d, L_2613
+  succs: L_26e9
+  effects:
+    2629  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@261c/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
+    2638  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(0x25:[load([bp+ppt])])
+    263c  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(0x25:[load([bp+ppt])+0x2])
+    2650  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2643/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xfc00) | 0x3ff)
+    2654  goto L_26e9
+
+block L_2657:
+  insts 128..129  off 0x2657..0x265e
+  preds: L_25dd, L_25e6
+  succs: L_26cc
+  effects:
+    2657  store[2] [bp-i] = 0x0
+    265c  goto L_26cc
+
+block L_265f:
+  insts 130..171  off 0x265f..0x26cb
+  preds: L_26cc
+  succs: L_26cc
+  effects:
+    268a  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))] = (load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]) + load@2673/src(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))]))
+    268d  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = (load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) + signhiword(load(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))])))
+    26a9  store[2] [bp-wtTotal] = (load([bp-wtTotal]) + load@26a5/src(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))]))
+    26ac  store[2] [bp-wtTotal+0x2] = (load([bp-wtTotal+0x2]) + signhiword(load(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))])))
+    26c3  store[2] load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))] = 0x0
+    26c8  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_26cc:
+  insts 172..173  off 0x26cc..0x26d1
+  preds: L_2657, L_265f
+  succs: L_265f, L_26d5
+  effects:
+    26d0  branch load([bp-i]) < 0x3 ? L_265f : L_26d5
+
+block L_26d5:
+  insts 175..180  off 0x26d5..0x26e8
+  preds: L_26cc
+  succs: L_26e9
+  effects:
+    26e5  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = ((load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0xc000) | 0x0)
+
+block L_26e9:
+  insts 181..187  off 0x26e9..0x26ff
+  preds: L_2619, L_26d5
+  succs: L_2927
+  effects:
+    26f9  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xbfff) | 0x4000)
+    26fd  goto L_2927
+
+block L_2700:
+  insts 188..189  off 0x2700..0x2707
+  preds: L_2927, L_2935
+  succs: L_291e
+  effects:
+    2700  store[2] [bp-i] = 0x0
+    2705  goto L_291e
+
+block L_2708:
+  insts 190..212  off 0x2708..0x2742
+  preds: L_291e
+  succs: L_2746, L_2842
+  effects:
+    271f  call __aFulmul(words(0x0, (load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
+    2741  branch (hiword(callresult(uint32_t)) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])) < 0x0 ? L_2842 : L_2746
+
+block L_2746:
+  insts 214..214  off 0x2746..0x2747
+  preds: L_2708
+  succs: L_274b, L_2753
+  effects:
+    2746  branch (hiword(callresult(uint32_t)) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])) > 0x0 ? L_2753 : L_274b
+
+block L_274b:
+  insts 216..217  off 0x274b..0x274f
+  preds: L_2746
+  succs: L_2753, L_2842
+  effects:
+    274e  branch (loword(callresult(uint32_t)) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))])) <= 0x7530 ? L_2842 : L_2753
+
+block L_2753:
+  insts 219..276  off 0x2753..0x27f4
+  preds: L_2746, L_274b
+  succs: L_27f8, L_2804
+  effects:
+    276a  call __aFulmul(words(0x0, (load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
+    2779  store[2] [bp-wt] = (0x7530 - loword(callresult(uint32_t)))
+    277c  store[2] [bp-wt+0x2] = (0x0 - hiword(callresult(uint32_t)))
+    2785  store[2] [bp-wtTotal] = (load([bp-wtTotal]) - load@277f/src([bp-wt]))
+    2788  store[2] [bp-wtTotal+0x2] = (load([bp-wtTotal+0x2]) - load@2782/src([bp-wt+0x2]))
+    279b  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = ((load@278e/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0xc000) | 0xbb8)
+    27b9  store[2] load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))] = (load(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))]) + load@279f/src([bp-wt]))
+    27d3  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))] = (load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]) - load@27cd/src([bp-wt]))
+    27d6  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = (load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) - load@27d0/src([bp-wt+0x2]))
+    27e1  call LpthNew(load([bp+iplr]), 0x1) -> callresult(THING *)
+    27e9  store[2] [bp-lpth] = faroff(callresult(THING *))
+    27ec  store[2] [bp-lpth+0x2] = farseg(callresult(THING *))
+    27f3  branch load([bp-lpth]) != 0x0 ? L_2804 : L_27f8
+
+block L_27f8:
+  insts 278..279  off 0x27f8..0x27fd
+  preds: L_2753
+  succs: L_2804, L_294c
+  effects:
+    27fc  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_27fe
+
+block L_27fe:
+  insts 280..280  off 0x27fe..0x2800
+  succs: L_2804
+
+block L_2801:
+  insts 281..281  off 0x2801..0x2803
+  succs: L_294c
+
+block L_2804:
+  insts 282..300  off 0x2804..0x2841
+  preds: L_2753, L_27f8, L_27fe
+  succs: L_2900
+  effects:
+    2814  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2807/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
+    2828  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@281b/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xfc00) | 0x3ff)
+    2837  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(0x25:[load([bp+ppt])])
+    283b  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(0x25:[load([bp+ppt])+0x2])
+    283f  goto L_2900
+
+block L_2842:
+  insts 301..367  off 0x2842..0x28ff
+  preds: L_2708, L_274b
+  succs: L_2900
+  effects:
+    286a  call __aFldiv(words((load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) + 0x0), (load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]) + 0x9)), words(0x0, 0xa)) -> callresult(int32_t)
+    2879  store[2] ss:[bp-0x12] = ((loword(callresult(int32_t)) + load@2872/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe])) & 0x3fff)
+    287f  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = (load@287f/dst(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0xc000)
+    288f  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = (load@288f/dst(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) | load(ss:[bp-0x12]))
+    28c3  store[2] load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))] = (load(load([bp-lpth+0x2]):[((load([bp-lpth]) + 0x8) + (load([bp-i]) << 0x1))]) + load@28a8/src(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]))
+    28de  store[2] [bp-wtTotal] = (load([bp-wtTotal]) - load@28d7/src(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]))
+    28e1  store[2] [bp-wtTotal+0x2] = (load([bp-wtTotal+0x2]) - load@28da/src(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]))
+    28f5  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))] = 0x0
+    28fa  store[2] load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = 0x0
+
+block L_2900:
+  insts 368..369  off 0x2900..0x2905
+  preds: L_2804, L_2842
+  succs: L_2909, L_291a
+  effects:
+    2904  branch load([bp-wtTotal+0x2]) > 0x0 ? L_291a : L_2909
+
+block L_2909:
+  insts 371..371  off 0x2909..0x290a
+  preds: L_2900
+  succs: L_290e, L_2927
+  effects:
+    2909  branch load([bp-wtTotal+0x2]) < 0x0 ? L_2927 : L_290e
+
+block L_290e:
+  insts 373..374  off 0x290e..0x2913
+  preds: L_2909
+  succs: L_291a, L_2927
+  effects:
+    2912  branch load([bp-wtTotal]) <= 0x0 ? L_2927 : L_2914
+
+block L_2914:
+  insts 375..375  off 0x2914..0x2916
+  succs: L_291a
+
+block L_2917:
+  insts 376..376  off 0x2917..0x2919
+  succs: L_2927
+
+block L_291a:
+  insts 377..377  off 0x291a..0x291d
+  preds: L_2900, L_290e, L_2914
+  succs: L_291e
+  effects:
+    291a  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_291e:
+  insts 378..379  off 0x291e..0x2923
+  preds: L_2700, L_291a
+  succs: L_2708, L_2927
+  effects:
+    2922  branch load([bp-i]) < 0x3 ? L_2708 : L_2927
+
+block L_2927:
+  insts 381..382  off 0x2927..0x292c
+  preds: L_26e9, L_2909, L_290e, L_2917, L_291e
+  succs: L_2700, L_2930
+  effects:
+    292b  branch load([bp-wtTotal+0x2]) > 0x0 ? L_2700 : L_2930
+
+block L_2930:
+  insts 384..384  off 0x2930..0x2931
+  preds: L_2927
+  succs: L_2935, L_293e
+  effects:
+    2930  branch load([bp-wtTotal+0x2]) < 0x0 ? L_293e : L_2935
+
+block L_2935:
+  insts 386..387  off 0x2935..0x293a
+  preds: L_2930
+  succs: L_2700, L_293e
+  effects:
+    2939  branch load([bp-wtTotal]) > 0x0 ? L_2700 : L_293e
+
+block L_293e:
+  insts 389..393  off 0x293e..0x294b
+  preds: L_2930, L_2935
+  succs: L_294c
+  effects:
+    2947  store[2] 0x25:[load([bp+plpth])] = load([bp-lpth])
+    2949  store[2] 0x25:[load([bp+plpth])+0x2] = load([bp-lpth+0x2])
+
+block L_294c:
+  insts 394..398  off 0x294c..0x2951
+  preds: L_252d, L_2535, L_260d, L_2616, L_27f8, L_2801, L_293e
+  effects:
+    2951  return

@@ -1,0 +1,13 @@
+/*
+LpengineFromId  (parts)
+  addr: 0002:5168  len=33
+  sig:  ENGINE * LpengineFromId(int16_t id)
+  params:
+    int16_t          id             [BP+0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_5168:
+
+L_5183:
+    return &rgengine[id]

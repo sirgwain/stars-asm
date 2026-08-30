@@ -1,0 +1,123 @@
+{
+  "union_variants": [
+    {
+      "type": "PART",
+      "discriminator": ["hs", "grhst"],
+      "enum": "HullSlotType",
+      "default_member": "pcom",
+      "value_to_member": {
+        "hstNone": "pcom",
+        "hstEngine": "pengine",
+        "hstScanner": "pscanner",
+        "hstShield": "pshield",
+        "hstArmor": "parmor",
+        "hstBeam": "pbeam",
+        "hstTorp": "ptorp",
+        "hstBomb": "pbomb",
+        "hstMining": "pmining",
+        "hstMines": "pmines",
+        "hstSpecialSB": "pspecialsb",
+        "hstSpecialE": "pspecial",
+        "hstSpecialM": "pspecial",
+        "hstTerra": "pterra",
+        "hstHull": "phul",
+        "hstPlanetary": "pplanetary"
+      }
+    },
+    {
+      "type": "THING",
+      "discriminator": ["ith"],
+      "enum": "ThingType",
+      "value_to_member": {
+        "ithMinefield": "thm",
+        "ithMineralPacket": "thp",
+        "ithWormhole": "thw",
+        "ithMysteryTrader": "tht"
+      }
+    },
+    {
+      "type": "POPUPDATA",
+      "discriminator": ["grPopup"],
+      "enum": "GrPopupType",
+      "value_to_member": {
+        "grPopupComponent": "part",
+        "grPopupFleet": "lpfl",
+        "grPopupMineral": "idPlanet",
+        "grPopupShdef": "lpshdef",
+        "grPopupShdefSB": "lpshdef",
+        "grPopupString": "psz"
+      }
+    },
+    {
+      "type": "OBJ",
+      "discriminator": ["grobj"],
+      "enum": "GrobjClass",
+      "value_to_member": {
+        "grobjPlanet": "ppl",
+        "grobjFleet": "pfl",
+        "grobjThing": "pth"
+      }
+    }
+  ],
+
+  "function_path_facts": [
+    {
+      "func": "DropSalvage",
+      "root": "lpth",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMineralPacket"
+    },
+    {
+      "func": "DrawShipPlanet",
+      "root": "obj",
+      "type": "OBJ",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "value": "grobjFleet"
+    },
+    {
+      "func": "FBuildObject",
+      "root": "lpth",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMineralPacket"
+    },
+    {
+      "func": "SatisfyOrders",
+      "root": "lpth",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMinefield"
+    },
+    {
+      "func": "SatisfyOrders",
+      "root": "lpthBest",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMinefield"
+    },
+    {
+      "func": "CalcPctSurvive",
+      "root": "part",
+      "type": "PART",
+      "path": ["hs", "grhst"],
+      "enum": "HullSlotType",
+      "value": "hstPlanetary"
+    }
+  ],
+
+  "call_result_path_facts": [
+    {
+      "func": "LpthNew",
+      "type": "THING",
+      "path": ["ith"],
+      "from_param": "ith",
+      "enum": "ThingType"
+    }
+  ]
+}

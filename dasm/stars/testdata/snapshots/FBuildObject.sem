@@ -1,0 +1,679 @@
+/*
+FBuildObject  (turn2)
+  addr: 0018:19b2  len=5667
+  sig:  int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    GrobjClass       grobj          [BP+0xa]
+    int16_t          iItem          [BP+0xc]
+    int16_t          cBuilt         [BP+0xe]
+    int32_t *        rgMinerals     [BP+0x10]
+  locals:
+    int16_t          cAllowed       [BP-0x14]
+    SHDEF *          lpshdef        [BP-0x12]
+    int16_t          fTwoMAs        [BP-0xe]
+    MessageId        idm            [BP-0xc]
+    FLEET *          lpfl           [BP-0xa]
+    int16_t          i              [BP-0x6]
+    int16_t          iWarp          [BP-0x4]
+    block 0018:1D3A  len=0x462
+      uint16_t         dpShdef        [BP-0x1e]
+      int16_t          cshOrig        [BP-0x1c]
+      int16_t          cshDamaged     [BP-0x1a]
+      int32_t          dpOrig         [BP-0x18]
+    block 0018:2681  len=0x581
+      int16_t[3]       rgwt           [BP-0x2c]
+      int16_t          cSize          [BP-0x26]
+      int16_t          iWarpAsked     [BP-0x24]
+      int16_t          raMajor        [BP-0x22]
+      THING *          lpth           [BP-0x20]
+      int16_t          iDecayRate     [BP-0x1c]
+      int16_t          iWarp          [BP-0x1a]
+      THING *          lpthMac        [BP-0x18]
+      block 0018:2785  len=0x4B
+        int32_t          l              [BP-0x30]
+    block 0018:2DD5  len=0xE6
+      int16_t          iEnv           [BP-0x16]
+    block 0018:2EC1  len=0x28
+      PART             part           [BP-0x1c]
+
+  stats: blocks=5  labels=1
+    SendMsgFactMine: L_248b
+*/
+L_19b2:
+    branch grobj != grobjFleet ? L_23c7 : L_19c4
+
+L_19c4:
+    branch iItem < 0x10 ? L_1c78 : L_19cd
+
+L_19cd:
+    iItem = (iItem - 0x10)
+    lpshdef = &rglpshdefSB[lppl->iPlayer][iItem]
+    branch lpshdef->fFree != 0x0 ? L_1a26 : L_1a09
+
+L_1a09:
+    branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0x0 ? L_1a2c : L_1a26
+
+L_1a26:
+    return 0x0
+
+L_1a2c:
+    idm = idmHasBuiltNew
+    branch lpshdef->hul.wtCargoMax == 0x0 ? L_1a60 : L_1a3e
+
+L_1a3e:
+    idm = (idm + 0x1)
+    branch lpshdef->hul.wtCargoMax != 0xffff ? L_1a60 : L_1a54
+
+L_1a54:
+    branch 0x0 != 0x0 ? L_1a60 : L_1a5c
+
+L_1a5c:
+    idm = (idm + 0x1)
+
+L_1a60:
+    call FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, ((lppl->iPlayer << 0x5) | (iItem + 0x10)), LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    branch lppl->fStarbase == 0x0 ? L_1b3a : L_1ad6
+
+L_1ad6:
+    branch rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef ? L_1b3a : L_1b2c
+
+L_1b2c:
+    call KillQueuedShips(lppl) -> callresult(void)
+
+L_1b3a:
+    iWarp = IWarpMAFromLppl(lppl, &fTwoMAs)
+    branch lppl->fStarbase == 0x0 ? L_1b9b : L_1b66
+
+L_1b66:
+    part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x1)
+    part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x0)
+    goto L_1baf
+
+L_1b9b:
+    lppl->fStarbase = 0x1
+
+L_1baf:
+    *(lppl+0x2c) = ((*(lppl+0x2c) & 0xfff0) | (iItem & 0xf))
+    branch iWarp > 0x0 ? L_1c55 : L_1bd1
+
+L_1bd1:
+    iWarp = IWarpMAFromLppl(lppl, &fTwoMAs)
+    branch iWarp <= 0x0 ? L_1c1f : L_1bef
+
+L_1bef:
+    *(lppl+0x2e) = ((*(lppl+0x2e) & 0xc3ff) | ((((iWarp + fTwoMAs) + 0xfffc) & 0xf) << 0xa))
+    goto L_1c55
+
+L_1c1f:
+    lppl->iWarpFling = 0x0
+    lppl->idFling = 0x0
+    call KillQueuedMassPackets(lppl) -> callresult(void)
+
+L_1c55:
+    lpshdef->cBuilt = (lpshdef->cBuilt + 0x1)
+    lpshdef->cExist = (lpshdef->cExist + 0x1)
+    return 0x1
+
+L_1c78:
+    branch lppl->fStarbase == 0x0 ? L_1c98 : L_1c8f
+
+L_1c8f:
+    branch iItem < 0x10 ? L_1c9e : L_1c98
+
+L_1c98:
+    return 0x0
+
+L_1c9e:
+    lpshdef = &rglpshdef[lppl->iPlayer][iItem]
+    branch lpshdef->fFree != 0x0 ? L_1cf3 : L_1cd6
+
+L_1cd6:
+    branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0x0 ? L_1d1d : L_1cf3
+
+L_1cf3:
+    call FSendPlrMsg2(lppl->iPlayer, 0x4f, lppl->id, (iItem + 0x1), 0x0) -> callresult(int16_t)
+    return 0x0
+
+L_1d1d:
+    branch (part[4:2](rgplr[lppl->iPlayer]) & 0xfff) != 0x200 ? L_219c : L_1d3a
+
+L_1d3a:
+    i = 0x0
+    goto L_1d46
+
+L_1d42:
+    i = (i + 0x1)
+
+L_1d46:
+    branch i >= cFleet ? L_214f : L_1d51
+
+L_1d51:
+    lpfl = rglpfl[i]
+    branch LOWORD(rglpfl[i]) != 0x0 ? L_1d81 : L_1d79
+
+L_1d79:
+    branch *(rglpfl[i]+0x2) == 0x0 ? L_214f : L_1d81
+
+L_1d81:
+    branch lpfl->iPlayer > lppl->iPlayer ? L_214f : L_1d91
+
+L_1d91:
+
+
+L_1d97:
+    branch lpfl->iPlayer < lppl->iPlayer ? L_1d42 : L_1da7
+
+L_1da7:
+
+
+L_1dad:
+    branch lpfl->lpplord->rgord[0x0].pt.x != rgptPlan[lppl->id].x ? L_1d42 : L_1dcb
+
+L_1dcb:
+    branch lpfl->lpplord->rgord[0x0].pt.y != rgptPlan[lppl->id].y ? L_1d42 : L_1ded
+
+L_1ded:
+    branch (0x7ffe - cBuilt) <= lpfl->rgcsh[iItem] ? L_1d42 : L_1e0f
+
+L_1e0f:
+    branch lpfl->rgcsh[iItem] == 0x0 ? L_20c5 : L_1e2c
+
+L_1e2c:
+    branch ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff) == 0x0 ? L_20c5 : L_1e53
+
+L_1e53:
+    dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp
+    cshOrig = lpfl->rgcsh[iItem]
+    cshDamaged = loword((int32_t)(words(hiword((uint32_t)(words(0x0, (HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f)) * sext16to32(cshOrig))), loword((uint32_t)(words(0x0, (HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f)) * sext16to32(cshOrig)))) / 0x64))
+    branch cshDamaged != 0x0 ? L_1edb : L_1ed6
+
+L_1ed6:
+    cshDamaged = 0x1
+
+L_1edb:
+    LOWORD(dpOrig) = loword((int32_t)(words(hiword((uint32_t)(words(hiword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa)), loword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa))) * sext16to32(cshDamaged))), loword((uint32_t)(words(hiword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa)), loword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa))) * sext16to32(cshDamaged)))) / 0x32))
+    HIWORD(dpOrig) = hiword((int32_t)(words(hiword((uint32_t)(words(hiword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa)), loword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa))) * sext16to32(cshDamaged))), loword((uint32_t)(words(hiword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa)), loword((int32_t)(words(hiword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff)))), loword((uint32_t)(words(0x0, dpShdef) * words(0x0, ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] >> 0x7) & 0x1ff))))) / 0xa))) * sext16to32(cshDamaged)))) / 0x32))
+    HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] = ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0xff80) | (loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 0x64) / sext16to32((cshOrig + cBuilt)))) & 0x7f))
+    branch (HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f) != 0x0 ? L_1ff4 : L_1fc0
+
+L_1fc0:
+    HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] = ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0xff80) | 0x1)
+
+L_1ff4:
+    cshDamaged = loword((int32_t)(words(hiword((uint32_t)(words(0x0, (HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f)) * sext16to32((cshOrig + cBuilt)))), loword((uint32_t)(words(0x0, (HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f)) * sext16to32((cshOrig + cBuilt))))) / 0x64))
+    branch cshDamaged != 0x0 ? L_2041 : L_203c
+
+L_203c:
+    cshDamaged = 0x1
+
+L_2041:
+    HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] = ((HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] & 0x7f) | ((loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 0x5) / sext16to32(cshDamaged)) * 0x64) / words(0x0, dpShdef))) & 0x1ff) << 0x7))
+    goto L_20de
+
+L_20c5:
+    HIWORD(lpfl):[((LOWORD(lpfl) + 0x2c) + (iItem * 0x2))] = 0x0
+
+L_20de:
+    call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
+    call FSendPlrMsg(lppl->iPlayer, 0x139, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), LOWORD(lpfl), 0x0, 0x0, 0x0) -> callresult(int16_t)
+    return 0x1
+
+
+L_214f:
+    call FSendPlrMsg(lppl->iPlayer, 0xba, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    return 0x0
+
+L_219c:
+    lpfl = LpflNew(lppl->iPlayer, lppl->id)
+    call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
+    lpfl->rgwtMin[0x4] = LGetFleetStat(lpfl, 0x1)
+    branch lppl->idRoute == 0x0 ? L_2321 : L_2201
+
+L_2201:
+    call AutoRouteFleet(lpfl, lppl) -> callresult(void)
+    branch cBuilt != 0x1 ? L_22a0 : L_221e
+
+L_221e:
+    branch ((part[6:2](lpfl->lpplord->rgord[0x1]) >> 0x4) & 0xf) != 0x0 ? L_2242 : L_223c
+
+L_223c:
+    t_merge_2245_0001 = 0x33
+    goto L_2245
+
+L_2242:
+    t_merge_2245_0001 = 0x31
+
+L_2245:
+    idm = t_merge_2245_0001
+    call FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    goto L_2fc9
+
+L_22a0:
+    branch ((part[6:2](lpfl->lpplord->rgord[0x1]) >> 0x4) & 0xf) != 0x0 ? L_22c4 : L_22be
+
+L_22be:
+    t_merge_22c7_0001 = 0x34
+    goto L_22c7
+
+L_22c4:
+    t_merge_22c7_0001 = 0x32
+
+L_22c7:
+    idm = t_merge_22c7_0001
+    call FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0) -> callresult(int16_t)
+
+
+L_2321:
+    call AutoFleetOrder(lpfl, lppl) -> callresult(void)
+    branch cBuilt != 0x1 ? L_2379 : L_233e
+
+L_233e:
+    call FSendPlrMsg2(lppl->iPlayer, 0x2f, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem)) -> callresult(int16_t)
+    goto L_2fc9
+
+L_2379:
+    call FSendPlrMsg(lppl->iPlayer, 0x30, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+
+
+L_23c7:
+    branch grobj != grobjPlanet ? L_2fc3 : L_23d0
+
+L_23d0:
+    goto L_2f77
+
+L_23d6:
+    goto L_2fcf
+    ss:[bp-0x16] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x14)) & 0xfff)
+    cAllowed = (CMaxFactories(lppl, lppl->iPlayer) - ss:[bp-0x16])
+    branch cBuilt >= cAllowed ? L_2426 : L_2420
+
+L_2420:
+    t_merge_2429_0001 = cBuilt
+    goto L_2429
+
+L_2426:
+    t_merge_2429_0001 = cAllowed
+
+L_2429:
+    cBuilt = t_merge_2429_0001
+    branch cBuilt <= 0x0 ? L_24fc : L_2435
+
+L_2435:
+    ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x14)) & 0x0)
+    ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x16)) & 0xfff0)
+    *(lppl+0x14) = (*(lppl+0x14) & 0xffff)
+    lppl->cFactories = 0x0
+    *(lppl+0x14) = (*(lppl+0x14) | ss:[bp-0x18])
+    *(lppl+0x16) = (*(lppl+0x16) | ss:[bp-0x16])
+    idm = idmHaveBuiltFactory
+
+SendMsgFactMine:
+    cBuilt = (cBuilt + FRemovePlayerMessage(lppl->iPlayer, idm, lppl->id))
+    branch cBuilt <= 0x1 ? L_24d7 : L_24af
+
+L_24af:
+    call FSendPlrMsg2(lppl->iPlayer, (idm + 0x1), lppl->id, cBuilt, lppl->id) -> callresult(int16_t)
+    goto L_2502
+
+L_24d7:
+    call FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0x0) -> callresult(int16_t)
+
+
+L_24fc:
+    return 0x0
+
+L_2502:
+    goto L_2fc0
+    ss:[bp-0x16] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x8)) & 0xfff)
+    cAllowed = (CMaxMines(lppl, lppl->iPlayer) - ss:[bp-0x16])
+    branch cBuilt >= cAllowed ? L_254f : L_2549
+
+L_2549:
+    t_merge_2552_0001 = cBuilt
+    goto L_2552
+
+L_254f:
+    t_merge_2552_0001 = cAllowed
+
+L_2552:
+    cBuilt = t_merge_2552_0001
+    branch cBuilt <= 0x0 ? L_25bb : L_255e
+
+L_255e:
+    ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x8)) + *(lppl+0x14)) & 0xff00)
+    ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x8)) + *(lppl+0x16)) & 0xf)
+    lppl->cMines = 0x0
+    *(lppl+0x14) = (*(lppl+0x14) | ss:[bp-0x18])
+    *(lppl+0x16) = (*(lppl+0x16) | ss:[bp-0x16])
+    idm = idmHaveBuiltMine
+    goto L_248b
+
+L_25bb:
+    goto L_2fcf
+    ss:[bp-0x16] = lppl->cDefenses
+    cAllowed = (CMaxDefenses(lppl, lppl->iPlayer) - ss:[bp-0x16])
+    branch cBuilt >= cAllowed ? L_2606 : L_2600
+
+L_2600:
+    t_merge_2609_0001 = cBuilt
+    goto L_2609
+
+L_2606:
+    t_merge_2609_0001 = cAllowed
+
+L_2609:
+    cBuilt = t_merge_2609_0001
+    branch cBuilt <= 0x0 ? L_2672 : L_2615
+
+L_2615:
+    ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x18)) & 0xfff)
+    ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x1a)) & 0x0)
+    lppl->cDefenses = 0x0
+    *(lppl+0x1a) = (*(lppl+0x1a) & 0xffff)
+    *(lppl+0x18) = (*(lppl+0x18) | ss:[bp-0x18])
+    *(lppl+0x1a) = (*(lppl+0x1a) | ss:[bp-0x16])
+    idm = idmHaveBuiltDefenseOutpost
+    goto L_248b
+
+L_2672:
+    goto L_2fcf
+    goto L_2fc0
+    goto L_2fc0
+    raMajor = GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv)
+    iWarp = IWarpMAFromLppl(lppl, &fTwoMAs)
+    branch iWarp != 0x0 ? L_26e7 : L_26be
+
+L_26be:
+    call FSendPlrMsg2(lppl->iPlayer, 0xd1, lppl->id, lppl->id, 0x0) -> callresult(int16_t)
+    return 0x0
+
+L_26e7:
+    branch lppl->idFling != 0x0 ? L_2722 : L_26f9
+
+L_26f9:
+    call FSendPlrMsg2(lppl->iPlayer, 0xd2, lppl->id, lppl->id, 0x0) -> callresult(int16_t)
+    return 0x0
+
+L_2722:
+    branch iItem != 0x6 ? L_2730 : L_272b
+
+L_272b:
+    iItem = 0x11
+
+L_2730:
+    branch iItem != 0x11 ? L_2751 : L_2739
+
+L_2739:
+    branch raMajor != 0x6 ? L_2748 : L_2742
+
+L_2742:
+    t_merge_274b_0001 = 0x19
+    goto L_274b
+
+L_2748:
+    t_merge_274b_0001 = 0x28
+
+L_274b:
+    cSize = t_merge_274b_0001
+    goto L_2766
+
+L_2751:
+    branch raMajor != 0x6 ? L_2760 : L_275a
+
+L_275a:
+    t_merge_2763_0001 = 0x46
+    goto L_2763
+
+L_2760:
+    t_merge_2763_0001 = 0x64
+
+L_2763:
+    cSize = t_merge_2763_0001
+
+L_2766:
+    i = 0x0
+    goto L_27e5
+
+L_276e:
+    branch i == (iItem + 0xfff2) ? L_2785 : L_277c
+
+L_277c:
+    branch iItem != 0x11 ? L_27d3 : L_2785
+
+L_2785:
+    l = (uint32_t)(sext16to32(cSize) * sext16to32(cBuilt))
+    branch HIWORD(l) < 0x0 ? L_27be : L_27a5
+
+L_27a5:
+    branch HIWORD(l) > 0x0 ? L_27b4 : L_27aa
+
+L_27aa:
+    branch LOWORD(l) <= 0x7ff8 ? L_27be : L_27b4
+
+L_27b4:
+    l = 0x7ff8
+
+L_27be:
+    rgwt[i] = LOWORD(l)
+    goto L_27e1
+
+L_27d3:
+    rgwt[i] = 0x0
+
+L_27e1:
+    i = (i + 0x1)
+
+L_27e5:
+    branch i < 0x3 ? L_276e : L_27ee
+
+L_27ee:
+    iWarpAsked = (lppl->iWarpFling + 0x4)
+    branch iWarpAsked < 0x5 ? L_281a : L_280c
+
+L_280c:
+    branch iWarpAsked <= (iWarp + 0x3) ? L_2823 : L_281a
+
+L_281a:
+    iWarpAsked = (iWarp + fTwoMAs)
+
+L_2823:
+    branch iWarpAsked > (iWarp + fTwoMAs) ? L_2839 : L_2831
+
+L_2831:
+    iDecayRate = 0x0
+    goto L_2845
+
+L_2839:
+    iDecayRate = ((iWarpAsked - iWarp) - fTwoMAs)
+
+L_2845:
+    branch raMajor != 0x7 ? L_285b : L_284e
+
+L_284e:
+    branch iDecayRate >= 0x3 ? L_285b : L_2857
+
+L_2857:
+    iDecayRate = (iDecayRate + 0x1)
+
+L_285b:
+    iWarp = (iWarpAsked + 0xfffc)
+    lpth = lpThings
+    lpthMac = &lpThings[cThing]
+    goto L_295a
+
+L_288f:
+    branch lpth->iplr != lppl->iPlayer ? L_2956 : L_28ab
+
+L_28ab:
+    branch lpth->ith != ithMineralPacket ? L_2956 : L_28c1
+
+L_28c1:
+    branch lpth->pt.x != rgptPlan[lppl->id].x ? L_2956 : L_28e7
+
+L_28e7:
+    branch lpth->pt.y != rgptPlan[lppl->id].y ? L_2956 : L_28f0
+
+L_28f0:
+    branch ((*(lpth+0x6) >> 0xa) & 0xf) != iWarp ? L_2956 : L_2909
+
+L_2909:
+    branch (*(lpth+0x6) & 0x3ff) != (lppl->idFling + 0xffff) ? L_2956 : L_2928
+
+L_2928:
+    branch lpth->thp.iDecayRate != iDecayRate ? L_2956 : L_2941
+
+L_2941:
+    branch lpth->thp.wtMax < 0x65e ? L_2968 : L_2950
+
+L_2950:
+
+
+L_2956:
+    lpth = (lpth + 0x1)
+
+L_295a:
+    branch LOWORD(lpth) < LOWORD(lpthMac) ? L_288f : L_2968
+
+L_2968:
+    branch LOWORD(lpth) != LOWORD(lpthMac) ? L_297e : L_2976
+
+L_2976:
+    branch HIWORD(lpth) == HIWORD(lpthMac) ? L_2a78 : L_297e
+
+L_297e:
+    lpth->thp.wtMax = 0x0
+    i = 0x0
+    goto L_2a3f
+
+L_299a:
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + rgwt[i])
+    branch HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] >= 0x0 ? L_29f3 : L_29da
+
+L_29da:
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = 0x7ff8
+
+L_29f3:
+    ss:[bp-0x2e] = (((words((HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + 0x9), signhiword((HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + 0x9))) / 0xa) + *(lpth+0xe)) & 0x3fff)
+    lpth->thp.wtMax = 0x0
+    *(lpth+0xe) = (*(lpth+0xe) | ss:[bp-0x2e])
+    i = (i + 0x1)
+
+L_2a3f:
+    branch i < 0x3 ? L_299a : L_2a48
+
+L_2a48:
+    call FSendPlrMsg2(lppl->iPlayer, 0xd4, lppl->id, lppl->id, (lppl->idFling + 0xffff)) -> callresult(int16_t)
+    goto L_2fc9
+
+L_2a78:
+    lpth = LpthNew(lppl->iPlayer, ithMineralPacket)
+    branch LOWORD(lpth) != 0x0 ? L_2ac9 : L_2a9a
+
+L_2a9a:
+    branch HIWORD(lpth) != 0x0 ? L_2ac9 : L_2aa3
+
+L_2aa3:
+    call FSendPlrMsg2(lppl->iPlayer, 0x129, lppl->id, lppl->id, 0x0) -> callresult(int16_t)
+    goto L_2fc9
+
+L_2ac9:
+    i = 0x0
+    goto L_2b35
+
+L_2ad1:
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = rgwt[i]
+    ss:[bp-0x2e] = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + *(lpth+0xe)) & 0x3fff)
+    lpth->thp.wtMax = 0x0
+    *(lpth+0xe) = (*(lpth+0xe) | ss:[bp-0x2e])
+    i = (i + 0x1)
+
+L_2b35:
+    branch i < 0x3 ? L_2ad1 : L_2b3e
+
+L_2b3e:
+    *(lpth+0x6) = ((*(lpth+0x6) & 0xc3ff) | ((iWarp & 0xf) << 0xa))
+    *(lpth+0xe) = (lpth->thp.wtMax | ((iDecayRate & 0x3) << 0xe))
+    *(lpth+0x6) = ((*(lpth+0x6) & 0xfc00) | ((lppl->idFling + 0xffff) & 0x3ff))
+    lpth->pt.x = rgptPlan[lppl->id].x
+    lpth->pt.y = rgptPlan[lppl->id].y
+    call FSendPlrMsg2(lppl->iPlayer, 0xd3, lppl->id, lppl->id, (lppl->idFling + 0xffff)) -> callresult(int16_t)
+    goto L_2fc0
+    i = 0x0
+    goto L_2c11
+
+L_2c0d:
+    i = (i + 0x1)
+
+L_2c11:
+    branch i >= game.cPlayer ? L_2c3e : L_2c1c
+
+L_2c1c:
+    call FSendPlrMsg2(i, 0x11b, lppl->id, lppl->id, 0x0) -> callresult(int16_t)
+    goto L_2c0d
+
+L_2c3e:
+    branch GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh ? L_2cea : L_2c62
+
+L_2c62:
+    *(lppl+0x14) = ((*(lppl+0x14) & 0xffff) | 0x0)
+    lppl->cFactories = 0x0
+    lppl->cMines = 0x0
+    lppl->cDefenses = 0x0
+    *(lppl+0x1a) = ((*(lppl+0x1a) & 0xffff) | 0x0)
+    lppl->iScanner = 0x1f
+
+L_2cea:
+    i = 0x0
+    goto L_2d9c
+
+L_2cf2:
+    lppl->rgwtMin[i] = 0x0
+    ss:[bp-0x16] = Random(0x32)
+    call Random(0x32) -> callresult(int16_t)
+    lppl->rgEnvVarOrig[i] = lobyte(((callresult(int16_t) + 0x1) + ss:[bp-0x16]))
+    lppl->rgEnvVar[i] = lobyte(((callresult(int16_t) + 0x1) + ss:[bp-0x16]))
+    ss:[bp-0x16] = Random(0x28)
+    lppl->rgMinConc[i] = lobyte(((Random(0x28) + 0x19) + ss:[bp-0x16]))
+    i = (i + 0x1)
+
+L_2d9c:
+    branch i >= 0x3 ? L_2fc9 : L_2da2
+
+L_2da2:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+L_2f77:
+    branch iItem > 0x1b ? L_23d6 : L_2f7f
+
+L_2f7f:
+    goto L_ffffffff
+
+L_2fc0:
+
+L_2fc3:
+    return 0x0
+
+L_2fc9:
+    return 0x1
+
+L_2fcf:

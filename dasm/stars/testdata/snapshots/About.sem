@@ -1,0 +1,141 @@
+/*
+About  (stars)
+  addr: 0004:1252  len=716
+  sig:  int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    WMType           message        [BP+0xc]
+    uint16_t         wParam         [BP+0xa]
+    int32_t          lParam         [BP+0x6]
+  locals:
+    RECT             rc             [BP-0xa]
+    block 0004:12D1  len=0x15B
+      HWND             hwndCtl        [BP-0x10]
+      int16_t          i              [BP-0xe]
+      HDC              hdc            [BP-0xc]
+    block 0004:14A3  len=0x3C
+      int16_t() *      lpProc         [BP-0xe]
+
+  stats: blocks=2  labels=0
+*/
+L_1252:
+    goto L_14e5
+
+L_1261:
+    iAbout1st = 0xfff5
+    iAboutPartial = 0x0
+    call SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion()) -> callresult(void)
+    uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0)
+    return 0x1
+
+L_12a9:
+    call GetClientRect(hwnd, &rc) -> callresult(void)
+    call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
+    return 0x1
+
+L_12d1:
+    hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F)
+    iAboutPartial = (iAboutPartial + 0x2)
+    branch iAboutPartial < dyArial8 ? L_130c : L_12f1
+
+L_12f1:
+    iAboutPartial = 0x0
+    iAbout1st = (iAbout1st + 0x1)
+    branch iAbout1st <= 0x4e ? L_130c : L_1306
+
+L_1306:
+    iAbout1st = 0xfff5
+
+L_130c:
+    call GetClientRect(hwndCtl, &rc) -> callresult(void)
+    hdc = GetDC(hwndCtl)
+    call SelectObject(hdc, HIWORD(rghfontArial8)) -> callresult(HGDIOBJ)
+    call SetBkMode(hdc, OPAQUE) -> callresult(int16_t)
+    call SetBkColor(hdc, crButtonFace) -> callresult(COLORREF)
+    call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
+    call IntersectClipRect(hdc, 0x0, 0x0, rc.right, rc.bottom) -> callresult(int16_t)
+    rc.top = (rc.top - iAboutPartial)
+    rc.bottom = (rc.top + dyArial8)
+    i = iAbout1st
+    goto L_1391
+
+L_138d:
+    i = (i + 0x1)
+
+L_1391:
+    branch i >= (iAbout1st + 0xa) ? L_13fa : L_139f
+
+L_139f:
+    branch i < 0x0 ? L_13d7 : L_13a8
+
+L_13a8:
+    branch i >= 0x4d ? L_13d7 : L_13b1
+
+L_13b1:
+    call RcCtrTextOut(hdc, &rc, PszGetCompressedString(part[37:0](szDirName[i])), 0xffff) -> callresult(void)
+    goto L_13e3
+
+L_13d7:
+    branch i >= 0x4d ? L_13fa : L_13dd
+
+L_13dd:
+
+
+L_13e3:
+    call OffsetRect(&rc, 0x0, dyArial8) -> callresult(void)
+    goto L_138d
+
+L_13fa:
+    rc.bottom = 0x3e8
+    call FillRect(hdc, &rc, hbrButtonFace) -> callresult(int16_t)
+    call SelectClipRgn(hdc, 0x0) -> callresult(int16_t)
+    call ReleaseDC(hwnd, hdc) -> callresult(int16_t)
+    goto L_1510
+
+L_142c:
+    branch (loword((uint32_t)(lParam >> 0x10)) & 0xffff) != 0x6 ? L_1510 : L_1448
+
+L_1448:
+    call SetBkColor(wParam, crButtonFace) -> callresult(COLORREF)
+    return hbrButtonFace
+
+
+L_1461:
+    branch wParam == 0x1 ? L_1473 : L_146a
+
+L_146a:
+    branch wParam != 0x2 ? L_149a : L_1473
+
+L_1473:
+    call KillTimer(hwnd, uTimerId) -> callresult(int16_t)
+    uTimerId = 0x0
+    call EndDialog(hwnd, 0x1) -> callresult(void)
+    return 0x1
+
+L_149a:
+    branch wParam != 0x76 ? L_1510 : L_14a3
+
+L_14a3:
+    lpProc = MakeProcInstance(OrderInfoDlg, hInst)
+    call DialogBox(hInst, IDD_ORDER_INFO, hwnd, &lpProc) -> callresult(int16_t)
+    call FreeProcInstance(&lpProc) -> callresult(void)
+
+
+L_14e5:
+    branch message == WM_ERASEBKGND ? L_12a9 : L_14ed
+
+L_14ed:
+    branch message == WM_CTLCOLOR ? L_142c : L_14f5
+
+L_14f5:
+    branch message == WM_INITDIALOG ? L_1261 : L_14fd
+
+L_14fd:
+    branch message == WM_COMMAND ? L_1461 : L_1505
+
+L_1505:
+    branch message == WM_TIMER ? L_12d1 : L_1510
+
+L_1510:
+    return 0x0
+

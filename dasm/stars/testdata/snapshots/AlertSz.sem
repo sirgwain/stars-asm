@@ -1,0 +1,39 @@
+/*
+AlertSz  (utilgen)
+  addr: 0009:2160  len=189
+  sig:  int16_t AlertSz(char *sz, MessageBoxType mbType)
+  params:
+    char *           sz             [BP+0x6]
+    MessageBoxType   mbType         [BP+0x8]
+  locals:
+    char[256]        szT            [BP-0x102]
+
+  stats: blocks=0  labels=0
+*/
+L_2160:
+    branch ini.fValidate != 0x0 ? L_21a3 : L_217c
+
+L_217c:
+    branch ini.fLogging == 0x0 ? L_21f7 : L_218f
+
+L_218f:
+    branch ini.fGen == 0x0 ? L_21f7 : L_21a3
+
+L_21a3:
+    call _wsprintf(&szT, "Error: %s", sz, 0x25) -> callresult(int16_t)
+    branch ini.fValidate == 0x0 ? L_21e2 : L_21dc
+
+L_21dc:
+    t_merge_21e5_0001 = 0x7
+    goto L_21e5
+
+L_21e2:
+    t_merge_21e5_0001 = 0x6
+
+L_21e5:
+    call OutputSz(t_merge_21e5_0001, &szT) -> callresult(void)
+    return 0x6
+
+L_21f7:
+    return MessageBox(GetFocus(), sz, "Stars!", mbType)
+

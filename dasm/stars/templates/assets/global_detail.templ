@@ -1,0 +1,8 @@
+{{.Name}}
+  addr: {{addr .Addr}}
+  module: {{ .Module }}
+  cdecl: {{ .CDecl }}
+{{- if (len .StaticInitializer) }}
+  init: 
+    {{ .CDecl }} = {{ .StaticInitializer }};
+{{- end }}

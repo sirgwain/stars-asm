@@ -1,0 +1,25 @@
+{{ commentOpen . -}}
+{{ commentLine . (printf "%s  (%s)" .Name .Module) }}
+{{ commentLine . (printf "  addr: %s  len=%d" (addr .Addr) .Len) }}
+{{ commentLine . (printf "  sig:  %s" .CDecl) }}
+{{- if .Params }}
+{{ commentLine . "  params:" }}
+{{- range .Params }}
+{{ commentLine $ (printf "    %s" (paramLine .)) }}
+{{- end }}
+{{- end }}
+{{- if or .RootLocals .RootScopes }}
+{{ commentLine . "  locals:" }}
+{{- range .RootLocals }}
+{{ commentLine $ (printf "    %s" (varLine .)) }}
+{{- end }}
+{{- if .RootScopes }}
+{{ commentText . (scopeTree .Function) -}}
+{{- end }}
+{{- end }}
+{{ commentLine . "" }}
+{{ commentLine . (printf "  stats: blocks=%d  labels=%d" .BlockCount (len .Labels)) }}
+{{- range .Labels }}
+{{ commentLine $ (printf "    %s: %s" .Name (printf "L_%4x" .Addr.Off)) }}
+{{- end }}
+{{ commentClose . }}

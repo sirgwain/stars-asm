@@ -1,0 +1,33 @@
+/*
+LphuldefFromId  (parts)
+  addr: 0002:512c  len=60
+  sig:  HULDEF * LphuldefFromId(int16_t id)
+  params:
+    int16_t          id             [BP+0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_512c:
+  insts 0..6  off 0x512c..0x513a
+  succs: L_513e, L_5150
+  effects:
+    5139  branch load([bp+id]) < 0x20 ? L_5150 : L_513e
+
+block L_513e:
+  insts 8..13  off 0x513e..0x514f
+  preds: L_512c
+  succs: L_5162
+  effects:
+    5145  call LphuldefSBFromId((load([bp+id]) + 0xffe0)) -> callresult(HULDEF *)
+    514d  goto L_5162
+
+block L_5150:
+  insts 14..19  off 0x5150..0x5161
+  preds: L_512c
+  succs: L_5162
+
+block L_5162:
+  insts 21..25  off 0x5162..0x5167
+  preds: L_513e, L_5150
+  effects:
+    5167  return farptr(merge(Join: L_5162, (L_513e:farseg(callresult(HULDEF *)), L_5150:0x2)), merge(Join: L_5162, (L_513e:faroff(callresult(HULDEF *)), L_5150:(0x29f0 + loword((0x8f * load([bp+0x6])))))))

@@ -1,0 +1,5262 @@
+{
+  "functions": [
+    {
+      "name": "AdjustWindowRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AdjustWindowRectEx",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiLower",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiLowerBuff",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiNext",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiPrev",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiUpper",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnsiUpperBuff",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AnyPopup",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "AppendMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ArrangeIconicWindows",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BeginDeferWindowPos",
+      "ret": "HDWP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BeginPaint",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "PAINTSTRUCT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BringWindowToTop",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BuildCommDCB",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "DCB FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CallMsgFilter",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "MSG FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CallNextHookEx",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "hhook",
+          "ctype": "HHOOK"
+        },
+        {
+          "name": "code",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "wparam",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "lparam",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CallWindowProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FARPROC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ChangeClipboardChain",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ChangeMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CheckDlgButton",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CheckMenuItem",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CheckRadioButton",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ChildWindowFromPoint",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ClearCommBreak",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ClientToScreen",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ClipCursor",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CloseClipboard",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "CloseComm",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CloseDriver",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "hdriver",
+          "ctype": "HDRVR"
+        },
+        {
+          "name": "lparam1",
+          "ctype": "LPARAM"
+        },
+        {
+          "name": "lparam2",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CloseWindow",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CopyCursor",
+      "ret": "HCURSOR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HCURSOR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CopyIcon",
+      "ret": "HICON",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HICON"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CopyRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CountClipboardFormats",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateCaret",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateCursor",
+      "ret": "HCURSOR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg7",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDialog",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDialogIndirect",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDialogIndirectParam",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateDialogParam",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateIcon",
+      "ret": "HICON",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg7",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateMenu",
+      "ret": "HMENU",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreatePopupMenu",
+      "ret": "HMENU",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg9",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg10",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg11",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CreateWindowEx",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg10",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg11",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg12",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefDlgProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefDriverProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "dwdriveridentifier",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "driverid",
+          "ctype": "HDRVR"
+        },
+        {
+          "name": "message",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "lparam1",
+          "ctype": "LPARAM"
+        },
+        {
+          "name": "lparam2",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefFrameProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefHookProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "HOOKPROC FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefMDIChildProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DefWindowProc",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeferWindowPos",
+      "ret": "HDWP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDWP"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeleteMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DestroyCaret",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "DestroyCursor",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HCURSOR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DestroyIcon",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HICON"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DestroyMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DestroyWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DialogBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DialogBoxIndirect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HGLOBAL"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DialogBoxIndirectParam",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HGLOBAL"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DialogBoxParam",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg4",
+          "ctype": "DLGPROC"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DispatchMessage",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "MSG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirList",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirListComboBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirSelect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirSelectComboBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirSelectComboBoxEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DlgDirSelectEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DrawFocusRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DrawIcon",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "HICON"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DrawMenuBar",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DrawText",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EmptyClipboard",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnableCommNotification",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnableHardwareInput",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnableMenuItem",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnableScrollBar",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnableWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EndDeferWindowPos",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDWP"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EndDialog",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EndPaint",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "PAINTSTRUCT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumChildWindows",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "WNDENUMPROC"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumClipboardFormats",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumProps",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "PROPENUMPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumTaskWindows",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "arg2",
+          "ctype": "WNDENUMPROC"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EnumWindows",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "WNDENUMPROC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EqualRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "EscapeCommFunction",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExcludeUpdateRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExitWindows",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "dwreturncode",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "wreserved",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ExitWindowsExec",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FillRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HBRUSH"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FindWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FlashWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FlushComm",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FrameRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HBRUSH"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetActiveWindow",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetAsyncKeyState",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCapture",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCaretBlinkTime",
+      "ret": "uint16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCaretPos",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClassInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WNDCLASS FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClassLong",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClassName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClassWord",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClientRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipCursor",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipboardData",
+      "ret": "HANDLE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipboardFormatName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipboardOwner",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetClipboardViewer",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCommError",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "COMSTAT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCommEventMask",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCommState",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "DCB FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCurrentTime",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCursor",
+      "ret": "HCURSOR",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCursorPos",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDC",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDCEx",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "hwnd",
+          "ctype": "register HWND"
+        },
+        {
+          "name": "hrgnclip",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDesktopWindow",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDialogBaseUnits",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDlgCtrlID",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDlgItem",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDlgItemInt",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDlgItemText",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDoubleClickTime",
+      "ret": "uint16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDriverInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDRVR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "DRIVERINFOSTRUCT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDriverModuleHandle",
+      "ret": "HINSTANCE",
+      "params": [
+        {
+          "name": "hdriver",
+          "ctype": "HDRVR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetFocus",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetFreeSystemResources",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetInputState",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetKeyState",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetKeyboardState",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint8_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetLastActivePopup",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenu",
+      "ret": "HMENU",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenuCheckMarkDimensions",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenuItemCount",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenuItemID",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenuState",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMenuString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "MSG FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMessageExtraInfo",
+      "ret": "LPARAM",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMessagePos",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetMessageTime",
+      "ret": "int32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNextDlgGroupItem",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNextDlgTabItem",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNextDriver",
+      "ret": "HDRVR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDRVR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNextWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetOpenClipboardWindow",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetParent",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPriorityClipboardFormat",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetProp",
+      "ret": "HANDLE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetQueueStatus",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetScrollPos",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetScrollRange",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSubMenu",
+      "ret": "HMENU",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSysColor",
+      "ret": "COLORREF",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSysModalWindow",
+      "ret": "HWND",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemDebugState",
+      "ret": "int32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemMenu",
+      "ret": "HMENU",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemMetrics",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTabbedTextExtent",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTickCount",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTimerResolution",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTopWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetUpdateRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetUpdateRgn",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowDC",
+      "ret": "HDC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowLong",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowPlacement",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "WINDOWPLACEMENT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowTask",
+      "ret": "HTASK",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowText",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowTextLength",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowWord",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalAddAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalDeleteAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "ATOM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalFindAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalGetAtomName",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "ATOM"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GrayString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HBRUSH"
+        },
+        {
+          "name": "arg3",
+          "ctype": "GRAYSTRINGPROC"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg9",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "HideCaret",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "HiliteMenuItem",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InSendMessage",
+      "ret": "int16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "InflateRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InsertMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IntersectRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InvalidateRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InvalidateRgn",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InvertRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsCharAlpha",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsCharAlphaNumeric",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsCharLower",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsCharUpper",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsChild",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsClipboardFormatAvailable",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsDialogMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "MSG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsDlgButtonChecked",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsIconic",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsRectEmpty",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsWindowEnabled",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsWindowVisible",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsZoomed",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "KillTimer",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadAccelerators",
+      "ret": "HACCEL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadBitmap",
+      "ret": "HBITMAP",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadCursor",
+      "ret": "HCURSOR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadIcon",
+      "ret": "HICON",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadMenu",
+      "ret": "HMENU",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadMenuIndirect",
+      "ret": "HMENU",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LockInput",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "h1",
+          "ctype": "HANDLE"
+        },
+        {
+          "name": "hwndinput",
+          "ctype": "HWND"
+        },
+        {
+          "name": "flock",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LockWindowUpdate",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hwndlock",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MapDialogRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MapWindowPoints",
+      "ret": "void",
+      "params": [
+        {
+          "name": "hwndfrom",
+          "ctype": "HWND"
+        },
+        {
+          "name": "hwndto",
+          "ctype": "HWND"
+        },
+        {
+          "name": "lppt",
+          "ctype": "POINT FAR*"
+        },
+        {
+          "name": "cpt",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MessageBeep",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MessageBox",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ModifyMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MoveWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OffsetRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OpenClipboard",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OpenComm",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OpenDriver",
+      "ret": "HDRVR",
+      "params": [
+        {
+          "name": "szdrivername",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "szsectionname",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "lparam2",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OpenIcon",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PeekMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "MSG FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PostAppMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HTASK"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PostMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PostQuitMessage",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PtInRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "QuerySendMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "h1",
+          "ctype": "HANDLE"
+        },
+        {
+          "name": "h2",
+          "ctype": "HANDLE"
+        },
+        {
+          "name": "h3",
+          "ctype": "HANDLE"
+        },
+        {
+          "name": "lpmsg",
+          "ctype": "LPMSG"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReadComm",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RealizePalette",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RedrawWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hwnd",
+          "ctype": "HWND"
+        },
+        {
+          "name": "lprcupdate",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "hrgnupdate",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RegisterClass",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "WNDCLASS FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RegisterClipboardFormat",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RegisterWindowMessage",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReleaseCapture",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReleaseDC",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HDC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RemoveMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RemoveProp",
+      "ret": "HANDLE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReplyMessage",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LRESULT"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScreenToClient",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "POINT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScrollDC",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg5",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg6",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "arg7",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScrollWindow",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg5",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScrollWindowEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hwnd",
+          "ctype": "HWND"
+        },
+        {
+          "name": "dx",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "dy",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "prcscroll",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "prcclip",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "hrgnupdate",
+          "ctype": "HRGN"
+        },
+        {
+          "name": "prcupdate",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SelectPalette",
+      "ret": "HPALETTE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HPALETTE"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SendDlgItemMessage",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg5",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SendDriverMessage",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "hdriver",
+          "ctype": "HDRVR"
+        },
+        {
+          "name": "message",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "lparam1",
+          "ctype": "LPARAM"
+        },
+        {
+          "name": "lparam2",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SendMessage",
+      "ret": "LRESULT",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "WPARAM"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPARAM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetActiveWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCapture",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCaretBlinkTime",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCaretPos",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetClassLong",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetClassWord",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetClipboardData",
+      "ret": "HANDLE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HANDLE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetClipboardViewer",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCommBreak",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCommEventMask",
+      "ret": "uint16_t FAR*",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCommState",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "DCB FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCursor",
+      "ret": "HCURSOR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HCURSOR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetCursorPos",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetDlgItemInt",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetDlgItemText",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetDoubleClickTime",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetFocus",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetKeyboardState",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint8_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HMENU"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMenuItemBitmaps",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "HBITMAP"
+        },
+        {
+          "name": "arg5",
+          "ctype": "HBITMAP"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetMessageQueue",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetParent",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetProp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "HANDLE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetRectEmpty",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetScrollPos",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetScrollRange",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSysColors",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "COLORREF FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSysModalWindow",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetTimer",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "TIMERPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowLong",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowPlacement",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "WINDOWPLACEMENT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowPos",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowText",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowWord",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowsHook",
+      "ret": "HOOKPROC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HOOKPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowsHookEx",
+      "ret": "HHOOK",
+      "params": [
+        {
+          "name": "idhook",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "lpfn",
+          "ctype": "HOOKPROC"
+        },
+        {
+          "name": "hinstance",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "htask",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ShowCaret",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ShowCursor",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ShowOwnedPopups",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ShowScrollBar",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ShowWindow",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SubtractRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SwapMouseButton",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SystemParametersInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "arg4",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TabbedTextOut",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HDC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg7",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg8",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TrackPopupMenu",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HMENU"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg7",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TranslateAccelerator",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HACCEL"
+        },
+        {
+          "name": "arg3",
+          "ctype": "MSG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TranslateMDISysAccel",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "MSG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TranslateMessage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "MSG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TransmitCommChar",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UngetCommChar",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnhookWindowsHook",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HOOKPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnhookWindowsHookEx",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hhook",
+          "ctype": "HHOOK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnionRect",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnregisterClass",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HINSTANCE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UpdateWindow",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ValidateRect",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "RECT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ValidateRgn",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HWND"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRGN"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WNetAddConnection",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WNetCancelConnection",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WNetGetConnection",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WaitMessage",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "WinHelp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "hwndmain",
+          "ctype": "HWND"
+        },
+        {
+          "name": "lpszhelp",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "uscommand",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "uldata",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WindowFromPoint",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "POINT"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WriteComm",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrcmp",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrcmpi",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_wsprintf",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpszout",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "lpszfmt",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "..."
+        }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "wvsprintf",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpszout",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "lpszfmt",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "lpparams",
+          "ctype": "LPCVOID"
+        }
+      ],
+      "callconv": "pascal"
+    }
+  ]
+}

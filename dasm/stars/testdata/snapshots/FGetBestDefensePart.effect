@@ -1,0 +1,101 @@
+/*
+FGetBestDefensePart  (planet)
+  addr: 000a:21f6  len=214
+  sig:  int16_t FGetBestDefensePart(PART *ppart)
+  params:
+    PART *           ppart          [BP+0x6]
+  locals:
+    PART             part           [BP-0xe]
+    int16_t          i              [BP-0x6]
+    int16_t          fRet           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_21f6:
+  insts 0..12  off 0x21f6..0x221c
+  succs: L_2250
+  effects:
+    21ff  store[2] [bp-fRet] = 0x1
+    2204  store[2] [bp-part] = 0x8000
+    2212  store[2] [bp-part+0x2] = ((load([bp-part+0x2]) & 0xff00) | 0x9)
+    2215  store[2] [bp-i] = 0x0
+    221a  goto L_2250
+
+block L_221d:
+  insts 13..28  off 0x221d..0x224f
+  preds: L_2259, L_226a, L_2270
+  succs: L_2250
+  effects:
+    2220  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    222a  store[2] ss:[bp-0x10] = (load@2224/src([bp-part+0x2]) & 0xff)
+    2236  store[2] ss:[bp-0x12] = ((load@222d/src([bp-part+0x2]) + 0x1) & 0xff)
+    2239  store[2] [bp-part+0x2] = (load@2239/dst([bp-part+0x2]) & 0xff00)
+    2244  store[2] [bp-part+0x2] = (load@2244/dst([bp-part+0x2]) | load(ss:[bp-0x12]))
+
+block L_2250:
+  insts 29..30  off 0x2250..0x2255
+  preds: L_21f6, L_221d
+  succs: L_2259, L_2273
+  effects:
+    2254  branch load([bp-i]) >= 0x5 ? L_2273 : L_2259
+
+block L_2259:
+  insts 32..37  off 0x2259..0x2269
+  preds: L_2250
+  succs: L_221d, L_2273
+  effects:
+    225d  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
+    2268  branch callresult(int16_t) != 0x1 ? L_2273 : L_226a
+
+block L_226a:
+  insts 38..38  off 0x226a..0x226c
+  succs: L_221d
+
+block L_226d:
+  insts 39..39  off 0x226d..0x226f
+  succs: L_2273
+
+block L_2270:
+  insts 40..40  off 0x2270..0x2272
+  succs: L_221d
+
+block L_2273:
+  insts 41..42  off 0x2273..0x2278
+  preds: L_2250, L_2259, L_226d
+  succs: L_227c, L_2283
+  effects:
+    2277  branch load([bp-i]) <= 0x0 ? L_2283 : L_227c
+
+block L_227c:
+  insts 44..45  off 0x227c..0x2282
+  preds: L_2273
+  succs: L_2288
+  effects:
+    227c  store[2] [bp-i] = (load([bp-i]) - 0x1)
+    2280  goto L_2288
+
+block L_2283:
+  insts 46..46  off 0x2283..0x2287
+  preds: L_2273
+  succs: L_2288
+  effects:
+    2283  store[2] [bp-fRet] = 0x0
+
+block L_2288:
+  insts 47..70  off 0x2288..0x22c5
+  preds: L_227c, L_2283
+  succs: L_22c6
+  effects:
+    228e  store[2] ss:[bp-0x10] = (load([bp-i]) + 0x9)
+    22a0  store[2] [bp-part+0x2] = ((load([bp-part+0x2]) & 0xff00) | (load(ss:[bp-0x10]) & 0xff))
+    22a9  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
+    22b9  copy[0x2] *addr(0x25:[load([bp+ppart])]) = *addr(0x25:[addr([bp-part])])
+    22ba  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x2)]) = *addr(0x25:[(addr([bp-part]) + 0x2)])
+    22bb  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x4)]) = *addr(0x25:[(addr([bp-part]) + 0x4)])
+    22bc  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x6)]) = *addr(0x25:[(addr([bp-part]) + 0x6)])
+
+block L_22c6:
+  insts 72..76  off 0x22c6..0x22cb
+  preds: L_2288
+  effects:
+    22cb  return load([bp-fRet])

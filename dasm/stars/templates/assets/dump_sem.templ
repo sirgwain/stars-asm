@@ -1,0 +1,27 @@
+{{ range $i, $block := .Blocks -}}
+{{- if or (not $block.Removed) (or $.Options.ShowEffects $.Options.ShowAsm) }}
+{{- if $i }}
+{{ end -}}
+{{ $block.Label }}:
+{{- if $.Options.ShowAsm }}
+  instrs:
+{{- range highlightText "nasm" (renderAsmBlock $ $block) $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if and $.Options.ShowEffects $block.Machine }}
+  effects:
+{{- range highlightLines "c" $block.Machine $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if $block.Effects }}
+{{- if or (and $.Options.ShowEffects $block.Machine) $.Options.ShowAsm }}
+  sem:
+{{- end }}
+{{- range highlightLines "c" $block.Effects $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{ end -}}

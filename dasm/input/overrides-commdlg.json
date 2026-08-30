@@ -1,0 +1,106 @@
+{
+  "functions": [
+    {
+      "name": "ChooseColor",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "CHOOSECOLOR FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ChooseFont",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "CHOOSEFONT FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CommDlgExtendedError",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "FindText",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FINDREPLACE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetFileTitle",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetOpenFileName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "OPENFILENAME FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSaveFileName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "OPENFILENAME FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PrintDlg",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "PRINTDLG FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReplaceText",
+      "ret": "HWND",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FINDREPLACE FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+/*
+LpengineFromId  (parts)
+  addr: 0002:5168  len=33
+  sig:  ENGINE * LpengineFromId(int16_t id)
+  params:
+    int16_t          id             [BP+0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_5168:
+  insts 0..10  off 0x5168..0x5182
+  succs: L_5183
+
+block L_5183:
+  insts 12..16  off 0x5183..0x5188
+  preds: L_5168
+  effects:
+    5188  return farptr(0x2, (0x0 + loword((0x4e * load([bp+id])))))

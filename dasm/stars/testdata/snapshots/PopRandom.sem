@@ -1,0 +1,12 @@
+/*
+PopRandom  (utilgen)
+  addr: 0009:14a2  len=72
+  sig:  void PopRandom()
+
+  stats: blocks=0  labels=0
+*/
+L_14a2:
+    cRandStack = (cRandStack - 0x1)
+    lRandSeed1 = rglRandStack[cRandStack][0x0]
+    lRandSeed2 = rglRandStack[cRandStack][0x1]
+    return

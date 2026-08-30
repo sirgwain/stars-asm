@@ -1,0 +1,23 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+
+# The following options are key for aligning defines
+AlignConsecutiveMacros: true
+AlignConsecutiveDeclarations: true
+
+# AlignTrailingComments: true # Uncomment this if you want to align comments
+
+# Optional: Use a specific column limit for alignment
+ColumnLimit: 160
+
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+IncludeCategories:
+  # 1) System / SDK headers
+  - Regex: '^<.*>'
+    Priority: 1
+
+  # 2) Project headers
+  - Regex: '^".*"'
+    Priority: 2

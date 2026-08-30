@@ -1,0 +1,653 @@
+/*
+CBuildProdItem  (turn2)
+  addr: 0018:0c92  len=3359
+  sig:  int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    PROD *           lpprod         [BP+0xa]
+    PROD *           pprodPartial   [BP+0xe]
+    int32_t *        rgRes          [BP+0x10]
+    int16_t          fAlchemy       [BP+0x12]
+    int16_t *        pmdStatus      [BP+0x14]
+    int16_t          fCalcOnly      [BP+0x16]
+  locals:
+    int16_t          fMineralBlocked [BP-0x54]
+    int32_t[4]       rgCost         [BP-0x52]
+    int32_t          pct            [BP-0x42]
+    int32_t          pctTooBig      [BP-0x3e]
+    int32_t          pctInitial     [BP-0x3a]
+    int16_t          fResourceBlocked [BP-0x36]
+    int16_t          i              [BP-0x34]
+    int32_t[4]       rgCostPaid     [BP-0x32]
+    int16_t          cAlchemy       [BP-0x22]
+    int16_t          cBuilt         [BP-0x20]
+    int16_t          fAutoBuild     [BP-0x1e]
+    PROD             prod           [BP-0x1c]
+    int32_t          lAlchCost      [BP-0x18]
+    int32_t          lMinNeeded     [BP-0x14]
+    int32_t          cCanBuild      [BP-0x10]
+    uint32_t         iobjOther      [BP-0xc]
+    int16_t          cMax           [BP-0x8]
+    int32_t          pctT           [BP-0x6]
+    block 0018:1324  len=0x70
+      int32_t          AddCost        [BP-0x58]
+
+  stats: blocks=1  labels=1
+    LAlchemize: L_13e1
+*/
+L_0c92:
+    cAlchemy = 0x0
+    LOWORD(pctInitial) = lpprod->pct
+    HIWORD(pctInitial) = (hiword((uint32_t)(lpprod >> 0x14)) & 0x0)
+    prod = lpprod
+    call GetProductionCosts(lppl, lpprod, &part[0:4](rgCost), lppl->iPlayer, 0x1) -> callresult(void)
+    cBuilt = 0x0
+    branch prod.grobj != 0x1 ? L_0d49 : L_0d12
+
+L_0d12:
+    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0d49 : L_0d1a
+
+L_0d1a:
+    branch (hiword((uint32_t)(prod >> 0xa)) & 0x0) > 0x0 ? L_0d49 : L_0d36
+
+L_0d36:
+    branch (hiword(callresult(uint32_t)) & 0x0) < 0x0 ? L_0d43 : L_0d3b
+
+L_0d3b:
+    branch (loword(callresult(uint32_t)) & 0x7f) >= 0x7 ? L_0d49 : L_0d43
+
+L_0d43:
+    t_merge_0d4c_0001 = 0x1
+    goto L_0d4c
+
+L_0d49:
+    t_merge_0d4c_0001 = 0x0
+
+L_0d4c:
+    fAutoBuild = t_merge_0d4c_0001
+    branch fAutoBuild == 0x0 ? L_102c : L_0d58
+
+L_0d58:
+    cMax = 0x3e8
+    goto L_0f2c
+
+L_0d74:
+    iobjOther = 0x8
+    ss:[bp-0x56] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x8)) & 0xfff)
+    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    goto L_0f9f
+
+L_0dbe:
+    iobjOther = 0x7
+    ss:[bp-0x56] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x14)) & 0xfff)
+    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    goto L_0f9f
+
+L_0e08:
+    iobjOther = 0x9
+    ss:[bp-0x56] = lppl->cDefenses
+    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    goto L_0f9f
+
+L_0e4a:
+    iobjOther = 0xb
+    goto L_0f9f
+
+L_0e57:
+    iobjOther = 0xc
+    cMax = IpctCanTerraformLppl(lppl)
+    branch cMax <= 0x0 ? L_0f9f : L_0e7b
+
+L_0e7b:
+    branch prod.iItem != 0x4 ? L_0f9f : L_0e97
+
+L_0e97:
+    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0f9f : L_0e9f
+
+L_0e9f:
+    branch hiword(ChgPopFromPlanet(lppl, 0x0)) < 0x0 ? L_0f9f : L_0eb9
+
+L_0eb9:
+    branch hiword(callresult(int32_t)) > 0x0 ? L_0ec6 : L_0ebe
+
+L_0ebe:
+    branch loword(callresult(int32_t)) < 0x0 ? L_0f9f : L_0ec6
+
+L_0ec6:
+    branch PctPlanetDesirability(lppl, lppl->iPlayer) <= 0x0 ? L_0f9f : L_0ee3
+
+L_0ee3:
+    cMax = 0x0
+
+
+L_0eeb:
+    iobjOther = 0x11
+    branch IWarpMAFromLppl(lppl, 0x0) == 0x0 ? L_0f21 : L_0f0f
+
+L_0f0f:
+    branch lppl->idFling != 0x0 ? L_0f9f : L_0f21
+
+L_0f21:
+    cMax = 0x0
+
+
+L_0f2c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x0 ? L_0f3c : L_0f34
+
+L_0f34:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0d74 : L_0f3c
+
+L_0f3c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x1 ? L_0f4c : L_0f44
+
+L_0f44:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0dbe : L_0f4c
+
+L_0f4c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x2 ? L_0f5c : L_0f54
+
+L_0f54:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e08 : L_0f5c
+
+L_0f5c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x3 ? L_0f6c : L_0f64
+
+L_0f64:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e4a : L_0f6c
+
+L_0f6c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x4 ? L_0f7c : L_0f74
+
+L_0f74:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e57 : L_0f7c
+
+L_0f7c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x5 ? L_0f8c : L_0f84
+
+L_0f84:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e57 : L_0f8c
+
+L_0f8c:
+    branch (loword(callresult(uint32_t)) & 0x7f) != 0x6 ? L_0f9f : L_0f94
+
+L_0f94:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0eeb : L_0f9f
+
+L_0f9f:
+    branch cMax >= 0x0 ? L_0fad : L_0fa8
+
+L_0fa8:
+    cMax = 0x0
+
+L_0fad:
+    branch (HIWORD(prod) & 0x0) > signhiword(cMax) ? L_1000 : L_0fd0
+
+L_0fd0:
+    branch ss:[bp-0x56] < signhiword(cMax) ? L_0fdc : L_0fd5
+
+L_0fd5:
+    branch ss:[bp-0x58] > cMax ? L_1000 : L_0fdc
+
+L_0fdc:
+    branch prod.iItem != 0x3 ? L_102c : L_0ff8
+
+L_0ff8:
+    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_102c : L_1000
+
+L_1000:
+    LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words((cMax & 0x3ff), (signhiword(cMax) & 0x0)) << 0x0)))
+    HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words((cMax & 0x3ff), (signhiword(cMax) & 0x0)) << 0x0)))
+
+L_102c:
+    i = 0x0
+    goto L_1086
+
+L_1034:
+    rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words((hiword((uint32_t)(prod >> 0x14)) & 0x0), prod.pct)) / 0x64)
+    i = (i + 0x1)
+
+L_1086:
+    branch i < 0x4 ? L_1034 : L_108f
+
+L_108f:
+    branch (HIWORD(prod) & 0x0) < 0x0 ? L_1712 : L_10a3
+
+L_10a3:
+    branch (HIWORD(prod) & 0x0) > 0x0 ? L_10b0 : L_10a8
+
+L_10a8:
+    branch prod.cItem <= 0x0 ? L_1712 : L_10b0
+
+L_10b0:
+    i = 0x0
+    goto L_1101
+
+L_10b8:
+    branch (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) < HIWORD(rgRes[i]) ? L_10fd : L_10ee
+
+L_10ee:
+    branch (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) > HIWORD(rgRes[i]) ? L_110a : L_10f3
+
+L_10f3:
+    branch (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) > LOWORD(rgRes[i]) ? L_110a : L_10f7
+
+L_10f7:
+
+
+L_10fd:
+    i = (i + 0x1)
+
+L_1101:
+    branch i < 0x4 ? L_10b8 : L_110a
+
+L_110a:
+    branch i >= 0x4 ? L_165c : L_1113
+
+L_1113:
+    fMineralBlocked = 0x0
+    fResourceBlocked = 0x0
+    pct = 0x64
+    i = 0x0
+    goto L_12ea
+
+L_1130:
+    branch HIWORD(rgCost[i]) < 0x0 ? L_12e6 : L_1145
+
+L_1145:
+    branch HIWORD(rgCost[i]) > 0x0 ? L_1152 : L_114a
+
+L_114a:
+    branch LOWORD(rgCost[i]) <= 0x0 ? L_12e6 : L_1152
+
+L_1152:
+    branch HIWORD(rgRes[i]) < HIWORD(rgCost[i]) ? L_1190 : L_1177
+
+L_1177:
+    branch HIWORD(rgRes[i]) > HIWORD(rgCost[i]) ? L_1183 : L_117c
+
+L_117c:
+    branch LOWORD(rgRes[i]) < LOWORD(rgCost[i]) ? L_1190 : L_1183
+
+L_1183:
+    pctT = 0x64
+    goto L_1270
+
+L_1190:
+    pctT = (int32_t)((uint32_t)(words((HIWORD(rgRes[i]) + HIWORD(rgCostPaid[i])), (LOWORD(rgRes[i]) + LOWORD(rgCostPaid[i]))) * 0x64) / rgCost[i])
+    pctTooBig = (int32_t)((uint32_t)(words(((HIWORD(rgRes[i]) + HIWORD(rgCostPaid[i])) + 0x0), ((LOWORD(rgRes[i]) + LOWORD(rgCostPaid[i])) + 0x1)) * 0x64) / rgCost[i])
+    branch HIWORD(pctT) < (HIWORD(pctTooBig) + 0xffff) ? L_125e : L_1248
+
+L_1248:
+    branch HIWORD(pctT) > (HIWORD(pctTooBig) + 0xffff) ? L_1255 : L_124d
+
+L_124d:
+    branch LOWORD(pctT) <= (LOWORD(pctTooBig) + 0xffff) ? L_125e : L_1255
+
+L_1255:
+    t_merge_126a_0001_wide = pctT
+    goto L_126a
+
+L_125e:
+    t_merge_126a_0001_wide = (pctTooBig + 0xffffffff)
+
+L_126a:
+    pctT = t_merge_126a_0001_wide
+
+L_1270:
+    branch HIWORD(pctT) > HIWORD(pct) ? L_12e6 : L_127e
+
+L_127e:
+    branch HIWORD(pctT) < HIWORD(pct) ? L_128b : L_1283
+
+L_1283:
+    branch LOWORD(pctT) >= LOWORD(pct) ? L_12e6 : L_128b
+
+L_128b:
+    lMinNeeded = ((rgCost[i] - rgCostPaid[i]) - rgRes[i])
+    pct = pctT
+    branch i != 0x3 ? L_12e1 : L_12d9
+
+L_12d9:
+    fResourceBlocked = 0x1
+    goto L_12e6
+
+L_12e1:
+    fMineralBlocked = 0x1
+
+L_12e6:
+    i = (i + 0x1)
+
+L_12ea:
+    branch i < 0x4 ? L_1130 : L_12f3
+
+L_12f3:
+    branch fMineralBlocked == 0x0 ? L_131c : L_12fc
+
+L_12fc:
+    branch fAutoBuild == 0x0 ? L_131c : L_1305
+
+L_1305:
+    branch fAlchemy != 0x0 ? L_13e1 : L_130b
+
+L_130b:
+
+
+L_1314:
+    fAutoBuild = 0x2
+    goto L_1712
+
+L_131c:
+    i = 0x0
+    goto L_1398
+
+L_1324:
+    AddCost = ((int32_t)((uint32_t)(rgCost[i] * pct) / 0x64) - rgCostPaid[i])
+    rgRes[i] = (rgRes[i] - AddCost)
+    rgCostPaid[i] = (rgCostPaid[i] + AddCost)
+    i = (i + 0x1)
+
+L_1398:
+    branch i < 0x4 ? L_1324 : L_13a1
+
+L_13a1:
+    LOWORD(prod) = ((LOWORD(prod) & 0xffff) | loword((int32_t)(words((LOWORD(pct) & 0x7f), (HIWORD(pct) & 0x0)) << 0x14)))
+    HIWORD(prod) = ((HIWORD(prod) & 0xf80f) | hiword((int32_t)(words((LOWORD(pct) & 0x7f), (HIWORD(pct) & 0x0)) << 0x14)))
+    branch fAlchemy == 0x0 ? L_1712 : L_13d5
+
+L_13d5:
+    branch fResourceBlocked != 0x0 ? L_1712 : L_13db
+
+L_13db:
+
+
+LAlchemize:
+    branch GetRaceGrbit(rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0x0 ? L_140c : L_1405
+
+L_1405:
+    t_merge_1410_0001 = 0x19
+    goto L_1410
+
+L_140c:
+    t_merge_1410_0001 = 0x64
+
+L_1410:
+    LOWORD(lAlchCost) = t_merge_1410_0001
+    HIWORD(lAlchCost) = 0x0
+    cCanBuild = (int32_t)(words(*(rgRes+0xe), LOWORD(rgRes[0x3])) / lAlchCost)
+    branch HIWORD(cCanBuild) < HIWORD(lMinNeeded) ? L_1457 : L_143e
+
+L_143e:
+    branch HIWORD(cCanBuild) > HIWORD(lMinNeeded) ? L_144b : L_1443
+
+L_1443:
+    branch LOWORD(cCanBuild) <= LOWORD(lMinNeeded) ? L_1457 : L_144b
+
+L_144b:
+    cCanBuild = lMinNeeded
+
+L_1457:
+    branch HIWORD(cCanBuild) < 0x0 ? L_14c5 : L_1460
+
+L_1460:
+    branch HIWORD(cCanBuild) > 0x0 ? L_146e : L_1465
+
+L_1465:
+    branch LOWORD(cCanBuild) <= 0x0 ? L_14c5 : L_146e
+
+L_146e:
+    i = 0x0
+    goto L_1491
+
+L_1476:
+    rgRes[i] = (rgRes[i] + cCanBuild)
+    i = (i + 0x1)
+
+L_1491:
+    branch i < 0x3 ? L_1476 : L_149a
+
+L_149a:
+    rgRes[i] = (rgRes[i] - (uint32_t)(lAlchCost * cCanBuild))
+    cAlchemy = (cAlchemy + LOWORD(cCanBuild))
+
+L_14c5:
+    branch LOWORD(cCanBuild) != LOWORD(lMinNeeded) ? L_14de : L_14d3
+
+L_14d3:
+    branch HIWORD(cCanBuild) == HIWORD(lMinNeeded) ? L_108f : L_14d8
+
+L_14d8:
+
+
+L_14de:
+    branch *(rgRes+0xe) < 0x0 ? L_1712 : L_14ea
+
+L_14ea:
+    branch *(rgRes+0xe) > 0x0 ? L_14f8 : L_14ef
+
+L_14ef:
+    branch LOWORD(rgRes[0x3]) <= 0x0 ? L_1712 : L_14f8
+
+L_14f8:
+    branch pprodPartial == 0x0 ? L_1712 : L_1501
+
+L_1501:
+    call memset(pprodPartial, 0x0, 0x4) -> callresult(void *)
+    pprodPartial = ((pprodPartial & 0xffff) | 0x0)
+    pprodPartial->grobj = grobjPlanet
+    pprodPartial = ((pprodPartial & 0x3ff) | 0x2c00)
+    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | 0x0)
+    pprodPartial->cItem = 0x1
+    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xffff) | 0x0)
+    pctT = (int32_t)((uint32_t)(words(*(rgRes+0xe), LOWORD(rgRes[0x3])) * 0x64) / lAlchCost)
+    pctTooBig = (int32_t)((uint32_t)(words((*(rgRes+0xe) + 0x0), (LOWORD(rgRes[0x3]) + 0x1)) * 0x64) / lAlchCost)
+    branch HIWORD(pctT) < (HIWORD(pctTooBig) + 0xffff) ? L_15ec : L_15d6
+
+L_15d6:
+    branch HIWORD(pctT) > (HIWORD(pctTooBig) + 0xffff) ? L_15e3 : L_15db
+
+L_15db:
+    branch LOWORD(pctT) <= (LOWORD(pctTooBig) + 0xffff) ? L_15ec : L_15e3
+
+L_15e3:
+    t_merge_15f8_0001_wide = pctT
+    goto L_15f8
+
+L_15ec:
+    t_merge_15f8_0001_wide = (pctTooBig + 0xffffffff)
+
+L_15f8:
+    pctT = t_merge_15f8_0001_wide
+    pprodPartial = ((pprodPartial & 0xffff) | loword((int32_t)(words((LOWORD(pctT) & 0x7f), (HIWORD(pctT) & 0x0)) << 0x14)))
+    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xf80f) | hiword((int32_t)(words((LOWORD(pctT) & 0x7f), (HIWORD(pctT) & 0x0)) << 0x14)))
+    LOWORD(rgRes[0x3]) = (LOWORD(rgRes[0x3]) - loword((int32_t)((uint32_t)(pctT * lAlchCost) / 0x64)))
+    *(rgRes+0xe) = (*(rgRes+0xe) - hiword((int32_t)((uint32_t)(pctT * lAlchCost) / 0x64)))
+
+
+L_165c:
+    cBuilt = (cBuilt + 0x1)
+    ss:[bp-0x58] = ((LOWORD(prod) + 0xffff) & 0x3ff)
+    ss:[bp-0x56] = ((HIWORD(prod) + 0xffff) & 0x0)
+    prod.cItem = 0x0
+    HIWORD(prod) = (HIWORD(prod) & 0xffff)
+    LOWORD(prod) = (LOWORD(prod) | ss:[bp-0x58])
+    HIWORD(prod) = (HIWORD(prod) | ss:[bp-0x56])
+    LOWORD(prod) = ((LOWORD(prod) & 0xffff) | 0x0)
+    prod.pct = 0x0
+    i = 0x0
+    goto L_1706
+
+L_16ba:
+    rgRes[i] = (rgRes[i] - (rgCost[i] - rgCostPaid[i]))
+    rgCostPaid[i] = 0x0
+    i = (i + 0x1)
+
+L_1706:
+    branch i >= 0x4 ? L_108f : L_170c
+
+L_170c:
+
+
+L_1712:
+    branch cBuilt <= 0x0 ? L_17b7 : L_171b
+
+L_171b:
+    branch prod.grobj != 0x1 ? L_17b7 : L_1737
+
+L_1737:
+    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_17b7 : L_173f
+
+L_173f:
+    branch prod.iItem != 0xb ? L_1763 : L_175b
+
+L_175b:
+    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_1787 : L_1763
+
+L_1763:
+    branch prod.iItem != 0x3 ? L_17b7 : L_177f
+
+L_177f:
+    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_17b7 : L_1787
+
+L_1787:
+    cAlchemy = (cAlchemy + cBuilt)
+    i = 0x0
+    goto L_17ae
+
+L_1795:
+    rgRes[i] = (rgRes[i] + sext16to32(cBuilt))
+    i = (i + 0x1)
+
+L_17ae:
+    branch i < 0x3 ? L_1795 : L_17b7
+
+L_17b7:
+    branch cAlchemy == 0x0 ? L_17fb : L_17c0
+
+L_17c0:
+    branch fCalcOnly != 0x0 ? L_17fb : L_17c9
+
+L_17c9:
+    branch gd.fGeneratingTurn == 0x0 ? L_17fb : L_17d9
+
+L_17d9:
+    call FSendPlrMsg2(lppl->iPlayer, 0x8c, lppl->id, lppl->id, cAlchemy) -> callresult(int16_t)
+
+L_17fb:
+    branch pmdStatus == 0x0 ? L_18d1 : L_1804
+
+L_1804:
+    branch fAutoBuild != 0x2 ? L_1827 : L_180d
+
+L_180d:
+    branch cBuilt <= 0x0 ? L_181c : L_1816
+
+L_1816:
+    t_merge_181f_0001 = 0x3
+    goto L_181f
+
+L_181c:
+    t_merge_181f_0001 = 0x4
+
+L_181f:
+    *pmdStatus = t_merge_181f_0001
+    goto L_18d1
+
+L_1827:
+    branch fAutoBuild == 0x0 ? L_1866 : L_1830
+
+L_1830:
+    branch prod.cItem != 0x0 ? L_1866 : L_1844
+
+L_1844:
+    branch (HIWORD(prod) & 0x0) != 0x0 ? L_1866 : L_184c
+
+L_184c:
+    branch cBuilt <= 0x0 ? L_185b : L_1855
+
+L_1855:
+    t_merge_185e_0001 = 0x1
+    goto L_185e
+
+L_185b:
+    t_merge_185e_0001 = 0x2
+
+L_185e:
+    *pmdStatus = t_merge_185e_0001
+    goto L_18d1
+
+L_1866:
+    branch cBuilt != 0x0 ? L_18a4 : L_186f
+
+L_186f:
+    branch LOWORD(pctInitial) != prod.pct ? L_1899 : L_188b
+
+L_188b:
+    branch HIWORD(pctInitial) != (hiword(callresult(uint32_t)) & 0x0) ? L_1899 : L_1893
+
+L_1893:
+    t_merge_189c_0001 = 0x7
+    goto L_189c
+
+L_1899:
+    t_merge_189c_0001 = 0x6
+
+L_189c:
+    *pmdStatus = t_merge_189c_0001
+    goto L_18d1
+
+L_18a4:
+    branch prod.cItem != 0x0 ? L_18ca : L_18b8
+
+L_18b8:
+    branch (HIWORD(prod) & 0x0) != 0x0 ? L_18ca : L_18c0
+
+L_18c0:
+    *pmdStatus = 0x0
+    goto L_18d1
+
+L_18ca:
+    *pmdStatus = 0x5
+
+L_18d1:
+    branch fCalcOnly != 0x0 ? L_18f3 : L_18da
+
+L_18da:
+    branch fAutoBuild != 0x0 ? L_18f3 : L_18e3
+
+L_18e3:
+    LOWORD(lpprod) = LOWORD(prod)
+    *(lpprod+0x2) = HIWORD(prod)
+
+L_18f3:
+    branch fAutoBuild == 0x0 ? L_19a5 : L_18fc
+
+L_18fc:
+    branch pprodPartial == 0x0 ? L_19a5 : L_1905
+
+L_1905:
+    branch pprodPartial->cItem != 0x0 ? L_19a5 : L_191b
+
+L_191b:
+    branch (*(pprodPartial+0x2) & 0x0) != 0x0 ? L_19a5 : L_1923
+
+L_1923:
+    branch (hiword((uint32_t)(prod >> 0x14)) & 0x0) < 0x0 ? L_19a5 : L_193f
+
+L_193f:
+    branch (hiword(callresult(uint32_t)) & 0x0) > 0x0 ? L_194c : L_1944
+
+L_1944:
+    branch (loword(callresult(uint32_t)) & 0x7f) <= 0x0 ? L_19a5 : L_194c
+
+L_194c:
+    pprodPartial = LOWORD(prod)
+    *(pprodPartial+0x2) = HIWORD(prod)
+    pprodPartial->cItem = 0x1
+    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xffff) | 0x0)
+    pprodPartial = (pprodPartial->cItem | loword((int32_t)(words((LOWORD(iobjOther) & 0x7f), (HIWORD(iobjOther) & 0x0)) << 0xa)))
+    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | hiword((int32_t)(words((LOWORD(iobjOther) & 0x7f), (HIWORD(iobjOther) & 0x0)) << 0xa)))
+
+L_19a5:
+
+L_19ab:
+    return cBuilt

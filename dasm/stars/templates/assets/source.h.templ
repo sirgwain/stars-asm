@@ -1,0 +1,15 @@
+#ifndef STARS_DECOMPILED_{{.Module | upper }}_H
+#define STARS_DECOMPILED_{{.Module | upper }}_H
+
+#include <stdint.h>
+#include <windows.h>
+
+{{range $i, $s := .Globals}}
+extern {{ .CDecl }};
+{{- end }}
+
+{{range $i, $s := .Functions}}
+{{ .CDecl }};
+{{- end }}
+
+#endif

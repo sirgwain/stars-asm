@@ -1,0 +1,290 @@
+/*
+InitMDIApp  (mdi)
+  addr: 0005:0000  len=907
+  sig:  int16_t InitMDIApp()
+  locals:
+    WNDCLASS         wc             [BP-0x1c]
+
+  stats: blocks=0  labels=0
+*/
+block L_0000:
+  insts 0..36  off 0x0000..0x006c
+  succs: L_0070, L_0076
+  effects:
+    0009  store[2] [bp-wc] = 0xb
+    000e  store[2] [bp-wc+0x2] = 0x6d6
+    0013  store[2] [bp-wc+0x4] = 0xffff
+    0018  store[2] [bp-wc+0x6] = 0x0
+    001d  store[2] [bp-wc+0x8] = 0x0
+    0025  store[2] [bp-wc+0xa] = load([hInst])
+    0028  store[2] [bp-wc+0xc] = 0x0
+    0039  call LoadCursor(0x0, farptr(0x0, 0x7f00)) -> callresult(HCURSOR)
+    003e  store[2] [bp-wc+0xe] = callresult(HCURSOR)
+    0041  store[2] [bp-wc+0x10] = 0xd
+    004b  store[2] [bp-wc+0x12] = 0x364
+    004e  store[2] [bp-wc+0x14] = 0x25
+    0056  store[2] [bp-wc+0x16] = 0x1d6
+    0059  store[2] [bp-wc+0x18] = 0x25
+    0063  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    006b  branch callresult(uint16_t_ATOM) != 0x0 ? L_0076 : L_0070
+
+block L_0070:
+  insts 38..39  off 0x0070..0x0075
+  preds: L_0000
+  succs: L_0385
+  effects:
+    0073  goto L_0385
+
+block L_0076:
+  insts 40..60  off 0x0076..0x00bb
+  preds: L_0000
+  succs: L_00bf, L_00c5
+  effects:
+    0076  store[2] [bp-wc] = 0x20b
+    007b  store[2] [bp-wc+0x2] = 0x5c92
+    0080  store[2] [bp-wc+0x4] = 0xffff
+    0085  store[2] [bp-wc+0xc] = 0x0
+    008a  store[2] [bp-wc+0x12] = 0x0
+    008f  store[2] [bp-wc+0x14] = 0x0
+    0098  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    009d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    00a5  store[2] [bp-wc+0x16] = 0x202
+    00a8  store[2] [bp-wc+0x18] = 0x25
+    00b2  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    00ba  branch callresult(uint16_t_ATOM) != 0x0 ? L_00c5 : L_00bf
+
+block L_00bf:
+  insts 62..63  off 0x00bf..0x00c4
+  preds: L_0076
+  succs: L_0385
+  effects:
+    00c2  goto L_0385
+
+block L_00c5:
+  insts 64..81  off 0x00c5..0x00fb
+  preds: L_0076
+  succs: L_00ff, L_0105
+  effects:
+    00c5  store[2] [bp-wc] = 0x20b
+    00ca  store[2] [bp-wc+0x2] = 0x32
+    00cf  store[2] [bp-wc+0x4] = 0xffff
+    00d8  call GetStockObject(0x4) -> callresult(HGDIOBJ)
+    00dd  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    00e5  store[2] [bp-wc+0x16] = 0x1e2
+    00e8  store[2] [bp-wc+0x18] = 0x25
+    00f2  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    00fa  branch callresult(uint16_t_ATOM) != 0x0 ? L_0105 : L_00ff
+
+block L_00ff:
+  insts 83..84  off 0x00ff..0x0104
+  preds: L_00c5
+  succs: L_0385
+  effects:
+    0102  goto L_0385
+
+block L_0105:
+  insts 85..102  off 0x0105..0x013b
+  preds: L_00c5
+  succs: L_013f, L_0145
+  effects:
+    0105  store[2] [bp-wc] = 0x20b
+    010a  store[2] [bp-wc+0x2] = 0x0
+    010f  store[2] [bp-wc+0x4] = 0xffff
+    0118  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    011d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    0125  store[2] [bp-wc+0x16] = 0x1ec
+    0128  store[2] [bp-wc+0x18] = 0x25
+    0132  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    013a  branch callresult(uint16_t_ATOM) != 0x0 ? L_0145 : L_013f
+
+block L_013f:
+  insts 104..105  off 0x013f..0x0144
+  preds: L_0105
+  succs: L_0385
+  effects:
+    0142  goto L_0385
+
+block L_0145:
+  insts 106..123  off 0x0145..0x017b
+  preds: L_0105
+  succs: L_017f, L_0185
+  effects:
+    0145  store[2] [bp-wc] = 0x208
+    014a  store[2] [bp-wc+0x2] = 0x1e
+    014f  store[2] [bp-wc+0x4] = 0xffff
+    0158  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    015d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    0165  store[2] [bp-wc+0x16] = 0x242
+    0168  store[2] [bp-wc+0x18] = 0x25
+    0172  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    017a  branch callresult(uint16_t_ATOM) != 0x0 ? L_0185 : L_017f
+
+block L_017f:
+  insts 125..126  off 0x017f..0x0184
+  preds: L_0145
+  succs: L_0385
+  effects:
+    0182  goto L_0385
+
+block L_0185:
+  insts 127..145  off 0x0185..0x01c0
+  preds: L_0145
+  succs: L_01c4, L_01ca
+  effects:
+    0185  store[2] [bp-wc] = 0x200
+    018a  store[2] [bp-wc+0x2] = 0x0
+    018f  store[2] [bp-wc+0x4] = 0xffff
+    0198  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    019d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    01a0  store[2] [bp-wc+0xc] = 0x0
+    01aa  store[2] [bp-wc+0x16] = 0x1f6
+    01ad  store[2] [bp-wc+0x18] = 0x25
+    01b7  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    01bf  branch callresult(uint16_t_ATOM) != 0x0 ? L_01ca : L_01c4
+
+block L_01c4:
+  insts 147..148  off 0x01c4..0x01c9
+  preds: L_0185
+  succs: L_0385
+  effects:
+    01c7  goto L_0385
+
+block L_01ca:
+  insts 149..167  off 0x01ca..0x0205
+  preds: L_0185
+  succs: L_0209, L_020f
+  effects:
+    01ca  store[2] [bp-wc] = 0xa00
+    01cf  store[2] [bp-wc+0x2] = 0x0
+    01d4  store[2] [bp-wc+0x4] = 0xffff
+    01dd  call GetStockObject(0x0) -> callresult(HGDIOBJ)
+    01e2  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    01e5  store[2] [bp-wc+0xc] = 0x0
+    01ef  store[2] [bp-wc+0x16] = 0x210
+    01f2  store[2] [bp-wc+0x18] = 0x25
+    01fc  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    0204  branch callresult(uint16_t_ATOM) != 0x0 ? L_020f : L_0209
+
+block L_0209:
+  insts 169..170  off 0x0209..0x020e
+  preds: L_01ca
+  succs: L_0385
+  effects:
+    020c  goto L_0385
+
+block L_020f:
+  insts 171..189  off 0x020f..0x024a
+  preds: L_01ca
+  succs: L_024e, L_0254
+  effects:
+    020f  store[2] [bp-wc] = 0xa00
+    0214  store[2] [bp-wc+0x2] = 0x19e4
+    0219  store[2] [bp-wc+0x4] = 0x152
+    0222  call GetStockObject(0x0) -> callresult(HGDIOBJ)
+    0227  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    022a  store[2] [bp-wc+0xc] = 0x0
+    0234  store[2] [bp-wc+0x16] = 0x24a
+    0237  store[2] [bp-wc+0x18] = 0x25
+    0241  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    0249  branch callresult(uint16_t_ATOM) != 0x0 ? L_0254 : L_024e
+
+block L_024e:
+  insts 191..192  off 0x024e..0x0253
+  preds: L_020f
+  succs: L_0385
+  effects:
+    0251  goto L_0385
+
+block L_0254:
+  insts 193..211  off 0x0254..0x028f
+  preds: L_020f
+  succs: L_0293, L_0299
+  effects:
+    0254  store[2] [bp-wc] = 0x200
+    0259  store[2] [bp-wc+0x2] = 0x2876
+    025e  store[2] [bp-wc+0x4] = 0xffff
+    0267  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    026c  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    026f  store[2] [bp-wc+0xc] = 0x0
+    0279  store[2] [bp-wc+0x16] = 0x21c
+    027c  store[2] [bp-wc+0x18] = 0x25
+    0286  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    028e  branch callresult(uint16_t_ATOM) != 0x0 ? L_0299 : L_0293
+
+block L_0293:
+  insts 213..214  off 0x0293..0x0298
+  preds: L_0254
+  succs: L_0385
+  effects:
+    0296  goto L_0385
+
+block L_0299:
+  insts 215..247  off 0x0299..0x0302
+  preds: L_0254
+  succs: L_0306, L_030c
+  effects:
+    0299  store[2] [bp-wc] = 0x0
+    029e  store[2] [bp-wc+0x2] = 0x9126
+    02a3  store[2] [bp-wc+0x4] = 0x16
+    02a8  store[2] [bp-wc+0x6] = 0x0
+    02ad  store[2] [bp-wc+0x8] = 0x0
+    02b5  store[2] [bp-wc+0xa] = load([hInst])
+    02b8  store[2] [bp-wc+0xc] = 0x0
+    02c9  call LoadCursor(0x0, farptr(0x0, 0x7f00)) -> callresult(HCURSOR)
+    02ce  store[2] [bp-wc+0xe] = callresult(HCURSOR)
+    02d5  call GetStockObject(0x4) -> callresult(HGDIOBJ)
+    02da  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    02dd  store[2] [bp-wc+0x12] = 0x0
+    02e2  store[2] [bp-wc+0x14] = 0x0
+    02ec  store[2] [bp-wc+0x16] = 0x22a
+    02ef  store[2] [bp-wc+0x18] = 0x25
+    02f9  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    0301  branch callresult(uint16_t_ATOM) != 0x0 ? L_030c : L_0306
+
+block L_0306:
+  insts 249..250  off 0x0306..0x030b
+  preds: L_0299
+  succs: L_0385
+  effects:
+    0309  goto L_0385
+
+block L_030c:
+  insts 251..283  off 0x030c..0x0375
+  preds: L_0299
+  succs: L_0379, L_037f
+  effects:
+    030c  store[2] [bp-wc] = 0xb
+    0311  store[2] [bp-wc+0x2] = 0x18
+    0316  store[2] [bp-wc+0x4] = 0xffff
+    031b  store[2] [bp-wc+0x6] = 0x0
+    0320  store[2] [bp-wc+0x8] = 0x0
+    0328  store[2] [bp-wc+0xa] = load([hInst])
+    032b  store[2] [bp-wc+0xc] = 0x0
+    033c  call LoadCursor(0x0, farptr(0x0, 0x7f00)) -> callresult(HCURSOR)
+    0341  store[2] [bp-wc+0xe] = callresult(HCURSOR)
+    0348  call GetStockObject(0x1) -> callresult(HGDIOBJ)
+    034d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
+    0350  store[2] [bp-wc+0x12] = 0x0
+    0355  store[2] [bp-wc+0x14] = 0x0
+    035f  store[2] [bp-wc+0x16] = 0x236
+    0362  store[2] [bp-wc+0x18] = 0x25
+    036c  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
+    0374  branch callresult(uint16_t_ATOM) != 0x0 ? L_037f : L_0379
+
+block L_0379:
+  insts 285..286  off 0x0379..0x037e
+  preds: L_030c
+  succs: L_0385
+  effects:
+    037c  goto L_0385
+
+block L_037f:
+  insts 287..287  off 0x037f..0x0384
+  preds: L_030c
+  succs: L_0385
+
+block L_0385:
+  insts 289..293  off 0x0385..0x038a
+  preds: L_0070, L_00bf, L_00ff, L_013f, L_017f, L_01c4, L_0209, L_024e, L_0293, L_0306, L_0379, L_037f
+  effects:
+    038a  return merge(Join: L_0385, (L_0070:0x0, L_00bf:0x0, L_00ff:0x0, L_013f:0x0, L_017f:0x0, L_01c4:0x0, L_0209:0x0, L_024e:0x0, L_0293:0x0, L_0306:0x0, L_0379:0x0, L_037f:0x1))

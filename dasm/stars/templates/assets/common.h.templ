@@ -1,0 +1,23 @@
+#ifndef STARS_DECOMPILED_COMMON_H
+#define STARS_DECOMPILED_COMMON_H
+
+#include <stdint.h>
+#include <windows.h>
+
+#include <setjmp.h>
+
+#define LOWORD(x)  ((uint16_t)((uint32_t)(x) & 0xffffu))
+#define HIWORD(x)  ((uint16_t)(((uint32_t)(x) >> 16) & 0xffffu))
+#define MAKELONG(lo, hi) \
+    ((uint32_t)(uint16_t)(lo) | ((uint32_t)(uint16_t)(hi) << 16))
+    
+#include "structs.h"
+#include "enums.h"
+
+{{range $i, $s := .Modules}}
+#include "{{.}}.h"
+{{- end}}
+
+typedef jmp_buf ENV;
+
+#endif

@@ -1,0 +1,1735 @@
+{
+  "functions": [
+    {
+      "name": "AccessResource",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRSRC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AddAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AllocDStoCSAlias",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AllocResource",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRSRC"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AllocSelector",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Catch",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DebugBreak",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "DeleteAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "ATOM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "DirectedYield",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FatalAppExit",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FatalExit",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FindAtom",
+      "ret": "ATOM",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FindResource",
+      "ret": "HRSRC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FreeLibrary",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FreeModule",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FreeProcInstance",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FARPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FreeResource",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FreeSelector",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetAtomHandle",
+      "ret": "HLOCAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "ATOM"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetAtomName",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "ATOM"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCodeHandle",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FARPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCodeInfo",
+      "ret": "void",
+      "params": [
+        {
+          "name": "lpproc",
+          "ctype": "FARPROC"
+        },
+        {
+          "name": "lpseginfo",
+          "ctype": "SEGINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCurrentPDB",
+      "ret": "uint16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetCurrentTask",
+      "ret": "HTASK",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDOSEnvironment",
+      "ret": "LPSTR",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetDriveType",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetFreeSpace",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetInstanceData",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint8_t*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetModuleFileName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetModuleHandle",
+      "ret": "HMODULE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetModuleUsage",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetNumTasks",
+      "ret": "uint16_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPrivateProfileInt",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetPrivateProfileString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        },
+        {
+          "name": "arg6",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetProcAddress",
+      "ret": "FARPROC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetProfileInt",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetProfileString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg5",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSelectorBase",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSelectorLimit",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetSystemDirectory",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTempDrive",
+      "ret": "uint8_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "char"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetTempFileName",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint8_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetVersion",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWinDebugInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpwdi",
+          "ctype": "WINDEBUGINFO FAR*"
+        },
+        {
+          "name": "flags",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWinFlags",
+      "ret": "uint32_t",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetWindowsDirectory",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalAlloc",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalCompact",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalDosAlloc",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalDosFree",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalFix",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalFlags",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalFree",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalHandle",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalLRUNewest",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalLRUOldest",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalLock",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalNotify",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "GNOTIFYPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalPageLock",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalPageUnlock",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalReAlloc",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalSize",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalUnWire",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalUnfix",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalUnlock",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GlobalWire",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "InitAtomTable",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadCodePtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpfn",
+          "ctype": "FARPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadHugeReadPtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lp",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "cb",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadHugeWritePtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lp",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "cb",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadReadPtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lp",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "cb",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadStringPtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpsz",
+          "ctype": "LPCVOID"
+        },
+        {
+          "name": "cchmax",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsBadWritePtr",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lp",
+          "ctype": "LPVOID"
+        },
+        {
+          "name": "cb",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsDBCSLeadByte",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint8_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "IsTask",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HTASK"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LimitEmsPages",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadLibrary",
+      "ret": "HINSTANCE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadModule",
+      "ret": "HINSTANCE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LoadResource",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRSRC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalAlloc",
+      "ret": "HLOCAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalCompact",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalFlags",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalFree",
+      "ret": "HLOCAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalHandle",
+      "ret": "HLOCAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalInit",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalLock",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalReAlloc",
+      "ret": "HLOCAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalShrink",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalSize",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LocalUnlock",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HLOCAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LockResource",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HGLOBAL"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LockSegment",
+      "ret": "HGLOBAL",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LogError",
+      "ret": "void",
+      "params": [
+        {
+          "name": "err",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "lpinfo",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "LogParamError",
+      "ret": "void",
+      "params": [
+        {
+          "name": "err",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "lpfn",
+          "ctype": "FARPROC"
+        },
+        {
+          "name": "param",
+          "ctype": "LPVOID"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MakeProcInstance",
+      "ret": "FARPROC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "FARPROC"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HINSTANCE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OpenFile",
+      "ret": "HFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "OFSTRUCT FAR*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OutputDebugString",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PrestoChangoSelector",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "sourcesel",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "destsel",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetErrorMode",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetHandleCount",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetResourceHandler",
+      "ret": "RSRCHDLRPROC",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "RSRCHDLRPROC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSelectorBase",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSelectorLimit",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetSwapAreaSize",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWinDebugInfo",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "lpwdi",
+          "ctype": "WINDEBUGINFO FAR*"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SizeofResource",
+      "ret": "uint32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HINSTANCE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "HRSRC"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SwapRecording",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SwitchStackBack",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "SwitchStackTo",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Throw",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "int16_t FAR*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "UnlockSegment",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ValidateCodeSegments",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "ValidateFreeSpaces",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "WinExec",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WritePrivateProfileString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg4",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "WriteProfileString",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "Yield",
+      "ret": "void",
+      "params": null,
+      "callconv": "pascal"
+    },
+    {
+      "name": "_hread",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_hwrite",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_lclose",
+      "ret": "HFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_lcreat",
+      "ret": "HFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_llseek",
+      "ret": "int32_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int32_t"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_lopen",
+      "ret": "HFILE",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_lread",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "_lwrite",
+      "ret": "uint16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "HFILE"
+        },
+        {
+          "name": "arg2",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "uint16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "hmemcpy",
+      "ret": "void",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg2",
+          "ctype": "void _huge*"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int32_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrcat",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrcpy",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrcpyn",
+      "ret": "LPSTR",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPSTR"
+        },
+        {
+          "name": "arg2",
+          "ctype": "LPCSTR"
+        },
+        {
+          "name": "arg3",
+          "ctype": "int16_t"
+        }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "lstrlen",
+      "ret": "int16_t",
+      "params": [
+        {
+          "name": "arg1",
+          "ctype": "LPCSTR"
+        }
+      ],
+      "callconv": "pascal"
+    }
+  ]
+}

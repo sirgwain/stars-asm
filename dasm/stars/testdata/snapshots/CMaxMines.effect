@@ -1,0 +1,77 @@
+/*
+CMaxMines  (planet)
+  addr: 000a:7248  len=187
+  sig:  int16_t CMaxMines(PLANET *lppl, int16_t iplr)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    int16_t          iEff           [BP-0xc]
+    int32_t          lPopMax        [BP-0xa]
+    int32_t          cMax           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_7248:
+  insts 0..39  off 0x7248..0x72ae
+  succs: L_72b2, L_72ca
+  effects:
+    725a  call CalcPlanetMaxPop(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@7251/src([bp+iplr])) -> callresult(int32_t)
+    7262  store[2] [bp-lPopMax] = loword(callresult(int32_t))
+    7265  store[2] [bp-lPopMax+0x2] = hiword(callresult(int32_t))
+    7278  call GetRaceStat((0x59a2 + loword((0xc0 * load([bp+iplr])))), 0x6) -> callresult(int16_t)
+    7280  store[2] [bp-iEff] = callresult(int16_t)
+    7297  call __aFulmul(words(load([bp-lPopMax+0x2]), load([bp-lPopMax])), words(signhiword(load([bp-iEff])), load([bp-iEff]))) -> callresult(uint32_t)
+    729e  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words(0x0, 0x64)) -> callresult(int32_t)
+    72a3  store[2] [bp-cMax] = loword(callresult(int32_t))
+    72a6  store[2] [bp-cMax+0x2] = hiword(callresult(int32_t))
+    72ad  branch load([bp-cMax+0x2]) > 0x0 ? L_72ca : L_72b2
+
+block L_72b2:
+  insts 41..41  off 0x72b2..0x72b3
+  preds: L_7248
+  succs: L_72b7, L_72c0
+  effects:
+    72b2  branch load([bp-cMax+0x2]) < 0x0 ? L_72c0 : L_72b7
+
+block L_72b7:
+  insts 43..44  off 0x72b7..0x72bc
+  preds: L_72b2
+  succs: L_72c0, L_72ca
+  effects:
+    72bb  branch load([bp-cMax]) >= 0xa ? L_72ca : L_72c0
+
+block L_72c0:
+  insts 46..47  off 0x72c0..0x72c9
+  preds: L_72b2, L_72b7
+  succs: L_72ca
+  effects:
+    72c0  store[2] [bp-cMax] = 0xa
+    72c5  store[2] [bp-cMax+0x2] = 0x0
+
+block L_72ca:
+  insts 48..58  off 0x72ca..0x72e6
+  preds: L_7248, L_72b7, L_72c0
+  succs: L_72ea, L_72f4
+  effects:
+    72da  call GetRaceStat((0x59a2 + loword((0xc0 * load([bp+iplr])))), 0xe) -> callresult(int16_t)
+    72e5  branch callresult(int16_t) != 0x8 ? L_72f4 : L_72ea
+
+block L_72ea:
+  insts 60..61  off 0x72ea..0x72f3
+  preds: L_72ca
+  succs: L_72f4
+  effects:
+    72ea  store[2] [bp-cMax] = 0x0
+    72ef  store[2] [bp-cMax+0x2] = 0x0
+
+block L_72f4:
+  insts 62..63  off 0x72f4..0x72fc
+  preds: L_72ca, L_72ea
+  succs: L_72fd
+
+block L_72fd:
+  insts 65..69  off 0x72fd..0x7302
+  preds: L_72f4
+  effects:
+    7302  return load([bp-cMax])

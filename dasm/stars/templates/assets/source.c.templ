@@ -1,0 +1,31 @@
+#include "common.h"
+{{ range $i, $s := .Globals }}
+{{- if .StaticInitializer }}
+{{ .CDecl }} = {{ .StaticInitializer }};
+{{- else }}
+{{ .CDecl }};
+{{- end }}
+{{- end }}
+
+{{ range $i, $s := .Functions }}
+{{- if $.FunctionBodies }}
+{{ index $.FunctionBodies .Name }}
+{{- else }}
+{{ .CDecl }} {
+{{- range $i, $v := .Vars }}
+    {{ .CDecl }};
+{{- end }}
+{{- if .Body}}
+{{.Body}}
+{{- else }}
+{{- if eq .Ret.String "void" }}
+
+    return;
+{{- else }}
+
+    return 0;
+{{- end }}
+{{- end }}
+}
+{{- end }}
+{{ end }}

@@ -1,0 +1,615 @@
+/*
+CalcPlayerScore  (util)
+  addr: 0008:58a6  len=1299
+  sig:  int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore)
+  params:
+    int16_t          iPlr           [BP+0x6]
+    SCORE *          pscore         [BP+0x8]
+  locals:
+    int16_t[16]      rgType         [BP-0x5c]
+    int32_t          lPower         [BP-0x3c]
+    int16_t          iTech          [BP-0x38]
+    FLEET *          lpfl           [BP-0x36]
+    int16_t          ifl            [BP-0x32]
+    int16_t          i              [BP-0x30]
+    PLANET *         lppl           [BP-0x2e]
+    PLANET *         lpplMac        [BP-0x2a]
+    SCORE            score          [BP-0x26]
+    int32_t          lTemp          [BP-0x12]
+    int32_t[3]       rgcsh          [BP-0xe]
+
+  stats: blocks=0  labels=0
+*/
+block L_58a6:
+  insts 0..26  off 0x58a6..0x58ed
+  succs: L_59c9
+  effects:
+    58bb  call memset(addr([bp-score]), 0x0, 0x14) -> callresult(void *)
+    58ca  store[2] [bp-lppl] = load([lpPlanets])
+    58cd  store[2] [bp-lppl+0x2] = load([lpPlanets+0x2])
+    58d0  store[2] ss:[bp-0x60] = load([lpPlanets])
+    58d3  store[2] ss:[bp-0x5e] = load([lpPlanets+0x2])
+    58e5  store[2] [bp-lpplMac] = (load(ss:[bp-0x60]) + loword((0x38 * load([cPlanet]))))
+    58e8  store[2] [bp-lpplMac+0x2] = load(ss:[bp-0x5e])
+    58eb  goto L_59c9
+
+block L_58ee:
+  insts 27..30  off 0x58ee..0x58f9
+  preds: L_59c9
+  succs: L_5900, L_59c5
+  effects:
+    58f8  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) != load([bp+iPlr]) ? L_59c5 : L_58fa
+
+block L_58fa:
+  insts 31..31  off 0x58fa..0x58fc
+  succs: L_5900
+
+block L_58fd:
+  insts 32..32  off 0x58fd..0x58ff
+  succs: L_59c5
+
+block L_5900:
+  insts 33..49  off 0x5900..0x592f
+  preds: L_58ee, L_58fa
+  succs: L_5933, L_594b
+  effects:
+    5900  store[2] [bp-score+0x8] = (load([bp-score+0x8]) + 0x1)
+    591f  call __aFldiv(words((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2a]) + 0x0), (load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x28]) + 0x3e7)), words(0x0, 0x3e8)) -> callresult(int32_t)
+    5924  store[2] [bp-lTemp] = loword(callresult(int32_t))
+    5927  store[2] [bp-lTemp+0x2] = hiword(callresult(int32_t))
+    592e  branch load([bp-lTemp+0x2]) < 0x0 ? L_594b : L_5933
+
+block L_5933:
+  insts 51..51  off 0x5933..0x5934
+  preds: L_5900
+  succs: L_5938, L_5941
+  effects:
+    5933  branch load([bp-lTemp+0x2]) > 0x0 ? L_5941 : L_5938
+
+block L_5938:
+  insts 53..54  off 0x5938..0x593d
+  preds: L_5933
+  succs: L_5941, L_594b
+  effects:
+    593c  branch load([bp-lTemp]) <= 0x6 ? L_594b : L_5941
+
+block L_5941:
+  insts 56..57  off 0x5941..0x594a
+  preds: L_5933, L_5938
+  succs: L_594b
+  effects:
+    5941  store[2] [bp-lTemp] = 0x6
+    5946  store[2] [bp-lTemp+0x2] = 0x0
+
+block L_594b:
+  insts 58..68  off 0x594b..0x596a
+  preds: L_5900, L_5938, L_5941
+  succs: L_596e, L_59ad
+  effects:
+    5951  store[2] [bp-score] = (load([bp-score]) + load([bp-lTemp]))
+    5954  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + load([bp-lTemp+0x2]))
+    5969  branch ((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x4]) >> 0x9) & 0x1) == 0x0 ? L_59ad : L_596e
+
+block L_596e:
+  insts 70..88  off 0x596e..0x59a5
+  preds: L_594b
+  succs: L_59a9, L_59ad
+  effects:
+    5993  call LphuldefFromId(load(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14e]):[(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14c]) + loword(((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2c]) & 0xf) * 0x93)))])) -> callresult(HULDEF *)
+    59a4  branch load(farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))+0x34]) == 0x0 ? L_59ad : L_59a9
+
+block L_59a9:
+  insts 90..90  off 0x59a9..0x59ac
+  preds: L_596e
+  succs: L_59ad
+  effects:
+    59a9  store[2] [bp-score+0xa] = (load([bp-score+0xa]) + 0x1)
+
+block L_59ad:
+  insts 91..98  off 0x59ad..0x59c4
+  preds: L_594b, L_596e, L_59a9
+  succs: L_59c5
+  effects:
+    59b6  call CResourcesAtPlanet(farptr(load([bp-lppl+0x2]), load([bp-lppl])), load([bp+iPlr])) -> callresult(int16_t)
+    59bf  store[2] [bp-score+0x4] = (load([bp-score+0x4]) + callresult(int16_t))
+    59c2  store[2] [bp-score+0x6] = (load([bp-score+0x6]) + signhiword(callresult(int16_t)))
+
+block L_59c5:
+  insts 99..99  off 0x59c5..0x59c8
+  preds: L_58ee, L_58fd, L_59ad
+  succs: L_59c9
+  effects:
+    59c5  store[2] [bp-lppl] = (load([bp-lppl]) + 0x38)
+
+block L_59c9:
+  insts 100..103  off 0x59c9..0x59d3
+  preds: L_58a6, L_59c5
+  succs: L_58ee, L_59d7
+  effects:
+    59d2  branch load([bp-lppl]) < load([bp-lpplMac]) ? L_58ee : L_59d7
+
+block L_59d7:
+  insts 105..126  off 0x59d7..0x5a12
+  preds: L_59c9
+  succs: L_5a16, L_5aa7
+  effects:
+    59e5  call __aFldiv(words(load([bp-score+0x6]), load([bp-score+0x4])), words(0x0, 0x1e)) -> callresult(int32_t)
+    59ea  store[2] [bp-score] = (load@59ea/dst([bp-score]) + loword(callresult(int32_t)))
+    59ed  store[2] [bp-score+0x2] = (load@59ed/dst([bp-score+0x2]) + hiword(callresult(int32_t)))
+    59f7  store[2] [bp-score] = (load@59f7/dst([bp-score]) + loword((0x3 * load([bp-score+0xa]))))
+    59fa  store[2] [bp-score+0x2] = (load@59fa/dst([bp-score+0x2]) + signhiword(loword((0x3 * load([bp-score+0xa])))))
+    5a11  branch (load(0x25:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x54]) & 0x1) != 0x0 ? L_5aa7 : L_5a16
+
+block L_5a16:
+  insts 128..129  off 0x5a16..0x5a1d
+  preds: L_59d7
+  succs: L_5a9e
+  effects:
+    5a16  store[2] [bp-i] = 0x0
+    5a1b  goto L_5a9e
+
+block L_5a1e:
+  insts 130..143  off 0x5a1e..0x5a41
+  preds: L_5a9e
+  succs: L_5a45, L_5a52
+  effects:
+    5a36  store[2] [bp-iTech] = sext8to16(load(byte 0x25:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))]))
+    5a39  store[2] [bp-score+0x12] = (load([bp-score+0x12]) + sext8to16(load(byte 0x25:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))])))
+    5a40  branch load([bp-iTech]) >= 0x4 ? L_5a52 : L_5a45
+
+block L_5a45:
+  insts 145..149  off 0x5a45..0x5a51
+  preds: L_5a1e
+  succs: L_5a9a
+  effects:
+    5a49  store[2] [bp-score] = (load([bp-score]) + load([bp-iTech]))
+    5a4c  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + signhiword(load([bp-iTech])))
+    5a4f  goto L_5a9a
+
+block L_5a52:
+  insts 150..151  off 0x5a52..0x5a57
+  preds: L_5a1e
+  succs: L_5a5b, L_5a6d
+  effects:
+    5a56  branch load([bp-iTech]) >= 0x7 ? L_5a6d : L_5a5b
+
+block L_5a5b:
+  insts 153..159  off 0x5a5b..0x5a6c
+  preds: L_5a52
+  succs: L_5a9a
+  effects:
+    5a64  store[2] [bp-score] = (load([bp-score]) + ((load([bp-iTech]) << 0x1) + 0xfffd))
+    5a67  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + signhiword(((load([bp-iTech]) << 0x1) + 0xfffd)))
+    5a6a  goto L_5a9a
+
+block L_5a6d:
+  insts 160..161  off 0x5a6d..0x5a72
+  preds: L_5a52
+  succs: L_5a76, L_5a89
+  effects:
+    5a71  branch load([bp-iTech]) >= 0xa ? L_5a89 : L_5a76
+
+block L_5a76:
+  insts 163..169  off 0x5a76..0x5a88
+  preds: L_5a6d
+  succs: L_5a9a
+  effects:
+    5a80  store[2] [bp-score] = (load([bp-score]) + (loword((0x3 * load([bp-iTech]))) + 0xfff7))
+    5a83  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + signhiword((loword((0x3 * load([bp-iTech]))) + 0xfff7)))
+    5a86  goto L_5a9a
+
+block L_5a89:
+  insts 170..176  off 0x5a89..0x5a99
+  preds: L_5a6d
+  succs: L_5a9a
+  effects:
+    5a94  store[2] [bp-score] = (load([bp-score]) + (((load([bp-iTech]) << 0x1) << 0x1) + 0xffee))
+    5a97  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + signhiword((((load([bp-iTech]) << 0x1) << 0x1) + 0xffee)))
+
+block L_5a9a:
+  insts 177..177  off 0x5a9a..0x5a9d
+  preds: L_5a45, L_5a5b, L_5a76, L_5a89
+  succs: L_5a9e
+  effects:
+    5a9a  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5a9e:
+  insts 178..179  off 0x5a9e..0x5aa3
+  preds: L_5a16, L_5a9a
+  succs: L_5a1e, L_5aa7
+  effects:
+    5aa2  branch load([bp-i]) < 0x6 ? L_5a1e : L_5aa7
+
+block L_5aa7:
+  insts 181..182  off 0x5aa7..0x5aae
+  preds: L_59d7, L_5a9e
+  succs: L_5b77
+  effects:
+    5aa7  store[2] [bp-i] = 0x0
+    5aac  goto L_5b77
+
+block L_5aaf:
+  insts 183..197  off 0x5aaf..0x5ad8
+  preds: L_5b77
+  succs: L_5adc, L_5aed
+  effects:
+    5ad7  branch ((load(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]):[(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x7b]) >> 0x9) & 0x1) == 0x0 ? L_5aed : L_5adc
+
+block L_5adc:
+  insts 199..204  off 0x5adc..0x5aec
+  preds: L_5aaf
+  succs: L_5b73
+  effects:
+    5ae6  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x5c] = 0xffff
+    5aea  goto L_5b73
+
+block L_5aed:
+  insts 205..220  off 0x5aed..0x5b19
+  preds: L_5aaf
+  succs: L_5b1d, L_5b3c
+  effects:
+    5b06  call LComputePower(farptr(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]), (load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i])))))) -> callresult(int32_t)
+    5b0e  store[2] [bp-lPower] = loword(callresult(int32_t))
+    5b11  store[2] [bp-lPower+0x2] = hiword(callresult(int32_t))
+    5b18  branch load([bp-lPower+0x2]) > 0x0 ? L_5b3c : L_5b1d
+
+block L_5b1d:
+  insts 222..222  off 0x5b1d..0x5b1e
+  preds: L_5aed
+  succs: L_5b22, L_5b2b
+  effects:
+    5b1d  branch load([bp-lPower+0x2]) < 0x0 ? L_5b2b : L_5b22
+
+block L_5b22:
+  insts 224..225  off 0x5b22..0x5b27
+  preds: L_5b1d
+  succs: L_5b2b, L_5b3c
+  effects:
+    5b26  branch load([bp-lPower]) > 0x0 ? L_5b3c : L_5b2b
+
+block L_5b2b:
+  insts 227..232  off 0x5b2b..0x5b3b
+  preds: L_5b1d, L_5b22
+  succs: L_5b73
+  effects:
+    5b35  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x5c] = 0x0
+    5b39  goto L_5b73
+
+block L_5b3c:
+  insts 233..234  off 0x5b3c..0x5b41
+  preds: L_5aed, L_5b22
+  succs: L_5b45, L_5b65
+  effects:
+    5b40  branch load([bp-lPower+0x2]) > 0x0 ? L_5b65 : L_5b45
+
+block L_5b45:
+  insts 236..236  off 0x5b45..0x5b46
+  preds: L_5b3c
+  succs: L_5b4a, L_5b54
+  effects:
+    5b45  branch load([bp-lPower+0x2]) < 0x0 ? L_5b54 : L_5b4a
+
+block L_5b4a:
+  insts 238..239  off 0x5b4a..0x5b50
+  preds: L_5b45
+  succs: L_5b54, L_5b65
+  effects:
+    5b4f  branch load([bp-lPower]) >= 0x7d0 ? L_5b65 : L_5b54
+
+block L_5b54:
+  insts 241..246  off 0x5b54..0x5b64
+  preds: L_5b45, L_5b4a
+  succs: L_5b73
+  effects:
+    5b5e  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x5c] = 0x1
+    5b62  goto L_5b73
+
+block L_5b65:
+  insts 247..251  off 0x5b65..0x5b72
+  preds: L_5b3c, L_5b4a
+  succs: L_5b73
+  effects:
+    5b6f  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x5c] = 0x2
+
+block L_5b73:
+  insts 252..252  off 0x5b73..0x5b76
+  preds: L_5adc, L_5b2b, L_5b54, L_5b65
+  succs: L_5b77
+  effects:
+    5b73  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5b77:
+  insts 253..254  off 0x5b77..0x5b7c
+  preds: L_5aa7, L_5b73
+  succs: L_5aaf, L_5b80
+  effects:
+    5b7b  branch load([bp-i]) < 0x10 ? L_5aaf : L_5b80
+
+block L_5b80:
+  insts 256..257  off 0x5b80..0x5b87
+  preds: L_5b77
+  succs: L_5ba1
+  effects:
+    5b80  store[2] [bp-i] = 0x0
+    5b85  goto L_5ba1
+
+block L_5b88:
+  insts 258..265  off 0x5b88..0x5ba0
+  preds: L_5ba1
+  succs: L_5ba1
+  effects:
+    5b94  store[2] ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0xe] = 0x0
+    5b98  store[2] ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0xc] = 0x0
+    5b9d  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5ba1:
+  insts 266..267  off 0x5ba1..0x5ba6
+  preds: L_5b80, L_5b88
+  succs: L_5b88, L_5baa
+  effects:
+    5ba5  branch load([bp-i]) < 0x3 ? L_5b88 : L_5baa
+
+block L_5baa:
+  insts 269..270  off 0x5baa..0x5bb1
+  preds: L_5ba1
+  succs: L_5bb6
+  effects:
+    5baa  store[2] [bp-ifl] = 0x0
+    5baf  goto L_5bb6
+
+block L_5bb2:
+  insts 271..271  off 0x5bb2..0x5bb5
+  preds: L_5bf1, L_5c00, L_5c17, L_5c87, L_5c90
+  succs: L_5bb6
+  effects:
+    5bb2  store[2] [bp-ifl] = (load([bp-ifl]) + 0x1)
+
+block L_5bb6:
+  insts 272..274  off 0x5bb6..0x5bbd
+  preds: L_5baa, L_5bb2
+  succs: L_5bc1, L_5c93
+  effects:
+    5bbc  branch load([bp-ifl]) >= load([cFleet]) ? L_5c93 : L_5bc1
+
+block L_5bc1:
+  insts 276..288  off 0x5bc1..0x5be5
+  preds: L_5bb6
+  succs: L_5be9, L_5bf1
+  effects:
+    5bdb  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))])
+    5bde  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))+0x2])
+    5be4  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))]) != 0x0 ? L_5bf1 : L_5be9
+
+block L_5be9:
+  insts 290..291  off 0x5be9..0x5bed
+  preds: L_5bc1
+  succs: L_5bf1, L_5c93
+  effects:
+    5bec  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_5c93 : L_5bf1
+
+block L_5bf1:
+  insts 293..296  off 0x5bf1..0x5bfc
+  preds: L_5bc1, L_5be9
+  succs: L_5bb2, L_5c00
+  effects:
+    5bfb  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) != load([bp+iPlr]) ? L_5bb2 : L_5c00
+
+block L_5c00:
+  insts 298..304  off 0x5c00..0x5c13
+  preds: L_5bf1
+  succs: L_5bb2, L_5c1a
+  effects:
+    5c12  branch ((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) >> 0xa) & 0x1) != 0x0 ? L_5bb2 : L_5c14
+
+block L_5c14:
+  insts 305..305  off 0x5c14..0x5c16
+  succs: L_5c1a
+
+block L_5c17:
+  insts 306..306  off 0x5c17..0x5c19
+  succs: L_5bb2
+
+block L_5c1a:
+  insts 307..308  off 0x5c1a..0x5c21
+  preds: L_5c00, L_5c14
+  succs: L_5c87
+  effects:
+    5c1a  store[2] [bp-i] = 0x0
+    5c1f  goto L_5c87
+
+block L_5c22:
+  insts 309..318  off 0x5c22..0x5c3b
+  preds: L_5c87, L_5c8d
+  succs: L_5c3f, L_5c83
+  effects:
+    5c3a  branch load(load([bp-lpfl+0x2]):[((load([bp-lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) <= 0x0 ? L_5c83 : L_5c3f
+
+block L_5c3f:
+  insts 320..325  off 0x5c3f..0x5c4d
+  preds: L_5c22
+  succs: L_5c51, L_5c83
+  effects:
+    5c4c  branch load(ss:[bp+(load([bp-i]) << 0x1)-0x5c]) == 0xffff ? L_5c83 : L_5c51
+
+block L_5c51:
+  insts 327..347  off 0x5c51..0x5c82
+  preds: L_5c3f
+  succs: L_5c83
+  effects:
+    5c7e  store[2] ss:[bp+((load(ss:[bp+(load([bp-i]) << 0x1)-0x5c]) << 0x1) << 0x1)-0xe] = (load(ss:[bp+((load(ss:[bp+(load([bp-i]) << 0x1)-0x5c]) << 0x1) << 0x1)-0xe]) + load(load([bp-lpfl+0x2]):[((load([bp-lpfl]) + 0xc) + (load([bp-i]) << 0x1))]))
+    5c80  store[2] ss:[bp+((load(ss:[bp+(load([bp-i]) << 0x1)-0x5c]) << 0x1) << 0x1)-0xc] = (load(ss:[bp+((load(ss:[bp+(load([bp-i]) << 0x1)-0x5c]) << 0x1) << 0x1)-0xc]) + signhiword(load(load([bp-lpfl+0x2]):[((load([bp-lpfl]) + 0xc) + (load([bp-i]) << 0x1))])))
+
+block L_5c83:
+  insts 348..348  off 0x5c83..0x5c86
+  preds: L_5c22, L_5c3f, L_5c51
+  succs: L_5c87
+  effects:
+    5c83  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5c87:
+  insts 349..350  off 0x5c87..0x5c8c
+  preds: L_5c1a, L_5c83
+  succs: L_5bb2, L_5c22
+  effects:
+    5c8b  branch load([bp-i]) >= 0x10 ? L_5bb2 : L_5c8d
+
+block L_5c8d:
+  insts 351..351  off 0x5c8d..0x5c8f
+  succs: L_5c22
+
+block L_5c90:
+  insts 352..352  off 0x5c90..0x5c92
+  succs: L_5bb2
+
+block L_5c93:
+  insts 353..356  off 0x5c93..0x5c9b
+  preds: L_5bb6, L_5be9
+  succs: L_5c9f, L_5cb5
+  effects:
+    5c9a  branch load([bp-rgcsh+0x6]) > signhiword(load([bp-score+0x8])) ? L_5cb5 : L_5c9f
+
+block L_5c9f:
+  insts 358..358  off 0x5c9f..0x5ca0
+  preds: L_5c93
+  succs: L_5ca4, L_5cac
+  effects:
+    5c9f  branch load([bp-rgcsh+0x6]) < signhiword(load([bp-score+0x8])) ? L_5cac : L_5ca4
+
+block L_5ca4:
+  insts 360..361  off 0x5ca4..0x5ca8
+  preds: L_5c9f
+  succs: L_5cac, L_5cb5
+  effects:
+    5ca7  branch load([bp-rgcsh+0x4]) >= load([bp-score+0x8]) ? L_5cb5 : L_5cac
+
+block L_5cac:
+  insts 363..365  off 0x5cac..0x5cb4
+  preds: L_5c9f, L_5ca4
+  succs: L_5cb9
+  effects:
+    5cb2  goto L_5cb9
+
+block L_5cb5:
+  insts 366..367  off 0x5cb5..0x5cb8
+  preds: L_5c93, L_5ca4
+  succs: L_5cb9
+
+block L_5cb9:
+  insts 368..379  off 0x5cb9..0x5cd7
+  preds: L_5cac, L_5cb5
+  succs: L_5cdb, L_5cf1
+  effects:
+    5cbc  call __aFlshl(merge(Join: L_5cb9, (L_5cac:words(load([bp-0xa]), load([bp-0x8])), L_5cb5:words(load([bp-0x1e]), signhiword(load([bp-0x1e]))))), 0x1) -> callresult(int32_t)
+    5cc9  store[2] ss:[bp-0x60] = loword(callresult(int32_t))
+    5ccc  store[2] ss:[bp-0x5e] = hiword(callresult(int32_t))
+    5cd6  branch load([bp-rgcsh+0x2]) > signhiword(load([bp-score+0x8])) ? L_5cf1 : L_5cdb
+
+block L_5cdb:
+  insts 381..381  off 0x5cdb..0x5cdc
+  preds: L_5cb9
+  succs: L_5ce0, L_5ce8
+  effects:
+    5cdb  branch load([bp-rgcsh+0x2]) < signhiword(load([bp-score+0x8])) ? L_5ce8 : L_5ce0
+
+block L_5ce0:
+  insts 383..384  off 0x5ce0..0x5ce4
+  preds: L_5cdb
+  succs: L_5ce8, L_5cf1
+  effects:
+    5ce3  branch load([bp-rgcsh]) >= load([bp-score+0x8]) ? L_5cf1 : L_5ce8
+
+block L_5ce8:
+  insts 386..388  off 0x5ce8..0x5cf0
+  preds: L_5cdb, L_5ce0
+  succs: L_5cf5
+  effects:
+    5cee  goto L_5cf5
+
+block L_5cf1:
+  insts 389..390  off 0x5cf1..0x5cf4
+  preds: L_5cb9, L_5ce0
+  succs: L_5cf5
+
+block L_5cf5:
+  insts 391..401  off 0x5cf5..0x5d11
+  preds: L_5ce8, L_5cf1
+  succs: L_5d15, L_5d57
+  effects:
+    5cf7  call __aFldiv(merge(Join: L_5cf5, (L_5ce8:words(load([bp-0xc]), load([bp-0xe])), L_5cf1:words(signhiword(load([bp-0x1e])), load([bp-0x1e])))), words(0x0, 0x2)) -> callresult(int32_t)
+    5d06  store[2] [bp-score] = (load([bp-score]) + (loword(callresult(int32_t)) + load(ss:[bp-0x60])))
+    5d09  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + (hiword(callresult(int32_t)) + load(ss:[bp-0x5e])))
+    5d10  branch load([bp-rgcsh+0xa]) < 0x0 ? L_5d57 : L_5d15
+
+block L_5d15:
+  insts 403..403  off 0x5d15..0x5d16
+  preds: L_5cf5
+  succs: L_5d1a, L_5d23
+  effects:
+    5d15  branch load([bp-rgcsh+0xa]) > 0x0 ? L_5d23 : L_5d1a
+
+block L_5d1a:
+  insts 405..406  off 0x5d1a..0x5d1f
+  preds: L_5d15
+  succs: L_5d23, L_5d57
+  effects:
+    5d1e  branch load([bp-rgcsh+0x8]) <= 0x0 ? L_5d57 : L_5d23
+
+block L_5d23:
+  insts 408..429  off 0x5d23..0x5d56
+  preds: L_5d15, L_5d1a
+  succs: L_5d57
+  effects:
+    5d3e  call __aFlshl(words(load([bp-rgcsh+0x8]), load([bp-rgcsh+0xa])), 0x3) -> callresult(int32_t)
+    5d45  call __aFulmul(words(hiword(callresult(int32_t)), loword(callresult(int32_t))), words(signhiword(load([bp-score+0x8])), load([bp-score+0x8]))) -> callresult(uint32_t)
+    5d4c  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words((signhiword(load([bp-score+0x8])) + load([bp-rgcsh+0xa])), (load([bp-score+0x8]) + load([bp-rgcsh+0x8])))) -> callresult(int32_t)
+    5d51  store[2] [bp-score] = (load([bp-score]) + loword(callresult(int32_t)))
+    5d54  store[2] [bp-score+0x2] = (load([bp-score+0x2]) + hiword(callresult(int32_t)))
+
+block L_5d57:
+  insts 430..431  off 0x5d57..0x5d5e
+  preds: L_5cf5, L_5d1a, L_5d23
+  succs: L_5d88
+  effects:
+    5d57  store[2] [bp-i] = 0x0
+    5d5c  goto L_5d88
+
+block L_5d5f:
+  insts 432..446  off 0x5d5f..0x5d87
+  preds: L_5d88
+  succs: L_5d88
+  effects:
+    5d70  call WPackLong(words(load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0xc]), load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0xe]))) -> callresult(uint16_t)
+    5d82  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x1a] = callresult(uint16_t)
+    5d84  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5d88:
+  insts 447..448  off 0x5d88..0x5d8d
+  preds: L_5d57, L_5d5f
+  succs: L_5d5f, L_5d91
+  effects:
+    5d8c  branch load([bp-i]) < 0x3 ? L_5d5f : L_5d91
+
+block L_5d91:
+  insts 450..451  off 0x5d91..0x5d96
+  preds: L_5d88
+  succs: L_5d9a, L_5daa
+  effects:
+    5d95  branch load([bp+pscore]) == 0x0 ? L_5daa : L_5d9a
+
+block L_5d9a:
+  insts 453..459  off 0x5d9a..0x5da9
+  preds: L_5d91
+  succs: L_5daa
+  effects:
+    5da5  copy[0x14] *addr(0x25:[load([bp+pscore])]) = *addr(0x25:[addr([bp-score])])
+
+block L_5daa:
+  insts 460..461  off 0x5daa..0x5db2
+  preds: L_5d91, L_5d9a
+  succs: L_5db3
+
+block L_5db3:
+  insts 463..467  off 0x5db3..0x5db8
+  preds: L_5daa
+  effects:
+    5db8  return words(load([bp-score]), load([bp-score+0x2]))

@@ -1,0 +1,15 @@
+.DS_Store
+dist/
+.vscode/
+vendor/
+.gocache
+.claude/
+debug-diagrams/
+decompiled/effects
+decompiled/asm
+decompiled/c
+decompiled/sem
+decompiled/ir
+snippets/
+scripts/zip-src.sh
+*.zip

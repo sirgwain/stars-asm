@@ -1,0 +1,16 @@
+{{ define "dump_asm_block_insts" -}}
+{{ $block := .Block -}}
+{{ range $block.Instrs -}}
+{{ if ne .Off $block.Off -}}
+{{ range sourceComments $.SourceFile $.SourceLines .Off -}}
+{{ asmCommentLine "" . }}
+{{ end -}}
+{{ end -}}
+{{ $line := "" -}}
+{{ if $.Options.ShowBytes }}{{ $line = printf "%s%s" $line (renderBytes $.Styles .Bytes) }}{{ end -}}
+{{ if $.Options.ShowOffsets }}{{ $line = printf "%s%04X  " $line .Off }}{{ end -}}
+{{ $comment := "" -}}
+{{ if $.Options.RawOperands }}{{ $line = printf "%s%s" $line .StringRaw }}{{ $comment = instructionComment $.CFG nil . }}{{ else }}{{ $line = printf "%s%s" $line (printf "%-9s %-20s" (instructionMnemonic $.CFG .) (instructionOperands $.CFG $.Annotations .)) }}{{ $comment = instructionComment $.CFG $.Annotations . }}{{ end -}}
+{{ if $comment }}{{ asmCommentLine $line $comment }}{{ else }}{{ $line }}{{ end }}
+{{ end -}}
+{{ end -}}

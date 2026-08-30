@@ -1,0 +1,78 @@
+/*
+CalcPctSurvive  (util)
+  addr: 0008:02f6  len=432
+  sig:  void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart)
+  params:
+    PLANET *         lppl           [BP+0x6]
+    float *          ppct           [BP+0xa]
+    float *          ppctSmart      [BP+0xc]
+  locals:
+    PART             part           [BP-0x14]
+    float            pct            [BP-0xc]
+    int32_t          cDefenses      [BP-0x8]
+    int16_t          iPlrSav        [BP-0x4]
+    block 0008:0369  len=0x107
+      int16_t          cMax           [BP-0x16]
+
+  stats: blocks=1  labels=0
+*/
+L_02f6:
+    branch ppctSmart == 0x0 ? L_0317 : L_0308
+
+L_0308:
+    *ppctSmart = 1
+
+L_0317:
+    branch lppl->iPlayer == 0xffff ? L_0487 : L_0324
+
+L_0324:
+    branch lppl->cDefenses != 0x0 ? L_0345 : L_033d
+
+L_033d:
+    branch (*(lppl+0x1a) & 0x0) == 0x0 ? L_0487 : L_0345
+
+L_0345:
+    iPlrSav = idPlayer
+    idPlayer = lppl->iPlayer
+    branch FGetBestDefensePart(&part) == 0x0 ? L_0473 : L_0369
+
+L_0369:
+    LOWORD(cDefenses) = lppl->cDefenses
+    HIWORD(cDefenses) = (*(lppl+0x1a) & 0x0)
+    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0x0)
+    branch signhiword(cMax) > HIWORD(cDefenses) ? L_03bf : L_03a8
+
+L_03a8:
+    branch signhiword(cMax) < HIWORD(cDefenses) ? L_03b5 : L_03ad
+
+L_03ad:
+    branch cMax >= LOWORD(cDefenses) ? L_03bf : L_03b5
+
+L_03b5:
+    cDefenses = sext16to32(cMax)
+
+L_03bf:
+    ss:[bp-0x1e] = part[52:2](part[4:4](part))
+    ss:[bp-0x1c] = signhiword(part[52:2](part[4:4](part)))
+    pct = pow((1 - ((double)dword ss:[bp-0x1e] / 1000)), (double)cDefenses)
+    branch ppctSmart == 0x0 ? L_047e : L_041a
+
+L_041a:
+    ss:[bp-0x1e] = part[52:2](part[4:4](part))
+    ss:[bp-0x1c] = signhiword(part[52:2](part[4:4](part)))
+    *ppctSmart = pow((1 - ((double)dword ss:[bp-0x1e] / 2000)), (double)cDefenses)
+
+
+L_0473:
+    pct = 1
+
+L_047e:
+    idPlayer = iPlrSav
+    goto L_0492
+
+L_0487:
+    pct = 1
+
+L_0492:
+    *ppct = pct
+    return

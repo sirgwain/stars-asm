@@ -1,0 +1,105 @@
+{
+  "function_semantics": [
+    {
+      "name": "CreateDialog",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        },
+        {
+          "name": "arg4",
+          "semantic": "callback_proc"
+        }
+      ]
+    },
+    {
+      "name": "CreateDialogParam",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        },
+        {
+          "name": "arg4",
+          "semantic": "callback_proc"
+        }
+      ]
+    },
+    {
+      "name": "DialogBox",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        },
+        {
+          "name": "arg4",
+          "semantic": "callback_proc"
+        }
+      ]
+    },
+    {
+      "name": "DialogBoxParam",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        },
+        {
+          "name": "arg4",
+          "semantic": "callback_proc"
+        }
+      ]
+    },
+    {
+      "name": "LoadBitmap",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "LoadCursor",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "LoadAccelerators",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "FindResource",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "resource_name_or_id"
+        },
+        {
+          "name": "arg3",
+          "semantic": "resource_name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "MakeProcInstance",
+      "params": [
+        {
+          "name": "arg1",
+          "semantic": "callback_proc"
+        }
+      ]
+    }
+  ]
+}

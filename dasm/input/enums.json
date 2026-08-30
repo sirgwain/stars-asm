@@ -1,0 +1,510 @@
+{
+  "enums": {
+    "import_headers": ["./enums.h"]
+  },
+  "uses": [
+    { "kind": "global", "name": "mdBuild", "enum": "MdBuild" },
+
+    { "kind": "local", "func": "FleetOrdersChangeTarget", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "FCheckXferWP", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "AddItemToQueue", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "ChangeMainObjSel", "name": "grobjSav", "enum": "GrobjClass" },
+    { "kind": "local", "func": "DrawMineSurvey", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "DrawScannerSBar", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "HtMineWindow", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "LogChangeName", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "SetMineralTitleBar", "name": "grobj", "enum": "GrobjClass" },
+    { "kind": "local", "func": "XferAiSupply", "name": "grobjDst", "enum": "GrobjClass" },
+    { "kind": "local", "func": "XferAiSupply", "name": "grobjSrc", "enum": "GrobjClass" },
+    { "kind": "local", "func": "FOpenGame", "name": "grobjIni", "enum": "GrobjClass" },
+
+    { "kind": "local", "func": "MineClick", "name": "ht", "enum": "HtMineType" },
+    { "kind": "local", "func": "MineWndProc", "name": "ht", "enum": "HtMineType" },
+    { "kind": "local", "func": "MessageWndProc", "name": "ht", "enum": "HtMsgType" },
+
+    { "kind": "local", "func": "GetProductionCosts", "name": "iItem", "enum": "ProdItemType" },
+
+    { "kind": "local", "func": "PszGetTaskName", "name": "opOrd", "enum": "XferActionType" },
+    { "kind": "local", "func": "ZipOrderDlg", "name": "iAction", "enum": "XferActionType" },
+    { "kind": "local", "func": "SatisfyOrders", "name": "action", "enum": "XferActionType" },
+
+    { "kind": "local", "func": "CchGetETA", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "DecorateMsgTitleBar", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "DoBombing", "name": "idmSrc", "enum": "MessageId" },
+    { "kind": "local", "func": "DoBombing", "name": "idmDst", "enum": "MessageId" },
+    { "kind": "local", "func": "DoThingInteractions", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "FBuildObject", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "FReadPlanet", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "FRunLogRecord", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "FStargateJump", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "IdmGiveTraderPart", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "IMsgNext", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "IMsgPrev", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "MessageWndProc", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "MoveThings", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "Produce", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "ReportDlg", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "SatisfyOrders", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "SendBattleMessages", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "TransferToOthers", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "UpdateResearchStatus", "name": "idm", "enum": "MessageId" },
+    { "kind": "local", "func": "UpdateResearchStatus", "name": "idm", "enum": "MessageId" },
+
+    { "kind": "local", "func": "CchGetETA", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "CommandHandler", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DisplayComponentInfo", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawNewGame2", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawNewGame3", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawRace3", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawScoreReport", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawShipWayPtOrders", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DrawVCReport", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DumpFleets", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DumpPlanets", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DumpUniverse", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "DxReportColHdr", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FCheckQueuedShip", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FCreateAiShdef", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FCreateAiShdef", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FCreateAiShdef", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FCreateAiShdef", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FMarkFile", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "FOpenFile", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "PszGetTaskName", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "PszProductionETA", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "PtDisplayFactoryMineInfo", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "PtDisplayPlanetStateInfo", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "PtDisplayResourceInfo", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "RaceWizardDlg4", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "RenameZipDlg", "name": "ids", "enum": "StringId" },
+    { "kind": "local", "func": "TbWndProc", "name": "ids", "enum": "StringId" },
+
+    { "kind": "field", "struct": "_hdr", "field": "rt", "enum": "RecordType" },
+    { "kind": "field", "struct": "_hs", "field": "grhst", "enum": "HullSlotType" },
+    { "kind": "field", "struct": "_hul", "field": "ihuldef", "enum": "HulDef" },
+    { "kind": "field", "struct": "_logxfer", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_scan", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_scan", "field": "grobjFull", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_xfer", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_order", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_sel", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_sel", "field": "grobjFull", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_sel", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_selSome", "field": "grobjFull", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_logxferf", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_tok", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_prod", "field": "iItem", "enum": "ProdItemType" },
+    { "kind": "field", "struct": "_prod", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_thing", "field": "ith", "enum": "ThingType" },
+    { "kind": "field", "struct": "_btlplan", "field": "mdTactic", "enum": "BattleTactic" },
+    { "kind": "field", "struct": "_btlplan", "field": "mdTarget1", "enum": "MdTarget" },
+    { "kind": "field", "struct": "_btlplan", "field": "mdTarget2", "enum": "MdTarget" },
+    { "kind": "field", "struct": "_order", "field": "grTask", "enum": "TaskType" },
+    { "kind": "field", "struct": "_itemaction", "field": "iAction", "enum": "XferActionType" },
+    { "kind": "field", "struct": "_popupdata", "field": "grPopup", "enum": "GrPopupType" },
+
+    { "kind": "call_result", "func": "HtMineWindow", "enum": "HtMineType" },
+    { "kind": "call_result", "func": "HtMsgBox", "enum": "HtMsgType" },
+
+    { "kind": "param", "func": "FillBuildDD", "param": "md", "enum": "MdBuild" },
+
+    { "kind": "param", "func": "ChgCargo", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "AddItemToQueue", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "LogChangeName", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FBuildObject", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FCheckSummary", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FCheckSelection", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FCheckFleetWP", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FCheckQueue", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FLookupObject", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "PszGetLocName", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FFindNearestObject", "param": "grobj", "enum": "GrobjClass" },
+    { "kind": "param", "func": "ChangeMainObjSel", "param": "grobjNew", "enum": "GrobjClass" },
+    { "kind": "param", "func": "FDeleteFleet", "param": "grobjSel", "enum": "GrobjClass" },
+    { "kind": "param", "func": "XferAiSupply", "param": "grobjSrc", "enum": "GrobjClass" },
+    { "kind": "param", "func": "XferAiSupply", "param": "grobjDst", "enum": "GrobjClass" },
+    { "kind": "param", "func": "TransferStuff", "param": "grobj1", "enum": "GrobjClass" },
+    { "kind": "param", "func": "TransferStuff", "param": "grobj2", "enum": "GrobjClass" },
+
+    { "kind": "param", "func": "PszProductionETA", "param": "iItem", "enum": "ProdItemType" },
+    { "kind": "param", "func": "EstimateItemProdSched", "param": "iItem", "enum": "ProdItemType" },
+
+    { "kind": "param", "func": "ITechLearnATech", "param": "idm", "enum": "MessageId" },
+    { "kind": "param", "func": "PszFormatMessage", "param": "idm", "enum": "MessageId" },
+    { "kind": "param", "func": "PszGetCompressedMessage", "param": "idm", "enum": "MessageId" },
+    { "kind": "param", "func": "SetFilteringGroups", "param": "idm", "enum": "MessageId" },
+    { "kind": "param", "func": "FCheckMessages", "param": "idm", "enum": "MessageId" },
+
+    { "kind": "param", "func": "CchGetString", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "FBadFileError", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "FCheckFleetName", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "FCheckZip", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "FileError", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "GetIniWinRc", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "PickANameAndBmp", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "PszFormatIds", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "PszGetCompressedString", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "ShowTooltip", "param": "ids", "enum": "StringId" },
+    { "kind": "param", "func": "TurnLog", "param": "ids", "enum": "StringId" },
+
+    { "kind": "param", "func": "FCheckMessages", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FileError", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FGetNMsgbig", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FRemovePlayerMessage", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FSendPlrMsg", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FSendPlrMsg2", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FSendPlrMsg2XGen", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "FSendPrependedPlrMsg", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "ITechLearnATech", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "PackageUpMsg", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "PackageUpMsg", "param": "ids", "enum": "MessageId" },
+    { "kind": "param", "func": "PszGetCompressedMessage", "param": "ids", "enum": "MessageId" },
+
+    { "kind": "param", "func": "FreeLp", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "LpAlloc", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "LphbAlloc", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "LphbFromLpHt", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "LpplAlloc", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "LpReAlloc", "param": "ht", "enum": "HeapType" },
+    { "kind": "param", "func": "ResetHb", "param": "ht", "enum": "HeapType" },
+
+    { "kind": "param", "func": "FOpenFile", "param": "dt", "enum": "DtFileType" },
+    { "kind": "param", "func": "FCheckFile", "param": "dt", "enum": "DtFileType" },
+    { "kind": "param", "func": "SetSzWorkFromDt", "param": "dt", "enum": "DtFileType" },
+    { "kind": "param", "func": "FMarkFile", "param": "dt", "enum": "DtFileType" },
+    { "kind": "param", "func": "FCreateFile", "param": "dt", "enum": "DtFileType" },
+
+    { "kind": "param", "func": "FRunLogRecord", "param": "rt", "enum": "RecordType" },
+    { "kind": "param", "func": "FEnumCalcJettison", "param": "rt", "enum": "RecordType" },
+    { "kind": "param", "func": "WriteRt", "param": "rt", "enum": "RecordType" },
+    { "kind": "param", "func": "CancelMemRt", "param": "rt", "enum": "RecordType" },
+    { "kind": "param", "func": "WritePlanet", "param": "rt", "enum": "RecordType" },
+
+    { "kind": "param", "func": "SetRaceGrbit", "param": "ibit", "enum": "RaceGrbit" },
+    { "kind": "param", "func": "GetRaceGrbit", "param": "ibit", "enum": "RaceGrbit" },
+    { "kind": "param", "func": "SetRaceStat", "param": "iStat", "enum": "RaceStat" },
+    { "kind": "param", "func": "GetRaceStat", "param": "iStat", "enum": "RaceStat" },
+    { "kind": "call_result", "func": "GetRaceStat", "enum": "RaceAttribute", "when": [{ "param": "iStat", "value": 14 }] },
+
+    { "kind": "param", "func": "DialogBox", "param": "arg2", "enum": "DialogId" },
+    { "kind": "param", "func": "DialogBoxParam", "param": "arg2", "enum": "DialogId" },
+    { "kind": "param", "func": "CreateDialog", "param": "arg2", "enum": "DialogId" },
+    { "kind": "param", "func": "CreateDialogParam", "param": "arg2", "enum": "DialogId" },
+
+    { "kind": "param", "func": "About", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "AskSaveDialog", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "BattlePlansDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "BrowserDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "BrowserWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "HostModeDialog", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "HostOptionsDialog", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "MessageWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "MineWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "NewGameDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "NewGameDlg2", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "NewGameDlg3", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "NewPasswordDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "NewPlanNameDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "OrderInfoDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "PanicDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "PasswordDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "PlanetWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "PopupWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ProductionDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ProgressGaugeDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg1", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg2", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg3", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg4", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg5", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RaceWizardDlg6", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RandomSeedDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RelationsDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RenameDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "RenameZipDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ResearchDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ScoreXDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "SimpleNewGameDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "SlotDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "TransferDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "TutorDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "VCRDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ZipOrderDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "ZipProdDlg", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "FakeCEProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "FakeComboProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "FakeEditProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "FakeListProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "FindDlg", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "FrameWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "HostTimerProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "MergeFleetsDlg", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "PrintMapDlg", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "ScannerWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "TbWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "TitleWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "TooltipWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "LpthNew", "param": "ith", "enum": "ThingType" },
+    { "kind": "param", "func": "IdmGiveTraderPart", "param": "grbitTrader", "enum": "GrbitTrader" },
+
+    { "kind": "param", "func": "AlertSz", "param": "mbType", "enum": "MessageBoxType" },
+    { "kind": "param", "func": "MessageBox", "param": "arg4", "enum": "MessageBoxType" },
+    { "kind": "param", "func": "GetDlgItem", "param": "arg2", "enum": "ControlId" },
+    { "kind": "param", "func": "GetDlgItemText", "param": "arg2", "enum": "ControlId" },
+    { "kind": "param", "func": "SetDlgItemText", "param": "arg2", "enum": "ControlId" },
+    { "kind": "param", "func": "SendMessage", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "PostMessage", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "PatBlt", "param": "arg6", "enum": "PatBltRop" },
+    { "kind": "param", "func": "GetSystemMetrics", "param": "arg1", "enum": "SystemMetric" },
+
+    { "kind": "param", "func": "GetDeviceCaps", "param": "arg2", "enum": "DeviceCapsIndex" },
+
+    { "kind": "param", "func": "ShowWindow", "param": "arg2", "enum": "ShowWindowCmd" },
+
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "WindowStyle" },
+    { "kind": "param", "func": "CreateWindowEx", "param": "arg1", "enum": "WindowExStyle" },
+    { "kind": "param", "func": "CreateWindowEx", "param": "arg4", "enum": "WindowStyle" },
+
+    { "kind": "param", "func": "SetWindowPos", "param": "arg7", "enum": "SetWindowPosFlags" },
+
+    { "kind": "param", "func": "GetWindowLong", "param": "arg2", "enum": "WindowLongOffset" },
+    { "kind": "param", "func": "SetWindowLong", "param": "arg2", "enum": "WindowLongOffset" },
+
+    { "kind": "param", "func": "GetWindow", "param": "arg2", "enum": "GetWindowCmd" },
+
+    { "kind": "param", "func": "WinHelp", "param": "arg3", "enum": "WinHelpCommand" },
+
+    { "kind": "param", "func": "GetStockObject", "param": "arg1", "enum": "StockObjectId" },
+
+    { "kind": "param", "func": "SetBkMode", "param": "arg2", "enum": "BkMode" },
+
+    { "kind": "param", "func": "BitBlt", "param": "arg9", "enum": "BitBltRop" },
+    { "kind": "param", "func": "StretchBlt", "param": "arg11", "enum": "BitBltRop" },
+    { "kind": "param", "func": "ShowMainControls", "param": "sw", "enum": "ShowWindowCmd" },
+    { "kind": "param", "func": "ShowMainControls", "name": "sw", "enum": "ShowWindowCmd" }
+  ],
+
+  "messages": [
+    {
+      "msg": "WM_COMMAND",
+      "wparam": {
+        "whole": { "enum": "ControlId" },
+        "loword": { "enum": "ControlId" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_PARENTNOTIFY",
+      "wparam": {
+        "loword": { "enum": "WMType" },
+        "hiword": { "enum": "ControlId" }
+      }
+    },
+    {
+      "msg": "WM_CTLCOLOR",
+      "wparam": {
+        "whole": { "cast_type": "HDC" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND" },
+        "hiword": { "enum": "CtlColorType" }
+      }
+    },
+    {
+      "msg": "WM_VSCROLL",
+      "wparam": {
+        "loword": { "enum": "ScrollCode" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_HSCROLL",
+      "wparam": {
+        "loword": { "enum": "ScrollCode" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_GETMINMAXINFO",
+      "lparam": {
+        "whole": { "cast_type": "MINMAXINFO" }
+      }
+    },
+    {
+      "msg": "WM_CREATE",
+      "lparam": {
+        "whole": { "cast_type": "CREATESTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_WINDOWPOSCHANGING",
+      "lparam": {
+        "whole": { "cast_type": "WINDOWPOS" }
+      }
+    },
+    {
+      "msg": "WM_WINDOWPOSCHANGED",
+      "lparam": {
+        "whole": { "cast_type": "WINDOWPOS" }
+      }
+    },
+    {
+      "msg": "WM_DRAWITEM",
+      "lparam": {
+        "whole": { "cast_type": "DRAWITEMSTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_MEASUREITEM",
+      "lparam": {
+        "whole": { "cast_type": "MEASUREITEMSTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_DELETEITEM",
+      "lparam": {
+        "whole": { "cast_type": "DELETEITEMSTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_COMPAREITEM",
+      "lparam": {
+        "whole": { "cast_type": "COMPAREITEMSTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_MDICREATE",
+      "lparam": {
+        "whole": { "cast_type": "MDICREATESTRUCT" }
+      }
+    },
+    {
+      "msg": "WM_INITMENU",
+      "wparam": {
+        "whole": { "cast_type": "HMENU" }
+      }
+    },
+    {
+      "msg": "WM_INITMENUPOPUP",
+      "wparam": {
+        "whole": { "cast_type": "HMENU" }
+      }
+    },
+    {
+      "msg": "WM_MENUSELECT",
+      "lparam": {
+        "loword": { "cast_type": "HMENU" }
+      }
+    },
+    {
+      "msg": "WM_ENTERIDLE",
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_ACTIVATE",
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_MOUSEACTIVATE",
+      "wparam": {
+        "whole": { "cast_type": "HWND" }
+      },
+      "lparam": {
+        "hiword": { "enum": "WMType" }
+      }
+    },
+    {
+      "msg": "WM_SETCURSOR",
+      "wparam": {
+        "whole": { "cast_type": "HWND" }
+      },
+      "lparam": {
+        "hiword": { "enum": "WMType" }
+      }
+    },
+    {
+      "msg": "WM_VKEYTOITEM",
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_CHARTOITEM",
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "WM_SETFONT",
+      "wparam": {
+        "whole": { "cast_type": "HFONT" }
+      }
+    },
+    {
+      "msg": "WM_CHANGECBCHAIN",
+      "wparam": {
+        "whole": { "cast_type": "HWND" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND" }
+      }
+    }
+  ],
+
+  "dependent_enums": [
+    {
+      "type": "HS",
+      "target": ["iItem"],
+      "discriminator": ["grhst"],
+      "enum_by_value": {
+        "hstEngine": "iengine",
+        "hstScanner": "iscanner",
+        "hstShield": "ishield",
+        "hstArmor": "iarmor",
+        "hstBeam": "ibeam",
+        "hstTorp": "itorp",
+        "hstBomb": "ibomb",
+        "hstMining": "imining",
+        "hstMines": "imines",
+        "hstSpecialSB": "ispecialSB",
+        "hstSpecialE": "ispecialE",
+        "hstSpecialM": "ispecialM",
+        "hstTerra": "iterra",
+        "hstHull": "ihuldef",
+        "hstPlanetary": "iplanetary"
+      }
+    },
+    {
+      "type": "PART",
+      "target": ["hs", "iItem"],
+      "discriminator": ["hs", "grhst"],
+      "enum_by_value": {
+        "hstEngine": "iengine",
+        "hstScanner": "iscanner",
+        "hstShield": "ishield",
+        "hstArmor": "iarmor",
+        "hstBeam": "ibeam",
+        "hstTorp": "itorp",
+        "hstBomb": "ibomb",
+        "hstMining": "imining",
+        "hstMines": "imines",
+        "hstSpecialSB": "ispecialSB",
+        "hstSpecialE": "ispecialE",
+        "hstSpecialM": "ispecialM",
+        "hstTerra": "iterra",
+        "hstHull": "ihuldef",
+        "hstPlanetary": "iplanetary"
+      }
+    }
+  ]
+}

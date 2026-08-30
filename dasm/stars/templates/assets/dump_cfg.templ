@@ -1,0 +1,18 @@
+{{ range $i, $block := .Blocks -}}
+{{ if $i }}
+{{ end -}}
+; block {{ $block.Label }}:
+;   off {{ $block.Offsets }}
+;   killed-before-read:
+;     regs: {{ $block.KilledBeforeRead }}
+;     flags: {{ $block.FlagsKilledBeforeRead }}
+;   live-in:
+;     regs: {{ $block.RegLiveIn }}
+;     bp: {{ $block.BPLiveIn }}
+;     flags: {{ $block.FlagsLiveIn }}
+;   live-out:
+;     regs: {{ $block.RegLiveOut }}
+;     bp: {{ $block.BPLiveOut }}
+;     flags: {{ $block.FlagsLiveOut }}
+{{ template "dump_asm_block_insts" blockInstsView $ $block }}
+{{ end -}}

@@ -1,0 +1,609 @@
+/*
+ChgCargo  (ship)
+  addr: 000b:6034  len=1176
+  sig:  int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)
+  params:
+    GrobjClass       grobj          [BP+0x6]
+    int16_t          id             [BP+0x8]
+    int16_t          iSupply        [BP+0xa]
+    int32_t          dChg           [BP+0xc]
+    void *           pobj           [BP+0x10]
+  locals:
+    PLANET *         ppl            [BP-0x8a]
+    FLEET *          pfl            [BP-0x88]
+    int16_t          i              [BP-0x86]
+    XFER             xfer           [BP-0x84]
+    THING *          pth            [BP-0x4]
+    block 000B:61DB  len=0x118
+      int32_t          wtFree         [BP-0x8e]
+
+  stats: blocks=1  labels=0
+*/
+block L_6034:
+  insts 0..6  off 0x6034..0x6042
+  succs: L_6046, L_604f
+  effects:
+    6041  branch load([bp+grobj]) == 0x1 ? L_604f : L_6046
+
+block L_6046:
+  insts 8..9  off 0x6046..0x604b
+  preds: L_6034
+  succs: L_604f, L_6190
+  effects:
+    604a  branch load([bp+grobj]) != 0x4 ? L_6190 : L_604f
+
+block L_604f:
+  insts 11..12  off 0x604f..0x6054
+  preds: L_6034, L_6046
+  succs: L_6058, L_6062
+  effects:
+    6053  branch load([bp+pobj]) == 0x0 ? L_6062 : L_6058
+
+block L_6058:
+  insts 14..16  off 0x6058..0x6061
+  preds: L_604f
+  succs: L_609f
+  effects:
+    605b  store[2] [bp-ppl] = load([bp+pobj])
+    605f  goto L_609f
+
+block L_6062:
+  insts 17..18  off 0x6062..0x6067
+  preds: L_604f
+  succs: L_606b, L_6084
+  effects:
+    6066  branch load([bp+grobj]) != 0x1 ? L_6084 : L_606b
+
+block L_606b:
+  insts 20..27  off 0x606b..0x6083
+  preds: L_6062
+  succs: L_609f
+  effects:
+    6072  call FLookupPlanet(load([bp+id]), addr([bp-xfer+0x4])) -> callresult(int16_t)
+    607d  store[2] [bp-ppl] = addr([bp-xfer+0x4])
+    6081  goto L_609f
+
+block L_6084:
+  insts 28..37  off 0x6084..0x609e
+  preds: L_6062
+  succs: L_609f
+  effects:
+    6090  call memset(addr([bp-xfer+0x4]), 0x0, 0x38) -> callresult(void *)
+    609b  store[2] [bp-ppl] = addr([bp-xfer+0x4])
+
+block L_609f:
+  insts 38..39  off 0x609f..0x60a4
+  preds: L_6058, L_606b, L_6084
+  succs: L_60a8, L_6159
+  effects:
+    60a3  branch load([bp+iSupply]) > 0x4 ? L_6159 : L_60a8
+
+block L_60a8:
+  insts 41..42  off 0x60a8..0x60ad
+  preds: L_609f
+  succs: L_60b1, L_60ba
+  effects:
+    60ac  branch load([bp+iSupply]) != 0x4 ? L_60ba : L_60b1
+
+block L_60b1:
+  insts 44..46  off 0x60b1..0x60b9
+  preds: L_60a8
+  succs: L_64c6
+  effects:
+    60b7  goto L_64c6
+
+block L_60ba:
+  insts 47..48  off 0x60ba..0x60bf
+  preds: L_60a8
+  succs: L_60c3, L_60e6
+  effects:
+    60be  branch load([bp+dChg]) != 0x0 ? L_60e6 : L_60c3
+
+block L_60c3:
+  insts 50..51  off 0x60c3..0x60c8
+  preds: L_60ba
+  succs: L_60cc, L_60e6
+  effects:
+    60c7  branch load([bp+dChg+0x2]) != 0x0 ? L_60e6 : L_60cc
+
+block L_60cc:
+  insts 53..62  off 0x60cc..0x60e5
+  preds: L_60c3
+  succs: L_64c6
+  effects:
+    60e3  goto L_64c6
+
+block L_60e6:
+  insts 63..75  off 0x60e6..0x6107
+  preds: L_60ba, L_60c3
+  succs: L_610b, L_613c
+  effects:
+    6106  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_613c : L_610b
+
+block L_610b:
+  insts 77..77  off 0x610b..0x610c
+  preds: L_60e6
+  succs: L_6110, L_6118
+  effects:
+    610b  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_6118 : L_6110
+
+block L_6110:
+  insts 79..80  off 0x6110..0x6114
+  preds: L_610b
+  succs: L_6118, L_613c
+  effects:
+    6113  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_613c : L_6118
+
+block L_6118:
+  insts 82..95  off 0x6118..0x613b
+  preds: L_610b, L_6110
+  succs: L_613c
+  effects:
+    6136  store[2] [bp+dChg] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
+    6139  store[2] [bp+dChg+0x2] = ((load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
+
+block L_613c:
+  insts 96..106  off 0x613c..0x6158
+  preds: L_60e6, L_6110, L_6118
+  succs: L_6159
+  effects:
+    6154  store[2] 0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg]))
+    6156  store[2] 0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2]))
+
+block L_6159:
+  insts 107..108  off 0x6159..0x615e
+  preds: L_609f, L_613c
+  succs: L_6162, L_616b
+  effects:
+    615d  branch load([bp+dChg]) != 0x0 ? L_616b : L_6162
+
+block L_6162:
+  insts 110..111  off 0x6162..0x6167
+  preds: L_6159
+  succs: L_616b, L_64bd
+  effects:
+    6166  branch load([bp+dChg+0x2]) == 0x0 ? L_64bd : L_616b
+
+block L_616b:
+  insts 113..114  off 0x616b..0x6170
+  preds: L_6159, L_6162
+  succs: L_6174, L_64bd
+  effects:
+    616f  branch load([bp+pobj]) != 0x0 ? L_64bd : L_6174
+
+block L_6174:
+  insts 116..117  off 0x6174..0x6179
+  preds: L_616b
+  succs: L_617d, L_64bd
+  effects:
+    6178  branch load([bp+grobj]) == 0x4 ? L_64bd : L_617d
+
+block L_617d:
+  insts 119..124  off 0x617d..0x618c
+  preds: L_6174
+  succs: L_64bd
+  effects:
+    6185  call FLookupPlanet(0xffff, addr([bp-xfer+0x4])) -> callresult(int16_t)
+
+block L_618d:
+  insts 125..125  off 0x618d..0x618f
+  succs: L_64bd
+
+block L_6190:
+  insts 126..127  off 0x6190..0x6195
+  preds: L_6046
+  succs: L_6199, L_6320
+  effects:
+    6194  branch load([bp+grobj]) != 0x8 ? L_6320 : L_6199
+
+block L_6199:
+  insts 129..130  off 0x6199..0x619e
+  preds: L_6190
+  succs: L_61a2, L_61ab
+  effects:
+    619d  branch load([bp+pobj]) == 0x0 ? L_61ab : L_61a2
+
+block L_61a2:
+  insts 132..134  off 0x61a2..0x61aa
+  preds: L_6199
+  succs: L_61c0
+  effects:
+    61a5  store[2] [bp-pth] = load([bp+pobj])
+    61a8  goto L_61c0
+
+block L_61ab:
+  insts 135..141  off 0x61ab..0x61bf
+  preds: L_6199
+  succs: L_61c0
+  effects:
+    61b2  call FLookupThing(load([bp+id]), addr([bp-xfer+0x4])) -> callresult(int16_t)
+    61bd  store[2] [bp-pth] = addr([bp-xfer+0x4])
+
+block L_61c0:
+  insts 142..143  off 0x61c0..0x61c5
+  preds: L_61a2, L_61ab
+  succs: L_61c9, L_61d2
+  effects:
+    61c4  branch load([bp+iSupply]) < 0x3 ? L_61d2 : L_61c9
+
+block L_61c9:
+  insts 145..147  off 0x61c9..0x61d1
+  preds: L_61c0
+  succs: L_64c6
+  effects:
+    61cf  goto L_64c6
+
+block L_61d2:
+  insts 148..149  off 0x61d2..0x61d7
+  preds: L_61c0
+  succs: L_61db, L_62f3
+  effects:
+    61d6  branch load([bp+iSupply]) > 0x4 ? L_62f3 : L_61db
+
+block L_61db:
+  insts 151..152  off 0x61db..0x61e0
+  preds: L_61d2
+  succs: L_61e4, L_6202
+  effects:
+    61df  branch load([bp+dChg]) != 0x0 ? L_6202 : L_61e4
+
+block L_61e4:
+  insts 154..155  off 0x61e4..0x61e9
+  preds: L_61db
+  succs: L_61ed, L_6202
+  effects:
+    61e8  branch load([bp+dChg+0x2]) != 0x0 ? L_6202 : L_61ed
+
+block L_61ed:
+  insts 157..165  off 0x61ed..0x6201
+  preds: L_61e4
+  succs: L_64c6
+  effects:
+    61ff  goto L_64c6
+
+block L_6202:
+  insts 166..177  off 0x6202..0x621e
+  preds: L_61db, L_61e4
+  succs: L_6222, L_6249
+  effects:
+    621d  branch (signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) > 0x0 ? L_6249 : L_6222
+
+block L_6222:
+  insts 179..179  off 0x6222..0x6223
+  preds: L_6202
+  succs: L_6227, L_622f
+  effects:
+    6222  branch (signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) < 0x0 ? L_622f : L_6227
+
+block L_6227:
+  insts 181..182  off 0x6227..0x622b
+  preds: L_6222
+  succs: L_622f, L_6249
+  effects:
+    622a  branch (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_6249 : L_622f
+
+block L_622f:
+  insts 184..194  off 0x622f..0x6248
+  preds: L_6222, L_6227
+  succs: L_6249
+  effects:
+    6243  store[2] [bp+dChg] = (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0)
+    6246  store[2] [bp+dChg+0x2] = signhiword((load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0))
+
+block L_6249:
+  insts 195..209  off 0x6249..0x6274
+  preds: L_6202, L_6227, L_622f
+  succs: L_6295
+  effects:
+    625f  call __aFulmul(words(0x0, (load(0x25:[load([bp-pth])+0xe]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
+    6264  store[2] [bp-wtFree] = loword(callresult(uint32_t))
+    6268  store[2] [bp-wtFree+0x2] = hiword(callresult(uint32_t))
+    626c  store[2] [bp-i] = 0x0
+    6272  goto L_6295
+
+block L_6275:
+  insts 210..220  off 0x6275..0x6294
+  preds: L_6295
+  succs: L_6295
+  effects:
+    6288  store[2] [bp-wtFree] = (load([bp-wtFree]) - load(0x25:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))]))
+    628c  store[2] [bp-wtFree+0x2] = (load([bp-wtFree+0x2]) - signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))])))
+    6290  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_6295:
+  insts 221..222  off 0x6295..0x629b
+  preds: L_6249, L_6275
+  succs: L_6275, L_629f
+  effects:
+    629a  branch load([bp-i]) < 0x3 ? L_6275 : L_629f
+
+block L_629f:
+  insts 224..227  off 0x629f..0x62ab
+  preds: L_6295
+  succs: L_62af, L_62ca
+  effects:
+    62aa  branch load([bp+dChg+0x2]) < load([bp-wtFree+0x2]) ? L_62ca : L_62af
+
+block L_62af:
+  insts 229..229  off 0x62af..0x62b0
+  preds: L_629f
+  succs: L_62b4, L_62bc
+  effects:
+    62af  branch load([bp+dChg+0x2]) > load([bp-wtFree+0x2]) ? L_62bc : L_62b4
+
+block L_62b4:
+  insts 231..232  off 0x62b4..0x62b8
+  preds: L_62af
+  succs: L_62bc, L_62ca
+  effects:
+    62b7  branch load([bp+dChg]) <= load([bp-wtFree]) ? L_62ca : L_62bc
+
+block L_62bc:
+  insts 234..237  off 0x62bc..0x62c9
+  preds: L_62af, L_62b4
+  succs: L_62ca
+  effects:
+    62c4  store[2] [bp+dChg] = load([bp-wtFree])
+    62c7  store[2] [bp+dChg+0x2] = load([bp-wtFree+0x2])
+
+block L_62ca:
+  insts 238..254  off 0x62ca..0x62f2
+  preds: L_629f, L_62b4, L_62bc
+  succs: L_62f3
+  effects:
+    62f1  store[2] 0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))] = (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg]))
+
+block L_62f3:
+  insts 255..256  off 0x62f3..0x62f8
+  preds: L_61d2, L_62ca
+  succs: L_62fc, L_6305
+  effects:
+    62f7  branch load([bp+dChg]) != 0x0 ? L_6305 : L_62fc
+
+block L_62fc:
+  insts 258..259  off 0x62fc..0x6301
+  preds: L_62f3
+  succs: L_6305, L_64bd
+  effects:
+    6300  branch load([bp+dChg+0x2]) == 0x0 ? L_64bd : L_6305
+
+block L_6305:
+  insts 261..262  off 0x6305..0x630a
+  preds: L_62f3, L_62fc
+  succs: L_630e, L_64bd
+  effects:
+    6309  branch load([bp+pobj]) != 0x0 ? L_64bd : L_630e
+
+block L_630e:
+  insts 264..268  off 0x630e..0x631c
+  preds: L_6305
+  succs: L_64bd
+  effects:
+    6315  call FLookupThing(0xffff, load([bp-pth])) -> callresult(int16_t)
+
+block L_631d:
+  insts 269..269  off 0x631d..0x631f
+  succs: L_64bd
+
+block L_6320:
+  insts 270..271  off 0x6320..0x6325
+  preds: L_6190
+  succs: L_6329, L_6333
+  effects:
+    6324  branch load([bp+pobj]) == 0x0 ? L_6333 : L_6329
+
+block L_6329:
+  insts 273..275  off 0x6329..0x6332
+  preds: L_6320
+  succs: L_6349
+  effects:
+    632c  store[2] [bp-pfl] = load([bp+pobj])
+    6330  goto L_6349
+
+block L_6333:
+  insts 276..282  off 0x6333..0x6348
+  preds: L_6320
+  succs: L_6349
+  effects:
+    633a  call FLookupFleet(load([bp+id]), addr([bp-xfer+0x4])) -> callresult(int16_t)
+    6345  store[2] [bp-pfl] = addr([bp-xfer+0x4])
+
+block L_6349:
+  insts 283..284  off 0x6349..0x634e
+  preds: L_6329, L_6333
+  succs: L_6352, L_6492
+  effects:
+    634d  branch load([bp+iSupply]) > 0x4 ? L_6492 : L_6352
+
+block L_6352:
+  insts 286..287  off 0x6352..0x6357
+  preds: L_6349
+  succs: L_635b, L_637e
+  effects:
+    6356  branch load([bp+dChg]) != 0x0 ? L_637e : L_635b
+
+block L_635b:
+  insts 289..290  off 0x635b..0x6360
+  preds: L_6352
+  succs: L_6364, L_637e
+  effects:
+    635f  branch load([bp+dChg+0x2]) != 0x0 ? L_637e : L_6364
+
+block L_6364:
+  insts 292..301  off 0x6364..0x637d
+  preds: L_635b
+  succs: L_64c6
+  effects:
+    637b  goto L_64c6
+
+block L_637e:
+  insts 302..314  off 0x637e..0x639f
+  preds: L_6352, L_635b
+  succs: L_63a3, L_63d4
+  effects:
+    639e  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_63d4 : L_63a3
+
+block L_63a3:
+  insts 316..316  off 0x63a3..0x63a4
+  preds: L_637e
+  succs: L_63a8, L_63b0
+  effects:
+    63a3  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_63b0 : L_63a8
+
+block L_63a8:
+  insts 318..319  off 0x63a8..0x63ac
+  preds: L_63a3
+  succs: L_63b0, L_63d4
+  effects:
+    63ab  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_63d4 : L_63b0
+
+block L_63b0:
+  insts 321..334  off 0x63b0..0x63d3
+  preds: L_63a3, L_63a8
+  succs: L_63d4
+  effects:
+    63ce  store[2] [bp+dChg] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
+    63d1  store[2] [bp+dChg+0x2] = ((load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
+
+block L_63d4:
+  insts 335..336  off 0x63d4..0x63d9
+  preds: L_637e, L_63a8, L_63b0
+  succs: L_63dd, L_63f9
+  effects:
+    63d8  branch load([bp+iSupply]) != 0x3 ? L_63f9 : L_63dd
+
+block L_63dd:
+  insts 338..342  off 0x63dd..0x63eb
+  preds: L_63d4
+  succs: L_63ef, L_63f9
+  effects:
+    63ea  branch (load(0x25:[load([bp-pfl])+0x4]) & 0xff) == 0x7 ? L_63f9 : L_63ef
+
+block L_63ef:
+  insts 344..345  off 0x63ef..0x63f8
+  preds: L_63dd
+  succs: L_63f9
+  effects:
+    63ef  store[2] [bp+dChg] = 0x0
+    63f4  store[2] [bp+dChg+0x2] = 0x0
+
+block L_63f9:
+  insts 346..347  off 0x63f9..0x63fe
+  preds: L_63d4, L_63dd, L_63ef
+  succs: L_6402, L_6415
+  effects:
+    63fd  branch load([bp+iSupply]) != 0x4 ? L_6415 : L_6402
+
+block L_6402:
+  insts 349..355  off 0x6402..0x6414
+  preds: L_63f9
+  succs: L_6425
+  effects:
+    640a  call GetFuelFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    6412  goto L_6425
+
+block L_6415:
+  insts 356..361  off 0x6415..0x6424
+  preds: L_63f9
+  succs: L_6425
+  effects:
+    641d  call GetCargoFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+
+block L_6425:
+  insts 362..363  off 0x6425..0x6429
+  preds: L_6402, L_6415
+  succs: L_642d, L_6443
+  effects:
+    6428  branch load([bp+dChg+0x2]) > merge(Join: L_6425, (L_6402:hiword(callresult(int32_t)), L_6415:hiword(callresult(int32_t)))) ? L_6443 : L_642d
+
+block L_642d:
+  insts 365..365  off 0x642d..0x642e
+  preds: L_6425
+  succs: L_6432, L_643a
+  effects:
+    642d  branch load([bp+dChg+0x2]) < merge(Join: L_6425, (L_6402:hiword(callresult(int32_t)), L_6415:hiword(callresult(int32_t)))) ? L_643a : L_6432
+
+block L_6432:
+  insts 367..368  off 0x6432..0x6436
+  preds: L_642d
+  succs: L_643a, L_6443
+  effects:
+    6435  branch load([bp+dChg]) >= merge(Join: L_6425, (L_6402:loword(callresult(int32_t)), L_6415:loword(callresult(int32_t)))) ? L_6443 : L_643a
+
+block L_643a:
+  insts 370..372  off 0x643a..0x6442
+  preds: L_642d, L_6432
+  succs: L_646f
+  effects:
+    6440  goto L_646f
+
+block L_6443:
+  insts 373..374  off 0x6443..0x6448
+  preds: L_6425, L_6432
+  succs: L_644c, L_645f
+  effects:
+    6447  branch load([bp+iSupply]) != 0x4 ? L_645f : L_644c
+
+block L_644c:
+  insts 376..382  off 0x644c..0x645e
+  preds: L_6443
+  succs: L_646f
+  effects:
+    6454  call GetFuelFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    645c  goto L_646f
+
+block L_645f:
+  insts 383..388  off 0x645f..0x646e
+  preds: L_6443
+  succs: L_646f
+  effects:
+    6467  call GetCargoFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+
+block L_646f:
+  insts 389..401  off 0x646f..0x6491
+  preds: L_643a, L_644c, L_645f
+  succs: L_6492
+  effects:
+    646f  store[2] [bp+dChg] = merge(Join: L_646f, (L_643a:load([bp+0xc]), L_644c:loword(callresult(int32_t)), L_645f:loword(callresult(int32_t))))
+    6472  store[2] [bp+dChg+0x2] = merge(Join: L_646f, (L_643a:load([bp+0xe]), L_644c:hiword(callresult(int32_t)), L_645f:hiword(callresult(int32_t))))
+    648d  store[2] 0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load@6487/src([bp+dChg]))
+    648f  store[2] 0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load@648a/src([bp+dChg+0x2]))
+
+block L_6492:
+  insts 402..403  off 0x6492..0x6497
+  preds: L_6349, L_646f
+  succs: L_649b, L_64a4
+  effects:
+    6496  branch load([bp+dChg]) != 0x0 ? L_64a4 : L_649b
+
+block L_649b:
+  insts 405..406  off 0x649b..0x64a0
+  preds: L_6492
+  succs: L_64a4, L_64bd
+  effects:
+    649f  branch load([bp+dChg+0x2]) == 0x0 ? L_64bd : L_64a4
+
+block L_64a4:
+  insts 408..409  off 0x64a4..0x64a9
+  preds: L_6492, L_649b
+  succs: L_64ad, L_64bd
+  effects:
+    64a8  branch load([bp+pobj]) != 0x0 ? L_64bd : L_64ad
+
+block L_64ad:
+  insts 411..415  off 0x64ad..0x64bc
+  preds: L_64a4
+  succs: L_64bd
+  effects:
+    64b5  call FLookupFleet(0xffff, load([bp-pfl])) -> callresult(int16_t)
+
+block L_64bd:
+  insts 416..417  off 0x64bd..0x64c5
+  preds: L_6162, L_616b, L_6174, L_617d, L_618d, L_62fc, L_6305, L_630e, L_631d, L_649b, L_64a4, L_64ad
+  succs: L_64c6
+
+block L_64c6:
+  insts 419..423  off 0x64c6..0x64cb
+  preds: L_60b1, L_60cc, L_61c9, L_61ed, L_6364, L_64bd
+  effects:
+    64cb  return merge(Join: L_64c6, (L_60b1:words(0x0, 0x0), L_60cc:words(load(0x25:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(0x25:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_61c9:words(0x0, 0x0), L_61ed:words(load(0x25:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]), signhiword(load(0x25:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]))), L_6364:words(load(0x25:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(0x25:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_64bd:words(load([bp+0xc]), load([bp+0xe]))))
