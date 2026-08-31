@@ -34,7 +34,6 @@
     { "name": "LPARAM", "canonical": "int32_t" },
     { "name": "LPBITMAPINFO", "canonical": "BITMAPINFO far *" },
     { "name": "LPCSTR", "canonical": "const char far *" },
-    { "name": "LPCSTR", "canonical": "const char far *" },
     { "name": "LPCVOID", "canonical": "const void far *" },
     { "name": "LPSTR", "canonical": "char far *" },
     { "name": "LPSTR", "canonical": "char far *" },

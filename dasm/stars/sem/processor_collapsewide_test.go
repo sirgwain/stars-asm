@@ -262,9 +262,9 @@ func TestCollapseWideStoresResolvesConstFarFunctionPointer(t *testing.T) {
 	}
 }
 
-// TestCollapseWideStoresResolvesConstFarStringLiteral verifies constant far
-// char-pointer halves are resolved after wide-store collapse.
-func TestCollapseWideStoresResolvesConstFarStringLiteral(t *testing.T) {
+// TestCollapseWideStoresResolvesConstFarGlobal verifies constant far
+// char-pointer halves prefer globals after wide-store collapse.
+func TestCollapseWideStoresResolvesConstFarGlobal(t *testing.T) {
 	fx := testfixture.Stars(t)
 	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("InitMDIApp"))
 	charPtrType := &typeinfo.Pointer{Elem: typeinfo.U8.WithName("char"), Class: typeinfo.PtrFar}
@@ -289,7 +289,7 @@ func TestCollapseWideStoresResolvesConstFarStringLiteral(t *testing.T) {
 		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
 	}
 	got := FormatEffect(gotBlock.Effects[0])
-	want := "lpszClassName = \"starsmessage\""
+	want := "lpszClassName = szMessage"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}
@@ -340,10 +340,10 @@ func TestCollapseWideStoresCollapsesDataSegmentNearPointerResult(t *testing.T) {
 
 	block := Block{Effects: []Effect{
 		&Assign{Dst: &Part{Base: lpsz, ByteOff: 0, Width: 2, TypeInfo: typeinfo.U16}, Src: result},
-		&Assign{Dst: &Part{Base: lpsz, ByteOff: 2, Width: 2, TypeInfo: typeinfo.U16}, Src: &Const{TypeInfo: typeinfo.U16, U64: 0x25}},
+		&Assign{Dst: &Part{Base: lpsz, ByteOff: 2, Width: 2, TypeInfo: typeinfo.U16}, Src: &Register{Val: asm.RegDS, SegNum: 0x25}},
 	}}
 
-	gotBlock, changed := (&collapseWideStoresProcessor{ctx: &FuncContext{dsReg: machine.ConstVal(0x25)}}).ProcessBlock(nil, Func{}, block)
+	gotBlock, changed := (&collapseWideStoresProcessor{ctx: &FuncContext{dsReg: machine.RegVal(asm.RegDS)}}).ProcessBlock(nil, Func{}, block)
 	if !changed {
 		t.Fatal("ProcessBlock changed = false, want true")
 	}
@@ -796,6 +796,173 @@ func TestCollapseWideStoresCollapsesBitfieldParts(t *testing.T) {
 	}
 	got := FormatEffect(gotBlock.Effects[0])
 	want := "lppl->iScanner = 0x1f"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestCollapseWideStoresResolvesNestedPartBitfieldExtract verifies bitfield
+// reads from contiguous parts of a nested struct field are named.
+func TestCollapseWideStoresResolvesNestedPartBitfieldExtract(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("AddMinesToBlockedQueues"))
+	sel := fx.SDB.GetGlobal("sel")
+	if sel == nil {
+		t.Fatal("sel not found")
+	}
+	selPlanetField, ok := ctx.res.ResolveFieldLoad(sel, 0x98, fx.SDB.GetStruct("PLANET").Bytes())
+	if !ok {
+		t.Fatal("sel.pl not resolved")
+	}
+	selPlanet := &SymbolRef{Path: selPlanetField}
+	planetBits := &Words{Words: []Expr{
+		&Part{Base: selPlanet, ByteOff: 0x18, Width: 2, TypeInfo: typeinfo.U16},
+		&Part{Base: selPlanet, ByteOff: 0x1a, Width: 2, TypeInfo: typeinfo.U16},
+	}}
+	cond := &Binary{
+		TypeInfo: typeinfo.U16,
+		Op:       OpAnd,
+		LHS: &Word{
+			Parent: &Cast{
+				Value: &Binary{
+					TypeInfo: typeinfo.U32,
+					Op:       OpShr,
+					LHS:      planetBits,
+					RHS:      &Const{TypeInfo: typeinfo.U16, U64: 0x17},
+				},
+				To:       "uint32_t",
+				TypeInfo: typeinfo.U32,
+			},
+			Part: machine.WordLow,
+		},
+		RHS: &Const{TypeInfo: typeinfo.U16, U64: 0x1},
+	}
+
+	block := Block{Effects: []Effect{
+		&Branch{
+			Cond:       &Compare{Op: CompareNE, LHS: cond, RHS: &Const{TypeInfo: typeinfo.U16, U64: 0x0}},
+			TrueBlock:  0x19aa,
+			FalseBlock: 0x196f,
+		},
+	}}
+
+	gotBlock, changed := (&collapseWideStoresProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(gotBlock.Effects) != 1 {
+		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "branch sel.pl.fNoResearch != 0x0 ? L_19aa : L_196f"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestCollapseWideStoresResolvesDynamicBitfieldAssign verifies masked stores
+// from one bitfield into another are represented as bitfield assignments.
+func TestCollapseWideStoresResolvesDynamicBitfieldAssign(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("InitProduction"))
+	gd := fx.SDB.GetGlobal("gd")
+	if gd == nil {
+		t.Fatal("gd not found")
+	}
+	sel := fx.SDB.GetGlobal("sel")
+	if sel == nil {
+		t.Fatal("sel not found")
+	}
+	selPlanetField, ok := ctx.res.ResolveFieldLoad(sel, 0x98, fx.SDB.GetStruct("PLANET").Bytes())
+	if !ok {
+		t.Fatal("sel.pl not resolved")
+	}
+	fNoResearch, ok := ctx.res.ResolveBitfieldPathLoad(selPlanetField, 0x18, 4, 0x17, 1)
+	if !ok {
+		t.Fatal("sel.pl.fNoResearch not resolved")
+	}
+	dst := &Part{Base: &Global{GlobalVar: gd}, ByteOff: 0, Width: 2, TypeInfo: typeinfo.U16}
+
+	block := Block{Effects: []Effect{
+		&Assign{
+			Dst: dst,
+			Src: &Binary{
+				TypeInfo: typeinfo.U16,
+				Op:       OpOr,
+				LHS: &Binary{
+					TypeInfo: typeinfo.U16,
+					Op:       OpAnd,
+					LHS:      dst,
+					RHS:      &Const{TypeInfo: typeinfo.U16, U64: 0xffdf},
+				},
+				RHS: &Binary{
+					TypeInfo: typeinfo.U16,
+					Op:       OpShl,
+					LHS: &Binary{
+						TypeInfo: typeinfo.U16,
+						Op:       OpAnd,
+						LHS:      &SymbolRef{Path: fNoResearch},
+						RHS:      &Const{TypeInfo: typeinfo.U16, U64: 0x1},
+					},
+					RHS: &Const{TypeInfo: typeinfo.U16, U64: 0x5},
+				},
+			},
+		},
+	}}
+
+	gotBlock, changed := (&collapseWideStoresProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(gotBlock.Effects) != 1 {
+		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "gd.fNoResearchSav = sel.pl.fNoResearch"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestCollapseWideStoresResolvesShiftedConstBitfieldAssign verifies constant
+// set masks are shifted down to the target bitfield value.
+func TestCollapseWideStoresResolvesShiftedConstBitfieldAssign(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("DropSalvage"))
+	lpth := &Local{FunctionVar: typeinfo.FunctionVar{Name: "lpth", Type: &typeinfo.Pointer{Elem: fx.SDB.GetStruct("THING"), Class: typeinfo.PtrFar}, BPOffset: -0x10}}
+	dst := &Part{
+		Base:     &SymbolRef{Path: &symresolve.SymbolField{Base: &symresolve.SymbolRoot{Symbol: &lpth.FunctionVar}, Field: fieldByName(fx.SDB.GetStruct("THING"), "thp")}},
+		ByteOff:  0,
+		Width:    2,
+		TypeInfo: typeinfo.U16,
+	}
+
+	block := Block{Effects: []Effect{
+		&Assign{
+			Dst: dst,
+			Src: &Binary{
+				TypeInfo: typeinfo.U16,
+				Op:       OpOr,
+				LHS: &Binary{
+					TypeInfo: typeinfo.U16,
+					Op:       OpAnd,
+					LHS:      dst,
+					RHS:      &Const{TypeInfo: typeinfo.U16, U64: 0xc3ff},
+				},
+				RHS: &Const{TypeInfo: typeinfo.U16, U64: 0x0},
+			},
+		},
+	}}
+
+	gotBlock, changed := (&collapseWideStoresProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(gotBlock.Effects) != 1 {
+		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "lpth->thp.iWarp = 0x0"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}

@@ -3,6 +3,7 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
@@ -23,7 +24,7 @@ func TestLowerMachineResolvesNearPointerMemory(t *testing.T) {
 		Origin: machine.Origin{InstOff: 0x2832, Role: machine.OperandSrc},
 	})
 	ppchTarget := machine.MemoryAccess{
-		Seg:    machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:    machine.RegVal(asm.RegDS),
 		Base:   ppch,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x2835, Role: machine.OperandDst},
@@ -82,7 +83,7 @@ func TestLowerMachineResolvesIndexedLocalPointerArray(t *testing.T) {
 		Origin: machine.Origin{InstOff: 0xaeae, Role: machine.OperandSrc},
 	})
 	field := machine.LoadVal(machine.MemoryAccess{
-		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:   machine.RegVal(asm.RegDS),
 		Base:  pointer,
 		Disp:  4,
 		Width: 2,
@@ -140,7 +141,7 @@ func TestLowerMachineResolvesIndexedNearBytePointerArray(t *testing.T) {
 		Origin: machine.Origin{InstOff: 0x675a, Role: machine.OperandSrc},
 	})
 	source := machine.LoadVal(machine.MemoryAccess{
-		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:   machine.RegVal(asm.RegDS),
 		Base:  machine.BinaryVal(machine.ValueOpAdd, pTech, i),
 		Width: 1,
 	})
@@ -210,7 +211,7 @@ func TestLowerMachineResolvesIndexedNearPointerByteArrayFields(t *testing.T) {
 					machine.StoreEffect{
 						MetaInfo: machine.Meta{BlockID: 0x5b39, InstOff: 0x5b46},
 						Addr: machine.MemoryAccess{
-							Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+							Seg:   machine.RegVal(asm.RegDS),
 							Base:  envMax,
 							Width: 1,
 						},
@@ -258,12 +259,12 @@ func TestLowerMachineResolvesIndexedNearPointerParameter(t *testing.T) {
 		Origin: machine.Origin{InstOff: 0x1663, Role: machine.OperandSrc},
 	})
 	psz := machine.LoadVal(machine.MemoryAccess{
-		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:   machine.RegVal(asm.RegDS),
 		Base:  machine.BinaryVal(machine.ValueOpAdd, rgsz, machine.BinaryVal(machine.ValueOpMul, i, machine.ConstVal(2))),
 		Width: 2,
 	})
 	ch := machine.LoadVal(machine.MemoryAccess{
-		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:   machine.RegVal(asm.RegDS),
 		Base:  psz,
 		Width: 1,
 	})

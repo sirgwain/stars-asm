@@ -1,6 +1,10 @@
 package machine
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
+)
 
 // phiValue builds a materialized phi value for source-visible consumers such
 // as calls, stores, branches, and returns.
@@ -14,13 +18,13 @@ func TestPhiValueFlattensAndDedupesNestedArms(t *testing.T) {
 	b3 := &Block{ID: 3}
 
 	inner := phiValue([]PhiArm{
-		{Block: b2, Value: ScalarVal("bx")},
-		{Block: b1, Value: ScalarVal("ax")},
+		{Block: b2, Value: RegVal(asm.RegBX)},
+		{Block: b1, Value: RegVal(asm.RegAX)},
 	})
 
 	got := phiValue([]PhiArm{
-		{Block: b3, Value: ScalarVal("cx")},
-		{Block: b2, Value: ScalarVal("bx")},
+		{Block: b3, Value: RegVal(asm.RegCX)},
+		{Block: b2, Value: RegVal(asm.RegBX)},
 		{Block: b1, Value: inner},
 	})
 
@@ -38,12 +42,12 @@ func TestStackWordsValueCombinesMatchingPhiShapesByArm(t *testing.T) {
 	b2 := &Block{ID: 2}
 
 	lo := phiValue([]PhiArm{
-		{Block: b1, Value: ScalarVal("ax")},
-		{Block: b2, Value: ScalarVal("bx")},
+		{Block: b1, Value: RegVal(asm.RegAX)},
+		{Block: b2, Value: RegVal(asm.RegBX)},
 	})
 	hi := phiValue([]PhiArm{
-		{Block: b1, Value: ScalarVal("dx")},
-		{Block: b2, Value: ScalarVal("cx")},
+		{Block: b1, Value: RegVal(asm.RegDX)},
+		{Block: b2, Value: RegVal(asm.RegCX)},
 	})
 
 	got := stackWordsValue([]Value{lo, hi})

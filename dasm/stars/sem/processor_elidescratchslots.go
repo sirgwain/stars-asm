@@ -2,7 +2,9 @@ package sem
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -90,7 +92,7 @@ func (p *elideScratchSlotsProcessor) ProcessBlock(result *Result, f Func, b Bloc
 		rewriter := scratchAliasRewriter(aliases)
 		next, effectChanged := rewriter.rewriteEffect(effect)
 		changed = changed || effectChanged
-		if _, ok := next.(*CallEffect); ok && scratchAliasesSafeAcrossCall(aliases) && futureScratchAliasUse(b.Effects[i+1:], aliases) {
+		if call, ok := next.(*CallEffect); ok && scratchAliasesPreservedAcrossCall(call, aliases) && futureScratchAliasUse(b.Effects[i+1:], aliases) {
 			effects = append(effects, next)
 			continue
 		}
@@ -169,6 +171,21 @@ func semBlockIndexByID(blocks []Block) map[machine.BlockID]int {
 	return out
 }
 
+// scratchAliasesPreservedAcrossCall reports whether pending aliases can be
+// substituted after call without changing memory-observation order.
+func scratchAliasesPreservedAcrossCall(call *CallEffect, aliases map[string]*scratchAlias) bool {
+	if scratchAliasesSafeAcrossCall(aliases) {
+		return true
+	}
+	return callPreservesScratchAliases(call)
+}
+
+// callPreservesScratchAliases reports whether call cannot mutate values used
+// by pending scratch aliases.
+func callPreservesScratchAliases(call *CallEffect) bool {
+	return call != nil && call.Call != nil && call.Call.Function != nil && strings.EqualFold(call.Call.Function.Name, "sqrt")
+}
+
 // scratchAliasesSafeAcrossCall reports whether pending aliases are pure far-pointer words.
 func scratchAliasesSafeAcrossCall(aliases map[string]*scratchAlias) bool {
 	for _, alias := range aliases {
@@ -182,6 +199,8 @@ func scratchAliasesSafeAcrossCall(aliases map[string]*scratchAlias) bool {
 // exprSafeAcrossCall reports whether expr can be substituted after a call.
 func exprSafeAcrossCall(expr Expr) bool {
 	switch e := expr.(type) {
+	case *Register:
+		return true
 	case *Const:
 		return true
 	case *Part:
@@ -292,6 +311,9 @@ func startsWideWordAssignPair(loEffect, hiEffect Effect) bool {
 func scratchAliasRewriter(aliases map[string]*scratchAlias) *semRewriter {
 	return &semRewriter{
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
+			if value, ok := scratchAliasWideValue(expr, aliases); ok {
+				return value, true, true
+			}
 			key, ok := scratchSlotKeyExpr(expr)
 			if !ok {
 				return nil, false, false
@@ -304,6 +326,46 @@ func scratchAliasRewriter(aliases map[string]*scratchAlias) *semRewriter {
 			return alias.value, true, true
 		},
 	}
+}
+
+// scratchAliasWideValue synthesizes a signed dword value from adjacent scratch
+// word aliases written by CWD-style compiler staging.
+func scratchAliasWideValue(expr Expr, aliases map[string]*scratchAlias) (Expr, bool) {
+	mem, ok := expr.(*Memory)
+	if !ok || mem.Width != 4 || mem.Index != nil || mem.Scale != 0 && mem.Scale != 1 {
+		return nil, false
+	}
+	if !scratchStackSegment(mem.Seg) || !scratchFrameBase(mem.Base) {
+		return nil, false
+	}
+	lo := aliases[fmt.Sprintf("%d:%d", mem.Disp, 2)]
+	hi := aliases[fmt.Sprintf("%d:%d", mem.Disp+2, 2)]
+	if lo == nil || hi == nil {
+		return nil, false
+	}
+	if value, ok := scratchAliasWideConst(lo, hi); ok {
+		return value, true
+	}
+	parent, ok := wordPartParent(hi.value, machine.WordSignHigh)
+	if !ok || !sameExpr(parent, lo.value) {
+		return nil, false
+	}
+	lo.used = true
+	hi.used = true
+	return &SignExtend{Parent: lo.value, FromBits: 16, ToBits: 32, TypeInfo: typeinfo.I32}, true
+}
+
+// scratchAliasWideConst synthesizes a dword constant from adjacent scratch word
+// aliases.
+func scratchAliasWideConst(lo, hi *scratchAlias) (Expr, bool) {
+	loConst, loOK := lo.value.(*Const)
+	hiConst, hiOK := hi.value.(*Const)
+	if !loOK || !hiOK {
+		return nil, false
+	}
+	lo.used = true
+	hi.used = true
+	return &Const{TypeInfo: typeinfo.I32, U64: ((hiConst.U64 & 0xffff) << 16) | (loConst.U64 & 0xffff)}, true
 }
 
 // appendPendingScratchAssignments preserves scratch writes that were never consumed.
@@ -350,12 +412,9 @@ func scratchStackSegment(expr Expr) bool {
 	if expr == nil {
 		return true
 	}
-	raw, ok := expr.(*RawValue)
-	if !ok {
-		return false
-	}
-	scalar, ok := raw.Value.(*machine.Scalar)
-	return ok && scalar.Name == "ss"
+	seg, ok := expr.(*Register)
+
+	return ok && seg.Val == asm.RegSS
 }
 
 // scratchFrameBase reports whether expr names the frame base pointer.

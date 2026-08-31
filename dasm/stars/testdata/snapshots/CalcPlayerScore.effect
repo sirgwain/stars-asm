@@ -95,7 +95,7 @@ block L_596e:
   preds: L_594b
   succs: L_59a9, L_59ad
   effects:
-    5993  call LphuldefFromId(load(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14e]):[(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14c]) + loword(((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2c]) & 0xf) * 0x93)))])) -> callresult(HULDEF *)
+    5993  call LphuldefFromId(load(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14e]):[(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x14c]) + loword(((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2c]) & 0xf) * 0x93)))])) -> callresult(HULDEF *)
     59a4  branch load(farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))+0x34]) == 0x0 ? L_59ad : L_59a9
 
 block L_59a9:
@@ -138,7 +138,7 @@ block L_59d7:
     59ed  store[2] [bp-score+0x2] = (load@59ed/dst([bp-score+0x2]) + hiword(callresult(int32_t)))
     59f7  store[2] [bp-score] = (load@59f7/dst([bp-score]) + loword((0x3 * load([bp-score+0xa]))))
     59fa  store[2] [bp-score+0x2] = (load@59fa/dst([bp-score+0x2]) + signhiword(loword((0x3 * load([bp-score+0xa])))))
-    5a11  branch (load(0x25:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x54]) & 0x1) != 0x0 ? L_5aa7 : L_5a16
+    5a11  branch (load(ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x54]) & 0x1) != 0x0 ? L_5aa7 : L_5a16
 
 block L_5a16:
   insts 128..129  off 0x5a16..0x5a1d
@@ -153,8 +153,8 @@ block L_5a1e:
   preds: L_5a9e
   succs: L_5a45, L_5a52
   effects:
-    5a36  store[2] [bp-iTech] = sext8to16(load(byte 0x25:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))]))
-    5a39  store[2] [bp-score+0x12] = (load([bp-score+0x12]) + sext8to16(load(byte 0x25:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))])))
+    5a36  store[2] [bp-iTech] = sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))]))
+    5a39  store[2] [bp-score+0x12] = (load([bp-score+0x12]) + sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([bp+iPlr])))) + 0x1a) + load([bp-i]))])))
     5a40  branch load([bp-iTech]) >= 0x4 ? L_5a52 : L_5a45
 
 block L_5a45:
@@ -233,7 +233,7 @@ block L_5aaf:
   preds: L_5b77
   succs: L_5adc, L_5aed
   effects:
-    5ad7  branch ((load(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]):[(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x7b]) >> 0x9) & 0x1) == 0x0 ? L_5aed : L_5adc
+    5ad7  branch ((load(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x7b]) >> 0x9) & 0x1) == 0x0 ? L_5aed : L_5adc
 
 block L_5adc:
   insts 199..204  off 0x5adc..0x5aec
@@ -248,7 +248,7 @@ block L_5aed:
   preds: L_5aaf
   succs: L_5b1d, L_5b3c
   effects:
-    5b06  call LComputePower(farptr(load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]), (load(0x25:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i])))))) -> callresult(int32_t)
+    5b06  call LComputePower(farptr(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]), (load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i])))))) -> callresult(int32_t)
     5b0e  store[2] [bp-lPower] = loword(callresult(int32_t))
     5b11  store[2] [bp-lPower+0x2] = hiword(callresult(int32_t))
     5b18  branch load([bp-lPower+0x2]) > 0x0 ? L_5b3c : L_5b1d
@@ -601,7 +601,7 @@ block L_5d9a:
   preds: L_5d91
   succs: L_5daa
   effects:
-    5da5  copy[0x14] *addr(0x25:[load([bp+pscore])]) = *addr(0x25:[addr([bp-score])])
+    5da5  copy[0x14] *addr(ds:[load([bp+pscore])]) = *addr(ds:[addr([bp-score])])
 
 block L_5daa:
   insts 460..461  off 0x5daa..0x5db2

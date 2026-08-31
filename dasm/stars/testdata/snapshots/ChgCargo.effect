@@ -118,37 +118,37 @@ block L_60e6:
   preds: L_60ba, L_60c3
   succs: L_610b, L_613c
   effects:
-    6106  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_613c : L_610b
+    6106  branch (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_613c : L_610b
 
 block L_610b:
   insts 77..77  off 0x610b..0x610c
   preds: L_60e6
   succs: L_6110, L_6118
   effects:
-    610b  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_6118 : L_6110
+    610b  branch (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_6118 : L_6110
 
 block L_6110:
   insts 79..80  off 0x6110..0x6114
   preds: L_610b
   succs: L_6118, L_613c
   effects:
-    6113  branch (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_613c : L_6118
+    6113  branch (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_613c : L_6118
 
 block L_6118:
   insts 82..95  off 0x6118..0x613b
   preds: L_610b, L_6110
   succs: L_613c
   effects:
-    6136  store[2] [bp+dChg] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
-    6139  store[2] [bp+dChg+0x2] = ((load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
+    6136  store[2] [bp+dChg] = (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
+    6139  store[2] [bp+dChg+0x2] = ((load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
 
 block L_613c:
   insts 96..106  off 0x613c..0x6158
   preds: L_60e6, L_6110, L_6118
   succs: L_6159
   effects:
-    6154  store[2] 0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg]))
-    6156  store[2] 0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(0x25:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2]))
+    6154  store[2] ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg]))
+    6156  store[2] ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(ds:[((load([bp-ppl]) + 0x1c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2]))
 
 block L_6159:
   insts 107..108  off 0x6159..0x615e
@@ -266,36 +266,36 @@ block L_6202:
   preds: L_61db, L_61e4
   succs: L_6222, L_6249
   effects:
-    621d  branch (signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) > 0x0 ? L_6249 : L_6222
+    621d  branch (signhiword(load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) > 0x0 ? L_6249 : L_6222
 
 block L_6222:
   insts 179..179  off 0x6222..0x6223
   preds: L_6202
   succs: L_6227, L_622f
   effects:
-    6222  branch (signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) < 0x0 ? L_622f : L_6227
+    6222  branch (signhiword(load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))])) + load([bp+dChg+0x2])) < 0x0 ? L_622f : L_6227
 
 block L_6227:
   insts 181..182  off 0x6227..0x622b
   preds: L_6222
   succs: L_622f, L_6249
   effects:
-    622a  branch (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_6249 : L_622f
+    622a  branch (load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_6249 : L_622f
 
 block L_622f:
   insts 184..194  off 0x622f..0x6248
   preds: L_6222, L_6227
   succs: L_6249
   effects:
-    6243  store[2] [bp+dChg] = (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0)
-    6246  store[2] [bp+dChg+0x2] = signhiword((load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0))
+    6243  store[2] [bp+dChg] = (load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0)
+    6246  store[2] [bp+dChg+0x2] = signhiword((load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) neg 0x0))
 
 block L_6249:
   insts 195..209  off 0x6249..0x6274
   preds: L_6202, L_6227, L_622f
   succs: L_6295
   effects:
-    625f  call __aFulmul(words(0x0, (load(0x25:[load([bp-pth])+0xe]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
+    625f  call __aFulmul(words(0x0, (load(ds:[load([bp-pth])+0xe]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
     6264  store[2] [bp-wtFree] = loword(callresult(uint32_t))
     6268  store[2] [bp-wtFree+0x2] = hiword(callresult(uint32_t))
     626c  store[2] [bp-i] = 0x0
@@ -306,8 +306,8 @@ block L_6275:
   preds: L_6295
   succs: L_6295
   effects:
-    6288  store[2] [bp-wtFree] = (load([bp-wtFree]) - load(0x25:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))]))
-    628c  store[2] [bp-wtFree+0x2] = (load([bp-wtFree+0x2]) - signhiword(load(0x25:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))])))
+    6288  store[2] [bp-wtFree] = (load([bp-wtFree]) - load(ds:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))]))
+    628c  store[2] [bp-wtFree+0x2] = (load([bp-wtFree+0x2]) - signhiword(load(ds:[((load([bp-pth]) + 0x8) + (load([bp-i]) << 0x1))])))
     6290  store[2] [bp-i] = (load([bp-i]) + 0x1)
 
 block L_6295:
@@ -351,7 +351,7 @@ block L_62ca:
   preds: L_629f, L_62b4, L_62bc
   succs: L_62f3
   effects:
-    62f1  store[2] 0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))] = (load(0x25:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg]))
+    62f1  store[2] ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))] = (load(ds:[((load([bp-pth]) + 0x8) + (load([bp+iSupply]) << 0x1))]) + load([bp+dChg]))
 
 block L_62f3:
   insts 255..256  off 0x62f3..0x62f8
@@ -441,29 +441,29 @@ block L_637e:
   preds: L_6352, L_635b
   succs: L_63a3, L_63d4
   effects:
-    639e  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_63d4 : L_63a3
+    639e  branch (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) > 0x0 ? L_63d4 : L_63a3
 
 block L_63a3:
   insts 316..316  off 0x63a3..0x63a4
   preds: L_637e
   succs: L_63a8, L_63b0
   effects:
-    63a3  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_63b0 : L_63a8
+    63a3  branch (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load([bp+dChg+0x2])) < 0x0 ? L_63b0 : L_63a8
 
 block L_63a8:
   insts 318..319  off 0x63a8..0x63ac
   preds: L_63a3
   succs: L_63b0, L_63d4
   effects:
-    63ab  branch (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_63d4 : L_63b0
+    63ab  branch (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load([bp+dChg])) >= 0x0 ? L_63d4 : L_63b0
 
 block L_63b0:
   insts 321..334  off 0x63b0..0x63d3
   preds: L_63a3, L_63a8
   succs: L_63d4
   effects:
-    63ce  store[2] [bp+dChg] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
-    63d1  store[2] [bp+dChg+0x2] = ((load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
+    63ce  store[2] [bp+dChg] = (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) neg 0x0)
+    63d1  store[2] [bp+dChg+0x2] = ((load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + 0x0) neg 0x0)
 
 block L_63d4:
   insts 335..336  off 0x63d4..0x63d9
@@ -477,7 +477,7 @@ block L_63dd:
   preds: L_63d4
   succs: L_63ef, L_63f9
   effects:
-    63ea  branch (load(0x25:[load([bp-pfl])+0x4]) & 0xff) == 0x7 ? L_63f9 : L_63ef
+    63ea  branch (load(ds:[load([bp-pfl])+0x4]) & 0xff) == 0x7 ? L_63f9 : L_63ef
 
 block L_63ef:
   insts 344..345  off 0x63ef..0x63f8
@@ -499,7 +499,7 @@ block L_6402:
   preds: L_63f9
   succs: L_6425
   effects:
-    640a  call GetFuelFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    640a  call GetFuelFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
     6412  goto L_6425
 
 block L_6415:
@@ -507,7 +507,7 @@ block L_6415:
   preds: L_63f9
   succs: L_6425
   effects:
-    641d  call GetCargoFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    641d  call GetCargoFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
 
 block L_6425:
   insts 362..363  off 0x6425..0x6429
@@ -549,7 +549,7 @@ block L_644c:
   preds: L_6443
   succs: L_646f
   effects:
-    6454  call GetFuelFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    6454  call GetFuelFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
     645c  goto L_646f
 
 block L_645f:
@@ -557,7 +557,7 @@ block L_645f:
   preds: L_6443
   succs: L_646f
   effects:
-    6467  call GetCargoFree(farptr(0x25, load([bp-pfl]))) -> callresult(int32_t)
+    6467  call GetCargoFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
 
 block L_646f:
   insts 389..401  off 0x646f..0x6491
@@ -566,8 +566,8 @@ block L_646f:
   effects:
     646f  store[2] [bp+dChg] = merge(Join: L_646f, (L_643a:load([bp+0xc]), L_644c:loword(callresult(int32_t)), L_645f:loword(callresult(int32_t))))
     6472  store[2] [bp+dChg+0x2] = merge(Join: L_646f, (L_643a:load([bp+0xe]), L_644c:hiword(callresult(int32_t)), L_645f:hiword(callresult(int32_t))))
-    648d  store[2] 0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load@6487/src([bp+dChg]))
-    648f  store[2] 0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(0x25:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load@648a/src([bp+dChg+0x2]))
+    648d  store[2] ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))] = (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))]) + load@6487/src([bp+dChg]))
+    648f  store[2] ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2] = (load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp+iSupply]) << 0x1) << 0x1))+0x2]) + load@648a/src([bp+dChg+0x2]))
 
 block L_6492:
   insts 402..403  off 0x6492..0x6497
@@ -606,4 +606,4 @@ block L_64c6:
   insts 419..423  off 0x64c6..0x64cb
   preds: L_60b1, L_60cc, L_61c9, L_61ed, L_6364, L_64bd
   effects:
-    64cb  return merge(Join: L_64c6, (L_60b1:words(0x0, 0x0), L_60cc:words(load(0x25:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(0x25:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_61c9:words(0x0, 0x0), L_61ed:words(load(0x25:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]), signhiword(load(0x25:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]))), L_6364:words(load(0x25:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(0x25:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_64bd:words(load([bp+0xc]), load([bp+0xe]))))
+    64cb  return merge(Join: L_64c6, (L_60b1:words(0x0, 0x0), L_60cc:words(load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_61c9:words(0x0, 0x0), L_61ed:words(load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]), signhiword(load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]))), L_6364:words(load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_64bd:words(load([bp+0xc]), load([bp+0xe]))))

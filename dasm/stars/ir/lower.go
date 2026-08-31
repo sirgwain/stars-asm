@@ -254,6 +254,9 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		}
 		return &Deref{Pointer: ptr, ByteOff: e.ByteOff}, true
 	case *sem.AddressOf:
+		if base, ok := addressOfZeroIndexArrayBase(e); ok {
+			return l.lowerExpr(base)
+		}
 		target, ok := l.lowerExpr(e.Target)
 		if !ok {
 			return nil, false
@@ -276,6 +279,24 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 	default:
 		return nil, false
 	}
+}
+
+// addressOfZeroIndexArrayBase returns the array base for &array[0].
+func addressOfZeroIndexArrayBase(expr *sem.AddressOf) (sem.Expr, bool) {
+	index, ok := expr.Target.(*sem.ArrayIndex)
+	if !ok || !semConstExprEquals(index.Index, 0) {
+		return nil, false
+	}
+	if _, ok := index.Base.ExprType().(*typeinfo.Array); !ok {
+		return nil, false
+	}
+	return index.Base, true
+}
+
+// semConstExprEquals reports whether expr is a semantic constant with value.
+func semConstExprEquals(expr sem.Expr, value uint64) bool {
+	c, ok := expr.(*sem.Const)
+	return ok && c.U64 == value
 }
 
 func (l *lowerer) addTemp(t *sem.Temp) {

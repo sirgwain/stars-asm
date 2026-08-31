@@ -22,8 +22,8 @@ L_417c:
 
 
 L_4185:
-    ppt->x = part[6:2](msg)
-    ppt->y = (loword((uint32_t)(words(part[6:2](msg), part[8:2](msg)) >> 0x10)) & 0xffff)
+    ppt->x = LOWORD(msg.lParam)
+    ppt->y = (loword((uint32_t)(msg.lParam >> 0x10)) & 0xffff)
     branch msg.message == 0x202 ? L_41ba : L_41b4
 
 L_41b4:

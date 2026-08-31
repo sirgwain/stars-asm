@@ -54,7 +54,7 @@ L_2564:
         goto L_2573;
 
 L_2573:
-    if ((LOWORD(lpfl) == idSkip))
+    if ((lpfl->id == idSkip))
         goto L_2525;
     else
         goto L_2581;
@@ -94,7 +94,7 @@ L_25bc:
 L_25c5:
     pxf->fl = *(lpfl);
     pxf->grobj = grobjFleet;
-    pxf->id = LOWORD(lpfl);
+    pxf->id = lpfl->id;
 
 L_25fd:
     return 0x1;
@@ -139,7 +139,7 @@ L_2679:
 L_2682:
     pxf->th = *(lpth);
     pxf->grobj = grobjThing;
-    pxf->id = LOWORD(lpth);
+    pxf->id = lpth->idFull;
 
 L_26ba:
     return 0x1;

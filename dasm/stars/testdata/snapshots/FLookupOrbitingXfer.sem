@@ -45,7 +45,7 @@ L_2564:
     branch lpfl->idPlanet != idPlanet ? L_2525 : L_2573
 
 L_2573:
-    branch LOWORD(lpfl) == idSkip ? L_2525 : L_2581
+    branch lpfl->id == idSkip ? L_2525 : L_2581
 
 L_2581:
     branch idSkip == 0xffff ? L_25ad : L_258a
@@ -67,7 +67,7 @@ L_25bc:
 L_25c5:
     pxf->fl = *lpfl
     pxf->grobj = grobjFleet
-    pxf->id = LOWORD(lpfl)
+    pxf->id = lpfl->id
 
 L_25fd:
     return 0x1
@@ -98,7 +98,7 @@ L_2679:
 L_2682:
     pxf->th = *lpth
     pxf->grobj = grobjThing
-    pxf->id = LOWORD(lpth)
+    pxf->id = lpth->idFull
 
 L_26ba:
     return 0x1

@@ -52,8 +52,8 @@ func TestRenderStructDetail(t *testing.T) {
     int16_t id; /* +0x0000 (2) */
     union {
         uint16_t lo : 8, /* +0x0002 (2) @bit0 */
-                hi : 8; /* @bit8 */
-        uint16_t word; /* +0x0002 (2) */
+            hi : 8;      /* @bit8 */
+        uint16_t word;   /* +0x0002 (2) */
     };
 } SAMPLE; /* size=0x4 */
 `

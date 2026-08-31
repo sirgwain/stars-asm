@@ -33,7 +33,7 @@ block L_1261:
     1267  store[2] [iAboutPartial] = 0x0
     1274  call GetDlgItem(load@126d/src([bp+hwnd]), 0x401) -> callresult(HWND)
     127a  call SzVersion() -> callresult(char *)
-    1283  call SetWindowText(callresult(HWND), farptr(0x25, callresult(char *))) -> callresult(void)
+    1283  call SetWindowText(callresult(HWND), farptr(ds, callresult(char *))) -> callresult(void)
     129b  call SetTimer(load@1288/src([bp+hwnd]), 0xe, 0x32, farptr(0x0, 0x0)) -> callresult(uint16_t)
     12a0  store[2] [uTimerId] = callresult(uint16_t)
     12a6  goto L_1516
@@ -272,4 +272,4 @@ block L_1516:
   insts 232..236  off 0x1516..0x151d
   preds: L_1261, L_12a9, L_1448, L_1473, L_1510
   effects:
-    151b  return merge(Join: L_1516, (L_1261:0x1, L_12a9:0x1, L_1448:load(0x25:[0x0010]), L_1473:0x1, L_1510:0x0))
+    151b  return merge(Join: L_1516, (L_1261:0x1, L_12a9:0x1, L_1448:load(ds:[0x0010]), L_1473:0x1, L_1510:0x0))

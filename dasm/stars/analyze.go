@@ -17,6 +17,7 @@ type FuncAnalysis struct {
 	SemAnalysis sem.AnalyzeResult
 	Annotations *sem.Result
 	IR          ir.Func
+	IRAnalysis  ir.AnalyzeResult
 }
 
 // analyzeFunc decodes a function and derives its CFG, machine effects, and semantic effects.
@@ -70,7 +71,9 @@ func analyzeFuncWithSemPassSnapshots(img *asm.ImageNE, sdb *typeinfo.SymbolDB, f
 	analysis.SemAnalysis = semFunc.Analyze(semCtx)
 
 	// lower to IR
-	analysis.IR = ir.Lower(semFunc, fs)
+	irFunc := ir.Lower(semFunc, fs)
+	analysis.IR = irFunc
+	analysis.IRAnalysis = irFunc.Analyze()
 
 	return analysis, nil
 }

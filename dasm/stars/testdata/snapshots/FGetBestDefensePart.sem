@@ -21,9 +21,9 @@ L_21f6:
 L_221d:
     i = (i + 0x1)
     ss:[bp-0x10] = part.hs.iItem
-    ss:[bp-0x12] = ((HIWORD(part) + 0x1) & 0xff)
+    ss:[bp-0x12] = ((HIWORD(part.hs) + 0x1) & 0xff)
     part.hs.iItem = 0x0
-    HIWORD(part) = (HIWORD(part) | ss:[bp-0x12])
+    HIWORD(part.hs) = (HIWORD(part.hs) | ss:[bp-0x12])
 
 L_2250:
     branch i >= 0x5 ? L_2273 : L_2259
@@ -46,7 +46,7 @@ L_2283:
     fRet = 0x0
 
 L_2288:
-    HIWORD(part) = ((HIWORD(part) & 0xff00) | ((i + 0x9) & 0xff))
+    part.hs.iItem = (i + 0x9)
     call FLookupPart(&part) -> callresult(int16_t)
     *ppart = part
 

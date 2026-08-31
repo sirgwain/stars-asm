@@ -144,6 +144,15 @@ func (ctx *FuncContext) resolveSemanticFarPointer(ptr *FarPointer) (Expr, bool) 
 	if ptr.Part != machine.FarPointerWhole {
 		return nil, false
 	}
+	if expr, ok := ctx.resolveFarPointerParallelMerge(ptr); ok {
+		return expr, true
+	}
+	if expr, ok := ctx.resolveFarPointerMergeOffset(ptr); ok {
+		return expr, true
+	}
+	if expr, ok := ctx.resolveDataSegmentNearPointer(ptr); ok {
+		return expr, true
+	}
 	if expr, ok := ctx.resolveDirectSemanticFarPointer(ptr); ok {
 		return expr, true
 	}
@@ -179,9 +188,113 @@ func (ctx *FuncContext) resolveSemanticFarPointer(ptr *FarPointer) (Expr, bool) 
 	}, true
 }
 
+// resolveFarPointerParallelMerge resolves paired segment and offset merges arm by arm.
+func (ctx *FuncContext) resolveFarPointerParallelMerge(ptr *FarPointer) (Expr, bool) {
+	segMerge, segOK := ptr.Segment.(*Merge)
+	offMerge, offOK := ptr.Offset.(*Merge)
+	if !segOK || !offOK || segMerge.Join != offMerge.Join || len(segMerge.Arms) != len(offMerge.Arms) {
+		return nil, false
+	}
+	arms := make([]MergeArm, 0, len(offMerge.Arms))
+	for i, offArm := range offMerge.Arms {
+		segArm := segMerge.Arms[i]
+		if segArm.Block != offArm.Block {
+			return nil, false
+		}
+		next := *ptr
+		next.Segment = segArm.Value
+		next.Offset = offArm.Value
+		resolved, ok := ctx.resolveSemanticFarPointer(&next)
+		if !ok {
+			return nil, false
+		}
+		arms = append(arms, MergeArm{Block: offArm.Block, Value: resolved})
+	}
+	return &Merge{TypeInfo: mergeType(arms), Join: offMerge.Join, Arms: arms}, true
+}
+
+// resolveFarPointerMergeOffset resolves each arm of a merged far-pointer offset.
+func (ctx *FuncContext) resolveFarPointerMergeOffset(ptr *FarPointer) (Expr, bool) {
+	merge, ok := ptr.Offset.(*Merge)
+	if !ok {
+		return nil, false
+	}
+	arms := make([]MergeArm, 0, len(merge.Arms))
+	for _, arm := range merge.Arms {
+		next := *ptr
+		next.Offset = arm.Value
+		resolved, ok := ctx.resolveSemanticFarPointer(&next)
+		if !ok {
+			return nil, false
+		}
+		arms = append(arms, MergeArm{Block: arm.Block, Value: resolved})
+	}
+	return &Merge{TypeInfo: mergeType(arms), Join: merge.Join, Arms: arms}, true
+}
+
+// resolveDataSegmentNearPointer resolves DS:near-pointer expressions to the near pointer.
+func (ctx *FuncContext) resolveDataSegmentNearPointer(ptr *FarPointer) (Expr, bool) {
+	if !exprMatchesMachineValue(ptr.Segment, ctx.dsReg) {
+		return nil, false
+	}
+	root, residual, ok := splitDataSegmentNearPointerOffset(ptr.Offset)
+	if !ok {
+		return nil, false
+	}
+	if residual == nil {
+		return root, true
+	}
+	return &PointerOffset{Pointer: root, Offset: residual, TypeInfo: root.ExprType()}, true
+}
+
+// splitDataSegmentNearPointerOffset finds a near pointer plus optional byte offset.
+func splitDataSegmentNearPointerOffset(expr Expr) (Expr, Expr, bool) {
+	if ptr, ok := expr.ExprType().(*typeinfo.Pointer); ok && ptr.Class == typeinfo.PtrNear {
+		return expr, nil, true
+	}
+	if part, ok := expr.(*Part); ok && part.Width == 0 {
+		if field, ok := resolveZeroWidthAggregatePart(part); ok {
+			return field, nil, true
+		}
+		return part, nil, true
+	}
+	if array, ok := expr.ExprType().(*typeinfo.Array); ok && array.IsCStringArray() {
+		return expr, nil, true
+	}
+	binary, ok := expr.(*Binary)
+	if !ok || (binary.Op != OpAdd && binary.Op != OpSub) {
+		return nil, nil, false
+	}
+	if root, residual, ok := splitDataSegmentNearPointerOffset(binary.LHS); ok {
+		if binary.Op == OpSub {
+			return root, subtractSemanticAddressTerms(residual, binary.RHS), true
+		}
+		return root, joinSemanticAddressTerms(residual, binary.RHS), true
+	}
+	if binary.Op == OpAdd {
+		if root, residual, ok := splitDataSegmentNearPointerOffset(binary.RHS); ok {
+			return root, joinSemanticAddressTerms(binary.LHS, residual), true
+		}
+	}
+	return nil, nil, false
+}
+
+// resolveZeroWidthAggregatePart resolves a byte address into an aggregate field.
+func resolveZeroWidthAggregatePart(part *Part) (Expr, bool) {
+	strct, ok := part.Base.ExprType().(*typeinfo.Struct)
+	if !ok {
+		return nil, false
+	}
+	matches := strct.FieldsContainingOffset(part.ByteOff)
+	if len(matches) != 1 || matches[0].Off != 0 || !isAggregateType(matches[0].Field.Type) {
+		return nil, false
+	}
+	return &FieldAccess{Base: part.Base, Field: matches[0].Field}, true
+}
+
 // resolveDirectSemanticFarPointer resolves segment:offset expressions into static globals.
 func (ctx *FuncContext) resolveDirectSemanticFarPointer(ptr *FarPointer) (Expr, bool) {
-	segConst, ok := ptr.Segment.(*Const)
+	segNum, ok := ptr.SegNum()
 	if !ok {
 		return nil, false
 	}
@@ -189,28 +302,23 @@ func (ctx *FuncContext) resolveDirectSemanticFarPointer(ptr *FarPointer) (Expr, 
 	if !ok || addr.Base != nil || addr.Offset < 0 {
 		return nil, false
 	}
-	if addr.Offset == 0 && segConst.U64 == 0 {
+	if addr.Offset == 0 && segNum == 0 {
 		return &Const{U64: 0, TypeInfo: ptr.TypeInfo}, true
-	}
-	segNum := uint16(segConst.U64)
-	if fx := segConst.Fixup; fx != nil &&
-		fx.Source == asm.FixupSourceSegment &&
-		fx.Target == asm.FixupTargetInternalRef {
-
-		segNum = fx.TargetSegNum
 	}
 	if typeinfo.IsFunctionPointer(ptr.TypeInfo) {
 		if f := ctx.sdb.GetFunctionByAddr(typeinfo.Addr{Seg: segNum, Off: uint32(addr.Offset)}); f != nil {
 			return &FunctionRef{Function: f, TypeInfo: ptr.TypeInfo}, true
 		}
 	}
-	if ptrType, ok := ptr.TypeInfo.(*typeinfo.Pointer); ok && ptrType.IsCStringPointer() {
-		if text, ok := ctx.res.ResolveLiteral(segNum, uint32(addr.Offset)); ok {
-			return &StringLiteral{TypeInfo: ptr.TypeInfo, Text: text}, true
+	global, globalOK := ctx.res.ResolveGlobal(segNum, uint32(addr.Offset), 0)
+
+	if !globalOK {
+		if ptrType, ok := ptr.TypeInfo.(*typeinfo.Pointer); ok && ptrType.IsCStringPointer() {
+			if text, ok := ctx.res.ResolveLiteral(segNum, uint32(addr.Offset)); ok {
+				return &StringLiteral{TypeInfo: ptr.TypeInfo, Text: text}, true
+			}
 		}
-	}
-	global, ok := ctx.res.ResolveGlobal(segNum, uint32(addr.Offset), 0)
-	if !ok {
+
 		return collapseConstSegmentFarPointerOffset(ptr)
 	}
 	base := &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}
@@ -261,7 +369,7 @@ func resolveDirectGlobalByteArrayOffset(base Expr, fieldOff int, terms []ScaledT
 
 // collapseConstSegmentFarPointerOffset keeps a static segment base with dynamic offset terms.
 func collapseConstSegmentFarPointerOffset(ptr *FarPointer) (Expr, bool) {
-	if _, ok := ptr.Segment.(*Const); !ok {
+	if _, ok := ptr.SegNum(); !ok {
 		return nil, false
 	}
 	addr, ok := semanticAbsoluteAddressExpr(ptr.Offset)
@@ -289,7 +397,7 @@ func (ctx *FuncContext) resolveFarPointerWithRecoveredOffset(ptr *FarPointer) (E
 	if ptr.Part != machine.FarPointerWhole {
 		return nil, false
 	}
-	if _, ok := ptr.Segment.(*Const); !ok {
+	if _, ok := ptr.SegNum(); !ok {
 		return nil, false
 	}
 	offset, ok := semanticResolvedAddressOffsetExpr(ptr.Offset)
@@ -365,7 +473,7 @@ func (ctx *FuncContext) semanticAddressExprFromMemory(mem *Memory) (AddressExpr,
 		return addr, true
 	}
 
-	if !constExprEquals(mem.Seg, uint64(ctx.sdb.DGroupFrame)) {
+	if !semanticMemoryUsesDataSegment(mem.Seg) {
 		return AddressExpr{}, false
 	}
 	offset := mem.Disp
@@ -412,6 +520,11 @@ func semanticAddressExpr(expr Expr) (AddressExpr, bool) {
 	default:
 		return AddressExpr{Terms: []ScaledTerm{{Expr: expr, Scale: 1}}}, true
 	}
+}
+
+// semanticMemoryUsesDataSegment reports whether a lowered memory node uses DS.
+func semanticMemoryUsesDataSegment(seg Expr) bool {
+	return seg == nil || regExprEquals(seg, asm.RegDS)
 }
 
 // semanticAbsoluteAddressExpr decomposes segment offsets with unsigned constants.
@@ -800,7 +913,7 @@ func (c *machineConverter) machineAddressExpr(value machine.Value) (machineAddre
 	case nil:
 		return machineAddressExpr{}, false
 	case *machine.Const:
-		if global, ok := c.ctx.res.ResolveGlobal(uint16(constValue(c.ctx.dsReg)), uint32(v.Val), 0); ok {
+		if global, ok := c.ctx.res.ResolveGlobal(uint16(c.ctx.sdb.DGroupFrame), uint32(v.Val), 0); ok {
 			return machineAddressExpr{base: &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}, offset: global.FieldOff}, true
 		}
 		return machineAddressExpr{offset: signedWordOffset(v.Val)}, true
@@ -859,6 +972,7 @@ func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary) (machineA
 	case machine.ValueOpAdd, machine.ValueOpSub:
 		lhs, lhsOK := c.machineAddressExpr(v.LHS)
 		rhs, rhsOK := c.machineAddressExpr(v.RHS)
+
 		lhs, rhs = preferConstDisplacementTerms(v.Op, v.LHS, lhs, v.RHS, rhs)
 		if !lhsOK || !rhsOK || (lhs.base != nil && rhs.base != nil) {
 			return machineAddressExpr{}, false
@@ -882,17 +996,37 @@ func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary) (machineA
 	return machineAddressExpr{terms: []machineScaledTerm{{value: v, scale: 1}}}, true
 }
 
-// preferConstDisplacementTerms treats constants added to an existing base as byte offsets.
+// preferConstDisplacementTerms disambiguates constants that numerically overlap
+// globals from constants used as byte displacements.
+//
+// A RHS constant in pointer/address arithmetic is a displacement:
+//
+//	pointer + 0x24c
+//	pointer - 0x24c
+//
+// A LHS constant in addition is allowed to remain an absolute global base:
+//
+//	0x59a2 + 0xc0*i
+//
+// unless the RHS already provides a resolved base, in which case the LHS
+// constant is the displacement:
+//
+//	4 + pointer
 func preferConstDisplacementTerms(op machine.ValueOp, lhsValue machine.Value, lhs machineAddressExpr, rhsValue machine.Value, rhs machineAddressExpr) (machineAddressExpr, machineAddressExpr) {
-	if lhs.base == nil || rhs.base == nil {
-		return lhs, rhs
-	}
-	if c, ok := lhsValue.(*machine.Const); ok && op == machine.ValueOpAdd {
-		lhs = machineAddressExpr{offset: signedWordOffset(c.Val)}
-	}
 	if c, ok := rhsValue.(*machine.Const); ok {
-		rhs = machineAddressExpr{offset: signedWordOffset(c.Val)}
+		rhs = machineAddressExpr{
+			offset: signedWordOffset(c.Val),
+		}
 	}
+
+	if c, ok := lhsValue.(*machine.Const); ok &&
+		op == machine.ValueOpAdd &&
+		rhs.base != nil {
+		lhs = machineAddressExpr{
+			offset: signedWordOffset(c.Val),
+		}
+	}
+
 	return lhs, rhs
 }
 
@@ -994,25 +1128,61 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 	}
 
 	if offset == 0 && len(terms) == 0 {
-		if ptr, ok := current.ExprType().(*typeinfo.Pointer); ok && addr.Deref && width > 0 && ptr.Elem != nil && ptr.Elem.Bytes() == width {
-			if _, field := current.(*FieldAccess); !field {
-				return &Deref{Pointer: current, Width: width, TypeInfo: ptr.Elem}, true
+		if ptr, ok := current.ExprType().(*typeinfo.Pointer); ok && addr.Deref && width > 0 && ptr.Elem != nil {
+
+			if ptr.Elem.Bytes() == width {
+				if _, field := current.(*FieldAccess); !field {
+					return &Deref{Pointer: current, Width: width, TypeInfo: ptr.Elem}, true
+				}
+			}
+
+			// A partial load of a pointer value through another pointer:
+			//
+			//     char **ppszBeg
+			//     load word [ppszBeg]
+			//
+			// represents LOWORD(*ppszBeg), not ppszBeg and not an
+			// arbitrary partial load of the pointee object.
+			if partialPointerPointee(ptr, 0, width) {
+				if _, field := current.(*FieldAccess); !field {
+					whole := &Deref{Pointer: current, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
+					return &Part{Base: whole, ByteOff: 0, Width: width, TypeInfo: intTypeForWidth(width)}, true
+				}
 			}
 		}
+
 		if base, ok := current.(LValue); ok && width > 0 && current.ExprType() != nil && current.ExprType().Bytes() > width {
 			return &Part{Base: base, ByteOff: 0, Width: width, TypeInfo: intTypeForWidth(width)}, true
 		}
+
 		return current, true
 	}
+
 	if ptr, ok := current.ExprType().(*typeinfo.Pointer); ok && addr.Deref && len(terms) == 0 && ptr.Elem != nil {
 		if _, field := current.(*FieldAccess); !field {
+			if partialPointerPointee(ptr, offset, width) {
+				whole := &Deref{Pointer: current, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
+				return &Part{Base: whole, ByteOff: offset, Width: width, TypeInfo: intTypeForWidth(width)}, true
+			}
+
 			return &Deref{Pointer: current, ByteOff: offset, Width: width, TypeInfo: derefType(current, width)}, true
 		}
 	}
+
 	if base, ok := current.(LValue); ok && len(terms) == 0 && offset >= 0 {
 		return &Part{Base: base, ByteOff: offset, Width: width, TypeInfo: intTypeForWidth(width)}, true
 	}
 	return nil, false
+}
+
+// partialPointerPointee returns true if ptr is a pointer to a slice inside another pointer
+func partialPointerPointee(ptr *typeinfo.Pointer, offset, width int) bool {
+	if !typeinfo.IsPointer(ptr.Elem) {
+		return false
+	}
+
+	elemWidth := ptr.Elem.Bytes()
+	return offset >= 0 && width > 0 && elemWidth > width && offset+width <= elemWidth
 }
 
 // consumeAddressStep consumes one field, array index, or pointer projection.
@@ -1057,25 +1227,47 @@ func consumeStructField(base Expr, typ typeinfo.Type, offset int, terms []Scaled
 		return &FieldAccess{Base: base, Field: field}, fieldOff, true
 	}
 	if len(matches) != 1 {
+		if field, ok := exactFieldAccess(base, matches, width); ok {
+			return field, 0, true
+		}
 		return nil, 0, false
 	}
 	match := matches[0]
 	if match.Off != 0 {
-		if !isAggregateType(match.Field.Type) && !typeinfo.IsPointer(match.Field.Type) {
+		if !isAggregateType(match.Field.Type) && !typeinfo.IsPointer(match.Field.Type) && match.Off+width > match.Field.Type.Bytes() {
 			return nil, 0, false
 		}
 		field := &FieldAccess{Base: base, Field: match.Field}
 		return field, match.Off, true
 	}
 	if width == 0 {
+		if match.Field.Offset != 0 && match.Field.Bitfield == nil {
+			return &FieldAccess{Base: base, Field: match.Field}, 0, true
+		}
 		return nil, 0, false
 	}
 	if match.Field.Type.Bytes() != width &&
 		!(isAggregateType(match.Field.Type) && (len(terms) > 0 || match.Field.Type.Bytes() > width)) &&
-		!(typeinfo.IsPointer(match.Field.Type) && match.Field.Type.Bytes() > width) {
+		!(typeinfo.IsPointer(match.Field.Type) && match.Field.Type.Bytes() > width) &&
+		!(match.Field.Type.Bytes() > width) {
 		return nil, 0, false
 	}
 	return &FieldAccess{Base: base, Field: match.Field}, 0, true
+}
+
+// exactFieldAccess returns a unique exact non-bitfield field for an access.
+func exactFieldAccess(base Expr, matches []typeinfo.StructFieldMatch, width int) (Expr, bool) {
+	var out *FieldAccess
+	for _, match := range matches {
+		if match.Off != 0 || match.Field.Bitfield != nil || match.Field.Type.Bytes() != width {
+			continue
+		}
+		if out != nil {
+			return nil, false
+		}
+		out = &FieldAccess{Base: base, Field: match.Field}
+	}
+	return out, out != nil
 }
 
 // consumeArrayTerm consumes a scaled dynamic term into an array index.

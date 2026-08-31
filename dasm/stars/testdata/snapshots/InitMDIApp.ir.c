@@ -11,7 +11,7 @@ L_0000:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00));
     wc.hbrBackground = 0xd;
     wc.lpszMenuName = "StarsMenu";
-    wc.lpszClassName = "starsframe";
+    wc.lpszClassName = szFrame;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0076;
     else
@@ -26,7 +26,7 @@ L_0076:
     wc.hIcon = 0x0;
     wc.lpszMenuName = 0x0;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
-    wc.lpszClassName = "starsmessage";
+    wc.lpszClassName = szMessage;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_00c5;
     else
@@ -39,7 +39,7 @@ L_00c5:
     wc.style = 0x20b;
     wc.lpfnWndProc = ScannerWndProc;
     wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-    wc.lpszClassName = "starsscan";
+    wc.lpszClassName = szScan;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0105;
     else
@@ -52,7 +52,7 @@ L_0105:
     wc.style = 0x20b;
     wc.lpfnWndProc = MineWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
-    wc.lpszClassName = "starsmine";
+    wc.lpszClassName = szMine;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0145;
     else
@@ -65,7 +65,7 @@ L_0145:
     wc.style = 0x208;
     wc.lpfnWndProc = TbWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
-    wc.lpszClassName = "starstb";
+    wc.lpszClassName = szTb;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0185;
     else
@@ -79,7 +79,7 @@ L_0185:
     wc.lpfnWndProc = PlanetWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.hIcon = 0x0;
-    wc.lpszClassName = "starsplanet";
+    wc.lpszClassName = szPlanet;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_01ca;
     else
@@ -93,7 +93,7 @@ L_01ca:
     wc.lpfnWndProc = PopupWndProc;
     wc.hbrBackground = GetStockObject(WHITE_BRUSH);
     wc.hIcon = 0x0;
-    wc.lpszClassName = "starspopup";
+    wc.lpszClassName = szPopup;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_020f;
     else
@@ -107,7 +107,7 @@ L_020f:
     wc.lpfnWndProc = TooltipWndProc;
     wc.hbrBackground = GetStockObject(WHITE_BRUSH);
     wc.hIcon = 0x0;
-    wc.lpszClassName = "starstt";
+    wc.lpszClassName = szTooltip;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0254;
     else
@@ -121,7 +121,7 @@ L_0254:
     wc.lpfnWndProc = BrowserWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.hIcon = 0x0;
-    wc.lpszClassName = "starsbrowser";
+    wc.lpszClassName = szBrowser;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_0299;
     else
@@ -140,7 +140,7 @@ L_0299:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00));
     wc.hbrBackground = GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName = 0x0;
-    wc.lpszClassName = "starstitle";
+    wc.lpszClassName = szTitle;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_030c;
     else
@@ -159,7 +159,7 @@ L_030c:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00));
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.lpszMenuName = 0x0;
-    wc.lpszClassName = "starsreport";
+    wc.lpszClassName = szReport;
     if ((RegisterClass(&(wc)) != 0x0))
         goto L_037f;
     else

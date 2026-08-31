@@ -105,8 +105,7 @@ L_1b3a:
         goto L_1b66;
 
 L_1b66:
-    /* untranslated: part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x1) */
-    /* untranslated: part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x0) */
+    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = (rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 0x1);
     goto L_1baf;
 
 L_1b9b:
@@ -307,7 +306,7 @@ L_20c5:
 
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
-    FSendPlrMsg(lppl->iPlayer, 0x139, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), LOWORD(lpfl), 0x0, 0x0, 0x0);
+    FSendPlrMsg(lppl->iPlayer, 0x139, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0x0, 0x0, 0x0);
     return 0x1;
 
 L_214f:
@@ -342,7 +341,7 @@ L_2242:
 
 L_2245:
     idm = t_merge_2245_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0);
     goto L_2fc9;
 
 L_22a0:
@@ -357,7 +356,7 @@ L_22c4:
 
 L_22c7:
     idm = t_merge_22c7_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0);
+    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0);
 
 L_2321:
     AutoFleetOrder(lpfl, lppl);
@@ -367,11 +366,11 @@ L_2321:
         goto L_233e;
 
 L_233e:
-    FSendPlrMsg2(lppl->iPlayer, 0x2f, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem));
+    FSendPlrMsg2(lppl->iPlayer, 0x2f, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem));
     goto L_2fc9;
 
 L_2379:
-    FSendPlrMsg(lppl->iPlayer, 0x30, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lppl->iPlayer, 0x30, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0);
 
 L_23c7:
     if ((grobj != grobjPlanet))
@@ -406,7 +405,7 @@ L_2429:
         goto L_2435;
 
 L_2435:
-    /* untranslated: ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x14)) & 0x0) */
+    /* untranslated: ss:[bp-0x18] = 0x0 */
     /* untranslated: ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x16)) & 0xfff0) */
     *(lppl + 0x14) = (*(lppl + 0x14) & 0xffff);
     lppl->cFactories = 0x0;
@@ -488,7 +487,7 @@ L_2609:
 
 L_2615:
     /* untranslated: ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x18)) & 0xfff) */
-    /* untranslated: ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x1a)) & 0x0) */
+    /* untranslated: ss:[bp-0x16] = 0x0 */
     lppl->cDefenses = 0x0;
     *(lppl + 0x1a) = (*(lppl + 0x1a) & 0xffff);
     /* untranslated: *(lppl+0x18) = (*(lppl+0x18) | ss:[bp-0x18]) */

@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -26,28 +27,64 @@ func collapseTypedFarPointerCallArgs(ctx *FuncContext, call *Call) (*Call, bool)
 	return &next, true
 }
 
-// collapseTypedFarPointerCallArg collapses one typed far pointer call argument.
+// collapseTypedFarPointerCallArg collapses one typed pointer call argument.
 func collapseTypedFarPointerCallArg(ctx *FuncContext, arg Expr, param *typeinfo.FunctionVar) (Expr, bool) {
 	if param == nil {
 		return arg, false
 	}
+
 	expected := param.Type
+
 	if param.Semantic == typeinfo.ParamSemanticResourceNameOrID {
 		if value, ok := resourceIDValue(arg); ok {
 			return &ResourceID{Value: value, TypeInfo: expected}, true
 		}
 	}
+
+	if !typeinfo.IsPointer(expected) {
+		return arg, false
+	}
+
+	// A bare 16-bit value in pointer context may be a near pointer into DS.
+	//
+	// This catches cases such as:
+	//
+	//     strcpy(0x57a4, psz)
+	//
+	// where 0x57a4 is actually the address of a known DS global.
+	_, argIsFarPointer := arg.(*FarPointer)
+	if !argIsFarPointer && arg.ExprType() == typeinfo.U16 && !constExprEquals(arg, 0) {
+		ptr := &FarPointer{
+			Segment:  &Register{Val: asm.RegDS, SegNum: ctx.segFromRegister(asm.RegDS)},
+			Offset:   arg,
+			Part:     machine.FarPointerWhole,
+			TypeInfo: expected,
+		}
+		if resolved, ok := ctx.resolveSemanticFarPointer(ptr); ok {
+			if decayed, ok := decayArrayAddress(resolved, expected); ok {
+				return decayed, true
+			}
+			return resolved, true
+		}
+	}
+
 	if !typeinfo.IsFarPointer(expected) {
 		return arg, false
 	}
+
 	ptr, ok := arg.(*FarPointer)
 	if !ok || ptr.Part != machine.FarPointerWhole {
 		return arg, false
 	}
+
 	if constExprEquals(ptr.Segment, 0) && constExprEquals(ptr.Offset, 0) {
 		return &Const{TypeInfo: expected, U64: 0}, true
 	}
-	if exprMatchesMachineValue(ptr.Segment, machine.ScalarVal("ss")) {
+
+	if exprMatchesMachineValue(ptr.Segment, machine.RegVal(asm.RegSS)) {
+		if decayed, ok := decayArrayAddress(ptr.Offset, expected); ok {
+			return decayed, true
+		}
 		if _, ok := ptr.Offset.(*AddressOf); ok {
 			return ptr.Offset, true
 		}
@@ -55,18 +92,23 @@ func collapseTypedFarPointerCallArg(ctx *FuncContext, arg Expr, param *typeinfo.
 			return ptr.Offset, true
 		}
 		if target, ok := ptr.Offset.(LValue); ok {
+			if decayed, ok := decayArrayLValue(target, expected); ok {
+				return decayed, true
+			}
 			return &AddressOf{Target: target, TypeInfo: expected}, true
 		}
 		return arg, false
 	}
-	if ctx == nil || !exprMatchesMachineValue(ptr.Segment, ctx.dsReg) {
+
+	if !exprMatchesMachineValue(ptr.Segment, ctx.dsReg) {
 		return arg, false
 	}
+
 	if !sourcePointerMatchesFarPointer(ptr.Offset.ExprType(), expected) {
-		_, expectedOK := expected.(*typeinfo.Pointer)
-		if !expectedOK {
+		if _, ok := expected.(*typeinfo.Pointer); !ok {
 			return arg, false
 		}
+
 		if ptr.Offset.ExprType() == typeinfo.U16 {
 			return ptr.Offset, true
 		}
@@ -74,11 +116,54 @@ func collapseTypedFarPointerCallArg(ctx *FuncContext, arg Expr, param *typeinfo.
 			return ptr.Offset, true
 		}
 		if target, ok := ptr.Offset.(LValue); ok {
+			if decayed, ok := decayArrayLValue(target, expected); ok {
+				return decayed, true
+			}
 			return &AddressOf{Target: target, TypeInfo: expected}, true
 		}
+
 		return arg, false
 	}
+
 	return ptr.Offset, true
+}
+
+// decayArrayAddress converts &array or &array[0] to array in pointer context.
+func decayArrayAddress(expr Expr, expected typeinfo.Type) (Expr, bool) {
+	addr, ok := expr.(*AddressOf)
+	if !ok {
+		return expr, false
+	}
+	return decayArrayLValue(addr.Target, expected)
+}
+
+// decayArrayLValue returns an array lvalue where C would decay it to a pointer.
+func decayArrayLValue(target LValue, expected typeinfo.Type) (Expr, bool) {
+	arrayExpr := Expr(target)
+	targetType, ok := target.ExprType().(*typeinfo.Array)
+	if !ok {
+		if index, indexOK := target.(*ArrayIndex); indexOK && constExprEquals(index.Index, 0) {
+			if array, arrayOK := index.Base.ExprType().(*typeinfo.Array); arrayOK {
+				arrayExpr = index.Base
+				targetType = array
+				ok = true
+			}
+		}
+	}
+	if !ok {
+		return target, false
+	}
+	expectedPtr, ok := expected.(*typeinfo.Pointer)
+	if !ok {
+		return target, false
+	}
+	if expectedPtr.IsCStringPointer() && targetType.IsCStringArray() {
+		return arrayExpr, true
+	}
+	if typeinfo.IsCallCompatible(expectedPtr.Elem, targetType.Elem) {
+		return arrayExpr, true
+	}
+	return target, false
 }
 
 // resourceIDValue extracts the integer value encoded in a MAKEINTRESOURCE-style expression.
@@ -120,6 +205,9 @@ func exprMatchesMachineValue(expr Expr, value machine.Value) bool {
 	case *Const:
 		v, ok := value.(*machine.Const)
 		return ok && uint(e.U64) == v.Val
+	case *Register:
+		v, ok := value.(*machine.Reg)
+		return ok && e.Val == v.Val
 	case *RawValue:
 		return machine.ValueEquals(e.Value, value)
 	default:

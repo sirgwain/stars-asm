@@ -67,6 +67,13 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
+			Name:    "normalize-call-args",
+			Purpose: "Normalize call arguments while machine word-pair structure is still available.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &normalizeCallArgsProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "coalesce-copies",
 			Purpose: "Coalesce adjacent contiguous machine copy effects into wider copies.",
 			Machine: func(*FuncContext) MachineBlockProcessor {
@@ -153,6 +160,13 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Sink top-level return merge arms into predecessor blocks.",
 			Func: func(*FuncContext) SemFuncProcessor {
 				return &returnSinkProcessor{}
+			},
+		},
+		{
+			Name:    "normalize-call-args",
+			Purpose: "Normalize semantic call arguments before merge lowering.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &normalizeCallArgsProcessor{ctx: ctx}
 			},
 		},
 		{

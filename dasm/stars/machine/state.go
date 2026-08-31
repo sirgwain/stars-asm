@@ -58,10 +58,10 @@ func newValueState() *state {
 func seedEntryState(ctx *FuncContext) *state {
 	st := newValueState()
 	for _, r := range []asm.Reg{asm.RegAX, asm.RegBX, asm.RegCX, asm.RegDX, asm.RegSI, asm.RegDI, asm.RegBP, asm.RegSP} {
-		st.regs[r] = ScalarVal(r.String())
+		st.regs[r] = RegVal(r)
 	}
 	for _, r := range []asm.Reg{asm.RegDS, asm.RegES, asm.RegSS, asm.RegCS} {
-		st.regs[r] = ScalarVal(r.String())
+		st.regs[r] = RegVal(r)
 	}
 
 	// write the actual values we care about for DS/CS registers

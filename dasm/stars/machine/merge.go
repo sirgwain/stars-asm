@@ -280,8 +280,8 @@ func valueKeyDepth(v Value, depth int) string {
 			return fmt.Sprintf("const:%x", x.Val)
 		}
 		return fmt.Sprintf("const:%x@%x/%d", x.Val, x.Origin.InstOff, x.Origin.Role)
-	case *Scalar:
-		return "scalar:" + keyString(x.Name)
+	case *Reg:
+		return "scalar:" + keyString(x.Val.String())
 	case *FrameBase:
 		return "framebase"
 	case *FloatConst:

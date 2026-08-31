@@ -21,7 +21,7 @@ L_218f:
         goto L_21a3;
 
 L_21a3:
-    _wsprintf(&(szT), "Error: %s", sz, 0x25);
+    _wsprintf(szT, "Error: %s", sz);
     if ((ini.fValidate == 0x0))
         goto L_21e2;
     else
@@ -35,7 +35,7 @@ L_21e2:
     t_merge_21e5_0001 = 0x6;
 
 L_21e5:
-    OutputSz(t_merge_21e5_0001, &(szT));
+    OutputSz(t_merge_21e5_0001, szT);
     return 0x6;
 
 L_21f7:

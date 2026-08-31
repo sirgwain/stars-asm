@@ -55,6 +55,8 @@ func FormatExpr(expr Expr) string {
 			return text
 		}
 		return fmt.Sprintf("0x%x", e.U64)
+	case *Register:
+		return e.Val.String()
 	case *StringLiteral:
 		return e.Text
 	case *ResourceID:
@@ -97,7 +99,7 @@ func FormatExpr(expr Expr) string {
 	case *Part:
 		return formatPart(e)
 	case *AddressOf:
-		return "&" + FormatExpr(e.Target)
+		return formatAddressOf(e)
 	case *Merge:
 		return formatMerge(e)
 	case *RawValue:
@@ -109,6 +111,26 @@ func FormatExpr(expr Expr) string {
 	default:
 		return fmt.Sprintf("%T", expr)
 	}
+}
+
+// formatAddressOf renders address-of with C array-to-pointer decay cleanup.
+func formatAddressOf(e *AddressOf) string {
+	if base, ok := zeroIndexArrayBase(e.Target); ok {
+		return FormatExpr(base)
+	}
+	return "&" + FormatExpr(e.Target)
+}
+
+// zeroIndexArrayBase returns the array base for address-of array[0].
+func zeroIndexArrayBase(target LValue) (Expr, bool) {
+	index, ok := target.(*ArrayIndex)
+	if !ok || !constExprEquals(index.Index, 0) {
+		return nil, false
+	}
+	if _, ok := index.Base.ExprType().(*typeinfo.Array); !ok {
+		return nil, false
+	}
+	return index.Base, true
 }
 
 // formatFieldAccess renders a semantic field projection.

@@ -89,10 +89,10 @@ block L_2288:
     228e  store[2] ss:[bp-0x10] = (load([bp-i]) + 0x9)
     22a0  store[2] [bp-part+0x2] = ((load([bp-part+0x2]) & 0xff00) | (load(ss:[bp-0x10]) & 0xff))
     22a9  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
-    22b9  copy[0x2] *addr(0x25:[load([bp+ppart])]) = *addr(0x25:[addr([bp-part])])
-    22ba  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x2)]) = *addr(0x25:[(addr([bp-part]) + 0x2)])
-    22bb  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x4)]) = *addr(0x25:[(addr([bp-part]) + 0x4)])
-    22bc  copy[0x2] *addr(0x25:[(load([bp+ppart]) + 0x6)]) = *addr(0x25:[(addr([bp-part]) + 0x6)])
+    22b9  copy[0x2] *addr(ds:[load([bp+ppart])]) = *addr(ds:[addr([bp-part])])
+    22ba  copy[0x2] *addr(ds:[(load([bp+ppart]) + 0x2)]) = *addr(ds:[(addr([bp-part]) + 0x2)])
+    22bb  copy[0x2] *addr(ds:[(load([bp+ppart]) + 0x4)]) = *addr(ds:[(addr([bp-part]) + 0x4)])
+    22bc  copy[0x2] *addr(ds:[(load([bp+ppart]) + 0x6)]) = *addr(ds:[(addr([bp-part]) + 0x6)])
 
 block L_22c6:
   insts 72..76  off 0x22c6..0x22cb

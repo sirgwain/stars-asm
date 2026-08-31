@@ -128,9 +128,9 @@ block L_25c5:
   preds: L_25bc
   succs: L_25fd
   effects:
-    25dc  copy[0x7c] *addr(0x25:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpfl+0x2]):[load([bp-lpfl])])
-    25ed  store[2] 0x25:[load([bp+pxf])+0x2] = 0x2
-    25fb  store[2] 0x25:[load([bp+pxf])] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))])
+    25dc  copy[0x7c] *addr(ds:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpfl+0x2]):[load([bp-lpfl])])
+    25ed  store[2] ds:[load([bp+pxf])+0x2] = 0x2
+    25fb  store[2] ds:[load([bp+pxf])] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))])
 
 block L_25fd:
   insts 94..95  off 0x25fd..0x2602
@@ -197,9 +197,9 @@ block L_2682:
   preds: L_2679
   succs: L_26ba
   effects:
-    2699  copy[0x12] *addr(0x25:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpth+0x2]):[load([bp-lpth])])
-    26aa  store[2] 0x25:[load([bp+pxf])+0x2] = 0x8
-    26b8  store[2] 0x25:[load([bp+pxf])] = load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))])
+    2699  copy[0x12] *addr(ds:[(load([bp+pxf]) + 0x4)]) = *addr(load([bp-lpth+0x2]):[load([bp-lpth])])
+    26aa  store[2] ds:[load([bp+pxf])+0x2] = 0x8
+    26b8  store[2] ds:[load([bp+pxf])] = load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))])
 
 block L_26ba:
   insts 163..164  off 0x26ba..0x26bf

@@ -16,8 +16,8 @@ block L_524e:
   effects:
     5268  call GetRaceStat((0x59a2 + loword((0xc0 * load([idPlayer])))), 0xe) -> callresult(int16_t)
     5270  store[2] [bp-raMajor] = callresult(int16_t)
-    527b  store[2] [bp-hs] = load(0x25:[load([bp+ppart])])
-    527e  store[2] [bp-hs+0x2] = load(0x25:[load([bp+ppart])+0x2])
+    527b  store[2] [bp-hs] = load(ds:[load([bp+ppart])])
+    527e  store[2] [bp-hs+0x2] = load(ds:[load([bp+ppart])+0x2])
     5284  goto L_6019
 
 block L_5287:
@@ -46,8 +46,8 @@ block L_52a1:
   preds: L_528d
   succs: L_52c6, L_609c
   effects:
-    52b6  store[2] 0x25:[load([bp+ppart])+0x4] = (0x0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x4e)))
-    52b9  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    52b6  store[2] ds:[load([bp+ppart])+0x4] = (0x0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x4e)))
+    52b9  store[2] ds:[load([bp+ppart])+0x6] = cs
     52c1  branch load([idPlayer]) == 0xffff ? L_609c : L_52c6
 
 block L_52c6:
@@ -196,8 +196,8 @@ block L_53e8:
   preds: L_53d4
   succs: L_5411, L_5423
   effects:
-    53fd  store[2] 0x25:[load([bp+ppart])+0x4] = (0xae8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    5400  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    53fd  store[2] ds:[load([bp+ppart])+0x4] = (0xae8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5400  store[2] ds:[load([bp+ppart])+0x6] = cs
     540c  branch (load@5403/src([bp-hs+0x2]) & 0xff) != 0x4 ? L_5423 : L_5411
 
 block L_5411:
@@ -273,8 +273,8 @@ block L_5473:
   preds: L_545f
   succs: L_5498, L_609c
   effects:
-    5488  store[2] 0x25:[load([bp+ppart])+0x4] = (0x29f0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
-    548b  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5488  store[2] ds:[load([bp+ppart])+0x4] = (0x29f0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
+    548b  store[2] ds:[load([bp+ppart])+0x6] = cs
     5493  branch load([idPlayer]) == 0xffff ? L_609c : L_5498
 
 block L_5498:
@@ -548,8 +548,8 @@ block L_5676:
   preds: L_5662
   succs: L_569b, L_609c
   effects:
-    568b  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4872 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
-    568e  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    568b  store[2] ds:[load([bp+ppart])+0x4] = (0x4872 + loword(((load([bp-hs+0x2]) & 0xff) * 0x8f)))
+    568e  store[2] ds:[load([bp+ppart])+0x6] = cs
     5696  branch load([idPlayer]) == 0xffff ? L_609c : L_569b
 
 block L_569b:
@@ -625,8 +625,8 @@ block L_5712:
   preds: L_56fe
   succs: L_573b, L_574d
   effects:
-    5727  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4e0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    572a  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5727  store[2] ds:[load([bp+ppart])+0x4] = (0x4e0 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    572a  store[2] ds:[load([bp+ppart])+0x6] = cs
     5736  branch (load@572d/src([bp-hs+0x2]) & 0xff) != 0x7 ? L_574d : L_573b
 
 block L_573b:
@@ -702,8 +702,8 @@ block L_579d:
   preds: L_5789
   succs: L_57c2, L_609c
   effects:
-    57b2  store[2] 0x25:[load([bp+ppart])+0x4] = (0xd04 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    57b5  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    57b2  store[2] ds:[load([bp+ppart])+0x4] = (0xd04 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    57b5  store[2] ds:[load([bp+ppart])+0x6] = cs
     57bd  branch load([idPlayer]) == 0xffff ? L_609c : L_57c2
 
 block L_57c2:
@@ -832,8 +832,8 @@ block L_588b:
   preds: L_5877
   succs: L_58b0, L_609c
   effects:
-    58a0  store[2] 0x25:[load([bp+ppart])+0x4] = (0x109a + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    58a3  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    58a0  store[2] ds:[load([bp+ppart])+0x4] = (0x109a + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    58a3  store[2] ds:[load([bp+ppart])+0x6] = cs
     58ab  branch load([idPlayer]) == 0xffff ? L_609c : L_58b0
 
 block L_58b0:
@@ -916,8 +916,8 @@ block L_591d:
   preds: L_5909
   succs: L_5942, L_609c
   effects:
-    5932  store[2] 0x25:[load([bp+ppart])+0x4] = (0x4d8a + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
-    5935  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5932  store[2] ds:[load([bp+ppart])+0x4] = (0x4d8a + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
+    5935  store[2] ds:[load([bp+ppart])+0x6] = cs
     593d  branch load([idPlayer]) == 0xffff ? L_609c : L_5942
 
 block L_5942:
@@ -1045,8 +1045,8 @@ block L_59f9:
   preds: L_59e5
   succs: L_5a1e, L_609c
   effects:
-    5a0e  store[2] 0x25:[load([bp+ppart])+0x4] = (0x12ec + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    5a11  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5a0e  store[2] ds:[load([bp+ppart])+0x4] = (0x12ec + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5a11  store[2] ds:[load([bp+ppart])+0x6] = cs
     5a19  branch load([idPlayer]) == 0xffff ? L_609c : L_5a1e
 
 block L_5a1e:
@@ -1191,8 +1191,8 @@ block L_5afd:
   preds: L_5ae9
   succs: L_5b22, L_609c
   effects:
-    5b12  store[2] 0x25:[load([bp+ppart])+0x4] = (0x1508 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    5b15  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5b12  store[2] ds:[load([bp+ppart])+0x4] = (0x1508 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5b15  store[2] ds:[load([bp+ppart])+0x6] = cs
     5b1d  branch load([idPlayer]) == 0xffff ? L_609c : L_5b22
 
 block L_5b22:
@@ -1333,8 +1333,8 @@ block L_5c28:
   preds: L_5c14
   succs: L_5c4d, L_609c
   effects:
-    5c3d  store[2] 0x25:[load([bp+ppart])+0x4] = (0x768 + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
-    5c40  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5c3d  store[2] ds:[load([bp+ppart])+0x4] = (0x768 + loword(((load([bp-hs+0x2]) & 0xff) * 0x38)))
+    5c40  store[2] ds:[load([bp+ppart])+0x6] = cs
     5c48  branch load([idPlayer]) == 0xffff ? L_609c : L_5c4d
 
 block L_5c4d:
@@ -1431,8 +1431,8 @@ block L_5cf1:
   preds: L_5cdd
   succs: L_5d1a, L_5d29
   effects:
-    5d06  store[2] 0x25:[load([bp+ppart])+0x4] = (0x2450 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
-    5d09  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5d06  store[2] ds:[load([bp+ppart])+0x4] = (0x2450 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
+    5d09  store[2] ds:[load([bp+ppart])+0x6] = cs
     5d15  branch (load@5d0c/src([bp-hs+0x2]) & 0xff) != 0x2 ? L_5d29 : L_5d1a
 
 block L_5d1a:
@@ -1515,8 +1515,8 @@ block L_5d87:
   preds: L_5d73
   succs: L_5dac, L_609c
   effects:
-    5d9c  store[2] 0x25:[load([bp+ppart])+0x4] = (0x2180 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
-    5d9f  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5d9c  store[2] ds:[load([bp+ppart])+0x4] = (0x2180 + loword(((load([bp-hs+0x2]) & 0xff) * 0x3c)))
+    5d9f  store[2] ds:[load([bp+ppart])+0x6] = cs
     5da7  branch load([idPlayer]) == 0xffff ? L_609c : L_5dac
 
 block L_5dac:
@@ -1557,8 +1557,8 @@ block L_5ddc:
   preds: L_5dc8
   succs: L_5e01, L_609c
   effects:
-    5df1  store[2] 0x25:[load([bp+ppart])+0x4] = (0x1e1a + loword(((load([bp-hs+0x2]) & 0xff) * 0x3a)))
-    5df4  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5df1  store[2] ds:[load([bp+ppart])+0x4] = (0x1e1a + loword(((load([bp-hs+0x2]) & 0xff) * 0x3a)))
+    5df4  store[2] ds:[load([bp+ppart])+0x6] = cs
     5dfc  branch load([idPlayer]) == 0xffff ? L_609c : L_5e01
 
 block L_5e01:
@@ -1648,8 +1648,8 @@ block L_5e7f:
   preds: L_5e6b
   succs: L_5ea4, L_609c
   effects:
-    5e94  store[2] 0x25:[load([bp+ppart])+0x4] = (0x16b8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    5e97  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5e94  store[2] ds:[load([bp+ppart])+0x4] = (0x16b8 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5e97  store[2] ds:[load([bp+ppart])+0x6] = cs
     5e9f  branch load([idPlayer]) == 0xffff ? L_609c : L_5ea4
 
 block L_5ea4:
@@ -1671,7 +1671,7 @@ block L_5ec0:
   preds: L_5eb2
   succs: L_5ed0, L_5ef7
   effects:
-    5ecb  branch load(farseg(load(dword 0x25:[load([bp+ppart])+0x4])):[faroff(load(dword 0x25:[load([bp+ppart])+0x4]))+0x34]) >= 0x0 ? L_5ef7 : L_5ed0
+    5ecb  branch load(farseg(load(dword ds:[load([bp+ppart])+0x4])):[faroff(load(dword ds:[load([bp+ppart])+0x4]))+0x34]) >= 0x0 ? L_5ef7 : L_5ed0
 
 block L_5ed0:
   insts 1095..1105  off 0x5ed0..0x5eed
@@ -1810,8 +1810,8 @@ block L_5fab:
   preds: L_5f97
   succs: L_5fd0, L_609c
   effects:
-    5fc0  store[2] 0x25:[load([bp+ppart])+0x4] = (0x19e2 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
-    5fc3  store[2] 0x25:[load([bp+ppart])+0x6] = 0x2
+    5fc0  store[2] ds:[load([bp+ppart])+0x4] = (0x19e2 + loword(((load([bp-hs+0x2]) & 0xff) * 0x36)))
+    5fc3  store[2] ds:[load([bp+ppart])+0x6] = cs
     5fcb  branch load([idPlayer]) == 0xffff ? L_609c : L_5fd0
 
 block L_5fd0:
@@ -1972,7 +1972,7 @@ block L_609c:
   preds: L_52a1, L_53b8, L_53d1, L_5443, L_545c, L_5473, L_5646, L_565f, L_5676, L_56de, L_56ec, L_56fb, L_576d, L_5786, L_579d, L_5829, L_583b, L_5841, L_5849, L_5874, L_588b, L_58e9, L_58f7, L_5906, L_591d, L_595e, L_596c, L_597a, L_5989, L_598c, L_599a, L_59d3, L_59e2, L_59f9, L_5ac9, L_5ad7, L_5ae6, L_5afd, L_5bf8, L_5c11, L_5c28, L_5cbd, L_5ccb, L_5cda, L_5d57, L_5d70, L_5d87, L_5dac, L_5dc5, L_5ddc, L_5e4f, L_5e68, L_5e7f, L_5f7b, L_5f94, L_5fab, L_5fd0, L_5fde, L_5fec, L_6013
   succs: L_60b7
   effects:
-    60ac  call TechStatus(farptr(load(0x25:[load([bp+ppart])+0x6]), (load(0x25:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)
+    60ac  call TechStatus(farptr(load(ds:[load([bp+ppart])+0x6]), (load(ds:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)
 
 block L_60b7:
   insts 1267..1271  off 0x60b7..0x60bc

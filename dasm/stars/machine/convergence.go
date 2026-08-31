@@ -37,9 +37,9 @@ func convergenceValueEqualsDepth(a, b Value, depth int) bool {
 	case *Const:
 		bv, ok := b.(*Const)
 		return ok && av.Val == bv.Val && originEquals(av.Origin, bv.Origin)
-	case *Scalar:
-		bv, ok := b.(*Scalar)
-		return ok && av.Name == bv.Name
+	case *Reg:
+		bv, ok := b.(*Reg)
+		return ok && av.Val == bv.Val
 	case *FrameBase:
 		_, ok := b.(*FrameBase)
 		return ok

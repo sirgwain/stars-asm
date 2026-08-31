@@ -160,6 +160,8 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	switch v := value.(type) {
 	case nil:
 		return nil
+	case *machine.Reg:
+		return &Register{Val: v.Val, SegNum: c.ctx.segFromRegister(v.Val)}
 	case *machine.Const:
 		return &Const{TypeInfo: typeinfo.U16, U64: uint64(v.Val), Origin: v.Origin, Fixup: v.Fixup}
 	case *machine.FloatConst:

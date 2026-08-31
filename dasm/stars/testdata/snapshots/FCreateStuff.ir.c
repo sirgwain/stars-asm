@@ -62,7 +62,7 @@ L_00a3:
 L_00af:
     gd.fNoIdleChecks = 0x0;
     gd.fAisDone = 0x0;
-    /* untranslated: vplr = part[0:192](vrgplrDef) */
+    vplr = vrgplrDef[0x0];
     hrgnHuge = CreateRectRgn(0xfff6, 0xfff6, 0x7d0, 0x7d0);
     hrgnScratch = CreateRectRgn(0x0, 0x0, 0xa, 0xa);
     hbrShip = HbrGet(0xff00);
@@ -77,25 +77,25 @@ L_00af:
     hbrPurple = HbrGet(0x7f007f);
     hbrTooltip = HbrGet(0x9fffff);
     hbrRadarNear = 0x0;
-    LOWORD(rghbrMineral) = HbrGet(0xff0000);
-    HIWORD(rghbrMineral) = HbrGet(0x7f00);
-    /* untranslated: part[4:2](rghbrMineral) = HbrGet(0xffff) */
-    /* untranslated: part[6:2](rghbrMineral) = HbrGet(0xffffff) */
-    /* untranslated: part[8:2](rghbrMineral) = HbrGet(0xff) */
-    LOWORD(rghbrPlanetAttr) = HbrGet(0x7f0000);
-    HIWORD(rghbrPlanetAttr) = HbrGet(0xff0000);
-    /* untranslated: part[4:2](rghbrPlanetAttr) = HbrGet(0x7f) */
-    /* untranslated: part[6:2](rghbrPlanetAttr) = HbrGet(0xff) */
-    /* untranslated: part[8:2](rghbrPlanetAttr) = HbrGet(0x7f00) */
-    /* untranslated: part[10:2](rghbrPlanetAttr) = HbrGet(0xff00) */
-    LOWORD(rghbrMinSum) = HbrGet(0xff0000);
-    HIWORD(rghbrMinSum) = HbrGet(0x7f0000);
-    /* untranslated: part[4:2](rghbrMinSum) = HbrGet(0xff00) */
-    /* untranslated: part[6:2](rghbrMinSum) = HbrGet(0x7f00) */
-    /* untranslated: part[8:2](rghbrMinSum) = HbrGet(0xffff) */
-    /* untranslated: part[10:2](rghbrMinSum) = HbrGet(0x7f7f) */
-    /* untranslated: part[12:2](rghbrMinSum) = HbrGet(0xff) */
-    /* untranslated: part[14:2](rghbrMinSum) = HbrGet(0x7f) */
+    rghbrMineral[0x0] = HbrGet(0xff0000);
+    rghbrMineral[0x1] = HbrGet(0x7f00);
+    rghbrMineral[0x2] = HbrGet(0xffff);
+    rghbrMineral[0x3] = HbrGet(0xffffff);
+    rghbrMineral[0x4] = HbrGet(0xff);
+    rghbrPlanetAttr[0x0][0x0] = HbrGet(0x7f0000);
+    rghbrPlanetAttr[0x0][0x1] = HbrGet(0xff0000);
+    rghbrPlanetAttr[0x1][0x0] = HbrGet(0x7f);
+    rghbrPlanetAttr[0x1][0x1] = HbrGet(0xff);
+    rghbrPlanetAttr[0x2][0x0] = HbrGet(0x7f00);
+    rghbrPlanetAttr[0x2][0x1] = HbrGet(0xff00);
+    rghbrMinSum[0x0][0x0] = HbrGet(0xff0000);
+    rghbrMinSum[0x0][0x1] = HbrGet(0x7f0000);
+    rghbrMinSum[0x1][0x0] = HbrGet(0xff00);
+    rghbrMinSum[0x1][0x1] = HbrGet(0x7f00);
+    rghbrMinSum[0x2][0x0] = HbrGet(0xffff);
+    rghbrMinSum[0x2][0x1] = HbrGet(0x7f7f);
+    rghbrMinSum[0x3][0x0] = HbrGet(0xff);
+    rghbrMinSum[0x3][0x1] = HbrGet(0x7f);
     hbrYellow = HbrGet(0xffff);
     hbrDkYellow = HbrGet(0x7f7f);
     hbrLightGray = HbrGet(0xc0c0c0);
@@ -179,7 +179,7 @@ L_06bc:
     goto L_0720;
 
 L_06c4:
-    /* untranslated: rghdibShips[i] = HdibLoadBigResource(part[12:0](szBrowser[i])) */
+    rghdibShips[i] = HdibLoadBigResource((i + 0x228));
     if ((rghdibShips[i] != 0x0))
         goto L_06f0;
     else
@@ -189,7 +189,7 @@ L_06eb:
     fFailed = 0x1;
 
 L_06f0:
-    /* untranslated: rghdibShipsT[i] = HdibLoadBigResource(part[3:0](szTitle[i])) */
+    rghdibShipsT[i] = HdibLoadBigResource((i + 0x22d));
     if ((rghdibShipsT[i] != 0x0))
         goto L_071c;
     else
@@ -212,7 +212,7 @@ L_0729:
     goto L_0761;
 
 L_0731:
-    /* untranslated: rghdibInventory[i] = HdibLoadBigResource(part[8:0](szMine[i])) */
+    rghdibInventory[i] = HdibLoadBigResource((i + 0x1f4));
     if ((rghdibInventory[i] != 0x0))
         goto L_075d;
     else
@@ -231,7 +231,7 @@ L_0761:
         goto L_076a;
 
 L_076a:
-    /* untranslated: vhpal = HpalFromDib(part[6:2](rghdibShips)) */
+    vhpal = HpalFromDib(rghdibShips[0x3]);
     hdibRaces = HdibLoadBigResource(0x85);
     hdibRacesT = HdibLoadBigResource(0x50);
     hdibRacesX = HdibLoadBigResource(0x4f);
@@ -242,13 +242,13 @@ L_076a:
     hiconStars = LoadIcon(hInst, "StarsIco");
     hiconHost = LoadIcon(hInst, "HostIco");
     hiconWait = LoadIcon(hInst, "WaitIco");
-    LOWORD(rghiconVCR) = LoadIcon(hInst, "Bang1Ico");
-    HIWORD(rghiconVCR) = LoadIcon(hInst, "Bang2Ico");
-    /* untranslated: part[4:2](rghiconVCR) = LoadIcon(hInst, "Bang3Ico") */
-    /* untranslated: part[6:2](rghiconVCR) = LoadIcon(hInst, "Torp1Ico") */
-    /* untranslated: part[8:2](rghiconVCR) = LoadIcon(hInst, "Torp2Ico") */
-    /* untranslated: part[10:2](rghiconVCR) = LoadIcon(hInst, "Torp3Ico") */
-    /* untranslated: part[12:2](rghiconVCR) = LoadIcon(hInst, "Torp4Ico") */
+    rghiconVCR[0x0] = LoadIcon(hInst, "Bang1Ico");
+    rghiconVCR[0x1] = LoadIcon(hInst, "Bang2Ico");
+    rghiconVCR[0x2] = LoadIcon(hInst, "Bang3Ico");
+    rghiconVCR[0x3] = LoadIcon(hInst, "Torp1Ico");
+    rghiconVCR[0x4] = LoadIcon(hInst, "Torp2Ico");
+    rghiconVCR[0x5] = LoadIcon(hInst, "Torp3Ico");
+    rghiconVCR[0x6] = LoadIcon(hInst, "Torp4Ico");
     lpLog = LpAlloc(0x7d00, htLog);
     lpMsg = LpAlloc(0xffc8, htMsg);
     lpfnFakeComboProc = MakeProcInstance(FakeComboProc, hInst);

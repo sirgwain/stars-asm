@@ -1,0 +1,3681 @@
+[
+  {
+    "addr": "0001:0000",
+    "name": "rgPalGray",
+    "type": "uint8_t[20]",
+    "module": "init"
+  },
+  {
+    "addr": "0002:0000",
+    "name": "rgengine",
+    "type": "ENGINE[16]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:04e0",
+    "name": "rgarmor",
+    "type": "ARMOR[12]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:0768",
+    "name": "rgscanner",
+    "type": "SCANNER[16]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:0ae8",
+    "name": "rgshield",
+    "type": "SHIELD[10]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:0d04",
+    "name": "rgspecialE",
+    "type": "SPECIAL[17]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:109a",
+    "name": "rgspecialM",
+    "type": "SPECIAL[11]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:12ec",
+    "name": "rgmines",
+    "type": "MINES[10]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:1508",
+    "name": "rgmining",
+    "type": "MINING[8]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:16b8",
+    "name": "rgplanetary",
+    "type": "PLANETARY[15]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:19e2",
+    "name": "rgterra",
+    "type": "TERRA[20]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:1e1a",
+    "name": "rgbomb",
+    "type": "BOMB[15]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:2180",
+    "name": "rgtorp",
+    "type": "TORP[12]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:2450",
+    "name": "rgbeam",
+    "type": "BEAM[24]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:29f0",
+    "name": "rghuldef",
+    "type": "HULDEF[32]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:3bd0",
+    "name": "rgshdefT",
+    "type": "SHDEF[22]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:4872",
+    "name": "rghuldefSB",
+    "type": "HULDEF[5]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:4b3e",
+    "name": "rgshdefSBT",
+    "type": "SHDEF[4]",
+    "module": "parts"
+  },
+  {
+    "addr": "0002:4d8a",
+    "name": "rgspecialSB",
+    "type": "SPECIALSB[16]",
+    "module": "parts"
+  },
+  {
+    "addr": "0003:0000",
+    "name": "aSTRCmpr",
+    "type": "char[28209]",
+    "module": "strings"
+  },
+  {
+    "addr": "0003:6e32",
+    "name": "acSTR",
+    "type": "uint8_t[1414]",
+    "module": "strings"
+  },
+  {
+    "addr": "0003:73b8",
+    "name": "aiSTRChunkOffset",
+    "type": "int16_t[23]",
+    "module": "strings"
+  },
+  {
+    "addr": "0003:73e6",
+    "name": "rgSTRLookupTable",
+    "type": "char[84]",
+    "module": "strings"
+  },
+  {
+    "addr": "0005:2870",
+    "name": "vrgbShuffleSerial",
+    "type": "uint8_t[21]",
+    "module": "mdi"
+  },
+  {
+    "addr": "0005:7702",
+    "name": "rgTOWidth",
+    "type": "char[2][2]",
+    "module": "mdi"
+  },
+  {
+    "addr": "0007:0000",
+    "name": "aMSGCmpr",
+    "type": "char[22836]",
+    "module": "msg"
+  },
+  {
+    "addr": "0007:5934",
+    "name": "acMSG",
+    "type": "uint8_t[387]",
+    "module": "msg"
+  },
+  {
+    "addr": "0007:5ab8",
+    "name": "aiMSGChunkOffset",
+    "type": "int16_t[7]",
+    "module": "msg"
+  },
+  {
+    "addr": "0007:5ac6",
+    "name": "rgMSGLookupTable",
+    "type": "char[72]",
+    "module": "msg"
+  },
+  {
+    "addr": "0007:5b0e",
+    "name": "rgcMsgArgs",
+    "type": "char[387]",
+    "module": "msg"
+  },
+  {
+    "addr": "0008:50be",
+    "name": "vrgbTachyon",
+    "type": "uint8_t[18]",
+    "module": "util"
+  },
+  {
+    "addr": "0008:5f7e",
+    "name": "rgDSDivCnt",
+    "type": "int32_t[5]",
+    "module": "util"
+  },
+  {
+    "addr": "0008:5f92",
+    "name": "rgcrDrawStars",
+    "type": "uint32_t[5]",
+    "module": "util"
+  },
+  {
+    "addr": "0008:5fa6",
+    "name": "rgDSDivCnt2",
+    "type": "int32_t[5]",
+    "module": "util"
+  },
+  {
+    "addr": "0008:5fba",
+    "name": "rgcrDrawStars2a",
+    "type": "uint32_t[5]",
+    "module": "util"
+  },
+  {
+    "addr": "0008:5fce",
+    "name": "rgcrDrawStars2b",
+    "type": "uint32_t[5]",
+    "module": "util"
+  },
+  {
+    "addr": "0009:0000",
+    "name": "aPNCmpr",
+    "type": "char[4099]",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0009:1004",
+    "name": "acPN",
+    "type": "uint8_t[999]",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0009:13ec",
+    "name": "aiPNChunkOffset",
+    "type": "int16_t[16]",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0009:140c",
+    "name": "rgPNLookupTable",
+    "type": "char[52]",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0009:14ea",
+    "name": "rgPrimes",
+    "type": "int16_t[128]",
+    "module": "utilgen"
+  },
+  {
+    "addr": "000c:0000",
+    "name": "vrgPopRad",
+    "type": "int16_t[19]",
+    "module": "scan"
+  },
+  {
+    "addr": "000c:0026",
+    "name": "rgcrScanMine",
+    "type": "uint32_t[3]",
+    "module": "scan"
+  },
+  {
+    "addr": "000e:0000",
+    "name": "vrgTBBtn",
+    "type": "char[29]",
+    "module": "tb"
+  },
+  {
+    "addr": "000e:0da4",
+    "name": "vrgpctZoom",
+    "type": "int16_t[9]",
+    "module": "tb"
+  },
+  {
+    "addr": "000f:0000",
+    "name": "mpishdefishTutor",
+    "type": "char[6]",
+    "module": "file"
+  },
+  {
+    "addr": "0010:0000",
+    "name": "vrgWormholeMin",
+    "type": "uint8_t[5]",
+    "module": "create"
+  },
+  {
+    "addr": "0010:0006",
+    "name": "vrgWormholeVar",
+    "type": "uint8_t[5]",
+    "module": "create"
+  },
+  {
+    "addr": "0010:000c",
+    "name": "rgbtlplanT",
+    "type": "BTLPLAN[5]",
+    "module": "create"
+  },
+  {
+    "addr": "0010:9d4c",
+    "name": "rgNG3Width",
+    "type": "char[2][9]",
+    "module": "create"
+  },
+  {
+    "addr": "0010:a370",
+    "name": "vrgplrComp",
+    "type": "PLAYER[4][6]",
+    "module": "create"
+  },
+  {
+    "addr": "0010:b5a8",
+    "name": "vrgvcMax",
+    "type": "int16_t[10]",
+    "module": "create"
+  },
+  {
+    "addr": "0012:02ee",
+    "name": "vrgAiRobotoidResOrder",
+    "type": "uint8_t[36]",
+    "module": "ai"
+  },
+  {
+    "addr": "0012:1f34",
+    "name": "vrgRobIshAip",
+    "type": "uint16_t[38]",
+    "module": "ai"
+  },
+  {
+    "addr": "0012:1f80",
+    "name": "vrgRobAip",
+    "type": "uint8_t[301]",
+    "module": "ai"
+  },
+  {
+    "addr": "0012:35ae",
+    "name": "vrgTDIshAip",
+    "type": "uint8_t[19]",
+    "module": "ai"
+  },
+  {
+    "addr": "0012:35c2",
+    "name": "vrgTDAip",
+    "type": "uint8_t[141]",
+    "module": "ai"
+  },
+  {
+    "addr": "0012:3650",
+    "name": "vrgAiTurinDroneResOrder",
+    "type": "uint8_t[31]",
+    "module": "ai"
+  },
+  {
+    "addr": "0013:0000",
+    "name": "vrgAiParts",
+    "type": "AIPART[150]",
+    "module": "aiutil"
+  },
+  {
+    "addr": "0013:7688",
+    "name": "vrgSBAip",
+    "type": "uint8_t[85]",
+    "module": "aiutil"
+  },
+  {
+    "addr": "0013:76de",
+    "name": "vrgSBMacAisb",
+    "type": "uint8_t[6]",
+    "module": "aiutil"
+  },
+  {
+    "addr": "0013:7dce",
+    "name": "vrgAiPacketDist",
+    "type": "int32_t[2]",
+    "module": "aiutil"
+  },
+  {
+    "addr": "0014:0064",
+    "name": "vrgISIshAip",
+    "type": "uint8_t[19]",
+    "module": "ai2"
+  },
+  {
+    "addr": "0014:0078",
+    "name": "vrgISAip",
+    "type": "uint8_t[182]",
+    "module": "ai2"
+  },
+  {
+    "addr": "0014:01ce",
+    "name": "vrgAiISResOrder",
+    "type": "uint8_t[18]",
+    "module": "ai2"
+  },
+  {
+    "addr": "0015:0000",
+    "name": "vrgAiMacintiResOrder",
+    "type": "uint8_t[8]",
+    "module": "ai3"
+  },
+  {
+    "addr": "0015:2a06",
+    "name": "vrgMacIshAip",
+    "type": "uint16_t[31]",
+    "module": "ai3"
+  },
+  {
+    "addr": "0015:2a44",
+    "name": "vrgMacAip",
+    "type": "uint8_t[248]",
+    "module": "ai3"
+  },
+  {
+    "addr": "0016:0000",
+    "name": "vrgAiCybertronResOrder",
+    "type": "uint8_t[42]",
+    "module": "ai4"
+  },
+  {
+    "addr": "0016:46b0",
+    "name": "vrgCyberIshAip",
+    "type": "uint16_t[36]",
+    "module": "ai4"
+  },
+  {
+    "addr": "0016:46f8",
+    "name": "vrgCyberAip",
+    "type": "uint8_t[301]",
+    "module": "ai4"
+  },
+  {
+    "addr": "0017:4f3c",
+    "name": "rgrgdmgMine",
+    "type": "int16_t[2][3]",
+    "module": "turn"
+  },
+  {
+    "addr": "0017:4f48",
+    "name": "rgrgdmgMinMine",
+    "type": "int16_t[2][3]",
+    "module": "turn"
+  },
+  {
+    "addr": "0017:4f54",
+    "name": "rgpctMineHit",
+    "type": "int16_t[3]",
+    "module": "turn"
+  },
+  {
+    "addr": "0017:4f5a",
+    "name": "rgiWarpSafe",
+    "type": "int16_t[3]",
+    "module": "turn"
+  },
+  {
+    "addr": "0019:0138",
+    "name": "mpimdgrbitBU",
+    "type": "uint16_t[8]",
+    "module": "popup"
+  },
+  {
+    "addr": "001a:0000",
+    "name": "rghstCat",
+    "type": "HullSlotType[14]",
+    "module": "build"
+  },
+  {
+    "addr": "001a:001c",
+    "name": "rgidsCat",
+    "type": "StringId[14]",
+    "module": "build"
+  },
+  {
+    "addr": "001a:0038",
+    "name": "rggrbitParts",
+    "type": "uint16_t[13]",
+    "module": "build"
+  },
+  {
+    "addr": "001a:0052",
+    "name": "rgidsParts",
+    "type": "int16_t[13]",
+    "module": "build"
+  },
+  {
+    "addr": "001a:006c",
+    "name": "rggrbitPartsSB",
+    "type": "uint16_t[8]",
+    "module": "build"
+  },
+  {
+    "addr": "001a:007c",
+    "name": "rgidsPartsSB",
+    "type": "int16_t[8]",
+    "module": "build"
+  },
+  {
+    "addr": "001c:1d4e",
+    "name": "rglTechCost",
+    "type": "int32_t[27]",
+    "module": "research"
+  },
+  {
+    "addr": "001c:1eb6",
+    "name": "rggrbitBrParts",
+    "type": "uint16_t[17]",
+    "module": "research"
+  },
+  {
+    "addr": "001d:2a8c",
+    "name": "rgRW3Spacing",
+    "type": "char[7]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:2a94",
+    "name": "rgRW3Width",
+    "type": "char[7]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:2a9c",
+    "name": "rgRW3IStat",
+    "type": "char[7]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:30f4",
+    "name": "rgRaceStatMin",
+    "type": "char[16]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:3104",
+    "name": "rgRaceStatMax",
+    "type": "char[16]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:4410",
+    "name": "rgRacePrimaryTrait",
+    "type": "int16_t[10]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:4424",
+    "name": "rgRaceAdvDisPts",
+    "type": "int16_t[14]",
+    "module": "race"
+  },
+  {
+    "addr": "001d:4440",
+    "name": "rgRaceDisEnvPts",
+    "type": "int16_t[6]",
+    "module": "race"
+  },
+  {
+    "addr": "001f:0000",
+    "name": "rgbrcStart",
+    "type": "uint8_t[136]",
+    "module": "battle"
+  },
+  {
+    "addr": "0020:0f94",
+    "name": "rgiaQuikDrop",
+    "type": "ITEMACTION[5]",
+    "module": "tutor"
+  },
+  {
+    "addr": "0020:0f9e",
+    "name": "rgiaQuikLoad",
+    "type": "ITEMACTION[5]",
+    "module": "tutor"
+  },
+  {
+    "addr": "0020:0fa8",
+    "name": "rgiaUnloadAllCol",
+    "type": "ITEMACTION[5]",
+    "module": "tutor"
+  },
+  {
+    "addr": "0020:0fb2",
+    "name": "rgiaLoadAllCol",
+    "type": "ITEMACTION[5]",
+    "module": "tutor"
+  },
+  {
+    "addr": "0020:663a",
+    "name": "rgzpqTut",
+    "type": "ZIPPRODQ1[2]",
+    "module": "tutor"
+  },
+  {
+    "addr": "0021:0000",
+    "name": "aTUTCmpr",
+    "type": "char[22323]",
+    "module": "tutor2"
+  },
+  {
+    "addr": "0021:5734",
+    "name": "acTUT",
+    "type": "uint8_t[640]",
+    "module": "tutor2"
+  },
+  {
+    "addr": "0021:59b4",
+    "name": "aiTUTChunkOffset",
+    "type": "int16_t[10]",
+    "module": "tutor2"
+  },
+  {
+    "addr": "0021:59c8",
+    "name": "rgTUTLookupTable",
+    "type": "char[76]",
+    "module": "tutor2"
+  },
+  {
+    "addr": "0022:0000",
+    "name": "mpicolgrbitBU",
+    "type": "uint16_t[12]",
+    "module": "report"
+  },
+  {
+    "addr": "0025:0010",
+    "name": "hbrButtonFace",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0012",
+    "name": "hbrButtonText",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0014",
+    "name": "hbrButtonHilite",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0016",
+    "name": "hbrButtonShadow",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0018",
+    "name": "hbrWindow",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:001a",
+    "name": "hbrWindowText",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:001c",
+    "name": "hbrWindowFrame",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:001e",
+    "name": "hbrDesktop",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0020",
+    "name": "hbrLightGray",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0022",
+    "name": "hbrGray",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0024",
+    "name": "hbrRed",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0026",
+    "name": "hbrGreen",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0028",
+    "name": "hbrBlue",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:002a",
+    "name": "lpfnTutorDlgProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:002e",
+    "name": "rgcrPlrHistory",
+    "type": "uint32_t[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:006e",
+    "name": "penvMem",
+    "type": "jmp_buf[9] *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0070",
+    "name": "game",
+    "type": "GAME",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00f0",
+    "name": "dGal",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00f2",
+    "name": "dGalInv",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00f4",
+    "name": "dGalMinDist",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00f6",
+    "name": "lpPlanets",
+    "type": "PLANET *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00fa",
+    "name": "rglpfl",
+    "type": "FLEET * *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:00fe",
+    "name": "rglpshdef",
+    "type": "SHDEF *[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:014a",
+    "name": "szHelpFile",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:014c",
+    "name": "rglpshdefSB",
+    "type": "SHDEF *[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:018c",
+    "name": "idPlayer",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:018e",
+    "name": "hwndBrowser",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0190",
+    "name": "hwndScanner",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0192",
+    "name": "hwndActive",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0194",
+    "name": "hwndMine",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0196",
+    "name": "hwndPlanet",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0198",
+    "name": "hwndMessage",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:019a",
+    "name": "hwndTb",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:019c",
+    "name": "fLogOut",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:019e",
+    "name": "lpchBatch",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01a2",
+    "name": "uTimerId",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01a4",
+    "name": "uTimerType",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01aa",
+    "name": "PCTD",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01b0",
+    "name": "PCTLD",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01b8",
+    "name": "PCTDPCTPCT",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01c0",
+    "name": "PCTDKT",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01c6",
+    "name": "MPCTD",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01d0",
+    "name": "PCTDXPCTDPCTPCT",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01d2",
+    "name": "ctickLast",
+    "type": "uint32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01d6",
+    "name": "szFrame",
+    "type": "char[11]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01e2",
+    "name": "szScan",
+    "type": "char[10]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01ec",
+    "name": "szMine",
+    "type": "char[10]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:01f6",
+    "name": "szPlanet",
+    "type": "char[12]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0202",
+    "name": "szMessage",
+    "type": "char[13]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0210",
+    "name": "szPopup",
+    "type": "char[11]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:021c",
+    "name": "szBrowser",
+    "type": "char[13]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:022a",
+    "name": "szTitle",
+    "type": "char[11]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0236",
+    "name": "szReport",
+    "type": "char[12]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0242",
+    "name": "szTb",
+    "type": "char[8]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:024a",
+    "name": "szTooltip",
+    "type": "char[8]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0252",
+    "name": "szDirName",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0352",
+    "name": "hwndTitle",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0354",
+    "name": "fFreeingTitle",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0356",
+    "name": "hiconStars",
+    "type": "HICON",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0358",
+    "name": "hiconHost",
+    "type": "HICON",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:035a",
+    "name": "hiconWait",
+    "type": "HICON",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:035c",
+    "name": "lSaltCur",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0360",
+    "name": "lSaltLast",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:038c",
+    "name": "vretExitValue",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:03d2",
+    "name": "iPassCnt",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0414",
+    "name": "fProcessingTimer",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0416",
+    "name": "ptStickyHostModeDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:042e",
+    "name": "vhpalSplash",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0430",
+    "name": "vhdibTitle",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0432",
+    "name": "rghwndBtnSplash",
+    "type": "uint16_t[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0448",
+    "name": "rgcrMinerals",
+    "type": "uint32_t[6]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:047e",
+    "name": "rgszPlanetAttr",
+    "type": "char *[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0492",
+    "name": "rgszPlanetAttrAbbr",
+    "type": "char *[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:04cc",
+    "name": "rgszMinerals",
+    "type": "char *[6]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:04f2",
+    "name": "rgszMineField",
+    "type": "char *[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:04f8",
+    "name": "cMinGrafMax",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:050a",
+    "name": "mpiTypeiItem",
+    "type": "uint8_t[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0552",
+    "name": "mpdtsz",
+    "type": "char *[8]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0586",
+    "name": "fOrdersVis",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0588",
+    "name": "grbitScan",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:058a",
+    "name": "vpctRadarView",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:058c",
+    "name": "vrgScanPO",
+    "type": "int16_t[5][2]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:05a0",
+    "name": "iScanZoom",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:05cc",
+    "name": "fInScrollSet",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:05ce",
+    "name": "ptStickyFindDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:05d2",
+    "name": "vrgszMRU",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:05d6",
+    "name": "bitTbl",
+    "type": "int16_t[8]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:06a6",
+    "name": "rgszArial",
+    "type": "char[32][4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:074c",
+    "name": "fFileErrSilent",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:074e",
+    "name": "idsFileError",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0750",
+    "name": "wVersFile",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0766",
+    "name": "bogi",
+    "type": "uint32_t[25]",
+    "module": "file"
+  },
+  {
+    "addr": "0025:07ca",
+    "name": "gd",
+    "type": "GDATA",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:07dc",
+    "name": "szListbox",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:07e8",
+    "name": "szCombobox",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:07f0",
+    "name": "szEdit",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:07fa",
+    "name": "szButton",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:07fc",
+    "name": "rgtilePlanet",
+    "type": "TILE[6]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:085c",
+    "name": "rgdxOrderDD",
+    "type": "int16_t[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0862",
+    "name": "dxBattleDD",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0864",
+    "name": "dxShipLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0866",
+    "name": "dyShipLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0868",
+    "name": "dxFleetCompLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:086a",
+    "name": "dyFleetCompLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:086c",
+    "name": "dxPlanetProdLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:086e",
+    "name": "dyPlanetProdLB",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0870",
+    "name": "dxOrderED",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0872",
+    "name": "iselProd",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0874",
+    "name": "hwndOrderED",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:08ac",
+    "name": "vSerialNumber",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:08cc",
+    "name": "rglPopMac",
+    "type": "int32_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:08e0",
+    "name": "ptStickyRenameDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0906",
+    "name": "rgszZipOrder",
+    "type": "char *[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:090e",
+    "name": "rgtileShip",
+    "type": "TILE[7]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0984",
+    "name": "mdXferDlg",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0986",
+    "name": "ptStickyTransferDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0998",
+    "name": "fValidLx",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:099a",
+    "name": "fValidLxf",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:099c",
+    "name": "vlpMemStream",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09a0",
+    "name": "lpLog",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09a4",
+    "name": "imemLogCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09a6",
+    "name": "imemLogPrev",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09a8",
+    "name": "fLogOff",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09b4",
+    "name": "vrgts",
+    "type": "TURNSERIAL *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09b8",
+    "name": "vrgPlanResExtra",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09bc",
+    "name": "lpcd",
+    "type": "COLDROP *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09c0",
+    "name": "lpxf",
+    "type": "XFERFULL *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:09de",
+    "name": "vcBackupDirs",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0a22",
+    "name": "hf",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0a2a",
+    "name": "lpbDefUni",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0a7e",
+    "name": "vrgszComputerPlayers",
+    "type": "char *[7]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0aae",
+    "name": "vrgszComputerLevel",
+    "type": "char *[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0ad8",
+    "name": "ptStickyNewDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0af6",
+    "name": "cbbitfMsg",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0af8",
+    "name": "lpMsg",
+    "type": "int16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0afc",
+    "name": "imemMsgCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0afe",
+    "name": "cMsg",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b00",
+    "name": "iMsgCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b02",
+    "name": "iMsgSendCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b04",
+    "name": "fViewFilteredMsg",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b06",
+    "name": "vlpmsgplrIn",
+    "type": "MSGPLR *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b0a",
+    "name": "vlpmsgplrOut",
+    "type": "MSGPLR *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b0e",
+    "name": "vcmsgplrIn",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b10",
+    "name": "vcmsgplrOut",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b12",
+    "name": "viInRe",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b48",
+    "name": "vrgszUnits",
+    "type": "char *[6]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b75",
+    "name": "iLastMsgGet",
+    "type": "char",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b7c",
+    "name": "PCTLD00",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b7e",
+    "name": "hwndPopup",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0b80",
+    "name": "GlobalPD",
+    "type": "POPUPDATA",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c50",
+    "name": "fInEditUpdate",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c52",
+    "name": "rgmapBuildBmps",
+    "type": "HullSlotType[21]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c7c",
+    "name": "iselSlot",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c7e",
+    "name": "ptStickySlotDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c82",
+    "name": "hdibPlaque",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0c90",
+    "name": "hwndSlotDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0ca0",
+    "name": "rgszSpeed",
+    "type": "uint8_t[30]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0cce",
+    "name": "lpplProdGlob",
+    "type": "PLPROD *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0cd2",
+    "name": "hwndProdDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0cd4",
+    "name": "fDlgUp",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0cd6",
+    "name": "ptStickyProduceDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d00",
+    "name": "ptStickyZipProdDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d04",
+    "name": "vyZPDStatic",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d06",
+    "name": "pctResGlob",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d08",
+    "name": "ptStickyResDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d0c",
+    "name": "yTopTechNote",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d1e",
+    "name": "ptStickyBrowserDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d22",
+    "name": "fBrowserValid",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d34",
+    "name": "rglphb",
+    "type": "HB *[12]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d64",
+    "name": "mphtcbAlloc",
+    "type": "uint16_t[12]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d7c",
+    "name": "lpbBattleLog",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d80",
+    "name": "lpbBattleCur",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d84",
+    "name": "lpbBattleT",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d88",
+    "name": "vlpwtCargo",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d8c",
+    "name": "idBattle",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d8e",
+    "name": "fStarbaseDied",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d90",
+    "name": "fStarbaseDamaged",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d92",
+    "name": "ptStickyRelationsDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d96",
+    "name": "ptStickyBattlePlansDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0d9a",
+    "name": "iPlanSelDlg",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:0da2",
+    "name": "vrgplrDef",
+    "type": "PLAYER[7]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:12e2",
+    "name": "rgidRaceBtn",
+    "type": "uint16_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:12ec",
+    "name": "ptStickyRaceDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1304",
+    "name": "vrgszRCWWidth",
+    "type": "char *[2]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1308",
+    "name": "szRacePass",
+    "type": "char[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1318",
+    "name": "szRaceFile",
+    "type": "char[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1370",
+    "name": "lRandSeed1",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1374",
+    "name": "lRandSeed2",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1378",
+    "name": "cRandStack",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:137a",
+    "name": "iLastGet",
+    "type": "char",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:138c",
+    "name": "rgptArrow",
+    "type": "POINT[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:13a0",
+    "name": "rgptTriangle",
+    "type": "POINT[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:13ac",
+    "name": "chbrCache",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:13ae",
+    "name": "rgcompstrlower",
+    "type": "int16_t[26]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:13fe",
+    "name": "rgchcompstrlower",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1400",
+    "name": "rgchcomp",
+    "type": "char[13]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:140e",
+    "name": "vcPasswordFailures",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1410",
+    "name": "hwndProgressGauge",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1412",
+    "name": "vrgdpVCR",
+    "type": "int32_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1416",
+    "name": "fAnimate",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1418",
+    "name": "viSpeedVCR",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:141a",
+    "name": "ptStickyVCRDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:141e",
+    "name": "hwndVCRDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1442",
+    "name": "fAi",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1444",
+    "name": "vlpbAiPlanet",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1448",
+    "name": "vlpbAiData",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:144c",
+    "name": "vrglpplAi",
+    "type": "PLANET * *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1450",
+    "name": "vrgcAiParts",
+    "type": "uint8_t[45]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1484",
+    "name": "iLastStrGet",
+    "type": "char",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1486",
+    "name": "ptStickyTutorDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1492",
+    "name": "iLastTutGet",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1494",
+    "name": "vrptPlanet",
+    "type": "RPT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:14ca",
+    "name": "vrptFleet",
+    "type": "RPT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1500",
+    "name": "vrptEFleet",
+    "type": "RPT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1536",
+    "name": "vrptBattle",
+    "type": "RPT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:156c",
+    "name": "rgsxPlr",
+    "type": "SCOREX *[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15ac",
+    "name": "vprptCur",
+    "type": "RPT *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15ae",
+    "name": "irowEFleetCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15b0",
+    "name": "vlprgidRep",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15b4",
+    "name": "vlprgidMisc",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15b8",
+    "name": "vlprgidPlanet",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15bc",
+    "name": "vlprgidFleet",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15c0",
+    "name": "vlprgScoreX",
+    "type": "SCOREX *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15c4",
+    "name": "hwndReportDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15ca",
+    "name": "szDblDash",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15e0",
+    "name": "ptStickyScoreXDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15e4",
+    "name": "hwndScoreXDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:15e6",
+    "name": "fInScoreDialog",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:162c",
+    "name": "vicolSortPrev",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:162e",
+    "name": "viSubsortPrev",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1630",
+    "name": "szCRLF",
+    "type": "char[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1690",
+    "name": "ptStickyPrintMapDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1694",
+    "name": "vrgcPrintMapPage",
+    "type": "int16_t[2]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1698",
+    "name": "lpThings",
+    "type": "THING *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:169c",
+    "name": "cThing",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:169e",
+    "name": "cThingAlloc",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16b4",
+    "name": "ptStickyZipOrderDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16b8",
+    "name": "hwndZipOrderDlg",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16c0",
+    "name": "ptStickyMergeFleetsDlg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16c8",
+    "name": "hwndTBRadar",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16ca",
+    "name": "vptTbLast",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16d8",
+    "name": "hwndTooltip",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16da",
+    "name": "vidTimerTooltip",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:16dc",
+    "name": "vtickTooltipLast",
+    "type": "uint32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:1706",
+    "name": "__fac",
+    "type": "double",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:175e",
+    "name": "_ctype",
+    "type": "uint8_t[0]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2272",
+    "name": "lFileSeed1",
+    "type": "int32_t",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0025:2276",
+    "name": "lFileSeed2",
+    "type": "int32_t",
+    "module": "utilgen"
+  },
+  {
+    "addr": "0025:2290",
+    "name": "ini",
+    "type": "INI",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22aa",
+    "name": "vpartBrowser",
+    "type": "PART",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22b2",
+    "name": "rcMsgText",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22ba",
+    "name": "crButtonFace",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22be",
+    "name": "hrgnScratch",
+    "type": "HRGN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22c0",
+    "name": "vcStepVCR",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22c2",
+    "name": "lpfnRealEditProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22c6",
+    "name": "hbrYellow",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22c8",
+    "name": "szLastGet",
+    "type": "char[19]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22dc",
+    "name": "fMarkedPlanets",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22de",
+    "name": "iWindowLayout",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22e0",
+    "name": "szPassLast",
+    "type": "char[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22f0",
+    "name": "hwndBattleDD",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22f2",
+    "name": "vrgszFileNew",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22f4",
+    "name": "dxyVCRSquare",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:22f6",
+    "name": "vrgZipProd",
+    "type": "ZIPPRODQ[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23be",
+    "name": "rcCargo",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23c6",
+    "name": "dySBar",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23c8",
+    "name": "hpenDkYellow",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23ca",
+    "name": "vfs",
+    "type": "FRAMESTUFF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23e0",
+    "name": "dxResRadio",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23e2",
+    "name": "vlpbdVCRNext",
+    "type": "BTLDATA *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23e6",
+    "name": "hAccel",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23e8",
+    "name": "lpfnRealComboProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23ec",
+    "name": "dxWinFrame",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23ee",
+    "name": "dyWinFrame",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23f0",
+    "name": "hcurResizeWE",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23f2",
+    "name": "dxResRight",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23f4",
+    "name": "dxShipDD",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23f6",
+    "name": "dyArial7",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23f8",
+    "name": "dyArial6",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23fa",
+    "name": "dyArial8",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23fc",
+    "name": "hwndRepCB",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:23fe",
+    "name": "crButtonShadow",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2402",
+    "name": "lpfnFakeListProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2406",
+    "name": "dyShipDD",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2408",
+    "name": "lpfnGaugeDlgProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:240c",
+    "name": "grfMissed",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:240e",
+    "name": "rgcsxPlr",
+    "type": "int16_t[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:242e",
+    "name": "hdibThings",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2430",
+    "name": "hbrSelect",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2432",
+    "name": "lResBudget",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2436",
+    "name": "shdefBuild",
+    "type": "SHDEF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:24ca",
+    "name": "lx",
+    "type": "LOGXFER",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:24e2",
+    "name": "hbmpBackBld",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:24e4",
+    "name": "hwndMDIClient",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:24e6",
+    "name": "rghiconVCR",
+    "type": "uint16_t[7]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:24f4",
+    "name": "lxf",
+    "type": "LOGXFERF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2518",
+    "name": "rghbrCacheUse",
+    "type": "uint8_t[32]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2538",
+    "name": "lpfnFakeEditProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:253c",
+    "name": "lResTotal",
+    "type": "int32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2540",
+    "name": "rgbtnXfer",
+    "type": "BTN *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2542",
+    "name": "csh",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2544",
+    "name": "lpfnFakeComboProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2548",
+    "name": "vszDefPass",
+    "type": "char[17]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:255a",
+    "name": "hbrRadar",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:255c",
+    "name": "rgTechBattle",
+    "type": "uint8_t[6]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2562",
+    "name": "rgTechTrader",
+    "type": "uint8_t[13]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2570",
+    "name": "yScanTop",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2572",
+    "name": "xScanTop",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2574",
+    "name": "crWindow",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2578",
+    "name": "vcflMerge",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:257a",
+    "name": "uDateInstalled",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:257c",
+    "name": "rghbrMineral",
+    "type": "uint16_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2586",
+    "name": "lpfnRealListProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:258a",
+    "name": "hcurTrashCan",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:258c",
+    "name": "hwndFrame",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:258e",
+    "name": "rghdibInventory",
+    "type": "uint16_t[7]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:259c",
+    "name": "szMineralTitle",
+    "type": "char[90]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:25f6",
+    "name": "crButtonText",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:25fa",
+    "name": "rgXferValidHulls",
+    "type": "int16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:25fc",
+    "name": "vlpbrVCR",
+    "type": "BTLREC *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2600",
+    "name": "dxyVCRBoard",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2602",
+    "name": "iPanelActive",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2604",
+    "name": "hdibRacesX",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2606",
+    "name": "hdibRacesT",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2608",
+    "name": "viStore",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:260a",
+    "name": "hbmpMsg",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:260c",
+    "name": "viStepVCRCur",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:260e",
+    "name": "cFutureTech",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2610",
+    "name": "dxMaxMineralQuan",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2612",
+    "name": "rgcrCache",
+    "type": "uint32_t[32]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2692",
+    "name": "hbrPurple",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2694",
+    "name": "vrgplrNew",
+    "type": "PLAYER *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2696",
+    "name": "hdrCur",
+    "type": "HDR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2698",
+    "name": "rghwndBtn",
+    "type": "uint16_t[13]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26b2",
+    "name": "fDirtyPlan",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26b4",
+    "name": "rghfontArial8",
+    "type": "uint16_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26be",
+    "name": "rghfontArial7",
+    "type": "uint16_t[1]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26c0",
+    "name": "rghfontArial6",
+    "type": "uint16_t[1]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26c2",
+    "name": "hpenDkPurple",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26c4",
+    "name": "hpenYellow",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26c6",
+    "name": "hcurResizeNS",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:26c8",
+    "name": "vrgrcSlot",
+    "type": "RECT[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2748",
+    "name": "lpfnFakeCEProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:274c",
+    "name": "dScanPage",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:274e",
+    "name": "vrcTooltip",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2756",
+    "name": "hwndMain",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2758",
+    "name": "viRound",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:275a",
+    "name": "hbrTooltip",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:275c",
+    "name": "rcSpinTop",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2764",
+    "name": "rcSpinBot",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:276c",
+    "name": "vcRound",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:276e",
+    "name": "rgidPlan",
+    "type": "int16_t[999]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2f3c",
+    "name": "lpfnRealCEProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:2f40",
+    "name": "rgptPlan",
+    "type": "POINT[999]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3edc",
+    "name": "vptMsg",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ee0",
+    "name": "yBuildInfoSum",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ee2",
+    "name": "mdMsgObj",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ee4",
+    "name": "hcurNoWay",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ee6",
+    "name": "idMsgObj",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ee8",
+    "name": "ptPlaque",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3eec",
+    "name": "crButtonHilite",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3ef0",
+    "name": "vtimer",
+    "type": "TIMER",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3efa",
+    "name": "hbmpUnknownPlanet",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3efc",
+    "name": "lpfnReportDlgProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:3f00",
+    "name": "rgshdef",
+    "type": "SHDEF[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4830",
+    "name": "rgcbtlplan",
+    "type": "uint8_t[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4840",
+    "name": "rghfontArial10",
+    "type": "uint16_t[2]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4844",
+    "name": "xNewGameDiamond",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4846",
+    "name": "vrgAiCyberArmadaPotency",
+    "type": "uint8_t[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:484a",
+    "name": "dScanInc",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:484c",
+    "name": "szMsgTitle",
+    "type": "char[90]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:48a6",
+    "name": "crWindowText",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:48aa",
+    "name": "hwndRaceParent",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:48ac",
+    "name": "vrgrcRCW",
+    "type": "RECT *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:48ae",
+    "name": "hcurArrowHelp",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:48b0",
+    "name": "rgrcRef",
+    "type": "RECT[19]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4948",
+    "name": "vclpplAi",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:494a",
+    "name": "rcMsgTitle",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4952",
+    "name": "hdibPlanets",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4954",
+    "name": "yTopFutureTech",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4956",
+    "name": "sel",
+    "type": "SEL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a38",
+    "name": "rghsFutureTech",
+    "type": "HS[8]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a58",
+    "name": "hAccelTitle",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a5a",
+    "name": "hbmpScanner",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a5c",
+    "name": "grbitScanMines",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a5e",
+    "name": "rcProdDiamond",
+    "type": "RECT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a66",
+    "name": "hcurScanner",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a68",
+    "name": "pxfer",
+    "type": "XFER *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a6a",
+    "name": "iPopMenuSel",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4a6c",
+    "name": "szPopupBuffer",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b6c",
+    "name": "dxTip",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b6e",
+    "name": "rghdibShips",
+    "type": "uint16_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b78",
+    "name": "hbr50Screen",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b7a",
+    "name": "hcurOpenGrab",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b7c",
+    "name": "cPlanet",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b7e",
+    "name": "hbmpScanShip",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b80",
+    "name": "vrgtok",
+    "type": "TOK *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b84",
+    "name": "rghwndMsgBtn",
+    "type": "uint16_t[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b8c",
+    "name": "vidsTooltip",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b8e",
+    "name": "vfAscendingPrev",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b90",
+    "name": "ptSpeedVCR",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b94",
+    "name": "crcRCW",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b96",
+    "name": "crgbtnXfer",
+    "type": "COLORREF",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4b98",
+    "name": "rgbCur",
+    "type": "char[1024]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4f98",
+    "name": "iResTechNow",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:4f9a",
+    "name": "vplr",
+    "type": "PLAYER",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:505a",
+    "name": "dyTitleBar",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:505c",
+    "name": "szLastMsgGet",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:515c",
+    "name": "vrgAiArmadaPotency",
+    "type": "uint8_t[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5160",
+    "name": "rghdibShipsT",
+    "type": "uint16_t[5]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:516a",
+    "name": "bitfMsgSent",
+    "type": "uint8_t[49]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:519c",
+    "name": "hbrDkYellow",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:519e",
+    "name": "vrgbMachineConfig",
+    "type": "uint8_t[11]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51aa",
+    "name": "grbitScanEShip",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51ac",
+    "name": "iAboutPartial",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51ae",
+    "name": "vAiMacRecycleSB",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51b0",
+    "name": "lpchBatchMac",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51b4",
+    "name": "ptslotGlob",
+    "type": "POINT",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51b8",
+    "name": "vpctProgressGauge",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51ba",
+    "name": "hwndFleetCompLB",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51bc",
+    "name": "vrgiflMerge",
+    "type": "int16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51be",
+    "name": "vrgplrTypeNew",
+    "type": "uint8_t[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51ce",
+    "name": "hcurResize4Way",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51d0",
+    "name": "lpfnBrowserDlgProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51d4",
+    "name": "btlplan",
+    "type": "BTLPLAN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51f8",
+    "name": "vdxScoreX",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51fa",
+    "name": "dxResStrRight",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51fc",
+    "name": "hwndMsgDrop",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:51fe",
+    "name": "lpfnHostTimerProc",
+    "type": "int32_t() *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5202",
+    "name": "lpshdefBuild",
+    "type": "SHDEF *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5206",
+    "name": "lpb2k",
+    "type": "uint8_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:520a",
+    "name": "hbrCargo",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:520c",
+    "name": "tutor",
+    "type": "TUTOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5238",
+    "name": "rglRandStack",
+    "type": "int32_t[2][4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5258",
+    "name": "cXferValidHulls",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:525a",
+    "name": "hrgnHuge",
+    "type": "HRGN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:525c",
+    "name": "hwndPlanetProdLB",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:525e",
+    "name": "hcurHand",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5260",
+    "name": "hdrPrev",
+    "type": "HDR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5262",
+    "name": "hbrDock",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5264",
+    "name": "vrgZip",
+    "type": "ZIPORDER[4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:52c4",
+    "name": "rghbrCache",
+    "type": "uint16_t[32]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5304",
+    "name": "hcurCloseGrab",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5306",
+    "name": "vbrcVCRFocus",
+    "type": "uint8_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5308",
+    "name": "grbitScanShip",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:530a",
+    "name": "dyArial10",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:530c",
+    "name": "ishdefBuild",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:530e",
+    "name": "hwndShipDD",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5310",
+    "name": "hInst",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5312",
+    "name": "vcScreenColors",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5314",
+    "name": "vhpal",
+    "type": "uint16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5316",
+    "name": "hwndShipLB",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5318",
+    "name": "hbrShip",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:531a",
+    "name": "hwndMsgScroll",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:531c",
+    "name": "vlpbdVCR",
+    "type": "BTLDATA *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5320",
+    "name": "fRCWReadOnly",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5322",
+    "name": "vrgPlrLosses",
+    "type": "uint16_t *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5324",
+    "name": "bitfMsgFiltered",
+    "type": "uint8_t[49]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5356",
+    "name": "cFleet",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5358",
+    "name": "hpenDkGreen",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:535a",
+    "name": "szMsgBuf",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5462",
+    "name": "lpbDefMac",
+    "type": "char *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5466",
+    "name": "mdBuild",
+    "type": "MdBuild",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5468",
+    "name": "vrgbEnvCur",
+    "type": "uint8_t[11]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5474",
+    "name": "hwndBrowserChild",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5476",
+    "name": "hdibRaces",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5478",
+    "name": "viVCRFocus",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:547a",
+    "name": "szLastStrGet",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:557a",
+    "name": "szBackup",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:567a",
+    "name": "hwndMineCB",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:567c",
+    "name": "cXferFull",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:567e",
+    "name": "hpenRadarNear",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5680",
+    "name": "rghbrPlanetAttr",
+    "type": "uint16_t[2][3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:568c",
+    "name": "hpenEnemy",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:568e",
+    "name": "hbrRadarNear",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5690",
+    "name": "hpenDkBlue",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5692",
+    "name": "rghbrMinSum",
+    "type": "uint16_t[2][4]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:56a2",
+    "name": "szBase",
+    "type": "char[256]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:57a2",
+    "name": "hcurScanAdd",
+    "type": "HCURSOR",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:57a4",
+    "name": "szWork",
+    "type": "char[360]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:590c",
+    "name": "hbrStarbase",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:590e",
+    "name": "szFormatNumber",
+    "type": "char[12]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:591a",
+    "name": "dySysFont",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:591c",
+    "name": "fHullCopy",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:591e",
+    "name": "rghbrPat",
+    "type": "uint16_t[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5924",
+    "name": "hwndMsgEdit",
+    "type": "HWND",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5926",
+    "name": "rgrcBuildSpin",
+    "type": "RECT[2]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5936",
+    "name": "hpenRadar",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5938",
+    "name": "rglpbtlplan",
+    "type": "BTLPLAN *[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5978",
+    "name": "vctok",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:597a",
+    "name": "hbmpNumbers",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:597c",
+    "name": "lpthBattle",
+    "type": "THING *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5980",
+    "name": "hpenStarbase",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5982",
+    "name": "vtickTooltip1stVis",
+    "type": "uint32_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5986",
+    "name": "rghwndOrderDD",
+    "type": "uint16_t[3]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:598c",
+    "name": "hdibToolbar",
+    "type": "HGLOBAL",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:598e",
+    "name": "fStarbaseMode",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5990",
+    "name": "vcplrNew",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5992",
+    "name": "hbmpMono",
+    "type": "HBITMAP",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5994",
+    "name": "iAbout1st",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5996",
+    "name": "hbrEnemy",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:5998",
+    "name": "cColDrop",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:599a",
+    "name": "hbrBBlue",
+    "type": "HBRUSH",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:599c",
+    "name": "dxResLeft",
+    "type": "int16_t",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:599e",
+    "name": "hpenMassPath",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:59a0",
+    "name": "pProdGlob",
+    "type": "PROD *",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:59a2",
+    "name": "rgplr",
+    "type": "PLAYER[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:65a2",
+    "name": "hpenShip",
+    "type": "HPEN",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:65a4",
+    "name": "rgOut",
+    "type": "int16_t[16]",
+    "module": "globals"
+  },
+  {
+    "addr": "0025:65c4",
+    "name": "cProdGlob",
+    "type": "int16_t",
+    "module": "globals"
+  }
+]
+

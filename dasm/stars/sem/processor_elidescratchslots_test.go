@@ -3,6 +3,7 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -326,10 +327,93 @@ func TestElideScratchSlotsDropsUnusedAliasesBeforeTerminator(t *testing.T) {
 	}
 }
 
+func TestElideScratchSlotsInlinesSignedDwordFloatScratchAcrossSqrt(t *testing.T) {
+	slot30 := scratchMemory(-0x30, 2)
+	slot2e := scratchMemory(-0x2e, 2)
+	slot3a := scratchMemory(-0x3a, 10)
+	slot42 := scratchMemory(-0x42, 2)
+	slot40 := scratchMemory(-0x40, 2)
+	int16Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true}
+	rgrad := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rgrad", Type: int16Type}}
+	rad := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rad", Type: int16Type}}
+	l := &Local{FunctionVar: typeinfo.FunctionVar{Name: "l", Type: typeinfo.I32}}
+	sqrtFn := &typeinfo.Function{Name: "sqrt", Ret: typeinfo.Double, Params: []typeinfo.FunctionVar{{Type: typeinfo.Double}}}
+	sqrtResult := &CallResult{Function: sqrtFn, TypeInfo: typeinfo.Double, InstOff: 0x5238}
+
+	block := Block{Effects: []Effect{
+		&Assign{Dst: slot30, Src: rgrad},
+		&Assign{Dst: slot2e, Src: &Word{Parent: rgrad, Part: machine.WordSignHigh}},
+		&Assign{Dst: slot3a, Src: &Cast{Value: scratchMemory(-0x30, 4), To: "double", TypeInfo: typeinfo.Double}},
+		&CallEffect{Call: &Call{Function: sqrtFn, Args: []Expr{&Cast{Value: l, To: "double", TypeInfo: typeinfo.Double}}}, Result: sqrtResult},
+		&Assign{Dst: slot42, Src: rad},
+		&Assign{Dst: slot40, Src: &Word{Parent: rad, Part: machine.WordSignHigh}},
+		&Branch{
+			Cond: &Compare{
+				Op:  CompareLE,
+				LHS: &Binary{TypeInfo: typeinfo.Double, Op: OpAdd, LHS: sqrtResult, RHS: &Cast{Value: scratchMemory(-0x42, 4), To: "double", TypeInfo: typeinfo.Double}},
+				RHS: slot3a,
+			},
+			TrueBlock:  0x5405,
+			FalseBlock: 0x5266,
+		},
+	}}
+
+	got, changed := (&elideScratchSlotsProcessor{}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(got.Effects) != 2 {
+		t.Fatalf("effects = %#v, want call and branch", got.Effects)
+	}
+	gotBranch := FormatEffect(got.Effects[1])
+	wantBranch := "branch (callresult(double) + (double)sext16to32(rad)) <= (double)sext16to32(rgrad) ? L_5405 : L_5266"
+	if gotBranch != wantBranch {
+		t.Fatalf("branch = %q, want %q", gotBranch, wantBranch)
+	}
+}
+
+func TestElideScratchSlotsInlinesConstDwordFloatScratchInSqrtArg(t *testing.T) {
+	slot10c := scratchMemory(-0x10c, 2)
+	slot10a := scratchMemory(-0x10a, 2)
+	sqrtFn := &typeinfo.Function{Name: "sqrt", Ret: typeinfo.Double, Params: []typeinfo.FunctionVar{{Type: typeinfo.Double}}}
+
+	block := Block{Effects: []Effect{
+		&Assign{Dst: slot10c, Src: &Const{TypeInfo: typeinfo.U16, U64: 1}},
+		&Assign{Dst: slot10a, Src: &Const{TypeInfo: typeinfo.U16, U64: 0}},
+		&CallEffect{
+			Call: &Call{
+				Function: sqrtFn,
+				Args: []Expr{
+					&Binary{
+						TypeInfo: typeinfo.Double,
+						Op:       OpAdd,
+						LHS:      &Local{FunctionVar: typeinfo.FunctionVar{Name: "m2", Type: typeinfo.Double}},
+						RHS:      &Cast{Value: scratchMemory(-0x10c, 4), To: "double", TypeInfo: typeinfo.Double},
+					},
+				},
+			},
+			Result: &CallResult{Function: sqrtFn, TypeInfo: typeinfo.Double, InstOff: 0x57ff},
+		},
+	}}
+
+	got, changed := (&elideScratchSlotsProcessor{}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(got.Effects) != 1 {
+		t.Fatalf("effects = %#v, want call", got.Effects)
+	}
+	gotCall := FormatEffect(got.Effects[0])
+	wantCall := "call sqrt((m2 + (double)0x1)) -> callresult(double)"
+	if gotCall != wantCall {
+		t.Fatalf("call = %q, want %q", gotCall, wantCall)
+	}
+}
+
 // scratchMemory creates an unresolved BP-relative semantic stack slot.
 func scratchMemory(disp int, width int) *Memory {
 	return &Memory{
-		Seg:      &RawValue{Value: &machine.Scalar{Name: "ss"}, TypeInfo: typeinfo.U16},
+		Seg:      &Register{Val: asm.RegSS},
 		Base:     &RawValue{Value: machine.FrameBaseVal(), TypeInfo: typeinfo.U16},
 		Disp:     disp,
 		Width:    width,

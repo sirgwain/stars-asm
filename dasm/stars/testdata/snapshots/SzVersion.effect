@@ -10,7 +10,7 @@ block L_1212:
   succs: L_124c
   effects:
     122b  call PszGetCompressedString(0x22d) -> callresult(char *)
-    123e  call _wsprintf(farptr(0x25, 0x57a4), farptr(0x25, callresult(char *)), 0x2, 0x3c, 0x6a) -> callresult(int16_t)
+    123e  call _wsprintf(farptr(ds, 0x57a4), farptr(ds, callresult(char *)), 0x2, 0x3c, 0x6a) -> callresult(int16_t)
 
 block L_124c:
   insts 26..30  off 0x124c..0x1251

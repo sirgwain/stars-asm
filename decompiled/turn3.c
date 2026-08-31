@@ -252,7 +252,7 @@ L_69cd:
 L_69dc:
     fMining = 0x1;
     xWP = 0xffff;
-    idWP = (LOWORD(lpflWP) | 0x8000);
+    idWP = (lpflWP->id | 0x8000);
     goto L_6c14;
 
 L_69f6:
@@ -273,7 +273,7 @@ L_6a18:
 L_6a27:
     fFueling = 0x1;
     xWP = 0xffff;
-    idWP = (LOWORD(lpflWP) | 0x8000);
+    idWP = (lpflWP->id | 0x8000);
 
 L_6a41:
     lpthWP = LpthFromId(ord.id);
@@ -412,9 +412,9 @@ L_6ba4:
     fMining = 0x2;
     fHasPermission = 0x1;
     ord.grobj = grobjFleet;
-    ord.id = LOWORD(lpflWP);
+    ord.id = lpflWP->id;
     xWP = 0xffff;
-    idWP = (LOWORD(lpflWP) | 0x8000);
+    idWP = (lpflWP->id | 0x8000);
     goto L_6c14;
 
 L_6bde:
@@ -485,7 +485,7 @@ L_6c6d:
         goto L_6c77;
 
 L_6c77:
-    FSendPlrMsg2(lpfl->iPlayer, 0x11e, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), lpthWP->ith);
+    FSendPlrMsg2(lpfl->iPlayer, 0x11e, (lpfl->id | 0x8000), lpfl->id, lpthWP->ith);
 
 LTryDunnage:
     j = 0x0;
@@ -892,7 +892,7 @@ L_7162:
 
 L_7165:
     idm = t_merge_7165_0001;
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), j, (ss:[bp+(j * 0x2)-0x74] & 0xfff), 0x0, xWP, idWP, 0x0) ->
+    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, (ss:[bp+(j * 0x2)-0x74] & 0xfff), 0x0, xWP, idWP, 0x0) ->
      * callresult(int16_t) */
 
 L_71b1:
@@ -1083,7 +1083,7 @@ L_734a:
         goto L_7355;
 
 L_7355:
-    FSendPlrMsg2(lpfl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), j);
+    FSendPlrMsg2(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j);
     goto CancelOrder;
 
 L_737d:
@@ -1162,7 +1162,7 @@ L_7429:
         goto L_7432;
 
 L_7432:
-    /* untranslated: l = ChgCargo(grobjFleet, LOWORD(lpfl), j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
     if ((LOWORD(l) != 0x0))
         goto L_7476;
     else
@@ -1187,8 +1187,7 @@ L_7489:
         goto L_749c;
 
 L_749c:
-    FSendPlrMsg(lpfl->iPlayer, 0x119, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, (idWP & 0x7fff), 0x0,
-                0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x119, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, (idWP & 0x7fff), 0x0, 0x0);
     goto L_7557;
 
 L_74f5:
@@ -1205,8 +1204,7 @@ L_7544:
     t_merge_7547_0001 = 0x2c;
 
 L_7547:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (loword(callresult(uint32_t)) &
-     * 0xffff), j, xWP, idWP, 0x0) -> callresult(int16_t) */
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0x0);
 
 L_7557:
     if ((fFueling != 0x0))
@@ -1241,15 +1239,14 @@ L_75d0:
         goto L_75d9;
 
 L_75d9:
-    /* untranslated: l = ChgCargo(grobjFleet, LOWORD(lpfl), j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
     if ((fMining == 0x0))
         goto L_7668;
     else
         goto L_7612;
 
 L_7612:
-    FSendPlrMsg(lpfl->iPlayer, 0x7d, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, LOWORD(lpflWP), pl.id,
-                0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x7d, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, lpflWP->id, pl.id, 0x0);
     goto L_76d7;
 
 L_7668:
@@ -1266,8 +1263,7 @@ L_76b5:
     t_merge_76b8_0001 = 0x2c;
 
 L_76b8:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (loword(callresult(uint32_t)) &
-     * 0xffff), j, xWP, pl.id, 0x0) -> callresult(int16_t) */
+    FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0x0);
 
 L_76cb:
     l = 0x0;
@@ -1411,7 +1407,7 @@ L_7817:
     idm = idmHasTriedBeamColonistsPlanetUninhabitedMust;
 
 LCantDrop:
-    FSendPlrMsg2(lpfl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), pl.id);
+    FSendPlrMsg2(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, pl.id);
     goto CancelOrder;
 
 L_7847:
@@ -1467,7 +1463,7 @@ L_78ef:
         goto L_7902;
 
 L_7902:
-    /* untranslated: branch sext8to16(byte 0x25:[(part[112:0](rgplr[lpflWP->iPlayer]) + lpfl->iPlayer)]) != 0x2 ? L_793f : L_7932 */
+    /* untranslated: branch sext8to16(byte ds:[(rgplr[lpflWP->iPlayer].rgmdRelation + lpfl->iPlayer)]) != 0x2 ? L_793f : L_7932 */
 
 L_7932:
     amount = 0x0;
@@ -1486,7 +1482,7 @@ L_7948:
         goto L_795b;
 
 L_795b:
-    FSendPlrMsg2(lpfl->iPlayer, 0x165, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x165, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_7988:
@@ -1528,8 +1524,7 @@ L_7a1d:
     t_merge_7a20_0001 = 0x2e;
 
 L_7a20:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (loword(callresult(uint32_t)) &
-     * 0xffff), j, xWP, pl.id, 0x0) -> callresult(int16_t) */
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0x0);
     goto L_7ae8;
 
 L_7a33:
@@ -1565,8 +1560,7 @@ L_7ac7:
     t_merge_7aca_0001 = 0x2e;
 
 L_7aca:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (loword(callresult(uint32_t)) &
-     * 0xffff), j, xWP, idWP, 0x0) -> callresult(int16_t) */
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0x0);
 
 L_7ada:
     amount = l;
@@ -1584,7 +1578,7 @@ L_7af1:
         goto L_7afa;
 
 L_7afa:
-    /* untranslated: l = ChgCargo(grobjFleet, LOWORD(lpfl), j, words(((HIWORD(amount) + 0x0) neg 0x0), (LOWORD(amount) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(amount) + 0x0) neg 0x0), (LOWORD(amount) neg 0x0)), 0x0) */
 
 L_7b2a:
     /* untranslated: ss:[bp+(j * 0x2)-0x74] = ((ss:[bp+(j * 0x2)-0x74] & 0xfff) | 0x0) */
@@ -1670,8 +1664,8 @@ L_7c22:
         goto L_7c2b;
 
 L_7c2b:
-    FSendPlrMsg(lpfl->iPlayer, 0x2b, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(wtOptimalFuel), (LOWORD((uint32_t)((wtOptimalFuel >> 0x10))) & 0xffff), 0x4,
-                xWP, idWP, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x2b, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtOptimalFuel), (LOWORD((uint32_t)((wtOptimalFuel >> 0x10))) & 0xffff), 0x4, xWP,
+                idWP, 0x0);
 
 L_7c7d:
     if ((iPass != 0x4))
@@ -1686,7 +1680,7 @@ L_7c86:
         goto L_7c8f;
 
 L_7c8f:
-    FSendPlrMsg(lpfl->iPlayer, 0x126, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), xWP, idWP, 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x126, (lpfl->id | 0x8000), lpfl->id, xWP, idWP, 0x0, 0x0, 0x0, 0x0);
     goto FinishFleet;
 
 L_7cce:
@@ -1715,7 +1709,7 @@ L_7d05:
         goto L_7d0e;
 
 L_7d0e:
-    FSendPlrMsg(lpfl->iPlayer, 0x3d, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(lMaxFuel), (LOWORD((uint32_t)((lMaxFuel >> 0x10))) & 0xffff), LOWORD(amount),
+    FSendPlrMsg(lpfl->iPlayer, 0x3d, (lpfl->id | 0x8000), lpfl->id, LOWORD(lMaxFuel), (LOWORD((uint32_t)((lMaxFuel >> 0x10))) & 0xffff), LOWORD(amount),
                 (LOWORD((uint32_t)((amount >> 0x10))) & 0xffff), 0x0, 0x0);
     goto FinishFleet;
 
@@ -1730,8 +1724,7 @@ L_7d9a:
     idWP = pl.id;
 
 L_7da1:
-    FSendPlrMsg(lpfl->iPlayer, 0x3c, (LOWORD(lpfl) | 0x8000), xWP, idWP, LOWORD(lpfl), LOWORD(cFuel2), (LOWORD((uint32_t)((cFuel2 >> 0x10))) & 0xffff), 0x0,
-                0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x3c, (lpfl->id | 0x8000), xWP, idWP, lpfl->id, LOWORD(cFuel2), (LOWORD((uint32_t)((cFuel2 >> 0x10))) & 0xffff), 0x0, 0x0);
 
 L_7dfb:
     if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[0x4])))
@@ -1804,7 +1797,7 @@ L_7efa:
         goto L_7f03;
 
 L_7f03:
-    /* untranslated: l = ChgCargo(grobjFleet, LOWORD(lpfl), 0x4, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, 0x4, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
 
 L_7f37:
     l = 0x0;
@@ -1841,7 +1834,7 @@ L_7f73:
         goto L_7f7d;
 
 L_7f7d:
-    FSendPlrMsg(lpfl->iPlayer, 0x2b, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), 0x4, xWP, idWP, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x2b, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), 0x4, xWP, idWP, 0x0);
     goto L_804f;
 
 L_7fd4:
@@ -1863,8 +1856,8 @@ L_7fe3:
         goto L_7fed;
 
 L_7fed:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, 0x2d, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), (LOWORD(l) neg 0x0), (loword((uint32_t)(words((LOWORD(l) neg
-     * 0x0), ((HIWORD(l) + 0x0) neg 0x0)) >> 0x10)) & 0xffff), 0x4, xWP, idWP, 0x0) -> callresult(int16_t) */
+    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, 0x2d, (lpfl->id | 0x8000), lpfl->id, (LOWORD(l) neg 0x0), (loword((uint32_t)(words((LOWORD(l) neg 0x0),
+     * ((HIWORD(l) + 0x0) neg 0x0)) >> 0x10)) & 0xffff), 0x4, xWP, idWP, 0x0) -> callresult(int16_t) */
 
 L_804f:
     if ((fDone == 0x0))
@@ -1879,8 +1872,8 @@ L_8059:
         goto L_8062;
 
 L_8062:
-    /* untranslated: part[16:2](ord) = ((part[16:2](ord) & 0xfff) | 0x0) */
-    /* untranslated: part[16:2](ord) = ((part[16:2](ord) & 0xf000) | 0x0) */
+    ord.txp.rgia[0x4] = ((ord.txp.rgia[0x4] & 0xfff) | 0x0);
+    ord.txp.rgia[0x4] = ((ord.txp.rgia[0x4] & 0xf000) | 0x0);
 
 FinishFleet:
     if ((fFulfilled != 0x0))
@@ -1996,7 +1989,7 @@ L_8187:
         goto L_8195;
 
 L_8195:
-    FSendPlrMsg2(lpfl->iPlayer, 0x51, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x51, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_81c2:
@@ -2032,7 +2025,7 @@ L_8215:
         goto L_821e;
 
 L_821e:
-    FSendPlrMsg(lpfl->iPlayer, 0x52, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), pl.id, pl.id, 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x52, (lpfl->id | 0x8000), lpfl->id, pl.id, pl.id, 0x0, 0x0, 0x0, 0x0);
     goto CancelOrder;
 
 L_825a:
@@ -2048,7 +2041,7 @@ L_8267:
         goto L_8271;
 
 L_8271:
-    FSendPlrMsg2(lpfl->iPlayer, 0x53, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), pl.id);
+    FSendPlrMsg2(lpfl->iPlayer, 0x53, (lpfl->id | 0x8000), lpfl->id, pl.id);
     goto CancelOrder;
 
 L_829a:
@@ -2068,8 +2061,8 @@ L_82bf:
 L_82c9:
     fColonize = 0x0;
     csh = 0x0;
-    memset(0x255c, 0x0, 0x6);
-    memset(0x2562, 0x0, 0xd);
+    memset(&(rgTechBattle), 0x0, 0x6);
+    memset(&(rgTechTrader), 0x0, 0xd);
     i = 0x0;
     goto L_8466;
 
@@ -2137,7 +2130,7 @@ L_847e:
         goto L_8488;
 
 L_8488:
-    FSendPlrMsg(lpfl->iPlayer, 0x54, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), pl.id, LOWORD(lpfl), 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, 0x54, (lpfl->id | 0x8000), lpfl->id, pl.id, lpfl->id, 0x0, 0x0, 0x0, 0x0);
     goto CancelOrder;
 
 L_84c7:
@@ -2447,8 +2440,8 @@ L_8b78:
     iGoto = pl.id;
 
 L_8b7f:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, LOWORD(lpfl), LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id,
-                LOWORD(lResUltimate), (LOWORD((uint32_t)((lResUltimate >> 0x10))) & 0xffff), i);
+    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, LOWORD(lResUltimate),
+                (LOWORD((uint32_t)((lResUltimate >> 0x10))) & 0xffff), i);
     goto L_8d7d;
 
 L_8be2:
@@ -2459,8 +2452,8 @@ L_8be2:
 
 L_8beb:
     lpthWP = 0x0;
-    DropSalvage(&(lpthWP), &(pl.rgwtMin), lpfl->iplr, &(ord.pt));
-    FSendPlrMsg2(lpfl->iPlayer, 0x5b, 0xfffa, LOWORD(lpthWP), WFromLpfl(lpfl));
+    DropSalvage(&(lpthWP), pl.rgwtMin, lpfl->iplr, &(ord.pt));
+    FSendPlrMsg2(lpfl->iPlayer, 0x5b, 0xfffa, lpthWP->idFull, WFromLpfl(lpfl));
     goto L_8d7d;
 
 L_8c4f:
@@ -2499,12 +2492,12 @@ L_8d2e:
     iGoto = pl.id;
 
 L_8d35:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, LOWORD(lpfl), LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, i, 0x0, 0x0);
+    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, i, 0x0, 0x0);
 
 L_8d7d:
     idPlayer = 0xffff;
     gd.fDontCalcBleed = 0x0;
-    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (LOWORD(lpfl) | 0x8000));
+    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (lpfl->id | 0x8000));
     lpfl->fDead = 0x1;
     if ((ord.grTask != grTaskColonize))
         goto L_8df1;
@@ -2546,8 +2539,8 @@ L_8e89:
     /* untranslated: branch (part[6:2](lpfl->lpplord->rgord[0x0]) & 0xf) == 0x0 ? L_8ee3 : L_8e9f */
 
 L_8e9f:
-    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (LOWORD(lpfl) | 0x8000));
-    FSendPlrMsg2(lpfl->iPlayer, 0x4e, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (lpfl->id | 0x8000));
+    FSendPlrMsg2(lpfl->iPlayer, 0x4e, (lpfl->id | 0x8000), lpfl->id, 0x0);
 
 L_8ee3:
     /* untranslated: part[6:2](lpfl->lpplord->rgord[0x0]) = ((part[6:2](lpfl->lpplord->rgord[0x0]) & 0xfff0) | 0x0) */
@@ -2581,7 +2574,7 @@ L_8f3f:
         goto L_8f4c;
 
 L_8f4c:
-    FSendPlrMsg2(lpfl->iPlayer, 0x77, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x77, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_8f76:
@@ -2613,7 +2606,7 @@ L_8fc4:
         goto L_8fce;
 
 L_8fce:
-    FSendPlrMsg2(lpfl->iPlayer, 0x75, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), lppl->id);
+    FSendPlrMsg2(lpfl->iPlayer, 0x75, (lpfl->id | 0x8000), lpfl->id, lppl->id);
     goto CancelOrder;
 
 L_8ffb:
@@ -2629,7 +2622,7 @@ L_9009:
         goto L_902d;
 
 L_902d:
-    FSendPlrMsg2(lpfl->iPlayer, 0x76, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), lppl->id);
+    FSendPlrMsg2(lpfl->iPlayer, 0x76, (lpfl->id | 0x8000), lpfl->id, lppl->id);
     goto CancelOrder;
 
 L_905d:
@@ -2679,7 +2672,7 @@ L_9157:
     t_merge_915a_0001 = 0x127;
 
 L_915a:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), lpfl->idPlanet, (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0);
     goto L_67b6;
 
 L_916d:
@@ -2719,7 +2712,7 @@ LDoMerge:
         goto NMNF;
 
 NMNF:
-    FSendPlrMsg2(lpfl->iPlayer, 0xf5, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0xf5, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_921f:
@@ -2764,12 +2757,12 @@ L_927c:
         goto L_9290;
 
 L_9290:
-    FSendPlrMsg2(lpfl->iPlayer, 0xf6, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0xf6, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_92ba:
-    FSendPlrMsg2(lpfl->iPlayer, 0xf7, (LOWORD(lpflDest) | 0x8000), WFromLpfl(lpfl), LOWORD(lpflDest));
-    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (LOWORD(lpfl) | 0x8000));
+    FSendPlrMsg2(lpfl->iPlayer, 0xf7, (lpflDest->id | 0x8000), WFromLpfl(lpfl), lpflDest->id);
+    FRemovePlayerMessage(lpfl->iPlayer, 0x4e, (lpfl->id | 0x8000));
     Merge2Fleets(lpflDest, lpfl, 0x1);
     goto CancelOrder;
 
@@ -2788,7 +2781,7 @@ L_9339:
 L_933f:
 
 L_9345:
-    iplrDest = ord.tsell;
+    iplrDest = ord.tsell.iPlrX;
     if ((iplrDest < lpfl->iPlayer))
         goto L_9361;
     else
@@ -2810,20 +2803,26 @@ L_936b:
         goto L_9377;
 
 L_9377:
-    /* untranslated: branch (part[84:2](rgplr[iplrDest]) & 0x1) == 0x0 ? L_93bb : L_9391 */
+    if (((rgplr[iplrDest].wFlags & 0x1) == 0x0))
+        goto L_93bb;
+    else
+        goto L_9391;
 
 L_9391:
-    FSendPlrMsg2(lpfl->iPlayer, 0x148, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x148, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_93bb:
-    /* untranslated: branch ((part[6:2](rgplr[iplrDest]) >> 0x9) & 0x1) != 0x0 ? L_9407 : L_93da */
+    if ((((rgplr[iplrDest].wMdPlr >> 0x9) & 0x1) != 0x0))
+        goto L_9407;
+    else
+        goto L_93da;
 
 L_93da:
-    /* untranslated: branch sext8to16(byte 0x25:[(part[112:0](rgplr[iplrDest]) + lpfl->iPlayer)]) != 0x2 ? L_9433 : L_9407 */
+    /* untranslated: branch sext8to16(byte ds:[(rgplr[iplrDest].rgmdRelation + lpfl->iPlayer)]) != 0x2 ? L_9433 : L_9407 */
 
 L_9407:
-    FSendPlrMsg2(lpfl->iPlayer, 0x14c, (LOWORD(lpfl) | 0x8000), (0x30 | iplrDest), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x14c, (lpfl->id | 0x8000), (0x30 | iplrDest), 0x0);
     goto CancelOrder;
 
 L_9433:
@@ -2845,7 +2844,7 @@ L_9445:
         goto L_944f;
 
 L_944f:
-    FSendPlrMsg2(lpfl->iPlayer, 0x149, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x149, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_9479:
@@ -2882,7 +2881,10 @@ L_9506:
         goto L_9517;
 
 L_9517:
-    /* untranslated: branch ((part[123:2](rglpshdef[iplrDest][ishLastFree]) >> 0x9) & 0x1) != 0x0 ? L_954c : L_9543 */
+    if ((((rglpshdef[iplrDest][ishLastFree].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_954c;
+    else
+        goto L_9543;
 
 L_9543:
 
@@ -2893,7 +2895,7 @@ L_954c:
         goto SellNoCap;
 
 SellNoCap:
-    FSendPlrMsg2(lpfl->iPlayer, 0x14a, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), (0x30 | iplrDest));
+    FSendPlrMsg2(lpfl->iPlayer, 0x14a, (lpfl->id | 0x8000), lpfl->id, (0x30 | iplrDest));
     FSendPlrMsg2(iplrDest, 0x14b, 0xffff, (0x30 | lpfl->iPlayer), 0x0);
     goto CancelOrder;
 
@@ -2998,8 +3000,8 @@ L_989a:
 
 L_98a4:
     lpfl->fDead = 0x1;
-    FSendPlrMsg2(lpfl->iPlayer, 0x14d, (LOWORD(lpflNew) | 0x8000), WFromLpfl(lpfl), (0x30 | iplrDest));
-    FSendPlrMsg2(iplrDest, 0x14e, (LOWORD(lpflNew) | 0x8000), (0x30 | lpfl->iPlayer), WFromLpfl(lpflNew));
+    FSendPlrMsg2(lpfl->iPlayer, 0x14d, (lpflNew->id | 0x8000), WFromLpfl(lpfl), (0x30 | iplrDest));
+    FSendPlrMsg2(iplrDest, 0x14e, (lpflNew->id | 0x8000), (0x30 | lpfl->iPlayer), WFromLpfl(lpflNew));
     lpfl->fDead = 0x1;
     goto L_67b6;
 
@@ -3065,7 +3067,7 @@ L_9a12:
         goto L_9a1c;
 
 L_9a1c:
-    FSendPlrMsg2(lpfl->iPlayer, 0xbf, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0xbf, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto CancelOrder;
 
 L_9a46:
@@ -3075,17 +3077,23 @@ L_9a46:
         goto L_9a54;
 
 L_9a54:
-    /* untranslated: branch part[8:2](lpfl->lpplord->rgord[0x0]) != 0x0 ? L_9a84 : L_9a65 */
+    if ((lpfl->lpplord->rgord[0x0].tsell.iPlrX != 0x0))
+        goto L_9a84;
+    else
+        goto L_9a65;
 
 L_9a65:
     /* untranslated: part[6:2](lpfl->lpplord->rgord[0x0]) = ((part[6:2](lpfl->lpplord->rgord[0x0]) & 0xfff0) | 0x0) */
     goto L_9aa1;
 
 L_9a84:
-    /* untranslated: branch part[8:2](lpfl->lpplord->rgord[0x0]) == 0x5 ? L_9aa1 : L_9a95 */
+    if ((lpfl->lpplord->rgord[0x0].tsell.iPlrX == 0x5))
+        goto L_9aa1;
+    else
+        goto L_9a95;
 
 L_9a95:
-    /* untranslated: part[8:2](lpfl->lpplord->rgord[0x0]) = (part[8:2](lpfl->lpplord->rgord[0x0]) - 0x1) */
+    lpfl->lpplord->rgord[0x0].tsell.iPlrX = (lpfl->lpplord->rgord[0x0].tsell.iPlrX - 0x1);
 
 L_9aa1:
     j = 0x0;
@@ -3254,7 +3262,7 @@ L_9de6:
         goto L_9df0;
 
 L_9df0:
-    FSendPlrMsg2(lpfl->iPlayer, 0x17e, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), 0x0);
+    FSendPlrMsg2(lpfl->iPlayer, 0x17e, (lpfl->id | 0x8000), lpfl->id, 0x0);
     goto L_9ea2;
 
 L_9e1a:
@@ -3265,7 +3273,7 @@ L_9e1a:
     lpth->thm.iType = LOBYTE(j);
 
 L_9e50:
-    FSendPlrMsg(lpfl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), LOWORD(lpfl), LOWORD(cMine), (LOWORD((uint32_t)((cMine >> 0x10))) & 0xffff), 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, LOWORD(cMine), (LOWORD((uint32_t)((cMine >> 0x10))) & 0xffff), 0x0, 0x0, 0x0, 0x0);
 
 L_9ea2:
     j = (j + 0x1);

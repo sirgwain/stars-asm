@@ -22,9 +22,9 @@ block L_0000:
     003e  store[2] [bp-wc+0xe] = callresult(HCURSOR)
     0041  store[2] [bp-wc+0x10] = 0xd
     004b  store[2] [bp-wc+0x12] = 0x364
-    004e  store[2] [bp-wc+0x14] = 0x25
+    004e  store[2] [bp-wc+0x14] = ds
     0056  store[2] [bp-wc+0x16] = 0x1d6
-    0059  store[2] [bp-wc+0x18] = 0x25
+    0059  store[2] [bp-wc+0x18] = ds
     0063  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     006b  branch callresult(uint16_t_ATOM) != 0x0 ? L_0076 : L_0070
 
@@ -49,7 +49,7 @@ block L_0076:
     0098  call GetStockObject(0x1) -> callresult(HGDIOBJ)
     009d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     00a5  store[2] [bp-wc+0x16] = 0x202
-    00a8  store[2] [bp-wc+0x18] = 0x25
+    00a8  store[2] [bp-wc+0x18] = ds
     00b2  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     00ba  branch callresult(uint16_t_ATOM) != 0x0 ? L_00c5 : L_00bf
 
@@ -71,7 +71,7 @@ block L_00c5:
     00d8  call GetStockObject(0x4) -> callresult(HGDIOBJ)
     00dd  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     00e5  store[2] [bp-wc+0x16] = 0x1e2
-    00e8  store[2] [bp-wc+0x18] = 0x25
+    00e8  store[2] [bp-wc+0x18] = ds
     00f2  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     00fa  branch callresult(uint16_t_ATOM) != 0x0 ? L_0105 : L_00ff
 
@@ -93,7 +93,7 @@ block L_0105:
     0118  call GetStockObject(0x1) -> callresult(HGDIOBJ)
     011d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     0125  store[2] [bp-wc+0x16] = 0x1ec
-    0128  store[2] [bp-wc+0x18] = 0x25
+    0128  store[2] [bp-wc+0x18] = ds
     0132  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     013a  branch callresult(uint16_t_ATOM) != 0x0 ? L_0145 : L_013f
 
@@ -115,7 +115,7 @@ block L_0145:
     0158  call GetStockObject(0x1) -> callresult(HGDIOBJ)
     015d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     0165  store[2] [bp-wc+0x16] = 0x242
-    0168  store[2] [bp-wc+0x18] = 0x25
+    0168  store[2] [bp-wc+0x18] = ds
     0172  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     017a  branch callresult(uint16_t_ATOM) != 0x0 ? L_0185 : L_017f
 
@@ -138,7 +138,7 @@ block L_0185:
     019d  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     01a0  store[2] [bp-wc+0xc] = 0x0
     01aa  store[2] [bp-wc+0x16] = 0x1f6
-    01ad  store[2] [bp-wc+0x18] = 0x25
+    01ad  store[2] [bp-wc+0x18] = ds
     01b7  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     01bf  branch callresult(uint16_t_ATOM) != 0x0 ? L_01ca : L_01c4
 
@@ -161,7 +161,7 @@ block L_01ca:
     01e2  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     01e5  store[2] [bp-wc+0xc] = 0x0
     01ef  store[2] [bp-wc+0x16] = 0x210
-    01f2  store[2] [bp-wc+0x18] = 0x25
+    01f2  store[2] [bp-wc+0x18] = ds
     01fc  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     0204  branch callresult(uint16_t_ATOM) != 0x0 ? L_020f : L_0209
 
@@ -184,7 +184,7 @@ block L_020f:
     0227  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     022a  store[2] [bp-wc+0xc] = 0x0
     0234  store[2] [bp-wc+0x16] = 0x24a
-    0237  store[2] [bp-wc+0x18] = 0x25
+    0237  store[2] [bp-wc+0x18] = ds
     0241  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     0249  branch callresult(uint16_t_ATOM) != 0x0 ? L_0254 : L_024e
 
@@ -207,7 +207,7 @@ block L_0254:
     026c  store[2] [bp-wc+0x10] = callresult(HGDIOBJ)
     026f  store[2] [bp-wc+0xc] = 0x0
     0279  store[2] [bp-wc+0x16] = 0x21c
-    027c  store[2] [bp-wc+0x18] = 0x25
+    027c  store[2] [bp-wc+0x18] = ds
     0286  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     028e  branch callresult(uint16_t_ATOM) != 0x0 ? L_0299 : L_0293
 
@@ -237,7 +237,7 @@ block L_0299:
     02dd  store[2] [bp-wc+0x12] = 0x0
     02e2  store[2] [bp-wc+0x14] = 0x0
     02ec  store[2] [bp-wc+0x16] = 0x22a
-    02ef  store[2] [bp-wc+0x18] = 0x25
+    02ef  store[2] [bp-wc+0x18] = ds
     02f9  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     0301  branch callresult(uint16_t_ATOM) != 0x0 ? L_030c : L_0306
 
@@ -267,7 +267,7 @@ block L_030c:
     0350  store[2] [bp-wc+0x12] = 0x0
     0355  store[2] [bp-wc+0x14] = 0x0
     035f  store[2] [bp-wc+0x16] = 0x236
-    0362  store[2] [bp-wc+0x18] = 0x25
+    0362  store[2] [bp-wc+0x18] = ds
     036c  call RegisterClass(farptr(ss, addr([bp-wc]))) -> callresult(uint16_t_ATOM)
     0374  branch callresult(uint16_t_ATOM) != 0x0 ? L_037f : L_0379
 

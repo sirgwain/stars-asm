@@ -13,9 +13,9 @@ L_21f6:
 L_221d:
     i = (i + 0x1);
     /* untranslated: ss:[bp-0x10] = part.hs.iItem */
-    /* untranslated: ss:[bp-0x12] = ((HIWORD(part) + 0x1) & 0xff) */
+    /* untranslated: ss:[bp-0x12] = ((HIWORD(part.hs) + 0x1) & 0xff) */
     part.hs.iItem = 0x0;
-    /* untranslated: HIWORD(part) = (HIWORD(part) | ss:[bp-0x12]) */
+    /* untranslated: HIWORD(part.hs) = (HIWORD(part.hs) | ss:[bp-0x12]) */
 
 L_2250:
     if ((i >= 0x5))
@@ -45,7 +45,7 @@ L_2283:
     fRet = 0x0;
 
 L_2288:
-    HIWORD(part) = ((HIWORD(part) & 0xff00) | ((i + 0x9) & 0xff));
+    part.hs.iItem = (i + 0x9);
     FLookupPart(&(part));
     *(ppart) = part;
 

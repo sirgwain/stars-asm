@@ -3,6 +3,7 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -58,7 +59,7 @@ func TestCollapseCallResultsInlinesNestedCallArgs(t *testing.T) {
 				&Global{GlobalVar: &typeinfo.GlobalVar{Name: "szWork", Type: charPtrType}},
 				&FarPointer{
 					Part:    machine.FarPointerWhole,
-					Segment: &Const{TypeInfo: typeinfo.U16, U64: 0x25},
+					Segment: &Register{Val: asm.RegDS, SegNum: 0x25},
 					Offset:  result,
 				},
 			}},
@@ -74,7 +75,7 @@ func TestCollapseCallResultsInlinesNestedCallArgs(t *testing.T) {
 		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
 	}
 	got := FormatEffect(gotBlock.Effects[0])
-	want := "call _wsprintf(szWork, farptr(0x25, PszGetCompressedString(0x105))) -> callresult(int16_t)"
+	want := "call _wsprintf(szWork, farptr(ds, PszGetCompressedString(0x105))) -> callresult(int16_t)"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}
@@ -110,14 +111,14 @@ func TestCollapseCallResultsCollapsesDefaultDataFarPointerArg(t *testing.T) {
 				hwnd,
 				&FarPointer{
 					Part:    machine.FarPointerWhole,
-					Segment: &Const{TypeInfo: typeinfo.U16, U64: 0x25},
+					Segment: &Register{Val: asm.RegDS, SegNum: 0x25},
 					Offset:  result,
 				},
 			}},
 		},
 	}}
 
-	ctx := &FuncContext{dsReg: machine.ConstVal(0x25)}
+	ctx := &FuncContext{dsReg: machine.RegVal(asm.RegDS)}
 	gotBlock, changed := (&collapseCallResultsProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
 	if !changed {
 		t.Fatal("ProcessBlock changed = false, want true")

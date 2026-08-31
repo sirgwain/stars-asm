@@ -1157,7 +1157,7 @@ char *PszGetCompressedString(StringId ids) {
 
 L_743a:
     iNibble = 0x0;
-    if ((ids != (uint16_t)(LOWORD(iLastStrGet))))
+    if ((ids != (uint16_t)(iLastStrGet)))
         goto L_745a;
     else
         goto L_7454;
@@ -1168,7 +1168,7 @@ L_7454:
 L_745a:
     iChunk = (ids >> 0x6);
     iOffset = (ids & 0x3f);
-    /* untranslated: pch = &aSTRCmpr[0x3:[(iChunk * 0x2)+0x73b8]] */
+    /* untranslated: pch = &aSTRCmpr[cs:[(iChunk * 0x2)+0x73b8]] */
     pchLen = &(acSTR[(0x40 * iChunk)]);
     i = 0x0;
     goto L_74b3;
@@ -1251,7 +1251,7 @@ L_755c:
         goto L_756e;
 
 L_756e:
-    /* untranslated: *pszOut = byte 0x3:[iBuild+0x73e6] */
+    /* untranslated: *pszOut = byte cs:[iBuild+0x73e6] */
     pszOut = (pszOut + 0x1);
     iBuild = 0x0;
 

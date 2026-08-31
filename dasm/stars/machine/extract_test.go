@@ -154,7 +154,7 @@ func TestExtractPreservesPendingStackArgAcrossSinglePredBlocksInLoop(t *testing.
 	if containsLoopUnknown(call.Args[0], 0) {
 		t.Fatalf("pending arg contains loop unknown: %s", call.Args[0])
 	}
-	if got, want := call.Args[0].String(), "load(0x0:[0x2000])"; got != want {
+	if got, want := call.Args[0].String(), "load(ds:[0x2000])"; got != want {
 		t.Fatalf("pending arg = %s, want %s", got, want)
 	}
 	if got, want := call.Args[1].String(), "merge(Join: L_1018, (L_1010:0x1, L_1016:0x2))"; got != want {

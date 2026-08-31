@@ -47,7 +47,6 @@ HB *LphbReAlloc(HB *lphb) {
     HB      *lphbNew;
     uint16_t cbCur;
     uint16_t cbGrow;
-    HB      *t_merge_02d2_0001_wide;
 
 L_0108:
     if ((LOWORD(lphb) != 0x0))
@@ -62,8 +61,7 @@ L_011a:
         goto L_0123;
 
 L_0123:
-    t_merge_02d2_0001_wide = 0x0;
-    goto L_02d2;
+    return 0x0;
 
 L_012c:
     hmem = lphb->hmem;
@@ -153,10 +151,7 @@ L_02ac:
     lphbNew->cbBlock = (lphbNew->cbBlock + cbGrow);
     lphbNew->cbFree = (lphbNew->cbFree + cbGrow);
     lphbNew->cbSlop = (lphbNew->cbSlop + cbGrow);
-    t_merge_02d2_0001_wide = lphbNew;
-
-L_02d2:
-    return t_merge_02d2_0001_wide;
+    return lphbNew;
 }
 
 void FreeHb(HB *lphb) {
@@ -236,8 +231,6 @@ void *LpAlloc(uint16_t cb, HeapType ht) {
     uint8_t *lpbTop;
     HB      *lphb;
     uint8_t *lpb;
-    uint16_t t_merge_0586_0001;
-    uint16_t t_merge_0586_0002;
 
 L_03b2:
     lphb = rglphb[ht];
@@ -292,9 +285,7 @@ L_045a:
     lphb->ibTop = (lphb->ibTop + cb);
     lphb->cbFree = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
-    t_merge_0586_0001 = (LOWORD(lpbTop) + 0x2);
-    t_merge_0586_0002 = HIWORD(lpbTop);
-    goto L_0586;
+    return &(lpbTop[0x2]);
 
 L_0493:
     lpb = &(lphb[0x1]);
@@ -346,9 +337,7 @@ L_0555:
     LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
     lpbPrev = (lpbPrev + 0x2);
     lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
-    t_merge_0586_0001 = LOWORD(lpbPrev);
-    t_merge_0586_0002 = HIWORD(lpbPrev);
-    goto L_0586;
+    return lpbPrev;
 
 L_0575:
     if ((LOWORD(lpb) >= LOWORD(lpbTop)))
@@ -357,14 +346,10 @@ L_0575:
         goto L_0580;
 
 L_0580:
-
-L_0586:
-    return farptr(t_merge_0586_0002, t_merge_0586_0001);
 }
 
 HB *LphbFromLpHt(void *lp, HeapType ht) {
     HB *lphb;
-    HB *t_merge_0659_0001_wide;
 
 L_058c:
     if ((ht < htOrd))
@@ -379,8 +364,7 @@ L_059e:
         goto L_05a7;
 
 L_05a7:
-    t_merge_0659_0001_wide = 0x0;
-    goto L_0659;
+    return 0x0;
 
 L_05b0:
     lphb = rglphb[ht];
@@ -452,14 +436,10 @@ L_063e:
         goto L_0647;
 
 L_0647:
-    t_merge_0659_0001_wide = 0x0;
-    goto L_0659;
+    return 0x0;
 
 L_0650:
-    t_merge_0659_0001_wide = lphb;
-
-L_0659:
-    return t_merge_0659_0001_wide;
+    return lphb;
 }
 
 void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
@@ -467,7 +447,6 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
     HB      *lphb;
     uint16_t cbCur;
     uint16_t cbGrow;
-    void    *t_merge_07a2_0001_wide;
 
 L_0660:
     cbCur = *(lp - 0x2);
@@ -479,8 +458,7 @@ L_0660:
         goto L_0693;
 
 L_0693:
-    t_merge_07a2_0001_wide = lp;
-    goto L_07a2;
+    return lp;
 
 L_069c:
     lphb = LphbFromLpHt(lp, ht);
@@ -534,10 +512,7 @@ L_0751:
     lp = lpNew;
 
 L_0799:
-    t_merge_07a2_0001_wide = lp;
-
-L_07a2:
-    return t_merge_07a2_0001_wide;
+    return lp;
 }
 
 void FreeLp(void *lp, HeapType ht) {
@@ -593,8 +568,8 @@ L_088c:
     lppl->iMax = LOBYTE(cAlloc);
     lppl->iMac = 0x0;
     lppl->fMark = 0x0;
-    LOWORD(lppl) = ((LOWORD(lppl) & 0xff00) | (cbItem & 0xff));
-    LOWORD(lppl) = ((LOWORD(lppl) & 0xf1ff) | ((ht & 0x7) << 0x9));
+    lppl->cbItem = cbItem;
+    lppl->ht = ht;
 
 L_0912:
     return lppl;

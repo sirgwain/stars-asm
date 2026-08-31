@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 func TestHandleX87BinaryPopUsesStackOperands(t *testing.T) {
@@ -36,6 +37,37 @@ func TestHandleX87FCOMPPopsOnlyForFCOMP(t *testing.T) {
 	ctx.handleX87(st, x87Inst(asm.OpFCOMP, asm.Operand{}, x87Operand(1)), Meta{})
 	if got, want := st.fpd, 1; got != want {
 		t.Fatalf("fp depth after FCOMP = %d, want %d", got, want)
+	}
+}
+
+func TestHandleCALLFLowersAFFComppToFlags(t *testing.T) {
+	st := newValueState()
+	ctx := &extractor{}
+	helper := &typeinfo.Function{Name: "__aFfcompp", Ret: &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"}}
+	lhs := BinaryVal(ValueOpAdd, FloatConstVal(2), FloatConstVal(3))
+	rhs := FloatConstVal(7)
+	st.pushFP(rhs)
+	st.pushFP(lhs)
+
+	effects := ctx.handleCALLF(st, &InstCall{Target: helper}, nil, Meta{InstOff: 0x525f})
+
+	if got, want := len(effects), 0; got != want {
+		t.Fatalf("effects = %d, want %d", got, want)
+	}
+	if got, want := st.fpd, 0; got != want {
+		t.Fatalf("fp depth = %d, want %d", got, want)
+	}
+	if st.flags == nil {
+		t.Fatal("flags = nil, want compare predicate")
+	}
+	if got, want := st.flags.Kind, PredicateCompare; got != want {
+		t.Fatalf("flags kind = %v, want %v", got, want)
+	}
+	if got, want := st.flags.LHS.String(), "(2 + 3)"; got != want {
+		t.Fatalf("flags lhs = %s, want %s", got, want)
+	}
+	if got, want := st.flags.RHS.String(), "7"; got != want {
+		t.Fatalf("flags rhs = %s, want %s", got, want)
 	}
 }
 
@@ -86,7 +118,7 @@ func TestHandleMOVSWCopiesAndAdvancesIndexes(t *testing.T) {
 	if got, want := copyEffect.Width, 2; got != want {
 		t.Fatalf("copy width = %d, want %d", got, want)
 	}
-	if got, want := copyEffect.Src.String(), "addr(0x0:[0x200])"; got != want {
+	if got, want := copyEffect.Src.String(), "addr(ds:[0x200])"; got != want {
 		t.Fatalf("copy src = %s, want %s", got, want)
 	}
 	if got, want := copyEffect.Dst.String(), "addr(es:[0x300])"; got != want {
@@ -154,7 +186,7 @@ func TestBinaryResultMasksDeadLowByteWriteParent(t *testing.T) {
 	written := LoadVal(MemoryAccess{Base: ConstVal(0x1234), Width: 1})
 	patched := ByteWriteVal(UnknownVal("loop"), ByteLow, written)
 
-	got := binaryResult(ValueOpAnd, patched, ConstVal(0x00ff))
+	got := BinaryResult(ValueOpAnd, patched, ConstVal(0x00ff))
 
 	if containsLoopUnknown(got, 0) {
 		t.Fatalf("masked value still contains loop unknown: %s", got)

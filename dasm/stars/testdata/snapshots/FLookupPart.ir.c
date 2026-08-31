@@ -1359,5 +1359,5 @@ L_6091:
 L_6096:
 
 L_609c:
-    return TechStatus(&(*(ppart->pcom + 0x2)));
+    return TechStatus(&(ppart->pcom->rgTech));
 }

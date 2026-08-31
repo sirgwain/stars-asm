@@ -49,7 +49,7 @@ L_1306:
 L_130c:
     call GetClientRect(hwndCtl, &rc) -> callresult(void)
     hdc = GetDC(hwndCtl)
-    call SelectObject(hdc, HIWORD(rghfontArial8)) -> callresult(HGDIOBJ)
+    call SelectObject(hdc, rghfontArial8[0x1]) -> callresult(HGDIOBJ)
     call SetBkMode(hdc, OPAQUE) -> callresult(int16_t)
     call SetBkColor(hdc, crButtonFace) -> callresult(COLORREF)
     call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
@@ -72,7 +72,7 @@ L_13a8:
     branch i >= 0x4d ? L_13d7 : L_13b1
 
 L_13b1:
-    call RcCtrTextOut(hdc, &rc, PszGetCompressedString(part[37:0](szDirName[i])), 0xffff) -> callresult(void)
+    call RcCtrTextOut(hdc, &rc, PszGetCompressedString((i + 0x277)), 0xffff) -> callresult(void)
     goto L_13e3
 
 L_13d7:

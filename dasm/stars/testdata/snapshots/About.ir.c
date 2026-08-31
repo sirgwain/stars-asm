@@ -42,7 +42,7 @@ L_1306:
 L_130c:
     GetClientRect(hwndCtl, &(rc));
     hdc = GetDC(hwndCtl);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -74,7 +74,7 @@ L_13a8:
         goto L_13b1;
 
 L_13b1:
-    /* untranslated: call RcCtrTextOut(hdc, &rc, PszGetCompressedString(part[37:0](szDirName[i])), 0xffff) -> callresult(void) */
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 0x277)), 0xffff);
     goto L_13e3;
 
 L_13d7:

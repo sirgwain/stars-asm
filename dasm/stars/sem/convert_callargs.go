@@ -122,7 +122,13 @@ func (c *machineConverter) convertAddressArgTyped(value machine.Value, expected 
 	}
 	target := c.convertMemoryLValue(addr.Access, width)
 	if !typeinfo.IsCallCompatible(ptrType.Elem, target.ExprType()) {
+		if decayed, ok := decayArrayLValue(target, expected); ok {
+			return decayed, true
+		}
 		return nil, false
+	}
+	if decayed, ok := decayArrayLValue(target, expected); ok {
+		return decayed, true
 	}
 	return &AddressOf{Target: target, TypeInfo: expected}, true
 }

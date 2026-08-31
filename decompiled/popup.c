@@ -117,7 +117,7 @@ L_0166:
 
 L_016c:
     /* untranslated: imd = ((*(LphuldefFromId(rglpshdef[HIWORD(part[2:4](GlobalPD))][ishdef].hul.ihuldef)+0x7b) >> 0xa) & 0xf) */
-    /* untranslated: return (0x19:[(imd * 0x2)+0x138] & part[10:2](GlobalPD)) */
+    /* untranslated: return (cs:[(imd * 0x2)+0x138] & part[10:2](GlobalPD)) */
 }
 
 void DrawPopup(HWND hwnd, HDC hdc) {
@@ -143,15 +143,15 @@ L_01c0:
     crBack = SetBkColor(hdc, 0xffffff);
     crFore = SetTextColor(hdc, 0x0);
     bkMode = SetBkMode(hdc, OPAQUE);
-    hfontSav = SelectObject(hdc, HIWORD(rghfontArial8));
+    hfontSav = SelectObject(hdc, rghfontArial8[0x1]);
     GetClientRect(hwnd, &(rc));
     goto L_0c14;
 
 L_0228:
     goto L_0c44;
-    /* untranslated: call CtrTextOut(hdc, (rc.right >> 0x1), 0x4, 0x25:[loword((int32_t)(words(HIWORD(GlobalPD), part[4:2](GlobalPD)) * 0x2))+0x4cc], 0x0) ->
+    /* untranslated: call CtrTextOut(hdc, (rc.right >> 0x1), 0x4, ds:[loword((int32_t)(words(HIWORD(GlobalPD), part[4:2](GlobalPD)) * 0x2))+0x4cc], 0x0) ->
      * callresult(void) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     psz = PszGetCompressedString(idsMineralConcentration);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 0x4);
     RightTextOut(hdc, dx, (dyArial8 + 0x4), PszGetCompressedString(idsSurface), 0x0, 0x0);
@@ -168,13 +168,12 @@ L_02d8:
     goto L_0324;
 
 L_02fc:
-    strcpy(0x57a4, PszGetCompressedString(idsUnknown2));
-    c = strlen(0x57a4);
+    strcpy(szWork, PszGetCompressedString(idsUnknown2));
+    c = strlen(szWork);
 
 L_0324:
     TextOut(hdc, dx, (dyArial8 + 0x4), szWork, c);
-    /* untranslated: call RightTextOut(hdc, dx, part[4:0](mpicolgrbitBU[dyArial8]), PszGetCompressedString(idsMineralConcentration), 0x0, 0x0) ->
-     * callresult(void) */
+    RightTextOut(hdc, dx, ((dyArial8 * 0x2) + 0x4), PszGetCompressedString(idsMineralConcentration), 0x0, 0x0);
     if ((GlobalPD.iPlrMax < 0x0))
         goto L_0401;
     else
@@ -225,26 +224,35 @@ L_0401:
     c = _wsprintf(szWork, PszGetCompressedString(idsUnknown2));
 
 L_0423:
-    /* untranslated: call TextOut(hdc, dx, part[4:0](mpicolgrbitBU[dyArial8]), szWork, c) -> callresult(int16_t) */
-    /* untranslated: branch part[20:2](GlobalPD) < 0x0 ? L_04d9 : L_044b */
+    TextOut(hdc, dx, ((dyArial8 * 0x2) + 0x4), szWork, c);
+    if ((HIWORD(GlobalPD.rgi[0x4]) < 0x0))
+        goto L_04d9;
+    else
+        goto L_044b;
 
 L_044b:
-    /* untranslated: branch part[20:2](GlobalPD) > 0x0 ? L_045a : L_0450 */
+    if ((HIWORD(GlobalPD.rgi[0x4]) > 0x0))
+        goto L_045a;
+    else
+        goto L_0450;
 
 L_0450:
-    /* untranslated: branch part[18:2](GlobalPD) < 0x0 ? L_04d9 : L_045a */
+    if ((LOWORD(GlobalPD.rgi[0x4]) < 0x0))
+        goto L_04d9;
+    else
+        goto L_045a;
 
 L_045a:
     RightTextOut(hdc, dx, (LOWORD((0x3 * dyArial8)) + 0x4), PszGetCompressedString(idsMiningRate), 0x0, 0x0);
     CchGetString(idsLdktYr, szT);
-    /* untranslated: c = _wsprintf(szWork, &szT, part[18:2](GlobalPD), part[20:2](GlobalPD)) */
+    c = _wsprintf(szWork, szT, LOWORD(GlobalPD.rgi[0x4]), HIWORD(GlobalPD.rgi[0x4]));
     TextOut(hdc, dx, (LOWORD((0x3 * dyArial8)) + 0x4), szWork, c);
 
 L_04d9:
     goto L_0c44;
     CtrTextOut(hdc, (rc.right >> 0x1), 0x4, PszPlayerName(HIWORD(GlobalPD), 0x1, 0x1, 0x1, 0x0, 0x0), 0x0);
     c = _wsprintf(szWork, PszGetCompressedString(idsPlayerD), (HIWORD(GlobalPD) + 0x1));
-    CtrTextOut(hdc, (rc.right >> 0x1), (dyArial8 + 0x4), 0x57a4, c);
+    CtrTextOut(hdc, (rc.right >> 0x1), (dyArial8 + 0x4), szWork, c);
     goto L_0c44;
     if (((rc.bottom - rc.top) >= (dyArial8 * 0x2)))
         goto L_05b0;
@@ -252,25 +260,25 @@ L_04d9:
         goto L_0574;
 
 L_0574:
-    c = CchGetString(idsNone2, 0x57a4);
+    c = CchGetString(idsNone2, szWork);
     TextOut(hdc, 0x4, 0x4, szWork, c);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     goto L_0c44;
 
 L_05b0:
-    SelectObject(hdc, HIWORD(rghfontArial8));
-    c = CchGetString(idsShipName, 0x57a4);
+    SelectObject(hdc, rghfontArial8[0x1]);
+    c = CchGetString(idsShipName, szWork);
     TextOut(hdc, 0x4, 0x4, szWork, c);
-    /* untranslated: call RightTextOut(hdc, ((rc.right + 0xfffc) - part[8:2](GlobalPD)), 0x4, 0xbf4, 0x1, 0x0) -> callresult(void) */
+    /* untranslated: call RightTextOut(hdc, ((rc.right + 0xfffc) - part[8:2](GlobalPD)), 0x4, "#", 0x1, 0x0) -> callresult(void) */
     /* untranslated: branch part[8:2](GlobalPD) == 0x0 ? L_0673 : L_0619 */
 
 L_0619:
-    c = CchGetString(idsDamage2, 0x57a4);
-    RightTextOut(hdc, (rc.right + 0xfffc), 0x4, 0x57a4, c, 0x0);
+    c = CchGetString(idsDamage2, szWork);
+    RightTextOut(hdc, (rc.right + 0xfffc), 0x4, szWork, c, 0x0);
     PatBlt(hdc, 0x4, (dyArial8 + 0x2), (rc.right + 0xfff8), 0x1, BLACKNESS);
 
 L_0673:
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     yCur = (dyArial8 + 0x4);
     i = 0x0;
     goto L_08d1;
@@ -306,7 +314,7 @@ L_0718:
     /* untranslated: HIWORD(lpsz) = ss */
     TextOut(hdc, 0x4, yCur, lpsz, fstrlen(lpsz));
     /* untranslated: c = _wsprintf(szWork, PCTD, part[4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))]) */
-    /* untranslated: call RightTextOut(hdc, ((rc.right + 0xfffc) - part[8:2](GlobalPD)), yCur, 0x57a4, c, 0x0) -> callresult(void) */
+    /* untranslated: call RightTextOut(hdc, ((rc.right + 0xfffc) - part[8:2](GlobalPD)), yCur, szWork, c, 0x0) -> callresult(void) */
     /* untranslated: branch part[6:2](GlobalPD) == 0x0 ? L_08c7 : L_07c8 */
 
 L_07c8:
@@ -336,7 +344,7 @@ L_0883:
 
 L_0888:
     c = _wsprintf(szWork, "%d@%d%%", csh, dpT);
-    RightTextOut(hdc, (rc.right + 0xfffc), yCur, 0x57a4, c, 0x0);
+    RightTextOut(hdc, (rc.right + 0xfffc), yCur, szWork, c, 0x0);
 
 L_08c7:
     yCur = (yCur + dyArial8);
@@ -360,18 +368,18 @@ L_08f4:
     goto L_0c44;
     psz = PszGetCompressedString(idsPlanet);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 0x4);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     RightTextOut(hdc, dx, 0x4, psz, strlen(psz), 0x0);
     RightTextOut(hdc, dx, (dyArial8 + 0x4), PszGetCompressedString(idsId), 0x0, 0x0);
-    /* untranslated: call RightTextOut(hdc, dx, part[4:0](mpicolgrbitBU[dyArial8]), PszGetCompressedString(idsX), 0x0, 0x0) -> callresult(void) */
+    RightTextOut(hdc, dx, ((dyArial8 * 0x2) + 0x4), PszGetCompressedString(idsX), 0x0, 0x0);
     RightTextOut(hdc, dx, (LOWORD((0x3 * dyArial8)) + 0x4), PszGetCompressedString(idsY), 0x0, 0x0);
     psz = PszGetPlanetName(sel.scan.idpl);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     TextOut(hdc, dx, 0x4, psz, strlen(psz));
     c = _wsprintf(szWork, PCTD, (sel.scan.idpl + 0x1));
     TextOut(hdc, dx, (dyArial8 + 0x4), szWork, c);
     c = _wsprintf(szWork, PCTD, sel.scan.pt.x);
-    /* untranslated: call TextOut(hdc, dx, part[4:0](mpicolgrbitBU[dyArial8]), szWork, c) -> callresult(int16_t) */
+    TextOut(hdc, dx, ((dyArial8 * 0x2) + 0x4), szWork, c);
     c = _wsprintf(szWork, PCTD, sel.scan.pt.y);
     TextOut(hdc, dx, (LOWORD((0x3 * dyArial8)) + 0x4), szWork, c);
     goto L_0c44;
@@ -385,7 +393,7 @@ L_08f4:
     goto L_0c44;
     PtDisplayResourceInfo(hdc, rc.right, 0x1);
     goto L_0c44;
-    DisplayComponentInfo(hdc, rc.right, rc.bottom, 0xb82);
+    /* untranslated: call DisplayComponentInfo(hdc, rc.right, rc.bottom, &part[2:0](GlobalPD)) -> callresult(void) */
     goto L_0c44;
     PtDisplayString(hdc, rc.right, 0x1);
     goto L_0c44;
@@ -403,10 +411,10 @@ L_0b79:
     DrawSlotDlg(hwnd, hdc, &(rc), 0xffff);
     rc.top = (dyArial8 + 0x132);
     rc.left = (rc.left + 0x6);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     SetBkMode(hdc, TRANSPARENT);
     /* untranslated: call fstrcpy(szWork, &part[8:0](GlobalPD)) -> callresult(char *) */
-    CtrTextOut(hdc, (((rc.right + 0xffb4) >> 0x1) + 0x4c), 0x6, 0x57a4, 0x0);
+    CtrTextOut(hdc, (((rc.right + 0xffb4) >> 0x1) + 0x4c), 0x6, szWork, 0x0);
     DrawBuildSelHull(hwnd, hdc, 0xffff, &(rc));
     goto L_0c44;
 
@@ -460,7 +468,7 @@ L_0c7c:
     pt.y = y;
     ClientToScreen(hwnd, &(pt));
     hdc = GetDC(hwnd);
-    hfontSav = SelectObject(hdc, LOWORD(rghfontArial8));
+    hfontSav = SelectObject(hdc, rghfontArial8[0x0]);
     goto L_11f5;
 
 L_0cc0:
@@ -468,20 +476,29 @@ L_0cc0:
     psz = PszGetCompressedString(idsMineralConcentration0000000kt);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 0x8);
     dy = (LOWORD((0x3 * dyArial8)) + 0x8);
-    /* untranslated: branch part[20:2](GlobalPD) < 0x0 ? L_0d1f : L_0d0a */
+    if ((HIWORD(GlobalPD.rgi[0x4]) < 0x0))
+        goto L_0d1f;
+    else
+        goto L_0d0a;
 
 L_0d0a:
-    /* untranslated: branch part[20:2](GlobalPD) > 0x0 ? L_0d19 : L_0d0f */
+    if ((HIWORD(GlobalPD.rgi[0x4]) > 0x0))
+        goto L_0d19;
+    else
+        goto L_0d0f;
 
 L_0d0f:
-    /* untranslated: branch part[18:2](GlobalPD) < 0x0 ? L_0d1f : L_0d19 */
+    if ((LOWORD(GlobalPD.rgi[0x4]) < 0x0))
+        goto L_0d1f;
+    else
+        goto L_0d19;
 
 L_0d19:
     dy = (dy + dyArial8);
 
 L_0d1f:
     goto L_1225;
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     psz = PszPlayerName(HIWORD(GlobalPD), 0x1, 0x1, 0x1, 0x0, 0x0);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 0x8);
     dx2 = (LOWORD(GetTextExtent(hdc, "Player #16", 0xa)) + 0x8);
@@ -494,15 +511,15 @@ L_0d96:
     dx = dx2;
 
 L_0d9c:
-    /* untranslated: dy = part[8:0](mpicolgrbitBU[dyArial8]) */
+    dy = ((dyArial8 * 0x2) + 0x8);
     goto L_1225;
     dxR = 0x0;
     dxDamage = 0x0;
     dy = (dyArial8 + 0x8);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     psz = PszGetCompressedString(idsShipName);
     dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     i = 0x0;
     goto L_0f7b;
 
@@ -592,12 +609,12 @@ L_0fbf:
     /* untranslated: part[8:2](GlobalPD) = dxDamage */
     dx = (((dxL + dxR) + 0x10) + dxDamage);
     goto L_1225;
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     dy = ((dyArial8 * 0x4) + 0x8);
     psz = PszGetCompressedString(idsPlanet);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 0x8);
     psz = PszGetPlanetName(sel.scan.idpl);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     dxName = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
     dxCoord = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 0x4));
     if ((dxName <= dxCoord))
@@ -786,7 +803,7 @@ L_12f6:
 L_1302:
     pt.y = t_merge_1302_0001;
     hwndPopup = CreateWindow(szPopup, 0x0, 0x90800000, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndPopup, WM_SETFONT, LOWORD(rghfontArial8), 0x0);
+    SendMessage(hwndPopup, WM_SETFONT, rghfontArial8[0x0], 0x0);
     SetCapture(hwndPopup);
     return;
 }
@@ -857,7 +874,7 @@ L_13e5:
     goto L_1883;
 
 L_1401:
-    if (((LOWORD(rgids[i]) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_1429;
     else
         goto L_1421;
@@ -873,7 +890,7 @@ L_1429:
     goto L_152e;
 
 L_1432:
-    if (((LOWORD(rgids[i]) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_145a;
     else
         goto L_1452;
@@ -889,7 +906,7 @@ L_145a:
     goto L_152e;
 
 L_147b:
-    if (((LOWORD(rgids[i]) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_14a3;
     else
         goto L_149b;
@@ -905,7 +922,7 @@ L_14a3:
     goto L_152e;
 
 L_14c4:
-    if (((LOWORD(rgids[i]) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_14ec;
     else
         goto L_14e4;
@@ -960,7 +977,7 @@ L_158f:
     t_merge_1592_0001 = 0x0;
 
 L_1592:
-    AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 0x3a98), &(szTemp));
+    AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 0x3a98), szTemp);
 
 L_15ad:
     if ((rgsz[i] != 0x0))
@@ -1077,7 +1094,7 @@ L_1719:
     t_merge_171c_0001 = 0x0;
 
 L_171c:
-    AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 0x3a98), &(szTemp));
+    AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 0x3a98), szTemp);
 
 L_1734:
     i = (i + 0x1);
@@ -1188,7 +1205,7 @@ L_186b:
     t_merge_186e_0001 = 0x0;
 
 L_186e:
-    AppendMenu(hmenuPopup, t_merge_186e_0001, (i + 0x3a98), &(szTemp));
+    AppendMenu(hmenuPopup, t_merge_186e_0001, (i + 0x3a98), szTemp);
 
 L_1883:
     i = (i + 0x1);
@@ -1271,11 +1288,11 @@ L_1938:
     y = 0x4;
     xMax = 0x4;
     x = 0x4;
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[4:2](GlobalPD)], 0x0, fPrint) -> callresult(int16_t) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsCurrently), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: branch part[6:2](GlobalPD) < 0x0 ? L_19f3 : L_19c6 */
 
 L_19c6:
@@ -1286,8 +1303,8 @@ L_19f3:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsUnknown2), 0x0, fPrint);
 
 L_1a19:
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    DxStreamTextOut(hdc, &(x), y, 0xc14, 0x1, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
     if ((x <= xMax))
         goto L_1a53;
     else
@@ -1316,7 +1333,7 @@ L_1a9f:
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsEffects), 0x0, fPrint);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[4:2](GlobalPD)], 0x0, fPrint) -> callresult(int16_t) */
-    DxStreamTextOut(hdc, &(x), y, 0xc16, 0x1, fPrint);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
     goto L_1c65;
 
 L_1b13:
@@ -1334,14 +1351,14 @@ L_1b4a:
     y = (y + dyArial8);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[4:2](GlobalPD)], 0x0, fPrint) -> callresult(int16_t) */
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsBetween), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[4:2](GlobalPD), part[14:2](GlobalPD)), 0x0, fPrint) -> callresult(int16_t) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsAnd), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[4:2](GlobalPD), GlobalPD.iPlrMax), 0x0, fPrint) -> callresult(int16_t) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    DxStreamTextOut(hdc, &(x), y, 0xc18, 0x1, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
 
 L_1c65:
     if ((x <= xMax))
@@ -1373,9 +1390,9 @@ L_1cc2:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsModify), 0x0, fPrint);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[4:2](GlobalPD)], 0x0, fPrint) -> callresult(int16_t) */
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOn2), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     if ((x <= xMax))
         goto L_1d8b;
     else
@@ -1388,14 +1405,14 @@ L_1d8b:
     x = 0x4;
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWithinRange), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[4:2](GlobalPD), part[8:2](GlobalPD)), 0x0, fPrint) -> callresult(int16_t) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsTo), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[4:2](GlobalPD), part[10:2](GlobalPD)), 0x0, fPrint) -> callresult(int16_t) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    DxStreamTextOut(hdc, &(x), y, 0xc1a, 0x1, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
     if ((x <= xMax))
         goto L_1e94;
     else
@@ -1472,21 +1489,21 @@ L_1f24:
         goto L_1fb6;
 
 L_1fb6:
-    cch = CchGetString(idsIfTerraform, 0x57a4);
-    WrapTextOut(hdc, &(x), &(y), 0x57a4, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    cch = CchGetString(idsIfTerraform, szWork);
+    WrapTextOut(hdc, &(x), &(y), szWork, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call WrapTextOut(hdc, &x, &y, rgszPlanetAttr[part[4:2](GlobalPD)], 0x0, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint) -> callresult(void) */
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     WrapTextOut(hdc, &(x), &(y), PszGetCompressedString(idsTo), 0x0, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: call WrapTextOut(hdc, &x, &y, PszCalcEnvVar(part[4:2](GlobalPD), iNewVal), 0x0, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint) -> callresult(void)
      */
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    cch = CchGetString(idsPlanetsValueWouldImprove, 0x57a4);
-    WrapTextOut(hdc, &(x), &(y), 0x57a4, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
+    cch = CchGetString(idsPlanetsValueWouldImprove, szWork);
+    WrapTextOut(hdc, &(x), &(y), szWork, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
+    SelectObject(hdc, rghfontArial8[0x1]);
     cch = _wsprintf(szWork, "%d%%.  ", pctDesire);
-    WrapTextOut(hdc, &(x), &(y), 0x57a4, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
+    WrapTextOut(hdc, &(x), &(y), szWork, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
 
 L_2172:
     /* untranslated: branch part[14:2](GlobalPD) == 0xffff ? L_225e : L_217c */
@@ -1529,9 +1546,9 @@ L_21f2:
     ids = idsValueDOutsideHabitableRangeRace;
 
 L_21f7:
-    CchGetString(ids, 0x57a4);
-    cch = _wsprintf(&(szOut), szWork, dChg);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    CchGetString(ids, szWork);
+    cch = _wsprintf(szOut, szWork, dChg);
+    SelectObject(hdc, rghfontArial8[0x0]);
     WrapTextOut(hdc, &(x), &(y), szOut, cch, 0x4, (xMax + 0xfffc), 0x0, 0x0, fPrint);
 
 L_225e:
@@ -1569,7 +1586,7 @@ L_228e:
     xMax = 0x4;
     x = 0x4;
     FLookupPlanet(HIWORD(GlobalPD), &(pl));
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     if ((pl.iPlayer != idPlayer))
         goto L_23eb;
     else
@@ -1577,24 +1594,30 @@ L_228e:
 
 L_22cf:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsPopulation3), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsIs), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
-    /* untranslated: call _wsprintf(szWork, PCTLD00, part[40:2](pl), part[42:2](pl)) -> callresult(int16_t) */
-    /* untranslated: branch part[40:2](pl) != 0x0 ? L_239e : L_2390 */
+    SelectObject(hdc, rghfontArial8[0x1]);
+    _wsprintf(szWork, PCTLD00, LOWORD(pl.rgwtMin[0x3]), HIWORD(pl.rgwtMin[0x3]));
+    if ((LOWORD(pl.rgwtMin[0x3]) != 0x0))
+        goto L_239e;
+    else
+        goto L_2390;
 
 L_2390:
-    /* untranslated: branch part[42:2](pl) != 0x0 ? L_239e : L_2399 */
+    if ((HIWORD(pl.rgwtMin[0x3]) != 0x0))
+        goto L_239e;
+    else
+        goto L_2399;
 
 L_2399:
-    /* untranslated: part[1:1](szWork) = 0x0 */
+    szWork[0x1] = 0x0;
 
 L_239e:
-    DxStreamTextOut(hdc, &(x), y, 0x57a4, 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    DxStreamTextOut(hdc, &(x), y, 0xc24, 0x1, fPrint);
+    DxStreamTextOut(hdc, &(x), y, szWork, 0x0, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
     goto L_25b2;
 
 L_23eb:
@@ -1605,9 +1628,9 @@ L_23eb:
 
 L_23f4:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsEnemyPopulation), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     if ((pl.det < 0x3))
         goto L_2500;
     else
@@ -1615,7 +1638,7 @@ L_23f4:
 
 L_246a:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsApproximately), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     _wsprintf(szWork, "%d00", (pl.uPopGuess * 0x4));
     if ((pl.uPopGuess != 0x0))
         goto L_24d2;
@@ -1623,24 +1646,24 @@ L_246a:
         goto L_24cd;
 
 L_24cd:
-    /* untranslated: part[1:1](szWork) = 0x0 */
+    szWork[0x1] = 0x0;
 
 L_24d2:
-    DxStreamTextOut(hdc, &(x), y, 0x57a4, 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    DxStreamTextOut(hdc, &(x), y, szWork, 0x0, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
     goto L_2528;
 
 L_2500:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsUnknown), 0x0, fPrint);
 
 L_2528:
-    DxStreamTextOut(hdc, &(x), y, 0xc2b, 0x1, fPrint);
+    DxStreamTextOut(hdc, &(x), y, ".", 0x1, fPrint);
     goto L_25b2;
 
 L_254a:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsUninhabited2), 0x0, fPrint);
 
 L_25b2:
@@ -1671,14 +1694,14 @@ L_25e5:
         goto L_261e;
 
 L_261e:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillKillOffApproximately), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     /* untranslated: c = _wsprintf(szWork, PCTDXPCTDPCTPCT, (sext16to32((pctDesire neg 0x0)) / 0xa), (sext16to32((pctDesire neg 0x0)) % 0xa)) */
-    DxStreamTextOut(hdc, &(x), y, 0x57a4, c, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOf), 0x0, fPrint);
     if ((x <= xMax))
         goto L_272e;
@@ -1728,9 +1751,9 @@ L_27b6:
         goto L_27c0;
 
 L_27c0:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillSupportPopulation), 0x0, fPrint);
     if ((x <= xMax))
         goto L_283d;
@@ -1743,10 +1766,10 @@ L_2835:
 L_283d:
     x = 0x4;
     y = (y + dyArial8);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     c = _wsprintf(szWork, PCTLD00, LOWORD(lMax), HIWORD(lMax));
-    DxStreamTextOut(hdc, &(x), y, 0x57a4, c, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonists3), 0x0, fPrint);
     goto L_2a58;
 
@@ -1769,11 +1792,11 @@ L_28dd:
         goto L_28e7;
 
 L_28e7:
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsIfColonize), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWould), 0x0, fPrint);
     if ((x <= xMax))
         goto L_2998;
@@ -1787,10 +1810,10 @@ L_2998:
     x = 0x4;
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsSupport), 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     c = _wsprintf(szWork, PCTLD00, LOWORD(lMax), HIWORD(lMax));
-    DxStreamTextOut(hdc, &(x), y, 0x57a4, c, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonists3), 0x0, fPrint);
     goto L_2a58;
 
@@ -1821,21 +1844,30 @@ L_2a85:
         goto L_2a8f;
 
 L_2a8f:
-    /* untranslated: branch part[42:2](pl) > HIWORD(lMax) ? L_2c24 : L_2a9f */
+    if ((HIWORD(pl.rgwtMin[0x3]) > HIWORD(lMax)))
+        goto L_2c24;
+    else
+        goto L_2a9f;
 
 L_2a9f:
-    /* untranslated: branch part[42:2](pl) < HIWORD(lMax) ? L_2aac : L_2aa4 */
+    if ((HIWORD(pl.rgwtMin[0x3]) < HIWORD(lMax)))
+        goto L_2aac;
+    else
+        goto L_2aa4;
 
 L_2aa4:
-    /* untranslated: branch part[40:2](pl) >= LOWORD(lMax) ? L_2c24 : L_2aac */
+    if ((LOWORD(pl.rgwtMin[0x3]) >= LOWORD(lMax)))
+        goto L_2c24;
+    else
+        goto L_2aac;
 
 L_2aac:
     c = CchGetString(idsPopulation, szT);
     WrapTextOut(hdc, &(x), &(y), szT, c, 0x4, xMax, 0x0, 0x0, fPrint);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     psz = PszGetPlanetName(pl.id);
     WrapTextOut(hdc, &(x), &(y), psz, 0x0, 0x4, xMax, 0x0, 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     lPopChg = ChgPopFromPlanet(&(pl), 0x0);
     if ((pctDesire == 0x0))
         goto L_2b87;
@@ -1866,7 +1898,7 @@ L_2b87:
 
 L_2b9f:
     psz = PszGetCompressedString(idsWillGrowLd00Ld00Year);
-    /* untranslated: c = _wsprintf(&szT, psz, LOWORD(lPopChg), HIWORD(lPopChg), (part[40:2](pl) + LOWORD(lPopChg)), (part[42:2](pl) + HIWORD(lPopChg))) */
+    c = _wsprintf(szT, psz, LOWORD(lPopChg), HIWORD(lPopChg), (LOWORD(pl.rgwtMin[0x3]) + LOWORD(lPopChg)), (HIWORD(pl.rgwtMin[0x3]) + HIWORD(lPopChg)));
 
 L_2be3:
     WrapTextOut(hdc, &(x), &(y), szT, c, 0x4, xMax, 0x0, 0x0, fPrint);
@@ -1887,22 +1919,22 @@ L_2c2f:
         goto L_2c38;
 
 L_2c38:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     psz = PszGetPlanetName(pl.id);
     WrapTextOut(hdc, &(x), &(y), psz, 0x0, 0x4, xMax, 0x0, 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     if ((pl.uDefGuess != 0x0))
         goto L_2cb9;
     else
         goto L_2ca2;
 
 L_2ca2:
-    c = CchGetString(idsAppearsHavePlanetaryDefenses, 0x57a4);
+    c = CchGetString(idsAppearsHavePlanetaryDefenses, szWork);
     goto L_2d01;
 
 L_2cb9:
     psz = PszGetCompressedString(idsHasPlanetaryDefensesApproximatelyDCoverage);
-    c = _wsprintf(&(szT), psz, (LOWORD((pl.uDefGuess * 0x6)) + 0x3));
+    c = _wsprintf(szT, psz, (LOWORD((pl.uDefGuess * 0x6)) + 0x3));
     psz = szT;
 
 L_2d01:
@@ -1929,7 +1961,7 @@ L_2d66:
     y = 0x4;
     xMax = 0x4;
     x = 0x4;
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     if ((fPrint == 0x0))
         goto L_2dc1;
     else
@@ -1941,7 +1973,7 @@ L_2d92:
 
 L_2dc1:
     y = (y + dyArial8);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsZipordProvidesAbilityQuicklySetFleets), 0x0, fPrint);
     if ((x <= xMax))
         goto L_2e0a;
@@ -1990,9 +2022,9 @@ L_2eca:
 L_2ed0:
     x = 0x4;
     y = (y + (dyArial8 * 0x2));
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsQuikload), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsLoadMineralsAvailable), 0x0, fPrint);
     if ((x <= xMax))
         goto L_2f52;
@@ -2005,9 +2037,9 @@ L_2f4c:
 L_2f52:
     x = 0x4;
     y = (y + ((dyArial8 >> 0x1) + dyArial8));
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsQuikdrop), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsUnloadEverythingFleetCarrying), 0x0, fPrint);
     if ((x <= xMax))
         goto L_2fd8;
@@ -2020,9 +2052,9 @@ L_2fd2:
 L_2fd8:
     x = 0x4;
     y = (y + ((dyArial8 >> 0x1) + dyArial8));
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWaitload), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWaitFullLoadMinerals), 0x0, fPrint);
     if ((x <= xMax))
         goto L_305e;
@@ -2035,9 +2067,9 @@ L_3058:
 L_305e:
     x = 0x4;
     y = (y + ((dyArial8 >> 0x1) + dyArial8));
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsClear2), 0x0, fPrint);
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsRemoveTransportOrders), 0x0, fPrint);
     if ((x <= xMax))
         goto L_30e4;
@@ -2091,7 +2123,7 @@ L_314e:
     pszTypes = 0xc44;
 
 L_3158:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     if ((fPrint == 0x0))
         goto L_31b8;
     else
@@ -2099,8 +2131,8 @@ L_3158:
 
 L_316d:
     CchGetString(idsSInfo, szT);
-    c = _wsprintf(szWork, &(szT), pszType, 0x25);
-    CtrTextOut(hdc, (dx >> 0x1), y, 0x57a4, c);
+    c = _wsprintf(szWork, szT, pszType);
+    CtrTextOut(hdc, (dx >> 0x1), y, szWork, c);
 
 L_31b8:
     y = (y + (dyArial8 + 0x4));
@@ -2110,7 +2142,7 @@ L_31b8:
         goto L_31e2;
 
 L_31e2:
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     /* untranslated: branch part[10:2](GlobalPD) == 0x0 ? L_31fe : L_31f8 */
 
 L_31f8:
@@ -2130,9 +2162,9 @@ L_323c:
     goto L_3349;
 
 L_3244:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     goto L_32f6;
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     psz = PszGetCompressedString(ids);
     ids = (ids + 0x1);
     goto L_3319;
@@ -2152,7 +2184,7 @@ L_328e:
     t_merge_3293_0001 = pszTypes;
 
 L_3293:
-    _wsprintf(szWork, "%d %s", cnt, t_merge_3293_0001, 0x25);
+    _wsprintf(szWork, "%d %s", cnt, t_merge_3293_0001);
     psz = 0x57a4;
     goto L_3319;
     psz = PszGetPlanetName(HIWORD(GlobalPD));
@@ -2215,7 +2247,7 @@ L_33ab:
     xMax = 0x4;
     x = 0x4;
     y = 0x2;
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     if ((fPrint == 0x0))
         goto L_3416;
     else
@@ -2231,14 +2263,14 @@ L_3416:
     goto L_352b;
 
 L_3427:
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     goto L_34d6;
     /* untranslated: branch part[6:2](GlobalPD) == part[4:2](GlobalPD) ? L_3536 : L_3442 */
 
 L_3442:
 
 L_3448:
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     psz = PszGetCompressedString(ids);
     ids = (ids + 0x1);
     goto L_34fb;
@@ -2293,7 +2325,7 @@ L_355c:
     xMax = 0x4;
     x = 0x4;
     y = 0x2;
-    SelectObject(hdc, LOWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x0]);
     /* untranslated: call WrapTextOut(hdc, &x, &y, part[4:2](GlobalPD), 0x0, 0x4, dx, &xMax, 0x0, fPrint) -> callresult(void) */
     pt.x = (xMax + 0x4);
     pt.y = ((y + dyArial8) + 0x2);

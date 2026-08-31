@@ -35,7 +35,7 @@ block L_21a3:
   preds: L_2160, L_218f
   succs: L_21dc, L_21e2
   effects:
-    21b9  call _wsprintf(farptr(ss, addr([bp-szT])), farptr(0x25, 0x137b), load([bp+sz]), 0x25) -> callresult(int16_t)
+    21b9  call _wsprintf(farptr(ss, addr([bp-szT])), farptr(ds, 0x137b), load([bp+sz]), ds) -> callresult(int16_t)
     21d7  branch ((load([ini+0xa]) >> 0xe) & 0x1) == 0x0 ? L_21e2 : L_21dc
 
 block L_21dc:
@@ -64,7 +64,7 @@ block L_21f7:
   succs: L_2217
   effects:
     21f7  call GetFocus() -> callresult(HWND)
-    220f  call MessageBox(callresult(HWND), farptr(0x25, load([bp+sz])), farptr(0x25, 0x1385), load([bp+mbType])) -> callresult(int16_t)
+    220f  call MessageBox(callresult(HWND), farptr(ds, load([bp+sz])), farptr(ds, 0x1385), load([bp+mbType])) -> callresult(int16_t)
 
 block L_2217:
   insts 74..78  off 0x2217..0x221c

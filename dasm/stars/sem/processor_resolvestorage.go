@@ -115,17 +115,17 @@ func (p *resolveStorageProcessor) resolveLValueWithRewriter(w *semRewriter, resu
 
 // resolveSymbolPart resolves a byte range from an already symbolic base path.
 func (p *resolveStorageProcessor) resolveSymbolPart(part *Part) (LValue, bool) {
-	base, ok := part.Base.(*SymbolRef)
+	base, ok := symbolPathForExpr(part.Base)
 	if !ok {
 		return nil, false
 	}
-	if typeinfo.IsPointer(base.Path.Type()) && part.ByteOff < base.Path.Type().Bytes() {
+	if typeinfo.IsPointer(base.Type()) && part.ByteOff < base.Type().Bytes() {
 		return nil, false
 	}
-	if path, ok := p.ctx.res.ResolveFieldPathLoadInContext(base.Path, part.ByteOff, part.Width, p.ctx.unionContext()); ok {
+	if path, ok := p.ctx.res.ResolveFieldPathLoadInContext(base, part.ByteOff, part.Width, p.ctx.unionContext()); ok {
 		return &SymbolRef{Path: path}, true
 	}
-	path, offLeft, ok := p.ctx.res.ResolveFieldPathInContext(base.Path, part.ByteOff, p.ctx.unionContext())
+	path, offLeft, ok := p.ctx.res.ResolveFieldPathInContext(base, part.ByteOff, p.ctx.unionContext())
 	if !ok {
 		return nil, false
 	}

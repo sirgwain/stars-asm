@@ -3,7 +3,9 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -27,11 +29,11 @@ func TestCollapseTypedFarPointerCallArgCollapsesDefaultDataOffsetArithmetic(t *t
 	}
 	arg := &FarPointer{
 		Part:    machine.FarPointerWhole,
-		Segment: &Const{TypeInfo: typeinfo.U16, U64: 0x25},
+		Segment: &Register{Val: asm.RegDS, SegNum: 0x25},
 		Offset:  offset,
 	}
 
-	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, &typeinfo.FunctionVar{Type: farCharPtrType})
+	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, &typeinfo.FunctionVar{Type: farCharPtrType})
 	if !changed {
 		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 	}
@@ -40,6 +42,36 @@ func TestCollapseTypedFarPointerCallArgCollapsesDefaultDataOffsetArithmetic(t *t
 	}
 	if gotText := FormatExpr(got); gotText != "(szWork[cch] + 0xfffd)" {
 		t.Fatalf("collapsed arg text = %q, want %q", gotText, "(szWork[cch] + 0xfffd)")
+	}
+}
+
+// TestCollapseTypedFarPointerCallArgDecaysNearGlobalArray verifies near
+// pointer constants in call args resolve to global array pointer values.
+func TestCollapseTypedFarPointerCallArgDecaysNearGlobalArray(t *testing.T) {
+	charType := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}
+	nearCharPtrType := &typeinfo.Pointer{Elem: charType, Class: typeinfo.PtrNear}
+	sdb := &typeinfo.SymbolDB{
+		DGroupFrame: 0x25,
+		Globals: []*typeinfo.GlobalVar{
+			{
+				Name: "szBase",
+				Addr: typeinfo.Addr{Seg: 0x25, Off: 0x56a2},
+				Type: &typeinfo.Array{Elem: charType, Count: 256},
+			},
+		},
+	}
+	ctx := &FuncContext{
+		sdb:   sdb,
+		res:   symresolve.NewResolver(nil, sdb),
+		dsReg: machine.RegVal(asm.RegDS),
+	}
+
+	got, changed := collapseTypedFarPointerCallArg(ctx, &Const{TypeInfo: typeinfo.U16, U64: 0x56a2}, &typeinfo.FunctionVar{Type: nearCharPtrType})
+	if !changed {
+		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
+	}
+	if gotText := FormatExpr(got); gotText != "szBase" {
+		t.Fatalf("collapsed arg text = %q, want %q", gotText, "szBase")
 	}
 }
 
@@ -61,11 +93,11 @@ func TestCollapseTypedFarPointerCallArgAddressesDefaultDataLValue(t *testing.T) 
 	left := &FieldAccess{Base: prc, Field: field}
 	arg := &FarPointer{
 		Part:    machine.FarPointerWhole,
-		Segment: &Const{TypeInfo: typeinfo.U16, U64: 0x25},
+		Segment: &Register{Val: asm.RegDS, SegNum: 0x25},
 		Offset:  left,
 	}
 
-	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, &typeinfo.FunctionVar{Type: rectPtrType})
+	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, &typeinfo.FunctionVar{Type: rectPtrType})
 	if !changed {
 		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 	}
@@ -85,11 +117,11 @@ func TestCollapseTypedFarPointerCallArgCollapsesDefaultDataMerge(t *testing.T) {
 	}}
 	arg := &FarPointer{
 		Part:    machine.FarPointerWhole,
-		Segment: &Const{TypeInfo: typeinfo.U16, U64: 0x25},
+		Segment: &Register{Val: asm.RegDS, SegNum: 0x25},
 		Offset:  offset,
 	}
 
-	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, &typeinfo.FunctionVar{Type: farCharPtrType})
+	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, &typeinfo.FunctionVar{Type: farCharPtrType})
 	if !changed {
 		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 	}
@@ -115,7 +147,7 @@ func TestCollapseTypedFarPointerCallArgConvertsResourceIDs(t *testing.T) {
 		Offset:  id,
 	}
 
-	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, param)
+	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, param)
 	if !changed {
 		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 	}
@@ -155,7 +187,7 @@ func TestCollapseTypedFarPointerCallArgConvertsResourceIDOffsets(t *testing.T) {
 		TypeInfo: farCharPtrType,
 	}
 
-	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, param)
+	got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, param)
 	if !changed {
 		t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 	}
@@ -181,29 +213,33 @@ func TestCollapseTypedFarPointerCallArgAddressesStackLValues(t *testing.T) {
 	rc := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rc", Type: rectType, BPOffset: -0x42}}
 	right := &FieldAccess{Base: rc, Field: &rectType.Fields[2]}
 	rgb := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rgb", Type: &typeinfo.Array{Elem: charType, Count: 256}, BPOffset: -0x100}}
+	rgbBase := &ArrayIndex{Base: rgb, Index: &Const{TypeInfo: typeinfo.U16, U64: 0}, TypeInfo: charType}
 	rgbIndex := &ArrayIndex{Base: rgb, Index: &Const{TypeInfo: typeinfo.U16, U64: 1}, TypeInfo: charType}
 	xfer := &Local{FunctionVar: typeinfo.FunctionVar{Name: "xfer", Type: typeinfo.U16, BPOffset: -0x20}}
 	xferOffset := &Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: xfer, RHS: &Const{TypeInfo: typeinfo.U16, U64: 4}}
+	charPtrType := &typeinfo.Pointer{Elem: charType, Class: typeinfo.PtrFar}
 
 	tests := []struct {
-		name string
-		arg  Expr
-		want string
+		name     string
+		arg      Expr
+		expected typeinfo.Type
+		want     string
 	}{
-		{name: "rect", arg: rc, want: "&rc"},
-		{name: "field", arg: right, want: "&rc.right"},
-		{name: "address of", arg: &AddressOf{Target: rgbIndex, TypeInfo: typeinfo.U16}, want: "&rgb[0x1]"},
-		{name: "offset arithmetic", arg: xferOffset, want: "(xfer + 0x4)"},
+		{name: "rect", arg: rc, expected: pointPtrType, want: "&rc"},
+		{name: "field", arg: right, expected: pointPtrType, want: "&rc.right"},
+		{name: "array base", arg: &AddressOf{Target: rgbBase, TypeInfo: typeinfo.U16}, expected: charPtrType, want: "rgb"},
+		{name: "array element", arg: &AddressOf{Target: rgbIndex, TypeInfo: typeinfo.U16}, expected: charPtrType, want: "&rgb[0x1]"},
+		{name: "offset arithmetic", arg: xferOffset, expected: pointPtrType, want: "(xfer + 0x4)"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			arg := &FarPointer{
 				Part:    machine.FarPointerWhole,
-				Segment: &RawValue{Value: machine.ScalarVal("ss"), TypeInfo: typeinfo.U16},
+				Segment: &RawValue{Value: machine.RegVal(asm.RegSS), TypeInfo: typeinfo.U16},
 				Offset:  tt.arg,
 			}
 
-			got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.ConstVal(0x25)}, arg, &typeinfo.FunctionVar{Type: pointPtrType})
+			got, changed := collapseTypedFarPointerCallArg(&FuncContext{dsReg: machine.RegVal(asm.RegDS)}, arg, &typeinfo.FunctionVar{Type: tt.expected})
 			if !changed {
 				t.Fatal("collapseTypedFarPointerCallArg changed = false, want true")
 			}

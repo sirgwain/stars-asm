@@ -86,8 +86,7 @@ L_1b3a:
     branch lppl->fStarbase == 0x0 ? L_1b9b : L_1b66
 
 L_1b66:
-    part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[131:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x1)
-    part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) = (part[133:2](rglpshdefSB[lppl->iPlayer][lppl->isb]) - 0x0)
+    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = (rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 0x1)
     goto L_1baf
 
 L_1b9b:
@@ -216,7 +215,7 @@ L_20c5:
 
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
-    call FSendPlrMsg(lppl->iPlayer, 0x139, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), LOWORD(lpfl), 0x0, 0x0, 0x0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, 0x139, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0x0, 0x0, 0x0) -> callresult(int16_t)
     return 0x1
 
 
@@ -246,7 +245,7 @@ L_2242:
 
 L_2245:
     idm = t_merge_2245_0001
-    call FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
     goto L_2fc9
 
 L_22a0:
@@ -261,7 +260,7 @@ L_22c4:
 
 L_22c7:
     idm = t_merge_22c7_0001
-    call FSendPlrMsg(lppl->iPlayer, idm, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 
 L_2321:
@@ -269,11 +268,11 @@ L_2321:
     branch cBuilt != 0x1 ? L_2379 : L_233e
 
 L_233e:
-    call FSendPlrMsg2(lppl->iPlayer, 0x2f, (LOWORD(lpfl) | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem)) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, 0x2f, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem)) -> callresult(int16_t)
     goto L_2fc9
 
 L_2379:
-    call FSendPlrMsg(lppl->iPlayer, 0x30, (LOWORD(lpfl) | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, 0x30, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 
 L_23c7:
@@ -300,7 +299,7 @@ L_2429:
     branch cBuilt <= 0x0 ? L_24fc : L_2435
 
 L_2435:
-    ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x14)) & 0x0)
+    ss:[bp-0x18] = 0x0
     ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x14)) + *(lppl+0x16)) & 0xfff0)
     *(lppl+0x14) = (*(lppl+0x14) & 0xffff)
     lppl->cFactories = 0x0
@@ -368,7 +367,7 @@ L_2609:
 
 L_2615:
     ss:[bp-0x18] = ((loword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x18)) & 0xfff)
-    ss:[bp-0x16] = ((hiword((int32_t)(sext16to32(cBuilt) << 0x0)) + *(lppl+0x1a)) & 0x0)
+    ss:[bp-0x16] = 0x0
     lppl->cDefenses = 0x0
     *(lppl+0x1a) = (*(lppl+0x1a) & 0xffff)
     *(lppl+0x18) = (*(lppl+0x18) | ss:[bp-0x18])

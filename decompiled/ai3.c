@@ -85,7 +85,7 @@ void DoMacintiAiTurn(PROD *rgprod) {
     uint16_t t_merge_2934_0001;
 
 L_0008:
-    /* untranslated: iAiLvl = ((part[6:2](rgplr[idPlayer]) >> 0xa) & 0x7) */
+    iAiLvl = ((rgplr[idPlayer].wMdPlr >> 0xa) & 0x7);
     iPlanet = rgplr[idPlayer].idPlanetHome;
     iroCur = IroEnsureAi(vrgAiMacintiResOrder, 0x8, 0x0, 0xf);
     if ((game.turn < 0x28))
@@ -94,10 +94,16 @@ L_0008:
         goto L_0066;
 
 L_0066:
-    /* untranslated: branch ((part[1152:2](rgshdef) >> 0x9) & 0x1) != 0x0 ? L_00f3 : L_0079 */
+    if ((((rgshdef[0x7].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_00f3;
+    else
+        goto L_0079;
 
 L_0079:
-    /* untranslated: branch part[1029:2](rgshdef) != 0xf ? L_00f3 : L_0083 */
+    if ((rgshdef[0x7].hul.ihuldef != ihuldefColonyShip))
+        goto L_00f3;
+    else
+        goto L_0083;
 
 L_0083:
     fUsingTempColonizer = 0x1;
@@ -107,13 +113,19 @@ L_0083:
         goto L_00a5;
 
 L_00a5:
-    /* untranslated: branch part[1160:2](rgshdef) != 0x0 ? L_00f8 : L_00af */
+    if ((LOWORD(rgshdef[0x7].cExist) != 0x0))
+        goto L_00f8;
+    else
+        goto L_00af;
 
 L_00af:
-    /* untranslated: branch part[1162:2](rgshdef) != 0x0 ? L_00f8 : L_00b9 */
+    if ((HIWORD(rgshdef[0x7].cExist) != 0x0))
+        goto L_00f8;
+    else
+        goto L_00b9;
 
 L_00b9:
-    /* untranslated: shdef = part[1029:147](rgshdef) */
+    shdef = rgshdef[0x7];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0x7);
     fUsingTempColonizer = 0x0;
@@ -159,7 +171,7 @@ L_0172:
 
 L_0177:
     LOWORD(vrgAiArmadaPotency) = LOBYTE(j);
-    /* untranslated: part[1:2](vrgAiArmadaPotency) = lobyte((sext16to32((j & 0xff)) / 0x2)) */
+    vrgAiArmadaPotency[0x1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
     j = 0x6;
     if ((game.turn <= 0x73))
         goto L_01ab;
@@ -179,7 +191,7 @@ L_01b4:
     j = 0xc;
 
 L_01b9:
-    HIWORD(vrgAiArmadaPotency) = LOBYTE(j);
+    vrgAiArmadaPotency[0x2] = LOBYTE(j);
     if ((0x3 >= (((uint32_t)(j) / 0x2) + 0xffff)))
         goto L_01db;
     else
@@ -193,7 +205,7 @@ L_01db:
     t_merge_01e7_0001 = (((uint32_t)(j) / 0x2) + 0xffff);
 
 L_01e7:
-    /* untranslated: part[3:2](vrgAiArmadaPotency) = lobyte(t_merge_01e7_0001) */
+    vrgAiArmadaPotency[0x3] = LOBYTE(t_merge_01e7_0001);
     memset(rgRecycleShdef, 0x0, 0x10);
     if ((game.turn >= 0x78))
         goto L_0210;
@@ -221,7 +233,7 @@ L_0224:
     cRecyclePeriod = t_merge_0224_0001;
 
 L_0227:
-    /* untranslated: cshDestroyer = CheckAiShdefStatus(0xc, 0xd, cRecyclePeriod, &iLatestDestroyer, &part[0:1](rgRecycleShdef)) */
+    cshDestroyer = CheckAiShdefStatus(0xc, 0xd, cRecyclePeriod, &(iLatestDestroyer), rgRecycleShdef);
     i = 0xc;
     goto L_02a1;
 
@@ -232,7 +244,10 @@ L_024d:
         goto L_0262;
 
 L_0262:
-    /* untranslated: branch ((part[123:2](rgshdef[i]) >> 0x9) & 0x1) != 0x0 ? L_029d : L_0280 */
+    if ((((rgshdef[i].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_029d;
+    else
+        goto L_0280;
 
 L_0280:
     if ((rgshdef[i].hul.ihuldef != ihuldefNubian))
@@ -253,8 +268,11 @@ L_02a1:
         goto L_02aa;
 
 L_02aa:
-    /* untranslated: call CheckAiShdefStatus(0xe, 0xf, 0x1388, &iLatestMiner, &part[0:1](rgRecycleShdef)) -> callresult(int16_t) */
-    /* untranslated: branch ((part[2328:2](rgshdef) >> 0x9) & 0x1) != 0x0 ? L_03c3 : L_02d9 */
+    CheckAiShdefStatus(0xe, 0xf, 0x1388, &(iLatestMiner), rgRecycleShdef);
+    if ((((rgshdef[0xf].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_03c3;
+    else
+        goto L_02d9;
 
 L_02d9:
     if ((FLookupPartX(&(part), 0x80, 0x6) != 0x1))
@@ -277,16 +295,25 @@ L_0305:
 
 L_0308:
     i = t_merge_0308_0001;
-    /* untranslated: branch (part[2126:2](rgshdef) & 0xff) == 0x6 ? L_0382 : L_0319 */
+    if (((HIWORD(rgshdef[0xe].hul.rghs[0x2]) & 0xff) == 0x6))
+        goto L_0382;
+    else
+        goto L_0319;
 
 L_0319:
     i = 0xe;
 
 LUpgradeMiner:
-    /* untranslated: branch part[131:2](rgshdef[i]) != 0x0 ? L_037b : L_0333 */
+    if ((LOWORD(rgshdef[i].cExist) != 0x0))
+        goto L_037b;
+    else
+        goto L_0333;
 
 L_0333:
-    /* untranslated: branch part[133:2](rgshdef[i]) != 0x0 ? L_037b : L_033d */
+    if ((HIWORD(rgshdef[i].cExist) != 0x0))
+        goto L_037b;
+    else
+        goto L_033d;
 
 L_033d:
     shdef = rgshdef[i];
@@ -295,10 +322,13 @@ L_033d:
     goto L_03c3;
 
 L_037b:
-    /* untranslated: part[14:1](rgRecycleShdef) = 0x3 */
+    rgRecycleShdef[0xe] = 0x3;
 
 L_0382:
-    /* untranslated: branch (part[2273:2](rgshdef) & 0xff) == 0x6 ? L_03c3 : L_0390 */
+    if (((HIWORD(rgshdef[0xf].hul.rghs[0x2]) & 0xff) == 0x6))
+        goto L_03c3;
+    else
+        goto L_0390;
 
 L_0390:
     if ((FLookupPartX(&(part), 0x1, 0xf) != 0x1))
@@ -307,55 +337,67 @@ L_0390:
         goto L_03ad;
 
 L_03ad:
-    /* untranslated: branch (part[2118:2](rgshdef) & 0xff) == 0xf ? L_03c3 : L_03bb */
+    if (((HIWORD(rgshdef[0xe].hul.rghs[0x0]) & 0xff) == 0xf))
+        goto L_03c3;
+    else
+        goto L_03bb;
 
 L_03bb:
     i = 0xf;
     goto LUpgradeMiner;
 
 L_03c3:
-    /* untranslated: call CheckAiShdefStatus(0xa, 0xb, cRecyclePeriod, &iLatestCargo, &part[0:1](rgRecycleShdef)) -> callresult(int16_t) */
-    /* untranslated: call CheckAiShdefStatus(0x8, 0x9, cRecyclePeriod, &iLatestBomber, &part[0:1](rgRecycleShdef)) -> callresult(int16_t) */
-    /* untranslated: call CheckAiShdefStatus(0x2, 0x4, cRecyclePeriod, &iLatestCruiser, &part[0:1](rgRecycleShdef)) -> callresult(int16_t) */
-    /* untranslated: call CheckAiShdefStatus(0x5, ishLastBattle, cRecyclePeriod, &iLatestBattle, &part[0:1](rgRecycleShdef)) -> callresult(int16_t) */
+    CheckAiShdefStatus(0xa, 0xb, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef);
+    CheckAiShdefStatus(0x8, 0x9, cRecyclePeriod, &(iLatestBomber), rgRecycleShdef);
+    CheckAiShdefStatus(0x2, 0x4, cRecyclePeriod, &(iLatestCruiser), rgRecycleShdef);
+    CheckAiShdefStatus(0x5, ishLastBattle, cRecyclePeriod, &(iLatestBattle), rgRecycleShdef);
     if ((game.turn <= 0x50))
         goto L_04ec;
     else
         goto L_0438;
 
 L_0438:
-    /* untranslated: call SplitOutShdefs(&part[0:1](rgRecycleShdef)) -> callresult(void) */
+    SplitOutShdefs(rgRecycleShdef);
     memset(rgRecycleSBShdef, 0x0, 0xa);
-    /* untranslated: part[0:1](rgRecycleSBShdef) = 0x2 */
-    /* untranslated: call SplitOutShdefs(&part[0:1](rgRecycleSBShdef)) -> callresult(void) */
+    rgRecycleSBShdef[0x0] = 0x2;
+    SplitOutShdefs(rgRecycleSBShdef);
     memset(rgRecycleSBShdef, 0x0, 0xa);
-    /* untranslated: part[1:1](rgRecycleSBShdef) = 0x2 */
-    /* untranslated: call SplitOutShdefs(&part[0:1](rgRecycleSBShdef)) -> callresult(void) */
+    rgRecycleSBShdef[0x1] = 0x2;
+    SplitOutShdefs(rgRecycleSBShdef);
     memset(rgRecycleSBShdef, 0x0, 0xa);
     /* untranslated: part[1:1](l) = 0x2 */
     /* untranslated: part[0:1](l) = 0x2 */
-    /* untranslated: call SplitOutShdefs(&part[0:1](rgRecycleSBShdef)) -> callresult(void) */
+    SplitOutShdefs(rgRecycleSBShdef);
     memset(rgRecycleSBShdef, 0x0, 0xa);
     /* untranslated: part[1:1](fTonsOfMinerals) = 0x2 */
     /* untranslated: part[0:1](fTonsOfMinerals) = 0x2 */
-    /* untranslated: call SplitOutShdefs(&part[0:1](rgRecycleSBShdef)) -> callresult(void) */
+    SplitOutShdefs(rgRecycleSBShdef);
 
 L_04ec:
     EnsureMacintiShdefs();
-    /* untranslated: call EnsureMacintiStarbaseDesigns(&part[0:1](rgRecycleSBShdef)) -> callresult(void) */
+    EnsureMacintiStarbaseDesigns(rgRecycleSBShdef);
     vAiMacRecycleSB = rgRecycleSBShdef;
     fShouldColonize = FShouldWeBuildColonizers(&(cColFleet));
-    /* untranslated: branch (part[207:2](rgshdef) & 0xff) != 0xf ? L_052a : L_0522 */
+    if (((HIWORD(rgshdef[0x1].hul.rghs[0x0]) & 0xff) != 0xf))
+        goto L_052a;
+    else
+        goto L_0522;
 
 L_0522:
     iLatestColony = 0x1;
     goto L_0554;
 
 L_052a:
-    /* untranslated: branch ((part[1152:2](rgshdef) >> 0x9) & 0x1) != 0x0 ? L_054f : L_053d */
+    if ((((rgshdef[0x7].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_054f;
+    else
+        goto L_053d;
 
 L_053d:
-    /* untranslated: branch part[1029:2](rgshdef) != 0xf ? L_054f : L_0547 */
+    if ((rgshdef[0x7].hul.ihuldef != ihuldefColonyShip))
+        goto L_054f;
+    else
+        goto L_0547;
 
 L_0547:
     iLatestColony = 0x7;
@@ -377,10 +419,13 @@ L_055d:
         goto L_0566;
 
 L_0566:
-    /* untranslated: branch (game.turn - part[272:2](rgshdef)) <= 0x5 ? L_0579 : L_0575 */
+    if (((game.turn - rgshdef[0x1].turn) <= 0x5))
+        goto L_0579;
+    else
+        goto L_0575;
 
 L_0575:
-    /* untranslated: part[7:1](rgRecycleShdef) = 0x2 */
+    rgRecycleShdef[0x7] = 0x2;
 
 L_0579:
     lpb = &(vlpbAiPlanet[0xe]);
@@ -542,7 +587,8 @@ L_06f8:
         goto L_0702;
 
 L_0702:
-    vlpbAiPlanet[((lpfl->lpplord->rgord[0x1].id * 0x10) + 0xe)] = (vlpbAiPlanet[((lpfl->lpplord->rgord[0x1].id * 0x10) + 0xe)] | 0x1);
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 0x10) + 0xe))] = (byte
+     * HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 0x10) + 0xe))] | 0x1) */
 
 L_0728:
     i = 0x2;
@@ -616,7 +662,7 @@ L_07eb:
         goto L_07f3;
 
 L_07f3:
-    vlpbAiPlanet[((lppl->id * 0x10) + 0xd)] = 0x1;
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 0x10) + 0xd))] = 0x1 */
     goto L_07b4;
 
 L_0817:
@@ -682,8 +728,8 @@ L_08ff:
     i = (i + 0x1);
 
 L_0903:
-    vlpbAiPlanet[((lppl->id * 0x10) + 0xa)] = LOBYTE(i);
-    vlpbAiPlanet[((lppl->id * 0x10) + 0x9)] = 0x1;
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 0x10) + 0xa))] = lobyte(i) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 0x10) + 0x9))] = 0x1 */
 
 L_094a:
     lppl = (lppl + 0x1);
@@ -789,7 +835,7 @@ L_0a4a:
     InitProduction(rgprod);
     fWrite = 0x0;
     i = 0x0;
-    lpprod = &(lpplProdGlob->rgprod);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0a90;
 
 L_0a7a:
@@ -809,19 +855,28 @@ L_0aa3:
         goto L_0ac4;
 
 L_0ac4:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0a7a : L_0acc */
+    if ((0x0 != 0x0))
+        goto L_0a7a;
+    else
+        goto L_0acc;
 
 L_0acc:
-    if (((HIWORD((uint32_t)((lpprod >> 0xa))) & 0x0) > 0x0))
+    if ((0x0 > 0x0))
         goto L_0a7a;
     else
         goto L_0aed;
 
 L_0aed:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) < 0x0 ? L_0b00 : L_0af2 */
+    if ((0x0 < 0x0))
+        goto L_0b00;
+    else
+        goto L_0af2;
 
 L_0af2:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) < 0x10 ? L_0b00 : L_0af7 */
+    if ((lpprod->iItem < 0x10))
+        goto L_0b00;
+    else
+        goto L_0af7;
 
 L_0af7:
 
@@ -876,7 +931,7 @@ L_0b8c:
     lpplBest = 0x0;
     lLeast = 0x186a0;
     i = 0x0;
-    lpprod = &(lpplProdGlob->rgprod);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0bd9;
 
 L_0bc3:
@@ -896,31 +951,46 @@ L_0bec:
         goto L_0c0d;
 
 L_0c0d:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0bc3 : L_0c15 */
+    if ((0x0 != 0x0))
+        goto L_0bc3;
+    else
+        goto L_0c15;
 
 L_0c15:
-    if (((HIWORD((uint32_t)((lpprod >> 0xa))) & 0x0) < 0x0))
+    if ((0x0 < 0x0))
         goto L_0bc3;
     else
         goto L_0c36;
 
 L_0c36:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) > 0x0 ? L_0c43 : L_0c3b */
+    if ((0x0 > 0x0))
+        goto L_0c43;
+    else
+        goto L_0c3b;
 
 L_0c3b:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) < 0xe ? L_0bc3 : L_0c43 */
+    if ((lpprod->iItem < 0xe))
+        goto L_0bc3;
+    else
+        goto L_0c43;
 
 L_0c43:
-    if (((HIWORD((uint32_t)((lpprod >> 0xa))) & 0x0) > 0x0))
+    if ((0x0 > 0x0))
         goto L_0bc3;
     else
         goto L_0c64;
 
 L_0c64:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) < 0x0 ? L_0f5b : L_0c69 */
+    if ((0x0 < 0x0))
+        goto LTryCargo;
+    else
+        goto L_0c69;
 
 L_0c69:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) <= 0x11 ? L_0f5b : L_0c6e */
+    if ((lpprod->iItem <= 0x11))
+        goto LTryCargo;
+    else
+        goto L_0c6e;
 
 L_0c6e:
 
@@ -1059,10 +1129,16 @@ L_0e35:
         goto L_0e68;
 
 L_0e68:
-    /* untranslated: branch HIWORD(lLeast) < hiword(callresult(int32_t)) ? L_0e76 : L_0e6d */
+    if ((HIWORD(lLeast) < HIWORD((int32_t)((lppl->rgwtMin[i] / 0x5)))))
+        goto L_0e76;
+    else
+        goto L_0e6d;
 
 L_0e6d:
-    /* untranslated: branch LOWORD(lLeast) >= loword(callresult(int32_t)) ? L_0f5b : L_0e76 */
+    if ((LOWORD(lLeast) >= LOWORD((int32_t)((lppl->rgwtMin[i] / 0x5)))))
+        goto LTryCargo;
+    else
+        goto L_0e76;
 
 L_0e76:
     l = (int32_t)((lppl->rgwtMin[i] / 0x5));
@@ -1091,8 +1167,8 @@ L_0ece:
     AddItemToQueue((i + 0xe), LOWORD(l), grobjPlanet, 0x1);
     FinishProduction(0x1);
     sel.pl.iWarpFling = 0x7;
-    /* untranslated: part[198:2](sel) = ((part[198:2](sel) & 0xfc00) | ((lpplBest->id + 0x1) & 0x3ff)) */
-    FLookupPlanet(0xffff, 0x49ee);
+    sel.pl.idFling = (lpplBest->id + 0x1);
+    FLookupPlanet(0xffff, &(sel.pl));
     goto L_0964;
 
 LTryCargo:
@@ -1301,13 +1377,22 @@ L_115c:
         goto L_1166;
 
 L_1166:
-    /* untranslated: branch part[133:2](rgshdef[iLatestMiner]) > 0x0 ? L_1315 : L_117b */
+    if ((HIWORD(rgshdef[iLatestMiner].cExist) > 0x0))
+        goto TryShip2b;
+    else
+        goto L_117b;
 
 L_117b:
-    /* untranslated: branch part[133:2](rgshdef[iLatestMiner]) < 0x0 ? L_118b : L_1180 */
+    if ((HIWORD(rgshdef[iLatestMiner].cExist) < 0x0))
+        goto L_118b;
+    else
+        goto L_1180;
 
 L_1180:
-    /* untranslated: branch part[131:2](rgshdef[iLatestMiner]) >= 0x1388 ? L_1315 : L_118b */
+    if ((LOWORD(rgshdef[iLatestMiner].cExist) >= 0x1388))
+        goto TryShip2b;
+    else
+        goto L_118b;
 
 L_118b:
     if ((Random(0x2) != 0x0))
@@ -1443,7 +1528,7 @@ L_12f2:
     fWrite = 0x1;
 
 TryShip2b:
-    if ((LOWORD(rgshdef) != 0x5))
+    if ((rgshdef[0x0].hul.ihuldef != ihuldefFrigate))
         goto L_1454;
     else
         goto L_131f;
@@ -1455,13 +1540,22 @@ L_131f:
         goto L_1328;
 
 L_1328:
-    /* untranslated: branch part[133:2](rgshdef[iLatestMiner]) > 0x0 ? L_1454 : L_133d */
+    if ((HIWORD(rgshdef[iLatestMiner].cExist) > 0x0))
+        goto L_1454;
+    else
+        goto L_133d;
 
 L_133d:
-    /* untranslated: branch part[133:2](rgshdef[iLatestMiner]) < 0x0 ? L_134d : L_1342 */
+    if ((HIWORD(rgshdef[iLatestMiner].cExist) < 0x0))
+        goto L_134d;
+    else
+        goto L_1342;
 
 L_1342:
-    /* untranslated: branch part[131:2](rgshdef[iLatestMiner]) >= 0x1d4c ? L_1454 : L_134d */
+    if ((LOWORD(rgshdef[iLatestMiner].cExist) >= 0x1d4c))
+        goto L_1454;
+    else
+        goto L_134d;
 
 L_134d:
     if ((Random(0x4) != 0x0))
@@ -1538,7 +1632,10 @@ L_1405:
         goto L_1419;
 
 L_1419:
-    /* untranslated: branch Random(part[1:0](mpicolgrbitBU[cFr])) != 0x0 ? L_1454 : L_1432 */
+    if ((Random(((cFr * 0x2) + 0x1)) != 0x0))
+        goto L_1454;
+    else
+        goto L_1432;
 
 L_1432:
     cFlMineLayers = (cFlMineLayers + 0x3);
@@ -1682,7 +1779,7 @@ L_1581:
         goto L_158a;
 
 L_158a:
-    if (((lpfl->rgcsh[0x8] + lpfl->rgcsh[0x9]) >= (HIWORD(vrgAiArmadaPotency) & 0xff)))
+    if (((lpfl->rgcsh[0x8] + lpfl->rgcsh[0x9]) >= (vrgAiArmadaPotency[0x2] & 0xff)))
         goto L_15e8;
     else
         goto L_15aa;
@@ -1734,7 +1831,7 @@ L_1603:
 
 L_160e:
     i = 0x0;
-    lpprod = &(lpplProdGlob->rgprod);
+    lpprod = lpplProdGlob->rgprod;
     goto L_1643;
 
 L_162d:
@@ -1754,7 +1851,10 @@ L_1656:
         goto L_1677;
 
 L_1677:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_162d : L_167f */
+    if ((0x0 != 0x0))
+        goto L_162d;
+    else
+        goto L_167f;
 
 L_167f:
     if ((lpprod->iItem != 0xd))
@@ -1763,7 +1863,10 @@ L_167f:
         goto L_16a0;
 
 L_16a0:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_16ae : L_16a5 */
+    if ((0x0 == 0x0))
+        goto L_16ae;
+    else
+        goto L_16a5;
 
 L_16a5:
 
@@ -2022,7 +2125,7 @@ L_1932:
         goto L_193b;
 
 L_193b:
-    GetTrueHullCost(idPlayer, &(rgshdef[iLatestDestroyer]), &(LOWORD(rgCosts)));
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestDestroyer]), rgCosts);
     i = 0x0;
     goto L_19ce;
 
@@ -2153,10 +2256,10 @@ L_1b1f:
         goto L_1b2a;
 
 L_1b2a:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 0x1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
 
 L_1b5b:
     if ((lpfl->iPlayer == idPlayer))
@@ -2258,11 +2361,11 @@ L_1d0d:
     /* untranslated: branch (part[6:2](lpfl->lpplord->rgord[0x0]) & 0xf) == 0x6 ? L_2154 : L_1d23 */
 
 L_1d23:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x6) */
-    /* untranslated: part[8:2](sel.fl.lpplord->rgord[0x0]) = 0x5 */
+    sel.fl.lpplord->rgord[0x0].tsell.iPlrX = 0x5;
     /* untranslated: part[10:2](sel.fl.lpplord->rgord[0x0]) = 0x5 */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     goto L_1a3b;
 
 L_1d75:
@@ -2287,9 +2390,9 @@ L_1d9c:
     /* untranslated: branch (part[6:2](lpfl->lpplord->rgord[0x0]) & 0xf) == 0x3 ? L_1ded : L_1db2 */
 
 L_1db2:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x3) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     goto L_1a3b;
 
 L_1ded:
@@ -2523,10 +2626,10 @@ L_2107:
         goto L_2111;
 
 L_2111:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 0x1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     ClearAiCurrentTask(lpfl, 0x0);
 
 L_2154:
@@ -2548,9 +2651,9 @@ L_216b:
         goto LRecycle;
 
 LRecycle:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x5) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     goto L_1a3b;
 
 L_21b3:
@@ -2566,7 +2669,10 @@ L_21c0:
         goto L_21c9;
 
 L_21c9:
-    /* untranslated: branch part[7:1](rgRecycleShdef) == 0x0 ? L_1a3b : L_21d7 */
+    if ((rgRecycleShdef[0x7] == 0x0))
+        goto L_1a3b;
+    else
+        goto L_21d7;
 
 L_21d7:
     if ((lpfl->rgcsh[0x7] == 0x0))
@@ -2575,10 +2681,10 @@ L_21d7:
         goto L_21e4;
 
 L_21e4:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 0x1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     FMoveToNearestStarbase(lpfl, 0x0);
 
 L_222a:
@@ -2707,9 +2813,9 @@ L_2338:
     goto L_1a3b;
 
 L_234d:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x2) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     goto L_1a3b;
 
 L_2388:
@@ -2738,12 +2844,12 @@ L_23b8:
         goto L_23c5;
 
 L_23c5:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x5) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
 
 L_2400:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((lpfl->idPlanet == 0xffff))
         goto L_24d6;
     else
@@ -2788,8 +2894,8 @@ L_248e:
     l = 0x0;
 
 L_249a:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, LOWORD(lpfl), 0x3, LOWORD(l));
-    FLookupFleet(LOWORD(lpfl), 0x4972);
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 0x3, LOWORD(l));
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_24d6:
     if ((idPlanDst == 0xffff))
@@ -2859,9 +2965,9 @@ L_2589:
         goto L_259b;
 
 L_259b:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.iplan = 0x4;
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
 
 L_25c2:
     IdTargetMacFreighter(lpfl);
@@ -2968,9 +3074,9 @@ L_26e3:
         goto L_26f7;
 
 L_26f7:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[0x0]) = ((part[6:2](sel.fl.lpplord->rgord[0x0]) & 0xfff0) | 0x5) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     goto L_25e7;
 
 L_2735:
@@ -3209,10 +3315,16 @@ L_2b3c:
     goto L_2c55;
 
 L_2b4d:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) == 0x0 ? L_2c51 : L_2b6b */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2c51;
+    else
+        goto L_2b6b;
 
 L_2b6b:
-    /* untranslated: branch ((part[6:2](rgplr[idPlayer]) >> 0xa) & 0x7) < 0x2 ? L_2b90 : L_2b8a */
+    if ((((rgplr[idPlayer].wMdPlr >> 0xa) & 0x7) < 0x2))
+        goto L_2b90;
+    else
+        goto L_2b8a;
 
 L_2b8a:
     t_merge_2b93_0001 = 0x1;
@@ -3256,7 +3368,7 @@ L_2be8:
     t_merge_2beb_0001 = 0x0;
 
 L_2beb:
-    /* untranslated: branch FCreateAiShdef(ish, (0x18 - t_merge_2beb_0001), &vrgMacAip[0x15:[((fAdvanced + 0x15) * 0x2)+0x2a06]]) != 0x0 ? L_2c51 : L_2c04 */
+    /* untranslated: branch FCreateAiShdef(ish, (0x18 - t_merge_2beb_0001), &vrgMacAip[cs:[((fAdvanced + 0x15) * 0x2)+0x2a06]]) != 0x0 ? L_2c51 : L_2c04 */
 
 L_2c04:
     if ((ish != 0xe))
@@ -3271,11 +3383,11 @@ L_2c0d:
         goto L_2c16;
 
 L_2c16:
-    /* untranslated: call FCreateAiShdef(ish, 0x16, &vrgMacAip[part[44:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(ish, 0x16, &(vrgMacAip[vrgMacIshAip[0x16]]));
     goto L_2c51;
 
 L_2c35:
-    /* untranslated: call FCreateAiShdef(ish, 0x15, &vrgMacAip[part[46:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(ish, 0x15, &(vrgMacAip[vrgMacIshAip[0x17]]));
 
 L_2c51:
     ish = (ish + 0x1);
@@ -3287,7 +3399,10 @@ L_2c55:
         goto L_2c5e;
 
 L_2c5e:
-    /* untranslated: branch ((part[1887:2](rgshdef) >> 0x9) & 0x1) == 0x0 ? L_2d14 : L_2c71 */
+    if ((((rgshdef[0xc].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2d14;
+    else
+        goto L_2c71;
 
 L_2c71:
     if (((uint16_t)(rgplr[idPlayer].rgTech[0x1]) < 0x5))
@@ -3302,14 +3417,17 @@ L_2c89:
         goto L_2ca1;
 
 L_2ca1:
-    /* untranslated: branch FCreateAiShdef(0xc, 0x1d, &vrgMacAip[part[60:2](vrgMacIshAip)]) != 0x0 ? L_2d14 : L_2cc6 */
+    if ((FCreateAiShdef(0xc, 0x1d, &(vrgMacAip[vrgMacIshAip[0x1e]])) != 0x0))
+        goto L_2d14;
+    else
+        goto L_2cc6;
 
 L_2cc6:
     i = 0x0;
     goto L_2d0b;
 
 L_2cce:
-    /* untranslated: branch FCreateAiShdef(0xc, 0x6, &vrgMacAip[0x15:[(Random(0x4) * 0x2)+0x2a06]]) != 0x0 ? L_2d14 : L_2d01 */
+    /* untranslated: branch FCreateAiShdef(0xc, 0x6, &vrgMacAip[cs:[(Random(0x4) * 0x2)+0x2a06]]) != 0x0 ? L_2d14 : L_2d01 */
 
 L_2d01:
 
@@ -3323,7 +3441,10 @@ L_2d0b:
         goto L_2d14;
 
 L_2d14:
-    /* untranslated: branch ((part[2034:2](rgshdef) >> 0x9) & 0x1) == 0x0 ? L_2dcd : L_2d27 */
+    if ((((rgshdef[0xd].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2dcd;
+    else
+        goto L_2d27;
 
 L_2d27:
     if (((uint16_t)(rgplr[idPlayer].rgTech[0x1]) < 0xa))
@@ -3338,14 +3459,17 @@ L_2d3f:
         goto L_2d57;
 
 L_2d57:
-    /* untranslated: branch FCreateAiShdef(0xd, 0x1d, &vrgMacAip[part[60:2](vrgMacIshAip)]) != 0x0 ? L_2dcd : L_2d7c */
+    if ((FCreateAiShdef(0xd, 0x1d, &(vrgMacAip[vrgMacIshAip[0x1e]])) != 0x0))
+        goto L_2dcd;
+    else
+        goto L_2d7c;
 
 L_2d7c:
     i = 0x0;
     goto L_2dc4;
 
 L_2d84:
-    /* untranslated: branch FCreateAiShdef(0xd, 0x6, &vrgMacAip[0x15:[((Random(0x4) + 0x4) * 0x2)+0x2a06]]) != 0x0 ? L_2dcd : L_2dba */
+    /* untranslated: branch FCreateAiShdef(0xd, 0x6, &vrgMacAip[cs:[((Random(0x4) + 0x4) * 0x2)+0x2a06]]) != 0x0 ? L_2dcd : L_2dba */
 
 L_2dba:
 
@@ -3359,19 +3483,28 @@ L_2dc4:
         goto L_2dcd;
 
 L_2dcd:
-    /* untranslated: branch ((part[1593:2](rgshdef) >> 0x9) & 0x1) == 0x0 ? L_2e22 : L_2de0 */
+    if ((((rgshdef[0xa].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2e22;
+    else
+        goto L_2de0;
 
 L_2de0:
-    /* untranslated: branch FCreateAiShdef(0xa, 0x2, &vrgMacAip[part[48:2](vrgMacIshAip)]) != 0x0 ? L_2e22 : L_2e05 */
+    if ((FCreateAiShdef(0xa, 0x2, &(vrgMacAip[vrgMacIshAip[0x18]])) != 0x0))
+        goto L_2e22;
+    else
+        goto L_2e05;
 
 L_2e05:
-    /* untranslated: call FCreateAiShdef(0xa, 0x1, &vrgMacAip[part[48:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(0xa, 0x1, &(vrgMacAip[vrgMacIshAip[0x18]]));
 
 L_2e22:
-    /* untranslated: branch ((part[1740:2](rgshdef) >> 0x9) & 0x1) == 0x0 ? L_2e52 : L_2e35 */
+    if ((((rgshdef[0xb].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2e52;
+    else
+        goto L_2e35;
 
 L_2e35:
-    /* untranslated: call FCreateAiShdef(0xb, 0x2, &vrgMacAip[part[48:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(0xb, 0x2, &(vrgMacAip[vrgMacIshAip[0x18]]));
 
 L_2e52:
     if ((game.turn >= 0x14))
@@ -3380,16 +3513,25 @@ L_2e52:
         goto L_2e5c;
 
 L_2e5c:
-    /* untranslated: branch ((part[417:2](rgshdef) >> 0x9) & 0x1) != 0x0 ? L_2eb3 : L_2e6f */
+    if ((((rgshdef[0x2].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_2eb3;
+    else
+        goto L_2e6f;
 
 L_2e6f:
-    /* untranslated: branch part[425:2](rgshdef) != 0x0 ? L_2eb3 : L_2e79 */
+    if ((LOWORD(rgshdef[0x2].cExist) != 0x0))
+        goto L_2eb3;
+    else
+        goto L_2e79;
 
 L_2e79:
-    /* untranslated: branch part[427:2](rgshdef) != 0x0 ? L_2eb3 : L_2e83 */
+    if ((HIWORD(rgshdef[0x2].cExist) != 0x0))
+        goto L_2eb3;
+    else
+        goto L_2e83;
 
 L_2e83:
-    /* untranslated: shdef = part[294:147](rgshdef) */
+    shdef = rgshdef[0x2];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0x2);
 
@@ -3398,7 +3540,10 @@ L_2eb3:
     goto L_2f54;
 
 L_2ebb:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) == 0x0 ? L_2f50 : L_2ed9 */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2f50;
+    else
+        goto L_2ed9;
 
 L_2ed9:
     if ((ish == 0x2))
@@ -3417,7 +3562,7 @@ L_2f00:
     goto L_2f47;
 
 L_2f08:
-    /* untranslated: branch FCreateAiShdef(ish, 0x7, &vrgMacAip[0x15:[((Random(0x4) + 0x19) * 0x2)+0x2a06]]) != 0x0 ? L_2f50 : L_2f3d */
+    /* untranslated: branch FCreateAiShdef(ish, 0x7, &vrgMacAip[cs:[((Random(0x4) + 0x19) * 0x2)+0x2a06]]) != 0x0 ? L_2f50 : L_2f3d */
 
 L_2f3d:
 
@@ -3446,10 +3591,13 @@ L_2f5d:
         goto L_2f67;
 
 L_2f67:
-    /* untranslated: branch ((part[1152:2](rgshdef) >> 0x9) & 0x1) == 0x0 ? L_2f97 : L_2f7a */
+    if ((((rgshdef[0x7].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_2f97;
+    else
+        goto L_2f7a;
 
 L_2f7a:
-    /* untranslated: call FCreateAiShdef(0x7, 0xf, &vrgMacAip[part[40:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(0x7, 0xf, &(vrgMacAip[vrgMacIshAip[0x14]]));
 
 L_2f97:
     if ((FLookupPartX(&(part), 0x1, 0xf) != 0x1))
@@ -3458,29 +3606,44 @@ L_2f97:
         goto L_2fb3;
 
 L_2fb3:
-    /* untranslated: branch ((part[270:2](rgshdef) >> 0x9) & 0x1) != 0x0 ? L_3035 : L_2fc6 */
+    if ((((rgshdef[0x1].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_3035;
+    else
+        goto L_2fc6;
 
 L_2fc6:
-    /* untranslated: branch part[278:2](rgshdef) != 0x0 ? L_3035 : L_2fd0 */
+    if ((LOWORD(rgshdef[0x1].cExist) != 0x0))
+        goto L_3035;
+    else
+        goto L_2fd0;
 
 L_2fd0:
-    /* untranslated: branch part[280:2](rgshdef) != 0x0 ? L_3035 : L_2fda */
+    if ((HIWORD(rgshdef[0x1].cExist) != 0x0))
+        goto L_3035;
+    else
+        goto L_2fda;
 
 L_2fda:
-    /* untranslated: branch (part[207:2](rgshdef) & 0xff) == 0xf ? L_3035 : L_2fe8 */
+    if (((HIWORD(rgshdef[0x1].hul.rghs[0x0]) & 0xff) == 0xf))
+        goto L_3035;
+    else
+        goto L_2fe8;
 
 L_2fe8:
-    /* untranslated: shdef = part[147:147](rgshdef) */
+    shdef = rgshdef[0x1];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0x1);
-    /* untranslated: call FCreateAiShdef(0x1, 0xf, &vrgMacAip[part[40:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(0x1, 0xf, &(vrgMacAip[vrgMacIshAip[0x14]]));
 
 L_3035:
     ish = 0x5;
     goto L_316f;
 
 L_303d:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) == 0x0 ? L_316b : L_305b */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_316b;
+    else
+        goto L_305b;
 
 L_305b:
     if ((ish == 0x5))
@@ -3489,7 +3652,10 @@ L_305b:
         goto L_3064;
 
 L_3064:
-    /* untranslated: branch ((part[123:2](rgshdef[(ish - 0x1)]) >> 0x9) & 0x1) != 0x0 ? L_316b : L_3087 */
+    if ((((rgshdef[(ish - 0x1)].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_316b;
+    else
+        goto L_3087;
 
 L_3087:
     if (((game.turn - rgshdef[(ish - 0x1)].turn) <= 0x14))
@@ -3540,14 +3706,17 @@ L_30e3:
         goto L_30f7;
 
 L_30f7:
-    /* untranslated: branch FCreateAiShdef(ish, 0x1d, &vrgMacAip[part[58:2](vrgMacIshAip)]) != 0x0 ? L_316b : L_311b */
+    if ((FCreateAiShdef(ish, 0x1d, &(vrgMacAip[vrgMacIshAip[0x1d]])) != 0x0))
+        goto L_316b;
+    else
+        goto L_311b;
 
 L_311b:
     i = 0x0;
     goto L_3162;
 
 L_3123:
-    /* untranslated: branch FCreateAiShdef(ish, 0x9, &vrgMacAip[0x15:[((Random(0x4) + shBase) * 0x2)+0x2a06]]) != 0x0 ? L_316b : L_3158 */
+    /* untranslated: branch FCreateAiShdef(ish, 0x9, &vrgMacAip[cs:[((Random(0x4) + shBase) * 0x2)+0x2a06]]) != 0x0 ? L_316b : L_3158 */
 
 L_3158:
 
@@ -3574,7 +3743,10 @@ L_3178:
     goto L_325b;
 
 L_3180:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) == 0x0 ? L_3257 : L_319e */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_3257;
+    else
+        goto L_319e;
 
 L_319e:
     if (((uint16_t)(rgplr[idPlayer].rgTech[0x1]) < 0xe))
@@ -3589,7 +3761,10 @@ L_31b6:
         goto L_31bf;
 
 L_31bf:
-    /* untranslated: branch ((part[123:2](rgshdef[(ish - 0x1)]) >> 0x9) & 0x1) != 0x0 ? L_3257 : L_31e2 */
+    if ((((rgshdef[(ish - 0x1)].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_3257;
+    else
+        goto L_31e2;
 
 L_31e2:
     if (((game.turn - rgshdef[(ish - 0x1)].turn) <= 0xf))
@@ -3598,7 +3773,10 @@ L_31e2:
         goto L_3200;
 
 L_3200:
-    /* untranslated: branch FCreateAiShdef(ish, 0x9, &vrgMacAip[part[38:2](vrgMacIshAip)]) != 0x0 ? L_3257 : L_3224 */
+    if ((FCreateAiShdef(ish, 0x9, &(vrgMacAip[vrgMacIshAip[0x13]])) != 0x0))
+        goto L_3257;
+    else
+        goto L_3224;
 
 L_3224:
     if ((ish != 0x8))
@@ -3614,7 +3792,7 @@ L_3233:
     t_merge_3236_0001 = 0x9;
 
 L_3236:
-    /* untranslated: call FCreateAiShdef(ish, 0x13, &vrgMacAip[0x15:[(t_merge_3236_0001 * 0x2)+0x2a06]]) -> callresult(int16_t) */
+    /* untranslated: call FCreateAiShdef(ish, 0x13, &vrgMacAip[cs:[(t_merge_3236_0001 * 0x2)+0x2a06]]) -> callresult(int16_t) */
 
 L_3257:
     ish = (ish + 0x1);
@@ -3626,19 +3804,28 @@ L_325b:
         goto L_3264;
 
 L_3264:
-    if ((LOWORD(rgshdef) == 0x5))
+    if ((rgshdef[0x0].hul.ihuldef == ihuldefFrigate))
         goto L_3366;
     else
         goto L_326e;
 
 L_326e:
-    /* untranslated: branch ((part[6:2](rgplr[idPlayer]) >> 0xa) & 0x7) <= 0x1 ? L_3366 : L_328d */
+    if ((((rgplr[idPlayer].wMdPlr >> 0xa) & 0x7) <= 0x1))
+        goto L_3366;
+    else
+        goto L_328d;
 
 L_328d:
-    /* untranslated: branch part[131:2](rgshdef) != 0x0 ? L_3366 : L_3297 */
+    if ((LOWORD(rgshdef[0x0].cExist) != 0x0))
+        goto L_3366;
+    else
+        goto L_3297;
 
 L_3297:
-    /* untranslated: branch part[133:2](rgshdef) != 0x0 ? L_3366 : L_32a1 */
+    if ((HIWORD(rgshdef[0x0].cExist) != 0x0))
+        goto L_3366;
+    else
+        goto L_32a1;
 
 L_32a1:
     if (((uint16_t)(rgplr[idPlayer].rgTech[0x5]) < 0x4))
@@ -3671,10 +3858,10 @@ L_3301:
         goto L_3319;
 
 L_3319:
-    /* untranslated: shdef = part[0:147](rgshdef) */
+    shdef = rgshdef[0x0];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0x0);
-    /* untranslated: call FCreateAiShdef(0x0, 0x5, &vrgMacAip[part[20:2](vrgMacIshAip)]) -> callresult(int16_t) */
+    FCreateAiShdef(0x0, 0x5, &(vrgMacAip[vrgMacIshAip[0xa]]));
 
 L_3366:
     return;
@@ -3957,10 +4144,7 @@ L_3719:
 L_371e:
 
 L_3724:
-    if (((vlpbAiPlanet[((lppl->id * 0x10) + 0xe)] & 0x1) != 0x0))
-        goto L_36cc;
-    else
-        goto L_374f;
+    /* untranslated: branch (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 0x10) + 0xe))] & 0x1) != 0x0 ? L_36cc : L_374f */
 
 L_374f:
 
@@ -4114,10 +4298,11 @@ L_38e2:
 L_38ea:
 
 L_38f0:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, LOWORD(lpfl), 0x3, LOWORD(cColHaul));
-    FLookupFleet(LOWORD(lpfl), 0x4972);
-    vlpbAiPlanet[((lpplBest->id * 0x10) + 0xe)] = (vlpbAiPlanet[((lpplBest->id * 0x10) + 0xe)] | 0x1);
+    ChangeMainObjSel(grobjFleet, lpfl->id);
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 0x3, LOWORD(cColHaul));
+    FLookupFleet(lpfl->id, &(sel.fl));
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplBest->id * 0x10) + 0xe))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpplBest->id * 0x10) + 0xe))] | 0x1) */
 
 LMoveToLpplBest:
     memset(ord, 0x0, 0x12);
@@ -4375,11 +4560,11 @@ L_3c81:
         goto L_3c8a;
 
 L_3c8a:
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
 
 L_3c9c:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, LOWORD(lpfl), iM, LOWORD(cColHaul));
-    FLookupFleet(LOWORD(lpfl), 0x4972);
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, iM, LOWORD(cColHaul));
+    FLookupFleet(lpfl->id, &(sel.fl));
     goto LMoveToLpplBest;
 
 L_3cd8:
@@ -4628,7 +4813,7 @@ LTryNewTarget:
     FPotentMacWarFleet(lpfl, &(cshWar));
     cshBomb = (lpfl->rgcsh[0x8] + lpfl->rgcsh[0x9]);
     lpfl->fMark = 0x1;
-    ChangeMainObjSel(grobjFleet, LOWORD(lpfl));
+    ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((lpfl->idPlanet != 0xffff))
         goto L_3fb4;
     else
@@ -4652,7 +4837,7 @@ L_3fd8:
         goto L_3fe6;
 
 L_3fe6:
-    if ((cshBomb < (HIWORD(vrgAiArmadaPotency) & 0xff)))
+    if ((cshBomb < (vrgAiArmadaPotency[0x2] & 0xff)))
         goto L_4163;
     else
         goto TargetPotentArmada;
@@ -4698,7 +4883,8 @@ L_406a:
         goto L_4073;
 
 L_4073:
-    vlpbAiPlanet[((lpplTarget->id * 0x10) + 0xa)] = (vlpbAiPlanet[((lpplTarget->id * 0x10) + 0xa)] | 0x80);
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTarget->id * 0x10) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpplTarget->id * 0x10) + 0xa))] | 0x80) */
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lpplTarget->id].x;
@@ -4729,14 +4915,17 @@ L_412e:
         goto L_4137;
 
 L_4137:
-    ord.id = LOWORD(lpflTarget);
+    ord.id = lpflTarget->id;
     ord.grobj = grobjFleet;
     ord.pt.x = lpflTarget->pt.x;
     ord.pt.y = lpflTarget->pt.y;
     goto FinishTargeting;
 
 L_4163:
-    /* untranslated: branch ((part[6:2](rgplr[idPlayer]) >> 0xa) & 0x7) <= 0x1 ? L_42e5 : L_4182 */
+    if ((((rgplr[idPlayer].wMdPlr >> 0xa) & 0x7) <= 0x1))
+        goto L_42e5;
+    else
+        goto L_4182;
 
 L_4182:
     if ((cshWar > ((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x2)))
@@ -4783,14 +4972,23 @@ L_41df:
 L_41f0:
 
 L_41f9:
-    /* untranslated: branch cshWar < (part[1:2](vrgAiArmadaPotency) & 0xff) ? L_4215 : L_4207 */
+    if ((cshWar < (vrgAiArmadaPotency[0x1] & 0xff)))
+        goto L_4215;
+    else
+        goto L_4207;
 
 L_4207:
-    /* untranslated: branch cshBomb >= (part[3:2](vrgAiArmadaPotency) & 0xff) ? L_42d2 : L_4215 */
+    if ((cshBomb >= (vrgAiArmadaPotency[0x3] & 0xff)))
+        goto L_42d2;
+    else
+        goto L_4215;
 
 L_4215:
     ClearAiCurrentTask(lpfl, 0x0);
-    /* untranslated: branch ((part[6:2](rgplr[idPlayer]) >> 0xa) & 0x7) <= 0x1 ? L_42b0 : L_4246 */
+    if ((((rgplr[idPlayer].wMdPlr >> 0xa) & 0x7) <= 0x1))
+        goto L_42b0;
+    else
+        goto L_4246;
 
 L_4246:
     if ((cshWar <= ((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x2)))
@@ -4898,7 +5096,10 @@ L_4373:
         goto L_4390;
 
 L_4390:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) != 0x0 ? L_43dc : L_43ae */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_43dc;
+    else
+        goto L_43ae;
 
 L_43ae:
     if ((rgshdef[ish].hul.ihuldef != ihuldefBattleship))

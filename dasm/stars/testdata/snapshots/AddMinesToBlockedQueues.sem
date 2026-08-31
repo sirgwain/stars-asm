@@ -49,31 +49,31 @@ L_17fc:
     branch prod.grobj != 0x1 ? L_18c8 : L_182d
 
 L_182d:
-    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_18c8 : L_1835
+    branch 0x0 != 0x0 ? L_18c8 : L_1835
 
 L_1835:
     branch prod.iItem != 0x8 ? L_1859 : L_1851
 
 L_1851:
-    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_1859
+    branch 0x0 == 0x0 ? L_17a3 : L_1859
 
 L_1859:
     branch prod.iItem != 0x3 ? L_187d : L_1875
 
 L_1875:
-    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_187d
+    branch 0x0 == 0x0 ? L_17a3 : L_187d
 
 L_187d:
     branch prod.iItem != 0xb ? L_18a1 : L_1899
 
 L_1899:
-    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18a1
+    branch 0x0 == 0x0 ? L_17a3 : L_18a1
 
 L_18a1:
     branch prod.iItem != 0xc ? L_18c8 : L_18bd
 
 L_18bd:
-    branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18c2
+    branch 0x0 == 0x0 ? L_17a3 : L_18c2
 
 L_18c2:
 
@@ -93,31 +93,31 @@ L_1912:
     etaFirst = 0x258
 
 L_1917:
-    call GetProductionCosts(lppl, &prod, &part[0:4](rgCost), idPlayer, 0x1) -> callresult(void)
+    call GetProductionCosts(lppl, &prod, rgCost, idPlayer, 0x1) -> callresult(void)
     cRes = sext16to32(CResourcesAtPlanet(&sel.pl, idPlayer))
-    branch (loword((uint32_t)(words(part[176:2](sel), part[178:2](sel)) >> 0x17)) & 0x1) != 0x0 ? L_19aa : L_196f
+    branch sel.pl.fNoResearch != 0x0 ? L_19aa : L_196f
 
 L_196f:
-    branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_19aa : L_1977
+    branch 0x0 != 0x0 ? L_19aa : L_1977
 
 L_1977:
     cRes = (cRes - (int32_t)((uint32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
 
 L_19aa:
-    branch part[14:2](rgCost) < hiword((uint32_t)(cRes * sext16to32((etaFirst + 0xffff)))) ? L_19d6 : L_19c6
+    branch HIWORD(rgCost[0x3]) < hiword((uint32_t)(cRes * sext16to32((etaFirst + 0xffff)))) ? L_19d6 : L_19c6
 
 L_19c6:
-    branch part[14:2](rgCost) > hiword(callresult(uint32_t)) ? L_17a3 : L_19cb
+    branch HIWORD(rgCost[0x3]) > hiword((uint32_t)(cRes * sext16to32((etaFirst + 0xffff)))) ? L_17a3 : L_19cb
 
 L_19cb:
-    branch part[12:2](rgCost) > loword(callresult(uint32_t)) ? L_17a3 : L_19d0
+    branch LOWORD(rgCost[0x3]) > loword((uint32_t)(cRes * sext16to32((etaFirst + 0xffff)))) ? L_17a3 : L_19d0
 
 L_19d0:
 
 
 L_19d6:
-    ss:[bp-0x136] = (loword((uint32_t)(words(part[172:2](sel), part[174:2](sel)) >> 0x8)) & 0xfff)
-    ss:[bp-0x134] = (hiword((uint32_t)(words(part[172:2](sel), part[174:2](sel)) >> 0x8)) & 0x0)
+    ss:[bp-0x136] = sel.pl.cMines
+    ss:[bp-0x134] = 0x0
     call CMaxOperableMines(&sel.pl, idPlayer, 0x1) -> callresult(int16_t)
     LOWORD(cMaxBuild) = (callresult(int16_t) - ss:[bp-0x136])
     HIWORD(cMaxBuild) = (signhiword(callresult(int16_t)) - ss:[bp-0x134])
@@ -137,10 +137,10 @@ L_1a3e:
     branch hiword((uint32_t)(cResMine * cMaxBuild)) > HIWORD(cRes) ? L_1a93 : L_1a77
 
 L_1a77:
-    branch hiword(callresult(uint32_t)) < HIWORD(cRes) ? L_1a84 : L_1a7c
+    branch hiword((uint32_t)(cResMine * cMaxBuild)) < HIWORD(cRes) ? L_1a84 : L_1a7c
 
 L_1a7c:
-    branch loword(callresult(uint32_t)) > LOWORD(cRes) ? L_1a93 : L_1a84
+    branch loword((uint32_t)(cResMine * cMaxBuild)) > LOWORD(cRes) ? L_1a93 : L_1a84
 
 L_1a84:
     cBuild = cMaxBuild
@@ -225,8 +225,9 @@ L_1c4a:
     goto L_17a3
 
 L_1c8f:
-    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)(words((LOWORD(cBuild) & 0x3ff), (0x0 & 0x0)) << 0x0)))
-    HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)(words((LOWORD(cBuild) & 0x3ff), (0x0 & 0x0)) << 0x0)))
+    ss:[bp-0x134] = 0x0
+    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)(words((LOWORD(cBuild) & 0x3ff), 0x0) << 0x0)))
+    HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)(words((LOWORD(cBuild) & 0x3ff), 0x0) << 0x0)))
     goto L_17a3
 
 L_1cef:

@@ -1,6 +1,8 @@
 package machine
 
 import (
+	"strings"
+
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -130,6 +132,10 @@ func nextInst(instrs []asm.DecodedInst, instIdx int) *asm.DecodedInst {
 
 func (ctx *extractor) handleCALLF(st *state, call *InstCall, next *asm.DecodedInst, meta Meta) []Effect {
 	target := call.Target
+	if handleCompilerFlagHelper(st, target) {
+		return nil
+	}
+
 	words := numCleanupWordsAfterCall(target, next)
 
 	var args []Value
@@ -163,6 +169,26 @@ func (ctx *extractor) handleCALLF(st *state, call *InstCall, next *asm.DecodedIn
 	}
 
 	return []Effect{CallEffect{MetaInfo: meta, Target: target, Args: args, Result: result}}
+}
+
+// handleCompilerFlagHelper applies compiler helper calls that only update
+// condition flags.
+func handleCompilerFlagHelper(st *state, target *typeinfo.Function) bool {
+	if target == nil || !strings.EqualFold(target.Name, "__aFfcompp") {
+		return false
+	}
+	lhs := st.peekFP(0)
+	if lhs == nil {
+		lhs = UnknownVal("fp")
+	}
+	rhs := st.peekFP(1)
+	if rhs == nil {
+		rhs = UnknownVal("fp")
+	}
+	st.flags = &PredicateValue{Kind: PredicateCompare, LHS: lhs, RHS: rhs, Op: "cmp"}
+	st.popFP()
+	st.popFP()
+	return true
 }
 
 // handle a func pointer like
@@ -282,7 +308,7 @@ func advanceMOVSReg(st *state, reg asm.Reg, bytes int) {
 		st.writeReg(reg, ConstVal(c.Val+uint(bytes)))
 		return
 	}
-	st.writeReg(reg, binaryResult(ValueOpAdd, v, ConstVal(uint(bytes))))
+	st.writeReg(reg, BinaryResult(ValueOpAdd, v, ConstVal(uint(bytes))))
 }
 
 // movsBase returns the base register used by an implicit MOVS memory operand.
@@ -304,7 +330,7 @@ func (ctx *extractor) handleBinary(st *state, inst asm.DecodedInst, meta Meta, o
 
 	lhs := st.readOperand(inst.Off, OperandDst, inst.Dst)
 	rhs := st.readOperand(inst.Off, OperandSrc, inst.Src)
-	out := binaryResult(op, lhs, rhs)
+	out := BinaryResult(op, lhs, rhs)
 
 	mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, out)
 	if inst.Dst.Kind == asm.OKReg && inst.Dst.Reg == asm.RegSP {
@@ -463,17 +489,17 @@ func (ctx *extractor) floatLiteralValue(op asm.Operand) (Value, bool) {
 	if !op.Mem.Direct {
 		return nil, false
 	}
-	seg, ok := ctx.dsReg.(*Const)
+	seg, ok := ctx.dsReg.(*Reg)
 	if !ok {
 		return nil, false
 	}
 	if op.Mem.SegOverride == asm.RegCS {
-		seg, ok = ctx.csReg.(*Const)
+		seg, ok = ctx.csReg.(*Reg)
 		if !ok {
 			return nil, false
 		}
 	}
-	if value, ok := ctx.res.ResolveFloatLiteral(int(seg.Val), uint32(op.Mem.Disp), op.Mem.MemSize); ok {
+	if value, ok := ctx.res.ResolveFloatLiteral(int(ctx.segFromRegister(seg.Val)), uint32(op.Mem.Disp), op.Mem.MemSize); ok {
 		return FloatConstVal(value), true
 	}
 	return nil, false
@@ -579,13 +605,13 @@ func fpBinaryResult(op ValueOp, dst, src Value, reversed bool) Value {
 		return UnknownVal("fp")
 	}
 	if reversed {
-		return binaryResult(op, src, dst)
+		return BinaryResult(op, src, dst)
 	}
-	return binaryResult(op, dst, src)
+	return BinaryResult(op, dst, src)
 }
 
-// binaryResult converts a binary operation on two constants into a single constant
-func binaryResult(op ValueOp, lhs, rhs Value) Value {
+// BinaryResult converts a binary operation into a simplified value.
+func BinaryResult(op ValueOp, lhs, rhs Value) Value {
 	lc, lok := lhs.(*Const)
 	rc, rok := rhs.(*Const)
 	if lok && rok && (op != ValueOpDiv && op != ValueOpMod || rc.Val != 0) {
@@ -625,6 +651,12 @@ func binaryResult(op ValueOp, lhs, rhs Value) Value {
 		}
 	}
 	if op == ValueOpAnd {
+		if rok && rc.Val == 0 {
+			return ConstVal(0)
+		}
+		if lok && lc.Val == 0 {
+			return ConstVal(0)
+		}
 		if rok {
 			if out, ok := simplifyByteWriteMask(lhs, rc.Val); ok {
 				return out
@@ -651,7 +683,7 @@ func combineAddConst(v Value, add uint) (Value, bool) {
 	}
 	switch bv.Op {
 	case ValueOpAdd:
-		return binaryResult(ValueOpAdd, bv.LHS, ConstVal(tail.Val+add)), true
+		return BinaryResult(ValueOpAdd, bv.LHS, ConstVal(tail.Val+add)), true
 	default:
 		return nil, false
 	}
@@ -670,14 +702,14 @@ func simplifyByteWriteMask(v Value, mask uint) (Value, bool) {
 		case 0x00ff:
 			return maskedByteValue(*bv.Value), true
 		case 0xff00:
-			return binaryResult(ValueOpAnd, bv.Parent, ConstVal(0xff00)), true
+			return BinaryResult(ValueOpAnd, bv.Parent, ConstVal(0xff00)), true
 		}
 	case ByteHigh:
 		switch mask & 0xffff {
 		case 0x00ff:
-			return binaryResult(ValueOpAnd, bv.Parent, ConstVal(0x00ff)), true
+			return BinaryResult(ValueOpAnd, bv.Parent, ConstVal(0x00ff)), true
 		case 0xff00:
-			return binaryResult(ValueOpShl, maskedByteValue(*bv.Value), ConstVal(8)), true
+			return BinaryResult(ValueOpShl, maskedByteValue(*bv.Value), ConstVal(8)), true
 		}
 	}
 	return nil, false
@@ -689,7 +721,7 @@ func maskedByteValue(v Value) Value {
 	if isByteWideValue(v) {
 		return v
 	}
-	return binaryResult(ValueOpAnd, v, ConstVal(0x00ff))
+	return BinaryResult(ValueOpAnd, v, ConstVal(0x00ff))
 }
 
 // isByteWideValue reports whether v cannot contain bits outside the low byte.

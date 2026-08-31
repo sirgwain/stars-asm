@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
@@ -310,11 +311,11 @@ func TestLowerMachineCollapsesDefaultDataFarPointerCallArg(t *testing.T) {
 							machine.ConstVal(0x1234),
 							machine.FarPointerWordsVal(
 								machine.LoadVal(machine.MemoryAccess{
-									Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+									Seg:   machine.RegVal(asm.RegDS),
 									Disp:  int(helpFile.Addr.Off),
 									Width: helpFile.Type.Bytes(),
 								}),
-								machine.ConstVal(fx.SDB.DGroupFrame),
+								machine.RegVal(asm.RegDS),
 							),
 							machine.ConstVal(1),
 							machine.ConstVal(0x44a),
@@ -429,7 +430,7 @@ func TestLowerMachineCollapsesStackFarPointerCallArg(t *testing.T) {
 									Width:  2,
 									Origin: machine.Origin{InstOff: 0x12ac, Role: machine.OperandSrc},
 								}),
-								machine.ScalarVal("ss"),
+								machine.RegVal(asm.RegSS),
 							),
 						},
 					},

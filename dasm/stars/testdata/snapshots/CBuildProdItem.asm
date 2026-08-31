@@ -121,8 +121,8 @@ L_0d58:                             ; turn2.c:315
 MOV       [bp-cMax], 0x03e8         ; [bp-0x8], 0x03e8
                                     ; turn2.c:317
 MOV       cx, 0x000a          
-MOV       ax, [bp-0x1c]       
-MOV       dx, [bp-0x1a]       
+MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
+MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
 CALLF     __aFulshr                 ; uint32_t __aFulshr(uint32_t val, uint16_t shift)
 AND       ax, 0x007f          
 AND       dx, 0x0000          
@@ -361,7 +361,7 @@ MOV       [bp-cMax], 0x0000         ; [bp-0x8], 0x0000
 
 L_0fad:                             ; turn2.c:361
 MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
-MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
+MOV       dx, [bp-0x1a]       
 AND       ax, 0x03ff          
 AND       dx, 0x0000          
 MOV       [bp-0x58], ax       
@@ -455,7 +455,7 @@ JL        L_1034
 
 L_108f:                             ; turn2.c:374
 MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
-MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
+MOV       dx, [bp-0x1a]       
 AND       ax, 0x03ff          
 AND       dx, 0x0000          
 CMP       dx, 0x0000          
@@ -819,7 +819,7 @@ JL        L_1324
 
 L_13a1:                             ; turn2.c:428
 MOV       ax, [bp-pct]              ; ax, [bp-0x42]
-MOV       dx, [bp-pct+0x2]          ; dx, [bp-0x40]
+MOV       dx, [bp-0x40]       
 AND       ax, 0x007f          
 AND       dx, 0x0000          
 MOV       cx, 0x0014          
@@ -1089,7 +1089,7 @@ MOV       [bp-pctT], ax             ; [bp-0x6], ax
 MOV       [bp-pctT+0x2], dx         ; [bp-0x4], dx
                                     ; turn2.c:459
 MOV       ax, [bp-pctT]             ; ax, [bp-0x6]
-MOV       dx, [bp-pctT+0x2]         ; dx, [bp-0x4]
+MOV       dx, [bp-0x4]        
 AND       ax, 0x007f          
 AND       dx, 0x0000          
 MOV       cx, 0x0014          
@@ -1128,7 +1128,7 @@ L_165c:                             ; turn2.c:467
 ADD       [bp-cBuilt], 0x0001       ; [bp-0x20], 0x0001
                                     ; turn2.c:468
 MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
-MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
+MOV       dx, [bp-0x1a]       
 ADD       ax, 0xffff          
 ADC       dx, 0xffff          
 AND       ax, 0x03ff          
@@ -1329,7 +1329,7 @@ JZ        L_1866
 
 L_1830:
 MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
-MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
+MOV       dx, [bp-0x1a]       
 AND       ax, 0x03ff          
 AND       dx, 0x0000          
 CMP       ax, 0x0000          
@@ -1389,7 +1389,7 @@ JMP       L_18d1
 
 L_18a4:
 MOV       ax, [bp-prod]             ; ax, [bp-0x1c]
-MOV       dx, [bp-prod+0x2]         ; dx, [bp-0x1a]
+MOV       dx, [bp-0x1a]       
 AND       ax, 0x03ff          
 AND       dx, 0x0000          
 CMP       ax, 0x0000          
@@ -1481,7 +1481,7 @@ MOV       [bx], ax
 MOV       [bx+0x2], dx        
                                     ; turn2.c:511
 MOV       ax, [bp-iobjOther]        ; ax, [bp-0xc]
-MOV       dx, [bp-iobjOther+0x2]    ; dx, [bp-0xa]
+MOV       dx, [bp-0xa]        
 AND       ax, 0x007f          
 AND       dx, 0x0000          
 MOV       cx, 0x000a          

@@ -26,13 +26,24 @@ func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Re
 		sdb:   sdb,
 		res:   res,
 		fs:    fs,
-		ssReg: ScalarVal("ss"),
-		dsReg: ConstVal(sdb.DGroupFrame),
-		csReg: ConstVal(uint(fs.Addr.Seg)),
+		ssReg: RegVal(asm.RegSS),
+		dsReg: RegVal(asm.RegDS),
+		csReg: RegVal(asm.RegCS),
 	}
 	return ctx
 }
 
 func (ctx *FuncContext) ReturnsValue() bool {
 	return ctx.fs.Ret.Kind() != typeinfo.KVoid
+}
+
+// segFromRegister returns the segment value for a given register based on the function context
+func (ctx *FuncContext) segFromRegister(reg asm.Reg) uint16 {
+	switch reg {
+	case asm.RegDS:
+		return uint16(ctx.sdb.DGroupFrame)
+	case asm.RegCS:
+		return ctx.fs.Addr.Seg
+	}
+	return 0
 }

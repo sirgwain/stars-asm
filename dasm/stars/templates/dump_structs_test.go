@@ -35,7 +35,7 @@ func TestRenderDumpStructs(t *testing.T) {
 		"#include <stdint.h>",
 		"typedef struct _sample {",
 		"    uint16_t value; /* +0x0000 (2) */",
-		"} Sample; /* size=0x2 */",
+		"} Sample;           /* size=0x2 */",
 		"#endif",
 	} {
 		if !strings.Contains(got, want) {

@@ -15,4 +15,4 @@ block L_5183:
   insts 12..16  off 0x5183..0x5188
   preds: L_5168
   effects:
-    5188  return farptr(0x2, (0x0 + loword((0x4e * load([bp+id])))))
+    5188  return farptr(cs, (0x0 + loword((0x4e * load([bp+id])))))

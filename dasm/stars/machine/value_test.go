@@ -3,25 +3,26 @@ package machine
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 func TestMemoryAccessEqualsComparesAddressShape(t *testing.T) {
 	a := MemoryAccess{
-		Seg:    ScalarVal("ds"),
+		Seg:    RegVal(asm.RegDS),
 		Base:   BinaryVal(ValueOpAdd, FrameBaseVal(), ConstVal(4)),
 		Disp:   8,
 		Width:  2,
-		Index:  ScalarVal("si"),
+		Index:  RegVal(asm.RegSI),
 		Scale:  2,
 		Origin: Origin{InstOff: 0x1234, Role: OperandSrc},
 	}
 	b := MemoryAccess{
-		Seg:    ScalarVal("ds"),
+		Seg:    RegVal(asm.RegDS),
 		Base:   BinaryVal(ValueOpAdd, FrameBaseVal(), ConstVal(4)),
 		Disp:   8,
 		Width:  2,
-		Index:  ScalarVal("si"),
+		Index:  RegVal(asm.RegSI),
 		Scale:  2,
 		Origin: Origin{InstOff: 0x1234, Role: OperandSrc},
 	}

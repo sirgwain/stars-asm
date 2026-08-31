@@ -16,8 +16,8 @@ L_417c:
     goto L_41c3;
 
 L_4185:
-    /* untranslated: ppt->x = part[6:2](msg) */
-    /* untranslated: ppt->y = (loword((uint32_t)(words(part[6:2](msg), part[8:2](msg)) >> 0x10)) & 0xffff) */
+    ppt->x = LOWORD(msg.lParam);
+    ppt->y = (LOWORD((uint32_t)((msg.lParam >> 0x10))) & 0xffff);
     if ((msg.message == 0x202))
         goto L_41ba;
     else

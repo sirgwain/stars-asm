@@ -3340,8 +3340,6 @@ L_5125:
 }
 
 HULDEF *LphuldefFromId(int16_t id) {
-    HULDEF *t_merge_5162_0001_wide;
-
 L_512c:
     if ((id < 0x20))
         goto L_5150;
@@ -3349,14 +3347,10 @@ L_512c:
         goto L_513e;
 
 L_513e:
-    t_merge_5162_0001_wide = LphuldefSBFromId((id + 0xffe0));
-    goto L_5162;
+    return LphuldefSBFromId((id + 0xffe0));
 
 L_5150:
-    t_merge_5162_0001_wide = &(rghuldef[id]);
-
-L_5162:
-    return t_merge_5162_0001_wide;
+    return &(rghuldef[id]);
 }
 
 ENGINE *LpengineFromId(int16_t id) {
@@ -3397,7 +3391,7 @@ L_51f7:
 int16_t FLookupPartX(PART *ppart, uint16_t grhst, uint16_t iItem) {
 L_51fe:
     ppart->hs.grhst = grhst;
-    HIWORD(ppart->hs) = ((HIWORD(ppart->hs) & 0xff00) | (iItem & 0xff));
+    ppart->hs.iItem = iItem;
     ppart->hs.cItem = 0x0;
     FLookupPart(ppart);
 
@@ -4766,7 +4760,7 @@ L_6091:
 L_6096:
 
 L_609c:
-    return TechStatus(&(*(ppart->pcom + 0x2)));
+    return TechStatus(&(ppart->pcom->rgTech));
 }
 
 void LookupBestPlanetaryScanner(PART *ppart) {

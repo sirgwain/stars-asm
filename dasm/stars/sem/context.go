@@ -20,6 +20,17 @@ type FuncContext struct {
 	currentUnionContext *symresolve.UnionContext
 }
 
+// segFromRegister returns the segment value for a given register based on the function context
+func (ctx *FuncContext) segFromRegister(reg asm.Reg) uint16 {
+	switch reg {
+	case asm.RegDS:
+		return uint16(ctx.sdb.DGroupFrame)
+	case asm.RegCS:
+		return ctx.fs.Addr.Seg
+	}
+	return 0
+}
+
 // SetUnionContexts installs block-entry union contexts for later passes.
 func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolve.UnionContext) {
 	ctx.unionContexts = contexts
@@ -50,8 +61,8 @@ func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Re
 		sdb:   sdb,
 		res:   res,
 		fs:    fs,
-		dsReg: machine.ConstVal(sdb.DGroupFrame),
-		csReg: machine.ConstVal(uint(fs.Addr.Seg)),
+		dsReg: machine.RegVal(asm.RegDS),
+		csReg: machine.RegVal(asm.RegCS),
 	}
 }
 
@@ -63,6 +74,9 @@ func (ctx *FuncContext) resolveMachineStorage(mem machine.MemoryAccess, width in
 	// if this isn't a bp+ local var, resolve it as a global
 	if _, ok := mem.Base.(*machine.FrameBase); !ok {
 		if global, ok := ctx.resolveGlobal(mem); ok {
+			if lvalue, ok := ctx.resolveTypedStorage(&Global{GlobalVar: global.Global}, global.FieldOff, width); ok {
+				return lvalue, true
+			}
 			if lvalue, ok := ctx.resolveFieldStorage(global.Global, global.FieldOff, width); ok {
 				return lvalue, true
 			}
@@ -76,10 +90,29 @@ func (ctx *FuncContext) resolveMachineStorage(mem machine.MemoryAccess, width in
 	if !ok {
 		return nil, false
 	}
+	if lvalue, ok := ctx.resolveTypedStorage(&Local{FunctionVar: local.Local}, local.FieldOff, width); ok {
+		return lvalue, true
+	}
 	if lvalue, ok := ctx.resolveFieldStorage(&local.Local, local.FieldOff, width); ok {
 		return lvalue, true
 	}
 	return lvalueForLocalAccess(local, width), true
+}
+
+// resolveTypedStorage projects direct variable storage through its declared type.
+func (ctx *FuncContext) resolveTypedStorage(base LValue, fieldOff int, width int) (LValue, bool) {
+	if typeinfo.IsPointer(base.ExprType()) {
+		return nil, false
+	}
+	expr, ok := (&machineConverter{ctx: ctx}).consumeAddressExpr(AddressExpr{Base: base, Offset: fieldOff}, width)
+	if !ok {
+		return nil, false
+	}
+	lvalue, ok := expr.(LValue)
+	if !ok {
+		return nil, false
+	}
+	return lvalue, true
 }
 
 // resolveFieldStorage resolves exact and partial loads of fields within a symbol.
@@ -391,6 +424,9 @@ func valueShapeEquals(a, b machine.Value) bool {
 	case *machine.Const:
 		bv, ok := b.(*machine.Const)
 		return ok && av.Val == bv.Val
+	case *machine.Reg:
+		bv, ok := b.(*machine.Reg)
+		return ok && av.Val == bv.Val
 	case *machine.FrameBase:
 		_, ok := b.(*machine.FrameBase)
 		return ok
@@ -467,9 +503,22 @@ func (ctx *FuncContext) resolveGlobal(mem machine.MemoryAccess) (symresolve.Glob
 	if mem.Index != nil {
 		return symresolve.GlobalAccess{}, false
 	}
-	seg, ok := mem.Seg.(*machine.Const)
-	if !ok {
-		return symresolve.GlobalAccess{}, false
+	var seg uint16
+	if segReg, ok := mem.Seg.(*machine.Reg); ok {
+		seg = ctx.segFromRegister(segReg.Val)
+	}
+	if seg == 0 {
+		segConst, ok := mem.Seg.(*machine.Const)
+		if !ok {
+			return symresolve.GlobalAccess{}, false
+		}
+		seg = uint16(segConst.Val)
+		if fx := segConst.Fixup; fx != nil &&
+			fx.Source == asm.FixupSourceSegment &&
+			fx.Target == asm.FixupTargetInternalRef {
+
+			seg = fx.TargetSegNum
+		}
 	}
 	off := int64(mem.Disp)
 	if mem.Base != nil {
@@ -482,5 +531,5 @@ func (ctx *FuncContext) resolveGlobal(mem machine.MemoryAccess) (symresolve.Glob
 	if off < 0 || off > int64(^uint32(0)) {
 		return symresolve.GlobalAccess{}, false
 	}
-	return ctx.res.ResolveGlobal(uint16(seg.Val), uint32(off), mem.Width)
+	return ctx.res.ResolveGlobal(seg, uint32(off), mem.Width)
 }

@@ -27,7 +27,7 @@ L_0324:
         goto L_033d;
 
 L_033d:
-    if (((*(lppl + 0x1a) & 0x0) == 0x0))
+    if ((0x0 == 0x0))
         goto L_0487;
     else
         goto L_0345;
@@ -42,7 +42,7 @@ L_0345:
 
 L_0369:
     LOWORD(cDefenses) = lppl->cDefenses;
-    HIWORD(cDefenses) = (*(lppl + 0x1a) & 0x0);
+    HIWORD(cDefenses) = 0x0;
     cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0x0);
     if ((SIGNHIWORD(cMax) > HIWORD(cDefenses)))
         goto L_03bf;
@@ -65,18 +65,14 @@ L_03b5:
     cDefenses = (uint32_t)(cMax);
 
 L_03bf:
-    /* untranslated: ss:[bp-0x1e] = part[52:2](part[4:4](part)) */
-    /* untranslated: ss:[bp-0x1c] = signhiword(part[52:2](part[4:4](part))) */
-    /* untranslated: pct = pow((1 - ((double)dword ss:[bp-0x1e] / 1000)), (double)cDefenses) */
+    pct = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 1000)), (double)(cDefenses));
     if ((ppctSmart == 0x0))
         goto L_047e;
     else
         goto L_041a;
 
 L_041a:
-    /* untranslated: ss:[bp-0x1e] = part[52:2](part[4:4](part)) */
-    /* untranslated: ss:[bp-0x1c] = signhiword(part[52:2](part[4:4](part))) */
-    /* untranslated: *ppctSmart = pow((1 - ((double)dword ss:[bp-0x1e] / 2000)), (double)cDefenses) */
+    *(ppctSmart) = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 2000)), (double)(cDefenses));
 
 L_0473:
     pct = 1;

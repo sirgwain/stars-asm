@@ -211,7 +211,7 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 		},
 	)
 	rgTechByte := machine.LoadVal(machine.MemoryAccess{
-		Seg: machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg: machine.RegVal(asm.RegDS),
 		Base: machine.BinaryVal(
 			machine.ValueOpAdd,
 			machine.BinaryVal(machine.ValueOpAdd, playerBase, machine.ConstVal(0x1a)),

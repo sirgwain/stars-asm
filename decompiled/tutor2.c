@@ -914,7 +914,7 @@ L_5a2d:
 L_5a3b:
     iChunk = (idt >> 0x6);
     iOffset = (idt & 0x3f);
-    /* untranslated: pch = &aTUTCmpr[0x21:[(iChunk * 0x2)+0x59b4]] */
+    /* untranslated: pch = &aTUTCmpr[cs:[(iChunk * 0x2)+0x59b4]] */
     pchLen = &(acTUT[(0x40 * iChunk)]);
     i = 0x0;
     goto L_5a94;
@@ -997,7 +997,7 @@ L_5b3e:
         goto L_5b50;
 
 L_5b50:
-    /* untranslated: *pszOut = byte 0x21:[iBuild+0x59c8] */
+    /* untranslated: *pszOut = byte cs:[iBuild+0x59c8] */
     pszOut = (pszOut + 0x1);
     iBuild = 0x0;
 

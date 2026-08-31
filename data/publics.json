@@ -1,0 +1,1183 @@
+[
+  {
+    "addr": "0024:32bc",
+    "name": "$i8_tpwr10"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINIsQWINin"
+  },
+  {
+    "addr": "0024:16ba",
+    "name": "__fFEXP"
+  },
+  {
+    "addr": "0025:1720",
+    "name": "__oserr"
+  },
+  {
+    "addr": "0024:027e",
+    "name": "__lseek"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wread"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wterm"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wsetsize"
+  },
+  {
+    "addr": "0024:24c7",
+    "name": "__rttosnpopde"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wgetsize"
+  },
+  {
+    "addr": "0024:0b20",
+    "name": "__dos_findfirst"
+  },
+  {
+    "addr": "0024:15b0",
+    "name": "__stackavail"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINMenuClick"
+  },
+  {
+    "addr": "0025:65c6",
+    "name": "__end"
+  },
+  {
+    "addr": "0024:01a3",
+    "name": "_exit"
+  },
+  {
+    "addr": "0024:0a5a",
+    "name": "__chdir"
+  },
+  {
+    "addr": "0024:0a4c",
+    "name": "__mkdir"
+  },
+  {
+    "addr": "0024:0a7e",
+    "name": "__rmdir"
+  },
+  {
+    "addr": "0024:15c4",
+    "name": "__catox"
+  },
+  {
+    "addr": "0024:1b6a",
+    "name": "__cftoe"
+  },
+  {
+    "addr": "0024:1d20",
+    "name": "__cftof"
+  },
+  {
+    "addr": "0024:1ea2",
+    "name": "__cftog"
+  },
+  {
+    "addr": "0024:2fe8",
+    "name": "__fltin"
+  },
+  {
+    "addr": "0024:1124",
+    "name": "_sqrt"
+  },
+  {
+    "addr": "0024:1644",
+    "name": "__cxtoa"
+  },
+  {
+    "addr": "0024:16ae",
+    "name": "_fFYTOX"
+  },
+  {
+    "addr": "0024:0e9a",
+    "name": "__fmemcpy"
+  },
+  {
+    "addr": "0024:3362",
+    "name": "__STRINGTOLD"
+  },
+  {
+    "addr": "0024:3957",
+    "name": "__LD12MULT"
+  },
+  {
+    "addr": "0025:18b8",
+    "name": "__sqrtjmptab"
+  },
+  {
+    "addr": "0024:24d7",
+    "name": "__rtchsifneg"
+  },
+  {
+    "addr": "0025:1c2a",
+    "name": "__amblksiz"
+  },
+  {
+    "addr": "0024:1192",
+    "name": "__aFCIasin"
+  },
+  {
+    "addr": "0024:150f",
+    "name": "__amsg_exit"
+  },
+  {
+    "addr": "0024:2231",
+    "name": "__NMSG_WRITE"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINExit"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINWrite"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINInit"
+  },
+  {
+    "addr": "0025:16ee",
+    "name": "_aseghi"
+  },
+  {
+    "addr": "0025:16ec",
+    "name": "_aseglo"
+  },
+  {
+    "addr": "0025:1c20",
+    "name": "__HUGE"
+  },
+  {
+    "addr": "0024:124e",
+    "name": "__stubmain"
+  },
+  {
+    "addr": "0025:1894",
+    "name": "__lseekchk"
+  },
+  {
+    "addr": "0024:0f82",
+    "name": "__fstrcpy"
+  },
+  {
+    "addr": "0025:171c",
+    "name": "__osversion"
+  },
+  {
+    "addr": "0025:18da",
+    "name": "__logemax"
+  },
+  {
+    "addr": "0024:05f2",
+    "name": "__strcmpi"
+  },
+  {
+    "addr": "0024:2ee5",
+    "name": "__FASTLDMULT"
+  },
+  {
+    "addr": "0024:2090",
+    "name": "__ctrandisp1"
+  },
+  {
+    "addr": "0024:2076",
+    "name": "__ctrandisp2"
+  },
+  {
+    "addr": "0024:29ae",
+    "name": "__Init80x87"
+  },
+  {
+    "addr": "0024:22ac",
+    "name": "_atof"
+  },
+  {
+    "addr": "0025:171a",
+    "name": "__osver"
+  },
+  {
+    "addr": "0024:30be",
+    "name": "__nrealloc"
+  },
+  {
+    "addr": "0024:0f3e",
+    "name": "__fstrlen"
+  },
+  {
+    "addr": "0025:16f4",
+    "name": "__acfinfo"
+  },
+  {
+    "addr": "0025:1754",
+    "name": "__environ"
+  },
+  {
+    "addr": "0025:18b4",
+    "name": "__sigintoff"
+  },
+  {
+    "addr": "0025:1aa8",
+    "name": "__indefinite"
+  },
+  {
+    "addr": "0025:1c28",
+    "name": "__matherr_flag"
+  },
+  {
+    "addr": "0024:1198",
+    "name": "__aFCIacos"
+  },
+  {
+    "addr": "0024:1b20",
+    "name": "__fassign"
+  },
+  {
+    "addr": "0025:1720",
+    "name": "__doserrno"
+  },
+  {
+    "addr": "0024:249e",
+    "name": "__rtonepop"
+  },
+  {
+    "addr": "0025:1719",
+    "name": "__winmajor"
+  },
+  {
+    "addr": "0025:1718",
+    "name": "__winminor"
+  },
+  {
+    "addr": "0024:248b",
+    "name": "__rtnospop"
+  },
+  {
+    "addr": "0024:17c4",
+    "name": "__rtinfpop"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINSetAboutString"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINClose"
+  },
+  {
+    "addr": "0024:0abe",
+    "name": "_rename"
+  },
+  {
+    "addr": "0024:113c",
+    "name": "_log10"
+  },
+  {
+    "addr": "0025:545a",
+    "name": "__mbac"
+  },
+  {
+    "addr": "0024:229c",
+    "name": "__GetDGROUP"
+  },
+  {
+    "addr": "0024:2488",
+    "name": "__rttospop"
+  },
+  {
+    "addr": "0024:1583",
+    "name": "__maperror"
+  },
+  {
+    "addr": "0025:16f0",
+    "name": "___aDBswpflg"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wmenuclick"
+  },
+  {
+    "addr": "0024:116c",
+    "name": "__aFCIsin"
+  },
+  {
+    "addr": "0024:1177",
+    "name": "__aFCItan"
+  },
+  {
+    "addr": "0024:2c12",
+    "name": "$i8_output"
+  },
+  {
+    "addr": "0025:16e4",
+    "name": "__hInstance"
+  },
+  {
+    "addr": "0024:2485",
+    "name": "__rttospopde"
+  },
+  {
+    "addr": "0025:65c6",
+    "name": "_end"
+  },
+  {
+    "addr": "0024:1136",
+    "name": "_log"
+  },
+  {
+    "addr": "0024:115c",
+    "name": "_sin"
+  },
+  {
+    "addr": "0024:1167",
+    "name": "_tan"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wopen"
+  },
+  {
+    "addr": "0025:1716",
+    "name": "__psp"
+  },
+  {
+    "addr": "0024:079c",
+    "name": "_abs"
+  },
+  {
+    "addr": "0024:1141",
+    "name": "_exp"
+  },
+  {
+    "addr": "0024:1130",
+    "name": "_pow"
+  },
+  {
+    "addr": "0024:1162",
+    "name": "_cos"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wgetscreenbuf"
+  },
+  {
+    "addr": "0024:0c7e",
+    "name": "__aFulmul"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINGetBuffSize"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINSetBuffSize"
+  },
+  {
+    "addr": "0025:19d4",
+    "name": "__cotanjmptab"
+  },
+  {
+    "addr": "0025:1706",
+    "name": "__fac"
+  },
+  {
+    "addr": "0024:071a",
+    "name": "_memcmp"
+  },
+  {
+    "addr": "0024:0742",
+    "name": "_memcpy"
+  },
+  {
+    "addr": "0024:076e",
+    "name": "_memset"
+  },
+  {
+    "addr": "0024:0848",
+    "name": "_labs"
+  },
+  {
+    "addr": "0024:1182",
+    "name": "_acos"
+  },
+  {
+    "addr": "0024:183c",
+    "name": "__fFSIN"
+  },
+  {
+    "addr": "0024:182c",
+    "name": "__fFCOS"
+  },
+  {
+    "addr": "0024:0352",
+    "name": "_strcat"
+  },
+  {
+    "addr": "0024:0392",
+    "name": "_strcpy"
+  },
+  {
+    "addr": "0024:03c4",
+    "name": "_strcmp"
+  },
+  {
+    "addr": "0024:05c8",
+    "name": "_strchr"
+  },
+  {
+    "addr": "0025:16e6",
+    "name": "__lpszCmdLine"
+  },
+  {
+    "addr": "0024:0dc8",
+    "name": "__aFulrem"
+  },
+  {
+    "addr": "0024:0ef8",
+    "name": "__fstricmp"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wsetscreenbuf"
+  },
+  {
+    "addr": "0025:0004",
+    "name": "rsrvptrs"
+  },
+  {
+    "addr": "0024:0634",
+    "name": "__strnicmp"
+  },
+  {
+    "addr": "0024:24ce",
+    "name": "__rtifprojnpop"
+  },
+  {
+    "addr": "0025:1750",
+    "name": "___argc"
+  },
+  {
+    "addr": "0025:1752",
+    "name": "___argv"
+  },
+  {
+    "addr": "0024:0866",
+    "name": "_qsort"
+  },
+  {
+    "addr": "0025:1ab2",
+    "name": "__piby2"
+  },
+  {
+    "addr": "0024:30a4",
+    "name": "__nfree"
+  },
+  {
+    "addr": "0024:2a84",
+    "name": "__matherr"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wsetfocus"
+  },
+  {
+    "addr": "0024:0e32",
+    "name": "__aFulshr"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wgetfocus"
+  },
+  {
+    "addr": "0024:22f8",
+    "name": "__fptostr"
+  },
+  {
+    "addr": "0024:2392",
+    "name": "__wrt2err"
+  },
+  {
+    "addr": "0025:18b2",
+    "name": "__sigintseg"
+  },
+  {
+    "addr": "0024:2422",
+    "name": "__trandisp2"
+  },
+  {
+    "addr": "0024:23e0",
+    "name": "__trandisp1"
+  },
+  {
+    "addr": "0024:226e",
+    "name": "__myalloc"
+  },
+  {
+    "addr": "0024:19ba",
+    "name": "__rtpiby2"
+  },
+  {
+    "addr": "0024:3048",
+    "name": "__nmalloc"
+  },
+  {
+    "addr": "0024:1172",
+    "name": "__aFCIcos"
+  },
+  {
+    "addr": "0024:2ba4",
+    "name": "__findlast"
+  },
+  {
+    "addr": "0024:1757",
+    "name": "__rtinfpopse"
+  },
+  {
+    "addr": "0024:24af",
+    "name": "__rtifprojpop"
+  },
+  {
+    "addr": "0024:24b9",
+    "name": "__rtindfnpop"
+  },
+  {
+    "addr": "0024:11a8",
+    "name": "__fcmp"
+  },
+  {
+    "addr": "0024:24f7",
+    "name": "_Soft_fFSIN"
+  },
+  {
+    "addr": "0024:24e0",
+    "name": "_Soft_fFCOS"
+  },
+  {
+    "addr": "0024:19f0",
+    "name": "__forcdecpt"
+  },
+  {
+    "addr": "0024:112a",
+    "name": "__aFCIsqrt"
+  },
+  {
+    "addr": "0025:1c76",
+    "name": "__pnhNearHeap"
+  },
+  {
+    "addr": "0025:171b",
+    "name": "__osmajor"
+  },
+  {
+    "addr": "0025:171a",
+    "name": "__osminor"
+  },
+  {
+    "addr": "0024:1a66",
+    "name": "__cropzeros"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINTerm"
+  },
+  {
+    "addr": "0024:0454",
+    "name": "__tell"
+  },
+  {
+    "addr": "0024:1767",
+    "name": "__fFLN"
+  },
+  {
+    "addr": "0024:03f0",
+    "name": "_strlen"
+  },
+  {
+    "addr": "0024:09c8",
+    "name": "__setjmp"
+  },
+  {
+    "addr": "0024:147a",
+    "name": "__setenvp"
+  },
+  {
+    "addr": "0024:127a",
+    "name": "__FF_MSGBANNER"
+  },
+  {
+    "addr": "0024:2a34",
+    "name": "__fltout"
+  },
+  {
+    "addr": "0024:248e",
+    "name": "__rttosnpop"
+  },
+  {
+    "addr": "0024:17e2",
+    "name": "__ffexpm1"
+  },
+  {
+    "addr": "0024:129e",
+    "name": "__fptrap"
+  },
+  {
+    "addr": "0024:001a",
+    "name": "__astart"
+  },
+  {
+    "addr": "0024:0f58",
+    "name": "__fstrcmp"
+  },
+  {
+    "addr": "0025:1714",
+    "name": "__pspadr"
+  },
+  {
+    "addr": "0025:1712",
+    "name": "__umaskval"
+  },
+  {
+    "addr": "0024:05f2",
+    "name": "__stricmp"
+  },
+  {
+    "addr": "0024:24a8",
+    "name": "__rtbignan"
+  },
+  {
+    "addr": "0024:06b4",
+    "name": "__strlwr"
+  },
+  {
+    "addr": "0024:119d",
+    "name": "__aFCIatan"
+  },
+  {
+    "addr": "0024:11a2",
+    "name": "__aFCIatan2"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wwrite"
+  },
+  {
+    "addr": "0024:068c",
+    "name": "_strrchr"
+  },
+  {
+    "addr": "0024:312c",
+    "name": "__nmsize"
+  },
+  {
+    "addr": "0024:1552",
+    "name": "__dosret0"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINRead"
+  },
+  {
+    "addr": "0025:175d",
+    "name": "__exitflag"
+  },
+  {
+    "addr": "0025:194a",
+    "name": "__lnjmptab"
+  },
+  {
+    "addr": "0024:2494",
+    "name": "__rtzeropop"
+  },
+  {
+    "addr": "0024:0aea",
+    "name": "_remove"
+  },
+  {
+    "addr": "0024:0438",
+    "name": "__itoa"
+  },
+  {
+    "addr": "0024:11fc",
+    "name": "__ftol"
+  },
+  {
+    "addr": "0024:01d1",
+    "name": "__c_exit"
+  },
+  {
+    "addr": "0024:21ee",
+    "name": "__wcexit"
+  },
+  {
+    "addr": "0024:0e3e",
+    "name": "__fmemcmp"
+  },
+  {
+    "addr": "0024:11d7",
+    "name": "__aFfcompp"
+  },
+  {
+    "addr": "0024:11fc",
+    "name": "__aFftol"
+  },
+  {
+    "addr": "0024:11a8",
+    "name": "__aFfcmp"
+  },
+  {
+    "addr": "0025:1726",
+    "name": "__wnfile"
+  },
+  {
+    "addr": "0025:173c",
+    "name": "__wsfile"
+  },
+  {
+    "addr": "0025:1728",
+    "name": "__osfile"
+  },
+  {
+    "addr": "0024:09ed",
+    "name": "_longjmp"
+  },
+  {
+    "addr": "0024:07b0",
+    "name": "_bsearch"
+  },
+  {
+    "addr": "0024:1945",
+    "name": "__fFATN2"
+  },
+  {
+    "addr": "0024:0b0e",
+    "name": "__dos_findnext"
+  },
+  {
+    "addr": "0024:21ca",
+    "name": "__fpsignal"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wabout"
+  },
+  {
+    "addr": "0024:1157",
+    "name": "__aFCIexp"
+  },
+  {
+    "addr": "0024:2d5e",
+    "name": "__FASTLDADD"
+  },
+  {
+    "addr": "0024:0a16",
+    "name": "__access"
+  },
+  {
+    "addr": "0024:1571",
+    "name": "__dosretax"
+  },
+  {
+    "addr": "0024:2b3e",
+    "name": "__incseg"
+  },
+  {
+    "addr": "0024:0c7e",
+    "name": "__aFlmul"
+  },
+  {
+    "addr": "0024:0cb0",
+    "name": "__aFlrem"
+  },
+  {
+    "addr": "0024:0d50",
+    "name": "__aFlshl"
+  },
+  {
+    "addr": "0024:0010",
+    "name": "__wflags"
+  },
+  {
+    "addr": "0024:0be4",
+    "name": "__aFldiv"
+  },
+  {
+    "addr": "0024:0d5c",
+    "name": "__aFlshr"
+  },
+  {
+    "addr": "0025:171e",
+    "name": "__osmode"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__wclose"
+  },
+  {
+    "addr": "0024:0aea",
+    "name": "__unlink"
+  },
+  {
+    "addr": "0025:1756",
+    "name": "__pgmptr"
+  },
+  {
+    "addr": "0024:06d2",
+    "name": "_memmove"
+  },
+  {
+    "addr": "0024:00bd",
+    "name": "__nomain"
+  },
+  {
+    "addr": "0024:24a1",
+    "name": "__rtonenpop"
+  },
+  {
+    "addr": "0025:1abc",
+    "name": "__cpower"
+  },
+  {
+    "addr": "0025:1718",
+    "name": "__winver"
+  },
+  {
+    "addr": "0024:11d7",
+    "name": "__fcompp"
+  },
+  {
+    "addr": "0024:040c",
+    "name": "_strncpy"
+  },
+  {
+    "addr": "0024:17c7",
+    "name": "__rtinfnpop"
+  },
+  {
+    "addr": "0024:24b6",
+    "name": "__rtindfpop"
+  },
+  {
+    "addr": "0025:1c86",
+    "name": "__fpinit"
+  },
+  {
+    "addr": "0025:18b6",
+    "name": "__asizeC"
+  },
+  {
+    "addr": "0025:18b7",
+    "name": "__asizeD"
+  },
+  {
+    "addr": "0024:21ee",
+    "name": "__wcinit"
+  },
+  {
+    "addr": "0024:2497",
+    "name": "__rtzeronpop"
+  },
+  {
+    "addr": "0024:00c4",
+    "name": "__cinit"
+  },
+  {
+    "addr": "0024:117c",
+    "name": "_asin"
+  },
+  {
+    "addr": "0024:1187",
+    "name": "_atan"
+  },
+  {
+    "addr": "0024:118c",
+    "name": "_atan2"
+  },
+  {
+    "addr": "0025:1710",
+    "name": "_errno"
+  },
+  {
+    "addr": "0024:12c4",
+    "name": "__chkstk"
+  },
+  {
+    "addr": "0024:12f8",
+    "name": "__setargv"
+  },
+  {
+    "addr": "0025:16ea",
+    "name": "__cmdShow"
+  },
+  {
+    "addr": "0024:175a",
+    "name": "__rtinfnpopse"
+  },
+  {
+    "addr": "0024:0d68",
+    "name": "__aFuldiv"
+  },
+  {
+    "addr": "0024:0470",
+    "name": "__filelength"
+  },
+  {
+    "addr": "0025:1874",
+    "name": "__adbgmsg"
+  },
+  {
+    "addr": "0024:1152",
+    "name": "__aFCIlog10"
+  },
+  {
+    "addr": "0024:114c",
+    "name": "__aFCIlog"
+  },
+  {
+    "addr": "0024:1146",
+    "name": "__aFCIpow"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINSetFocus"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINGetFocus"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINGetSize"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINSetSize"
+  },
+  {
+    "addr": "0024:1aea",
+    "name": "__positive"
+  },
+  {
+    "addr": "0024:2ab2",
+    "name": "__growseg"
+  },
+  {
+    "addr": "0024:3882",
+    "name": "__LD12MULTTENPOWER"
+  },
+  {
+    "addr": "0025:175b",
+    "name": "__child"
+  },
+  {
+    "addr": "0025:1722",
+    "name": "__nfile"
+  },
+  {
+    "addr": "0025:1724",
+    "name": "__wfile"
+  },
+  {
+    "addr": "0024:0434",
+    "name": "_atoi"
+  },
+  {
+    "addr": "0024:01b1",
+    "name": "__exit"
+  },
+  {
+    "addr": "0025:1878",
+    "name": "__aaltstkovr"
+  },
+  {
+    "addr": "0024:105a",
+    "name": "__fmemmove"
+  },
+  {
+    "addr": "0024:2a9e",
+    "name": "___ExportedStub"
+  },
+  {
+    "addr": "0024:1618",
+    "name": "__aFahdiff"
+  },
+  {
+    "addr": "0025:16e2",
+    "name": "__hPrevInstance"
+  },
+  {
+    "addr": "0025:1702",
+    "name": "__aintdiv"
+  },
+  {
+    "addr": "0024:150a",
+    "name": "__cintDIV"
+  },
+  {
+    "addr": "0025:1bfa",
+    "name": "__80x87"
+  },
+  {
+    "addr": "0025:16e0",
+    "name": "_STKHQQ"
+  },
+  {
+    "addr": "0024:01c0",
+    "name": "__cexit"
+  },
+  {
+    "addr": "0024:0241",
+    "name": "__ctermsub"
+  },
+  {
+    "addr": "0024:25f9",
+    "name": "_Soft_fFTAN"
+  },
+  {
+    "addr": "0025:16f2",
+    "name": "___aDBrterr"
+  },
+  {
+    "addr": "0025:1a34",
+    "name": "__atn2jmptab"
+  },
+  {
+    "addr": "0024:0fbe",
+    "name": "__fstrcat"
+  },
+  {
+    "addr": "0024:204a",
+    "name": "__cintrindisp1"
+  },
+  {
+    "addr": "0024:201a",
+    "name": "__cintrindisp2"
+  },
+  {
+    "addr": "0025:1962",
+    "name": "__expjmptab"
+  },
+  {
+    "addr": "0024:32fa",
+    "name": "__STRINGTOD"
+  },
+  {
+    "addr": "0025:1a04",
+    "name": "__acsjmptab"
+  },
+  {
+    "addr": "0025:19a4",
+    "name": "__cosjmptab"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINOpen"
+  },
+  {
+    "addr": "0025:1aa6",
+    "name": "__qwinused"
+  },
+  {
+    "addr": "0024:21f3",
+    "name": "__QWINYield"
+  },
+  {
+    "addr": "0024:0b9a",
+    "name": "__dos_getdiskfree"
+  },
+  {
+    "addr": "0025:171f",
+    "name": "__cpumode"
+  },
+  {
+    "addr": "0024:1638",
+    "name": "__cltoasub"
+  },
+  {
+    "addr": "0025:1902",
+    "name": "__ytoxjmptab"
+  },
+  {
+    "addr": "0024:1012",
+    "name": "__fmemset"
+  },
+  {
+    "addr": "0025:18d0",
+    "name": "__infinity"
+  },
+  {
+    "addr": "0025:1932",
+    "name": "__logjmptab"
+  },
+  {
+    "addr": "0024:056e",
+    "name": "__strtime"
+  },
+  {
+    "addr": "0024:050a",
+    "name": "__strdate"
+  },
+  {
+    "addr": "0024:12c4",
+    "name": "__aFchkstk"
+  },
+  {
+    "addr": "0025:1896",
+    "name": "__cfltcvt_tab"
+  },
+  {
+    "addr": "0024:21fa",
+    "name": "__NMSG_TEXT"
+  },
+  {
+    "addr": "0024:155f",
+    "name": "__dosreturn"
+  },
+  {
+    "addr": "0024:12a4",
+    "name": "__aNchkstk"
+  },
+  {
+    "addr": "0024:1f78",
+    "name": "__cfltcvt"
+  },
+  {
+    "addr": "0025:19bc",
+    "name": "__tanjmptab"
+  },
+  {
+    "addr": "0024:3adc",
+    "name": "__MANTOLD12"
+  },
+  {
+    "addr": "0025:198c",
+    "name": "__sinjmptab"
+  },
+  {
+    "addr": "0025:1a1c",
+    "name": "__atnjmptab"
+  },
+  {
+    "addr": "0025:19ec",
+    "name": "__asnjmptab"
+  },
+  {
+    "addr": "0024:248f",
+    "name": "__rtnospopde"
+  }
+]
+

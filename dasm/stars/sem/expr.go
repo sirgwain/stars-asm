@@ -136,6 +136,18 @@ func (*Const) expr() {}
 // ExprType returns the constant type.
 func (v *Const) ExprType() typeinfo.Type { return v.TypeInfo }
 
+// Const is an integer constant expression.
+type Register struct {
+	Val    asm.Reg
+	SegNum uint16
+}
+
+// expr marks Const as an expression.
+func (*Register) expr() {}
+
+// ExprType returns the constant type.
+func (v *Register) ExprType() typeinfo.Type { return typeinfo.U16 }
+
 // StringLiteral is a resolved static C string literal.
 type StringLiteral struct {
 	TypeInfo typeinfo.Type
@@ -346,6 +358,28 @@ func (v *FarPointer) ExprType() typeinfo.Type {
 		return v.TypeInfo
 	}
 	return typeinfo.U16
+}
+
+// For a far pointer, return the segment as a number, if it's a const or a register
+func (v *FarPointer) SegNum() (uint16, bool) {
+	if segReg, ok := v.Segment.(*Register); ok {
+		if segReg.SegNum == 0 {
+			return 0, false
+		}
+		return segReg.SegNum, true
+	}
+
+	if segConst, ok := v.Segment.(*Const); ok {
+		segNum := uint16(segConst.U64)
+		if fx := segConst.Fixup; fx != nil &&
+			fx.Source == asm.FixupSourceSegment &&
+			fx.Target == asm.FixupTargetInternalRef {
+
+			segNum = fx.TargetSegNum
+		}
+		return segNum, true
+	}
+	return 0, false
 }
 
 // PointerOffset is a pointer advanced by a byte offset expression.

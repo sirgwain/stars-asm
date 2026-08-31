@@ -1,0 +1,443 @@
+[
+  {
+    "name": "AIHIST",
+    "size": "0x0504"
+  },
+  {
+    "name": "AIPART",
+    "size": "0x0002"
+  },
+  {
+    "name": "AISTARBASE",
+    "size": "0x0014"
+  },
+  {
+    "name": "ARMOR",
+    "size": "0x0036"
+  },
+  {
+    "name": "BEAM",
+    "size": "0x003c"
+  },
+  {
+    "name": "BOMB",
+    "size": "0x003a"
+  },
+  {
+    "name": "BTLDATA",
+    "size": "0x000e"
+  },
+  {
+    "name": "BTLPLAN",
+    "size": "0x0024"
+  },
+  {
+    "name": "BTLREC",
+    "size": "0x0006"
+  },
+  {
+    "name": "BTLREC26",
+    "size": "0x0006"
+  },
+  {
+    "name": "BTN",
+    "size": "0x000e"
+  },
+  {
+    "name": "BTNT",
+    "size": "0x0018"
+  },
+  {
+    "name": "COLDROP",
+    "size": "0x000c"
+  },
+  {
+    "name": "COMPART",
+    "size": "0x0034"
+  },
+  {
+    "name": "CYBERINFO",
+    "size": "0x0002"
+  },
+  {
+    "name": "CYBERINFOTEMP",
+    "size": "0x0002"
+  },
+  {
+    "name": "DRAWCIR",
+    "size": "0x0018"
+  },
+  {
+    "name": "DV",
+    "size": "0x0002"
+  },
+  {
+    "name": "ENGINE",
+    "size": "0x004e"
+  },
+  {
+    "name": "FLEET",
+    "size": "0x007c"
+  },
+  {
+    "name": "FLEETID",
+    "size": "0x0002"
+  },
+  {
+    "name": "FLEETSOME",
+    "size": "0x000c"
+  },
+  {
+    "name": "FRAMESTUFF",
+    "size": "0x0016"
+  },
+  {
+    "name": "GAME",
+    "size": "0x0040"
+  },
+  {
+    "name": "GDATA",
+    "size": "0x000a"
+  },
+  {
+    "name": "HB",
+    "size": "0x0010"
+  },
+  {
+    "name": "HDR",
+    "size": "0x0002"
+  },
+  {
+    "name": "HS",
+    "size": "0x0004"
+  },
+  {
+    "name": "HUL",
+    "size": "0x007b"
+  },
+  {
+    "name": "HULDEF",
+    "size": "0x008f"
+  },
+  {
+    "name": "INI",
+    "size": "0x001a"
+  },
+  {
+    "name": "ITEMACTION",
+    "size": "0x0002"
+  },
+  {
+    "name": "KILL",
+    "size": "0x0008"
+  },
+  {
+    "name": "LOGXFER",
+    "size": "0x0018"
+  },
+  {
+    "name": "LOGXFERF",
+    "size": "0x0024"
+  },
+  {
+    "name": "LSB",
+    "size": "0x0004"
+  },
+  {
+    "name": "MDPLR",
+    "size": "0x0002"
+  },
+  {
+    "name": "MINES",
+    "size": "0x0036"
+  },
+  {
+    "name": "MINING",
+    "size": "0x0036"
+  },
+  {
+    "name": "MSGBIG",
+    "size": "0x0012"
+  },
+  {
+    "name": "MSGHDR",
+    "size": "0x0004"
+  },
+  {
+    "name": "MSGPLR",
+    "size": "0x000c"
+  },
+  {
+    "name": "MSGTURN",
+    "size": "0x0005"
+  },
+  {
+    "name": "OBJ",
+    "size": "0x0002"
+  },
+  {
+    "name": "ORDER",
+    "size": "0x0012"
+  },
+  {
+    "name": "PART",
+    "size": "0x0008"
+  },
+  {
+    "name": "PL",
+    "size": "0x0004"
+  },
+  {
+    "name": "PLANET",
+    "size": "0x0038"
+  },
+  {
+    "name": "PLANETARY",
+    "size": "0x0036"
+  },
+  {
+    "name": "PLANETMINIMAL",
+    "size": "0x0006"
+  },
+  {
+    "name": "PLANETSOME",
+    "size": "0x0017"
+  },
+  {
+    "name": "PLAYER",
+    "size": "0x00c0"
+  },
+  {
+    "name": "PLORD",
+    "size": "0x0004"
+  },
+  {
+    "name": "PLPROD",
+    "size": "0x0004"
+  },
+  {
+    "name": "POPUPDATA",
+    "size": "0x0016"
+  },
+  {
+    "name": "PROD",
+    "size": "0x0004"
+  },
+  {
+    "name": "PRODQ1",
+    "size": "0x0002"
+  },
+  {
+    "name": "RPT",
+    "size": "0x0036"
+  },
+  {
+    "name": "RTBOF",
+    "size": "0x0010"
+  },
+  {
+    "name": "RTCHGNAME",
+    "size": "0x0025"
+  },
+  {
+    "name": "RTCHGPLANETLONG",
+    "size": "0x0006"
+  },
+  {
+    "name": "RTCHGPRODQ",
+    "size": "0x0002"
+  },
+  {
+    "name": "RTCHGSHDEF",
+    "size": "0x0013"
+  },
+  {
+    "name": "RTHISTHDR",
+    "size": "0x0004"
+  },
+  {
+    "name": "RTLOGHDR",
+    "size": "0x0011"
+  },
+  {
+    "name": "RTLOGTHING",
+    "size": "0x0004"
+  },
+  {
+    "name": "RTPLANET",
+    "size": "0x0004"
+  },
+  {
+    "name": "RTSHDEF",
+    "size": "0x0011"
+  },
+  {
+    "name": "RTSHIPINT",
+    "size": "0x0004"
+  },
+  {
+    "name": "RTSHIPINT2",
+    "size": "0x0006"
+  },
+  {
+    "name": "RTWAYPT",
+    "size": "0x0016"
+  },
+  {
+    "name": "RTXFER",
+    "size": "0x0007"
+  },
+  {
+    "name": "RTXFERF",
+    "size": "0x0009"
+  },
+  {
+    "name": "RTXFERL",
+    "size": "0x000a"
+  },
+  {
+    "name": "RTXFERX",
+    "size": "0x0008"
+  },
+  {
+    "name": "SBAR",
+    "size": "0x000c"
+  },
+  {
+    "name": "SCAN",
+    "size": "0x0010"
+  },
+  {
+    "name": "SCANNER",
+    "size": "0x0038"
+  },
+  {
+    "name": "SCORE",
+    "size": "0x0014"
+  },
+  {
+    "name": "SCOREX",
+    "size": "0x0018"
+  },
+  {
+    "name": "SEL",
+    "size": "0x00e2"
+  },
+  {
+    "name": "SELSOME",
+    "size": "0x001c"
+  },
+  {
+    "name": "SHDEF",
+    "size": "0x0093"
+  },
+  {
+    "name": "SHIELD",
+    "size": "0x0036"
+  },
+  {
+    "name": "SPECIAL",
+    "size": "0x0036"
+  },
+  {
+    "name": "SPECIALSB",
+    "size": "0x0038"
+  },
+  {
+    "name": "STARPACK",
+    "size": "0x0004"
+  },
+  {
+    "name": "TASKLAYMINES",
+    "size": "0x0004"
+  },
+  {
+    "name": "TASKPATROL",
+    "size": "0x0004"
+  },
+  {
+    "name": "TASKSELL",
+    "size": "0x0002"
+  },
+  {
+    "name": "TASKXPORT",
+    "size": "0x000a"
+  },
+  {
+    "name": "TERRA",
+    "size": "0x0036"
+  },
+  {
+    "name": "THING",
+    "size": "0x0012"
+  },
+  {
+    "name": "THMINE",
+    "size": "0x000a"
+  },
+  {
+    "name": "THPACK",
+    "size": "0x000a"
+  },
+  {
+    "name": "THTRADER",
+    "size": "0x000a"
+  },
+  {
+    "name": "THWORM",
+    "size": "0x0008"
+  },
+  {
+    "name": "TILE",
+    "size": "0x0010"
+  },
+  {
+    "name": "TIMER",
+    "size": "0x000a"
+  },
+  {
+    "name": "TOK",
+    "size": "0x001d"
+  },
+  {
+    "name": "TORP",
+    "size": "0x003c"
+  },
+  {
+    "name": "TURNSERIAL",
+    "size": "0x0010"
+  },
+  {
+    "name": "TUTOR",
+    "size": "0x002c"
+  },
+  {
+    "name": "VERS",
+    "size": "0x0002"
+  },
+  {
+    "name": "WN",
+    "size": "0x000a"
+  },
+  {
+    "name": "XFER",
+    "size": "0x0080"
+  },
+  {
+    "name": "XFERFULL",
+    "size": "0x0019"
+  },
+  {
+    "name": "ZIPORDER",
+    "size": "0x0018"
+  },
+  {
+    "name": "ZIPPRODQ",
+    "size": "0x0028"
+  },
+  {
+    "name": "ZIPPRODQ1",
+    "size": "0x001a"
+  }
+]
+

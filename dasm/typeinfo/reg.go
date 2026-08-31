@@ -1,6 +1,9 @@
 package typeinfo
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Register is a logical Win16 x86 register used by symbol metadata and asm.
 type Register uint8
@@ -75,6 +78,53 @@ func (r Register) String() string {
 		return "bh"
 	default:
 		return fmt.Sprintf("reg(%d)", r)
+	}
+}
+
+func RegFromString(s string) Register {
+	switch strings.ToLower(s) {
+	case "ax":
+		return RegAX
+	case "cx":
+		return RegCX
+	case "dx":
+		return RegDX
+	case "bx":
+		return RegBX
+	case "sp":
+		return RegSP
+	case "bp":
+		return RegBP
+	case "si":
+		return RegSI
+	case "di":
+		return RegDI
+	case "es":
+		return RegES
+	case "cs":
+		return RegCS
+	case "ss":
+		return RegSS
+	case "ds":
+		return RegDS
+	case "al":
+		return RegAL
+	case "cl":
+		return RegCL
+	case "dl":
+		return RegDL
+	case "bl":
+		return RegBL
+	case "ah":
+		return RegAH
+	case "ch":
+		return RegCH
+	case "dh":
+		return RegDH
+	case "bh":
+		return RegBH
+	default:
+		return RegNone
 	}
 }
 

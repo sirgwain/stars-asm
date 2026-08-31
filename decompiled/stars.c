@@ -9,10 +9,10 @@ int16_t WinMain(uint16_t hInstance, uint16_t hPrevInstance, char *lpCmdLine, int
 
 L_0000:
     hInst = hInstance;
-    /* untranslated: part[0:1](szBase) = 0x0 */
+    szBase[0x0] = 0x0;
     ini.wFlags = 0x0;
-    memset(0x520c, 0x0, 0x2c);
-    memset(0x3ef0, 0x0, 0xa);
+    memset(&(tutor), 0x0, 0x2c);
+    memset(&(vtimer), 0x0, 0xa);
     vtimer.fAutoGenWhenIn = 0x1;
     if ((hPrevInstance != 0x0))
         goto L_0085;
@@ -355,7 +355,7 @@ L_0450:
 L_0466:
     *(pch) = 0x0;
     lpT = (lpT - 0x1);
-    lSaltLast = LSaltFromSz(0x22e0);
+    lSaltLast = LSaltFromSz(szPassLast);
     goto L_050d;
 
 L_0489:
@@ -448,7 +448,10 @@ L_062e:
         goto L_0638;
 
 L_0638:
-    /* untranslated: branch FHandleKey(msg.hwnd, msg.message, msg.wParam, words(part[8:2](msg), part[6:2](msg))) != 0x0 ? L_058a : L_065b */
+    if ((FHandleKey(msg.hwnd, msg.message, msg.wParam, msg.lParam) != 0x0))
+        goto L_058a;
+    else
+        goto L_065b;
 
 L_065b:
     if ((msg.message != 0x102))
@@ -457,7 +460,10 @@ L_065b:
         goto L_0665;
 
 L_0665:
-    /* untranslated: branch FHandleChar(msg.hwnd, msg.wParam, words(part[8:2](msg), part[6:2](msg))) != 0x0 ? L_058a : L_0681 */
+    if ((FHandleChar(msg.hwnd, msg.wParam, msg.lParam) != 0x0))
+        goto L_058a;
+    else
+        goto L_0681;
 
 L_0681:
     DispatchMessage(&(msg));
@@ -484,7 +490,7 @@ L_06a4:
 L_06c9:
 
 L_06cf:
-    StreamOpen(0x56a2, 0x20);
+    StreamOpen(szBase, 0x20);
     cb = LOWORD(filelength(hf));
     lpchBatch = LpAlloc(cb, htPerm);
     RgFromStream(&(lpchBatch), cb);
@@ -529,7 +535,7 @@ LError:
         goto L_0799;
 
 L_0799:
-    /* untranslated: part[0:1](szBase) = 0x0 */
+    szBase[0x0] = 0x0;
 
 L_079e:
 
@@ -541,7 +547,10 @@ int16_t IPlrAlsoCheater(int16_t iplr) {
     int16_t i;
 
 L_07aa:
-    /* untranslated: branch FValidSerialLong(words(HIWORD(vrgts[iplr]), LOWORD(vrgts[iplr]))) != 0x0 ? L_07e9 : L_07e3 */
+    if ((FValidSerialLong(vrgts[iplr].lSerialNumber) != 0x0))
+        goto L_07e9;
+    else
+        goto L_07e3;
 
 L_07e3:
     return 0xffff;
@@ -566,22 +575,28 @@ L_0800:
         goto L_080b;
 
 L_080b:
-    /* untranslated: branch ((part[84:2](rgplr[i]) >> 0x2) & 0x1) == 0x0 ? L_07f1 : L_0828 */
+    if ((((rgplr[i].wFlags >> 0x2) & 0x1) == 0x0))
+        goto L_07f1;
+    else
+        goto L_0828;
 
 L_0828:
-    if ((LOWORD(vrgts[iplr]) != LOWORD(vrgts[i])))
+    if ((LOWORD(vrgts[iplr].lSerialNumber) != LOWORD(vrgts[i].lSerialNumber)))
         goto L_07f1;
     else
         goto L_0867;
 
 L_0867:
-    if ((HIWORD(vrgts[iplr]) != HIWORD(vrgts[i])))
+    if ((HIWORD(vrgts[iplr].lSerialNumber) != HIWORD(vrgts[i].lSerialNumber)))
         goto L_07f1;
     else
         goto L_0870;
 
 L_0870:
-    /* untranslated: branch fmemcmp(&part[4:0](vrgts[iplr]), &part[4:0](vrgts[i]), 0xb) == 0x0 ? L_07f1 : L_08bc */
+    if ((fmemcmp(&(vrgts[iplr].rgbConfig), &(vrgts[i].rgbConfig), 0xb) == 0x0))
+        goto L_07f1;
+    else
+        goto L_08bc;
 
 L_08bc:
     return i;
@@ -1090,8 +1105,8 @@ L_117d:
     DeleteObject(hpenDkBlue);
     DeleteObject(hpenYellow);
     DeleteObject(hpenDkYellow);
-    DeleteObject(LOWORD(rghfontArial10));
-    DeleteObject(HIWORD(rghfontArial10));
+    DeleteObject(rghfontArial10[0x0]);
+    DeleteObject(rghfontArial10[0x1]);
     i = 0x0;
     goto L_11c4;
 
@@ -1177,7 +1192,7 @@ L_1306:
 L_130c:
     GetClientRect(hwndCtl, &(rc));
     hdc = GetDC(hwndCtl);
-    SelectObject(hdc, HIWORD(rghfontArial8));
+    SelectObject(hdc, rghfontArial8[0x1]);
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -1209,7 +1224,7 @@ L_13a8:
         goto L_13b1;
 
 L_13b1:
-    /* untranslated: call RcCtrTextOut(hdc, &rc, PszGetCompressedString(part[37:0](szDirName[i])), 0xffff) -> callresult(void) */
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 0x277)), 0xffff);
     goto L_13e3;
 
 L_13d7:
@@ -1970,7 +1985,7 @@ L_1b1c:
 
 L_1b25:
     /* untranslated: part[6:2](sel.fl.lpplord->rgord[iwp]) = ((part[6:2](sel.fl.lpplord->rgord[iwp]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
-    FLookupFleet(0xffff, 0x4972);
+    FLookupFleet(0xffff, &(sel.fl));
     DrawPlanShip(0x0, 0x4220);
 
 L_1b9a:

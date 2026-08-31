@@ -17,7 +17,7 @@ L_0000:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = 0xd
     wc.lpszMenuName = "StarsMenu"
-    wc.lpszClassName = "starsframe"
+    wc.lpszClassName = szFrame
     branch RegisterClass(&wc) != 0x0 ? L_0076 : L_0070
 
 L_0070:
@@ -29,7 +29,7 @@ L_0076:
     wc.hIcon = 0x0
     wc.lpszMenuName = 0x0
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.lpszClassName = "starsmessage"
+    wc.lpszClassName = szMessage
     branch RegisterClass(&wc) != 0x0 ? L_00c5 : L_00bf
 
 L_00bf:
@@ -39,7 +39,7 @@ L_00c5:
     wc.style = 0x20b
     wc.lpfnWndProc = ScannerWndProc
     wc.hbrBackground = GetStockObject(BLACK_BRUSH)
-    wc.lpszClassName = "starsscan"
+    wc.lpszClassName = szScan
     branch RegisterClass(&wc) != 0x0 ? L_0105 : L_00ff
 
 L_00ff:
@@ -49,7 +49,7 @@ L_0105:
     wc.style = 0x20b
     wc.lpfnWndProc = MineWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.lpszClassName = "starsmine"
+    wc.lpszClassName = szMine
     branch RegisterClass(&wc) != 0x0 ? L_0145 : L_013f
 
 L_013f:
@@ -59,7 +59,7 @@ L_0145:
     wc.style = 0x208
     wc.lpfnWndProc = TbWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.lpszClassName = "starstb"
+    wc.lpszClassName = szTb
     branch RegisterClass(&wc) != 0x0 ? L_0185 : L_017f
 
 L_017f:
@@ -70,7 +70,7 @@ L_0185:
     wc.lpfnWndProc = PlanetWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.hIcon = 0x0
-    wc.lpszClassName = "starsplanet"
+    wc.lpszClassName = szPlanet
     branch RegisterClass(&wc) != 0x0 ? L_01ca : L_01c4
 
 L_01c4:
@@ -81,7 +81,7 @@ L_01ca:
     wc.lpfnWndProc = PopupWndProc
     wc.hbrBackground = GetStockObject(WHITE_BRUSH)
     wc.hIcon = 0x0
-    wc.lpszClassName = "starspopup"
+    wc.lpszClassName = szPopup
     branch RegisterClass(&wc) != 0x0 ? L_020f : L_0209
 
 L_0209:
@@ -92,7 +92,7 @@ L_020f:
     wc.lpfnWndProc = TooltipWndProc
     wc.hbrBackground = GetStockObject(WHITE_BRUSH)
     wc.hIcon = 0x0
-    wc.lpszClassName = "starstt"
+    wc.lpszClassName = szTooltip
     branch RegisterClass(&wc) != 0x0 ? L_0254 : L_024e
 
 L_024e:
@@ -103,7 +103,7 @@ L_0254:
     wc.lpfnWndProc = BrowserWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.hIcon = 0x0
-    wc.lpszClassName = "starsbrowser"
+    wc.lpszClassName = szBrowser
     branch RegisterClass(&wc) != 0x0 ? L_0299 : L_0293
 
 L_0293:
@@ -119,7 +119,7 @@ L_0299:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = GetStockObject(BLACK_BRUSH)
     wc.lpszMenuName = 0x0
-    wc.lpszClassName = "starstitle"
+    wc.lpszClassName = szTitle
     branch RegisterClass(&wc) != 0x0 ? L_030c : L_0306
 
 L_0306:
@@ -135,7 +135,7 @@ L_030c:
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.lpszMenuName = 0x0
-    wc.lpszClassName = "starsreport"
+    wc.lpszClassName = szReport
     branch RegisterClass(&wc) != 0x0 ? L_037f : L_0379
 
 L_0379:

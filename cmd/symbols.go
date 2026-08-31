@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -13,6 +14,8 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 	"github.com/spf13/cobra"
 )
+
+var jsonOutput = false
 
 func newSymbolsCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -45,6 +48,7 @@ func newSymbolsCmd() *cobra.Command {
 		},
 	}
 
+	cmd.PersistentFlags().BoolVar(&jsonOutput, "json", false, "output as json")
 	cmd.AddCommand(newSymbolsPublicsCmd())
 	cmd.AddCommand(newSymbolsGlobalsCmd())
 	cmd.AddCommand(newSymbolsFuncsCmd())
@@ -75,10 +79,10 @@ func newSymbolsGlobalsCmd() *cobra.Command {
 				return nil
 			}
 			type row struct {
-				Addr   string `header:"Address"`
-				Name   string `header:"Name"`
-				Type   string `header:"Type"`
-				Module string `header:"Module"`
+				Addr   string `header:"Address" json:"addr,omitempty"`
+				Name   string `header:"Name" json:"name,omitempty"`
+				Type   string `header:"Type" json:"type,omitempty"`
+				Module string `header:"Module" json:"module,omitempty"`
 			}
 
 			globals := sdb.Globals
@@ -92,9 +96,17 @@ func newSymbolsGlobalsCmd() *cobra.Command {
 				})
 			}
 
-			printer := tableprinter.New(os.Stdout)
-			printer.Print(rows)
-			fmt.Printf("\n%d globals\n", len(globals))
+			if jsonOutput {
+				json := json.NewEncoder(os.Stdout)
+				json.SetIndent("", "  ")
+				if err := json.Encode(rows); err != nil {
+					return err
+				}
+			} else {
+				printer := tableprinter.New(os.Stdout)
+				printer.Print(rows)
+				fmt.Printf("\n%d globals\n", len(globals))
+			}
 			return nil
 		},
 	}
@@ -126,13 +138,13 @@ func newSymbolsFuncsCmd() *cobra.Command {
 				return nil
 			}
 			type row struct {
-				Addr   string `header:"Address"`
-				Name   string `header:"Name"`
-				Type   string `header:"Type"`
-				Len    uint   `header:"Len"`
-				Blocks int    `header:"Blocks"`
-				Labels int    `header:"Labels"`
-				Module string `header:"Module"`
+				Addr   string `header:"Address" json:"addr,omitempty"`
+				Name   string `header:"Name" json:"name,omitempty"`
+				Type   string `header:"Type" json:"type,omitempty"`
+				Len    uint   `header:"Len" json:"len,omitempty"`
+				Blocks int    `header:"Blocks" json:"blocks,omitempty"`
+				Labels int    `header:"Labels" json:"labels,omitempty"`
+				Module string `header:"Module" json:"module,omitempty"`
 			}
 
 			funcs := sdb.Functions
@@ -152,9 +164,17 @@ func newSymbolsFuncsCmd() *cobra.Command {
 				})
 			}
 
-			printer := tableprinter.New(os.Stdout)
-			printer.Print(rows)
-			fmt.Printf("\n%d procedures\n", len(funcs))
+			if jsonOutput {
+				json := json.NewEncoder(os.Stdout)
+				json.SetIndent("", "  ")
+				if err := json.Encode(rows); err != nil {
+					return err
+				}
+			} else {
+				printer := tableprinter.New(os.Stdout)
+				printer.Print(rows)
+				fmt.Printf("\n%d procedures\n", len(funcs))
+			}
 			return nil
 		},
 	}
@@ -183,9 +203,9 @@ func newSymbolsStructsCmd() *cobra.Command {
 				return dumpStructDetail(os.Stdout, s)
 			}
 			type row struct {
-				Name    string `header:"Name"`
-				Size    string `header:"Size"`
-				Windows string `header:"Windows"`
+				Name    string `header:"Name" json:"name,omitempty"`
+				Size    string `header:"Size" json:"size,omitempty"`
+				Windows string `header:"Windows" json:"windows,omitempty"`
 			}
 
 			structs := sdb.Structs
@@ -205,9 +225,17 @@ func newSymbolsStructsCmd() *cobra.Command {
 				})
 			}
 
-			printer := tableprinter.New(os.Stdout)
-			printer.Print(rows)
-			fmt.Printf("\n%d structs\n", len(structs))
+			if jsonOutput {
+				json := json.NewEncoder(os.Stdout)
+				json.SetIndent("", "  ")
+				if err := json.Encode(rows); err != nil {
+					return err
+				}
+			} else {
+				printer := tableprinter.New(os.Stdout)
+				printer.Print(rows)
+				fmt.Printf("\n%d structs\n", len(structs))
+			}
 			return nil
 		},
 	}
@@ -251,8 +279,8 @@ func newSymbolsPublicsCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			type row struct {
-				Addr string `header:"Address"`
-				Name string `header:"Name"`
+				Addr string `header:"Address" json:"addr,omitempty"`
+				Name string `header:"Name" json:"name,omitempty"`
 			}
 
 			publics := sdb.Publics
@@ -264,9 +292,17 @@ func newSymbolsPublicsCmd() *cobra.Command {
 				})
 			}
 
-			printer := tableprinter.New(os.Stdout)
-			printer.Print(rows)
-			fmt.Printf("\n%d publics\n", len(publics))
+			if jsonOutput {
+				json := json.NewEncoder(os.Stdout)
+				json.SetIndent("", "  ")
+				if err := json.Encode(rows); err != nil {
+					return err
+				}
+			} else {
+				printer := tableprinter.New(os.Stdout)
+				printer.Print(rows)
+				fmt.Printf("\n%d publics\n", len(publics))
+			}
 			return nil
 		},
 	}

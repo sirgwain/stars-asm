@@ -38,8 +38,8 @@ func (c *machineConverter) convertFarPointerTyped(value machine.Value, expected 
 // resolveStackFarPointerTyped resolves SS:offset far pointers to local addresses.
 func (c *machineConverter) resolveStackFarPointerTyped(ptr *machine.FarPointer, expected typeinfo.Type) (Expr, bool) {
 	expectedPtr, ok := expected.(*typeinfo.Pointer)
-	seg, segOK := ptr.Segment.(*machine.Scalar)
-	if !ok || !typeinfo.IsFarPointer(expected) || !segOK || seg.Name != "ss" {
+	seg, segOK := ptr.Segment.(*machine.Reg)
+	if !ok || !typeinfo.IsFarPointer(expected) || !segOK || seg.Val != asm.RegSS {
 		return nil, false
 	}
 	addr, ok := ptr.Offset.(*machine.Address)
@@ -104,21 +104,29 @@ func (c *machineConverter) resolveDirectFarPointerTyped(ptr *machine.FarPointer,
 		return nil, false
 	}
 	off, offOK := ptr.Offset.(*machine.Const)
-	seg, segOK := ptr.Segment.(*machine.Const)
-	if !offOK || !segOK {
+	segConst, segConstOK := ptr.Segment.(*machine.Const)
+	segReg, segRegOK := ptr.Segment.(*machine.Reg)
+	if !offOK || (!segConstOK && !segRegOK) {
 		return nil, false
 	}
-	if off.Val == 0 && seg.Val == 0 {
-		// nil pointer
-		return &Const{U64: 0, TypeInfo: typeinfo.U32, Origin: off.Origin}, true
+
+	segNum := uint16(0)
+	if segRegOK {
+		segNum = c.ctx.segFromRegister(segReg.Val)
+	}
+	if segConstOK {
+		segNum = uint16(segConst.Val)
+		if fx := segConst.Fixup; fx != nil &&
+			fx.Source == asm.FixupSourceSegment &&
+			fx.Target == asm.FixupTargetInternalRef {
+
+			segNum = fx.TargetSegNum
+		}
 	}
 
-	segNum := uint16(seg.Val)
-	if fx := seg.Fixup; fx != nil &&
-		fx.Source == asm.FixupSourceSegment &&
-		fx.Target == asm.FixupTargetInternalRef {
-
-		segNum = fx.TargetSegNum
+	if off.Val == 0 && segNum == 0 {
+		// nil pointer
+		return &Const{U64: 0, TypeInfo: typeinfo.U32, Origin: off.Origin}, true
 	}
 
 	if typeinfo.IsFunctionPointer(expected) {
@@ -127,7 +135,10 @@ func (c *machineConverter) resolveDirectFarPointerTyped(ptr *machine.FarPointer,
 		}
 	}
 
-	if global, ok := c.ctx.res.ResolveGlobal(uint16(seg.Val), uint32(off.Val), 0); ok {
+	if segRegOK {
+		segNum = c.ctx.segFromRegister(segReg.Val)
+	}
+	if global, ok := c.ctx.res.ResolveGlobal(segNum, uint32(off.Val), 0); ok {
 		if global.FieldOff == 0 {
 			return &Global{GlobalVar: global.Global}, true
 		}
@@ -144,7 +155,7 @@ func (c *machineConverter) resolveDirectFarPointerTyped(ptr *machine.FarPointer,
 	if !ok || !ptrType.IsCStringPointer() {
 		return nil, false
 	}
-	if text, ok := c.ctx.res.ResolveLiteral(uint16(seg.Val), uint32(off.Val)); ok {
+	if text, ok := c.ctx.res.ResolveLiteral(segNum, uint32(off.Val)); ok {
 		return &StringLiteral{TypeInfo: expected, Text: text}, true
 	}
 	return nil, false

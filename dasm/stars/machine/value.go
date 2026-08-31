@@ -107,7 +107,7 @@ func ConstVal(v uint) *Const       { return &Const{Val: v} }
 func PredicateVal(kind PredicateKind, op string) Value {
 	return &PredicateValue{Kind: kind, Op: op}
 }
-func ScalarVal(scaler string) Value { return &Scalar{Name: scaler} }
+func RegVal(reg asm.Reg) Value { return &Reg{Val: reg} }
 
 // FrameBaseVal returns the canonical BP-relative stack frame base.
 func FrameBaseVal() Value { return &FrameBase{} }
@@ -377,12 +377,12 @@ func (v *Const) WithFixup(fixup *asm.Fixup) *Const {
 }
 func (v *Const) String() string { return fmt.Sprintf("0x%x", v.Val) }
 
-type Scalar struct {
-	Name string
+type Reg struct {
+	Val asm.Reg
 }
 
-func (*Scalar) value()           {}
-func (v *Scalar) String() string { return v.Name }
+func (*Reg) value()           {}
+func (v *Reg) String() string { return v.Val.String() }
 
 // FrameBase represents the canonical BP-relative stack frame base.
 type FrameBase struct{}
@@ -550,9 +550,9 @@ func ValueEquals(a, b Value) bool {
 	case *Const:
 		bv, ok := b.(*Const)
 		return ok && av.Val == bv.Val && originEquals(av.Origin, bv.Origin)
-	case *Scalar:
-		bv, ok := b.(*Scalar)
-		return ok && av.Name == bv.Name
+	case *Reg:
+		bv, ok := b.(*Reg)
+		return ok && av.Val == bv.Val
 	case *FrameBase:
 		_, ok := b.(*FrameBase)
 		return ok

@@ -81,7 +81,7 @@ block L_9f69:
   preds: L_9ef2
   succs: L_9fde
   effects:
-    9f93  copy[0x12] *addr(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0xffff) * 0x12)))]) = *addr(0x25:[addr([bp-ord])])
+    9f93  copy[0x12] *addr(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]):[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4) + loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0xffff) * 0x12)))]) = *addr(ds:[addr([bp-ord])])
     9fad  store[2] ss:[bp-0x18] = (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
     9fb0  store[2] ss:[bp-0x16] = load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
     9fc7  goto L_9fde

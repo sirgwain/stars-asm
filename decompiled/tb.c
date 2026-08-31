@@ -33,7 +33,7 @@ L_002d:
     goto L_0211;
 
 L_003a:
-    /* untranslated: itb = sext8to16(byte 0xe:[i]) */
+    /* untranslated: itb = sext8to16(byte cs:[i]) */
     dx = DxOfBtn(itb);
     if ((itb > 0xfffd))
         goto L_0207;
@@ -49,7 +49,7 @@ L_005d:
 L_0066:
     hwndTBRadar = CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((uint32_t)(((0x1c - dyArial8) + 0xfff8)) / 0x2) + 0x4), dx, (LOWORD((0xb * dyArial8)) + 0x1c),
                                hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndTBRadar, WM_SETFONT, HIWORD(rghfontArial8), 0x0);
+    SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[0x1], 0x0);
     iSel = 0xffff;
     j = 0x0;
     goto L_0137;
@@ -66,7 +66,7 @@ L_00fc:
 
 L_0102:
     _wsprintf(szWork, PCTDPCTPCT, pct);
-    SendMessage(hwndTBRadar, CB_ADDSTRING, 0x0, 0x2557a4);
+    /* untranslated: call SendMessage(hwndTBRadar, CB_ADDSTRING, 0x0, words(ds, 0x57a4)) -> callresult(LRESULT) */
     j = (j + 0x1);
 
 L_0137:
@@ -436,14 +436,14 @@ L_06f0:
     goto L_077d;
 
 L_0723:
-    /* untranslated: ibtn = sext8to16(byte 0xe:[i]) */
+    /* untranslated: ibtn = sext8to16(byte cs:[i]) */
     if ((ibtn < 0x0))
         goto L_0762;
     else
         goto L_0738;
 
 L_0738:
-    /* untranslated: call DrawBitmapButton(hdc, words(pt.y, pt.x), sext8to16(byte 0xe:[i]), FIsButtonDown(ibtn)) -> callresult(void) */
+    /* untranslated: call DrawBitmapButton(hdc, words(pt.y, pt.x), sext8to16(byte cs:[i]), FIsButtonDown(ibtn)) -> callresult(void) */
     goto L_076b;
 
 L_0762:
@@ -585,7 +585,7 @@ L_0b49:
     goto L_0b9c;
 
 L_0b51:
-    /* untranslated: dx = DxOfBtn(sext8to16(byte 0xe:[i])) */
+    /* untranslated: dx = DxOfBtn(sext8to16(byte cs:[i])) */
     if (((x + dx) <= ppt->x))
         goto L_0b92;
     else
@@ -594,7 +594,7 @@ L_0b51:
 L_0b76:
     ppt->x = x;
     ppt->y = 0x4;
-    /* untranslated: return sext8to16(byte 0xe:[i]) */
+    /* untranslated: return sext8to16(byte cs:[i]) */
 
 L_0b92:
     x = (x + dx);
@@ -949,8 +949,8 @@ L_0f0d:
 
 L_0f17:
     rgid[c] = 0x0;
-    /* untranslated: part[250:1](szWork) = 0xff */
-    /* untranslated: part[251:1](szWork) = 0x0 */
+    szWork[0xfa] = 0xff;
+    szWork[0xfb] = 0x0;
     c = (c + 0x1);
     rgszScan[c] = 0x589e;
     i = 0x0;
@@ -972,7 +972,7 @@ L_0f6b:
 L_0f6f:
     LOWORD(rgid[c]) = t_merge_0f6f_0001;
     HIWORD(rgid[c]) = 0x0;
-    CchGetString((i + 0x500), (0x57a4 + LOWORD((0x1e * i))));
+    CchGetString((i + 0x500), &(szWork[(0x1e * i)]));
     c = (c + 0x1);
     rgszScan[c] = (0x57a4 + LOWORD((0x1e * i)));
     i = (i + 0x1);
@@ -1039,7 +1039,7 @@ L_105e:
 
 L_1083:
     rgid[c] = 0x0;
-    CchGetString(i, (0x57a4 + LOWORD(((i + 0xfb05) * 0x14))));
+    CchGetString(i, &(szWork[(0x14 * (i - 0x4fb))]));
     c = (c + 0x1);
     rgszScan[c] = (0x57a4 + LOWORD(((i + 0xfb05) * 0x14)));
     i = (i + 0x1);
@@ -1052,8 +1052,8 @@ L_10d9:
 
 L_10e3:
     rgid[c] = 0x0;
-    /* untranslated: part[200:1](szWork) = 0xff */
-    /* untranslated: part[201:1](szWork) = 0x0 */
+    szWork[0xc8] = 0xff;
+    szWork[0xc9] = 0x0;
     c = (c + 0x1);
     rgszScan[c] = 0x586c;
     ish = 0x0;
@@ -1071,7 +1071,10 @@ L_1135:
         goto L_113e;
 
 L_113e:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) != 0x0 ? L_1125 : L_115c */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_1125;
+    else
+        goto L_115c;
 
 L_115c:
     if (((grbitSh & grbitScanShip) == 0x0))
@@ -1090,7 +1093,7 @@ L_1176:
     LOWORD(rgid[c]) = t_merge_1176_0001;
     HIWORD(rgid[c]) = 0x0;
     c = (c + 0x1);
-    /* untranslated: rgszScan[c] = part[8:0](rgshdef[ish].hul) */
+    rgszScan[c] = rgshdef[ish].hul.szClass;
 
 L_11ab:
     GetCursorPos(&(pt));
@@ -1152,7 +1155,10 @@ L_1251:
     goto L_1294;
 
 L_125e:
-    /* untranslated: branch ((part[123:2](rgshdef[ish]) >> 0x9) & 0x1) != 0x0 ? L_1290 : L_127c */
+    if ((((rgshdef[ish].wFlags >> 0x9) & 0x1) != 0x0))
+        goto L_1290;
+    else
+        goto L_127c;
 
 L_127c:
     iSel = (iSel - 0x1);
@@ -1219,8 +1225,8 @@ L_1361:
 
 L_136b:
     rgid[c] = 0x0;
-    /* untranslated: part[300:1](szWork) = 0xff */
-    /* untranslated: part[301:1](szWork) = 0x0 */
+    szWork[0x12c] = 0xff;
+    szWork[0x12d] = 0x0;
     c = (c + 0x1);
     rgszScan[c] = 0x58d0;
     i = 0x0;
@@ -1242,7 +1248,7 @@ L_13bf:
 L_13c3:
     LOWORD(rgid[c]) = t_merge_13c3_0001;
     HIWORD(rgid[c]) = 0x0;
-    CchGetString((i + 0x17d), (0x57a4 + LOWORD((0x19 * i))));
+    CchGetString((i + 0x17d), &(szWork[(0x19 * i)]));
     c = (c + 0x1);
     rgszScan[c] = (0x57a4 + LOWORD((0x19 * i)));
     i = (i + 0x1);
@@ -1355,7 +1361,7 @@ L_153b:
 L_153f:
     LOWORD(rgid[c]) = t_merge_153f_0001;
     HIWORD(rgid[c]) = 0x0;
-    /* untranslated: call _wsprintf((0x57a4 + (i * 0x8)), PCTDPCTPCT, 0xe:[(i * 0x2)+0xda4]) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(&szWork[(0x8 * i)], PCTDPCTPCT, cs:[(i * 0x2)+0xda4]) -> callresult(int16_t) */
     c = (c + 0x1);
     rgszScan[c] = (0x57a4 + (i * 0x8));
     i = (i + 0x1);
@@ -1585,10 +1591,10 @@ L_187a:
 
 L_1880:
     vidsTooltip = ids;
-    cch = CchGetString(vidsTooltip, 0x57a4);
+    cch = CchGetString(vidsTooltip, szWork);
     vrcTooltip = *(prc);
     hdc = GetDC(0x0);
-    hfontSav = SelectObject(hdc, LOWORD(rghfontArial8));
+    hfontSav = SelectObject(hdc, rghfontArial8[0x0]);
     dxTip = LOWORD(GetTextExtent(hdc, szWork, cch));
     SelectObject(hdc, hfontSav);
     ReleaseDC(0x0, hdc);
@@ -1809,8 +1815,8 @@ L_1c41:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     FrameRect(hdc, &(rc), hbrWindowFrame);
-    SelectObject(hdc, LOWORD(rghfontArial8));
-    cch = CchGetString(vidsTooltip, 0x57a4);
+    SelectObject(hdc, rghfontArial8[0x0]);
+    cch = CchGetString(vidsTooltip, szWork);
     bkSav = SetBkMode(hdc, TRANSPARENT);
     SetTextColor(hdc, crWindowText);
     ExtTextOut(hdc, 0x3, 0x3, 0x0, 0x0, szWork, cch, 0x0);

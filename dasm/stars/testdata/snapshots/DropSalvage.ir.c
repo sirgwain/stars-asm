@@ -5,7 +5,7 @@ void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt)
     THING  *lpth;
 
 L_24dc:
-    lpth = farptr(*(plpth + 0x2), plpth);
+    lpth = *(plpth);
     wtTotal = 0x0;
     i = 0x0;
     goto L_2509;
@@ -104,10 +104,10 @@ L_260d:
 L_2613:
 
 L_2619:
-    LOWORD(lpth->thp) = ((LOWORD(lpth->thp) & 0xc3ff) | 0x0);
+    lpth->thp.iWarp = 0x0;
     lpth->pt.x = ppt->x;
     lpth->pt.y = ppt->y;
-    LOWORD(lpth->thp) = ((LOWORD(lpth->thp) & 0xfc00) | 0x3ff);
+    lpth->thp.idPlanet = 0x3ff;
     goto L_26e9;
 
 L_2657:
@@ -132,7 +132,7 @@ L_26d5:
     lpth->thp.wtMax = 0x0;
 
 L_26e9:
-    LOWORD(lpth->thp) = ((LOWORD(lpth->thp) & 0xbfff) | 0x4000);
+    lpth->thp.fMoved = 0x1;
     goto L_2927;
 
 L_2700:
@@ -143,10 +143,10 @@ L_2708:
     /* untranslated: branch (hiword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + HIWORD(rgwtMinerals[i])) < 0x0 ? L_2842 : L_2746 */
 
 L_2746:
-    /* untranslated: branch (hiword(callresult(uint32_t)) + HIWORD(rgwtMinerals[i])) > 0x0 ? L_2753 : L_274b */
+    /* untranslated: branch (hiword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + HIWORD(rgwtMinerals[i])) > 0x0 ? L_2753 : L_274b */
 
 L_274b:
-    /* untranslated: branch (loword(callresult(uint32_t)) + LOWORD(rgwtMinerals[i])) <= 0x7530 ? L_2842 : L_2753 */
+    /* untranslated: branch (loword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + LOWORD(rgwtMinerals[i])) <= 0x7530 ? L_2842 : L_2753 */
 
 L_2753:
     /* untranslated: wt = (0x7530 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) */
@@ -169,8 +169,8 @@ L_27f8:
 L_27fe:
 
 L_2804:
-    LOWORD(lpth->thp) = ((LOWORD(lpth->thp) & 0xc3ff) | 0x0);
-    LOWORD(lpth->thp) = ((LOWORD(lpth->thp) & 0xfc00) | 0x3ff);
+    lpth->thp.iWarp = 0x0;
+    lpth->thp.idPlanet = 0x3ff;
     lpth->pt.x = ppt->x;
     lpth->pt.y = ppt->y;
     goto L_2900;
@@ -232,8 +232,7 @@ L_2935:
         goto L_293e;
 
 L_293e:
-    plpth = LOWORD(lpth);
-    *(plpth + 0x2) = HIWORD(lpth);
+    *(plpth) = lpth;
 
 L_294c:
     return;

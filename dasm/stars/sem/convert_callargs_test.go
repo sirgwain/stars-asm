@@ -3,6 +3,7 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
@@ -31,7 +32,7 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 		Origin: machine.Origin{InstOff: 0x1016, Role: machine.OperandSrc},
 	})
 	target := machine.MemoryAccess{
-		Seg:    machine.ConstVal(fx.SDB.DGroupFrame),
+		Seg:    machine.RegVal(asm.RegDS),
 		Base:   machine.BinaryVal(machine.ValueOpAdd, ptile, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, i, machine.ConstVal(1)), machine.ConstVal(1)), machine.ConstVal(1)), machine.ConstVal(1))),
 		Disp:   0x6,
 		Width:  4,

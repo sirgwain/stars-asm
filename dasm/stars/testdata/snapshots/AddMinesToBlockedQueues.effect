@@ -92,7 +92,7 @@ block L_182d:
   preds: L_17fc
   succs: L_1835, L_18c8
   effects:
-    1830  branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_18c8 : L_1835
+    1830  branch 0x0 != 0x0 ? L_18c8 : L_1835
 
 block L_1835:
   insts 55..62  off 0x1835..0x184d
@@ -107,7 +107,7 @@ block L_1851:
   preds: L_1835
   succs: L_17a3, L_1859
   effects:
-    1854  branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_1859
+    1854  branch 0x0 == 0x0 ? L_17a3 : L_1859
 
 block L_1859:
   insts 67..74  off 0x1859..0x1871
@@ -122,7 +122,7 @@ block L_1875:
   preds: L_1859
   succs: L_17a3, L_187d
   effects:
-    1878  branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_187d
+    1878  branch 0x0 == 0x0 ? L_17a3 : L_187d
 
 block L_187d:
   insts 79..86  off 0x187d..0x1895
@@ -137,7 +137,7 @@ block L_1899:
   preds: L_187d
   succs: L_17a3, L_18a1
   effects:
-    189c  branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18a1
+    189c  branch 0x0 == 0x0 ? L_17a3 : L_18a1
 
 block L_18a1:
   insts 91..98  off 0x18a1..0x18b9
@@ -152,7 +152,7 @@ block L_18bd:
   preds: L_18a1
   succs: L_17a3, L_18c8
   effects:
-    18c0  branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18c2
+    18c0  branch 0x0 == 0x0 ? L_17a3 : L_18c2
 
 block L_18c2:
   insts 102..102  off 0x18c2..0x18c4
@@ -168,7 +168,7 @@ block L_18c8:
   succs: L_17a3, L_1909
   effects:
     18d2  call ChangeMainObjSel(0x1, load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))])) -> callresult(void)
-    18f5  call PszProductionETA(farptr(0x25, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x0, addr([bp-etaFirst]), 0x0) -> callresult(char *)
+    18f5  call PszProductionETA(farptr(ds, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x0, addr([bp-etaFirst]), 0x0) -> callresult(char *)
     1901  branch load([bp-etaFirst]) == 0x1 ? L_17a3 : L_1903
 
 block L_1903:
@@ -199,7 +199,7 @@ block L_1917:
   succs: L_196f, L_19aa
   effects:
     1930  call GetProductionCosts(farptr(load([bp-lppl+0x2]), load([bp-lppl])), farptr(ss, addr([bp-prod])), addr([bp-rgCost]), load@191b/src([idPlayer]), 0x1) -> callresult(void)
-    1943  call CResourcesAtPlanet(farptr(0x25, 0x49ee), load@1938/src([idPlayer])) -> callresult(int16_t)
+    1943  call CResourcesAtPlanet(farptr(ds, 0x49ee), load@1938/src([idPlayer])) -> callresult(int16_t)
     194c  store[2] [bp-cRes] = callresult(int16_t)
     194f  store[2] [bp-cRes+0x2] = signhiword(callresult(int16_t))
     195c  call __aFulshr(words(load([sel+0xb0]), load([sel+0xb2])), 0x17) -> callresult(uint32_t)
@@ -210,14 +210,14 @@ block L_196f:
   preds: L_1917
   succs: L_1977, L_19aa
   effects:
-    1972  branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_19aa : L_1977
+    1972  branch 0x0 != 0x0 ? L_19aa : L_1977
 
 block L_1977:
   insts 167..187  off 0x1977..0x19a9
   preds: L_196f
   succs: L_19aa
   effects:
-    1998  call __aFulmul(words(load([bp-cRes+0x2]), load([bp-cRes])), words(signhiword(sext8to16(load(byte 0x25:[(0x59a2 + loword((0xc0 * load([idPlayer]))))+0x38]))), sext8to16(load(byte 0x25:[(0x59a2 + loword((0xc0 * load([idPlayer]))))+0x38])))) -> callresult(uint32_t)
+    1998  call __aFulmul(words(load([bp-cRes+0x2]), load([bp-cRes])), words(signhiword(sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([idPlayer]))))+0x38]))), sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([idPlayer]))))+0x38])))) -> callresult(uint32_t)
     199f  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words(0x0, 0x64)) -> callresult(int32_t)
     19a4  store[2] [bp-cRes] = (load@19a4/dst([bp-cRes]) - loword(callresult(int32_t)))
     19a7  store[2] [bp-cRes+0x2] = (load@19a7/dst([bp-cRes+0x2]) - hiword(callresult(int32_t)))
@@ -259,8 +259,8 @@ block L_19d6:
   effects:
     19e0  call __aFulshr(words(load([sel+0xac]), load([sel+0xae])), 0x8) -> callresult(uint32_t)
     19eb  store[2] ss:[bp-0x136] = (loword(callresult(uint32_t)) & 0xfff)
-    19ef  store[2] ss:[bp-0x134] = (hiword(callresult(uint32_t)) & 0x0)
-    1a02  call CMaxOperableMines(farptr(0x25, 0x49ee), load([idPlayer]), 0x1) -> callresult(int16_t)
+    19ef  store[2] ss:[bp-0x134] = 0x0
+    1a02  call CMaxOperableMines(farptr(ds, 0x49ee), load([idPlayer]), 0x1) -> callresult(int16_t)
     1a17  store[2] [bp-cMaxBuild] = (callresult(int16_t) - load(ss:[bp-0x136]))
     1a1a  store[2] [bp-cMaxBuild+0x2] = (signhiword(callresult(int16_t)) - load(ss:[bp-0x134]))
     1a21  branch load([bp-cMaxBuild+0x2]) > 0x0 ? L_1a3e : L_1a26
@@ -359,7 +359,7 @@ block L_1ace:
   effects:
     1ae1  call AddItemToQueue(0x8, load([bp-cBuild]), 0x1, 0x0) -> callresult(void)
     1aed  call FinishProduction(0x1) -> callresult(void)
-    1b11  call PszProductionETA(farptr(0x25, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x1, addr([bp-etaBetterMines]), 0x0) -> callresult(char *)
+    1b11  call PszProductionETA(farptr(ds, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x1, addr([bp-etaBetterMines]), 0x0) -> callresult(char *)
     1b1e  branch load([bp-etaBetterMines]) != 0xffff ? L_1b29 : L_1b23
 
 block L_1b23:
@@ -394,7 +394,7 @@ block L_1b9e:
   preds: L_1b29, L_1b74
   succs: L_1bca, L_1bcf
   effects:
-    1bb9  call PszProductionETA(farptr(0x25, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x1, addr([bp-etaBetterAlchemy]), 0x0) -> callresult(char *)
+    1bb9  call PszProductionETA(farptr(ds, 0x49ee), farptr(load([sel+0xce]), load([sel+0xcc])), 0x1, addr([bp-etaBetterAlchemy]), 0x0) -> callresult(char *)
     1bc5  branch load([bp-etaBetterAlchemy]) != 0xffff ? L_1bcf : L_1bca
 
 block L_1bca:
@@ -493,7 +493,7 @@ block L_1c8f:
   effects:
     1c98  store[2] ss:[bp-0x136] = load([bp-cBuild])
     1c9c  store[2] ss:[bp-0x134] = 0x0
-    1cb1  call __aFlshl(words((load(ss:[bp-0x136]) & 0x3ff), (load(ss:[bp-0x134]) & 0x0)), 0x0) -> callresult(int32_t)
+    1cb1  call __aFlshl(words((load(ss:[bp-0x136]) & 0x3ff), 0x0), 0x0) -> callresult(int32_t)
     1ccd  store[2] ss:[bp-0x13a] = ((load(farseg(load(dword [sel+0xcc])):[faroff(load(dword [sel+0xcc]))+0x4]) & 0xfc00) | loword(callresult(int32_t)))
     1cd1  store[2] ss:[bp-0x138] = ((load(farseg(load(dword [sel+0xcc])):[faroff(load(dword [sel+0xcc]))+0x6]) & 0xffff) | hiword(callresult(int32_t)))
     1ce1  store[2] farseg(load(dword [sel+0xcc])):[faroff(load(dword [sel+0xcc]))+0x4] = load(ss:[bp-0x13a])

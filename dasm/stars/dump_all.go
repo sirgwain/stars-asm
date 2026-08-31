@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
+	"github.com/sirgwain/stars-asm/dasm/stars/ir"
 	"github.com/sirgwain/stars-asm/dasm/stars/sem"
 	"github.com/sirgwain/stars-asm/dasm/stars/templates"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -18,8 +19,13 @@ import (
 
 type DumpAllResult struct {
 	OutDir    string
-	Analysis  sem.AnalyzeResult            `json:"analysis,omitempty"`
-	Functions map[string]sem.AnalyzeResult `json:"functions,omitempty"`
+	Analysis  DumpAllAnalysis            `json:"analysis,omitempty"`
+	Functions map[string]DumpAllAnalysis `json:"functions,omitempty"`
+}
+
+type DumpAllAnalysis struct {
+	sem.AnalyzeResult
+	IR ir.AnalyzeResult `json:"ir,omitzero"`
 }
 
 func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (DumpAllResult, error) {
@@ -45,7 +51,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		return strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
 	})
 
-	result.Functions = make(map[string]sem.AnalyzeResult, len(funcs))
+	result.Functions = make(map[string]DumpAllAnalysis, len(funcs))
 	funcAnalyses := make(map[string]FuncAnalysis, len(funcs))
 	funcIRBodies := make(map[string]string, len(funcs))
 
@@ -195,7 +201,6 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		}
 
 		funcAnalyses[function.Name] = analysis
-		result.Functions[function.Name] = analysis.SemAnalysis
 		result.Analysis.Merges += analysis.SemAnalysis.Merges
 		result.Analysis.Temps += analysis.SemAnalysis.Temps
 		result.Analysis.FarPointers += analysis.SemAnalysis.FarPointers
@@ -204,6 +209,8 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		result.Analysis.BranchHiWords += analysis.SemAnalysis.BranchHiWords
 		result.Analysis.BranchLoWords += analysis.SemAnalysis.BranchLoWords
 		result.Analysis.DSRefs += analysis.SemAnalysis.DSRefs
+		result.Analysis.IR.Untranslated += analysis.IRAnalysis.Untranslated
+		result.Functions[function.Name] = DumpAllAnalysis{AnalyzeResult: analysis.SemAnalysis, IR: analysis.IRAnalysis}
 
 		if opt.EmitASM {
 			path := filepath.Join(asmOutDir, function.Name+".asm")

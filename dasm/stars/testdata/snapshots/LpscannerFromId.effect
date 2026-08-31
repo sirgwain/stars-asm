@@ -15,4 +15,4 @@ block L_51a5:
   insts 12..16  off 0x51a5..0x51aa
   preds: L_518a
   effects:
-    51aa  return farptr(0x2, (0x768 + loword((0x38 * load([bp+id])))))
+    51aa  return farptr(cs, (0x768 + loword((0x38 * load([bp+id])))))

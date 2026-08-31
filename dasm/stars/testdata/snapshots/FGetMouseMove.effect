@@ -44,9 +44,9 @@ block L_4185:
   preds: L_41c3, L_41cb, L_41d0
   succs: L_41b4, L_41ba
   effects:
-    418e  store[2] 0x25:[load([bp+ppt])] = load@4185/src([bp-msg+0x6])
+    418e  store[2] ds:[load([bp+ppt])] = load@4185/src([bp-msg+0x6])
     4199  call __aFulshr(words(load([bp-msg+0x6]), load([bp-msg+0x8])), 0x10) -> callresult(uint32_t)
-    41a7  store[2] 0x25:[load([bp+ppt])+0x2] = (loword(callresult(uint32_t)) & 0xffff)
+    41a7  store[2] ds:[load([bp+ppt])+0x2] = (loword(callresult(uint32_t)) & 0xffff)
     41af  branch load([bp-msg+0x2]) == 0x202 ? L_41ba : L_41b4
 
 block L_41b4:

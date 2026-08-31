@@ -81,6 +81,9 @@ func (c *machineConverter) convertNearPointerMemoryLValue(access machine.MemoryA
 	case *RawMemory, *Memory:
 		return nil, false
 	}
+	if nearPointerElementType(pointer) == nil {
+		return nil, false
+	}
 	if lvalue, ok := c.consumeAddress(AddressExpr{Base: pointer, Offset: access.Disp, Deref: true}, width); ok {
 		return lvalue, true
 	}

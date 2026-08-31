@@ -38,14 +38,14 @@ type compilerHelperReplacement struct {
 	value machine.Value
 }
 
-// ProcessMachineBlock lowers pure compiler helper calls in one machine block.
+// ProcessMachineBlock lowers pure compiler helper calls and records their
+// result expressions for uses in following machine blocks.
 func (p *compilerHelpersProcessors) ProcessMachineBlock(result *Result, f machine.FuncEffects, b machine.BlockEffects) (machine.BlockEffects, bool) {
 	if len(b.Effects) == 0 {
 		return b, false
 	}
 
 	changed := false
-	p.replacements = p.replacements[:0]
 	rewriter := p.rewriter()
 	effects := make([]machine.Effect, 0, len(b.Effects))
 	for _, effect := range b.Effects {
@@ -150,7 +150,7 @@ func (p *compilerHelpersProcessors) lowerBinaryCompilerHelperValue(op machine.Va
 	if len(args) < 2 {
 		return nil, false
 	}
-	return machine.CastVal(machine.BinaryVal(op, args[0], args[1]), to), true
+	return machine.CastVal(machine.BinaryResult(op, args[0], args[1]), to), true
 }
 
 // rewriter returns the machine tree rewrite for compiler helper replacements.

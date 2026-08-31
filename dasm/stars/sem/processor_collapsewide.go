@@ -2,6 +2,7 @@ package sem
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -186,6 +187,15 @@ func rewritePendingWideTempAssign(assign *Assign, aliases map[string]pendingWide
 // collapseWideRewriter returns the semantic tree rewrite for wide word aggregates.
 func collapseWideRewriter(ctx *FuncContext) *semRewriter {
 	return &semRewriter{
+		effect: func(w *semRewriter, effect Effect) (Effect, bool, bool) {
+			next, changed := w.rewriteEffectChildren(effect)
+			if assign, ok := next.(*Assign); ok {
+				if dst, src, ok := collapseSemanticBitfieldAssign(ctx, assign); ok {
+					return &Assign{MetaInfo: assign.MetaInfo, Dst: dst, Src: src}, true, true
+				}
+			}
+			return next, changed, true
+		},
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			next, changed := w.rewriteExprChildren(expr)
 			if resolved, ok := collapseSemanticBitfieldExtract(ctx, next); ok {
@@ -202,6 +212,112 @@ func collapseWideRewriter(ctx *FuncContext) *semRewriter {
 			return next, changed, true
 		},
 	}
+}
+
+// collapseSemanticBitfieldAssign resolves masked semantic stores to bitfield assignments.
+func collapseSemanticBitfieldAssign(ctx *FuncContext, assign *Assign) (LValue, Expr, bool) {
+	if ctx == nil {
+		return nil, nil, false
+	}
+	keep, set, ok := semanticMaskedStore(assign.Dst, assign.Src)
+	if !ok {
+		return nil, nil, false
+	}
+	path, fieldOff, storageWidth, ok := bitfieldSourcePath(assign.Dst)
+	if !ok {
+		return nil, nil, false
+	}
+	fullMask, ok := bitMask(storageWidth * 8)
+	if !ok {
+		return nil, nil, false
+	}
+	changed := (^uint(keep.U64)) & fullMask
+	bitOff, bitWidth, ok := contiguousMaskRange(changed)
+	if !ok {
+		return nil, nil, false
+	}
+	src, ok := unshiftSemanticBitfieldSet(set, bitOff, bitWidth, changed)
+	if !ok {
+		return nil, nil, false
+	}
+	field, ok := ctx.res.ResolveBitfieldPathLoadInContext(path, fieldOff, storageWidth, bitOff, bitWidth, ctx.unionContext())
+	if !ok {
+		return nil, nil, false
+	}
+	return &SymbolRef{Path: field}, src, true
+}
+
+// semanticMaskedStore splits a destination-preserving masked store.
+func semanticMaskedStore(dst LValue, src Expr) (*Const, Expr, bool) {
+	or, ok := src.(*Binary)
+	if !ok || or.Op != OpOr {
+		return nil, nil, false
+	}
+	if keep, ok := semanticKeepMask(dst, or.LHS); ok {
+		return keep, or.RHS, true
+	}
+	if keep, ok := semanticKeepMask(dst, or.RHS); ok {
+		return keep, or.LHS, true
+	}
+	return nil, nil, false
+}
+
+// semanticKeepMask returns the keep mask from a destination-preserving AND.
+func semanticKeepMask(dst LValue, expr Expr) (*Const, bool) {
+	and, ok := expr.(*Binary)
+	if !ok || and.Op != OpAnd {
+		return nil, false
+	}
+	keep, kept, ok := constExprOperand(and.LHS, and.RHS)
+	if !ok {
+		return nil, false
+	}
+	lvalue, ok := kept.(LValue)
+	return keep, ok && sameLValue(dst, lvalue)
+}
+
+// unshiftSemanticBitfieldSet returns the value shifted into a bitfield store.
+func unshiftSemanticBitfieldSet(expr Expr, bitOff int, bitWidth int, changed uint) (Expr, bool) {
+	if c, ok := expr.(*Const); ok {
+		if uint(c.U64)&^changed != 0 {
+			return nil, false
+		}
+		fieldMask, ok := bitMask(bitWidth)
+		if !ok {
+			return nil, false
+		}
+		next := *c
+		next.U64 = (c.U64 >> bitOff) & uint64(fieldMask)
+		return &next, true
+	}
+	shift, ok := expr.(*Binary)
+	if bitOff == 0 {
+		if ok && shift.Op == OpShl && constExprEquals(shift.RHS, 0) {
+			return stripSemanticBitfieldSourceMask(shift.LHS, bitWidth), true
+		}
+		return stripSemanticBitfieldSourceMask(expr, bitWidth), true
+	}
+	if !ok || shift.Op != OpShl || !constExprEquals(shift.RHS, uint64(bitOff)) {
+		return nil, false
+	}
+	return stripSemanticBitfieldSourceMask(shift.LHS, bitWidth), true
+}
+
+// stripSemanticBitfieldSourceMask removes a low mask implied by the destination bitfield width.
+func stripSemanticBitfieldSourceMask(expr Expr, bitWidth int) Expr {
+	and, ok := expr.(*Binary)
+	if !ok || and.Op != OpAnd {
+		return expr
+	}
+	mask, source, ok := constExprOperand(and.LHS, and.RHS)
+	if !ok {
+		return expr
+	}
+	width, ok := lowBitMaskWidth(uint(mask.U64))
+	if !ok || width != bitWidth {
+		return expr
+	}
+	return source
 }
 
 // collapseSemanticBitfieldExtract resolves shifted-and-masked wide expressions to bitfield reads.
@@ -230,19 +346,69 @@ func collapseSemanticBitfieldExtract(ctx *FuncContext, expr Expr) (Expr, bool) {
 		return nil, false
 	}
 	base := unwrapBitfieldExtractWrapper(value)
-	path, ok := symbolPathForExpr(base)
+	path, fieldOff, storageWidth, ok := bitfieldSourcePath(base)
 	if !ok {
 		return nil, false
 	}
-	storageWidth := exprWidth(base)
-	if storageWidth == 0 {
-		return nil, false
-	}
-	field, ok := ctx.res.ResolveBitfieldPathLoadInContext(path, 0, storageWidth, int(amount.U64), bitWidth, ctx.unionContext())
+	field, ok := ctx.res.ResolveBitfieldPathLoadInContext(path, fieldOff, storageWidth, int(amount.U64), bitWidth, ctx.unionContext())
 	if !ok {
 		return nil, false
 	}
 	return &SymbolRef{Path: field}, true
+}
+
+// bitfieldSourcePath resolves the source storage path for a semantic bitfield extraction.
+func bitfieldSourcePath(expr Expr) (symresolve.SymbolPath, int, int, bool) {
+	path, ok := symbolPathForExpr(expr)
+	if ok {
+		width := exprWidth(expr)
+		return path, 0, width, width > 0
+	}
+	if part, ok := expr.(*Part); ok {
+		path, ok := symbolPathForExpr(part.Base)
+		return path, part.ByteOff, part.Width, ok && part.Width > 0
+	}
+	if words, ok := expr.(*Words); ok {
+		path, off, width, ok := bitfieldWordsSourcePath(words)
+		return path, off, width, ok
+	}
+	return nil, 0, 0, false
+}
+
+// bitfieldWordsSourcePath resolves contiguous part words as one storage range.
+func bitfieldWordsSourcePath(words *Words) (symresolve.SymbolPath, int, int, bool) {
+	if len(words.Words) == 0 {
+		return nil, 0, 0, false
+	}
+	first, ok := words.Words[0].(*Part)
+	if !ok || first.Width <= 0 {
+		return nil, 0, 0, false
+	}
+	path, ok := symbolPathForExpr(first.Base)
+	if !ok {
+		return nil, 0, 0, false
+	}
+	minOff := first.ByteOff
+	maxOff := first.ByteOff + first.Width
+	seen := map[int]bool{first.ByteOff: true}
+	for _, word := range words.Words[1:] {
+		part, ok := word.(*Part)
+		if !ok || part.Width != first.Width || seen[part.ByteOff] || !sameLValue(first.Base, part.Base) {
+			return nil, 0, 0, false
+		}
+		seen[part.ByteOff] = true
+		if part.ByteOff < minOff {
+			minOff = part.ByteOff
+		}
+		if part.ByteOff+part.Width > maxOff {
+			maxOff = part.ByteOff + part.Width
+		}
+	}
+	width := maxOff - minOff
+	if width != len(words.Words)*first.Width {
+		return nil, 0, 0, false
+	}
+	return path, minOff, width, true
 }
 
 // unwrapBitfieldExtractWrapper removes casts and low-word projections around a wide bitfield expression.
@@ -264,6 +430,12 @@ func unwrapBitfieldExtractWrapper(expr Expr) Expr {
 
 // collapseWideAssign matches low/high word stores to the same larger lvalue.
 func collapseWideAssign(ctx *FuncContext, lo, hi *Assign) (LValue, Expr, bool) {
+	// Recognize compiler-generated far-pointer arithmetic before the generic
+	// word-pair collapse turns it back into a raw farptr(segment, offset).
+	if dst, src, ok := collapseFarPointerOffsetPair(lo, hi); ok {
+		return dst, src, true
+	}
+
 	loDst, ok := lo.Dst.(*Part)
 	if !ok || loDst.ByteOff != 0 || loDst.Width != 2 {
 		return nil, nil, false
@@ -321,6 +493,105 @@ func collapseWideAssign(ctx *FuncContext, lo, hi *Assign) (LValue, Expr, bool) {
 		return nil, nil, false
 	}
 	return loDst.Base, loParent, true
+}
+
+// collapseFarPointerOffsetPair collapses paired low/high word updates that
+// advance a far pointer by the same signed byte offset.
+func collapseFarPointerOffsetPair(lo, hi *Assign) (LValue, Expr, bool) {
+	loDst, ok := lo.Dst.(*Part)
+	if !ok || loDst.ByteOff != 0 || loDst.Width != 2 {
+		return nil, nil, false
+	}
+
+	hiDst, ok := hi.Dst.(*Part)
+	if !ok || hiDst.ByteOff != 2 || hiDst.Width != 2 {
+		return nil, nil, false
+	}
+
+	if !sameLValue(loDst.Base, hiDst.Base) ||
+		!typeinfo.IsFarPointer(loDst.Base.ExprType()) {
+		return nil, nil, false
+	}
+
+	delta, ok := farPointerOffsetAssignOffset(loDst.Base, lo.Src)
+	if !ok {
+		return nil, nil, false
+	}
+
+	if !matchesFarPointerHighAdjustment(loDst.Base, delta, hi.Src) {
+		return nil, nil, false
+	}
+
+	if src, ok := pointerOffsetExpr(loDst.Base, delta); ok {
+		return loDst.Base, src, true
+	}
+
+	return loDst.Base, &PointerOffset{
+		Pointer:  loDst.Base,
+		Offset:   delta,
+		TypeInfo: loDst.Base.ExprType(),
+	}, true
+}
+
+// matchesFarPointerHighAdjustment matches the compiler-generated high-word
+// adjustment for adding a signed 16-bit byte offset to a far pointer:
+//
+//	(((signhiword(delta) + 0) << 0xffff) + HIWORD(ptr))
+//
+// The zero add and outer add are treated as commutative where harmless.
+func matchesFarPointerHighAdjustment(ptr Expr, delta Expr, high Expr) bool {
+	add, ok := high.(*Binary)
+	if !ok || add.Op != OpAdd {
+		return false
+	}
+
+	// One side must be HIWORD(ptr); the other must be the segment adjustment.
+	var adjust Expr
+	if parent, ok := highWordParent(add.LHS); ok && sameExpr(parent, ptr) {
+		adjust = add.RHS
+	} else if parent, ok := highWordParent(add.RHS); ok && sameExpr(parent, ptr) {
+		adjust = add.LHS
+	} else {
+		return false
+	}
+
+	shl, ok := adjust.(*Binary)
+	if !ok || shl.Op != OpShl {
+		return false
+	}
+
+	// Match the exact normalized shift count currently produced for this
+	// compiler idiom.
+	shift, ok := shl.RHS.(*Const)
+	if !ok || shift.U64&0xffff != 0xffff {
+		return false
+	}
+
+	signHigh := stripAddZero(shl.LHS)
+
+	parent, ok := wordPartParent(signHigh, machine.WordSignHigh)
+	if !ok {
+		return false
+	}
+
+	return sameExpr(parent, delta)
+}
+
+// stripAddZero removes a single harmless "+ 0" wrapper.
+func stripAddZero(expr Expr) Expr {
+	add, ok := expr.(*Binary)
+	if !ok || add.Op != OpAdd {
+		return expr
+	}
+
+	if constExprEquals(add.LHS, 0) {
+		return add.RHS
+	}
+	if constExprEquals(add.RHS, 0) {
+		return add.LHS
+	}
+
+	return expr
 }
 
 // collapseFarPointerOffsetAssign rewrites low-word far pointer arithmetic as a
@@ -466,9 +737,15 @@ func collapseFarPointerWords(ctx *FuncContext, dst LValue, high, low Expr) (Expr
 	}
 	if ctx != nil {
 		if resolved, ok := ctx.resolveFarPointerWithRecoveredOffset(ptr); ok {
+			if decayed, ok := decayArrayAddress(resolved, dst.ExprType()); ok {
+				return decayed, true
+			}
 			return resolved, true
 		}
 		if resolved, ok := ctx.resolveSemanticFarPointer(ptr); ok {
+			if decayed, ok := decayArrayAddress(resolved, dst.ExprType()); ok {
+				return decayed, true
+			}
 			return resolved, true
 		}
 	}

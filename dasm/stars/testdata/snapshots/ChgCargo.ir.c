@@ -175,20 +175,20 @@ L_61e4:
         goto L_61ed;
 
 L_61ed:
-    /* untranslated: return words(0x25:[((pth + 0x8) + (iSupply * 0x2))], signhiword(0x25:[((pth + 0x8) + (iSupply * 0x2))])) */
+    /* untranslated: return words(ds:[((pth + 0x8) + (iSupply * 0x2))], signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))])) */
 
 L_6202:
-    /* untranslated: branch (signhiword(0x25:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
+    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
 
 L_6222:
-    /* untranslated: branch (signhiword(0x25:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
+    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
 
 L_6227:
-    /* untranslated: branch (0x25:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
+    /* untranslated: branch (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
 
 L_622f:
-    /* untranslated: LOWORD(dChg) = (0x25:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0) */
-    /* untranslated: HIWORD(dChg) = signhiword((0x25:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0)) */
+    /* untranslated: LOWORD(dChg) = (ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0) */
+    /* untranslated: HIWORD(dChg) = signhiword((ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0)) */
 
 L_6249:
     /* untranslated: wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa) */
@@ -196,8 +196,8 @@ L_6249:
     goto L_6295;
 
 L_6275:
-    /* untranslated: LOWORD(wtFree) = (LOWORD(wtFree) - 0x25:[((pth + 0x8) + (i * 0x2))]) */
-    /* untranslated: HIWORD(wtFree) = (HIWORD(wtFree) - signhiword(0x25:[((pth + 0x8) + (i * 0x2))])) */
+    /* untranslated: LOWORD(wtFree) = (LOWORD(wtFree) - ds:[((pth + 0x8) + (i * 0x2))]) */
+    /* untranslated: HIWORD(wtFree) = (HIWORD(wtFree) - signhiword(ds:[((pth + 0x8) + (i * 0x2))])) */
     i = (i + 0x1);
 
 L_6295:
@@ -228,7 +228,7 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    /* untranslated: 0x25:[((pth + 0x8) + (iSupply * 0x2))] = (0x25:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) */
+    /* untranslated: ds:[((pth + 0x8) + (iSupply * 0x2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) */
 
 L_62f3:
     if ((LOWORD(dChg) != 0x0))

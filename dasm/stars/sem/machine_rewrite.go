@@ -170,7 +170,7 @@ func (w *machineRewriter) rewriteMachineValueChildren(value machine.Value) (mach
 		if !lhsChanged && !rhsChanged {
 			return value, false
 		}
-		return machine.BinaryVal(v.Op, lhs, rhs), true
+		return machine.BinaryResult(v.Op, lhs, rhs), true
 	case *machine.Load:
 		access, changed := w.rewriteMachineMemory(v.Access)
 		if !changed {

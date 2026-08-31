@@ -63,7 +63,7 @@ func TestRenderDumpEffectsIncludesTypedEffects(t *testing.T) {
 					machine.StoreEffect{
 						MetaInfo: machine.Meta{InstOff: 0x72f6},
 						Addr: machine.MemoryAccess{
-							Base:  machine.ScalarVal("bp"),
+							Base:  machine.RegVal(asm.RegBP),
 							Disp:  -2,
 							Width: 2,
 						},
@@ -74,10 +74,10 @@ func TestRenderDumpEffectsIncludesTypedEffects(t *testing.T) {
 						MetaInfo: machine.Meta{InstOff: 0x72fa},
 						Target:   &typeinfo.Function{Name: "DoThing"},
 						Args: []machine.Value{
-							machine.ScalarVal("arg0"),
+							machine.RegVal(asm.RegNone),
 							machine.ConstVal(0x2),
 						},
-						Result: machine.ScalarVal("ax"),
+						Result: machine.RegVal(asm.RegAX),
 					},
 				},
 			},
@@ -93,7 +93,7 @@ func TestRenderDumpEffectsIncludesTypedEffects(t *testing.T) {
 	for _, want := range []string{
 		"  effects:",
 		"    72f6  store[2] [bp-0x2] = 0x1234",
-		"    72fa  call DoThing(arg0, 0x2) -> ax",
+		"    72fa  call DoThing(reg(0), 0x2) -> ax",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("rendered dump missing %q:\n%s", want, got)

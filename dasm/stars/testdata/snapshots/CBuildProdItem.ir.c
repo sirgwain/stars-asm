@@ -29,9 +29,9 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
 L_0c92:
     cAlchemy = 0x0;
     LOWORD(pctInitial) = lpprod->pct;
-    HIWORD(pctInitial) = (HIWORD((uint32_t)((lpprod >> 0x14))) & 0x0);
+    HIWORD(pctInitial) = 0x0;
     prod = lpprod;
-    /* untranslated: call GetProductionCosts(lppl, lpprod, &part[0:4](rgCost), lppl->iPlayer, 0x1) -> callresult(void) */
+    GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 0x1);
     cBuilt = 0x0;
     if ((prod.grobj != 0x1))
         goto L_0d49;
@@ -39,19 +39,28 @@ L_0c92:
         goto L_0d12;
 
 L_0d12:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0d49 : L_0d1a */
+    if ((0x0 != 0x0))
+        goto L_0d49;
+    else
+        goto L_0d1a;
 
 L_0d1a:
-    if (((HIWORD((uint32_t)((prod >> 0xa))) & 0x0) > 0x0))
+    if ((0x0 > 0x0))
         goto L_0d49;
     else
         goto L_0d36;
 
 L_0d36:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) < 0x0 ? L_0d43 : L_0d3b */
+    if ((0x0 < 0x0))
+        goto L_0d43;
+    else
+        goto L_0d3b;
 
 L_0d3b:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) >= 0x7 ? L_0d49 : L_0d43 */
+    if ((prod.iItem >= 0x7))
+        goto L_0d49;
+    else
+        goto L_0d43;
 
 L_0d43:
     t_merge_0d4c_0001 = 0x1;
@@ -108,7 +117,10 @@ L_0e7b:
         goto L_0e97;
 
 L_0e97:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_0f9f : L_0e9f */
+    if ((0x0 != 0x0))
+        goto L_0f9f;
+    else
+        goto L_0e9f;
 
 L_0e9f:
     if ((HIWORD(ChgPopFromPlanet(lppl, 0x0)) < 0x0))
@@ -148,46 +160,88 @@ L_0f21:
     cMax = 0x0;
 
 L_0f2c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x0 ? L_0f3c : L_0f34 */
+    if ((prod.iItem != 0x0))
+        goto L_0f3c;
+    else
+        goto L_0f34;
 
 L_0f34:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0d74 : L_0f3c */
+    if ((0x0 == 0x0))
+        goto L_0d74;
+    else
+        goto L_0f3c;
 
 L_0f3c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x1 ? L_0f4c : L_0f44 */
+    if ((prod.iItem != 0x1))
+        goto L_0f4c;
+    else
+        goto L_0f44;
 
 L_0f44:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0dbe : L_0f4c */
+    if ((0x0 == 0x0))
+        goto L_0dbe;
+    else
+        goto L_0f4c;
 
 L_0f4c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x2 ? L_0f5c : L_0f54 */
+    if ((prod.iItem != 0x2))
+        goto L_0f5c;
+    else
+        goto L_0f54;
 
 L_0f54:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e08 : L_0f5c */
+    if ((0x0 == 0x0))
+        goto L_0e08;
+    else
+        goto L_0f5c;
 
 L_0f5c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x3 ? L_0f6c : L_0f64 */
+    if ((prod.iItem != 0x3))
+        goto L_0f6c;
+    else
+        goto L_0f64;
 
 L_0f64:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e4a : L_0f6c */
+    if ((0x0 == 0x0))
+        goto L_0e4a;
+    else
+        goto L_0f6c;
 
 L_0f6c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x4 ? L_0f7c : L_0f74 */
+    if ((prod.iItem != 0x4))
+        goto L_0f7c;
+    else
+        goto L_0f74;
 
 L_0f74:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e57 : L_0f7c */
+    if ((0x0 == 0x0))
+        goto L_0e57;
+    else
+        goto L_0f7c;
 
 L_0f7c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x5 ? L_0f8c : L_0f84 */
+    if ((prod.iItem != 0x5))
+        goto L_0f8c;
+    else
+        goto L_0f84;
 
 L_0f84:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0e57 : L_0f8c */
+    if ((0x0 == 0x0))
+        goto L_0e57;
+    else
+        goto L_0f8c;
 
 L_0f8c:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) != 0x6 ? L_0f9f : L_0f94 */
+    if ((prod.iItem != 0x6))
+        goto L_0f9f;
+    else
+        goto L_0f94;
 
 L_0f94:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_0eeb : L_0f9f */
+    if ((0x0 == 0x0))
+        goto L_0eeb;
+    else
+        goto L_0f9f;
 
 L_0f9f:
     if ((cMax >= 0x0))
@@ -199,7 +253,7 @@ L_0fa8:
     cMax = 0x0;
 
 L_0fad:
-    if (((HIWORD(prod) & 0x0) > SIGNHIWORD(cMax)))
+    if ((0x0 > SIGNHIWORD(cMax)))
         goto L_1000;
     else
         goto L_0fd0;
@@ -217,18 +271,21 @@ L_0fdc:
         goto L_0ff8;
 
 L_0ff8:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_102c : L_1000 */
+    if ((0x0 != 0x0))
+        goto L_102c;
+    else
+        goto L_1000;
 
 L_1000:
-    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words((cMax & 0x3ff), (signhiword(cMax) & 0x0)) << 0x0))) */
-    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words((cMax & 0x3ff), (signhiword(cMax) & 0x0)) << 0x0))) */
+    /* untranslated: prod.cItem = loword((int32_t)(words((cMax & 0x3ff), 0x0) << 0x0)) */
+    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words((cMax & 0x3ff), 0x0) << 0x0))) */
 
 L_102c:
     i = 0x0;
     goto L_1086;
 
 L_1034:
-    /* untranslated: rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words((hiword((uint32_t)(prod >> 0x14)) & 0x0), prod.pct)) / 0x64) */
+    /* untranslated: rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words(0x0, prod.pct)) / 0x64) */
     i = (i + 0x1);
 
 L_1086:
@@ -238,13 +295,13 @@ L_1086:
         goto L_108f;
 
 L_108f:
-    if (((HIWORD(prod) & 0x0) < 0x0))
+    if ((0x0 < 0x0))
         goto L_1712;
     else
         goto L_10a3;
 
 L_10a3:
-    if (((HIWORD(prod) & 0x0) > 0x0))
+    if ((0x0 > 0x0))
         goto L_10b0;
     else
         goto L_10a8;
@@ -456,8 +513,8 @@ L_1398:
         goto L_13a1;
 
 L_13a1:
-    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xffff) | loword((int32_t)(words((LOWORD(pct) & 0x7f), (HIWORD(pct) & 0x0)) << 0x14))) */
-    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xf80f) | hiword((int32_t)(words((LOWORD(pct) & 0x7f), (HIWORD(pct) & 0x0)) << 0x14))) */
+    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xffff) | loword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14))) */
+    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xf80f) | hiword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14))) */
     if ((fAlchemy == 0x0))
         goto L_1712;
     else
@@ -618,15 +675,15 @@ L_15ec:
 
 L_15f8:
     pctT = t_merge_15f8_0001_wide;
-    /* untranslated: pprodPartial = ((pprodPartial & 0xffff) | loword((int32_t)(words((LOWORD(pctT) & 0x7f), (HIWORD(pctT) & 0x0)) << 0x14))) */
-    /* untranslated: *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xf80f) | hiword((int32_t)(words((LOWORD(pctT) & 0x7f), (HIWORD(pctT) & 0x0)) << 0x14))) */
+    /* untranslated: pprodPartial = ((pprodPartial & 0xffff) | loword((int32_t)(words((LOWORD(pctT) & 0x7f), 0x0) << 0x14))) */
+    /* untranslated: *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xf80f) | hiword((int32_t)(words((LOWORD(pctT) & 0x7f), 0x0) << 0x14))) */
     LOWORD(rgRes[0x3]) = (LOWORD(rgRes[0x3]) - LOWORD((int32_t)(((uint32_t)((pctT * lAlchCost)) / 0x64))));
     *(rgRes + 0xe) = (*(rgRes + 0xe) - HIWORD((int32_t)(((uint32_t)((pctT * lAlchCost)) / 0x64))));
 
 L_165c:
     cBuilt = (cBuilt + 0x1);
     /* untranslated: ss:[bp-0x58] = ((LOWORD(prod) + 0xffff) & 0x3ff) */
-    /* untranslated: ss:[bp-0x56] = ((HIWORD(prod) + 0xffff) & 0x0) */
+    /* untranslated: ss:[bp-0x56] = 0x0 */
     prod.cItem = 0x0;
     HIWORD(prod) = (HIWORD(prod) & 0xffff);
     /* untranslated: LOWORD(prod) = (LOWORD(prod) | ss:[bp-0x58]) */
@@ -662,7 +719,10 @@ L_171b:
         goto L_1737;
 
 L_1737:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_17b7 : L_173f */
+    if ((0x0 != 0x0))
+        goto L_17b7;
+    else
+        goto L_173f;
 
 L_173f:
     if ((prod.iItem != 0xb))
@@ -671,7 +731,10 @@ L_173f:
         goto L_175b;
 
 L_175b:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_1787 : L_1763 */
+    if ((0x0 == 0x0))
+        goto L_1787;
+    else
+        goto L_1763;
 
 L_1763:
     if ((prod.iItem != 0x3))
@@ -680,7 +743,10 @@ L_1763:
         goto L_177f;
 
 L_177f:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_17b7 : L_1787 */
+    if ((0x0 != 0x0))
+        goto L_17b7;
+    else
+        goto L_1787;
 
 L_1787:
     cAlchemy = (cAlchemy + cBuilt);
@@ -760,7 +826,7 @@ L_1830:
         goto L_1844;
 
 L_1844:
-    if (((HIWORD(prod) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_1866;
     else
         goto L_184c;
@@ -795,7 +861,10 @@ L_186f:
         goto L_188b;
 
 L_188b:
-    /* untranslated: branch HIWORD(pctInitial) != (hiword(callresult(uint32_t)) & 0x0) ? L_1899 : L_1893 */
+    if ((HIWORD(pctInitial) != 0x0))
+        goto L_1899;
+    else
+        goto L_1893;
 
 L_1893:
     t_merge_189c_0001 = 0x7;
@@ -815,7 +884,7 @@ L_18a4:
         goto L_18b8;
 
 L_18b8:
-    if (((HIWORD(prod) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_18ca;
     else
         goto L_18c0;
@@ -862,31 +931,36 @@ L_1905:
         goto L_191b;
 
 L_191b:
-    if (((*(pprodPartial + 0x2) & 0x0) != 0x0))
+    if ((0x0 != 0x0))
         goto L_19a5;
     else
         goto L_1923;
 
 L_1923:
-    if (((HIWORD((uint32_t)((prod >> 0x14))) & 0x0) < 0x0))
+    if ((0x0 < 0x0))
         goto L_19a5;
     else
         goto L_193f;
 
 L_193f:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) > 0x0 ? L_194c : L_1944 */
+    if ((0x0 > 0x0))
+        goto L_194c;
+    else
+        goto L_1944;
 
 L_1944:
-    /* untranslated: branch (loword(callresult(uint32_t)) & 0x7f) <= 0x0 ? L_19a5 : L_194c */
+    if ((prod.pct <= 0x0))
+        goto L_19a5;
+    else
+        goto L_194c;
 
 L_194c:
     pprodPartial = LOWORD(prod);
     *(pprodPartial + 0x2) = HIWORD(prod);
     pprodPartial->cItem = 0x1;
     *(pprodPartial + 0x2) = ((*(pprodPartial + 0x2) & 0xffff) | 0x0);
-    /* untranslated: pprodPartial = (pprodPartial->cItem | loword((int32_t)(words((LOWORD(iobjOther) & 0x7f), (HIWORD(iobjOther) & 0x0)) << 0xa))) */
-    /* untranslated: *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | hiword((int32_t)(words((LOWORD(iobjOther) & 0x7f), (HIWORD(iobjOther) & 0x0)) <<
-     * 0xa))) */
+    /* untranslated: pprodPartial = (pprodPartial->cItem | loword((int32_t)(words((LOWORD(iobjOther) & 0x7f), 0x0) << 0xa))) */
+    /* untranslated: *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | hiword((int32_t)(words((LOWORD(iobjOther) & 0x7f), 0x0) << 0xa))) */
 
 L_19a5:
 

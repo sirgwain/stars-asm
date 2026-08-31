@@ -60,7 +60,10 @@ L_17fc:
         goto L_182d;
 
 L_182d:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_18c8 : L_1835 */
+    if ((0x0 != 0x0))
+        goto L_18c8;
+    else
+        goto L_1835;
 
 L_1835:
     if ((prod.iItem != 0x8))
@@ -69,7 +72,10 @@ L_1835:
         goto L_1851;
 
 L_1851:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_1859 */
+    if ((0x0 == 0x0))
+        goto L_17a3;
+    else
+        goto L_1859;
 
 L_1859:
     if ((prod.iItem != 0x3))
@@ -78,7 +84,10 @@ L_1859:
         goto L_1875;
 
 L_1875:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_187d */
+    if ((0x0 == 0x0))
+        goto L_17a3;
+    else
+        goto L_187d;
 
 L_187d:
     if ((prod.iItem != 0xb))
@@ -87,7 +96,10 @@ L_187d:
         goto L_1899;
 
 L_1899:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18a1 */
+    if ((0x0 == 0x0))
+        goto L_17a3;
+    else
+        goto L_18a1;
 
 L_18a1:
     if ((prod.iItem != 0xc))
@@ -96,7 +108,10 @@ L_18a1:
         goto L_18bd;
 
 L_18bd:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) == 0x0 ? L_17a3 : L_18c2 */
+    if ((0x0 == 0x0))
+        goto L_17a3;
+    else
+        goto L_18c2;
 
 L_18c2:
 
@@ -120,30 +135,45 @@ L_1912:
     etaFirst = 0x258;
 
 L_1917:
-    /* untranslated: call GetProductionCosts(lppl, &prod, &part[0:4](rgCost), idPlayer, 0x1) -> callresult(void) */
+    GetProductionCosts(lppl, &(prod), rgCost, idPlayer, 0x1);
     cRes = (uint32_t)(CResourcesAtPlanet(&(sel.pl), idPlayer));
-    /* untranslated: branch (loword((uint32_t)(words(part[176:2](sel), part[178:2](sel)) >> 0x17)) & 0x1) != 0x0 ? L_19aa : L_196f */
+    if ((sel.pl.fNoResearch != 0x0))
+        goto L_19aa;
+    else
+        goto L_196f;
 
 L_196f:
-    /* untranslated: branch (hiword(callresult(uint32_t)) & 0x0) != 0x0 ? L_19aa : L_1977 */
+    if ((0x0 != 0x0))
+        goto L_19aa;
+    else
+        goto L_1977;
 
 L_1977:
     cRes = (cRes - (int32_t)(((uint32_t)((cRes * (uint32_t)((uint16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
 
 L_19aa:
-    /* untranslated: branch part[14:2](rgCost) < hiword((uint32_t)(cRes * sext16to32((etaFirst + 0xffff)))) ? L_19d6 : L_19c6 */
+    if ((HIWORD(rgCost[0x3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+        goto L_19d6;
+    else
+        goto L_19c6;
 
 L_19c6:
-    /* untranslated: branch part[14:2](rgCost) > hiword(callresult(uint32_t)) ? L_17a3 : L_19cb */
+    if ((HIWORD(rgCost[0x3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+        goto L_17a3;
+    else
+        goto L_19cb;
 
 L_19cb:
-    /* untranslated: branch part[12:2](rgCost) > loword(callresult(uint32_t)) ? L_17a3 : L_19d0 */
+    if ((LOWORD(rgCost[0x3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+        goto L_17a3;
+    else
+        goto L_19d0;
 
 L_19d0:
 
 L_19d6:
-    /* untranslated: ss:[bp-0x136] = (loword((uint32_t)(words(part[172:2](sel), part[174:2](sel)) >> 0x8)) & 0xfff) */
-    /* untranslated: ss:[bp-0x134] = (hiword((uint32_t)(words(part[172:2](sel), part[174:2](sel)) >> 0x8)) & 0x0) */
+    /* untranslated: ss:[bp-0x136] = sel.pl.cMines */
+    /* untranslated: ss:[bp-0x134] = 0x0 */
     CMaxOperableMines(&(sel.pl), idPlayer, 0x1);
     /* untranslated: LOWORD(cMaxBuild) = (callresult(int16_t) - ss:[bp-0x136]) */
     /* untranslated: HIWORD(cMaxBuild) = (signhiword(callresult(int16_t)) - ss:[bp-0x134]) */
@@ -175,10 +205,16 @@ L_1a3e:
         goto L_1a77;
 
 L_1a77:
-    /* untranslated: branch hiword(callresult(uint32_t)) < HIWORD(cRes) ? L_1a84 : L_1a7c */
+    if ((HIWORD((uint32_t)((cResMine * cMaxBuild))) < HIWORD(cRes)))
+        goto L_1a84;
+    else
+        goto L_1a7c;
 
 L_1a7c:
-    /* untranslated: branch loword(callresult(uint32_t)) > LOWORD(cRes) ? L_1a93 : L_1a84 */
+    if ((LOWORD((uint32_t)((cResMine * cMaxBuild))) > LOWORD(cRes)))
+        goto L_1a93;
+    else
+        goto L_1a84;
 
 L_1a84:
     cBuild = cMaxBuild;
@@ -304,10 +340,11 @@ L_1c4a:
     goto L_17a3;
 
 L_1c8f:
+    /* untranslated: ss:[bp-0x134] = 0x0 */
     /* untranslated: LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)(words((LOWORD(cBuild) & 0x3ff),
-     * (0x0 & 0x0)) << 0x0))) */
+     * 0x0) << 0x0))) */
     /* untranslated: HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)(words((LOWORD(cBuild) & 0x3ff),
-     * (0x0 & 0x0)) << 0x0))) */
+     * 0x0) << 0x0))) */
     goto L_17a3;
 
 L_1cef:

@@ -19,8 +19,8 @@ block L_24dc:
   insts 0..13  off 0x24dc..0x2504
   succs: L_2509
   effects:
-    24ed  store[2] [bp-lpth] = load(0x25:[load([bp+plpth])])
-    24f0  store[2] [bp-lpth+0x2] = load(0x25:[load([bp+plpth])+0x2])
+    24ed  store[2] [bp-lpth] = load(ds:[load([bp+plpth])])
+    24f0  store[2] [bp-lpth+0x2] = load(ds:[load([bp+plpth])+0x2])
     24f3  store[2] [bp-wtTotal] = 0x0
     24f8  store[2] [bp-wtTotal+0x2] = 0x0
     24fd  store[2] [bp-i] = 0x0
@@ -45,14 +45,14 @@ block L_2514:
   preds: L_2509
   succs: L_2505, L_252d
   effects:
-    2528  branch load(0x25:[load([bp+ppt])]) != load(0x25:[((load([bp-i]) << 0x1) << 0x1)+0x2f40]) ? L_2505 : L_252d
+    2528  branch load(ds:[load([bp+ppt])]) != load(ds:[((load([bp-i]) << 0x1) << 0x1)+0x2f40]) ? L_2505 : L_252d
 
 block L_252d:
   insts 28..29  off 0x252d..0x2531
   preds: L_2514
   succs: L_2505, L_294c
   effects:
-    2530  branch load(0x25:[load([bp+ppt])+0x2]) == load(0x25:[((load([bp-i]) << 0x1) << 0x1)+0x2f42]) ? L_294c : L_2532
+    2530  branch load(ds:[load([bp+ppt])+0x2]) == load(ds:[((load([bp-i]) << 0x1) << 0x1)+0x2f42]) ? L_294c : L_2532
 
 block L_2532:
   insts 30..30  off 0x2532..0x2534
@@ -184,8 +184,8 @@ block L_2619:
   succs: L_26e9
   effects:
     2629  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@261c/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
-    2638  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(0x25:[load([bp+ppt])])
-    263c  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(0x25:[load([bp+ppt])+0x2])
+    2638  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(ds:[load([bp+ppt])])
+    263c  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(ds:[load([bp+ppt])+0x2])
     2650  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2643/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xfc00) | 0x3ff)
     2654  goto L_26e9
 
@@ -302,8 +302,8 @@ block L_2804:
   effects:
     2814  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2807/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
     2828  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@281b/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xfc00) | 0x3ff)
-    2837  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(0x25:[load([bp+ppt])])
-    283b  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(0x25:[load([bp+ppt])+0x2])
+    2837  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(ds:[load([bp+ppt])])
+    283b  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(ds:[load([bp+ppt])+0x2])
     283f  goto L_2900
 
 block L_2842:
@@ -390,8 +390,8 @@ block L_293e:
   preds: L_2930, L_2935
   succs: L_294c
   effects:
-    2947  store[2] 0x25:[load([bp+plpth])] = load([bp-lpth])
-    2949  store[2] 0x25:[load([bp+plpth])+0x2] = load([bp-lpth+0x2])
+    2947  store[2] ds:[load([bp+plpth])] = load([bp-lpth])
+    2949  store[2] ds:[load([bp+plpth])+0x2] = load([bp-lpth+0x2])
 
 block L_294c:
   insts 394..398  off 0x294c..0x2951
