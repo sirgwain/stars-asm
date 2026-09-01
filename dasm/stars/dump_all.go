@@ -208,8 +208,13 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		result.Analysis.LoWords += analysis.SemAnalysis.LoWords
 		result.Analysis.BranchHiWords += analysis.SemAnalysis.BranchHiWords
 		result.Analysis.BranchLoWords += analysis.SemAnalysis.BranchLoWords
-		result.Analysis.DSRefs += analysis.SemAnalysis.DSRefs
+		result.Analysis.SegRegRefs += analysis.SemAnalysis.SegRegRefs
 		result.Analysis.IR.Untranslated += analysis.IRAnalysis.Untranslated
+		result.Analysis.IR.UntranslatedAssign += analysis.IRAnalysis.UntranslatedAssign
+		result.Analysis.IR.UntranslatedBitwise += analysis.IRAnalysis.UntranslatedBitwise
+		result.Analysis.IR.UntranslatedBranch += analysis.IRAnalysis.UntranslatedBranch
+		result.Analysis.IR.UntranslatedPart += analysis.IRAnalysis.UntranslatedPart
+		result.Analysis.IR.UntranslatedScratch += analysis.IRAnalysis.UntranslatedScratch
 		result.Functions[function.Name] = DumpAllAnalysis{AnalyzeResult: analysis.SemAnalysis, IR: analysis.IRAnalysis}
 
 		if opt.EmitASM {

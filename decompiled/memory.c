@@ -296,7 +296,7 @@ L_04a7:
     fFree = (LOWORD(lpb) & 0x1);
     cbItem = (LOWORD(lpb) & 0xfffe);
     lpb = ((uint8_t *)(lpb) + (cbItem + 0x2));
-    if ((fFree == 0x0))
+    if ((fFree == 0))
         goto L_0575;
     else
         goto L_04dd;

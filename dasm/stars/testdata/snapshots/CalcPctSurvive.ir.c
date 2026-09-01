@@ -15,7 +15,7 @@ L_0308:
     *(ppctSmart) = 1;
 
 L_0317:
-    if ((lppl->iPlayer == 0xffff))
+    if ((lppl->iPlayer == -1))
         goto L_0487;
     else
         goto L_0324;
@@ -35,7 +35,7 @@ L_033d:
 L_0345:
     iPlrSav = idPlayer;
     idPlayer = lppl->iPlayer;
-    if ((FGetBestDefensePart(&(part)) == 0x0))
+    if ((FGetBestDefensePart(&(part)) == 0))
         goto L_0473;
     else
         goto L_0369;

@@ -9,18 +9,18 @@ int16_t WinMain(uint16_t hInstance, uint16_t hPrevInstance, char *lpCmdLine, int
 
 L_0000:
     hInst = hInstance;
-    szBase[0x0] = 0x0;
+    szBase[0] = 0;
     ini.wFlags = 0x0;
     memset(&(tutor), 0x0, 0x2c);
     memset(&(vtimer), 0x0, 0xa);
-    vtimer.fAutoGenWhenIn = 0x1;
+    vtimer.fAutoGenWhenIn = 1;
     if ((hPrevInstance != 0x0))
         goto L_0085;
     else
         goto L_0051;
 
 L_0051:
-    if ((InitMDIApp() != 0x0))
+    if ((InitMDIApp() != 0))
         goto L_0085;
     else
         goto L_005e;
@@ -31,7 +31,7 @@ L_005e:
 
 L_0085:
     Randomize2(GetTickCount());
-    if ((FCreateStuff() != 0x0))
+    if ((FCreateStuff() != 0))
         goto L_00a7;
     else
         goto L_00a1;
@@ -40,7 +40,7 @@ L_00a1:
     return 0x0;
 
 L_00a7:
-    if ((FGetSystemColors() != 0x0))
+    if ((FGetSystemColors() != 0))
         goto L_00db;
     else
         goto L_00b4;
@@ -50,7 +50,7 @@ L_00b4:
     return 0x0;
 
 L_00db:
-    if ((InitInstance(nCmdShow) != 0x0))
+    if ((InitInstance(nCmdShow) != 0))
         goto L_0115;
     else
         goto L_00ee;
@@ -63,13 +63,13 @@ L_0115:
     lpT = lpCmdLine;
 
 L_0121:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0571;
     else
         goto L_0130;
 
 L_0130:
-    if (((uint16_t)(*(lpT)) != 0x20))
+    if (((uint16_t)(*(lpT)) != 32))
         goto L_0146;
     else
         goto L_013f;
@@ -79,13 +79,13 @@ L_013f:
     goto L_0130;
 
 L_0146:
-    if (((uint16_t)(*(lpT)) == 0x2d))
+    if (((uint16_t)(*(lpT)) == 45))
         goto L_0164;
     else
         goto L_0155;
 
 L_0155:
-    if (((uint16_t)(*(lpT)) != 0x2f))
+    if (((uint16_t)(*(lpT)) != 47))
         goto L_0517;
     else
         goto L_0164;
@@ -94,13 +94,13 @@ L_0164:
     lpT = (lpT + 0x1);
 
 L_0168:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0121;
     else
         goto L_0177;
 
 L_0177:
-    if (((uint16_t)(*(lpT)) == 0x20))
+    if (((uint16_t)(*(lpT)) == 32))
         goto L_0121;
     else
         goto L_0186;
@@ -115,13 +115,13 @@ L_0190:
     lpT = (lpT + 0x1);
 
 L_01a6:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0238;
     else
         goto L_01b5;
 
 L_01b5:
-    if (((uint16_t)(*(lpT)) == 0x20))
+    if (((uint16_t)(*(lpT)) == 32))
         goto L_0238;
     else
         goto L_01c4;
@@ -142,37 +142,37 @@ L_01ec:
     goto L_0231;
 
 L_01fe:
-    if (((uint16_t)(*(lpT)) == 0x46))
+    if (((uint16_t)(*(lpT)) == 70))
         goto L_01ce;
     else
         goto L_0206;
 
 L_0206:
-    if (((uint16_t)(*(lpT)) == 0x4d))
+    if (((uint16_t)(*(lpT)) == 77))
         goto L_01ec;
     else
         goto L_020e;
 
 L_020e:
-    if (((uint16_t)(*(lpT)) == 0x50))
+    if (((uint16_t)(*(lpT)) == 80))
         goto L_01dd;
     else
         goto L_0216;
 
 L_0216:
-    if (((uint16_t)(*(lpT)) == 0x66))
+    if (((uint16_t)(*(lpT)) == 102))
         goto L_01ce;
     else
         goto L_021e;
 
 L_021e:
-    if (((uint16_t)(*(lpT)) == 0x6d))
+    if (((uint16_t)(*(lpT)) == 109))
         goto L_01ec;
     else
         goto L_0226;
 
 L_0226:
-    if (((uint16_t)(*(lpT)) == 0x70))
+    if (((uint16_t)(*(lpT)) == 112))
         goto L_01dd;
     else
         goto L_0231;
@@ -185,39 +185,39 @@ L_0238:
     lpT = (lpT - 0x1);
     goto L_050d;
     ini.fGen = 0x1;
-    i = 0x0;
+    i = 0;
 
 L_0250:
-    if (((uint16_t)(lpT[0x1]) < 0x30))
+    if (((uint16_t)(lpT[1]) < 48))
         goto L_02cb;
     else
         goto L_0260;
 
 L_0260:
-    if (((uint16_t)(lpT[0x1]) > 0x39))
+    if (((uint16_t)(lpT[1]) > 57))
         goto L_02cb;
     else
         goto L_0270;
 
 L_0270:
     lpT = (lpT + 0x1);
-    i = ((LOWORD((0xa * i)) + (uint16_t)(*(lpT))) + 0xffd0);
-    if ((i <= 0x3e8))
+    i = ((LOWORD((0xa * i)) + (uint16_t)(*(lpT))) - 48);
+    if ((i <= 1000))
         goto L_0250;
     else
         goto L_0299;
 
 L_0299:
-    i = 0x3e8;
+    i = 1000;
 
 L_029e:
-    if (((uint16_t)(lpT[0x1]) < 0x30))
+    if (((uint16_t)(lpT[1]) < 48))
         goto L_02cb;
     else
         goto L_02ae;
 
 L_02ae:
-    if (((uint16_t)(lpT[0x1]) > 0x39))
+    if (((uint16_t)(lpT[1]) > 57))
         goto L_02cb;
     else
         goto L_02be;
@@ -227,13 +227,13 @@ L_02be:
     goto L_029e;
 
 L_02cb:
-    if ((i <= 0x0))
+    if ((i <= 0))
         goto L_02dd;
     else
         goto L_02d4;
 
 L_02d4:
-    ini.cTurnGen = (i + 0xffff);
+    ini.cTurnGen = (i - 1);
 
 L_02dd:
     goto L_050d;
@@ -246,7 +246,7 @@ L_02dd:
     lpT = (lpT + 0x1);
 
 L_0311:
-    if (((uint16_t)(*(lpT)) != 0x20))
+    if (((uint16_t)(*(lpT)) != 32))
         goto L_0327;
     else
         goto L_0320;
@@ -256,16 +256,16 @@ L_0320:
     goto L_0311;
 
 L_0327:
-    pch = 0x56a2;
+    pch = szBase;
 
 L_032c:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0360;
     else
         goto L_033b;
 
 L_033b:
-    if (((uint16_t)(*(lpT)) == 0x20))
+    if (((uint16_t)(*(lpT)) == 32))
         goto L_0360;
     else
         goto L_034a;
@@ -277,9 +277,9 @@ L_034a:
     goto L_032c;
 
 L_0360:
-    *(pch) = 0x0;
+    *(pch) = 0;
     lpT = (lpT - 0x1);
-    if ((FSetUpBatchProcessing() == 0x0))
+    if ((FSetUpBatchProcessing() == 0))
         goto L_03a7;
     else
         goto L_0377;
@@ -316,7 +316,7 @@ L_03ec:
     lpT = (lpT + 0x1);
 
 L_040d:
-    if (((uint16_t)(*(lpT)) != 0x20))
+    if (((uint16_t)(*(lpT)) != 32))
         goto L_0423;
     else
         goto L_041c;
@@ -326,16 +326,16 @@ L_041c:
     goto L_040d;
 
 L_0423:
-    pch = 0x22e0;
+    pch = szPassLast;
 
 L_0428:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0466;
     else
         goto L_0437;
 
 L_0437:
-    if (((uint16_t)(*(lpT)) == 0x20))
+    if (((uint16_t)(*(lpT)) == 32))
         goto L_0466;
     else
         goto L_0446;
@@ -353,13 +353,13 @@ L_0450:
     goto L_0428;
 
 L_0466:
-    *(pch) = 0x0;
+    *(pch) = 0;
     lpT = (lpT - 0x1);
     lSaltLast = LSaltFromSz(szPassLast);
     goto L_050d;
 
 L_0489:
-    if ((((uint16_t)(*(lpT)) - 0x41) > 0x37))
+    if ((((uint16_t)(*(lpT)) - 65) > 0x37))
         goto L_0190;
     else
         goto L_0494;
@@ -372,16 +372,16 @@ L_050d:
     goto L_0168;
 
 L_0517:
-    pch = 0x56a2;
+    pch = szBase;
 
 L_051c:
-    if (((uint16_t)(*(lpT)) == 0x0))
+    if (((uint16_t)(*(lpT)) == 0))
         goto L_0550;
     else
         goto L_052b;
 
 L_052b:
-    if (((uint16_t)(*(lpT)) == 0x20))
+    if (((uint16_t)(*(lpT)) == 32))
         goto L_0550;
     else
         goto L_053a;
@@ -393,7 +393,7 @@ L_053a:
     goto L_051c;
 
 L_0550:
-    *(pch) = 0x0;
+    *(pch) = 0;
     ini.fStartupFile = 0x1;
     ini.fCmdLine = 0x1;
 
@@ -401,7 +401,7 @@ L_0571:
     PostMessage(hwndFrame, WM_STARS_STARTUP, 0x0, 0x0);
 
 L_058a:
-    if ((GetMessage(&(msg), 0x0, 0x0, 0x0) == 0x0))
+    if ((GetMessage(&(msg), 0x0, 0x0, 0x0) == 0))
         goto L_0690;
     else
         goto L_05aa;
@@ -413,7 +413,7 @@ L_05aa:
         goto L_05b4;
 
 L_05b4:
-    if ((TranslateAccelerator(hwndFrame, hAccelTitle, &(msg)) != 0x0))
+    if ((TranslateAccelerator(hwndFrame, hAccelTitle, &(msg)) != 0))
         goto L_058a;
     else
         goto L_05d0;
@@ -423,13 +423,13 @@ L_05d0:
     DispatchMessage(&(msg));
 
 L_05eb:
-    if ((IsIconic(hwndFrame) != 0x0))
+    if ((IsIconic(hwndFrame) != 0))
         goto L_0618;
     else
         goto L_05fc;
 
 L_05fc:
-    if ((TranslateAccelerator(hwndFrame, hAccel, &(msg)) != 0x0))
+    if ((TranslateAccelerator(hwndFrame, hAccel, &(msg)) != 0))
         goto L_058a;
     else
         goto L_0618;
@@ -448,7 +448,7 @@ L_062e:
         goto L_0638;
 
 L_0638:
-    if ((FHandleKey(msg.hwnd, msg.message, msg.wParam, msg.lParam) != 0x0))
+    if ((FHandleKey(msg.hwnd, msg.message, msg.wParam, msg.lParam) != 0))
         goto L_058a;
     else
         goto L_065b;
@@ -460,7 +460,7 @@ L_065b:
         goto L_0665;
 
 L_0665:
-    if ((FHandleChar(msg.hwnd, msg.wParam, msg.lParam) != 0x0))
+    if ((FHandleChar(msg.hwnd, msg.wParam, msg.lParam) != 0))
         goto L_058a;
     else
         goto L_0681;
@@ -480,9 +480,9 @@ int16_t FSetUpBatchProcessing() {
     int16_t cb;
 
 L_06a4:
-    fSuccess = 0x0;
+    fSuccess = 0;
     penvMem = env;
-    if ((setjmp(env) != 0x0))
+    if ((setjmp(env) != 0))
         goto LError;
     else
         goto L_06c9;
@@ -495,10 +495,10 @@ L_06cf:
     lpchBatch = LpAlloc(cb, htPerm);
     RgFromStream(&(lpchBatch), cb);
     lpchBatchMac = &(lpchBatch[cb]);
-    pch = 0x56a2;
+    pch = szBase;
 
 L_0733:
-    if (((uint16_t)(*(lpchBatch)) == 0xa))
+    if (((uint16_t)(*(lpchBatch)) == 10))
         goto L_0774;
     else
         goto L_0743;
@@ -523,19 +523,19 @@ L_075c:
 
 L_0774:
     lpchBatch = (lpchBatch + 0x1);
-    *(pch - 0x1) = 0x0;
-    fSuccess = 0x1;
+    *(pch - 0x1) = 0;
+    fSuccess = 1;
 
 LError:
     penvMem = 0x0;
     StreamClose();
-    if ((fSuccess != 0x0))
+    if ((fSuccess != 0))
         goto L_079e;
     else
         goto L_0799;
 
 L_0799:
-    szBase[0x0] = 0x0;
+    szBase[0] = 0;
 
 L_079e:
 
@@ -547,7 +547,7 @@ int16_t IPlrAlsoCheater(int16_t iplr) {
     int16_t i;
 
 L_07aa:
-    if ((FValidSerialLong(vrgts[iplr].lSerialNumber) != 0x0))
+    if ((FValidSerialLong(vrgts[iplr].lSerialNumber) != 0))
         goto L_07e9;
     else
         goto L_07e3;
@@ -556,11 +556,11 @@ L_07e3:
     return 0xffff;
 
 L_07e9:
-    i = 0x0;
+    i = 0;
     goto L_07f5;
 
 L_07f1:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_07f5:
     if ((i >= game.cPlayer))
@@ -593,7 +593,7 @@ L_0867:
         goto L_0870;
 
 L_0870:
-    if ((fmemcmp(&(vrgts[iplr].rgbConfig), &(vrgts[i].rgbConfig), 0xb) == 0x0))
+    if ((fmemcmp(&(vrgts[iplr].rgbConfig), &(vrgts[i].rgbConfig), 0xb) == 0))
         goto L_07f1;
     else
         goto L_08bc;
@@ -856,7 +856,7 @@ L_0cc9:
     FreeHbr(hbrTooltip);
 
 L_0cd5:
-    i = 0x0;
+    i = 0;
     goto L_0d01;
 
 L_0cdd:
@@ -869,64 +869,64 @@ L_0cec:
     FreeHbr(rghbrMineral[i]);
 
 L_0cfd:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0d01:
-    if ((i <= 0x4))
+    if ((i <= 4))
         goto L_0cdd;
     else
         goto L_0d0a;
 
 L_0d0a:
-    i = 0x0;
+    i = 0;
     goto L_0d48;
 
 L_0d12:
-    j = 0x0;
+    j = 0;
     goto L_0d3b;
 
 L_0d1a:
     FreeHbr(rghbrPlanetAttr[i][j]);
-    j = (j + 0x1);
+    j = (j + 1);
 
 L_0d3b:
-    if ((j < 0x2))
+    if ((j < 2))
         goto L_0d1a;
     else
         goto L_0d44;
 
 L_0d44:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0d48:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_0d12;
     else
         goto L_0d51;
 
 L_0d51:
-    i = 0x0;
+    i = 0;
     goto L_0d8f;
 
 L_0d59:
-    j = 0x0;
+    j = 0;
     goto L_0d82;
 
 L_0d61:
     FreeHbr(rghbrMinSum[i][j]);
-    j = (j + 0x1);
+    j = (j + 1);
 
 L_0d82:
-    if ((j < 0x2))
+    if ((j < 2))
         goto L_0d61;
     else
         goto L_0d8b;
 
 L_0d8b:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0d8f:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_0d59;
     else
         goto L_0d98;
@@ -974,15 +974,15 @@ L_0e07:
     DestroyIcon(hiconStars);
     DestroyIcon(hiconHost);
     DestroyIcon(hiconWait);
-    i = 0x0;
+    i = 0;
     goto L_0eec;
 
 L_0eda:
     DestroyIcon(rghiconVCR[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0eec:
-    if ((i < 0x7))
+    if ((i < 7))
         goto L_0eda;
     else
         goto L_0ef5;
@@ -1004,7 +1004,7 @@ L_0ef5:
     DeleteObject(hbmpMsg);
     DeleteObject(hbmpMono);
     FreeResource(hdibPlaque);
-    i = 0x0;
+    i = 0;
     goto L_0fc9;
 
 L_0f8d:
@@ -1012,25 +1012,25 @@ L_0f8d:
     FreeResource(rghdibShips[i]);
     GlobalUnlock(rghdibShipsT[i]);
     FreeResource(rghdibShipsT[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0fc9:
-    if ((i < 0x5))
+    if ((i < 5))
         goto L_0f8d;
     else
         goto L_0fd2;
 
 L_0fd2:
-    i = 0x0;
+    i = 0;
     goto L_0ffa;
 
 L_0fda:
     GlobalUnlock(rghdibInventory[i]);
     FreeResource(rghdibInventory[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0ffa:
-    if ((i < 0x7))
+    if ((i < 7))
         goto L_0fda;
     else
         goto L_1003;
@@ -1070,15 +1070,15 @@ L_10bd:
     FreeHbr(hbrYellow);
     FreeHbr(hbrDkYellow);
     DeleteObject(hbr50Screen);
-    i = 0x0;
+    i = 0;
     goto L_1110;
 
 L_10fe:
     DeleteObject(rghbrPat[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1110:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_10fe;
     else
         goto L_1119;
@@ -1105,17 +1105,17 @@ L_117d:
     DeleteObject(hpenDkBlue);
     DeleteObject(hpenYellow);
     DeleteObject(hpenDkYellow);
-    DeleteObject(rghfontArial10[0x0]);
-    DeleteObject(rghfontArial10[0x1]);
-    i = 0x0;
+    DeleteObject(rghfontArial10[0]);
+    DeleteObject(rghfontArial10[1]);
+    i = 0;
     goto L_11c4;
 
 L_11b2:
     DeleteObject(rghfontArial8[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_11c4:
-    if ((i < 0x5))
+    if ((i < 5))
         goto L_11b2;
     else
         goto L_11cd;
@@ -1123,15 +1123,15 @@ L_11c4:
 L_11cd:
     DeleteObject(rghfontArial6);
     DeleteObject(rghfontArial7);
-    i = 0x0;
+    i = 0;
     goto L_1202;
 
 L_11e7:
     FreeHb(rglphb[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1202:
-    if ((i < 0xc))
+    if ((i < 12))
         goto L_11e7;
     else
         goto L_120b;
@@ -1145,7 +1145,7 @@ L_1212:
     _wsprintf(szWork, PszGetCompressedString(idsVersionD02dC), 0x2, 0x3c, 0x6a);
 
 L_124c:
-    return 0x57a4;
+    return szWork;
 }
 
 int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -1159,8 +1159,8 @@ L_1252:
     goto L_14e5;
 
 L_1261:
-    iAbout1st = 0xfff5;
-    iAboutPartial = 0x0;
+    iAbout1st = -11;
+    iAboutPartial = 0;
     SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0);
     return 0x1;
@@ -1172,27 +1172,27 @@ L_12a9:
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
-    iAboutPartial = (iAboutPartial + 0x2);
+    iAboutPartial = (iAboutPartial + 2);
     if ((iAboutPartial < dyArial8))
         goto L_130c;
     else
         goto L_12f1;
 
 L_12f1:
-    iAboutPartial = 0x0;
-    iAbout1st = (iAbout1st + 0x1);
-    if ((iAbout1st <= 0x4e))
+    iAboutPartial = 0;
+    iAbout1st = (iAbout1st + 1);
+    if ((iAbout1st <= 78))
         goto L_130c;
     else
         goto L_1306;
 
 L_1306:
-    iAbout1st = 0xfff5;
+    iAbout1st = -11;
 
 L_130c:
     GetClientRect(hwndCtl, &(rc));
     hdc = GetDC(hwndCtl);
-    SelectObject(hdc, rghfontArial8[0x1]);
+    SelectObject(hdc, rghfontArial8[1]);
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -1203,32 +1203,32 @@ L_130c:
     goto L_1391;
 
 L_138d:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1391:
-    if ((i >= (iAbout1st + 0xa)))
+    if ((i >= (iAbout1st + 10)))
         goto L_13fa;
     else
         goto L_139f;
 
 L_139f:
-    if ((i < 0x0))
+    if ((i < 0))
         goto L_13d7;
     else
         goto L_13a8;
 
 L_13a8:
-    if ((i >= 0x4d))
+    if ((i >= 77))
         goto L_13d7;
     else
         goto L_13b1;
 
 L_13b1:
-    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 0x277)), 0xffff);
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), 0xffff);
     goto L_13e3;
 
 L_13d7:
-    if ((i >= 0x4d))
+    if ((i >= 77))
         goto L_13fa;
     else
         goto L_13dd;
@@ -1240,7 +1240,7 @@ L_13e3:
     goto L_138d;
 
 L_13fa:
-    rc.bottom = 0x3e8;
+    rc.bottom = 1000;
     FillRect(hdc, &(rc), hbrButtonFace);
     SelectClipRgn(hdc, 0x0);
     ReleaseDC(hwnd, hdc);
@@ -1447,13 +1447,13 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     uint16_t t_merge_1bbd_0001;
 
 L_165a:
-    if ((iMsg != 0x100))
+    if ((iMsg != 256))
         goto L_16f4;
     else
         goto L_166d;
 
 L_166d:
-    if ((iKey != 0x1b))
+    if ((iKey != 27))
         goto L_169d;
     else
         goto L_1676;
@@ -1475,7 +1475,7 @@ L_168e:
     return 0x1;
 
 L_169d:
-    if ((iKey != 0x1b))
+    if ((iKey != 27))
         goto L_16cf;
     else
         goto L_16a6;
@@ -1491,7 +1491,7 @@ L_16b0:
     return 0x1;
 
 L_16cf:
-    if ((iKey != 0x1b))
+    if ((iKey != 27))
         goto L_175f;
     else
         goto L_16d8;
@@ -1507,7 +1507,7 @@ L_16e2:
     return 0x1;
 
 L_16f4:
-    if ((iMsg != 0x101))
+    if ((iMsg != 257))
         goto L_175f;
     else
         goto L_16fe;
@@ -1519,13 +1519,13 @@ L_16fe:
         goto L_1708;
 
 L_1708:
-    if ((iKey == 0x1b))
+    if ((iKey == 27))
         goto L_171a;
     else
         goto L_1711;
 
 L_1711:
-    if ((iKey != 0xd))
+    if ((iKey != 13))
         goto L_175f;
     else
         goto L_171a;
@@ -1544,7 +1544,7 @@ L_1733:
         goto L_1744;
 
 L_1744:
-    if ((iKey != 0x1b))
+    if ((iKey != 27))
         goto L_1753;
     else
         goto L_174d;
@@ -1560,7 +1560,7 @@ L_1756:
     TerminateToolbarFocus(t_merge_1756_0001);
 
 L_175f:
-    if ((iKey != 0x10))
+    if ((iKey != 16))
         goto L_17ae;
     else
         goto L_1768;
@@ -1573,7 +1573,7 @@ L_1768:
 
 L_1772:
     GetCursorPos(&(pt));
-    /* untranslated: hwndOver = WindowFromPoint(words(pt.y, pt.x)) */
+    hwndOver = WindowFromPoint(pt);
     if ((hwndOver != hwndScanner))
         goto L_17ae;
     else
@@ -1583,7 +1583,7 @@ L_1797:
     SendMessage(hwndOver, WM_SETCURSOR, hwndOver, 0x0);
 
 L_17ae:
-    if ((iMsg == 0x100))
+    if ((iMsg == 256))
         goto L_17be;
     else
         goto L_17b8;
@@ -1592,73 +1592,73 @@ L_17b8:
     return 0x0;
 
 L_17be:
-    if ((iKey == 0x8))
+    if ((iKey == 8))
         goto L_1834;
     else
         goto L_17c7;
 
 L_17c7:
-    if ((iKey == 0x2e))
+    if ((iKey == 46))
         goto L_1834;
     else
         goto L_17d0;
 
 L_17d0:
-    if ((iKey == 0x28))
+    if ((iKey == 40))
         goto L_1834;
     else
         goto L_17d9;
 
 L_17d9:
-    if ((iKey == 0x26))
+    if ((iKey == 38))
         goto L_1834;
     else
         goto L_17e2;
 
 L_17e2:
-    if ((iKey == 0x24))
+    if ((iKey == 36))
         goto L_1834;
     else
         goto L_17eb;
 
 L_17eb:
-    if ((iKey == 0x23))
+    if ((iKey == 35))
         goto L_1834;
     else
         goto L_17f4;
 
 L_17f4:
-    if ((iKey < 0x30))
+    if ((iKey < 48))
         goto L_1806;
     else
         goto L_17fd;
 
 L_17fd:
-    if ((iKey <= 0x39))
+    if ((iKey <= 57))
         goto L_1834;
     else
         goto L_1806;
 
 L_1806:
-    if ((iKey == 0xbc))
+    if ((iKey == 188))
         goto L_1834;
     else
         goto L_1810;
 
 L_1810:
-    if ((iKey == 0xbe))
+    if ((iKey == 190))
         goto L_1834;
     else
         goto L_181a;
 
 L_181a:
-    if ((iKey == 0xdb))
+    if ((iKey == 219))
         goto L_1834;
     else
         goto L_1824;
 
 L_1824:
-    if ((iKey == 0xdd))
+    if ((iKey == 221))
         goto L_1834;
     else
         goto L_182e;
@@ -1701,7 +1701,7 @@ L_1884:
     return 0x0;
 
 L_188a:
-    i = 0x0;
+    i = 0;
     goto L_18ad;
 
 L_1892:
@@ -1714,10 +1714,10 @@ L_18a3:
     return 0x0;
 
 L_18a9:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_18ad:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_1892;
     else
         goto L_18b6;
@@ -1789,38 +1789,38 @@ L_1933:
     return 0x0;
 
 L_1939:
-    if ((iKey < 0x30))
+    if ((iKey < 48))
         goto L_1a4a;
     else
         goto L_1942;
 
 L_1942:
-    if ((iKey > 0x39))
+    if ((iKey > 57))
         goto L_1a4a;
     else
         goto L_194b;
 
 L_194b:
-    if ((iKey < 0x31))
+    if ((iKey < 49))
         goto L_19a2;
     else
         goto L_1954;
 
 L_1954:
-    if ((iKey > 0x36))
+    if ((iKey > 54))
         goto L_19a2;
     else
         goto L_195d;
 
 L_195d:
-    md = (iKey + 0xffcf);
+    md = (iKey - 49);
     if ((md == (grbitScan & 0xf)))
         goto L_199c;
     else
         goto L_1974;
 
 L_1974:
-    ExecuteButton((iKey + 0xffcf), 0x1);
+    ExecuteButton((iKey - 49), 0x1);
     InvalidateRect(hwndTb, 0x0, 0x0);
 
 L_199c:
@@ -1830,56 +1830,56 @@ L_19a2:
     goto L_19e4;
 
 L_19a8:
-    itb = 0x7;
+    itb = 7;
     goto L_1a07;
 
 L_19b0:
-    itb = 0x8;
+    itb = 8;
     goto L_1a07;
 
 L_19b8:
-    itb = 0x9;
+    itb = 9;
     goto L_1a07;
 
 L_19c0:
-    if ((GetKeyState(0x10) >= 0x0))
+    if ((GetKeyState(0x10) >= 0))
         goto L_19d9;
     else
         goto L_19d1;
 
 L_19d1:
-    itb = 0x11;
+    itb = 17;
     goto L_1a07;
 
 L_19d9:
-    itb = 0xb;
+    itb = 11;
 
 L_19e4:
-    if ((iKey == 0x30))
+    if ((iKey == 48))
         goto L_19c0;
     else
         goto L_19ec;
 
 L_19ec:
-    if ((iKey == 0x37))
+    if ((iKey == 55))
         goto L_19a8;
     else
         goto L_19f4;
 
 L_19f4:
-    if ((iKey == 0x38))
+    if ((iKey == 56))
         goto L_19b0;
     else
         goto L_19fc;
 
 L_19fc:
-    if ((iKey == 0x39))
+    if ((iKey == 57))
         goto L_19b8;
     else
         goto L_1a07;
 
 L_1a07:
-    if ((FIsButtonDown(itb) != 0x0))
+    if ((FIsButtonDown(itb) != 0))
         goto L_1a20;
     else
         goto L_1a1a;
@@ -1909,7 +1909,7 @@ L_1a56:
         goto L_1a60;
 
 L_1a60:
-    iKey = 0x8;
+    iKey = 8;
     DeleteCurWayPoint(0x8);
 
 L_1a74:
@@ -1932,19 +1932,19 @@ L_1aa1:
         goto L_1aab;
 
 L_1aab:
-    if ((sel.iwpAct > 0x0))
+    if ((sel.iwpAct > 0))
         goto L_1abf;
     else
         goto L_1ab5;
 
 L_1ab5:
-    if ((sel.fl.cord <= 0x1))
+    if ((sel.fl.cord <= 1))
         goto L_1b9a;
     else
         goto L_1abf;
 
 L_1abf:
-    if ((sel.iwpAct <= 0x0))
+    if ((sel.iwpAct <= 0))
         goto L_1acf;
     else
         goto L_1ac9;
@@ -1954,31 +1954,31 @@ L_1ac9:
     goto L_1ad2;
 
 L_1acf:
-    t_merge_1ad2_0001 = 0x1;
+    t_merge_1ad2_0001 = 1;
 
 L_1ad2:
     iwp = t_merge_1ad2_0001;
-    /* untranslated: iWarp = ((part[6:2](sel.fl.lpplord->rgord[iwp]) >> 0x4) & 0xf) */
-    if ((iKey != 0xbc))
+    iWarp = sel.fl.lpplord->rgord[iwp].iWarp;
+    if ((iKey != 188))
         goto L_1b0f;
     else
         goto L_1b08;
 
 L_1b08:
-    iWarp = (iWarp - 0x1);
+    iWarp = (iWarp - 1);
     goto L_1b13;
 
 L_1b0f:
-    iWarp = (iWarp + 0x1);
+    iWarp = (iWarp + 1);
 
 L_1b13:
-    if ((iWarp < 0x0))
+    if ((iWarp < 0))
         goto L_1b9a;
     else
         goto L_1b1c;
 
 L_1b1c:
-    if ((iWarp > 0xb))
+    if ((iWarp > 11))
         goto L_1b9a;
     else
         goto L_1b25;
@@ -1992,9 +1992,9 @@ L_1b9a:
     return 0x1;
 
 L_1ba0:
-    pt.x = 0x0;
-    pt.y = 0x0;
-    if ((iKey != 0xdb))
+    pt.x = 0;
+    pt.y = 0;
+    if ((iKey != 219))
         goto L_1bba;
     else
         goto L_1bb4;
@@ -2007,65 +2007,65 @@ L_1bba:
     t_merge_1bbd_0001 = 0xffff;
 
 L_1bbd:
-    /* untranslated: call ExecuteReportClick(words(pt.y, pt.x), 0x2, 0x0, t_merge_1bbd_0001) -> callresult(void) */
+    ExecuteReportClick(pt, 0x2, 0x0, t_merge_1bbd_0001);
     return 0x1;
 
 L_1bdd:
-    if ((iKey == 0x8))
+    if ((iKey == 8))
         goto L_1a56;
     else
         goto L_1be5;
 
 L_1be5:
-    if ((iKey == 0x23))
+    if ((iKey == 35))
         goto L_1a74;
     else
         goto L_1bed;
 
 L_1bed:
-    if ((iKey == 0x24))
+    if ((iKey == 36))
         goto L_1a74;
     else
         goto L_1bf5;
 
 L_1bf5:
-    if ((iKey == 0x26))
+    if ((iKey == 38))
         goto L_1a74;
     else
         goto L_1bfd;
 
 L_1bfd:
-    if ((iKey == 0x28))
+    if ((iKey == 40))
         goto L_1a74;
     else
         goto L_1c05;
 
 L_1c05:
-    if ((iKey == 0x2e))
+    if ((iKey == 46))
         goto L_1a56;
     else
         goto L_1c0d;
 
 L_1c0d:
-    if ((iKey == 0xbc))
+    if ((iKey == 188))
         goto L_1aa1;
     else
         goto L_1c15;
 
 L_1c15:
-    if ((iKey == 0xbe))
+    if ((iKey == 190))
         goto L_1aa1;
     else
         goto L_1c1d;
 
 L_1c1d:
-    if ((iKey == 0xdb))
+    if ((iKey == 219))
         goto L_1ba0;
     else
         goto L_1c25;
 
 L_1c25:
-    if ((iKey != 0xdd))
+    if ((iKey != 221))
         goto L_1a50;
     else
         goto L_1c2a;

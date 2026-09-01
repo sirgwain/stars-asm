@@ -54,6 +54,12 @@ func FormatExpr(expr Expr) string {
 		if text, ok := formatEnumConst(e); ok {
 			return text
 		}
+		// if e.U64 == 0 {
+		// 	return "0"
+		// }
+		if i64, ok := e.Int64(); ok {
+			return fmt.Sprintf("%d", i64)
+		}
 		return fmt.Sprintf("0x%x", e.U64)
 	case *Register:
 		return e.Val.String()
@@ -115,10 +121,26 @@ func FormatExpr(expr Expr) string {
 
 // formatAddressOf renders address-of with C array-to-pointer decay cleanup.
 func formatAddressOf(e *AddressOf) string {
+	if base, ok := arrayAddressBase(e.Target, e.TypeInfo); ok {
+		return FormatExpr(base)
+	}
 	if base, ok := zeroIndexArrayBase(e.Target); ok {
 		return FormatExpr(base)
 	}
 	return "&" + FormatExpr(e.Target)
+}
+
+// arrayAddressBase returns the array base when address-of is typed as a
+// compatible pointer and C would decay the array to that pointer.
+func arrayAddressBase(target LValue, expected typeinfo.Type) (Expr, bool) {
+	_, ok := target.ExprType().(*typeinfo.Array)
+	if !ok {
+		return nil, false
+	}
+	if decayed, ok := decayArrayLValue(target, expected); ok {
+		return decayed, true
+	}
+	return nil, false
 }
 
 // zeroIndexArrayBase returns the array base for address-of array[0].

@@ -19,6 +19,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     int16_t  fMineralBlocked;
     int32_t  AddCost;
     uint16_t t_merge_0d4c_0001;
+    int32_t  t_call_0ea9;
     int32_t  t_merge_126a_0001_wide;
     uint16_t t_merge_1410_0001;
     int32_t  t_merge_15f8_0001_wide;
@@ -27,12 +28,12 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     uint16_t t_merge_189c_0001;
 
 L_0c92:
-    cAlchemy = 0x0;
+    cAlchemy = 0;
     LOWORD(pctInitial) = lpprod->pct;
     HIWORD(pctInitial) = 0x0;
     prod = lpprod;
     GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 0x1);
-    cBuilt = 0x0;
+    cBuilt = 0;
     if ((prod.grobj != 0x1))
         goto L_0d49;
     else
@@ -71,13 +72,13 @@ L_0d49:
 
 L_0d4c:
     fAutoBuild = t_merge_0d4c_0001;
-    if ((fAutoBuild == 0x0))
+    if ((fAutoBuild == 0))
         goto L_102c;
     else
         goto L_0d58;
 
 L_0d58:
-    cMax = 0x3e8;
+    cMax = 1000;
     goto L_0f2c;
 
 L_0d74:
@@ -105,7 +106,7 @@ L_0e4a:
 L_0e57:
     iobjOther = 0xc;
     cMax = IpctCanTerraformLppl(lppl);
-    if ((cMax <= 0x0))
+    if ((cMax <= 0))
         goto L_0f9f;
     else
         goto L_0e7b;
@@ -123,29 +124,36 @@ L_0e97:
         goto L_0e9f;
 
 L_0e9f:
-    if ((HIWORD(ChgPopFromPlanet(lppl, 0x0)) < 0x0))
+    t_call_0ea9 = ChgPopFromPlanet(lppl, 0x0);
+    if ((HIWORD(t_call_0ea9) < 0x0))
         goto L_0f9f;
     else
         goto L_0eb9;
 
 L_0eb9:
-    /* untranslated: branch hiword(callresult(int32_t)) > 0x0 ? L_0ec6 : L_0ebe */
+    if ((HIWORD(t_call_0ea9) > 0x0))
+        goto L_0ec6;
+    else
+        goto L_0ebe;
 
 L_0ebe:
-    /* untranslated: branch loword(callresult(int32_t)) < 0x0 ? L_0f9f : L_0ec6 */
+    if ((LOWORD(t_call_0ea9) < 0x0))
+        goto L_0f9f;
+    else
+        goto L_0ec6;
 
 L_0ec6:
-    if ((PctPlanetDesirability(lppl, lppl->iPlayer) <= 0x0))
+    if ((PctPlanetDesirability(lppl, lppl->iPlayer) <= 0))
         goto L_0f9f;
     else
         goto L_0ee3;
 
 L_0ee3:
-    cMax = 0x0;
+    cMax = 0;
 
 L_0eeb:
     iobjOther = 0x11;
-    if ((IWarpMAFromLppl(lppl, 0x0) == 0x0))
+    if ((IWarpMAFromLppl(lppl, 0x0) == 0))
         goto L_0f21;
     else
         goto L_0f0f;
@@ -157,7 +165,7 @@ L_0f0f:
         goto L_0f21;
 
 L_0f21:
-    cMax = 0x0;
+    cMax = 0;
 
 L_0f2c:
     if ((prod.iItem != 0x0))
@@ -244,13 +252,13 @@ L_0f94:
         goto L_0f9f;
 
 L_0f9f:
-    if ((cMax >= 0x0))
+    if ((cMax >= 0))
         goto L_0fad;
     else
         goto L_0fa8;
 
 L_0fa8:
-    cMax = 0x0;
+    cMax = 0;
 
 L_0fad:
     if ((0x0 > SIGNHIWORD(cMax)))
@@ -281,15 +289,15 @@ L_1000:
     /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words((cMax & 0x3ff), 0x0) << 0x0))) */
 
 L_102c:
-    i = 0x0;
+    i = 0;
     goto L_1086;
 
 L_1034:
     /* untranslated: rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words(0x0, prod.pct)) / 0x64) */
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1086:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_1034;
     else
         goto L_108f;
@@ -313,7 +321,7 @@ L_10a8:
         goto L_10b0;
 
 L_10b0:
-    i = 0x0;
+    i = 0;
     goto L_1101;
 
 L_10b8:
@@ -337,25 +345,25 @@ L_10f3:
 L_10f7:
 
 L_10fd:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1101:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_10b8;
     else
         goto L_110a;
 
 L_110a:
-    if ((i >= 0x4))
+    if ((i >= 4))
         goto L_165c;
     else
         goto L_1113;
 
 L_1113:
-    fMineralBlocked = 0x0;
-    fResourceBlocked = 0x0;
-    pct = 0x64;
-    i = 0x0;
+    fMineralBlocked = 0;
+    fResourceBlocked = 0;
+    pct = 100;
+    i = 0;
     goto L_12ea;
 
 L_1130:
@@ -395,7 +403,7 @@ L_117c:
         goto L_1183;
 
 L_1183:
-    pctT = 0x64;
+    pctT = 100;
     goto L_1270;
 
 L_1190:
@@ -425,7 +433,7 @@ L_1255:
     goto L_126a;
 
 L_125e:
-    t_merge_126a_0001_wide = (pctTooBig + 0xffffffff);
+    t_merge_126a_0001_wide = (pctTooBig - 1);
 
 L_126a:
     pctT = t_merge_126a_0001_wide;
@@ -451,41 +459,41 @@ L_1283:
 L_128b:
     lMinNeeded = ((rgCost[i] - rgCostPaid[i]) - rgRes[i]);
     pct = pctT;
-    if ((i != 0x3))
+    if ((i != 3))
         goto L_12e1;
     else
         goto L_12d9;
 
 L_12d9:
-    fResourceBlocked = 0x1;
+    fResourceBlocked = 1;
     goto L_12e6;
 
 L_12e1:
-    fMineralBlocked = 0x1;
+    fMineralBlocked = 1;
 
 L_12e6:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_12ea:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_1130;
     else
         goto L_12f3;
 
 L_12f3:
-    if ((fMineralBlocked == 0x0))
+    if ((fMineralBlocked == 0))
         goto L_131c;
     else
         goto L_12fc;
 
 L_12fc:
-    if ((fAutoBuild == 0x0))
+    if ((fAutoBuild == 0))
         goto L_131c;
     else
         goto L_1305;
 
 L_1305:
-    if ((fAlchemy != 0x0))
+    if ((fAlchemy != 0))
         goto LAlchemize;
     else
         goto L_130b;
@@ -493,21 +501,21 @@ L_1305:
 L_130b:
 
 L_1314:
-    fAutoBuild = 0x2;
+    fAutoBuild = 2;
     goto L_1712;
 
 L_131c:
-    i = 0x0;
+    i = 0;
     goto L_1398;
 
 L_1324:
     AddCost = ((int32_t)(((uint32_t)((rgCost[i] * pct)) / 0x64)) - rgCostPaid[i]);
     rgRes[i] = (rgRes[i] - AddCost);
     rgCostPaid[i] = (rgCostPaid[i] + AddCost);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1398:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_1324;
     else
         goto L_13a1;
@@ -515,13 +523,13 @@ L_1398:
 L_13a1:
     /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xffff) | loword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14))) */
     /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xf80f) | hiword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14))) */
-    if ((fAlchemy == 0x0))
+    if ((fAlchemy == 0))
         goto L_1712;
     else
         goto L_13d5;
 
 L_13d5:
-    if ((fResourceBlocked != 0x0))
+    if ((fResourceBlocked != 0))
         goto L_1712;
     else
         goto L_13db;
@@ -529,7 +537,7 @@ L_13d5:
 L_13db:
 
 LAlchemize:
-    if ((GetRaceGrbit(rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0x0))
+    if ((GetRaceGrbit(rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0))
         goto L_140c;
     else
         goto L_1405;
@@ -584,15 +592,15 @@ L_1465:
         goto L_146e;
 
 L_146e:
-    i = 0x0;
+    i = 0;
     goto L_1491;
 
 L_1476:
     rgRes[i] = (rgRes[i] + cCanBuild);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1491:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_1476;
     else
         goto L_149a;
@@ -671,7 +679,7 @@ L_15e3:
     goto L_15f8;
 
 L_15ec:
-    t_merge_15f8_0001_wide = (pctTooBig + 0xffffffff);
+    t_merge_15f8_0001_wide = (pctTooBig - 1);
 
 L_15f8:
     pctT = t_merge_15f8_0001_wide;
@@ -681,7 +689,7 @@ L_15f8:
     *(rgRes + 0xe) = (*(rgRes + 0xe) - HIWORD((int32_t)(((uint32_t)((pctT * lAlchCost)) / 0x64))));
 
 L_165c:
-    cBuilt = (cBuilt + 0x1);
+    cBuilt = (cBuilt + 1);
     /* untranslated: ss:[bp-0x58] = ((LOWORD(prod) + 0xffff) & 0x3ff) */
     /* untranslated: ss:[bp-0x56] = 0x0 */
     prod.cItem = 0x0;
@@ -690,16 +698,16 @@ L_165c:
     /* untranslated: HIWORD(prod) = (HIWORD(prod) | ss:[bp-0x56]) */
     LOWORD(prod) = ((LOWORD(prod) & 0xffff) | 0x0);
     prod.pct = 0x0;
-    i = 0x0;
+    i = 0;
     goto L_1706;
 
 L_16ba:
     rgRes[i] = (rgRes[i] - (rgCost[i] - rgCostPaid[i]));
-    rgCostPaid[i] = 0x0;
-    i = (i + 0x1);
+    rgCostPaid[i] = 0;
+    i = (i + 1);
 
 L_1706:
-    if ((i >= 0x4))
+    if ((i >= 4))
         goto L_108f;
     else
         goto L_170c;
@@ -707,7 +715,7 @@ L_1706:
 L_170c:
 
 L_1712:
-    if ((cBuilt <= 0x0))
+    if ((cBuilt <= 0))
         goto L_17b7;
     else
         goto L_171b;
@@ -750,27 +758,27 @@ L_177f:
 
 L_1787:
     cAlchemy = (cAlchemy + cBuilt);
-    i = 0x0;
+    i = 0;
     goto L_17ae;
 
 L_1795:
     rgRes[i] = (rgRes[i] + (uint32_t)(cBuilt));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_17ae:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_1795;
     else
         goto L_17b7;
 
 L_17b7:
-    if ((cAlchemy == 0x0))
+    if ((cAlchemy == 0))
         goto L_17fb;
     else
         goto L_17c0;
 
 L_17c0:
-    if ((fCalcOnly != 0x0))
+    if ((fCalcOnly != 0))
         goto L_17fb;
     else
         goto L_17c9;
@@ -791,13 +799,13 @@ L_17fb:
         goto L_1804;
 
 L_1804:
-    if ((fAutoBuild != 0x2))
+    if ((fAutoBuild != 2))
         goto L_1827;
     else
         goto L_180d;
 
 L_180d:
-    if ((cBuilt <= 0x0))
+    if ((cBuilt <= 0))
         goto L_181c;
     else
         goto L_1816;
@@ -814,7 +822,7 @@ L_181f:
     goto L_18d1;
 
 L_1827:
-    if ((fAutoBuild == 0x0))
+    if ((fAutoBuild == 0))
         goto L_1866;
     else
         goto L_1830;
@@ -832,7 +840,7 @@ L_1844:
         goto L_184c;
 
 L_184c:
-    if ((cBuilt <= 0x0))
+    if ((cBuilt <= 0))
         goto L_185b;
     else
         goto L_1855;
@@ -849,7 +857,7 @@ L_185e:
     goto L_18d1;
 
 L_1866:
-    if ((cBuilt != 0x0))
+    if ((cBuilt != 0))
         goto L_18a4;
     else
         goto L_186f;
@@ -890,20 +898,20 @@ L_18b8:
         goto L_18c0;
 
 L_18c0:
-    *(pmdStatus) = 0x0;
+    *(pmdStatus) = 0;
     goto L_18d1;
 
 L_18ca:
-    *(pmdStatus) = 0x5;
+    *(pmdStatus) = 5;
 
 L_18d1:
-    if ((fCalcOnly != 0x0))
+    if ((fCalcOnly != 0))
         goto L_18f3;
     else
         goto L_18da;
 
 L_18da:
-    if ((fAutoBuild != 0x0))
+    if ((fAutoBuild != 0))
         goto L_18f3;
     else
         goto L_18e3;
@@ -913,7 +921,7 @@ L_18e3:
     *(lpprod + 0x2) = HIWORD(prod);
 
 L_18f3:
-    if ((fAutoBuild == 0x0))
+    if ((fAutoBuild == 0))
         goto L_19a5;
     else
         goto L_18fc;

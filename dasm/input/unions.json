@@ -57,9 +57,30 @@
         "grobjFleet": "pfl",
         "grobjThing": "pth"
       }
+    },
+    {
+      "type": "XFER",
+      "discriminator": ["grobj"],
+      "enum": "GrobjClass",
+      "value_to_member": {
+        "grobjPlanet": "pl",
+        "grobjFleet": "fl",
+        "grobjOther": "pl",
+        "grobjThing": "th"
+      }
+    },
+    {
+      "type": "ORDER",
+      "discriminator": ["grTask"],
+      "enum": "TaskType",
+      "value_to_member": {
+        "grTaskXfer": "txp",
+        "grTaskLayMines": "tlm",
+        "grTaskPatrol": "tptl",
+        "grTaskGive": "tsell"
+      }
     }
   ],
-
   "function_path_facts": [
     {
       "func": "DropSalvage",
@@ -102,6 +123,14 @@
       "value": "ithMinefield"
     },
     {
+      "func": "MysteryTrader",
+      "root": "lpth",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMysteryTrader"
+    },
+    {
       "func": "CalcPctSurvive",
       "root": "part",
       "type": "PART",
@@ -110,7 +139,6 @@
       "value": "hstPlanetary"
     }
   ],
-
   "call_result_path_facts": [
     {
       "func": "LpthNew",
@@ -118,6 +146,15 @@
       "path": ["ith"],
       "from_param": "ith",
       "enum": "ThingType"
+    }
+  ],
+  "external_discriminator_aliases": [
+    {
+      "func": "ChgCargo",
+      "source": ["grobj"],
+      "root": "xfer",
+      "type": "XFER",
+      "enum": "GrobjClass"
     }
   ]
 }

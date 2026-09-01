@@ -13,12 +13,117 @@ type resolveStorageProcessor struct {
 
 // ProcessBlock resolves raw memory references to semantic local/global lvalues.
 func (p *resolveStorageProcessor) ProcessBlock(result *Result, f Func, b Block) (Block, bool) {
-	effects, changed := p.rewriter(result).rewriteEffects(b.Effects)
+	rewrite := p.rewriter(result)
+	effects := append([]Effect(nil), b.Effects...)
+	changed := false
+	prevUnionContext := p.ctx.currentUnionContext
+	localUnionContext := prevUnionContext
+	if localUnionContext != nil {
+		localUnionContext = localUnionContext.Clone()
+	}
+	defer func() {
+		p.ctx.currentUnionContext = prevUnionContext
+	}()
+	for i, effect := range effects {
+		p.ctx.currentUnionContext = localUnionContext
+		next, effectChanged := rewrite.rewriteEffect(effect)
+		if effectChanged {
+			effects[i] = next
+			changed = true
+		}
+		if updated := p.unionContextAfterEffect(localUnionContext, effects[i]); updated != localUnionContext {
+			localUnionContext = updated
+			p.ctx.currentUnionContext = localUnionContext
+		}
+	}
 	if !changed {
 		return b, false
 	}
 	b.Effects = effects
 	return b, true
+}
+
+// unionContextAfterEffect updates straight-line union selections produced by one effect.
+func (p *resolveStorageProcessor) unionContextAfterEffect(ctx *symresolve.UnionContext, effect Effect) *symresolve.UnionContext {
+	assign, ok := effect.(*Assign)
+	if !ok {
+		return ctx
+	}
+	root, rule, value, ok := p.unionDiscriminatorAssign(assign)
+	if !ok {
+		return ctx
+	}
+	if ctx == nil {
+		ctx = symresolve.NewUnionContext()
+	}
+	ctx.Add(root, rule, value)
+	return ctx
+}
+
+// unionDiscriminatorAssign returns the union selection implied by a discriminator assignment.
+func (p *resolveStorageProcessor) unionDiscriminatorAssign(assign *Assign) (symresolve.SymbolPath, *typeinfo.UnionVariantRule, typeinfo.EnumValue, bool) {
+	value, ok := enumConstValue(assign.Src)
+	if !ok || p.ctx == nil || p.ctx.sdb == nil || p.ctx.sdb.UnionRules == nil {
+		return nil, nil, typeinfo.EnumValue{}, false
+	}
+	dst, ok := symbolPathForExpr(assign.Dst)
+	if !ok {
+		return nil, nil, typeinfo.EnumValue{}, false
+	}
+	root, fields, ok := splitSymbolFieldPath(dst)
+	if !ok || len(fields) == 0 {
+		return nil, nil, typeinfo.EnumValue{}, false
+	}
+	for i := 0; i < len(fields); i++ {
+		candidate := rebuildSymbolFieldPath(root, fields[:i])
+		rule, ok := p.ctx.sdb.UnionRules.UnionVariantForType(candidate.Type())
+		if !ok || !fieldNamesMatch(fields[i:], rule.Discriminator) {
+			continue
+		}
+		if _, ok := rule.MemberForValue(value.Value); !ok {
+			return nil, nil, typeinfo.EnumValue{}, false
+		}
+		return candidate, rule, value, true
+	}
+	return nil, nil, typeinfo.EnumValue{}, false
+}
+
+// splitSymbolFieldPath separates a symbolic field path into its root and fields.
+func splitSymbolFieldPath(path symresolve.SymbolPath) (symresolve.SymbolPath, []*typeinfo.StructField, bool) {
+	field, ok := path.(*symresolve.SymbolField)
+	if !ok {
+		if _, ok := path.(*symresolve.SymbolRoot); ok {
+			return path, nil, true
+		}
+		return nil, nil, false
+	}
+	root, fields, ok := splitSymbolFieldPath(field.Base)
+	if !ok {
+		return nil, nil, false
+	}
+	return root, append(fields, field.Field), true
+}
+
+// rebuildSymbolFieldPath rebuilds a symbolic path from root and a field prefix.
+func rebuildSymbolFieldPath(root symresolve.SymbolPath, fields []*typeinfo.StructField) symresolve.SymbolPath {
+	path := root
+	for _, field := range fields {
+		path = &symresolve.SymbolField{Base: path, Field: field}
+	}
+	return path
+}
+
+// fieldNamesMatch reports whether fields exactly match a configured path.
+func fieldNamesMatch(fields []*typeinfo.StructField, names []string) bool {
+	if len(fields) != len(names) {
+		return false
+	}
+	for i, field := range fields {
+		if field == nil || field.Name != names[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // resolveCallWithRewriter resolves storage references in call arguments using
@@ -48,6 +153,13 @@ func (p *resolveStorageProcessor) rewriter(result *Result) *semRewriter {
 			return next, changed, true
 		},
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
+			if addr, ok := expr.(*AddressOf); ok {
+				if target, ok := p.resolveAddressOfTarget(addr.Target); ok {
+					next := *addr
+					next.Target = target
+					return &next, true, true
+				}
+			}
 			next, changed := w.rewriteExprChildren(expr)
 			if ptr, ok := next.(*FarPointer); ok {
 				if resolved, ok := p.ctx.resolveSemanticFarPointer(ptr); ok {
@@ -111,6 +223,26 @@ func (p *resolveStorageProcessor) resolveLValueWithRewriter(w *semRewriter, resu
 	default:
 		return value, false, false
 	}
+}
+
+// resolveAddressOfTarget resolves a symbolic byte range as an address target.
+func (p *resolveStorageProcessor) resolveAddressOfTarget(target LValue) (LValue, bool) {
+	part, ok := target.(*Part)
+	if !ok {
+		return nil, false
+	}
+	base, ok := symbolPathForExpr(part.Base)
+	if !ok {
+		return nil, false
+	}
+	if typeinfo.IsPointer(base.Type()) && part.ByteOff < base.Type().Bytes() {
+		return nil, false
+	}
+	path, offLeft, ok := p.ctx.res.ResolveContainingFieldPathInContext(base, part.ByteOff, p.ctx.unionContext())
+	if !ok || offLeft != 0 || part.Width > path.Type().Bytes() {
+		return nil, false
+	}
+	return &SymbolRef{Path: path}, true
 }
 
 // resolveSymbolPart resolves a byte range from an already symbolic base path.

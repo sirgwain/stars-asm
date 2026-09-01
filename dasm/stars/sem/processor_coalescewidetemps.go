@@ -3,6 +3,7 @@ package sem
 import (
 	"slices"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -186,6 +187,9 @@ func preferredWideTempType(current typeinfo.Type, next typeinfo.Type) typeinfo.T
 
 // reconstructWideTempSrc rebuilds one wide source from high and low words.
 func reconstructWideTempSrc(ctx *FuncContext, high Expr, low Expr, expected typeinfo.Type) (Expr, bool) {
+	if src, ok := collapseInferredFarPointerWords(ctx, high, low); ok {
+		return src, true
+	}
 	if src, ok := collapseWideExprPair(high, low, expected); ok {
 		return src, true
 	}
@@ -200,6 +204,63 @@ func reconstructWideTempSrc(ctx *FuncContext, high Expr, low Expr, expected type
 		}
 	}
 	return nil, false
+}
+
+// collapseInferredFarPointerWords rebuilds common string pointer word pairs
+// before a destination far-pointer type has been inferred.
+func collapseInferredFarPointerWords(ctx *FuncContext, high Expr, low Expr) (Expr, bool) {
+	if ctx == nil || exprWidth(high) != 2 {
+		return nil, false
+	}
+
+	if exprMatchesMachineValue(high, machine.RegVal(asm.RegSS)) {
+		return collapseStackCStringPointerWords(low)
+	}
+
+	if exprMatchesMachineValue(high, ctx.dsReg) {
+		return collapseDataSegmentCStringPointerWords(ctx, low)
+	}
+
+	return nil, false
+}
+
+// collapseStackCStringPointerWords converts SS plus a C string array lvalue
+// into a typed far C string address.
+func collapseStackCStringPointerWords(low Expr) (Expr, bool) {
+	lvalue, ok := low.(LValue)
+	if !ok {
+		return nil, false
+	}
+	array, ok := lvalue.ExprType().(*typeinfo.Array)
+	if !ok || !array.IsCStringArray() {
+		return nil, false
+	}
+	return &AddressOf{Target: lvalue, TypeInfo: farCStringPointerType(array.Elem)}, true
+}
+
+// collapseDataSegmentCStringPointerWords converts DS plus a literal offset
+// into a typed far C string literal.
+func collapseDataSegmentCStringPointerWords(ctx *FuncContext, low Expr) (Expr, bool) {
+	if ctx.sdb == nil || ctx.res == nil {
+		return nil, false
+	}
+	c, ok := low.(*Const)
+	if !ok || c.U64 == 0 || c.U64 > 0xffff {
+		return nil, false
+	}
+	text, ok := ctx.res.ResolveLiteral(uint16(ctx.sdb.DGroupFrame), uint32(c.U64))
+	if !ok {
+		return nil, false
+	}
+	return &StringLiteral{TypeInfo: farCStringPointerType(nil), Text: text}, true
+}
+
+// farCStringPointerType returns a far pointer type suitable for C strings.
+func farCStringPointerType(elem typeinfo.Type) typeinfo.Type {
+	if elem == nil {
+		elem = &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}
+	}
+	return &typeinfo.Pointer{Elem: elem, Class: typeinfo.PtrFar}
 }
 
 // sameWideTempDefs reports whether two reconstructed definition lists match.

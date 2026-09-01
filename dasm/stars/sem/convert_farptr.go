@@ -18,6 +18,10 @@ func (c *machineConverter) convertFarPointerTyped(value machine.Value, expected 
 	if expr, ok := c.resolveStackFarPointerTyped(ptr, expected); ok {
 		return expr, true
 	}
+	if expr, ok := c.resolveSegmentRelativeFarPointerTyped(ptr, expected); ok {
+		return expr, true
+	}
+
 	if expr, ok := c.resolveFarPointerAddressTyped(ptr, expected); ok {
 		return expr, true
 	}
@@ -33,6 +37,31 @@ func (c *machineConverter) convertFarPointerTyped(value machine.Value, expected 
 		}
 	}
 	return collapseTypedFarPointerCallArg(c.ctx, c.convertValue(value), &typeinfo.FunctionVar{Type: expected})
+}
+
+// convertFarPointerMemoryLValue resolves segment:offset memory through a known pointer variable.
+func (c *machineConverter) convertFarPointerMemoryLValue(access machine.MemoryAccess, width int) (LValue, bool) {
+	ptrLoad, ok := farPointerMemoryLoad(access)
+	if !ok {
+		return nil, false
+	}
+	pointer := c.convertMemoryLValue(ptrLoad.Access, ptrLoad.Access.Width)
+	switch pointer.(type) {
+	case *RawMemory, *Memory:
+		return nil, false
+	}
+	if lvalue, ok := c.consumeAddress(AddressExpr{Base: pointer, Offset: access.Disp, Deref: true}, width); ok {
+		return lvalue, true
+	}
+	if lvalue, ok := c.ctx.resolvePointerFieldLoad(pointer, access.Disp, width); ok {
+		return lvalue, true
+	}
+	return &Deref{
+		Pointer:  pointer,
+		ByteOff:  access.Disp,
+		Width:    width,
+		TypeInfo: derefType(pointer, width),
+	}, true
 }
 
 // resolveStackFarPointerTyped resolves SS:offset far pointers to local addresses.
@@ -64,6 +93,69 @@ func (c *machineConverter) resolveStackFarPointerTyped(ptr *machine.FarPointer, 
 	return &AddressOf{Target: target, TypeInfo: expected}, true
 }
 
+// resolveSegmentRelativeFarPointerTyped resolves segment-relative far pointers
+// whose offset is a known global base plus a dynamic byte offset.
+func (c *machineConverter) resolveSegmentRelativeFarPointerTyped(
+	ptr *machine.FarPointer,
+	expected typeinfo.Type,
+) (Expr, bool) {
+	if !typeinfo.IsFarPointer(expected) {
+		return nil, false
+	}
+
+	seg, ok := ptr.Segment.(*machine.Reg)
+	if !ok {
+		return nil, false
+	}
+
+	segNum := c.ctx.segFromRegister(seg.Val)
+	if segNum == 0 {
+		return nil, false
+	}
+
+	addr, ok := c.machineAddressExpr(ptr.Offset, segNum)
+	if !ok {
+		return nil, false
+	}
+
+	resolved := AddressExpr{
+		Base:   addr.base,
+		Offset: addr.offset,
+	}
+
+	if resolved.Base == nil {
+		// The constant portion of the offset identifies the global. The
+		// remaining terms are byte offsets relative to that global.
+		global, ok := c.ctx.res.ResolveGlobal(segNum, uint32(addr.offset), 0)
+		if !ok {
+			return nil, false
+		}
+		resolved.Base = &Global{GlobalVar: global.Global}
+		resolved.Offset = global.FieldOff
+	}
+
+	for _, term := range addr.terms {
+		resolved.Terms = append(resolved.Terms, ScaledTerm{
+			Expr:  c.convertIndexExpr(term.value),
+			Scale: term.scale,
+		})
+	}
+
+	target, ok := c.consumeAddress(resolved, 0)
+	if !ok {
+		return nil, false
+	}
+
+	if typeinfo.IsCallCompatible(expected, target.ExprType()) {
+		return target, true
+	}
+
+	return &AddressOf{
+		Target:   target,
+		TypeInfo: expected,
+	}, true
+}
+
 // resolveFarPointerAddressTyped resolves whole far pointer values to typed address expressions.
 func (c *machineConverter) resolveFarPointerAddressTyped(ptr *machine.FarPointer, expected typeinfo.Type) (Expr, bool) {
 	rootLoad, indexBytes, ok := splitFarPointerAddressBase(ptr.Offset, ptr.Segment)
@@ -79,7 +171,7 @@ func (c *machineConverter) resolveFarPointerAddressTyped(ptr *machine.FarPointer
 	}
 	addr := AddressExpr{Base: root, Deref: true}
 	if indexBytes != nil {
-		indexAddr, ok := c.machineAddressExpr(indexBytes)
+		indexAddr, ok := c.machineAddressExpr(indexBytes, 0)
 		if !ok || indexAddr.base != nil {
 			return nil, false
 		}
@@ -235,29 +327,4 @@ func joinIndexTerms(a, b machine.Value) machine.Value {
 		return a
 	}
 	return machine.BinaryVal(machine.ValueOpAdd, a, b)
-}
-
-// convertFarPointerMemoryLValue resolves segment:offset memory through a known pointer variable.
-func (c *machineConverter) convertFarPointerMemoryLValue(access machine.MemoryAccess, width int) (LValue, bool) {
-	ptrLoad, ok := farPointerMemoryLoad(access)
-	if !ok {
-		return nil, false
-	}
-	pointer := c.convertMemoryLValue(ptrLoad.Access, ptrLoad.Access.Width)
-	switch pointer.(type) {
-	case *RawMemory, *Memory:
-		return nil, false
-	}
-	if lvalue, ok := c.consumeAddress(AddressExpr{Base: pointer, Offset: access.Disp, Deref: true}, width); ok {
-		return lvalue, true
-	}
-	if lvalue, ok := c.ctx.resolvePointerFieldLoad(pointer, access.Disp, width); ok {
-		return lvalue, true
-	}
-	return &Deref{
-		Pointer:  pointer,
-		ByteOff:  access.Disp,
-		Width:    width,
-		TypeInfo: derefType(pointer, width),
-	}, true
 }

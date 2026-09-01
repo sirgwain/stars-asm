@@ -860,6 +860,63 @@ func TestCollapseWideStoresResolvesNestedPartBitfieldExtract(t *testing.T) {
 	}
 }
 
+// TestCollapseWideStoresResolvesUnshiftedBitfieldExtract verifies low-mask
+// branch conditions resolve to bitfield names without an explicit shift.
+func TestCollapseWideStoresResolvesUnshiftedBitfieldExtract(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("FBuildObject"))
+	player := fx.SDB.GetStruct("PLAYER")
+	if player == nil {
+		t.Fatal("PLAYER not found")
+	}
+	rgplr := fx.SDB.GetGlobal("rgplr")
+	if rgplr == nil {
+		t.Fatal("rgplr not found")
+	}
+	planet := fx.SDB.GetStruct("PLANET")
+	if planet == nil {
+		t.Fatal("PLANET not found")
+	}
+	lppl := &Local{FunctionVar: typeinfo.FunctionVar{
+		Name:     "lppl",
+		Type:     &typeinfo.Pointer{Elem: planet, Class: typeinfo.PtrFar},
+		BPOffset: 6,
+	}}
+	iPlayerField, ok := ctx.res.ResolveFieldPathLoad(&symresolve.SymbolRoot{Symbol: &lppl.FunctionVar}, 0x2, 2)
+	if !ok {
+		t.Fatal("lppl->iPlayer not resolved")
+	}
+	playerExpr := &ArrayIndex{
+		Base:     &Global{GlobalVar: rgplr},
+		Index:    &SymbolRef{Path: iPlayerField},
+		TypeInfo: player,
+	}
+	cond := &Binary{
+		TypeInfo: typeinfo.U16,
+		Op:       OpAnd,
+		LHS:      &Part{Base: playerExpr, ByteOff: 0x4, Width: 2, TypeInfo: typeinfo.U16},
+		RHS:      &Const{TypeInfo: typeinfo.U16, U64: 0xfff},
+	}
+
+	block := Block{Effects: []Effect{
+		&Branch{
+			Cond:       &Compare{Op: CompareNE, LHS: cond, RHS: &Const{TypeInfo: typeinfo.U16, U64: 0x200}},
+			TrueBlock:  0x219c,
+			FalseBlock: 0x1d3a,
+		},
+	}}
+
+	gotBlock, changed := (&collapseWideStoresProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "branch rgplr[lppl->iPlayer].cFleet != 0x200 ? L_219c : L_1d3a"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
 // TestCollapseWideStoresResolvesDynamicBitfieldAssign verifies masked stores
 // from one bitfield into another are represented as bitfield assignments.
 func TestCollapseWideStoresResolvesDynamicBitfieldAssign(t *testing.T) {
@@ -995,6 +1052,34 @@ func TestCollapseWideStoresCollapsesDerefFieldParts(t *testing.T) {
 	}
 	got := FormatEffect(gotBlock.Effects[0])
 	want := "lppl->lStarbase = 0x0"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestCollapseWideStoresCollapsesReturnWordSum verifies return values rebuilt
+// from matching low/high additive word trees collapse to one wide expression.
+func TestCollapseWideStoresCollapsesReturnWordSum(t *testing.T) {
+	dx := &Local{FunctionVar: typeinfo.FunctionVar{Name: "dx", Type: typeinfo.I32, BPOffset: -0x0a}}
+	dy := &Local{FunctionVar: typeinfo.FunctionVar{Name: "dy", Type: typeinfo.I32, BPOffset: -0x06}}
+	dxSquared := &Binary{TypeInfo: typeinfo.U32, Op: OpMul, LHS: dx, RHS: dx}
+	dySquared := &Binary{TypeInfo: typeinfo.U32, Op: OpMul, LHS: dy, RHS: dy}
+	block := Block{Effects: []Effect{
+		&Return{Value: &Words{Words: []Expr{
+			&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: &Word{Parent: dxSquared, Part: machine.WordLow}, RHS: &Word{Parent: dySquared, Part: machine.WordLow}},
+			&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: &Word{Parent: dxSquared, Part: machine.WordHigh}, RHS: &Word{Parent: dySquared, Part: machine.WordHigh}},
+		}}},
+	}}
+
+	gotBlock, changed := (&collapseWideStoresProcessor{}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	if len(gotBlock.Effects) != 1 {
+		t.Fatalf("effects = %d, want 1", len(gotBlock.Effects))
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "return ((dx * dx) + (dy * dy))"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}

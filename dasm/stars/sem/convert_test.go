@@ -67,12 +67,12 @@ func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 		t.Fatalf("temp = %q, want %q", gotTemp, wantTemp)
 	}
 	gotStore := FormatEffect(semFunc.Blocks[0].Effects[1])
-	wantStore := "n = (n - 0x1)"
+	wantStore := "n = (n - 1)"
 	if gotStore != wantStore {
 		t.Fatalf("store = %q, want %q", gotStore, wantStore)
 	}
 	gotBranch := FormatEffect(semFunc.Blocks[0].Effects[2])
-	wantBranch := "branch t_5c4f != 0x0 ? L_5c81 : L_5c5e"
+	wantBranch := "branch t_5c4f != 0 ? L_5c81 : L_5c5e"
 	if gotBranch != wantBranch {
 		t.Fatalf("branch = %q, want %q", gotBranch, wantBranch)
 	}
@@ -176,7 +176,7 @@ func TestLowerMachineResolvesConstBaseGlobalMemory(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch sel.fl.pt.x != 0x0 ? L_89c0 : L_89b4"
+	want := "branch sel.fl.pt.x != 0 ? L_89c0 : L_89b4"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -409,7 +409,7 @@ func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 	}
 
 	wants := []string{
-		"prod = lppl->lpplprod->rgprod[0x0]",
+		"prod = lppl->lpplprod->rgprod[0]",
 		"branch prod.grobj != 0x1 ? L_18c8 : L_182d",
 	}
 	for i, want := range wants {
@@ -507,7 +507,7 @@ func TestLowerMachineResolvesWideBitfieldStores(t *testing.T) {
 		"lppl->fNoResearch = 0x0",
 		"lppl->cDefenses = 0x0",
 		"lppl->iScanner = 0x1f",
-		"lppl->lStarbase = 0x0",
+		"lppl->lStarbase = 0",
 	}
 	for i, want := range wants {
 		if got := FormatEffect(semFunc.Blocks[0].Effects[i]); got != want {

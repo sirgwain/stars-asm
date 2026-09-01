@@ -22,8 +22,8 @@ L_1252:
     goto L_14e5
 
 L_1261:
-    iAbout1st = 0xfff5
-    iAboutPartial = 0x0
+    iAbout1st = -11
+    iAboutPartial = 0
     call SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion()) -> callresult(void)
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0)
     return 0x1
@@ -35,21 +35,21 @@ L_12a9:
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F)
-    iAboutPartial = (iAboutPartial + 0x2)
+    iAboutPartial = (iAboutPartial + 2)
     branch iAboutPartial < dyArial8 ? L_130c : L_12f1
 
 L_12f1:
-    iAboutPartial = 0x0
-    iAbout1st = (iAbout1st + 0x1)
-    branch iAbout1st <= 0x4e ? L_130c : L_1306
+    iAboutPartial = 0
+    iAbout1st = (iAbout1st + 1)
+    branch iAbout1st <= 78 ? L_130c : L_1306
 
 L_1306:
-    iAbout1st = 0xfff5
+    iAbout1st = -11
 
 L_130c:
     call GetClientRect(hwndCtl, &rc) -> callresult(void)
     hdc = GetDC(hwndCtl)
-    call SelectObject(hdc, rghfontArial8[0x1]) -> callresult(HGDIOBJ)
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
     call SetBkMode(hdc, OPAQUE) -> callresult(int16_t)
     call SetBkColor(hdc, crButtonFace) -> callresult(COLORREF)
     call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
@@ -60,23 +60,23 @@ L_130c:
     goto L_1391
 
 L_138d:
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_1391:
-    branch i >= (iAbout1st + 0xa) ? L_13fa : L_139f
+    branch i >= (iAbout1st + 10) ? L_13fa : L_139f
 
 L_139f:
-    branch i < 0x0 ? L_13d7 : L_13a8
+    branch i < 0 ? L_13d7 : L_13a8
 
 L_13a8:
-    branch i >= 0x4d ? L_13d7 : L_13b1
+    branch i >= 77 ? L_13d7 : L_13b1
 
 L_13b1:
-    call RcCtrTextOut(hdc, &rc, PszGetCompressedString((i + 0x277)), 0xffff) -> callresult(void)
+    call RcCtrTextOut(hdc, &rc, PszGetCompressedString((i + 631)), 0xffff) -> callresult(void)
     goto L_13e3
 
 L_13d7:
-    branch i >= 0x4d ? L_13fa : L_13dd
+    branch i >= 77 ? L_13fa : L_13dd
 
 L_13dd:
 
@@ -86,7 +86,7 @@ L_13e3:
     goto L_138d
 
 L_13fa:
-    rc.bottom = 0x3e8
+    rc.bottom = 1000
     call FillRect(hdc, &rc, hbrButtonFace) -> callresult(int16_t)
     call SelectClipRgn(hdc, 0x0) -> callresult(int16_t)
     call ReleaseDC(hwnd, hdc) -> callresult(int16_t)

@@ -16,4 +16,4 @@ block L_124c:
   insts 26..30  off 0x124c..0x1251
   preds: L_1212
   effects:
-    1251  return 0x57a4
+    1251  return szWork

@@ -4,7 +4,7 @@ int16_t FGetMouseMove(POINT *ppt) {
 L_4146:
 
 L_4152:
-    if ((PeekMessage(&(msg), 0x0, 0x0, 0x0, 0x1) != 0x0))
+    if ((PeekMessage(&(msg), 0x0, 0x0, 0x0, 0x1) != 0))
         goto L_417c;
     else
         goto L_4176;

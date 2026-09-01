@@ -1,0 +1,101 @@
+/*
+GetTechLevelCost  (research)
+  addr: 001c:1dba  len=252
+  sig:  int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr)
+  params:
+    int16_t          iTech          [BP+0x6]
+    int16_t          iLevel         [BP+0x8]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    int16_t          cTech          [BP-0xa]
+    int16_t          i              [BP-0x8]
+    int32_t          lCost          [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_1dba:
+  insts 0..7  off 0x1dba..0x1dcf
+  succs: L_1def
+  effects:
+    1dc3  store[2] [bp-cTech] = 0x0
+    1dc8  store[2] [bp-i] = 0x0
+    1dcd  goto L_1def
+
+block L_1dd0:
+  insts 8..19  off 0x1dd0..0x1dee
+  preds: L_1def
+  succs: L_1def
+  effects:
+    1de8  store[2] [bp-cTech] = (load([bp-cTech]) + sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([bp+iplr])))) + 0x1a) + load([bp-i]))])))
+    1deb  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1def:
+  insts 20..21  off 0x1def..0x1df4
+  preds: L_1dba, L_1dd0
+  succs: L_1dd0, L_1df8
+  effects:
+    1df3  branch load([bp-i]) < 0x6 ? L_1dd0 : L_1df8
+
+block L_1df8:
+  insts 23..46  off 0x1df8..0x1e3c
+  preds: L_1def
+  succs: L_1e40, L_1e83
+  effects:
+    1e10  store[2] [bp-lCost] = (loword((0xa * load([bp-cTech]))) + load(cs:[((load([bp+iLevel]) << 0x1) << 0x1)+0x1d4e]))
+    1e13  store[2] [bp-lCost+0x2] = (signhiword(loword((0xa * load([bp-cTech])))) + load(cs:[((load([bp+iLevel]) << 0x1) << 0x1)+0x1d50]))
+    1e29  call GetRaceStat((0x59a2 + loword((0xc0 * load([bp+iplr])))), (load([bp+iTech]) + 0x8)) -> callresult(int16_t)
+    1e34  store[2] [bp-i] = (callresult(int16_t) + 0xffff)
+    1e3b  branch load([bp-i]) == 0x0 ? L_1e83 : L_1e40
+
+block L_1e40:
+  insts 48..49  off 0x1e40..0x1e45
+  preds: L_1df8
+  succs: L_1e49, L_1e6a
+  effects:
+    1e44  branch load([bp-i]) >= 0x0 ? L_1e6a : L_1e49
+
+block L_1e49:
+  insts 51..61  off 0x1e49..0x1e69
+  preds: L_1e40
+  succs: L_1e83
+  effects:
+    1e52  call __aFlshr(words(load([bp-lCost]), load([bp-lCost+0x2])), 0x2) -> callresult(int32_t)
+    1e61  store[2] [bp-lCost] = (load@1e61/dst([bp-lCost]) + (load@1e57/src([bp-lCost]) - loword(callresult(int32_t))))
+    1e64  store[2] [bp-lCost+0x2] = (load@1e64/dst([bp-lCost+0x2]) + (load@1e5a/src([bp-lCost+0x2]) - hiword(callresult(int32_t))))
+    1e67  goto L_1e83
+
+block L_1e6a:
+  insts 62..70  off 0x1e6a..0x1e82
+  preds: L_1e40
+  succs: L_1e83
+  effects:
+    1e78  call __aFldiv(words(load([bp-lCost+0x2]), load([bp-lCost])), words(0x0, 0x2)) -> callresult(int32_t)
+    1e7d  store[2] [bp-lCost] = loword(callresult(int32_t))
+    1e80  store[2] [bp-lCost+0x2] = hiword(callresult(int32_t))
+
+block L_1e83:
+  insts 71..75  off 0x1e83..0x1e8f
+  preds: L_1df8, L_1e49, L_1e6a
+  succs: L_1e93, L_1ea7
+  effects:
+    1e8e  branch ((load([game+0x10]) >> 0x1) & 0x1) == 0x0 ? L_1ea7 : L_1e93
+
+block L_1e93:
+  insts 77..82  off 0x1e93..0x1ea6
+  preds: L_1e83
+  succs: L_1ea7
+  effects:
+    1e9c  call __aFlshl(words(load([bp-lCost]), load([bp-lCost+0x2])), 0x1) -> callresult(int32_t)
+    1ea1  store[2] [bp-lCost] = loword(callresult(int32_t))
+    1ea4  store[2] [bp-lCost+0x2] = hiword(callresult(int32_t))
+
+block L_1ea7:
+  insts 83..84  off 0x1ea7..0x1eaf
+  preds: L_1e83, L_1e93
+  succs: L_1eb0
+
+block L_1eb0:
+  insts 86..90  off 0x1eb0..0x1eb5
+  preds: L_1ea7
+  effects:
+    1eb5  return words(load([bp-lCost]), load([bp-lCost+0x2]))

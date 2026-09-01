@@ -1156,25 +1156,25 @@ char *PszGetCompressedString(StringId ids) {
     uint16_t t_merge_755c_0001;
 
 L_743a:
-    iNibble = 0x0;
+    iNibble = 0;
     if ((ids != (uint16_t)(iLastStrGet)))
         goto L_745a;
     else
         goto L_7454;
 
 L_7454:
-    return 0x547a;
+    return szLastStrGet;
 
 L_745a:
     iChunk = (ids >> 0x6);
     iOffset = (ids & 0x3f);
-    /* untranslated: pch = &aSTRCmpr[cs:[(iChunk * 0x2)+0x73b8]] */
+    pch = &(aSTRCmpr[aiSTRChunkOffset[iChunk]]);
     pchLen = &(acSTR[(0x40 * iChunk)]);
-    i = 0x0;
+    i = 0;
     goto L_74b3;
 
 L_74a0:
-    i = (i + 0x1);
+    i = (i + 1);
     pchLen = (pchLen + 0x1);
 
 L_74b3:
@@ -1204,19 +1204,19 @@ L_74f5:
 
 L_74f8:
     fHigh = t_merge_74f8_0001;
-    pszOut = 0x547a;
-    iBuild = 0x0;
+    pszOut = szLastStrGet;
+    iBuild = 0;
 
 L_7505:
     t_7505 = iLen;
-    iLen = (iLen - 0x1);
-    if ((t_7505 == 0x0))
+    iLen = (iLen - 1);
+    if ((t_7505 == 0))
         goto L_7587;
     else
         goto L_7514;
 
 L_7514:
-    if ((fHigh == 0x0))
+    if ((fHigh == 0))
         goto L_7534;
     else
         goto L_751d;
@@ -1230,7 +1230,7 @@ L_7534:
     i = (*(pch) & 0xf);
 
 L_754a:
-    if ((fHigh != 0x0))
+    if ((fHigh != 0))
         goto L_7559;
     else
         goto L_7553;
@@ -1245,17 +1245,17 @@ L_7559:
 L_755c:
     fHigh = t_merge_755c_0001;
     iBuild = (iBuild + i);
-    if ((i == 0xf))
+    if ((i == 15))
         goto L_7505;
     else
         goto L_756e;
 
 L_756e:
-    /* untranslated: *pszOut = byte cs:[iBuild+0x73e6] */
+    *(pszOut) = rgSTRLookupTable[iBuild];
     pszOut = (pszOut + 0x1);
-    iBuild = 0x0;
+    iBuild = 0;
 
 L_7587:
-    *(pszOut) = 0x0;
-    return 0x547a;
+    *(pszOut) = 0;
+    return szLastStrGet;
 }

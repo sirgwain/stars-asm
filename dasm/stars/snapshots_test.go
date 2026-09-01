@@ -30,6 +30,7 @@ var procs = []string{
 	"FGetMouseMove",
 	"FLookupOrbitingXfer",
 	"FLookupPart",
+	"GetTechLevelCost",
 	"InitMDIApp",
 	"LpengineFromId",
 	"LphuldefFromId",

@@ -17,12 +17,12 @@ DropSalvage  (battle)
 */
 L_24dc:
     lpth = *plpth
-    wtTotal = 0x0
-    i = 0x0
+    wtTotal = 0
+    i = 0
     goto L_2509
 
 L_2505:
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_2509:
     branch i >= game.cPlanMax ? L_253b : L_2514
@@ -38,30 +38,30 @@ L_2532:
 
 
 L_253b:
-    i = 0x0
+    i = 0
     goto L_2565
 
 L_2543:
     wtTotal = (wtTotal + rgwtMinerals[i])
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_2565:
-    branch i >= 0x3 ? L_25cb : L_256b
+    branch i >= 3 ? L_25cb : L_256b
 
 L_256b:
 
 
 L_2571:
-    i = 0x0
+    i = 0
     goto L_25c2
 
 L_2579:
     rgwtMinerals[i] = sext16to32(Random(0xa))
     wtTotal = (wtTotal + rgwtMinerals[i])
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_25c2:
-    branch i < 0x3 ? L_2579 : L_25cb
+    branch i < 3 ? L_2579 : L_25cb
 
 L_25cb:
     branch LOWORD(wtTotal) != 0x0 ? L_25dd : L_25d4
@@ -93,7 +93,7 @@ L_2619:
     goto L_26e9
 
 L_2657:
-    i = 0x0
+    i = 0
     goto L_26cc
 
 L_265f:
@@ -101,11 +101,11 @@ L_265f:
     HIWORD(rgwtMinerals[i]) = (HIWORD(rgwtMinerals[i]) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]))
     LOWORD(wtTotal) = (LOWORD(wtTotal) + HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])
     HIWORD(wtTotal) = (HIWORD(wtTotal) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]))
-    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = 0x0
-    i = (i + 0x1)
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = 0x0
+    i = (i + 1)
 
 L_26cc:
-    branch i < 0x3 ? L_265f : L_26d5
+    branch i < 3 ? L_265f : L_26d5
 
 L_26d5:
     lpth->thp.wtMax = 0x0
@@ -115,7 +115,7 @@ L_26e9:
     goto L_2927
 
 L_2700:
-    i = 0x0
+    i = 0
     goto L_291e
 
 L_2708:
@@ -128,10 +128,10 @@ L_274b:
     branch (loword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + LOWORD(rgwtMinerals[i])) <= 0x7530 ? L_2842 : L_2753
 
 L_2753:
-    wt = (0x7530 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa))
+    wt = (30000 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa))
     wtTotal = (wtTotal - wt)
     lpth->thp.wtMax = 0xbb8
-    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(wt))
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(wt))
     rgwtMinerals[i] = (rgwtMinerals[i] - wt)
     lpth = LpthNew(iplr, ithMineralPacket)
     branch LOWORD(lpth) != 0x0 ? L_2804 : L_27f8
@@ -153,9 +153,9 @@ L_2842:
     ss:[bp-0x12] = ((loword((int32_t)(words((HIWORD(rgwtMinerals[i]) + 0x0), (LOWORD(rgwtMinerals[i]) + 0x9)) / 0xa)) + *(lpth+0xe)) & 0x3fff)
     lpth->thp.wtMax = 0x0
     *(lpth+0xe) = (*(lpth+0xe) | ss:[bp-0x12])
-    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(rgwtMinerals[i]))
+    HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(rgwtMinerals[i]))
     wtTotal = (wtTotal - rgwtMinerals[i])
-    rgwtMinerals[i] = 0x0
+    rgwtMinerals[i] = 0
 
 L_2900:
     branch HIWORD(wtTotal) > 0x0 ? L_291a : L_2909
@@ -170,10 +170,10 @@ L_2914:
 
 
 L_291a:
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_291e:
-    branch i < 0x3 ? L_2708 : L_2927
+    branch i < 3 ? L_2708 : L_2927
 
 L_2927:
     branch HIWORD(wtTotal) > 0x0 ? L_2700 : L_2930

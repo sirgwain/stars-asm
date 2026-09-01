@@ -223,7 +223,7 @@ func collapseSemanticBitfieldAssign(ctx *FuncContext, assign *Assign) (LValue, E
 	if !ok {
 		return nil, nil, false
 	}
-	path, fieldOff, storageWidth, ok := bitfieldSourcePath(assign.Dst)
+	path, fieldOff, storageWidth, ok := bitfieldSourcePath(assign.Dst, true)
 	if !ok {
 		return nil, nil, false
 	}
@@ -337,30 +337,145 @@ func collapseSemanticBitfieldExtract(ctx *FuncContext, expr Expr) (Expr, bool) {
 	if !ok {
 		return nil, false
 	}
-	shift, ok := unwrapBitfieldExtractWrapper(source).(*Binary)
-	if !ok || shift.Op != OpShr {
-		return nil, false
+	base := unwrapBitfieldExtractWrapper(source)
+	bitOff := 0
+	shifted := false
+	if shift, ok := base.(*Binary); ok && shift.Op == OpShr {
+		amount, value, ok := constExprOperand(shift.LHS, shift.RHS)
+		if !ok || value != shift.LHS {
+			return nil, false
+		}
+		base = unwrapBitfieldExtractWrapper(value)
+		bitOff = int(amount.U64)
+		shifted = true
 	}
-	amount, value, ok := constExprOperand(shift.LHS, shift.RHS)
-	if !ok || value != shift.LHS {
-		return nil, false
-	}
-	base := unwrapBitfieldExtractWrapper(value)
-	path, fieldOff, storageWidth, ok := bitfieldSourcePath(base)
+	path, fieldOff, storageWidth, ok := bitfieldSourcePath(base, shifted)
 	if !ok {
-		return nil, false
+		return collapseSemanticExprBitfieldExtract(base, bitOff, bitWidth, shifted)
 	}
-	field, ok := ctx.res.ResolveBitfieldPathLoadInContext(path, fieldOff, storageWidth, int(amount.U64), bitWidth, ctx.unionContext())
+	field, ok := ctx.res.ResolveBitfieldPathLoadInContext(path, fieldOff, storageWidth, bitOff, bitWidth, ctx.unionContext())
 	if !ok {
-		return nil, false
+		return collapseSemanticExprBitfieldExtract(base, bitOff, bitWidth, shifted)
 	}
 	return &SymbolRef{Path: field}, true
 }
 
+// collapseSemanticExprBitfieldExtract resolves bitfields from non-symbolic expression bases.
+func collapseSemanticExprBitfieldExtract(expr Expr, bitOff int, bitWidth int, allowPointer bool) (Expr, bool) {
+	base, fieldOff, storageWidth, ok := bitfieldSourceExpr(expr, allowPointer)
+	if !ok {
+		return nil, false
+	}
+	return resolveExprBitfieldLoad(base, fieldOff, storageWidth, bitOff, bitWidth)
+}
+
+// bitfieldSourceExpr resolves the expression storage source for bitfield extraction.
+func bitfieldSourceExpr(expr Expr, allowPointer bool) (Expr, int, int, bool) {
+	if _, ok := symbolPathForExpr(expr); ok {
+		return nil, 0, 0, false
+	}
+	if !allowPointer && typeinfo.IsPointer(expr.ExprType()) {
+		return nil, 0, 0, false
+	}
+	if part, ok := expr.(*Part); ok {
+		if _, ok := symbolPathForExpr(part.Base); ok {
+			return nil, 0, 0, false
+		}
+		if !allowPointer && typeinfo.IsPointer(part.Base.ExprType()) {
+			return nil, 0, 0, false
+		}
+		return part.Base, part.ByteOff, part.Width, part.Width > 0
+	}
+	if words, ok := expr.(*Words); ok {
+		return bitfieldWordsSourceExpr(words, allowPointer)
+	}
+	width := exprWidth(expr)
+	return expr, 0, width, width > 0
+}
+
+// bitfieldWordsSourceExpr resolves contiguous part words from one expression base.
+func bitfieldWordsSourceExpr(words *Words, allowPointer bool) (Expr, int, int, bool) {
+	if len(words.Words) == 0 {
+		return nil, 0, 0, false
+	}
+	first, ok := words.Words[0].(*Part)
+	if !ok || first.Width <= 0 {
+		return nil, 0, 0, false
+	}
+	if _, ok := symbolPathForExpr(first.Base); ok {
+		return nil, 0, 0, false
+	}
+	if !allowPointer && typeinfo.IsPointer(first.Base.ExprType()) {
+		return nil, 0, 0, false
+	}
+	minOff := first.ByteOff
+	maxOff := first.ByteOff + first.Width
+	seen := map[int]bool{first.ByteOff: true}
+	for _, word := range words.Words[1:] {
+		part, ok := word.(*Part)
+		if !ok || part.Width != first.Width || seen[part.ByteOff] || !sameLValue(first.Base, part.Base) {
+			return nil, 0, 0, false
+		}
+		seen[part.ByteOff] = true
+		if part.ByteOff < minOff {
+			minOff = part.ByteOff
+		}
+		if part.ByteOff+part.Width > maxOff {
+			maxOff = part.ByteOff + part.Width
+		}
+	}
+	width := maxOff - minOff
+	if width != len(words.Words)*first.Width {
+		return nil, 0, 0, false
+	}
+	return first.Base, minOff, width, true
+}
+
+// resolveExprBitfieldLoad resolves a bitfield load rooted at a semantic expression.
+func resolveExprBitfieldLoad(base Expr, off int, storageWidth int, bitOff int, bitWidth int) (Expr, bool) {
+	typ, _ := typeinfo.UnwrapPointer(base.ExprType())
+	strct, ok := typ.(*typeinfo.Struct)
+	if !ok {
+		return nil, false
+	}
+	var out Expr
+	for _, match := range strct.FieldsContainingOffset(off) {
+		field := &FieldAccess{Base: base, Field: match.Field}
+		if match.Field.Bitfield != nil {
+			fieldBitOff := match.Off*8 + bitOff
+			if bitOff+bitWidth <= storageWidth*8 &&
+				match.Off+storageWidth <= match.Field.Bitfield.StorageSize &&
+				fieldBitOff == match.Field.Bitfield.BitOffset &&
+				match.Field.Bitfield.BitWidth == bitWidth {
+				if out != nil {
+					return nil, false
+				}
+				out = field
+			}
+			continue
+		}
+		if _, ok := match.Field.Type.(*typeinfo.Struct); match.Off == 0 || !ok {
+			continue
+		}
+		child, ok := resolveExprBitfieldLoad(field, match.Off, storageWidth, bitOff, bitWidth)
+		if !ok {
+			continue
+		}
+		if out != nil {
+			return nil, false
+		}
+		out = child
+	}
+	return out, out != nil
+}
+
 // bitfieldSourcePath resolves the source storage path for a semantic bitfield extraction.
-func bitfieldSourcePath(expr Expr) (symresolve.SymbolPath, int, int, bool) {
+func bitfieldSourcePath(expr Expr, allowPointer bool) (symresolve.SymbolPath, int, int, bool) {
 	path, ok := symbolPathForExpr(expr)
 	if ok {
+		if typeinfo.IsPointer(path.Type()) && !allowPointer {
+			return nil, 0, 0, false
+		}
 		width := exprWidth(expr)
 		return path, 0, width, width > 0
 	}
@@ -369,14 +484,14 @@ func bitfieldSourcePath(expr Expr) (symresolve.SymbolPath, int, int, bool) {
 		return path, part.ByteOff, part.Width, ok && part.Width > 0
 	}
 	if words, ok := expr.(*Words); ok {
-		path, off, width, ok := bitfieldWordsSourcePath(words)
+		path, off, width, ok := bitfieldWordsSourcePath(words, allowPointer)
 		return path, off, width, ok
 	}
 	return nil, 0, 0, false
 }
 
 // bitfieldWordsSourcePath resolves contiguous part words as one storage range.
-func bitfieldWordsSourcePath(words *Words) (symresolve.SymbolPath, int, int, bool) {
+func bitfieldWordsSourcePath(words *Words, allowPointer bool) (symresolve.SymbolPath, int, int, bool) {
 	if len(words.Words) == 0 {
 		return nil, 0, 0, false
 	}
@@ -386,6 +501,9 @@ func bitfieldWordsSourcePath(words *Words) (symresolve.SymbolPath, int, int, boo
 	}
 	path, ok := symbolPathForExpr(first.Base)
 	if !ok {
+		return nil, 0, 0, false
+	}
+	if typeinfo.IsPointer(path.Type()) && !allowPointer {
 		return nil, 0, 0, false
 	}
 	minOff := first.ByteOff
@@ -760,7 +878,7 @@ func collapseFarPointerWords(ctx *FuncContext, dst LValue, high, low Expr) (Expr
 
 // collapseDataSegmentPointerWords collapses DS plus a pointer-valued low word.
 func collapseDataSegmentPointerWords(ctx *FuncContext, expected typeinfo.Type, high Expr, low Expr) (Expr, bool) {
-	if !exprMatchesMachineValue(high, ctx.dsReg) {
+	if !(exprMatchesMachineValue(high, ctx.dsReg) || exprMatchesMachineValue(high, ctx.csReg)) {
 		return nil, false
 	}
 	if !sourcePointerMatchesFarPointer(low.ExprType(), expected) {
@@ -885,7 +1003,10 @@ func collapseWideWords(words *Words) (Expr, bool) {
 	if parent, ok := collapseWideWordPair(words.Words[0], words.Words[1]); ok {
 		return parent, true
 	}
-	return collapseWideWordPair(words.Words[1], words.Words[0])
+	if parent, ok := collapseWideWordPair(words.Words[1], words.Words[0]); ok {
+		return parent, true
+	}
+	return collapseWideExprPair(words.Words[1], words.Words[0], words.ExprType())
 }
 
 // collapseWideConstWords matches a high and low const word to one 32-bit const.

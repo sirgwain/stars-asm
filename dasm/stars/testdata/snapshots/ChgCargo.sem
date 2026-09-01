@@ -37,18 +37,18 @@ L_6062:
 
 L_606b:
     call FLookupPlanet(id, &xfer.pl) -> callresult(int16_t)
-    ppl = &part[4:2](xfer)
+    ppl = &xfer.pl
     goto L_609f
 
 L_6084:
-    call memset(&part[4:2](xfer), 0x0, 0x38) -> callresult(void *)
-    ppl = &part[4:2](xfer)
+    call memset(&xfer.pl, 0x0, 0x38) -> callresult(void *)
+    ppl = &xfer.pl
 
 L_609f:
-    branch iSupply > 0x4 ? L_6159 : L_60a8
+    branch iSupply > 4 ? L_6159 : L_60a8
 
 L_60a8:
-    branch iSupply != 0x4 ? L_60ba : L_60b1
+    branch iSupply != 4 ? L_60ba : L_60b1
 
 L_60b1:
     return 0x0
@@ -106,16 +106,16 @@ L_61a2:
 
 L_61ab:
     call FLookupThing(id, &xfer.th) -> callresult(int16_t)
-    pth = &part[4:2](xfer)
+    pth = &xfer.th
 
 L_61c0:
-    branch iSupply < 0x3 ? L_61d2 : L_61c9
+    branch iSupply < 3 ? L_61d2 : L_61c9
 
 L_61c9:
     return 0x0
 
 L_61d2:
-    branch iSupply > 0x4 ? L_62f3 : L_61db
+    branch iSupply > 4 ? L_62f3 : L_61db
 
 L_61db:
     branch LOWORD(dChg) != 0x0 ? L_6202 : L_61e4
@@ -124,16 +124,16 @@ L_61e4:
     branch HIWORD(dChg) != 0x0 ? L_6202 : L_61ed
 
 L_61ed:
-    return words(ds:[((pth + 0x8) + (iSupply * 0x2))], signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]))
+    return words(ds:[((pth + 0x8) + (iSupply * 2))], signhiword(ds:[((pth + 0x8) + (iSupply * 2))]))
 
 L_6202:
-    branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222
+    branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222
 
 L_6222:
-    branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227
+    branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227
 
 L_6227:
-    branch (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f
+    branch (ds:[((pth + 0x8) + (iSupply * 2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f
 
 L_622f:
     LOWORD(dChg) = (ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0)
@@ -141,16 +141,16 @@ L_622f:
 
 L_6249:
     wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa)
-    i = 0x0
+    i = 0
     goto L_6295
 
 L_6275:
     LOWORD(wtFree) = (LOWORD(wtFree) - ds:[((pth + 0x8) + (i * 0x2))])
     HIWORD(wtFree) = (HIWORD(wtFree) - signhiword(ds:[((pth + 0x8) + (i * 0x2))]))
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_6295:
-    branch i < 0x3 ? L_6275 : L_629f
+    branch i < 3 ? L_6275 : L_629f
 
 L_629f:
     branch HIWORD(dChg) < HIWORD(wtFree) ? L_62ca : L_62af
@@ -165,7 +165,7 @@ L_62bc:
     dChg = wtFree
 
 L_62ca:
-    ds:[((pth + 0x8) + (iSupply * 0x2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg))
+    ds:[((pth + 0x8) + (iSupply * 2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg))
 
 L_62f3:
     branch LOWORD(dChg) != 0x0 ? L_6305 : L_62fc
@@ -189,10 +189,10 @@ L_6329:
 
 L_6333:
     call FLookupFleet(id, &xfer.fl) -> callresult(int16_t)
-    pfl = &part[4:2](xfer)
+    pfl = &xfer.fl
 
 L_6349:
-    branch iSupply > 0x4 ? L_6492 : L_6352
+    branch iSupply > 4 ? L_6492 : L_6352
 
 L_6352:
     branch LOWORD(dChg) != 0x0 ? L_637e : L_635b
@@ -217,16 +217,16 @@ L_63b0:
     HIWORD(dChg) = ((HIWORD(pfl->rgwtMin[iSupply]) + 0x0) neg 0x0)
 
 L_63d4:
-    branch iSupply != 0x3 ? L_63f9 : L_63dd
+    branch iSupply != 3 ? L_63f9 : L_63dd
 
 L_63dd:
     branch pfl->det == 0x7 ? L_63f9 : L_63ef
 
 L_63ef:
-    dChg = 0x0
+    dChg = 0
 
 L_63f9:
-    branch iSupply != 0x4 ? L_6415 : L_6402
+    branch iSupply != 4 ? L_6415 : L_6402
 
 L_6402:
     t_merge_6425_0003_wide = GetFuelFree(pfl)
@@ -249,7 +249,7 @@ L_643a:
     goto L_646f
 
 L_6443:
-    branch iSupply != 0x4 ? L_645f : L_644c
+    branch iSupply != 4 ? L_645f : L_644c
 
 L_644c:
     t_merge_646f_0001_wide = GetFuelFree(pfl)

@@ -7,7 +7,7 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
     int16_t t_266a;
 
 L_24fa:
-    if ((cFleet > 0x0))
+    if ((cFleet > 0))
         goto L_2513;
     else
         goto L_250d;
@@ -16,17 +16,17 @@ L_250d:
     return 0x0;
 
 L_2513:
-    if ((cFleet == 0x0))
+    if ((cFleet == 0))
         goto L_2606;
     else
         goto L_251d;
 
 L_251d:
-    i = 0x0;
+    i = 0;
     goto L_2529;
 
 L_2525:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_2529:
     if ((i >= cFleet))
@@ -60,7 +60,7 @@ L_2573:
         goto L_2581;
 
 L_2581:
-    if ((idSkip == 0xffff))
+    if ((idSkip == -1))
         goto L_25ad;
     else
         goto L_258a;
@@ -79,8 +79,8 @@ L_25a4:
 
 L_25ad:
     t_25ad = iNth;
-    iNth = (iNth - 0x1);
-    if ((t_25ad != 0x0))
+    iNth = (iNth - 1);
+    if ((t_25ad != 0))
         goto L_2525;
     else
         goto L_25bc;
@@ -124,8 +124,8 @@ L_2661:
 
 L_266a:
     t_266a = iNth;
-    iNth = (iNth - 0x1);
-    if ((t_266a != 0x0))
+    iNth = (iNth - 1);
+    if ((t_266a != 0))
         goto L_26c0;
     else
         goto L_2679;

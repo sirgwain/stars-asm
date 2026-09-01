@@ -25,7 +25,7 @@ L_72b7:
         goto L_72c0;
 
 L_72c0:
-    cMax = 0xa;
+    cMax = 10;
 
 L_72ca:
     if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
@@ -34,7 +34,7 @@ L_72ca:
         goto L_72ea;
 
 L_72ea:
-    cMax = 0x0;
+    cMax = 0;
 
 L_72f4:
 

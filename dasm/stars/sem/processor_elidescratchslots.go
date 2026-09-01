@@ -24,6 +24,9 @@ func (p *elideScratchSlotsProcessor) ProcessFunc(result *Result, f *Func) bool {
 	for i := range f.Blocks {
 		aliases, aliasOrder, ok := scratchAliasesForWholeBlock(f.Blocks[i])
 		if !ok || len(aliases) == 0 {
+			if p.propagateTrailingScratchAliases(f, blocksByID, i) {
+				changed = true
+			}
 			continue
 		}
 		succID, ok := singleScratchPropagationSuccessor(f, i)
@@ -45,6 +48,34 @@ func (p *elideScratchSlotsProcessor) ProcessFunc(result *Result, f *Func) bool {
 		changed = changed || skipped
 	}
 	return changed
+}
+
+// propagateTrailingScratchAliases carries a block's final scratch writes into its single successor.
+func (p *elideScratchSlotsProcessor) propagateTrailingScratchAliases(f *Func, blocksByID map[machine.BlockID]int, blockIndex int) bool {
+	prefix, aliases, aliasOrder, ok := trailingScratchAliases(f.Blocks[blockIndex])
+	if !ok || len(aliases) == 0 {
+		return false
+	}
+	succID, ok := singleScratchPropagationSuccessor(f, blockIndex)
+	if !ok {
+		return false
+	}
+	succIndex, ok := blocksByID[succID]
+	if !ok {
+		return false
+	}
+
+	rewriter := scratchAliasRewriter(aliases)
+	effects, effectChanged := rewriter.rewriteEffects(f.Blocks[succIndex].Effects)
+	if !effectChanged {
+		return false
+	}
+	preserved, skipped := appendPendingScratchAssignments(nil, aliases, aliasOrder, true)
+	nextEffects := append([]Effect(nil), f.Blocks[blockIndex].Effects[:prefix]...)
+	nextEffects = append(nextEffects, preserved...)
+	f.Blocks[blockIndex].Effects = nextEffects
+	f.Blocks[succIndex].Effects = effects
+	return effectChanged || skipped
 }
 
 // ProcessBlock inlines simple unresolved BP-relative compiler scratch slots.
@@ -137,6 +168,42 @@ func scratchAliasesForWholeBlock(block Block) (map[string]*scratchAlias, []strin
 		aliases[key] = &scratchAlias{assign: &next, value: value}
 	}
 	return aliases, aliasOrder, true
+}
+
+// trailingScratchAliases returns the final contiguous scratch writes in a block.
+func trailingScratchAliases(block Block) (int, map[string]*scratchAlias, []string, bool) {
+	if len(block.Effects) == 0 {
+		return 0, nil, nil, false
+	}
+	start := len(block.Effects)
+	for start > 0 {
+		assign, ok := block.Effects[start-1].(*Assign)
+		if !ok {
+			break
+		}
+		if _, scratch := scratchSlotKeyExpr(assign.Dst); !scratch {
+			break
+		}
+		start--
+	}
+	if start == len(block.Effects) {
+		return 0, nil, nil, false
+	}
+	aliases := make(map[string]*scratchAlias)
+	aliasOrder := make([]string, 0, len(block.Effects)-start)
+	for _, effect := range block.Effects[start:] {
+		assign := effect.(*Assign)
+		key, _ := scratchSlotKeyExpr(assign.Dst)
+		rewriter := scratchAliasRewriter(aliases)
+		value, _ := rewriter.rewriteExpr(assign.Src)
+		next := *assign
+		next.Src = value
+		if _, exists := aliases[key]; !exists {
+			aliasOrder = append(aliasOrder, key)
+		}
+		aliases[key] = &scratchAlias{assign: &next, value: value}
+	}
+	return start, aliases, aliasOrder, true
 }
 
 // singleScratchPropagationSuccessor returns the unique successor for straight-line propagation.

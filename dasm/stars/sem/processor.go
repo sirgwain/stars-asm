@@ -53,6 +53,13 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
+			Name:    "normalize-assignment-addresses",
+			Purpose: "Recover DGROUP addresses stored into typed near-pointer storage.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "annotate-machine-storage",
 			Purpose: "Annotate direct machine local and global storage references.",
 			Machine: func(ctx *FuncContext) MachineBlockProcessor {
@@ -156,10 +163,24 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "normalize-assignment-addresses",
+			Purpose: "Normalize semantic assignment and return addresses before return sinking.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "return-sink",
 			Purpose: "Sink top-level return merge arms into predecessor blocks.",
 			Func: func(*FuncContext) SemFuncProcessor {
 				return &returnSinkProcessor{}
+			},
+		},
+		{
+			Name:    "normalize-assignment-addresses",
+			Purpose: "Normalize semantic assignment and return addresses before merge lowering.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -191,6 +212,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "materialize-branch-call-results",
+			Purpose: "Materialize wide call results reused by branch comparison chains.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &branchCallResultProcessor{}
+			},
+		},
+		{
 			Name:    "collapse-call-results",
 			Purpose: "Inline single-use call results into their consuming semantic effect.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
@@ -198,10 +226,24 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "normalize-assignment-addresses",
+			Purpose: "Normalize semantically annotated assignment addresses.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "normalize-call-args",
 			Purpose: "Normalize semantically annotated call arguments.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &normalizeCallArgsProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "resolve-const-types",
+			Purpose: "Resolve consts to their semantic types.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &resolveConstTypesProcessor{}
 			},
 		},
 		{

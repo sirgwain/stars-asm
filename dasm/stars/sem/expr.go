@@ -44,6 +44,29 @@ const (
 	OpNot
 )
 
+func (op Op) Invert() Op {
+	switch op {
+	case OpAdd:
+		return OpSub
+	case OpSub:
+		return OpAdd
+	case OpMul:
+		return OpDiv
+	case OpDiv:
+		return OpMul
+	case OpShl:
+		return OpShr
+	case OpShr:
+		return OpShl
+	case OpNeg:
+		return OpNeg
+	case OpNot:
+		return OpNot
+	default:
+		return OpUnknown
+	}
+}
+
 // CompareOp identifies a semantic comparison operation.
 type CompareOp uint8
 
@@ -135,6 +158,23 @@ func (*Const) expr() {}
 
 // ExprType returns the constant type.
 func (v *Const) ExprType() typeinfo.Type { return v.TypeInfo }
+
+func (c *Const) Int64() (int64, bool) {
+	if !typeinfo.IsIntLike(c.TypeInfo) {
+		return 0, false
+	}
+
+	switch c.TypeInfo.Bytes() {
+	case 1:
+		return int64(int8(c.U64)), true
+	case 2:
+		return int64(int16(c.U64)), true
+	case 4:
+		return int64(int32(c.U64)), true
+	default:
+		return 0, false
+	}
+}
 
 // Const is an integer constant expression.
 type Register struct {

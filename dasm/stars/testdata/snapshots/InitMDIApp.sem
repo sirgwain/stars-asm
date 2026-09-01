@@ -10,8 +10,8 @@ InitMDIApp  (mdi)
 L_0000:
     wc.style = 0xb
     wc.lpfnWndProc = FrameWndProc
-    wc.cbClsExtra = 0x0
-    wc.cbWndExtra = 0x0
+    wc.cbClsExtra = 0
+    wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = 0x0
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
@@ -112,8 +112,8 @@ L_0293:
 L_0299:
     wc.style = 0x0
     wc.lpfnWndProc = TitleWndProc
-    wc.cbClsExtra = 0x0
-    wc.cbWndExtra = 0x0
+    wc.cbClsExtra = 0
+    wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = 0x0
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
@@ -128,8 +128,8 @@ L_0306:
 L_030c:
     wc.style = 0xb
     wc.lpfnWndProc = ReportDlg
-    wc.cbClsExtra = 0x0
-    wc.cbWndExtra = 0x0
+    wc.cbClsExtra = 0
+    wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = 0x0
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))

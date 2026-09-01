@@ -2,14 +2,16 @@ package typeinfo
 
 // UnionRules stores typed union discriminator and path fact rules.
 type UnionRules struct {
-	Variants            []*UnionVariantRule
-	FunctionPathFacts   []*UnionFunctionPathFact
-	CallResultPathFacts []*UnionCallResultPathFact
+	Variants                     []*UnionVariantRule
+	FunctionPathFacts            []*UnionFunctionPathFact
+	CallResultPathFacts          []*UnionCallResultPathFact
+	ExternalDiscriminatorAliases []*UnionExternalDiscriminatorAlias
 
-	variantsByType             map[string]*UnionVariantRule
-	functionPathFactsByFunc    map[string][]*UnionFunctionPathFact
-	callResultPathFactsByFunc  map[string][]*UnionCallResultPathFact
-	callResultPathFactsByParam map[string][]*UnionCallResultPathFact
+	variantsByType                     map[string]*UnionVariantRule
+	functionPathFactsByFunc            map[string][]*UnionFunctionPathFact
+	callResultPathFactsByFunc          map[string][]*UnionCallResultPathFact
+	callResultPathFactsByParam         map[string][]*UnionCallResultPathFact
+	externalDiscriminatorAliasesByFunc map[string][]*UnionExternalDiscriminatorAlias
 }
 
 // UnionVariantRule maps a discriminator enum value to a concrete union member.
@@ -44,6 +46,16 @@ type UnionCallResultPathFact struct {
 	ParamIndex int
 }
 
+// UnionExternalDiscriminatorAlias records a function path that selects a union root.
+type UnionExternalDiscriminatorAlias struct {
+	Func   *Function
+	Source []string
+	Root   string
+	Type   *Struct
+	Enum   *Enum
+	Rule   *UnionVariantRule
+}
+
 // UnionVariantForType returns the variant rule for the named union-bearing type.
 func (r *UnionRules) UnionVariantForType(typ Type) (*UnionVariantRule, bool) {
 	if r == nil {
@@ -71,6 +83,14 @@ func (r *UnionRules) CallResultFactsFor(fn *Function) []*UnionCallResultPathFact
 		return nil
 	}
 	return r.callResultPathFactsByFunc[funcLookupName(fn.Name)]
+}
+
+// ExternalDiscriminatorAliasesFor returns discriminator aliases for a function.
+func (r *UnionRules) ExternalDiscriminatorAliasesFor(fn *Function) []*UnionExternalDiscriminatorAlias {
+	if r == nil || fn == nil {
+		return nil
+	}
+	return r.externalDiscriminatorAliasesByFunc[funcLookupName(fn.Name)]
 }
 
 // MemberForValue returns the union member selected by an enum value.

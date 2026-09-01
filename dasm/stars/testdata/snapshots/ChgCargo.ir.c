@@ -38,21 +38,21 @@ L_6062:
 
 L_606b:
     FLookupPlanet(id, &(xfer.pl));
-    /* untranslated: ppl = &part[4:2](xfer) */
+    ppl = &(xfer.pl);
     goto L_609f;
 
 L_6084:
-    /* untranslated: call memset(&part[4:2](xfer), 0x0, 0x38) -> callresult(void *) */
-    /* untranslated: ppl = &part[4:2](xfer) */
+    memset(&(xfer.pl), 0x0, 0x38);
+    ppl = &(xfer.pl);
 
 L_609f:
-    if ((iSupply > 0x4))
+    if ((iSupply > 4))
         goto L_6159;
     else
         goto L_60a8;
 
 L_60a8:
-    if ((iSupply != 0x4))
+    if ((iSupply != 4))
         goto L_60ba;
     else
         goto L_60b1;
@@ -145,10 +145,10 @@ L_61a2:
 
 L_61ab:
     FLookupThing(id, &(xfer.th));
-    /* untranslated: pth = &part[4:2](xfer) */
+    pth = &(xfer.th);
 
 L_61c0:
-    if ((iSupply < 0x3))
+    if ((iSupply < 3))
         goto L_61d2;
     else
         goto L_61c9;
@@ -157,7 +157,7 @@ L_61c9:
     return 0x0;
 
 L_61d2:
-    if ((iSupply > 0x4))
+    if ((iSupply > 4))
         goto L_62f3;
     else
         goto L_61db;
@@ -175,16 +175,16 @@ L_61e4:
         goto L_61ed;
 
 L_61ed:
-    /* untranslated: return words(ds:[((pth + 0x8) + (iSupply * 0x2))], signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))])) */
+    /* untranslated: return words(ds:[((pth + 0x8) + (iSupply * 2))], signhiword(ds:[((pth + 0x8) + (iSupply * 2))])) */
 
 L_6202:
-    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
+    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
 
 L_6222:
-    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 0x2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
+    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
 
 L_6227:
-    /* untranslated: branch (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
+    /* untranslated: branch (ds:[((pth + 0x8) + (iSupply * 2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
 
 L_622f:
     /* untranslated: LOWORD(dChg) = (ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0) */
@@ -192,16 +192,16 @@ L_622f:
 
 L_6249:
     /* untranslated: wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa) */
-    i = 0x0;
+    i = 0;
     goto L_6295;
 
 L_6275:
     /* untranslated: LOWORD(wtFree) = (LOWORD(wtFree) - ds:[((pth + 0x8) + (i * 0x2))]) */
     /* untranslated: HIWORD(wtFree) = (HIWORD(wtFree) - signhiword(ds:[((pth + 0x8) + (i * 0x2))])) */
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_6295:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_6275;
     else
         goto L_629f;
@@ -228,7 +228,7 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    /* untranslated: ds:[((pth + 0x8) + (iSupply * 0x2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) */
+    /* untranslated: ds:[((pth + 0x8) + (iSupply * 2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) */
 
 L_62f3:
     if ((LOWORD(dChg) != 0x0))
@@ -263,10 +263,10 @@ L_6329:
 
 L_6333:
     FLookupFleet(id, &(xfer.fl));
-    /* untranslated: pfl = &part[4:2](xfer) */
+    pfl = &(xfer.fl);
 
 L_6349:
-    if ((iSupply > 0x4))
+    if ((iSupply > 4))
         goto L_6492;
     else
         goto L_6352;
@@ -309,7 +309,7 @@ L_63b0:
     /* untranslated: HIWORD(dChg) = ((HIWORD(pfl->rgwtMin[iSupply]) + 0x0) neg 0x0) */
 
 L_63d4:
-    if ((iSupply != 0x3))
+    if ((iSupply != 3))
         goto L_63f9;
     else
         goto L_63dd;
@@ -321,10 +321,10 @@ L_63dd:
         goto L_63ef;
 
 L_63ef:
-    dChg = 0x0;
+    dChg = 0;
 
 L_63f9:
-    if ((iSupply != 0x4))
+    if ((iSupply != 4))
         goto L_6415;
     else
         goto L_6402;
@@ -359,7 +359,7 @@ L_643a:
     goto L_646f;
 
 L_6443:
-    if ((iSupply != 0x4))
+    if ((iSupply != 4))
         goto L_645f;
     else
         goto L_644c;

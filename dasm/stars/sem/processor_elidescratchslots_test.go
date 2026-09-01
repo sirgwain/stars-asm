@@ -239,6 +239,48 @@ func TestElideScratchSlotsInlinesAliasesAcrossStraightLineBlocks(t *testing.T) {
 	}
 }
 
+// TestElideScratchSlotsInlinesTrailingAliasesAcrossStraightLineBlocks verifies
+// tail scratch stores in a non-scratch predecessor can feed its successor.
+func TestElideScratchSlotsInlinesTrailingAliasesAcrossStraightLineBlocks(t *testing.T) {
+	slot0e := scratchMemory(-0x0e, 2)
+	slot0c := scratchMemory(-0x0c, 2)
+	dx := &Local{FunctionVar: typeinfo.FunctionVar{Name: "dx", Type: typeinfo.I32, BPOffset: -0x0a}}
+	dySquared := &Binary{TypeInfo: typeinfo.U32, Op: OpMul, LHS: &Local{FunctionVar: typeinfo.FunctionVar{Name: "dy", Type: typeinfo.I32, BPOffset: -0x06}}, RHS: &Local{FunctionVar: typeinfo.FunctionVar{Name: "dy", Type: typeinfo.I32, BPOffset: -0x06}}}
+	dxSquared := &Binary{TypeInfo: typeinfo.U32, Op: OpMul, LHS: dx, RHS: dx}
+	fn := &Func{Blocks: []Block{
+		{
+			ID: 0x685c,
+			Effects: []Effect{
+				&Assign{Dst: dx, Src: &Const{TypeInfo: typeinfo.I32, U64: 3}},
+				&Assign{Dst: slot0e, Src: &Word{Parent: dySquared, Part: machine.WordLow}},
+				&Assign{Dst: slot0c, Src: &Word{Parent: dySquared, Part: machine.WordHigh}},
+			},
+		},
+		{
+			ID: 0x68b4,
+			Effects: []Effect{
+				&Return{Value: &Words{Words: []Expr{
+					&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: &Word{Parent: dxSquared, Part: machine.WordLow}, RHS: slot0e},
+					&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: &Word{Parent: dxSquared, Part: machine.WordHigh}, RHS: slot0c},
+				}}},
+			},
+		},
+	}}
+
+	changed := (&elideScratchSlotsProcessor{}).ProcessFunc(nil, fn)
+	if !changed {
+		t.Fatal("changed = false, want true")
+	}
+	if len(fn.Blocks[0].Effects) != 1 {
+		t.Fatalf("predecessor effects = %#v, want one non-scratch effect", fn.Blocks[0].Effects)
+	}
+	got := FormatEffect(fn.Blocks[1].Effects[0])
+	want := "return words((loword((dx * dx)) + loword((dy * dy))), (hiword((dx * dx)) + hiword((dy * dy))))"
+	if got != want {
+		t.Fatalf("return = %q, want %q", got, want)
+	}
+}
+
 // TestElideScratchSlotsPreservesUnusedAliasBeforeCall verifies unused scratch
 // stores are not moved after an intervening call.
 func TestElideScratchSlotsPreservesUnusedAliasBeforeCall(t *testing.T) {
@@ -404,7 +446,7 @@ func TestElideScratchSlotsInlinesConstDwordFloatScratchInSqrtArg(t *testing.T) {
 		t.Fatalf("effects = %#v, want call", got.Effects)
 	}
 	gotCall := FormatEffect(got.Effects[0])
-	wantCall := "call sqrt((m2 + (double)0x1)) -> callresult(double)"
+	wantCall := "call sqrt((m2 + (double)1)) -> callresult(double)"
 	if gotCall != wantCall {
 		t.Fatalf("call = %q, want %q", gotCall, wantCall)
 	}

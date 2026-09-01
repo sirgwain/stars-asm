@@ -6,6 +6,7 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
+	"github.com/sirgwain/stars-asm/dasm/testfixture"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -37,6 +38,7 @@ func TestNormalizeCallArgsPreProcessorRebuildsDataSegmentVarArgFarPointers(t *te
 					machine.ConstVal(0x2),
 					title,
 					machine.RegVal(asm.RegDS),
+					machine.ConstVal(0x7),
 				},
 			},
 		},
@@ -56,6 +58,7 @@ func TestNormalizeCallArgsPreProcessorRebuildsDataSegmentVarArgFarPointers(t *te
 		"farptr(ds, load([bp+0x6]))",
 		"0x2",
 		"farptr(ds, 0x1385)",
+		"0x7",
 	}
 	if len(got.Args) != len(want) {
 		t.Fatalf("args = %#v, want %d args", got.Args, len(want))
@@ -109,7 +112,100 @@ func TestNormalizeCallArgsProcessorRebuildsSemanticVarArgFarPointers(t *testing.
 		t.Fatal("ProcessBlock changed = false, want true")
 	}
 	got := FormatEffect(gotBlock.Effects[0])
-	want := "call _wsprintf(szWork, pszFmt, merge(Join: L_0020, (L_0010:&szOne, L_0011:&szTwo)))"
+	want := "call _wsprintf(szWork, pszFmt, merge(Join: L_0020, (L_0010:szOne, L_0011:szTwo)))"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestNormalizeCallArgsProcessorResolvesMergedSemanticVarArgFarPointers verifies
+// mixed stack/data segment vararg pointer merges preserve per-arm pointer meaning.
+func TestNormalizeCallArgsProcessorResolvesMergedSemanticVarArgFarPointers(t *testing.T) {
+	fx := testfixture.Stars(t)
+	charType := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}
+	farCharPtrType := &typeinfo.Pointer{Elem: charType, Class: typeinfo.PtrFar}
+	wsprintf := &typeinfo.Function{
+		Name:    "_wsprintf",
+		Ret:     typeinfo.U16,
+		VarArgs: true,
+		Params: []typeinfo.FunctionVar{
+			{Name: "lpszout", Type: farCharPtrType},
+			{Name: "lpszfmt", Type: farCharPtrType},
+		},
+	}
+	rgch := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rgch", Type: &typeinfo.Array{Elem: charType, Count: 40}, BPOffset: -0x2a}}
+	offset := &Merge{
+		TypeInfo: typeinfo.U16,
+		Join:     0x342,
+		Arms: []MergeArm{
+			{Block: 0x335, Value: rgch},
+			{Block: 0x33d, Value: &Const{TypeInfo: typeinfo.U16, U64: 0xc84}},
+		},
+	}
+	segment := &Merge{
+		TypeInfo: typeinfo.U16,
+		Join:     0x342,
+		Arms: []MergeArm{
+			{Block: 0x335, Value: &Register{Val: asm.RegSS}},
+			{Block: 0x33d, Value: &Register{Val: asm.RegDS, SegNum: uint16(fx.SDB.DGroupFrame)}},
+		},
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("FCheckQueuedShip"))
+	block := Block{Effects: []Effect{
+		&CallEffect{
+			Call: &Call{Function: wsprintf, Args: []Expr{
+				&Global{GlobalVar: &typeinfo.GlobalVar{Name: "szWork", Type: farCharPtrType}},
+				&Global{GlobalVar: &typeinfo.GlobalVar{Name: "pszFmt", Type: farCharPtrType}},
+				offset,
+				segment,
+			}},
+		},
+	}}
+
+	gotBlock, changed := (&normalizeCallArgsProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "call _wsprintf(szWork, pszFmt, merge(Join: L_0342, (L_0335:rgch, L_033d:\"\")))"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestNormalizeCallArgsProcessorCollapsesSemanticVarArgFarPointerParts verifies
+// adjacent faroff/farseg projections of one vararg pointer collapse to the
+// original pointer expression.
+func TestNormalizeCallArgsProcessorCollapsesSemanticVarArgFarPointerParts(t *testing.T) {
+	charType := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}
+	farCharPtrType := &typeinfo.Pointer{Elem: charType, Class: typeinfo.PtrFar}
+	wsprintf := &typeinfo.Function{
+		Name:    "_wsprintf",
+		Ret:     typeinfo.U16,
+		VarArgs: true,
+		Params: []typeinfo.FunctionVar{
+			{Name: "lpszout", Type: farCharPtrType},
+			{Name: "lpszfmt", Type: farCharPtrType},
+		},
+	}
+	arg := &Temp{Name: "t_merge_2766_0001_wide", TypeInfo: farCharPtrType}
+	block := Block{Effects: []Effect{
+		&CallEffect{
+			Call: &Call{Function: wsprintf, Args: []Expr{
+				&Global{GlobalVar: &typeinfo.GlobalVar{Name: "szWork", Type: farCharPtrType}},
+				&Global{GlobalVar: &typeinfo.GlobalVar{Name: "pszFmt", Type: farCharPtrType}},
+				&FarPointer{Parent: arg, Part: machine.FarPointerOffset, TypeInfo: typeinfo.U16},
+				&FarPointer{Parent: arg, Part: machine.FarPointerSegment, TypeInfo: typeinfo.U16},
+			}},
+		},
+	}}
+
+	gotBlock, changed := (&normalizeCallArgsProcessor{}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "call _wsprintf(szWork, pszFmt, t_merge_2766_0001_wide)"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}
@@ -154,6 +250,60 @@ func TestNormalizeCallArgsProcessorLeavesTrailingScalarVarArgs(t *testing.T) {
 	}
 	got := FormatEffect(gotBlock.Effects[0])
 	want := "call _wsprintf(lpb2k, szT, callresult(char *), 0xd, 0xa)"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
+// TestNormalizeCallArgsProcessorCollapsesStructWordArgs verifies by-value
+// struct arguments split into stack words collapse to their aggregate roots.
+func TestNormalizeCallArgsProcessorCollapsesStructWordArgs(t *testing.T) {
+	int16Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true}
+	int32Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int32_t", Size: 4, Signed: true}
+	pointType := &typeinfo.Struct{
+		Name:  "tagPOINT",
+		SKind: typeinfo.StructKindStruct,
+		Size:  4,
+		Fields: []typeinfo.StructField{
+			{Name: "x", Offset: 0, Size: 2, Type: int16Type},
+			{Name: "y", Offset: 2, Size: 2, Type: int16Type},
+		},
+	}
+	lDistance2 := &typeinfo.Function{
+		Name: "LDistance2",
+		Ret:  int32Type,
+		Params: []typeinfo.FunctionVar{
+			{Name: "pt1", Type: pointType},
+			{Name: "pt2", Type: pointType},
+		},
+	}
+	pt := &Local{FunctionVar: typeinfo.FunctionVar{Name: "pt", Type: pointType, BPOffset: -6}}
+	rgptPlan := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "rgptPlan", Type: &typeinfo.Array{Elem: pointType, Count: 999}}}
+	i := &Local{FunctionVar: typeinfo.FunctionVar{Name: "i", Type: int16Type, BPOffset: -8}}
+	ptX := &pointType.Fields[0]
+	ptY := &pointType.Fields[1]
+	rgptPlanI := &ArrayIndex{Base: rgptPlan, Index: i, TypeInfo: pointType}
+	block := Block{Effects: []Effect{
+		&CallEffect{
+			Call: &Call{Function: lDistance2, Args: []Expr{
+				&Words{Words: []Expr{
+					&FieldAccess{Base: pt, Field: ptY},
+					&FieldAccess{Base: pt, Field: ptX},
+				}},
+				&Words{Words: []Expr{
+					&FieldAccess{Base: rgptPlanI, Field: ptY},
+					&FieldAccess{Base: rgptPlanI, Field: ptX},
+				}},
+			}},
+		},
+	}}
+
+	gotBlock, changed := (&normalizeCallArgsProcessor{}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	got := FormatEffect(gotBlock.Effects[0])
+	want := "call LDistance2(pt, rgptPlan[i])"
 	if got != want {
 		t.Fatalf("effect = %q, want %q", got, want)
 	}

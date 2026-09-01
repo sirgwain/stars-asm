@@ -39,6 +39,7 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 	rules.Variants = make([]*UnionVariantRule, 0, len(cfg.UnionVariants))
 	rules.FunctionPathFacts = make([]*UnionFunctionPathFact, 0, len(cfg.FunctionPathFacts))
 	rules.CallResultPathFacts = make([]*UnionCallResultPathFact, 0, len(cfg.CallResultPathFacts))
+	rules.ExternalDiscriminatorAliases = make([]*UnionExternalDiscriminatorAlias, 0, len(cfg.ExternalDiscriminatorAliases))
 
 	for _, variantJSON := range cfg.UnionVariants {
 		variant, err := l.parseUnionVariant(variantJSON, sdb)
@@ -71,19 +72,31 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 		rules.callResultPathFactsByParam[paramName] = append(rules.callResultPathFactsByParam[paramName], fact)
 	}
 
+	for _, aliasJSON := range cfg.ExternalDiscriminatorAliases {
+		alias, err := l.parseExternalDiscriminatorAlias(aliasJSON, sdb, rules)
+		if err != nil {
+			return nil, err
+		}
+		rules.ExternalDiscriminatorAliases = append(rules.ExternalDiscriminatorAliases, alias)
+		name := funcLookupName(alias.Func.Name)
+		rules.externalDiscriminatorAliasesByFunc[name] = append(rules.externalDiscriminatorAliasesByFunc[name], alias)
+	}
+
 	return rules, nil
 }
 
 // emptyUnionRules creates an initialized empty union rule set.
 func emptyUnionRules() *UnionRules {
 	return &UnionRules{
-		Variants:                   []*UnionVariantRule{},
-		FunctionPathFacts:          []*UnionFunctionPathFact{},
-		CallResultPathFacts:        []*UnionCallResultPathFact{},
-		variantsByType:             make(map[string]*UnionVariantRule),
-		functionPathFactsByFunc:    make(map[string][]*UnionFunctionPathFact),
-		callResultPathFactsByFunc:  make(map[string][]*UnionCallResultPathFact),
-		callResultPathFactsByParam: make(map[string][]*UnionCallResultPathFact),
+		Variants:                           []*UnionVariantRule{},
+		FunctionPathFacts:                  []*UnionFunctionPathFact{},
+		CallResultPathFacts:                []*UnionCallResultPathFact{},
+		ExternalDiscriminatorAliases:       []*UnionExternalDiscriminatorAlias{},
+		variantsByType:                     make(map[string]*UnionVariantRule),
+		functionPathFactsByFunc:            make(map[string][]*UnionFunctionPathFact),
+		callResultPathFactsByFunc:          make(map[string][]*UnionCallResultPathFact),
+		callResultPathFactsByParam:         make(map[string][]*UnionCallResultPathFact),
+		externalDiscriminatorAliasesByFunc: make(map[string][]*UnionExternalDiscriminatorAlias),
 	}
 }
 
@@ -218,6 +231,55 @@ func (l *unionLoader) parseCallResultPathFact(cfg callResultPathFactJSON, sdb *S
 	}, nil
 }
 
+// parseExternalDiscriminatorAlias resolves a function discriminator alias rule.
+func (l *unionLoader) parseExternalDiscriminatorAlias(cfg externalDiscriminatorAliasJSON, sdb *SymbolDB, rules *UnionRules) (*UnionExternalDiscriminatorAlias, error) {
+	fn := sdb.GetFunction(cfg.Func)
+	if fn == nil {
+		return nil, fmt.Errorf("union external discriminator alias function %s not found", cfg.Func)
+	}
+	if len(cfg.Source) == 0 {
+		return nil, fmt.Errorf("union external discriminator alias %s has empty source path", cfg.Func)
+	}
+	if cfg.Root == "" {
+		return nil, fmt.Errorf("union external discriminator alias %s has empty root", cfg.Func)
+	}
+	strct := sdb.GetStruct(cfg.Type)
+	if strct == nil {
+		return nil, fmt.Errorf("union external discriminator alias type %s not found for %s", cfg.Type, cfg.Func)
+	}
+	enum := sdb.GetEnum(cfg.Enum)
+	if enum == nil {
+		return nil, fmt.Errorf("union external discriminator alias enum %s not found for %s", cfg.Enum, cfg.Func)
+	}
+	variant, ok := rules.UnionVariantForType(strct)
+	if !ok {
+		return nil, fmt.Errorf("union external discriminator alias type %s has no variant rule", cfg.Type)
+	}
+	sourceType, ok := functionPathType(fn, cfg.Source)
+	if !ok {
+		return nil, fmt.Errorf("union external discriminator alias %s source path %s not found", cfg.Func, strings.Join(cfg.Source, "."))
+	}
+	if sourceType != enum {
+		return nil, fmt.Errorf("union external discriminator alias %s source path %s is %s, not %s", cfg.Func, strings.Join(cfg.Source, "."), sourceType, cfg.Enum)
+	}
+	rootType, ok := functionRootType(fn, cfg.Root)
+	if !ok {
+		return nil, fmt.Errorf("union external discriminator alias %s target root %s not found", cfg.Func, cfg.Root)
+	}
+	rootStruct, ok := namedStructType(rootType)
+	if !ok || rootStruct != strct {
+		return nil, fmt.Errorf("union external discriminator alias %s target root %s is %s, not %s", cfg.Func, cfg.Root, rootType, cfg.Type)
+	}
+	return &UnionExternalDiscriminatorAlias{
+		Func:   fn,
+		Source: append([]string(nil), cfg.Source...),
+		Root:   cfg.Root,
+		Type:   strct,
+		Enum:   enum,
+		Rule:   variant,
+	}, nil
+}
+
 // enumValueByName returns an enum value by symbolic name.
 func enumValueByName(enum *Enum, name string) (EnumValue, bool) {
 	for _, value := range enum.Values {
@@ -255,6 +317,44 @@ func functionParamIndex(fn *Function, name string) (int, bool) {
 	return 0, false
 }
 
+// functionRootType returns the type of a parameter or local in fn.
+func functionRootType(fn *Function, name string) (Type, bool) {
+	for i := range fn.Params {
+		if fn.Params[i].Name == name {
+			return fn.Params[i].Type, true
+		}
+	}
+	for i := range fn.Vars {
+		if fn.Vars[i].Name == name {
+			return fn.Vars[i].Type, true
+		}
+	}
+	return nil, false
+}
+
+// functionPathType resolves the final type of a parameter or local path.
+func functionPathType(fn *Function, components []string) (Type, bool) {
+	if len(components) == 0 {
+		return nil, false
+	}
+	typ, ok := functionRootType(fn, components[0])
+	if !ok {
+		return nil, false
+	}
+	for _, name := range components[1:] {
+		strct, ok := namedStructType(typ)
+		if !ok {
+			return nil, false
+		}
+		field := structFieldByName(strct, name)
+		if field == nil {
+			return nil, false
+		}
+		typ = field.Type
+	}
+	return typ, true
+}
+
 // typeLookupName returns the canonical lookup key for a struct type.
 func typeLookupName(strct *Struct) string {
 	return strings.ToLower(strct.String())
@@ -266,9 +366,10 @@ func funcLookupName(name string) string {
 }
 
 type unionConfigJSON struct {
-	UnionVariants       []unionVariantJSON       `json:"union_variants"`
-	FunctionPathFacts   []functionPathFactJSON   `json:"function_path_facts"`
-	CallResultPathFacts []callResultPathFactJSON `json:"call_result_path_facts"`
+	UnionVariants                []unionVariantJSON               `json:"union_variants"`
+	FunctionPathFacts            []functionPathFactJSON           `json:"function_path_facts"`
+	CallResultPathFacts          []callResultPathFactJSON         `json:"call_result_path_facts"`
+	ExternalDiscriminatorAliases []externalDiscriminatorAliasJSON `json:"external_discriminator_aliases"`
 }
 
 type unionVariantJSON struct {
@@ -295,4 +396,12 @@ type callResultPathFactJSON struct {
 	FromParam string   `json:"from_param"`
 	FromArg   int      `json:"from_arg"`
 	Enum      string   `json:"enum"`
+}
+
+type externalDiscriminatorAliasJSON struct {
+	Func   string   `json:"func"`
+	Source []string `json:"source"`
+	Root   string   `json:"root"`
+	Type   string   `json:"type"`
+	Enum   string   `json:"enum"`
 }

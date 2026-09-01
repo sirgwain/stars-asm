@@ -100,7 +100,7 @@ func collapseTypedFarPointerCallArg(ctx *FuncContext, arg Expr, param *typeinfo.
 		return arg, false
 	}
 
-	if !exprMatchesMachineValue(ptr.Segment, ctx.dsReg) {
+	if _, ok := ptr.Segment.(*Register); !ok {
 		return arg, false
 	}
 

@@ -902,7 +902,7 @@ int16_t CchTutorString(char *pchOut, int16_t idt) {
     uint16_t t_merge_5b3e_0001;
 
 L_5a14:
-    iNibble = 0x0;
+    iNibble = 0;
     if ((idt != iLastTutGet))
         goto L_5a3b;
     else
@@ -914,13 +914,13 @@ L_5a2d:
 L_5a3b:
     iChunk = (idt >> 0x6);
     iOffset = (idt & 0x3f);
-    /* untranslated: pch = &aTUTCmpr[cs:[(iChunk * 0x2)+0x59b4]] */
+    pch = &(aTUTCmpr[aiTUTChunkOffset[iChunk]]);
     pchLen = &(acTUT[(0x40 * iChunk)]);
-    i = 0x0;
+    i = 0;
     goto L_5a94;
 
 L_5a81:
-    i = (i + 0x1);
+    i = (i + 1);
     pchLen = (pchLen + 0x1);
 
 L_5a94:
@@ -951,18 +951,18 @@ L_5ad6:
 L_5ad9:
     fHigh = t_merge_5ad9_0001;
     pszOut = pchOut;
-    iBuild = 0x0;
+    iBuild = 0;
 
 L_5ae7:
     t_5ae7 = iLen;
-    iLen = (iLen - 0x1);
-    if ((t_5ae7 == 0x0))
+    iLen = (iLen - 1);
+    if ((t_5ae7 == 0))
         goto L_5b69;
     else
         goto L_5af6;
 
 L_5af6:
-    if ((fHigh == 0x0))
+    if ((fHigh == 0))
         goto L_5b16;
     else
         goto L_5aff;
@@ -976,7 +976,7 @@ L_5b16:
     i = (*(pch) & 0xf);
 
 L_5b2c:
-    if ((fHigh != 0x0))
+    if ((fHigh != 0))
         goto L_5b3b;
     else
         goto L_5b35;
@@ -991,17 +991,17 @@ L_5b3b:
 L_5b3e:
     fHigh = t_merge_5b3e_0001;
     iBuild = (iBuild + i);
-    if ((i == 0xf))
+    if ((i == 15))
         goto L_5ae7;
     else
         goto L_5b50;
 
 L_5b50:
-    /* untranslated: *pszOut = byte cs:[iBuild+0x59c8] */
+    *(pszOut) = rgTUTLookupTable[iBuild];
     pszOut = (pszOut + 0x1);
-    iBuild = 0x0;
+    iBuild = 0;
 
 L_5b69:
-    *(pszOut) = 0x0;
+    *(pszOut) = 0;
     return (pszOut - pchOut);
 }

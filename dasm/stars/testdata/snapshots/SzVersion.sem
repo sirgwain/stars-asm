@@ -9,4 +9,4 @@ L_1212:
     call _wsprintf(szWork, PszGetCompressedString(idsVersionD02dC), 0x2, 0x3c, 0x6a) -> callresult(int16_t)
 
 L_124c:
-    return 0x57a4
+    return szWork

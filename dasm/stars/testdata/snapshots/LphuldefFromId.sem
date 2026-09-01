@@ -8,10 +8,10 @@ LphuldefFromId  (parts)
   stats: blocks=0  labels=0
 */
 L_512c:
-    branch id < 0x20 ? L_5150 : L_513e
+    branch id < 32 ? L_5150 : L_513e
 
 L_513e:
-    return LphuldefSBFromId((id + 0xffe0))
+    return LphuldefSBFromId((id - 32))
 
 L_5150:
     return &rghuldef[id]

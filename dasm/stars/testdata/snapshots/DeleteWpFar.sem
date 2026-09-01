@@ -12,37 +12,37 @@ DeleteWpFar  (ship)
   stats: blocks=0  labels=0
 */
 L_9e28:
-    branch fRecycle == 0x0 ? L_9ef2 : L_9e3a
+    branch fRecycle == 0 ? L_9ef2 : L_9e3a
 
 L_9e3a:
-    branch iDel == 0x56 ? L_9ebf : L_9e43
+    branch iDel == 86 ? L_9ebf : L_9e43
 
 L_9e43:
-    branch lpfl->cord == 0x2 ? L_9ebf : L_9e50
+    branch lpfl->cord == 2 ? L_9ebf : L_9e50
 
 L_9e50:
-    branch lpfl->lpplord->rgord[(lpfl->cord - 0x1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x ? L_9ec7 : L_9eb6
+    branch lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x ? L_9ec7 : L_9eb6
 
 L_9eb6:
-    branch ss:[bp-0x16]:[(ss:[bp-0x18] + loword(((lpfl->cord + 0xffff) * 0x12)))+0x2] != ss:[bp-0x1a] ? L_9ec7 : L_9ebf
+    branch ss:[bp-0x16]:[(ss:[bp-0x18] + loword(((lpfl->cord - 1) * 0x12)))+0x2] != ss:[bp-0x1a] ? L_9ec7 : L_9ebf
 
 L_9ebf:
-    fRecycle = 0x0
+    fRecycle = 0
     goto L_9ef2
 
 L_9ec7:
     ord = lpfl->lpplord->rgord[iDel]
 
 L_9ef2:
-    call fmemmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[(iDel + 0x1)], loword((((lpfl->cord - iDel) + 0xffff) * 0x12))) -> callresult(void *)
-    branch fRecycle == 0x0 ? L_9fca : L_9f69
+    call fmemmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[(iDel + 1)], loword((((lpfl->cord - iDel) + 0xffff) * 0x12))) -> callresult(void *)
+    branch fRecycle == 0 ? L_9fca : L_9f69
 
 L_9f69:
-    lpfl->lpplord->rgord[(lpfl->cord - 0x1)] = ord
+    lpfl->lpplord->rgord[(lpfl->cord - 1)] = ord
     goto L_9fde
 
 L_9fca:
-    lpfl->cord = (lpfl->cord - 0x1)
+    lpfl->cord = (lpfl->cord - 1)
     lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - 0x1)
 
 L_9fde:

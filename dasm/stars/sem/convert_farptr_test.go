@@ -79,6 +79,82 @@ func TestFromMachineResolvesFarPointerMemory(t *testing.T) {
 	}
 }
 
+// TestFromMachineKeepsFarPointerResidualConstants verifies constants in
+// recovered far-pointer offsets stay byte displacements, not globals.
+func TestFromMachineKeepsFarPointerResidualConstants(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("LComputePower")
+	if fn == nil {
+		t.Fatal("LComputePower not found")
+	}
+
+	lpshdef := machine.LoadVal(machine.MemoryAccess{
+		Base:   machine.FrameBaseVal(),
+		Disp:   6,
+		Width:  4,
+		Origin: machine.Origin{InstOff: 0x0b89, Role: machine.OperandSrc},
+	})
+	ihs := machine.LoadVal(machine.MemoryAccess{
+		Base:   machine.FrameBaseVal(),
+		Disp:   -8,
+		Width:  2,
+		Origin: machine.Origin{InstOff: 0x0b91, Role: machine.OperandSrc},
+	})
+	slotBytes := machine.BinaryVal(
+		machine.ValueOpShl,
+		machine.BinaryVal(machine.ValueOpShl, ihs, machine.ConstVal(1)),
+		machine.ConstVal(1),
+	)
+	rghsOffset := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAdd, machine.FarPointerVal(lpshdef, machine.FarPointerOffset), machine.ConstVal(0x3a)),
+		slotBytes,
+	)
+	hiword := machine.LoadVal(machine.MemoryAccess{
+		Seg:   machine.FarPointerVal(lpshdef, machine.FarPointerSegment),
+		Base:  rghsOffset,
+		Disp:  2,
+		Width: 2,
+	})
+
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x0b86,
+				Effects: []machine.Effect{
+					machine.StoreEffect{
+						MetaInfo: machine.Meta{BlockID: 0x0b86, InstOff: 0x0ba6},
+						Addr: machine.MemoryAccess{
+							Base:   machine.FrameBaseVal(),
+							Disp:   -0x24,
+							Width:  2,
+							Origin: machine.Origin{InstOff: 0x0ba6, Role: machine.OperandDst},
+						},
+						Src:   hiword,
+						Width: 2,
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one lowered store effect", semFunc.Blocks)
+	}
+
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "HIWORD(part.hs) = HIWORD(lpshdef->hul.rghs[ihs])"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
 // formatEffectsForTest renders effects for assertion failures.
 func formatEffectsForTest(effects []Effect) string {
 	lines := make([]string, len(effects))
@@ -275,6 +351,91 @@ func TestLowerMachineResolvesDirectFarPointerGlobalFieldCallArg(t *testing.T) {
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
 	want := "call PszProductionETA(&sel.pl) -> callresult(char *)"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
+// TestLowerMachineResolvesNestedCodeSegmentFarPointerCallArg verifies nested
+// code-segment globals use CS, not DGROUP, when resolving far-pointer offsets.
+func TestLowerMachineResolvesNestedCodeSegmentFarPointerCallArg(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("EnsureMacintiShdefs")
+	if fn == nil {
+		t.Fatal("EnsureMacintiShdefs not found")
+	}
+	random := fx.SDB.GetFunction("Random")
+	if random == nil {
+		t.Fatal("Random not found")
+	}
+	target := fx.SDB.GetFunction("FCreateAiShdef")
+	if target == nil {
+		t.Fatal("FCreateAiShdef not found")
+	}
+
+	randomResult := &machine.CallResult{Target: random, Type: random.Ret, InstOff: 0x3127}
+	ish := machine.LoadVal(machine.MemoryAccess{
+		Base:   machine.FrameBaseVal(),
+		Disp:   -4,
+		Width:  2,
+		Origin: machine.Origin{InstOff: 0x314b, Role: machine.OperandSrc},
+	})
+	shBase := machine.LoadVal(machine.MemoryAccess{
+		Base:   machine.FrameBaseVal(),
+		Disp:   -0x10,
+		Width:  2,
+		Origin: machine.Origin{InstOff: 0x314b, Role: machine.OperandSrc},
+	})
+	ishIndex := machine.BinaryVal(machine.ValueOpAdd, randomResult, shBase)
+	ishOffset := machine.BinaryVal(machine.ValueOpAdd,
+		machine.ConstVal(0x2a06),
+		machine.BinaryVal(machine.ValueOpShl, ishIndex, machine.ConstVal(1)),
+	)
+	ishLoad := machine.LoadVal(machine.MemoryAccess{
+		Seg:   machine.RegVal(asm.RegCS),
+		Base:  ishOffset,
+		Width: 2,
+	})
+	aipOffset := machine.BinaryVal(machine.ValueOpAdd, machine.ConstVal(0x2a44), ishLoad)
+
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x3123,
+				Effects: []machine.Effect{
+					machine.CallEffect{
+						MetaInfo: machine.Meta{BlockID: 0x3123, InstOff: 0x3127},
+						Target:   random,
+						Args:     []machine.Value{machine.ConstVal(4)},
+						Result:   randomResult,
+					},
+					machine.CallEffect{
+						MetaInfo: machine.Meta{BlockID: 0x3123, InstOff: 0x314b},
+						Target:   target,
+						Args: []machine.Value{
+							ish,
+							machine.ConstVal(9),
+							machine.FarPointerWordsVal(aipOffset, machine.RegVal(asm.RegCS)),
+						},
+						Result: &machine.CallResult{Target: target, Type: target.Ret, InstOff: 0x314b},
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %q, want lowered FCreateAiShdef call", formatEffectsForTest(semFunc.Blocks[0].Effects))
+	}
+
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "call FCreateAiShdef(ish, 0x9, &vrgMacAip[vrgMacIshAip[(Random(0x4) + shBase)]]) -> callresult(int16_t)"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}

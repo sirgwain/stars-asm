@@ -13,11 +13,11 @@ void AddMinesToBlockedQueues() {
     int16_t etaBetterMines;
 
 L_1792:
-    ipl = 0x0;
+    ipl = 0;
     goto L_17a7;
 
 L_17a3:
-    ipl = (ipl + 0x1);
+    ipl = (ipl + 1);
 
 L_17a7:
     if ((ipl >= vclpplAi))
@@ -53,7 +53,7 @@ L_17ef:
 L_17f6:
 
 L_17fc:
-    prod = lppl->lpplprod->rgprod[0x0];
+    prod = lppl->lpplprod->rgprod[0];
     if ((prod.grobj != 0x1))
         goto L_18c8;
     else
@@ -118,7 +118,7 @@ L_18c2:
 L_18c8:
     ChangeMainObjSel(grobjPlanet, lppl->id);
     PszProductionETA(&(sel.pl), sel.pl.lpplprod, iobjMine, &(etaFirst), 0x0);
-    if ((etaFirst == 0x1))
+    if ((etaFirst == 1))
         goto L_17a3;
     else
         goto L_1903;
@@ -126,13 +126,13 @@ L_18c8:
 L_1903:
 
 L_1909:
-    if ((etaFirst != 0xffff))
+    if ((etaFirst != -1))
         goto L_1917;
     else
         goto L_1912;
 
 L_1912:
-    etaFirst = 0x258;
+    etaFirst = 600;
 
 L_1917:
     GetProductionCosts(lppl, &(prod), rgCost, idPlayer, 0x1);
@@ -152,19 +152,19 @@ L_1977:
     cRes = (cRes - (int32_t)(((uint32_t)((cRes * (uint32_t)((uint16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
 
 L_19aa:
-    if ((HIWORD(rgCost[0x3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+    if ((HIWORD(rgCost[0x3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_19d6;
     else
         goto L_19c6;
 
 L_19c6:
-    if ((HIWORD(rgCost[0x3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+    if ((HIWORD(rgCost[0x3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19cb;
 
 L_19cb:
-    if ((LOWORD(rgCost[0x3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst + 0xffff)))))))
+    if ((LOWORD(rgCost[0x3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19d0;
@@ -195,7 +195,7 @@ L_1a2b:
         goto L_1a34;
 
 L_1a34:
-    cMaxBuild = 0x0;
+    cMaxBuild = 0;
 
 L_1a3e:
     cResMine = (uint32_t)(GetRaceStat(rgplr[idPlayer], rsMineBuild));
@@ -246,35 +246,35 @@ L_1ace:
     AddItemToQueue(0x8, LOWORD(cBuild), grobjPlanet, 0x0);
     FinishProduction(0x1);
     PszProductionETA(&(sel.pl), sel.pl.lpplprod, iobjFactory, &(etaBetterMines), 0x0);
-    if ((etaBetterMines != 0xffff))
+    if ((etaBetterMines != -1))
         goto L_1b29;
     else
         goto L_1b23;
 
 L_1b23:
-    etaBetterMines = 0x2bc;
+    etaBetterMines = 700;
 
 L_1b29:
     LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | 0x1);
     HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | 0x0);
-    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0x3ff) | 0xc00);
+    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = (sel.pl.lpplprod->rgprod[0x0].cItem | 0xc00);
     HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfffe) | 0x0);
     goto L_1b9e;
 
 L_1b74:
-    etaBetterMines = 0x2bc;
+    etaBetterMines = 700;
     AddItemToQueue(0x3, 0x1, grobjPlanet, 0x0);
     FinishProduction(0x1);
 
 L_1b9e:
     PszProductionETA(&(sel.pl), sel.pl.lpplprod, iobjFactory, &(etaBetterAlchemy), 0x0);
-    if ((etaBetterAlchemy != 0xffff))
+    if ((etaBetterAlchemy != -1))
         goto L_1bcf;
     else
         goto L_1bca;
 
 L_1bca:
-    etaBetterAlchemy = 0x2bc;
+    etaBetterAlchemy = 700;
 
 L_1bcf:
     if ((etaBetterAlchemy >= etaFirst))
@@ -309,7 +309,7 @@ L_1bf4:
 L_1bfa:
 
 L_1c03:
-    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0x3ff) | 0x2000);
+    LOWORD(sel.pl.lpplprod->rgprod[0x0]) = (sel.pl.lpplprod->rgprod[0x0].cItem | 0x2000);
     HIWORD(sel.pl.lpplprod->rgprod[0x0]) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfffe) | 0x0);
     if ((etaFirst < etaBetterMines))
         goto L_1c4a;

@@ -9,7 +9,7 @@ void BattleVCR(int16_t iBattle) {
 L_0000:
     lpProc = 0x0;
     penvMemSav = penvMem;
-    viStepVCRCur = 0xffff;
+    viStepVCRCur = -1;
     gd.fVCRTimer = 0x0;
     if ((gd.mdScreenSize < 0x2))
         goto L_004d;
@@ -17,16 +17,16 @@ L_0000:
         goto L_003e;
 
 L_003e:
-    dxyVCRBoard = 0x2a1;
-    dxyVCRSquare = 0x40;
+    dxyVCRBoard = 673;
+    dxyVCRSquare = 64;
     goto L_0059;
 
 L_004d:
-    dxyVCRBoard = 0x161;
-    dxyVCRSquare = 0x20;
+    dxyVCRBoard = 353;
+    dxyVCRSquare = 32;
 
 L_0059:
-    lphb = rglphb[0xb];
+    lphb = rglphb[11];
     vlpbdVCR = &(*(lphb + 0x12));
 
 L_0079:
@@ -66,7 +66,7 @@ L_00d1:
 L_00ee:
     vlpbdVCRNext = ((uint8_t *)(vlpbdVCR) + vlpbdVCR->cbData);
     penvMem = env;
-    if ((setjmp(env) == 0x0))
+    if ((setjmp(env) == 0))
         goto L_014c;
     else
         goto L_0122;
@@ -79,7 +79,7 @@ L_0122:
 L_014c:
     vrgtok = LpAlloc(LOWORD((vlpbdVCR->ctok * 0x1d)), htMisc);
     vrgdpVCR = LpAlloc((vlpbdVCR->ctok * 0x4), htMisc);
-    vcStepVCR = (SetVCRBoard(0x7530) + 0xffff);
+    vcStepVCR = (SetVCRBoard(0x7530) - 1);
     vcRound = viRound;
     SetVCRBoard(0xffff);
     if ((gd.fTutorial == 0x0))
@@ -153,8 +153,8 @@ int16_t CBattles() {
     int16_t  cBattles;
 
 L_028c:
-    cBattles = 0x0;
-    lphb = rglphb[0xb];
+    cBattles = 0;
+    lphb = rglphb[11];
     if ((LOWORD(lphb) != 0x0))
         goto L_02bf;
     else
@@ -215,7 +215,7 @@ L_0336:
 
 L_033f:
     lpbd = ((uint8_t *)(lpbd) + lpbd->cbData);
-    cBattles = (cBattles + 0x1);
+    cBattles = (cBattles + 1);
 }
 
 BTLDATA *BtlDataGet(int16_t i) {
@@ -224,7 +224,7 @@ BTLDATA *BtlDataGet(int16_t i) {
     int16_t  t_0419;
 
 L_0362:
-    lphb = rglphb[0xb];
+    lphb = rglphb[11];
     if ((LOWORD(lphb) != 0x0))
         goto L_0393;
     else
@@ -285,8 +285,8 @@ L_040d:
 
 L_0419:
     t_0419 = i;
-    i = (i - 0x1);
-    if ((t_0419 > 0x0))
+    i = (i - 1);
+    if ((t_0419 > 0))
         goto L_0431;
     else
         goto L_0428;
@@ -307,8 +307,8 @@ int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU) {
 
 L_0450:
     ctok = lpbd->ctok;
-    lUnits = 0x0;
-    i = 0x0;
+    lUnits = 0;
+    i = 0;
     goto L_0614;
 
 L_0478:
@@ -362,13 +362,13 @@ L_0506:
 
 L_0518:
     imd = ((*(LphuldefFromId(rglpshdef[lptok->iplr][lptok->ishdef].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
-    if ((imd <= 0x1))
+    if ((imd <= 1))
         goto L_057b;
     else
         goto L_0572;
 
 L_0572:
-    if ((imd < 0x6))
+    if ((imd < 6))
         goto L_058f;
     else
         goto L_057b;
@@ -382,7 +382,7 @@ L_057b:
 L_0586:
 
 L_058f:
-    if ((imd != 0x2))
+    if ((imd != 2))
         goto L_05ac;
     else
         goto L_0598;
@@ -396,7 +396,7 @@ L_0598:
 L_05a3:
 
 L_05ac:
-    if ((imd != 0x3))
+    if ((imd != 3))
         goto L_05c9;
     else
         goto L_05b5;
@@ -410,7 +410,7 @@ L_05b5:
 L_05c0:
 
 L_05c9:
-    if ((imd != 0x5))
+    if ((imd != 5))
         goto L_05e6;
     else
         goto L_05d2;
@@ -424,7 +424,7 @@ L_05d2:
 L_05dd:
 
 L_05e6:
-    if ((imd != 0x4))
+    if ((imd != 4))
         goto L_0600;
     else
         goto L_05ef;
@@ -442,7 +442,7 @@ L_0600:
     HIWORD(lUnits) = (HIWORD(lUnits) + 0x0);
 
 L_0610:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0614:
     if ((i < ctok))
@@ -466,7 +466,7 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead) {
 L_062e:
     lpbr = &(lpbd->rgtok[lpbd->ctok]);
     lpbdNext = ((uint8_t *)(lpbd) + lpbd->cbData);
-    cKilled = 0x0;
+    cKilled = 0;
 
 L_0684:
     if ((LOWORD(lpbr) >= LOWORD(lpbdNext)))
@@ -476,7 +476,7 @@ L_0684:
 
 L_0692:
     cKill = lpbr->ctok;
-    i = 0x0;
+    i = 0;
     goto L_076b;
 
 L_06a4:
@@ -492,7 +492,7 @@ L_06c6:
         goto L_0708;
 
 L_0708:
-    if ((fOurDead == 0x0))
+    if ((fOurDead == 0))
         goto L_0767;
     else
         goto L_0711;
@@ -502,7 +502,7 @@ L_0711:
     HIWORD(cKilled) = (HIWORD(cKilled) + 0x0);
 
 L_0739:
-    if ((fOurDead != 0x0))
+    if ((fOurDead != 0))
         goto L_0767;
     else
         goto L_0742;
@@ -512,7 +512,7 @@ L_0742:
     HIWORD(cKilled) = (HIWORD(cKilled) + 0x0);
 
 L_0767:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_076b:
     if ((i < cKill))
@@ -565,13 +565,13 @@ L_07d4:
 
 L_0830:
     /* untranslated: csh = loword((int32_t)((uint32_t)(words(0x0, vrgtok[itok].csh) * words(0x0, dv.pctSh)) / 0x64)) */
-    if ((csh > 0x0))
+    if ((csh > 0))
         goto L_087b;
     else
         goto L_0876;
 
 L_0876:
-    csh = 0x1;
+    csh = 1;
 
 L_087b:
     /* untranslated: dp = (dp - (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, dv.pctDp)) / 0xa) * sext16to32(csh)) / 0x32)) */
@@ -594,7 +594,7 @@ L_08d8:
         goto L_08ec;
 
 L_08ec:
-    if ((viStepVCRCur == 0xffff))
+    if ((viStepVCRCur == -1))
         goto L_08fc;
     else
         goto L_08f6;
@@ -609,17 +609,17 @@ L_08fc:
         goto L_0908;
 
 L_0908:
-    if ((viStepVCRCur != 0xffff))
+    if ((viStepVCRCur != -1))
         goto L_0a11;
     else
         goto L_0912;
 
 L_0912:
-    i = 0x0;
+    i = 0;
     goto L_091e;
 
 L_091a:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_091e:
     if ((i >= vlpbdVCR->ctok))
@@ -633,14 +633,14 @@ L_0931:
     goto L_091a;
 
 L_09b9:
-    viStepVCRCur = 0xffff;
-    viRound = 0x0;
-    viVCRFocus = 0x0;
+    viStepVCRCur = -1;
+    viRound = 0;
+    viVCRFocus = 0;
     vbrcVCRFocus = vrgtok->brc;
     vlpbrVCR = &(vlpbdVCR->rgtok[vlpbdVCR->ctok]);
 
 L_0a0c:
-    viStepVCRCur = (viStepVCRCur + 0x1);
+    viStepVCRCur = (viStepVCRCur + 1);
 
 L_0a11:
     if ((viStepVCRCur >= iStep))
@@ -655,17 +655,17 @@ L_0a1d:
         goto L_0a2d;
 
 L_0a2d:
-    if ((viStepVCRCur < 0x0))
+    if ((viStepVCRCur < 0))
         goto L_0d15;
     else
         goto L_0a37;
 
 L_0a37:
-    i = 0x0;
+    i = 0;
     goto L_0a43;
 
 L_0a3f:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0a43:
     if ((i >= vlpbrVCR->ctok))
@@ -720,11 +720,11 @@ L_0c54:
 L_0c8f:
     viRound = vlpbrVCR->iRound;
     ptok = vrgtok;
-    i = 0x0;
+    i = 0;
     goto L_0cc5;
 
 L_0cb2:
-    i = (i + 0x1);
+    i = (i + 1);
     ptok = (ptok + 0x1);
 
 L_0cc5:
@@ -805,64 +805,64 @@ L_0e9f:
     GetClientRect(hwnd, &(rc));
     dyFrame = ((rcWindow.bottom - rcWindow.top) - rc.bottom);
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x00A1), &(rc));
-    SetWindowPos(hwnd, 0x0, 0x0, 0x0, (dxyVCRBoard + 0xfa), (((dyFrame + 0x18) + dxyVCRBoard) + (rc.bottom - rc.top)), 0x6);
-    i = 0x0;
+    SetWindowPos(hwnd, 0x0, 0x0, 0x0, (dxyVCRBoard + 250), (((dyFrame + 24) + dxyVCRBoard) + (rc.bottom - rc.top)), 0x6);
+    i = 0;
     goto L_1021;
 
 L_0f22:
-    if ((i >= 0x5))
+    if ((i >= 5))
         goto L_0f37;
     else
         goto L_0f2b;
 
 L_0f2b:
-    ibtn = (i + 0xa1);
+    ibtn = (i + 161);
     goto L_0f56;
 
 L_0f37:
-    if ((i != 0x5))
+    if ((i != 5))
         goto L_0f48;
     else
         goto L_0f40;
 
 L_0f40:
-    ibtn = 0x1;
+    ibtn = 1;
     goto L_0f56;
 
 L_0f48:
-    if ((i != 0x6))
+    if ((i != 6))
         goto L_0f56;
     else
         goto L_0f51;
 
 L_0f51:
-    ibtn = 0x76;
+    ibtn = 118;
 
 L_0f56:
     GetWindowRect(GetDlgItem(hwnd, ibtn), &(rc));
     MapWindowPoints(0x0, hwnd, &(rc), 0x2);
-    if ((dxyVCRSquare < 0x40))
+    if ((dxyVCRSquare < 64))
         goto L_0fd8;
     else
         goto L_0f8f;
 
 L_0f8f:
     dx = (rc.right - rc.left);
-    /* untranslated: dx = (((((sext16to32(dxyVCRBoard) / 0x2) + 0x8) - (words(loword((0x7 * dx)), signhiword(loword((0x7 * dx)))) / 0x2)) + 0xffe8) +
-     * loword(((dx + 0x8) * i))) */
+    /* untranslated: dx = (((((sext16to32(dxyVCRBoard) / 2) + 8) - (words(loword((0x7 * dx)), signhiword(loword((0x7 * dx)))) / 2)) - 24) + loword(((dx + 0x8) *
+     * i))) */
     dx = (dx - rc.left);
     goto L_0fdd;
 
 L_0fd8:
-    dx = 0x0;
+    dx = 0;
 
 L_0fdd:
-    OffsetRect(&(rc), dx, ((dxyVCRBoard + 0x10) - rc.top));
+    OffsetRect(&(rc), dx, ((dxyVCRBoard + 16) - rc.top));
     SetWindowPos(GetDlgItem(hwnd, ibtn), 0x0, rc.left, rc.top, 0x0, 0x0, 0x5);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1021:
-    if ((i < 0x7))
+    if ((i < 7))
         goto L_0f22;
     else
         goto L_102a;
@@ -870,7 +870,7 @@ L_1021:
 L_102a:
     EnableVCRButtons();
     StickyDlgPos(hwnd, &(ptStickyVCRDlg), 0x1);
-    fAnimate = 0x1;
+    fAnimate = 1;
     return 0x1;
 
 L_104e:
@@ -881,25 +881,25 @@ L_104e:
 L_1076:
     GetCursorPos(&(pt));
     ScreenToClient(hwnd, &(pt));
-    if ((pt.x <= 0x8))
+    if ((pt.x <= 8))
         goto L_10de;
     else
         goto L_109a;
 
 L_109a:
-    if ((pt.x >= (LOWORD(((dxyVCRSquare + 0x3) * 0xa)) + 0x8)))
+    if ((pt.x >= (LOWORD(((dxyVCRSquare + 3) * 0xa)) + 0x8)))
         goto L_10de;
     else
         goto L_10b0;
 
 L_10b0:
-    if ((pt.y < 0x8))
+    if ((pt.y < 8))
         goto L_10de;
     else
         goto L_10b9;
 
 L_10b9:
-    if ((pt.y >= (LOWORD(((dxyVCRSquare + 0x3) * 0xa)) + 0x8)))
+    if ((pt.y >= (LOWORD(((dxyVCRSquare + 3) * 0xa)) + 0x8)))
         goto L_10de;
     else
         goto L_10cf;
@@ -914,90 +914,99 @@ L_10de:
 L_10e4:
     pt.x = LOWORD(lParam);
     pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
-    /* untranslated: branch PtInRect(rgrcBuildSpin, words(pt.y, pt.x)) != 0x0 ? L_1138 : L_111e */
+    if ((PtInRect(rgrcBuildSpin, pt) != 0))
+        goto L_1138;
+    else
+        goto L_111e;
 
 L_111e:
-    /* untranslated: branch PtInRect(&rgrcBuildSpin[0x1], words(pt.y, pt.x)) == 0x0 ? L_1321 : L_1138 */
+    if ((PtInRect(&(rgrcBuildSpin[0x1]), pt) == 0))
+        goto L_1321;
+    else
+        goto L_1138;
 
 L_1138:
-    /* untranslated: branch PtInRect(rgrcBuildSpin, words(pt.y, pt.x)) == 0x0 ? L_1164 : L_1152 */
+    if ((PtInRect(rgrcBuildSpin, pt) == 0))
+        goto L_1164;
+    else
+        goto L_1152;
 
 L_1152:
-    iDir = 0xffff;
-    bt = 0x22;
-    prc = 0x5926;
+    iDir = -1;
+    bt = 34;
+    prc = rgrcBuildSpin;
     goto L_1173;
 
 L_1164:
-    iDir = 0x1;
-    bt = 0x23;
-    prc = 0x592e;
+    iDir = 1;
+    bt = 35;
+    prc = &(rgrcBuildSpin[0x1]);
 
 L_1173:
     iCur = viSpeedVCR;
-    if ((iCur <= 0x4))
+    if ((iCur <= 4))
         goto L_118a;
     else
         goto L_1182;
 
 L_1182:
-    iCur = 0x4;
+    iCur = 4;
     goto L_1198;
 
 L_118a:
-    if ((iCur >= 0x0))
+    if ((iCur >= 0))
         goto L_1198;
     else
         goto L_1193;
 
 L_1193:
-    iCur = 0x0;
+    iCur = 0;
 
 L_1198:
     hdc = GetDC(hwnd);
     bkMode = SetBkMode(hdc, OPAQUE);
     crBkSav = SetBkColor(hdc, crButtonFace);
-    SelectObject(hdc, rghfontArial8[0x1]);
+    SelectObject(hdc, rghfontArial8[1]);
     InitBtnTrack(&(btnt), hwnd, 0x0, prc, bt, 0x50, 0x0, 0x0, 0x0);
 
 L_11fd:
-    if ((FTrackBtn(&(btnt)) == 0x0))
+    if ((FTrackBtn(&(btnt)) == 0))
         goto L_1281;
     else
         goto L_1211;
 
 L_1211:
-    if ((iDir != 0xffff))
+    if ((iDir != -1))
         goto L_1223;
     else
         goto L_121a;
 
 L_121a:
-    if ((iCur > 0x0))
+    if ((iCur > 0))
         goto L_1235;
     else
         goto L_1223;
 
 L_1223:
-    if ((iDir != 0x1))
+    if ((iDir != 1))
         goto L_11fd;
     else
         goto L_122c;
 
 L_122c:
-    if ((iCur >= 0x4))
+    if ((iCur >= 4))
         goto L_11fd;
     else
         goto L_1235;
 
 L_1235:
     iCur = (iCur + iDir);
-    bt = _wsprintf(szWork, PszGetCompressedString(idsPlaybackSpeedD), (iCur + 0x1));
+    bt = _wsprintf(szWork, PszGetCompressedString(idsPlaybackSpeedD), (iCur + 1));
     TextOut(hdc, ptSpeedVCR.x, ptSpeedVCR.y, szWork, bt);
 
 L_1281:
     viSpeedVCR = iCur;
-    SelectObject(hdc, rghfontArial8[0x0]);
+    SelectObject(hdc, rghfontArial8[0]);
     SetBkColor(hdc, crBkSav);
     ReleaseDC(hwnd, hdc);
     if ((gd.fVCRTimer == 0x0))
@@ -1007,7 +1016,7 @@ L_1281:
 
 L_12bf:
     KillTimer(hwnd, 0xa6c);
-    if ((SetTimer(hwnd, 0xa6c, (0x23a - LOWORD((0x78 * viSpeedVCR))), 0x0) == 0x0))
+    if ((SetTimer(hwnd, 0xa6c, (0x23a - LOWORD((120 * viSpeedVCR))), 0x0) == 0x0))
         goto L_12fa;
     else
         goto L_12f4;
@@ -1026,27 +1035,27 @@ L_131b:
     return 0x1;
 
 L_1321:
-    pt.x = ((uint32_t)((pt.x + 0xfff8)) / (dxyVCRSquare + 0x3));
-    pt.y = ((uint32_t)((pt.y + 0xfff8)) / (dxyVCRSquare + 0x3));
-    if ((pt.x < 0xa))
+    pt.x = ((uint32_t)((pt.x + 0xfff8)) / (dxyVCRSquare + 3));
+    pt.y = ((uint32_t)((pt.y + 0xfff8)) / (dxyVCRSquare + 3));
+    if ((pt.x < 10))
         goto L_14ad;
     else
         goto L_1350;
 
 L_1350:
-    if ((pt.y < 0x2))
+    if ((pt.y < 2))
         goto L_14ad;
     else
         goto L_1359;
 
 L_1359:
-    if ((pt.y >= 0xa))
+    if ((pt.y >= 10))
         goto L_14ad;
     else
         goto L_1362;
 
 L_1362:
-    if ((viVCRFocus < 0x0))
+    if ((viVCRFocus < 0))
         goto L_14ad;
     else
         goto L_136c;
@@ -1059,17 +1068,15 @@ L_136c:
         goto L_1394;
 
 L_1394:
-    HIWORD(GlobalPD) = (LOWORD(rglpshdefSB[vrgtok[viVCRFocus].iplr]) + LOWORD(((vrgtok[viVCRFocus].ishdef + 0xfff0) * 0x93)));
-    /* untranslated: part[4:2](GlobalPD) = HIWORD(rglpshdefSB[vrgtok[viVCRFocus].iplr]) */
+    GlobalPD.lpshdef = &(rglpshdefSB[vrgtok[viVCRFocus].iplr][(vrgtok[viVCRFocus].ishdef - 0x10)]);
     goto L_1446;
 
 L_13f0:
-    HIWORD(GlobalPD) = (LOWORD(rglpshdef[vrgtok[viVCRFocus].iplr]) + LOWORD((vrgtok[viVCRFocus].ishdef * 0x93)));
-    /* untranslated: part[4:2](GlobalPD) = HIWORD(rglpshdef[vrgtok[viVCRFocus].iplr]) */
+    GlobalPD.lpshdef = &(rglpshdef[vrgtok[viVCRFocus].iplr][vrgtok[viVCRFocus].ishdef]);
 
 L_1446:
-    /* untranslated: part[6:2](GlobalPD) = 0x1 */
-    /* untranslated: part[10:2](GlobalPD) = 0x1 */
+    GlobalPD.fShowDamage = 1;
+    GlobalPD.fToken = 1;
     if ((vrgtok[viVCRFocus].iplr == idPlayer))
         goto L_147d;
     else
@@ -1083,30 +1090,30 @@ L_147d:
     t_merge_1480_0001 = 0x0;
 
 L_1480:
-    /* untranslated: part[8:2](GlobalPD) = t_merge_1480_0001 */
+    GlobalPD.fHideCounts = t_merge_1480_0001;
     Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));
     goto L_1930;
 
 L_14ad:
-    if ((pt.x < 0x0))
+    if ((pt.x < 0))
         goto L_1930;
     else
         goto L_14b6;
 
 L_14b6:
-    if ((pt.y < 0x0))
+    if ((pt.y < 0))
         goto L_1930;
     else
         goto L_14bf;
 
 L_14bf:
-    if ((pt.x >= 0xa))
+    if ((pt.x >= 10))
         goto L_1930;
     else
         goto L_14c8;
 
 L_14c8:
-    if ((pt.y >= 0xa))
+    if ((pt.y >= 10))
         goto L_1930;
     else
         goto L_14ce;
@@ -1122,7 +1129,7 @@ L_14d4:
 
 L_14f7:
     iSel = PopupVCRMenu(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), brc);
-    if ((iSel < 0x0))
+    if ((iSel < 0))
         goto L_1930;
     else
         goto L_1531;
@@ -1139,27 +1146,27 @@ L_1543:
         goto L_155c;
 
 L_155c:
-    if ((viVCRFocus != 0xffff))
+    if ((viVCRFocus != -1))
         goto L_157d;
     else
         goto L_1566;
 
 L_1566:
     vbrcVCRFocus = brc;
-    viVCRFocus = (vlpbdVCR->ctok + 0xffff);
+    viVCRFocus = (vlpbdVCR->ctok - 1);
 
 L_157d:
     i = viVCRFocus;
 
 L_1583:
-    i = (i + 0x1);
+    i = (i + 1);
     if ((i != vlpbdVCR->ctok))
         goto L_159f;
     else
         goto L_159a;
 
 L_159a:
-    i = 0x0;
+    i = 0;
 
 L_159f:
     if ((vrgtok[i].brc != brc))
@@ -1184,7 +1191,7 @@ L_15f0:
         goto L_15fb;
 
 L_15fb:
-    viVCRFocus = 0xffff;
+    viVCRFocus = -1;
 
 GoodSel:
     DrawVCR(0x0, 0xfffe, 0xffff);
@@ -1209,7 +1216,7 @@ L_1665:
         goto L_1671;
 
 L_1671:
-    i = 0x2;
+    i = 2;
     goto KillTime;
 
 L_167f:
@@ -1225,7 +1232,7 @@ L_1689:
         goto L_1693;
 
 L_1693:
-    i = (wParam + 0xff5f);
+    i = (wParam - 161);
     if ((gd.fVCRTimer == 0x0))
         goto L_16d3;
     else
@@ -1234,7 +1241,7 @@ L_1693:
 KillTime:
     KillTimer(hwnd, 0xa6c);
     gd.fVCRTimer = 0x0;
-    if ((i == 0x2))
+    if ((i == 2))
         goto L_1930;
     else
         goto L_16cd;
@@ -1242,48 +1249,48 @@ KillTime:
 L_16cd:
 
 L_16d3:
-    if ((GetAsyncKeyState(0x11) >= 0x0))
+    if ((GetAsyncKeyState(0x11) >= 0))
         goto L_16ec;
     else
         goto L_16e4;
 
 L_16e4:
-    dStep = 0x64;
+    dStep = 100;
     goto L_170a;
 
 L_16ec:
-    if ((GetAsyncKeyState(0x10) >= 0x0))
+    if ((GetAsyncKeyState(0x10) >= 0))
         goto L_1705;
     else
         goto L_16fd;
 
 L_16fd:
-    dStep = 0xa;
+    dStep = 10;
     goto L_170a;
 
 L_1705:
-    dStep = 0x1;
+    dStep = 1;
 
 L_170a:
-    fAnimate = 0x0;
+    fAnimate = 0;
     goto L_17dc;
 
 L_1716:
-    iStep = 0xffff;
+    iStep = -1;
     goto L_1807;
 
 L_171e:
     iStep = (viStepVCRCur - dStep);
-    if ((iStep >= 0xffff))
+    if ((iStep >= -1))
         goto L_1807;
     else
         goto L_1730;
 
 L_1730:
-    iStep = 0xffff;
+    iStep = -1;
 
 L_1738:
-    if ((SetTimer(hwnd, 0xa6c, (0x23a - LOWORD((0x78 * viSpeedVCR))), 0x0) == 0x0))
+    if ((SetTimer(hwnd, 0xa6c, (0x23a - LOWORD((120 * viSpeedVCR))), 0x0) == 0x0))
         goto L_1767;
     else
         goto L_1761;
@@ -1299,7 +1306,7 @@ L_176a:
     gd.fVCRTimer = t_merge_176a_0001;
 
 NextBtn:
-    if ((i != 0x3))
+    if ((i != 3))
         goto L_179d;
     else
         goto L_1791;
@@ -1309,7 +1316,7 @@ L_1791:
     goto L_17a6;
 
 L_179d:
-    iStep = (viStepVCRCur + 0x1);
+    iStep = (viStepVCRCur + 1);
 
 L_17a6:
     if ((iStep <= vcStepVCR))
@@ -1321,7 +1328,7 @@ L_17b1:
     iStep = vcStepVCR;
 
 L_17b7:
-    if ((viSpeedVCR >= 0x4))
+    if ((viSpeedVCR >= 4))
         goto L_17c7;
     else
         goto L_17c1;
@@ -1342,31 +1349,31 @@ L_17d0:
     goto L_1807;
 
 L_17dc:
-    if ((i == 0x0))
+    if ((i == 0))
         goto L_1716;
     else
         goto L_17e4;
 
 L_17e4:
-    if ((i == 0x1))
+    if ((i == 1))
         goto L_171e;
     else
         goto L_17ec;
 
 L_17ec:
-    if ((i == 0x2))
+    if ((i == 2))
         goto L_1738;
     else
         goto L_17f4;
 
 L_17f4:
-    if ((i == 0x3))
+    if ((i == 3))
         goto NextBtn;
     else
         goto L_17fc;
 
 L_17fc:
-    if ((i == 0x4))
+    if ((i == 4))
         goto L_17d0;
     else
         goto L_1807;
@@ -1494,16 +1501,16 @@ void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, 
     uint16_t dpShdef;
 
 L_193e:
-    dpArmor = 0x0;
-    dpShields = 0x0;
-    cshKill = 0x0;
+    dpArmor = 0;
+    dpShields = 0;
+    cshKill = 0;
     dv.dp = 0xffff;
     dpArmor = vrgdpVCR[itok];
-    i = 0x0;
+    i = 0;
     goto L_1991;
 
 L_198d:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1991:
     if ((i >= vlpbrVCR->ctok))
@@ -1534,13 +1541,13 @@ L_1a6d:
     cshT = (vrgtok[itok].csh - cshKill);
     /* untranslated: dpArmor = (uint32_t)(words(0x0, dpShdef) * sext16to32(cshT)) */
     /* untranslated: cshT = loword((int32_t)((uint32_t)(sext16to32(cshT) * words(0x0, dv.pctSh)) / 0x64)) */
-    if ((cshT > 0x0))
+    if ((cshT > 0))
         goto L_1b05;
     else
         goto L_1b00;
 
 L_1b00:
-    cshT = 0x1;
+    cshT = 1;
 
 L_1b05:
     /* untranslated: dpArmor = (dpArmor - (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, dv.pctDp)) / 0xa) * sext16to32(cshT)) /
@@ -1559,14 +1566,14 @@ L_1b82:
 
 L_1b8e:
     cshT = (vrgtok[itok].csh - cshKill);
-    if ((cshT >= 0x1))
+    if ((cshT >= 1))
         goto L_1c0b;
     else
         goto L_1bbb;
 
 L_1bbb:
-    cshT = 0x0;
-    dpArmor = 0x0;
+    cshT = 0;
+    dpArmor = 0;
     /* untranslated: dpShields = (uint32_t)(words(0x0, vrgtok[itok].dpShield) * words(0x0, vrgtok[itok].csh)) */
 
 L_1c0b:
@@ -1644,7 +1651,6 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     uint16_t t_merge_1c7d_0001;
     uint16_t t_merge_1fe0_0001;
     char     t_merge_2766_0001[96];
-    uint16_t t_merge_2766_0002;
     uint16_t t_merge_27d6_0001;
     uint16_t t_merge_2965_0001;
     uint8_t  t_merge_2d54_0001;
@@ -1665,7 +1671,7 @@ L_1c7a:
 
 L_1c7d:
     fCreatedDC = t_merge_1c7d_0001;
-    if ((fCreatedDC == 0x0))
+    if ((fCreatedDC == 0))
         goto L_1c95;
     else
         goto L_1c89;
@@ -1678,18 +1684,18 @@ L_1c95:
     bkMode = SetBkMode(hdc, TRANSPARENT);
     memset(rgfSeen, 0x0, 0x100);
     GetClientRect(hwndVCRDlg, &(rc));
-    if ((iStart != 0xfffe))
+    if ((iStart != -2))
         goto L_1d15;
     else
         goto L_1ce2;
 
 L_1ce2:
-    PatBlt(hdc, (dxyVCRBoard + 0xa), 0x0, ((rc.right - dxyVCRBoard) + 0xfff6), (dxyVCRBoard + 0x8), PATCOPY);
-    iStart = 0xffff;
+    PatBlt(hdc, (dxyVCRBoard + 10), 0x0, ((rc.right - dxyVCRBoard) + 0xfff6), (dxyVCRBoard + 8), PATCOPY);
+    iStart = -1;
 
 L_1d15:
     SelectObject(hdc, hbrButtonShadow);
-    if ((iStart != 0xffff))
+    if ((iStart != -1))
         goto L_33a4;
     else
         goto L_1d2a;
@@ -1698,45 +1704,45 @@ L_1d2a:
     PatBlt(hdc, 0x8, 0x8, dxyVCRBoard, 0x2, PATCOPY);
     PatBlt(hdc, 0x8, 0x8, 0x2, dxyVCRBoard, PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, 0x9, (dxyVCRBoard + 0x6), (dxyVCRBoard + 0xffff), 0x1, PATCOPY);
-    PatBlt(hdc, 0x8, (dxyVCRBoard + 0x7), dxyVCRBoard, 0x1, PATCOPY);
-    PatBlt(hdc, (dxyVCRBoard + 0x6), 0x9, 0x1, (dxyVCRBoard + 0xfffd), PATCOPY);
-    PatBlt(hdc, (dxyVCRBoard + 0x7), 0x8, 0x1, (dxyVCRBoard + 0xfffe), PATCOPY);
+    PatBlt(hdc, 0x9, (dxyVCRBoard + 6), (dxyVCRBoard - 1), 0x1, PATCOPY);
+    PatBlt(hdc, 0x8, (dxyVCRBoard + 7), dxyVCRBoard, 0x1, PATCOPY);
+    PatBlt(hdc, (dxyVCRBoard + 6), 0x9, 0x1, (dxyVCRBoard - 3), PATCOPY);
+    PatBlt(hdc, (dxyVCRBoard + 7), 0x8, 0x1, (dxyVCRBoard - 2), PATCOPY);
     SelectObject(hdc, hbrButtonShadow);
-    i = 0x1;
+    i = 1;
     goto L_1e7f;
 
 L_1e20:
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * i)) + 0x9), 0xa, 0x1, (dxyVCRBoard + 0xfffc), PATCOPY);
-    PatBlt(hdc, 0xa, (LOWORD(((dxyVCRSquare + 0x3) * i)) + 0x9), (dxyVCRBoard + 0xfffc), 0x1, PATCOPY);
-    i = (i + 0x1);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * i)) + 0x9), 0xa, 0x1, (dxyVCRBoard - 4), PATCOPY);
+    PatBlt(hdc, 0xa, (LOWORD(((dxyVCRSquare + 3) * i)) + 0x9), (dxyVCRBoard - 4), 0x1, PATCOPY);
+    i = (i + 1);
 
 L_1e7f:
-    if ((i < 0xa))
+    if ((i < 10))
         goto L_1e20;
     else
         goto L_1e89;
 
 L_1e89:
-    x = (dxyVCRBoard + 0xe);
-    y = 0x8;
-    SelectObject(hdc, rghfontArial8[0x1]);
-    c = _wsprintf(szWork, PszGetCompressedString(idsPhaseDDRoundDD), (viStepVCRCur + 0x2), (vcStepVCR + 0x2), (viRound + 0x1), (vcRound + 0x1));
+    x = (dxyVCRBoard + 14);
+    y = 8;
+    SelectObject(hdc, rghfontArial8[1]);
+    c = _wsprintf(szWork, PszGetCompressedString(idsPhaseDDRoundDD), (viStepVCRCur + 2), (vcStepVCR + 2), (viRound + 1), (vcRound + 1));
     TextOut(hdc, x, y, szWork, c);
-    y = (y + (dyArial8 + 0x4));
-    c = _wsprintf(szWork, PszGetCompressedString(idsPlaybackSpeedD), (viSpeedVCR + 0x1));
+    y = (y + (dyArial8 + 4));
+    c = _wsprintf(szWork, PszGetCompressedString(idsPlaybackSpeedD), (viSpeedVCR + 1));
     dx = LOWORD(GetTextExtent(hdc, szWork, c));
     TextOut(hdc, x, y, szWork, c);
     ptSpeedVCR.x = x;
     ptSpeedVCR.y = y;
-    SetRect(rgrcBuildSpin, (x + dx), y, ((x + dx) + 0xe), (y + 0xe));
-    rgrcBuildSpin[0x1] = rgrcBuildSpin[0x0];
+    SetRect(rgrcBuildSpin, (x + dx), y, ((x + dx) + 0xe), (y + 14));
+    rgrcBuildSpin[1] = rgrcBuildSpin[0];
     OffsetRect(&(rgrcBuildSpin[0x1]), 0xe, 0x0);
-    i = 0x0;
+    i = 0;
     goto L_2004;
 
 L_1fc5:
-    if ((i != 0x0))
+    if ((i != 0))
         goto L_1fdd;
     else
         goto L_1fd7;
@@ -1750,22 +1756,22 @@ L_1fdd:
 
 L_1fe0:
     DrawBtn(hdc, rgrcBuildSpin[i], (t_merge_1fe0_0001 | 0x20), 0x0, 0x0);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_2004:
-    if ((i < 0x2))
+    if ((i < 2))
         goto L_1fc5;
     else
         goto L_200e;
 
 L_200e:
-    if ((viStepVCRCur < 0x0))
+    if ((viStepVCRCur < 0))
         goto L_29a2;
     else
         goto L_2018;
 
 L_2018:
-    y = (y + (dyArial8 + 0x4));
+    y = (y + (dyArial8 + 4));
     psz = PszPlayerName(vrgtok[vlpbrVCR->itok].iplr, 0x1, 0x1, 0x1, 0x0, 0x0);
     TextOut(hdc, x, y, szWork, strlen(psz));
     y = (y + dyArial8);
@@ -1792,7 +1798,7 @@ L_214b:
 
 L_21b6:
     csh = vrgtok[vlpbrVCR->itok].csh;
-    if ((csh <= 0x1))
+    if ((csh <= 1))
         goto L_221c;
     else
         goto L_21e3;
@@ -1802,15 +1808,15 @@ L_21e3:
     goto L_224a;
 
 L_221c:
-    fstrcpy(szWork, &(lpshdef->hul.szClass));
+    fstrcpy(szWork, lpshdef->hul.szClass);
     c = strlen(szWork);
 
 L_224a:
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
     SetTextColor(hdc, crButtonText);
-    fJam = 0x0;
-    if ((vlpbrVCR->ctok <= 0x0))
+    fJam = 0;
+    if ((vlpbrVCR->ctok <= 0))
         goto L_291d;
     else
         goto L_228e;
@@ -1820,7 +1826,7 @@ L_228e:
     c = _wsprintf(szT, PszGetCompressedString(idsAttacksS), psz);
     TextOut(hdc, x, y, szT, c);
     y = (y + dyArial8);
-    if ((vlpbrVCR->rgkill[0x0].dv.dp == 0x0))
+    if ((vlpbrVCR->rgkill[0].dv.dp == 0x0))
         goto L_2342;
     else
         goto L_2332;
@@ -1843,7 +1849,7 @@ L_23f5:
 
 L_2472:
     csh = vrgtok[vlpbrVCR->itokAttack].csh;
-    if ((csh <= 0x1))
+    if ((csh <= 1))
         goto L_24de;
     else
         goto L_24a5;
@@ -1853,7 +1859,7 @@ L_24a5:
     goto L_250c;
 
 L_24de:
-    fstrcpy(szWork, &(lpshdef->hul.szClass));
+    fstrcpy(szWork, lpshdef->hul.szClass);
     c = strlen(szWork);
 
 L_250c:
@@ -1861,9 +1867,9 @@ L_250c:
     y = (y + dyArial8);
     SetTextColor(hdc, crButtonText);
     brcT = vrgtok[vlpbrVCR->itokAttack].brc;
-    dpArmor = 0x0;
-    dpShields = 0x0;
-    j = 0x0;
+    dpArmor = 0;
+    dpShields = 0;
+    j = 0;
     i = vlpbrVCR->ctok;
     goto L_26a4;
 
@@ -1875,7 +1881,7 @@ L_258e:
         goto L_25cd;
 
 L_25cd:
-    if ((fJam != 0x0))
+    if ((fJam != 0))
         goto L_2603;
     else
         goto L_25d7;
@@ -1899,10 +1905,10 @@ L_2642:
     dpShields = (dpShields + dpShT);
 
 L_269f:
-    i = (i - 0x1);
+    i = (i - 1);
 
 L_26a4:
-    if ((i > 0x0))
+    if ((i > 0))
         goto L_258e;
     else
         goto L_26ae;
@@ -1943,26 +1949,23 @@ L_273d:
 
 L_2746:
     t_merge_2766_0001 = szT;
-    /* untranslated: t_merge_2766_0002 = ss */
     goto L_2766;
 
 L_274f:
-    if ((j <= 0x0))
+    if ((j <= 0))
         goto L_2761;
     else
         goto L_2759;
 
 L_2759:
-    t_merge_2766_0001 = 0x1420;
-    /* untranslated: t_merge_2766_0002 = ds */
+    t_merge_2766_0001 = ",";
     goto L_2766;
 
 L_2761:
-    t_merge_2766_0001 = 0x1422;
-    /* untranslated: t_merge_2766_0002 = ds */
+    t_merge_2766_0001 = ".";
 
 L_2766:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageShieldsS), LOWORD(dpShields), HIWORD(dpShields), t_merge_2766_0001, t_merge_2766_0002);
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageShieldsS), LOWORD(dpShields), HIWORD(dpShields), t_merge_2766_0001);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
 
@@ -1979,7 +1982,7 @@ L_27ba:
         goto L_27c3;
 
 L_27c3:
-    if ((j <= 0x0))
+    if ((j <= 0))
         goto L_27d3;
     else
         goto L_27cd;
@@ -2032,33 +2035,33 @@ L_2853:
     y = (y + dyArial8);
 
 L_288d:
-    if ((j <= 0x0))
+    if ((j <= 0))
         goto L_291d;
     else
         goto L_2897;
 
 L_2897:
     c = _wsprintf(szWork, PszGetCompressedString(idsDestroyingDShip), j);
-    if ((j != 0x1))
+    if ((j != 1))
         goto L_28e4;
     else
         goto L_28c8;
 
 L_28c8:
     strcpy(szWork[c], ".");
-    c = (c + 0x1);
+    c = (c + 1);
     goto L_28fd;
 
 L_28e4:
     strcpy(szWork[c], "s.");
-    c = (c + 0x2);
+    c = (c + 2);
 
 L_28fd:
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
 
 L_291d:
-    if ((fJam == 0x0))
+    if ((fJam == 0))
         goto L_29a2;
     else
         goto L_2927;
@@ -2102,17 +2105,17 @@ L_29a2:
         goto L_29b0;
 
 L_29b0:
-    y = 0xc8;
+    y = 200;
     c = _wsprintf(szWork, PszGetCompressedString(idsSelectionDD), ((vbrcVCRFocus & 0xff) & 0xf), ((vbrcVCRFocus & 0xff) >> 0x4));
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
-    if ((viVCRFocus < 0x0))
+    if ((viVCRFocus < 0))
         goto L_339a;
     else
         goto L_2a1b;
 
 L_2a1b:
-    csh = 0x0;
+    csh = 0;
     psz = PszPlayerName(vrgtok[viVCRFocus].iplr, 0x1, 0x1, 0x1, 0x0, 0x0);
     c = strlen(psz);
     TextOut(hdc, x, y, szWork, c);
@@ -2134,13 +2137,13 @@ L_2b66:
     GetVCRStats(viVCRFocus, &(dpT), dv, &(dpShields), &(cshT));
     cshNew = cshT;
     cshT = (csh - cshT);
-    if ((csh > 0x1))
+    if ((csh > 1))
         goto L_2bc8;
     else
         goto L_2bbe;
 
 L_2bbe:
-    if ((cshT == 0x0))
+    if ((cshT == 0))
         goto L_2c01;
     else
         goto L_2bc8;
@@ -2150,11 +2153,11 @@ L_2bc8:
     goto L_2c2f;
 
 L_2c01:
-    fstrcpy(szWork, &(lpshdef->hul.szClass));
+    fstrcpy(szWork, lpshdef->hul.szClass);
     c = strlen(szWork);
 
 L_2c2f:
-    if ((cshT == 0x0))
+    if ((cshT == 0))
         goto L_2c5b;
     else
         goto L_2c39;
@@ -2166,9 +2169,9 @@ L_2c5b:
     SetTextColor(hdc, 0x7f0000);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
-    xT = (((uint32_t)((rc.right - (dxyVCRBoard + 0xe))) / 0x2) + x);
+    xT = (((uint32_t)((rc.right - (dxyVCRBoard + 0xe))) / 2) + x);
     SetTextColor(hdc, crButtonText);
-    if ((cshNew <= 0x0))
+    if ((cshNew <= 0))
         goto L_3317;
     else
         goto L_2cc1;
@@ -2180,11 +2183,11 @@ L_2cc1:
         goto L_2ce3;
 
 L_2ce3:
-    i = 0x0;
+    i = 0;
     goto L_2d12;
 
 L_2cec:
-    /* untranslated: i = (((part[25:2](vrgtok[viVCRFocus]) >> 0x8) & 0xf) + 0x1) */
+    i = (vrgtok[viVCRFocus].spd + 1);
 
 L_2d12:
     if ((vrgtok[viVCRFocus].initMin >= 0xff))
@@ -2219,13 +2222,13 @@ L_2e34:
 L_2e4b:
     csh = (csh - cshT);
     /* untranslated: csh = loword((int32_t)((uint32_t)(words(0x0, dv.pctSh) * sext16to32(csh)) / 0x64)) */
-    if ((csh > 0x0))
+    if ((csh > 0))
         goto L_2e8e;
     else
         goto L_2e88;
 
 L_2e88:
-    csh = 0x1;
+    csh = 1;
 
 L_2e8e:
     /* untranslated: LOWORD(dpT) = (words(dv.pctDp, 0x0) / 0x5) */
@@ -2242,7 +2245,7 @@ L_2eb6:
         goto L_2ec0;
 
 L_2ec0:
-    dpT = 0x1;
+    dpT = 1;
 
 L_2ecc:
     SetTextColor(hdc, 0x7f);
@@ -2304,14 +2307,14 @@ L_30ff:
         goto L_310d;
 
 L_310d:
-    /* untranslated: i = (((part[23:2](vrgtok[viVCRFocus]) >> 0x8) & 0xf) + 0x198) */
+    i = (vrgtok[viVCRFocus].mdTactic + 408);
     goto L_313c;
 
 L_3136:
-    i = 0x19e;
+    i = 414;
 
 L_313c:
-    if ((i != 0x198))
+    if ((i != 408))
         goto L_31ab;
     else
         goto L_3147;
@@ -2330,19 +2333,19 @@ L_31e7:
     y = (y + dyArial8);
 
 L_3207:
-    if ((i == 0x19e))
+    if ((i == 414))
         goto L_334f;
     else
         goto L_3212;
 
 L_3212:
     CchGetString(idsPrimayTargetS, szT);
-    /* untranslated: i = ((part[23:2](vrgtok[viVCRFocus]) & 0xf) + 0x190) */
+    i = (vrgtok[viVCRFocus].mdTarget1 + 400);
     c = _wsprintf(szWork, szT, PszGetCompressedString(i));
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
     CchGetString(idsSecondaryTargetS, szT);
-    /* untranslated: i = (((part[23:2](vrgtok[viVCRFocus]) >> 0x4) & 0xf) + 0x190) */
+    i = (vrgtok[viVCRFocus].mdTarget2 + 400);
     c = _wsprintf(szWork, szT, PszGetCompressedString(i));
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
@@ -2353,34 +2356,34 @@ L_3317:
     y = (y + LOWORD((0x5 * dyArial8)));
 
 L_334f:
-    SetRect(&(rc), x, (y + 0x4), ((x + dyArial8) + 0x4), ((y + dyArial8) + 0x8));
+    SetRect(&(rc), x, (y + 4), ((x + dyArial8) + 0x4), ((y + dyArial8) + 0x8));
     DrawBtn(hdc, &(rc), 0x8, 0x0, "?");
 
 L_339a:
-    iStart = 0x0;
-    iEnd = 0x63;
+    iStart = 0;
+    iEnd = 99;
 
 L_33a4:
     i = iStart;
     goto L_39e8;
 
 L_33ae:
-    x = ((uint32_t)(i) % 0xa);
-    y = ((uint32_t)(i) / 0xa);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), (dxyVCRSquare + 0x2), 0x1, BLACKNESS);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x1, (dxyVCRSquare + 0x2), BLACKNESS);
-    PatBlt(hdc, (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + dxyVCRSquare) + 0x1), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x1, (dxyVCRSquare + 0x2),
+    x = ((uint32_t)(i) % 10);
+    y = ((uint32_t)(i) / 10);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), (dxyVCRSquare + 2), 0x1, BLACKNESS);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x1, (dxyVCRSquare + 2), BLACKNESS);
+    PatBlt(hdc, (((LOWORD(((dxyVCRSquare + 3) * x)) + 0xa) + dxyVCRSquare) + 0x1), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x1, (dxyVCRSquare + 2),
            BLACKNESS);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + dxyVCRSquare) + 0x1), (dxyVCRSquare + 0x2), 0x1,
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (((LOWORD(((dxyVCRSquare + 3) * y)) + 0xa) + dxyVCRSquare) + 0x1), (dxyVCRSquare + 2), 0x1,
            BLACKNESS);
-    ctok = 0x0;
-    ibmp = 0xffff;
-    dpT = 0x0;
-    j = 0x0;
+    ctok = 0;
+    ibmp = -1;
+    dpT = 0;
+    j = 0;
     goto L_34d2;
 
 L_34cd:
-    j = (j + 0x1);
+    j = (j + 1);
 
 L_34d2:
     if ((j >= vlpbdVCR->ctok))
@@ -2401,10 +2404,10 @@ L_352b:
         goto L_3548;
 
 L_3548:
-    ctok = (ctok + 0x1);
+    ctok = (ctok + 1);
     LOWORD(dpT) = (LOWORD(dpT) + vrgtok[j].csh);
     HIWORD(dpT) = (HIWORD(dpT) + 0x0);
-    if ((ibmp == 0xffff))
+    if ((ibmp == -1))
         goto L_3582;
     else
         goto L_3576;
@@ -2454,22 +2457,22 @@ L_36ae:
     goto L_36c1;
 
 L_36bb:
-    csh = 0x7fff;
+    csh = 32767;
 
 L_36c1:
-    if ((ctok <= 0x0))
+    if ((ctok <= 0))
         goto L_3807;
     else
         goto L_36ca;
 
 L_36ca:
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), (dxyVCRSquare + 0x2), 0x1, BLACKNESS);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x1, (dxyVCRSquare + 0x2), BLACKNESS);
-    PatBlt(hdc, (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + dxyVCRSquare) + 0x1), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x1, (dxyVCRSquare + 0x2),
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), (dxyVCRSquare + 2), 0x1, BLACKNESS);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x1, (dxyVCRSquare + 2), BLACKNESS);
+    PatBlt(hdc, (((LOWORD(((dxyVCRSquare + 3) * x)) + 0xa) + dxyVCRSquare) + 0x1), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x1, (dxyVCRSquare + 2),
            BLACKNESS);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + dxyVCRSquare) + 0x1), (dxyVCRSquare + 0x2), 0x1,
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (((LOWORD(((dxyVCRSquare + 3) * y)) + 0xa) + dxyVCRSquare) + 0x1), (dxyVCRSquare + 2), 0x1,
            BLACKNESS);
-    if ((dxyVCRSquare >= 0x40))
+    if ((dxyVCRSquare >= 64))
         goto L_37c7;
     else
         goto L_37c1;
@@ -2482,12 +2485,12 @@ L_37c7:
     t_merge_37ca_0001 = 0x0;
 
 L_37ca:
-    DrawFleetBitmap(0x0, hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xb), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xb), 0x0, ibmp, ctok, t_merge_37ca_0001,
-                    ibmpRace, csh);
+    DrawFleetBitmap(0x0, hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xb), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xb), 0x0, ibmp, ctok, t_merge_37ca_0001, ibmpRace,
+                    csh);
     goto L_3840;
 
 L_3807:
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), (dxyVCRSquare + 0x2), (dxyVCRSquare + 0x2), BLACKNESS);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), (dxyVCRSquare + 2), (dxyVCRSquare + 2), BLACKNESS);
 
 L_3840:
     if (((vbrcVCRFocus & 0xff) != ((((y & 0xf) << 0x4) | (x & 0xf)) & 0xff)))
@@ -2496,13 +2499,13 @@ L_3840:
         goto L_3871;
 
 L_3871:
-    if ((viVCRFocus == 0xffff))
+    if ((viVCRFocus == -1))
         goto L_38e7;
     else
         goto L_387b;
 
 L_387b:
-    if ((viVCRFocus < 0x0))
+    if ((viVCRFocus < 0))
         goto L_39e3;
     else
         goto L_3885;
@@ -2521,14 +2524,14 @@ L_38ca:
 
 L_38e7:
     hbrSav = SelectObject(hdc, hbrBlue);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), (dxyVCRSquare + 0x1), 0x2, PATCOPY);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x2, (dxyVCRSquare + 0x1), PATCOPY);
-    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa), ((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + dxyVCRSquare), (dxyVCRSquare + 0x1), 0x2, PATCOPY);
-    PatBlt(hdc, ((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + dxyVCRSquare), (LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa), 0x2, (dxyVCRSquare + 0x1), PATCOPY);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), (dxyVCRSquare + 1), 0x2, PATCOPY);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x2, (dxyVCRSquare + 1), PATCOPY);
+    PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xa), ((LOWORD(((dxyVCRSquare + 3) * y)) + 0xa) + dxyVCRSquare), (dxyVCRSquare + 1), 0x2, PATCOPY);
+    PatBlt(hdc, ((LOWORD(((dxyVCRSquare + 3) * x)) + 0xa) + dxyVCRSquare), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xa), 0x2, (dxyVCRSquare + 1), PATCOPY);
     SelectObject(hdc, hbrSav);
 
 L_39e3:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_39e8:
     if ((i <= iEnd))
@@ -2537,7 +2540,7 @@ L_39e8:
         goto L_39f4;
 
 L_39f4:
-    if ((vlpbrVCR->ctok <= 0x0))
+    if ((vlpbrVCR->ctok <= 0))
         goto L_3a0d;
     else
         goto L_3a02;
@@ -2548,7 +2551,7 @@ L_3a02:
 L_3a0d:
     SetBkMode(hdc, bkMode);
     SelectObject(hdc, hbrSav);
-    if ((fCreatedDC == 0x0))
+    if ((fCreatedDC == 0))
         goto L_3a38;
     else
         goto L_3a2c;
@@ -2667,8 +2670,8 @@ void AnimateAttack(HDC hdc) {
 
 L_3ac2:
     grfWeapon = 0x0;
-    fKill = 0x0;
-    if ((viStepVCRCur < 0x0))
+    fKill = 0;
+    if ((viStepVCRCur < 0))
         goto L_4512;
     else
         goto L_3adc;
@@ -2679,17 +2682,17 @@ L_3ae2:
     ptokSrc = &(vrgtok[vlpbrVCR->itok]);
     x = (ptokSrc->brc & 0xf);
     y = (ptokSrc->brc >> 0x4);
-    ptSrc.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    ptSrc.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    ptTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    /* untranslated: ptBottom.x = (((loword(((dxyVCRSquare + 0x3) * x)) + 0xa) + ss:[bp-0x76]) + 0x1) */
-    ptRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    /* untranslated: ptLeft.y = (((loword(((dxyVCRSquare + 0x3) * y)) + 0xa) + ss:[bp-0x76]) + 0x1) */
-    ptBottom.y = (((uint32_t)(dxyVCRSquare) / 0x3) + ptLeft.y);
-    ptTop.y = (ptLeft.y - ((uint32_t)(dxyVCRSquare) / 0x3));
-    ptLeft.x = (ptBottom.x - ((uint32_t)(dxyVCRSquare) / 0x3));
-    ptRight.x = (((uint32_t)(dxyVCRSquare) / 0x3) + ptBottom.x);
-    iHit = 0x0;
+    ptSrc.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptSrc.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    /* untranslated: ptBottom.x = (((loword(((dxyVCRSquare + 0x3) * x)) + 10) + ss:[bp-0x76]) + 1) */
+    ptRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    /* untranslated: ptLeft.y = (((loword(((dxyVCRSquare + 0x3) * y)) + 10) + ss:[bp-0x76]) + 1) */
+    ptBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptLeft.y);
+    ptTop.y = (ptLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
+    ptLeft.x = (ptBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
+    ptRight.x = (((uint32_t)(dxyVCRSquare) / 3) + ptBottom.x);
+    iHit = 0;
 
 LNextTarget:
     grfWeapon = vlpbrVCR->rgkill[iHit].grfWeapon;
@@ -2699,14 +2702,14 @@ LNextTarget:
         goto L_3c51;
 
 L_3c51:
-    fKill = 0x1;
+    fKill = 1;
 
 L_3c56:
-    iFrame = (iHit + 0x1);
+    iFrame = (iHit + 1);
     goto L_3c66;
 
 L_3c62:
-    iFrame = (iFrame + 0x1);
+    iFrame = (iFrame + 1);
 
 L_3c66:
     if ((iFrame >= vlpbrVCR->ctok))
@@ -2730,7 +2733,7 @@ L_3cc8:
         goto L_3d10;
 
 L_3d10:
-    fKill = 0x1;
+    fKill = 1;
 
 L_3d18:
     ptokAttack = &(vrgtok[vlpbrVCR->rgkill[iHit].itok]);
@@ -2738,42 +2741,42 @@ L_3d18:
     y = (ptokAttack->brc >> 0x4);
     dx = ((ptokSrc->brc & 0xf) - x);
     dy = ((ptokSrc->brc >> 0x4) - y);
-    ptDest.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    ptDest.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    ptDestTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    /* untranslated: ptDestBottom.x = (((loword(((dxyVCRSquare + 0x3) * x)) + 0xa) + ss:[bp-0x76]) + 0x1) */
-    ptDestRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    /* untranslated: ptDestLeft.y = (((loword(((dxyVCRSquare + 0x3) * y)) + 0xa) + ss:[bp-0x76]) + 0x1) */
-    ptDestBottom.y = (((uint32_t)(dxyVCRSquare) / 0x3) + ptDestLeft.y);
-    ptDestTop.y = (ptDestLeft.y - ((uint32_t)(dxyVCRSquare) / 0x3));
-    ptDestLeft.x = (ptDestBottom.x - ((uint32_t)(dxyVCRSquare) / 0x3));
-    ptDestRight.x = (((uint32_t)(dxyVCRSquare) / 0x3) + ptDestBottom.x);
+    ptDest.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDestTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    /* untranslated: ptDestBottom.x = (((loword(((dxyVCRSquare + 0x3) * x)) + 10) + ss:[bp-0x76]) + 1) */
+    ptDestRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    /* untranslated: ptDestLeft.y = (((loword(((dxyVCRSquare + 0x3) * y)) + 10) + ss:[bp-0x76]) + 1) */
+    ptDestBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptDestLeft.y);
+    ptDestTop.y = (ptDestLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
+    ptDestLeft.x = (ptDestBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
+    ptDestRight.x = (((uint32_t)(dxyVCRSquare) / 3) + ptDestBottom.x);
     iHit = iFrame;
-    if ((dx != 0x0))
+    if ((dx != 0))
         goto L_3e93;
     else
         goto L_3e8a;
 
 L_3e8a:
-    if ((dy == 0x0))
+    if ((dy == 0))
         goto LFinishUp;
     else
         goto L_3e93;
 
 L_3e93:
-    if ((dx == 0x0))
+    if ((dx == 0))
         goto L_3ec2;
     else
         goto L_3e9c;
 
 L_3e9c:
-    if ((abs(dx) != 0x1))
+    if ((abs(dx) != 1))
         goto L_3f37;
     else
         goto L_3eaf;
 
 L_3eaf:
-    if ((abs(dy) <= 0x2))
+    if ((abs(dy) <= 2))
         goto L_3f37;
     else
         goto L_3ec2;
@@ -2783,7 +2786,7 @@ L_3ec2:
     ptBeam1.y = ptRight.y;
     ptBeam2.x = ptLeft.x;
     ptBeam2.y = ptLeft.y;
-    if ((dy <= 0x0))
+    if ((dy <= 0))
         goto L_3eec;
     else
         goto L_3ee3;
@@ -2800,7 +2803,7 @@ L_3eec:
 L_3ef2:
     ptTorp.x = t_merge_3ef2_0001;
     ptTorp.y = t_merge_3ef2_0002;
-    if ((dy <= 0x0))
+    if ((dy <= 0))
         goto L_3f0a;
     else
         goto L_3f01;
@@ -2817,7 +2820,7 @@ L_3f0a:
 L_3f10:
     ptRay2.x = t_merge_3f10_0001;
     ptRay2.y = t_merge_3f10_0002;
-    if ((dy <= 0x0))
+    if ((dy <= 0))
         goto L_3f28;
     else
         goto L_3f1f;
@@ -2837,19 +2840,19 @@ L_3f2e:
     goto L_40bf;
 
 L_3f37:
-    if ((dy == 0x0))
+    if ((dy == 0))
         goto L_3f66;
     else
         goto L_3f40;
 
 L_3f40:
-    if ((abs(dy) != 0x1))
+    if ((abs(dy) != 1))
         goto L_3fdb;
     else
         goto L_3f53;
 
 L_3f53:
-    if ((abs(dx) <= 0x2))
+    if ((abs(dx) <= 2))
         goto L_3fdb;
     else
         goto L_3f66;
@@ -2859,7 +2862,7 @@ L_3f66:
     ptBeam1.y = ptTop.y;
     ptBeam2.x = ptBottom.x;
     ptBeam2.y = ptBottom.y;
-    if ((dx <= 0x0))
+    if ((dx <= 0))
         goto L_3f90;
     else
         goto L_3f87;
@@ -2876,7 +2879,7 @@ L_3f90:
 L_3f96:
     ptTorp.x = t_merge_3f96_0001;
     ptTorp.y = t_merge_3f96_0002;
-    if ((dx <= 0x0))
+    if ((dx <= 0))
         goto L_3fae;
     else
         goto L_3fa5;
@@ -2893,7 +2896,7 @@ L_3fae:
 L_3fb4:
     ptRay1.x = t_merge_3fb4_0001;
     ptRay1.y = t_merge_3fb4_0002;
-    if ((dx <= 0x0))
+    if ((dx <= 0))
         goto L_3fcc;
     else
         goto L_3fc3;
@@ -2913,13 +2916,13 @@ L_3fd2:
     goto L_40bf;
 
 L_3fdb:
-    if ((dx <= 0x0))
+    if ((dx <= 0))
         goto L_4053;
     else
         goto L_3fe4;
 
 L_3fe4:
-    if ((dy <= 0x0))
+    if ((dy <= 0))
         goto L_4014;
     else
         goto L_3fed;
@@ -2949,7 +2952,7 @@ L_4038:
     goto L_40bf;
 
 L_4053:
-    if ((dy <= 0x0))
+    if ((dy <= 0))
         goto L_4083;
     else
         goto L_405c;
@@ -3002,7 +3005,7 @@ L_40e7:
     LineTo(hdc, ptDest.x, ptDest.y);
     MoveTo(hdc, ptBeam2.x, ptBeam2.y);
     LineTo(hdc, ptDest.x, ptDest.y);
-    DrawIcon(hdc, (ptDest.x + 0xfff0), (ptDest.y + 0xfff0), rghiconVCR[0x0]);
+    DrawIcon(hdc, (ptDest.x - 16), (ptDest.y - 16), rghiconVCR[0]);
 
 L_413f:
     if (((grfWeapon & 0x4) == 0x0))
@@ -3011,7 +3014,7 @@ L_413f:
         goto L_414d;
 
 L_414d:
-    if ((fAnimate == 0x0))
+    if ((fAnimate == 0))
         goto L_43b4;
     else
         goto L_4157;
@@ -3070,12 +3073,12 @@ L_41f9:
     ti.dwSize = 0xc;
     TimerCount(ti);
     dwTickLast = ti.dwmsSinceStart;
-    iFrame = 0x0;
+    iFrame = 0;
     goto L_438e;
 
 L_424b:
-    BitBlt(hdcMem, 0x0, 0x0, 0x20, 0x20, hdc, (ptTorp.x + 0xfff0), (ptTorp.y + 0xfff0), SRCCOPY);
-    DrawIcon(hdc, (ptTorp.x + 0xfff0), (ptTorp.y + 0xfff0), rghiconVCR[((iFrame & 0x3) + 0x3)]);
+    BitBlt(hdcMem, 0x0, 0x0, 0x20, 0x20, hdc, (ptTorp.x - 16), (ptTorp.y - 16), SRCCOPY);
+    DrawIcon(hdc, (ptTorp.x - 16), (ptTorp.y - 16), rghiconVCR[((iFrame & 0x3) + 0x3)]);
 
 L_42a1:
     TimerCount(ti);
@@ -3098,29 +3101,29 @@ L_42cc:
         goto L_42d4;
 
 L_42d4:
-    if ((HIWORD(dwTickCur) < ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((0xa * viSpeedVCR))))))
+    if ((HIWORD(dwTickCur) < ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((10 * viSpeedVCR))))))
         goto L_42a1;
     else
         goto L_42f4;
 
 L_42f4:
-    if ((HIWORD(dwTickCur) > ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((0xa * viSpeedVCR))))))
+    if ((HIWORD(dwTickCur) > ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((10 * viSpeedVCR))))))
         goto L_4301;
     else
         goto L_42f9;
 
 L_42f9:
-    if ((LOWORD(dwTickCur) < ((LOWORD(dwTickLast) + 0x23) - LOWORD((0xa * viSpeedVCR)))))
+    if ((LOWORD(dwTickCur) < ((LOWORD(dwTickLast) + 0x23) - LOWORD((10 * viSpeedVCR)))))
         goto L_42a1;
     else
         goto L_4301;
 
 L_4301:
     dwTickLast = dwTickCur;
-    BitBlt(hdc, (ptTorp.x + 0xfff0), (ptTorp.y + 0xfff0), 0x20, 0x20, hdcMem, 0x0, 0x0, SRCCOPY);
+    BitBlt(hdc, (ptTorp.x - 16), (ptTorp.y - 16), 0x20, 0x20, hdcMem, 0x0, 0x0, SRCCOPY);
     ptTorp.x = (ptBase.x - LOWORD((int32_t)(((uint32_t)(((uint32_t)(dxFrame) * (uint32_t)(iFrame))) / (uint32_t)(cFrame)))));
     ptTorp.y = (ptBase.y - LOWORD((int32_t)(((uint32_t)(((uint32_t)(dyFrame) * (uint32_t)(iFrame))) / (uint32_t)(cFrame)))));
-    iFrame = (iFrame + 0x1);
+    iFrame = (iFrame + 1);
 
 L_438e:
     if ((iFrame < cFrame))
@@ -3140,7 +3143,7 @@ L_43b4:
         goto L_43c2;
 
 L_43c2:
-    DrawIcon(hdc, (ptDest.x + 0xfff0), (ptDest.y + 0xfff0), rghiconVCR[0x1]);
+    DrawIcon(hdc, (ptDest.x - 16), (ptDest.y - 16), rghiconVCR[1]);
 
 LFinishUp:
     if ((iHit < vlpbrVCR->ctok))
@@ -3151,11 +3154,11 @@ LFinishUp:
 L_43e9:
 
 L_43ef:
-    iFrame = 0x0;
+    iFrame = 0;
     goto L_43fb;
 
 L_43f7:
-    iFrame = (iFrame + 0x1);
+    iFrame = (iFrame + 1);
 
 L_43fb:
     if ((iFrame >= vlpbrVCR->ctok))
@@ -3179,9 +3182,9 @@ L_4435:
 L_4438:
     fKill = t_merge_4438_0001;
     ptokAttack = &(vrgtok[vlpbrVCR->rgkill[iFrame].itok]);
-    ptDest.x = (((LOWORD(((ptokAttack->brc & 0xf) * (dxyVCRSquare + 0x3))) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    ptDest.y = (((LOWORD(((ptokAttack->brc >> 0x4) * (dxyVCRSquare + 0x3))) + 0xa) + ((uint32_t)(dxyVCRSquare) / 0x2)) + 0x1);
-    if ((fKill == 0x0))
+    ptDest.x = (((LOWORD(((ptokAttack->brc & 0xf) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.y = (((LOWORD(((ptokAttack->brc >> 0x4) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    if ((fKill == 0))
         goto L_44f9;
     else
         goto L_44f3;
@@ -3194,11 +3197,11 @@ L_44f9:
     t_merge_44fc_0001 = 0x0;
 
 L_44fc:
-    DrawIcon(hdc, (ptDest.x + 0xfff0), (ptDest.y + 0xfff0), rghiconVCR[t_merge_44fc_0001]);
+    DrawIcon(hdc, (ptDest.x - 16), (ptDest.y - 16), rghiconVCR[t_merge_44fc_0001]);
     goto L_43f7;
 
 L_450c:
-    fAnimate = 0x0;
+    fAnimate = 0;
 
 L_4512:
     return;
@@ -3221,8 +3224,8 @@ int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {
     uint16_t t_merge_4582_0001;
 
 L_4518:
-    c = 0x0;
-    iChecked = 0xffff;
+    c = 0;
+    iChecked = -1;
     psz = rgch;
     if ((brc != vrgtok[((*(vlpbrVCR + 0x4) >> 0x8) & 0xff)].brc))
         goto L_457f;
@@ -3238,11 +3241,11 @@ L_457f:
 
 L_4582:
     fAttack = t_merge_4582_0001;
-    i = 0x0;
+    i = 0;
     goto L_4591;
 
 L_458d:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_4591:
     if ((i >= vlpbdVCR->ctok))
@@ -3263,7 +3266,7 @@ L_45d2:
         goto L_45ee;
 
 L_45ee:
-    if ((PszPlayerName(vrgtok[i].iplr, 0x0, 0x0, 0x0, 0x0, 0x0) != 0x57a4))
+    if ((PszPlayerName(vrgtok[i].iplr, 0x0, 0x0, 0x0, 0x0, 0x0) != szWork))
         goto L_4632;
     else
         goto L_462c;
@@ -3289,30 +3292,30 @@ L_46c3:
 
 L_471a:
     cch = (cch + _wsprintf(&(szWork[cch]), " %s * %d", (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), vrgtok[i].csh));
-    if ((fAttack == 0x0))
+    if ((fAttack == 0))
         goto L_481e;
     else
         goto L_4766;
 
 L_4766:
-    if ((vlpbrVCR->ctok <= 0x0))
+    if ((vlpbrVCR->ctok <= 0))
         goto L_481e;
     else
         goto L_4774;
 
 L_4774:
-    if ((viStepVCRCur < 0x0))
+    if ((viStepVCRCur < 0))
         goto L_481e;
     else
         goto L_477e;
 
 L_477e:
-    cKilled = 0x0;
-    j = 0x0;
+    cKilled = 0;
+    j = 0;
     goto L_4792;
 
 L_478d:
-    j = (j + 0x1);
+    j = (j + 1);
 
 L_4792:
     if ((j >= vlpbrVCR->ctok))
@@ -3330,7 +3333,7 @@ L_47cc:
     cKilled = (cKilled + vlpbrVCR->rgkill[j].cshKill);
 
 L_47f2:
-    if ((cKilled <= 0x0))
+    if ((cKilled <= 0))
         goto L_481e;
     else
         goto L_47fc;
@@ -3345,7 +3348,7 @@ L_481e:
         goto L_4837;
 
 L_4837:
-    if ((c >= 0x28))
+    if ((c >= 40))
         goto L_4897;
     else
         goto L_483d;
@@ -3356,7 +3359,7 @@ L_4843:
     rgsz[c] = psz;
     rgid[c] = i;
     strcpy(psz, szWork);
-    psz = (psz + (cch + 0x1));
+    psz = (psz + (cch + 1));
     if ((i != viVCRFocus))
         goto L_4890;
     else
@@ -3366,10 +3369,10 @@ L_4889:
     iChecked = c;
 
 L_4890:
-    c = (c + 0x1);
+    c = (c + 1);
 
 L_4897:
-    if ((c != 0x0))
+    if ((c != 0))
         goto L_48a6;
     else
         goto L_48a0;
@@ -3379,7 +3382,7 @@ L_48a0:
 
 L_48a6:
     iSel = PopupMenu(hwnd, x, y, c, 0x0, rgsz, iChecked, 0x1);
-    if ((iSel != 0xffff))
+    if ((iSel != -1))
         goto L_48de;
     else
         goto L_48d8;
@@ -3397,12 +3400,12 @@ void EnableVCRButtons() {
     uint16_t t_merge_4965_0001;
 
 L_48f6:
-    i = 0xa1;
+    i = 161;
     goto L_4931;
 
 L_4907:
     GetDlgItem(hwndVCRDlg, i);
-    if ((viStepVCRCur <= 0xffff))
+    if ((viStepVCRCur <= -1))
         goto L_4924;
     else
         goto L_491e;
@@ -3416,16 +3419,16 @@ L_4924:
 
 L_4927:
     /* untranslated: call EnableWindow(callresult(HWND), t_merge_4927_0001) -> callresult(int16_t) */
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_4931:
-    if ((i < 0xa3))
+    if ((i < 163))
         goto L_4907;
     else
         goto L_493b;
 
 L_493b:
-    i = 0xa3;
+    i = 163;
     goto L_496f;
 
 L_4943:
@@ -3444,16 +3447,16 @@ L_4962:
 
 L_4965:
     /* untranslated: call EnableWindow(callresult(HWND), t_merge_4965_0001) -> callresult(int16_t) */
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_496f:
-    if ((i < 0xa6))
+    if ((i < 166))
         goto L_4943;
     else
         goto L_4979;
 
 L_4979:
-    if ((viStepVCRCur != 0xffff))
+    if ((viStepVCRCur != -1))
         goto L_4999;
     else
         goto L_4983;

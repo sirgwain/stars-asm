@@ -157,6 +157,50 @@ func TestResolveStorageResolvesNestedPartThroughUnionContext(t *testing.T) {
 	}
 }
 
+// TestResolveStorageUsesSameBlockGlobalDiscriminatorAssign verifies global
+// discriminator writes select the following union-field accesses in the block.
+func TestResolveStorageUsesSameBlockGlobalDiscriminatorAssign(t *testing.T) {
+	fx := testfixture.Stars(t)
+	globalPD := fx.SDB.GetGlobal("GlobalPD")
+	if globalPD == nil {
+		t.Fatal("GlobalPD not found")
+	}
+	enumType := fx.SDB.GetEnum("GrPopupType")
+	if enumType == nil {
+		t.Fatal("GrPopupType not found")
+	}
+	grPopupPath, ok := appendSymbolFieldPath(&symresolve.SymbolRoot{Symbol: globalPD}, []string{"grPopup"})
+	if !ok {
+		t.Fatal("GlobalPD.grPopup not resolved")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("ShipCommandProc"))
+	block := Block{Effects: []Effect{
+		&Assign{
+			Dst: &SymbolRef{Path: grPopupPath},
+			Src: &Const{TypeInfo: enumType, U64: 11},
+		},
+		&Assign{
+			Dst: &Part{
+				Base:     &Global{GlobalVar: globalPD},
+				ByteOff:  6,
+				Width:    2,
+				TypeInfo: typeinfo.U16,
+			},
+			Src: &Const{TypeInfo: typeinfo.U16, U64: 1},
+		},
+	}}
+
+	gotBlock, changed := (&resolveStorageProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, block)
+	if !changed {
+		t.Fatal("ProcessBlock changed = false, want true")
+	}
+	got := FormatEffect(gotBlock.Effects[1])
+	want := "GlobalPD.fShowDamage = 0x1"
+	if got != want {
+		t.Fatalf("effect = %q, want %q", got, want)
+	}
+}
+
 // TestConsumeAddressExprResolvesZeroWidthExactFieldAddress verifies address
 // expressions at a field boundary name the field instead of a zero-width part.
 func TestConsumeAddressExprResolvesZeroWidthExactFieldAddress(t *testing.T) {
@@ -292,6 +336,55 @@ func TestResolveStorageCollapsesKnownConstSegmentByteArrayOffset(t *testing.T) {
 	want := "&acTUT[(0x40 * iChunk)]"
 	if gotText != want {
 		t.Fatalf("expr = %q, want %q", gotText, want)
+	}
+}
+
+// TestConsumeAddressExprFoldsByteArrayIndexOffsets verifies byte table indexes
+// keep residual byte terms in the source-level array index.
+func TestConsumeAddressExprFoldsByteArrayIndexOffsets(t *testing.T) {
+	int16Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true}
+	table := &typeinfo.GlobalVar{
+		Name: "rgbrcStart",
+		Type: &typeinfo.Array{Elem: typeinfo.U8, Count: 136},
+	}
+	base := &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: table}}
+	i := &Local{FunctionVar: typeinfo.FunctionVar{Name: "i", Type: int16Type, BPOffset: -0xa}}
+	ibrc := &Local{FunctionVar: typeinfo.FunctionVar{Name: "ibrc", Type: int16Type, BPOffset: 0xa}}
+
+	tests := []struct {
+		name string
+		addr AddressExpr
+		want string
+	}{
+		{
+			name: "signed byte residual",
+			addr: AddressExpr{
+				Base:   base,
+				Offset: -1,
+				Terms:  []ScaledTerm{{Expr: i, Scale: 1}},
+			},
+			want: "rgbrcStart[(i - 0x1)]",
+		},
+		{
+			name: "multiple byte terms",
+			addr: AddressExpr{
+				Base:  base,
+				Terms: []ScaledTerm{{Expr: i, Scale: 1}, {Expr: ibrc, Scale: 1}},
+			},
+			want: "rgbrcStart[(i + ibrc)]",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := (&machineConverter{}).consumeAddressExpr(tt.addr, 1)
+			if !ok {
+				t.Fatal("consumeAddressExpr ok = false, want true")
+			}
+			if gotText := FormatExpr(got); gotText != tt.want {
+				t.Fatalf("expr = %q, want %q", gotText, tt.want)
+			}
+		})
 	}
 }
 

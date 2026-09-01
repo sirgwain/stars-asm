@@ -1,0 +1,53 @@
+/*
+GetTechLevelCost  (research)
+  addr: 001c:1dba  len=252
+  sig:  int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr)
+  params:
+    int16_t          iTech          [BP+0x6]
+    int16_t          iLevel         [BP+0x8]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    int16_t          cTech          [BP-0xa]
+    int16_t          i              [BP-0x8]
+    int32_t          lCost          [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_1dba:
+    cTech = 0
+    i = 0
+    goto L_1def
+
+L_1dd0:
+    cTech = (cTech + sext8to16(rgplr[iplr].rgTech[i]))
+    i = (i + 1)
+
+L_1def:
+    branch i < 6 ? L_1dd0 : L_1df8
+
+L_1df8:
+    LOWORD(lCost) = (loword((0xa * cTech)) + LOWORD(rglTechCost[iLevel]))
+    HIWORD(lCost) = (signhiword(loword((0xa * cTech))) + HIWORD(rglTechCost[iLevel]))
+    i = (GetRaceStat(rgplr[iplr], (iTech + 8)) - 1)
+    branch i == 0 ? L_1e83 : L_1e40
+
+L_1e40:
+    branch i >= 0 ? L_1e6a : L_1e49
+
+L_1e49:
+    lCost = (lCost + (lCost - (int32_t)(lCost >> 0x2)))
+    goto L_1e83
+
+L_1e6a:
+    lCost = (int32_t)(lCost / 2)
+
+L_1e83:
+    branch game.fSlowTech == 0x0 ? L_1ea7 : L_1e93
+
+L_1e93:
+    lCost = (int32_t)(lCost * 2)
+
+L_1ea7:
+
+L_1eb0:
+    return lCost

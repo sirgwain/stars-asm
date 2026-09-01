@@ -16,20 +16,20 @@ FLookupOrbitingXfer  (util)
   stats: blocks=0  labels=0
 */
 L_24fa:
-    branch cFleet > 0x0 ? L_2513 : L_250d
+    branch cFleet > 0 ? L_2513 : L_250d
 
 L_250d:
     return 0x0
 
 L_2513:
-    branch cFleet == 0x0 ? L_2606 : L_251d
+    branch cFleet == 0 ? L_2606 : L_251d
 
 L_251d:
-    i = 0x0
+    i = 0
     goto L_2529
 
 L_2525:
-    i = (i + 0x1)
+    i = (i + 1)
 
 L_2529:
     branch i >= cFleet ? L_2606 : L_2534
@@ -48,7 +48,7 @@ L_2573:
     branch lpfl->id == idSkip ? L_2525 : L_2581
 
 L_2581:
-    branch idSkip == 0xffff ? L_25ad : L_258a
+    branch idSkip == -1 ? L_25ad : L_258a
 
 L_258a:
     branch lpfl->pt.x != sel.pt.x ? L_2525 : L_25a4
@@ -58,8 +58,8 @@ L_25a4:
 
 L_25ad:
     t_25ad = iNth
-    iNth = (iNth - 0x1)
-    branch t_25ad != 0x0 ? L_2525 : L_25bc
+    iNth = (iNth - 1)
+    branch t_25ad != 0 ? L_2525 : L_25bc
 
 L_25bc:
     branch pxf == 0x0 ? L_25fd : L_25c5
@@ -89,8 +89,8 @@ L_2661:
 
 L_266a:
     t_266a = iNth
-    iNth = (iNth - 0x1)
-    branch t_266a != 0x0 ? L_26c0 : L_2679
+    iNth = (iNth - 1)
+    branch t_266a != 0 ? L_26c0 : L_2679
 
 L_2679:
     branch pxf == 0x0 ? L_26ba : L_2682

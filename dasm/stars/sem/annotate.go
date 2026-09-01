@@ -79,8 +79,6 @@ func (r *Result) annotateMemory(mem machine.MemoryAccess, ann Annotation) bool {
 	return true
 }
 
-
-
 // localAnnotation creates an assembly annotation for a resolved local or parameter.
 func localAnnotation(l symresolve.LocalAccess) Annotation {
 	local := l.Local
@@ -336,15 +334,6 @@ func annotatedAccessText(ann Annotation) string {
 		}
 		return "[?]"
 	}
-}
-
-// constValue returns the uint value of a constant machine value.
-func constValue(v machine.Value) uint {
-	c, ok := v.(*machine.Const)
-	if !ok {
-		return 0
-	}
-	return c.Val
 }
 
 // memoryAnnotationKey returns the stable key for a machine memory annotation.

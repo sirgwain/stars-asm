@@ -9,8 +9,8 @@ L_1252:
     goto L_14e5;
 
 L_1261:
-    iAbout1st = 0xfff5;
-    iAboutPartial = 0x0;
+    iAbout1st = -11;
+    iAboutPartial = 0;
     SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0);
     return 0x1;
@@ -22,27 +22,27 @@ L_12a9:
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
-    iAboutPartial = (iAboutPartial + 0x2);
+    iAboutPartial = (iAboutPartial + 2);
     if ((iAboutPartial < dyArial8))
         goto L_130c;
     else
         goto L_12f1;
 
 L_12f1:
-    iAboutPartial = 0x0;
-    iAbout1st = (iAbout1st + 0x1);
-    if ((iAbout1st <= 0x4e))
+    iAboutPartial = 0;
+    iAbout1st = (iAbout1st + 1);
+    if ((iAbout1st <= 78))
         goto L_130c;
     else
         goto L_1306;
 
 L_1306:
-    iAbout1st = 0xfff5;
+    iAbout1st = -11;
 
 L_130c:
     GetClientRect(hwndCtl, &(rc));
     hdc = GetDC(hwndCtl);
-    SelectObject(hdc, rghfontArial8[0x1]);
+    SelectObject(hdc, rghfontArial8[1]);
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -53,32 +53,32 @@ L_130c:
     goto L_1391;
 
 L_138d:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1391:
-    if ((i >= (iAbout1st + 0xa)))
+    if ((i >= (iAbout1st + 10)))
         goto L_13fa;
     else
         goto L_139f;
 
 L_139f:
-    if ((i < 0x0))
+    if ((i < 0))
         goto L_13d7;
     else
         goto L_13a8;
 
 L_13a8:
-    if ((i >= 0x4d))
+    if ((i >= 77))
         goto L_13d7;
     else
         goto L_13b1;
 
 L_13b1:
-    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 0x277)), 0xffff);
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), 0xffff);
     goto L_13e3;
 
 L_13d7:
-    if ((i >= 0x4d))
+    if ((i >= 77))
         goto L_13fa;
     else
         goto L_13dd;
@@ -90,7 +90,7 @@ L_13e3:
     goto L_138d;
 
 L_13fa:
-    rc.bottom = 0x3e8;
+    rc.bottom = 1000;
     FillRect(hdc, &(rc), hbrButtonFace);
     SelectClipRgn(hdc, 0x0);
     ReleaseDC(hwnd, hdc);

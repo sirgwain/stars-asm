@@ -28,20 +28,20 @@ L_001e:
     goto L_068b;
 
 L_002d:
-    x = 0x4;
-    i = 0x0;
+    x = 4;
+    i = 0;
     goto L_0211;
 
 L_003a:
-    /* untranslated: itb = sext8to16(byte cs:[i]) */
+    itb = (uint16_t)(vrgTBBtn[i]);
     dx = DxOfBtn(itb);
-    if ((itb > 0xfffd))
+    if ((itb > -3))
         goto L_0207;
     else
         goto L_005d;
 
 L_005d:
-    if ((itb != 0xfffd))
+    if ((itb != -3))
         goto L_0207;
     else
         goto L_0066;
@@ -49,13 +49,13 @@ L_005d:
 L_0066:
     hwndTBRadar = CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((uint32_t)(((0x1c - dyArial8) + 0xfff8)) / 0x2) + 0x4), dx, (LOWORD((0xb * dyArial8)) + 0x1c),
                                hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[0x1], 0x0);
-    iSel = 0xffff;
-    j = 0x0;
+    SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[1], 0x0);
+    iSel = -1;
+    j = 0;
     goto L_0137;
 
 L_00e3:
-    pct = (0x64 - LOWORD((0xa * j)));
+    pct = (100 - LOWORD((0xa * j)));
     if ((pct != vpctRadarView))
         goto L_0102;
     else
@@ -67,10 +67,10 @@ L_00fc:
 L_0102:
     _wsprintf(szWork, PCTDPCTPCT, pct);
     /* untranslated: call SendMessage(hwndTBRadar, CB_ADDSTRING, 0x0, words(ds, 0x57a4)) -> callresult(LRESULT) */
-    j = (j + 0x1);
+    j = (j + 1);
 
 L_0137:
-    if ((j < 0xa))
+    if ((j < 10))
         goto L_00e3;
     else
         goto L_0140;
@@ -94,10 +94,10 @@ L_01df:
 
 L_0207:
     x = (x + dx);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0211:
-    if ((i >= 0x1d))
+    if ((i >= 29))
         goto L_06de;
     else
         goto L_0217;
@@ -111,7 +111,7 @@ L_021d:
     ptBtn.x = pt.x;
     ptBtn.y = pt.y;
     itb = ItbFromPpt(&(ptBtn));
-    if ((itb < 0x0))
+    if ((itb < 0))
         goto L_06de;
     else
         goto L_026e;
@@ -120,13 +120,13 @@ L_026e:
 
 L_0274:
     fDown = FIsButtonDown(itb);
-    if ((fDown == 0x0))
+    if ((fDown == 0))
         goto L_02a0;
     else
         goto L_028b;
 
 L_028b:
-    if ((itb > 0x5))
+    if ((itb > 5))
         goto L_02a0;
     else
         goto L_0294;
@@ -136,31 +136,31 @@ L_0294:
     goto L_06de;
 
 L_02a0:
-    if ((itb == 0xd))
+    if ((itb == 13))
         goto L_02c4;
     else
         goto L_02a9;
 
 L_02a9:
-    if ((itb == 0xf))
+    if ((itb == 15))
         goto L_02c4;
     else
         goto L_02b2;
 
 L_02b2:
-    if ((itb == 0x10))
+    if ((itb == 16))
         goto L_02c4;
     else
         goto L_02bb;
 
 L_02bb:
-    if ((itb != 0x8))
+    if ((itb != 8))
         goto L_02e5;
     else
         goto L_02c4;
 
 L_02c4:
-    if ((fDown != 0x0))
+    if ((fDown != 0))
         goto L_02d3;
     else
         goto L_02cd;
@@ -181,39 +181,39 @@ L_02e5:
     rc.left = ptBtn.x;
     rc.top = ptBtn.y;
     rc.right = (rc.left + dx);
-    rc.bottom = (rc.top + 0x1c);
+    rc.bottom = (rc.top + 28);
     hdc = GetDC(hwnd);
     SelectPalette(hdc, vhpal, 0x0);
     RealizePalette(hdc);
     SetCapture(hwnd);
-    fCur = 0xffff;
+    fCur = -1;
 
 L_0341:
-    if ((FGetMouseMove(&(pt)) == 0x0))
+    if ((FGetMouseMove(&(pt)) == 0))
         goto L_0399;
     else
         goto L_0355;
 
 L_0355:
-    /* untranslated: fInside = PtInRect(&rc, words(pt.y, pt.x)) */
+    fInside = PtInRect(&(rc), pt);
     if ((fCur == fInside))
         goto L_0341;
     else
         goto L_0375;
 
 L_0375:
-    /* untranslated: call DrawBitmapButton(hdc, words(ptBtn.y, ptBtn.x), itb, (fDown + fInside)) -> callresult(void) */
+    DrawBitmapButton(hdc, ptBtn, itb, (fDown + fInside));
     fCur = fInside;
 
 L_0399:
     ReleaseCapture();
-    if ((fInside == 0x0))
+    if ((fInside == 0))
         goto L_03d3;
     else
         goto L_03a7;
 
 L_03a7:
-    if ((fDown != 0x0))
+    if ((fDown != 0))
         goto L_03b6;
     else
         goto L_03b0;
@@ -230,7 +230,7 @@ L_03b9:
     fDown = FIsButtonDown(itb);
 
 L_03d3:
-    if ((itb > 0x5))
+    if ((itb > 5))
         goto L_03fd;
     else
         goto L_03dc;
@@ -241,7 +241,7 @@ L_03dc:
     goto L_0414;
 
 L_03fd:
-    /* untranslated: call DrawBitmapButton(hdc, words(ptBtn.y, ptBtn.x), itb, fDown) -> callresult(void) */
+    DrawBitmapButton(hdc, ptBtn, itb, fDown);
 
 L_0414:
     ReleaseDC(hwnd, hdc);
@@ -276,25 +276,25 @@ L_047e:
     vptTbLast.x = pt.x;
     vptTbLast.y = pt.y;
     itb = ItbFromPpt(&(pt));
-    if ((itb < 0x0))
+    if ((itb < 0))
         goto L_04f8;
     else
         goto L_04a3;
 
 L_04a3:
-    ids = (itb + 0x16a);
+    ids = (itb + 362);
 
 LShowTip:
     rc.left = pt.x;
     rc.right = (DxOfBtn(itb) + rc.left);
     rc.top = pt.y;
-    rc.bottom = 0x1c;
+    rc.bottom = 28;
     MapWindowPoints(hwndTb, 0x0, &(rc), 0x2);
     ShowTooltip(ids, &(rc));
     goto L_06de;
 
 L_04f8:
-    if ((itb != 0xfffd))
+    if ((itb != -3))
         goto L_06de;
     else
         goto L_0501;
@@ -339,8 +339,8 @@ L_05c5:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     PatBlt(hdc, 0x0, 0x0, rc.right, 0x1, BLACKNESS);
-    PatBlt(hdc, 0x0, (rc.bottom + 0xffff), rc.right, 0x1, BLACKNESS);
-    if ((iWindowLayout != 0x0))
+    PatBlt(hdc, 0x0, (rc.bottom - 1), rc.right, 0x1, BLACKNESS);
+    if ((iWindowLayout != 0))
         goto L_0650;
     else
         goto L_0631;
@@ -430,34 +430,34 @@ void DrawToolbar(HDC hdc, RECT *prc) {
 L_06f0:
     SelectPalette(hdc, vhpal, 0x0);
     RealizePalette(hdc);
-    pt.x = 0x4;
-    pt.y = 0x4;
-    i = 0x0;
+    pt.x = 4;
+    pt.y = 4;
+    i = 0;
     goto L_077d;
 
 L_0723:
-    /* untranslated: ibtn = sext8to16(byte cs:[i]) */
-    if ((ibtn < 0x0))
+    ibtn = (uint16_t)(vrgTBBtn[i]);
+    if ((ibtn < 0))
         goto L_0762;
     else
         goto L_0738;
 
 L_0738:
-    /* untranslated: call DrawBitmapButton(hdc, words(pt.y, pt.x), sext8to16(byte cs:[i]), FIsButtonDown(ibtn)) -> callresult(void) */
+    DrawBitmapButton(hdc, pt, (uint16_t)(vrgTBBtn[i]), FIsButtonDown(ibtn));
     goto L_076b;
 
 L_0762:
-    if ((ibtn <= 0xfffd))
+    if ((ibtn <= -3))
         goto L_076b;
     else
         goto L_076b;
 
 L_076b:
     pt.x = (pt.x + DxOfBtn(ibtn));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_077d:
-    if ((i < 0x1d))
+    if ((i < 29))
         goto L_0723;
     else
         goto L_0786;
@@ -475,7 +475,7 @@ void DrawBitmapButton(HDC hdc, POINT pt, int16_t ibtn, int16_t fDown) {
 
 L_078c:
     dx = DxOfBtn(ibtn);
-    if ((dx >= 0x18))
+    if ((dx >= 24))
         goto L_07b2;
     else
         goto L_07ac;
@@ -489,7 +489,7 @@ L_07b2:
 
 L_07b5:
     dxDraw = t_merge_07b5_0001;
-    if ((fDown == 0x0))
+    if ((fDown == 0))
         goto L_07d0;
     else
         goto L_07c1;
@@ -505,49 +505,49 @@ L_07d0:
 
 L_07dc:
     SelectObject(hdc, hbrTopLeft);
-    PatBlt(hdc, (pt.x + 0x2), pt.y, (dx + 0xfffc), 0x1, PATCOPY);
-    PatBlt(hdc, pt.x, (pt.y + 0x2), 0x1, 0x18, PATCOPY);
-    PatBlt(hdc, (pt.x + 0x1), (pt.y + 0x1), 0x1, 0x1, PATCOPY);
-    PatBlt(hdc, (pt.x + 0x1), (pt.y + 0x1a), 0x1, 0x1, PATCOPY);
+    PatBlt(hdc, (pt.x + 2), pt.y, (dx - 4), 0x1, PATCOPY);
+    PatBlt(hdc, pt.x, (pt.y + 2), 0x1, 0x18, PATCOPY);
+    PatBlt(hdc, (pt.x + 1), (pt.y + 1), 0x1, 0x1, PATCOPY);
+    PatBlt(hdc, (pt.x + 1), (pt.y + 26), 0x1, 0x1, PATCOPY);
     SelectObject(hdc, hbrBotRight);
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x1b), (dx + 0xfffc), 0x1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xffff), (pt.y + 0x2), 0x1, 0x18, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 0x1), 0x1, 0x1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 0x1a), 0x1, 0x1, PATCOPY);
+    PatBlt(hdc, (pt.x + 2), (pt.y + 27), (dx - 4), 0x1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xffff), (pt.y + 2), 0x1, 0x18, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 1), 0x1, 0x1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 26), 0x1, 0x1, PATCOPY);
     SelectObject(hdc, hbrButtonFace);
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x1), (dx + 0xfffc), 0x1, PATCOPY);
-    PatBlt(hdc, (pt.x + 0x1), (pt.y + 0x2), 0x1, 0x18, PATCOPY);
-    if ((fDown == 0x0))
+    PatBlt(hdc, (pt.x + 2), (pt.y + 1), (dx - 4), 0x1, PATCOPY);
+    PatBlt(hdc, (pt.x + 1), (pt.y + 2), 0x1, 0x18, PATCOPY);
+    if ((fDown == 0))
         goto L_0a38;
     else
         goto L_098d;
 
 L_098d:
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x2), (dx + 0xfffc), fDown, PATCOPY);
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x2), fDown, 0x18, PATCOPY);
-    if ((fDown != 0x1))
+    PatBlt(hdc, (pt.x + 2), (pt.y + 2), (dx - 4), fDown, PATCOPY);
+    PatBlt(hdc, (pt.x + 2), (pt.y + 2), fDown, 0x18, PATCOPY);
+    if ((fDown != 1))
         goto L_0a8a;
     else
         goto L_09e3;
 
 L_09e3:
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x1a), (dx + 0xfffc), 0x1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 0x2), 0x1, 0x18, PATCOPY);
+    PatBlt(hdc, (pt.x + 2), (pt.y + 26), (dx - 4), 0x1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 2), 0x1, 0x18, PATCOPY);
 
 L_0a38:
-    PatBlt(hdc, (pt.x + 0x2), (pt.y + 0x19), (dx + 0xfffc), 0x2, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffd), (pt.y + 0x2), 0x2, 0x18, PATCOPY);
+    PatBlt(hdc, (pt.x + 2), (pt.y + 25), (dx - 4), 0x2, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xfffd), (pt.y + 2), 0x2, 0x18, PATCOPY);
 
 L_0a8a:
-    DibBlt(hdc, ((pt.x + 0x2) + fDown), ((pt.y + 0x2) + fDown), dxDraw, 0x17, hdibToolbar, LOWORD((0x18 * ibtn)), 0x0, dxDraw, 0x17, 0xcc0020);
-    if ((fDown <= 0x1))
+    DibBlt(hdc, ((pt.x + 2) + fDown), ((pt.y + 2) + fDown), dxDraw, 0x17, hdibToolbar, LOWORD((24 * ibtn)), 0x0, dxDraw, 0x17, 0xcc0020);
+    if ((fDown <= 1))
         goto L_0b0c;
     else
         goto L_0ad7;
 
 L_0ad7:
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 0x1a), 0x1, 0x1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 26), 0x1, 0x1, PATCOPY);
 
 L_0b0c:
     return;
@@ -559,20 +559,20 @@ int16_t ItbFromPpt(POINT *ppt) {
     int16_t x;
 
 L_0b12:
-    x = 0x4;
-    if ((ppt->x < 0x4))
+    x = 4;
+    if ((ppt->x < 4))
         goto L_0b43;
     else
         goto L_0b2b;
 
 L_0b2b:
-    if ((ppt->y < 0x4))
+    if ((ppt->y < 4))
         goto L_0b43;
     else
         goto L_0b37;
 
 L_0b37:
-    if ((ppt->y < 0x20))
+    if ((ppt->y < 32))
         goto L_0b49;
     else
         goto L_0b43;
@@ -581,11 +581,11 @@ L_0b43:
     return 0xffff;
 
 L_0b49:
-    i = 0x0;
+    i = 0;
     goto L_0b9c;
 
 L_0b51:
-    /* untranslated: dx = DxOfBtn(sext8to16(byte cs:[i])) */
+    dx = DxOfBtn((uint16_t)(vrgTBBtn[i]));
     if (((x + dx) <= ppt->x))
         goto L_0b92;
     else
@@ -593,15 +593,15 @@ L_0b51:
 
 L_0b76:
     ppt->x = x;
-    ppt->y = 0x4;
-    /* untranslated: return sext8to16(byte cs:[i]) */
+    ppt->y = 4;
+    return (uint16_t)(vrgTBBtn[i]);
 
 L_0b92:
     x = (x + dx);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0b9c:
-    if ((i < 0x1d))
+    if ((i < 29))
         goto L_0b51;
     else
         goto L_0ba5;
@@ -612,19 +612,19 @@ L_0ba5:
 
 int16_t DxOfBtn(int16_t itb) {
 L_0bb2:
-    if ((itb < 0x0))
+    if ((itb < 0))
         goto L_0be5;
     else
         goto L_0bc4;
 
 L_0bc4:
-    if ((itb == 0xd))
+    if ((itb == 13))
         goto L_0bdf;
     else
         goto L_0bcd;
 
 L_0bcd:
-    if ((itb == 0xf))
+    if ((itb == 15))
         goto L_0bdf;
     else
         goto L_0bd6;
@@ -636,7 +636,7 @@ L_0bdf:
     return 0xb;
 
 L_0be5:
-    if ((itb != 0xffff))
+    if ((itb != -1))
         goto L_0bf4;
     else
         goto L_0bee;
@@ -645,7 +645,7 @@ L_0bee:
     return 0x6;
 
 L_0bf4:
-    if ((itb != 0xfffe))
+    if ((itb != -2))
         goto L_0c03;
     else
         goto L_0bfd;
@@ -657,7 +657,7 @@ L_0c03:
     goto L_0c22;
 
 L_0c09:
-    if ((dyArial8 >= 0x10))
+    if ((dyArial8 >= 16))
         goto L_0c19;
     else
         goto L_0c13;
@@ -669,7 +669,7 @@ L_0c19:
     return 0x46;
 
 L_0c22:
-    if ((itb == 0xfffd))
+    if ((itb == -3))
         goto L_0c09;
     else
         goto L_0c2d;
@@ -839,7 +839,7 @@ L_0db6:
 
 L_0dd1:
     goto L_167a;
-    if ((fDown == 0x0))
+    if ((fDown == 0))
         goto L_167a;
     else
         goto L_0dda;
@@ -852,7 +852,7 @@ L_0de0:
     grbitNew = 0x10;
 
 LBitDiddle:
-    if ((fDown == 0x0))
+    if ((fDown == 0))
         goto L_0e0a;
     else
         goto L_0e00;
@@ -881,7 +881,7 @@ L_0e13:
     grbitNew = 0x800;
     goto LBitDiddle;
     grbit = 0x1;
-    c = 0x0;
+    c = 0;
     if (((grbitScan & 0x40) != 0x0))
         goto L_0e6c;
     else
@@ -891,11 +891,11 @@ L_0e66:
     grbitScanMines = 0x0;
 
 L_0e6c:
-    i = 0x4fe;
+    i = 1278;
     goto L_0f0d;
 
 L_0e74:
-    if ((i != 0x4fe))
+    if ((i != 1278))
         goto L_0ea7;
     else
         goto L_0e7e;
@@ -936,24 +936,24 @@ L_0ebc:
     HIWORD(rgid[c]) = 0x0;
 
 L_0ecd:
-    CchGetString(i, (0x5844 + LOWORD(((i + 0xfb02) * 0x1e))));
-    c = (c + 0x1);
+    CchGetString(i, (0x5844 + LOWORD(((i - 1278) * 0x1e))));
+    c = (c + 1);
     rgszScan[c] = (0x5844 + LOWORD(((i + 0xfb02) * 0x1e)));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0f0d:
-    if ((i <= 0x4ff))
+    if ((i <= 1279))
         goto L_0e74;
     else
         goto L_0f17;
 
 L_0f17:
-    rgid[c] = 0x0;
-    szWork[0xfa] = 0xff;
-    szWork[0xfb] = 0x0;
-    c = (c + 0x1);
-    rgszScan[c] = 0x589e;
-    i = 0x0;
+    rgid[c] = 0;
+    szWork[250] = -1;
+    szWork[251] = 0;
+    c = (c + 1);
+    rgszScan[c] = &(szWork[0xfa]);
+    i = 0;
     goto L_0fba;
 
 L_0f50:
@@ -972,13 +972,13 @@ L_0f6b:
 L_0f6f:
     LOWORD(rgid[c]) = t_merge_0f6f_0001;
     HIWORD(rgid[c]) = 0x0;
-    CchGetString((i + 0x500), &(szWork[(0x1e * i)]));
-    c = (c + 0x1);
+    CchGetString((i + 1280), &(szWork[(30 * i)]));
+    c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD((0x1e * i)));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_0fba:
-    if ((i < 0x4))
+    if ((i < 4))
         goto L_0f50;
     else
         goto L_0fc3;
@@ -987,7 +987,7 @@ L_0fc3:
     GetCursorPos(&(pt));
     ScreenToClient(hwndTb, &(pt));
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, 0xfffe, 0x0);
-    if ((iSel == 0xffff))
+    if ((iSel == -1))
         goto L_167a;
     else
         goto L_100d;
@@ -995,13 +995,13 @@ L_0fc3:
 L_100d:
 
 L_1013:
-    if ((iSel >= 0x3))
+    if ((iSel >= 3))
         goto L_1037;
     else
         goto L_101c;
 
 L_101c:
-    if ((iSel != 0x0))
+    if ((iSel != 0))
         goto L_102e;
     else
         goto L_1025;
@@ -1014,7 +1014,7 @@ L_102e:
     grbitScanMines = 0x0;
 
 L_1037:
-    iSel = (iSel - 0x3);
+    iSel = (iSel - 3);
     grbitScanMines = (grbitScanMines ^ (0x1 << iSel));
 
 L_1047:
@@ -1033,39 +1033,39 @@ L_1059:
 L_105e:
     InvalidateRect(hwndTb, 0x0, 0x1);
     goto L_1644;
-    c = 0x0;
-    i = 0x4fb;
+    c = 0;
+    i = 1275;
     goto L_10d9;
 
 L_1083:
-    rgid[c] = 0x0;
-    CchGetString(i, &(szWork[(0x14 * (i - 0x4fb))]));
-    c = (c + 0x1);
+    rgid[c] = 0;
+    CchGetString(i, &(szWork[(0x14 * (i - 1275))]));
+    c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD(((i + 0xfb05) * 0x14)));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_10d9:
-    if ((i <= 0x4fd))
+    if ((i <= 1277))
         goto L_1083;
     else
         goto L_10e3;
 
 L_10e3:
-    rgid[c] = 0x0;
-    szWork[0xc8] = 0xff;
-    szWork[0xc9] = 0x0;
-    c = (c + 0x1);
-    rgszScan[c] = 0x586c;
-    ish = 0x0;
+    rgid[c] = 0;
+    szWork[200] = -1;
+    szWork[201] = 0;
+    c = (c + 1);
+    rgszScan[c] = &(szWork[0xc8]);
+    ish = 0;
     grbitSh = 0x1;
     goto L_1135;
 
 L_1125:
-    ish = (ish + 0x1);
+    ish = (ish + 1);
     grbitSh = (grbitSh * 0x2);
 
 L_1135:
-    if ((ish >= 0x10))
+    if ((ish >= 16))
         goto L_11ab;
     else
         goto L_113e;
@@ -1092,14 +1092,14 @@ L_1172:
 L_1176:
     LOWORD(rgid[c]) = t_merge_1176_0001;
     HIWORD(rgid[c]) = 0x0;
-    c = (c + 0x1);
+    c = (c + 1);
     rgszScan[c] = rgshdef[ish].hul.szClass;
 
 L_11ab:
     GetCursorPos(&(pt));
     ScreenToClient(hwndTb, &(pt));
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, 0xfffe, 0x0);
-    if ((iSel == 0xffff))
+    if ((iSel == -1))
         goto L_167a;
     else
         goto L_11f8;
@@ -1107,13 +1107,13 @@ L_11ab:
 L_11f8:
 
 L_11fe:
-    if ((iSel >= 0x4))
+    if ((iSel >= 4))
         goto L_1251;
     else
         goto L_1208;
 
 L_1208:
-    if ((iSel != 0x0))
+    if ((iSel != 0))
         goto L_121b;
     else
         goto L_1212;
@@ -1123,7 +1123,7 @@ L_1212:
     goto L_1233;
 
 L_121b:
-    if ((iSel != 0x1))
+    if ((iSel != 1))
         goto L_122d;
     else
         goto L_1225;
@@ -1150,8 +1150,8 @@ L_1241:
 L_1248:
 
 L_1251:
-    iSel = (iSel - 0x4);
-    ish = 0x0;
+    iSel = (iSel - 4);
+    ish = 0;
     goto L_1294;
 
 L_125e:
@@ -1161,8 +1161,8 @@ L_125e:
         goto L_127c;
 
 L_127c:
-    iSel = (iSel - 0x1);
-    if ((iSel < 0x0))
+    iSel = (iSel - 1);
+    if ((iSel < 0))
         goto L_129d;
     else
         goto L_128a;
@@ -1170,10 +1170,10 @@ L_127c:
 L_128a:
 
 L_1290:
-    ish = (ish + 0x1);
+    ish = (ish + 1);
 
 L_1294:
-    if ((ish < 0x10))
+    if ((ish < 16))
         goto L_125e;
     else
         goto L_129d;
@@ -1206,30 +1206,30 @@ L_12f1:
 L_12f7:
     goto L_1644;
     grbit = 0x1;
-    c = 0x0;
-    i = 0x4fb;
+    c = 0;
+    i = 1275;
     goto L_1361;
 
 L_130c:
-    rgid[c] = 0x0;
-    CchGetString(i, (0x586c + LOWORD(((i + 0xfb05) * 0x19))));
-    c = (c + 0x1);
+    rgid[c] = 0;
+    CchGetString(i, (0x586c + LOWORD(((i - 1275) * 0x19))));
+    c = (c + 1);
     rgszScan[c] = (0x586c + LOWORD(((i + 0xfb05) * 0x19)));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_1361:
-    if ((i <= 0x4fd))
+    if ((i <= 1277))
         goto L_130c;
     else
         goto L_136b;
 
 L_136b:
-    rgid[c] = 0x0;
-    szWork[0x12c] = 0xff;
-    szWork[0x12d] = 0x0;
-    c = (c + 0x1);
-    rgszScan[c] = 0x58d0;
-    i = 0x0;
+    rgid[c] = 0;
+    szWork[300] = -1;
+    szWork[301] = 0;
+    c = (c + 1);
+    rgszScan[c] = &(szWork[0x12c]);
+    i = 0;
     goto L_140e;
 
 L_13a4:
@@ -1248,13 +1248,13 @@ L_13bf:
 L_13c3:
     LOWORD(rgid[c]) = t_merge_13c3_0001;
     HIWORD(rgid[c]) = 0x0;
-    CchGetString((i + 0x17d), &(szWork[(0x19 * i)]));
-    c = (c + 0x1);
+    CchGetString((i + 381), &(szWork[(25 * i)]));
+    c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD((0x19 * i)));
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_140e:
-    if ((i < 0x8))
+    if ((i < 8))
         goto L_13a4;
     else
         goto L_1417;
@@ -1263,7 +1263,7 @@ L_1417:
     GetCursorPos(&(pt));
     ScreenToClient(hwndTb, &(pt));
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, 0xfffe, 0x0);
-    if ((iSel == 0xffff))
+    if ((iSel == -1))
         goto L_167a;
     else
         goto L_1461;
@@ -1271,13 +1271,13 @@ L_1417:
 L_1461:
 
 L_1467:
-    if ((iSel >= 0x4))
+    if ((iSel >= 4))
         goto L_14b8;
     else
         goto L_1470;
 
 L_1470:
-    if ((iSel != 0x0))
+    if ((iSel != 0))
         goto L_1482;
     else
         goto L_1479;
@@ -1287,7 +1287,7 @@ L_1479:
     goto L_149a;
 
 L_1482:
-    if ((iSel != 0x1))
+    if ((iSel != 1))
         goto L_1494;
     else
         goto L_148b;
@@ -1314,7 +1314,7 @@ L_14a8:
 L_14af:
 
 L_14b8:
-    iSel = (iSel - 0x4);
+    iSel = (iSel - 4);
     grbitScanEShip = (grbitScanEShip ^ (0x1 << iSel));
     if (((grbitScan & 0x800) != 0x0))
         goto L_1505;
@@ -1341,12 +1341,12 @@ L_1510:
 
 L_1516:
     goto L_1644;
-    c = 0x0;
-    i = 0x0;
+    c = 0;
+    i = 0;
     goto L_159d;
 
 L_1526:
-    if (((iScanZoom + 0x4) != i))
+    if (((iScanZoom + 4) != i))
         goto L_153b;
     else
         goto L_1534;
@@ -1361,13 +1361,13 @@ L_153b:
 L_153f:
     LOWORD(rgid[c]) = t_merge_153f_0001;
     HIWORD(rgid[c]) = 0x0;
-    /* untranslated: call _wsprintf(&szWork[(0x8 * i)], PCTDPCTPCT, cs:[(i * 0x2)+0xda4]) -> callresult(int16_t) */
-    c = (c + 0x1);
-    rgszScan[c] = (0x57a4 + (i * 0x8));
-    i = (i + 0x1);
+    _wsprintf(&(szWork[(8 * i)]), PCTDPCTPCT, vrgpctZoom[i]);
+    c = (c + 1);
+    rgszScan[c] = (0x57a4 + (i * 8));
+    i = (i + 1);
 
 L_159d:
-    if ((i < 0x9))
+    if ((i < 9))
         goto L_1526;
     else
         goto L_15a6;
@@ -1376,7 +1376,7 @@ L_15a6:
     GetCursorPos(&(pt));
     ScreenToClient(hwndTb, &(pt));
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, 0xfffe, 0x0);
-    if ((iSel == 0xffff))
+    if ((iSel == -1))
         goto L_167a;
     else
         goto L_15f0;
@@ -1384,11 +1384,11 @@ L_15a6:
 L_15f0:
 
 L_15f6:
-    CommandHandler(hwndFrame, (iSel + 0xf3d));
+    CommandHandler(hwndFrame, (iSel + 3901));
     goto L_167a;
 
 L_160f:
-    if ((itb > 0x11))
+    if ((itb > 17))
         goto L_0dd1;
     else
         goto L_1617;
@@ -1397,7 +1397,7 @@ L_1617:
     goto L_ffffffff;
 
 L_1644:
-    if ((itb == 0x6))
+    if ((itb == 6))
         goto L_1662;
     else
         goto L_164d;
@@ -1424,72 +1424,72 @@ void TerminateToolbarFocus(int16_t fCancel) {
 
 L_1680:
     gd.fChgScanner = 0x1;
-    if ((fCancel != 0x0))
+    if ((fCancel != 0))
         goto L_171d;
     else
         goto L_169e;
 
 L_169e:
     GetWindowText(hwndTBRadar, szWork, 0x14);
-    psz = 0x57a4;
-    pct = 0x0;
+    psz = szWork;
+    pct = 0;
 
 L_16bc:
-    if (((uint16_t)(*(psz)) < 0x30))
+    if (((uint16_t)(*(psz)) < 48))
         goto L_16f9;
     else
         goto L_16ca;
 
 L_16ca:
-    if (((uint16_t)(*(psz)) > 0x39))
+    if (((uint16_t)(*(psz)) > 57))
         goto L_16f9;
     else
         goto L_16d8;
 
 L_16d8:
-    pct = (LOWORD((0xa * pct)) + ((uint16_t)(*(psz)) + 0xffd0));
+    pct = (LOWORD((0xa * pct)) + ((uint16_t)(*(psz)) - 48));
     psz = (psz + 0x1);
     goto L_16bc;
 
 L_16f9:
-    if (((uint16_t)(*(psz)) == 0x0))
+    if (((uint16_t)(*(psz)) == 0))
         goto L_1723;
     else
         goto L_1707;
 
 L_1707:
-    if (((uint16_t)(*(psz)) == 0x25))
+    if (((uint16_t)(*(psz)) == 37))
         goto L_1723;
     else
         goto L_1715;
 
 L_1715:
-    pct = 0x0;
+    pct = 0;
 
 L_171d:
     pct = vpctRadarView;
 
 L_1723:
-    if ((pct >= 0x2))
+    if ((pct >= 2))
         goto L_1734;
     else
         goto L_172c;
 
 L_172c:
-    pct = 0x2;
+    pct = 2;
     goto L_1742;
 
 L_1734:
-    if ((pct <= 0x64))
+    if ((pct <= 100))
         goto L_1742;
     else
         goto L_173d;
 
 L_173d:
-    pct = 0x64;
+    pct = 100;
 
 L_1742:
-    SendMessage(hwndTBRadar, CB_SETCURSEL, ((uint32_t)((0x64 - pct)) / 0xa), 0x0);
+    SendMessage(hwndTBRadar, CB_SETCURSEL, ((uint32_t)((100 - pct)) / 0xa), 0x0);
     _wsprintf(szWork, PCTDPCTPCT, pct);
     SetWindowText(hwndTBRadar, szWork);
     if ((pct == vpctRadarView))
@@ -1523,6 +1523,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
     int16_t  cch;
     int16_t  fShowNow;
     uint16_t t_merge_1817_0001;
+    uint32_t t_call_1991;
     uint16_t t_merge_19c1_0001;
 
 L_17ea:
@@ -1532,7 +1533,7 @@ L_17ea:
         goto L_17fd;
 
 L_17fd:
-    if ((IsWindowVisible(hwndTooltip) == 0x0))
+    if ((IsWindowVisible(hwndTooltip) == 0))
         goto L_1814;
     else
         goto L_180e;
@@ -1567,7 +1568,7 @@ L_1836:
     DestroyWindow(hwndTooltip);
 
 L_183f:
-    if ((fVisCur == 0x0))
+    if ((fVisCur == 0))
         goto L_19dd;
     else
         goto L_1848;
@@ -1582,7 +1583,7 @@ L_1857:
         goto L_1862;
 
 L_1862:
-    if ((EqualRect(prc, vrcTooltip) != 0x0))
+    if ((EqualRect(prc, vrcTooltip) != 0))
         goto L_19dd;
     else
         goto L_187a;
@@ -1594,7 +1595,7 @@ L_1880:
     cch = CchGetString(vidsTooltip, szWork);
     vrcTooltip = *(prc);
     hdc = GetDC(0x0);
-    hfontSav = SelectObject(hdc, rghfontArial8[0x0]);
+    hfontSav = SelectObject(hdc, rghfontArial8[0]);
     dxTip = LOWORD(GetTextExtent(hdc, szWork, cch));
     SelectObject(hdc, hfontSav);
     ReleaseDC(0x0, hdc);
@@ -1604,26 +1605,27 @@ L_1880:
         goto L_18f9;
 
 L_18f9:
-    CreateWindow(szTooltip, 0x0, WS_POPUP, 0x64, 0x64, (dxTip + 0x6), (dyArial8 + 0x6), hwndTb, 0x0, hInst, 0x0);
+    CreateWindow(szTooltip, 0x0, WS_POPUP, 0x64, 0x64, (dxTip + 6), (dyArial8 + 6), hwndTb, 0x0, hInst, 0x0);
     goto L_1957;
 
 L_1942:
     InvalidateRect(hwndTooltip, 0x0, 0x1);
 
 L_1957:
-    SetWindowPos(hwndTooltip, 0xffff, 0x0, 0x0, (dxTip + 0x6), (dyArial8 + 0x6), 0x216);
+    SetWindowPos(hwndTooltip, 0xffff, 0x0, 0x0, (dxTip + 6), (dyArial8 + 6), 0x216);
     /* untranslated: ss:[bp-0x10] = (LOWORD(vtickTooltipLast) + 0x190) */
     /* untranslated: ss:[bp-0xe] = (HIWORD(vtickTooltipLast) + 0x0) */
-    /* untranslated: branch ss:[bp-0xe] > hiword(GetTickCount()) ? L_19b8 : L_19a3 */
+    t_call_1991 = GetTickCount();
+    /* untranslated: branch ss:[bp-0xe] > hiword(t_call_1991) ? L_19b8 : L_19a3 */
 
 L_19a3:
-    /* untranslated: branch ss:[bp-0xe] < hiword(callresult(uint32_t)) ? L_19af : L_19a8 */
+    /* untranslated: branch ss:[bp-0xe] < hiword(t_call_1991) ? L_19af : L_19a8 */
 
 L_19a8:
-    /* untranslated: branch ss:[bp-0x10] >= loword(callresult(uint32_t)) ? L_19b8 : L_19af */
+    /* untranslated: branch ss:[bp-0x10] >= loword(t_call_1991) ? L_19b8 : L_19af */
 
 L_19af:
-    if ((fVisCur == 0x0))
+    if ((fVisCur == 0))
         goto L_19be;
     else
         goto L_19b8;
@@ -1660,17 +1662,17 @@ L_19f3:
 
 L_19fc:
     hwndTooltip = 0x0;
-    if ((vidTimerTooltip == 0xffff))
+    if ((vidTimerTooltip == -1))
         goto L_1a1e;
     else
         goto L_1a0c;
 
 L_1a0c:
     KillTimer(hwnd, vidTimerTooltip);
-    vidTimerTooltip = 0xffff;
+    vidTimerTooltip = -1;
 
 L_1a1e:
-    vidsTooltip = 0xffff;
+    vidsTooltip = -1;
     goto L_1d53;
 
 L_1a27:
@@ -1684,7 +1686,7 @@ L_1a38:
         goto L_1a41;
 
 L_1a41:
-    if ((vidTimerTooltip == 0xffff))
+    if ((vidTimerTooltip == -1))
         goto L_1a57;
     else
         goto L_1a4b;
@@ -1699,11 +1701,11 @@ L_1a57:
         goto L_1a77;
 
 L_1a77:
-    vidTimerTooltip = 0x39e;
+    vidTimerTooltip = 926;
     goto L_1a86;
 
 L_1a80:
-    vidTimerTooltip = 0xffff;
+    vidTimerTooltip = -1;
 
 L_1a86:
     return 0x0;
@@ -1726,7 +1728,7 @@ L_1aa1:
         goto L_1aab;
 
 L_1aab:
-    if ((IsWindowVisible(hwnd) != 0x0))
+    if ((IsWindowVisible(hwnd) != 0))
         goto L_1baf;
     else
         goto L_1abb;
@@ -1734,7 +1736,10 @@ L_1aab:
 L_1abb:
     vtickTooltip1stVis = GetTickCount();
     GetCursorPos(&(pt));
-    /* untranslated: branch PtInRect(vrcTooltip, words(pt.y, pt.x)) == 0x0 ? L_1c05 : L_1aea */
+    if ((PtInRect(vrcTooltip, pt) == 0))
+        goto LKillTip;
+    else
+        goto L_1aea;
 
 L_1aea:
 
@@ -1746,14 +1751,14 @@ L_1af0:
         goto L_1b10;
 
 L_1b10:
-    pt.x = ((vfs.dx - dxTip) + 0xfffb);
+    pt.x = ((vfs.dx - dxTip) - 5);
 
 L_1b1d:
     ClientToScreen(hwndFrame, &(pt));
-    /* untranslated: call SetWindowPos(hwnd, 0xffff, pt.x, ((words(loword((0x3 * dyArial8)), signhiword(loword((0x3 * dyArial8)))) / 0x2) + pt.y), 0x0, 0x0,
-     * 0x251) -> callresult(int16_t) */
+    /* untranslated: call SetWindowPos(hwnd, 0xffff, pt.x, ((words(loword((3 * dyArial8)), signhiword(loword((3 * dyArial8)))) / 0x2) + pt.y), 0x0, 0x0, 0x251)
+     * -> callresult(int16_t) */
     UpdateWindow(hwnd);
-    if ((vidTimerTooltip == 0xffff))
+    if ((vidTimerTooltip == -1))
         goto L_1b77;
     else
         goto L_1b6b;
@@ -1768,11 +1773,11 @@ L_1b77:
         goto L_1b97;
 
 L_1b97:
-    vidTimerTooltip = 0x39e;
+    vidTimerTooltip = 926;
     goto L_1ba6;
 
 L_1ba0:
-    vidTimerTooltip = 0xffff;
+    vidTimerTooltip = -1;
 
 L_1ba6:
     return 0x0;
@@ -1780,7 +1785,10 @@ L_1ba6:
 L_1baf:
     vtickTooltipLast = GetTickCount();
     GetCursorPos(&(pt));
-    /* untranslated: branch PtInRect(vrcTooltip, words(pt.y, pt.x)) == 0x0 ? L_1c05 : L_1be1 */
+    if ((PtInRect(vrcTooltip, pt) == 0))
+        goto LKillTip;
+    else
+        goto L_1be1;
 
 L_1be1:
     if (((HIWORD(vtickTooltip1stVis) + 0x0) > HIWORD(vtickTooltipLast)))
@@ -1815,7 +1823,7 @@ L_1c41:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     FrameRect(hdc, &(rc), hbrWindowFrame);
-    SelectObject(hdc, rghfontArial8[0x0]);
+    SelectObject(hdc, rghfontArial8[0]);
     cch = CchGetString(vidsTooltip, szWork);
     bkSav = SetBkMode(hdc, TRANSPARENT);
     SetTextColor(hdc, crWindowText);

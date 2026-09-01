@@ -50,7 +50,7 @@ func (c *machineConverter) resolveAddressValue(value machine.Value) (Expr, bool)
 	default:
 		return nil, false
 	}
-	machineAddr, ok := c.machineAddressExpr(value)
+	machineAddr, ok := c.machineAddressExpr(value, 0)
 	if !ok || machineAddr.base == nil {
 		return nil, false
 	}
@@ -60,24 +60,9 @@ func (c *machineConverter) resolveAddressValue(value machine.Value) (Expr, bool)
 
 // addressExprFromMemory decomposes direct local/global storage plus residual address terms.
 func (c *machineConverter) addressExprFromMemory(access machine.MemoryAccess) (AddressExpr, bool) {
-	if machine.ValueEquals(access.Seg, c.ctx.dsReg) && access.Base != nil {
-		if addr, ok := c.machineAddressExpr(access.Base); ok && addr.base != nil {
-			addr.offset += access.Disp
-			if access.Index != nil {
-				scale := access.Scale
-				if scale == 0 {
-					scale = 1
-				}
-				if indexAddr, ok := c.machineAddressExpr(access.Index); ok && indexAddr.base == nil {
-					addr.offset += indexAddr.offset * scale
-					for _, term := range indexAddr.terms {
-						term.scale *= scale
-						addr.terms = append(addr.terms, term)
-					}
-				} else {
-					addr.terms = append(addr.terms, machineScaledTerm{value: access.Index, scale: scale})
-				}
-			}
+	if seg, ok := access.Seg.(*machine.Reg); ok && (seg.Val == asm.RegDS || seg.Val == asm.RegCS) && access.Base != nil {
+		segNum := c.ctx.segFromRegister(seg.Val)
+		if addr, ok := c.segmentRelativeAddress(access, segNum); ok {
 			return c.semanticAddressExpr(addr), true
 		}
 	}
@@ -85,13 +70,45 @@ func (c *machineConverter) addressExprFromMemory(access machine.MemoryAccess) (A
 	if !ok {
 		return AddressExpr{}, false
 	}
+	addr = c.addMemoryAccessDisplacement(addr, access)
+	return c.semanticAddressExpr(addr), true
+}
+
+// segmentRelativeAddress resolves DS/CS effective addresses with dynamic byte terms.
+func (c *machineConverter) segmentRelativeAddress(access machine.MemoryAccess, segNum uint16) (machineAddressExpr, bool) {
+	addr, ok := c.machineAddressExpr(access.Base, segNum)
+	if !ok {
+		return machineAddressExpr{}, false
+	}
+	if addr.base == nil && access.Disp != 0 && len(addr.terms) > 0 {
+		if global, ok := c.ctx.res.ResolveGlobal(segNum, uint32(uint16(access.Disp)), 0); ok {
+			addr.base = &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}
+			addr.offset += global.FieldOff
+			access.Disp = 0
+		}
+	}
+	addr = c.addMemoryAccessDisplacement(addr, access)
+	if addr.base != nil {
+		return addr, true
+	}
+	global, ok := c.ctx.res.ResolveGlobal(segNum, uint32(uint16(addr.offset)), 0)
+	if !ok {
+		return machineAddressExpr{}, false
+	}
+	addr.base = &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}
+	addr.offset = global.FieldOff
+	return addr, true
+}
+
+// addMemoryAccessDisplacement folds memory displacement and index terms into an address.
+func (c *machineConverter) addMemoryAccessDisplacement(addr machineAddressExpr, access machine.MemoryAccess) machineAddressExpr {
 	addr.offset += access.Disp
 	if access.Index != nil {
 		scale := access.Scale
 		if scale == 0 {
 			scale = 1
 		}
-		if indexAddr, ok := c.machineAddressExpr(access.Index); ok && indexAddr.base == nil {
+		if indexAddr, ok := c.machineAddressExpr(access.Index, 0); ok && indexAddr.base == nil {
 			addr.offset += indexAddr.offset * scale
 			for _, term := range indexAddr.terms {
 				term.scale *= scale
@@ -101,7 +118,7 @@ func (c *machineConverter) addressExprFromMemory(access machine.MemoryAccess) (A
 			addr.terms = append(addr.terms, machineScaledTerm{value: access.Index, scale: scale})
 		}
 	}
-	return c.semanticAddressExpr(addr), true
+	return addr
 }
 
 // addressExprFromFarPointerMemory decomposes memory reached through far pointer words.
@@ -119,7 +136,7 @@ func (c *machineConverter) addressExprFromFarPointerMemory(access machine.Memory
 	}
 	addr := machineAddressExpr{base: root, offset: access.Disp}
 	if indexBytes != nil {
-		if indexAddr, ok := c.machineAddressExpr(indexBytes); ok && indexAddr.base == nil {
+		if indexAddr, ok := c.machineOffsetExpr(indexBytes); ok && indexAddr.base == nil {
 			addr.offset += indexAddr.offset
 			addr.terms = append(addr.terms, indexAddr.terms...)
 		} else {
@@ -151,6 +168,9 @@ func (ctx *FuncContext) resolveSemanticFarPointer(ptr *FarPointer) (Expr, bool) 
 		return expr, true
 	}
 	if expr, ok := ctx.resolveDataSegmentNearPointer(ptr); ok {
+		return expr, true
+	}
+	if expr, ok := ctx.resolveStackSegmentFarPointer(ptr); ok {
 		return expr, true
 	}
 	if expr, ok := ctx.resolveDirectSemanticFarPointer(ptr); ok {
@@ -245,6 +265,29 @@ func (ctx *FuncContext) resolveDataSegmentNearPointer(ptr *FarPointer) (Expr, bo
 		return root, true
 	}
 	return &PointerOffset{Pointer: root, Offset: residual, TypeInfo: root.ExprType()}, true
+}
+
+// resolveStackSegmentFarPointer resolves SS:near-pointer expressions to stack lvalues.
+func (ctx *FuncContext) resolveStackSegmentFarPointer(ptr *FarPointer) (Expr, bool) {
+	if !exprMatchesMachineValue(ptr.Segment, machine.RegVal(asm.RegSS)) {
+		return nil, false
+	}
+	if decayed, ok := decayArrayAddress(ptr.Offset, ptr.TypeInfo); ok {
+		return decayed, true
+	}
+	if _, ok := ptr.Offset.(*AddressOf); ok {
+		return ptr.Offset, true
+	}
+	if ptr.Offset.ExprType() == typeinfo.U16 {
+		return ptr.Offset, true
+	}
+	if target, ok := ptr.Offset.(LValue); ok {
+		if decayed, ok := decayArrayLValue(target, ptr.TypeInfo); ok {
+			return decayed, true
+		}
+		return &AddressOf{Target: target, TypeInfo: ptr.TypeInfo}, true
+	}
+	return nil, false
 }
 
 // splitDataSegmentNearPointerOffset finds a near pointer plus optional byte offset.
@@ -473,16 +516,18 @@ func (ctx *FuncContext) semanticAddressExprFromMemory(mem *Memory) (AddressExpr,
 		return addr, true
 	}
 
-	if !semanticMemoryUsesDataSegment(mem.Seg) {
+	seg, ok := mem.Seg.(*Register)
+	if !ok {
 		return AddressExpr{}, false
 	}
+
 	offset := mem.Disp
 	baseExpr := mem.Base
 	if c, ok := baseExpr.(*Const); ok {
 		offset += int(c.U64)
 		baseExpr = nil
 	}
-	global, ok := ctx.res.ResolveGlobal(uint16(ctx.sdb.DGroupFrame), uint32(offset), mem.Width)
+	global, ok := ctx.res.ResolveGlobal(ctx.segFromRegister(seg.Val), uint32(offset), mem.Width)
 	if !ok {
 		return AddressExpr{}, false
 	}
@@ -520,11 +565,6 @@ func semanticAddressExpr(expr Expr) (AddressExpr, bool) {
 	default:
 		return AddressExpr{Terms: []ScaledTerm{{Expr: expr, Scale: 1}}}, true
 	}
-}
-
-// semanticMemoryUsesDataSegment reports whether a lowered memory node uses DS.
-func semanticMemoryUsesDataSegment(seg Expr) bool {
-	return seg == nil || regExprEquals(seg, asm.RegDS)
 }
 
 // semanticAbsoluteAddressExpr decomposes segment offsets with unsigned constants.
@@ -672,13 +712,21 @@ func semanticScaledTermExpr(term ScaledTerm) (Expr, bool) {
 
 // unwrapSemanticAddressWord removes low-word projections around address arithmetic.
 func unwrapSemanticAddressWord(expr Expr) Expr {
-	if word, ok := expr.(*Word); ok && word.Part == machine.WordLow {
-		return word.Parent
+	for {
+		if word, ok := expr.(*Word); ok && word.Part == machine.WordLow {
+			expr = word.Parent
+			continue
+		}
+		if part, ok := expr.(*Part); ok && part.ByteOff == 0 && part.Width == 2 {
+			expr = part.Base
+			continue
+		}
+		if cast, ok := expr.(*Cast); ok && cast.TypeInfo != nil && cast.TypeInfo.Bytes() > 2 {
+			expr = cast.Value
+			continue
+		}
+		return expr
 	}
-	if part, ok := expr.(*Part); ok && part.ByteOff == 0 && part.Width == 2 {
-		return part.Base
-	}
-	return expr
 }
 
 // splitSemanticFarPointerAddressBase finds a semantic far-pointer root and residual offset bytes.
@@ -861,7 +909,7 @@ func (c *machineConverter) directStorageAddress(access machine.MemoryAccess) (ma
 		}, true
 	}
 
-	if machine.ValueEquals(access.Seg, c.ctx.dsReg) {
+	if seg, ok := access.Seg.(*machine.Reg); ok && (seg.Val == asm.RegDS || seg.Val == asm.RegCS) {
 		withoutIndex := access
 		withoutIndex.Index = nil
 		withoutIndex.Scale = 0
@@ -895,7 +943,7 @@ func (c *machineConverter) semanticAddressExpr(addr machineAddressExpr) AddressE
 
 // convertIndexExpr lowers a machine value used as an array index with residual constants normalized.
 func (c *machineConverter) convertIndexExpr(value machine.Value) Expr {
-	addr, ok := c.machineAddressExpr(value)
+	addr, ok := c.machineAddressExpr(value, 0)
 	if !ok || addr.base != nil || len(addr.terms) != 1 || addr.terms[0].scale != 1 || addr.offset == 0 {
 		return c.convertValue(value)
 	}
@@ -907,13 +955,16 @@ func (c *machineConverter) convertIndexExpr(value machine.Value) Expr {
 }
 
 // machineAddressExpr decomposes machine arithmetic into a static base, byte offset, and scaled terms.
-func (c *machineConverter) machineAddressExpr(value machine.Value) (machineAddressExpr, bool) {
+func (c *machineConverter) machineAddressExpr(value machine.Value, segNum uint16) (machineAddressExpr, bool) {
 	value = unwrapAddressWord(value)
 	switch v := value.(type) {
 	case nil:
 		return machineAddressExpr{}, false
 	case *machine.Const:
-		if global, ok := c.ctx.res.ResolveGlobal(uint16(c.ctx.sdb.DGroupFrame), uint32(v.Val), 0); ok {
+		if segNum == 0 {
+			segNum = uint16(c.ctx.sdb.DGroupFrame)
+		}
+		if global, ok := c.ctx.res.ResolveGlobal(segNum, uint32(v.Val), 0); ok {
 			return machineAddressExpr{base: &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}, offset: global.FieldOff}, true
 		}
 		return machineAddressExpr{offset: signedWordOffset(v.Val)}, true
@@ -924,7 +975,7 @@ func (c *machineConverter) machineAddressExpr(value machine.Value) (machineAddre
 		}
 		return machineAddressExpr{base: &SymbolRef{Path: path}}, true
 	case *machine.Binary:
-		return c.machineBinaryAddressExpr(v)
+		return c.machineBinaryAddressExpr(v, segNum)
 	default:
 		return machineAddressExpr{terms: []machineScaledTerm{{value: value, scale: 1}}}, true
 	}
@@ -967,13 +1018,14 @@ func (c *machineConverter) machineOffsetExpr(value machine.Value) (machineAddres
 }
 
 // machineBinaryAddressExpr decomposes binary machine arithmetic into address terms.
-func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary) (machineAddressExpr, bool) {
+func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary, segNum uint16) (machineAddressExpr, bool) {
 	switch v.Op {
 	case machine.ValueOpAdd, machine.ValueOpSub:
-		lhs, lhsOK := c.machineAddressExpr(v.LHS)
-		rhs, rhsOK := c.machineAddressExpr(v.RHS)
+		lhs, lhsOK := c.machineAddressExpr(v.LHS, segNum)
+		rhs, rhsOK := c.machineAddressExpr(v.RHS, segNum)
 
-		lhs, rhs = preferConstDisplacementTerms(v.Op, v.LHS, lhs, v.RHS, rhs)
+		allowRHSConstBase := segNum != 0 && segNum != uint16(c.ctx.sdb.DGroupFrame)
+		lhs, rhs = preferConstDisplacementTerms(v.Op, v.LHS, lhs, v.RHS, rhs, allowRHSConstBase)
 		if !lhsOK || !rhsOK || (lhs.base != nil && rhs.base != nil) {
 			return machineAddressExpr{}, false
 		}
@@ -999,7 +1051,8 @@ func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary) (machineA
 // preferConstDisplacementTerms disambiguates constants that numerically overlap
 // globals from constants used as byte displacements.
 //
-// A RHS constant in pointer/address arithmetic is a displacement:
+// A RHS constant in pointer/address arithmetic is a displacement when the LHS
+// already provides a base:
 //
 //	pointer + 0x24c
 //	pointer - 0x24c
@@ -1012,8 +1065,15 @@ func (c *machineConverter) machineBinaryAddressExpr(v *machine.Binary) (machineA
 // constant is the displacement:
 //
 //	4 + pointer
-func preferConstDisplacementTerms(op machine.ValueOp, lhsValue machine.Value, lhs machineAddressExpr, rhsValue machine.Value, rhs machineAddressExpr) (machineAddressExpr, machineAddressExpr) {
-	if c, ok := rhsValue.(*machine.Const); ok {
+func preferConstDisplacementTerms(
+	op machine.ValueOp,
+	lhsValue machine.Value,
+	lhs machineAddressExpr,
+	rhsValue machine.Value,
+	rhs machineAddressExpr,
+	allowRHSConstBase bool,
+) (machineAddressExpr, machineAddressExpr) {
+	if c, ok := rhsValue.(*machine.Const); ok && (op == machine.ValueOpSub || lhs.base != nil || !allowRHSConstBase) {
 		rhs = machineAddressExpr{
 			offset: signedWordOffset(c.Val),
 		}
@@ -1080,10 +1140,17 @@ func arrayScaledIndex(value machine.Value, elemSize int) (machine.Value, bool) {
 
 // unwrapAddressWord removes low-word projections around address arithmetic.
 func unwrapAddressWord(value machine.Value) machine.Value {
-	if word, ok := value.(*machine.WordValue); ok && word.Part == machine.WordLow {
-		return word.Parent
+	for {
+		if word, ok := value.(*machine.WordValue); ok && word.Part == machine.WordLow {
+			value = word.Parent
+			continue
+		}
+		if cast, ok := value.(*machine.Cast); ok && cast.To != nil && cast.To.Bytes() > 2 {
+			value = cast.Value
+			continue
+		}
+		return value
 	}
-	return value
 }
 
 // signedWordOffset interprets word-sized arithmetic constants as signed residual offsets.
@@ -1189,8 +1256,8 @@ func partialPointerPointee(ptr *typeinfo.Pointer, offset, width int) bool {
 func consumeAddressStep(current Expr, offset int, terms []ScaledTerm, width int) (Expr, int, []ScaledTerm, bool) {
 	typ := current.ExprType()
 	if ptr, ok := typ.(*typeinfo.Pointer); ok {
-		if next, nextTerms, changed := consumeArrayTerm(current, typ, terms); changed {
-			return next, offset, nextTerms, true
+		if next, nextOffset, nextTerms, changed := consumeArrayTerm(current, typ, offset, terms); changed {
+			return next, nextOffset, nextTerms, true
 		}
 		if next, nextOffset, changed := consumeStructField(current, ptr.Elem, offset, terms, width); changed {
 			return next, nextOffset, terms, true
@@ -1203,8 +1270,8 @@ func consumeAddressStep(current Expr, offset int, terms []ScaledTerm, width int)
 	if next, nextOffset, changed := consumeStructField(current, typ, offset, terms, width); changed {
 		return next, nextOffset, terms, true
 	}
-	if next, nextTerms, changed := consumeArrayTerm(current, typ, terms); changed {
-		return next, offset, nextTerms, true
+	if next, nextOffset, nextTerms, changed := consumeArrayTerm(current, typ, offset, terms); changed {
+		return next, nextOffset, nextTerms, true
 	}
 	if next, nextOffset, changed := consumeArrayConstIndex(current, typ, offset, width, true); changed {
 		return next, nextOffset, terms, true
@@ -1271,20 +1338,47 @@ func exactFieldAccess(base Expr, matches []typeinfo.StructFieldMatch, width int)
 }
 
 // consumeArrayTerm consumes a scaled dynamic term into an array index.
-func consumeArrayTerm(base Expr, typ typeinfo.Type, terms []ScaledTerm) (Expr, []ScaledTerm, bool) {
+func consumeArrayTerm(base Expr, typ typeinfo.Type, offset int, terms []ScaledTerm) (Expr, int, []ScaledTerm, bool) {
 	elem := indexElementType(typ)
 	if elem == nil || elem.Bytes() <= 0 {
-		return nil, nil, false
+		return nil, 0, nil, false
 	}
-	for i, term := range terms {
+	var index Expr
+	nextTerms := make([]ScaledTerm, 0, len(terms))
+	for _, term := range terms {
 		if term.Scale != elem.Bytes() {
+			nextTerms = append(nextTerms, term)
 			continue
 		}
-		nextTerms := append([]ScaledTerm(nil), terms[:i]...)
-		nextTerms = append(nextTerms, terms[i+1:]...)
-		return &ArrayIndex{Base: base, Index: term.Expr, TypeInfo: elem}, nextTerms, true
+		index = joinSemanticAddressTerms(index, term.Expr)
 	}
-	return nil, nil, false
+	if index == nil {
+		return nil, 0, nil, false
+	}
+	nextOffset := offset
+	if offset%elem.Bytes() == 0 {
+		index = offsetArrayIndex(index, offset/elem.Bytes())
+		nextOffset = 0
+	}
+	return &ArrayIndex{Base: base, Index: index, TypeInfo: elem}, nextOffset, nextTerms, true
+}
+
+// offsetArrayIndex folds a constant element offset into an array index.
+func offsetArrayIndex(index Expr, offset int) Expr {
+	if offset == 0 {
+		return index
+	}
+	op := OpAdd
+	if offset < 0 {
+		op = OpSub
+		offset = -offset
+	}
+	return &Binary{
+		TypeInfo: typeinfo.U16,
+		Op:       op,
+		LHS:      index,
+		RHS:      &Const{TypeInfo: typeinfo.U16, U64: uint64(offset)},
+	}
 }
 
 // consumeArrayConstIndex consumes a constant byte offset into an array index.

@@ -6,12 +6,12 @@ void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt)
 
 L_24dc:
     lpth = *(plpth);
-    wtTotal = 0x0;
-    i = 0x0;
+    wtTotal = 0;
+    i = 0;
     goto L_2509;
 
 L_2505:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_2509:
     if ((i >= game.cPlanMax))
@@ -34,15 +34,15 @@ L_252d:
 L_2532:
 
 L_253b:
-    i = 0x0;
+    i = 0;
     goto L_2565;
 
 L_2543:
     wtTotal = (wtTotal + rgwtMinerals[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_2565:
-    if ((i >= 0x3))
+    if ((i >= 3))
         goto L_25cb;
     else
         goto L_256b;
@@ -50,16 +50,16 @@ L_2565:
 L_256b:
 
 L_2571:
-    i = 0x0;
+    i = 0;
     goto L_25c2;
 
 L_2579:
     rgwtMinerals[i] = (uint32_t)(Random(0xa));
     wtTotal = (wtTotal + rgwtMinerals[i]);
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_25c2:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_2579;
     else
         goto L_25cb;
@@ -111,7 +111,7 @@ L_2619:
     goto L_26e9;
 
 L_2657:
-    i = 0x0;
+    i = 0;
     goto L_26cc;
 
 L_265f:
@@ -119,11 +119,11 @@ L_265f:
     /* untranslated: HIWORD(rgwtMinerals[i]) = (HIWORD(rgwtMinerals[i]) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
     /* untranslated: LOWORD(wtTotal) = (LOWORD(wtTotal) + HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
     /* untranslated: HIWORD(wtTotal) = (HIWORD(wtTotal) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = 0x0 */
-    i = (i + 0x1);
+    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = 0x0 */
+    i = (i + 1);
 
 L_26cc:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_265f;
     else
         goto L_26d5;
@@ -136,7 +136,7 @@ L_26e9:
     goto L_2927;
 
 L_2700:
-    i = 0x0;
+    i = 0;
     goto L_291e;
 
 L_2708:
@@ -149,10 +149,10 @@ L_274b:
     /* untranslated: branch (loword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + LOWORD(rgwtMinerals[i])) <= 0x7530 ? L_2842 : L_2753 */
 
 L_2753:
-    /* untranslated: wt = (0x7530 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) */
+    /* untranslated: wt = (30000 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) */
     wtTotal = (wtTotal - wt);
     lpth->thp.wtMax = 0xbb8;
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(wt)) */
+    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(wt)) */
     rgwtMinerals[i] = (rgwtMinerals[i] - wt);
     lpth = LpthNew(iplr, ithMineralPacket);
     if ((LOWORD(lpth) != 0x0))
@@ -180,9 +180,9 @@ L_2842:
      */
     lpth->thp.wtMax = 0x0;
     /* untranslated: *(lpth+0xe) = (*(lpth+0xe) | ss:[bp-0x12]) */
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(rgwtMinerals[i])) */
+    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(rgwtMinerals[i])) */
     wtTotal = (wtTotal - rgwtMinerals[i]);
-    rgwtMinerals[i] = 0x0;
+    rgwtMinerals[i] = 0;
 
 L_2900:
     if ((HIWORD(wtTotal) > 0x0))
@@ -205,10 +205,10 @@ L_290e:
 L_2914:
 
 L_291a:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_291e:
-    if ((i < 0x3))
+    if ((i < 3))
         goto L_2708;
     else
         goto L_2927;

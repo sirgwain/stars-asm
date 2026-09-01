@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
@@ -13,10 +14,13 @@ type unionContextProcessor struct {
 }
 
 type unionFlowState struct {
-	ctx         *symresolve.UnionContext
-	aliases     map[string]map[string]unionAliasTarget
-	enumAliases map[string]map[string]dependentEnumAliasTarget
-	callResults map[string]unionCallResultSelection
+	// ctx contains authoritative selections from function and call-result facts.
+	// Discriminator-flow selections are materialized only after convergence.
+	ctx           *symresolve.UnionContext
+	aliases       map[string]map[string]unionAliasTarget
+	enumAliases   map[string]map[string]dependentEnumAliasTarget
+	possibleEnums map[string]map[int]typeinfo.EnumValue
+	callResults   map[string]unionCallResultSelection
 }
 
 type unionAliasTarget struct {
@@ -30,6 +34,7 @@ type dependentEnumAliasTarget struct {
 	Key    string
 	Target symresolve.SymbolPath
 	Rule   *typeinfo.DependentEnumRule
+	Enum   *typeinfo.Enum
 	Direct bool
 }
 
@@ -73,7 +78,14 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 			continue
 		}
 		exits := p.processBlock(entries[id].clone(), block, f)
-		for succ, state := range exits {
+		succs := make([]machine.BlockID, 0, len(exits))
+		for succ := range exits {
+			succs = append(succs, succ)
+		}
+		slices.Sort(succs)
+
+		for _, succ := range succs {
+			state := exits[succ]
 			next, changed := mergeUnionFlowState(entries[succ], state)
 			if !changed {
 				continue
@@ -88,7 +100,7 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 
 	contexts := make(map[machine.BlockID]*symresolve.UnionContext, len(entries))
 	for id, state := range entries {
-		contexts[id] = state.ctx
+		contexts[id] = materializeUnionContext(state)
 	}
 	p.ctx.SetUnionContexts(contexts)
 	return true
@@ -97,15 +109,17 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 // initialState creates the function-entry union facts and discriminator aliases.
 func (p *unionContextProcessor) initialState() *unionFlowState {
 	state := &unionFlowState{
-		ctx:         symresolve.NewUnionContext(),
-		aliases:     make(map[string]map[string]unionAliasTarget),
-		enumAliases: make(map[string]map[string]dependentEnumAliasTarget),
-		callResults: make(map[string]unionCallResultSelection),
+		ctx:           symresolve.NewUnionContext(),
+		aliases:       make(map[string]map[string]unionAliasTarget),
+		enumAliases:   make(map[string]map[string]dependentEnumAliasTarget),
+		possibleEnums: make(map[string]map[int]typeinfo.EnumValue),
+		callResults:   make(map[string]unionCallResultSelection),
 	}
-	for _, root := range p.functionRoots() {
+	for _, root := range p.symbolRoots() {
 		p.addDirectAliases(state, root)
 		p.addDependentEnumAliases(state, root)
 	}
+	p.addExternalDiscriminatorAliases(state)
 	if p.ctx.sdb.UnionRules != nil {
 		for _, fact := range p.ctx.sdb.UnionRules.FunctionFactsFor(p.ctx.fs) {
 			root, ok := p.functionRootByName(fact.Root)
@@ -116,6 +130,32 @@ func (p *unionContextProcessor) initialState() *unionFlowState {
 		}
 	}
 	return state
+}
+
+// addExternalDiscriminatorAliases adds configured function-path discriminator aliases.
+func (p *unionContextProcessor) addExternalDiscriminatorAliases(state *unionFlowState) {
+	if p.ctx.sdb.UnionRules == nil {
+		return
+	}
+	for _, alias := range p.ctx.sdb.UnionRules.ExternalDiscriminatorAliasesFor(p.ctx.fs) {
+		source, ok := p.functionPathByComponents(alias.Source)
+		if !ok {
+			continue
+		}
+		root, ok := p.functionRootByName(alias.Root)
+		if !ok {
+			continue
+		}
+		target := unionAliasTarget{
+			Key:    unionAliasTargetKey(root, alias.Rule),
+			Root:   root,
+			Rule:   alias.Rule,
+			Direct: true,
+		}
+		key := symbolPathKey(source)
+		addAliasTarget(state.aliases, key, target)
+		state.possibleEnums[key] = possibleEnumValuesForUnionTargets(state.aliases[key])
+	}
 }
 
 // processBlock applies assignments and terminator branch facts to one block.
@@ -166,8 +206,10 @@ func (p *unionContextProcessor) processAssign(state *unionFlowState, assign *Ass
 	dstKey := symbolPathKey(dst)
 	directTargets := directAliasTargets(state.aliases[dstKey])
 	directEnumTargets := directDependentEnumAliasTargets(state.enumAliases[dstKey])
+	enumValue, hasEnumValue := enumConstValue(assign.Src)
 	delete(state.aliases, dstKey)
 	delete(state.enumAliases, dstKey)
+	delete(state.possibleEnums, dstKey)
 	src, ok := symbolPathForExpr(assign.Src)
 	if !ok {
 		if len(directTargets) > 0 {
@@ -175,6 +217,12 @@ func (p *unionContextProcessor) processAssign(state *unionFlowState, assign *Ass
 		}
 		if len(directEnumTargets) > 0 {
 			state.enumAliases[dstKey] = directEnumTargets
+		}
+		if len(directTargets) > 0 || len(directEnumTargets) > 0 {
+			state.possibleEnums[dstKey] = possibleEnumValuesForAliases(directTargets, directEnumTargets)
+		}
+		if hasEnumValue && len(state.possibleEnums[dstKey]) > 0 {
+			state.possibleEnums[dstKey] = map[int]typeinfo.EnumValue{enumValue.Value: enumValue}
 		}
 		return
 	}
@@ -199,6 +247,13 @@ func (p *unionContextProcessor) processAssign(state *unionFlowState, assign *Ass
 	}
 	if len(enumTargets) > 0 {
 		state.enumAliases[dstKey] = enumTargets
+	}
+	if len(targets) > 0 || len(enumTargets) > 0 {
+		srcPossible := state.possibleEnums[symbolPathKey(src)]
+		state.possibleEnums[dstKey] = clonePossibleEnumValues(srcPossible)
+		if len(state.possibleEnums[dstKey]) == 0 {
+			state.possibleEnums[dstKey] = possibleEnumValuesForAliases(targets, enumTargets)
+		}
 	}
 }
 
@@ -236,7 +291,7 @@ func (p *unionContextProcessor) callResultSelection(state *unionFlowState, expr 
 	return selection, ok
 }
 
-// applyBranchFact adds union selections implied by an equality branch.
+// applyBranchFact narrows discriminator possibilities on each branch edge.
 func (p *unionContextProcessor) applyBranchFact(cond Expr, trueState, falseState *unionFlowState) {
 	compare, ok := cond.(*Compare)
 	if !ok {
@@ -249,30 +304,93 @@ func (p *unionContextProcessor) applyBranchFact(cond Expr, trueState, falseState
 	key := symbolPathKey(path)
 	switch compare.Op {
 	case CompareEQ:
-		addUnionSelections(trueState, trueState.aliases[key], value)
-		addDependentEnumSelections(trueState, trueState.enumAliases[key], value)
+		narrowPossibleEnumsEqual(trueState, key, value)
+		narrowPossibleEnumsNotEqual(falseState, key, value)
 	case CompareNE:
-		addUnionSelections(falseState, falseState.aliases[key], value)
-		addDependentEnumSelections(falseState, falseState.enumAliases[key], value)
+		narrowPossibleEnumsNotEqual(trueState, key, value)
+		narrowPossibleEnumsEqual(falseState, key, value)
 	}
 }
 
-// addUnionSelections records an enum value for every aliased union target.
-func addUnionSelections(state *unionFlowState, targets map[string]unionAliasTarget, value typeinfo.EnumValue) {
+// materializeUnionContext combines explicit context with converged flow facts.
+//
+// Explicit selections come from authoritative sources such as function facts and
+// typed call-result facts. Flow-derived discriminator selections are added only
+// when the converged possible-value set is a singleton, and never overwrite an
+// explicit selection.
+func materializeUnionContext(state *unionFlowState) *symresolve.UnionContext {
+	if state == nil {
+		return symresolve.NewUnionContext()
+	}
+
+	ctx := state.ctx.Clone()
+	for path, values := range state.possibleEnums {
+		value, ok := singletonPossibleEnumValue(values)
+		if !ok {
+			continue
+		}
+		addUnionSelectionsIfUnset(ctx, state.aliases[path], value)
+		addDependentEnumSelectionsIfUnset(ctx, state.enumAliases[path], value)
+	}
+	return ctx
+}
+
+// addUnionSelectionsIfUnset adds flow-derived union selections without
+// replacing selections established by an authoritative context source.
+func addUnionSelectionsIfUnset(ctx *symresolve.UnionContext, targets map[string]unionAliasTarget, value typeinfo.EnumValue) {
 	for _, target := range targets {
-		state.ctx.Add(target.Root, target.Rule, value)
+		if target.Rule == nil || target.Rule.Type == nil {
+			continue
+		}
+		if _, ok := ctx.SelectionFor(target.Root, target.Rule.Type); ok {
+			continue
+		}
+		ctx.Add(target.Root, target.Rule, value)
 	}
 }
 
-// addDependentEnumSelections records selected enum types for dependent paths.
-func addDependentEnumSelections(state *unionFlowState, targets map[string]dependentEnumAliasTarget, value typeinfo.EnumValue) {
+// addDependentEnumSelectionsIfUnset adds flow-derived dependent enum
+// selections without replacing authoritative path-specific enum selections.
+func addDependentEnumSelectionsIfUnset(ctx *symresolve.UnionContext, targets map[string]dependentEnumAliasTarget, value typeinfo.EnumValue) {
 	for _, target := range targets {
+		if _, ok := ctx.EnumFor(target.Target); ok {
+			continue
+		}
 		enumType, ok := target.Rule.TargetEnumForValue(value.Value)
 		if !ok {
 			continue
 		}
-		state.ctx.AddEnum(target.Target, enumType)
+		ctx.AddEnum(target.Target, enumType)
 	}
+}
+
+// narrowPossibleEnumsEqual restricts a discriminator path to one enum value.
+func narrowPossibleEnumsEqual(state *unionFlowState, path string, value typeinfo.EnumValue) {
+	if len(state.possibleEnums[path]) == 0 {
+		return
+	}
+	state.possibleEnums[path] = map[int]typeinfo.EnumValue{value.Value: value}
+}
+
+// narrowPossibleEnumsNotEqual removes one enum value from a discriminator path.
+func narrowPossibleEnumsNotEqual(state *unionFlowState, path string, value typeinfo.EnumValue) {
+	if len(state.possibleEnums[path]) == 0 {
+		return
+	}
+	next := clonePossibleEnumValues(state.possibleEnums[path])
+	delete(next, value.Value)
+	state.possibleEnums[path] = next
+}
+
+// singletonPossibleEnumValue returns the only value in a possible-value set.
+func singletonPossibleEnumValue(values map[int]typeinfo.EnumValue) (typeinfo.EnumValue, bool) {
+	if len(values) != 1 {
+		return typeinfo.EnumValue{}, false
+	}
+	for _, value := range values {
+		return value, true
+	}
+	return typeinfo.EnumValue{}, false
 }
 
 // unionCompareFact extracts a path == enum-value comparison.
@@ -328,6 +446,7 @@ func (p *unionContextProcessor) addDirectAliases(state *unionFlowState, root sym
 		Direct: true,
 	}
 	addAliasTarget(state.aliases, symbolPathKey(path), target)
+	state.possibleEnums[symbolPathKey(path)] = possibleEnumValuesForUnionTargets(state.aliases[symbolPathKey(path)])
 }
 
 // addDependentEnumAliases adds aliases for every dependent enum discriminator rooted at root.
@@ -344,24 +463,34 @@ func (p *unionContextProcessor) addDependentEnumAliases(state *unionFlowState, r
 		if !ok {
 			continue
 		}
+		discriminatorEnum, ok := discriminator.Type().(*typeinfo.Enum)
+		if !ok {
+			continue
+		}
 		target := dependentEnumAliasTarget{
 			Key:    dependentEnumAliasTargetKey(targetPath, rule),
 			Target: targetPath,
 			Rule:   rule,
+			Enum:   discriminatorEnum,
 			Direct: true,
 		}
-		addDependentEnumAliasTarget(state.enumAliases, symbolPathKey(discriminator), target)
+		key := symbolPathKey(discriminator)
+		addDependentEnumAliasTarget(state.enumAliases, key, target)
+		state.possibleEnums[key] = possibleEnumValuesForAliases(state.aliases[key], state.enumAliases[key])
 	}
 }
 
-// functionRoots returns all params and locals as symbolic roots.
-func (p *unionContextProcessor) functionRoots() []symresolve.SymbolPath {
-	roots := make([]symresolve.SymbolPath, 0, len(p.ctx.fs.Params)+len(p.ctx.fs.Vars))
+// symbolRoots returns all function and global symbols as symbolic roots.
+func (p *unionContextProcessor) symbolRoots() []symresolve.SymbolPath {
+	roots := make([]symresolve.SymbolPath, 0, len(p.ctx.fs.Params)+len(p.ctx.fs.Vars)+len(p.ctx.sdb.Globals))
 	for i := range p.ctx.fs.Params {
 		roots = append(roots, &symresolve.SymbolRoot{Symbol: &p.ctx.fs.Params[i]})
 	}
 	for i := range p.ctx.fs.Vars {
 		roots = append(roots, &symresolve.SymbolRoot{Symbol: &p.ctx.fs.Vars[i]})
+	}
+	for _, global := range p.ctx.sdb.Globals {
+		roots = append(roots, &symresolve.SymbolRoot{Symbol: global})
 	}
 	return roots
 }
@@ -379,6 +508,21 @@ func (p *unionContextProcessor) functionRootByName(name string) (symresolve.Symb
 		}
 	}
 	return nil, false
+}
+
+// functionPathByComponents builds a function-rooted path from path components.
+func (p *unionContextProcessor) functionPathByComponents(components []string) (symresolve.SymbolPath, bool) {
+	if len(components) == 0 {
+		return nil, false
+	}
+	root, ok := p.functionRootByName(components[0])
+	if !ok {
+		return nil, false
+	}
+	if len(components) == 1 {
+		return root, true
+	}
+	return appendSymbolFieldPath(root, components[1:])
 }
 
 // appendSymbolFieldPath builds a symbol path by selecting named fields.
@@ -419,17 +563,19 @@ func fieldByName(strct *typeinfo.Struct, name string) *typeinfo.StructField {
 func (s *unionFlowState) clone() *unionFlowState {
 	if s == nil {
 		return &unionFlowState{
-			ctx:         symresolve.NewUnionContext(),
-			aliases:     make(map[string]map[string]unionAliasTarget),
-			enumAliases: make(map[string]map[string]dependentEnumAliasTarget),
-			callResults: make(map[string]unionCallResultSelection),
+			ctx:           symresolve.NewUnionContext(),
+			aliases:       make(map[string]map[string]unionAliasTarget),
+			enumAliases:   make(map[string]map[string]dependentEnumAliasTarget),
+			possibleEnums: make(map[string]map[int]typeinfo.EnumValue),
+			callResults:   make(map[string]unionCallResultSelection),
 		}
 	}
 	return &unionFlowState{
-		ctx:         s.ctx.Clone(),
-		aliases:     cloneAliases(s.aliases),
-		enumAliases: cloneDependentEnumAliases(s.enumAliases),
-		callResults: cloneCallResults(s.callResults),
+		ctx:           s.ctx.Clone(),
+		aliases:       cloneAliases(s.aliases),
+		enumAliases:   cloneDependentEnumAliases(s.enumAliases),
+		possibleEnums: clonePossibleEnums(s.possibleEnums),
+		callResults:   cloneCallResults(s.callResults),
 	}
 }
 
@@ -439,15 +585,67 @@ func mergeUnionFlowState(existing, incoming *unionFlowState) (*unionFlowState, b
 		return incoming.clone(), true
 	}
 	merged := &unionFlowState{
-		ctx:         symresolve.IntersectUnionContexts([]*symresolve.UnionContext{existing.ctx, incoming.ctx}),
-		aliases:     intersectAliases(existing.aliases, incoming.aliases),
-		enumAliases: intersectDependentEnumAliases(existing.enumAliases, incoming.enumAliases),
-		callResults: intersectCallResults(existing.callResults, incoming.callResults),
+		ctx:           symresolve.IntersectUnionContexts([]*symresolve.UnionContext{existing.ctx, incoming.ctx}),
+		aliases:       intersectAliases(existing.aliases, incoming.aliases),
+		enumAliases:   intersectDependentEnumAliases(existing.enumAliases, incoming.enumAliases),
+		possibleEnums: unionPossibleEnums(existing.possibleEnums, incoming.possibleEnums),
+		callResults:   intersectCallResults(existing.callResults, incoming.callResults),
 	}
-	if existing.ctx.Equal(merged.ctx) && aliasMapsEqual(existing.aliases, merged.aliases) && dependentEnumAliasMapsEqual(existing.enumAliases, merged.enumAliases) && callResultMapsEqual(existing.callResults, merged.callResults) {
+	if existing.ctx.Equal(merged.ctx) && aliasMapsEqual(existing.aliases, merged.aliases) && dependentEnumAliasMapsEqual(existing.enumAliases, merged.enumAliases) && possibleEnumMapsEqual(existing.possibleEnums, merged.possibleEnums) && callResultMapsEqual(existing.callResults, merged.callResults) {
 		return existing, false
 	}
 	return merged, true
+}
+
+// clonePossibleEnums returns a detached possible-value map.
+func clonePossibleEnums(in map[string]map[int]typeinfo.EnumValue) map[string]map[int]typeinfo.EnumValue {
+	out := make(map[string]map[int]typeinfo.EnumValue, len(in))
+	for key, values := range in {
+		out[key] = clonePossibleEnumValues(values)
+	}
+	return out
+}
+
+// clonePossibleEnumValues returns a detached possible-value set.
+func clonePossibleEnumValues(in map[int]typeinfo.EnumValue) map[int]typeinfo.EnumValue {
+	out := make(map[int]typeinfo.EnumValue, len(in))
+	for value, enumValue := range in {
+		out[value] = enumValue
+	}
+	return out
+}
+
+// unionPossibleEnums joins possible-value sets from incoming flow paths.
+func unionPossibleEnums(a, b map[string]map[int]typeinfo.EnumValue) map[string]map[int]typeinfo.EnumValue {
+	out := clonePossibleEnums(a)
+	for path, values := range b {
+		if out[path] == nil {
+			out[path] = make(map[int]typeinfo.EnumValue)
+		}
+		for value, enumValue := range values {
+			out[path][value] = enumValue
+		}
+	}
+	return out
+}
+
+// possibleEnumMapsEqual reports whether two possible-value maps match.
+func possibleEnumMapsEqual(a, b map[string]map[int]typeinfo.EnumValue) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for path, aValues := range a {
+		bValues := b[path]
+		if len(aValues) != len(bValues) {
+			return false
+		}
+		for value := range aValues {
+			if _, ok := bValues[value]; !ok {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 // cloneCallResults returns a detached call result selection map.
@@ -513,6 +711,41 @@ func directAliasTargets(in map[string]unionAliasTarget) map[string]unionAliasTar
 		}
 	}
 	return out
+}
+
+// possibleEnumValuesForUnionTargets returns all mapped values for aliased unions.
+func possibleEnumValuesForUnionTargets(targets map[string]unionAliasTarget) map[int]typeinfo.EnumValue {
+	values := make(map[int]typeinfo.EnumValue)
+	for _, target := range targets {
+		if target.Rule == nil || target.Rule.Enum == nil {
+			continue
+		}
+		for _, value := range target.Rule.Enum.Values {
+			if _, ok := target.Rule.MemberForValue(value.Value); ok {
+				values[value.Value] = value
+			}
+		}
+	}
+	return values
+}
+
+// possibleEnumValuesForAliases returns all discriminator values represented by aliases.
+func possibleEnumValuesForAliases(
+	unionTargets map[string]unionAliasTarget,
+	enumTargets map[string]dependentEnumAliasTarget,
+) map[int]typeinfo.EnumValue {
+	values := possibleEnumValuesForUnionTargets(unionTargets)
+	for _, target := range enumTargets {
+		if target.Rule == nil || target.Enum == nil {
+			continue
+		}
+		for _, value := range target.Enum.Values {
+			if _, ok := target.Rule.EnumByValue[value.Value]; ok {
+				values[value.Value] = value
+			}
+		}
+	}
+	return values
 }
 
 // cloneDependentEnumAliases returns a detached dependent enum alias map.

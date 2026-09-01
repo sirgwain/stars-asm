@@ -3,7 +3,10 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
+	"github.com/sirgwain/stars-asm/dasm/testfixture"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -58,6 +61,74 @@ func TestCoalesceWideTempsCollapsesFarPointerTempHalves(t *testing.T) {
 		t.Fatalf("block 1606 effects = %#v, want %#v", got, want)
 	}
 	if got, want := FormatEffect(fn.Blocks[2].Effects[0]), "call IdTargetFreighter(lpfl, t_merge_160c_0001_wide)"; got != want {
+		t.Fatalf("call = %q, want %q", got, want)
+	}
+}
+
+// TestCoalesceWideTempsInfersCStringPointerFromSegmentOffsetTemps verifies
+// SS:array and DS:literal word pairs coalesce into one far C string pointer
+// temp.
+func TestCoalesceWideTempsInfersCStringPointerFromSegmentOffsetTemps(t *testing.T) {
+	fx := testfixture.Stars(t)
+	charType := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}
+	farCharPtrType := &typeinfo.Pointer{Elem: charType, Class: typeinfo.PtrFar}
+	szT := &Local{FunctionVar: typeinfo.FunctionVar{Name: "szT", Type: &typeinfo.Array{Elem: charType, Count: 96}, BPOffset: -0x190}}
+	lo := &Temp{Name: "t_merge_2766_0001", TypeInfo: typeinfo.U16}
+	hi := &Temp{Name: "t_merge_2766_0002", TypeInfo: typeinfo.U16}
+	target := &typeinfo.Function{Name: "_wsprintf", Ret: typeinfo.U16, VarArgs: true, Params: []typeinfo.FunctionVar{
+		{Name: "lpszout", Type: farCharPtrType},
+		{Name: "lpszfmt", Type: farCharPtrType},
+	}}
+	fn := &Func{Blocks: []Block{
+		{
+			ID: 0x2746,
+			Effects: []Effect{
+				&Assign{Dst: lo, Src: szT},
+				&Assign{Dst: hi, Src: &Register{Val: asm.RegSS}},
+				&Jump{To: 0x2766},
+			},
+		},
+		{
+			ID: 0x2759,
+			Effects: []Effect{
+				&Assign{Dst: lo, Src: &Const{TypeInfo: typeinfo.U16, U64: 0x1420}},
+				&Assign{Dst: hi, Src: &Register{Val: asm.RegDS, SegNum: 0x25}},
+				&Jump{To: 0x2766},
+			},
+		},
+		{
+			ID: 0x2761,
+			Effects: []Effect{
+				&Assign{Dst: lo, Src: &Const{TypeInfo: typeinfo.U16, U64: 0x1422}},
+				&Assign{Dst: hi, Src: &Register{Val: asm.RegDS, SegNum: 0x25}},
+			},
+		},
+		{
+			ID: 0x2766,
+			Effects: []Effect{
+				&CallEffect{Call: &Call{Function: target, Args: []Expr{
+					&Global{GlobalVar: &typeinfo.GlobalVar{Name: "szWork", Type: farCharPtrType}},
+					&Global{GlobalVar: &typeinfo.GlobalVar{Name: "pszFmt", Type: farCharPtrType}},
+					&FarPointer{Part: machine.FarPointerWhole, Segment: hi, Offset: lo, TypeInfo: farCharPtrType},
+				}}},
+			},
+		},
+	}}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("DrawVCR"))
+
+	if changed := (&coalesceWideTempsProcessor{ctx: ctx}).ProcessFunc(nil, fn); !changed {
+		t.Fatal("ProcessFunc changed = false, want true")
+	}
+	if got, want := formatEffects(fn.Blocks[0].Effects), []string{"t_merge_2766_0001_wide = szT", "goto L_2766"}; !equalStrings(got, want) {
+		t.Fatalf("block 2746 effects = %#v, want %#v", got, want)
+	}
+	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_2766_0001_wide = \",\"", "goto L_2766"}; !equalStrings(got, want) {
+		t.Fatalf("block 2759 effects = %#v, want %#v", got, want)
+	}
+	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_2766_0001_wide = \".\""}; !equalStrings(got, want) {
+		t.Fatalf("block 2761 effects = %#v, want %#v", got, want)
+	}
+	if got, want := FormatEffect(fn.Blocks[3].Effects[0]), "call _wsprintf(szWork, pszFmt, t_merge_2766_0001_wide)"; got != want {
 		t.Fatalf("call = %q, want %q", got, want)
 	}
 }

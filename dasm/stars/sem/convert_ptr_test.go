@@ -171,7 +171,7 @@ func TestLowerMachineResolvesIndexedNearBytePointerArray(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch 0x4 <= sext8to16(pTech[i]) ? L_687f : L_6796"
+	want := "branch 4 <= sext8to16(pTech[i]) ? L_687f : L_6796"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -232,7 +232,7 @@ func TestLowerMachineResolvesIndexedNearPointerByteArrayFields(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "pplr->rgEnvVarMax[i] = 0xff"
+	want := "pplr->rgEnvVarMax[i] = -1"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -294,7 +294,7 @@ func TestLowerMachineResolvesIndexedNearPointerParameter(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch sext8to16(*rgsz[i]) != 0xffff ? L_16a9 : L_1675"
+	want := "branch sext8to16(*rgsz[i]) != -1 ? L_16a9 : L_1675"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}

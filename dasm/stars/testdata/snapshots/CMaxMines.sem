@@ -25,13 +25,13 @@ L_72b7:
     branch LOWORD(cMax) >= 0xa ? L_72ca : L_72c0
 
 L_72c0:
-    cMax = 0xa
+    cMax = 10
 
 L_72ca:
     branch GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh ? L_72f4 : L_72ea
 
 L_72ea:
-    cMax = 0x0
+    cMax = 0
 
 L_72f4:
 

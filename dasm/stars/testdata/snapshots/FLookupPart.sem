@@ -27,13 +27,13 @@ L_529b:
 
 L_52a1:
     ppart->pengine = &rgengine[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_52c6
+    branch idPlayer == -1 ? L_609c : L_52c6
 
 L_52c6:
     branch hs.iItem != iengineSettlersDelight ? L_52e6 : L_52d4
 
 L_52d4:
-    branch raMajor == 0x0 ? L_52e6 : L_52dd
+    branch raMajor == 0 ? L_52e6 : L_52dd
 
 L_52dd:
     return 0xffff
@@ -48,7 +48,7 @@ L_5302:
     branch hs.iItem != iengineRadiatingHydroRamScoop ? L_533a : L_5310
 
 L_5310:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0x0 ? L_533a : L_5331
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0 ? L_533a : L_5331
 
 L_5331:
     return 0xffff
@@ -60,7 +60,7 @@ L_5348:
     branch hs.iItem != iengineFuelMizer ? L_5380 : L_5356
 
 L_5356:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0x0 ? L_5380 : L_5377
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0 ? L_5380 : L_5377
 
 L_5377:
     return 0xffff
@@ -69,13 +69,13 @@ L_5380:
     branch hs.iItem != iengineInterspace10 ? L_53b8 : L_538e
 
 L_538e:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0x0 ? L_53b8 : L_53af
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0 ? L_53b8 : L_53af
 
 L_53af:
     return 0xffff
 
 L_53b8:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_53cb
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_53cb
 
 L_53cb:
     return 0xffff
@@ -92,7 +92,7 @@ L_53e8:
     branch hs.iItem != ishieldShadowShield ? L_5423 : L_5411
 
 L_5411:
-    branch raMajor == 0x1 ? L_5423 : L_541a
+    branch raMajor == 1 ? L_5423 : L_541a
 
 L_541a:
     return 0xffff
@@ -101,13 +101,13 @@ L_5423:
     branch hs.iItem != ishieldCrobySharmor ? L_5443 : L_5431
 
 L_5431:
-    branch raMajor == 0x4 ? L_5443 : L_543a
+    branch raMajor == 4 ? L_5443 : L_543a
 
 L_543a:
     return 0xffff
 
 L_5443:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5456
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5456
 
 L_5456:
     return 0xffff
@@ -121,7 +121,7 @@ L_546d:
 
 L_5473:
     ppart->phul = &rghuldef[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5498
+    branch idPlayer == -1 ? L_609c : L_5498
 
 L_5498:
     branch hs.iItem == ihuldefMiniColonyShip ? L_54b4 : L_54a6
@@ -130,7 +130,7 @@ L_54a6:
     branch hs.iItem != ihuldefMetaMorph ? L_54c6 : L_54b4
 
 L_54b4:
-    branch raMajor == 0x0 ? L_54c6 : L_54bd
+    branch raMajor == 0 ? L_54c6 : L_54bd
 
 L_54bd:
     return 0xffff
@@ -142,7 +142,7 @@ L_54d4:
     branch hs.iItem != ihuldefSuperFreighter ? L_54f4 : L_54e2
 
 L_54e2:
-    branch raMajor == 0x4 ? L_54f4 : L_54eb
+    branch raMajor == 4 ? L_54f4 : L_54eb
 
 L_54eb:
     return 0xffff
@@ -160,7 +160,7 @@ L_551e:
     branch hs.iItem != ihuldefUltraMiner ? L_5556 : L_552c
 
 L_552c:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0x0 ? L_5556 : L_554d
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5556 : L_554d
 
 L_554d:
     return 0xffff
@@ -175,7 +175,7 @@ L_5572:
     branch hs.iItem != ihuldefUltraMiner ? L_55aa : L_5580
 
 L_5580:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0x0 ? L_55aa : L_55a1
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0 ? L_55aa : L_55a1
 
 L_55a1:
     return 0xffff
@@ -187,7 +187,7 @@ L_55b8:
     branch hs.iItem != ihuldefBattleCruiser ? L_55d8 : L_55c6
 
 L_55c6:
-    branch raMajor == 0x2 ? L_55d8 : L_55cf
+    branch raMajor == 2 ? L_55d8 : L_55cf
 
 L_55cf:
     return 0xffff
@@ -196,7 +196,7 @@ L_55d8:
     branch hs.iItem != ihuldefRogue ? L_55f8 : L_55e6
 
 L_55e6:
-    branch raMajor == 0x1 ? L_55f8 : L_55ef
+    branch raMajor == 1 ? L_55f8 : L_55ef
 
 L_55ef:
     return 0xffff
@@ -205,7 +205,7 @@ L_55f8:
     branch hs.iItem != ihuldefStealthBomber ? L_5618 : L_5606
 
 L_5606:
-    branch raMajor == 0x1 ? L_5618 : L_560f
+    branch raMajor == 1 ? L_5618 : L_560f
 
 L_560f:
     return 0xffff
@@ -217,13 +217,13 @@ L_5626:
     branch hs.iItem != ihuldefSuperMineLayer ? L_5646 : L_5634
 
 L_5634:
-    branch raMajor == 0x5 ? L_5646 : L_563d
+    branch raMajor == 5 ? L_5646 : L_563d
 
 L_563d:
     return 0xffff
 
 L_5646:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5659
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5659
 
 L_5659:
     return 0xffff
@@ -237,7 +237,7 @@ L_5670:
 
 L_5676:
     ppart->pcom = &rghuldefSB[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_569b
+    branch idPlayer == -1 ? L_609c : L_569b
 
 L_569b:
     branch hs.iItem == 0x1 ? L_56b7 : L_56a9
@@ -246,7 +246,7 @@ L_56a9:
     branch hs.iItem != 0x3 ? L_56de : L_56b7
 
 L_56b7:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0x0 ? L_56de : L_56d8
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0 ? L_56de : L_56d8
 
 L_56d8:
     return 0xffff
@@ -255,7 +255,7 @@ L_56de:
     branch hs.iItem != 0x4 ? L_609c : L_56ec
 
 L_56ec:
-    branch raMajor == 0x8 ? L_609c : L_56f5
+    branch raMajor == 8 ? L_609c : L_56f5
 
 L_56f5:
     return 0xffff
@@ -272,7 +272,7 @@ L_5712:
     branch hs.iItem != iarmorDepletedNeutronium ? L_574d : L_573b
 
 L_573b:
-    branch raMajor == 0x1 ? L_574d : L_5744
+    branch raMajor == 1 ? L_574d : L_5744
 
 L_5744:
     return 0xffff
@@ -281,13 +281,13 @@ L_574d:
     branch hs.iItem != iarmorFieldedKelarium ? L_576d : L_575b
 
 L_575b:
-    branch raMajor == 0x4 ? L_576d : L_5764
+    branch raMajor == 4 ? L_576d : L_5764
 
 L_5764:
     return 0xffff
 
 L_576d:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5780
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5780
 
 L_5780:
     return 0xffff
@@ -301,45 +301,45 @@ L_5797:
 
 L_579d:
     ppart->pspecial = &rgspecialE[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_57c2
+    branch idPlayer == -1 ? L_609c : L_57c2
 
 L_57c2:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_57db : L_57d5
+    branch FShouldPartBeHidden(ppart) == 0 ? L_57db : L_57d5
 
 L_57d5:
     return 0xffff
 
 L_57db:
     goto L_5841
-    branch raMajor == 0x1 ? L_57f3 : L_57ed
+    branch raMajor == 1 ? L_57f3 : L_57ed
 
 L_57ed:
     return 0xffff
 
 L_57f3:
     goto L_5874
-    branch raMajor == 0x5 ? L_5805 : L_57ff
+    branch raMajor == 5 ? L_5805 : L_57ff
 
 L_57ff:
     return 0xffff
 
 L_5805:
     goto L_5874
-    branch raMajor == 0x7 ? L_5817 : L_5811
+    branch raMajor == 7 ? L_5817 : L_5811
 
 L_5811:
     return 0xffff
 
 L_5817:
     goto L_5874
-    branch raMajor == 0x0 ? L_5829 : L_5823
+    branch raMajor == 0 ? L_5829 : L_5823
 
 L_5823:
     return 0xffff
 
 L_5829:
     goto L_5874
-    branch raMajor == 0x4 ? L_609c : L_5835
+    branch raMajor == 4 ? L_609c : L_5835
 
 L_5835:
     return 0xffff
@@ -358,10 +358,10 @@ L_5885:
 
 L_588b:
     ppart->pspecial = &rgspecialM[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_58b0
+    branch idPlayer == -1 ? L_609c : L_58b0
 
 L_58b0:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_58c9 : L_58c3
+    branch FShouldPartBeHidden(ppart) == 0 ? L_58c9 : L_58c3
 
 L_58c3:
     return 0xffff
@@ -370,7 +370,7 @@ L_58c9:
     branch hs.iItem != ispecialMColonizationModule ? L_58e9 : L_58d7
 
 L_58d7:
-    branch raMajor != 0x8 ? L_58e9 : L_58e0
+    branch raMajor != 8 ? L_58e9 : L_58e0
 
 L_58e0:
     return 0xffff
@@ -379,7 +379,7 @@ L_58e9:
     branch hs.iItem != ispecialMOrbitalConstructionModule ? L_609c : L_58f7
 
 L_58f7:
-    branch raMajor == 0x8 ? L_609c : L_5900
+    branch raMajor == 8 ? L_609c : L_5900
 
 L_5900:
     return 0xffff
@@ -393,7 +393,7 @@ L_5917:
 
 L_591d:
     ppart->pspecialsb = &rgspecialSB[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5942
+    branch idPlayer == -1 ? L_609c : L_5942
 
 L_5942:
     branch hs.iItem < ispecialSBMassDriver5 ? L_598c : L_5950
@@ -408,7 +408,7 @@ L_596c:
     branch hs.iItem == ispecialSBUltraDriver10 ? L_609c : L_597a
 
 L_597a:
-    branch raMajor == 0x6 ? L_609c : L_5983
+    branch raMajor == 6 ? L_609c : L_5983
 
 L_5983:
     return 0xffff
@@ -421,7 +421,7 @@ L_599a:
     branch hs.iItem > ispecialSBStargateAnyAny ? L_609c : L_59a8
 
 L_59a8:
-    branch raMajor == 0x7 ? L_59d3 : L_59b1
+    branch raMajor == 7 ? L_59d3 : L_59b1
 
 L_59b1:
     branch hs.iItem == ispecialSBStargateAny300 ? L_59cd : L_59bf
@@ -433,7 +433,7 @@ L_59cd:
     return 0xffff
 
 L_59d3:
-    branch raMajor != 0x0 ? L_609c : L_59dc
+    branch raMajor != 0 ? L_609c : L_59dc
 
 L_59dc:
     return 0xffff
@@ -447,7 +447,7 @@ L_59f3:
 
 L_59f9:
     ppart->pmines = &rgmines[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5a1e
+    branch idPlayer == -1 ? L_609c : L_5a1e
 
 L_5a1e:
     branch hs.iItem == iminesMineDispenser40 ? L_5a8e : L_5a2c
@@ -474,7 +474,7 @@ L_5a80:
     branch hs.iItem != iminesSpeedTrap50 ? L_5aa0 : L_5a8e
 
 L_5a8e:
-    branch raMajor == 0x5 ? L_5aa0 : L_5a97
+    branch raMajor == 5 ? L_5aa0 : L_5a97
 
 L_5a97:
     return 0xffff
@@ -483,10 +483,10 @@ L_5aa0:
     branch hs.iItem != iminesSpeedTrap20 ? L_5ac9 : L_5aae
 
 L_5aae:
-    branch raMajor == 0x5 ? L_5ac9 : L_5ab7
+    branch raMajor == 5 ? L_5ac9 : L_5ab7
 
 L_5ab7:
-    branch raMajor == 0x4 ? L_5ac9 : L_5ac0
+    branch raMajor == 4 ? L_5ac9 : L_5ac0
 
 L_5ac0:
     return 0xffff
@@ -495,7 +495,7 @@ L_5ac9:
     branch hs.iItem != iminesMineDispenser50 ? L_609c : L_5ad7
 
 L_5ad7:
-    branch raMajor != 0x2 ? L_609c : L_5ae0
+    branch raMajor != 2 ? L_609c : L_5ae0
 
 L_5ae0:
     return 0xffff
@@ -509,7 +509,7 @@ L_5af7:
 
 L_5afd:
     ppart->pmining = &rgmining[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5b22
+    branch idPlayer == -1 ? L_609c : L_5b22
 
 L_5b22:
     branch hs.iItem == iminingRoboMiner ? L_5b68 : L_5b30
@@ -527,7 +527,7 @@ L_5b5a:
     branch hs.iItem != iminingRoboUltraMiner ? L_5b92 : L_5b68
 
 L_5b68:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0x0 ? L_5b92 : L_5b89
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5b92 : L_5b89
 
 L_5b89:
     return 0xffff
@@ -539,7 +539,7 @@ L_5ba0:
     branch hs.iItem != iminingRoboUltraMiner ? L_5bd8 : L_5bae
 
 L_5bae:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0x0 ? L_5bd8 : L_5bcf
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0 ? L_5bd8 : L_5bcf
 
 L_5bcf:
     return 0xffff
@@ -548,13 +548,13 @@ L_5bd8:
     branch hs.iItem != iminingOrbitalAdjuster ? L_5bf8 : L_5be6
 
 L_5be6:
-    branch raMajor == 0x3 ? L_5bf8 : L_5bef
+    branch raMajor == 3 ? L_5bf8 : L_5bef
 
 L_5bef:
     return 0xffff
 
 L_5bf8:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5c0b
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5c0b
 
 L_5c0b:
     return 0xffff
@@ -568,7 +568,7 @@ L_5c22:
 
 L_5c28:
     ppart->pscanner = &rgscanner[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5c4d
+    branch idPlayer == -1 ? L_609c : L_5c4d
 
 L_5c4d:
     branch hs.iItem == iscannerFerretScanner ? L_5c77 : L_5c5b
@@ -580,7 +580,7 @@ L_5c69:
     branch hs.iItem != iscannerElephantScanner ? L_5ca1 : L_5c77
 
 L_5c77:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0x0 ? L_5ca1 : L_5c98
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ca1 : L_5c98
 
 L_5c98:
     return 0xffff
@@ -595,7 +595,7 @@ L_5cbd:
     branch hs.iItem != iscannerRobberBaronScanner ? L_609c : L_5ccb
 
 L_5ccb:
-    branch raMajor == 0x1 ? L_609c : L_5cd4
+    branch raMajor == 1 ? L_609c : L_5cd4
 
 L_5cd4:
     return 0xffff
@@ -612,7 +612,7 @@ L_5cf1:
     branch hs.iItem != ibeamMiniGun ? L_5d29 : L_5d1a
 
 L_5d1a:
-    branch raMajor == 0x4 ? L_5d29 : L_5d23
+    branch raMajor == 4 ? L_5d29 : L_5d23
 
 L_5d23:
     return 0xffff
@@ -624,13 +624,13 @@ L_5d37:
     branch hs.iItem != ibeamGatlingNeutrinoCannon ? L_5d57 : L_5d45
 
 L_5d45:
-    branch raMajor == 0x2 ? L_5d57 : L_5d4e
+    branch raMajor == 2 ? L_5d57 : L_5d4e
 
 L_5d4e:
     return 0xffff
 
 L_5d57:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5d6a
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5d6a
 
 L_5d6a:
     return 0xffff
@@ -644,10 +644,10 @@ L_5d81:
 
 L_5d87:
     ppart->ptorp = &rgtorp[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5dac
+    branch idPlayer == -1 ? L_609c : L_5dac
 
 L_5dac:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5dbf
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5dbf
 
 L_5dbf:
     return 0xffff
@@ -661,7 +661,7 @@ L_5dd6:
 
 L_5ddc:
     ppart->pbomb = &rgbomb[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5e01
+    branch idPlayer == -1 ? L_609c : L_5e01
 
 L_5e01:
     branch hs.iItem < ibombSmartBomb ? L_5e2f : L_5e0f
@@ -670,7 +670,7 @@ L_5e0f:
     branch hs.iItem > ibombAnnihilatorBomb ? L_5e2f : L_5e1d
 
 L_5e1d:
-    branch raMajor != 0x4 ? L_5e2f : L_5e26
+    branch raMajor != 4 ? L_5e2f : L_5e26
 
 L_5e26:
     return 0xffff
@@ -679,13 +679,13 @@ L_5e2f:
     branch hs.iItem != ibombRetroBomb ? L_5e4f : L_5e3d
 
 L_5e3d:
-    branch raMajor == 0x3 ? L_5e4f : L_5e46
+    branch raMajor == 3 ? L_5e4f : L_5e46
 
 L_5e46:
     return 0xffff
 
 L_5e4f:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5e62
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5e62
 
 L_5e62:
     return 0xffff
@@ -699,7 +699,7 @@ L_5e79:
 
 L_5e7f:
     ppart->pplanetary = &rgplanetary[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5ea4
+    branch idPlayer == -1 ? L_609c : L_5ea4
 
 L_5ea4:
     branch hs.iItem < iplanetaryViewer50 ? L_5ef7 : L_5eb2
@@ -708,10 +708,10 @@ L_5eb2:
     branch hs.iItem > iplanetarySnooper620X ? L_5ef7 : L_5ec0
 
 L_5ec0:
-    branch ppart->pplanetary->grAbility >= 0x0 ? L_5ef7 : L_5ed0
+    branch ppart->pplanetary->grAbility >= 0 ? L_5ef7 : L_5ed0
 
 L_5ed0:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0x0 ? L_5ef7 : L_5ef1
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ef7 : L_5ef1
 
 L_5ef1:
     return 0xffff
@@ -723,7 +723,7 @@ L_5f05:
     branch hs.iItem > iplanetarySnooper620X ? L_5f22 : L_5f13
 
 L_5f13:
-    branch raMajor != 0x8 ? L_5f22 : L_5f1c
+    branch raMajor != 8 ? L_5f22 : L_5f1c
 
 L_5f1c:
     return 0xffff
@@ -735,7 +735,7 @@ L_5f30:
     branch hs.iItem > iplanetaryNeutronShield ? L_5f4d : L_5f3e
 
 L_5f3e:
-    branch raMajor != 0x8 ? L_5f4d : L_5f47
+    branch raMajor != 8 ? L_5f4d : L_5f47
 
 L_5f47:
     return 0xffff
@@ -747,13 +747,13 @@ L_5f5b:
     branch hs.iItem > iplanetaryNeutronShield ? L_5f7b : L_5f69
 
 L_5f69:
-    branch raMajor != 0x2 ? L_5f7b : L_5f72
+    branch raMajor != 2 ? L_5f7b : L_5f72
 
 L_5f72:
     return 0xffff
 
 L_5f7b:
-    branch FShouldPartBeHidden(ppart) == 0x0 ? L_609c : L_5f8e
+    branch FShouldPartBeHidden(ppart) == 0 ? L_609c : L_5f8e
 
 L_5f8e:
     return 0xffff
@@ -767,7 +767,7 @@ L_5fa5:
 
 L_5fab:
     ppart->pterra = &rgterra[hs.iItem]
-    branch idPlayer == 0xffff ? L_609c : L_5fd0
+    branch idPlayer == -1 ? L_609c : L_5fd0
 
 L_5fd0:
     branch hs.iItem < iterraTotalTerraform3 ? L_609c : L_5fde
@@ -776,7 +776,7 @@ L_5fde:
     branch hs.iItem > iterraTotalTerraform30 ? L_609c : L_5fec
 
 L_5fec:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0x0 ? L_609c : L_600d
+    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0 ? L_609c : L_600d
 
 L_600d:
     return 0xffff
@@ -834,5 +834,5 @@ L_6096:
 
 
 L_609c:
-    return TechStatus(&ppart->pcom->rgTech)
+    return TechStatus(ppart->pcom->rgTech)
 

@@ -10,7 +10,7 @@ type AnalyzeResult struct {
 	LoWords       int `json:"loWords,omitempty"`
 	BranchHiWords int `json:"branchHiWords,omitempty"`
 	BranchLoWords int `json:"branchLoWords,omitempty"`
-	DSRefs        int `json:"dsRefs,omitempty"`
+	SegRegRefs    int `json:"segRegRefs,omitempty"`
 }
 
 func (fn *Func) Analyze(ctx *FuncContext) AnalyzeResult {
@@ -57,8 +57,8 @@ func (r *AnalyzeResult) countExpr(ctx *FuncContext, expr Expr, branch bool) {
 		}
 
 	case *Memory:
-		if ctx != nil && exprMatchesMachineValue(e.Seg, ctx.dsReg) {
-			r.DSRefs++
+		if ctx != nil && (exprMatchesMachineValue(e.Seg, ctx.dsReg) || exprMatchesMachineValue(e.Seg, ctx.csReg)) {
+			r.SegRegRefs++
 		}
 
 	case *Word:

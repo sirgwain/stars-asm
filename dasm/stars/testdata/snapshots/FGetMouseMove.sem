@@ -12,7 +12,7 @@ FGetMouseMove  (utilgen)
 L_4146:
 
 L_4152:
-    branch PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0x0 ? L_417c : L_4176
+    branch PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0 ? L_417c : L_4176
 
 L_4176:
     return 0x1

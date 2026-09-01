@@ -254,6 +254,9 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		}
 		return &Deref{Pointer: ptr, ByteOff: e.ByteOff}, true
 	case *sem.AddressOf:
+		if base, ok := addressOfArrayBase(e); ok {
+			return l.lowerExpr(base)
+		}
 		if base, ok := addressOfZeroIndexArrayBase(e); ok {
 			return l.lowerExpr(base)
 		}
@@ -279,6 +282,26 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 	default:
 		return nil, false
 	}
+}
+
+// addressOfArrayBase returns the array base when address-of is typed as a
+// compatible pointer and C would decay the array to that pointer.
+func addressOfArrayBase(expr *sem.AddressOf) (sem.Expr, bool) {
+	array, ok := expr.Target.ExprType().(*typeinfo.Array)
+	if !ok {
+		return nil, false
+	}
+	ptr, ok := expr.TypeInfo.(*typeinfo.Pointer)
+	if !ok {
+		return nil, false
+	}
+	if ptr.IsCStringPointer() && array.IsCStringArray() {
+		return expr.Target, true
+	}
+	if typeinfo.IsCallCompatible(ptr.Elem, array.Elem) {
+		return expr.Target, true
+	}
+	return nil, false
 }
 
 // addressOfZeroIndexArrayBase returns the array base for &array[0].

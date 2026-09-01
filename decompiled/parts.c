@@ -3341,13 +3341,13 @@ L_5125:
 
 HULDEF *LphuldefFromId(int16_t id) {
 L_512c:
-    if ((id < 0x20))
+    if ((id < 32))
         goto L_5150;
     else
         goto L_513e;
 
 L_513e:
-    return LphuldefSBFromId((id + 0xffe0));
+    return LphuldefSBFromId((id - 32));
 
 L_5150:
     return &(rghuldef[id]);
@@ -3423,7 +3423,7 @@ L_529b:
 
 L_52a1:
     ppart->pengine = &(rgengine[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_52c6;
@@ -3435,7 +3435,7 @@ L_52c6:
         goto L_52d4;
 
 L_52d4:
-    if ((raMajor == 0x0))
+    if ((raMajor == 0))
         goto L_52e6;
     else
         goto L_52dd;
@@ -3462,7 +3462,7 @@ L_5302:
         goto L_5310;
 
 L_5310:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0))
         goto L_533a;
     else
         goto L_5331;
@@ -3483,7 +3483,7 @@ L_5348:
         goto L_5356;
 
 L_5356:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0))
         goto L_5380;
     else
         goto L_5377;
@@ -3498,7 +3498,7 @@ L_5380:
         goto L_538e;
 
 L_538e:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0))
         goto L_53b8;
     else
         goto L_53af;
@@ -3507,7 +3507,7 @@ L_53af:
     return 0xffff;
 
 L_53b8:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_53cb;
@@ -3532,7 +3532,7 @@ L_53e8:
         goto L_5411;
 
 L_5411:
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_5423;
     else
         goto L_541a;
@@ -3547,7 +3547,7 @@ L_5423:
         goto L_5431;
 
 L_5431:
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_5443;
     else
         goto L_543a;
@@ -3556,7 +3556,7 @@ L_543a:
     return 0xffff;
 
 L_5443:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5456;
@@ -3575,7 +3575,7 @@ L_546d:
 
 L_5473:
     ppart->phul = &(rghuldef[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5498;
@@ -3593,7 +3593,7 @@ L_54a6:
         goto L_54b4;
 
 L_54b4:
-    if ((raMajor == 0x0))
+    if ((raMajor == 0))
         goto L_54c6;
     else
         goto L_54bd;
@@ -3614,7 +3614,7 @@ L_54d4:
         goto L_54e2;
 
 L_54e2:
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_54f4;
     else
         goto L_54eb;
@@ -3647,7 +3647,7 @@ L_551e:
         goto L_552c;
 
 L_552c:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0))
         goto L_5556;
     else
         goto L_554d;
@@ -3674,7 +3674,7 @@ L_5572:
         goto L_5580;
 
 L_5580:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0))
         goto L_55aa;
     else
         goto L_55a1;
@@ -3695,7 +3695,7 @@ L_55b8:
         goto L_55c6;
 
 L_55c6:
-    if ((raMajor == 0x2))
+    if ((raMajor == 2))
         goto L_55d8;
     else
         goto L_55cf;
@@ -3710,7 +3710,7 @@ L_55d8:
         goto L_55e6;
 
 L_55e6:
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_55f8;
     else
         goto L_55ef;
@@ -3725,7 +3725,7 @@ L_55f8:
         goto L_5606;
 
 L_5606:
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_5618;
     else
         goto L_560f;
@@ -3746,7 +3746,7 @@ L_5626:
         goto L_5634;
 
 L_5634:
-    if ((raMajor == 0x5))
+    if ((raMajor == 5))
         goto L_5646;
     else
         goto L_563d;
@@ -3755,7 +3755,7 @@ L_563d:
     return 0xffff;
 
 L_5646:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5659;
@@ -3774,7 +3774,7 @@ L_5670:
 
 L_5676:
     ppart->pcom = &(rghuldefSB[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_569b;
@@ -3792,7 +3792,7 @@ L_56a9:
         goto L_56b7;
 
 L_56b7:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0))
         goto L_56de;
     else
         goto L_56d8;
@@ -3807,7 +3807,7 @@ L_56de:
         goto L_56ec;
 
 L_56ec:
-    if ((raMajor == 0x8))
+    if ((raMajor == 8))
         goto L_609c;
     else
         goto L_56f5;
@@ -3832,7 +3832,7 @@ L_5712:
         goto L_573b;
 
 L_573b:
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_574d;
     else
         goto L_5744;
@@ -3847,7 +3847,7 @@ L_574d:
         goto L_575b;
 
 L_575b:
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_576d;
     else
         goto L_5764;
@@ -3856,7 +3856,7 @@ L_5764:
     return 0xffff;
 
 L_576d:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5780;
@@ -3875,13 +3875,13 @@ L_5797:
 
 L_579d:
     ppart->pspecial = &(rgspecialE[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_57c2;
 
 L_57c2:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_57db;
     else
         goto L_57d5;
@@ -3891,7 +3891,7 @@ L_57d5:
 
 L_57db:
     goto L_5841;
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_57f3;
     else
         goto L_57ed;
@@ -3901,7 +3901,7 @@ L_57ed:
 
 L_57f3:
     goto L_5874;
-    if ((raMajor == 0x5))
+    if ((raMajor == 5))
         goto L_5805;
     else
         goto L_57ff;
@@ -3911,7 +3911,7 @@ L_57ff:
 
 L_5805:
     goto L_5874;
-    if ((raMajor == 0x7))
+    if ((raMajor == 7))
         goto L_5817;
     else
         goto L_5811;
@@ -3921,7 +3921,7 @@ L_5811:
 
 L_5817:
     goto L_5874;
-    if ((raMajor == 0x0))
+    if ((raMajor == 0))
         goto L_5829;
     else
         goto L_5823;
@@ -3931,7 +3931,7 @@ L_5823:
 
 L_5829:
     goto L_5874;
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_609c;
     else
         goto L_5835;
@@ -3954,13 +3954,13 @@ L_5885:
 
 L_588b:
     ppart->pspecial = &(rgspecialM[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_58b0;
 
 L_58b0:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_58c9;
     else
         goto L_58c3;
@@ -3975,7 +3975,7 @@ L_58c9:
         goto L_58d7;
 
 L_58d7:
-    if ((raMajor != 0x8))
+    if ((raMajor != 8))
         goto L_58e9;
     else
         goto L_58e0;
@@ -3990,7 +3990,7 @@ L_58e9:
         goto L_58f7;
 
 L_58f7:
-    if ((raMajor == 0x8))
+    if ((raMajor == 8))
         goto L_609c;
     else
         goto L_5900;
@@ -4009,7 +4009,7 @@ L_5917:
 
 L_591d:
     ppart->pspecialsb = &(rgspecialSB[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5942;
@@ -4039,7 +4039,7 @@ L_596c:
         goto L_597a;
 
 L_597a:
-    if ((raMajor == 0x6))
+    if ((raMajor == 6))
         goto L_609c;
     else
         goto L_5983;
@@ -4060,7 +4060,7 @@ L_599a:
         goto L_59a8;
 
 L_59a8:
-    if ((raMajor == 0x7))
+    if ((raMajor == 7))
         goto L_59d3;
     else
         goto L_59b1;
@@ -4081,7 +4081,7 @@ L_59cd:
     return 0xffff;
 
 L_59d3:
-    if ((raMajor != 0x0))
+    if ((raMajor != 0))
         goto L_609c;
     else
         goto L_59dc;
@@ -4100,7 +4100,7 @@ L_59f3:
 
 L_59f9:
     ppart->pmines = &(rgmines[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5a1e;
@@ -4154,7 +4154,7 @@ L_5a80:
         goto L_5a8e;
 
 L_5a8e:
-    if ((raMajor == 0x5))
+    if ((raMajor == 5))
         goto L_5aa0;
     else
         goto L_5a97;
@@ -4169,13 +4169,13 @@ L_5aa0:
         goto L_5aae;
 
 L_5aae:
-    if ((raMajor == 0x5))
+    if ((raMajor == 5))
         goto L_5ac9;
     else
         goto L_5ab7;
 
 L_5ab7:
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_5ac9;
     else
         goto L_5ac0;
@@ -4190,7 +4190,7 @@ L_5ac9:
         goto L_5ad7;
 
 L_5ad7:
-    if ((raMajor != 0x2))
+    if ((raMajor != 2))
         goto L_609c;
     else
         goto L_5ae0;
@@ -4209,7 +4209,7 @@ L_5af7:
 
 L_5afd:
     ppart->pmining = &(rgmining[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5b22;
@@ -4245,7 +4245,7 @@ L_5b5a:
         goto L_5b68;
 
 L_5b68:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0))
         goto L_5b92;
     else
         goto L_5b89;
@@ -4266,7 +4266,7 @@ L_5ba0:
         goto L_5bae;
 
 L_5bae:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0))
         goto L_5bd8;
     else
         goto L_5bcf;
@@ -4281,7 +4281,7 @@ L_5bd8:
         goto L_5be6;
 
 L_5be6:
-    if ((raMajor == 0x3))
+    if ((raMajor == 3))
         goto L_5bf8;
     else
         goto L_5bef;
@@ -4290,7 +4290,7 @@ L_5bef:
     return 0xffff;
 
 L_5bf8:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5c0b;
@@ -4309,7 +4309,7 @@ L_5c22:
 
 L_5c28:
     ppart->pscanner = &(rgscanner[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5c4d;
@@ -4333,7 +4333,7 @@ L_5c69:
         goto L_5c77;
 
 L_5c77:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
         goto L_5ca1;
     else
         goto L_5c98;
@@ -4360,7 +4360,7 @@ L_5cbd:
         goto L_5ccb;
 
 L_5ccb:
-    if ((raMajor == 0x1))
+    if ((raMajor == 1))
         goto L_609c;
     else
         goto L_5cd4;
@@ -4385,7 +4385,7 @@ L_5cf1:
         goto L_5d1a;
 
 L_5d1a:
-    if ((raMajor == 0x4))
+    if ((raMajor == 4))
         goto L_5d29;
     else
         goto L_5d23;
@@ -4406,7 +4406,7 @@ L_5d37:
         goto L_5d45;
 
 L_5d45:
-    if ((raMajor == 0x2))
+    if ((raMajor == 2))
         goto L_5d57;
     else
         goto L_5d4e;
@@ -4415,7 +4415,7 @@ L_5d4e:
     return 0xffff;
 
 L_5d57:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5d6a;
@@ -4434,13 +4434,13 @@ L_5d81:
 
 L_5d87:
     ppart->ptorp = &(rgtorp[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5dac;
 
 L_5dac:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5dbf;
@@ -4459,7 +4459,7 @@ L_5dd6:
 
 L_5ddc:
     ppart->pbomb = &(rgbomb[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5e01;
@@ -4477,7 +4477,7 @@ L_5e0f:
         goto L_5e1d;
 
 L_5e1d:
-    if ((raMajor != 0x4))
+    if ((raMajor != 4))
         goto L_5e2f;
     else
         goto L_5e26;
@@ -4492,7 +4492,7 @@ L_5e2f:
         goto L_5e3d;
 
 L_5e3d:
-    if ((raMajor == 0x3))
+    if ((raMajor == 3))
         goto L_5e4f;
     else
         goto L_5e46;
@@ -4501,7 +4501,7 @@ L_5e46:
     return 0xffff;
 
 L_5e4f:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5e62;
@@ -4520,7 +4520,7 @@ L_5e79:
 
 L_5e7f:
     ppart->pplanetary = &(rgplanetary[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5ea4;
@@ -4538,13 +4538,13 @@ L_5eb2:
         goto L_5ec0;
 
 L_5ec0:
-    if ((ppart->pplanetary->grAbility >= 0x0))
+    if ((ppart->pplanetary->grAbility >= 0))
         goto L_5ef7;
     else
         goto L_5ed0;
 
 L_5ed0:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
         goto L_5ef7;
     else
         goto L_5ef1;
@@ -4565,7 +4565,7 @@ L_5f05:
         goto L_5f13;
 
 L_5f13:
-    if ((raMajor != 0x8))
+    if ((raMajor != 8))
         goto L_5f22;
     else
         goto L_5f1c;
@@ -4586,7 +4586,7 @@ L_5f30:
         goto L_5f3e;
 
 L_5f3e:
-    if ((raMajor != 0x8))
+    if ((raMajor != 8))
         goto L_5f4d;
     else
         goto L_5f47;
@@ -4607,7 +4607,7 @@ L_5f5b:
         goto L_5f69;
 
 L_5f69:
-    if ((raMajor != 0x2))
+    if ((raMajor != 2))
         goto L_5f7b;
     else
         goto L_5f72;
@@ -4616,7 +4616,7 @@ L_5f72:
     return 0xffff;
 
 L_5f7b:
-    if ((FShouldPartBeHidden(ppart) == 0x0))
+    if ((FShouldPartBeHidden(ppart) == 0))
         goto L_609c;
     else
         goto L_5f8e;
@@ -4635,7 +4635,7 @@ L_5fa5:
 
 L_5fab:
     ppart->pterra = &(rgterra[hs.iItem]);
-    if ((idPlayer == 0xffff))
+    if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_5fd0;
@@ -4653,7 +4653,7 @@ L_5fde:
         goto L_5fec;
 
 L_5fec:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0x0))
+    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0))
         goto L_609c;
     else
         goto L_600d;
@@ -4760,7 +4760,7 @@ L_6091:
 L_6096:
 
 L_609c:
-    return TechStatus(&(ppart->pcom->rgTech));
+    return TechStatus(ppart->pcom->rgTech);
 }
 
 void LookupBestPlanetaryScanner(PART *ppart) {
@@ -4769,19 +4769,19 @@ L_60be:
     ppart->hs.grhst = hstPlanetary;
 
 L_60e0:
-    if ((ppart->hs.iItem < 0x0))
+    if ((ppart->hs.iItem < iplanetaryViewer50))
         goto L_6141;
     else
         goto L_60f1;
 
 L_60f1:
-    if ((FLookupPart(ppart) == 0x1))
+    if ((FLookupPart(ppart) == 1))
         goto L_6141;
     else
         goto L_6104;
 
 L_6104:
-    if ((ppart->hs.iItem == 0x0))
+    if ((ppart->hs.iItem == iplanetaryViewer50))
         goto L_6141;
     else
         goto L_6112;
@@ -4790,7 +4790,7 @@ L_6112:
 
 L_6118:
     /* untranslated: ss:[bp-0x4] = ((HIWORD(ppart->hs) + 0xffff) & 0xff) */
-    ppart->hs.iItem = 0x0;
+    ppart->hs.iItem = iplanetaryViewer50;
     /* untranslated: HIWORD(ppart->hs) = (HIWORD(ppart->hs) | ss:[bp-0x4]) */
     goto L_60e0;
 
@@ -4805,10 +4805,10 @@ int16_t TechStatus(char *rgTech) {
     int16_t cMiss;
 
 L_6148:
-    cMiss = 0x0;
-    fAlmost = 0x0;
-    fInAWhile = 0x0;
-    i = 0x0;
+    cMiss = 0;
+    fAlmost = 0;
+    fInAWhile = 0;
+    i = 0;
     goto L_6211;
 
 L_6168:
@@ -4818,36 +4818,36 @@ L_6168:
         goto L_61a1;
 
 L_61a1:
-    cMiss = (cMiss + 0x1);
+    cMiss = (cMiss + 1);
     if ((i != ((uint16_t)(rgplr[idPlayer].iTechCur) & 0xf)))
         goto L_620d;
     else
         goto L_61c0;
 
 L_61c0:
-    if ((((uint16_t)(rgplr[idPlayer].rgTech[i]) + 0x1) != (uint16_t)(rgTech[i])))
+    if ((((uint16_t)(rgplr[idPlayer].rgTech[i]) + 1) != (uint16_t)(rgTech[i])))
         goto L_6204;
     else
         goto L_61fc;
 
 L_61fc:
-    fAlmost = 0x1;
+    fAlmost = 1;
     goto L_620d;
 
 L_6204:
-    fInAWhile = (i + 0x1);
+    fInAWhile = (i + 1);
 
 L_620d:
-    i = (i + 0x1);
+    i = (i + 1);
 
 L_6211:
-    if ((i < 0x6))
+    if ((i < 6))
         goto L_6168;
     else
         goto L_621a;
 
 L_621a:
-    if ((cMiss != 0x0))
+    if ((cMiss != 0))
         goto L_622c;
     else
         goto L_6223;
@@ -4856,13 +4856,13 @@ L_6223:
     return 0x1;
 
 L_622c:
-    if ((cMiss != 0x1))
+    if ((cMiss != 1))
         goto L_6247;
     else
         goto L_6235;
 
 L_6235:
-    if ((fAlmost == 0x0))
+    if ((fAlmost == 0))
         goto L_6247;
     else
         goto L_623e;
@@ -4871,19 +4871,19 @@ L_623e:
     return 0x2;
 
 L_6247:
-    if ((cMiss != 0x1))
+    if ((cMiss != 1))
         goto L_629c;
     else
         goto L_6250;
 
 L_6250:
-    if ((fInAWhile == 0x0))
+    if ((fInAWhile == 0))
         goto L_629c;
     else
         goto L_6259;
 
 L_6259:
-    /* untranslated: return ((sext8to16(byte HIWORD(rgTech):[(LOWORD(rgTech) + (fInAWhile + 0xffff))]) - ss:[bp-0xc]) + 0x1) */
+    /* untranslated: return ((sext8to16(rgTech[(fInAWhile - 1)]) - ss:[bp-0xc]) + 0x1) */
 
 L_629c:
     return 0x63;

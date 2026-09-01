@@ -56,3 +56,10 @@ func IsArrayPointer(typ Type) bool {
 	_, ok = ptr.Elem.(*Array)
 	return ok
 }
+
+func IsIntLike(typ Type) bool {
+	if p, ok := typ.(*Primitive); ok {
+		return p.Signed && p.TypeKind == KInt
+	}
+	return false
+}

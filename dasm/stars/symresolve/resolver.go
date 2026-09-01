@@ -228,6 +228,21 @@ func (r *Resolver) ResolveFieldPathInContext(base SymbolPath, off int, ctx *Unio
 	return field, offLeft, true
 }
 
+// ResolveContainingFieldPathInContext resolves the immediate field containing an offset.
+func (r *Resolver) ResolveContainingFieldPathInContext(base SymbolPath, off int, ctx *UnionContext) (SymbolPath, int, bool) {
+	t, _ := typeinfo.UnwrapPointer(base.Type())
+	s, ok := t.(*typeinfo.Struct)
+	if !ok {
+		return nil, 0, false
+	}
+	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx, true)
+	if len(matches) != 1 {
+		return nil, 0, false
+	}
+	match := matches[0]
+	return &SymbolField{Base: base, Field: match.Field}, match.Off, true
+}
+
 // ResolveBitfieldLoad resolves a shifted and masked field load from a root symbol.
 func (r *Resolver) ResolveBitfieldLoad(v typeinfo.Var, off int, storageWidth int, bitOff int, bitWidth int) (SymbolPath, bool) {
 	return r.ResolveBitfieldLoadInContext(v, off, storageWidth, bitOff, bitWidth, nil)
@@ -351,7 +366,7 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 	if ctx != nil {
 		selection, ok := ctx.SelectionFor(base, strct)
 		if ok {
-			return selectUnionMemberMatch(matches, selection.Member)
+			return selectUnionMemberMatch(strct, matches, selection.Member)
 		}
 	}
 	if !useDefault || ctx == nil {
@@ -361,15 +376,84 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 	if !ok || rule.DefaultMember == nil {
 		return matches
 	}
-	return selectUnionMemberMatch(matches, rule.DefaultMember)
+	return selectUnionMemberMatch(strct, matches, rule.DefaultMember)
 }
 
 // selectUnionMemberMatch narrows matches to the requested union member.
-func selectUnionMemberMatch(matches []typeinfo.StructFieldMatch, member *typeinfo.StructField) []typeinfo.StructFieldMatch {
+func selectUnionMemberMatch(strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, member *typeinfo.StructField) []typeinfo.StructFieldMatch {
 	for _, match := range matches {
 		if match.Field == member {
 			return []typeinfo.StructFieldMatch{match}
 		}
 	}
+	if match, ok := selectUnionLayoutPathMatch(strct, matches, member); ok {
+		return []typeinfo.StructFieldMatch{match}
+	}
 	return matches
+}
+
+// selectUnionLayoutPathMatch narrows matches to the layout path containing the selected member.
+func selectUnionLayoutPathMatch(strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, member *typeinfo.StructField) (typeinfo.StructFieldMatch, bool) {
+	memberChunk, ok := structChunkIndexForField(strct, member)
+	if !ok {
+		return typeinfo.StructFieldMatch{}, false
+	}
+	for _, region := range strct.OverlapRegions {
+		for _, path := range region.Paths {
+			if !intSliceContains(path, memberChunk) {
+				continue
+			}
+			var out typeinfo.StructFieldMatch
+			found := false
+			for _, match := range matches {
+				matchChunk, ok := structChunkIndexForField(strct, match.Field)
+				if !ok || !intSliceContains(path, matchChunk) {
+					continue
+				}
+				if found {
+					return typeinfo.StructFieldMatch{}, false
+				}
+				out = match
+				found = true
+			}
+			return out, found
+		}
+	}
+	return typeinfo.StructFieldMatch{}, false
+}
+
+// structChunkIndexForField returns the layout chunk occupied by a struct field.
+func structChunkIndexForField(strct *typeinfo.Struct, field *typeinfo.StructField) (int, bool) {
+	if strct == nil || field == nil {
+		return 0, false
+	}
+	for i := range strct.Chunks {
+		chunk := &strct.Chunks[i]
+		for j := range chunk.Fields {
+			if sameStructFieldLayout(&chunk.Fields[j], field) {
+				return i, true
+			}
+		}
+	}
+	return 0, false
+}
+
+// sameStructFieldLayout reports whether two field descriptors name the same layout field.
+func sameStructFieldLayout(a, b *typeinfo.StructField) bool {
+	return a != nil &&
+		b != nil &&
+		a.Name == b.Name &&
+		a.Offset == b.Offset &&
+		a.End == b.End &&
+		a.Type == b.Type
+}
+
+// intSliceContains reports whether values contains value.
+func intSliceContains(values []int, value int) bool {
+	for _, next := range values {
+		if next == value {
+			return true
+		}
+	}
+	return false
 }

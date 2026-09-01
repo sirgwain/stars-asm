@@ -23,7 +23,7 @@ L_0308:
     *ppctSmart = 1
 
 L_0317:
-    branch lppl->iPlayer == 0xffff ? L_0487 : L_0324
+    branch lppl->iPlayer == -1 ? L_0487 : L_0324
 
 L_0324:
     branch lppl->cDefenses != 0x0 ? L_0345 : L_033d
@@ -34,7 +34,7 @@ L_033d:
 L_0345:
     iPlrSav = idPlayer
     idPlayer = lppl->iPlayer
-    branch FGetBestDefensePart(&part) == 0x0 ? L_0473 : L_0369
+    branch FGetBestDefensePart(&part) == 0 ? L_0473 : L_0369
 
 L_0369:
     LOWORD(cDefenses) = lppl->cDefenses
