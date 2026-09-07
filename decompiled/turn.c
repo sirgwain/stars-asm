@@ -1437,7 +1437,8 @@ L_1ada:
         goto L_1ae3;
 
 L_1ae3:
-    lpth->pt = pt;
+    lpth->pt.x = pt.x;
+    lpth->pt.y = pt.y;
 
 L_1af7:
     if ((lpth->ith != ithMysteryTrader))
@@ -1673,7 +1674,8 @@ L_1e3b:
 L_1e4c:
 
 L_1e52:
-    lpth->pt = lpth->tht.ptDest;
+    lpth->pt.x = lpth->tht.ptDest.x;
+    lpth->pt.y = lpth->tht.ptDest.y;
     dRange = (lpth->tht.iWarp - 2);
     if ((dRange >= 6))
         goto L_1e86;
@@ -2317,7 +2319,7 @@ L_2a7b:
     goto LFreeThePacket;
 
 L_2aba:
-    /* untranslated: lDefKilled = (int32_t)((uint32_t)(words(0x0, lppl->cDefenses) * dmgRaw) / 0x3e8) */
+    lDefKilled = (int32_t)(((uint32_t)((lppl->cDefenses * dmgRaw)) / 0x3e8));
     if ((LOWORD(lDefKilled) != 0x0))
         goto L_2b53;
     else
@@ -2533,7 +2535,8 @@ L_2e7b:
 L_2e80:
 
 L_2e86:
-    lpth->pt = ptSrc;
+    lpth->pt.x = ptSrc.x;
+    lpth->pt.y = ptSrc.y;
 
 L_2e97:
     if ((fPostProd == 0))
@@ -2696,7 +2699,7 @@ L_30fe:
     /* untranslated: branch (part[0x3c:2](lphul[j*0x4]) & 0xff) != 0x10 ? L_316f : L_3123 */
 
 L_3123:
-    /* untranslated: cPods = (cPods + (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * words(0x0, ((part[0x3c:2](lphul[j*0x4]) >> 0x8) & 0xff)))) */
+    /* untranslated: cPods = (cPods + (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)((part[0x3c:2](lphul[j*0x4]) >> 0x8) & 0xff))) */
 
 L_316f:
     j = (j - 1);
@@ -2837,8 +2840,7 @@ void MoveFleets() {
     THING   *lpth;
     int16_t  grbitPlr;
     uint16_t t_merge_3de5_0001;
-    uint16_t t_merge_3e66_0001;
-    uint16_t t_merge_3e66_0002;
+    int32_t  t_merge_3e66_0001;
     int16_t  t_40c6;
     uint32_t t_merge_436d_0001;
     int32_t  t_call_43cd;
@@ -3401,17 +3403,14 @@ L_3e2c:
         goto L_3e34;
 
 L_3e34:
-    t_merge_3e66_0001 = LOWORD(dRange);
-    t_merge_3e66_0002 = HIWORD(dRange);
+    t_merge_3e66_0001 = dRange;
     goto L_3e66;
 
 L_3e3d:
-    t_merge_3e66_0001 = LOWORD((((*(lpord + 0x18) >> 0x4) & 0xf) * ((*(lpord + 0x18) >> 0x4) & 0xf)));
-    t_merge_3e66_0002 = 0x0;
+    t_merge_3e66_0001 = (uint32_t)(LOWORD((((*(lpord + 0x18) >> 0x4) & 0xf) * ((*(lpord + 0x18) >> 0x4) & 0xf))));
 
 L_3e66:
-    LOWORD(dRange) = t_merge_3e66_0001;
-    HIWORD(dRange) = t_merge_3e66_0002;
+    dRange = t_merge_3e66_0001;
 
 L_3e6c:
     if ((cPass != 0))
@@ -3628,8 +3627,7 @@ L_42ad:
 L_42b7:
     fDone = 0;
     lpfl->fDone = 0x0;
-    lpfl->dMoveLeft = LOWORD(dTravel);
-    lpfl->dMoveUsed = 0;
+    lpfl->lPower = (uint32_t)(LOWORD(dTravel));
     lpfl->lFuelUsed = 0;
     goto L_32f6;
 
@@ -4134,7 +4132,8 @@ L_497a:
         goto LMakeItToDest;
 
 LMakeItToDest:
-    lpfl->pt = ptEnd;
+    lpfl->pt.x = ptEnd.x;
+    lpfl->pt.y = ptEnd.y;
     if ((((*(lpord + 0x18) >> 0x8) & 0xf) != 0x1))
         goto L_49bc;
     else
@@ -4396,7 +4395,8 @@ L_4d5b:
     lpth->thw.grbitPlrTrav = (lpth->thw.grbitPlrTrav | grbitPlr);
     /* untranslated: part[0xa:2](lpthDest) = (*(lpthDest+0xa) | grbitPlr) */
     /* untranslated: part[0x8:2](lpthDest) = (*(lpthDest+0x8) | grbitPlr) */
-    lpfl->pt = lpthDest->pt;
+    lpfl->pt.x = lpthDest->pt.x;
+    lpfl->pt.y = lpthDest->pt.y;
     /* untranslated: part[0x12:4](lpord) = lpthDest->pt */
 
 L_4dd8:
@@ -4415,7 +4415,8 @@ L_4e08:
     lpfl->idPlanet = scan.idpl;
 
 L_4e12:
-    lpord = lpfl->pt;
+    LOWORD(lpord) = lpfl->pt.x;
+    lpord->pt.y = lpfl->pt.y;
     lpord->id = lpfl->idPlanet;
     if ((lpfl->idPlanet != -1))
         goto L_4e48;
@@ -5099,8 +5100,8 @@ L_5ad4:
 L_5ae4:
     dmgReduce = t_merge_5ae4_0001;
     dmgToApply = (dmgToApply - dmgReduce);
-    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * words(0x0, (part[0x2c:2](lpfl[i*0x2]) & 0x7f))) / 0x64)) */
-    /* untranslated: dmgToApply = (dmgToApply + (int32_t)((uint32_t)((uint32_t)(dpsh * words(0x0, ((part[0x2c:2](lpfl[i*0x2]) >> 0x7) & 0x1ff))) *
+    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)(part[0x2c:2](lpfl[i*0x2]) & 0x7f)) / 0x64)) */
+    /* untranslated: dmgToApply = (dmgToApply + (int32_t)((uint32_t)((uint32_t)(dpsh * (uint32_t)((part[0x2c:2](lpfl[i*0x2]) >> 0x7) & 0x1ff)) *
      * sext16to32(cshDamaged)) / 0x1f4)) */
     dmgExtra = 0;
     dmgPerShip = (int32_t)((dmgToApply / (uint32_t)(cshT)));
@@ -5320,10 +5321,7 @@ L_5fe3:
 L_5fe9:
     dx = (lpth->pt.x - ptAct.x);
     dy = (lpth->pt.y - ptAct.y);
-    LOWORD(d2) =
-        ((LOWORD((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx)))) + LOWORD((uint32_t)(((uint32_t)(dy) * (uint32_t)((lpth->pt.y - ptAct.y)))))) - *(lpth + 0x6));
-    HIWORD(d2) =
-        ((HIWORD((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx)))) + HIWORD((uint32_t)(((uint32_t)(dy) * (uint32_t)((lpth->pt.y - ptAct.y)))))) - *(lpth + 0x8));
+    d2 = (((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)((lpth->pt.y - ptAct.y))))) - *(lpth + 0x6));
     if ((HIWORD(d2) > HIWORD(d2Closest)))
         goto L_6084;
     else
@@ -5355,7 +5353,7 @@ L_6089:
         goto L_609a;
 
 L_609a:
-    /* untranslated: d2 = (int32_t)(part[0x6:4](lpthClosest) / 0x14) */
+    d2 = (int32_t)((*(lpthClosest + 0x6) / 0x14));
     if ((HIWORD(d2) < 0x0))
         goto L_6113;
     else
@@ -5374,7 +5372,7 @@ L_60c7:
         goto L_60d0;
 
 L_60d0:
-    /* untranslated: d2 = (int32_t)(part[0x6:4](lpthClosest) / 0x64) */
+    d2 = (int32_t)((*(lpthClosest + 0x6) / 0x64));
     if ((HIWORD(d2) > 0x0))
         goto L_6156;
     else

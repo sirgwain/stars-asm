@@ -160,7 +160,7 @@ L_0125:
         goto L_0159;
 
 L_0159:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff88)) / 20)) */
+    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
 
 L_0169:
     if ((j <= 50))
@@ -181,7 +181,7 @@ L_0177:
         goto L_019b;
 
 L_019b:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff9c)) / 22)) */
+    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
 
 L_01ab:
     if ((j <= 12))
@@ -710,7 +710,7 @@ L_08b6:
         goto L_08c3;
 
 L_08c3:
-    /* untranslated: i = ((words(0x0, lppl->uPopGuess) / 250) + 1) */
+    i = ((lppl->uPopGuess / 250) + 1);
     if ((i <= 6))
         goto L_08e8;
     else
@@ -1071,7 +1071,7 @@ L_0d7c:
         goto L_0d98;
 
 L_0d98:
-    l = LDistance2(rgptPlan[LOWORD(lppl)], rgptPlan[LOWORD(lpplDest)]);
+    l = LDistance2(rgptPlan[lppl->id], rgptPlan[lpplDest->id]);
     if ((HIWORD(l) > 0x1))
         goto L_0d02;
     else
@@ -2078,8 +2078,7 @@ L_1963:
     goto L_19b5;
 
 L_196b:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_19b1;
     else
@@ -2299,7 +2298,8 @@ L_1c8b:
     ClearAiCurrentTask(lpfl, 1);
     ord.id = idPlanDst;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[idPlanDst];
+    ord.pt.x = rgptPlan[idPlanDst].x;
+    ord.pt.y = rgptPlan[idPlanDst].y;
     ord.grTask = grTaskLayMines;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -3891,7 +3891,7 @@ L_33c8:
         goto L_33d0;
 
 L_33d0:
-    t_call_33ed = LDistance2(lpfl->pt, rgptPlan[LOWORD(lppl)]);
+    t_call_33ed = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
     if ((HIWORD(t_call_33ed) > 0x0))
         goto L_3391;
     else
@@ -3953,7 +3953,8 @@ L_34ad:
 L_34b3:
     ord.id = lpplBest->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplBest->id];
+    ord.pt.x = rgptPlan[lpplBest->id].x;
+    ord.pt.y = rgptPlan[lpplBest->id].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
@@ -4146,7 +4147,7 @@ L_3724:
 L_374f:
 
 L_3755:
-    lDist = LDistance2(lpfl->pt, rgptPlan[LOWORD(lppl)]);
+    lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
     if ((HIWORD(lDist) < 0x0))
         goto L_379b;
     else
@@ -4303,7 +4304,8 @@ L_38f0:
 LMoveToLpplBest:
     memset(&(ord), 0, 0x12);
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplBest->id];
+    ord.pt.x = rgptPlan[lpplBest->id].x;
+    ord.pt.y = rgptPlan[lpplBest->id].y;
     ord.id = lpplBest->id;
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
@@ -4418,7 +4420,7 @@ L_3aed:
 L_3af2:
 
 L_3af8:
-    lDist = LDistance2(lpfl->pt, rgptPlan[LOWORD(lppl)]);
+    lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
     if ((HIWORD(lDist) < 0x0))
         goto L_3b3e;
     else
@@ -4587,7 +4589,7 @@ L_3d3c:
 L_3d41:
 
 L_3d47:
-    lDist = LDistance2(lpfl->pt, rgptPlan[LOWORD(lppl)]);
+    lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
     if ((HIWORD(lDist) < 0x0))
         goto L_3d8d;
     else
@@ -4874,7 +4876,8 @@ L_4073:
     /* untranslated: part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) | 0x80) */
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplTarget->id];
+    ord.pt.x = rgptPlan[lpplTarget->id].x;
+    ord.pt.y = rgptPlan[lpplTarget->id].y;
 
 FinishTargeting:
     ord.grTask = grTaskNone;
@@ -4903,7 +4906,8 @@ L_412e:
 L_4137:
     ord.id = lpflTarget->id;
     ord.grobj = grobjFleet;
-    ord.pt = lpflTarget->pt;
+    ord.pt.x = lpflTarget->pt.x;
+    ord.pt.y = lpflTarget->pt.y;
     goto FinishTargeting;
 
 L_4163:

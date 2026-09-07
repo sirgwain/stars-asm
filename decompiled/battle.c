@@ -855,27 +855,39 @@ L_11b9:
 L_11e1:
 
 L_11e7:
-    /* untranslated: branch byte ds:[(cLen + 20951)] != 0x29 ? L_123c : L_11ff */
+    if ((btlplan.szName[(cLen - 1)] != 41))
+        goto L_123c;
+    else
+        goto L_11ff;
 
 L_11ff:
-    /* untranslated: branch (byte ds:[(0x175f + byte ds:[(cLen + 20950)])] & 0x4) == 0x0 ? L_123c : L_1224 */
+    if (((_ctype[(btlplan.szName[(cLen - 2)] + 1)] & 0x4) == 0x0))
+        goto L_123c;
+    else
+        goto L_1224;
 
 L_1224:
-    /* untranslated: branch byte ds:[(cLen + 20949)] == 0x28 ? L_1254 : L_123c */
+    if ((btlplan.szName[(cLen - 3)] == 40))
+        goto L_1254;
+    else
+        goto L_123c;
 
 L_123c:
     strcpy(btlplan.szName[cLen], 0xd9c);
     goto L_128b;
 
 L_1254:
-    /* untranslated: branch byte ds:[(cLen + 20950)] != 0x39 ? L_127d : L_126c */
+    if ((btlplan.szName[(cLen - 2)] != 57))
+        goto L_127d;
+    else
+        goto L_126c;
 
 L_126c:
-    /* untranslated: byte ds:[(cLen + 20950)] = 0x30 */
+    btlplan.szName[(cLen - 2)] = 48;
     goto L_128b;
 
 L_127d:
-    /* untranslated: byte ds:[(cLen + 20950)] = (byte ds:[(cLen + 0x151d6)] + 0x1) */
+    btlplan.szName[(cLen - 2)] = (btlplan.szName[(cLen - 2)] + 1);
 
 L_128b:
     btlplan.iplan = iPlanSelDlg;
@@ -1376,7 +1388,7 @@ L_1beb:
 
 L_1bff:
     pctSell = (uint32_t)((Random(31) + 0x5));
-    /* untranslated: lSell = (int32_t)((uint32_t)(words(0x0, lppl->cMines) * pctSell) / 0x64) */
+    lSell = (int32_t)(((uint32_t)((lppl->cMines * pctSell)) / 0x64));
     if ((HIWORD(lSell) > 0x0))
         goto L_1c71;
     else
@@ -1964,7 +1976,8 @@ L_2613:
 
 L_2619:
     lpth->thp.iWarp = 0x0;
-    lpth->pt = *(ppt);
+    lpth->pt.x = ppt->x;
+    lpth->pt.y = ppt->y;
     lpth->thp.idPlanet = 0x3ff;
     goto L_26e9;
 
@@ -1996,16 +2009,25 @@ L_2700:
     goto L_291e;
 
 L_2708:
-    /* untranslated: branch (hiword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + HIWORD(rgwtMinerals[i])) < 0x0 ? L_2842 : L_2746 */
+    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) < 0x0))
+        goto L_2842;
+    else
+        goto L_2746;
 
 L_2746:
-    /* untranslated: branch (hiword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + HIWORD(rgwtMinerals[i])) > 0x0 ? L_2753 : L_274b */
+    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) > 0x0))
+        goto L_2753;
+    else
+        goto L_274b;
 
 L_274b:
-    /* untranslated: branch (loword((uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) + LOWORD(rgwtMinerals[i])) <= 0x7530 ? L_2842 : L_2753 */
+    if (((LOWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + LOWORD(rgwtMinerals[i])) <= 0x7530))
+        goto L_2842;
+    else
+        goto L_2753;
 
 L_2753:
-    /* untranslated: wt = (30000 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) */
+    wt = (30000 - (uint32_t)((lpth->thp.wtMax * 0xa)));
     wtTotal = (wtTotal - wt);
     lpth->thp.wtMax = 0xbb8;
     /* untranslated: part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + LOWORD(wt)) */
@@ -2027,7 +2049,8 @@ L_27fe:
 L_2804:
     lpth->thp.iWarp = 0x0;
     lpth->thp.idPlanet = 0x3ff;
-    lpth->pt = *(ppt);
+    lpth->pt.x = ppt->x;
+    lpth->pt.y = ppt->y;
     goto L_2900;
 
 L_2842:
@@ -3057,9 +3080,8 @@ L_372d:
 
 L_374b:
     wtCargoFleetMax = LGetFleetStat(lpfl, 2);
-    LOWORD(wtFleetCargo) = (((LOWORD(lpfl->rgwtMin[0x0]) + LOWORD(lpfl->rgwtMin[0x1])) + LOWORD(lpfl->rgwtMin[0x2])) + LOWORD(lpfl->rgwtMin[0x3]));
-    HIWORD(wtFleetCargo) = (((HIWORD(lpfl->rgwtMin[0x0]) + HIWORD(lpfl->rgwtMin[0x1])) + HIWORD(lpfl->rgwtMin[0x2])) + HIWORD(lpfl->rgwtMin[0x3]));
-    /* untranslated: wtFleetCargo = (int32_t)((uint32_t)(wtFleetCargo * words(0x0, wtCargoShdefMax)) / wtCargoFleetMax) */
+    wtFleetCargo = (((lpfl->rgwtMin[0] + lpfl->rgwtMin[1]) + lpfl->rgwtMin[2]) + lpfl->rgwtMin[3]);
+    wtFleetCargo = (int32_t)(((uint32_t)((wtFleetCargo * (uint32_t)(wtCargoShdefMax))) / wtCargoFleetMax));
     wt = (wt + LOWORD(wtFleetCargo));
     goto L_37cc;
 
@@ -3094,7 +3116,7 @@ L_381b:
     ptok->wt = wt;
 
 L_3825:
-    /* untranslated: spd = (spd - (words(0x0, (words(0x0, wt) / 0x46)) / ((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff))) */
+    spd = (spd - ((uint32_t)(((uint32_t)(wt) / 0x46)) / ((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff)));
     if ((8 >= spd))
         goto L_3857;
     else
@@ -3365,8 +3387,7 @@ L_3c16:
 L_3c52:
 
 L_3c58:
-    LOWORD(dpNew) = (ptok->dpShield + LOWORD((int32_t)((dpOrig / 0xa))));
-    HIWORD(dpNew) = (0x0 + HIWORD((int32_t)((dpOrig / 0xa))));
+    dpNew = ((uint32_t)(ptok->dpShield) + (int32_t)((dpOrig / 10)));
     if ((HIWORD(dpNew) < HIWORD(dpOrig)))
         goto L_3ca6;
     else
@@ -3420,7 +3441,8 @@ L_3cf5:
         goto L_3d07;
 
 L_3d07:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     if ((part.hs.cItem == 0x0))
         goto L_3cf1;
     else
@@ -3597,7 +3619,8 @@ L_3f8b:
 L_3fb5:
     pctJam = 100;
     dxyPart = -1;
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     if (((part.hs.grhst & 0x30) == 0x0))
         goto L_402d;
     else
@@ -3642,7 +3665,7 @@ L_4038:
     goto L_40fd;
 
 L_40c9:
-    /* untranslated: pctCap = (int32_t)((uint32_t)(pctCap * (sext16to32(part[0x34:2](part.pcom)) + 0x64)) / 0x64) */
+    pctCap = (int32_t)(((uint32_t)((pctCap * ((uint32_t)(part.pcom[0x1].id) + 100))) / 0x64));
     i = (i - 1);
 
 L_40fd:
@@ -4371,7 +4394,8 @@ L_4dd4:
     /* untranslated: branch ((part[0x3c:2](lphul[ihs*0x4]) >> 0x8) & 0xff) == 0x0 ? L_4d9a : L_4dfe */
 
 L_4dfe:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     idPlayer = ptok->iplr;
     FLookupPart(&(part));
     idPlayer = -1;
@@ -4429,7 +4453,7 @@ L_4e97:
 L_4e9d:
 
 L_4ea3:
-    /* untranslated: dp = (uint32_t)(sext16to32(part[0x36:2](part.pcom)) * words(0x0, part.hs.cItem)) */
+    /* untranslated: dp = (uint32_t)(sext16to32(part[0x36:2](part.pcom)) * part.hs.cItem) */
     goto L_51b5;
 
 L_4ece:
@@ -4484,7 +4508,7 @@ L_4f9f:
         goto L_4fb1;
 
 L_4fb1:
-    /* untranslated: dpShieldsLeft = (uint32_t)(words(0x0, ptokTarget->dpShield) * words(0x0, ptok->csh)) */
+    dpShieldsLeft = (uint32_t)(((uint32_t)(ptokTarget->dpShield) * (uint32_t)(ptok->csh)));
     if ((HIWORD(dp) < HIWORD(dpShieldsLeft)))
         goto L_4ffb;
     else
@@ -4534,11 +4558,11 @@ L_5047:
     dp = part.hs.cItem;
 
 L_505b:
-    /* untranslated: dpTotal = (dpTotal + (uint32_t)(dp * words(0x0, ptok->csh))) */
+    dpTotal = (dpTotal + (uint32_t)((dp * (uint32_t)(ptok->csh))));
     goto L_4d9a;
 
 L_507b:
-    /* untranslated: cTorpBase = (uint32_t)((uint32_t)(words(0x0, part.hs.cItem) * words(0x0, ptok->csh)) * 0xc8) */
+    cTorpBase = (uint32_t)(((uint32_t)((part.hs.cItem * (uint32_t)(ptok->csh))) * 0xc8));
     cTorpHit = CTorpHit(cTorpBase, ptokTarget, part.ptorp->dHitChance, ptok->pctBC);
     dp = (int32_t)(((uint32_t)(((uint32_t)(part.ptorp->dp) * cTorpHit)) / 0xc8));
     if ((ptokTarget->dpShield <= 0x0))
@@ -4597,7 +4621,7 @@ L_51c2:
 
 L_51cb:
     dpShdef = (uint32_t)(LpshdefFromTok(ptokTarget)->hul.dp);
-    /* untranslated: dpMax = (uint32_t)(words((0x0 + HIWORD(dpShdef)), (ptokTarget->dpShield + LOWORD(dpShdef))) * words(0x0, ptokTarget->csh)) */
+    dpMax = (uint32_t)((((uint32_t)(ptokTarget->dpShield) + dpShdef) * (uint32_t)(ptokTarget->csh)));
     if ((ptokTarget->dv.dp == 0x0))
         goto L_52d3;
     else
@@ -4622,8 +4646,10 @@ L_522e:
         goto L_5237;
 
 L_5237:
-    /* untranslated: dpMax = (dpMax - (int32_t)((uint32_t)((int32_t)((uint32_t)((int32_t)((uint32_t)(dpShdef * words(0x0, ptokTarget->dv.pctDp)) / 0xa) *
-     * words(0x0, ptokTarget->dv.pctSh)) / 0xa) * words(0x0, ptokTarget->csh)) / 0x1f4)) */
+    dpMax = (dpMax -
+             (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpShdef * ptokTarget->dv.pctDp)) / 0xa)) * ptokTarget->dv.pctSh)) / 0xa)) *
+                                    (uint32_t)(ptokTarget->csh))) /
+                        0x1f4)));
     if ((HIWORD(dpMax) > 0x0))
         goto L_52d3;
     else
@@ -4741,7 +4767,8 @@ L_5409:
     /* untranslated: branch ((part[0x3c:2](lphul[ihs*0x4]) >> 0x8) & 0xff) == 0x0 ? L_53d4 : L_5433 */
 
 L_5433:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     idPlayer = ptok->iplr;
     FLookupPart(&(part));
     idPlayer = -1;
@@ -6529,7 +6556,8 @@ L_6a3c:
     /* untranslated: branch ((part[0x3c:2](lphul[ihs*0x4]) >> 0x8) & 0xff) == 0x0 ? L_6a02 : L_6a66 */
 
 L_6a66:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     idPlayer = ptok->iplr;
     if ((FLookupPart(&(part)) == 0))
         goto L_6ab0;
@@ -6588,7 +6616,7 @@ L_6b3c:
         goto L_6b4e;
 
 L_6b4e:
-    /* untranslated: dp = (uint32_t)((uint32_t)(sext16to32(part.pbeam->dp) * sext16to32(cItem)) * words(0x0, ptok->csh)) */
+    dp = (uint32_t)(((uint32_t)(((uint32_t)(part.pbeam->dp) * (uint32_t)(cItem))) * (uint32_t)(ptok->csh)));
     if ((part.pbeam->dp < 200))
         goto L_6b92;
     else
@@ -6707,13 +6735,13 @@ L_6d99:
         goto L_6da2;
 
 L_6da2:
-    /* untranslated: dpMain = (uint32_t)((uint32_t)(sext16to32(part.pbeam->dp) * sext16to32(cItem)) * words(0x0, ptok->csh)) */
+    dpMain = (uint32_t)(((uint32_t)(((uint32_t)(part.pbeam->dp) * (uint32_t)(cItem))) * (uint32_t)(ptok->csh)));
     cTorpsLeft = 0;
     goto LFindAnotherTarget;
 
 L_6ddd:
     dpMain = 0;
-    /* untranslated: cTorpsLeft = (uint32_t)(sext16to32(cItem) * words(0x0, ptok->csh)) */
+    cTorpsLeft = (uint32_t)(((uint32_t)(cItem) * (uint32_t)(ptok->csh)));
 
 LFindAnotherTarget:
     fPrimary = 1;
@@ -6787,7 +6815,7 @@ L_6f0d:
 
 L_6f13:
     lpshdefE = LpshdefFromTok(ptokE);
-    /* untranslated: lValue = (uint32_t)(words(0x0, (lpshdefE->hul.resCost + lpshdefE->hul.rgwtOreCost[0x1])) * words(0x0, ptokE->csh)) */
+    lValue = (uint32_t)((((uint32_t)(lpshdefE->hul.resCost) + (uint32_t)(lpshdefE->hul.rgwtOreCost[1])) * (uint32_t)(ptokE->csh)));
     if ((HIWORD(lValue) > 0x1))
         goto L_6f8c;
     else
@@ -6814,16 +6842,18 @@ L_6f8c:
 
 L_6f96:
     dpSingle = (uint32_t)(lpshdefE->hul.dp);
-    /* untranslated: dpShieldLeft = (uint32_t)(words(0x0, ptokE->dpShield) * words(0x0, ptokE->csh)) */
-    /* untranslated: dpArmorLeft = (uint32_t)(dpSingle * words(0x0, ptokE->csh)) */
+    dpShieldLeft = (uint32_t)(((uint32_t)(ptokE->dpShield) * (uint32_t)(ptokE->csh)));
+    dpArmorLeft = (uint32_t)((dpSingle * (uint32_t)(ptokE->csh)));
     if ((ptokE->dv.dp == 0x0))
         goto L_706e;
     else
         goto L_6ff3;
 
 L_6ff3:
-    /* untranslated: dpArmorLeft = (dpArmorLeft - (int32_t)((uint32_t)((int32_t)((uint32_t)((int32_t)((uint32_t)(dpSingle * words(0x0, ptokE->dv.pctDp)) / 0xa)
-     * * words(0x0, ptokE->dv.pctSh)) / 0xa) * words(0x0, ptokE->csh)) / 0x1f4)) */
+    dpArmorLeft =
+        (dpArmorLeft - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpSingle * ptokE->dv.pctDp)) / 0xa)) * ptokE->dv.pctSh)) / 0xa)) *
+                                              (uint32_t)(ptokE->csh))) /
+                                  0x1f4)));
 
 L_706e:
     if ((HIWORD(dpArmorLeft) > 0x0))
@@ -6856,7 +6886,7 @@ L_7095:
         goto L_70a7;
 
 L_70a7:
-    /* untranslated: lValue = (int32_t)((uint32_t)(lValue * words(0x0, ptokE->pctBeamDef)) / 0x64) */
+    lValue = (int32_t)(((uint32_t)((lValue * (uint32_t)(ptokE->pctBeamDef))) / 0x64));
 
 L_70d6:
     /* untranslated: branch (part[0x3a:2](part.pcom) & 0x1) == 0x0 ? L_7141 : L_70e8 */
@@ -7366,16 +7396,19 @@ L_782b:
     cTorpHit = CTorpHit(cTorpBase, ptokTarget, part.ptorp->dHitChance, ptok->pctBC);
     lpshdefE = LpshdefFromTok(ptokTarget);
     dpSingle = (uint32_t)(lpshdefE->hul.dp);
-    /* untranslated: dpShieldLeft = (uint32_t)(words(0x0, ptokTarget->dpShield) * words(0x0, ptokTarget->csh)) */
-    /* untranslated: dpArmorLeft = (uint32_t)(dpSingle * words(0x0, ptokTarget->csh)) */
+    dpShieldLeft = (uint32_t)(((uint32_t)(ptokTarget->dpShield) * (uint32_t)(ptokTarget->csh)));
+    dpArmorLeft = (uint32_t)((dpSingle * (uint32_t)(ptokTarget->csh)));
     if ((ptokTarget->dv.dp == 0x0))
         goto L_7954;
     else
         goto L_78d9;
 
 L_78d9:
-    /* untranslated: dpArmorLeft = (dpArmorLeft - (int32_t)((uint32_t)((int32_t)((uint32_t)((int32_t)((uint32_t)(dpSingle * words(0x0, ptokTarget->dv.pctDp)) /
-     * 0xa) * words(0x0, ptokTarget->dv.pctSh)) / 0xa) * words(0x0, ptokTarget->csh)) / 0x1f4)) */
+    dpArmorLeft =
+        (dpArmorLeft -
+         (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpSingle * ptokTarget->dv.pctDp)) / 0xa)) * ptokTarget->dv.pctSh)) / 0xa)) *
+                                (uint32_t)(ptokTarget->csh))) /
+                    0x1f4)));
 
 L_7954:
     dp = (uint32_t)(part.ptorp->dp);
@@ -7587,8 +7620,7 @@ L_7c35:
     lpbtlrec->itokAttack = itokTarget;
 
 L_7c59:
-    LOWORD(cTorpsLeft) = (LOWORD(cTorpsLeft) - (LOWORD(cTorpFire) + LOWORD(cTorpMiss)));
-    HIWORD(cTorpsLeft) = (HIWORD(cTorpsLeft) - (HIWORD(cTorpFire) + HIWORD(cTorpMiss)));
+    cTorpsLeft = (cTorpsLeft - (cTorpFire + cTorpMiss));
     goto L_7c84;
 
 L_7c71:
@@ -7730,7 +7762,8 @@ L_7e04:
     goto L_7e33;
 
 L_7e0c:
-    flDead.rgwtMin[i] = flSrc.rgwtMin[i];
+    LOWORD(flDead.rgwtMin[i]) = LOWORD(flSrc.rgwtMin[i]);
+    HIWORD(flDead.rgwtMin[i]) = HIWORD(flSrc.rgwtMin[i]);
     i = (i + 1);
 
 L_7e33:
@@ -7759,7 +7792,8 @@ L_7e83:
 
 L_7e8c:
     flDead.iPlayer = flSrc.iPlayer;
-    flDead.pt = flSrc.pt;
+    flDead.pt.x = flSrc.pt.x;
+    flDead.pt.y = flSrc.pt.y;
     flDead.idPlanet = flSrc.idPlanet;
     CreateSalvage(&(flDead), lpthBattle);
 
@@ -7836,7 +7870,7 @@ L_7fe8:
     lpshdefT = (rglpshdef[pfl->iPlayer] + LOWORD((0x93 * j)));
 
 L_8008:
-    /* untranslated: rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)((uint32_t)(sext16to32(pfl->rgcsh[j]) * words(0x0, part[0x2c:2](lpshdefT[i*0x2]))) / 0x3)) */
+    /* untranslated: rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)((uint32_t)(sext16to32(pfl->rgcsh[j]) * (uint32_t)part[0x2c:2](lpshdefT[i*0x2])) / 0x3)) */
 
 L_805d:
     j = (j + 1);
@@ -7874,10 +7908,10 @@ L_80c9:
     t_merge_80cd_0001_wide = 0x50005;
 
 L_80cd:
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = (part[0x1c:2](lppl[i*0x4]) + loword((int32_t)((uint32_t)(rgwtMinerals[i] * words(0x0,
-     * loword(t_merge_80cd_0001_wide))) / 0xa))) */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = (part[0x1e:2](lppl[i*0x4]) + hiword((int32_t)((uint32_t)(rgwtMinerals[i] * words(0x0,
-     * hiword(t_merge_80cd_0001_wide))) / 0xa))) */
+    /* untranslated: part[0x1c:2](lppl[i*0x4]) = (part[0x1c:2](lppl[i*0x4]) + loword((int32_t)((uint32_t)(rgwtMinerals[i] *
+     * (uint32_t)loword(t_merge_80cd_0001_wide)) / 0xa))) */
+    /* untranslated: part[0x1e:2](lppl[i*0x4]) = (part[0x1e:2](lppl[i*0x4]) + hiword((int32_t)((uint32_t)(rgwtMinerals[i] *
+     * (uint32_t)hiword(t_merge_80cd_0001_wide)) / 0xa))) */
 
 L_8109:
     i = (i + 1);
@@ -7970,9 +8004,8 @@ L_81d4:
 
 L_8225:
     dpOrig = (uint32_t)(ptok->dpShield);
-    LOWORD(dpT) = (ptok->dpShield - LOWORD(dpOrig));
-    HIWORD(dpT) = (0x0 - HIWORD(dpOrig));
-    /* untranslated: dpOrig = (uint32_t)(dpOrig * words(0x0, ptok->csh)) */
+    dpT = ((uint32_t)(ptok->dpShield) - dpOrig);
+    dpOrig = (uint32_t)((dpOrig * (uint32_t)(ptok->csh)));
     if ((HIWORD(dpOrig) < HIWORD(dp)))
         goto L_82d6;
     else
@@ -7993,7 +8026,7 @@ L_827b:
 L_8283:
     dpOrig = (dpOrig - dp);
     /* untranslated: part[0x4:2](lpbBattleCur) = WPackLong(dp) */
-    /* untranslated: ptok->dpShield = (loword((int32_t)(dpOrig / words(0x0, ptok->csh))) + LOWORD(dpT)) */
+    ptok->dpShield = (LOWORD((int32_t)((dpOrig / (uint32_t)(ptok->csh)))) + LOWORD(dpT));
     dp = 0;
     goto L_8313;
 
@@ -8088,7 +8121,7 @@ L_83ff:
         goto L_842f;
 
 L_842f:
-    /* untranslated: dp = (dp + (int32_t)((uint32_t)(dpShdef * words(0x0, dv.pctDp)) / 0x1f4)) */
+    dp = (dp + (int32_t)(((uint32_t)((dpShdef * dv.pctDp)) / 0x1f4)));
 
 L_845f:
     if ((HIWORD(dp) < HIWORD(dpShdef)))
@@ -8180,7 +8213,7 @@ L_8694:
         goto L_86d8;
 
 L_86d8:
-    /* untranslated: cshOrigDamaged = loword((int32_t)((uint32_t)(sext16to32(csh) * words(0x0, dv.pctSh)) / 0x64)) */
+    cshOrigDamaged = LOWORD((int32_t)(((uint32_t)(((uint32_t)(csh)*dv.pctSh)) / 0x64)));
     if ((cshOrigDamaged != 0))
         goto L_870e;
     else
@@ -8190,7 +8223,7 @@ L_8709:
     cshOrigDamaged = 1;
 
 L_870e:
-    /* untranslated: ddpOrig = (int32_t)((uint32_t)(dpShdef * words(0x0, dv.pctDp)) / 0x1f4) */
+    ddpOrig = (int32_t)(((uint32_t)((dpShdef * dv.pctDp)) / 0x1f4));
     if ((LOWORD(ddpOrig) != 0x0))
         goto L_876c;
     else
@@ -8369,8 +8402,7 @@ L_88d9:
         goto L_88e2;
 
 L_88e2:
-    LOWORD(dp) = (LOWORD(dp) + ((LOWORD((uint32_t)((ddpOrig * (uint32_t)(cshOrigDamaged)))) + csh) + 0xffff));
-    HIWORD(dp) = (HIWORD(dp) + ((HIWORD((uint32_t)((ddpOrig * (uint32_t)(cshOrigDamaged)))) + SIGNHIWORD(csh)) + 0xffff));
+    dp = (dp + (((uint32_t)((ddpOrig * (uint32_t)(cshOrigDamaged))) + (int32_t)(csh)) - 1));
 
 L_8913:
     dp = (int32_t)((dp / (uint32_t)(csh)));
@@ -8497,7 +8529,7 @@ int16_t DxyFromSpdRound(uint16_t spd, int16_t iRound) {
     uint16_t t_merge_8b9b_0001;
 
 L_8b28:
-    /* untranslated: dxy = (words(0x0, (spd + 0x2)) / 4) */
+    dxy = ((uint32_t)((spd + 0x2)) / 4);
     goto L_8ba4;
 
 L_8b4a:
@@ -8697,7 +8729,7 @@ L_8d9d:
 
 L_8dba:
     /* untranslated: cShipsInvolved = (cShipsInvolved + part[0xc:2](lpflT[i*0x2])) */
-    rgPlrLosses[((lpflT->iPlayer << 0x4) + i)] = 0x8000;
+    rgPlrLosses = 0x8000;
 
 L_8df2:
     i = (i + 1);
@@ -8785,7 +8817,8 @@ L_8ee6:
     lpbtldata->cplr = LOBYTE(cplr);
     lpbtldata->ctok = LOBYTE(vctok);
     lpbtldata->idPlanet = lpfl->idPlanet;
-    lpbtldata->pt = lpfl->pt;
+    lpbtldata->pt.x = lpfl->pt.x;
+    lpbtldata->pt.y = lpfl->pt.y;
     t_8f4b = idBattle;
     idBattle = (idBattle + 1);
     LOWORD(lpbtldata) = t_8f4b;
@@ -8928,8 +8961,7 @@ L_91e6:
     lwt = ptok->dwt;
     lwt = (lwt - 7);
     lwt = (int32_t)((lwt * 2));
-    /* untranslated: LOWORD(lwt) = (ptok->wt + loword((int32_t)((uint32_t)(words(0x0, ptok->wt) * lwt) / 0x64))) */
-    /* untranslated: HIWORD(lwt) = (0x0 + hiword((int32_t)((uint32_t)(words(0x0, ptok->wt) * lwt) / 0x64))) */
+    lwt = ((uint32_t)(ptok->wt) + (int32_t)(((uint32_t)(((uint32_t)(ptok->wt) * lwt)) / 0x64)));
     wtT = LOWORD(lwt);
     if ((wtT <= wtNext))
         goto L_92ac;
@@ -9228,7 +9260,7 @@ L_9834:
     lpbtldata->cbData = (LOWORD(lpbBattleCur) - LOWORD(lpbtldata));
     SendBattleMessages(lpfl, cplr, lpbtldata->id, rgPlrLosses, grfPlayer, cShipsInvolved, cShdefsInvolved, grfSpectator);
     lpbtldata->grfPlr = grfPlayer;
-    if ((0x0 > 0x0))
+    if (((0x0 - 0x0) > 0x0))
         goto L_98d9;
     else
         goto L_98b6;
@@ -11113,9 +11145,8 @@ L_b10b:
     dmgBombBldg = __ftol();
 
 L_b14e:
-    /* untranslated: LOWORD(cPPE) = (((loword((uint32_t)(words(*(lppl+0x16), *(lppl+0x14)) >> 0x8)) & 0xfff) + (loword((uint32_t)(words(*(lppl+0x16),
-     * *(lppl+0x14)) >> 0x14)) & 0xfff)) + lppl->cDefenses) */
-    HIWORD(cPPE) = ((0x0 + 0x0) + 0x0);
+    /* untranslated: cPPE = (((uint32_t)(loword((uint32_t)(words(*(lppl+0x16), *(lppl+0x14)) >> 0x8)) & 0xfff) + words(0x0,
+     * (loword((uint32_t)(words(*(lppl+0x16), *(lppl+0x14)) >> 0x14)) & 0xfff))) + words(0x0, lppl->cDefenses)) */
     cKillDefenses = 0;
     cKillPeople = 0;
     cKillMine = 0;
@@ -11156,7 +11187,7 @@ L_b216:
         goto L_b21f;
 
 L_b21f:
-    /* untranslated: cKillFact = (uint32_t)(words(0x0, lppl->cFactories) * dmgBombBldg) */
+    cKillFact = (uint32_t)((lppl->cFactories * dmgBombBldg));
     modKill = (int32_t)((cKillFact % cPPE));
     cKillFact = (int32_t)((cKillFact / cPPE));
     if ((HIWORD(modKill) < 0x0))
@@ -11194,8 +11225,7 @@ L_b2be:
     t_merge_b2c2_0001 = 0x0;
 
 L_b2c2:
-    LOWORD(cKillFact) = (LOWORD(cKillFact) + t_merge_b2c2_0001);
-    HIWORD(cKillFact) = (HIWORD(cKillFact) + 0x0);
+    cKillFact = (cKillFact + (uint32_t)(t_merge_b2c2_0001));
 
 L_b2c8:
     if ((HIWORD(cKillFact) < 0x0))
@@ -11219,7 +11249,7 @@ L_b2f6:
     cKillFact = lppl->cFactories;
 
 L_b315:
-    /* untranslated: cKillDefenses = (uint32_t)(words(0x0, lppl->cDefenses) * dmgBombBldg) */
+    cKillDefenses = (uint32_t)((lppl->cDefenses * dmgBombBldg));
     modKill = (int32_t)((cKillDefenses % cPPE));
     cKillDefenses = (int32_t)((cKillDefenses / cPPE));
     if ((HIWORD(modKill) < 0x0))
@@ -11257,8 +11287,7 @@ L_b3ac:
     t_merge_b3b0_0001 = 0x0;
 
 L_b3b0:
-    LOWORD(cKillDefenses) = (LOWORD(cKillDefenses) + t_merge_b3b0_0001);
-    HIWORD(cKillDefenses) = (HIWORD(cKillDefenses) + 0x0);
+    cKillDefenses = (cKillDefenses + (uint32_t)(t_merge_b3b0_0001));
 
 L_b3b6:
     if ((HIWORD(cKillDefenses) < 0x0))
@@ -11282,8 +11311,7 @@ L_b3dc:
     cKillDefenses = lppl->cDefenses;
 
 L_b3f3:
-    LOWORD(cKillMine) = (LOWORD(dmgBombBldg) - (LOWORD(cKillFact) + LOWORD(cKillDefenses)));
-    HIWORD(cKillMine) = (HIWORD(dmgBombBldg) - (HIWORD(cKillFact) + HIWORD(cKillDefenses)));
+    cKillMine = (dmgBombBldg - (cKillFact + cKillDefenses));
     if ((HIWORD(cKillMine) < 0x0))
         goto L_b45c;
     else
@@ -11437,8 +11465,7 @@ L_b5b5:
     t_merge_b5b9_0001 = 0x0;
 
 L_b5b9:
-    LOWORD(cKillPeople) = (LOWORD(cKillPeople) + t_merge_b5b9_0001);
-    HIWORD(cKillPeople) = (HIWORD(cKillPeople) + 0x0);
+    cKillPeople = (cKillPeople + (uint32_t)(t_merge_b5b9_0001));
 
 L_b5bf:
     cKillPeople = (cKillPeople + cKillPeopleS);
@@ -11763,8 +11790,7 @@ L_b9c4:
     FSendPlrMsg(lppl->iPlayer, t_merge_b9c4_0001, lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
 
 L_b9d4:
-    LOWORD(cPPE) = ((LOWORD(cKillMine) + LOWORD(cKillFact)) + LOWORD(cKillDefenses));
-    HIWORD(cPPE) = ((HIWORD(cKillMine) + HIWORD(cKillFact)) + HIWORD(cKillDefenses));
+    cPPE = ((cKillMine + cKillFact) + cKillDefenses);
     if ((HIWORD(cPPE) < 0x0))
         goto L_bd61;
     else

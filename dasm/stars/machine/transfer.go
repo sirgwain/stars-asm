@@ -321,7 +321,7 @@ func movsBase(op asm.Operand, def asm.Reg) asm.Reg {
 }
 
 func (ctx *extractor) handleBinary(st *state, inst asm.DecodedInst, meta Meta, op ValueOp) []Effect {
-	if op == ValueOpSub && sameFullRegisterOperands(inst.Dst, inst.Src) {
+	if inst.Op == asm.OpSUB && sameFullRegisterOperands(inst.Dst, inst.Src) {
 		mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, ConstVal(0))
 		if isMem {
 			return []Effect{StoreEffect{MetaInfo: meta, Addr: mem, Src: ConstVal(0), Width: mem.Width}}
@@ -331,7 +331,17 @@ func (ctx *extractor) handleBinary(st *state, inst asm.DecodedInst, meta Meta, o
 
 	lhs := st.readOperand(inst.Off, OperandDst, inst.Dst)
 	rhs := st.readOperand(inst.Off, OperandSrc, inst.Src)
-	out := BinaryResult(op, lhs, rhs)
+	var out Value
+	if inst.Op == asm.OpADC || inst.Op == asm.OpSBB {
+		out = &Binary{Op: op, LHS: lhs, RHS: rhs, Producer: meta}
+	} else {
+		out = BinaryResult(op, lhs, rhs)
+		if binary, ok := out.(*Binary); ok {
+			next := *binary
+			next.Producer = meta
+			out = &next
+		}
+	}
 
 	mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, out)
 	if inst.Dst.Kind == asm.OKReg && inst.Dst.Reg == asm.RegSP {

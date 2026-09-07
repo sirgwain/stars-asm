@@ -699,11 +699,11 @@ L_6e85:
         goto L_6e8e;
 
 L_6e8e:
-    /* untranslated: amountEdit = (uint32_t)((uint32_t)(amount * words(0x0, (ord.tsell & 0xfff))) / 0x64) */
+    amountEdit = (uint32_t)(((uint32_t)((amount * (uint32_t)((ord.tsell & 0xfff)))) / 0x64));
     goto L_6eff;
 
 L_6ec9:
-    /* untranslated: amountEdit = (uint32_t)((int32_t)(amount / 100) * words(0x0, (ord.tsell & 0xfff))) */
+    amountEdit = (uint32_t)(((int32_t)((amount / 0x64)) * (uint32_t)((ord.tsell & 0xfff))));
 
 L_6eff:
     /* untranslated: amountEdit = (amountEdit - part[0x4c:4](lpfl[j*0x4])) */
@@ -2197,7 +2197,7 @@ L_85e9:
     lpshdefT = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * j)));
 
 L_860d:
-    /* untranslated: lT = (uint32_t)(sext16to32(part[0xc:2](lpfl[j*0x2])) * words(0x0, part[0x2c:2](lpshdefT[i*0x2]))) */
+    /* untranslated: lT = (uint32_t)(sext16to32(part[0xc:2](lpfl[j*0x2])) * (uint32_t)part[0x2c:2](lpshdefT[i*0x2])) */
     if ((lpshdefT->fGift == 0x0))
         goto L_8689;
     else
@@ -2279,7 +2279,8 @@ L_87da:
         goto L_8819;
 
 L_8819:
-    pl.rgwtMin[i] = lAmt;
+    LOWORD(pl.rgwtMin[i]) = LOWORD(lAmt);
+    HIWORD(pl.rgwtMin[i]) = HIWORD(lAmt);
     goto L_8866;
 
 L_8836:
@@ -2328,7 +2329,7 @@ L_8916:
     lpshdefT = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * j)));
 
 L_893a:
-    /* untranslated: lT = (uint32_t)(sext16to32(part[0xc:2](lpfl[j*0x2])) * words(0x0, lpshdefT->hul.resCost)) */
+    /* untranslated: lT = (uint32_t)(sext16to32(part[0xc:2](lpfl[j*0x2])) * (uint32_t)lpshdefT->hul.resCost) */
     if ((lpshdefT->fGift == 0x0))
         goto L_89a4;
     else
@@ -2944,8 +2945,10 @@ L_9627:
     ifltcur = (ifltcur + 1);
 
 L_962b:
-    lpflNew->pt = lpfl->pt;
-    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
+    lpflNew->pt.x = lpfl->pt.x;
+    lpflNew->pt.y = lpfl->pt.y;
+    lpflNew->lpplord->rgord[0].pt.x = lpfl->pt.x;
+    lpflNew->lpplord->rgord[0].pt.y = lpfl->pt.y;
     ish = 0;
     goto L_96a9;
 
@@ -3263,7 +3266,8 @@ L_9df0:
     goto L_9ea2;
 
 L_9e1a:
-    lpth->pt = lpfl->pt;
+    lpth->pt.x = lpfl->pt.x;
+    lpth->pt.y = lpfl->pt.y;
     lpth->thm.cMines = cMine;
     lpth->thm.iType = LOBYTE(j);
 

@@ -1,0 +1,1146 @@
+/*
+BattlePlansDlg  (battle)
+  addr: 001f:0652  len=4276
+  sig:  int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    WMType           message        [BP+0xc]
+    uint16_t         wParam         [BP+0xa]
+    int32_t          lParam         [BP+0x6]
+  locals:
+    RECT             rc             [BP-0x14]
+    int16_t          fRet           [BP-0xc]
+    int16_t          i              [BP-0xa]
+    int16_t          idc            [BP-0x8]
+    int16_t() *      lpProc         [BP-0x6]
+    block 001F:113E  len=0x35A
+      int16_t          cLen           [BP-0x16]
+
+  stats: blocks=1  labels=2
+    LSelectName: L_14a5
+    LRename: L_ f9c
+*/
+block L_0652:
+  insts 0..6  off 0x0652..0x0660
+  succs: L_16d5
+  effects:
+    065e  goto L_16d5
+
+block L_0661:
+  insts 7..16  off 0x0661..0x0680
+  preds: L_16e5
+  succs: L_0684, L_068d
+  effects:
+    066c  call StickyDlgPos(load([bp+hwnd]), 0xd96, 0x1) -> callresult(void)
+    0674  store[2] [iPlanSelDlg] = 0x0
+    067f  branch load([sel+0x4]) != 0x2 ? L_068d : L_0684
+
+block L_0684:
+  insts 18..20  off 0x0684..0x068c
+  preds: L_0661
+  succs: L_068d
+  effects:
+    068a  store[2] [iPlanSelDlg] = (load([sel+0x7c]) & 0xff)
+
+block L_068d:
+  insts 21..41  off 0x068d..0x06c0
+  preds: L_0661, L_0684
+  succs: L_06c5
+  effects:
+    06b2  copy[0x24] *addr([btlplan]) = *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))])
+    06b9  store[2] [bp-i] = 0x0
+    06be  goto L_06c5
+
+block L_06c1:
+  insts 42..42  off 0x06c1..0x06c4
+  preds: L_06d8
+  succs: L_06c5
+  effects:
+    06c1  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_06c5:
+  insts 43..47  off 0x06c5..0x06d4
+  preds: L_068d, L_06c1
+  succs: L_06d8, L_0714
+  effects:
+    06d3  branch load([bp-i]) >= load(byte ds:[load([idPlayer])+0x4830]) ? L_0714 : L_06d8
+
+block L_06d8:
+  insts 49..71  off 0x06d8..0x0713
+  preds: L_06c5
+  succs: L_06c1
+  effects:
+    06df  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    070c  call SendMessage(callresult(HWND), 0x403, 0x0, words(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]), ((load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([bp-i])))) + 0x4))) -> callresult(LRESULT)
+    0711  goto L_06c1
+
+block L_0714:
+  insts 72..92  off 0x0714..0x0749
+  preds: L_06c5
+  succs: L_074d, L_0753
+  effects:
+    071b  call GetDlgItem(load@0714/src([bp+hwnd]), 0x41e) -> callresult(HWND)
+    0731  call SendMessage(callresult(HWND), 0x40e, load@0725/src([iPlanSelDlg]), words(0x0, 0x0)) -> callresult(LRESULT)
+    073d  call GetDlgItem(load@0736/src([bp+hwnd]), 0x41b) -> callresult(HWND)
+    0748  branch load@0743/dst([iPlanSelDlg]) <= 0x0 ? L_0753 : L_074d
+
+block L_074d:
+  insts 94..95  off 0x074d..0x0752
+  preds: L_0714
+  succs: L_0756
+  effects:
+    0750  goto L_0756
+
+block L_0753:
+  insts 96..96  off 0x0753..0x0755
+  preds: L_0714
+  succs: L_0756
+
+block L_0756:
+  insts 97..105  off 0x0756..0x076f
+  preds: L_074d, L_0753
+  succs: L_0773, L_0779
+  effects:
+    0757  call EnableWindow(callresult(HWND), merge(Join: L_0756, (L_074d:0x1, L_0753:0x0))) -> callresult(int16_t)
+    0763  call GetDlgItem(load([bp+hwnd]), 0x817) -> callresult(HWND)
+    076e  branch load([iPlanSelDlg]) <= 0x0 ? L_0779 : L_0773
+
+block L_0773:
+  insts 107..108  off 0x0773..0x0778
+  preds: L_0756
+  succs: L_077c
+  effects:
+    0776  goto L_077c
+
+block L_0779:
+  insts 109..109  off 0x0779..0x077b
+  preds: L_0756
+  succs: L_077c
+
+block L_077c:
+  insts 110..113  off 0x077c..0x0789
+  preds: L_0773, L_0779
+  succs: L_07b7
+  effects:
+    077d  call EnableWindow(callresult(HWND), merge(Join: L_077c, (L_0773:0x1, L_0779:0x0))) -> callresult(int16_t)
+    0782  store[2] [bp-i] = 0x198
+    0787  goto L_07b7
+
+block L_078a:
+  insts 114..130  off 0x078a..0x07b6
+  preds: L_07b7
+  succs: L_07b7
+  effects:
+    0791  call GetDlgItem(load([bp+hwnd]), 0x421) -> callresult(HWND)
+    07a2  call PszGetCompressedString(load@079f/src([bp-i])) -> callresult(char *)
+    07ae  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    07b3  store[2] [bp-i] = (load@07b3/dst([bp-i]) + 0x1)
+
+block L_07b7:
+  insts 131..132  off 0x07b7..0x07bd
+  preds: L_077c, L_078a
+  succs: L_078a, L_07c1
+  effects:
+    07bc  branch load([bp-i]) <= 0x19d ? L_078a : L_07c1
+
+block L_07c1:
+  insts 134..152  off 0x07c1..0x07f2
+  preds: L_07b7
+  succs: L_0820
+  effects:
+    07c8  call GetDlgItem(load([bp+hwnd]), 0x421) -> callresult(HWND)
+    07e6  call SendMessage(callresult(HWND), 0x40e, ((load([btlplan]) >> 0x8) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    07eb  store[2] [bp-i] = 0x190
+    07f0  goto L_0820
+
+block L_07f3:
+  insts 153..169  off 0x07f3..0x081f
+  preds: L_0820
+  succs: L_0820
+  effects:
+    07fa  call GetDlgItem(load([bp+hwnd]), 0x41f) -> callresult(HWND)
+    080b  call PszGetCompressedString(load@0808/src([bp-i])) -> callresult(char *)
+    0817  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    081c  store[2] [bp-i] = (load@081c/dst([bp-i]) + 0x1)
+
+block L_0820:
+  insts 170..171  off 0x0820..0x0826
+  preds: L_07c1, L_07f3
+  succs: L_07f3, L_082a
+  effects:
+    0825  branch load([bp-i]) <= 0x197 ? L_07f3 : L_082a
+
+block L_082a:
+  insts 173..193  off 0x082a..0x085d
+  preds: L_0820
+  succs: L_0861, L_0946
+  effects:
+    0831  call GetDlgItem(load([bp+hwnd]), 0x41f) -> callresult(HWND)
+    084a  call SendMessage(callresult(HWND), 0x40e, (load([btlplan+0x2]) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    085c  branch (((load([game+0x10]) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_0946 : L_0861
+
+block L_0861:
+  insts 195..196  off 0x0861..0x0868
+  preds: L_082a
+  succs: L_0896
+  effects:
+    0861  store[2] [bp-i] = 0x78
+    0866  goto L_0896
+
+block L_0869:
+  insts 197..213  off 0x0869..0x0895
+  preds: L_0896
+  succs: L_0896
+  effects:
+    0870  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
+    0881  call PszGetCompressedString(load@087e/src([bp-i])) -> callresult(char *)
+    088d  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    0892  store[2] [bp-i] = (load@0892/dst([bp-i]) + 0x1)
+
+block L_0896:
+  insts 214..215  off 0x0896..0x089b
+  preds: L_0861, L_0869
+  succs: L_0869, L_089f
+  effects:
+    089a  branch load([bp-i]) <= 0x7b ? L_0869 : L_089f
+
+block L_089f:
+  insts 217..218  off 0x089f..0x08a6
+  preds: L_0896
+  succs: L_08ab
+  effects:
+    089f  store[2] [bp-i] = 0x0
+    08a4  goto L_08ab
+
+block L_08a7:
+  insts 219..219  off 0x08a7..0x08aa
+  preds: L_08b6, L_08c1, L_08fe
+  succs: L_08ab
+  effects:
+    08a7  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_08ab:
+  insts 220..222  off 0x08ab..0x08b2
+  preds: L_089f, L_08a7
+  succs: L_08b6, L_0901
+  effects:
+    08b1  branch load([bp-i]) >= load([game+0x8]) ? L_0901 : L_08b6
+
+block L_08b6:
+  insts 224..226  off 0x08b6..0x08bd
+  preds: L_08ab
+  succs: L_08a7, L_08c1
+  effects:
+    08bc  branch load([bp-i]) == load([idPlayer]) ? L_08a7 : L_08c1
+
+block L_08c1:
+  insts 228..253  off 0x08c1..0x08fd
+  preds: L_08b6
+  succs: L_08a7
+  effects:
+    08c8  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
+    08ed  call PszPlayerName(load([bp-i]), 0x0, 0x1, 0x0, 0x0, 0x0) -> callresult(char *)
+    08f9  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+
+block L_08fe:
+  insts 254..254  off 0x08fe..0x0900
+  succs: L_08a7
+
+block L_0901:
+  insts 255..263  off 0x0901..0x0919
+  preds: L_08ab
+  succs: L_091d, L_0921
+  effects:
+    090c  store[2] [bp-i] = ((load([btlplan+0x2]) >> 0x8) & 0x1f)
+    0918  branch load([bp-i]) < (load([idPlayer]) + 0x4) ? L_0921 : L_091d
+
+block L_091d:
+  insts 265..265  off 0x091d..0x0920
+  preds: L_0901
+  succs: L_0921
+  effects:
+    091d  store[2] [bp-i] = (load([bp-i]) - 0x1)
+
+block L_0921:
+  insts 266..280  off 0x0921..0x0945
+  preds: L_0901, L_091d
+  succs: L_09a8
+  effects:
+    0928  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
+    093e  call SendMessage(callresult(HWND), 0x40e, load([bp-i]), words(0x0, 0x0)) -> callresult(LRESULT)
+    0943  goto L_09a8
+
+block L_0946:
+  insts 281..319  off 0x0946..0x09a7
+  preds: L_082a
+  succs: L_09a8
+  effects:
+    094d  call GetDlgItem(load@0946/src([bp+hwnd]), 0x422) -> callresult(HWND)
+    095f  call PszGetCompressedString(0x7b) -> callresult(char *)
+    096b  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    0977  call GetDlgItem(load@0970/src([bp+hwnd]), 0x422) -> callresult(HWND)
+    098d  call SendMessage(callresult(HWND), 0x40e, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0999  call GetDlgItem(load@0992/src([bp+hwnd]), 0x422) -> callresult(HWND)
+    09a3  call EnableWindow(callresult(HWND), 0x0) -> callresult(int16_t)
+
+block L_09a8:
+  insts 320..321  off 0x09a8..0x09af
+  preds: L_0921, L_0946
+  succs: L_09dd
+  effects:
+    09a8  store[2] [bp-i] = 0x190
+    09ad  goto L_09dd
+
+block L_09b0:
+  insts 322..338  off 0x09b0..0x09dc
+  preds: L_09dd
+  succs: L_09dd
+  effects:
+    09b7  call GetDlgItem(load([bp+hwnd]), 0x420) -> callresult(HWND)
+    09c8  call PszGetCompressedString(load@09c5/src([bp-i])) -> callresult(char *)
+    09d4  call SendMessage(callresult(HWND), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    09d9  store[2] [bp-i] = (load@09d9/dst([bp-i]) + 0x1)
+
+block L_09dd:
+  insts 339..340  off 0x09dd..0x09e3
+  preds: L_09a8, L_09b0
+  succs: L_09b0, L_09e7
+  effects:
+    09e2  branch load([bp-i]) <= 0x197 ? L_09b0 : L_09e7
+
+block L_09e7:
+  insts 342..384  off 0x09e7..0x0a53
+  preds: L_09dd
+  succs: L_0a57, L_0a5c
+  effects:
+    09ee  call GetDlgItem(load@09e7/src([bp+hwnd]), 0x420) -> callresult(HWND)
+    0a0f  call SendMessage(callresult(HWND), 0x40e, (((((load([btlplan+0x2]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    0a1b  call GetDlgItem(load@0a14/src([bp+hwnd]), 0x41d) -> callresult(HWND)
+    0a39  call SendMessage(callresult(HWND), 0x401, ((load([btlplan]) >> 0xf) & 0x1), words(0x0, 0x0)) -> callresult(LRESULT)
+    0a3e  store[2] [fDirtyPlan] = 0x0
+    0a52  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_0a5c : L_0a57
+
+block L_0a57:
+  insts 386..386  off 0x0a57..0x0a5b
+  preds: L_09e7
+  succs: L_0a5c
+  effects:
+    0a57  call AdvanceTutor() -> callresult(void)
+
+block L_0a5c:
+  insts 387..388  off 0x0a5c..0x0a61
+  preds: L_09e7, L_0a57
+  succs: L_16fe
+  effects:
+    0a5f  goto L_16fe
+
+block L_0a62:
+  insts 389..390  off 0x0a62..0x0a69
+  preds: L_16dd
+  succs: L_0a8f
+  effects:
+    0a62  store[2] [bp-idc] = 0x41d
+    0a67  goto L_0a8f
+
+block L_0a6a:
+  insts 391..399  off 0x0a6a..0x0a84
+  preds: L_0a8f
+  succs: L_0a8b, L_0a99
+  effects:
+    0a70  store[2] ss:[bp-0x16] = load([bp+lParam])
+    0a79  call GetDlgItem(load([bp+hwnd]), load([bp-idc])) -> callresult(HWND)
+    0a83  branch load(ss:[bp-0x16]) == callresult(HWND) ? L_0a99 : L_0a85
+
+block L_0a85:
+  insts 400..400  off 0x0a85..0x0a87
+  succs: L_0a8b
+
+block L_0a88:
+  insts 401..401  off 0x0a88..0x0a8a
+  succs: L_0a99
+
+block L_0a8b:
+  insts 402..402  off 0x0a8b..0x0a8e
+  preds: L_0a6a, L_0a85
+  succs: L_0a8f
+  effects:
+    0a8b  store[2] [bp-idc] = (load([bp-idc]) + 0x1)
+
+block L_0a8f:
+  insts 403..404  off 0x0a8f..0x0a95
+  preds: L_0a62, L_0a8b
+  succs: L_0a6a, L_0a99
+  effects:
+    0a94  branch load([bp-idc]) <= 0x422 ? L_0a6a : L_0a99
+
+block L_0a99:
+  insts 406..407  off 0x0a99..0x0a9f
+  preds: L_0a6a, L_0a88, L_0a8f
+  succs: L_0aa3, L_0abf
+  effects:
+    0a9e  branch load([bp-idc]) >= 0x41d ? L_0abf : L_0aa3
+
+block L_0aa3:
+  insts 409..416  off 0x0aa3..0x0abb
+  preds: L_0a99
+  succs: L_0abf, L_16f8
+  effects:
+    0aac  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0aba  branch (loword(callresult(uint32_t)) & 0xffff) != 0x6 ? L_16f8 : L_0abf
+
+block L_0abf:
+  insts 418..423  off 0x0abf..0x0ad4
+  preds: L_0a99, L_0aa3
+  succs: L_16fe
+  effects:
+    0aca  call SetBkColor(load([bp+wParam]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
+    0ad2  goto L_16fe
+
+block L_0ad5:
+  insts 424..424  off 0x0ad5..0x0ad7
+  succs: L_16f8
+
+block L_0ad8:
+  insts 425..439  off 0x0ad8..0x0aff
+  preds: L_16d5
+  succs: L_16fe
+  effects:
+    0ae2  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    0af5  call FillRect(load([bp+wParam]), words(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    0afd  goto L_16fe
+
+block L_0b00:
+  insts 440..441  off 0x0b00..0x0b05
+  preds: L_16ed
+  succs: L_0b09, L_0b12
+  effects:
+    0b04  branch load([bp+wParam]) == 0x1 ? L_0b12 : L_0b09
+
+block L_0b09:
+  insts 443..444  off 0x0b09..0x0b0e
+  preds: L_0b00
+  succs: L_0b12, L_0bb8
+  effects:
+    0b0d  branch load([bp+wParam]) != 0x2 ? L_0bb8 : L_0b12
+
+block L_0b12:
+  insts 446..447  off 0x0b12..0x0b18
+  preds: L_0b00, L_0b09
+  succs: L_0b1c, L_0b6e
+  effects:
+    0b17  branch load([fDirtyPlan]) == 0x0 ? L_0b6e : L_0b1c
+
+block L_0b1c:
+  insts 449..477  off 0x0b1c..0x0b6d
+  preds: L_0b12
+  succs: L_0b6e
+  effects:
+    0b3e  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    0b58  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    0b66  call LogChangeBtlplan(0x51d4) -> callresult(void)
+
+block L_0b6e:
+  insts 478..489  off 0x0b6e..0x0b93
+  preds: L_0b12, L_0b1c
+  succs: L_0b97, L_0ba9
+  effects:
+    0b79  call StickyDlgPos(load@0b76/src([bp+hwnd]), 0xd96, 0x0) -> callresult(void)
+    0b88  call EndDialog(load@0b81/src([bp+hwnd]), load([iPlanSelDlg])) -> callresult(void)
+    0b92  branch load([sel+0x4]) != 0x2 ? L_0ba9 : L_0b97
+
+block L_0b97:
+  insts 491..496  off 0x0b97..0x0ba8
+  preds: L_0b6e
+  succs: L_0ba9
+  effects:
+    0ba1  call FillBattleDD(((load([sel+0x7c]) & 0xff) + 0x1)) -> callresult(void)
+
+block L_0ba9:
+  insts 497..499  off 0x0ba9..0x0bb4
+  preds: L_0b6e, L_0b97
+  succs: L_16fe
+  effects:
+    0ba9  store[2] [iPlanSelDlg] = 0xffff
+    0bb2  goto L_16fe
+
+block L_0bb8:
+  insts 500..501  off 0x0bb8..0x0bbe
+  preds: L_0b09
+  succs: L_0bc2, L_0c05
+  effects:
+    0bbd  branch load([bp+wParam]) != 0x41d ? L_0c05 : L_0bc2
+
+block L_0bc2:
+  insts 503..526  off 0x0bc2..0x0c04
+  preds: L_0bb8
+  succs: L_16f8
+  effects:
+    0bd9  call SendDlgItemMessage(load([bp+hwnd]), 0x41d, 0x400, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0bde  store[2] ss:[bp-0x16] = loword(callresult(LRESULT))
+    0bf6  store[2] [btlplan] = ((load([btlplan]) & 0x7fff) | ((load(ss:[bp-0x16]) & 0x1) << 0xf))
+    0bfc  store[2] [fDirtyPlan] = 0x1
+    0c02  goto L_16f8
+
+block L_0c05:
+  insts 527..528  off 0x0c05..0x0c0b
+  preds: L_0bb8
+  succs: L_0c0f, L_0e25
+  effects:
+    0c0a  branch load([bp+wParam]) != 0x817 ? L_0e25 : L_0c0f
+
+block L_0c0f:
+  insts 530..531  off 0x0c0f..0x0c15
+  preds: L_0c05
+  succs: L_0c19, L_0c71
+  effects:
+    0c14  branch load([fDirtyPlan]) == 0x0 ? L_0c71 : L_0c19
+
+block L_0c19:
+  insts 533..562  off 0x0c19..0x0c70
+  preds: L_0c0f
+  succs: L_0c71
+  effects:
+    0c3b  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    0c55  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    0c63  call LogChangeBtlplan(0x51d4) -> callresult(void)
+    0c6b  store[2] [fDirtyPlan] = 0x0
+
+block L_0c71:
+  insts 563..608  off 0x0c71..0x0cf3
+  preds: L_0c0f, L_0c19
+  succs: L_0cf7, L_0dd0
+  effects:
+    0c7a  store[2] [btlplan] = ((load@0c71/src([btlplan]) & 0xbfff) | 0x4000)
+    0c9f  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    0cb9  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    0cdb  store[2] [btlplan] = ((load@0cd1/src([btlplan]) & 0xff0f) | (((((load@0cc3/src([iPlanSelDlg]) & 0xf) << 0x1) << 0x1) << 0x1) << 0x1))
+    0ce7  call FDeleteBattlePlan(load@0ce3/src([iPlanSelDlg]), 0x1) -> callresult(int16_t)
+    0cf2  branch callresult(int16_t) == 0x0 ? L_0dd0 : L_0cf7
+
+block L_0cf7:
+  insts 610..644  off 0x0cf7..0x0d51
+  preds: L_0c71
+  succs: L_0d56
+  effects:
+    0cfb  call LogChangeBtlplan(0x51d4) -> callresult(void)
+    0d0a  call GetDlgItem(load@0d03/src([bp+hwnd]), 0x41e) -> callresult(HWND)
+    0d23  call SendMessage(callresult(HWND), 0x40e, (load([iPlanSelDlg]) + 0xffff), words(0x0, 0x0)) -> callresult(LRESULT)
+    0d2f  call GetDlgItem(load@0d28/src([bp+hwnd]), 0x41e) -> callresult(HWND)
+    0d45  call SendMessage(callresult(HWND), 0x40b, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0d4a  store[2] [bp-i] = 0x0
+    0d4f  goto L_0d56
+
+block L_0d52:
+  insts 645..645  off 0x0d52..0x0d55
+  preds: L_0d69
+  succs: L_0d56
+  effects:
+    0d52  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0d56:
+  insts 646..650  off 0x0d56..0x0d65
+  preds: L_0cf7, L_0d52
+  succs: L_0d69, L_0da5
+  effects:
+    0d64  branch load([bp-i]) >= load(byte ds:[load([idPlayer])+0x4830]) ? L_0da5 : L_0d69
+
+block L_0d69:
+  insts 652..674  off 0x0d69..0x0da4
+  preds: L_0d56
+  succs: L_0d52
+  effects:
+    0d70  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    0d9d  call SendMessage(callresult(HWND), 0x403, 0x0, words(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]), ((load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([bp-i])))) + 0x4))) -> callresult(LRESULT)
+    0da2  goto L_0d52
+
+block L_0da5:
+  insts 675..690  off 0x0da5..0x0dcc
+  preds: L_0d56
+  succs: L_14a5
+  effects:
+    0dac  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    0dc5  call SendMessage(callresult(HWND), 0x40e, (load([iPlanSelDlg]) + 0xffff), words(0x0, 0x0)) -> callresult(LRESULT)
+    0dca  goto L_14a5
+
+block L_0dd0:
+  insts 691..720  off 0x0dd0..0x0e24
+  preds: L_0c71
+  succs: L_16f8
+  effects:
+    0dd9  store[2] [btlplan] = ((load([btlplan]) & 0xbfff) | 0x0)
+    0dfe  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    0e18  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    0e22  goto L_16f8
+
+block L_0e25:
+  insts 721..722  off 0x0e25..0x0e2b
+  preds: L_0c05
+  succs: L_0e2f, L_0e70
+  effects:
+    0e2a  branch load([bp+wParam]) != 0x41f ? L_0e70 : L_0e2f
+
+block L_0e2f:
+  insts 724..746  off 0x0e2f..0x0e6f
+  preds: L_0e25
+  succs: L_16f8
+  effects:
+    0e36  call GetDlgItem(load([bp+hwnd]), load([bp+wParam])) -> callresult(HWND)
+    0e4c  call SendMessage(callresult(HWND), 0x407, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0e51  store[2] [bp-i] = loword(callresult(LRESULT))
+    0e63  store[2] [btlplan+0x2] = ((load([btlplan+0x2]) & 0xfff0) | (load([bp-i]) & 0xf))
+    0e67  store[2] [fDirtyPlan] = 0x1
+    0e6d  goto L_16f8
+
+block L_0e70:
+  insts 747..748  off 0x0e70..0x0e76
+  preds: L_0e25
+  succs: L_0e7a, L_0ec4
+  effects:
+    0e75  branch load([bp+wParam]) != 0x420 ? L_0ec4 : L_0e7a
+
+block L_0e7a:
+  insts 750..776  off 0x0e7a..0x0ec3
+  preds: L_0e70
+  succs: L_16f8
+  effects:
+    0e81  call GetDlgItem(load([bp+hwnd]), load([bp+wParam])) -> callresult(HWND)
+    0e97  call SendMessage(callresult(HWND), 0x407, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0e9c  store[2] [bp-i] = loword(callresult(LRESULT))
+    0eb7  store[2] [btlplan+0x2] = ((load([btlplan+0x2]) & 0xff0f) | (((((load([bp-i]) & 0xf) << 0x1) << 0x1) << 0x1) << 0x1))
+    0ebb  store[2] [fDirtyPlan] = 0x1
+    0ec1  goto L_16f8
+
+block L_0ec4:
+  insts 777..778  off 0x0ec4..0x0eca
+  preds: L_0e70
+  succs: L_0ece, L_0f41
+  effects:
+    0ec9  branch load([bp+wParam]) != 0x422 ? L_0f41 : L_0ece
+
+block L_0ece:
+  insts 780..800  off 0x0ece..0x0f01
+  preds: L_0ec4
+  succs: L_0f05, L_0f0d
+  effects:
+    0ed5  call GetDlgItem(load([bp+hwnd]), load([bp+wParam])) -> callresult(HWND)
+    0eeb  call SendMessage(callresult(HWND), 0x407, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0ef0  store[2] [bp-i] = loword(callresult(LRESULT))
+    0f00  branch (((load([game+0x10]) >> 0x1) >> 0x1) & 0x1) == 0x0 ? L_0f0d : L_0f05
+
+block L_0f05:
+  insts 802..803  off 0x0f05..0x0f0c
+  preds: L_0ece
+  succs: L_0f1f
+  effects:
+    0f05  store[2] [bp-i] = 0x3
+    0f0a  goto L_0f1f
+
+block L_0f0d:
+  insts 804..807  off 0x0f0d..0x0f17
+  preds: L_0ece
+  succs: L_0f1b, L_0f1f
+  effects:
+    0f16  branch load([bp-i]) < (load([idPlayer]) + 0x4) ? L_0f1f : L_0f1b
+
+block L_0f1b:
+  insts 809..809  off 0x0f1b..0x0f1e
+  preds: L_0f0d
+  succs: L_0f1f
+  effects:
+    0f1b  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0f1f:
+  insts 810..819  off 0x0f1f..0x0f40
+  preds: L_0f05, L_0f0d, L_0f1b
+  succs: L_16f8
+  effects:
+    0f34  store[2] [btlplan+0x2] = ((load([btlplan+0x2]) & 0xe0ff) | ((load([bp-i]) & 0x1f) << 0x8))
+    0f38  store[2] [fDirtyPlan] = 0x1
+    0f3e  goto L_16f8
+
+block L_0f41:
+  insts 820..821  off 0x0f41..0x0f47
+  preds: L_0ec4
+  succs: L_0f4b, L_0f92
+  effects:
+    0f46  branch load([bp+wParam]) != 0x421 ? L_0f92 : L_0f4b
+
+block L_0f4b:
+  insts 823..847  off 0x0f4b..0x0f91
+  preds: L_0f41
+  succs: L_16f8
+  effects:
+    0f52  call GetDlgItem(load([bp+hwnd]), load([bp+wParam])) -> callresult(HWND)
+    0f68  call SendMessage(callresult(HWND), 0x407, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    0f6d  store[2] [bp-i] = loword(callresult(LRESULT))
+    0f85  store[2] [btlplan] = ((load([btlplan]) & 0xf0ff) | ((load([bp-i]) & 0xf) << 0x8))
+    0f89  store[2] [fDirtyPlan] = 0x1
+    0f8f  goto L_16f8
+
+block L_0f92:
+  insts 848..849  off 0x0f92..0x0f98
+  preds: L_0f41
+  succs: L_0f9c, L_1134
+  effects:
+    0f97  branch load([bp+wParam]) != 0x41b ? L_1134 : L_0f9c
+
+block LRename:
+  insts 851..882  off 0x0f9c..0x0ffc
+  preds: L_0f92, L_1452
+  succs: L_1000, L_10e5
+  effects:
+    0fa7  call StickyDlgPos(load@0fa4/src([bp+hwnd]), 0xd96, 0x0) -> callresult(void)
+    0fbb  call MakeProcInstance(words(0xcea, 0x4ce), load@0fb7/src([hInst])) -> callresult(int32_t() *)
+    0fc0  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
+    0fc3  store[2] [bp-lpProc+0x2] = farseg(callresult(int32_t() *))
+    0fdc  call DialogBox(load@0fc6/src([hInst]), words(0x0, 0x7e3), load([hwndFrame]), words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
+    0fe1  store[2] [bp-fRet] = callresult(int16_t)
+    0fea  call FreeProcInstance(words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
+    0ff2  call SetFocus(load@0fef/src([bp+hwnd])) -> callresult(HWND)
+    0ffb  branch load([bp-fRet]) == 0x0 ? L_10e5 : L_1000
+
+block L_1000:
+  insts 884..924  off 0x1000..0x106f
+  preds: L_0f9c
+  succs: L_1074
+  effects:
+    1022  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    103c  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    104d  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    1063  call SendMessage(callresult(HWND), 0x40b, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    1068  store[2] [bp-i] = 0x0
+    106d  goto L_1074
+
+block L_1070:
+  insts 925..925  off 0x1070..0x1073
+  preds: L_1087
+  succs: L_1074
+  effects:
+    1070  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1074:
+  insts 926..930  off 0x1074..0x1083
+  preds: L_1000, L_1070
+  succs: L_1087, L_10c3
+  effects:
+    1082  branch load([bp-i]) >= load(byte ds:[load([idPlayer])+0x4830]) ? L_10c3 : L_1087
+
+block L_1087:
+  insts 932..954  off 0x1087..0x10c2
+  preds: L_1074
+  succs: L_1070
+  effects:
+    108e  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    10bb  call SendMessage(callresult(HWND), 0x403, 0x0, words(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]), ((load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([bp-i])))) + 0x4))) -> callresult(LRESULT)
+    10c0  goto L_1070
+
+block L_10c3:
+  insts 955..968  off 0x10c3..0x10e4
+  preds: L_1074
+  succs: L_10e5
+  effects:
+    10ca  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    10e0  call SendMessage(callresult(HWND), 0x40e, load([iPlanSelDlg]), words(0x0, 0x0)) -> callresult(LRESULT)
+
+block L_10e5:
+  insts 969..975  off 0x10e5..0x10f8
+  preds: L_0f9c, L_10c3
+  succs: L_10fc, L_1102
+  effects:
+    10ec  call GetDlgItem(load([bp+hwnd]), 0x41b) -> callresult(HWND)
+    10f7  branch load([iPlanSelDlg]) <= 0x0 ? L_1102 : L_10fc
+
+block L_10fc:
+  insts 977..978  off 0x10fc..0x1101
+  preds: L_10e5
+  succs: L_1105
+  effects:
+    10ff  goto L_1105
+
+block L_1102:
+  insts 979..979  off 0x1102..0x1104
+  preds: L_10e5
+  succs: L_1105
+
+block L_1105:
+  insts 980..988  off 0x1105..0x111e
+  preds: L_10fc, L_1102
+  succs: L_1122, L_1128
+  effects:
+    1106  call EnableWindow(callresult(HWND), merge(Join: L_1105, (L_10fc:0x1, L_1102:0x0))) -> callresult(int16_t)
+    1112  call GetDlgItem(load([bp+hwnd]), 0x817) -> callresult(HWND)
+    111d  branch load([iPlanSelDlg]) <= 0x0 ? L_1128 : L_1122
+
+block L_1122:
+  insts 990..991  off 0x1122..0x1127
+  preds: L_1105
+  succs: L_112b
+  effects:
+    1125  goto L_112b
+
+block L_1128:
+  insts 992..992  off 0x1128..0x112a
+  preds: L_1105
+  succs: L_112b
+
+block L_112b:
+  insts 993..995  off 0x112b..0x1133
+  preds: L_1122, L_1128
+  succs: L_16f8
+  effects:
+    112c  call EnableWindow(callresult(HWND), merge(Join: L_112b, (L_1122:0x1, L_1128:0x0))) -> callresult(int16_t)
+    1131  goto L_16f8
+
+block L_1134:
+  insts 996..997  off 0x1134..0x113a
+  preds: L_0f92
+  succs: L_113e, L_149b
+  effects:
+    1139  branch load([bp+wParam]) != 0x41c ? L_149b : L_113e
+
+block L_113e:
+  insts 999..1003  off 0x113e..0x114d
+  preds: L_1134
+  succs: L_1151, L_1157
+  effects:
+    114c  branch load(byte ds:[load([idPlayer])+0x4830]) != 0xf ? L_1157 : L_1151
+
+block L_1151:
+  insts 1005..1006  off 0x1151..0x1156
+  preds: L_113e
+  succs: L_16fe
+  effects:
+    1154  goto L_16fe
+
+block L_1157:
+  insts 1007..1008  off 0x1157..0x115d
+  preds: L_113e
+  succs: L_1161, L_11b9
+  effects:
+    115c  branch load([fDirtyPlan]) == 0x0 ? L_11b9 : L_1161
+
+block L_1161:
+  insts 1010..1039  off 0x1161..0x11b8
+  preds: L_1157
+  succs: L_11b9
+  effects:
+    1183  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    119d  store[2] ss:[bp-0x18] = loword((0x24 * load([iPlanSelDlg])))
+    11ab  call LogChangeBtlplan(0x51d4) -> callresult(void)
+    11b3  store[2] [fDirtyPlan] = 0x0
+
+block L_11b9:
+  insts 1040..1051  off 0x11b9..0x11e0
+  preds: L_1157, L_1161
+  succs: L_11e7, L_128b
+  effects:
+    11c1  store[1] byte ds:[load([idPlayer])+0x4830] = (load@11c1/dst(byte ds:[load([idPlayer])+0x4830]) + 0x1)
+    11c9  store[2] [iPlanSelDlg] = load@11bd/src(byte ds:[load([idPlayer])+0x4830])
+    11d0  call strlen(0x51d8) -> callresult(uint16_t)
+    11d8  store[2] [bp-cLen] = callresult(uint16_t)
+    11df  branch load([bp-cLen]) > 0x1b ? L_128b : L_11e1
+
+block L_11e1:
+  insts 1052..1052  off 0x11e1..0x11e3
+  succs: L_11e7
+
+block L_11e4:
+  insts 1053..1053  off 0x11e4..0x11e6
+  succs: L_128b
+
+block L_11e7:
+  insts 1054..1061  off 0x11e7..0x11fb
+  preds: L_11b9, L_11e1
+  succs: L_11ff, L_123c
+  effects:
+    11fa  branch load(byte ds:[(load([bp-cLen]) + 0x151d7)]) != 0x29 ? L_123c : L_11ff
+
+block L_11ff:
+  insts 1063..1075  off 0x11ff..0x1220
+  preds: L_11e7
+  succs: L_1224, L_123c
+  effects:
+    121f  branch (load(byte ds:[(0x175f + load(byte ds:[(load([bp-cLen]) + 0x151d6)]))]) & 0x4) == 0x0 ? L_123c : L_1224
+
+block L_1224:
+  insts 1077..1084  off 0x1224..0x1238
+  preds: L_11ff
+  succs: L_123c, L_1254
+  effects:
+    1237  branch load(byte ds:[(load([bp-cLen]) + 0x151d5)]) == 0x28 ? L_1254 : L_123c
+
+block L_123c:
+  insts 1086..1094  off 0x123c..0x1253
+  preds: L_11e7, L_11ff, L_1224
+  succs: L_128b
+  effects:
+    1249  call strcpy((0x51d8 + load([bp-cLen])), 0xd9c) -> callresult(char *)
+    1251  goto L_128b
+
+block L_1254:
+  insts 1095..1102  off 0x1254..0x1268
+  preds: L_1224
+  succs: L_126c, L_127d
+  effects:
+    1267  branch load(byte ds:[(load([bp-cLen]) + 0x151d6)]) != 0x39 ? L_127d : L_126c
+
+block L_126c:
+  insts 1104..1109  off 0x126c..0x127c
+  preds: L_1254
+  succs: L_128b
+  effects:
+    1277  store[1] byte ds:[(load([bp-cLen]) + 0x151d6)] = 0x30
+    127a  goto L_128b
+
+block L_127d:
+  insts 1110..1114  off 0x127d..0x128a
+  preds: L_1254
+  succs: L_128b
+  effects:
+    1288  store[1] byte ds:[(load([bp-cLen]) + 0x151d6)] = (load(byte ds:[(load([bp-cLen]) + 0x151d6)]) + 0x1)
+
+block L_128b:
+  insts 1115..1182  off 0x128b..0x1340
+  preds: L_11b9, L_11e4, L_123c, L_126c, L_127d
+  succs: L_1345
+  effects:
+    12a3  store[2] [btlplan] = ((load@1299/src([btlplan]) & 0xff0f) | (((((load@128b/src([iPlanSelDlg]) & 0xf) << 0x1) << 0x1) << 0x1) << 0x1))
+    12c9  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    12e3  store[2] ss:[bp-0x18] = loword((0x24 * load([iPlanSelDlg])))
+    12f4  call GetDlgItem(load@12ed/src([bp+hwnd]), 0x421) -> callresult(HWND)
+    1312  call SendMessage(callresult(HWND), 0x40e, ((load@1301/src([btlplan]) >> 0x8) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    131e  call GetDlgItem(load@1317/src([bp+hwnd]), 0x41e) -> callresult(HWND)
+    1334  call SendMessage(callresult(HWND), 0x40b, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    1339  store[2] [bp-i] = 0x0
+    133e  goto L_1345
+
+block L_1341:
+  insts 1183..1183  off 0x1341..0x1344
+  preds: L_1358
+  succs: L_1345
+  effects:
+    1341  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1345:
+  insts 1184..1188  off 0x1345..0x1354
+  preds: L_128b, L_1341
+  succs: L_1358, L_1394
+  effects:
+    1353  branch load([bp-i]) >= load(byte ds:[load([idPlayer])+0x4830]) ? L_1394 : L_1358
+
+block L_1358:
+  insts 1190..1212  off 0x1358..0x1393
+  preds: L_1345
+  succs: L_1341
+  effects:
+    135f  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    138c  call SendMessage(callresult(HWND), 0x403, 0x0, words(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]), ((load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([bp-i])))) + 0x4))) -> callresult(LRESULT)
+    1391  goto L_1341
+
+block L_1394:
+  insts 1213..1286  off 0x1394..0x144a
+  preds: L_1345
+  succs: L_144e, L_1452
+  effects:
+    139b  call GetDlgItem(load@1394/src([bp+hwnd]), 0x41e) -> callresult(HWND)
+    13b1  call SendMessage(callresult(HWND), 0x40e, load([iPlanSelDlg]), words(0x0, 0x0)) -> callresult(LRESULT)
+    13bd  call GetDlgItem(load@13b6/src([bp+hwnd]), 0x41f) -> callresult(HWND)
+    13d6  call SendMessage(callresult(HWND), 0x40e, (load@13c7/src([btlplan+0x2]) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    13e2  call GetDlgItem(load@13db/src([bp+hwnd]), 0x420) -> callresult(HWND)
+    1403  call SendMessage(callresult(HWND), 0x40e, (((((load@13ec/src([btlplan+0x2]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    140f  call GetDlgItem(load@1408/src([bp+hwnd]), 0x41d) -> callresult(HWND)
+    142d  call SendMessage(callresult(HWND), 0x401, ((load([btlplan]) >> 0xf) & 0x1), words(0x0, 0x0)) -> callresult(LRESULT)
+    143d  store[2] [bp-i] = ((load@1435/src([btlplan+0x2]) >> 0x8) & 0x1f)
+    1449  branch load([bp-i]) < (load([idPlayer]) + 0x4) ? L_1452 : L_144e
+
+block L_144e:
+  insts 1288..1288  off 0x144e..0x1451
+  preds: L_1394
+  succs: L_1452
+  effects:
+    144e  store[2] [bp-i] = (load([bp-i]) - 0x1)
+
+block L_1452:
+  insts 1289..1313  off 0x1452..0x1497
+  preds: L_1394, L_144e
+  succs: L_0f9c
+  effects:
+    1459  call GetDlgItem(load@1452/src([bp+hwnd]), 0x422) -> callresult(HWND)
+    146f  call SendMessage(callresult(HWND), 0x40e, load([bp-i]), words(0x0, 0x0)) -> callresult(LRESULT)
+    1474  store[2] [fDirtyPlan] = 0x1
+    147a  store[2] [bp+wParam] = 0x41f
+    1486  call GetDlgItem(load@147f/src([bp+hwnd]), 0x41b) -> callresult(HWND)
+    1490  call EnableWindow(callresult(HWND), 0x1) -> callresult(int16_t)
+    1495  goto L_0f9c
+
+block L_149b:
+  insts 1314..1315  off 0x149b..0x14a1
+  preds: L_1134
+  succs: L_14a5, L_16a5
+  effects:
+    14a0  branch load([bp+wParam]) != 0x41e ? L_16a5 : L_14a5
+
+block LSelectName:
+  insts 1317..1334  off 0x14a5..0x14d1
+  preds: L_0da5, L_149b
+  succs: L_14d5, L_16f8
+  effects:
+    14ac  call GetDlgItem(load([bp+hwnd]), 0x41e) -> callresult(HWND)
+    14c2  call SendMessage(callresult(HWND), 0x407, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    14c7  store[2] [bp-i] = loword(callresult(LRESULT))
+    14d0  branch load([bp-i]) == load([iPlanSelDlg]) ? L_16f8 : L_14d5
+
+block L_14d5:
+  insts 1336..1337  off 0x14d5..0x14db
+  preds: L_14a5
+  succs: L_14df, L_1537
+  effects:
+    14da  branch load([fDirtyPlan]) == 0x0 ? L_1537 : L_14df
+
+block L_14df:
+  insts 1339..1368  off 0x14df..0x1536
+  preds: L_14d5
+  succs: L_1537
+  effects:
+    1501  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
+    151b  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
+    1529  call LogChangeBtlplan(0x51d4) -> callresult(void)
+    1531  store[2] [fDirtyPlan] = 0x0
+
+block L_1537:
+  insts 1369..1448  off 0x1537..0x15fd
+  preds: L_14d5, L_14df
+  succs: L_1601, L_1607
+  effects:
+    153a  store[2] [iPlanSelDlg] = load([bp-i])
+    1562  copy[0x24] *addr([btlplan]) = *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))])
+    1570  call GetDlgItem(load@1569/src([bp+hwnd]), 0x41f) -> callresult(HWND)
+    1589  call SendMessage(callresult(HWND), 0x40e, (load@157a/src([btlplan+0x2]) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    1595  call GetDlgItem(load@158e/src([bp+hwnd]), 0x420) -> callresult(HWND)
+    15b6  call SendMessage(callresult(HWND), 0x40e, (((((load@159f/src([btlplan+0x2]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    15c2  call GetDlgItem(load@15bb/src([bp+hwnd]), 0x41d) -> callresult(HWND)
+    15e0  call SendMessage(callresult(HWND), 0x401, ((load([btlplan]) >> 0xf) & 0x1), words(0x0, 0x0)) -> callresult(LRESULT)
+    15e5  store[2] [bp+wParam] = 0x41f
+    15f1  call GetDlgItem(load@15ea/src([bp+hwnd]), 0x41b) -> callresult(HWND)
+    15fc  branch load([iPlanSelDlg]) <= 0x0 ? L_1607 : L_1601
+
+block L_1601:
+  insts 1450..1451  off 0x1601..0x1606
+  preds: L_1537
+  succs: L_160a
+  effects:
+    1604  goto L_160a
+
+block L_1607:
+  insts 1452..1452  off 0x1607..0x1609
+  preds: L_1537
+  succs: L_160a
+
+block L_160a:
+  insts 1453..1461  off 0x160a..0x1623
+  preds: L_1601, L_1607
+  succs: L_1627, L_162d
+  effects:
+    160b  call EnableWindow(callresult(HWND), merge(Join: L_160a, (L_1601:0x1, L_1607:0x0))) -> callresult(int16_t)
+    1617  call GetDlgItem(load([bp+hwnd]), 0x817) -> callresult(HWND)
+    1622  branch load([iPlanSelDlg]) <= 0x0 ? L_162d : L_1627
+
+block L_1627:
+  insts 1463..1464  off 0x1627..0x162c
+  preds: L_160a
+  succs: L_1630
+  effects:
+    162a  goto L_1630
+
+block L_162d:
+  insts 1465..1465  off 0x162d..0x162f
+  preds: L_160a
+  succs: L_1630
+
+block L_1630:
+  insts 1466..1493  off 0x1630..0x1678
+  preds: L_1627, L_162d
+  succs: L_167c, L_1680
+  effects:
+    1631  call EnableWindow(callresult(HWND), merge(Join: L_1630, (L_1627:0x1, L_162d:0x0))) -> callresult(int16_t)
+    163d  call GetDlgItem(load([bp+hwnd]), 0x421) -> callresult(HWND)
+    165b  call SendMessage(callresult(HWND), 0x40e, ((load([btlplan]) >> 0x8) & 0xf), words(0x0, 0x0)) -> callresult(LRESULT)
+    166b  store[2] [bp-i] = ((load([btlplan+0x2]) >> 0x8) & 0x1f)
+    1677  branch load([bp-i]) < (load([idPlayer]) + 0x4) ? L_1680 : L_167c
+
+block L_167c:
+  insts 1495..1495  off 0x167c..0x167f
+  preds: L_1630
+  succs: L_1680
+  effects:
+    167c  store[2] [bp-i] = (load([bp-i]) - 0x1)
+
+block L_1680:
+  insts 1496..1509  off 0x1680..0x16a1
+  preds: L_1630, L_167c
+  succs: L_16f8
+  effects:
+    1687  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
+    169d  call SendMessage(callresult(HWND), 0x40e, load([bp-i]), words(0x0, 0x0)) -> callresult(LRESULT)
+
+block L_16a2:
+  insts 1510..1510  off 0x16a2..0x16a4
+  succs: L_16f8
+
+block L_16a5:
+  insts 1511..1512  off 0x16a5..0x16aa
+  preds: L_149b
+  succs: L_16ae, L_16f8
+  effects:
+    16a9  branch load([bp+wParam]) != 0x76 ? L_16f8 : L_16ae
+
+block L_16ae:
+  insts 1514..1527  off 0x16ae..0x16ce
+  preds: L_16a5
+  succs: L_16fe
+  effects:
+    16c4  call WinHelp(load([bp+hwnd]), words(ds, load([szHelpFile])), 0x1, words(0x0, 0x439)) -> callresult(int16_t)
+    16cc  goto L_16fe
+
+block L_16cf:
+  insts 1528..1528  off 0x16cf..0x16d1
+  succs: L_16f8
+
+block L_16d5:
+  insts 1529..1530  off 0x16d5..0x16d9
+  preds: L_0652
+  succs: L_0ad8, L_16dd
+  effects:
+    16d8  branch load([bp+message]) == 0x14 ? L_0ad8 : L_16dd
+
+block L_16dd:
+  insts 1532..1533  off 0x16dd..0x16e1
+  preds: L_16d5
+  succs: L_0a62, L_16e5
+  effects:
+    16e0  branch load([bp+message]) == 0x19 ? L_0a62 : L_16e5
+
+block L_16e5:
+  insts 1535..1536  off 0x16e5..0x16e9
+  preds: L_16dd
+  succs: L_0661, L_16ed
+  effects:
+    16e8  branch load([bp+message]) == 0x110 ? L_0661 : L_16ed
+
+block L_16ed:
+  insts 1538..1539  off 0x16ed..0x16f1
+  preds: L_16e5
+  succs: L_0b00, L_16f8
+  effects:
+    16f0  branch load([bp+message]) == 0x111 ? L_0b00 : L_16f8
+
+block L_16f8:
+  insts 1542..1542  off 0x16f8..0x16fd
+  preds: L_0aa3, L_0ad5, L_0bc2, L_0dd0, L_0e2f, L_0e7a, L_0f1f, L_0f4b, L_112b, L_14a5, L_1680, L_16a2, L_16a5, L_16cf, L_16ed
+  succs: L_16fe
+
+block L_16fe:
+  insts 1544..1548  off 0x16fe..0x1705
+  preds: L_0a5c, L_0abf, L_0ad8, L_0ba9, L_1151, L_16ae, L_16f8
+  effects:
+    1703  return merge(Join: L_16fe, (L_0a5c:0x1, L_0abf:load(ds:[0x0010]), L_0ad8:0x1, L_0ba9:0x1, L_1151:0x0, L_16ae:0x1, L_16f8:0x0))

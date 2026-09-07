@@ -169,9 +169,9 @@ L_574e:
 
 L_5794:
     rgb[4] = lpshdef->hul.dp;
-    rgb[7] = lpshdef->turn;
-    rgb[9] = lpshdef->cBuilt;
-    rgb[13] = lpshdef->cExist;
+    rgb[7] = *(lpshdef + 0x7d);
+    rgb[11] = *(lpshdef + 0x81);
+    rgb[15] = HIWORD(lpshdef->cExist);
     pb = &(rgb[0x11]);
     fmemmove(pb, lpshdef->hul.rghs, (rgb[6] * 0x4));
     pb = (pb + (rgb[6] * 0x4));
@@ -356,7 +356,7 @@ L_5a64:
         goto L_5a91;
 
 L_5a91:
-    if ((FFindNearestObject(lpord, 0x81, &(scan)) == 0))
+    if ((FFindNearestObject(lpord->pt, 0x81, &(scan)) == 0))
         goto L_5ad4;
     else
         goto L_5ab3;
@@ -390,7 +390,8 @@ L_5b10:
 
 L_5b22:
     lpord->grTask = grTaskPatrol;
-    /* untranslated: part[0x8:4](lpord) = *(lpord+0x1a) */
+    lpord->tsell.iPlrX = *(lpord + 0x1a);
+    /* untranslated: part[0xa:2](lpord) = *(lpord+0x1c) */
 
 L_5b4c:
     if ((lpord->grTask != grTaskPatrol))
@@ -2622,7 +2623,7 @@ L_856c:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_85d9 : L_858a */
 
 L_858a:
-    /* untranslated: wt = (wt + (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * words(0x0, rglpshdef[lpfl->iPlayer][i].hul.wtEmpty))) */
+    /* untranslated: wt = (wt + (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)rglpshdef[lpfl->iPlayer][i].hul.wtEmpty)) */
 
 L_85d9:
     i = (i + 1);

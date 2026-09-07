@@ -335,8 +335,8 @@ L_1c4a:
 
 L_1c8f:
     scratch_bp_m134 = 0x0;
-    /* untranslated: sel.pl.lpplprod->rgprod[0] = words(((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)(words(0x0, (LOWORD(cBuild) & 0x3ff))
-     * << 0x0))), ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)(words(0x0, (LOWORD(cBuild) & 0x3ff)) << 0x0)))) */
+    /* untranslated: sel.pl.lpplprod->rgprod[0] = words(((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff)
+     * << 0x0))), ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff) << 0x0)))) */
     goto L_17a3;
 
 L_1cef:

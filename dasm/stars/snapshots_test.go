@@ -17,6 +17,7 @@ var procs = []string{
 	"About",
 	"AddMinesToBlockedQueues",
 	"AlertSz",
+	"BattlePlansDlg",
 	"CalcPctSurvive",
 	"CalcPlayerScore",
 	"CBuildProdItem",

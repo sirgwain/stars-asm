@@ -1331,7 +1331,7 @@ L_1554:
         goto L_155e;
 
 L_155e:
-    /* untranslated: call ShipCommandProc(hwndPlanet, 0x0, words(0x0, (rghwndBtn[6] | 0x0))) -> callresult(void) */
+    ShipCommandProc(hwndPlanet, 0x0, (uint32_t)((rghwndBtn[6] | 0x0)));
 
 L_157c:
     if ((iOffset != 0))
@@ -1365,7 +1365,7 @@ L_15ba:
         goto L_15c4;
 
 L_15c4:
-    /* untranslated: return words(0x0, hiconHost) */
+    return (uint32_t)(hiconHost);
 
 L_15cd:
     if ((uTimerId != 0x0))
@@ -1374,10 +1374,10 @@ L_15cd:
         goto L_15d7;
 
 L_15d7:
-    /* untranslated: return words(0x0, hiconStars) */
+    return (uint32_t)(hiconStars);
 
 L_15e0:
-    /* untranslated: return words(0x0, hiconWait) */
+    return (uint32_t)(hiconWait);
 
 L_15e9:
     if ((IsIconic(hwnd) == 0))
@@ -3689,10 +3689,8 @@ L_3991:
 L_39c0:
     x = (uint32_t)((rgptPlan[lppl->id].x + 0xfc18));
     y = (uint32_t)(((dGalInv + 0xfc18) - rgptPlan[lppl->id].y));
-    LOWORD(x) = ((LOWORD((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + dMargin) + xOff);
-    HIWORD(x) = ((HIWORD((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + SIGNHIWORD(dMargin)) + SIGNHIWORD(xOff));
-    LOWORD(y) = ((LOWORD((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + dMargin) + yOff);
-    HIWORD(y) = ((HIWORD((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + SIGNHIWORD(dMargin)) + SIGNHIWORD(yOff));
+    x = (((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(xOff));
+    y = (((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(yOff));
     if ((lppl->iPlayer != idPlayer))
         goto L_3b59;
     else
@@ -3768,10 +3766,8 @@ L_3be5:
 L_3bf0:
     x = (uint32_t)((rgptPlan[i].x + 0xfc18));
     y = (uint32_t)(((dGalInv + 0xfc18) - rgptPlan[i].y));
-    LOWORD(x) = ((LOWORD((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + dMargin) + xOff);
-    HIWORD(x) = ((HIWORD((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + SIGNHIWORD(dMargin)) + SIGNHIWORD(xOff));
-    LOWORD(y) = ((LOWORD((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + dMargin) + yOff);
-    HIWORD(y) = ((HIWORD((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal)))) + SIGNHIWORD(dMargin)) + SIGNHIWORD(yOff));
+    x = (((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(xOff));
+    y = (((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(yOff));
     DrawPlanetPrintDot(pd.hDC, LOWORD(x), LOWORD(y), 0);
     if (((grbitScan & 0x400) == 0x0))
         goto L_3be1;
@@ -4503,7 +4499,7 @@ L_47a5:
     t_merge_47a9_0001 = 0x32ca;
 
 L_47a9:
-    /* untranslated: call WinHelp(hwnd, szHelpFile, 0x1, words(0x0, t_merge_47a9_0001)) -> callresult(int16_t) */
+    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_47a9_0001));
     goto L_536f;
 
 L_47b3:
@@ -6692,8 +6688,7 @@ L_6511:
 
 L_653d:
     dmin = LOWORD((uint32_t)((dsec / 0x3c)));
-    LOWORD(dsec) = (LOWORD(dsec) - LOWORD((0x3c * dmin)));
-    HIWORD(dsec) = (HIWORD(dsec) - 0x0);
+    dsec = (dsec - (uint32_t)(LOWORD((0x3c * dmin))));
     if ((dmin >= 0x3c))
         goto L_659b;
     else
@@ -6704,7 +6699,7 @@ L_656b:
     goto L_663a;
 
 L_659b:
-    /* untranslated: dhour = (words(0x0, dmin) / 0x3c) */
+    dhour = ((uint32_t)(dmin) / 0x3c);
     dmin = (dmin - LOWORD((0x3c * dhour)));
     if ((dhour >= 0x18))
         goto L_65ee;
@@ -6716,7 +6711,7 @@ L_65ba:
     goto L_663a;
 
 L_65ee:
-    /* untranslated: dday = (words(0x0, dhour) / 24) */
+    dday = ((uint32_t)(dhour) / 24);
     dhour = (dhour - LOWORD((dday * 0x18)));
     cch = _wsprintf(szWork, PszGetCompressedString(idsDDaysD02d02d), dday, dhour, dmin, LOWORD(dsec));
 

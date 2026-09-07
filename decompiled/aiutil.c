@@ -201,7 +201,8 @@ L_01c9:
 
 L_01f1:
     /* untranslated: part.hs.cItem = ((part[0x3c:2](lphul[ihs*0x4]) >> 0x8) & 0xff) */
-    shdef.hul.rghs[ihs] = part.hs;
+    shdef.hul.rghs[ihs].grhst = part.hs.grhst;
+    HIWORD(shdef.hul.rghs[ihs]) = HIWORD(part.hs);
     goto L_01b3;
 
 L_024b:
@@ -470,7 +471,7 @@ L_05c3:
         goto L_05f0;
 
 L_05f0:
-    rgfBmpUsed[(rglpshdefSB[idPlayer][ishdef].hul.ibmp - ibmpStart)] = 1;
+    rgfBmpUsed = 0x1;
 
 L_061c:
     ishdef = (ishdef + 1);
@@ -500,7 +501,7 @@ L_0652:
         goto L_066e;
 
 L_066e:
-    rgfBmpUsed[(rgshdef[ishdef].hul.ibmp - ibmpStart)] = 1;
+    rgfBmpUsed = 0x1;
 
 L_068a:
     ishdef = (ishdef + 1);
@@ -856,7 +857,8 @@ int16_t FColonizeAiFleet(FLEET *lpfl, int16_t idPlanet) {
 L_0c78:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     memset(&(ord), 0, 0x12);
-    ord.pt = rgptPlan[idPlanet];
+    ord.pt.x = rgptPlan[idPlanet].x;
+    ord.pt.y = rgptPlan[idPlanet].y;
     ord.grobj = grobjPlanet;
     ord.id = idPlanet;
     ord.grTask = grTaskColonize;
@@ -881,7 +883,8 @@ int16_t FGotoWormholeAiFleet(FLEET *lpfl, THING *lpthWorm) {
 L_0d5c:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     memset(&(ord), 0, 0x12);
-    ord.pt = lpthWorm->pt;
+    ord.pt.x = lpthWorm->pt.x;
+    ord.pt.y = lpthWorm->pt.y;
     ord.grobj = grobjThing;
     ord.id = lpthWorm->idFull;
     ord.grTask = grTaskNone;
@@ -1994,8 +1997,8 @@ L_1c4a:
 
 L_1c8f:
     scratch_bp_m134 = 0x0;
-    /* untranslated: sel.pl.lpplprod->rgprod[0] = words(((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)(words(0x0, (LOWORD(cBuild) & 0x3ff))
-     * << 0x0))), ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)(words(0x0, (LOWORD(cBuild) & 0x3ff)) << 0x0)))) */
+    /* untranslated: sel.pl.lpplprod->rgprod[0] = words(((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff)
+     * << 0x0))), ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff) << 0x0)))) */
     goto L_17a3;
 
 L_1cef:
@@ -2412,7 +2415,8 @@ L_2268:
         goto L_2272;
 
 L_2272:
-    ord.pt = lpflClosest->pt;
+    ord.pt.x = lpflClosest->pt.x;
+    ord.pt.y = lpflClosest->pt.y;
     ord.grobj = grobjFleet;
     ord.id = lpflClosest->id;
     goto ThwakSumthin;
@@ -2584,7 +2588,8 @@ L_24b1:
         goto L_24c3;
 
 L_24c3:
-    ord.pt = rgptPlan[lpplClosest->id];
+    ord.pt.x = rgptPlan[lpplClosest->id].x;
+    ord.pt.y = rgptPlan[lpplClosest->id].y;
     ord.grobj = grobjPlanet;
     ord.id = lpplClosest->id;
     goto ThwakSumthin;
@@ -2674,7 +2679,8 @@ L_264a:
         goto L_265c;
 
 L_265c:
-    ord.pt = rgptPlan[lpplClosest->id];
+    ord.pt.x = rgptPlan[lpplClosest->id].x;
+    ord.pt.y = rgptPlan[lpplClosest->id].y;
     ord.grobj = grobjPlanet;
     ord.id = lpplClosest->id;
     goto ThwakSumthin;
@@ -2736,7 +2742,8 @@ L_2774:
         goto L_277d;
 
 L_277d:
-    ord.pt = rgptPlan[idClosest];
+    ord.pt.x = rgptPlan[idClosest].x;
+    ord.pt.y = rgptPlan[idClosest].y;
     ord.grobj = grobjPlanet;
     ord.id = idClosest;
     goto ThwakSumthin;
@@ -2744,7 +2751,8 @@ L_277d:
 L_27a7:
     ord.id = Random(game.cPlanMax);
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[ord.id];
+    ord.pt.x = rgptPlan[ord.id].x;
+    ord.pt.y = rgptPlan[ord.id].y;
 
 ThwakSumthin:
     if ((lpfl->cord <= 1))
@@ -3476,12 +3484,14 @@ L_332a:
 
 L_3333:
     ord.grobj = grobjThing;
-    ord.pt = lpthBest->pt;
+    ord.pt.x = lpthBest->pt.x;
+    ord.pt.y = lpthBest->pt.y;
     goto L_3374;
 
 L_3353:
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[idBest];
+    ord.pt.x = rgptPlan[idBest].x;
+    ord.pt.y = rgptPlan[idBest].y;
 
 L_3374:
     ord.id = idBest;
@@ -4430,10 +4440,7 @@ L_4070:
         goto L_407b;
 
 L_407b:
-    /* untranslated: LOWORD(lpplProdGlob[iprod].rgprod[0]) = ((LOWORD(lpplProdGlob[iprod].rgprod[0]) & 0xfc00) | loword((int32_t)(words(0x0, (cItem & 0x3ff)) <<
-     * 0x0))) */
-    /* untranslated: HIWORD(lpplProdGlob[iprod].rgprod[0]) = ((HIWORD(lpplProdGlob[iprod].rgprod[0]) & 0xffff) | hiword((int32_t)(words(0x0, (cItem & 0x3ff)) <<
-     * 0x0))) */
+    lpplProdGlob[iprod].rgprod[0] = ((lpplProdGlob[iprod].rgprod[0] & 0xfffffc00) | (int32_t)(((uint32_t)((cItem & 0x3ff)) << 0x0)));
     lpplProdGlob[iprod].rgprod[0].iItem = iItem;
     lpplProdGlob[iprod].rgprod[0].grobj = grobj;
     lpplProdGlob[iprod].rgprod[0].pct = 0x0;
@@ -5472,10 +5479,8 @@ L_5065:
     goto L_50e5;
 
 L_5077:
-    /* untranslated: LOWORD(l) = (LOWORD(l) + (loword((int32_t)((uint32_t)(words(0x0, part[0x9:1](lppl[i*0x1])) * words(0x0, part[0x9:1](lppl[i*0x1]))) * 0x4))
-     * + part[0x1c:2](lppl[i*0x4]))) */
-    /* untranslated: HIWORD(l) = (HIWORD(l) + (hiword((int32_t)((uint32_t)(words(0x0, part[0x9:1](lppl[i*0x1])) * words(0x0, part[0x9:1](lppl[i*0x1]))) * 0x4))
-     * + part[0x1e:2](lppl[i*0x4]))) */
+    /* untranslated: l = (l + ((int32_t)((uint32_t)((uint32_t)part[0x9:1](lppl[i*0x1]) * (uint32_t)part[0x9:1](lppl[i*0x1])) * 0x4) +
+     * part[0x1c:4](lppl[i*0x4]))) */
     i = (i + 1);
 
 L_50e5:
@@ -6745,7 +6750,8 @@ L_63de:
         goto L_63e8;
 
 L_63e8:
-    ord.pt = lpflClosest->pt;
+    ord.pt.x = lpflClosest->pt.x;
+    ord.pt.y = lpflClosest->pt.y;
     ord.grobj = grobjFleet;
     ord.id = lpflClosest->id;
     goto ThwakSumthin;
@@ -6917,7 +6923,8 @@ L_6627:
         goto L_6639;
 
 L_6639:
-    ord.pt = rgptPlan[lpplClosest->id];
+    ord.pt.x = rgptPlan[lpplClosest->id].x;
+    ord.pt.y = rgptPlan[lpplClosest->id].y;
     ord.grobj = grobjPlanet;
     ord.id = lpplClosest->id;
     goto ThwakSumthin;
@@ -6951,7 +6958,8 @@ L_66c1:
         goto L_66ca;
 
 L_66ca:
-    ord.pt = *(plpthWorm)->pt;
+    ord.pt.x = *(plpthWorm)->pt.x;
+    ord.pt.y = *(plpthWorm)->pt.y;
     ord.grobj = grobjThing;
     ord.id = *(plpthWorm)->idFull;
     goto ThwakSumthin;
@@ -6995,7 +7003,8 @@ L_677a:
 L_6783:
     ord.id = idClosest;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[idClosest];
+    ord.pt.x = rgptPlan[idClosest].x;
+    ord.pt.y = rgptPlan[idClosest].y;
 
 ThwakSumthin:
     if ((lpfl->cord <= 1))
@@ -7609,7 +7618,8 @@ L_6fa4:
 L_6faa:
     ord.id = id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[id];
+    ord.pt.x = rgptPlan[id].x;
+    ord.pt.y = rgptPlan[id].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -7739,7 +7749,8 @@ L_71b5:
 L_71bb:
     ord.id = id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[id];
+    ord.pt.x = rgptPlan[id].x;
+    ord.pt.y = rgptPlan[id].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -9666,11 +9677,11 @@ L_8bd1:
         goto L_8be3;
 
 L_8be3:
-    /* untranslated: t_merge_8c15_0001 = ((ishdefSBLatest + (words(0x0, lppl->isb) % 0x5)) + 0xffff) */
+    t_merge_8c15_0001 = ((ishdefSBLatest + (lppl->isb % 0x5)) + 0xffff);
     goto L_8c15;
 
 L_8bff:
-    /* untranslated: t_merge_8c15_0001 = (ishdefSBLatest + (words(0x0, lppl->isb) % 0x5)) */
+    t_merge_8c15_0001 = (ishdefSBLatest + (lppl->isb % 0x5));
 
 L_8c15:
     ishdef = t_merge_8c15_0001;
@@ -9678,7 +9689,10 @@ L_8c15:
     return 0x1;
 
 L_8c3c:
-    /* untranslated: branch (words(0x0, lppl->isb) % 0x5) >= ((iDesigns - 1) * 0x2) ? L_8d1c : L_8c5c */
+    if (((lppl->isb % 0x5) >= ((iDesigns - 1) * 0x2)))
+        goto L_8d1c;
+    else
+        goto L_8c5c;
 
 L_8c5c:
     if ((rglpshdefSB[idPlayer][((load([load(dword[bp + 0x6]) + 0x2c]) & 0xf) + 0x2)].fFree != 0x0))
@@ -11027,7 +11041,8 @@ L_9eab:
     ClearAiCurrentTask(lpfl, 1);
     ord.id = lpflBest->id;
     ord.grobj = grobjFleet;
-    ord.pt = lpflBest->pt;
+    ord.pt.x = lpflBest->pt.x;
+    ord.pt.y = lpflBest->pt.y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;

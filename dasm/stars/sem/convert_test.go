@@ -294,6 +294,58 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 	}
 }
 
+// TestLowerMachineResolvesFoldedNegativeGlobalByteArrayIndex verifies word
+// arithmetic folded across zero still projects relative byte-array indexes.
+func TestLowerMachineResolvesFoldedNegativeGlobalByteArrayIndex(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("BattlePlansDlg")
+	if fn == nil {
+		t.Fatal("BattlePlansDlg not found")
+	}
+
+	cLen := machine.LoadVal(machine.MemoryAddress{
+		Base:  machine.FrameBaseVal(),
+		Disp:  -0x16,
+		Width: 2,
+	})
+	lastNameByte := machine.LoadVal(machine.MemoryAddress{
+		Seg: machine.RegVal(asm.RegDS),
+		Base: machine.BinaryVal(
+			machine.ValueOpAdd,
+			cLen,
+			machine.ConstVal(0x151d7),
+		),
+		Width: 1,
+	})
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x11e7,
+				Effects: []machine.Effect{
+					machine.BranchEffect{
+						MetaInfo:   machine.Meta{BlockID: 0x11e7, InstOff: 0x11fa},
+						Predicate:  &machine.PredicateValue{Kind: machine.PredicateCompare, Op: "JNZ", LHS: lastNameByte, RHS: machine.ConstVal(0x29)},
+						TrueBlock:  0x123c,
+						FalseBlock: 0x11ff,
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "branch btlplan.szName[(cLen - 1)] != 41 ? L_123c : L_11ff"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
 func TestLowerMachineResolvesBitfieldExtract(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)

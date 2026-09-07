@@ -291,7 +291,7 @@ L_044e:
     fDisabled = 0;
     SelectObject(hdc, rghfontArial8[1]);
     cSections = 1;
-    /* untranslated: lMax = (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa) */
+    lMax = (uint32_t)((lpth->thp.wtMax * 0xa));
     if ((md < 0))
         goto L_04fa;
     else
@@ -1496,7 +1496,7 @@ L_1386:
         goto L_1398;
 
 L_1398:
-    /* untranslated: cGive = (cGive + Random(((words(0x0, game.turn) / 0x64) + 0x1))) */
+    cGive = (cGive + Random((((uint32_t)(game.turn) / 0x64) + 0x1)));
 
 L_13b2:
     if ((cGive <= 5))
@@ -1542,8 +1542,10 @@ L_145b:
     ifl = (ifl + 1);
 
 L_145f:
-    lpflNew->pt = lpfl->pt;
-    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
+    lpflNew->pt.x = lpfl->pt.x;
+    lpflNew->pt.y = lpfl->pt.y;
+    lpflNew->lpplord->rgord[0].pt.x = lpfl->pt.x;
+    lpflNew->lpplord->rgord[0].pt.y = lpfl->pt.y;
     lpflNew->fHereAllTurn = 0x1;
     lpshdefDest = (rglpshdef[iplr] + LOWORD((0x93 * ish)));
     if ((lpshdefDest->fFree == 0x0))

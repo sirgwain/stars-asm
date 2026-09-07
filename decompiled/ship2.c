@@ -162,7 +162,7 @@ L_033f:
     /* untranslated: branch sext8to16(byte ds:[(cch - 1)+0x57a4]) != 0x2e ? L_0408 : L_03d1 */
 
 L_03d1:
-    /* untranslated: call _wsprintf(words(ds, ((22436 + cch) + 0xfffd)), " %dkT", (vrgZip[iResTechNow].txp.rgia[i] & 0xfff)) -> callresult(int16_t) */
+    _wsprintf(&(szWork[(cch - 3)]), " %dkT", (vrgZip[iResTechNow].txp.rgia[i] & 0xfff));
 
 L_0408:
     TextOut(hdc, (xCtr + 6), rcGBox.top, szWork, strlen(szWork));
@@ -508,7 +508,7 @@ L_0a1f:
     t_merge_0a23_0001 = 0xc1f;
 
 L_0a23:
-    /* untranslated: call WinHelp(hwnd, szHelpFile, 0x1, words(0x0, t_merge_0a23_0001)) -> callresult(int16_t) */
+    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_0a23_0001));
     return 0x1;
 
 L_0a36:
@@ -1621,7 +1621,8 @@ L_1e17:
 
 L_1e1d:
     lpord->fNoAutoTrack = 0x1;
-    lpord = lpflTarget->pt;
+    LOWORD(lpord) = lpflTarget->pt.x;
+    lpord->pt.y = lpflTarget->pt.y;
     goto L_1dd2;
 
 L_1e4c:
@@ -1653,7 +1654,8 @@ L_1e52:
     lpord->grobj = grobjPlanet;
     lpord->id = (lppl->idRoute - 1);
     lpplRoute = LpplFromId((lppl->idRoute + 0xffff));
-    lpord = rgptPlan[(lppl->idRoute - 1)];
+    LOWORD(lpord) = rgptPlan[(lppl->idRoute + 0xffff)].x;
+    lpord->pt.y = rgptPlan[(lppl->idRoute + 0xffff)].y;
     lpord->fValidTask = 0x1;
     iWarp = IFindIdealWarp(lpfl, 0);
     DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y);
@@ -2204,9 +2206,10 @@ L_269a:
         goto L_26ac;
 
 L_26ac:
-    part.hs = *(lphs);
+    part.hs.grhst = lphs->grhst;
+    HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    /* untranslated: cMine = (cMine + (uint32_t)(words(0x0, lphs->cItem) * sext16to32(part.pcom[0x1].id))) */
+    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pcom[0x1].id))));
 
 L_26f4:
     /* untranslated: cMineTot = (cMineTot + (uint32_t)(cMine * sext16to32(part[0xc:2](lpfl[i*0x2])))) */
@@ -2293,8 +2296,7 @@ L_2812:
         goto L_2824;
 
 L_2824:
-    LOWORD(pct) = (LOWORD(pct) + lphs->cItem);
-    HIWORD(pct) = (HIWORD(pct) + 0x0);
+    pct = (pct + lphs->cItem);
 
 L_283f:
     /* untranslated: pctTot = (pctTot + (uint32_t)(pct * sext16to32(part[0xc:2](lpfl[i*0x2])))) */
@@ -2434,9 +2436,10 @@ L_29c5:
         goto L_29d7;
 
 L_29d7:
-    part.hs = *(lphs);
+    part.hs.grhst = lphs->grhst;
+    HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    /* untranslated: cMine = (cMine + (uint32_t)(words(0x0, lphs->cItem) * sext16to32(part.pcom[0x1].id))) */
+    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pcom[0x1].id))));
     goto L_2988;
 
 L_2a1f:
@@ -2458,7 +2461,7 @@ L_2a34:
         goto L_2a46;
 
 L_2a46:
-    /* untranslated: cMine = (cMine + (int32_t)(words(0x0, lphs->cItem) * 0x4)) */
+    cMine = (cMine + (int32_t)((lphs->cItem * 0x4)));
 
 L_2a69:
     if ((lphul->ihuldef == ihuldefMiniMineLayer))
@@ -2631,7 +2634,8 @@ L_2c6b:
         goto L_2c77;
 
 L_2c77:
-    part.hs = *(lphs);
+    part.hs.grhst = lphs->grhst;
+    HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
     /* untranslated: branch (part[0x3a:2](part.pcom) & 0x2) == 0x0 ? L_2cb2 : L_2ca5 */
 
@@ -2660,7 +2664,7 @@ L_2ce1:
     lRange = (lRange + 1);
 
 L_2ce9:
-    /* untranslated: lPow = (lPow + (uint32_t)((uint32_t)((uint32_t)(lRange * lRange) * words(0x0, lphs->cItem)) * sext16to32(part.pbeam->dp))) */
+    lPow = (lPow + (uint32_t)(((uint32_t)(((uint32_t)((lRange * lRange)) * lphs->cItem)) * (uint32_t)(part.pbeam->dp))));
 
 L_2d2f:
     if ((HIWORD(lPow) > 0x0))
@@ -2718,7 +2722,7 @@ L_2d9e:
 L_2dbb:
     lphul = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * i)));
     chs = lphul->chs;
-    /* untranslated: wtFleetCur = (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * words(0x0, lphul->wtEmpty)) */
+    /* untranslated: wtFleetCur = (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)lphul->wtEmpty) */
     cPtsCur = 0;
     if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raStealth))
         goto L_2e51;
@@ -3076,7 +3080,8 @@ L_31b6:
         goto L_31c8;
 
 L_31c8:
-    part.hs = *(lphs);
+    part.hs.grhst = lphs->grhst;
+    HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
     cPts = part.pcom[0x1].id;
 
@@ -3536,7 +3541,8 @@ L_3785:
     /* untranslated: branch ((part[0x3c:2](lphul[ihs*0x4]) >> 0x8) & 0xff) == 0x0 ? L_376f : L_37af */
 
 L_37af:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     FLookupPart(&(part));
     iTech = 0;
     goto L_3843;

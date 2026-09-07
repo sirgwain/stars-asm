@@ -319,7 +319,7 @@ L_058b:
 L_05a8:
 
 L_05ae:
-    /* untranslated: fPara = (byte ds:[(0x175f + sext8to16(rgch[0x0]))] & 0x1) */
+    fPara = (_ctype[((uint16_t)(rgch[0x0]) + 0x1)] & 0x1);
     if ((fPara == 0))
         goto L_05e8;
     else
@@ -564,7 +564,8 @@ L_092e:
 
 L_093b:
     tutor.idsError = -1;
-    /* untranslated: part[0x0:4](tutor) = (uint32_t)((tutor.wFlags & 0xbfff) | 0x4000) */
+    tutor.fShowHidMsg = 0x1;
+    tutor.idt = 0;
     tutor.idtBold = 0;
     tutor.fProgress = 0x0;
 
@@ -3811,7 +3812,8 @@ L_361f:
 
 L_3625:
     hs.grhst = hstEngine;
-    /* untranslated: part[0x2:4](hs) = 0x20103 */
+    HIWORD(hs) = 0x103;
+    hs1.grhst = hstScanner;
     HIWORD(hs1) = 0x101;
     if ((hwndSlotDlg != 0x0))
         goto L_3655;
@@ -5006,7 +5008,8 @@ L_47bf:
 
 L_47c9:
     hs.grhst = hstEngine;
-    /* untranslated: part[0x2:4](hs) = 0x1000104 */
+    HIWORD(hs) = 0x104;
+    hs1.grhst = hstMines;
     HIWORD(hs1) = 0x301;
     if ((hwndSlotDlg != 0x0))
         goto L_47f9;
@@ -5585,7 +5588,8 @@ L_50b2:
 
 L_50bc:
     hs.grhst = hstEngine;
-    /* untranslated: part[0x2:4](hs) = 0x10000104 */
+    HIWORD(hs) = 0x104;
+    hs2.grhst = hstSpecialM;
     HIWORD(hs2) = 0x100;
     if ((FCheckScanner(3, -1) != 0))
         goto L_50f4;

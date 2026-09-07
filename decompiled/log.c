@@ -301,7 +301,8 @@ L_8f88:
     goto L_8ffb;
 
 L_8f9e:
-    /* untranslated: lxNew.rgdItem[i] = (pflNew->rgwtMin[i] - part[0x4c:4](pfl[i*0x4])) */
+    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (LOWORD(pflNew->rgwtMin[i]) - part[0x4c:2](pfl[i*0x4])) */
+    /* untranslated: HIWORD(lxNew.rgdItem[i]) = (HIWORD(pflNew->rgwtMin[i]) - part[0x4e:2](pfl[i*0x4])) */
     /* untranslated: branch (LOWORD(pflNew->rgwtMin[i]) - part[0x4c:2](pfl[i*0x4])) != 0x0 ? L_8ff2 : L_8fea */
 
 L_8fea:
@@ -640,7 +641,8 @@ L_94ab:
     goto L_951e;
 
 L_94c1:
-    /* untranslated: lxNew.rgdItem[i] = (pplNew->rgwtMin[i] - part[0x1c:4](ppl[i*0x4])) */
+    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (LOWORD(pplNew->rgwtMin[i]) - part[0x1c:2](ppl[i*0x4])) */
+    /* untranslated: HIWORD(lxNew.rgdItem[i]) = (HIWORD(pplNew->rgwtMin[i]) - part[0x1e:2](ppl[i*0x4])) */
     /* untranslated: branch (LOWORD(pplNew->rgwtMin[i]) - part[0x1c:2](ppl[i*0x4])) != 0x0 ? L_9515 : L_950d */
 
 L_950d:
@@ -815,17 +817,13 @@ L_97b5:
     /* untranslated: part[0x0:4](rgbCur) = (uint32_t)pplNew->id */
     rgbCur[4] = 0;
     scratch_bp_m22 = 0x0;
-    /* untranslated: rgbCur[2] = ((rgbCur[0x2] & 0xfffe) | loword((int32_t)(words(0x0, (pplNew->fNoResearch & 0x1)) << 0x0))) */
-    /* untranslated: rgbCur[4] = ((rgbCur[0x4] & 0xffff) | hiword((int32_t)(words(0x0, (scratch_bp_m24 & 0x1)) << 0x0))) */
+    rgbCur[2] = ((rgbCur[0x2] & 0xfffffffe) | (int32_t)(((uint32_t)((pplNew->fNoResearch & 0x1)) << 0x0)));
     scratch_bp_m22 = 0x0;
-    /* untranslated: rgbCur[2] = ((rgbCur[0x2] & 0xf801) | loword((int32_t)(words(0x0, (pplNew->idFling & 0x3ff)) << 0x1))) */
-    /* untranslated: rgbCur[4] = ((rgbCur[0x4] & 0xffff) | hiword((int32_t)(words(0x0, (scratch_bp_m24 & 0x3ff)) << 0x1))) */
+    rgbCur[2] = ((rgbCur[0x2] & 0xfffff801) | (int32_t)(((uint32_t)((pplNew->idFling & 0x3ff)) << 0x1)));
     scratch_bp_m22 = 0x0;
-    /* untranslated: rgbCur[2] = ((rgbCur[0x2] & 0x87ff) | loword((int32_t)(words(0x0, (pplNew->iWarpFling & 0xf)) << 0xb))) */
-    /* untranslated: rgbCur[4] = ((rgbCur[0x4] & 0xffff) | hiword((int32_t)(words(0x0, (scratch_bp_m24 & 0xf)) << 0xb))) */
+    rgbCur[2] = ((rgbCur[0x2] & 0xffff87ff) | (int32_t)(((uint32_t)((pplNew->iWarpFling & 0xf)) << 0xb)));
     scratch_bp_m22 = 0x0;
-    /* untranslated: rgbCur[2] = ((rgbCur[0x2] & 0x7fff) | loword((int32_t)(words(0x0, (pplNew->idRoute & 0x3ff)) << 0xf))) */
-    /* untranslated: rgbCur[4] = ((rgbCur[0x4] & 0xfe00) | hiword((int32_t)(words(0x0, (scratch_bp_m24 & 0x3ff)) << 0xf))) */
+    rgbCur[2] = ((rgbCur[0x2] & 0xfe007fff) | (int32_t)(((uint32_t)((pplNew->idRoute & 0x3ff)) << 0xf)));
     WriteMemRt(35, 6, rgbCur);
 
 L_9901:
@@ -854,7 +852,8 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    /* untranslated: lxNew.rgdItem[i] = sext16to32((part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2]))) */
+    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2])) */
+    /* untranslated: HIWORD(lxNew.rgdItem[i]) = signhiword((part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2]))) */
     /* untranslated: branch (part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2])) != 0x0 ? L_999c : L_9994 */
 
 L_9994:
@@ -1865,10 +1864,13 @@ L_cbde:
         goto L_cbf1;
 
 L_cbf1:
-    lpmp = LpAlloc(hdrCur.cb, htPlrMsg);
+    LpAlloc(hdrCur.cb, htPlrMsg);
+    /* untranslated: LOWORD(lpmp) = faroff(callresult(void *)) */
+    /* untranslated: HIWORD(lpmp->lpmsgplrNext) = farseg(callresult(void *)) */
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
-    lpmp = 0x0;
+    LOWORD(lpmp) = 0x0;
+    HIWORD(lpmp->lpmsgplrNext) = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     ReadRt();
     goto L_cbde;

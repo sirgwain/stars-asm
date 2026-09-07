@@ -228,8 +228,8 @@ L_0368:
     t_merge_036d_0001 = 0xc86;
 
 L_036d:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(ids), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), words(ds,
-     * t_merge_036d_0001), cshQueued, t_merge_0342_0001, t_merge_0342_0002) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(ids), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
+     * ds:[t_merge_036d_0001], cshQueued, t_merge_0342_0001, t_merge_0342_0002) -> callresult(int16_t) */
     goto L_047e;
 
 L_03ab:
@@ -267,8 +267,8 @@ L_03dd:
     t_merge_03e2_0001 = 0xc8a;
 
 L_03e2:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 1)), cshQueued, (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), words(ds,
-     * t_merge_03e2_0001), t_merge_03ca_0001, t_merge_03ca_0002) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 1)), cshQueued, (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
+     * ds:[t_merge_03e2_0001], t_merge_03ca_0001, t_merge_03ca_0002) -> callresult(int16_t) */
     goto L_047e;
 
 L_0419:
@@ -291,8 +291,8 @@ L_043a:
     t_merge_043f_0001 = 0xc8d;
 
 L_043f:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 2)), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), words(ds,
-     * t_merge_043f_0001)) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 2)), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
+     * ds:[t_merge_043f_0001]) -> callresult(int16_t) */
 
 L_047e:
     id = MessageBox(GetFocus(), szWork, PszGetCompressedString((fEdit + 742)), 0x2024);
@@ -358,13 +358,11 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t            j;
     uint16_t           t_merge_0bdb_0001;
     uint16_t           t_merge_0c80_0001;
-    uint16_t           t_merge_0cc3_0001;
-    uint16_t           t_merge_0cc3_0002;
+    uint32_t           t_merge_0cc3_0001;
     uint16_t           t_merge_0dce_0001;
     uint16_t           t_merge_0e24_0001;
     uint16_t           t_merge_0e84_0001;
-    uint16_t           t_merge_107a_0001;
-    uint16_t           t_merge_107a_0002;
+    uint32_t           t_merge_107a_0001;
     uint16_t           t_merge_1110_0001;
     uint16_t           t_merge_11a4_0001;
     uint16_t           t_merge_11fb_0001;
@@ -634,17 +632,14 @@ L_0c80:
         goto L_0cb2;
 
 L_0cb2:
-    t_merge_0cc3_0001 = rggrbitPartsSB[0];
-    t_merge_0cc3_0002 = 0x0;
+    t_merge_0cc3_0001 = (uint32_t)(rggrbitPartsSB[0]);
     goto L_0cc3;
 
 L_0cbc:
-    t_merge_0cc3_0001 = rggrbitParts[0];
-    t_merge_0cc3_0002 = 0x0;
+    t_merge_0cc3_0001 = (uint32_t)(rggrbitParts[0]);
 
 L_0cc3:
-    LOWORD(lSel) = t_merge_0cc3_0001;
-    HIWORD(lSel) = t_merge_0cc3_0002;
+    lSel = t_merge_0cc3_0001;
     FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), LOWORD(lSel));
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     FillBuildDD(hwndItem, mdBuild);
@@ -835,17 +830,14 @@ L_103d:
         goto L_1047;
 
 L_1047:
-    t_merge_107a_0001 = rggrbitPartsSB[lSel];
-    t_merge_107a_0002 = 0x0;
+    t_merge_107a_0001 = (uint32_t)(rggrbitPartsSB[lSel]);
     goto L_107a;
 
 L_1062:
-    t_merge_107a_0001 = rggrbitParts[lSel];
-    t_merge_107a_0002 = 0x0;
+    t_merge_107a_0001 = (uint32_t)(rggrbitParts[lSel]);
 
 L_107a:
-    LOWORD(lSel) = t_merge_107a_0001;
-    HIWORD(lSel) = t_merge_107a_0002;
+    lSel = t_merge_107a_0001;
 
 L_1080:
     FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), LOWORD(lSel));
@@ -1634,7 +1626,8 @@ L_1b34:
     /* untranslated: branch ((part[0x3c:2](lpshdef[j*0x4]) >> 0x8) & 0xff) <= 0x0 ? L_1b1e : L_1b5e */
 
 L_1b5e:
-    /* untranslated: part.hs = part[0x3a:4](lpshdef[j*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lpshdef[j*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lpshdef[j*0x4]) */
     if ((FLookupPart(&(part)) == 1))
         goto L_1b1e;
     else
@@ -2182,7 +2175,7 @@ L_25cf:
     t_merge_25d3_0001 = 0x42a;
 
 L_25d3:
-    /* untranslated: call WinHelp(hwnd, szHelpFile, 0x1, words(0x0, t_merge_25d3_0001)) -> callresult(int16_t) */
+    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_25d3_0001));
     return 0x1;
 
 L_25e6:
@@ -2507,7 +2500,8 @@ L_2a93:
         goto L_2ae1;
 
 L_2ae1:
-    /* untranslated: part.hs = part[0x3a:4](lpshdefBuild[i*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lpshdefBuild[i*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lpshdefBuild[i*0x4]) */
     FLookupPart(&(part));
     ibmp = part.pcom->ibmp;
     iInventSel = (ibmp >> 0x5);
@@ -2845,7 +2839,8 @@ L_329c:
     return 0x0;
 
 L_32ad:
-    part.hs = hs;
+    part.hs.grhst = hs.grhst;
+    HIWORD(part.hs) = HIWORD(hs);
     FLookupPart(&(part));
     ibmp = part.pcom->ibmp;
     rcStart = vrgrcSlot[iSrc];
@@ -3473,7 +3468,8 @@ L_3ee3:
     goto Restore;
 
 HullPart:
-    part.hs = hsShip;
+    part.hs.grhst = hsShip.grhst;
+    HIWORD(part.hs) = HIWORD(hsShip);
     FLookupPart(&(part));
     dxkT = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsKt), 2));
     if ((hsShip.cItem == 0x1))
@@ -3529,8 +3525,7 @@ L_406c:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[k], lstrlen(rgszMinerals[k]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    /* untranslated: cch = _wsprintf(szWork, PCTLD, loword((uint32_t)(sext16to32(c) * words(0x0, rgCosts[k]))), hiword((uint32_t)(sext16to32(c) * words(0x0,
-     * rgCosts[k])))) */
+    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[k])))), HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[k])))));
     RightTextOut(hdc, ((rc.right - dxkT) + 0xffc0), rc.top, szWork, cch, dxMaxMineralQuan);
     TextOut(hdc, ((rc.right - dxkT) + 0xffc0), rc.top, PszGetCompressedString(idsKt), 2);
     k = (k + 1);
@@ -3548,8 +3543,8 @@ L_4178:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[5], lstrlen(rgszMinerals[5]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    /* untranslated: cch = _wsprintf(szWork, PCTLD, loword((uint32_t)(sext16to32(c) * words(0x0, rgCosts[0x3]))), hiword((uint32_t)(sext16to32(c) * words(0x0,
-     * rgCosts[0x3])))) */
+    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[0x3])))),
+                    HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[0x3])))));
     RightTextOut(hdc, ((rc.right - dxkT) + 0xffc0), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((fStarbaseMode != 0))
         goto Restore;
@@ -3602,7 +3597,8 @@ L_4305:
         goto L_4317;
 
 L_4317:
-    /* untranslated: part.hs = part[0x3a:4](lphul[ihs*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[ihs*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[ihs*0x4]) */
     if ((part.hs.grhst != hstSpecialE))
         goto L_43a8;
     else
@@ -3903,8 +3899,7 @@ L_467a:
 
 L_4684:
     GetVCRStats(viVCRFocus, &(dp), &(dv), &(dpShield), &(csh));
-    LOWORD(dpShield) = (vrgtok[viVCRFocus].dpShield - LOWORD(dpShield));
-    HIWORD(dpShield) = (0x0 - HIWORD(dpShield));
+    dpShield = ((uint32_t)(vrgtok[viVCRFocus].dpShield) - dpShield);
     if ((HIWORD(dpShield) > 0x0))
         goto L_46e7;
     else
@@ -4001,7 +3996,7 @@ L_4841:
     goto L_486c;
 
 L_4849:
-    /* untranslated: rgCosts[k] = (rgCosts[k] - (words(0x0, rgCosts[k]) / 0x5)) */
+    rgCosts[k] = (rgCosts[k] - ((uint32_t)(rgCosts[k]) / 0x5));
     k = (k + 1);
 
 L_486c:
@@ -4021,7 +4016,7 @@ L_487f:
     goto L_48aa;
 
 L_4887:
-    /* untranslated: rgCosts[k] = (rgCosts[k] - (words(0x0, rgCosts[k]) / 0x2)) */
+    rgCosts[k] = (rgCosts[k] - ((uint32_t)(rgCosts[k]) / 0x2));
     k = (k + 1);
 
 L_48aa:
@@ -4179,7 +4174,7 @@ L_4c04:
     t_merge_4c09_0001 = 0xcbf;
 
 L_4c09:
-    /* untranslated: cch = _wsprintf(szWork, words(ds, t_merge_4c09_0001), LOWORD(dpShield), HIWORD(dpShield)) */
+    /* untranslated: cch = _wsprintf(szWork, &dword ds:[t_merge_4c09_0001], LOWORD(dpShield), HIWORD(dpShield)) */
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 10));
     cch = CchGetString(idsShields, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -4264,7 +4259,7 @@ L_4e47:
     j = (SpdOfShip(0x0, 0, 0x0, 0, lpshdefBuild) + 1);
 
 L_4e75:
-    /* untranslated: cch = _wsprintf(szWork, PszGetCompressedString(idsDS), i, words(ds, (0xca0 + loword((0x3 * j))))) */
+    cch = _wsprintf(szWork, PszGetCompressedString(idsDS), i, &(rgszSpeed[j * 0x3]));
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((dyArial8 <= 14))
         goto L_4edd;
@@ -4346,7 +4341,7 @@ L_5023:
         goto L_5044;
 
 L_5044:
-    cch = CommaFormatLong(szWork, (uint32_t)((rglPopMac[(LOWORD(lpshdefBuild) - 32)] * 100)));
+    cch = CommaFormatLong(szWork, (uint32_t)((rglPopMac[(lpshdefBuild->hul.ihuldef - 32)] * 100)));
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 16));
     if ((dyArial8 <= 14))
         goto L_50af;
@@ -4432,7 +4427,7 @@ L_525a:
 
 L_5263:
     SetTextColor(hdc, 0x7f);
-    /* untranslated: pct = (words(0x0, dv.pctDp) / 5) */
+    pct = (dv.pctDp / 5);
     if ((pct > 0))
         goto L_5296;
     else
@@ -4442,7 +4437,7 @@ L_5291:
     pct = 1;
 
 L_5296:
-    /* untranslated: csh = loword((int32_t)((uint32_t)(sext16to32(csh) * words(0x0, dv.pctSh)) / 0x64)) */
+    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(csh)*dv.pctSh)) / 0x64)));
     if ((csh > 0))
         goto L_52cc;
     else
@@ -5854,7 +5849,7 @@ L_6972:
     /* untranslated: branch sext8to16(part[0xffff:1](lpsz[cLen])) != 0x29 ? L_69d3 : L_698e */
 
 L_698e:
-    /* untranslated: branch (byte ds:[(0x175f + sext8to16(part[0xfffe:1](lpsz[cLen])))] & 0x4) == 0x0 ? L_69d3 : L_69b7 */
+    /* untranslated: branch (_ctype[(sext8to16(part[0xfffe:1](lpsz[cLen])) + 1)] & 0x4) == 0x0 ? L_69d3 : L_69b7 */
 
 L_69b7:
     /* untranslated: branch sext8to16(part[0xfffd:1](lpsz[cLen])) == 0x28 ? L_69f2 : L_69d3 */

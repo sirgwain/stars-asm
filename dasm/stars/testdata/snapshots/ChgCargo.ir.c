@@ -190,7 +190,7 @@ L_622f:
     /* untranslated: dChg = sext16to32((part[0x8:2](pth[iSupply*0x2]) neg 0x0)) */
 
 L_6249:
-    /* untranslated: wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa) */
+    wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
     i = 0;
     goto L_6295;
 

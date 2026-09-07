@@ -33,8 +33,7 @@ L_1e40:
         goto L_1e49;
 
 L_1e49:
-    LOWORD(lCost) = (LOWORD(lCost) + (LOWORD(lCost) - LOWORD((int32_t)((lCost >> 0x2)))));
-    HIWORD(lCost) = (HIWORD(lCost) + (HIWORD(lCost) - HIWORD((int32_t)((lCost >> 0x2)))));
+    lCost = (lCost + (lCost - (int32_t)((lCost >> 0x2))));
     goto L_1e83;
 
 L_1e6a:

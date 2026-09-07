@@ -1096,7 +1096,7 @@ L_12e7:
         goto L_12f1;
 
 L_12f1:
-    /* untranslated: gd.fScoreVictory = (words(0x0, (gd.fScoreVictory + 0x1)) % 0x3) */
+    gd.fScoreVictory = ((uint32_t)((gd.fScoreVictory + 0x1)) % 0x3);
     InvalidateRect(hwnd, 0x0, 1);
     InitScoreDlg(hwnd, gd.fScoreVictory);
     if ((gd.fTutorial == 0x0))
@@ -1188,7 +1188,7 @@ L_1402:
 
 L_140b:
     psz = PszGetCompressedString(idsExceedsSecondPlaceScore);
-    /* untranslated: vdxScoreX = ((words(0x0, loword((loword(GetTextExtent(hdc, psz, strlen(psz))) * 0x3))) / 2) + loword((0x6 * dxDig))) */
+    vdxScoreX = (((uint32_t)(LOWORD((LOWORD(GetTextExtent(hdc, psz, strlen(psz))) * 0x3))) / 2) + LOWORD((0x6 * dxDig)));
     if ((4 <= game.cPlayer))
         goto L_1464;
     else
@@ -2035,7 +2035,7 @@ L_277e:
     iYearBase = (game.turn + 0xff9c);
 
 L_2787:
-    /* untranslated: cYears = (uint32_t)((int32_t)(words(0x0, (game.turn + 0x4)) / 0x5) * 0x5) */
+    cYears = (uint32_t)(((int32_t)(((uint32_t)((game.turn + 0x4)) / 0x5)) * 0x5));
     if ((HIWORD(cYears) < 0x0))
         goto L_27d8;
     else
@@ -2604,7 +2604,7 @@ L_2e85:
 L_2e8b:
     dYear = (*(lpsx + 0x2) - iYearBase);
     cCur = LFetchScoreXVal(lpsx, gd.iCurGraph);
-    /* untranslated: pt.x = (loword((int32_t)((uint32_t)(words(0x0, dYear) * sext16to32(dx)) / cYears)) + rcChart.left) */
+    pt.x = (LOWORD((int32_t)(((uint32_t)(((uint32_t)(dYear) * (uint32_t)(dx))) / cYears))) + rcChart.left);
     pt.y = (rcChart.bottom - LOWORD((int32_t)(((uint32_t)((cCur * (uint32_t)(dy))) / cScaleMax))));
     if ((cDrawn != 0))
         goto L_2f20;
@@ -3496,7 +3496,7 @@ L_45e2:
 L_45f2:
     ExtTextOut(hdc, prc->left, prc->top, 0x4, prc, psz, strlen(psz), 0x0);
     goto L_485a;
-    /* untranslated: call DrawMineralItem(hdc, (prc->right - 2), prc->top, -1, words(0x0, lpbd->cplr)) -> callresult(void) */
+    DrawMineralItem(hdc, (prc->right - 2), prc->top, -1, (uint32_t)(lpbd->cplr));
     goto L_485a;
     t_call_4669 = CBattleUnits(lpbd, 0x5);
     if ((LOWORD(t_call_4669) != 0x0))
@@ -4509,7 +4509,7 @@ L_5775:
     t_merge_577a_0001 = 0x1613;
 
 L_577a:
-    /* untranslated: call _wsprintf(szWork, words(ds, t_merge_577a_0001), psz, (ord.tsell & 0xfff)) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, &dword ds:[t_merge_577a_0001], psz, (ord.tsell & 0xfff)) -> callresult(int16_t) */
 
 L_578b:
     return szWork;
@@ -6667,7 +6667,8 @@ L_831f:
         goto L_8328;
 
 L_8328:
-    scan.pt = lpbd->pt;
+    scan.pt.x = lpbd->pt.x;
+    scan.pt.y = lpbd->pt.y;
     scan.grobj = 0x8f;
     ChangeScanSel(&(scan), 0);
     CtrPointScan(scan.pt, 1);
@@ -7126,7 +7127,7 @@ L_8ab0:
         goto L_8ac2;
 
 L_8ac2:
-    /* untranslated: l = (uint32_t)(words(0x0, lppl->uPopGuess) * 0x190) */
+    l = (uint32_t)((lppl->uPopGuess * 0x190));
     strcpy(&(szForm[0x1]), PszFromLong(l, 0x0));
 
 L_8b08:
@@ -7181,7 +7182,6 @@ L_8c01:
 L_8cf6:
     szForm[2] = 9;
     szForm[1] = 9;
-    szForm[3] = 0;
     if ((gd.fPerPlayerDumps == 0x0))
         goto L_8d78;
     else

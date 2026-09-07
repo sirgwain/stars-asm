@@ -141,7 +141,7 @@ L_5b8c:
         goto L_5b9a;
 
 L_5b9a:
-    /* untranslated: cNew = (uint32_t)(words(0x0, (*(pxfer+0x92) & 0x3fff)) * 0xa) */
+    cNew = (uint32_t)(((uint32_t)((*(pxfer + 0x92) & 0x3fff)) * 0xa));
     goto L_5c26;
 
 L_5bc0:

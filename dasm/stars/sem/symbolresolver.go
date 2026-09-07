@@ -29,6 +29,354 @@ type resolvedAddressTerm struct {
 	scale int
 }
 
+// resolvedStorageLane identifies the declared object containing one resolved
+// machine lane and the lane's byte offset within that object.
+type resolvedStorageLane struct {
+	object symresolve.SymbolPath
+	offset int
+	size   int
+}
+
+// adjacentResolvedStorage reports whether high is the next 16-bit lane after
+// low within the same normalized storage address.
+func (sr *symbolResolver) adjacentResolvedStorage(low machine.MemoryAddress, high machine.MemoryAddress) (resolvedAddress, bool) {
+	if low.Width != 2 || high.Width != 2 {
+		return resolvedAddress{}, false
+	}
+
+	lo, ok := sr.addressFromMemory(low, nil)
+	if !ok {
+		return resolvedAddress{}, false
+	}
+	hi, ok := sr.addressFromMemory(high, nil)
+	if !ok {
+		return resolvedAddress{}, false
+	}
+	lo = physicalResolvedAddress(lo)
+	hi = physicalResolvedAddress(hi)
+	if !sr.sameResolvedAddressBase(lo, hi) || resolvedAddressPhysicalOffset(hi) != resolvedAddressPhysicalOffset(lo)+2 {
+		return resolvedAddress{}, false
+	}
+	return lo, true
+}
+
+// physicalResolvedAddress folds typed field projections into the fixed byte
+// offset used for storage comparison without changing the address's exact path.
+func physicalResolvedAddress(addr resolvedAddress) resolvedAddress {
+	for {
+		switch base := addr.base.(type) {
+		case *symresolve.SymbolOffset:
+			addr.offset += base.Offset
+			addr.base = base.Base
+		case *symresolve.SymbolField:
+			if base.Field == nil {
+				return addr
+			}
+			addr.offset += base.Field.Offset
+			addr.base = base.Base
+		case *symresolve.SymbolBitfield:
+			if base.Field == nil {
+				return addr
+			}
+			addr.offset += base.Field.Offset
+			addr.base = base.Base
+		default:
+			return addr
+		}
+	}
+}
+
+// storageLaneFromResolvedAddress retains field and indexed-element identity
+// while peeling only byte offsets within that declared storage object.
+func (sr *symbolResolver) storageLaneFromResolvedAddress(addr resolvedAddress) (resolvedStorageLane, bool) {
+	path := addr.exact
+	offset := 0
+	for path != nil {
+		part, ok := path.(*symresolve.SymbolOffset)
+		if !ok {
+			break
+		}
+		offset += part.Offset
+		path = part.Base
+	}
+	if len(addr.terms) != 0 && !symbolPathContainsTerm(path) {
+		path = nil
+		offset = 0
+	}
+	if path == nil {
+		path = addr.base
+		offset = addr.offset
+		if path == nil {
+			return resolvedStorageLane{}, false
+		}
+		if len(addr.terms) == 1 {
+			term := addr.terms[0]
+			result := indexedTermResult(path.Type(), term.scale)
+			if result == nil {
+				return resolvedStorageLane{}, false
+			}
+			indexed := &symresolve.SymbolTerm{Base: path, Scale: term.scale, Result: result}
+			if index, ok := sr.symbolFromValue(term.value); ok {
+				indexed.Index = index
+			} else {
+				indexed.IndexVal = term.value
+			}
+			path = indexed
+		} else if len(addr.terms) != 0 {
+			return resolvedStorageLane{}, false
+		}
+	}
+	for path != nil {
+		part, ok := path.(*symresolve.SymbolOffset)
+		if !ok {
+			break
+		}
+		offset += part.Offset
+		path = part.Base
+	}
+	if deref, ok := path.(*symresolve.SymbolDeref); ok && offset >= 0 {
+		if elem, ok := typeinfo.UnwrapPointer(deref.Base.Type()); ok && elem.Bytes() > 0 && offset >= elem.Bytes() {
+			path = &symresolve.SymbolTerm{
+				Base:     deref.Base,
+				IndexVal: machine.ConstVal(uint(offset / elem.Bytes())),
+				Scale:    elem.Bytes(),
+				Result:   elem,
+			}
+			offset %= elem.Bytes()
+		}
+	}
+	typ := path.Type()
+	if typ == nil || typ.Bytes() <= 0 {
+		return resolvedStorageLane{}, false
+	}
+	return resolvedStorageLane{object: path, offset: offset, size: typ.Bytes()}, true
+}
+
+// storageLaneFromMemory recovers the pointed-to object for split far-pointer
+// addresses before deriving the typed lane from the normalized address.
+func (sr *symbolResolver) storageLaneFromMemory(mem machine.MemoryAddress, addr resolvedAddress) (resolvedStorageLane, bool) {
+	lane, laneOK := sr.storageLaneFromResolvedAddress(addr)
+	if laneOK {
+		_, pointerRoot := lane.object.(*symresolve.SymbolRoot)
+		if !pointerRoot || !typeinfo.IsPointer(lane.object.Type()) {
+			return lane, true
+		}
+	}
+	segment, segmentOK := mem.Seg.(*machine.FarPointer)
+	offset, offsetOK := mem.Base.(*machine.FarPointer)
+	if segmentOK && offsetOK &&
+		segment.Part == machine.FarPointerSegment && offset.Part == machine.FarPointerOffset &&
+		sr.sameResolvedMachineValue(segment.Parent, offset.Parent) {
+		base, ok := sr.symbolFromValue(offset.Parent)
+		if ok && typeinfo.IsPointer(base.Type()) {
+			resolved := resolvedAddress{
+				base:   &symresolve.SymbolDeref{Base: base},
+				offset: mem.Disp,
+				deref:  true,
+			}
+			return sr.storageLaneFromResolvedAddress(resolved)
+		}
+	}
+	return lane, laneOK
+}
+
+// symbolPathContainsTerm reports whether a typed path retains the indexed
+// element that distinguishes it from its containing array.
+func symbolPathContainsTerm(path symresolve.SymbolPath) bool {
+	switch path := path.(type) {
+	case *symresolve.SymbolTerm:
+		return true
+	case *symresolve.SymbolOffset:
+		return symbolPathContainsTerm(path.Base)
+	case *symresolve.SymbolField:
+		return symbolPathContainsTerm(path.Base)
+	case *symresolve.SymbolBitfield:
+		return symbolPathContainsTerm(path.Base)
+	case *symresolve.SymbolDeref:
+		return symbolPathContainsTerm(path.Base)
+	default:
+		return false
+	}
+}
+
+// sameResolvedStorageObject compares typed storage paths while allowing
+// independently loaded indexes that resolve to the same symbolic value.
+func (sr *symbolResolver) sameResolvedStorageObject(a symresolve.SymbolPath, b symresolve.SymbolPath) bool {
+	if symresolve.Equals(a, b) {
+		return true
+	}
+	aTerm, aOK := a.(*symresolve.SymbolTerm)
+	bTerm, bOK := b.(*symresolve.SymbolTerm)
+	if !aOK || !bOK || aTerm.Scale != bTerm.Scale || !symresolve.Equals(aTerm.Base, bTerm.Base) {
+		return false
+	}
+	if aTerm.Index != nil || bTerm.Index != nil {
+		return aTerm.Index != nil && bTerm.Index != nil && symresolve.Equals(aTerm.Index, bTerm.Index)
+	}
+	return sr.sameResolvedAddressTermValue(aTerm.IndexVal, bTerm.IndexVal)
+}
+
+// sameResolvedAddressBase reports whether two normalized addresses differ
+// only in their fixed byte offsets and typed exact projections.
+func (sr *symbolResolver) sameResolvedAddressBase(a resolvedAddress, b resolvedAddress) bool {
+	if a.deref != b.deref {
+		return false
+	}
+
+	switch {
+	case a.base != nil || b.base != nil:
+		if a.base == nil || b.base == nil {
+			return false
+		}
+		aScratch, aIsScratch := a.base.(*symresolve.SymbolScratch)
+		bScratch, bIsScratch := b.base.(*symresolve.SymbolScratch)
+		if aIsScratch || bIsScratch {
+			if !aIsScratch || !bIsScratch || aScratch.Function != bScratch.Function {
+				return false
+			}
+		} else if !symresolve.Equals(a.base, b.base) {
+			return false
+		}
+	case a.baseValue != nil || b.baseValue != nil:
+		if a.baseValue == nil || b.baseValue == nil || !machine.ValueEquals(a.baseValue, b.baseValue) {
+			return false
+		}
+	}
+
+	return sr.sameResolvedAddressTerms(a.terms, b.terms)
+}
+
+// resolvedAddressPhysicalOffset includes a scratch symbol's BP displacement
+// in the normalized byte offset used for lane adjacency.
+func resolvedAddressPhysicalOffset(addr resolvedAddress) int {
+	if scratch, ok := addr.base.(*symresolve.SymbolScratch); ok {
+		return addr.offset + scratch.BPOffset
+	}
+	return addr.offset
+}
+
+// sameResolvedAddressTerms compares normalized dynamic address terms without
+// depending on the source expression's commutative addition order.
+func (sr *symbolResolver) sameResolvedAddressTerms(a []resolvedAddressTerm, b []resolvedAddressTerm) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	matched := make([]bool, len(b))
+	for _, aTerm := range a {
+		found := false
+		for i, bTerm := range b {
+			if !matched[i] && aTerm.scale == bTerm.scale && sr.sameResolvedAddressTermValue(aTerm.value, bTerm.value) {
+				matched[i] = true
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// sameResolvedAddressTermValue compares dynamic address terms structurally or,
+// for distinct loads, by their resolver-proven symbolic storage identity.
+func (sr *symbolResolver) sameResolvedAddressTermValue(a machine.Value, b machine.Value) bool {
+	if machine.ValueEquals(a, b) {
+		return true
+	}
+	aLoad, aOK := a.(*machine.Load)
+	bLoad, bOK := b.(*machine.Load)
+	if !aOK || !bOK || aLoad.Addr.Width != bLoad.Addr.Width {
+		return false
+	}
+	aPath, aOK := sr.symbolFromValue(aLoad)
+	bPath, bOK := sr.symbolFromValue(bLoad)
+	return aOK && bOK && symresolve.Equals(aPath, bPath)
+}
+
+// sameResolvedMachineValue compares values structurally or treats distinct
+// loads as equal when the resolver proves they read the same storage.
+func (sr *symbolResolver) sameResolvedMachineValue(a machine.Value, b machine.Value) bool {
+	if machine.ValueEquals(a, b) {
+		return true
+	}
+	aLoad, aOK := a.(*machine.Load)
+	bLoad, bOK := b.(*machine.Load)
+	return aOK && bOK &&
+		aLoad.Addr.Width == bLoad.Addr.Width &&
+		sr.sameResolvedStorage(aLoad.Addr, bLoad.Addr)
+}
+
+// wideStorageDestination proves that adjacent word stores describe one
+// declared object wide enough to receive a 32-bit access.
+func (sr *symbolResolver) wideStorageDestination(low machine.MemoryAddress, high machine.MemoryAddress) (machine.MemoryAddress, bool) {
+	lo, ok := sr.addressFromMemory(low, nil)
+	if !ok {
+		return machine.MemoryAddress{}, false
+	}
+	hi, ok := sr.addressFromMemory(high, nil)
+	if !ok {
+		return machine.MemoryAddress{}, false
+	}
+	physicalLo := physicalResolvedAddress(lo)
+	physicalHi := physicalResolvedAddress(hi)
+	if !sr.sameResolvedAddressBase(physicalLo, physicalHi) ||
+		resolvedAddressPhysicalOffset(physicalHi) != resolvedAddressPhysicalOffset(physicalLo)+2 {
+		return machine.MemoryAddress{}, false
+	}
+	loLane, ok := sr.storageLaneFromMemory(low, lo)
+	typedObject := ok
+	hiLane, ok := sr.storageLaneFromMemory(high, hi)
+	directLow := low
+	directLow.Index = nil
+	_, directStorage := sr.varAccessFromMemory(directLow)
+	_, pointerRoot := loLane.object.(*symresolve.SymbolRoot)
+	typedObject = typedObject && ok &&
+		sr.sameResolvedStorageObject(loLane.object, hiLane.object) &&
+		hiLane.offset == loLane.offset+2 &&
+		loLane.offset >= 0 && loLane.offset+4 <= loLane.size &&
+		symbolPathHasDeclaredRoot(loLane.object) &&
+		!(pointerRoot && typeinfo.IsPointer(loLane.object.Type()) && !directStorage)
+
+	wide := low
+	wide.Width = 4
+	if !typedObject {
+		resolved, ok := sr.addressFromMemory(wide, nil)
+		if !ok {
+			return machine.MemoryAddress{}, false
+		}
+		alias, ok := sr.storageLaneFromMemory(wide, resolved)
+		if !ok || alias.offset != 0 || !symbolPathHasDeclaredRoot(alias.object) ||
+			alias.object.Type() == nil || alias.object.Type().Bytes() != 4 ||
+			isAggregateType(alias.object.Type()) ||
+			(typeinfo.IsPointer(alias.object.Type()) && !directStorage) {
+			return machine.MemoryAddress{}, false
+		}
+	}
+	return wide, true
+}
+
+// symbolPathHasDeclaredRoot reports whether a path ultimately refers to a
+// declared local or global rather than synthetic scratch storage.
+func symbolPathHasDeclaredRoot(path symresolve.SymbolPath) bool {
+	switch path := path.(type) {
+	case *symresolve.SymbolRoot:
+		return true
+	case *symresolve.SymbolField:
+		return symbolPathHasDeclaredRoot(path.Base)
+	case *symresolve.SymbolBitfield:
+		return symbolPathHasDeclaredRoot(path.Base)
+	case *symresolve.SymbolDeref:
+		return symbolPathHasDeclaredRoot(path.Base)
+	case *symresolve.SymbolOffset:
+		return symbolPathHasDeclaredRoot(path.Base)
+	case *symresolve.SymbolTerm:
+		return symbolPathHasDeclaredRoot(path.Base)
+	default:
+		return false
+	}
+}
+
 func newSymbolResolver(ctx *FuncContext) *symbolResolver {
 	return &symbolResolver{FuncContext: ctx}
 }
@@ -53,6 +401,9 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 				return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
 			}
 			path, fieldOff, ok := sr.globalAddressBase(sr.segFromRegister(seg.Val), uint32(uint16(addr.offset)))
+			if !ok && len(addr.terms) > 0 {
+				path, fieldOff, ok = sr.flexibleGlobalAddressBase(sr.segFromRegister(seg.Val), uint32(uint16(addr.offset)))
+			}
 			if ok {
 				addr.base = path
 				addr.offset = fieldOff
@@ -127,7 +478,8 @@ func resolvedAddressIsPointer(addr resolvedAddress) bool {
 	return addr.baseValue != nil && typeinfo.IsPointer(machineValueType(addr.baseValue))
 }
 
-// resolvedAddressFromPath separates unresolved byte offsets from a finished symbol path.
+// resolvedAddressFromPath separates unresolved byte offsets from a finished
+// symbol path while preserving the typed field path used for projection.
 func resolvedAddressFromPath(path symresolve.SymbolPath) resolvedAddress {
 	addr := resolvedAddress{}
 	for {
@@ -224,16 +576,26 @@ func (sr *symbolResolver) addressOffsetFromValue(value machine.Value) resolvedAd
 			}
 			return mergeResolvedAddress(lhs, rhs)
 		case machine.ValueOpMul:
-			if term, ok := resolvedAddressTermFromMul(v.LHS, v.RHS); ok {
-				return resolvedAddress{terms: []resolvedAddressTerm{term}}
+			if factor, value, ok := constOperand(v.LHS, v.RHS); ok {
+				return scaleResolvedAddress(sr.addressOffsetFromValue(value), int(factor.Val))
 			}
 		case machine.ValueOpShl:
-			if shift, ok := v.RHS.(*machine.Const); ok {
-				return resolvedAddress{terms: []resolvedAddressTerm{{value: v.LHS, scale: 1 << shift.Val}}}
+			if shift, ok := v.RHS.(*machine.Const); ok && shift.Val < 16 {
+				return scaleResolvedAddress(sr.addressOffsetFromValue(v.LHS), 1<<shift.Val)
 			}
 		}
 	}
 	return resolvedAddress{terms: []resolvedAddressTerm{{value: value, scale: 1}}}
+}
+
+// scaleResolvedAddress multiplies every fixed and dynamic component of a
+// residual address expression by one constant factor.
+func scaleResolvedAddress(addr resolvedAddress, factor int) resolvedAddress {
+	addr.offset *= factor
+	for i := range addr.terms {
+		addr.terms[i].scale *= factor
+	}
+	return addr
 }
 
 // addressFromBinary decomposes one machine binary address expression.
@@ -901,7 +1263,7 @@ func (sr *symbolResolver) symbolFromValue(value machine.Value) (symresolve.Symbo
 
 // symbolFromBitfieldValue resolves a machine mask and shift to a logical bitfield path.
 func (sr *symbolResolver) symbolFromBitfieldValue(value machine.Value) (*symresolve.SymbolBitfield, bool) {
-	load, bitOff, bitWidth, ok := bitfieldExtract(value)
+	load, bitOff, bitWidth, ok := sr.bitfieldExtract(value)
 	if !ok {
 		return nil, false
 	}
@@ -923,7 +1285,7 @@ func (sr *symbolResolver) symbolFromBitfieldStore(mem machine.MemoryAddress, val
 }
 
 // bitfieldExtract returns the storage load, bit offset, and bit width for a bitfield expression.
-func bitfieldExtract(value machine.Value) (*machine.Load, int, int, bool) {
+func (sr *symbolResolver) bitfieldExtract(value machine.Value) (*machine.Load, int, int, bool) {
 	value = unwrapMachineBitfieldValue(value)
 	and, ok := value.(*machine.Binary)
 	if !ok || and.Op != machine.ValueOpAnd {
@@ -937,7 +1299,7 @@ func bitfieldExtract(value machine.Value) (*machine.Load, int, int, bool) {
 	if !ok {
 		return nil, 0, 0, false
 	}
-	load, bitOff, ok := shiftedLoad(source)
+	load, bitOff, ok := sr.shiftedLoad(source)
 	if !ok {
 		return nil, 0, 0, false
 	}
@@ -1038,6 +1400,7 @@ func unshiftMachineBitfieldSet(value machine.Value, bitOff int, bitWidth int, ch
 		}
 		source = shift.LHS
 	}
+	source = unwrapMachineBitfieldValue(source)
 	if words, ok := source.(*machine.StackWords); ok && len(words.Words) == 2 {
 		if high, ok := words.Words[0].(*machine.Const); ok && high.Val == 0 {
 			source = words.Words[1]
@@ -1060,18 +1423,18 @@ func unshiftMachineBitfieldSet(value machine.Value, bitOff int, bitWidth int, ch
 }
 
 // shiftedLoad returns the load and right-shift amount for a bitfield source.
-func shiftedLoad(value machine.Value) (*machine.Load, int, bool) {
+func (sr *symbolResolver) shiftedLoad(value machine.Value) (*machine.Load, int, bool) {
 	value = unwrapMachineBitfieldValue(value)
 	shift, ok := value.(*machine.Binary)
 	if !ok || shift.Op != machine.ValueOpShr {
-		load, ok := machineBitfieldStorageLoad(value)
+		load, ok := sr.machineBitfieldStorageLoad(value)
 		return load, 0, ok
 	}
 	amount, source, ok := constOperand(shift.LHS, shift.RHS)
 	if !ok || source != shift.LHS {
 		return nil, 0, false
 	}
-	load, ok := machineBitfieldStorageLoad(unwrapMachineBitfieldValue(source))
+	load, ok := sr.machineBitfieldStorageLoad(unwrapMachineBitfieldValue(source))
 	if !ok {
 		return nil, 0, false
 	}
@@ -1098,7 +1461,7 @@ func unwrapMachineBitfieldValue(value machine.Value) machine.Value {
 
 // machineBitfieldStorageLoad returns the physical load selected by a
 // bitfield expression, including an uncollapsed high/low word pair.
-func machineBitfieldStorageLoad(value machine.Value) (*machine.Load, bool) {
+func (sr *symbolResolver) machineBitfieldStorageLoad(value machine.Value) (*machine.Load, bool) {
 	if load, ok := value.(*machine.Load); ok {
 		return load, true
 	}
@@ -1106,7 +1469,7 @@ func machineBitfieldStorageLoad(value machine.Value) (*machine.Load, bool) {
 	if !ok || len(words.Words) != 2 {
 		return nil, false
 	}
-	wide, ok := collapseAdjacentMachineLoads(words.Words[0], words.Words[1])
+	wide, ok := (&wideMachineCollapser{ctx: sr.FuncContext}).pair(words.Words[1], words.Words[0])
 	if !ok {
 		return nil, false
 	}
@@ -1630,6 +1993,25 @@ func (sr *symbolResolver) globalAddressBase(segNum uint16, offset uint32) (symre
 		return nil, 0, false
 	}
 	return &symresolve.SymbolRoot{Symbol: g.Global}, g.FieldOff, true
+}
+
+// flexibleGlobalAddressBase resolves an indexed address into the nearest
+// preceding zero-length array global without treating unrelated constants as
+// addresses into that open-ended storage.
+func (sr *symbolResolver) flexibleGlobalAddressBase(segNum uint16, offset uint32) (symresolve.SymbolPath, int, bool) {
+	var match *typeinfo.GlobalVar
+	for _, global := range sr.sdb.Globals {
+		if global == nil || global.Addr.Seg != segNum || global.Addr.Off > offset {
+			continue
+		}
+		if match == nil || global.Addr.Off > match.Addr.Off {
+			match = global
+		}
+	}
+	if match == nil || !isZeroLengthArray(match.Type) {
+		return nil, 0, false
+	}
+	return &symresolve.SymbolRoot{Symbol: match}, int(offset - match.Addr.Off), true
 }
 
 // globalAccessFromMemory resolves a direct machine memory address as a global access.

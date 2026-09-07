@@ -310,7 +310,7 @@ L_050c:
 
 L_0537:
     SetBkColor(wParam, crButtonFace);
-    /* untranslated: return words(0x0, hbrButtonFace) */
+    return (uint32_t)(hbrButtonFace);
 
 L_0550:
     SetCursor(LoadCursor(0x0, MAKEINTRESOURCE(0x7f00)));

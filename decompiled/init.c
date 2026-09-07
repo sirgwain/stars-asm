@@ -820,8 +820,10 @@ L_124c:
         goto L_12d3;
 
 L_12d3:
-    /* untranslated: vrptFleet.ptDlg = part[0x0:4](wnT.rc) */
-    /* untranslated: vrptFleet.ptSize = (part[0x4:4](wnT.rc) - part[0x0:4](wnT.rc)) */
+    vrptFleet.ptDlg.x = wnT.rc.left;
+    vrptFleet.ptDlg.y = wnT.rc.top;
+    vrptFleet.ptSize.x = (wnT.rc.right - wnT.rc.left);
+    vrptFleet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
 
 L_12f2:
     GetIniWinRc(szSection, szIniFile, idsReportefleetwin, &(wnT));
@@ -831,8 +833,10 @@ L_12f2:
         goto L_1314;
 
 L_1314:
-    /* untranslated: vrptEFleet.ptDlg = part[0x0:4](wnT.rc) */
-    /* untranslated: vrptEFleet.ptSize = (part[0x4:4](wnT.rc) - part[0x0:4](wnT.rc)) */
+    vrptEFleet.ptDlg.x = wnT.rc.left;
+    vrptEFleet.ptDlg.y = wnT.rc.top;
+    vrptEFleet.ptSize.x = (wnT.rc.right - wnT.rc.left);
+    vrptEFleet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
 
 L_1333:
     GetIniWinRc(szSection, szIniFile, idsReportbtlwin, &(wnT));
@@ -842,8 +846,10 @@ L_1333:
         goto L_1355;
 
 L_1355:
-    /* untranslated: vrptBattle.ptDlg = part[0x0:4](wnT.rc) */
-    /* untranslated: vrptBattle.ptSize = (part[0x4:4](wnT.rc) - part[0x0:4](wnT.rc)) */
+    vrptBattle.ptDlg.x = wnT.rc.left;
+    vrptBattle.ptDlg.y = wnT.rc.top;
+    vrptBattle.ptSize.x = (wnT.rc.right - wnT.rc.left);
+    vrptBattle.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
 
 L_1374:
     GetIniWinRc(szSection, szIniFile, idsReportplanwin, &(wnT));
@@ -853,8 +859,10 @@ L_1374:
         goto L_1396;
 
 L_1396:
-    /* untranslated: vrptPlanet.ptDlg = part[0x0:4](wnT.rc) */
-    /* untranslated: vrptPlanet.ptSize = (part[0x4:4](wnT.rc) - part[0x0:4](wnT.rc)) */
+    vrptPlanet.ptDlg.x = wnT.rc.left;
+    vrptPlanet.ptDlg.y = wnT.rc.top;
+    vrptPlanet.ptSize.x = (wnT.rc.right - wnT.rc.left);
+    vrptPlanet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
 
 L_13b5:
     CchGetString(idsResolution, szEntry);
@@ -2011,12 +2019,15 @@ L_2bc2:
     iCol = (iCol + 0x1);
 
 L_2bc9:
-    /* untranslated: branch (byte ds:[(95 + sext8to16(*pszFormat))] & 0x3) == 0x0 ? L_2d7a : L_2be1 */
+    if (((_ctype[((uint16_t)(*(pszFormat)) + 1)] & 0x3) == 0x0))
+        goto DoNext;
+    else
+        goto L_2be1;
 
 L_2be1:
 
 L_2be7:
-    /* untranslated: fPopped = (byte ds:[(0x175f + sext8to16(*pszFormat))] & 0x1) */
+    fPopped = (_ctype[((uint16_t)(*(pszFormat)) + 0x1)] & 0x1);
     if ((fPopped == 0))
         goto L_2c12;
     else

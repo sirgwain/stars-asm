@@ -320,7 +320,7 @@ L_07c8:
 
 L_07e7:
     /* untranslated: csh = part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))] */
-    /* untranslated: csh = loword((int32_t)((uint32_t)(words(0x0, (part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] & 0x7f)) * sext16to32(csh)) /
+    /* untranslated: csh = loword((int32_t)((uint32_t)((uint32_t)(part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] & 0x7f) * sext16to32(csh)) /
      * 0x64)) */
     if ((csh > 0))
         goto L_084f;
@@ -331,7 +331,7 @@ L_084a:
     csh = 1;
 
 L_084f:
-    /* untranslated: dpT = (words(0x0, ((part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] >> 0x7) & 0x1ff)) / 5) */
+    /* untranslated: dpT = ((uint32_t)((part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] >> 0x7) & 0x1ff) / 0x5) */
     if ((dpT != 0))
         goto L_0888;
     else
@@ -2184,7 +2184,7 @@ L_328e:
     t_merge_3293_0001 = pszTypes;
 
 L_3293:
-    /* untranslated: call _wsprintf(szWork, "%d %s", cnt, words(ds, t_merge_3293_0001)) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, "%d %s", cnt, &dword ds:[t_merge_3293_0001]) -> callresult(int16_t) */
     psz = &(szWork);
     goto L_3319;
     psz = PszGetPlanetName(HIWORD(GlobalPD));

@@ -81,8 +81,7 @@ L_00dd:
         goto L_00fa;
 
 L_00fa:
-    /* untranslated: lResCur = (lResCur + (int32_t)((uint32_t)(lResCur * words(0x0, vrgPlanResExtra[lppl->id])) / words((0x0 + HIWORD(lResCur)),
-     * (vrgPlanResExtra[lppl->id] + LOWORD(lResCur))))) */
+    lResCur = (lResCur + (int32_t)(((uint32_t)((lResCur * (uint32_t)(vrgPlanResExtra[lppl->id]))) / ((uint32_t)(vrgPlanResExtra[lppl->id]) + lResCur))));
 
 L_0150:
     rgplr[lppl->iPlayer].lResLastYear = (rgplr[lppl->iPlayer].lResLastYear + lResCur);
@@ -136,8 +135,7 @@ L_0221:
         goto L_023e;
 
 L_023e:
-    /* untranslated: lResCur = (lResCur + (int32_t)((uint32_t)(lResCur * words(0x0, vrgPlanResExtra[lppl->id])) / words((0x0 + HIWORD(lResCur)),
-     * (vrgPlanResExtra[lppl->id] + LOWORD(lResCur))))) */
+    lResCur = (lResCur + (int32_t)(((uint32_t)((lResCur * (uint32_t)(vrgPlanResExtra[lppl->id]))) / ((uint32_t)(vrgPlanResExtra[lppl->id]) + lResCur))));
 
 L_0294:
     rgResAvail[3] = lResCur;
@@ -398,8 +396,7 @@ L_0640:
 L_0668:
 
 L_0671:
-    /* untranslated: LOWORD(lpprod) = ((LOWORD(lpprod) & 0xfc00) | loword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
-    /* untranslated: HIWORD(lpprod) = ((*(lpprod+0x2) & 0xffff) | hiword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
+    lpprod = ((*(lpprod) & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
 
 L_06a5:
     if ((lpprod->iItem != mdIdleMine))
@@ -1030,15 +1027,14 @@ L_0ff8:
         goto L_1000;
 
 L_1000:
-    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
-    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
+    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
 
 L_102c:
     i = 0;
     goto L_1086;
 
 L_1034:
-    /* untranslated: rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words(0x0, prod.pct)) / 0x64) */
+    rgCostPaid[i] = (uint32_t)(((uint32_t)((rgCost[i] * prod.pct)) / 0x64));
     i = (i + 1);
 
 L_1086:
@@ -1200,8 +1196,7 @@ L_1283:
         goto L_128b;
 
 L_128b:
-    LOWORD(lMinNeeded) = ((LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) - LOWORD(rgRes[i]));
-    HIWORD(lMinNeeded) = ((HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) - HIWORD(rgRes[i]));
+    lMinNeeded = ((rgCost[i] - rgCostPaid[i]) - rgRes[i]);
     pct = pctT;
     if ((i != 3))
         goto L_12e1;
@@ -1436,8 +1431,7 @@ L_165c:
     goto L_1706;
 
 L_16ba:
-    LOWORD(rgRes[i]) = (LOWORD(rgRes[i]) - (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])));
-    HIWORD(rgRes[i]) = (HIWORD(rgRes[i]) - (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])));
+    rgRes[i] = (rgRes[i] - (rgCost[i] - rgCostPaid[i]));
     rgCostPaid[i] = 0;
     i = (i + 1);
 
@@ -1955,7 +1949,7 @@ L_1e2c:
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
     /* untranslated: cshOrig = part[0xc:2](lpfl[iItem*0x2]) */
-    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(words(0x0, (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f)) * sext16to32(cshOrig)) / 0x64)) */
+    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32(cshOrig)) / 0x64)) */
     if ((cshDamaged != 0))
         goto L_1edb;
     else
@@ -1965,8 +1959,8 @@ L_1ed6:
     cshDamaged = 1;
 
 L_1edb:
-    /* untranslated: dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, ((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff))) /
-     * 0xa) * sext16to32(cshDamaged)) / 0x32) */
+    /* untranslated: dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)((uint32_t)dpShdef * (uint32_t)((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff)) / 0xa) *
+     * sext16to32(cshDamaged)) / 0x32) */
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | (loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 0x64) /
      * sext16to32((cshOrig + cBuilt)))) & 0x7f)) */
     /* untranslated: branch (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) != 0x0 ? L_1ff4 : L_1fc0 */
@@ -1975,7 +1969,7 @@ L_1fc0:
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | 0x1) */
 
 L_1ff4:
-    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(words(0x0, (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f)) * sext16to32((cshOrig + cBuilt))) / 0x64)) */
+    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32((cshOrig + cBuilt))) / 0x64)) */
     if ((cshDamaged != 0))
         goto L_2041;
     else
@@ -1986,7 +1980,7 @@ L_203c:
 
 L_2041:
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) | ((loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 0x5)
-     * / sext16to32(cshDamaged)) * 0x64) / words(0x0, dpShdef))) & 0x1ff) << 0x7)) */
+     * / sext16to32(cshDamaged)) * 0x64) / (uint32_t)dpShdef)) & 0x1ff) << 0x7)) */
     goto L_20de;
 
 L_20c5:
@@ -2495,7 +2489,8 @@ L_2b3e:
     lpth->thp.iWarp = iWarp;
     lpth->thp.iDecayRate = iDecayRate;
     lpth->thp.idPlanet = (lppl->idFling + 0xffff);
-    lpth->pt = rgptPlan[lppl->id];
+    lpth->pt.x = rgptPlan[lppl->id].x;
+    lpth->pt.y = rgptPlan[lppl->id].y;
     FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling + 0xffff));
     goto L_2fc0;
     i = 0;
@@ -3443,10 +3438,7 @@ L_4045:
     scratch_bp_mfe = 0x0;
     prod.iItem = (rgplr[iMax].zpq1.rgpq[ipq].w & 0x3f);
     scratch_bp_mfe = 0x0;
-    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words(0x0, (((rgplr[iMax].zpq1.rgpq[ipq].w >> 0x6) & 0x3ff) & 0x3ff)) << 0x0)))
-     */
-    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words(0x0, (((rgplr[iMax].zpq1.rgpq[ipq].w >> 0x6) & 0x3ff) & 0x3ff)) << 0x0)))
-     */
+    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((((rgplr[iMax].zpq1.rgpq[ipq].w >> 0x6) & 0x3ff) & 0x3ff)) << 0x0)));
     pl.lpplprod[iDst].rgprod[0] = prod;
     iDst = (iDst + 1);
 
@@ -4762,9 +4754,7 @@ L_549c:
 
 L_54b3:
     CalcPctSurvive(lppl, &(pct), 0x0);
-    __ftol();
-    /* untranslated: LOWORD(l) = ((0x64 - loword(callresult(int32_t))) + 0x4) */
-    /* untranslated: HIWORD(l) = ((0x0 - hiword(callresult(int32_t))) + 0x0) */
+    l = ((100 - __ftol()) + 4);
     l = (int32_t)((l / 6));
     if ((HIWORD(l) > 0x0))
         goto L_5535;
@@ -5453,14 +5443,20 @@ L_5efa:
 L_5f0a:
 
 L_5f10:
-    /* untranslated: branch (words(0x0, game.turn) % 0x64) != 0x47 ? L_5f2a : L_5f22 */
+    if ((((uint32_t)(game.turn) % 0x64) != 0x47))
+        goto L_5f2a;
+    else
+        goto L_5f22;
 
 L_5f22:
     cRand = 2;
     goto L_5f73;
 
 L_5f2a:
-    /* untranslated: branch (words(0x0, game.turn) % 0x64) != 0x21 ? L_5f44 : L_5f3c */
+    if ((((uint32_t)(game.turn) % 0x64) != 0x21))
+        goto L_5f44;
+    else
+        goto L_5f3c;
 
 L_5f3c:
     cRand = 3;
@@ -5848,8 +5844,8 @@ L_6537:
     rgcCond[i] = (rgcCond[i] + 0x1);
 
 L_6542:
-    /* untranslated: scratch_bp_m88 = loword((int32_t)(words(0x0, (score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))) */
-    /* untranslated: scratch_bp_m86 = hiword((int32_t)(words(0x0, (score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))) */
+    scratch_bp_m88 = LOWORD((int32_t)(((uint32_t)((score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))));
+    scratch_bp_m86 = HIWORD((int32_t)(((uint32_t)((score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))));
     GetVCVal(game.lid, 6, 0);
     /* untranslated: branch scratch_bp_m86 < signhiword(callresult(int16_t)) ? L_6614 : L_6588 */
 
@@ -6304,11 +6300,11 @@ L_6e2d:
         goto L_6e37;
 
 L_6e37:
-    /* untranslated: call _wsprintf(pchT, "backup%d", (words(0x0, game.turn) % vcBackupDirs)) -> callresult(int16_t) */
+    _wsprintf(pchT, "backup%d", ((uint32_t)(game.turn) % vcBackupDirs));
     goto L_6e7a;
 
 L_6e5a:
-    /* untranslated: call _wsprintf(pchT, "backup.%03d", (words(0x0, game.turn) % vcBackupDirs)) -> callresult(int16_t) */
+    _wsprintf(pchT, "backup.%03d", ((uint32_t)(game.turn) % vcBackupDirs));
 
 L_6e7a:
     mkdir(szBackup);
@@ -6725,7 +6721,7 @@ L_7539:
     pctDecay = (pctDecay + 25);
 
 L_7541:
-    /* untranslated: lDecay = (int32_t)((uint32_t)(part[0x6:4](lpth) * pctDecay) / 0x64) */
+    lDecay = (int32_t)(((uint32_t)((*(lpth + 0x6) * pctDecay)) / 0x64));
     if ((HIWORD(lDecay) > HIWORD(pctDecay)))
         goto L_7593;
     else
@@ -7025,8 +7021,7 @@ L_78dc:
         goto L_78e3;
 
 L_78e3:
-    LOWORD(cMineCur) = ((*(lpth + 0x6) - LOWORD(lCur)) + 0x1);
-    HIWORD(cMineCur) = ((*(lpth + 0x8) - HIWORD(lCur)) + 0x0);
+    cMineCur = ((*(lpth + 0x6) - lCur) + 1);
 
 L_7900:
     if ((HIWORD(cMineCur) < *(lpth + 0x8)))
@@ -7238,8 +7233,7 @@ L_7cc1:
         goto L_7cc8;
 
 L_7cc8:
-    LOWORD(cMineCur) = ((*(lpth + 0x6) - LOWORD(lCur)) + 0x1);
-    HIWORD(cMineCur) = ((*(lpth + 0x8) - HIWORD(lCur)) + 0x0);
+    cMineCur = ((*(lpth + 0x6) - lCur) + 1);
 
 L_7ce5:
     if ((HIWORD(cMineCur) < *(lpth + 0x8)))

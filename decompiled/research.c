@@ -1396,8 +1396,7 @@ L_1e40:
         goto L_1e49;
 
 L_1e49:
-    LOWORD(lCost) = (LOWORD(lCost) + (LOWORD(lCost) - LOWORD((int32_t)((lCost >> 0x2)))));
-    HIWORD(lCost) = (HIWORD(lCost) + (HIWORD(lCost) - HIWORD((int32_t)((lCost >> 0x2)))));
+    lCost = (lCost + (lCost - (int32_t)((lCost >> 0x2))));
     goto L_1e83;
 
 L_1e6a:
@@ -4878,7 +4877,7 @@ int32_t CostOfDevelopingItem(char *rgTech) {
     int16_t  fUnreachable;
     int16_t  i;
     int32_t  lCur;
-    uint32_t t_merge_6879_0001_wide;
+    uint16_t t_merge_6879_0001;
 
 L_66e0:
     fUnreachable = 0;
@@ -4968,15 +4967,14 @@ L_6862:
         goto L_686a;
 
 L_686a:
-    t_merge_6879_0001_wide = 0x0;
+    t_merge_6879_0001 = 0x0;
     goto L_6879;
 
 L_6873:
-    t_merge_6879_0001_wide = lCur;
+    t_merge_6879_0001 = lCur;
 
 L_6879:
-    LOWORD(lCost) = (LOWORD(lCost) + LOWORD(t_merge_6879_0001_wide));
-    HIWORD(lCost) = (HIWORD(lCost) + HIWORD(t_merge_6879_0001_wide));
+    lCost = (lCost + t_merge_6879_0001);
 
 L_687f:
     i = (i + 1);

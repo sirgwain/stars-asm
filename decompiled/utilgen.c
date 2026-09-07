@@ -404,7 +404,10 @@ L_1953:
     dw = 0x0;
 
 L_197a:
-    /* untranslated: branch (byte ds:[(95 + sext8to16(*pch))] & 0x4) == 0x0 ? L_19cf : L_1995 */
+    if (((_ctype[((uint16_t)(*(pch)) + 1)] & 0x4) == 0x0))
+        goto L_19cf;
+    else
+        goto L_1995;
 
 L_1995:
     dw = ((uint32_t)((dw * 0xa)) + (int32_t)(((uint16_t)(*(pch)) + 0xffd0)));
@@ -2737,7 +2740,7 @@ L_3e42:
         goto L_3e66;
 
 L_3e66:
-    PatBlt(hdc, x, rgptDraw[(cpt - 1)].y, dx, 1, PATCOPY);
+    /* untranslated: call PatBlt(hdc, x, part[0x2:24](rgptDraw), dx, 1, PATCOPY) -> callresult(int16_t) */
 
 L_3e95:
     PatBlt(hdc, x, y, dx, 1, PATCOPY);
@@ -3919,8 +3922,7 @@ L_4ef2:
     bi.biYPelsPerMeter = 0;
     bi.biClrUsed = 0x0;
     bi.biClrImportant = 0x0;
-    LOWORD(dwLen) = (PaletteSize(&(bi)) + LOWORD(bi.biSize));
-    HIWORD(dwLen) = (0x0 + HIWORD(bi.biSize));
+    dwLen = ((uint32_t)(PaletteSize(&(bi))) + bi.biSize);
     hdc = GetDC(0x0);
     scratch_bp_pe = SelectPalette(hdc, scratch_bp_pe, 0);
     RealizePalette(hdc);
@@ -3953,8 +3955,8 @@ L_5048:
         goto L_5051;
 
 L_5051:
-    /* untranslated: bi.biSizeImage = (uint32_t)((int32_t)((uint32_t)(((uint32_t)(sext16to32(bm.bmWidth) * words(0x0, scratch_bp_pc)) + 0x1f) / 0x20) * 0x4) *
-     * sext16to32(bm.bmHeight)) */
+    bi.biSizeImage = (uint32_t)(((int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(bm.bmWidth) * (uint32_t)(scratch_bp_pc))) + 0x1f) / 0x20)) * 0x4)) *
+                                 (uint32_t)(bm.bmHeight)));
     if ((scratch_bp_p8 != 0x0))
         goto L_50a6;
     else
@@ -3970,8 +3972,7 @@ L_50a6:
     bi.biSizeImage = (uint32_t)(((uint32_t)((bi.biSizeImage * 0x3)) / 0x2));
 
 L_50ce:
-    LOWORD(dwLen) = ((PaletteSize(&(bi)) + LOWORD(bi.biSize)) + LOWORD(bi.biSizeImage));
-    HIWORD(dwLen) = ((0x0 + HIWORD(bi.biSize)) + HIWORD(bi.biSizeImage));
+    dwLen = (((uint32_t)(PaletteSize(&(bi))) + bi.biSize) + bi.biSizeImage);
     GlobalReAlloc(hdib, dwLen, 0x0);
     /* untranslated: h = callresult(HGLOBAL) */
     /* untranslated: branch callresult(HGLOBAL) == 0x0 ? L_5118 : L_510f */
@@ -5148,8 +5149,8 @@ L_62ac:
         goto L_62b5;
 
 L_62b5:
-    /* untranslated: l = (int32_t)((uint32_t)(words(0x0, df.total_clusters) * words(0x0, df.bytes_per_sector)) / 0x200) */
-    /* untranslated: l = (uint32_t)(l * words(0x0, df.sectors_per_cluster)) */
+    l = (int32_t)(((uint32_t)(((uint32_t)(df.total_clusters) * (uint32_t)(df.bytes_per_sector))) / 0x200));
+    l = (uint32_t)((l * (uint32_t)(df.sectors_per_cluster)));
     l = (int32_t)((l / 195312));
     if ((HIWORD(l) < 0x0))
         goto L_6332;

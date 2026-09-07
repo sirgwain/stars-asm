@@ -291,7 +291,7 @@ L_03a3:
         goto L_03b3;
 
 L_03b3:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff88)) / 20)) */
+    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
 
 L_03c3:
     if ((j <= 50))
@@ -312,7 +312,7 @@ L_03d1:
         goto L_03f5;
 
 L_03f5:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff9c)) / 22)) */
+    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
 
 L_0405:
     if ((j <= 12))
@@ -404,7 +404,7 @@ L_0501:
     cExistCargo = CheckAiShdefStatus(11, 13, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef);
     CheckAiShdefStatus(9, 10, cRecyclePeriod, &(iLatestBomber), rgRecycleShdef);
     CheckAiShdefStatus(2, 5, cRecyclePeriod, &(iLatestMeta), rgRecycleShdef);
-    /* untranslated: call CheckAiShdefStatus(6, 7, (words(0x0, loword((0x3 * cRecyclePeriod))) / 0x2), &iLatestBattle, rgRecycleShdef) -> callresult(int16_t) */
+    CheckAiShdefStatus(6, 7, ((uint32_t)(LOWORD((0x3 * cRecyclePeriod))) / 0x2), &(iLatestBattle), rgRecycleShdef);
     if ((game.turn <= 0x50))
         goto L_0611;
     else
@@ -499,7 +499,7 @@ L_06f4:
         goto L_0701;
 
 L_0701:
-    /* untranslated: i = ((words(0x0, lppl->uPopGuess) / 250) + 1) */
+    i = ((lppl->uPopGuess / 250) + 1);
     if ((i <= 6))
         goto L_0726;
     else
@@ -1091,8 +1091,7 @@ L_0e60:
     goto L_0edb;
 
 L_0e88:
-    /* untranslated: LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - (words(0x0, loword((0x3 * rgCosts[j]))) / 0x5)) */
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(((uint32_t)(LOWORD((0x3 * rgCosts[j]))) / 0x5)));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_0ed7;
     else
@@ -1208,8 +1207,7 @@ L_0fe4:
     goto L_1054;
 
 L_100b:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_1050;
     else
@@ -1377,7 +1375,8 @@ L_128b:
     ClearAiCurrentTask(lpfl, 1);
     ord.id = idPlanDst;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[idPlanDst];
+    ord.pt.x = rgptPlan[idPlanDst].x;
+    ord.pt.y = rgptPlan[idPlanDst].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -1671,7 +1670,8 @@ L_16d2:
 
 L_16f7:
     memset(&(ord), 0, 0x12);
-    ord.pt = rgptPlan[lpplDrop->id];
+    ord.pt.x = rgptPlan[lpplDrop->id].x;
+    ord.pt.y = rgptPlan[lpplDrop->id].y;
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
     ord.fValidTask = 0x1;
@@ -1696,7 +1696,8 @@ L_17e9:
     memset(&(ord), 0, 0x12);
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplDrop->id];
+    ord.pt.x = rgptPlan[lpplDrop->id].x;
+    ord.pt.y = rgptPlan[lpplDrop->id].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -3053,7 +3054,8 @@ L_2c3d:
     /* untranslated: part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) | 0x80) */
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplTarget->id];
+    ord.pt.x = rgptPlan[lpplTarget->id].x;
+    ord.pt.y = rgptPlan[lpplTarget->id].y;
 
 FinishTargeting:
     ord.grTask = grTaskNone;
@@ -3083,7 +3085,8 @@ L_2cfb:
 L_2d04:
     ord.id = lpflTarget->id;
     ord.grobj = grobjFleet;
-    ord.pt = lpflTarget->pt;
+    ord.pt.x = lpflTarget->pt.x;
+    ord.pt.y = lpflTarget->pt.y;
     goto FinishTargeting;
 
 L_2d30:
@@ -3241,8 +3244,8 @@ L_2f29:
 
 L_2f38:
     lPopUs = lpfl->rgwtMin[3];
-    /* untranslated: lPopEnemy = (int32_t)(words(0x0, lppl->uPopGuess) * 0x4) */
-    /* untranslated: pctDef = ((uint32_t)(words(0x0, lppl->uDefGuess) * 0x6) + 6) */
+    lPopEnemy = (int32_t)((lppl->uPopGuess * 0x4));
+    pctDef = ((uint32_t)((lppl->uDefGuess * 0x6)) + 6);
     pctDef = (int32_t)(((uint32_t)((pctDef * 3)) / 0x4));
     lPopEnemy = (int32_t)(((uint32_t)((lPopEnemy * 100)) / (100 - pctDef)));
     if ((HIWORD(lPopEnemy) < HIWORD((int32_t)((lPopUs / 5)))))
@@ -3535,7 +3538,7 @@ L_32ab:
         goto L_32e2;
 
 L_32e2:
-    l2 = LDistance2(rgptPlan[LOWORD(lpplSrc)], rgptPlan[LOWORD(lpplTest)]);
+    l2 = LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]);
     if ((HIWORD(l2) > 0x0))
         goto L_3333;
     else
@@ -3723,7 +3726,7 @@ L_345c:
         goto L_348a;
 
 L_348a:
-    l2 = LDistance2(rgptPlan[LOWORD(lpplSrc)], rgptPlan[LOWORD(lpplTest)]);
+    l2 = LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]);
     if ((HIWORD(l2) > 0x0))
         goto L_34db;
     else
@@ -3980,7 +3983,7 @@ L_3740:
         goto L_3750;
 
 L_3750:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff88)) / 20)) */
+    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
 
 L_3760:
     if ((j <= 50))
@@ -4001,7 +4004,7 @@ L_376e:
         goto L_3792;
 
 L_3792:
-    /* untranslated: j = (j + (words(0x0, (game.turn + 0xff9c)) / 22)) */
+    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
 
 L_37a2:
     if ((j <= 12))
@@ -4760,8 +4763,7 @@ L_4348:
     goto L_43b9;
 
 L_4370:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_43b5;
     else
@@ -4871,8 +4873,7 @@ L_44c0:
     goto L_4530;
 
 L_44e7:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_452c;
     else
@@ -4982,8 +4983,7 @@ L_4636:
     goto L_46a6;
 
 L_465d:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_46a2;
     else
@@ -5099,8 +5099,7 @@ L_47bf:
     goto L_482f;
 
 L_47e6:
-    LOWORD(rgResAvail[j]) = (LOWORD(rgResAvail[j]) - rgCosts[j]);
-    HIWORD(rgResAvail[j]) = (HIWORD(rgResAvail[j]) - 0x0);
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(rgCosts[j]));
     if ((HIWORD(rgResAvail[j]) > 0x0))
         goto L_482b;
     else
@@ -5418,7 +5417,8 @@ L_4c57:
 
 L_4c6e:
     memset(&(ord), 0, 0x12);
-    ord.pt = rgptPlan[idPlanDst];
+    ord.pt.x = rgptPlan[idPlanDst].x;
+    ord.pt.y = rgptPlan[idPlanDst].y;
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
     ord.grTask = grTaskXfer;
@@ -5612,7 +5612,8 @@ L_4fa8:
     memset(&(ord), 0, 0x12);
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lppl->id];
+    ord.pt.x = rgptPlan[lppl->id].x;
+    ord.pt.y = rgptPlan[lppl->id].y;
     ord.grTask = grTaskMine;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
@@ -5779,7 +5780,8 @@ L_5290:
     memset(&(ord), 0, 0x12);
     ord.id = lpplDest->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplDest->id];
+    ord.pt.x = rgptPlan[lpplDest->id].x;
+    ord.pt.y = rgptPlan[lpplDest->id].y;
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
@@ -6057,7 +6059,8 @@ L_56e5:
     /* untranslated: part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) | 0x80) */
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lppl->id];
+    ord.pt.x = rgptPlan[lppl->id].x;
+    ord.pt.y = rgptPlan[lppl->id].y;
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;

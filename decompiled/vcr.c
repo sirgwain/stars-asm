@@ -440,8 +440,7 @@ L_05ef:
 L_05fa:
 
 L_0600:
-    LOWORD(lUnits) = (LOWORD(lUnits) + lptok->csh);
-    HIWORD(lUnits) = (HIWORD(lUnits) + 0x0);
+    lUnits = (lUnits + (uint32_t)(lptok->csh));
 
 L_0610:
     i = (i + 1);
@@ -494,8 +493,7 @@ L_0708:
         goto L_0711;
 
 L_0711:
-    /* untranslated: LOWORD(cKilled) = (LOWORD(cKilled) + part[0x8:2](lpbr[i*0x8])) */
-    HIWORD(cKilled) = (HIWORD(cKilled) + 0x0);
+    /* untranslated: cKilled = (cKilled + (uint32_t)part[0x8:2](lpbr[i*0x8])) */
 
 L_0739:
     if ((fOurDead != 0))
@@ -504,8 +502,7 @@ L_0739:
         goto L_0742;
 
 L_0742:
-    /* untranslated: LOWORD(cKilled) = (LOWORD(cKilled) + part[0x8:2](lpbr[i*0x8])) */
-    HIWORD(cKilled) = (HIWORD(cKilled) + 0x0);
+    /* untranslated: cKilled = (cKilled + (uint32_t)part[0x8:2](lpbr[i*0x8])) */
 
 L_0767:
     i = (i + 1);
@@ -554,14 +551,14 @@ L_07cf:
 
 L_07d4:
     dpShdef = LpshdefFromTok(&(vrgtok[itok]))->hul.dp;
-    /* untranslated: dp = (uint32_t)(words(0x0, dpShdef) * words(0x0, vrgtok[itok].csh)) */
+    dp = (uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(vrgtok[itok].csh)));
     if ((dv.dp == 0x0))
         goto L_08c9;
     else
         goto L_0830;
 
 L_0830:
-    /* untranslated: csh = loword((int32_t)((uint32_t)(words(0x0, vrgtok[itok].csh) * words(0x0, dv.pctSh)) / 0x64)) */
+    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(vrgtok[itok].csh) * dv.pctSh)) / 0x64)));
     if ((csh > 0))
         goto L_087b;
     else
@@ -571,7 +568,7 @@ L_0876:
     csh = 1;
 
 L_087b:
-    /* untranslated: dp = (dp - (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, dv.pctDp)) / 0xa) * sext16to32(csh)) / 0x32)) */
+    dp = (dp - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (uint32_t)(csh))) / 0x32)));
 
 L_08c9:
 
@@ -687,20 +684,20 @@ L_0b29:
     /* untranslated: branch part[0xa:2](vlpbrVCR[i*0x8]) == 0x0 ? L_0a3f : L_0b4d */
 
 L_0b4d:
-    /* untranslated: branch hiword((uint32_t)(words(0x0, ptok->dpShield) * words(0x0, ptok->csh))) < hiword((int32_t)(words(0x0, (part[0xa:2](vlpbrVCR[i*0x8]) &
-     * 0x1fff)) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1))) ? L_0c48 : L_0bcf */
+    /* untranslated: branch hiword((uint32_t)((uint32_t)ptok->dpShield * (uint32_t)ptok->csh)) < hiword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) &
+     * 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1))) ? L_0c48 : L_0bcf */
 
 L_0bcf:
-    /* untranslated: branch scratch_bp_mc > hiword((int32_t)(words(0x0, (part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff)) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
+    /* untranslated: branch scratch_bp_mc > hiword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
      * 0x1))) ? L_0bdb : L_0bd4 */
 
 L_0bd4:
-    /* untranslated: branch scratch_bp_me <= loword((int32_t)(words(0x0, (part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff)) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
+    /* untranslated: branch scratch_bp_me <= loword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
      * 0x1))) ? L_0c48 : L_0bdb */
 
 L_0bdb:
-    /* untranslated: ptok->dpShield = (ptok->dpShield - loword((int32_t)((int32_t)(words(0x0, (part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff)) <<
-     * ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1)) / words(0x0, ptok->csh)))) */
+    /* untranslated: ptok->dpShield = (ptok->dpShield - loword((int32_t)((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) <<
+     * ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1)) / (uint32_t)ptok->csh))) */
     goto L_0a3f;
 
 L_0c48:
@@ -1516,8 +1513,7 @@ L_19a1:
 
 L_19c9:
     /* untranslated: cshKill = (cshKill + part[0x8:2](vlpbrVCR[i*0x8])) */
-    /* untranslated: dpShields = (dpShields + (int32_t)(words(0x0, (part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff)) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1)))
-     */
+    /* untranslated: dpShields = (dpShields + (int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1))) */
     /* untranslated: dv.dp = part[0xc:2](vlpbrVCR[i*0x8]) */
 
 L_1a64:
@@ -1529,8 +1525,8 @@ L_1a64:
 L_1a6d:
     dpShdef = LpshdefFromTok(&(vrgtok[itok]))->hul.dp;
     cshT = (vrgtok[itok].csh - cshKill);
-    /* untranslated: dpArmor = (uint32_t)(words(0x0, dpShdef) * sext16to32(cshT)) */
-    /* untranslated: cshT = loword((int32_t)((uint32_t)(sext16to32(cshT) * words(0x0, dv.pctSh)) / 0x64)) */
+    dpArmor = (uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(cshT)));
+    cshT = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT)*dv.pctSh)) / 0x64)));
     if ((cshT > 0))
         goto L_1b05;
     else
@@ -1540,8 +1536,7 @@ L_1b00:
     cshT = 1;
 
 L_1b05:
-    /* untranslated: dpArmor = (dpArmor - (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, dv.pctDp)) / 0xa) * sext16to32(cshT)) /
-     * 0x32)) */
+    dpArmor = (dpArmor - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (uint32_t)(cshT))) / 0x32)));
     goto L_1b8e;
 
 L_1b56:
@@ -1564,7 +1559,7 @@ L_1b8e:
 L_1bbb:
     cshT = 0;
     dpArmor = 0;
-    /* untranslated: dpShields = (uint32_t)(words(0x0, vrgtok[itok].dpShield) * words(0x0, vrgtok[itok].csh)) */
+    dpShields = (uint32_t)(((uint32_t)(vrgtok[itok].dpShield) * (uint32_t)(vrgtok[itok].csh)));
 
 L_1c0b:
     if ((pdv == 0x0))
@@ -1891,8 +1886,7 @@ L_263c:
 L_2642:
     rgfSeen[itokT] = 0x1;
     GetVCRStats(itokT, &(dpT), 0x0, &(dpShT), &(cshT));
-    LOWORD(dpArmor) = (LOWORD(dpArmor) + (LOWORD(vrgdpVCR[itokT]) - LOWORD(dpT)));
-    HIWORD(dpArmor) = (HIWORD(dpArmor) + (HIWORD(vrgdpVCR[itokT]) - HIWORD(dpT)));
+    dpArmor = (dpArmor + (vrgdpVCR[itokT] - dpT));
     dpShields = (dpShields + dpShT);
 
 L_269f:
@@ -2199,7 +2193,7 @@ L_2d51:
 L_2d54:
     c = _wsprintf(szWork, PszGetCompressedString(idsInitiativeD), t_merge_2d54_0001);
     TextOut(hdc, x, y, szWork, c);
-    /* untranslated: c = _wsprintf(szWork, PszGetCompressedString(idsMovementS), words(ds, (0xca0 + loword((0x3 * i))))) */
+    c = _wsprintf(szWork, PszGetCompressedString(idsMovementS), &(rgszSpeed[i * 0x3]));
     TextOut(hdc, xT, y, szWork, c);
     y = (y + dyArial8);
     c = _wsprintf(szWork, PszGetCompressedString(idsArmorLd), LOWORD(dpT), HIWORD(dpT));
@@ -2215,7 +2209,7 @@ L_2e34:
 
 L_2e4b:
     csh = (csh - cshT);
-    /* untranslated: csh = loword((int32_t)((uint32_t)(words(0x0, dv.pctSh) * sext16to32(csh)) / 0x64)) */
+    csh = LOWORD((int32_t)(((uint32_t)((dv.pctSh * (uint32_t)(csh))) / 0x64)));
     if ((csh > 0))
         goto L_2e8e;
     else
@@ -2225,7 +2219,7 @@ L_2e88:
     csh = 1;
 
 L_2e8e:
-    /* untranslated: dpT = (uint32_t)(words(0x0, dv.pctDp) / 0x5) */
+    dpT = (uint32_t)((dv.pctDp / 0x5));
     if ((LOWORD(dpT) != 0x0))
         goto L_2ecc;
     else
@@ -2258,21 +2252,31 @@ L_2f60:
     TextOut(hdc, xT, y, szWork, c);
     SetTextColor(hdc, crButtonText);
     y = (y + dyArial8);
-    /* untranslated: branch (hiword((uint32_t)(words(0x0, vrgtok[viVCRFocus].dpShield) * sext16to32(cshNew))) - HIWORD(dpShields)) > 0x0 ? L_2fea : L_2fc6 */
+    if (((HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)) > 0x0))
+        goto L_2fea;
+    else
+        goto L_2fc6;
 
 L_2fc6:
-    /* untranslated: branch (hiword((uint32_t)(words(0x0, vrgtok[viVCRFocus].dpShield) * sext16to32(cshNew))) - HIWORD(dpShields)) < 0x0 ? L_2fd3 : L_2fcb */
+    if (((HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)) < 0x0))
+        goto L_2fd3;
+    else
+        goto L_2fcb;
 
 L_2fcb:
-    /* untranslated: branch (loword((uint32_t)(words(0x0, vrgtok[viVCRFocus].dpShield) * sext16to32(cshNew))) - LOWORD(dpShields)) > 0x0 ? L_2fea : L_2fd3 */
+    if (((LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - LOWORD(dpShields)) > 0x0))
+        goto L_2fea;
+    else
+        goto L_2fd3;
 
 L_2fd3:
     c = CchGetString(idsShieldsNone, szWork);
     goto L_303d;
 
 L_2fea:
-    /* untranslated: c = _wsprintf(szWork, PszGetCompressedString(idsShieldsLd), (loword((uint32_t)(words(0x0, vrgtok[viVCRFocus].dpShield) *
-     * sext16to32(cshNew))) - LOWORD(dpShields)), (hiword((uint32_t)(words(0x0, vrgtok[viVCRFocus].dpShield) * sext16to32(cshNew))) - HIWORD(dpShields))) */
+    c = _wsprintf(szWork, PszGetCompressedString(idsShieldsLd),
+                  (LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - LOWORD(dpShields)),
+                  (HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)));
 
 L_303d:
     TextOut(hdc, x, y, szWork, c);
@@ -2396,8 +2400,7 @@ L_352b:
 
 L_3548:
     ctok = (ctok + 1);
-    LOWORD(dpT) = (LOWORD(dpT) + vrgtok[j].csh);
-    HIWORD(dpT) = (HIWORD(dpT) + 0x0);
+    dpT = (dpT + (uint32_t)(vrgtok[j].csh));
     if ((ibmp == -1))
         goto L_3582;
     else

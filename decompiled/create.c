@@ -903,8 +903,8 @@ L_094d:
 
 L_0951:
     scratch_bp_m116 = 0x0;
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)(words(0x0, (loword(t_merge_0951_0001_wide) & 0x1)) << 0x16))),
-     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)(words(0x0, (hiword(t_merge_0951_0001_wide) & 0x1)) << 0x16)))) */
+    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)((uint32_t)(loword(t_merge_0951_0001_wide) & 0x1) << 0x16))),
+     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(hiword(t_merge_0951_0001_wide) & 0x1) << 0x16)))) */
 
 L_09a1:
     lppl->rgEnvVar[0] = LOBYTE((Random(90) + 0x1));
@@ -1784,7 +1784,7 @@ L_1cc5:
     lpPlanets[iMin].rgwtMin[3] = 250;
 
 L_1ce4:
-    /* untranslated: lpPlanets[iMin].uGuesses = ((lpPlanets[iMin].uGuesses & 0xf000) | ((words(0x0, LOWORD(lpPlanets[iMin].rgwtMin[0x3])) / 0x4) & 0xfff)) */
+    lpPlanets[iMin].uGuesses = ((lpPlanets[iMin].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[iMin].rgwtMin[0x3])) / 0x4) & 0xfff));
     j = 0;
     goto L_1eaf;
 
@@ -2682,7 +2682,7 @@ L_36fe:
     lpplPicked->cFactories = 0x4;
     lpplPicked->cMines = 0xa;
     lpplPicked->rgwtMin[3] = (int32_t)(((int32_t)((lpPlanets[idHome].rgwtMin[3] * 2)) / 0x5));
-    /* untranslated: lpplPicked->uPopGuess = (words(0x0, LOWORD(lpplPicked->rgwtMin[0x3])) / 0x4) */
+    lpplPicked->uPopGuess = ((uint32_t)(LOWORD(lpplPicked->rgwtMin[0x3])) / 0x4);
     j = 0;
     goto L_3854;
 
@@ -2701,8 +2701,7 @@ L_3854:
 L_385e:
     lpplPicked->iScanner = 0x0;
     lpPlanets[idHome].rgwtMin[3] = (int32_t)(((int32_t)((lpPlanets[idHome].rgwtMin[3] * 4)) / 0x5));
-    /* untranslated: lpPlanets[idHome].uGuesses = ((lpPlanets[idHome].uGuesses & 0xf000) | ((words(0x0, LOWORD(lpPlanets[idHome].rgwtMin[0x3])) / 0x4) & 0xfff))
-     */
+    lpPlanets[idHome].uGuesses = ((lpPlanets[idHome].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[idHome].rgwtMin[0x3])) / 0x4) & 0xfff));
     CreateStartupShip(i, lpplPicked->id, 0, 0);
     goto L_39dd;
 
@@ -2778,7 +2777,8 @@ L_3ae7:
 
 L_3af4:
     cTry = 0;
-    part.hs = *(lphs);
+    part.hs.grhst = lphs->grhst;
+    HIWORD(part.hs) = *(lphs + 0x2);
     goto L_3dc0;
 
 L_3b14:
@@ -3153,7 +3153,8 @@ L_417b:
         goto L_4185;
 
 L_4185:
-    lpth->pt = pt;
+    lpth->pt.x = pt.x;
+    lpth->pt.y = pt.y;
 
 L_4199:
     j = (j + 1);
@@ -3356,8 +3357,7 @@ L_4463:
     scratch_bp_m116 = SIGNHIWORD(rgidPlan[i]);
     starpack.id = rgidPlan[i];
     dx = (rgptPlan[i].x - xOld);
-    /* untranslated: LOWORD(starpack) = ((LOWORD(starpack) & 0xfc00) | loword((int32_t)(words(0x0, (dx & 0x3ff)) << 0x0))) */
-    /* untranslated: HIWORD(starpack) = ((HIWORD(starpack) & 0xffff) | hiword((int32_t)(words(0x0, (dx & 0x3ff)) << 0x0))) */
+    starpack = ((starpack & 0xfffffc00) | (int32_t)(((uint32_t)((dx & 0x3ff)) << 0x0)));
     RgToStream(&(starpack), 0x4);
     xOld = rgptPlan[i].x;
     i = (i + 1);
@@ -5031,8 +5031,7 @@ L_5a0e:
 
 L_5a26:
     CchGetString((Random(24) + 1390), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x52])))) * 0x1]);
-    /* untranslated: call _wsprintf(&game.szName[(0x59a2 + loword((0xc0 * load([bp-0x52]))))]+0x10, "%ss", words(ds, ((0x59a2 + loword((192 * i))) + 0x80))) ->
-     * callresult(int16_t) */
+    _wsprintf(&(game.szName[(0x59a2 + loword((0xc0 * load([bp - 0x52]))))] + 0x10), "%ss", &(rgplr[i].szName));
 
 L_5a89:
     i = 1;
@@ -5711,8 +5710,7 @@ L_6694:
 
 L_66d3:
     CchGetString((c + 1383), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x2e])))) * 0x1]);
-    /* untranslated: call _wsprintf(&game.szName[(0x59a2 + loword((0xc0 * load([bp-0x2e]))))]+0x10, "%ss", words(ds, ((0x59a2 + loword((192 * i))) + 0x80))) ->
-     * callresult(int16_t) */
+    _wsprintf(&(game.szName[(0x59a2 + loword((0xc0 * load([bp - 0x2e]))))] + 0x10), "%ss", &(rgplr[i].szName));
     goto L_68cd;
 
 L_672d:
@@ -5820,8 +5818,7 @@ L_69c0:
         goto L_69d8;
 
 L_69d8:
-    /* untranslated: call _wsprintf(&game.szName[(0x59a2 + loword((0xc0 * load([bp-0x2e]))))]+0x10, "%ss", words(ds, ((0x59a2 + loword((192 * i))) + 0x80))) ->
-     * callresult(int16_t) */
+    _wsprintf(&(game.szName[(0x59a2 + loword((0xc0 * load([bp - 0x2e]))))] + 0x10), "%ss", &(rgplr[i].szName));
 
 L_6a12:
     i = 1;
@@ -8509,7 +8506,7 @@ L_980e:
         goto L_9825;
 
 L_9825:
-    /* untranslated: call _wsprintf(szWork, " %s", words(ds, (vrgszFileNew + loword((13 * iPlr))))) -> callresult(int16_t) */
+    _wsprintf(szWork, " %s", &(vrgszFileNew[iPlr * 0xd]));
     goto DisplayName;
 
 L_984e:
@@ -8532,12 +8529,11 @@ L_989a:
     t_merge_989d_0001 = 0x311;
 
 L_989d:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(t_merge_989d_0001), words(ds, ((vrgplrNew + loword((192 * iPlr))) + 0xa0)), words(ds,
-     * (vrgszFileNew + loword((13 * iPlr))))) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString(t_merge_989d_0001), &(vrgplrNew[iPlr].szNames), &(vrgszFileNew[iPlr * 0xd]));
     goto DisplayName;
 
 L_98bc:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(idsS), words(ds, ((vrgplrNew + loword((192 * iPlr))) + 0xa0))) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString(idsS), &(vrgplrNew[iPlr].szNames));
 
 L_98f3:
     _wsprintf(szWork, PszGetCompressedString(idsSSComputerPlayer), vrgszComputerPlayers[(iPlr & 0x7)], vrgszComputerLevel[(vrgplrTypeNew[i] >> 0x5)]);

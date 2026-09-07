@@ -196,6 +196,50 @@ func TestBinaryResultMasksDeadLowByteWriteParent(t *testing.T) {
 	}
 }
 
+// TestHandleCarryBinaryPreservesExplicitProducer verifies ADC and SBB retain
+// their carry-sensitive instruction nodes even when ordinary binary folding
+// would simplify their operands.
+func TestHandleCarryBinaryPreservesExplicitProducer(t *testing.T) {
+	tests := []struct {
+		name string
+		op   asm.Op
+		val  ValueOp
+	}{
+		{name: "ADC constant zero", op: asm.OpADC, val: ValueOpAdd},
+		{name: "SBB identical register", op: asm.OpSBB, val: ValueOpSub},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			st := newValueState()
+			st.writeReg(asm.RegAX, ConstVal(0))
+			meta := Meta{BlockID: 3, InstOff: 0x1234, InstOp: tt.op, InstLen: 2}
+			src := asm.Operand{Kind: asm.OKImm, Imm: 0}
+			if tt.op == asm.OpSBB {
+				src = asm.Operand{Kind: asm.OKReg, Reg: asm.RegAX}
+			}
+			inst := asm.DecodedInst{
+				Op:  tt.op,
+				Dst: asm.Operand{Kind: asm.OKReg, Reg: asm.RegAX},
+				Src: src,
+			}
+
+			(&extractor{}).handleBinary(st, inst, meta, tt.val)
+
+			got, ok := st.readReg(asm.RegAX).(*Binary)
+			if !ok {
+				t.Fatalf("result = %T, want *Binary", st.readReg(asm.RegAX))
+			}
+			if got.Op != tt.val {
+				t.Fatalf("binary op = %v, want %v", got.Op, tt.val)
+			}
+			if got.Producer != meta {
+				t.Fatalf("producer = %+v, want %+v", got.Producer, meta)
+			}
+		})
+	}
+}
+
 // x87Inst builds an x87 instruction for transfer tests.
 func x87Inst(op asm.Op, dst asm.Operand, src asm.Operand) asm.DecodedInst {
 	return asm.DecodedInst{Op: op, Dst: dst, Src: src}

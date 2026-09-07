@@ -16,7 +16,7 @@ int32_t PlanetWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam
     PLANET            *lppl;
     FLEET             *lpfl;
     HWND               t_merge_0021_0001;
-    uint32_t           t_merge_0062_0001_wide;
+    uint16_t           t_merge_0062_0001;
     uint16_t           t_merge_008a_0001;
     uint16_t           t_merge_0543_0001;
 
@@ -52,11 +52,11 @@ L_003b:
         goto L_0053;
 
 L_0053:
-    t_merge_0062_0001_wide = 0x2100000;
+    t_merge_0062_0001 = 0x210;
     goto L_0062;
 
 L_005c:
-    t_merge_0062_0001_wide = 0x0;
+    t_merge_0062_0001 = 0x0;
 
 L_0062:
     if ((i != 2))
@@ -72,8 +72,7 @@ L_0087:
     t_merge_008a_0001 = 0x50;
 
 L_008a:
-    /* untranslated: rghwndOrderDD[i] = CreateWindow(szCombobox, "OrdDD", words((loword(t_merge_0062_0001_wide) | 0x4020), (hiword(t_merge_0062_0001_wide) |
-     * 0x3)), 100, 100, 200, t_merge_008a_0001, hwnd, 0x0, hInst, 0x0) */
+    rghwndOrderDD[i] = CreateWindow(szCombobox, "OrdDD", (t_merge_0062_0001 | 0x40200003), 100, 100, 200, t_merge_008a_0001, hwnd, 0x0, hInst, 0x0);
     SendMessage(rghwndOrderDD[i], WM_SETFONT, rghfontArial8[1], 0);
     i = (i + 1);
 
@@ -150,7 +149,7 @@ L_04bd:
 L_04cc:
     SetBkColor(wParam, crButtonFace);
     SetTextColor(wParam, crButtonText);
-    /* untranslated: return words(0x0, hbrButtonFace) */
+    return (uint32_t)(hbrButtonFace);
 
 L_04f8:
     /* untranslated: part[0xc:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
@@ -1859,7 +1858,7 @@ L_276b:
     w = 0x5;
 
 L_2770:
-    /* untranslated: c = _wsprintf(szWork, PCTDPCTPCT, (words(0x0, w) / 0x5)) */
+    c = _wsprintf(szWork, PCTDPCTPCT, ((uint32_t)(w) / 0x5));
     crForeSav = SetTextColor(hdc, 0x7f);
     goto L_27c0;
 
@@ -3221,7 +3220,8 @@ L_3ee9:
 L_3f0d:
 
 L_3f13:
-    sel.pt = rgptPlan[iObjSel];
+    sel.pt.x = rgptPlan[iObjSel].x;
+    sel.pt.y = rgptPlan[iObjSel].y;
     sel.scan.iwp = -1;
     sel.iwpAct = -1;
     i = 0;
@@ -3298,7 +3298,8 @@ L_4014:
 L_4038:
 
 L_403e:
-    sel.pt = sel.fl.pt;
+    sel.pt.x = sel.fl.pt.x;
+    sel.pt.y = sel.fl.pt.y;
     if ((sel.fl.idPlanet == -1))
         goto L_407a;
     else
@@ -3688,7 +3689,8 @@ L_457f:
         goto L_4591;
 
 L_4591:
-    scan.pt = rgptPlan[idPlanet];
+    scan.pt.x = rgptPlan[idPlanet].x;
+    scan.pt.y = rgptPlan[idPlanet].y;
     scan.grobj = 0x81;
     ChangeScanSel(&(scan), 0);
     goto FinishUp;
@@ -3754,7 +3756,8 @@ L_4676:
 L_4694:
 
 L_469a:
-    scan.pt = rgptPlan[idPlanet];
+    scan.pt.x = rgptPlan[idPlanet].x;
+    scan.pt.y = rgptPlan[idPlanet].y;
     scan.grobj = 0x81;
     ChangeScanSel(&(scan), 0);
     RedrawScanSel(0x0, 0);
@@ -3933,7 +3936,7 @@ L_48cd:
     goto L_48dd;
 
 L_48dd:
-    /* untranslated: iCol = (words(0x0, x) / 0xc6) */
+    iCol = ((uint32_t)(x) / 198);
     xRel = (x - LOWORD((iCol * 0xc6)));
     if ((xRel < 4))
         goto L_5155;
@@ -6355,8 +6358,8 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr) {
     int16_t  pctVar;
     int16_t  iPlanet;
     int32_t  pctMod;
-    uint32_t t_merge_6fd3_0001_wide;
-    uint32_t t_merge_6ffa_0001_wide;
+    uint16_t t_merge_6fd3_0001;
+    uint16_t t_merge_6ffa_0001;
 
 L_6e1e:
     pctPos = 0;
@@ -6434,15 +6437,14 @@ L_6fb5:
         goto L_6fc5;
 
 L_6fc5:
-    t_merge_6fd3_0001_wide = 0xf;
+    t_merge_6fd3_0001 = 0xf;
     goto L_6fd3;
 
 L_6fcc:
-    t_merge_6fd3_0001_wide = (uint32_t)((iMin - iPlanet));
+    t_merge_6fd3_0001 = (uint32_t)((iMin - iPlanet));
 
 L_6fd3:
-    LOWORD(pctNeg) = (LOWORD(pctNeg) + LOWORD(t_merge_6fd3_0001_wide));
-    HIWORD(pctNeg) = (HIWORD(pctNeg) + HIWORD(t_merge_6fd3_0001_wide));
+    pctNeg = (pctNeg + t_merge_6fd3_0001);
     goto L_7000;
 
 L_6fdc:
@@ -6452,15 +6454,14 @@ L_6fdc:
         goto L_6fec;
 
 L_6fec:
-    t_merge_6ffa_0001_wide = 0xf;
+    t_merge_6ffa_0001 = 0xf;
     goto L_6ffa;
 
 L_6ff3:
-    t_merge_6ffa_0001_wide = (uint32_t)((iPlanet - iMax));
+    t_merge_6ffa_0001 = (uint32_t)((iPlanet - iMax));
 
 L_6ffa:
-    LOWORD(pctNeg) = (LOWORD(pctNeg) + LOWORD(t_merge_6ffa_0001_wide));
-    HIWORD(pctNeg) = (HIWORD(pctNeg) + HIWORD(t_merge_6ffa_0001_wide));
+    pctNeg = (pctNeg + t_merge_6ffa_0001);
 
 L_7000:
     i = (i + 1);
@@ -7332,7 +7333,8 @@ L_7e16:
     /* untranslated: branch (part[0x3c:2](lphul[i*0x4]) & 0xff) > 0x6 ? L_7d91 : L_7e3b */
 
 L_7e3b:
-    /* untranslated: part.hs = part[0x3a:4](lphul[i*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[i*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[i*0x4]) */
     FLookupPart(&(part));
     /* untranslated: branch part[0x36:2](part.pcom) != 0xffff ? L_7e80 : L_7e77 */
 

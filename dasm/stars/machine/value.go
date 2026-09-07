@@ -405,6 +405,10 @@ type Binary struct {
 	Op  ValueOp
 	LHS Value
 	RHS Value
+	// Producer identifies the instruction that directly produced this value.
+	// It is provenance rather than part of value identity, and retains
+	// instruction semantics significant to later normalization.
+	Producer Meta
 }
 
 func (*Binary) value() {}

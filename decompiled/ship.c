@@ -1865,13 +1865,13 @@ L_24a2:
 
 int16_t FCanSplitAll(int32_t cBoat) {
 L_24ae:
-    if (((HIWORD(cBoat) + 0xffff) < 0x0))
+    if ((((HIWORD(cBoat) + 0xffff) + 0x0) < 0x0))
         goto L_24f8;
     else
         goto L_24e4;
 
 L_24e4:
-    if (((HIWORD(cBoat) + 0xffff) > 0x0))
+    if ((((HIWORD(cBoat) + 0xffff) + 0x0) > 0x0))
         goto L_24f2;
     else
         goto L_24e9;
@@ -3300,7 +3300,8 @@ L_3df3:
 L_3df9:
     pt.x = lpfl->pt.x;
     pt.y = lpfl->pt.y;
-    scan.pt = lpfl->pt;
+    scan.pt.x = lpfl->pt.x;
+    scan.pt.y = lpfl->pt.y;
     scan.grobj = 0x83;
     ChangeScanSel(&(scan), 0);
     goto FinishUp;
@@ -3382,7 +3383,8 @@ L_3f25:
     idNew = lpflT->id;
     pt.x = lpflT->pt.x;
     pt.y = lpflT->pt.y;
-    scan.pt = lpflT->pt;
+    scan.pt.x = lpflT->pt.x;
+    scan.pt.y = lpflT->pt.y;
     scan.grobj = 0x82;
     ChangeScanSel(&(scan), 0);
     RedrawScanSel(0x0, 0);
@@ -4241,8 +4243,10 @@ int16_t TransferStuff(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass gr
 
 L_4faa:
     lPopPrev = -1;
-    /* untranslated: part[0x0:4](xfer[0x0]) = id1 */
-    /* untranslated: part[0x0:4](xfer[0x1]) = id2 */
+    xfer[0].id = id1;
+    xfer[0].grobj = grobj1;
+    xfer[1].id = id2;
+    xfer[1].grobj = grobj2;
     pxfer = &(xfer);
     mdXferDlg = mdXfer;
     i = 0;
@@ -4807,7 +4811,7 @@ L_59be:
     t_merge_59c2_0001 = 0x433;
 
 L_59c2:
-    /* untranslated: call WinHelp(hwnd, szHelpFile, 0x1, words(0x0, t_merge_59c2_0001)) -> callresult(int16_t) */
+    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_59c2_0001));
     return 0x1;
 
 L_59d5:
@@ -4993,7 +4997,7 @@ L_5b8c:
         goto L_5b9a;
 
 L_5b9a:
-    /* untranslated: cNew = (uint32_t)(words(0x0, (*(pxfer+0x92) & 0x3fff)) * 0xa) */
+    cNew = (uint32_t)(((uint32_t)((*(pxfer + 0x92) & 0x3fff)) * 0xa));
     goto L_5c26;
 
 L_5bc0:
@@ -5445,7 +5449,7 @@ L_622f:
     /* untranslated: dChg = sext16to32((part[0x8:2](pth[iSupply*0x2]) neg 0x0)) */
 
 L_6249:
-    /* untranslated: wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa) */
+    wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
     i = 0;
     goto L_6295;
 
@@ -7518,7 +7522,7 @@ L_8263:
 L_826c:
     iChecked = -1;
     /* untranslated: lpord = (words(HIWORD(sel.fl.lpplord), (LOWORD(sel.fl.lpplord) + 0x4)) + loword((0x12 * sel.iwpAct))) */
-    FFindNearestObject(lpord, 0x8f, &(scan));
+    FFindNearestObject(lpord->pt, 0x8f, &(scan));
     if ((scan.idpl == -1))
         goto L_82d6;
     else
@@ -7863,9 +7867,7 @@ L_886b:
 
 L_88a6:
     lTempMax = (lCur + sel.fl.rgwtMin[4]);
-    LGetFleetStat(&(sel.fl), 1);
-    /* untranslated: LOWORD(lTempMin) = (LOWORD(lCur) - (loword(callresult(int32_t)) - LOWORD(sel.fl.rgwtMin[0x4]))) */
-    /* untranslated: HIWORD(lTempMin) = (HIWORD(lCur) - (hiword(callresult(int32_t)) - HIWORD(sel.fl.rgwtMin[0x4]))) */
+    lTempMin = (lCur - (LGetFleetStat(&(sel.fl), 1) - sel.fl.rgwtMin[4]));
     goto L_8b82;
 
 L_88ec:
@@ -8291,8 +8293,7 @@ L_8f0b:
         goto L_8f15;
 
 L_8f15:
-    LOWORD(sel.fl.rgwtMin[0x4]) = (LOWORD(sel.fl.rgwtMin[0x4]) - (LOWORD(lNew) - LOWORD(lCur)));
-    HIWORD(sel.fl.rgwtMin[0x4]) = (HIWORD(sel.fl.rgwtMin[0x4]) - (HIWORD(lNew) - HIWORD(lCur)));
+    sel.fl.rgwtMin[4] = (sel.fl.rgwtMin[4] - (lNew - lCur));
     DrawFleetGauge(hdc, rgrcRef[2].left, &(sel.fl), grbit);
     goto L_8f57;
 
@@ -8448,8 +8449,8 @@ L_9190:
         goto L_91a2;
 
 L_91a2:
-    /* untranslated: pctDmg = (int32_t)(((uint32_t)(words(0x0, (part[0x48:2](sel[i*0x2]) & 0x7f)) * words(0x0, ((part[0x48:2](sel[i*0x2]) >> 0x7) & 0x1ff))) +
-     * 0xfa) / 0x1f4) */
+    /* untranslated: pctDmg = (int32_t)(((uint32_t)((uint32_t)(part[0x48:2](sel[i*0x2]) & 0x7f) * (uint32_t)((part[0x48:2](sel[i*0x2]) >> 0x7) & 0x1ff)) + 0xfa)
+     * / 0x1f4) */
     if ((LOWORD(pctDmg) != 0x0))
         goto L_9221;
     else
@@ -8488,8 +8489,7 @@ L_9247:
     t_merge_924a_0001 = 0x51;
 
 L_924a:
-    /* untranslated: call _wsprintf(szWork, "%c%c%5d%s", t_merge_924a_0001, t_merge_922e_0001, sel.fl.rgcsh[i], words(ds, ((0x3f00 + loword((147 * i))) + 0x8)))
-     * -> callresult(int16_t) */
+    _wsprintf(szWork, "%c%c%5d%s", t_merge_924a_0001, t_merge_922e_0001, sel.fl.rgcsh[i], &(rgshdef[i].hul.szClass));
     SendMessage(hwndFleetCompLB, CB_LIMITTEXT, 0x0, szWork);
 
 L_9279:
@@ -9407,7 +9407,7 @@ L_a460:
         goto L_a468;
 
 L_a468:
-    /* untranslated: wtMass = ((uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * words(0x0, rglpshdef[lpfl->iPlayer][i].hul.wtEmpty)) + wtCargoT) */
+    /* untranslated: wtMass = ((uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)rglpshdef[lpfl->iPlayer][i].hul.wtEmpty) + wtCargoT) */
     lT = (uint32_t)((iEffCur * dTravel));
     if ((HIWORD(wtMass) < 0x0))
         goto L_a548;
@@ -10155,7 +10155,8 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
 
 L_ae74:
     fDeadFleet = 0;
-    rgpflNew = pflNew1;
+    rgpflNew[0] = pflNew1;
+    rgpflNew[1] = pflNew2;
     iplr = pflNew1->iPlayer;
     i = 0;
     goto L_afb3;
@@ -10287,7 +10288,7 @@ L_b243:
         goto L_b269;
 
 L_b269:
-    /* untranslated: cshDmgSrc = (int32_t)((uint32_t)(words(0x0, (ds:[(((&rgflCur + loword((0x7c * iSrc))) + 0x2c) + (ishdef * 0x2))] & 0x7f)) *
+    /* untranslated: cshDmgSrc = (int32_t)((uint32_t)((uint32_t)(ds:[(((&rgflCur + loword((0x7c * iSrc))) + 0x2c) + (ishdef * 0x2))] & 0x7f) *
      * sext16to32(rgflCur[iSrc].rgcsh[ishdef])) / 0x64) */
     goto L_b2d7;
 
@@ -10340,7 +10341,7 @@ L_b352:
     t_merge_b355_0001 = 0x0;
 
 L_b355:
-    /* untranslated: cshDmgDst = (int32_t)((uint32_t)(words(0x0, (ds:[(((&rgflCur + loword((t_merge_b355_0001 * 0x7c))) + 0x2c) + (ishdef * 0x2))] & 0x7f)) *
+    /* untranslated: cshDmgDst = (int32_t)((uint32_t)((uint32_t)(ds:[(((&rgflCur + loword((t_merge_b355_0001 * 0x7c))) + 0x2c) + (ishdef * 0x2))] & 0x7f) *
      * sext16to32(rgflCur[t_merge_b325_0001].rgcsh[ishdef])) / 0x64) */
     goto L_b39a;
 
@@ -10432,8 +10433,8 @@ L_b4e2:
     t_merge_b4e5_0001 = 0x0;
 
 L_b4e5:
-    /* untranslated: pctNew = (int32_t)(((((uint32_t)(cshDmgDst * words(0x0, ((ds:[(((&rgflCur + loword((t_merge_b4e5_0001 * 0x7c))) + 0x2c) + (ishdef * 0x2))]
-     * >> 0x7) & 0x1ff))) + scratch_bp_m1c2) + scratch_bp_m1be) + 0xffffffff) / sext16to32(rgpflNew[ishdef]->rgcsh[0x0])) */
+    /* untranslated: pctNew = (int32_t)(((((uint32_t)(cshDmgDst * (uint32_t)((ds:[(((&rgflCur + loword((t_merge_b4e5_0001 * 0x7c))) + 0x2c) + (ishdef * 0x2))]
+     * >> 0x7) & 0x1ff)) + scratch_bp_m1c2) + scratch_bp_m1be) + 0xffffffff) / sext16to32(rgpflNew[ishdef]->rgcsh[0x0])) */
     if ((iSrc != 0))
         goto L_b572;
     else
@@ -12072,7 +12073,7 @@ L_d131:
         goto L_d151;
 
 L_d151:
-    /* untranslated: rgCost[3] = (words(0x0, rgCost[0x3]) / 0x2) */
+    rgCost[3] = ((uint32_t)(rgCost[3]) / 0x2);
     goto L_d1c1;
 
 L_d167:

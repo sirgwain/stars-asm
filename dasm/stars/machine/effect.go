@@ -26,7 +26,7 @@ type Effect interface {
 	EffectMeta() Meta
 }
 
-// Meta identifies where an effect came from.
+// Meta identifies the instruction that produced an effect or machine value.
 type Meta struct {
 	BlockID BlockID
 	InstOff uint32

@@ -69,7 +69,7 @@ func (d valueDumper) value(value Value, depth int) string {
 	case *Cast:
 		return d.call("machine.CastVal", depth, d.value(v.Value, depth+1), dumpType(v.To))
 	case *Binary:
-		return d.call("machine.BinaryVal", depth, dumpValueOp(v.Op), d.value(v.LHS, depth+1), d.value(v.RHS, depth+1))
+		return d.binary(v, depth)
 	case *Load:
 		return d.call("machine.LoadVal", depth, d.memoryAddress(v.Addr, depth+1))
 	case *Address:
@@ -79,6 +79,21 @@ func (d valueDumper) value(value Value, depth int) string {
 	default:
 		return fmt.Sprintf("/* unsupported %T: %s */ nil", value, value)
 	}
+}
+
+// binary returns Go source for a binary value, retaining producer provenance
+// when the value came directly from an instruction.
+func (d valueDumper) binary(v *Binary, depth int) string {
+	if v.Producer == (Meta{}) {
+		return d.call("machine.BinaryVal", depth, dumpValueOp(v.Op), d.value(v.LHS, depth+1), d.value(v.RHS, depth+1))
+	}
+	fields := []string{
+		"Op: " + dumpValueOp(v.Op),
+		"LHS: " + d.value(v.LHS, depth+1),
+		"RHS: " + d.value(v.RHS, depth+1),
+		"Producer: " + d.meta(v.Producer, depth+1),
+	}
+	return d.structLiteral("&machine.Binary", depth, fields)
 }
 
 // memoryAddress returns a Go composite literal for a MemoryAddress.
@@ -202,6 +217,24 @@ func (d valueDumper) origin(origin Origin, depth int) string {
 	}
 	fields = append(fields, "Role: "+dumpOperandRole(origin.Role))
 	return d.structLiteral("machine.Origin", depth, fields)
+}
+
+// meta returns a Go composite literal for machine instruction provenance.
+func (d valueDumper) meta(meta Meta, depth int) string {
+	fields := make([]string, 0, 4)
+	if meta.BlockID != 0 {
+		fields = append(fields, fmt.Sprintf("BlockID: machine.BlockID(0x%x)", uint32(meta.BlockID)))
+	}
+	if meta.InstOff != 0 {
+		fields = append(fields, fmt.Sprintf("InstOff: 0x%x", meta.InstOff))
+	}
+	if meta.InstOp != 0 {
+		fields = append(fields, fmt.Sprintf("InstOp: asm.Op(%d)", meta.InstOp))
+	}
+	if meta.InstLen != 0 {
+		fields = append(fields, fmt.Sprintf("InstLen: %d", meta.InstLen))
+	}
+	return d.structLiteral("machine.Meta", depth, fields)
 }
 
 // call returns a formatted Go function call.

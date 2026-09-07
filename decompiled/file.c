@@ -169,7 +169,8 @@ L_0384:
     /* untranslated: branch ((part[0x3c:2](lphul[c*0x4]) >> 0x8) & 0xff) <= 0x0 ? L_04f3 : L_03b1 */
 
 L_03b1:
-    /* untranslated: part.hs = part[0x3a:4](lphul[c*0x4]) */
+    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[c*0x4]) */
+    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[c*0x4]) */
     fOkay = FLookupPart(&(part));
     if ((idPlayer != -1))
         goto L_03fa;
@@ -201,8 +202,7 @@ L_0478:
     /* untranslated: part[0x3c:2](lphul[c*0x4]) = ((part[0x3c:2](lphul[c*0x4]) & 0xff) | 0x0) */
 
 L_04b8:
-    /* untranslated: LOWORD(wt) = (LOWORD(wt) + loword((part.pcom->cMass * ((part[0x3c:2](lphul[c*0x4]) >> 0x8) & 0xff)))) */
-    HIWORD(wt) = (HIWORD(wt) + 0x0);
+    /* untranslated: wt = (wt + (uint32_t)loword((part.pcom->cMass * ((part[0x3c:2](lphul[c*0x4]) >> 0x8) & 0xff)))) */
 
 L_04f3:
     if ((c != 0))
@@ -226,10 +226,10 @@ L_0523:
     lphul->rghs[0].grhst = hstEngine;
     HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff00) | 0x1);
     HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff) | ((((HIWORD(lphulBase->rghs[0x0]) >> 0x8) & 0xff) & 0xff) << 0x8));
-    part.hs = lphul->rghs[0];
+    part.hs.grhst = lphul->rghs[0x0].grhst;
+    HIWORD(part.hs) = HIWORD(lphul->rghs[0x0]);
     FLookupPart(&(part));
-    LOWORD(wt) = (LOWORD(wt) + LOWORD((part.pcom->cMass * ((HIWORD(lphul->rghs[0x0]) >> 0x8) & 0xff))));
-    HIWORD(wt) = (HIWORD(wt) + 0x0);
+    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * ((HIWORD(lphul->rghs[0x0]) >> 0x8) & 0xff)))));
 
 L_05c5:
     lphul->wtEmpty = LOWORD(wt);
@@ -285,7 +285,7 @@ L_0721:
         goto L_0739;
 
 L_0739:
-    /* untranslated: psz = PszPlayerName(0, (byte ds:[(0x175f + sext8to16(pplr->szName[0x0]))] & 0x1), 1, 0, 0, pplr) */
+    psz = PszPlayerName(0, (_ctype[((uint16_t)(pplr->szName[0x0]) + 0x1)] & 0x1), 1, 0, 0, pplr);
     strcpy(pplr->szNames, psz);
     goto L_07f7;
 
@@ -1159,13 +1159,13 @@ L_15e9:
     lpbBattleCur = lpbBattleLog;
 
 L_160e:
-    if ((0x0 > 0x0))
+    if (((0x0 - 0x0) > 0x0))
         goto L_165e;
     else
         goto L_1632;
 
 L_1632:
-    if ((0x0 < 0x0))
+    if (((0x0 - 0x0) < 0x0))
         goto L_163e;
     else
         goto L_1637;
@@ -1409,7 +1409,10 @@ L_1a12:
         goto L_1a1c;
 
 L_1a1c:
-    /* untranslated: branch lppl->lpplprod->iprodMax > (words(0x0, hdrCur.cb) / 0x4) ? L_1a6a : L_1a48 */
+    if ((lppl->lpplprod->iprodMax > (hdrCur.cb / 0x4)))
+        goto L_1a6a;
+    else
+        goto L_1a48;
 
 L_1a48:
     FreePl(lppl->lpplprod);
@@ -1428,11 +1431,11 @@ L_1a77:
         goto L_1a81;
 
 L_1a81:
-    /* untranslated: lppl->lpplprod = LpplAlloc(0x4, ((words(0x0, hdrCur.cb) / 0x4) + 0x2), htOrd) */
+    lppl->lpplprod = LpplAlloc(0x4, ((hdrCur.cb / 0x4) + 0x2), htOrd);
 
 L_1aad:
     fmemmove(lppl->lpplprod->rgprod[0], rgbCur, hdrCur.cb);
-    /* untranslated: lppl->lpplprod->iprodMac = lobyte((words(0x0, hdrCur.cb) / 0x4)) */
+    lppl->lpplprod->iprodMac = LOBYTE((hdrCur.cb / 0x4));
     ReadRt();
 
 L_1af2:
@@ -2611,7 +2614,7 @@ L_2e33:
         goto L_2e43;
 
 L_2e43:
-    /* untranslated: call _wsprintf(szWork, "%s.x%s", pszFileName, words(ds, (pszExt + 0x1))) -> callresult(int16_t) */
+    _wsprintf(szWork, "%s.x%s", pszFileName, &(pszExt[0x1]));
     if ((FLoadLogFile(szWork) == 0))
         goto L_2e8d;
     else
@@ -3233,8 +3236,8 @@ L_391d:
 
 L_3944:
     scratch_bp_me = 0x0;
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)(words(0x0, (((rgbCur[0x2] >> 0xc) & 0x1) & 0x1)) << 0x16))),
-     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)(words(0x0, (((rgbCur[0x2] >> 0xc) & 0x1) & 0x1)) << 0x16)))) */
+    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16))),
+     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16)))) */
     lppl->iScanner = 0x1f;
     lppl->cDefenses = 0x0;
 
@@ -3564,7 +3567,8 @@ L_3fad:
         goto L_3fb7;
 
 L_3fb7:
-    lpfl->pt = rgptPlan[lpfl->idPlanet];
+    lpfl->pt.x = rgptPlan[lpfl->idPlanet].x;
+    lpfl->pt.y = rgptPlan[lpfl->idPlanet].y;
     goto L_3fdb;
 
 L_3fdb:
@@ -3813,7 +3817,7 @@ L_43e0:
 void PromptSaveGame() {
     int16_t (**lpProc)();
     int16_t  fRet;
-    uint16_t t_merge_4433_0001;
+    uint32_t t_merge_4433_0001;
     uint16_t t_merge_446d_0001;
 
 L_43ee:

@@ -40,7 +40,7 @@ L_00b9:
 
 L_00e4:
     SetBkColor(wParam, crButtonFace);
-    /* untranslated: return words(0x0, hbrButtonFace) */
+    return (uint32_t)(hbrButtonFace);
 
 L_00fd:
     GetCursorPos(&(pt));
@@ -1075,7 +1075,7 @@ L_1e04:
     pctDecay = (pctDecay + 25);
 
 L_1e0e:
-    /* untranslated: lDecay = (int32_t)((uint32_t)(part[0x6:4](lpth) * pctDecay) / 0x64) */
+    lDecay = (int32_t)(((uint32_t)((*(lpth + 0x6) * pctDecay)) / 0x64));
     if ((HIWORD(lDecay) > HIWORD(pctDecay)))
         goto L_1e6d;
     else
@@ -1374,7 +1374,7 @@ L_25a0:
         goto L_25ae;
 
 L_25ae:
-    /* untranslated: l = (int32_t)(words(0x0, pl.uPopGuess) * 0x4) */
+    l = (int32_t)((pl.uPopGuess * 0x4));
     strcpy(szWork, szT);
     c = strlen(szT);
     if ((HIWORD(l) < 0x0))
@@ -2953,6 +2953,7 @@ L_4439:
     rgi[4] = 5000;
     rgi[6] = 10000;
     rgi[8] = 30000;
+    i = 0;
     goto L_44d6;
 
 L_4476:
@@ -3026,7 +3027,8 @@ L_45bd:
         goto L_45cb;
 
 L_45cb:
-    /* untranslated: part[0xe:4](GlobalPD) = (uint32_t)pl.rgpctMinLevel[(ht + 2)] */
+    /* untranslated: part[0xe:2](GlobalPD) = pl.rgpctMinLevel[(ht + 2)] */
+    GlobalPD.iPlrMax = 0;
     /* untranslated: part[0x6:4](GlobalPD) = pl.fHomeworld */
     if ((pl.det <= 0x3))
         goto L_478e;

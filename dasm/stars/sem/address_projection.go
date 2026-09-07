@@ -398,6 +398,9 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	if !ok {
 		return nil, 0, false
 	}
+	if field, fieldOff, ok := indexedArrayFieldAfterOffset(strct, offset, terms); ok {
+		return &FieldAccess{Base: base, Field: field}, fieldOff, true
+	}
 	matches := strct.FieldsContainingOffset(offset)
 	matches = c.unionFieldMatches(base, strct, matches)
 	if len(matches) == 0 {
@@ -434,6 +437,56 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 		return nil, 0, false
 	}
 	return &FieldAccess{Base: base, Field: match.Field}, 0, true
+}
+
+// indexedArrayFieldAfterOffset recognizes a folded negative array index whose
+// fixed address lands immediately before an array field.
+func indexedArrayFieldAfterOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
+	for _, current := range strct.FieldsContainingOffset(offset) {
+		array, ok := current.Field.Type.(*typeinfo.Array)
+		if !ok || array.Elem == nil {
+			continue
+		}
+		for _, term := range terms {
+			if term.Scale == array.Elem.Bytes() {
+				return nil, 0, false
+			}
+		}
+	}
+	var match *typeinfo.StructField
+	matchDistance := 0
+	for i := range strct.Fields {
+		field := &strct.Fields[i]
+		array, ok := field.Type.(*typeinfo.Array)
+		if !ok || array.Elem == nil || array.Elem.Bytes() <= 0 {
+			continue
+		}
+		distance := field.Offset - offset
+		if distance <= 0 || distance >= array.Bytes() {
+			continue
+		}
+		indexed := false
+		for _, term := range terms {
+			if term.Scale == array.Elem.Bytes() {
+				indexed = true
+				break
+			}
+		}
+		if !indexed {
+			continue
+		}
+		if match != nil && distance == matchDistance {
+			return nil, 0, false
+		}
+		if match == nil || distance < matchDistance {
+			match = field
+			matchDistance = distance
+		}
+	}
+	if match == nil {
+		return nil, 0, false
+	}
+	return match, -matchDistance, true
 }
 
 // isAggregateType reports whether a type contains addressable subobjects.

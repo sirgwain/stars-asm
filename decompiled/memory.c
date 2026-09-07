@@ -16,7 +16,7 @@ L_0028:
     cb = mphtcbAlloc[ht];
 
 L_0034:
-    /* untranslated: hmem = GlobalAlloc(0x22, words(0x0, cb)) */
+    hmem = GlobalAlloc(0x22, (uint32_t)(cb));
     if ((hmem != 0x0))
         goto L_0082;
     else
@@ -85,7 +85,7 @@ L_0172:
 
 L_017b:
     GlobalUnlock(hmem);
-    /* untranslated: hmem = GlobalReAlloc(hmem, words(0x0, (lphb->cbBlock + cbGrow)), 0x22) */
+    hmem = GlobalReAlloc(hmem, (uint32_t)((lphb->cbBlock + cbGrow)), 0x22);
     if ((hmem != 0x0))
         goto L_01db;
     else

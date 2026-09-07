@@ -246,7 +246,7 @@ L_1e2c:
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
     /* untranslated: cshOrig = part[0xc:2](lpfl[iItem*0x2]) */
-    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(words(0x0, (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f)) * sext16to32(cshOrig)) / 0x64)) */
+    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32(cshOrig)) / 0x64)) */
     if ((cshDamaged != 0))
         goto L_1edb;
     else
@@ -256,8 +256,8 @@ L_1ed6:
     cshDamaged = 1;
 
 L_1edb:
-    /* untranslated: dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)(words(0x0, dpShdef) * words(0x0, ((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff))) /
-     * 0xa) * sext16to32(cshDamaged)) / 0x32) */
+    /* untranslated: dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)((uint32_t)dpShdef * (uint32_t)((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff)) / 0xa) *
+     * sext16to32(cshDamaged)) / 0x32) */
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | (loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 0x64) /
      * sext16to32((cshOrig + cBuilt)))) & 0x7f)) */
     /* untranslated: branch (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) != 0x0 ? L_1ff4 : L_1fc0 */
@@ -266,7 +266,7 @@ L_1fc0:
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | 0x1) */
 
 L_1ff4:
-    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)(words(0x0, (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f)) * sext16to32((cshOrig + cBuilt))) / 0x64)) */
+    /* untranslated: cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32((cshOrig + cBuilt))) / 0x64)) */
     if ((cshDamaged != 0))
         goto L_2041;
     else
@@ -277,7 +277,7 @@ L_203c:
 
 L_2041:
     /* untranslated: part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) | ((loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 0x5)
-     * / sext16to32(cshDamaged)) * 0x64) / words(0x0, dpShdef))) & 0x1ff) << 0x7)) */
+     * / sext16to32(cshDamaged)) * 0x64) / (uint32_t)dpShdef)) & 0x1ff) << 0x7)) */
     goto L_20de;
 
 L_20c5:
@@ -786,7 +786,8 @@ L_2b3e:
     lpth->thp.iWarp = iWarp;
     lpth->thp.iDecayRate = iDecayRate;
     lpth->thp.idPlanet = (lppl->idFling + 0xffff);
-    lpth->pt = rgptPlan[lppl->id];
+    lpth->pt.x = rgptPlan[lppl->id].x;
+    lpth->pt.y = rgptPlan[lppl->id].y;
     FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling + 0xffff));
     goto L_2fc0;
     i = 0;

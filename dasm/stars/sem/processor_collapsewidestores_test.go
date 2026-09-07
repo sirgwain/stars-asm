@@ -74,6 +74,24 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 	scoreHighAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x5954-calcPlayerScoreCtx.fs.Addr.Off, -0x24, 2)
 	lTempAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x594b-calcPlayerScoreCtx.fs.Addr.Off, -0x12, 2)
 	lTempHighAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x594e-calcPlayerScoreCtx.fs.Addr.Off, -0x10, 2)
+	indexedLowAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x5b94-calcPlayerScoreCtx.fs.Addr.Off, -0xe, 2)
+	indexedHighAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x5b98-calcPlayerScoreCtx.fs.Addr.Off, -0xc, 2)
+	indexedLowValue := frameLoad(calcPlayerScoreCtx, 0x5b90-calcPlayerScoreCtx.fs.Addr.Off, -0x30, 2)
+	indexedHighValue := frameLoad(calcPlayerScoreCtx, 0x5b92-calcPlayerScoreCtx.fs.Addr.Off, -0x30, 2)
+	indexedLowAddr.Seg = machine.RegVal(asm.RegSS)
+	indexedLowAddr.Index = machine.BinaryVal(
+		machine.ValueOpShl,
+		machine.BinaryVal(machine.ValueOpShl, indexedLowValue, machine.ConstVal(1)),
+		machine.ConstVal(1),
+	)
+	indexedHighAddr.Seg = machine.RegVal(asm.RegSS)
+	indexedHighAddr.Index = machine.BinaryVal(machine.ValueOpMul, indexedHighValue, machine.ConstVal(4))
+	wordArrayLowAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x5b90-calcPlayerScoreCtx.fs.Addr.Off, -0x5c, 2)
+	wordArrayHighAddr := frameMemoryAccess(calcPlayerScoreCtx, 0x5b92-calcPlayerScoreCtx.fs.Addr.Off, -0x5a, 2)
+	wordArrayLowAddr.Seg = machine.RegVal(asm.RegSS)
+	wordArrayLowAddr.Index = machine.BinaryVal(machine.ValueOpShl, indexedLowValue, machine.ConstVal(1))
+	wordArrayHighAddr.Seg = machine.RegVal(asm.RegSS)
+	wordArrayHighAddr.Index = machine.BinaryVal(machine.ValueOpShl, indexedHighValue, machine.ConstVal(1))
 
 	addMinesCtx := mustFuncContext(t, fx, res, "AddMinesToBlockedQueues")
 	cResAddr := frameMemoryAccess(addMinesCtx, 0x19a4-addMinesCtx.fs.Addr.Off, -0x1e, 2)
@@ -98,6 +116,8 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 		Type:    &typeinfo.Pointer{Elem: &typeinfo.Function{Ret: typeinfo.I32}, Class: typeinfo.PtrFar},
 		InstOff: 0x14af,
 	}
+	phiLeft := &machine.Block{ID: 0x1000}
+	phiRight := &machine.Block{ID: 0x1010}
 
 	// adjacent independent locals
 	getTechLevelCostCtx := mustFuncContext(t, fx, res, "GetTechLevelCost")
@@ -148,6 +168,36 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 				Width: 2,
 			},
 			ctx:         getTechLevelCostCtx,
+			wantChanged: false,
+		},
+		{
+			name: "adjacent word fields should not merge",
+			ctx:  uninhabitPlanetCtx,
+			low: machine.StoreEffect{
+				Addr:  planetDst(0),
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
+			high: machine.StoreEffect{
+				Addr:  planetDst(2),
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
+			wantChanged: false,
+		},
+		{
+			name: "adjacent word array elements should not merge",
+			ctx:  calcPlayerScoreCtx,
+			low: machine.StoreEffect{
+				Addr:  wordArrayLowAddr,
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
+			high: machine.StoreEffect{
+				Addr:  wordArrayHighAddr,
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
 			wantChanged: false,
 		},
 		{
@@ -256,6 +306,48 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 			wantChanged: true,
 		},
 		{
+			name: "CMaxMines stores recursive wide phi",
+			ctx:  cMaxMinesCtx,
+			low: machine.StoreEffect{
+				Addr: cMaxAddr,
+				Src: &machine.PhiValue{Join: 0x2000, Arms: []machine.PhiArm{
+					{Block: phiLeft, Value: machine.ConstVal(1)},
+					{Block: phiRight, Value: machine.WordVal(cMaxResult, machine.WordLow)},
+				}},
+				Width: 2,
+			},
+			high: machine.StoreEffect{
+				Addr: cMaxHighAddr,
+				Src: &machine.PhiValue{Join: 0x2000, Arms: []machine.PhiArm{
+					{Block: phiLeft, Value: machine.ConstVal(0)},
+					{Block: phiRight, Value: machine.WordVal(cMaxResult, machine.WordHigh)},
+				}},
+				Width: 2,
+			},
+			wantSrc:     "merge(Join: L_2000, (L_1000:0x1, L_1010:callresult(int32_t)))",
+			wantAddr:    "dword [bp-0x6]",
+			wantWidth:   4,
+			wantChanged: true,
+		},
+		{
+			name: "CalcPlayerScore stores normalized-equivalent indexed lanes",
+			ctx:  calcPlayerScoreCtx,
+			low: machine.StoreEffect{
+				Addr:  indexedLowAddr,
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
+			high: machine.StoreEffect{
+				Addr:  indexedHighAddr,
+				Src:   machine.ConstVal(0),
+				Width: 2,
+			},
+			wantSrc:     "0x0",
+			wantAddr:    "dword [bp+((load([bp-0x30]) << 0x1) << 0x1)-0xe]",
+			wantWidth:   4,
+			wantChanged: true,
+		},
+		{
 			name: "CalcPctSurvive stores zero-extended primitive",
 			ctx:  calcPctSurviveCtx,
 			low: machine.StoreEffect{
@@ -297,14 +389,24 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 			low: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x594b, InstOff: 0x5951, InstOp: asm.OpADD, InstLen: 3},
 				Addr:     scoreAddr,
-				Src:      machine.BinaryVal(machine.ValueOpAdd, machine.LoadVal(scoreAddr), machine.LoadVal(lTempAddr)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpAdd,
+					LHS:      machine.LoadVal(scoreAddr),
+					RHS:      machine.LoadVal(lTempAddr),
+					Producer: machine.Meta{BlockID: 0x594b, InstOff: 0x5951, InstOp: asm.OpADD, InstLen: 3},
+				},
+				Width: 2,
 			},
 			high: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x594b, InstOff: 0x5954, InstOp: asm.OpADC, InstLen: 3},
 				Addr:     scoreHighAddr,
-				Src:      machine.BinaryVal(machine.ValueOpAdd, machine.LoadVal(scoreHighAddr), machine.LoadVal(lTempHighAddr)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpAdd,
+					LHS:      machine.LoadVal(scoreHighAddr),
+					RHS:      machine.LoadVal(lTempHighAddr),
+					Producer: machine.Meta{BlockID: 0x594b, InstOff: 0x5954, InstOp: asm.OpADC, InstLen: 3},
+				},
+				Width: 2,
 			},
 			wantSrc:     "(load(dword [bp-0x26]) + load(dword [bp-0x12]))",
 			wantAddr:    "dword [bp-0x26]",
@@ -317,14 +419,24 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 			low: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x1977, InstOff: 0x19a4, InstOp: asm.OpSUB, InstLen: 3},
 				Addr:     cResAddr,
-				Src:      machine.BinaryVal(machine.ValueOpSub, machine.LoadVal(cResAddr), machine.WordVal(cResDelta, machine.WordLow)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpSub,
+					LHS:      machine.LoadVal(cResAddr),
+					RHS:      machine.WordVal(cResDelta, machine.WordLow),
+					Producer: machine.Meta{BlockID: 0x1977, InstOff: 0x19a4, InstOp: asm.OpSUB, InstLen: 3},
+				},
+				Width: 2,
 			},
 			high: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x1977, InstOff: 0x19a7, InstOp: asm.OpSBB, InstLen: 3},
 				Addr:     cResHighAddr,
-				Src:      machine.BinaryVal(machine.ValueOpSub, machine.LoadVal(cResHighAddr), machine.WordVal(cResDelta, machine.WordHigh)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpSub,
+					LHS:      machine.LoadVal(cResHighAddr),
+					RHS:      machine.WordVal(cResDelta, machine.WordHigh),
+					Producer: machine.Meta{BlockID: 0x1977, InstOff: 0x19a7, InstOp: asm.OpSBB, InstLen: 3},
+				},
+				Width: 2,
 			},
 			wantSrc:     "(load(dword [bp-0x1e]) - callresult(int32_t))",
 			wantAddr:    "dword [bp-0x1e]",
@@ -337,14 +449,24 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 			low: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x1977, InstOff: 0x19a4, InstOp: asm.OpSUB, InstLen: 3},
 				Addr:     cResAddr,
-				Src:      machine.BinaryVal(machine.ValueOpSub, machine.LoadVal(cResAddr), machine.WordVal(cResDelta, machine.WordLow)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpSub,
+					LHS:      machine.LoadVal(cResAddr),
+					RHS:      machine.WordVal(cResDelta, machine.WordLow),
+					Producer: machine.Meta{BlockID: 0x1977, InstOff: 0x19a4, InstOp: asm.OpSUB, InstLen: 3},
+				},
+				Width: 2,
 			},
 			high: machine.StoreEffect{
 				MetaInfo: machine.Meta{BlockID: 0x1977, InstOff: 0x19a7, InstOp: asm.OpSUB, InstLen: 3},
 				Addr:     cResHighAddr,
-				Src:      machine.BinaryVal(machine.ValueOpSub, machine.LoadVal(cResHighAddr), machine.WordVal(cResDelta, machine.WordHigh)),
-				Width:    2,
+				Src: &machine.Binary{
+					Op:       machine.ValueOpSub,
+					LHS:      machine.LoadVal(cResHighAddr),
+					RHS:      machine.WordVal(cResDelta, machine.WordHigh),
+					Producer: machine.Meta{BlockID: 0x1977, InstOff: 0x19a7, InstOp: asm.OpSUB, InstLen: 3},
+				},
+				Width: 2,
 			},
 			wantChanged: false,
 		},
@@ -457,14 +579,24 @@ func TestCollapseWideReadModifyWriteConstPair(t *testing.T) {
 	low := machine.StoreEffect{
 		MetaInfo: machine.Meta{InstOff: 0x1808, InstOp: asm.OpADD, InstLen: 5},
 		Addr:     lowAddr,
-		Src:      machine.BinaryVal(machine.ValueOpAdd, machine.LoadVal(lowAddr), machine.ConstVal(0xff07)),
-		Width:    2,
+		Src: &machine.Binary{
+			Op:       machine.ValueOpAdd,
+			LHS:      machine.LoadVal(lowAddr),
+			RHS:      machine.ConstVal(0xff07),
+			Producer: machine.Meta{InstOff: 0x1808, InstOp: asm.OpADD, InstLen: 5},
+		},
+		Width: 2,
 	}
 	high := machine.StoreEffect{
 		MetaInfo: machine.Meta{InstOff: 0x180d, InstOp: asm.OpADC, InstLen: 3},
 		Addr:     highAddr,
-		Src:      machine.BinaryVal(machine.ValueOpAdd, machine.LoadVal(highAddr), machine.ConstVal(0x7fff)),
-		Width:    2,
+		Src: &machine.Binary{
+			Op:       machine.ValueOpAdd,
+			LHS:      machine.LoadVal(highAddr),
+			RHS:      machine.ConstVal(0x7fff),
+			Producer: machine.Meta{InstOff: 0x180d, InstOp: asm.OpADC, InstLen: 3},
+		},
+		Width: 2,
 	}
 
 	got, changed := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(low, high)
@@ -480,9 +612,9 @@ func TestCollapseWideReadModifyWriteConstPair(t *testing.T) {
 	}
 }
 
-// TestCollapseWideRegisterArithmeticStores recognizes arithmetic performed in
-// registers before the low/high results are copied to a wide local.
-func TestCollapseWideRegisterArithmeticStores(t *testing.T) {
+// TestCollapseWideRegisterArithmeticStoresRequireProvenCarry verifies MOV
+// stores only collapse when their source values retain SUB/SBB provenance.
+func TestCollapseWideRegisterArithmeticStoresRequireProvenCarry(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
 	ctx := mustFuncContext(t, fx, res, "Random")
@@ -510,9 +642,15 @@ func TestCollapseWideRegisterArithmeticStores(t *testing.T) {
 		Width:    2,
 	}
 
+	if _, changed := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(low, high); changed {
+		t.Fatal("MOV stores without SUB/SBB provenance collapsed")
+	}
+
+	low.Src.(*machine.Binary).Producer = machine.Meta{InstOff: 0x1818, InstOp: asm.OpSUB, InstLen: 2}
+	high.Src.(*machine.Binary).Producer = machine.Meta{InstOff: 0x181a, InstOp: asm.OpSBB, InstLen: 2}
 	got, changed := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(low, high)
 	if !changed {
-		t.Fatal("collapseWideMachineStorePair() changed = false, want true")
+		t.Fatal("MOV stores with SUB/SBB provenance did not collapse")
 	}
 	want := "(load(dword [bp-0xa]) - load(dword [bp-0x12]))"
 	if got.Src.String() != want {
@@ -520,9 +658,9 @@ func TestCollapseWideRegisterArithmeticStores(t *testing.T) {
 	}
 }
 
-// TestCollapseWideMaskedStoresRequireDeclaredBitfield verifies paired masked
-// words are not merged merely because they occupy adjacent storage.
-func TestCollapseWideMaskedStoresRequireDeclaredBitfield(t *testing.T) {
+// TestCollapseWideMaskedStoresAllowDeclaredWideInteger verifies independently
+// lane-wise bit operations collapse for any proven declared wide object.
+func TestCollapseWideMaskedStoresAllowDeclaredWideInteger(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
 	ctx := mustFuncContext(t, fx, res, "CMaxMines")
@@ -539,7 +677,12 @@ func TestCollapseWideMaskedStoresRequireDeclaredBitfield(t *testing.T) {
 	low := machine.StoreEffect{Addr: lowAddr, Src: maskedWord(lowAddr, 0xfffe), Width: 2}
 	high := machine.StoreEffect{Addr: highAddr, Src: maskedWord(highAddr, 0xffff), Width: 2}
 
-	if _, changed := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(low, high); changed {
-		t.Fatal("masked non-bitfield storage pair collapsed")
+	got, changed := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(low, high)
+	if !changed {
+		t.Fatal("masked wide integer storage pair did not collapse")
+	}
+	want := "((load(dword [bp-0xa]) & 0xfffffffe) | 0x0)"
+	if got.Src.String() != want {
+		t.Fatalf("collapsed source = %q, want %q", got.Src.String(), want)
 	}
 }

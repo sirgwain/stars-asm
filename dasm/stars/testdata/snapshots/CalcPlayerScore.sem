@@ -237,16 +237,13 @@ L_5ce0:
 
 L_5ce8:
     t_merge_5cf5_0001 = rgcsh[0]
-    t_merge_5cf5_0002 = rgcsh[0]
     goto L_5cf5
 
 L_5cf1:
     t_merge_5cf5_0001 = sext16to32(score.cPlanet)
-    t_merge_5cf5_0002 = sext16to32(score.cPlanet)
 
 L_5cf5:
-    LOWORD(score.lScore) = (LOWORD(score.lScore) + (loword((int32_t)(t_merge_5cf5_0001 / 0x2)) + scratch_bp_m60))
-    HIWORD(score.lScore) = (HIWORD(score.lScore) + (hiword((int32_t)(t_merge_5cf5_0002 / 0x2)) + scratch_bp_m5e))
+    score.lScore = (score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + scratch_bp_m60))
     branch HIWORD(rgcsh[0x2]) < 0x0 ? L_5d57 : L_5d15
 
 L_5d15:

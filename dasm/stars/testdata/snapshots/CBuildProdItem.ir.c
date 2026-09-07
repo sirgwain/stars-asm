@@ -289,15 +289,14 @@ L_0ff8:
         goto L_1000;
 
 L_1000:
-    /* untranslated: LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
-    /* untranslated: HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0))) */
+    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
 
 L_102c:
     i = 0;
     goto L_1086;
 
 L_1034:
-    /* untranslated: rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * words(0x0, prod.pct)) / 0x64) */
+    rgCostPaid[i] = (uint32_t)(((uint32_t)((rgCost[i] * prod.pct)) / 0x64));
     i = (i + 1);
 
 L_1086:
@@ -459,8 +458,7 @@ L_1283:
         goto L_128b;
 
 L_128b:
-    LOWORD(lMinNeeded) = ((LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) - LOWORD(rgRes[i]));
-    HIWORD(lMinNeeded) = ((HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) - HIWORD(rgRes[i]));
+    lMinNeeded = ((rgCost[i] - rgCostPaid[i]) - rgRes[i]);
     pct = pctT;
     if ((i != 3))
         goto L_12e1;
@@ -695,8 +693,7 @@ L_165c:
     goto L_1706;
 
 L_16ba:
-    LOWORD(rgRes[i]) = (LOWORD(rgRes[i]) - (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])));
-    HIWORD(rgRes[i]) = (HIWORD(rgRes[i]) - (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])));
+    rgRes[i] = (rgRes[i] - (rgCost[i] - rgCostPaid[i]));
     rgCostPaid[i] = 0;
     i = (i + 1);
 

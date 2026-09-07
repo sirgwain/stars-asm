@@ -1,6 +1,9 @@
 package sem
 
-import "github.com/sirgwain/stars-asm/dasm/stars/machine"
+import (
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+)
 
 type machineEffectRewrite func(*machineRewriter, machine.Effect) (machine.Effect, bool, bool)
 type machineValueRewrite func(*machineRewriter, machine.Value) (machine.Value, bool, bool)
@@ -170,7 +173,16 @@ func (w *machineRewriter) rewriteMachineValueChildren(value machine.Value) (mach
 		if !lhsChanged && !rhsChanged {
 			return value, false
 		}
-		return machine.BinaryResult(v.Op, lhs, rhs), true
+		if v.Producer.InstOp == asm.OpADC || v.Producer.InstOp == asm.OpSBB {
+			return &machine.Binary{Op: v.Op, LHS: lhs, RHS: rhs, Producer: v.Producer}, true
+		}
+		next := machine.BinaryResult(v.Op, lhs, rhs)
+		if binary, ok := next.(*machine.Binary); ok {
+			copy := *binary
+			copy.Producer = v.Producer
+			next = &copy
+		}
+		return next, true
 	case *machine.Load:
 		access, changed := w.rewriteMachineMemory(v.Addr)
 		if !changed {

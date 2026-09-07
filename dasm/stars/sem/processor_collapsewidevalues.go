@@ -80,7 +80,12 @@ func (p *collapseWideValues) collapseCallArgs(fn *typeinfo.Function, args []mach
 	for i, arg := range args {
 		var expected typeinfo.Type
 		if fn != nil && i < len(fn.Params) {
-			expected = fn.Params[i].Type
+			param := &fn.Params[i]
+			expected = param.Type
+			if param.Semantic == typeinfo.ParamSemanticResourceNameOrID {
+				out[i] = arg
+				continue
+			}
 		}
 		if messageType := messageCallArgumentType(p.ctx.sdb, fn, args, i); messageType != nil {
 			expected = messageType
@@ -130,7 +135,7 @@ func collapseWideMachineValue(ctx *FuncContext, v machine.Value) (machine.Value,
 	case *machine.Binary:
 		if ctx != nil {
 			if _, ok := ctx.symbols.symbolFromBitfieldValue(v); ok {
-				if collapsed, changed := collapseWideBitfieldStorage(v); changed {
+				if collapsed, changed := collapseWideBitfieldStorage(ctx, v); changed {
 					return collapsed, true, true
 				}
 			}
@@ -218,101 +223,14 @@ func collapseWideMachineValue(ctx *FuncContext, v machine.Value) (machine.Value,
 			}
 		}
 
-		// check for two consts, words(0,0x64)
-		if high, ok := v.Words[0].(*machine.Const); ok {
-			if low, ok := v.Words[1].(*machine.Const); ok {
-				if high.Fixup != nil || low.Fixup != nil {
-					break
-				}
-				return &machine.Const{Val: high.Val<<16 | low.Val, Origin: low.Origin}, true, true
-			}
-		}
-		// check for two contiguous loads, words(load([bp-x+0x2]), load([bp-x])).
-		if load, ok := collapseAdjacentMachineLoads(v.Words[0], v.Words[1]); ok {
-			return load, true, true
-		}
-
-		// collapse hiword/loword if they are parts of the same wide parent.
-		if high, ok := v.Words[0].(*machine.WordValue); ok && high.Part == machine.WordHigh {
-			if low, ok := v.Words[1].(*machine.WordValue); ok && low.Part == machine.WordLow && machine.ValueEquals(high.Parent, low.Parent) {
-				parent, _ := collapseWideMachineValueTree(ctx, low.Parent)
-				return parent, true, true
-			}
-		}
-		if high, ok := v.Words[0].(*machine.WordValue); ok && high.Part == machine.WordSignHigh {
-			if machine.ValueEquals(high.Parent, v.Words[1]) {
-				parent, _ := collapseWideMachineValueTree(ctx, v.Words[1])
-				return machine.SignExtendVal(parent, 16, 32), true, true
-			}
-		}
-
-		// collapse farseg/faroff if they are the same base.
-		if farseg, ok := v.Words[0].(*machine.FarPointer); ok && farseg.Part == machine.FarPointerSegment {
-			if faroff, ok := v.Words[1].(*machine.FarPointer); ok && faroff.Part == machine.FarPointerOffset {
-				if machine.ValueEquals(farseg.Parent, faroff.Parent) && typeinfo.IsFarPointer(machineValueType(faroff.Parent)) {
-					parent, _ := collapseWideMachineValueTree(ctx, faroff.Parent)
-					return parent, true, true
-				}
-				if segLoad, ok := farseg.Parent.(*machine.Load); ok {
-					if offLoad, ok := faroff.Parent.(*machine.Load); ok && machine.ValueEquals(segLoad.Addr.Base, offLoad.Addr.Base) {
-						// far pointer with the same base
-						offLoad.Addr.Width = 4
-						return offLoad, true, true
-					}
-				}
-			}
-		}
-
-		if value, ok := collapseWideMachinePair(v.Words[0], v.Words[1]); ok {
+		collapser := wideMachineCollapser{ctx: ctx}
+		if value, ok := collapser.pair(v.Words[1], v.Words[0]); ok {
+			value, _ = collapseWideMachineValueTree(ctx, value)
 			return value, true, true
 		}
 	}
 	// next, changed, handled
 	return v, false, false
-}
-
-// collapseWideMachinePair reconstructs a wide value from recursively matching
-// high and low machine expression trees.
-func collapseWideMachinePair(high, low machine.Value) (machine.Value, bool) {
-	if highConst, ok := high.(*machine.Const); ok {
-		if lowConst, ok := low.(*machine.Const); ok {
-			return machine.ConstVal((highConst.Val&0xffff)<<16 | lowConst.Val&0xffff), true
-		}
-	}
-	if highWord, ok := high.(*machine.WordValue); ok {
-		switch highWord.Part {
-		case machine.WordHigh:
-			if machine.ValueEquals(highWord.Parent, low) {
-				return low, true
-			}
-			if lowWord, ok := low.(*machine.WordValue); ok && lowWord.Part == machine.WordLow && machine.ValueEquals(highWord.Parent, lowWord.Parent) {
-				return lowWord.Parent, true
-			}
-		case machine.WordSignHigh:
-			if machine.ValueEquals(highWord.Parent, low) {
-				return machine.SignExtendVal(low, 16, 32), true
-			}
-		}
-	}
-	if load, ok := collapseAdjacentMachineLoads(high, low); ok {
-		return load, true
-	}
-	highBinary, highOK := high.(*machine.Binary)
-	lowBinary, lowOK := low.(*machine.Binary)
-	if !highOK || !lowOK || highBinary.Op != lowBinary.Op {
-		return nil, false
-	}
-	switch highBinary.Op {
-	case machine.ValueOpAdd, machine.ValueOpSub:
-	default:
-		return nil, false
-	}
-	lhs, lhsOK := collapseWideMachinePair(highBinary.LHS, lowBinary.LHS)
-	rhs, rhsOK := collapseWideMachinePair(highBinary.RHS, lowBinary.RHS)
-	if !lhsOK || !rhsOK {
-		return nil, false
-	}
-	return machine.BinaryVal(highBinary.Op, lhs, rhs), true
 }
 
 // machineValueType returns the declared type carried directly by a machine value.
@@ -329,18 +247,22 @@ func machineValueType(value machine.Value) typeinfo.Type {
 
 // collapseWideBitfieldStorage replaces an uncollapsed high/low storage pair
 // inside a proven native bitfield expression with one physical dword load.
-func collapseWideBitfieldStorage(value machine.Value) (machine.Value, bool) {
+func collapseWideBitfieldStorage(ctx *FuncContext, value machine.Value) (machine.Value, bool) {
+	collapser := wideMachineCollapser{ctx: ctx}
 	rewriter := &machineRewriter{
 		value: func(mr *machineRewriter, candidate machine.Value) (machine.Value, bool, bool) {
 			words, ok := candidate.(*machine.StackWords)
 			if !ok {
 				return candidate, false, false
 			}
-			load, ok := machineBitfieldStorageLoad(words)
+			if len(words.Words) != 2 {
+				return candidate, false, true
+			}
+			wide, ok := collapser.pair(words.Words[1], words.Words[0])
 			if !ok {
 				return candidate, false, true
 			}
-			return load, true, true
+			return wide, true, true
 		},
 	}
 	return rewriter.rewriteMachineValue(value)
@@ -393,31 +315,4 @@ func collapseWideMachineValueTree(ctx *FuncContext, v machine.Value) (machine.Va
 		},
 	}
 	return rewriter.rewriteMachineValue(v)
-}
-
-// collapseAdjacentMachineLoads rebuilds one dword load from high/low
-// contiguous word loads.
-func collapseAdjacentMachineLoads(highValue machine.Value, lowValue machine.Value) (machine.Value, bool) {
-	high, ok := highValue.(*machine.Load)
-	if !ok {
-		return nil, false
-	}
-	low, ok := lowValue.(*machine.Load)
-	if !ok {
-		return nil, false
-	}
-	if !sameMachineMemoryBase(high.Addr, low.Addr) || high.Addr.Disp-low.Addr.Disp != 2 {
-		return nil, false
-	}
-	wide := *low
-	wide.Addr.Width = 4
-	return &wide, true
-}
-
-// sameMachineMemoryBase compares memory base shape while ignoring displacement,
-// width, and origin.
-func sameMachineMemoryBase(a machine.MemoryAddress, b machine.MemoryAddress) bool {
-	return machine.ValueEquals(a.Seg, b.Seg) &&
-		machine.ValueEquals(a.Base, b.Base) &&
-		machine.ValueEquals(a.Index, b.Index)
 }

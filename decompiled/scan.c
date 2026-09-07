@@ -3608,7 +3608,7 @@ L_3a3d:
     goto L_3a70;
 
 L_3a53:
-    /* untranslated: lPop = (int32_t)(words(0x0, lppl->uPopGuess) * 0x4) */
+    lPop = (int32_t)((lppl->uPopGuess * 0x4));
 
 L_3a70:
     dRad = 0;
@@ -7108,7 +7108,8 @@ L_7644:
     pscan->idpl = -1;
     pscan->ifl = -1;
     pscan->iwp = (sel.iwpAct + 1);
-    pscan->pt = ptIn;
+    pscan->pt.x = ptIn.x;
+    pscan->pt.y = ptIn.y;
 
 L_7680:
     /* untranslated: lpord = (words(HIWORD(sel.fl.lpplord), (LOWORD(sel.fl.lpplord) + 0x4)) + loword((0x12 * sel.iwpAct))) */
@@ -7175,7 +7176,8 @@ L_7797:
 
 L_77c2:
     /* untranslated: lpord = part[0xffee:18](lpord) */
-    lpord = pscan->pt;
+    LOWORD(lpord) = pscan->pt.x;
+    lpord->pt.y = pscan->pt.y;
     goto L_785a;
 
 L_77ff:
@@ -7434,7 +7436,7 @@ L_7c46:
 
 L_7c4f:
     iWarpOld = iWarp;
-    if ((FFindNearestObject(lpord, 0x81, &(scan)) == 0))
+    if ((FFindNearestObject(lpord->pt, 0x81, &(scan)) == 0))
         goto L_7c8b;
     else
         goto L_7c77;
@@ -7727,7 +7729,7 @@ L_8025:
     cTravel = 2;
 
 L_802a:
-    if ((FCanFleetUseStargates(lpfl, lpord - 0x12, lpord) != 1))
+    if ((FCanFleetUseStargates(lpfl, *(lpord - 0x12), lpord->pt) != 1))
         goto L_805a;
     else
         goto L_8055;
@@ -8135,7 +8137,8 @@ L_8508:
     sbar.psz = 0x0;
 
 L_850d:
-    sbar.pt = rgpt[0];
+    sbar.pt.x = rgpt[0x0].x;
+    sbar.pt.y = rgpt[0x0].y;
     sbar.grbit = scan.grobj;
     LogicalToScan(rgpt);
     DrawScanXorLines(hdc, rgpt, cpt);
@@ -8179,7 +8182,8 @@ L_8593:
         goto L_859c;
 
 L_859c:
-    scan.pt = ptLogical;
+    scan.pt.x = ptLogical.x;
+    scan.pt.y = ptLogical.y;
     scan.grobj = grobjOther;
     scan.iwp = sel.iwpAct;
 
@@ -8406,7 +8410,8 @@ L_8960:
     /* untranslated: lpord = (words(HIWORD(sel.fl.lpplord), (LOWORD(sel.fl.lpplord) + 0x4)) + loword((0x12 * sel.iwpAct))) */
     lpord->grobj = scan.grobj;
     lpord->id = i;
-    lpord = scan.pt;
+    LOWORD(lpord) = scan.pt.x;
+    lpord->pt.y = scan.pt.y;
     lpord->iWarp = IWarpBestForWaypoint(&(sel.fl), lpord);
     FLookupFleet(-1, sel.fl.id);
     scan.iwp = sel.iwpAct;
@@ -9189,7 +9194,10 @@ L_95fc:
     pch = (pch + 0x1);
 
 L_960c:
-    /* untranslated: branch (byte ds:[(95 + sext8to16(*pch))] & 0x4) == 0x0 ? L_9657 : L_9627 */
+    if (((_ctype[((uint16_t)(*(pch)) + 1)] & 0x4) == 0x0))
+        goto L_9657;
+    else
+        goto L_9627;
 
 L_9627:
     ifl = ((LOWORD((0xa * ifl)) + (uint16_t)(*(pch))) - 48);
@@ -9629,7 +9637,8 @@ L_9c32:
     sbar.psz = 0x0;
 
 L_9c37:
-    sbar.pt = ptLogical;
+    sbar.pt.x = ptLogical.x;
+    sbar.pt.y = ptLogical.y;
     sbar.grbit = scan.grobj;
     DrawScannerSBar(hdc, 0x0, &(sbar), 0);
     pt.x = ptNew.x;

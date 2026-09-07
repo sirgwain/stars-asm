@@ -1293,7 +1293,7 @@ L_640f:
 
 L_641e:
     SetBkColor(wParam, crButtonFace);
-    /* untranslated: return words(0x0, hbrButtonFace) */
+    return (uint32_t)(hbrButtonFace);
 
 L_643a:
     hdc = BeginPaint(hwnd, &(ps));
@@ -1398,7 +1398,7 @@ L_66d2:
     /* untranslated: t_merge_66fb_0001 = callresult(char *) */
 
 L_66fb:
-    /* untranslated: cch = (cch + _wsprintf(lpb2k[cch], szT, words(ds, t_merge_66fb_0001), 0xd, 0xa)) */
+    /* untranslated: cch = (cch + _wsprintf(lpb2k[cch], szT, &dword ds:[t_merge_66fb_0001], 0xd, 0xa)) */
     if ((lpmsgplr->cLen < 0))
         goto L_6762;
     else
@@ -1875,7 +1875,8 @@ L_6ec1:
         goto L_6eca;
 
 L_6eca:
-    scan.pt = lpth->pt;
+    scan.pt.x = lpth->pt.x;
+    scan.pt.y = lpth->pt.y;
     scan.grobj = grobjThing;
     ChangeScanSel(&(scan), 0);
     CtrPointScan(scan.pt, 1);
@@ -4265,10 +4266,13 @@ L_9b4d:
         goto L_9b56;
 
 L_9b56:
-    lpmp = LpAlloc(hdrCur.cb, htPlrMsg);
+    LpAlloc(hdrCur.cb, htPlrMsg);
+    /* untranslated: LOWORD(lpmp) = faroff(callresult(void *)) */
+    /* untranslated: HIWORD(lpmp->lpmsgplrNext) = farseg(callresult(void *)) */
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
-    lpmp = 0x0;
+    LOWORD(lpmp) = 0x0;
+    HIWORD(lpmp->lpmsgplrNext) = 0x0;
     vcmsgplrIn = (vcmsgplrIn + 1);
 
 LOutOfMem:
@@ -4342,7 +4346,8 @@ L_9c63:
 
 L_9c6c:
     DirtyGame(1);
-    lpmpPrev = lpmpCur->lpmsgplrNext;
+    LOWORD(lpmpPrev) = LOWORD(lpmpCur->lpmsgplrNext);
+    HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur->lpmsgplrNext);
     FreeLp(lpmpCur, htPlrMsg);
     vcmsgplrOut = (vcmsgplrOut - 1);
     if ((iMsgSendCur <= 0))
@@ -4442,12 +4447,14 @@ L_9de2:
 L_9e01:
     DirtyGame(1);
     lpmpCur = LpAlloc(cbNew, htPlrMsg);
-    lpmpCur = 0x0;
+    LOWORD(lpmpCur) = 0x0;
+    HIWORD(lpmpCur->lpmsgplrNext) = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     lpmpCur->iInRe = iMsgCur;
 
 L_9e40:
-    lpmpPrev = lpmpCur;
+    LOWORD(lpmpPrev) = LOWORD(lpmpCur);
+    HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur);
     lpmpCur->iPlrFrom = idPlayer;
     lpmpCur->iPlrTo = iPlrTo;
     lpmpCur->cLen = cb;
