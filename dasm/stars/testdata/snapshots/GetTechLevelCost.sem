@@ -26,8 +26,7 @@ L_1def:
     branch i < 6 ? L_1dd0 : L_1df8
 
 L_1df8:
-    LOWORD(lCost) = (loword((0xa * cTech)) + LOWORD(rglTechCost[iLevel]))
-    HIWORD(lCost) = (signhiword(loword((0xa * cTech))) + HIWORD(rglTechCost[iLevel]))
+    lCost = (sext16to32(loword((0xa * cTech))) + rglTechCost[iLevel])
     i = (GetRaceStat(rgplr[iplr], (iTech + 8)) - 1)
     branch i == 0 ? L_1e83 : L_1e40
 
@@ -35,7 +34,8 @@ L_1e40:
     branch i >= 0 ? L_1e6a : L_1e49
 
 L_1e49:
-    lCost = (lCost + (lCost - (int32_t)(lCost >> 0x2)))
+    LOWORD(lCost) = (LOWORD(lCost) + (LOWORD(lCost) - loword((int32_t)(lCost >> 0x2))))
+    HIWORD(lCost) = (HIWORD(lCost) + (HIWORD(lCost) - hiword((int32_t)(lCost >> 0x2))))
     goto L_1e83
 
 L_1e6a:

@@ -30,13 +30,15 @@ type Effect interface {
 type Meta struct {
 	BlockID BlockID
 	InstOff uint32
+	InstOp  asm.Op
+	InstLen int
 }
 
 // StoreEffect records a memory write to a normalized machine address.
 // Later lowering decides whether this is a local/global/field/index/bitfield.
 type StoreEffect struct {
 	MetaInfo Meta
-	Addr     MemoryAccess
+	Addr     MemoryAddress
 	Src      Value
 	Width    int
 }
@@ -59,7 +61,7 @@ func (e CopyEffect) EffectMeta() Meta { return e.MetaInfo }
 type CallEffect struct {
 	MetaInfo     Meta
 	Target       *typeinfo.Function
-	MemoryAccess MemoryAccess // for CALLF [bx+6] style func pointers
+	MemoryAccess MemoryAddress // for CALLF [bx+6] style func pointers
 	Args         []Value
 	Result       Value
 }

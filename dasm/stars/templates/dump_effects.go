@@ -197,7 +197,7 @@ func (ctx effectFormatContext) noteValueLoads(value machine.Value, writes map[st
 		if v.ID.IsZero() {
 			return
 		}
-		key := effectMemoryKey(v.Access, v.Access.Width)
+		key := effectMemoryKey(v.Addr, v.Addr.Width)
 		if loadIDs[key] == nil {
 			loadIDs[key] = make(map[machine.ValueID]struct{})
 		}
@@ -295,27 +295,27 @@ func (ctx effectFormatContext) formatValueWithIDs(value machine.Value) (string, 
 	case *machine.Binary:
 		return fmt.Sprintf("(%s %s %s)", ctx.formatValue(v.LHS), v.Op, ctx.formatValue(v.RHS)), true
 	case *machine.Load:
-		if v.ID.IsZero() || !ctx.displayLoadIDs[effectMemoryKey(v.Access, v.Access.Width)] {
+		if v.ID.IsZero() || !ctx.displayLoadIDs[effectMemoryKey(v.Addr, v.Addr.Width)] {
 			return "", false
 		}
-		return fmt.Sprintf("load%s(%s)", v.ID, ctx.formatMemoryAccess(v.Access)), true
+		return fmt.Sprintf("load%s(%s)", v.ID, ctx.formatMemoryAccess(v.Addr)), true
 	default:
 		return "", false
 	}
 }
 
-func (ctx effectFormatContext) formatMemoryAccess(access machine.MemoryAccess) string {
+func (ctx effectFormatContext) formatMemoryAccess(mem machine.MemoryAddress) string {
 	if ctx.annotations == nil {
-		return access.String()
+		return mem.String()
 	}
-	return ctx.annotations.MemoryAccess(access)
+	return ctx.annotations.MemoryAddress(mem)
 }
 
 // effectMemoryKey returns a storage key for load identity display decisions.
-func effectMemoryKey(access machine.MemoryAccess, width int) string {
-	access.Origin = machine.Origin{}
-	access.Width = width
-	return access.String()
+func effectMemoryKey(mem machine.MemoryAddress, width int) string {
+	mem.Origin = machine.Origin{}
+	mem.Width = width
+	return mem.String()
 }
 
 func formatCallTarget(target *typeinfo.Function) string {
@@ -339,12 +339,11 @@ func (ctx effectFormatContext) formatCallTarget(effect machine.CallEffect) strin
 }
 
 // emptyCallTargetMemory reports whether a machine call has no indirect target memory.
-func emptyCallTargetMemory(access machine.MemoryAccess) bool {
-	return access.Seg == nil &&
-		access.Base == nil &&
-		access.Index == nil &&
-		access.Disp == 0 &&
-		access.Width == 0 &&
-		access.Scale == 0 &&
-		access.Origin == (machine.Origin{})
+func emptyCallTargetMemory(mem machine.MemoryAddress) bool {
+	return mem.Seg == nil &&
+		mem.Base == nil &&
+		mem.Index == nil &&
+		mem.Disp == 0 &&
+		mem.Width == 0 &&
+		mem.Origin == (machine.Origin{})
 }

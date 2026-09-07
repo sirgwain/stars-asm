@@ -5,7 +5,7 @@ import "github.com/sirgwain/stars-asm/dasm/stars/machine"
 type coalesceCopiesProcessor struct{}
 
 type copyAddress struct {
-	access machine.MemoryAccess
+	mem machine.MemoryAddress
 }
 
 // ProcessMachineBlock coalesces adjacent contiguous copy effects in one machine block.
@@ -70,43 +70,42 @@ func normalizeCopyAddress(value machine.Value) (copyAddress, bool) {
 	if !ok {
 		return copyAddress{}, false
 	}
-	access := normalizeCopyMemoryAccess(addr.Access)
+	access := normalizeCopyMemoryAccess(addr.Addr)
 	access.Origin = machine.Origin{}
-	return copyAddress{access: access}, true
+	return copyAddress{mem: access}, true
 }
 
 // normalizeCopyMemoryAccess folds additive constant base tails into memory displacement.
-func normalizeCopyMemoryAccess(access machine.MemoryAccess) machine.MemoryAccess {
+func normalizeCopyMemoryAccess(mem machine.MemoryAddress) machine.MemoryAddress {
 	for {
-		if constant, ok := access.Base.(*machine.Const); ok && access.Index == nil {
-			access.Base = nil
-			access.Disp += int(constant.Val)
+		if constant, ok := mem.Base.(*machine.Const); ok && mem.Index == nil {
+			mem.Base = nil
+			mem.Disp += int(constant.Val)
 			continue
 		}
-		binary, ok := access.Base.(*machine.Binary)
+		binary, ok := mem.Base.(*machine.Binary)
 		if !ok || binary.Op != machine.ValueOpAdd {
-			return access
+			return mem
 		}
 		constant, ok := binary.RHS.(*machine.Const)
 		if !ok {
-			return access
+			return mem
 		}
-		access.Base = binary.LHS
-		access.Disp += int(constant.Val)
+		mem.Base = binary.LHS
+		mem.Disp += int(constant.Val)
 	}
 }
 
 // copyAddressAt returns addr advanced by byteOff bytes.
 func copyAddressAt(addr copyAddress, byteOff int) copyAddress {
-	addr.access.Disp += byteOff
+	addr.mem.Disp += byteOff
 	return addr
 }
 
 // equals reports whether two copy addresses describe the same machine address.
 func (addr copyAddress) equals(other copyAddress) bool {
-	return addr.access.Disp == other.access.Disp &&
-		addr.access.Scale == other.access.Scale &&
-		machine.ValueEquals(addr.access.Seg, other.access.Seg) &&
-		machine.ValueEquals(addr.access.Base, other.access.Base) &&
-		machine.ValueEquals(addr.access.Index, other.access.Index)
+	return addr.mem.Disp == other.mem.Disp &&
+		machine.ValueEquals(addr.mem.Seg, other.mem.Seg) &&
+		machine.ValueEquals(addr.mem.Base, other.mem.Base) &&
+		machine.ValueEquals(addr.mem.Index, other.mem.Index)
 }

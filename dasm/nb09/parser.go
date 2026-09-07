@@ -42,13 +42,13 @@ func parseNB09(blob []byte) (NB09DB, error) {
 		Flags:       le.Uint32(blob[lfoDir+12 : lfoDir+16]),
 	}
 	out.Dir.Header = dh
-	slog.Debug("nb09: directory header",
-		"cbDirHeader", fmt.Sprintf("0x%X", dh.CBDirHeader),
-		"cbDirEntry", fmt.Sprintf("0x%X", dh.CBDirEntry),
-		"cDir", dh.CDir,
-		"lfoNextDir", fmt.Sprintf("0x%X", dh.LfoNextDir),
-		"flags", fmt.Sprintf("0x%X", dh.Flags),
-	)
+	// slog.Debug("nb09: directory header",
+	// 	"cbDirHeader", fmt.Sprintf("0x%X", dh.CBDirHeader),
+	// 	"cbDirEntry", fmt.Sprintf("0x%X", dh.CBDirEntry),
+	// 	"cDir", dh.CDir,
+	// 	"lfoNextDir", fmt.Sprintf("0x%X", dh.LfoNextDir),
+	// 	"flags", fmt.Sprintf("0x%X", dh.Flags),
+	// )
 
 	if dh.CBDirHeader != 0x10 {
 		return out, fmt.Errorf("nb09: unexpected CBDirHeader=0x%x (want 0x10)", dh.CBDirHeader)

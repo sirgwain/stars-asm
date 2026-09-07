@@ -82,7 +82,7 @@ func FormatExpr(expr Expr) string {
 	case *FieldAccess:
 		return formatFieldAccess(e)
 	case *SymbolRef:
-		return e.Path.CDecl()
+		return e.Path.String()
 	case *Compare:
 		return fmt.Sprintf("%s %s %s", FormatExpr(e.LHS), formatCompareOp(e.Op), FormatExpr(e.RHS))
 	case *SignExtend:
@@ -92,9 +92,6 @@ func FormatExpr(expr Expr) string {
 	case *Word:
 		return fmt.Sprintf("%s(%s)", e.Part, FormatExpr(e.Parent))
 	case *FarPointer:
-		if e.Part == machine.FarPointerWhole {
-			return fmt.Sprintf("%s(%s, %s)", e.Part, FormatExpr(e.Segment), FormatExpr(e.Offset))
-		}
 		return fmt.Sprintf("%s(%s)", e.Part, FormatExpr(e.Parent))
 	case *PointerOffset:
 		return fmt.Sprintf("ptroff(%s, %s)", FormatExpr(e.Pointer), FormatExpr(e.Offset))
@@ -111,7 +108,7 @@ func FormatExpr(expr Expr) string {
 	case *RawValue:
 		return fmt.Sprint(e.Value)
 	case *RawMemory:
-		return e.Access.String()
+		return e.Address.String()
 	case *Memory:
 		return formatMemory(e)
 	default:
@@ -282,7 +279,7 @@ func formatPart(e *Part) string {
 			return fmt.Sprintf("HIWORD(%s)", base)
 		}
 	}
-	return fmt.Sprintf("part[%d:%d](%s)", e.ByteOff, e.Width, base)
+	return fmt.Sprintf("part[0x%x:%d](%s)", e.ByteOff, e.Width, base)
 }
 
 // formatExprs renders a comma-separated expression list.

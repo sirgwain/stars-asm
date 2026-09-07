@@ -1,8 +1,9 @@
 void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt) {
-    int32_t wtTotal;
-    int32_t wt;
-    int16_t i;
-    THING  *lpth;
+    int32_t  wtTotal;
+    int32_t  wt;
+    int16_t  i;
+    THING   *lpth;
+    uint16_t scratch_bp_m12;
 
 L_24dc:
     lpth = *(plpth);
@@ -54,7 +55,7 @@ L_2571:
     goto L_25c2;
 
 L_2579:
-    rgwtMinerals[i] = (uint32_t)(Random(0xa));
+    rgwtMinerals[i] = (uint32_t)(Random(10));
     wtTotal = (wtTotal + rgwtMinerals[i]);
     i = (i + 1);
 
@@ -105,8 +106,7 @@ L_2613:
 
 L_2619:
     lpth->thp.iWarp = 0x0;
-    lpth->pt.x = ppt->x;
-    lpth->pt.y = ppt->y;
+    lpth->pt = *(ppt);
     lpth->thp.idPlanet = 0x3ff;
     goto L_26e9;
 
@@ -115,11 +115,9 @@ L_2657:
     goto L_26cc;
 
 L_265f:
-    /* untranslated: LOWORD(rgwtMinerals[i]) = (LOWORD(rgwtMinerals[i]) + HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
-    /* untranslated: HIWORD(rgwtMinerals[i]) = (HIWORD(rgwtMinerals[i]) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
-    /* untranslated: LOWORD(wtTotal) = (LOWORD(wtTotal) + HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
-    /* untranslated: HIWORD(wtTotal) = (HIWORD(wtTotal) + signhiword(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = 0x0 */
+    /* untranslated: rgwtMinerals[i] = (rgwtMinerals[i] + sext16to32(part[0x8:2](lpth[i*0x2]))) */
+    /* untranslated: wtTotal = (wtTotal + sext16to32(part[0x8:2](lpth[i*0x2]))) */
+    /* untranslated: part[0x8:2](lpth[i*0x2]) = 0x0 */
     i = (i + 1);
 
 L_26cc:
@@ -152,7 +150,7 @@ L_2753:
     /* untranslated: wt = (30000 - (uint32_t)(words(0x0, lpth->thp.wtMax) * 0xa)) */
     wtTotal = (wtTotal - wt);
     lpth->thp.wtMax = 0xbb8;
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(wt)) */
+    /* untranslated: part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + LOWORD(wt)) */
     rgwtMinerals[i] = (rgwtMinerals[i] - wt);
     lpth = LpthNew(iplr, ithMineralPacket);
     if ((LOWORD(lpth) != 0x0))
@@ -171,16 +169,14 @@ L_27fe:
 L_2804:
     lpth->thp.iWarp = 0x0;
     lpth->thp.idPlanet = 0x3ff;
-    lpth->pt.x = ppt->x;
-    lpth->pt.y = ppt->y;
+    lpth->pt = *(ppt);
     goto L_2900;
 
 L_2842:
-    /* untranslated: ss:[bp-0x12] = ((loword((int32_t)(words((HIWORD(rgwtMinerals[i]) + 0x0), (LOWORD(rgwtMinerals[i]) + 0x9)) / 0xa)) + *(lpth+0xe)) & 0x3fff)
-     */
+    /* untranslated: scratch_bp_m12 = ((loword((int32_t)((rgwtMinerals[i] + 0x9) / 0xa)) + part[0x8:2](lpth->thp)) & 0x3fff) */
     lpth->thp.wtMax = 0x0;
-    /* untranslated: *(lpth+0xe) = (*(lpth+0xe) | ss:[bp-0x12]) */
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] + LOWORD(rgwtMinerals[i])) */
+    /* untranslated: part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m12) */
+    /* untranslated: part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + LOWORD(rgwtMinerals[i])) */
     wtTotal = (wtTotal - rgwtMinerals[i]);
     rgwtMinerals[i] = 0;
 

@@ -113,10 +113,10 @@ func RegVal(reg asm.Reg) Value { return &Reg{Val: reg} }
 func FrameBaseVal() Value { return &FrameBase{} }
 
 // LoadVal returns a memory load value tagged with its operand origin.
-func LoadVal(mem MemoryAccess) Value { return &Load{Access: mem, ID: valueIDFromOrigin(mem.Origin)} }
+func LoadVal(mem MemoryAddress) Value { return &Load{Addr: mem, ID: valueIDFromOrigin(mem.Origin)} }
 
-func AddressVal(mem MemoryAccess) Value { return &Address{Access: mem} }
-func FloatConstVal(v float64) Value     { return &FloatConst{Val: v} }
+func AddressVal(mem MemoryAddress) Value { return &Address{Addr: mem} }
+func FloatConstVal(v float64) Value      { return &FloatConst{Val: v} }
 func CastVal(v Value, to typeinfo.Type) Value {
 	return &Cast{Value: v, To: to}
 }
@@ -127,11 +127,6 @@ func WordVal(parent Value, part WordPart) Value {
 // FarPointerVal projects the offset or segment word from a known far pointer.
 func FarPointerVal(parent Value, part FarPointerPart) Value {
 	return &FarPointer{Parent: parent, Part: part}
-}
-
-// FarPointerWordsVal records a far pointer from its offset and segment words.
-func FarPointerWordsVal(offset, segment Value) Value {
-	return &FarPointer{Part: FarPointerWhole, Offset: offset, Segment: segment}
 }
 
 // SignExtendVal records an integer sign extension between machine widths.
@@ -265,8 +260,7 @@ func (v *WordValue) String() string {
 type FarPointerPart uint8
 
 const (
-	FarPointerWhole FarPointerPart = iota
-	FarPointerOffset
+	FarPointerOffset FarPointerPart = iota
 	FarPointerSegment
 )
 
@@ -287,8 +281,8 @@ func (p FarPointerPart) String() string {
 type FarPointer struct {
 	Parent  Value
 	Part    FarPointerPart
-	Offset  Value
 	Segment Value
+	Offset  Value
 }
 
 // value marks FarPointer as a machine value.
@@ -296,9 +290,6 @@ func (*FarPointer) value() {}
 
 // String renders a far pointer word projection.
 func (v *FarPointer) String() string {
-	if v.Part == FarPointerWhole {
-		return fmt.Sprintf("%s(%s, %s)", v.Part, v.Segment, v.Offset)
-	}
 	return fmt.Sprintf("%s(%s)", v.Part, v.Parent)
 }
 
@@ -423,14 +414,14 @@ func (v *Binary) String() string {
 }
 
 type Load struct {
-	Access MemoryAccess
-	ID     ValueID
+	Addr MemoryAddress
+	ID   ValueID
 }
 
 func (*Load) value() {}
 
 func (v *Load) String() string {
-	return fmt.Sprintf("load(%s)", v.Access)
+	return fmt.Sprintf("load(%s)", v.Addr)
 }
 
 // ValueID identifies a distinct symbolic value read from one instruction operand.
@@ -464,37 +455,35 @@ func valueIDFromOrigin(origin Origin) ValueID {
 // PUSH  ax
 // CALLF InitProduction ; void InitProduction(PROD *rgprod)
 type Address struct {
-	Access MemoryAccess
+	Addr MemoryAddress
 }
 
 func (*Address) value() {}
 
 func (v *Address) String() string {
-	return fmt.Sprintf("addr(%s)", v.Access)
+	return fmt.Sprintf("addr(%s)", v.Addr)
 }
 
-type MemoryAccess struct {
+type MemoryAddress struct {
 	Seg    Value // DS, SS, ES, etc
 	Base   Value // BP, BX, or any symbolic value
 	Disp   int
 	Width  int
 	Index  Value // optional dynamic byte offset added to Base+Disp, not a typed array index
-	Scale  int   // optional multiplier for Index, 0/1 means unscaled
 	Origin Origin
 }
 
 // Equals reports whether two memory accesses describe the same address.
-func (a MemoryAccess) Equals(b MemoryAccess) bool {
+func (a MemoryAddress) Equals(b MemoryAddress) bool {
 	return a.Disp == b.Disp &&
 		a.Width == b.Width &&
-		a.Scale == b.Scale &&
 		a.Origin == b.Origin &&
 		ValueEquals(a.Seg, b.Seg) &&
 		ValueEquals(a.Base, b.Base) &&
 		ValueEquals(a.Index, b.Index)
 }
 
-func (a MemoryAccess) String() string {
+func (a MemoryAddress) String() string {
 	var sb strings.Builder
 	if a.Width > 0 && a.Width != 2 {
 		sb.WriteString(memoryWidthString(a.Width))
@@ -520,9 +509,6 @@ func (a MemoryAccess) String() string {
 			sb.WriteByte('+')
 		}
 		sb.WriteString(a.Index.String())
-		if a.Scale != 0 && a.Scale != 1 {
-			fmt.Fprintf(&sb, "*%#x", a.Scale)
-		}
 		needSep = true
 	}
 	if a.Disp != 0 || !needSep {
@@ -598,10 +584,10 @@ func ValueEquals(a, b Value) bool {
 			ValueEquals(av.RHS, bv.RHS)
 	case *Load:
 		bv, ok := b.(*Load)
-		return ok && av.ID == bv.ID && av.Access.Equals(bv.Access)
+		return ok && av.ID == bv.ID && av.Addr.Equals(bv.Addr)
 	case *Address:
 		bv, ok := b.(*Address)
-		return ok && av.Access.Equals(bv.Access)
+		return ok && av.Addr.Equals(bv.Addr)
 	case *PhiValue:
 		bv, ok := b.(*PhiValue)
 		return ok && phiValuesEqual(av, bv)

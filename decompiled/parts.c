@@ -3371,14 +3371,14 @@ SHDEF *LpshdefT() {
 L_51ac:
 
 L_51bd:
-    return &(rgshdefT);
+    return rgshdefT;
 }
 
 SHDEF *LpshdefSBT() {
 L_51c4:
 
 L_51d5:
-    return &(rgshdefSBT);
+    return rgshdefSBT;
 }
 
 PLANETARY *LpplanetaryFromId(int16_t id) {
@@ -3574,7 +3574,7 @@ L_546d:
     return 0x0;
 
 L_5473:
-    ppart->phul = &(rghuldef[hs.iItem]);
+    ppart->phul = &(rghuldef[hs.iItem].hul);
     if ((idPlayer == -1))
         goto L_609c;
     else
@@ -3773,20 +3773,20 @@ L_5670:
     return 0x0;
 
 L_5676:
-    ppart->pcom = &(rghuldefSB[hs.iItem]);
+    ppart->phul = &(rghuldefSB[hs.iItem].hul);
     if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_569b;
 
 L_569b:
-    if ((hs.iItem == 0x1))
+    if ((hs.iItem == ihuldefMediumFreighter))
         goto L_56b7;
     else
         goto L_56a9;
 
 L_56a9:
-    if ((hs.iItem != 0x3))
+    if ((hs.iItem != ihuldefSuperFreighter))
         goto L_56de;
     else
         goto L_56b7;
@@ -3801,7 +3801,7 @@ L_56d8:
     return 0xffff;
 
 L_56de:
-    if ((hs.iItem != 0x4))
+    if ((hs.iItem != ihuldefScout))
         goto L_609c;
     else
         goto L_56ec;
@@ -4764,12 +4764,14 @@ L_609c:
 }
 
 void LookupBestPlanetaryScanner(PART *ppart) {
+    uint16_t scratch_bp_m4;
+
 L_60be:
     ppart->hs.iItem = 0x8;
     ppart->hs.grhst = hstPlanetary;
 
 L_60e0:
-    if ((ppart->hs.iItem < iplanetaryViewer50))
+    if ((ppart->hs.iItem < 0x0))
         goto L_6141;
     else
         goto L_60f1;
@@ -4781,7 +4783,7 @@ L_60f1:
         goto L_6104;
 
 L_6104:
-    if ((ppart->hs.iItem == iplanetaryViewer50))
+    if ((ppart->hs.iItem == 0x0))
         goto L_6141;
     else
         goto L_6112;
@@ -4789,9 +4791,9 @@ L_6104:
 L_6112:
 
 L_6118:
-    /* untranslated: ss:[bp-0x4] = ((HIWORD(ppart->hs) + 0xffff) & 0xff) */
-    ppart->hs.iItem = iplanetaryViewer50;
-    /* untranslated: HIWORD(ppart->hs) = (HIWORD(ppart->hs) | ss:[bp-0x4]) */
+    scratch_bp_m4 = ((HIWORD(ppart->hs) + 0xffff) & 0xff);
+    ppart->hs.iItem = 0x0;
+    HIWORD(ppart->hs) = (HIWORD(ppart->hs) | scratch_bp_m4);
     goto L_60e0;
 
 L_6141:
@@ -4799,10 +4801,11 @@ L_6141:
 }
 
 int16_t TechStatus(char *rgTech) {
-    int16_t fInAWhile;
-    int16_t i;
-    int16_t fAlmost;
-    int16_t cMiss;
+    int16_t  fInAWhile;
+    int16_t  i;
+    int16_t  fAlmost;
+    int16_t  cMiss;
+    uint16_t scratch_bp_mc;
 
 L_6148:
     cMiss = 0;
@@ -4883,7 +4886,7 @@ L_6250:
         goto L_6259;
 
 L_6259:
-    /* untranslated: return ((sext8to16(rgTech[(fInAWhile - 1)]) - ss:[bp-0xc]) + 0x1) */
+    /* untranslated: return ((sext8to16(part[0xffff:1](rgTech[fInAWhile])) - scratch_bp_mc) + 0x1) */
 
 L_629c:
     return 0x63;

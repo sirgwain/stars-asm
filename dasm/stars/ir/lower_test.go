@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/sem"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -40,5 +41,36 @@ func TestLowerAddressOfArrayDecaysToPointer(t *testing.T) {
 	}
 	if v.Name != "szT" {
 		t.Fatalf("src var = %q, want %q", v.Name, "szT")
+	}
+}
+
+// TestLowerDeclaresSurvivingScratchSymbols verifies symbolic scratch storage
+// that cannot be elided is emitted as a synthetic IR local.
+func TestLowerDeclaresSurvivingScratchSymbols(t *testing.T) {
+	scratch := &symresolve.SymbolScratch{
+		Function:    typeinfo.Addr{Seg: 1, Off: 0x100},
+		BPOffset:    -4,
+		StorageSize: 2,
+		TypeInfo:    typeinfo.U16,
+	}
+	src := sem.Func{Blocks: []sem.Block{
+		{
+			ID: machine.BlockID(0x100),
+			Effects: []sem.Effect{
+				&sem.Assign{
+					Dst: &sem.SymbolRef{Path: scratch},
+					Src: &sem.Const{TypeInfo: typeinfo.U16, U64: 1},
+				},
+			},
+		},
+	}}
+	fn := &typeinfo.Function{Name: "ScratchUser", Ret: &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"}}
+
+	got := Lower(src, fn)
+	if len(got.Locals) != 1 {
+		t.Fatalf("locals = %d, want 1", len(got.Locals))
+	}
+	if got.Locals[0].Name != "scratch_bp_m4" || got.Locals[0].Type != typeinfo.U16 {
+		t.Fatalf("scratch local = %#v, want uint16_t scratch_bp_m4", got.Locals[0])
 	}
 }

@@ -543,9 +543,9 @@ func (*RawValue) lvalue() {}
 // ExprType returns the known raw value type.
 func (v *RawValue) ExprType() typeinfo.Type { return v.TypeInfo }
 
-// RawMemory keeps an unlowered machine memory access inside semantic IR.
+// RawMemory keeps an unlowered machine memory address inside semantic IR.
 type RawMemory struct {
-	Access   machine.MemoryAccess
+	Address  machine.MemoryAddress
 	TypeInfo typeinfo.Type
 }
 
@@ -575,7 +575,7 @@ func (*Memory) expr() {}
 // lvalue marks Memory as assignable storage.
 func (*Memory) lvalue() {}
 
-// ExprType returns the memory access type.
+// ExprType returns the memory address type.
 func (v *Memory) ExprType() typeinfo.Type { return v.TypeInfo }
 
 // RawEffect keeps an unlowered machine effect inside semantic IR.

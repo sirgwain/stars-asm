@@ -22,7 +22,7 @@ func TestAnnotateArraysKeepsMachineExpressionShallow(t *testing.T) {
 		t.Fatal("GetRaceStat not found")
 	}
 
-	iplr := machine.LoadVal(machine.MemoryAccess{
+	iplr := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   8,
 		Width:  2,

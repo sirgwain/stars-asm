@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -38,8 +40,10 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 	rules := emptyUnionRules()
 	rules.Variants = make([]*UnionVariantRule, 0, len(cfg.UnionVariants))
 	rules.FunctionPathFacts = make([]*UnionFunctionPathFact, 0, len(cfg.FunctionPathFacts))
+	rules.BlockPathFacts = make([]*UnionBlockPathFact, 0)
 	rules.CallResultPathFacts = make([]*UnionCallResultPathFact, 0, len(cfg.CallResultPathFacts))
 	rules.ExternalDiscriminatorAliases = make([]*UnionExternalDiscriminatorAlias, 0, len(cfg.ExternalDiscriminatorAliases))
+	rules.ConditionalSelectionFacts = make([]*UnionConditionalSelectionFact, 0, len(cfg.ConditionalSelectionFacts))
 
 	for _, variantJSON := range cfg.UnionVariants {
 		variant, err := l.parseUnionVariant(variantJSON, sdb)
@@ -51,13 +55,9 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 	}
 
 	for _, factJSON := range cfg.FunctionPathFacts {
-		fact, err := l.parseFunctionPathFact(factJSON, sdb, rules)
-		if err != nil {
+		if err := l.appendFunctionPathFact(factJSON, sdb, rules); err != nil {
 			return nil, err
 		}
-		rules.FunctionPathFacts = append(rules.FunctionPathFacts, fact)
-		name := funcLookupName(fact.Func.Name)
-		rules.functionPathFactsByFunc[name] = append(rules.functionPathFactsByFunc[name], fact)
 	}
 
 	for _, factJSON := range cfg.CallResultPathFacts {
@@ -82,7 +82,79 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 		rules.externalDiscriminatorAliasesByFunc[name] = append(rules.externalDiscriminatorAliasesByFunc[name], alias)
 	}
 
+	for _, factJSON := range cfg.ConditionalSelectionFacts {
+		fact, err := l.parseConditionalSelectionFact(factJSON, sdb, rules)
+		if err != nil {
+			return nil, err
+		}
+		rules.ConditionalSelectionFacts = append(rules.ConditionalSelectionFacts, fact)
+		name := funcLookupName(fact.Func.Name)
+		rules.conditionalSelectionFactsByFunc[name] = append(rules.conditionalSelectionFactsByFunc[name], fact)
+	}
+
 	return rules, nil
+}
+
+// appendUnionFunctionPathFacts loads and appends function path facts from one union extension file.
+func (l *unionLoader) appendUnionFunctionPathFacts(path string, sdb *SymbolDB, rules *UnionRules) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("union rules %s: %w", path, err)
+	}
+	defer f.Close()
+
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return fmt.Errorf("union rules read %s: %w", path, err)
+	}
+	var cfg unionConfigJSON
+	dec := json.NewDecoder(bytes.NewReader(data))
+	if err := dec.Decode(&cfg); err != nil {
+		return fmt.Errorf("union rules parse %s: %w", path, err)
+	}
+	if len(cfg.UnionVariants) != 0 || len(cfg.CallResultPathFacts) != 0 || len(cfg.ExternalDiscriminatorAliases) != 0 || len(cfg.ConditionalSelectionFacts) != 0 {
+		return fmt.Errorf("union extension %s may only contain function_path_facts", path)
+	}
+	for _, factJSON := range cfg.FunctionPathFacts {
+		if err := l.appendFunctionPathFact(factJSON, sdb, rules); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// appendFunctionPathFact resolves and indexes one function-level or block-level path fact declaration.
+func (l *unionLoader) appendFunctionPathFact(factJSON FunctionPathFactJSON, sdb *SymbolDB, rules *UnionRules) error {
+	if factJSON.Value == "" && len(factJSON.BlockPathFacts) == 0 {
+		return fmt.Errorf("union function fact %s has neither a function value nor block facts", factJSON.Func)
+	}
+	if factJSON.Value != "" {
+		fact, err := l.parseFunctionPathFact(factJSON, sdb, rules)
+		if err != nil {
+			return err
+		}
+		rules.FunctionPathFacts = append(rules.FunctionPathFacts, fact)
+		name := funcLookupName(fact.Func.Name)
+		rules.functionPathFactsByFunc[name] = append(rules.functionPathFactsByFunc[name], fact)
+	}
+	for _, blockJSON := range factJSON.BlockPathFacts {
+		fact, err := l.parseBlockPathFact(factJSON, blockJSON, sdb, rules)
+		if err != nil {
+			return err
+		}
+		rules.BlockPathFacts = append(rules.BlockPathFacts, fact)
+		name := funcLookupName(fact.Func.Name)
+		if rules.blockPathFactsByFunc[name] == nil {
+			rules.blockPathFactsByFunc[name] = make(map[uint32][]*UnionBlockPathFact)
+		}
+		for _, existing := range rules.blockPathFactsByFunc[name][fact.BlockOff] {
+			if existing.Root == fact.Root && existing.Type == fact.Type && existing.AllElements == fact.AllElements {
+				return fmt.Errorf("duplicate union block fact for %s %s root %s", fact.Func.Name, blockJSON.Block, fact.Root)
+			}
+		}
+		rules.blockPathFactsByFunc[name][fact.BlockOff] = append(rules.blockPathFactsByFunc[name][fact.BlockOff], fact)
+	}
+	return nil
 }
 
 // emptyUnionRules creates an initialized empty union rule set.
@@ -90,13 +162,17 @@ func emptyUnionRules() *UnionRules {
 	return &UnionRules{
 		Variants:                           []*UnionVariantRule{},
 		FunctionPathFacts:                  []*UnionFunctionPathFact{},
+		BlockPathFacts:                     []*UnionBlockPathFact{},
 		CallResultPathFacts:                []*UnionCallResultPathFact{},
 		ExternalDiscriminatorAliases:       []*UnionExternalDiscriminatorAlias{},
+		ConditionalSelectionFacts:          []*UnionConditionalSelectionFact{},
 		variantsByType:                     make(map[string]*UnionVariantRule),
 		functionPathFactsByFunc:            make(map[string][]*UnionFunctionPathFact),
+		blockPathFactsByFunc:               make(map[string]map[uint32][]*UnionBlockPathFact),
 		callResultPathFactsByFunc:          make(map[string][]*UnionCallResultPathFact),
 		callResultPathFactsByParam:         make(map[string][]*UnionCallResultPathFact),
 		externalDiscriminatorAliasesByFunc: make(map[string][]*UnionExternalDiscriminatorAlias),
+		conditionalSelectionFactsByFunc:    make(map[string][]*UnionConditionalSelectionFact),
 	}
 }
 
@@ -153,7 +229,7 @@ func (l *unionLoader) parseDefaultUnionMember(cfg unionVariantJSON, strct *Struc
 }
 
 // parseFunctionPathFact resolves a function path fact JSON record to typed rule data.
-func (l *unionLoader) parseFunctionPathFact(cfg functionPathFactJSON, sdb *SymbolDB, rules *UnionRules) (*UnionFunctionPathFact, error) {
+func (l *unionLoader) parseFunctionPathFact(cfg FunctionPathFactJSON, sdb *SymbolDB, rules *UnionRules) (*UnionFunctionPathFact, error) {
 	fn := sdb.GetFunction(cfg.Func)
 	if fn == nil {
 		return nil, fmt.Errorf("union function fact function %s not found", cfg.Func)
@@ -174,19 +250,80 @@ func (l *unionLoader) parseFunctionPathFact(cfg functionPathFactJSON, sdb *Symbo
 	if !ok {
 		return nil, fmt.Errorf("union function fact type %s has no variant rule", cfg.Type)
 	}
+	if variant.Enum != enum {
+		return nil, fmt.Errorf("union function fact %s enum %s does not match %s variant enum %s", cfg.Func, cfg.Enum, cfg.Type, variant.Enum.Name)
+	}
+	if !slices.Equal(cfg.Path, variant.Discriminator) {
+		return nil, fmt.Errorf("union function fact %s path %s does not match %s discriminator %s", cfg.Func, strings.Join(cfg.Path, "."), cfg.Type, strings.Join(variant.Discriminator, "."))
+	}
 	if _, ok := variant.MemberForValue(value.Value); !ok {
 		return nil, fmt.Errorf("union function fact %s value %s has no member mapping", cfg.Func, cfg.Value)
 	}
+	rootType, ok := functionOrGlobalRootType(fn, sdb, cfg.Root)
+	if !ok {
+		return nil, fmt.Errorf("union function fact %s root %s not found", cfg.Func, cfg.Root)
+	}
+	rootStruct, ok := conditionalSelectionRootType(rootType, cfg.AllElements)
+	if !ok || rootStruct != strct {
+		return nil, fmt.Errorf("union function fact %s root %s is %s, not %s", cfg.Func, cfg.Root, rootType, cfg.Type)
+	}
 
 	return &UnionFunctionPathFact{
-		Func:  fn,
-		Root:  cfg.Root,
-		Type:  strct,
-		Path:  append([]string(nil), cfg.Path...),
-		Enum:  enum,
-		Value: value,
-		Rule:  variant,
+		Func:        fn,
+		Root:        cfg.Root,
+		AllElements: cfg.AllElements,
+		Type:        strct,
+		Path:        append([]string(nil), cfg.Path...),
+		Enum:        enum,
+		Value:       value,
+		Rule:        variant,
 	}, nil
+}
+
+// parseBlockPathFact resolves a nested function block union fact.
+func (l *unionLoader) parseBlockPathFact(parent FunctionPathFactJSON, cfg BlockPathFactJSON, sdb *SymbolDB, rules *UnionRules) (*UnionBlockPathFact, error) {
+	blockOff, err := parseUnionBlockOffset(cfg.Block)
+	if err != nil {
+		return nil, fmt.Errorf("union block fact %s block %q: %w", parent.Func, cfg.Block, err)
+	}
+	factJSON := parent
+	factJSON.Value = cfg.Value
+	factJSON.BlockPathFacts = nil
+	fact, err := l.parseFunctionPathFact(factJSON, sdb, rules)
+	if err != nil {
+		return nil, err
+	}
+	return &UnionBlockPathFact{
+		Func:        fact.Func,
+		BlockOff:    blockOff,
+		Root:        fact.Root,
+		AllElements: fact.AllElements,
+		Type:        fact.Type,
+		Path:        append([]string(nil), fact.Path...),
+		Enum:        fact.Enum,
+		Value:       fact.Value,
+		Rule:        fact.Rule,
+	}, nil
+}
+
+// parseUnionBlockOffset parses a source block label such as L_5def.
+func parseUnionBlockOffset(label string) (uint32, error) {
+	value := strings.TrimSpace(label)
+	lower := strings.ToLower(value)
+	switch {
+	case strings.HasPrefix(lower, "l_"):
+		value = value[2:]
+	case strings.HasPrefix(lower, "0x"):
+		value = value[2:]
+	}
+	if value == "" {
+		return 0, fmt.Errorf("empty block offset")
+	}
+	parsed, err := strconv.ParseUint(value, 16, 32)
+	if err != nil {
+		return 0, fmt.Errorf("invalid hexadecimal block offset: %w", err)
+	}
+	return uint32(parsed), nil
 }
 
 // parseCallResultPathFact resolves a call result path fact JSON record to typed rule data.
@@ -280,6 +417,121 @@ func (l *unionLoader) parseExternalDiscriminatorAlias(cfg externalDiscriminatorA
 	}, nil
 }
 
+// parseConditionalSelectionFact resolves a branch-conditioned union selection rule.
+func (l *unionLoader) parseConditionalSelectionFact(cfg conditionalSelectionFactJSON, sdb *SymbolDB, rules *UnionRules) (*UnionConditionalSelectionFact, error) {
+	fn := sdb.GetFunction(cfg.Func)
+	if fn == nil {
+		return nil, fmt.Errorf("union conditional selection function %s not found", cfg.Func)
+	}
+	if len(cfg.Source) == 0 {
+		return nil, fmt.Errorf("union conditional selection %s has empty source path", cfg.Func)
+	}
+	if cfg.Root == "" {
+		return nil, fmt.Errorf("union conditional selection %s has empty target root", cfg.Func)
+	}
+	sourceEnum := sdb.GetEnum(cfg.SourceEnum)
+	if sourceEnum == nil {
+		return nil, fmt.Errorf("union conditional selection source enum %s not found for %s", cfg.SourceEnum, cfg.Func)
+	}
+	sourceType, ok := functionOrGlobalPathType(fn, sdb, cfg.Source)
+	if !ok {
+		return nil, fmt.Errorf("union conditional selection %s source path %s not found", cfg.Func, strings.Join(cfg.Source, "."))
+	}
+	if sourceType != sourceEnum {
+		return nil, fmt.Errorf("union conditional selection %s source path %s is %s, not %s", cfg.Func, strings.Join(cfg.Source, "."), sourceType, cfg.SourceEnum)
+	}
+	sourceValue, ok := enumValueByName(sourceEnum, cfg.SourceValue)
+	if !ok {
+		return nil, fmt.Errorf("union conditional selection %s source value %s not found in %s", cfg.Func, cfg.SourceValue, cfg.SourceEnum)
+	}
+	strct := sdb.GetStruct(cfg.Type)
+	if strct == nil {
+		return nil, fmt.Errorf("union conditional selection type %s not found for %s", cfg.Type, cfg.Func)
+	}
+	variant, ok := rules.UnionVariantForType(strct)
+	if !ok {
+		return nil, fmt.Errorf("union conditional selection type %s has no variant rule", cfg.Type)
+	}
+	value, ok := enumValueByName(variant.Enum, cfg.Value)
+	if !ok {
+		return nil, fmt.Errorf("union conditional selection %s target value %s not found in %s", cfg.Func, cfg.Value, variant.Enum.Name)
+	}
+	if _, ok := variant.MemberForValue(value.Value); !ok {
+		return nil, fmt.Errorf("union conditional selection %s target value %s has no member mapping", cfg.Func, cfg.Value)
+	}
+	rootType, ok := functionOrGlobalRootType(fn, sdb, cfg.Root)
+	if !ok {
+		return nil, fmt.Errorf("union conditional selection %s target root %s not found", cfg.Func, cfg.Root)
+	}
+	rootStruct, ok := conditionalSelectionRootType(rootType, cfg.AllElements)
+	if !ok || rootStruct != strct {
+		return nil, fmt.Errorf("union conditional selection %s target root %s is %s, not %s", cfg.Func, cfg.Root, rootType, cfg.Type)
+	}
+	return &UnionConditionalSelectionFact{
+		Func:        fn,
+		Source:      append([]string(nil), cfg.Source...),
+		SourceEnum:  sourceEnum,
+		SourceValue: sourceValue,
+		Root:        cfg.Root,
+		AllElements: cfg.AllElements,
+		Type:        strct,
+		Value:       value,
+		Rule:        variant,
+	}, nil
+}
+
+// functionOrGlobalRootType resolves a function symbol or global root type.
+func functionOrGlobalRootType(fn *Function, sdb *SymbolDB, name string) (Type, bool) {
+	if typ, ok := functionRootType(fn, name); ok {
+		return typ, true
+	}
+	global := sdb.GetGlobal(name)
+	if global == nil {
+		return nil, false
+	}
+	return global.Type, true
+}
+
+// functionOrGlobalPathType resolves a field path rooted in a function symbol or global.
+func functionOrGlobalPathType(fn *Function, sdb *SymbolDB, components []string) (Type, bool) {
+	if len(components) == 0 {
+		return nil, false
+	}
+	typ, ok := functionOrGlobalRootType(fn, sdb, components[0])
+	if !ok {
+		return nil, false
+	}
+	for _, name := range components[1:] {
+		strct, ok := namedStructType(typ)
+		if !ok {
+			return nil, false
+		}
+		field := structFieldByName(strct, name)
+		if field == nil {
+			return nil, false
+		}
+		typ = field.Type
+	}
+	return typ, true
+}
+
+// conditionalSelectionRootType returns the selected root or collection element struct.
+func conditionalSelectionRootType(typ Type, allElements bool) (*Struct, bool) {
+	if !allElements {
+		return namedStructType(typ)
+	}
+	switch t := typ.(type) {
+	case *Pointer:
+		strct, ok := t.Elem.(*Struct)
+		return strct, ok
+	case *Array:
+		strct, ok := t.Elem.(*Struct)
+		return strct, ok
+	default:
+		return nil, false
+	}
+}
+
 // enumValueByName returns an enum value by symbolic name.
 func enumValueByName(enum *Enum, name string) (EnumValue, bool) {
 	for _, value := range enum.Values {
@@ -367,26 +619,36 @@ func funcLookupName(name string) string {
 
 type unionConfigJSON struct {
 	UnionVariants                []unionVariantJSON               `json:"union_variants"`
-	FunctionPathFacts            []functionPathFactJSON           `json:"function_path_facts"`
+	FunctionPathFacts            []FunctionPathFactJSON           `json:"function_path_facts"`
 	CallResultPathFacts          []callResultPathFactJSON         `json:"call_result_path_facts"`
 	ExternalDiscriminatorAliases []externalDiscriminatorAliasJSON `json:"external_discriminator_aliases"`
+	ConditionalSelectionFacts    []conditionalSelectionFactJSON   `json:"conditional_selection_facts"`
 }
 
 type unionVariantJSON struct {
 	Type          string            `json:"type"`            // struct type name, e.g. "_part"
 	Discriminator []string          `json:"discriminator"`   // field path, e.g. ["hs","grhst"]
 	Enum          string            `json:"enum"`            // enum name for documentation
-	DefaultMember string            `json:"default_member"`  // fallback member when no discriminator fact is known
+	DefaultMember string            `json:"default_member"`  // fallback member when union context has no path selection
 	ValueToMember map[string]string `json:"value_to_member"` // enum-value-name → member-name
 }
 
-type functionPathFactJSON struct {
-	Func  string   `json:"func"`
-	Root  string   `json:"root"`
-	Type  string   `json:"type"`
-	Path  []string `json:"path"`
-	Enum  string   `json:"enum"`
-	Value string   `json:"value"`
+// FunctionPathFactJSON is the serialized form of function- and block-scoped union facts.
+type FunctionPathFactJSON struct {
+	Func           string              `json:"func"`
+	Root           string              `json:"root"`
+	AllElements    bool                `json:"all_elements"`
+	Type           string              `json:"type"`
+	Path           []string            `json:"path"`
+	Enum           string              `json:"enum"`
+	Value          string              `json:"value,omitempty"`
+	BlockPathFacts []BlockPathFactJSON `json:"block_path_facts"`
+}
+
+// BlockPathFactJSON is the serialized discriminator value for one function block.
+type BlockPathFactJSON struct {
+	Block string `json:"block"`
+	Value string `json:"value"`
 }
 
 type callResultPathFactJSON struct {
@@ -404,4 +666,15 @@ type externalDiscriminatorAliasJSON struct {
 	Root   string   `json:"root"`
 	Type   string   `json:"type"`
 	Enum   string   `json:"enum"`
+}
+
+type conditionalSelectionFactJSON struct {
+	Func        string   `json:"func"`
+	Source      []string `json:"source"`
+	SourceEnum  string   `json:"source_enum"`
+	SourceValue string   `json:"source_value"`
+	Root        string   `json:"root"`
+	AllElements bool     `json:"all_elements"`
+	Type        string   `json:"type"`
+	Value       string   `json:"value"`
 }

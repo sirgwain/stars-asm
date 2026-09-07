@@ -120,7 +120,7 @@ L_546d:
     return 0x0
 
 L_5473:
-    ppart->phul = &rghuldef[hs.iItem]
+    ppart->phul = &rghuldef[hs.iItem].hul
     branch idPlayer == -1 ? L_609c : L_5498
 
 L_5498:
@@ -236,14 +236,14 @@ L_5670:
     return 0x0
 
 L_5676:
-    ppart->pcom = &rghuldefSB[hs.iItem]
+    ppart->phul = &rghuldefSB[hs.iItem].hul
     branch idPlayer == -1 ? L_609c : L_569b
 
 L_569b:
-    branch hs.iItem == 0x1 ? L_56b7 : L_56a9
+    branch hs.iItem == ihuldefMediumFreighter ? L_56b7 : L_56a9
 
 L_56a9:
-    branch hs.iItem != 0x3 ? L_56de : L_56b7
+    branch hs.iItem != ihuldefSuperFreighter ? L_56de : L_56b7
 
 L_56b7:
     branch GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0 ? L_56de : L_56d8
@@ -252,7 +252,7 @@ L_56d8:
     return 0xffff
 
 L_56de:
-    branch hs.iItem != 0x4 ? L_609c : L_56ec
+    branch hs.iItem != ihuldefScout ? L_609c : L_56ec
 
 L_56ec:
     branch raMajor == 8 ? L_609c : L_56f5

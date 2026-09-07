@@ -14,6 +14,7 @@ type SymbolDB struct {
 	Publics     []*Public
 	Modules     []string
 	Sources     []SourceRange
+	Messages    []*MessageRule
 
 	EnumRules          []*EnumUseRule
 	DependentEnumRules []*DependentEnumRule
@@ -74,7 +75,7 @@ func (sdb *SymbolDB) GetGlobalContaining(addr Addr) (*GlobalVar, int, bool) {
 	size := g.Type.Bytes()
 	start := g.Addr.Off
 	end := start + uint32(size)
-	if addr.Off >= start && addr.Off < end {
+	if addr.Seg == g.Addr.Seg && addr.Off >= start && addr.Off < end {
 		return g, int(addr.Off - start), true
 	}
 	return nil, 0, false
@@ -139,6 +140,16 @@ func (sdb *SymbolDB) GetStruct(name string) *Struct {
 
 func (sdb *SymbolDB) GetEnum(name string) *Enum {
 	return sdb.enumsByName[strings.ToLower(name)]
+}
+
+// GetMessage returns the payload rule for a numeric window message.
+func (sdb *SymbolDB) GetMessage(value int) *MessageRule {
+	for _, message := range sdb.Messages {
+		if message.Value == value {
+			return message
+		}
+	}
+	return nil
 }
 
 // AddFunction adds a new function to the symboldb

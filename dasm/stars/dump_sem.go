@@ -2,6 +2,7 @@ package stars
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -26,6 +27,11 @@ func DumpFuncSem(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *type
 	if err != nil {
 		return err
 	}
+	if opt.Analyze {
+		if err := json.NewEncoder(w).Encode(analysis.SemAnalysis); err != nil {
+			return err
+		}
+	}
 
 	return renderFuncSem(w, fs, analysis, opt)
 }
@@ -40,14 +46,22 @@ func dumpFuncSemDiff(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *
 	if err := os.MkdirAll(opt.DiffDir, 0o755); err != nil {
 		return err
 	}
+	diffPasses := make(map[string]struct{}, len(opt.DiffPasses))
+	for _, pass := range opt.DiffPasses {
+		diffPasses[pass] = struct{}{}
+	}
 
 	var previous string
+	var finalEffects *machine.FuncEffects
 	passOpt := opt
 	passOpt.DiffDir = ""
 	analysis, err := analyzeFuncWithSemPassSnapshots(img, sdb, fs, opt.DumpOptions, func(snapshot sem.PassSnapshot, effects *machine.FuncEffects) error {
+		if snapshot.Effects != nil {
+			finalEffects = snapshot.Effects
+		}
 		name := fmt.Sprintf("%02d-%s.sem", snapshot.Index, cleanSemPassName(snapshot.Name))
 		path := filepath.Join(opt.DiffDir, name)
-		rendered, err := renderSemSnapshotFile(path, fs, snapshot.Func, effects, snapshot.Result, passOpt)
+		rendered, err := renderSemSnapshotFile(path, fs, snapshot.Func, snapshot.Effects, snapshot.Result, passOpt)
 		if err != nil {
 			return err
 		}
@@ -55,8 +69,14 @@ func dumpFuncSemDiff(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *
 			if _, err := w.Write(rendered); err != nil {
 				return err
 			}
-		} else if err := writeSemPassDiff(w, previous, path); err != nil {
-			return err
+		} else if len(diffPasses) == 0 {
+			if err := writeSemPassDiff(w, previous, path); err != nil {
+				return err
+			}
+		} else if _, ok := diffPasses[snapshot.Name]; ok {
+			if err := writeSemPassDiff(w, previous, path); err != nil {
+				return err
+			}
 		}
 		previous = path
 		return nil
@@ -64,12 +84,13 @@ func dumpFuncSemDiff(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *
 	if err != nil {
 		return err
 	}
+	analysis.Effects = *finalEffects
 
 	finalPath := filepath.Join(opt.DiffDir, "final.sem")
 	if _, err := renderSemSnapshotFile(finalPath, fs, analysis.Sem, &analysis.Effects, analysis.Annotations, passOpt); err != nil {
 		return err
 	}
-	if previous != "" {
+	if previous != "" && len(diffPasses) == 0 {
 		if err := writeSemPassDiff(w, previous, finalPath); err != nil {
 			return err
 		}
@@ -81,8 +102,14 @@ func dumpFuncSemDiff(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *
 // renderSemSnapshotFile writes one semantic function snapshot to disk and returns the rendered bytes.
 func renderSemSnapshotFile(path string, fs *typeinfo.Function, fn sem.Func, effects *machine.FuncEffects, annotations *sem.Result, opt DumpSemOptions) ([]byte, error) {
 	var buf bytes.Buffer
-	if err := startemplates.RenderDumpSem(&buf, startemplates.NewDumpSemView(fn, effects, opt, fs, annotations, annotations)); err != nil {
-		return nil, err
+	if len(fn.Blocks) == 0 && opt.ShowEffects {
+		if err := startemplates.RenderDumpEffects(&buf, startemplates.NewDumpEffectsView(effects, startemplates.DumpEffectsOptions{DumpOptions: opt.DumpOptions, ShowOffsets: opt.ShowOffsets, ShowAsm: opt.ShowAsm}, fs, annotations)); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := startemplates.RenderDumpSem(&buf, startemplates.NewDumpSemView(fn, effects, opt, fs, annotations, annotations)); err != nil {
+			return nil, err
+		}
 	}
 	rendered := buf.Bytes()
 	if err := os.WriteFile(path, rendered, 0o644); err != nil {

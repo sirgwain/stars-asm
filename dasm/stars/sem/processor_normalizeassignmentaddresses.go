@@ -2,7 +2,6 @@ package sem
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
-	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -65,70 +64,6 @@ func (p *normalizeAssignmentAddressesProcessor) ProcessMachineBlock(
 	return b, true
 }
 
-// ProcessBlock converts constants used in semantic near-pointer contexts into
-// resolved source-level address expressions.
-func (p *normalizeAssignmentAddressesProcessor) ProcessBlock(
-	result *Result,
-	f Func,
-	b Block,
-) (Block, bool) {
-	rewriter := &semRewriter{
-		effect: func(
-			w *semRewriter,
-			effect Effect,
-		) (Effect, bool, bool) {
-			switch e := effect.(type) {
-			case *Assign:
-				dst, dstChanged := w.rewriteLValue(e.Dst)
-				src, srcChanged := w.rewriteExpr(e.Src)
-				src, srcNormalized := p.normalizeSemanticAssignSrc(dst, src)
-				if !dstChanged && !srcChanged && !srcNormalized {
-					return e, false, true
-				}
-
-				next := *e
-				next.Dst = dst
-				next.Src = src
-				return &next, true, true
-
-			case *Branch:
-				cond, condChanged := w.rewriteExpr(e.Cond)
-				cond, condNormalized := p.normalizeSemanticPointerCompare(cond)
-				if !condChanged && !condNormalized {
-					return e, false, true
-				}
-
-				next := *e
-				next.Cond = cond
-				return &next, true, true
-
-			case *Return:
-				value, valueChanged := w.rewriteExpr(e.Value)
-				value, valueNormalized := p.normalizeSemanticReturnValue(value)
-				if !valueChanged && !valueNormalized {
-					return e, false, true
-				}
-
-				next := *e
-				next.Value = value
-				return &next, true, true
-
-			default:
-				return nil, false, false
-			}
-		},
-	}
-
-	effects, changed := rewriter.rewriteEffects(b.Effects)
-	if !changed {
-		return b, false
-	}
-
-	next := b
-	next.Effects = effects
-	return next, true
-}
-
 // normalizeStoreAddress recognizes a DGROUP offset stored into near-pointer
 // storage and makes its address semantics explicit.
 func (p *normalizeAssignmentAddressesProcessor) normalizeStoreAddress(
@@ -138,8 +73,12 @@ func (p *normalizeAssignmentAddressesProcessor) normalizeStoreAddress(
 		return store.Src, false
 	}
 
-	dst, ok := p.ctx.resolveMachineStorage(store.Addr, store.Width)
-	if !ok || !isNearAddressStorage(dst.ExprType(), store.Width) {
+	resolved, ok := p.ctx.symbols.addressFromMemory(store.Addr, nil)
+	if !ok {
+		return store.Src, false
+	}
+	dst, ok := resolved.path()
+	if !ok || !isNearAddressStorage(dst.Type(), store.Width) {
 		return store.Src, false
 	}
 
@@ -159,42 +98,9 @@ func (p *normalizeAssignmentAddressesProcessor) normalizeReturnAddress(
 	return p.normalizeNearAddressConst(ret.Value)
 }
 
-// normalizeSemanticAssignSrc recognizes a DGROUP offset assigned into
-// near-pointer storage and makes its address semantics explicit.
-func (p *normalizeAssignmentAddressesProcessor) normalizeSemanticAssignSrc(
-	dst LValue,
-	src Expr,
-) (Expr, bool) {
-	if dst == nil {
-		return src, false
-	}
-	dstType := dst.ExprType()
-	if dstType == nil || !isNearAddressStorage(dstType, dstType.Bytes()) {
-		return src, false
-	}
-
-	return p.normalizeSemanticNearAddressConst(src, dstType)
-}
-
-// normalizeSemanticReturnValue recognizes a DGROUP offset returned from a
-// near-pointer function and makes its address semantics explicit.
-func (p *normalizeAssignmentAddressesProcessor) normalizeSemanticReturnValue(
-	value Expr,
-) (Expr, bool) {
-	retType, ok := p.nearPointerReturnType()
-	if !ok {
-		return value, false
-	}
-
-	return p.normalizeSemanticNearAddressConst(value, retType)
-}
-
 // nearPointerReturnType returns the current function return type when it is
 // represented by a two-byte near pointer.
 func (p *normalizeAssignmentAddressesProcessor) nearPointerReturnType() (typeinfo.Type, bool) {
-	if p.ctx == nil || p.ctx.fs == nil || p.ctx.fs.Ret == nil {
-		return nil, false
-	}
 	if !isNearAddressStorage(p.ctx.fs.Ret, p.ctx.fs.Ret.Bytes()) {
 		return nil, false
 	}
@@ -237,61 +143,22 @@ func (p *normalizeAssignmentAddressesProcessor) normalizePredicateAddresses(
 	return predicate, false
 }
 
-// normalizeSemanticPointerCompare recognizes pointer equality comparisons
-// against constants that are actually DGROUP offsets.
-func (p *normalizeAssignmentAddressesProcessor) normalizeSemanticPointerCompare(
-	cond Expr,
-) (Expr, bool) {
-	compare, ok := cond.(*Compare)
-	if !ok {
-		return cond, false
-	}
-
-	switch compare.Op {
-	case CompareEQ, CompareNE:
-	default:
-		return cond, false
-	}
-
-	if compare.LHS != nil {
-		if lhsType := compare.LHS.ExprType(); lhsType != nil && isNearAddressStorage(lhsType, lhsType.Bytes()) {
-			if rhs, changed := p.normalizeSemanticNearAddressConst(compare.RHS, lhsType); changed {
-				next := *compare
-				next.RHS = rhs
-				return &next, true
-			}
-		}
-	}
-
-	if compare.RHS != nil {
-		if rhsType := compare.RHS.ExprType(); rhsType != nil && isNearAddressStorage(rhsType, rhsType.Bytes()) {
-			if lhs, changed := p.normalizeSemanticNearAddressConst(compare.LHS, rhsType); changed {
-				next := *compare
-				next.LHS = lhs
-				return &next, true
-			}
-		}
-	}
-
-	return cond, false
-}
-
 // isNearAddressValue reports whether a machine value loads storage whose
 // declared representation is a two-byte near pointer.
 func (p *normalizeAssignmentAddressesProcessor) isNearAddressValue(
 	value machine.Value,
 ) bool {
 	load, ok := value.(*machine.Load)
-	if !ok || load.Access.Width != 2 {
+	if !ok || load.Addr.Width != 2 {
 		return false
 	}
 
-	storage, ok := p.ctx.resolveMachineStorage(
-		load.Access,
-		load.Access.Width,
-	)
-	return ok &&
-		isNearAddressStorage(storage.ExprType(), load.Access.Width)
+	resolved, ok := p.ctx.symbols.addressFromMemory(load.Addr, nil)
+	if !ok {
+		return false
+	}
+	storage, ok := resolved.path()
+	return ok && isNearAddressStorage(storage.Type(), load.Addr.Width)
 }
 
 // normalizeNearAddressConst converts a nonzero constant that resolves inside
@@ -306,7 +173,7 @@ func (p *normalizeAssignmentAddressesProcessor) normalizeNearAddressConst(
 
 	// Do not reinterpret arbitrary integers as addresses. The constant must
 	// actually point into a known DGROUP global.
-	if _, ok := p.ctx.res.ResolveGlobal(
+	if _, ok := p.ctx.symbols.globalSymbol(
 		uint16(p.ctx.sdb.DGroupFrame),
 		uint32(c.Val),
 		0,
@@ -319,50 +186,11 @@ func (p *normalizeAssignmentAddressesProcessor) normalizeNearAddressConst(
 		origin = *c.Origin
 	}
 
-	return machine.AddressVal(machine.MemoryAccess{
+	return machine.AddressVal(machine.MemoryAddress{
 		Seg:    p.ctx.dsReg,
 		Disp:   int(c.Val),
 		Origin: origin,
 	}), true
-}
-
-// normalizeSemanticNearAddressConst converts a nonzero constant that resolves
-// inside DGROUP into a source-level near-pointer address expression.
-func (p *normalizeAssignmentAddressesProcessor) normalizeSemanticNearAddressConst(
-	value Expr,
-	expected typeinfo.Type,
-) (Expr, bool) {
-	c, ok := value.(*Const)
-	if !ok || c.U64 == 0 || c.U64 > 0xffff {
-		return value, false
-	}
-
-	global, ok := p.ctx.res.ResolveGlobal(
-		uint16(p.ctx.sdb.DGroupFrame),
-		uint32(c.U64),
-		0,
-	)
-	if !ok {
-		return value, false
-	}
-
-	base := &SymbolRef{Path: &symresolve.SymbolRoot{Symbol: global.Global}}
-	target, ok := (&machineConverter{ctx: p.ctx}).consumeAddressExpr(AddressExpr{
-		Base:   base,
-		Offset: global.FieldOff,
-	}, 0)
-	if !ok {
-		return value, false
-	}
-
-	lvalue, ok := target.(LValue)
-	if !ok {
-		return value, false
-	}
-	if decayed, ok := decayArrayLValue(lvalue, expected); ok {
-		return decayed, true
-	}
-	return &AddressOf{Target: lvalue, TypeInfo: expected}, true
 }
 
 // isNearAddressStorage reports whether storage is represented by a near

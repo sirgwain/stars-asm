@@ -4,10 +4,9 @@ import "github.com/sirgwain/stars-asm/dasm/typeinfo"
 
 // convergenceMemoryAccessEqualsDepth reports whether two memory accesses are
 // equivalent for bounded dataflow convergence.
-func convergenceMemoryAccessEqualsDepth(a, b MemoryAccess, depth int) bool {
+func convergenceMemoryAccessEqualsDepth(a, b MemoryAddress, depth int) bool {
 	return a.Disp == b.Disp &&
 		a.Width == b.Width &&
-		a.Scale == b.Scale &&
 		a.Origin == b.Origin &&
 		convergenceValueEqualsDepth(a.Seg, b.Seg, depth+1) &&
 		convergenceValueEqualsDepth(a.Base, b.Base, depth+1) &&
@@ -85,10 +84,10 @@ func convergenceValueEqualsDepth(a, b Value, depth int) bool {
 			convergenceValueEqualsDepth(av.RHS, bv.RHS, depth+1)
 	case *Load:
 		bv, ok := b.(*Load)
-		return ok && av.ID == bv.ID && convergenceMemoryAccessEqualsDepth(av.Access, bv.Access, depth+1)
+		return ok && av.ID == bv.ID && convergenceMemoryAccessEqualsDepth(av.Addr, bv.Addr, depth+1)
 	case *Address:
 		bv, ok := b.(*Address)
-		return ok && convergenceMemoryAccessEqualsDepth(av.Access, bv.Access, depth+1)
+		return ok && convergenceMemoryAccessEqualsDepth(av.Addr, bv.Addr, depth+1)
 	case *PhiValue:
 		bv, ok := b.(*PhiValue)
 		return ok && convergencePhiValuesEqualDepth(av, bv, depth+1)

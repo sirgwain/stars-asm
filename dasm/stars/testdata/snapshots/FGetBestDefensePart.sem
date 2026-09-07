@@ -20,10 +20,10 @@ L_21f6:
 
 L_221d:
     i = (i + 1)
-    ss:[bp-0x10] = part.hs.iItem
-    ss:[bp-0x12] = ((HIWORD(part.hs) + 0x1) & 0xff)
-    part.hs.iItem = iplanetaryViewer50
-    HIWORD(part.hs) = (HIWORD(part.hs) | ss:[bp-0x12])
+    scratch_bp_m10 = part.hs.iItem
+    scratch_bp_m12 = ((HIWORD(part.hs) + 0x1) & 0xff)
+    part.hs.iItem = 0x0
+    HIWORD(part.hs) = (HIWORD(part.hs) | scratch_bp_m12)
 
 L_2250:
     branch i >= 5 ? L_2273 : L_2259

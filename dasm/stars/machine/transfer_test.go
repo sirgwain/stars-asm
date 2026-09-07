@@ -84,8 +84,8 @@ func TestMemoryAccessFromBPOperandUsesFrameBase(t *testing.T) {
 
 func TestMemoryAccessFromAddressRegisterUsesAddressProvenance(t *testing.T) {
 	st := seedEntryState(ctxForGraphTest())
-	index := BinaryVal(ValueOpShl, LoadVal(MemoryAccess{Base: FrameBaseVal(), Disp: -0x90, Width: 2}), ConstVal(1))
-	st.writeReg(asm.RegBX, BinaryVal(ValueOpAdd, AddressVal(MemoryAccess{Base: FrameBaseVal(), Disp: -0x8a, Width: 2}), index))
+	index := BinaryVal(ValueOpShl, LoadVal(MemoryAddress{Base: FrameBaseVal(), Disp: -0x90, Width: 2}), ConstVal(1))
+	st.writeReg(asm.RegBX, BinaryVal(ValueOpAdd, AddressVal(MemoryAddress{Base: FrameBaseVal(), Disp: -0x8a, Width: 2}), index))
 
 	mem := st.memoryAccessFromOperand(0xaeae, OperandSrc, memOperandForTest(asm.RegBX, 0, 2))
 
@@ -183,7 +183,7 @@ func TestHandleREPMOVSBUnknownCountEmitsUnknownAndClobbersIndexes(t *testing.T) 
 }
 
 func TestBinaryResultMasksDeadLowByteWriteParent(t *testing.T) {
-	written := LoadVal(MemoryAccess{Base: ConstVal(0x1234), Width: 1})
+	written := LoadVal(MemoryAddress{Base: ConstVal(0x1234), Width: 1})
 	patched := ByteWriteVal(UnknownVal("loop"), ByteLow, written)
 
 	got := BinaryResult(ValueOpAnd, patched, ConstVal(0x00ff))

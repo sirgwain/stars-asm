@@ -4,6 +4,7 @@
   },
   "uses": [
     { "kind": "global", "name": "mdBuild", "enum": "MdBuild" },
+    { "kind": "global", "name": "mdXferDlg", "enum": "MdXfer" },
 
     { "kind": "local", "func": "FleetOrdersChangeTarget", "name": "grobj", "enum": "GrobjClass" },
     { "kind": "local", "func": "FCheckXferWP", "name": "grobj", "enum": "GrobjClass" },
@@ -23,6 +24,7 @@
     { "kind": "local", "func": "MessageWndProc", "name": "ht", "enum": "HtMsgType" },
 
     { "kind": "local", "func": "GetProductionCosts", "name": "iItem", "enum": "ProdItemType" },
+    { "kind": "local", "func": "CBuildProdItem", "name": "iobjOther", "enum": "ProdItemType" },
 
     { "kind": "local", "func": "PszGetTaskName", "name": "opOrd", "enum": "XferActionType" },
     { "kind": "local", "func": "ZipOrderDlg", "name": "iAction", "enum": "XferActionType" },
@@ -125,6 +127,7 @@
     { "kind": "param", "func": "XferAiSupply", "param": "grobjDst", "enum": "GrobjClass" },
     { "kind": "param", "func": "TransferStuff", "param": "grobj1", "enum": "GrobjClass" },
     { "kind": "param", "func": "TransferStuff", "param": "grobj2", "enum": "GrobjClass" },
+    { "kind": "param", "func": "TransferStuff", "param": "mdXfer", "enum": "MdXfer" },
 
     { "kind": "param", "func": "PszProductionETA", "param": "iItem", "enum": "ProdItemType" },
     { "kind": "param", "func": "EstimateItemProdSched", "param": "iItem", "enum": "ProdItemType" },
@@ -293,6 +296,12 @@
       },
       "lparam": {
         "loword": { "cast_type": "HWND" }
+      }
+    },
+    {
+      "msg": "CB_ADDSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
       }
     },
     {

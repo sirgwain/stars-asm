@@ -316,8 +316,8 @@ func (st *state) readOperand(off uint32, role OperandRole, op asm.Operand) Value
 
 }
 
-// writeOperand writes a Value to an operand, returning a memory access, if resolved.
-func (st *state) writeOperand(off uint32, role OperandRole, op asm.Operand, v Value) (MemoryAccess, bool) {
+// writeOperand writes a Value to an operand, returning a memory address, if resolved.
+func (st *state) writeOperand(off uint32, role OperandRole, op asm.Operand, v Value) (MemoryAddress, bool) {
 	switch op.Kind {
 	case asm.OKReg, asm.OKSReg:
 		st.writeReg(op.Reg, v)
@@ -327,7 +327,7 @@ func (st *state) writeOperand(off uint32, role OperandRole, op asm.Operand, v Va
 		// MOV [1234], 0 	; write 0 into address 1234, 2 bytes
 		return st.memoryAccessFromOperand(off, role, op), true
 	}
-	return MemoryAccess{}, false
+	return MemoryAddress{}, false
 }
 
 // memoryAccessFromOperand creates a MemoryAccess for a memory operand
@@ -339,7 +339,7 @@ func (st *state) writeOperand(off uint32, role OperandRole, op asm.Operand, v Va
 // MOV ax, [bp-6] 	   ; load from ss:bp local var into ax
 // MOV ax, es:[bx+0x2] ; load from es:bx with displacement into ax
 // MOV al, es:[bx+0x2] ; load 1 byte from es:bx with displacement into al
-func (st *state) memoryAccessFromOperand(off uint32, role OperandRole, op asm.Operand) MemoryAccess {
+func (st *state) memoryAccessFromOperand(off uint32, role OperandRole, op asm.Operand) MemoryAddress {
 	origin := Origin{InstOff: off, Role: role}
 	base := operandBase(op)
 	if base != asm.RegNone && base != asm.RegBP && op.Mem.SegOverride == asm.RegNone {
@@ -354,7 +354,7 @@ func (st *state) memoryAccessFromOperand(off uint32, role OperandRole, op asm.Op
 			return mem
 		}
 	}
-	mem := MemoryAccess{
+	mem := MemoryAddress{
 		Seg:    st.readReg(operandSeg(op)),
 		Disp:   op.Mem.Disp,
 		Width:  op.Width(),
@@ -371,34 +371,34 @@ func (st *state) memoryAccessFromOperand(off uint32, role OperandRole, op asm.Op
 }
 
 // memoryAccessFromAddressValue dereferences a value known to carry address provenance.
-func memoryAccessFromAddressValue(value Value, disp int, width int, origin Origin) (MemoryAccess, bool) {
+func memoryAccessFromAddressValue(value Value, disp int, width int, origin Origin) (MemoryAddress, bool) {
 	switch v := value.(type) {
 	case *Address:
-		access := v.Access
+		access := v.Addr
 		access.Disp += disp
 		access.Width = width
 		access.Origin = origin
 		return access, true
 	case *Binary:
 		if v.Op != ValueOpAdd {
-			return MemoryAccess{}, false
+			return MemoryAddress{}, false
 		}
-		if access, ok := memoryAccessFromAddressIndex(v.LHS, v.RHS, disp, width, origin); ok {
-			return access, true
+		// if we are adding to an address on the left or right, put that binary op in the Index var
+		if addr, ok := v.LHS.(*Address); ok {
+			return memoryAccessFromAddressIndex(addr, v.RHS, disp, width, origin), true
 		}
-		return memoryAccessFromAddressIndex(v.RHS, v.LHS, disp, width, origin)
+		if addr, ok := v.RHS.(*Address); ok {
+			return memoryAccessFromAddressIndex(addr, v.LHS, disp, width, origin), true
+		}
+		return MemoryAddress{}, false
 	default:
-		return MemoryAccess{}, false
+		return MemoryAddress{}, false
 	}
 }
 
 // memoryAccessFromAddressIndex dereferences an address value plus a dynamic byte offset.
-func memoryAccessFromAddressIndex(addressValue Value, index Value, disp int, width int, origin Origin) (MemoryAccess, bool) {
-	addr, ok := addressValue.(*Address)
-	if !ok {
-		return MemoryAccess{}, false
-	}
-	access := addr.Access
+func memoryAccessFromAddressIndex(addr *Address, index Value, disp int, width int, origin Origin) MemoryAddress {
+	access := addr.Addr
 	access.Disp += disp
 	access.Width = width
 	access.Origin = origin
@@ -407,16 +407,16 @@ func memoryAccessFromAddressIndex(addressValue Value, index Value, disp int, wid
 	} else {
 		access.Index = index
 	}
-	return access, true
+	return access
 }
 
 // memoryAccessFromOperandLike creates a MemoryAccess for memory-shaped operands.
-func (st *state) memoryAccessFromOperandLike(off uint32, role OperandRole, op asm.Operand) MemoryAccess {
+func (st *state) memoryAccessFromOperandLike(off uint32, role OperandRole, op asm.Operand) MemoryAddress {
 	return st.memoryAccessFromOperandLikeWidth(off, role, op, op.Width())
 }
 
 // memoryAccessFromOperandLikeWidth creates a MemoryAccess with an explicit width.
-func (st *state) memoryAccessFromOperandLikeWidth(off uint32, role OperandRole, op asm.Operand, width int) MemoryAccess {
+func (st *state) memoryAccessFromOperandLikeWidth(off uint32, role OperandRole, op asm.Operand, width int) MemoryAddress {
 	mem := st.memoryAccessFromOperand(off, role, op)
 	mem.Width = width
 	return mem

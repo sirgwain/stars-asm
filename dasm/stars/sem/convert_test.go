@@ -18,13 +18,13 @@ func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 		t.Fatal("NthValidShdef not found")
 	}
 
-	nAtMov := machine.MemoryAccess{
+	nAtMov := machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x5c4f, Role: machine.OperandSrc},
 	}
-	nAtSub := machine.MemoryAccess{
+	nAtSub := machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,
@@ -52,7 +52,6 @@ func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 			},
 		},
 	}
-
 	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
@@ -86,13 +85,13 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 		t.Fatal("ChFromNybble not found")
 	}
 
-	nyb := machine.LoadVal(machine.MemoryAccess{
+	nyb := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x49f7, Role: machine.OperandSrc},
 	})
-	global := machine.LoadVal(machine.MemoryAccess{
+	global := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
 		Disp:  0x13fe,
 		Width: 2,
@@ -121,7 +120,6 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 			},
 		},
 	}
-
 	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
@@ -137,6 +135,47 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 	}
 }
 
+// TestConvertTypedPhiResolvesCodeSegmentPointerWords verifies return types
+// propagate through merge arms before code-segment pointers are resolved.
+func TestConvertTypedPhiResolvesCodeSegmentPointerWords(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("LphuldefFromId")
+	if fn == nil {
+		t.Fatal("LphuldefFromId not found")
+	}
+	callee := fx.SDB.GetFunction("LphuldefSBFromId")
+	if callee == nil {
+		t.Fatal("LphuldefSBFromId not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, res, fn)
+	id := frameLoad(ctx, fn.Addr.Off, 0x6, 2)
+	indexedPointer := &machine.StackWords{Words: []machine.Value{
+		machine.RegVal(asm.RegCS),
+		machine.BinaryVal(
+			machine.ValueOpAdd,
+			machine.ConstVal(0x29f0),
+			machine.WordVal(machine.BinaryVal(machine.ValueOpMul, machine.ConstVal(0x8f), id), machine.WordLow),
+		),
+	}}
+	value := &machine.PhiValue{
+		Join: 0x5162,
+		Arms: []machine.PhiArm{
+			{Block: &machine.Block{ID: 0x513e}, Value: &machine.CallResult{Target: callee, Type: callee.Ret}},
+			{Block: &machine.Block{ID: 0x5150}, Value: indexedPointer},
+		},
+	}
+
+	got := (&machineConverter{ctx: ctx}).convertValueTyped(value, fn.Ret)
+	merge, ok := got.(*Merge)
+	if !ok {
+		t.Fatalf("convertValueTyped() = %T, want *Merge", got)
+	}
+	if got := FormatExpr(merge.Arms[1].Value); got != "&rghuldef[id]" {
+		t.Fatalf("code-segment merge arm = %q, want %q", got, "&rghuldef[id]")
+	}
+}
+
 func TestLowerMachineResolvesConstBaseGlobalMemory(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
@@ -145,7 +184,7 @@ func TestLowerMachineResolvesConstBaseGlobalMemory(t *testing.T) {
 		t.Fatal("ClickInShipOrders not found")
 	}
 
-	global := machine.LoadVal(machine.MemoryAccess{
+	global := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
 		Base:  machine.ConstVal(0x497a),
 		Width: 2,
@@ -166,7 +205,6 @@ func TestLowerMachineResolvesConstBaseGlobalMemory(t *testing.T) {
 			},
 		},
 	}
-
 	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
@@ -190,13 +228,13 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 		t.Fatal("CalcPlayerScore not found")
 	}
 
-	iPlr := machine.LoadVal(machine.MemoryAccess{
+	iPlr := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x5a21, Role: machine.OperandSrc},
 	})
-	i := machine.LoadVal(machine.MemoryAccess{
+	i := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   -0x30,
 		Width:  2,
@@ -210,7 +248,7 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 			Part:   machine.WordLow,
 		},
 	)
-	rgTechByte := machine.LoadVal(machine.MemoryAccess{
+	rgTechByte := machine.LoadVal(machine.MemoryAddress{
 		Seg: machine.RegVal(asm.RegDS),
 		Base: machine.BinaryVal(
 			machine.ValueOpAdd,
@@ -227,7 +265,7 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 				Effects: []machine.Effect{
 					machine.StoreEffect{
 						MetaInfo: machine.Meta{BlockID: 0x5a1e, InstOff: 0x5a36},
-						Addr: machine.MemoryAccess{
+						Addr: machine.MemoryAddress{
 							Base:   machine.FrameBaseVal(),
 							Disp:   -0x38,
 							Width:  2,
@@ -268,7 +306,7 @@ func TestLowerMachineResolvesBitfieldExtract(t *testing.T) {
 		t.Fatal("gd not found")
 	}
 
-	flags := machine.LoadVal(machine.MemoryAccess{
+	flags := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
 		Base:  machine.ConstVal(uint(gd.Addr.Off)),
 		Disp:  2,
@@ -311,6 +349,61 @@ func TestLowerMachineResolvesBitfieldExtract(t *testing.T) {
 	}
 }
 
+func TestLowerMachineResolvesBitfieldExtractFromStorageAlias(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("AlertSz")
+	if fn == nil {
+		t.Fatal("AlertSz not found")
+	}
+	ini := fx.SDB.GetGlobal("ini")
+	if ini == nil {
+		t.Fatal("ini not found")
+	}
+
+	flags := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
+		Base:  machine.ConstVal(uint(ini.Addr.Off)),
+		Disp:  0xa,
+		Width: 2,
+	})
+	fValidate := machine.BinaryVal(
+		machine.ValueOpAnd,
+		machine.BinaryVal(machine.ValueOpShr, flags, machine.ConstVal(14)),
+		machine.ConstVal(1),
+	)
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x2160,
+				Effects: []machine.Effect{
+					machine.BranchEffect{
+						MetaInfo:   machine.Meta{BlockID: 0x2160, InstOff: 0x2177},
+						Predicate:  &machine.PredicateValue{Kind: machine.PredicateCompare, Op: "JNZ", LHS: fValidate, RHS: machine.ConstVal(0)},
+						TrueBlock:  0x21a3,
+						FalseBlock: 0x217c,
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one lowered branch effect", semFunc.Blocks)
+	}
+
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "branch ini.fValidate != 0x0 ? L_21a3 : L_217c"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
 func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
@@ -319,37 +412,37 @@ func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 		t.Fatal("AddMinesToBlockedQueues not found")
 	}
 
-	lppl := machine.LoadVal(machine.MemoryAccess{
+	lppl := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   -0x16,
 		Width:  4,
 		Origin: machine.Origin{InstOff: 0x180b, Role: machine.OperandSrc},
 	})
-	lpplprodOff := machine.LoadVal(machine.MemoryAccess{
+	lpplprodOff := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
 		Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
 		Disp:  0x34,
 		Width: 2,
 	})
-	lpplprodSeg := machine.LoadVal(machine.MemoryAccess{
+	lpplprodSeg := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
 		Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
 		Disp:  0x36,
 		Width: 2,
 	})
-	prodWordAt := func(instOff uint32, disp int) machine.MemoryAccess {
-		return machine.MemoryAccess{
+	prodWordAt := func(instOff uint32, disp int) machine.MemoryAddress {
+		return machine.MemoryAddress{
 			Base:   machine.FrameBaseVal(),
 			Disp:   -0x6 + disp,
 			Width:  2,
 			Origin: machine.Origin{InstOff: instOff, Role: machine.OperandSrc},
 		}
 	}
-	prodWord := func(disp int) machine.MemoryAccess {
+	prodWord := func(disp int) machine.MemoryAddress {
 		return prodWordAt(0x180b, disp)
 	}
-	rgprodWord := func(disp int) machine.MemoryAccess {
-		return machine.MemoryAccess{
+	rgprodWord := func(disp int) machine.MemoryAddress {
+		return machine.MemoryAddress{
 			Seg:   lpplprodSeg,
 			Base:  lpplprodOff,
 			Disp:  0x4 + disp,
@@ -357,8 +450,8 @@ func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 		}
 	}
 	prodWords := &machine.StackWords{Words: []machine.Value{
-		machine.LoadVal(prodWordAt(0x1828, 0)),
 		machine.LoadVal(prodWordAt(0x1828, 2)),
+		machine.LoadVal(prodWordAt(0x1828, 0)),
 	}}
 	grobj := machine.BinaryVal(
 		machine.ValueOpAnd,
@@ -405,17 +498,130 @@ func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 		t.Fatalf("LowerMachine: %v", err)
 	}
 	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 2 {
-		t.Fatalf("effects = %q, want one block with two effects", formatEffectsForTest(semFunc.Blocks[0].Effects))
+		t.Fatalf("effects = %#v, want one block with two effects", semFunc.Blocks[0].Effects)
 	}
 
 	wants := []string{
 		"prod = lppl->lpplprod->rgprod[0]",
-		"branch prod.grobj != 0x1 ? L_18c8 : L_182d",
+		"branch prod.grobj != grobjPlanet ? L_18c8 : L_182d",
 	}
 	for i, want := range wants {
 		if got := FormatEffect(semFunc.Blocks[0].Effects[i]); got != want {
 			t.Fatalf("effect[%d] = %q, want %q", i, got, want)
 		}
+	}
+}
+
+func TestLowerMachineResolvesCollapsedPointerFieldCallArg(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("AddMinesToBlockedQueues")
+	if fn == nil {
+		t.Fatal("AddMinesToBlockedQueues not found")
+	}
+	target := fx.SDB.GetFunction("ChangeMainObjSel")
+	if target == nil {
+		t.Fatal("ChangeMainObjSel not found")
+	}
+
+	lppl := machine.LoadVal(machine.MemoryAddress{
+		Base:   machine.FrameBaseVal(),
+		Disp:   -0x16,
+		Width:  4,
+		Origin: machine.Origin{InstOff: 0x18d2, Role: machine.OperandSrc},
+	})
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x18c8,
+				Effects: []machine.Effect{
+					machine.CallEffect{
+						MetaInfo: machine.Meta{BlockID: 0x18c8, InstOff: 0x18d2},
+						Target:   target,
+						Args: []machine.Value{
+							machine.ConstVal(1),
+							machine.LoadVal(machine.MemoryAddress{
+								Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
+								Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
+								Width: 2,
+							}),
+						},
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one lowered call effect", semFunc.Blocks)
+	}
+
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "call ChangeMainObjSel(grobjPlanet, lppl->id)"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
+func TestLowerMachinePreservesNativePointerDerefCallArg(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	fn := fx.SDB.GetFunction("FBuildObject")
+	if fn == nil {
+		t.Fatal("FBuildObject not found")
+	}
+	target := &typeinfo.Function{
+		Name: "SinkI32",
+		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
+		Params: []typeinfo.FunctionVar{
+			{Name: "value", Type: typeinfo.I32},
+		},
+	}
+
+	rgMinerals := machine.LoadVal(machine.MemoryAddress{
+		Base:   machine.FrameBaseVal(),
+		Disp:   0x10,
+		Width:  4,
+		Origin: machine.Origin{InstOff: 0x19b2, Role: machine.OperandSrc},
+	})
+	effects := &machine.FuncEffects{
+		CFG: &machine.CFG{},
+		Blocks: []machine.BlockEffects{
+			{
+				Block: 0x19b2,
+				Effects: []machine.Effect{
+					machine.CallEffect{
+						MetaInfo: machine.Meta{BlockID: 0x19b2, InstOff: 0x19b2},
+						Target:   target,
+						Args: []machine.Value{
+							machine.LoadVal(machine.MemoryAddress{
+								Base:  rgMinerals,
+								Width: 4,
+							}),
+						},
+					},
+				},
+			},
+		},
+	}
+
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	if err != nil {
+		t.Fatalf("LowerMachine: %v", err)
+	}
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one lowered call effect", semFunc.Blocks)
+	}
+
+	got := FormatEffect(semFunc.Blocks[0].Effects[0])
+	want := "call SinkI32(*rgMinerals)"
+	if got != want {
+		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
 }
 
@@ -427,21 +633,21 @@ func TestLowerMachineResolvesWideBitfieldStores(t *testing.T) {
 		t.Fatal("UninhabitPlanet not found")
 	}
 
-	lppl := machine.LoadVal(machine.MemoryAccess{
+	lppl := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  4,
 		Origin: machine.Origin{InstOff: 0x8832, Role: machine.OperandSrc},
 	})
-	pl := func(disp int) machine.MemoryAccess {
-		return machine.MemoryAccess{
+	pl := func(disp int) machine.MemoryAddress {
+		return machine.MemoryAddress{
 			Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
 			Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
 			Disp:  disp,
 			Width: 2,
 		}
 	}
-	clear := func(mem machine.MemoryAccess, mask uint) machine.Value {
+	clear := func(mem machine.MemoryAddress, mask uint) machine.Value {
 		return machine.BinaryVal(
 			machine.ValueOpOr,
 			machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(mem), machine.ConstVal(mask)),
@@ -524,7 +730,7 @@ func TestLowerMachineResolvesStorageInsideCast(t *testing.T) {
 		t.Fatal("ChangeScanSel not found")
 	}
 
-	value := machine.CastVal(machine.LoadVal(machine.MemoryAccess{
+	value := machine.CastVal(machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.ConstVal(fx.SDB.DGroupFrame),
 		Disp:  0x4970,
 		Width: 2,

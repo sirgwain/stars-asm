@@ -198,18 +198,13 @@ func reconstructWideTempSrc(ctx *FuncContext, high Expr, low Expr, expected type
 			return highParent, true
 		}
 	}
-	if expected != nil && typeinfo.IsFarPointer(expected) {
-		if src, ok := collapseFarPointerWords(ctx, &Temp{TypeInfo: expected}, high, low); ok {
-			return src, true
-		}
-	}
 	return nil, false
 }
 
 // collapseInferredFarPointerWords rebuilds common string pointer word pairs
 // before a destination far-pointer type has been inferred.
 func collapseInferredFarPointerWords(ctx *FuncContext, high Expr, low Expr) (Expr, bool) {
-	if ctx == nil || exprWidth(high) != 2 {
+	if exprWidth(high) != 2 {
 		return nil, false
 	}
 
@@ -301,7 +296,7 @@ func (p *coalesceWideTempsProcessor) applyCandidate(f *Func, candidate wideTempC
 			if removedAssignments[wideTempAssignmentKey{block: block.ID, index: ei}] {
 				continue
 			}
-			rewritten, _ := rewriteWideTempEffect(effect, replacements, p.ctx)
+			rewritten, _ := rewriteWideTempEffect(effect, replacements)
 			out = append(out, rewritten)
 		}
 		block.Effects = out
@@ -353,7 +348,7 @@ func wideTempPartExpr(temp *Temp, part wideTempPart) Expr {
 }
 
 // rewriteWideTempEffect replaces old half-temp reads in one effect.
-func rewriteWideTempEffect(effect Effect, replacements map[string]Expr, ctx *FuncContext) (Effect, bool) {
+func rewriteWideTempEffect(effect Effect, replacements map[string]Expr) (Effect, bool) {
 	rewriter := &semRewriter{
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			next, changed := w.rewriteExprChildren(expr)
@@ -362,7 +357,7 @@ func rewriteWideTempEffect(effect Effect, replacements map[string]Expr, ctx *Fun
 					return replacement, true, true
 				}
 			}
-			if collapsed, ok := collapseWideTempReconstructedExpr(ctx, next); ok {
+			if collapsed, ok := collapseWideTempReconstructedExpr(next); ok {
 				return collapsed, true, true
 			}
 			return next, changed, true
@@ -372,32 +367,9 @@ func rewriteWideTempEffect(effect Effect, replacements map[string]Expr, ctx *Fun
 }
 
 // collapseWideTempReconstructedExpr collapses projections of one wide temp.
-func collapseWideTempReconstructedExpr(ctx *FuncContext, expr Expr) (Expr, bool) {
+func collapseWideTempReconstructedExpr(expr Expr) (Expr, bool) {
 	if words, ok := expr.(*Words); ok {
 		return collapseWideWords(words)
 	}
-	ptr, ok := expr.(*FarPointer)
-	if !ok || ptr.Part != machine.FarPointerWhole {
-		return nil, false
-	}
-	segment, segOK := farPointerPartParent(ptr.Segment, machine.FarPointerSegment)
-	offset, offOK := farPointerPartParent(ptr.Offset, machine.FarPointerOffset)
-	if !segOK || !offOK || !sameExpr(segment, offset) || !typeinfo.IsFarPointer(segment.ExprType()) {
-		segment, segOK = highWordParent(ptr.Segment)
-		offset, offOK = lowWordParent(ptr.Offset)
-		if !segOK || !offOK || !sameExpr(segment, offset) || exprWidth(segment) != 4 || !typeinfo.IsFarPointer(ptr.ExprType()) {
-			return nil, false
-		}
-	}
-	if ctx != nil {
-		if resolved, ok := ctx.resolveSemanticFarPointer(&FarPointer{
-			Part:     machine.FarPointerWhole,
-			Offset:   ptr.Offset,
-			Segment:  ptr.Segment,
-			TypeInfo: segment.ExprType(),
-		}); ok {
-			return resolved, true
-		}
-	}
-	return segment, true
+	return nil, false
 }

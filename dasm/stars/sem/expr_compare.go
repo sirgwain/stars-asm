@@ -32,10 +32,10 @@ func sameLValue(a, b LValue) bool {
 	case *SymbolRef:
 		bv, ok := b.(*SymbolRef)
 		// TODO: evaluate this. It' s a string compare...
-		return ok && av.Path.CDecl() == bv.Path.CDecl()
+		return ok && av.Path.String() == bv.Path.String()
 	case *RawMemory:
 		bv, ok := b.(*RawMemory)
-		return ok && av.Access.Equals(bv.Access)
+		return ok && av.Address.Equals(bv.Address)
 	default:
 		return false
 	}

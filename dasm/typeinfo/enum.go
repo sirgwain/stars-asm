@@ -109,3 +109,19 @@ type ArgConstraint struct {
 	ParamName string
 	Value     int
 }
+
+// MessageRule describes the typed payload carried by one window message.
+type MessageRule struct {
+	Name   string
+	Value  int
+	WParam *MessagePayloadRule
+	LParam *MessagePayloadRule
+}
+
+// MessagePayloadRule describes interpretations of a whole message parameter
+// and its low and high words.
+type MessagePayloadRule struct {
+	Whole  Type
+	Loword Type
+	Hiword Type
+}

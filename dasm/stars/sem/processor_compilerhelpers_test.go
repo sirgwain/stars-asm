@@ -21,7 +21,7 @@ func TestCompilerHelpersProcessorLowersPureCallResultUses(t *testing.T) {
 		},
 		machine.StoreEffect{
 			MetaInfo: machine.Meta{InstOff: 0x1005},
-			Addr:     machine.MemoryAccess{Base: machine.FrameBaseVal(), Disp: -2, Width: 2},
+			Addr:     machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: -2, Width: 2},
 			Src:      machine.WordVal(result, machine.WordLow),
 			Width:    2,
 		},

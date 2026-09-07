@@ -6,6 +6,7 @@ import (
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -395,18 +396,15 @@ func scratchAliasRewriter(aliases map[string]*scratchAlias) *semRewriter {
 	}
 }
 
-// scratchAliasWideValue synthesizes a signed dword value from adjacent scratch
-// word aliases written by CWD-style compiler staging.
+// scratchAliasWideValue reconstructs a dword value from adjacent scratch word
+// aliases when an explicit dword read proves they form one value.
 func scratchAliasWideValue(expr Expr, aliases map[string]*scratchAlias) (Expr, bool) {
-	mem, ok := expr.(*Memory)
-	if !ok || mem.Width != 4 || mem.Index != nil || mem.Scale != 0 && mem.Scale != 1 {
+	disp, width, ok := scratchSlotRangeExpr(expr)
+	if !ok || width != 4 {
 		return nil, false
 	}
-	if !scratchStackSegment(mem.Seg) || !scratchFrameBase(mem.Base) {
-		return nil, false
-	}
-	lo := aliases[fmt.Sprintf("%d:%d", mem.Disp, 2)]
-	hi := aliases[fmt.Sprintf("%d:%d", mem.Disp+2, 2)]
+	lo := aliases[fmt.Sprintf("%d:%d", disp, 2)]
+	hi := aliases[fmt.Sprintf("%d:%d", disp+2, 2)]
 	if lo == nil || hi == nil {
 		return nil, false
 	}
@@ -414,12 +412,19 @@ func scratchAliasWideValue(expr Expr, aliases map[string]*scratchAlias) (Expr, b
 		return value, true
 	}
 	parent, ok := wordPartParent(hi.value, machine.WordSignHigh)
-	if !ok || !sameExpr(parent, lo.value) {
-		return nil, false
+	if ok && sameExpr(parent, lo.value) {
+		lo.used = true
+		hi.used = true
+		return &SignExtend{Parent: lo.value, FromBits: 16, ToBits: 32, TypeInfo: typeinfo.I32}, true
+	}
+	if value, ok := collapseWideExprPair(hi.value, lo.value, typeinfo.I32); ok {
+		lo.used = true
+		hi.used = true
+		return value, true
 	}
 	lo.used = true
 	hi.used = true
-	return &SignExtend{Parent: lo.value, FromBits: 16, ToBits: 32, TypeInfo: typeinfo.I32}, true
+	return &Words{Words: []Expr{hi.value, lo.value}}, true
 }
 
 // scratchAliasWideConst synthesizes a dword constant from adjacent scratch word
@@ -462,16 +467,67 @@ func preserveUnusedScratchAliases(effect Effect) bool {
 	}
 }
 
-// scratchSlotKeyExpr returns the canonical key for an unresolved stack scratch expression.
+// scratchSlotKeyExpr returns the canonical key for a raw or symbolic stack scratch expression.
 func scratchSlotKeyExpr(expr Expr) (string, bool) {
-	mem, ok := expr.(*Memory)
-	if !ok || mem.Index != nil || mem.Scale != 0 && mem.Scale != 1 {
+	disp, width, ok := scratchSlotRangeExpr(expr)
+	if !ok {
 		return "", false
 	}
-	if !scratchStackSegment(mem.Seg) || !scratchFrameBase(mem.Base) {
-		return "", false
+	return fmt.Sprintf("%d:%d", disp, width), true
+}
+
+// scratchSlotRangeExpr returns the BP displacement and width named by a raw
+// memory expression or a symbolic scratch path.
+func scratchSlotRangeExpr(expr Expr) (int, int, bool) {
+	switch e := expr.(type) {
+	case *Memory:
+		if e.Index != nil || e.Scale != 0 && e.Scale != 1 {
+			return 0, 0, false
+		}
+		if !scratchStackSegment(e.Seg) || !scratchFrameBase(e.Base) {
+			return 0, 0, false
+		}
+		return e.Disp, e.Width, e.Width > 0
+	case *SymbolRef:
+		return scratchSymbolPathRange(e.Path)
+	case *Part:
+		disp, _, ok := scratchSlotRangeExpr(e.Base)
+		if !ok || e.Width <= 0 {
+			return 0, 0, false
+		}
+		return disp + e.ByteOff, e.Width, true
+	default:
+		return 0, 0, false
 	}
-	return fmt.Sprintf("%d:%d", mem.Disp, mem.Width), true
+}
+
+// scratchSymbolPathRange returns the BP displacement and access width for a
+// path rooted at synthetic scratch storage.
+func scratchSymbolPathRange(path symresolve.SymbolPath) (int, int, bool) {
+	switch p := path.(type) {
+	case *symresolve.SymbolScratch:
+		return p.BPOffset, p.StorageSize, p.StorageSize > 0
+	case *symresolve.SymbolOffset:
+		disp, _, ok := scratchSymbolPathRange(p.Base)
+		if !ok || p.Type() == nil || p.Type().Bytes() <= 0 {
+			return 0, 0, false
+		}
+		return disp + p.Offset, p.Type().Bytes(), true
+	case *symresolve.SymbolField:
+		disp, _, ok := scratchSymbolPathRange(p.Base)
+		if !ok || p.Field == nil || p.Field.Type == nil {
+			return 0, 0, false
+		}
+		return disp + p.Field.Offset, p.Field.Type.Bytes(), true
+	case *symresolve.SymbolBitfield:
+		disp, _, ok := scratchSymbolPathRange(p.Base)
+		if !ok || p.Field == nil || p.Field.Bitfield == nil {
+			return 0, 0, false
+		}
+		return disp + p.Field.Offset, p.Field.Bitfield.StorageSize, true
+	default:
+		return 0, 0, false
+	}
 }
 
 // scratchStackSegment reports whether expr names the stack segment or omits it.

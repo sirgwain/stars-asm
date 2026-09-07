@@ -90,6 +90,23 @@ func (l *enumLoader) loadDependentEnumRules(path string, sdb *SymbolDB) ([]*Depe
 	return dependent, nil
 }
 
+// loadMessageRules loads typed window-message payload rules from JSON.
+func (l *enumLoader) loadMessageRules(path string, sdb *SymbolDB, resolver *typeResolver) ([]*MessageRule, error) {
+	cfg, err := l.loadEnumConfig(path)
+	if err != nil {
+		return nil, err
+	}
+	messages := make([]*MessageRule, 0, len(cfg.Messages))
+	for _, messageJSON := range cfg.Messages {
+		message, err := parseMessageRuleJSON(messageJSON, sdb, resolver)
+		if err != nil {
+			return nil, err
+		}
+		messages = append(messages, message)
+	}
+	return messages, nil
+}
+
 var reTypedefEnum = regexp.MustCompile(`(?s)\btypedef\s+enum\b\s*(?:[A-Za-z_][A-Za-z0-9_]*\s*)?\{(.*?)\}\s*([A-Za-z_][A-Za-z0-9_]*)\s*;`)
 
 func parseHeaderEnums(text string) ([]*Enum, error) {
@@ -282,6 +299,7 @@ type symbolicConfigJSON struct {
 		ImportHeaders []string `json:"import_headers"`
 	} `json:"enums"`
 	Uses           []useRuleJSON           `json:"uses"`
+	Messages       []messageRuleJSON       `json:"messages"`
 	DependentEnums []dependentEnumRuleJSON `json:"dependent_enums"`
 }
 
@@ -303,6 +321,23 @@ type useRuleJSON struct {
 type argConstraintJSON struct {
 	Param string `json:"param"`
 	Value int    `json:"value"`
+}
+
+type messageRuleJSON struct {
+	Message string              `json:"msg"`
+	WParam  *messagePayloadJSON `json:"wparam"`
+	LParam  *messagePayloadJSON `json:"lparam"`
+}
+
+type messagePayloadJSON struct {
+	Whole  *messageValueJSON `json:"whole"`
+	Loword *messageValueJSON `json:"loword"`
+	Hiword *messageValueJSON `json:"hiword"`
+}
+
+type messageValueJSON struct {
+	Enum     string `json:"enum"`
+	CastType string `json:"cast_type"`
 }
 
 type dependentEnumRuleJSON struct {
@@ -347,6 +382,75 @@ func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
 	return r
 }
 
+// parseMessageRuleJSON resolves one message payload record to type metadata.
+func parseMessageRuleJSON(cfg messageRuleJSON, sdb *SymbolDB, resolver *typeResolver) (*MessageRule, error) {
+	messageEnum := sdb.GetEnum("WMType")
+	if messageEnum == nil {
+		return nil, fmt.Errorf("message enum WMType not found")
+	}
+	messageValue, ok := enumValueByName(messageEnum, cfg.Message)
+	if !ok {
+		return nil, fmt.Errorf("message %s not found in WMType", cfg.Message)
+	}
+	wparam, err := parseMessagePayloadJSON(cfg.Message, "wparam", cfg.WParam, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
+	lparam, err := parseMessagePayloadJSON(cfg.Message, "lparam", cfg.LParam, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
+	return &MessageRule{
+		Name:   messageValue.Name,
+		Value:  messageValue.Value,
+		WParam: wparam,
+		LParam: lparam,
+	}, nil
+}
+
+// parseMessagePayloadJSON resolves the whole and word-part types for one
+// message parameter.
+func parseMessagePayloadJSON(message, parameter string, cfg *messagePayloadJSON, sdb *SymbolDB, resolver *typeResolver) (*MessagePayloadRule, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+	whole, err := parseMessageValueJSON(message, parameter+".whole", cfg.Whole, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
+	loword, err := parseMessageValueJSON(message, parameter+".loword", cfg.Loword, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
+	hiword, err := parseMessageValueJSON(message, parameter+".hiword", cfg.Hiword, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
+	return &MessagePayloadRule{Whole: whole, Loword: loword, Hiword: hiword}, nil
+}
+
+// parseMessageValueJSON resolves an enum or cast type for one message value.
+func parseMessageValueJSON(message, path string, cfg *messageValueJSON, sdb *SymbolDB, resolver *typeResolver) (Type, error) {
+	if cfg == nil {
+		return nil, nil
+	}
+	if (cfg.Enum == "") == (cfg.CastType == "") {
+		return nil, fmt.Errorf("message %s %s must specify exactly one of enum or cast_type", message, path)
+	}
+	if cfg.Enum != "" {
+		typ := sdb.GetEnum(cfg.Enum)
+		if typ == nil {
+			return nil, fmt.Errorf("message %s %s enum %s not found", message, path, cfg.Enum)
+		}
+		return typ, nil
+	}
+	typ, err := (&overrideDB{sdb: sdb, typeResolver: resolver}).resolveNamedType("", cfg.CastType)
+	if err != nil {
+		return nil, fmt.Errorf("message %s %s cast type %s: %w", message, path, cfg.CastType, err)
+	}
+	return typ, nil
+}
+
 // parseDependentEnumRuleJSON resolves a dependent enum JSON record to typed rule data.
 func parseDependentEnumRuleJSON(cfg dependentEnumRuleJSON, sdb *SymbolDB) (*DependentEnumRule, error) {
 	strct := sdb.GetStruct(cfg.Type)
@@ -373,7 +477,7 @@ func parseDependentEnumRuleJSON(cfg dependentEnumRuleJSON, sdb *SymbolDB) (*Depe
 
 	enumByValue := make(map[int]*Enum, len(cfg.EnumByValue))
 	for valueName, enumName := range cfg.EnumByValue {
-		value, ok := enumValueByNameForDependent(discriminatorEnum, valueName)
+		value, ok := enumValueByName(discriminatorEnum, valueName)
 		if !ok {
 			return nil, fmt.Errorf("dependent enum %s discriminator value %s not found in %s", cfg.Type, valueName, discriminatorEnum.Name)
 		}
@@ -455,14 +559,4 @@ func namedStructTypeForDependent(typ Type) (*Struct, bool) {
 	unwrapped, _ := UnwrapPointer(typ)
 	strct, ok := unwrapped.(*Struct)
 	return strct, ok
-}
-
-// enumValueByNameForDependent returns an enum value by symbolic name.
-func enumValueByNameForDependent(enum *Enum, name string) (EnumValue, bool) {
-	for _, value := range enum.Values {
-		if value.Name == name {
-			return value, true
-		}
-	}
-	return EnumValue{}, false
 }

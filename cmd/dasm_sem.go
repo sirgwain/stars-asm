@@ -11,7 +11,9 @@ func newDasmSemCmd() *cobra.Command {
 	var showSem bool
 	var showAsm bool
 	var showEffects bool
+	var analyze bool
 	var diff bool
+	var diffPasses []string
 
 	cmd := &cobra.Command{
 		Use:   "sem",
@@ -45,7 +47,9 @@ func newDasmSemCmd() *cobra.Command {
 					ShowAsm:     showAsm,
 					ShowEffects: showEffects,
 					ShowOffsets: showAsm,
+					Analyze:     analyze,
 					DiffDir:     diffDir,
+					DiffPasses:  diffPasses,
 				}); err != nil {
 					return fmt.Errorf("dump sem: %v", err)
 				}
@@ -59,7 +63,9 @@ func newDasmSemCmd() *cobra.Command {
 	cmd.Flags().BoolVar(&showSem, "sem", true, "show semantic effects")
 	cmd.Flags().BoolVar(&showAsm, "asm", false, "show asm before semantic effects")
 	cmd.Flags().BoolVar(&showEffects, "effects", false, "show machine effects before semantic effects")
+	cmd.Flags().BoolVar(&analyze, "analyze", false, "output semantic analysis as JSON")
 	cmd.Flags().BoolVar(&diff, "diff", false, "write per-pass semantic dumps to dist and show changed pass diffs")
+	cmd.Flags().StringSliceVar(&diffPasses, "diff-passes", nil, "only show diffs for the named semantic passes")
 
 	return cmd
 }

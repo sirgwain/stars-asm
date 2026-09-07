@@ -48,5 +48,8 @@ type DumpSemOptions struct {
 	ShowAsm     bool
 	ShowEffects bool
 	ShowOffsets bool
+	Analyze     bool
 	DiffDir     string
+	// DiffPasses limits per-pass diffs to the named semantic passes.
+	DiffPasses []string
 }

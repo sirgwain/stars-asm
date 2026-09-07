@@ -1,0 +1,62 @@
+/*
+HfontPrinterCreate  (utilgen)
+  addr: 0009:6aa6  len=202
+  sig:  HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont)
+  params:
+    HDC              hdc            
+    int16_t          iSize          
+    int16_t *        pdyFont        
+  locals:
+    LOGFONT *        plf            [BP-0x6]
+    HFONT            hfontNew       [BP-0x4]
+    block 0009:6B28  len=0x33
+      HFONT            hfontSav       [BP-0x28]
+      TEXTMETRIC       tm             [BP-0x26]
+
+  stats: blocks=1  labels=0
+*/
+block L_6aa6:
+  insts 0..45  off 0x6aa6..0x6b1b
+  succs: L_6b1f, L_6b5b
+  effects:
+    6ab7  call LocalAlloc(0x40, 0x32) -> callresult(HLOCAL)
+    6abc  store[2] [bp-plf] = callresult(HLOCAL)
+    6aca  call memset(load@6ac7/src([bp-plf]), 0x0, 0x32) -> callresult(void *)
+    6adc  call GetDeviceCaps(load(ss:[bp+0x6]), 0x5a) -> callresult(int16_t)
+    6ae6  call MulDiv(load(ss:[bp+0x8]), callresult(int16_t), 0x48) -> callresult(int16_t)
+    6af0  store[2] ds:[load([bp-plf])] = (callresult(int16_t) neg 0x0)
+    6aff  call strcpy((load@6af9/src([bp-plf]) + 0x12), 0x6c6) -> callresult(char *)
+    6b0e  call CreateFontIndirect(words(ds, load([bp-plf]))) -> callresult(HFONT)
+    6b13  store[2] [bp-hfontNew] = callresult(HFONT)
+    6b1a  branch load(ss:[bp+0xa]) == 0x0 ? L_6b5b : L_6b1f
+
+block L_6b1f:
+  insts 47..48  off 0x6b1f..0x6b24
+  preds: L_6aa6
+  succs: L_6b28, L_6b5b
+  effects:
+    6b23  branch load([bp-hfontNew]) == 0x0 ? L_6b5b : L_6b28
+
+block L_6b28:
+  insts 50..66  off 0x6b28..0x6b5a
+  preds: L_6b1f
+  succs: L_6b5b
+  effects:
+    6b2e  call SelectObject(load@6b28/src(ss:[bp+0x6]), load([bp-hfontNew])) -> callresult(HGDIOBJ)
+    6b33  store[2] [bp-hfontSav] = callresult(HGDIOBJ)
+    6b40  call GetTextMetrics(load@6b36/src(ss:[bp+0x6]), words(ss, addr([bp-tm]))) -> callresult(int16_t)
+    6b4e  store[2] ds:[load(ss:[bp+0xa])] = (load([bp-tm]) + load([bp-tm+0x8]))
+    6b56  call SelectObject(load@6b50/src(ss:[bp+0x6]), load([bp-hfontSav])) -> callresult(HGDIOBJ)
+
+block L_6b5b:
+  insts 67..70  off 0x6b5b..0x6b69
+  preds: L_6aa6, L_6b1f, L_6b28
+  succs: L_6b6a
+  effects:
+    6b5f  call LocalFree(load([bp-plf])) -> callresult(HLOCAL)
+
+block L_6b6a:
+  insts 72..76  off 0x6b6a..0x6b6f
+  preds: L_6b5b
+  effects:
+    6b6f  return load([bp-hfontNew])

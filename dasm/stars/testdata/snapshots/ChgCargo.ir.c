@@ -6,7 +6,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     PLANET *ppl;
     int32_t wtFree;
     int32_t t_merge_6425_0003_wide;
-    int32_t t_merge_646f_0001_wide;
+    int32_t t_merge_646f_0001;
 
 L_6034:
     if ((grobj == grobjPlanet))
@@ -42,7 +42,7 @@ L_606b:
     goto L_609f;
 
 L_6084:
-    memset(&(xfer.pl), 0x0, 0x38);
+    memset(&(xfer.pl), 0, 0x38);
     ppl = &(xfer.pl);
 
 L_609f:
@@ -125,7 +125,7 @@ L_6174:
         goto L_617d;
 
 L_617d:
-    FLookupPlanet(0xffff, &(xfer.pl));
+    FLookupPlanet(-1, &(xfer.pl));
 
 L_6190:
     if ((grobj != grobjThing))
@@ -175,20 +175,19 @@ L_61e4:
         goto L_61ed;
 
 L_61ed:
-    /* untranslated: return words(ds:[((pth + 0x8) + (iSupply * 2))], signhiword(ds:[((pth + 0x8) + (iSupply * 2))])) */
+    /* untranslated: return sext16to32(part[0x8:2](pth[iSupply*0x2])) */
 
 L_6202:
-    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
+    /* untranslated: branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
 
 L_6222:
-    /* untranslated: branch (signhiword(ds:[((pth + 0x8) + (iSupply * 2))]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
+    /* untranslated: branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
 
 L_6227:
-    /* untranslated: branch (ds:[((pth + 0x8) + (iSupply * 2))] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
+    /* untranslated: branch (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
 
 L_622f:
-    /* untranslated: LOWORD(dChg) = (ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0) */
-    /* untranslated: HIWORD(dChg) = signhiword((ds:[((pth + 0x8) + (iSupply * 0x2))] neg 0x0)) */
+    /* untranslated: dChg = sext16to32((part[0x8:2](pth[iSupply*0x2]) neg 0x0)) */
 
 L_6249:
     /* untranslated: wtFree = (uint32_t)(words(0x0, pth->thp.wtMax) * 0xa) */
@@ -196,8 +195,7 @@ L_6249:
     goto L_6295;
 
 L_6275:
-    /* untranslated: LOWORD(wtFree) = (LOWORD(wtFree) - ds:[((pth + 0x8) + (i * 0x2))]) */
-    /* untranslated: HIWORD(wtFree) = (HIWORD(wtFree) - signhiword(ds:[((pth + 0x8) + (i * 0x2))])) */
+    /* untranslated: wtFree = (wtFree - sext16to32(part[0x8:2](pth[i*0x2]))) */
     i = (i + 1);
 
 L_6295:
@@ -228,7 +226,7 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    /* untranslated: ds:[((pth + 0x8) + (iSupply * 2))] = (ds:[((pth + 0x8) + (iSupply * 0x2))] + LOWORD(dChg)) */
+    /* untranslated: part[0x8:2](pth[iSupply*0x2]) = (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg)) */
 
 L_62f3:
     if ((LOWORD(dChg) != 0x0))
@@ -249,7 +247,7 @@ L_6305:
         goto L_630e;
 
 L_630e:
-    FLookupThing(0xffff, pth);
+    FLookupThing(-1, pth);
 
 L_6320:
     if ((pobj == 0x0))
@@ -330,11 +328,13 @@ L_63f9:
         goto L_6402;
 
 L_6402:
-    t_merge_6425_0003_wide = GetFuelFree(pfl);
+    GetFuelFree(pfl);
+    /* untranslated: t_merge_6425_0003_wide = callresult(int32_t) */
     goto L_6425;
 
 L_6415:
-    t_merge_6425_0003_wide = GetCargoFree(pfl);
+    GetCargoFree(pfl);
+    /* untranslated: t_merge_6425_0003_wide = callresult(int32_t) */
 
 L_6425:
     if ((HIWORD(dChg) > HIWORD(t_merge_6425_0003_wide)))
@@ -355,7 +355,7 @@ L_6432:
         goto L_643a;
 
 L_643a:
-    t_merge_646f_0001_wide = dChg;
+    t_merge_646f_0001 = dChg;
     goto L_646f;
 
 L_6443:
@@ -365,14 +365,16 @@ L_6443:
         goto L_644c;
 
 L_644c:
-    t_merge_646f_0001_wide = GetFuelFree(pfl);
+    GetFuelFree(pfl);
+    /* untranslated: t_merge_646f_0001 = callresult(int32_t) */
     goto L_646f;
 
 L_645f:
-    t_merge_646f_0001_wide = GetCargoFree(pfl);
+    GetCargoFree(pfl);
+    /* untranslated: t_merge_646f_0001 = callresult(int32_t) */
 
 L_646f:
-    dChg = t_merge_646f_0001_wide;
+    dChg = t_merge_646f_0001;
     pfl->rgwtMin[iSupply] = (pfl->rgwtMin[iSupply] + dChg);
 
 L_6492:
@@ -394,7 +396,7 @@ L_64a4:
         goto L_64ad;
 
 L_64ad:
-    FLookupFleet(0xffff, pfl);
+    FLookupFleet(-1, pfl);
 
 L_64bd:
     return dChg;

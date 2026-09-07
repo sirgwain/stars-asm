@@ -53,8 +53,44 @@ func (p *returnSinkProcessor) ProcessFunc(result *Result, f *Func) bool {
 		f.Blocks[i].Effects = nil
 		changed = true
 	}
+	for i := range f.Blocks {
+		if sinkReturnedCall(&f.Blocks[i]) {
+			changed = true
+		}
+	}
 
 	return changed
+}
+
+// sinkReturnedCall folds an immediately returned call result into the return
+// while preserving the call's expression and the return's metadata.
+func sinkReturnedCall(block *Block) bool {
+	if len(block.Effects) < 2 {
+		return false
+	}
+	callIndex := len(block.Effects) - 2
+	callEffect, ok := block.Effects[callIndex].(*CallEffect)
+	if !ok || callEffect.Call == nil {
+		return false
+	}
+	callResult, ok := callEffect.Result.(*CallResult)
+	if !ok {
+		return false
+	}
+	ret, ok := block.Effects[callIndex+1].(*Return)
+	if !ok {
+		return false
+	}
+	returned, ok := ret.Value.(*CallResult)
+	if !ok || !sameExpr(callResult, returned) {
+		return false
+	}
+
+	next := *ret
+	next.Value = callEffect.Call
+	block.Effects[callIndex] = &next
+	block.Effects = block.Effects[:callIndex+1]
+	return true
 }
 
 // blockIndexByID maps each semantic block ID to its index in blocks.

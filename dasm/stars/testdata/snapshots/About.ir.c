@@ -46,7 +46,7 @@ L_130c:
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
-    IntersectClipRect(hdc, 0x0, 0x0, rc.right, rc.bottom);
+    IntersectClipRect(hdc, 0, 0, rc.right, rc.bottom);
     rc.top = (rc.top - iAboutPartial);
     rc.bottom = (rc.top + dyArial8);
     i = iAbout1st;
@@ -74,7 +74,7 @@ L_13a8:
         goto L_13b1;
 
 L_13b1:
-    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), 0xffff);
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), -1);
     goto L_13e3;
 
 L_13d7:
@@ -86,7 +86,7 @@ L_13d7:
 L_13dd:
 
 L_13e3:
-    OffsetRect(&(rc), 0x0, dyArial8);
+    OffsetRect(&(rc), 0, dyArial8);
     goto L_138d;
 
 L_13fa:
@@ -121,7 +121,7 @@ L_146a:
 L_1473:
     KillTimer(hwnd, uTimerId);
     uTimerId = 0x0;
-    EndDialog(hwnd, 0x1);
+    EndDialog(hwnd, 1);
     return 0x1;
 
 L_149a:
@@ -132,8 +132,8 @@ L_149a:
 
 L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst);
-    DialogBox(hInst, IDD_ORDER_INFO, hwnd, &(lpProc));
-    FreeProcInstance(&(lpProc));
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
+    FreeProcInstance(lpProc);
 
 L_14e5:
     if ((message == WM_ERASEBKGND))

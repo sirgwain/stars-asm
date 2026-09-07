@@ -18,6 +18,7 @@ type Resolver struct {
 type VarAccess interface {
 	varAccess()
 	String() string
+	VarType() typeinfo.Type
 }
 
 // GlobalAccess defines an acces to a global
@@ -27,7 +28,8 @@ type GlobalAccess struct {
 	FieldOff int
 }
 
-func (g *GlobalAccess) varAccess() {}
+func (g *GlobalAccess) varAccess()             {}
+func (g *GlobalAccess) VarType() typeinfo.Type { return g.Global.Type }
 
 func (g *GlobalAccess) String() string {
 	if g.FieldOff == 0 {
@@ -35,13 +37,15 @@ func (g *GlobalAccess) String() string {
 	}
 	return fmt.Sprintf("%s+0x%x", g.Global.Name, g.FieldOff)
 }
+func (ga GlobalAccess) Exact() bool { return ga.FieldOff == 0 }
 
 type LocalAccess struct {
 	Local    typeinfo.FunctionVar
 	FieldOff int
 }
 
-func (g *LocalAccess) varAccess() {}
+func (l *LocalAccess) varAccess()             {}
+func (l *LocalAccess) VarType() typeinfo.Type { return l.Local.Type }
 
 func (l *LocalAccess) String() string {
 	if l.FieldOff == 0 {
@@ -50,13 +54,11 @@ func (l *LocalAccess) String() string {
 	return fmt.Sprintf("%s+0x%x", l.Local.Name, l.FieldOff)
 }
 
-func (ga GlobalAccess) Exact() bool { return ga.FieldOff == 0 }
-
 func NewResolver(img *asm.ImageNE, sdb *typeinfo.SymbolDB) *Resolver {
 	return &Resolver{sdb: sdb, img: img}
 }
 
-func (r *Resolver) ResolveGlobal(seg uint16, off uint32, width int) (GlobalAccess, bool) {
+func (r *Resolver) ResolveGlobal(seg uint16, off uint32) (GlobalAccess, bool) {
 	addr := typeinfo.Addr{Seg: seg, Off: off}
 	if global, fieldOff, ok := r.sdb.GetGlobalContaining(typeinfo.Addr{Seg: seg, Off: off}); ok {
 		return GlobalAccess{Global: global, Addr: addr, FieldOff: fieldOff}, true
@@ -68,12 +70,12 @@ func (r *Resolver) ResolveLiteral(seg uint16, off uint32) (string, bool) {
 	return r.img.ReadCStringAt(seg, off)
 }
 
-func (r *Resolver) ResolveLocal(f *typeinfo.Function, off uint32, bpOff int) (LocalAccess, bool) {
+func (r *Resolver) ResolveLocal(f *typeinfo.Function, off uint32, bpDisp int) (LocalAccess, bool) {
 	if off > 0 {
 		// PLANET* lppl [BP+6] - 4 bytes wide is bp+6 to bp+10
 		for _, p := range f.Params {
-			if bpOff >= p.BPOffset && bpOff < p.BPOffset+p.Type.Bytes() {
-				return LocalAccess{Local: p, FieldOff: bpOff - p.BPOffset}, true
+			if bpDisp >= p.BPOffset && bpDisp < p.BPOffset+p.Type.Bytes() {
+				return LocalAccess{Local: p, FieldOff: bpDisp - p.BPOffset}, true
 			}
 		}
 	}
@@ -83,8 +85,8 @@ func (r *Resolver) ResolveLocal(f *typeinfo.Function, off uint32, bpOff int) (Lo
 		if !f.InScope(v, off) {
 			continue
 		}
-		if bpOff >= v.BPOffset && bpOff < v.BPOffset+v.Type.Bytes() {
-			return LocalAccess{Local: v, FieldOff: bpOff - v.BPOffset}, true
+		if bpDisp >= v.BPOffset && bpDisp < v.BPOffset+v.Type.Bytes() {
+			return LocalAccess{Local: v, FieldOff: bpDisp - v.BPOffset}, true
 		}
 	}
 	return LocalAccess{}, false
@@ -104,6 +106,14 @@ func (r *Resolver) ResolveFunction(fixup *asm.Fixup) (*typeinfo.Function, bool) 
 	case asm.FixupTargetImportOrdinal:
 		f := r.sdb.GetFunction(fixup.FuncName)
 		return f, f != nil
+	}
+	return nil, false
+}
+
+// ResolveLocalFunctionPtr resolves a local variable  and returns the function signature it points to, if it's a function pointer
+func (r *Resolver) ResolveLocalFunctionPtr(f *typeinfo.Function, instOff uint32, bpDisp int) (*typeinfo.Function, bool) {
+	if local, ok := r.ResolveLocal(f, instOff, bpDisp); ok {
+		return typeinfo.GetFunctionPointerFunction(local.Local.Type)
 	}
 	return nil, false
 }
@@ -143,13 +153,13 @@ func (r *Resolver) ResolveFieldInContext(v typeinfo.Var, off int, ctx *UnionCont
 // LES       bx, [bp-lppl]             ; bx, [bp-0x1c]
 // CMP       es:[bx+0x2], ax
 func (r *Resolver) resolveField(base SymbolPath, s *typeinfo.Struct, off int, ctx *UnionContext) (SymbolPath, int) {
-	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx, true)
+	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx)
 	if len(matches) == 1 {
 		match := matches[0]
-		field := &SymbolField{
-			Base:  base,
-			Field: match.Field,
+		if match.Field.Bitfield != nil {
+			return base, off
 		}
+		field := symbolMemberPath(base, match.Field)
 
 		// we found an exact match, return the field path
 		if match.Off == 0 {
@@ -235,12 +245,15 @@ func (r *Resolver) ResolveContainingFieldPathInContext(base SymbolPath, off int,
 	if !ok {
 		return nil, 0, false
 	}
-	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx, true)
+	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx)
 	if len(matches) != 1 {
 		return nil, 0, false
 	}
 	match := matches[0]
-	return &SymbolField{Base: base, Field: match.Field}, match.Off, true
+	if match.Field.Bitfield != nil {
+		return nil, 0, false
+	}
+	return symbolMemberPath(base, match.Field), match.Off, true
 }
 
 // ResolveBitfieldLoad resolves a shifted and masked field load from a root symbol.
@@ -275,16 +288,16 @@ func (r *Resolver) ResolveBitfieldPathLoadInContext(base SymbolPath, off int, st
 }
 
 func (r *Resolver) resolveFieldLoad(base SymbolPath, s *typeinfo.Struct, off int, accessWidth int, ctx *UnionContext) (SymbolPath, bool) {
-	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx, true)
+	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx)
 	if field, ok := exactFieldLoad(base, matches, accessWidth); ok {
 		return field, true
 	}
 	if len(matches) == 1 {
 		match := matches[0]
-		field := &SymbolField{
-			Base:  base,
-			Field: match.Field,
+		if match.Field.Bitfield != nil {
+			return nil, false
 		}
+		field := symbolMemberPath(base, match.Field)
 
 		// we found an exact match, return the field path
 		if match.Off == 0 && match.Field.Type.Bytes() == accessWidth {
@@ -324,11 +337,7 @@ func exactFieldLoad(base SymbolPath, matches []typeinfo.StructFieldMatch, access
 // resolveBitfieldLoad recursively matches a bitfield by storage and bit range.
 func (r *Resolver) resolveBitfieldLoad(base SymbolPath, s *typeinfo.Struct, off int, storageWidth int, bitOff int, bitWidth int, ctx *UnionContext) (SymbolPath, bool) {
 	var out SymbolPath
-	for _, match := range r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx, true) {
-		field := &SymbolField{
-			Base:  base,
-			Field: match.Field,
-		}
+	for _, match := range r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx) {
 		if match.Field.Bitfield != nil {
 			fieldBitOff := match.Off*8 + bitOff
 			if bitOff+bitWidth <= storageWidth*8 &&
@@ -338,12 +347,13 @@ func (r *Resolver) resolveBitfieldLoad(base SymbolPath, s *typeinfo.Struct, off 
 				if out != nil {
 					return nil, false
 				}
-				out = field
+				out = &SymbolBitfield{Base: base, Field: match.Field}
 				continue
 			}
 		}
+		field := &SymbolField{Base: base, Field: match.Field}
 		childType, ok := match.Field.Type.(*typeinfo.Struct)
-		if match.Off == 0 || !ok {
+		if !ok {
 			continue
 		}
 		child, ok := r.resolveBitfieldLoad(field, childType, match.Off, storageWidth, bitOff, bitWidth, ctx)
@@ -358,8 +368,17 @@ func (r *Resolver) resolveBitfieldLoad(base SymbolPath, s *typeinfo.Struct, off 
 	return out, out != nil
 }
 
-// unionContextMatches narrows ambiguous union field matches using context.
-func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, ctx *UnionContext, useDefault bool) []typeinfo.StructFieldMatch {
+// symbolMemberPath builds the native symbolic node for an aggregate member.
+func symbolMemberPath(base SymbolPath, field *typeinfo.StructField) SymbolPath {
+	if field.Bitfield != nil {
+		return &SymbolBitfield{Base: base, Field: field}
+	}
+	return &SymbolField{Base: base, Field: field}
+}
+
+// unionContextMatches narrows ambiguous union field matches using an explicit
+// path selection or the union's default member when a context is active.
+func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, ctx *UnionContext) []typeinfo.StructFieldMatch {
 	if len(matches) <= 1 {
 		return matches
 	}
@@ -369,7 +388,7 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 			return selectUnionMemberMatch(strct, matches, selection.Member)
 		}
 	}
-	if !useDefault || ctx == nil {
+	if ctx == nil {
 		return matches
 	}
 	rule, ok := r.sdb.UnionRules.UnionVariantForType(strct)

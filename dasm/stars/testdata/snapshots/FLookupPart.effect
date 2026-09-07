@@ -1972,7 +1972,7 @@ block L_609c:
   preds: L_52a1, L_53b8, L_53d1, L_5443, L_545c, L_5473, L_5646, L_565f, L_5676, L_56de, L_56ec, L_56fb, L_576d, L_5786, L_579d, L_5829, L_583b, L_5841, L_5849, L_5874, L_588b, L_58e9, L_58f7, L_5906, L_591d, L_595e, L_596c, L_597a, L_5989, L_598c, L_599a, L_59d3, L_59e2, L_59f9, L_5ac9, L_5ad7, L_5ae6, L_5afd, L_5bf8, L_5c11, L_5c28, L_5cbd, L_5ccb, L_5cda, L_5d57, L_5d70, L_5d87, L_5dac, L_5dc5, L_5ddc, L_5e4f, L_5e68, L_5e7f, L_5f7b, L_5f94, L_5fab, L_5fd0, L_5fde, L_5fec, L_6013
   succs: L_60b7
   effects:
-    60ac  call TechStatus(farptr(load(ds:[load([bp+ppart])+0x6]), (load(ds:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)
+    60ac  call TechStatus(words(load(ds:[load([bp+ppart])+0x6]), (load(ds:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)
 
 block L_60b7:
   insts 1267..1271  off 0x60b7..0x60bc

@@ -73,7 +73,7 @@ block L_9ef2:
     9f1e  store[2] ss:[bp-0x16] = load@9f0c/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
     9f42  store[2] ss:[bp-0x1c] = (load@9f35/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
     9f45  store[2] ss:[bp-0x1a] = load@9f39/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
-    9f58  call fmemmove(farptr(load(ss:[bp-0x1a]), (load(ss:[bp-0x1c]) + loword((0x12 * load([bp+iDel]))))), farptr(load(ss:[bp-0x16]), (load(ss:[bp-0x18]) + loword(((load([bp+iDel]) + 0x1) * 0x12)))), loword((((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) - load([bp+iDel])) + 0xffff) * 0x12))) -> callresult(void *)
+    9f58  call fmemmove(words(load(ss:[bp-0x1a]), (load(ss:[bp-0x1c]) + loword((0x12 * load([bp+iDel]))))), words(load(ss:[bp-0x16]), (load(ss:[bp-0x18]) + loword(((load([bp+iDel]) + 0x1) * 0x12)))), loword((((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) - load([bp+iDel])) + 0xffff) * 0x12))) -> callresult(void *)
     9f64  branch load([bp+fRecycle]) == 0x0 ? L_9fca : L_9f69
 
 block L_9f69:

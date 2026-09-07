@@ -10,7 +10,7 @@ import (
 func getRegisterCallArgs(st *state, f *typeinfo.Function) []Value {
 	args := make([]Value, 0, len(f.Params))
 	if len(f.Params) > 0 {
-		args = append(args, typedWordsValue([]Value{st.readReg(asm.RegAX), st.readReg(asm.RegDX)}, f.Params[0].Type))
+		args = append(args, stackWordsValue([]Value{st.readReg(asm.RegDX), st.readReg(asm.RegAX)}))
 	}
 	if len(f.Params) > 1 {
 		args = append(args, st.readReg(asm.RegCX))
@@ -56,7 +56,7 @@ func getCallFArgs(st *state, f *typeinfo.Function, words int) []Value {
 			if idx+n > len(rawWords) {
 				break
 			}
-			args = append(args, typedStackWordsValue(rawWords[idx:idx+n], param.Type))
+			args = append(args, stackWordsValue(rawWords[idx:idx+n]))
 			idx += n
 		}
 		for idx < len(rawWords) {
@@ -79,7 +79,7 @@ func getCallFArgs(st *state, f *typeinfo.Function, words int) []Value {
 		if idx-n < 0 {
 			break
 		}
-		args = append(args, typedStackWordsValue(rawWords[idx-n:idx], param.Type))
+		args = append(args, stackWordsValue(rawWords[idx-n:idx]))
 		idx -= n
 	}
 	for i := idx - 1; i >= 0; i-- {
@@ -101,25 +101,6 @@ func stackWordsValue(words []Value) Value {
 	}
 	cp := append([]Value(nil), words...)
 	return &StackWords{Words: cp}
-}
-
-// typedWordsValue converts stack or register words using the known source type.
-func typedWordsValue(words []Value, typ typeinfo.Type) Value {
-	value := stackWordsValue(words)
-	if len(words) != 2 || !typeinfo.IsFarPointer(typ) {
-		return value
-	}
-	return FarPointerWordsVal(words[0], words[1])
-}
-
-// typedStackWordsValue converts stack words using the known source type.
-func typedStackWordsValue(words []Value, typ typeinfo.Type) Value {
-	value := stackWordsValue(words)
-	if len(words) != 2 || !typeinfo.IsFarPointer(typ) {
-		return value
-	}
-	// far pointers are pushed seg:off
-	return FarPointerWordsVal(words[1], words[0])
 }
 
 // numCleanupWordsAfterCall gets the number of 16-bit words to pop off the

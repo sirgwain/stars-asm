@@ -26,7 +26,7 @@ CBuildProdItem  (turn2)
     int32_t          lAlchCost      [BP-0x18]
     int32_t          lMinNeeded     [BP-0x14]
     int32_t          cCanBuild      [BP-0x10]
-    uint32_t         iobjOther      [BP-0xc]
+    ProdItemType     iobjOther      [BP-0xc]
     int16_t          cMax           [BP-0x8]
     int32_t          pctT           [BP-0x6]
     block 0018:1324  len=0x70
@@ -37,12 +37,11 @@ CBuildProdItem  (turn2)
 */
 L_0c92:
     cAlchemy = 0
-    LOWORD(pctInitial) = lpprod->pct
-    HIWORD(pctInitial) = 0x0
-    prod = lpprod
-    call GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 0x1) -> callresult(void)
+    pctInitial = lpprod->pct
+    prod = *lpprod
+    call GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 1) -> callresult(void)
     cBuilt = 0
-    branch prod.grobj != 0x1 ? L_0d49 : L_0d12
+    branch prod.grobj != grobjPlanet ? L_0d49 : L_0d12
 
 L_0d12:
     branch 0x0 != 0x0 ? L_0d49 : L_0d1a
@@ -54,7 +53,7 @@ L_0d36:
     branch 0x0 < 0x0 ? L_0d43 : L_0d3b
 
 L_0d3b:
-    branch prod.iItem >= 0x7 ? L_0d49 : L_0d43
+    branch prod.iItem >= mdIdleFactory ? L_0d49 : L_0d43
 
 L_0d43:
     t_merge_0d4c_0001 = 0x1
@@ -72,40 +71,37 @@ L_0d58:
     goto L_0f2c
 
 L_0d74:
-    iobjOther = 0x8
-    ss:[bp-0x56] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x8)) & 0xfff)
-    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    iobjOther = mdIdleMine
+    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - lppl->cMines)
     goto L_0f9f
 
 L_0dbe:
-    iobjOther = 0x7
-    ss:[bp-0x56] = (loword((uint32_t)(words(*(lppl+0x14), *(lppl+0x16)) >> 0x14)) & 0xfff)
-    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    iobjOther = mdIdleFactory
+    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - lppl->cFactories)
     goto L_0f9f
 
 L_0e08:
-    iobjOther = 0x9
-    ss:[bp-0x56] = lppl->cDefenses
-    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 0x1) - ss:[bp-0x56])
+    iobjOther = mdIdleDefense
+    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - lppl->cDefenses)
     goto L_0f9f
 
 L_0e4a:
-    iobjOther = 0xb
+    iobjOther = mdIdleAlchemy
     goto L_0f9f
 
 L_0e57:
-    iobjOther = 0xc
+    iobjOther = mdIdleTerraform
     cMax = IpctCanTerraformLppl(lppl)
     branch cMax <= 0 ? L_0f9f : L_0e7b
 
 L_0e7b:
-    branch prod.iItem != 0x4 ? L_0f9f : L_0e97
+    branch prod.iItem != iobjMinTerraform ? L_0f9f : L_0e97
 
 L_0e97:
     branch 0x0 != 0x0 ? L_0f9f : L_0e9f
 
 L_0e9f:
-    call ChgPopFromPlanet(lppl, 0x0) -> t_call_0ea9
+    call ChgPopFromPlanet(lppl, 0) -> t_call_0ea9
     branch hiword(t_call_0ea9) < 0x0 ? L_0f9f : L_0eb9
 
 L_0eb9:
@@ -122,7 +118,7 @@ L_0ee3:
 
 
 L_0eeb:
-    iobjOther = 0x11
+    iobjOther = iobjPacketMixed
     branch IWarpMAFromLppl(lppl, 0x0) == 0 ? L_0f21 : L_0f0f
 
 L_0f0f:
@@ -133,43 +129,43 @@ L_0f21:
 
 
 L_0f2c:
-    branch prod.iItem != 0x0 ? L_0f3c : L_0f34
+    branch prod.iItem != iobjMine ? L_0f3c : L_0f34
 
 L_0f34:
     branch 0x0 == 0x0 ? L_0d74 : L_0f3c
 
 L_0f3c:
-    branch prod.iItem != 0x1 ? L_0f4c : L_0f44
+    branch prod.iItem != iobjFactory ? L_0f4c : L_0f44
 
 L_0f44:
     branch 0x0 == 0x0 ? L_0dbe : L_0f4c
 
 L_0f4c:
-    branch prod.iItem != 0x2 ? L_0f5c : L_0f54
+    branch prod.iItem != iobjDefense ? L_0f5c : L_0f54
 
 L_0f54:
     branch 0x0 == 0x0 ? L_0e08 : L_0f5c
 
 L_0f5c:
-    branch prod.iItem != 0x3 ? L_0f6c : L_0f64
+    branch prod.iItem != iobjAlchemy ? L_0f6c : L_0f64
 
 L_0f64:
     branch 0x0 == 0x0 ? L_0e4a : L_0f6c
 
 L_0f6c:
-    branch prod.iItem != 0x4 ? L_0f7c : L_0f74
+    branch prod.iItem != iobjMinTerraform ? L_0f7c : L_0f74
 
 L_0f74:
     branch 0x0 == 0x0 ? L_0e57 : L_0f7c
 
 L_0f7c:
-    branch prod.iItem != 0x5 ? L_0f8c : L_0f84
+    branch prod.iItem != iobjMaxTerraform ? L_0f8c : L_0f84
 
 L_0f84:
     branch 0x0 == 0x0 ? L_0e57 : L_0f8c
 
 L_0f8c:
-    branch prod.iItem != 0x6 ? L_0f9f : L_0f94
+    branch prod.iItem != iobjPacket ? L_0f9f : L_0f94
 
 L_0f94:
     branch 0x0 == 0x0 ? L_0eeb : L_0f9f
@@ -184,20 +180,20 @@ L_0fad:
     branch 0x0 > signhiword(cMax) ? L_1000 : L_0fd0
 
 L_0fd0:
-    branch ss:[bp-0x56] < signhiword(cMax) ? L_0fdc : L_0fd5
+    branch scratch_bp_m56 < signhiword(cMax) ? L_0fdc : L_0fd5
 
 L_0fd5:
-    branch ss:[bp-0x58] > cMax ? L_1000 : L_0fdc
+    branch scratch_bp_m58 > cMax ? L_1000 : L_0fdc
 
 L_0fdc:
-    branch prod.iItem != 0x3 ? L_102c : L_0ff8
+    branch prod.iItem != iobjAlchemy ? L_102c : L_0ff8
 
 L_0ff8:
     branch 0x0 != 0x0 ? L_102c : L_1000
 
 L_1000:
-    prod.cItem = loword((int32_t)(words((cMax & 0x3ff), 0x0) << 0x0))
-    HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words((cMax & 0x3ff), 0x0) << 0x0)))
+    LOWORD(prod) = ((LOWORD(prod) & 0xfc00) | loword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0)))
+    HIWORD(prod) = ((HIWORD(prod) & 0xffff) | hiword((int32_t)(words(0x0, (cMax & 0x3ff)) << 0x0)))
 
 L_102c:
     i = 0
@@ -274,8 +270,8 @@ L_1183:
     goto L_1270
 
 L_1190:
-    pctT = (int32_t)((uint32_t)(words((HIWORD(rgRes[i]) + HIWORD(rgCostPaid[i])), (LOWORD(rgRes[i]) + LOWORD(rgCostPaid[i]))) * 0x64) / rgCost[i])
-    pctTooBig = (int32_t)((uint32_t)(words(((HIWORD(rgRes[i]) + HIWORD(rgCostPaid[i])) + 0x0), ((LOWORD(rgRes[i]) + LOWORD(rgCostPaid[i])) + 0x1)) * 0x64) / rgCost[i])
+    pctT = (int32_t)((uint32_t)((rgRes[i] + rgCostPaid[i]) * 0x64) / rgCost[i])
+    pctTooBig = (int32_t)((uint32_t)(((rgRes[i] + rgCostPaid[i]) + 0x1) * 0x64) / rgCost[i])
     branch HIWORD(pctT) < (HIWORD(pctTooBig) + 0xffff) ? L_125e : L_1248
 
 L_1248:
@@ -285,14 +281,14 @@ L_124d:
     branch LOWORD(pctT) <= (LOWORD(pctTooBig) + 0xffff) ? L_125e : L_1255
 
 L_1255:
-    t_merge_126a_0001_wide = pctT
+    t_merge_126a_0001 = pctT
     goto L_126a
 
 L_125e:
-    t_merge_126a_0001_wide = (pctTooBig - 1)
+    t_merge_126a_0001 = (pctTooBig - 1)
 
 L_126a:
-    pctT = t_merge_126a_0001_wide
+    pctT = t_merge_126a_0001
 
 L_1270:
     branch HIWORD(pctT) > HIWORD(pct) ? L_12e6 : L_127e
@@ -304,7 +300,8 @@ L_1283:
     branch LOWORD(pctT) >= LOWORD(pct) ? L_12e6 : L_128b
 
 L_128b:
-    lMinNeeded = ((rgCost[i] - rgCostPaid[i]) - rgRes[i])
+    LOWORD(lMinNeeded) = ((LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) - LOWORD(rgRes[i]))
+    HIWORD(lMinNeeded) = ((HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) - HIWORD(rgRes[i]))
     pct = pctT
     branch i != 3 ? L_12e1 : L_12d9
 
@@ -351,8 +348,7 @@ L_1398:
     branch i < 4 ? L_1324 : L_13a1
 
 L_13a1:
-    LOWORD(prod) = ((LOWORD(prod) & 0xffff) | loword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14)))
-    HIWORD(prod) = ((HIWORD(prod) & 0xf80f) | hiword((int32_t)(words((LOWORD(pct) & 0x7f), 0x0) << 0x14)))
+    prod.pct = LOWORD(pct)
     branch fAlchemy == 0 ? L_1712 : L_13d5
 
 L_13d5:
@@ -372,9 +368,8 @@ L_140c:
     t_merge_1410_0001 = 0x64
 
 L_1410:
-    LOWORD(lAlchCost) = t_merge_1410_0001
-    HIWORD(lAlchCost) = 0x0
-    cCanBuild = (int32_t)(words(*(rgRes+0xe), LOWORD(rgRes[0x3])) / lAlchCost)
+    lAlchCost = (uint32_t)t_merge_1410_0001
+    cCanBuild = (int32_t)(rgRes[3] / lAlchCost)
     branch HIWORD(cCanBuild) < HIWORD(lMinNeeded) ? L_1457 : L_143e
 
 L_143e:
@@ -432,15 +427,12 @@ L_14f8:
     branch pprodPartial == 0x0 ? L_1712 : L_1501
 
 L_1501:
-    call memset(pprodPartial, 0x0, 0x4) -> callresult(void *)
-    pprodPartial = ((pprodPartial & 0xffff) | 0x0)
+    call memset(pprodPartial, 0, 0x4) -> callresult(void *)
     pprodPartial->grobj = grobjPlanet
-    pprodPartial = ((pprodPartial & 0x3ff) | 0x2c00)
-    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | 0x0)
+    pprodPartial->iItem = mdIdleAlchemy
     pprodPartial->cItem = 0x1
-    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xffff) | 0x0)
-    pctT = (int32_t)((uint32_t)(words(*(rgRes+0xe), LOWORD(rgRes[0x3])) * 0x64) / lAlchCost)
-    pctTooBig = (int32_t)((uint32_t)(words((*(rgRes+0xe) + 0x0), (LOWORD(rgRes[0x3]) + 0x1)) * 0x64) / lAlchCost)
+    pctT = (int32_t)((uint32_t)(rgRes[3] * 100) / lAlchCost)
+    pctTooBig = (int32_t)((uint32_t)((rgRes[3] + 1) * 0x64) / lAlchCost)
     branch HIWORD(pctT) < (HIWORD(pctTooBig) + 0xffff) ? L_15ec : L_15d6
 
 L_15d6:
@@ -450,35 +442,31 @@ L_15db:
     branch LOWORD(pctT) <= (LOWORD(pctTooBig) + 0xffff) ? L_15ec : L_15e3
 
 L_15e3:
-    t_merge_15f8_0001_wide = pctT
+    t_merge_15f8_0001 = pctT
     goto L_15f8
 
 L_15ec:
-    t_merge_15f8_0001_wide = (pctTooBig - 1)
+    t_merge_15f8_0001 = (pctTooBig - 1)
 
 L_15f8:
-    pctT = t_merge_15f8_0001_wide
-    pprodPartial = ((pprodPartial & 0xffff) | loword((int32_t)(words((LOWORD(pctT) & 0x7f), 0x0) << 0x14)))
-    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xf80f) | hiword((int32_t)(words((LOWORD(pctT) & 0x7f), 0x0) << 0x14)))
-    LOWORD(rgRes[0x3]) = (LOWORD(rgRes[0x3]) - loword((int32_t)((uint32_t)(pctT * lAlchCost) / 0x64)))
-    *(rgRes+0xe) = (*(rgRes+0xe) - hiword((int32_t)((uint32_t)(pctT * lAlchCost) / 0x64)))
+    pctT = t_merge_15f8_0001
+    pprodPartial->pct = LOWORD(pctT)
+    rgRes[3] = (rgRes[3] - (int32_t)((uint32_t)(pctT * lAlchCost) / 0x64))
 
 
 L_165c:
     cBuilt = (cBuilt + 1)
-    ss:[bp-0x58] = ((LOWORD(prod) + 0xffff) & 0x3ff)
-    ss:[bp-0x56] = 0x0
+    scratch_bp_m58 = ((LOWORD(prod) + 0xffff) & 0x3ff)
+    scratch_bp_m56 = 0x0
     prod.cItem = 0x0
-    HIWORD(prod) = (HIWORD(prod) & 0xffff)
-    LOWORD(prod) = (LOWORD(prod) | ss:[bp-0x58])
-    HIWORD(prod) = (HIWORD(prod) | ss:[bp-0x56])
-    LOWORD(prod) = ((LOWORD(prod) & 0xffff) | 0x0)
+    prod = (prod | scratch_bp_m58)
     prod.pct = 0x0
     i = 0
     goto L_1706
 
 L_16ba:
-    rgRes[i] = (rgRes[i] - (rgCost[i] - rgCostPaid[i]))
+    LOWORD(rgRes[i]) = (LOWORD(rgRes[i]) - (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])))
+    HIWORD(rgRes[i]) = (HIWORD(rgRes[i]) - (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])))
     rgCostPaid[i] = 0
     i = (i + 1)
 
@@ -492,19 +480,19 @@ L_1712:
     branch cBuilt <= 0 ? L_17b7 : L_171b
 
 L_171b:
-    branch prod.grobj != 0x1 ? L_17b7 : L_1737
+    branch prod.grobj != grobjPlanet ? L_17b7 : L_1737
 
 L_1737:
     branch 0x0 != 0x0 ? L_17b7 : L_173f
 
 L_173f:
-    branch prod.iItem != 0xb ? L_1763 : L_175b
+    branch prod.iItem != mdIdleAlchemy ? L_1763 : L_175b
 
 L_175b:
     branch 0x0 == 0x0 ? L_1787 : L_1763
 
 L_1763:
-    branch prod.iItem != 0x3 ? L_17b7 : L_177f
+    branch prod.iItem != iobjAlchemy ? L_17b7 : L_177f
 
 L_177f:
     branch 0x0 != 0x0 ? L_17b7 : L_1787
@@ -531,7 +519,7 @@ L_17c9:
     branch gd.fGeneratingTurn == 0x0 ? L_17fb : L_17d9
 
 L_17d9:
-    call FSendPlrMsg2(lppl->iPlayer, 0x8c, lppl->id, lppl->id, cAlchemy) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy) -> callresult(int16_t)
 
 L_17fb:
     branch pmdStatus == 0x0 ? L_18d1 : L_1804
@@ -616,8 +604,7 @@ L_18da:
     branch fAutoBuild != 0 ? L_18f3 : L_18e3
 
 L_18e3:
-    LOWORD(lpprod) = LOWORD(prod)
-    *(lpprod+0x2) = HIWORD(prod)
+    lpprod = prod
 
 L_18f3:
     branch fAutoBuild == 0 ? L_19a5 : L_18fc
@@ -641,12 +628,9 @@ L_1944:
     branch prod.pct <= 0x0 ? L_19a5 : L_194c
 
 L_194c:
-    pprodPartial = LOWORD(prod)
-    *(pprodPartial+0x2) = HIWORD(prod)
+    *pprodPartial = prod
     pprodPartial->cItem = 0x1
-    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xffff) | 0x0)
-    pprodPartial = (pprodPartial->cItem | loword((int32_t)(words((LOWORD(iobjOther) & 0x7f), 0x0) << 0xa)))
-    *(pprodPartial+0x2) = ((*(pprodPartial+0x2) & 0xfffe) | hiword((int32_t)(words((LOWORD(iobjOther) & 0x7f), 0x0) << 0xa)))
+    pprodPartial->iItem = LOWORD(iobjOther)
 
 L_19a5:
 

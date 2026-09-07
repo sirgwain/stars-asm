@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/sem"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -13,13 +14,19 @@ type lowerer struct {
 	cfg      *machine.CFG
 	temps    []Local
 	tempSeen map[string]bool
+	scratch  map[string]int
 }
 
 // Lower converts post-processed semantic IR into low-level C-like IR.
 // Unsupported semantic constructs are preserved as comment statements rather
 // than guessed at, so the dump remains conservative.
 func Lower(src sem.Func, fn *typeinfo.Function) Func {
-	l := &lowerer{fn: fn, cfg: src.CFG, tempSeen: make(map[string]bool)}
+	l := &lowerer{
+		fn:       fn,
+		cfg:      src.CFG,
+		tempSeen: make(map[string]bool),
+		scratch:  make(map[string]int),
+	}
 	out := Func{Name: fn.Name, Decl: fn.CDecl()}
 
 	for _, v := range fn.Vars {
@@ -174,7 +181,10 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		_, ptr := typeinfo.UnwrapPointer(e.Base.ExprType())
 		return &Field{Base: base, Name: e.Field.Name, Pointer: ptr}, true
 	case *sem.SymbolRef:
-		return &Var{Name: e.Path.CDecl()}, true
+		if scratch := scratchSymbolRoot(e.Path); scratch != nil {
+			l.addScratch(scratch)
+		}
+		return &Var{Name: e.Path.String()}, true
 	case *sem.Compare:
 		lhs, ok1 := l.lowerExpr(e.LHS)
 		rhs, ok2 := l.lowerExpr(e.RHS)
@@ -223,14 +233,6 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		}
 		return &Macro{Name: name, Args: []Expr{parent}}, true
 	case *sem.FarPointer:
-		if e.Part == machine.FarPointerWhole {
-			seg, ok1 := l.lowerExpr(e.Segment)
-			off, ok2 := l.lowerExpr(e.Offset)
-			if !ok1 || !ok2 {
-				return nil, false
-			}
-			return &Macro{Name: "farptr", Args: []Expr{seg, off}}, true
-		}
 		parent, ok := l.lowerExpr(e.Parent)
 		if !ok {
 			return nil, false
@@ -328,6 +330,37 @@ func (l *lowerer) addTemp(t *sem.Temp) {
 	}
 	l.tempSeen[t.Name] = true
 	l.temps = append(l.temps, Local{Name: t.Name, Type: t.ExprType()})
+}
+
+// addScratch records a surviving synthetic scratch symbol as an IR local.
+func (l *lowerer) addScratch(s *symresolve.SymbolScratch) {
+	name := s.String()
+	if index, ok := l.scratch[name]; ok {
+		if l.temps[index].Type.Bytes() < s.Type().Bytes() {
+			l.temps[index].Type = s.Type()
+		}
+		return
+	}
+	l.scratch[name] = len(l.temps)
+	l.temps = append(l.temps, Local{Name: name, Type: s.Type()})
+}
+
+// scratchSymbolRoot returns the synthetic scratch root of a symbol path.
+func scratchSymbolRoot(path symresolve.SymbolPath) *symresolve.SymbolScratch {
+	for {
+		switch p := path.(type) {
+		case *symresolve.SymbolScratch:
+			return p
+		case *symresolve.SymbolOffset:
+			path = p.Base
+		case *symresolve.SymbolField:
+			path = p.Base
+		case *symresolve.SymbolBitfield:
+			path = p.Base
+		default:
+			return nil
+		}
+	}
 }
 
 func lowerUnaryOp(op sem.Op) (string, bool, bool) {

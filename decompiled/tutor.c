@@ -31,8 +31,8 @@ L_0000:
 
 L_000f:
     tutor.hwnd = hwnd;
-    SetWindowPos(hwnd, 0xffff, 0x0, 0x0, 0x0, 0x0, 0x3);
-    StickyDlgPos(hwnd, &(ptStickyTutorDlg), 0x1);
+    SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, 0x3);
+    StickyDlgPos(hwnd, ptStickyTutorDlg.x, 1);
     return 0x1;
 
 L_004e:
@@ -56,8 +56,8 @@ L_00a3:
 
 L_00ad:
     lpProc = MakeProcInstance(PanicDlg, hInst);
-    fRet = DialogBox(hInst, IDD_PANIC, hwnd, &(lpProc));
-    FreeProcInstance(&(lpProc));
+    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_PANIC), hwnd, lpProc);
+    FreeProcInstance(lpProc);
     if ((fRet == 0))
         goto L_025b;
     else
@@ -77,8 +77,8 @@ L_0105:
     t_merge_0108_0001 = 0x0;
 
 L_0108:
-    tutor.wFlags = ((tutor.wFlags & 0xfdff) | ((t_merge_0108_0001 & 0x1) << 0x9));
-    PostMessage(hwndFrame, WM_STARS_CONTINUE, fRet, 0x0);
+    tutor.fAutoComplete = t_merge_0108_0001;
+    PostMessage(hwndFrame, WM_STARS_CONTINUE, fRet, 0);
 
 L_0142:
     if ((wParam != 0x2))
@@ -87,7 +87,7 @@ L_0142:
         goto L_014b;
 
 L_014b:
-    ShowTutor(0x0);
+    ShowTutor(0);
     if ((tutor.fShowHidMsg == 0x0))
         goto L_0197;
     else
@@ -111,12 +111,12 @@ L_01a9:
     return 0x1;
 
 L_01cb:
-    StickyDlgPos(hwnd, &(ptStickyTutorDlg), 0x0);
+    StickyDlgPos(hwnd, ptStickyTutorDlg.x, 0);
     tutor.hwnd = 0x0;
-    hmenu = GetASubMenu(hwndFrame, 0x5);
+    hmenu = GetASubMenu(hwndFrame, 5);
     CheckMenuItem(hmenu, 0x9c5, 0x0);
-    EndDialog(hwnd, 0x1);
-    EndTutor(0x1);
+    EndDialog(hwnd, 1);
+    EndTutor(1);
     return 0x1;
 
 L_0228:
@@ -187,7 +187,7 @@ L_02d6:
         goto L_02df;
 
 L_02df:
-    EndDialog(hwnd, 0x0);
+    EndDialog(hwnd, 0);
     return 0x1;
 
 L_02f4:
@@ -264,7 +264,7 @@ L_039d:
 
 L_03a0:
     ShowWindow(tutor.hwnd, t_merge_03a0_0001);
-    tutor.wFlags = ((tutor.wFlags & 0xfffe) | (fShow & 0x1));
+    tutor.fVisible = fShow;
 
 L_03b9:
     return;
@@ -291,17 +291,17 @@ L_03c0:
     GetWindowRect(GetDlgItem(hwnd, IDCANCEL), &(rcBtn));
     rc.bottom = rcBtn.top;
     ScreenToClient(hwnd, &(rc));
-    ScreenToClient(hwnd, &(rc.right));
+    ScreenToClient(hwnd, rc.right);
     rc.top = (rc.top + (dyArial8 * 2));
     rc.bottom = (rc.bottom - ((uint32_t)((dyArial8 * 0x2)) / 3));
     rc.left = (rc.left + ((uint32_t)((dyArial8 * 0x2)) / 3));
     rc.right = (rc.right - ((uint32_t)((dyArial8 * 0x2)) / 3));
     SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), 0x1, PATCOPY);
-    PatBlt(hdc, rc.left, rc.top, 0x1, (rc.bottom - rc.top), PATCOPY);
+    PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), 1, PATCOPY);
+    PatBlt(hdc, rc.left, rc.top, 1, (rc.bottom - rc.top), PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, rc.left, (rc.bottom - 1), (rc.right - rc.left), 0x1, PATCOPY);
-    PatBlt(hdc, (rc.right - 1), rc.top, 0x1, (rc.bottom - rc.top), PATCOPY);
+    PatBlt(hdc, rc.left, (rc.bottom - 1), (rc.right - rc.left), 1, PATCOPY);
+    PatBlt(hdc, (rc.right - 1), rc.top, 1, (rc.bottom - rc.top), PATCOPY);
     /* untranslated: call ExpandRc(&rc, ((sext16to32(dyArial8) / 2) neg 0x0), ((sext16to32(dyArial8) / 2) neg 0x0)) -> callresult(void) */
     yTop = rc.top;
     FillRect(hdc, &(rc), hbrButtonFace);
@@ -365,7 +365,7 @@ L_0633:
     t_merge_0636_0001 = 0x0;
 
 L_0636:
-    WrapTextOut(hdc, &(xLeft), &(yTop), rgch, cch, rc.left, (rc.right - rc.left), 0x0, t_merge_0636_0001, 0x1);
+    WrapTextOut(hdc, &(xLeft), &(yTop), rgch, cch, rc.left, (rc.right - rc.left), 0x0, t_merge_0636_0001, 1);
     if (((tutor.idt + didt) != tutor.idtBold))
         goto L_0692;
     else
@@ -400,7 +400,7 @@ L_06b4:
         goto L_06d0;
 
 L_06d0:
-    memset(&(tutor), 0x0, 0x2c);
+    memset(tutor.wFlags, 0, 0x2c);
     if ((LOWORD(lpfnTutorDlgProc) != 0x0))
         goto L_0748;
     else
@@ -498,8 +498,8 @@ L_07ea:
         goto L_0806;
 
 L_0806:
-    strcat(szBase, ".xy");
-    if ((access(szBase, 0x0) == -1))
+    strcat(szBase, 0x148a);
+    if ((access(szBase, 0) == -1))
         goto L_08a4;
     else
         goto L_082e;
@@ -512,9 +512,9 @@ L_082e:
 
 L_0857:
     szBase[cch] = 0;
-    strcat(szBase, ".m1");
+    strcat(szBase, 0x148e);
     ini.fStartupFile = 0x1;
-    if ((FOpenGame(hwndFrame, 0x0) <= 0))
+    if ((FOpenGame(hwndFrame, 0) <= 0))
         goto L_0898;
     else
         goto L_0893;
@@ -542,13 +542,13 @@ L_08b6:
 
 L_08c0:
     CreateTutorWorld();
-    /* untranslated: call memset(&part[14:0](vrgZipProd), 0x0, 0x1a) -> callresult(void *) */
+    /* untranslated: call memset(part[0xe:2](vrgZipProd[0x0]), 0, 0x1a) -> callresult(void *) */
     vrgZipProd[0].fValid = 0x1;
     gd.fChgZipProd = 0x1;
 
 L_08ea:
     InitializeMenu(0x0);
-    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((fFreeingTitle != 0))
         goto L_092e;
     else
@@ -564,8 +564,7 @@ L_092e:
 
 L_093b:
     tutor.idsError = -1;
-    tutor.fShowHidMsg = 0x1;
-    tutor.idt = 0;
+    /* untranslated: part[0x0:4](tutor) = (uint32_t)((tutor.wFlags & 0xbfff) | 0x4000) */
     tutor.idtBold = 0;
     tutor.fProgress = 0x0;
 
@@ -592,7 +591,7 @@ L_098e:
         goto L_09a4;
 
 L_09a4:
-    EndTutor(0x0);
+    EndTutor(0);
     goto L_0a29;
 
 L_09b3:
@@ -602,7 +601,7 @@ L_09b3:
         goto L_09bd;
 
 L_09bd:
-    CreateDialog(hInst, IDD_TUTOR, hwndFrame, &(lpfnTutorDlgProc));
+    CreateDialog(hInst, MAKEINTRESOURCE(IDD_TUTOR), hwndFrame, lpfnTutorDlgProc);
 
 L_09da:
     if ((tutor.idt == 0))
@@ -624,8 +623,8 @@ L_09fd:
     AdvanceTutor();
 
 L_0a08:
-    ShowTutor(0x1);
-    InvalidateRect(tutor.hwnd, 0x0, 0x1);
+    ShowTutor(1);
+    InvalidateRect(tutor.hwnd, 0x0, 1);
 
 L_0a29:
     return;
@@ -723,10 +722,10 @@ L_0b26:
         goto L_0b31;
 
 L_0b31:
-    TutorError(0x20a);
+    TutorError(522);
 
 L_0b3d:
-    EndTutor(0x0);
+    EndTutor(0);
     goto L_0bfb;
 
 L_0b4c:
@@ -738,12 +737,12 @@ L_0b4c:
 LUpdatePage:
     _wsprintf(szTitle, PszGetCompressedString(idsStarsTutorPageD80), (((uint32_t)(tutor.idt) / 8) + 0x1));
     SetWindowText(tutor.hwnd, szTitle);
-    ShowTutor(0x1);
+    ShowTutor(1);
     GetWindowRect(tutor.hwnd, &(rc));
     ScreenToClient(tutor.hwnd, &(rc));
-    ScreenToClient(tutor.hwnd, &(rc.right));
+    ScreenToClient(tutor.hwnd, rc.right);
     /* untranslated: call ExpandRc(&rc, (dyArial8 neg 0), loword((-2 * dyArial8))) -> callresult(void) */
-    InvalidateRect(tutor.hwnd, &(rc), 0x1);
+    InvalidateRect(tutor.hwnd, &(rc), 1);
 
 L_0bfb:
     return;
@@ -781,7 +780,7 @@ L_0c5a:
     tutor.fFreeing = 0x1;
 
 L_0c66:
-    memset(&(tutor), 0x0, 0x2c);
+    memset(tutor.wFlags, 0, 0x2c);
     Randomize2(GetTickCount());
 
 L_0c89:
@@ -797,18 +796,18 @@ L_0c90:
     tutor.fGameSaved = 0x0;
     tutor.grbitScan = grbitScan;
     tutor.iScanZoom = iScanZoom;
-    tutor.wFlags = ((tutor.wFlags & 0xf7ff) | ((gd.fToolbar & 0x1) << 0xb));
+    tutor.fTBVis = gd.fToolbar;
     tutor.zpq = vrgZipProd[0x0].zpq1;
-    /* untranslated: tutor.wFlags = ((tutor.wFlags & 0xefff) | (((part[13:2](vrgZipProd[0x0]) & 0xff) & 0x1) << 0xc)) */
+    /* untranslated: tutor.fValidQ = (part[0xd:2](vrgZipProd[0x0]) & 0xff) */
     vrgZipProd[0].zpq1 = vrgZipProd[0x4].zpq1;
-    /* untranslated: part[13:2](vrgZipProd[0x0]) = part[13:2](vrgZipProd[0x4]) */
+    /* untranslated: part[0xd:2](vrgZipProd[0x0]) = part[0xd:2](vrgZipProd[0x4]) */
     if ((gd.fToolbar != 0x0))
         goto L_0db2;
     else
         goto L_0d37;
 
 L_0d37:
-    hmenu = GetASubMenu(hwndFrame, 0x1);
+    hmenu = GetASubMenu(hwndFrame, 1);
     if ((gd.fToolbar != 0x0))
         goto L_0d63;
     else
@@ -855,7 +854,7 @@ L_0dc2:
 L_0dcc:
     vrptFleet.icolSort = 1;
     vrptFleet.fAscending = 1;
-    InvalidateReport(0x1, 0x0);
+    InvalidateReport(1, 0);
 
 L_0de8:
     if ((LOWORD(game.lid) != 0x0))
@@ -897,16 +896,16 @@ L_0e35:
     grbitScan = tutor.grbitScan;
     iScanZoom = tutor.iScanZoom;
     vrgZipProd[4].zpq1 = vrgZipProd[0x0].zpq1;
-    /* untranslated: part[13:2](vrgZipProd[0x4]) = part[13:2](vrgZipProd[0x0]) */
+    /* untranslated: part[0xd:2](vrgZipProd[0x4]) = part[0xd:2](vrgZipProd[0x0]) */
     vrgZipProd[0].zpq1 = tutor.zpq;
-    /* untranslated: part[13:2](vrgZipProd[0x0]) = lobyte(tutor.fValidQ) */
+    /* untranslated: part[0xd:2](vrgZipProd[0x0]) = lobyte(tutor.fValidQ) */
     if ((gd.fToolbar == tutor.fTBVis))
         goto L_0f0e;
     else
         goto L_0e93;
 
 L_0e93:
-    hmenu = GetASubMenu(hwndFrame, 0x1);
+    hmenu = GetASubMenu(hwndFrame, 1);
     if ((gd.fToolbar != 0x0))
         goto L_0ebf;
     else
@@ -945,7 +944,7 @@ L_0f0e:
 
 L_0f1a:
     vrptFleet.icolSort = tutor.icolFSort;
-    InvalidateReport(0x1, 0x1);
+    InvalidateReport(1, 1);
 
 L_0f30:
     return;
@@ -965,7 +964,7 @@ L_0f49:
         goto L_0f72;
 
 L_0f72:
-    EndTutor(0x1);
+    EndTutor(1);
     return 0x1;
 
 L_0f87:
@@ -989,49 +988,79 @@ int16_t FTutorTaskDone() {
     uint16_t t_merge_1c45_0001;
     uint16_t t_merge_1c89_0001;
     uint16_t t_merge_1d3b_0001;
+    PLANET  *t_call_1d8a;
     uint16_t t_merge_1dee_0001;
+    PLANET  *t_call_1dfb;
     uint16_t t_merge_1e5f_0001;
     uint16_t t_merge_1f19_0001;
     uint16_t t_merge_1f5c_0001;
     uint16_t t_merge_1ff7_0001;
     uint16_t t_merge_2060_0001;
     uint16_t t_merge_213b_0001;
+    PLANET  *t_call_2216;
     uint16_t t_merge_227e_0001;
     uint16_t t_merge_2338_0001;
+    PLANET  *t_call_234b;
     uint16_t t_merge_2409_0001;
     uint16_t t_merge_249f_0001;
     uint16_t t_merge_24c2_0001;
+    PLANET  *t_call_2557;
     uint16_t t_merge_2668_0001;
     uint16_t t_merge_2782_0001;
     uint16_t t_merge_29a8_0001;
     uint16_t t_merge_2a51_0001;
     uint16_t t_merge_2a78_0001;
     uint16_t t_merge_2bec_0001;
+    PLANET  *t_call_2cab;
+    PLANET  *t_call_2d69;
     uint16_t t_merge_2e45_0001;
     uint16_t t_merge_2e97_0001;
     uint16_t t_merge_2f4b_0001;
     uint16_t t_merge_2fa3_0001;
     LRESULT  t_call_308b;
+    PLANET  *t_call_30cb;
     uint16_t t_merge_314a_0001;
     uint16_t t_merge_3246_0001;
     uint16_t t_merge_3274_0001;
+    PLANET  *t_call_32bf;
+    PLANET  *t_call_33d9;
+    PLANET  *t_call_3424;
     uint16_t t_merge_348c_0001;
     uint16_t t_merge_36af_0001;
     uint16_t t_merge_37cf_0001;
+    PLANET  *t_call_37dc;
+    PLANET  *t_call_37ff;
+    PLANET  *t_call_3856;
     uint16_t t_merge_38ba_0001;
+    PLANET  *t_call_39b1;
     uint16_t t_merge_3ce0_0001;
+    PLANET  *t_call_3d6d;
     uint16_t t_merge_3df9_0001;
     uint16_t t_merge_3ea9_0001;
+    PLANET  *t_call_3ee8;
     uint16_t t_merge_4169_0001;
+    PLANET  *t_call_423c;
+    PLANET  *t_call_440b;
     uint16_t t_merge_452f_0001;
     FLEET   *t_call_46b2;
+    PLANET  *t_call_4710;
+    PLANET  *t_call_48b9;
     FLEET   *t_call_4bfa;
     uint16_t t_merge_4c70_0001;
+    PLANET  *t_call_4cf1;
+    FLEET   *t_call_4df2;
+    PLANET  *t_call_51d2;
+    PLANET  *t_call_5251;
     uint16_t t_merge_53ea_0001;
+    PLANET  *t_call_54e7;
     FLEET   *t_call_56df;
     uint16_t t_merge_5794_0001;
     FLEET   *t_call_57a7;
     uint16_t t_merge_58c6_0001;
+    PLANET  *t_call_5996;
+    PLANET  *t_call_5e5b;
+    PLANET  *t_call_5ffb;
+    PLANET  *t_call_61e3;
 
 L_0fbc:
     goto L_63fe;
@@ -1039,11 +1068,11 @@ L_0fbc:
 
 L_0fd1:
     tutor.idtBold = 5;
-    return FCheckMessages(0x270f, 0xffff, 0x0);
+    return FCheckMessages(9999, 0xffff, 0);
 
 L_0fee:
     tutor.idtBold = 11;
-    if ((FCheckSelection(grobjFleet, 0x0) != 0))
+    if ((FCheckSelection(grobjFleet, 0) != 0))
         goto L_1012;
     else
         goto L_100c;
@@ -1053,11 +1082,11 @@ L_100c:
 
 L_1012:
     tutor.idtBold = 15;
-    return FCheckFleetWP(0x0, 0x1, grobjPlanet, 0xc, 0x0, 0xffff);
+    return FCheckFleetWP(0x0, 1, grobjPlanet, 12, 0x0, 0xffff);
 
 L_103b:
     tutor.idtBold = 18;
-    if ((FCheckSelection(grobjFleet, 0x1) != 0))
+    if ((FCheckSelection(grobjFleet, 1) != 0))
         goto L_1065;
     else
         goto L_1059;
@@ -1068,20 +1097,20 @@ L_1059:
 
 L_1065:
     tutor.idtBold = 21;
-    return FCheckFleetWP(0x1, 0x1, grobjPlanet, 0x10, 0x0, 0xffff);
+    return FCheckFleetWP(0x1, 1, grobjPlanet, 16, 0x0, 0xffff);
 
 L_108e:
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_10d2;
     else
         goto L_10a6;
 
 L_10a6:
     tutor.idtBold = 31;
-    return FCheckFleetWP(0x4, 0x1, grobjPlanet, 0xf, 0x0, 0xffff);
+    return FCheckFleetWP(0x4, 1, grobjPlanet, 15, 0x0, 0xffff);
 
 L_10d2:
-    if ((FCheckSelection(grobjFleet, 0x3) == 0))
+    if ((FCheckSelection(grobjFleet, 3) == 0))
         goto L_10f3;
     else
         goto L_10ea;
@@ -1091,7 +1120,7 @@ L_10ea:
     goto L_111a;
 
 L_10f3:
-    if ((FCheckSelection(grobjFleet, 0x2) == 0))
+    if ((FCheckSelection(grobjFleet, 2) == 0))
         goto L_1114;
     else
         goto L_110b;
@@ -1107,7 +1136,7 @@ L_111a:
     return 0x0;
 
 L_1120:
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_1167;
     else
         goto L_1138;
@@ -1129,7 +1158,7 @@ L_115e:
     goto L_11fb;
 
 L_1167:
-    if ((FCheckSelection(grobjFleet, 0x5) == 0))
+    if ((FCheckSelection(grobjFleet, 5) == 0))
         goto L_11ae;
     else
         goto L_117f;
@@ -1151,7 +1180,7 @@ L_11a5:
     goto L_11fb;
 
 L_11ae:
-    if ((FCheckResearch(0x1, 0x6, 0xf) == 0))
+    if ((FCheckResearch(1, 6, 15) == 0))
         goto L_11e5;
     else
         goto L_11ca;
@@ -1219,7 +1248,7 @@ L_1232:
 L_123b:
 
 L_1241:
-    if ((FCheckQueue(0xd, 0x0, grobjPlanet, 0x7, 0x14, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjPlanet, 0x7, 0x14, 0x0) != 0))
         goto L_128f;
     else
         goto L_1269;
@@ -1263,7 +1292,7 @@ L_12b2:
     goto L_1935;
 
 L_12bb:
-    if ((FCheckFleetWP(0x1, 0x1, grobjPlanet, 0x15, 0x0, 0xffff) == 0))
+    if ((FCheckFleetWP(0x1, 1, grobjPlanet, 21, 0x0, 0xffff) == 0))
         goto L_12e9;
     else
         goto L_12e3;
@@ -1272,7 +1301,7 @@ L_12e3:
     return 0x1;
 
 L_12e9:
-    if ((FCheckSelection(grobjFleet, 0x0) == 0))
+    if ((FCheckSelection(grobjFleet, 0) == 0))
         goto L_1307;
     else
         goto L_1301;
@@ -1286,7 +1315,7 @@ L_1307:
 
 L_130a:
     tutor.idtBold = t_merge_130a_0001;
-    if ((FCheckFleetWP(0x0, 0x1, grobjPlanet, 0x9, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 1, grobjPlanet, 9, 0x0, 0xffff) != 0))
         goto L_133b;
     else
         goto L_1335;
@@ -1296,7 +1325,7 @@ L_1335:
 
 L_133b:
     tutor.idtBold = 51;
-    if ((FCheckFleetWP(0x0, 0x2, grobjPlanet, 0x3, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 2, grobjPlanet, 3, 0x0, 0xffff) != 0))
         goto L_136f;
     else
         goto L_1369;
@@ -1306,7 +1335,7 @@ L_1369:
 
 L_136f:
     tutor.idtBold = 52;
-    if ((FCheckFleetWP(0x0, 0x3, grobjPlanet, 0x8, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 3, grobjPlanet, 8, 0x0, 0xffff) != 0))
         goto L_13a3;
     else
         goto L_139d;
@@ -1316,7 +1345,7 @@ L_139d:
 
 L_13a3:
     tutor.idtBold = 53;
-    if ((FCheckFleetWP(0x0, 0x4, grobjPlanet, 0x5, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 4, grobjPlanet, 5, 0x0, 0xffff) != 0))
         goto L_13d7;
     else
         goto L_13d1;
@@ -1326,7 +1355,7 @@ L_13d1:
 
 L_13d7:
     tutor.idtBold = 54;
-    if ((FCheckFleetWP(0x0, 0x5, grobjPlanet, 0x2, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 5, grobjPlanet, 2, 0x0, 0xffff) != 0))
         goto L_140b;
     else
         goto L_1405;
@@ -1336,10 +1365,10 @@ L_1405:
 
 L_140b:
     tutor.idtBold = 55;
-    return FCheckSelection(grobjFleet, 0x1);
+    return FCheckSelection(grobjFleet, 1);
 
 L_1424:
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0xe, 0x0, 0xffff) == 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 14, 0x0, 0xffff) == 0))
         goto L_1452;
     else
         goto L_144c;
@@ -1349,7 +1378,7 @@ L_144c:
 
 L_1452:
     tutor.idtBold = 57;
-    if ((FCheckFleetWP(0x1, 0x1, grobjPlanet, 0x15, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x1, 1, grobjPlanet, 21, 0x0, 0xffff) != 0))
         goto L_1486;
     else
         goto L_1480;
@@ -1359,7 +1388,7 @@ L_1480:
 
 L_1486:
     tutor.idtBold = 58;
-    if ((FCheckFleetWP(0x1, 0x2, grobjPlanet, 0x13, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x1, 2, grobjPlanet, 19, 0x0, 0xffff) != 0))
         goto L_14ba;
     else
         goto L_14b4;
@@ -1369,7 +1398,7 @@ L_14b4:
 
 L_14ba:
     tutor.idtBold = 59;
-    if ((FCheckFleetWP(0x1, 0x3, grobjPlanet, 0x14, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x1, 3, grobjPlanet, 20, 0x0, 0xffff) != 0))
         goto L_14ee;
     else
         goto L_14e8;
@@ -1379,7 +1408,7 @@ L_14e8:
 
 L_14ee:
     tutor.idtBold = 60;
-    if ((FCheckFleetWP(0x1, 0x4, grobjPlanet, 0x7, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x1, 4, grobjPlanet, 7, 0x0, 0xffff) != 0))
         goto L_1522;
     else
         goto L_151c;
@@ -1388,7 +1417,7 @@ L_151c:
     return 0x0;
 
 L_1522:
-    if ((FCheckMessages(0x2, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(2, 0xffff, 0) == 0))
         goto L_1544;
     else
         goto L_153e;
@@ -1402,10 +1431,10 @@ L_1544:
 
 L_1547:
     tutor.idtBold = t_merge_1547_0001;
-    return FCheckSelection(grobjFleet, 0x4);
+    return FCheckSelection(grobjFleet, 4);
 
 L_155d:
-    if ((FCheckFleetWP(0x5, 0x1, grobjPlanet, 0xc, 0x3, 0xffff) == 0))
+    if ((FCheckFleetWP(0x5, 1, grobjPlanet, 12, 0x3, 0xffff) == 0))
         goto L_158b;
     else
         goto L_1585;
@@ -1415,7 +1444,7 @@ L_1585:
 
 L_158b:
     tutor.idtBold = 64;
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0xe, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 14, 0x0, 0xffff) != 0))
         goto L_15bf;
     else
         goto L_15b9;
@@ -1425,7 +1454,7 @@ L_15b9:
 
 L_15bf:
     tutor.idtBold = 65;
-    if ((FCheckFleetWP(0x4, 0x2, grobjPlanet, 0x11, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 2, grobjPlanet, 17, 0x0, 0xffff) != 0))
         goto L_15f3;
     else
         goto L_15ed;
@@ -1435,7 +1464,7 @@ L_15ed:
 
 L_15f3:
     tutor.idtBold = 66;
-    if ((FCheckFleetWP(0x4, 0x3, grobjPlanet, 0x12, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 3, grobjPlanet, 18, 0x0, 0xffff) != 0))
         goto L_1627;
     else
         goto L_1621;
@@ -1445,7 +1474,7 @@ L_1621:
 
 L_1627:
     tutor.idtBold = 67;
-    if ((FCheckFleetWP(0x4, 0x4, grobjPlanet, 0x17, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 4, grobjPlanet, 23, 0x0, 0xffff) != 0))
         goto L_165b;
     else
         goto L_1655;
@@ -1455,7 +1484,7 @@ L_1655:
 
 L_165b:
     tutor.idtBold = 68;
-    if ((FCheckFleetWP(0x4, 0x5, grobjPlanet, 0x16, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 5, grobjPlanet, 22, 0x0, 0xffff) != 0))
         goto L_168f;
     else
         goto L_1689;
@@ -1464,7 +1493,7 @@ L_1689:
     return 0x0;
 
 L_168f:
-    if ((FCheckMessages(0x4, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(4, 0xffff, 0) == 0))
         goto L_16b1;
     else
         goto L_16ab;
@@ -1478,10 +1507,10 @@ L_16b1:
 
 L_16b4:
     tutor.idtBold = t_merge_16b4_0001;
-    return FCheckSummary(grobjPlanet, 0xc);
+    return FCheckSummary(grobjPlanet, 12);
 
 L_16ca:
-    if ((FCheckColonizeWP(0x2, 0x10, 0xffff) == 0))
+    if ((FCheckColonizeWP(0x2, 16, 0xffff) == 0))
         goto L_16ec;
     else
         goto L_16e6;
@@ -1490,7 +1519,7 @@ L_16e6:
     return 0x1;
 
 L_16ec:
-    if ((FCheckFleetWP(0x5, 0x1, grobjPlanet, 0xc, 0x3, 0xffff) == 0))
+    if ((FCheckFleetWP(0x5, 1, grobjPlanet, 12, 0x3, 0xffff) == 0))
         goto L_1729;
     else
         goto L_1714;
@@ -1500,7 +1529,7 @@ L_1714:
     return 0x1;
 
 L_1729:
-    if ((FCheckFleetWP(0x5, 0x1, grobjPlanet, 0xc, 0x0, 0xffff) == 0))
+    if ((FCheckFleetWP(0x5, 1, grobjPlanet, 12, 0x0, 0xffff) == 0))
         goto L_175a;
     else
         goto L_1751;
@@ -1510,7 +1539,7 @@ L_1751:
     goto L_1781;
 
 L_175a:
-    if ((FCheckSelection(grobjFleet, 0x5) == 0))
+    if ((FCheckSelection(grobjFleet, 5) == 0))
         goto L_177b;
     else
         goto L_1772;
@@ -1526,7 +1555,7 @@ L_1781:
     return 0x0;
 
 L_1787:
-    if ((FCheckColonizeWP(0x2, 0x10, 0xffff) == 0))
+    if ((FCheckColonizeWP(0x2, 16, 0xffff) == 0))
         goto L_17a9;
     else
         goto L_17a3;
@@ -1535,7 +1564,7 @@ L_17a3:
     return 0x1;
 
 L_17a9:
-    if ((FCheckSummary(grobjPlanet, 0x10) == 0))
+    if ((FCheckSummary(grobjPlanet, 16) == 0))
         goto L_17c7;
     else
         goto L_17c1;
@@ -1544,13 +1573,13 @@ L_17c1:
     return 0x1;
 
 L_17c7:
-    if ((FCheckSummary(grobjPlanet, 0xf) == 0))
+    if ((FCheckSummary(grobjPlanet, 15) == 0))
         goto L_1823;
     else
         goto L_17df;
 
 L_17df:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(9999, 0xffff, 0) == 0))
         goto L_1804;
     else
         goto L_17fb;
@@ -1579,19 +1608,19 @@ L_1823:
     return 0x0;
 
 L_1829:
-    if ((FCheckCargo(LpflFromId(0x2), 0x0, 0x0, 0x0, 0x19) != 0))
+    if ((FCheckCargo(LpflFromId(2), 0, 0, 0, 25) != 0))
         goto L_189d;
     else
         goto L_1857;
 
 L_1857:
-    if ((FCheckSelection(grobjFleet, 0x2) == 0))
+    if ((FCheckSelection(grobjFleet, 2) == 0))
         goto L_1891;
     else
         goto L_186f;
 
 L_186f:
-    if ((mdXferDlg != -1))
+    if ((mdXferDlg != 0xffff))
         goto L_1888;
     else
         goto L_1879;
@@ -1611,19 +1640,19 @@ L_1897:
     return 0x0;
 
 L_189d:
-    if ((FCheckColonizeWP(0x2, 0x10, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x2, 16, 0xffff) != 0))
         goto L_1914;
     else
         goto L_18b9;
 
 L_18b9:
-    if ((FCheckFleetWP(0x2, 0x1, grobjPlanet, 0x10, 0x0, 0xffff) != 0))
+    if ((FCheckFleetWP(0x2, 1, grobjPlanet, 16, 0x0, 0xffff) != 0))
         goto L_1908;
     else
         goto L_18e1;
 
 L_18e1:
-    if ((FCheckSelection(grobjFleet, 0x2) == 0))
+    if ((FCheckSelection(grobjFleet, 2) == 0))
         goto L_18ff;
     else
         goto L_18f9;
@@ -1695,7 +1724,7 @@ L_1965:
 L_196e:
 
 L_1974:
-    if ((FCheckMessages(0xffff, idmHaveBuiltFactories, 0x1) != 0))
+    if ((FCheckMessages(-1, idmHaveBuiltFactories, 1) != 0))
         goto L_199c;
     else
         goto L_1990;
@@ -1705,19 +1734,19 @@ L_1990:
     return 0x0;
 
 L_199c:
-    if ((FCheckQueue(0xd, 0x0, grobjPlanet, 0x1, 0x1e, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjPlanet, 0x1, 0x1e, 0x0) != 0))
         goto L_1a27;
     else
         goto L_19c4;
 
 L_19c4:
-    if ((FCheckMessages(0x1, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(1, 0xffff, 0) == 0))
         goto L_19f8;
     else
         goto L_19e0;
 
 L_19e0:
-    if ((FCheckSelection(grobjPlanet, 0xd) != 0))
+    if ((FCheckSelection(grobjPlanet, 13) != 0))
         goto L_1a01;
     else
         goto L_19f8;
@@ -1755,25 +1784,25 @@ L_1a27:
     return 0x1;
 
 L_1a2d:
-    if ((FCheckQueue(0x10, 0x0, grobjPlanet, 0x7, 0x3, 0x1) == 0))
+    if ((FCheckQueue(16, 0, grobjPlanet, 0x7, 0x3, 0x1) == 0))
         goto L_1a7d;
     else
         goto L_1a55;
 
 L_1a55:
-    if ((FCheckQueue(0x10, 0x1, grobjPlanet, 0x8, 0x3, 0x1) != 0))
+    if ((FCheckQueue(16, 1, grobjPlanet, 0x8, 0x3, 0x1) != 0))
         goto L_1ae0;
     else
         goto L_1a7d;
 
 L_1a7d:
-    if ((FCheckMessages(0x3, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(3, 0xffff, 0) == 0))
         goto L_1ab1;
     else
         goto L_1a99;
 
 L_1a99:
-    if ((FCheckSelection(grobjPlanet, 0x10) != 0))
+    if ((FCheckSelection(grobjPlanet, 16) != 0))
         goto L_1aba;
     else
         goto L_1ab1;
@@ -1808,19 +1837,19 @@ L_1ada:
     return 0x0;
 
 L_1ae0:
-    if ((FCheckCargo(LpflFromId(0x3), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(3), 0, 0, 0, 210) != 0))
         goto L_1b4b;
     else
         goto L_1b0e;
 
 L_1b0e:
-    if ((FCheckSelection(grobjFleet, 0x3) == 0))
+    if ((FCheckSelection(grobjFleet, 3) == 0))
         goto L_1b3f;
     else
         goto L_1b26;
 
 L_1b26:
-    if ((mdXferDlg == -1))
+    if ((mdXferDlg == 0xffff))
         goto L_1b36;
     else
         goto L_1b30;
@@ -1846,19 +1875,19 @@ L_1b4b:
     return 0x1;
 
 L_1b51:
-    if ((FCheckXferWP(0x3, 0x1, 0x10, 0xffff, rgiaQuikDrop) != 0))
+    if ((FCheckXferWP(0x3, 1, 16, 0xffff, rgiaQuikDrop) != 0))
         goto L_1be6;
     else
         goto L_1b78;
 
 L_1b78:
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0x10, 0x1, 0xffff) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 16, 0x1, 0xffff) != 0))
         goto L_1bda;
     else
         goto L_1ba0;
 
 L_1ba0:
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0x10, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 16, 0xffff, 0xffff) != 0))
         goto L_1bd1;
     else
         goto L_1bc8;
@@ -1877,7 +1906,7 @@ L_1be0:
     return 0x0;
 
 L_1be6:
-    if ((LpflFromId(0x0)->cord >= 6))
+    if ((LpflFromId(0)->cord >= 6))
         goto L_1c06;
     else
         goto L_1c00;
@@ -1886,7 +1915,7 @@ L_1c00:
     return 0x1;
 
 L_1c06:
-    if ((FCheckSelection(grobjFleet, 0x0) == 0))
+    if ((FCheckSelection(grobjFleet, 0) == 0))
         goto L_1c24;
     else
         goto L_1c1e;
@@ -1895,7 +1924,7 @@ L_1c1e:
     return 0x1;
 
 L_1c24:
-    if ((FCheckSummary(grobjPlanet, 0x9) == 0))
+    if ((FCheckSummary(grobjPlanet, 9) == 0))
         goto L_1c42;
     else
         goto L_1c3c;
@@ -1912,13 +1941,13 @@ L_1c45:
     return 0x0;
 
 L_1c4e:
-    if ((LpflFromId(0x0)->cord != 6))
+    if ((LpflFromId(0)->cord != 6))
         goto L_1c92;
     else
         goto L_1c68;
 
 L_1c68:
-    if ((FCheckSummary(grobjPlanet, 0x9) == 0))
+    if ((FCheckSummary(grobjPlanet, 9) == 0))
         goto L_1c86;
     else
         goto L_1c80;
@@ -1971,19 +2000,19 @@ L_1cd9:
 L_1ce2:
 
 L_1ce8:
-    if ((LpflFromId(0x4)->cord != 6))
+    if ((LpflFromId(4)->cord != 6))
         goto L_1d86;
     else
         goto L_1d02;
 
 L_1d02:
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_1d41;
     else
         goto L_1d1a;
 
 L_1d1a:
-    if ((FCheckSummary(grobjPlanet, 0xe) == 0))
+    if ((FCheckSummary(grobjPlanet, 14) == 0))
         goto L_1d38;
     else
         goto L_1d32;
@@ -2000,13 +2029,13 @@ L_1d3b:
     goto L_1d80;
 
 L_1d41:
-    if ((FCheckSummary(grobjPlanet, 0xe) != 0))
+    if ((FCheckSummary(grobjPlanet, 14) != 0))
         goto L_1d71;
     else
         goto L_1d59;
 
 L_1d59:
-    if ((FCheckSummary(grobjFleet, 0x4) == 0))
+    if ((FCheckSummary(grobjFleet, 4) == 0))
         goto L_1d7a;
     else
         goto L_1d71;
@@ -2022,16 +2051,14 @@ L_1d80:
     return 0x0;
 
 L_1d86:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac != 0x3))
-        goto L_1daf;
-    else
-        goto L_1da9;
+    t_call_1d8a = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_1d8a->lpplprod):[faroff(t_call_1d8a->lpplprod)+0x3] != 0x3 ? L_1daf : L_1da9 */
 
 L_1da9:
     return 0x1;
 
 L_1daf:
-    if ((FCheckSelection(grobjPlanet, 0xd) == 0))
+    if ((FCheckSelection(grobjPlanet, 13) == 0))
         goto L_1dcd;
     else
         goto L_1dc7;
@@ -2040,7 +2067,7 @@ L_1dc7:
     return 0x1;
 
 L_1dcd:
-    if ((FCheckSummary(grobjPlanet, 0x15) == 0))
+    if ((FCheckSummary(grobjPlanet, 21) == 0))
         goto L_1deb;
     else
         goto L_1de5;
@@ -2057,13 +2084,11 @@ L_1dee:
     return 0x0;
 
 L_1df7:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac != 0x3))
-        goto L_1e42;
-    else
-        goto L_1e1a;
+    t_call_1dfb = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_1dfb->lpplprod):[faroff(t_call_1dfb->lpplprod)+0x3] != 0x3 ? L_1e42 : L_1e1a */
 
 L_1e1a:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x2, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
         goto L_1e68;
     else
         goto L_1e42;
@@ -2115,19 +2140,19 @@ L_1e93:
 L_1e9c:
 
 L_1ea2:
-    if ((FCheckCargo(LpflFromId(0x2), 0x0, 0x0, 0x0, 0x19) == 0))
+    if ((FCheckCargo(LpflFromId(2), 0, 0, 0, 25) == 0))
         goto L_1f28;
     else
         goto L_1ed0;
 
 L_1ed0:
-    if ((FCheckFleetWP(0x2, 0x1, grobjPlanet, 0xe, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x2, 1, grobjPlanet, 14, 0xffff, 0xffff) != 0))
         goto L_1f22;
     else
         goto L_1ef8;
 
 L_1ef8:
-    if ((FCheckScanner(0x3, 0xffff) == 0))
+    if ((FCheckScanner(3, -1) == 0))
         goto L_1f16;
     else
         goto L_1f10;
@@ -2147,7 +2172,7 @@ L_1f22:
     return 0x1;
 
 L_1f28:
-    if ((FCheckSelection(grobjFleet, 0x2) != 0))
+    if ((FCheckSelection(grobjFleet, 2) != 0))
         goto L_1f49;
     else
         goto L_1f40;
@@ -2157,7 +2182,7 @@ L_1f40:
     goto L_1f5f;
 
 L_1f49:
-    if ((mdXferDlg == -1))
+    if ((mdXferDlg == 0xffff))
         goto L_1f59;
     else
         goto L_1f53;
@@ -2176,7 +2201,7 @@ L_1f5f:
     return 0x0;
 
 L_1f65:
-    if ((FCheckColonizeWP(0x2, 0xe, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x2, 14, 0xffff) != 0))
         goto L_1f8d;
     else
         goto L_1f81;
@@ -2186,13 +2211,13 @@ L_1f81:
     return 0x0;
 
 L_1f8d:
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_2000;
     else
         goto L_1fb5;
 
 L_1fb5:
-    if ((FCheckScanner(0x0, 0xffff) != 0))
+    if ((FCheckScanner(0, -1) != 0))
         goto L_1fd6;
     else
         goto L_1fcd;
@@ -2202,7 +2227,7 @@ L_1fcd:
     goto L_1ffa;
 
 L_1fd6:
-    if ((FCheckSelection(grobjFleet, 0x3) == 0))
+    if ((FCheckSelection(grobjFleet, 3) == 0))
         goto L_1ff4;
     else
         goto L_1fee;
@@ -2221,13 +2246,13 @@ L_1ffa:
     return 0x0;
 
 L_2000:
-    if ((LpflFromId(0x0)->cord != 5))
+    if ((LpflFromId(0)->cord != 5))
         goto L_2069;
     else
         goto L_201a;
 
 L_201a:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(9999, 0xffff, 0) == 0))
         goto L_203f;
     else
         goto L_2036;
@@ -2237,7 +2262,7 @@ L_2036:
     goto L_2063;
 
 L_203f:
-    if ((FCheckSelection(grobjPlanet, 0x10) == 0))
+    if ((FCheckSelection(grobjPlanet, 16) == 0))
         goto L_205d;
     else
         goto L_2057;
@@ -2279,25 +2304,25 @@ L_2094:
 L_209d:
 
 L_20a3:
-    if ((FCheckXferWP(0x3, 0x1, 0xc, 0xffff, rgiaQuikLoad) != 0))
+    if ((FCheckXferWP(0x3, 1, 12, 0xffff, rgiaQuikLoad) != 0))
         goto L_2156;
     else
         goto L_20ca;
 
 L_20ca:
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0xc, 0x1, 0xffff) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 12, 0x1, 0xffff) != 0))
         goto L_214a;
     else
         goto L_20f2;
 
 L_20f2:
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0xc, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 12, 0xffff, 0xffff) != 0))
         goto L_2141;
     else
         goto L_211a;
 
 L_211a:
-    if ((FCheckSelection(grobjFleet, 0x3) == 0))
+    if ((FCheckSelection(grobjFleet, 3) == 0))
         goto L_2138;
     else
         goto L_2132;
@@ -2324,11 +2349,11 @@ L_2150:
 
 L_2156:
     tutor.idtBold = 166;
-    return FCheckFleetWP(0x3, 0x2, grobjPlanet, 0xd, 0xffff, 0xffff);
+    return FCheckFleetWP(0x3, 2, grobjPlanet, 13, 0xffff, 0xffff);
 
 L_217f:
     tutor.fNoErrors = 0x1;
-    if ((FCheckXferWP(0x3, 0x2, 0xd, 0xffff, rgiaQuikDrop) != 0))
+    if ((FCheckXferWP(0x3, 2, 13, 0xffff, rgiaQuikDrop) != 0))
         goto L_21ca;
     else
         goto L_21b2;
@@ -2342,7 +2367,7 @@ L_21ca:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 171;
-    if ((((*(LpflFromId(0x3) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((((*(LpflFromId(3) + 0x4) >> 0x9) & 0x1) != 0x0))
         goto L_220c;
     else
         goto L_2206;
@@ -2352,19 +2377,17 @@ L_2206:
 
 L_220c:
     tutor.idh = 1059;
-    if ((LpplFromId(0xd)->lpplprod->iprodMac != 0x3))
-        goto L_225d;
-    else
-        goto L_2235;
+    t_call_2216 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_2216->lpplprod):[faroff(t_call_2216->lpplprod)+0x3] != 0x3 ? L_225d : L_2235 */
 
 L_2235:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x2, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
         goto L_2287;
     else
         goto L_225d;
 
 L_225d:
-    if ((FCheckSelection(grobjPlanet, 0xd) == 0))
+    if ((FCheckSelection(grobjPlanet, 13) == 0))
         goto L_227b;
     else
         goto L_2275;
@@ -2404,7 +2427,7 @@ L_22b2:
 L_22bb:
 
 L_22c1:
-    if ((FCheckCargo(LpflFromId(0x6), 0x0, 0x0, 0x0, 0x19) != 0))
+    if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 25) != 0))
         goto L_22fb;
     else
         goto L_22ef;
@@ -2414,13 +2437,13 @@ L_22ef:
     return 0x0;
 
 L_22fb:
-    if ((FCheckColonizeWP(0x6, 0x12, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x6, 18, 0xffff) != 0))
         goto L_2341;
     else
         goto L_2317;
 
 L_2317:
-    if ((FCheckScanner(0x3, 0xffff) == 0))
+    if ((FCheckScanner(3, -1) == 0))
         goto L_2335;
     else
         goto L_232f;
@@ -2438,13 +2461,11 @@ L_2338:
 
 L_2341:
     tutor.idh = 1507;
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_2392;
-    else
-        goto L_236a;
+    t_call_234b = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_234b->lpplprod):[faroff(t_call_234b->lpplprod)+0x3] < 0x3 ? L_2392 : L_236a */
 
 L_236a:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x2, 0x3, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x3, 0x0) != 0))
         goto L_239e;
     else
         goto L_2392;
@@ -2454,7 +2475,7 @@ L_2392:
     return 0x0;
 
 L_239e:
-    if ((FCheckScanner(0x0, 0xffff) != 0))
+    if ((FCheckScanner(0, -1) != 0))
         goto L_23c2;
     else
         goto L_23b6;
@@ -2467,13 +2488,13 @@ L_23c2:
     return 0x1;
 
 L_23c8:
-    if ((FCheckMessages(0xffff, idmHaveBuiltMines, 0x1) != 0))
+    if ((FCheckMessages(-1, idmHaveBuiltMines, 1) != 0))
         goto L_2412;
     else
         goto L_23e4;
 
 L_23e4:
-    if ((FCheckMessages(0x3, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(3, 0xffff, 0) == 0))
         goto L_2406;
     else
         goto L_2400;
@@ -2490,25 +2511,25 @@ L_2409:
     return 0x0;
 
 L_2412:
-    if ((FCheckQueue(0x10, 0x0, grobjPlanet, 0x1, 0xa, 0x1) == 0))
+    if ((FCheckQueue(16, 0, grobjPlanet, 0x1, 0xa, 0x1) == 0))
         goto L_2462;
     else
         goto L_243a;
 
 L_243a:
-    if ((FCheckQueue(0x10, 0x1, grobjPlanet, 0x0, 0xa, 0x1) != 0))
+    if ((FCheckQueue(16, 1, grobjPlanet, 0x0, 0xa, 0x1) != 0))
         goto L_24cb;
     else
         goto L_2462;
 
 L_2462:
-    if ((FCheckSelection(grobjPlanet, 0x10) != 0))
+    if ((FCheckSelection(grobjPlanet, 16) != 0))
         goto L_24a5;
     else
         goto L_247a;
 
 L_247a:
-    if ((FCheckMessages(0x4, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(4, 0xffff, 0) == 0))
         goto L_249c;
     else
         goto L_2496;
@@ -2552,7 +2573,7 @@ L_24c5:
 L_24cb:
     tutor.idtBold = 190;
     tutor.fProgress = 0x0;
-    return FCheckMessages(0x270f, 0xffff, 0x0);
+    return FCheckMessages(9999, 0xffff, 0);
 
 L_24f4:
     if ((tutor.fProgress != 0x0))
@@ -2567,7 +2588,7 @@ L_2507:
         goto L_251a;
 
 L_251a:
-    if ((FCheckSummary(grobjFleet, 0x200) == 0))
+    if ((FCheckSummary(grobjFleet, 512) == 0))
         goto L_2541;
     else
         goto L_2532;
@@ -2582,13 +2603,11 @@ L_2541:
 
 L_254d:
     tutor.idh = 1507;
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_259e;
-    else
-        goto L_2576;
+    t_call_2557 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_2557->lpplprod):[faroff(t_call_2557->lpplprod)+0x3] < 0x4 ? L_259e : L_2576 */
 
 L_2576:
-    if ((FCheckQueue(0xd, 0x2, grobjFleet, 0x0, 0x2, 0x0) != 0))
+    if ((FCheckQueue(13, 2, grobjFleet, 0x0, 0x2, 0x0) != 0))
         goto L_25aa;
     else
         goto L_259e;
@@ -2627,13 +2646,10 @@ L_25dd:
 L_25e6:
 
 L_25ec:
-    if ((rgplr[0].cFleet != 0xb))
-        goto L_261c;
-    else
-        goto L_25fa;
+    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xb ? L_261c : L_25fa */
 
 L_25fa:
-    if ((FCheckColonizeWP(0xa, 0x8, 0xffff) == 0))
+    if ((FCheckColonizeWP(0xa, 8, 0xffff) == 0))
         goto L_261c;
     else
         goto L_2616;
@@ -2642,19 +2658,16 @@ L_2616:
     return 0x1;
 
 L_261c:
-    if ((rgplr[0].cFleet == 0x9))
-        goto L_2634;
-    else
-        goto L_262a;
+    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) == 0x9 ? L_2634 : L_262a */
 
 L_262a:
-    if ((mdXferDlg != 1))
+    if ((mdXferDlg != mdXferShips))
         goto L_266e;
     else
         goto L_2634;
 
 L_2634:
-    if ((FCheckSelection(grobjFleet, 0x7) != 0))
+    if ((FCheckSelection(grobjFleet, 7) != 0))
         goto L_2655;
     else
         goto L_264c;
@@ -2664,7 +2677,7 @@ L_264c:
     goto L_26d3;
 
 L_2655:
-    if ((mdXferDlg != 1))
+    if ((mdXferDlg != mdXferShips))
         goto L_2665;
     else
         goto L_265f;
@@ -2680,13 +2693,13 @@ L_2668:
     tutor.idtBold = t_merge_2668_0001;
 
 L_266e:
-    if ((FCheckCargo(LpflFromId(0x7), 0x0, 0x0, 0x0, 0x32) == 0))
+    if ((FCheckCargo(LpflFromId(7), 0, 0, 0, 50) == 0))
         goto L_26c4;
     else
         goto L_269c;
 
 L_269c:
-    if ((FCheckFleetWP(0x7, 0x1, grobjPlanet, 0x8, 0x2, 0xffff) != 0))
+    if ((FCheckFleetWP(0x7, 1, grobjPlanet, 8, 0x2, 0xffff) != 0))
         goto L_26cd;
     else
         goto L_26c4;
@@ -2703,26 +2716,26 @@ L_26d3:
 
 L_26d9:
     tutor.fNoErrors = 0x1;
-    if ((FCheckColonizeWP(0x7, 0x11, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x7, 17, 0xffff) != 0))
         goto L_272d;
     else
         goto L_2701;
 
 L_2701:
     tutor.fNoErrors = 0x0;
-    FCheckColonizeWP(0x7, 0x8, 0xffff);
+    FCheckColonizeWP(0x7, 8, 0xffff);
     tutor.idtBold = 209;
     return 0x0;
 
 L_272d:
     tutor.fNoErrors = 0x0;
-    if ((FCheckFleetWP(0x8, 0x1, grobjPlanet, 0x9, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 1, grobjPlanet, 9, 0xffff, 0xffff) != 0))
         goto L_278b;
     else
         goto L_2761;
 
 L_2761:
-    if ((FCheckSelection(grobjFleet, 0x8) == 0))
+    if ((FCheckSelection(grobjFleet, 8) == 0))
         goto L_277f;
     else
         goto L_2779;
@@ -2744,7 +2757,7 @@ L_278b:
 
 L_279d:
     tutor.fNoErrors = 0x0;
-    if ((FCheckMessages(0xffff, idmHasUnloaded, 0x1) != 0))
+    if ((FCheckMessages(-1, idmHasUnloaded, 1) != 0))
         goto L_27dd;
     else
         goto L_27c5;
@@ -2756,7 +2769,7 @@ L_27c5:
 
 L_27dd:
     tutor.fNoErrors = 0x1;
-    if ((FCheckResearch(0x1, 0x6, 0x1e) == 0))
+    if ((FCheckResearch(1, 6, 30) == 0))
         goto L_2817;
     else
         goto L_2805;
@@ -2766,7 +2779,7 @@ L_2805:
     return 0x1;
 
 L_2817:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_284b;
     else
         goto L_2833;
@@ -2789,7 +2802,7 @@ L_285e:
         goto L_2871;
 
 L_2871:
-    if ((FCheckSummary(grobjPlanet, 0x5) == 0))
+    if ((FCheckSummary(grobjPlanet, 5) == 0))
         goto L_2892;
     else
         goto L_2889;
@@ -2841,7 +2854,7 @@ L_28f2:
     return 0x0;
 
 L_28fb:
-    if ((FCheckResearch(0x1, 0x6, 0x1e) != 0))
+    if ((FCheckResearch(1, 6, 30) != 0))
         goto L_2923;
     else
         goto L_2917;
@@ -2887,7 +2900,7 @@ L_2967:
 
 L_296d:
     tutor.fNoErrors = 0x1;
-    if ((FCheckResearch(0x1, 0x3, 0x1e) != 0))
+    if ((FCheckResearch(1, 3, 30) != 0))
         goto L_29bd;
     else
         goto L_2995;
@@ -2913,22 +2926,22 @@ L_29a8:
 L_29bd:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 238;
-    return FCheckMessages(0xffff, idmHasLoadedMiningRobotsWorking, 0x1);
+    return FCheckMessages(-1, idmHasLoadedMiningRobotsWorking, 1);
 
 L_29e6:
-    if ((FCheckColonizeWP(0x9, 0x2, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x9, 2, 0xffff) != 0))
         goto L_2a81;
     else
         goto L_2a02;
 
 L_2a02:
-    if ((FCheckSelection(grobjFleet, 0x9) == 0))
+    if ((FCheckSelection(grobjFleet, 9) == 0))
         goto L_2a57;
     else
         goto L_2a1a;
 
 L_2a1a:
-    if ((FCheckCargo(LpflFromId(0x9), 0x0, 0x0, 0x0, 0x19) == 0))
+    if ((FCheckCargo(LpflFromId(9), 0, 0, 0, 25) == 0))
         goto L_2a4e;
     else
         goto L_2a48;
@@ -2945,7 +2958,7 @@ L_2a51:
     goto L_2a7b;
 
 L_2a57:
-    if ((FCheckSummary(grobjPlanet, 0x2) == 0))
+    if ((FCheckSummary(grobjPlanet, 2) == 0))
         goto L_2a75;
     else
         goto L_2a6f;
@@ -2965,13 +2978,13 @@ L_2a7b:
 
 L_2a81:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x0, 0x1, grobjPlanet, 0x4, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 1, grobjPlanet, 4, 0xffff, 0xffff) != 0))
         goto L_2aed;
     else
         goto L_2ab5;
 
 L_2ab5:
-    FCheckFleetWP(0x0, 0x1, grobjPlanet, 0x2, 0xffff, 0xffff);
+    FCheckFleetWP(0x0, 1, grobjPlanet, 2, 0xffff, 0xffff);
     tutor.idtBold = 245;
     tutor.fNoErrors = 0x0;
     return 0x0;
@@ -3001,7 +3014,7 @@ L_2b24:
 L_2b2d:
 
 L_2b33:
-    if ((FCheckMessages(0xffff, idmHasDismantledKtMineralsWhichHaveDeposited, 0x1) != 0))
+    if ((FCheckMessages(-1, idmHasDismantledKtMineralsWhichHaveDeposited, 1) != 0))
         goto L_2b67;
     else
         goto L_2b4f;
@@ -3012,19 +3025,19 @@ L_2b4f:
     return 0x0;
 
 L_2b67:
-    if ((FCheckQueue(0xe, 0x0, grobjPlanet, 0x1, 0x3, 0x1) == 0))
+    if ((FCheckQueue(14, 0, grobjPlanet, 0x1, 0x3, 0x1) == 0))
         goto L_2bb7;
     else
         goto L_2b8f;
 
 L_2b8f:
-    if ((FCheckQueue(0xe, 0x1, grobjPlanet, 0x0, 0x3, 0x1) != 0))
+    if ((FCheckQueue(14, 1, grobjPlanet, 0x0, 0x3, 0x1) != 0))
         goto L_2bfe;
     else
         goto L_2bb7;
 
 L_2bb7:
-    if ((FCheckSelection(grobjPlanet, 0xe) == 0))
+    if ((FCheckSelection(grobjPlanet, 14) == 0))
         goto L_2bf2;
     else
         goto L_2bcf;
@@ -3059,7 +3072,7 @@ L_2bf8:
     return 0x0;
 
 L_2bfe:
-    if ((FCheckTemplate(0x0) == 0))
+    if ((FCheckTemplate(0) == 0))
         goto L_2c18;
     else
         goto L_2c12;
@@ -3097,7 +3110,7 @@ L_2c48:
     return 0x0;
 
 L_2c54:
-    if ((FCheckTemplate(0x0) != 0))
+    if ((FCheckTemplate(0) != 0))
         goto L_2c74;
     else
         goto L_2c68;
@@ -3129,13 +3142,11 @@ L_2c9b:
     return 0x0;
 
 L_2ca7:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_2cf2;
-    else
-        goto L_2cca;
+    t_call_2cab = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_2cab->lpplprod):[faroff(t_call_2cab->lpplprod)+0x3] < 0x3 ? L_2cf2 : L_2cca */
 
 L_2cca:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x2, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
         goto L_2d65;
     else
         goto L_2cf2;
@@ -3148,13 +3159,13 @@ L_2cf2:
         goto L_2d0b;
 
 L_2d0b:
-    if ((FCheckSelection(grobjPlanet, 0xd) != 0))
+    if ((FCheckSelection(grobjPlanet, 13) != 0))
         goto L_2d59;
     else
         goto L_2d23;
 
 L_2d23:
-    if ((FCheckSummary(grobjPlanet, 0x17) == 0))
+    if ((FCheckSummary(grobjPlanet, 23) == 0))
         goto L_2d50;
     else
         goto L_2d3b;
@@ -3174,13 +3185,11 @@ L_2d5f:
     return 0x0;
 
 L_2d65:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_2db0;
-    else
-        goto L_2d88;
+    t_call_2d69 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_2d69->lpplprod):[faroff(t_call_2d69->lpplprod)+0x3] < 0x4 ? L_2db0 : L_2d88 */
 
 L_2d88:
-    if ((FCheckQueue(0xd, 0x2, grobjFleet, 0x3, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 2, grobjFleet, 0x3, 0x1, 0x0) != 0))
         goto L_2dc2;
     else
         goto L_2db0;
@@ -3214,13 +3223,13 @@ L_2ded:
 L_2df6:
 
 L_2dfc:
-    if ((FCheckFleetWP(0x0, 0x1, grobjPlanet, 0xa, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
         goto L_2e4e;
     else
         goto L_2e24;
 
 L_2e24:
-    if ((FCheckSelection(grobjFleet, 0x0) == 0))
+    if ((FCheckSelection(grobjFleet, 0) == 0))
         goto L_2e42;
     else
         goto L_2e3c;
@@ -3237,13 +3246,13 @@ L_2e45:
     return 0x0;
 
 L_2e4e:
-    if ((FCheckFleetWP(0x1, 0x1, grobjPlanet, 0xd, 0x5, 0xffff) != 0))
+    if ((FCheckFleetWP(0x1, 1, grobjPlanet, 13, 0x5, 0xffff) != 0))
         goto L_2ea0;
     else
         goto L_2e76;
 
 L_2e76:
-    if ((FCheckSelection(grobjFleet, 0x1) == 0))
+    if ((FCheckSelection(grobjFleet, 1) == 0))
         goto L_2e94;
     else
         goto L_2e8e;
@@ -3260,7 +3269,7 @@ L_2e97:
     return 0x0;
 
 L_2ea0:
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_2ed4;
     else
         goto L_2ec8;
@@ -3270,7 +3279,7 @@ L_2ec8:
     return 0x0;
 
 L_2ed4:
-    if ((FCheckFleetWP(0x8, 0x1, grobjFleet, 0x200, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 1, grobjFleet, 512, 0xffff, 0xffff) != 0))
         goto L_2f08;
     else
         goto L_2efc;
@@ -3283,13 +3292,13 @@ L_2f08:
     return 0x1;
 
 L_2f0e:
-    if ((FCheckColonizeWP(0x2, 0x4, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x2, 4, 0xffff) != 0))
         goto L_2f54;
     else
         goto L_2f2a;
 
 L_2f2a:
-    if ((FCheckSelection(grobjFleet, 0x2) == 0))
+    if ((FCheckSelection(grobjFleet, 2) == 0))
         goto L_2f48;
     else
         goto L_2f42;
@@ -3306,13 +3315,13 @@ L_2f4b:
     return 0x0;
 
 L_2f54:
-    if ((FCheckCargo(LpflFromId(0xb), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(11), 0, 0, 0, 210) != 0))
         goto L_2fac;
     else
         goto L_2f82;
 
 L_2f82:
-    if ((FCheckSelection(grobjFleet, 0xb) == 0))
+    if ((FCheckSelection(grobjFleet, 11) == 0))
         goto L_2fa0;
     else
         goto L_2f9a;
@@ -3329,19 +3338,19 @@ L_2fa3:
     return 0x0;
 
 L_2fac:
-    if ((FCheckFleetWP(0xb, 0x1, grobjPlanet, 0x5, 0xffff, 0xffff) == 0))
+    if ((FCheckFleetWP(0xb, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0))
         goto L_30bb;
     else
         goto L_2fd4;
 
 L_2fd4:
-    if ((FCheckFleetWP(0xb, 0x1, grobjPlanet, 0x5, 0x1, 0xffff) == 0))
+    if ((FCheckFleetWP(0xb, 1, grobjPlanet, 5, 0x1, 0xffff) == 0))
         goto L_30b2;
     else
         goto L_2ffc;
 
 L_2ffc:
-    if ((FCheckXferWP(0xb, 0x1, 0x5, 0xffff, rgiaUnloadAllCol) == 0))
+    if ((FCheckXferWP(0xb, 1, 5, 0xffff, rgiaUnloadAllCol) == 0))
         goto L_3038;
     else
         goto L_3023;
@@ -3351,19 +3360,16 @@ L_3023:
     return 0x1;
 
 L_3038:
-    if ((FCheckSelection(grobjFleet, 0xb) == 0))
+    if ((FCheckSelection(grobjFleet, 11) == 0))
         goto L_30a9;
     else
         goto L_3050;
 
 L_3050:
-    if ((sel.fl.lpplord->rgord[sel.iwpAct].grTask != 0x1))
-        goto L_30a9;
-    else
-        goto L_3077;
+    /* untranslated: branch (part[0xa:2](sel.fl.lpplord[sel.iwpAct*0x12]) & 0xf) != 0x1 ? L_30a9 : L_3077 */
 
 L_3077:
-    t_call_308b = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0x0);
+    t_call_308b = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
     if ((LOWORD(t_call_308b) != 0x4))
         goto L_30a9;
     else
@@ -3392,13 +3398,11 @@ L_30c1:
     return 0x0;
 
 L_30c7:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x2))
-        goto L_3112;
-    else
-        goto L_30ea;
+    t_call_30cb = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_30cb->lpplprod):[faroff(t_call_30cb->lpplprod)+0x3] < 0x2 ? L_3112 : L_30ea */
 
 L_30ea:
-    if ((FCheckQueue(0xd, 0x0, grobjPlanet, 0x8, 0x46, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjPlanet, 0x8, 0x46, 0x0) != 0))
         goto L_311b;
     else
         goto L_3112;
@@ -3408,7 +3412,7 @@ L_3112:
     goto L_31fd;
 
 L_311b:
-    if ((FCheckResearch(0x3, 0x5, 0x1e) != 0))
+    if ((FCheckResearch(3, 5, 30) != 0))
         goto L_3150;
     else
         goto L_3137;
@@ -3431,7 +3435,7 @@ L_314a:
     goto L_31fd;
 
 L_3150:
-    if ((FCheckSelection(grobjFleet, 0x8) == 0))
+    if ((FCheckSelection(grobjFleet, 8) == 0))
         goto L_3171;
     else
         goto L_3168;
@@ -3446,7 +3450,7 @@ L_3171:
         goto L_3184;
 
 L_3184:
-    if ((FCheckMessages(0xb, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(11, 0xffff, 0) == 0))
         goto L_31aa;
     else
         goto L_31a0;
@@ -3472,7 +3476,7 @@ L_31bd:
     tutor.fProgress = 0x1;
 
 L_31d2:
-    if ((FCheckMessages(0xd, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(13, 0xffff, 0) != 0))
         goto L_31f7;
     else
         goto L_31ee;
@@ -3523,7 +3527,7 @@ L_3246:
     return 0x0;
 
 L_324f:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(9999, 0xffff, 0) == 0))
         goto L_3271;
     else
         goto L_326b;
@@ -3571,16 +3575,14 @@ L_32ac:
 L_32b5:
 
 L_32bb:
-    if ((LpplFromId(0x8)->lpplprod->iprodMac <= 0x2))
-        goto L_32e4;
-    else
-        goto L_32de;
+    t_call_32bf = LpplFromId(8);
+    /* untranslated: branch byte farseg(t_call_32bf->lpplprod):[faroff(t_call_32bf->lpplprod)+0x3] <= 0x2 ? L_32e4 : L_32de */
 
 L_32de:
     return 0x1;
 
 L_32e4:
-    if ((FCheckSummary(grobjFleet, 0x3) == 0))
+    if ((FCheckSummary(grobjFleet, 3) == 0))
         goto L_3302;
     else
         goto L_32fc;
@@ -3589,7 +3591,7 @@ L_32fc:
     return 0x1;
 
 L_3302:
-    if ((FCheckSummary(grobjThing, 0xffff) == 0))
+    if ((FCheckSummary(grobjThing, -1) == 0))
         goto L_3323;
     else
         goto L_331a;
@@ -3599,13 +3601,13 @@ L_331a:
     goto L_3366;
 
 L_3323:
-    if ((FCheckMessages(0x1, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(1, 0xffff, 0) == 0))
         goto L_3360;
     else
         goto L_333f;
 
 L_333f:
-    if ((FCheckSelection(grobjFleet, 0x8) == 0))
+    if ((FCheckSelection(grobjFleet, 8) == 0))
         goto L_3360;
     else
         goto L_3357;
@@ -3621,7 +3623,7 @@ L_3366:
     return 0x0;
 
 L_336c:
-    if ((FCheckMessages(0x5, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(5, 0xffff, 0) != 0))
         goto L_3394;
     else
         goto L_3388;
@@ -3631,7 +3633,7 @@ L_3388:
     return 0x0;
 
 L_3394:
-    if ((FCheckMessages(0x6, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(6, 0xffff, 0) != 0))
         goto L_33bc;
     else
         goto L_33b0;
@@ -3642,34 +3644,30 @@ L_33b0:
 
 L_33bc:
     tutor.idtBold = 310;
-    return FCheckSelection(grobjPlanet, 0x12);
+    return FCheckSelection(grobjPlanet, 18);
 
 L_33d5:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_3420;
-    else
-        goto L_33f8;
+    t_call_33d9 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_33d9->lpplprod):[faroff(t_call_33d9->lpplprod)+0x3] < 0x3 ? L_3420 : L_33f8 */
 
 L_33f8:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x3, 0x2, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x2, 0x0) != 0))
         goto L_349e;
     else
         goto L_3420;
 
 L_3420:
-    if ((LpplFromId(0x8)->lpplprod->iprodMac < 0x3))
-        goto L_346b;
-    else
-        goto L_3443;
+    t_call_3424 = LpplFromId(8);
+    /* untranslated: branch byte farseg(t_call_3424->lpplprod):[faroff(t_call_3424->lpplprod)+0x3] < 0x3 ? L_346b : L_3443 */
 
 L_3443:
-    if ((FCheckQueue(0x8, 0x0, grobjPlanet, 0xc, 0x2, 0x1) != 0))
+    if ((FCheckQueue(8, 0, grobjPlanet, 0xc, 0x2, 0x1) != 0))
         goto L_3492;
     else
         goto L_346b;
 
 L_346b:
-    if ((FCheckSelection(grobjPlanet, 0x8) == 0))
+    if ((FCheckSelection(grobjPlanet, 8) == 0))
         goto L_3489;
     else
         goto L_3483;
@@ -3721,19 +3719,19 @@ L_34d1:
 L_34da:
 
 L_34e0:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x7 ? L_34f2 : L_34ec */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_34f2 : L_34ec */
 
 L_34ec:
     return 0x1;
 
 L_34f2:
-    if ((FCheckXferWP(0x0, 0x1, 0x8, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0x0, 1, 8, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_3568;
     else
         goto L_3519;
 
 L_3519:
-    if ((FCheckCargo(LpflFromId(0x0), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(0), 0, 0, 0, 210) != 0))
         goto L_3550;
     else
         goto L_3547;
@@ -3750,7 +3748,7 @@ L_3556:
     return 0x0;
 
 L_3568:
-    if ((FCheckMessages(0x3, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(3, 0xffff, 0) != 0))
         goto L_3590;
     else
         goto L_3584;
@@ -3760,7 +3758,7 @@ L_3584:
     return 0x0;
 
 L_3590:
-    if ((FCheckResearch(0x5, 0x2, 0x1e) != 0))
+    if ((FCheckResearch(5, 2, 30) != 0))
         goto L_35b8;
     else
         goto L_35ac;
@@ -3813,8 +3811,7 @@ L_361f:
 
 L_3625:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x103;
-    hs1.grhst = hstScanner;
+    /* untranslated: part[0x2:4](hs) = 0x20103 */
     HIWORD(hs1) = 0x101;
     if ((hwndSlotDlg != 0x0))
         goto L_3655;
@@ -3822,19 +3819,19 @@ L_3625:
         goto L_3643;
 
 L_3643:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x7 ? L_3655 : L_364f */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_3655 : L_364f */
 
 L_364f:
     return 0x1;
 
 L_3655:
-    if ((FCheckShipBuilder(0x4, 0xffff) != 0))
+    if ((FCheckShipBuilder(4, -1) != 0))
         goto L_36b8;
     else
         goto L_366d;
 
 L_366d:
-    if ((FCheckShipBuilder(0x1, 0x7) == 0))
+    if ((FCheckShipBuilder(1, 7) == 0))
         goto L_368e;
     else
         goto L_3685;
@@ -3844,7 +3841,7 @@ L_3685:
     goto L_36b2;
 
 L_368e:
-    if ((FCheckShipBuilder(0x1, 0xffff) == 0))
+    if ((FCheckShipBuilder(1, -1) == 0))
         goto L_36ac;
     else
         goto L_36a6;
@@ -3864,13 +3861,13 @@ L_36b2:
 
 L_36b8:
     tutor.idh = 3039;
-    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
         goto L_36f2;
     else
         goto L_36d6;
 
 L_36d6:
-    if ((FCheckBuilderPart(0x0, &(hs), 0x1) != 0))
+    if ((FCheckBuilderPart(0, &(hs), 0x1) != 0))
         goto L_36fe;
     else
         goto L_36f2;
@@ -3880,13 +3877,13 @@ L_36f2:
     return 0x0;
 
 L_36fe:
-    if ((lpshdefBuild->hul.rghs[1].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) == 0x0))
         goto L_3732;
     else
         goto L_3716;
 
 L_3716:
-    if ((FCheckBuilderPart(0x1, &(hs1), 0x1) != 0))
+    if ((FCheckBuilderPart(1, &(hs1), 0x1) != 0))
         goto L_373e;
     else
         goto L_3732;
@@ -3896,19 +3893,19 @@ L_3732:
     return 0x0;
 
 L_373e:
-    if ((lpshdefBuild->hul.rghs[2].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) == 0x0))
         goto L_376e;
     else
         goto L_3756;
 
 L_3756:
-    if ((lpshdefBuild->hul.rghs[3].cItem != 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) != 0x0))
         goto L_379e;
     else
         goto L_376e;
 
 L_376e:
-    if ((FCheckShipBuilder(0x4, 0x8) != 0))
+    if ((FCheckShipBuilder(4, 8) != 0))
         goto L_3792;
     else
         goto L_3786;
@@ -3931,7 +3928,7 @@ L_37a4:
         goto L_37ae;
 
 L_37ae:
-    if ((FCheckShipBuilder(0x4, 0xffff) == 0))
+    if ((FCheckShipBuilder(4, -1) == 0))
         goto L_37cc;
     else
         goto L_37c6;
@@ -3948,19 +3945,15 @@ L_37cf:
     return 0x0;
 
 L_37d8:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_3846;
-    else
-        goto L_37fb;
+    t_call_37dc = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_37dc->lpplprod):[faroff(t_call_37dc->lpplprod)+0x3] < 0x3 ? L_3846 : L_37fb */
 
 L_37fb:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac != 0x3))
-        goto L_3852;
-    else
-        goto L_381e;
+    t_call_37ff = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_37ff->lpplprod):[faroff(t_call_37ff->lpplprod)+0x3] != 0x3 ? L_3852 : L_381e */
 
 L_381e:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x6, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x6, 0x1, 0x0) != 0))
         goto L_3852;
     else
         goto L_3846;
@@ -3970,13 +3963,11 @@ L_3846:
     return 0x0;
 
 L_3852:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_389d;
-    else
-        goto L_3875;
+    t_call_3856 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_3856->lpplprod):[faroff(t_call_3856->lpplprod)+0x3] < 0x4 ? L_389d : L_3875 */
 
 L_3875:
-    if ((FCheckQueue(0xd, 0x0, grobjPlanet, 0x8, 0x64, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjPlanet, 0x8, 0x64, 0x0) != 0))
         goto L_38cf;
     else
         goto L_389d;
@@ -4025,7 +4016,7 @@ L_38fb:
     return 0x0;
 
 L_3907:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_392f;
     else
         goto L_3923;
@@ -4035,7 +4026,7 @@ L_3923:
     return 0x0;
 
 L_392f:
-    if ((FCheckFleetWP(0x8, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_3963;
     else
         goto L_3957;
@@ -4080,25 +4071,23 @@ L_399e:
 L_39a7:
 
 L_39ad:
-    if ((LpplFromId(0x2)->lpplprod->iprodMac < 0x3))
-        goto L_3a0c;
-    else
-        goto L_39d0;
+    t_call_39b1 = LpplFromId(2);
+    /* untranslated: branch byte farseg(t_call_39b1->lpplprod):[faroff(t_call_39b1->lpplprod)+0x3] < 0x3 ? L_3a0c : L_39d0 */
 
 L_39d0:
-    if ((FCheckQueue(0x2, 0x0, grobjPlanet, 0x4, 0x2, 0x1) == 0))
+    if ((FCheckQueue(2, 0, grobjPlanet, 0x4, 0x2, 0x1) == 0))
         goto L_3a0c;
     else
         goto L_39f8;
 
 L_39f8:
-    if ((FCheckTemplate(0x1) != 0))
+    if ((FCheckTemplate(1) != 0))
         goto L_3a5a;
     else
         goto L_3a0c;
 
 L_3a0c:
-    if ((FCheckSelection(grobjPlanet, 0x2) == 0))
+    if ((FCheckSelection(grobjPlanet, 2) == 0))
         goto L_3a2d;
     else
         goto L_3a24;
@@ -4108,7 +4097,7 @@ L_3a24:
     goto L_3a54;
 
 L_3a2d:
-    if ((FCheckSelection(grobjPlanet, 0x11) == 0))
+    if ((FCheckSelection(grobjPlanet, 17) == 0))
         goto L_3a4e;
     else
         goto L_3a45;
@@ -4141,7 +4130,7 @@ L_3a7d:
 L_3a86:
 
 L_3a8c:
-    if ((FCheckFleetWP(0x8, 0x1, grobjPlanet, 0xb, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 1, grobjPlanet, 11, 0xffff, 0xffff) != 0))
         goto L_3ac0;
     else
         goto L_3ab4;
@@ -4151,7 +4140,7 @@ L_3ab4:
     return 0x0;
 
 L_3ac0:
-    if ((FCheckCargo(LpflFromId(0x6), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) != 0))
         goto L_3b06;
     else
         goto L_3aee;
@@ -4201,7 +4190,7 @@ L_3b67:
     return 0x0;
 
 L_3b6d:
-    if ((FCheckXferWP(0x6, 0x1, 0x5, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0x6, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_3ba0;
     else
         goto L_3b94;
@@ -4243,7 +4232,7 @@ L_3bf1:
     return 0x0;
 
 L_3bf7:
-    if ((FCheckFleetWP(0xb, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0xb, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_3c2b;
     else
         goto L_3c1f;
@@ -4276,7 +4265,7 @@ L_3c56:
 L_3c5f:
 
 L_3c65:
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0x5, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
         goto L_3c99;
     else
         goto L_3c8d;
@@ -4287,13 +4276,13 @@ L_3c8d:
 
 L_3c99:
     tutor.fNoErrors = 0x1;
-    if ((LpflFromId(0x7)->cord != 1))
+    if ((LpflFromId(7)->cord != 1))
         goto L_3ce9;
     else
         goto L_3cbf;
 
 L_3cbf:
-    if ((FCheckSelection(grobjFleet, 0x7) == 0))
+    if ((FCheckSelection(grobjFleet, 7) == 0))
         goto L_3cdd;
     else
         goto L_3cd7;
@@ -4310,7 +4299,7 @@ L_3ce0:
     return 0x0;
 
 L_3ce9:
-    if ((FCheckFleetWP(0x7, 0x1, grobjPlanet, 0xc, 0xffff, 0xffff) == 0))
+    if ((FCheckFleetWP(0x7, 1, grobjPlanet, 12, 0xffff, 0xffff) == 0))
         goto L_3d29;
     else
         goto L_3d11;
@@ -4322,7 +4311,7 @@ L_3d11:
 
 L_3d29:
     tutor.fNoErrors = 0x0;
-    if ((FCheckFleetWP(0x7, 0x1, grobjFleet, 0x5, 0x4, 0xffff) != 0))
+    if ((FCheckFleetWP(0x7, 1, grobjFleet, 5, 0x4, 0xffff) != 0))
         goto L_3d69;
     else
         goto L_3d5d;
@@ -4332,19 +4321,17 @@ L_3d5d:
     return 0x0;
 
 L_3d69:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x2))
-        goto L_3ddc;
-    else
-        goto L_3d8c;
+    t_call_3d6d = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_3d6d->lpplprod):[faroff(t_call_3d6d->lpplprod)+0x3] < 0x2 ? L_3ddc : L_3d8c */
 
 L_3d8c:
-    if ((FCheckQueue(0xd, 0x0, grobjPlanet, 0x1, 0x3c, 0x0) == 0))
+    if ((FCheckQueue(13, 0, grobjPlanet, 0x1, 0x3c, 0x0) == 0))
         goto L_3ddc;
     else
         goto L_3db4;
 
 L_3db4:
-    if ((FCheckQueue(0xd, 0x1, grobjPlanet, 0x0, 0x3c, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjPlanet, 0x0, 0x3c, 0x0) != 0))
         goto L_3e02;
     else
         goto L_3ddc;
@@ -4373,7 +4360,7 @@ L_3df9:
     return 0x0;
 
 L_3e02:
-    if ((FCheckResearch(0x2, 0x3, 0x1e) != 0))
+    if ((FCheckResearch(2, 3, 30) != 0))
         goto L_3e2a;
     else
         goto L_3e1e;
@@ -4400,13 +4387,13 @@ L_3e4d:
 L_3e56:
 
 L_3e5c:
-    if ((FCheckFleetWP(0x0, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x0, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_3eb2;
     else
         goto L_3e84;
 
 L_3e84:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(9999, 0xffff, 0) == 0))
         goto L_3ea6;
     else
         goto L_3ea0;
@@ -4440,13 +4427,11 @@ L_3ed5:
 L_3ede:
 
 L_3ee4:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_3f2f;
-    else
-        goto L_3f07;
+    t_call_3ee8 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_3ee8->lpplprod):[faroff(t_call_3ee8->lpplprod)+0x3] < 0x3 ? L_3f2f : L_3f07 */
 
 L_3f07:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x3, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x3, 0x1, 0x0) != 0))
         goto L_3f3b;
     else
         goto L_3f2f;
@@ -4456,7 +4441,7 @@ L_3f2f:
     return 0x0;
 
 L_3f3b:
-    if ((FCheckMessages(0x5, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(5, 0xffff, 0) != 0))
         goto L_3f6f;
     else
         goto L_3f57;
@@ -4479,7 +4464,7 @@ L_3f82:
         goto L_3f95;
 
 L_3f95:
-    if ((FCheckSelection(grobjPlanet, 0x10) == 0))
+    if ((FCheckSelection(grobjPlanet, 16) == 0))
         goto L_3fc9;
     else
         goto L_3fad;
@@ -4531,7 +4516,7 @@ L_4011:
 L_401a:
 
 L_4020:
-    if ((FCheckCargo(LpflFromId(0xb), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(11), 0, 0, 0, 210) != 0))
         goto L_405a;
     else
         goto L_404e;
@@ -4541,7 +4526,7 @@ L_404e:
     return 0x0;
 
 L_405a:
-    if ((FCheckXferWP(0xb, 0x1, 0x5, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0xb, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_408d;
     else
         goto L_4081;
@@ -4552,7 +4537,7 @@ L_4081:
 
 L_408d:
     tutor.fNoErrors = 0x1;
-    if ((FCheckXferWP(0xb, 0x2, 0xd, 0xffff, rgiaLoadAllCol) != 0))
+    if ((FCheckXferWP(0xb, 2, 13, 0xffff, rgiaLoadAllCol) != 0))
         goto L_40d8;
     else
         goto L_40c0;
@@ -4566,7 +4551,7 @@ L_40d8:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 403;
-    if ((((*(LpflFromId(0xb) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((((*(LpflFromId(11) + 0x4) >> 0x9) & 0x1) != 0x0))
         goto L_411a;
     else
         goto L_4114;
@@ -4575,13 +4560,13 @@ L_4114:
     return 0x0;
 
 L_411a:
-    if ((FCheckCargo(LpflFromId(0x1), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(1), 0, 0, 0, 210) != 0))
         goto L_4172;
     else
         goto L_4148;
 
 L_4148:
-    if ((FCheckSelection(grobjFleet, 0x1) == 0))
+    if ((FCheckSelection(grobjFleet, 1) == 0))
         goto L_4166;
     else
         goto L_4160;
@@ -4601,7 +4586,7 @@ L_4172:
     return 0x1;
 
 L_4178:
-    if ((FCheckXferWP(0x1, 0x1, 0x2, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0x1, 1, 2, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_41ab;
     else
         goto L_419f;
@@ -4612,7 +4597,7 @@ L_419f:
 
 L_41ab:
     tutor.fNoErrors = 0x1;
-    if ((FCheckXferWP(0x1, 0x2, 0xd, 0xffff, rgiaLoadAllCol) != 0))
+    if ((FCheckXferWP(0x1, 2, 13, 0xffff, rgiaLoadAllCol) != 0))
         goto L_41f6;
     else
         goto L_41de;
@@ -4626,7 +4611,7 @@ L_41f6:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 410;
-    if ((((*(LpflFromId(0x1) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((((*(LpflFromId(1) + 0x4) >> 0x9) & 0x1) != 0x0))
         goto L_4238;
     else
         goto L_4232;
@@ -4635,13 +4620,11 @@ L_4232:
     return 0x0;
 
 L_4238:
-    if ((LpplFromId(0x10)->lpplprod->iprodMac < 0x3))
-        goto L_4283;
-    else
-        goto L_425b;
+    t_call_423c = LpplFromId(16);
+    /* untranslated: branch byte farseg(t_call_423c->lpplprod):[faroff(t_call_423c->lpplprod)+0x3] < 0x3 ? L_4283 : L_425b */
 
 L_425b:
-    if ((FCheckQueue(0x10, 0x2, grobjPlanet, 0x5, 0x1, 0x1) != 0))
+    if ((FCheckQueue(16, 2, grobjPlanet, 0x5, 0x1, 0x1) != 0))
         goto L_428f;
     else
         goto L_4283;
@@ -4651,7 +4634,7 @@ L_4283:
     return 0x0;
 
 L_428f:
-    if ((FCheckFleetWP(0x6, 0x1, grobjPlanet, 0xd, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x6, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
         goto L_42c3;
     else
         goto L_42b7;
@@ -4684,7 +4667,7 @@ L_42ee:
 L_42f7:
 
 L_42fd:
-    if ((FCheckFleetWP(0x8, 0x1, grobjPlanet, 0x6, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 1, grobjPlanet, 6, 0xffff, 0xffff) != 0))
         goto L_4331;
     else
         goto L_4325;
@@ -4694,7 +4677,7 @@ L_4325:
     return 0x0;
 
 L_4331:
-    if ((FCheckResearch(0x3, 0x1, 0x1e) != 0))
+    if ((FCheckResearch(3, 1, 30) != 0))
         goto L_4359;
     else
         goto L_434d;
@@ -4704,10 +4687,7 @@ L_434d:
     return 0x0;
 
 L_4359:
-    if ((rgplr[0].cshdefSB == 0x1))
-        goto L_4376;
-    else
-        goto L_436c;
+    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) == 0x1 ? L_4376 : L_436c */
 
 L_436c:
     if ((hwndSlotDlg == 0x0))
@@ -4722,17 +4702,14 @@ L_4376:
         goto L_4380;
 
 L_4380:
-    if ((rgplr[0].cshdefSB != 0x1))
-        goto L_439c;
-    else
-        goto L_4393;
+    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x1 ? L_439c : L_4393 */
 
 L_4393:
     tutor.idtBold = 418;
     goto L_4401;
 
 L_439c:
-    if ((FCheckShipBuilder(0x4, 0xffff) == 0))
+    if ((FCheckShipBuilder(4, -1) == 0))
         goto L_43be;
     else
         goto L_43b4;
@@ -4744,17 +4721,14 @@ L_43b4:
         goto L_43be;
 
 L_43be:
-    if ((rgplr[0].cshdefSB != 0x1))
-        goto L_43da;
-    else
-        goto L_43d1;
+    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x1 ? L_43da : L_43d1 */
 
 L_43d1:
     tutor.idtBold = 419;
     goto L_4401;
 
 L_43da:
-    if ((lpshdefBuild->hul.rghs[0].cItem != 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x0))
         goto L_43fb;
     else
         goto L_43f2;
@@ -4770,13 +4744,11 @@ L_4401:
     return 0x0;
 
 L_4407:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_4452;
-    else
-        goto L_442a;
+    t_call_440b = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_440b->lpplprod):[faroff(t_call_440b->lpplprod)+0x3] < 0x4 ? L_4452 : L_442a */
 
 L_442a:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x11, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x11, 0x1, 0x0) != 0))
         goto L_445e;
     else
         goto L_4452;
@@ -4803,7 +4775,7 @@ L_4481:
 L_448a:
 
 L_4490:
-    if ((FCheckCargo(LpflFromId(0x0), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(0), 0, 0, 0, 210) != 0))
         goto L_44ca;
     else
         goto L_44be;
@@ -4813,7 +4785,7 @@ L_44be:
     return 0x0;
 
 L_44ca:
-    if ((FCheckXferWP(0x0, 0x1, 0x5, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0x0, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_44fd;
     else
         goto L_44f1;
@@ -4823,7 +4795,7 @@ L_44f1:
     return 0x0;
 
 L_44fd:
-    if ((FCheckZip(0x0, rgiaUnloadAllCol, idsDropcol) != 0))
+    if ((FCheckZip(0, rgiaUnloadAllCol, idsDropcol) != 0))
         goto L_4538;
     else
         goto L_451c;
@@ -4847,7 +4819,7 @@ L_452f:
 
 L_4538:
     tutor.fNoErrors = 0x1;
-    if ((FCheckXferWP(0x0, 0x2, 0xd, 0xffff, rgiaLoadAllCol) != 0))
+    if ((FCheckXferWP(0x0, 2, 13, 0xffff, rgiaLoadAllCol) != 0))
         goto L_4583;
     else
         goto L_456b;
@@ -4861,7 +4833,7 @@ L_4583:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 431;
-    if ((((*(LpflFromId(0x0) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((((*(LpflFromId(0) + 0x4) >> 0x9) & 0x1) != 0x0))
         goto L_45c5;
     else
         goto L_45bf;
@@ -4873,7 +4845,7 @@ L_45c5:
     return 0x1;
 
 L_45cb:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_45f3;
     else
         goto L_45e7;
@@ -4957,7 +4929,7 @@ L_469f:
 L_46a8:
 
 L_46ae:
-    t_call_46b2 = LpflFromId(0x3);
+    t_call_46b2 = LpflFromId(3);
     if ((LOWORD(t_call_46b2->rgwtMin[0x4]) != 0x17f))
         goto L_46d3;
     else
@@ -4970,7 +4942,7 @@ L_46c9:
         goto L_46d3;
 
 L_46d3:
-    if ((FCheckSelection(grobjFleet, 0x3) != 0))
+    if ((FCheckSelection(grobjFleet, 3) != 0))
         goto L_46f4;
     else
         goto L_46eb;
@@ -4990,13 +4962,11 @@ L_4706:
     return 0x1;
 
 L_470c:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_4757;
-    else
-        goto L_472f;
+    t_call_4710 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_4710->lpplprod):[faroff(t_call_4710->lpplprod)+0x3] < 0x4 ? L_4757 : L_472f */
 
 L_472f:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x3, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x1, 0x0) != 0))
         goto L_4763;
     else
         goto L_4757;
@@ -5006,7 +4976,7 @@ L_4757:
     return 0x0;
 
 L_4763:
-    if ((FCheckResearch(0x1, 0x2, 0x1e) != 0))
+    if ((FCheckResearch(1, 2, 30) != 0))
         goto L_478b;
     else
         goto L_477f;
@@ -5016,7 +4986,7 @@ L_477f:
     return 0x0;
 
 L_478b:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_47b3;
     else
         goto L_47a7;
@@ -5026,7 +4996,7 @@ L_47a7:
     return 0x0;
 
 L_47b3:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) < 0x8 ? L_47c9 : L_47bf */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) < 0x8 ? L_47c9 : L_47bf */
 
 L_47bf:
     if ((hwndSlotDlg == 0x0))
@@ -5036,8 +5006,7 @@ L_47bf:
 
 L_47c9:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
-    hs1.grhst = hstMines;
+    /* untranslated: part[0x2:4](hs) = 0x1000104 */
     HIWORD(hs1) = 0x301;
     if ((hwndSlotDlg != 0x0))
         goto L_47f9;
@@ -5050,10 +5019,10 @@ L_47e7:
     return 0x0;
 
 L_47f9:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) >= 0x8 ? L_4829 : L_4805 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x8 ? L_4829 : L_4805 */
 
 L_4805:
-    if ((FCheckShipBuilder(0x4, 0xffff) != 0))
+    if ((FCheckShipBuilder(4, -1) != 0))
         goto L_4829;
     else
         goto L_481d;
@@ -5064,13 +5033,13 @@ L_481d:
 
 L_4829:
     tutor.idh = 3039;
-    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
         goto L_4863;
     else
         goto L_4847;
 
 L_4847:
-    if ((FCheckBuilderPart(0x0, &(hs), 0x1) != 0))
+    if ((FCheckBuilderPart(0, &(hs), 0x1) != 0))
         goto L_486c;
     else
         goto L_4863;
@@ -5080,13 +5049,13 @@ L_4863:
     goto L_48af;
 
 L_486c:
-    if ((lpshdefBuild->hul.rghs[2].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) == 0x0))
         goto L_48a0;
     else
         goto L_4884;
 
 L_4884:
-    if ((FCheckBuilderPart(0x2, &(hs1), 0x1) != 0))
+    if ((FCheckBuilderPart(2, &(hs1), 0x1) != 0))
         goto L_48a9;
     else
         goto L_48a0;
@@ -5102,13 +5071,11 @@ L_48af:
     return 0x0;
 
 L_48b5:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x5))
-        goto L_4900;
-    else
-        goto L_48d8;
+    t_call_48b9 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_48b9->lpplprod):[faroff(t_call_48b9->lpplprod)+0x3] < 0x5 ? L_4900 : L_48d8 */
 
 L_48d8:
-    if ((FCheckQueue(0xd, 0x2, grobjFleet, 0x7, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 2, grobjFleet, 0x7, 0x1, 0x0) != 0))
         goto L_490c;
     else
         goto L_4900;
@@ -5122,13 +5089,13 @@ L_490c:
     return 0x1;
 
 L_4918:
-    if ((FCheckFleetWP(0x4, 0x1, grobjFleet, 0x204, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjFleet, 516, 0xffff, 0xffff) != 0))
         goto L_498e;
     else
         goto L_4940;
 
 L_4940:
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_4961;
     else
         goto L_4958;
@@ -5138,7 +5105,7 @@ L_4958:
     goto L_4988;
 
 L_4961:
-    if ((FCheckSummary(grobjFleet, 0x204) == 0))
+    if ((FCheckSummary(grobjFleet, 516) == 0))
         goto L_4982;
     else
         goto L_4979;
@@ -5184,7 +5151,7 @@ L_49cd:
 L_49d6:
 
 L_49dc:
-    if ((FCheckCargo(LpflFromId(0x6), 0x0, 0x0, 0x0, 0xd2) == 0))
+    if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) == 0))
         goto L_4a10;
     else
         goto L_4a0a;
@@ -5193,13 +5160,13 @@ L_4a0a:
     return 0x1;
 
 L_4a10:
-    if ((FCheckMessages(0x1, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(1, 0xffff, 0) != 0))
         goto L_4a5f;
     else
         goto L_4a2c;
 
 L_4a2c:
-    if ((FCheckSelection(grobjFleet, 0x4) != 0))
+    if ((FCheckSelection(grobjFleet, 4) != 0))
         goto L_4a5f;
     else
         goto L_4a44;
@@ -5210,13 +5177,13 @@ L_4a44:
     return 0x0;
 
 L_4a5f:
-    if ((FCheckMessages(0x2, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(2, 0xffff, 0) != 0))
         goto L_4aa2;
     else
         goto L_4a7b;
 
 L_4a7b:
-    if ((FCheckSelection(grobjFleet, 0x6) != 0))
+    if ((FCheckSelection(grobjFleet, 6) != 0))
         goto L_4aa2;
     else
         goto L_4a93;
@@ -5268,7 +5235,7 @@ L_4b09:
     return 0x1;
 
 L_4b0f:
-    if ((FCheckCargo(LpflFromId(0x6), 0x0, 0x0, 0x0, 0xd2) != 0))
+    if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) != 0))
         goto L_4b4c;
     else
         goto L_4b3d;
@@ -5278,7 +5245,7 @@ L_4b3d:
     return 0x0;
 
 L_4b4c:
-    if ((FCheckFleetWP(0x6, 0x1, grobjPlanet, 0x11, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x6, 1, grobjPlanet, 17, 0xffff, 0xffff) != 0))
         goto L_4b83;
     else
         goto L_4b74;
@@ -5288,7 +5255,7 @@ L_4b74:
     return 0x0;
 
 L_4b83:
-    if ((FCheckFleetWP(0x6, 0x1, grobjPlanet, 0x11, 0x1, 0xffff) != 0))
+    if ((FCheckFleetWP(0x6, 1, grobjPlanet, 17, 0x1, 0xffff) != 0))
         goto L_4bba;
     else
         goto L_4bab;
@@ -5298,7 +5265,7 @@ L_4bab:
     return 0x0;
 
 L_4bba:
-    if ((FCheckXferWP(0x6, 0x1, 0x11, 0xffff, rgiaUnloadAllCol) != 0))
+    if ((FCheckXferWP(0x6, 1, 17, 0xffff, rgiaUnloadAllCol) != 0))
         goto L_4bf6;
     else
         goto L_4be1;
@@ -5309,7 +5276,7 @@ L_4be1:
     return 0x0;
 
 L_4bf6:
-    t_call_4bfa = LpflFromId(0x2);
+    t_call_4bfa = LpflFromId(2);
     if ((FAROFF(t_call_4bfa) != 0x0))
         goto L_4c12;
     else
@@ -5322,7 +5289,7 @@ L_4c0a:
         goto L_4c12;
 
 L_4c12:
-    if ((FCheckMessages(0x3, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(3, 0xffff, 0) != 0))
         goto L_4c37;
     else
         goto L_4c2e;
@@ -5332,13 +5299,13 @@ L_4c2e:
     goto L_4ca1;
 
 L_4c37:
-    if ((FCheckSelection(grobjFleet, 0x3) != 0))
+    if ((FCheckSelection(grobjFleet, 3) != 0))
         goto L_4c7c;
     else
         goto L_4c4f;
 
 L_4c4f:
-    if ((FCheckSelection(grobjFleet, 0x2) == 0))
+    if ((FCheckSelection(grobjFleet, 2) == 0))
         goto L_4c6d;
     else
         goto L_4c67;
@@ -5378,7 +5345,7 @@ L_4ca7:
     return 0x1;
 
 L_4cb9:
-    if ((FCheckFleetWP(0x7, 0x0, grobjPlanet, 0xd, 0x6, 0xffff) != 0))
+    if ((FCheckFleetWP(0x7, 0, grobjPlanet, 13, 0x6, 0xffff) != 0))
         goto L_4ced;
     else
         goto L_4ce1;
@@ -5388,13 +5355,11 @@ L_4ce1:
     return 0x0;
 
 L_4ced:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_4d38;
-    else
-        goto L_4d10;
+    t_call_4cf1 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_4cf1->lpplprod):[faroff(t_call_4cf1->lpplprod)+0x3] < 0x3 ? L_4d38 : L_4d10 */
 
 L_4d10:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x6, 0x1, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x6, 0x1, 0x0) != 0))
         goto L_4d50;
     else
         goto L_4d38;
@@ -5405,19 +5370,19 @@ L_4d38:
     return 0x0;
 
 L_4d50:
-    if ((FCheckMessages(0xe, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(14, 0xffff, 0) == 0))
         goto L_4dc2;
     else
         goto L_4d6c;
 
 L_4d6c:
-    if ((FCheckSelection(grobjFleet, 0x4) != 0))
+    if ((FCheckSelection(grobjFleet, 4) != 0))
         goto L_4d9c;
     else
         goto L_4d84;
 
 L_4d84:
-    if ((FCheckSelection(grobjFleet, 0x8) == 0))
+    if ((FCheckSelection(grobjFleet, 8) == 0))
         goto L_4dc2;
     else
         goto L_4d9c;
@@ -5454,10 +5419,8 @@ L_4de2:
     return 0x0;
 
 L_4dee:
-    if ((LpflFromId(0x4)->lpplord->rgord[0].grobj == 0x2))
-        goto L_4e28;
-    else
-        goto L_4e16;
+    t_call_4df2 = LpflFromId(4);
+    /* untranslated: branch ((farseg(t_call_4df2->lpplord):[faroff(t_call_4df2->lpplord)+0xa] >> 0x8) & 0xf) == 0x2 ? L_4e28 : L_4e16 */
 
 L_4e16:
     tutor.idtBold = 484;
@@ -5465,19 +5428,19 @@ L_4e16:
     return 0x0;
 
 L_4e28:
-    if ((LpflFromId(0x8)->cord >= 3))
+    if ((LpflFromId(8)->cord >= 3))
         goto L_4f00;
     else
         goto L_4e42;
 
 L_4e42:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(9999, 0xffff, 0) == 0))
         goto L_4e76;
     else
         goto L_4e5e;
 
 L_4e5e:
-    if ((FCheckSelection(grobjFleet, 0x8) != 0))
+    if ((FCheckSelection(grobjFleet, 8) != 0))
         goto L_4e7f;
     else
         goto L_4e76;
@@ -5488,7 +5451,7 @@ L_4e76:
 
 L_4e7f:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x8, 0x1, grobjPlanet, 0x1, 0xffff, 0xffff) == 0))
+    if ((FCheckFleetWP(0x8, 1, grobjPlanet, 1, 0xffff, 0xffff) == 0))
         goto L_4ebc;
     else
         goto L_4eb3;
@@ -5499,7 +5462,7 @@ L_4eb3:
 
 L_4ebc:
     tutor.fNoErrors = 0x0;
-    FCheckFleetWP(0x8, 0x1, grobjPlanet, 0x6, 0xffff, 0xffff);
+    FCheckFleetWP(0x8, 1, grobjPlanet, 6, 0xffff, 0xffff);
     tutor.idtBold = 486;
 
 L_4eee:
@@ -5509,7 +5472,7 @@ L_4efa:
     return 0x0;
 
 L_4f00:
-    if ((FCheckFleetWP(0x8, 0x2, grobjPlanet, 0x0, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x8, 2, grobjPlanet, 0, 0xffff, 0xffff) != 0))
         goto L_4f34;
     else
         goto L_4f28;
@@ -5548,7 +5511,7 @@ L_4f67:
 L_4f70:
 
 L_4f76:
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0x5, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
         goto L_4faa;
     else
         goto L_4f9e;
@@ -5559,20 +5522,20 @@ L_4f9e:
 
 L_4faa:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x2, 0x1, grobjFleet, 0x5, 0x4, 0xffff) != 0))
+    if ((FCheckFleetWP(0x2, 1, grobjFleet, 5, 0x4, 0xffff) != 0))
         goto L_5016;
     else
         goto L_4fde;
 
 L_4fde:
     tutor.fNoErrors = 0x0;
-    FCheckFleetWP(0x2, 0x1, grobjPlanet, 0xc, 0xffff, 0xffff);
+    FCheckFleetWP(0x2, 1, grobjPlanet, 12, 0xffff, 0xffff);
     tutor.idtBold = 489;
     return 0x0;
 
 L_5016:
     tutor.fNoErrors = 0x0;
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_504a;
     else
         goto L_503e;
@@ -5599,7 +5562,7 @@ L_506d:
 L_5076:
 
 L_507c:
-    if ((FCheckMessages(0x3, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(3, 0xffff, 0) != 0))
         goto L_50a4;
     else
         goto L_5098;
@@ -5609,7 +5572,7 @@ L_5098:
     return 0x0;
 
 L_50a4:
-    if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
+    if (((HIWORD(rgshdef[2].hul.rghs[0x0]) & 0xff) != 0x4))
         goto L_50bc;
     else
         goto L_50b2;
@@ -5622,10 +5585,9 @@ L_50b2:
 
 L_50bc:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
-    hs2.grhst = hstSpecialM;
+    /* untranslated: part[0x2:4](hs) = 0x10000104 */
     HIWORD(hs2) = 0x100;
-    if ((FCheckScanner(0x3, 0xffff) != 0))
+    if ((FCheckScanner(3, -1) != 0))
         goto L_50f4;
     else
         goto L_50e8;
@@ -5646,7 +5608,7 @@ L_50fe:
     return 0x0;
 
 L_5110:
-    if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
+    if (((HIWORD(rgshdef[2].hul.rghs[0x0]) & 0xff) != 0x4))
         goto L_512a;
     else
         goto L_511e;
@@ -5656,13 +5618,13 @@ L_511e:
     return 0x0;
 
 L_512a:
-    if ((FCheckShipBuilder(0x4, 0xffff) != 0))
+    if ((FCheckShipBuilder(4, -1) != 0))
         goto L_516c;
     else
         goto L_5142;
 
 L_5142:
-    if ((FCheckShipBuilder(0x0, 0x2) != 0))
+    if ((FCheckShipBuilder(0, 2) != 0))
         goto L_5163;
     else
         goto L_515a;
@@ -5675,19 +5637,19 @@ L_5163:
     tutor.idtBold = 501;
 
 L_516c:
-    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
         goto L_51b3;
     else
         goto L_5184;
 
 L_5184:
-    if ((lpshdefBuild->hul.rghs[0].iItem != 0x4))
+    if (((HIWORD(lpshdefBuild->hul.rghs[0x0]) & 0xff) != 0x4))
         goto L_51b3;
     else
         goto L_5197;
 
 L_5197:
-    if ((FCheckBuilderPart(0x1, &(hs2), 0x1) != 0))
+    if ((FCheckBuilderPart(1, &(hs2), 0x1) != 0))
         goto L_51bc;
     else
         goto L_51b3;
@@ -5706,13 +5668,11 @@ L_51c8:
     return 0x1;
 
 L_51ce:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_5219;
-    else
-        goto L_51f1;
+    t_call_51d2 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_51d2->lpplprod):[faroff(t_call_51d2->lpplprod)+0x3] < 0x3 ? L_5219 : L_51f1 */
 
 L_51f1:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x2, 0x3, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x2, 0x3, 0x0) != 0))
         goto L_5225;
     else
         goto L_5219;
@@ -5722,7 +5682,7 @@ L_5219:
     return 0x0;
 
 L_5225:
-    if ((FCheckMessages(0x4, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(4, 0xffff, 0) != 0))
         goto L_524d;
     else
         goto L_5241;
@@ -5732,19 +5692,17 @@ L_5241:
     return 0x0;
 
 L_524d:
-    if ((LpplFromId(0x11)->lpplprod->iprodMac != 0x3))
-        goto L_5298;
-    else
-        goto L_5270;
+    t_call_5251 = LpplFromId(17);
+    /* untranslated: branch byte farseg(t_call_5251->lpplprod):[faroff(t_call_5251->lpplprod)+0x3] != 0x3 ? L_5298 : L_5270 */
 
 L_5270:
-    if ((FCheckQueue(0x11, 0x2, grobjPlanet, 0x5, 0x2, 0x1) != 0))
+    if ((FCheckQueue(17, 2, grobjPlanet, 0x5, 0x2, 0x1) != 0))
         goto L_52c5;
     else
         goto L_5298;
 
 L_5298:
-    if ((FCheckSelection(grobjPlanet, 0x11) != 0))
+    if ((FCheckSelection(grobjPlanet, 17) != 0))
         goto L_52b9;
     else
         goto L_52b0;
@@ -5760,13 +5718,13 @@ L_52bf:
     return 0x0;
 
 L_52c5:
-    if ((FCheckMessages(0x6, 0xffff, 0x0) == 0))
+    if ((FCheckMessages(6, 0xffff, 0) == 0))
         goto L_52fd;
     else
         goto L_52e1;
 
 L_52e1:
-    if ((FCheckResearch(0x2, 0x3, 0x1e) != 0))
+    if ((FCheckResearch(2, 3, 30) != 0))
         goto L_5309;
     else
         goto L_52fd;
@@ -5776,7 +5734,7 @@ L_52fd:
     return 0x0;
 
 L_5309:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_5331;
     else
         goto L_5325;
@@ -5810,7 +5768,7 @@ L_5368:
 L_5371:
 
 L_5377:
-    if ((FCheckMessages(0x4, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(4, 0xffff, 0) != 0))
         goto L_539f;
     else
         goto L_5393;
@@ -5820,19 +5778,16 @@ L_5393:
     return 0x0;
 
 L_539f:
-    if ((rgplr[0].cFleet != 0xa))
-        goto L_53f3;
-    else
-        goto L_53ad;
+    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xa ? L_53f3 : L_53ad */
 
 L_53ad:
-    if ((FCheckColonizeWP(0x9, 0x0, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x9, 0, 0xffff) != 0))
         goto L_53f3;
     else
         goto L_53c9;
 
 L_53c9:
-    if ((FCheckSelection(grobjFleet, 0x9) == 0))
+    if ((FCheckSelection(grobjFleet, 9) == 0))
         goto L_53e7;
     else
         goto L_53e1;
@@ -5849,10 +5804,7 @@ L_53ea:
     return 0x0;
 
 L_53f3:
-    if ((rgplr[0].cFleet != 0xa))
-        goto L_540d;
-    else
-        goto L_5401;
+    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xa ? L_540d : L_5401 */
 
 L_5401:
     tutor.idtBold = 515;
@@ -5860,32 +5812,32 @@ L_5401:
 
 L_540d:
     tutor.fNoErrors = 0x1;
-    if ((FCheckColonizeWP(0x9, 0x1, 0xffff) != 0))
+    if ((FCheckColonizeWP(0x9, 1, 0xffff) != 0))
         goto L_5461;
     else
         goto L_5435;
 
 L_5435:
     tutor.fNoErrors = 0x0;
-    FCheckColonizeWP(0x9, 0x0, 0xffff);
+    FCheckColonizeWP(0x9, 0, 0xffff);
     tutor.idtBold = 516;
     return 0x0;
 
 L_5461:
-    if ((FCheckColonizeWP(0xa, 0x17, 0xffff) != 0))
+    if ((FCheckColonizeWP(0xa, 23, 0xffff) != 0))
         goto L_54a9;
     else
         goto L_547d;
 
 L_547d:
     tutor.fNoErrors = 0x0;
-    FCheckColonizeWP(0xa, 0x0, 0xffff);
+    FCheckColonizeWP(0xa, 0, 0xffff);
     tutor.idtBold = 517;
     return 0x0;
 
 L_54a9:
     tutor.fNoErrors = 0x0;
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_54dd;
     else
         goto L_54d1;
@@ -5898,13 +5850,11 @@ L_54dd:
     return 0x1;
 
 L_54e3:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x4))
-        goto L_552e;
-    else
-        goto L_5506;
+    t_call_54e7 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_54e7->lpplprod):[faroff(t_call_54e7->lpplprod)+0x3] < 0x4 ? L_552e : L_5506 */
 
 L_5506:
-    if ((FCheckQueue(0xd, 0x1, grobjFleet, 0x3, 0x3, 0x0) != 0))
+    if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x3, 0x0) != 0))
         goto L_553a;
     else
         goto L_552e;
@@ -5915,27 +5865,27 @@ L_552e:
 
 L_553a:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x4, 0x1, grobjFleet, 0x205, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjFleet, 517, 0xffff, 0xffff) != 0))
         goto L_55eb;
     else
         goto L_556e;
 
 L_556e:
     tutor.fNoErrors = 0x0;
-    FCheckColonizeWP(0x4, 0x5, 0xffff);
-    if ((FCheckSummary(grobjFleet, 0x205) != 0))
+    FCheckColonizeWP(0x4, 5, 0xffff);
+    if ((FCheckSummary(grobjFleet, 517) != 0))
         goto L_55d6;
     else
         goto L_55a6;
 
 L_55a6:
-    if ((FCheckSummary(grobjFleet, 0x4) != 0))
+    if ((FCheckSummary(grobjFleet, 4) != 0))
         goto L_55d6;
     else
         goto L_55be;
 
 L_55be:
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_55df;
     else
         goto L_55d6;
@@ -5976,14 +5926,14 @@ L_562b:
 
 L_5631:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x4, 0x0, grobjFleet, 0x205, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 0, grobjFleet, 517, 0xffff, 0xffff) != 0))
         goto L_56a4;
     else
         goto L_5665;
 
 L_5665:
     tutor.fNoErrors = 0x0;
-    if ((FCheckSelection(grobjFleet, 0x4) == 0))
+    if ((FCheckSelection(grobjFleet, 4) == 0))
         goto L_5698;
     else
         goto L_5689;
@@ -6001,7 +5951,7 @@ L_569e:
 
 L_56a4:
     tutor.fNoErrors = 0x0;
-    if ((FCheckMessages(0x1, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(1, 0xffff, 0) != 0))
         goto L_56db;
     else
         goto L_56cc;
@@ -6011,7 +5961,7 @@ L_56cc:
     return 0x0;
 
 L_56db:
-    t_call_56df = LpflFromId(0xc);
+    t_call_56df = LpflFromId(12);
     if ((FAROFF(t_call_56df) != 0x0))
         goto L_56f7;
     else
@@ -6024,7 +5974,7 @@ L_56ef:
         goto L_56f7;
 
 L_56f7:
-    if ((((*(LpflFromId(0xc) + 0x4) >> 0xa) & 0x1) == 0x0))
+    if ((((*(LpflFromId(12) + 0x4) >> 0xa) & 0x1) == 0x0))
         goto L_5724;
     else
         goto L_571b;
@@ -6033,13 +5983,13 @@ L_571b:
     return 0x1;
 
 L_5724:
-    if ((FCheckCargo(LpflFromId(0xc), 0x0, 0x0, 0x0, 0x276) != 0))
+    if ((FCheckCargo(LpflFromId(12), 0, 0, 0, 630) != 0))
         goto L_579d;
     else
         goto L_5752;
 
 L_5752:
-    if ((FCheckSelection(grobjFleet, 0xc) == 0))
+    if ((FCheckSelection(grobjFleet, 12) == 0))
         goto L_5773;
     else
         goto L_576a;
@@ -6049,7 +5999,7 @@ L_576a:
     goto L_5797;
 
 L_5773:
-    if ((FCheckSelection(grobjFleet, 0x8) == 0))
+    if ((FCheckSelection(grobjFleet, 8) == 0))
         goto L_5791;
     else
         goto L_578b;
@@ -6071,7 +6021,7 @@ L_579d:
     return 0x1;
 
 L_57a3:
-    t_call_57a7 = LpflFromId(0xc);
+    t_call_57a7 = LpflFromId(12);
     if ((FAROFF(t_call_57a7) != 0x0))
         goto L_57bf;
     else
@@ -6084,7 +6034,7 @@ L_57b7:
         goto L_57bf;
 
 L_57bf:
-    if ((FCheckSelection(grobjFleet, 0xb) != 0))
+    if ((FCheckSelection(grobjFleet, 11) != 0))
         goto L_57e0;
     else
         goto L_57d7;
@@ -6111,7 +6061,7 @@ L_57ff:
     return 0x0;
 
 L_5805:
-    if ((FCheckMessages(0x8, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(8, 0xffff, 0) != 0))
         goto L_582d;
     else
         goto L_5821;
@@ -6121,7 +6071,7 @@ L_5821:
     return 0x0;
 
 L_582d:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_5855;
     else
         goto L_5849;
@@ -6139,7 +6089,7 @@ L_5855:
         goto L_586b;
 
 L_586b:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x9 ? L_587d : L_5877 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x9 ? L_587d : L_5877 */
 
 L_5877:
     return 0x1;
@@ -6154,16 +6104,16 @@ L_5883:
         goto L_588d;
 
 L_588d:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) >= 0x9 ? L_5992 : L_5899 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x9 ? L_5992 : L_5899 */
 
 L_5899:
-    if ((FCheckShipBuilder(0x4, 0xffff) != 0))
+    if ((FCheckShipBuilder(4, -1) != 0))
         goto L_58cc;
     else
         goto L_58b1;
 
 L_58b1:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) >= 0x9 ? L_58c3 : L_58bd */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x9 ? L_58c3 : L_58bd */
 
 L_58bd:
     t_merge_58c6_0001 = 0x221;
@@ -6177,31 +6127,31 @@ L_58c6:
     goto L_598c;
 
 L_58cc:
-    if ((lpshdefBuild->hul.rghs[0].cItem != 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x1))
         goto L_5944;
     else
         goto L_58e4;
 
 L_58e4:
-    if ((lpshdefBuild->hul.rghs[1].cItem != 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) != 0x1))
         goto L_5944;
     else
         goto L_58fc;
 
 L_58fc:
-    if ((lpshdefBuild->hul.rghs[2].cItem != 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) != 0x1))
         goto L_5944;
     else
         goto L_5914;
 
 L_5914:
-    if ((lpshdefBuild->hul.rghs[3].cItem != 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) != 0x1))
         goto L_5944;
     else
         goto L_592c;
 
 L_592c:
-    if ((lpshdefBuild->hul.rghs[4].cItem == 0x2))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x4]) >> 0x8) & 0xff) == 0x2))
         goto L_594d;
     else
         goto L_5944;
@@ -6211,13 +6161,13 @@ L_5944:
     goto L_598c;
 
 L_594d:
-    if ((lpshdefBuild->hul.rghs[5].cItem != 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x5]) >> 0x8) & 0xff) != 0x1))
         goto L_597d;
     else
         goto L_5965;
 
 L_5965:
-    if ((lpshdefBuild->hul.rghs[6].cItem == 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x6]) >> 0x8) & 0xff) == 0x1))
         goto L_5986;
     else
         goto L_597d;
@@ -6233,13 +6183,11 @@ L_598c:
     return 0x0;
 
 L_5992:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_59dd;
-    else
-        goto L_59b5;
+    t_call_5996 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_5996->lpplprod):[faroff(t_call_5996->lpplprod)+0x3] < 0x3 ? L_59dd : L_59b5 */
 
 L_59b5:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x8, 0xa, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x8, 0xa, 0x0) != 0))
         goto L_59e9;
     else
         goto L_59dd;
@@ -6278,13 +6226,13 @@ L_5a1c:
 L_5a25:
 
 L_5a2b:
-    if ((FCheckFleetWP(0x4, 0x1, grobjPlanet, 0x5, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
         goto L_5a80;
     else
         goto L_5a53;
 
 L_5a53:
-    if ((FCheckSelection(grobjFleet, 0x4) != 0))
+    if ((FCheckSelection(grobjFleet, 4) != 0))
         goto L_5a74;
     else
         goto L_5a6b;
@@ -6300,7 +6248,7 @@ L_5a7a:
     return 0x0;
 
 L_5a80:
-    if ((FCheckMessages(0x6, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(6, 0xffff, 0) != 0))
         goto L_5aa8;
     else
         goto L_5a9c;
@@ -6310,13 +6258,13 @@ L_5a9c:
     return 0x0;
 
 L_5aa8:
-    if ((FCheckFleetWP(0xc, 0x1, grobjPlanet, 0xa, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0xc, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
         goto L_5afd;
     else
         goto L_5ad0;
 
 L_5ad0:
-    if ((FCheckSelection(grobjFleet, 0xc) != 0))
+    if ((FCheckSelection(grobjFleet, 12) != 0))
         goto L_5af1;
     else
         goto L_5ae8;
@@ -6332,7 +6280,7 @@ L_5af7:
     return 0x0;
 
 L_5afd:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_5b25;
     else
         goto L_5b19;
@@ -6361,14 +6309,14 @@ L_5b5d:
 
 L_5b63:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x3, 0x1, grobjPlanet, 0xd, 0xffff, 0x5) != 0))
+    if ((FCheckFleetWP(0x3, 1, grobjPlanet, 13, 0xffff, 0x5) != 0))
         goto L_5bd0;
     else
         goto L_5b97;
 
 L_5b97:
     tutor.fNoErrors = 0x0;
-    if ((FCheckSelection(grobjFleet, 0x3) != 0))
+    if ((FCheckSelection(grobjFleet, 3) != 0))
         goto L_5bc4;
     else
         goto L_5bbb;
@@ -6385,7 +6333,7 @@ L_5bca:
 
 L_5bd0:
     tutor.fNoErrors = 0x0;
-    if ((FCheckMessages(0x6, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(6, 0xffff, 0) != 0))
         goto L_5c04;
     else
         goto L_5bf8;
@@ -6395,7 +6343,7 @@ L_5bf8:
     return 0x0;
 
 L_5c04:
-    if ((FCheckFleetWP(0xd, 0x1, grobjPlanet, 0xa, 0xffff, 0xffff) != 0))
+    if ((FCheckFleetWP(0xd, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
         goto L_5c38;
     else
         goto L_5c2c;
@@ -6405,7 +6353,7 @@ L_5c2c:
     return 0x0;
 
 L_5c38:
-    if ((FCheckPlanetRoute(0xd, 0xa) != 0))
+    if ((FCheckPlanetRoute(13, 10) != 0))
         goto L_5c5c;
     else
         goto L_5c50;
@@ -6418,7 +6366,7 @@ L_5c5c:
     return 0x1;
 
 L_5c62:
-    if ((FCheckMessages(0x11, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(17, 0xffff, 0) != 0))
         goto L_5c8a;
     else
         goto L_5c7e;
@@ -6428,7 +6376,7 @@ L_5c7e:
     return 0x0;
 
 L_5c8a:
-    if ((FCheckResearch(0x3, 0x0, 0x1e) != 0))
+    if ((FCheckResearch(3, 0, 30) != 0))
         goto L_5cb2;
     else
         goto L_5ca6;
@@ -6438,7 +6386,7 @@ L_5ca6:
     return 0x0;
 
 L_5cb2:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_5cda;
     else
         goto L_5cce;
@@ -6449,14 +6397,14 @@ L_5cce:
 
 L_5cda:
     tutor.fNoErrors = 0x1;
-    if ((FCheckFleetWP(0x6, 0x0, grobjPlanet, 0x11, 0x5, 0xffff) != 0))
+    if ((FCheckFleetWP(0x6, 0, grobjPlanet, 17, 0x5, 0xffff) != 0))
         goto L_5d47;
     else
         goto L_5d0e;
 
 L_5d0e:
     tutor.fNoErrors = 0x0;
-    if ((FCheckSelection(grobjFleet, 0x6) != 0))
+    if ((FCheckSelection(grobjFleet, 6) != 0))
         goto L_5d3b;
     else
         goto L_5d32;
@@ -6488,19 +6436,19 @@ L_5d63:
         goto L_5d76;
 
 L_5d76:
-    if ((FCheckShipBuilder(0x4, 0xffff) == 0))
+    if ((FCheckShipBuilder(4, -1) == 0))
         goto L_5e2a;
     else
         goto L_5d8e;
 
 L_5d8e:
-    if ((FCheckShipBuilder(0x4, 0xffff) == 0))
+    if ((FCheckShipBuilder(4, -1) == 0))
         goto L_5e21;
     else
         goto L_5da6;
 
 L_5da6:
-    if ((lpshdefBuild->hul.rghs[0].cItem == 0x2))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x2))
         goto L_5dc7;
     else
         goto L_5dbe;
@@ -6510,19 +6458,19 @@ L_5dbe:
     goto L_5e30;
 
 L_5dc7:
-    if ((lpshdefBuild->hul.rghs[1].cItem != 0x4))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) != 0x4))
         goto L_5e0f;
     else
         goto L_5ddf;
 
 L_5ddf:
-    if ((lpshdefBuild->hul.rghs[2].cItem != 0x4))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) != 0x4))
         goto L_5e0f;
     else
         goto L_5df7;
 
 L_5df7:
-    if ((lpshdefBuild->hul.rghs[3].cItem == 0x1))
+    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) == 0x1))
         goto L_5e18;
     else
         goto L_5e0f;
@@ -6544,7 +6492,7 @@ L_5e30:
     return 0x0;
 
 L_5e39:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) >= 0xa ? L_5e57 : L_5e45 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0xa ? L_5e57 : L_5e45 */
 
 L_5e45:
     tutor.idtBold = 577;
@@ -6552,13 +6500,11 @@ L_5e45:
     return 0x0;
 
 L_5e57:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_5ea2;
-    else
-        goto L_5e7a;
+    t_call_5e5b = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_5e5b->lpplprod):[faroff(t_call_5e5b->lpplprod)+0x3] < 0x3 ? L_5ea2 : L_5e7a */
 
 L_5e7a:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x9, 0xa, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x9, 0xa, 0x0) != 0))
         goto L_5eae;
     else
         goto L_5ea2;
@@ -6598,7 +6544,7 @@ L_5eed:
 L_5ef6:
 
 L_5efc:
-    if ((FCheckMessages(0x5, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(5, 0xffff, 0) != 0))
         goto L_5f24;
     else
         goto L_5f18;
@@ -6608,13 +6554,13 @@ L_5f18:
     return 0x0;
 
 L_5f24:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_5f6d;
     else
         goto L_5f40;
 
 L_5f40:
-    if ((FCheckSelection(grobjFleet, 0xe) != 0))
+    if ((FCheckSelection(grobjFleet, 14) != 0))
         goto L_5f61;
     else
         goto L_5f58;
@@ -6648,7 +6594,7 @@ L_5f9c:
 L_5fa5:
 
 L_5fab:
-    if ((FCheckMessages(0x6, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(6, 0xffff, 0) != 0))
         goto L_5fd3;
     else
         goto L_5fc7;
@@ -6658,7 +6604,7 @@ L_5fc7:
     return 0x0;
 
 L_5fd3:
-    if ((FCheckSelection(grobjPlanet, 0x5) != 0))
+    if ((FCheckSelection(grobjPlanet, 5) != 0))
         goto L_5ff7;
     else
         goto L_5feb;
@@ -6668,13 +6614,11 @@ L_5feb:
     return 0x0;
 
 L_5ff7:
-    if ((LpplFromId(0x5)->lpplprod->iprodMac < 0x4))
-        goto L_6042;
-    else
-        goto L_601a;
+    t_call_5ffb = LpplFromId(5);
+    /* untranslated: branch byte farseg(t_call_5ffb->lpplprod):[faroff(t_call_5ffb->lpplprod)+0x3] < 0x4 ? L_6042 : L_601a */
 
 L_601a:
-    if ((FCheckQueue(0x5, 0x0, grobjPlanet, 0x8, 0x64, 0x1) != 0))
+    if ((FCheckQueue(5, 0, grobjPlanet, 0x8, 0x64, 0x1) != 0))
         goto L_604e;
     else
         goto L_6042;
@@ -6684,7 +6628,7 @@ L_6042:
     return 0x0;
 
 L_604e:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_6076;
     else
         goto L_606a;
@@ -6712,7 +6656,7 @@ L_60a5:
 L_60ae:
 
 L_60b4:
-    if ((FCheckMessages(0x2, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(2, 0xffff, 0) != 0))
         goto L_60dc;
     else
         goto L_60d0;
@@ -6738,13 +6682,13 @@ L_6102:
     return 0x0;
 
 L_610e:
-    if ((FCheckMessages(0x12, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(18, 0xffff, 0) != 0))
         goto L_6157;
     else
         goto L_612a;
 
 L_612a:
-    if ((FCheckSelection(grobjFleet, 0xc) != 0))
+    if ((FCheckSelection(grobjFleet, 12) != 0))
         goto L_614b;
     else
         goto L_6142;
@@ -6761,7 +6705,7 @@ L_6151:
 
 L_6157:
     tutor.idtBold = 606;
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_617f;
     else
         goto L_6179;
@@ -6787,7 +6731,7 @@ L_61a8:
 L_61b1:
 
 L_61b7:
-    if ((FCheckMessages(0xa, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(10, 0xffff, 0) != 0))
         goto L_61df;
     else
         goto L_61d3;
@@ -6797,19 +6741,17 @@ L_61d3:
     return 0x0;
 
 L_61df:
-    if ((LpplFromId(0xd)->lpplprod->iprodMac < 0x3))
-        goto L_622a;
-    else
-        goto L_6202;
+    t_call_61e3 = LpplFromId(13);
+    /* untranslated: branch byte farseg(t_call_61e3->lpplprod):[faroff(t_call_61e3->lpplprod)+0x3] < 0x3 ? L_622a : L_6202 */
 
 L_6202:
-    if ((FCheckQueue(0xd, 0x0, grobjFleet, 0x9, 0xa, 0x0) != 0))
+    if ((FCheckQueue(13, 0, grobjFleet, 0x9, 0xa, 0x0) != 0))
         goto L_6257;
     else
         goto L_622a;
 
 L_622a:
-    if ((FCheckSelection(grobjPlanet, 0xd) != 0))
+    if ((FCheckSelection(grobjPlanet, 13) != 0))
         goto L_624b;
     else
         goto L_6242;
@@ -6825,7 +6767,7 @@ L_6251:
     return 0x0;
 
 L_6257:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_627f;
     else
         goto L_6273;
@@ -6854,7 +6796,7 @@ L_62b7:
 
 L_62bd:
     tutor.idtBold = 619;
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_62e5;
     else
         goto L_62df;
@@ -6880,7 +6822,7 @@ L_630e:
 L_6317:
 
 L_631d:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_6345;
     else
         goto L_6339;
@@ -6909,7 +6851,7 @@ L_637d:
     return 0x1;
 
 L_6383:
-    if ((FCheckMessages(0x270f, 0xffff, 0x0) != 0))
+    if ((FCheckMessages(9999, 0xffff, 0) != 0))
         goto L_63ab;
     else
         goto L_639f;
@@ -6951,14 +6893,14 @@ L_6460:
 
 L_6488:
     vrgZip[iZip].fValid = 0x1;
-    piaCur = vrgZip[iZip];
+    piaCur = (0x5264 + LOWORD((0x18 * iZip)));
     i = 0;
     goto L_64c7;
 
 L_64ad:
     i = (i + 1);
     piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x1);
+    lpiaGoal = (lpiaGoal + 0x2);
 
 L_64c7:
     if ((i >= 5))
@@ -6967,12 +6909,12 @@ L_64c7:
         goto L_64d0;
 
 L_64d0:
-    *(piaCur) = (piaCur->cQuan | ((lpiaGoal->iAction & 0xf) << 0xc));
+    piaCur->iAction = lpiaGoal->iAction;
     goto L_64ad;
 
 L_6501:
     CchGetString(ids, szT);
-    strcpy(vrgZip[iZip].szName, szT);
+    strcpy(((0x5264 + LOWORD((24 * iZip))) + 0xa), szT);
     return 0x1;
 
 L_6533:
@@ -6994,7 +6936,7 @@ L_655c:
     return 0x0;
 
 L_6562:
-    piaCur = vrgZip[iZip];
+    piaCur = (0x5264 + LOWORD((0x18 * iZip)));
     tutor.idh = 1519;
     i = 0;
     goto L_6598;
@@ -7002,7 +6944,7 @@ L_6562:
 L_657e:
     i = (i + 1);
     piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x1);
+    lpiaGoal = (lpiaGoal + 0x2);
 
 L_6598:
     if ((i >= 5))
@@ -7027,7 +6969,7 @@ L_65d8:
 
 L_65e1:
     CchGetString(ids, szT);
-    if ((strcmpi(szT, vrgZip[iZip].szName) != 0))
+    if ((strcmpi(szT, ((0x5264 + LOWORD((24 * iZip))) + 0xa)) != 0))
         goto L_6621;
     else
         goto L_6615;
@@ -7037,7 +6979,7 @@ L_6615:
     return 0x1;
 
 L_6621:
-    TutorError(0x208);
+    TutorError(520);
     return 0x0;
 }
 
@@ -7058,19 +7000,19 @@ L_6690:
     return 0x1;
 
 L_66c7:
-    /* untranslated: branch (part[13:2](vrgZipProd[0x0]) & 0xff) != 0x0 ? L_66db : L_66d5 */
+    /* untranslated: branch (part[0xd:2](vrgZipProd[0x0]) & 0xff) != 0x0 ? L_66db : L_66d5 */
 
 L_66d5:
     return 0x0;
 
 L_66db:
-    /* untranslated: branch (part[14:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].fNoResearch ? L_6704 : L_66fe */
+    /* untranslated: branch (part[0xe:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].fNoResearch ? L_6704 : L_66fe */
 
 L_66fe:
     return 0x0;
 
 L_6704:
-    /* untranslated: branch (part[15:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].cpq ? L_6733 : L_672d */
+    /* untranslated: branch (part[0xf:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].cpq ? L_6733 : L_672d */
 
 L_672d:
     return 0x0;
@@ -7089,10 +7031,7 @@ L_673f:
         goto L_675d;
 
 L_675d:
-    if ((mpicolgrbitBU[(i + 4483)] == rgzpqTut[iTemplate].rgpq[i].w))
-        goto L_673b;
-    else
-        goto L_678c;
+    /* untranslated: branch part[0x10:2](vrgZipProd[i*0x2]) == rgzpqTut[iTemplate].rgpq[i].w ? L_673b : L_678c */
 
 L_678c:
     return 0x0;
@@ -7103,6 +7042,9 @@ L_6795:
 }
 
 void TutorError(int16_t idsError) {
+    uint16_t scratch_bp_m4;
+    uint16_t scratch_bp_m6;
+
 L_67ae:
     if ((tutor.fNoErrors == 0x0))
         goto L_67d8;
@@ -7120,11 +7062,14 @@ L_67d8:
         goto L_67e4;
 
 L_67e4:
-    /* untranslated: ss:[bp-0x4] = tutor.cError */
-    /* untranslated: ss:[bp-0x6] = ((tutor.wFlags + 0x40) & 0x1c0) */
+    scratch_bp_m4 = tutor.cError;
+    scratch_bp_m6 = ((tutor.wFlags + 0x40) & 0x1c0);
     tutor.cError = 0x0;
-    /* untranslated: tutor.wFlags = (tutor.wFlags | ss:[bp-0x6]) */
-    /* untranslated: branch ss:[bp-0x4] < 0x3 ? L_6856 : L_6824 */
+    tutor.wFlags = (tutor.wFlags | scratch_bp_m6);
+    if ((scratch_bp_m4 < 0x3))
+        goto L_6856;
+    else
+        goto L_6824;
 
 L_6824:
     tutor.cError = 0x0;
@@ -7275,7 +7220,7 @@ L_69bd:
     return 0x1;
 
 L_69c9:
-    TutorError(0x4cf);
+    TutorError(1231);
     return 0x0;
 }
 
@@ -7605,7 +7550,7 @@ L_6c6d:
         goto L_6c7d;
 
 L_6c7d:
-    if ((IMsgNext(0x0) == -1))
+    if ((IMsgNext(0) == -1))
         goto L_6c9a;
     else
         goto L_6c91;
@@ -7659,7 +7604,7 @@ L_6ce7:
         goto L_6d14;
 
 L_6d14:
-    SetFilteringGroups(idm, 0x1);
+    SetFilteringGroups(idm, 1);
     tutor.idh = idhSav;
     return 0x1;
 
@@ -7700,13 +7645,13 @@ L_6d91:
 
 int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
 L_6da4:
-    /* untranslated: branch (sext8to16(part[57:2](rgplr[0x0])) & 0xf) != iTech ? L_6de2 : L_6dbc */
+    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) & 0xf) != iTech ? L_6de2 : L_6dbc */
 
 L_6dbc:
-    /* untranslated: branch (sext8to16(part[57:2](rgplr[0x0])) >> 0x4) != iTechNext ? L_6de2 : L_6dd0 */
+    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) >> 0x4) != iTechNext ? L_6de2 : L_6dd0 */
 
 L_6dd0:
-    /* untranslated: branch sext8to16(part[56:2](rgplr[0x0])) != pct ? L_6de2 : L_6ddc */
+    /* untranslated: branch sext8to16(part[0x38:2](rgplr[0x0])) != pct ? L_6de2 : L_6ddc */
 
 L_6ddc:
     return 0x1;
@@ -7753,7 +7698,7 @@ L_6e35:
 L_6e4a:
 
 L_6e50:
-    ord = lpfl->lpplord->rgord[iord];
+    /* untranslated: ord = part[0x4:18](lpfl->lpplord[iord*0x12]) */
     if (((id & 0x7fff) == 0x7fff))
         goto L_6ebc;
     else
@@ -7772,7 +7717,7 @@ L_6e9c:
         goto L_6ea7;
 
 L_6ea7:
-    TutorError(0x1ec);
+    TutorError(492);
     tutor.idh = 3063;
     goto LReturn;
 
@@ -7953,10 +7898,7 @@ L_7076:
     return 0x0;
 
 L_707c:
-    if ((lpfl->lpplord->rgord[iord].tsell.iPlrX == iYears))
-        goto L_70ae;
-    else
-        goto L_70a8;
+    /* untranslated: branch part[0xc:2](lpfl->lpplord[iord*0x12]) == iYears ? L_70ae : L_70a8 */
 
 L_70a8:
     return 0x0;
@@ -7996,7 +7938,7 @@ L_70f9:
     goto L_712a;
 
 L_710c:
-    csh = (csh + lpfl->rgcsh[ish]);
+    /* untranslated: csh = (csh + part[0xc:2](lpfl[ish*0x2])) */
     ish = (ish + 1);
 
 L_712a:
@@ -8012,7 +7954,7 @@ L_7133:
         goto L_7140;
 
 L_7140:
-    if ((FCheckCargo(lpfl, 0x0, 0x0, 0x0, LOWORD((25 * csh))) != 0))
+    if ((FCheckCargo(lpfl, 0, 0, 0, LOWORD((25 * csh))) != 0))
         goto L_716f;
     else
         goto L_7169;
@@ -8021,7 +7963,7 @@ L_7169:
     return 0x0;
 
 L_716f:
-    if ((FCheckFleetWP(ifl, 0x1, grobjPlanet, id, 0x2, iWarp) == 0))
+    if ((FCheckFleetWP(ifl, 1, grobjPlanet, id, 0x2, iWarp) == 0))
         goto L_71a0;
     else
         goto L_7194;
@@ -8088,7 +8030,7 @@ L_7233:
         goto L_723c;
 
 L_723c:
-    /* untranslated: branch part[10:2](lpfl->lpplord->rgord[iord]) == iDist ? L_726e : L_7262 */
+    /* untranslated: branch part[0xe:2](lpfl->lpplord[iord*0x12]) == iDist ? L_726e : L_7262 */
 
 L_7262:
     tutor.idh = 1519;
@@ -8151,8 +8093,8 @@ L_7302:
     return 0x0;
 
 L_7308:
-    ord = lpfl->lpplord->rgord[iord];
-    piaCur = &(ord.tsell.iPlrX);
+    /* untranslated: ord = part[0x4:18](lpfl->lpplord[iord*0x12]) */
+    /* untranslated: piaCur = &part[0x8:0](ord) */
     tutor.idh = 1519;
     i = 0;
     goto L_7361;
@@ -8160,7 +8102,7 @@ L_7308:
 L_7347:
     i = (i + 1);
     piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x1);
+    lpiaGoal = (lpiaGoal + 0x2);
 
 L_7361:
     if ((i >= 5))
@@ -8181,7 +8123,7 @@ L_738c:
         goto L_73a1;
 
 L_73a1:
-    TutorError(0x268);
+    TutorError(616);
 
 L_73b0:
     goto L_73df;
@@ -8296,8 +8238,7 @@ L_74a9:
 L_74bc:
 
 L_74c2:
-    LOWORD(prod) = LOWORD(lppl->lpplprod[(iprod + 0x1)]);
-    HIWORD(prod) = HIWORD(lppl->lpplprod[iprod].rgprod[0x0]);
+    prod = lppl->lpplprod[iprod].rgprod[0];
     if ((prod.grobj != grobj))
         goto L_753a;
     else
@@ -8322,7 +8263,7 @@ L_7533:
         goto L_753a;
 
 L_753a:
-    TutorError(0x1eb);
+    TutorError(491);
     goto LReturn;
 
 L_7549:
@@ -8338,7 +8279,7 @@ L_7562:
         goto L_7569;
 
 L_7569:
-    TutorError(0x1f0);
+    TutorError(496);
     goto LReturn;
 
 L_7578:
@@ -8348,7 +8289,10 @@ L_7578:
         goto L_7581;
 
 L_7581:
-    /* untranslated: branch (loword((uint32_t)(words(*(lppl+0x18), *(lppl+0x1a)) >> 0x17)) & 0x1) != fNoResearch ? L_75ae : L_75a7 */
+    if ((lppl->fNoResearch != fNoResearch))
+        goto L_75ae;
+    else
+        goto L_75a7;
 
 L_75a7:
     if ((0x0 == 0x0))
@@ -8357,7 +8301,7 @@ L_75a7:
         goto L_75ae;
 
 L_75ae:
-    TutorError(0x519);
+    TutorError(1305);
     goto LReturn;
 
 L_75bd:
@@ -8417,7 +8361,7 @@ L_7636:
     return 0x0;
 
 L_763c:
-    lpbtlplan = &(rglpbtlplan[0x0][ibp]);
+    lpbtlplan = (rglpbtlplan[0] + LOWORD((0x24 * ibp)));
     tutor.idh = idhSav;
     return 0x1;
 }
@@ -8518,7 +8462,7 @@ L_770c:
         goto L_7716;
 
 L_7716:
-    TutorError(0x1ef);
+    TutorError(495);
     goto LReturn;
 
 L_7725:
@@ -8627,7 +8571,7 @@ L_780d:
     return 0x0;
 
 L_7813:
-    cItemAct = lpshdefBuild->hul.rghs[iSlot].cItem;
+    /* untranslated: cItemAct = ((part[0x3c:2](lpshdefBuild[iSlot*0x4]) >> 0x8) & 0xff) */
     if ((phs->cItem != 0x0))
         goto L_785f;
     else
@@ -8661,7 +8605,7 @@ L_7880:
         goto BadCnt;
 
 BadCnt:
-    TutorError(0x1f5);
+    TutorError(501);
 
 BadCntSilent:
     tutor.idh = 3039;
@@ -8690,19 +8634,13 @@ L_78d5:
 L_78e8:
 
 L_78ee:
-    if ((phs->grhst != lpshdefBuild->hul.rghs[iSlot].grhst))
-        goto L_7943;
-    else
-        goto L_7913;
+    /* untranslated: branch phs->grhst != part[0x3a:2](lpshdefBuild[iSlot*0x4]) ? L_7943 : L_7913 */
 
 L_7913:
-    if ((phs->iItem == lpshdefBuild->hul.rghs[iSlot].iItem))
-        goto L_7952;
-    else
-        goto L_7943;
+    /* untranslated: branch phs->iItem == (part[0x3c:2](lpshdefBuild[iSlot*0x4]) & 0xff) ? L_7952 : L_7943 */
 
 L_7943:
-    TutorError(0x1f6);
+    TutorError(502);
     goto BadCntSilent;
 
 L_7952:
@@ -8741,7 +8679,7 @@ L_799d:
     return 0x0;
 
 L_79a3:
-    iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0x0));
+    iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
     if ((iShip == -1))
         goto L_79dd;
     else
@@ -8777,7 +8715,7 @@ L_7a05:
     goto L_81d4;
 
 L_7a0b:
-    TutorError(0x1f1);
+    TutorError(497);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8785,7 +8723,7 @@ L_7a1d:
     goto L_7c15;
 
 NoCustom:
-    TutorError(0x1f2);
+    TutorError(498);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8796,21 +8734,21 @@ L_7a35:
         goto L_7a40;
 
 L_7a40:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x7 ? L_7a5e : L_7a4c */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_7a5e : L_7a4c */
 
 L_7a4c:
-    TutorError(0x1f3);
+    TutorError(499);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
 L_7a5e:
-    if ((FCheckShipBuilder(0x1, 0x7) != 0))
+    if ((FCheckShipBuilder(1, 7) != 0))
         goto L_7c40;
     else
         goto L_7a76;
 
 L_7a76:
-    TutorError(0x1fe);
+    TutorError(510);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8821,18 +8759,15 @@ L_7a91:
         goto L_7a9c;
 
 L_7a9c:
-    if ((rgplr[0].cshdefSB != 0x2))
-        goto L_7ac1;
-    else
-        goto L_7aaf;
+    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x2 ? L_7ac1 : L_7aaf */
 
 L_7aaf:
-    TutorError(0x1f3);
+    TutorError(499);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
 L_7ac1:
-    if ((FCheckShipBuilder(0x0, 0x0) == 0))
+    if ((FCheckShipBuilder(0, 0) == 0))
         goto L_7ae3;
     else
         goto L_7ad9;
@@ -8844,7 +8779,7 @@ L_7ad9:
         goto L_7ae3;
 
 L_7ae3:
-    TutorError(0x1f4);
+    TutorError(500);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8855,21 +8790,21 @@ L_7afe:
         goto L_7b09;
 
 L_7b09:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x8 ? L_7b27 : L_7b15 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x8 ? L_7b27 : L_7b15 */
 
 L_7b15:
-    TutorError(0x1f3);
+    TutorError(499);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
 L_7b27:
-    if ((FCheckShipBuilder(0x1, 0x3) != 0))
+    if ((FCheckShipBuilder(1, 3) != 0))
         goto L_7c40;
     else
         goto L_7b3f;
 
 L_7b3f:
-    TutorError(0x1fe);
+    TutorError(510);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8880,21 +8815,21 @@ L_7b5a:
         goto L_7b65;
 
 L_7b65:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0x9 ? L_7b83 : L_7b71 */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x9 ? L_7b83 : L_7b71 */
 
 L_7b71:
-    TutorError(0x1f3);
+    TutorError(499);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
 L_7b83:
-    if ((FCheckShipBuilder(0x1, 0x4) != 0))
+    if ((FCheckShipBuilder(1, 4) != 0))
         goto L_7c40;
     else
         goto L_7b9b;
 
 L_7b9b:
-    TutorError(0x1fe);
+    TutorError(510);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8905,21 +8840,21 @@ L_7bb6:
         goto L_7bc1;
 
 L_7bc1:
-    /* untranslated: branch sext8to16(part[1:2](rgplr[0x0])) != 0xa ? L_7bdf : L_7bcd */
+    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0xa ? L_7bdf : L_7bcd */
 
 L_7bcd:
-    TutorError(0x1f3);
+    TutorError(499);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
 L_7bdf:
-    if ((FCheckShipBuilder(0x1, 0x8) != 0))
+    if ((FCheckShipBuilder(1, 8) != 0))
         goto L_7c40;
     else
         goto L_7bf7;
 
 L_7bf7:
-    TutorError(0x1fe);
+    TutorError(510);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -8969,17 +8904,15 @@ L_7c4f:
         goto L_7c5a;
 
 L_7c5a:
-    if ((FCheckShipBuilder(0x0, 0x2) != 0))
-        goto L_f0000000;
-    else
-        goto L_7c72;
+    FCheckShipBuilder(0, 2);
+    /* untranslated: branch callresult(int16_t) != 0 ? L_f0000000 : L_7c72 */
 
 L_f0000000:
     /* untranslated: t_merge_81d4_0001 = callresult(int16_t) */
     goto L_81d4;
 
 L_7c72:
-    TutorError(0x1ff);
+    TutorError(511);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -9004,7 +8937,7 @@ L_8163:
     goto L_ffffffff;
 
 L_8194:
-    TutorError(0x1f7);
+    TutorError(503);
     t_merge_81d4_0001 = 0x0;
     goto L_81d4;
 
@@ -9049,7 +8982,7 @@ L_81da:
     goto L_8276;
 
 L_81e9:
-    TutorError(0x204);
+    TutorError(516);
     return 0x0;
 
 L_81fb:
@@ -9121,7 +9054,7 @@ L_827e:
 L_8283:
 
 L_8289:
-    TutorError(0x202);
+    TutorError(514);
     tutor.idh = 1107;
     return 0x0;
 }

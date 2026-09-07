@@ -24,10 +24,15 @@ type unionFlowState struct {
 }
 
 type unionAliasTarget struct {
-	Key    string
-	Root   symresolve.SymbolPath
-	Rule   *typeinfo.UnionVariantRule
-	Direct bool
+	Key            string
+	Root           symresolve.SymbolPath
+	Rule           *typeinfo.UnionVariantRule
+	Direct         bool
+	AllElements    bool
+	Conditional    bool
+	SourceEnum     *typeinfo.Enum
+	SourceValue    typeinfo.EnumValue
+	SelectionValue typeinfo.EnumValue
 }
 
 type dependentEnumAliasTarget struct {
@@ -45,9 +50,6 @@ type unionCallResultSelection struct {
 
 // ProcessFunc computes block-entry union contexts for a function.
 func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
-	if p.ctx == nil || p.ctx.sdb == nil || p.ctx.fs == nil || f == nil {
-		return false
-	}
 	if p.ctx.sdb.UnionRules == nil && len(p.ctx.sdb.DependentEnumRules) == 0 {
 		return false
 	}
@@ -77,7 +79,9 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 		if entries[id] == nil {
 			continue
 		}
-		exits := p.processBlock(entries[id].clone(), block, f)
+		state := entries[id].clone()
+		p.applyConfiguredBlockContext(state, id)
+		exits := p.processBlock(state, block, f)
 		succs := make([]machine.BlockID, 0, len(exits))
 		for succ := range exits {
 			succs = append(succs, succ)
@@ -100,7 +104,9 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 
 	contexts := make(map[machine.BlockID]*symresolve.UnionContext, len(entries))
 	for id, state := range entries {
-		contexts[id] = materializeUnionContext(state)
+		ctx := materializeUnionContext(state)
+		p.applyBlockPathFacts(ctx, id)
+		contexts[id] = ctx
 	}
 	p.ctx.SetUnionContexts(contexts)
 	return true
@@ -109,7 +115,7 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 // initialState creates the function-entry union facts and discriminator aliases.
 func (p *unionContextProcessor) initialState() *unionFlowState {
 	state := &unionFlowState{
-		ctx:           symresolve.NewUnionContext(),
+		ctx:           p.ctx.configuredUnionBase.Clone(),
 		aliases:       make(map[string]map[string]unionAliasTarget),
 		enumAliases:   make(map[string]map[string]dependentEnumAliasTarget),
 		possibleEnums: make(map[string]map[int]typeinfo.EnumValue),
@@ -120,16 +126,99 @@ func (p *unionContextProcessor) initialState() *unionFlowState {
 		p.addDependentEnumAliases(state, root)
 	}
 	p.addExternalDiscriminatorAliases(state)
-	if p.ctx.sdb.UnionRules != nil {
-		for _, fact := range p.ctx.sdb.UnionRules.FunctionFactsFor(p.ctx.fs) {
-			root, ok := p.functionRootByName(fact.Root)
-			if !ok {
-				continue
-			}
-			state.ctx.Add(root, fact.Rule, fact.Value)
+	p.addConditionalSelectionFacts(state)
+	return state
+}
+
+// applyConfiguredBlockContext seeds flow analysis with authoritative sparse
+// function and block facts before the block propagates state to successors.
+func (p *unionContextProcessor) applyConfiguredBlockContext(state *unionFlowState, id machine.BlockID) {
+	configured := p.ctx.configuredUnionBase
+	if blockContext := p.ctx.configuredUnionByBlock[id]; blockContext != nil {
+		configured = blockContext
+	}
+	state.ctx = symresolve.MergeUnionContexts(state.ctx, configured)
+	for _, selection := range configured.Selections() {
+		p.applyConfiguredSelection(state, selection)
+	}
+}
+
+// applyConfiguredSelection narrows every propagated discriminator alias that
+// refers to one authoritative union selection.
+func (p *unionContextProcessor) applyConfiguredSelection(state *unionFlowState, selection symresolve.UnionSelection) {
+	value := selection.Value
+	possible := map[int]typeinfo.EnumValue{value.Value: value}
+	unionKey := unionAliasTargetKey(selection.Root, selection.Rule)
+	for path, targets := range state.aliases {
+		if _, ok := targets[unionKey]; ok {
+			state.possibleEnums[path] = clonePossibleEnumValues(possible)
 		}
 	}
-	return state
+
+	for _, rule := range p.ctx.sdb.DependentEnumRules {
+		if !rule.AppliesToType(selection.Root.Type()) || !slices.Equal(rule.Discriminator, selection.Rule.Discriminator) {
+			continue
+		}
+		target, ok := appendSymbolFieldPath(selection.Root, rule.Target)
+		if !ok {
+			continue
+		}
+		targetKey := dependentEnumAliasTargetKey(target, rule)
+		for path, targets := range state.enumAliases {
+			if _, ok := targets[targetKey]; ok {
+				state.possibleEnums[path] = clonePossibleEnumValues(possible)
+			}
+		}
+	}
+}
+
+// applyBlockPathFacts overlays authoritative selections for one exact block.
+func (p *unionContextProcessor) applyBlockPathFacts(ctx *symresolve.UnionContext, id machine.BlockID) {
+	if p.ctx.sdb.UnionRules == nil {
+		return
+	}
+	for _, fact := range p.ctx.sdb.UnionRules.BlockFactsFor(p.ctx.fs, uint32(id)) {
+		root, ok := p.ctx.symbolRootByName(fact.Root)
+		if !ok {
+			continue
+		}
+		if fact.AllElements {
+			ctx.AddAllElements(root, fact.Rule, fact.Value)
+		} else {
+			ctx.Add(root, fact.Rule, fact.Value)
+		}
+	}
+}
+
+// addConditionalSelectionFacts adds branch-conditioned selections for configured roots.
+func (p *unionContextProcessor) addConditionalSelectionFacts(state *unionFlowState) {
+	if p.ctx.sdb.UnionRules == nil {
+		return
+	}
+	for _, fact := range p.ctx.sdb.UnionRules.ConditionalSelectionFactsFor(p.ctx.fs) {
+		source, ok := p.symbolPathByComponents(fact.Source)
+		if !ok {
+			continue
+		}
+		root, ok := p.ctx.symbolRootByName(fact.Root)
+		if !ok {
+			continue
+		}
+		target := unionAliasTarget{
+			Key:            unionAliasTargetKey(root, fact.Rule) + "|conditional|" + strings.ToLower(fact.SourceValue.Name),
+			Root:           root,
+			Rule:           fact.Rule,
+			Direct:         true,
+			AllElements:    fact.AllElements,
+			Conditional:    true,
+			SourceEnum:     fact.SourceEnum,
+			SourceValue:    fact.SourceValue,
+			SelectionValue: fact.Value,
+		}
+		key := symbolPathKey(source)
+		addAliasTarget(state.aliases, key, target)
+		state.possibleEnums[key] = possibleEnumValuesForUnionTargets(state.aliases[key])
+	}
 }
 
 // addExternalDiscriminatorAliases adds configured function-path discriminator aliases.
@@ -142,7 +231,7 @@ func (p *unionContextProcessor) addExternalDiscriminatorAliases(state *unionFlow
 		if !ok {
 			continue
 		}
-		root, ok := p.functionRootByName(alias.Root)
+		root, ok := p.ctx.functionRootByName(alias.Root)
 		if !ok {
 			continue
 		}
@@ -297,7 +386,7 @@ func (p *unionContextProcessor) applyBranchFact(cond Expr, trueState, falseState
 	if !ok {
 		return
 	}
-	path, value, ok := unionCompareFact(compare)
+	path, value, ok := unionCompareFact(compare, trueState)
 	if !ok {
 		return
 	}
@@ -342,11 +431,40 @@ func addUnionSelectionsIfUnset(ctx *symresolve.UnionContext, targets map[string]
 		if target.Rule == nil || target.Rule.Type == nil {
 			continue
 		}
+		selectionValue := value
+		if target.Conditional {
+			if value.Value != target.SourceValue.Value {
+				continue
+			}
+			selectionValue = target.SelectionValue
+		}
+		if target.AllElements {
+			if _, ok := ctx.AllElementsSelectionFor(target.Root, target.Rule.Type); ok {
+				continue
+			}
+			ctx.AddAllElements(target.Root, target.Rule, selectionValue)
+			continue
+		}
 		if _, ok := ctx.SelectionFor(target.Root, target.Rule.Type); ok {
 			continue
 		}
-		ctx.Add(target.Root, target.Rule, value)
+		ctx.Add(target.Root, target.Rule, selectionValue)
 	}
+}
+
+// symbolPathByComponents builds a function- or global-rooted path from path components.
+func (p *unionContextProcessor) symbolPathByComponents(components []string) (symresolve.SymbolPath, bool) {
+	if len(components) == 0 {
+		return nil, false
+	}
+	root, ok := p.ctx.symbolRootByName(components[0])
+	if !ok {
+		return nil, false
+	}
+	if len(components) == 1 {
+		return root, true
+	}
+	return appendSymbolFieldPath(root, components[1:])
 }
 
 // addDependentEnumSelectionsIfUnset adds flow-derived dependent enum
@@ -393,19 +511,34 @@ func singletonPossibleEnumValue(values map[int]typeinfo.EnumValue) (typeinfo.Enu
 	return typeinfo.EnumValue{}, false
 }
 
-// unionCompareFact extracts a path == enum-value comparison.
-func unionCompareFact(compare *Compare) (symresolve.SymbolPath, typeinfo.EnumValue, bool) {
+// unionCompareFact extracts a path comparison with an enum value, using the
+// discriminator's possible values when enum constant typing runs later.
+func unionCompareFact(compare *Compare, state *unionFlowState) (symresolve.SymbolPath, typeinfo.EnumValue, bool) {
 	if path, ok := symbolPathForExpr(compare.LHS); ok {
-		if value, ok := enumConstValue(compare.RHS); ok {
+		if value, ok := enumValueForComparison(compare.RHS, state.possibleEnums[symbolPathKey(path)]); ok {
 			return path, value, true
 		}
 	}
 	if path, ok := symbolPathForExpr(compare.RHS); ok {
-		if value, ok := enumConstValue(compare.LHS); ok {
+		if value, ok := enumValueForComparison(compare.LHS, state.possibleEnums[symbolPathKey(path)]); ok {
 			return path, value, true
 		}
 	}
 	return nil, typeinfo.EnumValue{}, false
+}
+
+// enumValueForComparison resolves either an already typed enum constant or a
+// raw constant constrained by the discriminator's configured enum values.
+func enumValueForComparison(expr Expr, possible map[int]typeinfo.EnumValue) (typeinfo.EnumValue, bool) {
+	if value, ok := enumConstValue(expr); ok {
+		return value, true
+	}
+	constant, ok := expr.(*Const)
+	if !ok {
+		return typeinfo.EnumValue{}, false
+	}
+	value, ok := possible[int(constant.U64)]
+	return value, ok
 }
 
 // enumConstValue returns a typed enum constant's value.
@@ -495,27 +628,12 @@ func (p *unionContextProcessor) symbolRoots() []symresolve.SymbolPath {
 	return roots
 }
 
-// functionRootByName returns a function param or local root by name.
-func (p *unionContextProcessor) functionRootByName(name string) (symresolve.SymbolPath, bool) {
-	for i := range p.ctx.fs.Params {
-		if p.ctx.fs.Params[i].Name == name {
-			return &symresolve.SymbolRoot{Symbol: &p.ctx.fs.Params[i]}, true
-		}
-	}
-	for i := range p.ctx.fs.Vars {
-		if p.ctx.fs.Vars[i].Name == name {
-			return &symresolve.SymbolRoot{Symbol: &p.ctx.fs.Vars[i]}, true
-		}
-	}
-	return nil, false
-}
-
 // functionPathByComponents builds a function-rooted path from path components.
 func (p *unionContextProcessor) functionPathByComponents(components []string) (symresolve.SymbolPath, bool) {
 	if len(components) == 0 {
 		return nil, false
 	}
-	root, ok := p.functionRootByName(components[0])
+	root, ok := p.ctx.functionRootByName(components[0])
 	if !ok {
 		return nil, false
 	}
@@ -536,6 +654,10 @@ func appendSymbolFieldPath(base symresolve.SymbolPath, names []string) (symresol
 		field := fieldByName(strct, name)
 		if field == nil {
 			return nil, false
+		}
+		if field.Bitfield != nil {
+			path = &symresolve.SymbolBitfield{Base: path, Field: field}
+			continue
 		}
 		path = &symresolve.SymbolField{Base: path, Field: field}
 	}
@@ -717,6 +839,15 @@ func directAliasTargets(in map[string]unionAliasTarget) map[string]unionAliasTar
 func possibleEnumValuesForUnionTargets(targets map[string]unionAliasTarget) map[int]typeinfo.EnumValue {
 	values := make(map[int]typeinfo.EnumValue)
 	for _, target := range targets {
+		if target.Conditional {
+			if target.SourceEnum == nil {
+				continue
+			}
+			for _, value := range target.SourceEnum.Values {
+				values[value.Value] = value
+			}
+			continue
+		}
 		if target.Rule == nil || target.Rule.Enum == nil {
 			continue
 		}
@@ -727,6 +858,18 @@ func possibleEnumValuesForUnionTargets(targets map[string]unionAliasTarget) map[
 		}
 	}
 	return values
+}
+
+// unionAliasTargetsEqual reports whether two alias targets carry the same semantics.
+func unionAliasTargetsEqual(a, b unionAliasTarget) bool {
+	return a.Rule == b.Rule &&
+		a.Root.String() == b.Root.String() &&
+		a.Direct == b.Direct &&
+		a.AllElements == b.AllElements &&
+		a.Conditional == b.Conditional &&
+		a.SourceEnum == b.SourceEnum &&
+		a.SourceValue.Value == b.SourceValue.Value &&
+		a.SelectionValue.Value == b.SelectionValue.Value
 }
 
 // possibleEnumValuesForAliases returns all discriminator values represented by aliases.
@@ -784,7 +927,7 @@ func intersectAliases(a, b map[string]map[string]unionAliasTarget) map[string]ma
 		bTargets := b[path]
 		for key, aTarget := range aTargets {
 			bTarget, ok := bTargets[key]
-			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Direct != bTarget.Direct {
+			if !ok || !unionAliasTargetsEqual(aTarget, bTarget) {
 				continue
 			}
 			addAliasTarget(out, path, aTarget)
@@ -805,7 +948,7 @@ func aliasMapsEqual(a, b map[string]map[string]unionAliasTarget) bool {
 		}
 		for key, aTarget := range aTargets {
 			bTarget, ok := bTargets[key]
-			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Direct != bTarget.Direct {
+			if !ok || !unionAliasTargetsEqual(aTarget, bTarget) {
 				return false
 			}
 		}
@@ -820,7 +963,7 @@ func intersectDependentEnumAliases(a, b map[string]map[string]dependentEnumAlias
 		bTargets := b[path]
 		for key, aTarget := range aTargets {
 			bTarget, ok := bTargets[key]
-			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Target.CDecl() != bTarget.Target.CDecl() || aTarget.Direct != bTarget.Direct {
+			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Target.String() != bTarget.Target.String() || aTarget.Direct != bTarget.Direct {
 				continue
 			}
 			addDependentEnumAliasTarget(out, path, aTarget)
@@ -841,7 +984,7 @@ func dependentEnumAliasMapsEqual(a, b map[string]map[string]dependentEnumAliasTa
 		}
 		for key, aTarget := range aTargets {
 			bTarget, ok := bTargets[key]
-			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Target.CDecl() != bTarget.Target.CDecl() || aTarget.Direct != bTarget.Direct {
+			if !ok || aTarget.Rule != bTarget.Rule || aTarget.Target.String() != bTarget.Target.String() || aTarget.Direct != bTarget.Direct {
 				return false
 			}
 		}
@@ -867,17 +1010,17 @@ func addDependentEnumAliasTarget(aliases map[string]map[string]dependentEnumAlia
 
 // unionAliasTargetKey returns a stable key for a union root/rule pair.
 func unionAliasTargetKey(root symresolve.SymbolPath, rule *typeinfo.UnionVariantRule) string {
-	return strings.ToLower(root.CDecl()) + "|" + strings.ToLower(rule.Type.String())
+	return strings.ToLower(root.String()) + "|" + strings.ToLower(rule.Type.String())
 }
 
 // dependentEnumAliasTargetKey returns a stable key for a dependent enum target/rule pair.
 func dependentEnumAliasTargetKey(target symresolve.SymbolPath, rule *typeinfo.DependentEnumRule) string {
-	return strings.ToLower(target.CDecl()) + "|" + strings.ToLower(rule.Type.String())
+	return strings.ToLower(target.String()) + "|" + strings.ToLower(rule.Type.String())
 }
 
 // symbolPathKey returns a stable lookup key for a symbolic path.
 func symbolPathKey(path symresolve.SymbolPath) string {
-	return strings.ToLower(path.CDecl())
+	return strings.ToLower(path.String())
 }
 
 // callResultExpr returns the call result carried by an expression.

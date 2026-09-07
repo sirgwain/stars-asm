@@ -1169,7 +1169,7 @@ L_745a:
     iChunk = (ids >> 0x6);
     iOffset = (ids & 0x3f);
     pch = &(aSTRCmpr[aiSTRChunkOffset[iChunk]]);
-    pchLen = &(acSTR[(0x40 * iChunk)]);
+    pchLen = &(acSTR[iChunk * 0x40]);
     i = 0;
     goto L_74b3;
 
@@ -1188,7 +1188,7 @@ L_74be:
     goto L_74a0;
 
 L_74cd:
-    pch = ((uint8_t *)(pch) + (iNibble >> 0x1));
+    pch = (pch + (iNibble >> 0x1));
     iLen = *(pchLen);
     if (((iNibble & 0x1) != 0x0))
         goto L_74f5;
@@ -1204,7 +1204,7 @@ L_74f5:
 
 L_74f8:
     fHigh = t_merge_74f8_0001;
-    pszOut = szLastStrGet;
+    pszOut = &(szLastStrGet);
     iBuild = 0;
 
 L_7505:
@@ -1227,7 +1227,7 @@ L_751d:
 
 L_7534:
     pch = (pch + 0x1);
-    i = (*(pch) & 0xf);
+    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
 
 L_754a:
     if ((fHigh != 0))

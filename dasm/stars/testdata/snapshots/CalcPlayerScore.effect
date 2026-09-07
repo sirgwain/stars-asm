@@ -110,7 +110,7 @@ block L_59ad:
   preds: L_594b, L_596e, L_59a9
   succs: L_59c5
   effects:
-    59b6  call CResourcesAtPlanet(farptr(load([bp-lppl+0x2]), load([bp-lppl])), load([bp+iPlr])) -> callresult(int16_t)
+    59b6  call CResourcesAtPlanet(words(load([bp-lppl+0x2]), load([bp-lppl])), load([bp+iPlr])) -> callresult(int16_t)
     59bf  store[2] [bp-score+0x4] = (load([bp-score+0x4]) + callresult(int16_t))
     59c2  store[2] [bp-score+0x6] = (load([bp-score+0x6]) + signhiword(callresult(int16_t)))
 
@@ -248,7 +248,7 @@ block L_5aed:
   preds: L_5aaf
   succs: L_5b1d, L_5b3c
   effects:
-    5b06  call LComputePower(farptr(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]), (load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i])))))) -> callresult(int32_t)
+    5b06  call LComputePower(words(load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0x100]), (load(ds:[((load([bp+iPlr]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i])))))) -> callresult(int32_t)
     5b0e  store[2] [bp-lPower] = loword(callresult(int32_t))
     5b11  store[2] [bp-lPower+0x2] = hiword(callresult(int32_t))
     5b18  branch load([bp-lPower+0x2]) > 0x0 ? L_5b3c : L_5b1d
@@ -499,7 +499,7 @@ block L_5cb9:
   preds: L_5cac, L_5cb5
   succs: L_5cdb, L_5cf1
   effects:
-    5cbc  call __aFlshl(merge(Join: L_5cb9, (L_5cac:words(load([bp-0xa]), load([bp-0x8])), L_5cb5:words(load([bp-0x1e]), signhiword(load([bp-0x1e]))))), 0x1) -> callresult(int32_t)
+    5cbc  call __aFlshl(merge(Join: L_5cb9, (L_5cac:words(load([bp-0x8]), load([bp-0xa])), L_5cb5:words(signhiword(load([bp-0x1e])), load([bp-0x1e])))), 0x1) -> callresult(int32_t)
     5cc9  store[2] ss:[bp-0x60] = loword(callresult(int32_t))
     5ccc  store[2] ss:[bp-0x5e] = hiword(callresult(int32_t))
     5cd6  branch load([bp-rgcsh+0x2]) > signhiword(load([bp-score+0x8])) ? L_5cf1 : L_5cdb
@@ -559,7 +559,7 @@ block L_5d23:
   preds: L_5d15, L_5d1a
   succs: L_5d57
   effects:
-    5d3e  call __aFlshl(words(load([bp-rgcsh+0x8]), load([bp-rgcsh+0xa])), 0x3) -> callresult(int32_t)
+    5d3e  call __aFlshl(words(load([bp-rgcsh+0xa]), load([bp-rgcsh+0x8])), 0x3) -> callresult(int32_t)
     5d45  call __aFulmul(words(hiword(callresult(int32_t)), loword(callresult(int32_t))), words(signhiword(load([bp-score+0x8])), load([bp-score+0x8]))) -> callresult(uint32_t)
     5d4c  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words((signhiword(load([bp-score+0x8])) + load([bp-rgcsh+0xa])), (load([bp-score+0x8]) + load([bp-rgcsh+0x8])))) -> callresult(int32_t)
     5d51  store[2] [bp-score] = (load([bp-score]) + loword(callresult(int32_t)))
@@ -612,4 +612,4 @@ block L_5db3:
   insts 463..467  off 0x5db3..0x5db8
   preds: L_5daa
   effects:
-    5db8  return words(load([bp-score]), load([bp-score+0x2]))
+    5db8  return words(load([bp-score+0x2]), load([bp-score]))

@@ -63,6 +63,74 @@ func TestReturnSinkProcessorMovesMergeArmsToPredecessors(t *testing.T) {
 	}
 }
 
+// TestReturnSinkProcessorFoldsImmediatelyReturnedCall verifies a call result
+// used only by the following return becomes the return expression itself.
+func TestReturnSinkProcessorFoldsImmediatelyReturnedCall(t *testing.T) {
+	callee := &typeinfo.Function{Name: "MessageBox", Ret: typeinfo.I16}
+	result := &CallResult{Function: callee, TypeInfo: typeinfo.I16, InstOff: 0x220f}
+	fn := &Func{Blocks: []Block{{
+		ID: 0x21f7,
+		Effects: []Effect{
+			&CallEffect{
+				Call:   &Call{Function: callee},
+				Result: result,
+			},
+			&Return{Value: &CallResult{Function: callee, TypeInfo: typeinfo.I16, InstOff: 0x220f}},
+		},
+	}}}
+
+	if changed := (&returnSinkProcessor{}).ProcessFunc(nil, fn); !changed {
+		t.Fatal("ProcessFunc changed = false, want true")
+	}
+	if len(fn.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one return", fn.Blocks[0].Effects)
+	}
+	if got, want := FormatEffect(fn.Blocks[0].Effects[0]), "return MessageBox()"; got != want {
+		t.Fatalf("folded return = %q, want %q", got, want)
+	}
+}
+
+// TestReturnSinkProcessorFoldsCallAfterMergeSink verifies a call result moved
+// from a shared merge return is folded after it reaches its predecessor block.
+func TestReturnSinkProcessorFoldsCallAfterMergeSink(t *testing.T) {
+	cfg := cfgForReturnSinkTest(t, []asm.DecodedInst{
+		jccForReturnSinkTest(0x1000, 0x1004),
+		jmpForReturnSinkTest(0x1002, 0x1006),
+		jmpForReturnSinkTest(0x1004, 0x1006),
+		retForReturnSinkTest(0x1006),
+	})
+	callee := &typeinfo.Function{Name: "MessageBox", Ret: typeinfo.I16}
+	callResult := &CallResult{Function: callee, TypeInfo: typeinfo.I16, InstOff: 0x1002}
+	fn := &Func{
+		CFG: cfg,
+		Blocks: []Block{
+			{ID: 0x1000, Effects: []Effect{&Branch{TrueBlock: 0x1004, FalseBlock: 0x1002}}},
+			{ID: 0x1002, Effects: []Effect{
+				&CallEffect{Call: &Call{Function: callee}, Result: callResult},
+				&Jump{To: 0x1006},
+			}},
+			{ID: 0x1004},
+			{ID: 0x1006, Effects: []Effect{&Return{Value: &Merge{
+				TypeInfo: typeinfo.I16,
+				Arms: []MergeArm{
+					{Block: 0x1002, Value: &CallResult{Function: callee, TypeInfo: typeinfo.I16, InstOff: 0x1002}},
+					{Block: 0x1004, Value: &Const{TypeInfo: typeinfo.I16, U64: 0}},
+				},
+			}}}},
+		},
+	}
+
+	if changed := (&returnSinkProcessor{}).ProcessFunc(nil, fn); !changed {
+		t.Fatal("ProcessFunc changed = false, want true")
+	}
+	if got, want := FormatEffect(fn.Blocks[1].Effects[len(fn.Blocks[1].Effects)-1]), "return MessageBox()"; got != want {
+		t.Fatalf("call predecessor tail = %q, want %q", got, want)
+	}
+	if got, want := FormatEffect(fn.Blocks[2].Effects[len(fn.Blocks[2].Effects)-1]), "return 0"; got != want {
+		t.Fatalf("constant predecessor tail = %q, want %q", got, want)
+	}
+}
+
 // cfgForReturnSinkTest builds a CFG for return sink processor tests.
 func cfgForReturnSinkTest(t *testing.T, instrs []asm.DecodedInst) *machine.CFG {
 	t.Helper()

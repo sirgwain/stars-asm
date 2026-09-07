@@ -1,5 +1,6 @@
 void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
-    ORDER ord;
+    ORDER    ord;
+    uint16_t scratch_bp_m1a;
 
 L_9e28:
     if ((fRecycle == 0))
@@ -20,30 +21,29 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x))
-        goto L_9ec7;
-    else
-        goto L_9eb6;
+    /* untranslated: branch HIWORD(lpfl->lpplord):[((LOWORD(lpfl->lpplord) + 0x4) + loword(((lpfl->cord - 1) * 0x12)))] != part[0x4:2](lpfl->lpplord[iDel*0x12])
+     * ? L_9ec7 : L_9eb6 */
 
 L_9eb6:
-    /* untranslated: branch ss:[bp-0x16]:[(ss:[bp-0x18] + loword(((lpfl->cord - 1) * 0x12)))+0x2] != ss:[bp-0x1a] ? L_9ec7 : L_9ebf */
+    /* untranslated: branch scratch_bp_m16:[(scratch_bp_m18 + loword(((lpfl->cord - 1) * 0x12)))+0x2] != scratch_bp_m1a ? L_9ec7 : L_9ebf */
 
 L_9ebf:
     fRecycle = 0;
     goto L_9ef2;
 
 L_9ec7:
-    ord = lpfl->lpplord->rgord[iDel];
+    /* untranslated: ord = part[0x4:18](lpfl->lpplord[iDel*0x12]) */
 
 L_9ef2:
-    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), LOWORD((((lpfl->cord - iDel) + 0xffff) * 0x12)));
+    /* untranslated: call fmemmove(words(HIWORD(lpfl->lpplord), ((LOWORD(lpfl->lpplord) + 0x4) + loword((18 * iDel)))), words(HIWORD(lpfl->lpplord),
+     * ((LOWORD(lpfl->lpplord) + 0x4) + loword(((iDel + 1) * 0x12)))), loword((((lpfl->cord - iDel) + 0xffff) * 0x12))) -> callresult(void *) */
     if ((fRecycle == 0))
         goto L_9fca;
     else
         goto L_9f69;
 
 L_9f69:
-    lpfl->lpplord->rgord[(lpfl->cord - 1)] = ord;
+    /* untranslated: part[0x4:18](lpfl->lpplord[(load([load(dword [bp+0x6])+0x62]) + 0xffff)*0x12]) = ord */
     goto L_9fde;
 
 L_9fca:

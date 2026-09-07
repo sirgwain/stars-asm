@@ -9,7 +9,7 @@ import (
 
 type Env struct {
 	SDB   *typeinfo.SymbolDB
-	Image *asm.ImageNE	
+	Image *asm.ImageNE
 }
 
 type Options struct {

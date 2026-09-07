@@ -25,6 +25,15 @@ func IsPointer(typ Type) bool {
 	return ok
 }
 
+// IsNearPointer reports whether a type is represented as a near machine pointer.
+func IsNearPointer(typ Type) bool {
+	ptr, ok := typ.(*Pointer)
+	if !ok {
+		return false
+	}
+	return ptr.Class == PtrNear || ptr.Class == PtrDefault
+}
+
 // IsFarPointer reports whether a type is represented as a far machine pointer.
 func IsFarPointer(typ Type) bool {
 	ptr, ok := typ.(*Pointer)

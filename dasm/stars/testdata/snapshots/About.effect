@@ -33,8 +33,8 @@ block L_1261:
     1267  store[2] [iAboutPartial] = 0x0
     1274  call GetDlgItem(load@126d/src([bp+hwnd]), 0x401) -> callresult(HWND)
     127a  call SzVersion() -> callresult(char *)
-    1283  call SetWindowText(callresult(HWND), farptr(ds, callresult(char *))) -> callresult(void)
-    129b  call SetTimer(load@1288/src([bp+hwnd]), 0xe, 0x32, farptr(0x0, 0x0)) -> callresult(uint16_t)
+    1283  call SetWindowText(callresult(HWND), words(ds, callresult(char *))) -> callresult(void)
+    129b  call SetTimer(load@1288/src([bp+hwnd]), 0xe, 0x32, words(0x0, 0x0)) -> callresult(uint16_t)
     12a0  store[2] [uTimerId] = callresult(uint16_t)
     12a6  goto L_1516
 
@@ -43,8 +43,8 @@ block L_12a9:
   preds: L_14e5
   succs: L_1516
   effects:
-    12b3  call GetClientRect(load([bp+hwnd]), farptr(ss, addr([bp-rc]))) -> callresult(void)
-    12c6  call FillRect(load([bp+wParam]), farptr(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    12b3  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    12c6  call FillRect(load([bp+wParam]), words(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
     12ce  goto L_1516
 
 block L_12d1:
@@ -78,7 +78,7 @@ block L_130c:
   preds: L_12d1, L_12f1, L_1306
   succs: L_1391
   effects:
-    1316  call GetClientRect(load@130c/src([bp-hwndCtl]), farptr(ss, addr([bp-rc]))) -> callresult(void)
+    1316  call GetClientRect(load@130c/src([bp-hwndCtl]), words(ss, addr([bp-rc]))) -> callresult(void)
     131e  call GetDC(load@131b/src([bp-hwndCtl])) -> callresult(HDC)
     1323  store[2] [bp-hdc] = callresult(HDC)
     132d  call SelectObject(load@1326/src([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
@@ -148,7 +148,7 @@ block L_13e3:
   preds: L_13b1, L_13d7, L_13dd
   succs: L_138d
   effects:
-    13f2  call OffsetRect(farptr(ss, addr([bp-rc])), 0x0, load([dyArial8])) -> callresult(void)
+    13f2  call OffsetRect(words(ss, addr([bp-rc])), 0x0, load([dyArial8])) -> callresult(void)
     13f7  goto L_138d
 
 block L_13fa:
@@ -157,7 +157,7 @@ block L_13fa:
   succs: L_1510
   effects:
     13fa  store[2] [bp-rc+0x6] = 0x3e8
-    140d  call FillRect(load@13ff/src([bp-hdc]), farptr(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    140d  call FillRect(load@13ff/src([bp-hdc]), words(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
     1419  call SelectClipRgn(load@1412/src([bp-hdc]), 0x0) -> callresult(int16_t)
     1424  call ReleaseDC(load([bp+hwnd]), load@1421/src([bp-hdc])) -> callresult(int16_t)
     1429  goto L_1510
@@ -167,7 +167,7 @@ block L_142c:
   preds: L_14ed
   succs: L_1448, L_1510
   effects:
-    1435  call __aFulshr(words(load([bp+lParam]), load([bp+lParam+0x2])), 0x10) -> callresult(uint32_t)
+    1435  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
     1443  branch (loword(callresult(uint32_t)) & 0xffff) != 0x6 ? L_1510 : L_1448
 
 block L_1448:
@@ -218,11 +218,11 @@ block L_14a3:
   preds: L_149a
   succs: L_1510
   effects:
-    14af  call MakeProcInstance(farptr(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(int32_t() *)
+    14af  call MakeProcInstance(words(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(int32_t() *)
     14b4  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
     14b7  store[2] [bp-lpProc+0x2] = farseg(callresult(int32_t() *))
-    14cf  call DialogBox(load@14ba/src([hInst]), words(0x0, 0x61), load([bp+hwnd]), farptr(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
-    14da  call FreeProcInstance(farptr(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
+    14cf  call DialogBox(load@14ba/src([hInst]), words(0x0, 0x61), load([bp+hwnd]), words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
+    14da  call FreeProcInstance(words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
 
 block L_14df:
   insts 213..213  off 0x14df..0x14e1

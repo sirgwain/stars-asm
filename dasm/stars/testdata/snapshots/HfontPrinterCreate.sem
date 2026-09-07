@@ -1,0 +1,39 @@
+/*
+HfontPrinterCreate  (utilgen)
+  addr: 0009:6aa6  len=202
+  sig:  HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont)
+  params:
+    HDC              hdc            
+    int16_t          iSize          
+    int16_t *        pdyFont        
+  locals:
+    LOGFONT *        plf            [BP-0x6]
+    HFONT            hfontNew       [BP-0x4]
+    block 0009:6B28  len=0x33
+      HFONT            hfontSav       [BP-0x28]
+      TEXTMETRIC       tm             [BP-0x26]
+
+  stats: blocks=1  labels=0
+*/
+L_6aa6:
+    plf = LocalAlloc(0x40, 0x32)
+    call memset(plf, 0, 0x32) -> callresult(void *)
+    plf->lfHeight = (MulDiv(scratch_bp_p8, GetDeviceCaps(scratch_bp_p6, LOGPIXELSY), 72) neg 0)
+    call strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1])) -> callresult(char *)
+    hfontNew = CreateFontIndirect(plf)
+    branch scratch_bp_pa == 0x0 ? L_6b5b : L_6b1f
+
+L_6b1f:
+    branch hfontNew == 0x0 ? L_6b5b : L_6b28
+
+L_6b28:
+    hfontSav = SelectObject(scratch_bp_p6, hfontNew)
+    call GetTextMetrics(scratch_bp_p6, &tm) -> callresult(int16_t)
+    ds:[scratch_bp_pa] = (tm.tmHeight + tm.tmExternalLeading)
+    call SelectObject(scratch_bp_p6, hfontSav) -> callresult(HGDIOBJ)
+
+L_6b5b:
+    call LocalFree(plf) -> callresult(HLOCAL)
+
+L_6b6a:
+    return hfontNew

@@ -9,26 +9,40 @@ import (
 
 // convertMachineToFunc converts extracted machine effects into initial semantic effects.
 func convertMachineToFunc(ctx *FuncContext, result *Result, effects *machine.FuncEffects) *Func {
-	converter := machineConverter{ctx: ctx, result: result}
+	converter := machineConverter{
+		ctx:            ctx,
+		result:         result,
+		inlineCalls:    make(map[machineCallResultKey]*Call),
+		inlineEligible: machineInlineCallResults(effects),
+	}
 	fn := Func{CFG: effects.CFG}
 	fn.Blocks = make([]Block, 0, len(effects.Blocks))
 	for _, block := range effects.Blocks {
+		ctx.SetCurrentBlock(block.Block)
 		fn.Blocks = append(fn.Blocks, Block{
 			ID:      block.Block,
 			Effects: converter.convertEffects(block.Effects),
 		})
+		ctx.ClearCurrentBlock()
 	}
 	return &fn
 }
 
 type machineConverter struct {
-	ctx          *FuncContext
-	result       *Result
-	instOff      uint32
-	memWrites    map[string]uint32
-	tempByLoad   map[machine.ValueID]*Temp
-	tempRequests map[uint32][]*machine.Load
-	noBitfields  bool
+	ctx            *FuncContext
+	result         *Result
+	instOff        uint32
+	memWrites      map[string]uint32
+	tempByLoad     map[machine.ValueID]*Temp
+	tempRequests   map[uint32][]*machine.Load
+	noBitfields    bool
+	inlineCalls    map[machineCallResultKey]*Call
+	inlineEligible map[machineCallResultKey]bool
+}
+
+type machineCallResultKey struct {
+	target  *typeinfo.Function
+	instOff uint32
 }
 
 // convertEffects converts machine effects while preserving unresolved raw storage.
@@ -39,7 +53,9 @@ func (c *machineConverter) convertEffects(effects []machine.Effect) []Effect {
 	out := make([]Effect, 0, len(effects)+len(c.tempRequests))
 	for _, effect := range effects {
 		out = append(out, c.convertTempAssignments(effect.EffectMeta().InstOff)...)
-		out = append(out, c.convertEffect(effect))
+		if converted := c.convertEffect(effect); converted != nil {
+			out = append(out, converted)
+		}
 	}
 	return out
 }
@@ -47,23 +63,32 @@ func (c *machineConverter) convertEffects(effects []machine.Effect) []Effect {
 // convertEffect converts one machine effect into a semantic effect.
 func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	c.instOff = effect.EffectMeta().InstOff
+	c.ctx.currentInstOff = c.instOff
 	switch e := effect.(type) {
 	case machine.StoreEffect:
-		if dst, src, ok := c.ctx.resolveBitfieldStore(e.Addr, e.Src); ok {
+		if path, value, ok := c.ctx.symbols.symbolFromBitfieldStore(e.Addr, e.Src); ok {
 			c.recordMemoryWrite(e.Addr, e.Width)
+			src := c.convertValue(value)
+			if constant, ok := src.(*Const); ok {
+				constant.TypeInfo = path.Type()
+			}
 			return &Assign{
 				MetaInfo: e.MetaInfo,
-				Dst:      dst,
+				Dst:      &SymbolRef{Path: path},
 				Src:      src,
 			}
 		}
+		dst := c.convertMemoryLValue(e.Addr, e.Width)
 		src := c.convertValue(e.Src)
-		if maskedStorageWrite(e.Addr, e.Src) {
+		if e.Width > 2 {
+			src = c.convertValueTyped(e.Src, dst.ExprType())
+		}
+		if c.ctx.maskedStorageWrite(e.Addr, e.Src) {
 			src = c.convertValueWithoutBitfields(e.Src)
 		}
 		assign := &Assign{
 			MetaInfo: e.MetaInfo,
-			Dst:      c.convertMemoryLValue(e.Addr, e.Width),
+			Dst:      dst,
 			Src:      src,
 		}
 		c.recordMemoryWrite(e.Addr, e.Width)
@@ -87,10 +112,14 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	case machine.CallEffect:
 		target, fn := c.convertCallTarget(e)
 		args := e.Args
-		if e.Target == nil && fn != nil {
-			args = indirectCallArgs(fn, e.Args)
-		}
 		call := &Call{Function: fn, Target: target, Args: c.convertCallArgs(fn, args)}
+		if callResult, ok := e.Result.(*machine.CallResult); ok {
+			key := machineCallResultKey{target: callResult.Target, instOff: callResult.InstOff}
+			if c.inlineEligible[key] {
+				c.inlineCalls[key] = call
+				return nil
+			}
+		}
 		var result Expr
 		if e.Result != nil {
 			result = c.convertValue(e.Result)
@@ -106,7 +135,11 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	case machine.JumpEffect:
 		return &Jump{MetaInfo: e.MetaInfo, To: e.To}
 	case machine.ReturnEffect:
-		return &Return{MetaInfo: e.MetaInfo, Value: c.convertValue(e.Value)}
+		var expected typeinfo.Type
+		if c.ctx != nil && c.ctx.fs != nil {
+			expected = c.ctx.fs.Ret
+		}
+		return &Return{MetaInfo: e.MetaInfo, Value: c.convertValueTyped(e.Value, expected)}
 	default:
 		return &RawEffect{Effect: effect, MetaInfo: effect.EffectMeta()}
 	}
@@ -123,19 +156,31 @@ func (c *machineConverter) convertCallTarget(effect machine.CallEffect) (Expr, *
 	access := effect.MemoryAccess
 	access.Width = 4
 	target := c.convertMemoryLValue(access, access.Width)
-	fn, _ := typeinfo.GetFunctionPointerFunction(target.ExprType())
+	fn, _ := functionFromCallTargetType(target.ExprType(), access.Width)
 	return target, fn
 }
 
+// functionFromCallTargetType resolves the callee signature for a direct
+// function pointer or a loaded function-pointer storage slot.
+func functionFromCallTargetType(typ typeinfo.Type, width int) (*typeinfo.Function, bool) {
+	if fn, ok := typeinfo.GetFunctionPointerFunction(typ); ok {
+		return fn, true
+	}
+	ptr, ok := typ.(*typeinfo.Pointer)
+	if !ok || ptr.Elem == nil || ptr.Elem.Bytes() != width {
+		return nil, false
+	}
+	return typeinfo.GetFunctionPointerFunction(ptr.Elem)
+}
+
 // emptyCallMemoryAccess reports whether an indirect call has no target memory.
-func emptyCallMemoryAccess(access machine.MemoryAccess) bool {
-	return access.Seg == nil &&
-		access.Base == nil &&
-		access.Index == nil &&
-		access.Disp == 0 &&
-		access.Width == 0 &&
-		access.Scale == 0 &&
-		access.Origin == (machine.Origin{})
+func emptyCallMemoryAccess(mem machine.MemoryAddress) bool {
+	return mem.Seg == nil &&
+		mem.Base == nil &&
+		mem.Index == nil &&
+		mem.Disp == 0 &&
+		mem.Width == 0 &&
+		mem.Origin == (machine.Origin{})
 }
 
 // convertValues converts a slice of machine values into semantic expressions.
@@ -149,12 +194,14 @@ func (c *machineConverter) convertValues(values []machine.Value) []Expr {
 
 // convertValue converts one machine value into a semantic expression.
 func (c *machineConverter) convertValue(value machine.Value) Expr {
-	if resolved, ok := c.resolveAddressValue(value); ok {
-		return resolved
+	if _, address := value.(*machine.Address); address {
+		if resolved, ok := c.resolveAddressValue(value); ok {
+			return resolved
+		}
 	}
 	if !c.noBitfields {
-		if resolved, ok := c.ctx.resolveBitfieldExtract(value); ok {
-			return resolved
+		if path, ok := c.ctx.symbols.symbolFromBitfieldValue(value); ok {
+			return &SymbolRef{Path: path}
 		}
 	}
 	switch v := value.(type) {
@@ -167,6 +214,9 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	case *machine.FloatConst:
 		return &FloatConst{TypeInfo: &typeinfo.Primitive{TypeKind: typeinfo.KFloat, Name: "float", Size: 4}, F64: v.Val}
 	case *machine.CallResult:
+		if call := c.inlineCalls[machineCallResultKey{target: v.Target, instOff: v.InstOff}]; call != nil {
+			return call
+		}
 		return &CallResult{Function: v.Target, TypeInfo: v.Type, InstOff: v.InstOff}
 	case *machine.WordValue:
 		return &Word{Parent: c.convertValue(v.Parent), Part: v.Part}
@@ -189,11 +239,15 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 		if temp := c.tempByLoad[v.ID]; temp != nil && c.staleLoad(v) {
 			return temp
 		}
-		return c.convertMemoryLValue(v.Access, v.Access.Width)
+		return c.convertMemoryLValue(v.Addr, v.Addr.Width)
 	case *machine.Address:
-		return &AddressOf{Target: c.convertMemoryLValue(v.Access, v.Access.Width), TypeInfo: typeinfo.U16}
+		return &AddressOf{Target: c.convertMemoryLValue(v.Addr, v.Addr.Width), TypeInfo: typeinfo.U16}
 	case *machine.StackWords:
-		return &Words{Words: c.convertValues(v.Words)}
+		words := &Words{Words: c.convertValues(v.Words)}
+		if collapsed, ok := collapseWideWords(words); ok {
+			return collapsed
+		}
+		return words
 	case *machine.PredicateValue:
 		return c.convertPredicate(v)
 	case *machine.PhiValue:
@@ -201,6 +255,42 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	default:
 		return &RawValue{Value: value}
 	}
+}
+
+// machineInlineCallResults identifies single-use call results confined to one block.
+func machineInlineCallResults(effects *machine.FuncEffects) map[machineCallResultKey]bool {
+	type usage struct {
+		count int
+		block machine.BlockID
+		mixed bool
+	}
+	uses := make(map[machineCallResultKey]usage)
+	for _, block := range effects.Blocks {
+		walker := &machineRewriter{
+			value: func(w *machineRewriter, value machine.Value) (machine.Value, bool, bool) {
+				result, ok := value.(*machine.CallResult)
+				if !ok {
+					return value, false, false
+				}
+				key := machineCallResultKey{target: result.Target, instOff: result.InstOff}
+				current := uses[key]
+				if current.count > 0 && current.block != block.Block {
+					current.mixed = true
+				}
+				current.count++
+				current.block = block.Block
+				uses[key] = current
+				return value, false, false
+			},
+		}
+		walker.rewriteMachineEffects(block.Effects)
+	}
+	inline := make(map[machineCallResultKey]bool)
+	for key, usage := range uses {
+		// One visit is the call-effect definition and one is the sole use.
+		inline[key] = usage.count == 2 && !usage.mixed
+	}
+	return inline
 }
 
 // convertValueWithoutBitfields converts a machine value with bitfield extraction disabled.
@@ -233,7 +323,7 @@ func (c *machineConverter) convertTempAssignments(instOff uint32) []Effect {
 	}
 	assigns := make([]Effect, 0, len(loads))
 	for _, load := range loads {
-		storage := c.convertMemoryLValue(load.Access, load.Access.Width)
+		storage := c.convertMemoryLValue(load.Addr, load.Addr.Width)
 		temp := &Temp{
 			Name:     tempName(load.ID),
 			ID:       load.ID,
@@ -241,7 +331,7 @@ func (c *machineConverter) convertTempAssignments(instOff uint32) []Effect {
 			TypeInfo: storage.ExprType(),
 		}
 		if temp.TypeInfo == nil {
-			temp.TypeInfo = intTypeForWidth(load.Access.Width)
+			temp.TypeInfo = intTypeForWidth(load.Addr.Width)
 		}
 		c.tempByLoad[load.ID] = temp
 		assigns = append(assigns, &Assign{
@@ -319,7 +409,7 @@ func collectTempLoads(value machine.Value, writes map[string]uint32, requests ma
 		if v.ID.IsZero() || seen[v.ID] {
 			return
 		}
-		writeOff, ok := writes[memoryWriteKey(v.Access, v.Access.Width)]
+		writeOff, ok := writes[memoryWriteKey(v.Addr, v.Addr.Width)]
 		if !ok || v.ID.InstOff >= writeOff {
 			return
 		}
@@ -333,11 +423,11 @@ func collectTempLoads(value machine.Value, writes map[string]uint32, requests ma
 }
 
 // recordMemoryWrite records that storage has been updated by the current effect.
-func (c *machineConverter) recordMemoryWrite(access machine.MemoryAccess, width int) {
+func (c *machineConverter) recordMemoryWrite(mem machine.MemoryAddress, width int) {
 	if c.memWrites == nil {
 		return
 	}
-	c.memWrites[memoryWriteKey(access, width)] = c.instOff
+	c.memWrites[memoryWriteKey(mem, width)] = c.instOff
 }
 
 // recordCopyWrite records the storage written by a copy effect.
@@ -346,7 +436,7 @@ func (c *machineConverter) recordCopyWrite(value machine.Value, width int) {
 	if !ok {
 		return
 	}
-	c.recordMemoryWrite(copyAddressMemoryAccess(addr.Access, width), width)
+	c.recordMemoryWrite(copyAddressMemoryAccess(addr.Addr, width), width)
 }
 
 // staleLoad reports whether a load predates a write to the same storage.
@@ -354,35 +444,26 @@ func (c *machineConverter) staleLoad(load *machine.Load) bool {
 	if load == nil || load.ID.IsZero() || c.memWrites == nil {
 		return false
 	}
-	writeOff, ok := c.memWrites[memoryWriteKey(load.Access, load.Access.Width)]
+	writeOff, ok := c.memWrites[memoryWriteKey(load.Addr, load.Addr.Width)]
 	return ok && load.ID.InstOff < writeOff
 }
 
 // memoryWriteKey returns a storage key for detecting reads invalidated by writes.
-func memoryWriteKey(access machine.MemoryAccess, width int) string {
-	access.Origin = machine.Origin{}
-	access.Width = width
-	return access.String()
+func memoryWriteKey(mem machine.MemoryAddress, width int) string {
+	mem.Origin = machine.Origin{}
+	mem.Width = width
+	return mem.String()
 }
 
-// convertMemoryLValue converts a machine memory access into a semantic lvalue.
-func (c *machineConverter) convertMemoryLValue(access machine.MemoryAccess, width int) LValue {
-	if lvalue, ok := c.ctx.resolveMachineStorage(access, width); ok {
+// convertMemoryLValue converts a machine memory address into a semantic lvalue.
+func (c *machineConverter) convertMemoryLValue(mem machine.MemoryAddress, width int) LValue {
+	if lvalue, ok := c.resolveAddressLValue(mem, width, nil); ok {
 		return lvalue
 	}
-	if lvalue, ok := c.resolveAddressLValue(access, width); ok {
-		return lvalue
-	}
-	if lvalue, ok := c.convertNearPointerMemoryLValue(access, width); ok {
-		return lvalue
-	}
-	if lvalue, ok := c.convertFarPointerMemoryLValue(access, width); ok {
-		return lvalue
-	}
-	return unresolvedMemory(c.ctx, c.result, access)
+	return unresolvedMemory(c.ctx, c.result, mem)
 }
 
-// derefType returns the semantic type for a memory access through pointer.
+// derefType returns the semantic type for a memory address through pointer.
 func derefType(pointer Expr, width int) typeinfo.Type {
 	if ptr, ok := pointer.ExprType().(*typeinfo.Pointer); ok && ptr.Elem != nil && ptr.Elem.Bytes() == width {
 		return ptr.Elem
@@ -390,17 +471,16 @@ func derefType(pointer Expr, width int) typeinfo.Type {
 	return intTypeForWidth(width)
 }
 
-// unresolvedMemory converts a raw machine memory access to an unresolved semantic lvalue.
-func unresolvedMemory(ctx *FuncContext, result *Result, access machine.MemoryAccess) *Memory {
+// unresolvedMemory converts a raw machine memory address to an unresolved semantic lvalue.
+func unresolvedMemory(ctx *FuncContext, result *Result, mem machine.MemoryAddress) *Memory {
 	converter := machineConverter{ctx: ctx, result: result}
 	return &Memory{
-		Seg:      converter.convertValue(access.Seg),
-		Base:     converter.convertValue(access.Base),
-		Disp:     access.Disp,
-		Width:    access.Width,
-		Index:    converter.convertValue(access.Index),
-		Scale:    access.Scale,
-		TypeInfo: intTypeForWidth(access.Width),
+		Seg:      converter.convertValue(mem.Seg),
+		Base:     converter.convertValue(mem.Base),
+		Disp:     mem.Disp,
+		Width:    mem.Width,
+		Index:    converter.convertValue(mem.Index),
+		TypeInfo: intTypeForWidth(mem.Width),
 	}
 }
 
@@ -413,15 +493,49 @@ func (c machineConverter) convertPredicate(v *machine.PredicateValue) Expr {
 }
 
 // convertPhi converts a machine phi into a semantic merge expression.
-func (c machineConverter) convertPhi(v *machine.PhiValue) Expr {
+func (c *machineConverter) convertPhi(v *machine.PhiValue) Expr {
 	arms := make([]MergeArm, 0, len(v.Arms))
 	for _, arm := range v.Arms {
 		if arm.Block == nil {
 			continue
 		}
-		arms = append(arms, MergeArm{Block: arm.Block.ID, Value: c.convertValue(arm.Value)})
+		arms = append(arms, MergeArm{Block: arm.Block.ID, Value: c.convertValueInBlock(arm.Block.ID, arm.Value, nil)})
 	}
 	return &Merge{TypeInfo: mergeType(arms), Join: v.Join, Arms: arms}
+}
+
+// convertPhiTyped propagates the surrounding type into each merge arm.
+func (c *machineConverter) convertPhiTyped(v *machine.PhiValue, expected typeinfo.Type) Expr {
+	arms := make([]MergeArm, 0, len(v.Arms))
+	for _, arm := range v.Arms {
+		if arm.Block == nil {
+			continue
+		}
+		arms = append(arms, MergeArm{Block: arm.Block.ID, Value: c.convertValueInBlock(arm.Block.ID, arm.Value, expected)})
+	}
+	return &Merge{TypeInfo: expected, Join: v.Join, Arms: arms}
+}
+
+// convertValueInBlock converts a predecessor-owned value using that block's
+// configured symbol context, then restores the surrounding conversion state.
+func (c *machineConverter) convertValueInBlock(block machine.BlockID, value machine.Value, expected typeinfo.Type) Expr {
+	previousBlock := c.ctx.currentBlock
+	previousInstOff := c.ctx.currentInstOff
+	c.ctx.SetCurrentBlock(block)
+	var expr Expr
+	if expected != nil {
+		expr = c.convertValueTyped(value, expected)
+	} else {
+		expr = c.convertValue(value)
+	}
+	if previousBlock != nil {
+		c.ctx.SetCurrentBlock(*previousBlock)
+	} else {
+		c.ctx.currentBlock = nil
+		c.ctx.currentUnionContext = nil
+	}
+	c.ctx.currentInstOff = previousInstOff
+	return expr
 }
 
 // mergeType returns the result type shared by merge arms.

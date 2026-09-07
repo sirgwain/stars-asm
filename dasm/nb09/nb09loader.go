@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"log/slog"
 	"os"
 )
 
@@ -45,7 +44,7 @@ func Load(path string) (*NB09DB, error) {
 // a byte slice containing the NB09 blob starting at "NB09" and extending far enough to
 // include the entire directory (header + entries) and all referenced subsection data.
 func loadNB09FromExePath(path string) ([]byte, nb09Info, error) {
-	slog.Debug("nb09: loading exe", "path", path)
+	// slog.Debug("nb09: loading exe", "path", path)
 	exe, err := os.ReadFile(path)
 	if err != nil {
 		return nil, nb09Info{}, err

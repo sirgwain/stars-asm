@@ -22,34 +22,38 @@ func TestResolver_ResolveGlobal(t *testing.T) {
 		wantFieldOff int
 	}{
 		{
+			name: "hbrButtonFace",
+			seg:  0x25, off: 0x0010, want: "hbrButtonFace", wantFieldOff: 0,
+		},
+		{
 			name: "rgplr exact",
-			seg:  0x25, off: 0x59a2, width: 2, want: "rgplr", wantFieldOff: 0,
+			seg:  0x25, off: 0x59a2, want: "rgplr", wantFieldOff: 0,
 		},
 		{
 			name: "rgplr second word still resolves containing global",
-			seg:  0x25, off: 0x59a4, width: 2, want: "rgplr", wantFieldOff: 2,
+			seg:  0x25, off: 0x59a4, want: "rgplr", wantFieldOff: 2,
 		},
 		{
 			name: "lpPlanets low word",
-			seg:  0x25, off: 0x00f6, width: 2, want: "lpPlanets", wantFieldOff: 0,
+			seg:  0x25, off: 0x00f6, want: "lpPlanets", wantFieldOff: 0,
 		},
 		{
 			name: "lpPlanets high word",
-			seg:  0x25, off: 0x00f8, width: 2, want: "lpPlanets", wantFieldOff: 2,
+			seg:  0x25, off: 0x00f8, want: "lpPlanets", wantFieldOff: 2,
 		},
 		{
 			name: "sel+off (sel.fl)",
-			seg:  0x25, off: 0x4972, width: 2, want: "sel", wantFieldOff: 0x1c,
+			seg:  0x25, off: 0x4972, want: "sel", wantFieldOff: 0x1c,
 		},
 		{
 			name: "GlobalPD+off",
-			seg:  0x25, off: 0x0b80, width: 2, want: "GlobalPD", wantFieldOff: 0,
+			seg:  0x25, off: 0x0b80, want: "GlobalPD", wantFieldOff: 0,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok := res.ResolveGlobal(tt.seg, tt.off, tt.width)
+			got, ok := res.ResolveGlobal(tt.seg, tt.off)
 			if !ok {
 				t.Fatalf("ResolveGlobalContaining(%d, %#x, %d) ok = false", tt.seg, tt.off, tt.width)
 			}
@@ -321,8 +325,8 @@ func TestResolver_ResolveField(t *testing.T) {
 				t.Fatalf("TestResolver_ResolveField(%v, %#x) off = %d, wantOff = %d", tt.v, tt.off, tt.off, tt.wantOff)
 			}
 
-			if ok && got.CDecl() != tt.want {
-				t.Fatalf("TestResolver_ResolveField(%v, %#x) got = %s, want = %s", tt.v, tt.off, got.CDecl(), tt.want)
+			if ok && got.String() != tt.want {
+				t.Fatalf("TestResolver_ResolveField(%v, %#x) got = %s, want = %s", tt.v, tt.off, got.String(), tt.want)
 			}
 		})
 	}
@@ -391,10 +395,14 @@ func TestResolver_ResolveFieldLoad(t *testing.T) {
 				t.Fatalf("TestResolver_ResolveField(%v, %#x) ok = %v, wantOk = %v", tt.v, tt.off, ok, tt.wantOK)
 			}
 
-			if ok && got.CDecl() != tt.want {
-				t.Fatalf("TestResolver_ResolveField(%v, %#x) got = %s, want = %s", tt.v, tt.off, got.CDecl(), tt.want)
+			if ok && got.String() != tt.want {
+				t.Fatalf("TestResolver_ResolveField(%v, %#x) got = %s, want = %s", tt.v, tt.off, got.String(), tt.want)
 			}
 		})
+	}
+
+	if got, ok := res.ResolveFieldLoadInContext(partVar, 4, 4, nil); ok {
+		t.Fatalf("part load without union context = %v, true; want unresolved", got)
 	}
 }
 
@@ -452,11 +460,11 @@ func TestResolver_ResolveFieldPathLoad(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, ok := res.ResolveFieldPathLoad(tt.base, tt.off, tt.accessWidth)
 			if tt.wantOK != ok {
-				t.Fatalf("TestResolver_ResolveFieldPathLoad(%v, %#x) ok = %v, wantOk = %v", tt.base.CDecl(), tt.off, ok, tt.wantOK)
+				t.Fatalf("TestResolver_ResolveFieldPathLoad(%v, %#x) ok = %v, wantOk = %v", tt.base.String(), tt.off, ok, tt.wantOK)
 			}
 
-			if ok && got.CDecl() != tt.want {
-				t.Fatalf("TestResolver_ResolveFieldPathLoad(%v, %#x) got = %s, want = %s", tt.base.CDecl(), tt.off, got.CDecl(), tt.want)
+			if ok && got.String() != tt.want {
+				t.Fatalf("TestResolver_ResolveFieldPathLoad(%v, %#x) got = %s, want = %s", tt.base.String(), tt.off, got.String(), tt.want)
 			}
 		})
 	}
@@ -523,8 +531,13 @@ func TestResolver_ResolveBitfieldLoad(t *testing.T) {
 				t.Fatalf("TestResolver_ResolveBitfieldLoad(%v, %#x, %d, %d, %d) ok = %v, wantOk = %v", tt.v, tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, ok, tt.wantOK)
 			}
 
-			if ok && got.CDecl() != tt.want {
-				t.Fatalf("TestResolver_ResolveBitfieldLoad(%v, %#x, %d, %d, %d) got = %s, want = %s", tt.v, tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got.CDecl(), tt.want)
+			if ok && got.String() != tt.want {
+				t.Fatalf("TestResolver_ResolveBitfieldLoad(%v, %#x, %d, %d, %d) got = %s, want = %s", tt.v, tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got.String(), tt.want)
+			}
+			if ok {
+				if _, native := got.(*symresolve.SymbolBitfield); !native {
+					t.Fatalf("TestResolver_ResolveBitfieldLoad(%v, %#x, %d, %d, %d) type = %T, want *symresolve.SymbolBitfield", tt.v, tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got)
+				}
 			}
 		})
 	}
@@ -567,11 +580,16 @@ func TestResolver_ResolveBitfieldPathLoad(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, ok := res.ResolveBitfieldPathLoad(tt.base, tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth)
 			if tt.wantOK != ok {
-				t.Fatalf("TestResolver_ResolveBitfieldPathLoad(%v, %#x, %d, %d, %d) ok = %v, wantOk = %v", tt.base.CDecl(), tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, ok, tt.wantOK)
+				t.Fatalf("TestResolver_ResolveBitfieldPathLoad(%v, %#x, %d, %d, %d) ok = %v, wantOk = %v", tt.base.String(), tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, ok, tt.wantOK)
 			}
 
-			if ok && got.CDecl() != tt.want {
-				t.Fatalf("TestResolver_ResolveBitfieldPathLoad(%v, %#x, %d, %d, %d) got = %s, want = %s", tt.base.CDecl(), tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got.CDecl(), tt.want)
+			if ok && got.String() != tt.want {
+				t.Fatalf("TestResolver_ResolveBitfieldPathLoad(%v, %#x, %d, %d, %d) got = %s, want = %s", tt.base.String(), tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got.String(), tt.want)
+			}
+			if ok {
+				if _, native := got.(*symresolve.SymbolBitfield); !native {
+					t.Fatalf("TestResolver_ResolveBitfieldPathLoad(%v, %#x, %d, %d, %d) type = %T, want *symresolve.SymbolBitfield", tt.base.String(), tt.off, tt.storageWidth, tt.bitOff, tt.bitWidth, got)
+				}
 			}
 		})
 	}

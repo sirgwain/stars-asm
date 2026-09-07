@@ -1,0 +1,275 @@
+/*
+FTrackXfer  (ship)
+  addr: 000b:5a16  len=1410
+  sig:  int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+    int16_t          fkb            [BP+0xc]
+  locals:
+    RECT             rc             [BP-0x4a]
+    int32_t          cNew           [BP-0x42]
+    BTN              btn            [BP-0x3e]
+    int16_t          iVal           [BP-0x30]
+    int16_t          iBtn           [BP-0x2e]
+    int16_t          i              [BP-0x2c]
+    int32_t          cCur           [BP-0x2a]
+    BTNT             btnt           [BP-0x26]
+    int32_t          dChg           [BP-0xe]
+    POINT            pt             [BP-0xa]
+    POINT            ptOld          [BP-0x6]
+
+  stats: blocks=0  labels=1
+    FinishUp: L_5f70
+*/
+L_5a16:
+    call GetClientRect(hwnd, &rc) -> callresult(void)
+    pt.x = x
+    pt.y = y
+    i = 0
+    goto L_5a86
+
+L_5a42:
+    branch (rgbtnXfer[i].bt & 0x4) != 0x0 ? L_5a82 : L_5a5c
+
+L_5a5c:
+    branch PtInRect(&rgbtnXfer[i].rc, pt) != 0 ? L_5a91 : L_5a7c
+
+L_5a7c:
+
+
+L_5a82:
+    i = (i + 1)
+
+L_5a86:
+    branch i < LOWORD(crgbtnXfer) ? L_5a42 : L_5a91
+
+L_5a91:
+    branch i != LOWORD(crgbtnXfer) ? L_5aa2 : L_5a9c
+
+L_5a9c:
+    return 0x0
+
+L_5aa2:
+    iBtn = (i >> 0x1)
+    btn = rgbtnXfer[i]
+    iVal = (btn.iVal & 0x7f)
+    branch btn.fVisible != 0x0 ? L_5d2e : L_5adc
+
+L_5adc:
+    branch iVal > 4 ? L_5f70 : L_5ae2
+
+L_5ae2:
+
+
+L_5ae8:
+    branch *(pxfer+0x82) != 0x8 ? L_5b0e : L_5af6
+
+L_5af6:
+    branch iVal == 4 ? L_5f70 : L_5aff
+
+L_5aff:
+    branch iVal == 3 ? L_5f70 : L_5b05
+
+L_5b05:
+
+
+
+L_5b0e:
+    branch part[0x6:2](pxfer[btn.iSide]) != idPlayer ? L_5f70 : L_5b2b
+
+L_5b2b:
+
+
+L_5b31:
+    call SetCapture(hwnd) -> callresult(HWND)
+    ptOld.y = -1
+    ptOld.x = -1
+
+L_5b44:
+    branch FGetMouseMove(&pt) == 0 ? L_5d26 : L_5b58
+
+L_5b58:
+    branch pt.x != ptOld.x ? L_5b6e : L_5b63
+
+L_5b63:
+    branch pt.y == ptOld.y ? L_5b44 : L_5b6e
+
+L_5b6e:
+    ptOld.x = pt.x
+    ptOld.y = pt.y
+    branch btn.iSide != 0x1 ? L_5bc0 : L_5b8c
+
+L_5b8c:
+    branch *(pxfer+0x82) != 0x8 ? L_5bc0 : L_5b9a
+
+L_5b9a:
+    cNew = (uint32_t)(words(0x0, (*(pxfer+0x92) & 0x3fff)) * 0xa)
+    goto L_5c26
+
+L_5bc0:
+    branch iVal != 4 ? L_5bf6 : L_5bc9
+
+L_5bc9:
+    call LGetFleetStat(&pxfer[btn.iSide].fl, 1) -> callresult(int32_t)
+    t_merge_5c20_0001 = callresult(int32_t)
+    goto L_5c20
+
+L_5bf6:
+    call LGetFleetStat(&pxfer[btn.iSide].fl, 2) -> callresult(int32_t)
+    t_merge_5c20_0001 = callresult(int32_t)
+
+L_5c20:
+    cNew = t_merge_5c20_0001
+
+L_5c26:
+    cNew = (int32_t)((uint32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) + 0xfffe)))
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, part[0x4:2](pxfer[btn.iSide]))
+    dChg = (cNew - cCur)
+    branch btn.iSide != 0x0 ? L_5ce3 : L_5cda
+
+L_5cda:
+    t_merge_5cf0_0001 = dChg
+    goto L_5cf0
+
+L_5ce3:
+    t_merge_5cf0_0001 = words(((HIWORD(dChg) + 0x0) neg 0x0), (LOWORD(dChg) neg 0x0))
+
+L_5cf0:
+    call XferSupply(iVal, t_merge_5cf0_0001) -> t_call_5cf5
+    branch loword(t_call_5cf5) != 0x0 ? L_5d0d : L_5d05
+
+L_5d05:
+    branch hiword(t_call_5cf5) == 0x0 ? L_5b44 : L_5d0d
+
+L_5d0d:
+    call DrawXferDlg(hwnd, 0x0, &rc, iVal) -> callresult(void)
+
+
+L_5d26:
+    call ReleaseCapture() -> callresult(void)
+    goto L_5f70
+
+L_5d2e:
+    call InitBtnTrack(&btnt, hwnd, 0x0, btn, btn.bt, 80, 0, 0, 0x0) -> callresult(void)
+    branch (fkb & 0x8) == 0x0 ? L_5d88 : L_5d66
+
+L_5d66:
+    branch (fkb & 0x4) == 0x0 ? L_5d7b : L_5d74
+
+L_5d74:
+    t_merge_5d7f_0001 = 0x3e8
+    goto L_5d7f
+
+L_5d7b:
+    t_merge_5d7f_0001 = 0x64
+
+L_5d7f:
+    dChg = (uint32_t)t_merge_5d7f_0001
+    goto L_5dad
+
+L_5d88:
+    branch (fkb & 0x4) == 0x0 ? L_5da3 : L_5d96
+
+L_5d96:
+    dChg = 10
+    goto L_5dad
+
+L_5da3:
+    dChg = 1
+
+L_5dad:
+    branch FTrackBtn(&btnt) == 0 ? L_5f70 : L_5dc1
+
+L_5dc1:
+    branch mdXferDlg != mdXferShips ? L_5f01 : L_5dcb
+
+L_5dcb:
+    branch btn.iSide != 0x0 ? L_5dec : L_5de6
+
+L_5de6:
+    t_merge_5def_0001 = 0x1
+    goto L_5def
+
+L_5dec:
+    t_merge_5def_0001 = 0x0
+
+L_5def:
+    branch scratch_bp_m4c >= pxfer[t_merge_5def_0001].fl.rgcsh[iVal] ? L_5e19 : L_5e10
+
+L_5e10:
+    t_merge_5e4d_0001 = LOWORD(dChg)
+    goto L_5e4d
+
+L_5e19:
+    branch btn.iSide != 0x0 ? L_5e31 : L_5e2b
+
+L_5e2b:
+    t_merge_5e34_0001 = 0x1
+    goto L_5e34
+
+L_5e31:
+    t_merge_5e34_0001 = 0x0
+
+L_5e34:
+    t_merge_5e4d_0001 = pxfer[t_merge_5e34_0001].fl.rgcsh[iVal]
+
+L_5e4d:
+    i = t_merge_5e4d_0001
+    branch i == 0 ? L_5dad : L_5e59
+
+L_5e59:
+    branch pxfer[btn.iSide].fl.rgcsh[iVal] < (32766 - i) ? L_5e8c : L_5e87
+
+L_5e87:
+    i = 1
+
+L_5e8c:
+    pxfer[btn.iSide].fl.rgcsh[iVal] = (pxfer[btn.iSide].fl.rgcsh[iVal] + i)
+    branch btn.iSide != 0x0 ? L_5eca : L_5ec4
+
+L_5ec4:
+    t_merge_5ecd_0001_wide = 0x10001
+    goto L_5ecd
+
+L_5eca:
+    t_merge_5ecd_0001_wide = 0x0
+
+L_5ecd:
+    pxfer[loword(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] = (pxfer[hiword(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] - i)
+    call DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn) -> callresult(void)
+
+
+L_5f01:
+    branch iVal < 0 ? L_5dad : L_5f0a
+
+L_5f0a:
+    branch iVal > 4 ? L_5dad : L_5f13
+
+L_5f13:
+    branch btn.iSide != 0x0 ? L_5f2e : L_5f25
+
+L_5f25:
+    t_merge_5f3b_0001 = dChg
+    goto L_5f3b
+
+L_5f2e:
+    t_merge_5f3b_0001 = words(((HIWORD(dChg) + 0x0) neg 0x0), (LOWORD(dChg) neg 0x0))
+
+L_5f3b:
+    call XferSupply(iVal, t_merge_5f3b_0001) -> t_call_5f40
+    branch loword(t_call_5f40) != 0x0 ? L_5f58 : L_5f50
+
+L_5f50:
+    branch hiword(t_call_5f40) == 0x0 ? L_5dad : L_5f58
+
+L_5f58:
+    call DrawXferDlg(hwnd, btnt.hdc, &rc, iVal) -> callresult(void)
+
+
+FinishUp:
+    call UpdateXferBtns() -> callresult(void)
+    call DrawXferDlg(hwnd, 0x0, &rc, -2) -> callresult(void)
+    return 0x1
+

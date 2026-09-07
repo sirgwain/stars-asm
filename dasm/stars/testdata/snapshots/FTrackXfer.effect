@@ -1,0 +1,567 @@
+/*
+FTrackXfer  (ship)
+  addr: 000b:5a16  len=1410
+  sig:  int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+    int16_t          fkb            [BP+0xc]
+  locals:
+    RECT             rc             [BP-0x4a]
+    int32_t          cNew           [BP-0x42]
+    BTN              btn            [BP-0x3e]
+    int16_t          iVal           [BP-0x30]
+    int16_t          iBtn           [BP-0x2e]
+    int16_t          i              [BP-0x2c]
+    int32_t          cCur           [BP-0x2a]
+    BTNT             btnt           [BP-0x26]
+    int32_t          dChg           [BP-0xe]
+    POINT            pt             [BP-0xa]
+    POINT            ptOld          [BP-0x6]
+
+  stats: blocks=0  labels=1
+    FinishUp: L_5f70
+*/
+block L_5a16:
+  insts 0..16  off 0x5a16..0x5a41
+  succs: L_5a86
+  effects:
+    5a29  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    5a31  store[2] [bp-pt] = load([bp+x])
+    5a37  store[2] [bp-pt+0x2] = load([bp+y])
+    5a3a  store[2] [bp-i] = 0x0
+    5a3f  goto L_5a86
+
+block L_5a42:
+  insts 17..24  off 0x5a42..0x5a58
+  preds: L_5a86
+  succs: L_5a5c, L_5a82
+  effects:
+    5a57  branch (load(ds:[(load([rgbtnXfer]) + loword((0xe * load([bp-i]))))+0x8]) & 0x4) != 0x0 ? L_5a82 : L_5a5c
+
+block L_5a5c:
+  insts 26..37  off 0x5a5c..0x5a7b
+  preds: L_5a42
+  succs: L_5a82, L_5a91
+  effects:
+    5a72  call PtInRect(words(ds, (load([rgbtnXfer]) + loword((0xe * load([bp-i]))))), words(load([bp-pt+0x2]), load([bp-pt]))) -> callresult(int16_t)
+    5a7a  branch callresult(int16_t) != 0x0 ? L_5a91 : L_5a7c
+
+block L_5a7c:
+  insts 38..38  off 0x5a7c..0x5a7e
+  succs: L_5a82
+
+block L_5a7f:
+  insts 39..39  off 0x5a7f..0x5a81
+  succs: L_5a91
+
+block L_5a82:
+  insts 40..40  off 0x5a82..0x5a85
+  preds: L_5a42, L_5a5c, L_5a7c
+  succs: L_5a86
+  effects:
+    5a82  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5a86:
+  insts 41..43  off 0x5a86..0x5a8d
+  preds: L_5a16, L_5a82
+  succs: L_5a42, L_5a91
+  effects:
+    5a8c  branch load([bp-i]) < load([crgbtnXfer]) ? L_5a42 : L_5a91
+
+block L_5a91:
+  insts 45..47  off 0x5a91..0x5a98
+  preds: L_5a5c, L_5a7f, L_5a86
+  succs: L_5a9c, L_5aa2
+  effects:
+    5a97  branch load([bp-i]) != load([crgbtnXfer]) ? L_5aa2 : L_5a9c
+
+block L_5a9c:
+  insts 49..50  off 0x5a9c..0x5aa1
+  preds: L_5a91
+  succs: L_5f92
+  effects:
+    5a9f  goto L_5f92
+
+block L_5aa2:
+  insts 51..72  off 0x5aa2..0x5ad8
+  preds: L_5a91
+  succs: L_5adc, L_5d2e
+  effects:
+    5aa7  store[2] [bp-iBtn] = (load([bp-i]) sar 0x1)
+    5abf  copy[0xe] *addr(ss:[addr([bp-btn])]) = *addr(ds:[(load([rgbtnXfer]) + loword((0xe * load([bp-i]))))])
+    5acb  store[2] [bp-iVal] = (load([bp-btn+0xa]) & 0x7f)
+    5ad7  branch (load([bp-btn+0xc]) & 0x1) != 0x0 ? L_5d2e : L_5adc
+
+block L_5adc:
+  insts 74..75  off 0x5adc..0x5ae1
+  preds: L_5aa2
+  succs: L_5ae8, L_5f70
+  effects:
+    5ae0  branch load([bp-iVal]) > 0x4 ? L_5f70 : L_5ae2
+
+block L_5ae2:
+  insts 76..76  off 0x5ae2..0x5ae4
+  succs: L_5ae8
+
+block L_5ae5:
+  insts 77..77  off 0x5ae5..0x5ae7
+  succs: L_5f70
+
+block L_5ae8:
+  insts 78..80  off 0x5ae8..0x5af2
+  preds: L_5adc, L_5ae2
+  succs: L_5af6, L_5b0e
+  effects:
+    5af1  branch load(ds:[load([pxfer])+0x82]) != 0x8 ? L_5b0e : L_5af6
+
+block L_5af6:
+  insts 82..83  off 0x5af6..0x5afb
+  preds: L_5ae8
+  succs: L_5aff, L_5f70
+  effects:
+    5afa  branch load([bp-iVal]) == 0x4 ? L_5f70 : L_5aff
+
+block L_5aff:
+  insts 85..86  off 0x5aff..0x5b04
+  preds: L_5af6
+  succs: L_5b31, L_5f70
+  effects:
+    5b03  branch load([bp-iVal]) == 0x3 ? L_5f70 : L_5b05
+
+block L_5b05:
+  insts 87..87  off 0x5b05..0x5b07
+  succs: L_5b31
+
+block L_5b08:
+  insts 88..88  off 0x5b08..0x5b0a
+  succs: L_5f70
+
+block L_5b0b:
+  insts 89..89  off 0x5b0b..0x5b0d
+  succs: L_5b31
+
+block L_5b0e:
+  insts 90..100  off 0x5b0e..0x5b2a
+  preds: L_5ae8
+  succs: L_5b31, L_5f70
+  effects:
+    5b29  branch load(ds:[(load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7))+0x6]) != load([idPlayer]) ? L_5f70 : L_5b2b
+
+block L_5b2b:
+  insts 101..101  off 0x5b2b..0x5b2d
+  succs: L_5b31
+
+block L_5b2e:
+  insts 102..102  off 0x5b2e..0x5b30
+  succs: L_5f70
+
+block L_5b31:
+  insts 103..107  off 0x5b31..0x5b43
+  preds: L_5aff, L_5b05, L_5b0b, L_5b0e, L_5b2b
+  succs: L_5b44
+  effects:
+    5b34  call SetCapture(load([bp+hwnd])) -> callresult(HWND)
+    5b39  store[2] [bp-ptOld+0x2] = 0xffff
+    5b41  store[2] [bp-ptOld] = 0xffff
+
+block L_5b44:
+  insts 108..113  off 0x5b44..0x5b54
+  preds: L_5b31, L_5b63, L_5d05, L_5d0d, L_5d23
+  succs: L_5b58, L_5d26
+  effects:
+    5b48  call FGetMouseMove(addr([bp-pt])) -> callresult(int16_t)
+    5b53  branch callresult(int16_t) == 0x0 ? L_5d26 : L_5b58
+
+block L_5b58:
+  insts 115..117  off 0x5b58..0x5b5f
+  preds: L_5b44
+  succs: L_5b63, L_5b6e
+  effects:
+    5b5e  branch load([bp-pt]) != load([bp-ptOld]) ? L_5b6e : L_5b63
+
+block L_5b63:
+  insts 119..121  off 0x5b63..0x5b6a
+  preds: L_5b58
+  succs: L_5b44, L_5b6e
+  effects:
+    5b69  branch load([bp-pt+0x2]) == load([bp-ptOld+0x2]) ? L_5b44 : L_5b6e
+
+block L_5b6e:
+  insts 123..132  off 0x5b6e..0x5b88
+  preds: L_5b58, L_5b63
+  succs: L_5b8c, L_5bc0
+  effects:
+    5b74  store[2] [bp-ptOld] = load([bp-pt])
+    5b77  store[2] [bp-ptOld+0x2] = load([bp-pt+0x2])
+    5b87  branch (((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x1 ? L_5bc0 : L_5b8c
+
+block L_5b8c:
+  insts 134..136  off 0x5b8c..0x5b96
+  preds: L_5b6e
+  succs: L_5b9a, L_5bc0
+  effects:
+    5b95  branch load(ds:[load([pxfer])+0x82]) != 0x8 ? L_5bc0 : L_5b9a
+
+block L_5b9a:
+  insts 138..151  off 0x5b9a..0x5bbf
+  preds: L_5b8c
+  succs: L_5c26
+  effects:
+    5bb2  call __aFulmul(words(0x0, (load(ds:[load([pxfer])+0x92]) & 0x3fff)), words(0x0, 0xa)) -> callresult(uint32_t)
+    5bb7  store[2] [bp-cNew] = loword(callresult(uint32_t))
+    5bba  store[2] [bp-cNew+0x2] = hiword(callresult(uint32_t))
+    5bbd  goto L_5c26
+
+block L_5bc0:
+  insts 152..153  off 0x5bc0..0x5bc5
+  preds: L_5b6e, L_5b8c
+  succs: L_5bc9, L_5bf6
+  effects:
+    5bc4  branch load([bp-iVal]) != 0x4 ? L_5bf6 : L_5bc9
+
+block L_5bc9:
+  insts 155..172  off 0x5bc9..0x5bf5
+  preds: L_5bc0
+  succs: L_5c20
+  effects:
+    5beb  call LGetFleetStat(words(ds, ((load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x4)), 0x1) -> callresult(int32_t)
+    5bf3  goto L_5c20
+
+block L_5bf6:
+  insts 173..189  off 0x5bf6..0x5c1f
+  preds: L_5bc0
+  succs: L_5c20
+  effects:
+    5c18  call LGetFleetStat(words(ds, ((load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x4)), 0x2) -> callresult(int32_t)
+
+block L_5c20:
+  insts 190..191  off 0x5c20..0x5c25
+  preds: L_5bc9, L_5bf6
+  succs: L_5c26
+  effects:
+    5c20  store[2] [bp-cNew] = merge(Join: L_5c20, (L_5bc9:loword(callresult(int32_t)), L_5bf6:loword(callresult(int32_t))))
+    5c23  store[2] [bp-cNew+0x2] = merge(Join: L_5c20, (L_5bc9:hiword(callresult(int32_t)), L_5bf6:hiword(callresult(int32_t))))
+
+block L_5c26:
+  insts 192..260  off 0x5c26..0x5cd6
+  preds: L_5b9a, L_5c20
+  succs: L_5cda, L_5ce3
+  effects:
+    5c41  call __aFulmul(words(signhiword((load([bp-pt]) - load([bp-btn]))), (load([bp-pt]) - load([bp-btn]))), words(load([bp-cNew+0x2]), load([bp-cNew]))) -> callresult(uint32_t)
+    5c48  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words(signhiword(((load([bp-btn+0x4]) - load([bp-btn])) + 0xfffe)), ((load([bp-btn+0x4]) - load([bp-btn])) + 0xfffe))) -> callresult(int32_t)
+    5c4d  store[2] [bp-cNew] = loword(callresult(int32_t))
+    5c50  store[2] [bp-cNew+0x2] = hiword(callresult(int32_t))
+    5ca8  call ChgCargo(load(ds:[(load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7))+0x2]), load(ds:[(load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7))]), load([bp-iVal]), words(0x0, 0x0), ((load([pxfer]) + ((((load@5c53/src([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x4)) -> callresult(int32_t)
+    5cb0  store[2] [bp-cCur] = loword(callresult(int32_t))
+    5cb3  store[2] [bp-cCur+0x2] = hiword(callresult(int32_t))
+    5cc2  store[2] [bp-dChg] = (load@5cb6/src([bp-cNew]) - load([bp-cCur]))
+    5cc5  store[2] [bp-dChg+0x2] = (load@5cb9/src([bp-cNew+0x2]) - load([bp-cCur+0x2]))
+    5cd5  branch (((load@5cc8/src([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x0 ? L_5ce3 : L_5cda
+
+block L_5cda:
+  insts 262..264  off 0x5cda..0x5ce2
+  preds: L_5c26
+  succs: L_5cf0
+  effects:
+    5ce0  goto L_5cf0
+
+block L_5ce3:
+  insts 265..269  off 0x5ce3..0x5cef
+  preds: L_5c26
+  succs: L_5cf0
+
+block L_5cf0:
+  insts 270..276  off 0x5cf0..0x5d01
+  preds: L_5cda, L_5ce3
+  succs: L_5d05, L_5d0d
+  effects:
+    5cf5  call XferSupply(load([bp-iVal]), merge(Join: L_5cf0, (L_5cda:words(load([bp-0xc]), load([bp-0xe])), L_5ce3:words(((load([bp-0xc]) + 0x0) neg 0x0), (load([bp-0xe]) neg 0x0))))) -> callresult(int32_t)
+    5d00  branch loword(callresult(int32_t)) != 0x0 ? L_5d0d : L_5d05
+
+block L_5d05:
+  insts 278..279  off 0x5d05..0x5d09
+  preds: L_5cf0
+  succs: L_5b44, L_5d0d
+  effects:
+    5d08  branch hiword(callresult(int32_t)) == 0x0 ? L_5b44 : L_5d0d
+
+block L_5d0d:
+  insts 281..288  off 0x5d0d..0x5d22
+  preds: L_5cf0, L_5d05
+  succs: L_5b44
+  effects:
+    5d1b  call DrawXferDlg(load([bp+hwnd]), 0x0, addr([bp-rc]), load([bp-iVal])) -> callresult(void)
+
+block L_5d23:
+  insts 289..289  off 0x5d23..0x5d25
+  succs: L_5b44
+
+block L_5d26:
+  insts 290..291  off 0x5d26..0x5d2d
+  preds: L_5b44
+  succs: L_5f70
+  effects:
+    5d26  call ReleaseCapture() -> callresult(void)
+    5d2b  goto L_5f70
+
+block L_5d2e:
+  insts 292..313  off 0x5d2e..0x5d62
+  preds: L_5aa2
+  succs: L_5d66, L_5d88
+  effects:
+    5d50  call InitBtnTrack(addr([bp-btnt]), load([bp+hwnd]), 0x0, addr([bp-btn]), load([bp-btn+0x8]), 0x50, 0x0, 0x0, 0x0) -> callresult(void)
+    5d61  branch (load([bp+fkb]) & 0x8) == 0x0 ? L_5d88 : L_5d66
+
+block L_5d66:
+  insts 315..318  off 0x5d66..0x5d70
+  preds: L_5d2e
+  succs: L_5d74, L_5d7b
+  effects:
+    5d6f  branch (load([bp+fkb]) & 0x4) == 0x0 ? L_5d7b : L_5d74
+
+block L_5d74:
+  insts 320..322  off 0x5d74..0x5d7a
+  preds: L_5d66
+  succs: L_5d7f
+  effects:
+    5d78  goto L_5d7f
+
+block L_5d7b:
+  insts 323..324  off 0x5d7b..0x5d7e
+  preds: L_5d66
+  succs: L_5d7f
+
+block L_5d7f:
+  insts 325..327  off 0x5d7f..0x5d87
+  preds: L_5d74, L_5d7b
+  succs: L_5dad
+  effects:
+    5d7f  store[2] [bp-dChg] = merge(Join: L_5d7f, (L_5d74:0x3e8, L_5d7b:0x64))
+    5d82  store[2] [bp-dChg+0x2] = 0x0
+    5d85  goto L_5dad
+
+block L_5d88:
+  insts 328..331  off 0x5d88..0x5d92
+  preds: L_5d2e
+  succs: L_5d96, L_5da3
+  effects:
+    5d91  branch (load([bp+fkb]) & 0x4) == 0x0 ? L_5da3 : L_5d96
+
+block L_5d96:
+  insts 333..335  off 0x5d96..0x5da2
+  preds: L_5d88
+  succs: L_5dad
+  effects:
+    5d96  store[2] [bp-dChg] = 0xa
+    5d9b  store[2] [bp-dChg+0x2] = 0x0
+    5da0  goto L_5dad
+
+block L_5da3:
+  insts 336..337  off 0x5da3..0x5dac
+  preds: L_5d88
+  succs: L_5dad
+  effects:
+    5da3  store[2] [bp-dChg] = 0x1
+    5da8  store[2] [bp-dChg+0x2] = 0x0
+
+block L_5dad:
+  insts 338..343  off 0x5dad..0x5dbd
+  preds: L_5d7f, L_5d96, L_5da3, L_5e4d, L_5ecd, L_5efe, L_5f01, L_5f0a, L_5f50, L_5f58, L_5f6d
+  succs: L_5dc1, L_5f70
+  effects:
+    5db1  call FTrackBtn(addr([bp-btnt])) -> callresult(int16_t)
+    5dbc  branch callresult(int16_t) == 0x0 ? L_5f70 : L_5dc1
+
+block L_5dc1:
+  insts 345..346  off 0x5dc1..0x5dc7
+  preds: L_5dad
+  succs: L_5dcb, L_5f01
+  effects:
+    5dc6  branch load([mdXferDlg]) != 0x1 ? L_5f01 : L_5dcb
+
+block L_5dcb:
+  insts 348..356  off 0x5dcb..0x5de2
+  preds: L_5dc1
+  succs: L_5de6, L_5dec
+  effects:
+    5dd1  store[2] ss:[bp-0x4c] = load([bp-dChg])
+    5de1  branch (((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x0 ? L_5dec : L_5de6
+
+block L_5de6:
+  insts 358..359  off 0x5de6..0x5deb
+  preds: L_5dcb
+  succs: L_5def
+  effects:
+    5de9  goto L_5def
+
+block L_5dec:
+  insts 360..360  off 0x5dec..0x5dee
+  preds: L_5dcb
+  succs: L_5def
+
+block L_5def:
+  insts 361..372  off 0x5def..0x5e0c
+  preds: L_5de6, L_5dec
+  succs: L_5e10, L_5e19
+  effects:
+    5e0b  branch load(ss:[bp-0x4c]) >= load(ds:[(((load([pxfer]) + (merge(Join: L_5def, (L_5de6:0x1, L_5dec:0x0)) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))]) ? L_5e19 : L_5e10
+
+block L_5e10:
+  insts 374..376  off 0x5e10..0x5e18
+  preds: L_5def
+  succs: L_5e4d
+  effects:
+    5e16  goto L_5e4d
+
+block L_5e19:
+  insts 377..382  off 0x5e19..0x5e27
+  preds: L_5def
+  succs: L_5e2b, L_5e31
+  effects:
+    5e26  branch (((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x0 ? L_5e31 : L_5e2b
+
+block L_5e2b:
+  insts 384..385  off 0x5e2b..0x5e30
+  preds: L_5e19
+  succs: L_5e34
+  effects:
+    5e2e  goto L_5e34
+
+block L_5e31:
+  insts 386..386  off 0x5e31..0x5e33
+  preds: L_5e19
+  succs: L_5e34
+
+block L_5e34:
+  insts 387..396  off 0x5e34..0x5e4c
+  preds: L_5e2b, L_5e31
+  succs: L_5e4d
+
+block L_5e4d:
+  insts 397..399  off 0x5e4d..0x5e55
+  preds: L_5e10, L_5e34
+  succs: L_5dad, L_5e59
+  effects:
+    5e4d  store[2] [bp-i] = merge(Join: L_5e4d, (L_5e10:load([bp-0xe]), L_5e34:load(ds:[(((load(ds:[0x4a68]) + (merge(Join: L_5e34, (L_5e2b:0x1, L_5e31:0x0)) << 0x7)) + 0x10) + (load([bp-0x30]) << 0x1))])))
+    5e54  branch load([bp-i]) == 0x0 ? L_5dad : L_5e59
+
+block L_5e59:
+  insts 401..417  off 0x5e59..0x5e83
+  preds: L_5e4d
+  succs: L_5e87, L_5e8c
+  effects:
+    5e82  branch load(ds:[(((load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))]) < (0x7ffe - load([bp-i])) ? L_5e8c : L_5e87
+
+block L_5e87:
+  insts 419..419  off 0x5e87..0x5e8b
+  preds: L_5e59
+  succs: L_5e8c
+  effects:
+    5e87  store[2] [bp-i] = 0x1
+
+block L_5e8c:
+  insts 420..440  off 0x5e8c..0x5ec0
+  preds: L_5e59, L_5e87
+  succs: L_5ec4, L_5eca
+  effects:
+    5eb0  store[2] ds:[(((load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))] = (load(ds:[(((load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))]) + load([bp-i]))
+    5ebf  branch (((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x0 ? L_5eca : L_5ec4
+
+block L_5ec4:
+  insts 442..443  off 0x5ec4..0x5ec9
+  preds: L_5e8c
+  succs: L_5ecd
+  effects:
+    5ec7  goto L_5ecd
+
+block L_5eca:
+  insts 444..444  off 0x5eca..0x5ecc
+  preds: L_5e8c
+  succs: L_5ecd
+
+block L_5ecd:
+  insts 445..462  off 0x5ecd..0x5efd
+  preds: L_5ec4, L_5eca
+  succs: L_5dad
+  effects:
+    5ee7  store[2] ds:[(((load([pxfer]) + (merge(Join: L_5ecd, (L_5ec4:0x1, L_5eca:0x0)) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))] = (load(ds:[(((load([pxfer]) + (merge(Join: L_5ecd, (L_5ec4:0x1, L_5eca:0x0)) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))]) - load([bp-i]))
+    5ef6  call DrawXferDlg(load([bp+hwnd]), load([bp-btnt+0x2]), addr([bp-rc]), load([bp-iBtn])) -> callresult(void)
+
+block L_5efe:
+  insts 463..463  off 0x5efe..0x5f00
+  succs: L_5dad
+
+block L_5f01:
+  insts 464..465  off 0x5f01..0x5f06
+  preds: L_5dc1
+  succs: L_5dad, L_5f0a
+  effects:
+    5f05  branch load([bp-iVal]) < 0x0 ? L_5dad : L_5f0a
+
+block L_5f0a:
+  insts 467..468  off 0x5f0a..0x5f0f
+  preds: L_5f01
+  succs: L_5dad, L_5f13
+  effects:
+    5f0e  branch load([bp-iVal]) > 0x4 ? L_5dad : L_5f13
+
+block L_5f13:
+  insts 470..475  off 0x5f13..0x5f21
+  preds: L_5f0a
+  succs: L_5f25, L_5f2e
+  effects:
+    5f20  branch (((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) != 0x0 ? L_5f2e : L_5f25
+
+block L_5f25:
+  insts 477..479  off 0x5f25..0x5f2d
+  preds: L_5f13
+  succs: L_5f3b
+  effects:
+    5f2b  goto L_5f3b
+
+block L_5f2e:
+  insts 480..484  off 0x5f2e..0x5f3a
+  preds: L_5f13
+  succs: L_5f3b
+
+block L_5f3b:
+  insts 485..491  off 0x5f3b..0x5f4c
+  preds: L_5f25, L_5f2e
+  succs: L_5f50, L_5f58
+  effects:
+    5f40  call XferSupply(load([bp-iVal]), merge(Join: L_5f3b, (L_5f25:words(load([bp-0xc]), load([bp-0xe])), L_5f2e:words(((load([bp-0xc]) + 0x0) neg 0x0), (load([bp-0xe]) neg 0x0))))) -> callresult(int32_t)
+    5f4b  branch loword(callresult(int32_t)) != 0x0 ? L_5f58 : L_5f50
+
+block L_5f50:
+  insts 493..494  off 0x5f50..0x5f54
+  preds: L_5f3b
+  succs: L_5dad, L_5f58
+  effects:
+    5f53  branch hiword(callresult(int32_t)) == 0x0 ? L_5dad : L_5f58
+
+block L_5f58:
+  insts 496..502  off 0x5f58..0x5f6c
+  preds: L_5f3b, L_5f50
+  succs: L_5dad
+  effects:
+    5f65  call DrawXferDlg(load([bp+hwnd]), load([bp-btnt+0x2]), addr([bp-rc]), load([bp-iVal])) -> callresult(void)
+
+block L_5f6d:
+  insts 503..503  off 0x5f6d..0x5f6f
+  succs: L_5dad
+
+block FinishUp:
+  insts 504..514  off 0x5f70..0x5f91
+  preds: L_5adc, L_5ae5, L_5af6, L_5aff, L_5b08, L_5b0e, L_5b2e, L_5d26, L_5dad
+  succs: L_5f92
+  effects:
+    5f70  call UpdateXferBtns() -> callresult(void)
+    5f84  call DrawXferDlg(load([bp+hwnd]), 0x0, addr([bp-rc]), 0xfffe) -> callresult(void)
+
+block L_5f92:
+  insts 516..520  off 0x5f92..0x5f97
+  preds: L_5a9c, L_5f70
+  effects:
+    5f97  return merge(Join: L_5f92, (L_5a9c:0x0, L_5f70:0x1))

@@ -148,6 +148,48 @@
       "enum": "ThingType"
     }
   ],
+  "conditional_selection_facts": [
+    {
+      "func": "UpdateXferBtns",
+      "source": ["mdXferDlg"],
+      "source_enum": "MdXfer",
+      "source_value": "mdXferShips",
+      "root": "pxfer",
+      "all_elements": true,
+      "type": "XFER",
+      "value": "grobjFleet"
+    },
+    {
+      "func": "DrawXferDlg",
+      "source": ["mdXferDlg"],
+      "source_enum": "MdXfer",
+      "source_value": "mdXferShips",
+      "root": "pxfer",
+      "all_elements": true,
+      "type": "XFER",
+      "value": "grobjFleet"
+    },
+    {
+      "func": "FSetupXferBtns",
+      "source": ["mdXferDlg"],
+      "source_enum": "MdXfer",
+      "source_value": "mdXferShips",
+      "root": "pxfer",
+      "all_elements": true,
+      "type": "XFER",
+      "value": "grobjFleet"
+    },
+    {
+      "func": "TransferStuff",
+      "source": ["mdXfer"],
+      "source_enum": "MdXfer",
+      "source_value": "mdXferShips",
+      "root": "xfer",
+      "all_elements": true,
+      "type": "XFER",
+      "value": "grobjFleet"
+    }    
+  ],
   "external_discriminator_aliases": [
     {
       "func": "ChgCargo",

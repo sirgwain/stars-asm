@@ -62,7 +62,7 @@ func TestRenderDumpEffectsIncludesTypedEffects(t *testing.T) {
 				Effects: []machine.Effect{
 					machine.StoreEffect{
 						MetaInfo: machine.Meta{InstOff: 0x72f6},
-						Addr: machine.MemoryAccess{
+						Addr: machine.MemoryAddress{
 							Base:  machine.RegVal(asm.RegBP),
 							Disp:  -2,
 							Width: 2,
@@ -102,7 +102,7 @@ func TestRenderDumpEffectsIncludesTypedEffects(t *testing.T) {
 }
 
 func TestFormatEffectsHidesUnambiguousLoadID(t *testing.T) {
-	cMax := machine.MemoryAccess{
+	cMax := machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   -6,
 		Width:  2,
@@ -125,13 +125,13 @@ func TestFormatEffectsHidesUnambiguousLoadID(t *testing.T) {
 }
 
 func TestFormatEffectsShowsStaleLoadID(t *testing.T) {
-	nAtMov := machine.MemoryAccess{
+	nAtMov := machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x5c4f, Role: machine.OperandSrc},
 	}
-	nAtSub := machine.MemoryAccess{
+	nAtSub := machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   6,
 		Width:  2,

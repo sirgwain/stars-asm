@@ -915,7 +915,7 @@ L_5a3b:
     iChunk = (idt >> 0x6);
     iOffset = (idt & 0x3f);
     pch = &(aTUTCmpr[aiTUTChunkOffset[iChunk]]);
-    pchLen = &(acTUT[(0x40 * iChunk)]);
+    pchLen = &(acTUT[iChunk * 0x40]);
     i = 0;
     goto L_5a94;
 
@@ -934,7 +934,7 @@ L_5a9f:
     goto L_5a81;
 
 L_5aae:
-    pch = ((uint8_t *)(pch) + (iNibble >> 0x1));
+    pch = (pch + (iNibble >> 0x1));
     iLen = *(pchLen);
     if (((iNibble & 0x1) != 0x0))
         goto L_5ad6;
@@ -973,7 +973,7 @@ L_5aff:
 
 L_5b16:
     pch = (pch + 0x1);
-    i = (*(pch) & 0xf);
+    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
 
 L_5b2c:
     if ((fHigh != 0))

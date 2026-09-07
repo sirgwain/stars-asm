@@ -50,12 +50,12 @@ func TestStackWordsValueCombinesMatchingPhiShapesByArm(t *testing.T) {
 		{Block: b2, Value: RegVal(asm.RegCX)},
 	})
 
-	got := stackWordsValue([]Value{lo, hi})
+	got := stackWordsValue([]Value{hi, lo})
 	merge, ok := got.(*PhiValue)
 	if !ok {
 		t.Fatalf("wide phi = %T %[1]s, want PhiValue", got)
 	}
-	if got, want := merge.String(), "merge(Join: L_0000, (L_0001:words(ax, dx), L_0002:words(bx, cx)))"; got != want {
+	if got, want := merge.String(), "merge(Join: L_0000, (L_0001:words(dx, ax), L_0002:words(cx, bx)))"; got != want {
 		t.Fatalf("wide phi = %q, want %q", got, want)
 	}
 }

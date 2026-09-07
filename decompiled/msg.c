@@ -971,9 +971,9 @@ L_5ce8:
     t_merge_5ceb_0001 = 0x2c;
 
 L_5ceb:
-    /* untranslated: rghwndMsgBtn[i] = CreateWindow("BUTTON", callresult(char *), WS_CHILD, 0x64, 0x64, t_merge_5ceb_0001, ((loword((0x3 * dyArial8)) >> 0x1) +
+    /* untranslated: rghwndMsgBtn[i] = CreateWindow("BUTTON", callresult(char *), WS_CHILD, 100, 100, t_merge_5ceb_0001, ((loword((0x3 * dyArial8)) >> 0x1) +
      * 0xffff), hwnd, 0x0, hInst, 0x0) */
-    SendMessage(rghwndMsgBtn[i], WM_SETFONT, rghfontArial8[1], 0x0);
+    SendMessage(rghwndMsgBtn[i], WM_SETFONT, rghfontArial8[1], 0);
     i = (i + 1);
 
 L_5d3c:
@@ -983,14 +983,14 @@ L_5d3c:
         goto L_5d45;
 
 L_5d45:
-    hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", 0x40200003, 0x64, 0x64, 0xc8, 0x50, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndMsgDrop, WM_SETFONT, rghfontArial8[1], 0x0);
-    hwndMsgEdit = CreateWindow("EDIT", 0x0, 0x40800044, 0x64, 0x64, 0xc8, 0x32, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndMsgEdit, CB_SETEXTENDEDUI, 0x3c8, 0x0);
-    SendMessage(hwndMsgEdit, WM_SETFONT, rghfontArial8[1], 0x0);
-    hwndMsgScroll = CreateWindow("EDIT", 0x0, 0x40a00844, 0x64, 0x64, 0xc8, 0x32, hwnd, 0x0, hInst, 0x0);
+    hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", 0x40200003, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    SendMessage(hwndMsgDrop, WM_SETFONT, rghfontArial8[1], 0);
+    hwndMsgEdit = CreateWindow("EDIT", 0x0, 0x40800044, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
+    SendMessage(hwndMsgEdit, CB_SETEXTENDEDUI, 0x3c8, 0);
+    SendMessage(hwndMsgEdit, WM_SETFONT, rghfontArial8[1], 0);
+    hwndMsgScroll = CreateWindow("EDIT", 0x0, 0x40a00844, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
     SetMsgTitle(hwnd);
-    /* untranslated: call SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, words(ds, PszGetCompressedString(idsEverybody))) -> callresult(LRESULT) */
+    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, PszGetCompressedString(idsEverybody));
     i = 0;
     goto L_5e8d;
 
@@ -1004,12 +1004,12 @@ L_5e8d:
         goto L_5e98;
 
 L_5e98:
-    psz = PszPlayerName(i, 0x1, 0x1, 0x1, 0x0, 0x0);
-    /* untranslated: call SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, words(ds, psz)) -> callresult(LRESULT) */
+    psz = PszPlayerName(i, 1, 1, 1, 0, 0x0);
+    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, psz);
     goto L_5e89;
 
 L_5ed5:
-    SendMessage(hwndMsgDrop, CB_SETCURSEL, 0x0, 0x0);
+    SendMessage(hwndMsgDrop, CB_SETCURSEL, 0x0, 0);
     goto L_7207;
 
 L_5ef1:
@@ -1019,7 +1019,7 @@ L_5ef1:
     goto L_5f62;
 
 L_5f19:
-    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 0x3) + (dyArial8 * 2)), 0x0, 0x0, 0x55);
+    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 0x3) + (dyArial8 * 2)), 0, 0, 0x55);
     i = (i + 1);
 
 L_5f62:
@@ -1029,12 +1029,12 @@ L_5f62:
         goto L_5f6b;
 
 L_5f6b:
-    SetRect(rcMsgText, 0x4, ((dyArial8 * 2) + 0x3), (dx - 52), (dy - 4));
-    SetRect(rcMsgTitle, 0x4, 0x4, (dx - 4), ((dyArial8 * 2) + 0xfffc));
+    SetRect(rcMsgText.left, 4, ((dyArial8 * 2) + 0x3), (dx - 52), (dy - 4));
+    SetRect(rcMsgTitle.left, 4, 4, (dx - 4), ((dyArial8 * 2) + 0xfffc));
     rc = rcMsgText;
-    ExpandRc(&(rc), 0xfffc, 0xfffc);
+    ExpandRc(&(rc), -4, -4);
     SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) + 0xffac), (rc.bottom - rc.top), SWP_NOZORDER);
-    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0x0, 0x0, 0x5);
+    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x5);
     rc.top = (rc.top + (dyShipDD + 3));
     SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER);
     goto Default;
@@ -1042,7 +1042,7 @@ L_5f6b:
 L_6059:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x10000;
+    return 0x1;
 
 L_6084:
     hcs = 0x0;
@@ -1055,7 +1055,7 @@ L_6084:
 
 L_60ba:
     SetCursor(hcurHand);
-    return 0x10000;
+    return 0x1;
 
 L_60cf:
     pt.x = LOWORD(lParam);
@@ -1104,7 +1104,7 @@ L_616d:
 
 L_6170:
     SetFilteringGroups(idm, t_merge_6170_0001);
-    DirtyGame(0x1);
+    DirtyGame(1);
     if ((gd.fTutorial == 0x0))
         goto L_61a0;
     else
@@ -1114,7 +1114,7 @@ L_619b:
     AdvanceTutor();
 
 L_61a0:
-    InvalidateRect(hwndMessage, 0x0, 0x1);
+    InvalidateRect(hwndMessage, 0x0, 1);
     SetMsgTitle(hwnd);
     goto L_7207;
 
@@ -1145,8 +1145,10 @@ L_61df:
         goto L_61ec;
 
 L_61ec:
-    /* untranslated: ss:[bp-0x30] = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7)) */
-    /* untranslated: branch (bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & ss:[bp-0x30]) == 0x0 ? L_6233 : L_622d */
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+        goto L_6233;
+    else
+        goto L_622d;
 
 L_622d:
     t_merge_6236_0001 = 0x1;
@@ -1175,7 +1177,7 @@ L_6266:
     iMsgCur = i;
 
 L_626c:
-    InvalidateRect(hwndMessage, 0x0, 0x1);
+    InvalidateRect(hwndMessage, 0x0, 1);
     SetMsgTitle(hwnd);
     goto L_7207;
 
@@ -1192,7 +1194,7 @@ ToggleMsgMode:
         goto L_62ab;
 
 L_62ab:
-    FFinishPlrMsgEntry(0x0);
+    FFinishPlrMsgEntry(0);
     goto L_637a;
 
 L_62ba:
@@ -1274,13 +1276,13 @@ L_6393:
 
 L_6396:
     gd.fSendMsgMode = t_merge_6396_0001;
-    InvalidateRect(hwndMessage, 0x0, 0x1);
+    InvalidateRect(hwndMessage, 0x0, 1);
     SetMsgTitle(hwnd);
     SetFocus(hwndMsgEdit);
 
 L_63e0:
-    /* untranslated: part[12:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
-    /* untranslated: part[14:2](lParam) = ((loword((0xd * dyArial8)) >> 0x1) + 0x16) */
+    /* untranslated: part[0xc:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
+    /* untranslated: part[0xe:2](lParam) = ((loword((0xd * dyArial8)) >> 0x1) + 0x16) */
     goto Default;
 
 L_640f:
@@ -1291,11 +1293,11 @@ L_640f:
 
 L_641e:
     SetBkColor(wParam, crButtonFace);
-    /* untranslated: return words(hbrButtonFace, 0x0) */
+    /* untranslated: return words(0x0, hbrButtonFace) */
 
 L_643a:
     hdc = BeginPaint(hwnd, &(ps));
-    _Draw3dFrame(hdc, &(rcMsgTitle), 0x0);
+    _Draw3dFrame(hdc, rcMsgTitle.left, 0);
     crFore = SetTextColor(hdc, crButtonText);
     crBack = SetBkColor(hdc, crButtonFace);
     cch = strlen(szMsgTitle);
@@ -1318,19 +1320,19 @@ L_64ca:
     goto L_64a7;
 
 L_64d1:
-    RcCtrTextOut(hdc, &(rcMsgTitle), szMsgTitle, cch);
-    DecorateMsgTitleBar(hdc, &(rcMsgTitle));
+    RcCtrTextOut(hdc, rcMsgTitle.left, szMsgTitle, cch);
+    DecorateMsgTitleBar(hdc, rcMsgTitle.left);
     rc = rcMsgText;
     dx = (rc.right - rc.left);
     dy = (rc.bottom - rc.top);
     hbrSav = SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, rc.left, rc.top, dx, 0x1, PATCOPY);
-    PatBlt(hdc, rc.left, rc.top, 0x1, dy, PATCOPY);
+    PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY);
+    PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, rc.left, (rc.bottom - 1), dx, 0x1, PATCOPY);
-    PatBlt(hdc, (rc.right - 1), rc.top, 0x1, dy, PATCOPY);
+    PatBlt(hdc, rc.left, (rc.bottom - 1), dx, 1, PATCOPY);
+    PatBlt(hdc, (rc.right - 1), rc.top, 1, dy, PATCOPY);
     SelectObject(hdc, hbrSav);
-    ExpandRc(&(rc), 0xfffc, 0xfffc);
+    ExpandRc(&(rc), -4, -4);
     if ((gd.fSendMsgMode != 0x0))
         goto L_69ee;
     else
@@ -1369,7 +1371,7 @@ L_6639:
 L_663f:
 
 L_6642:
-    cch = _wsprintf(&(lpb2k), szT, PszPlayerName(lpmsgplr->iPlrFrom, 0x1, 0x1, 0x1, 0x0, 0x0), 0xd, 0xa);
+    cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, 1, 1, 1, 0, 0x0), 0xd, 0xa);
     if ((CchGetString(idsSCC2, szT) >= 32))
         goto L_66a9;
     else
@@ -1387,14 +1389,16 @@ L_66ac:
         goto L_66c1;
 
 L_66c1:
-    t_merge_66fb_0001 = PszGetCompressedString(idsEverybody);
+    PszGetCompressedString(idsEverybody);
+    /* untranslated: t_merge_66fb_0001 = callresult(char *) */
     goto L_66fb;
 
 L_66d2:
-    t_merge_66fb_0001 = PszPlayerName((lpmsgplr->iPlrTo - 1), 0x1, 0x1, 0x1, 0x0, 0x0);
+    PszPlayerName((lpmsgplr->iPlrTo - 1), 1, 1, 1, 0, 0x0);
+    /* untranslated: t_merge_66fb_0001 = callresult(char *) */
 
 L_66fb:
-    cch = (cch + _wsprintf(&(lpb2k[cch]), szT, t_merge_66fb_0001, 0xd, 0xa));
+    /* untranslated: cch = (cch + _wsprintf(lpb2k[cch], szT, words(ds, t_merge_66fb_0001), 0xd, 0xa)) */
     if ((lpmsgplr->cLen < 0))
         goto L_6762;
     else
@@ -1402,11 +1406,11 @@ L_66fb:
 
 L_672b:
     i = 1000;
-    FDecompressUserString(&(lpmsgplr->rgbMsg), lpmsgplr->cLen, &(lpb2k[cch]), &(i));
+    FDecompressUserString(lpmsgplr->rgbMsg[0], lpmsgplr->cLen, lpb2k[cch], &(i));
     goto L_6786;
 
 L_6762:
-    fstrcpy(&(lpb2k[cch]), &(lpmsgplr->rgbMsg));
+    fstrcpy(lpb2k[cch], lpmsgplr->rgbMsg[0]);
 
 L_6786:
     lpsz = lpb2k;
@@ -1426,7 +1430,7 @@ L_67af:
         goto L_67b9;
 
 L_67b9:
-    lpsz = PszGetCompressedString(idsMessagesHaveSentYearFilteredIfWant);
+    lpsz = &(*(PszGetCompressedString(idsMessagesHaveSentYearFilteredIfWant)));
     goto L_683c;
 
 L_67d0:
@@ -1448,11 +1452,11 @@ L_6807:
         goto L_6811;
 
 L_6811:
-    lpsz = PszGetCompressedString(idsMessageTypeHasFilteredWillShownDefault);
+    lpsz = &(*(PszGetCompressedString(idsMessageTypeHasFilteredWillShownDefault)));
     goto L_683c;
 
 L_6828:
-    lpsz = PszGetMessageN(iMsgCur);
+    lpsz = &(*(PszGetMessageN(iMsgCur)));
 
 L_683c:
     SetTextColor(hdc, 0xffffff);
@@ -1481,13 +1485,15 @@ L_6879:
         goto L_6885;
 
 L_6885:
-    /* untranslated: ss:[bp-0x74] = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7)) */
-    /* untranslated: branch (bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & ss:[bp-0x74]) == 0x0 ? L_6903 : L_68c6 */
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+        goto L_6903;
+    else
+        goto L_68c6;
 
 L_68c6:
     cch = CchGetString(idsFiltered, szWork);
     DiaganolTextOut(hdc, &(rc), szWork, cch);
-    lpsz = PszGetMessageN(iMsgCur);
+    lpsz = &(*(PszGetMessageN(iMsgCur)));
 
 L_6903:
     SetTextColor(hdc, crButtonText);
@@ -1511,7 +1517,7 @@ L_6960:
 
 L_6998:
     SetWindowText(hwndMsgScroll, lpsz);
-    ExpandRc(&(rc), 0x4, 0x4);
+    ExpandRc(&(rc), 4, 4);
     SetWindowPos(hwndMsgScroll, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), 0x44);
 
 L_69e0:
@@ -1522,7 +1528,7 @@ L_69ee:
     iMode = SetBkMode(hdc, TRANSPARENT);
     SetTextColor(hdc, crButtonText);
     cch = CchGetString(idsTo3, szT);
-    RightTextOut(hdc, (rc.left + 26), rc.top, szT, cch, 0x0);
+    RightTextOut(hdc, (rc.left + 26), rc.top, szT, cch, 0);
     SetBkMode(hdc, iMode);
 
 L_6a4b:
@@ -1654,22 +1660,22 @@ PrevMsg:
         goto L_6bb3;
 
 L_6bb3:
-    FFinishPlrMsgEntry(0xffff);
+    FFinishPlrMsgEntry(-1);
     goto SetupNewMsg;
 
 L_6bc2:
-    if (((GetAsyncKeyState(0x10) & 0xfffe) == 0x0))
+    if (((GetAsyncKeyState(16) & 0xfffe) == 0x0))
         goto L_6bee;
     else
         goto L_6bd6;
 
 L_6bd6:
     iMsgCur = -1;
-    i = IMsgNext(0x0);
+    i = IMsgNext(0);
     goto L_6bfd;
 
 L_6bee:
-    i = IMsgPrev(0x0);
+    i = IMsgPrev(0);
 
 L_6bfd:
     if ((i == -1))
@@ -1694,7 +1700,7 @@ L_6c1f:
 SetupNewMsg:
     gd.fGotoVCR = 0x0;
     SetMsgTitle(hwnd);
-    InvalidateRect(hwnd, rcMsgText, 0x1);
+    InvalidateRect(hwnd, rcMsgText.left, 1);
     if ((gd.fTutorial == 0x0))
         goto L_7207;
     else
@@ -1723,22 +1729,22 @@ NextMsg:
         goto L_6cbc;
 
 L_6cbc:
-    FFinishPlrMsgEntry(0x1);
+    FFinishPlrMsgEntry(1);
     goto SetupNewMsg;
 
 L_6ccb:
-    if (((GetAsyncKeyState(0x10) & 0xfffe) == 0x0))
+    if (((GetAsyncKeyState(16) & 0xfffe) == 0x0))
         goto L_6cfb;
     else
         goto L_6cdf;
 
 L_6cdf:
     iMsgCur = (cMsg + vcmsgplrIn);
-    i = IMsgPrev(0x0);
+    i = IMsgPrev(0);
     goto L_6d0a;
 
 L_6cfb:
-    i = IMsgNext(0x0);
+    i = IMsgNext(0);
 
 L_6d0a:
     if ((i == -1))
@@ -1763,7 +1769,7 @@ L_6d34:
         goto L_6d50;
 
 L_6d50:
-    FFinishPlrMsgEntry(0x3e8);
+    FFinishPlrMsgEntry(1000);
     goto SetupNewMsg;
 
 L_6d62:
@@ -1797,9 +1803,9 @@ L_6daf:
 
 L_6db5:
     goto L_7163;
-    SelectAdjPlanet(0x0, idMsgObj);
+    SelectAdjPlanet(0, idMsgObj);
     UpdateWindow(hwndScanner);
-    SendMessage(hwndScanner, WM_CHAR, 0x76, 0x0);
+    SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
     idm = IdmGetMessageN(iMsgCur);
     if ((idm == 62))
         goto L_6e1f;
@@ -1848,13 +1854,13 @@ L_6e56:
         goto L_6e62;
 
 L_6e62:
-    ChangeProduction(0x0);
+    ChangeProduction(0);
 
 L_6e6e:
     goto L_7163;
-    SelectAdjFleet(0x0, idMsgObj);
+    SelectAdjFleet(0, idMsgObj);
     UpdateWindow(hwndScanner);
-    SendMessage(hwndScanner, WM_CHAR, 0x76, 0x0);
+    SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
     goto L_7163;
     lpth = LpthFromId(vptMsg.x);
     if ((LOWORD(lpth) != 0x0))
@@ -1869,15 +1875,14 @@ L_6ec1:
         goto L_6eca;
 
 L_6eca:
-    scan.pt.x = lpth->pt.x;
-    scan.pt.y = lpth->pt.y;
+    scan.pt = lpth->pt;
     scan.grobj = grobjThing;
-    ChangeScanSel(&(scan), 0x0);
-    CtrPointScan(scan.pt, 0x1);
+    ChangeScanSel(&(scan), 0);
+    CtrPointScan(scan.pt, 1);
 
 L_6f02:
     goto L_7163;
-    SelectOursAtObject(&(vptMsg));
+    SelectOursAtObject(vptMsg.x);
     if ((gd.fGotoVCR == 0x0))
         goto L_6f33;
     else
@@ -1893,13 +1898,13 @@ L_6f33:
 
 L_6f4a:
     goto L_7163;
-    PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
     goto L_7163;
-    PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
     goto L_7163;
-    PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
     goto L_7163;
-    PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
     goto L_7163;
     if ((hwndReportDlg == 0x0))
         goto L_6fd2;
@@ -1907,13 +1912,13 @@ L_6f4a:
         goto L_6fc7;
 
 L_6fc7:
-    if ((vprptCur == vrptBattle))
+    if ((vprptCur == &(vrptBattle)))
         goto L_6feb;
     else
         goto L_6fd2;
 
 L_6fd2:
-    PostMessage(hwndFrame, WM_COMMAND, 0x901, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x901, 0);
 
 L_6feb:
     goto L_7163;
@@ -1932,8 +1937,8 @@ L_7026:
     t_merge_7029_0001 = hwndFrame;
 
 L_7029:
-    fRet = DialogBox(hInst, IDD_GENERIC_SMALL, t_merge_7029_0001, &(lpProc));
-    FreeProcInstance(&(lpProc));
+    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_GENERIC_SMALL), t_merge_7029_0001, lpProc);
+    FreeProcInstance(lpProc);
     if ((fRet == 0))
         goto L_70b0;
     else
@@ -1947,7 +1952,7 @@ L_704c:
 
 L_7064:
     vSerialNumber = lSerial;
-    memcpy(&(vrgbMachineConfig), &(vrgbEnvCur), 0xb);
+    memcpy(vrgbMachineConfig, vrgbEnvCur, 0xb);
     goto L_70b0;
 
 L_7088:
@@ -1963,25 +1968,25 @@ L_7092:
         goto L_709c;
 
 L_709c:
-    memcpy(&(vrgbMachineConfig), &(vrgbEnvCur), 0xb);
+    memcpy(vrgbMachineConfig, vrgbEnvCur, 0xb);
 
 L_70b0:
     goto L_7163;
     vpartBrowser.hs.grhst = (0x1 << ((idMsgObj >> 0x8) & 0xf));
     vpartBrowser.hs.iItem = (idMsgObj & 0xff);
-    FLookupPart(&(vpartBrowser));
+    FLookupPart(vpartBrowser.hs.grhst);
     if ((hwndBrowser == 0x0))
         goto L_7115;
     else
         goto L_70fd;
 
 L_70fd:
-    InvalidateRect(hwndBrowserChild, 0x0, 0x1);
+    InvalidateRect(hwndBrowserChild, 0x0, 1);
     goto L_7163;
 
 L_7115:
     fBrowserValid = 1;
-    PostMessage(hwndFrame, WM_COMMAND, 0x100, 0x0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
 
 L_713a:
     if ((mdMsgObj > 11))
@@ -2198,9 +2203,9 @@ L_7300:
 L_732e:
     _wsprintf(szWork, PszGetCompressedString(idsSendMessagesDD), (iMsgSendCur + 1), vcmsgplrOut);
     rc = rcMsgText;
-    ExpandRc(&(rc), 0xfffc, 0xfffc);
+    ExpandRc(&(rc), -4, -4);
     SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) + 0xffac), (rc.bottom - rc.top), 0x44);
-    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0x0, 0x0, 0x45);
+    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x45);
     rc.top = (rc.top + (dyShipDD + 3));
     SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), 0x44);
     if ((iMsgSendCur <= 0))
@@ -2217,8 +2222,8 @@ L_740c:
 
 L_740f:
     EnableWindow(rghwndMsgBtn[0], t_merge_740f_0001);
-    EnableWindow(rghwndMsgBtn[1], 0x1);
-    EnableWindow(rghwndMsgBtn[2], 0x1);
+    EnableWindow(rghwndMsgBtn[1], 1);
+    EnableWindow(rghwndMsgBtn[2], 1);
     lpmp = vlpmsgplrOut;
     i = iMsgSendCur;
 
@@ -2247,23 +2252,23 @@ L_746d:
         goto L_7476;
 
 L_7476:
-    SendMessage(hwndMsgDrop, CB_SETCURSEL, lpmp->iPlrTo, 0x0);
+    SendMessage(hwndMsgDrop, CB_SETCURSEL, lpmp->iPlrTo, 0);
     if ((lpmp->cLen >= 0))
         goto L_74b9;
     else
         goto L_74a0;
 
 L_74a0:
-    SetWindowText(hwndMsgEdit, &(lpmp->rgbMsg));
+    SetWindowText(hwndMsgEdit, lpmp->rgbMsg[0]);
     goto FinishUp;
 
 L_74b9:
     i = 1000;
-    FDecompressUserString(&(lpmp->rgbMsg), lpmp->cLen, &(lpb2k), &(i));
-    SetWindowText(hwndMsgEdit, &(lpb2k));
+    FDecompressUserString(lpmp->rgbMsg[0], lpmp->cLen, lpb2k, &(i));
+    SetWindowText(hwndMsgEdit, lpb2k);
 
 L_74fa:
-    SendMessage(hwndMsgDrop, CB_SETCURSEL, viInRe, 0x0);
+    SendMessage(hwndMsgDrop, CB_SETCURSEL, viInRe, 0);
     SetWindowText(hwndMsgEdit, "");
 
 L_7529:
@@ -2282,7 +2287,7 @@ L_7571:
     _wsprintf(szWork, szT, (game.turn + 0x960), (uint16_t)(ch));
 
 L_75a3:
-    if ((IMsgPrev(0x0) == -1))
+    if ((IMsgPrev(0) == -1))
         goto L_75c1;
     else
         goto L_75bb;
@@ -2296,7 +2301,7 @@ L_75c1:
 
 L_75c4:
     EnableWindow(rghwndMsgBtn[0], t_merge_75c4_0001);
-    if ((IMsgNext(0x0) == -1))
+    if ((IMsgNext(0) == -1))
         goto L_75e8;
     else
         goto L_75e2;
@@ -2316,7 +2321,7 @@ L_75eb:
         goto L_75fd;
 
 L_75fd:
-    EnableWindow(rghwndMsgBtn[1], 0x1);
+    EnableWindow(rghwndMsgBtn[1], 1);
     goto FinishUp;
 
 L_760d:
@@ -2488,8 +2493,10 @@ L_7770:
         goto L_777a;
 
 L_777a:
-    /* untranslated: ss:[bp-0x6e] = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7)) */
-    /* untranslated: branch (bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & ss:[bp-0x6e]) == 0x0 ? L_77c1 : L_77bb */
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+        goto L_77c1;
+    else
+        goto L_77bb;
 
 L_77bb:
     mdMsgObj = 0;
@@ -2512,7 +2519,7 @@ L_77d8:
 
 FinishUp:
     strcpy(szMsgTitle, szWork);
-    InvalidateRect(hwndMessage, rcMsgTitle, 0x1);
+    InvalidateRect(hwndMessage, rcMsgTitle.left, 1);
 
 L_7802:
     return;
@@ -2732,9 +2739,9 @@ L_7a6e:
 L_7a91:
     crTextSav = SetTextColor(hdc, 0x0);
     crBkSav = SetBkColor(hdc, 0xffffff);
-    BitBlt(hdc, xDst, yDst, dxSrc, dySrc, hdcMem, 0x0, ySrcMask, SRCAND);
+    BitBlt(hdc, xDst, yDst, dxSrc, dySrc, hdcMem, 0, ySrcMask, SRCAND);
     hbmpSav = SelectObject(hdcMem, hbmpMsg);
-    BitBlt(hdc, xDst, yDst, dxSrc, dySrc, hdcMem, 0x0, ySrc, SRCPAINT);
+    BitBlt(hdc, xDst, yDst, dxSrc, dySrc, hdcMem, 0, ySrc, SRCPAINT);
 
 DoMinMax:
     i = 0;
@@ -2785,16 +2792,16 @@ L_7b83:
 L_7b8d:
     xDst = ((prc->right - (prc->bottom - prc->top)) - 1);
     hbrSav = SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, xDst, prc->top, 0x1, (prc->bottom - prc->top), PATCOPY);
+    PatBlt(hdc, xDst, prc->top, 1, (prc->bottom - prc->top), PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, (xDst + 1), prc->top, 0x1, (prc->bottom - prc->top), PATCOPY);
+    PatBlt(hdc, (xDst + 1), prc->top, 1, (prc->bottom - prc->top), PATCOPY);
     SelectObject(hdc, hbrSav);
     yDst = (((uint32_t)(((prc->bottom - prc->top) + 0xfff1)) / 2) + prc->top);
     xDst = (prc->right - (prc->bottom - yDst));
     SelectObject(hdcMem, hbmpMono);
-    BitBlt(hdc, xDst, yDst, 0xf, 0xf, hdcMem, 0x0, ySrcMask, SRCAND);
+    BitBlt(hdc, xDst, yDst, 15, 15, hdcMem, 0, ySrcMask, SRCAND);
     SelectObject(hdcMem, hbmpMsg);
-    BitBlt(hdc, xDst, yDst, 0xf, 0xf, hdcMem, 0x0, ySrc, SRCPAINT);
+    BitBlt(hdc, xDst, yDst, 15, 15, hdcMem, 0, ySrc, SRCPAINT);
 
 Cleanup:
     SetTextColor(hdc, crTextSav);
@@ -2808,8 +2815,8 @@ L_7ced:
     SelectObject(hdcMem, hbmpMsg);
     xDst = (prc->right - 45);
     yDst = (((uint32_t)(((prc->bottom - prc->top) + 0xfff9)) / 2) + prc->top);
-    PatBlt(hdc, (xDst - 1), (yDst - 1), 0x11, 0xb, BLACKNESS);
-    BitBlt(hdc, xDst, yDst, 0xf, 0x9, hdcMem, 0x0, 0x38, SRCCOPY);
+    PatBlt(hdc, (xDst - 1), (yDst - 1), 17, 11, BLACKNESS);
+    BitBlt(hdc, xDst, yDst, 15, 9, hdcMem, 0, 56, SRCCOPY);
 
 L_7d72:
     SelectObject(hdcMem, hbmpSav);
@@ -2821,7 +2828,7 @@ HtMsgType HtMsgBox(POINT pt) {
     int16_t i;
 
 L_7d8c:
-    if ((PtInRect(rcMsgTitle, pt) == 0))
+    if ((PtInRect(rcMsgTitle.left, pt) == 0))
         goto L_7e9d;
     else
         goto L_7daf;
@@ -2916,7 +2923,7 @@ L_7e9d:
 
 int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
 L_7eaa:
-    FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0x0, 0x0, 0x0, 0x0, 0x0);
+    FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0);
 
 L_7ee1:
     /* untranslated: return callresult(int16_t) */
@@ -2947,8 +2954,8 @@ L_7f36:
     return 0x0;
 
 L_7f3c:
-    lpb = ((uint8_t *)(lpMsg) + imemMsgCur);
-    fmemmove(&(lpb), &(rgbWork), cbMsg);
+    lpb = (lpMsg + imemMsgCur);
+    fmemmove(lpb, &(rgbWork), cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
     return 0x1;
@@ -2978,8 +2985,8 @@ L_7fce:
     return 0x0;
 
 L_7fd4:
-    fmemmove(((uint8_t *)(lpMsg) + cbMsg), &(lpMsg), imemMsgCur);
-    fmemmove(&(lpMsg), &(rgbWork), cbMsg);
+    fmemmove(lpMsg[cbMsg * 0x1], lpMsg, imemMsgCur);
+    fmemmove(lpMsg, &(rgbWork), cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
     return 0x1;
@@ -2993,6 +3000,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     MSGTURN *lpmt;
     uint8_t *lpb;
     uint8_t *lpbBase;
+    uint16_t scratch_bp_m16;
 
 L_802a:
     if ((iPlr != -1))
@@ -3004,13 +3012,13 @@ L_803c:
     return 0x0;
 
 L_8042:
-    if ((((rgplr[iPlr].wMdPlr >> 0x9) & 0x1) == 0x0))
+    if ((rgplr[iPlr].fAi == 0x0))
         goto L_80a9;
     else
         goto L_8060;
 
 L_8060:
-    if ((((rgplr[iPlr].wMdPlr >> 0xd) & 0x7) == 0x7))
+    if ((rgplr[iPlr].idAi == 0x7))
         goto L_80a9;
     else
         goto L_807e;
@@ -3052,16 +3060,16 @@ L_80b7:
     return 0xffff;
 
 L_80bd:
-    lpb = pb;
+    lpb = &(*(pb));
     lpmt = lpb;
-    /* untranslated: part[0:1](lpmt) = lobyte(((part[0:1](lpmt) & 0xf0) | (iPlr & 0xf))) */
+    /* untranslated: part[0x0:1](lpmt) = lobyte(((part[0x0:1](lpmt) & 0xf0) | (iPlr & 0xf))) */
     lpmt->msghdr.iMsg = iMsg;
-    LOWORD(lpmt->msghdr) = (lpmt->msghdr.iMsg | 0x0);
+    lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
     lpb = (lpb + 0x5);
     lpbBase = lpb;
     grbit = 0x1;
-    pi = p1;
+    pi = &(p1);
     i = 0;
     goto L_8168;
 
@@ -3083,21 +3091,21 @@ L_8179:
         goto L_8189;
 
 L_8189:
-    /* untranslated: ss:[bp-0x16] = (((grbit << 0x9) | LOWORD(lpmt->msghdr)) & 0xfe00) */
-    LOWORD(lpmt->msghdr) = lpmt->msghdr.iMsg;
-    /* untranslated: LOWORD(lpmt->msghdr) = (LOWORD(lpmt->msghdr) | ss:[bp-0x16]) */
+    scratch_bp_m16 = (((grbit << 0x9) | LOWORD(lpmt->msghdr)) & 0xfe00);
+    lpmt->msghdr.grWord = 0x0;
+    LOWORD(lpmt->msghdr) = (LOWORD(lpmt->msghdr) | scratch_bp_m16);
     LOWORD(lpb) = *(pi);
     lpb = (lpb + 0x2);
     goto L_8151;
 
 L_81cb:
-    *(lpb) = LOBYTE(*(pi));
+    /* untranslated: part[0x0:1](lpb) = lobyte(*pi) */
     lpb = (lpb + 0x1);
 
 L_81dd:
-    /* untranslated: part[0:1](lpmt) = lobyte((lpmt->iPlr | ((lobyte((LOWORD(lpb) - LOWORD(lpbBase))) & 0xf) * 0x10))) */
-    /* untranslated: ss:[bp-0x16] = pb */
-    /* untranslated: return (LOWORD(lpb) - ss:[bp-0x16]) */
+    /* untranslated: part[0x0:1](lpmt) = lobyte((lpmt->iPlr | ((lobyte((LOWORD(lpb) - LOWORD(lpbBase))) & 0xf) * 0x10))) */
+    scratch_bp_m16 = pb;
+    return (LOWORD(lpb) - scratch_bp_m16);
 }
 
 int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
@@ -3108,6 +3116,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     uint8_t *pb;
     uint16_t cSize;
     MSGHDR  *pmsghdr;
+    uint16_t scratch_bp_m50;
 
 L_823a:
     if (((imemMsgCur + 20) <= 0xffc8))
@@ -3119,7 +3128,7 @@ L_8251:
     return 0x0;
 
 L_8257:
-    pb = rgb;
+    pb = &(rgb);
     pmsghdr = pb;
     pmsghdr->iMsg = iMsg;
     /* untranslated: bitfMsgSent[(iMsg >> 0x3)] = lobyte(((bitfMsgSent[(iMsg >> 0x3)] & ((0x1 << (iMsg & 0x7)) ~ 0x0)) | (0x1 << (iMsg & 0x7)))) */
@@ -3127,7 +3136,7 @@ L_8257:
     pmsghdr->wGoto = iObj;
     pb = (pb + 0x4);
     grbit = 0x1;
-    pi = p1;
+    pi = &(p1);
     i = 0;
     goto L_8301;
 
@@ -3149,9 +3158,9 @@ L_8312:
         goto L_8322;
 
 L_8322:
-    /* untranslated: ss:[bp-0x50] = (((grbit << 0x9) | pmsghdr) & 0xfe00) */
+    scratch_bp_m50 = (((grbit << 0x9) | pmsghdr) & 0xfe00);
     pmsghdr->grWord = 0x0;
-    /* untranslated: pmsghdr = (pmsghdr | ss:[bp-0x50]) */
+    pmsghdr = (pmsghdr | scratch_bp_m50);
     pb = *(pi);
     pb = (pb + 0x2);
     goto L_82ea;
@@ -3161,25 +3170,25 @@ L_835e:
     pb = (pb + 0x1);
 
 L_836f:
-    cSize = rgb[pb];
+    cSize = (pb - &(rgb));
     if ((fPrepend == 0))
         goto L_83c3;
     else
         goto L_8383;
 
 L_8383:
-    fmemmove(((uint8_t *)(lpMsg) + cSize), &(lpMsg), imemMsgCur);
-    fmemmove(&(lpMsg), &(rgb), cSize);
+    fmemmove(lpMsg[cSize * 0x1], lpMsg, imemMsgCur);
+    fmemmove(lpMsg, &(rgb), cSize);
     goto L_83e4;
 
 L_83c3:
-    fmemmove(((uint8_t *)(lpMsg) + imemMsgCur), &(rgb), cSize);
+    fmemmove(lpMsg[imemMsgCur * 0x1], &(rgb), cSize);
 
 L_83e4:
     imemMsgCur = (imemMsgCur + cSize);
     cMsg = (cMsg + 1);
     iMsgCur = -1;
-    iMsgCur = IMsgNext(0x0);
+    iMsgCur = IMsgNext(0);
     return 0x1;
 }
 
@@ -3227,7 +3236,7 @@ L_8461:
 
 L_8467:
     lpb = lpMsg;
-    lpbMax = &(lpb[imemMsgCur]);
+    lpbMax = (lpb + imemMsgCur);
     goto L_8566;
 
 L_8488:
@@ -3284,7 +3293,7 @@ L_8536:
     t_merge_8539_0001 = 0x0;
 
 L_8539:
-    lpb = ((uint8_t *)(lpb) + (t_merge_8539_0001 + 0x1));
+    lpb = (lpb + (t_merge_8539_0001 + 0x1));
     u = (u >> 0x1);
     i = (i + 1);
 
@@ -3350,7 +3359,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
 L_85cc:
     iMineral = -1;
     pParams = pParamsReal;
-    pch = szMsgBuf;
+    pch = &(szMsgBuf);
 
 L_85ec:
     if (((uint16_t)(*(pszFormat)) == 0))
@@ -3415,9 +3424,9 @@ L_8f77:
     pt.x = -1;
     pt.y = -1;
     szWork[0] = 0;
-    SendDlgItemMessage(hwnd, 0x10c, 0x415, 0x8, 0x0);
+    SendDlgItemMessage(hwnd, 268, 0x415, 0x8, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-    StickyDlgPos(hwnd, &(pt), 0x1);
+    StickyDlgPos(hwnd, &(pt), 1);
     return 0x1;
 
 L_8fd4:
@@ -3439,7 +3448,7 @@ L_9031:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     GetWindowRect(GetDlgItem(hwnd, IDC_EDIT1), &(rcEdit));
-    ScreenToClient(hwnd, &(rcEdit.right));
+    ScreenToClient(hwnd, rcEdit.right);
     rcEdit.left = 8;
     rcEdit.right = (rc.right - 8);
     rcEdit.top = (rcEdit.bottom + 8);
@@ -3471,7 +3480,7 @@ L_9125:
         goto L_912e;
 
 L_912e:
-    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 0x9);
+    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 9);
     if ((FValidSerialNo(szWork, 0x0) != 0))
         goto L_9193;
     else
@@ -3567,7 +3576,7 @@ int16_t FRemovePlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
 L_9278:
     cDel = 0;
     lpb = lpMsg;
-    lpbMax = &(lpb[imemMsgCur]);
+    lpbMax = (lpb + imemMsgCur);
     goto L_9310;
 
 L_92a7:
@@ -3590,10 +3599,10 @@ L_92cf:
 
 L_92de:
     cDel = (cDel + 1);
-    lpb[1] = ((lpb[0x1] & 0xfe00) | 0x1ff);
+    /* untranslated: part[0x1:2](lpb) = ((lpb[0x1] & 0xfe00) | 0x1ff) */
 
 L_92f6:
-    lpb = ((uint8_t *)(lpb) + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
 
 L_9310:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -3613,7 +3622,7 @@ int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
 
 L_932a:
     lpb = lpMsg;
-    lpbMax = &(lpb[imemMsgCur]);
+    lpbMax = (lpb + imemMsgCur);
     goto L_93ab;
 
 L_9354:
@@ -3638,7 +3647,7 @@ L_938b:
     return 0x1;
 
 L_9391:
-    lpb = ((uint8_t *)(lpb) + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
 
 L_93ab:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -3657,11 +3666,12 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
     uint16_t w;
     uint8_t *lpb;
     uint16_t t_merge_944b_0001;
+    uint32_t scratch_bp_m18;
     uint16_t t_merge_9479_0001;
 
 L_93c6:
     lpb = lpMsg;
-    lpbMax = &(lpb[imemMsgCur]);
+    lpbMax = (lpb + imemMsgCur);
     goto L_95ef;
 
 L_93f0:
@@ -3688,7 +3698,7 @@ L_9448:
     t_merge_944b_0001 = 0x0;
 
 L_944b:
-    /* untranslated: lpbT = farptr(ss:[bp-0x16], (ss:[bp-0x18] + t_merge_944b_0001)) */
+    lpbT = (scratch_bp_m18 + t_merge_944b_0001);
     if (((w & 0x2) == 0x0))
         goto L_9470;
     else
@@ -3921,7 +3931,7 @@ L_95ca:
         goto L_95d5;
 
 L_95d5:
-    lpb = ((uint8_t *)(lpb) + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
 
 L_95ef:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -3967,7 +3977,7 @@ L_9645:
         goto L_9657;
 
 L_9657:
-    if ((((rgplr[lpmp->iPlrFrom].wMdPlr >> 0x8) & 0x1) != 0x0))
+    if ((rgplr[lpmp->iPlrFrom].fInclude != 0x0))
         goto L_96d9;
     else
         goto L_9679;
@@ -4013,7 +4023,7 @@ L_9717:
 
 L_971d:
     lpb = lpMsg;
-    lpbMax = &(lpb[imemMsgCur]);
+    lpbMax = (lpb + imemMsgCur);
     goto L_980d;
 
 L_9742:
@@ -4039,11 +4049,11 @@ L_9784:
         goto L_9797;
 
 L_9797:
-    fmemmove(&(rgb[cbMsg]), &(lpb[0x1]), (((*(lpb) >> 0x4) & 0xf) + 0x4));
+    /* untranslated: call fmemmove(&rgb[cbMsg], words(HIWORD(lpb), (LOWORD(lpb) + 0x1)), (((*lpb >> 0x4) & 0xf) + 0x4)) -> callresult(void *) */
     cbMsg = (cbMsg + (((*(lpb) >> 0x4) & 0xf) + 0x4));
 
 L_97f1:
-    lpb = ((uint8_t *)(lpb) + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
 
 L_980d:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -4083,7 +4093,7 @@ L_986e:
         goto L_9881;
 
 L_9881:
-    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), &(lpmp));
+    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), lpmp);
 
 L_98a9:
     lpmp = lpmp->lpmsgplrNext;
@@ -4110,8 +4120,8 @@ L_98d6:
     iMsgCur = -1;
     cMsg = 0;
     iMsgSendCur = 0;
-    memset(&(bitfMsgSent), 0x0, 0x31);
-    memset(&(bitfMsgFiltered), 0x0, 0x31);
+    memset(bitfMsgSent, 0, 0x31);
+    memset(bitfMsgFiltered, 0, 0x31);
     vlpmsgplrIn = 0x0;
     vlpmsgplrOut = 0x0;
     vcmsgplrIn = 0;
@@ -4136,7 +4146,7 @@ void ReadPlayerMessages() {
 L_994a:
     imemMsgT = 0x0;
     fOOM = 0;
-    lpb = ((uint8_t *)(lpMsg) + imemMsgCur);
+    lpb = (lpMsg + imemMsgCur);
 
 L_9970:
     if ((hdrCur.rt != rtMsg))
@@ -4157,7 +4167,7 @@ L_9991:
         goto L_99ab;
 
 L_99ab:
-    fmemmove(&(lpb[imemMsgT]), rgbCur, hdrCur.cb);
+    fmemmove(lpb[imemMsgT], rgbCur, hdrCur.cb);
     imemMsgT = (imemMsgT + hdrCur.cb);
 
 L_99d7:
@@ -4166,7 +4176,7 @@ L_99d7:
 
 L_99df:
     imemMsgCur = (imemMsgCur + imemMsgT);
-    lpbMax = &(lpb[imemMsgT]);
+    lpbMax = (lpb + imemMsgT);
     goto L_9aca;
 
 L_99fa:
@@ -4194,7 +4204,7 @@ L_9aac:
     t_merge_9aaf_0001 = 0x0;
 
 L_9aaf:
-    lpb = ((uint8_t *)(lpb) + (t_merge_9aaf_0001 + 0x1));
+    lpb = (lpb + (t_merge_9aaf_0001 + 0x1));
     u = (u >> 0x1);
     i = (i + 1);
 
@@ -4231,7 +4241,7 @@ L_9af9:
 
 L_9b0c:
     penvMemSav = penvMem;
-    penvMem = env;
+    penvMem = &(env);
     if ((setjmp(env) == 0))
         goto L_9b3a;
     else
@@ -4255,10 +4265,10 @@ L_9b4d:
         goto L_9b56;
 
 L_9b56:
-    lpmp->lpmsgplrNext = LpAlloc(hdrCur.cb, htPlrMsg);
+    lpmp = LpAlloc(hdrCur.cb, htPlrMsg);
     lpmp = lpmp->lpmsgplrNext;
-    fmemcpy(&(lpmp), rgbCur, hdrCur.cb);
-    lpmp->lpmsgplrNext = 0x0;
+    fmemcpy(lpmp, rgbCur, hdrCur.cb);
+    lpmp = 0x0;
     vcmsgplrIn = (vcmsgplrIn + 1);
 
 LOutOfMem:
@@ -4267,7 +4277,7 @@ LOutOfMem:
 
 L_9bba:
     iMsgCur = -1;
-    iMsgCur = IMsgNext(0x0);
+    iMsgCur = IMsgNext(0);
     return;
 }
 
@@ -4310,7 +4320,7 @@ L_9c2c:
     goto L_9c51;
 
 L_9c39:
-    cb = GetWindowText(hwndMsgEdit, &(lpb2k), 0x3e8);
+    cb = GetWindowText(hwndMsgEdit, lpb2k, 1000);
 
 L_9c51:
     if ((cb != 0))
@@ -4331,9 +4341,9 @@ L_9c63:
         goto L_9c6c;
 
 L_9c6c:
-    DirtyGame(0x1);
-    lpmpPrev->lpmsgplrNext = lpmpCur->lpmsgplrNext;
-    FreeLp(&(lpmpCur), htPlrMsg);
+    DirtyGame(1);
+    lpmpPrev = lpmpCur->lpmsgplrNext;
+    FreeLp(lpmpCur, htPlrMsg);
     vcmsgplrOut = (vcmsgplrOut - 1);
     if ((iMsgSendCur <= 0))
         goto L_9cb2;
@@ -4379,14 +4389,11 @@ L_9ce7:
 
 L_9ced:
     cbNew = cb;
-    if ((FCompressUserString(&(lpb2k), &(lpb2k[0x400]), &(cbNew)) == 0))
-        goto L_9d3a;
-    else
-        goto L_9d1e;
+    /* untranslated: branch FCompressUserString(lpb2k, words(HIWORD(lpb2k), (LOWORD(lpb2k) + 0x400)), &cbNew) == 0 ? L_9d3a : L_9d1e */
 
 L_9d1e:
     cb = cbNew;
-    lpbMsg = &(lpb2k[0x400]);
+    lpbMsg = (lpb2k + 0x400);
     goto L_9d52;
 
 L_9d3a:
@@ -4395,7 +4402,7 @@ L_9d3a:
 
 L_9d52:
     cbNew = (abs(cb) + 12);
-    iPlrTo = LOWORD(SendMessage(hwndMsgDrop, CB_GETCURSEL, 0x0, 0x0));
+    iPlrTo = LOWORD(SendMessage(hwndMsgDrop, CB_GETCURSEL, 0x0, 0));
     if ((LOWORD(lpmpCur) != 0x0))
         goto L_9d91;
     else
@@ -4420,31 +4427,31 @@ L_9da0:
         goto L_9daf;
 
 L_9daf:
-    if ((fmemcmp(&(lpmpCur->rgbMsg), &(lpbMsg), cb) == 0))
+    if ((fmemcmp(lpmpCur->rgbMsg[0], lpbMsg, cb) == 0))
         goto L_9de2;
     else
         goto L_9dd6;
 
 L_9dd6:
-    DirtyGame(0x1);
+    DirtyGame(1);
 
 L_9de2:
-    lpmpCur = LpReAlloc(&(lpmpCur), cbNew, htPlrMsg);
+    lpmpCur = LpReAlloc(lpmpCur, cbNew, htPlrMsg);
     goto L_9e40;
 
 L_9e01:
-    DirtyGame(0x1);
+    DirtyGame(1);
     lpmpCur = LpAlloc(cbNew, htPlrMsg);
-    lpmpCur->lpmsgplrNext = 0x0;
+    lpmpCur = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     lpmpCur->iInRe = iMsgCur;
 
 L_9e40:
-    lpmpPrev->lpmsgplrNext = lpmpCur;
+    lpmpPrev = lpmpCur;
     lpmpCur->iPlrFrom = idPlayer;
     lpmpCur->iPlrTo = iPlrTo;
     lpmpCur->cLen = cb;
-    fmemmove(&(lpmpCur->rgbMsg), &(lpbMsg), abs(cb));
+    fmemmove(lpmpCur->rgbMsg[0], lpbMsg, abs(cb));
     iMsgSendCur = (iMsgSendCur + dInc);
     if ((iMsgSendCur >= 0))
         goto L_9eac;
@@ -4487,7 +4494,7 @@ L_9ed8:
     iChunk = (idm >> 0x6);
     iOffset = (idm & 0x3f);
     pch = &(aMSGCmpr[aiMSGChunkOffset[iChunk]]);
-    pchLen = &(acMSG[(0x40 * iChunk)]);
+    pchLen = &(acMSG[iChunk * 0x40]);
     i = 0;
     goto L_9f31;
 
@@ -4506,7 +4513,7 @@ L_9f3c:
     goto L_9f1e;
 
 L_9f4b:
-    pch = ((uint8_t *)(pch) + (iNibble >> 0x1));
+    pch = (pch + (iNibble >> 0x1));
     iLen = *(pchLen);
     if (((iNibble & 0x1) != 0x0))
         goto L_9f73;
@@ -4522,7 +4529,7 @@ L_9f73:
 
 L_9f76:
     fHigh = t_merge_9f76_0001;
-    pszOut = szLastMsgGet;
+    pszOut = &(szLastMsgGet);
     iBuild = 0;
 
 L_9f83:
@@ -4545,7 +4552,7 @@ L_9f9b:
 
 L_9fb2:
     pch = (pch + 0x1);
-    i = (*(pch) & 0xf);
+    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
 
 L_9fc8:
     if ((fHigh != 0))

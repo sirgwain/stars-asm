@@ -1,6 +1,9 @@
 package sem
 
 import (
+	"log/slog"
+
+	"github.com/sirgwain/stars-asm/dasm/log"
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
@@ -9,15 +12,228 @@ import (
 
 // FuncContext carries symbol and image facts for semantic lowering.
 type FuncContext struct {
-	img   *asm.ImageNE
-	sdb   *typeinfo.SymbolDB
-	res   *symresolve.Resolver
-	fs    *typeinfo.Function
-	dsReg machine.Value
-	csReg machine.Value
+	img     *asm.ImageNE
+	sdb     *typeinfo.SymbolDB
+	res     *symresolve.Resolver
+	symbols *symbolResolver
+	fs      *typeinfo.Function
+	log     *slog.Logger
+	dsReg   machine.Value
+	csReg   machine.Value
 
-	unionContexts       map[machine.BlockID]*symresolve.UnionContext
-	currentUnionContext *symresolve.UnionContext
+	// for logging
+	currentBlock   *machine.BlockID
+	currentInstOff uint32
+	fromAddr       uint32
+	toAddr         uint32
+
+	unionContexts          map[machine.BlockID]*symresolve.UnionContext
+	currentUnionContext    *symresolve.UnionContext
+	unionBlockPathFacts    map[machine.BlockID][]*typeinfo.UnionBlockPathFact
+	configuredUnionBase    *symresolve.UnionContext
+	configuredUnionByBlock map[machine.BlockID]*symresolve.UnionContext
+}
+
+// RecordedUnionBlockPathFacts returns configured and discovered union selections grouped by block.
+func (ctx *FuncContext) RecordedUnionBlockPathFacts() map[machine.BlockID][]*typeinfo.UnionBlockPathFact {
+	out := make(map[machine.BlockID][]*typeinfo.UnionBlockPathFact, len(ctx.unionBlockPathFacts))
+	for block, facts := range ctx.unionBlockPathFacts {
+		out[block] = append([]*typeinfo.UnionBlockPathFact(nil), facts...)
+	}
+	return out
+}
+
+// addUnionBlockPathFact records one distinct union selection used in a block.
+func (ctx *FuncContext) addUnionBlockPathFact(fact *typeinfo.UnionBlockPathFact) bool {
+	block := machine.BlockID(fact.BlockOff)
+	for _, existing := range ctx.unionBlockPathFacts[block] {
+		if existing.Root == fact.Root &&
+			existing.AllElements == fact.AllElements &&
+			existing.Type == fact.Type &&
+			existing.Value.Value == fact.Value.Value {
+			return false
+		}
+	}
+	ctx.unionBlockPathFacts[block] = append(ctx.unionBlockPathFacts[block], fact)
+	return true
+}
+
+// addUnionSelectionBlockFact records a replayable selection for one block.
+func (ctx *FuncContext) addUnionSelectionBlockFact(block machine.BlockID, selection symresolve.UnionSelection) bool {
+	if selection.Root == nil || selection.Rule == nil || selection.Rule.Type == nil || selection.Rule.Enum == nil {
+		return false
+	}
+	root, offset, ok := symbolOffsetRoot(selection.Root)
+	if !ok || offset != 0 {
+		return false
+	}
+	if _, ok := root.(*symresolve.SymbolRoot); !ok {
+		return false
+	}
+	return ctx.addUnionBlockPathFact(&typeinfo.UnionBlockPathFact{
+		Func:        ctx.fs,
+		BlockOff:    uint32(block),
+		Root:        root.String(),
+		AllElements: selection.AllElements,
+		Type:        selection.Rule.Type,
+		Path:        append([]string(nil), selection.Rule.Discriminator...),
+		Enum:        selection.Rule.Enum,
+		Value:       selection.Value,
+		Rule:        selection.Rule,
+	})
+}
+
+// SetUnionContexts installs block-entry union contexts for later passes.
+func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolve.UnionContext) {
+	merged := make(map[machine.BlockID]*symresolve.UnionContext, len(contexts))
+	for block, derived := range contexts {
+		configured := ctx.configuredUnionBase
+		if blockContext := ctx.configuredUnionByBlock[block]; blockContext != nil {
+			configured = blockContext
+		}
+		merged[block] = symresolve.MergeUnionContexts(derived, configured)
+	}
+	ctx.unionContexts = merged
+}
+
+// SetCurrentBlock selects the union context for a block being processed.
+func (ctx *FuncContext) SetCurrentBlock(id machine.BlockID) {
+	ctx.currentBlock = &id
+	ctx.currentUnionContext = ctx.configuredUnionBase
+	if configured := ctx.configuredUnionByBlock[id]; configured != nil {
+		ctx.currentUnionContext = configured
+	}
+	if ctx.unionContexts != nil {
+		if derived := ctx.unionContexts[id]; derived != nil {
+			ctx.currentUnionContext = derived
+		}
+	}
+}
+
+// ClearCurrentBlock clears the active block-specific union context.
+func (ctx *FuncContext) ClearCurrentBlock() {
+	ctx.currentBlock = nil
+	ctx.currentInstOff = 0
+	ctx.currentUnionContext = nil
+}
+
+// unionContext returns the active path-sensitive union context.
+func (ctx *FuncContext) unionContext() *symresolve.UnionContext {
+	return ctx.currentUnionContext
+}
+
+// custom lazy logger
+func (ctx *FuncContext) LogValue() slog.Value {
+	if ctx.currentBlock == nil {
+		return slog.GroupValue(
+			slog.String("func", ctx.fs.Name),
+		)
+	}
+	return slog.GroupValue(
+		slog.String("func", ctx.fs.Name),
+		slog.String("block", ctx.currentBlock.String()),
+	)
+}
+
+func (ctx *FuncContext) WithOptions(fromAddr, toAddr uint32) *FuncContext {
+	ctx.fromAddr = fromAddr
+	ctx.toAddr = toAddr
+	return ctx
+}
+
+// NewFuncContext creates a function-scoped semantic lowering context.
+func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Resolver, fs *typeinfo.Function) *FuncContext {
+
+	ctx := &FuncContext{
+		img:                 img,
+		sdb:                 sdb,
+		res:                 res,
+		fs:                  fs,
+		dsReg:               machine.RegVal(asm.RegDS),
+		csReg:               machine.RegVal(asm.RegCS),
+		unionBlockPathFacts: make(map[machine.BlockID][]*typeinfo.UnionBlockPathFact),
+	}
+	ctx.initializeConfiguredUnionContexts()
+
+	handler := &semLogger{
+		Handler: &log.LazyHandler{Handler: slog.Default().Handler()},
+		include: ctx.shouldLogCurrentBlock,
+	}
+	log := slog.New(handler).With(slog.Any("e", ctx))
+	ctx.log = log
+	ctx.symbols = newSymbolResolver(ctx)
+
+	return ctx
+}
+
+// initializeConfiguredUnionContexts builds contexts available before semantic processing begins.
+func (ctx *FuncContext) initializeConfiguredUnionContexts() {
+	// An active, non-nil context enables each union rule's default member;
+	// configured function and block facts below override that default by path.
+	ctx.configuredUnionBase = symresolve.NewUnionContext()
+	ctx.configuredUnionByBlock = make(map[machine.BlockID]*symresolve.UnionContext)
+	if ctx.sdb.UnionRules == nil {
+		return
+	}
+	for _, fact := range ctx.sdb.UnionRules.FunctionFactsFor(ctx.fs) {
+		root, ok := ctx.symbolRootByName(fact.Root)
+		if !ok {
+			continue
+		}
+		if fact.AllElements {
+			ctx.configuredUnionBase.AddAllElements(root, fact.Rule, fact.Value)
+		} else {
+			ctx.configuredUnionBase.Add(root, fact.Rule, fact.Value)
+		}
+	}
+	for _, fact := range ctx.sdb.UnionRules.BlockPathFacts {
+		if fact.Func != ctx.fs {
+			continue
+		}
+		ctx.addUnionBlockPathFact(fact)
+		root, ok := ctx.symbolRootByName(fact.Root)
+		if !ok {
+			continue
+		}
+		block := machine.BlockID(fact.BlockOff)
+		blockContext := ctx.configuredUnionByBlock[block]
+		if blockContext == nil {
+			blockContext = ctx.configuredUnionBase.Clone()
+			ctx.configuredUnionByBlock[block] = blockContext
+		}
+		if fact.AllElements {
+			blockContext.AddAllElements(root, fact.Rule, fact.Value)
+		} else {
+			blockContext.Add(root, fact.Rule, fact.Value)
+		}
+	}
+}
+
+// symbolRootByName returns a function or global symbolic root by name.
+func (ctx *FuncContext) symbolRootByName(name string) (symresolve.SymbolPath, bool) {
+	if root, ok := ctx.functionRootByName(name); ok {
+		return root, true
+	}
+	global := ctx.sdb.GetGlobal(name)
+	if global == nil {
+		return nil, false
+	}
+	return &symresolve.SymbolRoot{Symbol: global}, true
+}
+
+// functionRootByName returns a function parameter or local root by name.
+func (ctx *FuncContext) functionRootByName(name string) (symresolve.SymbolPath, bool) {
+	for i := range ctx.fs.Params {
+		if ctx.fs.Params[i].Name == name {
+			return &symresolve.SymbolRoot{Symbol: &ctx.fs.Params[i]}, true
+		}
+	}
+	for i := range ctx.fs.Vars {
+		if ctx.fs.Vars[i].Name == name {
+			return &symresolve.SymbolRoot{Symbol: &ctx.fs.Vars[i]}, true
+		}
+	}
+	return nil, false
 }
 
 // segFromRegister returns the segment value for a given register based on the function context
@@ -31,356 +247,30 @@ func (ctx *FuncContext) segFromRegister(reg asm.Reg) uint16 {
 	return 0
 }
 
-// SetUnionContexts installs block-entry union contexts for later passes.
-func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolve.UnionContext) {
-	ctx.unionContexts = contexts
+// sameResolvedStorage reports whether two memory accesses are structurally or
+// symbolically the same storage.
+func (ctx *FuncContext) sameResolvedStorage(a machine.MemoryAddress, b machine.MemoryAddress) bool {
+	return ctx.symbols.sameResolvedStorage(a, b)
 }
 
-// SetCurrentBlock selects the union context for a block being processed.
-func (ctx *FuncContext) SetCurrentBlock(id machine.BlockID) {
-	ctx.currentUnionContext = nil
-	if ctx.unionContexts != nil {
-		ctx.currentUnionContext = ctx.unionContexts[id]
-	}
+// maskedStorageWrite reports whether value preserves bits from the destination
+// storage using resolver-aware memory equivalence.
+func (ctx *FuncContext) maskedStorageWrite(mem machine.MemoryAddress, value machine.Value) bool {
+	return maskedStorageWrite(mem, value, ctx.sameResolvedStorage)
 }
 
-// ClearCurrentBlock clears the active block-specific union context.
-func (ctx *FuncContext) ClearCurrentBlock() {
-	ctx.currentUnionContext = nil
-}
-
-// unionContext returns the active path-sensitive union context.
-func (ctx *FuncContext) unionContext() *symresolve.UnionContext {
-	return ctx.currentUnionContext
-}
-
-// NewFuncContext creates a function-scoped semantic lowering context.
-func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Resolver, fs *typeinfo.Function) *FuncContext {
-	return &FuncContext{
-		img:   img,
-		sdb:   sdb,
-		res:   res,
-		fs:    fs,
-		dsReg: machine.RegVal(asm.RegDS),
-		csReg: machine.RegVal(asm.RegCS),
-	}
-}
-
-// resolveMachineStorage resolves direct machine memory to a semantic lvalue.
-func (ctx *FuncContext) resolveMachineStorage(mem machine.MemoryAccess, width int) (LValue, bool) {
-	if mem.Index != nil {
-		return nil, false
-	}
-	// if this isn't a bp+ local var, resolve it as a global
-	if _, ok := mem.Base.(*machine.FrameBase); !ok {
-		if global, ok := ctx.resolveGlobal(mem); ok {
-			if lvalue, ok := ctx.resolveTypedStorage(&Global{GlobalVar: global.Global}, global.FieldOff, width); ok {
-				return lvalue, true
-			}
-			if lvalue, ok := ctx.resolveFieldStorage(global.Global, global.FieldOff, width); ok {
-				return lvalue, true
-			}
-			return lvalueForGlobalAccess(global, width), true
-		}
-		return nil, false
-	}
-
-	off := mem.Origin.InstOff
-	local, ok := ctx.res.ResolveLocal(ctx.fs, off, mem.Disp)
-	if !ok {
-		return nil, false
-	}
-	if lvalue, ok := ctx.resolveTypedStorage(&Local{FunctionVar: local.Local}, local.FieldOff, width); ok {
-		return lvalue, true
-	}
-	if lvalue, ok := ctx.resolveFieldStorage(&local.Local, local.FieldOff, width); ok {
-		return lvalue, true
-	}
-	return lvalueForLocalAccess(local, width), true
-}
-
-// resolveTypedStorage projects direct variable storage through its declared type.
-func (ctx *FuncContext) resolveTypedStorage(base LValue, fieldOff int, width int) (LValue, bool) {
-	if typeinfo.IsPointer(base.ExprType()) {
-		return nil, false
-	}
-	expr, ok := (&machineConverter{ctx: ctx}).consumeAddressExpr(AddressExpr{Base: base, Offset: fieldOff}, width)
-	if !ok {
-		return nil, false
-	}
-	lvalue, ok := expr.(LValue)
-	if !ok {
-		return nil, false
-	}
-	return lvalue, true
-}
-
-// resolveFieldStorage resolves exact and partial loads of fields within a symbol.
-func (ctx *FuncContext) resolveFieldStorage(v typeinfo.Var, fieldOff int, width int) (LValue, bool) {
-	if typ := v.VarType(); typeinfo.IsPointer(typ) {
-		if fieldOff+width > typ.Bytes() {
-			return nil, false
-		}
-		root := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: v})
-		if fieldOff == 0 && width == typ.Bytes() {
-			return &SymbolRef{Path: root}, true
-		}
-		part := &Part{
-			Base:     &SymbolRef{Path: root},
-			ByteOff:  fieldOff,
-			Width:    width,
-			TypeInfo: intTypeForWidth(width),
-		}
-		return part, true
-	}
-	if path, ok := ctx.res.ResolveFieldLoadInContext(v, fieldOff, width, ctx.unionContext()); ok {
-		return &SymbolRef{Path: path}, true
-	}
-	path, partOff, ok := ctx.res.ResolveFieldInContext(v, fieldOff, ctx.unionContext())
-	if !ok {
-		return nil, false
-	}
-	if !typeinfo.IsPointer(path.Type()) || partOff+width > path.Type().Bytes() {
-		return nil, false
-	}
-	part := &Part{
-		Base:     &SymbolRef{Path: path},
-		ByteOff:  partOff,
-		Width:    width,
-		TypeInfo: intTypeForWidth(width),
-	}
-	return part, true
-}
-
-// resolvePointerFieldLoad resolves a dereference offset through a typed pointer expression.
-func (ctx *FuncContext) resolvePointerFieldLoad(pointer Expr, fieldOff int, width int) (LValue, bool) {
-	path, ok := symbolPathForExpr(pointer)
-	if ok {
-		field, ok := ctx.res.ResolveFieldPathLoadInContext(path, fieldOff, width, ctx.unionContext())
-		if !ok {
-			return nil, false
-		}
-		return &SymbolRef{Path: field}, true
-	}
-	return exactExprFieldLoad(pointer, fieldOff, width)
-}
-
-// exactExprFieldLoad resolves an exact field access from a typed expression.
-func exactExprFieldLoad(base Expr, fieldOff int, width int) (LValue, bool) {
-	typ, _ := typeinfo.UnwrapPointer(base.ExprType())
-	strct, ok := typ.(*typeinfo.Struct)
-	if !ok {
-		return nil, false
-	}
-	var out *FieldAccess
-	for _, match := range strct.FieldsContainingOffset(fieldOff) {
-		if match.Off != 0 || match.Field.Bitfield != nil || match.Field.Type.Bytes() != width {
-			continue
-		}
-		if out != nil {
-			return nil, false
-		}
-		out = &FieldAccess{Base: base, Field: match.Field}
-	}
-	if out == nil {
-		return nil, false
-	}
-	return out, true
-}
-
-// resolveBitfieldExtract resolves a shifted and masked storage load to a bitfield.
-func (ctx *FuncContext) resolveBitfieldExtract(value machine.Value) (Expr, bool) {
-	load, bitOff, bitWidth, ok := bitfieldExtract(value)
-	if !ok {
-		return nil, false
-	}
-	path, ok := ctx.resolveBitfieldLoad(load.Access, bitOff, bitWidth)
-	if !ok {
-		return nil, false
-	}
-	return &SymbolRef{Path: path}, true
-}
-
-// resolveBitfieldStore resolves a masked storage write to a whole bitfield assignment.
-func (ctx *FuncContext) resolveBitfieldStore(mem machine.MemoryAccess, value machine.Value) (LValue, Expr, bool) {
-	load, bitOff, bitWidth, stored, ok := bitfieldStore(mem, value)
-	if !ok {
-		return nil, nil, false
-	}
-	path, ok := ctx.resolveBitfieldLoad(load.Access, bitOff, bitWidth)
-	if !ok {
-		return nil, nil, false
-	}
-	return &SymbolRef{Path: path}, &Const{TypeInfo: intTypeForWidth(load.Access.Width), U64: uint64(stored)}, true
-}
-
-// resolveBitfieldLoad resolves a bitfield path from direct machine storage.
-func (ctx *FuncContext) resolveBitfieldLoad(mem machine.MemoryAccess, bitOff int, bitWidth int) (symresolve.SymbolPath, bool) {
-	if path, ok := ctx.resolvePointerMemoryPath(mem); ok {
-		field, ok := ctx.res.ResolveBitfieldPathLoad(path, mem.Disp, mem.Width, bitOff, bitWidth)
-		return field, ok
-	}
-	if _, ok := mem.Base.(*machine.FrameBase); !ok {
-		global, ok := ctx.resolveGlobal(mem)
-		if !ok {
-			return nil, false
-		}
-		root := &symresolve.SymbolRoot{Symbol: global.Global}
-		path, ok := ctx.res.ResolveBitfieldPathLoadInContext(root, global.FieldOff, mem.Width, bitOff, bitWidth, ctx.unionContext())
-		return path, ok
-	}
-
-	local, ok := ctx.res.ResolveLocal(ctx.fs, mem.Origin.InstOff, mem.Disp)
-	if !ok {
-		return nil, false
-	}
-	root := &symresolve.SymbolRoot{Symbol: &local.Local}
-	path, ok := ctx.res.ResolveBitfieldPathLoadInContext(root, local.FieldOff, mem.Width, bitOff, bitWidth, ctx.unionContext())
-	return path, ok
-}
-
-// resolvePointerMemoryPath returns the symbolic pointer used by indirect memory.
-func (ctx *FuncContext) resolvePointerMemoryPath(mem machine.MemoryAccess) (symresolve.SymbolPath, bool) {
-	if load, ok := nearPointerMemoryLoad(ctx.dsReg, mem); ok {
-		return ctx.resolveMemoryPath(load.Access)
-	}
-	if load, ok := farPointerMemoryLoad(mem); ok {
-		return ctx.resolveMemoryPath(load.Access)
-	}
-	return nil, false
-}
-
-// resolveMemoryPath returns the source-level path for direct local or global storage.
-func (ctx *FuncContext) resolveMemoryPath(mem machine.MemoryAccess) (symresolve.SymbolPath, bool) {
-	if _, ok := mem.Base.(*machine.FrameBase); !ok {
-		global, ok := ctx.resolveGlobal(mem)
-		if !ok {
-			return nil, false
-		}
-		root := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: global.Global})
-		if global.FieldOff == 0 {
-			return root, true
-		}
-		path, off, ok := ctx.res.ResolveFieldInContext(global.Global, global.FieldOff, ctx.unionContext())
-		if !ok || off != 0 {
-			return nil, false
-		}
-		return path, true
-	}
-
-	local, ok := ctx.res.ResolveLocal(ctx.fs, mem.Origin.InstOff, mem.Disp)
-	if !ok {
-		return nil, false
-	}
-	root := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: &local.Local})
-	if local.FieldOff == 0 {
-		return root, true
-	}
-	path, off, ok := ctx.res.ResolveFieldInContext(&local.Local, local.FieldOff, ctx.unionContext())
-	if !ok || off != 0 {
-		return nil, false
-	}
-	return path, true
-}
-
-// bitfieldExtract returns the storage load, bit offset, and bit width for a bitfield expression.
-func bitfieldExtract(value machine.Value) (*machine.Load, int, int, bool) {
-	and, ok := value.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return nil, 0, 0, false
-	}
-	mask, source, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	bitWidth, ok := lowBitMaskWidth(mask.Val)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	load, bitOff, ok := shiftedLoad(source)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	return load, bitOff, bitWidth, true
-}
-
-// bitfieldStore returns a whole bitfield write represented as load-and-mask-or-const.
-func bitfieldStore(mem machine.MemoryAccess, value machine.Value) (*machine.Load, int, int, uint, bool) {
-	source, set := value, uint(0)
+// maskedStorageWrite reports whether value preserves bits from the
+// destination storage using the supplied storage equivalence predicate.
+func maskedStorageWrite(mem machine.MemoryAddress, value machine.Value, same func(machine.MemoryAddress, machine.MemoryAddress) bool) bool {
 	if or, ok := value.(*machine.Binary); ok && or.Op == machine.ValueOpOr {
-		setConst, nextSource, ok := constOperand(or.LHS, or.RHS)
-		if !ok {
-			return nil, 0, 0, 0, false
+		if _, _, ok := bitfieldKeepMask(mem, or.LHS, same); ok {
+			return true
 		}
-		set = setConst.Val
-		source = nextSource
+		_, _, ok := bitfieldKeepMask(mem, or.RHS, same)
+		return ok
 	}
-	and, ok := source.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return nil, 0, 0, 0, false
-	}
-	keep, keptSource, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return nil, 0, 0, 0, false
-	}
-	load, ok := keptSource.(*machine.Load)
-	if !ok || !sameStorage(mem, load.Access) {
-		return nil, 0, 0, 0, false
-	}
-	fullMask, ok := bitMask(mem.Width * 8)
-	if !ok {
-		return nil, 0, 0, 0, false
-	}
-	changed := (^keep.Val) & fullMask
-	bitOff, bitWidth, ok := contiguousMaskRange(changed)
-	if !ok || set&^changed != 0 {
-		return nil, 0, 0, 0, false
-	}
-	fieldMask, ok := bitMask(bitWidth)
-	if !ok {
-		return nil, 0, 0, 0, false
-	}
-	return load, bitOff, bitWidth, (set >> bitOff) & fieldMask, true
-}
-
-// maskedStorageWrite reports whether value preserves bits from the destination storage.
-func maskedStorageWrite(mem machine.MemoryAccess, value machine.Value) bool {
-	source := value
-	if or, ok := value.(*machine.Binary); ok && or.Op == machine.ValueOpOr {
-		_, nextSource, ok := constOperand(or.LHS, or.RHS)
-		if !ok {
-			return false
-		}
-		source = nextSource
-	}
-	and, ok := source.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return false
-	}
-	_, keptSource, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return false
-	}
-	load, ok := keptSource.(*machine.Load)
-	return ok && sameStorage(mem, load.Access)
-}
-
-// shiftedLoad returns the load and right-shift amount for a bitfield source.
-func shiftedLoad(value machine.Value) (*machine.Load, int, bool) {
-	shift, ok := value.(*machine.Binary)
-	if !ok || shift.Op != machine.ValueOpShr {
-		load, ok := value.(*machine.Load)
-		return load, 0, ok
-	}
-	amount, source, ok := constOperand(shift.LHS, shift.RHS)
-	if !ok || source != shift.LHS {
-		return nil, 0, false
-	}
-	load, ok := source.(*machine.Load)
-	if !ok {
-		return nil, 0, false
-	}
-	return load, int(amount.Val), true
+	_, _, ok := bitfieldKeepMask(mem, value, same)
+	return ok
 }
 
 // contiguousMaskRange returns the bit offset and width for a contiguous mask.
@@ -406,10 +296,9 @@ func bitMask(width int) (uint, bool) {
 }
 
 // sameStorage reports whether two memory accesses describe the same storage.
-func sameStorage(a, b machine.MemoryAccess) bool {
+func sameStorage(a, b machine.MemoryAddress) bool {
 	return a.Disp == b.Disp &&
 		a.Width == b.Width &&
-		a.Scale == b.Scale &&
 		valueShapeEquals(a.Seg, b.Seg) &&
 		valueShapeEquals(a.Base, b.Base) &&
 		valueShapeEquals(a.Index, b.Index)
@@ -432,7 +321,7 @@ func valueShapeEquals(a, b machine.Value) bool {
 		return ok
 	case *machine.Load:
 		bv, ok := b.(*machine.Load)
-		return ok && sameStorage(av.Access, bv.Access)
+		return ok && sameStorage(av.Addr, bv.Addr)
 	case *machine.FarPointer:
 		bv, ok := b.(*machine.FarPointer)
 		return ok &&
@@ -448,7 +337,7 @@ func valueShapeEquals(a, b machine.Value) bool {
 			valueShapeEquals(av.RHS, bv.RHS)
 	case *machine.Address:
 		bv, ok := b.(*machine.Address)
-		return ok && sameStorage(av.Access, bv.Access)
+		return ok && sameStorage(av.Addr, bv.Addr)
 	default:
 		return machine.ValueEquals(a, b)
 	}
@@ -492,44 +381,35 @@ func symbolPathForExpr(expr Expr) (symresolve.SymbolPath, bool) {
 		if !ok {
 			return nil, false
 		}
+		if e.Field.Bitfield != nil {
+			return &symresolve.SymbolBitfield{Base: base, Field: e.Field}, true
+		}
 		return &symresolve.SymbolField{Base: base, Field: e.Field}, true
 	default:
 		return nil, false
 	}
 }
 
-// resolveGlobal resolves direct machine memory to a global access.
-func (ctx *FuncContext) resolveGlobal(mem machine.MemoryAccess) (symresolve.GlobalAccess, bool) {
-	if mem.Index != nil {
-		return symresolve.GlobalAccess{}, false
+// shouldLogCurrentBlock reports whether the currently processed block is in the
+// requested debug range.
+func (ctx *FuncContext) shouldLogCurrentBlock() bool {
+	if ctx.fromAddr == 0 && ctx.toAddr == 0 {
+		return true
 	}
-	var seg uint16
-	if segReg, ok := mem.Seg.(*machine.Reg); ok {
-		seg = ctx.segFromRegister(segReg.Val)
+	if ctx.currentBlock == nil {
+		return true
 	}
-	if seg == 0 {
-		segConst, ok := mem.Seg.(*machine.Const)
-		if !ok {
-			return symresolve.GlobalAccess{}, false
-		}
-		seg = uint16(segConst.Val)
-		if fx := segConst.Fixup; fx != nil &&
-			fx.Source == asm.FixupSourceSegment &&
-			fx.Target == asm.FixupTargetInternalRef {
-
-			seg = fx.TargetSegNum
-		}
+	if ctx.fromAddr != 0 && uint32(*ctx.currentBlock) < ctx.fromAddr {
+		return false
 	}
-	off := int64(mem.Disp)
-	if mem.Base != nil {
-		base, ok := mem.Base.(*machine.Const)
-		if !ok {
-			return symresolve.GlobalAccess{}, false
-		}
-		off += int64(base.Val)
+	if ctx.fromAddr == 0 && uint32(*ctx.currentBlock) != ctx.toAddr {
+		return false
 	}
-	if off < 0 || off > int64(^uint32(0)) {
-		return symresolve.GlobalAccess{}, false
+	if ctx.toAddr == 0 && uint32(*ctx.currentBlock) != ctx.fromAddr {
+		return false
 	}
-	return ctx.res.ResolveGlobal(seg, uint32(off), mem.Width)
+	if ctx.toAddr != 0 && uint32(*ctx.currentBlock) >= ctx.toAddr {
+		return false
+	}
+	return true
 }

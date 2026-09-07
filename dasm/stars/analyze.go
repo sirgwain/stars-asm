@@ -55,10 +55,14 @@ func analyzeFuncWithSemPassSnapshots(img *asm.ImageNE, sdb *typeinfo.SymbolDB, f
 	}
 
 	// run sem passes
-	semCtx := sem.NewFuncContext(img, sdb, res, fs)
+	semCtx := sem.NewFuncContext(img, sdb, res, fs).WithOptions(opt.FromAddr, opt.ToAddr)
 	semFunc, annotations, err := sem.Lower(semCtx, effects, func(snapshot sem.PassSnapshot) error {
 		if onPass == nil {
 			return nil
+		}
+
+		if snapshot.Effects != nil {
+			return onPass(snapshot, snapshot.Effects)
 		}
 		return onPass(snapshot, effects)
 	})

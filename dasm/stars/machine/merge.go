@@ -323,9 +323,9 @@ func valueKeyDepth(v Value, depth int) string {
 	case *Binary:
 		return fmt.Sprintf("binary:%d:%s:%s", x.Op, valueKeyDepth(x.LHS, depth+1), valueKeyDepth(x.RHS, depth+1))
 	case *Load:
-		return fmt.Sprintf("load:%s:%s", x.ID, memoryAccessKeyDepth(x.Access, depth+1))
+		return fmt.Sprintf("load:%s:%s", x.ID, memoryAccessKeyDepth(x.Addr, depth+1))
 	case *Address:
-		return "addr:" + memoryAccessKeyDepth(x.Access, depth+1)
+		return "addr:" + memoryAccessKeyDepth(x.Addr, depth+1)
 	case *PhiValue:
 		parts := make([]string, 0, len(x.Arms))
 		for _, arm := range x.Arms {
@@ -337,15 +337,14 @@ func valueKeyDepth(v Value, depth int) string {
 	}
 }
 
-// memoryAccessKeyDepth returns a deterministic key for a memory access.
-func memoryAccessKeyDepth(a MemoryAccess, depth int) string {
+// memoryAccessKeyDepth returns a deterministic key for a memory address.
+func memoryAccessKeyDepth(a MemoryAddress, depth int) string {
 	origin := fmt.Sprintf("@%x/%d", a.Origin.InstOff, a.Origin.Role)
 	return fmt.Sprintf(
-		"seg=%s;base=%s;idx=%s;scale=%d;disp=%d;width=%d%s",
+		"seg=%s;base=%s;idx=%s;disp=%d;width=%d%s",
 		valueKeyDepth(a.Seg, depth+1),
 		valueKeyDepth(a.Base, depth+1),
 		valueKeyDepth(a.Index, depth+1),
-		a.Scale,
 		a.Disp,
 		a.Width,
 		origin,
@@ -664,9 +663,9 @@ func containsLoopUnknown(v Value, depth int) bool {
 	case *Binary:
 		return containsLoopUnknown(x.LHS, depth+1) || containsLoopUnknown(x.RHS, depth+1)
 	case *Load:
-		return memoryAccessContainsLoopUnknown(x.Access, depth+1)
+		return memoryAccessContainsLoopUnknown(x.Addr, depth+1)
 	case *Address:
-		return memoryAccessContainsLoopUnknown(x.Access, depth+1)
+		return memoryAccessContainsLoopUnknown(x.Addr, depth+1)
 	case *PhiValue:
 		for _, arm := range x.Arms {
 			if containsLoopUnknown(arm.Value, depth+1) {
@@ -677,8 +676,8 @@ func containsLoopUnknown(v Value, depth int) bool {
 	return false
 }
 
-// memoryAccessContainsLoopUnknown reports whether a memory access contains loop top.
-func memoryAccessContainsLoopUnknown(a MemoryAccess, depth int) bool {
+// memoryAccessContainsLoopUnknown reports whether a memory address contains loop top.
+func memoryAccessContainsLoopUnknown(a MemoryAddress, depth int) bool {
 	return containsLoopUnknown(a.Seg, depth+1) ||
 		containsLoopUnknown(a.Base, depth+1) ||
 		containsLoopUnknown(a.Index, depth+1)

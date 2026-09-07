@@ -155,6 +155,14 @@ func (p *resolveEnumsProcessor) resolveExpectedEnum(expr Expr, enumType *typeinf
 			return expr, false
 		}
 		return p.resolveExpectedEnum(collapsed, enumType)
+	case *ResourceID:
+		value, changed := p.resolveExpectedEnum(e.Value, enumType)
+		if !changed {
+			return expr, false
+		}
+		next := *e
+		next.Value = value
+		return &next, true
 	default:
 		return expr, false
 	}

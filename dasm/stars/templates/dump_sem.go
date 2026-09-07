@@ -79,7 +79,7 @@ func NewDumpSemView(
 				Label:  block.Label,
 				Off:    uint32(block.ID),
 				Instrs: fn.CFG.BlockInstrs(block.ID),
-			},						
+			},
 			ID:      block.ID.String(),
 			Insts:   fmt.Sprintf("%d..%d", block.StartIdx, block.EndIdx-1),
 			Offsets: fmt.Sprintf("0x%04x..0x%04x", uint32(block.ID), block.EndOff-1),

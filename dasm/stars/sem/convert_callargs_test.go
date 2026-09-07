@@ -19,19 +19,19 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 		t.Fatal("DrawPlanShip not found")
 	}
 
-	i := machine.LoadVal(machine.MemoryAccess{
+	i := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   -0x12,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x100b, Role: machine.OperandSrc},
 	})
-	ptile := machine.LoadVal(machine.MemoryAccess{
+	ptile := machine.LoadVal(machine.MemoryAddress{
 		Base:   machine.FrameBaseVal(),
 		Disp:   -0x1a,
 		Width:  2,
 		Origin: machine.Origin{InstOff: 0x1016, Role: machine.OperandSrc},
 	})
-	target := machine.MemoryAccess{
+	target := machine.MemoryAddress{
 		Seg:    machine.RegVal(asm.RegDS),
 		Base:   machine.BinaryVal(machine.ValueOpAdd, ptile, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, i, machine.ConstVal(1)), machine.ConstVal(1)), machine.ConstVal(1)), machine.ConstVal(1))),
 		Disp:   0x6,
@@ -57,7 +57,6 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 			},
 		},
 	}
-
 	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)

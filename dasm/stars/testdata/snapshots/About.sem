@@ -53,7 +53,7 @@ L_130c:
     call SetBkMode(hdc, OPAQUE) -> callresult(int16_t)
     call SetBkColor(hdc, crButtonFace) -> callresult(COLORREF)
     call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
-    call IntersectClipRect(hdc, 0x0, 0x0, rc.right, rc.bottom) -> callresult(int16_t)
+    call IntersectClipRect(hdc, 0, 0, rc.right, rc.bottom) -> callresult(int16_t)
     rc.top = (rc.top - iAboutPartial)
     rc.bottom = (rc.top + dyArial8)
     i = iAbout1st
@@ -72,7 +72,7 @@ L_13a8:
     branch i >= 77 ? L_13d7 : L_13b1
 
 L_13b1:
-    call RcCtrTextOut(hdc, &rc, PszGetCompressedString((i + 631)), 0xffff) -> callresult(void)
+    call RcCtrTextOut(hdc, &rc, PszGetCompressedString((i + 631)), -1) -> callresult(void)
     goto L_13e3
 
 L_13d7:
@@ -82,7 +82,7 @@ L_13dd:
 
 
 L_13e3:
-    call OffsetRect(&rc, 0x0, dyArial8) -> callresult(void)
+    call OffsetRect(&rc, 0, dyArial8) -> callresult(void)
     goto L_138d
 
 L_13fa:
@@ -109,7 +109,7 @@ L_146a:
 L_1473:
     call KillTimer(hwnd, uTimerId) -> callresult(int16_t)
     uTimerId = 0x0
-    call EndDialog(hwnd, 0x1) -> callresult(void)
+    call EndDialog(hwnd, 1) -> callresult(void)
     return 0x1
 
 L_149a:
@@ -117,8 +117,8 @@ L_149a:
 
 L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst)
-    call DialogBox(hInst, IDD_ORDER_INFO, hwnd, &lpProc) -> callresult(int16_t)
-    call FreeProcInstance(&lpProc) -> callresult(void)
+    call DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc) -> callresult(int16_t)
+    call FreeProcInstance(lpProc) -> callresult(void)
 
 
 L_14e5:

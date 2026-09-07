@@ -34,8 +34,9 @@ type Annotation struct {
 // Result contains sem annotations keyed by original instruction operands and machine values.
 type Result struct {
 	Operands map[machine.AnnotationKey]Annotation
-	Memory   map[string]Annotation
+	Memory   map[string][]Annotation
 	Values   map[string]Annotation
+	function *typeinfo.Function
 }
 
 // InstructionOperands renders an instruction's operands with known annotations applied.
@@ -69,38 +70,18 @@ func (r *Result) annotateOperand(key machine.AnnotationKey, ann Annotation) bool
 }
 
 // annotateMemory records a resolved memory annotation and its origin operand.
-func (r *Result) annotateMemory(mem machine.MemoryAccess, ann Annotation) bool {
-	r.annotateOperand(machine.AnnotationKey{InstOff: mem.Origin.InstOff, Role: mem.Origin.Role}, ann)
+func (r *Result) annotateMemory(mem machine.MemoryAddress, ann Annotation) bool {
+	if mem.Origin != (machine.Origin{}) {
+		r.annotateOperand(machine.AnnotationKey{InstOff: mem.Origin.InstOff, Role: mem.Origin.Role}, ann)
+	}
 	key := memoryAnnotationKey(mem)
-	if prev, ok := r.Memory[key]; ok && prev.sameAnnotation(ann) {
-		return false
+	for _, prev := range r.Memory[key] {
+		if prev.sameAnnotation(ann) {
+			return false
+		}
 	}
-	r.Memory[key] = ann
+	r.Memory[key] = append(r.Memory[key], ann)
 	return true
-}
-
-// localAnnotation creates an assembly annotation for a resolved local or parameter.
-func localAnnotation(l symresolve.LocalAccess) Annotation {
-	local := l.Local
-	path := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: &local})
-	if l.FieldOff != 0 {
-		path = &symresolve.SymbolOffset{Base: path, Offset: l.FieldOff, Result: local.Type}
-	}
-	return Annotation{Kind: AnnotationLocal, Path: path, Var: &l, Text: l.String()}
-}
-
-// globalAnnotation creates an assembly annotation for a resolved global.
-func globalAnnotation(g symresolve.GlobalAccess) Annotation {
-	path := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: g.Global})
-	if g.FieldOff != 0 {
-		path = &symresolve.SymbolOffset{Base: path, Offset: g.FieldOff, Result: g.Global.Type}
-	}
-	return Annotation{Kind: AnnotationGlobal, Path: path, Var: &g, Text: g.String()}
-}
-
-// sameAnnotation reports whether two annotations have the same render-relevant fields.
-func (a Annotation) sameAnnotation(b Annotation) bool {
-	return a.Kind == b.Kind && a.Text == b.Text
 }
 
 // operandString renders one operand with an annotation when one is available.
@@ -205,9 +186,6 @@ func (r *Result) Value(value machine.Value) string {
 	case *machine.WordValue:
 		return fmt.Sprintf("%s(%s)", v.Part, r.Value(v.Parent))
 	case *machine.FarPointer:
-		if v.Part == machine.FarPointerWhole {
-			return fmt.Sprintf("%s(%s, %s)", v.Part, r.Value(v.Segment), r.Value(v.Offset))
-		}
 		return fmt.Sprintf("%s(%s)", v.Part, r.Value(v.Parent))
 	case *machine.SignExtendValue:
 		return fmt.Sprintf("sext%dto%d(%s)", v.FromBits, v.ToBits, r.Value(v.Parent))
@@ -232,25 +210,25 @@ func (r *Result) Value(value machine.Value) string {
 	case *machine.Binary:
 		return fmt.Sprintf("(%s %s %s)", r.Value(v.LHS), v.Op, r.Value(v.RHS))
 	case *machine.Load:
-		if ann, ok := r.memoryAnnotation(v.Access); ok && ann.Kind == AnnotationFloatLiteral {
+		if ann, ok := r.memoryAnnotation(v.Addr); ok && ann.Kind == AnnotationFloatLiteral {
 			return ann.Text
 		}
-		return fmt.Sprintf("load(%s)", r.MemoryAccess(v.Access))
+		return fmt.Sprintf("load(%s)", r.MemoryAddress(v.Addr))
 	case *machine.Address:
-		return fmt.Sprintf("addr(%s)", r.MemoryAccess(v.Access))
+		return fmt.Sprintf("addr(%s)", r.MemoryAddress(v.Addr))
 	default:
 		return fmt.Sprint(value)
 	}
 }
 
-// MemoryAccess renders a machine memory access with known semantic annotations applied.
-func (r *Result) MemoryAccess(access machine.MemoryAccess) string {
+// MemoryAddress renders a machine memory address with known semantic annotations applied.
+func (r *Result) MemoryAddress(mem machine.MemoryAddress) string {
 	var sb strings.Builder
-	if access.Width != 2 {
-		sb.WriteString(memoryWidthString(access.Width))
+	if mem.Width != 2 {
+		sb.WriteString(memoryWidthString(mem.Width))
 		sb.WriteByte(' ')
 	}
-	if ann, ok := r.memoryAnnotation(access); ok {
+	if ann, ok := r.memoryAnnotation(mem); ok {
 		if ann.Kind == AnnotationFloatLiteral {
 			sb.WriteString(ann.Text)
 			return sb.String()
@@ -258,32 +236,29 @@ func (r *Result) MemoryAccess(access machine.MemoryAccess) string {
 		sb.WriteString(annotatedAccessText(ann))
 		return sb.String()
 	}
-	if access.Seg != nil {
-		sb.WriteString(r.Value(access.Seg))
+	if mem.Seg != nil {
+		sb.WriteString(r.Value(mem.Seg))
 		sb.WriteByte(':')
 	}
 
 	sb.WriteByte('[')
 	needSep := false
-	if access.Base != nil {
-		sb.WriteString(r.Value(access.Base))
+	if mem.Base != nil {
+		sb.WriteString(r.Value(mem.Base))
 		needSep = true
 	}
-	if access.Index != nil {
+	if mem.Index != nil {
 		if needSep {
 			sb.WriteByte('+')
 		}
-		sb.WriteString(r.Value(access.Index))
-		if access.Scale != 0 && access.Scale != 1 {
-			fmt.Fprintf(&sb, "*%#x", access.Scale)
-		}
+		sb.WriteString(r.Value(mem.Index))
 		needSep = true
 	}
-	if access.Disp != 0 || !needSep {
+	if mem.Disp != 0 || !needSep {
 		if needSep {
-			fmt.Fprintf(&sb, "%+#x", access.Disp)
+			fmt.Fprintf(&sb, "%+#x", mem.Disp)
 		} else {
-			fmt.Fprintf(&sb, "0x%04x", uint16(access.Disp))
+			fmt.Fprintf(&sb, "0x%04x", uint16(mem.Disp))
 		}
 	}
 	sb.WriteByte(']')
@@ -291,14 +266,46 @@ func (r *Result) MemoryAccess(access machine.MemoryAccess) string {
 	return sb.String()
 }
 
-// memoryAnnotation returns the source annotation for a memory access.
-func (r *Result) memoryAnnotation(access machine.MemoryAccess) (Annotation, bool) {
-	key := machine.AnnotationKey{InstOff: access.Origin.InstOff, Role: access.Origin.Role}
-	if ann, ok := r.Operands[key]; ok {
-		return ann, true
+// memoryAnnotation returns the source annotation for a memory address.
+func (r *Result) memoryAnnotation(mem machine.MemoryAddress) (Annotation, bool) {
+	if mem.Origin != (machine.Origin{}) {
+		key := machine.AnnotationKey{InstOff: mem.Origin.InstOff, Role: mem.Origin.Role}
+		if ann, ok := r.Operands[key]; ok {
+			return ann, true
+		}
 	}
-	ann, ok := r.Memory[memoryAnnotationKey(access)]
-	return ann, ok
+
+	candidates := r.Memory[memoryAnnotationKey(mem)]
+	if len(candidates) == 1 && (mem.Origin == (machine.Origin{}) || r.function == nil) {
+		return candidates[0], true
+	}
+	if mem.Origin == (machine.Origin{}) || r.function == nil {
+		return Annotation{}, false
+	}
+
+	var match Annotation
+	found := false
+	for _, candidate := range candidates {
+		if candidate.Kind != AnnotationLocal {
+			if found && !match.sameAnnotation(candidate) {
+				return Annotation{}, false
+			}
+			match = candidate
+			found = true
+			continue
+		}
+
+		local, ok := candidate.Var.(*symresolve.LocalAccess)
+		if !ok || !r.function.InScope(local.Local, mem.Origin.InstOff) {
+			continue
+		}
+		if found && !match.sameAnnotation(candidate) {
+			return Annotation{}, false
+		}
+		match = candidate
+		found = true
+	}
+	return match, found
 }
 
 // valueAnnotation returns the source annotation for a value.
@@ -317,7 +324,7 @@ func (r *Result) constAnnotation(value *machine.Const) (Annotation, bool) {
 	return ann, ok
 }
 
-// annotatedAccessText renders an annotated memory access without width.
+// annotatedAccessText renders an annotated memory address without width.
 func annotatedAccessText(ann Annotation) string {
 	switch ann.Kind {
 	case AnnotationLocal:
@@ -337,7 +344,7 @@ func annotatedAccessText(ann Annotation) string {
 }
 
 // memoryAnnotationKey returns the stable key for a machine memory annotation.
-func memoryAnnotationKey(mem machine.MemoryAccess) string {
+func memoryAnnotationKey(mem machine.MemoryAddress) string {
 	return mem.String()
 }
 

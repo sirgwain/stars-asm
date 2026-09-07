@@ -231,6 +231,12 @@ typedef enum MdBuild {
     mdBuildEdit       = 4,
 } MdBuild;
 
+typedef enum MdXfer {
+    mdXferNone  = -1,
+    mdXferCargo = 0,
+    mdXferShips = 1,
+} MdXfer;
+
 typedef enum ProdItemType {
     iobjMine = 0,
     iobjFactory = 1,

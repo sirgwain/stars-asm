@@ -31,8 +31,8 @@ func (p *normalizeShiftsProcessor) rewriter() *machineRewriter {
 				return value, false, false
 			}
 		},
-		memory: func(w *machineRewriter, mem machine.MemoryAccess) (machine.MemoryAccess, bool, bool) {
-			next, changed := p.withMemoryBitwiseContext(false, func() (machine.MemoryAccess, bool) {
+		memory: func(w *machineRewriter, mem machine.MemoryAddress) (machine.MemoryAddress, bool, bool) {
+			next, changed := p.withMemoryBitwiseContext(false, func() (machine.MemoryAddress, bool) {
 				return w.rewriteMachineMemoryChildren(mem)
 			})
 			return next, changed, true
@@ -71,13 +71,8 @@ func (p *normalizeShiftsProcessor) normalizeShiftBinary(w *machineRewriter, v *m
 // normalizeShiftFarPointer normalizes shift expressions inside a far pointer.
 func (p *normalizeShiftsProcessor) normalizeShiftFarPointer(w *machineRewriter, v *machine.FarPointer) (machine.Value, bool) {
 	parent, parentChanged := w.rewriteMachineValue(v.Parent)
-	offset, offsetChanged := w.rewriteMachineValue(v.Offset)
-	segment, segmentChanged := w.rewriteMachineValue(v.Segment)
-	if !parentChanged && !offsetChanged && !segmentChanged {
+	if !parentChanged {
 		return v, false
-	}
-	if v.Part == machine.FarPointerWhole {
-		return machine.FarPointerWordsVal(offset, segment), true
 	}
 	return machine.FarPointerVal(parent, v.Part), true
 }
@@ -92,7 +87,7 @@ func (p *normalizeShiftsProcessor) withValueBitwiseContext(bitwiseContext bool, 
 }
 
 // withMemoryBitwiseContext runs a memory rewrite with a temporary bitwise context.
-func (p *normalizeShiftsProcessor) withMemoryBitwiseContext(bitwiseContext bool, fn func() (machine.MemoryAccess, bool)) (machine.MemoryAccess, bool) {
+func (p *normalizeShiftsProcessor) withMemoryBitwiseContext(bitwiseContext bool, fn func() (machine.MemoryAddress, bool)) (machine.MemoryAddress, bool) {
 	prev := p.bitwiseContext
 	p.bitwiseContext = bitwiseContext
 	value, changed := fn()

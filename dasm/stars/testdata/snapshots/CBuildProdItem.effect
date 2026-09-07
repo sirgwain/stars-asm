@@ -26,7 +26,7 @@ CBuildProdItem  (turn2)
     int32_t          lAlchCost      [BP-0x18]
     int32_t          lMinNeeded     [BP-0x14]
     int32_t          cCanBuild      [BP-0x10]
-    uint32_t         iobjOther      [BP-0xc]
+    ProdItemType     iobjOther      [BP-0xc]
     int16_t          cMax           [BP-0x8]
     int32_t          pctT           [BP-0x6]
     block 0018:1324  len=0x70
@@ -40,14 +40,14 @@ block L_0c92:
   succs: L_0d12, L_0d49
   effects:
     0c9b  store[2] [bp-cAlchemy] = 0x0
-    0cad  call __aFulshr(words(load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))]), load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))+0x2])), 0x14) -> callresult(uint32_t)
+    0cad  call __aFulshr(words(load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))+0x2]), load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))])), 0x14) -> callresult(uint32_t)
     0cb8  store[2] [bp-pctInitial] = (loword(callresult(uint32_t)) & 0x7f)
     0cbb  store[2] [bp-pctInitial+0x2] = 0x0
     0cc8  store[2] [bp-prod] = load@0cc1/src(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))])
     0ccb  store[2] [bp-prod+0x2] = load@0cc4/src(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))+0x2])
-    0ce9  call GetProductionCosts(farptr(load([bp+lppl+0x2]), load([bp+lppl])), farptr(load([bp+lpprod+0x2]), load([bp+lpprod])), addr([bp-rgCost]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(void)
+    0ce9  call GetProductionCosts(words(load([bp+lppl+0x2]), load([bp+lppl])), words(load([bp+lpprod+0x2]), load([bp+lpprod])), addr([bp-rgCost]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(void)
     0cf1  store[2] [bp-cBuilt] = 0x0
-    0cff  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0x11) -> callresult(uint32_t)
+    0cff  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0x11) -> callresult(uint32_t)
     0d0d  branch (loword(callresult(uint32_t)) & 0x7) != 0x1 ? L_0d49 : L_0d12
 
 block L_0d12:
@@ -62,7 +62,7 @@ block L_0d1a:
   preds: L_0d12
   succs: L_0d36, L_0d49
   effects:
-    0d23  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    0d23  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     0d31  branch 0x0 > 0x0 ? L_0d49 : L_0d36
 
 block L_0d36:
@@ -105,7 +105,7 @@ block L_0d58:
   succs: L_0f2c
   effects:
     0d58  store[2] [bp-cMax] = 0x3e8
-    0d66  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    0d66  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     0d71  goto L_0f2c
 
 block L_0d74:
@@ -115,10 +115,10 @@ block L_0d74:
   effects:
     0d74  store[2] [bp-iobjOther] = 0x8
     0d79  store[2] [bp-iobjOther+0x2] = 0x0
-    0d8c  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16])), 0x8) -> callresult(uint32_t)
-    0d97  store[2] [bp-AddCost+0x2] = (loword(callresult(uint32_t)) & 0xfff)
-    0dab  call CMaxOperableMines(farptr(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
-    0db8  store[2] [bp-cMax] = (callresult(int16_t) - load([bp-AddCost+0x2]))
+    0d8c  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14])), 0x8) -> callresult(uint32_t)
+    0d97  store[2] ss:[bp-0x56] = (loword(callresult(uint32_t)) & 0xfff)
+    0dab  call CMaxOperableMines(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
+    0db8  store[2] [bp-cMax] = (callresult(int16_t) - load(ss:[bp-0x56]))
     0dbb  goto L_0f9f
 
 block L_0dbe:
@@ -128,10 +128,10 @@ block L_0dbe:
   effects:
     0dbe  store[2] [bp-iobjOther] = 0x7
     0dc3  store[2] [bp-iobjOther+0x2] = 0x0
-    0dd6  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16])), 0x14) -> callresult(uint32_t)
-    0de1  store[2] [bp-AddCost+0x2] = (loword(callresult(uint32_t)) & 0xfff)
-    0df5  call CMaxOperableFactories(farptr(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
-    0e02  store[2] [bp-cMax] = (callresult(int16_t) - load([bp-AddCost+0x2]))
+    0dd6  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14])), 0x14) -> callresult(uint32_t)
+    0de1  store[2] ss:[bp-0x56] = (loword(callresult(uint32_t)) & 0xfff)
+    0df5  call CMaxOperableFactories(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
+    0e02  store[2] [bp-cMax] = (callresult(int16_t) - load(ss:[bp-0x56]))
     0e05  goto L_0f9f
 
 block L_0e08:
@@ -141,9 +141,9 @@ block L_0e08:
   effects:
     0e08  store[2] [bp-iobjOther] = 0x9
     0e0d  store[2] [bp-iobjOther+0x2] = 0x0
-    0e23  store[2] [bp-AddCost+0x2] = (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff)
-    0e37  call CMaxOperableDefenses(farptr(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
-    0e44  store[2] [bp-cMax] = (callresult(int16_t) - load([bp-AddCost+0x2]))
+    0e23  store[2] ss:[bp-0x56] = (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff)
+    0e37  call CMaxOperableDefenses(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x1) -> callresult(int16_t)
+    0e44  store[2] [bp-cMax] = (callresult(int16_t) - load(ss:[bp-0x56]))
     0e47  goto L_0f9f
 
 block L_0e4a:
@@ -162,7 +162,7 @@ block L_0e57:
   effects:
     0e57  store[2] [bp-iobjOther] = 0xc
     0e5c  store[2] [bp-iobjOther+0x2] = 0x0
-    0e67  call IpctCanTerraformLppl(farptr(load([bp+lppl+0x2]), load([bp+lppl]))) -> callresult(int16_t)
+    0e67  call IpctCanTerraformLppl(words(load([bp+lppl+0x2]), load([bp+lppl]))) -> callresult(int16_t)
     0e6f  store[2] [bp-cMax] = callresult(int16_t)
     0e76  branch load([bp-cMax]) <= 0x0 ? L_0f9f : L_0e7b
 
@@ -171,7 +171,7 @@ block L_0e7b:
   preds: L_0e57
   succs: L_0e97, L_0f9f
   effects:
-    0e84  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    0e84  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     0e92  branch (loword(callresult(uint32_t)) & 0x7f) != 0x4 ? L_0f9f : L_0e97
 
 block L_0e97:
@@ -186,7 +186,7 @@ block L_0e9f:
   preds: L_0e97
   succs: L_0eb9, L_0f9f
   effects:
-    0ea9  call ChgPopFromPlanet(farptr(load([bp+lppl+0x2]), load([bp+lppl])), 0x0) -> callresult(int32_t)
+    0ea9  call ChgPopFromPlanet(words(load([bp+lppl+0x2]), load([bp+lppl])), 0x0) -> callresult(int32_t)
     0eb4  branch hiword(callresult(int32_t)) < 0x0 ? L_0f9f : L_0eb9
 
 block L_0eb9:
@@ -208,7 +208,7 @@ block L_0ec6:
   preds: L_0eb9, L_0ebe
   succs: L_0ee3, L_0f9f
   effects:
-    0ed3  call PctPlanetDesirability(farptr(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])) -> callresult(int16_t)
+    0ed3  call PctPlanetDesirability(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])) -> callresult(int16_t)
     0ede  branch callresult(int16_t) <= 0x0 ? L_0f9f : L_0ee3
 
 block L_0ee3:
@@ -229,7 +229,7 @@ block L_0eeb:
   effects:
     0eeb  store[2] [bp-iobjOther] = 0x11
     0ef0  store[2] [bp-iobjOther+0x2] = 0x0
-    0eff  call IWarpMAFromLppl(farptr(load([bp+lppl+0x2]), load([bp+lppl])), 0x0) -> callresult(int16_t)
+    0eff  call IWarpMAFromLppl(words(load([bp+lppl+0x2]), load([bp+lppl])), 0x0) -> callresult(int16_t)
     0f0a  branch callresult(int16_t) == 0x0 ? L_0f21 : L_0f0f
 
 block L_0f0f:
@@ -367,30 +367,30 @@ block L_0fad:
   preds: L_0f9f, L_0fa8
   succs: L_0fd0, L_1000
   effects:
-    0fb9  store[2] [bp-AddCost] = (load([bp-prod]) & 0x3ff)
-    0fbc  store[2] [bp-AddCost+0x2] = 0x0
-    0fcb  branch load([bp-AddCost+0x2]) > signhiword(load([bp-cMax])) ? L_1000 : L_0fd0
+    0fb9  store[2] ss:[bp-0x58] = (load([bp-prod]) & 0x3ff)
+    0fbc  store[2] ss:[bp-0x56] = 0x0
+    0fcb  branch load(ss:[bp-0x56]) > signhiword(load([bp-cMax])) ? L_1000 : L_0fd0
 
 block L_0fd0:
   insts 267..267  off 0x0fd0..0x0fd1
   preds: L_0fad
   succs: L_0fd5, L_0fdc
   effects:
-    0fd0  branch load([bp-AddCost+0x2]) < signhiword(load([bp-cMax])) ? L_0fdc : L_0fd5
+    0fd0  branch load(ss:[bp-0x56]) < signhiword(load([bp-cMax])) ? L_0fdc : L_0fd5
 
 block L_0fd5:
   insts 269..270  off 0x0fd5..0x0fd8
   preds: L_0fd0
   succs: L_0fdc, L_1000
   effects:
-    0fd7  branch load([bp-AddCost]) > load([bp-cMax]) ? L_1000 : L_0fdc
+    0fd7  branch load(ss:[bp-0x58]) > load([bp-cMax]) ? L_1000 : L_0fdc
 
 block L_0fdc:
   insts 272..279  off 0x0fdc..0x0ff4
   preds: L_0fd0, L_0fd5
   succs: L_0ff8, L_102c
   effects:
-    0fe5  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    0fe5  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     0ff3  branch (loword(callresult(uint32_t)) & 0x7f) != 0x3 ? L_102c : L_0ff8
 
 block L_0ff8:
@@ -405,7 +405,7 @@ block L_1000:
   preds: L_0fad, L_0fd5, L_0ff8
   succs: L_102c
   effects:
-    100d  call __aFlshl(words((load([bp-cMax]) & 0x3ff), 0x0), 0x0) -> callresult(int32_t)
+    100d  call __aFlshl(words(0x0, (load([bp-cMax]) & 0x3ff)), 0x0) -> callresult(int32_t)
     1023  store[2] [bp-prod] = ((load([bp-prod]) & 0xfc00) | loword(callresult(int32_t)))
     1026  store[2] [bp-prod+0x2] = ((load([bp-prod+0x2]) & 0xffff) | hiword(callresult(int32_t)))
 
@@ -422,7 +422,7 @@ block L_1034:
   preds: L_1086
   succs: L_1086
   effects:
-    1045  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0x14) -> callresult(uint32_t)
+    1045  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0x14) -> callresult(uint32_t)
     1065  call __aFulmul(words(load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x50]), load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x52])), words(0x0, (loword(callresult(uint32_t)) & 0x7f))) -> callresult(uint32_t)
     106c  call __aFuldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words(0x0, 0x64)) -> callresult(uint32_t)
     107d  store[2] ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x32] = loword(callresult(uint32_t))
@@ -760,7 +760,7 @@ block L_13a1:
   preds: L_1398
   succs: L_13d5, L_1712
   effects:
-    13b0  call __aFlshl(words((load([bp-pct]) & 0x7f), 0x0), 0x14) -> callresult(int32_t)
+    13b0  call __aFlshl(words(0x0, (load([bp-pct]) & 0x7f)), 0x14) -> callresult(int32_t)
     13c6  store[2] [bp-prod] = ((load([bp-prod]) & 0xffff) | loword(callresult(int32_t)))
     13c9  store[2] [bp-prod+0x2] = ((load([bp-prod+0x2]) & 0xf80f) | hiword(callresult(int32_t)))
     13d0  branch load([bp+fAlchemy]) == 0x0 ? L_1712 : L_13d5
@@ -994,7 +994,7 @@ block L_15f8:
   effects:
     15f8  store[2] [bp-pctT] = merge(Join: L_15f8, (L_15e3:load([bp-0x6]), L_15ec:(load([bp-0x3e]) + 0xffff)))
     15fb  store[2] [bp-pctT+0x2] = merge(Join: L_15f8, (L_15e3:load([bp-0x4]), L_15ec:(load([bp-0x3c]) + 0xffff)))
-    160d  call __aFlshl(words((load([bp-pctT]) & 0x7f), 0x0), 0x14) -> callresult(int32_t)
+    160d  call __aFlshl(words(0x0, (load([bp-pctT]) & 0x7f)), 0x14) -> callresult(int32_t)
     1628  store[2] ds:[load([bp+pprodPartial])] = ((load(ds:[load([bp+pprodPartial])]) & 0xffff) | loword(callresult(int32_t)))
     162a  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load(ds:[load([bp+pprodPartial])+0x2]) & 0xf80f) | hiword(callresult(int32_t)))
     1641  call __aFulmul(words(load([bp-pctT+0x2]), load([bp-pctT])), words(load([bp-lAlchCost+0x2]), load([bp-lAlchCost]))) -> callresult(uint32_t)
@@ -1012,12 +1012,12 @@ block L_165c:
   succs: L_1706
   effects:
     165c  store[2] [bp-cBuilt] = (load([bp-cBuilt]) + 0x1)
-    1672  store[2] [bp-AddCost] = ((load@1660/src([bp-prod]) + 0xffff) & 0x3ff)
-    1675  store[2] [bp-AddCost+0x2] = 0x0
+    1672  store[2] ss:[bp-0x58] = ((load@1660/src([bp-prod]) + 0xffff) & 0x3ff)
+    1675  store[2] ss:[bp-0x56] = 0x0
     1678  store[2] [bp-prod] = (load@1678/dst([bp-prod]) & 0xfc00)
     167d  store[2] [bp-prod+0x2] = (load@167d/dst([bp-prod+0x2]) & 0xffff)
-    168d  store[2] [bp-prod] = (load@168d/dst([bp-prod]) | load([bp-AddCost]))
-    1690  store[2] [bp-prod+0x2] = (load@1690/dst([bp-prod+0x2]) | load([bp-AddCost+0x2]))
+    168d  store[2] [bp-prod] = (load@168d/dst([bp-prod]) | load(ss:[bp-0x58]))
+    1690  store[2] [bp-prod+0x2] = (load@1690/dst([bp-prod+0x2]) | load(ss:[bp-0x56]))
     16ac  store[2] [bp-prod] = ((load@1699/src([bp-prod]) & 0xffff) | 0x0)
     16af  store[2] [bp-prod+0x2] = ((load@169c/src([bp-prod+0x2]) & 0xf80f) | 0x0)
     16b2  store[2] [bp-i] = 0x0
@@ -1061,7 +1061,7 @@ block L_171b:
   preds: L_1712
   succs: L_1737, L_17b7
   effects:
-    1724  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0x11) -> callresult(uint32_t)
+    1724  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0x11) -> callresult(uint32_t)
     1732  branch (loword(callresult(uint32_t)) & 0x7) != 0x1 ? L_17b7 : L_1737
 
 block L_1737:
@@ -1076,7 +1076,7 @@ block L_173f:
   preds: L_1737
   succs: L_175b, L_1763
   effects:
-    1748  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    1748  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     1756  branch (loword(callresult(uint32_t)) & 0x7f) != 0xb ? L_1763 : L_175b
 
 block L_175b:
@@ -1091,7 +1091,7 @@ block L_1763:
   preds: L_173f, L_175b
   succs: L_177f, L_17b7
   effects:
-    176c  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0xa) -> callresult(uint32_t)
+    176c  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0xa) -> callresult(uint32_t)
     177a  branch (loword(callresult(uint32_t)) & 0x7f) != 0x3 ? L_17b7 : L_177f
 
 block L_177f:
@@ -1255,7 +1255,7 @@ block L_186f:
   preds: L_1866
   succs: L_188b, L_1899
   effects:
-    1878  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0x14) -> callresult(uint32_t)
+    1878  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0x14) -> callresult(uint32_t)
     1886  branch load([bp-pctInitial]) != (loword(callresult(uint32_t)) & 0x7f) ? L_1899 : L_188b
 
 block L_188b:
@@ -1369,7 +1369,7 @@ block L_1923:
   preds: L_191b
   succs: L_193f, L_19a5
   effects:
-    192c  call __aFulshr(words(load([bp-prod]), load([bp-prod+0x2])), 0x14) -> callresult(uint32_t)
+    192c  call __aFulshr(words(load([bp-prod+0x2]), load([bp-prod])), 0x14) -> callresult(uint32_t)
     193a  branch 0x0 < 0x0 ? L_19a5 : L_193f
 
 block L_193f:
@@ -1395,7 +1395,7 @@ block L_194c:
     1957  store[2] ds:[load([bp+pprodPartial])+0x2] = load([bp-prod+0x2])
     1971  store[2] ds:[load([bp+pprodPartial])] = ((load@195d/src(ds:[load([bp+pprodPartial])]) & 0xfc00) | 0x1)
     1973  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@195f/src(ds:[load([bp+pprodPartial])+0x2]) & 0xffff) | 0x0)
-    1985  call __aFlshl(words((load([bp-iobjOther]) & 0x7f), 0x0), 0xa) -> callresult(int32_t)
+    1985  call __aFlshl(words(0x0, (load([bp-iobjOther]) & 0x7f)), 0xa) -> callresult(int32_t)
     19a0  store[2] ds:[load([bp+pprodPartial])] = ((load@198d/src(ds:[load([bp+pprodPartial])]) & 0x3ff) | loword(callresult(int32_t)))
     19a2  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@198f/src(ds:[load([bp+pprodPartial])+0x2]) & 0xfffe) | hiword(callresult(int32_t)))
 

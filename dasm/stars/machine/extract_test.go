@@ -4,9 +4,28 @@ import (
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
-	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+type testSymResolver struct{}
+
+func (testSymResolver) ResolveFloatLiteral(seg int, off uint32, bytes int) (float64, bool) {
+	return 0, false
+}
+
+func (testSymResolver) ResolveFunction(fixup *asm.Fixup) (*typeinfo.Function, bool) {
+	return nil, false
+}
+
+func (testSymResolver) ResolveLocalFunctionPtr(
+	f *typeinfo.Function,
+	instOff uint32,
+	bpDisp int,
+) (*typeinfo.Function, bool) {
+	return nil, false
+}
+
+var _ symbolResolver = testSymResolver{}
 
 func TestExtractPhisRegisterAtDiamondJoin(t *testing.T) {
 	ctx := ctxForIntReturnExtractTest()
@@ -188,7 +207,7 @@ func TestExtractKeepsRegisterCallArgsLiveAcrossBlockBoundary(t *testing.T) {
 	if got, want := len(call.Args), 2; got != want {
 		t.Fatalf("call args = %d, want %d", got, want)
 	}
-	if got, want := call.Args[0].String(), "words(0x1, 0x2)"; got != want {
+	if got, want := call.Args[0].String(), "words(0x2, 0x1)"; got != want {
 		t.Fatalf("first call arg = %s, want %s", got, want)
 	}
 	if got, want := call.Args[1].String(), "0x3"; got != want {
@@ -196,7 +215,7 @@ func TestExtractKeepsRegisterCallArgsLiveAcrossBlockBoundary(t *testing.T) {
 	}
 }
 
-func TestExtractUsesFarPointerForTypedRegisterCallArg(t *testing.T) {
+func TestExtractUsesWordsForTypedRegisterCallArg(t *testing.T) {
 	ctx := ctxForIntReturnExtractTest()
 	farPtr := &typeinfo.Pointer{Class: typeinfo.PtrFar, Elem: typeinfo.U16}
 	helper := &typeinfo.Function{
@@ -220,17 +239,17 @@ func TestExtractUsesFarPointerForTypedRegisterCallArg(t *testing.T) {
 	if got, want := len(call.Args), 1; got != want {
 		t.Fatalf("call args = %d, want %d", got, want)
 	}
-	if _, ok := call.Args[0].(*FarPointer); !ok {
-		t.Fatalf("call arg = %T %[1]s, want FarPointer", call.Args[0])
+	if _, ok := call.Args[0].(*StackWords); !ok {
+		t.Fatalf("call arg = %T %[1]s, want StackWords", call.Args[0])
 	}
-	if got, want := call.Args[0].String(), "farptr(0x5678, 0x1234)"; got != want {
+	if got, want := call.Args[0].String(), "words(0x5678, 0x1234)"; got != want {
 		t.Fatalf("call arg = %s, want %s", got, want)
 	}
 }
 
 // TestExtractUsesOffsetSegmentOrderForTypedStackFarPointer verifies stack far
 // pointers are normalized from push order into source pointer word order.
-func TestExtractUsesOffsetSegmentOrderForTypedStackFarPointer(t *testing.T) {
+func TestExtractUsesWordsForTypedStackFarPointer(t *testing.T) {
 	ctx := ctxForIntReturnExtractTest()
 	farPtr := &typeinfo.Pointer{Class: typeinfo.PtrFar, Elem: typeinfo.U16}
 	helper := &typeinfo.Function{
@@ -256,17 +275,17 @@ func TestExtractUsesOffsetSegmentOrderForTypedStackFarPointer(t *testing.T) {
 	if got, want := len(call.Args), 1; got != want {
 		t.Fatalf("call args = %d, want %d", got, want)
 	}
-	if _, ok := call.Args[0].(*FarPointer); !ok {
-		t.Fatalf("call arg = %T %[1]s, want FarPointer", call.Args[0])
+	if _, ok := call.Args[0].(*StackWords); !ok {
+		t.Fatalf("call arg = %T %[1]s, want StackWords", call.Args[0])
 	}
-	if got, want := call.Args[0].String(), "farptr(0x25, 0x57a4)"; got != want {
+	if got, want := call.Args[0].String(), "words(0x25, 0x57a4)"; got != want {
 		t.Fatalf("call arg = %s, want %s", got, want)
 	}
 }
 
-// TestExtractKeepsSSForStackLocalFarPointer verifies stack-local far pointers
-// preserve SS as their segment word.
-func TestExtractKeepsSSForStackLocalFarPointer(t *testing.T) {
+// TestExtractUsesWordsForStackLocalFarPointer verifies stack-local far pointers
+// preserve their segment word in the word pair.
+func TestExtractUsesWordsForStackLocalFarPointer(t *testing.T) {
 	ctx := ctxForIntReturnExtractTest()
 	farPtr := &typeinfo.Pointer{Class: typeinfo.PtrFar, Elem: typeinfo.U16}
 	helper := &typeinfo.Function{
@@ -306,7 +325,7 @@ func TestExtractKeepsSSForStackLocalFarPointer(t *testing.T) {
 	if got, want := len(call.Args), 1; got != want {
 		t.Fatalf("call args = %d, want %d", got, want)
 	}
-	if got, want := call.Args[0].String(), "farptr(ss, addr([bp-0xa]))"; got != want {
+	if got, want := call.Args[0].String(), "words(ss, addr([bp-0xa]))"; got != want {
 		t.Fatalf("call arg = %s, want %s", got, want)
 	}
 }
@@ -338,7 +357,7 @@ func TestExtractWritesFarPointerReturnRegistersForTypedCallResult(t *testing.T) 
 	}
 }
 
-func TestExtractUsesFarPointerForTypedReturnEffect(t *testing.T) {
+func TestExtractUsesWordsForTypedReturnEffect(t *testing.T) {
 	ctx := ctxForIntReturnExtractTest()
 	ctx.fs.Ret = &typeinfo.Pointer{Class: typeinfo.PtrFar, Elem: typeinfo.U16}
 	cfg := cfgForExtractTest(t, ctx, []asm.DecodedInst{
@@ -349,10 +368,10 @@ func TestExtractUsesFarPointerForTypedReturnEffect(t *testing.T) {
 
 	effects := Extract(ctx, cfg, ExtractOptions{})
 	ret := returnEffectForExtractTest(t, effects, 0x1000)
-	if _, ok := ret.Value.(*FarPointer); !ok {
-		t.Fatalf("return value = %T %[1]s, want FarPointer", ret.Value)
+	if _, ok := ret.Value.(*StackWords); !ok {
+		t.Fatalf("return value = %T %[1]s, want StackWords", ret.Value)
 	}
-	if got, want := ret.Value.String(), "farptr(0x5678, 0x1234)"; got != want {
+	if got, want := ret.Value.String(), "words(0x5678, 0x1234)"; got != want {
 		t.Fatalf("return value = %s, want %s", got, want)
 	}
 }
@@ -427,12 +446,11 @@ func TestCallResultValueKeyUsesCallSiteIdentity(t *testing.T) {
 
 // ctxForIntReturnExtractTest returns a function context whose RET reads AX.
 func ctxForIntReturnExtractTest() *FuncContext {
-	img := &asm.ImageNE{}
 	sdb := &typeinfo.SymbolDB{}
 	fn := &typeinfo.Function{
 		Ret: &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true},
 	}
-	return NewFuncContext(nil, sdb, symresolve.NewResolver(img, sdb), fn)
+	return NewFuncContext(nil, sdb, &testSymResolver{}, fn)
 }
 
 // cfgForExtractTest builds a CFG for extractor tests.

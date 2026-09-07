@@ -2,6 +2,7 @@ package sem
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 // SemBlockProcessor processes semantic effects for one basic block.
@@ -14,6 +15,11 @@ type MachineBlockProcessor interface {
 	ProcessMachineBlock(result *Result, f machine.FuncEffects, b machine.BlockEffects) (machine.BlockEffects, bool)
 }
 
+// MachineFuncProcessor processes all extracted machine effects for a function.
+type MachineFuncProcessor interface {
+	ProcessMachineFunc(result *Result, f *machine.FuncEffects) bool
+}
+
 // SemFuncProcessor processes a whole semantic function.
 type SemFuncProcessor interface {
 	ProcessFunc(result *Result, f *Func) bool
@@ -24,6 +30,7 @@ type PreProcessor struct {
 	Name    string
 	Purpose string
 	Machine func(*FuncContext) MachineBlockProcessor
+	Func    func(*FuncContext) MachineFuncProcessor
 }
 
 // Processor describes one named semantic processor pass.
@@ -36,13 +43,14 @@ type Processor struct {
 
 // PassSnapshot captures the semantic function after one processor pass.
 type PassSnapshot struct {
-	Index  int
-	Name   string
-	Func   Func
-	Result *Result
+	Index   int
+	Name    string
+	Func    Func
+	Result  *Result
+	Effects *machine.FuncEffects
 }
 
-// ProcessorSpecs returns the semantic processor pass order.
+// PreProcessorSpecs returns the machine processor pass order.
 func PreProcessorSpecs() []PreProcessor {
 	return []PreProcessor{
 		{
@@ -60,13 +68,6 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
-			Name:    "annotate-machine-storage",
-			Purpose: "Annotate direct machine local and global storage references.",
-			Machine: func(ctx *FuncContext) MachineBlockProcessor {
-				return &annotateMachineStorageProcessor{ctx: ctx}
-			},
-		},
-		{
 			Name:    "normalize-shifts",
 			Purpose: "Combine repeated shifts and convert non-bitwise left shifts to multiplications.",
 			Machine: func(*FuncContext) MachineBlockProcessor {
@@ -81,12 +82,40 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
+			Name:    "annotate",
+			Purpose: "Annotate direct machine local and global storage references.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &annotateProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "coalesce-copies",
 			Purpose: "Coalesce adjacent contiguous machine copy effects into wider copies.",
 			Machine: func(*FuncContext) MachineBlockProcessor {
 				return &coalesceCopiesProcessor{}
 			},
 		},
+		{
+			Name:    "collapse-widevalues",
+			Purpose: "Collapse wide values into 32 bit machine types.",
+			Func: func(ctx *FuncContext) MachineFuncProcessor {
+				return &collapseWideValues{ctx: ctx}
+			},
+		},
+		{
+			Name:    "collapse-widestores",
+			Purpose: "Collapse adjacent contiguous machine store effects into wider stores.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &collapseWideStoresProcessor{ctx: ctx}
+			},
+		},
+		// {
+		// 	Name:    "symbol-debug",
+		// 	Purpose: "Attempt to resolve all symbols after machine pre-processing.",
+		// 	Machine: func(ctx *FuncContext) MachineBlockProcessor {
+		// 		return &symbolDebugPostMachineProcessor{ctx: ctx}
+		// 	},
+		// },
 	}
 }
 
@@ -94,23 +123,16 @@ func PreProcessorSpecs() []PreProcessor {
 func ProcessorSpecs() []Processor {
 	return []Processor{
 		{
-			Name:    "resolve-storage",
-			Purpose: "Resolve local and global storage references.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveStorageProcessor{ctx: ctx}
-			},
-		},
-		{
 			Name:    "elide-scratch-slots",
 			Purpose: "Inline simple compiler scratch stack slots within a block.",
 			Sem:     func(*FuncContext) SemBlockProcessor { return &elideScratchSlotsProcessor{} },
 			Func:    func(*FuncContext) SemFuncProcessor { return &elideScratchSlotsProcessor{} },
 		},
 		{
-			Name:    "resolve-storage",
-			Purpose: "Resolve semantic memory references exposed by scratch-slot elision.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveStorageProcessor{ctx: ctx}
+			Name:    "union-context",
+			Purpose: "Resolve union context for dependent enums.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &unionContextProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -121,73 +143,10 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
-			Name:    "resolve-storage",
-			Purpose: "Resolve storage references before deriving path-sensitive contexts.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveStorageProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "resolve-enums",
-			Purpose: "Resolve enum constants using path-sensitive context.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveEnumsProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "establish-union-context",
-			Purpose: "Establish path-sensitive union and enum contexts for the whole function.",
-			Func: func(ctx *FuncContext) SemFuncProcessor {
-				return &unionContextProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "resolve-storage",
-			Purpose: "Resolve union-sensitive storage references.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveStorageProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "resolve-enums",
-			Purpose: "Resolve enum constants using path-sensitive context.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &resolveEnumsProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "collapse-wide-stores",
-			Purpose: "Collapse adjacent low/high word stores and matching wide word expressions.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &collapseWideStoresProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "normalize-assignment-addresses",
-			Purpose: "Normalize semantic assignment and return addresses before return sinking.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
-			},
-		},
-		{
 			Name:    "return-sink",
 			Purpose: "Sink top-level return merge arms into predecessor blocks.",
 			Func: func(*FuncContext) SemFuncProcessor {
 				return &returnSinkProcessor{}
-			},
-		},
-		{
-			Name:    "normalize-assignment-addresses",
-			Purpose: "Normalize semantic assignment and return addresses before merge lowering.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "normalize-call-args",
-			Purpose: "Normalize semantic call arguments before merge lowering.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &normalizeCallArgsProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -205,38 +164,10 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
-			Name:    "collapse-wide-stores",
-			Purpose: "Collapse wide stores exposed by coalesced merge temps.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &collapseWideStoresProcessor{ctx: ctx}
-			},
-		},
-		{
 			Name:    "materialize-branch-call-results",
 			Purpose: "Materialize wide call results reused by branch comparison chains.",
 			Func: func(*FuncContext) SemFuncProcessor {
 				return &branchCallResultProcessor{}
-			},
-		},
-		{
-			Name:    "collapse-call-results",
-			Purpose: "Inline single-use call results into their consuming semantic effect.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &collapseCallResultsProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "normalize-assignment-addresses",
-			Purpose: "Normalize semantically annotated assignment addresses.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &normalizeAssignmentAddressesProcessor{ctx: ctx}
-			},
-		},
-		{
-			Name:    "normalize-call-args",
-			Purpose: "Normalize semantically annotated call arguments.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &normalizeCallArgsProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -260,10 +191,10 @@ func ProcessorSpecs() []Processor {
 type ProcessorRunner struct {
 	ctx            *FuncContext
 	fn             *Func
-	machineEffects *machine.FuncEffects
 	preSpecs       []PreProcessor
 	specs          []Processor
 	onPass         func(PassSnapshot) error
+	machineEffects *machine.FuncEffects
 }
 
 // NewProcessorRunner creates a semantic processor runner.
@@ -283,18 +214,38 @@ func (runner *ProcessorRunner) WithPassSnapshots(onPass func(PassSnapshot) error
 	return runner
 }
 
-// Run applies semantic processors to the runner's function.
+// PreRun applies machine processors before semantic conversion.
 func (runner *ProcessorRunner) PreRun(result *Result) error {
-	for _, spec := range runner.preSpecs {
+	for i, spec := range runner.preSpecs {
+		if spec.Func != nil {
+			processor := spec.Func(runner.ctx)
+			processor.ProcessMachineFunc(result, runner.machineEffects)
+		}
+		if spec.Machine != nil {
+			processor := spec.Machine(runner.ctx)
+			for i := range runner.machineEffects.Blocks {
+				runner.ctx.SetCurrentBlock(runner.machineEffects.Blocks[i].Block)
 
-		processor := spec.Machine(runner.ctx)
-		for i := range runner.machineEffects.Blocks {
-			next, changed := processor.ProcessMachineBlock(result, *runner.machineEffects, runner.machineEffects.Blocks[i])
-			if changed {
-				runner.machineEffects.Blocks[i] = next
+				next, changed := processor.ProcessMachineBlock(result, *runner.machineEffects, runner.machineEffects.Blocks[i])
+				if changed {
+					runner.machineEffects.Blocks[i] = next
+				}
 			}
 		}
+
+		if runner.onPass != nil {
+			if err := runner.onPass(PassSnapshot{
+				Index:   i + 1,
+				Name:    spec.Name,
+				Result:  result,
+				Effects: runner.machineEffects,
+			}); err != nil {
+				return err
+			}
+		}
+
 	}
+	runner.ctx.ClearCurrentBlock()
 	return nil
 }
 
@@ -319,7 +270,7 @@ func (runner *ProcessorRunner) Run(result *Result) error {
 		}
 		if runner.onPass != nil {
 			if err := runner.onPass(PassSnapshot{
-				Index:  i + 1,
+				Index:  i + 1 + len(runner.preSpecs),
 				Name:   spec.Name,
 				Func:   *runner.fn,
 				Result: result,
@@ -333,7 +284,7 @@ func (runner *ProcessorRunner) Run(result *Result) error {
 
 // Lower processes machine effects and reports each semantic pass result.
 func Lower(ctx *FuncContext, effects *machine.FuncEffects, onPass func(PassSnapshot) error) (Func, *Result, error) {
-	result := newResult()
+	result := newResult(ctx.fs)
 	runner := NewProcessorRunner(ctx, nil).WithMachineEffects(effects).WithPassSnapshots(onPass)
 
 	// preprocess the machine effects
@@ -349,10 +300,11 @@ func Lower(ctx *FuncContext, effects *machine.FuncEffects, onPass func(PassSnaps
 }
 
 // newResult creates an empty semantic lowering and back-annotation result.
-func newResult() *Result {
+func newResult(function *typeinfo.Function) *Result {
 	return &Result{
 		Operands: make(map[machine.AnnotationKey]Annotation),
-		Memory:   make(map[string]Annotation),
+		Memory:   make(map[string][]Annotation),
 		Values:   make(map[string]Annotation),
+		function: function,
 	}
 }

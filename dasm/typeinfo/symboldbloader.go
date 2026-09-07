@@ -236,6 +236,11 @@ func Load(inputDir string, db *nb09.NB09DB) (*SymbolDB, error) {
 		return nil, err
 	}
 
+	// Load message payload rules after named override types are available.
+	if err := loader.loadMessages(inputDir); err != nil {
+		return nil, err
+	}
+
 	// apply enum overrides from enums.json
 	if err := loader.applyEnumOverrides(); err != nil {
 		return nil, err
@@ -272,6 +277,15 @@ func (l *symboldbLoader) loadUnions(inputDir string) error {
 	rules, err := unionLoader.loadUnionRules(filepath.Join(inputDir, "unions.json"), l.sdb)
 	if err != nil {
 		return err
+	}
+	files, err := filepath.Glob(filepath.Join(inputDir, "unions-*.json"))
+	if err != nil {
+		return fmt.Errorf("union extension files: %w", err)
+	}
+	for _, path := range files {
+		if err := unionLoader.appendUnionFunctionPathFacts(path, l.sdb, rules); err != nil {
+			return err
+		}
 	}
 	l.sdb.UnionRules = rules
 	return nil
@@ -799,6 +813,17 @@ func (l *symboldbLoader) loadDependentEnums(inputDir string) error {
 		return err
 	}
 	l.sdb.DependentEnumRules = rules
+	return nil
+}
+
+// loadMessages loads typed message payload rules after type aliases are registered.
+func (l *symboldbLoader) loadMessages(inputDir string) error {
+	enumLoader := enumLoader{}
+	messages, err := enumLoader.loadMessageRules(filepath.Join(inputDir, "enums.json"), l.sdb, l.typeResolver)
+	if err != nil {
+		return err
+	}
+	l.sdb.Messages = messages
 	return nil
 }
 

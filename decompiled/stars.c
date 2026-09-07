@@ -11,8 +11,8 @@ L_0000:
     hInst = hInstance;
     szBase[0] = 0;
     ini.wFlags = 0x0;
-    memset(&(tutor), 0x0, 0x2c);
-    memset(&(vtimer), 0x0, 0xa);
+    memset(tutor.wFlags, 0, 0x2c);
+    memset(vtimer.mdForce, 0, 0xa);
     vtimer.fAutoGenWhenIn = 1;
     if ((hPrevInstance != 0x0))
         goto L_0085;
@@ -256,7 +256,7 @@ L_0320:
     goto L_0311;
 
 L_0327:
-    pch = szBase;
+    pch = &(szBase);
 
 L_032c:
     if (((uint16_t)(*(lpT)) == 0))
@@ -311,7 +311,7 @@ L_03e9:
     t_merge_03ec_0001 = 0x0;
 
 L_03ec:
-    ini.wFlags = ((ini.wFlags & 0xfffd) | ((t_merge_03ec_0001 & 0x1) << 0x1));
+    ini.fCmdLine = t_merge_03ec_0001;
     goto L_050d;
     lpT = (lpT + 0x1);
 
@@ -326,7 +326,7 @@ L_041c:
     goto L_040d;
 
 L_0423:
-    pch = szPassLast;
+    pch = &(szPassLast);
 
 L_0428:
     if (((uint16_t)(*(lpT)) == 0))
@@ -372,7 +372,7 @@ L_050d:
     goto L_0168;
 
 L_0517:
-    pch = szBase;
+    pch = &(szBase);
 
 L_051c:
     if (((uint16_t)(*(lpT)) == 0))
@@ -398,7 +398,7 @@ L_0550:
     ini.fCmdLine = 0x1;
 
 L_0571:
-    PostMessage(hwndFrame, WM_STARS_STARTUP, 0x0, 0x0);
+    PostMessage(hwndFrame, WM_STARS_STARTUP, 0x0, 0);
 
 L_058a:
     if ((GetMessage(&(msg), 0x0, 0x0, 0x0) == 0))
@@ -481,7 +481,7 @@ int16_t FSetUpBatchProcessing() {
 
 L_06a4:
     fSuccess = 0;
-    penvMem = env;
+    penvMem = &(env);
     if ((setjmp(env) != 0))
         goto LError;
     else
@@ -490,12 +490,12 @@ L_06a4:
 L_06c9:
 
 L_06cf:
-    StreamOpen(szBase, 0x20);
+    StreamOpen(szBase, 32);
     cb = LOWORD(filelength(hf));
     lpchBatch = LpAlloc(cb, htPerm);
-    RgFromStream(&(lpchBatch), cb);
-    lpchBatchMac = &(lpchBatch[cb]);
-    pch = szBase;
+    RgFromStream(lpchBatch, cb);
+    lpchBatchMac = (lpchBatch + cb);
+    pch = &(szBase);
 
 L_0733:
     if (((uint16_t)(*(lpchBatch)) == 10))
@@ -575,7 +575,7 @@ L_0800:
         goto L_080b;
 
 L_080b:
-    if ((((rgplr[i].wFlags >> 0x2) & 0x1) == 0x0))
+    if ((rgplr[i].fCheater == 0x0))
         goto L_07f1;
     else
         goto L_0828;
@@ -593,7 +593,7 @@ L_0867:
         goto L_0870;
 
 L_0870:
-    if ((fmemcmp(&(vrgts[iplr].rgbConfig), &(vrgts[i].rgbConfig), 0xb) == 0))
+    if ((fmemcmp(vrgts[iplr].rgbConfig, vrgts[i].rgbConfig, 0xb) == 0))
         goto L_07f1;
     else
         goto L_08bc;
@@ -682,19 +682,19 @@ L_097f:
     FreeHbr(hbrDesktop);
 
 L_098b:
-    crButtonFace = GetSysColor(0xf);
+    crButtonFace = GetSysColor(15);
     hbrButtonFace = HbrGet(crButtonFace);
-    crButtonHilite = GetSysColor(0x14);
+    crButtonHilite = GetSysColor(20);
     hbrButtonHilite = HbrGet(crButtonHilite);
-    crButtonShadow = GetSysColor(0x10);
+    crButtonShadow = GetSysColor(16);
     hbrButtonShadow = HbrGet(crButtonShadow);
-    crButtonText = GetSysColor(0x12);
+    crButtonText = GetSysColor(18);
     hbrButtonText = HbrGet(crButtonText);
-    hbrWindowFrame = HbrGet(GetSysColor(0x6));
-    hbrDesktop = HbrGet(GetSysColor(0x1));
-    crWindow = GetSysColor(0x5);
+    hbrWindowFrame = HbrGet(GetSysColor(6));
+    hbrDesktop = HbrGet(GetSysColor(1));
+    crWindow = GetSysColor(5);
     hbrWindow = HbrGet(crWindow);
-    crWindowText = GetSysColor(0x8);
+    crWindowText = GetSysColor(8);
     hbrWindowText = HbrGet(crWindowText);
     dyTitleBar = GetSystemMetrics(SM_CYCAPTION);
     dxWinFrame = GetSystemMetrics(SM_CXFRAME);
@@ -706,9 +706,9 @@ L_098b:
 
 L_0ab7:
     lpbi = GlobalLock(hdibPlaque);
-    *(lpbi + 0x40e) = LOBYTE(LOWORD(crButtonFace));
-    *(lpbi + 0x40d) = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    *(lpbi + 0x40c) = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    /* untranslated: part[0x40e:1](lpbi) = lobyte(LOWORD(crButtonFace)) */
+    /* untranslated: part[0x40d:1](lpbi) = lobyte((LOWORD(crButtonFace) >> 0x8)) */
+    /* untranslated: part[0x40c:1](lpbi) = lobyte(loword((uint32_t)(crButtonFace >> 0x10))) */
     GlobalUnlock(hdibPlaque);
 
 L_0b09:
@@ -719,19 +719,18 @@ L_0b09:
 
 L_0b13:
     lpbi = GlobalLock(hdibToolbar);
-    *(lpbi + 0x41e) = LOBYTE(LOWORD(crButtonFace));
-    *(lpbi + 0x41d) = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    *(lpbi + 0x41c) = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    /* untranslated: part[0x41e:1](lpbi) = lobyte(LOWORD(crButtonFace)) */
+    /* untranslated: part[0x41d:1](lpbi) = lobyte((LOWORD(crButtonFace) >> 0x8)) */
+    /* untranslated: part[0x41c:1](lpbi) = lobyte(loword((uint32_t)(crButtonFace >> 0x10))) */
     GlobalUnlock(hdibToolbar);
 
 L_0b65:
     hdc = GetDC(0x0);
-    /* untranslated: ss:[bp-0x6] = GetDeviceCaps(hdc, BITSPIXEL) */
-    /* untranslated: vcScreenColors = loword((ss:[bp-0x6] * GetDeviceCaps(hdc, PLANES))) */
+    vcScreenColors = LOWORD((GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES)));
     ReleaseDC(0x0, hdc);
 
 L_0ba8:
-    return 0x1;
+    return 1;
 }
 
 void FreeStuff() {
@@ -1036,9 +1035,9 @@ L_0ffa:
         goto L_1003;
 
 L_1003:
-    FreeLp(&(lpLog), htLog);
+    FreeLp(lpLog, htLog);
     lpLog = 0x0;
-    FreeLp(&(lpMsg), htMsg);
+    FreeLp(lpMsg, htMsg);
     lpMsg = 0x0;
     DeleteObject(vhpal);
     if ((vhpalSplash == 0x0))
@@ -1196,7 +1195,7 @@ L_130c:
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
-    IntersectClipRect(hdc, 0x0, 0x0, rc.right, rc.bottom);
+    IntersectClipRect(hdc, 0, 0, rc.right, rc.bottom);
     rc.top = (rc.top - iAboutPartial);
     rc.bottom = (rc.top + dyArial8);
     i = iAbout1st;
@@ -1224,7 +1223,7 @@ L_13a8:
         goto L_13b1;
 
 L_13b1:
-    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), 0xffff);
+    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), -1);
     goto L_13e3;
 
 L_13d7:
@@ -1236,7 +1235,7 @@ L_13d7:
 L_13dd:
 
 L_13e3:
-    OffsetRect(&(rc), 0x0, dyArial8);
+    OffsetRect(&(rc), 0, dyArial8);
     goto L_138d;
 
 L_13fa:
@@ -1271,7 +1270,7 @@ L_146a:
 L_1473:
     KillTimer(hwnd, uTimerId);
     uTimerId = 0x0;
-    EndDialog(hwnd, 0x1);
+    EndDialog(hwnd, 1);
     return 0x1;
 
 L_149a:
@@ -1282,8 +1281,8 @@ L_149a:
 
 L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst);
-    DialogBox(hInst, IDD_ORDER_INFO, hwnd, &(lpProc));
-    FreeProcInstance(&(lpProc));
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
+    FreeProcInstance(lpProc);
 
 L_14e5:
     if ((message == WM_ERASEBKGND))
@@ -1353,7 +1352,7 @@ L_1593:
         goto L_159c;
 
 L_159c:
-    EndDialog(hwnd, 0x1);
+    EndDialog(hwnd, 1);
     return 0x1;
 
 L_15b4:
@@ -1487,7 +1486,7 @@ L_16a6:
         goto L_16b0;
 
 L_16b0:
-    SendMessage(hwndPopup, WM_LBUTTONUP, 0x0, 0x0);
+    SendMessage(hwndPopup, WM_LBUTTONUP, 0x0, 0);
     return 0x1;
 
 L_16cf:
@@ -1580,7 +1579,7 @@ L_1772:
         goto L_1797;
 
 L_1797:
-    SendMessage(hwndOver, WM_SETCURSOR, hwndOver, 0x0);
+    SendMessage(hwndOver, WM_SETCURSOR, hwndOver, 0);
 
 L_17ae:
     if ((iMsg == 256))
@@ -1820,8 +1819,8 @@ L_195d:
         goto L_1974;
 
 L_1974:
-    ExecuteButton((iKey - 49), 0x1);
-    InvalidateRect(hwndTb, 0x0, 0x0);
+    ExecuteButton((iKey - 49), 1);
+    InvalidateRect(hwndTb, 0x0, 0);
 
 L_199c:
     return 0x1;
@@ -1842,7 +1841,7 @@ L_19b8:
     goto L_1a07;
 
 L_19c0:
-    if ((GetKeyState(0x10) >= 0))
+    if ((GetKeyState(16) >= 0))
         goto L_19d9;
     else
         goto L_19d1;
@@ -1893,7 +1892,7 @@ L_1a20:
 
 L_1a23:
     ExecuteButton(itb, t_merge_1a23_0001);
-    InvalidateRect(hwndTb, 0x0, 0x0);
+    InvalidateRect(hwndTb, 0x0, 0);
     return 0x1;
 
 L_1a4a:
@@ -1910,7 +1909,7 @@ L_1a56:
 
 L_1a60:
     iKey = 8;
-    DeleteCurWayPoint(0x8);
+    DeleteCurWayPoint(8);
 
 L_1a74:
     if ((hwndF != hwndShipLB))
@@ -1958,7 +1957,7 @@ L_1acf:
 
 L_1ad2:
     iwp = t_merge_1ad2_0001;
-    iWarp = sel.fl.lpplord->rgord[iwp].iWarp;
+    /* untranslated: iWarp = ((part[0xa:2](sel.fl.lpplord[iwp*0x12]) >> 0x4) & 0xf) */
     if ((iKey != 188))
         goto L_1b0f;
     else
@@ -1984,9 +1983,9 @@ L_1b1c:
         goto L_1b25;
 
 L_1b25:
-    /* untranslated: part[6:2](sel.fl.lpplord->rgord[iwp]) = ((part[6:2](sel.fl.lpplord->rgord[iwp]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
-    FLookupFleet(0xffff, &(sel.fl));
-    DrawPlanShip(0x0, 0x4220);
+    /* untranslated: part[0xa:2](sel.fl.lpplord[iwp*0x12]) = ((part[0xa:2](sel.fl.lpplord[iwp*0x12]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
+    FLookupFleet(-1, sel.fl.id);
+    DrawPlanShip(0x0, 16928);
 
 L_1b9a:
     return 0x1;
@@ -2007,7 +2006,7 @@ L_1bba:
     t_merge_1bbd_0001 = 0xffff;
 
 L_1bbd:
-    ExecuteReportClick(pt, 0x2, 0x0, t_merge_1bbd_0001);
+    ExecuteReportClick(pt, 2, 0, t_merge_1bbd_0001);
     return 0x1;
 
 L_1bdd:

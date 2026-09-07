@@ -1,7 +1,9 @@
 int16_t FGetBestDefensePart(PART *ppart) {
-    int16_t fRet;
-    int16_t i;
-    PART    part;
+    int16_t  fRet;
+    int16_t  i;
+    PART     part;
+    uint16_t scratch_bp_m10;
+    uint16_t scratch_bp_m12;
 
 L_21f6:
     fRet = 1;
@@ -12,10 +14,10 @@ L_21f6:
 
 L_221d:
     i = (i + 1);
-    /* untranslated: ss:[bp-0x10] = part.hs.iItem */
-    /* untranslated: ss:[bp-0x12] = ((HIWORD(part.hs) + 0x1) & 0xff) */
-    part.hs.iItem = iplanetaryViewer50;
-    /* untranslated: HIWORD(part.hs) = (HIWORD(part.hs) | ss:[bp-0x12]) */
+    scratch_bp_m10 = part.hs.iItem;
+    scratch_bp_m12 = ((HIWORD(part.hs) + 0x1) & 0xff);
+    part.hs.iItem = 0x0;
+    HIWORD(part.hs) = (HIWORD(part.hs) | scratch_bp_m12);
 
 L_2250:
     if ((i >= 5))

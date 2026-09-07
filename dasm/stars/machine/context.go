@@ -2,16 +2,21 @@ package machine
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
-	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+type symbolResolver interface {
+	ResolveFloatLiteral(seg int, off uint32, bytes int) (float64, bool)
+	ResolveFunction(fixup *asm.Fixup) (*typeinfo.Function, bool)
+	ResolveLocalFunctionPtr(f *typeinfo.Function, instOff uint32, bpDisp int) (*typeinfo.Function, bool)
+}
 
 // FuncContext is sem's analysis context. It carries only symbol/image facts
 // needed for semantic extraction and intentionally excludes asm pipeline state.
 type FuncContext struct {
 	img   *asm.ImageNE
 	sdb   *typeinfo.SymbolDB
-	res   *symresolve.Resolver
+	res   symbolResolver
 	fs    *typeinfo.Function
 	ssReg Value
 	dsReg Value
@@ -20,7 +25,7 @@ type FuncContext struct {
 
 // NewFuncContext is transitional; prefer ProgramContext.NewSemFuncContext
 // at real pipeline entry points so shared services have one owner.
-func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Resolver, fs *typeinfo.Function) *FuncContext {
+func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res symbolResolver, fs *typeinfo.Function) *FuncContext {
 	ctx := &FuncContext{
 		img:   img,
 		sdb:   sdb,

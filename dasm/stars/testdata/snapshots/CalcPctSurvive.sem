@@ -37,9 +37,8 @@ L_0345:
     branch FGetBestDefensePart(&part) == 0 ? L_0473 : L_0369
 
 L_0369:
-    LOWORD(cDefenses) = lppl->cDefenses
-    HIWORD(cDefenses) = 0x0
-    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0x0)
+    cDefenses = lppl->cDefenses
+    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0)
     branch signhiword(cMax) > HIWORD(cDefenses) ? L_03bf : L_03a8
 
 L_03a8:

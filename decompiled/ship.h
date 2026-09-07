@@ -20,7 +20,7 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat);
 void    DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit);
 void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame, int16_t ibmp, int16_t cDiff, int16_t fShrink, int16_t ibmpRace, int16_t csh);
 int16_t  FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet);
-int16_t  TransferStuff(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass grobj2, int16_t mdXfer);
+int16_t  TransferStuff(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass grobj2, MdXfer mdXfer);
 int16_t  TransferDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
 int16_t  FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb);
 int32_t  GetCargoFree(FLEET *lpfl);

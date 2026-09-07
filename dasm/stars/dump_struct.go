@@ -149,5 +149,3 @@ func hardStructDep(typ typeinfo.Type, byName map[string]*typeinfo.Struct) (*type
 		return nil, false
 	}
 }
-
-

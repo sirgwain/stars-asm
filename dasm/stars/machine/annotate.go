@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
-	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 type OperandRole uint8
@@ -55,10 +54,8 @@ func resolveInstMetadata(ctx *FuncContext, insts []asm.DecodedInst) (map[uint32]
 				// mem load like CALLF [bp+0x6]
 				if inst.Src.Mem.Base == asm.RegBP {
 					// check for a local var function pointer
-					if local, ok := ctx.res.ResolveLocal(ctx.fs, inst.Off, inst.Src.Mem.Disp); ok {
-						if callTarget, ok := typeinfo.GetFunctionPointerFunction(local.Local.Type); ok {
-							calls[inst.Off] = &InstCall{Target: callTarget}
-						}
+					if callTarget, ok := ctx.res.ResolveLocalFunctionPtr(ctx.fs, inst.Off, inst.Src.Mem.Disp); ok {
+						calls[inst.Off] = &InstCall{Target: callTarget}
 					}
 				}
 			}

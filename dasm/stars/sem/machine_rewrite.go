@@ -4,7 +4,7 @@ import "github.com/sirgwain/stars-asm/dasm/stars/machine"
 
 type machineEffectRewrite func(*machineRewriter, machine.Effect) (machine.Effect, bool, bool)
 type machineValueRewrite func(*machineRewriter, machine.Value) (machine.Value, bool, bool)
-type machineMemoryRewrite func(*machineRewriter, machine.MemoryAccess) (machine.MemoryAccess, bool, bool)
+type machineMemoryRewrite func(*machineRewriter, machine.MemoryAddress) (machine.MemoryAddress, bool, bool)
 
 type machineRewriter struct {
 	effect machineEffectRewrite
@@ -172,15 +172,15 @@ func (w *machineRewriter) rewriteMachineValueChildren(value machine.Value) (mach
 		}
 		return machine.BinaryResult(v.Op, lhs, rhs), true
 	case *machine.Load:
-		access, changed := w.rewriteMachineMemory(v.Access)
+		access, changed := w.rewriteMachineMemory(v.Addr)
 		if !changed {
 			return value, false
 		}
 		next := *v
-		next.Access = access
+		next.Addr = access
 		return &next, true
 	case *machine.Address:
-		access, changed := w.rewriteMachineMemory(v.Access)
+		access, changed := w.rewriteMachineMemory(v.Addr)
 		if !changed {
 			return value, false
 		}
@@ -243,8 +243,11 @@ func (w *machineRewriter) rewriteMachinePredicate(predicate *machine.PredicateVa
 	return &next, true
 }
 
-// rewriteMachineMemory rewrites a machine memory access.
-func (w *machineRewriter) rewriteMachineMemory(mem machine.MemoryAccess) (machine.MemoryAccess, bool) {
+// rewriteMachineMemory rewrites a machine memory address.
+func (w *machineRewriter) rewriteMachineMemory(mem machine.MemoryAddress) (machine.MemoryAddress, bool) {
+	if mem == (machine.MemoryAddress{}) {
+		return mem, false
+	}
 	if w.memory != nil {
 		if next, changed, handled := w.memory(w, mem); handled {
 			return next, changed
@@ -254,7 +257,7 @@ func (w *machineRewriter) rewriteMachineMemory(mem machine.MemoryAccess) (machin
 }
 
 // rewriteMachineMemoryChildren rewrites value-bearing memory fields.
-func (w *machineRewriter) rewriteMachineMemoryChildren(mem machine.MemoryAccess) (machine.MemoryAccess, bool) {
+func (w *machineRewriter) rewriteMachineMemoryChildren(mem machine.MemoryAddress) (machine.MemoryAddress, bool) {
 	changed := false
 	if next, ok := w.rewriteMachineValue(mem.Seg); ok {
 		mem.Seg = next

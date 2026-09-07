@@ -173,7 +173,7 @@ L_546d:
     return 0x0;
 
 L_5473:
-    ppart->phul = &(rghuldef[hs.iItem]);
+    ppart->phul = &(rghuldef[hs.iItem].hul);
     if ((idPlayer == -1))
         goto L_609c;
     else
@@ -372,20 +372,20 @@ L_5670:
     return 0x0;
 
 L_5676:
-    ppart->pcom = &(rghuldefSB[hs.iItem]);
+    ppart->phul = &(rghuldefSB[hs.iItem].hul);
     if ((idPlayer == -1))
         goto L_609c;
     else
         goto L_569b;
 
 L_569b:
-    if ((hs.iItem == 0x1))
+    if ((hs.iItem == ihuldefMediumFreighter))
         goto L_56b7;
     else
         goto L_56a9;
 
 L_56a9:
-    if ((hs.iItem != 0x3))
+    if ((hs.iItem != ihuldefSuperFreighter))
         goto L_56de;
     else
         goto L_56b7;
@@ -400,7 +400,7 @@ L_56d8:
     return 0xffff;
 
 L_56de:
-    if ((hs.iItem != 0x4))
+    if ((hs.iItem != ihuldefScout))
         goto L_609c;
     else
         goto L_56ec;

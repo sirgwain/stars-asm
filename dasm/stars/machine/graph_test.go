@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
-	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -295,7 +294,6 @@ func retForGraphTest(off uint32) asm.DecodedInst {
 }
 
 func ctxForGraphTest() *FuncContext {
-	img := &asm.ImageNE{}
 	sdb := &typeinfo.SymbolDB{}
-	return NewFuncContext(nil, sdb, symresolve.NewResolver(img, sdb), &typeinfo.Function{})
+	return NewFuncContext(nil, sdb, &testSymResolver{}, &typeinfo.Function{})
 }

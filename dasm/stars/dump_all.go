@@ -28,6 +28,10 @@ type DumpAllAnalysis struct {
 	IR ir.AnalyzeResult `json:"ir,omitzero"`
 }
 
+type UnionFunctionPathFacts struct {
+	FunctionPathFacts []typeinfo.FunctionPathFactJSON `json:"function_path_facts"`
+}
+
 func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (DumpAllResult, error) {
 	result := DumpAllResult{OutDir: opt.OutDir}
 
@@ -54,6 +58,9 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 	result.Functions = make(map[string]DumpAllAnalysis, len(funcs))
 	funcAnalyses := make(map[string]FuncAnalysis, len(funcs))
 	funcIRBodies := make(map[string]string, len(funcs))
+	funcPathFacts := UnionFunctionPathFacts{
+		FunctionPathFacts: make([]typeinfo.FunctionPathFactJSON, 0, len(funcs)),
+	}
 
 	if opt.EmitStructs {
 		structsPath := filepath.Join(opt.OutDir, "structs.h")
@@ -215,6 +222,12 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		result.Analysis.IR.UntranslatedBranch += analysis.IRAnalysis.UntranslatedBranch
 		result.Analysis.IR.UntranslatedPart += analysis.IRAnalysis.UntranslatedPart
 		result.Analysis.IR.UntranslatedScratch += analysis.IRAnalysis.UntranslatedScratch
+
+		// collect function path facts into a separate list
+		funcPathFacts.FunctionPathFacts = append(funcPathFacts.FunctionPathFacts, analysis.SemAnalysis.FunctionPathFacts...)
+		analysis.SemAnalysis.FunctionPathFacts = nil
+
+		// collect per function analysis
 		result.Functions[function.Name] = DumpAllAnalysis{AnalyzeResult: analysis.SemAnalysis, IR: analysis.IRAnalysis}
 
 		if opt.EmitASM {
@@ -310,6 +323,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		}
 	}
 
+	// dump analysis
 	path := filepath.Join(opt.OutDir, "analysis.json")
 	f, err := os.Create(path)
 	if err != nil {
@@ -317,9 +331,26 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 	}
 
 	slog.Debug("Dumping analysis", "path", path)
-	json := json.NewEncoder(f)
-	json.SetIndent("", "  ")
-	if err := json.Encode(result); err != nil {
+	unionsJson := json.NewEncoder(f)
+	unionsJson.SetIndent("", "  ")
+	if err := unionsJson.Encode(result); err != nil {
+		f.Close()
+		return DumpAllResult{}, err
+	}
+	if err := f.Close(); err != nil {
+		return result, fmt.Errorf("close %s: %w", path, err)
+	}
+
+	path = filepath.Join(opt.OutDir, "unions-blockfacts-generated.json")
+	f, err = os.Create(path)
+	if err != nil {
+		return DumpAllResult{}, err
+	}
+
+	slog.Debug("Dumping function path facts", "path", path)
+	unionsJson = json.NewEncoder(f)
+	unionsJson.SetIndent("", "  ")
+	if err := unionsJson.Encode(funcPathFacts); err != nil {
 		f.Close()
 		return DumpAllResult{}, err
 	}

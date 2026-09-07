@@ -42,7 +42,7 @@ L_2534:
         goto L_255c;
 
 L_255c:
-    if ((*(rglpfl[i] + 0x2) == 0x0))
+    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_2606;
     else
         goto L_2564;
@@ -92,7 +92,7 @@ L_25bc:
         goto L_25c5;
 
 L_25c5:
-    pxf->fl = *(lpfl);
+    pxf->fl = lpfl;
     pxf->grobj = grobjFleet;
     pxf->id = lpfl->id;
 
@@ -101,7 +101,7 @@ L_25fd:
 
 L_2606:
     lpth = lpThings;
-    lpthMac = &(lpThings[cThing]);
+    lpthMac = (lpThings + LOWORD((0x12 * cThing)));
     goto L_26c4;
 
 L_2631:
@@ -137,7 +137,7 @@ L_2679:
         goto L_2682;
 
 L_2682:
-    pxf->th = *(lpth);
+    pxf->th = lpth;
     pxf->grobj = grobjThing;
     pxf->id = lpth->idFull;
 
@@ -145,7 +145,7 @@ L_26ba:
     return 0x1;
 
 L_26c0:
-    lpth = (lpth + 0x1);
+    lpth = (lpth + 0x12);
 
 L_26c4:
     if ((LOWORD(lpth) < LOWORD(lpthMac)))

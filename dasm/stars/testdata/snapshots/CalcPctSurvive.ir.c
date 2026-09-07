@@ -41,9 +41,8 @@ L_0345:
         goto L_0369;
 
 L_0369:
-    LOWORD(cDefenses) = lppl->cDefenses;
-    HIWORD(cDefenses) = 0x0;
-    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0x0);
+    cDefenses = lppl->cDefenses;
+    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
     if ((SIGNHIWORD(cMax) > HIWORD(cDefenses)))
         goto L_03bf;
     else

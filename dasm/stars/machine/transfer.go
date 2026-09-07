@@ -31,7 +31,7 @@ func (ctx *extractor) processBlock(stIn *state, cfg *CFG, blk *Block) (*state, [
 // It intentionally does not emit sem.Events or choose final C lvalues.
 func (ctx *extractor) processInst(st *state, cfg *CFG, blk *Block, instrs []asm.DecodedInst, instIdx int) []Effect {
 	inst := instrs[instIdx]
-	meta := Meta{BlockID: blk.ID, InstOff: inst.Off}
+	meta := Meta{BlockID: blk.ID, InstOff: inst.Off, InstOp: inst.Op, InstLen: inst.Len}
 
 	if inst.Mnemonic == "DW" {
 		return nil
@@ -159,6 +159,7 @@ func (ctx *extractor) handleCALLF(st *state, call *InstCall, next *asm.DecodedIn
 	case 1:
 		st.writeReg(asm.RegAX, result)
 	case 2:
+		// TODO: remove this?
 		if typeinfo.IsFarPointer(target.Ret) {
 			st.writeReg(asm.RegAX, FarPointerVal(result, FarPointerOffset))
 			st.writeReg(asm.RegDX, FarPointerVal(result, FarPointerSegment))
@@ -202,7 +203,7 @@ func (ctx *extractor) handleCALLFUnknown(st *state, inst asm.DecodedInst, next *
 	}
 	rawWords := st.popStackWords(int((poppedBytes + 1) / 2))
 
-	var access MemoryAccess
+	var access MemoryAddress
 	if inst.Src.Kind == asm.OKMem {
 		access = st.memoryAccessFromOperand(inst.Off, OperandDst, inst.Src)
 	}
@@ -402,7 +403,7 @@ func (ctx *extractor) handleIMULrm(st *state, inst asm.DecodedInst) {
 
 // handleDIV applies one-operand word DIV/IDIV into AX quotient and DX remainder.
 func (ctx *extractor) handleDIV(st *state, inst asm.DecodedInst, signed bool) {
-	dividend := stackWordsValue([]Value{st.readReg(asm.RegAX), st.readReg(asm.RegDX)})
+	dividend := stackWordsValue([]Value{st.readReg(asm.RegDX), st.readReg(asm.RegAX)})
 	divisor := st.readOperand(inst.Off, OperandSrc, inst.Src)
 	quotient, remainder := divWordResult(dividend, divisor, signed)
 
@@ -730,7 +731,7 @@ func isByteWideValue(v Value) bool {
 	case *Const:
 		return x.Val&^uint(0xff) == 0
 	case *Load:
-		return x.Access.Width == 1
+		return x.Addr.Width == 1
 	case *ByteValue:
 		return x.Value == nil
 	}
@@ -830,7 +831,7 @@ func (ctx *extractor) handleRET(st *state, meta Meta) []Effect {
 		case 1:
 			retVal = st.readReg(asm.RegAX)
 		case 2:
-			retVal = typedWordsValue([]Value{st.readReg(asm.RegAX), st.readReg(asm.RegDX)}, ctx.fs.Ret)
+			retVal = stackWordsValue([]Value{st.readReg(asm.RegDX), st.readReg(asm.RegAX)})
 		default:
 			retVal = UnknownVal("return")
 		}

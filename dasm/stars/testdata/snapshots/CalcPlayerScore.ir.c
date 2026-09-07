@@ -10,13 +10,15 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     int16_t  iTech;
     int32_t  lPower;
     int16_t  rgType[16];
-    uint32_t t_merge_5cf5_0001;
-    uint32_t t_merge_5cf5_0002;
+    int32_t  t_merge_5cf5_0001;
+    int32_t  t_merge_5cf5_0002;
+    uint16_t scratch_bp_m60;
+    uint16_t scratch_bp_m5e;
 
 L_58a6:
-    memset(score, 0x0, 0x14);
+    memset(&(score), 0, 0x14);
     lppl = lpPlanets;
-    lpplMac = &(lpPlanets[cPlanet]);
+    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
     goto L_59c9;
 
 L_58ee:
@@ -29,7 +31,7 @@ L_58fa:
 
 L_5900:
     score.cPlanet = (score.cPlanet + 1);
-    /* untranslated: lTemp = (int32_t)(words((HIWORD(lppl->rgwtMin[0x3]) + 0x0), (LOWORD(lppl->rgwtMin[0x3]) + 0x3e7)) / 0x3e8) */
+    lTemp = (int32_t)(((lppl->rgwtMin[3] + 999) / 0x3e8));
     if ((HIWORD(lTemp) < 0x0))
         goto L_594b;
     else
@@ -70,7 +72,7 @@ L_59ad:
     score.cResources = (score.cResources + (uint32_t)(CResourcesAtPlanet(lppl, iPlr)));
 
 L_59c5:
-    lppl = (lppl + 0x1);
+    lppl = (lppl + 0x38);
 
 L_59c9:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -80,9 +82,8 @@ L_59c9:
 
 L_59d7:
     score.lScore = (score.lScore + (int32_t)((score.cResources / 30)));
-    LOWORD(score.lScore) = (LOWORD(score.lScore) + LOWORD((0x3 * score.cStarbase)));
-    HIWORD(score.lScore) = (HIWORD(score.lScore) + SIGNHIWORD(LOWORD((0x3 * score.cStarbase))));
-    if (((rgplr[iPlr].wFlags & 0x1) != 0x0))
+    score.lScore = (score.lScore + (uint32_t)(LOWORD((0x3 * score.cStarbase))));
+    if ((rgplr[iPlr].fDead != 0x0))
         goto L_5aa7;
     else
         goto L_5a16;
@@ -140,7 +141,7 @@ L_5aa7:
     goto L_5b77;
 
 L_5aaf:
-    if ((((rglpshdef[iPlr][i].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rglpshdef[iPlr][i].fFree == 0x0))
         goto L_5aed;
     else
         goto L_5adc;
@@ -241,7 +242,7 @@ L_5bc1:
         goto L_5be9;
 
 L_5be9:
-    if ((*(rglpfl[ifl] + 0x2) == 0x0))
+    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_5c93;
     else
         goto L_5bf1;
@@ -265,10 +266,7 @@ L_5c1a:
     goto L_5c87;
 
 L_5c22:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_5c83;
-    else
-        goto L_5c3f;
+    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_5c83 : L_5c3f */
 
 L_5c3f:
     if ((rgType[i] == -1))
@@ -277,7 +275,7 @@ L_5c3f:
         goto L_5c51;
 
 L_5c51:
-    rgcsh[rgType[i]] = (rgcsh[rgType[i]] + (uint32_t)(lpfl->rgcsh[i]));
+    /* untranslated: rgcsh[rgType[i]] = (rgcsh[rgType[i]] + sext16to32(part[0xc:2](lpfl[i*0x2]))) */
 
 L_5c83:
     i = (i + 1);
@@ -341,8 +339,8 @@ L_5cf1:
     t_merge_5cf5_0002 = (uint32_t)(score.cPlanet);
 
 L_5cf5:
-    /* untranslated: LOWORD(score.lScore) = (LOWORD(score.lScore) + (loword((int32_t)(t_merge_5cf5_0001 / 0x2)) + ss:[bp-0x60])) */
-    /* untranslated: HIWORD(score.lScore) = (HIWORD(score.lScore) + (hiword((int32_t)(t_merge_5cf5_0002 / 0x2)) + ss:[bp-0x5e])) */
+    LOWORD(score.lScore) = (LOWORD(score.lScore) + (LOWORD((int32_t)((t_merge_5cf5_0001 / 0x2))) + scratch_bp_m60));
+    HIWORD(score.lScore) = (HIWORD(score.lScore) + (HIWORD((int32_t)((t_merge_5cf5_0002 / 0x2))) + scratch_bp_m5e));
     if ((HIWORD(rgcsh[0x2]) < 0x0))
         goto L_5d57;
     else
@@ -361,8 +359,7 @@ L_5d1a:
         goto L_5d23;
 
 L_5d23:
-    /* untranslated: score.lScore = (score.lScore + (int32_t)((uint32_t)((int32_t)(rgcsh[2] * 8) * sext16to32(score.cPlanet)) / words((signhiword(score.cPlanet)
-     * + HIWORD(rgcsh[0x2])), (score.cPlanet + LOWORD(rgcsh[0x2]))))) */
+    score.lScore = (score.lScore + (int32_t)(((uint32_t)(((int32_t)((rgcsh[2] * 8)) * (uint32_t)(score.cPlanet))) / ((uint32_t)(score.cPlanet) + rgcsh[2]))));
 
 L_5d57:
     i = 0;

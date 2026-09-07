@@ -499,7 +499,7 @@ block L_6402:
   preds: L_63f9
   succs: L_6425
   effects:
-    640a  call GetFuelFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
+    640a  call GetFuelFree(words(ds, load([bp-pfl]))) -> callresult(int32_t)
     6412  goto L_6425
 
 block L_6415:
@@ -507,7 +507,7 @@ block L_6415:
   preds: L_63f9
   succs: L_6425
   effects:
-    641d  call GetCargoFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
+    641d  call GetCargoFree(words(ds, load([bp-pfl]))) -> callresult(int32_t)
 
 block L_6425:
   insts 362..363  off 0x6425..0x6429
@@ -549,7 +549,7 @@ block L_644c:
   preds: L_6443
   succs: L_646f
   effects:
-    6454  call GetFuelFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
+    6454  call GetFuelFree(words(ds, load([bp-pfl]))) -> callresult(int32_t)
     645c  goto L_646f
 
 block L_645f:
@@ -557,7 +557,7 @@ block L_645f:
   preds: L_6443
   succs: L_646f
   effects:
-    6467  call GetCargoFree(farptr(ds, load([bp-pfl]))) -> callresult(int32_t)
+    6467  call GetCargoFree(words(ds, load([bp-pfl]))) -> callresult(int32_t)
 
 block L_646f:
   insts 389..401  off 0x646f..0x6491
@@ -606,4 +606,4 @@ block L_64c6:
   insts 419..423  off 0x64c6..0x64cb
   preds: L_60b1, L_60cc, L_61c9, L_61ed, L_6364, L_64bd
   effects:
-    64cb  return merge(Join: L_64c6, (L_60b1:words(0x0, 0x0), L_60cc:words(load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_61c9:words(0x0, 0x0), L_61ed:words(load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]), signhiword(load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))]))), L_6364:words(load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))]), load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2])), L_64bd:words(load([bp+0xc]), load([bp+0xe]))))
+    64cb  return merge(Join: L_64c6, (L_60b1:words(0x0, 0x0), L_60cc:words(load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2]), load(ds:[((load([bp-0x8a]) + 0x1c) + ((load([bp+0xa]) << 0x1) << 0x1))])), L_61c9:words(0x0, 0x0), L_61ed:words(signhiword(load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))])), load(ds:[((load([bp-0x4]) + 0x8) + (load([bp+0xa]) << 0x1))])), L_6364:words(load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))+0x2]), load(ds:[((load([bp-0x88]) + 0x4c) + ((load([bp+0xa]) << 0x1) << 0x1))])), L_64bd:words(load([bp+0xe]), load([bp+0xc]))))

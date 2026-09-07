@@ -24,14 +24,14 @@ L_0034:
 
 L_0051:
     AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    longjmp(penvMem, 0xffff);
+    longjmp(penvMem, -1);
 
 L_0082:
     lphb = GlobalLock(hmem);
     lphb->hmem = hmem;
     lphb->cbBlock = cb;
     lphb->cbSlop = (cb + 0xfff0);
-    lphb->cbFree = (cb + 0xfff0);
+    LOWORD(lphb) = (cb + 0xfff0);
     lphb->ibTop = 0x10;
     lphb->ht = LOBYTE(ht);
     lphb->lphbNext = rglphb[ht];
@@ -93,7 +93,7 @@ L_017b:
 
 LReAllocOOM:
     AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    longjmp(penvMem, 0xffff);
+    longjmp(penvMem, -1);
 
 L_01db:
     lphbNew = GlobalLock(hmem);
@@ -149,7 +149,7 @@ L_029b:
 
 L_02ac:
     lphbNew->cbBlock = (lphbNew->cbBlock + cbGrow);
-    lphbNew->cbFree = (lphbNew->cbFree + cbGrow);
+    LOWORD(lphbNew) = (lphbNew->cbFree + cbGrow);
     lphbNew->cbSlop = (lphbNew->cbSlop + cbGrow);
     return lphbNew;
 }
@@ -205,7 +205,7 @@ L_0348:
 L_0369:
     lphb->ibTop = 0x10;
     lphb->cbSlop = (lphb->cbBlock + 0xfff0);
-    lphb->cbFree = (lphb->cbBlock + 0xfff0);
+    LOWORD(lphb) = (lphb->cbBlock + 0xfff0);
     lphb = lphb->lphbNext;
 
 L_039a:
@@ -274,7 +274,7 @@ L_0422:
     lphb = LphbAlloc(cb, ht);
 
 L_0436:
-    lpbTop = ((uint8_t *)(lphb) + lphb->ibTop);
+    lpbTop = (lphb + lphb->ibTop);
     if ((lphb->cbSlop < cb))
         goto L_0493;
     else
@@ -283,19 +283,19 @@ L_0436:
 L_045a:
     LOWORD(lpbTop) = (cb + 0xfffe);
     lphb->ibTop = (lphb->ibTop + cb);
-    lphb->cbFree = (lphb->cbFree - cb);
+    LOWORD(lphb) = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
-    return &(lpbTop[0x2]);
+    /* untranslated: return words(HIWORD(lpbTop), (LOWORD(lpbTop) + 0x2)) */
 
 L_0493:
-    lpb = &(lphb[0x1]);
+    lpb = (lphb + 0x10);
     goto L_0575;
 
 L_04a7:
     lpbPrev = lpb;
     fFree = (LOWORD(lpb) & 0x1);
     cbItem = (LOWORD(lpb) & 0xfffe);
-    lpb = ((uint8_t *)(lpb) + (cbItem + 0x2));
+    lpb = (lpb + (cbItem + 0x2));
     if ((fFree == 0))
         goto L_0575;
     else
@@ -320,7 +320,7 @@ L_04fc:
         goto L_0512;
 
 L_0512:
-    lpb = ((uint8_t *)(lpb) + ((LOWORD(lpb) & 0xfffe) + 0x2));
+    lpb = (lpb + ((LOWORD(lpb) & 0xfffe) + 0x2));
     goto L_04dd;
 
 L_0524:
@@ -336,7 +336,7 @@ L_054f:
 L_0555:
     LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
     lpbPrev = (lpbPrev + 0x2);
-    lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
+    LOWORD(lphb) = (lphb->cbFree - (cbItem + 0x2));
     return lpbPrev;
 
 L_0575:
@@ -483,9 +483,9 @@ L_06db:
 
 L_06ea:
     lphb->cbSlop = (lphb->cbSlop - cbGrow);
-    lphb->cbFree = (lphb->cbFree - cbGrow);
+    LOWORD(lphb) = (lphb->cbFree - cbGrow);
     lphb->ibTop = (lphb->ibTop + cbGrow);
-    *(lp - 0x2) = cb;
+    lp - 0x2 = cb;
     goto L_0799;
 
 L_0714:
@@ -502,7 +502,7 @@ L_071d:
 
 L_0726:
     lphb = LphbReAlloc(lphb);
-    lp = &(*(lphb + 0x12));
+    /* untranslated: lp = &part[0x12:0](lphb) */
     goto LGrewHeap;
 
 L_0751:
@@ -536,8 +536,8 @@ L_07c0:
 L_07c6:
     lphb = LphbFromLpHt(lp, ht);
     cbFree = (*(lp - 0x2) + 0x2);
-    *(lp - 0x2) = (*(lp - 0x2) | 0x1);
-    lphb->cbFree = (lphb->cbFree + cbFree);
+    lp - 0x2 = (*(lp - 0x2) | 0x1);
+    LOWORD(lphb) = (lphb->cbFree + cbFree);
     if (((((LOWORD(lp) - LOWORD(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
         goto L_082f;
     else
@@ -553,7 +553,7 @@ L_082f:
 
 PL *LpplReAlloc(PL *lppl, uint16_t cAlloc) {
 L_0836:
-    lppl = LpReAlloc(&(lppl), (LOWORD((lppl->cbItem * cAlloc)) + 0x4), lppl->ht);
+    lppl = LpReAlloc(lppl, (LOWORD((lppl->cbItem * cAlloc)) + 0x4), lppl->ht);
     lppl->iMax = LOBYTE(cAlloc);
 
 L_0885:
@@ -591,7 +591,7 @@ L_092a:
 L_0930:
 
 L_0936:
-    FreeLp(&(lppl), lppl->ht);
+    FreeLp(lppl, lppl->ht);
 
 L_0953:
     return;
