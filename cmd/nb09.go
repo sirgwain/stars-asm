@@ -347,18 +347,23 @@ func newNB09SrcModulesCmd() *cobra.Command {
 				File      string `header:"File"`
 				Seg       uint16 `header:"Seg"`
 				Range     string `header:"Range"`
-				LineCount int    `header:"Lines"`
+				LineCount int    `header:"Line Entries"`
+				LineRange string `header:"Line Range"`
 			}
 
 			printer := tableprinter.New(os.Stdout)
 			var rows []row
 
+			totalLines := 0
 			for _, imod := range sortedUint16Keys(db.SrcModules) {
 				sm := db.SrcModules[imod]
 				modName := db.ModuleName(imod)
 
 				for _, f := range sm.Files {
 					for _, s := range f.Segs {
+						firstLine := s.Lines[0]
+						lastLine := s.Lines[len(s.Lines)-1]
+						totalLines += int(lastLine.LineNum)
 						rows = append(rows, row{
 							IMod:      imod,
 							Module:    modName,
@@ -366,12 +371,15 @@ func newNB09SrcModulesCmd() *cobra.Command {
 							Seg:       s.Seg,
 							Range:     fmt.Sprintf("0x%04x...0x%04x", s.Start, s.End),
 							LineCount: len(s.Lines),
+							LineRange: fmt.Sprintf("%d...%d", firstLine.LineNum, lastLine.LineNum),
 						})
 					}
+					// totalLines += int(lastLines[len(lastLines)-1].LineNum)
 				}
 			}
 
 			printer.Print(rows)
+			fmt.Printf("\nTotal lines of code: %d\n", totalLines)
 			return nil
 		},
 	}

@@ -1480,10 +1480,10 @@ L_1f1b:
 L_1f24:
     lppl = LpplFromId(HIWORD(GlobalPD));
     pctDesireOld = PctPlanetDesirability(lppl, idPlayer);
-    /* untranslated: iValSav = sext8to16(part[0xc:1](lppl[GlobalPD+0x4*0x1])) */
-    /* untranslated: part[0xc:1](lppl[GlobalPD+0x4*0x1]) = lobyte(iNewVal) */
+    /* untranslated: iValSav = sext8to16(lppl->rgEnvVar[part[0x4:2](GlobalPD)]) */
+    /* untranslated: lppl->rgEnvVar[part[0x4:2](GlobalPD)] = lobyte(iNewVal) */
     pctDesire = PctPlanetDesirability(lppl, idPlayer);
-    /* untranslated: part[0xc:1](lppl[GlobalPD+0x4*0x1]) = lobyte(iValSav) */
+    /* untranslated: lppl->rgEnvVar[part[0x4:2](GlobalPD)] = lobyte(iValSav) */
     if ((pctDesireOld >= pctDesire))
         goto L_2172;
     else

@@ -518,8 +518,8 @@ L_073d:
     i = (i + 1);
 
 L_0741:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) = lobyte(i) */
-    /* untranslated: part[0x9:1](vlpbAiPlanet[lppl->id*0x10]) = 0x1 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(i) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
 
 L_0788:
     lppl = (lppl + 0x38);
@@ -884,13 +884,22 @@ L_0c00:
     goto L_0c3e;
 
 L_0c08:
-    /* untranslated: branch part[0x1e:2](lppl[i*0x4]) > 0x0 ? L_0c3a : L_0c28 */
+    if ((HIWORD(lppl->rgwtMin[i]) > 0x0))
+        goto L_0c3a;
+    else
+        goto L_0c28;
 
 L_0c28:
-    /* untranslated: branch part[0x1e:2](lppl[i*0x4]) < 0x0 ? L_0c47 : L_0c2d */
+    if ((HIWORD(lppl->rgwtMin[i]) < 0x0))
+        goto L_0c47;
+    else
+        goto L_0c2d;
 
 L_0c2d:
-    /* untranslated: branch part[0x1c:2](lppl[i*0x4]) < 0x1388 ? L_0c47 : L_0c34 */
+    if ((LOWORD(lppl->rgwtMin[i]) < 0x1388))
+        goto L_0c47;
+    else
+        goto L_0c34;
 
 L_0c34:
 
@@ -1419,7 +1428,10 @@ L_13d0:
     goto L_13fc;
 
 L_13d8:
-    /* untranslated: branch part[0xc:2](lpfl[j*0x2]) > 0x0 ? L_1405 : L_13f2 */
+    if ((lpfl->rgcsh[j] > 0))
+        goto L_1405;
+    else
+        goto L_13f2;
 
 L_13f2:
 
@@ -1476,8 +1488,7 @@ L_147d:
     id = lpfl->idPlanet;
 
 L_1488:
-    LOWORD(lpb) = ((LOWORD(vlpbAiPlanet) + (id * 16)) + 0xa);
-    HIWORD(lpb) = HIWORD(vlpbAiPlanet);
+    lpb = ((vlpbAiPlanet + (id * 16)) + 0xa);
     if ((*(lpb) == 0x0))
         goto L_15d1;
     else
@@ -1900,7 +1911,7 @@ L_1af5:
     j = (j + 1);
 
 L_1af9:
-    /* untranslated: branch j >= part[0x6:2](vlpbAiData[i*0x14]) ? L_1b5b : L_1b1c */
+    /* untranslated: branch j >= HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_1b5b : L_1b1c */
 
 L_1b1c:
     /* untranslated: branch HIWORD(vlpbAiData):[((((LOWORD(vlpbAiData) + 0x4) + loword((20 * i))) + 0x4) + (j * 2))] == lpfl->id ? L_1b5b : L_1b52 */
@@ -1908,7 +1919,7 @@ L_1b1c:
 L_1b52:
 
 L_1b5b:
-    /* untranslated: branch j < part[0x6:2](vlpbAiData[i*0x14]) ? L_1b84 : L_1b7b */
+    /* untranslated: branch j < HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_1b84 : L_1b7b */
 
 L_1b7b:
 
@@ -1919,7 +1930,7 @@ L_1b84:
         goto L_1b94;
 
 L_1b94:
-    /* untranslated: lppl = LpplFromId(part[0x4:2](vlpbAiData[i*0x14])) */
+    /* untranslated: lppl = LpplFromId(HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((0x14 * i)))]) */
 
 L_1bbc:
     if ((LOWORD(lppl) != 0x0))
@@ -1986,7 +1997,10 @@ L_1c55:
     goto L_1c96;
 
 L_1c5d:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_1c92 : L_1c7a */
+    if ((lpfl->rgcsh[i] <= 0))
+        goto L_1c92;
+    else
+        goto L_1c7a;
 
 L_1c7a:
     if ((rgRecycleShdef[i] == 0x0))
@@ -2086,7 +2100,10 @@ L_1da4:
     goto L_1dde;
 
 L_1dac:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_1dda : L_1dc9 */
+    if ((lpfl->rgcsh[i] <= 0))
+        goto L_1dda;
+    else
+        goto L_1dc9;
 
 L_1dc9:
     IdTargetArmada(lpfl);
@@ -2176,7 +2193,10 @@ L_1e6d:
         goto L_1e81;
 
 L_1e81:
-    /* untranslated: branch part[0xc:2](lpfl[iLatestDestroyer*0x2]) < 0x14 ? L_1eb2 : L_1e9e */
+    if ((lpfl->rgcsh[iLatestDestroyer] < 20))
+        goto L_1eb2;
+    else
+        goto L_1e9e;
 
 L_1e9e:
     if ((Random(20) != 0))
@@ -2864,7 +2884,7 @@ LTryNewTarget:
     goto L_29ce;
 
 L_29b0:
-    /* untranslated: cshWar = (cshWar + part[0xc:2](lpfl[ish*0x2])) */
+    cshWar = (cshWar + lpfl->rgcsh[ish]);
     ish = (ish + 1);
 
 L_29ce:
@@ -2878,7 +2898,7 @@ L_29d7:
     goto L_29ff;
 
 L_29df:
-    /* untranslated: cshWar = (cshWar + (part[0xc:2](lpfl[ish*0x2]) * 2)) */
+    cshWar = (cshWar + (lpfl->rgcsh[ish] * 2));
     ish = (ish + 1);
 
 L_29ff:
@@ -3057,7 +3077,8 @@ L_2c34:
         goto L_2c3d;
 
 L_2c3d:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTarget->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpplTarget->id * 0x10) + 0xa))] | 0x80) */
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lpplTarget->id].x;
@@ -3456,7 +3477,7 @@ L_31bc:
     goto L_31f0;
 
 L_31d2:
-    /* untranslated: cEquiv = (cEquiv + part[0xc:2](lpfl[ish*0x2])) */
+    cEquiv = (cEquiv + lpfl->rgcsh[ish]);
     ish = (ish + 1);
 
 L_31f0:
@@ -3470,7 +3491,7 @@ L_31f9:
     goto L_3221;
 
 L_3201:
-    /* untranslated: cEquiv = (cEquiv + (part[0xc:2](lpfl[ish*0x2]) * 2)) */
+    cEquiv = (cEquiv + (lpfl->rgcsh[ish] * 2));
     ish = (ish + 1);
 
 L_3221:
@@ -3537,7 +3558,7 @@ L_32a5:
 
 L_32ab:
     id = lpplTest->id;
-    /* untranslated: b = part[0xa:1](vlpbAiPlanet[id*0x10]) */
+    /* untranslated: b = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((id * 0x10) + 0xa))] */
     if ((b == 0x0))
         goto L_33f9;
     else
@@ -3725,7 +3746,7 @@ L_3456:
     return 0x0;
 
 L_345c:
-    /* untranslated: b = part[0xa:1](vlpbAiPlanet[id*0x10]) */
+    /* untranslated: b = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((id * 0x10) + 0xa))] */
     if ((b == 0x0))
         goto L_35a1;
     else
@@ -4134,7 +4155,7 @@ L_39cd:
     goto L_4873;
 
 L_39fe:
-    /* untranslated: part[0x9:1](vlpbAiPlanet[lppl->id*0x10]) = 0x1 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
     if ((lppl->iPlayer != -1))
         goto L_3ae8;
     else
@@ -4152,14 +4173,17 @@ L_3a3e:
     goto L_3aa2;
 
 L_3a4a:
-    /* untranslated: branch part[0x9:1](lppl[i*0x1]) <= 0x42 ? L_3a72 : L_3a6a */
+    if ((lppl->rgMinConc[i] <= 0x42))
+        goto L_3a72;
+    else
+        goto L_3a6a;
 
 L_3a6a:
     bT = 0x4b;
     goto L_3a94;
 
 L_3a72:
-    /* untranslated: bT = lobyte((sext16to32(part[0x9:1](lppl[i*0x1])) / 0x2)) */
+    bT = LOBYTE(((uint32_t)(lppl->rgMinConc[i]) / 0x2));
 
 L_3a94:
     b = (b + LOBYTE(bT));
@@ -4181,7 +4205,7 @@ L_3abc:
     b = 0x7f;
 
 L_3ac0:
-    /* untranslated: part[0x1:1](vlpbAiPlanet[lppl->id*0x10]) = b */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x1))] = b */
     cplMiners = (cplMiners + 1);
 
 L_3ae8:
@@ -4197,7 +4221,7 @@ L_3af7:
         goto L_3b04;
 
 L_3b04:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) = lobyte(((lppl->fStarbase & 0xff) + 0x1)) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(((lppl->fStarbase & 0xff) + 0x1)) */
     pct = PctPlanetOptValue(lppl, idPlayer);
     if ((pct <= 0))
         goto L_486f;
@@ -4205,7 +4229,7 @@ L_3b04:
         goto L_3b59;
 
 L_3b59:
-    /* untranslated: part[0x3:1](vlpbAiPlanet[lppl->id*0x10]) = lobyte(pct) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x3))] = lobyte(pct) */
     cplBadGuy = (cplBadGuy + 1);
 
 L_3b88:
@@ -4224,7 +4248,7 @@ L_3b9d:
 
 L_3bb7:
     cplNegative = (cplNegative + 1);
-    /* untranslated: part[0x2:1](vlpbAiPlanet[lppl->id*0x10]) = 0x1 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x2))] = 0x1 */
     goto L_486f;
 
 L_3be3:
@@ -4280,7 +4304,10 @@ L_3c4d:
 L_3c51:
     scratch_bp_mae = 0x0;
     sel.pl.fNoResearch = t_merge_3c51_0001;
-    /* untranslated: branch sel.pl.fNoResearch != (loword((uint32_t)(words(*(lppl+0x1a), *(lppl+0x18)) >> 0x17)) & 0x1) ? L_3cea : L_3ce3 */
+    if ((sel.pl.fNoResearch != lppl->fNoResearch))
+        goto L_3cea;
+    else
+        goto L_3ce3;
 
 L_3ce3:
     if ((scratch_bp_mb2 == 0x0))
@@ -5323,7 +5350,8 @@ L_4b10:
     goto L_4b24;
 
 L_4b24:
-    /* untranslated: part[0x1:1](vlpbAiPlanet[idPlanDst*0x10]) = (part[0x1:1](vlpbAiPlanet[idPlanDst*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((idPlanDst * 0x10) + 0x1))] | 0x80) */
     goto L_4932;
 
 L_4b45:
@@ -5389,7 +5417,7 @@ L_4be0:
         goto L_4bef;
 
 L_4bef:
-    /* untranslated: branch part[0x3:1](vlpbAiPlanet[idPlanDst*0x10]) == 0x0 ? L_4a70 : L_4c17 */
+    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] == 0x0 ? L_4a70 : L_4c17 */
 
 L_4c17:
     if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
@@ -5451,7 +5479,8 @@ L_4d32:
 
 L_4d5a:
     FLookupFleet(-1, sel.fl.id);
-    /* untranslated: part[0x3:1](vlpbAiPlanet[idPlanDst*0x10]) = (part[0x3:1](vlpbAiPlanet[idPlanDst*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((idPlanDst * 0x10) + 0x3))] | 0x80) */
     FMoveToNearestStarbase(lpfl, 0);
     goto L_4932;
 
@@ -5501,7 +5530,7 @@ L_4e26:
         goto L_4e2f;
 
 L_4e2f:
-    /* untranslated: branch part[0x3:1](vlpbAiPlanet[idPlanDst*0x10]) != 0x0 ? L_4ba7 : L_4e54 */
+    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] != 0x0 ? L_4ba7 : L_4e54 */
 
 L_4e54:
 
@@ -5595,7 +5624,7 @@ L_4f28:
 
 L_4f35:
     ChangeMainObjSel(grobjFleet, lpfl->id);
-    /* untranslated: b = part[0x1:1](vlpbAiPlanet[lpfl->idPlanet*0x10]) */
+    /* untranslated: b = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->idPlanet * 0x10) + 0x1))] */
     if ((b >= 0x4))
         goto L_4eb0;
     else
@@ -5624,8 +5653,10 @@ L_4fa8:
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
     FMoveAiFleet(lpfl, &(ord), 1);
-    /* untranslated: part[0x1:1](vlpbAiPlanet[lppl->id*0x10]) = (part[0x1:1](vlpbAiPlanet[lppl->id*0x10]) | 0x80) */
-    /* untranslated: part[0x1:1](vlpbAiPlanet[lpfl->idPlanet*0x10]) = (part[0x1:1](vlpbAiPlanet[lpfl->idPlanet*0x10]) & 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lppl->id * 0x10) + 0x1))] | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->idPlanet * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpfl->idPlanet * 0x10) + 0x1))] & 0x80) */
 
 L_5069:
     if ((lpfl->cord > 1))
@@ -5753,7 +5784,7 @@ L_5215:
 
 L_521e:
     FColonizeAiFleet(lpfl, idPlanDst);
-    /* untranslated: part[0xf:1](vlpbAiPlanet[idPlanDst*0x10]) = 0x4 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0xf))] = 0x4 */
     goto L_4eb0;
 
 L_5250:
@@ -5782,7 +5813,8 @@ L_5287:
         goto L_5290;
 
 L_5290:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lpplDest->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lpplDest->id*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplDest->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpplDest->id * 0x10) + 0xa))] | 0x80) */
     memset(&(ord), 0, 0x12);
     ord.id = lpplDest->id;
     ord.grobj = grobjPlanet;
@@ -5876,7 +5908,7 @@ L_53f7:
     j = (j + 1);
 
 L_53fb:
-    /* untranslated: branch j >= part[0x6:2](vlpbAiData[i*0x14]) ? L_545d : L_541e */
+    /* untranslated: branch j >= HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_545d : L_541e */
 
 L_541e:
     /* untranslated: branch HIWORD(vlpbAiData):[((((LOWORD(vlpbAiData) + 0x4) + loword((20 * i))) + 0x4) + (j * 2))] == lpfl->id ? L_545d : L_5454 */
@@ -5884,7 +5916,7 @@ L_541e:
 L_5454:
 
 L_545d:
-    /* untranslated: branch j < part[0x6:2](vlpbAiData[i*0x14]) ? L_5486 : L_547d */
+    /* untranslated: branch j < HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_5486 : L_547d */
 
 L_547d:
 
@@ -5895,7 +5927,7 @@ L_5486:
         goto L_5496;
 
 L_5496:
-    /* untranslated: lppl = LpplFromId(part[0x4:2](vlpbAiData[i*0x14])) */
+    /* untranslated: lppl = LpplFromId(HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((0x14 * i)))]) */
 
 L_54be:
     if ((LOWORD(lppl) != 0x0))
@@ -6062,7 +6094,8 @@ L_56dc:
         goto L_56e5;
 
 L_56e5:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lppl->id * 0x10) + 0xa))] | 0x80) */
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lppl->id].x;
@@ -6581,7 +6614,7 @@ L_5f51:
 
 L_5f57:
     id = lpplTest->id;
-    /* untranslated: b = part[0x1:1](vlpbAiPlanet[id*0x10]) */
+    /* untranslated: b = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((id * 0x10) + 0x1))] */
     if ((b == 0x0))
         goto L_5fbc;
     else
@@ -6628,8 +6661,8 @@ L_5fe7:
 
 L_5fed:
     id = lpplTest->id;
-    /* untranslated: bEnemy = part[0xa:1](vlpbAiPlanet[lpplTest->id*0x10]) */
-    /* untranslated: bWant = part[0x3:1](vlpbAiPlanet[lpplTest->id*0x10]) */
+    /* untranslated: bEnemy = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTest->id * 0x10) + 0xa))] */
+    /* untranslated: bWant = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTest->id * 0x10) + 0x3))] */
     if ((bEnemy != 0x1))
         goto L_60b0;
     else

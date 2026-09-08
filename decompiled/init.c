@@ -1448,14 +1448,14 @@ L_1dde:
 
 L_1dff:
     *(psz) = LOBYTE((i + 0x31));
-    cch = GetPrivateProfileString(szSection, szEntry, ".", vrgszMRU[i * 0x100], 256, szIniFile);
+    cch = GetPrivateProfileString(szSection, szEntry, ".", (vrgszMRU + (i * 256)), 256, szIniFile);
     if ((cch >= 4))
         goto L_1e67;
     else
         goto L_1e4f;
 
 L_1e4f:
-    /* untranslated: part[0x0:1](vrgszMRU[i*0x100]) = 0x0 */
+    /* untranslated: byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))] = 0x0 */
 
 L_1e67:
     i = (i + 1);
@@ -1472,7 +1472,7 @@ L_1e74:
     goto L_1efd;
 
 L_1e82:
-    /* untranslated: branch sext8to16(part[0x0:1](vrgszMRU[i*0x100])) == 0x0 ? L_1ef9 : L_1ea2 */
+    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))]) == 0x0 ? L_1ef9 : L_1ea2 */
 
 L_1ea2:
     if ((i == iPass))
@@ -1481,8 +1481,8 @@ L_1ea2:
         goto L_1ead;
 
 L_1ead:
-    fstrcpy(vrgszMRU[iPass * 0x100], vrgszMRU[i * 0x100]);
-    /* untranslated: part[0x0:1](vrgszMRU[i*0x100]) = 0x0 */
+    fstrcpy((vrgszMRU + (iPass * 256)), (vrgszMRU + (i * 256)));
+    /* untranslated: byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))] = 0x0 */
 
 L_1ef5:
     iPass = (iPass + 1);
@@ -1936,29 +1936,30 @@ L_2981:
     goto L_2b56;
 
 L_29c7:
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = (sext8to16(*psz) - 97) */
+    vrgZipProd[i].rgpq[iPass].w = ((uint16_t)(*(psz)) - 97);
     psz = (psz + 0x1);
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = (ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] |
-     * ((sext8to16(*psz) + 0xff9f) * 0x10)) */
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x10));
     psz = (psz + 0x1);
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = (ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] |
-     * ((sext8to16(*psz) + 0xff9f) * 0x100)) */
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x100));
     psz = (psz + 0x1);
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = (ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] |
-     * ((sext8to16(*psz) + 0xff9f) * 0x1000)) */
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x1000));
     psz = (psz + 0x1);
-    /* untranslated: branch ((ds:[(((0x22f6 + loword((40 * i))) + 0x10) + (iPass * 2))] >> 0x6) & 0x3ff) <= 0x3fc ? L_2af0 : L_2ab2 */
+    if ((vrgZipProd[i].rgpq[iPass].cQuan <= 0x3fc))
+        goto L_2af0;
+    else
+        goto L_2ab2;
 
 L_2ab2:
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = ((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] & 0x3f) |
-     * 0x40) */
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].mdIdle | 0x40);
 
 L_2af0:
-    /* untranslated: branch (ds:[(((0x22f6 + loword((40 * i))) + 0x10) + (iPass * 2))] & 0x3f) < 0x7 ? L_2b52 : L_2b14 */
+    if ((vrgZipProd[i].rgpq[iPass].mdIdle < 0x7))
+        goto L_2b52;
+    else
+        goto L_2b14;
 
 L_2b14:
-    /* untranslated: ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 2))] = ((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] & 0xffc0) |
-     * 0x0) */
+    vrgZipProd[i].rgpq[iPass].w = ((vrgZipProd[i].rgpq[iPass].w & 0xffc0) | 0x0);
 
 L_2b52:
     iPass = (iPass + 1);

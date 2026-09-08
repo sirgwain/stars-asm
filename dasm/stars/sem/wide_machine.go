@@ -3,6 +3,7 @@ package sem
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -17,10 +18,75 @@ func (c *wideMachineCollapser) pair(low machine.Value, high machine.Value) (mach
 	if value, ok := c.pairDirect(low, high); ok {
 		return value, true
 	}
+	if value, ok := c.pairPointerOffset(low, high); ok {
+		return value, true
+	}
 	if value, ok := c.pairPhi(low, high); ok {
 		return value, true
 	}
 	return c.pairBinary(low, high)
+}
+
+// pairPointerOffset reconstructs a wide pointer whose low word carries
+// additional offset arithmetic while its high word remains unchanged.
+func (c *wideMachineCollapser) pairPointerOffset(low machine.Value, high machine.Value) (machine.Value, bool) {
+	binary, ok := low.(*machine.Binary)
+	if !ok || (binary.Op != machine.ValueOpAdd && binary.Op != machine.ValueOpSub) {
+		return nil, false
+	}
+	if base, ok := c.pairDirect(binary.LHS, high); ok {
+		if !c.pointerValue(base) {
+			return nil, false
+		}
+		next := *binary
+		next.LHS = base
+		return &next, true
+	}
+	if base, ok := c.pairPointerOffset(binary.LHS, high); ok {
+		next := *binary
+		next.LHS = base
+		return &next, true
+	}
+	if binary.Op == machine.ValueOpAdd {
+		if base, ok := c.pairDirect(binary.RHS, high); ok {
+			if !c.pointerValue(base) {
+				return nil, false
+			}
+			next := *binary
+			next.RHS = base
+			return &next, true
+		}
+		if base, ok := c.pairPointerOffset(binary.RHS, high); ok {
+			next := *binary
+			next.RHS = base
+			return &next, true
+		}
+	}
+	return nil, false
+}
+
+// pointerValue reports whether a reconstructed machine value denotes a declared pointer.
+func (c *wideMachineCollapser) pointerValue(value machine.Value) bool {
+	if typ := machineValueType(value); typeinfo.IsPointer(typ) {
+		return true
+	}
+	if c.ctx == nil {
+		return false
+	}
+	path, ok := c.ctx.symbols.symbolFromValue(value)
+	if ok && typeinfo.IsPointer(path.Type()) {
+		return true
+	}
+	load, ok := value.(*machine.Load)
+	if !ok {
+		return false
+	}
+	addr, ok := c.ctx.symbols.addressFromMemory(load.Addr, nil)
+	if !ok {
+		return false
+	}
+	_, scratch := addr.base.(*symresolve.SymbolScratch)
+	return scratch
 }
 
 // pairDirect handles primitive lane representations that directly identify a

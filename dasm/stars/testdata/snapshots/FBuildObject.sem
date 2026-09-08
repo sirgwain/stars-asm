@@ -173,44 +173,44 @@ L_1dcb:
     branch lpfl->lpplord->rgord[0].pt.y != rgptPlan[lppl->id].y ? L_1d42 : L_1ded
 
 L_1ded:
-    branch (32766 - cBuilt) <= part[0xc:2](lpfl[iItem*0x2]) ? L_1d42 : L_1e0f
+    branch (32766 - cBuilt) <= lpfl->rgcsh[iItem] ? L_1d42 : L_1e0f
 
 L_1e0f:
-    branch part[0xc:2](lpfl[iItem*0x2]) == 0x0 ? L_20c5 : L_1e2c
+    branch lpfl->rgcsh[iItem] == 0 ? L_20c5 : L_1e2c
 
 L_1e2c:
-    branch ((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff) == 0x0 ? L_20c5 : L_1e53
+    branch lpfl->rgdv[iItem].pctDp == 0x0 ? L_20c5 : L_1e53
 
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp
-    cshOrig = part[0xc:2](lpfl[iItem*0x2])
-    cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32(cshOrig)) / 0x64))
+    cshOrig = lpfl->rgcsh[iItem]
+    cshDamaged = loword((int32_t)((uint32_t)(lpfl->rgdv[iItem].pctSh * sext16to32(cshOrig)) / 0x64))
     branch cshDamaged != 0 ? L_1edb : L_1ed6
 
 L_1ed6:
     cshDamaged = 1
 
 L_1edb:
-    dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)((uint32_t)dpShdef * (uint32_t)((part[0x2c:2](lpfl[iItem*0x2]) >> 0x7) & 0x1ff)) / 0xa) * sext16to32(cshDamaged)) / 0x32)
-    part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | (loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 0x64) / sext16to32((cshOrig + cBuilt)))) & 0x7f))
-    branch (part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) != 0x0 ? L_1ff4 : L_1fc0
+    dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * sext16to32(cshDamaged)) / 0x32)
+    lpfl->rgdv[iItem].pctSh = loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 0x64) / sext16to32((cshOrig + cBuilt))))
+    branch lpfl->rgdv[iItem].pctSh != 0x0 ? L_1ff4 : L_1fc0
 
 L_1fc0:
-    part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0xff80) | 0x1)
+    lpfl->rgdv[iItem].pctSh = 0x1
 
 L_1ff4:
-    cshDamaged = loword((int32_t)((uint32_t)((uint32_t)(part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) * sext16to32((cshOrig + cBuilt))) / 0x64))
+    cshDamaged = loword((int32_t)((uint32_t)(lpfl->rgdv[iItem].pctSh * sext16to32((cshOrig + cBuilt))) / 0x64))
     branch cshDamaged != 0 ? L_2041 : L_203c
 
 L_203c:
     cshDamaged = 1
 
 L_2041:
-    part[0x2c:2](lpfl[iItem*0x2]) = ((part[0x2c:2](lpfl[iItem*0x2]) & 0x7f) | ((loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 0x5) / sext16to32(cshDamaged)) * 0x64) / (uint32_t)dpShdef)) & 0x1ff) << 0x7))
+    lpfl->rgdv[iItem].pctDp = loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 0x5) / sext16to32(cshDamaged)) * 0x64) / (uint32_t)dpShdef))
     goto L_20de
 
 L_20c5:
-    part[0x2c:2](lpfl[iItem*0x2]) = 0x0
+    lpfl->rgdv[iItem].dp = 0x0
 
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
@@ -528,14 +528,14 @@ L_297e:
     goto L_2a3f
 
 L_299a:
-    part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + rgwt[i])
-    branch part[0x8:2](lpth[i*0x2]) >= 0x0 ? L_29f3 : L_29da
+    lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + rgwt[i])
+    branch lpth->thp.rgwtMin[i] >= 0 ? L_29f3 : L_29da
 
 L_29da:
-    part[0x8:2](lpth[i*0x2]) = 0x7ff8
+    lpth->thp.rgwtMin[i] = 32760
 
 L_29f3:
-    scratch_bp_m2e = (((sext16to32((part[0x8:2](lpth[i*0x2]) + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
+    scratch_bp_m2e = (((sext16to32((lpth->thp.rgwtMin[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
     lpth->thp.wtMax = 0x0
     part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m2e)
     i = (i + 1)
@@ -563,7 +563,7 @@ L_2ac9:
     goto L_2b35
 
 L_2ad1:
-    part[0x8:2](lpth[i*0x2]) = rgwt[i]
+    lpth->thp.rgwtMin[i] = rgwt[i]
     scratch_bp_m2e = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
     lpth->thp.wtMax = 0x0
     part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m2e)
@@ -607,13 +607,12 @@ L_2cea:
     goto L_2d9c
 
 L_2cf2:
-    part[0x1c:2](lppl[i*0x4]) = 0x0
-    part[0x1e:2](lppl[i*0x4]) = 0x0
+    lppl->rgwtMin[i] = 0
     scratch_bp_m16 = Random(50)
     call Random(50) -> callresult(int16_t)
-    part[0xf:1](lppl[i*0x1]) = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
-    part[0xc:1](lppl[i*0x1]) = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
-    part[0x9:1](lppl[i*0x1]) = lobyte(((Random(40) + 0x19) + Random(40)))
+    lppl->rgEnvVarOrig[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
+    lppl->rgEnvVar[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
+    lppl->rgMinConc[i] = lobyte(((Random(40) + 0x19) + Random(40)))
     i = (i + 1)
 
 L_2d9c:

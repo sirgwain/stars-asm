@@ -65,7 +65,7 @@ L_25bc:
     branch pxf == 0x0 ? L_25fd : L_25c5
 
 L_25c5:
-    pxf->fl = lpfl
+    pxf->fl = *lpfl
     pxf->grobj = grobjFleet
     pxf->id = lpfl->id
 
@@ -96,7 +96,7 @@ L_2679:
     branch pxf == 0x0 ? L_26ba : L_2682
 
 L_2682:
-    pxf->th = lpth
+    pxf->th = *lpth
     pxf->grobj = grobjThing
     pxf->id = lpth->idFull
 

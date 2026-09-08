@@ -299,12 +299,11 @@ L_0431:
 }
 
 int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU) {
-    TOK     *lptok;
-    int16_t  ctok;
-    int32_t  lUnits;
-    int16_t  i;
-    int16_t  imd;
-    uint16_t scratch_bp_m12;
+    TOK    *lptok;
+    int16_t ctok;
+    int32_t lUnits;
+    int16_t i;
+    int16_t imd;
 
 L_0450:
     ctok = lpbd->ctok;
@@ -313,7 +312,7 @@ L_0450:
     goto L_0614;
 
 L_0478:
-    /* untranslated: lptok = (words(HIWORD(lpbd), (LOWORD(lpbd) + 0xe)) + loword((0x1d * i))) */
+    lptok = ((lpbd + 0xe) + LOWORD((0x1d * i)));
     if ((lptok->iplr != idPlayer))
         goto L_04c4;
     else
@@ -362,8 +361,7 @@ L_0506:
         goto L_0518;
 
 L_0518:
-    scratch_bp_m12 = LOWORD((lptok->ishdef * 0x93));
-    imd = LphuldefFromId(rglpshdef[lptok->iplr][scratch_bp_m12 * 0x1])->imdCategory;
+    imd = LphuldefFromId(rglpshdef[lptok->iplr]->hul.rgTech[(LOWORD((lptok->ishdef * 0x93)) - 0x2)])->imdCategory;
     if ((imd <= 1))
         goto L_057b;
     else
@@ -465,7 +463,7 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead) {
     int16_t  cKill;
 
 L_062e:
-    /* untranslated: lpbr = (words(HIWORD(lpbd), (LOWORD(lpbd) + 0xe)) + loword((lpbd->ctok * 0x1d))) */
+    lpbr = ((lpbd + 0xe) + LOWORD((lpbd->ctok * 0x1d)));
     lpbdNext = (lpbd + lpbd->cbData);
     cKilled = 0;
 
@@ -481,10 +479,16 @@ L_0692:
     goto L_076b;
 
 L_06a4:
-    /* untranslated: branch part[0x8:2](lpbr[i*0x8]) <= 0x0 ? L_0767 : L_06c6 */
+    if ((lpbr->rgkill[i].cshKill <= 0x0))
+        goto L_0767;
+    else
+        goto L_06c6;
 
 L_06c6:
-    /* untranslated: branch part[0x10:1](lpbd[lpbr[i*0x8]+0x6*0x1d]) != idPlayer ? L_0739 : L_0708 */
+    if ((lpbd->rgtok[lpbr->rgkill[i].itok].iplr != idPlayer))
+        goto L_0739;
+    else
+        goto L_0708;
 
 L_0708:
     if ((fOurDead == 0))
@@ -493,7 +497,7 @@ L_0708:
         goto L_0711;
 
 L_0711:
-    /* untranslated: cKilled = (cKilled + (uint32_t)part[0x8:2](lpbr[i*0x8])) */
+    cKilled = (cKilled + (uint32_t)(lpbr->rgkill[i].cshKill));
 
 L_0739:
     if ((fOurDead != 0))
@@ -502,7 +506,7 @@ L_0739:
         goto L_0742;
 
 L_0742:
-    /* untranslated: cKilled = (cKilled + (uint32_t)part[0x8:2](lpbr[i*0x8])) */
+    cKilled = (cKilled + (uint32_t)(lpbr->rgkill[i].cshKill));
 
 L_0767:
     i = (i + 1);
@@ -514,8 +518,7 @@ L_076b:
         goto L_0776;
 
 L_0776:
-    LOWORD(lpbr) = ((LOWORD(lpbr) + 0x6) + (lpbr->ctok * 8));
-    HIWORD(lpbr) = HIWORD(lpbr);
+    lpbr = ((lpbr + 0x6) + (lpbr->ctok * 8));
     goto L_0684;
 
 L_0799:
@@ -624,7 +627,7 @@ L_091e:
         goto L_0931;
 
 L_0931:
-    /* untranslated: vrgtok[i].id = part[0xe:29](vlpbdVCR[i*0x1d]) */
+    vrgtok[i] = vlpbdVCR->rgtok[i];
     vrgdpVCR[i] = LdpFromItokDv(i, &(vrgtok[i].dv));
     goto L_091a;
 
@@ -633,7 +636,7 @@ L_09b9:
     viRound = 0;
     viVCRFocus = 0;
     vbrcVCRFocus = vrgtok->brc;
-    /* untranslated: vlpbrVCR = (words(HIWORD(vlpbdVCR), (LOWORD(vlpbdVCR) + 0xe)) + loword((vlpbdVCR->ctok * 0x1d))) */
+    vlpbrVCR = ((vlpbdVCR + 0xe) + LOWORD((vlpbdVCR->ctok * 0x1d)));
 
 L_0a0c:
     viStepVCRCur = (viStepVCRCur + 1);
@@ -670,42 +673,52 @@ L_0a43:
         goto L_0a53;
 
 L_0a53:
-    /* untranslated: itok = part[0x6:1](vlpbrVCR[i*0x8]) */
+    itok = vlpbrVCR->rgkill[i].itok;
     ptok = (vrgtok + LOWORD((0x1d * itok)));
-    /* untranslated: ptok->csh = (ptok->csh - part[0x8:2](vlpbrVCR[i*0x8])) */
-    /* untranslated: ptok->dv.dp = part[0xc:2](vlpbrVCR[i*0x8]) */
-    /* untranslated: vrgdpVCR[itok] = LdpFromItokDv(itok, words(HIWORD(vlpbrVCR), (((LOWORD(vlpbrVCR) + 0x6) + (i * 0x8)) + 0x6))) */
+    ptok->csh = (ptok->csh - vlpbrVCR->rgkill[i].cshKill);
+    ptok->dv.dp = vlpbrVCR->rgkill[i].dv.dp;
+    vrgdpVCR[itok] = LdpFromItokDv(itok, &(vlpbrVCR->rgkill[i].dv));
     if ((ptok->dpShield == 0x0))
         goto L_0a3f;
     else
         goto L_0b29;
 
 L_0b29:
-    /* untranslated: branch part[0xa:2](vlpbrVCR[i*0x8]) == 0x0 ? L_0a3f : L_0b4d */
+    if ((vlpbrVCR->rgkill[i].dpShield == 0x0))
+        goto L_0a3f;
+    else
+        goto L_0b4d;
 
 L_0b4d:
-    /* untranslated: branch hiword((uint32_t)((uint32_t)ptok->dpShield * (uint32_t)ptok->csh)) < hiword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) &
-     * 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1))) ? L_0c48 : L_0bcf */
+    if ((HIWORD((uint32_t)(((uint32_t)(ptok->dpShield) * (uint32_t)(ptok->csh)))) <
+         HIWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
+        goto L_0c48;
+    else
+        goto L_0bcf;
 
 L_0bcf:
-    /* untranslated: branch scratch_bp_mc > hiword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
-     * 0x1))) ? L_0bdb : L_0bd4 */
+    if ((scratch_bp_mc > HIWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
+        goto L_0bdb;
+    else
+        goto L_0bd4;
 
 L_0bd4:
-    /* untranslated: branch scratch_bp_me <= loword((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) <<
-     * 0x1))) ? L_0c48 : L_0bdb */
+    if ((scratch_bp_me <= LOWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
+        goto L_0c48;
+    else
+        goto L_0bdb;
 
 L_0bdb:
-    /* untranslated: ptok->dpShield = (ptok->dpShield - loword((int32_t)((int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) <<
-     * ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1)) / (uint32_t)ptok->csh))) */
+    ptok->dpShield =
+        (ptok->dpShield - LOWORD((int32_t)(((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))) /
+                                            (uint32_t)(ptok->csh)))));
     goto L_0a3f;
 
 L_0c48:
     ptok->dpShield = 0x0;
 
 L_0c54:
-    LOWORD(vlpbrVCR) = ((LOWORD(vlpbrVCR) + 0x6) + (vlpbrVCR->ctok * 8));
-    HIWORD(vlpbrVCR) = HIWORD(vlpbrVCR);
+    vlpbrVCR = ((vlpbrVCR + 0x6) + (vlpbrVCR->ctok * 8));
     if ((vlpbrVCR->iRound <= viRound))
         goto L_0d15;
     else
@@ -1509,12 +1522,15 @@ L_1991:
         goto L_19a1;
 
 L_19a1:
-    /* untranslated: branch part[0x6:1](vlpbrVCR[i*0x8]) != itok ? L_198d : L_19c9 */
+    if ((vlpbrVCR->rgkill[i].itok != itok))
+        goto L_198d;
+    else
+        goto L_19c9;
 
 L_19c9:
-    /* untranslated: cshKill = (cshKill + part[0x8:2](vlpbrVCR[i*0x8])) */
-    /* untranslated: dpShields = (dpShields + (int32_t)((uint32_t)(part[0xa:2](vlpbrVCR[i*0x8]) & 0x1fff) << ((part[0xa:2](vlpbrVCR[i*0x8]) >> 0xd) << 0x1))) */
-    /* untranslated: dv.dp = part[0xc:2](vlpbrVCR[i*0x8]) */
+    cshKill = (cshKill + vlpbrVCR->rgkill[i].cshKill);
+    dpShields = (dpShields + (int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))));
+    dv.dp = vlpbrVCR->rgkill[i].dv.dp;
 
 L_1a64:
     if ((dv.dp == 0xffff))
@@ -1638,7 +1654,6 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     uint16_t t_merge_27d6_0001;
     uint16_t t_merge_2965_0001;
     uint8_t  t_merge_2d54_0001;
-    uint16_t scratch_bp_m19e;
     uint16_t t_merge_37ca_0001;
 
 L_1c62:
@@ -1826,11 +1841,11 @@ L_2342:
         goto L_2372;
 
 L_2372:
-    lpshdef = (rglpshdefSB[vrgtok[((*(vlpbrVCR + 0x4) >> 0x8) & 0xff)].iplr] + LOWORD(((vrgtok[vlpbrVCR->itokAttack].ishdef + 0xfff0) * 0x93)));
+    lpshdef = (rglpshdefSB[vrgtok[vlpbrVCR->itokAttack].iplr] + LOWORD(((vrgtok[vlpbrVCR->itokAttack].ishdef + 0xfff0) * 0x93)));
     goto L_2472;
 
 L_23f5:
-    lpshdef = (rglpshdef[vrgtok[((*(vlpbrVCR + 0x4) >> 0x8) & 0xff)].iplr] + LOWORD((vrgtok[vlpbrVCR->itokAttack].ishdef * 0x93)));
+    lpshdef = (rglpshdef[vrgtok[vlpbrVCR->itokAttack].iplr] + LOWORD((vrgtok[vlpbrVCR->itokAttack].ishdef * 0x93)));
 
 L_2472:
     csh = vrgtok[vlpbrVCR->itokAttack].csh;
@@ -1859,7 +1874,7 @@ L_250c:
     goto L_26a4;
 
 L_258e:
-    /* untranslated: itokT = part[0x6:1](vlpbrVCR[(load([bp-0x120]) + 0xffff)*0x8]) */
+    itokT = vlpbrVCR->rgkill[(i + 0xffff)].itok;
     if ((itokT != vlpbrVCR->itokAttack))
         goto L_2603;
     else
@@ -1872,10 +1887,10 @@ L_25cd:
         goto L_25d7;
 
 L_25d7:
-    /* untranslated: fJam = (fJam | (part[0x7:1](vlpbrVCR[(load([bp-0x120]) + 0xffff)*0x8]) & 0xc0)) */
+    fJam = (fJam | (vlpbrVCR->rgkill[(i + 0xffff)].grfWeapon & 0xc0));
 
 L_2603:
-    /* untranslated: j = (j + part[0x8:2](vlpbrVCR[(load([bp-0x120]) + 0xffff)*0x8])) */
+    j = (j + vlpbrVCR->rgkill[(i + 0xffff)].cshKill);
     if ((rgfSeen[itokT] != 0x0))
         goto L_269f;
     else
@@ -2419,13 +2434,11 @@ L_3582:
         goto L_35a4;
 
 L_35a4:
-    scratch_bp_m19e = LOWORD(((vrgtok[j].ishdef + 0xfff0) * 0x93));
-    /* untranslated: ibmp = part[0x32:2](rglpshdefSB[vrgtok[j].iplr][scratch_bp_m19e*0x1]) */
+    /* untranslated: ibmp = HIWORD(rglpshdefSB[vrgtok[j].iplr]):[(LOWORD(rglpshdefSB[vrgtok[j].iplr]) + loword(((vrgtok[j].ishdef + 0xfff0) * 0x93)))+0x32] */
     goto L_3660;
 
 L_3605:
-    scratch_bp_m19e = LOWORD((vrgtok[j].ishdef * 0x93));
-    /* untranslated: ibmp = part[0x32:2](rglpshdef[vrgtok[j].iplr][scratch_bp_m19e*0x1]) */
+    /* untranslated: ibmp = HIWORD(rglpshdef[vrgtok[j].iplr]):[(LOWORD(rglpshdef[vrgtok[j].iplr]) + loword((vrgtok[j].ishdef * 0x93)))+0x32] */
 
 L_3660:
     ibmpRace = rgplr[vrgtok[j].iplr].iPlrBmp;
@@ -2691,8 +2704,11 @@ L_3ae2:
     iHit = 0;
 
 LNextTarget:
-    /* untranslated: grfWeapon = part[0x7:1](vlpbrVCR[iHit*0x8]) */
-    /* untranslated: branch part[0x8:2](vlpbrVCR[iHit*0x8]) == 0x0 ? L_3c56 : L_3c51 */
+    grfWeapon = vlpbrVCR->rgkill[iHit].grfWeapon;
+    if ((vlpbrVCR->rgkill[iHit].cshKill == 0x0))
+        goto L_3c56;
+    else
+        goto L_3c51;
 
 L_3c51:
     fKill = 1;
@@ -2711,19 +2727,25 @@ L_3c66:
         goto L_3c76;
 
 L_3c76:
-    /* untranslated: branch part[0x6:1](vlpbrVCR[iFrame*0x8]) != part[0x6:1](vlpbrVCR[iHit*0x8]) ? L_3d18 : L_3cc2 */
+    if ((vlpbrVCR->rgkill[iFrame].itok != vlpbrVCR->rgkill[iHit].itok))
+        goto L_3d18;
+    else
+        goto L_3cc2;
 
 L_3cc2:
 
 L_3cc8:
-    /* untranslated: grfWeapon = (grfWeapon | part[0x7:1](vlpbrVCR[iFrame*0x8])) */
-    /* untranslated: branch part[0x8:2](vlpbrVCR[iFrame*0x8]) == 0x0 ? L_3c62 : L_3d10 */
+    grfWeapon = (grfWeapon | vlpbrVCR->rgkill[iFrame].grfWeapon);
+    if ((vlpbrVCR->rgkill[iFrame].cshKill == 0x0))
+        goto L_3c62;
+    else
+        goto L_3d10;
 
 L_3d10:
     fKill = 1;
 
 L_3d18:
-    /* untranslated: ptokAttack = (vrgtok + loword((part[0x6:1](vlpbrVCR[iHit*0x8]) * 0x1d))) */
+    ptokAttack = (vrgtok + LOWORD((vlpbrVCR->rgkill[iHit].itok * 0x1d)));
     x = (ptokAttack->brc & 0xf);
     y = (ptokAttack->brc >> 0x4);
     dx = ((ptokSrc->brc & 0xf) - x);
@@ -3156,7 +3178,10 @@ L_43fb:
         goto L_440b;
 
 L_440b:
-    /* untranslated: branch part[0x8:2](vlpbrVCR[iFrame*0x8]) <= 0x0 ? L_4435 : L_442f */
+    if ((vlpbrVCR->rgkill[iFrame].cshKill <= 0x0))
+        goto L_4435;
+    else
+        goto L_442f;
 
 L_442f:
     t_merge_4438_0001 = 0x1;
@@ -3167,7 +3192,7 @@ L_4435:
 
 L_4438:
     fKill = t_merge_4438_0001;
-    /* untranslated: ptokAttack = (vrgtok + loword((part[0x6:1](vlpbrVCR[iFrame*0x8]) * 0x1d))) */
+    ptokAttack = (vrgtok + LOWORD((vlpbrVCR->rgkill[iFrame].itok * 0x1d)));
     ptDest.x = (((LOWORD(((ptokAttack->brc & 0xf) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
     ptDest.y = (((LOWORD(((ptokAttack->brc >> 0x4) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
     if ((fKill == 0))
@@ -3213,7 +3238,7 @@ L_4518:
     c = 0;
     iChecked = -1;
     psz = &(rgch);
-    if ((brc != vrgtok[((*(vlpbrVCR + 0x4) >> 0x8) & 0xff)].brc))
+    if ((brc != vrgtok[vlpbrVCR->itokAttack].brc))
         goto L_457f;
     else
         goto L_4579;
@@ -3310,10 +3335,13 @@ L_4792:
         goto L_47a3;
 
 L_47a3:
-    /* untranslated: branch part[0x6:1](vlpbrVCR[j*0x8]) != i ? L_478d : L_47cc */
+    if ((vlpbrVCR->rgkill[j].itok != i))
+        goto L_478d;
+    else
+        goto L_47cc;
 
 L_47cc:
-    /* untranslated: cKilled = (cKilled + part[0x8:2](vlpbrVCR[j*0x8])) */
+    cKilled = (cKilled + vlpbrVCR->rgkill[j].cshKill);
 
 L_47f2:
     if ((cKilled <= 0))

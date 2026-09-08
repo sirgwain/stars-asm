@@ -2426,11 +2426,17 @@ L_2dcc:
     goto L_2f11;
 
 L_2df8:
-    /* untranslated: branch sext8to16(part[0x2:1](ppart->pcom[i*0x1])) <= 0x0 ? L_2f0d : L_2e19 */
+    if (((uint16_t)(ppart->pcom->rgTech[i]) <= 0))
+        goto L_2f0d;
+    else
+        goto L_2e19;
 
 L_2e19:
     yCur = (yCur + dyArial8);
-    /* untranslated: branch sext8to16(part[0x2:1](ppart->pcom[i*0x1])) <= sext8to16(rgplr[idPlayer].rgTech[i]) ? L_2e6a : L_2e61 */
+    if (((uint16_t)(ppart->pcom->rgTech[i]) <= (uint16_t)(rgplr[idPlayer].rgTech[i])))
+        goto L_2e6a;
+    else
+        goto L_2e61;
 
 L_2e61:
     t_merge_2e70_0001 = 0x7f;
@@ -2444,7 +2450,7 @@ L_2e70:
     c = CchGetString((i + 91), szWork);
     RightTextOut(hdc, dxStr, yCur, szWork, c, 0);
     SetTextColor(hdc, 0x0);
-    /* untranslated: c = _wsprintf(szWork, PCTD, sext8to16(part[0x2:1](ppart->pcom[i*0x1]))) */
+    c = _wsprintf(szWork, PCTD, (uint16_t)(ppart->pcom->rgTech[i]));
     RightTextOut(hdc, xNum, yCur, szWork, c, 0);
     fReq = 1;
 
@@ -2844,7 +2850,10 @@ L_37c7:
     SelectObject(hdc, hbrSav);
 
 L_383c:
-    /* untranslated: branch part[0x36:2](ppart->pengine[i*0x2]) > 0x78 ? L_38b6 : L_385c */
+    if ((ppart->pengine->rgcFuelUsed[i] > 120))
+        goto L_38b6;
+    else
+        goto L_385c;
 
 L_385c:
     if ((i != 10))
@@ -2859,7 +2868,10 @@ L_3865:
         goto L_386e;
 
 L_386e:
-    /* untranslated: branch part[0x36:2](ppart->pengine[(load([bp-0x16]) + 0x1)*0x2]) > 0x78 ? L_38a3 : L_3891 */
+    if ((ppart->pengine->rgcFuelUsed[(i + 1)] > 120))
+        goto L_38a3;
+    else
+        goto L_3891;
 
 L_3891:
     if ((i != 9))
@@ -2911,7 +2923,7 @@ L_3929:
 L_395a:
     y = yBase;
     pct = 25;
-    /* untranslated: iEff = part[0x36:2](ppart->pengine[i*0x2]) */
+    iEff = ppart->pengine->rgcFuelUsed[i];
     goto L_3993;
 
 L_3985:

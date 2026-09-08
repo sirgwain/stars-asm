@@ -285,7 +285,7 @@ L_045a:
     lphb->ibTop = (lphb->ibTop + cb);
     LOWORD(lphb) = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
-    /* untranslated: return words(HIWORD(lpbTop), (LOWORD(lpbTop) + 0x2)) */
+    return lpbTop[2];
 
 L_0493:
     lpb = (lphb + 0x10);

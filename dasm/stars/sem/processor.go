@@ -143,6 +143,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "resolve-late-bitfields",
+			Purpose: "Resolve declared bitfields exposed by semantic scratch-slot substitution.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &resolveLateBitfieldsProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "resolve-enums",
 			Purpose: "Resolve enum-typed constants and constrained call result types.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {

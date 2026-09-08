@@ -258,8 +258,11 @@ L_8edf:
     goto L_8f3a;
 
 L_8ef5:
-    /* untranslated: lxfNew.rgdItem[i] = (pflNew->rgcsh[i] - part[0xc:2](pfl[i*0x2])) */
-    /* untranslated: branch (pflNew->rgcsh[i] - part[0xc:2](pfl[i*0x2])) == 0x0 ? L_8f36 : L_8f31 */
+    lxfNew.rgdItem[i] = (pflNew->rgcsh[i] - pfl->rgcsh[i]);
+    if (((pflNew->rgcsh[i] - pfl->rgcsh[i]) == 0x0))
+        goto L_8f36;
+    else
+        goto L_8f31;
 
 L_8f31:
     fChg = 1;
@@ -301,12 +304,18 @@ L_8f88:
     goto L_8ffb;
 
 L_8f9e:
-    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (LOWORD(pflNew->rgwtMin[i]) - part[0x4c:2](pfl[i*0x4])) */
-    /* untranslated: HIWORD(lxNew.rgdItem[i]) = (HIWORD(pflNew->rgwtMin[i]) - part[0x4e:2](pfl[i*0x4])) */
-    /* untranslated: branch (LOWORD(pflNew->rgwtMin[i]) - part[0x4c:2](pfl[i*0x4])) != 0x0 ? L_8ff2 : L_8fea */
+    LOWORD(lxNew.rgdItem[i]) = (LOWORD(pflNew->rgwtMin[i]) - LOWORD(pfl->rgwtMin[i]));
+    HIWORD(lxNew.rgdItem[i]) = (HIWORD(pflNew->rgwtMin[i]) - HIWORD(pfl->rgwtMin[i]));
+    if (((LOWORD(pflNew->rgwtMin[i]) - LOWORD(pfl->rgwtMin[i])) != 0x0))
+        goto L_8ff2;
+    else
+        goto L_8fea;
 
 L_8fea:
-    /* untranslated: branch (HIWORD(pflNew->rgwtMin[i]) - part[0x4e:2](pfl[i*0x4])) == 0x0 ? L_8ff7 : L_8ff2 */
+    if (((HIWORD(pflNew->rgwtMin[i]) - HIWORD(pfl->rgwtMin[i])) == 0x0))
+        goto L_8ff7;
+    else
+        goto L_8ff2;
 
 L_8ff2:
     fChg = 1;
@@ -384,8 +393,10 @@ L_910f:
         goto L_911d;
 
 L_911d:
-    /* untranslated: branch fmemcmp(words(HIWORD(pfl->lpplord), ((LOWORD(pfl->lpplord) + 0x4) + loword((18 * iordOld)))), words(HIWORD(pflNew->lpplord),
-     * ((LOWORD(pflNew->lpplord) + 0x4) + loword((18 * iordOld)))), 0x12) != 0 ? L_9181 : L_9178 */
+    if ((fmemcmp(((pfl->lpplord + 0x4) + LOWORD((18 * iordOld))), ((pflNew->lpplord + 0x4) + LOWORD((18 * iordOld))), 0x12) != 0))
+        goto L_9181;
+    else
+        goto L_9178;
 
 L_9178:
 
@@ -435,7 +446,7 @@ L_91e7:
     cbWp = 22;
     rtwp.id = pflNew->id;
     rtwp.iWaypt = iordNew;
-    /* untranslated: rtwp.order = part[0x4:18](pflNew->lpplord[iordNew*0x12]) */
+    rtwp.order = pflNew->lpplord->rgord[iordNew];
     pbWp = &(rtwp);
 
 L_9229:
@@ -490,7 +501,7 @@ L_92b5:
 L_92bb:
     rtwp.id = pflNew->id;
     rtwp.iWaypt = iordNew;
-    /* untranslated: rtwp.order = part[0x4:18](pflNew->lpplord[iordNew*0x12]) */
+    rtwp.order = pflNew->lpplord->rgord[iordNew];
     pbWp = &(rtwp);
 
 L_92f8:
@@ -641,12 +652,18 @@ L_94ab:
     goto L_951e;
 
 L_94c1:
-    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (LOWORD(pplNew->rgwtMin[i]) - part[0x1c:2](ppl[i*0x4])) */
-    /* untranslated: HIWORD(lxNew.rgdItem[i]) = (HIWORD(pplNew->rgwtMin[i]) - part[0x1e:2](ppl[i*0x4])) */
-    /* untranslated: branch (LOWORD(pplNew->rgwtMin[i]) - part[0x1c:2](ppl[i*0x4])) != 0x0 ? L_9515 : L_950d */
+    LOWORD(lxNew.rgdItem[i]) = (LOWORD(pplNew->rgwtMin[i]) - LOWORD(ppl->rgwtMin[i]));
+    HIWORD(lxNew.rgdItem[i]) = (HIWORD(pplNew->rgwtMin[i]) - HIWORD(ppl->rgwtMin[i]));
+    if (((LOWORD(pplNew->rgwtMin[i]) - LOWORD(ppl->rgwtMin[i])) != 0x0))
+        goto L_9515;
+    else
+        goto L_950d;
 
 L_950d:
-    /* untranslated: branch (HIWORD(pplNew->rgwtMin[i]) - part[0x1e:2](ppl[i*0x4])) == 0x0 ? L_951a : L_9515 */
+    if (((HIWORD(pplNew->rgwtMin[i]) - HIWORD(ppl->rgwtMin[i])) == 0x0))
+        goto L_951a;
+    else
+        goto L_9515;
 
 L_9515:
     fChg = 1;
@@ -755,7 +772,7 @@ L_95f7:
         goto L_9621;
 
 L_9621:
-    if ((fmemcmp(ppl->lpplprod->rgprod[0], pplNew->lpplprod->rgprod[0], (ppl->lpplprod->iprodMac * 0x4)) == 0))
+    if ((fmemcmp(ppl->lpplprod->rgprod, pplNew->lpplprod->rgprod, (ppl->lpplprod->iprodMac * 0x4)) == 0))
         goto L_9705;
     else
         goto L_9666;
@@ -783,11 +800,14 @@ L_96a0:
 
 L_96a6:
     LOWORD(rgbCur) = ppl->id;
-    fmemmove(rgbCur[2], pplNew->lpplprod->rgprod[0], (pplNew->lpplprod->iprodMac * 0x4));
+    fmemmove(rgbCur[2], pplNew->lpplprod->rgprod, (pplNew->lpplprod->iprodMac * 0x4));
     WriteMemRt(29, ((pplNew->lpplprod->iprodMac * 0x4) + 0x2), rgbCur);
 
 L_9705:
-    /* untranslated: branch ppl->fNoResearch != (loword((uint32_t)(words(*(pplNew+0x1a), *(pplNew+0x18)) >> 0x17)) & 0x1) ? L_97b5 : L_9754 */
+    if ((ppl->fNoResearch != pplNew->fNoResearch))
+        goto L_97b5;
+    else
+        goto L_9754;
 
 L_9754:
     if ((scratch_bp_m26 != 0x0))
@@ -852,12 +872,12 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2])) */
-    /* untranslated: HIWORD(lxNew.rgdItem[i]) = signhiword((part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2]))) */
-    /* untranslated: branch (part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2])) != 0x0 ? L_999c : L_9994 */
+    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (part[0x8:2](pthNew[i*0x2]) - HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
+    /* untranslated: HIWORD(lxNew.rgdItem[i]) = signhiword((part[0x8:2](pthNew[i*0x2]) - HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
+    /* untranslated: branch (part[0x8:2](pthNew[i*0x2]) - HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))]) != 0x0 ? L_999c : L_9994 */
 
 L_9994:
-    /* untranslated: branch signhiword((part[0x8:2](pthNew[i*0x2]) - part[0x8:2](lpth[i*0x2]))) == 0x0 ? L_99a1 : L_999c */
+    /* untranslated: branch signhiword((part[0x8:2](pthNew[i*0x2]) - HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))])) == 0x0 ? L_99a1 : L_999c */
 
 L_999c:
     fChg = 1;
@@ -924,8 +944,7 @@ L_99f6:
     goto L_9a7e;
 
 L_9a53:
-    LOWORD(prt) = ((LOWORD(lpLog) + imemLogCur) - hdrPrev.cb);
-    HIWORD(prt) = HIWORD(lpLog);
+    prt = ((lpLog + imemLogCur) - hdrPrev.cb);
     goto L_9a99;
 
 L_9a71:
@@ -1004,7 +1023,7 @@ L_9b46:
         goto L_9b59;
 
 L_9b59:
-    /* untranslated: rgQuan[i] = sext16to32(sext8to16(part[0x6:1](prt[iOff*0x1]))) */
+    rgQuan[i] = (uint32_t)((uint16_t)(prt->rgcQuan[iOff]));
     iOff = (iOff + 1);
 
 L_9b85:
@@ -1030,7 +1049,7 @@ L_9ba9:
         goto L_9bbc;
 
 L_9bbc:
-    /* untranslated: rgQuan[i] = sext16to32(part[0x6:2](prtx[iOff*0x2])) */
+    rgQuan[i] = (uint32_t)(prtx->rgcQuan[iOff]);
     iOff = (iOff + 1);
 
 L_9be9:
@@ -1056,7 +1075,7 @@ L_9c0d:
         goto L_9c20;
 
 L_9c20:
-    /* untranslated: rgQuan[i] = part[0x6:4](prtl[iOff*0x4]) */
+    rgQuan[i] = prtl->rgcQuan[iOff];
     iOff = (iOff + 1);
 
 L_9c52:
@@ -1203,7 +1222,7 @@ L_9e42:
 
 L_9e4b:
     iOff = (iOff + 1);
-    /* untranslated: part[0x6:1](prt[iOff*0x1]) = lobyte(LOWORD(rgQuan[i])) */
+    prt->rgcQuan[iOff] = LOBYTE(LOWORD(rgQuan[i]));
     cb = (cb + 1);
 
 L_9e79:
@@ -1255,7 +1274,7 @@ L_9ecd:
 
 L_9ed6:
     iOff = (iOff + 1);
-    /* untranslated: part[0x6:2](prtx[iOff*0x2]) = LOWORD(rgQuan[i]) */
+    prtx->rgcQuan[iOff] = LOWORD(rgQuan[i]);
     cb = (cb + 2);
 
 L_9f06:
@@ -1289,8 +1308,7 @@ L_9f42:
 
 L_9f4b:
     iOff = (iOff + 1);
-    /* untranslated: part[0x6:2](prtl[iOff*0x4]) = LOWORD(rgQuan[i]) */
-    /* untranslated: part[0x8:2](prtl[iOff*0x4]) = HIWORD(rgQuan[i]) */
+    prtl->rgcQuan[iOff] = rgQuan[i];
     cb = (cb + 4);
 
 L_9f81:
@@ -1432,7 +1450,7 @@ L_a178:
         goto L_a1e8;
 
 L_a1e8:
-    /* untranslated: call fmemcpy(words(HIWORD(lpv), (LOWORD(lpv) + 0x2)), rg, cb) -> callresult(void *) */
+    fmemcpy(lpv[2], rg, cb);
 
 L_a208:
     imemLogCur = (imemLogCur + (cb + 2));
@@ -1490,7 +1508,7 @@ L_a277:
         goto L_a2a5;
 
 L_a2a5:
-    /* untranslated: call fmemcpy(pb, words(HIWORD(lpv), (LOWORD(lpv) + 0x2)), phdr->cb) -> callresult(void *) */
+    fmemcpy(pb, lpv[2], phdr->cb);
 
 L_a2ca:
     return 0x1;
@@ -1520,7 +1538,7 @@ L_a2ff:
 
 L_a308:
     lprts = (lpLog + iCur);
-    /* untranslated: fRet = (fRet & FRunLogRecord(lprts->rt, lprts->cb, words(HIWORD(lpLog), ((LOWORD(lpLog) + iCur) + 0x2)))) */
+    fRet = (fRet & FRunLogRecord(lprts->rt, lprts->cb, ((lpLog + iCur) + 0x2)));
     iCur = (iCur + (lprts->cb + 2));
 
 L_a362:
@@ -1828,7 +1846,7 @@ L_cb37:
 L_cb3f:
     ReadRt();
     fmemmove(lpLog[iCur], hdrCur, 0x2);
-    /* untranslated: call fmemmove(words(HIWORD(lpLog), (LOWORD(lpLog) + (iCur + 2))), rgbCur, hdrCur.cb) -> callresult(void *) */
+    fmemmove((lpLog + (iCur + 2)), rgbCur, hdrCur.cb);
     iCur = (iCur + (hdrCur.cb + 2));
 
 L_cb9a:
@@ -2086,7 +2104,7 @@ L_cf13:
 
 L_cf54:
     lprts = (lpLog + iCur);
-    /* untranslated: call WriteRt(lprts->rt, lprts->cb, words(HIWORD(lpLog), ((LOWORD(lpLog) + iCur) + 0x2))) -> callresult(void) */
+    WriteRt(lprts->rt, lprts->cb, ((lpLog + iCur) + 0x2));
     iCur = (iCur + (lprts->cb + 2));
 
 L_cfab:
@@ -2605,7 +2623,10 @@ L_d700:
 
 L_d709:
     lprts = (lpLog + iCur);
-    /* untranslated: branch pfn(words(HIWORD(lpLog), ((LOWORD(lpLog) + iCur) + 0x2)), lprts->rt, lprts->cb, lpPass, iPass) == 0 ? L_d77d : L_d75d */
+    if ((pfn(((lpLog + iCur) + 0x2), lprts->rt, lprts->cb, lpPass, iPass) == 0))
+        goto L_d77d;
+    else
+        goto L_d75d;
 
 L_d75d:
 

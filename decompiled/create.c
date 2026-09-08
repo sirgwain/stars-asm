@@ -934,8 +934,8 @@ L_0a6d:
     goto L_0ac4;
 
 L_0a76:
-    /* untranslated: part[0xc:1](lppl[j*0x1]) = (part[0xc:1](lppl[j*0x1]) - 0x5) */
-    /* untranslated: part[0xf:1](lppl[j*0x1]) = part[0xc:1](lppl[j*0x1]) */
+    lppl->rgEnvVar[j] = (lppl->rgEnvVar[j] - 5);
+    lppl->rgEnvVarOrig[j] = lppl->rgEnvVar[j];
     j = (j + 1);
 
 L_0ac4:
@@ -969,35 +969,36 @@ L_0af0:
         goto L_0afe;
 
 L_0afe:
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = 0x64 */
+    lppl->rgMinConc[j] = 0x64;
     goto L_0bd3;
 
 L_0b1a:
-    /* untranslated: part[0x1c:2](lppl[j*0x4]) = 0x0 */
-    /* untranslated: part[0x1e:2](lppl[j*0x4]) = 0x0 */
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = lobyte(((Random(45) + Random(45)) + 0x1f)) */
+    lppl->rgwtMin[j] = 0;
+    lppl->rgMinConc[j] = LOBYTE(((Random(45) + Random(45)) + 0x1f));
     if (((uint16_t)(lppl->rgEnvVar[2]) < 90))
         goto L_0bd3;
     else
         goto L_0b8c;
 
 L_0b8c:
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = (part[0x9:1](lppl[j*0x1]) + lobyte((sext16to32(Random((0x63 - part[0x9:1](lppl[j*0x1])))) / 0x2))) */
+    lppl->rgMinConc[j] = (lppl->rgMinConc[j] + LOBYTE(((uint32_t)(Random((0x63 - lppl->rgMinConc[j]))) / 0x2)));
 
 L_0bd3:
-    /* untranslated: part[0x6:1](lppl[j*0x1]) = 0x0 */
-    /* untranslated: part[0x1c:2](lppl[j*0x4]) = 0x0 */
-    /* untranslated: part[0x1e:2](lppl[j*0x4]) = 0x0 */
+    lppl->rgpctMinLevel[j] = 0x0;
+    lppl->rgwtMin[j] = 0;
     if ((game.fBBSPlay == 0x0))
         goto L_0c64;
     else
         goto L_0c28;
 
 L_0c28:
-    /* untranslated: branch part[0x9:1](lppl[j*0x1]) >= 0x28 ? L_0c64 : L_0c4b */
+    if ((lppl->rgMinConc[j] >= 0x28))
+        goto L_0c64;
+    else
+        goto L_0c4b;
 
 L_0c4b:
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = (part[0x9:1](lppl[j*0x1]) + 0x5) */
+    lppl->rgMinConc[j] = (lppl->rgMinConc[j] + 0x5);
 
 L_0c64:
     j = (j + 1);
@@ -1036,7 +1037,7 @@ L_0ca4:
 L_0cae:
     jj = Random(30);
     j = Random(3);
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = lobyte((jj + 0x1)) */
+    lppl->rgMinConc[j] = LOBYTE((jj + 0x1));
     goto L_08ab;
 
 L_0cf0:
@@ -1046,7 +1047,7 @@ L_0cf0:
 L_0cf8:
     jj = Random(30);
     j = Random(3);
-    /* untranslated: part[0x9:1](lppl[j*0x1]) = lobyte((jj + 0x1)) */
+    lppl->rgMinConc[j] = LOBYTE((jj + 0x1));
     iT = (iT * 2);
 
 L_0d3e:
@@ -1062,21 +1063,26 @@ L_0d4b:
     goto L_0e6d;
 
 L_0d54:
-    /* untranslated: call Random(loword((part[0x9:1](lpPlanets[j*0x1]) * 0xa))) -> callresult(int16_t) */
-    /* untranslated: part[0x1c:2](lpPlanets[j*0x4]) = (callresult(int16_t) + 10) */
-    /* untranslated: part[0x1e:2](lpPlanets[j*0x4]) = signhiword((callresult(int16_t) + 0xa)) */
-    /* untranslated: branch part[0x1e:2](lpPlanets[j*0x4]) > 0x0 ? L_0e03 : L_0dc4 */
+    lpPlanets->rgwtMin[j] = (uint32_t)((Random(LOWORD((lpPlanets->rgMinConc[j] * 0xa))) + 0xa));
+    if ((HIWORD(lpPlanets->rgwtMin[j]) > 0x0))
+        goto L_0e03;
+    else
+        goto L_0dc4;
 
 L_0dc4:
-    /* untranslated: branch part[0x1e:2](lpPlanets[j*0x4]) < 0x0 ? L_0dd3 : L_0dc9 */
+    if ((HIWORD(lpPlanets->rgwtMin[j]) < 0x0))
+        goto L_0dd3;
+    else
+        goto L_0dc9;
 
 L_0dc9:
-    /* untranslated: branch part[0x1c:2](lpPlanets[j*0x4]) >= 0xc8 ? L_0e03 : L_0dd3 */
+    if ((LOWORD(lpPlanets->rgwtMin[j]) >= 0xc8))
+        goto L_0e03;
+    else
+        goto L_0dd3;
 
 L_0dd3:
-    Random(150);
-    /* untranslated: part[0x1c:2](lpPlanets[j*0x4]) = (part[0x1c:2](lpPlanets[j*0x4]) + (callresult(int16_t) + 155)) */
-    /* untranslated: part[0x1e:2](lpPlanets[j*0x4]) = (part[0x1e:2](lpPlanets[j*0x4]) + signhiword((callresult(int16_t) + 0x9b))) */
+    lpPlanets->rgwtMin[j] = (lpPlanets->rgwtMin[j] + (uint32_t)((Random(150) + 0x9b)));
 
 L_0e03:
     if ((game.fBBSPlay == 0x0))
@@ -1085,8 +1091,7 @@ L_0e03:
         goto L_0e1b;
 
 L_0e1b:
-    /* untranslated: part[0x1c:2](lpPlanets[j*0x4]) = (part[0x1c:2](lpPlanets[j*0x4]) + loword((int32_t)(part[0x1c:4](lpPlanets[j*0x4]) / 0x4))) */
-    /* untranslated: part[0x1e:2](lpPlanets[j*0x4]) = (part[0x1e:2](lpPlanets[j*0x4]) + hiword((int32_t)(part[0x1c:4](lpPlanets[j*0x4]) / 0x4))) */
+    lpPlanets->rgwtMin[j] = (lpPlanets->rgwtMin[j] + (int32_t)((lpPlanets->rgwtMin[j] / 4)));
 
 L_0e68:
     j = (j + 1);
@@ -1789,40 +1794,44 @@ L_1ce4:
     goto L_1eaf;
 
 L_1d5d:
-    /* untranslated: scratch_bp_m116 = part[0x1e:2](lpPlanets[j*0x4]) */
-    /* untranslated: HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * iMin))) + 0x1c) + (j * 4))] = part[0x1c:2](lpPlanets[j*0x4]) */
-    /* untranslated: HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * iMin))) + 0x1c) + (j * 4))+0x2] = scratch_bp_m116 */
+    lpPlanets[iMin].rgwtMin[j] = lpPlanets->rgwtMin[j];
     if ((gd.fTutorial == 0x0))
         goto L_1e3b;
     else
         goto L_1dc9;
 
 L_1dc9:
-    /* untranslated: branch 0x19 <= part[0x9:1](lpPlanets[j*0x1]) ? L_1df4 : L_1dee */
+    if ((0x19 <= lpPlanets->rgMinConc[j]))
+        goto L_1df4;
+    else
+        goto L_1dee;
 
 L_1dee:
     t_merge_1e0f_0001 = 0x19;
     goto L_1e0f;
 
 L_1df4:
-    /* untranslated: t_merge_1e0f_0001 = part[0x9:1](lpPlanets[j*0x1]) */
+    t_merge_1e0f_0001 = lpPlanets->rgMinConc[j];
 
 L_1e0f:
-    /* untranslated: byte HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * iMin))) + 0x9) + j)] = lobyte(t_merge_1e0f_0001) */
+    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_merge_1e0f_0001);
     goto L_1eaa;
 
 L_1e3b:
-    /* untranslated: branch 0x1e <= part[0x9:1](lpPlanets[j*0x1]) ? L_1e66 : L_1e60 */
+    if ((0x1e <= lpPlanets->rgMinConc[j]))
+        goto L_1e66;
+    else
+        goto L_1e60;
 
 L_1e60:
     t_merge_1e81_0001 = 0x1e;
     goto L_1e81;
 
 L_1e66:
-    /* untranslated: t_merge_1e81_0001 = part[0x9:1](lpPlanets[j*0x1]) */
+    t_merge_1e81_0001 = lpPlanets->rgMinConc[j];
 
 L_1e81:
-    /* untranslated: byte HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * iMin))) + 0x9) + j)] = lobyte(t_merge_1e81_0001) */
+    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_merge_1e81_0001);
 
 L_1eaa:
     j = (j + 1);
@@ -1886,8 +1895,7 @@ L_2143:
 
 L_2167:
     ktLeft = LOWORD((0xa * iT));
-    LOWORD(pl) = ((LOWORD(lpPlanets) + LOWORD((0x38 * iMin))) + 0x1c);
-    HIWORD(pl) = HIWORD(lpPlanets);
+    pl = ((lpPlanets + LOWORD((0x38 * iMin))) + 0x1c);
     if ((*(pl + 0x2) > *(pl + 0x6)))
         goto L_21e8;
     else
@@ -2005,8 +2013,7 @@ L_22f1:
     ktLeft = ((uint32_t)(iT) / 2);
 
 L_22ff:
-    LOWORD(pb) = ((LOWORD(lpPlanets) + LOWORD((0x38 * iMin))) + 0x9);
-    HIWORD(pb) = HIWORD(lpPlanets);
+    pb = ((lpPlanets + LOWORD((0x38 * iMin))) + 0x9);
     iLow = 0;
     j = 0;
     goto L_2376;
@@ -2195,7 +2202,7 @@ L_2a4a:
     /* untranslated: part[0x4:2](rgplr[i]) = (rgplr[i].cFleet | 0x1000) */
     lpshdef = LpAlloc(0x5be, htShips);
     fmemmove(lpshdef, LpshdefSBT(), 0x24c);
-    /* untranslated: call fmemset(words(HIWORD(lpshdef), (LOWORD(lpshdef) + 0x24c)), 0, 0x372) -> callresult(void *) */
+    fmemset(lpshdef[4], 0, 0x372);
     lpshdef->cBuilt = 0x1;
     lpshdef->cExist = 0x1;
     rglpshdefSB[i] = lpshdef;
@@ -2255,7 +2262,7 @@ L_2c67:
         goto L_2c9d;
 
 L_2c9d:
-    /* untranslated: part[0x93:147](lpshdef) = part[0x126:147](lpshdef) */
+    lpshdef[1] = lpshdef[2];
     /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0x83ff) | 0x4400) */
     /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0xfdff) | 0x0) */
     /* untranslated: scratch_bp_m116 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
@@ -2272,9 +2279,9 @@ L_2d72:
 
 L_2d93:
     idHome = rgplr[i].idPlanetHome;
-    /* untranslated: part[0x93:147](lpshdef) = lpshdef->hul */
+    lpshdef[1] = *(lpshdef);
     /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0x83ff) | 0x4400) */
-    /* untranslated: lpshdef = part[0x1b9:147](lpshdef) */
+    lpshdef = lpshdef[3];
     lpshdef->ishdef = 0x10;
     lpshdef->fFree = 0x0;
     /* untranslated: scratch_bp_m118 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
@@ -2641,8 +2648,8 @@ L_3610:
 
 L_3619:
     Random(97);
-    /* untranslated: part[0xf:1](lpplPicked[j*0x1]) = lobyte((callresult(int16_t) + 0x2)) */
-    /* untranslated: part[0xc:1](lpplPicked[j*0x1]) = lobyte((callresult(int16_t) + 0x2)) */
+    /* untranslated: lpplPicked->rgEnvVarOrig[j] = lobyte((callresult(int16_t) + 0x2)) */
+    /* untranslated: lpplPicked->rgEnvVar[j] = lobyte((callresult(int16_t) + 0x2)) */
     j = (j + 1);
 
 L_365d:
@@ -2664,8 +2671,8 @@ L_3674:
     goto L_36f4;
 
 L_367d:
-    /* untranslated: part[0xc:1](lpplPicked[j*0x1]) = byte HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * idHome))) + 0xc) + j)] */
-    /* untranslated: part[0xf:1](lpplPicked[j*0x1]) = byte HIWORD(lpPlanets):[(((LOWORD(lpPlanets) + loword((0x38 * idHome))) + 0xf) + j)] */
+    lpplPicked->rgEnvVar[j] = lpPlanets[idHome].rgEnvVar[j];
+    lpplPicked->rgEnvVarOrig[j] = lpPlanets[idHome].rgEnvVarOrig[j];
     j = (j + 1);
 
 L_36f4:
@@ -2687,9 +2694,7 @@ L_36fe:
     goto L_3854;
 
 L_381f:
-    Random(200);
-    /* untranslated: part[0x1c:2](lpplPicked[j*0x4]) = (callresult(int16_t) + 100) */
-    /* untranslated: part[0x1e:2](lpplPicked[j*0x4]) = signhiword((callresult(int16_t) + 0x64)) */
+    lpplPicked->rgwtMin[j] = (uint32_t)((Random(200) + 0x64));
     j = (j + 1);
 
 L_3854:
@@ -2760,8 +2765,7 @@ L_3a61:
 
 L_3a7a:
     chs = rglpshdef[i][j].hul.chs;
-    LOWORD(lphs) = ((LOWORD(rglpshdef[i]) + LOWORD((0x93 * j))) + 0x3a);
-    HIWORD(lphs) = HIWORD(rglpshdef[i]);
+    lphs = ((rglpshdef[i] + LOWORD((0x93 * j))) + 0x3a);
     k = 0;
     goto L_3ae7;
 
@@ -3026,8 +3030,7 @@ L_3f20:
     goto L_3f52;
 
 L_3f29:
-    /* untranslated: part[0x1c:2](lpPlanets[j*0x4]) = 0x0 */
-    /* untranslated: part[0x1e:2](lpPlanets[j*0x4]) = 0x0 */
+    lpPlanets->rgwtMin[j] = 0;
     j = (j + 1);
 
 L_3f52:
@@ -3446,7 +3449,7 @@ L_46a2:
     rgplr[iplr].cShDef = (rgplr[iplr].cShDef + 1);
     ishMac = (uint16_t)(t_46ad);
     LpshdefT();
-    /* untranslated: rglpshdef[iplr][ishMac].hul = 147-byte farseg(callresult(SHDEF *)):[(faroff(callresult(SHDEF *)) + loword((0x93 * ishdef)))] */
+    /* untranslated: rglpshdef[iplr][ishMac] = 147-byte farseg(callresult(SHDEF *)):[(faroff(callresult(SHDEF *)) + loword((0x93 * ishdef)))] */
     rglpshdef[iplr][ishMac].wFlags = ((rglpshdef[iplr][ishMac].wFlags & 0x83ff) | ((ishMac & 0x1f) * 0x400));
     ishdef = ishMac;
 
@@ -3454,7 +3457,7 @@ L_476b:
     rglpshdef[iplr][ishdef].cExist = (rglpshdef[iplr][ishdef].cExist + 0x1);
     rglpshdef[iplr][ishdef].cBuilt = (rglpshdef[iplr][ishdef].cBuilt + 0x1);
     lpfl = LpflNew(iplr, idPlanet);
-    /* untranslated: part[0xc:2](lpfl[ishdef*0x2]) = 0x1 */
+    lpfl->rgcsh[ishdef] = 1;
     lpfl->rgwtMin[4] = LGetFleetStat(lpfl, 1);
     lpfl->iplan = 0x0;
 
@@ -3892,7 +3895,7 @@ L_4def:
         goto L_4dfe;
 
 L_4dfe:
-    /* untranslated: cNum = CParseNumbers(words(HIWORD(lpbStart), (LOWORD(lpbStart) + 0x1)), rgl, 2) */
+    cNum = CParseNumbers(&(lpbStart[0x1]), rgl, 2);
     idAi = LOWORD(rgl[0x0]);
     lvlAi = LOWORD(rgl[0x1]);
     if ((cNum < 2))
@@ -4956,8 +4959,7 @@ L_5881:
 
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
-    LOWORD(lpb) = ((LOWORD(lpbStart) + fstrlen(lpbStart)) + 0xffff);
-    HIWORD(lpb) = HIWORD(lpbStart);
+    lpb = ((lpbStart + fstrlen(lpbStart)) + 0xffff);
     if (((LOWORD(lpb) - LOWORD(lpbStart)) < 0x3))
         goto L_593b;
     else
@@ -9126,7 +9128,7 @@ PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi) {
 L_b570:
 
 L_b5a1:
-    /* untranslated: return words(cs, ((0xa370 + loword((768 * idAi))) + loword((192 * lvlAi)))) */
+    /* untranslated: return (words(cs, (0xa370 + loword((768 * idAi)))) + loword((192 * lvlAi))) */
 }
 
 void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {

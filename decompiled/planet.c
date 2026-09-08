@@ -2332,7 +2332,7 @@ L_3172:
         goto L_3184;
 
 L_3184:
-    if ((lpplprod[iItem].rgprod[0].grobj != grobjPlanet))
+    if ((lpplprod->rgprod[iItem].grobj != grobjPlanet))
         goto L_3207;
     else
         goto L_31b7;
@@ -2356,7 +2356,7 @@ L_31f2:
         goto L_31f7;
 
 L_31f7:
-    if ((lpplprod[iItem].rgprod[0].iItem >= mdIdleFactory))
+    if ((lpplprod->rgprod[iItem].iItem >= mdIdleFactory))
         goto L_3207;
     else
         goto L_31ff;
@@ -5174,8 +5174,8 @@ L_5e95:
     goto L_5f46;
 
 L_5ea6:
-    /* untranslated: iSave = sext8to16(part[0xc:1](lppl[i*0x1])) */
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = lobyte(iEnv) */
+    iSave = (uint16_t)(lppl->rgEnvVar[i]);
+    lppl->rgEnvVar[i] = LOBYTE(iEnv);
     pctT = (PctPlanetDesirability(lppl, iPlr) - pctCur);
     if ((pctT >= 0))
         goto L_5eff;
@@ -5187,7 +5187,7 @@ L_5ef7:
 
 L_5eff:
     rgpctBest[i] = (((uint32_t)(LOWORD((0x64 * pctT))) / abs((iSave - iEnv))) + 1);
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = lobyte(iSave) */
+    lppl->rgEnvVar[i] = LOBYTE(iSave);
 
 L_5f46:
     i = (i + 1);
@@ -6252,21 +6252,30 @@ L_6bcb:
     goto L_6dbe;
 
 L_6bd3:
-    /* untranslated: rgiValSav[i] = sext8to16(part[0xc:1](lppl[i*0x1])) */
+    rgiValSav[i] = (uint16_t)(lppl->rgEnvVar[i]);
     if (((uint16_t)(rgplr[iPlr].rgEnvVarMin[i]) == -1))
         goto L_6dba;
     else
         goto L_6c15;
 
 L_6c15:
-    /* untranslated: branch sext8to16(part[0xc:1](lppl[i*0x1])) == sext8to16(rgplr[iPlr].rgEnvVar[i]) ? L_6dba : L_6c50 */
+    if (((uint16_t)(lppl->rgEnvVar[i]) == (uint16_t)(rgplr[iPlr].rgEnvVar[i])))
+        goto L_6dba;
+    else
+        goto L_6c50;
 
 L_6c50:
     iNewVal = -1;
-    /* untranslated: branch sext8to16(part[0xc:1](lppl[i*0x1])) >= sext8to16(rgplr[iPlr].rgEnvVar[i]) ? L_6d0d : L_6c90 */
+    if (((uint16_t)(lppl->rgEnvVar[i]) >= (uint16_t)(rgplr[iPlr].rgEnvVar[i])))
+        goto L_6d0d;
+    else
+        goto L_6c90;
 
 L_6c90:
-    /* untranslated: branch rgMax[i] <= sext8to16(part[0xc:1](lppl[i*0x1])) ? L_6d99 : L_6cb7 */
+    if ((rgMax[i] <= (uint16_t)(lppl->rgEnvVar[i])))
+        goto L_6d99;
+    else
+        goto L_6cb7;
 
 L_6cb7:
     if (((uint16_t)(rgplr[iPlr].rgEnvVar[i]) >= rgMax[i]))
@@ -6291,7 +6300,10 @@ L_6d0d:
         goto L_6d1f;
 
 L_6d1f:
-    /* untranslated: branch rgMin[i] >= sext8to16(part[0xc:1](lppl[i*0x1])) ? L_6d99 : L_6d46 */
+    if ((rgMin[i] >= (uint16_t)(lppl->rgEnvVar[i])))
+        goto L_6d99;
+    else
+        goto L_6d46;
 
 L_6d46:
     if (((uint16_t)(rgplr[iPlr].rgEnvVar[i]) <= rgMin[i]))
@@ -6316,7 +6328,7 @@ L_6d99:
         goto L_6da2;
 
 L_6da2:
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = lobyte(iNewVal) */
+    lppl->rgEnvVar[i] = LOBYTE(iNewVal);
 
 L_6dba:
     i = (i + 1);
@@ -6333,7 +6345,7 @@ L_6dc7:
     goto L_6e09;
 
 L_6de4:
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = lobyte(rgiValSav[i]) */
+    lppl->rgEnvVar[i] = LOBYTE(rgiValSav[i]);
     i = (i + 1);
 
 L_6e09:
@@ -6369,7 +6381,7 @@ L_6e1e:
     goto L_7004;
 
 L_6e4d:
-    /* untranslated: iPlanet = sext8to16(part[0xc:1](lppl[i*0x1])) */
+    iPlanet = (uint16_t)(lppl->rgEnvVar[i]);
     iPref = (uint16_t)(rgplr[iPlr].rgEnvVar[i]);
     iMin = (uint16_t)(rgplr[iPlr].rgEnvVarMin[i]);
     iMax = (uint16_t)(rgplr[iPlr].rgEnvVarMax[i]);
@@ -7223,19 +7235,31 @@ L_7be7:
         goto L_7bf9;
 
 L_7bf9:
-    /* untranslated: branch part[0x3a:2](lphul[i*0x4]) != 0x200 ? L_7be3 : L_7c19 */
+    if ((lphul->rghs[i].grhst != hstSpecialSB))
+        goto L_7be3;
+    else
+        goto L_7c19;
 
 L_7c19:
-    /* untranslated: branch ((part[0x3c:2](lphul[i*0x4]) >> 0x8) & 0xff) <= 0x0 ? L_7be3 : L_7c43 */
+    if ((lphul->rghs[i].cItem <= 0x0))
+        goto L_7be3;
+    else
+        goto L_7c43;
 
 L_7c43:
-    /* untranslated: branch (part[0x3c:2](lphul[i*0x4]) & 0xff) < 0x7 ? L_7be3 : L_7c68 */
+    if ((lphul->rghs[i].iItem < 0x7))
+        goto L_7be3;
+    else
+        goto L_7c68;
 
 L_7c68:
-    /* untranslated: branch (part[0x3c:2](lphul[i*0x4]) & 0xff) > 0xf ? L_7be3 : L_7c8d */
+    if ((lphul->rghs[i].iItem > 0xf))
+        goto L_7be3;
+    else
+        goto L_7c8d;
 
 L_7c8d:
-    /* untranslated: iNew = ((part[0x3c:2](lphul[i*0x4]) & 0xff) + 0xfffe) */
+    iNew = (lphul->rghs[i].iItem - 2);
     if ((iNew <= iWarp))
         goto L_7cc9;
     else
@@ -7321,20 +7345,32 @@ L_7d95:
         goto L_7da7;
 
 L_7da7:
-    /* untranslated: branch part[0x3a:2](lphul[i*0x4]) != 0x200 ? L_7d91 : L_7dc7 */
+    if ((lphul->rghs[i].grhst != hstSpecialSB))
+        goto L_7d91;
+    else
+        goto L_7dc7;
 
 L_7dc7:
-    /* untranslated: branch ((part[0x3c:2](lphul[i*0x4]) >> 0x8) & 0xff) <= 0x0 ? L_7d91 : L_7df1 */
+    if ((lphul->rghs[i].cItem <= 0x0))
+        goto L_7d91;
+    else
+        goto L_7df1;
 
 L_7df1:
-    /* untranslated: branch (part[0x3c:2](lphul[i*0x4]) & 0xff) < 0x0 ? L_7d91 : L_7e16 */
+    if ((lphul->rghs[i].iItem < 0x0))
+        goto L_7d91;
+    else
+        goto L_7e16;
 
 L_7e16:
-    /* untranslated: branch (part[0x3c:2](lphul[i*0x4]) & 0xff) > 0x6 ? L_7d91 : L_7e3b */
+    if ((lphul->rghs[i].iItem > 0x6))
+        goto L_7d91;
+    else
+        goto L_7e3b;
 
 L_7e3b:
-    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[i*0x4]) */
-    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[i*0x4]) */
+    part.hs.grhst = lphul->rghs[i].grhst;
+    HIWORD(part.hs) = HIWORD(lphul->rghs[i]);
     FLookupPart(&(part));
     /* untranslated: branch part[0x36:2](part.pcom) != 0xffff ? L_7e80 : L_7e77 */
 
@@ -7432,7 +7468,7 @@ L_7f98:
         goto L_7faa;
 
 L_7faa:
-    /* untranslated: ipct = (ipct + (sext8to16(part[0xc:1](lppl[i*0x1])) - rgMin[i])) */
+    ipct = (ipct + ((uint16_t)(lppl->rgEnvVar[i]) - rgMin[i]));
 
 L_7fcf:
     if ((rgMax[i] == -1))
@@ -7441,7 +7477,7 @@ L_7fcf:
         goto L_7fe1;
 
 L_7fe1:
-    /* untranslated: ipct = (ipct + (rgMax[i] - sext8to16(part[0xc:1](lppl[i*0x1])))) */
+    ipct = (ipct + (rgMax[i] - (uint16_t)(lppl->rgEnvVar[i])));
 
 L_8008:
     i = (i + 1);
@@ -7692,9 +7728,12 @@ L_82ca:
     goto L_86c8;
 
 L_82ea:
-    /* untranslated: rgEnvMin[i] = (sext8to16(part[0xf:1](lppl[i*0x1])) - rgMove[i]) */
-    /* untranslated: rgEnvMax[i] = (sext8to16(part[0xf:1](lppl[i*0x1])) + rgMove[i]) */
-    /* untranslated: branch rgEnvMin[i] < sext8to16(part[0xc:1](lppl[i*0x1])) ? L_837e : L_836d */
+    rgEnvMin[i] = ((uint16_t)(lppl->rgEnvVarOrig[i]) - rgMove[i]);
+    rgEnvMax[i] = ((uint16_t)(lppl->rgEnvVarOrig[i]) + rgMove[i]);
+    if ((rgEnvMin[i] < (uint16_t)(lppl->rgEnvVar[i])))
+        goto L_837e;
+    else
+        goto L_836d;
 
 L_836d:
     rgEnvMin[i] = -1;
@@ -7717,7 +7756,10 @@ L_83a4:
     rgEnvMin[i] = t_merge_83a4_0001;
 
 L_83b0:
-    /* untranslated: branch rgEnvMax[i] > sext8to16(part[0xc:1](lppl[i*0x1])) ? L_83e8 : L_83d7 */
+    if ((rgEnvMax[i] > (uint16_t)(lppl->rgEnvVar[i])))
+        goto L_83e8;
+    else
+        goto L_83d7;
 
 L_83d7:
     rgEnvMax[i] = -1;
@@ -7746,7 +7788,10 @@ L_841a:
         goto L_8423;
 
 L_8423:
-    /* untranslated: branch sext8to16(part[0xc:1](lppl[i*0x1])) != sext8to16(rgplr[idPlayer].rgEnvVar[i]) ? L_847f : L_845f */
+    if (((uint16_t)(lppl->rgEnvVar[i]) != (uint16_t)(rgplr[idPlayer].rgEnvVar[i])))
+        goto L_847f;
+    else
+        goto L_845f;
 
 L_845f:
     rgEnvMax[i] = -1;
@@ -7754,7 +7799,10 @@ L_845f:
     goto L_86c8;
 
 L_847f:
-    /* untranslated: branch sext8to16(part[0xc:1](lppl[i*0x1])) <= sext8to16(rgplr[idPlayer].rgEnvVar[i]) ? L_853c : L_84bb */
+    if (((uint16_t)(lppl->rgEnvVar[i]) <= (uint16_t)(rgplr[idPlayer].rgEnvVar[i])))
+        goto L_853c;
+    else
+        goto L_84bb;
 
 L_84bb:
     rgEnvMax[i] = -1;
@@ -7804,7 +7852,7 @@ L_85ae:
 
 L_85bd:
     ienvIdeal = (uint16_t)(rgplr[idPlayer].rgEnvVar[i]);
-    /* untranslated: dCur = abs((sext8to16(part[0xc:1](lppl[i*0x1])) - ienvIdeal)) */
+    dCur = abs(((uint16_t)(lppl->rgEnvVar[i]) - ienvIdeal));
     if ((rgEnvMin[i] == -1))
         goto L_862e;
     else
@@ -7930,7 +7978,7 @@ L_876c:
     goto L_87a2;
 
 L_8774:
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = part[0xf:1](lppl[i*0x1]) */
+    lppl->rgEnvVar[i] = lppl->rgEnvVarOrig[i];
     i = (i + 1);
 
 L_87a2:

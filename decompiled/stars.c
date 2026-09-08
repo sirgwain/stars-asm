@@ -1957,7 +1957,7 @@ L_1acf:
 
 L_1ad2:
     iwp = t_merge_1ad2_0001;
-    /* untranslated: iWarp = ((part[0xa:2](sel.fl.lpplord[iwp*0x12]) >> 0x4) & 0xf) */
+    /* untranslated: iWarp = ((part[0x6:2](sel.fl.lpplord->rgord[iwp]) >> 0x4) & 0xf) */
     if ((iKey != 188))
         goto L_1b0f;
     else
@@ -1983,7 +1983,7 @@ L_1b1c:
         goto L_1b25;
 
 L_1b25:
-    /* untranslated: part[0xa:2](sel.fl.lpplord[iwp*0x12]) = ((part[0xa:2](sel.fl.lpplord[iwp*0x12]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
+    /* untranslated: part[0x6:2](sel.fl.lpplord->rgord[iwp]) = ((part[0x6:2](sel.fl.lpplord->rgord[iwp]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
     FLookupFleet(-1, sel.fl.id);
     DrawPlanShip(0x0, 16928);
 

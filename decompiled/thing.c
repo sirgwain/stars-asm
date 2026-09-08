@@ -127,7 +127,7 @@ L_01c4:
         goto L_01cf;
 
 L_01cf:
-    /* untranslated: call fmemmove(words(HIWORD(lpth), (LOWORD(lpth) + 0x12)), lpth, loword(((cThing - i) * 0x12))) -> callresult(void *) */
+    fmemmove(lpth[1], lpth, LOWORD(((cThing - i) * 0x12)));
 
 L_01f6:
     cThing = (cThing + 1);
@@ -143,8 +143,7 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    /* untranslated: call fmemmove(lpth, words(HIWORD(lpth), (LOWORD(lpth) + 0x12)), loword((((cThing - (sext16to32((LOWORD(lpth) - LOWORD(lpThings))) / 0x12))
-     * + 0xffff) * 0x12))) -> callresult(void *) */
+    fmemmove(lpth, lpth[1], LOWORD((((cThing - ((uint32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12)));
 
 L_0294:
     cThing = (cThing - 1);
@@ -323,7 +322,7 @@ L_04b3:
 
 L_04cd:
     rghbr[0] = rghbrMineral[md];
-    /* untranslated: rgSize[0] = sext16to32(part[0x8:2](lpth[md*0x2])) */
+    /* untranslated: rgSize[0] = sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (md * 0x2))]) */
 
 L_04fa:
     if ((md != 5))
@@ -337,7 +336,7 @@ L_0503:
 
 L_050b:
     rghbr[i] = rghbrMineral[i];
-    /* untranslated: rgSize[i] = sext16to32(part[0x8:2](lpth[i*0x2])) */
+    /* untranslated: rgSize[i] = sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
     i = (i + 1);
 
 L_054d:
@@ -1029,7 +1028,7 @@ L_0c28:
     goto L_0c61;
 
 L_0c3a:
-    /* untranslated: wtMin = (wtMin + part[0x4c:4](lpfl[i*0x4])) */
+    wtMin = (wtMin + lpfl->rgwtMin[i]);
     i = (i + 1);
 
 L_0c61:
@@ -1567,7 +1566,7 @@ L_14de:
 L_1584:
     lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (uint32_t)(cGive));
     lpshdefDest->cExist = (lpshdefDest->cExist + (uint32_t)(cGive));
-    /* untranslated: part[0xc:2](lpflNew[ish*0x2]) = cGive */
+    lpflNew->rgcsh[ish] = cGive;
     lpflNew->rgwtMin[4] = LGetFleetStat(lpflNew, 1);
 
 L_15e9:
@@ -1660,7 +1659,7 @@ L_1783:
     goto L_17bc;
 
 L_1795:
-    /* untranslated: wtNext = (wtNext + part[0x1c:4](lppl[i*0x4])) */
+    wtNext = (wtNext + lppl->rgwtMin[i]);
     i = (i + 1);
 
 L_17bc:
@@ -1772,25 +1771,33 @@ L_18c1:
         goto L_18ca;
 
 L_18ca:
-    /* untranslated: branch HIWORD(wtNext) > part[0x1e:2](lppl[i*0x4]) ? L_1905 : L_18ef */
+    if ((HIWORD(wtNext) > HIWORD(lppl->rgwtMin[i])))
+        goto L_1905;
+    else
+        goto L_18ef;
 
 L_18ef:
-    /* untranslated: branch HIWORD(wtNext) < part[0x1e:2](lppl[i*0x4]) ? L_18fc : L_18f4 */
+    if ((HIWORD(wtNext) < HIWORD(lppl->rgwtMin[i])))
+        goto L_18fc;
+    else
+        goto L_18f4;
 
 L_18f4:
-    /* untranslated: branch LOWORD(wtNext) >= part[0x1c:2](lppl[i*0x4]) ? L_1905 : L_18fc */
+    if ((LOWORD(wtNext) >= LOWORD(lppl->rgwtMin[i])))
+        goto L_1905;
+    else
+        goto L_18fc;
 
 L_18fc:
     t_merge_1922_0001 = wtNext;
     goto L_1922;
 
 L_1905:
-    /* untranslated: t_merge_1922_0001 = part[0x1c:4](lppl[i*0x4]) */
+    t_merge_1922_0001 = lppl->rgwtMin[i];
 
 L_1922:
     wtMin = t_merge_1922_0001;
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = (part[0x1c:2](lppl[i*0x4]) - LOWORD(wtMin)) */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = (part[0x1e:2](lppl[i*0x4]) - HIWORD(wtMin)) */
+    lppl->rgwtMin[i] = (lppl->rgwtMin[i] - wtMin);
     wtNext = (wtNext - wtMin);
     i = (i - 1);
     goto L_18aa;

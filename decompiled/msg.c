@@ -1406,11 +1406,11 @@ L_66fb:
 
 L_672b:
     i = 1000;
-    FDecompressUserString(lpmsgplr->rgbMsg[0], lpmsgplr->cLen, lpb2k[cch], &(i));
+    FDecompressUserString(lpmsgplr->rgbMsg, lpmsgplr->cLen, lpb2k[cch], &(i));
     goto L_6786;
 
 L_6762:
-    fstrcpy(lpb2k[cch], lpmsgplr->rgbMsg[0]);
+    fstrcpy(lpb2k[cch], lpmsgplr->rgbMsg);
 
 L_6786:
     lpsz = lpb2k;
@@ -2260,12 +2260,12 @@ L_7476:
         goto L_74a0;
 
 L_74a0:
-    SetWindowText(hwndMsgEdit, lpmp->rgbMsg[0]);
+    SetWindowText(hwndMsgEdit, lpmp->rgbMsg);
     goto FinishUp;
 
 L_74b9:
     i = 1000;
-    FDecompressUserString(lpmp->rgbMsg[0], lpmp->cLen, lpb2k, &(i));
+    FDecompressUserString(lpmp->rgbMsg, lpmp->cLen, lpb2k, &(i));
     SetWindowText(hwndMsgEdit, lpb2k);
 
 L_74fa:
@@ -2986,7 +2986,7 @@ L_7fce:
     return 0x0;
 
 L_7fd4:
-    fmemmove(lpMsg[cbMsg * 0x1], lpMsg, imemMsgCur);
+    fmemmove((lpMsg + cbMsg), lpMsg, imemMsgCur);
     fmemmove(lpMsg, &(rgbWork), cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
@@ -3178,12 +3178,12 @@ L_836f:
         goto L_8383;
 
 L_8383:
-    fmemmove(lpMsg[cSize * 0x1], lpMsg, imemMsgCur);
+    fmemmove((lpMsg + cSize), lpMsg, imemMsgCur);
     fmemmove(lpMsg, &(rgb), cSize);
     goto L_83e4;
 
 L_83c3:
-    fmemmove(lpMsg[imemMsgCur * 0x1], &(rgb), cSize);
+    fmemmove((lpMsg + imemMsgCur), &(rgb), cSize);
 
 L_83e4:
     imemMsgCur = (imemMsgCur + cSize);
@@ -4050,7 +4050,7 @@ L_9784:
         goto L_9797;
 
 L_9797:
-    /* untranslated: call fmemmove(&rgb[cbMsg], words(HIWORD(lpb), (LOWORD(lpb) + 0x1)), (((*lpb >> 0x4) & 0xf) + 0x4)) -> callresult(void *) */
+    fmemmove(&(rgb[cbMsg]), lpb[1], (((*(lpb) >> 0x4) & 0xf) + 0x4));
     cbMsg = (cbMsg + (((*(lpb) >> 0x4) & 0xf) + 0x4));
 
 L_97f1:
@@ -4394,7 +4394,10 @@ L_9ce7:
 
 L_9ced:
     cbNew = cb;
-    /* untranslated: branch FCompressUserString(lpb2k, words(HIWORD(lpb2k), (LOWORD(lpb2k) + 0x400)), &cbNew) == 0 ? L_9d3a : L_9d1e */
+    if ((FCompressUserString(lpb2k, lpb2k[1024], &(cbNew)) == 0))
+        goto L_9d3a;
+    else
+        goto L_9d1e;
 
 L_9d1e:
     cb = cbNew;
@@ -4432,7 +4435,7 @@ L_9da0:
         goto L_9daf;
 
 L_9daf:
-    if ((fmemcmp(lpmpCur->rgbMsg[0], lpbMsg, cb) == 0))
+    if ((fmemcmp(lpmpCur->rgbMsg, lpbMsg, cb) == 0))
         goto L_9de2;
     else
         goto L_9dd6;
@@ -4458,7 +4461,7 @@ L_9e40:
     lpmpCur->iPlrFrom = idPlayer;
     lpmpCur->iPlrTo = iPlrTo;
     lpmpCur->cLen = cb;
-    fmemmove(lpmpCur->rgbMsg[0], lpbMsg, abs(cb));
+    fmemmove(lpmpCur->rgbMsg, lpbMsg, abs(cb));
     iMsgSendCur = (iMsgSendCur + dInc);
     if ((iMsgSendCur >= 0))
         goto L_9eac;
@@ -4559,7 +4562,7 @@ L_9f9b:
 
 L_9fb2:
     pch = (pch + 0x1);
-    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
+    i = (*(pch) & 0xf);
 
 L_9fc8:
     if ((fHigh != 0))

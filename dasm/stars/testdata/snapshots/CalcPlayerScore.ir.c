@@ -264,7 +264,10 @@ L_5c1a:
     goto L_5c87;
 
 L_5c22:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_5c83 : L_5c3f */
+    if ((lpfl->rgcsh[i] <= 0))
+        goto L_5c83;
+    else
+        goto L_5c3f;
 
 L_5c3f:
     if ((rgType[i] == -1))
@@ -273,7 +276,7 @@ L_5c3f:
         goto L_5c51;
 
 L_5c51:
-    /* untranslated: rgcsh[rgType[i]] = (rgcsh[rgType[i]] + sext16to32(part[0xc:2](lpfl[i*0x2]))) */
+    rgcsh[rgType[i]] = (rgcsh[rgType[i]] + (uint32_t)(lpfl->rgcsh[i]));
 
 L_5c83:
     i = (i + 1);

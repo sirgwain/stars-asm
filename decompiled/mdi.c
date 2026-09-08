@@ -3288,11 +3288,11 @@ L_30e5:
         goto L_30ef;
 
 L_30ef:
-    /* untranslated: branch sext8to16(part[0x0:1](vrgszMRU[(load([bp+0x8]) + 0xef34)*0x100])) == 0x0 ? L_536f : L_3112 */
+    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + ((wParam + 0xef34) * 0x100))]) == 0x0 ? L_536f : L_3112 */
 
 L_3112:
     iplrOld = idPlayer;
-    fstrcpy(szT, vrgszMRU[(load([bp + 0x8]) + 0xef34) * 0x100]);
+    fstrcpy(szT, (vrgszMRU + ((wParam + 0xef34) * 0x100)));
     psz = strrchr(szT, 46);
     if ((psz == 0x0))
         goto L_320e;
@@ -5622,13 +5622,13 @@ L_53cd:
     goto L_5456;
 
 L_53d5:
-    /* untranslated: branch sext8to16(part[0x0:1](vrgszMRU[i*0x100])) == 0x0 ? L_545f : L_53f5 */
+    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))]) == 0x0 ? L_545f : L_53f5 */
 
 L_53f5:
     szWork[0] = 38;
     szWork[1] = LOBYTE((i + 0x31));
     szWork[2] = 32;
-    fstrcpy(szWork[3], vrgszMRU[i * 0x100]);
+    fstrcpy(szWork[3], (vrgszMRU + (i * 256)));
     InsertMenu(hmenuSub, (i + 9), 0x400, (i + 4300), szWork);
     goto L_5452;
 
@@ -8619,13 +8619,13 @@ L_8b5a:
 
 L_8b73:
     psz = (psz + 0x1);
-    /* untranslated: *psz = lobyte((((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] & 0xf) & 0xff) + 0x61)) */
+    *(psz) = LOBYTE((((vrgZipProd[i].rgpq[iPass].w & 0xf) & 0xff) + 0x61));
     psz = (psz + 0x1);
-    /* untranslated: *psz = lobyte(((((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] >> 0x4) & 0xf) & 0xff) + 0x61)) */
+    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x4) & 0xf) & 0xff) + 0x61));
     psz = (psz + 0x1);
-    /* untranslated: *psz = lobyte(((((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] >> 0x8) & 0xf) & 0xff) + 0x61)) */
+    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x8) & 0xf) & 0xff) + 0x61));
     psz = (psz + 0x1);
-    /* untranslated: *psz = lobyte(((((ds:[(((0x22f6 + loword((0x28 * i))) + 0x10) + (iPass * 0x2))] >> 0xc) & 0xf) & 0xff) + 0x61)) */
+    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0xc) & 0xf) & 0xff) + 0x61));
     goto L_8b56;
 
 L_8c34:

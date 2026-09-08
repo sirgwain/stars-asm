@@ -35,7 +35,7 @@ L_5712:
     branch i >= 16 ? L_5880 : L_571b
 
 L_571b:
-    branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_56fe : L_5738
+    branch lpfl->rgcsh[i] == 0 ? L_56fe : L_5738
 
 L_5738:
     rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36)
@@ -70,7 +70,7 @@ L_5836:
     pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0x0].cItem * 0x4))
 
 L_5852:
-    pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(part[0xc:2](lpfl[i*0x2]))))
+    pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(lpfl->rgcsh[i])))
 
 
 L_5880:

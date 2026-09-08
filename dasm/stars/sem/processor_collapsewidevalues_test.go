@@ -261,3 +261,67 @@ func TestCollapseWideMachineValueUsesNativeBitfield(t *testing.T) {
 		t.Fatalf("collapsed bitfield = %q, want prod.grobj", formatted)
 	}
 }
+
+// TestCollapseWideMachineValuePairsFarPointerStructLanes verifies separately
+// loaded words from one far-pointer aggregate storage become a dword load.
+func TestCollapseWideMachineValuePairsFarPointerStructLanes(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DoBombing")
+	planetWord := func(relOff uint32, disp int) machine.Value {
+		lppl := frameLoad(ctx, relOff, -0x30, 4)
+		return machine.LoadVal(machine.MemoryAddress{
+			Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
+			Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
+			Disp:  disp,
+			Width: 2,
+		})
+	}
+	words := &machine.StackWords{Words: []machine.Value{
+		planetWord(0x26c, 0x16),
+		planetWord(0x268, 0x14),
+	}}
+
+	got, changed, handled := collapseWideMachineValue(ctx, words)
+	if !handled || !changed {
+		t.Fatalf("collapseWideMachineValue() handled = %v, changed = %v; want both true", handled, changed)
+	}
+	load, ok := got.(*machine.Load)
+	if !ok || load.Addr.Width != 4 {
+		t.Fatalf("collapseWideMachineValue() = %v, want dword load", got)
+	}
+}
+
+// TestWideMachinePairPointerOffset verifies low-word pointer arithmetic is
+// recombined with an unchanged high word before semantic conversion.
+func TestWideMachinePairPointerOffset(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "FLoadGame")
+	vrgsz := fx.SDB.GetGlobal("vrgszMRU")
+	if vrgsz == nil {
+		t.Fatal("vrgszMRU global not found")
+	}
+	lowAddr := machine.MemoryAddress{Seg: machine.RegVal(asm.RegDS), Disp: int(vrgsz.Addr.Off), Width: 2}
+	highAddr := lowAddr
+	highAddr.Disp += 2
+	delta := machine.BinaryVal(machine.ValueOpShl, frameLoad(ctx, 0x30c0-ctx.fs.Addr.Off, -0x18, 2), machine.ConstVal(8))
+	low := machine.BinaryVal(machine.ValueOpAdd, machine.LoadVal(lowAddr), delta)
+	high := machine.LoadVal(highAddr)
+
+	got, ok := (&wideMachineCollapser{ctx: ctx}).pair(low, high)
+	if !ok {
+		t.Fatal("pair() did not reconstruct pointer offset")
+	}
+	addition, ok := got.(*machine.Binary)
+	if !ok || addition.Op != machine.ValueOpAdd {
+		t.Fatalf("pair() = %v, want pointer addition", got)
+	}
+	base, ok := addition.LHS.(*machine.Load)
+	if !ok || base.Addr.Width != 4 {
+		t.Fatalf("pair() base = %v, want dword vrgszMRU load", addition.LHS)
+	}
+	if !machine.ValueEquals(addition.RHS, delta) {
+		t.Fatalf("pair() delta = %v, want %v", addition.RHS, delta)
+	}
+}

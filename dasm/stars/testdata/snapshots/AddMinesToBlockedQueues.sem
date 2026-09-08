@@ -116,7 +116,7 @@ L_19d0:
 
 
 L_19d6:
-    cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - words(0x0, sel.pl.cMines))
+    cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - (uint32_t)sel.pl.cMines)
     branch HIWORD(cMaxBuild) > 0x0 ? L_1a3e : L_1a26
 
 L_1a26:
@@ -214,7 +214,7 @@ L_1c41:
 
 L_1c4a:
     sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1)
-    call fmemmove(sel.pl.lpplprod->rgprod[0], sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4)) -> callresult(void *)
+    call fmemmove(sel.pl.lpplprod->rgprod, sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4)) -> callresult(void *)
     goto L_17a3
 
 L_1c8f:

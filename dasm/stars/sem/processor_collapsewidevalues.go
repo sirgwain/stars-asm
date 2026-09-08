@@ -27,13 +27,21 @@ func (p *collapseWideValues) ProcessMachineFunc(result *Result, f *machine.FuncE
 
 // ProcessMachineBlock coalesces adjacent contiguous copy effects in one machine block.
 func (p *collapseWideValues) ProcessMachineBlock(result *Result, f machine.FuncEffects, b machine.BlockEffects) (machine.BlockEffects, bool) {
-	effects, changed := p.rewriter().rewriteMachineEffects(b.Effects)
+	effects := b.Effects
+	changed := false
+	for {
+		next, passChanged := p.rewriter().rewriteMachineEffects(effects)
+		if !passChanged {
+			break
+		}
+		effects = next
+		changed = true
+	}
 	if !changed {
 		return b, false
 	}
 	b.Effects = effects
 	return b, true
-
 }
 
 // rewriter returns the machine tree visitor for storage annotation.

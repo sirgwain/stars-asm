@@ -92,7 +92,7 @@ L_25bc:
         goto L_25c5;
 
 L_25c5:
-    pxf->fl = lpfl;
+    pxf->fl = *(lpfl);
     pxf->grobj = grobjFleet;
     pxf->id = lpfl->id;
 
@@ -137,7 +137,7 @@ L_2679:
         goto L_2682;
 
 L_2682:
-    pxf->th = lpth;
+    pxf->th = *(lpth);
     pxf->grobj = grobjThing;
     pxf->id = lpth->idFull;
 

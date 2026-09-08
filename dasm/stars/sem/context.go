@@ -385,6 +385,36 @@ func symbolPathForExpr(expr Expr) (symresolve.SymbolPath, bool) {
 			return &symresolve.SymbolBitfield{Base: base, Field: e.Field}, true
 		}
 		return &symresolve.SymbolField{Base: base, Field: e.Field}, true
+	case *ArrayIndex:
+		base, ok := symbolPathForExpr(e.Base)
+		if !ok || e.TypeInfo == nil {
+			return nil, false
+		}
+		term := &symresolve.SymbolTerm{Base: base, Scale: e.TypeInfo.Bytes(), Result: e.TypeInfo}
+		if index, ok := symbolPathForExpr(e.Index); ok {
+			term.Index = index
+		} else if index, ok := e.Index.(*Const); ok {
+			term.IndexVal = machine.ConstVal(uint(index.U64))
+		} else {
+			return nil, false
+		}
+		return term, true
+	case *Deref:
+		base, ok := symbolPathForExpr(e.Pointer)
+		if !ok {
+			return nil, false
+		}
+		deref := symresolve.SymbolPath(&symresolve.SymbolDeref{Base: base})
+		if e.ByteOff != 0 {
+			return &symresolve.SymbolOffset{Base: deref, Offset: e.ByteOff, Result: deref.Type()}, true
+		}
+		return deref, true
+	case *Part:
+		base, ok := symbolPathForExpr(e.Base)
+		if !ok {
+			return nil, false
+		}
+		return &symresolve.SymbolOffset{Base: base, Offset: e.ByteOff, Result: e.Base.ExprType()}, true
 	default:
 		return nil, false
 	}

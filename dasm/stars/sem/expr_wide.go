@@ -13,6 +13,15 @@ func collapseWideExprPair(high, low Expr, expected typeinfo.Type) (Expr, bool) {
 	if value, ok := collapseWideWordPair(high, low); ok {
 		return value, true
 	}
+	if value, ok := collapseWideDerefPair(high, low, expected); ok {
+		return value, true
+	}
+	if highConst, ok := high.(*Const); ok && highConst.U64 == 0 && semanticWordLane(low) {
+		return &Cast{Value: low, To: typeinfo.U32.String(), TypeInfo: typeinfo.U32}, true
+	}
+	if value, ok := collapseWidePointerOffset(high, low, expected); ok {
+		return value, true
+	}
 	hiBinary, hiOK := high.(*Binary)
 	loBinary, loOK := low.(*Binary)
 	if hiOK && loOK && hiBinary.Op == loBinary.Op {
@@ -33,6 +42,52 @@ func collapseWideExprPair(high, low Expr, expected typeinfo.Type) (Expr, bool) {
 		}
 	}
 	return nil, false
+}
+
+// collapseWidePointerOffset reconstructs a wide pointer whose low word carries offset arithmetic.
+func collapseWidePointerOffset(high, low Expr, expected typeinfo.Type) (Expr, bool) {
+	binary, ok := low.(*Binary)
+	if !ok || (binary.Op != OpAdd && binary.Op != OpSub) {
+		return nil, false
+	}
+	if base, ok := collapseWideExprPair(high, binary.LHS, expected); ok {
+		if !typeinfo.IsPointer(base.ExprType()) {
+			return nil, false
+		}
+		return &Binary{TypeInfo: base.ExprType(), Op: binary.Op, LHS: base, RHS: binary.RHS}, true
+	}
+	if binary.Op == OpAdd {
+		if base, ok := collapseWideExprPair(high, binary.RHS, expected); ok {
+			if !typeinfo.IsPointer(base.ExprType()) {
+				return nil, false
+			}
+			return &Binary{TypeInfo: base.ExprType(), Op: OpAdd, LHS: binary.LHS, RHS: base}, true
+		}
+	}
+	return nil, false
+}
+
+// collapseWideDerefPair reconstructs adjacent low/high dereferences of the same storage.
+func collapseWideDerefPair(high, low Expr, expected typeinfo.Type) (Expr, bool) {
+	hi, hiOK := high.(*Deref)
+	lo, loOK := low.(*Deref)
+	if !hiOK || !loOK || hi.Width != 2 || lo.Width != 2 ||
+		hi.ByteOff != lo.ByteOff+2 || !sameExpr(hi.Pointer, lo.Pointer) {
+		return nil, false
+	}
+	next := *lo
+	next.Width = 4
+	next.TypeInfo = collapseWideExprType(expected, low, high)
+	return &next, true
+}
+
+// semanticWordLane reports whether an expression carries at most one word of value.
+func semanticWordLane(expr Expr) bool {
+	if exprWidth(expr) == 2 {
+		return true
+	}
+	field, ok := expr.(*FieldAccess)
+	return ok && field.Field.Bitfield != nil && field.Field.Bitfield.BitWidth <= 16
 }
 
 // collapseWideExprType chooses the type for a rebuilt wide expression.

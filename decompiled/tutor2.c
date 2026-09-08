@@ -973,7 +973,7 @@ L_5aff:
 
 L_5b16:
     pch = (pch + 0x1);
-    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
+    i = (*(pch) & 0xf);
 
 L_5b2c:
     if ((fHigh != 0))

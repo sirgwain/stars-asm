@@ -173,7 +173,7 @@ L_19cb:
 L_19d0:
 
 L_19d6:
-    /* untranslated: cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - words(0x0, sel.pl.cMines)) */
+    cMaxBuild = ((uint32_t)(CMaxOperableMines(&(sel.pl), idPlayer, 1)) - (uint32_t)(sel.pl.cMines));
     if ((HIWORD(cMaxBuild) > 0x0))
         goto L_1a3e;
     else
@@ -330,7 +330,7 @@ L_1c41:
 
 L_1c4a:
     sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1);
-    fmemmove(sel.pl.lpplprod->rgprod[0], sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4));
+    fmemmove(sel.pl.lpplprod->rgprod, sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4));
     goto L_17a3;
 
 L_1c8f:

@@ -116,9 +116,9 @@ L_2657:
     goto L_26cc;
 
 L_265f:
-    /* untranslated: rgwtMinerals[i] = (rgwtMinerals[i] + sext16to32(part[0x8:2](lpth[i*0x2]))) */
-    /* untranslated: wtTotal = (wtTotal + sext16to32(part[0x8:2](lpth[i*0x2]))) */
-    /* untranslated: part[0x8:2](lpth[i*0x2]) = 0x0 */
+    rgwtMinerals[i] = (rgwtMinerals[i] + (uint32_t)(lpth->thp.rgwtMin[i]));
+    wtTotal = (wtTotal + (uint32_t)(lpth->thp.rgwtMin[i]));
+    lpth->thp.rgwtMin[i] = 0;
     i = (i + 1);
 
 L_26cc:
@@ -160,7 +160,7 @@ L_2753:
     wt = (30000 - (uint32_t)((lpth->thp.wtMax * 0xa)));
     wtTotal = (wtTotal - wt);
     lpth->thp.wtMax = 0xbb8;
-    /* untranslated: part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + LOWORD(wt)) */
+    lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(wt));
     rgwtMinerals[i] = (rgwtMinerals[i] - wt);
     lpth = LpthNew(iplr, ithMineralPacket);
     if ((LOWORD(lpth) != 0x0))
@@ -187,7 +187,7 @@ L_2842:
     /* untranslated: scratch_bp_m12 = ((loword((int32_t)((rgwtMinerals[i] + 0x9) / 0xa)) + part[0x8:2](lpth->thp)) & 0x3fff) */
     lpth->thp.wtMax = 0x0;
     /* untranslated: part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m12) */
-    /* untranslated: part[0x8:2](lpth[i*0x2]) = (part[0x8:2](lpth[i*0x2]) + LOWORD(rgwtMinerals[i])) */
+    lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(rgwtMinerals[i]));
     wtTotal = (wtTotal - rgwtMinerals[i]);
     rgwtMinerals[i] = 0;
 

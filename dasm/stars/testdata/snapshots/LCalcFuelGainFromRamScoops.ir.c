@@ -31,7 +31,10 @@ L_5712:
         goto L_571b;
 
 L_571b:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_56fe : L_5738 */
+    if ((lpfl->rgcsh[i] == 0))
+        goto L_56fe;
+    else
+        goto L_5738;
 
 L_5738:
     rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36);
@@ -86,7 +89,7 @@ L_5836:
     pctShip10 = (pctShip10 + (uint32_t)((lpshdef->hul.rghs[0x0].cItem * 0x4)));
 
 L_5852:
-    /* untranslated: pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(part[0xc:2](lpfl[i*0x2])))) */
+    pct10 = (pct10 + (uint32_t)((pctShip10 * (uint32_t)(lpfl->rgcsh[i]))));
 
 L_5880:
     pct10 = (uint32_t)((pct10 * dTravel));

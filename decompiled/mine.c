@@ -493,7 +493,7 @@ L_0735:
     goto L_0ad3;
 
 L_0aaf:
-    /* untranslated: cShip = (cShip + sext16to32(part[0xc:2](lpfl[i*0x2]))) */
+    cShip = (cShip + (uint32_t)(lpfl->rgcsh[i]));
     i = (i + 1);
 
 L_0ad3:
@@ -911,7 +911,7 @@ L_1763:
 L_179c:
     c = _wsprintf(szWork, PszGetCompressedString(idsS2), rgszMinerals[i]);
     RightTextOut(hdc, xLeft, yTop, szWork, c, 0);
-    /* untranslated: c = _wsprintf(szWork, PCTDKT, part[0x8:2](lpth[i*0x2])) */
+    /* untranslated: c = _wsprintf(szWork, PCTDKT, HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     i = (i + 1);
@@ -1023,7 +1023,7 @@ L_1bda:
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldTypeS, szT);
-    /* untranslated: c = _wsprintf(szWork, szT, rgszMineField[part[0xc:1](lpth)]) */
+    c = _wsprintf(szWork, szT, rgszMineField[*(lpth + 0xc)]);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldRadiusDLYLdMines, szT);
@@ -2487,7 +2487,10 @@ L_3ca9:
     goto L_3d7c;
 
 L_3cda:
-    /* untranslated: branch part[0xc:2](lpfl[ishdef*0x2]) <= 0x0 ? L_3d77 : L_3cfa */
+    if ((lpfl->rgcsh[ishdef] <= 0))
+        goto L_3d77;
+    else
+        goto L_3cfa;
 
 L_3cfa:
     rgid[c] = ishdef;
@@ -3010,8 +3013,8 @@ L_456c:
     goto L_45b4;
 
 L_459b:
-    HIWORD(GlobalPD[i * 0x4]) = 0xffff;
-    /* untranslated: part[0x4:2](GlobalPD[i*0x4]) = 0xffff */
+    LOWORD(GlobalPD.rgi[i]) = 0xffff;
+    HIWORD(GlobalPD.rgi[i]) = 0xffff;
     i = (i + 1);
 
 L_45b4:
@@ -4067,7 +4070,7 @@ L_5490:
     goto L_5893;
 
 L_5498:
-    /* untranslated: lConc = (uint32_t)part[0x9:1](lppl[i*0x1]) */
+    lConc = (uint32_t)(lppl->rgMinConc[i]);
     if ((HIWORD(lConc) > 0x0))
         goto L_5503;
     else
@@ -4157,8 +4160,7 @@ L_55d3:
         goto L_55f3;
 
 L_55f3:
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = (part[0x1c:2](lppl[i*0x4]) + LOWORD(lQuan)) */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = (part[0x1e:2](lppl[i*0x4]) + HIWORD(lQuan)) */
+    lppl->rgwtMin[i] = (lppl->rgwtMin[i] + lQuan);
     lQuanAct = (int32_t)((lQuanAct / 100));
 
 L_562f:
@@ -4180,11 +4182,14 @@ L_563d:
         goto L_5646;
 
 L_5646:
-    /* untranslated: branch part[0x9:1](lppl[i*0x1]) <= 0x1 ? L_588f : L_5666 */
+    if ((lppl->rgMinConc[i] <= 0x1))
+        goto L_588f;
+    else
+        goto L_5666;
 
 L_5666:
-    /* untranslated: lLevel = (uint32_t)part[0x6:1](lppl[i*0x1]) */
-    /* untranslated: lConc = (uint32_t)part[0x9:1](lppl[i*0x1]) */
+    lLevel = (uint32_t)(lppl->rgpctMinLevel[i]);
+    lConc = (uint32_t)(lppl->rgMinConc[i]);
     if ((LOWORD(lLevel) != 0x0))
         goto L_56c4;
     else
@@ -4285,8 +4290,8 @@ L_5775:
 
 L_577d:
     lQuanAct = (lQuanAct - lLeft);
-    /* untranslated: part[0x9:1](lppl[i*0x1]) = (part[0x9:1](lppl[i*0x1]) - 0x1) */
-    /* untranslated: part[0x6:1](lppl[i*0x1]) = 0x0 */
+    lppl->rgMinConc[i] = (lppl->rgMinConc[i] - 0x1);
+    lppl->rgpctMinLevel[i] = 0x0;
     goto L_562f;
 
 L_57b8:
@@ -4334,7 +4339,7 @@ L_5834:
     lLeft = (lLevel - 1);
 
 L_5846:
-    /* untranslated: part[0x6:1](lppl[i*0x1]) = lobyte(LOWORD(lLeft)) */
+    lppl->rgpctMinLevel[i] = LOBYTE(LOWORD(lLeft));
     if ((LOWORD(lLeft) != 0x0))
         goto L_588f;
     else
@@ -4347,7 +4352,7 @@ L_586a:
         goto L_5873;
 
 L_5873:
-    /* untranslated: part[0x9:1](lppl[i*0x1]) = (part[0x9:1](lppl[i*0x1]) - 0x1) */
+    lppl->rgMinConc[i] = (lppl->rgMinConc[i] - 0x1);
 
 L_588f:
     i = (i + 1);

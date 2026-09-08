@@ -566,6 +566,70 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 	}
 }
 
+// TestCollapseWideMachineStorePairThroughFlexibleFarPointer verifies a split
+// far-pointer member path retains the trailing array element as its storage root.
+func TestCollapseWideMachineStorePairThroughFlexibleFarPointer(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "KillQueuedMassPackets")
+	ctx.SetCurrentBlock(0x6b64)
+	relOff := uint32(0x6b89) - ctx.fs.Addr.Off
+	lppl := frameLoad(ctx, relOff, 0x6, 4)
+	lpprod := frameLoad(ctx, relOff, -0xa, 4)
+	iDst := frameLoad(ctx, relOff, -0x6, 2)
+	lpplprodOff := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
+		Disp:  0x34,
+		Width: 2,
+	})
+	lpplprodSeg := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
+		Disp:  0x36,
+		Width: 2,
+	})
+	itemOffset := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.ConstVal(4),
+		machine.BinaryVal(machine.ValueOpShl, machine.BinaryVal(machine.ValueOpShl, iDst, machine.ConstVal(1)), machine.ConstVal(1)),
+	)
+	lowAddr := machine.MemoryAddress{
+		Seg:   lpplprodSeg,
+		Base:  machine.BinaryVal(machine.ValueOpAdd, lpplprodOff, itemOffset),
+		Width: 2,
+	}
+	highAddr := lowAddr
+	highAddr.Disp = 2
+	lowSrc := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(lpprod, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(lpprod, machine.FarPointerOffset),
+		Width: 2,
+	})
+	highSrc := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(lpprod, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(lpprod, machine.FarPointerOffset),
+		Disp:  2,
+		Width: 2,
+	})
+
+	store, ok := (&collapseWideStoresProcessor{ctx: ctx}).collapseWideMachineStorePair(
+		machine.StoreEffect{Addr: lowAddr, Src: lowSrc, Width: 2},
+		machine.StoreEffect{Addr: highAddr, Src: highSrc, Width: 2},
+	)
+	if !ok {
+		t.Fatal("collapseWideMachineStorePair() did not collapse flexible-array element")
+	}
+	converted := (&machineConverter{ctx: ctx}).convertEffect(store)
+	assign, ok := converted.(*Assign)
+	if !ok {
+		t.Fatalf("converted store = %T, want assignment", converted)
+	}
+	if got := FormatExpr(assign.Dst); got != "lppl->lpplprod->rgprod[iDst]" {
+		t.Fatalf("collapsed destination = %q", got)
+	}
+}
+
 // TestCollapseWideReadModifyWriteConstPair reconstructs a wide arithmetic
 // source from low/high constant word operands.
 func TestCollapseWideReadModifyWriteConstPair(t *testing.T) {

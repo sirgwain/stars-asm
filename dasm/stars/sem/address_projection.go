@@ -492,6 +492,12 @@ func (c *machineConverter) consumeDereferencedPointerStep(
 		return current, offset, terms, false
 	}
 
+	if strct, ok := ptr.Elem.(*typeinfo.Struct); ok {
+		if field, fieldOff, ok := indexedFlexibleArrayFieldAtOffset(strct, offset, terms); ok {
+			return &FieldAccess{Base: current, Field: field}, fieldOff, terms, true
+		}
+	}
+
 	if next, nextOffset, nextTerms, changed := consumeArrayTerm(current, ptr, offset, terms); changed {
 		return next, nextOffset, nextTerms, true
 	}
@@ -505,6 +511,25 @@ func (c *machineConverter) consumeDereferencedPointerStep(
 	}
 
 	return current, offset, terms, false
+}
+
+// indexedFlexibleArrayFieldAtOffset recognizes a trailing array member before
+// pointer arithmetic folds its byte offset into an index of the parent struct.
+func indexedFlexibleArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
+	field, fieldOff, ok := zeroLengthArrayFieldAtOffset(strct, offset)
+	if !ok {
+		return nil, 0, false
+	}
+	array := field.Type.(*typeinfo.Array)
+	if array.Elem == nil || array.Elem.Bytes() <= 0 {
+		return nil, 0, false
+	}
+	for _, term := range terms {
+		if term.Scale == array.Elem.Bytes() {
+			return field, fieldOff, true
+		}
+	}
+	return nil, 0, false
 }
 
 // consumeAddressProjection resolves an address-valued expression without
@@ -630,6 +655,9 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	if !ok {
 		return nil, 0, false
 	}
+	if field, fieldOff, ok := indexedArrayFieldAtOffset(strct, offset, terms); ok {
+		return &FieldAccess{Base: base, Field: field}, fieldOff, true
+	}
 	if field, fieldOff, ok := indexedArrayFieldAfterOffset(strct, offset, terms); ok {
 		return &FieldAccess{Base: base, Field: field}, fieldOff, true
 	}
@@ -669,6 +697,35 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 		return nil, 0, false
 	}
 	return &FieldAccess{Base: base, Field: match.Field}, 0, true
+}
+
+// indexedArrayFieldAtOffset selects an overlapping array field when a
+// residual term has the array element's byte scale.
+func indexedArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
+	var match *typeinfo.StructField
+	matchOff := 0
+	for _, current := range strct.FieldsContainingOffset(offset) {
+		array, ok := current.Field.Type.(*typeinfo.Array)
+		if !ok || array.Elem == nil || array.Elem.Bytes() <= 0 {
+			continue
+		}
+		indexed := false
+		for _, term := range terms {
+			if term.Scale == array.Elem.Bytes() {
+				indexed = true
+				break
+			}
+		}
+		if !indexed {
+			continue
+		}
+		if match != nil {
+			return nil, 0, false
+		}
+		match = current.Field
+		matchOff = current.Off
+	}
+	return match, matchOff, match != nil
 }
 
 // indexedArrayFieldAfterOffset recognizes a folded negative array index whose

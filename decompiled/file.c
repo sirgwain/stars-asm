@@ -116,7 +116,7 @@ L_0224:
         goto L_0244;
 
 L_0244:
-    lpshdef[ishdef].hul = shdef;
+    lpshdef[ishdef] = shdef;
     goto L_02de;
 
 L_0275:
@@ -132,7 +132,7 @@ L_0292:
         goto L_02b0;
 
 L_02b0:
-    lpshdef[ishdef].hul = shdef;
+    lpshdef[ishdef] = shdef;
 
 L_02de:
     if ((idPlayer == -1))
@@ -166,11 +166,14 @@ L_0370:
         goto L_0384;
 
 L_0384:
-    /* untranslated: branch ((part[0x3c:2](lphul[c*0x4]) >> 0x8) & 0xff) <= 0x0 ? L_04f3 : L_03b1 */
+    if ((lphul->rghs[c].cItem <= 0x0))
+        goto L_04f3;
+    else
+        goto L_03b1;
 
 L_03b1:
-    /* untranslated: part.hs.grhst = part[0x3a:2](lphul[c*0x4]) */
-    /* untranslated: HIWORD(part.hs) = part[0x3c:2](lphul[c*0x4]) */
+    part.hs.grhst = lphul->rghs[c].grhst;
+    HIWORD(part.hs) = HIWORD(lphul->rghs[c]);
     fOkay = FLookupPart(&(part));
     if ((idPlayer != -1))
         goto L_03fa;
@@ -181,7 +184,10 @@ L_03f4:
     fOkay = 0;
 
 L_03fa:
-    /* untranslated: branch (part.hs.grhst & part[0x3a:2](lphulBase[c*0x4])) == 0x0 ? L_0478 : L_0422 */
+    if (((part.hs.grhst & lphulBase->rghs[c].grhst) == 0x0))
+        goto L_0478;
+    else
+        goto L_0422;
 
 L_0422:
     if ((fOkay <= 1))
@@ -196,13 +202,16 @@ L_042c:
         goto L_043f;
 
 L_043f:
-    /* untranslated: branch part.hs.cItem <= ((part[0x3c:2](lphulBase[c*0x4]) >> 0x8) & 0xff) ? L_04b8 : L_0478 */
+    if ((part.hs.cItem <= lphulBase->rghs[c].cItem))
+        goto L_04b8;
+    else
+        goto L_0478;
 
 L_0478:
-    /* untranslated: part[0x3c:2](lphul[c*0x4]) = ((part[0x3c:2](lphul[c*0x4]) & 0xff) | 0x0) */
+    lphul->rghs[c].cItem = 0x0;
 
 L_04b8:
-    /* untranslated: wt = (wt + (uint32_t)loword((part.pcom->cMass * ((part[0x3c:2](lphul[c*0x4]) >> 0x8) & 0xff)))) */
+    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[c].cItem))));
 
 L_04f3:
     if ((c != 0))
@@ -932,14 +941,13 @@ L_118f:
         goto L_1198;
 
 L_1198:
-    /* untranslated: call fmemmove(rgsxPlr[iplr], words(HIWORD(rgsxPlr[iplr]), (LOWORD(rgsxPlr[iplr]) + 0x18)), loword(((isx - 1) * 0x18))) -> callresult(void
-     * *) */
+    fmemmove(rgsxPlr[iplr], rgsxPlr[iplr][1], LOWORD(((isx - 1) * 0x18)));
 
 L_11d1:
     isx = (isx - 1);
 
 L_11d8:
-    fmemmove(rgsxPlr[iplr][(isx + 1)], rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
+    fmemmove((rgsxPlr[iplr] + LOWORD(((isx + 1) * 0x18))), rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_1236:
@@ -1367,7 +1375,7 @@ L_1974:
         goto L_197f;
 
 L_197f:
-    /* untranslated: call fmemmove(words(HIWORD(lppl), (LOWORD(lppl) + 0x38)), lppl, loword(((cPlanetHist - j) * 0x38))) -> callresult(void *) */
+    fmemmove(lppl[1], lppl, LOWORD(((cPlanetHist - j) * 0x38)));
 
 L_19a6:
     cPlanetHist = (cPlanetHist + 1);
@@ -1434,7 +1442,7 @@ L_1a81:
     lppl->lpplprod = LpplAlloc(0x4, ((hdrCur.cb / 0x4) + 0x2), htOrd);
 
 L_1aad:
-    fmemmove(lppl->lpplprod->rgprod[0], rgbCur, hdrCur.cb);
+    fmemmove(lppl->lpplprod->rgprod, rgbCur, hdrCur.cb);
     lppl->lpplprod->iprodMac = LOBYTE((hdrCur.cb / 0x4));
     ReadRt();
 
@@ -2003,14 +2011,13 @@ L_239d:
         goto L_23a6;
 
 L_23a6:
-    /* untranslated: call fmemmove(rgsxPlr[iplr], words(HIWORD(rgsxPlr[iplr]), (LOWORD(rgsxPlr[iplr]) + 0x18)), loword(((isx - 1) * 0x18))) -> callresult(void
-     * *) */
+    fmemmove(rgsxPlr[iplr], rgsxPlr[iplr][1], LOWORD(((isx - 1) * 0x18)));
 
 L_23df:
     isx = (isx - 1);
 
 L_23e6:
-    fmemmove(rgsxPlr[iplr][(isx + 1)], rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
+    fmemmove((rgsxPlr[iplr] + LOWORD(((isx + 1) * 0x18))), rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_2444:
@@ -2179,7 +2186,7 @@ L_26c3:
         goto L_26ce;
 
 L_26ce:
-    /* untranslated: call fmemmove(words(HIWORD(lpth), (LOWORD(lpth) + 0x12)), lpth, loword(((cThing - j) * 0x12))) -> callresult(void *) */
+    fmemmove(lpth[1], lpth, LOWORD(((cThing - j) * 0x12)));
     fmemset(lpth, 0, 0x12);
 
 L_270b:
@@ -2748,7 +2755,7 @@ L_30a2:
     goto L_30dd;
 
 L_30aa:
-    if ((fstricmp(szT, vrgszMRU[i * 0x100]) == 0))
+    if ((fstricmp(szT, (vrgszMRU + (i * 256))) == 0))
         goto L_3120;
     else
         goto L_30d3;
@@ -2767,7 +2774,7 @@ L_30dd:
 L_30e3:
 
 L_30e9:
-    fstrcpy(vrgszMRU[i * 0x100], vrgszMRU[(load([bp - 0x18]) + 0xffff) * 0x100]);
+    fstrcpy((vrgszMRU + (i * 256)), (vrgszMRU + ((i - 1) * 0x100)));
     i = (i - 1);
 
 L_3120:
@@ -2787,7 +2794,7 @@ L_3129:
 
 L_3198:
     *(psz) = LOBYTE((i + 0x31));
-    fstrcpy(szT, vrgszMRU[i * 0x100]);
+    fstrcpy(szT, (vrgszMRU + (i * 256)));
     WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
     i = (i + 1);
 
@@ -2935,12 +2942,12 @@ L_3474:
     goto L_34c3;
 
 L_3480:
-    /* untranslated: part[0x6:1](lppl[i*0x1]) = 0x0 */
+    lppl->rgpctMinLevel[i] = 0x0;
     goto L_3457;
 
 L_3499:
     pb = (pb + 0x1);
-    /* untranslated: part[0x6:1](lppl[i*0x1]) = *pb */
+    lppl->rgpctMinLevel[i] = *(pb);
     goto L_3457;
 
 L_34ba:
@@ -2975,7 +2982,7 @@ L_34ef:
         goto L_34f8;
 
 L_34f8:
-    /* untranslated: part[0x9:1](lppl[i*0x1]) = *pb */
+    lppl->rgMinConc[i] = *(pb);
     goto L_34e1;
 
 L_3515:
@@ -2993,8 +3000,8 @@ L_352d:
 
 L_3533:
     pb = (pb + 0x1);
-    /* untranslated: part[0xf:1](lppl[i*0x1]) = *pb */
-    /* untranslated: part[0xc:1](lppl[i*0x1]) = *pb */
+    lppl->rgEnvVarOrig[i] = *(pb);
+    lppl->rgEnvVar[i] = *(pb);
     i = (i + 1);
 
 L_356a:
@@ -3024,7 +3031,7 @@ L_359e:
 
 L_35a4:
     pb = (pb + 0x1);
-    /* untranslated: part[0xf:1](lppl[i*0x1]) = *pb */
+    lppl->rgEnvVarOrig[i] = *(pb);
     i = (i + 1);
 
 L_35c6:
@@ -3077,25 +3084,21 @@ L_3648:
     goto L_3702;
 
 L_3654:
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = 0x0 */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = 0x0 */
+    lppl->rgwtMin[i] = 0;
     goto L_362b;
 
 L_3678:
     pb = (pb + 0x1);
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = *pb */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = 0x0 */
+    lppl->rgwtMin[i] = (uint32_t)(*(pb));
     goto L_362b;
 
 L_36a7:
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = pb */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = 0x0 */
+    lppl->rgwtMin[i] = (uint32_t)(pb);
     pb = (pb + 0x2);
     goto L_362b;
 
 L_36d3:
-    /* untranslated: part[0x1c:2](lppl[i*0x4]) = pb */
-    /* untranslated: part[0x1e:2](lppl[i*0x4]) = pb[2] */
+    lppl->rgwtMin[i] = pb;
     pb = (pb + 0x4);
     goto L_362b;
 
@@ -3230,7 +3233,7 @@ L_390a:
         goto L_391d;
 
 L_391d:
-    /* untranslated: call fmemmove(words(HIWORD(lppl), (LOWORD(lppl) + 0x14)), pb, 0x8) -> callresult(void *) */
+    /* untranslated: call fmemmove(part[0x14:4](*lppl), pb, 0x8) -> callresult(void *) */
     pb = (pb + 0x8);
     goto L_39dc;
 
@@ -3318,8 +3321,11 @@ L_3ad7:
 
 L_3ae5:
     pb = (pb + 0x1);
-    /* untranslated: part[0xc:2](lpfl[i*0x2]) = *pb */
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_3abe : L_3b25 */
+    lpfl->rgcsh[i] = *(pb);
+    if ((lpfl->rgcsh[i] == 0))
+        goto L_3abe;
+    else
+        goto L_3b25;
 
 L_3b25:
     cish = (cish + 1);
@@ -3347,8 +3353,11 @@ L_3b56:
 
 L_3b64:
     pus = (pus + 0x2);
-    /* untranslated: part[0xc:2](lpfl[i*0x2]) = *pus */
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_3b3d : L_3ba1 */
+    lpfl->rgcsh[i] = *(pus);
+    if ((lpfl->rgcsh[i] == 0))
+        goto L_3b3d;
+    else
+        goto L_3ba1;
 
 L_3ba1:
     cish = (cish + 1);
@@ -3391,20 +3400,17 @@ L_3c0f:
     goto L_3ca2;
 
 L_3c18:
-    /* untranslated: part[0x4c:2](lpfl[i*0x4]) = *pb */
-    /* untranslated: part[0x4e:2](lpfl[i*0x4]) = 0x0 */
+    lpfl->rgwtMin[i] = (uint32_t)(*(pb));
     pb = (pb + 0x1);
     goto L_3bf6;
 
 L_3c47:
-    /* untranslated: part[0x4c:2](lpfl[i*0x4]) = pb */
-    /* untranslated: part[0x4e:2](lpfl[i*0x4]) = 0x0 */
+    lpfl->rgwtMin[i] = (uint32_t)(pb);
     pb = (pb + 0x2);
     goto L_3bf6;
 
 L_3c73:
-    /* untranslated: part[0x4c:2](lpfl[i*0x4]) = pb */
-    /* untranslated: part[0x4e:2](lpfl[i*0x4]) = pb[2] */
+    lpfl->rgwtMin[i] = pb;
     pb = (pb + 0x4);
     goto L_3bf6;
 
@@ -3477,11 +3483,14 @@ L_3d83:
 
 L_3d91:
     pus = (pus + 0x2);
-    /* untranslated: part[0x2c:2](lpfl[i*0x2]) = *pus */
-    /* untranslated: branch ((part[0x2c:2](lpfl[i*0x2]) >> 0x7) & 0x1ff) < 0x1f4 ? L_3d6a : L_3dd8 */
+    lpfl->rgdv[i].dp = *(pus);
+    if ((lpfl->rgdv[i].pctDp < 0x1f4))
+        goto L_3d6a;
+    else
+        goto L_3dd8;
 
 L_3dd8:
-    /* untranslated: part[0x2c:2](lpfl[i*0x2]) = ((part[0x2c:2](lpfl[i*0x2]) & 0x7f) | 0xf980) */
+    lpfl->rgdv[i].pctDp = 0x1f3;
 
 L_3e0f:
     pb = pus;
@@ -3490,7 +3499,7 @@ L_3e0f:
     pb = (pb + 0x1);
     lpfl->cord = *(pb);
     lpfl->lpplord = LpplAlloc(0x12, (lpfl->cord + 1), htOrd);
-    fmemset(lpfl->lpplord->rgord[0].pt, 0, LOWORD(((lpfl->cord + 1) * 0x12)));
+    fmemset(lpfl->lpplord->rgord, 0, LOWORD(((lpfl->cord + 1) * 0x12)));
     cord = lpfl->cord;
     lpord = (lpfl->lpplord + 0x4);
     goto L_3ec0;
@@ -3704,7 +3713,7 @@ L_4241:
 L_424b:
 
 L_4251:
-    /* untranslated: lpbr = (words(HIWORD(lpbd), (LOWORD(lpbd) + 0xe)) + loword((lpbd->ctok * 0x1d))) */
+    lpbr = ((lpbd + 0xe) + LOWORD((lpbd->ctok * 0x1d)));
     lpbr26 = lpbr;
     lpbd = (lpbd + lpbd->cbData);
 
@@ -3719,8 +3728,7 @@ L_42ae:
     itok = lpbr26->itokAttack;
     lpbr->ctok = cKill;
     lpbr->itokAttack = itok;
-    LOWORD(lpbr) = ((LOWORD(lpbr) + 0x6) + (lpbr->ctok * 8));
-    HIWORD(lpbr) = HIWORD(lpbr);
+    lpbr = ((lpbr + 0x6) + (lpbr->ctok * 8));
     lpbr26 = lpbr;
     goto L_42a0;
 

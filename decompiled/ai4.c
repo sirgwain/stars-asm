@@ -345,10 +345,8 @@ L_0505:
     goto L_0821;
 
 L_0564:
-    LOWORD(lpciPlan) = ((LOWORD(vlpbAiData) + 0x2) + (lppl->id * 2));
-    HIWORD(lpciPlan) = HIWORD(vlpbAiData);
-    LOWORD(lpciPlanTemp) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (lppl->id * 2));
-    HIWORD(lpciPlanTemp) = HIWORD(vlpbAiData);
+    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
+    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
     if ((lpciPlan->iPktTarget <= 0x0))
         goto L_05e3;
     else
@@ -391,8 +389,8 @@ L_063b:
     i = (i + 1);
 
 L_063f:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lppl->id*0x10]) = lobyte(i) */
-    /* untranslated: part[0x9:1](vlpbAiPlanet[lppl->id*0x10]) = 0x1 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(i) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
     goto L_081d;
 
 L_0686:
@@ -647,7 +645,10 @@ L_0911:
     goto L_093d;
 
 L_0919:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) > 0x0 ? L_0946 : L_0933 */
+    if ((lpfl->rgcsh[i] > 0))
+        goto L_0946;
+    else
+        goto L_0933;
 
 L_0933:
 
@@ -712,8 +713,7 @@ L_09e4:
     id = lpfl->idPlanet;
 
 L_09ef:
-    LOWORD(lpb) = ((LOWORD(vlpbAiPlanet) + (id * 16)) + 0xa);
-    HIWORD(lpb) = HIWORD(vlpbAiPlanet);
+    lpb = ((vlpbAiPlanet + (id * 16)) + 0xa);
     if ((*(lpb) == 0x0))
         goto L_0a2c;
     else
@@ -778,9 +778,9 @@ L_0a98:
         goto L_0ac5;
 
 L_0ac5:
-    scratch_bp_m8e = ((lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 + 0x8) & 0x18);
-    lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst = 0x0;
-    lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 = (lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 | scratch_bp_m8e);
+    scratch_bp_m8e = ((lpciPlanTemp[lpfl->lpplord->rgord[0x1].id].wInfo1 + 0x8) & 0x18);
+    lpciPlanTemp[lpfl->lpplord->rgord[0x1].id].cFreightersDst = 0x0;
+    lpciPlanTemp[lpfl->lpplord->rgord[0x1].id].wInfo1 = (lpciPlanTemp[lpfl->lpplord->rgord[0x1].id].wInfo1 | scratch_bp_m8e);
 
 L_0b31:
     UpdateProgressGauge(-926);
@@ -822,7 +822,10 @@ L_0b96:
     goto L_0bd7;
 
 L_0b9e:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) <= 0x0 ? L_0bd3 : L_0bbb */
+    if ((lpfl->rgcsh[i] <= 0))
+        goto L_0bd3;
+    else
+        goto L_0bbb;
 
 L_0bbb:
     if ((rgRecycleShdef[i] == 0x0))
@@ -976,7 +979,10 @@ L_0ddc:
     goto L_0e08;
 
 L_0de4:
-    /* untranslated: branch part[0xc:2](lpfl[i*0x2]) > 0x0 ? L_0e11 : L_0dfe */
+    if ((lpfl->rgcsh[i] > 0))
+        goto L_0e11;
+    else
+        goto L_0dfe;
 
 L_0dfe:
 
@@ -1115,7 +1121,7 @@ L_0ff1:
         goto L_100c;
 
 L_100c:
-    lpciPlanTemp[lpfl->lpplord->rgord[0].id].fIdleColonizers = 0x1;
+    lpciPlanTemp[lpfl->lpplord->rgord[0x0].id].fIdleColonizers = 0x1;
 
 L_104d:
     ChangeMainObjSel(grobjFleet, lpfl->id);
@@ -1154,7 +1160,7 @@ L_10e6:
         goto L_10f3;
 
 L_10f3:
-    /* untranslated: part[0xf:1](vlpbAiPlanet[lpfl->lpplord->rgord[1].id*0x10]) = 0x4 */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 16) + 0xf))] = 0x4 */
 
 L_111c:
     if ((lpfl->rgcsh[2] > 0))
@@ -1319,10 +1325,8 @@ L_13ca:
         goto L_13d2;
 
 L_13d2:
-    LOWORD(lpciPlan) = ((LOWORD(vlpbAiData) + 0x2) + (lppl->id * 2));
-    HIWORD(lpciPlan) = HIWORD(vlpbAiData);
-    LOWORD(lpciPlanTemp) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (lppl->id * 2));
-    HIWORD(lpciPlanTemp) = HIWORD(vlpbAiData);
+    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
+    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -1935,10 +1939,8 @@ L_1ad4:
 L_1ae8:
 
 L_1aee:
-    LOWORD(lpciPlan) = ((LOWORD(vlpbAiData) + 0x2) + (lppl->id * 2));
-    HIWORD(lpciPlan) = HIWORD(vlpbAiData);
-    LOWORD(lpciPlanTemp) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (lppl->id * 2));
-    HIWORD(lpciPlanTemp) = HIWORD(vlpbAiData);
+    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
+    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -2055,10 +2057,8 @@ L_1c8a:
         goto L_1c93;
 
 L_1c93:
-    LOWORD(lpciPlanDst) = ((LOWORD(vlpbAiData) + 0x2) + (lpplDst->id * 2));
-    HIWORD(lpciPlanDst) = HIWORD(vlpbAiData);
-    LOWORD(lpciPlanT) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (lpplDst->id * 2));
-    HIWORD(lpciPlanT) = HIWORD(vlpbAiData);
+    lpciPlanDst = ((vlpbAiData + 0x2) + (lpplDst->id * 2));
+    lpciPlanT = ((vlpbAiData + dOffsetPlanTemp) + (lpplDst->id * 2));
     iPacketAdd = 0;
     if ((lpplDst->isb == 0x1))
         goto L_1d20;
@@ -2327,8 +2327,7 @@ L_1ff7:
         goto L_200b;
 
 L_200b:
-    LOWORD(plMinMax) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (game.cPlanMax * 2));
-    HIWORD(plMinMax) = HIWORD(vlpbAiData);
+    plMinMax = ((vlpbAiData + dOffsetPlanTemp) + (game.cPlanMax * 2));
     rgResAvail[0] = (rgResAvail[0] - rgResCost[0]);
     rgResAvail[1] = (rgResAvail[1] - rgResCost[1]);
     rgResAvail[2] = (rgResAvail[2] - rgResCost[2]);
@@ -2400,10 +2399,8 @@ L_2150:
 L_2159:
     /* untranslated: part[0x0:4](cPacket) = 0x0 */
     cPacket[2] = 0;
-    LOWORD(lpciPlanDst) = ((LOWORD(vlpbAiData) + 0x2) + (lpplDst->id * 2));
-    HIWORD(lpciPlanDst) = HIWORD(vlpbAiData);
-    LOWORD(lpciPlanT) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (lpplDst->id * 2));
-    HIWORD(lpciPlanT) = HIWORD(vlpbAiData);
+    lpciPlanDst = ((vlpbAiData + 0x2) + (lpplDst->id * 2));
+    lpciPlanT = ((vlpbAiData + dOffsetPlanTemp) + (lpplDst->id * 2));
     iPacketAdd = 0;
     if ((lpplDst->fStarbase == 0x0))
         goto L_21ec;
@@ -2427,8 +2424,7 @@ L_21f1:
     iWarp = (IWarpMAFromLppl(lppl, &(fTwoMA)) + 3);
     dDistance = (double)((int32_t)(LOWORD((iWarp * iWarp))));
     dDistanceTgt = DGetDistance(rgptPlan[lppl->id].x, rgptPlan[lppl->id].y, rgptPlan[lpplDst->id].x, rgptPlan[lpplDst->id].y);
-    /* untranslated: dMod = ((double)words(0x0, loword(((loword((iWarp * iWarp)) - loword((iWarpDst * iWarpDst))) * (0x64 - (lpplDst->uDefGuess + 0x5))))) /
-     * 16000) */
+    dMod = ((double)((uint32_t)(LOWORD(((LOWORD((iWarp * iWarp)) - LOWORD((iWarpDst * iWarpDst))) * (0x64 - (lpplDst->uDefGuess + 0x5)))))) / 16000);
     if ((0x3e8 >= ((lpplDst->uPopGuess + 0x19) * 0x4)))
         goto L_22fa;
     else
@@ -2644,8 +2640,7 @@ L_26b1:
         goto L_26bb;
 
 L_26bb:
-    LOWORD(lpciPlanDst) = ((LOWORD(vlpbAiData) + 0x2) + (idPlanDst * 2));
-    HIWORD(lpciPlanDst) = HIWORD(vlpbAiData);
+    lpciPlanDst = ((vlpbAiData + 0x2) + (idPlanDst * 2));
     if ((lpciPlanDst->iPktTarget != 0x0))
         goto L_276c;
     else
@@ -4501,8 +4496,7 @@ L_4204:
     iWarpDst = 0;
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
     lpciPlan = (vlpbAiData + 0x2);
-    LOWORD(plMinMax) = ((LOWORD(vlpbAiData) + dOffsetPlanTemp) + (game.cPlanMax * 2));
-    HIWORD(plMinMax) = HIWORD(vlpbAiData);
+    plMinMax = ((vlpbAiData + dOffsetPlanTemp) + (game.cPlanMax * 2));
     if ((lpplTest->iPlayer == idPlayer))
         goto L_42be;
     else
@@ -4607,8 +4601,7 @@ L_44c3:
     return 0x0;
 
 L_44c9:
-    /* untranslated: dMod = ((double)words(0x0, loword(((loword((iWarp * iWarp)) - loword((iWarpDst * iWarpDst))) * (0x64 - (lpplTest->uDefGuess + 0x5))))) /
-     * 16000) */
+    dMod = ((double)((uint32_t)(LOWORD(((LOWORD((iWarp * iWarp)) - LOWORD((iWarpDst * iWarpDst))) * (0x64 - (lpplTest->uDefGuess + 0x5)))))) / 16000);
     if ((0x3e8 >= ((lpplTest->uPopGuess + 0x19) * 0x4)))
         goto L_4544;
     else
@@ -5586,7 +5579,8 @@ L_5406:
         goto L_540f;
 
 L_540f:
-    /* untranslated: part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) = (part[0xa:1](vlpbAiPlanet[lpplTarget->id*0x10]) | 0x80) */
+    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTarget->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
+     * ((lpplTarget->id * 0x10) + 0xa))] | 0x80) */
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lpplTarget->id].x;

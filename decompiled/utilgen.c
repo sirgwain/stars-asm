@@ -750,7 +750,7 @@ L_1e94:
 
 L_1eab:
     pch = (pch + 0x1);
-    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
+    i = (*(pch) & 0xf);
 
 L_1ec1:
     if ((fHigh != 0))
@@ -3749,7 +3749,7 @@ L_4bb4:
     ppal = LocalAlloc(0x40, ((cColors * 4) + 0x8));
     ppal->palNumEntries = cColors;
     ppal->palVersion = 0x300;
-    /* untranslated: call fmemcpy(ppal->palPalEntry, words(HIWORD(lpb), (LOWORD(lpb) + 0x28)), (cColors * 4)) -> callresult(void *) */
+    fmemcpy(ppal->palPalEntry, lpb[40], (cColors * 4));
     i = 0;
     goto L_4c64;
 
@@ -3862,7 +3862,7 @@ L_4e09:
     return 0x0;
 
 L_4e0f:
-    /* untranslated: pBuf = (words(HIWORD(lpbi), (LOWORD(lpbi) + LOWORD(lpbi->biSize))) + PaletteSize(lpbi)) */
+    pBuf = ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi));
     StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, lpbi, 0x0, rop);
     GlobalUnlock(hdib);
     return 0x1;
@@ -3941,7 +3941,7 @@ L_4fd9:
     lpbi = GlobalLock(hdib);
     lpbi = bi;
     GetDIBits(hdc, scratch_bp_p6, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
-    bi = lpbi->biSize;
+    bi = *(lpbi);
     GlobalUnlock(hdib);
     if ((LOWORD(bi.biSizeImage) != 0x0))
         goto L_50ce;
@@ -3990,8 +3990,10 @@ L_5118:
 
 L_5146:
     lpbi = GlobalLock(hdib);
-    /* untranslated: branch GetDIBits(hdc, scratch_bp_p6, 0x0, LOWORD(bi.biHeight), words(HIWORD(lpbi), ((LOWORD(lpbi) + LOWORD(lpbi->biSize)) +
-     * PaletteSize(lpbi))), lpbi, 0x0) != 0 ? L_51da : L_51ac */
+    if ((GetDIBits(hdc, scratch_bp_p6, 0x0, LOWORD(bi.biHeight), ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
+        goto L_51da;
+    else
+        goto L_51ac;
 
 L_51ac:
     GlobalUnlock(hdib);
@@ -4001,7 +4003,7 @@ L_51ac:
     return 0x0;
 
 L_51da:
-    bi = lpbi->biSize;
+    bi = *(lpbi);
     GlobalUnlock(hdib);
     SelectPalette(hdc, scratch_bp_pe, 0);
     ReleaseDC(0x0, hdc);

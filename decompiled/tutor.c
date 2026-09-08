@@ -3373,7 +3373,7 @@ L_3038:
         goto L_3050;
 
 L_3050:
-    /* untranslated: branch (part[0xa:2](sel.fl.lpplord[sel.iwpAct*0x12]) & 0xf) != 0x1 ? L_30a9 : L_3077 */
+    /* untranslated: branch (part[0x6:2](sel.fl.lpplord->rgord[sel.iwpAct]) & 0xf) != 0x1 ? L_30a9 : L_3077 */
 
 L_3077:
     t_call_308b = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
@@ -7056,7 +7056,10 @@ L_673f:
         goto L_675d;
 
 L_675d:
-    /* untranslated: branch part[0x10:2](vrgZipProd[i*0x2]) == rgzpqTut[iTemplate].rgpq[i].w ? L_673b : L_678c */
+    if ((vrgZipProd[0].rgpq[i].w == rgzpqTut[iTemplate].rgpq[i].w))
+        goto L_673b;
+    else
+        goto L_678c;
 
 L_678c:
     return 0x0;
@@ -7723,7 +7726,7 @@ L_6e35:
 L_6e4a:
 
 L_6e50:
-    /* untranslated: ord = part[0x4:18](lpfl->lpplord[iord*0x12]) */
+    ord = lpfl->lpplord->rgord[iord];
     if (((id & 0x7fff) == 0x7fff))
         goto L_6ebc;
     else
@@ -7923,7 +7926,10 @@ L_7076:
     return 0x0;
 
 L_707c:
-    /* untranslated: branch part[0xc:2](lpfl->lpplord[iord*0x12]) == iYears ? L_70ae : L_70a8 */
+    if ((lpfl->lpplord->rgord[iord].tsell.iPlrX == iYears))
+        goto L_70ae;
+    else
+        goto L_70a8;
 
 L_70a8:
     return 0x0;
@@ -7963,7 +7969,7 @@ L_70f9:
     goto L_712a;
 
 L_710c:
-    /* untranslated: csh = (csh + part[0xc:2](lpfl[ish*0x2])) */
+    csh = (csh + lpfl->rgcsh[ish]);
     ish = (ish + 1);
 
 L_712a:
@@ -8055,7 +8061,7 @@ L_7233:
         goto L_723c;
 
 L_723c:
-    /* untranslated: branch part[0xe:2](lpfl->lpplord[iord*0x12]) == iDist ? L_726e : L_7262 */
+    /* untranslated: branch part[0xa:2](lpfl->lpplord->rgord[iord]) == iDist ? L_726e : L_7262 */
 
 L_7262:
     tutor.idh = 1519;
@@ -8118,7 +8124,7 @@ L_7302:
     return 0x0;
 
 L_7308:
-    /* untranslated: ord = part[0x4:18](lpfl->lpplord[iord*0x12]) */
+    ord = lpfl->lpplord->rgord[iord];
     /* untranslated: piaCur = &part[0x8:0](ord) */
     tutor.idh = 1519;
     i = 0;
@@ -8263,7 +8269,7 @@ L_74a9:
 L_74bc:
 
 L_74c2:
-    prod = lppl->lpplprod[iprod].rgprod[0];
+    prod = lppl->lpplprod->rgprod[iprod];
     if ((prod.grobj != grobj))
         goto L_753a;
     else
@@ -8596,7 +8602,7 @@ L_780d:
     return 0x0;
 
 L_7813:
-    /* untranslated: cItemAct = ((part[0x3c:2](lpshdefBuild[iSlot*0x4]) >> 0x8) & 0xff) */
+    cItemAct = lpshdefBuild->hul.rghs[iSlot].cItem;
     if ((phs->cItem != 0x0))
         goto L_785f;
     else
@@ -8659,10 +8665,16 @@ L_78d5:
 L_78e8:
 
 L_78ee:
-    /* untranslated: branch phs->grhst != part[0x3a:2](lpshdefBuild[iSlot*0x4]) ? L_7943 : L_7913 */
+    if ((phs->grhst != lpshdefBuild->hul.rghs[iSlot].grhst))
+        goto L_7943;
+    else
+        goto L_7913;
 
 L_7913:
-    /* untranslated: branch phs->iItem == (part[0x3c:2](lpshdefBuild[iSlot*0x4]) & 0xff) ? L_7952 : L_7943 */
+    if ((phs->iItem == lpshdefBuild->hul.rghs[iSlot].iItem))
+        goto L_7952;
+    else
+        goto L_7943;
 
 L_7943:
     TutorError(502);

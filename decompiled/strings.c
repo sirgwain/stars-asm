@@ -1227,7 +1227,7 @@ L_751d:
 
 L_7534:
     pch = (pch + 0x1);
-    /* untranslated: i = (part[0x0:1](pch) & 0xf) */
+    i = (*(pch) & 0xf);
 
 L_754a:
     if ((fHigh != 0))
