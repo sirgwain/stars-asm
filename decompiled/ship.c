@@ -1097,7 +1097,7 @@ L_1587:
         goto L_1596;
 
 L_1596:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_16f9;
     else
         goto L_15b7;
@@ -4123,13 +4123,13 @@ L_4e06:
 
 L_4e0f:
     prtxfer = lprt;
-    if ((prtxfer->grobj1 != 0x2))
+    if ((prtxfer->grobj1 != grobjFleet))
         goto L_4e51;
     else
         goto L_4e33;
 
 L_4e33:
-    if ((((*(prtxfer + 0x4) >> 0x4) & 0xf) == 0x4))
+    if ((prtxfer->grobj2 == grobjOther))
         goto L_4e57;
     else
         goto L_4e51;
@@ -4355,7 +4355,7 @@ L_51d2:
 
 L_51d9:
     rgbtnXfer = &(rgbtn);
-    LOWORD(crgbtnXfer) = 0x20;
+    crgbtnXfer = 32;
     if ((gd.fTutorial == 0x0))
         goto L_51fe;
     else
@@ -4587,7 +4587,7 @@ L_5555:
         goto L_555f;
 
 L_555f:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_55a6;
     else
         goto L_5580;
@@ -4903,13 +4903,13 @@ L_5a82:
     i = (i + 1);
 
 L_5a86:
-    if ((i < LOWORD(crgbtnXfer)))
+    if ((i < crgbtnXfer))
         goto L_5a42;
     else
         goto L_5a91;
 
 L_5a91:
-    if ((i != LOWORD(crgbtnXfer)))
+    if ((i != crgbtnXfer))
         goto L_5aa2;
     else
         goto L_5a9c;
@@ -6018,7 +6018,7 @@ L_68f3:
     i = (i + 1);
 
 L_68f7:
-    if ((i < LOWORD(crgbtnXfer)))
+    if ((i < crgbtnXfer))
         goto L_66d1;
     else
         goto L_6902;
@@ -6069,7 +6069,7 @@ L_69b5:
     i = (i + 1);
 
 L_69b9:
-    if ((i < LOWORD(crgbtnXfer)))
+    if ((i < crgbtnXfer))
         goto L_696c;
     else
         goto L_69c4;
@@ -6448,7 +6448,7 @@ L_7067:
         goto NoGauges;
 
 NoGauges:
-    LOWORD(crgbtnXfer) = cBtn;
+    crgbtnXfer = cBtn;
     UpdateXferBtns();
 
 L_7081:
@@ -8277,7 +8277,7 @@ L_8ebf:
 
 L_8ec9:
     sel.fl.rgwtMin[4] = lNew;
-    DrawFleetGauge(hdc, rgrcRef[irc], 0x0, grbit);
+    DrawFleetGauge(hdc, &(rgrcRef[irc]), 0x0, grbit);
     goto L_8f8b;
 
 L_8f01:
@@ -8302,7 +8302,7 @@ L_8f47:
 
 L_8f57:
     xf.fl.rgwtMin[4] = lNew;
-    DrawFleetGauge(hdc, rgrcRef[irc], &(xf.fl), grbit);
+    DrawFleetGauge(hdc, &(rgrcRef[irc]), &(xf.fl), grbit);
 
 L_8f8b:
     lCur = lNew;
@@ -9235,7 +9235,7 @@ L_a00c:
     /* untranslated: iWarp = ((part[0xa:2](lpfl->lpplord[(load([bp+0xa]) + 0x1)*0x12]) >> 0x4) & 0xf) */
 
 L_a03d:
-    fEfficient = GetRaceGrbit(rgplr[lpfl->iPlayer], ibitRaceIFE);
+    fEfficient = GetRaceGrbit(&(rgplr[lpfl->iPlayer]), ibitRaceIFE);
     i = 0;
     lpshdef = rglpshdef[lpfl->iPlayer];
     goto L_a091;
@@ -9882,7 +9882,7 @@ L_a9f4:
     goto L_ae59;
 
 L_aa2f:
-    iWarp = lpord[(load([bp - 0x10]) + 0x1)].iWarp;
+    iWarp = lpord[(i + 0x1)].iWarp;
     if ((iWarp <= 0))
         goto L_ab55;
     else
@@ -10058,7 +10058,7 @@ L_ad7d:
     lTot = lCur;
 
 L_ad89:
-    if ((lpord[(load([bp - 0x10]) + 0x1)].grobj != grobjPlanet))
+    if ((lpord[(i + 1)].grobj != grobjPlanet))
         goto L_ae55;
     else
         goto L_adb2;
@@ -10523,7 +10523,7 @@ L_b709:
 L_b72b:
     pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[ishdef]->rgcsh[0x0])) + 0xffffffff) /
                         (uint32_t)(rgpflNew[ishdef]->rgcsh[0x0])));
-    /* untranslated: part[0x2c:2](rgpflNew[ishdef]) = ((part[0x2c:2](rgpflNew[ishdef]) & 0xff80) | (LOWORD(pctNew) & 0x7f)) */
+    rgpflNew[ishdef]->rgdv[0].pctSh = LOWORD(pctNew);
 
 L_b808:
     if ((LOWORD(cshDmgSrc) != 0x0))
@@ -10650,7 +10650,7 @@ L_ba60:
 L_ba82:
     pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[ishdef]->rgcsh[0x0])) + 0xffffffff) /
                         (uint32_t)(rgpflNew[ishdef]->rgcsh[0x0])));
-    /* untranslated: part[0x2c:2](rgpflNew[ishdef]) = ((part[0x2c:2](rgpflNew[ishdef]) & 0xff80) | (LOWORD(pctNew) & 0x7f)) */
+    rgpflNew[ishdef]->rgdv[0].pctSh = LOWORD(pctNew);
 
 L_bb5f:
     if ((LOWORD(cshDmgDst) != 0x0))
@@ -11736,7 +11736,7 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCost) {
     COMPART *lpcom;
 
 L_cd00:
-    lpcom = *(ppart + 0x4);
+    lpcom = ppart->pcom;
     i = 0;
     goto L_cd47;
 
@@ -11880,7 +11880,7 @@ L_ced6:
     cExcess = 19;
 
 L_cedb:
-    if ((GetRaceGrbit(rgplr[iPlayer], ibitRaceBleedingEdgeTech) == 0))
+    if ((GetRaceGrbit(&(rgplr[iPlayer]), ibitRaceBleedingEdgeTech) == 0))
         goto L_cf15;
     else
         goto L_cefb;
@@ -11941,13 +11941,13 @@ LOtherDiddles:
         goto L_cfa5;
 
 L_cfa5:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raStargate))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raStargate))
         goto L_d03b;
     else
         goto L_cfc5;
 
 L_cfc5:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raStargate))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raStargate))
         goto L_d03b;
     else
         goto L_cfe5;
@@ -11999,7 +11999,7 @@ L_d051:
         goto L_d05c;
 
 L_d05c:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raAttack))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raAttack))
         goto L_d0b0;
     else
         goto L_d07c;
@@ -12039,7 +12039,7 @@ L_d0c6:
         goto L_d0d1;
 
 L_d0d1:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raDefend))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raDefend))
         goto L_d125;
     else
         goto L_d0f1;
@@ -12067,7 +12067,7 @@ L_d125:
         goto L_d131;
 
 L_d131:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raTerra))
         goto L_d167;
     else
         goto L_d151;
@@ -12083,7 +12083,7 @@ L_d167:
         goto L_d172;
 
 L_d172:
-    if ((GetRaceGrbit(rgplr[iPlayer], ibitRaceCheapEngines) == 0))
+    if ((GetRaceGrbit(&(rgplr[iPlayer]), ibitRaceCheapEngines) == 0))
         goto L_d1c1;
     else
         goto L_d192;
@@ -12109,7 +12109,7 @@ L_d1c1:
         goto L_d1ca;
 
 L_d1ca:
-    if ((GetRaceGrbit(rgplr[iPlayer], ibitRaceBleedingEdgeTech) == 0))
+    if ((GetRaceGrbit(&(rgplr[iPlayer]), ibitRaceBleedingEdgeTech) == 0))
         goto L_d27f;
     else
         goto L_d1ea;

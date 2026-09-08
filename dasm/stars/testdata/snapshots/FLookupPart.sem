@@ -11,7 +11,7 @@ FLookupPart  (parts)
   stats: blocks=0  labels=0
 */
 L_524e:
-    raMajor = GetRaceStat(rgplr[idPlayer], rsMajorAdv)
+    raMajor = GetRaceStat(&rgplr[idPlayer], rsMajorAdv)
     hs.grhst = ppart->hs.grhst
     HIWORD(hs) = HIWORD(ppart->hs)
     goto L_6019
@@ -48,7 +48,7 @@ L_5302:
     branch hs.iItem != iengineRadiatingHydroRamScoop ? L_533a : L_5310
 
 L_5310:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0 ? L_533a : L_5331
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) == 0 ? L_533a : L_5331
 
 L_5331:
     return 0xffff
@@ -60,7 +60,7 @@ L_5348:
     branch hs.iItem != iengineFuelMizer ? L_5380 : L_5356
 
 L_5356:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0 ? L_5380 : L_5377
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceIFE) != 0 ? L_5380 : L_5377
 
 L_5377:
     return 0xffff
@@ -69,7 +69,7 @@ L_5380:
     branch hs.iItem != iengineInterspace10 ? L_53b8 : L_538e
 
 L_538e:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0 ? L_53b8 : L_53af
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) != 0 ? L_53b8 : L_53af
 
 L_53af:
     return 0xffff
@@ -160,7 +160,7 @@ L_551e:
     branch hs.iItem != ihuldefUltraMiner ? L_5556 : L_552c
 
 L_552c:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5556 : L_554d
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5556 : L_554d
 
 L_554d:
     return 0xffff
@@ -175,7 +175,7 @@ L_5572:
     branch hs.iItem != ihuldefUltraMiner ? L_55aa : L_5580
 
 L_5580:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0 ? L_55aa : L_55a1
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceARM) != 0 ? L_55aa : L_55a1
 
 L_55a1:
     return 0xffff
@@ -246,7 +246,7 @@ L_56a9:
     branch hs.iItem != ihuldefSuperFreighter ? L_56de : L_56b7
 
 L_56b7:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0 ? L_56de : L_56d8
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) != 0 ? L_56de : L_56d8
 
 L_56d8:
     return 0xffff
@@ -527,7 +527,7 @@ L_5b5a:
     branch hs.iItem != iminingRoboUltraMiner ? L_5b92 : L_5b68
 
 L_5b68:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5b92 : L_5b89
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceOBRM) == 0 ? L_5b92 : L_5b89
 
 L_5b89:
     return 0xffff
@@ -539,7 +539,7 @@ L_5ba0:
     branch hs.iItem != iminingRoboUltraMiner ? L_5bd8 : L_5bae
 
 L_5bae:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0 ? L_5bd8 : L_5bcf
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceARM) != 0 ? L_5bd8 : L_5bcf
 
 L_5bcf:
     return 0xffff
@@ -580,7 +580,7 @@ L_5c69:
     branch hs.iItem != iscannerElephantScanner ? L_5ca1 : L_5c77
 
 L_5c77:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ca1 : L_5c98
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ca1 : L_5c98
 
 L_5c98:
     return 0xffff
@@ -711,7 +711,7 @@ L_5ec0:
     branch ppart->pplanetary->grAbility >= 0 ? L_5ef7 : L_5ed0
 
 L_5ed0:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ef7 : L_5ef1
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) == 0 ? L_5ef7 : L_5ef1
 
 L_5ef1:
     return 0xffff
@@ -776,7 +776,7 @@ L_5fde:
     branch hs.iItem > iterraTotalTerraform30 ? L_609c : L_5fec
 
 L_5fec:
-    branch GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0 ? L_609c : L_600d
+    branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceTT) != 0 ? L_609c : L_600d
 
 L_600d:
     return 0xffff

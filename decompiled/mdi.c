@@ -5886,7 +5886,7 @@ L_5781:
 
 L_578c:
     UpdateProgressGauge(MulDiv(340, (iPlayer + 1), game.cPlayer));
-    if ((((rgmdplr[iPlayer] >> 0x9) & 0x1) == 0x0))
+    if ((rgmdplr[iPlayer].fAi == 0x0))
         goto L_577d;
     else
         goto L_57c5;
@@ -6067,7 +6067,7 @@ L_5aad:
     t_merge_5ab0_0001 = 0x0;
 
 L_5ab0:
-    fRet = FWasRaceFile(szFile[ofn.nFileOffset], t_merge_5ab0_0001);
+    fRet = FWasRaceFile(&(szFile[ofn.nFileOffset]), t_merge_5ab0_0001);
     if ((fRaceOnly == 0))
         goto L_5af7;
     else
@@ -6080,7 +6080,7 @@ L_5ad0:
         goto L_5ada;
 
 L_5ada:
-    strcpy(szRaceFile, szFile[ofn.nFileOffset]);
+    strcpy(szRaceFile, &(szFile[ofn.nFileOffset]));
 
 L_5af0:
     return fRet;
@@ -6131,7 +6131,7 @@ L_5b64:
     szFile[(ofn.nFileExtension - 1)] = 0;
     DestroyCurGame();
     strcpy(szBase, szFile);
-    if ((FLoadGame(szFile, szFile[ofn.nFileExtension]) != 0))
+    if ((FLoadGame(szFile, &(szFile[ofn.nFileExtension])) != 0))
         goto L_5bc8;
     else
         goto L_5ba8;
@@ -8544,13 +8544,13 @@ L_8967:
 
 L_8974:
     psz = (psz + 0x1);
-    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass] >> 0xc) & 0xf) & 0xff) + 0x61));
+    *(psz) = LOBYTE(((vrgZip[i].txp.rgia[iPass].iAction & 0xff) + 0x61));
     psz = (psz + 0x1);
-    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass] & 0xfff) & 0xf) & 0xff) + 0x61));
+    *(psz) = LOBYTE((((vrgZip[i].txp.rgia[iPass].cQuan & 0xf) & 0xff) + 0x61));
     psz = (psz + 0x1);
-    *(psz) = LOBYTE((((((vrgZip[i].txp.rgia[iPass] & 0xfff) >> 0x4) & 0xf) & 0xff) + 0x61));
+    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x4) & 0xf) & 0xff) + 0x61));
     psz = (psz + 0x1);
-    *(psz) = LOBYTE((((((vrgZip[i].txp.rgia[iPass] & 0xfff) >> 0x8) & 0xf) & 0xff) + 0x61));
+    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x8) & 0xf) & 0xff) + 0x61));
     iPass = (iPass + 1);
 
 L_8a2b:

@@ -3683,7 +3683,7 @@ L_4baa:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_4c34 : L_4bc7 */
 
 L_4bc7:
-    j = ((*(LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    j = LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef)->imdCategory;
     if ((j <= 1))
         goto L_4c14;
     else
@@ -3721,7 +3721,7 @@ L_4c84:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_4d03 : L_4ca1 */
 
 L_4ca1:
-    if ((((*(LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf) != j))
+    if ((LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef)->imdCategory != j))
         goto L_4d03;
     else
         goto L_4ce3;
@@ -3885,7 +3885,7 @@ L_4fbd:
     goto L_4fda;
 
 L_4fda:
-    if ((((ord.txp.rgia[i] >> 0xc) & 0xf) == 0x6))
+    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
         goto LDelayed;
     else
         goto L_4fe5;
@@ -3990,7 +3990,7 @@ L_5128:
     return 0x1;
 
 L_5131:
-    if ((((ord.txp.rgia[i] >> 0xc) & 0xf) == 0x6))
+    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
         goto L_5128;
     else
         goto L_513c;
@@ -4088,7 +4088,7 @@ L_5211:
     goto L_522e;
 
 L_522e:
-    if ((((ord.txp.rgia[i] >> 0xc) & 0xf) == 0x6))
+    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
         goto LNoETA;
     else
         goto L_5239;
@@ -4326,31 +4326,31 @@ L_552c:
 L_5535:
     ids = idsAction;
     iZip = -1;
-    if ((((ord.txp.rgia[4] >> 0xc) & 0xf) != 0x7))
+    if ((ord.txp.rgia[4].iAction != iActionLoadDunnage))
         goto L_5644;
     else
         goto L_5552;
 
 L_5552:
-    if ((((ord.txp.rgia[3] >> 0xc) & 0xf) == 0x0))
+    if ((ord.txp.rgia[3].iAction == iActionNone))
         goto L_558b;
     else
         goto L_5565;
 
 L_5565:
-    if ((((ord.txp.rgia[3] >> 0xc) & 0xf) != 0x2))
+    if ((ord.txp.rgia[3].iAction != iActionUnloadAll))
         goto L_5644;
     else
         goto L_5578;
 
 L_5578:
-    if ((((ord.txp.rgia[0] >> 0xc) & 0xf) != 0x2))
+    if ((ord.txp.rgia[0].iAction != iActionUnloadAll))
         goto L_5644;
     else
         goto L_558b;
 
 L_558b:
-    opOrd = ((ord.txp.rgia[0x0] >> 0xc) & 0xf);
+    opOrd = ord.txp.rgia[0x0].iAction;
     goto L_5629;
 
 L_559f:
@@ -4358,7 +4358,7 @@ L_559f:
     goto L_55cc;
 
 L_55a7:
-    if ((((ord.txp.rgia[i] >> 0xc) & 0xf) != opOrd))
+    if ((ord.txp.rgia[0].iAction != opOrd))
         goto L_55d5;
     else
         goto L_55c2;
@@ -4439,7 +4439,7 @@ L_5644:
     goto L_5684;
 
 L_564c:
-    opOrd = ((ord.txp.rgia[i] >> 0xc) & 0xf);
+    opOrd = ord.txp.rgia[0x0].iAction;
     if (((opOrd + 109) <= ids))
         goto L_5680;
     else
@@ -4468,7 +4468,7 @@ L_5696:
     return PszGetCompressedString(idsTransport);
 
 L_56a5:
-    opOrd = ((ord.txp.rgia[icr] >> 0xc) & 0xf);
+    opOrd = ord.txp.rgia[0x0].iAction;
     *(picr) = icr;
     fPercent = 0;
     goto L_5794;
@@ -5813,7 +5813,7 @@ L_713d:
     /* untranslated: branch part[0xc:2](lpfl1[i*0x2]) == 0x0 ? L_71c5 : L_715a */
 
 L_715a:
-    j = ((*(LphuldefFromId(rglpshdef[lpfl1->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    j = LphuldefFromId(rglpshdef[lpfl1->iPlayer][i].hul.ihuldef)->imdCategory;
     if ((j <= 1))
         goto L_71a7;
     else
@@ -5832,7 +5832,7 @@ L_71c5:
     /* untranslated: branch part[0xc:2](lpfl2[i*0x2]) == 0x0 ? L_724d : L_71e2 */
 
 L_71e2:
-    j = ((*(LphuldefFromId(rglpshdef[lpfl2->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    j = LphuldefFromId(rglpshdef[lpfl2->iPlayer][i].hul.ihuldef)->imdCategory;
     if ((j <= 1))
         goto L_722f;
     else
@@ -5870,7 +5870,7 @@ L_7280:
     /* untranslated: branch part[0xc:2](lpfl1[i*0x2]) == 0x0 ? L_72fd : L_729d */
 
 L_729d:
-    if ((((*(LphuldefFromId(rglpshdef[lpfl1->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf) != j))
+    if ((LphuldefFromId(rglpshdef[lpfl1->iPlayer][i].hul.ihuldef)->imdCategory != j))
         goto L_72fd;
     else
         goto L_72df;
@@ -5882,7 +5882,7 @@ L_72fd:
     /* untranslated: branch part[0xc:2](lpfl2[i*0x2]) == 0x0 ? L_737a : L_731a */
 
 L_731a:
-    if ((((*(LphuldefFromId(rglpshdef[lpfl2->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf) != j))
+    if ((LphuldefFromId(rglpshdef[lpfl2->iPlayer][i].hul.ihuldef)->imdCategory != j))
         goto L_737a;
     else
         goto L_735c;
@@ -7865,7 +7865,7 @@ L_9f41:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_9fd6 : L_9f61 */
 
 L_9f61:
-    j = ((*(LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    j = LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef)->imdCategory;
     if ((j <= 1))
         goto L_9fb3;
     else
@@ -7904,7 +7904,7 @@ L_a043:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_a0cb : L_a063 */
 
 L_a063:
-    if ((((*(LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef) + 0x7b) >> 0xa) & 0xf) != j))
+    if ((LphuldefFromId(rglpshdef[lpfl->iPlayer][i].hul.ihuldef)->imdCategory != j))
         goto L_a0cb;
     else
         goto L_a0a8;

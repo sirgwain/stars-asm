@@ -129,7 +129,7 @@ L_1a34:
     cMaxBuild = 0
 
 L_1a3e:
-    cResMine = sext16to32(GetRaceStat(rgplr[idPlayer], rsMineBuild))
+    cResMine = sext16to32(GetRaceStat(&rgplr[idPlayer], rsMineBuild))
     branch hiword((uint32_t)(cResMine * cMaxBuild)) > HIWORD(cRes) ? L_1a93 : L_1a77
 
 L_1a77:

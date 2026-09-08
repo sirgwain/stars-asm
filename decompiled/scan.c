@@ -1851,7 +1851,7 @@ L_1a5f:
     goto L_19bb;
 
 L_1ae6:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMassAccel))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMassAccel))
         goto L_1c62;
     else
         goto L_1b07;
@@ -3206,7 +3206,7 @@ L_33fc:
         goto L_341c;
 
 L_341c:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raTerra))
         goto L_3484;
     else
         goto L_343d;
@@ -3219,7 +3219,7 @@ L_343d:
         goto L_345d;
 
 L_345d:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raTerra))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raTerra))
         goto L_3484;
     else
         goto L_347e;
@@ -4741,7 +4741,7 @@ L_4da9:
     /* untranslated: branch part[0xc:2](lpfl[k*0x2]) <= 0x0 ? L_4e26 : L_4dc6 */
 
 L_4dc6:
-    if ((((*(LphuldefFromId(rglpshdef[lpfl->iPlayer][k].hul.ihuldef) + 0x7b) >> 0xa) & 0xf) != j))
+    if ((LphuldefFromId(rglpshdef[lpfl->iPlayer][k].hul.ihuldef)->imdCategory != j))
         goto L_4e26;
     else
         goto L_4e08;
@@ -6317,7 +6317,7 @@ L_6a15:
         goto L_6a21;
 
 L_6a21:
-    CchGetString(idsFrom, psz[strlen(psz)]);
+    CchGetString(idsFrom, &(psz[strlen(psz)]));
     /* untranslated: call strcat(part[0x8:2](psz), PszGetLocName(sel.grobj, sel.id, pt2.x, pt2.y)) -> callresult(char *) */
 
 L_6a66:

@@ -116,7 +116,7 @@ func (sr *symbolResolver) storageLaneFromResolvedAddress(addr resolvedAddress) (
 				return resolvedStorageLane{}, false
 			}
 			indexed := &symresolve.SymbolTerm{Base: path, Scale: term.scale, Result: result}
-			if index, ok := sr.symbolFromValue(term.value); ok {
+			if index, ok := sr.symbolFromAddressTermValue(term.value); ok {
 				indexed.Index = index
 			} else {
 				indexed.IndexVal = term.value
@@ -1193,7 +1193,7 @@ func (sr *symbolResolver) symbolFromSplitFarPointerOffset(root symresolve.Symbol
 		Scale:  scale,
 		Result: indexedTermResult(root.Type(), scale),
 	}
-	if indexSymbol, ok := sr.symbolFromValue(index); ok {
+	if indexSymbol, ok := sr.symbolFromAddressTermValue(index); ok {
 		term.Index = indexSymbol
 	} else {
 		term.IndexVal = index
@@ -1242,10 +1242,6 @@ func indexedTermResult(typ typeinfo.Type, scale int) typeinfo.Type {
 }
 
 func (sr *symbolResolver) symbolFromValue(value machine.Value) (symresolve.SymbolPath, bool) {
-	if bitfield, ok := sr.symbolFromBitfieldValue(value); ok {
-		return bitfield, true
-	}
-
 	switch v := value.(type) {
 
 	case *machine.Load:
@@ -1259,343 +1255,6 @@ func (sr *symbolResolver) symbolFromValue(value machine.Value) (symresolve.Symbo
 		return sr.symbolFromAddressAddress(v.Addr)
 	}
 	return nil, false
-}
-
-// symbolFromBitfieldValue resolves a machine mask and shift to a logical bitfield path.
-func (sr *symbolResolver) symbolFromBitfieldValue(value machine.Value) (*symresolve.SymbolBitfield, bool) {
-	load, bitOff, bitWidth, ok := sr.bitfieldExtract(value)
-	if !ok {
-		return nil, false
-	}
-	return sr.symbolFromBitfieldMemory(load.Addr, bitOff, bitWidth)
-}
-
-// symbolFromBitfieldStore resolves a destination-preserving masked write to a
-// logical bitfield path and its unshifted source value.
-func (sr *symbolResolver) symbolFromBitfieldStore(mem machine.MemoryAddress, value machine.Value) (*symresolve.SymbolBitfield, machine.Value, bool) {
-	_, bitOff, bitWidth, stored, ok := bitfieldStore(mem, value, sr.sameResolvedStorage)
-	if !ok {
-		return nil, nil, false
-	}
-	field, ok := sr.symbolFromBitfieldMemory(mem, bitOff, bitWidth)
-	if !ok {
-		return nil, nil, false
-	}
-	return field, stored, true
-}
-
-// bitfieldExtract returns the storage load, bit offset, and bit width for a bitfield expression.
-func (sr *symbolResolver) bitfieldExtract(value machine.Value) (*machine.Load, int, int, bool) {
-	value = unwrapMachineBitfieldValue(value)
-	and, ok := value.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return nil, 0, 0, false
-	}
-	mask, source, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	bitWidth, ok := lowBitMaskWidth(mask.Val)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	load, bitOff, ok := sr.shiftedLoad(source)
-	if !ok {
-		return nil, 0, 0, false
-	}
-	return load, bitOff, bitWidth, true
-}
-
-// bitfieldStore returns a bitfield write and its unshifted source using the
-// supplied storage equivalence predicate for destination/source-load matching.
-func bitfieldStore(mem machine.MemoryAddress, value machine.Value, same func(machine.MemoryAddress, machine.MemoryAddress) bool) (*machine.Load, int, int, machine.Value, bool) {
-	load, keep, set, ok := bitfieldStoreParts(mem, value, same)
-	if !ok {
-		return nil, 0, 0, nil, false
-	}
-	fullMask, ok := bitMask(mem.Width * 8)
-	if !ok {
-		return nil, 0, 0, nil, false
-	}
-	changed := (^keep.Val) & fullMask
-	bitOff, bitWidth, ok := contiguousMaskRange(changed)
-	if !ok {
-		return nil, 0, 0, nil, false
-	}
-	stored, ok := unshiftMachineBitfieldSet(set, bitOff, bitWidth, changed)
-	if !ok {
-		return nil, 0, 0, nil, false
-	}
-	return load, bitOff, bitWidth, stored, true
-}
-
-// bitfieldStoreParts separates the preserved destination load, keep mask, and
-// inserted value from a compiler-generated read-modify-write expression.
-func bitfieldStoreParts(mem machine.MemoryAddress, value machine.Value, same func(machine.MemoryAddress, machine.MemoryAddress) bool) (*machine.Load, *machine.Const, machine.Value, bool) {
-	if or, ok := value.(*machine.Binary); ok && or.Op == machine.ValueOpOr {
-		if load, keep, ok := bitfieldKeepMask(mem, or.LHS, same); ok {
-			return load, keep, or.RHS, true
-		}
-		if load, keep, ok := bitfieldKeepMask(mem, or.RHS, same); ok {
-			return load, keep, or.LHS, true
-		}
-		return nil, nil, nil, false
-	}
-	load, keep, ok := bitfieldKeepMask(mem, value, same)
-	if !ok {
-		return nil, nil, nil, false
-	}
-	return load, keep, machine.ConstVal(0), true
-}
-
-// bitfieldKeepMask returns the destination load and constant keep mask from an AND expression.
-func bitfieldKeepMask(mem machine.MemoryAddress, value machine.Value, same func(machine.MemoryAddress, machine.MemoryAddress) bool) (*machine.Load, *machine.Const, bool) {
-	and, ok := value.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return nil, nil, false
-	}
-	keep, keptSource, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return nil, nil, false
-	}
-	load, ok := keptSource.(*machine.Load)
-	if !ok || !same(mem, load.Addr) {
-		return nil, nil, false
-	}
-	return load, keep, true
-}
-
-// unshiftMachineBitfieldSet validates and removes the destination bit shift
-// from the inserted portion of a machine bitfield store.
-func unshiftMachineBitfieldSet(value machine.Value, bitOff int, bitWidth int, changed uint) (machine.Value, bool) {
-	if c, ok := value.(*machine.Const); ok {
-		if c.Val&^changed != 0 {
-			return nil, false
-		}
-		fieldMask, ok := bitMask(bitWidth)
-		if !ok {
-			return nil, false
-		}
-		next := *c
-		next.Val = (c.Val >> bitOff) & fieldMask
-		return &next, true
-	}
-	for {
-		cast, ok := value.(*machine.Cast)
-		if !ok {
-			break
-		}
-		value = cast.Value
-	}
-
-	source := value
-	if bitOff != 0 {
-		shift, ok := value.(*machine.Binary)
-		if !ok || shift.Op != machine.ValueOpShl {
-			return nil, false
-		}
-		amount, ok := shift.RHS.(*machine.Const)
-		if !ok || int(amount.Val) != bitOff {
-			return nil, false
-		}
-		source = shift.LHS
-	}
-	source = unwrapMachineBitfieldValue(source)
-	if words, ok := source.(*machine.StackWords); ok && len(words.Words) == 2 {
-		if high, ok := words.Words[0].(*machine.Const); ok && high.Val == 0 {
-			source = words.Words[1]
-		}
-	}
-
-	and, ok := source.(*machine.Binary)
-	if !ok || and.Op != machine.ValueOpAnd {
-		return nil, false
-	}
-	mask, unmasked, ok := constOperand(and.LHS, and.RHS)
-	if !ok {
-		return nil, false
-	}
-	width, ok := lowBitMaskWidth(mask.Val)
-	if !ok || width != bitWidth {
-		return nil, false
-	}
-	return unmasked, true
-}
-
-// shiftedLoad returns the load and right-shift amount for a bitfield source.
-func (sr *symbolResolver) shiftedLoad(value machine.Value) (*machine.Load, int, bool) {
-	value = unwrapMachineBitfieldValue(value)
-	shift, ok := value.(*machine.Binary)
-	if !ok || shift.Op != machine.ValueOpShr {
-		load, ok := sr.machineBitfieldStorageLoad(value)
-		return load, 0, ok
-	}
-	amount, source, ok := constOperand(shift.LHS, shift.RHS)
-	if !ok || source != shift.LHS {
-		return nil, 0, false
-	}
-	load, ok := sr.machineBitfieldStorageLoad(unwrapMachineBitfieldValue(source))
-	if !ok {
-		return nil, 0, false
-	}
-	return load, int(amount.Val), true
-}
-
-// unwrapMachineBitfieldValue removes representation-only wrappers around a
-// machine bitfield expression or its backing storage value.
-func unwrapMachineBitfieldValue(value machine.Value) machine.Value {
-	for {
-		switch v := value.(type) {
-		case *machine.Cast:
-			value = v.Value
-		case *machine.WordValue:
-			if v.Part != machine.WordLow {
-				return value
-			}
-			value = v.Parent
-		default:
-			return value
-		}
-	}
-}
-
-// machineBitfieldStorageLoad returns the physical load selected by a
-// bitfield expression, including an uncollapsed high/low word pair.
-func (sr *symbolResolver) machineBitfieldStorageLoad(value machine.Value) (*machine.Load, bool) {
-	if load, ok := value.(*machine.Load); ok {
-		return load, true
-	}
-	words, ok := value.(*machine.StackWords)
-	if !ok || len(words.Words) != 2 {
-		return nil, false
-	}
-	wide, ok := (&wideMachineCollapser{ctx: sr.FuncContext}).pair(words.Words[1], words.Words[0])
-	if !ok {
-		return nil, false
-	}
-	load, ok := wide.(*machine.Load)
-	return load, ok
-}
-
-// symbolFromBitfieldMemory resolves a physical memory bit range to its logical field.
-func (sr *symbolResolver) symbolFromBitfieldMemory(mem machine.MemoryAddress, bitOff int, bitWidth int) (*symresolve.SymbolBitfield, bool) {
-	base, fieldOff, ok := sr.bitfieldMemoryBase(mem)
-	if !ok {
-		return nil, false
-	}
-	field, ok := sr.res.ResolveBitfieldPathLoadInContext(base, fieldOff, mem.Width, bitOff, bitWidth, sr.unionContext())
-	if !ok {
-		return nil, false
-	}
-	bitfield, ok := field.(*symresolve.SymbolBitfield)
-	return bitfield, ok
-}
-
-// bitfieldMemoryBase resolves machine memory to its containing aggregate and
-// physical byte offset without first selecting an overlapping storage field.
-func (sr *symbolResolver) bitfieldMemoryBase(mem machine.MemoryAddress) (symresolve.SymbolPath, int, bool) {
-	if mem.Index == nil {
-		if _, ok := mem.Base.(*machine.FrameBase); ok {
-			local, ok := sr.res.ResolveLocal(sr.fs, sr.memoryInstOff(mem), mem.Disp)
-			if !ok {
-				return nil, 0, false
-			}
-			root := &symresolve.SymbolRoot{Symbol: &local.Local}
-			return sr.bitfieldAggregateAtOffset(root, local.FieldOff, mem.Width)
-		}
-		if global, ok := sr.globalAccessFromMemory(mem); ok {
-			root := &symresolve.SymbolRoot{Symbol: global.Global}
-			return sr.bitfieldAggregateAtOffset(root, global.FieldOff, mem.Width)
-		}
-		if seg, ok := mem.Seg.(*machine.FarPointer); ok {
-			parent, ok := commonFarPointerParent(seg, mem.Base)
-			if !ok {
-				return nil, 0, false
-			}
-			base, ok := sr.symbolFromValue(parent)
-			if !ok {
-				return nil, 0, false
-			}
-			return sr.bitfieldAggregateAtOffset(base, mem.Disp, mem.Width)
-		}
-		if mem.Seg == nil {
-			base, ok := sr.symbolFromValue(mem.Base)
-			if ok && typeinfo.IsPointer(base.Type()) {
-				return sr.bitfieldAggregateAtOffset(base, mem.Disp, mem.Width)
-			}
-		}
-		if base, ok := sr.resolveBitfieldPointerMemoryPath(mem); ok {
-			return sr.bitfieldAggregateAtOffset(base, mem.Disp, mem.Width)
-		}
-	}
-
-	path, ok := sr.memoryPath(mem)
-	if !ok {
-		return nil, 0, false
-	}
-	return physicalAggregateBase(path)
-}
-
-// bitfieldAggregateAtOffset preserves an indexed flexible-array element as
-// the aggregate base before matching a bitfield within that element.
-func (sr *symbolResolver) bitfieldAggregateAtOffset(base symresolve.SymbolPath, off int, width int) (symresolve.SymbolPath, int, bool) {
-	if path, ok := sr.symbolFromFlexibleArrayAccess(base, off, width); ok {
-		return physicalAggregateBase(path)
-	}
-	return base, off, true
-}
-
-// physicalAggregateBase peels resolved members and byte offsets back to the
-// nearest root, dereference, or indexed element that denotes an aggregate.
-func physicalAggregateBase(path symresolve.SymbolPath) (symresolve.SymbolPath, int, bool) {
-	off := 0
-	for {
-		switch p := path.(type) {
-		case *symresolve.SymbolOffset:
-			off += p.Offset
-			path = p.Base
-		case *symresolve.SymbolField:
-			if p.Field == nil {
-				return nil, 0, false
-			}
-			off += p.Field.Offset
-			path = p.Base
-		case *symresolve.SymbolBitfield:
-			if p.Field == nil || p.Field.Bitfield == nil {
-				return nil, 0, false
-			}
-			off += p.Field.Offset
-			path = p.Base
-		default:
-			typ, _ := typeinfo.UnwrapPointer(path.Type())
-			_, ok := typ.(*typeinfo.Struct)
-			return path, off, ok
-		}
-	}
-}
-
-// resolveBitfieldPointerMemoryPath returns the symbolic pointer used by indirect memory.
-func (sr *symbolResolver) resolveBitfieldPointerMemoryPath(mem machine.MemoryAddress) (symresolve.SymbolPath, bool) {
-	if load, ok := nearPointerMemoryLoad(sr.dsReg, mem); ok {
-		return sr.resolveBitfieldMemoryPath(load.Addr)
-	}
-	if load, ok := farPointerMemoryLoad(mem); ok {
-		return sr.resolveBitfieldMemoryPath(load.Addr)
-	}
-	return nil, false
-}
-
-// resolveBitfieldMemoryPath returns an exact direct local or global storage path.
-func (sr *symbolResolver) resolveBitfieldMemoryPath(mem machine.MemoryAddress) (symresolve.SymbolPath, bool) {
-	path, ok := sr.memoryPath(mem)
-	if !ok {
-		return nil, false
-	}
-	root, off, ok := symbolOffsetRoot(path)
-	if !ok || off != 0 {
-		return nil, false
-	}
-	return root, true
 }
 
 // sameResolvedStorage reports whether two memory accesses name the same physical storage.
@@ -1794,7 +1453,7 @@ func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Va
 	if index, scale := sr.decomposeTerm(other); index != nil {
 		var term symresolve.SymbolPath
 
-		if indexSymbol, ok := sr.symbolFromValue(index); ok {
+		if indexSymbol, ok := sr.symbolFromAddressTermValue(index); ok {
 			term = &symresolve.SymbolTerm{
 				Base:   base,
 				Index:  indexSymbol,
@@ -1882,7 +1541,7 @@ func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value,
 			Scale:  scale,
 			Result: indexedTermResult(base.Type(), scale),
 		}
-		if indexSymbol, ok := sr.symbolFromValue(indexBase); ok {
+		if indexSymbol, ok := sr.symbolFromAddressTermValue(indexBase); ok {
 			term.Index = indexSymbol
 		} else {
 			term.IndexVal = indexBase
@@ -1917,7 +1576,7 @@ func (sr *symbolResolver) symbolFromIndexedField(base symresolve.SymbolPath, fix
 		Scale:  scale,
 		Result: array.Elem,
 	}
-	if indexSymbol, ok := sr.symbolFromValue(index); ok {
+	if indexSymbol, ok := sr.symbolFromAddressTermValue(index); ok {
 		term.Index = indexSymbol
 	} else {
 		term.IndexVal = index

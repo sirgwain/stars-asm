@@ -43,10 +43,10 @@ L_5a82:
     i = (i + 1)
 
 L_5a86:
-    branch i < LOWORD(crgbtnXfer) ? L_5a42 : L_5a91
+    branch i < crgbtnXfer ? L_5a42 : L_5a91
 
 L_5a91:
-    branch i != LOWORD(crgbtnXfer) ? L_5aa2 : L_5a9c
+    branch i != crgbtnXfer ? L_5aa2 : L_5a9c
 
 L_5a9c:
     return 0x0

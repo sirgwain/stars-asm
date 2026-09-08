@@ -96,7 +96,7 @@ L_0008:
         goto L_0066;
 
 L_0066:
-    if ((((rgshdef[7].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[7].fFree != 0x0))
         goto L_00f3;
     else
         goto L_0079;
@@ -271,7 +271,7 @@ L_02a1:
 
 L_02aa:
     CheckAiShdefStatus(14, 15, 0x1388, &(iLatestMiner), rgRecycleShdef);
-    if ((((rgshdef[15].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[15].fFree != 0x0))
         goto L_03c3;
     else
         goto L_02d9;
@@ -297,7 +297,7 @@ L_0305:
 
 L_0308:
     i = t_merge_0308_0001;
-    if (((HIWORD(rgshdef[14].hul.rghs[0x2]) & 0xff) == 0x6))
+    if ((rgshdef[14].hul.rghs[2].iItem == 0x6))
         goto L_0382;
     else
         goto L_0319;
@@ -327,7 +327,7 @@ L_037b:
     rgRecycleShdef[14] = 0x3;
 
 L_0382:
-    if (((HIWORD(rgshdef[15].hul.rghs[0x2]) & 0xff) == 0x6))
+    if ((rgshdef[15].hul.rghs[2].iItem == 0x6))
         goto L_03c3;
     else
         goto L_0390;
@@ -339,7 +339,7 @@ L_0390:
         goto L_03ad;
 
 L_03ad:
-    if (((HIWORD(rgshdef[14].hul.rghs[0x0]) & 0xff) == 0xf))
+    if ((rgshdef[14].hul.rghs[0].iItem == 0xf))
         goto L_03c3;
     else
         goto L_03bb;
@@ -380,7 +380,7 @@ L_04ec:
     EnsureMacintiStarbaseDesigns(rgRecycleSBShdef);
     vAiMacRecycleSB = &(rgRecycleSBShdef);
     fShouldColonize = FShouldWeBuildColonizers(&(cColFleet));
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) != 0xf))
+    if ((rgshdef[1].hul.rghs[0].iItem != 0xf))
         goto L_052a;
     else
         goto L_0522;
@@ -390,7 +390,7 @@ L_0522:
     goto L_0554;
 
 L_052a:
-    if ((((rgshdef[7].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[7].fFree != 0x0))
         goto L_054f;
     else
         goto L_053d;
@@ -3280,6 +3280,7 @@ void EnsureMacintiShdefs() {
     uint16_t t_merge_2beb_0001;
     uint16_t t_merge_30b7_0001;
     uint16_t t_merge_30e0_0001;
+    uint16_t t_merge_3236_0001;
 
 L_2b3c:
     ish = 14;
@@ -3339,7 +3340,7 @@ L_2be8:
     t_merge_2beb_0001 = 0x0;
 
 L_2beb:
-    if ((FCreateAiShdef(ish, (0x18 - t_merge_2beb_0001), &(vrgMacAip[load(cs : [((load([bp - 0x10]) + 0x15) * 0x2) + 0x2a06])])) != 0))
+    if ((FCreateAiShdef(ish, (0x18 - t_merge_2beb_0001), &(vrgMacAip[vrgMacIshAip[(fAdvanced + 21)]])) != 0))
         goto L_2c51;
     else
         goto L_2c04;
@@ -3357,11 +3358,11 @@ L_2c0d:
         goto L_2c16;
 
 L_2c16:
-    FCreateAiShdef(ish, 22, &(vrgMacAip[load(cs : [0x2a32])]));
+    FCreateAiShdef(ish, 22, &(vrgMacAip[vrgMacIshAip[22]]));
     goto L_2c51;
 
 L_2c35:
-    FCreateAiShdef(ish, 21, &(vrgMacAip[load(cs : [0x2a34])]));
+    FCreateAiShdef(ish, 21, &(vrgMacAip[vrgMacIshAip[23]]));
 
 L_2c51:
     ish = (ish + 1);
@@ -3373,7 +3374,7 @@ L_2c55:
         goto L_2c5e;
 
 L_2c5e:
-    if ((((rgshdef[12].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[12].fFree == 0x0))
         goto L_2d14;
     else
         goto L_2c71;
@@ -3391,7 +3392,7 @@ L_2c89:
         goto L_2ca1;
 
 L_2ca1:
-    if ((FCreateAiShdef(12, 29, &(vrgMacAip[load(cs : [0x2a42])])) != 0))
+    if ((FCreateAiShdef(12, 29, &(vrgMacAip[vrgMacIshAip[30]])) != 0))
         goto L_2d14;
     else
         goto L_2cc6;
@@ -3401,7 +3402,7 @@ L_2cc6:
     goto L_2d0b;
 
 L_2cce:
-    if ((FCreateAiShdef(12, 6, &(vrgMacAip[load(cs : [(callresult(int16_t) * 0x2) + 0x2a06])])) != 0))
+    if ((FCreateAiShdef(12, 6, &(vrgMacAip[vrgMacIshAip[Random(4)]])) != 0))
         goto L_2d14;
     else
         goto L_2d01;
@@ -3418,7 +3419,7 @@ L_2d0b:
         goto L_2d14;
 
 L_2d14:
-    if ((((rgshdef[13].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[13].fFree == 0x0))
         goto L_2dcd;
     else
         goto L_2d27;
@@ -3436,7 +3437,7 @@ L_2d3f:
         goto L_2d57;
 
 L_2d57:
-    if ((FCreateAiShdef(13, 29, &(vrgMacAip[load(cs : [0x2a42])])) != 0))
+    if ((FCreateAiShdef(13, 29, &(vrgMacAip[vrgMacIshAip[30]])) != 0))
         goto L_2dcd;
     else
         goto L_2d7c;
@@ -3446,7 +3447,7 @@ L_2d7c:
     goto L_2dc4;
 
 L_2d84:
-    if ((FCreateAiShdef(13, 6, &(vrgMacAip[load(cs : [((callresult(int16_t) + 0x4) * 0x2) + 0x2a06])])) != 0))
+    if ((FCreateAiShdef(13, 6, &(vrgMacAip[vrgMacIshAip[(Random(4) + 4)]])) != 0))
         goto L_2dcd;
     else
         goto L_2dba;
@@ -3463,28 +3464,28 @@ L_2dc4:
         goto L_2dcd;
 
 L_2dcd:
-    if ((((rgshdef[10].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[10].fFree == 0x0))
         goto L_2e22;
     else
         goto L_2de0;
 
 L_2de0:
-    if ((FCreateAiShdef(10, 2, &(vrgMacAip[load(cs : [0x2a36])])) != 0))
+    if ((FCreateAiShdef(10, 2, &(vrgMacAip[vrgMacIshAip[24]])) != 0))
         goto L_2e22;
     else
         goto L_2e05;
 
 L_2e05:
-    FCreateAiShdef(10, 1, &(vrgMacAip[load(cs : [0x2a36])]));
+    FCreateAiShdef(10, 1, &(vrgMacAip[vrgMacIshAip[24]]));
 
 L_2e22:
-    if ((((rgshdef[11].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[11].fFree == 0x0))
         goto L_2e52;
     else
         goto L_2e35;
 
 L_2e35:
-    FCreateAiShdef(11, 2, &(vrgMacAip[load(cs : [0x2a36])]));
+    FCreateAiShdef(11, 2, &(vrgMacAip[vrgMacIshAip[24]]));
 
 L_2e52:
     if ((game.turn >= 0x14))
@@ -3493,7 +3494,7 @@ L_2e52:
         goto L_2e5c;
 
 L_2e5c:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_2eb3;
     else
         goto L_2e6f;
@@ -3542,7 +3543,7 @@ L_2f00:
     goto L_2f47;
 
 L_2f08:
-    if ((FCreateAiShdef(ish, 7, &(vrgMacAip[load(cs : [((callresult(int16_t) + 0x19) * 0x2) + 0x2a06])])) != 0))
+    if ((FCreateAiShdef(ish, 7, &(vrgMacAip[vrgMacIshAip[(Random(4) + 25)]])) != 0))
         goto L_2f50;
     else
         goto L_2f3d;
@@ -3574,13 +3575,13 @@ L_2f5d:
         goto L_2f67;
 
 L_2f67:
-    if ((((rgshdef[7].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[7].fFree == 0x0))
         goto L_2f97;
     else
         goto L_2f7a;
 
 L_2f7a:
-    FCreateAiShdef(7, 15, &(vrgMacAip[load(cs : [0x2a2e])]));
+    FCreateAiShdef(7, 15, &(vrgMacAip[vrgMacIshAip[20]]));
 
 L_2f97:
     if ((FLookupPartX(&(part), 0x1, 0xf) != 1))
@@ -3589,7 +3590,7 @@ L_2f97:
         goto L_2fb3;
 
 L_2fb3:
-    if ((((rgshdef[1].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[1].fFree != 0x0))
         goto L_3035;
     else
         goto L_2fc6;
@@ -3607,7 +3608,7 @@ L_2fd0:
         goto L_2fda;
 
 L_2fda:
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) == 0xf))
+    if ((rgshdef[1].hul.rghs[0].iItem == 0xf))
         goto L_3035;
     else
         goto L_2fe8;
@@ -3616,7 +3617,7 @@ L_2fe8:
     shdef = rgshdef[1];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 1);
-    FCreateAiShdef(1, 15, &(vrgMacAip[load(cs : [0x2a2e])]));
+    FCreateAiShdef(1, 15, &(vrgMacAip[vrgMacIshAip[20]]));
 
 L_3035:
     ish = 5;
@@ -3635,7 +3636,7 @@ L_305b:
         goto L_3064;
 
 L_3064:
-    if ((rgshdef[(load([bp - 0x4]) + 0xffff)].fFree != 0x0))
+    if ((rgshdef[(ish - 1)].fFree != 0x0))
         goto L_316b;
     else
         goto L_3087;
@@ -3689,7 +3690,7 @@ L_30e3:
         goto L_30f7;
 
 L_30f7:
-    if ((FCreateAiShdef(ish, 29, &(vrgMacAip[load(cs : [0x2a40])])) != 0))
+    if ((FCreateAiShdef(ish, 29, &(vrgMacAip[vrgMacIshAip[29]])) != 0))
         goto L_316b;
     else
         goto L_311b;
@@ -3699,7 +3700,7 @@ L_311b:
     goto L_3162;
 
 L_3123:
-    if ((FCreateAiShdef(ish, 9, &(vrgMacAip[load(cs : [((callresult(int16_t) + load([bp - 0x10])) * 0x2) + 0x2a06])])) != 0))
+    if ((FCreateAiShdef(ish, 9, &(vrgMacAip[vrgMacIshAip[(Random(4) + shBase)]])) != 0))
         goto L_316b;
     else
         goto L_3158;
@@ -3747,7 +3748,7 @@ L_31b6:
         goto L_31bf;
 
 L_31bf:
-    if ((rgshdef[(load([bp - 0x4]) + 0xffff)].fFree != 0x0))
+    if ((rgshdef[(ish - 1)].fFree != 0x0))
         goto L_3257;
     else
         goto L_31e2;
@@ -3759,7 +3760,7 @@ L_31e2:
         goto L_3200;
 
 L_3200:
-    if ((FCreateAiShdef(ish, 9, &(vrgMacAip[load(cs : [0x2a2c])])) != 0))
+    if ((FCreateAiShdef(ish, 9, &(vrgMacAip[vrgMacIshAip[19]])) != 0))
         goto L_3257;
     else
         goto L_3224;
@@ -3771,12 +3772,14 @@ L_3224:
         goto L_322d;
 
 L_322d:
+    t_merge_3236_0001 = 0x8;
     goto L_3236;
 
 L_3233:
+    t_merge_3236_0001 = 0x9;
 
 L_3236:
-    FCreateAiShdef(ish, 19, &(vrgMacAip[load(cs : [(merge(Join : L_3236, (L_322d : 0x8, L_3233 : 0x9)) * 0x2) + 0x2a06])]));
+    FCreateAiShdef(ish, 19, &(vrgMacAip[vrgMacIshAip[t_merge_3236_0001]]));
 
 L_3257:
     ish = (ish + 1);
@@ -3845,7 +3848,7 @@ L_3319:
     shdef = rgshdef[0];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0);
-    FCreateAiShdef(0, 5, &(vrgMacAip[load(cs : [0x2a1a])]));
+    FCreateAiShdef(0, 5, &(vrgMacAip[vrgMacIshAip[10]]));
 
 L_3366:
     return;
@@ -4314,7 +4317,7 @@ LMoveToLpplBest:
     goto L_39ec;
 
 L_39ca:
-    ord.txp.rgia[i] = ((ord.txp.rgia[i] & 0xfff) | 0x2000);
+    ord.txp.rgia[0].iAction = iActionUnloadAll;
     i = (i + 1);
 
 L_39ec:

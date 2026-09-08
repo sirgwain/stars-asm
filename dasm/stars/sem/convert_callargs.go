@@ -59,10 +59,18 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 	if !ok {
 		return nil, false
 	}
+	ptr, pointerExpected := expected.(*typeinfo.Pointer)
 	_, words := value.(*machine.StackWords)
-	if ptr, ok := expected.(*typeinfo.Pointer); ok && words && typeinfo.IsFarPointer(expected) && !typeinfo.IsPointer(path.Type()) && typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
-		ref := &SymbolRef{Path: path}
-		return &AddressOf{Target: ref, TypeInfo: expected}, true
+	_, binary := value.(*machine.Binary)
+	addressValue := words && typeinfo.IsFarPointer(expected) || binary && typeinfo.IsNearPointer(expected)
+	if pointerExpected && addressValue && !typeinfo.IsPointer(path.Type()) && typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
+		target := LValue(&SymbolRef{Path: path})
+		if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
+			if lvalue, ok := expr.(LValue); ok {
+				target = lvalue
+			}
+		}
+		return convertAddressArgTargetTyped(target, expected, ptr)
 	}
 	if offset, ok := path.(*symresolve.SymbolOffset); ok && offset.Offset > 0 {
 		if base, ok := c.convertSymbolPath(offset.Base, offset.Base.Type()); ok {

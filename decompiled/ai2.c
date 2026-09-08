@@ -521,7 +521,7 @@ L_07cc:
 L_07ea:
     l = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
     cRes = CResourcesAtPlanet(lppl, idPlayer);
-    if ((((rgshdef[6].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[6].fFree != 0x0))
         goto L_093c;
     else
         goto L_0839;
@@ -1040,7 +1040,7 @@ L_0ef9:
         goto L_0f03;
 
 L_0f03:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto LBlowAwayOrders;
     else
         goto L_0f27;
@@ -1053,7 +1053,7 @@ L_0f27:
     ord.id = idPlanDst;
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
         goto L_0fe0;
@@ -1185,7 +1185,7 @@ L_11b3:
         goto L_11c0;
 
 L_11c0:
-    if (((HIWORD(rgshdef[0].hul.rghs[0x0]) & 0xff) >= 0xa))
+    if ((rgshdef[0].hul.rghs[0].iItem >= 0xa))
         goto L_1162;
     else
         goto L_11ce;
@@ -1316,7 +1316,7 @@ L_1333:
         goto L_1346;
 
 L_1346:
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) < 0x2))
+    if ((rgshdef[1].hul.rghs[0].iItem < 0x2))
         goto LScrapFleet;
     else
         goto L_1354;
@@ -1668,7 +1668,7 @@ L_1895:
 
 L_189b:
     ChangeMainObjSel(grobjFleet, lpfl->id);
-    if (((HIWORD(rgshdef[0].hul.rghs[0x0]) & 0xff) >= 0xa))
+    if ((rgshdef[0].hul.rghs[0].iItem >= 0xa))
         goto L_18da;
     else
         goto L_18bb;
@@ -1708,7 +1708,7 @@ void EnsureISShdefs(int16_t iroCur) {
     int16_t i;
 
 L_1938:
-    if ((((rgshdef[4].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[4].fFree == 0x0))
         goto L_198c;
     else
         goto L_1954;
@@ -1720,10 +1720,10 @@ L_1954:
         goto L_196c;
 
 L_196c:
-    FCreateAiShdef(4, 1, &(vrgISAip[(load(cs : [0x0072]) & 0xff)]));
+    FCreateAiShdef(4, 1, &(vrgISAip[(vrgISIshAip[14] & 0xff)]));
 
 L_198c:
-    if ((((rgshdef[5].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[5].fFree == 0x0))
         goto L_19d7;
     else
         goto L_199f;
@@ -1735,10 +1735,10 @@ L_199f:
         goto L_19b7;
 
 L_19b7:
-    FCreateAiShdef(5, 3, &(vrgISAip[(load(cs : [0x0076]) & 0xff)]));
+    FCreateAiShdef(5, 3, &(vrgISAip[(vrgISIshAip[18] & 0xff)]));
 
 L_19d7:
-    if ((((rgshdef[14].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[14].fFree == 0x0))
         goto L_1a9f;
     else
         goto L_19ea;
@@ -1772,7 +1772,7 @@ L_1a4a:
     goto L_1a95;
 
 L_1a53:
-    if ((FCreateAiShdef(14, 6, &(vrgISAip[load(byte cs : [(callresult(int16_t) + 0x4) + 0x64])])) != 0))
+    if ((FCreateAiShdef(14, 6, &(vrgISAip[vrgISIshAip[(Random(1) + 4)]])) != 0))
         goto L_1a9f;
     else
         goto L_1a8a;
@@ -1789,7 +1789,7 @@ L_1a95:
         goto L_1a9f;
 
 L_1a9f:
-    if ((((rgshdef[1].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[1].fFree != 0x0))
         goto L_1ac6;
     else
         goto L_1ab2;
@@ -1807,7 +1807,7 @@ L_1abc:
         goto L_1ac6;
 
 L_1ac6:
-    if ((((rgshdef[1].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[1].fFree != 0x0))
         goto L_1b09;
     else
         goto L_1ad9;
@@ -1818,10 +1818,10 @@ L_1ad9:
     FChangeAiShdef(&(shdef), 1);
 
 L_1b09:
-    FCreateAiShdef(1, 1, &(vrgISAip[(load(cs : [0x0064]) & 0xff)]));
+    FCreateAiShdef(1, 1, &(vrgISAip[(LOWORD(vrgISIshAip) & 0xff)]));
 
 L_1b29:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_1b50;
     else
         goto L_1b3c;
@@ -1839,7 +1839,7 @@ L_1b46:
         goto L_1b50;
 
 L_1b50:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_1b93;
     else
         goto L_1b63;
@@ -1850,10 +1850,10 @@ L_1b63:
     FChangeAiShdef(&(shdef), 0);
 
 L_1b93:
-    FCreateAiShdef(0, 4, &(vrgISAip[(load(cs : [0x0065]) & 0xff)]));
+    FCreateAiShdef(0, 4, &(vrgISAip[(vrgISIshAip[1] & 0xff)]));
 
 L_1bb3:
-    if ((((rgshdef[6].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[6].fFree == 0x0))
         goto L_1c2e;
     else
         goto L_1bc6;
@@ -1877,10 +1877,10 @@ L_1bf6:
         goto L_1c0e;
 
 L_1c0e:
-    FCreateAiShdef(6, 11, &(vrgISAip[(load(cs : [0x0075]) & 0xff)]));
+    FCreateAiShdef(6, 11, &(vrgISAip[(vrgISIshAip[17] & 0xff)]));
 
 L_1c2e:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[2].fFree == 0x0))
         goto L_1cc1;
     else
         goto L_1c41;
@@ -1910,10 +1910,10 @@ L_1c89:
         goto L_1ca1;
 
 L_1ca1:
-    FCreateAiShdef(2, 17, &(vrgISAip[(load(cs : [0x0073]) & 0xff)]));
+    FCreateAiShdef(2, 17, &(vrgISAip[(vrgISIshAip[15] & 0xff)]));
 
 L_1cc1:
-    if ((((rgshdef[3].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[3].fFree == 0x0))
         goto L_1d54;
     else
         goto L_1cd4;
@@ -1943,10 +1943,10 @@ L_1d1c:
         goto L_1d34;
 
 L_1d34:
-    FCreateAiShdef(3, 19, &(vrgISAip[(load(cs : [0x0074]) & 0xff)]));
+    FCreateAiShdef(3, 19, &(vrgISAip[(vrgISIshAip[16] & 0xff)]));
 
 L_1d54:
-    if ((((rgshdef[9].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[9].fFree == 0x0))
         goto L_1e1c;
     else
         goto L_1d67;
@@ -1980,7 +1980,7 @@ L_1dc7:
     goto L_1e12;
 
 L_1dd0:
-    if ((FCreateAiShdef(9, 9, &(vrgISAip[load(byte cs : [(callresult(int16_t) + 0xa) + 0x64])])) != 0))
+    if ((FCreateAiShdef(9, 9, &(vrgISAip[vrgISIshAip[(Random(4) + 10)]])) != 0))
         goto L_1e1c;
     else
         goto L_1e07;
@@ -2523,7 +2523,7 @@ L_2577:
         goto L_2581;
 
 L_2581:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto LBlowAwayOrders;
     else
         goto L_25a5;
@@ -2536,7 +2536,7 @@ L_25a5:
     ord.id = idPlanDst;
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
         goto L_265c;
@@ -2782,7 +2782,7 @@ L_29c4:
         goto L_29d7;
 
 L_29d7:
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) < 0x2))
+    if ((rgshdef[1].hul.rghs[0].iItem < 0x2))
         goto LScrapFleet;
     else
         goto L_29e5;
@@ -2800,7 +2800,7 @@ LScrapFleet:
 
 L_2a3a:
     lpthWorm = 0x0;
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) <= 0x1))
+    if ((rgshdef[1].hul.rghs[0].iItem <= 0x1))
         goto L_2a58;
     else
         goto L_2a52;
@@ -3160,7 +3160,7 @@ L_2f79:
         goto L_2f98;
 
 L_2f98:
-    if (((HIWORD(rgshdef[0].hul.rghs[0x0]) & 0xff) != 0x1))
+    if ((rgshdef[0].hul.rghs[0].iItem != 0x1))
         goto L_2fc5;
     else
         goto L_2fa6;

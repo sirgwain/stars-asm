@@ -23,13 +23,12 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     uint16_t  t_merge_2245_0001;
     uint16_t  t_merge_22c7_0001;
     int16_t   t_merge_2429_0001;
-    uint32_t  scratch_bp_m18;
-    uint16_t  scratch_bp_m16;
     int16_t   t_merge_2552_0001;
     int16_t   t_merge_2609_0001;
     uint16_t  t_merge_274b_0001;
     uint16_t  t_merge_2763_0001;
     uint16_t  scratch_bp_m2e;
+    uint16_t  scratch_bp_m16;
 
 L_19b2:
     if ((grobj != grobjFleet))
@@ -389,10 +388,7 @@ L_2429:
         goto L_2435;
 
 L_2435:
-    scratch_bp_m18 = 0x0;
-    scratch_bp_m16 = ((HIWORD((int32_t)(((uint32_t)(cBuilt) << 0x14))) + *(lppl + 0x16)) & 0xfff0);
-    lppl->cFactories = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m18) */
+    lppl->cFactories = (lppl->cFactories + cBuilt);
     idm = idmHaveBuiltFactory;
 
 SendMsgFactMine:
@@ -435,10 +431,7 @@ L_2552:
         goto L_255e;
 
 L_255e:
-    scratch_bp_m18 = ((LOWORD((int32_t)(((uint32_t)(cBuilt) << 0x8))) + *(lppl + 0x14)) & 0xff00);
-    scratch_bp_m16 = ((HIWORD((int32_t)(((uint32_t)(cBuilt) << 0x8))) + *(lppl + 0x16)) & 0xf);
-    lppl->cMines = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m18) */
+    lppl->cMines = (lppl->cMines + cBuilt);
     idm = idmHaveBuiltMine;
     goto SendMsgFactMine;
 
@@ -465,10 +458,7 @@ L_2609:
         goto L_2615;
 
 L_2615:
-    scratch_bp_m18 = ((LOWORD((int32_t)(((uint32_t)(cBuilt) << 0x0))) + *(lppl + 0x18)) & 0xfff);
-    scratch_bp_m16 = 0x0;
-    lppl->cDefenses = 0x0;
-    /* untranslated: part[0x18:4](lppl) = (*(lppl+0x18) | scratch_bp_m18) */
+    lppl->cDefenses = (lppl->cDefenses + cBuilt);
     idm = idmHaveBuiltDefenseOutpost;
     goto SendMsgFactMine;
 
@@ -476,7 +466,7 @@ L_2672:
     goto L_2fcf;
     goto L_2fc0;
     goto L_2fc0;
-    raMajor = GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv);
+    raMajor = GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv);
     iWarp = IWarpMAFromLppl(lppl, &(fTwoMAs));
     if ((iWarp != 0))
         goto L_26e7;
@@ -807,7 +797,7 @@ L_2c1c:
     goto L_2c0d;
 
 L_2c3e:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2cea;
     else
         goto L_2c62;

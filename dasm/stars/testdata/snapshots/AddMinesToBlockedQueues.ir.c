@@ -195,7 +195,7 @@ L_1a34:
     cMaxBuild = 0;
 
 L_1a3e:
-    cResMine = (uint32_t)(GetRaceStat(rgplr[idPlayer], rsMineBuild));
+    cResMine = (uint32_t)(GetRaceStat(&(rgplr[idPlayer]), rsMineBuild));
     if ((HIWORD((uint32_t)((cResMine * cMaxBuild))) > HIWORD(cRes)))
         goto L_1a93;
     else

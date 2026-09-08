@@ -844,7 +844,7 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 				continue
 			}
 			// apply prefix
-			if rule.prefix != "" && strings.HasPrefix(g.Name, rule.prefix) {
+			if rule.prefix != "" && strings.HasPrefix(g.Name, rule.prefix) && g.Type.Bytes() == rule.typ.Bytes() {
 				g.Type = rule.typ
 				continue
 			}
@@ -860,7 +860,7 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 					continue
 				}
 				// apply prefix
-				if rule.prefix != "" && strings.HasPrefix(p.Name, rule.prefix) {
+				if rule.prefix != "" && strings.HasPrefix(p.Name, rule.prefix) && p.Type.Bytes() == rule.typ.Bytes() {
 					p.Type = rule.typ
 					continue
 				}
@@ -874,7 +874,7 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 					continue
 				}
 				// apply prefix
-				if rule.prefix != "" && strings.HasPrefix(v.Name, rule.prefix) {
+				if rule.prefix != "" && strings.HasPrefix(v.Name, rule.prefix) && v.Type.Bytes() == rule.typ.Bytes() {
 					v.Type = rule.typ
 					continue
 				}

@@ -63,7 +63,7 @@ func TestAnnotateArraysKeepsMachineExpressionShallow(t *testing.T) {
 	}
 
 	gotSem := FormatEffect(semFunc.Blocks[0].Effects[0])
-	wantSem := "call GetRaceStat(rgplr[iplr], rsMajorAdv) -> callresult(RaceAttribute)"
+	wantSem := "call GetRaceStat(&rgplr[iplr], rsMajorAdv) -> callresult(RaceAttribute)"
 	if gotSem != wantSem {
 		t.Fatalf("semantic effect = %q, want %q", gotSem, wantSem)
 	}

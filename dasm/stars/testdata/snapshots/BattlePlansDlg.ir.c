@@ -544,7 +544,7 @@ L_1224:
         goto L_123c;
 
 L_123c:
-    strcpy(btlplan.szName[cLen], 0xd9c);
+    strcpy(&(btlplan.szName[cLen]), 0xd9c);
     goto L_128b;
 
 L_1254:

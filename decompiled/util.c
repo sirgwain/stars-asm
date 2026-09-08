@@ -1044,7 +1044,7 @@ L_105e:
     dpShdef = (dpShdef + (uint32_t)(LOWORD((lphs->cItem * 0x64))));
 
 L_107e:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceRegeneratingShields) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceRegeneratingShields) == 0))
         goto L_10c1;
     else
         goto L_109e;
@@ -1269,7 +1269,7 @@ L_135c:
         goto L_1365;
 
 L_1365:
-    CchGetString(idsHave2, szName[strlen(szName)]);
+    CchGetString(idsHave2, &(szName[strlen(szName)]));
     goto L_1440;
 
 L_1386:
@@ -1279,7 +1279,7 @@ L_1386:
         goto L_138f;
 
 L_138f:
-    CchGetString(idsAre, szName[strlen(szName)]);
+    CchGetString(idsAre, &(szName[strlen(szName)]));
 
 L_13b0:
     _wsprintf(szName, PszGetCompressedString(idsPlayerD2), (iPlayer + 1));
@@ -1298,7 +1298,7 @@ L_13ef:
         goto L_13f8;
 
 L_13f8:
-    CchGetString(idsHas, szName[strlen(szName)]);
+    CchGetString(idsHas, &(szName[strlen(szName)]));
     goto L_1440;
 
 L_1419:
@@ -1308,7 +1308,7 @@ L_1419:
         goto L_1422;
 
 L_1422:
-    CchGetString(idsIs2, szName[strlen(szName)]);
+    CchGetString(idsIs2, &(szName[strlen(szName)]));
 
 L_1440:
     strcpy(szWork, szName);
@@ -4482,7 +4482,7 @@ L_47b0:
         goto L_47cb;
 
 L_47cb:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceRegeneratingShields) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceRegeneratingShields) == 0))
         goto L_47f2;
     else
         goto L_47ec;
@@ -4669,7 +4669,7 @@ L_4c24:
     *(pDeep) = 0;
 
 L_4c2b:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_4d4d;
     else
         goto L_4c4f;
@@ -4677,7 +4677,7 @@ L_4c2b:
 L_4c4f:
     sqrt((double)((uint32_t)((lppl->rgwtMin[3] * 10))));
     dRange = LOWORD(__ftol());
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoAdvScanner) == 0))
         goto L_4ced;
     else
         goto L_4cb5;
@@ -4747,7 +4747,7 @@ L_4da4:
 
 L_4db4:
     dRange = abs(part.pcom[0x1].id);
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoAdvScanner) == 0))
         goto LFinishUp;
     else
         goto L_4de7;
@@ -4996,7 +4996,7 @@ L_50d0:
         goto L_5119;
 
 L_5119:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raNone))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raNone))
         goto L_513f;
     else
         goto L_5139;
@@ -5283,7 +5283,7 @@ L_55b8:
         goto L_55fd;
 
 L_55fd:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceNoAdvScanner) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceNoAdvScanner) == 0))
         goto L_562d;
     else
         goto L_561d;
@@ -5373,7 +5373,7 @@ L_571b:
     /* untranslated: branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_56fe : L_5738 */
 
 L_5738:
-    rgiFuel = (LpengineFromId((HIWORD(lpshdef->hul.rghs[0x0]) & 0xff)) + 0x36);
+    rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36);
     pctShip10 = 0;
     if ((iWarp > 9))
         goto L_56fe;
@@ -5389,14 +5389,14 @@ L_576c:
         goto L_5784;
 
 L_5784:
-    pctShip10 = (pctShip10 + (uint32_t)(((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff)));
+    pctShip10 = (pctShip10 + lpshdef->hul.rghs[0x0].cItem);
     if ((rgiFuel[(iWarp + 1)] != 0))
         goto L_5852;
     else
         goto L_57b7;
 
 L_57b7:
-    pctShip10 = (pctShip10 + (uint32_t)((((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff) * 0x2)));
+    pctShip10 = (pctShip10 + (uint32_t)((lpshdef->hul.rghs[0x0].cItem * 0x2)));
     if ((iWarp >= 9))
         goto L_5852;
     else
@@ -5409,7 +5409,7 @@ L_57da:
         goto L_57f5;
 
 L_57f5:
-    pctShip10 = (pctShip10 + (uint32_t)(LOWORD((((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff) * 0x3))));
+    pctShip10 = (pctShip10 + (uint32_t)(LOWORD((lpshdef->hul.rghs[0x0].cItem * 0x3))));
     if ((iWarp >= 8))
         goto L_5852;
     else
@@ -5422,7 +5422,7 @@ L_581b:
         goto L_5836;
 
 L_5836:
-    pctShip10 = (pctShip10 + (uint32_t)((((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff) * 0x4)));
+    pctShip10 = (pctShip10 + (uint32_t)((lpshdef->hul.rghs[0x0].cItem * 0x4)));
 
 L_5852:
     /* untranslated: pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(part[0xc:2](lpfl[i*0x2])))) */
@@ -5925,7 +5925,7 @@ L_5f2c:
     /* untranslated: c = callresult(uint16_t) */
     /* untranslated: psz[callresult(uint16_t)] = 32 */
     psz[(c + 1)] = 40;
-    IntToRoman(iVal, HIWORD(psz[c]));
+    /* untranslated: call IntToRoman(iVal, &part[0x2:1](psz[c])) -> callresult(void) */
     strcat(psz, 0x539);
 
 L_5f78:
@@ -6243,7 +6243,7 @@ L_663b:
     /* untranslated: branch part[0xc:2](lpflTarget[ish*0x2]) == 0x0 ? L_66a8 : L_6658 */
 
 L_6658:
-    imd = ((*(LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    imd = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef)->imdCategory;
     if ((imd < 2))
         goto L_66a8;
     else
@@ -6298,7 +6298,7 @@ L_66ea:
     /* untranslated: branch part[0xc:2](lpflTarget[ish*0x2]) == 0x0 ? L_6757 : L_6707 */
 
 L_6707:
-    imd = ((*(LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    imd = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef)->imdCategory;
     if ((imd == 1))
         goto L_6764;
     else
@@ -6338,7 +6338,7 @@ L_677e:
     /* untranslated: branch part[0xc:2](lpflTarget[ish*0x2]) == 0x0 ? L_67e2 : L_679b */
 
 L_679b:
-    imd = ((*(LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    imd = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef)->imdCategory;
     if ((imd == 7))
         goto L_67ef;
     else
@@ -6372,7 +6372,7 @@ L_6809:
     /* untranslated: branch part[0xc:2](lpflTarget[ish*0x2]) == 0x0 ? L_686d : L_6826 */
 
 L_6826:
-    imd = ((*(LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef) + 0x7b) >> 0xa) & 0xf);
+    imd = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef)->imdCategory;
     if ((imd == 1))
         goto L_687a;
     else
@@ -7564,7 +7564,7 @@ L_77df:
 
 L_77e5:
     fCargo = 0;
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) == raStargate))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raStargate))
         goto L_7856;
     else
         goto L_780e;

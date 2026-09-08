@@ -38,9 +38,9 @@ func frameMemoryAccess(ctx *FuncContext, relOff uint32, disp int, width int) mac
 	}
 }
 
-// TestSymbolResolverRecognizesMachineBitfieldValues verifies native bitfield
-// resolution across direct loads and an uncollapsed 32-bit word pair.
-func TestSymbolResolverRecognizesMachineBitfieldValues(t *testing.T) {
+// TestConvertMachineBitfieldValues verifies physical recognition and semantic
+// projection across direct loads and an uncollapsed 32-bit word pair.
+func TestConvertMachineBitfieldValues(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
 	ctx := mustFuncContext(t, fx, res, "UninhabitPlanet")
@@ -50,16 +50,16 @@ func TestSymbolResolverRecognizesMachineBitfieldValues(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		value  machine.Value
-		want   string
-		wantOK bool
+		name           string
+		value          machine.Value
+		want           string
+		wantRecognized bool
 	}{
 		{
-			name:   "unshifted 16-bit field",
-			value:  machine.BinaryVal(machine.ValueOpAnd, planetWord(0x4), machine.ConstVal(0xff)),
-			want:   "lppl->det",
-			wantOK: true,
+			name:           "unshifted 16-bit field",
+			value:          machine.BinaryVal(machine.ValueOpAnd, planetWord(0x4), machine.ConstVal(0xff)),
+			want:           "lppl->det",
+			wantRecognized: true,
 		},
 		{
 			name: "high word of 32-bit storage",
@@ -68,8 +68,8 @@ func TestSymbolResolverRecognizesMachineBitfieldValues(t *testing.T) {
 				machine.BinaryVal(machine.ValueOpShr, planetWord(0x1a), machine.ConstVal(7)),
 				machine.ConstVal(1),
 			),
-			want:   "lppl->fNoResearch",
-			wantOK: true,
+			want:           "lppl->fNoResearch",
+			wantRecognized: true,
 		},
 		{
 			name: "wrapped uncollapsed 32-bit storage",
@@ -85,13 +85,12 @@ func TestSymbolResolverRecognizesMachineBitfieldValues(t *testing.T) {
 				),
 				machine.ConstVal(1),
 			),
-			want:   "lppl->fNoResearch",
-			wantOK: true,
+			want:           "lppl->fNoResearch",
+			wantRecognized: true,
 		},
 		{
-			name:   "non-contiguous mask",
-			value:  machine.BinaryVal(machine.ValueOpAnd, planetWord(0x4), machine.ConstVal(0x5)),
-			wantOK: false,
+			name:  "non-contiguous mask",
+			value: machine.BinaryVal(machine.ValueOpAnd, planetWord(0x4), machine.ConstVal(0x5)),
 		},
 		{
 			name: "partial 32-bit field",
@@ -100,26 +99,28 @@ func TestSymbolResolverRecognizesMachineBitfieldValues(t *testing.T) {
 				machine.BinaryVal(machine.ValueOpShr, planetWord(0x18), machine.ConstVal(12)),
 				machine.ConstVal(0xf),
 			),
-			wantOK: false,
+			wantRecognized: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			path, ok := ctx.symbols.symbolFromBitfieldValue(tt.value)
-			if ok != tt.wantOK {
-				t.Fatalf("symbolFromBitfieldValue() ok = %v, want %v", ok, tt.wantOK)
+			_, ok := recognizeBitfieldRead(ctx, tt.value)
+			if ok != tt.wantRecognized {
+				t.Fatalf("recognizeBitfieldRead() ok = %v, want %v", ok, tt.wantRecognized)
 			}
-			if ok && path.String() != tt.want {
-				t.Fatalf("symbolFromBitfieldValue() = %q, want %q", path.String(), tt.want)
+			if tt.want != "" {
+				if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(tt.value)); got != tt.want {
+					t.Fatalf("converted bitfield = %q, want %q", got, tt.want)
+				}
 			}
 		})
 	}
 }
 
-// TestSymbolResolverRecognizesDynamicBitfieldStore verifies a shifted dynamic
+// TestConvertDynamicBitfieldStore verifies a shifted dynamic
 // source resolves while a preserved load from different storage is rejected.
-func TestSymbolResolverRecognizesDynamicBitfieldStore(t *testing.T) {
+func TestConvertDynamicBitfieldStore(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)
 	ctx := mustFuncContext(t, fx, res, "WinMain")
@@ -144,27 +145,95 @@ func TestSymbolResolverRecognizesDynamicBitfieldStore(t *testing.T) {
 		),
 	)
 
-	path, value, ok := ctx.symbols.symbolFromBitfieldStore(flags, stored)
+	bitfield, ok := recognizeBitfieldWrite(ctx, flags, stored)
 	if !ok {
-		t.Fatal("dynamic fCmdLine store did not resolve")
+		t.Fatal("dynamic fCmdLine store was not recognized")
 	}
-	if path.String() != "ini.fCmdLine" {
-		t.Fatalf("store path = %q, want ini.fCmdLine", path.String())
+	dst, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(flags, bitfield.BitOff, bitfield.BitWidth)
+	if !ok {
+		t.Fatal("dynamic fCmdLine store did not project")
 	}
-	if !machine.ValueEquals(value, source) {
-		t.Fatalf("store value = %v, want %v", value, source)
+	if got := FormatExpr(dst); got != "ini.fCmdLine" {
+		t.Fatalf("store path = %q, want ini.fCmdLine", got)
+	}
+	if !machine.ValueEquals(bitfield.Value, source) {
+		t.Fatalf("store value = %v, want %v", bitfield.Value, source)
 	}
 
 	other := flags
 	other.Disp += 2
-	if path, _, ok := ctx.symbols.symbolFromBitfieldStore(other, stored); ok {
-		t.Fatalf("mismatched storage resolved to %q", path.String())
+	if _, ok := recognizeBitfieldWrite(ctx, other, stored); ok {
+		t.Fatal("mismatched storage was recognized as a bitfield write")
 	}
 	if !ctx.maskedStorageWrite(flags, stored) {
 		t.Fatal("dynamic masked write was not preserved as raw storage fallback")
 	}
 	if ctx.maskedStorageWrite(other, stored) {
 		t.Fatal("mismatched dynamic masked write was classified as destination-preserving")
+	}
+}
+
+// TestConvertBitfieldThroughFixedArray verifies bitfields use the shared
+// pointer, struct, and array address projector before terminal selection.
+func TestConvertBitfieldThroughFixedArray(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "LCalcFuelGainFromRamScoops")
+	lpshdef := machine.LoadVal(frameMemoryAccess(ctx, 0, -0xc, 4))
+	load := machine.LoadVal(machine.MemoryAddress{Base: lpshdef, Disp: 0x3c, Width: 2})
+	value := machine.BinaryVal(
+		machine.ValueOpAnd,
+		machine.BinaryVal(machine.ValueOpShr, load, machine.ConstVal(8)),
+		machine.ConstVal(0xff),
+	)
+	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(value)); got != "lpshdef->hul.rghs[0x0].cItem" {
+		t.Fatalf("converted bitfield = %q, want lpshdef->hul.rghs[0x0].cItem", got)
+	}
+}
+
+// TestConvertChainedShiftBitfield verifies address-index bitfields retain
+// compiler-emitted successive right shifts during machine recognition.
+func TestConvertChainedShiftBitfield(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "FTrackXfer")
+	load := machine.LoadVal(frameMemoryAccess(ctx, 0x1d5, -0x32, 2))
+	value := machine.BinaryVal(
+		machine.ValueOpAnd,
+		machine.BinaryVal(machine.ValueOpShr,
+			machine.BinaryVal(machine.ValueOpShr, load, machine.ConstVal(1)),
+			machine.ConstVal(1),
+		),
+		machine.ConstVal(3),
+	)
+
+	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(value)); got != "btn.iSide" {
+		t.Fatalf("converted bitfield = %q, want btn.iSide", got)
+	}
+}
+
+// TestConvertBitfieldStoreThroughUnion verifies destination-preserving writes
+// can select the unique bitfield nested in an overlapping aggregate.
+func TestConvertBitfieldStoreThroughUnion(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DropSalvage")
+	pointer := machine.LoadVal(frameMemoryAccess(ctx, 0x209, -0x10, 4))
+	dst := machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(pointer, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(pointer, machine.FarPointerOffset),
+		Disp:  0xe,
+		Width: 2,
+	}
+	src := machine.BinaryVal(
+		machine.ValueOpOr,
+		machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(dst), machine.ConstVal(0xc000)),
+		machine.ConstVal(0),
+	)
+	effect := (&machineConverter{ctx: ctx}).convertEffect(machine.StoreEffect{Addr: dst, Src: src, Width: 2})
+
+	if got := FormatEffect(effect); got != "lpth->thp.wtMax = 0x0" {
+		t.Fatalf("converted store = %q, want lpth->thp.wtMax = 0x0", got)
 	}
 }
 

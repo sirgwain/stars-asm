@@ -134,7 +134,7 @@ L_5696:
         goto L_56ac;
 
 L_56ac:
-    /* untranslated: branch FCompressUserString(&game.szName[load([bp+0x6])]+0x10, part[0x1:4](pb), &cOut) == 0 ? L_56f2 : L_56da */
+    /* untranslated: branch FCompressUserString(&part[0x10:1](game.szName[pplr]), part[0x1:4](pb), &cOut) == 0 ? L_56f2 : L_56da */
 
 L_56da:
     *(pb) = LOBYTE(cOut);
@@ -1043,7 +1043,7 @@ L_67eb:
         goto L_6804;
 
 L_6804:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raTerra))
         goto L_684c;
     else
         goto L_6824;
@@ -1052,7 +1052,7 @@ L_6824:
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfff8) | 0x7);
 
 L_684c:
-    WriteRtPlr(rgplr[i], 0x0);
+    WriteRtPlr(&(rgplr[i]), 0x0);
 
 L_6867:
     if ((iPlayer != -1))
@@ -1745,10 +1745,7 @@ L_7266:
 L_728a:
     /* untranslated: iplr = part[0x10:1](lpbtldata[i*0x1d]) */
     /* untranslated: lppl = LpplFromId(part[0xe:2](lpbtldata[i*0x1d])) */
-    if ((rglpshdefSB[iplr][(load(byte load([bp - 0x22]) : [((load([bp - 0x24]) + 0xe) + loword((0x1d * load([bp - 0xc])))) + 0x4]) + 0xfff0)].fInclude != 0x0))
-        goto L_73db;
-    else
-        goto L_731b;
+    /* untranslated: branch rglpshdefSB[iplr][(part[0x12:1](lpbtldata[i*0x1d]) - 16)].fInclude != 0x0 ? L_73db : L_731b */
 
 L_731b:
     /* untranslated: rglpshdefSB[iplr][(part[0x12:1](lpbtldata[i*0x1d]) - 16)].wFlags = ((rglpshdefSB[iplr][(part[0x12:1](lpbtldata[i*0x1d]) + 0xfff0)].wFlags &
@@ -1780,10 +1777,7 @@ L_74b8:
     rgplr[lpfl->iPlayer].wMdPlr = ((rgplr[lpfl->iPlayer].wMdPlr & 0xfff8) | 0x3);
 
 L_7518:
-    if ((rglpshdef[lpfl->iPlayer][lpbtldata[i * 0x1d] + 0x12].fInclude != 0x0))
-        goto L_75fb;
-    else
-        goto L_7564;
+    /* untranslated: branch rglpshdef[lpfl->iPlayer][part[0x12:2](lpbtldata[i*0x1d])].fInclude != 0x0 ? L_75fb : L_7564 */
 
 L_7564:
     /* untranslated: rglpshdef[lpfl->iPlayer][part[0x12:2](lpbtldata[i*0x1d])].wFlags = ((rglpshdef[lpfl->iPlayer][part[0x12:2](lpbtldata[i*0x1d])].wFlags &
@@ -3031,7 +3025,7 @@ L_8dc1:
     t_merge_8dc4_0001 = 0x6d;
 
 L_8dc4:
-    _wsprintf(&(szWork[load([bp - 0x6])]), "%c%d", t_merge_8dc4_0001, (iPlayer + 1));
+    _wsprintf(&(szWork[c]), "%c%d", t_merge_8dc4_0001, (iPlayer + 1));
     goto L_8e0f;
 
 L_8de4:
@@ -3562,7 +3556,7 @@ void SetVisPFInit(int16_t iPlr) {
     uint16_t t_merge_9fb0_0001;
 
 L_9654:
-    raMajor = GetRaceStat(rgplr[iPlr], rsMajorAdv);
+    raMajor = GetRaceStat(&(rgplr[iPlr]), rsMajorAdv);
     if ((iPlr != -1))
         goto L_9687;
     else
@@ -4830,7 +4824,7 @@ L_abf6:
 L_abfe:
     grbitPlr = t_merge_abfe_0001;
     fStargateView = 0;
-    if ((GetRaceStat(rgplr[iPlr], rsMajorAdv) != raStargate))
+    if ((GetRaceStat(&(rgplr[iPlr]), rsMajorAdv) != raStargate))
         goto L_aca8;
     else
         goto L_ac26;
@@ -5717,7 +5711,7 @@ L_ba06:
 
 L_ba0e:
     grbitPlr = t_merge_ba0e_0001;
-    if ((GetRaceStat(rgplr[iPlr], rsMajorAdv) != raMassAccel))
+    if ((GetRaceStat(&(rgplr[iPlr]), rsMajorAdv) != raMassAccel))
         goto L_c1f9;
     else
         goto L_ba31;
@@ -6173,7 +6167,7 @@ L_c1e8:
 L_c1f3:
 
 L_c1f9:
-    if ((GetRaceStat(rgplr[iPlr], rsMajorAdv) != raMines))
+    if ((GetRaceStat(&(rgplr[iPlr]), rsMajorAdv) != raMines))
         goto L_c416;
     else
         goto L_c219;
@@ -6324,7 +6318,7 @@ void SetVisPFFinish(int16_t iPlr) {
     uint16_t scratch_bp_ma;
 
 L_c41c:
-    if ((GetRaceStat(rgplr[iPlr], rsMajorAdv) != raAttack))
+    if ((GetRaceStat(&(rgplr[iPlr]), rsMajorAdv) != raAttack))
         goto L_c44b;
     else
         goto L_c445;

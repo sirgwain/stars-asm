@@ -5,9 +5,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -21,10 +19,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -42,10 +37,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -71,9 +63,7 @@
       "root": "xfer",
       "all_elements": false,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -103,9 +93,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -119,6 +107,10 @@
         {
           "block": "L_56a3",
           "value": "grPopupShdef"
+        },
+        {
+          "block": "L_5749",
+          "value": "grPopupComponent"
         }
       ]
     },
@@ -127,9 +119,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -143,9 +133,7 @@
       "root": "xf",
       "all_elements": false,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -163,10 +151,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -188,10 +173,7 @@
       "root": "ppart",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -353,9 +335,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -369,10 +349,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -394,9 +371,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -434,9 +409,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -466,13 +439,43 @@
       ]
     },
     {
+      "func": "DrawPlanShip",
+      "root": "obj",
+      "all_elements": false,
+      "type": "OBJ",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_0ea0",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_0eb2",
+          "value": "grobjPlanet"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanShip",
+      "root": "objNull",
+      "all_elements": false,
+      "type": "OBJ",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_0d16",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
       "func": "DrawScanner",
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -498,9 +501,7 @@
       "root": "obj",
       "all_elements": false,
       "type": "OBJ",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -538,9 +539,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -562,9 +561,7 @@
       "root": "pxfer",
       "all_elements": true,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -578,9 +575,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -630,10 +625,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -647,10 +639,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -704,9 +693,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -748,10 +735,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -789,9 +773,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -805,9 +787,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -829,10 +809,7 @@
       "root": "ppart",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -910,9 +887,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -926,9 +901,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -950,9 +923,7 @@
       "root": "pxfer",
       "all_elements": true,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -982,9 +953,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -998,9 +967,7 @@
       "root": "lpthSalvage",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1014,9 +981,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1058,10 +1023,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1083,9 +1045,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1123,9 +1083,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1139,10 +1097,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1168,10 +1123,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1189,10 +1141,7 @@
       "root": "partDst",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1230,10 +1179,7 @@
       "root": "partSrc",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1275,9 +1221,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -1303,9 +1247,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1319,9 +1261,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1375,9 +1315,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1419,10 +1357,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1436,9 +1371,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -1452,9 +1385,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1468,9 +1399,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1484,9 +1413,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1548,9 +1475,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1564,9 +1489,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1596,9 +1519,7 @@
       "root": "lpthBest",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1624,9 +1545,7 @@
       "root": "ord",
       "all_elements": false,
       "type": "ORDER",
-      "path": [
-        "grTask"
-      ],
+      "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
         {
@@ -1648,9 +1567,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -1664,9 +1581,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1692,9 +1607,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1720,9 +1633,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1748,9 +1659,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1768,9 +1677,7 @@
       "root": "lpth2",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1796,9 +1703,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {
@@ -1812,9 +1717,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1832,9 +1735,7 @@
       "root": "lpth",
       "all_elements": false,
       "type": "THING",
-      "path": [
-        "ith"
-      ],
+      "path": ["ith"],
       "enum": "ThingType",
       "block_path_facts": [
         {
@@ -1864,9 +1765,7 @@
       "root": "xfer",
       "all_elements": true,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -1884,10 +1783,7 @@
       "root": "part",
       "all_elements": false,
       "type": "PART",
-      "path": [
-        "hs",
-        "grhst"
-      ],
+      "path": ["hs", "grhst"],
       "enum": "HullSlotType",
       "block_path_facts": [
         {
@@ -1909,9 +1805,7 @@
       "root": "pxfer",
       "all_elements": true,
       "type": "XFER",
-      "path": [
-        "grobj"
-      ],
+      "path": ["grobj"],
       "enum": "GrobjClass",
       "block_path_facts": [
         {
@@ -1929,9 +1823,7 @@
       "root": "GlobalPD",
       "all_elements": false,
       "type": "POPUPDATA",
-      "path": [
-        "grPopup"
-      ],
+      "path": ["grPopup"],
       "enum": "GrPopupType",
       "block_path_facts": [
         {

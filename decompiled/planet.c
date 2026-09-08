@@ -724,7 +724,7 @@ void DrawPlanShip(HDC hdc, int16_t grbit) {
 
 L_0d16:
     fDC = 0;
-    objNull = 0x0;
+    objNull.pfl = 0x0;
     if ((sel.id != -1))
         goto L_0e96;
     else
@@ -808,13 +808,13 @@ L_0e96:
 L_0ea0:
     ptile = &(rgtileShip);
     ctile = 7;
-    obj = &(sel.fl);
+    obj.pfl = &(sel.fl);
     goto L_0ec1;
 
 L_0eb2:
     ptile = &(rgtilePlanet);
     ctile = 6;
-    obj = &(sel.pl);
+    obj.ppl = &(sel.pl);
 
 L_0ec1:
     if ((hdc != 0x0))
@@ -1101,7 +1101,7 @@ L_14fa:
     SelectObject(hdc, rghfontArial8[0]);
 
 L_153d:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1593;
     else
         goto L_155e;
@@ -1128,7 +1128,7 @@ L_161f:
     SelectObject(hdc, rghfontArial8[0]);
 
 L_1662:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1699;
     else
         goto L_1683;
@@ -1399,7 +1399,7 @@ L_1bb9:
 
 L_1bfc:
     /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xb]), xLeft, yTop, xRight, ((dyArial8 * 2) + yTop)) -> callresult(void) */
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1c64;
     else
         goto L_1c3b;
@@ -1499,7 +1499,7 @@ L_1e7c:
 L_1eb3:
     SelectObject(hdc, rghfontArial8[0]);
     /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xa]), xLeft, yTop, xRight, (loword((3 * dyArial8)) + yTop)) -> callresult(void) */
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1f16;
     else
         goto L_1f00;
@@ -1538,7 +1538,7 @@ L_1fed:
         goto L_1ff5;
 
 L_1ff5:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_2020;
     else
         goto L_201a;
@@ -1596,7 +1596,7 @@ L_20e5:
     goto L_21d4;
 
 L_2195:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_21c0;
     else
         goto L_21ba;
@@ -4592,7 +4592,7 @@ L_5500:
         goto L_5508;
 
 L_5508:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_552f;
     else
         goto L_5529;
@@ -4610,7 +4610,7 @@ L_5538:
     return hcurArrowHelp;
 
 L_553e:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_5584;
     else
         goto L_555f;
@@ -4714,9 +4714,9 @@ L_5743:
     return hcurArrowHelp;
 
 L_5749:
-    HIWORD(GlobalPD) = 0x200;
+    GlobalPD.part.hs.grhst = hstSpecialSB;
     GlobalPD.part.hs.iItem = (iWarp + 2);
-    FLookupPart(HIWORD(GlobalPD));
+    FLookupPart(GlobalPD.part.hs.grhst);
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
@@ -5753,7 +5753,7 @@ L_65ed:
     goto L_65ce;
 
 L_65f4:
-    strncpy(szT[ich], ((psz + ichT) + fFleet), (6 - ichT));
+    strncpy(&(szT[ich]), ((psz + ichT) + fFleet), (6 - ichT));
     ich = (ich + (6 - ichT));
     if ((fFleet != 0))
         goto LRightOut;
@@ -6502,7 +6502,7 @@ int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr) {
 
 L_7096:
     FLookupPlanet(idpl, &(pl));
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7134;
     else
         goto L_70ce;
@@ -6554,7 +6554,7 @@ L_7171:
     lMaxPop = (uint32_t)((pctDesire * 100));
 
 L_718a:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raCheapCol))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raCheapCol))
         goto L_71c6;
     else
         goto L_71aa;
@@ -6564,7 +6564,7 @@ L_71aa:
     goto L_71ff;
 
 L_71c6:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raNone))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raNone))
         goto L_71ff;
     else
         goto L_71e6;
@@ -6573,7 +6573,7 @@ L_71e6:
     lMaxPop = (lMaxPop + (int32_t)((lMaxPop / 5)));
 
 L_71ff:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceOBRM) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceOBRM) == 0))
         goto L_7238;
     else
         goto L_721f;
@@ -6592,7 +6592,7 @@ int16_t CMaxMines(PLANET *lppl, int16_t iplr) {
 
 L_7248:
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
-    iEff = GetRaceStat(rgplr[iplr], rsMineOperate);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsMineOperate);
     cMax = (int32_t)(((uint32_t)((lPopMax * (uint32_t)(iEff))) / 0x64));
     if ((HIWORD(cMax) > 0x0))
         goto L_72ca;
@@ -6615,7 +6615,7 @@ L_72c0:
     cMax = 10;
 
 L_72ca:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_72f4;
     else
         goto L_72ea;
@@ -6638,7 +6638,7 @@ int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear) {
 
 L_7304:
     cMax = CMaxMines(lppl, iplr);
-    iEff = GetRaceStat(rgplr[iplr], rsMineOperate);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsMineOperate);
     lPop = lppl->rgwtMin[3];
     if ((fNextYear == 0))
         goto L_736e;
@@ -6685,7 +6685,7 @@ L_73c6:
     cMax = 1;
 
 L_73cb:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_73f0;
     else
         goto L_73eb;
@@ -6715,7 +6715,7 @@ L_7418:
     return 0x0;
 
 L_741e:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7469;
     else
         goto L_743e;
@@ -6756,7 +6756,7 @@ L_74da:
     return 0x0;
 
 L_74e0:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7506;
     else
         goto L_7500;
@@ -6786,7 +6786,7 @@ int16_t CMaxFactories(PLANET *lppl, int16_t iplr) {
 
 L_755c:
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
-    iEff = GetRaceStat(rgplr[iplr], rsFactOperate);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsFactOperate);
     cMax = (int32_t)(((uint32_t)((lPopMax * (uint32_t)(iEff))) / 0x64));
     if ((HIWORD(cMax) > 0x0))
         goto L_75de;
@@ -6809,7 +6809,7 @@ L_75d4:
     cMax = 10;
 
 L_75de:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7608;
     else
         goto L_75fe;
@@ -6832,7 +6832,7 @@ int16_t CMaxOperableFactories(PLANET *lppl, int16_t iplr, int16_t fNextYear) {
 
 L_7618:
     cMax = CMaxFactories(lppl, iplr);
-    iEff = GetRaceStat(rgplr[iplr], rsFactOperate);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsFactOperate);
     lPop = lppl->rgwtMin[3];
     if ((fNextYear == 0))
         goto L_7682;
@@ -6879,7 +6879,7 @@ L_76da:
     cMax = 1;
 
 L_76df:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7704;
     else
         goto L_76ff;
@@ -6938,7 +6938,7 @@ L_7772:
 
 L_7779:
     cMax = t_merge_7779_0001;
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_77a1;
     else
         goto L_779c;
@@ -7006,7 +7006,7 @@ L_7854:
 
 L_785a:
     cMax = t_merge_785a_0001;
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7882;
     else
         goto L_787d;
@@ -7049,7 +7049,7 @@ L_78ae:
     return 0x0;
 
 L_78b4:
-    iEff = GetRaceStat(rgplr[iplr], rsResGen);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsResGen);
     lPop = lppl->rgwtMin[3];
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
     if ((HIWORD(lPop) < HIWORD(lPopMax)))
@@ -7092,7 +7092,7 @@ L_795c:
     lPop = (int32_t)((lPopMax * 2));
 
 L_7970:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_7a48;
     else
         goto L_7990;
@@ -7138,7 +7138,7 @@ L_7a95:
     cFact = lppl->cFactories;
 
 L_7ab1:
-    iEff = GetRaceStat(rgplr[iplr], rsFactProd);
+    iEff = GetRaceStat(&(rgplr[iplr]), rsFactProd);
     cRes = (cRes + LOWORD((int32_t)((((uint32_t)(((uint32_t)(cFact) * (uint32_t)(iEff))) + 0x9) / 0xa))));
 
 LFinishUp:
@@ -7920,7 +7920,7 @@ L_8732:
         goto L_8748;
 
 L_8748:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raTerra))
         goto L_87ab;
     else
         goto L_876c;
@@ -7990,7 +7990,7 @@ L_88e9:
         goto L_88f5;
 
 L_88f5:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceISB) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceISB) == 0))
         goto L_8922;
     else
         goto L_8915;
@@ -8009,7 +8009,7 @@ L_892c:
         goto L_8935;
 
 L_8935:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raStealth))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raStealth))
         goto L_895e;
     else
         goto L_8955;

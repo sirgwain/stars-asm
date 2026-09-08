@@ -642,7 +642,7 @@ L_0b89:
     t_merge_0b8c_0001 = 0x3;
 
 L_0b8c:
-    DrawBtn(hdc, rgrcBuildSpin[i], (t_merge_0b8c_0001 | 0x20), 0, 0x0);
+    DrawBtn(hdc, &(rgrcBuildSpin[i]), (t_merge_0b8c_0001 | 0x20), 0, 0x0);
     i = (i + 1);
 
 L_0bae:
@@ -987,7 +987,7 @@ L_137e:
     *(vrgrcRCW + 0x7e) = (((dyArial8 >> 0x1) + *(vrgrcRCW + 0x7a)) + 0x3);
     vrgrcRCW[16] = vrgrcRCW[15];
     /* untranslated: call OffsetRect(part[0x10:4](game[load(ds:[0x48ac])*0x1]), 0, ((*(vrgrcRCW+0x7e) - *(vrgrcRCW+0x7a)) + 0xffff)) -> callresult(void) */
-    LOWORD(crcRCW) = 0x11;
+    crcRCW = 17;
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
     if ((fRCWReadOnly == 0))
@@ -1699,13 +1699,13 @@ L_21ae:
     i = (i + 1);
 
 L_21b2:
-    if ((i < LOWORD(crcRCW)))
+    if ((i < crcRCW))
         goto L_2185;
     else
         goto L_21bd;
 
 L_21bd:
-    if ((i >= LOWORD(crcRCW)))
+    if ((i >= crcRCW))
         goto L_21f7;
     else
         goto L_21c8;
@@ -2508,11 +2508,11 @@ L_2f6c:
         goto L_2f75;
 
 L_2f75:
-    LOWORD(crcRCW) = 0x2;
+    crcRCW = 2;
     goto L_2f84;
 
 L_2f7e:
-    LOWORD(crcRCW) = irc;
+    crcRCW = irc;
 
 L_2f84:
     SetBkColor(hdc, crBkSav);
@@ -2794,7 +2794,7 @@ L_3532:
         goto L_353b;
 
 L_353b:
-    cch = (cch + CchGetString(ids, szT[cch]));
+    cch = (cch + CchGetString(ids, &(szT[cch])));
     goto L_3522;
 
 L_3559:
@@ -3270,7 +3270,7 @@ L_3e31:
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
     _Draw3dFrame(hdc, &(rcGBox), -1);
     cch = CchGetString((i + 84), szWork);
-    cch = (cch + CchGetString(idsResearch, szWork[cch]));
+    cch = (cch + CchGetString(idsResearch, &(szWork[cch])));
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, cch);
     i = (i + 1);
 
@@ -4952,7 +4952,7 @@ L_5a52:
     icksum = IRaceChecksum(pplr);
     WriteRt(rtEOF, 2, &(icksum));
     StreamClose();
-    strcpy(szRaceFile, szFile[ofn.nFileOffset]);
+    strcpy(szRaceFile, &(szFile[ofn.nFileOffset]));
     goto L_5aab;
 
 L_5aa5:
@@ -5653,7 +5653,7 @@ L_65ce:
 
 int16_t PctTrueMaxGrowth(int16_t iplr) {
 L_65d4:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raCheapCol))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raCheapCol))
         goto L_6614;
     else
         goto L_65fd;

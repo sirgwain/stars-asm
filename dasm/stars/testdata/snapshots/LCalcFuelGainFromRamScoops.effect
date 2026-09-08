@@ -1,0 +1,167 @@
+/*
+LCalcFuelGainFromRamScoops  (util)
+  addr: 0008:56b8  len=494
+  sig:  int32_t LCalcFuelGainFromRamScoops(FLEET *lpfl, int16_t iWarp, int32_t dTravel)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+    int16_t          iWarp          [BP+0xa]
+    int32_t          dTravel        [BP+0xc]
+  locals:
+    int32_t          pctShip10      [BP-0x14]
+    int32_t          pct10          [BP-0x10]
+    SHDEF *          lpshdef        [BP-0xc]
+    int16_t *        rgiFuel        [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_56b8:
+  insts 0..8  off 0x56b8..0x56d0
+  succs: L_56d4, L_56dd
+  effects:
+    56c1  store[2] [bp-pct10] = 0x0
+    56c6  store[2] [bp-pct10+0x2] = 0x0
+    56cf  branch load([bp+iWarp]) <= 0xa ? L_56dd : L_56d4
+
+block L_56d4:
+  insts 10..12  off 0x56d4..0x56dc
+  preds: L_56b8
+  succs: L_58a0
+  effects:
+    56da  goto L_58a0
+
+block L_56dd:
+  insts 13..22  off 0x56dd..0x56fd
+  preds: L_56b8
+  succs: L_5712
+  effects:
+    56dd  store[2] [bp-i] = 0x0
+    56f5  store[2] [bp-lpshdef] = load(ds:[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x2]) << 0x1) << 0x1)+0xfe])
+    56f8  store[2] [bp-lpshdef+0x2] = load(ds:[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x2]) << 0x1) << 0x1)+0x100])
+    56fb  goto L_5712
+
+block L_56fe:
+  insts 23..28  off 0x56fe..0x5711
+  preds: L_571b, L_5738, L_5769, L_5852, L_587d
+  succs: L_5712
+  effects:
+    5701  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    570b  store[2] [bp-lpshdef] = (load([bp-lpshdef]) + 0x93)
+
+block L_5712:
+  insts 29..30  off 0x5712..0x5717
+  preds: L_56dd, L_56fe
+  succs: L_571b, L_5880
+  effects:
+    5716  branch load([bp-i]) >= 0x10 ? L_5880 : L_571b
+
+block L_571b:
+  insts 32..41  off 0x571b..0x5734
+  preds: L_5712
+  succs: L_56fe, L_5738
+  effects:
+    5733  branch load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) == 0x0 ? L_56fe : L_5738
+
+block L_5738:
+  insts 43..56  off 0x5738..0x5765
+  preds: L_571b
+  succs: L_56fe, L_576c
+  effects:
+    5743  call LpengineFromId((load(farseg(load(dword [bp-lpshdef])):[faroff(load(dword [bp-lpshdef]))+0x3c]) & 0xff)) -> callresult(ENGINE *)
+    5750  store[2] [bp-rgiFuel] = (faroff(callresult(ENGINE *)) + 0x36)
+    5753  store[2] [bp-rgiFuel+0x2] = farseg(callresult(ENGINE *))
+    5756  store[2] [bp-pctShip10] = 0x0
+    575b  store[2] [bp-pctShip10+0x2] = 0x0
+    5764  branch load([bp+iWarp]) > 0x9 ? L_56fe : L_5766
+
+block L_5766:
+  insts 57..57  off 0x5766..0x5768
+  succs: L_576c
+
+block L_5769:
+  insts 58..58  off 0x5769..0x576b
+  succs: L_56fe
+
+block L_576c:
+  insts 59..66  off 0x576c..0x5780
+  preds: L_5738, L_5766
+  succs: L_5784, L_5852
+  effects:
+    577f  branch load(load([bp-rgiFuel+0x2]):[(load([bp-rgiFuel]) + (load([bp+iWarp]) << 0x1))]) != 0x0 ? L_5852 : L_5784
+
+block L_5784:
+  insts 68..84  off 0x5784..0x57b3
+  preds: L_576c
+  succs: L_57b7, L_5852
+  effects:
+    5796  store[2] [bp-pctShip10] = (load([bp-pctShip10]) + ((load(farseg(load(dword [bp-lpshdef])):[faroff(load(dword [bp-lpshdef]))+0x3c]) >> 0x8) & 0xff))
+    5799  store[2] [bp-pctShip10+0x2] = (load([bp-pctShip10+0x2]) + 0x0)
+    57b2  branch load(load([bp-rgiFuel+0x2]):[(load([bp-rgiFuel]) + ((load([bp+iWarp]) + 0x1) << 0x1))]) != 0x0 ? L_5852 : L_57b7
+
+block L_57b7:
+  insts 86..96  off 0x57b7..0x57d6
+  preds: L_5784
+  succs: L_57da, L_5852
+  effects:
+    57cb  store[2] [bp-pctShip10] = (load([bp-pctShip10]) + (((load(farseg(load(dword [bp-lpshdef])):[faroff(load(dword [bp-lpshdef]))+0x3c]) >> 0x8) & 0xff) << 0x1))
+    57ce  store[2] [bp-pctShip10+0x2] = (load([bp-pctShip10+0x2]) + 0x0)
+    57d5  branch load([bp+iWarp]) >= 0x9 ? L_5852 : L_57da
+
+block L_57da:
+  insts 98..106  off 0x57da..0x57f1
+  preds: L_57b7
+  succs: L_57f5, L_5852
+  effects:
+    57f0  branch load(load([bp-rgiFuel+0x2]):[(load([bp-rgiFuel]) + ((load([bp+iWarp]) + 0x2) << 0x1))]) != 0x0 ? L_5852 : L_57f5
+
+block L_57f5:
+  insts 108..119  off 0x57f5..0x5817
+  preds: L_57da
+  succs: L_581b, L_5852
+  effects:
+    580c  store[2] [bp-pctShip10] = (load([bp-pctShip10]) + loword((((load(farseg(load(dword [bp-lpshdef])):[faroff(load(dword [bp-lpshdef]))+0x3c]) >> 0x8) & 0xff) * 0x3)))
+    580f  store[2] [bp-pctShip10+0x2] = (load([bp-pctShip10+0x2]) + 0x0)
+    5816  branch load([bp+iWarp]) >= 0x8 ? L_5852 : L_581b
+
+block L_581b:
+  insts 121..129  off 0x581b..0x5832
+  preds: L_57f5
+  succs: L_5836, L_5852
+  effects:
+    5831  branch load(load([bp-rgiFuel+0x2]):[(load([bp-rgiFuel]) + ((load([bp+iWarp]) + 0x3) << 0x1))]) != 0x0 ? L_5852 : L_5836
+
+block L_5836:
+  insts 131..140  off 0x5836..0x5851
+  preds: L_581b
+  succs: L_5852
+  effects:
+    584c  store[2] [bp-pctShip10] = (load([bp-pctShip10]) + ((((load(farseg(load(dword [bp-lpshdef])):[faroff(load(dword [bp-lpshdef]))+0x3c]) >> 0x8) & 0xff) << 0x1) << 0x1))
+    584f  store[2] [bp-pctShip10+0x2] = (load([bp-pctShip10+0x2]) + 0x0)
+
+block L_5852:
+  insts 141..157  off 0x5852..0x587c
+  preds: L_576c, L_5784, L_57b7, L_57da, L_57f5, L_581b, L_5836
+  succs: L_56fe
+  effects:
+    5872  call __aFulmul(words(load([bp-pctShip10+0x2]), load([bp-pctShip10])), words(signhiword(load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))])), load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]))) -> callresult(uint32_t)
+    5877  store[2] [bp-pct10] = (load([bp-pct10]) + loword(callresult(uint32_t)))
+    587a  store[2] [bp-pct10+0x2] = (load([bp-pct10+0x2]) + hiword(callresult(uint32_t)))
+
+block L_587d:
+  insts 158..158  off 0x587d..0x587f
+  succs: L_56fe
+
+block L_5880:
+  insts 159..167  off 0x5880..0x589f
+  preds: L_5712
+  succs: L_58a0
+  effects:
+    588c  call __aFulmul(words(load([bp-pct10+0x2]), load([bp-pct10])), words(load([bp+dTravel+0x2]), load([bp+dTravel]))) -> callresult(uint32_t)
+    5891  store[2] [bp-pct10] = loword(callresult(uint32_t))
+    5894  store[2] [bp-pct10+0x2] = hiword(callresult(uint32_t))
+
+block L_58a0:
+  insts 169..173  off 0x58a0..0x58a5
+  preds: L_56d4, L_5880
+  effects:
+    58a5  return merge(Join: L_58a0, (L_56d4:words(0x0, 0x0), L_5880:words(load([bp-0xe]), load([bp-0x10]))))

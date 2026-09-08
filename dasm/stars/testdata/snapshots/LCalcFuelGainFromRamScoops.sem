@@ -1,0 +1,79 @@
+/*
+LCalcFuelGainFromRamScoops  (util)
+  addr: 0008:56b8  len=494
+  sig:  int32_t LCalcFuelGainFromRamScoops(FLEET *lpfl, int16_t iWarp, int32_t dTravel)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+    int16_t          iWarp          [BP+0xa]
+    int32_t          dTravel        [BP+0xc]
+  locals:
+    int32_t          pctShip10      [BP-0x14]
+    int32_t          pct10          [BP-0x10]
+    SHDEF *          lpshdef        [BP-0xc]
+    int16_t *        rgiFuel        [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_56b8:
+    pct10 = 0
+    branch iWarp <= 10 ? L_56dd : L_56d4
+
+L_56d4:
+    return 0x0
+
+L_56dd:
+    i = 0
+    lpshdef = rglpshdef[lpfl->iPlayer]
+    goto L_5712
+
+L_56fe:
+    i = (i + 1)
+    lpshdef = (lpshdef + 0x93)
+
+L_5712:
+    branch i >= 16 ? L_5880 : L_571b
+
+L_571b:
+    branch part[0xc:2](lpfl[i*0x2]) == 0x0 ? L_56fe : L_5738
+
+L_5738:
+    rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36)
+    pctShip10 = 0
+    branch iWarp > 9 ? L_56fe : L_5766
+
+L_5766:
+
+
+L_576c:
+    branch rgiFuel[iWarp] != 0 ? L_5852 : L_5784
+
+L_5784:
+    pctShip10 = (pctShip10 + lpshdef->hul.rghs[0x0].cItem)
+    branch rgiFuel[(iWarp + 1)] != 0 ? L_5852 : L_57b7
+
+L_57b7:
+    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0x0].cItem * 0x2))
+    branch iWarp >= 9 ? L_5852 : L_57da
+
+L_57da:
+    branch rgiFuel[(iWarp + 2)] != 0 ? L_5852 : L_57f5
+
+L_57f5:
+    pctShip10 = (pctShip10 + (uint32_t)loword((lpshdef->hul.rghs[0x0].cItem * 0x3)))
+    branch iWarp >= 8 ? L_5852 : L_581b
+
+L_581b:
+    branch rgiFuel[(iWarp + 3)] != 0 ? L_5852 : L_5836
+
+L_5836:
+    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0x0].cItem * 0x4))
+
+L_5852:
+    pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(part[0xc:2](lpfl[i*0x2]))))
+
+
+L_5880:
+    pct10 = (uint32_t)(pct10 * dTravel)
+    return pct10
+

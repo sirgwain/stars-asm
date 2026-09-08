@@ -211,7 +211,7 @@ L_04f3:
         goto L_04fd;
 
 L_04fd:
-    if ((((HIWORD(lphul->rghs[0x0]) >> 0x8) & 0xff) != 0x0))
+    if ((lphul->rghs[0].cItem != 0x0))
         goto L_036b;
     else
         goto L_0515;
@@ -225,11 +225,11 @@ L_0515:
 L_0523:
     lphul->rghs[0].grhst = hstEngine;
     HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff00) | 0x1);
-    HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff) | ((((HIWORD(lphulBase->rghs[0x0]) >> 0x8) & 0xff) & 0xff) << 0x8));
+    HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff) | ((lphulBase->rghs[0x0].cItem & 0xff) << 0x8));
     part.hs.grhst = lphul->rghs[0x0].grhst;
     HIWORD(part.hs) = HIWORD(lphul->rghs[0x0]);
     FLookupPart(&(part));
-    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * ((HIWORD(lphul->rghs[0x0]) >> 0x8) & 0xff)))));
+    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[0x0].cItem))));
 
 L_05c5:
     lphul->wtEmpty = LOWORD(wt);
@@ -301,7 +301,7 @@ L_0799:
 
 L_07bb:
     cOut = 32;
-    /* untranslated: call FDecompressUserString(part[0x1:4](pbIn[iOff]), pbIn[iOff], &game.szName[load([bp+0x6])]+0x10, &cOut) -> callresult(int16_t) */
+    /* untranslated: call FDecompressUserString(part[0x1:4](pbIn[iOff]), pbIn[iOff], &part[0x10:1](game.szName[pplr]), &cOut) -> callresult(int16_t) */
 
 L_07f7:
     pplr->fLearned = 0x0;
@@ -639,7 +639,7 @@ L_0cc2:
 
 L_0cd5:
     i = (uint16_t)(LOWORD(rgbCur));
-    ReadRtPlr(rgplr[i], rgbCur);
+    ReadRtPlr(&(rgplr[i]), rgbCur);
     rgplr[i].cPlanet = 0;
     /* untranslated: part[0x4:2](rgplr[i]) = ((part[0x4:2](rgplr[i]) & 0xf000) | 0x0) */
     ReadRt();
@@ -1216,7 +1216,7 @@ L_16c8:
 
 L_16db:
     i = (uint16_t)(LOWORD(rgbCur));
-    ReadRtPlr(rgplr[i], rgbCur);
+    ReadRtPlr(&(rgplr[i]), rgbCur);
     cPlanet = (cPlanet + rgplr[i].cPlanet);
     rgplr[i].cPlanet = 0;
     cFleet = (cFleet + rgplr[i].cFleet);
@@ -2242,7 +2242,7 @@ L_27d8:
     rglpbtlplan[iP] = LpAlloc(0x240, htShips);
 
 L_27f7:
-    UnpackBattlePlan(rgbCur, &(rglpbtlplan[iP][load(byte ds : [load([bp - 0x48]) + 0x4830])]), rgcbtlplan[iP]);
+    UnpackBattlePlan(rgbCur, &(rglpbtlplan[iP][rgcbtlplan[iP]]), rgcbtlplan[iP]);
     rgcbtlplan[iP] = (rgcbtlplan[iP] + 0x1);
     ReadRt();
     goto L_279b;
@@ -3179,7 +3179,7 @@ L_37ea:
     goto L_3904;
 
 L_380d:
-    if ((GetRaceStat(rgplr[iPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raTerra))
         goto L_3863;
     else
         goto L_382d;

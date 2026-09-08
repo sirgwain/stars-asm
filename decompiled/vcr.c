@@ -363,7 +363,7 @@ L_0506:
 
 L_0518:
     scratch_bp_m12 = LOWORD((lptok->ishdef * 0x93));
-    imd = ((*(LphuldefFromId(rglpshdef[lptok->iplr][scratch_bp_m12 * 0x1]) + 0x7b) >> 0xa) & 0xf);
+    imd = LphuldefFromId(rglpshdef[lptok->iplr][scratch_bp_m12 * 0x1])->imdCategory;
     if ((imd <= 1))
         goto L_057b;
     else
@@ -1740,7 +1740,7 @@ L_1fdd:
     t_merge_1fe0_0001 = 0x3;
 
 L_1fe0:
-    DrawBtn(hdc, rgrcBuildSpin[i], (t_merge_1fe0_0001 | 0x20), 0, 0x0);
+    DrawBtn(hdc, &(rgrcBuildSpin[i]), (t_merge_1fe0_0001 | 0x20), 0, 0x0);
     i = (i + 1);
 
 L_2004:
@@ -2036,12 +2036,12 @@ L_2897:
         goto L_28c8;
 
 L_28c8:
-    strcpy(szWork[c], 0x1424);
+    strcpy(&(szWork[c]), 0x1424);
     c = (c + 1);
     goto L_28fd;
 
 L_28e4:
-    strcpy(szWork[c], 0x1426);
+    strcpy(&(szWork[c]), 0x1426);
     c = (c + 2);
 
 L_28fd:
@@ -2151,7 +2151,7 @@ L_2c2f:
         goto L_2c39;
 
 L_2c39:
-    c = (c + _wsprintf(&(szWork[load([bp - 0x11e])]), " (-%d)", cshT));
+    c = (c + _wsprintf(&(szWork[c]), " (-%d)", cshT));
 
 L_2c5b:
     SetTextColor(hdc, 0x7f0000);
@@ -3277,7 +3277,7 @@ L_46c3:
     lpshdef = (rglpshdef[vrgtok[i].iplr] + LOWORD((vrgtok[i].ishdef * 0x93)));
 
 L_471a:
-    cch = (cch + _wsprintf(&(szWork[load([bp - 0x6b6])]), " %s * %d", (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), vrgtok[i].csh));
+    cch = (cch + _wsprintf(&(szWork[cch]), " %s * %d", (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), vrgtok[i].csh));
     if ((fAttack == 0))
         goto L_481e;
     else
@@ -3322,7 +3322,7 @@ L_47f2:
         goto L_47fc;
 
 L_47fc:
-    cch = (cch + _wsprintf(&(szWork[load([bp - 0x6b6])]), " (-%d)", cKilled));
+    cch = (cch + _wsprintf(&(szWork[cch]), " (-%d)", cKilled));
 
 L_481e:
     if ((((psz + cch) + 0x1) >= &(rgch[0x5ff])))

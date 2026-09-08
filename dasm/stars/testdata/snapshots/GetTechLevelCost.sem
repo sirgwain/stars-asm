@@ -27,7 +27,7 @@ L_1def:
 
 L_1df8:
     lCost = (sext16to32(loword((0xa * cTech))) + rglTechCost[iLevel])
-    i = (GetRaceStat(rgplr[iplr], (iTech + 8)) - 1)
+    i = (GetRaceStat(&rgplr[iplr], (iTech + 8)) - 1)
     branch i == 0 ? L_1e83 : L_1e40
 
 L_1e40:

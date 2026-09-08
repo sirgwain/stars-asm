@@ -256,37 +256,6 @@ func (r *Resolver) ResolveContainingFieldPathInContext(base SymbolPath, off int,
 	return symbolMemberPath(base, match.Field), match.Off, true
 }
 
-// ResolveBitfieldLoad resolves a shifted and masked field load from a root symbol.
-func (r *Resolver) ResolveBitfieldLoad(v typeinfo.Var, off int, storageWidth int, bitOff int, bitWidth int) (SymbolPath, bool) {
-	return r.ResolveBitfieldLoadInContext(v, off, storageWidth, bitOff, bitWidth, nil)
-}
-
-// ResolveBitfieldLoadInContext resolves a bitfield load using path-sensitive union context.
-func (r *Resolver) ResolveBitfieldLoadInContext(v typeinfo.Var, off int, storageWidth int, bitOff int, bitWidth int, ctx *UnionContext) (SymbolPath, bool) {
-	root := &SymbolRoot{Symbol: v}
-	t, _ := typeinfo.UnwrapPointer(root.Type())
-	s, ok := t.(*typeinfo.Struct)
-	if !ok {
-		return nil, false
-	}
-	return r.resolveBitfieldLoad(root, s, off, storageWidth, bitOff, bitWidth, ctx)
-}
-
-// ResolveBitfieldPathLoad resolves a shifted and masked field load from a symbol path.
-func (r *Resolver) ResolveBitfieldPathLoad(base SymbolPath, off int, storageWidth int, bitOff int, bitWidth int) (SymbolPath, bool) {
-	return r.ResolveBitfieldPathLoadInContext(base, off, storageWidth, bitOff, bitWidth, nil)
-}
-
-// ResolveBitfieldPathLoadInContext resolves a bitfield path load using union context.
-func (r *Resolver) ResolveBitfieldPathLoadInContext(base SymbolPath, off int, storageWidth int, bitOff int, bitWidth int, ctx *UnionContext) (SymbolPath, bool) {
-	t, _ := typeinfo.UnwrapPointer(base.Type())
-	s, ok := t.(*typeinfo.Struct)
-	if !ok {
-		return nil, false
-	}
-	return r.resolveBitfieldLoad(base, s, off, storageWidth, bitOff, bitWidth, ctx)
-}
-
 func (r *Resolver) resolveFieldLoad(base SymbolPath, s *typeinfo.Struct, off int, accessWidth int, ctx *UnionContext) (SymbolPath, bool) {
 	matches := r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx)
 	if field, ok := exactFieldLoad(base, matches, accessWidth); ok {
@@ -330,40 +299,6 @@ func exactFieldLoad(base SymbolPath, matches []typeinfo.StructFieldMatch, access
 			return nil, false
 		}
 		out = &SymbolField{Base: base, Field: match.Field}
-	}
-	return out, out != nil
-}
-
-// resolveBitfieldLoad recursively matches a bitfield by storage and bit range.
-func (r *Resolver) resolveBitfieldLoad(base SymbolPath, s *typeinfo.Struct, off int, storageWidth int, bitOff int, bitWidth int, ctx *UnionContext) (SymbolPath, bool) {
-	var out SymbolPath
-	for _, match := range r.unionContextMatches(base, s, s.FieldsContainingOffset(off), ctx) {
-		if match.Field.Bitfield != nil {
-			fieldBitOff := match.Off*8 + bitOff
-			if bitOff+bitWidth <= storageWidth*8 &&
-				match.Off+storageWidth <= match.Field.Bitfield.StorageSize &&
-				fieldBitOff == match.Field.Bitfield.BitOffset &&
-				match.Field.Bitfield.BitWidth == bitWidth {
-				if out != nil {
-					return nil, false
-				}
-				out = &SymbolBitfield{Base: base, Field: match.Field}
-				continue
-			}
-		}
-		field := &SymbolField{Base: base, Field: match.Field}
-		childType, ok := match.Field.Type.(*typeinfo.Struct)
-		if !ok {
-			continue
-		}
-		child, ok := r.resolveBitfieldLoad(field, childType, match.Off, storageWidth, bitOff, bitWidth, ctx)
-		if !ok {
-			continue
-		}
-		if out != nil {
-			return nil, false
-		}
-		out = child
 	}
 	return out, out != nil
 }

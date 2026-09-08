@@ -53,6 +53,120 @@ func (c *machineConverter) resolveAddressLValue(mem machine.MemoryAddress, width
 	return nil, false
 }
 
+// resolveBitfieldLValue resolves a physical storage bit range through typed semantic projection.
+func (c *machineConverter) resolveBitfieldLValue(mem machine.MemoryAddress, bitOff int, bitWidth int) (LValue, bool) {
+	resolved, ok := c.ctx.symbols.addressFromMemory(mem, nil)
+	if !ok {
+		return nil, false
+	}
+	if addr, ok := c.semanticBitfieldExactAddress(resolved); ok {
+		if lvalue, ok := c.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth); ok {
+			return lvalue, true
+		}
+	}
+	resolved = physicalResolvedAddress(resolved)
+	resolved.deref = resolved.deref || bitfieldExactPathHasDeref(resolved.exact)
+	addr, ok := c.semanticResolvedAddress(resolved)
+	if !ok {
+		return nil, false
+	}
+	if lvalue, ok := c.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth); ok {
+		return lvalue, true
+	}
+	fallback := *c
+	fallback.ignoreUnionContext = true
+	return fallback.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth)
+}
+
+// semanticBitfieldExactAddress preserves machine-proven nested pointer and
+// index projections while returning terminal storage to a byte offset.
+func (c *machineConverter) semanticBitfieldExactAddress(resolved resolvedAddress) (AddressExpr, bool) {
+	path := resolved.exact
+	offset := 0
+	for path != nil {
+		if _, isOffset := path.(*symresolve.SymbolOffset); !isOffset {
+			typ, _ := typeinfo.UnwrapPointer(path.Type())
+			if _, aggregate := typ.(*typeinfo.Struct); aggregate {
+				if _, bareDeref := path.(*symresolve.SymbolDeref); bareDeref {
+					return AddressExpr{}, false
+				}
+				base, ok := c.convertSymbolPath(path, path.Type())
+				if !ok {
+					return AddressExpr{}, false
+				}
+				return AddressExpr{Base: normalizeBitfieldAggregateBase(base), Offset: offset}, true
+			}
+		}
+		switch current := path.(type) {
+		case *symresolve.SymbolOffset:
+			offset += current.Offset
+			path = current.Base
+		case *symresolve.SymbolField:
+			if current.Field == nil {
+				return AddressExpr{}, false
+			}
+			offset += current.Field.Offset
+			path = current.Base
+		default:
+			return AddressExpr{}, false
+		}
+	}
+	return AddressExpr{}, false
+}
+
+// normalizeBitfieldAggregateBase renders fields selected through explicit
+// dereferences as equivalent source-level pointer field accesses.
+func normalizeBitfieldAggregateBase(expr Expr) Expr {
+	switch current := expr.(type) {
+	case *FieldAccess:
+		next := *current
+		next.Base = normalizeBitfieldAggregateBase(current.Base)
+		if deref, ok := next.Base.(*Deref); ok && deref.ByteOff == 0 {
+			next.Base = deref.Pointer
+		}
+		return &next
+	case *ArrayIndex:
+		next := *current
+		next.Base = normalizeBitfieldAggregateBase(current.Base)
+		return &next
+	default:
+		return expr
+	}
+}
+
+// bitfieldExactPathHasDeref reports whether an exact path already encoded a
+// pointer crossing that the normalized address walker should perform instead.
+func bitfieldExactPathHasDeref(path symresolve.SymbolPath) bool {
+	for path != nil {
+		switch current := path.(type) {
+		case *symresolve.SymbolDeref:
+			return true
+		case *symresolve.SymbolOffset:
+			path = current.Base
+		case *symresolve.SymbolField:
+			path = current.Base
+		case *symresolve.SymbolTerm:
+			path = current.Base
+		default:
+			return false
+		}
+	}
+	return false
+}
+
+// resolveDeclaredBitfield returns the declared field selected by a physical bit range.
+func resolveDeclaredBitfield(ctx *FuncContext, mem machine.MemoryAddress, bitOff int, bitWidth int) (*typeinfo.StructField, bool) {
+	lvalue, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(mem, bitOff, bitWidth)
+	if !ok {
+		return nil, false
+	}
+	field, ok := lvalue.(*FieldAccess)
+	if !ok || field.Field == nil || field.Field.Bitfield == nil {
+		return nil, false
+	}
+	return field.Field, true
+}
+
 // resolveAddressValue resolves a machine address-valued expression through typed semantic projection.
 func (c *machineConverter) resolveAddressValue(value machine.Value) (Expr, bool) {
 	switch value.(type) {
@@ -128,6 +242,124 @@ func (c *machineConverter) consumeAddress(addr AddressExpr, width int) (LValue, 
 	}
 	lvalue, ok := expr.(LValue)
 	return lvalue, ok
+}
+
+// consumeBitfieldAddress walks an address to the aggregate containing a declared bitfield.
+func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+	current := addr.Base
+	offset := addr.Offset
+	terms := append([]ScaledTerm(nil), addr.Terms...)
+	deref := addr.Deref
+
+	for {
+		if len(terms) == 0 {
+			if field, ok := c.consumeStructBitfield(current, offset, storageWidth, bitOff, bitWidth); ok {
+				return field, true
+			}
+			if field, ok := c.consumeAmbiguousStructBitfield(current, offset, terms, storageWidth, bitOff, bitWidth); ok {
+				return field, true
+			}
+		}
+
+		if deref && typeinfo.IsPointer(current.ExprType()) {
+			next, nextOffset, nextTerms, changed := c.consumeDereferencedPointerStep(current, offset, terms, storageWidth)
+			if changed {
+				current = next
+				offset = nextOffset
+				terms = nextTerms
+				deref = false
+				continue
+			}
+		}
+
+		next, nextOffset, nextTerms, changed := c.consumeObjectAddressStep(current, offset, terms, storageWidth)
+		if !changed {
+			return nil, false
+		}
+		current = next
+		offset = nextOffset
+		terms = nextTerms
+	}
+}
+
+// consumeAmbiguousStructBitfield selects the sole aggregate branch that
+// eventually contains the requested bitfield when an overlapping union has
+// no active member selection.
+func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int, terms []ScaledTerm, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+	typ := base.ExprType()
+	if ptr, ok := typ.(*typeinfo.Pointer); ok {
+		typ = ptr.Elem
+	}
+	strct, ok := typ.(*typeinfo.Struct)
+	if !ok {
+		return nil, false
+	}
+	matches := c.unionFieldMatches(base, strct, strct.FieldsContainingOffset(offset))
+	if len(matches) <= 1 {
+		return nil, false
+	}
+	var out LValue
+	for _, match := range matches {
+		if match.Field.Bitfield != nil || !isAggregateType(match.Field.Type) {
+			continue
+		}
+		field := bitfieldFieldAccess(base, match.Field)
+		candidate, ok := c.consumeBitfieldAddress(
+			AddressExpr{Base: field, Offset: match.Off, Terms: append([]ScaledTerm(nil), terms...)},
+			storageWidth,
+			bitOff,
+			bitWidth,
+		)
+		if !ok {
+			continue
+		}
+		if out != nil {
+			return nil, false
+		}
+		out = candidate
+	}
+	return out, out != nil
+}
+
+// consumeStructBitfield matches a physical storage bit range against one struct's fields.
+func (c *machineConverter) consumeStructBitfield(base Expr, offset int, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+	typ := base.ExprType()
+	if ptr, ok := typ.(*typeinfo.Pointer); ok {
+		typ = ptr.Elem
+	}
+	strct, ok := typ.(*typeinfo.Struct)
+	if !ok {
+		return nil, false
+	}
+	matches := c.unionFieldMatches(base, strct, strct.FieldsContainingOffset(offset))
+	var out *FieldAccess
+	for _, match := range matches {
+		bitfield := match.Field.Bitfield
+		if bitfield == nil {
+			continue
+		}
+		fieldBitOff := match.Off*8 + bitOff
+		if bitOff+bitWidth > storageWidth*8 ||
+			match.Off+storageWidth > bitfield.StorageSize ||
+			fieldBitOff != bitfield.BitOffset ||
+			bitWidth != bitfield.BitWidth {
+			continue
+		}
+		if out != nil {
+			return nil, false
+		}
+		out = bitfieldFieldAccess(base, match.Field)
+	}
+	return out, out != nil
+}
+
+// bitfieldFieldAccess converts an explicit aggregate dereference into the
+// equivalent pointer-based field access before selecting a field.
+func bitfieldFieldAccess(base Expr, field *typeinfo.StructField) *FieldAccess {
+	if deref, ok := base.(*Deref); ok && deref.ByteOff == 0 {
+		base = deref.Pointer
+	}
+	return &FieldAccess{Base: base, Field: field}
 }
 
 // consumeAddressExpr resolves residual address terms according to the base expression type.
@@ -501,19 +733,30 @@ func isAggregateType(typ typeinfo.Type) bool {
 
 // unionFieldMatches narrows overlapping fields using the current block's union context.
 func (c *machineConverter) unionFieldMatches(base Expr, strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch) []typeinfo.StructFieldMatch {
-	if len(matches) <= 1 || c.ctx.unionContext() == nil {
+	if len(matches) <= 1 || c.ignoreUnionContext {
 		return matches
 	}
 	var selection symresolve.UnionSelection
 	var selected bool
-	if path, ok := symbolPathForExpr(base); ok {
-		selection, selected = c.ctx.unionContext().SelectionFor(path, strct)
-	} else if index, ok := base.(*ArrayIndex); ok {
-		if root, ok := symbolPathForExpr(index.Base); ok {
-			selection, selected = c.ctx.unionContext().AllElementsSelectionFor(root, strct)
+	if unionCtx := c.ctx.unionContext(); unionCtx != nil {
+		if path, ok := symbolPathForExpr(base); ok {
+			selection, selected = unionCtx.SelectionFor(path, strct)
+		} else if index, ok := base.(*ArrayIndex); ok {
+			if root, ok := symbolPathForExpr(index.Base); ok {
+				selection, selected = unionCtx.AllElementsSelectionFor(root, strct)
+			}
 		}
 	}
 	if !selected {
+		rule, ok := c.ctx.sdb.UnionRules.UnionVariantForType(strct)
+		if !ok || rule.DefaultMember == nil {
+			return matches
+		}
+		for _, match := range matches {
+			if match.Field == rule.DefaultMember {
+				return []typeinfo.StructFieldMatch{match}
+			}
+		}
 		return matches
 	}
 	for _, match := range matches {

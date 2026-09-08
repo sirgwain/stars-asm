@@ -888,7 +888,7 @@ L_10dc:
         goto L_10e6;
 
 L_10e6:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_110d;
     else
         goto L_1107;
@@ -1287,7 +1287,7 @@ L_15b0:
         goto L_15b9;
 
 L_15b9:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2641;
     else
         goto L_15d7;
@@ -1330,7 +1330,7 @@ L_1690:
         goto L_16ca;
 
 L_16ca:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_16ff;
     else
         goto L_16eb;
@@ -1808,7 +1808,7 @@ L_1e93:
         goto L_1eab;
 
 L_1eab:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2641;
     else
         goto L_1ec9;
@@ -1945,7 +1945,7 @@ L_212e:
         goto L_2138;
 
 L_2138:
-    if ((((HIWORD(shdefBuild.hul.rghs[0x0]) >> 0x8) & 0xff) != 0x0))
+    if ((shdefBuild.hul.rghs[0].cItem != 0x0))
         goto L_2172;
     else
         goto L_214b;
@@ -2088,7 +2088,7 @@ L_2404:
         goto L_240e;
 
 L_240e:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem != 0x0))
         goto L_242b;
     else
         goto L_2426;
@@ -2360,7 +2360,7 @@ L_27c2:
     t_merge_27c5_0001 = 0x3;
 
 L_27c5:
-    DrawBtn(hdc, rgrcBuildSpin[i], (t_merge_27c5_0001 | 0x20), 0, 0x0);
+    DrawBtn(hdc, &(rgrcBuildSpin[i]), (t_merge_27c5_0001 | 0x20), 0, 0x0);
     i = (i + 1);
 
 L_27e7:
@@ -2600,9 +2600,9 @@ L_2e03:
 L_2e4b:
     crBkSav = SetBkColor(hdc, 0xffffff);
     FrameRect(hdc, &(vrgrcSlot[i]), hbr50Screen);
-    ExpandRc(vrgrcSlot[i], -1, -1);
+    ExpandRc(&(vrgrcSlot[i]), -1, -1);
     FrameRect(hdc, &(vrgrcSlot[i]), hbr50Screen);
-    ExpandRc(vrgrcSlot[i], 1, 1);
+    ExpandRc(&(vrgrcSlot[i]), 1, 1);
     SetBkColor(hdc, crBkSav);
 
 L_2ee9:
@@ -2940,7 +2940,7 @@ L_34eb:
         goto L_34f9;
 
 L_34f9:
-    if ((((*(LphuldefFromId(lpshdefBuild->hul.ihuldef) + 0x7b) >> 0x6) & 0xf) == 0x0))
+    if ((LphuldefFromId(lpshdefBuild->hul.ihuldef)->imdAttack == 0x0))
         goto L_3559;
     else
         goto L_3520;
@@ -3320,11 +3320,11 @@ L_3cd7:
         goto L_3ce3;
 
 L_3ce3:
-    i = (i + CchGetString(idsOne, szWork[i]));
+    i = (i + CchGetString(idsOne, &(szWork[i])));
     goto L_3d24;
 
 L_3cfc:
-    i = (i + _wsprintf(&(szWork[load([bp - 0x16])]), "%d ", hsHul.cItem));
+    i = (i + _wsprintf(&(szWork[i]), "%d ", hsHul.cItem));
 
 L_3d24:
     grhst = hsHul.grhst;
@@ -3980,13 +3980,13 @@ L_47bf:
         goto L_47ff;
 
 L_47ff:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceISB) != 0))
         goto L_4841;
     else
         goto L_4820;
 
 L_4820:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_4875;
     else
         goto L_4841;
@@ -4246,7 +4246,7 @@ L_4d60:
         goto L_4e27;
 
 L_4e27:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem != 0x0))
         goto L_4e47;
     else
         goto L_4e3f;
@@ -4335,7 +4335,7 @@ L_4ff3:
     rc.top = (rc.top + dyArial8);
 
 L_5023:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_50df;
     else
         goto L_5044;
@@ -4403,7 +4403,7 @@ L_51c1:
     /* untranslated: branch part[0xc:2](GlobalPD) == 0x0 ? L_520d : L_51d0 */
 
 L_51d0:
-    dv.pctDp = ((*(LpplFromId(sel.scan.idpl) + 0x2c) >> 0x4) & 0xfff);
+    dv.pctDp = LpplFromId(sel.scan.idpl)->pctDp;
     goto L_5236;
 
 L_520d:
@@ -5374,7 +5374,7 @@ L_6187:
 L_618d:
 
 L_6190:
-    _wsprintf(&(szWork[callresult(uint16_t)]), " %s", ((LOWORD(lpshdef) + LOWORD((147 * j))) + 0x8), HIWORD(lpshdef));
+    _wsprintf(&(szWork[strlen(szWork)]), " %s", ((LOWORD(lpshdef) + LOWORD((147 * j))) + 0x8), HIWORD(lpshdef));
     SendMessage(hwndDD, CB_ADDSTRING, 0x0, szWork);
 
 L_61e0:

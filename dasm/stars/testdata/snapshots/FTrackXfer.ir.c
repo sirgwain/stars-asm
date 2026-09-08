@@ -47,13 +47,13 @@ L_5a82:
     i = (i + 1);
 
 L_5a86:
-    if ((i < LOWORD(crgbtnXfer)))
+    if ((i < crgbtnXfer))
         goto L_5a42;
     else
         goto L_5a91;
 
 L_5a91:
-    if ((i != LOWORD(crgbtnXfer)))
+    if ((i != crgbtnXfer))
         goto L_5aa2;
     else
         goto L_5a9c;

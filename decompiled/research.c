@@ -669,7 +669,7 @@ L_0d82:
         goto L_0d8d;
 
 L_0d8d:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceTT) == 0))
         goto L_0dde;
     else
         goto L_0dae;
@@ -935,7 +935,7 @@ L_1345:
 
 L_1374:
     lRBEffective = lResBudget;
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceGeneralizedResearch) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceGeneralizedResearch) == 0))
         goto L_13bc;
     else
         goto L_13a4;
@@ -1099,13 +1099,13 @@ L_1861:
 DrawProjBudgData:
     c = _wsprintf(szWork, PCTLD, LOWORD(lResBudget), HIWORD(lResBudget));
     RightTextOut(hdc, xNum, rc.top, szWork, c, (xNum - xCtr));
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceGeneralizedResearch) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceGeneralizedResearch) != 0))
         goto L_190b;
     else
         goto L_18ea;
 
 L_18ea:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceBleedingEdgeTech) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceBleedingEdgeTech) == 0))
         goto L_1a44;
     else
         goto L_190b;
@@ -1117,7 +1117,7 @@ L_190b:
     rc.left = (dxResLeft + 8);
     yTopTechNote = rc.top;
     dx = LOWORD(GetTextExtent(hdc, szTemp, cch));
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceGeneralizedResearch) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceGeneralizedResearch) == 0))
         goto L_19d4;
     else
         goto L_197e;
@@ -1129,7 +1129,7 @@ L_197e:
     rc.top = (rc.top + (dyArial8 + 2));
 
 L_19d4:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceBleedingEdgeTech) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceBleedingEdgeTech) == 0))
         goto CleanUp;
     else
         goto L_19f5;
@@ -1253,7 +1253,7 @@ L_1ba7:
         goto L_1bb2;
 
 L_1bb2:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceGeneralizedResearch) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceGeneralizedResearch) == 0))
         goto L_1c15;
     else
         goto L_1bd3;
@@ -1265,7 +1265,7 @@ L_1bd3:
         goto L_1bec;
 
 L_1bec:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceBleedingEdgeTech) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceBleedingEdgeTech) != 0))
         goto L_1c15;
     else
         goto L_1c0d;
@@ -1383,7 +1383,7 @@ L_1def:
 
 L_1df8:
     lCost = ((uint32_t)(LOWORD((0xa * cTech))) + rglTechCost[iLevel]);
-    i = (GetRaceStat(rgplr[iplr], (iTech + 8)) - 1);
+    i = (GetRaceStat(&(rgplr[iplr]), (iTech + 8)) - 1);
     if ((i == 0))
         goto L_1e83;
     else
@@ -1759,7 +1759,7 @@ L_24f9:
         goto L_2511;
 
 L_2511:
-    /* untranslated: part[0x4:4](vpartBrowser) = 0x0 */
+    vpartBrowser.pcom = 0x0;
     goto L_2557;
 
 L_2520:
@@ -1944,7 +1944,7 @@ L_26f0:
         goto L_26f9;
 
 L_26f9:
-    /* untranslated: part[0x4:4](vpartBrowser) = 0x0 */
+    vpartBrowser.pcom = 0x0;
     goto L_27b3;
 
 L_2708:
@@ -2067,7 +2067,7 @@ L_27f7:
 L_2808:
 
 NullItem:
-    /* untranslated: part[0x4:4](vpartBrowser) = 0x0 */
+    vpartBrowser.pcom = 0x0;
 
 L_281a:
     InvalidateRect(hwndBrowserChild, 0x0, 1);
@@ -2347,13 +2347,13 @@ L_2ac6:
     PatBlt(hdc, 0, 0, 1, dy, PATCOPY);
     PatBlt(hdc, 4, ((dy - (dyArial8 * 2)) + 0xfffe), (dx - 8), 1, PATCOPY);
     SetBkMode(hdc, TRANSPARENT);
-    if ((*(ppart + 0x4) != 0x0))
+    if ((LOWORD(ppart->pcom) != 0x0))
         goto L_2c05;
     else
         goto L_2bae;
 
 L_2bae:
-    if ((*(ppart + 0x6) != 0x0))
+    if ((HIWORD(ppart->pcom) != 0x0))
         goto L_2c05;
     else
         goto L_2bb7;
@@ -3305,7 +3305,7 @@ L_3f00:
     goto L_3f85;
 
 L_3f26:
-    c = _wsprintf(szWork, PCTD, (*(LphuldefFromId(ppart->phul->ihuldef) + 0x7b) & 0x3f));
+    c = _wsprintf(szWork, PCTD, LphuldefFromId(ppart->phul->ihuldef)->init);
     goto L_3f85;
 
 L_3f62:
@@ -3484,7 +3484,7 @@ L_4354:
     goto L_43c9;
 
 L_437a:
-    c = _wsprintf(szWork, PCTD, (*(LphuldefFromId(ppart->pcom->id) + 0x7b) & 0x3f));
+    c = _wsprintf(szWork, PCTD, LphuldefFromId(ppart->pcom->id)->init);
     goto L_43c9;
 
 L_43b6:
@@ -4369,8 +4369,8 @@ L_5ba8:
 
 L_5bad:
     c = CchGetString(idsModuleContainsRobotsCapableMining, szWork);
-    c = (c + _wsprintf(&(szWork[load([bp - 0x12])]), PCTD, ppart->pcom[0x1].id));
-    c = (c + CchGetString(idsKtEachMineralDependingConcentrationUninhabitedPl, szWork[c]));
+    c = (c + _wsprintf(&(szWork[c]), PCTD, ppart->pcom[0x1].id));
+    c = (c + CchGetString(idsKtEachMineralDependingConcentrationUninhabitedPl, &(szWork[c])));
     if ((ppart->hs.iItem != 0x6))
         goto L_5c28;
     else
@@ -4378,7 +4378,7 @@ L_5bad:
 
 L_5c0d:
     ids = idsOriginPartUnknown;
-    c = (c + CchGetString(idsModuleAlsoActs30Cloak30Jammer, szWork[c]));
+    c = (c + CchGetString(idsModuleAlsoActs30Cloak30Jammer, &(szWork[c])));
 
 L_5c28:
     goto PrintSpecial;

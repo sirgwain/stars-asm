@@ -873,7 +873,7 @@ L_1224:
         goto L_123c;
 
 L_123c:
-    strcpy(btlplan.szName[cLen], 0xd9c);
+    strcpy(&(btlplan.szName[cLen]), 0xd9c);
     goto L_128b;
 
 L_1254:
@@ -1183,18 +1183,16 @@ L_191d:
 }
 
 void SpankTheCheaters() {
-    int32_t  lSell;
-    PLANET  *lppl;
-    FLEET   *lpfl;
-    int16_t  ifl;
-    int16_t  i;
-    int32_t  pctSell;
-    int16_t  fCheater;
-    int16_t  fSellOff;
-    char     rgfCheater[16];
-    PLANET  *lpplMac;
-    uint32_t scratch_bp_m32;
-    uint16_t scratch_bp_m30;
+    int32_t lSell;
+    PLANET *lppl;
+    FLEET  *lpfl;
+    int16_t ifl;
+    int16_t i;
+    int32_t pctSell;
+    int16_t fCheater;
+    int16_t fSellOff;
+    char    rgfCheater[16];
+    PLANET *lpplMac;
 
 L_192a:
     fCheater = 0;
@@ -1410,10 +1408,7 @@ L_1c67:
     lSell = 1;
 
 L_1c71:
-    scratch_bp_m32 = ((*(lppl + 0x14) - (LOWORD(lSell) << 0x8)) & 0xff00);
-    scratch_bp_m30 = ((*(lppl + 0x16) - 0x0) & 0xf);
-    lppl->cMines = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m32) */
+    lppl->cMines = (lppl->cMines - LOWORD(lSell));
     FSendPlrMsg2(lppl->iPlayer, 262, -5, lppl->id, LOWORD(lSell));
     goto L_1dfe;
 
@@ -1497,7 +1492,7 @@ L_1e27:
 
 L_1e44:
     lphul = (rglpshdef[lpfl->iplr] + LOWORD((0x93 * ishdef)));
-    imd = ((*(LphuldefFromId(lphul->ihuldef) + 0x7b) >> 0x6) & 0xf);
+    imd = LphuldefFromId(lphul->ihuldef)->imdAttack;
     if ((FHullHasBombs(lphul) == 0))
         goto L_1ea9;
     else
@@ -2626,7 +2621,7 @@ L_3052:
     /* untranslated: branch part[0xc:2](lpflCur[ishdef*0x2]) == 0x0 ? L_30d8 : L_306f */
 
 L_306f:
-    if ((((*(LphuldefFromId(rglpshdef[iplrCur][ishdef].hul.ihuldef) + 0x7b) >> 0x6) & 0xf) == 0x0))
+    if ((LphuldefFromId(rglpshdef[iplrCur][ishdef].hul.ihuldef)->imdAttack == 0x0))
         goto L_30d4;
     else
         goto L_30ab;
@@ -3043,7 +3038,7 @@ L_36d6:
         goto L_36df;
 
 L_36df:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raAttack))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raAttack))
         goto L_3709;
     else
         goto L_3703;
@@ -3116,7 +3111,7 @@ L_381b:
     ptok->wt = wt;
 
 L_3825:
-    spd = (spd - ((uint32_t)(((uint32_t)(wt) / 0x46)) / ((HIWORD(lpshdef->hul.rghs[0x0]) >> 0x8) & 0xff)));
+    spd = (spd - ((uint32_t)(((uint32_t)(wt) / 0x46)) / lpshdef->hul.rghs[0x0].cItem));
     if ((8 >= spd))
         goto L_3857;
     else
@@ -3427,7 +3422,7 @@ int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
 L_3cba:
     pct = 0;
     cbc = 0;
-    initBase = (*(LphuldefFromId(lphul->ihuldef) + 0x7b) & 0x3f);
+    initBase = LphuldefFromId(lphul->ihuldef)->init;
     ihs = 0;
     goto L_3cf5;
 
@@ -4218,7 +4213,7 @@ L_4b12:
         goto L_4b1f;
 
 L_4b1f:
-    if ((GetRaceGrbit(rgplr[ptokT->iplr], ibitRaceRegeneratingShields) == 0))
+    if ((GetRaceGrbit(&(rgplr[ptokT->iplr]), ibitRaceRegeneratingShields) == 0))
         goto L_4b4e;
     else
         goto L_4b48;
@@ -7822,7 +7817,7 @@ void CreateSalvage(FLEET *pfl, THING **plpth) {
     uint32_t t_merge_80cd_0001_wide;
 
 L_7ee8:
-    fBleeding = GetRaceGrbit(rgplr[pfl->iPlayer], ibitRaceBleedingEdgeTech);
+    fBleeding = GetRaceGrbit(&(rgplr[pfl->iPlayer]), ibitRaceBleedingEdgeTech);
     gd.fDontCalcBleed = 0x1;
     idPlayer = pfl->iPlayer;
     if ((pfl->idPlanet == -1))
@@ -8147,7 +8142,7 @@ L_847a:
     ptok->fActive = 0x0;
     ptok->csh = 0x0;
     fStarbaseDied = 1;
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_8601;
     else
         goto L_84e1;
@@ -8857,7 +8852,7 @@ L_9017:
         goto L_9039;
 
 L_9039:
-    if ((GetRaceGrbit(rgplr[vrgtok[itok].iplr], ibitRaceRegeneratingShields) == 0))
+    if ((GetRaceGrbit(&(rgplr[vrgtok[itok].iplr]), ibitRaceRegeneratingShields) == 0))
         goto L_908d;
     else
         goto L_9072;
@@ -9522,7 +9517,7 @@ L_9cb1:
         goto L_9cbb;
 
 L_9cbb:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_9d15;
     else
         goto L_9cdf;
@@ -9616,7 +9611,7 @@ L_9df4:
         goto L_9e03;
 
 L_9e03:
-    if ((GetRaceStat(rgplr[iplrStarbase], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplrStarbase]), rsMajorAdv) != raMacintosh))
         goto L_9eb8;
     else
         goto L_9e23;
@@ -11613,10 +11608,7 @@ L_b6ff:
         goto L_b708;
 
 L_b708:
-    scratch_bp_m4e = ((*(lppl + 0x14) - LOWORD((int32_t)((cKillMine << 0x8)))) & 0xff00);
-    scratch_bp_m4c = ((*(lppl + 0x16) - HIWORD((int32_t)((cKillMine << 0x8)))) & 0xf);
-    lppl->cMines = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m4e) */
+    lppl->cMines = (lppl->cMines - cKillMine);
 
 L_b761:
     if ((HIWORD(cKillDefenses) < 0x0))

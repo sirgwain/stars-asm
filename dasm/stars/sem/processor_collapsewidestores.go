@@ -236,8 +236,12 @@ func (p *collapseWideStoresProcessor) collapseWideMaskedStoreSource(low, high ma
 	)
 	wideDestination := low.Addr
 	wideDestination.Width = 4
-	field, _, ok := p.ctx.symbols.symbolFromBitfieldStore(wideDestination, wideSource)
-	if !ok || field.Field.Bitfield.StorageSize != wideDestination.Width {
+	bitfield, ok := recognizeBitfieldWrite(p.ctx, wideDestination, wideSource)
+	if !ok {
+		return nil, false
+	}
+	field, ok := resolveDeclaredBitfield(p.ctx, wideDestination, bitfield.BitOff, bitfield.BitWidth)
+	if !ok || field.Bitfield.StorageSize != wideDestination.Width {
 		return nil, false
 	}
 	return wideSource, true

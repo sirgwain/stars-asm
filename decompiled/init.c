@@ -1792,16 +1792,16 @@ L_2648:
     goto L_27c5;
 
 L_2655:
-    vrgZip[i].txp.rgia[iPass] = ((vrgZip[i].txp.rgia[iPass] & 0xfff) | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
+    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass].cQuan | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
     psz = (psz + 0x1);
     vrgZip[i].txp.rgia[iPass] = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
     psz = (psz + 0x1);
     scratch_bp_m4a = (((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] & 0xf000);
+    vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
     vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | scratch_bp_m4a);
     psz = (psz + 0x1);
     scratch_bp_m4a = (((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] & 0xf000);
+    vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
     vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | scratch_bp_m4a);
     psz = (psz + 0x1);
     iPass = (iPass + 1);

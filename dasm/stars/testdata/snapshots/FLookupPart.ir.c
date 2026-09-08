@@ -3,7 +3,7 @@ int16_t FLookupPart(PART *ppart) {
     HS      hs;
 
 L_524e:
-    raMajor = GetRaceStat(rgplr[idPlayer], rsMajorAdv);
+    raMajor = GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv);
     hs.grhst = ppart->hs.grhst;
     HIWORD(hs) = HIWORD(ppart->hs);
     goto L_6019;
@@ -61,7 +61,7 @@ L_5302:
         goto L_5310;
 
 L_5310:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoRamscoops) == 0))
         goto L_533a;
     else
         goto L_5331;
@@ -82,7 +82,7 @@ L_5348:
         goto L_5356;
 
 L_5356:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceIFE) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceIFE) != 0))
         goto L_5380;
     else
         goto L_5377;
@@ -97,7 +97,7 @@ L_5380:
         goto L_538e;
 
 L_538e:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoRamscoops) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoRamscoops) != 0))
         goto L_53b8;
     else
         goto L_53af;
@@ -246,7 +246,7 @@ L_551e:
         goto L_552c;
 
 L_552c:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceOBRM) == 0))
         goto L_5556;
     else
         goto L_554d;
@@ -273,7 +273,7 @@ L_5572:
         goto L_5580;
 
 L_5580:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceARM) != 0))
         goto L_55aa;
     else
         goto L_55a1;
@@ -391,7 +391,7 @@ L_56a9:
         goto L_56b7;
 
 L_56b7:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceISB) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceISB) != 0))
         goto L_56de;
     else
         goto L_56d8;
@@ -844,7 +844,7 @@ L_5b5a:
         goto L_5b68;
 
 L_5b68:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceOBRM) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceOBRM) == 0))
         goto L_5b92;
     else
         goto L_5b89;
@@ -865,7 +865,7 @@ L_5ba0:
         goto L_5bae;
 
 L_5bae:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceARM) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceARM) != 0))
         goto L_5bd8;
     else
         goto L_5bcf;
@@ -932,7 +932,7 @@ L_5c69:
         goto L_5c77;
 
 L_5c77:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoAdvScanner) == 0))
         goto L_5ca1;
     else
         goto L_5c98;
@@ -1143,7 +1143,7 @@ L_5ec0:
         goto L_5ed0;
 
 L_5ed0:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceNoAdvScanner) == 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoAdvScanner) == 0))
         goto L_5ef7;
     else
         goto L_5ef1;
@@ -1252,7 +1252,7 @@ L_5fde:
         goto L_5fec;
 
 L_5fec:
-    if ((GetRaceGrbit(rgplr[idPlayer], ibitRaceTT) != 0))
+    if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceTT) != 0))
         goto L_609c;
     else
         goto L_600d;

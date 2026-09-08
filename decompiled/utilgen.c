@@ -1422,7 +1422,7 @@ L_26e3:
         goto L_26ec;
 
 L_26ec:
-    AddBackTrailingSpaces(&(pchEnd), pchStart[cLen]);
+    AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
     dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
 
 L_271a:
@@ -1478,7 +1478,7 @@ L_27b2:
 L_27bf:
 
 WrapIt:
-    AddBackTrailingSpaces(&(pchEnd), pchStart[cLen]);
+    AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
     cLen = (cLen - (pchEnd - pchStart));
     pchStart = pchEnd;
     *(py) = (*(py) + dyArial8);

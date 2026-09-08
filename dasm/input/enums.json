@@ -85,6 +85,8 @@
     { "kind": "field", "struct": "_hs", "field": "grhst", "enum": "HullSlotType" },
     { "kind": "field", "struct": "_hul", "field": "ihuldef", "enum": "HulDef" },
     { "kind": "field", "struct": "_logxfer", "field": "grobj", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_rtxfer", "field": "grobj1", "enum": "GrobjClass" },
+    { "kind": "field", "struct": "_rtxfer", "field": "grobj2", "enum": "GrobjClass" },
     { "kind": "field", "struct": "_scan", "field": "grobj", "enum": "GrobjClass" },
     { "kind": "field", "struct": "_scan", "field": "grobjFull", "enum": "GrobjClass" },
     { "kind": "field", "struct": "_xfer", "field": "grobj", "enum": "GrobjClass" },

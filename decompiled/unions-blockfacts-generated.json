@@ -119,6 +119,10 @@
         {
           "block": "L_56a3",
           "value": "grPopupShdef"
+        },
+        {
+          "block": "L_5749",
+          "value": "grPopupComponent"
         }
       ]
     },
@@ -462,6 +466,42 @@
         {
           "block": "L_1d8c",
           "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanShip",
+      "root": "obj",
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_0ea0",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_0eb2",
+          "value": "grobjPlanet"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanShip",
+      "root": "objNull",
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_0d16",
+          "value": "grobjFleet"
         }
       ]
     },

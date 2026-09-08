@@ -222,7 +222,7 @@ L_0243:
     goto L_045e;
 
 L_02c9:
-    if ((rgshdef[((load([bp - 0x48]) * 0x4) + 0x6)].fFree != 0x0))
+    if ((rgshdef[((i * 4) + 6)].fFree != 0x0))
         goto L_03e9;
     else
         goto L_02f0;
@@ -288,7 +288,7 @@ L_03d5:
     fScrap = 0;
 
 L_03e9:
-    if ((rgshdef[((load([bp - 0x48]) * 0x4) + 0x6)].fFree != 0x0))
+    if ((rgshdef[((i * 4) + 6)].fFree != 0x0))
         goto L_045a;
     else
         goto L_0410;
@@ -1543,7 +1543,7 @@ L_16ea:
         goto L_16f5;
 
 L_16f5:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_1777;
     else
         goto L_1708;
@@ -3927,7 +3927,7 @@ L_38ce:
         goto L_38db;
 
 L_38db:
-    if ((GetRaceStat(rgplr[lpplCur->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpplCur->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_3a51;
     else
         goto L_38ff;
@@ -3949,7 +3949,7 @@ L_3916:
     /* untranslated: t_396c = part[0x6:2](ord) */
     ord.grTask = grTaskXfer;
     /* untranslated: part[0x6:2](ord) = ((((t_396c & 0xfff0) | 0x1) & 0xefff) | 0x1000) */
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
         goto L_39f2;
@@ -4521,7 +4521,7 @@ L_4270:
         goto L_429a;
 
 L_429a:
-    if ((GetRaceStat(rgplr[lpplTest->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpplTest->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_42c4;
     else
         goto L_42be;
@@ -4748,7 +4748,7 @@ void EnsureCyberAiShdefs(int16_t iroCur) {
     uint16_t t_merge_4caf_0001;
 
 L_4826:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_48b9;
     else
         goto L_4842;
@@ -4789,16 +4789,16 @@ L_4889:
     FChangeAiShdef(&(shdef), 0);
 
 L_48b9:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[0].fFree == 0x0))
         goto L_48e8;
     else
         goto L_48cc;
 
 L_48cc:
-    FCreateAiShdef(0, 5, &(vrgCyberAip[load(cs : [0x46c8])]));
+    FCreateAiShdef(0, 5, &(vrgCyberAip[vrgCyberIshAip[12]]));
 
 L_48e8:
-    if ((((rgshdef[4].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[4].fFree == 0x0))
         goto L_497e;
     else
         goto L_48fb;
@@ -4816,7 +4816,7 @@ L_4905:
         goto L_490f;
 
 L_490f:
-    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[load(cs : [0x46b0])])) != 0))
+    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[vrgCyberIshAip[0]])) != 0))
         goto L_497e;
     else
         goto L_4933;
@@ -4826,7 +4826,7 @@ L_4933:
     goto L_4975;
 
 L_493b:
-    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[load(cs : [(callresult(int16_t) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[vrgCyberIshAip[Random(i)]])) != 0))
         goto L_497e;
     else
         goto L_496b;
@@ -4843,13 +4843,13 @@ L_4975:
         goto L_497e;
 
 L_497e:
-    if ((((rgshdef[5].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[5].fFree == 0x0))
         goto L_4a2f;
     else
         goto L_4991;
 
 L_4991:
-    if ((((rgshdef[4].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[4].fFree != 0x0))
         goto L_4a2f;
     else
         goto L_49a4;
@@ -4867,7 +4867,7 @@ L_49b3:
         goto L_49bd;
 
 L_49bd:
-    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[load(cs : [0x46ba])])) != 0))
+    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[vrgCyberIshAip[5]])) != 0))
         goto L_4a2f;
     else
         goto L_49e1;
@@ -4877,7 +4877,7 @@ L_49e1:
     goto L_4a26;
 
 L_49e9:
-    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x5) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 5)]])) != 0))
         goto L_4a2f;
     else
         goto L_4a1c;
@@ -4894,7 +4894,7 @@ L_4a26:
         goto L_4a2f;
 
 L_4a2f:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[2].fFree == 0x0))
         goto L_4a68;
     else
         goto L_4a42;
@@ -4906,16 +4906,16 @@ L_4a42:
         goto L_4a4c;
 
 L_4a4c:
-    FCreateAiShdef(2, 11, &(vrgCyberAip[load(cs : [0x46c4])]));
+    FCreateAiShdef(2, 11, &(vrgCyberAip[vrgCyberIshAip[10]]));
 
 L_4a68:
-    if ((((rgshdef[3].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[3].fFree == 0x0))
         goto L_4ab9;
     else
         goto L_4a7b;
 
 L_4a7b:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_4ab9;
     else
         goto L_4a8e;
@@ -4927,7 +4927,7 @@ L_4a8e:
         goto L_4a9d;
 
 L_4a9d:
-    FCreateAiShdef(3, 11, &(vrgCyberAip[load(cs : [0x46c6])]));
+    FCreateAiShdef(3, 11, &(vrgCyberAip[vrgCyberIshAip[11]]));
 
 L_4ab9:
     ish = 6;
@@ -4952,7 +4952,7 @@ L_4ae8:
         goto L_4af2;
 
 L_4af2:
-    if ((((rgshdef[6].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[6].fFree != 0x0))
         goto L_4d49;
     else
         goto L_4b05;
@@ -4969,7 +4969,7 @@ L_4b14:
     goto L_4b65;
 
 L_4b25:
-    if ((FCreateAiShdef(ishCur, 29, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x21) * 0x2) + 0x46b0])])) == 0))
+    if ((FCreateAiShdef(ishCur, 29, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 33)]])) == 0))
         goto L_4b61;
     else
         goto L_4b5a;
@@ -4992,7 +4992,7 @@ L_4b6e:
     goto L_4bb6;
 
 L_4b76:
-    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x1d) * 0x2) + 0x46b0])])) == 0))
+    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 29)]])) == 0))
         goto L_4bb2;
     else
         goto L_4bab;
@@ -5015,7 +5015,7 @@ L_4bbf:
     goto L_4c07;
 
 L_4bc7:
-    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x1a) * 0x2) + 0x46b0])])) == 0))
+    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 26)]])) == 0))
         goto L_4c03;
     else
         goto L_4bfc;
@@ -5050,7 +5050,7 @@ LCruiser:
     goto L_4c7e;
 
 L_4c42:
-    if ((FCreateAiShdef(ishCur, 7, &(vrgCyberAip[load(cs : [((callresult(int16_t) + load([bp - 0x4])) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(ishCur, 7, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + low)]])) != 0))
         goto L_4c87;
     else
         goto L_4c74;
@@ -5092,25 +5092,25 @@ L_4caf:
     goto LCruiser;
 
 LBomber:
-    if ((FCreateAiShdef((ish + 3), 29, &(vrgCyberAip[load(cs : [0x46d0])])) != 0))
+    if ((FCreateAiShdef((ish + 3), 29, &(vrgCyberAip[vrgCyberIshAip[16]])) != 0))
         goto L_4d49;
     else
         goto L_4cdc;
 
 L_4cdc:
-    if ((FCreateAiShdef((ish + 3), 9, &(vrgCyberAip[load(cs : [0x46ce])])) != 0))
+    if ((FCreateAiShdef((ish + 3), 9, &(vrgCyberAip[vrgCyberIshAip[15]])) != 0))
         goto L_4d49;
     else
         goto L_4d03;
 
 L_4d03:
-    if ((FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[load(cs : [0x46cc])])) != 0))
+    if ((FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[vrgCyberIshAip[14]])) != 0))
         goto L_4d49;
     else
         goto L_4d2a;
 
 L_4d2a:
-    FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[load(cs : [0x46ca])]));
+    FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[vrgCyberIshAip[13]]));
 
 L_4d49:
     ish = (ish + 4);
@@ -5144,7 +5144,7 @@ L_4d85:
         goto L_4d8f;
 
 L_4d8f:
-    if ((((rgshdef[14].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[14].fFree != 0x0))
         goto L_4ea7;
     else
         goto L_4da2;
@@ -5160,7 +5160,7 @@ L_4db1:
     goto L_4df5;
 
 L_4db9:
-    if ((FCreateAiShdef(ish, 9, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x1a) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(ish, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 26)]])) != 0))
         goto L_4dfe;
     else
         goto L_4deb;
@@ -5187,7 +5187,7 @@ L_4e07:
     goto L_4e4b;
 
 L_4e0f:
-    if ((FCreateAiShdef(ish, 7, &(vrgCyberAip[load(cs : [((callresult(int16_t) + 0x11) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(ish, 7, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 17)]])) != 0))
         goto L_4e54;
     else
         goto L_4e41;
@@ -5214,7 +5214,7 @@ L_4e5d:
     goto L_4e9e;
 
 L_4e65:
-    if ((FCreateAiShdef(ish, 6, &(vrgCyberAip[load(cs : [(callresult(int16_t) * 0x2) + 0x46b0])])) != 0))
+    if ((FCreateAiShdef(ish, 6, &(vrgCyberAip[vrgCyberIshAip[Random(i)]])) != 0))
         goto L_4ea7;
     else
         goto L_4e94;
@@ -5329,7 +5329,7 @@ L_4ff4:
         goto L_4ffd;
 
 L_4ffd:
-    if ((rgshdef[((load([bp + 0xe]) * 0x4) + 0x6)].fFree != 0x0))
+    if ((rgshdef[((iBestBattle * 4) + 6)].fFree != 0x0))
         goto L_5043;
     else
         goto L_5024;
@@ -5338,7 +5338,7 @@ L_5024:
     AddItemToQueue(((iBestBattle * 4) + 0x6), 0x2, grobjFleet, 1);
 
 L_5043:
-    if ((rgshdef[((load([bp + 0xe]) * 0x4) + 0x7)].fFree != 0x0))
+    if ((rgshdef[((iBestBattle * 4) + 7)].fFree != 0x0))
         goto L_5089;
     else
         goto L_506a;
@@ -5347,7 +5347,7 @@ L_506a:
     AddItemToQueue(((iBestBattle * 4) + 0x7), 0x2, grobjFleet, 1);
 
 L_5089:
-    if ((rgshdef[((load([bp + 0xe]) * 0x4) + 0x8)].fFree != 0x0))
+    if ((rgshdef[((iBestBattle * 4) + 8)].fFree != 0x0))
         goto L_50e3;
     else
         goto L_50b0;
@@ -5362,7 +5362,7 @@ L_50c4:
     AddItemToQueue(((iBestBattle * 4) + 0x8), 0x1, grobjFleet, 1);
 
 L_50e3:
-    if ((rgshdef[((load([bp + 0xe]) * 0x4) + 0x9)].fFree != 0x0))
+    if ((rgshdef[((iBestBattle * 4) + 9)].fFree != 0x0))
         goto L_513d;
     else
         goto L_510a;

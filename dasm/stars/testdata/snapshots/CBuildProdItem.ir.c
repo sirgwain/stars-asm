@@ -537,7 +537,7 @@ L_13d5:
 L_13db:
 
 LAlchemize:
-    if ((GetRaceGrbit(rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0))
+    if ((GetRaceGrbit(&(rgplr[lppl->iPlayer]), ibitRaceMineralAlchemy) == 0))
         goto L_140c;
     else
         goto L_1405;

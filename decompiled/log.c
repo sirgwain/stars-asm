@@ -971,7 +971,7 @@ L_9aab:
         goto L_9ad0;
 
 L_9ad0:
-    if ((((*(prt + 0x4) >> 0x4) & 0xf) != (plx2->grobj & 0xff)))
+    if ((prt->grobj2 != (plx2->grobj & 0xff)))
         goto L_9c94;
     else
         goto L_9afd;
@@ -2260,7 +2260,7 @@ L_d1ff:
     t_merge_d202_0001 = 0x9af;
 
 L_d202:
-    strcpy(szT[cch], t_merge_d202_0001);
+    strcpy(&(szT[cch]), t_merge_d202_0001);
     StreamOpen(szT, 4114);
 
 L_d224:
@@ -2379,7 +2379,7 @@ L_d3e8:
 L_d3fe:
 
 L_d404:
-    WriteRtPlr(rgplr[i], 0x0);
+    WriteRtPlr(&(rgplr[i]), 0x0);
     goto L_d3ce;
 
 L_d41f:

@@ -134,7 +134,7 @@ func collapseWideMachineValue(ctx *FuncContext, v machine.Value) (machine.Value,
 	switch v := v.(type) {
 	case *machine.Binary:
 		if ctx != nil {
-			if _, ok := ctx.symbols.symbolFromBitfieldValue(v); ok {
+			if _, ok := recognizeBitfieldRead(ctx, v); ok {
 				if collapsed, changed := collapseWideBitfieldStorage(ctx, v); changed {
 					return collapsed, true, true
 				}

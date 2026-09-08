@@ -116,7 +116,7 @@ L_0166:
     return 0x1;
 
 L_016c:
-    /* untranslated: imd = ((*(LphuldefFromId(rglpshdef[[part[0x2:4](GlobalPD)+0x2]][ishdef].hul.ihuldef)+0x7b) >> 0xa) & 0xf) */
+    /* untranslated: imd = LphuldefFromId(rglpshdef[[part[0x2:4](GlobalPD)+0x2]][ishdef].hul.ihuldef)->imdCategory */
     /* untranslated: return (mpimdgrbitBU[imd] & part[0xa:2](GlobalPD)) */
 }
 
@@ -217,7 +217,7 @@ L_03d9:
     t_merge_03dc_0001 = 0x51f;
 
 L_03dc:
-    c = (c + _wsprintf(&(szWork[load([bp - 0x5c])]), PszGetCompressedString(t_merge_03dc_0001)));
+    c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(t_merge_03dc_0001)));
 
 L_0401:
     c = _wsprintf(szWork, PszGetCompressedString(idsUnknown2));
@@ -2136,7 +2136,7 @@ L_316d:
 
 L_31b8:
     y = (y + (dyArial8 + 4));
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_323c;
     else
         goto L_31e2;
@@ -2228,7 +2228,7 @@ POINT PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint) {
     uint16_t t_merge_33ab_0001;
 
 L_3378:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_33a8;
     else
         goto L_33a2;

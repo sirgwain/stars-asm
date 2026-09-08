@@ -157,12 +157,12 @@ L_033f:
     SetTextColor(hdc, rgcrMinerals[i]);
     RightTextOut(hdc, xCtr, rcGBox.top, rgszMinerals[i], 0, 0);
     SetTextColor(hdc, 0x0);
-    iAction = ((vrgZip[iResTechNow].txp.rgia[i] >> 0xc) & 0xf);
+    iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
     cch = CchGetString((iAction + 109), szWork);
     /* untranslated: branch sext8to16(byte ds:[(cch - 1)+0x57a4]) != 0x2e ? L_0408 : L_03d1 */
 
 L_03d1:
-    _wsprintf(&(szWork[(cch - 3)]), " %dkT", (vrgZip[iResTechNow].txp.rgia[i] & 0xfff));
+    _wsprintf(&(szWork[(cch - 3)]), " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
 
 L_0408:
     TextOut(hdc, (xCtr + 6), rcGBox.top, szWork, strlen(szWork));
@@ -761,7 +761,7 @@ L_0dcd:
 L_0de0:
     cshdef = (cshdef + 1);
     cshOrig = (cshOrig + (uint32_t)(flSrc.rgcsh[ishdef]));
-    MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, rgpct[ishdef]);
+    MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &(rgpct[ishdef]));
     goto L_0eca;
 
 L_0e3c:
@@ -844,7 +844,7 @@ L_0fac:
 
 L_0fe8:
     cshT = flSrc.rgcsh[ishdef];
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raStargate))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raStargate))
         goto L_1025;
     else
         goto L_101d;
@@ -861,7 +861,7 @@ L_103d:
     /* untranslated: branch part[0x2c:124](flSrc) == 0x0 ? L_10ba : L_1075 */
 
 L_1075:
-    /* untranslated: cshDamagedOld = loword((int32_t)((uint32_t)(sext16to32(cshT) * sext16to32((part[0x2c:124](flSrc) & 0x7f))) / 0x64)) */
+    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT) * (uint32_t)(flSrc.rgdv[0x0].pctSh))) / 0x64)));
     if ((cshDamagedOld != 0))
         goto L_10c0;
     else
@@ -906,7 +906,10 @@ L_1115:
         goto L_1124;
 
 L_1124:
-    /* untranslated: branch Random(500) >= ((part[0x2c:124](flSrc) >> 0x7) & 0x1ff) ? L_10d8 : L_114d */
+    if ((Random(500) >= flSrc.rgdv[0].pctDp))
+        goto L_10d8;
+    else
+        goto L_114d;
 
 L_114d:
     cshDamagedOld = (cshDamagedOld - 1);
@@ -924,7 +927,7 @@ L_1179:
     /* untranslated: branch part[0x2c:124](flSrc) == 0x0 ? L_11d5 : L_118c */
 
 L_118c:
-    /* untranslated: dpPerShdefOld = loword((int32_t)((uint32_t)(sext16to32(dpShdef) * sext16to32(((part[0x2c:124](flSrc) >> 0x7) & 0x1ff))) / 0x1f4)) */
+    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(flSrc.rgdv[0x0].pctDp))) / 0x1f4)));
     if ((dpPerShdefOld != 0))
         goto L_11db;
     else
@@ -980,8 +983,8 @@ L_12ce:
     pct = 1;
 
 L_12d4:
-    /* untranslated: part[0x2c:124](flSrc) = ((part[0x2c:124](flSrc) & 0x7f) | ((pct & 0x1ff) << 0x7)) */
-    /* untranslated: part[0x2c:124](flSrc) = ((part[0x2c:124](flSrc) & 0xff80) | 0x64) */
+    flSrc.rgdv[0].pctDp = pct;
+    flSrc.rgdv[0].pctSh = 0x64;
 
 L_1329:
     flSrc.rgcsh[ishdef] = cshT;
@@ -1988,7 +1991,7 @@ L_23c8:
         goto L_23f9;
 
 L_23f9:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_25c4;
     else
         goto L_241d;
@@ -2724,7 +2727,7 @@ L_2dbb:
     chs = lphul->chs;
     /* untranslated: wtFleetCur = (uint32_t)(sext16to32(part[0xc:2](lpfl[i*0x2])) * (uint32_t)lphul->wtEmpty) */
     cPtsCur = 0;
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raStealth))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raStealth))
         goto L_2e51;
     else
         goto L_2e48;
@@ -2909,7 +2912,7 @@ L_2fcf:
     return 0x0;
 
 L_2fd5:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) == raStealth))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raStealth))
         goto L_307c;
     else
         goto L_2ff9;

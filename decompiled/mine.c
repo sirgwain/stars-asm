@@ -1031,7 +1031,7 @@ L_1bda:
     c = _wsprintf(szWork, szT, LOWORD(__ftol()), *(lpth + 0x6), *(lpth + 0x8));
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
-    if ((GetRaceStat(rgplr[lpth->iplr], rsMajorAdv) == raMines))
+    if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) == raMines))
         goto L_1d89;
     else
         goto L_1d83;
@@ -1163,7 +1163,7 @@ L_1fb8:
     fShortLabels = 0;
     plrSav = rgplr[idPlayer];
     rc = *(prc);
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raTerra))
         goto L_2106;
     else
         goto L_200d;
@@ -1352,7 +1352,7 @@ L_24f1:
 
 L_24ff:
     c = strlen(szT);
-    c = (c + CommaFormatLong(szT[c], (uint32_t)((pl.rgwtMin[3] * 100))));
+    c = (c + CommaFormatLong(&(szT[c]), (uint32_t)((pl.rgwtMin[3] * 100))));
     RightTextOut(hdc, xR, yCur, szT, c, 0);
     goto L_26c2;
 
@@ -1395,11 +1395,11 @@ L_25f8:
         goto L_2602;
 
 L_2602:
-    c = (c + _wsprintf(&(szWork[load([bp - 0x1ac])]), PszGetCompressedString(idsCLd00), 0xb1, LOWORD(l), HIWORD(l)));
+    c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(idsCLd00), 0xb1, LOWORD(l), HIWORD(l)));
     goto L_2650;
 
 L_2638:
-    c = (c + CchGetString(idsMsg1264, szWork[c]));
+    c = (c + CchGetString(idsMsg1264, &(szWork[c])));
 
 L_2650:
     RightTextOut(hdc, xR, yCur, szWork, c, 0);
@@ -1455,7 +1455,7 @@ L_277e:
     c = (c + 1);
 
 L_2793:
-    c = (c + CchGetString(idsOld, szWork[c]));
+    c = (c + CchGetString(idsOld, &(szWork[c])));
 
 L_27ab:
     if ((dNum > 5))
@@ -3263,7 +3263,7 @@ L_4972:
         goto L_499b;
 
 L_499b:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMines))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMines))
         goto L_49c2;
     else
         goto L_49bc;
@@ -3985,7 +3985,7 @@ L_5386:
         goto L_5396;
 
 L_5396:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_53c0;
     else
         goto L_53ba;
@@ -4056,7 +4056,7 @@ L_5447:
     goto L_5490;
 
 L_5454:
-    lMineEff = (uint32_t)(GetRaceStat(rgplr[lppl->iPlayer], rsMineProd));
+    lMineEff = (uint32_t)(GetRaceStat(&(rgplr[lppl->iPlayer]), rsMineProd));
 
 L_547a:
     lMine = cMines;

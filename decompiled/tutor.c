@@ -2368,7 +2368,7 @@ L_21ca:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 171;
-    if ((((*(LpflFromId(3) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((LpflFromId(3)->fRepOrders != 0x0))
         goto L_220c;
     else
         goto L_2206;
@@ -2647,7 +2647,10 @@ L_25dd:
 L_25e6:
 
 L_25ec:
-    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xb ? L_261c : L_25fa */
+    if ((rgplr[0].cFleet != 0xb))
+        goto L_261c;
+    else
+        goto L_25fa;
 
 L_25fa:
     if ((FCheckColonizeWP(0xa, 8, 0xffff) == 0))
@@ -2659,7 +2662,10 @@ L_2616:
     return 0x1;
 
 L_261c:
-    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) == 0x9 ? L_2634 : L_262a */
+    if ((rgplr[0].cFleet == 0x9))
+        goto L_2634;
+    else
+        goto L_262a;
 
 L_262a:
     if ((mdXferDlg != mdXferShips))
@@ -3863,7 +3869,7 @@ L_36b2:
 
 L_36b8:
     tutor.idh = 3039;
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
         goto L_36f2;
     else
         goto L_36d6;
@@ -3879,7 +3885,7 @@ L_36f2:
     return 0x0;
 
 L_36fe:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[1].cItem == 0x0))
         goto L_3732;
     else
         goto L_3716;
@@ -3895,13 +3901,13 @@ L_3732:
     return 0x0;
 
 L_373e:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[2].cItem == 0x0))
         goto L_376e;
     else
         goto L_3756;
 
 L_3756:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) != 0x0))
+    if ((lpshdefBuild->hul.rghs[3].cItem != 0x0))
         goto L_379e;
     else
         goto L_376e;
@@ -4553,7 +4559,7 @@ L_40d8:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 403;
-    if ((((*(LpflFromId(11) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((LpflFromId(11)->fRepOrders != 0x0))
         goto L_411a;
     else
         goto L_4114;
@@ -4613,7 +4619,7 @@ L_41f6:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 410;
-    if ((((*(LpflFromId(1) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((LpflFromId(1)->fRepOrders != 0x0))
         goto L_4238;
     else
         goto L_4232;
@@ -4689,7 +4695,10 @@ L_434d:
     return 0x0;
 
 L_4359:
-    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) == 0x1 ? L_4376 : L_436c */
+    if ((rgplr[0].cshdefSB == 0x1))
+        goto L_4376;
+    else
+        goto L_436c;
 
 L_436c:
     if ((hwndSlotDlg == 0x0))
@@ -4704,7 +4713,10 @@ L_4376:
         goto L_4380;
 
 L_4380:
-    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x1 ? L_439c : L_4393 */
+    if ((rgplr[0].cshdefSB != 0x1))
+        goto L_439c;
+    else
+        goto L_4393;
 
 L_4393:
     tutor.idtBold = 418;
@@ -4723,14 +4735,17 @@ L_43b4:
         goto L_43be;
 
 L_43be:
-    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x1 ? L_43da : L_43d1 */
+    if ((rgplr[0].cshdefSB != 0x1))
+        goto L_43da;
+    else
+        goto L_43d1;
 
 L_43d1:
     tutor.idtBold = 419;
     goto L_4401;
 
 L_43da:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem != 0x0))
         goto L_43fb;
     else
         goto L_43f2;
@@ -4835,7 +4850,7 @@ L_4583:
     tutor.fNoErrors = 0x0;
     tutor.idh = 1518;
     tutor.idtBold = 431;
-    if ((((*(LpflFromId(0) + 0x4) >> 0x9) & 0x1) != 0x0))
+    if ((LpflFromId(0)->fRepOrders != 0x0))
         goto L_45c5;
     else
         goto L_45bf;
@@ -5036,7 +5051,7 @@ L_481d:
 
 L_4829:
     tutor.idh = 3039;
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
         goto L_4863;
     else
         goto L_4847;
@@ -5052,7 +5067,7 @@ L_4863:
     goto L_48af;
 
 L_486c:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[2].cItem == 0x0))
         goto L_48a0;
     else
         goto L_4884;
@@ -5575,7 +5590,7 @@ L_5098:
     return 0x0;
 
 L_50a4:
-    if (((HIWORD(rgshdef[2].hul.rghs[0x0]) & 0xff) != 0x4))
+    if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
         goto L_50bc;
     else
         goto L_50b2;
@@ -5612,7 +5627,7 @@ L_50fe:
     return 0x0;
 
 L_5110:
-    if (((HIWORD(rgshdef[2].hul.rghs[0x0]) & 0xff) != 0x4))
+    if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
         goto L_512a;
     else
         goto L_511e;
@@ -5641,13 +5656,13 @@ L_5163:
     tutor.idtBold = 501;
 
 L_516c:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x0))
+    if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
         goto L_51b3;
     else
         goto L_5184;
 
 L_5184:
-    if (((HIWORD(lpshdefBuild->hul.rghs[0x0]) & 0xff) != 0x4))
+    if ((lpshdefBuild->hul.rghs[0].iItem != 0x4))
         goto L_51b3;
     else
         goto L_5197;
@@ -5782,7 +5797,10 @@ L_5393:
     return 0x0;
 
 L_539f:
-    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xa ? L_53f3 : L_53ad */
+    if ((rgplr[0].cFleet != 0xa))
+        goto L_53f3;
+    else
+        goto L_53ad;
 
 L_53ad:
     if ((FCheckColonizeWP(0x9, 0, 0xffff) != 0))
@@ -5808,7 +5826,10 @@ L_53ea:
     return 0x0;
 
 L_53f3:
-    /* untranslated: branch (part[0x4:2](rgplr[0x0]) & 0xfff) != 0xa ? L_540d : L_5401 */
+    if ((rgplr[0].cFleet != 0xa))
+        goto L_540d;
+    else
+        goto L_5401;
 
 L_5401:
     tutor.idtBold = 515;
@@ -5978,7 +5999,7 @@ L_56ef:
         goto L_56f7;
 
 L_56f7:
-    if ((((*(LpflFromId(12) + 0x4) >> 0xa) & 0x1) == 0x0))
+    if ((LpflFromId(12)->fDead == 0x0))
         goto L_5724;
     else
         goto L_571b;
@@ -6131,31 +6152,31 @@ L_58c6:
     goto L_598c;
 
 L_58cc:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) != 0x1))
+    if ((lpshdefBuild->hul.rghs[0].cItem != 0x1))
         goto L_5944;
     else
         goto L_58e4;
 
 L_58e4:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) != 0x1))
+    if ((lpshdefBuild->hul.rghs[1].cItem != 0x1))
         goto L_5944;
     else
         goto L_58fc;
 
 L_58fc:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) != 0x1))
+    if ((lpshdefBuild->hul.rghs[2].cItem != 0x1))
         goto L_5944;
     else
         goto L_5914;
 
 L_5914:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) != 0x1))
+    if ((lpshdefBuild->hul.rghs[3].cItem != 0x1))
         goto L_5944;
     else
         goto L_592c;
 
 L_592c:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x4]) >> 0x8) & 0xff) == 0x2))
+    if ((lpshdefBuild->hul.rghs[4].cItem == 0x2))
         goto L_594d;
     else
         goto L_5944;
@@ -6165,13 +6186,13 @@ L_5944:
     goto L_598c;
 
 L_594d:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x5]) >> 0x8) & 0xff) != 0x1))
+    if ((lpshdefBuild->hul.rghs[5].cItem != 0x1))
         goto L_597d;
     else
         goto L_5965;
 
 L_5965:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x6]) >> 0x8) & 0xff) == 0x1))
+    if ((lpshdefBuild->hul.rghs[6].cItem == 0x1))
         goto L_5986;
     else
         goto L_597d;
@@ -6434,7 +6455,7 @@ L_5d59:
         goto L_5d63;
 
 L_5d63:
-    if ((((rgshdef[9].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[9].fFree != 0x0))
         goto L_5d8e;
     else
         goto L_5d76;
@@ -6452,7 +6473,7 @@ L_5d8e:
         goto L_5da6;
 
 L_5da6:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x0]) >> 0x8) & 0xff) == 0x2))
+    if ((lpshdefBuild->hul.rghs[0].cItem == 0x2))
         goto L_5dc7;
     else
         goto L_5dbe;
@@ -6462,19 +6483,19 @@ L_5dbe:
     goto L_5e30;
 
 L_5dc7:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x1]) >> 0x8) & 0xff) != 0x4))
+    if ((lpshdefBuild->hul.rghs[1].cItem != 0x4))
         goto L_5e0f;
     else
         goto L_5ddf;
 
 L_5ddf:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x2]) >> 0x8) & 0xff) != 0x4))
+    if ((lpshdefBuild->hul.rghs[2].cItem != 0x4))
         goto L_5e0f;
     else
         goto L_5df7;
 
 L_5df7:
-    if ((((HIWORD(lpshdefBuild->hul.rghs[0x3]) >> 0x8) & 0xff) == 0x1))
+    if ((lpshdefBuild->hul.rghs[3].cItem == 0x1))
         goto L_5e18;
     else
         goto L_5e0f;
@@ -8763,7 +8784,10 @@ L_7a91:
         goto L_7a9c;
 
 L_7a9c:
-    /* untranslated: branch ((part[0x4:2](rgplr[0x0]) >> 0xc) & 0xf) != 0x2 ? L_7ac1 : L_7aaf */
+    if ((rgplr[0].cshdefSB != 0x2))
+        goto L_7ac1;
+    else
+        goto L_7aaf;
 
 L_7aaf:
     TutorError(499);

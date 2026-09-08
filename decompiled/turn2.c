@@ -1275,7 +1275,7 @@ L_13d5:
 L_13db:
 
 LAlchemize:
-    if ((GetRaceGrbit(rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0))
+    if ((GetRaceGrbit(&(rgplr[lppl->iPlayer]), ibitRaceMineralAlchemy) == 0))
         goto L_140c;
     else
         goto L_1405;
@@ -1726,13 +1726,12 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     uint16_t  t_merge_2245_0001;
     uint16_t  t_merge_22c7_0001;
     int16_t   t_merge_2429_0001;
-    uint32_t  scratch_bp_m18;
-    uint16_t  scratch_bp_m16;
     int16_t   t_merge_2552_0001;
     int16_t   t_merge_2609_0001;
     uint16_t  t_merge_274b_0001;
     uint16_t  t_merge_2763_0001;
     uint16_t  scratch_bp_m2e;
+    uint16_t  scratch_bp_m16;
 
 L_19b2:
     if ((grobj != grobjFleet))
@@ -2092,10 +2091,7 @@ L_2429:
         goto L_2435;
 
 L_2435:
-    scratch_bp_m18 = 0x0;
-    scratch_bp_m16 = ((HIWORD((int32_t)(((uint32_t)(cBuilt) << 0x14))) + *(lppl + 0x16)) & 0xfff0);
-    lppl->cFactories = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m18) */
+    lppl->cFactories = (lppl->cFactories + cBuilt);
     idm = idmHaveBuiltFactory;
 
 SendMsgFactMine:
@@ -2138,10 +2134,7 @@ L_2552:
         goto L_255e;
 
 L_255e:
-    scratch_bp_m18 = ((LOWORD((int32_t)(((uint32_t)(cBuilt) << 0x8))) + *(lppl + 0x14)) & 0xff00);
-    scratch_bp_m16 = ((HIWORD((int32_t)(((uint32_t)(cBuilt) << 0x8))) + *(lppl + 0x16)) & 0xf);
-    lppl->cMines = 0x0;
-    /* untranslated: part[0x14:4](lppl) = (*(lppl+0x14) | scratch_bp_m18) */
+    lppl->cMines = (lppl->cMines + cBuilt);
     idm = idmHaveBuiltMine;
     goto SendMsgFactMine;
 
@@ -2168,10 +2161,7 @@ L_2609:
         goto L_2615;
 
 L_2615:
-    scratch_bp_m18 = ((LOWORD((int32_t)(((uint32_t)(cBuilt) << 0x0))) + *(lppl + 0x18)) & 0xfff);
-    scratch_bp_m16 = 0x0;
-    lppl->cDefenses = 0x0;
-    /* untranslated: part[0x18:4](lppl) = (*(lppl+0x18) | scratch_bp_m18) */
+    lppl->cDefenses = (lppl->cDefenses + cBuilt);
     idm = idmHaveBuiltDefenseOutpost;
     goto SendMsgFactMine;
 
@@ -2179,7 +2169,7 @@ L_2672:
     goto L_2fcf;
     goto L_2fc0;
     goto L_2fc0;
-    raMajor = GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv);
+    raMajor = GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv);
     iWarp = IWarpMAFromLppl(lppl, &(fTwoMAs));
     if ((iWarp != 0))
         goto L_26e7;
@@ -2510,7 +2500,7 @@ L_2c1c:
     goto L_2c0d;
 
 L_2c3e:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2cea;
     else
         goto L_2c62;
@@ -2613,7 +2603,7 @@ L_309e:
     goto L_34cb;
 
 L_30c9:
-    /* untranslated: branch FLookupObject(((*(lpxfCur+0x4) >> 0x4) & 0xf), lpxfCur->id2, &part[0x84:256](rgxf)) == 0 ? L_34c6 : L_30fb */
+    /* untranslated: branch FLookupObject(lpxfCur->grobj2, lpxfCur->id2, &part[0x84:256](rgxf)) == 0 ? L_34c6 : L_30fb */
 
 L_30fb:
 
@@ -2648,7 +2638,7 @@ L_3181:
         goto L_318a;
 
 L_318a:
-    l = ChgCargo(((*(lpxfCur + 0x4) >> 0x4) & 0xf), lpxfCur->id2, i, l2, 0x0);
+    l = ChgCargo(lpxfCur->grobj2, lpxfCur->id2, i, l2, 0x0);
     if ((LOWORD(l) != LOWORD(l2)))
         goto L_31e0;
     else
@@ -2689,7 +2679,7 @@ L_3213:
 
 L_3216:
     idSrc = (lpxfCur->id1 | t_merge_3216_0001);
-    if ((((*(lpxfCur + 0x4) >> 0x4) & 0xf) != 0x2))
+    if ((lpxfCur->grobj2 != 0x2))
         goto L_3247;
     else
         goto L_3241;
@@ -2783,7 +2773,7 @@ L_33cf:
 
 L_33d2:
     idSrc = (lpxfCur->id1 | t_merge_33d2_0001);
-    if ((((*(lpxfCur + 0x4) >> 0x4) & 0xf) != 0x2))
+    if ((lpxfCur->grobj2 != 0x2))
         goto L_3403;
     else
         goto L_33fd;
@@ -2924,7 +2914,7 @@ L_35f2:
         goto L_3601;
 
 L_3601:
-    if ((GetRaceStat(rgplr[lpcdLook->idPlr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpcdLook->idPlr]), rsMajorAdv) != raMacintosh))
         goto L_3660;
     else
         goto L_3625;
@@ -2980,7 +2970,7 @@ L_36e9:
 L_3709:
     rgcCol[lpcdLook->idPlr] = (rgcCol[lpcdLook->idPlr] + lpcdLook->cColonist);
     cColTot = (cColTot + lpcdLook->cColonist);
-    if ((GetRaceStat(rgplr[lpcdLook->idPlr], rsMajorAdv) != raAttack))
+    if ((GetRaceStat(&(rgplr[lpcdLook->idPlr]), rsMajorAdv) != raAttack))
         goto L_376e;
     else
         goto L_375f;
@@ -2990,7 +2980,7 @@ L_375f:
     goto L_37ad;
 
 L_376e:
-    if ((GetRaceStat(rgplr[lpcdLook->idPlr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpcdLook->idPlr]), rsMajorAdv) != raMacintosh))
         goto L_37a1;
     else
         goto L_3792;
@@ -3028,7 +3018,7 @@ L_383c:
         goto L_3845;
 
 L_3845:
-    if ((GetRaceStat(rgplr[pl.iPlayer], rsMajorAdv) != raDefend))
+    if ((GetRaceStat(&(rgplr[pl.iPlayer]), rsMajorAdv) != raDefend))
         goto L_3874;
     else
         goto L_3865;
@@ -3362,7 +3352,7 @@ L_3e64:
 L_3e6a:
 
 L_3e70:
-    if ((GetRaceStat(rgplr[iMax], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iMax]), rsMajorAdv) != raMacintosh))
         goto L_3ea0;
     else
         goto L_3e9a;
@@ -3401,13 +3391,13 @@ L_3f27:
     goto L_4134;
 
 L_3f90:
-    if ((GetRaceStat(rgplr[iMax], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iMax]), rsMajorAdv) != raMacintosh))
         goto L_3fd8;
     else
         goto L_3fb0;
 
 L_3fb0:
-    if (((rgplr[iMax].zpq1.rgpq[ipq].w & 0x3f) <= 0x2))
+    if ((rgplr[iMax].zpq1.rgpq[ipq].mdIdle <= 0x2))
         goto L_412f;
     else
         goto L_3fd2;
@@ -3415,19 +3405,19 @@ L_3fb0:
 L_3fd2:
 
 L_3fd8:
-    if ((GetRaceStat(rgplr[iMax], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[iMax]), rsMajorAdv) != raTerra))
         goto L_4045;
     else
         goto L_3ff8;
 
 L_3ff8:
-    if (((rgplr[iMax].zpq1.rgpq[ipq].w & 0x3f) == 0x4))
+    if ((rgplr[iMax].zpq1.rgpq[ipq].mdIdle == 0x4))
         goto L_412f;
     else
         goto L_401d;
 
 L_401d:
-    if (((rgplr[iMax].zpq1.rgpq[ipq].w & 0x3f) == 0x5))
+    if ((rgplr[iMax].zpq1.rgpq[ipq].mdIdle == 0x5))
         goto L_412f;
     else
         goto L_403f;
@@ -3436,9 +3426,9 @@ L_403f:
 
 L_4045:
     scratch_bp_mfe = 0x0;
-    prod.iItem = (rgplr[iMax].zpq1.rgpq[ipq].w & 0x3f);
+    prod.iItem = rgplr[iMax].zpq1.rgpq[ipq].mdIdle;
     scratch_bp_mfe = 0x0;
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((((rgplr[iMax].zpq1.rgpq[ipq].w >> 0x6) & 0x3ff) & 0x3ff)) << 0x0)));
+    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((rgplr[iMax].zpq1.rgpq[ipq].cQuan & 0x3ff)) << 0x0)));
     pl.lpplprod[iDst].rgprod[0] = prod;
     iDst = (iDst + 1);
 
@@ -3470,7 +3460,7 @@ L_4176:
 
 L_418e:
     pl.iPlayer = iMax;
-    if ((GetRaceStat(rgplr[iMax], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iMax]), rsMajorAdv) != raMacintosh))
         goto L_41f9;
     else
         goto L_41b4;
@@ -3812,7 +3802,7 @@ L_4698:
     pct = 15;
 
 L_469d:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raDefend))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raDefend))
         goto L_46c9;
     else
         goto L_46c1;
@@ -3869,7 +3859,7 @@ L_47ea:
         goto L_4801;
 
 L_4801:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raDefend))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raDefend))
         goto L_482d;
     else
         goto L_4825;
@@ -3942,7 +3932,7 @@ L_4910:
         goto L_491b;
 
 L_491b:
-    if ((GetRaceStat(rgplr[i], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[i]), rsMajorAdv) != raTerra))
         goto L_4941;
     else
         goto L_493b;
@@ -4590,7 +4580,7 @@ L_526e:
         goto L_5278;
 
 L_5278:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_52a2;
     else
         goto L_529c;
@@ -4679,7 +4669,7 @@ L_536d:
 
 L_5377:
     l = lppl->rgwtMin[3];
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_53b9;
     else
         goto L_53ac;
@@ -4986,7 +4976,7 @@ L_57db:
         goto L_580b;
 
 L_580b:
-    if ((GetRaceStat(rgplr[i], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[i]), rsMajorAdv) == raMacintosh))
         goto L_5831;
     else
         goto L_582b;
@@ -5009,7 +4999,7 @@ L_5846:
         goto L_5853;
 
 L_5853:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_58ad;
     else
         goto L_5877;
@@ -6363,7 +6353,7 @@ L_6eff:
         goto L_6f0a;
 
 L_6f0a:
-    if ((GetRaceStat(rgplr[lpth->iplr], rsMajorAdv) != raMassAccel))
+    if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) != raMassAccel))
         goto L_6f4b;
     else
         goto L_6f37;
@@ -6592,7 +6582,7 @@ L_7330:
         goto L_7346;
 
 L_7346:
-    if ((GetRaceStat(rgplr[lpth->iplr], rsMajorAdv) != raMines))
+    if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) != raMines))
         goto L_7379;
     else
         goto L_7373;
@@ -7338,7 +7328,7 @@ L_7e68:
         goto L_7e73;
 
 L_7e73:
-    GetRaceStat(rgplr[i], rsMajorAdv);
+    GetRaceStat(&(rgplr[i]), rsMajorAdv);
     /* untranslated: branch callresult(RaceAttribute) != raDefend ? L_7e98 : L_7e93 */
 
 L_7e93:
@@ -7589,7 +7579,7 @@ L_8151:
 
 L_815c:
     fUsePool = fUsePoolOrig;
-    fGeneral = GetRaceGrbit(rgplr[i], ibitRaceGeneralizedResearch);
+    fGeneral = GetRaceGrbit(&(rgplr[i]), ibitRaceGeneralizedResearch);
     iTechCur = ((uint16_t)(rgplr[i].iTechCur) & 0xf);
     iTechNext = (uint16_t)((rgplr[i].iTechCur >> 0x4));
     idPlayer = i;
@@ -7901,7 +7891,7 @@ L_86ee:
         goto L_86f8;
 
 L_86f8:
-    if ((GetRaceGrbit(rgplr[i], ibitRaceTT) == 0))
+    if ((GetRaceGrbit(&(rgplr[i]), ibitRaceTT) == 0))
         goto L_873a;
     else
         goto L_8718;
@@ -8143,7 +8133,7 @@ L_8a38:
         goto L_8a43;
 
 L_8a43:
-    if ((GetRaceStat(rgplr[i], rsMajorAdv) != raStealth))
+    if ((GetRaceStat(&(rgplr[i]), rsMajorAdv) != raStealth))
         goto L_8a34;
     else
         goto L_8a60;

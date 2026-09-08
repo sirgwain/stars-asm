@@ -376,7 +376,7 @@ L_0a73:
         goto L_0a7b;
 
 L_0a7b:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_0b2e;
     else
         goto L_0a9c;
@@ -406,7 +406,7 @@ L_0bfe:
     goto L_0d32;
 
 L_0c06:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_0c45;
     else
         goto L_0c27;
@@ -432,7 +432,7 @@ L_0c39:
 L_0c3f:
 
 L_0c45:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raTerra))
         goto L_0c7b;
     else
         goto L_0c66;
@@ -1879,10 +1879,7 @@ L_284b:
         goto L_2853;
 
 L_2853:
-    scratch_bp_m2c = ((LOWORD((int32_t)((lpprod->cItem << 0x0))) + LOWORD(pProdGlob[iSrc])) & 0x3ff);
-    scratch_bp_m2a = 0x0;
-    pProdGlob[iSrc].cItem = 0x0;
-    pProdGlob[iSrc] = (pProdGlob[iSrc] | scratch_bp_m2c);
+    pProdGlob[iSrc].cItem = (pProdGlob[iSrc].cItem + lpprod->cItem);
 
 L_28c3:
     if ((wParam != 0x816))
@@ -1964,7 +1961,7 @@ L_2a3f:
         goto L_2a65;
 
 L_2a65:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_2aba;
     else
         goto L_2a86;
@@ -1975,7 +1972,7 @@ L_2a86:
 L_2ab4:
 
 L_2aba:
-    if ((GetRaceStat(rgplr[idPlayer], rsMajorAdv) != raTerra))
+    if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raTerra))
         goto L_2b40;
     else
         goto L_2adb;
@@ -2593,7 +2590,7 @@ L_39e6:
 L_39ec:
 
 L_39ef:
-    strcpy(szT[c], szWork);
+    strcpy(&(szT[c]), szWork);
     TextOut(hdc, (rc.left - 20), rc.bottom, szT, strlen(szT));
     SelectObject(hdc, rghfontArial8[0]);
 
@@ -2829,7 +2826,7 @@ L_3e0e:
     strcat(szWork, 0xcf5);
 
 L_3e21:
-    if ((((rgshdef[iItem].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[iItem].fFree != 0x0))
         goto LBogus;
     else
         goto L_3e49;
@@ -2938,7 +2935,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     uint16_t     t_merge_4c10_0001;
 
 L_3f20:
-    raMajor = GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv);
+    raMajor = GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv);
     fStarbase = 0;
     iItem = lpprod->iItem;
     cItem = lpprod->cItem;
@@ -3247,13 +3244,13 @@ L_475b:
         goto L_4764;
 
 L_4764:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceISB) != 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceISB) != 0))
         goto L_47a4;
     else
         goto L_4784;
 
 L_4784:
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raMacintosh))
         goto L_47d8;
     else
         goto L_47a4;
@@ -3314,7 +3311,7 @@ L_485b:
     goto L_4d3c;
 
 L_4867:
-    cost = GetRaceGrbit(rgplr[iplr], ibitRaceCheapFact);
+    cost = GetRaceGrbit(&(rgplr[iplr]), ibitRaceCheapFact);
     if ((gd.fTutorial == 0x0))
         goto L_48c5;
     else
@@ -3342,7 +3339,7 @@ L_48c5:
     rgCost[2] = (uint32_t)((0x4 - cost));
 
 L_48f0:
-    rgCost[3] = (uint32_t)(GetRaceStat(rgplr[iplr], rsFactBuild));
+    rgCost[3] = (uint32_t)(GetRaceStat(&(rgplr[iplr]), rsFactBuild));
     goto L_4eef;
 
 L_4915:
@@ -3360,7 +3357,7 @@ L_4936:
         goto L_493f;
 
 L_493f:
-    rgCost[3] = (uint32_t)(GetRaceStat(rgplr[iplr], rsMineBuild));
+    rgCost[3] = (uint32_t)(GetRaceStat(&(rgplr[iplr]), rsMineBuild));
     goto L_4eef;
 
 L_4964:
@@ -3382,7 +3379,7 @@ L_49b6:
 
 L_49bf:
     rgCost[3] = (uint32_t)(part.pplanetary->resCost);
-    if ((GetRaceStat(rgplr[iplr], rsMajorAdv) != raDefend))
+    if ((GetRaceStat(&(rgplr[iplr]), rsMajorAdv) != raDefend))
         goto L_4eef;
     else
         goto L_49f2;
@@ -3418,7 +3415,7 @@ L_4a69:
         goto L_4a72;
 
 L_4a72:
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceMineralAlchemy) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceMineralAlchemy) == 0))
         goto L_4a99;
     else
         goto L_4a92;
@@ -3587,7 +3584,7 @@ L_4c24:
     rgCost[2] = 0x0;
     rgCost[1] = 0x0;
     *(rgCost) = 0x0;
-    if ((GetRaceGrbit(rgplr[iplr], ibitRaceTT) == 0))
+    if ((GetRaceGrbit(&(rgplr[iplr]), ibitRaceTT) == 0))
         goto L_4c78;
     else
         goto L_4c68;
@@ -3980,22 +3977,20 @@ L_4f3a:
 }
 
 void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, int16_t *piFirst, int16_t *piLast) {
-    int32_t  cResearch;
-    PLANET   pl;
-    int32_t  rglQuan[3];
-    int16_t  cBuilt;
-    PROD     prodPartial;
-    int16_t  mdStatus;
-    int16_t  i;
-    int16_t  j;
-    int16_t  iPass;
-    int16_t  fAlchemy;
-    int16_t  iMac;
-    int32_t  rgRes[4];
-    PROD    *lpprod;
-    PROD    *t_merge_5223_0001;
-    uint32_t scratch_bp_m74;
-    uint16_t scratch_bp_m72;
+    int32_t cResearch;
+    PLANET  pl;
+    int32_t rglQuan[3];
+    int16_t cBuilt;
+    PROD    prodPartial;
+    int16_t mdStatus;
+    int16_t i;
+    int16_t j;
+    int16_t iPass;
+    int16_t fAlchemy;
+    int16_t iMac;
+    int32_t rgRes[4];
+    PROD   *lpprod;
+    PROD   *t_merge_5223_0001;
 
 L_4f40:
     if ((LOWORD(lpplprod) != 0x0))
@@ -4224,17 +4219,11 @@ L_52cf:
     goto L_5370;
 
 L_52ea:
-    /* untranslated: scratch_bp_m74 = ((loword((int32_t)(sext16to32(cBuilt) << 0x8)) + part[0x14:2](pl)) & 0xff00) */
-    /* untranslated: scratch_bp_m72 = ((hiword((int32_t)(sext16to32(cBuilt) << 0x8)) + part[0x16:2](pl)) & 0xf) */
-    pl.cMines = 0x0;
-    /* untranslated: part[0x14:4](pl) = (part[0x14:4](pl) | scratch_bp_m74) */
+    pl.cMines = (pl.cMines + cBuilt);
     goto L_53b3;
 
 L_532c:
-    scratch_bp_m74 = 0x0;
-    /* untranslated: scratch_bp_m72 = ((hiword((int32_t)(sext16to32(cBuilt) << 0x14)) + part[0x16:2](pl)) & 0xfff0) */
-    pl.cFactories = 0x0;
-    /* untranslated: part[0x14:4](pl) = (part[0x14:4](pl) | scratch_bp_m74) */
+    pl.cFactories = (pl.cFactories + cBuilt);
     goto L_53b3;
 
 L_5370:
@@ -4407,7 +4396,7 @@ L_549f:
     CheckRadioButton(hwnd, 1073, 1076, 1073);
     EnableZipProdBtns(hwnd, 0);
     iResTechNow = 0;
-    FillZipProdLB(hwnd, vrgZipProd[iResTechNow]);
+    FillZipProdLB(hwnd, &(vrgZipProd[iResTechNow]));
     i = 1073;
     goto L_565d;
 
@@ -4561,7 +4550,7 @@ L_58af:
 L_58b9:
     iResTechNow = (wParam - 1073);
     EnableZipProdBtns(hwnd, iResTechNow);
-    FillZipProdLB(hwnd, vrgZipProd[iResTechNow]);
+    FillZipProdLB(hwnd, &(vrgZipProd[iResTechNow]));
     goto L_5de2;
 
 L_58ec:
@@ -4750,7 +4739,7 @@ L_5c70:
 L_5c79:
     vrgZipProd[iResTechNow].cpq = LOBYTE(cpq);
     vrgZipProd[iResTechNow].fNoResearch = LOBYTE(sel.pl.fNoResearch);
-    FillZipProdLB(hwnd, vrgZipProd[iResTechNow]);
+    FillZipProdLB(hwnd, &(vrgZipProd[iResTechNow]));
 
 L_5cd3:
     EnableZipProdBtns(hwnd, iResTechNow);
@@ -4771,7 +4760,7 @@ L_5d0e:
     vrgZipProd[iResTechNow].fValid = 0x0;
     _wsprintf(szWork, PszGetCompressedString(idsUnusedD), (iResTechNow + 1));
     SetWindowText(GetDlgItem(hwnd, (iResTechNow + 1073)), szWork);
-    FillZipProdLB(hwnd, vrgZipProd[iResTechNow]);
+    FillZipProdLB(hwnd, &(vrgZipProd[iResTechNow]));
     gd.fChgZipProd = 0x1;
     goto L_5de2;
 

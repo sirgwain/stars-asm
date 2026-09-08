@@ -1663,7 +1663,7 @@ L_16c8:
         goto L_16d2;
 
 L_16d2:
-    if ((GetRaceStat(rgplr[lpplDrop->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpplDrop->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_1876;
     else
         goto L_16f7;
@@ -1676,7 +1676,7 @@ L_16f7:
     ord.grobj = grobjPlanet;
     ord.fValidTask = 0x1;
     ord.grTask = grTaskXfer;
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0] = ord;
     FLookupFleet(-1, sel.fl.id);
@@ -2207,8 +2207,10 @@ void EnsureRobotoidShdefs() {
     int16_t  i;
     int16_t  shBase;
     SHDEF    shdef;
+    uint16_t t_merge_2173_0001;
     uint16_t t_merge_24c8_0001;
     uint16_t t_merge_263a_0001;
+    uint16_t t_merge_2758_0001;
 
 L_20ae:
     ish = 11;
@@ -2257,12 +2259,14 @@ L_2161:
         goto L_216a;
 
 L_216a:
+    t_merge_2173_0001 = 0xe;
     goto L_2173;
 
 L_2170:
+    t_merge_2173_0001 = 0xf;
 
 L_2173:
-    FCreateAiShdef(ish, 11, &(vrgRobAip[load(cs : [(merge(Join : L_2173, (L_216a : 0xe, L_2170 : 0xf)) * 0x2) + 0x1f34])]));
+    FCreateAiShdef(ish, 11, &(vrgRobAip[vrgRobIshAip[t_merge_2173_0001]]));
     goto L_21e7;
 
 L_2197:
@@ -2270,7 +2274,7 @@ L_2197:
     goto L_21de;
 
 L_219f:
-    if ((FCreateAiShdef(ish, 31, &(vrgRobAip[load(cs : [((callresult(int16_t) + 0x8) * 0x2) + 0x1f34])])) != 0))
+    if ((FCreateAiShdef(ish, 31, &(vrgRobAip[vrgRobIshAip[(Random(6) + 8)]])) != 0))
         goto L_21e7;
     else
         goto L_21d4;
@@ -2296,7 +2300,7 @@ L_21eb:
         goto L_21f4;
 
 L_21f4:
-    if ((((rgshdef[14].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[14].fFree == 0x0))
         goto L_22f5;
     else
         goto L_2207;
@@ -2336,13 +2340,13 @@ L_227f:
     goto L_22ec;
 
 L_2287:
-    if ((FCreateAiShdef(14, 29, &(vrgRobAip[load(cs : [0x1f7e])])) != 0))
+    if ((FCreateAiShdef(14, 29, &(vrgRobAip[vrgRobIshAip[37]])) != 0))
         goto L_22e8;
     else
         goto L_22ac;
 
 L_22ac:
-    if ((FCreateAiShdef(14, 6, &(vrgRobAip[load(cs : [((callresult(int16_t) + 0x10) * 0x2) + 0x1f34])])) != 0))
+    if ((FCreateAiShdef(14, 6, &(vrgRobAip[vrgRobIshAip[(Random(4) + 16)]])) != 0))
         goto L_22f5;
     else
         goto L_22e2;
@@ -2359,7 +2363,7 @@ L_22ec:
         goto L_22f5;
 
 L_22f5:
-    if ((((rgshdef[15].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[15].fFree == 0x0))
         goto L_23de;
     else
         goto L_2308;
@@ -2389,7 +2393,7 @@ L_2350:
         goto L_2368;
 
 L_2368:
-    if ((FCreateAiShdef(15, 29, &(vrgRobAip[load(cs : [0x1f7e])])) != 0))
+    if ((FCreateAiShdef(15, 29, &(vrgRobAip[vrgRobIshAip[37]])) != 0))
         goto L_23de;
     else
         goto L_238d;
@@ -2399,7 +2403,7 @@ L_238d:
     goto L_23d5;
 
 L_2395:
-    if ((FCreateAiShdef(15, 6, &(vrgRobAip[load(cs : [((callresult(int16_t) + 0x14) * 0x2) + 0x1f34])])) != 0))
+    if ((FCreateAiShdef(15, 6, &(vrgRobAip[vrgRobIshAip[(Random(4) + 20)]])) != 0))
         goto L_23de;
     else
         goto L_23cb;
@@ -2456,7 +2460,7 @@ L_2464:
         goto L_246d;
 
 L_246d:
-    if ((rgshdef[(load([bp - 0x4]) + 0xffff)].fFree != 0x0))
+    if ((rgshdef[(ish - 1)].fFree != 0x0))
         goto L_251b;
     else
         goto L_2490;
@@ -2486,7 +2490,7 @@ L_24c8:
     goto L_2512;
 
 L_24d3:
-    if ((FCreateAiShdef(ish, 31, &(vrgRobAip[load(cs : [((callresult(int16_t) + load([bp - 0x8])) * 0x2) + 0x1f34])])) != 0))
+    if ((FCreateAiShdef(ish, 31, &(vrgRobAip[vrgRobIshAip[(Random(4) + shBase)]])) != 0))
         goto L_251b;
     else
         goto L_2508;
@@ -2564,7 +2568,7 @@ L_25de:
         goto L_25e7;
 
 L_25e7:
-    if ((rgshdef[(load([bp - 0x4]) + 0xffff)].fFree != 0x0))
+    if ((rgshdef[(ish - 1)].fFree != 0x0))
         goto L_268d;
     else
         goto L_260a;
@@ -2594,7 +2598,7 @@ L_263a:
     goto L_2684;
 
 L_2645:
-    if ((FCreateAiShdef(ish, 9, &(vrgRobAip[load(cs : [((callresult(int16_t) + load([bp - 0x8])) * 0x2) + 0x1f34])])) != 0))
+    if ((FCreateAiShdef(ish, 9, &(vrgRobAip[vrgRobIshAip[(Random(4) + shBase)]])) != 0))
         goto L_268d;
     else
         goto L_267a;
@@ -2642,7 +2646,7 @@ L_26d8:
         goto L_26e1;
 
 L_26e1:
-    if ((rgshdef[(load([bp - 0x4]) + 0xffff)].fFree != 0x0))
+    if ((rgshdef[(ish - 1)].fFree != 0x0))
         goto L_2779;
     else
         goto L_2704;
@@ -2654,7 +2658,7 @@ L_2704:
         goto L_2722;
 
 L_2722:
-    if ((FCreateAiShdef(ish, 9, &(vrgRobAip[load(cs : [0x1f7c])])) != 0))
+    if ((FCreateAiShdef(ish, 9, &(vrgRobAip[vrgRobIshAip[36]])) != 0))
         goto L_2779;
     else
         goto L_2746;
@@ -2666,12 +2670,14 @@ L_2746:
         goto L_274f;
 
 L_274f:
+    t_merge_2758_0001 = 0x18;
     goto L_2758;
 
 L_2755:
+    t_merge_2758_0001 = 0x19;
 
 L_2758:
-    FCreateAiShdef(ish, 19, &(vrgRobAip[load(cs : [(merge(Join : L_2758, (L_274f : 0x18, L_2755 : 0x19)) * 0x2) + 0x1f34])]));
+    FCreateAiShdef(ish, 19, &(vrgRobAip[vrgRobIshAip[t_merge_2758_0001]]));
 
 L_2779:
     ish = (ish + 1);
@@ -2740,7 +2746,7 @@ L_283b:
     shdef = rgshdef[0];
     shdef.fFree = 0x1;
     FChangeAiShdef(&(shdef), 0);
-    FCreateAiShdef(0, 5, &(vrgRobAip[load(cs : [0x1f68])]));
+    FCreateAiShdef(0, 5, &(vrgRobAip[vrgRobIshAip[26]]));
 
 L_2888:
     return;
@@ -3940,7 +3946,7 @@ L_3670:
     cplanCol = 0x0;
     cplMiners = 0;
     iroCur = IroEnsureAi(vrgAiTurinDroneResOrder, 31, &(ishdefSBLatest), 15);
-    if ((((rgshdef[13].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[13].fFree != 0x0))
         goto L_36e3;
     else
         goto L_36d7;
@@ -3949,7 +3955,7 @@ L_36d7:
     MergeAllShdefs(-7952);
 
 L_36e3:
-    if ((((rgshdef[12].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[12].fFree != 0x0))
         goto L_3702;
     else
         goto L_36f6;
@@ -3958,7 +3964,7 @@ L_36f6:
     MergeAllShdefs(4096);
 
 L_3702:
-    if ((((rgshdef[10].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[10].fFree != 0x0))
         goto L_3721;
     else
         goto L_3715;
@@ -3967,7 +3973,7 @@ L_3715:
     MergeAllShdefs(3072);
 
 L_3721:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_3740;
     else
         goto L_3734;
@@ -4382,7 +4388,7 @@ L_3e31:
 L_3e37:
 
 L_3e3d:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_3ede;
     else
         goto L_3e50;
@@ -4534,7 +4540,7 @@ L_3fcd:
 L_4033:
     l = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
     cRes = CResourcesAtPlanet(lppl, idPlayer);
-    if ((((rgshdef[12].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[12].fFree != 0x0))
         goto L_418b;
     else
         goto L_4083;
@@ -5030,7 +5036,7 @@ L_46da:
         goto L_46e3;
 
 L_46e3:
-    if ((((rgshdef[15].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[15].fFree != 0x0))
         goto FinishProd;
     else
         goto L_46f6;
@@ -5404,7 +5410,7 @@ L_4c29:
         goto L_4c33;
 
 L_4c33:
-    if ((GetRaceStat(rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto LBlowAwayOrders;
     else
         goto L_4c57;
@@ -5423,7 +5429,7 @@ L_4c6e:
     ord.id = idPlanDst;
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
         goto L_4d32;
@@ -5699,7 +5705,7 @@ L_50fa:
         goto L_510d;
 
 L_510d:
-    if (((HIWORD(rgshdef[1].hul.rghs[0x0]) & 0xff) <= 0x2))
+    if ((rgshdef[1].hul.rghs[0].iItem <= 0x2))
         goto LScrapFleet;
     else
         goto L_511b;
@@ -5785,7 +5791,7 @@ L_5290:
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
-    ord.txp.rgia[3] = ((ord.txp.rgia[0x3] & 0xfff) | 0x2000);
+    ord.txp.rgia[3].iAction = iActionUnloadAll;
     FMoveAiFleet(lpfl, &(ord), 0);
     goto L_4eb0;
 
@@ -6149,7 +6155,7 @@ void EnsureTurinDroneShdefs(int16_t iroCur) {
     int16_t i;
 
 L_58ba:
-    if ((((rgshdef[8].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[8].fFree == 0x0))
         goto L_5926;
     else
         goto L_58d6;
@@ -6167,10 +6173,10 @@ L_58ee:
         goto L_5906;
 
 L_5906:
-    FCreateAiShdef(8, 12, &(vrgTDAip[(load(cs : [0x35ba]) & 0xff)]));
+    FCreateAiShdef(8, 12, &(vrgTDAip[(vrgTDIshAip[12] & 0xff)]));
 
 L_5926:
-    if ((((rgshdef[9].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[9].fFree == 0x0))
         goto L_5989;
     else
         goto L_5939;
@@ -6188,10 +6194,10 @@ L_5951:
         goto L_5969;
 
 L_5969:
-    FCreateAiShdef(9, 13, &(vrgTDAip[(load(cs : [0x35bd]) & 0xff)]));
+    FCreateAiShdef(9, 13, &(vrgTDAip[(vrgTDIshAip[15] & 0xff)]));
 
 L_5989:
-    if ((((rgshdef[10].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[10].fFree == 0x0))
         goto L_5a51;
     else
         goto L_599c;
@@ -6225,7 +6231,7 @@ L_59fc:
     goto L_5a47;
 
 L_5a05:
-    if ((FCreateAiShdef(10, 6, &(vrgTDAip[load(byte cs : [(callresult(int16_t) + 0x2) + 0x35ae])])) != 0))
+    if ((FCreateAiShdef(10, 6, &(vrgTDAip[vrgTDIshAip[(Random(1) + 2)]])) != 0))
         goto L_5a51;
     else
         goto L_5a3c;
@@ -6242,7 +6248,7 @@ L_5a47:
         goto L_5a51;
 
 L_5a51:
-    if ((((rgshdef[1].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[1].fFree != 0x0))
         goto L_5a78;
     else
         goto L_5a64;
@@ -6260,7 +6266,7 @@ L_5a6e:
         goto L_5a78;
 
 L_5a78:
-    if ((((rgshdef[1].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[1].fFree != 0x0))
         goto L_5ac5;
     else
         goto L_5a8b;
@@ -6277,10 +6283,10 @@ L_5a95:
     FChangeAiShdef(&(shdef), 1);
 
 L_5ac5:
-    FCreateAiShdef(1, 15, &(vrgTDAip[(load(cs : [0x35ae]) & 0xff)]));
+    FCreateAiShdef(1, 15, &(vrgTDAip[(LOWORD(vrgTDIshAip) & 0xff)]));
 
 L_5ae5:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_5b0c;
     else
         goto L_5af8;
@@ -6298,7 +6304,7 @@ L_5b02:
         goto L_5b0c;
 
 L_5b0c:
-    if ((((rgshdef[0].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[0].fFree != 0x0))
         goto L_5b4f;
     else
         goto L_5b1f;
@@ -6309,10 +6315,10 @@ L_5b1f:
     FChangeAiShdef(&(shdef), 0);
 
 L_5b4f:
-    FCreateAiShdef(0, 5, &(vrgTDAip[(load(cs : [0x35af]) & 0xff)]));
+    FCreateAiShdef(0, 5, &(vrgTDAip[(vrgTDIshAip[1] & 0xff)]));
 
 L_5b6f:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_5b96;
     else
         goto L_5b82;
@@ -6342,7 +6348,7 @@ L_5bae:
         goto L_5bc6;
 
 L_5bc6:
-    if ((((rgshdef[2].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[2].fFree != 0x0))
         goto L_5c09;
     else
         goto L_5bd9;
@@ -6353,10 +6359,10 @@ L_5bd9:
     FChangeAiShdef(&(shdef), 2);
 
 L_5c09:
-    FCreateAiShdef(2, 22, &(vrgTDAip[(load(cs : [0x35bf]) & 0xff)]));
+    FCreateAiShdef(2, 22, &(vrgTDAip[(vrgTDIshAip[17] & 0xff)]));
 
 L_5c29:
-    if ((((rgshdef[12].wFlags >> 0x9) & 0x1) != 0x0))
+    if ((rgshdef[12].fFree != 0x0))
         goto L_5c50;
     else
         goto L_5c3c;
@@ -6386,10 +6392,10 @@ L_5c68:
         goto L_5c80;
 
 L_5c80:
-    FCreateAiShdef(12, 11, &(vrgTDAip[(load(cs : [0x35bc]) & 0xff)]));
+    FCreateAiShdef(12, 11, &(vrgTDAip[(vrgTDIshAip[14] & 0xff)]));
 
 L_5ca0:
-    if ((((rgshdef[13].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[13].fFree == 0x0))
         goto L_5d1b;
     else
         goto L_5cb3;
@@ -6413,10 +6419,10 @@ L_5ce3:
         goto L_5cfb;
 
 L_5cfb:
-    FCreateAiShdef(13, 18, &(vrgTDAip[(load(cs : [0x35bb]) & 0xff)]));
+    FCreateAiShdef(13, 18, &(vrgTDAip[(vrgTDIshAip[13] & 0xff)]));
 
 L_5d1b:
-    if ((((rgshdef[14].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[14].fFree == 0x0))
         goto L_5dae;
     else
         goto L_5d2e;
@@ -6446,10 +6452,10 @@ L_5d76:
         goto L_5d8e;
 
 L_5d8e:
-    FCreateAiShdef(14, 18, &(vrgTDAip[(load(cs : [0x35bb]) & 0xff)]));
+    FCreateAiShdef(14, 18, &(vrgTDAip[(vrgTDIshAip[13] & 0xff)]));
 
 L_5dae:
-    if ((((rgshdef[4].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[4].fFree == 0x0))
         goto L_5e76;
     else
         goto L_5dc1;
@@ -6483,7 +6489,7 @@ L_5e21:
     goto L_5e6c;
 
 L_5e2a:
-    if ((FCreateAiShdef(4, 9, &(vrgTDAip[load(byte cs : [(callresult(int16_t) + 0x8) + 0x35ae])])) != 0))
+    if ((FCreateAiShdef(4, 9, &(vrgTDAip[vrgTDIshAip[(Random(4) + 8)]])) != 0))
         goto L_5e76;
     else
         goto L_5e61;
@@ -6500,7 +6506,7 @@ L_5e6c:
         goto L_5e76;
 
 L_5e76:
-    if ((((rgshdef[15].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rgshdef[15].fFree == 0x0))
         goto L_5f2c;
     else
         goto L_5e89;
@@ -6534,7 +6540,7 @@ L_5ee9:
     goto L_5f22;
 
 L_5ef2:
-    if ((FCreateAiShdef(15, 12, &(vrgTDAip[(load(cs : [0x35ba]) & 0xff)])) != 0))
+    if ((FCreateAiShdef(15, 12, &(vrgTDAip[(vrgTDIshAip[12] & 0xff)])) != 0))
         goto L_5f2c;
     else
         goto L_5f17;
@@ -6648,7 +6654,7 @@ L_6069:
         goto L_607d;
 
 L_607d:
-    if ((GetRaceStat(rgplr[lpplTest->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpplTest->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_60a7;
     else
         goto L_60a1;

@@ -29,15 +29,16 @@ func convertMachineToFunc(ctx *FuncContext, result *Result, effects *machine.Fun
 }
 
 type machineConverter struct {
-	ctx            *FuncContext
-	result         *Result
-	instOff        uint32
-	memWrites      map[string]uint32
-	tempByLoad     map[machine.ValueID]*Temp
-	tempRequests   map[uint32][]*machine.Load
-	noBitfields    bool
-	inlineCalls    map[machineCallResultKey]*Call
-	inlineEligible map[machineCallResultKey]bool
+	ctx                *FuncContext
+	result             *Result
+	instOff            uint32
+	memWrites          map[string]uint32
+	tempByLoad         map[machine.ValueID]*Temp
+	tempRequests       map[uint32][]*machine.Load
+	noBitfields        bool
+	ignoreUnionContext bool
+	inlineCalls        map[machineCallResultKey]*Call
+	inlineEligible     map[machineCallResultKey]bool
 }
 
 type machineCallResultKey struct {
@@ -66,16 +67,18 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	c.ctx.currentInstOff = c.instOff
 	switch e := effect.(type) {
 	case machine.StoreEffect:
-		if path, value, ok := c.ctx.symbols.symbolFromBitfieldStore(e.Addr, e.Src); ok {
-			c.recordMemoryWrite(e.Addr, e.Width)
-			src := c.convertValue(value)
-			if constant, ok := src.(*Const); ok {
-				constant.TypeInfo = path.Type()
-			}
-			return &Assign{
-				MetaInfo: e.MetaInfo,
-				Dst:      &SymbolRef{Path: path},
-				Src:      src,
+		if bitfield, ok := recognizeBitfieldWrite(c.ctx, e.Addr, e.Src); ok {
+			if dst, ok := c.resolveBitfieldLValue(e.Addr, bitfield.BitOff, bitfield.BitWidth); ok {
+				c.recordMemoryWrite(e.Addr, e.Width)
+				src := c.convertValue(bitfield.Value)
+				if constant, ok := src.(*Const); ok {
+					constant.TypeInfo = dst.ExprType()
+				}
+				return &Assign{
+					MetaInfo: e.MetaInfo,
+					Dst:      dst,
+					Src:      src,
+				}
 			}
 		}
 		dst := c.convertMemoryLValue(e.Addr, e.Width)
@@ -200,8 +203,10 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 		}
 	}
 	if !c.noBitfields {
-		if path, ok := c.ctx.symbols.symbolFromBitfieldValue(value); ok {
-			return &SymbolRef{Path: path}
+		if bitfield, ok := recognizeBitfieldRead(c.ctx, value); ok {
+			if field, ok := c.resolveBitfieldLValue(bitfield.Load.Addr, bitfield.BitOff, bitfield.BitWidth); ok {
+				return field
+			}
 		}
 	}
 	switch v := value.(type) {

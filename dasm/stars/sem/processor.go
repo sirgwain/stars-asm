@@ -109,6 +109,13 @@ func PreProcessorSpecs() []PreProcessor {
 				return &collapseWideStoresProcessor{ctx: ctx}
 			},
 		},
+		{
+			Name:    "collapse-storage-rmw",
+			Purpose: "Collapse compiler scratch snapshots followed by split storage read-modify-write sequences.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &collapseStorageRMWProcessor{ctx: ctx}
+			},
+		},
 		// {
 		// 	Name:    "symbol-debug",
 		// 	Purpose: "Attempt to resolve all symbols after machine pre-processing.",

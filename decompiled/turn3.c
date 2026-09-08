@@ -515,7 +515,7 @@ LTryDunnage:
     goto L_7b78;
 
 L_6cb5:
-    action = ((ord.txp.rgia[j] >> 0xc) & 0xf);
+    action = ord.txp.rgia[0x0].iAction;
     if ((action == iActionNone))
         goto L_7b74;
     else
@@ -1410,7 +1410,7 @@ LCantDrop:
     goto CancelOrder;
 
 L_7847:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMacintosh))
         goto L_7876;
     else
         goto L_786b;
@@ -1871,8 +1871,8 @@ L_8059:
         goto L_8062;
 
 L_8062:
-    ord.txp.rgia[4] = ((ord.txp.rgia[0x4] & 0xfff) | 0x0);
-    ord.txp.rgia[4] = ((ord.txp.rgia[0x4] & 0xf000) | 0x0);
+    ord.txp.rgia[4].iAction = iActionNone;
+    ord.txp.rgia[4].cQuan = 0x0;
 
 FinishFleet:
     if ((fFulfilled != 0))
@@ -2151,7 +2151,7 @@ L_84e1:
         goto L_84ea;
 
 L_84ea:
-    if ((GetRaceGrbit(rgplr[pl.iPlayer], 0x5) == 0))
+    if ((GetRaceGrbit(&(rgplr[pl.iPlayer]), 0x5) == 0))
         goto L_8510;
     else
         goto L_850a;
@@ -2165,7 +2165,7 @@ L_8510:
 
 L_8513:
     fUltimate = t_merge_8513_0001;
-    fBleeding = GetRaceGrbit(rgplr[lpfl->iPlayer], ibitRaceBleedingEdgeTech);
+    fBleeding = GetRaceGrbit(&(rgplr[lpfl->iPlayer]), ibitRaceBleedingEdgeTech);
     gd.fDontCalcBleed = 0x1;
     idPlayer = lpfl->iPlayer;
     i = 0;
@@ -2617,7 +2617,7 @@ L_8ffb:
         goto L_9009;
 
 L_9009:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raMacintosh))
         goto L_67b6;
     else
         goto L_902d;
@@ -3026,7 +3026,7 @@ L_9957:
         goto L_9964;
 
 L_9964:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raMines))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMines))
         goto L_67b6;
     else
         goto L_9988;
@@ -3051,7 +3051,7 @@ L_99ac:
         goto L_99c3;
 
 L_99c3:
-    if ((GetRaceStat(rgplr[lpfl->iPlayer], rsMajorAdv) != raMines))
+    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMines))
         goto L_67b6;
     else
         goto L_99e4;

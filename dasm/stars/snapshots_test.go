@@ -35,6 +35,7 @@ var procs = []string{
 	"GetTechLevelCost",
 	"HfontPrinterCreate",
 	"InitMDIApp",
+	"LCalcFuelGainFromRamScoops",
 	"LpengineFromId",
 	"LphuldefFromId",
 	"LpscannerFromId",
