@@ -365,16 +365,14 @@ func unshiftMachineBitfieldSet(mem machine.MemoryAddress, value machine.Value, b
 	}
 
 	source := value
-	if bitOff != 0 {
-		shift, ok := value.(*machine.Binary)
-		if !ok || shift.Op != machine.ValueOpShl {
-			return nil, false
-		}
+	if shift, ok := value.(*machine.Binary); ok && shift.Op == machine.ValueOpShl {
 		amount, ok := shift.RHS.(*machine.Const)
 		if !ok || int(amount.Val) != bitOff {
 			return nil, false
 		}
 		source = shift.LHS
+	} else if bitOff != 0 {
+		return nil, false
 	}
 	source = unwrapMachineBitfieldValue(source)
 	if words, ok := source.(*machine.StackWords); ok && len(words.Words) == 2 {

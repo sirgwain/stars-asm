@@ -2,22 +2,22 @@
   "OutDir": "./decompiled",
   "analysis": {
     "temps": 1785,
-    "hiWords": 402,
-    "loWords": 2043,
+    "hiWords": 396,
+    "loWords": 2035,
     "branchHiWords": 3606,
     "branchLoWords": 2996,
     "segRegRefs": 16,
     "ir": {
-      "untranslated": 573,
-      "untranslatedAssign": 349,
-      "untranslatedBitwise": 29,
+      "untranslated": 570,
+      "untranslatedAssign": 346,
+      "untranslatedBitwise": 28,
       "untranslatedBranch": 138,
-      "untranslatedPart": 487,
+      "untranslatedPart": 484,
       "untranslatedScratch": 13,
       "untranslatedFailures": {
         "assign.dst.index:part": 2,
         "assign.dst:memory": 15,
-        "assign.dst:part": 221,
+        "assign.dst:part": 218,
         "assign.src.arg[0]:memory": 2,
         "assign.src.arg[0]:part": 2,
         "assign.src.arg[1].target:memory": 1,
@@ -66,7 +66,7 @@
         "assign.src:memory": 5,
         "assign.src:part": 24,
         "assign.src:register": 9,
-        "assign.src:words": 13,
+        "assign.src:words": 10,
         "branch.cond.lhs.arg[0].target:part": 1,
         "branch.cond.lhs.arg[0]:part": 23,
         "branch.cond.lhs.arg[1]:part": 1,
@@ -130,8 +130,7 @@
     },
     "AddMinesToBlockedQueues": {
       "temps": 1,
-      "hiWords": 3,
-      "loWords": 8,
+      "loWords": 3,
       "branchHiWords": 18,
       "branchLoWords": 10
     },
@@ -447,19 +446,10 @@
     },
     "ChgPopFromPlanet": {
       "temps": 2,
-      "hiWords": 3,
-      "loWords": 6,
+      "hiWords": 2,
+      "loWords": 5,
       "branchHiWords": 25,
-      "branchLoWords": 15,
-      "ir": {
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:part": 1,
-          "assign.src:words": 1
-        }
-      }
+      "branchLoWords": 15
     },
     "ChopLastWord": {},
     "ChopTrailingSpaces": {},
@@ -1522,19 +1512,17 @@
     },
     "FBuildObject": {
       "temps": 21,
-      "hiWords": 1,
-      "loWords": 9,
+      "loWords": 8,
       "branchHiWords": 6,
       "branchLoWords": 7,
       "ir": {
-        "untranslated": 5,
-        "untranslatedAssign": 5,
-        "untranslatedPart": 5,
+        "untranslated": 4,
+        "untranslatedAssign": 4,
+        "untranslatedPart": 4,
         "untranslatedFailures": {
-          "assign.dst:part": 3,
+          "assign.dst:part": 2,
           "assign.src.lhs.rhs:part": 2,
-          "assign.src.lhs:part": 2,
-          "assign.src:words": 1
+          "assign.src.lhs:part": 2
         }
       }
     },
@@ -2152,17 +2140,12 @@
     },
     "FReadPlanet": {
       "temps": 1,
-      "hiWords": 1,
-      "loWords": 7,
+      "loWords": 6,
       "branchLoWords": 1,
       "ir": {
-        "untranslated": 2,
-        "untranslatedAssign": 1,
-        "untranslatedBitwise": 1,
-        "untranslatedPart": 2,
+        "untranslated": 1,
+        "untranslatedPart": 1,
         "untranslatedFailures": {
-          "assign.dst:part": 1,
-          "assign.src:words": 1,
           "call.arg[0]:part": 1
         }
       }

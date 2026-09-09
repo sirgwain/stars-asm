@@ -962,8 +962,7 @@ L_2ec1:
 
 L_2ee9:
     FSendPlrMsg(lppl->iPlayer, 124, lppl->id, lppl->id, -32768, (iItem - 18), 0, 0, 0, 0);
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xfffe) | hiword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc))), (lppl->cDefenses |
-     * loword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc)))) */
+    lppl->iScanner = (iItem - 18);
     goto L_2fc9;
 
 L_2f77:

@@ -301,7 +301,7 @@ L_0ff8:
         goto L_1000;
 
 L_1000:
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
+    prod.cItem = cMax;
 
 L_102c:
     i = 0;

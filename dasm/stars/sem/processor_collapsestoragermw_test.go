@@ -7,7 +7,102 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+// TestCollapseScratchBitfieldCopy recovers PROD updates assembled in scratch
+// words while preserving live scratch storage and unrelated destination bits.
+func TestCollapseScratchBitfieldCopy(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "AddMinesToBlockedQueues")
+	blockID := machine.BlockID(0x1c8f)
+	ctx.SetCurrentBlock(blockID)
+	// sel.pl.lpplprod points to PLPROD; its PROD array starts at byte four.
+	lpplprod := machine.LoadVal(machine.MemoryAddress{Seg: machine.RegVal(asm.RegDS), Disp: 0x4a22, Width: 4})
+	dst := machine.MemoryAddress{
+		Seg:  machine.FarPointerVal(lpplprod, machine.FarPointerSegment),
+		Base: machine.FarPointerVal(lpplprod, machine.FarPointerOffset), Disp: 4, Width: 4,
+	}
+	low := frameMemoryAccess(ctx, 0x1ccd-ctx.fs.Addr.Off, -0x13a, 2)
+	high := frameMemoryAccess(ctx, 0x1cd1-ctx.fs.Addr.Off, -0x138, 2)
+	wide := low
+	wide.Width = 4
+	value := frameLoad(ctx, 0x1c92-ctx.fs.Addr.Off, -0x10, 2)
+	for _, tc := range []struct {
+		name                           string
+		offset, width                  uint
+		field                          string
+		liveHere, liveNext, addressUse bool
+		wrongDestination, dependent    bool
+	}{
+		{name: "low word with explicit zero shift", width: 10, field: "cItem"},
+		{name: "field spanning both words", offset: 10, width: 7, field: "iItem"},
+		{name: "high word field", offset: 20, width: 7, field: "pct"},
+		{name: "live in same block", width: 10, liveHere: true},
+		{name: "live in another block", width: 10, liveNext: true},
+		{name: "address taken", width: 10, addressUse: true},
+		{name: "different retained destination", width: 10, wrongDestination: true},
+		{name: "high word depends on scratch", width: 10, dependent: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			mask := (uint(1) << tc.width) - 1
+			keep := uint(0xffffffff) ^ (mask << tc.offset)
+			insertedValue := machine.Value(value)
+			if tc.dependent {
+				insertedValue = machine.LoadVal(low)
+			}
+			inserted := machine.CastVal(machine.BinaryVal(machine.ValueOpShl,
+				machine.CastVal(machine.BinaryVal(machine.ValueOpAnd, insertedValue, machine.ConstVal(mask)), typeinfo.U32),
+				machine.ConstVal(tc.offset)), typeinfo.I32)
+			retainedLow := dst
+			retainedLow.Width = 2
+			if tc.wrongDestination {
+				retainedLow.Disp += 4
+			}
+			retainedHigh := retainedLow
+			retainedHigh.Disp += 2
+			effects := []machine.Effect{
+				machine.StoreEffect{Addr: low, Width: 2, Src: machine.BinaryVal(machine.ValueOpOr,
+					machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(retainedLow), machine.ConstVal(keep&0xffff)),
+					machine.WordVal(inserted, machine.WordLow))},
+				machine.StoreEffect{Addr: high, Width: 2, Src: machine.BinaryVal(machine.ValueOpOr,
+					machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(retainedHigh), machine.ConstVal(keep>>16)),
+					machine.WordVal(inserted, machine.WordHigh))},
+				machine.StoreEffect{Addr: dst, Width: 4, Src: machine.LoadVal(wide)},
+			}
+			otherUse := machine.StoreEffect{Addr: frameMemoryAccess(ctx, 0, -0x10, 4), Width: 4, Src: machine.LoadVal(wide)}
+			if tc.addressUse {
+				otherUse.Src = machine.AddressVal(wide)
+			}
+			if tc.liveHere || tc.addressUse {
+				effects = append(effects, otherUse)
+			}
+			block := machine.BlockEffects{Block: blockID, Effects: effects}
+			fn := machine.FuncEffects{Blocks: []machine.BlockEffects{block}}
+			if tc.liveNext {
+				fn.Blocks = append(fn.Blocks, machine.BlockEffects{Block: 0x17a3, Effects: []machine.Effect{otherUse}})
+			}
+			got, changed := (&collapseStorageRMWProcessor{ctx: ctx}).ProcessMachineBlock(nil, fn, block)
+			if changed != (tc.field != "") {
+				t.Fatalf("changed = %v, want %v", changed, tc.field != "")
+			}
+			if !changed {
+				if len(got.Effects) != len(effects) {
+					t.Fatal("unmatched copy lost an effect")
+				}
+				return
+			}
+			if len(got.Effects) != 1 {
+				t.Fatalf("got %d effects, want one bitfield store", len(got.Effects))
+			}
+			converted := (&machineConverter{ctx: ctx, result: newResult(ctx.fs)}).convertEffect(got.Effects[0])
+			want := "sel.pl.lpplprod->rgprod[0]." + tc.field + " = LOWORD(cBuild)"
+			if text := FormatEffect(converted); text != want {
+				t.Fatalf("field update = %s, want %s", text, want)
+			}
+		})
+	}
+}
 
 // TestCollapseScratchWordBitfieldRMW recovers a captured HS.iItem increment and
 // preserves scratch definitions when they have other uses or the masks disagree.

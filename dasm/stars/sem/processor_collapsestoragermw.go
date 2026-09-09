@@ -10,7 +10,7 @@ type collapseStorageRMWProcessor struct {
 	ctx *FuncContext
 }
 
-// ProcessMachineBlock collapses scratch-backed clear-and-OR storage updates in one machine block.
+// ProcessMachineBlock collapses scratch-backed bitfield updates in one machine block.
 func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f machine.FuncEffects, b machine.BlockEffects) (machine.BlockEffects, bool) {
 	effects := make([]machine.Effect, 0, len(b.Effects))
 	changed := false
@@ -34,6 +34,12 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 			clear, clearOK := b.Effects[i+1].(machine.StoreEffect)
 			insert, insertOK := b.Effects[i+2].(machine.StoreEffect)
 			if snapshotOK && clearOK && insertOK {
+				if collapsed, ok := p.collapseScratchBitfieldCopy(f, b, i, snapshot, clear, insert); ok {
+					effects = append(effects, collapsed)
+					changed = true
+					i += 2
+					continue
+				}
 				if collapsed, ok := p.collapseScratchWordBitfieldRMW(f, b, i, snapshot, clear, insert); ok {
 					effects = append(effects, collapsed)
 					changed = true
@@ -49,6 +55,42 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 	}
 	b.Effects = effects
 	return b, true
+}
+
+// collapseScratchBitfieldCopy reconstructs a masked update assembled in two
+// scratch words and then copied back to the original wide storage.
+func (p *collapseStorageRMWProcessor) collapseScratchBitfieldCopy(f machine.FuncEffects, b machine.BlockEffects, index int, low, high, store machine.StoreEffect) (machine.StoreEffect, bool) {
+	if low.Width != 2 || high.Width != 2 || store.Width != 4 || !p.scratchWordPair(low.Addr, high.Addr) {
+		return store, false
+	}
+	scratch := low.Addr
+	scratch.Width = 4
+	load, ok := store.Src.(*machine.Load)
+	if !ok || !p.sameScratchRange(scratch, load.Addr) {
+		return store, false
+	}
+	// Only the final copy may read these scratch bytes. This also rejects
+	// dependencies between the word definitions that would prevent fusion.
+	if p.scratchReadOutsideWindow(b.Effects, index+2, index+2, scratch) {
+		return store, false
+	}
+	for _, other := range f.Blocks {
+		if other.Block != b.Block && p.scratchReadOutsideWindow(other.Effects, -1, -1, scratch) {
+			return store, false
+		}
+	}
+	// Match the retained loads against the copy destination, not the scratch
+	// addresses, so ordinary wide bitfield validation proves the update.
+	low.Addr = store.Addr
+	low.Addr.Width = 2
+	high.Addr = low.Addr
+	high.Addr.Disp += 2
+	source, ok := (&collapseWideStoresProcessor{ctx: p.ctx}).collapseWideMaskedStoreSource(low, high)
+	if !ok {
+		return store, false
+	}
+	store.Src = source
+	return store, true
 }
 
 // collapseScratchWordBitfieldRMW reconstructs a word-sized captured field update
@@ -338,9 +380,11 @@ func (p *collapseStorageRMWProcessor) scratchReadOutsideWindow(effects []machine
 		found := false
 		rewriter := machineRewriter{
 			value: func(w *machineRewriter, value machine.Value) (machine.Value, bool, bool) {
-				load, ok := value.(*machine.Load)
-				if ok && p.scratchStorageOverlaps(scratch, load.Addr) {
-					found = true
+				switch value := value.(type) {
+				case *machine.Load:
+					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
+				case *machine.Address:
+					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
 				}
 				return nil, false, false
 			},

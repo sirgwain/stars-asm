@@ -204,9 +204,7 @@ L_1c4a:
     goto L_17a3
 
 L_1c8f:
-    LOWORD(t_scratch_m13a) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)((uint32_t)(loword((uint32_t)LOWORD(cBuild)) & 0x3ff) << 0x0)))
-    HIWORD(t_scratch_m13a) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)((uint32_t)(loword((uint32_t)LOWORD(cBuild)) & 0x3ff) << 0x0)))
-    sel.pl.lpplprod->rgprod[0] = t_scratch_m13a
+    sel.pl.lpplprod->rgprod[0].cItem = loword((uint32_t)LOWORD(cBuild))
     goto L_17a3
 
 L_1cef:

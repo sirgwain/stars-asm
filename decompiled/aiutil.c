@@ -1669,7 +1669,6 @@ void AddMinesToBlockedQueues() {
     int32_t  rgCost[4];
     PROD     rgprod[64];
     int16_t  etaBetterMines;
-    PROD     t_scratch_m13a;
     uint32_t t_scratch_m136;
 
 L_1792:
@@ -1984,11 +1983,7 @@ L_1c4a:
     goto L_17a3;
 
 L_1c8f:
-    LOWORD(t_scratch_m13a) =
-        ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | LOWORD((int32_t)(((uint32_t)((LOWORD((uint32_t)(LOWORD(cBuild))) & 0x3ff)) << 0x0))));
-    HIWORD(t_scratch_m13a) =
-        ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | HIWORD((int32_t)(((uint32_t)((LOWORD((uint32_t)(LOWORD(cBuild))) & 0x3ff)) << 0x0))));
-    sel.pl.lpplprod->rgprod[0] = t_scratch_m13a;
+    sel.pl.lpplprod->rgprod[0].cItem = LOWORD((uint32_t)(LOWORD(cBuild)));
     goto L_17a3;
 
 L_1cef:
@@ -4469,7 +4464,7 @@ L_4070:
         goto L_407b;
 
 L_407b:
-    lpplProdGlob->rgprod[iprod] = ((lpplProdGlob->rgprod[iprod] & 0xfffffc00) | (int32_t)(((uint32_t)((cItem & 0x3ff)) << 0x0)));
+    lpplProdGlob->rgprod[iprod].cItem = cItem;
     lpplProdGlob->rgprod[iprod].iItem = iItem;
     lpplProdGlob->rgprod[iprod].grobj = grobj;
     lpplProdGlob->rgprod[iprod].pct = 0x0;

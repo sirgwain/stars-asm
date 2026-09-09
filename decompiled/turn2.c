@@ -391,7 +391,7 @@ L_0640:
         goto L_0671;
 
 L_0671:
-    lpprod = ((*(lpprod) & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
+    lpprod->cItem = cMax;
 
 L_06a2:
     goto L_07fc;
@@ -1038,7 +1038,7 @@ L_0ff8:
         goto L_1000;
 
 L_1000:
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((cMax & 0x3ff)) << 0x0)));
+    prod.cItem = cMax;
 
 L_102c:
     i = 0;
@@ -2669,8 +2669,7 @@ L_2ec1:
 
 L_2ee9:
     FSendPlrMsg(lppl->iPlayer, 124, lppl->id, lppl->id, -32768, (iItem - 18), 0, 0, 0, 0);
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xfffe) | hiword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc))), (lppl->cDefenses |
-     * loword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc)))) */
+    lppl->iScanner = (iItem - 18);
     goto L_2fc9;
 
 L_2f77:
@@ -3613,7 +3612,7 @@ L_401d:
 
 L_4045:
     prod.iItem = rgplr[iMax].zpq1.rgpq[ipq].mdIdle;
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((rgplr[iMax].zpq1.rgpq[ipq].cQuan & 0x3ff)) << 0x0)));
+    prod.cItem = rgplr[iMax].zpq1.rgpq[ipq].cQuan;
     pl.lpplprod->rgprod[iDst] = prod;
     iDst = (iDst + 1);
 

@@ -3462,7 +3462,7 @@ L_4463:
     starpack.y = LOWORD((int32_t)(rgptPlan[i].y));
     starpack.id = LOWORD((int32_t)(rgidPlan[i]));
     dx = (rgptPlan[i].x - xOld);
-    starpack = ((starpack & 0xfffffc00) | (int32_t)(((uint32_t)((dx & 0x3ff)) << 0x0)));
+    starpack.dx = dx;
     RgToStream(&(starpack), 0x4);
     xOld = rgptPlan[i].x;
     i = (i + 1);

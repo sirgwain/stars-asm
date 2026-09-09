@@ -315,7 +315,7 @@ L_072d:
 
 L_0733:
     t_scratch_m1c_3 = t_merge_0733_0002_wide;
-    rgprod[cProdGlob] = ((rgprod[cProdGlob] & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m1c_3) & 0x3ff)) << 0x0)));
+    rgprod[cProdGlob].cItem = LOWORD(t_scratch_m1c_3);
     rgprod[cProdGlob].iItem = mdIdleFactory;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -343,7 +343,7 @@ L_0834:
 
 L_083a:
     t_scratch_m1c_4 = t_merge_083a_0002_wide;
-    rgprod[cProdGlob] = ((rgprod[cProdGlob] & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m1c_4) & 0x3ff)) << 0x0)));
+    rgprod[cProdGlob].cItem = LOWORD(t_scratch_m1c_4);
     rgprod[cProdGlob].iItem = mdIdleMine;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -357,7 +357,7 @@ L_08e9:
         goto L_091f;
 
 L_091f:
-    rgprod[cProdGlob] = ((rgprod[cProdGlob] & 0xfffffc00) | (int32_t)(((uint32_t)((u & 0x3ff)) << 0x0)));
+    rgprod[cProdGlob].cItem = u;
     rgprod[cProdGlob].iItem = mdIdleDefense;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -398,7 +398,7 @@ L_0b2e:
         goto L_0b49;
 
 L_0b49:
-    rgprod[cProdGlob] = ((rgprod[cProdGlob] & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(i)) & 0x3ff)) << 0x0)));
+    rgprod[cProdGlob].cItem = LOWORD((uint32_t)(i));
     rgprod[cProdGlob].iItem = mdIdleTerraform;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -557,7 +557,7 @@ L_0eff:
         goto L_0f06;
 
 L_0f06:
-    lpprod = ((*(lpprod) & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pProdGlob[iSrc].cItem)) & 0x3ff)) << 0x0)));
+    lpprod->cItem = LOWORD((uint32_t)(pProdGlob[iSrc].cItem));
 
 L_0f5b:
     if ((pProdGlob[iSrc].cItem != 0x3ff))
@@ -1234,7 +1234,7 @@ L_1ab8:
 
 L_1abe:
     t_scratch_m2c = t_merge_1abe_0002_wide;
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m2c) & 0x3ff)) << 0x0)));
+    prod.cItem = LOWORD(t_scratch_m2c);
     goto L_1bfe;
 
 L_1af6:
@@ -1264,7 +1264,7 @@ L_1b26:
 
 L_1b2c:
     t_scratch_m2c_2 = t_merge_1b2c_0002_wide;
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m2c_2) & 0x3ff)) << 0x0)));
+    prod.cItem = LOWORD(t_scratch_m2c_2);
 
 L_1b61:
     goto L_1bfe;
@@ -1302,7 +1302,7 @@ L_1ba8:
 
 L_1bae:
     t_scratch_m2c_3 = t_merge_1bae_0002_wide;
-    prod = ((prod & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m2c_3) & 0x3ff)) << 0x0)));
+    prod.cItem = LOWORD(t_scratch_m2c_3);
     goto L_1bfe;
 
 L_1be6:
@@ -1427,7 +1427,7 @@ L_1e2e:
 
 L_1e76:
     t_scratch_m2c_6 = (((uint32_t)((uint16_t)(t_merge_1e76_0001)) << 0x10) | (uint16_t)(t_merge_1e76_0002));
-    lpplProdGlob->rgprod[iDst] = ((lpplProdGlob->rgprod[iDst] & 0xfffffc00) | (int32_t)(((uint32_t)((LOWORD(t_scratch_m2c_6) & 0x3ff)) << 0x0)));
+    lpplProdGlob->rgprod[iDst].cItem = LOWORD(t_scratch_m2c_6);
     if ((0x0 < 0x0))
         goto FixedUp;
     else
@@ -2006,7 +2006,7 @@ L_2b40:
     scratch_bp_m32 = vrgZipProd[lParam].rgpq[iSrc].mdIdle;
     lpplprodT->rgprod[iDst].iItem = scratch_bp_m32;
     scratch_bp_m32 = vrgZipProd[lParam].rgpq[iSrc].cQuan;
-    lpplprodT->rgprod[iDst] = ((lpplprodT->rgprod[iDst] & 0xfffffc00) | (int32_t)(((uint32_t)((scratch_bp_m32 & 0x3ff)) << 0x0)));
+    lpplprodT->rgprod[iDst].cItem = scratch_bp_m32;
     iDst = (iDst + 1);
     goto L_2a3b;
 

@@ -7503,8 +7503,7 @@ LUpdateAndExit:
         goto L_7574;
 
 L_7574:
-    /* untranslated: part[0x14:4](lppl) = words(((*(lppl+0x16) & 0xffff) | hiword((int32_t)((uint32_t)(DeltaCur & 0xff) << 0x0))), ((*(lppl+0x14) & 0xff00) |
-     * loword((int32_t)((uint32_t)(DeltaCur & 0xff) << 0x0)))) */
+    lppl->iDeltaPop = DeltaCur;
     lppl->rgwtMin[3] = (lppl->rgwtMin[3] + lPopInc);
 
 L_75d2:

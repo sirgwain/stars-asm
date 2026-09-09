@@ -3221,8 +3221,7 @@ L_391d:
     goto L_39dc;
 
 L_3944:
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16))),
-     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16)))) */
+    lppl->fArtifact = ((rgbCur[0x2] >> 0xc) & 0x1);
     lppl->iScanner = 0x1f;
     lppl->cDefenses = 0x0;
 
