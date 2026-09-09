@@ -240,7 +240,7 @@ func (p *collapseWideStoresProcessor) collapseWideMaskedStoreSource(low, high ma
 	if !ok {
 		return nil, false
 	}
-	field, ok := resolveDeclaredBitfield(p.ctx, wideDestination, bitfield.BitOff, bitfield.BitWidth)
+	field, ok := resolveDeclaredBitfield(p.ctx, wideDestination, bitfield.Access)
 	if !ok || field.Bitfield.StorageSize != wideDestination.Width {
 		return nil, false
 	}

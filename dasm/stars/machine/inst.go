@@ -12,8 +12,9 @@ type InstCall struct {
 
 // InstJump records the resolved target metadata for a decoded jump instruction.
 type InstJump struct {
-	TargetOff       uint32
-	Label           string
+	TargetOff uint32
+	Label     string
+	// TableTargetOffs retains physical word entries in order, including duplicates.
 	TableTargetOffs []uint32
 }
 

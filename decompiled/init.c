@@ -539,7 +539,7 @@ void InitTiles() {
 
 L_0eaa:
     iPass = 2;
-    rgtile = &(rgtilePlanet);
+    rgtile = rgtilePlanet;
     ctile = 6;
 
 L_0ec2:
@@ -593,7 +593,7 @@ L_1001:
         goto L_100c;
 
 L_100c:
-    rgtile = &(rgtileShip);
+    rgtile = rgtileShip;
     ctile = 7;
     goto L_0ec2;
 
@@ -707,9 +707,7 @@ L_112f:
     if (((uint16_t)(*(pch)) > 57))
         goto NoRc;
     else
-        goto L_113a;
-
-L_113a:
+        goto L_1140;
 
 L_1140:
     rg[i] = (LOWORD((0xa * rg[i])) + ((uint16_t)(*(pch)) - 48));
@@ -777,42 +775,47 @@ L_11ec:
 }
 
 void ReadIniSettings() {
-    uint16_t uDateCur;
-    int16_t  i;
-    int16_t  iPass;
-    char     szEntry[16];
-    WN       wnT;
-    char     szIniFile[16];
-    uint16_t w;
-    char    *psz;
-    char     szSection[16];
-    int16_t  cch;
-    int16_t  cpq;
-    uint16_t t_merge_1473_0001;
-    uint16_t t_merge_1498_0001;
-    int16_t  t_merge_14df_0001;
-    int16_t  t_merge_1500_0001;
-    int16_t  t_merge_1547_0001;
-    int16_t  t_merge_1568_0001;
-    int16_t  t_merge_15af_0001;
-    int16_t  t_merge_15d0_0001;
-    int16_t  t_merge_1617_0001;
-    int16_t  t_merge_1638_0001;
-    int16_t  t_merge_167f_0001;
-    int16_t  t_merge_16a0_0001;
-    int16_t  t_merge_16e7_0001;
-    int16_t  t_merge_1708_0001;
-    uint16_t t_merge_174e_0001;
-    uint16_t t_merge_1fc6_0001;
-    uint16_t t_merge_2027_0001;
-    uint16_t t_merge_208c_0001;
-    uint16_t t_merge_2175_0001;
-    uint16_t t_merge_2203_0001;
-    uint16_t t_merge_2291_0001;
-    uint16_t t_merge_231f_0001;
-    uint16_t t_merge_2483_0001;
-    uint16_t scratch_bp_m4a;
-    uint16_t t_merge_2981_0001;
+    uint16_t   uDateCur;
+    int16_t    i;
+    int16_t    iPass;
+    char       szEntry[16];
+    WN         wnT;
+    char       szIniFile[16];
+    uint16_t   w;
+    char      *psz;
+    char       szSection[16];
+    int16_t    cch;
+    int16_t    cpq;
+    ITEMACTION t_scratch_m4e;
+    uint16_t   t_merge_1473_0001;
+    uint16_t   t_merge_1498_0001;
+    int16_t    t_merge_14df_0001;
+    int16_t    t_merge_1500_0001;
+    int16_t    t_merge_1547_0001;
+    int16_t    t_merge_1568_0001;
+    int16_t    t_merge_15af_0001;
+    int16_t    t_merge_15d0_0001;
+    int16_t    t_merge_1617_0001;
+    int16_t    t_merge_1638_0001;
+    int16_t    t_merge_167f_0001;
+    int16_t    t_merge_16a0_0001;
+    int16_t    t_merge_16e7_0001;
+    int16_t    t_merge_1708_0001;
+    uint16_t   t_merge_174e_0001;
+    uint16_t   t_merge_1fc6_0001;
+    uint16_t   t_merge_2027_0001;
+    uint16_t   t_merge_208c_0001;
+    uint16_t   t_merge_2175_0001;
+    uint16_t   t_merge_2203_0001;
+    uint16_t   t_merge_2291_0001;
+    uint16_t   t_merge_231f_0001;
+    uint16_t   t_scratch_m4a_8;
+    uint16_t   t_scratch_m4c;
+    uint16_t   t_merge_2483_0001;
+    uint16_t   t_scratch_m4a_12;
+    uint16_t   t_scratch_m4a_13;
+    uint16_t   t_merge_2981_0001;
+    uint16_t   t_scratch_m4c_6;
 
 L_124c:
     ini.fGen = 0x0;
@@ -966,7 +969,10 @@ L_14f1:
     goto L_1500;
 
 L_14f7:
+
+L_14fa:
     t_merge_1500_0001 = 10;
+    goto L_1500;
 
 L_14fd:
     t_merge_1500_0001 = 2000;
@@ -1004,7 +1010,10 @@ L_1559:
     goto L_1568;
 
 L_155f:
+
+L_1562:
     t_merge_1568_0001 = 10;
+    goto L_1568;
 
 L_1565:
     t_merge_1568_0001 = 2000;
@@ -1042,7 +1051,10 @@ L_15c1:
     goto L_15d0;
 
 L_15c7:
+
+L_15ca:
     t_merge_15d0_0001 = 10;
+    goto L_15d0;
 
 L_15cd:
     t_merge_15d0_0001 = 2000;
@@ -1080,7 +1092,10 @@ L_1629:
     goto L_1638;
 
 L_162f:
+
+L_1632:
     t_merge_1638_0001 = 10;
+    goto L_1638;
 
 L_1635:
     t_merge_1638_0001 = 2000;
@@ -1118,7 +1133,10 @@ L_1691:
     goto L_16a0;
 
 L_1697:
+
+L_169a:
     t_merge_16a0_0001 = 10;
+    goto L_16a0;
 
 L_169d:
     t_merge_16a0_0001 = 2000;
@@ -1156,7 +1174,10 @@ L_16f9:
     goto L_1708;
 
 L_16ff:
+
+L_1702:
     t_merge_1708_0001 = 10;
+    goto L_1708;
 
 L_1705:
     t_merge_1708_0001 = 2000;
@@ -1255,6 +1276,7 @@ L_1932:
         goto L_1937;
 
 L_1937:
+    goto L_18f9;
 
 L_193d:
     if (((uint16_t)(szWork[1]) < 66))
@@ -1675,7 +1697,9 @@ L_239d:
     strdate(szWork);
     szWork[5] = 0;
     szWork[2] = 0;
-    uDateCur = ((atoi(szWork[3]) + LOWORD((atoi(szWork) * 0x1f))) + LOWORD((LOWORD((atoi(szWork[0x6]) * 0x1f)) * 0xc)));
+    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(szWork[0x6]) * 0x1f)) * 0xc));
+    t_scratch_m4c = LOWORD((atoi(szWork) * 0x1f));
+    uDateCur = ((atoi(szWork[3]) + t_scratch_m4c) + t_scratch_m4a_8);
     CchGetString(idsHistoryinfo, szEntry);
     uDateInstalled = GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     if ((uDateCur >= uDateInstalled))
@@ -1718,9 +1742,7 @@ L_250c:
     if ((cch > 31))
         goto L_2537;
     else
-        goto L_2512;
-
-L_2512:
+        goto L_2518;
 
 L_2518:
     strcpy(rgszArial[i], szWork);
@@ -1756,12 +1778,10 @@ L_25ea:
     if ((cch > 32))
         goto L_27f9;
     else
-        goto L_25f0;
-
-L_25f0:
+        goto L_25f6;
 
 L_25f6:
-    psz = &(szWork);
+    psz = szWork;
     iPass = 0;
     goto L_2611;
 
@@ -1782,38 +1802,36 @@ L_261a:
         goto L_2628;
 
 L_2628:
-    if (((uint16_t)(*(psz)) > 112))
-        goto L_263c;
+    if (((uint16_t)(*(psz)) <= 112))
+        goto L_2603;
     else
-        goto L_2633;
-
-L_2633:
+        goto L_263c;
 
 L_263c:
     if ((iPass < 20))
         goto L_27f9;
     else
-        goto L_2642;
-
-L_2642:
+        goto L_2648;
 
 L_2648:
-    psz = &(szWork);
+    psz = szWork;
     iPass = 0;
     goto L_27c5;
 
 L_2655:
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass].cQuan | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
+    t_scratch_m4e = (vrgZip[i].txp.rgia[iPass].cQuan | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
+    vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
     psz = (psz + 0x1);
-    vrgZip[i].txp.rgia[iPass] = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
+    t_scratch_m4e = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
+    vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
     psz = (psz + 0x1);
-    scratch_bp_m4a = (((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
+    t_scratch_m4a_12 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
     vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | scratch_bp_m4a);
+    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_12);
     psz = (psz + 0x1);
-    scratch_bp_m4a = (((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
+    t_scratch_m4a_13 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
     vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | scratch_bp_m4a);
+    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_13);
     psz = (psz + 0x1);
     iPass = (iPass + 1);
 
@@ -1859,12 +1877,10 @@ L_28a6:
     if ((cch > 64))
         goto L_2b61;
     else
-        goto L_28ac;
-
-L_28ac:
+        goto L_28b2;
 
 L_28b2:
-    psz = &(szWork);
+    psz = szWork;
     cpq = ((uint16_t)(psz[0x1]) - 97);
     if ((cpq < 0))
         goto L_2b61;
@@ -1875,9 +1891,7 @@ L_28cd:
     if ((cpq > 12))
         goto L_2b61;
     else
-        goto L_28d3;
-
-L_28d3:
+        goto L_28d9;
 
 L_28d9:
     iPass = 0;
@@ -1900,32 +1914,26 @@ L_2901:
         goto L_290f;
 
 L_290f:
-    if (((uint16_t)(*(psz)) > 112))
-        goto L_2923;
+    if (((uint16_t)(*(psz)) <= 112))
+        goto L_28e1;
     else
-        goto L_291a;
-
-L_291a:
+        goto L_2923;
 
 L_2923:
     if ((iPass < ((cpq * 4) + 0x2)))
         goto L_2b61;
     else
-        goto L_2932;
-
-L_2932:
+        goto L_2938;
 
 L_2938:
     if ((strlen(psz) > 0xc))
         goto L_2b61;
     else
-        goto L_2948;
-
-L_2948:
+        goto L_294e;
 
 L_294e:
     strcpy((0x22f6 + LOWORD((40 * i))), psz);
-    psz = &(szWork);
+    psz = szWork;
     if (((uint16_t)(*(psz)) == 97))
         goto L_297e;
     else
@@ -1939,7 +1947,8 @@ L_297e:
     t_merge_2981_0001 = 0x0;
 
 L_2981:
-    vrgZipProd[i].fNoResearch = LOBYTE(t_merge_2981_0001);
+    t_scratch_m4c_6 = t_merge_2981_0001;
+    vrgZipProd[i].fNoResearch = LOBYTE(t_scratch_m4c_6);
     vrgZipProd[i].fValid = 0x1;
     vrgZipProd[i].cpq = LOBYTE(cpq);
     psz = (psz + 0x2);
@@ -2030,13 +2039,14 @@ L_2bb9:
 L_2bc2:
     iCol = (iCol + 0x1);
 
+L_2bc6:
+    goto DoNext;
+
 L_2bc9:
     if (((_ctype[((uint16_t)(*(pszFormat)) + 1)] & 0x3) == 0x0))
         goto DoNext;
     else
-        goto L_2be1;
-
-L_2be1:
+        goto L_2be7;
 
 L_2be7:
     fPopped = (_ctype[((uint16_t)(*(pszFormat)) + 0x1)] & 0x1);
@@ -2057,9 +2067,7 @@ L_2c1b:
     if ((iBit < 0x0))
         goto DoNext;
     else
-        goto L_2c26;
-
-L_2c26:
+        goto L_2c2c;
 
 L_2c2c:
     i = iTile;
@@ -2069,9 +2077,7 @@ L_2c35:
     if ((rgtile[i].id == iBit))
         goto L_2c6b;
     else
-        goto L_2c56;
-
-L_2c56:
+        goto L_2c5c;
 
 L_2c5c:
     i = (i + 1);
@@ -2086,9 +2092,7 @@ L_2c6b:
     if ((i == ctile))
         goto DoNext;
     else
-        goto L_2c73;
-
-L_2c73:
+        goto L_2c79;
 
 L_2c79:
     rgtile[i].iCol = iCol;

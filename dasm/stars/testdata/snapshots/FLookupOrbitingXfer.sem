@@ -72,7 +72,6 @@ L_25c5:
 L_25fd:
     return 1
 
-
 L_2606:
     lpth = lpThings
     lpthMac = (lpThings + loword((0x12 * cThing)))

@@ -51,6 +51,10 @@ func semanticBlockTargets(f *Func) map[machine.BlockID]bool {
 	for _, block := range f.Blocks {
 		for _, effect := range block.Effects {
 			switch effect := effect.(type) {
+			case *TableJump:
+				for _, target := range effect.Targets {
+					targets[target] = true
+				}
 			case *Jump:
 				targets[effect.To] = true
 

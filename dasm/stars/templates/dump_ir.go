@@ -160,6 +160,14 @@ func formatIRStmt(stmt ir.Stmt) string {
 		return formatIRExpr(s.Expr) + ";"
 	case *ir.IfGoto:
 		return fmt.Sprintf("if (%s) goto %s; else goto %s;", formatIRExpr(s.Cond), s.TrueLabel, s.FalseLabel)
+	case *ir.TableJump:
+		var text strings.Builder
+		fmt.Fprintf(&text, "switch (%s) {", formatIRExpr(s.Index))
+		for i, label := range s.Labels {
+			fmt.Fprintf(&text, " case %#x: goto %s;", i*2, label)
+		}
+		text.WriteString(" }")
+		return text.String()
 	case *ir.Goto:
 		return "goto " + s.Label + ";"
 	case *ir.Return:

@@ -253,7 +253,7 @@ func TestCollapseWideMachineValueUsesNativeBitfield(t *testing.T) {
 	if !ok {
 		t.Fatalf("collapsed value %q is no longer recognized as a bitfield", got.String())
 	}
-	dst, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(bitfield.Load.Addr, bitfield.BitOff, bitfield.BitWidth)
+	dst, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(bitfield.Load.Addr, bitfield.Access)
 	if !ok {
 		t.Fatalf("collapsed value %q no longer projects as a bitfield", got.String())
 	}

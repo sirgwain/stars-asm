@@ -40,6 +40,7 @@ const (
 	OpXor
 	OpShl
 	OpShr
+	OpSar
 	OpNeg
 	OpNot
 )
@@ -57,6 +58,8 @@ func (op Op) Invert() Op {
 	case OpShl:
 		return OpShr
 	case OpShr:
+		return OpShl
+	case OpSar:
 		return OpShl
 	case OpNeg:
 		return OpNeg
@@ -82,8 +85,9 @@ const (
 
 // Func is a semantic function body produced from machine effects.
 type Func struct {
-	CFG    *machine.CFG
-	Blocks []Block
+	RecoveredLocals []*typeinfo.FunctionVar
+	CFG             *machine.CFG
+	Blocks          []Block
 }
 
 // Block is a semantic block produced from one machine effect block.
@@ -641,6 +645,19 @@ func (*Jump) effect() {}
 
 // EffectMeta returns the machine origin for Jump.
 func (e *Jump) EffectMeta() machine.Meta { return e.MetaInfo }
+
+// TableJump dispatches using a byte offset into an ordered word table.
+type TableJump struct {
+	Index    Expr
+	MetaInfo machine.Meta
+	Targets  []machine.BlockID
+}
+
+// effect marks TableJump as a semantic effect.
+func (*TableJump) effect() {}
+
+// EffectMeta returns the machine origin for TableJump.
+func (e *TableJump) EffectMeta() machine.Meta { return e.MetaInfo }
 
 // Return is a semantic return effect.
 type Return struct {

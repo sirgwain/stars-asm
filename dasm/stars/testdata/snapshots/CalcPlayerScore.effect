@@ -38,19 +38,11 @@ block L_58ee:
   preds: L_59c9
   succs: L_5900, L_59c5
   effects:
-    58f8  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) != load([bp+iPlr]) ? L_59c5 : L_58fa
-
-block L_58fa:
-  insts 31..31  off 0x58fa..0x58fc
-  succs: L_5900
-
-block L_58fd:
-  insts 32..32  off 0x58fd..0x58ff
-  succs: L_59c5
+    58f8  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) != load([bp+iPlr]) ? L_59c5 : L_5900
 
 block L_5900:
   insts 33..49  off 0x5900..0x592f
-  preds: L_58ee, L_58fa
+  preds: L_58ee
   succs: L_5933, L_594b
   effects:
     5900  store[2] [bp-score+0x8] = (load([bp-score+0x8]) + 0x1)
@@ -116,7 +108,7 @@ block L_59ad:
 
 block L_59c5:
   insts 99..99  off 0x59c5..0x59c8
-  preds: L_58ee, L_58fd, L_59ad
+  preds: L_58ee, L_59ad
   succs: L_59c9
   effects:
     59c5  store[2] [bp-lppl] = (load([bp-lppl]) + 0x38)
@@ -359,7 +351,7 @@ block L_5baa:
 
 block L_5bb2:
   insts 271..271  off 0x5bb2..0x5bb5
-  preds: L_5bf1, L_5c00, L_5c17, L_5c87, L_5c90
+  preds: L_5bf1, L_5c00, L_5c87
   succs: L_5bb6
   effects:
     5bb2  store[2] [bp-ifl] = (load([bp-ifl]) + 0x1)
@@ -399,19 +391,11 @@ block L_5c00:
   preds: L_5bf1
   succs: L_5bb2, L_5c1a
   effects:
-    5c12  branch ((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) >> 0xa) & 0x1) != 0x0 ? L_5bb2 : L_5c14
-
-block L_5c14:
-  insts 305..305  off 0x5c14..0x5c16
-  succs: L_5c1a
-
-block L_5c17:
-  insts 306..306  off 0x5c17..0x5c19
-  succs: L_5bb2
+    5c12  branch ((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) >> 0xa) & 0x1) != 0x0 ? L_5bb2 : L_5c1a
 
 block L_5c1a:
   insts 307..308  off 0x5c1a..0x5c21
-  preds: L_5c00, L_5c14
+  preds: L_5c00
   succs: L_5c87
   effects:
     5c1a  store[2] [bp-i] = 0x0
@@ -419,7 +403,7 @@ block L_5c1a:
 
 block L_5c22:
   insts 309..318  off 0x5c22..0x5c3b
-  preds: L_5c87, L_5c8d
+  preds: L_5c8d
   succs: L_5c3f, L_5c83
   effects:
     5c3a  branch load(load([bp-lpfl+0x2]):[((load([bp-lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) <= 0x0 ? L_5c83 : L_5c3f
@@ -449,17 +433,16 @@ block L_5c83:
 block L_5c87:
   insts 349..350  off 0x5c87..0x5c8c
   preds: L_5c1a, L_5c83
-  succs: L_5bb2, L_5c22
+  succs: L_5bb2, L_5c8d
   effects:
     5c8b  branch load([bp-i]) >= 0x10 ? L_5bb2 : L_5c8d
 
 block L_5c8d:
   insts 351..351  off 0x5c8d..0x5c8f
+  preds: L_5c87
   succs: L_5c22
-
-block L_5c90:
-  insts 352..352  off 0x5c90..0x5c92
-  succs: L_5bb2
+  effects:
+    5c8d  goto L_5c22
 
 block L_5c93:
   insts 353..356  off 0x5c93..0x5c9b

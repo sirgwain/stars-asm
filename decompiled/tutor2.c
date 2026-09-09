@@ -1001,6 +1001,9 @@ L_5b50:
     pszOut = (pszOut + 0x1);
     iBuild = 0;
 
+L_5b66:
+    goto L_5ae7;
+
 L_5b69:
     *(pszOut) = 0;
     return (pszOut - pchOut);

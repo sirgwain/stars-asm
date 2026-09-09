@@ -177,9 +177,6 @@ L_53cb:                             ; parts.c:103
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_53d1:                             ; parts.c:105
-JMP       L_609c              
-
 L_53d4:                             ; parts.c:107
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -239,9 +236,6 @@ JZ        L_609c
 L_5456:                             ; parts.c:115
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_545c:                             ; parts.c:116
-JMP       L_609c              
 
 L_545f:                             ; parts.c:118
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -463,9 +457,6 @@ L_5659:                             ; parts.c:145
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_565f:                             ; parts.c:147
-JMP       L_609c              
-
 L_5662:                             ; parts.c:149
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -534,9 +525,6 @@ L_56f5:                             ; parts.c:158
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_56fb:                             ; parts.c:160
-JMP       L_609c              
-
 L_56fe:                             ; parts.c:162
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -597,9 +585,6 @@ L_5780:                             ; parts.c:170
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5786:                             ; parts.c:171
-JMP       L_609c              
-
 L_5789:                             ; parts.c:173
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -637,59 +622,49 @@ MOV       ax, 0xffff
 JMP       L_60b7              
 
 L_57db:                             ; parts.c:181
-MOV       ax, [bp-0x6]        
+MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
 JMP       L_5841              
-                                    ; parts.c:185
+
+L_57e4:                             ; parts.c:185
 CMP       [bp-raMajor], 0x0001      ; [bp-0x4], 0x0001
-JZ        L_57f3              
+JZ        L_609c              
 
 L_57ed:                             ; parts.c:186
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_57f3:                             ; parts.c:187
-JMP       L_5874              
-                                    ; parts.c:189
+L_57f6:                             ; parts.c:189
 CMP       [bp-raMajor], 0x0005      ; [bp-0x4], 0x0005
-JZ        L_5805              
+JZ        L_609c              
 
 L_57ff:                             ; parts.c:190
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5805:                             ; parts.c:191
-JMP       L_5874              
-                                    ; parts.c:193
+L_5808:                             ; parts.c:193
 CMP       [bp-raMajor], 0x0007      ; [bp-0x4], 0x0007
-JZ        L_5817              
+JZ        L_609c              
 
 L_5811:                             ; parts.c:194
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5817:                             ; parts.c:195
-JMP       L_5874              
-                                    ; parts.c:197
+L_581a:                             ; parts.c:197
 CMP       [bp-raMajor], 0x0000      ; [bp-0x4], 0x0000
-JZ        L_5829              
+JZ        L_609c              
 
 L_5823:                             ; parts.c:198
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5829:                             ; parts.c:199
-JMP       L_5874              
-                                    ; parts.c:203
+L_582c:                             ; parts.c:203
 CMP       [bp-raMajor], 0x0004      ; [bp-0x4], 0x0004
 JZ        L_609c              
 
 L_5835:                             ; parts.c:204
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_583b:                             ; parts.c:205
-JMP       L_609c              
 
 L_5841:
 CMP       ax, 0x0010          
@@ -698,27 +673,7 @@ JA        L_609c
 L_5849:
 SHL       ax, 0x0001          
 MOV       bx, ax              
-JMP       L_ffffffff          
-DW        0x57e4                    ; L_57e4
-DW        0x5874                    ; L_5874
-DW        0x5874                    ; L_5874
-DW        0x57e4                    ; L_57e4
-DW        0x5874                    ; L_5874
-DW        0x5874                    ; L_5874
-DW        0x5874                    ; L_5874
-DW        0x5874                    ; L_5874
-DW        0x582c                    ; L_582c
-DW        0x5874                    ; L_5874
-DW        0x5874                    ; L_5874
-DW        0x582c                    ; L_582c
-DW        0x5874                    ; L_5874
-DW        0x581a                    ; L_581a
-DW        0x57f6                    ; L_57f6
-DW        0x582c                    ; L_582c
-DW        0x5808                    ; L_5808
-
-L_5874:                             ; parts.c:208
-JMP       L_609c              
+JMP       cs:[bx+0x5852]      
 
 L_5877:                             ; parts.c:211
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -784,9 +739,6 @@ L_5900:                             ; parts.c:222
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5906:                             ; parts.c:224
-JMP       L_609c              
-
 L_5909:                             ; parts.c:226
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -844,9 +796,6 @@ L_5983:                             ; parts.c:235
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5989:                             ; parts.c:237
-JMP       L_609c              
-
 L_598c:
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -886,9 +835,6 @@ JNZ       L_609c
 L_59dc:                             ; parts.c:242
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_59e2:                             ; parts.c:245
-JMP       L_609c              
 
 L_59e5:                             ; parts.c:247
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -1002,9 +948,6 @@ JNZ       L_609c
 L_5ae0:                             ; parts.c:264
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_5ae6:                             ; parts.c:266
-JMP       L_609c              
 
 L_5ae9:                             ; parts.c:268
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -1132,9 +1075,6 @@ L_5c0b:                             ; parts.c:284
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5c11:                             ; parts.c:286
-JMP       L_609c              
-
 L_5c14:                             ; parts.c:288
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -1221,9 +1161,6 @@ L_5cd4:                             ; parts.c:298
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5cda:                             ; parts.c:300
-JMP       L_609c              
-
 L_5cdd:                             ; parts.c:302
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -1290,9 +1227,6 @@ L_5d6a:                             ; parts.c:310
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5d70:                             ; parts.c:311
-JMP       L_609c              
-
 L_5d73:                             ; parts.c:313
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -1328,9 +1262,6 @@ JZ        L_609c
 L_5dbf:                             ; parts.c:319
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_5dc5:                             ; parts.c:321
-JMP       L_609c              
 
 L_5dc8:                             ; parts.c:323
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -1401,9 +1332,6 @@ JZ        L_609c
 L_5e62:                             ; parts.c:334
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_5e68:                             ; parts.c:336
-JMP       L_609c              
 
 L_5e6b:                             ; parts.c:338
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
@@ -1536,9 +1464,6 @@ L_5f8e:                             ; parts.c:356
 MOV       ax, 0xffff          
 JMP       L_60b7              
 
-L_5f94:                             ; parts.c:358
-JMP       L_609c              
-
 L_5f97:                             ; parts.c:360
 MOV       ax, [bp-hs+0x2]           ; ax, [bp-0x6]
 AND       ax, 0x00ff          
@@ -1592,9 +1517,6 @@ JNZ       L_609c
 L_600d:                             ; parts.c:367
 MOV       ax, 0xffff          
 JMP       L_60b7              
-
-L_6013:                             ; parts.c:369
-JMP       L_609c              
 
 L_6019:
 CMP       ax, 0x0001          
@@ -1662,9 +1584,6 @@ JNZ       L_5287
 
 L_6096:
 JMP       L_5e6b              
-
-L_6099:
-JMP       L_5287              
 
 L_609c:                             ; parts.c:373
 MOV       bx, [bp+ppart]            ; bx, [bp+0x6]

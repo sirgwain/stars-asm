@@ -37,6 +37,7 @@ L_0056:
         goto L_005b;
 
 L_005b:
+    goto L_0018;
 
 L_0064:
     hdc = BeginPaint(hwnd, &(ps));
@@ -63,6 +64,9 @@ L_00a0:
 L_00cd:
     tutor.fProgress = 0x1;
     AdvanceTutor();
+
+L_00de:
+    goto L_0126;
 
 Default:
     return DefWindowProc(hwnd, message, wParam, lParam);
@@ -98,6 +102,7 @@ L_011b:
         goto L_0120;
 
 L_0120:
+    goto L_0096;
 
 L_0126:
     return 0;
@@ -107,17 +112,23 @@ int16_t FIsPopupHullType(int16_t ishdef) {
     uint16_t imd;
 
 L_0148:
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_0166 : L_015b */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_0166;
+    else
+        goto L_015b;
 
 L_015b:
-    /* untranslated: branch part[0xa:2](GlobalPD) != 0xff ? L_016c : L_0166 */
+    if ((GlobalPD.grbit != 0xff))
+        goto L_016c;
+    else
+        goto L_0166;
 
 L_0166:
     return 1;
 
 L_016c:
     /* untranslated: imd = LphuldefFromId(rglpshdef[[part[0x2:4](GlobalPD)+0x2]][ishdef].hul.ihuldef)->imdCategory */
-    /* untranslated: return (mpimdgrbitBU[imd] & part[0xa:2](GlobalPD)) */
+    return (mpimdgrbitBU[imd] & GlobalPD.grbit);
 }
 
 void DrawPopup(HWND hwnd, HDC hdc) {
@@ -147,9 +158,8 @@ L_01c0:
     GetClientRect(hwnd, &(rc));
     goto L_0c14;
 
-L_0228:
-    goto L_0c44;
-    /* untranslated: call CtrTextOut(hdc, (rc.right >> 0x1), 4, rgszMinerals[part[0x2:4](GlobalPD)], 0) -> callresult(void) */
+L_022b:
+    /* untranslated: call CtrTextOut(hdc, (rc.right sar 0x1), 4, rgszMinerals[part[0x2:4](GlobalPD)], 0) -> callresult(void) */
     SelectObject(hdc, rghfontArial8[0]);
     psz = PszGetCompressedString(idsMineralConcentration);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4);
@@ -160,10 +170,13 @@ L_02c9:
     /* untranslated: branch part[0xc:2](GlobalPD) > 0x0 ? L_02d8 : L_02ce */
 
 L_02ce:
-    /* untranslated: branch part[0xa:2](GlobalPD) < 0x0 ? L_02fc : L_02d8 */
+    if ((GlobalPD.grbit < 0x0))
+        goto L_02fc;
+    else
+        goto L_02d8;
 
 L_02d8:
-    /* untranslated: c = _wsprintf(szWork, "%ldkT", part[0xa:2](GlobalPD), part[0xc:2](GlobalPD)) */
+    /* untranslated: c = _wsprintf(szWork, "%ldkT", GlobalPD.grbit, part[0xc:2](GlobalPD)) */
     goto L_0324;
 
 L_02fc:
@@ -219,13 +232,16 @@ L_03d9:
 L_03dc:
     c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(t_merge_03dc_0001)));
 
+L_03fe:
+    goto L_0423;
+
 L_0401:
     c = _wsprintf(szWork, PszGetCompressedString(idsUnknown2));
 
 L_0423:
     TextOut(hdc, dx, ((dyArial8 * 2) + 0x4), szWork, c);
     if ((HIWORD(GlobalPD.rgi[0x4]) < 0x0))
-        goto L_04d9;
+        goto L_0c44;
     else
         goto L_044b;
 
@@ -237,7 +253,7 @@ L_044b:
 
 L_0450:
     if ((LOWORD(GlobalPD.rgi[0x4]) < 0x0))
-        goto L_04d9;
+        goto L_0c44;
     else
         goto L_045a;
 
@@ -249,10 +265,14 @@ L_045a:
 
 L_04d9:
     goto L_0c44;
+
+L_04dc:
     CtrTextOut(hdc, (rc.right >> 0x1), 4, PszPlayerName(HIWORD(GlobalPD), 1, 1, 1, 0, 0x0), 0);
     c = _wsprintf(szWork, PszGetCompressedString(idsPlayerD), (HIWORD(GlobalPD) + 0x1));
     CtrTextOut(hdc, (rc.right >> 0x1), (dyArial8 + 4), szWork, c);
     goto L_0c44;
+
+L_0561:
     if (((rc.bottom - rc.top) >= (dyArial8 * 2)))
         goto L_05b0;
     else
@@ -286,7 +306,10 @@ L_0690:
     /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 2))] <= 0x0 ? L_08cd : L_06af */
 
 L_06af:
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_06cc : L_06b9 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_06cc;
+    else
+        goto L_06b9;
 
 L_06b9:
     if ((FIsPopupHullType(i) == 0))
@@ -357,13 +380,15 @@ L_08d1:
         goto L_08da;
 
 L_08da:
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_08f4 : L_08e4 */
+    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_0c44 : L_08e4 */
 
 L_08e4:
     SetTextColor(hdc, 0x0);
 
 L_08f4:
     goto L_0c44;
+
+L_08f7:
     psz = PszGetCompressedString(idsPlanet);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4);
     SelectObject(hdc, rghfontArial8[1]);
@@ -381,20 +406,36 @@ L_08f4:
     c = _wsprintf(szWork, PCTD, sel.scan.pt.y);
     TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 0x4), szWork, c);
     goto L_0c44;
+
+L_0ad0:
     PtDisplayPlanetStateInfo(hdc, 1);
     goto L_0c44;
+
+L_0ae2:
     PtDisplayZipOrdInfo(hdc, (rc.right >> 0x1), 1);
     goto L_0c44;
+
+L_0afa:
     PtDisplayPlanetPopInfo(hdc, 1);
     goto L_0c44;
+
+L_0b0c:
     PtDisplayFactoryMineInfo(hdc, rc.right, 1);
     goto L_0c44;
+
+L_0b21:
     PtDisplayResourceInfo(hdc, rc.right, 1);
     goto L_0c44;
+
+L_0b36:
     DisplayComponentInfo(hdc, rc.right, rc.bottom, HIWORD(GlobalPD));
     goto L_0c44;
+
+L_0b4e:
     PtDisplayString(hdc, rc.right, 1);
     goto L_0c44;
+
+L_0b63:
     /* untranslated: branch [part[0x2:4](GlobalPD)] < 0x20 ? L_0b76 : L_0b70 */
 
 L_0b70:
@@ -418,12 +459,41 @@ L_0b79:
 
 L_0c14:
     if (((GlobalPD.grPopup - 1) > 0xd))
-        goto L_0228;
+        goto L_0c44;
     else
         goto L_0c1f;
 
 L_0c1f:
-    goto L_ffffffff;
+    switch (((GlobalPD.grPopup - 1) * 0x2)) {
+    case 0x0:
+        goto L_022b;
+    case 0x2:
+        goto L_04dc;
+    case 0x4:
+        goto L_0561;
+    case 0x6:
+        goto L_08f7;
+    case 0x8:
+        goto L_0ad0;
+    case 0xa:
+        goto L_0ae2;
+    case 0xc:
+        goto L_0afa;
+    case 0xe:
+        goto L_0b0c;
+    case 0x10:
+        goto L_0b36;
+    case 0x12:
+        goto L_0b4e;
+    case 0x14:
+        goto L_0b63;
+    case 0x16:
+        goto L_0b21;
+    case 0x18:
+        goto L_0c44;
+    case 0x1a:
+        goto L_0b63;
+    }
 
 L_0c44:
     SelectObject(hdc, hfontSav);
@@ -479,13 +549,12 @@ L_0c7c:
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     goto L_11f5;
 
-L_0cc0:
-    goto L_1225;
+L_0cc3:
     psz = PszGetCompressedString(idsMineralConcentration0000000kt);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8);
     dy = (LOWORD((0x3 * dyArial8)) + 8);
     if ((HIWORD(GlobalPD.rgi[0x4]) < 0x0))
-        goto L_0d1f;
+        goto L_1225;
     else
         goto L_0d0a;
 
@@ -497,7 +566,7 @@ L_0d0a:
 
 L_0d0f:
     if ((LOWORD(GlobalPD.rgi[0x4]) < 0x0))
-        goto L_0d1f;
+        goto L_1225;
     else
         goto L_0d19;
 
@@ -506,6 +575,8 @@ L_0d19:
 
 L_0d1f:
     goto L_1225;
+
+L_0d22:
     SelectObject(hdc, rghfontArial8[1]);
     psz = PszPlayerName(HIWORD(GlobalPD), 1, 1, 1, 0, 0x0);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8);
@@ -521,6 +592,8 @@ L_0d96:
 L_0d9c:
     dy = ((dyArial8 * 2) + 8);
     goto L_1225;
+
+L_0daa:
     dxR = 0;
     dxDamage = 0;
     dy = (dyArial8 + 8);
@@ -535,7 +608,10 @@ L_0e0a:
     /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 2))] <= 0x0 ? L_0f77 : L_0e29 */
 
 L_0e29:
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_0e46 : L_0e33 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_0e46;
+    else
+        goto L_0e33;
 
 L_0e33:
     if ((FIsPopupHullType(i) == 0))
@@ -616,6 +692,8 @@ L_0fbf:
     /* untranslated: part[0x8:2](GlobalPD) = dxDamage */
     dx = (((dxL + dxR) + 16) + dxDamage);
     goto L_1225;
+
+L_0fd7:
     SelectObject(hdc, rghfontArial8[1]);
     dy = ((dyArial8 * 4) + 8);
     psz = PszGetCompressedString(idsPlanet);
@@ -639,22 +717,32 @@ L_1089:
 L_108c:
     dx = (dx + t_merge_108c_0001);
     goto L_1225;
+
+L_1092:
     t_call_1099 = PtDisplayPlanetStateInfo(hdc, 0);
     ptT.x = LOWORD(t_call_1099);
     ptT.y = HIWORD(t_call_1099);
     goto SetDxDy;
+
+L_10aa:
     t_call_10b5 = PtDisplayZipOrdInfo(hdc, 0, 0);
     ptT.x = LOWORD(t_call_10b5);
     ptT.y = HIWORD(t_call_10b5);
     goto SetDxDy;
+
+L_10c6:
     t_call_10cd = PtDisplayPlanetPopInfo(hdc, 0);
     ptT.x = LOWORD(t_call_10cd);
     ptT.y = HIWORD(t_call_10cd);
     goto SetDxDy;
+
+L_10de:
     t_call_10e9 = PtDisplayResourceInfo(hdc, 200, 0);
     ptT.x = LOWORD(t_call_10e9);
     ptT.y = HIWORD(t_call_10e9);
     goto SetDxDy;
+
+L_10fa:
     t_call_1105 = PtDisplayFactoryMineInfo(hdc, 200, 0);
     ptT.x = LOWORD(t_call_1105);
     ptT.y = HIWORD(t_call_1105);
@@ -663,6 +751,8 @@ SetDxDy:
     dx = (ptT.x + 2);
     dy = (ptT.y + 2);
     goto L_1225;
+
+L_1128:
     if ((dyArial8 <= 14))
         goto L_1138;
     else
@@ -679,10 +769,14 @@ L_113b:
     dx = (t_merge_113b_0001 + 344);
     dy = (((dyArial10 + 72) + LOWORD((0xc * dyArial8))) + 6);
     goto L_1225;
+
+L_115a:
     t_call_1165 = PtDisplayString(hdc, HIWORD(GlobalPD), 0);
     ptT.x = LOWORD(t_call_1165);
     ptT.y = HIWORD(t_call_1165);
     goto SetDxDy;
+
+L_1176:
     if ((GlobalPD.grPopup != grPopupShdef))
         goto L_1186;
     else
@@ -702,13 +796,13 @@ L_1189:
     dx = 340;
     dy = (((dyArial8 + 306) + LOWORD((0x6 * dyArial8))) + 8);
     if ((gd.mdScreenSize <= 0x0))
-        goto L_11e2;
+        goto L_1225;
     else
         goto L_11ce;
 
 L_11ce:
     if ((GlobalPD.grPopup != grPopupShdef))
-        goto L_11e2;
+        goto L_1225;
     else
         goto L_11d8;
 
@@ -717,18 +811,49 @@ L_11d8:
 
 L_11e2:
     goto L_1225;
+
+L_11e5:
     dx = 120;
     dy = 80;
     goto L_1225;
 
 L_11f5:
     if (((GlobalPD.grPopup - 1) > 0xd))
-        goto L_0cc0;
+        goto L_1225;
     else
         goto L_1200;
 
 L_1200:
-    goto L_ffffffff;
+    switch (((GlobalPD.grPopup - 1) * 0x2)) {
+    case 0x0:
+        goto L_0cc3;
+    case 0x2:
+        goto L_0d22;
+    case 0x4:
+        goto L_0daa;
+    case 0x6:
+        goto L_0fd7;
+    case 0x8:
+        goto L_1092;
+    case 0xa:
+        goto L_10aa;
+    case 0xc:
+        goto L_10c6;
+    case 0xe:
+        goto L_10fa;
+    case 0x10:
+        goto L_1128;
+    case 0x12:
+        goto L_115a;
+    case 0x14:
+        goto L_1176;
+    case 0x16:
+        goto L_10de;
+    case 0x18:
+        goto L_11e5;
+    case 0x1a:
+        goto L_1176;
+    }
 
 L_1225:
     SelectObject(hdc, hfontSav);
@@ -952,7 +1077,7 @@ L_1510:
     psz = PszGetPlanetName(LOWORD(rgids[i]));
 
 L_152e:
-    pszT = &(szTemp);
+    pszT = szTemp;
 
 L_1536:
     if (((uint16_t)(*(psz)) == 0))
@@ -973,6 +1098,9 @@ L_1564:
     pszT = (pszT + 0x1);
     *(pszT) = 38;
 
+L_1570:
+    goto L_1536;
+
 L_1573:
     *(pszT) = 0;
     if ((i != iChecked))
@@ -989,6 +1117,9 @@ L_158f:
 
 L_1592:
     AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 15000), szTemp);
+
+L_15aa:
+    goto L_1883;
 
 L_15ad:
     if ((rgsz[i] != 0x0))
@@ -1020,9 +1151,7 @@ L_1608:
     if ((rgsz[i] == 0x0))
         goto L_1743;
     else
-        goto L_1617;
-
-L_1617:
+        goto L_161d;
 
 L_161d:
     if ((rgids != 0x0))
@@ -1068,7 +1197,7 @@ L_168d:
     goto L_1734;
 
 L_16a9:
-    pszT = &(szTemp);
+    pszT = szTemp;
     psz = rgsz[i];
 
 L_16c1:
@@ -1089,6 +1218,9 @@ L_16d0:
 L_16ef:
     pszT = (pszT + 0x1);
     *(pszT) = 38;
+
+L_16fb:
+    goto L_16c1;
 
 L_16fe:
     *(pszT) = 0;
@@ -1150,7 +1282,7 @@ L_17a0:
     goto L_1883;
 
 L_17bc:
-    pszT = &(szTemp);
+    pszT = szTemp;
     psz = rgsz[i];
 
 L_17d4:
@@ -1171,6 +1303,9 @@ L_17e3:
 L_1802:
     pszT = (pszT + 0x1);
     *(pszT) = 38;
+
+L_180e:
+    goto L_17d4;
 
 L_1811:
     *(pszT) = 0;
@@ -1421,7 +1556,7 @@ L_1d8b:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsTo), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), part[0xa:2](GlobalPD)), 0, fPrint) -> callresult(int16_t) */
+    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), GlobalPD.grbit), 0, fPrint) -> callresult(int16_t) */
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, 0xc1a, 1, fPrint);
     if ((x <= xMax))
@@ -1450,20 +1585,23 @@ L_1ebf:
     /* untranslated: branch part[0x6:2](GlobalPD) >= part[0xc:2](GlobalPD) ? L_1ef7 : L_1ed0 */
 
 L_1ed0:
-    /* untranslated: branch part[0xa:2](GlobalPD) <= part[0x6:2](GlobalPD) ? L_1f1b : L_1edc */
+    /* untranslated: branch GlobalPD.grbit <= part[0x6:2](GlobalPD) ? L_1f1b : L_1edc */
 
 L_1edc:
-    /* untranslated: branch part[0xc:2](GlobalPD) >= part[0xa:2](GlobalPD) ? L_1eee : L_1ee8 */
+    /* untranslated: branch part[0xc:2](GlobalPD) >= GlobalPD.grbit ? L_1eee : L_1ee8 */
 
 L_1ee8:
     /* untranslated: t_merge_1ef1_0001 = part[0xc:2](GlobalPD) */
     goto L_1ef1;
 
 L_1eee:
-    /* untranslated: t_merge_1ef1_0001 = part[0xa:2](GlobalPD) */
+    t_merge_1ef1_0001 = GlobalPD.grbit;
 
 L_1ef1:
     iNewVal = t_merge_1ef1_0001;
+
+L_1ef4:
+    goto L_1f1b;
 
 L_1ef7:
     /* untranslated: branch part[0x8:2](GlobalPD) >= part[0x6:2](GlobalPD) ? L_1f1b : L_1f03 */
@@ -1691,9 +1829,7 @@ L_25c7:
     if ((pl.det < 0x3))
         goto AfterDesire;
     else
-        goto L_25df;
-
-L_25df:
+        goto L_25e5;
 
 L_25e5:
     lMax = CalcPlanetMaxPop(HIWORD(GlobalPD), idPlayer);
@@ -1735,6 +1871,9 @@ L_2746:
 
 L_2771:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonistsSettleEveryTurn), 0, fPrint);
+
+L_2799:
+    goto L_2a58;
 
 L_279c:
     if ((pl.iPlayer != idPlayer))
@@ -1945,7 +2084,7 @@ L_2ca2:
 L_2cb9:
     psz = PszGetCompressedString(idsHasPlanetaryDefensesApproximatelyDCoverage);
     c = _wsprintf(szT, psz, (LOWORD((pl.uDefGuess * 0x6)) + 0x3));
-    psz = &(szT);
+    psz = szT;
 
 L_2d01:
     WrapTextOut(hdc, &(x), &(y), psz, c, 4, xMax, 0x0, 0, fPrint);
@@ -2121,7 +2260,10 @@ L_3110:
     xMax = 4;
     x = 4;
     y = 2;
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_314e : L_3141 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_314e;
+    else
+        goto L_3141;
 
 L_3141:
     pszType = 0xc2d;
@@ -2153,7 +2295,10 @@ L_31b8:
 
 L_31e2:
     SelectObject(hdc, rghfontArial8[0]);
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_31fe : L_31f8 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_31fe;
+    else
+        goto L_31f8;
 
 L_31f8:
     t_merge_3201_0001 = idsRaceIncapableBuildingFactories;
@@ -2174,10 +2319,14 @@ L_323c:
 L_3244:
     SelectObject(hdc, rghfontArial8[1]);
     goto L_32f6;
+
+L_3256:
     SelectObject(hdc, rghfontArial8[0]);
     psz = PszGetCompressedString(ids);
     ids = (ids + 1);
     goto L_3319;
+
+L_3277:
     /* untranslated: cnt = part[0x6:2](GlobalPD) */
 
 SetQuan:
@@ -2195,17 +2344,49 @@ L_328e:
 
 L_3293:
     /* untranslated: call _wsprintf(szWork, "%d %s", cnt, &dword ds:[t_merge_3293_0001]) -> callresult(int16_t) */
-    psz = &(szWork);
+    psz = szWork;
     goto L_3319;
+
+L_32b6:
     psz = PszGetPlanetName(HIWORD(GlobalPD));
     goto L_3319;
+
+L_32c8:
     /* untranslated: cnt = part[0x4:2](GlobalPD) */
     goto SetQuan;
+
+L_32d1:
     /* untranslated: call _wsprintf(szWork, PCTD, part[0x8:2](GlobalPD)) -> callresult(int16_t) */
-    psz = &(szWork);
+    psz = szWork;
     goto L_3319;
 
 L_32f6:
+    if ((i > 8))
+        goto L_3319;
+    else
+        goto L_32fe;
+
+L_32fe:
+    switch ((i * 2)) {
+    case 0x0:
+        goto L_3256;
+    case 0x2:
+        goto L_3277;
+    case 0x4:
+        goto L_3256;
+    case 0x6:
+        goto L_32b6;
+    case 0x8:
+        goto L_3256;
+    case 0xa:
+        goto L_32c8;
+    case 0xc:
+        goto L_3256;
+    case 0xe:
+        goto L_32d1;
+    case 0x10:
+        goto L_3256;
+    }
 
 L_3319:
     WrapTextOut(hdc, &(x), &(y), psz, 0, 4, dx, &(xMax), 0, fPrint);
@@ -2275,40 +2456,76 @@ L_3416:
 L_3427:
     SelectObject(hdc, rghfontArial8[1]);
     goto L_34d6;
-    /* untranslated: branch part[0x6:2](GlobalPD) == part[0x4:2](GlobalPD) ? L_3536 : L_3442 */
 
-L_3442:
+L_3439:
+    /* untranslated: branch part[0x6:2](GlobalPD) == part[0x4:2](GlobalPD) ? L_3536 : L_3448 */
 
 L_3448:
     SelectObject(hdc, rghfontArial8[0]);
     psz = PszGetCompressedString(ids);
     ids = (ids + 1);
     goto L_34fb;
+
+L_3469:
     /* untranslated: cnt = part[0x4:2](GlobalPD) */
 
 SetQuan:
     _wsprintf(szWork, PCTD, cnt);
-    psz = &(szWork);
+    psz = szWork;
     goto L_34fb;
+
+L_3490:
     psz = PszGetPlanetName(HIWORD(GlobalPD));
     goto L_34fb;
+
+L_34a2:
     /* untranslated: cnt = (part[0x4:2](GlobalPD) - part[0x6:2](GlobalPD)) */
     if ((cnt > 0))
         goto SetQuan;
     else
-        goto L_34b2;
-
-L_34b2:
+        goto L_34b8;
 
 L_34b8:
     psz = PszGetCompressedString(idsNone2);
     goto L_34fb;
+
+L_34ca:
     /* untranslated: cnt = part[0x6:2](GlobalPD) */
     goto SetQuan;
 
 L_34d6:
+    if ((i > 9))
+        goto L_34fb;
+    else
+        goto L_34de;
+
+L_34de:
+    switch ((i * 2)) {
+    case 0x0:
+        goto L_3490;
+    case 0x2:
+        goto L_3448;
+    case 0x4:
+        goto L_3469;
+    case 0x6:
+        goto L_3448;
+    case 0x8:
+        goto L_34a2;
+    case 0xa:
+        goto L_3448;
+    case 0xc:
+        goto L_3439;
+    case 0xe:
+        goto L_34ca;
+    case 0x10:
+        goto L_3448;
+    case 0x12:
+        goto L_3448;
+    }
 
 L_34fb:
+    WrapTextOut(hdc, &(x), &(y), psz, 0, 4, dx, &(xMax), 0, fPrint);
+    i = (i + 1);
 
 L_352b:
     if ((i <= iMax))

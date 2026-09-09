@@ -80,6 +80,14 @@ func (w *semRewriter) rewriteEffectChildren(effect Effect) (Effect, bool) {
 		next := *e
 		next.Cond = cond
 		return &next, true
+	case *TableJump:
+		index, changed := w.rewriteExpr(e.Index)
+		if !changed {
+			return effect, false
+		}
+		next := *e
+		next.Index = index
+		return &next, true
 	case *Return:
 		value, changed := w.rewriteExpr(e.Value)
 		if !changed {
@@ -103,14 +111,16 @@ func (w *semRewriter) rewriteCall(call *Call, meta machine.Meta) (*Call, bool) {
 	return w.rewriteCallChildren(call)
 }
 
-// rewriteCallChildren rewrites only the direct argument children of a call.
+// rewriteCallChildren rewrites the target and arguments of a call.
 func (w *semRewriter) rewriteCallChildren(call *Call) (*Call, bool) {
 	args, changed := w.rewriteExprs(call.Args)
-	if !changed {
+	target, targetChanged := w.rewriteExpr(call.Target)
+	if !changed && !targetChanged {
 		return call, false
 	}
 	next := *call
 	next.Args = args
+	next.Target = target
 	return &next, true
 }
 
@@ -378,6 +388,8 @@ func walkEffect(effect Effect, visit exprVisitor) {
 	case *Branch:
 		walkExpr(e.Cond, visit)
 
+	case *TableJump:
+		walkExpr(e.Index, visit)
 	case *Return:
 		walkExpr(e.Value, visit)
 	}

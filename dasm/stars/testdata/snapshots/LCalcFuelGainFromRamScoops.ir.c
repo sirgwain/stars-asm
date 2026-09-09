@@ -42,9 +42,7 @@ L_5738:
     if ((iWarp > 9))
         goto L_56fe;
     else
-        goto L_5766;
-
-L_5766:
+        goto L_576c;
 
 L_576c:
     if ((rgiFuel[iWarp] != 0))
@@ -90,6 +88,9 @@ L_5836:
 
 L_5852:
     pct10 = (pct10 + (uint32_t)((pctShip10 * (uint32_t)(lpfl->rgcsh[i]))));
+
+L_587d:
+    goto L_56fe;
 
 L_5880:
     pct10 = (uint32_t)((pct10 * dTravel));

@@ -83,6 +83,14 @@
   ],
   "function_path_facts": [
     {
+      "func": "CalcPctSurvive",
+      "root": "part",
+      "type": "PART",
+      "path": ["hs", "grhst"],
+      "enum": "HullSlotType",
+      "value": "hstPlanetary"
+    },
+    {
       "func": "DropSalvage",
       "root": "lpth",
       "type": "THING",
@@ -107,6 +115,22 @@
       "value": "ithMineralPacket"
     },
     {
+      "func": "FGetBestDefensePart",
+      "root": "part",
+      "type": "PART",
+      "path": ["hs", "grhst"],
+      "enum": "HullSlotType",
+      "value": "hstPlanetary"
+    },
+    {
+      "func": "MysteryTrader",
+      "root": "lpth",
+      "type": "THING",
+      "path": ["ith"],
+      "enum": "ThingType",
+      "value": "ithMysteryTrader"
+    },
+    {
       "func": "SatisfyOrders",
       "root": "lpth",
       "type": "THING",
@@ -121,22 +145,6 @@
       "path": ["ith"],
       "enum": "ThingType",
       "value": "ithMinefield"
-    },
-    {
-      "func": "MysteryTrader",
-      "root": "lpth",
-      "type": "THING",
-      "path": ["ith"],
-      "enum": "ThingType",
-      "value": "ithMysteryTrader"
-    },
-    {
-      "func": "CalcPctSurvive",
-      "root": "part",
-      "type": "PART",
-      "path": ["hs", "grhst"],
-      "enum": "HullSlotType",
-      "value": "hstPlanetary"
     }
   ],
   "call_result_path_facts": [
@@ -188,7 +196,7 @@
       "all_elements": true,
       "type": "XFER",
       "value": "grobjFleet"
-    }    
+    }
   ],
   "external_discriminator_aliases": [
     {

@@ -73,6 +73,9 @@ L_03bf:
 L_041a:
     *(ppctSmart) = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 2000)), (double)(cDefenses));
 
+L_0470:
+    goto L_047e;
+
 L_0473:
     pct = 1;
 

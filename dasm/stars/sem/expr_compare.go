@@ -110,6 +110,18 @@ func sameExpr(a, b Expr) bool {
 	case *Words:
 		bv, ok := b.(*Words)
 		return ok && sameExprs(av.Words, bv.Words)
+	case *Merge:
+		bv, ok := b.(*Merge)
+		if !ok || av.Join != bv.Join || !typeinfo.Equals(av.TypeInfo, bv.TypeInfo) || len(av.Arms) != len(bv.Arms) {
+			return false
+		}
+		for i, arm := range av.Arms {
+			other := bv.Arms[i]
+			if arm.Block != other.Block || !typeinfo.Equals(arm.Value.ExprType(), other.Value.ExprType()) || !sameExpr(arm.Value, other.Value) {
+				return false
+			}
+		}
+		return true
 	case *RawValue:
 		bv, ok := b.(*RawValue)
 		return ok && machine.ValueEquals(av.Value, bv.Value)

@@ -266,3 +266,46 @@ func equalBlockIDs(a []machine.BlockID, b []machine.BlockID) bool {
 	}
 	return true
 }
+
+// TestLowerMergesSplitsRepeatedTableEdges verifies all cases sharing an edge
+// are redirected together, preserving the table and its computed index.
+func TestLowerMergesSplitsRepeatedTableEdges(t *testing.T) {
+	cfg := cfgForReturnSinkTest(t, []asm.DecodedInst{
+		{Off: 0x1000, Len: 4, Op: asm.OpJMP, Mnemonic: "JMP", Target: -1,
+			Src: asm.Operand{Kind: asm.OKMem, Mem: asm.MemRef{Base: asm.RegBX, SegOverride: asm.RegCS, Disp: 0x1004, MemSize: 2}}},
+		{Off: 0x1004, Len: 2, Op: asm.OpDW, Mnemonic: "DW", Target: 0x1010},
+		{Off: 0x1006, Len: 2, Op: asm.OpDW, Mnemonic: "DW", Target: 0x1020},
+		{Off: 0x1008, Len: 2, Op: asm.OpDW, Mnemonic: "DW", Target: 0x1010},
+		jmpForReturnSinkTest(0x1010, 0x1020),
+		retForReturnSinkTest(0x1020),
+	})
+	index := testLocal("index", typeinfo.U16)
+	jump := &TableJump{Index: index, Targets: []machine.BlockID{0x1010, 0x1020, 0x1010}}
+	fn := &Func{CFG: cfg, Blocks: []Block{
+		{ID: 0x1000, Effects: []Effect{jump}},
+		{ID: 0x1010, Effects: []Effect{&Jump{To: 0x1020}}},
+		{ID: 0x1020, Effects: []Effect{&Return{Value: &Merge{Join: 0x1020, TypeInfo: typeinfo.U16, Arms: []MergeArm{
+			{Block: 0x1000, Value: testConst(1)}, {Block: 0x1010, Value: testConst(2)},
+		}}}}},
+	}}
+	if !(&lowerMergesProcessor{}).ProcessFunc(nil, fn) {
+		t.Fatal("merge was not lowered")
+	}
+	next := fn.Blocks[0].Effects[0].(*TableJump)
+	if next.Index != index || next.Targets[0] != 0x1010 || next.Targets[2] != 0x1010 || next.Targets[1] == 0x1020 {
+		t.Fatalf("retargeted table = %#v", next)
+	}
+	if cfg.Block(next.Targets[1]) == nil {
+		t.Fatal("missing split block")
+	}
+	// Exercise a split on an edge with repeated table entries as well.
+	block := &fn.Blocks[0]
+	if !retargetTerminatorEdge(block, 0x1010, 0x1030) {
+		t.Fatal("table edge was not retargeted")
+	}
+	repeated := block.Effects[0].(*TableJump)
+	if repeated.Targets[0] != 0x1030 || repeated.Targets[2] != 0x1030 || jump.Targets[0] != 0x1010 {
+		t.Fatal("duplicate edges or original table were corrupted")
+	}
+	assertMergeAnalysisZero(t, fn)
+}

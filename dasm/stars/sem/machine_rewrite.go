@@ -86,6 +86,13 @@ func (w *machineRewriter) rewriteMachineEffectChildren(effect machine.Effect) (m
 		}
 		e.Predicate = predicate
 		return e, true
+	case machine.TableJumpEffect:
+		index, changed := w.rewriteMachineValue(e.Index)
+		if !changed {
+			return effect, false
+		}
+		e.Index = index
+		return e, true
 	case machine.ReturnEffect:
 		value, changed := w.rewriteMachineValue(e.Value)
 		if !changed {

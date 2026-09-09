@@ -32,6 +32,32 @@ func (p *resolveLateAddressesProcessor) ProcessBlock(result *Result, f Func, b B
 // rewriter returns the lvalue rewrite used for late typed address recovery.
 func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 	return &semRewriter{
+		effect: func(w *semRewriter, effect Effect) (Effect, bool, bool) {
+			assign, ok := effect.(*Assign)
+			if !ok {
+				return effect, false, false
+			}
+			next := *assign
+			next.Src = recoverExpectedValue(assign.Src, assign.Dst.ExprType())
+			rewritten, changed := w.rewriteEffectChildren(&next)
+			return rewritten, changed || next.Src != assign.Src, true
+		},
+		call: func(w *semRewriter, call *Call, meta machine.Meta) (*Call, bool, bool) {
+			if call.Function == nil {
+				return call, false, false
+			}
+			next := *call
+			next.Args = append([]Expr(nil), call.Args...)
+			changed := false
+			for i, arg := range next.Args {
+				if i < len(call.Params) {
+					next.Args[i] = recoverExpectedValue(arg, call.Params[i].Type)
+					changed = changed || next.Args[i] != arg
+				}
+			}
+			rewritten, childChanged := w.rewriteCallChildren(&next)
+			return rewritten, changed || childChanged, true
+		},
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			address, ok := expr.(*AddressOf)
 			if !ok {
@@ -47,6 +73,13 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 		},
 		lvalue: func(w *semRewriter, value LValue) (LValue, bool, bool) {
 			value, childChanged := w.rewriteLValueChildren(value)
+			if part, ok := value.(*Part); ok && part.Width > 0 && part.TypeInfo != nil {
+				converter := machineConverter{ctx: p.ctx}
+				expected := &typeinfo.Pointer{Elem: part.TypeInfo, Class: typeinfo.PtrNear}
+				if target, ok := converter.typedAddressTarget(part.Base, part.ByteOff, expected); ok && target.ExprType().Bytes() == part.Width {
+					return target, true, true
+				}
+			}
 			memory, ok := value.(*Memory)
 			if !ok {
 				return value, childChanged, true
@@ -64,10 +97,16 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 // of a typed subobject after wide pointer reconstruction.
 func (p *resolveLateAddressesProcessor) resolveAddressOfPart(address *AddressOf) (Expr, bool) {
 	part, ok := address.Target.(*Part)
-	if !ok || part.Width != 0 {
+	if !ok {
 		return nil, false
 	}
-	if typeinfo.IsPointer(part.Base.ExprType()) {
+	converter := machineConverter{ctx: p.ctx}
+	if part.Width == 0 && typeinfo.IsPointer(part.Base.ExprType()) {
+		ptr := part.Base.ExprType().(*typeinfo.Pointer)
+		base := &Deref{Pointer: part.Base, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
+		if target, ok := converter.typedAddressTarget(base, part.ByteOff, address.TypeInfo); ok {
+			return objectAddress(target, 0, address.TypeInfo), true
+		}
 		if projected, ok := projectPointerAddress(part.Base, part.ByteOff, nil); ok {
 			return projected, true
 		}
@@ -82,16 +121,13 @@ func (p *resolveLateAddressesProcessor) resolveAddressOfPart(address *AddressOf)
 		}
 		return &PointerOffset{Pointer: part.Base, Offset: offset, TypeInfo: address.TypeInfo}, true
 	}
-	converter := machineConverter{ctx: p.ctx}
-	projected, ok := converter.consumeAddressProjection(AddressExpr{Base: part.Base, Offset: part.ByteOff}, 0)
-	if !ok {
+	if target, ok := converter.typedAddressTarget(part.Base, part.ByteOff, address.TypeInfo); ok {
+		return objectAddress(target, 0, address.TypeInfo), true
+	}
+	if part.Width != 0 {
 		return nil, false
 	}
-	target, ok := projected.(LValue)
-	if !ok {
-		return nil, false
-	}
-	return &AddressOf{Target: target, TypeInfo: address.TypeInfo}, true
+	return objectAddress(part.Base, part.ByteOff, address.TypeInfo), true
 }
 
 // resolveMemory normalizes one semantic effective address and projects it

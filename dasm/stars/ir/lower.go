@@ -33,6 +33,10 @@ func Lower(src sem.Func, fn *typeinfo.Function) Func {
 		out.Locals = append(out.Locals, Local{Name: v.Name, Type: v.Type})
 	}
 
+	for _, v := range src.RecoveredLocals {
+		out.Locals = append(out.Locals, Local{Name: v.Name, Type: v.Type})
+	}
+
 	for _, b := range src.Blocks {
 		block := Block{ID: b.ID, Label: b.ID.String(), StartOff: uint32(b.ID)}
 		if src.CFG != nil {
@@ -77,6 +81,15 @@ func (l *lowerer) lowerEffect(effect sem.Effect) Stmt {
 		if ok {
 			return &IfGoto{Cond: cond, TrueLabel: l.blockLabel(e.TrueBlock), FalseLabel: l.blockLabel(e.FalseBlock)}
 		}
+	case *sem.TableJump:
+		index, ok := l.lowerExpr(e.Index)
+		if ok {
+			labels := make([]string, len(e.Targets))
+			for i, target := range e.Targets {
+				labels[i] = l.blockLabel(target)
+			}
+			return &TableJump{Index: index, Labels: labels}
+		}
 	case *sem.Jump:
 		return &Goto{Label: l.blockLabel(e.To)}
 	case *sem.Return:
@@ -112,6 +125,8 @@ func semanticEffectKind(effect sem.Effect) string {
 		return "call"
 	case *sem.Branch:
 		return "branch"
+	case *sem.TableJump:
+		return "tablejump"
 	case *sem.Jump:
 		return "jump"
 	case *sem.Return:
@@ -143,6 +158,8 @@ func unsupportedEffectFailures(effect sem.Effect) []LowerFailure {
 		}
 	case *sem.Branch:
 		collectUnsupportedExpr(e.Cond, "branch.cond", &failures)
+	case *sem.TableJump:
+		collectUnsupportedExpr(e.Index, "tablejump.index", &failures)
 	case *sem.Return:
 		collectUnsupportedExpr(e.Value, "return.value", &failures)
 	case *sem.RawEffect:
@@ -426,6 +443,20 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok {
 			return nil, false
 		}
+		if e.Width == 1 && e.ByteOff >= 0 && e.ByteOff < e.Base.ExprType().Bytes() && e.Base.ExprType().Bytes() <= 4 {
+			if e.Base.ExprType().Bytes() == 4 {
+				word := "LOWORD"
+				if e.ByteOff >= 2 {
+					word = "HIWORD"
+				}
+				base = &Macro{Name: word, Args: []Expr{base}}
+			}
+			name := "LOBYTE"
+			if e.ByteOff%2 != 0 {
+				name = "HIBYTE"
+			}
+			return &Macro{Name: name, Args: []Expr{base}}, true
+		}
 		if e.Width == 2 && e.ByteOff == 0 {
 			return &Macro{Name: "LOWORD", Args: []Expr{base}}, true
 		}
@@ -433,7 +464,20 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 			return &Macro{Name: "HIWORD", Args: []Expr{base}}, true
 		}
 		return nil, false
-	case *sem.CallResult, *sem.Words, *sem.Merge, *sem.RawValue, *sem.RawMemory, *sem.Memory:
+	case *sem.Words:
+		if len(e.Words) != 2 {
+			return nil, false
+		}
+		hi, hiOK := l.lowerExpr(e.Words[0])
+		lo, loOK := l.lowerExpr(e.Words[1])
+		if !hiOK || !loOK {
+			return nil, false
+		}
+		return &Binary{Op: "|",
+			LHS: &Binary{Op: "<<", LHS: &Cast{Type: "uint32_t", Value: &Cast{Type: "uint16_t", Value: hi}}, RHS: &IntConst{Value: 16}},
+			RHS: &Cast{Type: "uint16_t", Value: lo},
+		}, true
+	case *sem.CallResult, *sem.Merge, *sem.RawValue, *sem.RawMemory, *sem.Memory:
 		return nil, false
 	default:
 		return nil, false
@@ -563,7 +607,7 @@ func lowerBinaryOp(op sem.Op) (string, bool) {
 		return "^", true
 	case sem.OpShl:
 		return "<<", true
-	case sem.OpShr:
+	case sem.OpShr, sem.OpSar:
 		return ">>", true
 	default:
 		return "", false

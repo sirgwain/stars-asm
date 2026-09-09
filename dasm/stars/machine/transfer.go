@@ -43,8 +43,18 @@ func (ctx *extractor) processInst(st *state, cfg *CFG, blk *Block, instrs []asm.
 
 	if jump := cfg.Jumps[inst.Off]; jump != nil {
 		if len(jump.TableTargetOffs) > 0 {
-			// TODO: handle table target jumps
-			return []Effect{UnknownEffect{MetaInfo: meta, Inst: inst, Why: "unhandled table jump"}}
+			targets := make([]BlockID, len(jump.TableTargetOffs))
+			for i, target := range jump.TableTargetOffs {
+				targets[i] = cfg.semanticJumpTarget(BlockID(target))
+			}
+
+			return []Effect{
+				TableJumpEffect{
+					Index:    st.readReg(inst.Src.Mem.Base),
+					MetaInfo: meta,
+					Targets:  targets,
+				},
+			}
 		}
 
 		if inst.Op == asm.OpJMP {

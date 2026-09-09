@@ -371,14 +371,16 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t            t_merge_11fb_0001;
     HULDEF            *t_call_132a;
     uint16_t           t_merge_13e5_0001;
-    uint16_t           scratch_bp_m50;
+    uint16_t           t_scratch_m50;
     uint16_t           t_merge_178d_0001;
-    uint16_t           scratch_bp_m4e;
     uint16_t           t_merge_1c0b_0001;
     HULDEF            *t_call_1cbd;
     uint16_t           t_merge_1d40_0001;
+    uint16_t           t_scratch_m4e_4;
+    uint16_t           t_scratch_m4e_5;
     int16_t            t_merge_1fe4_0001;
     int16_t            t_merge_23ac_0001;
+    uint16_t           t_scratch_m4e_8;
     int16_t            t_merge_2580_0001;
     uint16_t           t_merge_25d3_0001;
 
@@ -484,9 +486,7 @@ L_0888:
     if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
         goto L_08b7;
     else
-        goto L_08a3;
-
-L_08a3:
+        goto L_08a9;
 
 L_08a9:
     i = (i + 1);
@@ -733,9 +733,7 @@ L_0e84:
     if ((wParam != 0x815))
         goto FixupShip;
     else
-        goto L_0e91;
-
-L_0e91:
+        goto L_0e97;
 
 L_0e97:
     if ((gd.fTutorial == 0x0))
@@ -745,6 +743,9 @@ L_0e97:
 
 L_0eaa:
     AdvanceTutor();
+
+L_0eaf:
+    goto L_2641;
 
 L_0eb2:
     if ((wParam != 0x81b))
@@ -788,6 +789,9 @@ L_0f69:
 
 L_0fb4:
     AdvanceTutor();
+
+L_0fb9:
+    goto L_2641;
 
 L_0fbc:
     if ((wParam != 0x81a))
@@ -876,9 +880,7 @@ L_10c6:
     if ((HIWORD(lSel) == 0xffff))
         goto LClearSelection;
     else
-        goto L_10cc;
-
-L_10cc:
+        goto L_10d2;
 
 L_10d2:
     if ((mdBuild != mdBuildShdef))
@@ -1006,6 +1008,9 @@ L_11f8:
 L_11fb:
     EnableWindow(t_call_11bb, t_merge_11fb_0001);
 
+L_1201:
+    goto LClearSelection;
+
 L_1204:
     if ((mdBuild != mdBuildEnemyShdef))
         goto L_124a;
@@ -1017,9 +1022,7 @@ L_120e:
     if ((lpshdefBuild->det == 0x7))
         goto LClearSelection;
     else
-        goto L_1234;
-
-L_1234:
+        goto L_123a;
 
 L_123a:
     i = lpshdefBuild->hul.ihuldef;
@@ -1060,9 +1063,7 @@ L_12a2:
     if ((LOWORD(lSel) <= 0x0))
         goto L_12ba;
     else
-        goto L_12a7;
-
-L_12a7:
+        goto L_12ad;
 
 L_12ad:
     i = (i + 1);
@@ -1106,9 +1107,7 @@ L_130f:
     if ((LOWORD(lSel) <= 0x0))
         goto L_1327;
     else
-        goto L_1314;
-
-L_1314:
+        goto L_131a;
 
 L_131a:
     i = (i + 1);
@@ -1187,6 +1186,9 @@ L_1477:
 L_148a:
     AdvanceTutor();
 
+L_148f:
+    goto L_2641;
+
 L_1492:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
         goto L_2641;
@@ -1194,6 +1196,7 @@ L_1492:
         goto L_1497;
 
 L_1497:
+    goto FixupShip;
 
 L_14a0:
     if ((wParam != 0x80c))
@@ -1209,6 +1212,9 @@ L_14aa:
 
 L_14c6:
     SetBuildSelection(-1);
+
+L_14d2:
+    goto L_2641;
 
 L_14d5:
     if ((wParam != 0x817))
@@ -1234,9 +1240,7 @@ L_1518:
     if ((FTutorialEnabledShipBuilder(0) == 0))
         goto L_2641;
     else
-        goto L_1529;
-
-L_1529:
+        goto L_152f;
 
 L_152f:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -1269,9 +1273,7 @@ L_1591:
     if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
     else
-        goto L_1597;
-
-L_1597:
+        goto L_159d;
 
 L_159d:
     if ((fStarbaseMode == 0))
@@ -1295,17 +1297,13 @@ L_15b9:
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2641;
     else
-        goto L_15d7;
-
-L_15d7:
+        goto L_15dd;
 
 L_15dd:
     if ((FCheckQueuedShip(hwnd, lpshdef, 0) == 0))
         goto L_2641;
     else
-        goto L_15f7;
-
-L_15f7:
+        goto L_15fd;
 
 L_15fd:
     lpshdef->fFree = 0x1;
@@ -1317,9 +1315,9 @@ L_15fd:
         goto L_163c;
 
 L_163c:
-    /* untranslated: scratch_bp_m50 = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
+    /* untranslated: t_scratch_m50 = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
     rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | scratch_bp_m50) */
+    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m50) */
     goto L_1690;
 
 L_1680:
@@ -1393,6 +1391,7 @@ L_178d:
         goto L_17aa;
 
 L_17aa:
+    goto L_2641;
 
 L_17b3:
     if ((wParam != 0x816))
@@ -1416,9 +1415,7 @@ L_17ec:
     if ((FTutorialEnabledShipBuilder(1) == 0))
         goto L_2641;
     else
-        goto L_17fd;
-
-L_17fd:
+        goto L_1803;
 
 L_1803:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -1438,9 +1435,7 @@ L_183e:
     if ((LOWORD(lSel) < 0x0))
         goto L_2641;
     else
-        goto L_1844;
-
-L_1844:
+        goto L_184a;
 
 L_184a:
     if ((fStarbaseMode == 0))
@@ -1456,9 +1451,7 @@ L_185c:
     if ((rglpshdefSB[idPlayer][i].fFree != 0x0))
         goto L_18d3;
     else
-        goto L_1887;
-
-L_1887:
+        goto L_188d;
 
 L_188d:
     i = (i + 1);
@@ -1470,6 +1463,7 @@ L_1891:
         goto L_1897;
 
 L_1897:
+    goto L_185c;
 
 L_189d:
     i = 0;
@@ -1479,9 +1473,7 @@ L_18a5:
     if ((rgshdef[i].fFree != 0x0))
         goto L_18d3;
     else
-        goto L_18c0;
-
-L_18c0:
+        goto L_18c6;
 
 L_18c6:
     i = (i + 1);
@@ -1518,6 +1510,7 @@ L_18f1:
         goto L_191a;
 
 L_191a:
+    goto L_19c4;
 
 L_1923:
     lpshdef = NthValidEnemyShdef(LOWORD(lSel));
@@ -1575,9 +1568,7 @@ L_19e4:
     if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
     else
-        goto L_19ea;
-
-L_19ea:
+        goto L_19f0;
 
 L_19f0:
     if ((fStarbaseMode == 0))
@@ -1587,7 +1578,6 @@ L_19f0:
 
 L_19fa:
     rglpshdefSB[idPlayer][i] = *(lpshdef);
-    scratch_bp_m4e = LOWORD((0x93 * i));
     lpshdef = (rglpshdefSB[idPlayer] + LOWORD((0x93 * i)));
     goto L_1aa6;
 
@@ -1643,6 +1633,9 @@ L_1b5e:
 
 L_1b95:
     lpshdef->hul.rghs[j].cItem = 0x0;
+
+L_1bcf:
+    goto L_1b1e;
 
 L_1bd5:
     if ((fStarbaseMode == 0))
@@ -1704,12 +1697,10 @@ L_1c4f:
         goto L_1c54;
 
 L_1c54:
-    if ((LOWORD(lSel) <= 0x0))
-        goto L_1c62;
+    if ((LOWORD(lSel) > 0x0))
+        goto L_1bf4;
     else
-        goto L_1c59;
-
-L_1c59:
+        goto L_1c62;
 
 L_1c62:
     if ((fStarbaseMode == 0))
@@ -1728,7 +1719,7 @@ L_1c91:
 L_1ca4:
     fmemset(lpshdef, 0, 0x93);
     t_call_1cbd = LphuldefFromId(j);
-    lpshdef = t_call_1cbd->hul;
+    lpshdef->hul = t_call_1cbd->hul;
     lpshdef->det = 0x7;
     fmemset(lpshdef->hul.rghs, 0, 0x40);
 
@@ -1748,7 +1739,8 @@ L_1d3d:
     t_merge_1d40_0001 = 0x0;
 
 L_1d40:
-    lpshdef->ishdef = (t_merge_1d40_0001 + i);
+    t_scratch_m4e_4 = (t_merge_1d40_0001 + i);
+    lpshdef->ishdef = t_scratch_m4e_4;
     UpdateShdefCost(lpshdef);
     if ((fStarbaseMode == 0))
         goto L_1dc3;
@@ -1756,9 +1748,9 @@ L_1d40:
         goto L_1d7f;
 
 L_1d7f:
-    /* untranslated: scratch_bp_m4e = ((part[0x4:2](rgplr[idPlayer]) + 0x1000) & 0xf000) */
+    /* untranslated: t_scratch_m4e_5 = ((part[0x4:2](rgplr[idPlayer]) + 0x1000) & 0xf000) */
     rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | scratch_bp_m4e) */
+    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m4e_5) */
     goto L_1dd3;
 
 L_1dc3:
@@ -1783,6 +1775,9 @@ L_1e3a:
 L_1e4d:
     AdvanceTutor();
 
+L_1e52:
+    goto L_2641;
+
 L_1e55:
     if ((wParam != 0x818))
         goto L_20ff;
@@ -1799,9 +1794,7 @@ L_1e72:
     if ((FTutorialEnabledShipBuilder(2) == 0))
         goto L_2641;
     else
-        goto L_1e83;
-
-L_1e83:
+        goto L_1e89;
 
 L_1e89:
     if ((fStarbaseMode == 0))
@@ -1819,9 +1812,7 @@ L_1eab:
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) == raMacintosh))
         goto L_2641;
     else
-        goto L_1ec9;
-
-L_1ec9:
+        goto L_1ecf;
 
 L_1ecf:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -1854,9 +1845,7 @@ L_1f31:
     if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
     else
-        goto L_1f37;
-
-L_1f37:
+        goto L_1f3d;
 
 L_1f3d:
     if ((fStarbaseMode != 0))
@@ -1868,9 +1857,7 @@ L_1f47:
     if ((FCheckQueuedShip(hwnd, lpshdef, 1) == 0))
         goto L_2641;
     else
-        goto L_1f61;
-
-L_1f61:
+        goto EditDesign;
 
 EditDesign:
     if ((LOWORD(lpshdefBuild) != 0x0))
@@ -1882,9 +1869,7 @@ L_1f71:
     if ((HIWORD(lpshdefBuild) == 0x0))
         goto L_2641;
     else
-        goto L_1f78;
-
-L_1f78:
+        goto L_1f7e;
 
 L_1f7e:
     InvalidateRect(hwnd, 0x0, 1);
@@ -1920,6 +1905,9 @@ L_1fe4:
 
 L_20f7:
     AdvanceTutor();
+
+L_20fc:
+    goto L_2641;
 
 L_20ff:
     if ((wParam == 0x1))
@@ -1972,9 +1960,7 @@ L_2185:
     if ((FTutorialEnabledShipBuilder(3) == 0))
         goto L_2641;
     else
-        goto L_2196;
-
-L_2196:
+        goto L_219c;
 
 L_219c:
     GetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass, 32);
@@ -1990,7 +1976,6 @@ L_219c:
 L_21f6:
     ishdefBuild = (ishdefBuild - 16);
     rglpshdefSB[idPlayer][ishdefBuild] = shdefBuild;
-    scratch_bp_m4e = LOWORD((0x93 * ishdefBuild));
     LogChangeShDef(shdefBuild.hul);
     i = 0;
     goto L_2293;
@@ -2042,6 +2027,7 @@ L_2317:
         goto L_231f;
 
 L_231f:
+    goto L_22ed;
 
 L_2325:
     if ((gd.fTutorial == 0x0))
@@ -2053,9 +2039,7 @@ L_2338:
     if ((FTutorialEnabledShipBuilder(4) == 0))
         goto L_2641;
     else
-        goto L_2349;
-
-L_2349:
+        goto L_234f;
 
 L_234f:
     InvalidateRect(hwnd, 0x0, 1);
@@ -2119,9 +2103,9 @@ L_2434:
 L_243e:
     shdefBuild.fFree = 0x1;
     rglpshdefSB[idPlayer][(ishdefBuild - 16)] = shdefBuild;
-    /* untranslated: scratch_bp_m4e = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
+    /* untranslated: t_scratch_m4e_8 = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
     rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | scratch_bp_m4e) */
+    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m4e_8) */
     LogChangeShDef(shdefBuild.hul);
     goto L_253e;
 
@@ -2299,9 +2283,7 @@ L_2672:
     if ((HIWORD(lpshdefBuild) == 0x0))
         goto L_3064;
     else
-        goto L_2679;
-
-L_2679:
+        goto L_267f;
 
 L_267f:
     lphuldef = LphuldefFromId(lpshdefBuild->hul.ihuldef);
@@ -2499,6 +2481,9 @@ L_2a4d:
 L_2a70:
     RcCtrTextOut(hdc, &(rc), PszGetCompressedString(idsMax), 0);
 
+L_2a90:
+    goto L_2eed;
+
 L_2a93:
     FillRect(hdc, &(vrgrcSlot[i]), hbr50Screen);
     cItem = lpshdefBuild->hul.rghs[i].cItem;
@@ -2586,6 +2571,9 @@ L_2c6d:
 
 L_2c7a:
     c = _wsprintf(szWork, PszGetCompressedString(idsDD), cItem, lphuldef->hul.rghs[i].cItem);
+
+L_2cc2:
+    goto L_2e03;
 
 L_2cc5:
     SelectObject(hdcMem, hbmpBackBld);
@@ -2772,7 +2760,7 @@ L_3102:
 L_311c:
     iDir = -1;
     bt = 34;
-    prc = &(rgrcBuildSpin);
+    prc = rgrcBuildSpin;
     goto L_313d;
 
 L_312e:
@@ -2818,9 +2806,7 @@ L_321c:
     if ((PtInRect(&(vrgrcSlot[iSrc]), pt) != 0))
         goto L_3253;
     else
-        goto L_323e;
-
-L_323e:
+        goto L_3244;
 
 L_3244:
     iSrc = (iSrc + 1);
@@ -2910,7 +2896,7 @@ L_3437:
 L_3444:
     GlobalPD.grPopup = grPopupString;
     HIWORD(GlobalPD) = 0xb4;
-    GlobalPD.psz = &(szPopupBuffer);
+    GlobalPD.psz = szPopupBuffer;
     CchGetString(idsSettlersDelightEngineMayMountedDesignsBased, szPopupBuffer);
     Popup(hwnd, x, y);
     return 1;
@@ -2936,7 +2922,7 @@ L_3498:
 L_34a5:
     GlobalPD.grPopup = grPopupString;
     HIWORD(GlobalPD) = 0xb4;
-    GlobalPD.psz = &(szPopupBuffer);
+    GlobalPD.psz = szPopupBuffer;
     CchGetString(idsOrbitalConstructionModuleMayMountedDesignsBased, szPopupBuffer);
     Popup(hwnd, x, y);
     return 1;
@@ -2962,7 +2948,7 @@ L_34f9:
 L_3520:
     GlobalPD.grPopup = grPopupString;
     HIWORD(GlobalPD) = 0xb4;
-    GlobalPD.psz = &(szPopupBuffer);
+    GlobalPD.psz = szPopupBuffer;
     CchGetString(idsTransportCloakingModuleMayPlacedHullCould, szPopupBuffer);
     Popup(hwnd, x, y);
     return 1;
@@ -3168,6 +3154,9 @@ L_39e4:
 L_39f0:
     SetCursor(hcurNoWay);
 
+L_39f9:
+    goto L_3676;
+
 L_39fc:
     if ((fFirst != 0))
         goto L_3a41;
@@ -3249,9 +3238,7 @@ L_3b64:
     if ((iselSlot == -2))
         goto Restore;
     else
-        goto L_3b6b;
-
-L_3b6b:
+        goto L_3b71;
 
 L_3b71:
     if ((iselSlot != -1))
@@ -3264,9 +3251,7 @@ L_3b7b:
     if ((iSel == -1))
         goto Restore;
     else
-        goto L_3ba9;
-
-L_3ba9:
+        goto L_3baf;
 
 L_3baf:
     SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_INSERTSTRING, iSel, szWork);
@@ -3285,9 +3270,7 @@ L_3c1f:
     if ((HIWORD(lpshdefBuild) == 0x0))
         goto Restore;
     else
-        goto L_3c26;
-
-L_3c26:
+        goto L_3c2c;
 
 L_3c2c:
     hsShip.grhst = lpshdefBuild->hul.rghs[iselSlot].grhst;
@@ -3400,6 +3383,9 @@ L_3dd4:
 L_3de5:
     szWord[(cch - 1)] = 0;
 
+L_3df3:
+    goto L_3e84;
+
 L_3df6:
     pch = ((&(szWord) + cch) + 0xffff);
     goto L_3e21;
@@ -3408,9 +3394,7 @@ L_3e0a:
     if (((uint16_t)(*(pch)) == 40))
         goto L_3e2d;
     else
-        goto L_3e16;
-
-L_3e16:
+        goto L_3e1c;
 
 L_3e1c:
     pch = (pch - 0x1);
@@ -3649,6 +3633,9 @@ L_438e:
 L_439b:
     pctJam = 100;
 
+L_43a5:
+    goto L_441f;
+
 L_43a8:
     if ((part.hs.grhst != hstArmor))
         goto L_43cc;
@@ -3734,6 +3721,7 @@ L_447b:
         goto L_4481;
 
 L_4481:
+    goto L_4447;
 
 L_4487:
     if ((HIWORD(pctHit) > 0x0))
@@ -3831,9 +3819,7 @@ L_451e:
     if ((mdBuild == mdBuildComp))
         goto L_53d3;
     else
-        goto L_4533;
-
-L_4533:
+        goto L_4539;
 
 L_4539:
     if ((hdc != 0x0))
@@ -3890,7 +3876,6 @@ L_45c4:
 
 L_45ce:
     lphul = lpshdefBuild;
-    goto L_45e1;
 
 L_45e1:
     SelectObject(hdc, rghfontArial8[0]);
@@ -3911,7 +3896,10 @@ L_4670:
         goto L_467a;
 
 L_467a:
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_470d : L_4684 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_470d;
+    else
+        goto L_4684;
 
 L_4684:
     GetVCRStats(viVCRFocus, &(dp), &(dv), &(dpShield), &(csh));
@@ -3944,6 +3932,7 @@ L_46e7:
         goto L_4704;
 
 L_4704:
+    goto L_4737;
 
 L_470d:
     dp = (uint32_t)(lphul->dp);
@@ -4115,7 +4104,10 @@ L_4a05:
         goto L_4a0f;
 
 L_4a0f:
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_4a3c : L_4a19 */
+    if ((GlobalPD.grbit == 0x0))
+        goto L_4a3c;
+    else
+        goto L_4a19;
 
 L_4a19:
     lwt = (uint32_t)(vrgtok[viVCRFocus].wt);
@@ -4149,7 +4141,10 @@ L_4ab7:
         goto L_4ac1;
 
 L_4ac1:
-    /* untranslated: branch part[0xa:2](GlobalPD) != 0x0 ? L_4b53 : L_4acb */
+    if ((GlobalPD.grbit != 0x0))
+        goto L_4b53;
+    else
+        goto L_4acb;
 
 L_4acb:
     cch = _wsprintf(szWork, PszGetCompressedString(idsDmg), WtMaxShdefStat(lpshdefBuild, 1));
@@ -4350,6 +4345,9 @@ L_4ff3:
     TextOut(hdc, rc.left, rc.top, szWork, cch);
     rc.top = (rc.top + dyArial8);
 
+L_5020:
+    goto L_50df;
+
 L_5023:
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_50df;
@@ -4392,7 +4390,10 @@ L_50f3:
     /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_5397 : L_50fd */
 
 L_50fd:
-    /* untranslated: branch part[0xa:2](GlobalPD) != 0x0 ? L_525a : L_5107 */
+    if ((GlobalPD.grbit != 0x0))
+        goto L_525a;
+    else
+        goto L_5107;
 
 L_5107:
     if ((fStarbaseMode != 0))
@@ -4413,6 +4414,9 @@ L_518d:
     k = lpshdefBuild->ishdef;
     csh = sel.fl.rgcsh[k];
     dv.dp = sel.fl.rgdv[k].dp;
+
+L_51be:
+    goto L_525a;
 
 L_51c1:
     dv.dp = 0x0;
@@ -4556,9 +4560,7 @@ L_5463:
     if ((iSrc == -1))
         goto RedrawSel;
     else
-        goto L_5469;
-
-L_5469:
+        goto L_546f;
 
 L_546f:
     return;
@@ -4574,9 +4576,11 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     uint16_t t_merge_5646_0001;
     uint16_t scratch_bp_m1c;
     uint16_t scratch_bp_m1e;
+    uint16_t t_scratch_m1a;
     HULDEF  *t_call_5761;
+    uint16_t t_scratch_m1a_2;
     uint16_t t_merge_58c1_0001;
-    uint16_t scratch_bp_m1a;
+    uint16_t t_scratch_m1a_3;
 
 L_5476:
     GetClientRect(hwndSlotDlg, &(rc));
@@ -4593,6 +4597,9 @@ L_54a3:
 
 L_54ac:
     hsSrc.cItem = 0x64;
+
+L_54b8:
+    goto L_550f;
 
 L_54bb:
     if (((GetAsyncKeyState(16) & 0xfffe) == 0x0))
@@ -4615,6 +4622,9 @@ L_54d8:
 L_54eb:
     hsSrc.cItem = 0x4;
 
+L_54f7:
+    goto L_550f;
+
 L_54fa:
     if ((iSrc < 0))
         goto L_550f;
@@ -4633,9 +4643,7 @@ L_5534:
     if ((PtInRect(&(vrgrcSlot[i]), pt) != 0))
         goto L_556b;
     else
-        goto L_5556;
-
-L_5556:
+        goto L_555c;
 
 L_555c:
     i = (i + 1);
@@ -4695,7 +4703,8 @@ L_5609:
     t_merge_5646_0001 = (((scratch_bp_m1c >> 0x8) & 0xff) - scratch_bp_m1e);
 
 L_5646:
-    lpshdefBuild->hul.rghs[iSrc].cItem = t_merge_5646_0001;
+    t_scratch_m1a = t_merge_5646_0001;
+    lpshdefBuild->hul.rghs[iSrc].cItem = t_scratch_m1a;
     UpdateShdefCost(lpshdefBuild);
     GetClientRect(hwndSlotDlg, &(rc));
     DrawSlotDlg(hwndSlotDlg, 0x0, &(rc), iSrc);
@@ -4796,14 +4805,16 @@ L_583e:
 
 L_5847:
     hsDst.grhst = hsSrc.grhst;
-    hsDst.iItem = hsSrc.iItem;
+    t_scratch_m1a_2 = hsSrc.iItem;
+    hsDst.iItem = t_scratch_m1a_2;
     if (((hsDst.cItem + hsSrc.cItem) >= hsHul.cItem))
         goto L_58b6;
     else
         goto L_5895;
 
 L_5895:
-    t_merge_58c1_0001 = (hsDst.cItem + scratch_bp_m1a);
+    t_scratch_m1a_2 = hsSrc.cItem;
+    t_merge_58c1_0001 = (hsDst.cItem + t_scratch_m1a_2);
     goto L_58c1;
 
 L_58b6:
@@ -4817,9 +4828,9 @@ L_58c1:
         goto L_58cd;
 
 L_58cd:
-    scratch_bp_m1a = ((HIWORD(lpshdefBuild->hul.rghs[iSrc]) - ((cNew - hsDst.cItem) << 0x8)) & 0xff00);
+    t_scratch_m1a_3 = ((HIWORD(lpshdefBuild->hul.rghs[iSrc]) - ((cNew - hsDst.cItem) << 0x8)) & 0xff00);
     lpshdefBuild->hul.rghs[iSrc].cItem = 0x0;
-    HIWORD(lpshdefBuild->hul.rghs[iSrc]) = (HIWORD(lpshdefBuild->hul.rghs[iSrc]) | scratch_bp_m1a);
+    HIWORD(lpshdefBuild->hul.rghs[iSrc]) = (HIWORD(lpshdefBuild->hul.rghs[iSrc]) | t_scratch_m1a_3);
 
 L_594b:
     hsDst.cItem = cNew;
@@ -4944,6 +4955,7 @@ L_5c4f:
         goto L_5c5e;
 
 L_5c5e:
+    scratch_bp_m6 = LOWORD((0x93 * i));
     return (rglpshdefSB[idPlayer] + scratch_bp_m6);
 
 L_5c81:
@@ -4956,6 +4968,7 @@ L_5c85:
         goto L_5c8b;
 
 L_5c8b:
+    goto L_5c21;
 
 L_5c91:
     i = 0;
@@ -5054,6 +5067,7 @@ L_5d79:
         goto L_5d88;
 
 L_5d88:
+    scratch_bp_m8 = LOWORD((0x93 * j));
     return (rglpshdefSB[i] + scratch_bp_m8);
 
 L_5daa:
@@ -5066,6 +5080,7 @@ L_5dae:
         goto L_5db4;
 
 L_5db4:
+    goto L_5d4c;
 
 L_5dbd:
     i = 0;
@@ -5117,6 +5132,7 @@ L_5e2f:
         goto L_5e3e;
 
 L_5e3e:
+    scratch_bp_m8 = LOWORD((0x93 * j));
     return (rglpshdef[i] + scratch_bp_m8);
 
 L_5e60:
@@ -5129,6 +5145,7 @@ L_5e64:
         goto L_5e6a;
 
 L_5e6a:
+    goto L_5e02;
 
 L_5e70:
     return 0x0;
@@ -5149,9 +5166,9 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
     int16_t  t_merge_6043_0001;
     uint16_t t_merge_608f_0001;
     SHDEF   *t_merge_611c_0001;
+    uint16_t t_merge_638b_0001;
+    uint16_t t_scratch_m22;
     uint16_t t_merge_63ac_0001;
-    uint16_t scratch_bp_m24;
-    uint16_t scratch_bp_m22;
 
 L_5e80:
     SendMessage(hwndDD, CB_RESETCONTENT, 0x0, 0);
@@ -5187,9 +5204,7 @@ L_5f18:
     if ((lpshdef[i].fFree != 0x0))
         goto L_5f4e;
     else
-        goto L_5f39;
-
-L_5f39:
+        goto L_5f3f;
 
 L_5f3f:
     i = (i + 1);
@@ -5330,6 +5345,7 @@ L_60be:
         goto L_60c6;
 
 L_60c6:
+    goto L_5fa9;
 
 L_60cc:
     i = 0;
@@ -5348,9 +5364,7 @@ L_60e3:
     if ((i == idPlayer))
         goto L_60d4;
     else
-        goto L_60eb;
-
-L_60eb:
+        goto L_60f1;
 
 L_60f1:
     if ((fStarbaseMode == 0))
@@ -5413,6 +5427,7 @@ L_61e4:
         goto L_61ec;
 
 L_61ec:
+    goto L_613c;
 
 L_61f5:
     if ((fStarbaseMode == 0))
@@ -5438,9 +5453,7 @@ L_621e:
     if ((FLookupPart(&(part)) != 1))
         goto L_6264;
     else
-        goto L_6241;
-
-L_6241:
+        goto L_6247;
 
 L_6247:
     SendMessage(hwndDD, CB_ADDSTRING, 0x0, part.pcom->szName);
@@ -5455,6 +5468,7 @@ L_6268:
         goto L_6270;
 
 L_6270:
+    goto L_621e;
 
 L_6276:
     if ((fStarbaseMode == 0))
@@ -5477,6 +5491,7 @@ L_62b2:
         goto L_62b8;
 
 L_62b8:
+    goto L_6288;
 
 L_62be:
     i = 0;
@@ -5493,6 +5508,7 @@ L_62f0:
         goto L_62f6;
 
 L_62f6:
+    goto L_62c6;
 
 L_62ff:
     if ((md == mdBuildShdef))
@@ -5525,6 +5541,7 @@ L_631f:
         goto L_6324;
 
 L_6324:
+    goto L_6276;
 
 L_632a:
     i = LOWORD(SendMessage(hwndDD, CB_GETCOUNT, 0x0, 0));
@@ -5544,11 +5561,14 @@ L_6353:
         goto L_6382;
 
 L_6382:
+    t_merge_638b_0001 = 0x1;
     goto L_638b;
 
 L_6388:
+    t_merge_638b_0001 = 0x0;
 
 L_638b:
+    t_scratch_m22 = t_merge_638b_0001;
     if ((dyArial8 > 14))
         goto L_63a9;
     else
@@ -5562,7 +5582,7 @@ L_63a9:
     t_merge_63ac_0001 = 0x0;
 
 L_63ac:
-    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD((scratch_bp_m24 * (dyArial8 - t_merge_63ac_0001))) + 0x8) + scratch_bp_m22), 0x6);
+    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 0x8) + t_scratch_m22), 0x6);
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
     return;
 }
@@ -5598,9 +5618,7 @@ L_6436:
     if ((t_call_644f == 0))
         goto L_650c;
     else
-        goto L_645f;
-
-L_645f:
+        goto L_6465;
 
 L_6465:
     if ((fStarbaseMode == 0))
@@ -5644,6 +5662,9 @@ L_649a:
 
 L_6505:
     i = (i + 1);
+
+L_6509:
+    goto L_6436;
 
 L_650c:
     grbitCur = (grbitCur * 2);
@@ -5871,9 +5892,7 @@ L_694c:
     if ((cLen > 27))
         goto L_6a39;
     else
-        goto L_696c;
-
-L_696c:
+        goto L_6972;
 
 L_6972:
     if (((uint16_t)(lpsz[(cLen - 1)]) != 41))
@@ -5936,9 +5955,7 @@ L_6a72:
     if ((lppl->lpplprod->iprodMac == 0x0))
         goto L_6c23;
     else
-        goto L_6a85;
-
-L_6a85:
+        goto L_6a8b;
 
 L_6a8b:
     iDst = 0;
@@ -6016,6 +6033,9 @@ L_6b64:
 L_6b90:
     iDst = (iDst + 1);
 
+L_6b94:
+    goto L_6aae;
+
 L_6b97:
     if ((iDst != 0))
         goto L_6bc5;
@@ -6077,9 +6097,7 @@ L_6c4a:
     if ((lppl->lpplprod->iprodMac == 0x0))
         goto L_6e17;
     else
-        goto L_6c5d;
-
-L_6c5d:
+        goto L_6c63;
 
 L_6c63:
     iDst = 0;
@@ -6153,6 +6171,9 @@ L_6d58:
 
 L_6d84:
     iDst = (iDst + 1);
+
+L_6d88:
+    goto L_6c86;
 
 L_6d8b:
     if ((iDst != 0))

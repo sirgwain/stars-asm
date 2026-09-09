@@ -80,7 +80,6 @@ L_53b8:
 L_53cb:
     return -1
 
-
 L_53d4:
     branch hs.iItem < ishieldCount ? L_53e8 : L_53e2
 
@@ -111,7 +110,6 @@ L_5443:
 
 L_5456:
     return -1
-
 
 L_545f:
     branch hs.iItem < ihuldefOrbitalFort ? L_5473 : L_546d
@@ -228,7 +226,6 @@ L_5646:
 L_5659:
     return -1
 
-
 L_5662:
     branch hs.iItem < 0x5 ? L_5676 : L_5670
 
@@ -259,7 +256,6 @@ L_56ec:
 
 L_56f5:
     return -1
-
 
 L_56fe:
     branch hs.iItem < iarmorCount ? L_5712 : L_570c
@@ -292,7 +288,6 @@ L_576d:
 L_5780:
     return -1
 
-
 L_5789:
     branch hs.iItem < ispecialECount ? L_579d : L_5797
 
@@ -311,44 +306,42 @@ L_57d5:
 
 L_57db:
     goto L_5841
-    branch raMajor == 1 ? L_57f3 : L_57ed
+
+L_57e4:
+    branch raMajor == 1 ? L_609c : L_57ed
 
 L_57ed:
     return -1
 
-L_57f3:
-    goto L_5874
-    branch raMajor == 5 ? L_5805 : L_57ff
+L_57f6:
+    branch raMajor == 5 ? L_609c : L_57ff
 
 L_57ff:
     return -1
 
-L_5805:
-    goto L_5874
-    branch raMajor == 7 ? L_5817 : L_5811
+L_5808:
+    branch raMajor == 7 ? L_609c : L_5811
 
 L_5811:
     return -1
 
-L_5817:
-    goto L_5874
-    branch raMajor == 0 ? L_5829 : L_5823
+L_581a:
+    branch raMajor == 0 ? L_609c : L_5823
 
 L_5823:
     return -1
 
-L_5829:
-    goto L_5874
+L_582c:
     branch raMajor == 4 ? L_609c : L_5835
 
 L_5835:
     return -1
 
-
 L_5841:
+    branch hs.iItem > ispecialEAntiMatterGenerator ? L_609c : L_5849
 
-
-L_5874:
+L_5849:
+    tablejump (hs.iItem * 0x2) [0x0: L_57e4, 0x2: L_609c, 0x4: L_609c, 0x6: L_57e4, 0x8: L_609c, 0xa: L_609c, 0xc: L_609c, 0xe: L_609c, 0x10: L_582c, 0x12: L_609c, 0x14: L_609c, 0x16: L_582c, 0x18: L_609c, 0x1a: L_581a, 0x1c: L_57f6, 0x1e: L_582c, 0x20: L_5808]
 
 L_5877:
     branch hs.iItem < ispecialMCount ? L_588b : L_5885
@@ -384,7 +377,6 @@ L_58f7:
 L_5900:
     return -1
 
-
 L_5909:
     branch hs.iItem < ispecialSBCount ? L_591d : L_5917
 
@@ -413,7 +405,6 @@ L_597a:
 L_5983:
     return -1
 
-
 L_598c:
     branch hs.iItem < ispecialSBStargate100250 ? L_609c : L_599a
 
@@ -437,7 +428,6 @@ L_59d3:
 
 L_59dc:
     return -1
-
 
 L_59e5:
     branch hs.iItem < iminesCount ? L_59f9 : L_59f3
@@ -500,7 +490,6 @@ L_5ad7:
 L_5ae0:
     return -1
 
-
 L_5ae9:
     branch hs.iItem < iminingCount ? L_5afd : L_5af7
 
@@ -559,7 +548,6 @@ L_5bf8:
 L_5c0b:
     return -1
 
-
 L_5c14:
     branch hs.iItem < iscannerCount ? L_5c28 : L_5c22
 
@@ -600,7 +588,6 @@ L_5ccb:
 L_5cd4:
     return -1
 
-
 L_5cdd:
     branch hs.iItem < ibeamCount ? L_5cf1 : L_5ceb
 
@@ -635,7 +622,6 @@ L_5d57:
 L_5d6a:
     return -1
 
-
 L_5d73:
     branch hs.iItem < itorpCount ? L_5d87 : L_5d81
 
@@ -651,7 +637,6 @@ L_5dac:
 
 L_5dbf:
     return -1
-
 
 L_5dc8:
     branch hs.iItem < ibombCount ? L_5ddc : L_5dd6
@@ -689,7 +674,6 @@ L_5e4f:
 
 L_5e62:
     return -1
-
 
 L_5e6b:
     branch hs.iItem < iplanetaryCount ? L_5e7f : L_5e79
@@ -758,7 +742,6 @@ L_5f7b:
 L_5f8e:
     return -1
 
-
 L_5f97:
     branch hs.iItem < iterraCount ? L_5fab : L_5fa5
 
@@ -780,7 +763,6 @@ L_5fec:
 
 L_600d:
     return -1
-
 
 L_6019:
     branch hs.grhst == hstEngine ? L_528d : L_6021
@@ -831,7 +813,7 @@ L_6091:
     branch hs.grhst != hstPlanetary ? L_5287 : L_6096
 
 L_6096:
-
+    goto L_5e6b
 
 L_609c:
     return TechStatus(ppart->pcom->rgTech)

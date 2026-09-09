@@ -214,13 +214,16 @@ block L_0ec6:
 block L_0ee3:
   insts 186..186  off 0x0ee3..0x0ee7
   preds: L_0ec6
-  succs: L_0f9f
+  succs: L_0ee8
   effects:
     0ee3  store[2] [bp-cMax] = 0x0
 
 block L_0ee8:
   insts 187..187  off 0x0ee8..0x0eea
+  preds: L_0ee3
   succs: L_0f9f
+  effects:
+    0ee8  goto L_0f9f
 
 block L_0eeb:
   insts 188..197  off 0x0eeb..0x0f0b
@@ -242,13 +245,16 @@ block L_0f0f:
 block L_0f21:
   insts 205..205  off 0x0f21..0x0f25
   preds: L_0eeb, L_0f0f
-  succs: L_0f9f
+  succs: L_0f26
   effects:
     0f21  store[2] [bp-cMax] = 0x0
 
 block L_0f26:
   insts 206..206  off 0x0f26..0x0f28
+  preds: L_0f21
   succs: L_0f9f
+  effects:
+    0f26  goto L_0f9f
 
 block L_0f2c:
   insts 207..208  off 0x0f2c..0x0f30
@@ -350,7 +356,7 @@ block L_0f94:
 
 block L_0f9f:
   insts 250..251  off 0x0f9f..0x0fa4
-  preds: L_0d74, L_0dbe, L_0e08, L_0e4a, L_0e57, L_0e7b, L_0e97, L_0e9f, L_0ebe, L_0ec6, L_0ee3, L_0ee8, L_0f0f, L_0f21, L_0f26, L_0f8c, L_0f94
+  preds: L_0d74, L_0dbe, L_0e08, L_0e4a, L_0e57, L_0e7b, L_0e97, L_0e9f, L_0ebe, L_0ec6, L_0ee8, L_0f0f, L_0f26, L_0f8c, L_0f94
   succs: L_0fa8, L_0fad
   effects:
     0fa3  branch load([bp-cMax]) >= 0x0 ? L_0fad : L_0fa8
@@ -438,7 +444,7 @@ block L_1086:
 
 block L_108f:
   insts 337..342  off 0x108f..0x109f
-  preds: L_1086, L_14d3, L_14db, L_1706, L_170f
+  preds: L_1086, L_14d3, L_1706
   succs: L_10a3, L_1712
   effects:
     109e  branch 0x0 < 0x0 ? L_1712 : L_10a3
@@ -484,19 +490,11 @@ block L_10f3:
   preds: L_10ee
   succs: L_10fd, L_110a
   effects:
-    10f5  branch (load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x52]) - load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x32])) > load(ds:[(load([bp+rgRes]) + ((load([bp-i]) << 0x1) << 0x1))]) ? L_110a : L_10f7
-
-block L_10f7:
-  insts 377..377  off 0x10f7..0x10f9
-  succs: L_10fd
-
-block L_10fa:
-  insts 378..378  off 0x10fa..0x10fc
-  succs: L_110a
+    10f5  branch (load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x52]) - load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x32])) > load(ds:[(load([bp+rgRes]) + ((load([bp-i]) << 0x1) << 0x1))]) ? L_110a : L_10fd
 
 block L_10fd:
   insts 379..379  off 0x10fd..0x1100
-  preds: L_10b8, L_10f3, L_10f7
+  preds: L_10b8, L_10f3
   succs: L_1101
   effects:
     10fd  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -510,7 +508,7 @@ block L_1101:
 
 block L_110a:
   insts 383..384  off 0x110a..0x110f
-  preds: L_10ee, L_10f3, L_10fa, L_1101
+  preds: L_10ee, L_10f3, L_1101
   succs: L_1113, L_165c
   effects:
     110e  branch load([bp-i]) >= 0x4 ? L_165c : L_1113
@@ -707,19 +705,11 @@ block L_1305:
   preds: L_12fc
   succs: L_1314, L_13e1
   effects:
-    1309  branch load([bp+fAlchemy]) != 0x0 ? L_13e1 : L_130b
-
-block L_130b:
-  insts 573..573  off 0x130b..0x130d
-  succs: L_1314
-
-block L_130e:
-  insts 574..574  off 0x130e..0x1310
-  succs: L_13e1
+    1309  branch load([bp+fAlchemy]) != 0x0 ? L_13e1 : L_1314
 
 block L_1314:
   insts 575..576  off 0x1314..0x131b
-  preds: L_1305, L_130b
+  preds: L_1305
   succs: L_1712
   effects:
     1314  store[2] [bp-fAutoBuild] = 0x2
@@ -770,19 +760,11 @@ block L_13d5:
   preds: L_13a1
   succs: L_13e1, L_1712
   effects:
-    13d9  branch load([bp-fResourceBlocked]) != 0x0 ? L_1712 : L_13db
-
-block L_13db:
-  insts 646..646  off 0x13db..0x13dd
-  succs: L_13e1
-
-block L_13de:
-  insts 647..647  off 0x13de..0x13e0
-  succs: L_1712
+    13d9  branch load([bp-fResourceBlocked]) != 0x0 ? L_1712 : L_13e1
 
 block LAlchemize:
   insts 648..659  off 0x13e1..0x1401
-  preds: L_1305, L_130e, L_13d5, L_13db
+  preds: L_1305, L_13d5
   succs: L_1405, L_140c
   effects:
     13f5  call GetRaceGrbit((0x59a2 + loword((0xc0 * load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])))), 0x6) -> callresult(int16_t)
@@ -901,19 +883,11 @@ block L_14d3:
   preds: L_14c5
   succs: L_108f, L_14de
   effects:
-    14d6  branch load([bp-cCanBuild+0x2]) == load([bp-lMinNeeded+0x2]) ? L_108f : L_14d8
-
-block L_14d8:
-  insts 735..735  off 0x14d8..0x14da
-  succs: L_14de
-
-block L_14db:
-  insts 736..736  off 0x14db..0x14dd
-  succs: L_108f
+    14d6  branch load([bp-cCanBuild+0x2]) == load([bp-lMinNeeded+0x2]) ? L_108f : L_14de
 
 block L_14de:
   insts 737..739  off 0x14de..0x14e6
-  preds: L_14c5, L_14d3, L_14d8
+  preds: L_14c5, L_14d3
   succs: L_14ea, L_1712
   effects:
     14e5  branch load(ds:[load([bp+rgRes])+0xe]) < 0x0 ? L_1712 : L_14ea
@@ -990,7 +964,7 @@ block L_15ec:
 block L_15f8:
   insts 839..871  off 0x15f8..0x1655
   preds: L_15e3, L_15ec
-  succs: L_1712
+  succs: L_1656
   effects:
     15f8  store[2] [bp-pctT] = merge(Join: L_15f8, (L_15e3:load([bp-0x6]), L_15ec:(load([bp-0x3e]) + 0xffff)))
     15fb  store[2] [bp-pctT+0x2] = merge(Join: L_15f8, (L_15e3:load([bp-0x4]), L_15ec:(load([bp-0x3c]) + 0xffff)))
@@ -1004,7 +978,10 @@ block L_15f8:
 
 block L_1656:
   insts 872..872  off 0x1656..0x1658
+  preds: L_15f8
   succs: L_1712
+  effects:
+    1656  goto L_1712
 
 block L_165c:
   insts 873..901  off 0x165c..0x16b9
@@ -1025,7 +1002,7 @@ block L_165c:
 
 block L_16ba:
   insts 902..930  off 0x16ba..0x1705
-  preds: L_1706, L_170c
+  preds: L_170c
   succs: L_1706
   effects:
     16e8  store[2] ds:[(load([bp+rgRes]) + ((load([bp-i]) << 0x1) << 0x1))] = (load(ds:[(load([bp+rgRes]) + ((load([bp-i]) << 0x1) << 0x1))]) - (load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x52]) - load(ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x32])))
@@ -1037,21 +1014,20 @@ block L_16ba:
 block L_1706:
   insts 931..932  off 0x1706..0x170b
   preds: L_165c, L_16ba
-  succs: L_108f, L_16ba
+  succs: L_108f, L_170c
   effects:
     170a  branch load([bp-i]) >= 0x4 ? L_108f : L_170c
 
 block L_170c:
   insts 933..933  off 0x170c..0x170e
+  preds: L_1706
   succs: L_16ba
-
-block L_170f:
-  insts 934..934  off 0x170f..0x1711
-  succs: L_108f
+  effects:
+    170c  goto L_16ba
 
 block L_1712:
   insts 935..936  off 0x1712..0x1717
-  preds: L_108f, L_10a8, L_1314, L_13a1, L_13d5, L_13de, L_14de, L_14ef, L_14f8, L_15f8, L_1656
+  preds: L_108f, L_10a8, L_1314, L_13a1, L_13d5, L_14de, L_14ef, L_14f8, L_1656
   succs: L_171b, L_17b7
   effects:
     1716  branch load([bp-cBuilt]) <= 0x0 ? L_17b7 : L_171b

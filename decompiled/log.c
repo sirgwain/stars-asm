@@ -28,9 +28,7 @@ L_8b6c:
     if ((gd.fGeneratingTurn != 0x0))
         goto L_8c21;
     else
-        goto L_8b82;
-
-L_8b82:
+        goto L_8b88;
 
 L_8b88:
     i = 0;
@@ -94,9 +92,7 @@ L_8c28:
     if ((gd.fGeneratingTurn != 0x0))
         goto L_8d53;
     else
-        goto L_8c3e;
-
-L_8c3e:
+        goto L_8c44;
 
 L_8c44:
     LOWORD(rgb) = ((LOWORD(rgb) & 0xe0ff) | ((lpshdefNew->ishdef & 0x1f) << 0x8));
@@ -154,9 +150,7 @@ L_8d7d:
     if ((HIWORD(lpfl) == 0x0))
         goto L_8eb8;
     else
-        goto L_8d83;
-
-L_8d83:
+        goto L_8d89;
 
 L_8d89:
     if ((LOWORD(lpfl->lpszName) != 0x0))
@@ -239,6 +233,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
     int16_t   cbWp;
     char     *pbWp;
     HDR       hdr;
+    uint16_t  t_scratch_m28;
     int16_t   t_9229;
     int16_t   t_92f8;
 
@@ -247,9 +242,7 @@ L_8ebe:
     if ((gd.fGeneratingTurn != 0x0))
         goto L_933a;
     else
-        goto L_8ed9;
-
-L_8ed9:
+        goto L_8edf;
 
 L_8edf:
     lxfNew.id = pfl->id;
@@ -296,6 +289,9 @@ L_8f56:
 L_8f6f:
     lxf = lxfNew;
     fValidLxf = 1;
+
+L_8f85:
+    goto L_933a;
 
 L_8f88:
     lxNew.id = pfl->id;
@@ -350,8 +346,12 @@ L_9030:
     lx = lxNew;
     fValidLx = 1;
 
+L_9046:
+    goto L_933a;
+
 L_9049:
-    if ((pfl->iplan == pflNew->iplan))
+    t_scratch_m28 = pfl->iplan;
+    if ((t_scratch_m28 == pflNew->iplan))
         goto L_9093;
     else
         goto L_906b;
@@ -393,12 +393,10 @@ L_910f:
         goto L_911d;
 
 L_911d:
-    if ((fmemcmp(((pfl->lpplord + 0x4) + LOWORD((18 * iordOld))), ((pflNew->lpplord + 0x4) + LOWORD((18 * iordOld))), 0x12) != 0))
-        goto L_9181;
+    if ((fmemcmp(((pfl->lpplord + 0x4) + LOWORD((18 * iordOld))), ((pflNew->lpplord + 0x4) + LOWORD((18 * iordOld))), 0x12) == 0))
+        goto L_90fc;
     else
-        goto L_9178;
-
-L_9178:
+        goto L_9181;
 
 L_9181:
     iordNew = iordOld;
@@ -411,9 +409,7 @@ L_9196:
     if ((d == 0))
         goto L_933a;
     else
-        goto L_919c;
-
-L_919c:
+        goto L_91a2;
 
 L_91a2:
     if ((d >= 0))
@@ -458,12 +454,10 @@ L_9229:
         goto L_9238;
 
 L_9238:
-    if (((uint16_t)(pbWp[cbWp]) != 0))
-        goto L_9251;
+    if (((uint16_t)(pbWp[cbWp]) == 0))
+        goto L_9229;
     else
-        goto L_9248;
-
-L_9248:
+        goto L_9251;
 
 L_9251:
     cbWp = (cbWp + 1);
@@ -513,12 +507,10 @@ L_92f8:
         goto L_9307;
 
 L_9307:
-    if (((uint16_t)(pbWp[cbWp]) != 0))
-        goto L_9320;
+    if (((uint16_t)(pbWp[cbWp]) == 0))
+        goto L_92f8;
     else
-        goto L_9317;
-
-L_9317:
+        goto L_9320;
 
 L_9320:
     cbWp = (cbWp + 1);
@@ -594,17 +586,15 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
     int16_t  fChg;
     HDR      hdr;
     LOGXFER  lxNew;
-    uint16_t scratch_bp_m26;
-    uint16_t scratch_bp_m22;
+    uint16_t t_scratch_m22;
+    uint16_t t_scratch_m28;
 
 L_9420:
     fChg = 0;
     if ((gd.fGeneratingTurn != 0x0))
         goto L_9901;
     else
-        goto L_943b;
-
-L_943b:
+        goto L_9441;
 
 L_9441:
     if ((LOWORD(ppl) != 0x0))
@@ -622,9 +612,7 @@ L_9453:
     if ((fValidLx == 0))
         goto L_9901;
     else
-        goto L_945a;
-
-L_945a:
+        goto L_9460;
 
 L_9460:
     lxNew.id = -1;
@@ -644,6 +632,7 @@ L_949f:
         goto L_94a5;
 
 L_94a5:
+    goto L_9472;
 
 L_94ab:
     lxNew.id = ppl->id;
@@ -709,9 +698,7 @@ L_957c:
     if ((HIWORD(ppl) == 0x0))
         goto L_9901;
     else
-        goto L_9582;
-
-L_9582:
+        goto L_9588;
 
 L_9588:
     if ((LOWORD(pplNew->lpplprod) != 0x0))
@@ -766,7 +753,8 @@ L_95ed:
         goto L_95f7;
 
 L_95f7:
-    if ((ppl->lpplprod->iprodMac != pplNew->lpplprod->iprodMac))
+    t_scratch_m22 = ppl->lpplprod->iprodMac;
+    if ((t_scratch_m22 != pplNew->lpplprod->iprodMac))
         goto L_9666;
     else
         goto L_9621;
@@ -804,13 +792,14 @@ L_96a6:
     WriteMemRt(29, ((pplNew->lpplprod->iprodMac * 0x4) + 0x2), rgbCur);
 
 L_9705:
-    if ((ppl->fNoResearch != pplNew->fNoResearch))
+    t_scratch_m28 = ppl->fNoResearch;
+    if ((t_scratch_m28 != pplNew->fNoResearch))
         goto L_97b5;
     else
         goto L_9754;
 
 L_9754:
-    if ((scratch_bp_m26 != 0x0))
+    if ((0x0 != 0x0))
         goto L_97b5;
     else
         goto L_975b;
@@ -836,14 +825,10 @@ L_979a:
 L_97b5:
     /* untranslated: part[0x0:4](rgbCur) = (uint32_t)pplNew->id */
     rgbCur[4] = 0;
-    scratch_bp_m22 = 0x0;
-    rgbCur[2] = ((rgbCur[0x2] & 0xfffffffe) | (int32_t)(((uint32_t)((pplNew->fNoResearch & 0x1)) << 0x0)));
-    scratch_bp_m22 = 0x0;
-    rgbCur[2] = ((rgbCur[0x2] & 0xfffff801) | (int32_t)(((uint32_t)((pplNew->idFling & 0x3ff)) << 0x1)));
-    scratch_bp_m22 = 0x0;
-    rgbCur[2] = ((rgbCur[0x2] & 0xffff87ff) | (int32_t)(((uint32_t)((pplNew->iWarpFling & 0xf)) << 0xb)));
-    scratch_bp_m22 = 0x0;
-    rgbCur[2] = ((rgbCur[0x2] & 0xfe007fff) | (int32_t)(((uint32_t)((pplNew->idRoute & 0x3ff)) << 0xf)));
+    rgbCur[2] = ((rgbCur[0x2] & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0)));
+    rgbCur[2] = ((rgbCur[0x2] & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1)));
+    rgbCur[2] = ((rgbCur[0x2] & 0xffff87ff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->iWarpFling)) & 0xf)) << 0xb)));
+    rgbCur[2] = ((rgbCur[0x2] & 0xfe007fff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idRoute)) & 0x3ff)) << 0xf)));
     WriteMemRt(35, 6, rgbCur);
 
 L_9901:
@@ -860,9 +845,7 @@ L_9908:
     if ((gd.fGeneratingTurn != 0x0))
         goto L_99f0;
     else
-        goto L_9923;
-
-L_9923:
+        goto L_9929;
 
 L_9929:
     memset(&(lxNew), 0, 0x18);
@@ -929,6 +912,8 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
     int16_t  grFlag;
     int32_t  iBiggest;
     int16_t  cb;
+    uint16_t t_scratch_m50;
+    uint16_t t_scratch_m50_2;
     int32_t  t_call_9cf5;
     int32_t  t_merge_9d34_0001;
     int32_t  t_call_9d2c;
@@ -971,6 +956,7 @@ L_9a8e:
         goto L_9a93;
 
 L_9a93:
+    goto L_9a53;
 
 L_9a99:
     if ((LOWORD(prt) != 0x0))
@@ -985,13 +971,15 @@ L_9aa2:
         goto L_9aab;
 
 L_9aab:
-    if ((prt->grobj1 != (plx1->grobj & 0xff)))
+    t_scratch_m50 = prt->grobj1;
+    if ((t_scratch_m50 != (plx1->grobj & 0xff)))
         goto L_9c94;
     else
         goto L_9ad0;
 
 L_9ad0:
-    if ((prt->grobj2 != (plx2->grobj & 0xff)))
+    t_scratch_m50_2 = prt->grobj2;
+    if ((t_scratch_m50_2 != (plx2->grobj & 0xff)))
         goto L_9c94;
     else
         goto L_9afd;
@@ -1037,6 +1025,7 @@ L_9b89:
         goto L_9b8f;
 
 L_9b8f:
+    goto L_9b46;
 
 L_9b95:
     prtx = prt;
@@ -1063,6 +1052,7 @@ L_9bed:
         goto L_9bf3;
 
 L_9bf3:
+    goto L_9ba9;
 
 L_9bf9:
     prtl = prt;
@@ -1089,6 +1079,7 @@ L_9c56:
         goto L_9c5c;
 
 L_9c5c:
+    goto L_9c0d;
 
 L_9c65:
     if ((hdrPrev.rt == rtLogCargoXfer8))
@@ -1170,13 +1161,14 @@ L_9d4e:
 L_9d57:
     grbit = (grbit | grFlag);
 
+L_9d5d:
+    goto L_9ca4;
+
 L_9d60:
     if ((grbit == 0))
         goto L_9fa0;
     else
-        goto L_9d66;
-
-L_9d66:
+        goto L_9d6c;
 
 L_9d6c:
     prt = &(rgbuf);
@@ -1236,6 +1228,7 @@ L_9e7d:
         goto L_9e83;
 
 L_9e83:
+    goto L_9e2e;
 
 L_9e89:
     if ((HIWORD(iBiggest) > 0x0))
@@ -1288,6 +1281,7 @@ L_9f0a:
         goto L_9f10;
 
 L_9f10:
+    goto L_9eb9;
 
 L_9f16:
     rt = 25;
@@ -1362,13 +1356,14 @@ L_9fda:
 L_9ff1:
     grbit = (grbit | grFlag);
 
+L_9ff7:
+    goto L_9fc1;
+
 L_9ffa:
     if ((grbit == 0x0))
         goto L_a101;
     else
-        goto L_a000;
-
-L_a000:
+        goto L_a006;
 
 L_a006:
     prt = &(rgbuf);
@@ -1424,9 +1419,7 @@ L_a130:
     if ((fLogOff != 0))
         goto L_a221;
     else
-        goto L_a140;
-
-L_a140:
+        goto L_a146;
 
 L_a146:
     if ((((imemLogCur + cb) + 0x2) <= 0x7d00))
@@ -1591,7 +1584,7 @@ L_c727:
         goto L_c72f;
 
 L_c72f:
-    goto L_ffffffff;
+    /* untranslated: {{L_c72f 50995 14 5} JMP       cs:[bx-0x38c8]       unhandled instruction} */
 
 L_c796:
 
@@ -1696,9 +1689,7 @@ L_c8b4:
     if ((HIWORD(vlpMemStream) == 0x0))
         goto BailOut;
     else
-        goto L_c8bb;
-
-L_c8bb:
+        goto L_c8c1;
 
 L_c8c1:
     if ((game.turn < *(vlpMemStream)))
@@ -1731,6 +1722,7 @@ L_c907:
         goto L_c92c;
 
 L_c92c:
+    goto L_c907;
 
 StrOpen:
     StreamOpen(pszLog, 16416);
@@ -2227,9 +2219,7 @@ L_d157:
     if ((HIWORD(vlpMemStream) == 0x0))
         goto BailOut;
     else
-        goto L_d15e;
-
-L_d15e:
+        goto L_d164;
 
 L_d164:
     if ((cSkip < *(vlpMemStream)))
@@ -2263,6 +2253,7 @@ L_d1b2:
         goto L_d1d7;
 
 L_d1d7:
+    goto L_d1b2;
 
 L_d1dd:
     cch = CchGetString(idsTutorial, szT);
@@ -2393,9 +2384,7 @@ L_d3e8:
     if ((rgplr[i].det == 0x0))
         goto L_d3ce;
     else
-        goto L_d3fe;
-
-L_d3fe:
+        goto L_d404;
 
 L_d404:
     WriteRtPlr(&(rgplr[i]), 0x0);
@@ -2450,6 +2439,7 @@ L_d4c0:
         goto L_d4c6;
 
 L_d4c6:
+    goto L_d47c;
 
 L_d4cc:
     i = 0;
@@ -2500,6 +2490,7 @@ L_d56d:
         goto L_d573;
 
 L_d573:
+    goto L_d529;
 
 L_d579:
     if ((game.turn > 0x64))
@@ -2553,13 +2544,16 @@ L_d5d2:
         goto L_d5e3;
 
 L_d5e3:
-    if ((HIWORD(rgsxPlr[i][j]) < cTurnBase))
+    if ((rgsxPlr[i][j].turn < cTurnBase))
         goto L_d5ce;
     else
         goto L_d608;
 
 L_d608:
     WriteRt(rtScore, 24, rgsxPlr[i][j]);
+
+L_d631:
+    goto L_d5ce;
 
 L_d637:
     if ((LOWORD(vlpbAiData) != 0x0))
@@ -2621,15 +2615,14 @@ L_d6e0:
         goto L_d700;
 
 L_d700:
+    goto L_d772;
 
 L_d709:
     lprts = (lpLog + iCur);
     if ((pfn(((lpLog + iCur) + 0x2), lprts->rt, lprts->cb, lpPass, iPass) == 0))
         goto L_d77d;
     else
-        goto L_d75d;
-
-L_d75d:
+        goto L_d763;
 
 L_d763:
     iCur = (iCur + (lprts->cb + 2));

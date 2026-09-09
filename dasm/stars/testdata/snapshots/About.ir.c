@@ -81,9 +81,7 @@ L_13d7:
     if ((i >= 77))
         goto L_13fa;
     else
-        goto L_13dd;
-
-L_13dd:
+        goto L_13e3;
 
 L_13e3:
     OffsetRect(&(rc), 0, dyArial8);
@@ -134,6 +132,9 @@ L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst);
     DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
     FreeProcInstance(lpProc);
+
+L_14df:
+    goto L_1510;
 
 L_14e5:
     if ((message == WM_ERASEBKGND))

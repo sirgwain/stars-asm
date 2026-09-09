@@ -27,10 +27,7 @@ L_58a6:
     goto L_59c9
 
 L_58ee:
-    branch lppl->iPlayer != iPlr ? L_59c5 : L_58fa
-
-L_58fa:
-
+    branch lppl->iPlayer != iPlr ? L_59c5 : L_5900
 
 L_5900:
     score.cPlanet = (score.cPlanet + 1)
@@ -185,10 +182,7 @@ L_5bf1:
     branch lpfl->iPlayer != iPlr ? L_5bb2 : L_5c00
 
 L_5c00:
-    branch lpfl->fDead != 0x0 ? L_5bb2 : L_5c14
-
-L_5c14:
-
+    branch lpfl->fDead != 0x0 ? L_5bb2 : L_5c1a
 
 L_5c1a:
     i = 0
@@ -210,7 +204,7 @@ L_5c87:
     branch i >= 16 ? L_5bb2 : L_5c8d
 
 L_5c8d:
-
+    goto L_5c22
 
 L_5c93:
     branch HIWORD(rgcsh[0x1]) > signhiword(score.cPlanet) ? L_5cb5 : L_5c9f
@@ -222,11 +216,14 @@ L_5ca4:
     branch LOWORD(rgcsh[0x1]) >= score.cPlanet ? L_5cb5 : L_5cac
 
 L_5cac:
+    t_merge_5cb9_0001 = rgcsh[1]
     goto L_5cb9
 
 L_5cb5:
+    t_merge_5cb9_0001 = sext16to32(score.cPlanet)
 
 L_5cb9:
+    t_scratch_m60_2 = (int32_t)(t_merge_5cb9_0001 * 2)
     branch HIWORD(rgcsh[0x0]) > signhiword(score.cPlanet) ? L_5cf1 : L_5cdb
 
 L_5cdb:
@@ -243,7 +240,7 @@ L_5cf1:
     t_merge_5cf5_0001 = sext16to32(score.cPlanet)
 
 L_5cf5:
-    score.lScore = (score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + scratch_bp_m60))
+    score.lScore = (score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + t_scratch_m60_2))
     branch HIWORD(rgcsh[0x2]) < 0x0 ? L_5d57 : L_5d15
 
 L_5d15:

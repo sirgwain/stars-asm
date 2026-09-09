@@ -68,7 +68,7 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	switch e := effect.(type) {
 	case machine.StoreEffect:
 		if bitfield, ok := recognizeBitfieldWrite(c.ctx, e.Addr, e.Src); ok {
-			if dst, ok := c.resolveBitfieldLValue(e.Addr, bitfield.BitOff, bitfield.BitWidth); ok {
+			if dst, ok := c.resolveBitfieldLValue(e.Addr, bitfield.Access); ok {
 				c.recordMemoryWrite(e.Addr, e.Width)
 				src := c.convertValue(bitfield.Value)
 				if constant, ok := src.(*Const); ok {
@@ -105,6 +105,10 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		if lvalue, ok := c.convertCopyAddress(e.Src, e.Width); ok {
 			src = lvalue
 		}
+		if target, ok := recoverExpectedValue(dst, src.ExprType()).(LValue); ok {
+			dst = target
+		}
+		src = recoverExpectedValue(src, dst.ExprType())
 		assign := &Assign{
 			MetaInfo: e.MetaInfo,
 			Dst:      dst,
@@ -137,6 +141,12 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		}
 	case machine.JumpEffect:
 		return &Jump{MetaInfo: e.MetaInfo, To: e.To}
+	case machine.TableJumpEffect:
+		return &TableJump{
+			Index:    c.convertValue(e.Index),
+			MetaInfo: e.MetaInfo,
+			Targets:  append([]machine.BlockID(nil), e.Targets...),
+		}
 	case machine.ReturnEffect:
 		var expected typeinfo.Type
 		if c.ctx != nil && c.ctx.fs != nil {
@@ -204,7 +214,7 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	}
 	if !c.noBitfields {
 		if bitfield, ok := recognizeBitfieldRead(c.ctx, value); ok {
-			if field, ok := c.resolveBitfieldLValue(bitfield.Load.Addr, bitfield.BitOff, bitfield.BitWidth); ok {
+			if field, ok := c.resolveBitfieldLValue(bitfield.Load.Addr, bitfield.Access); ok {
 				return field
 			}
 		}
@@ -395,6 +405,8 @@ func collectTempRequests(effects []machine.Effect) map[uint32][]*machine.Load {
 			collectTempLoads(e.Result, writes, requests, seen)
 		case machine.BranchEffect:
 			collectTempLoads(e.Predicate, writes, requests, seen)
+		case machine.TableJumpEffect:
+			collectTempLoads(e.Index, writes, requests, seen)
 		case machine.ReturnEffect:
 			collectTempLoads(e.Value, writes, requests, seen)
 		}
@@ -596,8 +608,10 @@ func convertOp(op machine.ValueOp) Op {
 		return OpXor
 	case machine.ValueOpShl:
 		return OpShl
-	case machine.ValueOpShr, machine.ValueOpSar:
+	case machine.ValueOpShr:
 		return OpShr
+	case machine.ValueOpSar:
+		return OpSar
 	case machine.ValueOpNeg:
 		return OpNeg
 	case machine.ValueOpNot:

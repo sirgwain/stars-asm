@@ -10,6 +10,9 @@ var U16 = &Primitive{TypeKind: KInt, Name: "uint16_t", Size: 2, Signed: false}
 var U32 = &Primitive{TypeKind: KInt, Name: "uint32_t", Size: 4, Signed: false}
 var I16 = &Primitive{TypeKind: KInt, Name: "int16_t", Size: 2, Signed: true}
 var I32 = &Primitive{TypeKind: KInt, Name: "int32_t", Size: 4, Signed: true}
+
+// F80 represents the 10-byte x87 extended-real storage format.
+var F80 = &Primitive{TypeKind: KFloat, Name: "long double", Size: 10}
 var Double = &Primitive{TypeKind: KFloat, Name: "double", Size: 8}
 var LpStr = &Pointer{Elem: &Primitive{TypeKind: KInt, Name: "char", Size: 1, Signed: true}, Class: PtrFar}
 

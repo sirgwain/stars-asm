@@ -1,0 +1,271 @@
+/*
+FReadFleet  (file)
+  addr: 000f:3a4c  len=1665
+  sig:  int16_t FReadFleet(FLEET *lpfl)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+  locals:
+    uint16_t *       pus            [BP-0x16]
+    int16_t          cch            [BP-0x14]
+    uint8_t *        pb             [BP-0x12]
+    int16_t          cish           [BP-0x10]
+    int16_t          i              [BP-0xe]
+    ORDER *          lpord          [BP-0xc]
+    int16_t          fByte          [BP-0x8]
+    int16_t          cord           [BP-0x6]
+    uint16_t         us             [BP-0x4]
+    block 000F:4047  len=0x63
+      int16_t          cOut           [BP-0x3a]
+      char[33]         szT            [BP-0x38]
+
+  stats: blocks=1  labels=1
+    Corrupt: L_3d24
+*/
+L_3a4c:
+    cish = 0
+    call fmemset(lpfl, 0, 0x7c) -> callresult(void *)
+    call fmemmove(lpfl, rgbCur, 0xc) -> callresult(void *)
+    fByte = lpfl->fDone
+    us = rgbCur[12]
+    pb = &rgbCur[0xe]
+    branch fByte == 0 ? L_3b2f : L_3ab6
+
+L_3ab6:
+    i = 0
+    goto L_3ace
+
+L_3abe:
+    i = (i + 1)
+    us = (us >> 0x1)
+
+L_3ace:
+    branch us == 0x0 ? L_3bae : L_3ad7
+
+L_3ad7:
+    branch (us & 0x1) == 0x0 ? L_3abe : L_3ae5
+
+L_3ae5:
+    pb = (pb + 0x1)
+    lpfl->rgcsh[i] = *pb
+    branch lpfl->rgcsh[i] == 0 ? L_3abe : L_3b25
+
+L_3b25:
+    cish = (cish + 1)
+
+L_3b29:
+    goto L_3abe
+
+L_3b2f:
+    pus = pb
+    i = 0
+    goto L_3b4d
+
+L_3b3d:
+    i = (i + 1)
+    us = (us >> 0x1)
+
+L_3b4d:
+    branch us == 0x0 ? L_3ba8 : L_3b56
+
+L_3b56:
+    branch (us & 0x1) == 0x0 ? L_3b3d : L_3b64
+
+L_3b64:
+    pus = (pus + 0x2)
+    lpfl->rgcsh[i] = *pus
+    branch lpfl->rgcsh[i] == 0 ? L_3b3d : L_3ba1
+
+L_3ba1:
+    cish = (cish + 1)
+
+L_3ba5:
+    goto L_3b3d
+
+L_3ba8:
+    pb = pus
+
+L_3bae:
+    branch cish != 0 ? L_3bcb : L_3bb7
+
+L_3bb7:
+    lpfl->fDead = 0x1
+
+L_3bcb:
+    branch lpfl->det < 0x4 ? L_3cc0 : L_3bdd
+
+L_3bdd:
+    us = pb
+    pb = (pb + 0x2)
+    i = 0
+    goto L_3c06
+
+L_3bf6:
+    i = (i + 1)
+    us = (us >> 0x2)
+
+L_3c06:
+    branch i >= 5 ? L_3cc0 : L_3c0f
+
+L_3c0f:
+    goto L_3ca2
+
+L_3c18:
+    lpfl->rgwtMin[i] = (uint32_t)*pb
+    pb = (pb + 0x1)
+    goto L_3bf6
+
+L_3c47:
+    lpfl->rgwtMin[i] = (uint32_t)pb
+    pb = (pb + 0x2)
+    goto L_3bf6
+
+L_3c73:
+    lpfl->rgwtMin[i] = pb
+    pb = (pb + 0x4)
+    goto L_3bf6
+
+L_3ca2:
+    branch (us & 0x3) == 0x1 ? L_3c18 : L_3caa
+
+L_3caa:
+    branch (us & 0x3) == 0x2 ? L_3c47 : L_3cb2
+
+L_3cb2:
+    branch (us & 0x3) != 0x3 ? L_3bf6 : L_3cb7
+
+L_3cb7:
+    goto L_3c73
+
+L_3cc0:
+    branch lpfl->det >= 0x7 ? L_3d11 : L_3cd2
+
+L_3cd2:
+    lpfl->dirLong = pb
+    pb = (pb + 0x4)
+    lpfl->wtFleet = pb
+    pb = (pb + 0x4)
+    call ReadRt() -> callresult(void)
+    return 1
+
+L_3d11:
+    branch hdrCur.rt == rtFleetA ? L_3d4b : L_3d24
+
+Corrupt:
+    call AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND) -> callresult(int16_t)
+    return 0
+
+L_3d4b:
+    us = pb
+    pb = (pb + 0x2)
+    pus = pb
+    i = 0
+    goto L_3d7a
+
+L_3d6a:
+    i = (i + 1)
+    us = (us >> 0x1)
+
+L_3d7a:
+    branch us == 0x0 ? L_3e0f : L_3d83
+
+L_3d83:
+    branch (us & 0x1) == 0x0 ? L_3d6a : L_3d91
+
+L_3d91:
+    pus = (pus + 0x2)
+    lpfl->rgdv[i].dp = *pus
+    branch lpfl->rgdv[i].pctDp < 0x1f4 ? L_3d6a : L_3dd8
+
+L_3dd8:
+    lpfl->rgdv[i].pctDp = 0x1f3
+
+L_3e0c:
+    goto L_3d6a
+
+L_3e0f:
+    pb = pus
+    pb = (pb + 0x1)
+    lpfl->iplan = *pb
+    pb = (pb + 0x1)
+    lpfl->cord = *pb
+    lpfl->lpplord = LpplAlloc(0x12, (lpfl->cord + 1), htOrd)
+    call fmemset(lpfl->lpplord->rgord, 0, loword(((lpfl->cord + 1) * 0x12))) -> callresult(void *)
+    cord = lpfl->cord
+    lpord = (lpfl->lpplord + 0x4)
+    goto L_3ec0
+
+L_3eaf:
+    lpord = (lpord + 0x12)
+    cord = (cord - 1)
+
+L_3ec0:
+    branch cord == 0 ? L_3f33 : L_3ec9
+
+L_3ec9:
+    call memset(rgbCur, 0, 0x12) -> callresult(void *)
+    call ReadRt() -> callresult(void)
+    branch hdrCur.rt == rtOrderA ? L_3f0b : L_3ef5
+
+L_3ef5:
+    branch hdrCur.rt != rtOrderB ? L_3d24 : L_3f0b
+
+L_3f0b:
+    *lpord = *(ORDER *)rgbCur
+    lpord->fNoAutoTrack = 0x0
+    goto L_3eaf
+
+L_3f33:
+    lpfl->lpplord->iordMac = lobyte(lpfl->cord)
+    branch lpfl->idPlanet == -1 ? L_3fdb : L_3f52
+
+L_3f52:
+    branch lpfl->idPlanet <= game.cPlanMax ? L_3f6a : L_3f61
+
+L_3f61:
+    lpfl->idPlanet = -1
+
+L_3f6a:
+    branch lpfl->pt.x != rgptPlan[lpfl->idPlanet].x ? L_3fa4 : L_3f85
+
+L_3f85:
+    branch lpfl->pt.y == rgptPlan[lpfl->idPlanet].y ? L_3fdb : L_3fa4
+
+L_3fa4:
+    branch i != 0 ? L_3d24 : L_3fad
+
+L_3fad:
+    branch game.turn != 0x0 ? L_3d24 : L_3fb7
+
+L_3fb7:
+    lpfl->pt.x = rgptPlan[lpfl->idPlanet].x
+    lpfl->pt.y = rgptPlan[lpfl->idPlanet].y
+
+L_3fdb:
+    call ReadRt() -> callresult(void)
+    branch hdrCur.rt != rtString ? L_40b2 : L_3ff3
+
+L_3ff3:
+    cch = sext8to16(LOWORD(rgbCur))
+    branch cch != 0 ? L_4047 : L_4003
+
+L_4003:
+    lpfl->lpszName = LpAlloc((strlen(rgbCur[1]) + 0x1), htString)
+    call fstrcpy(lpfl->lpszName, rgbCur[1]) -> callresult(char *)
+    goto L_40aa
+
+L_4047:
+    cOut = 32
+    call FDecompressUserString(rgbCur[1], cch, szT, &cOut) -> callresult(int16_t)
+    lpfl->lpszName = LpAlloc((strlen(szT) + 0x1), htString)
+    call fstrcpy(lpfl->lpszName, szT) -> callresult(char *)
+
+L_40aa:
+    call ReadRt() -> callresult(void)
+    goto L_40c1
+
+L_40b2:
+    lpfl->lpszName = 0x0
+
+L_40c1:
+    return 1
+

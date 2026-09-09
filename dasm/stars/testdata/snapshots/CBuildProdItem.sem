@@ -72,17 +72,20 @@ L_0d58:
 
 L_0d74:
     iobjOther = mdIdleMine
-    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - lppl->cMines)
+    t_scratch_m56 = lppl->cMines
+    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - t_scratch_m56)
     goto L_0f9f
 
 L_0dbe:
     iobjOther = mdIdleFactory
-    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - lppl->cFactories)
+    t_scratch_m56_2 = lppl->cFactories
+    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - t_scratch_m56_2)
     goto L_0f9f
 
 L_0e08:
     iobjOther = mdIdleDefense
-    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - lppl->cDefenses)
+    t_scratch_m56_3 = lppl->cDefenses
+    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - t_scratch_m56_3)
     goto L_0f9f
 
 L_0e4a:
@@ -116,6 +119,8 @@ L_0ec6:
 L_0ee3:
     cMax = 0
 
+L_0ee8:
+    goto L_0f9f
 
 L_0eeb:
     iobjOther = iobjPacketMixed
@@ -127,6 +132,8 @@ L_0f0f:
 L_0f21:
     cMax = 0
 
+L_0f26:
+    goto L_0f9f
 
 L_0f2c:
     branch prod.iItem != iobjMine ? L_0f3c : L_0f34
@@ -177,13 +184,14 @@ L_0fa8:
     cMax = 0
 
 L_0fad:
+    t_scratch_m58 = prod.cItem
     branch 0x0 > signhiword(cMax) ? L_1000 : L_0fd0
 
 L_0fd0:
-    branch scratch_bp_m56 < signhiword(cMax) ? L_0fdc : L_0fd5
+    branch 0x0 < signhiword(cMax) ? L_0fdc : L_0fd5
 
 L_0fd5:
-    branch scratch_bp_m58 > cMax ? L_1000 : L_0fdc
+    branch t_scratch_m58 > cMax ? L_1000 : L_0fdc
 
 L_0fdc:
     branch prod.iItem != iobjAlchemy ? L_102c : L_0ff8
@@ -225,10 +233,7 @@ L_10ee:
     branch (HIWORD(rgCost[i]) - HIWORD(rgCostPaid[i])) > HIWORD(rgRes[i]) ? L_110a : L_10f3
 
 L_10f3:
-    branch (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) > LOWORD(rgRes[i]) ? L_110a : L_10f7
-
-L_10f7:
-
+    branch (LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) > LOWORD(rgRes[i]) ? L_110a : L_10fd
 
 L_10fd:
     i = (i + 1)
@@ -323,10 +328,7 @@ L_12fc:
     branch fAutoBuild == 0 ? L_131c : L_1305
 
 L_1305:
-    branch fAlchemy != 0 ? L_13e1 : L_130b
-
-L_130b:
-
+    branch fAlchemy != 0 ? L_13e1 : L_1314
 
 L_1314:
     fAutoBuild = 2
@@ -350,10 +352,7 @@ L_13a1:
     branch fAlchemy == 0 ? L_1712 : L_13d5
 
 L_13d5:
-    branch fResourceBlocked != 0 ? L_1712 : L_13db
-
-L_13db:
-
+    branch fResourceBlocked != 0 ? L_1712 : L_13e1
 
 LAlchemize:
     branch GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? L_140c : L_1405
@@ -407,10 +406,7 @@ L_14c5:
     branch LOWORD(cCanBuild) != LOWORD(lMinNeeded) ? L_14de : L_14d3
 
 L_14d3:
-    branch HIWORD(cCanBuild) == HIWORD(lMinNeeded) ? L_108f : L_14d8
-
-L_14d8:
-
+    branch HIWORD(cCanBuild) == HIWORD(lMinNeeded) ? L_108f : L_14de
 
 L_14de:
     branch *(rgRes+0xe) < 0x0 ? L_1712 : L_14ea
@@ -451,13 +447,12 @@ L_15f8:
     pprodPartial->pct = LOWORD(pctT)
     rgRes[3] = (rgRes[3] - (int32_t)((uint32_t)(pctT * lAlchCost) / 0x64))
 
+L_1656:
+    goto L_1712
 
 L_165c:
     cBuilt = (cBuilt + 1)
-    scratch_bp_m58 = ((LOWORD(prod) + 0xffff) & 0x3ff)
-    scratch_bp_m56 = 0x0
-    prod.cItem = 0x0
-    prod = (prod | scratch_bp_m58)
+    prod.cItem = (prod.cItem + 0xffff)
     prod.pct = 0x0
     i = 0
     goto L_1706
@@ -471,7 +466,7 @@ L_1706:
     branch i >= 4 ? L_108f : L_170c
 
 L_170c:
-
+    goto L_16ba
 
 L_1712:
     branch cBuilt <= 0 ? L_17b7 : L_171b

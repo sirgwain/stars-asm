@@ -33,6 +33,9 @@ L_0080:
 L_008a:
     MineClick(LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), message, wParam);
 
+L_00b6:
+    goto L_03f8;
+
 L_00b9:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
@@ -133,6 +136,9 @@ L_0321:
     WriteMemRt(43, 4, &(rtlt));
     /* untranslated: part[0xd:1](lpThings[sel.scan.ith]) = lobyte(fDetonate) */
 
+L_0390:
+    goto L_03f8;
+
 Default:
     return DefWindowProc(hwnd, message, wParam, lParam);
 
@@ -191,6 +197,7 @@ L_03ed:
         goto L_03f2;
 
 L_03f2:
+    goto L_0080;
 
 L_03f8:
     return 0;
@@ -371,6 +378,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     uint16_t   t_merge_127e_0001;
     THING     *t_call_19ab;
     uint16_t   t_merge_1d8c_0001;
+    uint16_t   t_scratch_me2;
     int32_t    t_merge_1eae_0001;
     uint16_t   t_merge_2331_0001;
     COLORREF   t_merge_23d4_0001;
@@ -386,8 +394,6 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     int16_t    t_merge_3357_0001;
     uint16_t   t_call_334f;
     uint32_t   t_merge_33e5_0001;
-    uint16_t   scratch_bp_m1cc;
-    uint16_t   scratch_bp_m1ce;
     uint32_t   t_merge_3519_0001;
     int16_t    t_merge_3609_0001;
     int16_t    t_3636;
@@ -442,9 +448,7 @@ L_0705:
     if ((grobj == grobjNone))
         goto FinishUp;
     else
-        goto L_070c;
-
-L_070c:
+        goto L_0712;
 
 L_0712:
     if ((grobj != grobjFleet))
@@ -457,9 +461,7 @@ L_071c:
     if ((sel.scan.ifl == -1))
         goto FinishUp;
     else
-        goto L_072f;
-
-L_072f:
+        goto L_0735;
 
 L_0735:
     xLeft = (prc->left + 6);
@@ -560,6 +562,9 @@ L_0c38:
     OffsetRc(&(rcGauge), 0, (dyArial8 + 4));
     DrawFleetGauge(hdc, &(rcGauge), lpfl, 5);
     yTop = (yTop + (dyArial8 + 2));
+
+L_0cd4:
+    goto L_0cea;
 
 L_0cd7:
     cMass = lpfl->wtFleet;
@@ -676,6 +681,9 @@ L_0f67:
     CchGetString(t_merge_0f67_0001, szT);
     c = _wsprintf(szWork, szT, lpord->iWarp);
 
+L_0f9e:
+    goto L_0fce;
+
 L_0fa1:
     if ((gd.fSmallTileMode == 0x0))
         goto L_0fbf;
@@ -719,6 +727,9 @@ L_1022:
     c = _wsprintf(szWork, pszT, LOWORD(l), HIWORD(l));
     TextOut(hdc, (prc->left + 86), yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
+
+L_107d:
+    goto FinishUp;
 
 L_1080:
     if ((lpfl->fdirValid == 0x0))
@@ -770,6 +781,9 @@ L_112c:
     TextOut(hdc, (prc->left + 86), yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
 
+L_1155:
+    goto FinishUp;
+
 L_1158:
     if ((grobj != grobjThing))
         goto L_1f96;
@@ -780,9 +794,7 @@ L_1162:
     if ((sel.scan.ith == -1))
         goto FinishUp;
     else
-        goto L_1169;
-
-L_1169:
+        goto L_116f;
 
 L_116f:
     lpth = (lpThings + LOWORD((0x12 * sel.scan.ith)));
@@ -924,6 +936,7 @@ L_1843:
         goto L_1849;
 
 L_1849:
+    goto L_179c;
 
 L_1852:
     if ((lpth->ith != ithWormhole))
@@ -1010,9 +1023,7 @@ L_1bc0:
     if ((lpth->ith != ithMinefield))
         goto FinishUp;
     else
-        goto L_1bd4;
-
-L_1bd4:
+        goto L_1bda;
 
 L_1bda:
     xLeft = (xLeft + 80);
@@ -1045,7 +1056,8 @@ L_1d89:
     t_merge_1d8c_0001 = 0x0;
 
 L_1d8c:
-    pctDecay = (uint32_t)((LOWORD(((LOWORD((t_merge_1d8c_0001 * 0x3)) + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
+    t_scratch_me2 = (LOWORD((t_merge_1d8c_0001 * 0x3)) + 0x1);
+    pctDecay = (uint32_t)((LOWORD((t_scratch_me2 * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
     if ((HIWORD(pctDecay) < 0x0))
         goto L_1df1;
     else
@@ -1147,6 +1159,9 @@ L_1f27:
     c = _wsprintf(szWork, szT, i, c2);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
+
+L_1f93:
+    goto FinishUp;
 
 L_1f96:
     if ((sel.scan.idpl == -1))
@@ -1569,9 +1584,7 @@ L_2c3d:
     if ((yTop > yBot))
         goto L_2cf6;
     else
-        goto L_2c95;
-
-L_2c95:
+        goto L_2c9b;
 
 L_2c9b:
     PatBlt(hdc, xBeg, yBot, 1, 1, PATCOPY);
@@ -1580,6 +1593,9 @@ L_2c9b:
     PatBlt(hdc, ((xBeg + c) + 0xffff), yBot, 1, 1, PATCOPY);
     xBeg = (xBeg - 1);
     c = (c + 2);
+
+L_2cf3:
+    goto L_2c3d;
 
 L_2cf6:
     if ((fCanTerraform == 0))
@@ -1644,6 +1660,9 @@ L_2dc6:
 L_2dcc:
     xEnd = ((xL + 2) + MulDiv((iCur + dxBar), dx, 100));
     PatBlt(hdc, xBeg, yTop, ((xEnd - xBeg) + 0x1), 1, PATCOPY);
+
+L_2e17:
+    goto L_29af;
 
 L_2e1a:
     yCur = (yCur + (dyArial8 >> 0x1));
@@ -1800,9 +1819,7 @@ L_3232:
     if ((lpfl->lpplord->rgord[0].grTask != grTaskMine))
         goto L_31bb;
     else
-        goto L_3245;
-
-L_3245:
+        goto L_324b;
 
 L_324b:
     cMines = CMineFromLpfl(lpfl);
@@ -1839,6 +1856,7 @@ L_32cd:
         goto L_32d4;
 
 L_32d4:
+    goto L_32a3;
 
 L_32da:
     SelectObject(hdc, rghfontArial8[1]);
@@ -1915,13 +1933,13 @@ L_345a:
         goto L_3497;
 
 L_3497:
-    if ((scratch_bp_m1cc > SIGNHIWORD(cMinGrafMax)))
+    if (((HIWORD(rgl[i]) + HIWORD(pl.rgwtMin[i])) > SIGNHIWORD(cMinGrafMax)))
         goto L_34a3;
     else
         goto L_349c;
 
 L_349c:
-    if ((scratch_bp_m1ce <= cMinGrafMax))
+    if (((LOWORD(rgl[i]) + LOWORD(pl.rgwtMin[i])) <= cMinGrafMax))
         goto L_34d3;
     else
         goto L_34a3;
@@ -2003,9 +2021,7 @@ L_362f:
     if ((yTop > yBot))
         goto L_3699;
     else
-        goto L_365f;
-
-L_365f:
+        goto L_3665;
 
 L_3665:
     t_3668 = xBeg;
@@ -2014,6 +2030,9 @@ L_3665:
     yBot = (yBot - 1);
     PatBlt(hdc, xBeg, yBot, c, 1, PATCOPY);
     c = (c + 2);
+
+L_3696:
+    goto L_362f;
 
 L_3699:
     iPass = (iPass + 1);
@@ -2025,6 +2044,7 @@ L_369e:
         goto L_36a5;
 
 L_36a5:
+    goto L_35a1;
 
 L_36ab:
     SetBkMode(hdc, OPAQUE);
@@ -2353,6 +2373,8 @@ L_3ad1:
     return htMineStarbase;
 
 L_3ad7:
+
+L_3ada:
     return htMineNone;
 
 L_3ae0:
@@ -2407,10 +2429,10 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
     int16_t    ifl;
     int32_t    cMines;
     int32_t    lVal;
+    uint16_t   t_scratch_m12;
     uint16_t   t_merge_3e20_0001;
     uint16_t   t_merge_3e7b_0001;
     uint16_t   t_merge_3ef6_0001;
-    uint16_t   scratch_bp_m28;
     uint16_t   t_merge_41a7_0001;
     uint16_t   t_merge_4272_0001;
     uint16_t   t_merge_42ed_0001;
@@ -2433,15 +2455,12 @@ L_3b7f:
     if ((ht != htMineShipOrFleet))
         goto L_47d5;
     else
-        goto L_3b85;
-
-L_3b85:
+        goto L_3b8b;
 
 L_3b8b:
     goto L_47a6;
 
-L_3b91:
-    goto L_47d5;
+L_3b94:
     if ((sel.scan.grobj != grobjPlanet))
         goto L_3bbd;
     else
@@ -2469,13 +2488,18 @@ L_3c0f:
     GlobalPD.grPopup = grPopupPlayer;
     Popup(hwndMine, x, y);
     goto L_47d5;
-    /* untranslated: part.hs.iItem = mpiTypeiItem[part[0xc:1](lpThings[sel.scan.ith])] */
+
+L_3c2a:
+    /* untranslated: t_scratch_m12 = mpiTypeiItem[part[0xc:1](lpThings[sel.scan.ith])] */
+    part.hs.iItem = t_scratch_m12;
     part.hs.grhst = hstMines;
     FLookupPart(&(part));
     GlobalPD.grPopup = grPopupComponent;
     GlobalPD.part = part;
     Popup(hwndMine, x, y);
     goto L_47d5;
+
+L_3c9f:
     if ((msg != 516))
         goto L_3e38;
     else
@@ -2522,6 +2546,7 @@ L_3d90:
         goto L_3dc2;
 
 L_3dc2:
+    goto L_3dd1;
 
 L_3dcb:
     c = 0;
@@ -2564,14 +2589,16 @@ L_3e78:
 
 L_3e7b:
     /* untranslated: part[0x6:2](GlobalPD) = t_merge_3e7b_0001 */
-    /* untranslated: part[0xa:2](GlobalPD) = 0xff */
+    GlobalPD.grbit = 0xff;
 
 L_3e84:
     Popup(hwndMine, x, y);
     goto L_47d5;
+
+L_3e99:
     GlobalPD.grPopup = grPopupShdef;
     lppl = LpplFromId(sel.scan.idpl);
-    GlobalPD.lpshdef = (rglpshdefSB[lppl->iPlayer] + LOWORD((lppl->isb * 0x93)));
+    /* untranslated: part[0x2:4](GlobalPD) = (rglpshdefSB[lppl->iPlayer] + loword((lppl->isb * 0x93))) */
     if ((idPlayer == lppl->iPlayer))
         goto L_3ef3;
     else
@@ -2590,10 +2617,14 @@ L_3ef6:
     /* untranslated: part[0xa:4](GlobalPD) = 0x10000 */
     Popup(hwndMine, x, y);
     goto L_47d5;
+
+L_3f20:
     GlobalPD.grPopup = grPopupPlanet;
     HIWORD(GlobalPD) = sel.scan.idpl;
     Popup(hwndMine, x, y);
     goto L_47d5;
+
+L_3f41:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupPlanetEnv;
     HIWORD(GlobalPD) = pl.id;
@@ -2624,22 +2655,23 @@ L_3f99:
 
 L_3fc0:
     /* untranslated: part[0x8:2](GlobalPD) = rgMin[part[0x4:2](GlobalPD)] */
-    /* untranslated: part[0xa:2](GlobalPD) = rgMax[part[0x4:2](GlobalPD)] */
+    /* untranslated: GlobalPD.grbit = rgMax[part[0x4:2](GlobalPD)] */
     /* untranslated: branch part[0x8:2](GlobalPD) != 0xffff ? L_3fee : L_3fe8 */
 
 L_3fe8:
     /* untranslated: part[0x8:2](GlobalPD) = part[0x6:2](GlobalPD) */
 
 L_3fee:
-    /* untranslated: branch part[0xa:2](GlobalPD) != 0xffff ? L_3ffe : L_3ff8 */
+    if ((GlobalPD.grbit != 0xffff))
+        goto L_3ffe;
+    else
+        goto L_3ff8;
 
 L_3ff8:
-    /* untranslated: part[0xa:2](GlobalPD) = part[0x6:2](GlobalPD) */
+    /* untranslated: GlobalPD.grbit = part[0x6:2](GlobalPD) */
 
 L_3ffe:
-    /* untranslated: branch part[0x8:2](GlobalPD) == part[0xa:2](GlobalPD) ? L_4010 : L_4007 */
-
-L_4007:
+    /* untranslated: branch part[0x8:2](GlobalPD) != GlobalPD.grbit ? L_401c : L_4010 */
 
 NoTerra:
     /* untranslated: part[0x8:4](GlobalPD) = 0xffffffff */
@@ -2650,6 +2682,8 @@ L_401c:
     /* untranslated: GlobalPD.iPlrMax = sext8to16(rgplr[idPlayer].rgEnvVarMax[part[0x4:2](GlobalPD)]) */
     Popup(hwndMine, x, y);
     goto L_47d5;
+
+L_4085:
     if ((msg != 516))
         goto L_40a4;
     else
@@ -2657,7 +2691,7 @@ L_401c:
 
 L_408f:
     PopupMineralScanChoices(hwndMine, x, y);
-    goto L_4439;
+    goto L_47d5;
 
 L_40a4:
     scan = sel.scan;
@@ -2670,6 +2704,9 @@ L_40a4:
 L_40c2:
     i = (scan.ith + 1);
 
+CheckThing:
+    goto L_4113;
+
 L_40ce:
     if ((lpThings[i].pt.x != scan.pt.x))
         goto L_410f;
@@ -2677,12 +2714,10 @@ L_40ce:
         goto L_4103;
 
 L_4103:
-    if ((lpThings[i].pt.y == scratch_bp_m28))
+    if ((lpThings[i].pt.y == scan.pt.y))
         goto L_411e;
     else
-        goto L_4109;
-
-L_4109:
+        goto L_410f;
 
 L_410f:
     i = (i + 1);
@@ -2710,17 +2745,13 @@ L_4154:
     if (((scan.grobjFull & 0x1) != 0x0))
         goto CheckPlanet;
     else
-        goto L_415f;
-
-L_415f:
+        goto L_4168;
 
 L_4168:
     if (((scan.grobjFull & 0x2) != 0x0))
         goto CheckFleet;
     else
-        goto L_4173;
-
-L_4173:
+        goto L_417c;
 
 L_417c:
     if (((scan.grobjFull & 0x8) == 0x0))
@@ -2778,12 +2809,10 @@ L_41ec:
         goto L_4206;
 
 L_4206:
-    if ((scan.pt.y == lpfl->pt.y))
-        goto L_4215;
+    if ((scan.pt.y != lpfl->pt.y))
+        goto L_41ad;
     else
-        goto L_420c;
-
-L_420c:
+        goto L_4215;
 
 L_4215:
     if ((i >= cFleet))
@@ -2862,6 +2891,9 @@ L_42ea:
 L_42ed:
     fOurs = t_merge_42ed_0001;
 
+L_42f0:
+    goto ChangeIt;
+
 CheckFleet:
     i = 0;
     goto L_42ff;
@@ -2895,12 +2927,10 @@ L_433a:
         goto L_4354;
 
 L_4354:
-    if ((scan.pt.y == lpfl->pt.y))
-        goto L_4363;
+    if ((scan.pt.y != lpfl->pt.y))
+        goto L_42fb;
     else
-        goto L_435a;
-
-L_435a:
+        goto L_4363;
 
 L_4363:
     if ((i != cFleet))
@@ -2955,7 +2985,7 @@ L_43ec:
 L_43f2:
     ChangeScanSel(&(scan), 2);
     if ((fOurs == 0))
-        goto L_4439;
+        goto L_47d5;
     else
         goto L_440b;
 
@@ -2966,6 +2996,8 @@ L_440b:
 
 L_4439:
     goto L_47d5;
+
+L_443c:
     iChecked = -1;
     /* untranslated: part[0x0:4](rgi) = 0x1f40064 */
     rgi[2] = 1000;
@@ -2998,13 +3030,13 @@ L_44d6:
 L_44df:
     i = PopupMenu(hwndMine, x, y, 9, 0x0, psz, iChecked, 1);
     if ((i == -1))
-        goto L_456c;
+        goto L_47d5;
     else
         goto L_4511;
 
 L_4511:
     if ((rgi[i] == cMinGrafMax))
-        goto L_456c;
+        goto L_47d5;
     else
         goto L_4525;
 
@@ -3012,7 +3044,7 @@ L_4525:
     cMinGrafMax = rgi[i];
     InvalidateRect(hwndMine, 0x0, 1);
     if (((grbitScan & 0xf) != 0x1))
-        goto L_456c;
+        goto L_47d5;
     else
         goto L_4557;
 
@@ -3021,10 +3053,11 @@ L_4557:
 
 L_456c:
     goto L_47d5;
+
+L_456f:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.idPlanet = (ht - 1);
-    /* untranslated: part[0x4:2](GlobalPD) = signhiword((ht + 0xffff)) */
+    /* untranslated: part[0x2:4](GlobalPD) = sext16to32((ht + 0xffff)) */
     i = 1;
     goto L_45b4;
 
@@ -3112,9 +3145,7 @@ L_46ec:
     if ((lpfl->lpplord->rgord[0].grTask != grTaskMine))
         goto L_4678;
     else
-        goto L_46ff;
-
-L_46ff:
+        goto L_4705;
 
 L_4705:
     cMines = CMineFromLpfl(lpfl);
@@ -3138,6 +3169,9 @@ L_4727:
 L_4730:
     EstMineralsMined(&(pl), rglT, cMines, 0);
     lVal = (lVal + rglT[(ht - 1)]);
+
+L_4767:
+    goto L_4678;
 
 L_476a:
     if ((HIWORD(lVal) < 0x0))
@@ -3166,12 +3200,43 @@ L_478e:
 
 L_47a6:
     if ((ht > htMineMinefieldType))
-        goto L_3b91;
+        goto L_47d5;
     else
         goto L_47ae;
 
 L_47ae:
-    goto L_ffffffff;
+    switch ((ht * 0x2)) {
+    case 0x0:
+        goto L_47d5;
+    case 0x2:
+        goto L_456f;
+    case 0x4:
+        goto L_456f;
+    case 0x6:
+        goto L_456f;
+    case 0x8:
+        goto L_47d5;
+    case 0xa:
+        goto L_443c;
+    case 0xc:
+        goto L_3f41;
+    case 0xe:
+        goto L_3f41;
+    case 0x10:
+        goto L_3f41;
+    case 0x12:
+        goto L_4085;
+    case 0x14:
+        goto L_3b94;
+    case 0x16:
+        goto L_3c9f;
+    case 0x18:
+        goto L_3f20;
+    case 0x1a:
+        goto L_3e99;
+    case 0x1c:
+        goto L_3c2a;
+    }
 
 L_47d5:
     return;
@@ -3222,6 +3287,9 @@ L_4838:
     psz = PszGetPlanetName(sel.scan.idpl);
     strcat(psz, szSummary);
 
+L_4856:
+    goto L_48fe;
+
 L_4859:
     if (((grobj & 0x2) == 0x0))
         goto L_48a7;
@@ -3237,6 +3305,9 @@ L_4867:
 L_4871:
     psz = PszGetFleetName(rglpfl[sel.scan.ifl]->id);
     strcat(psz, szSummary);
+
+L_48a4:
+    goto L_48fe;
 
 L_48a7:
     if (((grobj & 0x8) == 0x0))
@@ -3255,8 +3326,11 @@ L_48bf:
     psz = PszGetThingName(lpThings[sel.scan.ith].idFull);
     strcat(psz, szSummary);
 
+L_48f5:
+    goto L_48fe;
+
 L_48f8:
-    psz = &(szDeepSpace);
+    psz = szDeepSpace;
 
 L_48fe:
     strcpy(szMineralTitle, psz);
@@ -3655,6 +3729,9 @@ L_4ee5:
 L_4f0c:
     iChecked = 0;
 
+L_4f12:
+    goto L_4f1a;
+
 L_4f15:
     c = 0;
 
@@ -3714,12 +3791,10 @@ L_4fb3:
 L_4fba:
     c = (c + 1);
     rgid[c] = ((uint32_t)(lpfl->id) | 0x80000000);
-    if ((c >= 100))
-        goto L_4fed;
+    if ((c < 100))
+        goto L_4f22;
     else
-        goto L_4fe4;
-
-L_4fe4:
+        goto L_4fed;
 
 L_4fed:
     if ((c != 2))
@@ -3856,12 +3931,10 @@ L_51cb:
         goto L_51d3;
 
 L_51d3:
-    if ((lpfl->id == id))
-        goto L_51e7;
+    if ((lpfl->id != id))
+        goto L_5194;
     else
-        goto L_51de;
-
-L_51de:
+        goto L_51e7;
 
 L_51e7:
     scan.ifl = i;
@@ -3904,9 +3977,7 @@ L_5271:
     if ((lpth->idFull == LOWORD(rgid[i])))
         goto L_52a3;
     else
-        goto L_528b;
-
-L_528b:
+        goto L_5291;
 
 L_5291:
     lpth = (lpth + 0x12);
@@ -3976,6 +4047,7 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
     FLEET   *lpfl;
     uint16_t t_merge_5386_0001;
     uint16_t t_merge_53c3_0001;
+    int16_t  t_scratch_m22;
 
 L_5362:
     if ((LOWORD(cMines) != 0xffff))
@@ -4062,6 +4134,7 @@ L_541d:
         goto L_5423;
 
 L_5423:
+    goto L_5404;
 
 L_5429:
     lMine = (uint32_t)(CMinesOperating(lppl));
@@ -4076,6 +4149,9 @@ L_5447:
 
 L_5454:
     lMineEff = (uint32_t)(GetRaceStat(&(rgplr[lppl->iPlayer]), rsMineProd));
+
+L_5477:
+    goto L_5490;
 
 L_547a:
     lMine = cMines;
@@ -4160,7 +4236,8 @@ L_559c:
         goto L_55ac;
 
 L_55ac:
-    if ((Random(100) >= LOWORD(lQuanRem)))
+    t_scratch_m22 = Random(100);
+    if ((t_scratch_m22 >= LOWORD(lQuanRem)))
         goto L_55d3;
     else
         goto L_55cb;
@@ -4445,9 +4522,7 @@ L_593e:
     if ((lpfl->lpplord->rgord[0].grTask != grTaskMine))
         goto L_58b6;
     else
-        goto L_5951;
-
-L_5951:
+        goto L_5957;
 
 L_5957:
     cMines = CMineFromLpfl(lpfl);
@@ -4491,6 +4566,9 @@ L_59d4:
 
 L_59dd:
     lpfl->fHereAllTurn = 0x0;
+
+L_59f1:
+    goto L_58b6;
 
 L_59f4:
     return;

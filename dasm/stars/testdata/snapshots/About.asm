@@ -190,12 +190,6 @@ L_13d7:
 CMP       [bp-i], 0x004d            ; [bp-0xe], 0x004d
 JGE       L_13fa              
 
-L_13dd:
-JMP       L_13e3              
-
-L_13e0:                             ; stars.c:803
-JMP       L_13fa              
-
 L_13e3:                             ; stars.c:805
 LEA       ax, [bp-rc]               ; ax, [bp-0xa]
 MOV       dx, ss              
@@ -248,9 +242,6 @@ CALLF     SetBkColor                ; COLORREF SetBkColor(HDC arg1, COLORREF arg
                                     ; stars.c:821
 MOV       ax, [hbrButtonFace]       ; ax, [0x0010]
 JMP       L_1516              
-
-L_145e:                             ; stars.c:823
-JMP       L_1510              
 
 L_1461:                             ; stars.c:827
 CMP       [bp+wParam], 0x0001       ; [bp+0xa], 0x0001

@@ -27,7 +27,7 @@ block L_1792:
 
 block L_17a3:
   insts 7..7  off 0x17a3..0x17a6
-  preds: L_17ef, L_17f9, L_1851, L_1875, L_1899, L_18bd, L_18c5, L_18c8, L_1906, L_19c6, L_19cb, L_19d3, L_1bda, L_1bef, L_1bf4, L_1bfd, L_1c4a, L_1c8f
+  preds: L_17ef, L_1851, L_1875, L_1899, L_18bd, L_18c8, L_19c6, L_19cb, L_1bda, L_1bef, L_1bf4, L_1c4a, L_1c8f
   succs: L_17a7
   effects:
     17a3  store[2] [bp-ipl] = (load([bp-ipl]) + 0x1)
@@ -67,19 +67,11 @@ block L_17ef:
   preds: L_17e2
   succs: L_17a3, L_17fc
   effects:
-    17f4  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x36]) == 0x0 ? L_17a3 : L_17f6
-
-block L_17f6:
-  insts 35..35  off 0x17f6..0x17f8
-  succs: L_17fc
-
-block L_17f9:
-  insts 36..36  off 0x17f9..0x17fb
-  succs: L_17a3
+    17f4  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x36]) == 0x0 ? L_17a3 : L_17fc
 
 block L_17fc:
   insts 37..50  off 0x17fc..0x1829
-  preds: L_17e2, L_17ef, L_17f6
+  preds: L_17e2, L_17ef
   succs: L_182d, L_18c8
   effects:
     180b  store[2] [bp-prod] = load(farseg(load(dword farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x34])):[faroff(load(dword farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x34]))+0x4])
@@ -152,36 +144,20 @@ block L_18bd:
   preds: L_18a1
   succs: L_17a3, L_18c8
   effects:
-    18c0  branch 0x0 == 0x0 ? L_17a3 : L_18c2
-
-block L_18c2:
-  insts 102..102  off 0x18c2..0x18c4
-  succs: L_18c8
-
-block L_18c5:
-  insts 103..103  off 0x18c5..0x18c7
-  succs: L_17a3
+    18c0  branch 0x0 == 0x0 ? L_17a3 : L_18c8
 
 block L_18c8:
   insts 104..125  off 0x18c8..0x1902
-  preds: L_17fc, L_182d, L_18a1, L_18bd, L_18c2
+  preds: L_17fc, L_182d, L_18a1, L_18bd
   succs: L_17a3, L_1909
   effects:
     18d2  call ChangeMainObjSel(0x1, load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))])) -> callresult(void)
     18f5  call PszProductionETA(words(ds, 0x49ee), words(load([sel+0xce]), load([sel+0xcc])), 0x0, addr([bp-etaFirst]), 0x0) -> callresult(char *)
-    1901  branch load([bp-etaFirst]) == 0x1 ? L_17a3 : L_1903
-
-block L_1903:
-  insts 126..126  off 0x1903..0x1905
-  succs: L_1909
-
-block L_1906:
-  insts 127..127  off 0x1906..0x1908
-  succs: L_17a3
+    1901  branch load([bp-etaFirst]) == 0x1 ? L_17a3 : L_1909
 
 block L_1909:
   insts 128..129  off 0x1909..0x190e
-  preds: L_18c8, L_1903
+  preds: L_18c8
   succs: L_1912, L_1917
   effects:
     190d  branch load([bp-etaFirst]) != 0xffff ? L_1917 : L_1912
@@ -242,19 +218,11 @@ block L_19cb:
   preds: L_19c6
   succs: L_17a3, L_19d6
   effects:
-    19ce  branch load([bp-rgCost+0xc]) > loword(callresult(uint32_t)) ? L_17a3 : L_19d0
-
-block L_19d0:
-  insts 203..203  off 0x19d0..0x19d2
-  succs: L_19d6
-
-block L_19d3:
-  insts 204..204  off 0x19d3..0x19d5
-  succs: L_17a3
+    19ce  branch load([bp-rgCost+0xc]) > loword(callresult(uint32_t)) ? L_17a3 : L_19d6
 
 block L_19d6:
   insts 205..230  off 0x19d6..0x1a22
-  preds: L_19aa, L_19cb, L_19d0
+  preds: L_19aa, L_19cb
   succs: L_1a26, L_1a3e
   effects:
     19e0  call __aFulshr(words(load([sel+0xae]), load([sel+0xac])), 0x8) -> callresult(uint32_t)
@@ -437,19 +405,11 @@ block L_1bf4:
   preds: L_1bef
   succs: L_17a3, L_1c03
   effects:
-    1bf8  branch load([bp-cBuild]) < 0x1 ? L_17a3 : L_1bfa
-
-block L_1bfa:
-  insts 390..390  off 0x1bfa..0x1bfc
-  succs: L_1c03
-
-block L_1bfd:
-  insts 391..391  off 0x1bfd..0x1bff
-  succs: L_17a3
+    1bf8  branch load([bp-cBuild]) < 0x1 ? L_17a3 : L_1c03
 
 block L_1c03:
   insts 392..404  off 0x1c03..0x1c2f
-  preds: L_1be6, L_1bf4, L_1bfa
+  preds: L_1be6, L_1bf4
   succs: L_1c33, L_1c4a
   effects:
     1c1f  store[2] farseg(load(dword [sel+0xcc])):[faroff(load(dword [sel+0xcc]))+0x4] = ((load(farseg(load(dword [sel+0xcc])):[faroff(load(dword [sel+0xcc]))+0x4]) & 0x3ff) | 0x2000)

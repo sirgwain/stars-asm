@@ -1,0 +1,37 @@
+/*
+GetFileStatus  (file)
+  addr: 000f:4a60  len=97
+  sig:  void GetFileStatus(int16_t dt, int16_t iPlayer)
+  params:
+    int16_t          dt             [BP+0x6]
+    int16_t          iPlayer        [BP+0x8]
+
+  stats: blocks=0  labels=0
+*/
+block L_4a60:
+  insts 0..17  off 0x4a60..0x4a8c
+  succs: L_4a90, L_4a96
+  effects:
+    4a70  call SetSzWorkFromDt(load([bp+dt]), load([bp+iPlayer])) -> callresult(void)
+    4a80  call access(0x57a4, 0x2) -> callresult(int16_t)
+    4a8b  branch callresult(int16_t) == 0x0 ? L_4a96 : L_4a90
+
+block L_4a90:
+  insts 19..20  off 0x4a90..0x4a95
+  preds: L_4a60
+  succs: L_4a99
+  effects:
+    4a93  goto L_4a99
+
+block L_4a96:
+  insts 21..21  off 0x4a96..0x4a98
+  preds: L_4a60
+  succs: L_4a99
+
+block L_4a99:
+  insts 22..39  off 0x4a99..0x4ac0
+  preds: L_4a90, L_4a96
+  effects:
+    4a99  store[2] ss:[bp-0x4] = merge(Join: L_4a99, (L_4a90:0x1, L_4a96:0x0))
+    4ab5  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xffdf) | ((((((load(ss:[bp-0x4]) & 0x1) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1))
+    4ac0  return

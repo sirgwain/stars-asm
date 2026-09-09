@@ -86,12 +86,6 @@ MOV       [bp-pctShip10+0x2], 0x0000; [bp-0x12], 0x0000
 CMP       [bp+iWarp], 0x0009        ; [bp+0xa], 0x0009
 JG        L_56fe              
 
-L_5766:
-JMP       L_576c              
-
-L_5769:                             ; util.c:2280
-JMP       L_56fe              
-
 L_576c:                             ; util.c:2282
 MOV       ax, [bp+iWarp]            ; ax, [bp+0xa]
 SHL       ax, 0x0001          

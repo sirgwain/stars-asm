@@ -1,0 +1,237 @@
+/*
+FCheckXferWP  (tutor)
+  addr: 0020:7280  len=450
+  sig:  int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITEMACTION *lpiaGoal)
+  params:
+    uint16_t         ifl            [BP+0x6]
+    int16_t          iord           [BP+0x8]
+    int16_t          id             [BP+0xa]
+    uint16_t         iWarp          [BP+0xc]
+    ITEMACTION *     lpiaGoal       [BP+0xe]
+  locals:
+    int16_t          idhSav         [BP-0x24]
+    GrobjClass       grobj          [BP-0x22]
+    int16_t          idh            [BP-0x20]
+    FLEET *          lpfl           [BP-0x1e]
+    int16_t          i              [BP-0x1a]
+    ITEMACTION *     piaCur         [BP-0x18]
+    int16_t          fRet           [BP-0x16]
+    ORDER            ord            [BP-0x14]
+
+  stats: blocks=0  labels=1
+    LReturn: L_73fa
+*/
+block L_7280:
+  insts 0..11  off 0x7280..0x729e
+  succs: L_72a2, L_72af
+  effects:
+    7289  store[2] [bp-fRet] = 0x0
+    7291  store[2] [bp-idhSav] = load([tutor+0x6])
+    729d  branch (load([bp+id]) & 0x8000) == 0x0 ? L_72af : L_72a2
+
+block L_72a2:
+  insts 13..15  off 0x72a2..0x72ae
+  preds: L_7280
+  succs: L_72b4
+  effects:
+    72a2  store[2] [bp+id] = (load([bp+id]) & 0x7fff)
+    72a7  store[2] [bp-grobj] = 0x2
+    72ac  goto L_72b4
+
+block L_72af:
+  insts 16..16  off 0x72af..0x72b3
+  preds: L_7280
+  succs: L_72b4
+  effects:
+    72af  store[2] [bp-grobj] = 0x1
+
+block L_72b4:
+  insts 17..24  off 0x72b4..0x72cb
+  preds: L_72a2, L_72af
+  succs: L_72cf, L_72de
+  effects:
+    72b8  call LpflFromId(load([bp+ifl])) -> callresult(FLEET *)
+    72c0  store[2] [bp-lpfl] = faroff(callresult(FLEET *))
+    72c3  store[2] [bp-lpfl+0x2] = farseg(callresult(FLEET *))
+    72ca  branch load([bp-lpfl]) != 0x0 ? L_72de : L_72cf
+
+block L_72cf:
+  insts 26..27  off 0x72cf..0x72d4
+  preds: L_72b4
+  succs: L_72d8, L_72de
+  effects:
+    72d3  branch load([bp-lpfl+0x2]) != 0x0 ? L_72de : L_72d8
+
+block L_72d8:
+  insts 29..30  off 0x72d8..0x72dd
+  preds: L_72cf
+  succs: L_743c
+  effects:
+    72db  goto L_743c
+
+block L_72de:
+  insts 31..42  off 0x72de..0x72fe
+  preds: L_72b4, L_72cf
+  succs: L_7302, L_7308
+  effects:
+    72f2  call FCheckFleetWP(load([bp+ifl]), load([bp+iord]), load([bp-grobj]), load([bp+id]), 0x1, load([bp+iWarp])) -> callresult(int16_t)
+    72fd  branch callresult(int16_t) != 0x0 ? L_7308 : L_7302
+
+block L_7302:
+  insts 44..45  off 0x7302..0x7307
+  preds: L_72de
+  succs: L_743c
+  effects:
+    7305  goto L_743c
+
+block L_7308:
+  insts 46..69  off 0x7308..0x7346
+  preds: L_72de
+  succs: L_7361
+  effects:
+    732c  copy[0x12] *addr(ss:[addr([bp-ord])]) = *addr(load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x66]):[((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64]) + 0x4) + loword((0x12 * load([bp+iord]))))])
+    7336  store[2] [bp-piaCur] = addr([bp-ord+0x8])
+    7339  store[2] [tutor+0x6] = 0x5ef
+    733f  store[2] [bp-i] = 0x0
+    7344  goto L_7361
+
+block L_7347:
+  insts 70..77  off 0x7347..0x7360
+  preds: L_73d6, L_73e7
+  succs: L_7361
+  effects:
+    734a  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    7351  store[2] [bp-piaCur] = (load([bp-piaCur]) + 0x2)
+    735b  store[2] [bp+lpiaGoal] = (load([bp+lpiaGoal]) + 0x2)
+
+block L_7361:
+  insts 78..79  off 0x7361..0x7366
+  preds: L_7308, L_7347
+  succs: L_736a, L_73f5
+  effects:
+    7365  branch load([bp-i]) >= 0x5 ? L_73f5 : L_736a
+
+block L_736a:
+  insts 81..92  off 0x736a..0x7388
+  preds: L_7361
+  succs: L_738c, L_73b0
+  effects:
+    7387  branch ((load(ds:[load([bp-piaCur])]) >> 0xc) & 0xf) == ((load(farseg(load(dword [bp+lpiaGoal])):[faroff(load(dword [bp+lpiaGoal]))]) >> 0xc) & 0xf) ? L_73b0 : L_738c
+
+block L_738c:
+  insts 94..100  off 0x738c..0x739d
+  preds: L_736a
+  succs: L_73a1, L_73fa
+  effects:
+    739c  branch ((load(ds:[load([bp-piaCur])]) >> 0xc) & 0xf) == 0x0 ? L_73fa : L_73a1
+
+block L_73a1:
+  insts 102..105  off 0x73a1..0x73ac
+  preds: L_738c
+  succs: L_73ad
+  effects:
+    73a5  call TutorError(0x268) -> callresult(void)
+
+block L_73ad:
+  insts 106..106  off 0x73ad..0x73af
+  preds: L_73a1
+  succs: L_73fa
+  effects:
+    73ad  goto L_73fa
+
+block L_73b0:
+  insts 107..112  off 0x73b0..0x73bf
+  preds: L_736a
+  succs: L_73df
+  effects:
+    73bd  goto L_73df
+
+block L_73c0:
+  insts 113..120  off 0x73c0..0x73d5
+  preds: L_73df, L_73ec
+  succs: L_73d6, L_73fa
+  effects:
+    73d4  branch (load(ds:[load([bp-piaCur])]) & 0xfff) != (load(farseg(load(dword [bp+lpiaGoal])):[faroff(load(dword [bp+lpiaGoal]))]) & 0xfff) ? L_73fa : L_73d6
+
+block L_73d6:
+  insts 121..121  off 0x73d6..0x73d8
+  preds: L_73c0
+  succs: L_7347
+  effects:
+    73d6  goto L_7347
+
+block L_73df:
+  insts 124..125  off 0x73df..0x73e3
+  preds: L_73b0
+  succs: L_73c0, L_73e7
+  effects:
+    73e2  branch ((load(ds:[load([bp-piaCur])]) >> 0xc) & 0xf) == 0x4 ? L_73c0 : L_73e7
+
+block L_73e7:
+  insts 127..128  off 0x73e7..0x73eb
+  preds: L_73df
+  succs: L_7347, L_73ec
+  effects:
+    73ea  branch ((load(ds:[load([bp-piaCur])]) >> 0xc) & 0xf) != 0x8 ? L_7347 : L_73ec
+
+block L_73ec:
+  insts 129..129  off 0x73ec..0x73ee
+  preds: L_73e7
+  succs: L_73c0
+  effects:
+    73ec  goto L_73c0
+
+block L_73f5:
+  insts 132..132  off 0x73f5..0x73f9
+  preds: L_7361
+  succs: L_73fa
+  effects:
+    73f5  store[2] [bp-fRet] = 0x1
+
+block LReturn:
+  insts 133..136  off 0x73fa..0x7405
+  preds: L_738c, L_73ad, L_73c0, L_73f5
+  succs: L_7409, L_7427
+  effects:
+    73fd  store[2] [bp-idh] = load([tutor+0x6])
+    7404  branch load([bp-fRet]) != 0x0 ? L_7427 : L_7409
+
+block L_7409:
+  insts 138..145  off 0x7409..0x741d
+  preds: L_73fa
+  succs: L_7421, L_7427
+  effects:
+    7411  call FCheckSelection(0x2, load([bp+ifl])) -> callresult(int16_t)
+    741c  branch callresult(int16_t) == 0x0 ? L_7427 : L_7421
+
+block L_7421:
+  insts 147..148  off 0x7421..0x7426
+  preds: L_7409
+  succs: L_7427
+  effects:
+    7424  store[2] [tutor+0x6] = load([bp-idh])
+
+block L_7427:
+  insts 149..150  off 0x7427..0x742c
+  preds: L_73fa, L_7409, L_7421
+  succs: L_7430, L_7436
+  effects:
+    742b  branch load([bp-fRet]) == 0x0 ? L_7436 : L_7430
+
+block L_7430:
+  insts 152..153  off 0x7430..0x7435
+  preds: L_7427
+  succs: L_7436
+  effects:
+    7433  store[2] [tutor+0x6] = load([bp-idhSav])
+
+block L_7436:
+  insts 154..154  off 0x7436..0x743b
+  preds: L_7427, L_7430
+  succs: L_743c
+
+block L_743c:
+  insts 156..160  off 0x743c..0x7441
+  preds: L_72d8, L_7302, L_7436
+  effects:
+    7441  return merge(Join: L_743c, (L_72d8:0x0, L_7302:0x0, L_7436:load([bp-0x16])))

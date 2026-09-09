@@ -188,6 +188,14 @@ func (c *CFG) jumpTarget(jump *InstJump) BlockID {
 	return BlockID(jump.TargetOff)
 }
 
+// semanticJumpTarget resolves removed trampolines while retaining surviving labels.
+func (cfg *CFG) semanticJumpTarget(id BlockID) BlockID {
+	if cfg.byID[id] != nil {
+		return id
+	}
+	return cfg.resolvedBlock(id)
+}
+
 // branchTargets returns the true and false block targets for a conditional
 // jump in this CFG's constructed topology.
 func (c *CFG) branchTargets(block *Block, jump *InstJump) (BlockID, BlockID) {
@@ -253,12 +261,10 @@ func BuildCFG(ctx *FuncContext, insts []asm.DecodedInst, retReadsRegs bool, opt 
 			} else {
 				leaders[jump.TargetOff] = true
 			}
-			if inst.Op == asm.OpJcc {
-				// fallthrough is also a target
-				if i+1 < len(insts) {
-					leaders[insts[i+1].Off] = true
-				}
-			}
+		}
+
+		if terminatesBlock(inst, jumps[inst.Off]) && i+1 < len(insts) {
+			leaders[insts[i+1].Off] = true
 		}
 	}
 
@@ -281,6 +287,10 @@ func BuildCFG(ctx *FuncContext, insts []asm.DecodedInst, retReadsRegs bool, opt 
 	}
 
 	for i, inst := range insts {
+		if inst.Op == asm.OpDW {
+			flush()
+			continue
+		}
 		if leaders[inst.Off] || cur == nil {
 			flush()
 			id := BlockID(inst.Off)
@@ -317,6 +327,21 @@ func BuildCFG(ctx *FuncContext, insts []asm.DecodedInst, retReadsRegs bool, opt 
 	annotateBlockRegLiveness(cfg, retReadsRegs)
 
 	return cfg, nil
+}
+
+// terminatesBlock returns true if the instruction terminates the block
+func terminatesBlock(inst asm.DecodedInst, jump *InstJump) bool {
+	if jump != nil {
+		// Jcc, JMP, jump table, etc.
+		return true
+	}
+
+	switch inst.Op {
+	case asm.OpRET, asm.OpRETF:
+		return true
+	default:
+		return false
+	}
 }
 
 // Successors returns the sorted block IDs directly reachable from id.
@@ -413,7 +438,14 @@ func (cfg *CFG) preserveUnsafeFallthroughTrampolines(removable map[BlockID]bool)
 	for changed {
 		changed = false
 		for _, block := range cfg.Blocks {
+			if removable[block.ID] {
+				continue
+			}
 			if block.EndIdx <= block.StartIdx || block.EndIdx > len(cfg.Instrs) {
+				continue
+			}
+			last := cfg.Instrs[block.EndIdx-1]
+			if last.Op == asm.OpJMP || last.Op == asm.OpRET || last.Op == asm.OpRETF {
 				continue
 			}
 			fallthroughBlock := BlockID(block.EndOff)
@@ -427,7 +459,6 @@ func (cfg *CFG) preserveUnsafeFallthroughTrampolines(removable map[BlockID]bool)
 				continue
 			}
 
-			last := cfg.Instrs[block.EndIdx-1]
 			jcc := cfg.Jumps[last.Off]
 			if jcc == nil || last.Op != asm.OpJcc || len(jcc.TableTargetOffs) > 0 {
 				delete(removable, fallthroughBlock)

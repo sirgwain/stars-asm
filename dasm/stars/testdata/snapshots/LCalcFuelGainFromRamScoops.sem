@@ -40,10 +40,7 @@ L_571b:
 L_5738:
     rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36)
     pctShip10 = 0
-    branch iWarp > 9 ? L_56fe : L_5766
-
-L_5766:
-
+    branch iWarp > 9 ? L_56fe : L_576c
 
 L_576c:
     branch rgiFuel[iWarp] != 0 ? L_5852 : L_5784
@@ -72,6 +69,8 @@ L_5836:
 L_5852:
     pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(lpfl->rgcsh[i])))
 
+L_587d:
+    goto L_56fe
 
 L_5880:
     pct10 = (uint32_t)(pct10 * dTravel)

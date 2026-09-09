@@ -1,25 +1,23 @@
 int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t (**lpProc)();
-    int16_t  idc;
-    int16_t  i;
-    int16_t  fRet;
-    RECT     rc;
-    int16_t  cLen;
-    HWND     t_call_073d;
-    int16_t  t_merge_0756_0001;
-    HWND     t_call_0763;
-    int16_t  t_merge_077c_0001;
-    uint16_t scratch_bp_m16;
-    HWND     t_call_10ec;
-    int16_t  t_merge_1105_0001;
-    HWND     t_call_1112;
-    int16_t  t_merge_112b_0001;
-    uint16_t scratch_bp_m18;
-    uint8_t  t_11bd;
-    HWND     t_call_15f1;
-    int16_t  t_merge_160a_0001;
-    HWND     t_call_1617;
-    int16_t  t_merge_1630_0001;
+    int16_t idc;
+    int16_t i;
+    int16_t fRet;
+    RECT    rc;
+    int16_t cLen;
+    HWND    t_call_073d;
+    int16_t t_merge_0756_0001;
+    HWND    t_call_0763;
+    int16_t t_merge_077c_0001;
+    HWND    t_call_10ec;
+    int16_t t_merge_1105_0001;
+    HWND    t_call_1112;
+    int16_t t_merge_112b_0001;
+    uint8_t t_11bd;
+    HWND    t_call_15f1;
+    int16_t t_merge_160a_0001;
+    HWND    t_call_1617;
+    int16_t t_merge_1630_0001;
 
 L_0652:
     goto L_16d5;
@@ -156,6 +154,9 @@ L_08b6:
 L_08c1:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, PszPlayerName(i, 0, 1, 0, 0, 0x0));
 
+L_08fe:
+    goto L_08a7;
+
 L_0901:
     i = btlplan.iplrAttack;
     if ((i < (idPlayer + 4)))
@@ -212,9 +213,7 @@ L_0a6a:
     if ((LOWORD(lParam) == GetDlgItem(hwnd, idc)))
         goto L_0a99;
     else
-        goto L_0a85;
-
-L_0a85:
+        goto L_0a8b;
 
 L_0a8b:
     idc = (idc + 1);
@@ -266,7 +265,6 @@ L_0b12:
 
 L_0b1c:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m16 = LOWORD((0x24 * iPlanSelDlg));
     LogChangeBtlplan(btlplan);
 
 L_0b6e:
@@ -309,14 +307,12 @@ L_0c0f:
 
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m16 = LOWORD((0x24 * iPlanSelDlg));
     LogChangeBtlplan(btlplan);
     fDirtyPlan = 0;
 
 L_0c71:
     btlplan.fDelete = 0x1;
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m16 = LOWORD((0x24 * iPlanSelDlg));
     btlplan.iplan = iPlanSelDlg;
     if ((FDeleteBattlePlan(iPlanSelDlg, 1) == 0))
         goto L_0dd0;
@@ -438,7 +434,6 @@ LRename:
 
 L_1000:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m16 = LOWORD((0x24 * iPlanSelDlg));
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
     i = 0;
     goto L_1074;
@@ -515,7 +510,6 @@ L_1157:
 
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m18 = LOWORD((0x24 * iPlanSelDlg));
     LogChangeBtlplan(btlplan);
     fDirtyPlan = 0;
 
@@ -527,9 +521,7 @@ L_11b9:
     if ((cLen > 27))
         goto L_128b;
     else
-        goto L_11e1;
-
-L_11e1:
+        goto L_11e7;
 
 L_11e7:
     if ((btlplan.szName[(cLen - 1)] != 41))
@@ -569,7 +561,6 @@ L_127d:
 L_128b:
     btlplan.iplan = iPlanSelDlg;
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m18 = LOWORD((0x24 * iPlanSelDlg));
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
     i = 0;
@@ -630,7 +621,6 @@ L_14d5:
 
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    scratch_bp_m16 = LOWORD((0x24 * iPlanSelDlg));
     LogChangeBtlplan(btlplan);
     fDirtyPlan = 0;
 
@@ -683,6 +673,9 @@ L_167c:
 
 L_1680:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
+
+L_16a2:
+    goto L_16f8;
 
 L_16a5:
     if ((wParam != 0x76))

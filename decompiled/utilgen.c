@@ -400,7 +400,7 @@ L_194a:
 
 L_1953:
     GetDlgItemText(hwnd, IDC_EDIT1, szValue, 32);
-    pch = &(szValue);
+    pch = szValue;
     dw = 0x0;
 
 L_197a:
@@ -726,7 +726,7 @@ L_1e67:
 
 L_1e6a:
     fHigh = t_merge_1e6a_0001;
-    pszOut = &(szLastGet);
+    pszOut = szLastGet;
     iBuild = 0;
     fCap = 1;
 
@@ -818,6 +818,9 @@ L_1f46:
     pszOut = (pszOut + 0x1);
     iBuild = 0;
 
+L_1f4f:
+    goto L_1e7c;
+
 L_1f52:
     *(pszOut) = 0;
     return szLastGet;
@@ -872,9 +875,7 @@ L_1ffa:
     if ((setjmp(env) != 0))
         goto LStreamError;
     else
-        goto L_2036;
-
-L_2036:
+        goto L_203c;
 
 L_203c:
     StreamOpen(szSrc, 32);
@@ -897,9 +898,7 @@ L_2090:
     if ((_lwrite(hfDst, &(rgb), 0x800) != 0x800))
         goto LStreamError;
     else
-        goto L_20be;
-
-L_20be:
+        goto L_20c4;
 
 L_20c4:
     cb = (cb - 2048);
@@ -1152,6 +1151,9 @@ L_2387:
 L_2391:
     l = 999;
 
+L_239b:
+    goto L_23ea;
+
 L_239e:
     if ((fLarge == 0))
         goto L_23ea;
@@ -1219,7 +1221,7 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
 
 L_2440:
     c = _wsprintf(rgch, PCTLD, LOWORD(l), HIWORD(l));
-    pch = &(rgch);
+    pch = rgch;
     pchOut = psz;
     cSkip = ((uint32_t)(c) % 3);
     if ((cSkip != 0))
@@ -1429,9 +1431,7 @@ L_271a:
     if ((pchStart != pchEnd))
         goto L_275f;
     else
-        goto L_2722;
-
-L_2722:
+        goto L_2728;
 
 L_2728:
     if ((*(px) != xLeft))
@@ -1442,7 +1442,6 @@ L_2728:
 L_2735:
     pchEnd = (pchStart + cLen);
     dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
-    goto L_275f;
 
 L_275f:
     if ((fPrint == 0))
@@ -1473,9 +1472,7 @@ L_27b2:
     if ((pchEnd == (pchStart + cLen)))
         goto L_2805;
     else
-        goto L_27bf;
-
-L_27bf:
+        goto WrapIt;
 
 WrapIt:
     AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
@@ -1704,13 +1701,10 @@ void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen) {
     int16_t  dHtY;
     int16_t  t_merge_2b8d_0001;
     uint16_t t_merge_2bf0_0001;
-    uint16_t scratch_bp_m46;
-    uint16_t scratch_bp_m44;
-    uint16_t scratch_bp_m4e;
-    uint16_t scratch_bp_m4c;
     int16_t  t_merge_2e41_0001;
     uint16_t t_merge_2e6f_0001;
     int16_t  t_merge_2e6a_0001;
+    uint16_t t_scratch_m48;
 
 L_2afa:
     if ((cLen != 0))
@@ -1733,9 +1727,7 @@ L_2b40:
     if ((dy < 10))
         goto L_2f06;
     else
-        goto L_2b46;
-
-L_2b46:
+        goto L_2b4c;
 
 L_2b4c:
     plf = LocalAlloc(0x40, 0x32);
@@ -1760,9 +1752,7 @@ TryAgain:
     if ((plf->lfHeight > -5))
         goto FreeLF;
     else
-        goto L_2b9f;
-
-L_2b9f:
+        goto L_2ba5;
 
 L_2ba5:
     dyEstFont = MulDiv(111, (-plf->lfHeight), 100);
@@ -1799,15 +1789,7 @@ L_2bf8:
     dyText = (LOWORD((uint32_t)((l >> 0x10))) & 0xffff);
     /* untranslated: dsin = sin(part[0x4:8](angle)) */
     /* untranslated: dcos = cos(part[0x4:8](angle)) */
-    scratch_bp_m46 = dxText;
-    scratch_bp_m44 = SIGNHIWORD(dxText);
-    scratch_bp_m4e = dyText;
-    scratch_bp_m4c = SIGNHIWORD(dyText);
     dxFlat = LOWORD(__ftol());
-    scratch_bp_m46 = dxText;
-    scratch_bp_m44 = SIGNHIWORD(dxText);
-    scratch_bp_m4e = dyText;
-    scratch_bp_m4c = SIGNHIWORD(dyText);
     dyFlat = LOWORD(__ftol());
     if (((dxFlat + 8) > dx))
         goto L_2d9a;
@@ -1895,13 +1877,11 @@ L_2e6f:
 
 L_2e7a:
     xStart = (((uint32_t)((dx - dxFlat)) / 2) + prc->left);
-    scratch_bp_m46 = dyText;
-    scratch_bp_m44 = SIGNHIWORD(dyText);
-    yStart = ((prc->bottom - ((uint32_t)((dy - dyFlat)) / 2)) - LOWORD(__ftol()));
+    t_scratch_m48 = LOWORD(__ftol());
+    yStart = ((prc->bottom - ((uint32_t)((dy - dyFlat)) / 2)) - t_scratch_m48);
     TextOut(hdc, xStart, yStart, psz, cLen);
     SelectObject(hdc, hfontSav);
     DeleteObject(hfont);
-    goto FreeLF;
 
 FreeLF:
     LocalFree(plf);
@@ -2127,9 +2107,7 @@ L_31f9:
     if ((LOWORD(cTot) <= 0x0))
         goto FinRet;
     else
-        goto L_31ff;
-
-L_31ff:
+        goto L_3205;
 
 L_3205:
     if ((HIWORD(cTot) < 0x98))
@@ -2290,6 +2268,7 @@ L_353a:
 
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText) {
     uint16_t t_merge_356f_0001;
+    uint16_t t_scratch_m4;
 
 L_354c:
     pbtnt->hwnd = hwnd;
@@ -2306,7 +2285,8 @@ L_356c:
     t_merge_356f_0001 = 0x0;
 
 L_356f:
-    pbtnt->fCreatedDC = t_merge_356f_0001;
+    t_scratch_m4 = t_merge_356f_0001;
+    pbtnt->fCreatedDC = t_scratch_m4;
     if ((hdc != 0x0))
         goto L_35a5;
     else
@@ -2332,6 +2312,7 @@ int16_t FTrackBtn(BTNT *pbtnt) {
     POINT   pt;
     int16_t fInBtn;
     int32_t ticksNew;
+    int32_t t_scratch_m10;
 
 L_364a:
     if ((pbtnt->fFirst == 0x0))
@@ -2342,7 +2323,8 @@ L_364a:
 L_3664:
     SetCapture(pbtnt->hwnd);
     DrawBtn(pbtnt->hdc, (pbtnt + 0x4), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
-    pbtnt->lTicks = (GetCurrentTime() + (int32_t)(LOWORD((0x3 * pbtnt->dTimer))));
+    t_scratch_m10 = (int32_t)(LOWORD((0x3 * pbtnt->dTimer)));
+    pbtnt->lTicks = (GetCurrentTime() + t_scratch_m10);
     pbtnt->fFirst = 0x0;
     return 1;
 
@@ -2742,6 +2724,9 @@ L_3e42:
 L_3e66:
     /* untranslated: call PatBlt(hdc, x, ss:[bp+((cpt - 1) * 0x4)-0x2e], dx, 1, PATCOPY) -> callresult(int16_t) */
 
+L_3e92:
+    goto L_3ec0;
+
 L_3e95:
     PatBlt(hdc, x, y, dx, 1, PATCOPY);
     x = (x + 1);
@@ -2755,6 +2740,7 @@ L_3ec0:
         goto L_3ec6;
 
 L_3ec6:
+    goto L_3e95;
 
 L_3ecc:
     if ((bt != 2))
@@ -2781,6 +2767,9 @@ L_3ede:
 
 L_3f02:
     PatBlt(hdc, rgptDraw[(cpt - 1)].x, y, 1, dy, PATCOPY);
+
+L_3f2d:
+    goto L_3f5b;
 
 L_3f30:
     PatBlt(hdc, x, y, 1, dy, PATCOPY);
@@ -2966,6 +2955,8 @@ L_41b4:
     return 1;
 
 L_41ba:
+
+L_41bd:
     return 0;
 
 L_41c3:
@@ -2981,6 +2972,7 @@ L_41cb:
         goto L_41d0;
 
 L_41d0:
+    goto L_4185;
 }
 
 int16_t FGetRMouseMove(POINT *ppt) {
@@ -3012,6 +3004,8 @@ L_424e:
     return 1;
 
 L_4254:
+
+L_4257:
     return 0;
 
 L_425d:
@@ -3027,6 +3021,7 @@ L_4265:
         goto L_426a;
 
 L_426a:
+    goto L_421f;
 }
 
 void DrawFuzzyBorder(HDC hdc, RECT *prc) {
@@ -3202,6 +3197,9 @@ L_4566:
 DeleteBrush:
     DeleteObject(hbr);
 
+L_4585:
+    goto L_459a;
+
 L_4588:
     i = (i + 1);
 
@@ -3212,6 +3210,7 @@ L_458c:
         goto L_4594;
 
 L_4594:
+    goto L_4543;
 
 L_459a:
     return;
@@ -3227,7 +3226,7 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
 
 L_45a0:
     fHalf = 0;
-    pchOut = &(szWork);
+    pchOut = szWork;
 
 L_45b6:
     if (((uint16_t)(*(szIn)) == 0))
@@ -3334,7 +3333,7 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
 
 L_46e8:
     fHalf = 0;
-    pchOut = &(szWork);
+    pchOut = szWork;
     goto L_484d;
 
 L_4701:
@@ -3359,6 +3358,7 @@ L_472a:
         goto L_4730;
 
 L_4730:
+    goto L_474f;
 
 L_4739:
     iNyb = (((uint16_t)(*(szIn)) >> 0x4) & 0xf);
@@ -3703,6 +3703,7 @@ L_4b3e:
         goto L_4b43;
 
 L_4b43:
+    goto L_4b1f;
 }
 
 HPALETTE HpalFromDib(HGLOBAL hdib) {
@@ -3832,6 +3833,7 @@ L_4da8:
 int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop) {
     char             *pBuf;
     BITMAPINFOHEADER *lpbi;
+    BITMAPINFOHEADER *t_scratch_me;
 
 L_4db8:
     if ((hdib != 0x0))
@@ -3859,7 +3861,8 @@ L_4e09:
     return 0;
 
 L_4e0f:
-    pBuf = ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi));
+    t_scratch_me = (lpbi + LOWORD(lpbi->biSize));
+    pBuf = (t_scratch_me + PaletteSize(lpbi));
     StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, lpbi, 0x0, rop);
     GlobalUnlock(hdib);
     return 1;
@@ -3873,7 +3876,9 @@ HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE 
     BITMAPINFOHEADER  bi;
     HGLOBAL           hdib;
     BITMAPINFOHEADER *lpbi;
+    uint16_t          t_scratch_m48;
     HGLOBAL           t_call_50ff;
+    BITMAPINFOHEADER *t_scratch_m4a;
 
 L_4e90:
     if ((hbm != 0x0))
@@ -3901,7 +3906,8 @@ L_4ebd:
         goto L_4ed9;
 
 L_4ed9:
-    biBits = LOWORD((bm.bmPlanes * bm.bmBitsPixel));
+    t_scratch_m48 = bm.bmPlanes;
+    biBits = LOWORD((t_scratch_m48 * bm.bmBitsPixel));
 
 L_4ef2:
     bi.biSize = 0x28;
@@ -3932,7 +3938,7 @@ L_4fb8:
 
 L_4fd9:
     lpbi = GlobalLock(hdib);
-    lpbi = bi;
+    *(lpbi) = bi;
     GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
     bi = *(lpbi);
     GlobalUnlock(hdib);
@@ -3986,7 +3992,8 @@ L_5118:
 
 L_5146:
     lpbi = GlobalLock(hdib);
-    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
+    t_scratch_m4a = (lpbi + LOWORD(lpbi->biSize));
+    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), (t_scratch_m4a + PaletteSize(lpbi)), lpbi, 0x0) != 0))
         goto L_51da;
     else
         goto L_51ac;
@@ -4064,9 +4071,7 @@ L_52d1:
     if ((ReadBigBlock(hfile, lpstr, SizeofResource(hInst, hrsrc)) == 0))
         goto CloseAndFail;
     else
-        goto L_52f5;
-
-L_52f5:
+        goto L_52fb;
 
 L_52fb:
     _lclose(hfile);
@@ -4326,6 +4331,9 @@ L_5733:
 L_573b:
     dCtr = (-dCtr);
 
+L_5743:
+    goto L_57c5;
+
 L_5746:
     if ((ptL1.x <= ptL2.x))
         goto L_5775;
@@ -4353,6 +4361,9 @@ L_5762:
 L_576a:
     dCtr = (-dCtr);
 
+L_5772:
+    goto L_57c5;
+
 L_5775:
     if ((ptL1.y >= ptL2.y))
         goto L_57a4;
@@ -4379,6 +4390,9 @@ L_5791:
 
 L_5799:
     dCtr = (-dCtr);
+
+L_57a1:
+    goto L_57c5;
 
 L_57a4:
     if ((HIWORD(yI) < SIGNHIWORD(ptL1.y)))
@@ -4646,6 +4660,9 @@ L_5a06:
 L_5a25:
     lSalt = (uint32_t)((lSalt * (uint32_t)((uint16_t)(*(psz)))));
     psz = (psz + 0x1);
+
+L_5a43:
+    goto L_59f8;
 
 L_5a46:
     if ((LOWORD(lSalt) != 0x0))
@@ -5015,9 +5032,7 @@ L_5ffa:
     if ((GetDriveType((i + 2)) != 0x3))
         goto NoDrive;
     else
-        goto L_602c;
-
-L_602c:
+        goto L_6032;
 
 L_6032:
     if ((dos_findfirst(fn, 0x8, &(fi)) != 0))
@@ -5033,9 +5048,7 @@ L_6056:
     if (((uint16_t)(fi.name[j]) == 0))
         goto L_60eb;
     else
-        goto L_6066;
-
-L_6066:
+        goto L_606c;
 
 L_606c:
     if ((i != 0))
@@ -5072,6 +5085,9 @@ L_60f4:
 
 L_614f:
     uDate = ((((fi.wr_date & 0x3) << 0x6) | ((fi.wr_time & 0x7) << 0x3)) | ((fi.wr_time >> 0x5) & 0x7));
+
+L_617d:
+    goto L_618f;
 
 NoDrive:
     uDate = 0xc57a;
@@ -5277,7 +5293,6 @@ L_6439:
 L_644c:
     iNum = pctX10;
     pctX10 = vpctProgressGauge;
-    goto L_645e;
 
 L_645e:
     vpctProgressGauge = pctX10;
@@ -5384,9 +5399,7 @@ L_6611:
     if ((hwndProgressGauge == 0x0))
         goto L_6856;
     else
-        goto L_661b;
-
-L_661b:
+        goto L_6621;
 
 L_6621:
     if ((hdcOrig != 0x0))
@@ -5448,9 +5461,7 @@ L_67c5:
     if ((fNumOnly != 0))
         goto LRelease;
     else
-        goto L_67cb;
-
-L_67cb:
+        goto L_67d1;
 
 L_67d1:
     SelectObject(hdc, hbrBlue);
@@ -5568,7 +5579,7 @@ L_695c:
     *(ppszBeg) = (psz + 0x1);
 
 L_696f:
-    /* untranslated: part[0x0:1](psz) = 0x0 */
+    LOBYTE(LOWORD(psz)) = 0x0;
 
 L_697f:
     return pszStart;

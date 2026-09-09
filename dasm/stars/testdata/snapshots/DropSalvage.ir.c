@@ -1,9 +1,8 @@
 void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt) {
-    int32_t  wtTotal;
-    int32_t  wt;
-    int16_t  i;
-    THING   *lpth;
-    uint16_t scratch_bp_m12;
+    int32_t wtTotal;
+    int32_t wt;
+    int16_t i;
+    THING  *lpth;
 
 L_24dc:
     lpth = *(plpth);
@@ -33,6 +32,7 @@ L_252d:
         goto L_2532;
 
 L_2532:
+    goto L_2505;
 
 L_253b:
     i = 0;
@@ -49,6 +49,7 @@ L_2565:
         goto L_256b;
 
 L_256b:
+    goto L_2543;
 
 L_2571:
     i = 0;
@@ -100,9 +101,7 @@ L_260d:
     if ((HIWORD(lpth) == 0x0))
         goto L_294c;
     else
-        goto L_2613;
-
-L_2613:
+        goto L_2619;
 
 L_2619:
     lpth->thp.iWarp = 0x0;
@@ -172,9 +171,7 @@ L_27f8:
     if ((HIWORD(lpth) == 0x0))
         goto L_294c;
     else
-        goto L_27fe;
-
-L_27fe:
+        goto L_2804;
 
 L_2804:
     lpth->thp.iWarp = 0x0;
@@ -184,9 +181,7 @@ L_2804:
     goto L_2900;
 
 L_2842:
-    /* untranslated: scratch_bp_m12 = ((loword((int32_t)((rgwtMinerals[i] + 0x9) / 0xa)) + part[0x8:2](lpth->thp)) & 0x3fff) */
-    lpth->thp.wtMax = 0x0;
-    /* untranslated: part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m12) */
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((rgwtMinerals[i] + 9) / 0xa));
     lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(rgwtMinerals[i]));
     wtTotal = (wtTotal - rgwtMinerals[i]);
     rgwtMinerals[i] = 0;
@@ -207,9 +202,7 @@ L_290e:
     if ((LOWORD(wtTotal) <= 0x0))
         goto L_2927;
     else
-        goto L_2914;
-
-L_2914:
+        goto L_291a;
 
 L_291a:
     i = (i + 1);

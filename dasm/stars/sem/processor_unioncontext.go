@@ -104,6 +104,11 @@ func (p *unionContextProcessor) ProcessFunc(result *Result, f *Func) bool {
 
 	contexts := make(map[machine.BlockID]*symresolve.UnionContext, len(entries))
 	for id, state := range entries {
+		// Entry states precede the configured facts applied during transfer.
+		// Seed them here too so dependent enums are available within this block,
+		// including the function entry, rather than only in its successors.
+		state = state.clone()
+		p.applyConfiguredBlockContext(state, id)
 		ctx := materializeUnionContext(state)
 		p.applyBlockPathFacts(ctx, id)
 		contexts[id] = ctx
@@ -262,6 +267,11 @@ func (p *unionContextProcessor) processBlock(state *unionFlowState, block Block,
 			p.applyBranchFact(e.Cond, trueState, falseState)
 			exits[e.TrueBlock] = trueState
 			exits[e.FalseBlock] = falseState
+			return exits
+		case *TableJump:
+			for _, target := range e.Targets {
+				exits[target] = state.clone()
+			}
 			return exits
 		case *Jump:
 			exits[e.To] = state.clone()

@@ -107,7 +107,7 @@ block L_03bf:
 block L_041a:
   insts 119..163  off 0x041a..0x046f
   preds: L_03bf
-  succs: L_047e
+  succs: L_0470
   effects:
     0435  store[2] ss:[bp-0x1e] = load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34])
     0438  store[2] ss:[bp-0x1c] = signhiword(load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]))
@@ -116,7 +116,10 @@ block L_041a:
 
 block L_0470:
   insts 164..164  off 0x0470..0x0472
+  preds: L_041a
   succs: L_047e
+  effects:
+    0470  goto L_047e
 
 block L_0473:
   insts 165..170  off 0x0473..0x047d
@@ -127,7 +130,7 @@ block L_0473:
 
 block L_047e:
   insts 171..173  off 0x047e..0x0486
-  preds: L_03bf, L_041a, L_0470, L_0473
+  preds: L_03bf, L_0470, L_0473
   succs: L_0492
   effects:
     0481  store[2] [idPlayer] = load([bp-iPlrSav])

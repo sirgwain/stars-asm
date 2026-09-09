@@ -70,9 +70,7 @@ L_012c:
     if ((cbCur >= 0xffdc))
         goto LReAllocOOM;
     else
-        goto L_015b;
-
-L_015b:
+        goto L_0164;
 
 L_0164:
     if ((cbCur <= (0xffdc - cbGrow)))
@@ -171,6 +169,7 @@ L_02ea:
         goto L_02f0;
 
 L_02f0:
+    goto L_0330;
 
 L_02f9:
     lphbNext = lphb->lphbNext;
@@ -329,9 +328,7 @@ L_0524:
     if (((cbItem + 0x2) < cb))
         goto L_0575;
     else
-        goto L_054f;
-
-L_054f:
+        goto L_0555;
 
 L_0555:
     LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
@@ -346,6 +343,7 @@ L_0575:
         goto L_0580;
 
 L_0580:
+    goto L_04a7;
 }
 
 HB *LphbFromLpHt(void *lp, HeapType ht) {
@@ -404,9 +402,7 @@ L_0608:
     if ((LOWORD(lp) < (LOWORD(lphb) + lphb->cbBlock)))
         goto L_0635;
     else
-        goto L_060c;
-
-L_060c:
+        goto L_0612;
 
 L_0612:
     lphb = lphb->lphbNext;
@@ -529,9 +525,7 @@ L_07ba:
     if ((HIWORD(lp) == 0x0))
         goto L_082f;
     else
-        goto L_07c0;
-
-L_07c0:
+        goto L_07c6;
 
 L_07c6:
     lphb = LphbFromLpHt(lp, ht);
@@ -586,9 +580,7 @@ L_092a:
     if ((HIWORD(lppl) == 0x0))
         goto L_0953;
     else
-        goto L_0930;
-
-L_0930:
+        goto L_0936;
 
 L_0936:
     FreeLp(lppl, lppl->ht);

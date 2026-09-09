@@ -3,6 +3,7 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
@@ -38,6 +39,16 @@ func TestConvertMachineBitfieldValues(t *testing.T) {
 				machine.ValueOpAnd,
 				machine.BinaryVal(machine.ValueOpShr, planetWord(0x1a), machine.ConstVal(7)),
 				machine.ConstVal(1),
+			),
+			want:           "lppl->fNoResearch",
+			wantRecognized: true,
+		},
+		{
+			name: "shifted mask before shift",
+			value: machine.BinaryVal(
+				machine.ValueOpShr,
+				machine.BinaryVal(machine.ValueOpAnd, planetWord(0x1a), machine.ConstVal(0x80)),
+				machine.ConstVal(7),
 			),
 			want:           "lppl->fNoResearch",
 			wantRecognized: true,
@@ -120,7 +131,7 @@ func TestConvertDynamicBitfieldStore(t *testing.T) {
 	if !ok {
 		t.Fatal("dynamic fCmdLine store was not recognized")
 	}
-	dst, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(flags, bitfield.BitOff, bitfield.BitWidth)
+	dst, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(flags, bitfield.Access)
 	if !ok {
 		t.Fatal("dynamic fCmdLine store did not project")
 	}
@@ -144,6 +155,40 @@ func TestConvertDynamicBitfieldStore(t *testing.T) {
 	}
 }
 
+// TestBitfieldStoreDisjointAdd verifies ADD is accepted only when the inserted
+// value is proven confined to bits cleared from the destination.
+func TestBitfieldStoreDisjointAdd(t *testing.T) {
+	mem := machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: -2, Width: 2}
+	source := machine.RegVal(asm.RegAX)
+	inserted := machine.BinaryVal(
+		machine.ValueOpShl,
+		machine.BinaryVal(machine.ValueOpAnd, source, machine.ConstVal(0x7)),
+		machine.ConstVal(1),
+	)
+	stored := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(mem), machine.ConstVal(0xfff1)),
+		inserted,
+	)
+
+	_, bitOff, bitWidth, got, ok := bitfieldStore(mem, stored, sameStorage)
+	if !ok {
+		t.Fatal("disjoint ADD bitfield store was not recognized")
+	}
+	if bitOff != 1 || bitWidth != 3 || !machine.ValueEquals(got, source) {
+		t.Fatalf("bitfield store = (off %d, width %d, value %v), want (1, 3, AX)", bitOff, bitWidth, got)
+	}
+
+	unsafe := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(mem), machine.ConstVal(0xfff1)),
+		source,
+	)
+	if _, _, _, _, ok := bitfieldStore(mem, unsafe, sameStorage); ok {
+		t.Fatal("unmasked ADD bitfield store was recognized")
+	}
+}
+
 // TestConvertChainedShiftBitfield verifies address-index bitfields retain
 // compiler-emitted successive right shifts during machine recognition.
 func TestConvertChainedShiftBitfield(t *testing.T) {
@@ -162,5 +207,90 @@ func TestConvertChainedShiftBitfield(t *testing.T) {
 
 	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(value)); got != "btn.iSide" {
 		t.Fatalf("converted bitfield = %q, want btn.iSide", got)
+	}
+}
+
+func TestRecognizeBitfieldReadSignedShiftPair(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "FTrackXfer")
+
+	load := &machine.Load{
+		Addr: machine.MemoryAddress{
+			Width: 2,
+		},
+	}
+
+	value := machine.BinaryVal(
+		machine.ValueOpSar,
+		machine.BinaryVal(
+			machine.ValueOpShl,
+			load,
+			machine.ConstVal(11),
+		),
+		machine.ConstVal(11),
+	)
+
+	got, ok := recognizeBitfieldRead(ctx, value)
+	if !ok {
+		t.Fatal("recognizeBitfieldRead() = false")
+	}
+
+	if got.Load != load {
+		t.Fatalf("Load = %#v, want %#v", got.Load, load)
+	}
+	if got.Access.BitOff != 0 {
+		t.Fatalf("BitOff = %d, want 0", got.Access.BitOff)
+	}
+	if got.Access.BitWidth != 5 {
+		t.Fatalf("BitWidth = %d, want 5", got.Access.BitWidth)
+	}
+	if got.Access.Signedness != BitfieldSigned {
+		t.Fatalf("Signedness = %v, want signed", got.Access.Signedness)
+	}
+}
+
+func TestRecognizeBitfieldReadSignedShiftPairNonzeroOffset(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "FTrackXfer")
+
+	load := &machine.Load{
+		Addr: machine.MemoryAddress{
+			Width: 2,
+		},
+	}
+
+	// 16-bit storage:
+	//
+	//     (storage << 7) SAR 12
+	//
+	// selects original bits [5:9):
+	//
+	//     BitOff   = 12 - 7 = 5
+	//     BitWidth = 16 - 12 = 4
+	value := machine.BinaryVal(
+		machine.ValueOpSar,
+		machine.BinaryVal(
+			machine.ValueOpShl,
+			load,
+			machine.ConstVal(7),
+		),
+		machine.ConstVal(12),
+	)
+
+	got, ok := recognizeBitfieldRead(ctx, value)
+	if !ok {
+		t.Fatal("recognizeBitfieldRead() = false")
+	}
+
+	if got.Access.BitOff != 5 {
+		t.Fatalf("BitOff = %d, want 5", got.Access.BitOff)
+	}
+	if got.Access.BitWidth != 4 {
+		t.Fatalf("BitWidth = %d, want 4", got.Access.BitWidth)
+	}
+	if got.Access.Signedness != BitfieldSigned {
+		t.Fatalf("Signedness = %v, want signed", got.Access.Signedness)
 	}
 }

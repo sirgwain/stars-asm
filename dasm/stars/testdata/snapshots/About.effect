@@ -133,19 +133,11 @@ block L_13d7:
   preds: L_139f, L_13a8
   succs: L_13e3, L_13fa
   effects:
-    13db  branch load([bp-i]) >= 0x4d ? L_13fa : L_13dd
-
-block L_13dd:
-  insts 131..131  off 0x13dd..0x13df
-  succs: L_13e3
-
-block L_13e0:
-  insts 132..132  off 0x13e0..0x13e2
-  succs: L_13fa
+    13db  branch load([bp-i]) >= 0x4d ? L_13fa : L_13e3
 
 block L_13e3:
   insts 133..141  off 0x13e3..0x13f9
-  preds: L_13b1, L_13d7, L_13dd
+  preds: L_13b1, L_13d7
   succs: L_138d
   effects:
     13f2  call OffsetRect(words(ss, addr([bp-rc])), 0x0, load([dyArial8])) -> callresult(void)
@@ -153,7 +145,7 @@ block L_13e3:
 
 block L_13fa:
   insts 142..157  off 0x13fa..0x142b
-  preds: L_1391, L_13d7, L_13e0
+  preds: L_1391, L_13d7
   succs: L_1510
   effects:
     13fa  store[2] [bp-rc+0x6] = 0x3e8
@@ -177,10 +169,6 @@ block L_1448:
   effects:
     1453  call SetBkColor(load([bp+wParam]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
     145b  goto L_1516
-
-block L_145e:
-  insts 173..173  off 0x145e..0x1460
-  succs: L_1510
 
 block L_1461:
   insts 174..175  off 0x1461..0x1466
@@ -216,7 +204,7 @@ block L_149a:
 block L_14a3:
   insts 193..212  off 0x14a3..0x14de
   preds: L_149a
-  succs: L_1510
+  succs: L_14df
   effects:
     14af  call MakeProcInstance(words(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(int32_t() *)
     14b4  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
@@ -226,7 +214,10 @@ block L_14a3:
 
 block L_14df:
   insts 213..213  off 0x14df..0x14e1
+  preds: L_14a3
   succs: L_1510
+  effects:
+    14df  goto L_1510
 
 block L_14e5:
   insts 214..215  off 0x14e5..0x14e9
@@ -265,7 +256,7 @@ block L_1505:
 
 block L_1510:
   insts 230..230  off 0x1510..0x1515
-  preds: L_13fa, L_142c, L_145e, L_149a, L_14a3, L_14df, L_1505
+  preds: L_13fa, L_142c, L_149a, L_14df, L_1505
   succs: L_1516
 
 block L_1516:

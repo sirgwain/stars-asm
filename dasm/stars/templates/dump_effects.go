@@ -151,6 +151,8 @@ func newEffectFormatContext(effects []machine.Effect, annotations *sem.Result) e
 			ctx.noteValueLoads(e.Result, writes, loadIDs)
 		case machine.BranchEffect:
 			ctx.noteValueLoads(e.Predicate, writes, loadIDs)
+		case machine.TableJumpEffect:
+			ctx.noteValueLoads(e.Index, writes, loadIDs)
 		case machine.ReturnEffect:
 			ctx.noteValueLoads(e.Value, writes, loadIDs)
 		}
@@ -233,6 +235,8 @@ func (ctx effectFormatContext) formatEffect(effect machine.Effect) string {
 		return line
 	case machine.BranchEffect:
 		return fmt.Sprintf("%sbranch %s ? %s : %s", prefix, ctx.formatValue(e.Predicate), e.TrueBlock, e.FalseBlock)
+	case machine.TableJumpEffect:
+		return fmt.Sprintf("%stablejump %s [%s]", prefix, ctx.formatValue(e.Index), strings.Join(formatBlockIDs(e.Targets), ", "))
 	case machine.JumpEffect:
 		return fmt.Sprintf("%sgoto %s", prefix, e.To)
 	case machine.ReturnEffect:

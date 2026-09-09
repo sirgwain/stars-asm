@@ -69,12 +69,6 @@ CALLF     PtInRect                  ; int16_t PtInRect(RECT *arg1, POINT arg2)
 CMP       ax, 0x0000          
 JNZ       L_5a91              
 
-L_5a7c:
-JMP       L_5a82              
-
-L_5a7f:                             ; ship.c:2231
-JMP       L_5a91              
-
 L_5a82:                             ; ship.c:2232
 ADD       [bp-i], 0x0001            ; [bp-0x2c], 0x0001
 
@@ -123,12 +117,6 @@ L_5adc:                             ; ship.c:2242
 CMP       [bp-iVal], 0x0004         ; [bp-0x30], 0x0004
 JG        FinishUp            
 
-L_5ae2:
-JMP       L_5ae8              
-
-L_5ae5:                             ; ship.c:2243
-JMP       FinishUp            
-
 L_5ae8:                             ; ship.c:2245
 MOV       bx, [pxfer]               ; bx, [0x4a68]
 CMP       [bx+0x82], 0x0008   
@@ -145,12 +133,6 @@ JZ        FinishUp
 L_5b05:
 JMP       L_5b31              
 
-L_5b08:                             ; ship.c:2248
-JMP       FinishUp            
-
-L_5b0b:                             ; ship.c:2250
-JMP       L_5b31              
-
 L_5b0e:                             ; ship.c:2253
 MOV       ax, [bp-btn+0xc]          ; ax, [bp-0x32]
 SHR       ax, 0x0001          
@@ -163,12 +145,6 @@ ADD       bx, ax
 MOV       ax, [idPlayer]            ; ax, [0x018c]
 CMP       [bx+0x6], ax        
 JNZ       FinishUp            
-
-L_5b2b:
-JMP       L_5b31              
-
-L_5b2e:                             ; ship.c:2254
-JMP       FinishUp            
 
 L_5b31:                             ; ship.c:2257
 PUSH      [bp+hwnd]                 ; [bp+0x6]

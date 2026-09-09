@@ -214,7 +214,7 @@ block L_089f:
 
 block L_08a7:
   insts 219..219  off 0x08a7..0x08aa
-  preds: L_08b6, L_08c1, L_08fe
+  preds: L_08b6, L_08fe
   succs: L_08ab
   effects:
     08a7  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -236,7 +236,7 @@ block L_08b6:
 block L_08c1:
   insts 228..253  off 0x08c1..0x08fd
   preds: L_08b6
-  succs: L_08a7
+  succs: L_08fe
   effects:
     08c8  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
     08ed  call PszPlayerName(load([bp-i]), 0x0, 0x1, 0x0, 0x0, 0x0) -> callresult(char *)
@@ -244,7 +244,10 @@ block L_08c1:
 
 block L_08fe:
   insts 254..254  off 0x08fe..0x0900
+  preds: L_08c1
   succs: L_08a7
+  effects:
+    08fe  goto L_08a7
 
 block L_0901:
   insts 255..263  off 0x0901..0x0919
@@ -349,19 +352,11 @@ block L_0a6a:
   effects:
     0a70  store[2] ss:[bp-0x16] = load([bp+lParam])
     0a79  call GetDlgItem(load([bp+hwnd]), load([bp-idc])) -> callresult(HWND)
-    0a83  branch load(ss:[bp-0x16]) == callresult(HWND) ? L_0a99 : L_0a85
-
-block L_0a85:
-  insts 400..400  off 0x0a85..0x0a87
-  succs: L_0a8b
-
-block L_0a88:
-  insts 401..401  off 0x0a88..0x0a8a
-  succs: L_0a99
+    0a83  branch load(ss:[bp-0x16]) == callresult(HWND) ? L_0a99 : L_0a8b
 
 block L_0a8b:
   insts 402..402  off 0x0a8b..0x0a8e
-  preds: L_0a6a, L_0a85
+  preds: L_0a6a
   succs: L_0a8f
   effects:
     0a8b  store[2] [bp-idc] = (load([bp-idc]) + 0x1)
@@ -375,7 +370,7 @@ block L_0a8f:
 
 block L_0a99:
   insts 406..407  off 0x0a99..0x0a9f
-  preds: L_0a6a, L_0a88, L_0a8f
+  preds: L_0a6a, L_0a8f
   succs: L_0aa3, L_0abf
   effects:
     0a9e  branch load([bp-idc]) >= 0x41d ? L_0abf : L_0aa3
@@ -395,10 +390,6 @@ block L_0abf:
   effects:
     0aca  call SetBkColor(load([bp+wParam]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
     0ad2  goto L_16fe
-
-block L_0ad5:
-  insts 424..424  off 0x0ad5..0x0ad7
-  succs: L_16f8
 
 block L_0ad8:
   insts 425..439  off 0x0ad8..0x0aff
@@ -838,19 +829,11 @@ block L_11b9:
     11c9  store[2] [iPlanSelDlg] = load@11bd/src(byte ds:[load([idPlayer])+0x4830])
     11d0  call strlen(0x51d8) -> callresult(uint16_t)
     11d8  store[2] [bp-cLen] = callresult(uint16_t)
-    11df  branch load([bp-cLen]) > 0x1b ? L_128b : L_11e1
-
-block L_11e1:
-  insts 1052..1052  off 0x11e1..0x11e3
-  succs: L_11e7
-
-block L_11e4:
-  insts 1053..1053  off 0x11e4..0x11e6
-  succs: L_128b
+    11df  branch load([bp-cLen]) > 0x1b ? L_128b : L_11e7
 
 block L_11e7:
   insts 1054..1061  off 0x11e7..0x11fb
-  preds: L_11b9, L_11e1
+  preds: L_11b9
   succs: L_11ff, L_123c
   effects:
     11fa  branch load(byte ds:[(load([bp-cLen]) + 0x151d7)]) != 0x29 ? L_123c : L_11ff
@@ -901,7 +884,7 @@ block L_127d:
 
 block L_128b:
   insts 1115..1182  off 0x128b..0x1340
-  preds: L_11b9, L_11e4, L_123c, L_126c, L_127d
+  preds: L_11b9, L_123c, L_126c, L_127d
   succs: L_1345
   effects:
     12a3  store[2] [btlplan] = ((load@1299/src([btlplan]) & 0xff0f) | (((((load@128b/src([iPlanSelDlg]) & 0xf) << 0x1) << 0x1) << 0x1) << 0x1))
@@ -1078,14 +1061,17 @@ block L_167c:
 block L_1680:
   insts 1496..1509  off 0x1680..0x16a1
   preds: L_1630, L_167c
-  succs: L_16f8
+  succs: L_16a2
   effects:
     1687  call GetDlgItem(load([bp+hwnd]), 0x422) -> callresult(HWND)
     169d  call SendMessage(callresult(HWND), 0x40e, load([bp-i]), words(0x0, 0x0)) -> callresult(LRESULT)
 
 block L_16a2:
   insts 1510..1510  off 0x16a2..0x16a4
+  preds: L_1680
   succs: L_16f8
+  effects:
+    16a2  goto L_16f8
 
 block L_16a5:
   insts 1511..1512  off 0x16a5..0x16aa
@@ -1101,10 +1087,6 @@ block L_16ae:
   effects:
     16c4  call WinHelp(load([bp+hwnd]), words(ds, load([szHelpFile])), 0x1, words(0x0, 0x439)) -> callresult(int16_t)
     16cc  goto L_16fe
-
-block L_16cf:
-  insts 1528..1528  off 0x16cf..0x16d1
-  succs: L_16f8
 
 block L_16d5:
   insts 1529..1530  off 0x16d5..0x16d9
@@ -1136,7 +1118,7 @@ block L_16ed:
 
 block L_16f8:
   insts 1542..1542  off 0x16f8..0x16fd
-  preds: L_0aa3, L_0ad5, L_0bc2, L_0dd0, L_0e2f, L_0e7a, L_0f1f, L_0f4b, L_112b, L_14a5, L_1680, L_16a2, L_16a5, L_16cf, L_16ed
+  preds: L_0aa3, L_0bc2, L_0dd0, L_0e2f, L_0e7a, L_0f1f, L_0f4b, L_112b, L_14a5, L_16a2, L_16a5, L_16ed
   succs: L_16fe
 
 block L_16fe:

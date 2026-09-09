@@ -39,10 +39,7 @@ L_17e2:
     branch LOWORD(lppl->lpplprod) != 0x0 ? L_17fc : L_17ef
 
 L_17ef:
-    branch HIWORD(lppl->lpplprod) == 0x0 ? L_17a3 : L_17f6
-
-L_17f6:
-
+    branch HIWORD(lppl->lpplprod) == 0x0 ? L_17a3 : L_17fc
 
 L_17fc:
     prod = lppl->lpplprod->rgprod[0]
@@ -73,18 +70,12 @@ L_18a1:
     branch prod.iItem != mdIdleTerraform ? L_18c8 : L_18bd
 
 L_18bd:
-    branch 0x0 == 0x0 ? L_17a3 : L_18c2
-
-L_18c2:
-
+    branch 0x0 == 0x0 ? L_17a3 : L_18c8
 
 L_18c8:
     call ChangeMainObjSel(grobjPlanet, lppl->id) -> callresult(void)
     call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjMine, &etaFirst, 0x0) -> callresult(char *)
-    branch etaFirst == 1 ? L_17a3 : L_1903
-
-L_1903:
-
+    branch etaFirst == 1 ? L_17a3 : L_1909
 
 L_1909:
     branch etaFirst != -1 ? L_1917 : L_1912
@@ -110,13 +101,11 @@ L_19c6:
     branch HIWORD(rgCost[0x3]) > hiword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19cb
 
 L_19cb:
-    branch LOWORD(rgCost[0x3]) > loword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19d0
-
-L_19d0:
-
+    branch LOWORD(rgCost[0x3]) > loword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19d6
 
 L_19d6:
-    cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - (uint32_t)sel.pl.cMines)
+    t_scratch_m136 = (uint32_t)sel.pl.cMines
+    cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - t_scratch_m136)
     branch HIWORD(cMaxBuild) > 0x0 ? L_1a3e : L_1a26
 
 L_1a26:
@@ -194,10 +183,7 @@ L_1bef:
     branch HIWORD(cBuild) < 0x0 ? L_17a3 : L_1bf4
 
 L_1bf4:
-    branch LOWORD(cBuild) < 0x1 ? L_17a3 : L_1bfa
-
-L_1bfa:
-
+    branch LOWORD(cBuild) < 0x1 ? L_17a3 : L_1c03
 
 L_1c03:
     sel.pl.lpplprod->rgprod[0].iItem = mdIdleMine
@@ -218,8 +204,9 @@ L_1c4a:
     goto L_17a3
 
 L_1c8f:
-    scratch_bp_m134 = 0x0
-    sel.pl.lpplprod->rgprod[0] = words(((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff) << 0x0))), ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)((uint32_t)(LOWORD(cBuild) & 0x3ff) << 0x0))))
+    LOWORD(t_scratch_m13a) = ((LOWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xfc00) | loword((int32_t)((uint32_t)(loword((uint32_t)LOWORD(cBuild)) & 0x3ff) << 0x0)))
+    HIWORD(t_scratch_m13a) = ((HIWORD(sel.pl.lpplprod->rgprod[0x0]) & 0xffff) | hiword((int32_t)((uint32_t)(loword((uint32_t)LOWORD(cBuild)) & 0x3ff) << 0x0)))
+    sel.pl.lpplprod->rgprod[0] = t_scratch_m13a
     goto L_17a3
 
 L_1cef:

@@ -198,6 +198,20 @@ func retargetTerminatorEdge(block *Block, old machine.BlockID, next machine.Bloc
 		}
 		return retargeted
 
+	case *TableJump:
+		replacement := *term
+		replacement.Targets = append([]machine.BlockID(nil), term.Targets...)
+		retargeted := false
+		for i, target := range replacement.Targets {
+			if target == old {
+				replacement.Targets[i] = next
+				retargeted = true
+			}
+		}
+		if retargeted {
+			block.Effects[len(block.Effects)-1] = &replacement
+		}
+		return retargeted
 	case *Jump:
 		if term.To != old {
 			return false
@@ -218,7 +232,7 @@ func insertBeforeTerminator(effects []Effect, inserts []Effect) []Effect {
 		return append([]Effect(nil), inserts...)
 	}
 	switch effects[len(effects)-1].(type) {
-	case *Branch, *Jump, *Return:
+	case *Branch, *Jump, *TableJump, *Return:
 		out := make([]Effect, 0, len(effects)+len(inserts))
 		out = append(out, effects[:len(effects)-1]...)
 		out = append(out, inserts...)

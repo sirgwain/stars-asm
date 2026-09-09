@@ -17,7 +17,6 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     int32_t  t_call_5cf5;
     uint16_t t_merge_5d7f_0001;
     uint16_t t_merge_5def_0001;
-    uint16_t scratch_bp_m4c;
     uint16_t t_merge_5e4d_0001;
     uint16_t t_merge_5e34_0001;
     uint32_t t_merge_5ecd_0001_wide;
@@ -41,9 +40,7 @@ L_5a5c:
     if ((PtInRect(&(rgbtnXfer[i].rc), pt) != 0))
         goto L_5a91;
     else
-        goto L_5a7c;
-
-L_5a7c:
+        goto L_5a82;
 
 L_5a82:
     i = (i + 1);
@@ -76,9 +73,7 @@ L_5adc:
     if ((iVal > 4))
         goto FinishUp;
     else
-        goto L_5ae2;
-
-L_5ae2:
+        goto L_5ae8;
 
 L_5ae8:
     if ((*(pxfer + 0x82) != 0x8))
@@ -99,11 +94,10 @@ L_5aff:
         goto L_5b05;
 
 L_5b05:
+    goto L_5b31;
 
 L_5b0e:
-    /* untranslated: branch part[0x6:2](pxfer[btn.iSide]) != idPlayer ? L_5f70 : L_5b2b */
-
-L_5b2b:
+    /* untranslated: branch part[0x6:2](pxfer[btn.iSide]) != idPlayer ? L_5f70 : L_5b31 */
 
 L_5b31:
     SetCapture(hwnd);
@@ -178,7 +172,7 @@ L_5cda:
     goto L_5cf0;
 
 L_5ce3:
-    /* untranslated: t_merge_5cf0_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg))) */
+    t_merge_5cf0_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
 
 L_5cf0:
     t_call_5cf5 = XferSupply(iVal, t_merge_5cf0_0001);
@@ -195,6 +189,9 @@ L_5d05:
 
 L_5d0d:
     DrawXferDlg(hwnd, 0x0, &(rc), iVal);
+
+L_5d23:
+    goto L_5b44;
 
 L_5d26:
     ReleaseCapture();
@@ -263,7 +260,7 @@ L_5dec:
     t_merge_5def_0001 = 0x0;
 
 L_5def:
-    if ((scratch_bp_m4c >= pxfer[t_merge_5def_0001].fl.rgcsh[iVal]))
+    if ((LOWORD(dChg) >= pxfer[t_merge_5def_0001].fl.rgcsh[iVal]))
         goto L_5e19;
     else
         goto L_5e10;
@@ -322,6 +319,9 @@ L_5ecd:
     pxfer[LOWORD(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] = (pxfer[HIWORD(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] - i);
     DrawXferDlg(hwnd, btnt.hdc, &(rc), iBtn);
 
+L_5efe:
+    goto L_5dad;
+
 L_5f01:
     if ((iVal < 0))
         goto L_5dad;
@@ -345,7 +345,7 @@ L_5f25:
     goto L_5f3b;
 
 L_5f2e:
-    /* untranslated: t_merge_5f3b_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg))) */
+    t_merge_5f3b_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
 
 L_5f3b:
     t_call_5f40 = XferSupply(iVal, t_merge_5f3b_0001);
@@ -362,6 +362,9 @@ L_5f50:
 
 L_5f58:
     DrawXferDlg(hwnd, btnt.hdc, &(rc), iVal);
+
+L_5f6d:
+    goto L_5dad;
 
 FinishUp:
     UpdateXferBtns();

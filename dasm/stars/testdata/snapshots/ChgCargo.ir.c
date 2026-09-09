@@ -131,6 +131,9 @@ L_6174:
 L_617d:
     FLookupPlanet(-1, &(xfer.pl));
 
+L_618d:
+    goto L_64bd;
+
 L_6190:
     if ((grobj != grobjThing))
         goto L_6320;
@@ -252,6 +255,9 @@ L_6305:
 
 L_630e:
     FLookupThing(-1, pth);
+
+L_631d:
+    goto L_64bd;
 
 L_6320:
     if ((pobj == 0x0))

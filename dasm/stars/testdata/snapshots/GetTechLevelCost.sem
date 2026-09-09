@@ -34,7 +34,7 @@ L_1e40:
     branch i >= 0 ? L_1e6a : L_1e49
 
 L_1e49:
-    lCost = (lCost + (lCost - (int32_t)(lCost >> 0x2)))
+    lCost = (lCost + (lCost - (int32_t)(lCost sar 0x2)))
     goto L_1e83
 
 L_1e6a:

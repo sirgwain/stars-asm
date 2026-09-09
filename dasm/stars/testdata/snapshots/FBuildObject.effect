@@ -266,7 +266,7 @@ block L_1d3a:
 
 block L_1d42:
   insts 302..302  off 0x1d42..0x1d45
-  preds: L_1d97, L_1daa, L_1dad, L_1dcb, L_1ded, L_214c
+  preds: L_1d97, L_1dad, L_1dcb, L_1ded
   succs: L_1d46
   effects:
     1d42  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -299,34 +299,18 @@ block L_1d81:
   preds: L_1d51, L_1d79
   succs: L_1d97, L_214f
   effects:
-    1d8f  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) > load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) ? L_214f : L_1d91
-
-block L_1d91:
-  insts 329..329  off 0x1d91..0x1d93
-  succs: L_1d97
-
-block L_1d94:
-  insts 330..330  off 0x1d94..0x1d96
-  succs: L_214f
+    1d8f  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) > load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) ? L_214f : L_1d97
 
 block L_1d97:
   insts 331..335  off 0x1d97..0x1da6
-  preds: L_1d81, L_1d91
+  preds: L_1d81
   succs: L_1d42, L_1dad
   effects:
-    1da5  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) < load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) ? L_1d42 : L_1da7
-
-block L_1da7:
-  insts 336..336  off 0x1da7..0x1da9
-  succs: L_1dad
-
-block L_1daa:
-  insts 337..337  off 0x1daa..0x1dac
-  succs: L_1d42
+    1da5  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) < load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) ? L_1d42 : L_1dad
 
 block L_1dad:
   insts 338..346  off 0x1dad..0x1dc7
-  preds: L_1d97, L_1da7
+  preds: L_1d97
   succs: L_1d42, L_1dcb
   effects:
     1dc6  branch load(farseg(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64]))+0x4]) != load(ds:[((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]) << 0x1) << 0x1)+0x2f40]) ? L_1d42 : L_1dcb
@@ -448,13 +432,9 @@ block L_20de:
     213e  call FSendPlrMsg(load@213a/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x139, (load@212c/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) | 0x8000), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@2120/src([bp+cBuilt]), ((((((load@210e/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1) | load@211c/src([bp+iItem])), load@2108/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]), 0x0, 0x0, 0x0) -> callresult(int16_t)
     2149  goto L_2fcf
 
-block L_214c:
-  insts 703..703  off 0x214c..0x214e
-  succs: L_1d42
-
 block L_214f:
   insts 704..733  off 0x214f..0x219b
-  preds: L_1d46, L_1d79, L_1d81, L_1d94
+  preds: L_1d46, L_1d79, L_1d81
   succs: L_2fcf
   effects:
     218e  call FSendPlrMsg(load@218a/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0xba, load@2180/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@217a/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load([bp+cBuilt]), ((((((load@2162/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1) | load([bp+iItem])), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
@@ -532,14 +512,17 @@ block L_22c4:
 block L_22c7:
   insts 837..869  off 0x22c7..0x231d
   preds: L_22be, L_22c4
-  succs: L_2fc9
+  succs: L_231e
   effects:
     22c7  store[2] [bp-idm] = merge(Join: L_22c7, (L_22be:0x34, L_22c4:0x32))
     2316  call FSendPlrMsg(load@2312/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), load([bp-idm]), (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) | 0x8000), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load([bp+cBuilt]), ((((((load@22e7/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1) | load([bp+iItem])), ((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x30]) & 0x3ff) + 0xffff), 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 block L_231e:
   insts 870..870  off 0x231e..0x2320
+  preds: L_22c7
   succs: L_2fc9
+  effects:
+    231e  goto L_2fc9
 
 block L_2321:
   insts 871..878  off 0x2321..0x233a
@@ -560,13 +543,16 @@ block L_233e:
 block L_2379:
   insts 902..931  off 0x2379..0x23c3
   preds: L_2321
-  succs: L_2fc9
+  succs: L_23c4
   effects:
     23bc  call FSendPlrMsg(load@23b8/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x30, (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) | 0x8000), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load([bp+cBuilt]), ((((((load@238c/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1) | load([bp+iItem])), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 block L_23c4:
   insts 932..932  off 0x23c4..0x23c6
+  preds: L_2379
   succs: L_2fc9
+  effects:
+    23c4  goto L_2fc9
 
 block L_23c7:
   insts 933..934  off 0x23c7..0x23cc
@@ -583,11 +569,17 @@ block L_23d0:
     23d3  goto L_2f77
 
 block L_23d6:
-  insts 938..959  off 0x23d6..0x241c
+  insts 938..939  off 0x23d6..0x23db
   preds: L_2f77
-  succs: L_2420, L_2426
+  succs: L_2fcf
   effects:
     23d9  goto L_2fcf
+
+block L_23dc:
+  insts 940..959  off 0x23dc..0x241c
+  preds: L_2f7f
+  succs: L_2420, L_2426
+  effects:
     23ea  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14])), 0x14) -> callresult(uint32_t)
     23f5  store[2] ss:[bp-0x16] = (loword(callresult(uint32_t)) & 0xfff)
     2405  call CMaxFactories(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])) -> callresult(int16_t)
@@ -596,14 +588,14 @@ block L_23d6:
 
 block L_2420:
   insts 961..962  off 0x2420..0x2425
-  preds: L_23d6
+  preds: L_23dc
   succs: L_2429
   effects:
     2423  goto L_2429
 
 block L_2426:
   insts 963..963  off 0x2426..0x2428
-  preds: L_23d6
+  preds: L_23dc
   succs: L_2429
 
 block L_2429:
@@ -640,21 +632,24 @@ block SendMsgFactMine:
 block L_24af:
   insts 1003..1015  off 0x24af..0x24d6
   preds: L_248b
-  succs: L_2502
+  succs: L_2fc9
   effects:
     24cc  call FSendPlrMsg2(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), (load([bp-idm]) + 0x1), load@24bb/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load([bp+cBuilt]), load@24b2/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))])) -> callresult(int16_t)
-    24d4  goto L_2502
+    24d4  goto L_2fc9
 
 block L_24d7:
   insts 1016..1026  off 0x24d7..0x24f8
   preds: L_248b
-  succs: L_2502
+  succs: L_24f9
   effects:
     24f1  call FSendPlrMsg2(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), load([bp-idm]), load@24e4/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@24de/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), 0x0) -> callresult(int16_t)
 
 block L_24f9:
   insts 1027..1027  off 0x24f9..0x24fb
-  succs: L_2502
+  preds: L_24d7
+  succs: L_2fc9
+  effects:
+    24f9  goto L_2fc9
 
 block L_24fc:
   insts 1028..1029  off 0x24fc..0x2501
@@ -663,12 +658,11 @@ block L_24fc:
   effects:
     24ff  goto L_2fcf
 
-block L_2502:
-  insts 1030..1050  off 0x2502..0x2545
-  preds: L_24af, L_24d7, L_24f9
+block L_2505:
+  insts 1031..1050  off 0x2505..0x2545
+  preds: L_2f7f
   succs: L_2549, L_254f
   effects:
-    2502  goto L_2fc0
     2513  call __aFulshr(words(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14])), 0x8) -> callresult(uint32_t)
     251e  store[2] ss:[bp-0x16] = (loword(callresult(uint32_t)) & 0xfff)
     252e  call CMaxMines(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])) -> callresult(int16_t)
@@ -677,14 +671,14 @@ block L_2502:
 
 block L_2549:
   insts 1052..1053  off 0x2549..0x254e
-  preds: L_2502
+  preds: L_2505
   succs: L_2552
   effects:
     254c  goto L_2552
 
 block L_254f:
   insts 1054..1054  off 0x254f..0x2551
-  preds: L_2502
+  preds: L_2505
   succs: L_2552
 
 block L_2552:
@@ -711,11 +705,17 @@ block L_255e:
     25b5  goto L_248b
 
 block L_25bb:
-  insts 1084..1103  off 0x25bb..0x25fc
+  insts 1084..1085  off 0x25bb..0x25c0
   preds: L_2552
-  succs: L_2600, L_2606
+  succs: L_2fcf
   effects:
     25be  goto L_2fcf
+
+block L_25c4:
+  insts 1086..1103  off 0x25c4..0x25fc
+  preds: L_2f7f
+  succs: L_2600, L_2606
+  effects:
     25d5  store[2] ss:[bp-0x16] = (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff)
     25e5  call CMaxDefenses(words(load([bp+lppl+0x2]), load([bp+lppl])), load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])) -> callresult(int16_t)
     25f2  store[2] [bp-cAllowed] = (callresult(int16_t) - load(ss:[bp-0x16]))
@@ -723,14 +723,14 @@ block L_25bb:
 
 block L_2600:
   insts 1105..1106  off 0x2600..0x2605
-  preds: L_25bb
+  preds: L_25c4
   succs: L_2609
   effects:
     2603  goto L_2609
 
 block L_2606:
   insts 1107..1107  off 0x2606..0x2608
-  preds: L_25bb
+  preds: L_25c4
   succs: L_2609
 
 block L_2609:
@@ -757,13 +757,17 @@ block L_2615:
     266c  goto L_248b
 
 block L_2672:
-  insts 1137..1160  off 0x2672..0x26ba
+  insts 1137..1138  off 0x2672..0x2677
   preds: L_2609
-  succs: L_26be, L_26e7
+  succs: L_2fcf
   effects:
     2675  goto L_2fcf
-    267b  goto L_2fc0
-    267e  goto L_2fc0
+
+block L_2681:
+  insts 1141..1160  off 0x2681..0x26ba
+  preds: L_2f7f
+  succs: L_26be, L_26e7
+  effects:
     2695  call GetRaceStat((0x59a2 + loword((0xc0 * load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])))), 0xe) -> callresult(int16_t)
     269d  store[2] [bp-raMajor] = callresult(int16_t)
     26aa  call IWarpMAFromLppl(words(load([bp+lppl+0x2]), load([bp+lppl])), addr([bp-fTwoMAs])) -> callresult(int16_t)
@@ -772,7 +776,7 @@ block L_2672:
 
 block L_26be:
   insts 1162..1175  off 0x26be..0x26e6
-  preds: L_2672
+  preds: L_2681
   succs: L_2fcf
   effects:
     26d9  call FSendPlrMsg2(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0xd1, load@26cb/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@26c5/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), 0x0) -> callresult(int16_t)
@@ -780,7 +784,7 @@ block L_26be:
 
 block L_26e7:
   insts 1176..1180  off 0x26e7..0x26f5
-  preds: L_2672
+  preds: L_2681
   succs: L_26f9, L_2722
   effects:
     26f4  branch (load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0x3ff) != 0x0 ? L_2722 : L_26f9
@@ -1083,19 +1087,11 @@ block L_2941:
   preds: L_2928
   succs: L_2956, L_2968
   effects:
-    294e  branch (load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0x3fff) < 0x65e ? L_2968 : L_2950
-
-block L_2950:
-  insts 1387..1387  off 0x2950..0x2952
-  succs: L_2956
-
-block L_2953:
-  insts 1388..1388  off 0x2953..0x2955
-  succs: L_2968
+    294e  branch (load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0x3fff) < 0x65e ? L_2968 : L_2956
 
 block L_2956:
   insts 1389..1389  off 0x2956..0x2959
-  preds: L_288f, L_28ab, L_28c1, L_28e7, L_28f0, L_2909, L_2928, L_2941, L_2950
+  preds: L_288f, L_28ab, L_28c1, L_28e7, L_28f0, L_2909, L_2928, L_2941
   succs: L_295a
   effects:
     2956  store[2] [bp-lpth] = (load([bp-lpth]) + 0x12)
@@ -1109,7 +1105,7 @@ block L_295a:
 
 block L_2968:
   insts 1395..1398  off 0x2968..0x2972
-  preds: L_2941, L_2953, L_295a
+  preds: L_2941, L_295a
   succs: L_2976, L_297e
   effects:
     2971  branch load([bp-lpth]) != load([bp-lpthMac]) ? L_297e : L_2976
@@ -1222,9 +1218,9 @@ block L_2b35:
     2b39  branch load([bp-i]) < 0x3 ? L_2ad1 : L_2b3e
 
 block L_2b3e:
-  insts 1556..1622  off 0x2b3e..0x2c0c
+  insts 1556..1620  off 0x2b3e..0x2c04
   preds: L_2b35
-  succs: L_2c11
+  succs: L_2fc9
   effects:
     2b41  store[2] ss:[bp-0x2e] = load([bp-iWarp])
     2b5f  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2b52/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | ((load@2b44/src(ss:[bp-0x2e]) & 0xf) << 0xa))
@@ -1235,7 +1231,13 @@ block L_2b3e:
     2bcd  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2] = load(ds:[((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]) << 0x1) << 0x1)+0x2f40])
     2bd1  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4] = load(ds:[((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]) << 0x1) << 0x1)+0x2f42])
     2bfa  call FSendPlrMsg2(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0xd3, load@2bec/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@2be6/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), ((load@2bd8/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0x3ff) + 0xffff)) -> callresult(int16_t)
-    2c02  goto L_2fc0
+    2c02  goto L_2fc9
+
+block L_2c05:
+  insts 1621..1622  off 0x2c05..0x2c0c
+  preds: L_2f7f
+  succs: L_2c11
+  effects:
     2c05  store[2] [bp-i] = 0x0
     2c0a  goto L_2c11
 
@@ -1248,7 +1250,7 @@ block L_2c0d:
 
 block L_2c11:
   insts 1624..1626  off 0x2c11..0x2c18
-  preds: L_2b3e, L_2c0d
+  preds: L_2c05, L_2c0d
   succs: L_2c1c, L_2c3e
   effects:
     2c17  branch load([bp-i]) >= load([game+0x8]) ? L_2c3e : L_2c1c
@@ -1293,7 +1295,7 @@ block L_2cea:
 
 block L_2cf2:
   insts 1695..1754  off 0x2cf2..0x2d9b
-  preds: L_2d9c, L_2da2
+  preds: L_2da2
   succs: L_2d9c
   effects:
     2d08  store[2] load([bp+lppl+0x2]):[((load([bp+lppl]) + 0x1c) + ((load([bp-i]) << 0x1) << 0x1))] = 0x0
@@ -1312,37 +1314,49 @@ block L_2cf2:
 block L_2d9c:
   insts 1755..1756  off 0x2d9c..0x2da1
   preds: L_2cea, L_2cf2
-  succs: L_2cf2, L_2fc9
+  succs: L_2da2, L_2fc9
   effects:
     2da0  branch load([bp-i]) >= 0x3 ? L_2fc9 : L_2da2
 
 block L_2da2:
   insts 1757..1757  off 0x2da2..0x2da4
+  preds: L_2d9c
   succs: L_2cf2
-
-block L_2da5:
-  insts 1758..1758  off 0x2da5..0x2da7
-  succs: L_2fc9
+  effects:
+    2da2  goto L_2cf2
 
 block L_2da8:
   insts 1759..1762  off 0x2da8..0x2db3
-  preds: L_2db7, L_2e9b, L_2ebb
-  succs: L_2db7, L_2ebe
+  preds: L_2db7, L_2ebb, L_2f7f
+  succs: L_2db7, L_2fc9
+  effects:
+    2dab  store[2] [bp+cBuilt] = (load@2dab/dst([bp+cBuilt]) - 0x1)
+    2db2  branch load@2da8/src([bp+cBuilt]) == 0x0 ? L_2fc9 : L_2db7
 
 block L_2db7:
   insts 1764..1772  off 0x2db7..0x2dd1
   preds: L_2da8
   succs: L_2da8, L_2dd5
+  effects:
+    2dc1  call IBestTerraform(words(load([bp+lppl+0x2]), load([bp+lppl])), 0x1) -> callresult(int16_t)
+    2dc9  store[2] [bp-i] = callresult(int16_t)
+    2dd0  branch load([bp-i]) == 0x0 ? L_2da8 : L_2dd5
 
 block L_2dd5:
   insts 1774..1780  off 0x2dd5..0x2deb
   preds: L_2db7
   succs: L_2def, L_2df5
+  effects:
+    2dd8  call abs(load@2dd5/src([bp-i])) -> callresult(int16_t)
+    2de3  store[2] [bp-iEnv] = (callresult(int16_t) + 0xffff)
+    2dea  branch load@2de6/dst([bp-i]) <= 0x0 ? L_2df5 : L_2def
 
 block L_2def:
   insts 1782..1783  off 0x2def..0x2df4
   preds: L_2dd5
   succs: L_2df8
+  effects:
+    2df2  goto L_2df8
 
 block L_2df5:
   insts 1784..1784  off 0x2df5..0x2df7
@@ -1353,11 +1367,17 @@ block L_2df8:
   insts 1785..1801  off 0x2df8..0x2e22
   preds: L_2def, L_2df5
   succs: L_2e26, L_2e2c
+  effects:
+    2e0d  store[2] ss:[bp-0x18] = merge(Join: L_2df8, (L_2def:0x1, L_2df5:0xffff))
+    2e18  store[2] [bp-cAllowed] = (sext8to16(load(byte load([bp+lppl+0x2]):[((load([bp+lppl]) + 0xc) + load([bp-iEnv]))])) + load(ss:[bp-0x18]))
+    2e21  branch 0x63 >= load([bp-cAllowed]) ? L_2e2c : L_2e26
 
 block L_2e26:
   insts 1803..1804  off 0x2e26..0x2e2b
   preds: L_2df8
   succs: L_2e2f
+  effects:
+    2e29  goto L_2e2f
 
 block L_2e2c:
   insts 1805..1805  off 0x2e2c..0x2e2e
@@ -1368,21 +1388,29 @@ block L_2e2f:
   insts 1806..1808  off 0x2e2f..0x2e35
   preds: L_2e26, L_2e2c
   succs: L_2e39, L_2e3f
+  effects:
+    2e34  branch 0x1 <= merge(Join: L_2e2f, (L_2e26:0x63, L_2e2c:load([bp-0x14]))) ? L_2e3f : L_2e39
 
 block L_2e39:
   insts 1810..1811  off 0x2e39..0x2e3e
   preds: L_2e2f
   succs: L_2e53
+  effects:
+    2e3c  goto L_2e53
 
 block L_2e3f:
   insts 1812..1814  off 0x2e3f..0x2e46
   preds: L_2e2f
   succs: L_2e4a, L_2e50
+  effects:
+    2e45  branch 0x63 >= load([bp-cAllowed]) ? L_2e50 : L_2e4a
 
 block L_2e4a:
   insts 1816..1817  off 0x2e4a..0x2e4f
   preds: L_2e3f
   succs: L_2e53
+  effects:
+    2e4d  goto L_2e53
 
 block L_2e50:
   insts 1818..1818  off 0x2e50..0x2e52
@@ -1393,11 +1421,17 @@ block L_2e53:
   insts 1819..1842  off 0x2e53..0x2e8e
   preds: L_2e39, L_2e4a, L_2e50
   succs: L_2e92, L_2e98
+  effects:
+    2e53  store[2] [bp-cAllowed] = merge(Join: L_2e53, (L_2e39:0x1, L_2e4a:0x63, L_2e50:load([bp-0x14])))
+    2e6b  store[1] byte load([bp+lppl+0x2]):[((load([bp+lppl]) + 0xc) + load([bp-iEnv]))] = lobyte(load([bp-cAllowed]))
+    2e8d  branch load([bp-i]) <= 0x0 ? L_2e98 : L_2e92
 
 block L_2e92:
   insts 1844..1845  off 0x2e92..0x2e97
   preds: L_2e53
   succs: L_2e9b
+  effects:
+    2e95  goto L_2e9b
 
 block L_2e98:
   insts 1846..1846  off 0x2e98..0x2e9a
@@ -1407,16 +1441,41 @@ block L_2e98:
 block L_2e9b:
   insts 1847..1857  off 0x2e9b..0x2eba
   preds: L_2e92, L_2e98
-  succs: L_2da8
+  succs: L_2ebb
+  effects:
+    2eb3  call FSendPlrMsg(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x7b, load@2ea5/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@2e9f/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), merge(Join: L_2e9b, (L_2e92:0x1, L_2e98:0x0)), load@2e86/src([bp-iEnv]), ((load@2e7d/src([bp-iEnv]) << 0x8) + load([bp-cAllowed])), 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 block L_2ebb:
   insts 1858..1858  off 0x2ebb..0x2ebd
+  preds: L_2e9b
   succs: L_2da8
+  effects:
+    2ebb  goto L_2da8
 
-block L_2ebe:
-  insts 1859..1920  off 0x2ebe..0x2f73
-  preds: L_2da8
+block L_2ec1:
+  insts 1860..1871  off 0x2ec1..0x2ee8
+  preds: L_2f7f
+  succs: L_2ee9
+  effects:
+    2ec8  store[2] [idPlayer] = load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2])
+    2ecf  call LookupBestPlanetaryScanner(addr([bp-part])) -> callresult(void)
+    2ed7  store[2] [idPlayer] = 0xffff
+    2ee6  store[2] [bp+iItem] = ((load([bp-part+0x2]) & 0xff) + 0x12)
+
+block L_2ee9:
+  insts 1872..1920  off 0x2ee9..0x2f73
+  preds: L_2ec1, L_2f7f
   succs: L_2fc9
+  effects:
+    2f1b  call FSendPlrMsg(load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2]), 0x7c, load@2f0d/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), load@2f07/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))]), 0x8000, (load@2ef9/src([bp+iItem]) + 0xffee), 0x0, 0x0, 0x0, 0x0) -> callresult(int16_t)
+    2f2a  store[2] ss:[bp-0x18] = (load@2f23/src([bp+iItem]) + 0xffee)
+    2f2d  store[2] ss:[bp-0x16] = signhiword((load([bp+iItem]) + 0xffee))
+    2f3f  call __aFlshl(words(0x0, (load(ss:[bp-0x18]) & 0x1f)), 0xc) -> callresult(int32_t)
+    2f5a  store[2] ss:[bp-0x1c] = ((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff) | loword(callresult(int32_t)))
+    2f5d  store[2] ss:[bp-0x1a] = ((load(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0xfffe) | hiword(callresult(int32_t)))
+    2f69  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18] = load(ss:[bp-0x1c])
+    2f6d  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a] = load(ss:[bp-0x1a])
+    2f71  goto L_2fc9
 
 block L_2f77:
   insts 1921..1922  off 0x2f77..0x2f7b
@@ -1426,15 +1485,11 @@ block L_2f77:
     2f7a  branch load([bp+iItem]) > 0x1b ? L_23d6 : L_2f7f
 
 block L_2f7f:
-  insts 1924..1954  off 0x2f7f..0x2fbf
+  insts 1924..1926  off 0x2f7f..0x2f87
   preds: L_2f77
-  succs: L_2fc9
+  succs: L_23dc, L_2505, L_25c4, L_2681, L_2c05, L_2da8, L_2ec1, L_2ee9, L_2fc9
   effects:
-    2f83  goto L_ffffffff
-
-block L_2fc0:
-  insts 1955..1955  off 0x2fc0..0x2fc2
-  succs: L_2fc9
+    2f83  tablejump (load([bp+iItem]) << 0x1) [L_2505, L_23dc, L_25c4, L_2fc9, L_2da8, L_2da8, L_2681, L_23dc, L_2505, L_25c4, L_2fc9, L_2fc9, L_2da8, L_2c05, L_2681, L_2681, L_2681, L_2681, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ee9, L_2ec1]
 
 block L_2fc3:
   insts 1956..1957  off 0x2fc3..0x2fc8
@@ -1445,11 +1500,11 @@ block L_2fc3:
 
 block L_2fc9:
   insts 1958..1958  off 0x2fc9..0x2fce
-  preds: L_2245, L_22c7, L_231e, L_233e, L_2379, L_23c4, L_2a48, L_2aa3, L_2d9c, L_2da5, L_2ebe, L_2f7f, L_2fc0
+  preds: L_2245, L_231e, L_233e, L_23c4, L_24af, L_24f9, L_2a48, L_2aa3, L_2b3e, L_2d9c, L_2da8, L_2ee9, L_2f7f
   succs: L_2fcf
 
 block L_2fcf:
   insts 1960..1964  off 0x2fcf..0x2fd4
-  preds: L_1a26, L_1c55, L_1c98, L_1cf3, L_20de, L_214f, L_24fc, L_26be, L_26f9, L_2fc3, L_2fc9
+  preds: L_1a26, L_1c55, L_1c98, L_1cf3, L_20de, L_214f, L_23d6, L_24fc, L_25bb, L_2672, L_26be, L_26f9, L_2fc3, L_2fc9
   effects:
-    2fd4  return merge(Join: L_2fcf, (L_1a26:0x0, L_1c55:0x1, L_1c98:0x0, L_1cf3:0x0, L_20de:0x1, L_214f:0x0, L_24fc:0x0, L_26be:0x0, L_26f9:0x0, L_2fc3:0x0, L_2fc9:0x1))
+    2fd4  return merge(Join: L_2fcf, (L_1a26:0x0, L_1c55:0x1, L_1c98:0x0, L_1cf3:0x0, L_20de:0x1, L_214f:0x0, L_23d6:0x0, L_24fc:0x0, L_25bb:0x0, L_2672:0x0, L_26be:0x0, L_26f9:0x0, L_2fc3:0x0, L_2fc9:0x1))

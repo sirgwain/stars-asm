@@ -60,25 +60,43 @@ func resolveInstMetadata(ctx *FuncContext, insts []asm.DecodedInst) (map[uint32]
 				}
 			}
 		case asm.OpJMP, asm.OpJcc:
-			if inst.Target == 0 && inst.Src.Kind == asm.OKMem || inst.Dst.Kind == asm.OKMem {
-				jumps[inst.Off] = &InstJump{TableTargetOffs: jumpTableTargets(insts, i+1)}
+			if inst.Op == asm.OpJMP &&
+				inst.Target < 0 &&
+				inst.Src.Kind == asm.OKMem {
+
+				targets := jumpTableTargets(insts, i+1)
+				if len(targets) > 0 {
+					jumps[inst.Off] = &InstJump{
+						TableTargetOffs: targets,
+					}
+					continue
+				}
+			}
+
+			if inst.Target < 0 {
+				// Unresolved indirect jump that wasn't a recognized table.
 				continue
 			}
+
 			label := labelFor(uint32(inst.Target))
 			if symbolicLabel := ctx.fs.GetLabel(uint32(inst.Target)); symbolicLabel != nil {
 				label = symbolicLabel.Name
 			}
-			jumps[inst.Off] = &InstJump{TargetOff: uint32(inst.Target), Label: label}
+			jumps[inst.Off] = &InstJump{
+				TargetOff: uint32(inst.Target),
+				Label:     label,
+			}
 		}
 	}
 	return calls, jumps
 }
 
+// jumpTableTargets retains physical word entries, including repeated destinations.
 func jumpTableTargets(insts []asm.DecodedInst, startIdx int) []uint32 {
 	if startIdx < 0 || startIdx >= len(insts) {
 		return nil
 	}
-	seen := make(map[uint32]struct{})
+
 	targets := make([]uint32, 0, 8)
 	for i := startIdx; i < len(insts); i++ {
 		inst := insts[i]
@@ -88,12 +106,9 @@ func jumpTableTargets(insts []asm.DecodedInst, startIdx int) []uint32 {
 		if inst.Target < 0 {
 			continue
 		}
-		target := uint32(inst.Target)
-		if _, ok := seen[target]; ok {
-			continue
-		}
-		seen[target] = struct{}{}
-		targets = append(targets, target)
+
+		targets = append(targets, uint32(inst.Target))
 	}
+
 	return targets
 }

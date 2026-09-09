@@ -17,6 +17,7 @@ const (
 	EffectCall
 	EffectBranch
 	EffectJump
+	EffectTableJump
 	EffectReturn
 )
 
@@ -88,6 +89,21 @@ type JumpEffect struct {
 
 func (e JumpEffect) Kind() EffectKind { return EffectJump }
 func (e JumpEffect) EffectMeta() Meta { return e.MetaInfo }
+
+// TableJumpEffect records an indirect jump through a compiler-generated
+// word jump table. Targets are CFG block IDs in table order, including duplicates.
+type TableJumpEffect struct {
+	// Index is the byte offset within the word table, before adding its base.
+	Index    Value
+	MetaInfo Meta
+	Targets  []BlockID
+}
+
+// Kind identifies a table-jump effect.
+func (e TableJumpEffect) Kind() EffectKind { return EffectTableJump }
+
+// EffectMeta returns the originating instruction.
+func (e TableJumpEffect) EffectMeta() Meta { return e.MetaInfo }
 
 // ReturnEffect records a RET/RETF. Value is populated only when the function's
 // source signature returns a value; void functions leave it empty even though

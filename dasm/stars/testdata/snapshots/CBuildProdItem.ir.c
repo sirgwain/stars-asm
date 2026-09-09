@@ -19,9 +19,11 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     int16_t      fMineralBlocked;
     int32_t      AddCost;
     uint16_t     t_merge_0d4c_0001;
+    uint16_t     t_scratch_m56;
+    uint16_t     t_scratch_m56_2;
+    uint16_t     t_scratch_m56_3;
     int32_t      t_call_0ea9;
-    uint16_t     scratch_bp_m56;
-    uint32_t     scratch_bp_m58;
+    uint16_t     t_scratch_m58;
     int32_t      t_merge_126a_0001;
     uint16_t     t_merge_1410_0001;
     int32_t      t_merge_15f8_0001;
@@ -84,17 +86,20 @@ L_0d58:
 
 L_0d74:
     iobjOther = mdIdleMine;
-    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - lppl->cMines);
+    t_scratch_m56 = lppl->cMines;
+    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - t_scratch_m56);
     goto L_0f9f;
 
 L_0dbe:
     iobjOther = mdIdleFactory;
-    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - lppl->cFactories);
+    t_scratch_m56_2 = lppl->cFactories;
+    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - t_scratch_m56_2);
     goto L_0f9f;
 
 L_0e08:
     iobjOther = mdIdleDefense;
-    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - lppl->cDefenses);
+    t_scratch_m56_3 = lppl->cDefenses;
+    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - t_scratch_m56_3);
     goto L_0f9f;
 
 L_0e4a:
@@ -149,6 +154,9 @@ L_0ec6:
 L_0ee3:
     cMax = 0;
 
+L_0ee8:
+    goto L_0f9f;
+
 L_0eeb:
     iobjOther = iobjPacketMixed;
     if ((IWarpMAFromLppl(lppl, 0x0) == 0))
@@ -164,6 +172,9 @@ L_0f0f:
 
 L_0f21:
     cMax = 0;
+
+L_0f26:
+    goto L_0f9f;
 
 L_0f2c:
     if ((prod.iItem != iobjMine))
@@ -259,19 +270,20 @@ L_0fa8:
     cMax = 0;
 
 L_0fad:
+    t_scratch_m58 = prod.cItem;
     if ((0x0 > SIGNHIWORD(cMax)))
         goto L_1000;
     else
         goto L_0fd0;
 
 L_0fd0:
-    if ((scratch_bp_m56 < SIGNHIWORD(cMax)))
+    if ((0x0 < SIGNHIWORD(cMax)))
         goto L_0fdc;
     else
         goto L_0fd5;
 
 L_0fd5:
-    if ((scratch_bp_m58 > cMax))
+    if ((t_scratch_m58 > cMax))
         goto L_1000;
     else
         goto L_0fdc;
@@ -343,9 +355,7 @@ L_10f3:
     if (((LOWORD(rgCost[i]) - LOWORD(rgCostPaid[i])) > LOWORD(rgRes[i])))
         goto L_110a;
     else
-        goto L_10f7;
-
-L_10f7:
+        goto L_10fd;
 
 L_10fd:
     i = (i + 1);
@@ -497,9 +507,7 @@ L_1305:
     if ((fAlchemy != 0))
         goto LAlchemize;
     else
-        goto L_130b;
-
-L_130b:
+        goto L_1314;
 
 L_1314:
     fAutoBuild = 2;
@@ -532,9 +540,7 @@ L_13d5:
     if ((fResourceBlocked != 0))
         goto L_1712;
     else
-        goto L_13db;
-
-L_13db:
+        goto LAlchemize;
 
 LAlchemize:
     if ((GetRaceGrbit(&(rgplr[lppl->iPlayer]), ibitRaceMineralAlchemy) == 0))
@@ -618,9 +624,7 @@ L_14d3:
     if ((HIWORD(cCanBuild) == HIWORD(lMinNeeded)))
         goto L_108f;
     else
-        goto L_14d8;
-
-L_14d8:
+        goto L_14de;
 
 L_14de:
     if ((*(rgRes + 0xe) < 0x0))
@@ -682,12 +686,12 @@ L_15f8:
     pprodPartial->pct = LOWORD(pctT);
     rgRes[3] = (rgRes[3] - (int32_t)(((uint32_t)((pctT * lAlchCost)) / 0x64)));
 
+L_1656:
+    goto L_1712;
+
 L_165c:
     cBuilt = (cBuilt + 1);
-    scratch_bp_m58 = ((LOWORD(prod) + 0xffff) & 0x3ff);
-    scratch_bp_m56 = 0x0;
-    prod.cItem = 0x0;
-    prod = (prod | scratch_bp_m58);
+    prod.cItem = (prod.cItem + 0xffff);
     prod.pct = 0x0;
     i = 0;
     goto L_1706;
@@ -704,6 +708,7 @@ L_1706:
         goto L_170c;
 
 L_170c:
+    goto L_16ba;
 
 L_1712:
     if ((cBuilt <= 0))

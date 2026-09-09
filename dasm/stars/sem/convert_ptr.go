@@ -1,6 +1,9 @@
 package sem
 
-import "github.com/sirgwain/stars-asm/dasm/stars/machine"
+import (
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
+)
 
 // convertCopyAddress resolves an address-valued copy operand at copy width.
 func (c *machineConverter) convertCopyAddress(value machine.Value, width int) (LValue, bool) {
@@ -8,7 +11,25 @@ func (c *machineConverter) convertCopyAddress(value machine.Value, width int) (L
 	if !ok {
 		return nil, false
 	}
-	return c.convertMemoryLValue(copyAddressMemoryAccess(addr.Addr, width), width), true
+	mem := copyAddressMemoryAccess(addr.Addr, width)
+	if segment, ok := mem.Seg.(*machine.FarPointer); ok {
+		if parent, ok := commonFarPointerParent(segment, mem.Base); ok {
+			pointer := c.convertValue(parent)
+			if mem.Index == nil && typeinfo.IsPointer(pointer.ExprType()) {
+				offset := signedWordOffset(uint(mem.Disp))
+				ptr := pointer.ExprType().(*typeinfo.Pointer)
+				if ptr.Elem.Bytes() == width {
+					if projected, ok := projectPointerAddress(pointer, offset, nil); ok {
+						return &Deref{Pointer: projected, Width: width, TypeInfo: ptr.Elem}, true
+					}
+				}
+				if target, ok := c.consumeAddress(AddressExpr{Base: pointer, Offset: offset, Deref: true}, width); ok {
+					return target, true
+				}
+			}
+		}
+	}
+	return c.convertMemoryLValue(mem, width), true
 }
 
 // copyAddressMemoryAccess returns the memory spanned by a copy address.

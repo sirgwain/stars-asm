@@ -943,12 +943,15 @@ int32_t MessageWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     uint16_t t_merge_615b_0001;
     int16_t  t_merge_6170_0001;
     uint16_t t_merge_61df_0001;
+    uint16_t t_scratch_m30;
     uint16_t t_merge_6236_0001;
     int16_t  t_62dd;
     uint16_t t_merge_6396_0001;
     char    *t_call_66c5;
     char    *t_merge_66fb_0001;
     char    *t_call_66f1;
+    uint16_t t_scratch_m74_2;
+    uint16_t t_scratch_m2c;
     HWND     t_merge_7029_0001;
 
 L_5c92:
@@ -1073,9 +1076,7 @@ CheckBox:
     if ((iMsgCur < 0))
         goto L_7207;
     else
-        goto L_6110;
-
-L_6110:
+        goto L_6116;
 
 L_6116:
     idm = IdmGetMessageN(iMsgCur);
@@ -1148,7 +1149,8 @@ L_61df:
         goto L_61ec;
 
 L_61ec:
-    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+    t_scratch_m30 = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7));
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & t_scratch_m30) == 0x0))
         goto L_6233;
     else
         goto L_622d;
@@ -1237,9 +1239,7 @@ L_632b:
     if ((lpmp->iInRe == iMsgCur))
         goto L_6364;
     else
-        goto L_6337;
-
-L_6337:
+        goto L_633d;
 
 L_633d:
     lpmp = lpmp->lpmsgplrNext;
@@ -1283,9 +1283,12 @@ L_6396:
     SetMsgTitle(hwnd);
     SetFocus(hwndMsgEdit);
 
+L_63dd:
+    goto L_7207;
+
 L_63e0:
     /* untranslated: part[0xc:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
-    /* untranslated: part[0xe:2](lParam) = ((loword((0xd * dyArial8)) >> 0x1) + 0x16) */
+    /* untranslated: part[0xe:2](lParam) = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) */
     goto Default;
 
 L_640f:
@@ -1488,7 +1491,8 @@ L_6879:
         goto L_6885;
 
 L_6885:
-    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+    t_scratch_m74_2 = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7));
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & t_scratch_m74_2) == 0x0))
         goto L_6903;
     else
         goto L_68c6;
@@ -1544,25 +1548,19 @@ L_6a79:
     if ((wParam == 0x28))
         goto NextMsg;
     else
-        goto L_6a7f;
-
-L_6a7f:
+        goto L_6a88;
 
 L_6a88:
     if ((wParam == 0x26))
         goto PrevMsg;
     else
-        goto L_6a8e;
-
-L_6a8e:
+        goto L_6a94;
 
 L_6a94:
     if ((gd.fSendMsgMode != 0x0))
         goto Default;
     else
-        goto L_6aa4;
-
-L_6aa4:
+        goto L_6aaa;
 
 L_6aaa:
     if ((wParam != 0x24))
@@ -1588,17 +1586,13 @@ L_6ad8:
     if ((wParam == 0xd))
         goto GotoMsg;
     else
-        goto L_6ade;
-
-L_6ade:
+        goto L_6ae7;
 
 L_6ae7:
     if ((wParam == 0x2b))
         goto CheckBox;
     else
-        goto L_6aed;
-
-L_6aed:
+        goto L_6af6;
 
 L_6af6:
     if ((wParam != 0x2d))
@@ -1611,12 +1605,11 @@ L_6aff:
     goto L_6b34;
 
 L_6b07:
-    if (((bitfMsgSent[i] & bitfMsgFiltered[i]) != 0x0))
+    t_scratch_m2c = bitfMsgFiltered[i];
+    if (((bitfMsgSent[i] & t_scratch_m2c) != 0x0))
         goto L_6b3f;
     else
-        goto L_6b2a;
-
-L_6b2a:
+        goto L_6b30;
 
 L_6b30:
     i = (i + 1);
@@ -1634,6 +1627,7 @@ L_6b3f:
         goto L_6b47;
 
 L_6b47:
+    goto L_7207;
 
 L_6b50:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -1698,7 +1692,6 @@ L_6c0f:
 
 L_6c1f:
     iMsgCur = (iMsgCur - 1);
-    goto SetupNewMsg;
 
 SetupNewMsg:
     gd.fGotoVCR = 0x0;
@@ -1712,6 +1705,9 @@ SetupNewMsg:
 L_6c67:
     tutor.fChange = 0x1;
     AdvanceTutor();
+
+L_6c78:
+    goto L_7207;
 
 L_6c7e:
     if ((LOWORD(lParam) != rghwndMsgBtn[2]))
@@ -1797,15 +1793,12 @@ L_6da0:
     if ((iMsgCur >= cMsg))
         goto ToggleMsgMode;
     else
-        goto L_6da9;
-
-L_6da9:
+        goto L_6daf;
 
 L_6daf:
     goto L_713a;
 
-L_6db5:
-    goto L_7163;
+L_6db8:
     SelectAdjPlanet(0, idMsgObj);
     UpdateWindow(hwndScanner);
     SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
@@ -1823,13 +1816,13 @@ L_6e02:
 
 L_6e0b:
     if ((idm < 175))
-        goto L_6e6e;
+        goto L_7163;
     else
         goto L_6e15;
 
 L_6e15:
     if ((idm > 180))
-        goto L_6e6e;
+        goto L_7163;
     else
         goto L_6e1f;
 
@@ -1842,17 +1835,17 @@ L_6e1f:
 L_6e32:
     gd.fGotoVCR = 0x1;
     SetMsgTitle(hwnd);
-    goto L_6e6e;
+    goto L_7163;
 
 L_6e4c:
     if ((sel.grobj != grobjPlanet))
-        goto L_6e6e;
+        goto L_7163;
     else
         goto L_6e56;
 
 L_6e56:
     if ((sel.id != idMsgObj))
-        goto L_6e6e;
+        goto L_7163;
     else
         goto L_6e62;
 
@@ -1861,10 +1854,14 @@ L_6e62:
 
 L_6e6e:
     goto L_7163;
+
+L_6e71:
     SelectAdjFleet(0, idMsgObj);
     UpdateWindow(hwndScanner);
     SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
     goto L_7163;
+
+L_6ea6:
     lpth = LpthFromId(vptMsg.x);
     if ((LOWORD(lpth) != 0x0))
         goto L_6eca;
@@ -1873,7 +1870,7 @@ L_6e6e:
 
 L_6ec1:
     if ((HIWORD(lpth) == 0x0))
-        goto L_6f02;
+        goto L_7163;
     else
         goto L_6eca;
 
@@ -1886,6 +1883,8 @@ L_6eca:
 
 L_6f02:
     goto L_7163;
+
+L_6f05:
     SelectOursAtObject(vptMsg.x);
     if ((gd.fGotoVCR == 0x0))
         goto L_6f33;
@@ -1894,7 +1893,7 @@ L_6f02:
 
 L_6f24:
     BattleVCR(idMsgObj);
-    goto L_6f4a;
+    goto L_7163;
 
 L_6f33:
     gd.fGotoVCR = 0x1;
@@ -1902,14 +1901,24 @@ L_6f33:
 
 L_6f4a:
     goto L_7163;
+
+L_6f4d:
     PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
     goto L_7163;
+
+L_6f69:
     PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
     goto L_7163;
+
+L_6f85:
     PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
     goto L_7163;
+
+L_6fa1:
     PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
     goto L_7163;
+
+L_6fbd:
     if ((hwndReportDlg == 0x0))
         goto L_6fd2;
     else
@@ -1917,7 +1926,7 @@ L_6f4a:
 
 L_6fc7:
     if ((vprptCur == &(vrptBattle)))
-        goto L_6feb;
+        goto L_7163;
     else
         goto L_6fd2;
 
@@ -1926,6 +1935,8 @@ L_6fd2:
 
 L_6feb:
     goto L_7163;
+
+L_6fee:
     szWork[200] = 2;
     lpProc = MakeProcInstance(MsgDlg, hInst);
     if ((hwndTitle == 0x0))
@@ -1944,7 +1955,7 @@ L_7029:
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_GENERIC_SMALL), t_merge_7029_0001, lpProc);
     FreeProcInstance(lpProc);
     if ((fRet == 0))
-        goto L_70b0;
+        goto L_7163;
     else
         goto L_704c;
 
@@ -1957,17 +1968,17 @@ L_704c:
 L_7064:
     vSerialNumber = lSerial;
     memcpy(vrgbMachineConfig, vrgbEnvCur, 0xb);
-    goto L_70b0;
+    goto L_7163;
 
 L_7088:
     if ((LOWORD(vSerialNumber) != 0x0))
-        goto L_70b0;
+        goto L_7163;
     else
         goto L_7092;
 
 L_7092:
     if ((HIWORD(vSerialNumber) != 0x0))
-        goto L_70b0;
+        goto L_7163;
     else
         goto L_709c;
 
@@ -1976,6 +1987,8 @@ L_709c:
 
 L_70b0:
     goto L_7163;
+
+L_70b3:
     vpartBrowser.hs.grhst = (0x1 << ((idMsgObj >> 0x8) & 0xf));
     vpartBrowser.hs.iItem = (idMsgObj & 0xff);
     FLookupPart(vpartBrowser.hs.grhst);
@@ -1992,14 +2005,42 @@ L_7115:
     fBrowserValid = 1;
     PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
 
+L_7134:
+    goto L_7163;
+
 L_713a:
     if ((mdMsgObj > 11))
-        goto L_6db5;
+        goto L_7163;
     else
         goto L_7142;
 
 L_7142:
-    goto L_ffffffff;
+    switch ((mdMsgObj * 2)) {
+    case 0x0:
+        goto L_7163;
+    case 0x2:
+        goto L_6db8;
+    case 0x4:
+        goto L_6e71;
+    case 0x6:
+        goto L_6f4d;
+    case 0x8:
+        goto L_70b3;
+    case 0xa:
+        goto L_6f85;
+    case 0xc:
+        goto L_6f05;
+    case 0xe:
+        goto L_6fa1;
+    case 0x10:
+        goto L_6f69;
+    case 0x12:
+        goto L_6fee;
+    case 0x14:
+        goto L_6ea6;
+    case 0x16:
+        goto L_6fbd;
+    }
 
 L_7163:
     if ((gd.fTutorial == 0x0))
@@ -2010,6 +2051,9 @@ L_7163:
 L_7176:
     tutor.fChange = 0x1;
     AdvanceTutor();
+
+L_7187:
+    goto L_7207;
 
 Default:
     return DefWindowProc(hwnd, message, wParam, lParam);
@@ -2087,6 +2131,7 @@ L_71fc:
         goto L_7201;
 
 L_7201:
+    goto L_60cf;
 
 L_7207:
     return 0;
@@ -2108,6 +2153,7 @@ void SetMsgTitle(HWND hwnd) {
     int16_t  t_merge_75c4_0001;
     int16_t  t_merge_75eb_0001;
     FLEET   *t_call_7723;
+    uint16_t t_scratch_m6e;
     int16_t  t_merge_77d8_0001;
 
 L_7218:
@@ -2120,9 +2166,7 @@ L_722a:
     if ((fAi != 0))
         goto L_7802;
     else
-        goto L_7231;
-
-L_7231:
+        goto L_7237;
 
 L_7237:
     if ((game.fDirty == 0))
@@ -2191,7 +2235,10 @@ L_72f1:
     goto L_7300;
 
 L_72f7:
+
+L_72fa:
     t_merge_7300_0001 = 0x54d;
+    goto L_7300;
 
 L_72fd:
     t_merge_7300_0001 = 0x550;
@@ -2271,9 +2318,15 @@ L_74b9:
     FDecompressUserString(lpmp->rgbMsg, lpmp->cLen, lpb2k, &(i));
     SetWindowText(hwndMsgEdit, lpb2k);
 
+L_74f7:
+    goto FinishUp;
+
 L_74fa:
     SendMessage(hwndMsgDrop, CB_SETCURSEL, viInRe, 0);
     SetWindowText(hwndMsgEdit, "");
+
+L_7523:
+    goto FinishUp;
 
 L_7529:
     if ((cMsgTot == 0))
@@ -2446,6 +2499,9 @@ L_7701:
     vptMsg.x = mb.rgParam[0];
     vptMsg.y = mb.rgParam[1];
 
+L_7713:
+    goto L_775c;
+
 L_7716:
     if ((mb.wGoto >= 0))
         goto L_774d;
@@ -2472,8 +2528,14 @@ L_773b:
 L_7744:
     mdMsgObj = 0;
 
+L_774a:
+    goto L_775c;
+
 L_774d:
     mdMsgObj = 1;
+
+L_7753:
+    goto L_775c;
 
 L_7756:
     mdMsgObj = 0;
@@ -2497,7 +2559,8 @@ L_7770:
         goto L_777a;
 
 L_777a:
-    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & (0x1 << (IdmGetMessageN(iMsgCur) & 0x7))) == 0x0))
+    t_scratch_m6e = (0x1 << (IdmGetMessageN(iMsgCur) & 0x7));
+    if (((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) >> 0x3)] & t_scratch_m6e) == 0x0))
         goto L_77c1;
     else
         goto L_77bb;
@@ -2690,6 +2753,7 @@ void DecorateMsgTitleBar(HDC hdc, RECT *prc) {
     int16_t   xyStart;
     COLORREF  crBkSav;
     COLORREF  crTextSav;
+    uint16_t  t_scratch_m24_2;
 
 L_799c:
     hdcMem = CreateCompatibleDC(hdc);
@@ -2697,9 +2761,7 @@ L_799c:
     if ((gd.fSendMsgMode != 0x0))
         goto Cleanup;
     else
-        goto L_79cf;
-
-L_79cf:
+        goto L_79d5;
 
 L_79d5:
     xyStart = (((uint32_t)(((prc->bottom - prc->top) + 0xfff5)) / 2) + prc->top);
@@ -2712,9 +2774,7 @@ L_79fd:
     if ((iMsgCur >= cMsg))
         goto DoMinMax;
     else
-        goto L_7a06;
-
-L_7a06:
+        goto L_7a0c;
 
 L_7a0c:
     idm = IdmGetMessageN(iMsgCur);
@@ -2752,12 +2812,11 @@ DoMinMax:
     goto L_7b4d;
 
 L_7b20:
-    if (((bitfMsgSent[i] & bitfMsgFiltered[i]) != 0x0))
+    t_scratch_m24_2 = bitfMsgFiltered[i];
+    if (((bitfMsgSent[i] & t_scratch_m24_2) != 0x0))
         goto L_7b58;
     else
-        goto L_7b43;
-
-L_7b43:
+        goto L_7b49;
 
 L_7b49:
     i = (i + 1);
@@ -2829,7 +2888,8 @@ L_7d72:
 }
 
 HtMsgType HtMsgBox(POINT pt) {
-    int16_t i;
+    int16_t  i;
+    uint16_t t_scratch_m6;
 
 L_7d8c:
     if ((PtInRect(rcMsgTitle.left, pt) == 0))
@@ -2881,12 +2941,11 @@ L_7e19:
     goto L_7e4e;
 
 L_7e21:
-    if (((bitfMsgSent[i] & bitfMsgFiltered[i]) != 0x0))
+    t_scratch_m6 = bitfMsgFiltered[i];
+    if (((bitfMsgSent[i] & t_scratch_m6) != 0x0))
         goto L_7e59;
     else
-        goto L_7e44;
-
-L_7e44:
+        goto L_7e4a;
 
 L_7e4a:
     i = (i + 1);
@@ -2957,6 +3016,8 @@ L_7f30:
     return 1;
 
 L_7f36:
+
+L_7f39:
     return 0;
 
 L_7f3c:
@@ -2988,6 +3049,8 @@ L_7fc8:
     return 1;
 
 L_7fce:
+
+L_7fd1:
     return 0;
 
 L_7fd4:
@@ -3068,7 +3131,8 @@ L_80b7:
 L_80bd:
     lpb = &(*(pb));
     lpmt = lpb;
-    /* untranslated: part[0x0:1](lpmt) = lobyte(((part[0x0:1](lpmt) & 0xf0) | (iPlr & 0xf))) */
+    scratch_bp_m16 = (iPlr & 0xf);
+    LOBYTE(LOWORD(lpmt)) = LOBYTE(((LOBYTE(LOWORD(lpmt)) & 0xf0) | scratch_bp_m16));
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
@@ -3105,11 +3169,15 @@ L_8189:
     goto L_8151;
 
 L_81cb:
-    /* untranslated: part[0x0:1](lpb) = lobyte(*pi) */
+    LOBYTE(LOWORD(lpb)) = LOBYTE(*(pi));
     lpb = (lpb + 0x1);
 
+L_81da:
+    goto L_8151;
+
 L_81dd:
-    /* untranslated: part[0x0:1](lpmt) = lobyte((lpmt->iPlr | ((lobyte((LOWORD(lpb) - LOWORD(lpbBase))) & 0xf) * 0x10))) */
+    scratch_bp_m16 = LOBYTE((LOWORD(lpb) - LOWORD(lpbBase)));
+    LOBYTE(LOWORD(lpmt)) = LOBYTE((lpmt->iPlr | ((scratch_bp_m16 & 0xf) * 0x10)));
     scratch_bp_m16 = pb;
     return (LOWORD(lpb) - scratch_bp_m16);
 }
@@ -3122,7 +3190,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     uint8_t *pb;
     uint16_t cSize;
     MSGHDR  *pmsghdr;
-    uint16_t scratch_bp_m50;
+    uint16_t t_scratch_m50_2;
 
 L_823a:
     if (((imemMsgCur + 20) <= 0xffc8))
@@ -3134,7 +3202,7 @@ L_8251:
     return 0;
 
 L_8257:
-    pb = &(rgb);
+    pb = rgb;
     pmsghdr = pb;
     pmsghdr->iMsg = iMsg;
     bitfMsgSent[(iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(iMsg >> 0x3)] & (~(0x1 << (iMsg & 0x7)))) | (0x1 << (iMsg & 0x7))));
@@ -3164,9 +3232,9 @@ L_8312:
         goto L_8322;
 
 L_8322:
-    scratch_bp_m50 = (((grbit << 0x9) | pmsghdr) & 0xfe00);
+    t_scratch_m50_2 = (((grbit << 0x9) | pmsghdr) & 0xfe00);
     pmsghdr->grWord = 0x0;
-    pmsghdr = (pmsghdr | scratch_bp_m50);
+    pmsghdr = (pmsghdr | t_scratch_m50_2);
     pb = *(pi);
     pb = (pb + 0x2);
     goto L_82ea;
@@ -3174,6 +3242,9 @@ L_8322:
 L_835e:
     *(pb) = LOBYTE(*(pi));
     pb = (pb + 0x1);
+
+L_836c:
+    goto L_82ea;
 
 L_836f:
     cSize = (pb - &(rgb));
@@ -3315,9 +3386,7 @@ L_8554:
     if ((t_8554 <= 0))
         goto L_8574;
     else
-        goto L_8560;
-
-L_8560:
+        goto L_8566;
 
 L_8566:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -3365,7 +3434,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
 L_85cc:
     iMineral = -1;
     pParams = pParamsReal;
-    pch = &(szMsgBuf);
+    pch = szMsgBuf;
 
 L_85ec:
     if (((uint16_t)(*(pszFormat)) == 0))
@@ -3400,7 +3469,7 @@ L_8ecd:
         goto L_8ed8;
 
 L_8ed8:
-    goto L_ffffffff;
+    /* untranslated: {{L_8ed8 36572 14 5} JMP       cs:[bx-0x711f]       unhandled instruction} */
 
 L_8f4d:
     pszFormat = (pszFormat + 0x1);
@@ -3676,7 +3745,6 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
     uint16_t w;
     uint8_t *lpb;
     uint16_t t_merge_944b_0001;
-    uint32_t scratch_bp_m18;
     uint16_t t_merge_9479_0001;
 
 L_93c6:
@@ -3708,7 +3776,7 @@ L_9448:
     t_merge_944b_0001 = 0x0;
 
 L_944b:
-    lpbT = (scratch_bp_m18 + t_merge_944b_0001);
+    lpbT = ((lpb + 0x6) + t_merge_944b_0001);
     if (((w & 0x2) == 0x0))
         goto L_9470;
     else
@@ -3743,6 +3811,9 @@ L_94a4:
 
 L_94ad:
     MarkPlanet(lppl, iPlayer, 0x3);
+
+L_94c2:
+    goto L_95d5;
 
 L_94c5:
     w = lpb[3];
@@ -3960,9 +4031,7 @@ L_9604:
     if ((iPlayer == -1))
         goto L_96fb;
     else
-        goto L_9613;
-
-L_9613:
+        goto L_9619;
 
 L_9619:
     lpmp = vlpmsgplrOut;
@@ -4027,9 +4096,7 @@ L_9702:
     if ((iPlayer == -1))
         goto L_98d0;
     else
-        goto L_9717;
-
-L_9717:
+        goto L_971d;
 
 L_971d:
     lpb = lpMsg;
@@ -4548,7 +4615,7 @@ L_9f73:
 
 L_9f76:
     fHigh = t_merge_9f76_0001;
-    pszOut = &(szLastMsgGet);
+    pszOut = szLastMsgGet;
     iBuild = 0;
 
 L_9f83:
@@ -4599,6 +4666,9 @@ L_9fec:
     pszOut = (pszOut + 0x1);
     iBuild = 0;
 
+L_a002:
+    goto L_9f83;
+
 L_a005:
     *(pszOut) = 0;
     return szLastMsgGet;
@@ -4609,36 +4679,52 @@ void SetFilteringGroups(MessageId idm, int16_t fSet) {
     uint16_t t_merge_a033_0001;
     uint16_t t_merge_a048_0001;
     uint16_t t_merge_a059_0001;
+    uint16_t t_scratch_m6;
     uint16_t t_merge_a0bb_0001;
     uint16_t t_merge_a0cc_0001;
+    uint16_t t_scratch_m6_2;
     uint16_t t_merge_a149_0001;
     uint16_t t_merge_a15a_0001;
+    uint16_t t_scratch_m6_3;
     uint16_t t_merge_a1d7_0001;
     uint16_t t_merge_a1e8_0001;
+    uint16_t t_scratch_m6_4;
     uint16_t t_merge_a26d_0001;
     uint16_t t_merge_a27e_0001;
+    uint16_t t_scratch_m6_5;
     uint16_t t_merge_a2f0_0001;
     uint16_t t_merge_a301_0001;
+    uint16_t t_scratch_m6_6;
     uint16_t t_merge_a37e_0001;
     uint16_t t_merge_a38f_0001;
+    uint16_t t_scratch_m6_7;
     uint16_t t_merge_a40c_0001;
     uint16_t t_merge_a41d_0001;
+    uint16_t t_scratch_m6_8;
     uint16_t t_merge_a49a_0001;
     uint16_t t_merge_a4ab_0001;
+    uint16_t t_scratch_m6_9;
     uint16_t t_merge_a528_0001;
     uint16_t t_merge_a539_0001;
+    uint16_t t_scratch_m6_10;
     uint16_t t_merge_a5b6_0001;
     uint16_t t_merge_a5c7_0001;
+    uint16_t t_scratch_m6_11;
     uint16_t t_merge_a644_0001;
     uint16_t t_merge_a655_0001;
+    uint16_t t_scratch_m6_12;
     uint16_t t_merge_a6da_0001;
     uint16_t t_merge_a6eb_0001;
+    uint16_t t_scratch_m6_13;
     uint16_t t_merge_a765_0001;
     uint16_t t_merge_a776_0001;
+    uint16_t t_scratch_m6_14;
     uint16_t t_merge_a7e8_0001;
     uint16_t t_merge_a7f9_0001;
+    uint16_t t_scratch_m6_15;
     uint16_t t_merge_a880_0001;
     uint16_t t_merge_a891_0001;
+    uint16_t t_scratch_m6_16;
 
 L_a018:
     if ((fSet != 0))
@@ -4681,7 +4767,8 @@ L_a056:
     t_merge_a059_0001 = 0x0;
 
 L_a059:
-    bitfMsgFiltered[(idm >> 0x3)] = LOBYTE(((bitfMsgFiltered[(idm >> 0x3)] & (~(0x1 << (idm & 0x7)))) | (t_merge_a059_0001 << (idm & 0x7))));
+    t_scratch_m6 = (t_merge_a059_0001 << (idm & 0x7));
+    bitfMsgFiltered[(idm >> 0x3)] = LOBYTE(((bitfMsgFiltered[(idm >> 0x3)] & (~(0x1 << (idm & 0x7)))) | t_scratch_m6));
     if ((idm == idmHaveBuiltFactory))
         goto L_a0a9;
     else
@@ -4720,8 +4807,9 @@ L_a0c9:
     t_merge_a0cc_0001 = 0x0;
 
 L_a0cc:
-    bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & (~(0x1 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) | (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7))));
+    t_scratch_m6_2 = (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & (~(0x1 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) | t_scratch_m6_2));
     goto L_a8dd;
 
 L_a125:
@@ -4763,8 +4851,9 @@ L_a157:
     t_merge_a15a_0001 = 0x0;
 
 L_a15a:
-    bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & (~(0x1 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) | (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7))));
+    t_scratch_m6_3 = (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & (~(0x1 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) | t_scratch_m6_3));
     goto L_a8dd;
 
 L_a1b3:
@@ -4806,8 +4895,9 @@ L_a1e5:
     t_merge_a1e8_0001 = 0x0;
 
 L_a1e8:
-    bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & (~(0x1 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) | (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7))));
+    t_scratch_m6_4 = (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & (~(0x1 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) | t_scratch_m6_4));
     goto L_a8dd;
 
 L_a241:
@@ -4853,7 +4943,8 @@ L_a27b:
     t_merge_a27e_0001 = 0x0;
 
 L_a27e:
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a27e_0001 << (i & 0x7))));
+    t_scratch_m6_5 = (t_merge_a27e_0001 << (i & 0x7));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_5));
     i = (i + 1);
 
 L_a2c0:
@@ -4863,6 +4954,7 @@ L_a2c0:
         goto L_a2c6;
 
 L_a2c6:
+    goto L_a25b;
 
 L_a2cc:
     if ((idm == idmStarbaseHasBuiltNew))
@@ -4903,8 +4995,9 @@ L_a2fe:
     t_merge_a301_0001 = 0x0;
 
 L_a301:
-    bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & (~(0x1 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) | (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7))));
+    t_scratch_m6_6 = (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & (~(0x1 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) | t_scratch_m6_6));
     goto L_a8dd;
 
 L_a35a:
@@ -4946,8 +5039,9 @@ L_a38c:
     t_merge_a38f_0001 = 0x0;
 
 L_a38f:
-    bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & (~(0x1 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) | (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7))));
+    t_scratch_m6_7 = (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & (~(0x1 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) | t_scratch_m6_7));
     goto L_a8dd;
 
 L_a3e8:
@@ -4989,8 +5083,9 @@ L_a41a:
     t_merge_a41d_0001 = 0x0;
 
 L_a41d:
-    bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & (~(0x1 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) | (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7))));
+    t_scratch_m6_8 = (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & (~(0x1 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) | t_scratch_m6_8));
     goto L_a8dd;
 
 L_a476:
@@ -5032,8 +5127,9 @@ L_a4a8:
     t_merge_a4ab_0001 = 0x0;
 
 L_a4ab:
-    bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & (~(0x1 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) | (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7))));
+    t_scratch_m6_9 = (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & (~(0x1 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) | t_scratch_m6_9));
     goto L_a8dd;
 
 L_a504:
@@ -5075,8 +5171,9 @@ L_a536:
     t_merge_a539_0001 = 0x0;
 
 L_a539:
-    bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & (~(0x1 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) | (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7))));
+    t_scratch_m6_10 = (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & (~(0x1 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) | t_scratch_m6_10));
     goto L_a8dd;
 
 L_a592:
@@ -5118,8 +5215,9 @@ L_a5c4:
     t_merge_a5c7_0001 = 0x0;
 
 L_a5c7:
-    bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & (~(0x1 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) | (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7))));
+    t_scratch_m6_11 = (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & (~(0x1 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) | t_scratch_m6_11));
     goto L_a8dd;
 
 L_a620:
@@ -5161,8 +5259,9 @@ L_a652:
     t_merge_a655_0001 = 0x0;
 
 L_a655:
-    bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & (~(0x1 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) | (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7))));
+    t_scratch_m6_12 = (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & (~(0x1 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) | t_scratch_m6_12));
     goto L_a8dd;
 
 L_a6ae:
@@ -5208,7 +5307,8 @@ L_a6e8:
     t_merge_a6eb_0001 = 0x0;
 
 L_a6eb:
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a6eb_0001 << (i & 0x7))));
+    t_scratch_m6_13 = (t_merge_a6eb_0001 << (i & 0x7));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_13));
     i = (i + 1);
 
 L_a72d:
@@ -5218,6 +5318,7 @@ L_a72d:
         goto L_a733;
 
 L_a733:
+    goto L_a6c8;
 
 L_a739:
     if ((idm < idmHasBombedKillingColonists2))
@@ -5262,7 +5363,8 @@ L_a773:
     t_merge_a776_0001 = 0x0;
 
 L_a776:
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a776_0001 << (i & 0x7))));
+    t_scratch_m6_14 = (t_merge_a776_0001 << (i & 0x7));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_14));
     i = (i + 1);
 
 L_a7b8:
@@ -5272,6 +5374,7 @@ L_a7b8:
         goto L_a7be;
 
 L_a7be:
+    goto L_a753;
 
 L_a7c4:
     if ((idm == idmHasLoaded2))
@@ -5312,8 +5415,9 @@ L_a7f6:
     t_merge_a7f9_0001 = 0x0;
 
 L_a7f9:
-    bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] = LOBYTE(
-        ((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & (~(0x1 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) | (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7))));
+    t_scratch_m6_15 = (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7));
+    bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] =
+        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & (~(0x1 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) | t_scratch_m6_15));
     goto L_a8dd;
 
 L_a852:
@@ -5359,7 +5463,8 @@ L_a88e:
     t_merge_a891_0001 = 0x0;
 
 L_a891:
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a891_0001 << (i & 0x7))));
+    t_scratch_m6_16 = (t_merge_a891_0001 << (i & 0x7));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_16));
     i = (i + 1);
 
 L_a8d3:

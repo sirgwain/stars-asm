@@ -1,0 +1,207 @@
+/*
+FOpenFile  (file)
+  addr: 000f:4ac2  len=1120
+  sig:  int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md)
+  params:
+    DtFileType       dt             [BP+0x6]
+    int16_t          iPlayer        [BP+0x8]
+    int16_t          md             [BP+0xa]
+  locals:
+    jmp_buf[9]       env            [BP-0x2e]
+    jmp_buf[9] *     penvMemSav     [BP-0x1c]
+    int16_t          fSilentSav     [BP-0x1a]
+    int16_t          fRewind        [BP-0x18]
+    int16_t          fCheckMulti    [BP-0x16]
+    StringId         ids            [BP-0x14]
+    RTBOF            rtbof          [BP-0x12]
+
+  stats: blocks=0  labels=1
+    LBadFile: L_4c36
+*/
+L_4ac2:
+    fSilentSav = fFileErrSilent
+    ids = idsCantOpenFile
+    gd.fPartialTurn = 0x0
+    fCheckMulti = (dt & 0x2000)
+    fRewind = (dt & 0x1000)
+    dt = (dt & 0xff)
+    call SetSzWorkFromDt(dt, iPlayer) -> callresult(void)
+    penvMemSav = penvMem
+    penvMem = &env
+    branch setjmp(env) == 0 ? L_4b49 : L_4b27
+
+L_4b27:
+    fFileErrSilent = fSilentSav
+    call FileError(ids) -> callresult(void)
+    call StreamClose() -> callresult(void)
+    penvMem = penvMemSav
+    return 0
+
+L_4b49:
+    fFileErrSilent = 1
+    call StreamOpen(szWork, md) -> callresult(void)
+    fFileErrSilent = fSilentSav
+    ids = idsGameFileAppearsCorruptUnableLoadFile
+    call ReadRt() -> callresult(void)
+    branch hdrCur.rt != rtBOF ? L_4bc4 : L_4b81
+
+L_4b81:
+    branch ((rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4bc4 : L_4b94
+
+L_4b94:
+    branch ((rgbCur[8] >> 0x5) & 0x7f) < 0x31 ? L_4bc4 : L_4bac
+
+L_4bac:
+    branch ((rgbCur[8] >> 0x5) & 0x7f) < 0x54 ? L_4c47 : L_4bc4
+
+L_4bc4:
+    branch hdrCur.rt != rtBOF ? L_4c2a : L_4bd7
+
+L_4bd7:
+    branch ((rgbCur[8] >> 0xc) & 0xf) > 0x2 ? L_4c15 : L_4bea
+
+L_4bea:
+    branch ((rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4c1b : L_4bfd
+
+L_4bfd:
+    branch ((rgbCur[8] >> 0x5) & 0x7f) <= 0x54 ? L_4c1b : L_4c15
+
+L_4c15:
+    t_merge_4c1e_0001 = 0x2ca
+    goto L_4c1e
+
+L_4c1b:
+    t_merge_4c1e_0001 = 0x4d3
+
+L_4c1e:
+    call FileError(t_merge_4c1e_0001) -> callresult(void)
+    goto L_4c36
+
+L_4c2a:
+    call FileError(idmColonistsDroppedDestroyedSpiritedFighting) -> callresult(void)
+
+LBadFile:
+    call StreamClose() -> callresult(void)
+    penvMem = penvMemSav
+    return 0
+
+L_4c47:
+    rtbof = *(RTBOF *)rgbCur
+    branch rtbof.iPlayer == iPlayer ? L_4c7b : L_4c6c
+
+L_4c6c:
+    call FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian) -> callresult(void)
+    goto L_4c36
+
+L_4c7b:
+    branch LOWORD(game.lid) != 0x0 ? L_4c8f : L_4c85
+
+L_4c85:
+    branch HIWORD(game.lid) == 0x0 ? L_4ebd : L_4c8f
+
+L_4c8f:
+    branch LOWORD(rtbof.lidGame) != LOWORD(game.lid) ? L_4ca6 : L_4c9e
+
+L_4c9e:
+    branch HIWORD(rtbof.lidGame) == HIWORD(game.lid) ? L_4cb8 : L_4ca6
+
+L_4ca6:
+    call FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl) -> callresult(void)
+    goto L_4c36
+
+L_4cb8:
+    branch dt == dtHist ? L_4ea5 : L_4cc1
+
+L_4cc1:
+    branch fCheckMulti == 0 ? L_4d4d : L_4cca
+
+L_4cca:
+    branch rtbof.fMulti == 0x0 ? L_4d4d : L_4cdd
+
+L_4cdd:
+    call lseek(hf, -4, 2) -> callresult(int32_t)
+    call ReadRt() -> callresult(void)
+    branch hdrCur.rt == rtEOF ? L_4d1e : L_4d0d
+
+L_4d0d:
+    branch hdrCur.cb != 0x2 ? L_4c36 : L_4d1e
+
+L_4d1e:
+    rtbof.turn = LOWORD(rgbCur)
+    game.wGen = rtbof.wGen
+
+L_4d4d:
+    branch game.turn != 0x0 ? L_4d95 : L_4d57
+
+L_4d57:
+    branch game.turn == rtbof.turn ? L_4d95 : L_4d63
+
+L_4d63:
+    game.turn = rtbof.turn
+    game.wGen = rtbof.wGen
+    goto L_4ebd
+
+L_4d95:
+    branch rtbof.turn == game.turn ? L_4db2 : L_4da0
+
+L_4da0:
+    call FileError(idmVigilantFleetsManagedDefeatSavageVerminWithout) -> callresult(void)
+    goto L_4c36
+
+L_4db2:
+    branch dt != dtHost ? L_4e11 : L_4dbb
+
+L_4dbb:
+    branch gd.fHostMode != 0x0 ? L_4e11 : L_4dcf
+
+L_4dcf:
+    branch rtbof.fInUse == 0x0 ? L_4e11 : L_4de2
+
+L_4de2:
+    branch AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), 0x2024) != 6 ? L_4c36 : L_4e08
+
+L_4e08:
+    goto L_4ebd
+
+L_4e11:
+    branch rtbof.fDone != 0x0 ? L_4e58 : L_4e24
+
+L_4e24:
+    branch gd.fGeneratingTurn == 0x0 ? L_4e58 : L_4e34
+
+L_4e34:
+    branch gd.fForceTurn != 0x0 ? L_4e58 : L_4e46
+
+L_4e46:
+    gd.fPartialTurn = 0x1
+    goto L_4c36
+
+L_4e58:
+    branch dt != dtLog ? L_4ebd : L_4e61
+
+L_4e61:
+    branch game.fTutorial != 0x0 ? L_4ebd : L_4e75
+
+L_4e75:
+    branch rtbof.wGen == game.wGen ? L_4ebd : L_4e93
+
+L_4e93:
+    call FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl) -> callresult(void)
+    goto L_4c36
+
+L_4ea5:
+    branch rtbof.iPlayer != iPlayer ? L_4c36 : L_4ebd
+
+L_4ebd:
+    branch fRewind == 0 ? L_4ee3 : L_4ec6
+
+L_4ec6:
+    call lseek(hf, 0, 0) -> callresult(int32_t)
+    call ReadRt() -> callresult(void)
+
+L_4ee3:
+    penvMem = penvMemSav
+    wVersFile = rtbof.wVersion
+    gd.fFileCrippled = rtbof.fCrippled
+    return 1
+

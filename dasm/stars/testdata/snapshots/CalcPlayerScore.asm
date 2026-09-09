@@ -56,12 +56,6 @@ MOV       ax, [bp+iPlr]             ; ax, [bp+0x6]
 CMP       es:[bx+0x2], ax     
 JNZ       L_59c5              
 
-L_58fa:
-JMP       L_5900              
-
-L_58fd:                             ; util.c:2327
-JMP       L_59c5              
-
 L_5900:                             ; util.c:2328
 ADD       [bp-score+0x8], 0x0001    ; [bp-0x1e], 0x0001
                                     ; util.c:2330
@@ -414,12 +408,6 @@ AND       ax, 0x0001
 CMP       ax, 0x0000          
 JNZ       L_5bb2              
 
-L_5c14:
-JMP       L_5c1a              
-
-L_5c17:                             ; util.c:2388
-JMP       L_5bb2              
-
 L_5c1a:                             ; util.c:2389
 MOV       [bp-i], 0x0000            ; [bp-0x30], 0x0000
 JMP       L_5c87              
@@ -476,9 +464,6 @@ JGE       L_5bb2
 
 L_5c8d:
 JMP       L_5c22              
-
-L_5c90:                             ; util.c:2394
-JMP       L_5bb2              
 
 L_5c93:                             ; util.c:2396
 MOV       ax, [bp-score+0x8]        ; ax, [bp-0x1e]

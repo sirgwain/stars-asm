@@ -223,9 +223,19 @@ func replaceBlockID(ids []BlockID, old BlockID, next BlockID) []BlockID {
 // resolveBlockSuccessors resolves jump trampolines in successors to collapse the graph
 func resolveBlockSuccessors(cfg *CFG, succs []BlockID) []BlockID {
 	out := make([]BlockID, 0, len(succs))
+
 	for _, succ := range succs {
+		// If the target survived jump collapsing, it is a real CFG block
+		// and incoming edges must still reach it.
+		if cfg.byID[succ] != nil {
+			out = appendTarget(out, uint32(succ))
+			continue
+		}
+
+		// Otherwise it was actually removed; follow its collapsed target.
 		out = appendTarget(out, uint32(cfg.resolvedBlock(succ)))
 	}
+
 	return out
 }
 

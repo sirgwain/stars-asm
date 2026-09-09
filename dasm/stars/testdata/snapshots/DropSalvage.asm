@@ -58,12 +58,6 @@ JZ        L_294c
 L_2532:
 JMP       L_2505              
 
-L_2535:                             ; battle.c:783
-JMP       L_294c              
-
-L_2538:                             ; battle.c:785
-JMP       L_2505              
-
 L_253b:
 MOV       [bp-i], 0x0000            ; [bp-0xc], 0x0000
 JMP       L_2565              
@@ -88,9 +82,6 @@ JGE       L_25cb
 
 L_256b:
 JMP       L_2543              
-
-L_256e:                             ; battle.c:788
-JMP       L_25cb              
 
 L_2571:                             ; battle.c:790
 MOV       [bp-i], 0x0000            ; [bp-0xc], 0x0000
@@ -162,12 +153,6 @@ JNZ       L_2619
 L_260d:
 CMP       [bp-lpth+0x2], 0x0000     ; [bp-0xe], 0x0000
 JZ        L_294c              
-
-L_2613:
-JMP       L_2619              
-
-L_2616:                             ; battle.c:801
-JMP       L_294c              
 
 L_2619:                             ; battle.c:802
 LES       bx, [bp-lpth]             ; bx, [bp-0x10]
@@ -372,12 +357,6 @@ L_27f8:
 CMP       [bp-lpth+0x2], 0x0000     ; [bp-0xe], 0x0000
 JZ        L_294c              
 
-L_27fe:
-JMP       L_2804              
-
-L_2801:                             ; battle.c:834
-JMP       L_294c              
-
 L_2804:                             ; battle.c:835
 LES       bx, [bp-lpth]             ; bx, [bp-0x10]
 MOV       ax, es:[bx+0x6]     
@@ -484,12 +463,6 @@ JL        L_2927
 L_290e:
 CMP       [bp-wtTotal], 0x0000      ; [bp-0x6], 0x0000
 JBE       L_2927              
-
-L_2914:
-JMP       L_291a              
-
-L_2917:                             ; battle.c:847
-JMP       L_2927              
 
 L_291a:                             ; battle.c:848
 ADD       [bp-i], 0x0001            ; [bp-0xc], 0x0001

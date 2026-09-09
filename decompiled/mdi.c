@@ -231,9 +231,7 @@ L_04ad:
     if ((idPlayer == -1))
         goto L_06cf;
     else
-        goto L_04c4;
-
-L_04c4:
+        goto L_04ca;
 
 L_04ca:
     if ((hwndScanner != 0x0))
@@ -374,6 +372,9 @@ L_073d:
 L_0740:
     EnsureTileSize(t_merge_0740_0001);
 
+L_0749:
+    goto L_1e2b;
+
 MapIt:
     if ((hwndTitle == 0x0))
         goto L_076c;
@@ -408,6 +409,7 @@ L_07de:
         goto L_07e2;
 
 L_07e2:
+    goto L_1e2b;
 
 L_07eb:
     InitializeMenu(wParam);
@@ -510,6 +512,9 @@ L_09e7:
 L_09f1:
     GenNewGameFromFile(szBase);
 
+L_09fd:
+    goto LExit;
+
 L_0a00:
     if ((ini.fGen == 0x0))
         goto L_0b67;
@@ -550,7 +555,7 @@ L_0a66:
 
 LTryNextBatch:
     DestroyCurGame();
-    pch = &(szBase);
+    pch = szBase;
 
 L_0a80:
     if (((uint16_t)(*(lpchBatch)) == 10))
@@ -605,6 +610,9 @@ L_0b04:
 L_0b16:
     PostQuitMessage(vretExitValue);
 
+L_0b1f:
+    goto L_1e2b;
+
 L_0b25:
     if ((ini.fTry == 0x0))
         goto L_0b67;
@@ -624,23 +632,20 @@ L_0b4e:
         goto L_0b5b;
 
 L_0b5b:
+    goto LExit;
 
 L_0b67:
     CommandHandler(hwnd, 0xed9);
     if ((ini.fTry != 0x0))
         goto LExit;
     else
-        goto L_0b87;
-
-L_0b87:
+        goto L_0b90;
 
 L_0b90:
     if ((ini.fGen != 0x0))
         goto LNop;
     else
-        goto L_0ba1;
-
-L_0ba1:
+        goto L_0baa;
 
 L_0baa:
     if ((LOWORD(game.lid) != 0x0))
@@ -652,9 +657,7 @@ L_0bb4:
     if ((HIWORD(game.lid) == 0x0))
         goto LShowStartup;
     else
-        goto L_0bbb;
-
-L_0bbb:
+        goto L_0bc4;
 
 L_0bc4:
     if ((idPlayer == -1))
@@ -707,6 +710,9 @@ L_0c5f:
 L_0c72:
     PostMessage(hwndFrame, WM_COMMAND, 0x53, 0);
 
+L_0c8b:
+    goto LExit;
+
 L_0c8e:
     ShowWindow(hwndFrame, SW_SHOW);
     InitializeMenu(0x0);
@@ -719,6 +725,9 @@ L_0c8e:
 L_0cd2:
     ini.fWait = 0x0;
     CommandHandler(hwnd, 0x6a);
+
+L_0ceb:
+    goto LNop;
 
 LShowStartup:
     if ((hwndTitle != 0x0))
@@ -823,6 +832,9 @@ L_0e60:
     memcpy(vrgbMachineConfig, vrgbEnvCur, 0xb);
     PostQuitMessage(vretExitValue);
 
+L_0e7d:
+    goto L_0ea9;
+
 L_0e80:
     vSerialNumber = 0;
     memcpy(vrgbMachineConfig, vrgbEnvCur, 0xb);
@@ -830,6 +842,9 @@ L_0e80:
 
 L_0ea9:
     WriteIniSettings();
+
+L_0eae:
+    goto L_1e2b;
 
 L_0eb1:
     if ((gd.fTutorial == 0x0))
@@ -1031,6 +1046,9 @@ L_11d3:
 L_11f7:
     CreateChildWindows();
 
+L_11fc:
+    goto L_124f;
+
 L_11ff:
     if ((id != 2))
         goto L_124f;
@@ -1108,6 +1126,9 @@ L_134c:
 L_1370:
     CreateChildWindows();
 
+L_1375:
+    goto L_13a3;
+
 L_1378:
     if ((id != 2))
         goto L_13a3;
@@ -1133,6 +1154,9 @@ L_13c7:
 
 L_13d2:
     CtrPointScan(sel.pt, 1);
+
+L_13e6:
+    goto Default;
 
 L_13e9:
     if ((hwndScanner == 0x0))
@@ -1303,6 +1327,9 @@ L_152b:
 L_152e:
     iOffset = t_merge_152e_0001;
 
+L_1531:
+    goto L_157c;
+
 L_1534:
     if ((wParam != 0x70))
         goto L_1544;
@@ -1359,6 +1386,9 @@ L_1598:
 L_15a9:
     SelectAdjPlanet(iOffset, idPlanet);
 
+L_15b7:
+    goto L_1e2b;
+
 L_15ba:
     if ((idPlayer != -1))
         goto L_15cd;
@@ -1378,6 +1408,8 @@ L_15d7:
     return (uint32_t)(hiconStars);
 
 L_15e0:
+
+L_15e6:
     return (uint32_t)(hiconWait);
 
 L_15e9:
@@ -1516,6 +1548,7 @@ L_19f9:
         goto L_19fe;
 
 L_19fe:
+    goto L_186b;
 
 L_1a04:
     SelectObject(hdc, hbrSav);
@@ -1527,9 +1560,7 @@ L_1a1f:
     if ((IsIconic(hwnd) != 0))
         goto Default;
     else
-        goto L_1a2f;
-
-L_1a2f:
+        goto L_1a35;
 
 L_1a35:
     GetCursorPos(&(pt));
@@ -1557,9 +1588,7 @@ L_1aaa:
     if ((HcrsFromFrameWindowPt(pt, &(grSel)) == 0x0))
         goto L_1e2b;
     else
-        goto L_1ae1;
-
-L_1ae1:
+        goto L_1ae7;
 
 L_1ae7:
     hdc = GetDC(hwnd);
@@ -1603,6 +1632,9 @@ L_1b75:
     ptAct.y = HIWORD(t_call_1ba9);
     ptOld.x = pt.x;
     ptOld.y = pt.y;
+
+L_1bc3:
+    goto L_1b4b;
 
 L_1bc6:
     InvertPaneBorder(hdc, grSel, ptD, 0x0);
@@ -1682,6 +1714,9 @@ L_1cbc:
     InvalidateRect(hwnd, 0x0, 1);
     RefitFrameChildren();
 
+L_1cd3:
+    goto L_1e2b;
+
 L_1cd6:
     if ((uTimerId == 0x0))
         goto L_1ced;
@@ -1715,6 +1750,9 @@ L_1d3c:
 
 L_1d4e:
     PostQuitMessage(vretExitValue);
+
+L_1d57:
+    goto L_1e2b;
 
 Default:
     return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -1858,6 +1896,7 @@ L_1e20:
         goto L_1e25;
 
 L_1e25:
+    goto L_0f7f;
 
 L_1e2b:
     return 0;
@@ -1937,6 +1976,7 @@ L_1f10:
         goto L_1f15;
 
 L_1f15:
+    goto L_1ed3;
 
 L_1f1b:
     if (((vfs.xTop + dpt.x) >= 0xc6))
@@ -2080,6 +2120,9 @@ L_20ba:
 L_20d7:
     dpt.y = (dyMsgCur - dyMin);
 
+L_20e0:
+    goto L_2140;
+
 L_20e3:
     if (((grSel & 0x4) == 0x0))
         goto L_2140;
@@ -2139,16 +2182,14 @@ L_218e:
 
 L_21b7:
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
-    goto L_2261;
+    goto L_24a0;
 
 L_21e0:
     dChg = dptPrev.x;
     if ((dChg == 0))
         goto L_24a0;
     else
-        goto L_21ec;
-
-L_21ec:
+        goto L_21f2;
 
 L_21f2:
     if ((dChg >= 0))
@@ -2170,9 +2211,13 @@ L_2221:
 
 L_2261:
     goto L_24a0;
+
+L_2264:
     dpt.x = 0;
     PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), (vfs.xTop + 1), 6, PATINVERT);
     goto L_24a0;
+
+L_2295:
     dpt.x = 0;
     if ((iWindowLayout != 0))
         goto L_22d0;
@@ -2181,16 +2226,20 @@ L_2261:
 
 L_22a4:
     PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 0x1), (vfs.xTop + 1), 6, PATINVERT);
-    goto L_2300;
+    goto L_24a0;
 
 L_22d0:
     PatBlt(hdc, (vfs.xTop + 7), ((vfs.y2 + dpt.y) + 0x1), ((vfs.dx - vfs.xTop) + 0xfff9), 6, PATINVERT);
 
 L_2300:
     goto L_24a0;
+
+L_2303:
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
     PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
     goto L_24a0;
+
+L_2358:
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
     if ((iWindowLayout != 0))
         goto L_23b7;
@@ -2199,13 +2248,15 @@ L_2300:
 
 L_2388:
     PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
-    goto L_23ed;
+    goto L_24a0;
 
 L_23b7:
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x7), ((vfs.y2 + dpt.y) + 0x1), (((vfs.dx - dpt.x) - vfs.xTop) + 0xfff9), 6, PATINVERT);
 
 L_23ed:
     goto L_24a0;
+
+L_23f0:
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
     PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
     PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x7), ((vfs.y2 + dpt.y) + 0x1), (((vfs.dx - dpt.x) - vfs.xTop) + 0xfff9), 6, PATINVERT);
@@ -2218,7 +2269,22 @@ L_247e:
         goto L_2489;
 
 L_2489:
-    goto L_ffffffff;
+    switch (((grSel - 1) * 0x2)) {
+    case 0x0:
+        goto L_2164;
+    case 0x2:
+        goto L_2264;
+    case 0x4:
+        goto L_2303;
+    case 0x6:
+        goto L_2295;
+    case 0x8:
+        goto L_2358;
+    case 0xa:
+        goto L_2164;
+    case 0xc:
+        goto L_23f0;
+    }
 
 L_24a0:
 
@@ -2363,6 +2429,7 @@ L_2598:
         goto L_259d;
 
 L_259d:
+    goto L_2552;
 
 L_25a3:
     if ((fInVBar == 0))
@@ -2388,6 +2455,9 @@ L_25be:
 
 L_25c7:
     hcs = hcurResizeWE;
+
+L_25cd:
+    goto L_25e8;
 
 L_25d0:
     if ((fInHBar1 != 0))
@@ -2469,6 +2539,9 @@ L_2695:
     ini.grobjSel = 0x1;
     ini.iObjSel = rgplr[idPlayer].idPlanetHome;
 
+L_26b3:
+    goto L_2732;
+
 L_26b6:
     if ((ini.grobjSel != 0x1))
         goto L_2732;
@@ -2538,6 +2611,9 @@ L_27b6:
     tutor.fChange = 0x1;
     AdvanceTutor();
 
+L_27c7:
+    goto L_27e8;
+
 L_27ca:
     ini.grobjSel = 0x1;
     ini.iObjSel = rgplr[idPlayer].idPlanetHome;
@@ -2579,6 +2655,9 @@ L_283d:
 
 L_2845:
     SelectAdjPlanet(0, ini.iObjSel);
+
+L_2855:
+    goto L_285d;
 
 L_2858:
     FFindSomethingAndSelectIt();
@@ -2762,18 +2841,20 @@ L_2adf:
 }
 
 int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn) {
-    uint8_t rgbRaw[21];
-    int16_t fSuccess;
-    int16_t j;
-    uint8_t bXor;
-    int16_t i;
-    int16_t cBits;
-    int16_t iRaw;
-    int16_t iPass;
-    int32_t lSerial;
-    int32_t lTank;
-    uint8_t rgbRaw2[21];
-    uint8_t b64;
+    uint8_t  rgbRaw[21];
+    int16_t  fSuccess;
+    int16_t  j;
+    uint8_t  bXor;
+    int16_t  i;
+    int16_t  cBits;
+    int16_t  iRaw;
+    int16_t  iPass;
+    int32_t  lSerial;
+    int32_t  lTank;
+    uint8_t  rgbRaw2[21];
+    uint8_t  b64;
+    uint16_t t_scratch_m48_2;
+    uint16_t t_scratch_m48_3;
 
 L_2aec:
     iPass = 0;
@@ -2923,7 +3004,8 @@ L_2cf8:
         goto L_2d01;
 
 L_2d01:
-    if (((rgbRaw[iRaw] & 0xf) == (Random(16) & 0xff)))
+    t_scratch_m48_2 = (rgbRaw[iRaw] & 0xf);
+    if ((t_scratch_m48_2 == (Random(16) & 0xff)))
         goto L_2d6f;
     else
         goto L_2d2d;
@@ -2931,8 +3013,12 @@ L_2d01:
 L_2d2d:
     fSuccess = 0;
 
+L_2d32:
+    goto L_2d6f;
+
 L_2d35:
-    if (((rgbRaw[iRaw] >> 0x4) == (Random(16) & 0xff)))
+    t_scratch_m48_3 = (rgbRaw[iRaw] >> 0x4);
+    if ((t_scratch_m48_3 == (Random(16) & 0xff)))
         goto L_2d6b;
     else
         goto L_2d66;
@@ -3026,9 +3112,7 @@ L_2e8e:
     if ((lppl->iPlayer == idPlayer))
         goto L_2eb2;
     else
-        goto L_2e9a;
-
-L_2e9a:
+        goto L_2ea0;
 
 L_2ea0:
     lppl = (lppl + 0x38);
@@ -3164,8 +3248,9 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
     int16_t      t_merge_3041_0001;
     uint16_t     t_merge_3297_0001;
     uint16_t     t_merge_32d8_0001;
+    uint16_t     t_merge_3424_0001;
+    uint16_t     t_scratch_ma0;
     uint16_t     t_merge_343d_0001;
-    uint16_t     scratch_bp_ma0;
     char        *t_merge_3b11_0001;
     uint16_t     t_merge_3e5a_0001;
     uint16_t     t_merge_4698_0001;
@@ -3207,9 +3292,7 @@ L_3003:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_300a;
-
-L_300a:
+        goto L_3010;
 
 L_3010:
     iWindowLayout = (wParam - 130);
@@ -3244,6 +3327,9 @@ L_3065:
 L_3074:
     StartTutor(0);
 
+L_3080:
+    goto L_536f;
+
 L_3083:
     if ((gd.fTutorial == 0x0))
         goto L_30a6;
@@ -3254,9 +3340,7 @@ L_3096:
     if ((FAskKillTutor() == 0))
         goto L_536f;
     else
-        goto L_30a0;
-
-L_30a0:
+        goto L_30a6;
 
 L_30a6:
     NewGameWizard(hwnd, 0);
@@ -3272,9 +3356,7 @@ L_30cb:
     if ((FAskKillTutor() == 0))
         goto L_536f;
     else
-        goto L_30d5;
-
-L_30d5:
+        goto L_30db;
 
 L_30db:
     if ((LOWORD(vrgszMRU) != 0x0))
@@ -3344,9 +3426,15 @@ L_31f5:
 L_31ff:
     StartTutor(0);
 
+L_320b:
+    goto L_536f;
+
 L_320e:
     strcpy(szWork, szT);
     AlertSz(PszFormatIds(idsCantOpenFile, 0x0), MB_ICONHAND);
+
+L_3240:
+    goto L_536f;
 
 L_3243:
     vplr = vrgplrDef[0];
@@ -3390,9 +3478,7 @@ L_32e6:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_32ed;
-
-L_32ed:
+        goto L_32f3;
 
 L_32f3:
     lpProc = MakeProcInstance(PrintMapDlg, hInst);
@@ -3401,9 +3487,7 @@ L_32f3:
     if ((fRet == 0))
         goto L_536f;
     else
-        goto L_3339;
-
-L_3339:
+        goto L_333f;
 
 L_333f:
     cPageX = vrgcPrintMapPage[0];
@@ -3433,11 +3517,14 @@ L_3387:
         goto L_341b;
 
 L_341b:
+    t_merge_3424_0001 = 0x1;
     goto L_3424;
 
 L_3421:
+    t_merge_3424_0001 = 0x0;
 
 L_3424:
+    t_scratch_ma0 = t_merge_3424_0001;
     if ((dxMax <= dyMax))
         goto L_343a;
     else
@@ -3451,7 +3538,7 @@ L_343a:
     t_merge_343d_0001 = 0x0;
 
 L_343d:
-    if ((scratch_bp_ma0 != t_merge_343d_0001))
+    if ((t_scratch_ma0 != t_merge_343d_0001))
         goto L_345a;
     else
         goto L_3448;
@@ -3781,6 +3868,9 @@ L_3bf0:
 L_3d08:
     CtrTextOut(pd.hDC, LOWORD(x), (LOWORD(y) + 0xe), PszGetPlanetName(i), 0);
 
+L_3d38:
+    goto L_3be1;
+
 L_3d3b:
     if ((hfontSav == 0x0))
         goto L_3d51;
@@ -3847,8 +3937,14 @@ L_3dec:
 L_3df5:
     GlobalFree(pd.hDevNames);
 
+L_3dfd:
+    goto L_536f;
+
 L_3e00:
     AlertSz(PszFormatIds(idsUnablePrintGameMapPrinterMayOff, 0x0), MB_ICONHAND);
+
+L_3e21:
+    goto L_536f;
 
 L_3e24:
     hmenu = GetASubMenu(hwnd, 1);
@@ -3876,13 +3972,14 @@ L_3e5a:
 L_3e7a:
     InvalidateRect(hwndScanner, 0x0, 0);
 
+L_3e8f:
+    goto L_536f;
+
 L_3e92:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_3e99;
-
-L_3e99:
+        goto L_3e9f;
 
 L_3e9f:
     lpProc = MakeProcInstance(FindDlg, hInst);
@@ -3894,9 +3991,7 @@ L_3ee1:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_3ee8;
-
-L_3ee8:
+        goto L_3eee;
 
 L_3eee:
     lpProc = MakeProcInstance(ScoreXDlg, hInst);
@@ -3914,9 +4009,7 @@ L_3f42:
     if ((AlertSz(PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould, 0x0), 0x2024) != 6))
         goto L_536f;
     else
-        goto L_3f68;
-
-L_3f68:
+        goto L_3f6e;
 
 L_3f6e:
     idCur = idPlayer;
@@ -3969,17 +4062,13 @@ L_3fcf:
     if ((MessageBox(GetFocus(), szWork, "Stars!", 0x2034) != 6))
         goto L_536f;
     else
-        goto L_4014;
-
-L_4014:
+        goto L_401a;
 
 L_401a:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4021;
-
-L_4021:
+        goto L_4027;
 
 L_4027:
     if ((gd.fTutorial == 0x0))
@@ -4083,14 +4172,13 @@ L_41ed:
         goto L_41f2;
 
 L_41f2:
+    goto L_418a;
 
 L_41f8:
     if ((game.fSinglePlr == 0x0))
         goto LWaitForTurn;
     else
-        goto L_4207;
-
-L_4207:
+        goto L_420d;
 
 L_420d:
     idsFileError = -1;
@@ -4116,6 +4204,7 @@ L_426a:
         goto L_4290;
 
 L_4290:
+    goto L_536f;
 
 L_429c:
     hcurSav = SetCursor(LoadCursor(0x0, MAKEINTRESOURCE(0x7f02)));
@@ -4161,9 +4250,7 @@ L_4323:
     if ((GetAsyncKeyState(17) >= 0))
         goto RepGen;
     else
-        goto L_4331;
-
-L_4331:
+        goto L_4337;
 
 L_4337:
     iPassCnt = 0;
@@ -4198,6 +4285,9 @@ L_43ec:
     tutor.fAutoComplete = 0x0;
     AdvanceTutor();
 
+L_4409:
+    goto L_536f;
+
 L_440c:
     if ((LOWORD(game.lid) != 0x0))
         goto L_4420;
@@ -4214,9 +4304,7 @@ L_4420:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4427;
-
-L_4427:
+        goto L_442d;
 
 L_442d:
     if ((hwndBrowser != 0x0))
@@ -4288,9 +4376,7 @@ L_44e5:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_44ec;
-
-L_44ec:
+        goto L_44f2;
 
 L_44f2:
     hmenu = GetASubMenu(hwnd, 4);
@@ -4345,6 +4431,9 @@ L_456f:
 L_457e:
     cObj = (cObj + 1);
 
+L_4582:
+    goto L_4530;
+
 L_4588:
     if ((wParam != 0x900))
         goto L_45fd;
@@ -4387,6 +4476,9 @@ L_45e4:
 
 L_45f3:
     cObj = (cObj + 1);
+
+L_45f7:
+    goto L_45a5;
 
 L_45fd:
     if ((wParam != 0x901))
@@ -4488,6 +4580,7 @@ L_476d:
         goto L_477d;
 
 L_477d:
+    goto L_536f;
 
 L_4786:
     if ((wParam != 0x9c2))
@@ -4532,9 +4625,7 @@ L_47ef:
     if ((game.fSinglePlr != 0x0))
         goto L_536f;
     else
-        goto L_47fe;
-
-L_47fe:
+        goto L_4804;
 
 L_4804:
     if ((FNewTurnAvail(idPlayer) == 0))
@@ -4557,6 +4648,7 @@ L_482e:
         goto L_4858;
 
 L_4858:
+    goto L_4882;
 
 L_4861:
     AlertSz(PszFormatIds(idsNewTurnAvailable, 0x0), MB_ICONASTERISK);
@@ -4617,9 +4709,7 @@ L_49e7:
     if ((FNewTurnAvail(idPlayer) != 0))
         goto LNewTurnAvail;
     else
-        goto L_49f8;
-
-L_49f8:
+        goto L_4a01;
 
 L_4a01:
     if ((wParam != 0xedb))
@@ -4639,6 +4729,9 @@ L_4a14:
     FWriteLogFile(szBase, idPlayer);
     FWriteHistFile(idPlayer);
 
+L_4a50:
+    goto L_536f;
+
 L_4a53:
     if ((gd.fTutorial == 0x0))
         goto L_4a76;
@@ -4649,9 +4742,7 @@ L_4a66:
     if ((FAskKillTutor() == 0))
         goto L_536f;
     else
-        goto L_4a70;
-
-L_4a70:
+        goto L_4a76;
 
 L_4a76:
     if ((FOpenGame(hwnd, 0) <= 0))
@@ -4684,13 +4775,14 @@ L_4acf:
 L_4ad9:
     StartTutor(0);
 
+L_4ae5:
+    goto L_536f;
+
 L_4ae8:
     if ((hwndTitle == 0x0))
         goto L_536f;
     else
-        goto L_4aef;
-
-L_4aef:
+        goto L_4af5;
 
 L_4af5:
     PostMessage(hwndTitle, WM_COMMAND, (wParam + 0xff06), 0);
@@ -4706,9 +4798,7 @@ L_4b27:
     if ((FAskKillTutor() == 0))
         goto L_536f;
     else
-        goto L_4b31;
-
-L_4b31:
+        goto L_4b37;
 
 L_4b37:
     WriteIniSettings();
@@ -4741,9 +4831,7 @@ L_4bf7:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4bfe;
-
-L_4bfe:
+        goto L_4c04;
 
 L_4c04:
     lpProc = MakeProcInstance(ResearchDlg, hInst);
@@ -4778,6 +4866,9 @@ L_4c6b:
 L_4c87:
     DrawPlanShip(0x0, 72);
 
+L_4c97:
+    goto L_536f;
+
 L_4c9a:
     if ((LOWORD(game.lid) != 0x0))
         goto L_4cae;
@@ -4794,9 +4885,7 @@ L_4cae:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4cb5;
-
-L_4cb5:
+        goto L_4cbb;
 
 L_4cbb:
     lpProc = MakeProcInstance(BattlePlansDlg, hInst);
@@ -4826,9 +4915,7 @@ L_4d19:
     if ((game.fSinglePlr != 0x0))
         goto L_536f;
     else
-        goto L_4d28;
-
-L_4d28:
+        goto L_4d2e;
 
 L_4d2e:
     lpProc = MakeProcInstance(RelationsDlg, hInst);
@@ -4852,9 +4939,7 @@ L_4d82:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4d89;
-
-L_4d89:
+        goto L_4d8f;
 
 L_4d8f:
     vplr = rgplr[idPlayer];
@@ -4877,9 +4962,7 @@ L_4dd4:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4ddb;
-
-L_4ddb:
+        goto L_4de1;
 
 L_4de1:
     NewGameWizard(hwnd, 1);
@@ -4901,9 +4984,7 @@ L_4e07:
     if ((idPlayer == -1))
         goto L_536f;
     else
-        goto L_4e0e;
-
-L_4e0e:
+        goto L_4e14;
 
 L_4e14:
     pt.x = 610;
@@ -4972,17 +5053,13 @@ L_4ea9:
     if ((LOWORD(lSaltCur) <= 0x0))
         goto L_536f;
     else
-        goto L_4eb0;
-
-L_4eb0:
+        goto L_4eb6;
 
 L_4eb6:
     if ((FCheckPassword() == 0))
         goto L_536f;
     else
-        goto L_4ec0;
-
-L_4ec0:
+        goto L_4ec6;
 
 L_4ec6:
     lpProc = MakeProcInstance(NewPasswordDlg, hInst);
@@ -5036,9 +5113,7 @@ L_5031:
     if ((hwndScanner == 0x0))
         goto L_536f;
     else
-        goto L_5038;
-
-L_5038:
+        goto L_503e;
 
 L_503e:
     gd.fNoScannerDraw = 0x1;
@@ -5580,6 +5655,7 @@ L_5364:
         goto L_5369;
 
 L_5369:
+    goto L_3f6e;
 
 L_536f:
     return;
@@ -5637,7 +5713,6 @@ L_53f5:
     szWork[2] = 32;
     fstrcpy(szWork[3], (vrgszMRU + (i * 256)));
     InsertMenu(hmenuSub, (i + 9), 0x400, (i + 4300), szWork);
-    goto L_5452;
 
 L_5452:
     i = (i + 1);
@@ -5843,9 +5918,7 @@ L_56bc:
     if ((gd.fAisDone != 0x0))
         goto L_5893;
     else
-        goto L_56eb;
-
-L_56eb:
+        goto L_56f1;
 
 L_56f1:
     fHostSav = gd.fHostMode;
@@ -5916,6 +5989,9 @@ L_5826:
 
 L_582e:
     DoAiTurn(iPlayer, rgmdplr[iPlayer]);
+
+L_5845:
+    goto L_577d;
 
 L_5848:
     gd.fSubmit = fSubmitSav;
@@ -6045,6 +6121,9 @@ L_59e7:
 
 L_59fb:
     szFilter[i] = 0;
+
+L_5a07:
+    goto L_59cf;
 
 L_5a0a:
     memset(&(ofn), 0, 0x48);
@@ -6290,6 +6369,9 @@ L_5d83:
 L_5d8d:
     FFindSomethingAndSelectIt();
 
+L_5d92:
+    goto L_5d9b;
+
 L_5d95:
     return 0;
 
@@ -6376,18 +6458,14 @@ L_5ec0:
     if (((rgbCur[14] & 0xff) != 0x5))
         goto LBadFile;
     else
-        goto L_5ed1;
-
-L_5ed1:
+        goto L_5ed7;
 
 L_5ed7:
     ReadRt();
     if ((hdrCur.rt != rtPlr))
         goto LBadFile;
     else
-        goto L_5eec;
-
-L_5eec:
+        goto L_5ef2;
 
 L_5ef2:
     idsError = 3;
@@ -6396,17 +6474,13 @@ L_5ef2:
     if ((hdrCur.rt != rtEOF))
         goto LBadFile;
     else
-        goto L_5f1d;
-
-L_5f1d:
+        goto L_5f23;
 
 L_5f23:
     if ((LOWORD(rgbCur) != IRaceChecksum(&(plr))))
         goto LBadFile;
     else
-        goto L_5f36;
-
-L_5f36:
+        goto L_5f3c;
 
 L_5f3c:
     lSaltSav = lSaltCur;
@@ -6540,9 +6614,7 @@ L_6162:
     if ((GetAsyncKeyState(17) >= 0))
         goto LNextGen;
     else
-        goto L_6170;
-
-L_6170:
+        goto L_6176;
 
 L_6176:
     iPassCnt = 0;
@@ -6820,6 +6892,9 @@ L_6809:
 L_6817:
     rgOut[i] = 0;
 
+L_6822:
+    goto L_68d6;
+
 L_6825:
     if ((idsError == 0))
         goto L_687b;
@@ -6854,6 +6929,7 @@ L_6869:
         goto L_686e;
 
 L_686e:
+    goto L_6834;
 
 L_6874:
     cOut = (cOut + 1);
@@ -6904,6 +6980,9 @@ L_68ea:
 
 L_68fb:
     ctickLast = GetTickCount();
+
+L_6907:
+    goto L_6739;
 
 L_690a:
     FreeLp(vrgPlanResExtra, htMisc);
@@ -7028,6 +7107,7 @@ L_6b22:
         goto L_6b27;
 
 L_6b27:
+    goto L_6aed;
 
 L_6b2d:
     cOut = (cOut + 1);
@@ -7079,6 +7159,9 @@ L_6ba3:
 L_6bb4:
     ctickLast = GetTickCount();
 
+L_6bc0:
+    goto L_6a59;
+
 L_6bc3:
     gd.fGeneratingTurn = 0x0;
     if ((cAi != game.cPlayer))
@@ -7127,6 +7210,7 @@ int16_t HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     uint16_t    t_merge_6f77_0001;
     uint16_t    t_merge_6fbd_0001;
     uint16_t    t_merge_7057_0001;
+    uint16_t    t_scratch_m36;
     int16_t     t_merge_7107_0001;
     int16_t     t_merge_712d_0001;
     HWND        t_call_715f;
@@ -7207,9 +7291,7 @@ L_6d35:
     if ((fProcessingTimer != 0))
         goto Done;
     else
-        goto L_6d3c;
-
-L_6d3c:
+        goto L_6d42;
 
 L_6d42:
     fProcessingTimer = 1;
@@ -7227,6 +7309,8 @@ L_6d6c:
     return 1;
 
 L_6d72:
+
+L_6d75:
     return 0;
 
 L_6d78:
@@ -7256,9 +7340,7 @@ L_6de8:
     if ((pt.y < 48))
         goto L_75c0;
     else
-        goto L_6dee;
-
-L_6dee:
+        goto L_6df4;
 
 L_6df4:
     iDiamond = ((uint32_t)((pt.y + 0xffd0)) / (dyArial8 + 4));
@@ -7271,9 +7353,7 @@ L_6e12:
     if ((((uint32_t)((pt.y - 48)) % (dyArial8 + 4)) >= (dyArial8 + 1)))
         goto L_75c0;
     else
-        goto L_6e2c;
-
-L_6e2c:
+        goto L_6e32;
 
 L_6e32:
     if ((message != WM_SETCURSOR))
@@ -7303,6 +7383,9 @@ L_6e86:
 
 L_6e8e:
     iSel = 1;
+
+L_6e93:
+    goto L_6e9b;
 
 L_6e96:
     iSel = 0;
@@ -7453,7 +7536,8 @@ L_7054:
     t_merge_7057_0001 = 0x0;
 
 L_7057:
-    rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0xfdff) | ((t_merge_7057_0001 & 0x1) * 0x200));
+    t_scratch_m36 = t_merge_7057_0001;
+    rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0xfdff) | ((t_scratch_m36 & 0x1) * 0x200));
     if ((iRet != 2))
         goto L_70c3;
     else
@@ -7463,7 +7547,7 @@ L_709b:
     rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0x1fff) | 0xe000);
 
 L_70c3:
-    /* untranslated: rgplr[iDiamond].lSalt = words(~(HIWORD(rgplr[iDiamond].lSalt)), ~(LOWORD(rgplr[iDiamond].lSalt))) */
+    rgplr[iDiamond].lSalt = (((uint32_t)((uint16_t)((~HIWORD(rgplr[iDiamond].lSalt)))) << 0x10) | (uint16_t)((~LOWORD(rgplr[iDiamond].lSalt))));
     if ((iRet == 0))
         goto L_7104;
     else
@@ -7627,6 +7711,9 @@ L_72ae:
 L_72b7:
     iPassCnt = 9;
 
+L_72bd:
+    goto L_72e0;
+
 L_72c0:
     if ((GetAsyncKeyState(17) >= 0))
         goto L_72da;
@@ -7735,9 +7822,7 @@ L_7407:
     if ((FCheckPassword() == 0))
         goto L_75c0;
     else
-        goto L_7411;
-
-L_7411:
+        goto L_7417;
 
 L_7417:
     lpProc = MakeProcInstance(NewPasswordDlg, hInst);
@@ -7998,9 +8083,7 @@ L_7716:
     if ((fProcessingTimer != 0))
         goto L_79a3;
     else
-        goto L_7726;
-
-L_7726:
+        goto L_772c;
 
 L_772c:
     fProcessingTimer = 1;
@@ -8263,7 +8346,7 @@ L_7b2e:
     _wsprintf(szWork, szPd, gd.fToolbar);
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     iPass = 2;
-    rgtile = &(rgtilePlanet);
+    rgtile = rgtilePlanet;
     ctile = 6;
     CchGetString(idsPlanettiles, szEntry);
 
@@ -8276,7 +8359,7 @@ L_7fd8:
         goto L_7fe7;
 
 L_7fe7:
-    psz = &(szWork);
+    psz = szWork;
     iCol = 0x0;
     i = 0;
     goto L_8008;
@@ -8325,7 +8408,7 @@ L_8097:
     *(psz) = 0;
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsShiptiles, szEntry);
-    rgtile = &(rgtileShip);
+    rgtile = rgtileShip;
     ctile = 7;
     goto L_7fd8;
 
@@ -8555,7 +8638,7 @@ L_8918:
         goto L_8967;
 
 L_8967:
-    psz = &(szWork);
+    psz = szWork;
     iPass = 0;
     goto L_8a2b;
 
@@ -8617,7 +8700,7 @@ L_8aa6:
         goto L_8b0f;
 
 L_8b0f:
-    psz = &(szWork);
+    psz = szWork;
     psz = (psz + 0x1);
     *(psz) = LOBYTE((vrgZipProd[i].fNoResearch + 0x61));
     psz = (psz + 0x1);
@@ -8698,9 +8781,7 @@ L_8c9b:
     if ((IsIconic(hwndFrame) != 0))
         goto L_911f;
     else
-        goto L_8ca9;
-
-L_8ca9:
+        goto L_8caf;
 
 L_8caf:
     goto L_90a7;
@@ -8828,6 +8909,9 @@ L_8e4a:
     MoveWindow(hwndMessage, 0, (vfs.y1 + 8), vfs.xTop, dyMsg, 1);
     MoveWindow(hwndMine, 0, (vfs.y2 + 8), vfs.xTop, dyMin, 1);
 
+L_8ece:
+    goto L_90c2;
+
 L_8ed1:
     if (((vfs.dx - vfs.dx2PlanWant) >= 0xc8))
         goto L_8eec;
@@ -8938,6 +9022,9 @@ L_9011:
     MoveWindow(hwndMessage, 0, (vfs.y1 + 8), vfs.xTop, dyMsg, 1);
     MoveWindow(hwndMine, (vfs.xTop + 8), (vfs.y2 + 8), ((vfs.dx - vfs.xTop) + 0xfff8), dyMin, 1);
 
+L_90a1:
+    goto L_90c2;
+
 L_90a7:
     if ((iWindowLayout == 0))
         goto L_8cb5;
@@ -8957,6 +9044,7 @@ L_90b7:
         goto L_90bc;
 
 L_90bc:
+    goto L_8ed1;
 
 L_90c2:
     hmenu = GetASubMenu(hwndFrame, 1);
@@ -9124,14 +9212,13 @@ L_92d7:
         goto L_92dd;
 
 L_92dd:
+    goto L_9200;
 
 MapIt:
     if ((vcScreenColors < 8))
         goto L_982f;
     else
-        goto L_92ea;
-
-L_92ea:
+        goto L_92f0;
 
 L_92f0:
     hdc = GetDC(hwnd);
@@ -9158,6 +9245,7 @@ L_9368:
         goto L_9370;
 
 L_9370:
+    goto L_982f;
 
 L_9379:
     if ((vhdibTitle == 0x0))
@@ -9189,6 +9277,9 @@ L_93b8:
 L_93ca:
     WriteIniSettings();
     PostQuitMessage(vretExitValue);
+
+L_93d8:
+    goto Default;
 
 L_93db:
     if ((wParam != 0x0))
@@ -9239,6 +9330,9 @@ L_943a:
 L_944a:
     SetFocus(hwnd);
 
+L_9452:
+    goto L_982f;
+
 L_9455:
     if ((wParam != 0x1))
         goto L_9514;
@@ -9288,6 +9382,9 @@ L_94e4:
 L_94ee:
     StartTutor(0);
 
+L_94fa:
+    goto L_9505;
+
 L_94fd:
     SetFocus(hwnd);
 
@@ -9325,6 +9422,9 @@ L_955d:
     WriteIniSettings();
     PostQuitMessage(vretExitValue);
 
+L_956b:
+    goto L_982f;
+
 L_956e:
     if ((IsIconic(hwnd) == 0))
         goto L_95b9;
@@ -9352,9 +9452,7 @@ L_9603:
     if ((vhdibTitle == 0x0))
         goto LTry16Color;
     else
-        goto L_961a;
-
-L_961a:
+        goto L_9620;
 
 L_9620:
     SelectPalette(hdc, vhpalSplash, 0);
@@ -9438,6 +9536,7 @@ L_9824:
         goto L_9829;
 
 L_9829:
+    goto L_9368;
 
 L_982f:
     return 0;

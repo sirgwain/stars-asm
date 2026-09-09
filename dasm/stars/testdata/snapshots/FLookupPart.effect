@@ -22,7 +22,7 @@ block L_524e:
 
 block L_5287:
   insts 22..23  off 0x5287..0x528c
-  preds: L_6091, L_6099
+  preds: L_6091
   succs: L_60b7
   effects:
     528a  goto L_60b7
@@ -173,10 +173,6 @@ block L_53cb:
   effects:
     53ce  goto L_60b7
 
-block L_53d1:
-  insts 134..134  off 0x53d1..0x53d3
-  succs: L_609c
-
 block L_53d4:
   insts 135..138  off 0x53d4..0x53de
   preds: L_6029
@@ -249,10 +245,6 @@ block L_5456:
   succs: L_60b7
   effects:
     5459  goto L_60b7
-
-block L_545c:
-  insts 180..180  off 0x545c..0x545e
-  succs: L_609c
 
 block L_545f:
   insts 181..184  off 0x545f..0x5469
@@ -525,10 +517,6 @@ block L_5659:
   effects:
     565c  goto L_60b7
 
-block L_565f:
-  insts 352..352  off 0x565f..0x5661
-  succs: L_609c
-
 block L_5662:
   insts 353..356  off 0x5662..0x566c
   preds: L_6069
@@ -601,10 +589,6 @@ block L_56f5:
   succs: L_60b7
   effects:
     56f8  goto L_60b7
-
-block L_56fb:
-  insts 407..407  off 0x56fb..0x56fd
-  succs: L_609c
 
 block L_56fe:
   insts 408..411  off 0x56fe..0x5708
@@ -679,10 +663,6 @@ block L_5780:
   effects:
     5783  goto L_60b7
 
-block L_5786:
-  insts 453..453  off 0x5786..0x5788
-  succs: L_609c
-
 block L_5789:
   insts 454..457  off 0x5789..0x5793
   preds: L_6071
@@ -722,96 +702,95 @@ block L_57d5:
     57d8  goto L_60b7
 
 block L_57db:
-  insts 482..486  off 0x57db..0x57e9
+  insts 482..484  off 0x57db..0x57e3
   preds: L_57c2
-  succs: L_57ed, L_57f3
+  succs: L_5841
   effects:
     57e1  goto L_5841
-    57e8  branch load([bp-raMajor]) == 0x1 ? L_57f3 : L_57ed
+
+block L_57e4:
+  insts 485..486  off 0x57e4..0x57e9
+  preds: L_5849
+  succs: L_57ed, L_609c
+  effects:
+    57e8  branch load([bp-raMajor]) == 0x1 ? L_609c : L_57ed
 
 block L_57ed:
   insts 488..489  off 0x57ed..0x57f2
-  preds: L_57db
+  preds: L_57e4
   succs: L_60b7
   effects:
     57f0  goto L_60b7
 
-block L_57f3:
-  insts 490..492  off 0x57f3..0x57fb
-  preds: L_57db
-  succs: L_57ff, L_5805
+block L_57f6:
+  insts 491..492  off 0x57f6..0x57fb
+  preds: L_5849
+  succs: L_57ff, L_609c
   effects:
-    57f3  goto L_5874
-    57fa  branch load([bp-raMajor]) == 0x5 ? L_5805 : L_57ff
+    57fa  branch load([bp-raMajor]) == 0x5 ? L_609c : L_57ff
 
 block L_57ff:
   insts 494..495  off 0x57ff..0x5804
-  preds: L_57f3
+  preds: L_57f6
   succs: L_60b7
   effects:
     5802  goto L_60b7
 
-block L_5805:
-  insts 496..498  off 0x5805..0x580d
-  preds: L_57f3
-  succs: L_5811, L_5817
+block L_5808:
+  insts 497..498  off 0x5808..0x580d
+  preds: L_5849
+  succs: L_5811, L_609c
   effects:
-    5805  goto L_5874
-    580c  branch load([bp-raMajor]) == 0x7 ? L_5817 : L_5811
+    580c  branch load([bp-raMajor]) == 0x7 ? L_609c : L_5811
 
 block L_5811:
   insts 500..501  off 0x5811..0x5816
-  preds: L_5805
+  preds: L_5808
   succs: L_60b7
   effects:
     5814  goto L_60b7
 
-block L_5817:
-  insts 502..504  off 0x5817..0x581f
-  preds: L_5805
-  succs: L_5823, L_5829
+block L_581a:
+  insts 503..504  off 0x581a..0x581f
+  preds: L_5849
+  succs: L_5823, L_609c
   effects:
-    5817  goto L_5874
-    581e  branch load([bp-raMajor]) == 0x0 ? L_5829 : L_5823
+    581e  branch load([bp-raMajor]) == 0x0 ? L_609c : L_5823
 
 block L_5823:
   insts 506..507  off 0x5823..0x5828
-  preds: L_5817
+  preds: L_581a
   succs: L_60b7
   effects:
     5826  goto L_60b7
 
-block L_5829:
-  insts 508..510  off 0x5829..0x5831
-  preds: L_5817
+block L_582c:
+  insts 509..510  off 0x582c..0x5831
+  preds: L_5849
   succs: L_5835, L_609c
   effects:
-    5829  goto L_5874
     5830  branch load([bp-raMajor]) == 0x4 ? L_609c : L_5835
 
 block L_5835:
   insts 512..513  off 0x5835..0x583a
-  preds: L_5829
+  preds: L_582c
   succs: L_60b7
   effects:
     5838  goto L_60b7
 
-block L_583b:
-  insts 514..514  off 0x583b..0x583d
-  succs: L_609c
-
 block L_5841:
   insts 515..516  off 0x5841..0x5845
+  preds: L_57db
   succs: L_5849, L_609c
+  effects:
+    5844  branch (load([bp-hs+0x2]) & 0xff) > 0x10 ? L_609c : L_5849
 
 block L_5849:
-  insts 518..537  off 0x5849..0x5873
+  insts 518..520  off 0x5849..0x5851
   preds: L_5841
-  succs: L_609c
-
-block L_5874:
-  insts 538..538  off 0x5874..0x5876
-  succs: L_609c
+  succs: L_57e4, L_57f6, L_5808, L_581a, L_582c, L_609c
+  effects:
+    584d  tablejump ((load([bp-hs+0x2]) & 0xff) << 0x1) [L_57e4, L_609c, L_609c, L_57e4, L_609c, L_609c, L_609c, L_609c, L_582c, L_609c, L_609c, L_582c, L_609c, L_581a, L_57f6, L_582c, L_5808]
 
 block L_5877:
   insts 539..542  off 0x5877..0x5881
@@ -893,10 +872,6 @@ block L_5900:
   effects:
     5903  goto L_60b7
 
-block L_5906:
-  insts 587..587  off 0x5906..0x5908
-  succs: L_609c
-
 block L_5909:
   insts 588..591  off 0x5909..0x5913
   preds: L_6061
@@ -962,10 +937,6 @@ block L_5983:
   effects:
     5986  goto L_60b7
 
-block L_5989:
-  insts 633..633  off 0x5989..0x598b
-  succs: L_609c
-
 block L_598c:
   insts 634..637  off 0x598c..0x5996
   preds: L_5942, L_5950
@@ -1021,10 +992,6 @@ block L_59dc:
   succs: L_60b7
   effects:
     59df  goto L_60b7
-
-block L_59e2:
-  insts 664..664  off 0x59e2..0x59e4
-  succs: L_609c
 
 block L_59e5:
   insts 665..668  off 0x59e5..0x59ef
@@ -1168,10 +1135,6 @@ block L_5ae0:
   effects:
     5ae3  goto L_60b7
 
-block L_5ae6:
-  insts 753..753  off 0x5ae6..0x5ae8
-  succs: L_609c
-
 block L_5ae9:
   insts 754..757  off 0x5ae9..0x5af3
   preds: L_6051
@@ -1310,10 +1273,6 @@ block L_5c0b:
   effects:
     5c0e  goto L_60b7
 
-block L_5c11:
-  insts 855..855  off 0x5c11..0x5c13
-  succs: L_609c
-
 block L_5c14:
   insts 856..859  off 0x5c14..0x5c1e
   preds: L_6021
@@ -1408,10 +1367,6 @@ block L_5cd4:
   effects:
     5cd7  goto L_60b7
 
-block L_5cda:
-  insts 925..925  off 0x5cda..0x5cdc
-  succs: L_609c
-
 block L_5cdd:
   insts 926..929  off 0x5cdd..0x5ce7
   preds: L_6039
@@ -1492,10 +1447,6 @@ block L_5d6a:
   effects:
     5d6d  goto L_60b7
 
-block L_5d70:
-  insts 976..976  off 0x5d70..0x5d72
-  succs: L_609c
-
 block L_5d73:
   insts 977..980  off 0x5d73..0x5d7d
   preds: L_6041
@@ -1533,10 +1484,6 @@ block L_5dbf:
   succs: L_60b7
   effects:
     5dc2  goto L_60b7
-
-block L_5dc5:
-  insts 1005..1005  off 0x5dc5..0x5dc7
-  succs: L_609c
 
 block L_5dc8:
   insts 1006..1009  off 0x5dc8..0x5dd2
@@ -1625,13 +1572,9 @@ block L_5e62:
   effects:
     5e65  goto L_60b7
 
-block L_5e68:
-  insts 1059..1059  off 0x5e68..0x5e6a
-  succs: L_609c
-
 block L_5e6b:
   insts 1060..1063  off 0x5e6b..0x5e75
-  preds: L_6091, L_6096
+  preds: L_6096
   succs: L_5e79, L_5e7f
   effects:
     5e74  branch (load([bp-hs+0x2]) & 0xff) < 0xf ? L_5e7f : L_5e79
@@ -1787,10 +1730,6 @@ block L_5f8e:
   effects:
     5f91  goto L_60b7
 
-block L_5f94:
-  insts 1162..1162  off 0x5f94..0x5f96
-  succs: L_609c
-
 block L_5f97:
   insts 1163..1166  off 0x5f97..0x5fa1
   preds: L_6081
@@ -1842,10 +1781,6 @@ block L_600d:
   succs: L_60b7
   effects:
     6010  goto L_60b7
-
-block L_6013:
-  insts 1207..1207  off 0x6013..0x6015
-  succs: L_609c
 
 block L_6019:
   insts 1208..1209  off 0x6019..0x601d
@@ -1955,21 +1890,20 @@ block L_6089:
 block L_6091:
   insts 1253..1254  off 0x6091..0x6095
   preds: L_6089
-  succs: L_5287, L_5e6b
+  succs: L_5287, L_6096
   effects:
     6094  branch load([bp-hs]) != 0x8000 ? L_5287 : L_6096
 
 block L_6096:
   insts 1255..1255  off 0x6096..0x6098
+  preds: L_6091
   succs: L_5e6b
-
-block L_6099:
-  insts 1256..1256  off 0x6099..0x609b
-  succs: L_5287
+  effects:
+    6096  goto L_5e6b
 
 block L_609c:
   insts 1257..1265  off 0x609c..0x60b6
-  preds: L_52a1, L_53b8, L_53d1, L_5443, L_545c, L_5473, L_5646, L_565f, L_5676, L_56de, L_56ec, L_56fb, L_576d, L_5786, L_579d, L_5829, L_583b, L_5841, L_5849, L_5874, L_588b, L_58e9, L_58f7, L_5906, L_591d, L_595e, L_596c, L_597a, L_5989, L_598c, L_599a, L_59d3, L_59e2, L_59f9, L_5ac9, L_5ad7, L_5ae6, L_5afd, L_5bf8, L_5c11, L_5c28, L_5cbd, L_5ccb, L_5cda, L_5d57, L_5d70, L_5d87, L_5dac, L_5dc5, L_5ddc, L_5e4f, L_5e68, L_5e7f, L_5f7b, L_5f94, L_5fab, L_5fd0, L_5fde, L_5fec, L_6013
+  preds: L_52a1, L_53b8, L_5443, L_5473, L_5646, L_5676, L_56de, L_56ec, L_576d, L_579d, L_57e4, L_57f6, L_5808, L_581a, L_582c, L_5841, L_5849, L_588b, L_58e9, L_58f7, L_591d, L_595e, L_596c, L_597a, L_598c, L_599a, L_59d3, L_59f9, L_5ac9, L_5ad7, L_5afd, L_5bf8, L_5c28, L_5cbd, L_5ccb, L_5d57, L_5d87, L_5dac, L_5ddc, L_5e4f, L_5e7f, L_5f7b, L_5fab, L_5fd0, L_5fde, L_5fec
   succs: L_60b7
   effects:
     60ac  call TechStatus(words(load(ds:[load([bp+ppart])+0x6]), (load(ds:[load([bp+ppart])+0x4]) + 0x2))) -> callresult(int16_t)

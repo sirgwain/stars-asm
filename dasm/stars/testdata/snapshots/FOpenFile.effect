@@ -1,0 +1,413 @@
+/*
+FOpenFile  (file)
+  addr: 000f:4ac2  len=1120
+  sig:  int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md)
+  params:
+    DtFileType       dt             [BP+0x6]
+    int16_t          iPlayer        [BP+0x8]
+    int16_t          md             [BP+0xa]
+  locals:
+    jmp_buf[9]       env            [BP-0x2e]
+    jmp_buf[9] *     penvMemSav     [BP-0x1c]
+    int16_t          fSilentSav     [BP-0x1a]
+    int16_t          fRewind        [BP-0x18]
+    int16_t          fCheckMulti    [BP-0x16]
+    StringId         ids            [BP-0x14]
+    RTBOF            rtbof          [BP-0x12]
+
+  stats: blocks=0  labels=1
+    LBadFile: L_4c36
+*/
+block L_4ac2:
+  insts 0..32  off 0x4ac2..0x4b23
+  succs: L_4b27, L_4b49
+  effects:
+    4ace  store[2] [bp-fSilentSav] = load([fFileErrSilent])
+    4ad1  store[2] [bp-ids] = 0x4
+    4adf  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xff7f) | 0x0)
+    4ae8  store[2] [bp-fCheckMulti] = (load@4ae2/src([bp+dt]) & 0x2000)
+    4af1  store[2] [bp-fRewind] = (load@4aeb/src([bp+dt]) & 0x1000)
+    4af4  store[2] [bp+dt] = (load@4af4/dst([bp+dt]) & 0xff)
+    4aff  call SetSzWorkFromDt(load@4afc/src([bp+dt]), load([bp+iPlayer])) -> callresult(void)
+    4b0a  store[2] [bp-penvMemSav] = load([penvMem])
+    4b10  store[2] [penvMem] = addr([bp-env])
+    4b17  call setjmp(addr([bp-env])) -> callresult(int16_t)
+    4b22  branch callresult(int16_t) == 0x0 ? L_4b49 : L_4b27
+
+block L_4b27:
+  insts 34..43  off 0x4b27..0x4b48
+  preds: L_4ac2
+  succs: L_4f1c
+  effects:
+    4b2a  store[2] [fFileErrSilent] = load([bp-fSilentSav])
+    4b30  call FileError(load([bp-ids])) -> callresult(void)
+    4b38  call StreamClose() -> callresult(void)
+    4b40  store[2] [penvMem] = load([bp-penvMemSav])
+    4b46  goto L_4f1c
+
+block L_4b49:
+  insts 44..59  off 0x4b49..0x4b7d
+  preds: L_4ac2
+  succs: L_4b81, L_4bc4
+  effects:
+    4b49  store[2] [fFileErrSilent] = 0x1
+    4b56  call StreamOpen(0x57a4, load([bp+md])) -> callresult(void)
+    4b61  store[2] [fFileErrSilent] = load([bp-fSilentSav])
+    4b64  store[2] [bp-ids] = 0x3
+    4b69  call ReadRt() -> callresult(void)
+    4b7c  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0x8 ? L_4bc4 : L_4b81
+
+block L_4b81:
+  insts 61..66  off 0x4b81..0x4b90
+  preds: L_4b49
+  succs: L_4b94, L_4bc4
+  effects:
+    4b8f  branch ((load([rgbCur+0x8]) >> 0xc) & 0xf) != 0x2 ? L_4bc4 : L_4b94
+
+block L_4b94:
+  insts 68..76  off 0x4b94..0x4ba8
+  preds: L_4b81
+  succs: L_4bac, L_4bc4
+  effects:
+    4ba7  branch ((((((load([rgbCur+0x8]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0x7f) < 0x31 ? L_4bc4 : L_4bac
+
+block L_4bac:
+  insts 78..86  off 0x4bac..0x4bc0
+  preds: L_4b94
+  succs: L_4bc4, L_4c47
+  effects:
+    4bbf  branch ((((((load([rgbCur+0x8]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0x7f) < 0x54 ? L_4c47 : L_4bc4
+
+block L_4bc4:
+  insts 88..93  off 0x4bc4..0x4bd3
+  preds: L_4b49, L_4b81, L_4b94, L_4bac
+  succs: L_4bd7, L_4c2a
+  effects:
+    4bd2  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0x8 ? L_4c2a : L_4bd7
+
+block L_4bd7:
+  insts 95..100  off 0x4bd7..0x4be6
+  preds: L_4bc4
+  succs: L_4bea, L_4c15
+  effects:
+    4be5  branch ((load([rgbCur+0x8]) >> 0xc) & 0xf) > 0x2 ? L_4c15 : L_4bea
+
+block L_4bea:
+  insts 102..107  off 0x4bea..0x4bf9
+  preds: L_4bd7
+  succs: L_4bfd, L_4c1b
+  effects:
+    4bf8  branch ((load([rgbCur+0x8]) >> 0xc) & 0xf) != 0x2 ? L_4c1b : L_4bfd
+
+block L_4bfd:
+  insts 109..117  off 0x4bfd..0x4c11
+  preds: L_4bea
+  succs: L_4c15, L_4c1b
+  effects:
+    4c10  branch ((((((load([rgbCur+0x8]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0x7f) <= 0x54 ? L_4c1b : L_4c15
+
+block L_4c15:
+  insts 119..120  off 0x4c15..0x4c1a
+  preds: L_4bd7, L_4bfd
+  succs: L_4c1e
+  effects:
+    4c18  goto L_4c1e
+
+block L_4c1b:
+  insts 121..121  off 0x4c1b..0x4c1d
+  preds: L_4bea, L_4bfd
+  succs: L_4c1e
+
+block L_4c1e:
+  insts 122..125  off 0x4c1e..0x4c29
+  preds: L_4c15, L_4c1b
+  succs: L_4c36
+  effects:
+    4c1f  call FileError(merge(Join: L_4c1e, (L_4c15:0x2ca, L_4c1b:0x4d3))) -> callresult(void)
+    4c27  goto L_4c36
+
+block L_4c2a:
+  insts 126..129  off 0x4c2a..0x4c35
+  preds: L_4bc4
+  succs: L_4c36
+  effects:
+    4c2e  call FileError(0xd) -> callresult(void)
+
+block LBadFile:
+  insts 130..134  off 0x4c36..0x4c46
+  preds: L_4c1e, L_4c2a, L_4c6c, L_4ca6, L_4d0d, L_4da0, L_4de2, L_4e46, L_4e93, L_4ea5
+  succs: L_4f1c
+  effects:
+    4c36  call StreamClose() -> callresult(void)
+    4c3e  store[2] [penvMem] = load([bp-penvMemSav])
+    4c44  goto L_4f1c
+
+block L_4c47:
+  insts 135..148  off 0x4c47..0x4c68
+  preds: L_4bac
+  succs: L_4c6c, L_4c7b
+  effects:
+    4c52  copy[0x10] *addr(ss:[addr([bp-rtbof])]) = *addr([rgbCur])
+    4c67  branch ((load([bp-rtbof+0xc]) << 0xb) sar 0xb) == load([bp+iPlayer]) ? L_4c7b : L_4c6c
+
+block L_4c6c:
+  insts 150..154  off 0x4c6c..0x4c7a
+  preds: L_4c47
+  succs: L_4c36
+  effects:
+    4c70  call FileError(0x3) -> callresult(void)
+    4c78  goto L_4c36
+
+block L_4c7b:
+  insts 155..156  off 0x4c7b..0x4c81
+  preds: L_4c47
+  succs: L_4c85, L_4c8f
+  effects:
+    4c80  branch load([game]) != 0x0 ? L_4c8f : L_4c85
+
+block L_4c85:
+  insts 158..159  off 0x4c85..0x4c8b
+  preds: L_4c7b
+  succs: L_4c8f, L_4ebd
+  effects:
+    4c8a  branch load([game+0x2]) == 0x0 ? L_4ebd : L_4c8f
+
+block L_4c8f:
+  insts 161..164  off 0x4c8f..0x4c9a
+  preds: L_4c7b, L_4c85
+  succs: L_4c9e, L_4ca6
+  effects:
+    4c99  branch load([bp-rtbof+0x4]) != load([game]) ? L_4ca6 : L_4c9e
+
+block L_4c9e:
+  insts 166..167  off 0x4c9e..0x4ca2
+  preds: L_4c8f
+  succs: L_4ca6, L_4cb8
+  effects:
+    4ca1  branch load([bp-rtbof+0x6]) == load([game+0x2]) ? L_4cb8 : L_4ca6
+
+block L_4ca6:
+  insts 169..173  off 0x4ca6..0x4cb4
+  preds: L_4c8f, L_4c9e
+  succs: L_4c36
+  effects:
+    4caa  call FileError(0x1d) -> callresult(void)
+    4cb2  goto L_4c36
+
+block L_4cb8:
+  insts 174..175  off 0x4cb8..0x4cbd
+  preds: L_4c9e
+  succs: L_4cc1, L_4ea5
+  effects:
+    4cbc  branch load([bp+dt]) == 0x4 ? L_4ea5 : L_4cc1
+
+block L_4cc1:
+  insts 177..178  off 0x4cc1..0x4cc6
+  preds: L_4cb8
+  succs: L_4cca, L_4d4d
+  effects:
+    4cc5  branch load([bp-fCheckMulti]) == 0x0 ? L_4d4d : L_4cca
+
+block L_4cca:
+  insts 180..185  off 0x4cca..0x4cd9
+  preds: L_4cc1
+  succs: L_4cdd, L_4d4d
+  effects:
+    4cd8  branch ((load([bp-rtbof+0xe]) >> 0xa) & 0x1) == 0x0 ? L_4d4d : L_4cdd
+
+block L_4cdd:
+  insts 187..202  off 0x4cdd..0x4d09
+  preds: L_4cca
+  succs: L_4d0d, L_4d1e
+  effects:
+    4ced  call lseek(load([hf]), words(0xffff, 0xfffc), 0x2) -> callresult(int32_t)
+    4cf5  call ReadRt() -> callresult(void)
+    4d08  branch ((load([hdrCur]) >> 0xa) & 0x3f) == 0x0 ? L_4d1e : L_4d0d
+
+block L_4d0d:
+  insts 204..207  off 0x4d0d..0x4d17
+  preds: L_4cdd
+  succs: L_4c36, L_4d1e
+  effects:
+    4d16  branch (load([hdrCur]) & 0x3ff) != 0x2 ? L_4c36 : L_4d1e
+
+block L_4d1e:
+  insts 210..225  off 0x4d1e..0x4d4c
+  preds: L_4cdd, L_4d0d
+  succs: L_4d4d
+  effects:
+    4d21  store[2] [bp-rtbof+0xa] = load([rgbCur])
+    4d2f  store[2] ss:[bp-0x30] = ((load([bp-rtbof+0xe]) >> 0xd) & 0x7)
+    4d47  store[2] [game+0x10] = ((load([game+0x10]) & 0xf1ff) | ((load(ss:[bp-0x30]) & 0x7) << 0x9))
+
+block L_4d4d:
+  insts 226..227  off 0x4d4d..0x4d53
+  preds: L_4cc1, L_4cca, L_4d1e
+  succs: L_4d57, L_4d95
+  effects:
+    4d52  branch load([game+0x12]) != 0x0 ? L_4d95 : L_4d57
+
+block L_4d57:
+  insts 229..231  off 0x4d57..0x4d5f
+  preds: L_4d4d
+  succs: L_4d63, L_4d95
+  effects:
+    4d5e  branch load([game+0x12]) == load([bp-rtbof+0xa]) ? L_4d95 : L_4d63
+
+block L_4d63:
+  insts 233..249  off 0x4d63..0x4d94
+  preds: L_4d57
+  succs: L_4ebd
+  effects:
+    4d66  store[2] [game+0x12] = load([bp-rtbof+0xa])
+    4d74  store[2] ss:[bp-0x30] = ((load([bp-rtbof+0xe]) >> 0xd) & 0x7)
+    4d8c  store[2] [game+0x10] = ((load([game+0x10]) & 0xf1ff) | ((load(ss:[bp-0x30]) & 0x7) << 0x9))
+    4d92  goto L_4ebd
+
+block L_4d95:
+  insts 250..252  off 0x4d95..0x4d9c
+  preds: L_4d4d, L_4d57
+  succs: L_4da0, L_4db2
+  effects:
+    4d9b  branch load([bp-rtbof+0xa]) == load([game+0x12]) ? L_4db2 : L_4da0
+
+block L_4da0:
+  insts 254..258  off 0x4da0..0x4dae
+  preds: L_4d95
+  succs: L_4c36
+  effects:
+    4da4  call FileError(0x1c) -> callresult(void)
+    4dac  goto L_4c36
+
+block L_4db2:
+  insts 259..260  off 0x4db2..0x4db7
+  preds: L_4d95
+  succs: L_4dbb, L_4e11
+  effects:
+    4db6  branch load([bp+dt]) != 0x2 ? L_4e11 : L_4dbb
+
+block L_4dbb:
+  insts 262..268  off 0x4dbb..0x4dcb
+  preds: L_4db2
+  succs: L_4dcf, L_4e11
+  effects:
+    4dca  branch ((((load([gd]) >> 0x1) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_4e11 : L_4dcf
+
+block L_4dcf:
+  insts 270..275  off 0x4dcf..0x4dde
+  preds: L_4dbb
+  succs: L_4de2, L_4e11
+  effects:
+    4ddd  branch ((load([bp-rtbof+0xe]) >> 0x9) & 0x1) == 0x0 ? L_4e11 : L_4de2
+
+block L_4de2:
+  insts 277..291  off 0x4de2..0x4e07
+  preds: L_4dcf
+  succs: L_4c36, L_4e08
+  effects:
+    4df2  call PszFormatIds(0x15, words(0x0, 0x0)) -> callresult(char *)
+    4dfb  call AlertSz(callresult(char *), 0x2024) -> callresult(int16_t)
+    4e06  branch callresult(int16_t) != 0x6 ? L_4c36 : L_4e08
+
+block L_4e08:
+  insts 292..292  off 0x4e08..0x4e0a
+  preds: L_4de2
+  succs: L_4ebd
+  effects:
+    4e08  goto L_4ebd
+
+block L_4e11:
+  insts 295..300  off 0x4e11..0x4e20
+  preds: L_4db2, L_4dbb, L_4dcf
+  succs: L_4e24, L_4e58
+  effects:
+    4e1f  branch ((load([bp-rtbof+0xe]) >> 0x8) & 0x1) != 0x0 ? L_4e58 : L_4e24
+
+block L_4e24:
+  insts 302..306  off 0x4e24..0x4e30
+  preds: L_4e11
+  succs: L_4e34, L_4e58
+  effects:
+    4e2f  branch ((load([gd]) >> 0x1) & 0x1) == 0x0 ? L_4e58 : L_4e34
+
+block L_4e34:
+  insts 308..313  off 0x4e34..0x4e42
+  preds: L_4e24
+  succs: L_4e46, L_4e58
+  effects:
+    4e41  branch (((load([gd]) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_4e58 : L_4e46
+
+block L_4e46:
+  insts 315..319  off 0x4e46..0x4e54
+  preds: L_4e34
+  succs: L_4c36
+  effects:
+    4e4f  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xff7f) | 0x80)
+    4e52  goto L_4c36
+
+block L_4e58:
+  insts 320..321  off 0x4e58..0x4e5d
+  preds: L_4e11, L_4e24, L_4e34
+  succs: L_4e61, L_4ebd
+  effects:
+    4e5c  branch load([bp+dt]) != 0x1 ? L_4ebd : L_4e61
+
+block L_4e61:
+  insts 323..329  off 0x4e61..0x4e71
+  preds: L_4e58
+  succs: L_4e75, L_4ebd
+  effects:
+    4e70  branch ((((load([game+0x10]) >> 0x1) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_4ebd : L_4e75
+
+block L_4e75:
+  insts 331..340  off 0x4e75..0x4e8f
+  preds: L_4e61
+  succs: L_4e93, L_4ebd
+  effects:
+    4e8e  branch ((load([bp-rtbof+0xe]) >> 0xd) & 0x7) == ((load([game+0x10]) >> 0x9) & 0x7) ? L_4ebd : L_4e93
+
+block L_4e93:
+  insts 342..346  off 0x4e93..0x4ea1
+  preds: L_4e75
+  succs: L_4c36
+  effects:
+    4e97  call FileError(0x1d) -> callresult(void)
+    4e9f  goto L_4c36
+
+block L_4ea5:
+  insts 348..354  off 0x4ea5..0x4eb6
+  preds: L_4cb8
+  succs: L_4c36, L_4ebd
+  effects:
+    4eb5  branch ((load([bp-rtbof+0xc]) << 0xb) sar 0xb) != load([bp+iPlayer]) ? L_4c36 : L_4ebd
+
+block L_4ebd:
+  insts 357..358  off 0x4ebd..0x4ec2
+  preds: L_4c85, L_4d63, L_4e08, L_4e58, L_4e61, L_4e75, L_4ea5
+  succs: L_4ec6, L_4ee3
+  effects:
+    4ec1  branch load([bp-fRewind]) == 0x0 ? L_4ee3 : L_4ec6
+
+block L_4ec6:
+  insts 360..369  off 0x4ec6..0x4ee2
+  preds: L_4ebd
+  succs: L_4ee3
+  effects:
+    4ed6  call lseek(load([hf]), words(0x0, 0x0), 0x0) -> callresult(int32_t)
+    4ede  call ReadRt() -> callresult(void)
+
+block L_4ee3:
+  insts 370..388  off 0x4ee3..0x4f1b
+  preds: L_4ebd, L_4ec6
+  succs: L_4f1c
+  effects:
+    4ee6  store[2] [penvMem] = load([bp-penvMemSav])
+    4eec  store[2] [wVersFile] = load([bp-rtbof+0x8])
+    4efa  store[2] ss:[bp-0x30] = ((load([bp-rtbof+0xe]) >> 0xc) & 0x1)
+    4f10  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xfffb) | (((load(ss:[bp-0x30]) & 0x1) << 0x1) << 0x1))
+
+block L_4f1c:
+  insts 390..394  off 0x4f1c..0x4f21
+  preds: L_4b27, L_4c36, L_4ee3
+  effects:
+    4f21  return merge(Join: L_4f1c, (L_4b27:0x0, L_4c36:0x0, L_4ee3:0x1))

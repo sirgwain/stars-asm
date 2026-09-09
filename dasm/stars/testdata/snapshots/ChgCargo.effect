@@ -181,13 +181,16 @@ block L_6174:
 block L_617d:
   insts 119..124  off 0x617d..0x618c
   preds: L_6174
-  succs: L_64bd
+  succs: L_618d
   effects:
     6185  call FLookupPlanet(0xffff, addr([bp-xfer+0x4])) -> callresult(int16_t)
 
 block L_618d:
   insts 125..125  off 0x618d..0x618f
+  preds: L_617d
   succs: L_64bd
+  effects:
+    618d  goto L_64bd
 
 block L_6190:
   insts 126..127  off 0x6190..0x6195
@@ -377,13 +380,16 @@ block L_6305:
 block L_630e:
   insts 264..268  off 0x630e..0x631c
   preds: L_6305
-  succs: L_64bd
+  succs: L_631d
   effects:
     6315  call FLookupThing(0xffff, load([bp-pth])) -> callresult(int16_t)
 
 block L_631d:
   insts 269..269  off 0x631d..0x631f
+  preds: L_630e
   succs: L_64bd
+  effects:
+    631d  goto L_64bd
 
 block L_6320:
   insts 270..271  off 0x6320..0x6325
@@ -599,7 +605,7 @@ block L_64ad:
 
 block L_64bd:
   insts 416..417  off 0x64bd..0x64c5
-  preds: L_6162, L_616b, L_6174, L_617d, L_618d, L_62fc, L_6305, L_630e, L_631d, L_649b, L_64a4, L_64ad
+  preds: L_6162, L_616b, L_6174, L_618d, L_62fc, L_6305, L_631d, L_649b, L_64a4, L_64ad
   succs: L_64c6
 
 block L_64c6:

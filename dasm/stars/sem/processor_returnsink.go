@@ -304,7 +304,7 @@ func hasUnsinkableReturnOrigin(block Block, nextID machine.BlockID) bool {
 	case *Jump:
 		return effect.To != nextID
 
-	case *Branch, *Return:
+	case *Branch, *TableJump, *Return:
 		return true
 
 	default:

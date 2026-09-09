@@ -504,12 +504,6 @@ MOV       cx, [bp-0x16]
 CMP       cx, ax              
 JZ        L_0a99              
 
-L_0a85:
-JMP       L_0a8b              
-
-L_0a88:                             ; battle.c:284
-JMP       L_0a99              
-
 L_0a8b:                             ; battle.c:286
 ADD       [bp-idc], 0x0001          ; [bp-0x8], 0x0001
 
@@ -539,9 +533,6 @@ CALLF     SetBkColor                ; COLORREF SetBkColor(HDC arg1, COLORREF arg
                                     ; battle.c:289
 MOV       ax, [hbrButtonFace]       ; ax, [0x0010]
 JMP       L_16fe              
-
-L_0ad5:                             ; battle.c:291
-JMP       L_16f8              
 
 L_0ad8:                             ; battle.c:295
 PUSH      [bp+hwnd]                 ; [bp+0xe]
@@ -1296,12 +1287,6 @@ MOV       [bp-cLen], ax             ; [bp-0x16], ax
 CMP       [bp-cLen], 0x001b         ; [bp-0x16], 0x001b
 JG        L_128b              
 
-L_11e1:
-JMP       L_11e7              
-
-L_11e4:                             ; battle.c:419
-JMP       L_128b              
-
 L_11e7:                             ; battle.c:421
 MOV       ax, [bp-cLen]             ; ax, [bp-0x16]
 ADD       ax, 0xffff          
@@ -1851,9 +1836,6 @@ CALLF     WinHelp                   ; int16_t WinHelp(HWND hwndmain, LPCSTR *lps
                                     ; battle.c:481
 MOV       ax, 0x0001          
 JMP       L_16fe              
-
-L_16cf:                             ; battle.c:484
-JMP       L_16f8              
 
 L_16d5:
 CMP       ax, 0x0014          

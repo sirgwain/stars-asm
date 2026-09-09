@@ -1,0 +1,1210 @@
+/*
+MineClick  (mine)
+  addr: 0006:3b4e  len=3213
+  sig:  void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks)
+  params:
+    int16_t          x              [BP+0x6]
+    int16_t          y              [BP+0x8]
+    int16_t          msg            [BP+0xa]
+    int16_t          sks            [BP+0xc]
+  locals:
+    HtMineType       ht             [BP-0x8]
+    PLANET *         lppl           [BP-0x6]
+    block 0006:3B9E  len=0x1C
+      PLANET *         lppl           [BP-0xc]
+    block 0006:3C2A  len=0x72
+      PART             part           [BP-0x10]
+    block 0006:3CA9  len=0x18C
+      int16_t          ishdef         [BP-0x250]
+      int16_t[16]      rgid           [BP-0x24e]
+      FLEET *          lpfl           [BP-0x22e]
+      int16_t          c              [BP-0x22a]
+      char *[16]       rgpsz          [BP-0x228]
+      char[32][16]     rgsz           [BP-0x208]
+    block 0006:3F41  len=0x141
+      int16_t[3]       rgMax          [BP-0x52]
+      int16_t[3]       rgCost         [BP-0x4c]
+      PLANET           pl             [BP-0x46]
+      int16_t[3]       rgMin          [BP-0xe]
+    block 0006:40A4  len=0x395
+      SCAN             scan           [BP-0x26]
+      int16_t          idNew          [BP-0x16]
+      int16_t          i              [BP-0x14]
+      FLEET *          lpfl           [BP-0x12]
+      int16_t          fOurs          [BP-0xe]
+      PLANET *         lppl           [BP-0xc]
+    block 0006:443C  len=0x130
+      char *[9]        psz            [BP-0x8a]
+      int16_t          iChecked       [BP-0x78]
+      int16_t[9]       rgi            [BP-0x76]
+      int16_t          i              [BP-0x64]
+      char[10][9]      rgsz           [BP-0x62]
+    block 0006:456F  len=0x234
+      int16_t          i              [BP-0x4e]
+      PLANET           pl             [BP-0x4c]
+      int32_t[3]       rglQuan        [BP-0x14]
+      block 0006:4608  len=0x186
+        int32_t          lVal           [BP-0x68]
+        int32_t          cMines         [BP-0x64]
+        FLEET *          lpfl           [BP-0x60]
+        int16_t          ifl            [BP-0x5c]
+        int32_t[3]       rglT           [BP-0x5a]
+
+  stats: blocks=8  labels=5
+    NoTerra: L_4010
+    CheckThing: L_40cb
+    ChangeIt: L_43d9
+    CheckPlanet: L_429f
+    CheckFleet: L_42f3
+*/
+block L_3b4e:
+  insts 0..12  off 0x3b4e..0x3b72
+  succs: L_3b76, L_3b8b
+  effects:
+    3b61  call HtMineWindow(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(HtMineType)
+    3b69  store[2] [bp-ht] = callresult(HtMineType)
+    3b71  branch load([bp+msg]) != 0x204 ? L_3b8b : L_3b76
+
+block L_3b76:
+  insts 14..15  off 0x3b76..0x3b7b
+  preds: L_3b4e
+  succs: L_3b7f, L_3b8b
+  effects:
+    3b7a  branch load([bp-ht]) == 0x9 ? L_3b8b : L_3b7f
+
+block L_3b7f:
+  insts 17..18  off 0x3b7f..0x3b84
+  preds: L_3b76
+  succs: L_3b8b, L_47d5
+  effects:
+    3b83  branch load([bp-ht]) != 0xb ? L_47d5 : L_3b8b
+
+block L_3b8b:
+  insts 21..22  off 0x3b8b..0x3b90
+  preds: L_3b4e, L_3b76, L_3b7f
+  succs: L_47a6
+  effects:
+    3b8e  goto L_47a6
+
+block L_3b94:
+  insts 24..25  off 0x3b94..0x3b9a
+  preds: L_47ae
+  succs: L_3b9e, L_3bbd
+  effects:
+    3b99  branch load([sel+0x10]) != 0x1 ? L_3bbd : L_3b9e
+
+block L_3b9e:
+  insts 27..35  off 0x3b9e..0x3bbc
+  preds: L_3b94
+  succs: L_3c0f
+  effects:
+    3ba2  call LpplFromId(load([sel+0x14])) -> callresult(PLANET *)
+    3baa  store[2] [bp-lppl] = faroff(callresult(PLANET *))
+    3bad  store[2] [bp-lppl+0x2] = farseg(callresult(PLANET *))
+    3bb7  store[2] [GlobalPD+0x2] = load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2])
+    3bba  goto L_3c0f
+
+block L_3bbd:
+  insts 36..37  off 0x3bbd..0x3bc3
+  preds: L_3b94
+  succs: L_3bc7, L_3beb
+  effects:
+    3bc2  branch load([sel+0x10]) != 0x8 ? L_3beb : L_3bc7
+
+block L_3bc7:
+  insts 39..50  off 0x3bc7..0x3bea
+  preds: L_3bbd
+  succs: L_3c0f
+  effects:
+    3be5  store[2] [GlobalPD+0x2] = ((load(load([lpThings+0x2]):[(load([lpThings]) + loword((0x12 * load([sel+0x1a]))))]) >> 0x9) & 0xf)
+    3be8  goto L_3c0f
+
+block L_3beb:
+  insts 51..63  off 0x3beb..0x3c0e
+  preds: L_3bbd
+  succs: L_3c0f
+  effects:
+    3c0c  store[2] [GlobalPD+0x2] = ((load(farseg(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))])):[faroff(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))]))]) >> 0x9) & 0xf)
+
+block L_3c0f:
+  insts 64..70  off 0x3c0f..0x3c29
+  preds: L_3b9e, L_3bc7, L_3beb
+  succs: L_47d5
+  effects:
+    3c0f  store[2] [GlobalPD] = 0x2
+    3c1f  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    3c27  goto L_47d5
+
+block L_3c2a:
+  insts 71..110  off 0x3c2a..0x3c9e
+  preds: L_47ae
+  succs: L_47d5
+  effects:
+    3c4d  store[2] ss:[bp-0x12] = load(byte ds:[load(byte load([lpThings+0x2]):[(load([lpThings]) + loword((0x12 * load([sel+0x1a]))))+0xc])+0x50a])
+    3c5f  store[2] [bp-part+0x2] = ((load([bp-part+0x2]) & 0xff00) | (load(ss:[bp-0x12]) & 0xff))
+    3c64  store[2] [bp-part] = 0x100
+    3c6d  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
+    3c75  store[2] [GlobalPD] = 0x9
+    3c83  copy[0x2] *addr([GlobalPD+0x2]) = *addr(ds:[addr([bp-part])])
+    3c84  copy[0x2] *addr([GlobalPD+0x4]) = *addr(ds:[(addr([bp-part]) + 0x2)])
+    3c85  copy[0x2] *addr([GlobalPD+0x6]) = *addr(ds:[(addr([bp-part]) + 0x4)])
+    3c86  copy[0x2] *addr([GlobalPD+0x8]) = *addr(ds:[(addr([bp-part]) + 0x6)])
+    3c94  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    3c9c  goto L_47d5
+
+block L_3c9f:
+  insts 111..112  off 0x3c9f..0x3ca5
+  preds: L_47ae
+  succs: L_3ca9, L_3e38
+  effects:
+    3ca4  branch load([bp+msg]) != 0x204 ? L_3e38 : L_3ca9
+
+block L_3ca9:
+  insts 114..127  off 0x3ca9..0x3cd9
+  preds: L_3c9f
+  succs: L_3d7c
+  effects:
+    3cc3  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))])
+    3cc7  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))+0x2])
+    3ccb  store[2] [bp-c] = 0x0
+    3cd1  store[2] [bp-ishdef] = 0x0
+    3cd7  goto L_3d7c
+
+block L_3cda:
+  insts 128..137  off 0x3cda..0x3cf6
+  preds: L_3d7c
+  succs: L_3cfa, L_3d77
+  effects:
+    3cf5  branch load(load([bp-lpfl+0x2]):[((load([bp-lpfl]) + 0xc) + (load([bp-ishdef]) << 0x1))]) <= 0x0 ? L_3d77 : L_3cfa
+
+block L_3cfa:
+  insts 139..184  off 0x3cfa..0x3d76
+  preds: L_3cda
+  succs: L_3d77
+  effects:
+    3d0a  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x24e] = load@3d06/src([bp-ishdef])
+    3d48  call fstrcpy(words(ss, (addr([bp-rgsz]) + (((((load([bp-c]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1))), words(load(ds:[((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) << 0x1) << 0x1)+0x100]), ((load(ds:[((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-ishdef])))) + 0x8))) -> callresult(char *)
+    3d70  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x228] = (addr([bp-rgsz]) + (((((load@3d50/src([bp-c]) << 0x1) << 0x1) << 0x1) << 0x1) << 0x1))
+    3d72  store[2] [bp-c] = (load@3d72/dst([bp-c]) + 0x1)
+
+block L_3d77:
+  insts 185..185  off 0x3d77..0x3d7b
+  preds: L_3cda, L_3cfa
+  succs: L_3d7c
+  effects:
+    3d77  store[2] [bp-ishdef] = (load([bp-ishdef]) + 0x1)
+
+block L_3d7c:
+  insts 186..187  off 0x3d7c..0x3d82
+  preds: L_3ca9, L_3d77
+  succs: L_3cda, L_3d86
+  effects:
+    3d81  branch load([bp-ishdef]) < 0x10 ? L_3cda : L_3d86
+
+block L_3d86:
+  insts 189..190  off 0x3d86..0x3d8c
+  preds: L_3d7c
+  succs: L_3d90, L_3dcb
+  effects:
+    3d8b  branch load([bp-c]) <= 0x1 ? L_3dcb : L_3d90
+
+block L_3d90:
+  insts 192..208  off 0x3d90..0x3dc1
+  preds: L_3d86
+  succs: L_3dc2, L_47d5
+  effects:
+    3daf  call PopupMenu(load([hwndMine]), load([bp+x]), load([bp+y]), load@3da1/src([bp-c]), 0x0, addr([bp-rgpsz]), 0xffff, 0x1) -> callresult(int16_t)
+    3db7  store[2] [bp-c] = callresult(int16_t)
+    3dc0  branch load@3dbb/dst([bp-c]) == 0xffff ? L_47d5 : L_3dc2
+
+block L_3dc2:
+  insts 209..209  off 0x3dc2..0x3dc4
+  preds: L_3d90
+  succs: L_3dd1
+  effects:
+    3dc2  goto L_3dd1
+
+block L_3dcb:
+  insts 212..212  off 0x3dcb..0x3dd0
+  preds: L_3d86
+  succs: L_3dd1
+  effects:
+    3dcb  store[2] [bp-c] = 0x0
+
+block L_3dd1:
+  insts 213..232  off 0x3dd1..0x3e13
+  preds: L_3dc2, L_3dcb
+  succs: L_3e17, L_3e1d
+  effects:
+    3dd1  store[2] [GlobalPD] = 0xb
+    3dfe  store[2] [GlobalPD+0x2] = (load(ds:[((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load(ss:[bp+(load([bp-c]) << 0x1)-0x24e]))))
+    3e02  store[2] [GlobalPD+0x4] = load(ds:[((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) << 0x1) << 0x1)+0x100])
+    3e12  branch load([idPlayer]) == load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) ? L_3e1d : L_3e17
+
+block L_3e17:
+  insts 234..235  off 0x3e17..0x3e1c
+  preds: L_3dd1
+  succs: L_3e20
+  effects:
+    3e1a  goto L_3e20
+
+block L_3e1d:
+  insts 236..236  off 0x3e1d..0x3e1f
+  preds: L_3dd1
+  succs: L_3e20
+
+block L_3e20:
+  insts 237..241  off 0x3e20..0x3e37
+  preds: L_3e17, L_3e1d
+  succs: L_3e84
+  effects:
+    3e20  store[2] [GlobalPD+0x8] = merge(Join: L_3e20, (L_3e17:0x1, L_3e1d:0x0))
+    3e23  store[2] [GlobalPD+0x6] = 0x0
+    3e29  store[2] [GlobalPD+0xa] = 0x0
+    3e2f  store[2] [GlobalPD+0xc] = 0x1
+    3e35  goto L_3e84
+
+block L_3e38:
+  insts 242..258  off 0x3e38..0x3e6e
+  preds: L_3c9f
+  succs: L_3e72, L_3e78
+  effects:
+    3e38  store[2] [GlobalPD] = 0x3
+    3e58  store[2] [GlobalPD+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))])
+    3e5b  store[2] [GlobalPD+0x4] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([sel+0x16]) << 0x1) << 0x1))+0x2])
+    3e6d  branch (load(farseg(load(dword [GlobalPD+0x2])):[faroff(load(dword [GlobalPD+0x2]))+0x4]) & 0xff) != 0x7 ? L_3e78 : L_3e72
+
+block L_3e72:
+  insts 260..261  off 0x3e72..0x3e77
+  preds: L_3e38
+  succs: L_3e7b
+  effects:
+    3e75  goto L_3e7b
+
+block L_3e78:
+  insts 262..262  off 0x3e78..0x3e7a
+  preds: L_3e38
+  succs: L_3e7b
+
+block L_3e7b:
+  insts 263..264  off 0x3e7b..0x3e83
+  preds: L_3e72, L_3e78
+  succs: L_3e84
+  effects:
+    3e7b  store[2] [GlobalPD+0x6] = merge(Join: L_3e7b, (L_3e72:0x1, L_3e78:0x0))
+    3e7e  store[2] [GlobalPD+0xa] = 0xff
+
+block L_3e84:
+  insts 265..270  off 0x3e84..0x3e98
+  preds: L_3e20, L_3e7b
+  succs: L_47d5
+  effects:
+    3e8e  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    3e96  goto L_47d5
+
+block L_3e99:
+  insts 271..294  off 0x3e99..0x3ee9
+  preds: L_47ae
+  succs: L_3eed, L_3ef3
+  effects:
+    3e99  store[2] [GlobalPD] = 0xb
+    3ea3  call LpplFromId(load([sel+0x14])) -> callresult(PLANET *)
+    3eab  store[2] [bp-lppl] = faroff(callresult(PLANET *))
+    3eae  store[2] [bp-lppl+0x2] = farseg(callresult(PLANET *))
+    3ed5  store[2] [GlobalPD+0x2] = (load(ds:[((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) << 0x1) << 0x1)+0x14c]) + loword(((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2c]) & 0xf) * 0x93)))
+    3ed9  store[2] [GlobalPD+0x4] = load(ds:[((load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) << 0x1) << 0x1)+0x14e])
+    3ee8  branch load([idPlayer]) == load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) ? L_3ef3 : L_3eed
+
+block L_3eed:
+  insts 296..297  off 0x3eed..0x3ef2
+  preds: L_3e99
+  succs: L_3ef6
+  effects:
+    3ef0  goto L_3ef6
+
+block L_3ef3:
+  insts 298..298  off 0x3ef3..0x3ef5
+  preds: L_3e99
+  succs: L_3ef6
+
+block L_3ef6:
+  insts 299..308  off 0x3ef6..0x3f1f
+  preds: L_3eed, L_3ef3
+  succs: L_47d5
+  effects:
+    3ef6  store[2] [GlobalPD+0x8] = merge(Join: L_3ef6, (L_3eed:0x1, L_3ef3:0x0))
+    3ef9  store[2] [GlobalPD+0x6] = 0x1
+    3eff  store[2] [GlobalPD+0xa] = 0x0
+    3f05  store[2] [GlobalPD+0xc] = 0x1
+    3f15  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    3f1d  goto L_47d5
+
+block L_3f20:
+  insts 309..317  off 0x3f20..0x3f40
+  preds: L_47ae
+  succs: L_47d5
+  effects:
+    3f20  store[2] [GlobalPD] = 0x7
+    3f29  store[2] [GlobalPD+0x2] = load([sel+0x14])
+    3f36  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    3f3e  goto L_47d5
+
+block L_3f41:
+  insts 318..332  off 0x3f41..0x3f70
+  preds: L_47ae
+  succs: L_3f74, L_3f85
+  effects:
+    3f49  call FLookupPlanet(load([sel+0x14]), addr([bp-pl])) -> callresult(int16_t)
+    3f51  store[2] [GlobalPD] = 0x5
+    3f5a  store[2] [GlobalPD+0x2] = load([bp-pl])
+    3f63  store[2] [GlobalPD+0x4] = (load([bp-ht]) + 0xfffa)
+    3f6f  branch (load([bp-pl+0x4]) & 0xff) < 0x3 ? L_3f85 : L_3f74
+
+block L_3f74:
+  insts 334..340  off 0x3f74..0x3f84
+  preds: L_3f41
+  succs: L_3f8b
+  effects:
+    3f7f  store[2] [GlobalPD+0x6] = sext8to16(load(byte ss:[bp+load([GlobalPD+0x4])-0x3a]))
+    3f82  goto L_3f8b
+
+block L_3f85:
+  insts 341..341  off 0x3f85..0x3f8a
+  preds: L_3f41
+  succs: L_3f8b
+  effects:
+    3f85  store[2] [GlobalPD+0x6] = 0xffff
+
+block L_3f8b:
+  insts 342..345  off 0x3f8b..0x3f95
+  preds: L_3f74, L_3f85
+  succs: L_3f99, L_4010
+  effects:
+    3f94  branch (load([bp-pl+0x4]) & 0xff) < 0x3 ? L_4010 : L_3f99
+
+block L_3f99:
+  insts 347..362  off 0x3f99..0x3fbc
+  preds: L_3f8b
+  succs: L_3fc0, L_4010
+  effects:
+    3fb0  call FCanTerraformLppl(words(ss, addr([bp-pl])), addr([bp-rgMin]), addr([bp-rgMax]), addr([bp-rgCost]), 0x1) -> callresult(int16_t)
+    3fbb  branch callresult(int16_t) == 0x0 ? L_4010 : L_3fc0
+
+block L_3fc0:
+  insts 364..377  off 0x3fc0..0x3fe4
+  preds: L_3f99
+  succs: L_3fe8, L_3fee
+  effects:
+    3fcc  store[2] [GlobalPD+0x8] = load(ss:[bp+(load([GlobalPD+0x4]) << 0x1)-0xe])
+    3fdb  store[2] [GlobalPD+0xa] = load(ss:[bp+(load([GlobalPD+0x4]) << 0x1)-0x52])
+    3fe3  branch load([GlobalPD+0x8]) != 0xffff ? L_3fee : L_3fe8
+
+block L_3fe8:
+  insts 379..380  off 0x3fe8..0x3fed
+  preds: L_3fc0
+  succs: L_3fee
+  effects:
+    3feb  store[2] [GlobalPD+0x8] = load([GlobalPD+0x6])
+
+block L_3fee:
+  insts 381..382  off 0x3fee..0x3ff4
+  preds: L_3fc0, L_3fe8
+  succs: L_3ff8, L_3ffe
+  effects:
+    3ff3  branch load([GlobalPD+0xa]) != 0xffff ? L_3ffe : L_3ff8
+
+block L_3ff8:
+  insts 384..385  off 0x3ff8..0x3ffd
+  preds: L_3fee
+  succs: L_3ffe
+  effects:
+    3ffb  store[2] [GlobalPD+0xa] = load([GlobalPD+0x6])
+
+block L_3ffe:
+  insts 386..388  off 0x3ffe..0x4006
+  preds: L_3fee, L_3ff8
+  succs: L_4010, L_401c
+  effects:
+    4005  branch load([GlobalPD+0x8]) != load([GlobalPD+0xa]) ? L_401c : L_4010
+
+block NoTerra:
+  insts 392..393  off 0x4010..0x401b
+  preds: L_3f8b, L_3f99, L_3ffe
+  succs: L_401c
+  effects:
+    4010  store[2] [GlobalPD+0x8] = 0xffff
+    4016  store[2] [GlobalPD+0xa] = 0xffff
+
+block L_401c:
+  insts 394..432  off 0x401c..0x4084
+  preds: L_3ffe, L_4010
+  succs: L_47d5
+  effects:
+    4035  store[2] [GlobalPD+0xc] = sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([idPlayer])))) + 0x10) + load([GlobalPD+0x4]))]))
+    4051  store[2] [GlobalPD+0xe] = sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([idPlayer])))) + 0x13) + load([GlobalPD+0x4]))]))
+    406d  store[2] [GlobalPD+0x10] = sext8to16(load(byte ds:[(((0x59a2 + loword((0xc0 * load([idPlayer])))) + 0x16) + load([GlobalPD+0x4]))]))
+    407a  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    4082  goto L_47d5
+
+block L_4085:
+  insts 433..434  off 0x4085..0x408b
+  preds: L_47ae
+  succs: L_408f, L_40a4
+  effects:
+    408a  branch load([bp+msg]) != 0x204 ? L_40a4 : L_408f
+
+block L_408f:
+  insts 436..441  off 0x408f..0x40a3
+  preds: L_4085
+  succs: L_47d5
+  effects:
+    4099  call PopupMineralScanChoices(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    40a1  goto L_47d5
+
+block L_40a4:
+  insts 442..451  off 0x40a4..0x40be
+  preds: L_4085
+  succs: L_40c2, L_4192
+  effects:
+    40af  copy[0x10] *addr(ss:[addr([bp-scan])]) = *addr([sel+0xc])
+    40b4  store[2] [bp-scan+0xc] = 0x0
+    40bd  branch load([bp-scan+0x4]) != 0x8 ? L_4192 : L_40c2
+
+block L_40c2:
+  insts 453..455  off 0x40c2..0x40ca
+  preds: L_40a4
+  succs: L_40cb
+  effects:
+    40c8  store[2] [bp-i] = (load([bp-scan+0xe]) + 0x1)
+
+block CheckThing:
+  insts 456..456  off 0x40cb..0x40cd
+  preds: L_40c2
+  succs: L_4113
+  effects:
+    40cb  goto L_4113
+
+block L_40ce:
+  insts 457..473  off 0x40ce..0x40ff
+  preds: L_4113
+  succs: L_4103, L_410f
+  effects:
+    40dc  store[2] ss:[bp-0x2a] = load(ss:[addr([bp-scan])])
+    40df  store[2] ss:[bp-0x28] = load(ss:[addr([bp-scan])+0x2])
+    40fe  branch load(load([lpThings+0x2]):[(load([lpThings]) + loword((0x12 * load([bp-i]))))+0x2]) != load(ss:[bp-0x2a]) ? L_410f : L_4103
+
+block L_4103:
+  insts 475..476  off 0x4103..0x4108
+  preds: L_40ce
+  succs: L_410f, L_411e
+  effects:
+    4107  branch load(load([lpThings+0x2]):[(load([lpThings]) + loword((0x12 * load([bp-i]))))+0x4]) == load(ss:[bp-0x28]) ? L_411e : L_410f
+
+block L_410f:
+  insts 479..479  off 0x410f..0x4112
+  preds: L_40ce, L_4103
+  succs: L_4113
+  effects:
+    410f  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_4113:
+  insts 480..482  off 0x4113..0x411a
+  preds: L_40cb, L_410f, L_418a, L_4286, L_437c
+  succs: L_40ce, L_411e
+  effects:
+    4119  branch load([bp-i]) < load([cThing]) ? L_40ce : L_411e
+
+block L_411e:
+  insts 484..486  off 0x411e..0x4125
+  preds: L_4103, L_4113
+  succs: L_4129, L_4154
+  effects:
+    4124  branch load([bp-i]) >= load([cThing]) ? L_4154 : L_4129
+
+block L_4129:
+  insts 488..500  off 0x4129..0x4153
+  preds: L_411e
+  succs: L_43d9
+  effects:
+    412c  store[2] [bp-scan+0xe] = load([bp-i])
+    412f  store[2] [bp-scan+0x4] = 0x8
+    4149  store[2] [bp-idNew] = load(load([lpThings+0x2]):[(load([lpThings]) + loword((0x12 * load([bp-i]))))])
+    414c  store[2] [bp-fOurs] = 0x0
+    4151  goto L_43d9
+
+block L_4154:
+  insts 501..504  off 0x4154..0x415e
+  preds: L_411e
+  succs: L_4168, L_429f
+  effects:
+    415d  branch (load([bp-scan+0x6]) & 0x1) != 0x0 ? L_429f : L_4168
+
+block L_4168:
+  insts 507..510  off 0x4168..0x4172
+  preds: L_4154
+  succs: L_417c, L_42f3
+  effects:
+    4171  branch (load([bp-scan+0x6]) & 0x2) != 0x0 ? L_42f3 : L_417c
+
+block L_417c:
+  insts 513..516  off 0x417c..0x4186
+  preds: L_4168
+  succs: L_418a, L_4192
+  effects:
+    4185  branch (load([bp-scan+0x6]) & 0x8) == 0x0 ? L_4192 : L_418a
+
+block L_418a:
+  insts 518..519  off 0x418a..0x4191
+  preds: L_417c
+  succs: L_4113
+  effects:
+    418a  store[2] [bp-i] = 0x0
+    418f  goto L_4113
+
+block L_4192:
+  insts 520..521  off 0x4192..0x4197
+  preds: L_40a4, L_417c
+  succs: L_419b, L_41a4
+  effects:
+    4196  branch load([bp-scan+0x4]) != 0x2 ? L_41a4 : L_419b
+
+block L_419b:
+  insts 523..525  off 0x419b..0x41a3
+  preds: L_4192
+  succs: L_41a7
+  effects:
+    41a1  goto L_41a7
+
+block L_41a4:
+  insts 526..526  off 0x41a4..0x41a6
+  preds: L_4192
+  succs: L_41a7
+
+block L_41a7:
+  insts 527..528  off 0x41a7..0x41ac
+  preds: L_419b, L_41a4
+  succs: L_41b1
+  effects:
+    41a7  store[2] [bp-i] = merge(Join: L_41a7, (L_419b:(load([bp-0x1c]) + 0x1), L_41a4:0x0))
+    41aa  goto L_41b1
+
+block L_41ad:
+  insts 529..529  off 0x41ad..0x41b0
+  preds: L_41ec, L_4206
+  succs: L_41b1
+  effects:
+    41ad  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_41b1:
+  insts 530..532  off 0x41b1..0x41b8
+  preds: L_41a7, L_41ad
+  succs: L_41bc, L_4215
+  effects:
+    41b7  branch load([bp-i]) >= load([cFleet]) ? L_4215 : L_41bc
+
+block L_41bc:
+  insts 534..546  off 0x41bc..0x41e0
+  preds: L_41b1
+  succs: L_41e4, L_41ec
+  effects:
+    41d6  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])
+    41d9  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])
+    41df  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]) != 0x0 ? L_41ec : L_41e4
+
+block L_41e4:
+  insts 548..549  off 0x41e4..0x41e8
+  preds: L_41bc
+  succs: L_41ec, L_4215
+  effects:
+    41e7  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_4215 : L_41ec
+
+block L_41ec:
+  insts 551..558  off 0x41ec..0x4202
+  preds: L_41bc, L_41e4
+  succs: L_41ad, L_4206
+  effects:
+    4201  branch load(ss:[addr([bp-scan])]) != load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x8]) ? L_41ad : L_4206
+
+block L_4206:
+  insts 560..561  off 0x4206..0x420b
+  preds: L_41ec
+  succs: L_41ad, L_4215
+  effects:
+    420a  branch load(ss:[addr([bp-scan])+0x2]) != load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0xa]) ? L_41ad : L_4215
+
+block L_4215:
+  insts 565..567  off 0x4215..0x421c
+  preds: L_41b1, L_41e4, L_4206
+  succs: L_4220, L_4278
+  effects:
+    421b  branch load([bp-i]) >= load([cFleet]) ? L_4278 : L_4220
+
+block L_4220:
+  insts 569..592  off 0x4220..0x4265
+  preds: L_4215
+  succs: L_4269, L_426f
+  effects:
+    4223  store[2] [bp-scan+0xa] = load([bp-i])
+    4226  store[2] [bp-scan+0x4] = 0x2
+    4244  store[2] [bp-idNew] = load(farseg(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])):[faroff(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]))])
+    4264  branch load(farseg(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])):[faroff(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]))+0x2]) != load([idPlayer]) ? L_426f : L_4269
+
+block L_4269:
+  insts 594..595  off 0x4269..0x426e
+  preds: L_4220
+  succs: L_4272
+  effects:
+    426c  goto L_4272
+
+block L_426f:
+  insts 596..596  off 0x426f..0x4271
+  preds: L_4220
+  succs: L_4272
+
+block L_4272:
+  insts 597..598  off 0x4272..0x4277
+  preds: L_4269, L_426f
+  succs: L_43d9
+  effects:
+    4272  store[2] [bp-fOurs] = merge(Join: L_4272, (L_4269:0x1, L_426f:0x0))
+    4275  goto L_43d9
+
+block L_4278:
+  insts 599..602  off 0x4278..0x4282
+  preds: L_4215
+  succs: L_4286, L_4291
+  effects:
+    4281  branch (load([bp-scan+0x6]) & 0x8) == 0x0 ? L_4291 : L_4286
+
+block L_4286:
+  insts 604..605  off 0x4286..0x428d
+  preds: L_4278
+  succs: L_4113
+  effects:
+    4286  store[2] [bp-i] = 0x0
+    428b  goto L_4113
+
+block L_4291:
+  insts 606..609  off 0x4291..0x429b
+  preds: L_4278
+  succs: L_429f, L_42f3
+  effects:
+    429a  branch (load([bp-scan+0x6]) & 0x1) == 0x0 ? L_42f3 : L_429f
+
+block CheckPlanet:
+  insts 611..620  off 0x429f..0x42c0
+  preds: L_4154, L_4291
+  succs: L_42c4, L_42d5
+  effects:
+    429f  store[2] [bp-scan+0x4] = 0x1
+    42a7  store[2] [bp-idNew] = load([bp-scan+0x8])
+    42ad  call LpplFromId(load([bp-idNew])) -> callresult(PLANET *)
+    42b5  store[2] [bp-lppl] = faroff(callresult(PLANET *))
+    42b8  store[2] [bp-lppl+0x2] = farseg(callresult(PLANET *))
+    42bf  branch load([bp-lppl]) != 0x0 ? L_42d5 : L_42c4
+
+block L_42c4:
+  insts 622..623  off 0x42c4..0x42c9
+  preds: L_429f
+  succs: L_42cd, L_42d5
+  effects:
+    42c8  branch load([bp-lppl+0x2]) != 0x0 ? L_42d5 : L_42cd
+
+block L_42cd:
+  insts 625..626  off 0x42cd..0x42d4
+  preds: L_42c4
+  succs: L_43d9
+  effects:
+    42cd  store[2] [bp-fOurs] = 0x0
+    42d2  goto L_43d9
+
+block L_42d5:
+  insts 627..630  off 0x42d5..0x42e0
+  preds: L_429f, L_42c4
+  succs: L_42e4, L_42ea
+  effects:
+    42df  branch load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]) != load([idPlayer]) ? L_42ea : L_42e4
+
+block L_42e4:
+  insts 632..633  off 0x42e4..0x42e9
+  preds: L_42d5
+  succs: L_42ed
+  effects:
+    42e7  goto L_42ed
+
+block L_42ea:
+  insts 634..634  off 0x42ea..0x42ec
+  preds: L_42d5
+  succs: L_42ed
+
+block L_42ed:
+  insts 635..635  off 0x42ed..0x42ef
+  preds: L_42e4, L_42ea
+  succs: L_42f0
+  effects:
+    42ed  store[2] [bp-fOurs] = merge(Join: L_42ed, (L_42e4:0x1, L_42ea:0x0))
+
+block L_42f0:
+  insts 636..636  off 0x42f0..0x42f2
+  preds: L_42ed
+  succs: L_43d9
+  effects:
+    42f0  goto L_43d9
+
+block CheckFleet:
+  insts 637..638  off 0x42f3..0x42fa
+  preds: L_4168, L_4291
+  succs: L_42ff
+  effects:
+    42f3  store[2] [bp-i] = 0x0
+    42f8  goto L_42ff
+
+block L_42fb:
+  insts 639..639  off 0x42fb..0x42fe
+  preds: L_433a, L_4354
+  succs: L_42ff
+  effects:
+    42fb  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_42ff:
+  insts 640..642  off 0x42ff..0x4306
+  preds: L_42f3, L_42fb
+  succs: L_430a, L_4363
+  effects:
+    4305  branch load([bp-i]) >= load([cFleet]) ? L_4363 : L_430a
+
+block L_430a:
+  insts 644..656  off 0x430a..0x432e
+  preds: L_42ff
+  succs: L_4332, L_433a
+  effects:
+    4324  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])
+    4327  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])
+    432d  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]) != 0x0 ? L_433a : L_4332
+
+block L_4332:
+  insts 658..659  off 0x4332..0x4336
+  preds: L_430a
+  succs: L_433a, L_4363
+  effects:
+    4335  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_4363 : L_433a
+
+block L_433a:
+  insts 661..668  off 0x433a..0x4350
+  preds: L_430a, L_4332
+  succs: L_42fb, L_4354
+  effects:
+    434f  branch load(ss:[addr([bp-scan])]) != load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x8]) ? L_42fb : L_4354
+
+block L_4354:
+  insts 670..671  off 0x4354..0x4359
+  preds: L_433a
+  succs: L_42fb, L_4363
+  effects:
+    4358  branch load(ss:[addr([bp-scan])+0x2]) != load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0xa]) ? L_42fb : L_4363
+
+block L_4363:
+  insts 675..677  off 0x4363..0x436a
+  preds: L_42ff, L_4332, L_4354
+  succs: L_436e, L_4384
+  effects:
+    4369  branch load([bp-i]) != load([cFleet]) ? L_4384 : L_436e
+
+block L_436e:
+  insts 679..682  off 0x436e..0x4378
+  preds: L_4363
+  succs: L_437c, L_4384
+  effects:
+    4377  branch (load([bp-scan+0x6]) & 0x8) == 0x0 ? L_4384 : L_437c
+
+block L_437c:
+  insts 684..685  off 0x437c..0x4383
+  preds: L_436e
+  succs: L_4113
+  effects:
+    437c  store[2] [bp-i] = 0x0
+    4381  goto L_4113
+
+block L_4384:
+  insts 686..709  off 0x4384..0x43c9
+  preds: L_4363, L_436e
+  succs: L_43cd, L_43d3
+  effects:
+    4384  store[2] [bp-scan+0x4] = 0x2
+    438c  store[2] [bp-scan+0xa] = load([bp-i])
+    43a8  store[2] [bp-idNew] = load(farseg(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])):[faroff(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]))])
+    43c8  branch load(farseg(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])):[faroff(load(dword load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]))+0x2]) != load([idPlayer]) ? L_43d3 : L_43cd
+
+block L_43cd:
+  insts 711..712  off 0x43cd..0x43d2
+  preds: L_4384
+  succs: L_43d6
+  effects:
+    43d0  goto L_43d6
+
+block L_43d3:
+  insts 713..713  off 0x43d3..0x43d5
+  preds: L_4384
+  succs: L_43d6
+
+block L_43d6:
+  insts 714..714  off 0x43d6..0x43d8
+  preds: L_43cd, L_43d3
+  succs: L_43d9
+  effects:
+    43d6  store[2] [bp-fOurs] = merge(Join: L_43d6, (L_43cd:0x1, L_43d3:0x0))
+
+block ChangeIt:
+  insts 715..716  off 0x43d9..0x43de
+  preds: L_4129, L_4272, L_42cd, L_42f0, L_43d6
+  succs: L_43e2, L_43ec
+  effects:
+    43dd  branch load([bp-fOurs]) == 0x0 ? L_43ec : L_43e2
+
+block L_43e2:
+  insts 718..719  off 0x43e2..0x43e8
+  preds: L_43d9
+  succs: L_43ec, L_43f2
+  effects:
+    43e7  branch load([sel+0x4]) == 0x2 ? L_43f2 : L_43ec
+
+block L_43ec:
+  insts 721..722  off 0x43ec..0x43f1
+  preds: L_43d9, L_43e2
+  succs: L_43f2
+  effects:
+    43ef  store[2] [bp-scan+0xc] = load([sel+0x18])
+
+block L_43f2:
+  insts 723..730  off 0x43f2..0x4407
+  preds: L_43e2, L_43ec
+  succs: L_440b, L_47d5
+  effects:
+    43fa  call ChangeScanSel(addr([bp-scan]), 0x2) -> callresult(void)
+    4406  branch load([bp-fOurs]) == 0x0 ? L_47d5 : L_440b
+
+block L_440b:
+  insts 732..747  off 0x440b..0x4438
+  preds: L_43f2
+  succs: L_4439
+  effects:
+    4413  call RedrawScanSel(0x0, 0x0) -> callresult(void)
+    4421  call ChangeMainObjSel(load([bp-scan+0x4]), load([bp-idNew])) -> callresult(void)
+    4431  call RedrawScanSel(0x0, 0x1) -> callresult(void)
+
+block L_4439:
+  insts 748..748  off 0x4439..0x443b
+  preds: L_440b
+  succs: L_47d5
+  effects:
+    4439  goto L_47d5
+
+block L_443c:
+  insts 749..760  off 0x443c..0x4475
+  preds: L_47ae
+  succs: L_44d6
+  effects:
+    443c  store[2] [bp-iChecked] = 0xffff
+    4441  store[2] [bp-rgi] = 0x64
+    4446  store[2] [bp-rgi+0x2] = 0x1f4
+    444b  store[2] [bp-rgi+0x4] = 0x3e8
+    4450  store[2] [bp-rgi+0x6] = 0x9c4
+    4455  store[2] [bp-rgi+0x8] = 0x1388
+    445a  store[2] [bp-rgi+0xa] = 0x1d4c
+    445f  store[2] [bp-rgi+0xc] = 0x2710
+    4464  store[2] [bp-rgi+0xe] = 0x4e20
+    4469  store[2] [bp-rgi+0x10] = 0x7530
+    446e  store[2] [bp-i] = 0x0
+    4473  goto L_44d6
+
+block L_4476:
+  insts 761..794  off 0x4476..0x44c8
+  preds: L_44d6
+  succs: L_44cc, L_44d2
+  effects:
+    4498  call _wsprintf(words(ss, (addr([bp-rgsz]) + loword((0xa * load([bp-i]))))), words(ds, load([PCTDKT])), load@4480/src(ss:[bp+(load([bp-i]) << 0x1)-0x76])) -> callresult(int16_t)
+    44b6  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x8a] = (addr([bp-rgsz]) + loword((0xa * load([bp-i]))))
+    44c7  branch load@44c5/dst(ss:[bp+(load([bp-i]) << 0x1)-0x76]) != load([cMinGrafMax]) ? L_44d2 : L_44cc
+
+block L_44cc:
+  insts 796..797  off 0x44cc..0x44d1
+  preds: L_4476
+  succs: L_44d2
+  effects:
+    44cf  store[2] [bp-iChecked] = load([bp-i])
+
+block L_44d2:
+  insts 798..798  off 0x44d2..0x44d5
+  preds: L_4476, L_44cc
+  succs: L_44d6
+  effects:
+    44d2  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_44d6:
+  insts 799..800  off 0x44d6..0x44db
+  preds: L_443c, L_44d2
+  succs: L_4476, L_44df
+  effects:
+    44da  branch load([bp-i]) < 0x9 ? L_4476 : L_44df
+
+block L_44df:
+  insts 802..818  off 0x44df..0x450d
+  preds: L_44d6
+  succs: L_4511, L_47d5
+  effects:
+    44fd  call PopupMenu(load([hwndMine]), load([bp+x]), load([bp+y]), 0x9, 0x0, addr([bp-psz]), load([bp-iChecked]), 0x1) -> callresult(int16_t)
+    4505  store[2] [bp-i] = callresult(int16_t)
+    450c  branch load([bp-i]) == 0xffff ? L_47d5 : L_4511
+
+block L_4511:
+  insts 820..826  off 0x4511..0x4521
+  preds: L_44df
+  succs: L_4525, L_47d5
+  effects:
+    4520  branch load(ss:[bp+(load([bp-i]) << 0x1)-0x76]) == load([cMinGrafMax]) ? L_47d5 : L_4525
+
+block L_4525:
+  insts 828..845  off 0x4525..0x4553
+  preds: L_4511
+  succs: L_4557, L_47d5
+  effects:
+    4531  store[2] [cMinGrafMax] = load(ss:[bp+(load([bp-i]) << 0x1)-0x76])
+    4544  call InvalidateRect(load([hwndMine]), words(0x0, 0x0), 0x1) -> callresult(void)
+    4552  branch (load([grbitScan]) & 0xf) != 0x1 ? L_47d5 : L_4557
+
+block L_4557:
+  insts 847..854  off 0x4557..0x456b
+  preds: L_4525
+  succs: L_456c
+  effects:
+    4567  call InvalidateRect(load([hwndScanner]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_456c:
+  insts 855..855  off 0x456c..0x456e
+  preds: L_4557
+  succs: L_47d5
+  effects:
+    456c  goto L_47d5
+
+block L_456f:
+  insts 856..868  off 0x456f..0x459a
+  preds: L_47ae
+  succs: L_45b4
+  effects:
+    4577  call FLookupPlanet(load([sel+0x14]), addr([bp-pl])) -> callresult(int16_t)
+    457f  store[2] [GlobalPD] = 0x1
+    458c  store[2] [GlobalPD+0x2] = (load([bp-ht]) + 0xffff)
+    458f  store[2] [GlobalPD+0x4] = signhiword((load([bp-ht]) + 0xffff))
+    4593  store[2] [bp-i] = 0x1
+    4598  goto L_45b4
+
+block L_459b:
+  insts 869..876  off 0x459b..0x45b3
+  preds: L_45b4
+  succs: L_45b4
+  effects:
+    45a7  store[2] ds:[(0xb82 + ((load([bp-i]) << 0x1) << 0x1))] = 0xffff
+    45ab  store[2] ds:[(0xb82 + ((load([bp-i]) << 0x1) << 0x1))+0x2] = 0xffff
+    45b0  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_45b4:
+  insts 877..878  off 0x45b4..0x45b9
+  preds: L_456f, L_459b
+  succs: L_459b, L_45bd
+  effects:
+    45b8  branch load([bp-i]) <= 0x4 ? L_459b : L_45bd
+
+block L_45bd:
+  insts 880..883  off 0x45bd..0x45c7
+  preds: L_45b4
+  succs: L_45cb, L_478e
+  effects:
+    45c6  branch (load([bp-pl+0x4]) & 0xff) < 0x3 ? L_478e : L_45cb
+
+block L_45cb:
+  insts 885..904  off 0x45cb..0x4604
+  preds: L_45bd
+  succs: L_4608, L_478e
+  effects:
+    45de  store[2] [GlobalPD+0xe] = load(byte ss:[bp+(load([bp-ht]) + 0xffff)-0x43])
+    45e1  store[2] [GlobalPD+0x10] = 0x0
+    45f3  store[2] [GlobalPD+0x6] = ((load@45e8/src([bp-pl+0x4]) >> 0xa) & 0x1)
+    45f6  store[2] [GlobalPD+0x8] = 0x0
+    4603  branch (load@45fa/src([bp-pl+0x4]) & 0xff) <= 0x3 ? L_478e : L_4608
+
+block L_4608:
+  insts 906..943  off 0x4608..0x466c
+  preds: L_45cb
+  succs: L_4670, L_478e
+  effects:
+    4608  store[2] [bp-lVal] = 0x0
+    460d  store[2] [bp-lVal+0x2] = 0x0
+    4626  store[2] [GlobalPD+0xa] = load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x30])
+    4629  store[2] [GlobalPD+0xc] = load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x2e])
+    4644  call EstMineralsMined(words(ss, addr([bp-pl])), addr([bp-rglQuan]), words(0xffff, 0xffff), 0x0) -> callresult(void)
+    4660  store[2] [GlobalPD+0x12] = load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x14])
+    4663  store[2] [GlobalPD+0x14] = load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x12])
+    466b  branch load([bp-pl+0x2]) != 0xffff ? L_478e : L_4670
+
+block L_4670:
+  insts 945..946  off 0x4670..0x4677
+  preds: L_4608
+  succs: L_467c
+  effects:
+    4670  store[2] [bp-ifl] = 0x0
+    4675  goto L_467c
+
+block L_4678:
+  insts 947..947  off 0x4678..0x467b
+  preds: L_46b7, L_46c6, L_46d5, L_46ec, L_4705, L_4727, L_4767
+  succs: L_467c
+  effects:
+    4678  store[2] [bp-ifl] = (load([bp-ifl]) + 0x1)
+
+block L_467c:
+  insts 948..950  off 0x467c..0x4683
+  preds: L_4670, L_4678
+  succs: L_4687, L_476a
+  effects:
+    4682  branch load([bp-ifl]) >= load([cFleet]) ? L_476a : L_4687
+
+block L_4687:
+  insts 952..964  off 0x4687..0x46ab
+  preds: L_467c
+  succs: L_46af, L_46b7
+  effects:
+    46a1  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))])
+    46a4  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))+0x2])
+    46aa  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))]) != 0x0 ? L_46b7 : L_46af
+
+block L_46af:
+  insts 966..967  off 0x46af..0x46b3
+  preds: L_4687
+  succs: L_46b7, L_476a
+  effects:
+    46b2  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-ifl]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_476a : L_46b7
+
+block L_46b7:
+  insts 969..972  off 0x46b7..0x46c2
+  preds: L_4687, L_46af
+  succs: L_4678, L_46c6
+  effects:
+    46c1  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x6]) != load([bp-pl]) ? L_4678 : L_46c6
+
+block L_46c6:
+  insts 974..977  off 0x46c6..0x46d1
+  preds: L_46b7
+  succs: L_4678, L_46d5
+  effects:
+    46d0  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) != load([idPlayer]) ? L_4678 : L_46d5
+
+block L_46d5:
+  insts 979..985  off 0x46d5..0x46e8
+  preds: L_46c6
+  succs: L_4678, L_46ec
+  effects:
+    46e7  branch ((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) >> 0xa) & 0x1) != 0x0 ? L_4678 : L_46ec
+
+block L_46ec:
+  insts 987..992  off 0x46ec..0x46fe
+  preds: L_46d5
+  succs: L_4678, L_4705
+  effects:
+    46fd  branch (load(farseg(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64]))+0xa]) & 0xf) != 0x3 ? L_4678 : L_4705
+
+block L_4705:
+  insts 995..1002  off 0x4705..0x471e
+  preds: L_46ec
+  succs: L_4678, L_4722
+  effects:
+    470b  call CMineFromLpfl(words(load([bp-lpfl+0x2]), load([bp-lpfl]))) -> callresult(int32_t)
+    4713  store[2] [bp-cMines] = loword(callresult(int32_t))
+    4716  store[2] [bp-cMines+0x2] = hiword(callresult(int32_t))
+    471d  branch load([bp-cMines+0x2]) < 0x0 ? L_4678 : L_4722
+
+block L_4722:
+  insts 1004..1004  off 0x4722..0x4723
+  preds: L_4705
+  succs: L_4727, L_4730
+  effects:
+    4722  branch load([bp-cMines+0x2]) > 0x0 ? L_4730 : L_4727
+
+block L_4727:
+  insts 1006..1007  off 0x4727..0x472c
+  preds: L_4722
+  succs: L_4678, L_4730
+  effects:
+    472b  branch load([bp-cMines]) <= 0x0 ? L_4678 : L_4730
+
+block L_4730:
+  insts 1009..1030  off 0x4730..0x4766
+  preds: L_4722, L_4727
+  succs: L_4767
+  effects:
+    4745  call EstMineralsMined(words(ss, addr([bp-pl])), addr([bp-rglT]), words(load([bp-cMines+0x2]), load([bp-cMines])), 0x0) -> callresult(void)
+    4761  store[2] [bp-lVal] = (load([bp-lVal]) + load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x5a]))
+    4764  store[2] [bp-lVal+0x2] = (load([bp-lVal+0x2]) + load(ss:[bp+(((load([bp-ht]) + 0xffff) << 0x1) << 0x1)-0x58]))
+
+block L_4767:
+  insts 1031..1031  off 0x4767..0x4769
+  preds: L_4730
+  succs: L_4678
+  effects:
+    4767  goto L_4678
+
+block L_476a:
+  insts 1032..1033  off 0x476a..0x476f
+  preds: L_467c, L_46af
+  succs: L_4773, L_478e
+  effects:
+    476e  branch load([bp-lVal+0x2]) < 0x0 ? L_478e : L_4773
+
+block L_4773:
+  insts 1035..1035  off 0x4773..0x4774
+  preds: L_476a
+  succs: L_4778, L_4781
+  effects:
+    4773  branch load([bp-lVal+0x2]) > 0x0 ? L_4781 : L_4778
+
+block L_4778:
+  insts 1037..1038  off 0x4778..0x477d
+  preds: L_4773
+  succs: L_4781, L_478e
+  effects:
+    477c  branch load([bp-lVal]) <= 0x0 ? L_478e : L_4781
+
+block L_4781:
+  insts 1040..1043  off 0x4781..0x478d
+  preds: L_4773, L_4778
+  succs: L_478e
+  effects:
+    4787  store[2] [GlobalPD+0x12] = load([bp-lVal])
+    478a  store[2] [GlobalPD+0x14] = load([bp-lVal+0x2])
+
+block L_478e:
+  insts 1044..1049  off 0x478e..0x47a2
+  preds: L_45bd, L_45cb, L_4608, L_476a, L_4778, L_4781
+  succs: L_47d5
+  effects:
+    4798  call Popup(load([hwndMine]), load([bp+x]), load([bp+y])) -> callresult(void)
+    47a0  goto L_47d5
+
+block L_47a6:
+  insts 1050..1051  off 0x47a6..0x47aa
+  preds: L_3b8b
+  succs: L_47ae, L_47d5
+  effects:
+    47a9  branch load([bp-ht]) > 0xe ? L_47d5 : L_47ae
+
+block L_47ae:
+  insts 1053..1055  off 0x47ae..0x47b6
+  preds: L_47a6
+  succs: L_3b94, L_3c2a, L_3c9f, L_3e99, L_3f20, L_3f41, L_4085, L_443c, L_456f, L_47d5
+  effects:
+    47b2  tablejump (load([bp-ht]) << 0x1) [L_47d5, L_456f, L_456f, L_456f, L_47d5, L_443c, L_3f41, L_3f41, L_3f41, L_4085, L_3b94, L_3c9f, L_3f20, L_3e99, L_3c2a]
+
+block L_47d5:
+  insts 1071..1075  off 0x47d5..0x47da
+  preds: L_3b7f, L_3c0f, L_3c2a, L_3d90, L_3e84, L_3ef6, L_3f20, L_401c, L_408f, L_43f2, L_4439, L_44df, L_4511, L_4525, L_456c, L_478e, L_47a6, L_47ae
+  effects:
+    47da  return

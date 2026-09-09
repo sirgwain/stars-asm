@@ -74,3 +74,48 @@ func TestResolveLateBitfields(t *testing.T) {
 		})
 	}
 }
+
+// TestResolveLateBitfieldMaskBeforeShift verifies scratch substitution can
+// expose the compiler's shifted-mask extraction order.
+func TestResolveLateBitfieldMaskBeforeShift(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DoBombing")
+	ctx.SetCurrentBlock(0xb14e)
+
+	var lpplVar *typeinfo.FunctionVar
+	for i := range ctx.fs.Vars {
+		if ctx.fs.Vars[i].Name == "lppl" {
+			lpplVar = &ctx.fs.Vars[i]
+			break
+		}
+	}
+	if lpplVar == nil {
+		t.Fatal("DoBombing lppl local not found")
+	}
+	storage := &Deref{
+		Pointer:  &Local{FunctionVar: *lpplVar},
+		ByteOff:  0x14,
+		Width:    4,
+		TypeInfo: typeinfo.U32,
+	}
+	expr := &Binary{
+		TypeInfo: typeinfo.U32,
+		Op:       OpShr,
+		LHS: &Binary{
+			TypeInfo: typeinfo.U32,
+			Op:       OpAnd,
+			LHS:      storage,
+			RHS:      &Const{TypeInfo: typeinfo.U32, U64: 0xfff00},
+		},
+		RHS: &Const{TypeInfo: typeinfo.U16, U64: 8},
+	}
+
+	got, ok := (&resolveLateBitfieldsProcessor{ctx: ctx}).resolve(expr)
+	if !ok {
+		t.Fatal("resolve() did not recognize mask-before-shift bitfield")
+	}
+	if formatted := FormatExpr(got); formatted != "lppl->cMines" {
+		t.Fatalf("resolve() = %q, want lppl->cMines", formatted)
+	}
+}

@@ -134,6 +134,9 @@ L_00b9:
     FChangeAiShdef(&(shdef), 7);
     fUsingTempColonizer = 0;
 
+L_00f0:
+    goto L_00f8;
+
 L_00f3:
     fUsingTempColonizer = 0;
 
@@ -328,6 +331,9 @@ L_033d:
 L_037b:
     rgRecycleShdef[14] = 0x3;
 
+L_037f:
+    goto L_03c3;
+
 L_0382:
     if ((rgshdef[15].hul.rghs[2].iItem == 0x6))
         goto L_03c3;
@@ -369,18 +375,18 @@ L_0438:
     rgRecycleSBShdef[1] = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
     memset(&(rgRecycleSBShdef), 0, 0xa);
-    /* untranslated: part[0x1:1](l) = 0x2 */
-    /* untranslated: part[0x0:1](l) = 0x2 */
+    HIBYTE(LOWORD(l)) = 0x2;
+    LOBYTE(LOWORD(l)) = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
     memset(&(rgRecycleSBShdef), 0, 0xa);
-    /* untranslated: part[0x1:1](fTonsOfMinerals) = 0x2 */
-    /* untranslated: part[0x0:1](fTonsOfMinerals) = 0x2 */
+    HIBYTE(fTonsOfMinerals) = 0x2;
+    LOBYTE(fTonsOfMinerals) = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
 
 L_04ec:
     EnsureMacintiShdefs();
     EnsureMacintiStarbaseDesigns(rgRecycleSBShdef);
-    vAiMacRecycleSB = &(rgRecycleSBShdef);
+    vAiMacRecycleSB = rgRecycleSBShdef;
     fShouldColonize = FShouldWeBuildColonizers(&(cColFleet));
     if ((rgshdef[1].hul.rghs[0].iItem != 0xf))
         goto L_052a;
@@ -447,7 +453,7 @@ L_05a5:
         goto L_05b0;
 
 L_05b0:
-    /* untranslated: part[0x0:1](lpb) = 0x0 */
+    LOBYTE(LOWORD(lpb)) = 0x0;
     goto L_0594;
 
 L_05ba:
@@ -620,6 +626,7 @@ L_0758:
         goto L_075e;
 
 L_075e:
+    goto L_0730;
 
 L_0764:
     cFlMineLayersBase = cFlMineLayers;
@@ -638,7 +645,7 @@ L_0797:
         goto L_07a2;
 
 L_07a2:
-    /* untranslated: part[0x0:1](lpb) = 0x0 */
+    LOBYTE(LOWORD(lpb)) = 0x0;
     goto L_0786;
 
 L_07ac:
@@ -692,6 +699,9 @@ L_083e:
 
 L_085f:
     cGenesis = 10;
+
+L_0864:
+    goto L_086c;
 
 L_0867:
     cGenesis = 0;
@@ -812,9 +822,7 @@ L_09fb:
     if ((game.turn > 0x19))
         goto L_0964;
     else
-        goto L_0a02;
-
-L_0a02:
+        goto L_0a08;
 
 L_0a08:
     ChangeMainObjSel(grobjPlanet, lppl->id);
@@ -833,9 +841,7 @@ L_0a31:
     if ((lppl->lpplprod->iprodMac >= 0x18))
         goto L_0964;
     else
-        goto L_0a44;
-
-L_0a44:
+        goto L_0a4a;
 
 L_0a4a:
     InitProduction(rgprod);
@@ -879,12 +885,10 @@ L_0aed:
         goto L_0af2;
 
 L_0af2:
-    if ((lpprod->iItem < iobjPacketGerm))
-        goto L_0b00;
+    if ((lpprod->iItem >= iobjPacketGerm))
+        goto L_0a7a;
     else
-        goto L_0af7;
-
-L_0af7:
+        goto L_0b00;
 
 L_0b00:
     if ((i >= lpplProdGlob->iprodMac))
@@ -999,6 +1003,7 @@ L_0c69:
         goto L_0c6e;
 
 L_0c6e:
+    goto L_0bc3;
 
 L_0c77:
     j = Random(3);
@@ -1027,20 +1032,16 @@ L_0cc7:
         goto L_0ccc;
 
 L_0ccc:
-    if ((LOWORD(lppl->rgwtMin[((uint32_t)(i) % 3)]) > 0x1388))
-        goto L_0cdc;
+    if ((LOWORD(lppl->rgwtMin[((uint32_t)(i) % 3)]) <= 0x1388))
+        goto L_0c8f;
     else
-        goto L_0cd3;
-
-L_0cd3:
+        goto L_0cdc;
 
 L_0cdc:
     if ((i == (j + 3)))
         goto LTryCargo;
     else
-        goto L_0ce7;
-
-L_0ce7:
+        goto L_0ced;
 
 L_0ced:
     i = ((uint32_t)(i) % 3);
@@ -1115,6 +1116,9 @@ L_0ddc:
 L_0de7:
     lLeast = lpplDest->rgwtMin[i];
     lpplBest = lpplDest;
+
+L_0e1e:
+    goto L_0d02;
 
 L_0e21:
     if ((LOWORD(lpplBest) != 0x0))
@@ -1234,9 +1238,7 @@ L_0fe5:
     if ((Random(100) >= 8))
         goto TryShip2;
     else
-        goto L_0ff6;
-
-L_0ff6:
+        goto L_0ffc;
 
 L_0ffc:
     if ((cColFleet < 50))
@@ -1248,9 +1250,7 @@ L_1005:
     if ((game.turn > 0x78))
         goto TryShip2;
     else
-        goto L_100c;
-
-L_100c:
+        goto L_1012;
 
 L_1012:
     i = 0;
@@ -1272,9 +1272,7 @@ L_103f:
     if ((LOWORD(lppl->rgwtMin[i]) < 0x1e))
         goto FinishProd;
     else
-        goto L_1045;
-
-L_1045:
+        goto L_104b;
 
 L_104b:
     i = (i + 1);
@@ -1289,9 +1287,7 @@ L_1058:
     if ((FShouldPlanetBuildColonizer(lppl) == 0))
         goto TryShip2;
     else
-        goto L_106b;
-
-L_106b:
+        goto L_1071;
 
 L_1071:
     cColFleet = (cColFleet + 1);
@@ -1300,9 +1296,7 @@ L_1071:
     if ((game.turn < 0x5))
         goto FinishProd;
     else
-        goto L_109a;
-
-L_109a:
+        goto L_10a0;
 
 L_10a0:
     l = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
@@ -1454,7 +1448,6 @@ L_1229:
 
 L_1238:
     cMine = CMineFromLpfl(lpfl);
-    goto L_1254;
 
 L_1254:
     if ((HIWORD(cMine) < 0x0))
@@ -1472,9 +1465,7 @@ L_1263:
     if ((LOWORD(cMine) > 0x3e8))
         goto TryShip2b;
     else
-        goto L_126b;
-
-L_126b:
+        goto L_1271;
 
 L_1271:
     cFr = 0;
@@ -1617,7 +1608,6 @@ L_13d4:
 
 L_13e3:
     cFr = lpfl->rgcsh[0];
-    goto L_13f3;
 
 L_13f3:
     if ((cFr < 10))
@@ -1668,9 +1658,7 @@ L_1481:
     if ((LOWORD(lppl->rgwtMin[i]) < 0x1388))
         goto L_149b;
     else
-        goto L_1488;
-
-L_1488:
+        goto L_148e;
 
 L_148e:
     i = (i + 1);
@@ -1730,9 +1718,7 @@ L_14ea:
     if ((Random(3) == 0))
         goto LAddBombers;
     else
-        goto L_14fb;
-
-L_14fb:
+        goto L_1501;
 
 L_1501:
     ifl = 0;
@@ -1788,9 +1774,7 @@ L_158a:
     if (((lpfl->rgcsh[8] + lpfl->rgcsh[9]) >= (vrgAiArmadaPotency[2] & 0xff)))
         goto L_15e8;
     else
-        goto L_15aa;
-
-L_15aa:
+        goto LAddBombers;
 
 LAddBombers:
     cFlArmadas = (cFlArmadas + 2);
@@ -1869,20 +1853,16 @@ L_167f:
         goto L_16a0;
 
 L_16a0:
-    if ((0x0 == 0x0))
-        goto L_16ae;
+    if ((0x0 != 0x0))
+        goto L_162d;
     else
-        goto L_16a5;
-
-L_16a5:
+        goto L_16ae;
 
 L_16ae:
     if ((i < lpplProdGlob->iprodMac))
         goto LTryCruiser;
     else
-        goto L_16be;
-
-L_16be:
+        goto L_16c4;
 
 L_16c4:
     i = 0;
@@ -1904,9 +1884,7 @@ L_16f1:
     if ((LOWORD(lppl->rgwtMin[i]) < 0x7d0))
         goto L_170b;
     else
-        goto L_16f8;
-
-L_16f8:
+        goto L_16fe;
 
 L_16fe:
     i = (i + 1);
@@ -1921,9 +1899,7 @@ L_170b:
     if ((i == 2))
         goto LTryCruiser;
     else
-        goto L_1711;
-
-L_1711:
+        goto L_1717;
 
 L_1717:
     cConc = 0;
@@ -2016,9 +1992,7 @@ L_1808:
     if ((Random(3) != 0))
         goto TryShip3;
     else
-        goto L_1819;
-
-L_1819:
+        goto L_181f;
 
 L_181f:
     if ((iLatestBattle == -1))
@@ -2059,9 +2033,7 @@ L_186c:
     if ((fTonsOfMinerals != 0))
         goto FinishProd;
     else
-        goto L_1887;
-
-L_1887:
+        goto TryShip3;
 
 TryShip3:
     if ((iLatestDestroyer == -1))
@@ -2117,9 +2089,7 @@ L_1923:
     if ((LOWORD(rgResAvail[i]) < 0x0))
         goto FinishProd;
     else
-        goto L_1928;
-
-L_1928:
+        goto L_192e;
 
 L_192e:
     i = (i + 1);
@@ -2156,9 +2126,7 @@ L_19a6:
     if ((LOWORD(rgResAvail[j]) < 0x0))
         goto L_19be;
     else
-        goto L_19ab;
-
-L_19ab:
+        goto L_19b1;
 
 L_19b1:
     j = (j + 1);
@@ -2173,9 +2141,7 @@ L_19be:
     if ((j < 4))
         goto L_19d7;
     else
-        goto L_19c4;
-
-L_19c4:
+        goto L_19ca;
 
 L_19ca:
     i = (i + 1);
@@ -2307,6 +2273,9 @@ L_1bb1:
 L_1bc7:
     ClearAiCurrentTask(lpfl, 1);
 
+L_1bd9:
+    goto L_1a3b;
+
 L_1bdc:
     if ((cFlMineLayersBase > 55))
         goto L_1c04;
@@ -2329,9 +2298,7 @@ L_1c04:
     if ((FFindBuddyAndJoinUp(lpfl, 0, 0, 72, 108) != 0))
         goto L_1a3b;
     else
-        goto L_1c2f;
-
-L_1c2f:
+        goto L_1c35;
 
 L_1c35:
     if ((lpfl->rgcsh[0] < 7))
@@ -2437,9 +2404,7 @@ L_1e15:
     if ((FFindBuddyAndJoinUp(lpfl, 14, 15, 72, 108) != 0))
         goto L_1a3b;
     else
-        goto L_1e40;
-
-L_1e40:
+        goto L_1e46;
 
 L_1e46:
     if ((lpfl->idPlanet == -1))
@@ -2513,6 +2478,9 @@ L_1ef3:
 L_1f07:
     FRetargetMiner(lpfl);
 
+L_1f15:
+    goto L_2154;
+
 L_1f18:
     if ((FIsAiAttack(lpfl) == 0))
         goto L_204b;
@@ -2529,9 +2497,7 @@ L_1f57:
     if ((lpfl->rgcsh[j] > 0))
         goto L_1f86;
     else
-        goto L_1f71;
-
-L_1f71:
+        goto L_1f77;
 
 L_1f77:
     j = (j + 1);
@@ -2593,7 +2559,10 @@ L_200b:
         goto L_2040;
 
 L_2040:
-    /* untranslated: part[0x0:1](lpb) = (*lpb | 0x80) */
+    LOBYTE(LOWORD(lpb)) = (*(lpb) | 0x80);
+
+L_2048:
+    goto L_2154;
 
 L_204b:
     if ((FIsAiTransport(lpfl) == 0))
@@ -2622,6 +2591,9 @@ L_2089:
 
 L_20a4:
     idPlanDst = lpfl->lpplord->rgord[0x1].id;
+
+L_20b2:
+    goto L_20bf;
 
 L_20b5:
     idPlanDst = lpfl->idPlanet;
@@ -2725,6 +2697,9 @@ L_21e4:
     FLookupFleet(-1, sel.fl.id);
     FMoveToNearestStarbase(lpfl, 0);
 
+L_2227:
+    goto L_1a3b;
+
 L_222a:
     if ((lpfl->rgcsh[1] != 0))
         goto L_2250;
@@ -2741,9 +2716,7 @@ L_2240:
     if ((lpfl->rgcsh[7] == 0))
         goto L_1a3b;
     else
-        goto L_224a;
-
-L_224a:
+        goto L_2250;
 
 L_2250:
     if ((fUsingTempColonizer == 0))
@@ -2761,9 +2734,7 @@ L_2262:
     if ((lpfl->idPlanet != -1))
         goto LRecycle;
     else
-        goto L_226c;
-
-L_226c:
+        goto L_2272;
 
 L_2272:
     if ((iAiLvl <= 1))
@@ -2812,9 +2783,7 @@ L_22e9:
     if ((lpplDrop->uPopGuess < 0x32))
         goto L_1a3b;
     else
-        goto L_22f9;
-
-L_22f9:
+        goto L_22ff;
 
 L_22ff:
     if ((LOWORD(lpplDrop) != 0x0))
@@ -2886,6 +2855,9 @@ L_23c5:
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
     FLookupFleet(-1, sel.fl.id);
 
+L_23fd:
+    goto L_1a3b;
+
 L_2400:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((lpfl->idPlanet == -1))
@@ -2928,6 +2900,9 @@ L_2475:
 L_247f:
     l = 25;
 
+L_248b:
+    goto L_249a;
+
 L_248e:
     l = 0;
 
@@ -2947,6 +2922,9 @@ L_24df:
 
 L_24f3:
     FGotoWormholeAiFleet(lpfl, lpthWorm);
+
+L_2507:
+    goto L_1a3b;
 
 L_250a:
     ifl = 0;
@@ -2984,17 +2962,13 @@ L_2560:
     if ((lpfl->cord > 1))
         goto L_2512;
     else
-        goto L_256a;
-
-L_256a:
+        goto L_2570;
 
 L_2570:
     if ((FIsAiTransport(lpfl) == 0))
         goto L_2512;
     else
-        goto L_2583;
-
-L_2583:
+        goto L_2589;
 
 L_2589:
     if ((lpfl->iplan == 0x4))
@@ -3042,9 +3016,7 @@ L_2626:
     if ((lpfl->iPlayer != idPlayer))
         goto L_25e7;
     else
-        goto L_2632;
-
-L_2632:
+        goto L_2638;
 
 L_2638:
     i = 0;
@@ -3060,9 +3032,7 @@ L_265d:
     if ((rgRecycleShdef[i] == 0x0))
         goto L_2682;
     else
-        goto L_266f;
-
-L_266f:
+        goto L_2675;
 
 L_2675:
     i = (i + 1);
@@ -3145,9 +3115,7 @@ L_276a:
     if ((FMoveToNearestStarbase(lpfl, 0) != 0))
         goto L_25e7;
     else
-        goto L_2781;
-
-L_2781:
+        goto L_2787;
 
 L_2787:
     i = 2;
@@ -3233,9 +3201,7 @@ L_2867:
     if ((FFindBuddyAndJoinUp(lpfl, 2, 9, 100, 200) != 0))
         goto L_28b6;
     else
-        goto L_2892;
-
-L_2892:
+        goto L_2898;
 
 L_2898:
     TargetMacArmada(lpfl);
@@ -3254,17 +3220,13 @@ L_28b6:
     if ((i <= 9))
         goto L_25e7;
     else
-        goto L_28bc;
-
-L_28bc:
+        goto L_28c2;
 
 L_28c2:
     if ((FIsAiAttack(lpfl) == 0))
         goto L_25e7;
     else
-        goto L_28d5;
-
-L_28d5:
+        goto L_28db;
 
 L_28db:
     if ((lpfl->cord <= 1))
@@ -3276,9 +3238,7 @@ L_28e8:
     if ((lpfl->lpplord->rgord[1].grobj == grobjFleet))
         goto L_25e7;
     else
-        goto L_2900;
-
-L_2900:
+        goto L_2906;
 
 L_2906:
     if ((game.turn <= 0x78))
@@ -3340,9 +3300,7 @@ L_2981:
     if ((FFindBuddyAndJoinUp(lpfl, 12, 13, 36, 72) != 0))
         goto L_25e7;
     else
-        goto L_29ac;
-
-L_29ac:
+        goto L_29b2;
 
 L_29b2:
     IdTargetAttack(lpfl, lpflAttack, lpflEnemy, game.fAisBand);
@@ -3407,9 +3365,7 @@ L_2ba8:
     if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 15))
         goto L_2c51;
     else
-        goto L_2bbd;
-
-L_2bbd:
+        goto L_2bc3;
 
 L_2bc3:
     if ((fAdvanced != 0))
@@ -3490,9 +3446,7 @@ L_2cce:
     if ((FCreateAiShdef(12, 6, &(vrgMacAip[vrgMacIshAip[Random(4)]])) != 0))
         goto L_2d14;
     else
-        goto L_2d01;
-
-L_2d01:
+        goto L_2d07;
 
 L_2d07:
     i = (i + 1);
@@ -3535,9 +3489,7 @@ L_2d84:
     if ((FCreateAiShdef(13, 6, &(vrgMacAip[vrgMacIshAip[(Random(4) + 4)]])) != 0))
         goto L_2dcd;
     else
-        goto L_2dba;
-
-L_2dba:
+        goto L_2dc0;
 
 L_2dc0:
     i = (i + 1);
@@ -3631,9 +3583,7 @@ L_2f08:
     if ((FCreateAiShdef(ish, 7, &(vrgMacAip[vrgMacIshAip[(Random(4) + 25)]])) != 0))
         goto L_2f50;
     else
-        goto L_2f3d;
-
-L_2f3d:
+        goto L_2f43;
 
 L_2f43:
     i = (i + 1);
@@ -3788,9 +3738,7 @@ L_3123:
     if ((FCreateAiShdef(ish, 9, &(vrgMacAip[vrgMacIshAip[(Random(4) + shBase)]])) != 0))
         goto L_316b;
     else
-        goto L_3158;
-
-L_3158:
+        goto L_315e;
 
 L_315e:
     i = (i + 1);
@@ -4017,6 +3965,9 @@ L_3472:
     lpplBest = lppl;
     cConcBest = cConc;
 
+L_3484:
+    goto L_3391;
+
 L_3487:
     if ((LOWORD(lpplBest) != 0x0))
         goto L_3499;
@@ -4095,9 +4046,7 @@ L_356e:
     if ((lpplHere->iPlayer != idPlayer))
         goto LFindPickup;
     else
-        goto L_357a;
-
-L_357a:
+        goto L_3580;
 
 L_3580:
     pctCapHere = PctPlanetCapacity(lpplHere);
@@ -4122,9 +4071,7 @@ L_35ac:
     if ((LOWORD(lpplHere->rgwtMin[0x3]) < 0x3e8))
         goto LFindPickup;
     else
-        goto L_35b4;
-
-L_35b4:
+        goto L_35ba;
 
 L_35ba:
     cColHaul = LGetFleetStat(lpfl, 2);
@@ -4179,9 +4126,7 @@ L_365d:
     if ((LOWORD(cColHaul) <= 0x0))
         goto LFindPickup;
     else
-        goto L_3663;
-
-L_3663:
+        goto L_3669;
 
 L_3669:
     cResLost = CResourcesAtPlanet(lpplHere, idPlayer);
@@ -4225,17 +4170,13 @@ L_3719:
     if ((HIWORD(lppl) == HIWORD(lpplHere)))
         goto L_36cc;
     else
-        goto L_371e;
-
-L_371e:
+        goto L_3724;
 
 L_3724:
     if (((vlpbAiPlanet[((lppl->id * 16) + 14)] & 0x1) != 0x0))
         goto L_36cc;
     else
-        goto L_374f;
-
-L_374f:
+        goto L_3755;
 
 L_3755:
     lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
@@ -4254,9 +4195,7 @@ L_378e:
     if ((LOWORD(lDist) > 0x9c40))
         goto L_36cc;
     else
-        goto L_3795;
-
-L_3795:
+        goto L_379b;
 
 L_379b:
     if ((HIWORD(lDist) < 0x0))
@@ -4342,6 +4281,9 @@ L_3887:
     cResGainMost = cResGain;
     lpplBest = lppl;
 
+L_3899:
+    goto L_36cc;
+
 L_389c:
     if ((LOWORD(lpplBest) != 0x0))
         goto L_38ae;
@@ -4382,9 +4324,7 @@ L_38e2:
     if ((game.turn > 0xa0))
         goto LFindPickup;
     else
-        goto L_38ea;
-
-L_38ea:
+        goto L_38f0;
 
 L_38f0:
     ChangeMainObjSel(grobjFleet, lpfl->id);
@@ -4458,9 +4398,7 @@ L_3a61:
     if ((LOWORD(lpplHere->rgwtMin[iM]) >= 0x9c4))
         goto L_3a7b;
     else
-        goto L_3a68;
-
-L_3a68:
+        goto L_3a6e;
 
 L_3a6e:
     iM = (iM + 1);
@@ -4515,9 +4453,7 @@ L_3aed:
     if ((HIWORD(lppl) == HIWORD(lpplHere)))
         goto L_3aa0;
     else
-        goto L_3af2;
-
-L_3af2:
+        goto L_3af8;
 
 L_3af8:
     lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
@@ -4536,9 +4472,7 @@ L_3b31:
     if ((LOWORD(lDist) > 0x9c40))
         goto L_3aa0;
     else
-        goto L_3b38;
-
-L_3b38:
+        goto L_3b3e;
 
 L_3b3e:
     if ((HIWORD(lppl->rgwtMin[iM]) > HIWORD(cMax)))
@@ -4561,6 +4495,9 @@ L_3b68:
 L_3b70:
     cMax = lppl->rgwtMin[iM];
     lpplBest = lppl;
+
+L_3b9f:
+    goto L_3aa0;
 
 L_3ba2:
     if ((LOWORD(lpplBest) != 0x0))
@@ -4693,9 +4630,7 @@ L_3d3c:
     if ((HIWORD(lppl) == HIWORD(lpplHere)))
         goto L_3cef;
     else
-        goto L_3d41;
-
-L_3d41:
+        goto L_3d47;
 
 L_3d47:
     lDist = LDistance2(lpfl->pt, rgptPlan[lppl->id]);
@@ -4714,9 +4649,7 @@ L_3d80:
     if ((LOWORD(lDist) > 0x9c40))
         goto L_3cef;
     else
-        goto L_3d87;
-
-L_3d87:
+        goto L_3d8d;
 
 L_3d8d:
     pctCapHere = PctPlanetCapacity(lppl);
@@ -4794,6 +4727,9 @@ L_3e03:
     lpplBest = lppl;
     pctCapMost = pctCapHere;
 
+L_3e15:
+    goto L_3cef;
+
 L_3e18:
     if ((LOWORD(lpplBest) != 0x0))
         goto LMoveToLpplBest;
@@ -4804,9 +4740,7 @@ L_3e21:
     if ((HIWORD(lpplBest) != 0x0))
         goto LMoveToLpplBest;
     else
-        goto L_3e27;
-
-L_3e27:
+        goto L_3e2d;
 
 L_3e2d:
     return -1;
@@ -4851,17 +4785,13 @@ L_3ea1:
     if ((ord.grobj == grobjFleet))
         goto LTryNewTarget;
     else
-        goto L_3eb1;
-
-L_3eb1:
+        goto L_3eb7;
 
 L_3eb7:
     if ((ord.grobj == grobjFleet))
         goto L_42e5;
     else
-        goto L_3ec7;
-
-L_3ec7:
+        goto L_3ecd;
 
 L_3ecd:
     if ((ord.grobj != grobjPlanet))
@@ -4904,9 +4834,7 @@ L_3f36:
     if ((lppl->turn != game.turn))
         goto L_42e5;
     else
-        goto L_3f43;
-
-L_3f43:
+        goto LTryNewTarget;
 
 LTryNewTarget:
     FPotentMacWarFleet(lpfl, &(cshWar));
@@ -4998,6 +4926,7 @@ FinishTargeting:
         goto L_4100;
 
 L_4100:
+    goto L_42e5;
 
 L_4109:
     lpflTarget = LpflFindClosestEnum(lpfl, FEnumCalcEnemyFleets);
@@ -5068,6 +4997,7 @@ L_41df:
         goto L_41f0;
 
 L_41f0:
+    goto L_42e5;
 
 L_41f9:
     if ((cshWar < (vrgAiArmadaPotency[1] & 0xff)))
@@ -5122,9 +5052,7 @@ L_4299:
     if ((Random(10) < 7))
         goto TargetPotentArmada;
     else
-        goto L_42aa;
-
-L_42aa:
+        goto L_42b0;
 
 L_42b0:
     lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
@@ -5134,9 +5062,7 @@ L_42d2:
     if ((lppl->iPlayer == -1))
         goto TargetPotentArmada;
     else
-        goto L_42dc;
-
-L_42dc:
+        goto L_42e5;
 
 L_42e5:
     return;
@@ -5179,9 +5105,7 @@ L_435a:
     if ((cEquiv >= (LOWORD(vrgAiArmadaPotency) & 0xff)))
         goto Success;
     else
-        goto L_4365;
-
-L_4365:
+        goto L_436b;
 
 L_436b:
     ish = 8;

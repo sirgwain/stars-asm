@@ -53,6 +53,14 @@
           "value": "hstSpecialE"
         },
         {
+          "block": "L_4041",
+          "value": "hstSpecialE"
+        },
+        {
+          "block": "L_40c9",
+          "value": "hstSpecialE"
+        },
+        {
           "block": "L_4179",
           "value": "hstSpecialM"
         },
@@ -215,6 +223,10 @@
           "value": "hstEngine"
         },
         {
+          "block": "L_3ad1",
+          "value": "hstEngine"
+        },
+        {
           "block": "L_3aeb",
           "value": "hstScanner"
         },
@@ -283,6 +295,14 @@
           "value": "hstBomb"
         },
         {
+          "block": "L_50bf",
+          "value": "hstSpecialE"
+        },
+        {
+          "block": "L_50f2",
+          "value": "hstSpecialE"
+        },
+        {
           "block": "L_545c",
           "value": "hstSpecialSB"
         },
@@ -329,6 +349,10 @@
         {
           "block": "L_598c",
           "value": "hstMines"
+        },
+        {
+          "block": "L_5bad",
+          "value": "hstMining"
         },
         {
           "block": "L_5cbd",

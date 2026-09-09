@@ -431,24 +431,12 @@ LES       bx, [bp-lpfl]             ; bx, [bp-0xa]
 CMP       es:[bx+0x2], ax     
 JG        L_214f              
 
-L_1d91:
-JMP       L_1d97              
-
-L_1d94:                             ; turn2.c:608
-JMP       L_214f              
-
 L_1d97:                             ; turn2.c:609
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, es:[bx+0x2]     
 LES       bx, [bp-lpfl]             ; bx, [bp-0xa]
 CMP       es:[bx+0x2], ax     
 JL        L_1d42              
-
-L_1da7:
-JMP       L_1dad              
-
-L_1daa:                             ; turn2.c:610
-JMP       L_1d42              
 
 L_1dad:                             ; turn2.c:612
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
@@ -844,9 +832,6 @@ ADD       sp, 0x0014
 MOV       ax, 0x0001          
 JMP       L_2fcf              
 
-L_214c:                             ; turn2.c:639
-JMP       L_1d42              
-
 L_214f:                             ; turn2.c:641
 MOV       ax, 0x0000          
 PUSH      ax                  
@@ -1124,7 +1109,8 @@ JMP       L_2f77
 L_23d6:                             ; turn2.c:686
 MOV       ax, 0x0000          
 JMP       L_2fcf              
-                                    ; turn2.c:691
+
+L_23dc:                             ; turn2.c:691
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, es:[bx+0x14]    
 MOV       dx, es:[bx+0x16]    
@@ -1214,7 +1200,7 @@ PUSH      es:[bx+0x2]
 CALLF     FSendPlrMsg2              ; int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2)
 ADD       sp, 0x000a          
                                     ; turn2.c:708
-JMP       L_2502              
+JMP       L_2fc9              
 
 L_24d7:                             ; turn2.c:711
 MOV       ax, 0x0000          
@@ -1230,15 +1216,13 @@ CALLF     FSendPlrMsg2              ; int16_t FSendPlrMsg2(int16_t iPlr, int16_t
 ADD       sp, 0x000a          
 
 L_24f9:                             ; turn2.c:714
-JMP       L_2502              
+JMP       L_2fc9              
 
 L_24fc:                             ; turn2.c:715
 MOV       ax, 0x0000          
 JMP       L_2fcf              
 
-L_2502:                             ; turn2.c:716
-JMP       L_2fc0              
-                                    ; turn2.c:720
+L_2505:                             ; turn2.c:720
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, es:[bx+0x14]    
 MOV       dx, es:[bx+0x16]    
@@ -1306,7 +1290,8 @@ JMP       SendMsgFactMine
 L_25bb:                             ; turn2.c:729
 MOV       ax, 0x0000          
 JMP       L_2fcf              
-                                    ; turn2.c:735
+
+L_25c4:                             ; turn2.c:735
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, es:[bx+0x18]    
 MOV       dx, es:[bx+0x1a]    
@@ -1372,11 +1357,8 @@ JMP       SendMsgFactMine
 L_2672:                             ; turn2.c:744
 MOV       ax, 0x0000          
 JMP       L_2fcf              
-                                    ; turn2.c:748
-JMP       L_2fc0              
-                                    ; turn2.c:753
-JMP       L_2fc0              
-                                    ; turn2.c:766
+
+L_2681:                             ; turn2.c:766
 MOV       ax, 0x000e          
 PUSH      ax                  
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
@@ -1696,12 +1678,6 @@ AND       ax, 0x3fff
 CMP       ax, 0x065e          
 JC        L_2968              
 
-L_2950:
-JMP       L_2956              
-
-L_2953:                             ; turn2.c:822
-JMP       L_2968              
-
 L_2956:                             ; turn2.c:823
 ADD       [bp-lpth], 0x0012         ; [bp-0x20], 0x0012
 
@@ -1971,8 +1947,9 @@ PUSH      es:[bx+0x2]
 CALLF     FSendPlrMsg2              ; int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2)
 ADD       sp, 0x000a          
                                     ; turn2.c:861
-JMP       L_2fc0              
-                                    ; turn2.c:864
+JMP       L_2fc9              
+
+L_2c05:                             ; turn2.c:864
 MOV       [bp-i], 0x0000            ; [bp-0x6], 0x0000
 JMP       L_2c11              
 
@@ -2133,35 +2110,32 @@ JGE       L_2fc9
 L_2da2:
 JMP       L_2cf2              
 
-L_2da5:                             ; turn2.c:881
-JMP       L_2fc9              
-
 L_2da8:                             ; turn2.c:886
-MOV       ax, [bp+0xe]        
-SUB       [bp+0xe], 0x0001    
+MOV       ax, [bp+cBuilt]           ; ax, [bp+0xe]
+SUB       [bp+cBuilt], 0x0001       ; [bp+0xe], 0x0001
 CMP       ax, 0x0000          
-JZ        L_2ebe              
+JZ        L_2fc9              
 
 L_2db7:                             ; turn2.c:888
 MOV       ax, 0x0001          
 PUSH      ax                  
-PUSH      [bp+0x8]            
-PUSH      [bp+0x6]            
+PUSH      [bp+lppl+0x2]             ; [bp+0x8]
+PUSH      [bp+lppl]                 ; [bp+0x6]
 CALLF     IBestTerraform            ; int16_t IBestTerraform(PLANET *lppl, int16_t fHelp)
 ADD       sp, 0x0006          
-MOV       [bp-0x6], ax        
+MOV       [bp-i], ax                ; [bp-0x6], ax
                                     ; turn2.c:889
-CMP       [bp-0x6], 0x0000    
+CMP       [bp-i], 0x0000            ; [bp-0x6], 0x0000
 JZ        L_2da8              
 
 L_2dd5:                             ; turn2.c:891
-PUSH      [bp-0x6]            
+PUSH      [bp-i]                    ; [bp-0x6]
 CALLF     abs                       ; int16_t abs(int16_t x)
 ADD       sp, 0x0002          
 ADD       ax, 0xffff          
-MOV       [bp-0x16], ax       
+MOV       [bp-iEnv], ax             ; [bp-0x16], ax
                                     ; turn2.c:893
-CMP       [bp-0x6], 0x0000    
+CMP       [bp-i], 0x0000            ; [bp-0x6], 0x0000
 JLE       L_2df5              
 
 L_2def:
@@ -2173,10 +2147,10 @@ MOV       ax, 0xffff
 
 L_2df8:
 MOV       cx, 0x000c          
-MOV       bx, [bp+0x6]        
-MOV       si, [bp+0x8]        
+MOV       bx, [bp+lppl]             ; bx, [bp+0x6]
+MOV       si, [bp+lppl+0x2]         ; si, [bp+0x8]
 ADD       bx, cx              
-MOV       cx, [bp-0x16]       
+MOV       cx, [bp-iEnv]             ; cx, [bp-0x16]
 ADD       bx, cx              
 MOV       es, si              
 MOV       cl, es:[bx]         
@@ -2185,10 +2159,10 @@ MOV       ax, cx
 CBW       ax, al              
 MOV       cx, [bp-0x18]       
 ADD       ax, cx              
-MOV       [bp-0x14], ax       
+MOV       [bp-cAllowed], ax         ; [bp-0x14], ax
                                     ; turn2.c:894
 MOV       ax, 0x0063          
-CMP       ax, [bp-0x14]       
+CMP       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 JGE       L_2e2c              
 
 L_2e26:
@@ -2196,7 +2170,7 @@ MOV       ax, 0x0063
 JMP       L_2e2f              
 
 L_2e2c:
-MOV       ax, [bp-0x14]       
+MOV       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 
 L_2e2f:
 MOV       cx, 0x0001          
@@ -2209,7 +2183,7 @@ JMP       L_2e53
 
 L_2e3f:
 MOV       ax, 0x0063          
-CMP       ax, [bp-0x14]       
+CMP       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 JGE       L_2e50              
 
 L_2e4a:
@@ -2217,17 +2191,17 @@ MOV       ax, 0x0063
 JMP       L_2e53              
 
 L_2e50:
-MOV       ax, [bp-0x14]       
+MOV       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 
 L_2e53:
-MOV       [bp-0x14], ax       
+MOV       [bp-cAllowed], ax         ; [bp-0x14], ax
                                     ; turn2.c:895
-MOV       ax, [bp-0x14]       
+MOV       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 MOV       cx, 0x000c          
-MOV       bx, [bp+0x6]        
-MOV       si, [bp+0x8]        
+MOV       bx, [bp+lppl]             ; bx, [bp+0x6]
+MOV       si, [bp+lppl+0x2]         ; si, [bp+0x8]
 ADD       bx, cx              
-MOV       cx, [bp-0x16]       
+MOV       cx, [bp-iEnv]             ; cx, [bp-0x16]
 ADD       bx, cx              
 MOV       es, si              
 MOV       es:[bx], al         
@@ -2239,12 +2213,12 @@ PUSH      ax
 MOV       ax, 0x0000          
 PUSH      ax                  
 MOV       cx, 0x0008          
-MOV       ax, [bp-0x16]       
+MOV       ax, [bp-iEnv]             ; ax, [bp-0x16]
 SHL       ax, cx              
-ADD       ax, [bp-0x14]       
+ADD       ax, [bp-cAllowed]         ; ax, [bp-0x14]
 PUSH      ax                  
-PUSH      [bp-0x16]           
-CMP       [bp-0x6], 0x0000    
+PUSH      [bp-iEnv]                 ; [bp-0x16]
+CMP       [bp-i], 0x0000            ; [bp-0x6], 0x0000
 JLE       L_2e98              
 
 L_2e92:
@@ -2256,13 +2230,13 @@ MOV       ax, 0x0000
 
 L_2e9b:
 PUSH      ax                  
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx]             
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx]             
 MOV       ax, 0x007b          
 PUSH      ax                  
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx+0x2]         
 CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
@@ -2270,25 +2244,24 @@ ADD       sp, 0x0014
 L_2ebb:                             ; turn2.c:900
 JMP       L_2da8              
 
-L_2ebe:                             ; turn2.c:901
-JMP       L_2fc0              
-                                    ; turn2.c:908
-LES       bx, [bp+0x6]        
+L_2ec1:                             ; turn2.c:908
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, es:[bx+0x2]     
-MOV       [0x018c], ax        
+MOV       [idPlayer], ax            ; [0x018c], ax
                                     ; turn2.c:909
-LEA       ax, [bp-0x1c]       
+LEA       ax, [bp-part]             ; ax, [bp-0x1c]
 PUSH      ax                  
 CALLF     LookupBestPlanetaryScanner; void LookupBestPlanetaryScanner(PART *ppart)
 ADD       sp, 0x0002          
                                     ; turn2.c:910
-MOV       [0x018c], 0xffff    
+MOV       [idPlayer], 0xffff        ; [0x018c], 0xffff
                                     ; turn2.c:912
-MOV       ax, [bp-0x1a]       
+MOV       ax, [bp-part+0x2]         ; ax, [bp-0x1a]
 AND       ax, 0x00ff          
 ADD       ax, 0x0012          
-MOV       [bp+0xc], ax        
-                                    ; turn2.c:926
+MOV       [bp+iItem], ax            ; [bp+0xc], ax
+
+L_2ee9:                             ; turn2.c:926
 MOV       ax, 0x0000          
 PUSH      ax                  
 MOV       ax, 0x0000          
@@ -2297,23 +2270,23 @@ MOV       ax, 0x0000
 PUSH      ax                  
 MOV       ax, 0x0000          
 PUSH      ax                  
-MOV       ax, [bp+0xc]        
+MOV       ax, [bp+iItem]            ; ax, [bp+0xc]
 ADD       ax, 0xffee          
 PUSH      ax                  
 MOV       ax, 0x8000          
 PUSH      ax                  
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx]             
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx]             
 MOV       ax, 0x007c          
 PUSH      ax                  
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx+0x2]         
 CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; turn2.c:927
-MOV       ax, [bp+0xc]        
+MOV       ax, [bp+iItem]            ; ax, [bp+0xc]
 ADD       ax, 0xffee          
 CWD       dx, ax              
 MOV       [bp-0x18], ax       
@@ -2324,7 +2297,7 @@ AND       ax, 0x001f
 AND       dx, 0x0000          
 MOV       cx, 0x000c          
 CALLF     __aFlshl                  ; int32_t __aFlshl(int32_t val, uint16_t shift)
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       cx, es:[bx+0x18]    
 MOV       bx, es:[bx+0x1a]    
 AND       cx, 0x0fff          
@@ -2333,7 +2306,7 @@ OR        cx, ax
 OR        bx, dx              
 MOV       [bp-0x1c], cx       
 MOV       [bp-0x1a], bx       
-LES       bx, [bp+0x6]        
+LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 MOV       ax, [bp-0x1c]       
 MOV       dx, [bp-0x1a]       
 MOV       es:[bx+0x18], ax    
@@ -2348,38 +2321,7 @@ JA        L_23d6
 L_2f7f:
 SHL       ax, 0x0001          
 MOV       bx, ax              
-JMP       L_ffffffff          
-DW        0x2505                    ; L_2505
-DW        0x23dc                    ; L_23dc
-DW        0x25c4                    ; L_25c4
-DW        0x267e                    ; L_267e
-DW        0x2da8                    ; L_2da8
-DW        0x2da8                    ; L_2da8
-DW        0x2681                    ; L_2681
-DW        0x23dc                    ; L_23dc
-DW        0x2505                    ; L_2505
-DW        0x25c4                    ; L_25c4
-DW        0x267b                    ; L_267b
-DW        0x267e                    ; L_267e
-DW        0x2da8                    ; L_2da8
-DW        0x2c05                    ; L_2c05
-DW        0x2681                    ; L_2681
-DW        0x2681                    ; L_2681
-DW        0x2681                    ; L_2681
-DW        0x2681                    ; L_2681
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ee9                    ; L_2ee9
-DW        0x2ec1                    ; L_2ec1
-
-L_2fc0:                             ; turn2.c:931
-JMP       L_2fc9              
+JMP       cs:[bx+0x2f88]      
 
 L_2fc3:                             ; turn2.c:934
 MOV       ax, 0x0000          

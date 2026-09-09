@@ -1,23 +1,18 @@
 int16_t FGetBestDefensePart(PART *ppart) {
-    int16_t  fRet;
-    int16_t  i;
-    PART     part;
-    uint16_t scratch_bp_m10;
-    uint16_t scratch_bp_m12;
+    int16_t fRet;
+    int16_t i;
+    PART    part;
 
 L_21f6:
     fRet = 1;
     part.hs.grhst = hstPlanetary;
-    part.hs.iItem = 0x9;
+    part.hs.iItem = iplanetarySDI;
     i = 0;
     goto L_2250;
 
 L_221d:
     i = (i + 1);
-    scratch_bp_m10 = part.hs.iItem;
-    scratch_bp_m12 = ((HIWORD(part.hs) + 0x1) & 0xff);
-    part.hs.iItem = 0x0;
-    HIWORD(part.hs) = (HIWORD(part.hs) | scratch_bp_m12);
+    part.hs.iItem = (part.hs.iItem + 0x1);
 
 L_2250:
     if ((i >= 5))
@@ -26,12 +21,10 @@ L_2250:
         goto L_2259;
 
 L_2259:
-    if ((FLookupPart(&(part)) != 1))
-        goto L_2273;
+    if ((FLookupPart(&(part)) == 1))
+        goto L_221d;
     else
-        goto L_226a;
-
-L_226a:
+        goto L_2273;
 
 L_2273:
     if ((i <= 0))

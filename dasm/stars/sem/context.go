@@ -262,14 +262,7 @@ func (ctx *FuncContext) maskedStorageWrite(mem machine.MemoryAddress, value mach
 // maskedStorageWrite reports whether value preserves bits from the
 // destination storage using the supplied storage equivalence predicate.
 func maskedStorageWrite(mem machine.MemoryAddress, value machine.Value, same func(machine.MemoryAddress, machine.MemoryAddress) bool) bool {
-	if or, ok := value.(*machine.Binary); ok && or.Op == machine.ValueOpOr {
-		if _, _, ok := bitfieldKeepMask(mem, or.LHS, same); ok {
-			return true
-		}
-		_, _, ok := bitfieldKeepMask(mem, or.RHS, same)
-		return ok
-	}
-	_, _, ok := bitfieldKeepMask(mem, value, same)
+	_, _, _, ok := bitfieldStoreParts(mem, value, same)
 	return ok
 }
 

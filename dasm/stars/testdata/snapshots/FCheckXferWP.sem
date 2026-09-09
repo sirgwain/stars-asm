@@ -1,0 +1,119 @@
+/*
+FCheckXferWP  (tutor)
+  addr: 0020:7280  len=450
+  sig:  int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITEMACTION *lpiaGoal)
+  params:
+    uint16_t         ifl            [BP+0x6]
+    int16_t          iord           [BP+0x8]
+    int16_t          id             [BP+0xa]
+    uint16_t         iWarp          [BP+0xc]
+    ITEMACTION *     lpiaGoal       [BP+0xe]
+  locals:
+    int16_t          idhSav         [BP-0x24]
+    GrobjClass       grobj          [BP-0x22]
+    int16_t          idh            [BP-0x20]
+    FLEET *          lpfl           [BP-0x1e]
+    int16_t          i              [BP-0x1a]
+    ITEMACTION *     piaCur         [BP-0x18]
+    int16_t          fRet           [BP-0x16]
+    ORDER            ord            [BP-0x14]
+
+  stats: blocks=0  labels=1
+    LReturn: L_73fa
+*/
+L_7280:
+    fRet = 0
+    idhSav = tutor.idh
+    branch (id & 0x8000) == 0x0 ? L_72af : L_72a2
+
+L_72a2:
+    id = (id & 0x7fff)
+    grobj = grobjFleet
+    goto L_72b4
+
+L_72af:
+    grobj = grobjPlanet
+
+L_72b4:
+    lpfl = LpflFromId(ifl)
+    branch LOWORD(lpfl) != 0x0 ? L_72de : L_72cf
+
+L_72cf:
+    branch HIWORD(lpfl) != 0x0 ? L_72de : L_72d8
+
+L_72d8:
+    return 0
+
+L_72de:
+    branch FCheckFleetWP(ifl, iord, grobj, id, 0x1, iWarp) != 0 ? L_7308 : L_7302
+
+L_7302:
+    return 0
+
+L_7308:
+    ord = lpfl->lpplord->rgord[iord]
+    piaCur = ord.txp.rgia
+    tutor.idh = 1519
+    i = 0
+    goto L_7361
+
+L_7347:
+    i = (i + 1)
+    piaCur = (piaCur + 0x2)
+    lpiaGoal = (lpiaGoal + 0x2)
+
+L_7361:
+    branch i >= 5 ? L_73f5 : L_736a
+
+L_736a:
+    branch piaCur->iAction == lpiaGoal->iAction ? L_73b0 : L_738c
+
+L_738c:
+    branch piaCur->iAction == iActionNone ? L_73fa : L_73a1
+
+L_73a1:
+    call TutorError(616) -> callresult(void)
+
+L_73ad:
+    goto L_73fa
+
+L_73b0:
+    goto L_73df
+
+L_73c0:
+    branch piaCur->cQuan != lpiaGoal->cQuan ? L_73fa : L_73d6
+
+L_73d6:
+    goto L_7347
+
+L_73df:
+    branch piaCur->iAction == iActionUnloadExact ? L_73c0 : L_73e7
+
+L_73e7:
+    branch piaCur->iAction != iActionSetAmount ? L_7347 : L_73ec
+
+L_73ec:
+    goto L_73c0
+
+L_73f5:
+    fRet = 1
+
+LReturn:
+    idh = tutor.idh
+    branch fRet != 0 ? L_7427 : L_7409
+
+L_7409:
+    branch FCheckSelection(grobjFleet, ifl) == 0 ? L_7427 : L_7421
+
+L_7421:
+    tutor.idh = idh
+
+L_7427:
+    branch fRet == 0 ? L_7436 : L_7430
+
+L_7430:
+    tutor.idh = idhSav
+
+L_7436:
+    return fRet
+

@@ -93,6 +93,8 @@ L_6174:
 L_617d:
     call FLookupPlanet(-1, &xfer.pl) -> callresult(int16_t)
 
+L_618d:
+    goto L_64bd
 
 L_6190:
     branch grobj != grobjThing ? L_6320 : L_6199
@@ -177,6 +179,8 @@ L_6305:
 L_630e:
     call FLookupThing(-1, pth) -> callresult(int16_t)
 
+L_631d:
+    goto L_64bd
 
 L_6320:
     branch pobj == 0x0 ? L_6333 : L_6329

@@ -63,12 +63,6 @@ L_17ef:
 CMP       es:[bx+0x36], 0x0000
 JZ        L_17a3              
 
-L_17f6:
-JMP       L_17fc              
-
-L_17f9:                             ; aiutil.c:939
-JMP       L_17a3              
-
 L_17fc:                             ; aiutil.c:941
 LES       bx, [bp-lppl]             ; bx, [bp-0x16]
 LES       bx, es:[bx+0x34]    
@@ -146,12 +140,6 @@ L_18bd:
 CMP       dx, 0x0000          
 JZ        L_17a3              
 
-L_18c2:
-JMP       L_18c8              
-
-L_18c5:                             ; aiutil.c:946
-JMP       L_17a3              
-
 L_18c8:                             ; aiutil.c:948
 LES       bx, [bp-lppl]             ; bx, [bp-0x16]
 PUSH      es:[bx]             
@@ -177,12 +165,6 @@ ADD       sp, 0x000e
                                     ; aiutil.c:951
 CMP       [bp-etaFirst], 0x0001     ; [bp-0x12], 0x0001
 JZ        L_17a3              
-
-L_1903:
-JMP       L_1909              
-
-L_1906:                             ; aiutil.c:952
-JMP       L_17a3              
 
 L_1909:                             ; aiutil.c:953
 CMP       [bp-etaFirst], 0xffff     ; [bp-0x12], 0xffff
@@ -271,12 +253,6 @@ JG        L_17a3
 L_19cb:
 CMP       [bp-rgCost+0xc], ax       ; [bp-0x24], ax
 JA        L_17a3              
-
-L_19d0:
-JMP       L_19d6              
-
-L_19d3:                             ; aiutil.c:961
-JMP       L_17a3              
 
 L_19d6:                             ; aiutil.c:963
 MOV       cx, 0x0008          
@@ -505,12 +481,6 @@ JL        L_17a3
 L_1bf4:
 CMP       [bp-cBuild], 0x0001       ; [bp-0x10], 0x0001
 JC        L_17a3              
-
-L_1bfa:
-JMP       L_1c03              
-
-L_1bfd:                             ; aiutil.c:1006
-JMP       L_17a3              
 
 L_1c03:                             ; aiutil.c:1010
 LES       bx, [sel+0xcc]            ; bx, [0x4a22]

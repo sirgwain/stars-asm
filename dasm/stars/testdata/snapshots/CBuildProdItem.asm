@@ -502,12 +502,6 @@ L_10f3:
 CMP       ax, [si]            
 JA        L_110a              
 
-L_10f7:
-JMP       L_10fd              
-
-L_10fa:                             ; turn2.c:378
-JMP       L_110a              
-
 L_10fd:                             ; turn2.c:380
 ADD       [bp-i], 0x0001            ; [bp-0x34], 0x0001
 
@@ -748,12 +742,6 @@ L_1305:                             ; turn2.c:413
 CMP       [bp+fAlchemy], 0x0000     ; [bp+0x12], 0x0000
 JNZ       LAlchemize          
 
-L_130b:
-JMP       L_1314              
-
-L_130e:                             ; turn2.c:414
-JMP       LAlchemize          
-
 L_1314:                             ; turn2.c:417
 MOV       [bp-fAutoBuild], 0x0002   ; [bp-0x1e], 0x0002
                                     ; turn2.c:418
@@ -839,12 +827,6 @@ JZ        L_1712
 L_13d5:
 CMP       [bp-fResourceBlocked], 0x0000 ; [bp-0x36], 0x0000
 JNZ       L_1712              
-
-L_13db:
-JMP       LAlchemize          
-
-L_13de:                             ; turn2.c:431
-JMP       L_1712              
 
 LAlchemize:                         ; turn2.c:433
 MOV       ax, 0x0006          
@@ -958,12 +940,6 @@ JNZ       L_14de
 L_14d3:
 CMP       [bp-cCanBuild+0x2], dx    ; [bp-0xe], dx
 JZ        L_108f              
-
-L_14d8:
-JMP       L_14de              
-
-L_14db:                             ; turn2.c:446
-JMP       L_108f              
 
 L_14de:                             ; turn2.c:448
 MOV       bx, [bp+rgRes]            ; bx, [bp+0x10]
@@ -1197,9 +1173,6 @@ JGE       L_108f
 
 L_170c:
 JMP       L_16ba              
-
-L_170f:                             ; turn2.c:476
-JMP       L_108f              
 
 L_1712:                             ; turn2.c:479
 CMP       [bp-cBuilt], 0x0000       ; [bp-0x20], 0x0000

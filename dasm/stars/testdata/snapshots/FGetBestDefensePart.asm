@@ -57,16 +57,7 @@ PUSH      ax
 CALLF     FLookupPart               ; int16_t FLookupPart(PART *ppart)
 ADD       sp, 0x0002          
 CMP       ax, 0x0001          
-JNZ       L_2273              
-
-L_226a:
-JMP       L_221d              
-
-L_226d:                             ; planet.c:865
-JMP       L_2273              
-
-L_2270:                             ; planet.c:867
-JMP       L_221d              
+JZ        L_221d              
 
 L_2273:
 CMP       [bp-i], 0x0000            ; [bp-0x6], 0x0000

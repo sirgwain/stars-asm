@@ -15,7 +15,7 @@ block L_4146:
 
 block L_4152:
   insts 6..20  off 0x4152..0x4172
-  preds: L_4146, L_4182, L_41cb, L_41d3, L_41d6
+  preds: L_4146, L_41cb
   succs: L_4176, L_417c
   effects:
     4169  call PeekMessage(words(ss, addr([bp-msg])), 0x0, 0x0, 0x0, 0x1) -> callresult(int16_t)
@@ -35,13 +35,9 @@ block L_417c:
   effects:
     417f  goto L_41c3
 
-block L_4182:
-  insts 26..26  off 0x4182..0x4184
-  succs: L_4152
-
 block L_4185:
   insts 27..40  off 0x4185..0x41b0
-  preds: L_41c3, L_41cb, L_41d0
+  preds: L_41c3, L_41d0
   succs: L_41b4, L_41ba
   effects:
     418e  store[2] ds:[load([bp+ppt])] = load@4185/src([bp-msg+0x6])
@@ -59,11 +55,14 @@ block L_41b4:
 block L_41ba:
   insts 44..44  off 0x41ba..0x41bc
   preds: L_4185
-  succs: L_41d9
+  succs: L_41bd
 
 block L_41bd:
   insts 45..45  off 0x41bd..0x41bf
+  preds: L_41ba
   succs: L_41d9
+  effects:
+    41bd  goto L_41d9
 
 block L_41c3:
   insts 46..47  off 0x41c3..0x41c7
@@ -75,24 +74,19 @@ block L_41c3:
 block L_41cb:
   insts 49..50  off 0x41cb..0x41cf
   preds: L_41c3
-  succs: L_4152, L_4185
+  succs: L_4152, L_41d0
   effects:
     41ce  branch load([bp-msg+0x2]) != 0x202 ? L_4152 : L_41d0
 
 block L_41d0:
   insts 51..51  off 0x41d0..0x41d2
+  preds: L_41cb
   succs: L_4185
-
-block L_41d3:
-  insts 52..52  off 0x41d3..0x41d5
-  succs: L_4152
-
-block L_41d6:
-  insts 53..53  off 0x41d6..0x41d8
-  succs: L_4152
+  effects:
+    41d0  goto L_4185
 
 block L_41d9:
   insts 54..58  off 0x41d9..0x41de
-  preds: L_4176, L_41b4, L_41ba, L_41bd
+  preds: L_4176, L_41b4, L_41bd
   effects:
-    41de  return merge(Join: L_41d9, (L_4176:0x1, L_41b4:0x1, L_41ba:0x0))
+    41de  return merge(Join: L_41d9, (L_4176:0x1, L_41b4:0x1, L_41bd:0x0))

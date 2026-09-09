@@ -103,6 +103,7 @@ L_0211:
         goto L_0217;
 
 L_0217:
+    goto L_003a;
 
 L_021d:
     ShowTooltip(0xffff, 0x0);
@@ -114,9 +115,7 @@ L_021d:
     if ((itb < 0))
         goto L_06de;
     else
-        goto L_026e;
-
-L_026e:
+        goto L_0274;
 
 L_0274:
     fDown = FIsButtonDown(itb);
@@ -205,6 +204,9 @@ L_0375:
     DrawBitmapButton(hdc, ptBtn, itb, (fDown + fInside));
     fCur = fInside;
 
+L_0396:
+    goto L_0341;
+
 L_0399:
     ReleaseCapture();
     if ((fInside == 0))
@@ -268,9 +270,7 @@ L_0473:
     if ((pt.y == vptTbLast.y))
         goto L_06de;
     else
-        goto L_0478;
-
-L_0478:
+        goto L_047e;
 
 L_047e:
     vptTbLast.x = pt.x;
@@ -330,6 +330,9 @@ L_057f:
 
 L_059b:
     PostMessage(hwnd, 0x5f4, 0x0, 0);
+
+L_05b3:
+    goto L_06de;
 
 L_05b6:
     TerminateToolbarFocus(0);
@@ -417,6 +420,7 @@ L_06d3:
         goto L_06d8;
 
 L_06d8:
+    goto L_05b6;
 
 L_06de:
     return 0;
@@ -533,6 +537,9 @@ L_098d:
 L_09e3:
     PatBlt(hdc, (pt.x + 2), (pt.y + 26), (dx - 4), 1, PATCOPY);
     PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 2), 1, 24, PATCOPY);
+
+L_0a35:
+    goto L_0a8a;
 
 L_0a38:
     PatBlt(hdc, (pt.x + 2), (pt.y + 25), (dx - 4), 2, PATCOPY);
@@ -666,6 +673,8 @@ L_0c13:
     return 60;
 
 L_0c19:
+
+L_0c1c:
     return 70;
 
 L_0c22:
@@ -681,42 +690,50 @@ L_0c2d:
 int16_t FIsButtonDown(int16_t itb) {
 L_0c3a:
     goto L_0d62;
+
+L_0c49:
     if (((grbitScan & 0xf) != itb))
         goto L_0c5f;
     else
         goto L_0c59;
 
 L_0c59:
-    goto L_0c62;
+    return 1;
 
 L_0c5f:
 
 L_0c62:
-    goto L_0d9d;
+    return 0;
+
+L_0c65:
     if (((grbitScan & 0x10) == 0x0))
         goto L_0c79;
     else
         goto L_0c73;
 
 L_0c73:
-    goto L_0c7c;
+    return 1;
 
 L_0c79:
 
 L_0c7c:
-    goto L_0d9d;
+    return 0;
+
+L_0c7f:
     if (((grbitScan & 0x20) == 0x0))
         goto L_0c93;
     else
         goto L_0c8d;
 
 L_0c8d:
-    goto L_0c96;
+    return 1;
 
 L_0c93:
 
 L_0c96:
-    goto L_0d9d;
+    return 0;
+
+L_0c99:
     if (((grbitScan & 0x40) == 0x0))
         goto L_0cb7;
     else
@@ -729,89 +746,147 @@ L_0ca7:
         goto L_0cb1;
 
 L_0cb1:
-    goto L_0cba;
+    return 1;
 
 L_0cb7:
 
 L_0cba:
-    goto L_0d9d;
+    return 0;
+
+L_0cbd:
     if (((grbitScan & 0x80) == 0x0))
         goto L_0cd1;
     else
         goto L_0ccb;
 
 L_0ccb:
-    goto L_0cd4;
+    return 1;
 
 L_0cd1:
 
 L_0cd4:
-    goto L_0d9d;
+    return 0;
+
+L_0cd7:
     if (((grbitScan & 0x100) == 0x0))
         goto L_0ceb;
     else
         goto L_0ce5;
 
 L_0ce5:
-    goto L_0cee;
+    return 1;
 
 L_0ceb:
 
 L_0cee:
-    goto L_0d9d;
+    return 0;
+
+L_0cf1:
     if (((grbitScan & 0x400) == 0x0))
         goto L_0d05;
     else
         goto L_0cff;
 
 L_0cff:
-    goto L_0d08;
+    return 1;
 
 L_0d05:
 
 L_0d08:
-    goto L_0d9d;
+    return 0;
+
+L_0d0b:
     if (((grbitScan & 0x1000) == 0x0))
         goto L_0d1f;
     else
         goto L_0d19;
 
 L_0d19:
-    goto L_0d22;
+    return 1;
 
 L_0d1f:
 
 L_0d22:
-    goto L_0d9d;
+    return 0;
+
+L_0d25:
     if (((grbitScan & 0x200) == 0x0))
         goto L_0d39;
     else
         goto L_0d33;
 
 L_0d33:
-    goto L_0d3c;
+    return 1;
 
 L_0d39:
 
 L_0d3c:
-    goto L_0d9d;
+    return 0;
+
+L_0d3f:
     if (((grbitScan & 0x800) == 0x0))
         goto L_0d53;
     else
         goto L_0d4d;
 
 L_0d4d:
-    goto L_0d56;
+    return 1;
 
 L_0d53:
 
 L_0d56:
-    goto L_0d9d;
-    goto L_0d9d;
+    return 0;
+
+L_0d59:
+    return 0;
 
 L_0d62:
+    if ((itb > 17))
+        goto L_0d97;
+    else
+        goto L_0d6a;
 
-L_0d9d:
+L_0d6a:
+    switch ((itb * 2)) {
+    case 0x0:
+        goto L_0c49;
+    case 0x2:
+        goto L_0c49;
+    case 0x4:
+        goto L_0c49;
+    case 0x6:
+        goto L_0c49;
+    case 0x8:
+        goto L_0c49;
+    case 0xa:
+        goto L_0c49;
+    case 0xc:
+        goto L_0c65;
+    case 0xe:
+        goto L_0c7f;
+    case 0x10:
+        goto L_0c99;
+    case 0x12:
+        goto L_0cbd;
+    case 0x14:
+        goto L_0cd7;
+    case 0x16:
+        goto L_0cf1;
+    case 0x18:
+        goto L_0d25;
+    case 0x1a:
+        goto L_0d59;
+    case 0x1c:
+        goto L_0d3f;
+    case 0x1e:
+        goto L_0d59;
+    case 0x20:
+        goto L_0d59;
+    case 0x22:
+        goto L_0d0b;
+    }
+
+L_0d97:
     return 0;
 }
 
@@ -837,18 +912,17 @@ L_0db6:
     gd.fChgScanner = 0x1;
     goto L_160f;
 
-L_0dd1:
-    goto L_167a;
+L_0dd4:
     if ((fDown == 0))
         goto L_167a;
     else
-        goto L_0dda;
-
-L_0dda:
+        goto L_0de0;
 
 L_0de0:
     grbitScan = (itb + (grbitScan & 0x3ff0));
     goto L_1644;
+
+L_0df2:
     grbitNew = 0x10;
 
 LBitDiddle:
@@ -859,27 +933,43 @@ LBitDiddle:
 
 L_0e00:
     grbitScan = (grbitScan | grbitNew);
-    goto L_0e13;
+    goto L_1644;
 
 L_0e0a:
     grbitScan = (grbitScan & (~grbitNew));
 
 L_0e13:
     goto L_1644;
+
+L_0e16:
     grbitNew = 0x20;
     goto LBitDiddle;
+
+L_0e1e:
     grbitNew = 0x80;
     goto LBitDiddle;
+
+L_0e26:
     grbitNew = 0x100;
     goto LBitDiddle;
+
+L_0e2e:
     grbitNew = 0x400;
     goto LBitDiddle;
+
+L_0e36:
     grbitNew = 0x1000;
     goto LBitDiddle;
+
+L_0e3e:
     grbitNew = 0x200;
     goto LBitDiddle;
+
+L_0e46:
     grbitNew = 0x800;
     goto LBitDiddle;
+
+L_0e4e:
     grbit = 0x1;
     c = 0;
     if (((grbitScan & 0x40) != 0x0))
@@ -987,9 +1077,7 @@ L_0fc3:
     if ((iSel == -1))
         goto L_167a;
     else
-        goto L_100d;
-
-L_100d:
+        goto L_1013;
 
 L_1013:
     if ((iSel >= 3))
@@ -1009,6 +1097,9 @@ L_1025:
 
 L_102e:
     grbitScanMines = 0x0;
+
+L_1034:
+    goto L_1047;
 
 L_1037:
     iSel = (iSel - 3);
@@ -1030,6 +1121,8 @@ L_1059:
 L_105e:
     InvalidateRect(hwndTb, 0x0, 1);
     goto L_1644;
+
+L_1076:
     c = 0;
     i = 1275;
     goto L_10d9;
@@ -1091,6 +1184,9 @@ L_1176:
     c = (c + 1);
     rgszScan[c] = ((0x3f00 + LOWORD((0x93 * ish))) + 0x8);
 
+L_11a8:
+    goto L_1125;
+
 L_11ab:
     GetCursorPos(&(pt));
     ScreenToClient(hwndTb, &(pt));
@@ -1098,9 +1194,7 @@ L_11ab:
     if ((iSel == -1))
         goto L_167a;
     else
-        goto L_11f8;
-
-L_11f8:
+        goto L_11fe;
 
 L_11fe:
     if ((iSel >= 4))
@@ -1144,6 +1238,7 @@ L_1241:
         goto L_1248;
 
 L_1248:
+    goto L_12e6;
 
 L_1251:
     iSel = (iSel - 4);
@@ -1161,9 +1256,7 @@ L_127c:
     if ((iSel < 0))
         goto L_129d;
     else
-        goto L_128a;
-
-L_128a:
+        goto L_1290;
 
 L_1290:
     ish = (ish + 1);
@@ -1198,9 +1291,9 @@ L_12e6:
         goto L_12f1;
 
 L_12f1:
-
-L_12f7:
     goto L_1644;
+
+L_12fa:
     grbit = 0x1;
     c = 0;
     i = 1275;
@@ -1261,9 +1354,7 @@ L_1417:
     if ((iSel == -1))
         goto L_167a;
     else
-        goto L_1461;
-
-L_1461:
+        goto L_1467;
 
 L_1467:
     if ((iSel >= 4))
@@ -1307,6 +1398,7 @@ L_14a8:
         goto L_14af;
 
 L_14af:
+    goto L_1505;
 
 L_14b8:
     iSel = (iSel - 4);
@@ -1333,9 +1425,9 @@ L_1505:
         goto L_1510;
 
 L_1510:
-
-L_1516:
     goto L_1644;
+
+L_1519:
     c = 0;
     i = 0;
     goto L_159d;
@@ -1373,9 +1465,7 @@ L_15a6:
     if ((iSel == -1))
         goto L_167a;
     else
-        goto L_15f0;
-
-L_15f0:
+        goto L_15f6;
 
 L_15f6:
     CommandHandler(hwndFrame, (iSel + 3901));
@@ -1383,12 +1473,49 @@ L_15f6:
 
 L_160f:
     if ((itb > 17))
-        goto L_0dd1;
+        goto L_167a;
     else
         goto L_1617;
 
 L_1617:
-    goto L_ffffffff;
+    switch ((itb * 2)) {
+    case 0x0:
+        goto L_0dd4;
+    case 0x2:
+        goto L_0dd4;
+    case 0x4:
+        goto L_0dd4;
+    case 0x6:
+        goto L_0dd4;
+    case 0x8:
+        goto L_0dd4;
+    case 0xa:
+        goto L_0dd4;
+    case 0xc:
+        goto L_0df2;
+    case 0xe:
+        goto L_0e16;
+    case 0x10:
+        goto L_0e4e;
+    case 0x12:
+        goto L_0e1e;
+    case 0x14:
+        goto L_0e26;
+    case 0x16:
+        goto L_0e2e;
+    case 0x18:
+        goto L_0e3e;
+    case 0x1a:
+        goto L_1076;
+    case 0x1c:
+        goto L_0e46;
+    case 0x1e:
+        goto L_12fa;
+    case 0x20:
+        goto L_1519;
+    case 0x22:
+        goto L_0e36;
+    }
 
 L_1644:
     if ((itb == 6))
@@ -1425,7 +1552,7 @@ L_1680:
 
 L_169e:
     GetWindowText(hwndTBRadar, szWork, 20);
-    psz = &(szWork);
+    psz = szWork;
     pct = 0;
 
 L_16bc:
@@ -1459,6 +1586,9 @@ L_1707:
 
 L_1715:
     pct = 0;
+
+L_171a:
+    goto L_1723;
 
 L_171d:
     pct = vpctRadarView;
@@ -1517,8 +1647,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
     int16_t  cch;
     int16_t  fShowNow;
     uint16_t t_merge_1817_0001;
-    uint16_t scratch_bp_m10;
-    uint16_t scratch_bp_me;
+    uint32_t t_scratch_m10_wide;
     uint32_t t_call_1991;
     uint16_t t_merge_19c1_0001;
 
@@ -1572,6 +1701,9 @@ L_183f:
 L_1848:
     vtickTooltipLast = GetTickCount();
 
+L_1854:
+    goto L_19dd;
+
 L_1857:
     if ((ids != vidsTooltip))
         goto L_1880;
@@ -1582,9 +1714,7 @@ L_1862:
     if ((EqualRect(prc, vrcTooltip.left) != 0))
         goto L_19dd;
     else
-        goto L_187a;
-
-L_187a:
+        goto L_1880;
 
 L_1880:
     vidsTooltip = ids;
@@ -1609,22 +1739,21 @@ L_1942:
 
 L_1957:
     SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), 0x216);
-    scratch_bp_m10 = (LOWORD(vtickTooltipLast) + 0x190);
-    scratch_bp_me = (HIWORD(vtickTooltipLast) + 0x0);
+    t_scratch_m10_wide = (vtickTooltipLast + 0x190);
     t_call_1991 = GetTickCount();
-    if ((scratch_bp_me > HIWORD(t_call_1991)))
+    if ((HIWORD(t_scratch_m10_wide) > HIWORD(t_call_1991)))
         goto L_19b8;
     else
         goto L_19a3;
 
 L_19a3:
-    if ((scratch_bp_me < HIWORD(t_call_1991)))
+    if ((HIWORD(t_scratch_m10_wide) < HIWORD(t_call_1991)))
         goto L_19af;
     else
         goto L_19a8;
 
 L_19a8:
-    if ((scratch_bp_m10 >= LOWORD(t_call_1991)))
+    if ((LOWORD(t_scratch_m10_wide) >= LOWORD(t_call_1991)))
         goto L_19b8;
     else
         goto L_19af;
@@ -1722,9 +1851,7 @@ L_1a94:
     if ((wParam != 0x39e))
         goto L_1d53;
     else
-        goto L_1a9b;
-
-L_1a9b:
+        goto L_1aa1;
 
 L_1aa1:
     if ((msg != WM_TIMER))
@@ -1744,9 +1871,7 @@ L_1abb:
     if ((PtInRect(vrcTooltip.left, pt) == 0))
         goto LKillTip;
     else
-        goto L_1aea;
-
-L_1aea:
+        goto L_1af0;
 
 L_1af0:
     ScreenToClient(hwndFrame, &(pt));

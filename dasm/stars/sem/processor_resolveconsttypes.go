@@ -355,7 +355,7 @@ func semanticPeerType(expr Expr) typeinfo.Type {
 // operation whose constants should retain unsigned machine typing.
 func isBitwiseBinaryOp(op Op) bool {
 	switch op {
-	case OpAnd, OpOr, OpXor, OpShl, OpShr:
+	case OpAnd, OpOr, OpXor, OpShl, OpShr, OpSar:
 		return true
 	default:
 		return false

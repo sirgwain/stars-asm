@@ -99,7 +99,11 @@ func TestConvertBitfieldThroughFlexibleArray(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			field, ok := converter.resolveBitfieldLValue(storage, tt.bitOff, tt.bitWidth)
+			field, ok := converter.resolveBitfieldLValue(storage, BitfieldAccess{
+				StorageWidth: storage.Width,
+				BitOff:       tt.bitOff,
+				BitWidth:     tt.bitWidth,
+			})
 			if !ok {
 				t.Fatal("flexible-array bitfield did not project")
 			}

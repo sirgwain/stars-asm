@@ -40,9 +40,6 @@ L_417c:                             ; utilgen.c:1299
 MOV       ax, [bp-msg+0x2]          ; ax, [bp-0x12]
 JMP       L_41c3              
 
-L_4182:                             ; utilgen.c:1302
-JMP       L_4152              
-
 L_4185:                             ; utilgen.c:1305
 MOV       ax, [bp-msg+0x6]          ; ax, [bp-0xe]
 MOV       dx, [bp-0xc]        
@@ -81,12 +78,6 @@ JNZ       L_4152
 
 L_41d0:
 JMP       L_4185              
-
-L_41d3:
-JMP       L_4152              
-
-L_41d6:                             ; utilgen.c:1309
-JMP       L_4152              
 
 L_41d9:                             ; utilgen.c:1310
 POP       di                  

@@ -233,12 +233,15 @@ L_0515:
 
 L_0523:
     lphul->rghs[0].grhst = hstEngine;
-    HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff00) | 0x1);
-    HIWORD(lphul->rghs[0x0]) = ((HIWORD(lphul->rghs[0x0]) & 0xff) | ((lphulBase->rghs[0x0].cItem & 0xff) << 0x8));
+    lphul->rghs[0].iItem = 0x1;
+    lphul->rghs[0].cItem = lphulBase->rghs[0x0].cItem;
     part.hs.grhst = lphul->rghs[0x0].grhst;
     HIWORD(part.hs) = HIWORD(lphul->rghs[0x0]);
     FLookupPart(&(part));
     wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[0x0].cItem))));
+
+L_05c2:
+    goto L_036b;
 
 L_05c5:
     lphul->wtEmpty = LOWORD(wt);
@@ -263,7 +266,7 @@ L_05e2:
 
 L_0615:
     memmove(pplr, pbIn, 0x70);
-    memmove(((uint8_t *)(pplr) + 112), (pbIn + 113), pbIn[112]);
+    memmove(pplr->rgmdRelation, (pbIn + 113), pbIn[112]);
     iOff = ((112 + pbIn[112]) + 1);
     goto L_0684;
 
@@ -360,18 +363,19 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     char    *psz;
     char     szEntry[16];
     uint16_t t_merge_0b9b_0001;
-    uint16_t scratch_bp_m48;
-    uint16_t scratch_bp_m66;
+    uint16_t t_scratch_m48_4;
     uint16_t t_merge_1877_0001;
+    uint16_t t_scratch_m48_7;
     uint16_t t_merge_1e06_0001;
     void    *t_call_1e2a;
-    uint16_t scratch_bp_m4e;
+    uint16_t t_scratch_m48_10;
+    uint16_t t_scratch_m48_14;
     uint16_t t_merge_2580_0001;
     uint16_t t_merge_259d_0001;
     int32_t  t_call_2884;
-    uint16_t scratch_bp_m4a;
     int32_t  t_call_2896;
     uint16_t t_merge_2e23_0001;
+    uint16_t t_scratch_m48_19;
 
 L_0810:
     grf = 0;
@@ -420,9 +424,7 @@ L_090f:
     if ((FOpenFile(dtXY, -1, 32) == 0))
         goto LError;
     else
-        goto L_0928;
-
-L_0928:
+        goto L_092e;
 
 L_092e:
     ReadRt();
@@ -436,7 +438,7 @@ XYCorrupt:
     goto LError;
 
 L_096a:
-    /* untranslated: game = part[0x0:64](rgbCur) */
+    game = *((GAME *)(rgbCur));
     game.fDirty = 0;
     dGal = (LOWORD((0x190 * game.mdSize)) + 400);
     dGalInv = (dGal + 2000);
@@ -477,15 +479,14 @@ L_0a4a:
         goto L_0a57;
 
 L_0a57:
+    goto L_09a3;
 
 L_0a60:
     ReadRt();
     if ((hdrCur.rt != rtEOF))
         goto XYCorrupt;
     else
-        goto L_0a75;
-
-L_0a75:
+        goto L_0a7b;
 
 L_0a7b:
     StreamClose();
@@ -546,9 +547,7 @@ L_0b49:
     if ((hdrCur.rt != rtHistHdr))
         goto CorruptHist;
     else
-        goto L_0b5e;
-
-L_0b5e:
+        goto L_0b64;
 
 L_0b64:
     cPlanetHist = LOWORD(rgbCur);
@@ -601,9 +600,7 @@ L_0bfb:
     if ((FReadPlanet(iPlayer, lppl, 1, 0) == 0))
         goto CorruptHist;
     else
-        goto L_0c19;
-
-L_0c19:
+        goto L_0c1f;
 
 L_0c1f:
     if ((lppl->iPlayer != iPlayer))
@@ -614,6 +611,9 @@ L_0c1f:
 L_0c2e:
     lppl->iPlayer = -1;
     lppl->det = 0x3;
+
+L_0c4b:
+    goto L_0c77;
 
 CorruptHist:
     StreamClose();
@@ -634,9 +634,7 @@ L_0c92:
     if ((hdrCur.cb > cbbitfMsg))
         goto CorruptHist;
     else
-        goto L_0ca0;
-
-L_0ca0:
+        goto L_0ca6;
 
 L_0ca6:
     memcpy(bitfMsgFiltered, rgbCur, hdrCur.cb);
@@ -685,9 +683,7 @@ L_0d75:
     if ((i == game.cPlayer))
         goto L_0ea0;
     else
-        goto L_0d7d;
-
-L_0d7d:
+        goto L_0d83;
 
 L_0d83:
     if ((LOWORD(rglpshdef[i]) != 0x0))
@@ -735,9 +731,7 @@ L_0e57:
     if ((FReadShDef(rgbCur, rglpshdef[i], iplrSav) == 0))
         goto CorruptHist;
     else
-        goto L_0e7d;
-
-L_0e7d:
+        goto L_0e83;
 
 L_0e83:
     idPlayer = iplrSav;
@@ -774,9 +768,7 @@ L_0ee8:
     if ((i == game.cPlayer))
         goto L_1042;
     else
-        goto L_0ef0;
-
-L_0ef0:
+        goto L_0ef6;
 
 L_0ef6:
     if ((LOWORD(rglpshdefSB[i]) != 0x0))
@@ -824,15 +816,13 @@ L_0fca:
     if ((FReadShDef(rgbCur, rglpshdefSB[i], iplrSav) == 0))
         goto CorruptHist;
     else
-        goto L_0ff0;
-
-L_0ff0:
+        goto L_0ff6;
 
 L_0ff6:
     idPlayer = iplrSav;
-    /* untranslated: scratch_bp_m48 = ((part[0x4:2](rgplr[i]) + 0xf000) & 0xf000) */
+    /* untranslated: t_scratch_m48_4 = ((part[0x4:2](rgplr[i]) + 0xf000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | scratch_bp_m48) */
+    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_4) */
     ReadRt();
     goto L_0ea5;
 
@@ -844,7 +834,7 @@ L_1042:
 
 L_1055:
     iplr = (LOWORD(rgbCur) & 0x1f);
-    /* untranslated: sx = part[0x0:24](rgbCur) */
+    sx = *((SCOREX *)(rgbCur));
     if ((LOWORD(rgsxPlr[iplr]) != 0x0))
         goto L_10b3;
     else
@@ -879,7 +869,7 @@ L_10ce:
         goto L_10e1;
 
 L_10e1:
-    turnCur = HIWORD(sx);
+    turnCur = sx.turn;
     goto L_10f0;
 
 L_10ea:
@@ -899,12 +889,10 @@ L_10fc:
         goto L_110d;
 
 L_110d:
-    if ((turnCur <= HIWORD(rgsxPlr[iplr][isx])))
-        goto L_1138;
+    if ((turnCur > rgsxPlr[iplr][isx].turn))
+        goto L_10f8;
     else
-        goto L_112f;
-
-L_112f:
+        goto L_1138;
 
 L_1138:
     if ((isx >= rgcsxPlr[iplr]))
@@ -913,7 +901,7 @@ L_1138:
         goto L_1149;
 
 L_1149:
-    if ((turnCur != HIWORD(rgsxPlr[iplr][isx])))
+    if ((turnCur != rgsxPlr[iplr][isx].turn))
         goto L_1177;
     else
         goto L_116e;
@@ -948,9 +936,15 @@ L_1198:
 L_11d1:
     isx = (isx - 1);
 
+L_11d5:
+    goto L_1251;
+
 L_11d8:
     fmemmove((rgsxPlr[iplr] + LOWORD(((isx + 1) * 0x18))), rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
+
+L_1233:
+    goto L_1251;
 
 L_1236:
     if ((isx != rgcsxPlr[iplr]))
@@ -963,8 +957,7 @@ L_1247:
 
 L_1251:
     rgsxPlr[iplr][isx] = sx;
-    scratch_bp_m66 = LOWORD((0x18 * isx));
-    HIWORD(rgsxPlr[iplr][isx]) = turnCur;
+    rgsxPlr[iplr][isx].turn = turnCur;
     rgsxPlr[iplr][isx].wWord = ((rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000);
 
 L_12f7:
@@ -1006,9 +999,7 @@ L_1366:
     if ((HIWORD(vlpbAiData) == 0x0))
         goto CorruptHist;
     else
-        goto L_136d;
-
-L_136d:
+        goto L_1373;
 
 L_1373:
     lpb = vlpbAiData;
@@ -1063,9 +1054,7 @@ L_1437:
     if ((HIWORD(lpThings) == 0x0))
         goto CorruptHist;
     else
-        goto L_143e;
-
-L_143e:
+        goto L_1444;
 
 L_1444:
     fmemset(lpThings, 0, LOWORD((cThingAlloc * 18)));
@@ -1088,9 +1077,7 @@ L_1499:
     if ((hdrCur.rt != rtThing))
         goto CorruptHist;
     else
-        goto L_14a9;
-
-L_14a9:
+        goto L_14af;
 
 L_14af:
     fmemcpy(lpth, rgbCur, hdrCur.cb);
@@ -1115,9 +1102,7 @@ L_1526:
     if ((FOpenFile((dt | grf), iPlayer, 32) == 0))
         goto LError;
     else
-        goto L_1555;
-
-L_1555:
+        goto L_155b;
 
 L_155b:
     if ((iPlayer != -1))
@@ -1279,6 +1264,9 @@ L_17da:
 L_17ed:
     AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
 
+L_180e:
+    goto LError;
+
 L_1811:
     ReadPlayerMessages();
     ResetHb(htFleets);
@@ -1386,9 +1374,7 @@ LFoundPlanet:
     if ((FReadPlanet(iPlayer, lppl, 0, fHaveHistoryData) == 0))
         goto Corrupt;
     else
-        goto L_19c7;
-
-L_19c7:
+        goto L_19cd;
 
 L_19cd:
     if ((lppl->iPlayer == -1))
@@ -1419,7 +1405,8 @@ L_1a12:
         goto L_1a1c;
 
 L_1a1c:
-    if ((lppl->lpplprod->iprodMax > (hdrCur.cb / 0x4)))
+    t_scratch_m48_7 = lppl->lpplprod->iprodMax;
+    if ((t_scratch_m48_7 > (hdrCur.cb / 0x4)))
         goto L_1a6a;
     else
         goto L_1a48;
@@ -1529,12 +1516,10 @@ L_1bb9:
     j = (j + 1);
 
 L_1c23:
-    if ((j >= 16))
-        goto L_1c32;
+    if ((j < 16))
+        goto L_1bb9;
     else
-        goto L_1c29;
-
-L_1c29:
+        goto L_1c32;
 
 L_1c32:
     iplrSav = idPlayer;
@@ -1582,6 +1567,7 @@ L_1c92:
         goto L_1cb8;
 
 L_1cb8:
+    goto L_1cca;
 
 L_1cc1:
     idPlayer = iplrSav;
@@ -1666,6 +1652,7 @@ L_1de1:
         goto L_1de7;
 
 L_1de7:
+    goto L_1d24;
 
 L_1ded:
     if ((1 <= cFleet))
@@ -1692,14 +1679,12 @@ L_1e22:
     if ((FReadFleet(lpfl) == 0))
         goto LError;
     else
-        goto L_1e67;
-
-L_1e67:
+        goto L_1e6d;
 
 L_1e6d:
-    /* untranslated: scratch_bp_m48 = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
+    /* untranslated: t_scratch_m48_10 = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
     rgplr[lpfl->iPlayer].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | scratch_bp_m48) */
+    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | t_scratch_m48_10) */
     i = (i + 1);
 
 L_1ebb:
@@ -1750,12 +1735,10 @@ L_1f3d:
     j = (j + 1);
 
 L_1fa7:
-    if ((j >= 10))
-        goto L_1fb6;
+    if ((j < 10))
+        goto L_1f3d;
     else
-        goto L_1fad;
-
-L_1fad:
+        goto L_1fb6;
 
 L_1fb6:
     iplrSav = idPlayer;
@@ -1803,6 +1786,7 @@ L_201d:
         goto L_2043;
 
 L_2043:
+    goto L_2055;
 
 L_204c:
     idPlayer = iplrSav;
@@ -1875,9 +1859,9 @@ L_2129:
     goto L_21b0;
 
 L_2172:
-    /* untranslated: scratch_bp_m48 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
+    /* untranslated: t_scratch_m48_14 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | scratch_bp_m48) */
+    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_14) */
 
 L_21b0:
     j = (j + 1);
@@ -1889,6 +1873,7 @@ L_21b4:
         goto L_21ba;
 
 L_21ba:
+    goto L_20c8;
 
 L_21c0:
     if ((LOWORD(vlprgScoreX) != 0x0))
@@ -1914,7 +1899,7 @@ L_220d:
 
 L_2220:
     iplr = (LOWORD(rgbCur) & 0x1f);
-    /* untranslated: vlprgScoreX[iplr] = part[0x0:24](rgbCur) */
+    vlprgScoreX[iplr] = *((SCOREX *)(rgbCur));
     if ((LOWORD(rgsxPlr[iplr]) != 0x0))
         goto L_229c;
     else
@@ -1949,7 +1934,7 @@ L_22b7:
         goto L_22dc;
 
 L_22dc:
-    turnCur = HIWORD(vlprgScoreX[iplr]);
+    turnCur = vlprgScoreX[iplr].turn;
     goto L_22fe;
 
 L_22f8:
@@ -1969,12 +1954,10 @@ L_230a:
         goto L_231b;
 
 L_231b:
-    if ((turnCur <= HIWORD(rgsxPlr[iplr][isx])))
-        goto L_2346;
+    if ((turnCur > rgsxPlr[iplr][isx].turn))
+        goto L_2306;
     else
-        goto L_233d;
-
-L_233d:
+        goto L_2346;
 
 L_2346:
     if ((isx >= rgcsxPlr[iplr]))
@@ -1983,7 +1966,7 @@ L_2346:
         goto L_2357;
 
 L_2357:
-    if ((turnCur != HIWORD(rgsxPlr[iplr][isx])))
+    if ((turnCur != rgsxPlr[iplr][isx].turn))
         goto L_2385;
     else
         goto L_237c;
@@ -2018,9 +2001,15 @@ L_23a6:
 L_23df:
     isx = (isx - 1);
 
+L_23e3:
+    goto L_245f;
+
 L_23e6:
     fmemmove((rgsxPlr[iplr] + LOWORD(((isx + 1) * 0x18))), rgsxPlr[iplr][isx], LOWORD(((rgcsxPlr[iplr] - isx) * 0x18)));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
+
+L_2441:
+    goto L_245f;
 
 L_2444:
     if ((isx != rgcsxPlr[iplr]))
@@ -2033,8 +2022,7 @@ L_2455:
 
 L_245f:
     rgsxPlr[iplr][isx] = vlprgScoreX[iplr];
-    scratch_bp_m4e = LOWORD((0x18 * isx));
-    HIWORD(rgsxPlr[iplr][isx]) = turnCur;
+    rgsxPlr[iplr][isx].turn = turnCur;
     rgsxPlr[iplr][isx].wWord = ((rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000);
 
 L_2518:
@@ -2116,9 +2104,7 @@ L_25da:
     if ((HIWORD(lpThings) == 0x0))
         goto LError;
     else
-        goto L_25e1;
-
-L_25e1:
+        goto L_25e7;
 
 L_25e7:
     fmemset(lpThings, 0, LOWORD((cThingAlloc * 18)));
@@ -2209,6 +2195,7 @@ L_2747:
         goto L_274f;
 
 L_274f:
+    goto L_2623;
 
 L_2755:
     cThing = 0;
@@ -2269,16 +2256,14 @@ Corrupt:
 
 L_2880:
     t_call_2884 = filelength(hf);
-    scratch_bp_m4a = LOWORD(t_call_2884);
-    scratch_bp_m48 = HIWORD(t_call_2884);
     t_call_2896 = tell(hf);
-    if ((scratch_bp_m4a != LOWORD(t_call_2896)))
+    if ((LOWORD(t_call_2884) != LOWORD(t_call_2896)))
         goto L_28b2;
     else
         goto L_28ab;
 
 L_28ab:
-    if ((scratch_bp_m48 == HIWORD(t_call_2896)))
+    if ((HIWORD(t_call_2884) == HIWORD(t_call_2896)))
         goto L_2a56;
     else
         goto L_28b2;
@@ -2397,9 +2382,7 @@ L_2aed:
     if ((strnicmp(pszExt, 0x759, 0x3) == 0))
         goto DoneNow;
     else
-        goto L_2b05;
-
-L_2b05:
+        goto L_2b0b;
 
 L_2b0b:
     if ((rgplr[iPlayer].fAi != 0x0))
@@ -2441,9 +2424,7 @@ L_2bac:
     if ((lppl->iPlayer != iPlayer))
         goto L_2c13;
     else
-        goto L_2bb8;
-
-L_2bb8:
+        goto L_2bbe;
 
 L_2bbe:
     iWarp = IWarpMAFromLppl(lppl, &(fTwo));
@@ -2497,17 +2478,13 @@ L_2c97:
     if ((HIWORD(lppl->lpplprod) == 0x0))
         goto L_2de3;
     else
-        goto L_2c9e;
-
-L_2c9e:
+        goto L_2ca4;
 
 L_2ca4:
     if ((rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef == ihuldefOrbitalFort))
         goto L_2de3;
     else
-        goto L_2cd0;
-
-L_2cd0:
+        goto L_2cd6;
 
 L_2cd6:
     fWorking = 0;
@@ -2574,6 +2551,9 @@ L_2daa:
 
 L_2db2:
     fWorking = 1;
+
+L_2db7:
+    goto L_2cf9;
 
 L_2dba:
     if ((fWorking == 0))
@@ -2713,9 +2693,9 @@ L_2fbb:
 
 L_2fc3:
     j = lpfl->iPlayer;
-    /* untranslated: scratch_bp_m48 = ((part[0x4:2](rgplr[j]) + 0x1) & 0xfff) */
+    /* untranslated: t_scratch_m48_19 = ((part[0x4:2](rgplr[j]) + 0x1) & 0xfff) */
     rgplr[j].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[j]) = (part[0x4:2](rgplr[j]) | scratch_bp_m48) */
+    /* untranslated: part[0x4:2](rgplr[j]) = (part[0x4:2](rgplr[j]) | t_scratch_m48_19) */
     goto L_2f84;
 
 DoneNow:
@@ -2760,9 +2740,7 @@ L_30aa:
     if ((fstricmp(szT, (vrgszMRU + (i * 256))) == 0))
         goto L_3120;
     else
-        goto L_30d3;
-
-L_30d3:
+        goto L_30d9;
 
 L_30d9:
     i = (i + 1);
@@ -2774,6 +2752,7 @@ L_30dd:
         goto L_30e3;
 
 L_30e3:
+    goto L_30aa;
 
 L_30e9:
     fstrcpy((vrgszMRU + (i * 256)), (vrgszMRU + ((i - 1) * 0x100)));
@@ -2819,7 +2798,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
     MessageId idm;
     int16_t   pctOpt;
     int16_t   pct;
-    uint16_t  scratch_bp_me;
+    uint16_t  t_scratch_me_6;
 
 L_3206:
     fFirstYear = 0;
@@ -2873,6 +2852,9 @@ L_3290:
 L_32a7:
     fFirstYear = 1;
 
+L_32ac:
+    goto L_32de;
+
 L_32af:
     lppl->fFirstYear = ((rgbCur[0x2] >> 0xf) & 0x1);
 
@@ -2920,9 +2902,7 @@ L_342d:
     if (((rgbCur[2] & 0x7f) < 0x3))
         goto LFinishBRecord;
     else
-        goto L_343d;
-
-L_343d:
+        goto L_3443;
 
 L_3443:
     bMask = *(pb);
@@ -2968,6 +2948,7 @@ L_34cb:
         goto L_34d0;
 
 L_34d0:
+    goto L_3499;
 
 L_34d9:
     i = 0;
@@ -3056,9 +3037,7 @@ L_35ef:
     if ((lppl->det <= 0x3))
         goto LFinishBRecord;
     else
-        goto L_35fe;
-
-L_35fe:
+        goto L_3604;
 
 L_3604:
     if ((((rgbCur[2] >> 0xd) & 0x1) == 0x0))
@@ -3129,6 +3108,7 @@ L_371a:
         goto L_371f;
 
 L_371f:
+    goto L_36d3;
 
 L_3728:
     if ((hdrCur.rt != rtPlanetB))
@@ -3143,7 +3123,8 @@ LFinishBRecord:
         goto L_3752;
 
 L_3752:
-    lppl->isb = *(pb);
+    t_scratch_me_6 = *(pb);
+    lppl->isb = t_scratch_me_6;
     pb = (pb + 0x1);
 
 L_377c:
@@ -3240,7 +3221,6 @@ L_391d:
     goto L_39dc;
 
 L_3944:
-    scratch_bp_me = 0x0;
     /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16))),
      * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(((rgbCur[0x2] >> 0xc) & 0x1) & 0x1) << 0x16)))) */
     lppl->iScanner = 0x1f;
@@ -3332,6 +3312,9 @@ L_3ae5:
 L_3b25:
     cish = (cish + 1);
 
+L_3b29:
+    goto L_3abe;
+
 L_3b2f:
     pus = pb;
     i = 0;
@@ -3363,6 +3346,9 @@ L_3b64:
 
 L_3ba1:
     cish = (cish + 1);
+
+L_3ba5:
+    goto L_3b3d;
 
 L_3ba8:
     pb = pus;
@@ -3435,6 +3421,7 @@ L_3cb2:
         goto L_3cb7;
 
 L_3cb7:
+    goto L_3c73;
 
 L_3cc0:
     if ((lpfl->det >= 0x7))
@@ -3494,6 +3481,9 @@ L_3d91:
 L_3dd8:
     lpfl->rgdv[i].pctDp = 0x1f3;
 
+L_3e0c:
+    goto L_3d6a;
+
 L_3e0f:
     pb = pus;
     pb = (pb + 0x1);
@@ -3528,12 +3518,10 @@ L_3ef5:
     if ((hdrCur.rt != rtOrderB))
         goto Corrupt;
     else
-        goto L_3f05;
-
-L_3f05:
+        goto L_3f0b;
 
 L_3f0b:
-    /* untranslated: lpord = part[0x0:18](rgbCur) */
+    *(lpord) = *((ORDER *)(rgbCur));
     lpord->fNoAutoTrack = 0x0;
     goto L_3eaf;
 
@@ -3580,7 +3568,6 @@ L_3fad:
 L_3fb7:
     lpfl->pt.x = rgptPlan[lpfl->idPlanet].x;
     lpfl->pt.y = rgptPlan[lpfl->idPlanet].y;
-    goto L_3fdb;
 
 L_3fdb:
     ReadRt();
@@ -3668,9 +3655,7 @@ L_41cb:
     if ((HIWORD(lphb) == 0x0))
         goto L_4323;
     else
-        goto L_41d1;
-
-L_41d1:
+        goto L_41d7;
 
 L_41d7:
     lpbd = (lphb + 0x12);
@@ -3698,9 +3683,7 @@ L_421a:
     if ((lphb->ibTop <= 0x10))
         goto L_4323;
     else
-        goto L_4224;
-
-L_4224:
+        goto L_422a;
 
 L_422a:
     lpbd = (lphb + 0x12);
@@ -3710,9 +3693,7 @@ L_4241:
     if ((lpbd->cbData == 0x0))
         goto L_4323;
     else
-        goto L_424b;
-
-L_424b:
+        goto L_4251;
 
 L_4251:
     lpbr = ((lpbd + 0xe) + LOWORD((lpbd->ctok * 0x1d)));
@@ -4096,9 +4077,7 @@ L_4887:
     if ((LOWORD(lSerial) > LOWORD(bogi[i])))
         goto L_4867;
     else
-        goto L_488c;
-
-L_488c:
+        goto L_4892;
 
 L_4892:
     if ((LOWORD(lSerial) != LOWORD(bogi[i])))
@@ -4418,8 +4397,11 @@ LBadFile:
     return 0;
 
 L_4c47:
-    /* untranslated: rtbof = part[0x0:16](rgbCur) */
-    /* untranslated: branch ((part[0xc:2](rtbof) << 0xb) >> 0xb) == iPlayer ? L_4c7b : L_4c6c */
+    rtbof = *((RTBOF *)(rgbCur));
+    if ((rtbof.iPlayer == iPlayer))
+        goto L_4c7b;
+    else
+        goto L_4c6c;
 
 L_4c6c:
     FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
@@ -4483,9 +4465,7 @@ L_4d0d:
     if ((hdrCur.cb != 0x2))
         goto LBadFile;
     else
-        goto L_4d18;
-
-L_4d18:
+        goto L_4d1e;
 
 L_4d1e:
     rtbof.turn = LOWORD(rgbCur);
@@ -4543,6 +4523,7 @@ L_4de2:
         goto L_4e08;
 
 L_4e08:
+    goto L_4ebd;
 
 L_4e11:
     if ((rtbof.fDone != 0x0))
@@ -4589,9 +4570,10 @@ L_4e93:
     goto LBadFile;
 
 L_4ea5:
-    /* untranslated: branch ((part[0xc:2](rtbof) << 0xb) >> 0xb) != iPlayer ? L_4c36 : L_4eb7 */
-
-L_4eb7:
+    if ((rtbof.iPlayer != iPlayer))
+        goto LBadFile;
+    else
+        goto L_4ebd;
 
 L_4ebd:
     if ((fRewind == 0))
@@ -4777,6 +4759,9 @@ L_50cc:
 
 L_50d8:
     fReturn = ((rgbCur[0x6] >> 0x9) & 0x1);
+
+L_50e6:
+    goto L_510c;
 
 L_50e9:
     if ((md == 0x1))
@@ -5017,6 +5002,7 @@ L_5391:
         goto L_5397;
 
 L_5397:
+    goto Retry;
 
 L_53a0:
     if ((fNoErr != 0))
@@ -5054,9 +5040,7 @@ L_53f4:
     if ((cb == 0x0))
         goto L_5478;
     else
-        goto L_5403;
-
-L_5403:
+        goto L_5409;
 
 L_5409:
     if ((LOWORD(vlpMemStream) != 0x0))

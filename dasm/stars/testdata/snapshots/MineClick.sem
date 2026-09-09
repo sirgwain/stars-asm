@@ -1,0 +1,611 @@
+/*
+MineClick  (mine)
+  addr: 0006:3b4e  len=3213
+  sig:  void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks)
+  params:
+    int16_t          x              [BP+0x6]
+    int16_t          y              [BP+0x8]
+    int16_t          msg            [BP+0xa]
+    int16_t          sks            [BP+0xc]
+  locals:
+    HtMineType       ht             [BP-0x8]
+    PLANET *         lppl           [BP-0x6]
+    block 0006:3B9E  len=0x1C
+      PLANET *         lppl           [BP-0xc]
+    block 0006:3C2A  len=0x72
+      PART             part           [BP-0x10]
+    block 0006:3CA9  len=0x18C
+      int16_t          ishdef         [BP-0x250]
+      int16_t[16]      rgid           [BP-0x24e]
+      FLEET *          lpfl           [BP-0x22e]
+      int16_t          c              [BP-0x22a]
+      char *[16]       rgpsz          [BP-0x228]
+      char[32][16]     rgsz           [BP-0x208]
+    block 0006:3F41  len=0x141
+      int16_t[3]       rgMax          [BP-0x52]
+      int16_t[3]       rgCost         [BP-0x4c]
+      PLANET           pl             [BP-0x46]
+      int16_t[3]       rgMin          [BP-0xe]
+    block 0006:40A4  len=0x395
+      SCAN             scan           [BP-0x26]
+      int16_t          idNew          [BP-0x16]
+      int16_t          i              [BP-0x14]
+      FLEET *          lpfl           [BP-0x12]
+      int16_t          fOurs          [BP-0xe]
+      PLANET *         lppl           [BP-0xc]
+    block 0006:443C  len=0x130
+      char *[9]        psz            [BP-0x8a]
+      int16_t          iChecked       [BP-0x78]
+      int16_t[9]       rgi            [BP-0x76]
+      int16_t          i              [BP-0x64]
+      char[10][9]      rgsz           [BP-0x62]
+    block 0006:456F  len=0x234
+      int16_t          i              [BP-0x4e]
+      PLANET           pl             [BP-0x4c]
+      int32_t[3]       rglQuan        [BP-0x14]
+      block 0006:4608  len=0x186
+        int32_t          lVal           [BP-0x68]
+        int32_t          cMines         [BP-0x64]
+        FLEET *          lpfl           [BP-0x60]
+        int16_t          ifl            [BP-0x5c]
+        int32_t[3]       rglT           [BP-0x5a]
+
+  stats: blocks=8  labels=5
+    NoTerra: L_4010
+    CheckThing: L_40cb
+    ChangeIt: L_43d9
+    CheckPlanet: L_429f
+    CheckFleet: L_42f3
+*/
+L_3b4e:
+    ht = HtMineWindow(hwndMine, x, y)
+    branch msg != 516 ? L_3b8b : L_3b76
+
+L_3b76:
+    branch ht == htMineScanSel ? L_3b8b : L_3b7f
+
+L_3b7f:
+    branch ht != htMineShipOrFleet ? L_47d5 : L_3b8b
+
+L_3b8b:
+    goto L_47a6
+
+L_3b94:
+    branch sel.scan.grobj != grobjPlanet ? L_3bbd : L_3b9e
+
+L_3b9e:
+    lppl = LpplFromId(sel.scan.idpl)
+    HIWORD(GlobalPD) = lppl->iPlayer
+    goto L_3c0f
+
+L_3bbd:
+    branch sel.scan.grobj != grobjThing ? L_3beb : L_3bc7
+
+L_3bc7:
+    HIWORD(GlobalPD) = lpThings[sel.scan.ith].iplr
+    goto L_3c0f
+
+L_3beb:
+    HIWORD(GlobalPD) = rglpfl[sel.scan.ifl]->iplr
+
+L_3c0f:
+    GlobalPD.grPopup = grPopupPlayer
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_3c2a:
+    t_scratch_m12 = mpiTypeiItem[part[0xc:1](lpThings[sel.scan.ith])]
+    part.hs.iItem = t_scratch_m12
+    part.hs.grhst = hstMines
+    call FLookupPart(&part) -> callresult(int16_t)
+    GlobalPD.grPopup = grPopupComponent
+    GlobalPD.part = part
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_3c9f:
+    branch msg != 516 ? L_3e38 : L_3ca9
+
+L_3ca9:
+    lpfl = rglpfl[sel.scan.ifl]
+    c = 0
+    ishdef = 0
+    goto L_3d7c
+
+L_3cda:
+    branch lpfl->rgcsh[ishdef] <= 0 ? L_3d77 : L_3cfa
+
+L_3cfa:
+    rgid[c] = ishdef
+    call fstrcpy(rgsz[c], rglpshdef[lpfl->iPlayer][ishdef].hul.szClass) -> callresult(char *)
+    rgpsz[c] = (&rgsz + (c * 32))
+    c = (c + 1)
+
+L_3d77:
+    ishdef = (ishdef + 1)
+
+L_3d7c:
+    branch ishdef < 16 ? L_3cda : L_3d86
+
+L_3d86:
+    branch c <= 1 ? L_3dcb : L_3d90
+
+L_3d90:
+    c = PopupMenu(hwndMine, x, y, c, 0x0, rgpsz, -1, 1)
+    branch c == -1 ? L_47d5 : L_3dc2
+
+L_3dc2:
+    goto L_3dd1
+
+L_3dcb:
+    c = 0
+
+L_3dd1:
+    GlobalPD.grPopup = grPopupShdef
+    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + loword((0x93 * rgid[c])))
+    branch idPlayer == lpfl->iPlayer ? L_3e1d : L_3e17
+
+L_3e17:
+    t_merge_3e20_0001 = 0x1
+    goto L_3e20
+
+L_3e1d:
+    t_merge_3e20_0001 = 0x0
+
+L_3e20:
+    part[0x8:2](GlobalPD) = t_merge_3e20_0001
+    part[0x6:2](GlobalPD) = 0x0
+    part[0xa:4](GlobalPD) = 0x10000
+    goto L_3e84
+
+L_3e38:
+    GlobalPD.grPopup = grPopupFleet
+    GlobalPD.lpfl = rglpfl[sel.scan.ifl]
+    branch GlobalPD.lpfl->det != 0x7 ? L_3e78 : L_3e72
+
+L_3e72:
+    t_merge_3e7b_0001 = 0x1
+    goto L_3e7b
+
+L_3e78:
+    t_merge_3e7b_0001 = 0x0
+
+L_3e7b:
+    part[0x6:2](GlobalPD) = t_merge_3e7b_0001
+    GlobalPD.grbit = 0xff
+
+L_3e84:
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_3e99:
+    GlobalPD.grPopup = grPopupShdef
+    lppl = LpplFromId(sel.scan.idpl)
+    part[0x2:4](GlobalPD) = (rglpshdefSB[lppl->iPlayer] + loword((lppl->isb * 0x93)))
+    branch idPlayer == lppl->iPlayer ? L_3ef3 : L_3eed
+
+L_3eed:
+    t_merge_3ef6_0001 = 0x1
+    goto L_3ef6
+
+L_3ef3:
+    t_merge_3ef6_0001 = 0x0
+
+L_3ef6:
+    part[0x8:2](GlobalPD) = t_merge_3ef6_0001
+    part[0x6:2](GlobalPD) = 0x1
+    part[0xa:4](GlobalPD) = 0x10000
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_3f20:
+    GlobalPD.grPopup = grPopupPlanet
+    HIWORD(GlobalPD) = sel.scan.idpl
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_3f41:
+    call FLookupPlanet(sel.scan.idpl, &pl) -> callresult(int16_t)
+    GlobalPD.grPopup = grPopupPlanetEnv
+    HIWORD(GlobalPD) = pl.id
+    part[0x4:2](GlobalPD) = (ht - 6)
+    branch pl.det < 0x3 ? L_3f85 : L_3f74
+
+L_3f74:
+    part[0x6:2](GlobalPD) = sext8to16(pl.rgEnvVar[part[0x4:2](GlobalPD)])
+    goto L_3f8b
+
+L_3f85:
+    part[0x6:2](GlobalPD) = 0xffff
+
+L_3f8b:
+    branch pl.det < 0x3 ? L_4010 : L_3f99
+
+L_3f99:
+    branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0 ? L_4010 : L_3fc0
+
+L_3fc0:
+    part[0x8:2](GlobalPD) = rgMin[part[0x4:2](GlobalPD)]
+    GlobalPD.grbit = rgMax[part[0x4:2](GlobalPD)]
+    branch part[0x8:2](GlobalPD) != 0xffff ? L_3fee : L_3fe8
+
+L_3fe8:
+    part[0x8:2](GlobalPD) = part[0x6:2](GlobalPD)
+
+L_3fee:
+    branch GlobalPD.grbit != 0xffff ? L_3ffe : L_3ff8
+
+L_3ff8:
+    GlobalPD.grbit = part[0x6:2](GlobalPD)
+
+L_3ffe:
+    branch part[0x8:2](GlobalPD) != GlobalPD.grbit ? L_401c : L_4010
+
+NoTerra:
+    part[0x8:4](GlobalPD) = 0xffffffff
+
+L_401c:
+    part[0xc:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVar[part[0x4:2](GlobalPD)])
+    part[0xe:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVarMin[part[0x4:2](GlobalPD)])
+    GlobalPD.iPlrMax = sext8to16(rgplr[idPlayer].rgEnvVarMax[part[0x4:2](GlobalPD)])
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_4085:
+    branch msg != 516 ? L_40a4 : L_408f
+
+L_408f:
+    call PopupMineralScanChoices(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_40a4:
+    scan = sel.scan
+    scan.iwp = 0
+    branch scan.grobj != grobjThing ? L_4192 : L_40c2
+
+L_40c2:
+    i = (scan.ith + 1)
+
+CheckThing:
+    goto L_4113
+
+L_40ce:
+    branch lpThings[i].pt.x != scan.pt.x ? L_410f : L_4103
+
+L_4103:
+    branch lpThings[i].pt.y == scan.pt.y ? L_411e : L_410f
+
+L_410f:
+    i = (i + 1)
+
+L_4113:
+    branch i < cThing ? L_40ce : L_411e
+
+L_411e:
+    branch i >= cThing ? L_4154 : L_4129
+
+L_4129:
+    scan.ith = i
+    scan.grobj = grobjThing
+    idNew = lpThings[i].idFull
+    fOurs = 0
+    goto L_43d9
+
+L_4154:
+    branch (scan.grobjFull & 0x1) != 0x0 ? L_429f : L_4168
+
+L_4168:
+    branch (scan.grobjFull & 0x2) != 0x0 ? L_42f3 : L_417c
+
+L_417c:
+    branch (scan.grobjFull & 0x8) == 0x0 ? L_4192 : L_418a
+
+L_418a:
+    i = 0
+    goto L_4113
+
+L_4192:
+    branch scan.grobj != grobjFleet ? L_41a4 : L_419b
+
+L_419b:
+    t_merge_41a7_0001 = (scan.ifl + 1)
+    goto L_41a7
+
+L_41a4:
+    t_merge_41a7_0001 = 0x0
+
+L_41a7:
+    i = t_merge_41a7_0001
+    goto L_41b1
+
+L_41ad:
+    i = (i + 1)
+
+L_41b1:
+    branch i >= cFleet ? L_4215 : L_41bc
+
+L_41bc:
+    lpfl = rglpfl[i]
+    branch LOWORD(rglpfl[i]) != 0x0 ? L_41ec : L_41e4
+
+L_41e4:
+    branch HIWORD(rglpfl[i]) == 0x0 ? L_4215 : L_41ec
+
+L_41ec:
+    branch scan.pt.x != lpfl->pt.x ? L_41ad : L_4206
+
+L_4206:
+    branch scan.pt.y != lpfl->pt.y ? L_41ad : L_4215
+
+L_4215:
+    branch i >= cFleet ? L_4278 : L_4220
+
+L_4220:
+    scan.ifl = i
+    scan.grobj = grobjFleet
+    idNew = rglpfl[i]->id
+    branch rglpfl[i]->iPlayer != idPlayer ? L_426f : L_4269
+
+L_4269:
+    t_merge_4272_0001 = 0x1
+    goto L_4272
+
+L_426f:
+    t_merge_4272_0001 = 0x0
+
+L_4272:
+    fOurs = t_merge_4272_0001
+    goto L_43d9
+
+L_4278:
+    branch (scan.grobjFull & 0x8) == 0x0 ? L_4291 : L_4286
+
+L_4286:
+    i = 0
+    goto L_4113
+
+L_4291:
+    branch (scan.grobjFull & 0x1) == 0x0 ? L_42f3 : L_429f
+
+CheckPlanet:
+    scan.grobj = grobjPlanet
+    idNew = scan.idpl
+    lppl = LpplFromId(idNew)
+    branch LOWORD(lppl) != 0x0 ? L_42d5 : L_42c4
+
+L_42c4:
+    branch HIWORD(lppl) != 0x0 ? L_42d5 : L_42cd
+
+L_42cd:
+    fOurs = 0
+    goto L_43d9
+
+L_42d5:
+    branch lppl->iPlayer != idPlayer ? L_42ea : L_42e4
+
+L_42e4:
+    t_merge_42ed_0001 = 0x1
+    goto L_42ed
+
+L_42ea:
+    t_merge_42ed_0001 = 0x0
+
+L_42ed:
+    fOurs = t_merge_42ed_0001
+
+L_42f0:
+    goto L_43d9
+
+CheckFleet:
+    i = 0
+    goto L_42ff
+
+L_42fb:
+    i = (i + 1)
+
+L_42ff:
+    branch i >= cFleet ? L_4363 : L_430a
+
+L_430a:
+    lpfl = rglpfl[i]
+    branch LOWORD(rglpfl[i]) != 0x0 ? L_433a : L_4332
+
+L_4332:
+    branch HIWORD(rglpfl[i]) == 0x0 ? L_4363 : L_433a
+
+L_433a:
+    branch scan.pt.x != lpfl->pt.x ? L_42fb : L_4354
+
+L_4354:
+    branch scan.pt.y != lpfl->pt.y ? L_42fb : L_4363
+
+L_4363:
+    branch i != cFleet ? L_4384 : L_436e
+
+L_436e:
+    branch (scan.grobjFull & 0x8) == 0x0 ? L_4384 : L_437c
+
+L_437c:
+    i = 0
+    goto L_4113
+
+L_4384:
+    scan.grobj = grobjFleet
+    scan.ifl = i
+    idNew = rglpfl[i]->id
+    branch rglpfl[i]->iPlayer != idPlayer ? L_43d3 : L_43cd
+
+L_43cd:
+    t_merge_43d6_0001 = 0x1
+    goto L_43d6
+
+L_43d3:
+    t_merge_43d6_0001 = 0x0
+
+L_43d6:
+    fOurs = t_merge_43d6_0001
+
+ChangeIt:
+    branch fOurs == 0 ? L_43ec : L_43e2
+
+L_43e2:
+    branch sel.grobj == grobjFleet ? L_43f2 : L_43ec
+
+L_43ec:
+    scan.iwp = sel.scan.iwp
+
+L_43f2:
+    call ChangeScanSel(&scan, 2) -> callresult(void)
+    branch fOurs == 0 ? L_47d5 : L_440b
+
+L_440b:
+    call RedrawScanSel(0x0, 0) -> callresult(void)
+    call ChangeMainObjSel(scan.grobj, idNew) -> callresult(void)
+    call RedrawScanSel(0x0, 1) -> callresult(void)
+
+L_4439:
+    goto L_47d5
+
+L_443c:
+    iChecked = -1
+    part[0x0:4](rgi) = 0x1f40064
+    rgi[2] = 1000
+    rgi[4] = 5000
+    rgi[6] = 10000
+    rgi[8] = 30000
+    i = 0
+    goto L_44d6
+
+L_4476:
+    call _wsprintf(rgsz[i], PCTDKT, rgi[i]) -> callresult(int16_t)
+    psz[i] = (&rgsz + loword((0xa * i)))
+    branch rgi[i] != cMinGrafMax ? L_44d2 : L_44cc
+
+L_44cc:
+    iChecked = i
+
+L_44d2:
+    i = (i + 1)
+
+L_44d6:
+    branch i < 9 ? L_4476 : L_44df
+
+L_44df:
+    i = PopupMenu(hwndMine, x, y, 9, 0x0, psz, iChecked, 1)
+    branch i == -1 ? L_47d5 : L_4511
+
+L_4511:
+    branch rgi[i] == cMinGrafMax ? L_47d5 : L_4525
+
+L_4525:
+    cMinGrafMax = rgi[i]
+    call InvalidateRect(hwndMine, 0x0, 1) -> callresult(void)
+    branch (grbitScan & 0xf) != 0x1 ? L_47d5 : L_4557
+
+L_4557:
+    call InvalidateRect(hwndScanner, 0x0, 1) -> callresult(void)
+
+L_456c:
+    goto L_47d5
+
+L_456f:
+    call FLookupPlanet(sel.scan.idpl, &pl) -> callresult(int16_t)
+    GlobalPD.grPopup = grPopupMineral
+    part[0x2:4](GlobalPD) = sext16to32((ht + 0xffff))
+    i = 1
+    goto L_45b4
+
+L_459b:
+    LOWORD(GlobalPD.rgi[i]) = 0xffff
+    HIWORD(GlobalPD.rgi[i]) = 0xffff
+    i = (i + 1)
+
+L_45b4:
+    branch i <= 4 ? L_459b : L_45bd
+
+L_45bd:
+    branch pl.det < 0x3 ? L_478e : L_45cb
+
+L_45cb:
+    part[0xe:2](GlobalPD) = pl.rgpctMinLevel[(ht + 2)]
+    GlobalPD.iPlrMax = 0
+    part[0x6:4](GlobalPD) = pl.fHomeworld
+    branch pl.det <= 0x3 ? L_478e : L_4608
+
+L_4608:
+    lVal = 0
+    part[0xa:4](GlobalPD) = pl.rgwtMin[(ht - 1)]
+    call EstMineralsMined(&pl, rglQuan, -1, 0) -> callresult(void)
+    GlobalPD.rgi[4] = rglQuan[(ht - 1)]
+    branch pl.iPlayer != -1 ? L_478e : L_4670
+
+L_4670:
+    ifl = 0
+    goto L_467c
+
+L_4678:
+    ifl = (ifl + 1)
+
+L_467c:
+    branch ifl >= cFleet ? L_476a : L_4687
+
+L_4687:
+    lpfl = rglpfl[ifl]
+    branch LOWORD(rglpfl[ifl]) != 0x0 ? L_46b7 : L_46af
+
+L_46af:
+    branch HIWORD(rglpfl[ifl]) == 0x0 ? L_476a : L_46b7
+
+L_46b7:
+    branch lpfl->idPlanet != pl.id ? L_4678 : L_46c6
+
+L_46c6:
+    branch lpfl->iPlayer != idPlayer ? L_4678 : L_46d5
+
+L_46d5:
+    branch lpfl->fDead != 0x0 ? L_4678 : L_46ec
+
+L_46ec:
+    branch lpfl->lpplord->rgord[0].grTask != grTaskMine ? L_4678 : L_4705
+
+L_4705:
+    cMines = CMineFromLpfl(lpfl)
+    branch HIWORD(cMines) < 0x0 ? L_4678 : L_4722
+
+L_4722:
+    branch HIWORD(cMines) > 0x0 ? L_4730 : L_4727
+
+L_4727:
+    branch LOWORD(cMines) <= 0x0 ? L_4678 : L_4730
+
+L_4730:
+    call EstMineralsMined(&pl, rglT, cMines, 0) -> callresult(void)
+    lVal = (lVal + rglT[(ht - 1)])
+
+L_4767:
+    goto L_4678
+
+L_476a:
+    branch HIWORD(lVal) < 0x0 ? L_478e : L_4773
+
+L_4773:
+    branch HIWORD(lVal) > 0x0 ? L_4781 : L_4778
+
+L_4778:
+    branch LOWORD(lVal) <= 0x0 ? L_478e : L_4781
+
+L_4781:
+    GlobalPD.rgi[4] = lVal
+
+L_478e:
+    call Popup(hwndMine, x, y) -> callresult(void)
+    goto L_47d5
+
+L_47a6:
+    branch ht > htMineMinefieldType ? L_47d5 : L_47ae
+
+L_47ae:
+    tablejump (ht * 0x2) [0x0: L_47d5, 0x2: L_456f, 0x4: L_456f, 0x6: L_456f, 0x8: L_47d5, 0xa: L_443c, 0xc: L_3f41, 0xe: L_3f41, 0x10: L_3f41, 0x12: L_4085, 0x14: L_3b94, 0x16: L_3c9f, 0x18: L_3f20, 0x1a: L_3e99, 0x1c: L_3c2a]
+
+L_47d5:
+    return

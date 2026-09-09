@@ -135,9 +135,6 @@ L_25fd:                             ; util.c:986
 MOV       ax, 0x0001          
 JMP       L_26d8              
 
-L_2603:                             ; util.c:988
-JMP       L_2525              
-
 L_2606:                             ; util.c:991
 MOV       ax, [lpThings]            ; ax, [0x1698]
 MOV       dx, [lpThings+0x2]        ; dx, [0x169a]

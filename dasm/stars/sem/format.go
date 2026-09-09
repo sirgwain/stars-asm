@@ -21,6 +21,12 @@ func FormatEffect(effect Effect) string {
 		return line
 	case *Branch:
 		return fmt.Sprintf("branch %s ? %s : %s", FormatExpr(e.Cond), e.TrueBlock, e.FalseBlock)
+	case *TableJump:
+		parts := make([]string, len(e.Targets))
+		for i, target := range e.Targets {
+			parts[i] = fmt.Sprintf("%#x: %s", i*2, target)
+		}
+		return fmt.Sprintf("tablejump %s [%s]", FormatExpr(e.Index), strings.Join(parts, ", "))
 	case *Jump:
 		return fmt.Sprintf("goto %s", e.To)
 	case *Return:
@@ -334,6 +340,8 @@ func formatOp(op Op) string {
 		return "<<"
 	case OpShr:
 		return ">>"
+	case OpSar:
+		return "sar"
 	case OpNeg:
 		return "neg"
 	case OpNot:

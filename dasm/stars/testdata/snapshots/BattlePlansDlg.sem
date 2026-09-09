@@ -125,6 +125,8 @@ L_08b6:
 L_08c1:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, PszPlayerName(i, 0, 1, 0, 0, 0x0)) -> callresult(LRESULT)
 
+L_08fe:
+    goto L_08a7
 
 L_0901:
     i = btlplan.iplrAttack
@@ -170,10 +172,7 @@ L_0a62:
     goto L_0a8f
 
 L_0a6a:
-    branch LOWORD(lParam) == GetDlgItem(hwnd, idc) ? L_0a99 : L_0a85
-
-L_0a85:
-
+    branch LOWORD(lParam) == GetDlgItem(hwnd, idc) ? L_0a99 : L_0a8b
 
 L_0a8b:
     idc = (idc + 1)
@@ -191,7 +190,6 @@ L_0abf:
     call SetBkColor(wParam, crButtonFace) -> callresult(COLORREF)
     return hbrButtonFace
 
-
 L_0ad8:
     call GetClientRect(hwnd, &rc) -> callresult(void)
     call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
@@ -208,7 +206,6 @@ L_0b12:
 
 L_0b1c:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m16 = loword((0x24 * iPlanSelDlg))
     call LogChangeBtlplan(btlplan) -> callresult(void)
 
 L_0b6e:
@@ -239,14 +236,12 @@ L_0c0f:
 
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m16 = loword((0x24 * iPlanSelDlg))
     call LogChangeBtlplan(btlplan) -> callresult(void)
     fDirtyPlan = 0
 
 L_0c71:
     btlplan.fDelete = 0x1
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m16 = loword((0x24 * iPlanSelDlg))
     btlplan.iplan = iPlanSelDlg
     branch FDeleteBattlePlan(iPlanSelDlg, 1) == 0 ? L_0dd0 : L_0cf7
 
@@ -338,7 +333,6 @@ LRename:
 
 L_1000:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m16 = loword((0x24 * iPlanSelDlg))
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0) -> callresult(LRESULT)
     i = 0
     goto L_1074
@@ -397,7 +391,6 @@ L_1157:
 
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m18 = loword((0x24 * iPlanSelDlg))
     call LogChangeBtlplan(btlplan) -> callresult(void)
     fDirtyPlan = 0
 
@@ -406,10 +399,7 @@ L_11b9:
     rgcbtlplan[idPlayer] = (rgcbtlplan[idPlayer] + 0x1)
     iPlanSelDlg = t_11bd
     cLen = strlen(btlplan.szName)
-    branch cLen > 27 ? L_128b : L_11e1
-
-L_11e1:
-
+    branch cLen > 27 ? L_128b : L_11e7
 
 L_11e7:
     branch btlplan.szName[(cLen - 1)] != 41 ? L_123c : L_11ff
@@ -437,7 +427,6 @@ L_127d:
 L_128b:
     btlplan.iplan = iPlanSelDlg
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m18 = loword((0x24 * iPlanSelDlg))
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0) -> callresult(LRESULT)
     i = 0
@@ -483,7 +472,6 @@ L_14d5:
 
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    scratch_bp_m16 = loword((0x24 * iPlanSelDlg))
     call LogChangeBtlplan(btlplan) -> callresult(void)
     fDirtyPlan = 0
 
@@ -528,6 +516,8 @@ L_167c:
 L_1680:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0) -> callresult(LRESULT)
 
+L_16a2:
+    goto L_16f8
 
 L_16a5:
     branch wParam != 0x76 ? L_16f8 : L_16ae
@@ -535,7 +525,6 @@ L_16a5:
 L_16ae:
     call WinHelp(hwnd, szHelpFile, 0x1, 0x439) -> callresult(int16_t)
     return 1
-
 
 L_16d5:
     branch message == WM_ERASEBKGND ? L_0ad8 : L_16dd

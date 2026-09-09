@@ -42,7 +42,7 @@ block L_56dd:
 
 block L_56fe:
   insts 23..28  off 0x56fe..0x5711
-  preds: L_571b, L_5738, L_5769, L_5852, L_587d
+  preds: L_571b, L_5738, L_587d
   succs: L_5712
   effects:
     5701  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -72,19 +72,11 @@ block L_5738:
     5753  store[2] [bp-rgiFuel+0x2] = farseg(callresult(ENGINE *))
     5756  store[2] [bp-pctShip10] = 0x0
     575b  store[2] [bp-pctShip10+0x2] = 0x0
-    5764  branch load([bp+iWarp]) > 0x9 ? L_56fe : L_5766
-
-block L_5766:
-  insts 57..57  off 0x5766..0x5768
-  succs: L_576c
-
-block L_5769:
-  insts 58..58  off 0x5769..0x576b
-  succs: L_56fe
+    5764  branch load([bp+iWarp]) > 0x9 ? L_56fe : L_576c
 
 block L_576c:
   insts 59..66  off 0x576c..0x5780
-  preds: L_5738, L_5766
+  preds: L_5738
   succs: L_5784, L_5852
   effects:
     577f  branch load(load([bp-rgiFuel+0x2]):[(load([bp-rgiFuel]) + (load([bp+iWarp]) << 0x1))]) != 0x0 ? L_5852 : L_5784
@@ -141,7 +133,7 @@ block L_5836:
 block L_5852:
   insts 141..157  off 0x5852..0x587c
   preds: L_576c, L_5784, L_57b7, L_57da, L_57f5, L_581b, L_5836
-  succs: L_56fe
+  succs: L_587d
   effects:
     5872  call __aFulmul(words(load([bp-pctShip10+0x2]), load([bp-pctShip10])), words(signhiword(load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))])), load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]))) -> callresult(uint32_t)
     5877  store[2] [bp-pct10] = (load([bp-pct10]) + loword(callresult(uint32_t)))
@@ -149,7 +141,10 @@ block L_5852:
 
 block L_587d:
   insts 158..158  off 0x587d..0x587f
+  preds: L_5852
   succs: L_56fe
+  effects:
+    587d  goto L_56fe
 
 block L_5880:
   insts 159..167  off 0x5880..0x589f

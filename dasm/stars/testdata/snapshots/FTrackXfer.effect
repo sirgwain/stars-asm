@@ -46,19 +46,11 @@ block L_5a5c:
   succs: L_5a82, L_5a91
   effects:
     5a72  call PtInRect(words(ds, (load([rgbtnXfer]) + loword((0xe * load([bp-i]))))), words(load([bp-pt+0x2]), load([bp-pt]))) -> callresult(int16_t)
-    5a7a  branch callresult(int16_t) != 0x0 ? L_5a91 : L_5a7c
-
-block L_5a7c:
-  insts 38..38  off 0x5a7c..0x5a7e
-  succs: L_5a82
-
-block L_5a7f:
-  insts 39..39  off 0x5a7f..0x5a81
-  succs: L_5a91
+    5a7a  branch callresult(int16_t) != 0x0 ? L_5a91 : L_5a82
 
 block L_5a82:
   insts 40..40  off 0x5a82..0x5a85
-  preds: L_5a42, L_5a5c, L_5a7c
+  preds: L_5a42, L_5a5c
   succs: L_5a86
   effects:
     5a82  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -72,7 +64,7 @@ block L_5a86:
 
 block L_5a91:
   insts 45..47  off 0x5a91..0x5a98
-  preds: L_5a5c, L_5a7f, L_5a86
+  preds: L_5a5c, L_5a86
   succs: L_5a9c, L_5aa2
   effects:
     5a97  branch load([bp-i]) != load([crgbtnXfer]) ? L_5aa2 : L_5a9c
@@ -99,19 +91,11 @@ block L_5adc:
   preds: L_5aa2
   succs: L_5ae8, L_5f70
   effects:
-    5ae0  branch load([bp-iVal]) > 0x4 ? L_5f70 : L_5ae2
-
-block L_5ae2:
-  insts 76..76  off 0x5ae2..0x5ae4
-  succs: L_5ae8
-
-block L_5ae5:
-  insts 77..77  off 0x5ae5..0x5ae7
-  succs: L_5f70
+    5ae0  branch load([bp-iVal]) > 0x4 ? L_5f70 : L_5ae8
 
 block L_5ae8:
   insts 78..80  off 0x5ae8..0x5af2
-  preds: L_5adc, L_5ae2
+  preds: L_5adc
   succs: L_5af6, L_5b0e
   effects:
     5af1  branch load(ds:[load([pxfer])+0x82]) != 0x8 ? L_5b0e : L_5af6
@@ -126,40 +110,27 @@ block L_5af6:
 block L_5aff:
   insts 85..86  off 0x5aff..0x5b04
   preds: L_5af6
-  succs: L_5b31, L_5f70
+  succs: L_5b05, L_5f70
   effects:
     5b03  branch load([bp-iVal]) == 0x3 ? L_5f70 : L_5b05
 
 block L_5b05:
   insts 87..87  off 0x5b05..0x5b07
+  preds: L_5aff
   succs: L_5b31
-
-block L_5b08:
-  insts 88..88  off 0x5b08..0x5b0a
-  succs: L_5f70
-
-block L_5b0b:
-  insts 89..89  off 0x5b0b..0x5b0d
-  succs: L_5b31
+  effects:
+    5b05  goto L_5b31
 
 block L_5b0e:
   insts 90..100  off 0x5b0e..0x5b2a
   preds: L_5ae8
   succs: L_5b31, L_5f70
   effects:
-    5b29  branch load(ds:[(load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7))+0x6]) != load([idPlayer]) ? L_5f70 : L_5b2b
-
-block L_5b2b:
-  insts 101..101  off 0x5b2b..0x5b2d
-  succs: L_5b31
-
-block L_5b2e:
-  insts 102..102  off 0x5b2e..0x5b30
-  succs: L_5f70
+    5b29  branch load(ds:[(load([pxfer]) + ((((load([bp-btn+0xc]) >> 0x1) >> 0x1) & 0x3) << 0x7))+0x6]) != load([idPlayer]) ? L_5f70 : L_5b31
 
 block L_5b31:
   insts 103..107  off 0x5b31..0x5b43
-  preds: L_5aff, L_5b05, L_5b0b, L_5b0e, L_5b2b
+  preds: L_5b05, L_5b0e
   succs: L_5b44
   effects:
     5b34  call SetCapture(load([bp+hwnd])) -> callresult(HWND)
@@ -168,7 +139,7 @@ block L_5b31:
 
 block L_5b44:
   insts 108..113  off 0x5b44..0x5b54
-  preds: L_5b31, L_5b63, L_5d05, L_5d0d, L_5d23
+  preds: L_5b31, L_5b63, L_5d05, L_5d23
   succs: L_5b58, L_5d26
   effects:
     5b48  call FGetMouseMove(addr([bp-pt])) -> callresult(int16_t)
@@ -290,13 +261,16 @@ block L_5d05:
 block L_5d0d:
   insts 281..288  off 0x5d0d..0x5d22
   preds: L_5cf0, L_5d05
-  succs: L_5b44
+  succs: L_5d23
   effects:
     5d1b  call DrawXferDlg(load([bp+hwnd]), 0x0, addr([bp-rc]), load([bp-iVal])) -> callresult(void)
 
 block L_5d23:
   insts 289..289  off 0x5d23..0x5d25
+  preds: L_5d0d
   succs: L_5b44
+  effects:
+    5d23  goto L_5b44
 
 block L_5d26:
   insts 290..291  off 0x5d26..0x5d2d
@@ -368,7 +342,7 @@ block L_5da3:
 
 block L_5dad:
   insts 338..343  off 0x5dad..0x5dbd
-  preds: L_5d7f, L_5d96, L_5da3, L_5e4d, L_5ecd, L_5efe, L_5f01, L_5f0a, L_5f50, L_5f58, L_5f6d
+  preds: L_5d7f, L_5d96, L_5da3, L_5e4d, L_5efe, L_5f01, L_5f0a, L_5f50, L_5f6d
   succs: L_5dc1, L_5f70
   effects:
     5db1  call FTrackBtn(addr([bp-btnt])) -> callresult(int16_t)
@@ -484,14 +458,17 @@ block L_5eca:
 block L_5ecd:
   insts 445..462  off 0x5ecd..0x5efd
   preds: L_5ec4, L_5eca
-  succs: L_5dad
+  succs: L_5efe
   effects:
     5ee7  store[2] ds:[(((load([pxfer]) + (merge(Join: L_5ecd, (L_5ec4:0x1, L_5eca:0x0)) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))] = (load(ds:[(((load([pxfer]) + (merge(Join: L_5ecd, (L_5ec4:0x1, L_5eca:0x0)) << 0x7)) + 0x10) + (load([bp-iVal]) << 0x1))]) - load([bp-i]))
     5ef6  call DrawXferDlg(load([bp+hwnd]), load([bp-btnt+0x2]), addr([bp-rc]), load([bp-iBtn])) -> callresult(void)
 
 block L_5efe:
   insts 463..463  off 0x5efe..0x5f00
+  preds: L_5ecd
   succs: L_5dad
+  effects:
+    5efe  goto L_5dad
 
 block L_5f01:
   insts 464..465  off 0x5f01..0x5f06
@@ -544,17 +521,20 @@ block L_5f50:
 block L_5f58:
   insts 496..502  off 0x5f58..0x5f6c
   preds: L_5f3b, L_5f50
-  succs: L_5dad
+  succs: L_5f6d
   effects:
     5f65  call DrawXferDlg(load([bp+hwnd]), load([bp-btnt+0x2]), addr([bp-rc]), load([bp-iVal])) -> callresult(void)
 
 block L_5f6d:
   insts 503..503  off 0x5f6d..0x5f6f
+  preds: L_5f58
   succs: L_5dad
+  effects:
+    5f6d  goto L_5dad
 
 block FinishUp:
   insts 504..514  off 0x5f70..0x5f91
-  preds: L_5adc, L_5ae5, L_5af6, L_5aff, L_5b08, L_5b0e, L_5b2e, L_5d26, L_5dad
+  preds: L_5adc, L_5af6, L_5aff, L_5b0e, L_5d26, L_5dad
   succs: L_5f92
   effects:
     5f70  call UpdateXferBtns() -> callresult(void)

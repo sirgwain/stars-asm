@@ -1,6 +1,5 @@
 void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
-    ORDER    ord;
-    uint16_t scratch_bp_m1a;
+    ORDER ord;
 
 L_9e28:
     if ((fRecycle == 0))
@@ -21,13 +20,12 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x))
-        goto L_9ec7;
-    else
-        goto L_9eb6;
+    /* untranslated: branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))] !=
+     * loword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9eb6 */
 
 L_9eb6:
-    /* untranslated: branch scratch_bp_m16:[(scratch_bp_m18 + loword(((lpfl->cord - 1) * 0x12)))+0x2] != scratch_bp_m1a ? L_9ec7 : L_9ebf */
+    /* untranslated: branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))+0x2] !=
+     * hiword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9ebf */
 
 L_9ebf:
     fRecycle = 0;

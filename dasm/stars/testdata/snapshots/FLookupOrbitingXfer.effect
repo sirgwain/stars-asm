@@ -45,7 +45,7 @@ block L_251d:
 
 block L_2525:
   insts 15..15  off 0x2525..0x2528
-  preds: L_2564, L_2573, L_258a, L_25a4, L_25ad, L_2603
+  preds: L_2564, L_2573, L_258a, L_25a4, L_25ad
   succs: L_2529
   effects:
     2525  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -138,10 +138,6 @@ block L_25fd:
   succs: L_26d8
   effects:
     2600  goto L_26d8
-
-block L_2603:
-  insts 96..96  off 0x2603..0x2605
-  succs: L_2525
 
 block L_2606:
   insts 97..110  off 0x2606..0x2630

@@ -108,10 +108,11 @@ L_0177:
 L_0186:
     goto L_0489;
 
-L_0190:
-    goto L_050d;
+L_0193:
     ini.fWait = 0x1;
     goto L_050d;
+
+L_01a2:
     lpT = (lpT + 0x1);
 
 L_01a6:
@@ -184,6 +185,8 @@ L_0231:
 L_0238:
     lpT = (lpT - 0x1);
     goto L_050d;
+
+L_023f:
     ini.fGen = 0x1;
     i = 0;
 
@@ -228,7 +231,7 @@ L_02be:
 
 L_02cb:
     if ((i <= 0))
-        goto L_02dd;
+        goto L_050d;
     else
         goto L_02d4;
 
@@ -237,12 +240,20 @@ L_02d4:
 
 L_02dd:
     goto L_050d;
+
+L_02e0:
     ini.fNewGame = 0x1;
     goto L_050d;
+
+L_02ef:
     gd.fHotSeat = 0x1;
     goto L_050d;
+
+L_02fe:
     gd.fExitWindows = 0x1;
     goto L_050d;
+
+L_030d:
     lpT = (lpT + 0x1);
 
 L_0311:
@@ -256,7 +267,7 @@ L_0320:
     goto L_0311;
 
 L_0327:
-    pch = &(szBase);
+    pch = szBase;
 
 L_032c:
     if (((uint16_t)(*(lpT)) == 0))
@@ -280,7 +291,7 @@ L_0360:
     *(pch) = 0;
     lpT = (lpT - 0x1);
     if ((FSetUpBatchProcessing() == 0))
-        goto L_03a7;
+        goto L_050d;
     else
         goto L_0377;
 
@@ -292,12 +303,20 @@ L_0377:
 
 L_03a7:
     goto L_050d;
+
+L_03aa:
     ini.fValidate = 0x1;
     goto L_050d;
+
+L_03b9:
     ini.fLogging = 0x1;
     goto L_050d;
+
+L_03c8:
     ini.fTry = 0x1;
     goto L_050d;
+
+L_03d7:
     if (((uint16_t)(LOWORD(szBase)) == 0x0))
         goto L_03e9;
     else
@@ -313,6 +332,8 @@ L_03e9:
 L_03ec:
     ini.fCmdLine = t_merge_03ec_0001;
     goto L_050d;
+
+L_0409:
     lpT = (lpT + 0x1);
 
 L_040d:
@@ -326,7 +347,7 @@ L_041c:
     goto L_040d;
 
 L_0423:
-    pch = &(szPassLast);
+    pch = szPassLast;
 
 L_0428:
     if (((uint16_t)(*(lpT)) == 0))
@@ -360,19 +381,132 @@ L_0466:
 
 L_0489:
     if ((((uint16_t)(*(lpT)) - 65) > 0x37))
-        goto L_0190;
+        goto L_050d;
     else
         goto L_0494;
 
 L_0494:
-    goto L_ffffffff;
+    switch ((((uint16_t)(*(lpT)) - 65) * 0x2)) {
+    case 0x0:
+        goto L_02e0;
+    case 0x2:
+        goto L_030d;
+    case 0x4:
+        goto L_03d7;
+    case 0x6:
+        goto L_01a2;
+    case 0x8:
+        goto L_050d;
+    case 0xa:
+        goto L_050d;
+    case 0xc:
+        goto L_023f;
+    case 0xe:
+        goto L_02ef;
+    case 0x10:
+        goto L_050d;
+    case 0x12:
+        goto L_050d;
+    case 0x14:
+        goto L_050d;
+    case 0x16:
+        goto L_03b9;
+    case 0x18:
+        goto L_050d;
+    case 0x1a:
+        goto L_050d;
+    case 0x1c:
+        goto L_050d;
+    case 0x1e:
+        goto L_0409;
+    case 0x20:
+        goto L_050d;
+    case 0x22:
+        goto L_050d;
+    case 0x24:
+        goto L_050d;
+    case 0x26:
+        goto L_03c8;
+    case 0x28:
+        goto L_050d;
+    case 0x2a:
+        goto L_03aa;
+    case 0x2c:
+        goto L_0193;
+    case 0x2e:
+        goto L_02fe;
+    case 0x30:
+        goto L_050d;
+    case 0x32:
+        goto L_050d;
+    case 0x34:
+        goto L_050d;
+    case 0x36:
+        goto L_050d;
+    case 0x38:
+        goto L_050d;
+    case 0x3a:
+        goto L_050d;
+    case 0x3c:
+        goto L_050d;
+    case 0x3e:
+        goto L_050d;
+    case 0x40:
+        goto L_02e0;
+    case 0x42:
+        goto L_030d;
+    case 0x44:
+        goto L_03d7;
+    case 0x46:
+        goto L_01a2;
+    case 0x48:
+        goto L_050d;
+    case 0x4a:
+        goto L_050d;
+    case 0x4c:
+        goto L_023f;
+    case 0x4e:
+        goto L_02ef;
+    case 0x50:
+        goto L_050d;
+    case 0x52:
+        goto L_050d;
+    case 0x54:
+        goto L_050d;
+    case 0x56:
+        goto L_03b9;
+    case 0x58:
+        goto L_050d;
+    case 0x5a:
+        goto L_050d;
+    case 0x5c:
+        goto L_050d;
+    case 0x5e:
+        goto L_0409;
+    case 0x60:
+        goto L_050d;
+    case 0x62:
+        goto L_050d;
+    case 0x64:
+        goto L_050d;
+    case 0x66:
+        goto L_03c8;
+    case 0x68:
+        goto L_050d;
+    case 0x6a:
+        goto L_03aa;
+    case 0x6c:
+        goto L_0193;
+    case 0x6e:
+        goto L_02fe;
+    }
 
 L_050d:
     lpT = (lpT + 0x1);
     goto L_0168;
 
 L_0517:
-    pch = &(szBase);
+    pch = szBase;
 
 L_051c:
     if (((uint16_t)(*(lpT)) == 0))
@@ -396,6 +530,9 @@ L_0550:
     *(pch) = 0;
     ini.fStartupFile = 0x1;
     ini.fCmdLine = 0x1;
+
+L_056e:
+    goto L_0121;
 
 L_0571:
     PostMessage(hwndFrame, WM_STARS_STARTUP, 0x0, 0);
@@ -421,6 +558,9 @@ L_05b4:
 L_05d0:
     TranslateMessage(&(msg));
     DispatchMessage(&(msg));
+
+L_05e8:
+    goto L_058a;
 
 L_05eb:
     if ((IsIconic(hwndFrame) != 0))
@@ -468,6 +608,9 @@ L_0665:
 L_0681:
     DispatchMessage(&(msg));
 
+L_068d:
+    goto L_058a;
+
 L_0690:
     FreeStuff();
     return msg.wParam;
@@ -485,9 +628,7 @@ L_06a4:
     if ((setjmp(env) != 0))
         goto LError;
     else
-        goto L_06c9;
-
-L_06c9:
+        goto L_06cf;
 
 L_06cf:
     StreamOpen(szBase, 32);
@@ -495,7 +636,7 @@ L_06cf:
     lpchBatch = LpAlloc(cb, htPerm);
     RgFromStream(lpchBatch, cb);
     lpchBatchMac = (lpchBatch + cb);
-    pch = &(szBase);
+    pch = szBase;
 
 L_0733:
     if (((uint16_t)(*(lpchBatch)) == 10))
@@ -608,6 +749,7 @@ L_08c5:
 int16_t FGetSystemColors() {
     HDC         hdc;
     BITMAPINFO *lpbi;
+    int16_t     t_scratch_m6;
 
 L_08d2:
     if ((hbrButtonFace == 0x0))
@@ -726,7 +868,8 @@ L_0b13:
 
 L_0b65:
     hdc = GetDC(0x0);
-    vcScreenColors = LOWORD((GetDeviceCaps(hdc, BITSPIXEL) * GetDeviceCaps(hdc, PLANES)));
+    t_scratch_m6 = GetDeviceCaps(hdc, BITSPIXEL);
+    vcScreenColors = LOWORD((t_scratch_m6 * GetDeviceCaps(hdc, PLANES)));
     ReleaseDC(0x0, hdc);
 
 L_0ba8:
@@ -1230,9 +1373,7 @@ L_13d7:
     if ((i >= 77))
         goto L_13fa;
     else
-        goto L_13dd;
-
-L_13dd:
+        goto L_13e3;
 
 L_13e3:
     OffsetRect(&(rc), 0, dyArial8);
@@ -1283,6 +1424,9 @@ L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst);
     DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
     FreeProcInstance(lpProc);
+
+L_14df:
+    goto L_1510;
 
 L_14e5:
     if ((message == WM_ERASEBKGND))
@@ -1853,6 +1997,9 @@ L_19d1:
 L_19d9:
     itb = 11;
 
+L_19de:
+    goto L_1a07;
+
 L_19e4:
     if ((iKey == 48))
         goto L_19c0;
@@ -1910,6 +2057,9 @@ L_1a56:
 L_1a60:
     iKey = 8;
     DeleteCurWayPoint(8);
+
+L_1a71:
+    goto L_1c30;
 
 L_1a74:
     if ((hwndF != hwndShipLB))
@@ -2070,6 +2220,7 @@ L_1c25:
         goto L_1c2a;
 
 L_1c2a:
+    goto L_1ba0;
 
 L_1c30:
     return 1;

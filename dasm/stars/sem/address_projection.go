@@ -32,6 +32,24 @@ type ScaledTerm struct {
 	Scale int
 }
 
+// BitfieldSignedness describes what an extraction proves about a declared
+// bitfield's integer base type.
+type BitfieldSignedness uint8
+
+const (
+	BitfieldSignednessUnknown BitfieldSignedness = iota
+	BitfieldUnsigned
+	BitfieldSigned
+)
+
+// BitfieldAccess describes one physical bit range within an integer storage unit.
+type BitfieldAccess struct {
+	StorageWidth int
+	BitOff       int
+	BitWidth     int
+	Signedness   BitfieldSignedness
+}
+
 // resolveAddressLValue resolves a machine memory address through typed semantic projection.
 func (c *machineConverter) resolveAddressLValue(mem machine.MemoryAddress, width int, expected typeinfo.Type) (LValue, bool) {
 	addr, ok := c.ctx.symbols.addressFromMemory(mem, expected)
@@ -66,13 +84,13 @@ func (c *machineConverter) resolveAddressLValue(mem machine.MemoryAddress, width
 }
 
 // resolveBitfieldLValue resolves a physical storage bit range through typed semantic projection.
-func (c *machineConverter) resolveBitfieldLValue(mem machine.MemoryAddress, bitOff int, bitWidth int) (LValue, bool) {
+func (c *machineConverter) resolveBitfieldLValue(mem machine.MemoryAddress, access BitfieldAccess) (LValue, bool) {
 	resolved, ok := c.ctx.symbols.addressFromMemory(mem, nil)
 	if !ok {
 		return nil, false
 	}
 	if addr, ok := c.semanticBitfieldExactAddress(resolved); ok {
-		if lvalue, ok := c.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth); ok {
+		if lvalue, ok := c.consumeBitfieldAddress(addr, access); ok {
 			return lvalue, true
 		}
 	}
@@ -82,12 +100,7 @@ func (c *machineConverter) resolveBitfieldLValue(mem machine.MemoryAddress, bitO
 	if !ok {
 		return nil, false
 	}
-	if lvalue, ok := c.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth); ok {
-		return lvalue, true
-	}
-	fallback := *c
-	fallback.ignoreUnionContext = true
-	return fallback.consumeBitfieldAddress(addr, mem.Width, bitOff, bitWidth)
+	return c.consumeBitfieldAddress(addr, access)
 }
 
 // semanticBitfieldExactAddress preserves machine-proven nested pointer and
@@ -167,8 +180,8 @@ func bitfieldExactPathHasDeref(path symresolve.SymbolPath) bool {
 }
 
 // resolveDeclaredBitfield returns the declared field selected by a physical bit range.
-func resolveDeclaredBitfield(ctx *FuncContext, mem machine.MemoryAddress, bitOff int, bitWidth int) (*typeinfo.StructField, bool) {
-	lvalue, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(mem, bitOff, bitWidth)
+func resolveDeclaredBitfield(ctx *FuncContext, mem machine.MemoryAddress, access BitfieldAccess) (*typeinfo.StructField, bool) {
+	lvalue, ok := (&machineConverter{ctx: ctx}).resolveBitfieldLValue(mem, access)
 	if !ok {
 		return nil, false
 	}
@@ -257,7 +270,7 @@ func (c *machineConverter) consumeAddress(addr AddressExpr, width int) (LValue, 
 }
 
 // consumeBitfieldAddress walks an address to the aggregate containing a declared bitfield.
-func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, access BitfieldAccess) (LValue, bool) {
 	current := addr.Base
 	offset := addr.Offset
 	terms := append([]ScaledTerm(nil), addr.Terms...)
@@ -265,16 +278,16 @@ func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, storageWidth
 
 	for {
 		if len(terms) == 0 {
-			if field, ok := c.consumeStructBitfield(current, offset, storageWidth, bitOff, bitWidth); ok {
+			if field, ok := c.consumeStructBitfield(current, offset, access); ok {
 				return field, true
 			}
-			if field, ok := c.consumeAmbiguousStructBitfield(current, offset, terms, storageWidth, bitOff, bitWidth); ok {
+			if field, ok := c.consumeAmbiguousStructBitfield(current, offset, terms, access); ok {
 				return field, true
 			}
 		}
 
 		if deref && typeinfo.IsPointer(current.ExprType()) {
-			next, nextOffset, nextTerms, changed := c.consumeDereferencedPointerStep(current, offset, terms, storageWidth)
+			next, nextOffset, nextTerms, changed := c.consumeDereferencedPointerStep(current, offset, terms, access.StorageWidth)
 			if changed {
 				current = next
 				offset = nextOffset
@@ -284,7 +297,7 @@ func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, storageWidth
 			}
 		}
 
-		next, nextOffset, nextTerms, changed := c.consumeObjectAddressStep(current, offset, terms, storageWidth)
+		next, nextOffset, nextTerms, changed := c.consumeObjectAddressStep(current, offset, terms, access.StorageWidth)
 		if !changed {
 			return nil, false
 		}
@@ -294,10 +307,10 @@ func (c *machineConverter) consumeBitfieldAddress(addr AddressExpr, storageWidth
 	}
 }
 
-// consumeAmbiguousStructBitfield selects the sole aggregate branch that
-// eventually contains the requested bitfield when an overlapping union has
-// no active member selection.
-func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int, terms []ScaledTerm, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+// consumeAmbiguousStructBitfield walks the selected aggregate branch, or the
+// sole branch that eventually contains the requested bitfield when an
+// overlapping union has no active member selection.
+func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int, terms []ScaledTerm, access BitfieldAccess) (LValue, bool) {
 	typ := base.ExprType()
 	if ptr, ok := typ.(*typeinfo.Pointer); ok {
 		typ = ptr.Elem
@@ -307,7 +320,7 @@ func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int,
 		return nil, false
 	}
 	matches := c.unionFieldMatches(base, strct, strct.FieldsContainingOffset(offset))
-	if len(matches) <= 1 {
+	if len(matches) == 0 {
 		return nil, false
 	}
 	var out LValue
@@ -318,9 +331,7 @@ func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int,
 		field := bitfieldFieldAccess(base, match.Field)
 		candidate, ok := c.consumeBitfieldAddress(
 			AddressExpr{Base: field, Offset: match.Off, Terms: append([]ScaledTerm(nil), terms...)},
-			storageWidth,
-			bitOff,
-			bitWidth,
+			access,
 		)
 		if !ok {
 			continue
@@ -334,7 +345,7 @@ func (c *machineConverter) consumeAmbiguousStructBitfield(base Expr, offset int,
 }
 
 // consumeStructBitfield matches a physical storage bit range against one struct's fields.
-func (c *machineConverter) consumeStructBitfield(base Expr, offset int, storageWidth int, bitOff int, bitWidth int) (LValue, bool) {
+func (c *machineConverter) consumeStructBitfield(base Expr, offset int, access BitfieldAccess) (LValue, bool) {
 	typ := base.ExprType()
 	if ptr, ok := typ.(*typeinfo.Pointer); ok {
 		typ = ptr.Elem
@@ -350,11 +361,12 @@ func (c *machineConverter) consumeStructBitfield(base Expr, offset int, storageW
 		if bitfield == nil {
 			continue
 		}
-		fieldBitOff := match.Off*8 + bitOff
-		if bitOff+bitWidth > storageWidth*8 ||
-			match.Off+storageWidth > bitfield.StorageSize ||
+		fieldBitOff := match.Off*8 + access.BitOff
+		if access.BitOff+access.BitWidth > access.StorageWidth*8 ||
+			match.Off+access.StorageWidth > bitfield.StorageSize ||
 			fieldBitOff != bitfield.BitOffset ||
-			bitWidth != bitfield.BitWidth {
+			access.BitWidth != bitfield.BitWidth ||
+			!bitfieldSignednessMatches(bitfield.BaseType, access.Signedness) {
 			continue
 		}
 		if out != nil {
@@ -363,6 +375,19 @@ func (c *machineConverter) consumeStructBitfield(base Expr, offset int, storageW
 		out = bitfieldFieldAccess(base, match.Field)
 	}
 	return out, out != nil
+}
+
+// bitfieldSignednessMatches reports whether known extraction signedness agrees
+// with a declared primitive integer base type.
+func bitfieldSignednessMatches(base typeinfo.Type, signedness BitfieldSignedness) bool {
+	if signedness == BitfieldSignednessUnknown {
+		return true
+	}
+	primitive, ok := base.(*typeinfo.Primitive)
+	if !ok || primitive.TypeKind != typeinfo.KInt {
+		return true
+	}
+	return primitive.Signed == (signedness == BitfieldSigned)
 }
 
 // bitfieldFieldAccess converts an explicit aggregate dereference into the

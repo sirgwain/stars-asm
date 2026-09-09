@@ -1,0 +1,24 @@
+/*
+GetFileStatus  (file)
+  addr: 000f:4a60  len=97
+  sig:  void GetFileStatus(int16_t dt, int16_t iPlayer)
+  params:
+    int16_t          dt             [BP+0x6]
+    int16_t          iPlayer        [BP+0x8]
+
+  stats: blocks=0  labels=0
+*/
+L_4a60:
+    call SetSzWorkFromDt(dt, iPlayer) -> callresult(void)
+    branch access(szWork, 2) == 0 ? L_4a96 : L_4a90
+
+L_4a90:
+    t_merge_4a99_0001 = 0x1
+    goto L_4a99
+
+L_4a96:
+    t_merge_4a99_0001 = 0x0
+
+L_4a99:
+    gd.fReadOnly = t_merge_4a99_0001
+    return

@@ -1204,7 +1204,7 @@ L_74f5:
 
 L_74f8:
     fHigh = t_merge_74f8_0001;
-    pszOut = &(szLastStrGet);
+    pszOut = szLastStrGet;
     iBuild = 0;
 
 L_7505:
@@ -1254,6 +1254,9 @@ L_756e:
     *(pszOut) = rgSTRLookupTable[iBuild];
     pszOut = (pszOut + 0x1);
     iBuild = 0;
+
+L_7584:
+    goto L_7505;
 
 L_7587:
     *(pszOut) = 0;

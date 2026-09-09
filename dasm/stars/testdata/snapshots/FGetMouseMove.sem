@@ -20,7 +20,6 @@ L_4176:
 L_417c:
     goto L_41c3
 
-
 L_4185:
     ppt->x = LOWORD(msg.lParam)
     ppt->y = (loword((uint32_t)(msg.lParam >> 0x10)) & 0xffff)
@@ -30,8 +29,9 @@ L_41b4:
     return 1
 
 L_41ba:
-    return 0
 
+L_41bd:
+    return 0
 
 L_41c3:
     branch msg.message == 0x200 ? L_4185 : L_41cb
@@ -40,6 +40,5 @@ L_41cb:
     branch msg.message != 0x202 ? L_4152 : L_41d0
 
 L_41d0:
-
-
+    goto L_4185
 

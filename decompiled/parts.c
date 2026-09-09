@@ -3893,46 +3893,44 @@ L_57d5:
 
 L_57db:
     goto L_5841;
+
+L_57e4:
     if ((raMajor == 1))
-        goto L_57f3;
+        goto L_609c;
     else
         goto L_57ed;
 
 L_57ed:
     return -1;
 
-L_57f3:
-    goto L_5874;
+L_57f6:
     if ((raMajor == 5))
-        goto L_5805;
+        goto L_609c;
     else
         goto L_57ff;
 
 L_57ff:
     return -1;
 
-L_5805:
-    goto L_5874;
+L_5808:
     if ((raMajor == 7))
-        goto L_5817;
+        goto L_609c;
     else
         goto L_5811;
 
 L_5811:
     return -1;
 
-L_5817:
-    goto L_5874;
+L_581a:
     if ((raMajor == 0))
-        goto L_5829;
+        goto L_609c;
     else
         goto L_5823;
 
 L_5823:
     return -1;
 
-L_5829:
-    goto L_5874;
+L_582c:
     if ((raMajor == 4))
         goto L_609c;
     else
@@ -3942,8 +3940,48 @@ L_5835:
     return -1;
 
 L_5841:
+    if ((hs.iItem > ispecialEAntiMatterGenerator))
+        goto L_609c;
+    else
+        goto L_5849;
 
-L_5874:
+L_5849:
+    switch ((hs.iItem * 0x2)) {
+    case 0x0:
+        goto L_57e4;
+    case 0x2:
+        goto L_609c;
+    case 0x4:
+        goto L_609c;
+    case 0x6:
+        goto L_57e4;
+    case 0x8:
+        goto L_609c;
+    case 0xa:
+        goto L_609c;
+    case 0xc:
+        goto L_609c;
+    case 0xe:
+        goto L_609c;
+    case 0x10:
+        goto L_582c;
+    case 0x12:
+        goto L_609c;
+    case 0x14:
+        goto L_609c;
+    case 0x16:
+        goto L_582c;
+    case 0x18:
+        goto L_609c;
+    case 0x1a:
+        goto L_581a;
+    case 0x1c:
+        goto L_57f6;
+    case 0x1e:
+        goto L_582c;
+    case 0x20:
+        goto L_5808;
+    }
 
 L_5877:
     if ((hs.iItem < ispecialMCount))
@@ -4760,14 +4798,13 @@ L_6091:
         goto L_6096;
 
 L_6096:
+    goto L_5e6b;
 
 L_609c:
     return TechStatus(ppart->pcom->rgTech);
 }
 
 void LookupBestPlanetaryScanner(PART *ppart) {
-    uint16_t scratch_bp_m4;
-
 L_60be:
     ppart->hs.iItem = 0x8;
     ppart->hs.grhst = hstPlanetary;
@@ -4788,14 +4825,10 @@ L_6104:
     if ((ppart->hs.iItem == 0x0))
         goto L_6141;
     else
-        goto L_6112;
-
-L_6112:
+        goto L_6118;
 
 L_6118:
-    scratch_bp_m4 = ((HIWORD(ppart->hs) + 0xffff) & 0xff);
-    ppart->hs.iItem = 0x0;
-    HIWORD(ppart->hs) = (HIWORD(ppart->hs) | scratch_bp_m4);
+    ppart->hs.iItem = (ppart->hs.iItem + 0xffff);
     goto L_60e0;
 
 L_6141:
@@ -4817,7 +4850,8 @@ L_6148:
     goto L_6211;
 
 L_6168:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[i]) >= (uint16_t)(rgTech[i])))
+    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[i]);
+    if ((scratch_bp_mc >= (uint16_t)(rgTech[i])))
         goto L_620d;
     else
         goto L_61a1;
@@ -4830,7 +4864,8 @@ L_61a1:
         goto L_61c0;
 
 L_61c0:
-    if ((((uint16_t)(rgplr[idPlayer].rgTech[i]) + 1) != (uint16_t)(rgTech[i])))
+    scratch_bp_mc = ((uint16_t)(rgplr[idPlayer].rgTech[i]) + 1);
+    if ((scratch_bp_mc != (uint16_t)(rgTech[i])))
         goto L_6204;
     else
         goto L_61fc;
@@ -4888,6 +4923,7 @@ L_6250:
         goto L_6259;
 
 L_6259:
+    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[(fInAWhile - 0x1)]);
     return (((uint16_t)(rgTech[(fInAWhile - 1)]) - scratch_bp_mc) + 0x1);
 
 L_629c:

@@ -130,10 +130,9 @@ func PreProcessorSpecs() []PreProcessor {
 func ProcessorSpecs() []Processor {
 	return []Processor{
 		{
-			Name:    "elide-scratch-slots",
-			Purpose: "Inline simple compiler scratch stack slots within a block.",
-			Sem:     func(*FuncContext) SemBlockProcessor { return &elideScratchSlotsProcessor{} },
-			Func:    func(*FuncContext) SemFuncProcessor { return &elideScratchSlotsProcessor{} },
+			Name:    "recover-scratch-storage",
+			Purpose: "Recover scratch values and addressable objects across the function CFG.",
+			Func:    func(*FuncContext) SemFuncProcessor { return &scratchRecoveryProcessor{} },
 		},
 		{
 			Name:    "union-context",

@@ -28,7 +28,7 @@ block L_24dc:
 
 block L_2505:
   insts 14..14  off 0x2505..0x2508
-  preds: L_2514, L_252d, L_2532, L_2538
+  preds: L_2514, L_2532
   succs: L_2509
   effects:
     2505  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -50,21 +50,16 @@ block L_2514:
 block L_252d:
   insts 28..29  off 0x252d..0x2531
   preds: L_2514
-  succs: L_2505, L_294c
+  succs: L_2532, L_294c
   effects:
     2530  branch load(ds:[load([bp+ppt])+0x2]) == load(ds:[((load([bp-i]) << 0x1) << 0x1)+0x2f42]) ? L_294c : L_2532
 
 block L_2532:
   insts 30..30  off 0x2532..0x2534
+  preds: L_252d
   succs: L_2505
-
-block L_2535:
-  insts 31..31  off 0x2535..0x2537
-  succs: L_294c
-
-block L_2538:
-  insts 32..32  off 0x2538..0x253a
-  succs: L_2505
+  effects:
+    2532  goto L_2505
 
 block L_253b:
   insts 33..34  off 0x253b..0x2542
@@ -76,7 +71,7 @@ block L_253b:
 
 block L_2543:
   insts 35..46  off 0x2543..0x2564
-  preds: L_2565, L_256b
+  preds: L_256b
   succs: L_2565
   effects:
     255b  store[2] [bp-wtTotal] = (load([bp-wtTotal]) + load(load([bp+rgwtMinerals+0x2]):[(load([bp+rgwtMinerals]) + ((load([bp-i]) << 0x1) << 0x1))]))
@@ -86,17 +81,16 @@ block L_2543:
 block L_2565:
   insts 47..48  off 0x2565..0x256a
   preds: L_253b, L_2543
-  succs: L_2543, L_25cb
+  succs: L_256b, L_25cb
   effects:
     2569  branch load([bp-i]) >= 0x3 ? L_25cb : L_256b
 
 block L_256b:
   insts 49..49  off 0x256b..0x256d
+  preds: L_2565
   succs: L_2543
-
-block L_256e:
-  insts 50..50  off 0x256e..0x2570
-  succs: L_25cb
+  effects:
+    256b  goto L_2543
 
 block L_2571:
   insts 51..52  off 0x2571..0x2578
@@ -127,7 +121,7 @@ block L_25c2:
 
 block L_25cb:
   insts 83..84  off 0x25cb..0x25d0
-  preds: L_2565, L_256e, L_25c2
+  preds: L_2565, L_25c2
   succs: L_25d4, L_25dd
   effects:
     25cf  branch load([bp-wtTotal]) != 0x0 ? L_25dd : L_25d4
@@ -168,19 +162,11 @@ block L_260d:
   preds: L_25ef
   succs: L_2619, L_294c
   effects:
-    2611  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_2613
-
-block L_2613:
-  insts 107..107  off 0x2613..0x2615
-  succs: L_2619
-
-block L_2616:
-  insts 108..108  off 0x2616..0x2618
-  succs: L_294c
+    2611  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_2619
 
 block L_2619:
   insts 109..127  off 0x2619..0x2656
-  preds: L_25ef, L_260d, L_2613
+  preds: L_25ef, L_260d
   succs: L_26e9
   effects:
     2629  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@261c/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
@@ -285,19 +271,11 @@ block L_27f8:
   preds: L_2753
   succs: L_2804, L_294c
   effects:
-    27fc  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_27fe
-
-block L_27fe:
-  insts 280..280  off 0x27fe..0x2800
-  succs: L_2804
-
-block L_2801:
-  insts 281..281  off 0x2801..0x2803
-  succs: L_294c
+    27fc  branch load([bp-lpth+0x2]) == 0x0 ? L_294c : L_2804
 
 block L_2804:
   insts 282..300  off 0x2804..0x2841
-  preds: L_2753, L_27f8, L_27fe
+  preds: L_2753, L_27f8
   succs: L_2900
   effects:
     2814  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6] = ((load@2807/src(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x6]) & 0xc3ff) | 0x0)
@@ -340,19 +318,11 @@ block L_290e:
   preds: L_2909
   succs: L_291a, L_2927
   effects:
-    2912  branch load([bp-wtTotal]) <= 0x0 ? L_2927 : L_2914
-
-block L_2914:
-  insts 375..375  off 0x2914..0x2916
-  succs: L_291a
-
-block L_2917:
-  insts 376..376  off 0x2917..0x2919
-  succs: L_2927
+    2912  branch load([bp-wtTotal]) <= 0x0 ? L_2927 : L_291a
 
 block L_291a:
   insts 377..377  off 0x291a..0x291d
-  preds: L_2900, L_290e, L_2914
+  preds: L_2900, L_290e
   succs: L_291e
   effects:
     291a  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -366,7 +336,7 @@ block L_291e:
 
 block L_2927:
   insts 381..382  off 0x2927..0x292c
-  preds: L_26e9, L_2909, L_290e, L_2917, L_291e
+  preds: L_26e9, L_2909, L_290e, L_291e
   succs: L_2700, L_2930
   effects:
     292b  branch load([bp-wtTotal+0x2]) > 0x0 ? L_2700 : L_2930
@@ -395,6 +365,6 @@ block L_293e:
 
 block L_294c:
   insts 394..398  off 0x294c..0x2951
-  preds: L_252d, L_2535, L_260d, L_2616, L_27f8, L_2801, L_293e
+  preds: L_252d, L_260d, L_27f8, L_293e
   effects:
     2951  return

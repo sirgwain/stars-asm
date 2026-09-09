@@ -50,7 +50,7 @@ func TestCFGSuccessorsResolveConditionalTargetTrampoline(t *testing.T) {
 
 func TestCFGSuccessorsResolveConditionalFallthroughTrampoline(t *testing.T) {
 	cfg := cfgForCollapsedGraphTest(t, []asm.DecodedInst{
-		jccForGraphTest(0x1000, "", 0x1010),
+		jccForGraphTest(0x1000, "JNZ", 0x1010),
 		jmpForGraphTest(0x1002, 0x1012),
 		retForGraphTest(0x1010),
 		retForGraphTest(0x1012),

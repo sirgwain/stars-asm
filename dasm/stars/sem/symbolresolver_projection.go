@@ -92,7 +92,7 @@ func (sr *symbolResolver) symbolFromScratchMemoryAddress(mem machine.MemoryAddre
 	}, true
 }
 
-// scratchTypeForWidth returns the neutral integer view for an untyped scratch access.
+// scratchTypeForWidth returns a neutral storage view, including x87 extended real.
 func scratchTypeForWidth(width int) typeinfo.Type {
 	switch width {
 	case 1:
@@ -101,6 +101,8 @@ func scratchTypeForWidth(width int) typeinfo.Type {
 		return typeinfo.U16
 	case 4:
 		return typeinfo.U32
+	case 10:
+		return typeinfo.F80
 	default:
 		return &typeinfo.Primitive{
 			TypeKind: typeinfo.KInt,

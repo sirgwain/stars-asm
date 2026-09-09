@@ -1,0 +1,537 @@
+/*
+FReadFleet  (file)
+  addr: 000f:3a4c  len=1665
+  sig:  int16_t FReadFleet(FLEET *lpfl)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+  locals:
+    uint16_t *       pus            [BP-0x16]
+    int16_t          cch            [BP-0x14]
+    uint8_t *        pb             [BP-0x12]
+    int16_t          cish           [BP-0x10]
+    int16_t          i              [BP-0xe]
+    ORDER *          lpord          [BP-0xc]
+    int16_t          fByte          [BP-0x8]
+    int16_t          cord           [BP-0x6]
+    uint16_t         us             [BP-0x4]
+    block 000F:4047  len=0x63
+      int16_t          cOut           [BP-0x3a]
+      char[33]         szT            [BP-0x38]
+
+  stats: blocks=1  labels=1
+    Corrupt: L_3d24
+*/
+block L_3a4c:
+  insts 0..37  off 0x3a4c..0x3ab2
+  succs: L_3ab6, L_3b2f
+  effects:
+    3a55  store[2] [bp-cish] = 0x0
+    3a68  call fmemset(words(load([bp+lpfl+0x2]), load([bp+lpfl])), 0x0, 0x7c) -> callresult(void *)
+    3a81  call fmemmove(words(load([bp+lpfl+0x2]), load([bp+lpfl])), words(ds, 0x4b98), 0xc) -> callresult(void *)
+    3a98  store[2] [bp-fByte] = ((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x4]) >> 0xb) & 0x1)
+    3aa5  store[2] [bp-us] = load([rgbCur+0xc])
+    3aa8  store[2] [bp-pb] = rgbCur+0xe
+    3ab1  branch load([bp-fByte]) == 0x0 ? L_3b2f : L_3ab6
+
+block L_3ab6:
+  insts 39..40  off 0x3ab6..0x3abd
+  preds: L_3a4c
+  succs: L_3ace
+  effects:
+    3ab6  store[2] [bp-i] = 0x0
+    3abb  goto L_3ace
+
+block L_3abe:
+  insts 41..45  off 0x3abe..0x3acd
+  preds: L_3ad7, L_3ae5, L_3b29
+  succs: L_3ace
+  effects:
+    3ac1  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    3ac8  store[2] [bp-us] = (load([bp-us]) >> 0x1)
+
+block L_3ace:
+  insts 46..47  off 0x3ace..0x3ad3
+  preds: L_3ab6, L_3abe
+  succs: L_3ad7, L_3bae
+  effects:
+    3ad2  branch load([bp-us]) == 0x0 ? L_3bae : L_3ad7
+
+block L_3ad7:
+  insts 49..52  off 0x3ad7..0x3ae1
+  preds: L_3ace
+  succs: L_3abe, L_3ae5
+  effects:
+    3ae0  branch (load([bp-us]) & 0x1) == 0x0 ? L_3abe : L_3ae5
+
+block L_3ae5:
+  insts 54..76  off 0x3ae5..0x3b21
+  preds: L_3ad7
+  succs: L_3abe, L_3b25
+  effects:
+    3ae8  store[2] [bp-pb] = (load([bp-pb]) + 0x1)
+    3b05  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))] = load(byte ds:[load([bp-pb])])
+    3b20  branch load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) == 0x0 ? L_3abe : L_3b25
+
+block L_3b25:
+  insts 78..78  off 0x3b25..0x3b28
+  preds: L_3ae5
+  succs: L_3b29
+  effects:
+    3b25  store[2] [bp-cish] = (load([bp-cish]) + 0x1)
+
+block L_3b29:
+  insts 79..79  off 0x3b29..0x3b2b
+  preds: L_3b25
+  succs: L_3abe
+  effects:
+    3b29  goto L_3abe
+
+block L_3b2f:
+  insts 81..84  off 0x3b2f..0x3b3c
+  preds: L_3a4c
+  succs: L_3b4d
+  effects:
+    3b32  store[2] [bp-pus] = load([bp-pb])
+    3b35  store[2] [bp-i] = 0x0
+    3b3a  goto L_3b4d
+
+block L_3b3d:
+  insts 85..89  off 0x3b3d..0x3b4c
+  preds: L_3b56, L_3b64, L_3ba5
+  succs: L_3b4d
+  effects:
+    3b40  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    3b47  store[2] [bp-us] = (load([bp-us]) >> 0x1)
+
+block L_3b4d:
+  insts 90..91  off 0x3b4d..0x3b52
+  preds: L_3b2f, L_3b3d
+  succs: L_3b56, L_3ba8
+  effects:
+    3b51  branch load([bp-us]) == 0x0 ? L_3ba8 : L_3b56
+
+block L_3b56:
+  insts 93..96  off 0x3b56..0x3b60
+  preds: L_3b4d
+  succs: L_3b3d, L_3b64
+  effects:
+    3b5f  branch (load([bp-us]) & 0x1) == 0x0 ? L_3b3d : L_3b64
+
+block L_3b64:
+  insts 98..119  off 0x3b64..0x3b9d
+  preds: L_3b56
+  succs: L_3b3d, L_3ba1
+  effects:
+    3b67  store[2] [bp-pus] = (load([bp-pus]) + 0x2)
+    3b81  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))] = load(ds:[load([bp-pus])])
+    3b9c  branch load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) == 0x0 ? L_3b3d : L_3ba1
+
+block L_3ba1:
+  insts 121..121  off 0x3ba1..0x3ba4
+  preds: L_3b64
+  succs: L_3ba5
+  effects:
+    3ba1  store[2] [bp-cish] = (load([bp-cish]) + 0x1)
+
+block L_3ba5:
+  insts 122..122  off 0x3ba5..0x3ba7
+  preds: L_3ba1
+  succs: L_3b3d
+  effects:
+    3ba5  goto L_3b3d
+
+block L_3ba8:
+  insts 123..124  off 0x3ba8..0x3bad
+  preds: L_3b4d
+  succs: L_3bae
+  effects:
+    3bab  store[2] [bp-pb] = load([bp-pus])
+
+block L_3bae:
+  insts 125..126  off 0x3bae..0x3bb3
+  preds: L_3ace, L_3ba8
+  succs: L_3bb7, L_3bcb
+  effects:
+    3bb2  branch load([bp-cish]) != 0x0 ? L_3bcb : L_3bb7
+
+block L_3bb7:
+  insts 128..133  off 0x3bb7..0x3bca
+  preds: L_3bae
+  succs: L_3bcb
+  effects:
+    3bc7  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x4] = ((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x4]) & 0xfbff) | 0x400)
+
+block L_3bcb:
+  insts 134..138  off 0x3bcb..0x3bd9
+  preds: L_3bae, L_3bb7
+  succs: L_3bdd, L_3cc0
+  effects:
+    3bd8  branch (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x4]) & 0xff) < 0x4 ? L_3cc0 : L_3bdd
+
+block L_3bdd:
+  insts 140..147  off 0x3bdd..0x3bf5
+  preds: L_3bcb
+  succs: L_3c06
+  effects:
+    3be7  store[2] [bp-us] = load(ds:[load([bp-pb])])
+    3bea  store[2] [bp-pb] = (load([bp-pb]) + 0x2)
+    3bee  store[2] [bp-i] = 0x0
+    3bf3  goto L_3c06
+
+block L_3bf6:
+  insts 148..152  off 0x3bf6..0x3c05
+  preds: L_3c18, L_3c47, L_3c73, L_3cb2
+  succs: L_3c06
+  effects:
+    3bf9  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    3c00  store[2] [bp-us] = (load([bp-us]) >> 0x2)
+
+block L_3c06:
+  insts 153..154  off 0x3c06..0x3c0b
+  preds: L_3bdd, L_3bf6
+  succs: L_3c0f, L_3cc0
+  effects:
+    3c0a  branch load([bp-i]) >= 0x5 ? L_3cc0 : L_3c0f
+
+block L_3c0f:
+  insts 156..158  off 0x3c0f..0x3c17
+  preds: L_3c06
+  succs: L_3ca2
+  effects:
+    3c15  goto L_3ca2
+
+block L_3c18:
+  insts 159..175  off 0x3c18..0x3c46
+  preds: L_3ca2
+  succs: L_3bf6
+  effects:
+    3c39  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))] = load(byte ds:[load([bp-pb])])
+    3c3c  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = 0x0
+    3c40  store[2] [bp-pb] = (load([bp-pb]) + 0x1)
+    3c44  goto L_3bf6
+
+block L_3c47:
+  insts 176..191  off 0x3c47..0x3c72
+  preds: L_3caa
+  succs: L_3bf6
+  effects:
+    3c65  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))] = load(ds:[load([bp-pb])])
+    3c68  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = 0x0
+    3c6c  store[2] [bp-pb] = (load([bp-pb]) + 0x2)
+    3c70  goto L_3bf6
+
+block L_3c73:
+  insts 192..207  off 0x3c73..0x3c9e
+  preds: L_3cb7
+  succs: L_3bf6
+  effects:
+    3c91  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))] = load(ds:[load([bp-pb])])
+    3c94  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = load(ds:[load([bp-pb])+0x2])
+    3c98  store[2] [bp-pb] = (load([bp-pb]) + 0x4)
+    3c9c  goto L_3bf6
+
+block L_3ca2:
+  insts 208..209  off 0x3ca2..0x3ca6
+  preds: L_3c0f
+  succs: L_3c18, L_3caa
+  effects:
+    3ca5  branch (load([bp-us]) & 0x3) == 0x1 ? L_3c18 : L_3caa
+
+block L_3caa:
+  insts 211..212  off 0x3caa..0x3cae
+  preds: L_3ca2
+  succs: L_3c47, L_3cb2
+  effects:
+    3cad  branch (load([bp-us]) & 0x3) == 0x2 ? L_3c47 : L_3cb2
+
+block L_3cb2:
+  insts 214..215  off 0x3cb2..0x3cb6
+  preds: L_3caa
+  succs: L_3bf6, L_3cb7
+  effects:
+    3cb5  branch (load([bp-us]) & 0x3) != 0x3 ? L_3bf6 : L_3cb7
+
+block L_3cb7:
+  insts 216..216  off 0x3cb7..0x3cb9
+  preds: L_3cb2
+  succs: L_3c73
+  effects:
+    3cb7  goto L_3c73
+
+block L_3cc0:
+  insts 219..223  off 0x3cc0..0x3cce
+  preds: L_3bcb, L_3c06
+  succs: L_3cd2, L_3d11
+  effects:
+    3ccd  branch (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x4]) & 0xff) >= 0x7 ? L_3d11 : L_3cd2
+
+block L_3cd2:
+  insts 225..243  off 0x3cd2..0x3d10
+  preds: L_3cc0
+  succs: L_40c7
+  effects:
+    3ce3  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x74] = load@3cd9/src(ds:[load([bp-pb])])
+    3ce7  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x76] = load@3cdc/src(ds:[load([bp-pb])+0x2])
+    3ceb  store[2] [bp-pb] = (load@3ceb/dst([bp-pb]) + 0x4)
+    3cfa  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x2c] = load@3cf2/src(ds:[load([bp-pb])])
+    3cfe  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x2e] = load@3cf4/src(ds:[load([bp-pb])+0x2])
+    3d02  store[2] [bp-pb] = (load@3d02/dst([bp-pb]) + 0x4)
+    3d06  call ReadRt() -> callresult(void)
+    3d0e  goto L_40c7
+
+block L_3d11:
+  insts 244..249  off 0x3d11..0x3d20
+  preds: L_3cc0
+  succs: L_3d24, L_3d4b
+  effects:
+    3d1f  branch ((load([hdrCur]) >> 0xa) & 0x3f) == 0x10 ? L_3d4b : L_3d24
+
+block Corrupt:
+  insts 251..265  off 0x3d24..0x3d4a
+  preds: L_3d11, L_3ef5, L_3fa4, L_3fad
+  succs: L_40c7
+  effects:
+    3d34  call PszFormatIds(0x3, words(0x0, 0x0)) -> callresult(char *)
+    3d3d  call AlertSz(callresult(char *), 0x10) -> callresult(int16_t)
+    3d48  goto L_40c7
+
+block L_3d4b:
+  insts 266..275  off 0x3d4b..0x3d69
+  preds: L_3d11
+  succs: L_3d7a
+  effects:
+    3d55  store[2] [bp-us] = load(ds:[load([bp-pb])])
+    3d58  store[2] [bp-pb] = (load@3d58/dst([bp-pb]) + 0x2)
+    3d5f  store[2] [bp-pus] = load@3d5c/src([bp-pb])
+    3d62  store[2] [bp-i] = 0x0
+    3d67  goto L_3d7a
+
+block L_3d6a:
+  insts 276..280  off 0x3d6a..0x3d79
+  preds: L_3d83, L_3d91, L_3e0c
+  succs: L_3d7a
+  effects:
+    3d6d  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    3d74  store[2] [bp-us] = (load([bp-us]) >> 0x1)
+
+block L_3d7a:
+  insts 281..282  off 0x3d7a..0x3d7f
+  preds: L_3d4b, L_3d6a
+  succs: L_3d83, L_3e0f
+  effects:
+    3d7e  branch load([bp-us]) == 0x0 ? L_3e0f : L_3d83
+
+block L_3d83:
+  insts 284..287  off 0x3d83..0x3d8d
+  preds: L_3d7a
+  succs: L_3d6a, L_3d91
+  effects:
+    3d8c  branch (load([bp-us]) & 0x1) == 0x0 ? L_3d6a : L_3d91
+
+block L_3d91:
+  insts 289..314  off 0x3d91..0x3dd4
+  preds: L_3d83
+  succs: L_3d6a, L_3dd8
+  effects:
+    3d94  store[2] [bp-pus] = (load([bp-pus]) + 0x2)
+    3dae  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x2c) + (load([bp-i]) << 0x1))] = load(ds:[load([bp-pus])])
+    3dd3  branch ((load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x2c) + (load([bp-i]) << 0x1))]) >> 0x7) & 0x1ff) < 0x1f4 ? L_3d6a : L_3dd8
+
+block L_3dd8:
+  insts 316..335  off 0x3dd8..0x3e0b
+  preds: L_3d91
+  succs: L_3e0c
+  effects:
+    3e09  store[2] load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x2c) + (load([bp-i]) << 0x1))] = ((load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0x2c) + (load([bp-i]) << 0x1))]) & 0x7f) | 0xf980)
+
+block L_3e0c:
+  insts 336..336  off 0x3e0c..0x3e0e
+  preds: L_3dd8
+  succs: L_3d6a
+  effects:
+    3e0c  goto L_3d6a
+
+block L_3e0f:
+  insts 337..390  off 0x3e0f..0x3eae
+  preds: L_3d7a
+  succs: L_3ec0
+  effects:
+    3e12  store[2] [bp-pb] = load([bp-pus])
+    3e18  store[2] [bp-pb] = (load@3e18/dst([bp-pb]) + 0x1)
+    3e21  store[1] byte farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x60] = load@3e1c/src(byte ds:[load([bp-pb])])
+    3e28  store[2] [bp-pb] = (load@3e28/dst([bp-pb]) + 0x1)
+    3e34  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62] = load@3e2c/src(byte ds:[load([bp-pb])])
+    3e4b  call LpplAlloc(0x12, (load@3e3f/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0x1), 0x0) -> callresult(PL *)
+    3e56  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64] = faroff(callresult(PL *))
+    3e5a  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66] = farseg(callresult(PL *))
+    3e84  call fmemset(words(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66]), (load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)), 0x0, loword(((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]) + 0x1) * 0x12))) -> callresult(void *)
+    3e93  store[2] [bp-cord] = load@3e8f/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62])
+    3ea6  store[2] [bp-lpord] = (load@3e99/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]) + 0x4)
+    3ea9  store[2] [bp-lpord+0x2] = load@3e9d/src(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x66])
+    3eac  goto L_3ec0
+
+block L_3eaf:
+  insts 391..395  off 0x3eaf..0x3ebf
+  preds: L_3f0b
+  succs: L_3ec0
+  effects:
+    3eb5  store[2] [bp-lpord] = (load([bp-lpord]) + 0x12)
+    3ebc  store[2] [bp-cord] = (load([bp-cord]) - 0x1)
+
+block L_3ec0:
+  insts 396..397  off 0x3ec0..0x3ec5
+  preds: L_3e0f, L_3eaf
+  succs: L_3ec9, L_3f33
+  effects:
+    3ec4  branch load([bp-cord]) == 0x0 ? L_3f33 : L_3ec9
+
+block L_3ec9:
+  insts 399..413  off 0x3ec9..0x3ef1
+  preds: L_3ec0
+  succs: L_3ef5, L_3f0b
+  effects:
+    3ed5  call memset(0x4b98, 0x0, 0x12) -> callresult(void *)
+    3edd  call ReadRt() -> callresult(void)
+    3ef0  branch ((load([hdrCur]) >> 0xa) & 0x3f) == 0x13 ? L_3f0b : L_3ef5
+
+block L_3ef5:
+  insts 415..420  off 0x3ef5..0x3f04
+  preds: L_3ec9
+  succs: L_3d24, L_3f0b
+  effects:
+    3f03  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0x14 ? L_3d24 : L_3f0b
+
+block L_3f0b:
+  insts 423..435  off 0x3f0b..0x3f32
+  preds: L_3ec9, L_3ef5
+  succs: L_3eaf
+  effects:
+    3f14  copy[0x12] *addr(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))]) = *addr([rgbCur])
+    3f2c  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = ((load(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xdfff) | 0x0)
+    3f30  goto L_3eaf
+
+block L_3f33:
+  insts 436..443  off 0x3f33..0x3f4e
+  preds: L_3ec0
+  succs: L_3f52, L_3fdb
+  effects:
+    3f41  store[1] byte farseg(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x64]))+0x3] = lobyte(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x62]))
+    3f4d  branch load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) == 0xffff ? L_3fdb : L_3f52
+
+block L_3f52:
+  insts 445..448  off 0x3f52..0x3f5d
+  preds: L_3f33
+  succs: L_3f61, L_3f6a
+  effects:
+    3f5c  branch load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) <= load([game+0xa]) ? L_3f6a : L_3f61
+
+block L_3f61:
+  insts 450..451  off 0x3f61..0x3f69
+  preds: L_3f52
+  succs: L_3f6a
+  effects:
+    3f64  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6] = 0xffff
+
+block L_3f6a:
+  insts 452..459  off 0x3f6a..0x3f81
+  preds: L_3f52, L_3f61
+  succs: L_3f85, L_3fa4
+  effects:
+    3f80  branch load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x8]) != load(ds:[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) << 0x1) << 0x1)+0x2f40]) ? L_3fa4 : L_3f85
+
+block L_3f85:
+  insts 461..470  off 0x3f85..0x3fa0
+  preds: L_3f6a
+  succs: L_3fa4, L_3fdb
+  effects:
+    3f9f  branch load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0xa]) == load(ds:[(0x2f40 + ((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) << 0x1) << 0x1))+0x2]) ? L_3fdb : L_3fa4
+
+block L_3fa4:
+  insts 472..473  off 0x3fa4..0x3fa9
+  preds: L_3f6a, L_3f85
+  succs: L_3d24, L_3fad
+  effects:
+    3fa8  branch load([bp-i]) != 0x0 ? L_3d24 : L_3fad
+
+block L_3fad:
+  insts 475..476  off 0x3fad..0x3fb3
+  preds: L_3fa4
+  succs: L_3d24, L_3fb7
+  effects:
+    3fb2  branch load([game+0x12]) != 0x0 ? L_3d24 : L_3fb7
+
+block L_3fb7:
+  insts 478..486  off 0x3fb7..0x3fd7
+  preds: L_3fad
+  succs: L_3fdb
+  effects:
+    3fcd  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x8] = load(ds:[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) << 0x1) << 0x1)+0x2f40])
+    3fd1  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0xa] = load(ds:[((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x6]) << 0x1) << 0x1)+0x2f42])
+
+block L_3fdb:
+  insts 489..495  off 0x3fdb..0x3fef
+  preds: L_3f33, L_3f85, L_3fb7
+  succs: L_3ff3, L_40b2
+  effects:
+    3fdb  call ReadRt() -> callresult(void)
+    3fee  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0x15 ? L_40b2 : L_3ff3
+
+block L_3ff3:
+  insts 497..501  off 0x3ff3..0x3fff
+  preds: L_3fdb
+  succs: L_4003, L_4047
+  effects:
+    3ff7  store[2] [bp-cch] = sext8to16(load([rgbCur]))
+    3ffe  branch load([bp-cch]) != 0x0 ? L_4047 : L_4003
+
+block L_4003:
+  insts 503..525  off 0x4003..0x4046
+  preds: L_3ff3
+  succs: L_40aa
+  effects:
+    400b  call strlen(0x4b99) -> callresult(uint16_t)
+    4017  call LpAlloc((callresult(uint16_t) + 0x1), 0x1) -> callresult(void *)
+    4022  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x78] = faroff(callresult(void *))
+    4026  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x7a] = farseg(callresult(void *))
+    403c  call fstrcpy(words(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x7a]), load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x78])), words(ds, 0x4b99)) -> callresult(char *)
+    4044  goto L_40aa
+
+block L_4047:
+  insts 526..561  off 0x4047..0x40a9
+  preds: L_3ff3
+  succs: L_40aa
+  effects:
+    4047  store[2] [bp-cOut] = 0x20
+    4061  call FDecompressUserString(words(ds, 0x4b99), load([bp-cch]), words(ss, addr([bp-szT])), addr([bp-cOut])) -> callresult(int16_t)
+    4071  call strlen(addr([bp-szT])) -> callresult(uint16_t)
+    407d  call LpAlloc((callresult(uint16_t) + 0x1), 0x1) -> callresult(void *)
+    4088  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x78] = faroff(callresult(void *))
+    408c  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x7a] = farseg(callresult(void *))
+    40a2  call fstrcpy(words(load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x7a]), load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x78])), words(ss, addr([bp-szT]))) -> callresult(char *)
+
+block L_40aa:
+  insts 562..563  off 0x40aa..0x40b1
+  preds: L_4003, L_4047
+  succs: L_40c1
+  effects:
+    40aa  call ReadRt() -> callresult(void)
+    40af  goto L_40c1
+
+block L_40b2:
+  insts 564..566  off 0x40b2..0x40c0
+  preds: L_3fdb
+  succs: L_40c1
+  effects:
+    40b5  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x78] = 0x0
+    40bb  store[2] farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))+0x7a] = 0x0
+
+block L_40c1:
+  insts 567..567  off 0x40c1..0x40c6
+  preds: L_40aa, L_40b2
+  succs: L_40c7
+
+block L_40c7:
+  insts 569..573  off 0x40c7..0x40cc
+  preds: L_3cd2, L_3d24, L_40c1
+  effects:
+    40cc  return merge(Join: L_40c7, (L_3cd2:0x1, L_3d24:0x0, L_40c1:0x1))

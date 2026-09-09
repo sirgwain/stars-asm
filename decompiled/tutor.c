@@ -80,6 +80,9 @@ L_0108:
     tutor.fAutoComplete = t_merge_0108_0001;
     PostMessage(hwndFrame, WM_STARS_CONTINUE, fRet, 0);
 
+L_013f:
+    goto L_025b;
+
 L_0142:
     if ((wParam != 0x2))
         goto L_01a0;
@@ -245,9 +248,7 @@ L_0374:
     if ((tutor.hwnd == 0x0))
         goto L_03b9;
     else
-        goto L_0384;
-
-L_0384:
+        goto L_038a;
 
 L_038a:
     if ((fShow == 0))
@@ -314,9 +315,7 @@ L_058b:
     if ((cch == 1))
         goto L_069f;
     else
-        goto L_05a8;
-
-L_05a8:
+        goto L_05ae;
 
 L_05ae:
     fPara = (_ctype[((uint16_t)(rgch[0x0]) + 0x1)] & 0x1);
@@ -670,6 +669,7 @@ L_0a78:
         goto L_0a7e;
 
 L_0a7e:
+    goto L_0bfb;
 
 L_0a8a:
     if ((tutor.fTurnDone != 0x0))
@@ -692,9 +692,7 @@ L_0ad4:
     if ((tutor.fTurnDone == 0x0))
         goto SkipToNext;
     else
-        goto L_0ae5;
-
-L_0ae5:
+        goto L_0aeb;
 
 L_0aeb:
     fRedraw = 1;
@@ -1065,6 +1063,8 @@ int16_t FTutorTaskDone() {
 
 L_0fbc:
     goto L_63fe;
+
+L_0fcb:
     goto L_120a;
 
 L_0fd1:
@@ -1211,6 +1211,7 @@ L_11fb:
     return 0;
 
 L_1201:
+    return 0;
 
 L_120a:
     if ((tutor.idt == 0))
@@ -1237,16 +1238,19 @@ L_1222:
         goto L_122a;
 
 L_122a:
-    if ((tutor.idt == 32))
-        goto L_1120;
+    if ((tutor.idt != 32))
+        goto L_1201;
     else
-        goto L_1232;
+        goto L_122f;
 
-L_1232:
-    goto L_1201;
+L_122f:
+    goto L_1120;
+
+L_1235:
     goto L_12aa;
 
 L_123b:
+    return 1;
 
 L_1241:
     if ((FCheckQueue(13, 0, grobjPlanet, 0x7, 0x14, 0x0) != 0))
@@ -1283,13 +1287,15 @@ L_128f:
     return 1;
 
 L_12aa:
-    if ((tutor.idt == 40))
-        goto L_1241;
+    if ((tutor.idt != 40))
+        goto L_123b;
     else
-        goto L_12b2;
+        goto L_12af;
 
-L_12b2:
-    goto L_123b;
+L_12af:
+    goto L_1241;
+
+L_12b5:
     goto L_1935;
 
 L_12bb:
@@ -1634,6 +1640,9 @@ L_1879:
 L_1888:
     tutor.idtBold = 91;
 
+L_188e:
+    goto L_1897;
+
 L_1891:
     tutor.idtBold = 89;
 
@@ -1681,6 +1690,7 @@ L_1914:
     return 1;
 
 L_192c:
+    return 1;
 
 L_1935:
     if ((tutor.idt == 48))
@@ -1713,16 +1723,19 @@ L_1955:
         goto L_195d;
 
 L_195d:
-    if ((tutor.idt == 88))
-        goto L_1829;
+    if ((tutor.idt != 88))
+        goto L_192c;
     else
-        goto L_1965;
+        goto L_1962;
 
-L_1965:
-    goto L_192c;
+L_1962:
+    goto L_1829;
+
+L_1968:
     goto L_1cb9;
 
 L_196e:
+    return 1;
 
 L_1974:
     if ((FCheckMessages(-1, idmHaveBuiltFactories, 1) != 0))
@@ -1900,6 +1913,9 @@ L_1bc8:
 L_1bd1:
     tutor.idtBold = 113;
 
+L_1bd7:
+    goto L_1be0;
+
 L_1bda:
     tutor.idtBold = 114;
 
@@ -1989,16 +2005,19 @@ L_1cc9:
         goto L_1cd1;
 
 L_1cd1:
-    if ((tutor.idt == 120))
-        goto L_1c4e;
+    if ((tutor.idt != 120))
+        goto L_196e;
     else
-        goto L_1cd9;
+        goto L_1cd6;
 
-L_1cd9:
-    goto L_196e;
+L_1cd6:
+    goto L_1c4e;
+
+L_1cdc:
     goto L_1e83;
 
 L_1ce2:
+    return 1;
 
 L_1ce8:
     if ((LpflFromId(4)->cord != 6))
@@ -2135,16 +2154,19 @@ L_1e83:
         goto L_1e8b;
 
 L_1e8b:
-    if ((tutor.idt == 136))
-        goto L_1df7;
+    if ((tutor.idt != 136))
+        goto L_1ce2;
     else
-        goto L_1e93;
+        goto L_1e90;
 
-L_1e93:
-    goto L_1ce2;
+L_1e90:
+    goto L_1df7;
+
+L_1e96:
     goto L_2084;
 
 L_1e9c:
+    return 1;
 
 L_1ea2:
     if ((FCheckCargo(LpflFromId(2), 0, 0, 0, 25) == 0))
@@ -2299,16 +2321,19 @@ L_2084:
         goto L_208c;
 
 L_208c:
-    if ((tutor.idt == 152))
-        goto L_1f65;
+    if ((tutor.idt != 152))
+        goto L_1e9c;
     else
-        goto L_2094;
+        goto L_2091;
 
-L_2094:
-    goto L_1e9c;
+L_2091:
+    goto L_1f65;
+
+L_2097:
     goto L_22a2;
 
 L_209d:
+    return 1;
 
 L_20a3:
     if ((FCheckXferWP(0x3, 1, 12, 0xffff, rgiaQuikLoad) != 0))
@@ -2347,6 +2372,9 @@ L_213b:
 
 L_2141:
     tutor.idtBold = 164;
+
+L_2147:
+    goto L_2150;
 
 L_214a:
     tutor.idtBold = 165;
@@ -2425,16 +2453,19 @@ L_22a2:
         goto L_22aa;
 
 L_22aa:
-    if ((tutor.idt == 168))
-        goto L_217f;
+    if ((tutor.idt != 168))
+        goto L_209d;
     else
-        goto L_22b2;
+        goto L_22af;
 
-L_22b2:
-    goto L_209d;
+L_22af:
+    goto L_217f;
+
+L_22b5:
     goto L_25c5;
 
 L_22bb:
+    return 1;
 
 L_22c1:
     if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 25) != 0))
@@ -2650,16 +2681,19 @@ L_25cd:
         goto L_25d5;
 
 L_25d5:
-    if ((tutor.idt == 192))
-        goto L_24f4;
+    if ((tutor.idt != 192))
+        goto L_22bb;
     else
-        goto L_25dd;
+        goto L_25da;
 
-L_25dd:
-    goto L_22bb;
+L_25da:
+    goto L_24f4;
+
+L_25e0:
     goto L_293e;
 
 L_25e6:
+    return 1;
 
 L_25ec:
     if ((rgplr[0].cFleet != 0xb))
@@ -2713,6 +2747,9 @@ L_2665:
 
 L_2668:
     tutor.idtBold = t_merge_2668_0001;
+
+L_266b:
+    goto L_26d3;
 
 L_266e:
     if ((FCheckCargo(LpflFromId(7), 0, 0, 0, 50) == 0))
@@ -2909,16 +2946,19 @@ L_294e:
         goto L_2956;
 
 L_2956:
-    if ((tutor.idt == 224))
-        goto L_28c6;
+    if ((tutor.idt != 224))
+        goto L_25e6;
     else
-        goto L_295e;
+        goto L_295b;
 
-L_295e:
-    goto L_25e6;
+L_295b:
+    goto L_28c6;
+
+L_2961:
     goto L_2b14;
 
 L_2967:
+    return 1;
 
 L_296d:
     tutor.fNoErrors = 0x1;
@@ -3024,16 +3064,19 @@ L_2b14:
         goto L_2b1c;
 
 L_2b1c:
-    if ((tutor.idt == 240))
-        goto L_29e6;
+    if ((tutor.idt != 240))
+        goto L_2967;
     else
-        goto L_2b24;
+        goto L_2b21;
 
-L_2b24:
-    goto L_2967;
+L_2b21:
+    goto L_29e6;
+
+L_2b27:
     goto L_2ddd;
 
 L_2b2d:
+    return 1;
 
 L_2b33:
     if ((FCheckMessages(-1, idmHasDismantledKtMineralsWhichHaveDeposited, 1) != 0))
@@ -3203,6 +3246,9 @@ L_2d3b:
 L_2d50:
     tutor.idtBold = 259;
 
+L_2d56:
+    goto L_2d5f;
+
 L_2d59:
     tutor.idtBold = 260;
 
@@ -3239,16 +3285,19 @@ L_2ddd:
         goto L_2de5;
 
 L_2de5:
-    if ((tutor.idt == 256))
-        goto L_2c54;
+    if ((tutor.idt != 256))
+        goto L_2b2d;
     else
-        goto L_2ded;
+        goto L_2dea;
 
-L_2ded:
-    goto L_2b2d;
+L_2dea:
+    goto L_2c54;
+
+L_2df0:
     goto L_328c;
 
 L_2df6:
+    return 1;
 
 L_2dfc:
     if ((FCheckFleetWP(0x0, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
@@ -3416,8 +3465,14 @@ L_30a0:
 L_30a9:
     tutor.idtBold = 278;
 
+L_30af:
+    goto L_30c1;
+
 L_30b2:
     tutor.idtBold = 277;
+
+L_30b8:
+    goto L_30c1;
 
 L_30bb:
     tutor.idtBold = 276;
@@ -3505,6 +3560,9 @@ L_31b4:
 L_31bd:
     tutor.idtBold = 284;
     tutor.fProgress = 0x1;
+
+L_31cf:
+    goto L_31fd;
 
 L_31d2:
     if ((FCheckMessages(13, 0xffff, 0) != 0))
@@ -3594,16 +3652,19 @@ L_329c:
         goto L_32a4;
 
 L_32a4:
-    if ((tutor.idt == 288))
-        goto L_3203;
+    if ((tutor.idt != 288))
+        goto L_2df6;
     else
-        goto L_32ac;
+        goto L_32a9;
 
-L_32ac:
-    goto L_2df6;
+L_32a9:
+    goto L_3203;
+
+L_32af:
     goto L_34b9;
 
 L_32b5:
+    return 1;
 
 L_32bb:
     t_call_32bf = LpplFromId(8);
@@ -3747,16 +3808,19 @@ L_34c1:
         goto L_34c9;
 
 L_34c9:
-    if ((tutor.idt == 312))
-        goto L_33d5;
+    if ((tutor.idt != 312))
+        goto L_32b5;
     else
-        goto L_34d1;
+        goto L_34ce;
 
-L_34d1:
-    goto L_32b5;
+L_34ce:
+    goto L_33d5;
+
+L_34d4:
     goto L_397e;
 
 L_34da:
+    return 1;
 
 L_34e0:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_34f2 : L_34ec */
@@ -3847,6 +3911,8 @@ L_3619:
     return 1;
 
 L_361f:
+
+L_3622:
     return 0;
 
 L_3625:
@@ -4109,16 +4175,19 @@ L_398e:
         goto L_3996;
 
 L_3996:
-    if ((tutor.idt == 344))
-        goto L_38d5;
+    if ((tutor.idt != 344))
+        goto L_34da;
     else
-        goto L_399e;
+        goto L_399b;
 
-L_399e:
-    goto L_34da;
+L_399b:
+    goto L_38d5;
+
+L_39a1:
     goto L_3a75;
 
 L_39a7:
+    return 1;
 
 L_39ad:
     t_call_39b1 = LpplFromId(2);
@@ -4171,16 +4240,19 @@ L_3a5a:
     return 1;
 
 L_3a75:
-    if ((tutor.idt == 352))
-        goto L_39ad;
+    if ((tutor.idt != 352))
+        goto L_39a7;
     else
-        goto L_3a7d;
+        goto L_3a7a;
 
-L_3a7d:
-    goto L_39a7;
+L_3a7a:
+    goto L_39ad;
+
+L_3a80:
     goto L_3c46;
 
 L_3a86:
+    return 1;
 
 L_3a8c:
     if ((FCheckFleetWP(0x8, 1, grobjPlanet, 11, 0xffff, 0xffff) != 0))
@@ -4306,16 +4378,19 @@ L_3c46:
         goto L_3c4e;
 
 L_3c4e:
-    if ((tutor.idt == 368))
-        goto L_3ba6;
+    if ((tutor.idt != 368))
+        goto L_3a86;
     else
-        goto L_3c56;
+        goto L_3c53;
 
-L_3c56:
-    goto L_3a86;
+L_3c53:
+    goto L_3ba6;
+
+L_3c59:
     goto L_3e45;
 
 L_3c5f:
+    return 1;
 
 L_3c65:
     if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
@@ -4431,16 +4506,19 @@ L_3e2a:
     return 1;
 
 L_3e45:
-    if ((tutor.idt == 376))
-        goto L_3c65;
+    if ((tutor.idt != 376))
+        goto L_3c5f;
     else
-        goto L_3e4d;
+        goto L_3e4a;
 
-L_3e4d:
-    goto L_3c5f;
+L_3e4a:
+    goto L_3c65;
+
+L_3e50:
     goto L_3ecd;
 
 L_3e56:
+    return 1;
 
 L_3e5c:
     if ((FCheckFleetWP(0x0, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -4471,16 +4549,19 @@ L_3eb2:
     return 1;
 
 L_3ecd:
-    if ((tutor.idt == 384))
-        goto L_3e5c;
+    if ((tutor.idt != 384))
+        goto L_3e56;
     else
-        goto L_3ed5;
+        goto L_3ed2;
 
-L_3ed5:
-    goto L_3e56;
+L_3ed2:
+    goto L_3e5c;
+
+L_3ed8:
     goto L_4009;
 
 L_3ede:
+    return 1;
 
 L_3ee4:
     t_call_3ee8 = LpplFromId(13);
@@ -4541,6 +4622,9 @@ L_3fb7:
 L_3fc0:
     tutor.idtBold = 395;
 
+L_3fc6:
+    goto L_3fcf;
+
 L_3fc9:
     tutor.idtBold = 393;
 
@@ -4563,16 +4647,19 @@ L_3fee:
     return 1;
 
 L_4009:
-    if ((tutor.idt == 392))
-        goto L_3ee4;
+    if ((tutor.idt != 392))
+        goto L_3ede;
     else
-        goto L_4011;
+        goto L_400e;
 
-L_4011:
-    goto L_3ede;
+L_400e:
+    goto L_3ee4;
+
+L_4014:
     goto L_42de;
 
 L_401a:
+    return 1;
 
 L_4020:
     if ((FCheckCargo(LpflFromId(11), 0, 0, 0, 210) != 0))
@@ -4717,16 +4804,19 @@ L_42de:
         goto L_42e6;
 
 L_42e6:
-    if ((tutor.idt == 408))
-        goto L_4178;
+    if ((tutor.idt != 408))
+        goto L_401a;
     else
-        goto L_42ee;
+        goto L_42eb;
 
-L_42ee:
-    goto L_401a;
+L_42eb:
+    goto L_4178;
+
+L_42f1:
     goto L_4479;
 
 L_42f7:
+    return 1;
 
 L_42fd:
     if ((FCheckFleetWP(0x8, 1, grobjPlanet, 6, 0xffff, 0xffff) != 0))
@@ -4837,16 +4927,19 @@ L_445e:
     return 1;
 
 L_4479:
-    if ((tutor.idt == 416))
-        goto L_42fd;
+    if ((tutor.idt != 416))
+        goto L_42f7;
     else
-        goto L_4481;
+        goto L_447e;
 
-L_4481:
-    goto L_42f7;
+L_447e:
+    goto L_42fd;
+
+L_4484:
     goto L_468f;
 
 L_448a:
+    return 1;
 
 L_4490:
     if ((FCheckCargo(LpflFromId(0), 0, 0, 0, 210) != 0))
@@ -4991,16 +5084,19 @@ L_468f:
         goto L_4697;
 
 L_4697:
-    if ((tutor.idt == 432))
-        goto L_45cb;
+    if ((tutor.idt != 432))
+        goto L_448a;
     else
-        goto L_469f;
+        goto L_469c;
 
-L_469f:
-    goto L_448a;
+L_469c:
+    goto L_45cb;
+
+L_46a2:
     goto L_49b5;
 
 L_46a8:
+    return 1;
 
 L_46ae:
     t_call_46b2 = LpflFromId(3);
@@ -5220,16 +5316,19 @@ L_49bd:
         goto L_49c5;
 
 L_49c5:
-    if ((tutor.idt == 456))
-        goto L_4918;
+    if ((tutor.idt != 456))
+        goto L_46a8;
     else
-        goto L_49cd;
+        goto L_49ca;
 
-L_49cd:
-    goto L_46a8;
+L_49ca:
+    goto L_4918;
+
+L_49d0:
     goto L_4f4f;
 
 L_49d6:
+    return 1;
 
 L_49dc:
     if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) == 0))
@@ -5583,16 +5682,19 @@ L_4f57:
         goto L_4f5f;
 
 L_4f5f:
-    if ((tutor.idt == 480))
-        goto L_4cb9;
+    if ((tutor.idt != 480))
+        goto L_49d6;
     else
-        goto L_4f67;
+        goto L_4f64;
 
-L_4f67:
-    goto L_49d6;
+L_4f64:
+    goto L_4cb9;
+
+L_4f6a:
     goto L_5065;
 
 L_4f70:
+    return 1;
 
 L_4f76:
     if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
@@ -5634,16 +5736,19 @@ L_504a:
     return 1;
 
 L_5065:
-    if ((tutor.idt == 488))
-        goto L_4f76;
+    if ((tutor.idt != 488))
+        goto L_4f70;
     else
-        goto L_506d;
+        goto L_506a;
 
-L_506d:
-    goto L_4f70;
+L_506a:
+    goto L_4f76;
+
+L_5070:
     goto L_5358;
 
 L_5076:
+    return 1;
 
 L_507c:
     if ((FCheckMessages(3, 0xffff, 0) != 0))
@@ -5720,6 +5825,9 @@ L_515a:
 
 L_5163:
     tutor.idtBold = 501;
+
+L_5169:
+    goto L_51c2;
 
 L_516c:
     if ((lpshdefBuild->hul.rghs[0].cItem == 0x0))
@@ -5847,16 +5955,19 @@ L_5358:
         goto L_5360;
 
 L_5360:
-    if ((tutor.idt == 504))
-        goto L_51ce;
+    if ((tutor.idt != 504))
+        goto L_5076;
     else
-        goto L_5368;
+        goto L_5365;
 
-L_5368:
-    goto L_5076;
+L_5365:
+    goto L_51ce;
+
+L_536b:
     goto L_5612;
 
 L_5371:
+    return 1;
 
 L_5377:
     if ((FCheckMessages(4, 0xffff, 0) != 0))
@@ -6013,16 +6124,19 @@ L_5612:
         goto L_561a;
 
 L_561a:
-    if ((tutor.idt == 520))
-        goto L_54e3;
+    if ((tutor.idt != 520))
+        goto L_5371;
     else
-        goto L_5622;
+        goto L_561f;
 
-L_5622:
-    goto L_5371;
+L_561f:
+    goto L_54e3;
+
+L_5625:
     goto L_5a04;
 
 L_562b:
+    return 1;
 
 L_5631:
     tutor.fNoErrors = 0x1;
@@ -6195,6 +6309,8 @@ L_5877:
     return 1;
 
 L_587d:
+
+L_5880:
     return 0;
 
 L_5883:
@@ -6317,16 +6433,19 @@ L_5a0c:
         goto L_5a14;
 
 L_5a14:
-    if ((tutor.idt == 544))
-        goto L_5883;
+    if ((tutor.idt != 544))
+        goto L_562b;
     else
-        goto L_5a1c;
+        goto L_5a19;
 
-L_5a1c:
-    goto L_562b;
+L_5a19:
+    goto L_5883;
+
+L_5a1f:
     goto L_5b4c;
 
 L_5a25:
+    return 1;
 
 L_5a2b:
     if ((FCheckFleetWP(0x4, 1, grobjPlanet, 5, 0xffff, 0xffff) != 0))
@@ -6399,16 +6518,19 @@ L_5b25:
     return 1;
 
 L_5b4c:
-    if ((tutor.idt == 552))
-        goto L_5a2b;
+    if ((tutor.idt != 552))
+        goto L_5a25;
     else
-        goto L_5b54;
+        goto L_5b51;
 
-L_5b54:
-    goto L_5a25;
+L_5b51:
+    goto L_5a2b;
+
+L_5b57:
     goto L_5ed5;
 
 L_5b5d:
+    return 1;
 
 L_5b63:
     tutor.fNoErrors = 0x1;
@@ -6585,8 +6707,14 @@ L_5e0f:
 L_5e18:
     tutor.idtBold = 581;
 
+L_5e1e:
+    goto L_5e30;
+
 L_5e21:
     tutor.idtBold = 578;
+
+L_5e27:
+    goto L_5e30;
 
 L_5e2a:
     tutor.idtBold = 581;
@@ -6638,16 +6766,19 @@ L_5edd:
         goto L_5ee5;
 
 L_5ee5:
-    if ((tutor.idt == 576))
-        goto L_5d59;
+    if ((tutor.idt != 576))
+        goto L_5b5d;
     else
-        goto L_5eed;
+        goto L_5eea;
 
-L_5eed:
-    goto L_5b5d;
+L_5eea:
+    goto L_5d59;
+
+L_5ef0:
     goto L_5f94;
 
 L_5ef6:
+    return 1;
 
 L_5efc:
     if ((FCheckMessages(5, 0xffff, 0) != 0))
@@ -6688,16 +6819,19 @@ L_5f6d:
     return 1;
 
 L_5f94:
-    if ((tutor.idt == 584))
-        goto L_5efc;
+    if ((tutor.idt != 584))
+        goto L_5ef6;
     else
-        goto L_5f9c;
+        goto L_5f99;
 
-L_5f9c:
-    goto L_5ef6;
+L_5f99:
+    goto L_5efc;
+
+L_5f9f:
     goto L_609d;
 
 L_5fa5:
+    return 1;
 
 L_5fab:
     if ((FCheckMessages(6, 0xffff, 0) != 0))
@@ -6753,16 +6887,19 @@ L_6076:
     return 1;
 
 L_609d:
-    if ((tutor.idt == 592))
-        goto L_5fab;
+    if ((tutor.idt != 592))
+        goto L_5fa5;
     else
-        goto L_60a5;
+        goto L_60a2;
 
-L_60a5:
-    goto L_5fa5;
+L_60a2:
+    goto L_5fab;
+
+L_60a8:
     goto L_61a0;
 
 L_60ae:
+    return 1;
 
 L_60b4:
     if ((FCheckMessages(2, 0xffff, 0) != 0))
@@ -6828,16 +6965,19 @@ L_617f:
     return 1;
 
 L_61a0:
-    if ((tutor.idt == 600))
-        goto L_60b4;
+    if ((tutor.idt != 600))
+        goto L_60ae;
     else
-        goto L_61a8;
+        goto L_61a5;
 
-L_61a8:
-    goto L_60ae;
+L_61a5:
+    goto L_60b4;
+
+L_61ab:
     goto L_62a6;
 
 L_61b1:
+    return 1;
 
 L_61b7:
     if ((FCheckMessages(10, 0xffff, 0) != 0))
@@ -6895,16 +7035,19 @@ L_627f:
     return 1;
 
 L_62a6:
-    if ((tutor.idt == 608))
-        goto L_61b7;
+    if ((tutor.idt != 608))
+        goto L_61b1;
     else
-        goto L_62ae;
+        goto L_62ab;
 
-L_62ae:
-    goto L_61b1;
+L_62ab:
+    goto L_61b7;
+
+L_62b1:
     goto L_6306;
 
 L_62b7:
+    return 1;
 
 L_62bd:
     tutor.idtBold = 619;
@@ -6922,16 +7065,19 @@ L_62e5:
     return 1;
 
 L_6306:
-    if ((tutor.idt == 616))
-        goto L_62bd;
+    if ((tutor.idt != 616))
+        goto L_62b7;
     else
-        goto L_630e;
+        goto L_630b;
 
-L_630e:
-    goto L_62b7;
+L_630b:
+    goto L_62bd;
+
+L_6311:
     goto L_636c;
 
 L_6317:
+    return 1;
 
 L_631d:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6950,13 +7096,15 @@ L_6345:
     return 1;
 
 L_636c:
-    if ((tutor.idt == 624))
-        goto L_631d;
+    if ((tutor.idt != 624))
+        goto L_6317;
     else
-        goto L_6374;
+        goto L_6371;
 
-L_6374:
-    goto L_6317;
+L_6371:
+    goto L_631d;
+
+L_6377:
     goto L_63d2;
 
 L_637d:
@@ -6985,8 +7133,96 @@ L_63d2:
         goto L_63d7;
 
 L_63d7:
+    goto L_6383;
+
+L_63dd:
+    tutor.fTurnDone = 0x1;
+    tutor.fTutorDone = 0x1;
+    return 1;
 
 L_63fe:
+    if ((game.turn > 0x24))
+        goto L_63dd;
+    else
+        goto L_6406;
+
+L_6406:
+    switch ((game.turn * 0x2)) {
+    case 0x0:
+        goto L_0fcb;
+    case 0x2:
+        goto L_1235;
+    case 0x4:
+        goto L_12b5;
+    case 0x6:
+        goto L_1968;
+    case 0x8:
+        goto L_1cdc;
+    case 0xa:
+        goto L_1e96;
+    case 0xc:
+        goto L_2097;
+    case 0xe:
+        goto L_22b5;
+    case 0x10:
+        goto L_25e0;
+    case 0x12:
+        goto L_2961;
+    case 0x14:
+        goto L_2b27;
+    case 0x16:
+        goto L_2df0;
+    case 0x18:
+        goto L_32af;
+    case 0x1a:
+        goto L_34d4;
+    case 0x1c:
+        goto L_39a1;
+    case 0x1e:
+        goto L_3a80;
+    case 0x20:
+        goto L_3c59;
+    case 0x22:
+        goto L_3e50;
+    case 0x24:
+        goto L_3ed8;
+    case 0x26:
+        goto L_4014;
+    case 0x28:
+        goto L_42f1;
+    case 0x2a:
+        goto L_4484;
+    case 0x2c:
+        goto L_46a2;
+    case 0x2e:
+        goto L_49d0;
+    case 0x30:
+        goto L_4f6a;
+    case 0x32:
+        goto L_5070;
+    case 0x34:
+        goto L_536b;
+    case 0x36:
+        goto L_5625;
+    case 0x38:
+        goto L_5a1f;
+    case 0x3a:
+        goto L_5b57;
+    case 0x3c:
+        goto L_5ef0;
+    case 0x3e:
+        goto L_5f9f;
+    case 0x40:
+        goto L_60a8;
+    case 0x42:
+        goto L_61ab;
+    case 0x44:
+        goto L_62b1;
+    case 0x46:
+        goto L_6311;
+    case 0x48:
+        goto L_6377;
+    }
 }
 
 int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, StringId ids) {
@@ -7157,8 +7393,8 @@ L_6795:
 }
 
 void TutorError(int16_t idsError) {
-    uint16_t scratch_bp_m4;
-    uint16_t scratch_bp_m6;
+    uint16_t t_scratch_m4;
+    uint16_t t_scratch_m6;
 
 L_67ae:
     if ((tutor.fNoErrors == 0x0))
@@ -7177,11 +7413,11 @@ L_67d8:
         goto L_67e4;
 
 L_67e4:
-    scratch_bp_m4 = tutor.cError;
-    scratch_bp_m6 = ((tutor.wFlags + 0x40) & 0x1c0);
+    t_scratch_m4 = tutor.cError;
+    t_scratch_m6 = ((tutor.wFlags + 0x40) & 0x1c0);
     tutor.cError = 0x0;
-    tutor.wFlags = (tutor.wFlags | scratch_bp_m6);
-    if ((scratch_bp_m4 < 0x3))
+    tutor.wFlags = (tutor.wFlags | t_scratch_m6);
+    if ((t_scratch_m4 < 0x3))
         goto L_6856;
     else
         goto L_6824;
@@ -7321,6 +7557,8 @@ L_6980:
     return 1;
 
 L_6986:
+
+L_6989:
     return 0;
 
 L_698c:
@@ -7763,7 +8001,7 @@ L_6da4:
     /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) & 0xf) != iTech ? L_6de2 : L_6dbc */
 
 L_6dbc:
-    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) >> 0x4) != iTechNext ? L_6de2 : L_6dd0 */
+    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) sar 0x4) != iTechNext ? L_6de2 : L_6dd0 */
 
 L_6dd0:
     /* untranslated: branch sext8to16(part[0x38:2](rgplr[0x0])) != pct ? L_6de2 : L_6ddc */
@@ -7799,18 +8037,14 @@ L_6e29:
     if ((HIWORD(lpfl) == 0x0))
         goto LReturn;
     else
-        goto L_6e2f;
-
-L_6e2f:
+        goto L_6e35;
 
 L_6e35:
     tutor.idh = 3062;
     if ((lpfl->cord < (iord + 1)))
         goto LReturn;
     else
-        goto L_6e4a;
-
-L_6e4a:
+        goto L_6e50;
 
 L_6e50:
     ord = lpfl->lpplord->rgord[iord];
@@ -7870,6 +8104,9 @@ L_6ef6:
 
 L_6ef9:
     TutorError(t_merge_6ef9_0001);
+
+L_6f02:
+    goto LReturn;
 
 L_6f05:
     tutor.idh = 1518;
@@ -8212,7 +8449,7 @@ L_7302:
 
 L_7308:
     ord = lpfl->lpplord->rgord[iord];
-    /* untranslated: piaCur = &part[0x8:0](ord) */
+    piaCur = ord.txp.rgia;
     tutor.idh = 1519;
     i = 0;
     goto L_7361;
@@ -8243,6 +8480,9 @@ L_738c:
 L_73a1:
     TutorError(616);
 
+L_73ad:
+    goto LReturn;
+
 L_73b0:
     goto L_73df;
 
@@ -8253,6 +8493,7 @@ L_73c0:
         goto L_73d6;
 
 L_73d6:
+    goto L_7347;
 
 L_73df:
     if ((piaCur->iAction == iActionUnloadExact))
@@ -8267,6 +8508,7 @@ L_73e7:
         goto L_73ec;
 
 L_73ec:
+    goto L_73c0;
 
 L_73f5:
     fRet = 1;
@@ -8351,9 +8593,7 @@ L_74a9:
     if ((lppl->lpplprod->iprodMac <= iprod))
         goto LReturn;
     else
-        goto L_74bc;
-
-L_74bc:
+        goto L_74c2;
 
 L_74c2:
     prod = lppl->lpplprod->rgprod[iprod];
@@ -8739,17 +8979,13 @@ L_78c7:
     if ((cItemAct > cInit))
         goto BadCnt;
     else
-        goto L_78cf;
-
-L_78cf:
+        goto L_78d5;
 
 L_78d5:
     if ((cItemAct != phs->cItem))
         goto BadCntSilent;
     else
-        goto L_78e8;
-
-L_78e8:
+        goto L_78ee;
 
 L_78ee:
     if ((phs->grhst != lpshdefBuild->hul.rghs[iSlot].grhst))
@@ -9017,6 +9253,7 @@ L_7c35:
         goto L_7c3a;
 
 L_7c3a:
+    goto L_7bb6;
 
 L_7c40:
     t_merge_81d4_0001 = 1;
@@ -9054,9 +9291,9 @@ L_7c90:
         goto L_7c95;
 
 L_7c95:
+    goto L_7c4f;
 
 L_7c9e:
-    goto L_8158;
 
 L_8158:
     if (((game.turn - 0xd) > 0x10))
@@ -9065,7 +9302,7 @@ L_8158:
         goto L_8163;
 
 L_8163:
-    goto L_ffffffff;
+    /* untranslated: {{L_8163 33127 14 5} JMP       cs:[bx-0x7e94]       unhandled instruction} */
 
 L_8194:
     TutorError(503);
@@ -9103,6 +9340,7 @@ L_81c9:
         goto L_81ce;
 
 L_81ce:
+    goto L_8194;
 
 L_81d4:
     return t_merge_81d4_0001;
@@ -9183,6 +9421,7 @@ L_827e:
         goto L_8283;
 
 L_8283:
+    goto L_8237;
 
 L_8289:
     TutorError(514);

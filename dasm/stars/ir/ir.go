@@ -45,6 +45,15 @@ type IfGoto struct {
 
 func (*IfGoto) stmt() {}
 
+// TableJump preserves a computed byte offset and each word-table destination.
+type TableJump struct {
+	Index  Expr
+	Labels []string
+}
+
+// stmt marks TableJump as an IR statement.
+func (*TableJump) stmt() {}
+
 type Goto struct{ Label string }
 
 func (*Goto) stmt() {}

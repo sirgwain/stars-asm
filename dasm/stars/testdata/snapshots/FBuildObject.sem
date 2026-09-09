@@ -155,16 +155,10 @@ L_1d79:
     branch HIWORD(rglpfl[i]) == 0x0 ? L_214f : L_1d81
 
 L_1d81:
-    branch lpfl->iPlayer > lppl->iPlayer ? L_214f : L_1d91
-
-L_1d91:
-
+    branch lpfl->iPlayer > lppl->iPlayer ? L_214f : L_1d97
 
 L_1d97:
-    branch lpfl->iPlayer < lppl->iPlayer ? L_1d42 : L_1da7
-
-L_1da7:
-
+    branch lpfl->iPlayer < lppl->iPlayer ? L_1d42 : L_1dad
 
 L_1dad:
     branch lpfl->lpplord->rgord[0].pt.x != rgptPlan[lppl->id].x ? L_1d42 : L_1dcb
@@ -217,7 +211,6 @@ L_20de:
     call FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
     return 1
 
-
 L_214f:
     call FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
     return 0
@@ -261,6 +254,8 @@ L_22c7:
     idm = t_merge_22c7_0001
     call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0, 0, 0) -> callresult(int16_t)
 
+L_231e:
+    goto L_2fc9
 
 L_2321:
     call AutoFleetOrder(lpfl, lppl) -> callresult(void)
@@ -273,6 +268,8 @@ L_233e:
 L_2379:
     call FSendPlrMsg(lppl->iPlayer, 48, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
 
+L_23c4:
+    goto L_2fc9
 
 L_23c7:
     branch grobj != grobjPlanet ? L_2fc3 : L_23d0
@@ -281,8 +278,11 @@ L_23d0:
     goto L_2f77
 
 L_23d6:
-    goto L_2fcf
-    cAllowed = (CMaxFactories(lppl, lppl->iPlayer) - lppl->cFactories)
+    return 0
+
+L_23dc:
+    t_scratch_m16_3 = lppl->cFactories
+    cAllowed = (CMaxFactories(lppl, lppl->iPlayer) - t_scratch_m16_3)
     branch cBuilt >= cAllowed ? L_2426 : L_2420
 
 L_2420:
@@ -306,18 +306,20 @@ SendMsgFactMine:
 
 L_24af:
     call FSendPlrMsg2(lppl->iPlayer, (idm + 1), lppl->id, cBuilt, lppl->id) -> callresult(int16_t)
-    goto L_2502
+    goto L_2fc9
 
 L_24d7:
     call FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0) -> callresult(int16_t)
 
+L_24f9:
+    goto L_2fc9
 
 L_24fc:
     return 0
 
-L_2502:
-    goto L_2fc0
-    cAllowed = (CMaxMines(lppl, lppl->iPlayer) - lppl->cMines)
+L_2505:
+    t_scratch_m16_4 = lppl->cMines
+    cAllowed = (CMaxMines(lppl, lppl->iPlayer) - t_scratch_m16_4)
     branch cBuilt >= cAllowed ? L_254f : L_2549
 
 L_2549:
@@ -337,8 +339,11 @@ L_255e:
     goto L_248b
 
 L_25bb:
-    goto L_2fcf
-    cAllowed = (CMaxDefenses(lppl, lppl->iPlayer) - lppl->cDefenses)
+    return 0
+
+L_25c4:
+    t_scratch_m16_5 = lppl->cDefenses
+    cAllowed = (CMaxDefenses(lppl, lppl->iPlayer) - t_scratch_m16_5)
     branch cBuilt >= cAllowed ? L_2606 : L_2600
 
 L_2600:
@@ -358,9 +363,9 @@ L_2615:
     goto L_248b
 
 L_2672:
-    goto L_2fcf
-    goto L_2fc0
-    goto L_2fc0
+    return 0
+
+L_2681:
     raMajor = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv)
     iWarp = IWarpMAFromLppl(lppl, &fTwoMAs)
     branch iWarp != 0 ? L_26e7 : L_26be
@@ -505,10 +510,7 @@ L_2928:
     branch lpth->thp.iDecayRate != iDecayRate ? L_2956 : L_2941
 
 L_2941:
-    branch lpth->thp.wtMax < 0x65e ? L_2968 : L_2950
-
-L_2950:
-
+    branch lpth->thp.wtMax < 0x65e ? L_2968 : L_2956
 
 L_2956:
     lpth = (lpth + 0x12)
@@ -535,9 +537,9 @@ L_29da:
     lpth->thp.rgwtMin[i] = 32760
 
 L_29f3:
-    scratch_bp_m2e = (((sext16to32((lpth->thp.rgwtMin[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
+    t_scratch_m2e = (((sext16to32((lpth->thp.rgwtMin[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
     lpth->thp.wtMax = 0x0
-    part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m2e)
+    part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | t_scratch_m2e)
     i = (i + 1)
 
 L_2a3f:
@@ -564,9 +566,9 @@ L_2ac9:
 
 L_2ad1:
     lpth->thp.rgwtMin[i] = rgwt[i]
-    scratch_bp_m2e = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
+    t_scratch_m2e_2 = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff)
     lpth->thp.wtMax = 0x0
-    part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | scratch_bp_m2e)
+    part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | t_scratch_m2e_2)
     i = (i + 1)
 
 L_2b35:
@@ -579,7 +581,9 @@ L_2b3e:
     lpth->pt.x = rgptPlan[lppl->id].x
     lpth->pt.y = rgptPlan[lppl->id].y
     call FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling + 0xffff)) -> callresult(int16_t)
-    goto L_2fc0
+    goto L_2fc9
+
+L_2c05:
     i = 0
     goto L_2c11
 
@@ -608,45 +612,103 @@ L_2cea:
 
 L_2cf2:
     lppl->rgwtMin[i] = 0
-    scratch_bp_m16 = Random(50)
+    t_scratch_m16_6 = Random(50)
     call Random(50) -> t_call_2d26
-    lppl->rgEnvVarOrig[i] = lobyte(((t_call_2d26 + 0x1) + scratch_bp_m16))
-    lppl->rgEnvVar[i] = lobyte(((t_call_2d26 + 0x1) + scratch_bp_m16))
-    lppl->rgMinConc[i] = lobyte(((Random(40) + 0x19) + Random(40)))
+    lppl->rgEnvVarOrig[i] = lobyte(((t_call_2d26 + 0x1) + t_scratch_m16_6))
+    lppl->rgEnvVar[i] = lobyte(((t_call_2d26 + 0x1) + t_scratch_m16_6))
+    t_scratch_m16_7 = Random(40)
+    lppl->rgMinConc[i] = lobyte(((Random(40) + 0x19) + t_scratch_m16_7))
     i = (i + 1)
 
 L_2d9c:
     branch i >= 3 ? L_2fc9 : L_2da2
 
 L_2da2:
+    goto L_2cf2
 
+L_2da8:
+    t_2da8 = cBuilt
+    cBuilt = (cBuilt - 1)
+    branch t_2da8 == 0 ? L_2fc9 : L_2db7
 
+L_2db7:
+    i = IBestTerraform(lppl, 1)
+    branch i == 0 ? L_2da8 : L_2dd5
 
+L_2dd5:
+    iEnv = (abs(i) - 1)
+    branch i <= 0 ? L_2df5 : L_2def
 
+L_2def:
+    t_merge_2df8_0001 = 0x1
+    goto L_2df8
 
+L_2df5:
+    t_merge_2df8_0001 = 0xffff
 
+L_2df8:
+    t_scratch_m18 = t_merge_2df8_0001
+    cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + t_scratch_m18)
+    branch 99 >= cAllowed ? L_2e2c : L_2e26
 
+L_2e26:
+    t_merge_2e2f_0001 = 0x63
+    goto L_2e2f
 
+L_2e2c:
+    t_merge_2e2f_0001 = cAllowed
 
+L_2e2f:
+    branch 0x1 <= t_merge_2e2f_0001 ? L_2e3f : L_2e39
 
+L_2e39:
+    t_merge_2e53_0001 = 0x1
+    goto L_2e53
 
+L_2e3f:
+    branch 99 >= cAllowed ? L_2e50 : L_2e4a
 
+L_2e4a:
+    t_merge_2e53_0001 = 0x63
+    goto L_2e53
 
+L_2e50:
+    t_merge_2e53_0001 = cAllowed
 
+L_2e53:
+    cAllowed = t_merge_2e53_0001
+    lppl->rgEnvVar[iEnv] = lobyte(cAllowed)
+    branch i <= 0 ? L_2e98 : L_2e92
 
+L_2e92:
+    t_merge_2e9b_0001 = 1
+    goto L_2e9b
 
+L_2e98:
+    t_merge_2e9b_0001 = 0
 
+L_2e9b:
+    call FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, t_merge_2e9b_0001, iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 
+L_2ebb:
+    goto L_2da8
 
+L_2ec1:
+    idPlayer = lppl->iPlayer
+    call LookupBestPlanetaryScanner(&part) -> callresult(void)
+    idPlayer = -1
+    iItem = (part.hs.iItem + 18)
 
+L_2ee9:
+    call FSendPlrMsg(lppl->iPlayer, 124, lppl->id, lppl->id, -32768, (iItem - 18), 0, 0, 0, 0) -> callresult(int16_t)
+    part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xfffe) | hiword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc))), (lppl->cDefenses | loword((int32_t)((uint32_t)((iItem + 0xffee) & 0x1f) << 0xc))))
+    goto L_2fc9
 
 L_2f77:
     branch iItem > 27 ? L_23d6 : L_2f7f
 
 L_2f7f:
-    goto L_ffffffff
-
-L_2fc0:
+    tablejump (iItem * 2) [0x0: L_2505, 0x2: L_23dc, 0x4: L_25c4, 0x6: L_2fc9, 0x8: L_2da8, 0xa: L_2da8, 0xc: L_2681, 0xe: L_23dc, 0x10: L_2505, 0x12: L_25c4, 0x14: L_2fc9, 0x16: L_2fc9, 0x18: L_2da8, 0x1a: L_2c05, 0x1c: L_2681, 0x1e: L_2681, 0x20: L_2681, 0x22: L_2681, 0x24: L_2ee9, 0x26: L_2ee9, 0x28: L_2ee9, 0x2a: L_2ee9, 0x2c: L_2ee9, 0x2e: L_2ee9, 0x30: L_2ee9, 0x32: L_2ee9, 0x34: L_2ee9, 0x36: L_2ec1]
 
 L_2fc3:
     return 0
@@ -654,4 +716,3 @@ L_2fc3:
 L_2fc9:
     return 1
 
-L_2fcf:

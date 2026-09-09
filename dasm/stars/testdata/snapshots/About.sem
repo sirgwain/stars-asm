@@ -76,10 +76,7 @@ L_13b1:
     goto L_13e3
 
 L_13d7:
-    branch i >= 77 ? L_13fa : L_13dd
-
-L_13dd:
-
+    branch i >= 77 ? L_13fa : L_13e3
 
 L_13e3:
     call OffsetRect(&rc, 0, dyArial8) -> callresult(void)
@@ -98,7 +95,6 @@ L_142c:
 L_1448:
     call SetBkColor(wParam, crButtonFace) -> callresult(COLORREF)
     return hbrButtonFace
-
 
 L_1461:
     branch wParam == 0x1 ? L_1473 : L_146a
@@ -120,6 +116,8 @@ L_14a3:
     call DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc) -> callresult(int16_t)
     call FreeProcInstance(lpProc) -> callresult(void)
 
+L_14df:
+    goto L_1510
 
 L_14e5:
     branch message == WM_ERASEBKGND ? L_12a9 : L_14ed

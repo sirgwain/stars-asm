@@ -295,9 +295,7 @@ L_0789:
     if ((sel.id == lppl->id))
         goto L_07ce;
     else
-        goto L_0796;
-
-L_0796:
+        goto L_079c;
 
 L_079c:
     SelectAdjPlanet(0, lppl->id);
@@ -354,9 +352,7 @@ L_0835:
     if ((sel.id == lpfl->id))
         goto L_0d04;
     else
-        goto L_0842;
-
-L_0842:
+        goto L_0848;
 
 L_0848:
     SelectAdjFleet(0, lpfl->id);
@@ -392,6 +388,7 @@ L_08c7:
         goto L_08cc;
 
 L_08cc:
+    goto L_08b1;
 
 L_08d5:
     if ((LOWORD(lParam) != rghwndBtn[4]))
@@ -447,6 +444,9 @@ L_098c:
 L_09ac:
     SelectAdjPlanet(1, 0);
 
+L_09bc:
+    goto LRefocus;
+
 L_09c2:
     if ((LOWORD(lParam) != rghwndBtn[0]))
         goto L_0a70;
@@ -470,17 +470,13 @@ L_0a18:
     if ((HIWORD(lSel) == 0xffff))
         goto L_0d04;
     else
-        goto L_0a1f;
-
-L_0a1f:
+        goto L_0a25;
 
 L_0a25:
     if ((FLookupOrbitingXfer(sel.pl.id, LOWORD(lSel), &(xf), -1) == 0))
         goto L_0d04;
     else
-        goto L_0a48;
-
-L_0a48:
+        goto L_0a4e;
 
 L_0a4e:
     TransferStuff(sel.pl.id, grobjPlanet, xf.id, xf.grobj, mdXferCargo);
@@ -509,9 +505,7 @@ L_0ac6:
     if ((HIWORD(lSel) == 0xffff))
         goto LRefocus;
     else
-        goto L_0acd;
-
-L_0acd:
+        goto L_0ad3;
 
 L_0ad3:
     if ((FLookupOrbitingXfer(sel.pl.id, LOWORD(lSel), &(xf), -1) == 0))
@@ -527,6 +521,9 @@ L_0af9:
 
 L_0b03:
     SelectAdjFleet(0, xf.id);
+
+L_0b13:
+    goto LRefocus;
 
 L_0b19:
     if ((LOWORD(lParam) != rghwndBtn[2]))
@@ -578,9 +575,7 @@ L_0bce:
     if ((AlertSz(PszFormatIds(idsSureWantDeleteEverythingPlanetsProductionQueue, 0x0), 0x2024) != 6))
         goto L_0d04;
     else
-        goto L_0bf4;
-
-L_0bf4:
+        goto L_0bfa;
 
 L_0bfa:
     ChangeProduction(1);
@@ -605,6 +600,9 @@ L_0c32:
 L_0c55:
     tutor.fProgress = 0x1;
     AdvanceTutor();
+
+L_0c66:
+    goto Default;
 
 L_0c6c:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) == 0x1))
@@ -700,6 +698,7 @@ L_0cf9:
         goto L_0cfe;
 
 L_0cfe:
+    goto L_000f;
 
 L_0d04:
     return 0;
@@ -799,6 +798,9 @@ L_0e3a:
     i = CchGetString(idsDeceased, szWork);
     DiaganolTextOut(hdc, &(rc), szWork, i);
 
+L_0e93:
+    goto L_1080;
+
 L_0e96:
     if ((sel.grobj != grobjFleet))
         goto L_0eb2;
@@ -806,13 +808,13 @@ L_0e96:
         goto L_0ea0;
 
 L_0ea0:
-    ptile = &(rgtileShip);
+    ptile = rgtileShip;
     ctile = 7;
     obj.pfl = &(sel.fl);
     goto L_0ec1;
 
 L_0eb2:
-    ptile = &(rgtilePlanet);
+    ptile = rgtilePlanet;
     ctile = 6;
     obj.ppl = &(sel.pl);
 
@@ -943,9 +945,7 @@ L_110a:
     if ((ptile->fMinTitle == 0x0))
         goto FinishUp;
     else
-        goto L_111d;
-
-L_111d:
+        goto L_1123;
 
 L_1123:
     if ((ptile->fMinDraw != 0x0))
@@ -1035,9 +1035,7 @@ L_131f:
     if ((FDrawTileNC(hdc, ptile, &(rc), PszGetCompressedString(idsMineralsHand)) == 0))
         goto L_170f;
     else
-        goto L_1343;
-
-L_1343:
+        goto L_1349;
 
 L_1349:
     if ((ppl != 0x0))
@@ -1169,24 +1167,13 @@ void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t  t_1b78;
     int16_t  t_1e3b;
     StringId t_merge_2023_0001;
-    uint16_t scratch_bp_m34;
-    uint16_t scratch_bp_m32;
-    int32_t  t_call_2129;
-    uint16_t scratch_bp_m3c;
-    uint16_t scratch_bp_m3a;
-    uint16_t scratch_bp_m44;
-    uint16_t scratch_bp_m42;
-    uint16_t scratch_bp_m4c;
-    uint16_t scratch_bp_m4a;
     StringId t_merge_21c3_0001;
 
 L_1716:
     if ((FDrawTileNC(hdc, ptile, &(rc), PszGetCompressedString(idsStatus)) == 0))
         goto L_21ef;
     else
-        goto L_1743;
-
-L_1743:
+        goto L_1749;
 
 L_1749:
     xLeft = (rc.left + 4);
@@ -1476,6 +1463,9 @@ L_1da0:
 L_1dc8:
     c = _wsprintf(szWork, PszGetCompressedString(idsDLY), dRange);
 
+L_1ded:
+    goto L_1e05;
+
 L_1df0:
     CchGetString(idsNone4, szWork);
     c = 0;
@@ -1585,15 +1575,7 @@ L_20dc:
 L_20e5:
     CalcPctSurvive(&(sel.pl), &(pct), 0x0);
     pct = (1 - pct);
-    scratch_bp_m34 = 0x64;
-    scratch_bp_m32 = 0x0;
-    t_call_2129 = __ftol();
-    scratch_bp_m3c = LOWORD(t_call_2129);
-    scratch_bp_m3a = SIGNHIWORD(LOWORD(t_call_2129));
-    scratch_bp_m44 = 0x2710;
-    scratch_bp_m42 = 0x0;
-    scratch_bp_m4c = 0x64;
-    scratch_bp_m4a = 0x0;
+    __ftol();
     c = _wsprintf(szWork, PCTDXPCTDPCTPCT, LOWORD(__ftol()), LOWORD(__ftol()));
     goto L_21d4;
 
@@ -1612,7 +1594,7 @@ L_21c0:
 
 L_21c3:
     c = CchGetString(t_merge_21c3_0001, szWork);
-    psz = &(szWork);
+    psz = szWork;
 
 L_21d4:
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
@@ -1622,25 +1604,20 @@ L_21ef:
 }
 
 int16_t FGetBestDefensePart(PART *ppart) {
-    int16_t  fRet;
-    int16_t  i;
-    PART     part;
-    uint16_t scratch_bp_m10;
-    uint16_t scratch_bp_m12;
+    int16_t fRet;
+    int16_t i;
+    PART    part;
 
 L_21f6:
     fRet = 1;
     part.hs.grhst = hstPlanetary;
-    part.hs.iItem = 0x9;
+    part.hs.iItem = iplanetarySDI;
     i = 0;
     goto L_2250;
 
 L_221d:
     i = (i + 1);
-    scratch_bp_m10 = part.hs.iItem;
-    scratch_bp_m12 = ((HIWORD(part.hs) + 0x1) & 0xff);
-    part.hs.iItem = 0x0;
-    HIWORD(part.hs) = (HIWORD(part.hs) | scratch_bp_m12);
+    part.hs.iItem = (part.hs.iItem + 0x1);
 
 L_2250:
     if ((i >= 5))
@@ -1649,12 +1626,10 @@ L_2250:
         goto L_2259;
 
 L_2259:
-    if ((FLookupPart(&(part)) != 1))
-        goto L_2273;
+    if ((FLookupPart(&(part)) == 1))
+        goto L_221d;
     else
-        goto L_226a;
-
-L_226a:
+        goto L_2273;
 
 L_2273:
     if ((i <= 0))
@@ -1723,7 +1698,7 @@ L_232d:
 L_2340:
     lpshdef = (rglpshdefSB[idPlayer] + LOWORD((sel.pl.isb * 0x93)));
     fstrcpy(szWork, lpshdef->hul.szClass);
-    psz = &(szWork);
+    psz = szWork;
     goto L_2396;
 
 L_2387:
@@ -1733,9 +1708,7 @@ L_2396:
     if ((FDrawTileNC(hdc, ptile, &(rc), psz) == 0))
         goto L_2af4;
     else
-        goto L_23b0;
-
-L_23b0:
+        goto L_23b6;
 
 L_23b6:
     xLeft = (rc.left + 4);
@@ -1905,6 +1878,9 @@ L_28d9:
     c = (c + 1);
     szWork[c] = 43;
 
+L_28e5:
+    goto L_290a;
+
 L_28e8:
     c = _wsprintf(szWork, PszGetCompressedString(idsNone4));
 
@@ -2073,7 +2049,6 @@ void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj) {
     PLANET  *ppl;
     RECT     rc;
     uint16_t t_merge_2d4a_0001;
-    uint16_t scratch_bp_m56;
     int16_t  t_merge_30ab_0001;
 
 L_2c38:
@@ -2123,7 +2098,7 @@ L_2d47:
     t_merge_2d4a_0001 = 0x5;
 
 L_2d4a:
-    dyPlanetProdLB = LOWORD((scratch_bp_m56 * t_merge_2d4a_0001));
+    dyPlanetProdLB = LOWORD(((dyArial8 + 0x2) * t_merge_2d4a_0001));
     dyWrong = (dyPlanetProdLB - (rcT.bottom - rcT.top));
     if ((dxPlanetProdLB != (xRight - xLeft)))
         goto L_2d8d;
@@ -2280,7 +2255,7 @@ L_30a8:
 
 L_30ab:
     EnableWindow(rghwndBtn[12], t_merge_30ab_0001);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x11]), xStart, yTop, (xStart + c), ((yTop + dyArial8) + (dyArial8 >> 0x1))) -> callresult(void) */
+    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x11]), xStart, yTop, (xStart + c), ((yTop + dyArial8) + (dyArial8 sar 0x1))) -> callresult(void) */
     DrawBtn(hdc, rgrcRef[17].left, 8, gd.fSetRouteMode, PszGetCompressedString(idsRoute2));
 
 L_3105:
@@ -2422,6 +2397,9 @@ L_32c9:
     c = (c + 1);
     szWork[c] = 0;
 
+L_32dd:
+    goto L_3308;
+
 L_32e0:
     c = _wsprintf(szWork, PszGetCompressedString(idsDDYears), iTurnBegin, iTurnEnd);
 
@@ -2524,6 +2502,7 @@ L_340e:
         goto L_3414;
 
 L_3414:
+    goto L_33f8;
 
 L_341a:
     xLeft = (rc.left + 12);
@@ -2576,9 +2555,7 @@ DoBtns:
     if ((ptile->fMinDraw != 0x0))
         goto L_3777;
     else
-        goto L_36c1;
-
-L_36c1:
+        goto L_36c7;
 
 L_36c7:
     if ((gd.fSmallTileMode == 0x0))
@@ -3081,6 +3058,9 @@ L_3d99:
 L_3da3:
     ShowWindow(rghwndBtn[i], SW_SHOW);
 
+L_3db5:
+    goto L_3d40;
+
 L_3db8:
     if ((idSkip == -1))
         goto L_3dce;
@@ -3127,7 +3107,7 @@ L_3dff:
     psz = PszGetPlanetName(sel.pl.id);
     CchGetString(idsPlanet2, szTitle);
     lstrcat(szTitle, psz);
-    psz = &(szTitle);
+    psz = szTitle;
     goto L_3e65;
 
 L_3e3a:
@@ -3188,9 +3168,7 @@ L_3eb2:
     if ((iObjSel == sel.id))
         goto L_4299;
     else
-        goto L_3eba;
-
-L_3eba:
+        goto L_3ec0;
 
 L_3ec0:
     if ((sel.grobj != grobjPlanet))
@@ -3217,9 +3195,7 @@ L_3ee9:
     if ((FLookupPlanet(iObjSel, sel.pl.id) == 0))
         goto L_4299;
     else
-        goto L_3f0d;
-
-L_3f0d:
+        goto L_3f13;
 
 L_3f13:
     sel.pt.x = rgptPlan[iObjSel].x;
@@ -3258,12 +3234,10 @@ L_3f7c:
         goto L_3f8b;
 
 L_3f8b:
-    if ((lpfl->iPlayer == idPlayer))
-        goto L_3fa0;
+    if ((lpfl->iPlayer != idPlayer))
+        goto L_3f3d;
     else
-        goto L_3f97;
-
-L_3f97:
+        goto L_3fa0;
 
 L_3fa0:
     if ((i == cFleet))
@@ -3290,14 +3264,15 @@ L_3fdc:
     FillPlanetProdLB(0x0, 0x0, 0x0);
     SendMessage(hwndPlanetProdLB, CB_GETCURSEL, 0x0, 0);
 
+L_4011:
+    goto L_40ec;
+
 L_4014:
     InvalidateReport(1, 0);
     if ((FLookupFleet(iObjSel, sel.fl.id) == 0))
         goto L_4299;
     else
-        goto L_4038;
-
-L_4038:
+        goto L_403e;
 
 L_403e:
     sel.pt.x = sel.fl.pt.x;
@@ -3564,6 +3539,9 @@ L_43c6:
     LOWORD(szWork) = LOBYTE(t_merge_43c6_0001);
     SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
 
+L_43e1:
+    goto L_42fa;
+
 L_43e4:
     lpth = lpThings;
     lpthMac = (lpThings + LOWORD((0x12 * cThing)));
@@ -3638,9 +3616,7 @@ L_44f2:
     if ((idPlanet == -1))
         goto L_4747;
     else
-        goto L_44f8;
-
-L_44f8:
+        goto L_44fe;
 
 L_44fe:
     if ((dInc == 0))
@@ -3677,12 +3653,10 @@ L_4555:
         goto L_4560;
 
 L_4560:
-    if ((lpPl->id == idPlanet))
-        goto L_4574;
+    if ((lpPl->id != idPlanet))
+        goto L_4542;
     else
-        goto L_456b;
-
-L_456b:
+        goto L_4574;
 
 L_4574:
     if ((i == cPlanet))
@@ -3723,12 +3697,10 @@ L_45d3:
         goto L_45ea;
 
 L_45ea:
-    if ((lpPlT[vlprgidPlanet[i]].id == idPlanet))
-        goto L_461c;
+    if ((lpPlT[vlprgidPlanet[i]].id != idPlanet))
+        goto L_45cf;
     else
-        goto L_4613;
-
-L_4613:
+        goto L_461c;
 
 L_461c:
     i = (i + dInc);
@@ -3759,9 +3731,7 @@ L_4676:
     if ((lpPlT->iPlayer != idPlayer))
         goto L_4747;
     else
-        goto L_4694;
-
-L_4694:
+        goto L_469a;
 
 L_469a:
     scan.pt.x = rgptPlan[idPlanet].x;
@@ -3809,17 +3779,13 @@ L_47a2:
     if ((lppl->fStarbase == 0x0))
         goto L_4850;
     else
-        goto L_47b6;
-
-L_47b6:
+        goto L_47bc;
 
 L_47bc:
     if ((LphuldefFromId(rglpshdefSB[idPlayer][lppl->isb].hul.ihuldef)->hul.wtCargoMax == 0x0))
         goto L_4850;
     else
-        goto L_47f5;
-
-L_47f5:
+        goto L_47fb;
 
 L_47fb:
     if ((lppl->id <= idPlanet))
@@ -3835,6 +3801,9 @@ L_4809:
 
 L_4812:
     idAfter = lppl->id;
+
+L_481b:
+    goto L_4835;
 
 L_481e:
     if ((lppl->id >= idPlanet))
@@ -3882,6 +3851,8 @@ L_4874:
     return idFirst;
 
 L_487a:
+
+L_487d:
     return idAfter;
 
 L_4883:
@@ -3915,6 +3886,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
     POINT    ptNew;
     int16_t  t_merge_49b6_0001;
     uint16_t t_merge_4b50_0001;
+    uint16_t t_scratch_m40;
     uint16_t t_merge_4cf6_0001;
     uint16_t t_merge_4d28_0001;
     int16_t  t_merge_4dd8_0001;
@@ -3928,7 +3900,7 @@ L_489e:
         goto L_48b6;
 
 L_48b6:
-    prgtile = &(rgtilePlanet);
+    prgtile = rgtilePlanet;
     ctile = 6;
     goto L_48dd;
 
@@ -3939,9 +3911,8 @@ L_48c3:
         goto L_48cd;
 
 L_48cd:
-    prgtile = &(rgtileShip);
+    prgtile = rgtileShip;
     ctile = 7;
-    goto L_48dd;
 
 L_48dd:
     iCol = ((uint32_t)(x) / 198);
@@ -3955,9 +3926,7 @@ L_4903:
     if ((xRel >= 194))
         goto L_5155;
     else
-        goto L_490a;
-
-L_490a:
+        goto L_4910;
 
 L_4910:
     i = 0;
@@ -3967,17 +3936,13 @@ L_4918:
     if ((prgtile[i].iCol < iCol))
         goto L_49d3;
     else
-        goto L_4933;
-
-L_4933:
+        goto L_493c;
 
 L_493c:
     if ((prgtile[i].iCol > iCol))
         goto L_5155;
     else
-        goto L_4957;
-
-L_4957:
+        goto L_495d;
 
 L_495d:
     if ((y < prgtile[i].yTop))
@@ -4002,9 +3967,7 @@ L_49b6:
     if ((y < (t_merge_49b6_0001 + prgtile[i].yTop)))
         goto L_49e2;
     else
-        goto L_49cd;
-
-L_49cd:
+        goto L_49d3;
 
 L_49d3:
     i = (i + 1);
@@ -4019,9 +3982,7 @@ L_49e2:
     if ((i == ctile))
         goto L_5155;
     else
-        goto L_49ea;
-
-L_49ea:
+        goto L_49f0;
 
 L_49f0:
     pt.x = x;
@@ -4071,9 +4032,7 @@ L_4afd:
     if ((FTrackBtn(&(btnt)) != 0))
         goto L_4afd;
     else
-        goto L_4b0e;
-
-L_4b0e:
+        goto L_4b14;
 
 L_4b14:
     if ((btnt.fDown == 0x0))
@@ -4095,8 +4054,12 @@ L_4b4d:
     t_merge_4b50_0001 = 0x0;
 
 L_4b50:
-    prgtile[i].fPopped = t_merge_4b50_0001;
+    t_scratch_m40 = t_merge_4b50_0001;
+    prgtile[i].fPopped = t_scratch_m40;
     ReflowColumn(prgtile[i].iCol, i, 1);
+
+L_4bb2:
+    goto L_5155;
 
 L_4bb8:
     if ((prgtile[i].fPopped == 0x0))
@@ -4138,6 +4101,9 @@ L_4c51:
     pt.x = ptNew.x;
     pt.y = ptNew.y;
     DrawFuzzyBorder(hdc, &(rcTitle));
+
+L_4c95:
+    goto L_4c27;
 
 L_4c98:
     DrawFuzzyBorder(hdc, &(rcTitle));
@@ -4202,6 +4168,7 @@ L_4d48:
         goto L_4d63;
 
 L_4d63:
+    goto L_4d70;
 
 L_4d6c:
     i = (i + 1);
@@ -4233,12 +4200,10 @@ L_4dd2:
 
 L_4dd8:
     dy = t_merge_4dd8_0001;
-    if ((pt.y < ((dy >> 0x1) + prgtile[i].yTop)))
-        goto L_4e00;
+    if ((pt.y >= ((dy >> 0x1) + prgtile[i].yTop)))
+        goto L_4d6c;
     else
-        goto L_4df7;
-
-L_4df7:
+        goto L_4e00;
 
 L_4e00:
     if ((i == iCur))
@@ -4273,6 +4238,9 @@ L_4e8c:
 
 L_4ea5:
     ReflowColumn(i, iCur, 1);
+
+L_4eb7:
+    goto L_5155;
 
 L_4eba:
     tile = prgtile[iCur];
@@ -4318,6 +4286,9 @@ L_4fef:
 L_4fff:
     ReflowColumn(iCol, i, 1);
     ReflowColumn(tile.iCol, iCur, 1);
+
+L_5028:
+    goto L_5155;
 
 L_502b:
     if ((sel.grobj != grobjFleet))
@@ -4403,8 +4374,8 @@ uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRi
     BTNT     btnt;
     uint16_t t_merge_52ad_0001;
     int16_t  t_call_53a2;
-    uint16_t scratch_bp_m2c;
-    uint16_t scratch_bp_m2a;
+    uint16_t t_scratch_m2c;
+    uint16_t t_scratch_m2a;
 
 L_515c:
     if ((sel.grobj == grobjPlanet))
@@ -4441,7 +4412,7 @@ L_51b0:
     GlobalPD.grPopup = grPopupMineral;
     GlobalPD.idPlanet = i;
     /* untranslated: part[0x4:2](GlobalPD) = signhiword(i) */
-    /* untranslated: part[0xa:2](GlobalPD) = LOWORD(sel.pl.rgwtMin[i]) */
+    GlobalPD.grbit = LOWORD(sel.pl.rgwtMin[i]);
     /* untranslated: part[0xc:2](GlobalPD) = HIWORD(sel.pl.rgwtMin[i]) */
     /* untranslated: part[0xe:2](GlobalPD) = sel.pl.rgMinConc[i] */
     GlobalPD.iPlrMax = 0;
@@ -4480,8 +4451,11 @@ L_52aa:
     t_merge_52ad_0001 = 0x0;
 
 L_52ad:
-    /* untranslated: part[0xa:2](GlobalPD) = t_merge_52ad_0001 */
-    /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_5305 : L_52ba */
+    GlobalPD.grbit = t_merge_52ad_0001;
+    if ((GlobalPD.grbit == 0x0))
+        goto L_5305;
+    else
+        goto L_52ba;
 
 L_52ba:
     /* untranslated: part[0x4:2](GlobalPD) = CMaxFactories(&sel.pl, idPlayer) */
@@ -4627,7 +4601,7 @@ L_553e:
 L_555f:
     GlobalPD.grPopup = grPopupString;
     HIWORD(GlobalPD) = 0xb4;
-    GlobalPD.psz = &(szPopupBuffer);
+    GlobalPD.psz = szPopupBuffer;
     CchGetString(idsRaceCannotBuildPlanetaryScannersStarbasesHave, szPopupBuffer);
     goto L_5596;
 
@@ -4668,14 +4642,12 @@ L_5636:
     if ((FTrackBtn(&(btnt)) != 0))
         goto L_5636;
     else
-        goto L_5647;
-
-L_5647:
+        goto L_564d;
 
 L_564d:
-    scratch_bp_m2c = (((btnt.fDown << 0x8) ^ HIWORD(gd)) & 0x100);
+    t_scratch_m2c = (((btnt.fDown << 0x8) ^ HIWORD(gd)) & 0x100);
     gd.fSetMassMode = 0x0;
-    HIWORD(gd) = (HIWORD(gd) | scratch_bp_m2c);
+    HIWORD(gd) = (HIWORD(gd) | t_scratch_m2c);
     goto L_5871;
 
 L_567a:
@@ -4695,7 +4667,7 @@ L_56a3:
     GlobalPD.lpshdef = (rglpshdefSB[idPlayer] + LOWORD((sel.pl.isb * 0x93)));
     /* untranslated: part[0x8:2](GlobalPD) = 0x0 */
     /* untranslated: part[0x6:2](GlobalPD) = 0x1 */
-    /* untranslated: part[0xa:2](GlobalPD) = 0x0 */
+    GlobalPD.grbit = 0x0;
     /* untranslated: part[0xc:2](GlobalPD) = 0x0 */
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
@@ -4756,14 +4728,12 @@ L_5830:
     if ((FTrackBtn(&(btnt)) != 0))
         goto L_5830;
     else
-        goto L_5841;
-
-L_5841:
+        goto L_5847;
 
 L_5847:
-    scratch_bp_m2a = (((btnt.fDown << 0xd) ^ HIWORD(gd)) & 0x2000);
+    t_scratch_m2a = (((btnt.fDown << 0xd) ^ HIWORD(gd)) & 0x2000);
     gd.fSetRouteMode = 0x0;
-    HIWORD(gd) = (HIWORD(gd) | scratch_bp_m2a);
+    HIWORD(gd) = (HIWORD(gd) | t_scratch_m2a);
 
 L_5871:
     return 0x0;
@@ -4779,9 +4749,7 @@ L_587e:
     if ((fSmallTiles == gd.fSmallTileMode))
         goto L_5b7a;
     else
-        goto L_5898;
-
-L_5898:
+        goto L_589e;
 
 L_589e:
     gd.fSmallTileMode = fSmallTiles;
@@ -4971,12 +4939,12 @@ L_5b80:
         goto L_5b98;
 
 L_5b98:
-    ptile = &(rgtileShip);
+    ptile = rgtileShip;
     ctile = 7;
     goto L_5baf;
 
 L_5ba5:
-    ptile = &(rgtilePlanet);
+    ptile = rgtilePlanet;
     ctile = 6;
 
 L_5baf:
@@ -4994,9 +4962,7 @@ L_5bc5:
     if ((ptile[i].iCol == iCol))
         goto L_5bf5;
     else
-        goto L_5be0;
-
-L_5be0:
+        goto L_5be6;
 
 L_5be6:
     i = (i + 1);
@@ -5011,9 +4977,7 @@ L_5bf5:
     if ((i == ctile))
         goto L_5dcb;
     else
-        goto L_5bfd;
-
-L_5bfd:
+        goto L_5c03;
 
 L_5c03:
     iTile = i;
@@ -5067,6 +5031,9 @@ L_5c8f:
     rc.right = (rc.left + 191);
     hdc = GetDC(hwndPlanet);
     FillRect(hdc, &(rc), hbrButtonFace);
+
+L_5cd9:
+    goto L_5ce0;
 
 L_5cdc:
     iTile = (iTile + 1);
@@ -5282,6 +5249,7 @@ L_6040:
         goto L_6045;
 
 L_6045:
+    goto L_6011;
 
 L_604b:
     return szWork;
@@ -5460,6 +5428,9 @@ L_627d:
 L_628a:
     cr = 0x0;
 
+L_6294:
+    goto L_63d9;
+
 L_6297:
     fDoubleDraw = 1;
     pctDmg = (uint16_t)(psz[0x1]);
@@ -5523,6 +5494,7 @@ L_6305:
         goto L_630a;
 
 L_630a:
+    goto L_62a6;
 
 L_6313:
     cr = crWindow;
@@ -5553,6 +5525,9 @@ L_634b:
 
 L_635a:
     hbr = GetStockObject(BLACK_BRUSH);
+
+L_6366:
+    goto L_63d9;
 
 L_6369:
     fDoubleDraw = 1;
@@ -5617,6 +5592,7 @@ L_63ce:
         goto L_63d3;
 
 L_63d3:
+    goto L_6378;
 
 L_63d9:
     if ((fListbox != 2))
@@ -5675,6 +5651,9 @@ L_647d:
 
 L_6497:
     fItalic = 1;
+
+L_649c:
+    goto L_64a4;
 
 L_649f:
     ich = 1;
@@ -5886,7 +5865,6 @@ L_674d:
 
 L_6757:
     psz = PszGetCompressedString(idsTopQueue);
-    goto L_676c;
 
 L_676c:
     if ((fMinimal != 0))
@@ -5917,9 +5895,7 @@ L_67b1:
     if ((HIWORD(lpplprod) == 0x0))
         goto L_6ac4;
     else
-        goto L_67b7;
-
-L_67b7:
+        goto L_67bd;
 
 L_67bd:
     resCost = 0;
@@ -5981,9 +5957,7 @@ L_6885:
     if ((fMinimal != 0))
         goto L_680c;
     else
-        goto L_688b;
-
-L_688b:
+        goto L_6891;
 
 L_6891:
     ch = 38;
@@ -6302,6 +6276,9 @@ L_6cfb:
 L_6d07:
     iNewVal = t_merge_6d07_0001;
 
+L_6d0a:
+    goto L_6d99;
+
 L_6d0d:
     if ((rgMin[i] == -1))
         goto L_6d99;
@@ -6444,6 +6421,9 @@ L_6f49:
 L_6f72:
     pctMod = (uint32_t)((pctMod * (uint32_t)(((d * 0x2) - dPenalty))));
     pctMod = (int32_t)((pctMod / (uint32_t)((d * 0x2))));
+
+L_6fa7:
+    goto L_7000;
 
 L_6faa:
     if ((iPlanet >= iMin))
@@ -7043,17 +7023,13 @@ L_7888:
 }
 
 int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr) {
-    int16_t  cRes;
-    int32_t  lPop;
-    int16_t  cFact;
-    int32_t  lPopMax;
-    int16_t  iEff;
-    int16_t  pctVal;
-    int16_t  iEnergy;
-    uint16_t scratch_bp_m2c;
-    uint16_t scratch_bp_m2a;
-    uint16_t scratch_bp_m34;
-    uint16_t scratch_bp_m32;
+    int16_t cRes;
+    int32_t lPop;
+    int16_t cFact;
+    int32_t lPopMax;
+    int16_t iEff;
+    int16_t pctVal;
+    int16_t iEnergy;
 
 L_788e:
     if ((LOWORD(lppl->rgwtMin[0x3]) != 0x0))
@@ -7141,10 +7117,6 @@ L_79cd:
 
 L_79d2:
     sqrt((((double)(lPop) * (double)((int32_t)(iEnergy))) / (double)((int32_t)(iEff))));
-    scratch_bp_m2c = pctVal;
-    scratch_bp_m2a = SIGNHIWORD(pctVal);
-    scratch_bp_m34 = 0xa;
-    scratch_bp_m32 = 0x0;
     cRes = LOWORD(__ftol());
     goto LFinishUp;
 
@@ -7288,6 +7260,9 @@ L_7cc9:
 
 L_7cd4:
     fTwo = 1;
+
+L_7cd9:
+    goto L_7be3;
 
 L_7cdc:
     if ((pfTwo == 0x0))
@@ -7537,9 +7512,7 @@ L_8052:
     if ((FLookupPart(&(part)) == 1))
         goto L_8090;
     else
-        goto L_807d;
-
-L_807d:
+        goto L_8083;
 
 L_8083:
     i = (i - 1);
@@ -7573,6 +7546,7 @@ L_80d0:
         goto L_80d6;
 
 L_80d6:
+    goto L_80a6;
 
 L_80dc:
     fRet = 0;
@@ -7598,9 +7572,7 @@ L_810c:
     if ((FLookupPart(&(part)) == 1))
         goto L_814d;
     else
-        goto L_813a;
-
-L_813a:
+        goto L_8140;
 
 L_8140:
     i = (i - 1);
@@ -7637,9 +7609,7 @@ L_8188:
     if ((FLookupPart(&(part)) == 1))
         goto L_81c9;
     else
-        goto L_81b6;
-
-L_81b6:
+        goto L_81bc;
 
 L_81bc:
     i = (i - 1);
@@ -7676,9 +7646,7 @@ L_8205:
     if ((FLookupPart(&(part)) == 1))
         goto L_8246;
     else
-        goto L_8233;
-
-L_8233:
+        goto L_8239;
 
 L_8239:
     i = (i - 1);
@@ -7837,6 +7805,9 @@ L_8514:
 L_852d:
     rgEnvMin[i] = t_merge_852d_0001;
 
+L_8539:
+    goto L_86c8;
+
 L_853c:
     rgEnvMin[i] = -1;
     if ((rgEnvMax[i] == -1))
@@ -7859,6 +7830,9 @@ L_8595:
 
 L_85ae:
     rgEnvMax[i] = t_merge_85ae_0001;
+
+L_85ba:
+    goto L_86c8;
 
 L_85bd:
     ienvIdeal = (uint16_t)(rgplr[idPlayer].rgEnvVar[i]);
@@ -7941,9 +7915,7 @@ L_86ef:
     if ((rgEnvMin[i] != -1))
         goto L_8711;
     else
-        goto L_86fe;
-
-L_86fe:
+        goto L_8704;
 
 L_8704:
     i = (i + 1);
@@ -8127,6 +8099,9 @@ L_89e3:
 L_89ee:
     *(ppctSteal) = 70;
 
+L_89f5:
+    goto L_8989;
+
 L_89f8:
     if ((lphs->iItem != iscannerRobberBaronScanner))
         goto L_8989;
@@ -8141,6 +8116,9 @@ L_8a0a:
 
 L_8a15:
     *(ppctSteal) = 80;
+
+L_8a1c:
+    goto L_8989;
 
 L_8a1f:
     if ((LOWORD(cPts) != 0x0))

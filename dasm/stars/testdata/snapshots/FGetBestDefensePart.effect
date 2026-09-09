@@ -23,7 +23,7 @@ block L_21f6:
 
 block L_221d:
   insts 13..28  off 0x221d..0x224f
-  preds: L_2259, L_226a, L_2270
+  preds: L_2259
   succs: L_2250
   effects:
     2220  store[2] [bp-i] = (load([bp-i]) + 0x1)
@@ -45,23 +45,11 @@ block L_2259:
   succs: L_221d, L_2273
   effects:
     225d  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
-    2268  branch callresult(int16_t) != 0x1 ? L_2273 : L_226a
-
-block L_226a:
-  insts 38..38  off 0x226a..0x226c
-  succs: L_221d
-
-block L_226d:
-  insts 39..39  off 0x226d..0x226f
-  succs: L_2273
-
-block L_2270:
-  insts 40..40  off 0x2270..0x2272
-  succs: L_221d
+    2268  branch callresult(int16_t) == 0x1 ? L_221d : L_2273
 
 block L_2273:
   insts 41..42  off 0x2273..0x2278
-  preds: L_2250, L_2259, L_226d
+  preds: L_2250, L_2259
   succs: L_227c, L_2283
   effects:
     2277  branch load([bp-i]) <= 0x0 ? L_2283 : L_227c
