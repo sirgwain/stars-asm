@@ -18,7 +18,7 @@ L_0000:
         goto L_0070;
 
 L_0070:
-    return 0x0;
+    return 0;
 
 L_0076:
     wc.style = 0x20b;
@@ -33,7 +33,7 @@ L_0076:
         goto L_00bf;
 
 L_00bf:
-    return 0x0;
+    return 0;
 
 L_00c5:
     wc.style = 0x20b;
@@ -46,7 +46,7 @@ L_00c5:
         goto L_00ff;
 
 L_00ff:
-    return 0x0;
+    return 0;
 
 L_0105:
     wc.style = 0x20b;
@@ -59,7 +59,7 @@ L_0105:
         goto L_013f;
 
 L_013f:
-    return 0x0;
+    return 0;
 
 L_0145:
     wc.style = 0x208;
@@ -72,7 +72,7 @@ L_0145:
         goto L_017f;
 
 L_017f:
-    return 0x0;
+    return 0;
 
 L_0185:
     wc.style = 0x200;
@@ -86,7 +86,7 @@ L_0185:
         goto L_01c4;
 
 L_01c4:
-    return 0x0;
+    return 0;
 
 L_01ca:
     wc.style = 0xa00;
@@ -100,7 +100,7 @@ L_01ca:
         goto L_0209;
 
 L_0209:
-    return 0x0;
+    return 0;
 
 L_020f:
     wc.style = 0xa00;
@@ -114,7 +114,7 @@ L_020f:
         goto L_024e;
 
 L_024e:
-    return 0x0;
+    return 0;
 
 L_0254:
     wc.style = 0x200;
@@ -128,7 +128,7 @@ L_0254:
         goto L_0293;
 
 L_0293:
-    return 0x0;
+    return 0;
 
 L_0299:
     wc.style = 0x0;
@@ -147,7 +147,7 @@ L_0299:
         goto L_0306;
 
 L_0306:
-    return 0x0;
+    return 0;
 
 L_030c:
     wc.style = 0xb;
@@ -166,8 +166,8 @@ L_030c:
         goto L_0379;
 
 L_0379:
-    return 0x0;
+    return 0;
 
 L_037f:
-    return 0x1;
+    return 1;
 }

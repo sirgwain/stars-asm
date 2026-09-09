@@ -36,7 +36,7 @@ L_008a:
 L_00b9:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_00e4:
     SetBkColor(wParam, crButtonFace);
@@ -73,7 +73,7 @@ L_016d:
 
 L_0170:
     SetCursor(t_merge_0170_0001);
-    return 0x1;
+    return 1;
 
 L_0182:
     hdc = BeginPaint(hwnd, &(ps));
@@ -193,7 +193,7 @@ L_03ed:
 L_03f2:
 
 L_03f8:
-    return 0x0;
+    return 0;
 }
 
 void InvalidateMineralBars() {
@@ -360,35 +360,36 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     int16_t    ifl;
     int32_t    cMines;
     int16_t    iPass;
-    uint16_t   t_merge_0d0c_0001;
-    uint16_t   t_merge_0dc1_0001;
-    uint16_t   t_merge_0ea0_0001;
-    uint16_t   t_merge_0f67_0001;
-    uint16_t   t_merge_0fc2_0001;
+    StringId   t_merge_0d0c_0001;
+    StringId   t_merge_0dc1_0001;
+    StringId   t_merge_0ea0_0001;
+    StringId   t_merge_0f67_0001;
+    StringId   t_merge_0fc2_0001;
     int32_t    t_call_0ffd;
-    uint16_t   t_merge_10ce_0001;
-    uint16_t   t_merge_1120_0001;
+    StringId   t_merge_10ce_0001;
+    StringId   t_merge_1120_0001;
     uint16_t   t_merge_127e_0001;
     THING     *t_call_19ab;
     uint16_t   t_merge_1d8c_0001;
-    uint16_t   t_merge_1eae_0001;
+    int32_t    t_merge_1eae_0001;
     uint16_t   t_merge_2331_0001;
-    uint16_t   t_merge_23d4_0001;
-    uint16_t   t_merge_2466_0001;
+    COLORREF   t_merge_23d4_0001;
+    COLORREF   t_merge_2466_0001;
     uint16_t   t_merge_24d7_0001;
-    uint16_t   t_merge_26f6_0001;
-    uint16_t   t_merge_27c7_0001;
+    StringId   t_merge_26f6_0001;
+    COLORREF   t_merge_27c7_0001;
     char      *t_merge_2a3b_0001;
     int16_t    t_2c6c;
     int16_t    t_2cca;
     uint16_t   t_merge_2d4a_0001;
     uint16_t   t_merge_2dbf_0001;
-    uint16_t   t_merge_3357_0001;
+    int16_t    t_merge_3357_0001;
+    uint16_t   t_call_334f;
     uint32_t   t_merge_33e5_0001;
     uint16_t   scratch_bp_m1cc;
     uint16_t   scratch_bp_m1ce;
     uint32_t   t_merge_3519_0001;
-    uint16_t   t_merge_3609_0001;
+    int16_t    t_merge_3609_0001;
     int16_t    t_3636;
     int16_t    t_3668;
     int16_t    t_3672;
@@ -570,11 +571,11 @@ L_0cea:
         goto L_0d03;
 
 L_0d03:
-    t_merge_0d0c_0001 = 0x276;
+    t_merge_0d0c_0001 = idsMassLdkt;
     goto L_0d0c;
 
 L_0d09:
-    t_merge_0d0c_0001 = 0x21d;
+    t_merge_0d0c_0001 = idsFleetMassLdkt;
 
 L_0d0c:
     c = CchGetString(t_merge_0d0c_0001, szT);
@@ -603,11 +604,11 @@ L_0d9f:
         goto L_0db8;
 
 L_0db8:
-    t_merge_0dc1_0001 = 0x273;
+    t_merge_0dc1_0001 = idsWpS;
     goto L_0dc1;
 
 L_0dbe:
-    t_merge_0dc1_0001 = 0x21a;
+    t_merge_0dc1_0001 = idsWaypointS;
 
 L_0dc1:
     CchGetString(t_merge_0dc1_0001, szWP);
@@ -632,11 +633,11 @@ L_0e54:
         goto L_0e97;
 
 L_0e97:
-    t_merge_0ea0_0001 = 0x272;
+    t_merge_0ea0_0001 = idsTaskS;
     goto L_0ea0;
 
 L_0e9d:
-    t_merge_0ea0_0001 = 0x219;
+    t_merge_0ea0_0001 = idsWaypointTaskS;
 
 L_0ea0:
     CchGetString(t_merge_0ea0_0001, szT);
@@ -665,11 +666,11 @@ L_0f45:
         goto L_0f5e;
 
 L_0f5e:
-    t_merge_0f67_0001 = 0x274;
+    t_merge_0f67_0001 = idsWarpD;
     goto L_0f67;
 
 L_0f64:
-    t_merge_0f67_0001 = 0x21b;
+    t_merge_0f67_0001 = idsWarpSpeedD;
 
 L_0f67:
     CchGetString(t_merge_0f67_0001, szT);
@@ -682,11 +683,11 @@ L_0fa1:
         goto L_0fb9;
 
 L_0fb9:
-    t_merge_0fc2_0001 = 0x275;
+    t_merge_0fc2_0001 = idsWarpStopped;
     goto L_0fc2;
 
 L_0fbf:
-    t_merge_0fc2_0001 = 0x21c;
+    t_merge_0fc2_0001 = idsWarpSpeedStopped;
 
 L_0fc2:
     c = CchGetString(t_merge_0fc2_0001, szWork);
@@ -738,11 +739,11 @@ L_10ac:
         goto L_10c5;
 
 L_10c5:
-    t_merge_10ce_0001 = 0x274;
+    t_merge_10ce_0001 = idsWarpD;
     goto L_10ce;
 
 L_10cb:
-    t_merge_10ce_0001 = 0x21b;
+    t_merge_10ce_0001 = idsWarpSpeedD;
 
 L_10ce:
     CchGetString(t_merge_10ce_0001, szT);
@@ -756,11 +757,11 @@ L_10ff:
         goto L_1117;
 
 L_1117:
-    t_merge_1120_0001 = 0x275;
+    t_merge_1120_0001 = idsWarpStopped;
     goto L_1120;
 
 L_111d:
-    t_merge_1120_0001 = 0x21c;
+    t_merge_1120_0001 = idsWarpSpeedStopped;
 
 L_1120:
     c = CchGetString(t_merge_1120_0001, szWork);
@@ -911,7 +912,7 @@ L_1763:
 L_179c:
     c = _wsprintf(szWork, PszGetCompressedString(idsS2), rgszMinerals[i]);
     RightTextOut(hdc, xLeft, yTop, szWork, c, 0);
-    /* untranslated: c = _wsprintf(szWork, PCTDKT, HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) */
+    c = _wsprintf(szWork, PCTDKT, lpth->thp.rgwtMin[i]);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     i = (i + 1);
@@ -1121,7 +1122,7 @@ L_1e94:
         goto L_1e9d;
 
 L_1e9d:
-    t_merge_1eae_0001 = 0xa;
+    t_merge_1eae_0001 = 10;
     goto L_1eae;
 
 L_1ea6:
@@ -1191,9 +1192,9 @@ L_2043:
     goto L_20fc;
 
 L_204c:
-    /* untranslated: rgplr[idPlayer].rgEnvVar[c] = lobyte(setlobyte(c, rgplr[pl.iPlayer].rgEnvVar[c])) */
-    /* untranslated: rgplr[idPlayer].rgEnvVarMin[c] = lobyte(setlobyte(c, rgplr[pl.iPlayer].rgEnvVarMin[c])) */
-    /* untranslated: rgplr[idPlayer].rgEnvVarMax[c] = lobyte(setlobyte(c, rgplr[pl.iPlayer].rgEnvVarMax[c])) */
+    rgplr[idPlayer].rgEnvVar[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVar[c] & 0xff)));
+    rgplr[idPlayer].rgEnvVarMin[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVarMin[c] & 0xff)));
+    rgplr[idPlayer].rgEnvVarMax[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVarMax[c] & 0xff)));
     c = (c + 1);
 
 L_20fc:
@@ -1423,11 +1424,11 @@ L_26e3:
         goto L_26ed;
 
 L_26ed:
-    t_merge_26f6_0001 = 0x1bc;
+    t_merge_26f6_0001 = idsCurrent;
     goto L_26f6;
 
 L_26f3:
-    t_merge_26f6_0001 = 0x22b;
+    t_merge_26f6_0001 = idsReportCurrent;
 
 L_26f6:
     c = _wsprintf(szWork, PszGetCompressedString(t_merge_26f6_0001));
@@ -1863,12 +1864,12 @@ L_331b:
         goto L_3340;
 
 L_3340:
-    t_merge_3357_0001 = 0x4;
+    t_merge_3357_0001 = 4;
     goto L_3357;
 
 L_3346:
-    strlen(rgszMinerals[i]);
-    /* untranslated: t_merge_3357_0001 = callresult(uint16_t) */
+    t_call_334f = strlen(rgszMinerals[i]);
+    t_merge_3357_0001 = t_call_334f;
 
 L_3357:
     RightTextOut(hdc, (xL - 2), (yCur + dy), rgszMinerals[i], t_merge_3357_0001, 0);
@@ -1986,7 +1987,7 @@ L_35a1:
         goto L_35f6;
 
 L_35f6:
-    t_merge_3609_0001 = 0x64;
+    t_merge_3609_0001 = 100;
     goto L_3609;
 
 L_35fc:
@@ -2122,7 +2123,7 @@ L_383f:
         goto L_384c;
 
 L_384c:
-    return 0x9;
+    return htMineScanSel;
 
 L_3852:
     if ((grobj == grobjFleet))
@@ -2173,7 +2174,7 @@ L_38da:
         goto L_38e8;
 
 L_38e8:
-    return 0xa;
+    return htMineOwner;
 
 L_38ee:
     if ((grobj != grobjThing))
@@ -2212,7 +2213,7 @@ L_3947:
         goto L_3955;
 
 L_3955:
-    return 0xe;
+    return htMineMinefieldType;
 
 L_395b:
     if ((grobj != grobjThing))
@@ -2221,7 +2222,7 @@ L_395b:
         goto L_3964;
 
 L_3964:
-    return 0x0;
+    return htMineNone;
 
 L_396a:
     if ((x < (rc.left + 9)))
@@ -2248,7 +2249,7 @@ L_3994:
         goto L_39a2;
 
 L_39a2:
-    return 0xb;
+    return htMineShipOrFleet;
 
 L_39a8:
     if ((x < (rc.left + 92)))
@@ -2269,10 +2270,10 @@ L_39c4:
         goto L_39d6;
 
 L_39d6:
-    return 0xb;
+    return htMineShipOrFleet;
 
 L_39dc:
-    return 0x0;
+    return htMineNone;
 
 L_39e2:
     if ((sel.scan.idpl == -1))
@@ -2287,7 +2288,7 @@ L_39ec:
         goto L_3a04;
 
 L_3a04:
-    return 0x0;
+    return htMineNone;
 
 L_3a0a:
     rc.top = (rc.top - 4);
@@ -2337,10 +2338,10 @@ L_3aa3:
         goto L_3aac;
 
 L_3aac:
-    return 0xa;
+    return htMineOwner;
 
 L_3ab5:
-    return 0xc;
+    return htMinePlanet;
 
 L_3abe:
     if ((pl.fStarbase == 0x0))
@@ -2349,13 +2350,13 @@ L_3abe:
         goto L_3ad1;
 
 L_3ad1:
-    return 0xd;
+    return htMineStarbase;
 
 L_3ad7:
-    return 0x0;
+    return htMineNone;
 
 L_3ae0:
-    return 0x0;
+    return htMineNone;
 
 L_3ae6:
     if ((y >= (LOWORD((3 * dyRow)) + yCur)))
@@ -2377,7 +2378,7 @@ L_3b31:
     return (((uint32_t)((y - yCur)) / dyRow) + 0x1);
 
 L_3b41:
-    return 0x5;
+    return htMineScale;
 }
 
 void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
@@ -2670,7 +2671,10 @@ L_40c2:
     i = (scan.ith + 1);
 
 L_40ce:
-    /* untranslated: branch lpThings[i].pt.x != ss:[&scan] ? L_410f : L_4103 */
+    if ((lpThings[i].pt.x != scan.pt.x))
+        goto L_410f;
+    else
+        goto L_4103;
 
 L_4103:
     if ((lpThings[i].pt.y == scratch_bp_m28))
@@ -2768,10 +2772,16 @@ L_41e4:
         goto L_41ec;
 
 L_41ec:
-    /* untranslated: branch ss:[&scan] != lpfl->pt.x ? L_41ad : L_4206 */
+    if ((scan.pt.x != lpfl->pt.x))
+        goto L_41ad;
+    else
+        goto L_4206;
 
 L_4206:
-    /* untranslated: branch ss:[&scan+0x2] == lpfl->pt.y ? L_4215 : L_420c */
+    if ((scan.pt.y == lpfl->pt.y))
+        goto L_4215;
+    else
+        goto L_420c;
 
 L_420c:
 
@@ -2879,10 +2889,16 @@ L_4332:
         goto L_433a;
 
 L_433a:
-    /* untranslated: branch ss:[&scan] != lpfl->pt.x ? L_42fb : L_4354 */
+    if ((scan.pt.x != lpfl->pt.x))
+        goto L_42fb;
+    else
+        goto L_4354;
 
 L_4354:
-    /* untranslated: branch ss:[&scan+0x2] == lpfl->pt.y ? L_4363 : L_435a */
+    if ((scan.pt.y == lpfl->pt.y))
+        goto L_4363;
+    else
+        goto L_435a;
 
 L_435a:
 
@@ -3170,7 +3186,7 @@ void SetMineralTitleBar(HWND hwnd) {
     RECT       rc;
     GrobjClass t_merge_481d_0001;
     uint16_t   t_merge_49c5_0001;
-    uint16_t   t_merge_4a04_0001;
+    WPARAM     t_merge_4a04_0001;
     uint16_t   t_merge_4a58_0001;
 
 L_47dc:
@@ -3320,11 +3336,11 @@ L_4a58:
 }
 
 void DrawSelectionArrow(HDC hdc, RECT *prc, int16_t fEnabled) {
-    HBITMAP  hbmpSav;
-    HDC      hdcMem;
-    int16_t  xCtr;
-    uint16_t t_merge_4b25_0001;
-    uint16_t t_merge_4b38_0001;
+    HBITMAP hbmpSav;
+    HDC     hdcMem;
+    int16_t xCtr;
+    int16_t t_merge_4b25_0001;
+    int16_t t_merge_4b38_0001;
 
 L_4a68:
     hdcMem = CreateCompatibleDC(hdc);
@@ -3337,11 +3353,11 @@ L_4a68:
         goto L_4b1c;
 
 L_4b1c:
-    t_merge_4b25_0001 = 0x18;
+    t_merge_4b25_0001 = 24;
     goto L_4b25;
 
 L_4b22:
-    t_merge_4b25_0001 = 0x0;
+    t_merge_4b25_0001 = 0;
 
 L_4b25:
     if ((fEnabled == 0))
@@ -3350,11 +3366,11 @@ L_4b25:
         goto L_4b2f;
 
 L_4b2f:
-    t_merge_4b38_0001 = 0x39;
+    t_merge_4b38_0001 = 57;
     goto L_4b38;
 
 L_4b35:
-    t_merge_4b38_0001 = 0x2d;
+    t_merge_4b38_0001 = 45;
 
 L_4b38:
     BitBlt(hdc, (xCtr - 5), ((((prc->bottom - prc->top) >> 0x1) + prc->top) + 0xfffb), 11, 12, hdcMem, t_merge_4b25_0001, t_merge_4b38_0001, SRCPAINT);
@@ -3487,7 +3503,7 @@ L_4d8b:
         goto L_4d95;
 
 L_4d95:
-    return 0x1;
+    return 1;
 
 L_4d9b:
     if ((sel.scan.ifl == -1))
@@ -3502,7 +3518,7 @@ L_4da5:
         goto L_4daf;
 
 L_4daf:
-    return 0x1;
+    return 1;
 
 L_4db5:
     c = 1;
@@ -3552,7 +3568,7 @@ L_4e24:
         goto L_4e33;
 
 L_4e33:
-    return 0x1;
+    return 1;
 
 L_4e3c:
     if ((sel.scan.ith == -1))
@@ -3587,7 +3603,7 @@ L_4e99:
         goto L_4ea8;
 
 L_4ea8:
-    return 0x1;
+    return 1;
 
 L_4eae:
     lpth = (lpth + 0x12);
@@ -3599,7 +3615,7 @@ L_4eb2:
         goto L_4ec0;
 
 L_4ec0:
-    return 0x0;
+    return 0;
 }
 
 void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {

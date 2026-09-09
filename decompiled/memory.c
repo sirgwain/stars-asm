@@ -502,7 +502,7 @@ L_071d:
 
 L_0726:
     lphb = LphbReAlloc(lphb);
-    /* untranslated: lp = &part[0x12:0](lphb) */
+    lp = ((uint8_t *)(lphb) + 18);
     goto LGrewHeap;
 
 L_0751:

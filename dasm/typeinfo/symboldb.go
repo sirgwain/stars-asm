@@ -157,10 +157,12 @@ func (sdb *SymbolDB) AddFunction(f *Function) {
 	existing := sdb.GetFunction(f.Name)
 	if existing != nil {
 		// update the existing signature
+		oldParams := existing.Params
 		existing.Conv = f.Conv
 		existing.Ret = f.Ret
 		existing.Params = f.Params
 		existing.VarArgs = f.VarArgs
+		preserveFunctionParamLocations(existing, oldParams)
 		return
 	}
 
@@ -169,6 +171,22 @@ func (sdb *SymbolDB) AddFunction(f *Function) {
 	sdb.functionsByModule[f.Module] = append(sdb.functionsByModule[f.Module], f)
 	sdb.functionsByAddr[f.Addr] = f
 	sdb.functionsBySeg[f.Addr.Seg] = append(sdb.functionsBySeg[f.Addr.Seg], f)
+}
+
+// preserveFunctionParamLocations retains CodeView parameter locations when an
+// override replaces the source-level signature.
+func preserveFunctionParamLocations(f *Function, old []FunctionVar) {
+	stackOffsets := inferredParamStackOffsets(f)
+	for i := range f.Params {
+		if i < len(old) && (old[i].BPOffset != 0 || old[i].Register != RegNone) {
+			f.Params[i].BPOffset = old[i].BPOffset
+			f.Params[i].Register = old[i].Register
+			continue
+		}
+		if i < len(stackOffsets) {
+			f.Params[i].BPOffset = stackOffsets[i]
+		}
+	}
 }
 
 // AddPublic adds a public symbol to the symboldb.

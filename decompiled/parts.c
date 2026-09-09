@@ -3389,14 +3389,16 @@ L_51f7:
 }
 
 int16_t FLookupPartX(PART *ppart, uint16_t grhst, uint16_t iItem) {
+    int16_t t_call_523c;
+
 L_51fe:
     ppart->hs.grhst = grhst;
     ppart->hs.iItem = iItem;
     ppart->hs.cItem = 0x0;
-    FLookupPart(ppart);
+    t_call_523c = FLookupPart(ppart);
 
 L_5247:
-    /* untranslated: return callresult(int16_t) */
+    return t_call_523c;
 }
 
 int16_t FLookupPart(PART *ppart) {
@@ -3410,7 +3412,7 @@ L_524e:
     goto L_6019;
 
 L_5287:
-    return 0x0;
+    return 0;
 
 L_528d:
     if ((hs.iItem < iengineCount))
@@ -3419,7 +3421,7 @@ L_528d:
         goto L_529b;
 
 L_529b:
-    return 0x0;
+    return 0;
 
 L_52a1:
     ppart->pengine = &(rgengine[hs.iItem]);
@@ -3441,7 +3443,7 @@ L_52d4:
         goto L_52dd;
 
 L_52dd:
-    return 0xffff;
+    return -1;
 
 L_52e6:
     if ((hs.iItem < iengineSubGalacticFuelScoop))
@@ -3468,7 +3470,7 @@ L_5310:
         goto L_5331;
 
 L_5331:
-    return 0xffff;
+    return -1;
 
 L_533a:
     if ((hs.iItem == iengineGalaxyScoop))
@@ -3489,7 +3491,7 @@ L_5356:
         goto L_5377;
 
 L_5377:
-    return 0xffff;
+    return -1;
 
 L_5380:
     if ((hs.iItem != iengineInterspace10))
@@ -3504,7 +3506,7 @@ L_538e:
         goto L_53af;
 
 L_53af:
-    return 0xffff;
+    return -1;
 
 L_53b8:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -3513,7 +3515,7 @@ L_53b8:
         goto L_53cb;
 
 L_53cb:
-    return 0xffff;
+    return -1;
 
 L_53d4:
     if ((hs.iItem < ishieldCount))
@@ -3522,7 +3524,7 @@ L_53d4:
         goto L_53e2;
 
 L_53e2:
-    return 0x0;
+    return 0;
 
 L_53e8:
     ppart->pshield = &(rgshield[hs.iItem]);
@@ -3538,7 +3540,7 @@ L_5411:
         goto L_541a;
 
 L_541a:
-    return 0xffff;
+    return -1;
 
 L_5423:
     if ((hs.iItem != ishieldCrobySharmor))
@@ -3553,7 +3555,7 @@ L_5431:
         goto L_543a;
 
 L_543a:
-    return 0xffff;
+    return -1;
 
 L_5443:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -3562,7 +3564,7 @@ L_5443:
         goto L_5456;
 
 L_5456:
-    return 0xffff;
+    return -1;
 
 L_545f:
     if ((hs.iItem < ihuldefOrbitalFort))
@@ -3571,7 +3573,7 @@ L_545f:
         goto L_546d;
 
 L_546d:
-    return 0x0;
+    return 0;
 
 L_5473:
     ppart->phul = &(rghuldef[hs.iItem].hul);
@@ -3599,7 +3601,7 @@ L_54b4:
         goto L_54bd;
 
 L_54bd:
-    return 0xffff;
+    return -1;
 
 L_54c6:
     if ((hs.iItem == ihuldefFuelTransport))
@@ -3620,7 +3622,7 @@ L_54e2:
         goto L_54eb;
 
 L_54eb:
-    return 0xffff;
+    return -1;
 
 L_54f4:
     if ((hs.iItem == ihuldefMiner))
@@ -3653,7 +3655,7 @@ L_552c:
         goto L_554d;
 
 L_554d:
-    return 0xffff;
+    return -1;
 
 L_5556:
     if ((hs.iItem == ihuldefMidgetMiner))
@@ -3680,7 +3682,7 @@ L_5580:
         goto L_55a1;
 
 L_55a1:
-    return 0xffff;
+    return -1;
 
 L_55aa:
     if ((hs.iItem == ihuldefDreadnought))
@@ -3701,7 +3703,7 @@ L_55c6:
         goto L_55cf;
 
 L_55cf:
-    return 0xffff;
+    return -1;
 
 L_55d8:
     if ((hs.iItem != ihuldefRogue))
@@ -3716,7 +3718,7 @@ L_55e6:
         goto L_55ef;
 
 L_55ef:
-    return 0xffff;
+    return -1;
 
 L_55f8:
     if ((hs.iItem != ihuldefStealthBomber))
@@ -3731,7 +3733,7 @@ L_5606:
         goto L_560f;
 
 L_560f:
-    return 0xffff;
+    return -1;
 
 L_5618:
     if ((hs.iItem == ihuldefMiniMineLayer))
@@ -3752,7 +3754,7 @@ L_5634:
         goto L_563d;
 
 L_563d:
-    return 0xffff;
+    return -1;
 
 L_5646:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -3761,7 +3763,7 @@ L_5646:
         goto L_5659;
 
 L_5659:
-    return 0xffff;
+    return -1;
 
 L_5662:
     if ((hs.iItem < 0x5))
@@ -3770,7 +3772,7 @@ L_5662:
         goto L_5670;
 
 L_5670:
-    return 0x0;
+    return 0;
 
 L_5676:
     ppart->phul = &(rghuldefSB[hs.iItem].hul);
@@ -3798,7 +3800,7 @@ L_56b7:
         goto L_56d8;
 
 L_56d8:
-    return 0xffff;
+    return -1;
 
 L_56de:
     if ((hs.iItem != ihuldefScout))
@@ -3813,7 +3815,7 @@ L_56ec:
         goto L_56f5;
 
 L_56f5:
-    return 0xffff;
+    return -1;
 
 L_56fe:
     if ((hs.iItem < iarmorCount))
@@ -3822,7 +3824,7 @@ L_56fe:
         goto L_570c;
 
 L_570c:
-    return 0x0;
+    return 0;
 
 L_5712:
     ppart->parmor = &(rgarmor[hs.iItem]);
@@ -3838,7 +3840,7 @@ L_573b:
         goto L_5744;
 
 L_5744:
-    return 0xffff;
+    return -1;
 
 L_574d:
     if ((hs.iItem != iarmorFieldedKelarium))
@@ -3853,7 +3855,7 @@ L_575b:
         goto L_5764;
 
 L_5764:
-    return 0xffff;
+    return -1;
 
 L_576d:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -3862,7 +3864,7 @@ L_576d:
         goto L_5780;
 
 L_5780:
-    return 0xffff;
+    return -1;
 
 L_5789:
     if ((hs.iItem < ispecialECount))
@@ -3871,7 +3873,7 @@ L_5789:
         goto L_5797;
 
 L_5797:
-    return 0x0;
+    return 0;
 
 L_579d:
     ppart->pspecial = &(rgspecialE[hs.iItem]);
@@ -3887,7 +3889,7 @@ L_57c2:
         goto L_57d5;
 
 L_57d5:
-    return 0xffff;
+    return -1;
 
 L_57db:
     goto L_5841;
@@ -3897,7 +3899,7 @@ L_57db:
         goto L_57ed;
 
 L_57ed:
-    return 0xffff;
+    return -1;
 
 L_57f3:
     goto L_5874;
@@ -3907,7 +3909,7 @@ L_57f3:
         goto L_57ff;
 
 L_57ff:
-    return 0xffff;
+    return -1;
 
 L_5805:
     goto L_5874;
@@ -3917,7 +3919,7 @@ L_5805:
         goto L_5811;
 
 L_5811:
-    return 0xffff;
+    return -1;
 
 L_5817:
     goto L_5874;
@@ -3927,7 +3929,7 @@ L_5817:
         goto L_5823;
 
 L_5823:
-    return 0xffff;
+    return -1;
 
 L_5829:
     goto L_5874;
@@ -3937,7 +3939,7 @@ L_5829:
         goto L_5835;
 
 L_5835:
-    return 0xffff;
+    return -1;
 
 L_5841:
 
@@ -3950,7 +3952,7 @@ L_5877:
         goto L_5885;
 
 L_5885:
-    return 0x0;
+    return 0;
 
 L_588b:
     ppart->pspecial = &(rgspecialM[hs.iItem]);
@@ -3966,7 +3968,7 @@ L_58b0:
         goto L_58c3;
 
 L_58c3:
-    return 0xffff;
+    return -1;
 
 L_58c9:
     if ((hs.iItem != ispecialMColonizationModule))
@@ -3981,7 +3983,7 @@ L_58d7:
         goto L_58e0;
 
 L_58e0:
-    return 0xffff;
+    return -1;
 
 L_58e9:
     if ((hs.iItem != ispecialMOrbitalConstructionModule))
@@ -3996,7 +3998,7 @@ L_58f7:
         goto L_5900;
 
 L_5900:
-    return 0xffff;
+    return -1;
 
 L_5909:
     if ((hs.iItem < ispecialSBCount))
@@ -4005,7 +4007,7 @@ L_5909:
         goto L_5917;
 
 L_5917:
-    return 0x0;
+    return 0;
 
 L_591d:
     ppart->pspecialsb = &(rgspecialSB[hs.iItem]);
@@ -4045,7 +4047,7 @@ L_597a:
         goto L_5983;
 
 L_5983:
-    return 0xffff;
+    return -1;
 
 L_598c:
     if ((hs.iItem < ispecialSBStargate100250))
@@ -4078,7 +4080,7 @@ L_59bf:
         goto L_59cd;
 
 L_59cd:
-    return 0xffff;
+    return -1;
 
 L_59d3:
     if ((raMajor != 0))
@@ -4087,7 +4089,7 @@ L_59d3:
         goto L_59dc;
 
 L_59dc:
-    return 0xffff;
+    return -1;
 
 L_59e5:
     if ((hs.iItem < iminesCount))
@@ -4096,7 +4098,7 @@ L_59e5:
         goto L_59f3;
 
 L_59f3:
-    return 0x0;
+    return 0;
 
 L_59f9:
     ppart->pmines = &(rgmines[hs.iItem]);
@@ -4160,7 +4162,7 @@ L_5a8e:
         goto L_5a97;
 
 L_5a97:
-    return 0xffff;
+    return -1;
 
 L_5aa0:
     if ((hs.iItem != iminesSpeedTrap20))
@@ -4181,7 +4183,7 @@ L_5ab7:
         goto L_5ac0;
 
 L_5ac0:
-    return 0xffff;
+    return -1;
 
 L_5ac9:
     if ((hs.iItem != iminesMineDispenser50))
@@ -4196,7 +4198,7 @@ L_5ad7:
         goto L_5ae0;
 
 L_5ae0:
-    return 0xffff;
+    return -1;
 
 L_5ae9:
     if ((hs.iItem < iminingCount))
@@ -4205,7 +4207,7 @@ L_5ae9:
         goto L_5af7;
 
 L_5af7:
-    return 0x0;
+    return 0;
 
 L_5afd:
     ppart->pmining = &(rgmining[hs.iItem]);
@@ -4251,7 +4253,7 @@ L_5b68:
         goto L_5b89;
 
 L_5b89:
-    return 0xffff;
+    return -1;
 
 L_5b92:
     if ((hs.iItem == iminingRoboMidgetMiner))
@@ -4272,7 +4274,7 @@ L_5bae:
         goto L_5bcf;
 
 L_5bcf:
-    return 0xffff;
+    return -1;
 
 L_5bd8:
     if ((hs.iItem != iminingOrbitalAdjuster))
@@ -4287,7 +4289,7 @@ L_5be6:
         goto L_5bef;
 
 L_5bef:
-    return 0xffff;
+    return -1;
 
 L_5bf8:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -4296,7 +4298,7 @@ L_5bf8:
         goto L_5c0b;
 
 L_5c0b:
-    return 0xffff;
+    return -1;
 
 L_5c14:
     if ((hs.iItem < iscannerCount))
@@ -4305,7 +4307,7 @@ L_5c14:
         goto L_5c22;
 
 L_5c22:
-    return 0x0;
+    return 0;
 
 L_5c28:
     ppart->pscanner = &(rgscanner[hs.iItem]);
@@ -4339,7 +4341,7 @@ L_5c77:
         goto L_5c98;
 
 L_5c98:
-    return 0xffff;
+    return -1;
 
 L_5ca1:
     if ((hs.iItem == iscannerChameleonScanner))
@@ -4366,7 +4368,7 @@ L_5ccb:
         goto L_5cd4;
 
 L_5cd4:
-    return 0xffff;
+    return -1;
 
 L_5cdd:
     if ((hs.iItem < ibeamCount))
@@ -4375,7 +4377,7 @@ L_5cdd:
         goto L_5ceb;
 
 L_5ceb:
-    return 0x0;
+    return 0;
 
 L_5cf1:
     ppart->pbeam = &(rgbeam[hs.iItem]);
@@ -4391,7 +4393,7 @@ L_5d1a:
         goto L_5d23;
 
 L_5d23:
-    return 0xffff;
+    return -1;
 
 L_5d29:
     if ((hs.iItem == ibeamBlunderbuss))
@@ -4412,7 +4414,7 @@ L_5d45:
         goto L_5d4e;
 
 L_5d4e:
-    return 0xffff;
+    return -1;
 
 L_5d57:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -4421,7 +4423,7 @@ L_5d57:
         goto L_5d6a;
 
 L_5d6a:
-    return 0xffff;
+    return -1;
 
 L_5d73:
     if ((hs.iItem < itorpCount))
@@ -4430,7 +4432,7 @@ L_5d73:
         goto L_5d81;
 
 L_5d81:
-    return 0x0;
+    return 0;
 
 L_5d87:
     ppart->ptorp = &(rgtorp[hs.iItem]);
@@ -4446,7 +4448,7 @@ L_5dac:
         goto L_5dbf;
 
 L_5dbf:
-    return 0xffff;
+    return -1;
 
 L_5dc8:
     if ((hs.iItem < ibombCount))
@@ -4455,7 +4457,7 @@ L_5dc8:
         goto L_5dd6;
 
 L_5dd6:
-    return 0x0;
+    return 0;
 
 L_5ddc:
     ppart->pbomb = &(rgbomb[hs.iItem]);
@@ -4483,7 +4485,7 @@ L_5e1d:
         goto L_5e26;
 
 L_5e26:
-    return 0xffff;
+    return -1;
 
 L_5e2f:
     if ((hs.iItem != ibombRetroBomb))
@@ -4498,7 +4500,7 @@ L_5e3d:
         goto L_5e46;
 
 L_5e46:
-    return 0xffff;
+    return -1;
 
 L_5e4f:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -4507,7 +4509,7 @@ L_5e4f:
         goto L_5e62;
 
 L_5e62:
-    return 0xffff;
+    return -1;
 
 L_5e6b:
     if ((hs.iItem < iplanetaryCount))
@@ -4516,7 +4518,7 @@ L_5e6b:
         goto L_5e79;
 
 L_5e79:
-    return 0x0;
+    return 0;
 
 L_5e7f:
     ppart->pplanetary = &(rgplanetary[hs.iItem]);
@@ -4550,7 +4552,7 @@ L_5ed0:
         goto L_5ef1;
 
 L_5ef1:
-    return 0xffff;
+    return -1;
 
 L_5ef7:
     if ((hs.iItem < iplanetaryViewer50))
@@ -4571,7 +4573,7 @@ L_5f13:
         goto L_5f1c;
 
 L_5f1c:
-    return 0xffff;
+    return -1;
 
 L_5f22:
     if ((hs.iItem < iplanetarySDI))
@@ -4592,7 +4594,7 @@ L_5f3e:
         goto L_5f47;
 
 L_5f47:
-    return 0xffff;
+    return -1;
 
 L_5f4d:
     if ((hs.iItem < iplanetaryLaserBattery))
@@ -4613,7 +4615,7 @@ L_5f69:
         goto L_5f72;
 
 L_5f72:
-    return 0xffff;
+    return -1;
 
 L_5f7b:
     if ((FShouldPartBeHidden(ppart) == 0))
@@ -4622,7 +4624,7 @@ L_5f7b:
         goto L_5f8e;
 
 L_5f8e:
-    return 0xffff;
+    return -1;
 
 L_5f97:
     if ((hs.iItem < iterraCount))
@@ -4631,7 +4633,7 @@ L_5f97:
         goto L_5fa5;
 
 L_5fa5:
-    return 0x0;
+    return 0;
 
 L_5fab:
     ppart->pterra = &(rgterra[hs.iItem]);
@@ -4659,7 +4661,7 @@ L_5fec:
         goto L_600d;
 
 L_600d:
-    return 0xffff;
+    return -1;
 
 L_6019:
     if ((hs.grhst == hstEngine))
@@ -4856,7 +4858,7 @@ L_621a:
         goto L_6223;
 
 L_6223:
-    return 0x1;
+    return 1;
 
 L_622c:
     if ((cMiss != 1))
@@ -4871,7 +4873,7 @@ L_6235:
         goto L_623e;
 
 L_623e:
-    return 0x2;
+    return 2;
 
 L_6247:
     if ((cMiss != 1))
@@ -4889,5 +4891,5 @@ L_6259:
     return (((uint16_t)(rgTech[(fInAWhile - 1)]) - scratch_bp_mc) + 0x1);
 
 L_629c:
-    return 0x63;
+    return 99;
 }

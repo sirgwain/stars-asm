@@ -35,7 +35,8 @@ int16_t FGenerateTurn() {
     int16_t  iSteal;
     int16_t  pctDetect;
     uint16_t t_merge_06e8_0001;
-    uint16_t t_merge_1670_0001;
+    int16_t  t_call_120d;
+    int16_t  t_merge_1670_0001;
 
 L_0000:
     idCur = idPlayer;
@@ -63,7 +64,7 @@ L_0089:
     fFileErrSilent = fErrSav;
     SetCursor(hcurSav);
     TurnLog(idsCantFindHostFile);
-    return 0x0;
+    return 0;
 
 L_00aa:
     TurnLog(idsGeneratingYearD);
@@ -898,7 +899,7 @@ L_114f:
     goto L_1179;
 
 L_1163:
-    /* untranslated: call strcat(szT, part[0x1:2](pchT)) -> callresult(char *) */
+    strcat(szT, (pchT + 1));
 
 L_1179:
     pchBak = (&(szT) + strlen(szT));
@@ -927,8 +928,8 @@ L_11c0:
         goto L_11ed;
 
 L_11ed:
-    PctCloakFromHuldef(rglpshdefSB[i][j], i, 0x0);
-    /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = sext16to32((0x64 - callresult(int16_t))) */
+    t_call_120d = PctCloakFromHuldef(rglpshdefSB[i][j], i, 0x0);
+    /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = sext16to32((0x64 - t_call_120d)) */
     /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = (uint32_t)(part[0x87:4](rglpshdefSB[i][j]) * part[0x87:4](rglpshdefSB[i][j])) */
 
 L_12ce:
@@ -1087,11 +1088,11 @@ L_1652:
         goto L_1667;
 
 L_1667:
-    t_merge_1670_0001 = 0x1;
+    t_merge_1670_0001 = 1;
     goto L_1670;
 
 L_166d:
-    t_merge_1670_0001 = 0x0;
+    t_merge_1670_0001 = 0;
 
 L_1670:
     FWriteDataFile(szBase, i, t_merge_1670_0001);
@@ -1145,8 +1146,8 @@ void DoOrders(int16_t fPostMovement) {
     PLANET  *lppl;
     PLANET  *lpplMac;
     uint16_t t_merge_17e4_0001;
-    uint16_t t_merge_18ab_0001;
-    uint16_t t_merge_18d7_0001;
+    int16_t  t_merge_18ab_0001;
+    int16_t  t_merge_18d7_0001;
 
 L_179a:
     lppl = lpPlanets;
@@ -1215,11 +1216,11 @@ L_1899:
         goto L_18a2;
 
 L_18a2:
-    t_merge_18ab_0001 = 0x3;
+    t_merge_18ab_0001 = 3;
     goto L_18ab;
 
 L_18a8:
-    t_merge_18ab_0001 = 0x1;
+    t_merge_18ab_0001 = 1;
 
 L_18ab:
     SatisfyOrders(t_merge_18ab_0001);
@@ -1231,11 +1232,11 @@ L_18ab:
         goto L_18ce;
 
 L_18ce:
-    t_merge_18d7_0001 = 0x4;
+    t_merge_18d7_0001 = 4;
     goto L_18d7;
 
 L_18d4:
-    t_merge_18d7_0001 = 0x2;
+    t_merge_18d7_0001 = 2;
 
 L_18d7:
     SatisfyOrders(t_merge_18d7_0001);
@@ -1307,20 +1308,23 @@ void MoveThings(int16_t fPostProd) {
     int16_t   t_merge_226e_0001;
     int16_t   t_merge_2338_0001;
     int16_t   t_merge_2386_0001;
-    uint16_t  t_merge_2542_0001;
-    uint16_t  t_merge_25a7_0001;
+    int16_t   t_call_251e;
+    int16_t   t_merge_2542_0001;
+    int16_t   t_call_2583;
+    int16_t   t_merge_25a7_0001;
     int16_t   t_merge_26a3_0001;
     int16_t   t_merge_26f1_0001;
-    uint16_t  t_merge_283e_0001;
-    uint16_t  t_merge_28b8_0001;
-    uint16_t  t_merge_29a5_0001;
+    int16_t   t_merge_283e_0001;
+    int16_t   t_merge_28b8_0001;
+    int16_t   t_merge_29a5_0001;
+    int16_t   t_call_2b24;
     uint16_t  t_merge_2b4d_0001;
     uint16_t  t_merge_2bf5_0001;
     uint16_t  t_merge_2c65_0001;
     uint32_t  scratch_bp_m6a;
     uint16_t  scratch_bp_m68;
-    float     t_merge_2daf_0001;
-    float     t_merge_2dd1_0001;
+    double    t_merge_2daf_0001;
+    double    t_merge_2dd1_0001;
     uint16_t  scratch_bp_m54;
     uint16_t  scratch_bp_m52;
 
@@ -1403,10 +1407,16 @@ L_1a40:
     lpth->pt.y = ((Random(25) + ptBase.y) - 12);
 
 L_1a72:
-    /* untranslated: branch lpth->pt.x != ss:[&ptBase] ? L_1a98 : L_1a8c */
+    if ((lpth->pt.x != ptBase.x))
+        goto L_1a98;
+    else
+        goto L_1a8c;
 
 L_1a8c:
-    /* untranslated: branch lpth->pt.y == ss:[&ptBase+0x2] ? L_19fb : L_1a92 */
+    if ((lpth->pt.y == ptBase.y))
+        goto L_19fb;
+    else
+        goto L_1a92;
 
 L_1a92:
 
@@ -1814,8 +1824,7 @@ L_209f:
     goto L_20f4;
 
 L_20b0:
-    /* untranslated: rgwtTerra[i] = loword((int32_t)((uint32_t)(sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) * sext16to32(pctMinKeep)) /
-     * 0x3e8)) */
+    rgwtTerra[i] = LOWORD((int32_t)(((uint32_t)(((uint32_t)(lpth->thp.rgwtMin[i]) * (uint32_t)(pctMinKeep))) / 0x3e8)));
     i = (i + 1);
 
 L_20f4:
@@ -1831,15 +1840,17 @@ L_20fd:
     goto L_21ca;
 
 L_2121:
-    /* untranslated: branch HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] >= 0x0 ? L_2157 : L_213e */
+    if ((lpth->thp.rgwtMin[i] >= 0))
+        goto L_2157;
+    else
+        goto L_213e;
 
 L_213e:
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = 0x0 */
+    lpth->thp.rgwtMin[i] = 0;
 
 L_2157:
-    /* untranslated: wtTot = (wtTot + sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
-    /* untranslated: lppl->rgwtMin[i] = (lppl->rgwtMin[i] + (int32_t)((uint32_t)(sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) *
-     * sext16to32(pctMinKeep)) / 0x3e8)) */
+    wtTot = (wtTot + (uint32_t)(lpth->thp.rgwtMin[i]));
+    lppl->rgwtMin[i] = (lppl->rgwtMin[i] + (int32_t)(((uint32_t)(((uint32_t)(lpth->thp.rgwtMin[i]) * (uint32_t)(pctMinKeep))) / 0x3e8)));
     i = (i + 1);
 
 L_21ca:
@@ -1944,7 +1955,7 @@ L_231f:
     t_merge_2338_0001 = ((uint16_t)(lppl->rgEnvVarOrig[i]) - 1);
 
 L_2338:
-    /* untranslated: cTerraPerm = (t_merge_2338_0001 neg 0) */
+    cTerraPerm = (-t_merge_2338_0001);
     goto L_2506;
 
 L_2340:
@@ -1995,7 +2006,7 @@ L_24ba:
     goto L_2506;
 
 L_24f6:
-    /* untranslated: cTerraPerm = (cTerraPerm neg 0) */
+    cTerraPerm = (-cTerraPerm);
 
 L_2501:
     cTerraPerm = 0;
@@ -2007,21 +2018,21 @@ L_2506:
         goto L_250f;
 
 L_250f:
-    abs(cTerraPerm);
+    t_call_251e = abs(cTerraPerm);
     if ((cTerraPerm <= 0))
         goto L_253f;
     else
         goto L_2539;
 
 L_2539:
-    t_merge_2542_0001 = 0x1;
+    t_merge_2542_0001 = 1;
     goto L_2542;
 
 L_253f:
-    t_merge_2542_0001 = 0x0;
+    t_merge_2542_0001 = 0;
 
 L_2542:
-    /* untranslated: call FSendPlrMsg(iplr, 305, lppl->id, t_merge_2542_0001, i, lppl->id, callresult(int16_t), 0, 0, 0) -> callresult(int16_t) */
+    FSendPlrMsg(iplr, 305, lppl->id, t_merge_2542_0001, i, lppl->id, t_call_251e, 0, 0, 0);
     if ((lppl->iPlayer == -1))
         goto L_25bd;
     else
@@ -2034,21 +2045,21 @@ L_2565:
         goto L_2574;
 
 L_2574:
-    abs(cTerraPerm);
+    t_call_2583 = abs(cTerraPerm);
     if ((cTerraPerm <= 0))
         goto L_25a4;
     else
         goto L_259e;
 
 L_259e:
-    t_merge_25a7_0001 = 0x1;
+    t_merge_25a7_0001 = 1;
     goto L_25a7;
 
 L_25a4:
-    t_merge_25a7_0001 = 0x0;
+    t_merge_25a7_0001 = 0;
 
 L_25a7:
-    /* untranslated: call FSendPlrMsg(iplr, 306, lppl->id, t_merge_25a7_0001, i, lppl->id, callresult(int16_t), 0, 0, 0) -> callresult(int16_t) */
+    FSendPlrMsg(iplr, 306, lppl->id, t_merge_25a7_0001, i, lppl->id, t_call_2583, 0, 0, 0);
 
 L_25bd:
     lppl->rgEnvVarOrig[i] = (lppl->rgEnvVarOrig[i] + LOBYTE(cTerraPerm));
@@ -2098,7 +2109,7 @@ L_268a:
     t_merge_26a3_0001 = ((uint16_t)(lppl->rgEnvVar[i]) - 1);
 
 L_26a3:
-    /* untranslated: cTerraTemp = (t_merge_26a3_0001 neg 0) */
+    cTerraTemp = (-t_merge_26a3_0001);
     goto L_27d5;
 
 L_26ab:
@@ -2134,7 +2145,7 @@ L_2733:
     goto L_27d5;
 
 L_275d:
-    /* untranslated: cTerraTemp = (cTerraTemp neg 0) */
+    cTerraTemp = (-cTerraTemp);
 
 L_2768:
     if ((rgMax[i] == -1))
@@ -2168,11 +2179,11 @@ L_27de:
         goto L_2835;
 
 L_2835:
-    t_merge_283e_0001 = 0x1;
+    t_merge_283e_0001 = 1;
     goto L_283e;
 
 L_283b:
-    t_merge_283e_0001 = 0x0;
+    t_merge_283e_0001 = 0;
 
 L_283e:
     FSendPlrMsg(iplr, 307, lppl->id, t_merge_283e_0001, i, lppl->id, ((i << 0x8) | (uint16_t)(lppl->rgEnvVar[i])), 0, 0, 0);
@@ -2194,11 +2205,11 @@ L_2870:
         goto L_28af;
 
 L_28af:
-    t_merge_28b8_0001 = 0x1;
+    t_merge_28b8_0001 = 1;
     goto L_28b8;
 
 L_28b5:
-    t_merge_28b8_0001 = 0x0;
+    t_merge_28b8_0001 = 0;
 
 L_28b8:
     FSendPlrMsg(iplr, 308, lppl->id, t_merge_28b8_0001, i, lppl->id, ((i << 0x8) | (uint16_t)(lppl->rgEnvVar[i])), 0, 0, 0);
@@ -2247,11 +2258,11 @@ LAllSafe:
         goto L_299c;
 
 L_299c:
-    t_merge_29a5_0001 = 0xd5;
+    t_merge_29a5_0001 = 213;
     goto L_29a5;
 
 L_29a2:
-    t_merge_29a5_0001 = 0x146;
+    t_merge_29a5_0001 = 326;
 
 L_29a5:
     FSendPlrMsg(lppl->iPlayer, t_merge_29a5_0001, lppl->id, lppl->id, lpth->iplr, LOWORD(wtTot), (LOWORD((uint32_t)((wtTot >> 0x10))) & 0xffff), 0, 0, 0);
@@ -2377,14 +2388,23 @@ L_2b18:
         goto L_2b20;
 
 L_2b20:
-    Random(20);
-    /* untranslated: branch signhiword(callresult(int16_t)) > HIWORD(dmgRaw) ? L_2b49 : L_2b35 */
+    t_call_2b24 = Random(20);
+    if ((SIGNHIWORD(t_call_2b24) > HIWORD(dmgRaw)))
+        goto L_2b49;
+    else
+        goto L_2b35;
 
 L_2b35:
-    /* untranslated: branch signhiword(callresult(int16_t)) < HIWORD(dmgRaw) ? L_2b42 : L_2b3a */
+    if ((SIGNHIWORD(t_call_2b24) < HIWORD(dmgRaw)))
+        goto L_2b42;
+    else
+        goto L_2b3a;
 
 L_2b3a:
-    /* untranslated: branch callresult(int16_t) >= LOWORD(dmgRaw) ? L_2b49 : L_2b42 */
+    if ((t_call_2b24 >= LOWORD(dmgRaw)))
+        goto L_2b49;
+    else
+        goto L_2b42;
 
 L_2b42:
     t_merge_2b4d_0001 = 0x1;
@@ -2623,8 +2643,10 @@ void FuelFleets() {
     SHDEF   *lpshdef;
     int32_t  csh;
     HUL     *lphul;
+    int32_t  t_call_321d;
     uint16_t scratch_bp_m22;
     uint16_t scratch_bp_m24;
+    int32_t  t_call_3276;
     int32_t  t_merge_32b9_0001;
     uint32_t scratch_bp_m28;
     uint16_t scratch_bp_m26;
@@ -2693,7 +2715,10 @@ L_2fc8:
         goto L_2fdb;
 
 L_2fdb:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * lppl->iPlayer))) + 0x70) + lpfl->iPlayer)]) != 0x1 ? L_306e : L_3006 */
+    if (((uint16_t)(rgplr[lppl->iPlayer].rgmdRelation[lpfl->iPlayer]) != 1))
+        goto LChkFuelTransport;
+    else
+        goto L_3006;
 
 L_3006:
 
@@ -2802,8 +2827,11 @@ L_320a:
         goto L_3213;
 
 L_3213:
-    LGetFleetStat(lpfl, 1);
-    /* untranslated: branch hiword(callresult(int32_t)) > ((HIWORD(lpfl->rgwtMin[0x4]) + HIWORD(csh)) + hiword((uint32_t)(cPods * 50))) ? L_3281 : L_3260 */
+    t_call_321d = LGetFleetStat(lpfl, 1);
+    if ((HIWORD(t_call_321d) > ((HIWORD(lpfl->rgwtMin[0x4]) + HIWORD(csh)) + HIWORD((uint32_t)((cPods * 50))))))
+        goto L_3281;
+    else
+        goto L_3260;
 
 L_3260:
     if ((scratch_bp_m22 < ((HIWORD(lpfl->rgwtMin[0x4]) + HIWORD(csh)) + HIWORD((uint32_t)((cPods * 50))))))
@@ -2818,8 +2846,8 @@ L_3265:
         goto L_326c;
 
 L_326c:
-    LGetFleetStat(lpfl, 1);
-    /* untranslated: t_merge_32b9_0001 = callresult(int32_t) */
+    t_call_3276 = LGetFleetStat(lpfl, 1);
+    t_merge_32b9_0001 = t_call_3276;
     goto L_32b9;
 
 L_3281:
@@ -2884,17 +2912,18 @@ void MoveFleets() {
     uint16_t t_merge_3de5_0001;
     int32_t  t_merge_3e66_0001;
     int16_t  t_40c6;
-    uint32_t t_merge_436d_0001;
+    int32_t  t_merge_436d_0001;
     int32_t  t_call_43cd;
     int32_t  t_merge_4403_0001;
-    uint16_t t_merge_450b_0001;
+    int32_t  t_call_43fd;
+    int32_t  t_merge_450b_0001;
     int32_t  t_call_45a2;
     uint16_t t_merge_47c3_0001;
     int32_t  t_call_485a;
     int32_t  t_merge_48a1_0001;
     int32_t  t_call_48bc;
-    float    t_merge_4a09_0001;
-    float    t_merge_4a2b_0001;
+    double   t_merge_4a09_0001;
+    double   t_merge_4a2b_0001;
     uint16_t scratch_bp_m72;
     uint16_t scratch_bp_m70;
     uint32_t t_merge_4c51_0003_wide;
@@ -3117,7 +3146,10 @@ L_3628:
         goto L_363b;
 
 L_363b:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * lpplSrc->iPlayer))) + 0x70) + lpfl->iPlayer)]) == 0x1 ? L_36ab : L_3669 */
+    if (((uint16_t)(rgplr[lpplSrc->iPlayer].rgmdRelation[lpfl->iPlayer]) == 1))
+        goto LNoGateNeeded;
+    else
+        goto L_3669;
 
 L_3669:
     FSendPlrMsg(lpfl->iPlayer, 230, (lpfl->id | 0x8000), lpfl->id, lpplSrc->id, lpplSrc->id, 0, 0, 0, 0);
@@ -3201,7 +3233,10 @@ L_380b:
         goto L_381e;
 
 L_381e:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * lpplDst->iPlayer))) + 0x70) + lpfl->iPlayer)]) == 0x1 ? L_3890 : L_384c */
+    if (((uint16_t)(rgplr[lpplDst->iPlayer].rgmdRelation[lpfl->iPlayer]) == 1))
+        goto L_3890;
+    else
+        goto L_384c;
 
 L_384c:
     FSendPlrMsg(lpfl->iPlayer, 229, (lpfl->id | 0x8000), lpfl->id, lpplDst->id, lpplDst->id, lpplDst->id, 0, 0, 0);
@@ -3750,8 +3785,8 @@ L_43e8:
     goto L_4403;
 
 L_43f1:
-    __ftol();
-    /* untranslated: t_merge_4403_0001 = sext16to32(loword(callresult(int32_t))) */
+    t_call_43fd = __ftol();
+    t_merge_4403_0001 = (uint32_t)(LOWORD(t_call_43fd));
 
 L_4403:
     dTravel = t_merge_4403_0001;
@@ -3818,7 +3853,7 @@ L_44ea:
         goto L_44f1;
 
 L_44f1:
-    t_merge_450b_0001 = 0x0;
+    t_merge_450b_0001 = 0;
     goto L_450b;
 
 L_44fa:
@@ -4404,10 +4439,16 @@ L_4ca3:
     lpfl->rgwtMin[3] = (lpfl->rgwtMin[3] - pct);
 
 L_4ce4:
-    /* untranslated: branch ss:[&ptEnd] != lpfl->pt.x ? L_4dd8 : L_4cfe */
+    if ((ptEnd.x != lpfl->pt.x))
+        goto L_4dd8;
+    else
+        goto L_4cfe;
 
 L_4cfe:
-    /* untranslated: branch ss:[&ptEnd+0x2] != lpfl->pt.y ? L_4dd8 : L_4d07 */
+    if ((ptEnd.y != lpfl->pt.y))
+        goto L_4dd8;
+    else
+        goto L_4d07;
 
 L_4d07:
     if ((((*(lpord + 0x18) >> 0x8) & 0xf) != 0x8))
@@ -4603,10 +4644,11 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     uint16_t scratch_bp_m1ee;
     uint16_t t_58cd;
     int32_t  t_merge_5ae4_0001;
-    uint16_t t_merge_63a1_0001;
-    uint16_t t_merge_63f3_0001;
-    uint16_t t_merge_6494_0001;
-    uint16_t t_merge_64e6_0001;
+    int32_t  t_call_5e09;
+    int16_t  t_merge_63a1_0001;
+    int16_t  t_merge_63f3_0001;
+    int16_t  t_merge_6494_0001;
+    int16_t  t_merge_64e6_0001;
 
 L_4f60:
     lpthSalvage = 0x0;
@@ -4697,7 +4739,7 @@ L_506f:
         goto L_5078;
 
 L_5078:
-    return 0x1;
+    return 1;
 
 L_507e:
     i = 0;
@@ -4900,7 +4942,7 @@ L_5571:
         goto L_558b;
 
 L_558b:
-    return 0x1;
+    return 1;
 
 LHitSkip1:
     fHasRamScoop = 0;
@@ -5181,15 +5223,15 @@ L_5be7:
     goto L_5cd2;
 
 L_5c1a:
-    flSrc.rgdv[0].pctSh = 0x64;
-    flSrc.rgdv[0].pctDp = LOWORD((int32_t)(((uint32_t)((dmgPerShip * 0x1f4)) / dpsh)));
-    if ((flSrc.rgdv[0].pctDp != 0x0))
+    flSrc.rgdv[i].pctSh = 0x64;
+    flSrc.rgdv[i].pctDp = LOWORD((int32_t)(((uint32_t)((dmgPerShip * 0x1f4)) / dpsh)));
+    if ((flSrc.rgdv[i].pctDp != 0x0))
         goto L_5cd2;
     else
         goto L_5cb0;
 
 L_5cb0:
-    flSrc.rgdv[0].pctDp = 0x1;
+    flSrc.rgdv[i].pctDp = 0x1;
 
 L_5cd2:
     dmgToApply = 0;
@@ -5228,7 +5270,7 @@ L_5d09:
         goto L_5d13;
 
 L_5d13:
-    return 0x0;
+    return 0;
 
 L_5d19:
     if ((cshDead != LOWORD(csh)))
@@ -5277,9 +5319,9 @@ L_5d91:
     dx = (ptDst.x - ptSrc.x);
     dy = (ptDst.y - ptSrc.y);
     sqrt((double)(((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)((ptDst.y - ptSrc.y)))))));
-    __ftol();
-    /* untranslated: dTravel = loword(callresult(int32_t)) */
-    /* untranslated: ptAct.x = (MulDiv(dx, dEnd, loword(callresult(int32_t))) + ptSrc.x) */
+    t_call_5e09 = __ftol();
+    dTravel = LOWORD(t_call_5e09);
+    ptAct.x = (MulDiv(dx, dEnd, LOWORD(t_call_5e09)) + ptSrc.x);
     ptAct.y = (MulDiv(dy, dEnd, dTravel) + ptSrc.y);
     if ((cshDead == 0))
         goto L_5f34;
@@ -5292,10 +5334,16 @@ L_5e44:
     goto L_5ed2;
 
 L_5e77:
-    /* untranslated: branch lpthSalvage->pt.x != ss:[&ptAct] ? L_5ecd : L_5e92 */
+    if ((lpthSalvage->pt.x != ptAct.x))
+        goto L_5ecd;
+    else
+        goto L_5e92;
 
 L_5e92:
-    /* untranslated: branch lpthSalvage->pt.y != ss:[&ptAct+0x2] ? L_5ecd : L_5e9b */
+    if ((lpthSalvage->pt.y != ptAct.y))
+        goto L_5ecd;
+    else
+        goto L_5e9b;
 
 L_5e9b:
     if ((lpthSalvage->ith != ithMineralPacket))
@@ -5595,11 +5643,11 @@ L_638f:
         goto L_6398;
 
 L_6398:
-    t_merge_63a1_0001 = 0x160;
+    t_merge_63a1_0001 = 352;
     goto L_63a1;
 
 L_639e:
-    t_merge_63a1_0001 = 0xc6;
+    t_merge_63a1_0001 = 198;
 
 L_63a1:
     FSendPlrMsg(iPlayer, t_merge_63a1_0001, (lpfl->id | 0x8000), (lpfl->id | 0x8000), lpthClosest->iplr, iType, ptAct.x, ptAct.y, LOWORD(dmgTot), 0);
@@ -5617,11 +5665,11 @@ L_63e1:
         goto L_63ea;
 
 L_63ea:
-    t_merge_63f3_0001 = 0x163;
+    t_merge_63f3_0001 = 355;
     goto L_63f3;
 
 L_63f0:
-    t_merge_63f3_0001 = 0xca;
+    t_merge_63f3_0001 = 202;
 
 L_63f3:
     FSendPlrMsg(lpthClosest->iplr, t_merge_63f3_0001, (lpfl->id | 0x8000), (lpfl->id | 0x8000), iType, ptAct.x, ptAct.y, LOWORD(dmgTot), 0, 0);
@@ -5664,11 +5712,11 @@ L_6482:
         goto L_648b;
 
 L_648b:
-    t_merge_6494_0001 = 0x161;
+    t_merge_6494_0001 = 353;
     goto L_6494;
 
 L_6491:
-    t_merge_6494_0001 = 0xc7;
+    t_merge_6494_0001 = 199;
 
 L_6494:
     FSendPlrMsg(iPlayer, t_merge_6494_0001, (lpfl->id | 0x8000), (lpfl->id | 0x8000), lpthClosest->iplr, iType, ptAct.x, ptAct.y, LOWORD(dmgTot), cshDead);
@@ -5686,11 +5734,11 @@ L_64d4:
         goto L_64dd;
 
 L_64dd:
-    t_merge_64e6_0001 = 0x164;
+    t_merge_64e6_0001 = 356;
     goto L_64e6;
 
 L_64e3:
-    t_merge_64e6_0001 = 0xcb;
+    t_merge_64e6_0001 = 203;
 
 L_64e6:
     FSendPlrMsg(lpthClosest->iplr, t_merge_64e6_0001, (lpfl->id | 0x8000), (lpfl->id | 0x8000), iType, ptAct.x, ptAct.y, LOWORD(dmgTot), cshDead, 0);
@@ -5789,7 +5837,7 @@ L_674b:
 
 L_6753:
     lpfl->fNoHeal = 0x1;
-    return 0x0;
+    return 0;
 
 LDoNext:
     rgi[iType] = (rgi[iType] + 1);
@@ -5802,5 +5850,5 @@ L_6781:
         goto L_678b;
 
 L_678b:
-    return 0x1;
+    return 1;
 }

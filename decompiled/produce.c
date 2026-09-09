@@ -45,7 +45,7 @@ L_0070:
     fDlgUp = 0;
     AlertSz(PszFormatIds(idsThereIsntEnoughFreeMemoryModifyProduction, 0x0), MB_ICONHAND);
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_00a9:
     if ((fClear == 0))
@@ -84,7 +84,7 @@ L_013b:
 
 L_014b:
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 }
 
 void InitProduction(PROD *rgprod) {
@@ -821,7 +821,7 @@ L_1544:
 
 L_154a:
     StickyDlgPos(hwnd, ptStickyProduceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_1563:
     lpdis = lParam;
@@ -860,12 +860,12 @@ L_15c3:
         goto L_15ce;
 
 L_15ce:
-    return 0x1;
+    return 1;
 
 L_15d4:
     lpmis = lParam;
     lpmis->itemHeight = (dyArial8 + 2);
-    return 0x1;
+    return 1;
 
 L_15f3:
     if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x008B)))
@@ -886,7 +886,7 @@ L_162e:
 L_1647:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_166f:
     pt.x = LOWORD(lParam);
@@ -1009,14 +1009,14 @@ L_1881:
 
 L_18bb:
     SetCursor(hcurArrowHelp);
-    return 0x1;
+    return 1;
 
 L_18cd:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     DrawProductionDlg(hwnd, hdc, &(rc), -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_1919:
     ProdCommandHandler(hwnd, wParam, lParam);
@@ -1083,7 +1083,7 @@ L_197b:
         goto L_1986;
 
 L_1986:
-    return 0x0;
+    return 0;
 }
 
 void ProdCommandHandler(HWND hwnd, uint16_t wParam, int32_t lParam) {
@@ -1114,9 +1114,9 @@ void ProdCommandHandler(HWND hwnd, uint16_t wParam, int32_t lParam) {
     uint16_t scratch_bp_m32;
     uint16_t t_merge_2363_0001;
     int16_t  t_merge_2432_0001;
-    uint16_t t_merge_2f8a_0001;
+    int16_t  t_merge_2f8a_0001;
     uint16_t t_merge_2fa6_0001;
-    uint16_t t_merge_2fd9_0001;
+    int16_t  t_merge_2fd9_0001;
 
 L_1994:
     goto L_33b6;
@@ -1566,8 +1566,8 @@ L_2228:
 L_222e:
     iMac = lpplProdGlob->iprodMac;
     lSel = (lSel - 1);
-    /* untranslated: LOWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] */
-    /* untranslated: HIWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))+0x2] */
+    LOWORD(prod) = LOWORD(lpplProdGlob->rgprod[lSel]);
+    HIWORD(prod) = HIWORD(lpplProdGlob->rgprod[lSel]);
     iSrc = 0;
     goto L_2327;
 
@@ -1719,17 +1719,18 @@ L_245d:
 
 L_24b6:
     scratch_bp_m2e = 0x0;
-    /* untranslated: scratch_bp_m2c = ((HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] - c) & 0x3ff) */
+    scratch_bp_m2c = ((LOWORD(lpplProdGlob->rgprod[lSel]) - c) & 0x3ff);
     scratch_bp_m2a = 0x0;
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] = (HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) +
-     * 0x4) + loword((int32_t)(lSel * 0x4)))] & 0xfc00) */
+    LOWORD(lpplProdGlob->rgprod[lSel]) = (LOWORD(lpplProdGlob->rgprod[lSel]) & 0xfc00);
     /* untranslated: scratch_bp_m36:[(scratch_bp_m38 + loword((int32_t)(lSel * 0x4)))+0x2] = (scratch_bp_m36:[(scratch_bp_m38 + loword((int32_t)(lSel *
      * 0x4)))+0x2] & 0xffff) */
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] = (HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) +
-     * 0x4) + loword((int32_t)(lSel * 0x4)))] | scratch_bp_m2c) */
+    LOWORD(lpplProdGlob->rgprod[lSel]) = (LOWORD(lpplProdGlob->rgprod[lSel]) | scratch_bp_m2c);
     /* untranslated: scratch_bp_m3a:[(scratch_bp_m3c + loword((int32_t)(lSel * 0x4)))+0x2] = (scratch_bp_m3a:[(scratch_bp_m3c + loword((int32_t)(lSel *
      * 0x4)))+0x2] | scratch_bp_m2a) */
-    /* untranslated: branch (HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 4)))] & 0x3ff) != 0x0 ? L_2689 : L_25c5 */
+    if (((LOWORD(lpplProdGlob->rgprod[lSel]) & 0x3ff) != 0x0))
+        goto L_2689;
+    else
+        goto L_25c5;
 
 L_25c5:
     if ((0x0 != 0x0))
@@ -2054,11 +2055,11 @@ L_2f5c:
         goto L_2f81;
 
 L_2f81:
-    t_merge_2f8a_0001 = 0x1;
+    t_merge_2f8a_0001 = 1;
     goto L_2f8a;
 
 L_2f87:
-    t_merge_2f8a_0001 = 0x0;
+    t_merge_2f8a_0001 = 0;
 
 L_2f8a:
     EndDialog(hwnd, t_merge_2f8a_0001);
@@ -2092,11 +2093,11 @@ L_2fc6:
         goto L_2fd0;
 
 L_2fd0:
-    t_merge_2fd9_0001 = 0x1;
+    t_merge_2fd9_0001 = 1;
     goto L_2fd9;
 
 L_2fd6:
-    t_merge_2fd9_0001 = 0x0;
+    t_merge_2fd9_0001 = 0;
 
 L_2fd9:
     SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, t_merge_2fd9_0001));
@@ -2156,13 +2157,12 @@ L_30b7:
 
 L_30bd:
     lSel = (lSel - 1);
-    /* untranslated: LOWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] */
-    /* untranslated: HIWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))+0x2] */
-    /* untranslated: scratch_bp_m2e = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)((lSel + 0x1) * 0x4)))+0x2] */
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4)
-     * + loword((int32_t)((lSel + 0x1) * 0x4)))] */
+    LOWORD(prod) = LOWORD(lpplProdGlob->rgprod[lSel]);
+    HIWORD(prod) = HIWORD(lpplProdGlob->rgprod[lSel]);
+    scratch_bp_m2e = HIWORD(lpplProdGlob->rgprod[(lSel + 0x1)]);
+    LOWORD(lpplProdGlob->rgprod[lSel]) = LOWORD(lpplProdGlob->rgprod[(lSel + 0x1)]);
     /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 0x4)))+0x2] = scratch_bp_m2e */
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)((lSel + 0x1) * 0x4)))] = LOWORD(prod) */
+    LOWORD(lpplProdGlob->rgprod[(lSel + 1)]) = LOWORD(prod);
     /* untranslated: scratch_bp_m2a:[(scratch_bp_m2c + loword((int32_t)((lSel + 0x1) * 0x4)))+0x2] = HIWORD(prod) */
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (LOWORD(lSel) + 0x2), 0);
@@ -2192,13 +2192,12 @@ L_323d:
 L_3243:
     iMac = lpplProdGlob->iprodMac;
     lSel = (lSel - 2);
-    /* untranslated: LOWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] */
-    /* untranslated: HIWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))+0x2] */
-    /* untranslated: scratch_bp_m2e = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)((lSel + 0x1) * 0x4)))+0x2] */
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4)
-     * + loword((int32_t)((lSel + 0x1) * 0x4)))] */
+    LOWORD(prod) = LOWORD(lpplProdGlob->rgprod[lSel]);
+    HIWORD(prod) = HIWORD(lpplProdGlob->rgprod[lSel]);
+    scratch_bp_m2e = HIWORD(lpplProdGlob->rgprod[(lSel + 0x1)]);
+    LOWORD(lpplProdGlob->rgprod[lSel]) = LOWORD(lpplProdGlob->rgprod[(lSel + 0x1)]);
     /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 0x4)))+0x2] = scratch_bp_m2e */
-    /* untranslated: HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)((lSel + 0x1) * 0x4)))] = LOWORD(prod) */
+    LOWORD(lpplProdGlob->rgprod[(lSel + 1)]) = LOWORD(prod);
     /* untranslated: scratch_bp_m2a:[(scratch_bp_m2c + loword((int32_t)((lSel + 0x1) * 0x4)))+0x2] = HIWORD(prod) */
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (LOWORD(lSel) + 0x1), 0);
@@ -2508,8 +2507,8 @@ L_3765:
 
 L_3798:
     lSel = (lSel - 1);
-    /* untranslated: LOWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))] */
-    /* untranslated: HIWORD(prod) = HIWORD(lpplProdGlob):[((LOWORD(lpplProdGlob) + 0x4) + loword((int32_t)(lSel * 0x4)))+0x2] */
+    LOWORD(prod) = LOWORD(lpplProdGlob->rgprod[lSel]);
+    HIWORD(prod) = HIWORD(lpplProdGlob->rgprod[lSel]);
 
 L_37d8:
     GetProductionCosts(&(sel.pl), &(prod), rgCost, idPlayer, 0);
@@ -2784,8 +2783,10 @@ L_3cef:
 
 L_3cf8:
     iItem = (iItem - 0x10);
-    /* untranslated: branch ((HIWORD(rglpshdefSB[idPlayer]):[(LOWORD(rglpshdefSB[idPlayer]) + loword((uint32_t)(iItem * 0x93)))+0x7b] >> 0x9) & 0x1) == 0x0 ?
-     * L_3d46 : L_3d3b */
+    if ((((rglpshdefSB[idPlayer][iItem].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_3d46;
+    else
+        goto LBogus;
 
 LBogus:
     szWork[0] = 0;
@@ -2970,7 +2971,10 @@ L_3fe5:
     lpshdef = rglpshdef[iplr];
 
 L_3ffa:
-    /* untranslated: branch ((HIWORD(lpshdef):[(LOWORD(lpshdef) + loword((uint32_t)(iItem * 0x93)))+0x7b] >> 0x9) & 0x1) == 0x0 ? L_4058 : L_402b */
+    if ((((lpshdef[iItem].wFlags >> 0x9) & 0x1) == 0x0))
+        goto L_4058;
+    else
+        goto L_402b;
 
 L_402b:
     i = 0;
@@ -4071,7 +4075,7 @@ L_510b:
         goto L_5114;
 
 L_5114:
-    /* untranslated: lpprod = &dword ss:[&prodPartial] */
+    lpprod = &(prodPartial);
     goto L_513c;
 
 L_5122:
@@ -4380,8 +4384,8 @@ int16_t ZipProdDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     RECT        rcGBox;
     int16_t     cch;
     int16_t (**lpProc)();
-    int16_t  cpq;
-    uint16_t t_merge_5926_0001;
+    int16_t cpq;
+    int16_t t_merge_5926_0001;
 
 L_5490:
     goto L_5db7;
@@ -4465,12 +4469,12 @@ L_568d:
     AdvanceTutor();
 
 L_5692:
-    return 0x1;
+    return 1;
 
 L_5698:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_56c0:
     i = 1073;
@@ -4530,7 +4534,7 @@ L_5836:
 
 L_5874:
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_5889:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -4576,11 +4580,11 @@ L_58fe:
         goto L_591d;
 
 L_591d:
-    t_merge_5926_0001 = 0x1;
+    t_merge_5926_0001 = 1;
     goto L_5926;
 
 L_5923:
-    t_merge_5926_0001 = 0x0;
+    t_merge_5926_0001 = 0;
 
 L_5926:
     EndDialog(hwnd, t_merge_5926_0001);
@@ -4594,7 +4598,7 @@ L_5945:
     AdvanceTutor();
 
 L_594a:
-    return 0x1;
+    return 1;
 
 L_5953:
     if ((wParam == 0x816))
@@ -4615,7 +4619,7 @@ L_5967:
         goto L_5981;
 
 L_5981:
-    strcpy(szWork, vrgZipProd[iResTechNow]);
+    strcpy(szWork, (0x22f6 + LOWORD((40 * iResTechNow))));
     goto L_59c0;
 
 L_599d:
@@ -4646,7 +4650,7 @@ L_5a13:
     _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
 
 L_5a36:
-    strcpy(vrgZipProd[iResTechNow], szWork);
+    strcpy((0x22f6 + LOWORD((40 * iResTechNow))), szWork);
     pszT = &(szWork[0x40]);
     psz = &(szWork);
 
@@ -4773,7 +4777,7 @@ L_5d87:
 
 L_5d90:
     WinHelp(hwnd, szHelpFile, 0x1, 0x452);
-    return 0x1;
+    return 1;
 
 L_5db7:
     if ((message == WM_PAINT))
@@ -4806,7 +4810,7 @@ L_5dd7:
         goto L_5de2;
 
 L_5de2:
-    return 0x0;
+    return 0;
 }
 
 void EnableZipProdBtns(HWND hwnd, int16_t iSel) {

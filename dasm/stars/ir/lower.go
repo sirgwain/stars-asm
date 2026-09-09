@@ -88,9 +88,159 @@ func (l *lowerer) lowerEffect(effect sem.Effect) Stmt {
 			return &Return{Value: value}
 		}
 	case *sem.RawEffect:
-		return &Comment{Text: "untranslated: " + sem.FormatEffect(effect)}
+		return untranslatedEffect(effect)
 	}
-	return &Comment{Text: "untranslated: " + sem.FormatEffect(effect)}
+	return untranslatedEffect(effect)
+}
+
+// untranslatedEffect preserves an unsupported semantic effect together with
+// structured diagnostics for every expression that blocked lowering.
+func untranslatedEffect(effect sem.Effect) Stmt {
+	return &Comment{
+		Text:       "untranslated: " + sem.FormatEffect(effect),
+		EffectKind: semanticEffectKind(effect),
+		Failures:   unsupportedEffectFailures(effect),
+	}
+}
+
+// semanticEffectKind returns the stable diagnostic name for an effect type.
+func semanticEffectKind(effect sem.Effect) string {
+	switch effect.(type) {
+	case *sem.Assign:
+		return "assign"
+	case *sem.CallEffect:
+		return "call"
+	case *sem.Branch:
+		return "branch"
+	case *sem.Jump:
+		return "jump"
+	case *sem.Return:
+		return "return"
+	case *sem.RawEffect:
+		return "raw-effect"
+	default:
+		return fmt.Sprintf("%T", effect)
+	}
+}
+
+// unsupportedEffectFailures returns the semantic nodes and paths that cannot
+// be represented by the current low-level IR.
+func unsupportedEffectFailures(effect sem.Effect) []LowerFailure {
+	var failures []LowerFailure
+	switch e := effect.(type) {
+	case *sem.Assign:
+		collectUnsupportedExpr(e.Dst, "assign.dst", &failures)
+		collectUnsupportedExpr(e.Src, "assign.src", &failures)
+	case *sem.CallEffect:
+		if e.Call != nil {
+			collectUnsupportedExpr(e.Call.Target, "call.target", &failures)
+			for i, arg := range e.Call.Args {
+				collectUnsupportedExpr(arg, fmt.Sprintf("call.arg[%d]", i), &failures)
+			}
+		}
+		if _, definition := e.Result.(*sem.CallResult); !definition {
+			collectUnsupportedExpr(e.Result, "call.result", &failures)
+		}
+	case *sem.Branch:
+		collectUnsupportedExpr(e.Cond, "branch.cond", &failures)
+	case *sem.Return:
+		collectUnsupportedExpr(e.Value, "return.value", &failures)
+	case *sem.RawEffect:
+		failures = append(failures, LowerFailure{Kind: "raw-effect", Path: "effect"})
+	default:
+		failures = append(failures, LowerFailure{Kind: fmt.Sprintf("%T", effect), Path: "effect"})
+	}
+	return failures
+}
+
+// collectUnsupportedExpr records unsupported nodes using the same support
+// boundary as lowerExpr.
+func collectUnsupportedExpr(expr sem.Expr, path string, failures *[]LowerFailure) {
+	if expr == nil {
+		return
+	}
+	switch e := expr.(type) {
+	case *sem.Local, *sem.Global, *sem.FunctionRef, *sem.Temp, *sem.Const,
+		*sem.StringLiteral, *sem.FloatConst, *sem.SymbolRef:
+		return
+	case *sem.ResourceID:
+		collectUnsupportedExpr(e.Value, path+".value", failures)
+	case *sem.Unary:
+		if _, _, ok := lowerUnaryOp(e.Op); !ok {
+			*failures = append(*failures, LowerFailure{Kind: "unary-op", Path: path})
+			return
+		}
+		collectUnsupportedExpr(e.X, path+".operand", failures)
+	case *sem.Binary:
+		if _, ok := lowerBinaryOp(e.Op); !ok {
+			*failures = append(*failures, LowerFailure{Kind: "binary-op", Path: path})
+			return
+		}
+		collectUnsupportedExpr(e.LHS, path+".lhs", failures)
+		collectUnsupportedExpr(e.RHS, path+".rhs", failures)
+	case *sem.Byte:
+		collectUnsupportedExpr(e.Parent, path+".parent", failures)
+		collectUnsupportedExpr(e.Value, path+".value", failures)
+	case *sem.Cast:
+		collectUnsupportedExpr(e.Value, path+".value", failures)
+	case *sem.ArrayIndex:
+		collectUnsupportedExpr(e.Base, path+".base", failures)
+		collectUnsupportedExpr(e.Index, path+".index", failures)
+	case *sem.FieldAccess:
+		collectUnsupportedExpr(e.Base, path+".base", failures)
+	case *sem.Compare:
+		if _, ok := lowerCompareOp(e.Op); !ok {
+			*failures = append(*failures, LowerFailure{Kind: "compare-op", Path: path})
+			return
+		}
+		collectUnsupportedExpr(e.LHS, path+".lhs", failures)
+		collectUnsupportedExpr(e.RHS, path+".rhs", failures)
+	case *sem.SignExtend:
+		collectUnsupportedExpr(e.Parent, path+".parent", failures)
+	case *sem.Call:
+		collectUnsupportedExpr(e.Target, path+".target", failures)
+		for i, arg := range e.Args {
+			collectUnsupportedExpr(arg, fmt.Sprintf("%s.arg[%d]", path, i), failures)
+		}
+	case *sem.Word, *sem.FarPointer:
+		var parent sem.Expr
+		switch value := e.(type) {
+		case *sem.Word:
+			parent = value.Parent
+		case *sem.FarPointer:
+			parent = value.Parent
+		}
+		collectUnsupportedExpr(parent, path+".parent", failures)
+	case *sem.PointerOffset:
+		collectUnsupportedExpr(e.Pointer, path+".pointer", failures)
+		collectUnsupportedExpr(e.Offset, path+".offset", failures)
+	case *sem.Deref:
+		collectUnsupportedExpr(e.Pointer, path+".pointer", failures)
+	case *sem.AddressOf:
+		collectUnsupportedExpr(e.Target, path+".target", failures)
+	case *sem.Part:
+		if e.Width != 2 || e.ByteOff != 0 && e.ByteOff != 2 {
+			*failures = append(*failures, LowerFailure{Kind: "part", Path: path})
+			return
+		}
+		collectUnsupportedExpr(e.Base, path+".base", failures)
+	case *sem.CallResult:
+		*failures = append(*failures, LowerFailure{Kind: "call-result", Path: path})
+	case *sem.Words:
+		*failures = append(*failures, LowerFailure{Kind: "words", Path: path})
+	case *sem.Merge:
+		*failures = append(*failures, LowerFailure{Kind: "merge", Path: path})
+	case *sem.RawValue:
+		*failures = append(*failures, LowerFailure{Kind: "raw-value", Path: path})
+	case *sem.RawMemory:
+		*failures = append(*failures, LowerFailure{Kind: "raw-memory", Path: path})
+	case *sem.Memory:
+		*failures = append(*failures, LowerFailure{Kind: "memory", Path: path})
+	case *sem.Register:
+		*failures = append(*failures, LowerFailure{Kind: "register", Path: path})
+	default:
+		*failures = append(*failures, LowerFailure{Kind: fmt.Sprintf("%T", expr), Path: path})
+	}
 }
 
 // blockLabel returns the rendered label for a CFG block ID.
@@ -159,7 +309,11 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if e.Value == nil {
 			return &Macro{Name: name, Args: []Expr{parent}}, true
 		}
-		return nil, false
+		value, ok := l.lowerExpr(e.Value)
+		if !ok {
+			return nil, false
+		}
+		return lowerByteReplacement(parent, value, e.Part), true
 	case *sem.Cast:
 		v, ok := l.lowerExpr(e.Value)
 		if !ok {
@@ -283,6 +437,22 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		return nil, false
 	default:
 		return nil, false
+	}
+}
+
+// lowerByteReplacement renders a partial-register byte update as ordinary
+// mask-and-shift arithmetic on the containing word.
+func lowerByteReplacement(parent, value Expr, part machine.BytePart) Expr {
+	keepMask := uint64(0xff00)
+	insert := Expr(&Binary{Op: "&", LHS: value, RHS: &IntConst{Value: 0xff}})
+	if part == machine.ByteHigh {
+		keepMask = 0x00ff
+		insert = &Binary{Op: "<<", LHS: insert, RHS: &IntConst{Value: 8}}
+	}
+	return &Binary{
+		Op:  "|",
+		LHS: &Binary{Op: "&", LHS: parent, RHS: &IntConst{Value: keepMask}},
+		RHS: insert,
 	}
 }
 

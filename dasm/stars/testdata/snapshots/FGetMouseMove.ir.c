@@ -10,7 +10,7 @@ L_4152:
         goto L_4176;
 
 L_4176:
-    return 0x1;
+    return 1;
 
 L_417c:
     goto L_41c3;
@@ -24,10 +24,10 @@ L_4185:
         goto L_41b4;
 
 L_41b4:
-    return 0x1;
+    return 1;
 
 L_41ba:
-    return 0x0;
+    return 0;
 
 L_41c3:
     if ((msg.message == 0x200))

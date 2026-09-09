@@ -31,7 +31,7 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 // convertValueTyped converts one machine value with an optional expected call type.
 func (c *machineConverter) convertValueTyped(value machine.Value, expected typeinfo.Type) Expr {
 	if expected != nil {
-		if phi, ok := value.(*machine.PhiValue); ok && typeinfo.IsPointer(expected) {
+		if phi, ok := value.(*machine.PhiValue); ok {
 			return c.convertPhiTyped(phi, expected)
 		}
 		if expr, ok := c.convertAddressArgTyped(value, expected); ok {
@@ -49,7 +49,20 @@ func (c *machineConverter) convertValueTyped(value machine.Value, expected typei
 			return expr
 		}
 	}
-	return c.convertValue(value)
+	return coerceConvertedValue(c.convertValue(value), expected)
+}
+
+// coerceConvertedValue removes machine register-preservation details that are
+// outside the width required by the source-level destination.
+func coerceConvertedValue(expr Expr, expected typeinfo.Type) Expr {
+	if expected == nil || expected.Bytes() != 1 {
+		return expr
+	}
+	replacement, ok := expr.(*Byte)
+	if !ok || replacement.Value == nil {
+		return expr
+	}
+	return byteProjection(replacement.Value, machine.ByteLow)
 }
 
 // convertSymbolValueTyped resolves a machine value through the function-scoped
@@ -62,7 +75,7 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 	ptr, pointerExpected := expected.(*typeinfo.Pointer)
 	_, words := value.(*machine.StackWords)
 	_, binary := value.(*machine.Binary)
-	addressValue := words && typeinfo.IsFarPointer(expected) || binary && typeinfo.IsNearPointer(expected)
+	addressValue := words && typeinfo.IsFarPointer(expected) || binary && typeinfo.IsPointer(expected)
 	if pointerExpected && addressValue && !typeinfo.IsPointer(path.Type()) && typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
 		target := LValue(&SymbolRef{Path: path})
 		if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
@@ -71,6 +84,43 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 			}
 		}
 		return convertAddressArgTargetTyped(target, expected, ptr)
+	}
+	if pointerExpected && binary && !typeinfo.IsPointer(path.Type()) {
+		// Keep computed pointer values on the address-projection path. A
+		// symbol path for the addressed byte describes the destination
+		// object, but consuming a further offset from that byte would
+		// incorrectly turn pointer arithmetic into a Part of the byte.
+		if target, ok := c.convertSymbolPath(path, path.Type()); ok {
+			if lvalue, ok := target.(LValue); ok {
+				if decayed, ok := decayArrayLValue(lvalue, expected); ok {
+					return decayed, true
+				}
+			}
+		}
+		return nil, false
+	}
+	if offset, ok := path.(*symresolve.SymbolOffset); ok && addressValue && typeinfo.IsPointer(offset.Base.Type()) {
+		base, ok := c.convertSymbolPath(offset.Base, offset.Base.Type())
+		if !ok {
+			return nil, false
+		}
+		if projected, ok := projectPointerAddress(base, offset.Offset, nil); ok {
+			return projected, true
+		}
+		magnitude := offset.Offset
+		negative := magnitude < 0
+		if negative {
+			magnitude = -magnitude
+		}
+		var displacement Expr = &Const{TypeInfo: typeinfo.I16, U64: uint64(magnitude)}
+		if negative {
+			displacement = &Unary{TypeInfo: typeinfo.I16, Op: OpNeg, X: displacement}
+		}
+		return &PointerOffset{
+			Pointer:  base,
+			Offset:   displacement,
+			TypeInfo: expected,
+		}, true
 	}
 	if offset, ok := path.(*symresolve.SymbolOffset); ok && offset.Offset > 0 {
 		if base, ok := c.convertSymbolPath(offset.Base, offset.Base.Type()); ok {

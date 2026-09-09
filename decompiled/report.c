@@ -20,7 +20,7 @@ int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     PAINTSTRUCT ps;
     MessageId   idm;
     int16_t     t_merge_01d9_0001;
-    uint16_t    t_merge_04b1_0001;
+    int16_t     t_merge_04b1_0001;
     int16_t     t_07d4;
 
 L_0018:
@@ -51,7 +51,7 @@ L_0097:
     ReleaseDC(hwnd, hdc);
     SortReportCache(vprptCur->irpt, vprptCur->icolSort);
     SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, 0xe);
-    StickyDlgPos(hwnd, vprptCur->ptDlg.x, 1);
+    StickyDlgPos(hwnd, (vprptCur + 0x10), 1);
     vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, 0x40000001, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
     if ((gd.fTutorial == 0x0))
@@ -127,20 +127,20 @@ L_02b5:
         goto L_0304;
 
 L_0304:
-    return 0x1;
+    return 1;
 
 L_030b:
-    return 0x0;
+    return 0;
 
 L_0312:
     /* untranslated: part[0xc:2](lParam) = 0x12c */
     /* untranslated: part[0xe:2](lParam) = 0xdc */
-    return 0x0;
+    return 0;
 
 L_0337:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0362:
     xCur = 2;
@@ -253,11 +253,11 @@ L_049e:
         goto L_04a8;
 
 L_04a8:
-    t_merge_04b1_0001 = 0x1;
+    t_merge_04b1_0001 = 1;
     goto L_04b1;
 
 L_04ae:
-    t_merge_04b1_0001 = 0x0;
+    t_merge_04b1_0001 = 0;
 
 L_04b1:
     ReportColumnPopup(pt, iCol, t_merge_04b1_0001);
@@ -332,7 +332,7 @@ L_05d7:
     UpdateWindow(hwnd);
 
 L_0673:
-    return 0x0;
+    return 0;
 
 L_067c:
     iCur = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
@@ -430,17 +430,17 @@ L_07e9:
     UpdateWindow(hwnd);
 
 L_080f:
-    return 0x0;
+    return 0;
 
 L_0818:
     hdc = BeginPaint(hwnd, &(ps));
     DrawReport(hwnd, hdc, &(ps.rcPaint));
     EndPaint(hwnd, &(ps));
     gd.fRptSafeDraw = 0x0;
-    return 0x1;
+    return 1;
 
 L_0860:
-    StickyDlgPos(hwnd, vprptCur->ptDlg.x, 0);
+    StickyDlgPos(hwnd, (vprptCur + 0x10), 0);
     GetWindowRect(hwnd, &(rc));
     vprptCur->ptSize.x = (rc.right - rc.left);
     vprptCur->ptSize.y = (rc.bottom - rc.top);
@@ -508,7 +508,7 @@ L_0945:
 
 L_094e:
     DestroyWindow(hwnd);
-    return 0x1;
+    return 1;
 
 L_0965:
     if ((msg == 0x1))
@@ -926,12 +926,12 @@ L_0fbe:
     AdvanceTutor();
 
 L_0fc3:
-    return 0x1;
+    return 1;
 
 L_0fc9:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0ff1:
     hdc = BeginPaint(hwnd, &(ps));
@@ -959,7 +959,7 @@ L_1045:
 
 L_1050:
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_1065:
     if ((gd.fScoreVictory != 0x2))
@@ -985,7 +985,7 @@ L_10a8:
 
 L_10b1:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_10c3:
     c = 0;
@@ -1014,7 +1014,7 @@ L_1120:
     goto L_11da;
 
 L_113b:
-    strcpy(szWork[i * 0x28], szT);
+    strcpy((0x57a4 + LOWORD((40 * i))), szT);
     psz = ((0x57a4 + LOWORD((0x28 * i))) + cchHistory);
     cch = CchGetString((i + 435), psz);
     psz[(cch - 1)] = 0;
@@ -1077,7 +1077,7 @@ L_12ac:
     AdvanceTutor();
 
 L_12b1:
-    return 0x1;
+    return 1;
 
 L_12ba:
     if ((wParam != 0x76))
@@ -1087,7 +1087,7 @@ L_12ba:
 
 L_12c3:
     WinHelp(hwnd, szHelpFile, 0x1, 0x455);
-    return 0x1;
+    return 1;
 
 L_12e7:
     if ((wParam != 0xc6))
@@ -1150,7 +1150,7 @@ L_139d:
         goto L_13a8;
 
 L_13a8:
-    return 0x0;
+    return 0;
 }
 
 void InitScoreDlg(HWND hwnd, int16_t fVictory) {
@@ -1268,7 +1268,7 @@ void DrawVCReport(HDC hdc) {
     uint16_t scratch_bp_m32;
     uint16_t t_merge_19cc_0001;
     StringId t_1bfe;
-    uint16_t t_merge_1c4c_0001;
+    COLORREF t_merge_1c4c_0001;
 
 L_168e:
     yTop = 88;
@@ -1667,8 +1667,8 @@ void DrawScoreReport(HDC hdc) {
     uint16_t scratch_bp_m32;
     uint16_t scratch_bp_m30;
     StringId t_20ef;
-    uint16_t t_merge_23b0_0001;
-    uint16_t t_merge_23e2_0001;
+    COLORREF t_merge_23b0_0001;
+    COLORREF t_merge_23e2_0001;
 
 L_1e0c:
     yTop = 88;
@@ -1983,9 +1983,9 @@ void DrawHistoryReport(HDC hdc) {
     HPEN     hpenSav;
     HPEN     hpen;
     SCOREX  *lpsx;
-    uint16_t t_merge_2d63_0001;
-    uint16_t t_merge_2e05_0001;
-    uint16_t t_merge_2f6e_0001;
+    COLORREF t_merge_2d63_0001;
+    COLORREF t_merge_2e05_0001;
+    COLORREF t_merge_2f6e_0001;
 
 L_2494:
     SetBkMode(hdc, TRANSPARENT);
@@ -2683,7 +2683,7 @@ L_305e:
 
 L_3087:
     *(psz) = 0;
-    return 0x0;
+    return 0;
 
 L_3093:
     cch = CchGetString((iCol + 1113), psz);
@@ -2878,21 +2878,23 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
     int32_t  t_call_3758;
     uint16_t scratch_bp_m94;
     uint16_t scratch_bp_m92;
+    int32_t  t_call_38aa;
     uint16_t scratch_bp_m9c;
     uint16_t scratch_bp_m9a;
     uint16_t scratch_bp_ma4;
     uint16_t scratch_bp_ma2;
     uint16_t scratch_bp_mac;
     uint16_t scratch_bp_maa;
-    uint16_t t_merge_39e1_0001;
-    uint16_t t_merge_3a8e_0001;
-    uint16_t t_merge_3aff_0001;
+    COLORREF t_merge_39e1_0001;
+    COLORREF t_merge_3a8e_0001;
+    COLORREF t_merge_3aff_0001;
+    int16_t  t_call_3d42;
     int32_t  t_call_4201;
     uint16_t t_merge_422c_0001;
     int32_t  t_call_4669;
     int32_t  t_call_4692;
-    uint16_t t_merge_476d_0001;
-    uint16_t t_merge_47df_0001;
+    int16_t  t_merge_476d_0001;
+    int16_t  t_merge_47df_0001;
 
 L_3398:
     szT[0] = 56;
@@ -3055,9 +3057,9 @@ L_385f:
     pct = (1 - pct);
     scratch_bp_m94 = 0x64;
     scratch_bp_m92 = 0x0;
-    __ftol();
-    /* untranslated: scratch_bp_m9c = loword(callresult(int32_t)) */
-    /* untranslated: scratch_bp_m9a = signhiword(loword(callresult(int32_t))) */
+    t_call_38aa = __ftol();
+    scratch_bp_m9c = LOWORD(t_call_38aa);
+    scratch_bp_m9a = SIGNHIWORD(LOWORD(t_call_38aa));
     scratch_bp_ma4 = 0x2710;
     scratch_bp_ma2 = 0x0;
     scratch_bp_mac = 0x64;
@@ -3246,9 +3248,9 @@ L_3c96:
     goto L_3e61;
     cch = CchGetString(idsN1000, szT);
     dx = LOWORD(GetTextExtent(hdc, szT, cch));
-    CResourcesAtPlanet(lppl, idPlayer);
-    /* untranslated: j = callresult(int16_t) */
-    /* untranslated: i = callresult(int16_t) */
+    t_call_3d42 = CResourcesAtPlanet(lppl, idPlayer);
+    j = t_call_3d42;
+    i = t_call_3d42;
     if ((lppl->fNoResearch != 0x0))
         goto L_3d99;
     else
@@ -3388,7 +3390,7 @@ L_4229:
 
 L_422c:
     fEnough = t_merge_422c_0001;
-    /* untranslated: call DrawMineralItem(hdc, ((dx * 4) + prc->left), prc->top, (fEnough neg 0), lpfl->rgwtMin[4]) -> callresult(void) */
+    DrawMineralItem(hdc, ((dx * 4) + prc->left), prc->top, (-fEnough), lpfl->rgwtMin[4]);
     goto L_4500;
     i = IshdefPrimaryFromLpfl(lpfl, &(j));
     if ((lpfl->rgdv[i].dp == 0x0))
@@ -3563,11 +3565,11 @@ BtlUnitsCom:
         goto L_4764;
 
 L_4764:
-    t_merge_476d_0001 = 0x1;
+    t_merge_476d_0001 = 1;
     goto L_476d;
 
 L_476a:
-    t_merge_476d_0001 = 0x0;
+    t_merge_476d_0001 = 0;
 
 L_476d:
     l = CBattleKills(lpbd, t_merge_476d_0001);
@@ -3583,11 +3585,11 @@ LUnitsLeft:
         goto L_47d6;
 
 L_47d6:
-    t_merge_47df_0001 = 0x1;
+    t_merge_47df_0001 = 1;
     goto L_47df;
 
 L_47dc:
-    t_merge_47df_0001 = 0x0;
+    t_merge_47df_0001 = 0;
 
 L_47df:
     l = (l - CBattleKills(lpbd, t_merge_47df_0001));
@@ -3891,7 +3893,7 @@ L_4fbd:
     goto L_4fda;
 
 L_4fda:
-    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
+    if ((ord.txp.rgia[i].iAction == iActionWaitPercent))
         goto LDelayed;
     else
         goto L_4fe5;
@@ -3993,10 +3995,10 @@ L_5111:
     goto L_5131;
 
 L_5128:
-    return 0x1;
+    return 1;
 
 L_5131:
-    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
+    if ((ord.txp.rgia[i].iAction == iActionWaitPercent))
         goto L_5128;
     else
         goto L_513c;
@@ -4021,7 +4023,7 @@ L_514c:
 L_515c:
 
 L_5162:
-    return 0x1;
+    return 1;
 
 L_516b:
     if ((ord.grTask == grTaskXfer))
@@ -4054,10 +4056,10 @@ L_518b:
         goto L_5196;
 
 L_5196:
-    return 0x0;
+    return 0;
 
 L_519c:
-    return 0x1;
+    return 1;
 }
 
 char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
@@ -4094,7 +4096,7 @@ L_5211:
     goto L_522e;
 
 L_522e:
-    if ((ord.txp.rgia[0].iAction == iActionWaitPercent))
+    if ((ord.txp.rgia[i].iAction == iActionWaitPercent))
         goto LNoETA;
     else
         goto L_5239;
@@ -4262,10 +4264,7 @@ L_5414:
     goto L_5431;
 
 L_5431:
-    if ((((ord.tsell >> 0xc) & 0xf) == 0x6))
-        goto LShowTask;
-    else
-        goto L_543c;
+    /* untranslated: branch ((ss:[bp+(i * 2)-0x16] >> 0xc) & 0xf) == 0x6 ? L_54a6 : L_543c */
 
 L_543c:
     i = (i + 1);
@@ -4312,7 +4311,7 @@ L_54d6:
         goto L_54ef;
 
 L_54ef:
-    if ((memcmp(vrgZip[i], &(ord.txp), 0xa) != 0))
+    if ((memcmp((0x5264 + LOWORD((24 * i))), &(ord.txp), 0xa) != 0))
         goto L_5528;
     else
         goto L_5513;
@@ -4364,7 +4363,7 @@ L_559f:
     goto L_55cc;
 
 L_55a7:
-    if ((ord.txp.rgia[0].iAction != opOrd))
+    if ((ord.txp.rgia[i].iAction != opOrd))
         goto L_55d5;
     else
         goto L_55c2;
@@ -4445,7 +4444,7 @@ L_5644:
     goto L_5684;
 
 L_564c:
-    opOrd = ord.txp.rgia[0x0].iAction;
+    opOrd = ord.txp.rgia[i].iAction;
     if (((opOrd + 109) <= ids))
         goto L_5680;
     else
@@ -4474,7 +4473,7 @@ L_5696:
     return PszGetCompressedString(idsTransport);
 
 L_56a5:
-    opOrd = ord.txp.rgia[0x0].iAction;
+    opOrd = ord.txp.rgia[icr].iAction;
     *(picr) = icr;
     fPercent = 0;
     goto L_5794;
@@ -4498,7 +4497,7 @@ L_56dd:
         goto L_571d;
 
 L_571d:
-    _wsprintf(szWork, "%s %d%%", psz, (ord.tsell & 0xfff));
+    /* untranslated: call _wsprintf(szWork, "%s %d%%", psz, (ss:[bp+(icr * 2)-0x16] & 0xfff)) -> callresult(int16_t) */
     goto L_578b;
 
 L_574d:
@@ -4515,7 +4514,7 @@ L_5775:
     t_merge_577a_0001 = 0x1613;
 
 L_577a:
-    /* untranslated: call _wsprintf(szWork, &dword ds:[t_merge_577a_0001], psz, (ord.tsell & 0xfff)) -> callresult(int16_t) */
+    /* untranslated: call _wsprintf(szWork, &dword ds:[t_merge_577a_0001], psz, (ss:[bp+(icr * 2)-0x16] & 0xfff)) -> callresult(int16_t) */
 
 L_578b:
     return szWork;
@@ -4831,10 +4830,10 @@ int16_t ICompReport(void *arg1, void *arg2) {
     int16_t  ibtl1;
     BTLDATA *lpbd2;
     uint16_t scratch_bp_m7e;
-    uint16_t t_merge_6c5d_0001;
-    uint16_t t_merge_6c84_0001;
-    uint16_t t_merge_6ce3_0001;
-    uint16_t t_merge_6d0a_0001;
+    int16_t  t_merge_6c5d_0001;
+    int16_t  t_merge_6c84_0001;
+    int16_t  t_merge_6ce3_0001;
+    int16_t  t_merge_6d0a_0001;
 
 L_5bb8:
     iRet = 0;
@@ -5309,8 +5308,7 @@ L_6665:
         goto L_666d;
 
 L_666d:
-    /* untranslated: iRet = (HIWORD(lpfl1):[((LOWORD(lpfl1) + 0xc) + loword((int32_t)(l1 * 0x2)))] - HIWORD(lpfl2):[((LOWORD(lpfl2) + 0xc) + loword((int32_t)(l2
-     * * 0x2)))]) */
+    iRet = (lpfl1->rgcsh[l1] - lpfl2->rgcsh[l2]);
     goto L_679e;
 
 L_66d3:
@@ -5321,8 +5319,7 @@ L_66d3:
         goto L_6723;
 
 L_6723:
-    /* untranslated: iRet = (HIWORD(lpfl1):[((LOWORD(lpfl1) + 0xc) + loword((int32_t)(l1 * 0x2)))] - HIWORD(lpfl2):[((LOWORD(lpfl2) + 0xc) + loword((int32_t)(l2
-     * * 0x2)))]) */
+    iRet = (lpfl1->rgcsh[l1] - lpfl2->rgcsh[l2]);
 
 L_6786:
     if ((iRet != 0))
@@ -5623,11 +5620,11 @@ BtlUnitsCom:
         goto L_6c54;
 
 L_6c54:
-    t_merge_6c5d_0001 = 0x1;
+    t_merge_6c5d_0001 = 1;
     goto L_6c5d;
 
 L_6c5a:
-    t_merge_6c5d_0001 = 0x0;
+    t_merge_6c5d_0001 = 0;
 
 L_6c5d:
     l1 = CBattleKills(lpbd1, t_merge_6c5d_0001);
@@ -5637,11 +5634,11 @@ L_6c5d:
         goto L_6c7b;
 
 L_6c7b:
-    t_merge_6c84_0001 = 0x1;
+    t_merge_6c84_0001 = 1;
     goto L_6c84;
 
 L_6c81:
-    t_merge_6c84_0001 = 0x0;
+    t_merge_6c84_0001 = 0;
 
 L_6c84:
     l2 = CBattleKills(lpbd2, t_merge_6c84_0001);
@@ -5657,11 +5654,11 @@ LUnitsLeft:
         goto L_6cda;
 
 L_6cda:
-    t_merge_6ce3_0001 = 0x1;
+    t_merge_6ce3_0001 = 1;
     goto L_6ce3;
 
 L_6ce0:
-    t_merge_6ce3_0001 = 0x0;
+    t_merge_6ce3_0001 = 0;
 
 L_6ce3:
     l1 = (l1 - CBattleKills(lpbd1, t_merge_6ce3_0001));
@@ -5671,11 +5668,11 @@ L_6ce3:
         goto L_6d01;
 
 L_6d01:
-    t_merge_6d0a_0001 = 0x1;
+    t_merge_6d0a_0001 = 1;
     goto L_6d0a;
 
 L_6d07:
-    t_merge_6d0a_0001 = 0x0;
+    t_merge_6d0a_0001 = 0;
 
 L_6d0a:
     l2 = (l2 - CBattleKills(lpbd2, t_merge_6d0a_0001));
@@ -5750,8 +5747,7 @@ L_6ef9:
         goto L_6f01;
 
 L_6f01:
-    /* untranslated: iRet = (HIWORD(lpfl1):[((LOWORD(lpfl1) + 0xc) + loword((int32_t)(l1 * 0x2)))] - HIWORD(lpfl2):[((LOWORD(lpfl2) + 0xc) + loword((int32_t)(l2
-     * * 0x2)))]) */
+    iRet = (lpfl1->rgcsh[l1] - lpfl2->rgcsh[l2]);
     goto L_7054;
 
 L_6f67:
@@ -5763,8 +5759,7 @@ L_6f67:
         goto L_6fd9;
 
 L_6fd9:
-    /* untranslated: iRet = (HIWORD(lpfl1):[((LOWORD(lpfl1) + 0xc) + loword((int32_t)(l1 * 0x2)))] - HIWORD(lpfl2):[((LOWORD(lpfl2) + 0xc) + loword((int32_t)(l2
-     * * 0x2)))]) */
+    iRet = (lpfl1->rgcsh[l1] - lpfl2->rgcsh[l2]);
 
 L_703c:
     if ((iRet != 0))
@@ -5992,7 +5987,7 @@ L_746b:
         goto L_7474;
 
 L_7474:
-    /* untranslated: iRet = (iRet neg 0) */
+    iRet = (-iRet);
 
 L_747c:
     if ((iRet != 0))
@@ -6055,7 +6050,7 @@ void ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn) {
     int16_t  iRet;
     int16_t  iHide;
     int16_t  iSortLast;
-    uint16_t t_merge_753f_0001;
+    StringId t_merge_753f_0001;
     uint16_t t_merge_7617_0001;
     uint16_t t_merge_79b5_0001;
     uint16_t t_merge_79e0_0001;
@@ -6080,11 +6075,11 @@ L_751e:
         goto L_7536;
 
 L_7536:
-    t_merge_753f_0001 = 0x46d;
+    t_merge_753f_0001 = idsSort;
     goto L_753f;
 
 L_753c:
-    t_merge_753f_0001 = 0x46e;
+    t_merge_753f_0001 = idsReverseSort;
 
 L_753f:
     cch = CchGetString(t_merge_753f_0001, rgsz[cItems]);
@@ -6394,7 +6389,7 @@ L_7a71:
 
 L_7a7e:
     fccolChange = 1;
-    /* untranslated: vprptCur->grbitVisible = (vprptCur->grbitVisible & sext16to32(((0x1 << icol) ~ 0x0))) */
+    vprptCur->grbitVisible = (vprptCur->grbitVisible & (uint32_t)((~(0x1 << icol))));
     goto L_7acb;
 
 L_7a9b:
@@ -6429,7 +6424,7 @@ void InvalidateReport(int16_t irpt, int16_t fReload) {
     RPT      *prptSav;
     uint16_t *lprgidSav;
     RECT      rc;
-    uint16_t  t_merge_7b91_0001;
+    int16_t   t_merge_7b91_0001;
 
 L_7af6:
     fClearRpt = 0;
@@ -6477,11 +6472,11 @@ L_7b74:
         goto L_7b88;
 
 L_7b88:
-    t_merge_7b91_0001 = 0x1;
+    t_merge_7b91_0001 = 1;
     goto L_7b91;
 
 L_7b8e:
-    t_merge_7b91_0001 = 0x0;
+    t_merge_7b91_0001 = 0;
 
 L_7b91:
     InvalidateRect(hwndReportDlg, &(rc), t_merge_7b91_0001);
@@ -6957,6 +6952,7 @@ void DumpPlanets() {
     PART     part;
     uint16_t scratch_bp_m23a;
     uint16_t scratch_bp_m238;
+    int32_t  t_call_8c4c;
     uint16_t scratch_bp_m242;
     uint16_t scratch_bp_m240;
     uint16_t scratch_bp_m24a;
@@ -7187,9 +7183,9 @@ L_8c01:
     pct = (1 - pct);
     scratch_bp_m23a = 0x64;
     scratch_bp_m238 = 0x0;
-    __ftol();
-    /* untranslated: scratch_bp_m242 = loword(callresult(int32_t)) */
-    /* untranslated: scratch_bp_m240 = signhiword(loword(callresult(int32_t))) */
+    t_call_8c4c = __ftol();
+    scratch_bp_m242 = LOWORD(t_call_8c4c);
+    scratch_bp_m240 = SIGNHIWORD(LOWORD(t_call_8c4c));
     scratch_bp_m24a = 0x2710;
     scratch_bp_m248 = 0x0;
     scratch_bp_m252 = 0x64;
@@ -7998,10 +7994,10 @@ L_a1ad:
 }
 
 int16_t PrintMapDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
-    int16_t  i;
-    RECT     rc;
-    HWND     hwndEdit;
-    uint16_t t_merge_a3aa_0001;
+    int16_t i;
+    RECT    rc;
+    HWND    hwndEdit;
+    int16_t t_merge_a3aa_0001;
 
 L_a1c2:
     goto L_a473;
@@ -8027,12 +8023,12 @@ L_a242:
 
 L_a24b:
     StickyDlgPos(hwnd, ptStickyPrintMapDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_a264:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_a28c:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -8115,15 +8111,15 @@ L_a382:
         goto L_a3a1;
 
 L_a3a1:
-    t_merge_a3aa_0001 = 0x1;
+    t_merge_a3aa_0001 = 1;
     goto L_a3aa;
 
 L_a3a7:
-    t_merge_a3aa_0001 = 0x0;
+    t_merge_a3aa_0001 = 0;
 
 L_a3aa:
     EndDialog(hwnd, t_merge_a3aa_0001);
-    return 0x1;
+    return 1;
 
 L_a3b9:
     if ((wParam != 0x76))
@@ -8133,7 +8129,7 @@ L_a3b9:
 
 L_a3c2:
     WinHelp(hwnd, szHelpFile, 0x1, 0xc3c);
-    return 0x1;
+    return 1;
 
 L_a3e6:
     if ((wParam == 0x10c))
@@ -8201,5 +8197,5 @@ L_a48b:
         goto L_a496;
 
 L_a496:
-    return 0x0;
+    return 0;
 }

@@ -52,7 +52,7 @@ func TestBranchCallResultMaterializesWideMultiUseResult(t *testing.T) {
 		},
 	}}
 
-	changed := (&branchCallResultProcessor{}).ProcessFunc(nil, fn)
+	changed := (&callResultProcessor{}).ProcessFunc(nil, fn)
 	if !changed {
 		t.Fatal("ProcessFunc changed = false, want true")
 	}
@@ -70,9 +70,9 @@ func TestBranchCallResultMaterializesWideMultiUseResult(t *testing.T) {
 	}
 }
 
-// TestBranchCallResultLeavesSingleUseResult verifies single-use call results
-// remain available for the ordinary call-result collapse pass.
-func TestBranchCallResultLeavesSingleUseResult(t *testing.T) {
+// TestBranchCallResultMaterializesSingleSurvivingUse verifies a call result
+// already present in semantic IR is made explicit even when it has one use.
+func TestBranchCallResultMaterializesSingleSurvivingUse(t *testing.T) {
 	int32Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int32_t", Size: 4, Signed: true}
 	target := &typeinfo.Function{Name: "Calc", Ret: int32Type}
 	result := &CallResult{Function: target, TypeInfo: int32Type, InstOff: 0x1000}
@@ -90,8 +90,14 @@ func TestBranchCallResultLeavesSingleUseResult(t *testing.T) {
 		},
 	}}
 
-	changed := (&branchCallResultProcessor{}).ProcessFunc(nil, fn)
-	if changed {
-		t.Fatal("ProcessFunc changed = true, want false")
+	changed := (&callResultProcessor{}).ProcessFunc(nil, fn)
+	if !changed {
+		t.Fatal("ProcessFunc changed = false, want true")
+	}
+	if got, want := FormatEffect(fn.Blocks[0].Effects[0]), "call Calc() -> t_call_1000"; got != want {
+		t.Fatalf("call effect = %q, want %q", got, want)
+	}
+	if got, want := FormatEffect(fn.Blocks[0].Effects[1]), "branch hiword(t_call_1000) < 0x0 ? L_1010 : L_1005"; got != want {
+		t.Fatalf("branch effect = %q, want %q", got, want)
 	}
 }

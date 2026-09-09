@@ -53,9 +53,20 @@ type Return struct{ Value Expr }
 
 func (*Return) stmt() {}
 
-type Comment struct{ Text string }
+type Comment struct {
+	Text       string
+	EffectKind string
+	Failures   []LowerFailure
+}
 
 func (*Comment) stmt() {}
+
+// LowerFailure identifies an unsupported semantic expression and its path
+// within the containing effect.
+type LowerFailure struct {
+	Kind string
+	Path string
+}
 
 type Var struct{ Name string }
 

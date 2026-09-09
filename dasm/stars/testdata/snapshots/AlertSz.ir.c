@@ -1,6 +1,6 @@
 int16_t AlertSz(char *sz, MessageBoxType mbType) {
-    char     szT[256];
-    uint16_t t_merge_21e5_0001;
+    char    szT[256];
+    int16_t t_merge_21e5_0001;
 
 L_2160:
     if ((ini.fValidate != 0x0))
@@ -28,15 +28,15 @@ L_21a3:
         goto L_21dc;
 
 L_21dc:
-    t_merge_21e5_0001 = 0x7;
+    t_merge_21e5_0001 = 7;
     goto L_21e5;
 
 L_21e2:
-    t_merge_21e5_0001 = 0x6;
+    t_merge_21e5_0001 = 6;
 
 L_21e5:
     OutputSz(t_merge_21e5_0001, szT);
-    return 0x6;
+    return 6;
 
 L_21f7:
     return MessageBox(GetFocus(), sz, "Stars!", mbType);

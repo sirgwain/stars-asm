@@ -57,8 +57,9 @@ L_0159:
 }
 
 void ShowMainControls(HWND hwnd, ShowWindowCmd sw) {
-    uint16_t t_merge_0245_0001;
-    uint16_t t_merge_0264_0001;
+    HWND          t_call_022d;
+    ShowWindowCmd t_merge_0245_0001;
+    StringId      t_merge_0264_0001;
 
 L_0160:
     ShowWindow(GetDlgItem(hwnd, IDC_IMPORT), sw);
@@ -70,32 +71,32 @@ L_0160:
     ShowWindow(GetDlgItem(hwnd, IDC_LAST), sw);
     ShowWindow(GetDlgItem(hwnd, IDC_UP), sw);
     ShowWindow(GetDlgItem(hwnd, IDC_DOWN), sw);
-    GetDlgItem(hwnd, IDOK);
+    t_call_022d = GetDlgItem(hwnd, IDOK);
     if ((sw != SW_SHOW))
         goto L_0242;
     else
         goto L_023c;
 
 L_023c:
-    t_merge_0245_0001 = 0x0;
+    t_merge_0245_0001 = SW_HIDE;
     goto L_0245;
 
 L_0242:
-    t_merge_0245_0001 = 0x5;
+    t_merge_0245_0001 = SW_SHOW;
 
 L_0245:
-    /* untranslated: call ShowWindow(callresult(HWND), t_merge_0245_0001) -> callresult(int16_t) */
+    ShowWindow(t_call_022d, t_merge_0245_0001);
     if ((sw != SW_SHOW))
         goto L_0261;
     else
         goto L_025b;
 
 L_025b:
-    t_merge_0264_0001 = 0x2e2;
+    t_merge_0264_0001 = idsDone;
     goto L_0264;
 
 L_0261:
-    t_merge_0264_0001 = 0x2e3;
+    t_merge_0264_0001 = idsCancel;
 
 L_0264:
     SetDlgItemText(hwnd, IDCANCEL, PszGetCompressedString(t_merge_0264_0001));
@@ -303,7 +304,7 @@ L_047e:
         goto L_04bb;
 
 L_04bb:
-    return 0x0;
+    return 0;
 
 L_04c1:
     if ((HIWORD(lpshdef->cExist) < 0x0))
@@ -333,7 +334,7 @@ L_0528:
     RemoveIshdefFromAllQueues(lpshdef->ishdef, fEdit);
 
 L_0543:
-    return 0x1;
+    return 1;
 }
 
 int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -356,25 +357,29 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     PART               part;
     int16_t            cshQueued;
     int16_t            j;
-    uint16_t           t_merge_0bdb_0001;
+    int16_t            t_merge_0bdb_0001;
     uint16_t           t_merge_0c80_0001;
-    uint32_t           t_merge_0cc3_0001;
+    int32_t            t_merge_0cc3_0001;
     uint16_t           t_merge_0dce_0001;
     uint16_t           t_merge_0e24_0001;
-    uint16_t           t_merge_0e84_0001;
-    uint32_t           t_merge_107a_0001;
+    ShowWindowCmd      t_merge_0e84_0001;
+    int32_t            t_merge_107a_0001;
     uint16_t           t_merge_1110_0001;
-    uint16_t           t_merge_11a4_0001;
-    uint16_t           t_merge_11fb_0001;
+    HWND               t_call_1152;
+    int16_t            t_merge_11a4_0001;
+    HWND               t_call_11bb;
+    int16_t            t_merge_11fb_0001;
+    HULDEF            *t_call_132a;
     uint16_t           t_merge_13e5_0001;
     uint16_t           scratch_bp_m50;
     uint16_t           t_merge_178d_0001;
     uint16_t           scratch_bp_m4e;
     uint16_t           t_merge_1c0b_0001;
+    HULDEF            *t_call_1cbd;
     uint16_t           t_merge_1d40_0001;
-    uint16_t           t_merge_1fe4_0001;
-    uint16_t           t_merge_23ac_0001;
-    uint16_t           t_merge_2580_0001;
+    int16_t            t_merge_1fe4_0001;
+    int16_t            t_merge_23ac_0001;
+    int16_t            t_merge_2580_0001;
     uint16_t           t_merge_25d3_0001;
 
 L_0550:
@@ -417,7 +422,7 @@ L_07bf:
     AdvanceTutor();
 
 L_07c4:
-    return 0x1;
+    return 1;
 
 L_07ca:
     lpdis = lParam;
@@ -464,12 +469,12 @@ L_0854:
         goto L_085f;
 
 L_085f:
-    return 0x1;
+    return 1;
 
 L_0865:
     lpmis = lParam;
     lpmis->itemHeight = 0x42;
-    return 0x1;
+    return 1;
 
 L_0880:
     i = 2064;
@@ -521,12 +526,12 @@ L_092e:
 
 L_0948:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_095a:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0982:
     hdc = BeginPaint(hwnd, &(ps));
@@ -569,7 +574,7 @@ L_0b66:
     DrawBuildSelComp(hwnd, hdc, -1);
     DrawBuildSelHull(hwnd, hdc, -1, 0x0);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_0bc8:
     if ((message != WM_RBUTTONDOWN))
@@ -578,11 +583,11 @@ L_0bc8:
         goto L_0bd2;
 
 L_0bd2:
-    t_merge_0bdb_0001 = 0x1;
+    t_merge_0bdb_0001 = 1;
     goto L_0bdb;
 
 L_0bd8:
-    t_merge_0bdb_0001 = 0x0;
+    t_merge_0bdb_0001 = 0;
 
 L_0bdb:
     return FTrackSlot(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, 0, t_merge_0bdb_0001);
@@ -717,11 +722,11 @@ L_0e24:
         goto L_0e7b;
 
 L_0e7b:
-    t_merge_0e84_0001 = 0x5;
+    t_merge_0e84_0001 = SW_SHOW;
     goto L_0e84;
 
 L_0e81:
-    t_merge_0e84_0001 = 0x0;
+    t_merge_0e84_0001 = SW_HIDE;
 
 L_0e84:
     ShowWindow(hwndItem, t_merge_0e84_0001);
@@ -904,7 +909,7 @@ L_1110:
     fProtoSB = t_merge_1110_0001;
     lpshdefBuild = NthValidShdef(LOWORD(lSel));
     CshQueued(lpshdefBuild->ishdef, &(fProgress), 0);
-    GetDlgItem(hwndSlotDlg, IDC_EDIT);
+    t_call_1152 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
     if ((LOWORD(lpshdefBuild->cExist) != 0x0))
         goto L_11a1;
     else
@@ -947,21 +952,21 @@ L_1192:
         goto L_119b;
 
 L_119b:
-    t_merge_11a4_0001 = 0x1;
+    t_merge_11a4_0001 = 1;
     goto L_11a4;
 
 L_11a1:
-    t_merge_11a4_0001 = 0x0;
+    t_merge_11a4_0001 = 0;
 
 L_11a4:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_11a4_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_1152, t_merge_11a4_0001);
     if ((fProtoSB == 0))
         goto LClearSelection;
     else
         goto L_11b3;
 
 L_11b3:
-    GetDlgItem(hwndSlotDlg, IDC_DELETE);
+    t_call_11bb = GetDlgItem(hwndSlotDlg, IDC_DELETE);
     if ((HIWORD(lSel) < 0x0))
         goto L_11f8;
     else
@@ -992,14 +997,14 @@ L_11e7:
         goto L_11f2;
 
 L_11f2:
-    t_merge_11fb_0001 = 0x1;
+    t_merge_11fb_0001 = 1;
     goto L_11fb;
 
 L_11f8:
-    t_merge_11fb_0001 = 0x0;
+    t_merge_11fb_0001 = 0;
 
 L_11fb:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_11fb_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_11bb, t_merge_11fb_0001);
 
 L_1204:
     if ((mdBuild != mdBuildEnemyShdef))
@@ -1115,8 +1120,8 @@ L_131e:
         goto L_1327;
 
 L_1327:
-    LphuldefFromId(i);
-    /* untranslated: shdefBuild.hul = 123-byte farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))] */
+    t_call_132a = LphuldefFromId(i);
+    shdefBuild.hul = t_call_132a->hul;
     shdefBuild.hul.ihuldef = (i & 0xff);
     i = 0;
     goto L_135f;
@@ -1722,8 +1727,8 @@ L_1c91:
 
 L_1ca4:
     fmemset(lpshdef, 0, 0x93);
-    LphuldefFromId(j);
-    /* untranslated: lpshdef = 123-byte farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))] */
+    t_call_1cbd = LphuldefFromId(j);
+    lpshdef = t_call_1cbd->hul;
     lpshdef->det = 0x7;
     fmemset(lpshdef->hul.rghs, 0, 0x40);
 
@@ -1893,11 +1898,11 @@ L_1f7e:
         goto L_1fdb;
 
 L_1fdb:
-    t_merge_1fe4_0001 = 0xa3c;
+    t_merge_1fe4_0001 = 2620;
     goto L_1fe4;
 
 L_1fe1:
-    t_merge_1fe4_0001 = 0x19ff;
+    t_merge_1fe4_0001 = 6655;
 
 L_1fe4:
     FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), t_merge_1fe4_0001);
@@ -1955,7 +1960,7 @@ L_2138:
 
 L_214b:
     AlertSz(PszFormatIds(idsShipDesignDoesHaveAnyEnginesMust, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_2172:
     if ((gd.fTutorial == 0x0))
@@ -2139,11 +2144,11 @@ L_2546:
         goto L_2577;
 
 L_2577:
-    t_merge_2580_0001 = 0x1;
+    t_merge_2580_0001 = 1;
     goto L_2580;
 
 L_257d:
-    t_merge_2580_0001 = 0x0;
+    t_merge_2580_0001 = 0;
 
 L_2580:
     EndDialog(hwnd, t_merge_2580_0001);
@@ -2156,7 +2161,7 @@ L_2599:
     AdvanceTutor();
 
 L_259e:
-    return 0x1;
+    return 1;
 
 L_25a7:
     if ((wParam != 0x76))
@@ -2179,7 +2184,7 @@ L_25cf:
 
 L_25d3:
     WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_25d3_0001));
-    return 0x1;
+    return 1;
 
 L_25e6:
     if ((message == WM_PAINT))
@@ -2248,7 +2253,7 @@ L_2636:
         goto L_2641;
 
 L_2641:
-    return 0x0;
+    return 0;
 }
 
 void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
@@ -2732,7 +2737,7 @@ L_3082:
         goto L_308c;
 
 L_308c:
-    return 0x0;
+    return 0;
 
 L_3092:
     pt.x = x;
@@ -2796,7 +2801,7 @@ L_31a2:
 
 L_31e8:
     lpshdefBuild->hul.ibmp = (iBase + iCur);
-    return 0x1;
+    return 1;
 
 L_31fc:
     if ((fListBox != 0))
@@ -2833,7 +2838,7 @@ L_3253:
         goto L_325e;
 
 L_325e:
-    return 0x0;
+    return 0;
 
 L_3264:
     hs.grhst = lpshdefBuild->hul.rghs[iSrc].grhst;
@@ -2845,7 +2850,7 @@ L_3264:
 
 L_329c:
     SetBuildSelection(iSrc);
-    return 0x0;
+    return 0;
 
 L_32ad:
     part.hs.grhst = hs.grhst;
@@ -2863,7 +2868,7 @@ L_32ee:
         goto L_3312;
 
 L_3312:
-    return 0x0;
+    return 0;
 
 L_3318:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
@@ -2908,7 +2913,7 @@ L_3444:
     GlobalPD.psz = &(szPopupBuffer);
     CchGetString(idsSettlersDelightEngineMayMountedDesignsBased, szPopupBuffer);
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_3480:
     if ((hs.grhst != hstSpecialM))
@@ -2934,7 +2939,7 @@ L_34a5:
     GlobalPD.psz = &(szPopupBuffer);
     CchGetString(idsOrbitalConstructionModuleMayMountedDesignsBased, szPopupBuffer);
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_34e1:
     if ((hs.grhst != hstSpecialE))
@@ -2960,7 +2965,7 @@ L_3520:
     GlobalPD.psz = &(szPopupBuffer);
     CchGetString(idsTransportCloakingModuleMayPlacedHullCould, szPopupBuffer);
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_3559:
     SetBuildSelection(iSrc);
@@ -2973,7 +2978,7 @@ L_356d:
     GlobalPD.part = part;
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_3599:
     if ((mdBuild == mdBuildEdit))
@@ -2982,7 +2987,7 @@ L_3599:
         goto L_35a3;
 
 L_35a3:
-    return 0x0;
+    return 0;
 
 L_35a9:
     ptTileSize.y = 64;
@@ -3183,7 +3188,7 @@ L_3a41:
     DeleteDC(hdcMemFull);
     i = IDropPart(pt, hs, iSrc, 0);
     ReleaseDC(hwnd, hdc);
-    return 0x1;
+    return 1;
 }
 
 void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -3206,7 +3211,8 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     RECT     rc;
     int16_t  iSel;
     char    *pch;
-    uint16_t t_merge_3caf_0001;
+    HULDEF  *t_call_3c58;
+    StringId t_merge_3caf_0001;
     uint16_t t_merge_3cd7_0001;
     uint16_t t_merge_3f7f_0001;
 
@@ -3286,9 +3292,9 @@ L_3c26:
 L_3c2c:
     hsShip.grhst = lpshdefBuild->hul.rghs[iselSlot].grhst;
     HIWORD(hsShip) = HIWORD(lpshdefBuild->hul.rghs[iselSlot]);
-    LphuldefFromId(lpshdefBuild->hul.ihuldef);
-    /* untranslated: hsHul.grhst = farseg(callresult(HULDEF *)):[((faroff(callresult(HULDEF *)) + 0x3a) + (iselSlot * 0x4))] */
-    /* untranslated: HIWORD(hsHul) = farseg(callresult(HULDEF *)):[((faroff(callresult(HULDEF *)) + 0x3a) + (iselSlot * 0x4))+0x2] */
+    t_call_3c58 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
+    hsHul.grhst = t_call_3c58->hul.rghs[iselSlot].grhst;
+    HIWORD(hsHul) = HIWORD(t_call_3c58->hul.rghs[iselSlot]);
     if ((hsShip.cItem != 0x0))
         goto HullPart;
     else
@@ -3301,11 +3307,11 @@ L_3c94:
         goto L_3ca6;
 
 L_3ca6:
-    t_merge_3caf_0001 = 0x2f9;
+    t_merge_3caf_0001 = idsRequiresExactly;
     goto L_3caf;
 
 L_3cac:
-    t_merge_3caf_0001 = 0x2fa;
+    t_merge_3caf_0001 = idsCanHold;
 
 L_3caf:
     i = CchGetString(t_merge_3caf_0001, szWork);
@@ -3350,7 +3356,7 @@ L_3d35:
         goto L_3d51;
 
 L_3d51:
-    /* untranslated: grhst = (grhst & (rghstCat[i] ~ 0x0)) */
+    grhst = (grhst & (~rghstCat[i]));
     goto L_3d70;
 
 L_3d63:
@@ -3440,7 +3446,7 @@ L_3e58:
         goto L_3e68;
 
 L_3e68:
-    /* untranslated: call strcpy(part[0xfffe:2](pch), part[0xffff:2](pch)) -> callresult(char *) */
+    strcpy((pch - 2), (pch - 1));
 
 L_3e84:
     if ((grhst == 0x0))
@@ -3814,6 +3820,7 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
     uint16_t t_merge_478e_0001;
     uint16_t t_merge_478e_0002;
     uint16_t t_merge_4957_0001;
+    char    *t_call_4bf7;
     char    *t_merge_4c09_0001;
     uint16_t t_merge_4ee0_0001;
     uint16_t t_merge_4ff3_0001;
@@ -4175,8 +4182,8 @@ L_4bea:
         goto L_4bf3;
 
 L_4bf3:
-    PszGetCompressedString(idsNone);
-    /* untranslated: t_merge_4c09_0001 = callresult(char *) */
+    t_call_4bf7 = PszGetCompressedString(idsNone);
+    t_merge_4c09_0001 = t_call_4bf7;
     goto L_4c09;
 
 L_4c04:
@@ -4268,7 +4275,7 @@ L_4e47:
     j = (SpdOfShip(0x0, 0, 0x0, 0, lpshdefBuild) + 1);
 
 L_4e75:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsDS), i, &(rgszSpeed[j * 0x3]));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsDS), i, &(rgszSpeed[(j * 3)]));
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((dyArial8 <= 14))
         goto L_4edd;
@@ -4567,6 +4574,7 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     uint16_t t_merge_5646_0001;
     uint16_t scratch_bp_m1c;
     uint16_t scratch_bp_m1e;
+    HULDEF  *t_call_5761;
     uint16_t t_merge_58c1_0001;
     uint16_t scratch_bp_m1a;
 
@@ -4704,17 +4712,17 @@ L_5724:
     AdvanceTutor();
 
 L_5729:
-    return 0x1;
+    return 1;
 
 L_572f:
-    return 0x0;
+    return 0;
 
 L_5735:
     hsDst.grhst = lpshdefBuild->hul.rghs[i].grhst;
     HIWORD(hsDst) = HIWORD(lpshdefBuild->hul.rghs[i]);
-    LphuldefFromId(lpshdefBuild->hul.ihuldef);
-    /* untranslated: hsHul.grhst = farseg(callresult(HULDEF *)):[((faroff(callresult(HULDEF *)) + 0x3a) + (i * 0x4))] */
-    /* untranslated: HIWORD(hsHul) = farseg(callresult(HULDEF *)):[((faroff(callresult(HULDEF *)) + 0x3a) + (i * 0x4))+0x2] */
+    t_call_5761 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
+    hsHul.grhst = t_call_5761->hul.rghs[i].grhst;
+    HIWORD(hsHul) = HIWORD(t_call_5761->hul.rghs[i]);
     if (((hsHul.grhst & 0x1) == 0x0))
         goto L_57a4;
     else
@@ -4730,7 +4738,7 @@ L_57a4:
         goto L_57af;
 
 L_57af:
-    return 0x2;
+    return 2;
 
 L_57b5:
     if ((hsDst.cItem >= hsHul.cItem))
@@ -4778,7 +4786,7 @@ L_582f:
     MessageBeep(0x0);
 
 L_5838:
-    return 0x3;
+    return 3;
 
 L_583e:
     if ((fNoModify != 0))
@@ -4831,17 +4839,17 @@ L_59df:
     AdvanceTutor();
 
 L_59e4:
-    return 0xffff;
+    return -1;
 }
 
 void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
-    COLORREF cr;
-    COLORREF crForeSav;
-    int16_t  ibmp;
-    int16_t  bkSav;
-    RECT     rc;
-    uint16_t t_merge_5a41_0001;
-    COLORREF t_merge_5b5f_0001;
+    COLORREF      cr;
+    COLORREF      crForeSav;
+    int16_t       ibmp;
+    int16_t       bkSav;
+    RECT          rc;
+    StockObjectId t_merge_5a41_0001;
+    COLORREF      t_merge_5b5f_0001;
 
 L_59f0:
     CopyRect(&(rc), &(lpdis->rcItem));
@@ -4851,11 +4859,11 @@ L_59f0:
         goto L_5a38;
 
 L_5a38:
-    t_merge_5a41_0001 = 0x4;
+    t_merge_5a41_0001 = BLACK_BRUSH;
     goto L_5a41;
 
 L_5a3e:
-    t_merge_5a41_0001 = 0x0;
+    t_merge_5a41_0001 = WHITE_BRUSH;
 
 L_5a41:
     FillRect(lpdis->hDC, &(lpdis->rcItem), GetStockObject(t_merge_5a41_0001));
@@ -5137,7 +5145,8 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
     PART     part;
     uint16_t t_merge_5f7d_0001;
     uint16_t t_merge_5ff1_0001;
-    uint16_t t_merge_6043_0001;
+    HWND     t_call_6005;
+    int16_t  t_merge_6043_0001;
     uint16_t t_merge_608f_0001;
     SHDEF   *t_merge_611c_0001;
     uint16_t t_merge_63ac_0001;
@@ -5259,7 +5268,7 @@ L_5fee:
 
 L_5ff1:
     CshQueued((t_merge_5ff1_0001 + i), &(fProgress), 0);
-    GetDlgItem(hwndSlotDlg, IDC_EDIT);
+    t_call_6005 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
     if ((LOWORD(lpshdef[i].cExist) != 0x0))
         goto L_6040;
     else
@@ -5278,14 +5287,14 @@ L_6031:
         goto L_603a;
 
 L_603a:
-    t_merge_6043_0001 = 0x1;
+    t_merge_6043_0001 = 1;
     goto L_6043;
 
 L_6040:
-    t_merge_6043_0001 = 0x0;
+    t_merge_6043_0001 = 0;
 
 L_6043:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_6043_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_6005, t_merge_6043_0001);
     EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 1);
     if ((LOWORD(lpshdef[i].cExist) != 0x0))
         goto L_6086;
@@ -5564,6 +5573,7 @@ void FillBuildPartsLB(HWND hwndLB, int16_t grbit) {
     char    sz[200];
     int16_t grbitCur;
     PART    part;
+    int16_t t_call_644f;
 
 L_63e8:
     grbitCur = 1;
@@ -5583,9 +5593,12 @@ L_6426:
 
 L_6436:
     part.hs.iItem = i;
-    FLookupPart(&(part));
-    /* untranslated: mdAvail = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) == 0 ? L_650c : L_645f */
+    t_call_644f = FLookupPart(&(part));
+    mdAvail = t_call_644f;
+    if ((t_call_644f == 0))
+        goto L_650c;
+    else
+        goto L_645f;
 
 L_645f:
 
@@ -5751,7 +5764,7 @@ L_6742:
         goto L_674b;
 
 L_674b:
-    return 0x0;
+    return 0;
 }
 
 int32_t FakeListProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
@@ -5771,7 +5784,7 @@ L_676a:
 
 L_678e:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_67a3:
     if ((LOWORD(lParam) >= 0x40))
@@ -5813,7 +5826,7 @@ L_6813:
         goto L_6837;
 
 L_6837:
-    return 0x0;
+    return 0;
 
 L_6840:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
@@ -5822,11 +5835,11 @@ L_6840:
     FLookupPart(HIWORD(GlobalPD));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));
-    return 0x0;
+    return 0;
 
 L_68ca:
     FTrackSlot(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, 1, 0);
-    return 0x0;
+    return 0;
 
 L_6909:
     if ((msg == WM_SETCURSOR))

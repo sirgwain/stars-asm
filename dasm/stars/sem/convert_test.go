@@ -129,9 +129,32 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "return setlobyte(nyb, rgchcompstrlower)"
+	want := "return lobyte(rgchcompstrlower)"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
+// TestConvertUnaryMachineValues verifies NEG and NOT lose their synthetic
+// zero operand when converted to semantic expressions.
+func TestConvertUnaryMachineValues(t *testing.T) {
+	converter := &machineConverter{}
+	value := machine.ConstVal(7)
+
+	for _, tt := range []struct {
+		name string
+		op   machine.ValueOp
+		want string
+	}{
+		{name: "neg", op: machine.ValueOpNeg, want: "neg(0x7)"},
+		{name: "not", op: machine.ValueOpNot, want: "~(0x7)"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := converter.convertValue(machine.BinaryVal(tt.op, value, machine.ConstVal(0)))
+			if formatted := FormatExpr(got); formatted != tt.want {
+				t.Fatalf("converted expression = %q, want %q", formatted, tt.want)
+			}
+		})
 	}
 }
 

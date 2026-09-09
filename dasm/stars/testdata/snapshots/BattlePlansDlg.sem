@@ -48,30 +48,30 @@ L_06d8:
 
 L_0714:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
-    call GetDlgItem(hwnd, IDC_RENAME) -> callresult(HWND)
+    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_073d
     branch iPlanSelDlg <= 0 ? L_0753 : L_074d
 
 L_074d:
-    t_merge_0756_0001 = 0x1
+    t_merge_0756_0001 = 1
     goto L_0756
 
 L_0753:
-    t_merge_0756_0001 = 0x0
+    t_merge_0756_0001 = 0
 
 L_0756:
-    call EnableWindow(callresult(HWND), t_merge_0756_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> callresult(HWND)
+    call EnableWindow(t_call_073d, t_merge_0756_0001) -> callresult(int16_t)
+    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_0763
     branch iPlanSelDlg <= 0 ? L_0779 : L_0773
 
 L_0773:
-    t_merge_077c_0001 = 0x1
+    t_merge_077c_0001 = 1
     goto L_077c
 
 L_0779:
-    t_merge_077c_0001 = 0x0
+    t_merge_077c_0001 = 0
 
 L_077c:
-    call EnableWindow(callresult(HWND), t_merge_077c_0001) -> callresult(int16_t)
+    call EnableWindow(t_call_0763, t_merge_077c_0001) -> callresult(int16_t)
     i = 408
     goto L_07b7
 
@@ -163,7 +163,7 @@ L_0a57:
     call AdvanceTutor() -> callresult(void)
 
 L_0a5c:
-    return 0x1
+    return 1
 
 L_0a62:
     idc = 1053
@@ -195,7 +195,7 @@ L_0abf:
 L_0ad8:
     call GetClientRect(hwnd, &rc) -> callresult(void)
     call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
-    return 0x1
+    return 1
 
 L_0b00:
     branch wParam == 0x1 ? L_0b12 : L_0b09
@@ -221,7 +221,7 @@ L_0b97:
 
 L_0ba9:
     iPlanSelDlg = -1
-    return 0x1
+    return 1
 
 L_0bb8:
     branch wParam != 0x41d ? L_0c05 : L_0bc2
@@ -357,30 +357,30 @@ L_10c3:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
 
 L_10e5:
-    call GetDlgItem(hwnd, IDC_RENAME) -> callresult(HWND)
+    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_10ec
     branch iPlanSelDlg <= 0 ? L_1102 : L_10fc
 
 L_10fc:
-    t_merge_1105_0001 = 0x1
+    t_merge_1105_0001 = 1
     goto L_1105
 
 L_1102:
-    t_merge_1105_0001 = 0x0
+    t_merge_1105_0001 = 0
 
 L_1105:
-    call EnableWindow(callresult(HWND), t_merge_1105_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> callresult(HWND)
+    call EnableWindow(t_call_10ec, t_merge_1105_0001) -> callresult(int16_t)
+    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_1112
     branch iPlanSelDlg <= 0 ? L_1128 : L_1122
 
 L_1122:
-    t_merge_112b_0001 = 0x1
+    t_merge_112b_0001 = 1
     goto L_112b
 
 L_1128:
-    t_merge_112b_0001 = 0x0
+    t_merge_112b_0001 = 0
 
 L_112b:
-    call EnableWindow(callresult(HWND), t_merge_112b_0001) -> callresult(int16_t)
+    call EnableWindow(t_call_1112, t_merge_112b_0001) -> callresult(int16_t)
     goto L_16f8
 
 L_1134:
@@ -390,7 +390,7 @@ L_113e:
     branch rgcbtlplan[idPlayer] != 0xf ? L_1157 : L_1151
 
 L_1151:
-    return 0x0
+    return 0
 
 L_1157:
     branch fDirtyPlan == 0 ? L_11b9 : L_1161
@@ -494,30 +494,30 @@ L_1537:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), CB_LIMITTEXT, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     wParam = 0x41f
-    call GetDlgItem(hwnd, IDC_RENAME) -> callresult(HWND)
+    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_15f1
     branch iPlanSelDlg <= 0 ? L_1607 : L_1601
 
 L_1601:
-    t_merge_160a_0001 = 0x1
+    t_merge_160a_0001 = 1
     goto L_160a
 
 L_1607:
-    t_merge_160a_0001 = 0x0
+    t_merge_160a_0001 = 0
 
 L_160a:
-    call EnableWindow(callresult(HWND), t_merge_160a_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> callresult(HWND)
+    call EnableWindow(t_call_15f1, t_merge_160a_0001) -> callresult(int16_t)
+    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_1617
     branch iPlanSelDlg <= 0 ? L_162d : L_1627
 
 L_1627:
-    t_merge_1630_0001 = 0x1
+    t_merge_1630_0001 = 1
     goto L_1630
 
 L_162d:
-    t_merge_1630_0001 = 0x0
+    t_merge_1630_0001 = 0
 
 L_1630:
-    call EnableWindow(callresult(HWND), t_merge_1630_0001) -> callresult(int16_t)
+    call EnableWindow(t_call_1617, t_merge_1630_0001) -> callresult(int16_t)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0) -> callresult(LRESULT)
     i = btlplan.iplrAttack
     branch i < (idPlayer + 4) ? L_1680 : L_167c
@@ -534,7 +534,7 @@ L_16a5:
 
 L_16ae:
     call WinHelp(hwnd, szHelpFile, 0x1, 0x439) -> callresult(int16_t)
-    return 0x1
+    return 1
 
 
 L_16d5:
@@ -550,5 +550,5 @@ L_16ed:
     branch message == WM_COMMAND ? L_0b00 : L_16f8
 
 L_16f8:
-    return 0x0
+    return 0
 

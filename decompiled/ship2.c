@@ -13,7 +13,7 @@ int16_t ZipOrderDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) 
     int16_t        xCtr;
     XferActionType iAction;
     int16_t (**lpProc)();
-    uint16_t t_merge_0524_0001;
+    int16_t t_merge_0524_0001;
 
 L_0000:
     goto L_07f8;
@@ -89,12 +89,12 @@ L_0175:
     AdvanceTutor();
 
 L_017a:
-    return 0x1;
+    return 1;
 
 L_0180:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_01a8:
     i = 1073;
@@ -183,7 +183,7 @@ L_0444:
 
 L_0470:
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_0485:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -230,11 +230,11 @@ L_04f6:
         goto L_051b;
 
 L_051b:
-    t_merge_0524_0001 = 0x1;
+    t_merge_0524_0001 = 1;
     goto L_0524;
 
 L_0521:
-    t_merge_0524_0001 = 0x0;
+    t_merge_0524_0001 = 0;
 
 L_0524:
     EndDialog(hwnd, t_merge_0524_0001);
@@ -247,7 +247,7 @@ L_053d:
     AdvanceTutor();
 
 L_0542:
-    return 0x1;
+    return 1;
 
 L_054b:
     if ((wParam == 0x816))
@@ -358,7 +358,7 @@ L_07c8:
 
 L_07d1:
     WinHelp(hwnd, szHelpFile, 0x1, 0x44a);
-    return 0x1;
+    return 1;
 
 L_07f8:
     if ((message == WM_PAINT))
@@ -391,7 +391,7 @@ L_0818:
         goto L_0823;
 
 L_0823:
-    return 0x0;
+    return 0;
 }
 
 void EnableZipBtns(HWND hwnd, int16_t iSel) {
@@ -407,7 +407,7 @@ L_0832:
 int16_t RenameZipDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     StringId ids;
     RECT     rc;
-    uint16_t t_merge_09e8_0001;
+    int16_t  t_merge_09e8_0001;
     uint16_t t_merge_0a23_0001;
 
 L_0880:
@@ -432,12 +432,12 @@ L_08a6:
     SendDlgItemMessage(hwnd, 268, 0x415, 0xc, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, ptStickyRenameDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_0931:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0959:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -478,15 +478,15 @@ L_09c0:
         goto L_09df;
 
 L_09df:
-    t_merge_09e8_0001 = 0x1;
+    t_merge_09e8_0001 = 1;
     goto L_09e8;
 
 L_09e5:
-    t_merge_09e8_0001 = 0x0;
+    t_merge_09e8_0001 = 0;
 
 L_09e8:
     EndDialog(hwnd, t_merge_09e8_0001);
-    return 0x1;
+    return 1;
 
 L_09f7:
     if ((wParam != 0x76))
@@ -509,7 +509,7 @@ L_0a1f:
 
 L_0a23:
     WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_0a23_0001));
-    return 0x1;
+    return 1;
 
 L_0a36:
     if ((message == WM_ERASEBKGND))
@@ -536,13 +536,13 @@ L_0a4e:
         goto L_0a59;
 
 L_0a59:
-    return 0x0;
+    return 0;
 }
 
 int16_t RenameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    RECT     rc;
-    int32_t  lSel;
-    uint16_t t_merge_0bcd_0001;
+    RECT    rc;
+    int32_t lSel;
+    int16_t t_merge_0bcd_0001;
 
 L_0a68:
     goto L_0ccc;
@@ -553,12 +553,12 @@ L_0a77:
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, ptStickyRenameDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_0b03:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0b2b:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -600,15 +600,15 @@ L_0ba5:
         goto L_0bc4;
 
 L_0bc4:
-    t_merge_0bcd_0001 = 0x1;
+    t_merge_0bcd_0001 = 1;
     goto L_0bcd;
 
 L_0bca:
-    t_merge_0bcd_0001 = 0x0;
+    t_merge_0bcd_0001 = 0;
 
 L_0bcd:
     EndDialog(hwnd, t_merge_0bcd_0001);
-    return 0x1;
+    return 1;
 
 L_0bdc:
     if ((wParam != 0x10c))
@@ -653,7 +653,7 @@ L_0c9c:
 
 L_0ca5:
     WinHelp(hwnd, szHelpFile, 0x1, 0x447);
-    return 0x1;
+    return 1;
 
 L_0ccc:
     if ((message == WM_ERASEBKGND))
@@ -680,7 +680,7 @@ L_0ce4:
         goto L_0cef;
 
 L_0cef:
-    return 0x0;
+    return 0;
 }
 
 int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist) {
@@ -703,6 +703,7 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
     int16_t   dpPerShdefOld;
     int16_t   cshDamagedOld;
     FLEET     flDead;
+    int16_t   t_call_0e31;
 
 L_0cfe:
     cshdef = 0;
@@ -761,16 +762,16 @@ L_0dcd:
 L_0de0:
     cshdef = (cshdef + 1);
     cshOrig = (cshOrig + (uint32_t)(flSrc.rgcsh[ishdef]));
-    MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &(rgpct[ishdef]));
+    t_call_0e31 = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &(rgpct[ishdef]));
     goto L_0eca;
 
 L_0e3c:
     FSendPlrMsg(flSrc.iPlayer, 227, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
-    return 0x0;
+    return 0;
 
 L_0e75:
     FSendPlrMsg(flSrc.iPlayer, 228, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
-    return 0x0;
+    return 0;
 
 L_0eae:
     cshdef = (cshdef - 1);
@@ -781,16 +782,28 @@ L_0eb6:
     goto L_0eed;
 
 L_0eca:
-    /* untranslated: branch callresult(int16_t) == -2 ? L_0e75 : L_0ed2 */
+    if ((t_call_0e31 == -2))
+        goto L_0e75;
+    else
+        goto L_0ed2;
 
 L_0ed2:
-    /* untranslated: branch callresult(int16_t) == -1 ? L_0e3c : L_0eda */
+    if ((t_call_0e31 == -1))
+        goto L_0e3c;
+    else
+        goto L_0eda;
 
 L_0eda:
-    /* untranslated: branch callresult(int16_t) == 0 ? L_0eae : L_0ee2 */
+    if ((t_call_0e31 == 0))
+        goto L_0eae;
+    else
+        goto L_0ee2;
 
 L_0ee2:
-    /* untranslated: branch callresult(int16_t) == 1 ? L_0eb6 : L_0eed */
+    if ((t_call_0e31 == 1))
+        goto L_0eb6;
+    else
+        goto L_0eed;
 
 L_0eed:
     ishdef = (ishdef + 1);
@@ -810,7 +823,7 @@ L_0efc:
 LKilledEmAll:
     lpfl->fDead = 0x1;
     FSendPlrMsg(flSrc.iPlayer, 231, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
-    return 0x0;
+    return 0;
 
 L_0f53:
     memset(&(flDead), 0, 0x7c);
@@ -864,7 +877,7 @@ L_103d:
         goto L_1075;
 
 L_1075:
-    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT) * (uint32_t)(flSrc.rgdv[0x0].pctSh))) / 0x64)));
+    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT) * (uint32_t)(flSrc.rgdv[ishdef].pctSh))) / 0x64)));
     if ((cshDamagedOld != 0))
         goto L_10c0;
     else
@@ -909,7 +922,7 @@ L_1115:
         goto L_1124;
 
 L_1124:
-    if ((Random(500) >= flSrc.rgdv[0].pctDp))
+    if ((Random(500) >= flSrc.rgdv[ishdef].pctDp))
         goto L_10d8;
     else
         goto L_114d;
@@ -933,7 +946,7 @@ L_1179:
         goto L_118c;
 
 L_118c:
-    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(flSrc.rgdv[0x0].pctDp))) / 0x1f4)));
+    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(flSrc.rgdv[ishdef].pctDp))) / 0x1f4)));
     if ((dpPerShdefOld != 0))
         goto L_11db;
     else
@@ -989,8 +1002,8 @@ L_12ce:
     pct = 1;
 
 L_12d4:
-    flSrc.rgdv[0].pctDp = pct;
-    flSrc.rgdv[0].pctSh = 0x64;
+    flSrc.rgdv[ishdef].pctDp = pct;
+    flSrc.rgdv[ishdef].pctSh = 0x64;
 
 L_1329:
     flSrc.rgcsh[ishdef] = cshT;
@@ -1109,7 +1122,7 @@ L_14d9:
 
 L_150f:
     lpfl = flSrc;
-    return 0x1;
+    return 1;
 }
 
 int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg) {
@@ -1163,7 +1176,7 @@ L_15e1:
         goto L_15e8;
 
 L_15e8:
-    return 0xffff;
+    return -1;
 
 L_15f1:
     if ((partSrc.pspecialsb->grAbility <= 0))
@@ -1214,7 +1227,7 @@ L_167c:
         goto L_1683;
 
 L_1683:
-    return 0xfffe;
+    return -2;
 
 L_1689:
     if ((SIGNHIWORD(dDist) < HIWORD(dBaseDistance)))
@@ -1255,7 +1268,7 @@ L_16f9:
 
 TotalDeath:
     *(ppctDmg) = 100;
-    return 0x0;
+    return 0;
 
 L_170f:
     if ((wt <= partSrc.pspecialsb->grAbility))
@@ -1333,7 +1346,7 @@ L_1847:
 
 L_186d:
     *(ppctDmg) = LOWORD((int32_t)(((0x2710 - pctSurvive) / 0x64)));
-    return 0x1;
+    return 1;
 }
 
 void KillUsedWaypoints() {
@@ -1937,7 +1950,7 @@ L_22fb:
         goto L_2303;
 
 L_2303:
-    return 0x1;
+    return 1;
 
 L_2309:
     i = (i + 1);
@@ -1949,7 +1962,7 @@ L_230d:
         goto L_2316;
 
 L_2316:
-    return 0x0;
+    return 0;
 }
 
 int16_t FScout(FLEET *lpfl) {
@@ -1980,7 +1993,7 @@ L_23a1:
         goto L_23a9;
 
 L_23a9:
-    return 0x1;
+    return 1;
 
 L_23af:
     i = (i + 1);
@@ -1992,7 +2005,7 @@ L_23b3:
         goto L_23bc;
 
 L_23bc:
-    return 0x0;
+    return 0;
 }
 
 void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
@@ -2272,7 +2285,7 @@ L_2744:
     return cMineTot;
 
 L_274d:
-    return 0xfa0;
+    return 4000;
 }
 
 int32_t PctTerraFromLpfl(FLEET *lpfl) {
@@ -2560,7 +2573,7 @@ L_2af4:
         goto L_2afd;
 
 L_2afd:
-    return 0x5f5e100;
+    return 100000000;
 
 L_2b09:
     return (uint32_t)((cMineTot * 10));
@@ -2616,7 +2629,7 @@ L_2bd9:
         goto L_2be2;
 
 L_2be2:
-    return 0x0;
+    return 0;
 
 L_2beb:
     return lPowTot;
@@ -2721,7 +2734,7 @@ L_2d3d:
         goto L_2d46;
 
 L_2d46:
-    return 0x0;
+    return 0;
 
 L_2d4f:
     return lPow;
@@ -2945,7 +2958,7 @@ L_2fc6:
         goto L_2fcf;
 
 L_2fcf:
-    return 0x0;
+    return 0;
 
 L_2fd5:
     if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raStealth))
@@ -3021,7 +3034,7 @@ L_30c0:
         goto L_30c9;
 
 L_30c9:
-    return 0x0;
+    return 0;
 
 L_30cf:
     cScore = LOWORD(cPts);
@@ -3086,7 +3099,7 @@ L_315e:
     return (t_merge_315e_0001 + 0x60);
 
 L_3164:
-    return 0x62;
+    return 98;
 }
 
 int16_t CPtsCloakFromLphs(HS *lphs) {
@@ -3101,7 +3114,7 @@ L_3170:
         goto L_3195;
 
 L_3195:
-    return 0x0;
+    return 0;
 
 L_319b:
     goto L_32f8;
@@ -3279,14 +3292,16 @@ L_336a:
 }
 
 int16_t MergeFleetsDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
-    int16_t  i;
-    RECT     rc;
-    char     szT[80];
-    char    *psz;
-    uint16_t t_merge_3487_0001;
-    LRESULT  t_call_3557;
-    uint16_t t_merge_35e1_0001;
-    uint16_t t_merge_365d_0001;
+    int16_t i;
+    RECT    rc;
+    char    szT[80];
+    char   *psz;
+    HWND    t_call_343f;
+    WPARAM  t_merge_3487_0001;
+    LRESULT t_call_3557;
+    int16_t t_merge_35e1_0001;
+    HWND    t_call_3640;
+    WPARAM  t_merge_365d_0001;
 
 L_3376:
     goto L_3684;
@@ -3309,7 +3324,7 @@ L_3407:
 
 L_3417:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), CB_LIMITTEXT, 0x0, szT);
-    GetDlgItem(hwnd, IDC_U16_0x0051);
+    t_call_343f = GetDlgItem(hwnd, IDC_U16_0x0051);
     if ((vcflMerge == 2))
         goto L_347e;
     else
@@ -3329,7 +3344,7 @@ L_3484:
     t_merge_3487_0001 = 0x0;
 
 L_3487:
-    /* untranslated: call SendMessage(callresult(HWND), CB_GETCOUNT, t_merge_3487_0001, sext16to32(i)) -> callresult(LRESULT) */
+    SendMessage(t_call_343f, CB_GETCOUNT, t_merge_3487_0001, (uint32_t)(i));
     i = (i + 1);
 
 L_3497:
@@ -3348,12 +3363,12 @@ L_34b5:
     AdvanceTutor();
 
 L_34ba:
-    return 0x1;
+    return 1;
 
 L_34c0:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_34e8:
     if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x0051)))
@@ -3425,7 +3440,7 @@ L_35a6:
         goto L_35b3;
 
 L_35b3:
-    return 0x1;
+    return 1;
 
 L_35b9:
     StickyDlgPos(hwnd, ptStickyMergeFleetsDlg.x, 0);
@@ -3435,15 +3450,15 @@ L_35b9:
         goto L_35d8;
 
 L_35d8:
-    t_merge_35e1_0001 = 0x1;
+    t_merge_35e1_0001 = 1;
     goto L_35e1;
 
 L_35de:
-    t_merge_35e1_0001 = 0x0;
+    t_merge_35e1_0001 = 0;
 
 L_35e1:
     EndDialog(hwnd, t_merge_35e1_0001);
-    return 0x1;
+    return 1;
 
 L_35f0:
     if ((wParam != 0x76))
@@ -3453,7 +3468,7 @@ L_35f0:
 
 L_35f9:
     WinHelp(hwnd, szHelpFile, 0x1, 0x453);
-    return 0x1;
+    return 1;
 
 L_361d:
     if ((wParam == 0x7f8))
@@ -3472,7 +3487,7 @@ L_3631:
     goto L_366d;
 
 L_3639:
-    GetDlgItem(hwnd, IDC_U16_0x0051);
+    t_call_3640 = GetDlgItem(hwnd, IDC_U16_0x0051);
     if ((wParam != 0x7f8))
         goto L_365a;
     else
@@ -3486,7 +3501,7 @@ L_365a:
     t_merge_365d_0001 = 0x0;
 
 L_365d:
-    /* untranslated: call SendMessage(callresult(HWND), CB_GETCOUNT, t_merge_365d_0001, sext16to32(i)) -> callresult(LRESULT) */
+    SendMessage(t_call_3640, CB_GETCOUNT, t_merge_365d_0001, (uint32_t)(i));
     i = (i + 1);
 
 L_366d:
@@ -3496,7 +3511,7 @@ L_366d:
         goto L_3678;
 
 L_3678:
-    return 0x1;
+    return 1;
 
 L_3684:
     if ((msg == WM_ERASEBKGND))
@@ -3523,7 +3538,7 @@ L_369c:
         goto L_36a7;
 
 L_36a7:
-    return 0x0;
+    return 0;
 }
 
 void MarkTechsSeen(HUL *lphul, int16_t iplr) {

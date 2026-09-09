@@ -347,10 +347,10 @@ L_0a75:
 
 L_0a7f:
     AlertSz(PszFormatIds(idsUnableLoadBitmaps, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_0aa6:
-    return 0x1;
+    return 1;
 }
 
 int16_t FCreateFonts(HDC hdc) {
@@ -384,7 +384,7 @@ L_0b13:
         goto L_0b1c;
 
 L_0b1c:
-    /* untranslated: plf->lfHeight = (MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72) neg 0) */
+    plf->lfHeight = (-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     i = 0;
     goto L_0b82;
 
@@ -401,11 +401,11 @@ L_0b82:
 
 L_0b8b:
     strcpy(plf->lfFaceName, rgszArial);
-    /* untranslated: plf->lfHeight = (MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72) neg 0) */
+    plf->lfHeight = (-MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     rghfontArial6 = CreateFontIndirect(plf);
-    /* untranslated: plf->lfHeight = (MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72) neg 0) */
+    plf->lfHeight = (-MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     rghfontArial7 = CreateFontIndirect(plf);
-    /* untranslated: plf->lfHeight = (MulDiv(8, GetDeviceCaps(hdc, LOGPIXELSY), 72) neg 0) */
+    plf->lfHeight = (-MulDiv(8, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     i = 0;
     goto L_0c66;
 
@@ -448,6 +448,8 @@ L_0d6a:
 int16_t InitInstance(int16_t nCmdShow) {
     int16_t  sw;
     RECT     rc;
+    HACCEL   t_call_0e11;
+    HACCEL   t_call_0e33;
     uint16_t t_merge_0e82_0001;
 
 L_0d70:
@@ -464,23 +466,29 @@ L_0d70:
         goto L_0dff;
 
 L_0dff:
-    return 0x0;
+    return 0;
 
 L_0e05:
-    LoadAccelerators(hInst, MAKEINTRESOURCE(0x74));
-    /* untranslated: hAccel = callresult(HACCEL) */
-    /* untranslated: branch callresult(HACCEL) != 0x0 ? L_0e27 : L_0e21 */
+    t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(0x74));
+    hAccel = t_call_0e11;
+    if ((t_call_0e11 != 0x0))
+        goto L_0e27;
+    else
+        goto L_0e21;
 
 L_0e21:
-    return 0x0;
+    return 0;
 
 L_0e27:
-    LoadAccelerators(hInst, MAKEINTRESOURCE(0x438));
-    /* untranslated: hAccelTitle = callresult(HACCEL) */
-    /* untranslated: branch callresult(HACCEL) != 0x0 ? L_0e49 : L_0e43 */
+    t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(0x438));
+    hAccelTitle = t_call_0e33;
+    if ((t_call_0e33 != 0x0))
+        goto L_0e49;
+    else
+        goto L_0e43;
 
 L_0e43:
-    return 0x0;
+    return 0;
 
 L_0e49:
     if ((nCmdShow == 1))
@@ -517,7 +525,7 @@ L_0e82:
 L_0e85:
     ShowWindow(hwndFrame, sw);
     ShowWindow(hwndFrame, SW_HIDE);
-    return 0x1;
+    return 1;
 }
 
 void InitTiles() {
@@ -714,7 +722,7 @@ L_116f:
         goto L_1178;
 
 L_1178:
-    /* untranslated: rg[i] = (rg[i] neg 0) */
+    rg[i] = (-rg[i]);
 
 L_1192:
     i = (i + 1);
@@ -1455,7 +1463,7 @@ L_1dff:
         goto L_1e4f;
 
 L_1e4f:
-    /* untranslated: byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))] = 0x0 */
+    vrgszMRU[(i * 256)] = 0;
 
 L_1e67:
     i = (i + 1);
@@ -1472,7 +1480,10 @@ L_1e74:
     goto L_1efd;
 
 L_1e82:
-    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))]) == 0x0 ? L_1ef9 : L_1ea2 */
+    if (((uint16_t)(vrgszMRU[(i * 256)]) == 0))
+        goto L_1ef9;
+    else
+        goto L_1ea2;
 
 L_1ea2:
     if ((i == iPass))
@@ -1482,7 +1493,7 @@ L_1ea2:
 
 L_1ead:
     fstrcpy((vrgszMRU + (iPass * 256)), (vrgszMRU + (i * 256)));
-    /* untranslated: byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))] = 0x0 */
+    vrgszMRU[(i * 256)] = 0;
 
 L_1ef5:
     iPass = (iPass + 1);
@@ -1913,7 +1924,7 @@ L_2938:
 L_2948:
 
 L_294e:
-    strcpy(vrgZipProd[i], psz);
+    strcpy((0x22f6 + LOWORD((40 * i))), psz);
     psz = &(szWork);
     if (((uint16_t)(*(psz)) == 97))
         goto L_297e;

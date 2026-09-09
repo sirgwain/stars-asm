@@ -938,14 +938,17 @@ int32_t MessageWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     int16_t (**lpProc)();
     int16_t  fRet;
     int32_t  lSerial;
-    uint16_t t_merge_5ceb_0001;
+    char    *t_call_5cbd;
+    int16_t  t_merge_5ceb_0001;
     uint16_t t_merge_615b_0001;
-    uint16_t t_merge_6170_0001;
+    int16_t  t_merge_6170_0001;
     uint16_t t_merge_61df_0001;
     uint16_t t_merge_6236_0001;
     int16_t  t_62dd;
     uint16_t t_merge_6396_0001;
+    char    *t_call_66c5;
     char    *t_merge_66fb_0001;
+    char    *t_call_66f1;
     HWND     t_merge_7029_0001;
 
 L_5c92:
@@ -957,22 +960,22 @@ L_5ca1:
 
 L_5ca9:
     hwndMessage = hwnd;
-    PszGetCompressedString((i + 1356));
+    t_call_5cbd = PszGetCompressedString((i + 1356));
     if ((i != 3))
         goto L_5ce8;
     else
         goto L_5ce2;
 
 L_5ce2:
-    t_merge_5ceb_0001 = 0x32;
+    t_merge_5ceb_0001 = 50;
     goto L_5ceb;
 
 L_5ce8:
-    t_merge_5ceb_0001 = 0x2c;
+    t_merge_5ceb_0001 = 44;
 
 L_5ceb:
-    /* untranslated: rghwndMsgBtn[i] = CreateWindow("BUTTON", callresult(char *), WS_CHILD, 100, 100, t_merge_5ceb_0001, ((loword((0x3 * dyArial8)) >> 0x1) +
-     * 0xffff), hwnd, 0x0, hInst, 0x0) */
+    rghwndMsgBtn[i] =
+        CreateWindow("BUTTON", t_call_5cbd, WS_CHILD, 100, 100, t_merge_5ceb_0001, ((LOWORD((0x3 * dyArial8)) >> 0x1) + 0xffff), hwnd, 0x0, hInst, 0x0);
     SendMessage(rghwndMsgBtn[i], WM_SETFONT, rghfontArial8[1], 0);
     i = (i + 1);
 
@@ -1042,7 +1045,7 @@ L_5f6b:
 L_6059:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_6084:
     hcs = 0x0;
@@ -1055,7 +1058,7 @@ L_6084:
 
 L_60ba:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_60cf:
     pt.x = LOWORD(lParam);
@@ -1096,11 +1099,11 @@ L_615b:
         goto L_6167;
 
 L_6167:
-    t_merge_6170_0001 = 0x1;
+    t_merge_6170_0001 = 1;
     goto L_6170;
 
 L_616d:
-    t_merge_6170_0001 = 0x0;
+    t_merge_6170_0001 = 0;
 
 L_6170:
     SetFilteringGroups(idm, t_merge_6170_0001);
@@ -1389,13 +1392,13 @@ L_66ac:
         goto L_66c1;
 
 L_66c1:
-    PszGetCompressedString(idsEverybody);
-    /* untranslated: t_merge_66fb_0001 = callresult(char *) */
+    t_call_66c5 = PszGetCompressedString(idsEverybody);
+    t_merge_66fb_0001 = t_call_66c5;
     goto L_66fb;
 
 L_66d2:
-    PszPlayerName((lpmsgplr->iPlrTo - 1), 1, 1, 1, 0, 0x0);
-    /* untranslated: t_merge_66fb_0001 = callresult(char *) */
+    t_call_66f1 = PszPlayerName((lpmsgplr->iPlrTo - 1), 1, 1, 1, 0, 0x0);
+    t_merge_66fb_0001 = t_call_66f1;
 
 L_66fb:
     /* untranslated: cch = (cch + _wsprintf(lpb2k[cch], szT, &dword ds:[t_merge_66fb_0001], 0xd, 0xa)) */
@@ -2086,7 +2089,7 @@ L_71fc:
 L_7201:
 
 L_7207:
-    return 0x0;
+    return 0;
 }
 
 void SetMsgTitle(HWND hwnd) {
@@ -2100,12 +2103,12 @@ void SetMsgTitle(HWND hwnd) {
     RECT     rc;
     uint16_t t_merge_7268_0001;
     uint16_t t_merge_7300_0001;
-    uint16_t t_merge_740f_0001;
+    int16_t  t_merge_740f_0001;
     int16_t  t_7442;
-    uint16_t t_merge_75c4_0001;
-    uint16_t t_merge_75eb_0001;
+    int16_t  t_merge_75c4_0001;
+    int16_t  t_merge_75eb_0001;
     FLEET   *t_call_7723;
-    uint16_t t_merge_77d8_0001;
+    int16_t  t_merge_77d8_0001;
 
 L_7218:
     if ((hwnd == 0x0))
@@ -2215,11 +2218,11 @@ L_732e:
         goto L_7406;
 
 L_7406:
-    t_merge_740f_0001 = 0x1;
+    t_merge_740f_0001 = 1;
     goto L_740f;
 
 L_740c:
-    t_merge_740f_0001 = 0x0;
+    t_merge_740f_0001 = 0;
 
 L_740f:
     EnableWindow(rghwndMsgBtn[0], t_merge_740f_0001);
@@ -2294,11 +2297,11 @@ L_75a3:
         goto L_75bb;
 
 L_75bb:
-    t_merge_75c4_0001 = 0x1;
+    t_merge_75c4_0001 = 1;
     goto L_75c4;
 
 L_75c1:
-    t_merge_75c4_0001 = 0x0;
+    t_merge_75c4_0001 = 0;
 
 L_75c4:
     EnableWindow(rghwndMsgBtn[0], t_merge_75c4_0001);
@@ -2308,11 +2311,11 @@ L_75c4:
         goto L_75e2;
 
 L_75e2:
-    t_merge_75eb_0001 = 0x1;
+    t_merge_75eb_0001 = 1;
     goto L_75eb;
 
 L_75e8:
-    t_merge_75eb_0001 = 0x0;
+    t_merge_75eb_0001 = 0;
 
 L_75eb:
     EnableWindow(rghwndMsgBtn[2], t_merge_75eb_0001);
@@ -2509,11 +2512,11 @@ L_77c1:
         goto L_77cf;
 
 L_77cf:
-    t_merge_77d8_0001 = 0x1;
+    t_merge_77d8_0001 = 1;
     goto L_77d8;
 
 L_77d5:
-    t_merge_77d8_0001 = 0x0;
+    t_merge_77d8_0001 = 0;
 
 L_77d8:
     EnableWindow(rghwndMsgBtn[1], t_merge_77d8_0001);
@@ -2554,7 +2557,7 @@ L_783c:
     return (i + 1);
 
 L_7848:
-    return 0xffff;
+    return -1;
 
 L_784e:
     i = (i + 1);
@@ -2596,7 +2599,7 @@ L_78c5:
     return i;
 
 L_78cb:
-    return 0xffff;
+    return -1;
 }
 
 int16_t IMsgPrev(int16_t fFilteredOnly) {
@@ -2627,7 +2630,7 @@ L_7903:
     return (i - 1);
 
 L_790f:
-    return 0xffff;
+    return -1;
 
 L_7915:
     if ((i <= cMsg))
@@ -2669,7 +2672,7 @@ L_7987:
     return i;
 
 L_7990:
-    return 0xffff;
+    return -1;
 }
 
 void DecorateMsgTitleBar(HDC hdc, RECT *prc) {
@@ -2859,7 +2862,7 @@ L_7dd8:
         goto L_7deb;
 
 L_7deb:
-    return 0x1;
+    return htMsgCurrent;
 
 L_7df1:
     if ((pt.x < (rcMsgTitle.right - (rcMsgTitle.bottom - rcMsgTitle.top))))
@@ -2901,7 +2904,7 @@ L_7e59:
         goto L_7e64;
 
 L_7e64:
-    return 0x2;
+    return htMsgZoom;
 
 L_7e6d:
     if ((game.fSinglePlr != 0x0))
@@ -2916,18 +2919,20 @@ L_7e7f:
         goto L_7e97;
 
 L_7e97:
-    return 0x3;
+    return htMsgMode;
 
 L_7e9d:
-    return 0x0;
+    return htMsgNone;
 }
 
 int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
+    int16_t t_call_7ed6;
+
 L_7eaa:
-    FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0);
+    t_call_7ed6 = FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0);
 
 L_7ee1:
-    /* untranslated: return callresult(int16_t) */
+    return t_call_7ed6;
 }
 
 int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
@@ -2949,17 +2954,17 @@ L_7f27:
         goto L_7f30;
 
 L_7f30:
-    return 0x1;
+    return 1;
 
 L_7f36:
-    return 0x0;
+    return 0;
 
 L_7f3c:
     lpb = (lpMsg + imemMsgCur);
     fmemmove(lpb, &(rgbWork), cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
-    return 0x1;
+    return 1;
 }
 
 int16_t FSendPrependedPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
@@ -2980,17 +2985,17 @@ L_7fbf:
         goto L_7fc8;
 
 L_7fc8:
-    return 0x1;
+    return 1;
 
 L_7fce:
-    return 0x0;
+    return 0;
 
 L_7fd4:
     fmemmove((lpMsg + cbMsg), lpMsg, imemMsgCur);
     fmemmove(lpMsg, &(rgbWork), cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
-    return 0x1;
+    return 1;
 }
 
 int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6,
@@ -3010,7 +3015,7 @@ L_802a:
         goto L_803c;
 
 L_803c:
-    return 0x0;
+    return 0;
 
 L_8042:
     if ((rgplr[iPlr].fAi == 0x0))
@@ -3049,7 +3054,7 @@ L_809a:
         goto L_80a3;
 
 L_80a3:
-    return 0x0;
+    return 0;
 
 L_80a9:
     if (((imemMsgCur + 20) <= 0xffc8))
@@ -3058,7 +3063,7 @@ L_80a9:
         goto L_80b7;
 
 L_80b7:
-    return 0xffff;
+    return -1;
 
 L_80bd:
     lpb = &(*(pb));
@@ -3126,13 +3131,13 @@ L_823a:
         goto L_8251;
 
 L_8251:
-    return 0x0;
+    return 0;
 
 L_8257:
     pb = &(rgb);
     pmsghdr = pb;
     pmsghdr->iMsg = iMsg;
-    /* untranslated: bitfMsgSent[(iMsg >> 0x3)] = lobyte(((bitfMsgSent[(iMsg >> 0x3)] & ((0x1 << (iMsg & 0x7)) ~ 0x0)) | (0x1 << (iMsg & 0x7)))) */
+    bitfMsgSent[(iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(iMsg >> 0x3)] & (~(0x1 << (iMsg & 0x7)))) | (0x1 << (iMsg & 0x7))));
     pmsghdr->grWord = 0x0;
     pmsghdr->wGoto = iObj;
     pb = (pb + 0x4);
@@ -3190,7 +3195,7 @@ L_83e4:
     cMsg = (cMsg + 1);
     iMsgCur = -1;
     iMsgCur = IMsgNext(0);
-    return 0x1;
+    return 1;
 }
 
 int16_t IdmGetMessageN(int16_t iMsg) {
@@ -3203,7 +3208,7 @@ L_8412:
         goto L_8432;
 
 L_8432:
-    return 0xffff;
+    return -1;
 
 L_8438:
     return mb.iMsg;
@@ -3233,7 +3238,7 @@ L_8456:
         goto L_8461;
 
 L_8461:
-    return 0x0;
+    return 0;
 
 L_8467:
     lpb = lpMsg;
@@ -3321,7 +3326,7 @@ L_8566:
         goto L_8574;
 
 L_8574:
-    return 0x1;
+    return 1;
 }
 
 char *PszGetMessageN(int16_t iMsg) {
@@ -3416,7 +3421,7 @@ int16_t MsgDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     cch;
     char        szT[256];
     PAINTSTRUCT ps;
-    uint16_t    t_merge_91a8_0001;
+    int16_t     t_merge_91a8_0001;
 
 L_8f68:
     goto L_91e7;
@@ -3428,12 +3433,12 @@ L_8f77:
     SendDlgItemMessage(hwnd, 268, 0x415, 0x8, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(pt), 1);
-    return 0x1;
+    return 1;
 
 L_8fd4:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_8ffc:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -3460,7 +3465,7 @@ L_9031:
     cch = CchGetString(((uint16_t)(szWork[0xc8]) - 54), szT);
     DrawText(hdc, szT, cch, &(rcEdit), 0x810);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_9113:
     if ((wParam == 0x1))
@@ -3499,15 +3504,15 @@ L_9193:
         goto L_919f;
 
 L_919f:
-    t_merge_91a8_0001 = 0x1;
+    t_merge_91a8_0001 = 1;
     goto L_91a8;
 
 L_91a5:
-    t_merge_91a8_0001 = 0x0;
+    t_merge_91a8_0001 = 0;
 
 L_91a8:
     EndDialog(hwnd, t_merge_91a8_0001);
-    return 0x1;
+    return 1;
 
 L_91b7:
     if ((wParam != 0x76))
@@ -3517,7 +3522,7 @@ L_91b7:
 
 L_91c0:
     WinHelp(hwnd, szHelpFile, 0x1, 0xdbc);
-    return 0x1;
+    return 1;
 
 L_91e7:
     if ((message == 0xf))
@@ -3550,23 +3555,27 @@ L_9207:
         goto L_9212;
 
 L_9212:
-    return 0x0;
+    return 0;
 }
 
 char *PszFormatMessage(MessageId idm, int16_t *pParams) {
+    char *t_call_923b;
+
 L_9220:
-    PszFormatString(PszGetCompressedMessage(idm), pParams);
+    t_call_923b = PszFormatString(PszGetCompressedMessage(idm), pParams);
 
 L_9246:
-    /* untranslated: return callresult(char *) */
+    return t_call_923b;
 }
 
 char *PszFormatIds(StringId ids, int16_t *pParams) {
+    char *t_call_9267;
+
 L_924c:
-    PszFormatString(PszGetCompressedString(ids), pParams);
+    t_call_9267 = PszFormatString(PszGetCompressedString(ids), pParams);
 
 L_9272:
-    /* untranslated: return callresult(char *) */
+    return t_call_9267;
 }
 
 int16_t FRemovePlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
@@ -3645,7 +3654,7 @@ L_937c:
         goto L_938b;
 
 L_938b:
-    return 0x1;
+    return 1;
 
 L_9391:
     lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
@@ -3657,7 +3666,7 @@ L_93ab:
         goto L_93b9;
 
 L_93b9:
-    return 0x0;
+    return 0;
 }
 
 void MarkPlanetsPlayerLost(int16_t iPlayer) {
@@ -4143,6 +4152,7 @@ void ReadPlayerMessages() {
     uint8_t *lpb;
     uint16_t u;
     uint16_t t_merge_9aaf_0001;
+    void    *t_call_9b61;
 
 L_994a:
     imemMsgT = 0x0;
@@ -4182,8 +4192,7 @@ L_99df:
 
 L_99fa:
     lpmh = lpb;
-    /* untranslated: bitfMsgSent[(lpmh->iMsg >> 0x3)] = lobyte(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & ((0x1 << (lpmh->iMsg & 0x7)) ~ 0x0)) | (0x1 << (lpmh->iMsg &
-     * 0x7)))) */
+    bitfMsgSent[(lpmh->iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & (~(0x1 << (lpmh->iMsg & 0x7)))) | (0x1 << (lpmh->iMsg & 0x7))));
     cMsg = (cMsg + 1);
     u = lpmh->grWord;
     lpb = (lpb + 0x4);
@@ -4266,9 +4275,9 @@ L_9b4d:
         goto L_9b56;
 
 L_9b56:
-    LpAlloc(hdrCur.cb, htPlrMsg);
-    /* untranslated: LOWORD(lpmp) = faroff(callresult(void *)) */
-    /* untranslated: HIWORD(lpmp->lpmsgplrNext) = farseg(callresult(void *)) */
+    t_call_9b61 = LpAlloc(hdrCur.cb, htPlrMsg);
+    LOWORD(lpmp) = FAROFF(t_call_9b61);
+    HIWORD(lpmp->lpmsgplrNext) = FARSEG(t_call_9b61);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
     LOWORD(lpmp) = 0x0;
@@ -4390,7 +4399,7 @@ L_9ce2:
     iMsgSendCur = (iMsgSendCur + 1);
 
 L_9ce7:
-    return 0x0;
+    return 0;
 
 L_9ced:
     cbNew = cb;
@@ -4405,7 +4414,7 @@ L_9d1e:
     goto L_9d52;
 
 L_9d3a:
-    /* untranslated: cb = ((cb neg 0) - 1) */
+    cb = ((-cb) - 1);
     lpbMsg = lpb2k;
 
 L_9d52:
@@ -4472,7 +4481,7 @@ L_9ea6:
     iMsgSendCur = 0;
 
 L_9eac:
-    return 0x1;
+    return 1;
 }
 
 char *PszGetCompressedMessage(MessageId idm) {
@@ -4504,7 +4513,7 @@ L_9ed8:
     iChunk = (idm >> 0x6);
     iOffset = (idm & 0x3f);
     pch = &(aMSGCmpr[aiMSGChunkOffset[iChunk]]);
-    pchLen = &(acMSG[iChunk * 0x40]);
+    pchLen = &(acMSG[(iChunk * 64)]);
     i = 0;
     goto L_9f31;
 
@@ -4672,8 +4681,7 @@ L_a056:
     t_merge_a059_0001 = 0x0;
 
 L_a059:
-    /* untranslated: bitfMsgFiltered[(idm >> 0x3)] = lobyte(((bitfMsgFiltered[(idm >> 0x3)] & ((0x1 << (idm & 0x7)) ~ 0x0)) | (t_merge_a059_0001 << (idm &
-     * 0x7)))) */
+    bitfMsgFiltered[(idm >> 0x3)] = LOBYTE(((bitfMsgFiltered[(idm >> 0x3)] & (~(0x1 << (idm & 0x7)))) | (t_merge_a059_0001 << (idm & 0x7))));
     if ((idm == idmHaveBuiltFactory))
         goto L_a0a9;
     else
@@ -4712,8 +4720,8 @@ L_a0c9:
     t_merge_a0cc_0001 = 0x0;
 
 L_a0cc:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & ((0x1 << (((idm ^ 0x35) ^
-     * 0x36) & 0x7)) ~ 0x0)) | (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & (~(0x1 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) | (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7))));
     goto L_a8dd;
 
 L_a125:
@@ -4755,8 +4763,8 @@ L_a157:
     t_merge_a15a_0001 = 0x0;
 
 L_a15a:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & ((0x1 << (((idm ^ 0x37) ^
-     * 0x38) & 0x7)) ~ 0x0)) | (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & (~(0x1 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) | (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7))));
     goto L_a8dd;
 
 L_a1b3:
@@ -4798,8 +4806,8 @@ L_a1e5:
     t_merge_a1e8_0001 = 0x0;
 
 L_a1e8:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & ((0x1 << (((idm ^ 0x39) ^
-     * 0x3a) & 0x7)) ~ 0x0)) | (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & (~(0x1 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) | (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7))));
     goto L_a8dd;
 
 L_a241:
@@ -4845,7 +4853,7 @@ L_a27b:
     t_merge_a27e_0001 = 0x0;
 
 L_a27e:
-    /* untranslated: bitfMsgFiltered[(i >> 0x3)] = lobyte(((bitfMsgFiltered[(i >> 0x3)] & ((0x1 << (i & 0x7)) ~ 0x0)) | (t_merge_a27e_0001 << (i & 0x7)))) */
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a27e_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a2c0:
@@ -4895,8 +4903,8 @@ L_a2fe:
     t_merge_a301_0001 = 0x0;
 
 L_a301:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & ((0x1 << (((idm ^ 0x2f) ^
-     * 0x30) & 0x7)) ~ 0x0)) | (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & (~(0x1 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) | (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7))));
     goto L_a8dd;
 
 L_a35a:
@@ -4938,8 +4946,8 @@ L_a38c:
     t_merge_a38f_0001 = 0x0;
 
 L_a38f:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & ((0x1 << (((idm ^ 0x42) ^
-     * 0x43) & 0x7)) ~ 0x0)) | (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & (~(0x1 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) | (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7))));
     goto L_a8dd;
 
 L_a3e8:
@@ -4981,8 +4989,8 @@ L_a41a:
     t_merge_a41d_0001 = 0x0;
 
 L_a41d:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & ((0x1 << (((idm ^ 0x44) ^
-     * 0x45) & 0x7)) ~ 0x0)) | (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & (~(0x1 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) | (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7))));
     goto L_a8dd;
 
 L_a476:
@@ -5024,8 +5032,8 @@ L_a4a8:
     t_merge_a4ab_0001 = 0x0;
 
 L_a4ab:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & ((0x1 << (((idm ^ 0x46) ^
-     * 0x47) & 0x7)) ~ 0x0)) | (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & (~(0x1 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) | (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7))));
     goto L_a8dd;
 
 L_a504:
@@ -5067,8 +5075,8 @@ L_a536:
     t_merge_a539_0001 = 0x0;
 
 L_a539:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & ((0x1 << (((idm ^ 0x48) ^
-     * 0x49) & 0x7)) ~ 0x0)) | (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & (~(0x1 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) | (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7))));
     goto L_a8dd;
 
 L_a592:
@@ -5110,8 +5118,8 @@ L_a5c4:
     t_merge_a5c7_0001 = 0x0;
 
 L_a5c7:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & ((0x1 << (((idm ^ 0x4a) ^
-     * 0x4b) & 0x7)) ~ 0x0)) | (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & (~(0x1 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) | (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7))));
     goto L_a8dd;
 
 L_a620:
@@ -5153,8 +5161,8 @@ L_a652:
     t_merge_a655_0001 = 0x0;
 
 L_a655:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & ((0x1 << (((idm ^ 0x4c) ^
-     * 0x4d) & 0x7)) ~ 0x0)) | (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & (~(0x1 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) | (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7))));
     goto L_a8dd;
 
 L_a6ae:
@@ -5200,7 +5208,7 @@ L_a6e8:
     t_merge_a6eb_0001 = 0x0;
 
 L_a6eb:
-    /* untranslated: bitfMsgFiltered[(i >> 0x3)] = lobyte(((bitfMsgFiltered[(i >> 0x3)] & ((0x1 << (i & 0x7)) ~ 0x0)) | (t_merge_a6eb_0001 << (i & 0x7)))) */
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a6eb_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a72d:
@@ -5254,7 +5262,7 @@ L_a773:
     t_merge_a776_0001 = 0x0;
 
 L_a776:
-    /* untranslated: bitfMsgFiltered[(i >> 0x3)] = lobyte(((bitfMsgFiltered[(i >> 0x3)] & ((0x1 << (i & 0x7)) ~ 0x0)) | (t_merge_a776_0001 << (i & 0x7)))) */
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a776_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a7b8:
@@ -5304,8 +5312,8 @@ L_a7f6:
     t_merge_a7f9_0001 = 0x0;
 
 L_a7f9:
-    /* untranslated: bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] = lobyte(((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & ((0x1 << (((idm ^ 0x79) ^
-     * 0x7a) & 0x7)) ~ 0x0)) | (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) */
+    bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & (~(0x1 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) | (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7))));
     goto L_a8dd;
 
 L_a852:
@@ -5351,7 +5359,7 @@ L_a88e:
     t_merge_a891_0001 = 0x0;
 
 L_a891:
-    /* untranslated: bitfMsgFiltered[(i >> 0x3)] = lobyte(((bitfMsgFiltered[(i >> 0x3)] & ((0x1 << (i & 0x7)) ~ 0x0)) | (t_merge_a891_0001 << (i & 0x7)))) */
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a891_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a8d3:

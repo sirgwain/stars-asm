@@ -1169,7 +1169,7 @@ L_745a:
     iChunk = (ids >> 0x6);
     iOffset = (ids & 0x3f);
     pch = &(aSTRCmpr[aiSTRChunkOffset[iChunk]]);
-    pchLen = &(acSTR[iChunk * 0x40]);
+    pchLen = &(acSTR[(iChunk * 64)]);
     i = 0;
     goto L_74b3;
 

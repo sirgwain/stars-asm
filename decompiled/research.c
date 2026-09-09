@@ -194,12 +194,12 @@ L_0480:
     AdvanceTutor();
 
 L_0485:
-    return 0x1;
+    return 1;
 
 L_048b:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_04b3:
     i = 1073;
@@ -246,7 +246,7 @@ L_0557:
     GetClientRect(hwnd, &(rc));
     DrawResearchDlg(hwnd, hdc, &(rc), -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_05a3:
     GetCursorPos(&(pt));
@@ -276,7 +276,7 @@ L_05e0:
 
 L_05f3:
     SetCursor(hcurArrowHelp);
-    return 0x1;
+    return 1;
 
 L_0605:
     if ((yTopTechNote == -1))
@@ -304,7 +304,7 @@ L_062b:
 
 L_0636:
     SetCursor(hcurArrowHelp);
-    return 0x1;
+    return 1;
 
 L_0645:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -415,7 +415,7 @@ L_087a:
     AdvanceTutor();
 
 L_087f:
-    return 0x1;
+    return 1;
 
 L_0888:
     if ((wParam != 0x76))
@@ -425,7 +425,7 @@ L_0888:
 
 L_0891:
     WinHelp(hwnd, szHelpFile, 0x1, 0x42e);
-    return 0x1;
+    return 1;
 
 L_08b8:
     if ((message == WM_PAINT))
@@ -476,7 +476,7 @@ L_08f0:
         goto L_08fb;
 
 L_08fb:
-    return 0x0;
+    return 0;
 }
 
 void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw) {
@@ -506,7 +506,8 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw) {
     HBRUSH   hbrSav;
     int32_t  lRBEffective;
     int16_t  cch;
-    uint16_t t_merge_10a5_0001;
+    int16_t  t_call_0d6c;
+    int32_t  t_merge_10a5_0001;
     uint16_t t_merge_1406_0001;
 
 L_090a:
@@ -586,7 +587,7 @@ L_0bd4:
         goto L_0be2;
 
 L_0be2:
-    /* untranslated: call ExpandRc(&rc, -6, ((dyArial8 >> 0x1) neg 0x0)) -> callresult(void) */
+    ExpandRc(&(rc), -6, (-(dyArial8 >> 0x1)));
     rc.top = (rc.top + (dyArial8 >> 0x1));
     InvalidateRect(hwnd, &(rc), 1);
     goto DrawRightSide;
@@ -656,9 +657,12 @@ L_0d44:
 
 L_0d53:
     part.hs.iItem = i;
-    FLookupPart(&(part));
-    /* untranslated: mdAvail = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) == 0 ? L_0e8a : L_0d7c */
+    t_call_0d6c = FLookupPart(&(part));
+    mdAvail = t_call_0d6c;
+    if ((t_call_0d6c == 0))
+        goto L_0e8a;
+    else
+        goto L_0d7c;
 
 L_0d7c:
 
@@ -768,7 +772,7 @@ L_0f57:
         goto L_0f65;
 
 L_0f65:
-    /* untranslated: call ExpandRc(&rc, -6, ((dyArial8 >> 0x1) neg 0x0)) -> callresult(void) */
+    ExpandRc(&(rc), -6, (-(dyArial8 >> 0x1)));
     rc.top = (rc.top + (dyArial8 >> 0x1));
     InvalidateRect(hwnd, &(rc), 1);
     goto CleanUp;
@@ -821,7 +825,7 @@ L_1085:
         goto L_108c;
 
 L_108c:
-    t_merge_10a5_0001 = 0x0;
+    t_merge_10a5_0001 = 0;
     goto L_10a5;
 
 L_1095:
@@ -1226,7 +1230,7 @@ L_1b2e:
     FLookupPart(HIWORD(GlobalPD));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_1b7f:
     if ((yTopTechNote == -1))
@@ -1282,10 +1286,10 @@ L_1c1a:
     HIWORD(GlobalPD) = dxResRight;
     GlobalPD.grPopup = grPopupString;
     Popup(hwnd, x, y);
-    return 0x1;
+    return 1;
 
 L_1c4e:
-    return 0x0;
+    return 0;
 
 L_1c54:
     GetClientRect(hwnd, &(rc));
@@ -1358,7 +1362,7 @@ L_1d0e:
     DrawResearchDlg(hwnd, btnt.hdc, &(rc), 16896);
 
 L_1d42:
-    return 0x1;
+    return 1;
 }
 
 int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
@@ -1437,9 +1441,12 @@ int16_t BrowserDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t     iOff;
     uint16_t    t_merge_1f1d_0001;
     uint16_t    scratch_bp_m3a;
+    HWND        t_call_2021;
     uint16_t    t_merge_203e_0001;
     uint16_t    t_merge_2090_0001;
+    HWND        t_call_20b4;
     uint16_t    t_merge_20d1_0001;
+    HWND        t_call_2125;
     uint16_t    t_merge_2172_0001;
     uint16_t    t_merge_220d_0001;
     uint16_t    t_merge_2470_0001;
@@ -1480,7 +1487,7 @@ L_1f1d:
     c = GetDlgItemText(hwnd, IDC_U16_0x042E, szWork, 80);
     dx = (LOWORD(GetTextExtent(hdc, szWork, c)) + 14);
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x042E), 0x0, 6, 6, dx, ((uint32_t)(LOWORD((3 * dyArial8))) / 0x2), SWP_NOZORDER);
-    GetDlgItem(hwnd, IDC_NEXT);
+    t_call_2021 = GetDlgItem(hwnd, IDC_NEXT);
     if ((dyArial8 <= 14))
         goto L_203b;
     else
@@ -1494,8 +1501,7 @@ L_203b:
     t_merge_203e_0001 = 0x0;
 
 L_203e:
-    /* untranslated: call SetWindowPos(callresult(HWND), 0x0, ((t_merge_203e_0001 + 0x15e) - dx), 6, dx, (sext16to32(loword((3 * dyArial8))) / 0x2),
-     * SWP_NOZORDER) -> callresult(int16_t) */
+    SetWindowPos(t_call_2021, 0x0, ((t_merge_203e_0001 + 0x15e) - dx), 6, dx, ((uint32_t)(LOWORD((3 * dyArial8))) / 0x2), SWP_NOZORDER);
     if ((dyArial8 <= 14))
         goto L_208d;
     else
@@ -1510,7 +1516,7 @@ L_208d:
 
 L_2090:
     SetWindowPos(hwndDD, 0x0, (dx + 12), 6, (((t_merge_2090_0001 + 0x158) - scratch_bp_m3a) + 0xfff4), LOWORD((18 * dyArial8)), SWP_NOZORDER);
-    GetDlgItem(hwnd, IDCANCEL);
+    t_call_20b4 = GetDlgItem(hwnd, IDCANCEL);
     if ((dyArial8 <= 14))
         goto L_20ce;
     else
@@ -1524,9 +1530,10 @@ L_20ce:
     t_merge_20d1_0001 = 0x0;
 
 L_20d1:
-    /* untranslated: call SetWindowPos(callresult(HWND), 0x0, ((t_merge_20d1_0001 + 0x15e) - dx), (((((dyArial10 + 72) + loword((12 * dyArial8))) + 0x6) +
-     * (sext16to32(loword((3 * dyArial8))) / 0x2)) + 0x12), dx, (sext16to32(loword((3 * dyArial8))) / 0x2), SWP_NOZORDER) -> callresult(int16_t) */
-    GetDlgItem(hwnd, 0x10a);
+    SetWindowPos(t_call_20b4, 0x0, ((t_merge_20d1_0001 + 0x15e) - dx),
+                 (((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 0x6) + ((uint32_t)(LOWORD((3 * dyArial8))) / 0x2)) + 0x12), dx,
+                 ((uint32_t)(LOWORD((3 * dyArial8))) / 0x2), SWP_NOZORDER);
+    t_call_2125 = GetDlgItem(hwnd, 0x10a);
     if ((dyArial8 <= 14))
         goto L_216f;
     else
@@ -1540,8 +1547,8 @@ L_216f:
     t_merge_2172_0001 = 0x0;
 
 L_2172:
-    /* untranslated: call SetWindowPos(callresult(HWND), 0x0, 6, (((((dyArial10 + 72) + loword((12 * dyArial8))) + 0x6) + scratch_bp_m3a) + 0x12),
-     * ((t_merge_2172_0001 + 0x158) - dx), (sext16to32(loword((3 * dyArial8))) / 0x2), SWP_NOZORDER) -> callresult(int16_t) */
+    SetWindowPos(t_call_2125, 0x0, 6, (((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 0x6) + scratch_bp_m3a) + 0x12), ((t_merge_2172_0001 + 0x158) - dx),
+                 ((uint32_t)(LOWORD((3 * dyArial8))) / 0x2), SWP_NOZORDER);
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
     if ((fBrowserValid != 0))
@@ -1594,12 +1601,12 @@ L_22a0:
     AdvanceTutor();
 
 L_22a5:
-    return 0x1;
+    return 1;
 
 L_22ab:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_22d3:
     i = 266;
@@ -1641,7 +1648,7 @@ L_2330:
 L_2349:
     hdc = BeginPaint(hwnd, &(ps));
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_2370:
     StickyDlgPos(hwnd, ptStickyBrowserDlg.x, 0);
@@ -1673,7 +1680,7 @@ L_241f:
     AdvanceTutor();
 
 L_2424:
-    return 0x1;
+    return 1;
 
 L_242d:
     if ((wParam != 0x10b))
@@ -2109,7 +2116,7 @@ L_285d:
         goto L_2868;
 
 L_2868:
-    return 0x0;
+    return 0;
 }
 
 int32_t BrowserWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -2118,6 +2125,8 @@ int32_t BrowserWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     int16_t     i;
     PAINTSTRUCT ps;
     RECT        rc;
+    HULDEF     *t_call_29ac;
+    HULDEF     *t_call_29d6;
 
 L_2876:
     goto L_2a89;
@@ -2137,7 +2146,7 @@ L_28d0:
 L_28ee:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_2919:
     pt.x = LOWORD(lParam);
@@ -2201,13 +2210,13 @@ L_2994:
         goto L_29a5;
 
 L_29a5:
-    LphuldefSBFromId(vpartBrowser.hs.iItem);
-    /* untranslated: shdefBuild.hul = 123-byte farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))] */
+    t_call_29ac = LphuldefSBFromId(vpartBrowser.hs.iItem);
+    shdefBuild.hul = t_call_29ac->hul;
     goto L_29f6;
 
 L_29cf:
-    LphuldefFromId(vpartBrowser.hs.iItem);
-    /* untranslated: shdefBuild.hul = 123-byte farseg(callresult(HULDEF *)):[faroff(callresult(HULDEF *))] */
+    t_call_29d6 = LphuldefFromId(vpartBrowser.hs.iItem);
+    shdefBuild.hul = t_call_29d6->hul;
 
 L_29f6:
     i = 0;
@@ -2233,7 +2242,7 @@ L_2a5d:
     SetCursor(hcurArrowHelp);
 
 L_2a66:
-    return 0x1;
+    return 1;
 
 Default:
     return DefWindowProc(hwnd, message, wParam, lParam);
@@ -2271,7 +2280,7 @@ L_2aa9:
 L_2aae:
 
 L_2ab4:
-    return 0x0;
+    return 0;
 }
 
 void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
@@ -2323,12 +2332,12 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
     char     ch;
     int32_t  ldelta;
     RECT     rcT;
-    uint16_t t_merge_2e70_0001;
-    uint16_t t_merge_335d_0001;
+    COLORREF t_merge_2e70_0001;
+    int16_t  t_merge_335d_0001;
     uint16_t t_merge_379d_0001;
     uint16_t t_merge_39e7_0001;
     uint16_t t_merge_3bff_0001;
-    uint16_t t_merge_4e19_0001;
+    StringId t_merge_4e19_0001;
     uint16_t t_merge_5016_0001;
     uint16_t t_merge_5094_0001;
     uint16_t t_merge_522a_0001;
@@ -2336,7 +2345,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
     uint16_t t_merge_52aa_0001;
     uint16_t t_merge_578c_0001;
     uint16_t t_merge_6105_0001;
-    uint16_t t_merge_6561_0001;
+    COLORREF t_merge_6561_0001;
 
 L_2ac6:
     SelectObject(hdc, hbrButtonShadow);
@@ -2683,7 +2692,7 @@ L_333a:
         goto L_3351;
 
 L_3351:
-    t_merge_335d_0001 = 0x49;
+    t_merge_335d_0001 = 73;
     goto L_335d;
 
 L_3357:
@@ -3835,11 +3844,11 @@ L_4e01:
         goto L_4e10;
 
 L_4e10:
-    t_merge_4e19_0001 = 0x513;
+    t_merge_4e19_0001 = idsSmartBombsStrictlyAdditiveHaveMinimumKill;
     goto L_4e19;
 
 L_4e16:
-    t_merge_4e19_0001 = 0x1c1;
+    t_merge_4e19_0001 = idsIfPlanetHasDefensesBombGuaranteedKill;
 
 L_4e19:
     CchGetString(t_merge_4e19_0001, szWork);
@@ -4630,7 +4639,7 @@ L_6357:
     xText = rcData.left;
     yText = (yText + ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2));
     c = CchGetString(idsScannerCanDeterminePlanetsBasicStatsDistance, szT);
-    /* untranslated: c = _wsprintf(szWork, szT, ((i neg 0x0) >> 0x1)) */
+    c = _wsprintf(szWork, szT, ((-i) >> 0x1));
     ids = idsScannerWillUnavailableIfHaveLesserRacial;
     goto L_6410;
 
@@ -4922,7 +4931,7 @@ L_673d:
         goto L_6746;
 
 L_6746:
-    return 0xffffffff;
+    return -1;
 
 L_674f:
     i = 0;
@@ -4946,8 +4955,8 @@ L_67cb:
     lSpent = (int32_t)((lSpent * 2));
 
 L_67df:
-    /* untranslated: LOWORD(lCur) = (LOWORD(lSpent) neg 0x0) */
-    /* untranslated: HIWORD(lCur) = ((HIWORD(lSpent) + 0x0) neg 0x0) */
+    LOWORD(lCur) = (-LOWORD(lSpent));
+    HIWORD(lCur) = (-(HIWORD(lSpent) + 0x0));
 
 L_67f2:
     if (((uint16_t)(rgTech[i]) <= (uint16_t)(pTech[i])))
@@ -5026,7 +5035,7 @@ L_68c4:
         goto L_68d7;
 
 L_68d7:
-    return 0x0;
+    return 0;
 
 L_68dd:
     grbitTrader = 0x0;
@@ -5221,8 +5230,8 @@ L_6a29:
         goto L_6a43;
 
 L_6a43:
-    return 0x1;
+    return 1;
 
 L_6a49:
-    return 0x0;
+    return 0;
 }

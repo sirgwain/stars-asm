@@ -167,7 +167,7 @@ L_02b0:
         goto L_02b9;
 
 L_02b9:
-    return 0x0;
+    return 0;
 
 L_02bf:
     lpbd = (lphb + 0x12);
@@ -760,7 +760,7 @@ L_0d15:
         goto L_0d25;
 
 L_0d25:
-    /* untranslated: vrgtok[vlpbrVCR->itok].brc = lobyte(setlobyte(LOWORD(vlpbdVCRNext), vlpbrVCR->brcDest)) */
+    vrgtok[vlpbrVCR->itok].brc = LOBYTE(((LOWORD(vlpbdVCRNext) & 0xff00) | (vlpbrVCR->brcDest & 0xff)));
     vbrcVCRFocus = vrgtok[vlpbrVCR->itok].brc;
     viVCRFocus = vlpbrVCR->itok;
     vrgtok[vlpbrVCR->itok].wFlags = ((vrgtok[vlpbrVCR->itok].wFlags & 0xfc1f) | ((vlpbrVCR->dzDis & 0x1f) * 0x20));
@@ -877,12 +877,12 @@ L_102a:
     EnableVCRButtons();
     StickyDlgPos(hwnd, ptStickyVCRDlg.x, 1);
     fAnimate = 1;
-    return 0x1;
+    return 1;
 
 L_104e:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_1076:
     GetCursorPos(&(pt));
@@ -912,10 +912,10 @@ L_10b9:
 
 L_10cf:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_10de:
-    return 0x0;
+    return 0;
 
 L_10e4:
     pt.x = LOWORD(lParam);
@@ -1035,7 +1035,7 @@ L_12fd:
     gd.fVCRTimer = t_merge_12fd_0001;
 
 L_131b:
-    return 0x1;
+    return 1;
 
 L_1321:
     pt.x = ((uint32_t)((pt.x + 0xfff8)) / (dxyVCRSquare + 3));
@@ -1204,7 +1204,7 @@ L_1618:
     hdc = BeginPaint(hwnd, &(ps));
     DrawVCR(hdc, -1, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_1652:
     if ((gd.fVCRTimer == 0x0))
@@ -1420,7 +1420,7 @@ L_1879:
 L_1885:
     StickyDlgPos(hwnd, ptStickyVCRDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_18ac:
     if ((wParam != 0x76))
@@ -1430,7 +1430,7 @@ L_18ac:
 
 L_18b5:
     WinHelp(hwnd, szHelpFile, 0x1, 0x43a);
-    return 0x1;
+    return 1;
 
 L_18d9:
     hwndVCRDlg = 0x0;
@@ -1491,7 +1491,7 @@ L_1925:
         goto L_1930;
 
 L_1930:
-    return 0x0;
+    return 0;
 }
 
 void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, int16_t *pcsh) {
@@ -1652,9 +1652,9 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     uint16_t t_merge_2766_0001;
     uint16_t t_merge_2766_0002;
     uint16_t t_merge_27d6_0001;
-    uint16_t t_merge_2965_0001;
+    StringId t_merge_2965_0001;
     uint8_t  t_merge_2d54_0001;
-    uint16_t t_merge_37ca_0001;
+    int16_t  t_merge_37ca_0001;
 
 L_1c62:
     if ((hdc != 0x0))
@@ -2089,11 +2089,11 @@ L_2953:
         goto L_295c;
 
 L_295c:
-    t_merge_2965_0001 = 0x51c;
+    t_merge_2965_0001 = idsTorpedoesDeflected2;
     goto L_2965;
 
 L_2962:
-    t_merge_2965_0001 = 0x4d0;
+    t_merge_2965_0001 = idsTorpedoesDeflected;
 
 L_2965:
     c = CchGetString(t_merge_2965_0001, szWork);
@@ -2208,7 +2208,7 @@ L_2d51:
 L_2d54:
     c = _wsprintf(szWork, PszGetCompressedString(idsInitiativeD), t_merge_2d54_0001);
     TextOut(hdc, x, y, szWork, c);
-    c = _wsprintf(szWork, PszGetCompressedString(idsMovementS), &(rgszSpeed[i * 0x3]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsMovementS), &(rgszSpeed[(i * 3)]));
     TextOut(hdc, xT, y, szWork, c);
     y = (y + dyArial8);
     c = _wsprintf(szWork, PszGetCompressedString(idsArmorLd), LOWORD(dpT), HIWORD(dpT));
@@ -2434,11 +2434,11 @@ L_3582:
         goto L_35a4;
 
 L_35a4:
-    /* untranslated: ibmp = HIWORD(rglpshdefSB[vrgtok[j].iplr]):[(LOWORD(rglpshdefSB[vrgtok[j].iplr]) + loword(((vrgtok[j].ishdef + 0xfff0) * 0x93)))+0x32] */
+    ibmp = rglpshdefSB[vrgtok[j].iplr][(vrgtok[j].ishdef + 0xfff0)].hul.ibmp;
     goto L_3660;
 
 L_3605:
-    /* untranslated: ibmp = HIWORD(rglpshdef[vrgtok[j].iplr]):[(LOWORD(rglpshdef[vrgtok[j].iplr]) + loword((vrgtok[j].ishdef * 0x93)))+0x32] */
+    ibmp = rglpshdef[vrgtok[j].iplr][vrgtok[j].ishdef].hul.ibmp;
 
 L_3660:
     ibmpRace = rgplr[vrgtok[j].iplr].iPlrBmp;
@@ -2485,11 +2485,11 @@ L_36ca:
         goto L_37c1;
 
 L_37c1:
-    t_merge_37ca_0001 = 0x1;
+    t_merge_37ca_0001 = 1;
     goto L_37ca;
 
 L_37c7:
-    t_merge_37ca_0001 = 0x0;
+    t_merge_37ca_0001 = 0;
 
 L_37ca:
     DrawFleetBitmap(0x0, hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 0xb), (LOWORD(((dxyVCRSquare + 3) * y)) + 0xb), 0, ibmp, ctok, t_merge_37ca_0001, ibmpRace,
@@ -2671,7 +2671,7 @@ void AnimateAttack(HDC hdc) {
     int16_t      t_merge_3fb4_0002;
     int16_t      t_merge_3fd2_0001;
     int16_t      t_merge_3fd2_0002;
-    HPEN         t_merge_40e7_0001;
+    HGDIOBJ      t_merge_40e7_0001;
     uint16_t     t_merge_41f9_0001;
     uint16_t     scratch_bp_m7e;
     uint16_t     t_merge_4438_0001;
@@ -3389,7 +3389,7 @@ L_4897:
         goto L_48a0;
 
 L_48a0:
-    return 0xffff;
+    return -1;
 
 L_48a6:
     iSel = PopupMenu(hwnd, x, y, c, 0x0, rgsz, iChecked, 1);
@@ -3399,37 +3399,39 @@ L_48a6:
         goto L_48d8;
 
 L_48d8:
-    return 0xffff;
+    return -1;
 
 L_48de:
     return rgid[iSel];
 }
 
 void EnableVCRButtons() {
-    int16_t  i;
-    uint16_t t_merge_4927_0001;
-    uint16_t t_merge_4965_0001;
+    int16_t i;
+    HWND    t_call_490e;
+    int16_t t_merge_4927_0001;
+    HWND    t_call_494a;
+    int16_t t_merge_4965_0001;
 
 L_48f6:
     i = 161;
     goto L_4931;
 
 L_4907:
-    GetDlgItem(hwndVCRDlg, i);
+    t_call_490e = GetDlgItem(hwndVCRDlg, i);
     if ((viStepVCRCur <= -1))
         goto L_4924;
     else
         goto L_491e;
 
 L_491e:
-    t_merge_4927_0001 = 0x1;
+    t_merge_4927_0001 = 1;
     goto L_4927;
 
 L_4924:
-    t_merge_4927_0001 = 0x0;
+    t_merge_4927_0001 = 0;
 
 L_4927:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_4927_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_490e, t_merge_4927_0001);
     i = (i + 1);
 
 L_4931:
@@ -3443,21 +3445,21 @@ L_493b:
     goto L_496f;
 
 L_4943:
-    GetDlgItem(hwndVCRDlg, i);
+    t_call_494a = GetDlgItem(hwndVCRDlg, i);
     if ((viStepVCRCur >= vcStepVCR))
         goto L_4962;
     else
         goto L_495c;
 
 L_495c:
-    t_merge_4965_0001 = 0x1;
+    t_merge_4965_0001 = 1;
     goto L_4965;
 
 L_4962:
-    t_merge_4965_0001 = 0x0;
+    t_merge_4965_0001 = 0;
 
 L_4965:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_4965_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_494a, t_merge_4965_0001);
     i = (i + 1);
 
 L_496f:

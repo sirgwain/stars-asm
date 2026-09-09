@@ -1,6 +1,8 @@
 package sem
 
 import (
+	"fmt"
+
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -44,6 +46,16 @@ func (c *machineConverter) resolveAddressLValue(mem machine.MemoryAddress, width
 		return lvalue, true
 	}
 	if addr.exact != nil {
+		if addr.offset != 0 || len(addr.terms) != 0 {
+			c.ctx.log.Warn(
+				"typed address projection using exact fallback with residual components",
+				"instOff", fmt.Sprintf("%04x", c.ctx.currentInstOff),
+				"memory", mem.String(),
+				"exact", addr.exact.String(),
+				"offset", fmt.Sprintf("0x%x", addr.offset),
+				"terms", len(addr.terms),
+			)
+		}
 		exact, ok := c.convertSymbolPath(addr.exact, addr.exact.Type())
 		if ok {
 			lvalue, ok := exact.(LValue)
@@ -848,11 +860,12 @@ func consumeArrayTerm(base Expr, typ typeinfo.Type, offset int, terms []ScaledTe
 	var index Expr
 	nextTerms := make([]ScaledTerm, 0, len(terms))
 	for _, term := range terms {
-		if term.Scale != elem.Bytes() {
+		if term.Scale%elem.Bytes() != 0 {
 			nextTerms = append(nextTerms, term)
 			continue
 		}
-		index = joinSemanticAddressTerms(index, term.Expr)
+		component := scaledArrayIndexTerm(term.Expr, term.Scale/elem.Bytes())
+		index = joinSemanticAddressTerms(index, component)
 	}
 	if index == nil {
 		return nil, 0, nil, false
@@ -863,6 +876,27 @@ func consumeArrayTerm(base Expr, typ typeinfo.Type, offset int, terms []ScaledTe
 		nextOffset = 0
 	}
 	return &ArrayIndex{Base: base, Index: index, TypeInfo: elem}, nextOffset, nextTerms, true
+}
+
+// scaledArrayIndexTerm converts a byte-scaled address term into a logical
+// source array-index component.
+func scaledArrayIndexTerm(expr Expr, scale int) Expr {
+	negative := scale < 0
+	if negative {
+		scale = -scale
+	}
+	if scale != 1 {
+		expr = &Binary{
+			TypeInfo: typeinfo.I16,
+			Op:       OpMul,
+			LHS:      expr,
+			RHS:      &Const{TypeInfo: typeinfo.I16, U64: uint64(scale)},
+		}
+	}
+	if negative {
+		return &Unary{TypeInfo: typeinfo.I16, Op: OpNeg, X: expr}
+	}
+	return expr
 }
 
 // offsetArrayIndex folds a constant element offset into an array index.

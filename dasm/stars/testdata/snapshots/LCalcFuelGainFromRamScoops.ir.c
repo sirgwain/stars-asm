@@ -13,7 +13,7 @@ L_56b8:
         goto L_56d4;
 
 L_56d4:
-    return 0x0;
+    return 0;
 
 L_56dd:
     i = 0;

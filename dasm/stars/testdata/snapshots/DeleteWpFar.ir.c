@@ -21,8 +21,10 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    /* untranslated: branch HIWORD(lpfl->lpplord):[((LOWORD(lpfl->lpplord) + 0x4) + loword(((lpfl->cord - 1) * 0x12)))] != lpfl->lpplord->rgord[iDel].pt.x ?
-     * L_9ec7 : L_9eb6 */
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x))
+        goto L_9ec7;
+    else
+        goto L_9eb6;
 
 L_9eb6:
     /* untranslated: branch scratch_bp_m16:[(scratch_bp_m18 + loword(((lpfl->cord - 1) * 0x12)))+0x2] != scratch_bp_m1a ? L_9ec7 : L_9ebf */

@@ -13,12 +13,12 @@ L_1261:
     iAboutPartial = 0;
     SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0);
-    return 0x1;
+    return 1;
 
 L_12a9:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
@@ -122,7 +122,7 @@ L_1473:
     KillTimer(hwnd, uTimerId);
     uTimerId = 0x0;
     EndDialog(hwnd, 1);
-    return 0x1;
+    return 1;
 
 L_149a:
     if ((wParam != 0x76))
@@ -166,5 +166,5 @@ L_1505:
         goto L_1510;
 
 L_1510:
-    return 0x0;
+    return 0;
 }

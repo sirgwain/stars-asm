@@ -344,7 +344,7 @@ L_1844:
         goto L_1867;
 
 L_1867:
-    return 0x0;
+    return 0;
 
 L_186d:
     return LOWORD((uint32_t)((z % (uint32_t)(c))));
@@ -355,7 +355,7 @@ int16_t RandomSeedDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam
     char    *pch;
     uint32_t dw;
     RECT     rc;
-    uint16_t t_merge_1a0a_0001;
+    int16_t  t_merge_1a0a_0001;
 
 L_188a:
     goto L_1a1c;
@@ -363,12 +363,12 @@ L_188a:
 L_1899:
     SetWindowPos(hwnd, 0x0, 256, 256, 0, 0, 0x15);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
-    return 0x1;
+    return 1;
 
 L_18db:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_1903:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -427,7 +427,7 @@ L_19d8:
         goto L_19e1;
 
 L_19e1:
-    return 0x1;
+    return 1;
 
 L_19e7:
     Randomize(dw);
@@ -439,15 +439,15 @@ L_19f5:
         goto L_1a01;
 
 L_1a01:
-    t_merge_1a0a_0001 = 0x1;
+    t_merge_1a0a_0001 = 1;
     goto L_1a0a;
 
 L_1a07:
-    t_merge_1a0a_0001 = 0x0;
+    t_merge_1a0a_0001 = 0;
 
 L_1a0a:
     EndDialog(hwnd, t_merge_1a0a_0001);
-    return 0x1;
+    return 1;
 
 L_1a1c:
     if ((message == WM_ERASEBKGND))
@@ -474,7 +474,7 @@ L_1a34:
         goto L_1a3f;
 
 L_1a3f:
-    return 0x0;
+    return 0;
 }
 
 void GetFileSeeds(int32_t *pl1, int32_t *pl2) {
@@ -691,7 +691,7 @@ L_1dcc:
     iChunk = (id >> 0x6);
     iOffset = (id & 0x3f);
     pch = &(aPNCmpr[aiPNChunkOffset[iChunk]]);
-    pchLen = &(acPN[iChunk * 0x40]);
+    pchLen = &(acPN[(iChunk * 64)]);
     i = 0;
     goto L_1e25;
 
@@ -957,8 +957,8 @@ L_2159:
 }
 
 int16_t AlertSz(char *sz, MessageBoxType mbType) {
-    char     szT[256];
-    uint16_t t_merge_21e5_0001;
+    char    szT[256];
+    int16_t t_merge_21e5_0001;
 
 L_2160:
     if ((ini.fValidate != 0x0))
@@ -986,15 +986,15 @@ L_21a3:
         goto L_21dc;
 
 L_21dc:
-    t_merge_21e5_0001 = 0x7;
+    t_merge_21e5_0001 = 7;
     goto L_21e5;
 
 L_21e2:
-    t_merge_21e5_0001 = 0x6;
+    t_merge_21e5_0001 = 6;
 
 L_21e5:
     OutputSz(t_merge_21e5_0001, szT);
-    return 0x6;
+    return 6;
 
 L_21f7:
     return MessageBox(GetFocus(), sz, "Stars!", mbType);
@@ -1754,7 +1754,7 @@ L_2b8a:
     t_merge_2b8d_0001 = dy;
 
 L_2b8d:
-    /* untranslated: plf->lfHeight = (t_merge_2b8d_0001 neg 0) */
+    plf->lfHeight = (-t_merge_2b8d_0001);
 
 TryAgain:
     if ((plf->lfHeight > -5))
@@ -1765,7 +1765,7 @@ TryAgain:
 L_2b9f:
 
 L_2ba5:
-    /* untranslated: dyEstFont = MulDiv(111, (plf->lfHeight neg 0), 100) */
+    dyEstFont = MulDiv(111, (-plf->lfHeight), 100);
     if ((dy >= dyEstFont))
         goto L_2bf8;
     else
@@ -2341,10 +2341,10 @@ L_364a:
 
 L_3664:
     SetCapture(pbtnt->hwnd);
-    DrawBtn(pbtnt->hdc, pbtnt->rc.left, pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
+    DrawBtn(pbtnt->hdc, (pbtnt + 0x4), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
     pbtnt->lTicks = (GetCurrentTime() + (int32_t)(LOWORD((0x3 * pbtnt->dTimer))));
     pbtnt->fFirst = 0x0;
-    return 0x1;
+    return 1;
 
 L_36ec:
     pt.x = pbtnt->rc.left;
@@ -2365,7 +2365,7 @@ L_3712:
 
 L_373f:
     pbtnt->fDown = fInBtn;
-    DrawBtn(pbtnt->hdc, pbtnt->rc.left, pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
+    DrawBtn(pbtnt->hdc, (pbtnt + 0x4), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
 
 L_3796:
     ticksNew = GetCurrentTime();
@@ -2394,7 +2394,7 @@ L_37bf:
 
 L_37d2:
     pbtnt->lTicks = ((uint32_t)(pbtnt->dTimer) + ticksNew);
-    return 0x1;
+    return 1;
 
 L_37f1:
     if ((pbtnt->fDown == 0x0))
@@ -2410,7 +2410,7 @@ L_3804:
 
 L_381d:
     pbtnt->fDown = 0x0;
-    DrawBtn(pbtnt->hdc, pbtnt->rc.left, pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
+    DrawBtn(pbtnt->hdc, (pbtnt + 0x4), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
     pbtnt->fDown = 0x1;
 
 L_387f:
@@ -2424,7 +2424,7 @@ L_389b:
     ReleaseDC(pbtnt->hwnd, pbtnt->hdc);
 
 L_38ab:
-    return 0x0;
+    return 0;
 }
 
 void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
@@ -2449,8 +2449,8 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
     int16_t  dxyT;
     int16_t  bkMode;
     HFONT    hfontSav;
-    HBRUSH   t_merge_3962_0001;
-    HBRUSH   t_merge_39b7_0001;
+    HGDIOBJ  t_merge_3962_0001;
+    HGDIOBJ  t_merge_39b7_0001;
     HBRUSH   t_merge_3e10_0001;
     uint16_t t_merge_3e42_0001;
     uint16_t t_merge_3ede_0001;
@@ -2606,7 +2606,7 @@ L_3bc7:
     goto L_3c31;
 
 L_3c03:
-    /* untranslated: rgptDraw[ipt].x = ((rgptDraw[0x0].x * 2) - rgptDraw[(rgptDraw[ipt].x neg 0x0)].x) */
+    rgptDraw[ipt].x = ((rgptDraw[0x0].x * 2) - rgptDraw[(-rgptDraw[ipt].x)].x);
 
 L_3c31:
     rgptDraw[ipt].y = LOWORD((int32_t)(((uint32_t)(((uint32_t)(rgptDraw[ipt].y) * dxFace)) / 0xb)));
@@ -2740,7 +2740,7 @@ L_3e42:
         goto L_3e66;
 
 L_3e66:
-    /* untranslated: call PatBlt(hdc, x, part[0x2:24](rgptDraw), dx, 1, PATCOPY) -> callresult(int16_t) */
+    /* untranslated: call PatBlt(hdc, x, ss:[bp+((cpt - 1) * 0x4)-0x2e], dx, 1, PATCOPY) -> callresult(int16_t) */
 
 L_3e95:
     PatBlt(hdc, x, y, dx, 1, PATCOPY);
@@ -2949,7 +2949,7 @@ L_4152:
         goto L_4176;
 
 L_4176:
-    return 0x1;
+    return 1;
 
 L_417c:
     goto L_41c3;
@@ -2963,10 +2963,10 @@ L_4185:
         goto L_41b4;
 
 L_41b4:
-    return 0x1;
+    return 1;
 
 L_41ba:
-    return 0x0;
+    return 0;
 
 L_41c3:
     if ((msg.message == 0x200))
@@ -2995,7 +2995,7 @@ L_41ec:
         goto L_4210;
 
 L_4210:
-    return 0x1;
+    return 1;
 
 L_4216:
     goto L_425d;
@@ -3009,10 +3009,10 @@ L_421f:
         goto L_424e;
 
 L_424e:
-    return 0x1;
+    return 1;
 
 L_4254:
-    return 0x0;
+    return 0;
 
 L_425d:
     if ((msg.message == 0x200))
@@ -3091,12 +3091,10 @@ L_4442:
 }
 
 HBRUSH HbrGet(COLORREF cr) {
-    int16_t  iFree;
-    int16_t  i;
-    HBRUSH   hbr;
-    COLORREF scratch_bp_p6;
-    uint16_t scratch_bp_p8;
-    int16_t  t_44f1;
+    int16_t iFree;
+    int16_t i;
+    HBRUSH  hbr;
+    int16_t t_44f1;
 
 L_4448:
     iFree = -1;
@@ -3114,13 +3112,13 @@ L_4470:
     goto L_44ac;
 
 L_4479:
-    if ((LOWORD(rgcrCache[i]) != scratch_bp_p6))
+    if ((LOWORD(rgcrCache[i]) != LOWORD(cr)))
         goto L_44ac;
     else
         goto L_448f;
 
 L_448f:
-    if ((HIWORD(rgcrCache[i]) != scratch_bp_p8))
+    if ((HIWORD(rgcrCache[i]) != HIWORD(cr)))
         goto L_44ac;
     else
         goto L_4498;
@@ -3139,7 +3137,7 @@ L_44b0:
         goto L_44bb;
 
 L_44bb:
-    hbr = CreateSolidBrush(scratch_bp_p6);
+    hbr = CreateSolidBrush(cr);
     if ((hbr != 0x0))
         goto L_44d8;
     else
@@ -3171,7 +3169,7 @@ L_44f1:
 L_44fc:
     rghbrCacheUse[iFree] = 0x1;
     rghbrCache[iFree] = hbr;
-    rgcrCache[iFree] = scratch_bp_p6;
+    rgcrCache[iFree] = cr;
     return hbr;
 }
 
@@ -3290,7 +3288,7 @@ L_4641:
         goto L_466b;
 
 L_466b:
-    return 0x0;
+    return 0;
 
 L_4671:
     iNyb = (iNyb >> 0x4);
@@ -3317,12 +3315,12 @@ L_4697:
         goto L_46ab;
 
 L_46ab:
-    return 0x0;
+    return 0;
 
 L_46b1:
     *(pcOut) = (pchOut - &(szWork));
     fmemcpy(szOut, &(szWork), *(pcOut));
-    return 0x1;
+    return 1;
 }
 
 int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut) {
@@ -3460,7 +3458,7 @@ L_481c:
         goto L_4847;
 
 L_4847:
-    return 0x0;
+    return 0;
 
 L_484d:
     if ((cIn > 0))
@@ -3471,7 +3469,7 @@ L_484d:
 L_4856:
     *(pchOut) = 0;
     fstrcpy(szOut, szWork);
-    return 0x1;
+    return 1;
 }
 
 int16_t NybbleFromCh(uint8_t ch) {
@@ -3499,7 +3497,7 @@ L_48b9:
         goto L_48c7;
 
 L_48c7:
-    return 0x0;
+    return 0;
 
 L_48cd:
     if ((ch < 0x41))
@@ -3586,7 +3584,7 @@ L_49ea:
         goto L_49fc;
 
 L_49fc:
-    /* untranslated: return setlobyte(nyb, rgchcompstrlower[nyb]) */
+    return rgchcompstrlower[nyb];
 
 L_4a0a:
     iPage = (nyb & 0xf);
@@ -3624,10 +3622,10 @@ L_4a6c:
         goto L_4a75;
 
 L_4a75:
-    /* untranslated: return setlobyte((nyb >> 0x4), byte ds:[(iVal - 52)+0x1400]) */
+    /* untranslated: return byte ds:[(iVal - 52)+0x1400] */
 
 L_4a82:
-    /* untranslated: return setlobyte((iVal - 25), rgchcompstrlower[(iVal - 25)]) */
+    return rgchcompstrlower[(iVal - 25)];
 }
 
 uint16_t DibNumColors(void *pv) {
@@ -3715,10 +3713,9 @@ HPALETTE HpalFromDib(HGLOBAL hdib) {
     char             *lpb;
     BITMAPINFOHEADER *lpbi;
     LOGPALETTE       *ppal;
-    HGLOBAL           scratch_bp_p6;
 
 L_4b50:
-    lpb = LockResource(scratch_bp_p6);
+    lpb = LockResource(hdib);
     if ((LOWORD(lpb) != 0x0))
         goto L_4b7f;
     else
@@ -3742,7 +3739,7 @@ L_4b7f:
         goto L_4ba6;
 
 L_4ba6:
-    GlobalUnlock(scratch_bp_p6);
+    GlobalUnlock(hdib);
     return 0x0;
 
 L_4bb4:
@@ -3768,7 +3765,7 @@ L_4c64:
 L_4c6f:
     hpal = CreatePalette(ppal);
     LocalFree(ppal);
-    GlobalUnlock(scratch_bp_p6);
+    GlobalUnlock(hdib);
     return hpal;
 }
 
@@ -3859,13 +3856,13 @@ L_4e00:
         goto L_4e09;
 
 L_4e09:
-    return 0x0;
+    return 0;
 
 L_4e0f:
     pBuf = ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi));
     StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, lpbi, 0x0, rop);
     GlobalUnlock(hdib);
-    return 0x1;
+    return 1;
 }
 
 HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal) {
@@ -3876,14 +3873,10 @@ HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE 
     BITMAPINFOHEADER  bi;
     HGLOBAL           hdib;
     BITMAPINFOHEADER *lpbi;
-    uint16_t          scratch_bp_p6;
-    uint16_t          scratch_bp_pe;
-    uint16_t          scratch_bp_pc;
-    uint32_t          scratch_bp_p8;
-    uint16_t          scratch_bp_pa;
+    HGLOBAL           t_call_50ff;
 
 L_4e90:
-    if ((scratch_bp_p6 != 0x0))
+    if ((hbm != 0x0))
         goto L_4ea8;
     else
         goto L_4ea2;
@@ -3892,31 +3885,31 @@ L_4ea2:
     return 0x0;
 
 L_4ea8:
-    if ((scratch_bp_pe != 0x0))
+    if ((hpal != 0x0))
         goto L_4ebd;
     else
         goto L_4eb1;
 
 L_4eb1:
-    scratch_bp_pe = GetStockObject(DEFAULT_PALETTE);
+    hpal = GetStockObject(DEFAULT_PALETTE);
 
 L_4ebd:
-    GetObject(scratch_bp_p6, 14, &(bm));
-    if ((scratch_bp_pc != 0x0))
+    GetObject(hbm, 14, &(bm));
+    if ((biBits != 0x0))
         goto L_4ef2;
     else
         goto L_4ed9;
 
 L_4ed9:
-    scratch_bp_pc = LOWORD((bm.bmPlanes * bm.bmBitsPixel));
+    biBits = LOWORD((bm.bmPlanes * bm.bmBitsPixel));
 
 L_4ef2:
     bi.biSize = 0x28;
     bi.biWidth = (uint32_t)(bm.bmWidth);
     bi.biHeight = (uint32_t)(bm.bmHeight);
     bi.biPlanes = 0x1;
-    bi.biBitCount = scratch_bp_pc;
-    bi.biCompression = scratch_bp_p8;
+    bi.biBitCount = biBits;
+    bi.biCompression = biStyle;
     bi.biSizeImage = 0x0;
     bi.biXPelsPerMeter = 0;
     bi.biYPelsPerMeter = 0;
@@ -3924,7 +3917,7 @@ L_4ef2:
     bi.biClrImportant = 0x0;
     dwLen = ((uint32_t)(PaletteSize(&(bi))) + bi.biSize);
     hdc = GetDC(0x0);
-    scratch_bp_pe = SelectPalette(hdc, scratch_bp_pe, 0);
+    hpal = SelectPalette(hdc, hpal, 0);
     RealizePalette(hdc);
     hdib = GlobalAlloc(0x42, dwLen);
     if ((hdib != 0x0))
@@ -3933,14 +3926,14 @@ L_4ef2:
         goto L_4fb8;
 
 L_4fb8:
-    SelectPalette(hdc, scratch_bp_pe, 0);
+    SelectPalette(hdc, hpal, 0);
     ReleaseDC(0x0, hdc);
     return 0x0;
 
 L_4fd9:
     lpbi = GlobalLock(hdib);
     lpbi = bi;
-    GetDIBits(hdc, scratch_bp_p6, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
+    GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
     bi = *(lpbi);
     GlobalUnlock(hdib);
     if ((LOWORD(bi.biSizeImage) != 0x0))
@@ -3955,15 +3948,15 @@ L_5048:
         goto L_5051;
 
 L_5051:
-    bi.biSizeImage = (uint32_t)(((int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(bm.bmWidth) * (uint32_t)(scratch_bp_pc))) + 0x1f) / 0x20)) * 0x4)) *
-                                 (uint32_t)(bm.bmHeight)));
-    if ((scratch_bp_p8 != 0x0))
+    bi.biSizeImage =
+        (uint32_t)(((int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(bm.bmWidth) * (uint32_t)(biBits))) + 0x1f) / 0x20)) * 0x4)) * (uint32_t)(bm.bmHeight)));
+    if ((LOWORD(biStyle) != 0x0))
         goto L_50a6;
     else
         goto L_509d;
 
 L_509d:
-    if ((scratch_bp_pa == 0x0))
+    if ((HIWORD(biStyle) == 0x0))
         goto L_50ce;
     else
         goto L_50a6;
@@ -3973,9 +3966,12 @@ L_50a6:
 
 L_50ce:
     dwLen = (((uint32_t)(PaletteSize(&(bi))) + bi.biSize) + bi.biSizeImage);
-    GlobalReAlloc(hdib, dwLen, 0x0);
-    /* untranslated: h = callresult(HGLOBAL) */
-    /* untranslated: branch callresult(HGLOBAL) == 0x0 ? L_5118 : L_510f */
+    t_call_50ff = GlobalReAlloc(hdib, dwLen, 0x0);
+    h = t_call_50ff;
+    if ((t_call_50ff == 0x0))
+        goto L_5118;
+    else
+        goto L_510f;
 
 L_510f:
     hdib = h;
@@ -3984,13 +3980,13 @@ L_510f:
 L_5118:
     GlobalFree(hdib);
     hdib = 0x0;
-    SelectPalette(hdc, scratch_bp_pe, 0);
+    SelectPalette(hdc, hpal, 0);
     ReleaseDC(0x0, hdc);
     return hdib;
 
 L_5146:
     lpbi = GlobalLock(hdib);
-    if ((GetDIBits(hdc, scratch_bp_p6, 0x0, LOWORD(bi.biHeight), ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
+    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((lpbi + LOWORD(lpbi->biSize)) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
         goto L_51da;
     else
         goto L_51ac;
@@ -3998,14 +3994,14 @@ L_5146:
 L_51ac:
     GlobalUnlock(hdib);
     hdib = 0x0;
-    SelectPalette(hdc, scratch_bp_pe, 0);
+    SelectPalette(hdc, hpal, 0);
     ReleaseDC(0x0, hdc);
     return 0x0;
 
 L_51da:
     bi = *(lpbi);
     GlobalUnlock(hdib);
-    SelectPalette(hdc, scratch_bp_pe, 0);
+    SelectPalette(hdc, hpal, 0);
     ReleaseDC(0x0, hdc);
     return hdib;
 }
@@ -4015,10 +4011,9 @@ HGLOBAL HdibLoadBigResource(int16_t idb) {
     char    *lpstr;
     int16_t  hfile;
     HGLOBAL  hdib;
-    uint16_t scratch_bp_p6;
 
 L_5220:
-    hrsrc = FindResource(hInst, MAKEINTRESOURCE((scratch_bp_p6 | 0x0)), MAKEINTRESOURCE(0x2));
+    hrsrc = FindResource(hInst, MAKEINTRESOURCE((idb | 0x0)), MAKEINTRESOURCE(0x2));
     if ((hrsrc != 0x0))
         goto L_525a;
     else
@@ -4120,7 +4115,7 @@ L_534c:
         goto L_536d;
 
 L_536d:
-    return 0x0;
+    return 0;
 
 L_5373:
     dwSize = (dwSize - (uint32_t)(nBytes));
@@ -4140,7 +4135,7 @@ L_539f:
         goto L_53a8;
 
 L_53a8:
-    return 0x1;
+    return 1;
 }
 
 int16_t FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd) {
@@ -4273,7 +4268,7 @@ L_562c:
         goto L_5634;
 
 L_5634:
-    return 0x0;
+    return 0;
 
 L_563a:
     dxT = (xI - (uint32_t)(ptL1.x));
@@ -4300,7 +4295,7 @@ L_56e1:
         goto L_56ea;
 
 L_56ea:
-    return 0x0;
+    return 0;
 
 L_56f0:
     sqrt((double)(lT));
@@ -4329,7 +4324,7 @@ L_5733:
         goto L_573b;
 
 L_573b:
-    /* untranslated: dCtr = (dCtr neg 0) */
+    dCtr = (-dCtr);
 
 L_5746:
     if ((ptL1.x <= ptL2.x))
@@ -4356,7 +4351,7 @@ L_5762:
         goto L_576a;
 
 L_576a:
-    /* untranslated: dCtr = (dCtr neg 0) */
+    dCtr = (-dCtr);
 
 L_5775:
     if ((ptL1.y >= ptL2.y))
@@ -4383,7 +4378,7 @@ L_5791:
         goto L_5799;
 
 L_5799:
-    /* untranslated: dCtr = (dCtr neg 0) */
+    dCtr = (-dCtr);
 
 L_57a4:
     if ((HIWORD(yI) < SIGNHIWORD(ptL1.y)))
@@ -4404,7 +4399,7 @@ L_57b5:
         goto L_57bd;
 
 L_57bd:
-    /* untranslated: dCtr = (dCtr neg 0) */
+    dCtr = (-dCtr);
 
 L_57c5:
     if ((0x0 <= (dCtr - dOff)))
@@ -4447,10 +4442,10 @@ L_5810:
         goto L_581d;
 
 L_581d:
-    return 0x0;
+    return 0;
 
 L_5823:
-    return 0x1;
+    return 1;
 }
 
 void IntToRoman(int16_t i, char *pszOut) {
@@ -4568,7 +4563,7 @@ L_590e:
         goto L_5918;
 
 L_5918:
-    return 0x1;
+    return 1;
 
 L_591e:
     if (((uint16_t)(LOWORD(vszDefPass)) == 0x0))
@@ -4590,7 +4585,7 @@ L_594b:
         goto L_5953;
 
 L_5953:
-    return 0x1;
+    return 1;
 
 L_5959:
     if ((ini.fValidate == 0x0))
@@ -4599,7 +4594,7 @@ L_5959:
         goto L_596c;
 
 L_596c:
-    return 0x0;
+    return 0;
 
 L_5972:
     lpProc = MakeProcInstance(PasswordDlg, hInst);
@@ -4632,7 +4627,7 @@ L_59ce:
         goto L_59ef;
 
 L_59ef:
-    return 0x0;
+    return 0;
 
 L_59f8:
     if (((uint16_t)(*(psz)) == 0))
@@ -4672,11 +4667,11 @@ L_5a62:
 }
 
 int16_t PasswordDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    char     szPass[60];
-    RECT     rc;
-    int32_t  lSalt;
-    uint16_t t_merge_5ba5_0001;
-    uint16_t t_merge_5c49_0001;
+    char    szPass[60];
+    RECT    rc;
+    int32_t lSalt;
+    int16_t t_merge_5ba5_0001;
+    int16_t t_merge_5c49_0001;
 
 L_5a72:
     goto L_5c88;
@@ -4684,12 +4679,12 @@ L_5a72:
 L_5a81:
     SendDlgItemMessage(hwnd, 268, 0x415, 0xf, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_U16_0x07E2), PszGetCompressedString(idsEnterPassword));
-    return 0x1;
+    return 1;
 
 L_5ac5:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_5aed:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -4741,7 +4736,7 @@ L_5b7d:
         goto L_5b8c;
 
 L_5b8c:
-    t_merge_5ba5_0001 = 0x3e8;
+    t_merge_5ba5_0001 = 1000;
     goto L_5ba5;
 
 L_5b92:
@@ -4751,11 +4746,11 @@ L_5b92:
         goto L_5b9c;
 
 L_5b9c:
-    t_merge_5ba5_0001 = 0x1388;
+    t_merge_5ba5_0001 = 5000;
     goto L_5ba5;
 
 L_5ba2:
-    t_merge_5ba5_0001 = 0x2710;
+    t_merge_5ba5_0001 = 10000;
 
 L_5ba5:
     Delay(t_merge_5ba5_0001);
@@ -4781,15 +4776,15 @@ L_5c34:
         goto L_5c40;
 
 L_5c40:
-    t_merge_5c49_0001 = 0x1;
+    t_merge_5c49_0001 = 1;
     goto L_5c49;
 
 L_5c46:
-    t_merge_5c49_0001 = 0x0;
+    t_merge_5c49_0001 = 0;
 
 L_5c49:
     EndDialog(hwnd, t_merge_5c49_0001);
-    return 0x1;
+    return 1;
 
 L_5c58:
     if ((wParam != 0x76))
@@ -4799,7 +4794,7 @@ L_5c58:
 
 L_5c61:
     WinHelp(hwnd, szHelpFile, 0x1, 0x441);
-    return 0x1;
+    return 1;
 
 L_5c88:
     if ((message == WM_ERASEBKGND))
@@ -4826,15 +4821,15 @@ L_5ca0:
         goto L_5cab;
 
 L_5cab:
-    return 0x0;
+    return 0;
 }
 
 int16_t NewPasswordDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    char     szPass[20];
-    RECT     rc;
-    int32_t  lSalt2;
-    int32_t  lSalt;
-    uint16_t t_merge_5f4f_0001;
+    char    szPass[20];
+    RECT    rc;
+    int32_t lSalt2;
+    int32_t lSalt;
+    int16_t t_merge_5f4f_0001;
 
 L_5cba:
     goto L_5f8e;
@@ -4856,12 +4851,12 @@ L_5d48:
     SetWindowText(GetDlgItem(hwnd, IDC_U16_0x07E2), PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil));
 
 L_5d6a:
-    return 0x1;
+    return 1;
 
 L_5d70:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_5d98:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -4945,15 +4940,15 @@ L_5f3a:
         goto L_5f46;
 
 L_5f46:
-    t_merge_5f4f_0001 = 0x1;
+    t_merge_5f4f_0001 = 1;
     goto L_5f4f;
 
 L_5f4c:
-    t_merge_5f4f_0001 = 0x0;
+    t_merge_5f4f_0001 = 0;
 
 L_5f4f:
     EndDialog(hwnd, t_merge_5f4f_0001);
-    return 0x1;
+    return 1;
 
 L_5f5e:
     if ((wParam != 0x76))
@@ -4963,7 +4958,7 @@ L_5f5e:
 
 L_5f67:
     WinHelp(hwnd, szHelpFile, 0x1, 0x43c);
-    return 0x1;
+    return 1;
 
 L_5f8e:
     if ((message == WM_ERASEBKGND))
@@ -4990,7 +4985,7 @@ L_5fa6:
         goto L_5fb1;
 
 L_5fb1:
-    return 0x0;
+    return 0;
 }
 
 uint32_t GetDiskSerialNumber() {
@@ -5315,12 +5310,12 @@ L_648d:
     rc.left = ((dx - (rc.right - rc.left)) >> 0x1);
     rc.top = ((dy - (rc.bottom - rc.top)) >> 0x1);
     SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, 0x5);
-    return 0x1;
+    return 1;
 
 L_6549:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_6571:
     SetBkColor(wParam, crButtonFace);
@@ -5330,7 +5325,7 @@ L_6587:
     hdc = BeginPaint(hwnd, &(ps));
     DrawProgressGauge(hdc, 1, 0);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_65c4:
     if ((message == WM_PAINT))
@@ -5357,7 +5352,7 @@ L_65dc:
         goto L_65e7;
 
 L_65e7:
-    return 0x0;
+    return 0;
 }
 
 void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly) {
@@ -5620,7 +5615,7 @@ L_69db:
         goto L_69ea;
 
 L_69ea:
-    return 0xffff;
+    return -1;
 
 L_69f0:
     if (((uint16_t)(*(psz)) == 32))
@@ -5668,17 +5663,14 @@ HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont) {
     LOGFONT   *plf;
     TEXTMETRIC tm;
     HFONT      hfontSav;
-    int16_t    scratch_bp_p8;
-    HDC        scratch_bp_p6;
-    uint16_t   scratch_bp_pa;
 
 L_6aa6:
     plf = LocalAlloc(0x40, 0x32);
     memset(plf, 0, 0x32);
-    /* untranslated: plf->lfHeight = (MulDiv(scratch_bp_p8, GetDeviceCaps(scratch_bp_p6, LOGPIXELSY), 72) neg 0) */
+    plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
     hfontNew = CreateFontIndirect(plf);
-    if ((scratch_bp_pa == 0x0))
+    if ((pdyFont == 0x0))
         goto L_6b5b;
     else
         goto L_6b1f;
@@ -5690,10 +5682,10 @@ L_6b1f:
         goto L_6b28;
 
 L_6b28:
-    hfontSav = SelectObject(scratch_bp_p6, hfontNew);
-    GetTextMetrics(scratch_bp_p6, &(tm));
-    /* untranslated: ds:[scratch_bp_pa] = (tm.tmHeight + tm.tmExternalLeading) */
-    SelectObject(scratch_bp_p6, hfontSav);
+    hfontSav = SelectObject(hdc, hfontNew);
+    GetTextMetrics(hdc, &(tm));
+    *(pdyFont) = (tm.tmHeight + tm.tmExternalLeading);
+    SelectObject(hdc, hfontSav);
 
 L_6b5b:
     LocalFree(plf);

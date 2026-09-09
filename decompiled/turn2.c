@@ -1730,6 +1730,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     uint16_t  t_merge_2763_0001;
     uint16_t  scratch_bp_m2e;
     uint16_t  scratch_bp_m16;
+    int16_t   t_call_2d26;
 
 L_19b2:
     if ((grobj != grobjFleet))
@@ -1758,7 +1759,7 @@ L_1a09:
         goto L_1a26;
 
 L_1a26:
-    return 0x0;
+    return 0;
 
 L_1a2c:
     idm = idmHasBuiltNew;
@@ -1840,7 +1841,7 @@ L_1c1f:
 L_1c55:
     lpshdef->cBuilt = (lpshdef->cBuilt + 0x1);
     lpshdef->cExist = (lpshdef->cExist + 0x1);
-    return 0x1;
+    return 1;
 
 L_1c78:
     if ((lppl->fStarbase == 0x0))
@@ -1855,7 +1856,7 @@ L_1c8f:
         goto L_1c98;
 
 L_1c98:
-    return 0x0;
+    return 0;
 
 L_1c9e:
     lpshdef = (rglpshdef[lppl->iPlayer] + LOWORD((0x93 * iItem)));
@@ -1872,7 +1873,7 @@ L_1cd6:
 
 L_1cf3:
     FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, (iItem + 1), 0);
-    return 0x0;
+    return 0;
 
 L_1d1d:
     if ((rgplr[lppl->iPlayer].cFleet != 0x200))
@@ -1995,11 +1996,11 @@ L_20c5:
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
     FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0, 0, 0);
-    return 0x1;
+    return 1;
 
 L_214f:
     FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0);
-    return 0x0;
+    return 0;
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id);
@@ -2116,7 +2117,7 @@ L_24d7:
     FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
 
 L_24fc:
-    return 0x0;
+    return 0;
 
 L_2502:
     goto L_2fc0;
@@ -2185,7 +2186,7 @@ L_2672:
 
 L_26be:
     FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0);
-    return 0x0;
+    return 0;
 
 L_26e7:
     if ((lppl->idFling != 0x0))
@@ -2195,7 +2196,7 @@ L_26e7:
 
 L_26f9:
     FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0);
-    return 0x0;
+    return 0;
 
 L_2722:
     if ((iItem != 6))
@@ -2528,9 +2529,9 @@ L_2cea:
 L_2cf2:
     lppl->rgwtMin[i] = 0;
     scratch_bp_m16 = Random(50);
-    Random(50);
-    /* untranslated: lppl->rgEnvVarOrig[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16)) */
-    /* untranslated: lppl->rgEnvVar[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16)) */
+    t_call_2d26 = Random(50);
+    lppl->rgEnvVarOrig[i] = LOBYTE(((t_call_2d26 + 0x1) + scratch_bp_m16));
+    lppl->rgEnvVar[i] = LOBYTE(((t_call_2d26 + 0x1) + scratch_bp_m16));
     lppl->rgMinConc[i] = LOBYTE(((Random(40) + 0x19) + Random(40)));
     i = (i + 1);
 
@@ -2554,10 +2555,10 @@ L_2f7f:
 L_2fc0:
 
 L_2fc3:
-    return 0x0;
+    return 0;
 
 L_2fc9:
-    return 0x1;
+    return 1;
 
 L_2fcf:
 }
@@ -2869,6 +2870,7 @@ void DropColonists() {
     uint16_t t_merge_3ea3_0001;
     uint16_t scratch_bp_mf6;
     uint16_t scratch_bp_mfe;
+    PLANET  *t_call_4159;
 
 L_34e2:
     if ((cColDrop == 0))
@@ -3458,9 +3460,9 @@ L_4141:
 
 L_414b:
     pl.lpplprod->iprodMac = LOBYTE(iDst);
-    LpplFromId(pl.id);
-    /* untranslated: farseg(callresult(PLANET *)):[faroff(callresult(PLANET *))+0x34] = LOWORD(pl.lpplprod) */
-    /* untranslated: farseg(callresult(PLANET *)):[faroff(callresult(PLANET *))+0x36] = HIWORD(pl.lpplprod) */
+    t_call_4159 = LpplFromId(pl.id);
+    LOWORD(t_call_4159->lpplprod) = LOWORD(pl.lpplprod);
+    HIWORD(t_call_4159->lpplprod) = HIWORD(pl.lpplprod);
     goto L_418e;
 
 L_4176:
@@ -4151,7 +4153,7 @@ void RemoteTerraforming() {
     uint16_t t_merge_4e9d_0001;
     uint16_t t_merge_4f28_0001;
     uint16_t scratch_bp_m20;
-    uint16_t t_merge_4f91_0001;
+    int16_t  t_merge_4f91_0001;
 
 L_4c56:
     ifl = 0;
@@ -4228,7 +4230,10 @@ L_4d1b:
         goto L_4d48;
 
 L_4d48:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * lpfl->iPlayer))) + 0x70) + lppl->iPlayer)]) == 0x1 ? L_4d89 : L_4d76 */
+    if (((uint16_t)(rgplr[lpfl->iPlayer].rgmdRelation[lppl->iPlayer]) == 1))
+        goto L_4d89;
+    else
+        goto L_4d76;
 
 L_4d76:
     if ((lpfl->iPlayer != lppl->iPlayer))
@@ -4392,11 +4397,11 @@ L_4f5b:
         goto L_4f88;
 
 L_4f88:
-    t_merge_4f91_0001 = 0x12c;
+    t_merge_4f91_0001 = 300;
     goto L_4f91;
 
 L_4f8e:
-    t_merge_4f91_0001 = 0x15a;
+    t_merge_4f91_0001 = 346;
 
 L_4f91:
     FSendPlrMsg(lppl->iPlayer, t_merge_4f91_0001, lppl->id, lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
@@ -4428,7 +4433,7 @@ L_4fc1:
         goto L_4fca;
 
 L_4fca:
-    return 0x1;
+    return 1;
 
 L_4fd0:
     iColDrop = 0;
@@ -4472,7 +4477,7 @@ L_5029:
         goto L_5034;
 
 L_5034:
-    return 0x0;
+    return 0;
 
 L_503a:
     LOWORD(lpcdT) = lpfl->id;
@@ -4585,8 +4590,8 @@ L_518f:
     goto NextPlanet;
 
 L_51fb:
-    /* untranslated: call FSendPlrMsg(lppl->iPlayer, 38, lppl->id, lppl->id, (LOWORD(lPopChg) neg 0x0), (loword((uint32_t)(words(((HIWORD(lPopChg) + 0x0) neg
-     * 0x0), (LOWORD(lPopChg) neg 0x0)) >> 0x10)) & 0xffff), 0, 0, 0, 0) -> callresult(int16_t) */
+    /* untranslated: call FSendPlrMsg(lppl->iPlayer, 38, lppl->id, lppl->id, neg(LOWORD(lPopChg)), (loword((uint32_t)(words(neg((HIWORD(lPopChg) + 0x0)),
+     * neg(LOWORD(lPopChg))) >> 0x10)) & 0xffff), 0, 0, 0, 0) -> callresult(int16_t) */
 
 NextPlanet:
     if ((lppl->iPlayer == -1))
@@ -4676,6 +4681,7 @@ void UpdateGuesses() {
     float   pct;
     PLANET *lpplMac;
     int32_t l;
+    int16_t t_call_53c8;
 
 L_532c:
     lppl = lpPlanets;
@@ -4706,9 +4712,9 @@ L_53ac:
     goto L_5456;
 
 L_53b9:
-    Random(LOWORD((int32_t)((l >> 0x2))));
-    /* untranslated: LOWORD(l) = (LOWORD(l) + ((loword((int32_t)(l >> 0x3)) neg 0x0) + callresult(int16_t))) */
-    /* untranslated: HIWORD(l) = (HIWORD(l) + (((hiword((int32_t)(l >> 0x3)) + 0x0) neg 0x0) + signhiword(callresult(int16_t)))) */
+    t_call_53c8 = Random(LOWORD((int32_t)((l >> 0x2))));
+    LOWORD(l) = (LOWORD(l) + ((-LOWORD((int32_t)((l >> 0x3)))) + t_call_53c8));
+    HIWORD(l) = (HIWORD(l) + ((-(HIWORD((int32_t)((l >> 0x3))) + 0x0)) + SIGNHIWORD(t_call_53c8)));
     l = (int32_t)((l >> 0x2));
     if ((HIWORD(l) < 0x0))
         goto L_5435;
@@ -5128,7 +5134,7 @@ L_5a13:
         goto L_5a27;
 
 L_5a27:
-    /* untranslated: iT = (iT neg 0) */
+    iT = (-iT);
 
 L_5a2f:
     j = ((uint16_t)(lppl->rgEnvVar[i]) + iT);
@@ -5348,7 +5354,7 @@ L_5d36:
         goto L_5d4a;
 
 L_5d4a:
-    /* untranslated: iT = (iT neg 0) */
+    iT = (-iT);
 
 L_5d52:
     j = ((uint16_t)(lppl->rgEnvVar[i]) + iT);
@@ -5450,6 +5456,7 @@ void MysteryTrader() {
     THING   *lpth;
     int16_t  grbitTrader;
     int16_t  rgC[4];
+    int16_t  t_call_6055;
     uint16_t t_merge_6082_0001;
     uint16_t t_merge_60ba_0001;
 
@@ -5556,9 +5563,9 @@ L_603f:
     rgC[3] = 1020;
 
 L_6051:
-    Random(2);
-    /* untranslated: iSrc = callresult(int16_t) */
-    /* untranslated: lpth->pt.x = rgC[callresult(int16_t)] */
+    t_call_6055 = Random(2);
+    iSrc = t_call_6055;
+    lpth->pt.x = rgC[t_call_6055];
     if ((iSrc != 0))
         goto L_607f;
     else
@@ -5761,6 +5768,10 @@ void UpdatePlayerScores() {
     int32_t  lScoreMax;
     uint16_t scratch_bp_m86;
     uint16_t scratch_bp_m88;
+    int16_t  t_call_6570;
+    int16_t  t_call_6620;
+    int16_t  t_call_67e5;
+    int16_t  t_call_6b7a;
 
 L_6258:
     cDead = 0;
@@ -5865,14 +5876,23 @@ L_6537:
 L_6542:
     scratch_bp_m88 = LOWORD((int32_t)(((uint32_t)((score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))));
     scratch_bp_m86 = HIWORD((int32_t)(((uint32_t)((score.rgcsh[0x2] & 0x1fff)) << ((score.rgcsh[0x2] >> 0xd) << 0x1))));
-    GetVCVal(game.lid, 6, 0);
-    /* untranslated: branch scratch_bp_m86 < signhiword(callresult(int16_t)) ? L_6614 : L_6588 */
+    t_call_6570 = GetVCVal(game.lid, 6, 0);
+    if ((scratch_bp_m86 < SIGNHIWORD(t_call_6570)))
+        goto L_6614;
+    else
+        goto L_6588;
 
 L_6588:
-    /* untranslated: branch scratch_bp_m86 > signhiword(callresult(int16_t)) ? L_6594 : L_658d */
+    if ((scratch_bp_m86 > SIGNHIWORD(t_call_6570)))
+        goto L_6594;
+    else
+        goto L_658d;
 
 L_658d:
-    /* untranslated: branch scratch_bp_m88 < callresult(int16_t) ? L_6614 : L_6594 */
+    if ((scratch_bp_m88 < t_call_6570))
+        goto L_6614;
+    else
+        goto L_6594;
 
 L_6594:
     scratch_bp_m86 = ((vlprgScoreX[i].wWord | 0x800) & 0x3fc0);
@@ -5887,14 +5907,23 @@ L_6609:
     rgcCond[i] = (rgcCond[i] + 0x1);
 
 L_6614:
-    GetVCVal(game.lid, 3, 0);
-    /* untranslated: branch HIWORD(rglScore[i]) < signhiword(callresult(int16_t)) ? L_66c9 : L_663d */
+    t_call_6620 = GetVCVal(game.lid, 3, 0);
+    if ((HIWORD(rglScore[i]) < SIGNHIWORD(t_call_6620)))
+        goto L_66c9;
+    else
+        goto L_663d;
 
 L_663d:
-    /* untranslated: branch HIWORD(rglScore[i]) > signhiword(callresult(int16_t)) ? L_6649 : L_6642 */
+    if ((HIWORD(rglScore[i]) > SIGNHIWORD(t_call_6620)))
+        goto L_6649;
+    else
+        goto L_6642;
 
 L_6642:
-    /* untranslated: branch LOWORD(rglScore[i]) < callresult(int16_t) ? L_66c9 : L_6649 */
+    if ((LOWORD(rglScore[i]) < t_call_6620))
+        goto L_66c9;
+    else
+        goto L_6649;
 
 L_6649:
     scratch_bp_m86 = ((vlprgScoreX[i].wWord | 0x100) & 0x3fc0);
@@ -5952,14 +5981,23 @@ L_67b3:
 L_67be:
     scratch_bp_m88 = LOWORD((int32_t)((score.cResources / 0x3e8)));
     scratch_bp_m86 = HIWORD((int32_t)((score.cResources / 0x3e8)));
-    GetVCVal(game.lid, 5, 0);
-    /* untranslated: branch scratch_bp_m86 < signhiword(callresult(int16_t)) ? L_62ac : L_67fd */
+    t_call_67e5 = GetVCVal(game.lid, 5, 0);
+    if ((scratch_bp_m86 < SIGNHIWORD(t_call_67e5)))
+        goto L_62ac;
+    else
+        goto L_67fd;
 
 L_67fd:
-    /* untranslated: branch scratch_bp_m86 > signhiword(callresult(int16_t)) ? L_6809 : L_6802 */
+    if ((scratch_bp_m86 > SIGNHIWORD(t_call_67e5)))
+        goto L_6809;
+    else
+        goto L_6802;
 
 L_6802:
-    /* untranslated: branch scratch_bp_m88 < callresult(int16_t) ? L_62ac : L_6809 */
+    if ((scratch_bp_m88 < t_call_67e5))
+        goto L_62ac;
+    else
+        goto L_6809;
 
 L_6809:
     scratch_bp_m86 = ((vlprgScoreX[i].wWord | 0x400) & 0x3fc0);
@@ -6150,14 +6188,23 @@ L_6b31:
     FSendPrependedPlrMsg(i, 184, -4, 0, 0, 0, 0, 0, 0, 0);
 
 L_6b66:
-    GetVCVal(game.lid, 4, 0);
-    /* untranslated: branch HIWORD(lScoreMax) < hiword((int32_t)((uint32_t)(lScore2nd * sext16to32((callresult(int16_t) + 100))) / 0x64)) ? L_6c31 : L_6ba3 */
+    t_call_6b7a = GetVCVal(game.lid, 4, 0);
+    if ((HIWORD(lScoreMax) < HIWORD((int32_t)(((uint32_t)((lScore2nd * (uint32_t)((t_call_6b7a + 100)))) / 0x64)))))
+        goto L_6c31;
+    else
+        goto L_6ba3;
 
 L_6ba3:
-    /* untranslated: branch HIWORD(lScoreMax) > hiword((int32_t)((uint32_t)(lScore2nd * sext16to32((callresult(int16_t) + 100))) / 0x64)) ? L_6bb1 : L_6ba8 */
+    if ((HIWORD(lScoreMax) > HIWORD((int32_t)(((uint32_t)((lScore2nd * (uint32_t)((t_call_6b7a + 100)))) / 0x64)))))
+        goto L_6bb1;
+    else
+        goto L_6ba8;
 
 L_6ba8:
-    /* untranslated: branch LOWORD(lScoreMax) < loword((int32_t)((uint32_t)(lScore2nd * sext16to32((callresult(int16_t) + 100))) / 0x64)) ? L_6c31 : L_6bb1 */
+    if ((LOWORD(lScoreMax) < LOWORD((int32_t)(((uint32_t)((lScore2nd * (uint32_t)((t_call_6b7a + 100)))) / 0x64)))))
+        goto L_6c31;
+    else
+        goto L_6bb1;
 
 L_6bb1:
     scratch_bp_m86 = ((vlprgScoreX[iScoreMax].wWord | 0x200) & 0x3fc0);
@@ -6266,7 +6313,7 @@ L_6d69:
 
 L_6d77:
     imsg = 183;
-    /* untranslated: wWinners2 = (wWinners2 & (j ~ 0x0)) */
+    wWinners2 = (wWinners2 & (~j));
     goto L_6d94;
 
 L_6d87:
@@ -6346,7 +6393,7 @@ L_6e9c:
         goto L_6ebc;
 
 L_6ebc:
-    return 0x0;
+    return 0;
 
 L_6ec2:
     goto L_6eef;
@@ -6452,11 +6499,11 @@ L_7061:
 
 L_706a:
     FreeLpth(lpth);
-    return 0x1;
+    return 1;
 
 L_7081:
     lpth->thp.wtMax = LOWORD((int32_t)(((lDecay + 0x9) / 0xa)));
-    return 0x0;
+    return 0;
 }
 
 void ThingDecay() {
@@ -6476,7 +6523,7 @@ void ThingDecay() {
     uint16_t scratch_bp_m28;
     uint16_t scratch_bp_m2a;
     uint16_t t_merge_74cc_0001;
-    uint16_t t_merge_75cf_0001;
+    int32_t  t_merge_75cf_0001;
 
 L_70c6:
     ifl = 0;
@@ -6541,28 +6588,37 @@ L_71b3:
     goto L_72a1;
 
 L_71c5:
-    /* untranslated: branch HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] == 0x0 ? L_729d : L_71e2 */
+    if ((lpth->thp.rgwtMin[i] == 0))
+        goto L_729d;
+    else
+        goto L_71e2;
 
 L_71e2:
-    /* untranslated: branch 0xa <= (sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))]) / 0xa) ? L_720f : L_7209 */
+    if ((0xa <= ((uint32_t)(lpth->thp.rgwtMin[i]) / 10)))
+        goto L_720f;
+    else
+        goto L_7209;
 
 L_7209:
     t_merge_722c_0001 = 0xa;
     goto L_722c;
 
 L_720f:
-    /* untranslated: t_merge_722c_0001 = (sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))]) / 0xa) */
+    t_merge_722c_0001 = ((uint32_t)(lpth->thp.rgwtMin[i]) / 10);
 
 L_722c:
     wDecay = t_merge_722c_0001;
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = (HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))] - wDecay) */
-    /* untranslated: branch HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] >= 0x0 ? L_727f : L_7266 */
+    lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] - wDecay);
+    if ((lpth->thp.rgwtMin[i] >= 0))
+        goto L_727f;
+    else
+        goto L_7266;
 
 L_7266:
-    /* untranslated: HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 2))] = 0x0 */
+    lpth->thp.rgwtMin[i] = 0;
 
 L_727f:
-    /* untranslated: lDecay = (lDecay + sext16to32(HIWORD(lpth):[((LOWORD(lpth) + 0x8) + (i * 0x2))])) */
+    lDecay = (lDecay + (uint32_t)(lpth->thp.rgwtMin[i]));
 
 L_729d:
     i = (i + 1);
@@ -6786,7 +6842,7 @@ L_75b8:
         goto L_75c0;
 
 L_75c0:
-    t_merge_75cf_0001 = 0xa;
+    t_merge_75cf_0001 = 10;
     goto L_75cf;
 
 L_75c9:
@@ -7174,7 +7230,10 @@ L_7b7f:
         goto L_7b95;
 
 L_7b95:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * iplr))) + 0x70) + lpth->iplr)]) == 0x1 ? L_7e24 : L_7bc3 */
+    if (((uint16_t)(rgplr[iplr].rgmdRelation[lpth->iplr]) == 1))
+        goto L_7e24;
+    else
+        goto L_7bc3;
 
 L_7bc3:
 
@@ -7330,17 +7389,18 @@ L_7e48:
 }
 
 void BreedColonistsInTransit() {
-    int16_t  fNoBreeders;
-    char     grfBreeder[16];
-    int32_t  lColGain;
-    PLANET  *lppl;
-    int16_t  ifl;
-    FLEET   *lpfl;
-    int16_t  i;
-    int32_t  lColGainAct;
-    uint16_t t_merge_7e9a_0001;
-    uint16_t t_merge_7e9a_0002;
-    PLANET  *t_call_8058;
+    int16_t       fNoBreeders;
+    char          grfBreeder[16];
+    int32_t       lColGain;
+    PLANET       *lppl;
+    int16_t       ifl;
+    FLEET        *lpfl;
+    int16_t       i;
+    int32_t       lColGainAct;
+    RaceAttribute t_call_7e83;
+    uint16_t      t_merge_7e9a_0001;
+    uint16_t      t_merge_7e9a_0002;
+    PLANET       *t_call_8058;
 
 L_7e4e:
     fNoBreeders = 1;
@@ -7357,17 +7417,20 @@ L_7e68:
         goto L_7e73;
 
 L_7e73:
-    GetRaceStat(&(rgplr[i]), rsMajorAdv);
-    /* untranslated: branch callresult(RaceAttribute) != raDefend ? L_7e98 : L_7e93 */
+    t_call_7e83 = GetRaceStat(&(rgplr[i]), rsMajorAdv);
+    if ((t_call_7e83 != raDefend))
+        goto L_7e98;
+    else
+        goto L_7e93;
 
 L_7e93:
-    /* untranslated: t_merge_7e9a_0001 = setlobyte(callresult(RaceAttribute), 0x1) */
-    /* untranslated: t_merge_7e9a_0002 = setlobyte(callresult(RaceAttribute), 0x1) */
+    t_merge_7e9a_0001 = ((t_call_7e83 & 0xff00) | (0x1 & 0xff));
+    t_merge_7e9a_0002 = ((t_call_7e83 & 0xff00) | (0x1 & 0xff));
     goto L_7e9a;
 
 L_7e98:
-    /* untranslated: t_merge_7e9a_0001 = setlobyte(callresult(RaceAttribute), 0x0) */
-    /* untranslated: t_merge_7e9a_0002 = setlobyte(callresult(RaceAttribute), 0x0) */
+    t_merge_7e9a_0001 = ((t_call_7e83 & 0xff00) | (0x0 & 0xff));
+    t_merge_7e9a_0002 = ((t_call_7e83 & 0xff00) | (0x0 & 0xff));
 
 L_7e9a:
     grfBreeder[i] = LOBYTE(t_merge_7e9a_0001);
@@ -7569,7 +7632,7 @@ void UpdateResearchStatus(int16_t fUsePool) {
     int16_t   jj;
     int16_t   iGoto;
     MessageId idm;
-    uint16_t  t_merge_861e_0001;
+    int16_t   t_merge_861e_0001;
 
 L_80fe:
     cPlrAlive = 0;
@@ -7826,7 +7889,10 @@ L_858f:
     goto L_85df;
 
 L_859c:
-    /* untranslated: branch rgplr[i].rgTech[jj] >= lobyte(setlobyte(iTechNext2, rgplr[i].rgTech[iTechNext2])) ? L_85db : L_85d5 */
+    if ((rgplr[i].rgTech[jj] >= LOBYTE(((iTechNext2 & 0xff00) | (rgplr[i].rgTech[iTechNext2] & 0xff)))))
+        goto L_85db;
+    else
+        goto L_85d5;
 
 L_85d5:
     iTechNext2 = jj;
@@ -7850,11 +7916,11 @@ L_85ed:
         goto L_8615;
 
 L_8615:
-    t_merge_861e_0001 = 0x136;
+    t_merge_861e_0001 = 310;
     goto L_861e;
 
 L_861b:
-    t_merge_861e_0001 = 0x50;
+    t_merge_861e_0001 = 80;
 
 L_861e:
     FSendPlrMsg(i, t_merge_861e_0001, -2, (uint16_t)(TechLevel), iT, iTechNext2, 0, 0, 0, 0);
@@ -7889,7 +7955,10 @@ L_8680:
         goto L_8689;
 
 L_8689:
-    /* untranslated: branch rgplr[i].rgTech[iT] != lobyte(setlobyte(iT, part.pcom->rgTech[iT])) ? L_87c2 : L_86c0 */
+    if ((rgplr[i].rgTech[iT] != LOBYTE(((iT & 0xff00) | (part.pcom->rgTech[iT] & 0xff)))))
+        goto L_87c2;
+    else
+        goto L_86c0;
 
 L_86c0:
     if ((grbitCur != 1024))
@@ -8055,7 +8124,10 @@ L_8814:
     goto L_8864;
 
 L_8821:
-    /* untranslated: branch rgplr[i].rgTech[jj] >= lobyte(setlobyte(iTechNext, rgplr[i].rgTech[iTechNext])) ? L_8860 : L_885a */
+    if ((rgplr[i].rgTech[jj] >= LOBYTE(((iTechNext & 0xff00) | (rgplr[i].rgTech[iTechNext] & 0xff)))))
+        goto L_8860;
+    else
+        goto L_885a;
 
 L_885a:
     iTechNext = jj;
@@ -8079,8 +8151,9 @@ L_886d:
     goto L_8944;
 
 L_88c6:
-    /* untranslated: rgplr[idPlayer].iTechCur = lobyte(setlobyte(setlobyte(setlobyte(loword((0xc0 * idPlayer)), rgplr[idPlayer].iTechCur),
-     * (rgplr[idPlayer].iTechCur & 0xf)), ((rgplr[idPlayer].iTechCur & 0xf) | 0x60))) */
+    rgplr[idPlayer].iTechCur =
+        LOBYTE(((((((LOWORD((0xc0 * idPlayer)) & 0xff00) | (rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) | ((rgplr[idPlayer].iTechCur & 0xf) & 0xff)) & 0xff00) |
+                (((rgplr[idPlayer].iTechCur & 0xf) | 0x60) & 0xff)));
     /* untranslated: rgplr[idPlayer].iTechCur = lobyte(setlobyte(setlobyte(setlobyte(loword((0xc0 * idPlayer)), rgplr[idPlayer].iTechCur),
      * (rgplr[idPlayer].iTechCur & 0xf0)), ((rgplr[idPlayer].iTechCur & 0xf0) | part[0x0:1](iTechNext)))) */
     LOWORD(rgplr[i].rgResSpent[iT]) = 0x0;
@@ -8261,9 +8334,9 @@ L_8b70:
     goto L_8c65;
 
 L_8bd7:
-    /* untranslated: rgplr[lppl->iPlayer].rgEnvVar[i] = lobyte(setlobyte(i, plrSav.rgEnvVar[i])) */
-    /* untranslated: rgplr[lppl->iPlayer].rgEnvVarMin[i] = lobyte(setlobyte(i, plrSav.rgEnvVarMin[i])) */
-    /* untranslated: rgplr[lppl->iPlayer].rgEnvVarMax[i] = lobyte(setlobyte(i, plrSav.rgEnvVarMax[i])) */
+    rgplr[lppl->iPlayer].rgEnvVar[i] = LOBYTE(((i & 0xff00) | (plrSav.rgEnvVar[i] & 0xff)));
+    rgplr[lppl->iPlayer].rgEnvVarMin[i] = LOBYTE(((i & 0xff00) | (plrSav.rgEnvVarMin[i] & 0xff)));
+    rgplr[lppl->iPlayer].rgEnvVarMax[i] = LOBYTE(((i & 0xff00) | (plrSav.rgEnvVarMax[i] & 0xff)));
     i = (i + 1);
 
 L_8c65:

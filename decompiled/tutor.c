@@ -33,20 +33,20 @@ L_000f:
     tutor.hwnd = hwnd;
     SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, 0x3);
     StickyDlgPos(hwnd, ptStickyTutorDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_004e:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0076:
     DrawTutorText(hwnd);
-    return 0x1;
+    return 1;
 
 L_0087:
     PostMessage(hwndFrame, WM_CHAR, wParam, lParam);
-    return 0x0;
+    return 0;
 
 L_00a3:
     if ((wParam != 0x9c7))
@@ -98,7 +98,7 @@ L_016a:
     tutor.fShowHidMsg = 0x0;
 
 L_0197:
-    return 0x1;
+    return 1;
 
 L_01a0:
     if ((wParam != 0x76))
@@ -108,7 +108,7 @@ L_01a0:
 
 L_01a9:
     WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(tutor.idh));
-    return 0x1;
+    return 1;
 
 L_01cb:
     StickyDlgPos(hwnd, ptStickyTutorDlg.x, 0);
@@ -117,7 +117,7 @@ L_01cb:
     CheckMenuItem(hmenu, 0x9c5, 0x0);
     EndDialog(hwnd, 1);
     EndTutor(1);
-    return 0x1;
+    return 1;
 
 L_0228:
     if ((message == WM_DESTROY))
@@ -156,7 +156,7 @@ L_0250:
         goto L_025b;
 
 L_025b:
-    return 0x0;
+    return 0;
 }
 
 int16_t PanicDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -168,7 +168,7 @@ L_026a:
 L_0279:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_02a1:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -188,7 +188,7 @@ L_02d6:
 
 L_02df:
     EndDialog(hwnd, 0);
-    return 0x1;
+    return 1;
 
 L_02f4:
     if ((wParam != 0x76))
@@ -198,7 +198,7 @@ L_02f4:
 
 L_02fd:
     WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(tutor.idh));
-    return 0x1;
+    return 1;
 
 L_031f:
     if ((wParam == 0x9c9))
@@ -214,7 +214,7 @@ L_0329:
 
 L_0333:
     EndDialog(hwnd, wParam);
-    return 0x1;
+    return 1;
 
 L_034b:
     if ((message == WM_ERASEBKGND))
@@ -235,11 +235,11 @@ L_035b:
         goto L_0366;
 
 L_0366:
-    return 0x0;
+    return 0;
 }
 
 void ShowTutor(int16_t fShow) {
-    uint16_t t_merge_03a0_0001;
+    ShowWindowCmd t_merge_03a0_0001;
 
 L_0374:
     if ((tutor.hwnd == 0x0))
@@ -256,11 +256,11 @@ L_038a:
         goto L_0397;
 
 L_0397:
-    t_merge_03a0_0001 = 0x5;
+    t_merge_03a0_0001 = SW_SHOW;
     goto L_03a0;
 
 L_039d:
-    t_merge_03a0_0001 = 0x0;
+    t_merge_03a0_0001 = SW_HIDE;
 
 L_03a0:
     ShowWindow(tutor.hwnd, t_merge_03a0_0001);
@@ -281,7 +281,7 @@ void DrawTutorText(HWND hwnd) {
     char        rgch[256];
     RECT        rcBtn;
     RECT        rc;
-    uint16_t    t_merge_0636_0001;
+    int16_t     t_merge_0636_0001;
 
 L_03c0:
     hdc = BeginPaint(hwnd, &(ps));
@@ -302,7 +302,7 @@ L_03c0:
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, rc.left, (rc.bottom - 1), (rc.right - rc.left), 1, PATCOPY);
     PatBlt(hdc, (rc.right - 1), rc.top, 1, (rc.bottom - rc.top), PATCOPY);
-    /* untranslated: call ExpandRc(&rc, ((sext16to32(dyArial8) / 2) neg 0x0), ((sext16to32(dyArial8) / 2) neg 0x0)) -> callresult(void) */
+    ExpandRc(&(rc), (-((uint32_t)(dyArial8) / 2)), (-((uint32_t)(dyArial8) / 2)));
     yTop = rc.top;
     FillRect(hdc, &(rc), hbrButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -358,11 +358,11 @@ L_0624:
         goto L_062d;
 
 L_062d:
-    t_merge_0636_0001 = 0x1;
+    t_merge_0636_0001 = 1;
     goto L_0636;
 
 L_0633:
-    t_merge_0636_0001 = 0x0;
+    t_merge_0636_0001 = 0;
 
 L_0636:
     WrapTextOut(hdc, &(xLeft), &(yTop), rgch, cch, rc.left, (rc.right - rc.left), 0x0, t_merge_0636_0001, 1);
@@ -742,7 +742,7 @@ LUpdatePage:
     GetWindowRect(tutor.hwnd, &(rc));
     ScreenToClient(tutor.hwnd, &(rc));
     ScreenToClient(tutor.hwnd, rc.right);
-    /* untranslated: call ExpandRc(&rc, (dyArial8 neg 0), loword((-2 * dyArial8))) -> callresult(void) */
+    ExpandRc(&(rc), (-dyArial8), LOWORD((-2 * dyArial8)));
     InvalidateRect(tutor.hwnd, &(rc), 1);
 
 L_0bfb:
@@ -966,10 +966,10 @@ L_0f49:
 
 L_0f72:
     EndTutor(1);
-    return 0x1;
+    return 1;
 
 L_0f87:
-    return 0x0;
+    return 0;
 }
 
 int16_t FTutorTaskDone() {
@@ -1079,7 +1079,7 @@ L_0fee:
         goto L_100c;
 
 L_100c:
-    return 0x0;
+    return 0;
 
 L_1012:
     tutor.idtBold = 15;
@@ -1094,7 +1094,7 @@ L_103b:
 
 L_1059:
     tutor.idh = 6001;
-    return 0x0;
+    return 0;
 
 L_1065:
     tutor.idtBold = 21;
@@ -1134,7 +1134,7 @@ L_1114:
     tutor.idtBold = 25;
 
 L_111a:
-    return 0x0;
+    return 0;
 
 L_1120:
     if ((FCheckSelection(grobjFleet, 4) == 0))
@@ -1189,7 +1189,7 @@ L_11ae:
 L_11ca:
     tutor.idtBold = 39;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_11e5:
     if ((pctResGlob != -1))
@@ -1208,7 +1208,7 @@ L_11f8:
     tutor.idtBold = t_merge_11f8_0001;
 
 L_11fb:
-    return 0x0;
+    return 0;
 
 L_1201:
 
@@ -1275,12 +1275,12 @@ L_1283:
 
 L_1286:
     tutor.idtBold = t_merge_1286_0001;
-    return 0x0;
+    return 0;
 
 L_128f:
     tutor.idtBold = 47;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_12aa:
     if ((tutor.idt == 40))
@@ -1299,7 +1299,7 @@ L_12bb:
         goto L_12e3;
 
 L_12e3:
-    return 0x1;
+    return 1;
 
 L_12e9:
     if ((FCheckSelection(grobjFleet, 0) == 0))
@@ -1322,7 +1322,7 @@ L_130a:
         goto L_1335;
 
 L_1335:
-    return 0x0;
+    return 0;
 
 L_133b:
     tutor.idtBold = 51;
@@ -1332,7 +1332,7 @@ L_133b:
         goto L_1369;
 
 L_1369:
-    return 0x0;
+    return 0;
 
 L_136f:
     tutor.idtBold = 52;
@@ -1342,7 +1342,7 @@ L_136f:
         goto L_139d;
 
 L_139d:
-    return 0x0;
+    return 0;
 
 L_13a3:
     tutor.idtBold = 53;
@@ -1352,7 +1352,7 @@ L_13a3:
         goto L_13d1;
 
 L_13d1:
-    return 0x0;
+    return 0;
 
 L_13d7:
     tutor.idtBold = 54;
@@ -1362,7 +1362,7 @@ L_13d7:
         goto L_1405;
 
 L_1405:
-    return 0x0;
+    return 0;
 
 L_140b:
     tutor.idtBold = 55;
@@ -1375,7 +1375,7 @@ L_1424:
         goto L_144c;
 
 L_144c:
-    return 0x1;
+    return 1;
 
 L_1452:
     tutor.idtBold = 57;
@@ -1385,7 +1385,7 @@ L_1452:
         goto L_1480;
 
 L_1480:
-    return 0x0;
+    return 0;
 
 L_1486:
     tutor.idtBold = 58;
@@ -1395,7 +1395,7 @@ L_1486:
         goto L_14b4;
 
 L_14b4:
-    return 0x0;
+    return 0;
 
 L_14ba:
     tutor.idtBold = 59;
@@ -1405,7 +1405,7 @@ L_14ba:
         goto L_14e8;
 
 L_14e8:
-    return 0x0;
+    return 0;
 
 L_14ee:
     tutor.idtBold = 60;
@@ -1415,7 +1415,7 @@ L_14ee:
         goto L_151c;
 
 L_151c:
-    return 0x0;
+    return 0;
 
 L_1522:
     if ((FCheckMessages(2, 0xffff, 0) == 0))
@@ -1441,7 +1441,7 @@ L_155d:
         goto L_1585;
 
 L_1585:
-    return 0x1;
+    return 1;
 
 L_158b:
     tutor.idtBold = 64;
@@ -1451,7 +1451,7 @@ L_158b:
         goto L_15b9;
 
 L_15b9:
-    return 0x0;
+    return 0;
 
 L_15bf:
     tutor.idtBold = 65;
@@ -1461,7 +1461,7 @@ L_15bf:
         goto L_15ed;
 
 L_15ed:
-    return 0x0;
+    return 0;
 
 L_15f3:
     tutor.idtBold = 66;
@@ -1471,7 +1471,7 @@ L_15f3:
         goto L_1621;
 
 L_1621:
-    return 0x0;
+    return 0;
 
 L_1627:
     tutor.idtBold = 67;
@@ -1481,7 +1481,7 @@ L_1627:
         goto L_1655;
 
 L_1655:
-    return 0x0;
+    return 0;
 
 L_165b:
     tutor.idtBold = 68;
@@ -1491,7 +1491,7 @@ L_165b:
         goto L_1689;
 
 L_1689:
-    return 0x0;
+    return 0;
 
 L_168f:
     if ((FCheckMessages(4, 0xffff, 0) == 0))
@@ -1517,7 +1517,7 @@ L_16ca:
         goto L_16e6;
 
 L_16e6:
-    return 0x1;
+    return 1;
 
 L_16ec:
     if ((FCheckFleetWP(0x5, 1, grobjPlanet, 12, 0x3, 0xffff) == 0))
@@ -1527,7 +1527,7 @@ L_16ec:
 
 L_1714:
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_1729:
     if ((FCheckFleetWP(0x5, 1, grobjPlanet, 12, 0x0, 0xffff) == 0))
@@ -1553,7 +1553,7 @@ L_177b:
     tutor.idtBold = 76;
 
 L_1781:
-    return 0x0;
+    return 0;
 
 L_1787:
     if ((FCheckColonizeWP(0x2, 16, 0xffff) == 0))
@@ -1562,7 +1562,7 @@ L_1787:
         goto L_17a3;
 
 L_17a3:
-    return 0x1;
+    return 1;
 
 L_17a9:
     if ((FCheckSummary(grobjPlanet, 16) == 0))
@@ -1571,7 +1571,7 @@ L_17a9:
         goto L_17c1;
 
 L_17c1:
-    return 0x1;
+    return 1;
 
 L_17c7:
     if ((FCheckSummary(grobjPlanet, 15) == 0))
@@ -1606,7 +1606,7 @@ L_1820:
     tutor.idtBold = t_merge_1820_0001;
 
 L_1823:
-    return 0x0;
+    return 0;
 
 L_1829:
     if ((FCheckCargo(LpflFromId(2), 0, 0, 0, 25) != 0))
@@ -1638,7 +1638,7 @@ L_1891:
     tutor.idtBold = 89;
 
 L_1897:
-    return 0x0;
+    return 0;
 
 L_189d:
     if ((FCheckColonizeWP(0x2, 16, 0xffff) != 0))
@@ -1673,12 +1673,12 @@ L_1908:
     tutor.idtBold = 93;
 
 L_190e:
-    return 0x0;
+    return 0;
 
 L_1914:
     tutor.idtBold = 95;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_192c:
 
@@ -1732,7 +1732,7 @@ L_1974:
 
 L_1990:
     tutor.idtBold = 97;
-    return 0x0;
+    return 0;
 
 L_199c:
     if ((FCheckQueue(13, 0, grobjPlanet, 0x1, 0x1e, 0x0) != 0))
@@ -1779,10 +1779,10 @@ L_1a1e:
     tutor.idtBold = t_merge_1a1e_0001;
 
 L_1a21:
-    return 0x0;
+    return 0;
 
 L_1a27:
-    return 0x1;
+    return 1;
 
 L_1a2d:
     if ((FCheckQueue(16, 0, grobjPlanet, 0x7, 0x3, 0x1) == 0))
@@ -1835,7 +1835,7 @@ L_1ad7:
     tutor.idtBold = t_merge_1ad7_0001;
 
 L_1ada:
-    return 0x0;
+    return 0;
 
 L_1ae0:
     if ((FCheckCargo(LpflFromId(3), 0, 0, 0, 210) != 0))
@@ -1870,10 +1870,10 @@ L_1b3f:
     tutor.idtBold = 109;
 
 L_1b45:
-    return 0x0;
+    return 0;
 
 L_1b4b:
-    return 0x1;
+    return 1;
 
 L_1b51:
     if ((FCheckXferWP(0x3, 1, 16, 0xffff, rgiaQuikDrop) != 0))
@@ -1904,7 +1904,7 @@ L_1bda:
     tutor.idtBold = 114;
 
 L_1be0:
-    return 0x0;
+    return 0;
 
 L_1be6:
     if ((LpflFromId(0)->cord >= 6))
@@ -1913,7 +1913,7 @@ L_1be6:
         goto L_1c00;
 
 L_1c00:
-    return 0x1;
+    return 1;
 
 L_1c06:
     if ((FCheckSelection(grobjFleet, 0) == 0))
@@ -1922,7 +1922,7 @@ L_1c06:
         goto L_1c1e;
 
 L_1c1e:
-    return 0x1;
+    return 1;
 
 L_1c24:
     if ((FCheckSummary(grobjPlanet, 9) == 0))
@@ -1939,7 +1939,7 @@ L_1c42:
 
 L_1c45:
     tutor.idtBold = t_merge_1c45_0001;
-    return 0x0;
+    return 0;
 
 L_1c4e:
     if ((LpflFromId(0)->cord != 6))
@@ -1962,13 +1962,13 @@ L_1c86:
 
 L_1c89:
     tutor.idtBold = t_merge_1c89_0001;
-    return 0x0;
+    return 0;
 
 L_1c92:
     tutor.idtBold = 127;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_1cb9:
     if ((tutor.idt == 96))
@@ -2049,14 +2049,17 @@ L_1d7a:
     tutor.idtBold = 128;
 
 L_1d80:
-    return 0x0;
+    return 0;
 
 L_1d86:
     t_call_1d8a = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_1d8a->lpplprod):[faroff(t_call_1d8a->lpplprod)+0x3] != 0x3 ? L_1daf : L_1da9 */
+    if ((t_call_1d8a->lpplprod->iprodMac != 0x3))
+        goto L_1daf;
+    else
+        goto L_1da9;
 
 L_1da9:
-    return 0x1;
+    return 1;
 
 L_1daf:
     if ((FCheckSelection(grobjPlanet, 13) == 0))
@@ -2065,7 +2068,7 @@ L_1daf:
         goto L_1dc7;
 
 L_1dc7:
-    return 0x1;
+    return 1;
 
 L_1dcd:
     if ((FCheckSummary(grobjPlanet, 21) == 0))
@@ -2082,11 +2085,14 @@ L_1deb:
 
 L_1dee:
     tutor.idtBold = t_merge_1dee_0001;
-    return 0x0;
+    return 0;
 
 L_1df7:
     t_call_1dfb = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_1dfb->lpplprod):[faroff(t_call_1dfb->lpplprod)+0x3] != 0x3 ? L_1e42 : L_1e1a */
+    if ((t_call_1dfb->lpplprod->iprodMac != 0x3))
+        goto L_1e42;
+    else
+        goto L_1e1a;
 
 L_1e1a:
     if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
@@ -2115,12 +2121,12 @@ L_1e5c:
 
 L_1e5f:
     tutor.idtBold = t_merge_1e5f_0001;
-    return 0x0;
+    return 0;
 
 L_1e68:
     tutor.idtBold = 143;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_1e83:
     if ((tutor.idt == 128))
@@ -2167,10 +2173,10 @@ L_1f16:
 
 L_1f19:
     tutor.idtBold = t_merge_1f19_0001;
-    return 0x0;
+    return 0;
 
 L_1f22:
-    return 0x1;
+    return 1;
 
 L_1f28:
     if ((FCheckSelection(grobjFleet, 2) != 0))
@@ -2199,7 +2205,7 @@ L_1f5c:
     tutor.idtBold = t_merge_1f5c_0001;
 
 L_1f5f:
-    return 0x0;
+    return 0;
 
 L_1f65:
     if ((FCheckColonizeWP(0x2, 14, 0xffff) != 0))
@@ -2209,7 +2215,7 @@ L_1f65:
 
 L_1f81:
     tutor.idtBold = 152;
-    return 0x0;
+    return 0;
 
 L_1f8d:
     if ((FCheckFleetWP(0x3, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -2244,7 +2250,7 @@ L_1ff7:
     tutor.idtBold = t_merge_1ff7_0001;
 
 L_1ffa:
-    return 0x0;
+    return 0;
 
 L_2000:
     if ((LpflFromId(0)->cord != 5))
@@ -2279,12 +2285,12 @@ L_2060:
     tutor.idtBold = t_merge_2060_0001;
 
 L_2063:
-    return 0x0;
+    return 0;
 
 L_2069:
     tutor.idtBold = 159;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_2084:
     if ((tutor.idt == 144))
@@ -2346,7 +2352,7 @@ L_214a:
     tutor.idtBold = 165;
 
 L_2150:
-    return 0x0;
+    return 0;
 
 L_2156:
     tutor.idtBold = 166;
@@ -2362,7 +2368,7 @@ L_217f:
 L_21b2:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 170;
-    return 0x0;
+    return 0;
 
 L_21ca:
     tutor.fNoErrors = 0x0;
@@ -2374,12 +2380,15 @@ L_21ca:
         goto L_2206;
 
 L_2206:
-    return 0x0;
+    return 0;
 
 L_220c:
     tutor.idh = 1059;
     t_call_2216 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_2216->lpplprod):[faroff(t_call_2216->lpplprod)+0x3] != 0x3 ? L_225d : L_2235 */
+    if ((t_call_2216->lpplprod->iprodMac != 0x3))
+        goto L_225d;
+    else
+        goto L_2235;
 
 L_2235:
     if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
@@ -2402,12 +2411,12 @@ L_227b:
 
 L_227e:
     tutor.idtBold = t_merge_227e_0001;
-    return 0x0;
+    return 0;
 
 L_2287:
     tutor.idtBold = 175;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_22a2:
     if ((tutor.idt == 160))
@@ -2435,7 +2444,7 @@ L_22c1:
 
 L_22ef:
     tutor.idtBold = 176;
-    return 0x0;
+    return 0;
 
 L_22fb:
     if ((FCheckColonizeWP(0x6, 18, 0xffff) != 0))
@@ -2458,12 +2467,15 @@ L_2335:
 
 L_2338:
     tutor.idtBold = t_merge_2338_0001;
-    return 0x0;
+    return 0;
 
 L_2341:
     tutor.idh = 1507;
     t_call_234b = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_234b->lpplprod):[faroff(t_call_234b->lpplprod)+0x3] < 0x3 ? L_2392 : L_236a */
+    if ((t_call_234b->lpplprod->iprodMac < 0x3))
+        goto L_2392;
+    else
+        goto L_236a;
 
 L_236a:
     if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x3, 0x0) != 0))
@@ -2473,7 +2485,7 @@ L_236a:
 
 L_2392:
     tutor.idtBold = 181;
-    return 0x0;
+    return 0;
 
 L_239e:
     if ((FCheckScanner(0, -1) != 0))
@@ -2483,10 +2495,10 @@ L_239e:
 
 L_23b6:
     tutor.idtBold = 182;
-    return 0x0;
+    return 0;
 
 L_23c2:
-    return 0x1;
+    return 1;
 
 L_23c8:
     if ((FCheckMessages(-1, idmHaveBuiltMines, 1) != 0))
@@ -2509,7 +2521,7 @@ L_2406:
 
 L_2409:
     tutor.idtBold = t_merge_2409_0001;
-    return 0x0;
+    return 0;
 
 L_2412:
     if ((FCheckQueue(16, 0, grobjPlanet, 0x1, 0xa, 0x1) == 0))
@@ -2569,7 +2581,7 @@ L_24c2:
     tutor.idtBold = t_merge_24c2_0001;
 
 L_24c5:
-    return 0x0;
+    return 0;
 
 L_24cb:
     tutor.idtBold = 190;
@@ -2600,12 +2612,15 @@ L_2532:
 
 L_2541:
     tutor.idtBold = 192;
-    return 0x0;
+    return 0;
 
 L_254d:
     tutor.idh = 1507;
     t_call_2557 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_2557->lpplprod):[faroff(t_call_2557->lpplprod)+0x3] < 0x4 ? L_259e : L_2576 */
+    if ((t_call_2557->lpplprod->iprodMac < 0x4))
+        goto L_259e;
+    else
+        goto L_2576;
 
 L_2576:
     if ((FCheckQueue(13, 2, grobjFleet, 0x0, 0x2, 0x0) != 0))
@@ -2615,12 +2630,12 @@ L_2576:
 
 L_259e:
     tutor.idtBold = 196;
-    return 0x0;
+    return 0;
 
 L_25aa:
     tutor.idtBold = 198;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_25c5:
     if ((tutor.idt == 176))
@@ -2659,7 +2674,7 @@ L_25fa:
         goto L_2616;
 
 L_2616:
-    return 0x1;
+    return 1;
 
 L_261c:
     if ((rgplr[0].cFleet == 0x9))
@@ -2719,7 +2734,7 @@ L_26cd:
     tutor.idtBold = 206;
 
 L_26d3:
-    return 0x0;
+    return 0;
 
 L_26d9:
     tutor.fNoErrors = 0x1;
@@ -2732,7 +2747,7 @@ L_2701:
     tutor.fNoErrors = 0x0;
     FCheckColonizeWP(0x7, 8, 0xffff);
     tutor.idtBold = 209;
-    return 0x0;
+    return 0;
 
 L_272d:
     tutor.fNoErrors = 0x0;
@@ -2756,11 +2771,11 @@ L_277f:
 
 L_2782:
     tutor.idtBold = t_merge_2782_0001;
-    return 0x0;
+    return 0;
 
 L_278b:
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_279d:
     tutor.fNoErrors = 0x0;
@@ -2772,7 +2787,7 @@ L_279d:
 L_27c5:
     tutor.fProgress = 0x0;
     tutor.idtBold = 216;
-    return 0x0;
+    return 0;
 
 L_27dd:
     tutor.fNoErrors = 0x1;
@@ -2783,7 +2798,7 @@ L_27dd:
 
 L_2805:
     tutor.fNoErrors = 0x0;
-    return 0x1;
+    return 1;
 
 L_2817:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -2794,7 +2809,7 @@ L_2817:
 L_2833:
     tutor.idtBold = 217;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_284b:
     if ((tutor.fProgress != 0x0))
@@ -2822,7 +2837,7 @@ L_2892:
     tutor.idtBold = 217;
 
 L_2898:
-    return 0x0;
+    return 0;
 
 L_289e:
     tutor.idtBold = 221;
@@ -2833,10 +2848,10 @@ L_289e:
 
 L_28ae:
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_28c0:
-    return 0x0;
+    return 0;
 
 L_28c6:
     if ((pctResGlob == -1))
@@ -2858,7 +2873,7 @@ L_28ec:
     tutor.idtBold = 228;
 
 L_28f2:
-    return 0x0;
+    return 0;
 
 L_28fb:
     if ((FCheckResearch(1, 6, 30) != 0))
@@ -2868,12 +2883,12 @@ L_28fb:
 
 L_2917:
     tutor.idtBold = 228;
-    return 0x0;
+    return 0;
 
 L_2923:
     tutor.idtBold = 230;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_293e:
     if ((tutor.idt == 200))
@@ -2928,7 +2943,7 @@ L_29a5:
 L_29a8:
     tutor.idtBold = t_merge_29a8_0001;
     tutor.fNoErrors = 0x0;
-    return 0x0;
+    return 0;
 
 L_29bd:
     tutor.fNoErrors = 0x0;
@@ -2981,7 +2996,7 @@ L_2a78:
     tutor.idtBold = t_merge_2a78_0001;
 
 L_2a7b:
-    return 0x0;
+    return 0;
 
 L_2a81:
     tutor.fNoErrors = 0x1;
@@ -2994,13 +3009,13 @@ L_2ab5:
     FCheckFleetWP(0x0, 1, grobjPlanet, 2, 0xffff, 0xffff);
     tutor.idtBold = 245;
     tutor.fNoErrors = 0x0;
-    return 0x0;
+    return 0;
 
 L_2aed:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 247;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_2b14:
     if ((tutor.idt == 232))
@@ -3029,7 +3044,7 @@ L_2b33:
 L_2b4f:
     tutor.idtBold = 248;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_2b67:
     if ((FCheckQueue(14, 0, grobjPlanet, 0x1, 0x3, 0x1) == 0))
@@ -3076,7 +3091,7 @@ L_2bf2:
     tutor.idtBold = 249;
 
 L_2bf8:
-    return 0x0;
+    return 0;
 
 L_2bfe:
     if ((FCheckTemplate(0) == 0))
@@ -3085,7 +3100,7 @@ L_2bfe:
         goto L_2c12;
 
 L_2c12:
-    return 0x1;
+    return 1;
 
 L_2c18:
     if ((LOWORD(lpplProdGlob) != 0x0))
@@ -3101,7 +3116,7 @@ L_2c22:
 
 L_2c2c:
     tutor.idtBold = 254;
-    return 0x0;
+    return 0;
 
 L_2c38:
     if ((vyZPDStatic == -1))
@@ -3110,11 +3125,11 @@ L_2c38:
         goto L_2c42;
 
 L_2c42:
-    return 0x1;
+    return 1;
 
 L_2c48:
     tutor.idtBold = 255;
-    return 0x0;
+    return 0;
 
 L_2c54:
     if ((FCheckTemplate(0) != 0))
@@ -3124,7 +3139,7 @@ L_2c54:
 
 L_2c68:
     tutor.idtBold = 256;
-    return 0x0;
+    return 0;
 
 L_2c74:
     if ((tutor.fProgress != 0x0))
@@ -3146,11 +3161,14 @@ L_2c91:
 
 L_2c9b:
     tutor.idtBold = 257;
-    return 0x0;
+    return 0;
 
 L_2ca7:
     t_call_2cab = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_2cab->lpplprod):[faroff(t_call_2cab->lpplprod)+0x3] < 0x3 ? L_2cf2 : L_2cca */
+    if ((t_call_2cab->lpplprod->iprodMac < 0x3))
+        goto L_2cf2;
+    else
+        goto L_2cca;
 
 L_2cca:
     if ((FCheckQueue(13, 1, grobjFleet, 0x2, 0x1, 0x0) != 0))
@@ -3189,11 +3207,14 @@ L_2d59:
     tutor.idtBold = 260;
 
 L_2d5f:
-    return 0x0;
+    return 0;
 
 L_2d65:
     t_call_2d69 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_2d69->lpplprod):[faroff(t_call_2d69->lpplprod)+0x3] < 0x4 ? L_2db0 : L_2d88 */
+    if ((t_call_2d69->lpplprod->iprodMac < 0x4))
+        goto L_2db0;
+    else
+        goto L_2d88;
 
 L_2d88:
     if ((FCheckQueue(13, 2, grobjFleet, 0x3, 0x1, 0x0) != 0))
@@ -3204,12 +3225,12 @@ L_2d88:
 L_2db0:
     tutor.idh = 1059;
     tutor.idtBold = 262;
-    return 0x0;
+    return 0;
 
 L_2dc2:
     tutor.idtBold = 263;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_2ddd:
     if ((tutor.idt == 248))
@@ -3250,7 +3271,7 @@ L_2e42:
 
 L_2e45:
     tutor.idtBold = t_merge_2e45_0001;
-    return 0x0;
+    return 0;
 
 L_2e4e:
     if ((FCheckFleetWP(0x1, 1, grobjPlanet, 13, 0x5, 0xffff) != 0))
@@ -3273,7 +3294,7 @@ L_2e94:
 
 L_2e97:
     tutor.idtBold = t_merge_2e97_0001;
-    return 0x0;
+    return 0;
 
 L_2ea0:
     if ((FCheckFleetWP(0x4, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -3283,7 +3304,7 @@ L_2ea0:
 
 L_2ec8:
     tutor.idtBold = 269;
-    return 0x0;
+    return 0;
 
 L_2ed4:
     if ((FCheckFleetWP(0x8, 1, grobjFleet, 512, 0xffff, 0xffff) != 0))
@@ -3293,10 +3314,10 @@ L_2ed4:
 
 L_2efc:
     tutor.idtBold = 271;
-    return 0x0;
+    return 0;
 
 L_2f08:
-    return 0x1;
+    return 1;
 
 L_2f0e:
     if ((FCheckColonizeWP(0x2, 4, 0xffff) != 0))
@@ -3319,7 +3340,7 @@ L_2f48:
 
 L_2f4b:
     tutor.idtBold = t_merge_2f4b_0001;
-    return 0x0;
+    return 0;
 
 L_2f54:
     if ((FCheckCargo(LpflFromId(11), 0, 0, 0, 210) != 0))
@@ -3342,7 +3363,7 @@ L_2fa0:
 
 L_2fa3:
     tutor.idtBold = t_merge_2fa3_0001;
-    return 0x0;
+    return 0;
 
 L_2fac:
     if ((FCheckFleetWP(0xb, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0))
@@ -3364,7 +3385,7 @@ L_2ffc:
 
 L_3023:
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_3038:
     if ((FCheckSelection(grobjFleet, 11) == 0))
@@ -3402,11 +3423,14 @@ L_30bb:
     tutor.idtBold = 276;
 
 L_30c1:
-    return 0x0;
+    return 0;
 
 L_30c7:
     t_call_30cb = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_30cb->lpplprod):[faroff(t_call_30cb->lpplprod)+0x3] < 0x2 ? L_3112 : L_30ea */
+    if ((t_call_30cb->lpplprod->iprodMac < 0x2))
+        goto L_3112;
+    else
+        goto L_30ea;
 
 L_30ea:
     if ((FCheckQueue(13, 0, grobjPlanet, 0x8, 0x46, 0x0) != 0))
@@ -3448,7 +3472,7 @@ L_3150:
         goto L_3168;
 
 L_3168:
-    return 0x1;
+    return 1;
 
 L_3171:
     if ((tutor.fProgress == 0x0))
@@ -3496,7 +3520,7 @@ L_31f7:
     tutor.idtBold = 286;
 
 L_31fd:
-    return 0x0;
+    return 0;
 
 L_3203:
     if ((tutor.fProgress != 0x0))
@@ -3531,7 +3555,7 @@ L_3243:
 
 L_3246:
     tutor.idtBold = t_merge_3246_0001;
-    return 0x0;
+    return 0;
 
 L_324f:
     if ((FCheckMessages(9999, 0xffff, 0) == 0))
@@ -3549,7 +3573,7 @@ L_3271:
 L_3274:
     tutor.idtBold = t_merge_3274_0001;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_328c:
     if ((tutor.idt == 264))
@@ -3583,10 +3607,13 @@ L_32b5:
 
 L_32bb:
     t_call_32bf = LpplFromId(8);
-    /* untranslated: branch byte farseg(t_call_32bf->lpplprod):[faroff(t_call_32bf->lpplprod)+0x3] <= 0x2 ? L_32e4 : L_32de */
+    if ((t_call_32bf->lpplprod->iprodMac <= 0x2))
+        goto L_32e4;
+    else
+        goto L_32de;
 
 L_32de:
-    return 0x1;
+    return 1;
 
 L_32e4:
     if ((FCheckSummary(grobjFleet, 3) == 0))
@@ -3595,7 +3622,7 @@ L_32e4:
         goto L_32fc;
 
 L_32fc:
-    return 0x1;
+    return 1;
 
 L_3302:
     if ((FCheckSummary(grobjThing, -1) == 0))
@@ -3627,7 +3654,7 @@ L_3360:
     tutor.idtBold = 297;
 
 L_3366:
-    return 0x0;
+    return 0;
 
 L_336c:
     if ((FCheckMessages(5, 0xffff, 0) != 0))
@@ -3637,7 +3664,7 @@ L_336c:
 
 L_3388:
     tutor.idtBold = 306;
-    return 0x0;
+    return 0;
 
 L_3394:
     if ((FCheckMessages(6, 0xffff, 0) != 0))
@@ -3647,7 +3674,7 @@ L_3394:
 
 L_33b0:
     tutor.idtBold = 308;
-    return 0x0;
+    return 0;
 
 L_33bc:
     tutor.idtBold = 310;
@@ -3655,7 +3682,10 @@ L_33bc:
 
 L_33d5:
     t_call_33d9 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_33d9->lpplprod):[faroff(t_call_33d9->lpplprod)+0x3] < 0x3 ? L_3420 : L_33f8 */
+    if ((t_call_33d9->lpplprod->iprodMac < 0x3))
+        goto L_3420;
+    else
+        goto L_33f8;
 
 L_33f8:
     if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x2, 0x0) != 0))
@@ -3665,7 +3695,10 @@ L_33f8:
 
 L_3420:
     t_call_3424 = LpplFromId(8);
-    /* untranslated: branch byte farseg(t_call_3424->lpplprod):[faroff(t_call_3424->lpplprod)+0x3] < 0x3 ? L_346b : L_3443 */
+    if ((t_call_3424->lpplprod->iprodMac < 0x3))
+        goto L_346b;
+    else
+        goto L_3443;
 
 L_3443:
     if ((FCheckQueue(8, 0, grobjPlanet, 0xc, 0x2, 0x1) != 0))
@@ -3694,12 +3727,12 @@ L_3492:
     tutor.idtBold = 318;
 
 L_3498:
-    return 0x0;
+    return 0;
 
 L_349e:
     tutor.idtBold = 319;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_34b9:
     if ((tutor.idt == 296))
@@ -3729,7 +3762,7 @@ L_34e0:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_34f2 : L_34ec */
 
 L_34ec:
-    return 0x1;
+    return 1;
 
 L_34f2:
     if ((FCheckXferWP(0x0, 1, 8, 0xffff, rgiaUnloadAllCol) != 0))
@@ -3752,7 +3785,7 @@ L_3550:
 
 L_3556:
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_3568:
     if ((FCheckMessages(3, 0xffff, 0) != 0))
@@ -3762,7 +3795,7 @@ L_3568:
 
 L_3584:
     tutor.idtBold = 322;
-    return 0x0;
+    return 0;
 
 L_3590:
     if ((FCheckResearch(5, 2, 30) != 0))
@@ -3772,7 +3805,7 @@ L_3590:
 
 L_35ac:
     tutor.idtBold = 324;
-    return 0x0;
+    return 0;
 
 L_35b8:
     if ((tutor.fProgress != 0x0))
@@ -3801,7 +3834,7 @@ L_35f1:
     tutor.fProgress = 0x1;
 
 L_3603:
-    return 0x0;
+    return 0;
 
 L_3609:
     tutor.idtBold = 327;
@@ -3811,10 +3844,10 @@ L_3609:
         goto L_3619;
 
 L_3619:
-    return 0x1;
+    return 1;
 
 L_361f:
-    return 0x0;
+    return 0;
 
 L_3625:
     hs.grhst = hstEngine;
@@ -3830,7 +3863,7 @@ L_3643:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_3655 : L_364f */
 
 L_364f:
-    return 0x1;
+    return 1;
 
 L_3655:
     if ((FCheckShipBuilder(4, -1) != 0))
@@ -3865,7 +3898,7 @@ L_36af:
     tutor.idtBold = t_merge_36af_0001;
 
 L_36b2:
-    return 0x0;
+    return 0;
 
 L_36b8:
     tutor.idh = 3039;
@@ -3882,7 +3915,7 @@ L_36d6:
 
 L_36f2:
     tutor.idtBold = 332;
-    return 0x0;
+    return 0;
 
 L_36fe:
     if ((lpshdefBuild->hul.rghs[1].cItem == 0x0))
@@ -3898,7 +3931,7 @@ L_3716:
 
 L_3732:
     tutor.idtBold = 333;
-    return 0x0;
+    return 0;
 
 L_373e:
     if ((lpshdefBuild->hul.rghs[2].cItem == 0x0))
@@ -3920,14 +3953,14 @@ L_376e:
 
 L_3786:
     tutor.idtBold = 334;
-    return 0x0;
+    return 0;
 
 L_3792:
     tutor.idtBold = 335;
-    return 0x0;
+    return 0;
 
 L_379e:
-    return 0x1;
+    return 1;
 
 L_37a4:
     if ((hwndSlotDlg == 0x0))
@@ -3950,15 +3983,21 @@ L_37cc:
 
 L_37cf:
     tutor.idtBold = t_merge_37cf_0001;
-    return 0x0;
+    return 0;
 
 L_37d8:
     t_call_37dc = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_37dc->lpplprod):[faroff(t_call_37dc->lpplprod)+0x3] < 0x3 ? L_3846 : L_37fb */
+    if ((t_call_37dc->lpplprod->iprodMac < 0x3))
+        goto L_3846;
+    else
+        goto L_37fb;
 
 L_37fb:
     t_call_37ff = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_37ff->lpplprod):[faroff(t_call_37ff->lpplprod)+0x3] != 0x3 ? L_3852 : L_381e */
+    if ((t_call_37ff->lpplprod->iprodMac != 0x3))
+        goto L_3852;
+    else
+        goto L_381e;
 
 L_381e:
     if ((FCheckQueue(13, 1, grobjFleet, 0x6, 0x1, 0x0) != 0))
@@ -3968,11 +4007,14 @@ L_381e:
 
 L_3846:
     tutor.idtBold = 339;
-    return 0x0;
+    return 0;
 
 L_3852:
     t_call_3856 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_3856->lpplprod):[faroff(t_call_3856->lpplprod)+0x3] < 0x4 ? L_389d : L_3875 */
+    if ((t_call_3856->lpplprod->iprodMac < 0x4))
+        goto L_389d;
+    else
+        goto L_3875;
 
 L_3875:
     if ((FCheckQueue(13, 0, grobjPlanet, 0x8, 0x64, 0x0) != 0))
@@ -4002,10 +4044,10 @@ L_38b7:
 L_38ba:
     tutor.idtBold = t_merge_38ba_0001;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_38cf:
-    return 0x1;
+    return 1;
 
 L_38d5:
     if ((tutor.fProgress != 0x0))
@@ -4021,7 +4063,7 @@ L_38e8:
 
 L_38fb:
     tutor.idtBold = 344;
-    return 0x0;
+    return 0;
 
 L_3907:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -4031,7 +4073,7 @@ L_3907:
 
 L_3923:
     tutor.idtBold = 345;
-    return 0x0;
+    return 0;
 
 L_392f:
     if ((FCheckFleetWP(0x8, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -4041,12 +4083,12 @@ L_392f:
 
 L_3957:
     tutor.idtBold = 348;
-    return 0x0;
+    return 0;
 
 L_3963:
     tutor.idtBold = 350;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_397e:
     if ((tutor.idt == 320))
@@ -4080,7 +4122,10 @@ L_39a7:
 
 L_39ad:
     t_call_39b1 = LpplFromId(2);
-    /* untranslated: branch byte farseg(t_call_39b1->lpplprod):[faroff(t_call_39b1->lpplprod)+0x3] < 0x3 ? L_3a0c : L_39d0 */
+    if ((t_call_39b1->lpplprod->iprodMac < 0x3))
+        goto L_3a0c;
+    else
+        goto L_39d0;
 
 L_39d0:
     if ((FCheckQueue(2, 0, grobjPlanet, 0x4, 0x2, 0x1) == 0))
@@ -4118,12 +4163,12 @@ L_3a4e:
     tutor.idtBold = 352;
 
 L_3a54:
-    return 0x0;
+    return 0;
 
 L_3a5a:
     tutor.idtBold = 358;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_3a75:
     if ((tutor.idt == 352))
@@ -4145,7 +4190,7 @@ L_3a8c:
 
 L_3ab4:
     tutor.idtBold = 360;
-    return 0x0;
+    return 0;
 
 L_3ac0:
     if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) != 0))
@@ -4156,7 +4201,7 @@ L_3ac0:
 L_3aee:
     tutor.idtBold = 361;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_3b06:
     if ((tutor.fAutoComplete != 0x0))
@@ -4195,7 +4240,7 @@ L_3b61:
     tutor.idtBold = 364;
 
 L_3b67:
-    return 0x0;
+    return 0;
 
 L_3b6d:
     if ((FCheckXferWP(0x6, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
@@ -4205,10 +4250,10 @@ L_3b6d:
 
 L_3b94:
     tutor.idtBold = 367;
-    return 0x0;
+    return 0;
 
 L_3ba0:
-    return 0x1;
+    return 1;
 
 L_3ba6:
     if ((tutor.fAutoComplete != 0x0))
@@ -4237,7 +4282,7 @@ L_3beb:
     tutor.idtBold = 368;
 
 L_3bf1:
-    return 0x0;
+    return 0;
 
 L_3bf7:
     if ((FCheckFleetWP(0xb, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -4247,12 +4292,12 @@ L_3bf7:
 
 L_3c1f:
     tutor.idtBold = 372;
-    return 0x0;
+    return 0;
 
 L_3c2b:
     tutor.idtBold = 374;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_3c46:
     if ((tutor.idt == 360))
@@ -4280,7 +4325,7 @@ L_3c65:
 
 L_3c8d:
     tutor.idtBold = 376;
-    return 0x0;
+    return 0;
 
 L_3c99:
     tutor.fNoErrors = 0x1;
@@ -4304,7 +4349,7 @@ L_3cdd:
 
 L_3ce0:
     tutor.idtBold = t_merge_3ce0_0001;
-    return 0x0;
+    return 0;
 
 L_3ce9:
     if ((FCheckFleetWP(0x7, 1, grobjPlanet, 12, 0xffff, 0xffff) == 0))
@@ -4315,7 +4360,7 @@ L_3ce9:
 L_3d11:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 378;
-    return 0x0;
+    return 0;
 
 L_3d29:
     tutor.fNoErrors = 0x0;
@@ -4326,11 +4371,14 @@ L_3d29:
 
 L_3d5d:
     tutor.idtBold = 378;
-    return 0x0;
+    return 0;
 
 L_3d69:
     t_call_3d6d = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_3d6d->lpplprod):[faroff(t_call_3d6d->lpplprod)+0x3] < 0x2 ? L_3ddc : L_3d8c */
+    if ((t_call_3d6d->lpplprod->iprodMac < 0x2))
+        goto L_3ddc;
+    else
+        goto L_3d8c;
 
 L_3d8c:
     if ((FCheckQueue(13, 0, grobjPlanet, 0x1, 0x3c, 0x0) == 0))
@@ -4365,7 +4413,7 @@ L_3df6:
 
 L_3df9:
     tutor.idtBold = t_merge_3df9_0001;
-    return 0x0;
+    return 0;
 
 L_3e02:
     if ((FCheckResearch(2, 3, 30) != 0))
@@ -4375,12 +4423,12 @@ L_3e02:
 
 L_3e1e:
     tutor.idtBold = 382;
-    return 0x0;
+    return 0;
 
 L_3e2a:
     tutor.idtBold = 383;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_3e45:
     if ((tutor.idt == 376))
@@ -4415,12 +4463,12 @@ L_3ea6:
 
 L_3ea9:
     tutor.idtBold = t_merge_3ea9_0001;
-    return 0x0;
+    return 0;
 
 L_3eb2:
     tutor.idtBold = 387;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_3ecd:
     if ((tutor.idt == 384))
@@ -4436,7 +4484,10 @@ L_3ede:
 
 L_3ee4:
     t_call_3ee8 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_3ee8->lpplprod):[faroff(t_call_3ee8->lpplprod)+0x3] < 0x3 ? L_3f2f : L_3f07 */
+    if ((t_call_3ee8->lpplprod->iprodMac < 0x3))
+        goto L_3f2f;
+    else
+        goto L_3f07;
 
 L_3f07:
     if ((FCheckQueue(13, 0, grobjFleet, 0x3, 0x1, 0x0) != 0))
@@ -4446,7 +4497,7 @@ L_3f07:
 
 L_3f2f:
     tutor.idtBold = 392;
-    return 0x0;
+    return 0;
 
 L_3f3b:
     if ((FCheckMessages(5, 0xffff, 0) != 0))
@@ -4457,7 +4508,7 @@ L_3f3b:
 L_3f57:
     tutor.fProgress = 0x0;
     tutor.idtBold = 393;
-    return 0x0;
+    return 0;
 
 L_3f6f:
     if ((tutor.fAutoComplete != 0x0))
@@ -4494,7 +4545,7 @@ L_3fc9:
     tutor.idtBold = 393;
 
 L_3fcf:
-    return 0x0;
+    return 0;
 
 L_3fd8:
     if ((pctResGlob == -1))
@@ -4504,12 +4555,12 @@ L_3fd8:
 
 L_3fe2:
     tutor.idtBold = 398;
-    return 0x0;
+    return 0;
 
 L_3fee:
     tutor.idtBold = 399;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_4009:
     if ((tutor.idt == 392))
@@ -4531,7 +4582,7 @@ L_4020:
 
 L_404e:
     tutor.idtBold = 400;
-    return 0x0;
+    return 0;
 
 L_405a:
     if ((FCheckXferWP(0xb, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
@@ -4541,7 +4592,7 @@ L_405a:
 
 L_4081:
     tutor.idtBold = 401;
-    return 0x0;
+    return 0;
 
 L_408d:
     tutor.fNoErrors = 0x1;
@@ -4553,7 +4604,7 @@ L_408d:
 L_40c0:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 402;
-    return 0x0;
+    return 0;
 
 L_40d8:
     tutor.fNoErrors = 0x0;
@@ -4565,7 +4616,7 @@ L_40d8:
         goto L_4114;
 
 L_4114:
-    return 0x0;
+    return 0;
 
 L_411a:
     if ((FCheckCargo(LpflFromId(1), 0, 0, 0, 210) != 0))
@@ -4588,10 +4639,10 @@ L_4166:
 
 L_4169:
     tutor.idtBold = t_merge_4169_0001;
-    return 0x0;
+    return 0;
 
 L_4172:
-    return 0x1;
+    return 1;
 
 L_4178:
     if ((FCheckXferWP(0x1, 1, 2, 0xffff, rgiaUnloadAllCol) != 0))
@@ -4601,7 +4652,7 @@ L_4178:
 
 L_419f:
     tutor.idtBold = 408;
-    return 0x0;
+    return 0;
 
 L_41ab:
     tutor.fNoErrors = 0x1;
@@ -4613,7 +4664,7 @@ L_41ab:
 L_41de:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 409;
-    return 0x0;
+    return 0;
 
 L_41f6:
     tutor.fNoErrors = 0x0;
@@ -4625,11 +4676,14 @@ L_41f6:
         goto L_4232;
 
 L_4232:
-    return 0x0;
+    return 0;
 
 L_4238:
     t_call_423c = LpplFromId(16);
-    /* untranslated: branch byte farseg(t_call_423c->lpplprod):[faroff(t_call_423c->lpplprod)+0x3] < 0x3 ? L_4283 : L_425b */
+    if ((t_call_423c->lpplprod->iprodMac < 0x3))
+        goto L_4283;
+    else
+        goto L_425b;
 
 L_425b:
     if ((FCheckQueue(16, 2, grobjPlanet, 0x5, 0x1, 0x1) != 0))
@@ -4639,7 +4693,7 @@ L_425b:
 
 L_4283:
     tutor.idtBold = 412;
-    return 0x0;
+    return 0;
 
 L_428f:
     if ((FCheckFleetWP(0x6, 1, grobjPlanet, 13, 0xffff, 0xffff) != 0))
@@ -4649,12 +4703,12 @@ L_428f:
 
 L_42b7:
     tutor.idtBold = 413;
-    return 0x0;
+    return 0;
 
 L_42c3:
     tutor.idtBold = 414;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_42de:
     if ((tutor.idt == 400))
@@ -4682,7 +4736,7 @@ L_42fd:
 
 L_4325:
     tutor.idtBold = 416;
-    return 0x0;
+    return 0;
 
 L_4331:
     if ((FCheckResearch(3, 1, 30) != 0))
@@ -4692,7 +4746,7 @@ L_4331:
 
 L_434d:
     tutor.idtBold = 417;
-    return 0x0;
+    return 0;
 
 L_4359:
     if ((rgplr[0].cshdefSB == 0x1))
@@ -4758,11 +4812,14 @@ L_43fb:
     tutor.idtBold = 421;
 
 L_4401:
-    return 0x0;
+    return 0;
 
 L_4407:
     t_call_440b = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_440b->lpplprod):[faroff(t_call_440b->lpplprod)+0x3] < 0x4 ? L_4452 : L_442a */
+    if ((t_call_440b->lpplprod->iprodMac < 0x4))
+        goto L_4452;
+    else
+        goto L_442a;
 
 L_442a:
     if ((FCheckQueue(13, 1, grobjFleet, 0x11, 0x1, 0x0) != 0))
@@ -4772,12 +4829,12 @@ L_442a:
 
 L_4452:
     tutor.idtBold = 422;
-    return 0x0;
+    return 0;
 
 L_445e:
     tutor.idtBold = 423;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_4479:
     if ((tutor.idt == 416))
@@ -4799,7 +4856,7 @@ L_4490:
 
 L_44be:
     tutor.idtBold = 424;
-    return 0x0;
+    return 0;
 
 L_44ca:
     if ((FCheckXferWP(0x0, 1, 5, 0xffff, rgiaUnloadAllCol) != 0))
@@ -4809,7 +4866,7 @@ L_44ca:
 
 L_44f1:
     tutor.idtBold = 425;
-    return 0x0;
+    return 0;
 
 L_44fd:
     if ((FCheckZip(0, rgiaUnloadAllCol, idsDropcol) != 0))
@@ -4832,7 +4889,7 @@ L_452c:
 
 L_452f:
     tutor.idtBold = t_merge_452f_0001;
-    return 0x0;
+    return 0;
 
 L_4538:
     tutor.fNoErrors = 0x1;
@@ -4844,7 +4901,7 @@ L_4538:
 L_456b:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 430;
-    return 0x0;
+    return 0;
 
 L_4583:
     tutor.fNoErrors = 0x0;
@@ -4856,10 +4913,10 @@ L_4583:
         goto L_45bf;
 
 L_45bf:
-    return 0x0;
+    return 0;
 
 L_45c5:
-    return 0x1;
+    return 1;
 
 L_45cb:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -4869,7 +4926,7 @@ L_45cb:
 
 L_45e7:
     tutor.idtBold = 432;
-    return 0x0;
+    return 0;
 
 L_45f3:
     if ((tutor.fAutoComplete != 0x0))
@@ -4920,12 +4977,12 @@ L_4668:
     tutor.idtBold = 435;
 
 L_466e:
-    return 0x0;
+    return 0;
 
 L_4674:
     tutor.idtBold = 439;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_468f:
     if ((tutor.idt == 424))
@@ -4973,14 +5030,17 @@ L_46f4:
     tutor.idh = 1517;
 
 L_4700:
-    return 0x0;
+    return 0;
 
 L_4706:
-    return 0x1;
+    return 1;
 
 L_470c:
     t_call_4710 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_4710->lpplprod):[faroff(t_call_4710->lpplprod)+0x3] < 0x4 ? L_4757 : L_472f */
+    if ((t_call_4710->lpplprod->iprodMac < 0x4))
+        goto L_4757;
+    else
+        goto L_472f;
 
 L_472f:
     if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x1, 0x0) != 0))
@@ -4990,7 +5050,7 @@ L_472f:
 
 L_4757:
     tutor.idtBold = 448;
-    return 0x0;
+    return 0;
 
 L_4763:
     if ((FCheckResearch(1, 2, 30) != 0))
@@ -5000,7 +5060,7 @@ L_4763:
 
 L_477f:
     tutor.idtBold = 449;
-    return 0x0;
+    return 0;
 
 L_478b:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -5010,7 +5070,7 @@ L_478b:
 
 L_47a7:
     tutor.idtBold = 450;
-    return 0x0;
+    return 0;
 
 L_47b3:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) < 0x8 ? L_47c9 : L_47bf */
@@ -5034,7 +5094,7 @@ L_47c9:
 L_47e7:
     tutor.idtBold = 450;
     tutor.idh = 1001;
-    return 0x0;
+    return 0;
 
 L_47f9:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x8 ? L_4829 : L_4805 */
@@ -5047,7 +5107,7 @@ L_4805:
 
 L_481d:
     tutor.idtBold = 451;
-    return 0x0;
+    return 0;
 
 L_4829:
     tutor.idh = 3039;
@@ -5086,11 +5146,14 @@ L_48a9:
     tutor.idtBold = 454;
 
 L_48af:
-    return 0x0;
+    return 0;
 
 L_48b5:
     t_call_48b9 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_48b9->lpplprod):[faroff(t_call_48b9->lpplprod)+0x3] < 0x5 ? L_4900 : L_48d8 */
+    if ((t_call_48b9->lpplprod->iprodMac < 0x5))
+        goto L_4900;
+    else
+        goto L_48d8;
 
 L_48d8:
     if ((FCheckQueue(13, 2, grobjFleet, 0x7, 0x1, 0x0) != 0))
@@ -5100,11 +5163,11 @@ L_48d8:
 
 L_4900:
     tutor.idtBold = 455;
-    return 0x0;
+    return 0;
 
 L_490c:
     tutor.idtBold = 455;
-    return 0x1;
+    return 1;
 
 L_4918:
     if ((FCheckFleetWP(0x4, 1, grobjFleet, 516, 0xffff, 0xffff) != 0))
@@ -5136,13 +5199,13 @@ L_4982:
     tutor.idtBold = 456;
 
 L_4988:
-    return 0x0;
+    return 0;
 
 L_498e:
     tutor.idtBold = 461;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_49b5:
     if ((tutor.idt == 440))
@@ -5175,7 +5238,7 @@ L_49dc:
         goto L_4a0a;
 
 L_4a0a:
-    return 0x1;
+    return 1;
 
 L_4a10:
     if ((FCheckMessages(1, 0xffff, 0) != 0))
@@ -5192,7 +5255,7 @@ L_4a2c:
 L_4a44:
     tutor.idtBold = 464;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_4a5f:
     if ((FCheckMessages(2, 0xffff, 0) != 0))
@@ -5208,7 +5271,7 @@ L_4a7b:
 
 L_4a93:
     tutor.idtBold = 468;
-    return 0x0;
+    return 0;
 
 L_4aa2:
     if ((tutor.fAutoComplete != 0x0))
@@ -5247,10 +5310,10 @@ L_4afd:
     tutor.idtBold = 469;
 
 L_4b03:
-    return 0x0;
+    return 0;
 
 L_4b09:
-    return 0x1;
+    return 1;
 
 L_4b0f:
     if ((FCheckCargo(LpflFromId(6), 0, 0, 0, 210) != 0))
@@ -5260,7 +5323,7 @@ L_4b0f:
 
 L_4b3d:
     tutor.idtBold = 472;
-    return 0x0;
+    return 0;
 
 L_4b4c:
     if ((FCheckFleetWP(0x6, 1, grobjPlanet, 17, 0xffff, 0xffff) != 0))
@@ -5270,7 +5333,7 @@ L_4b4c:
 
 L_4b74:
     tutor.idtBold = 472;
-    return 0x0;
+    return 0;
 
 L_4b83:
     if ((FCheckFleetWP(0x6, 1, grobjPlanet, 17, 0x1, 0xffff) != 0))
@@ -5280,7 +5343,7 @@ L_4b83:
 
 L_4bab:
     tutor.idtBold = 473;
-    return 0x0;
+    return 0;
 
 L_4bba:
     if ((FCheckXferWP(0x6, 1, 17, 0xffff, rgiaUnloadAllCol) != 0))
@@ -5291,7 +5354,7 @@ L_4bba:
 L_4be1:
     tutor.idtBold = 474;
     tutor.idh = 1520;
-    return 0x0;
+    return 0;
 
 L_4bf6:
     t_call_4bfa = LpflFromId(2);
@@ -5356,11 +5419,11 @@ L_4c95:
     tutor.idtBold = 479;
 
 L_4ca1:
-    return 0x0;
+    return 0;
 
 L_4ca7:
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_4cb9:
     if ((FCheckFleetWP(0x7, 0, grobjPlanet, 13, 0x6, 0xffff) != 0))
@@ -5370,11 +5433,14 @@ L_4cb9:
 
 L_4ce1:
     tutor.idtBold = 480;
-    return 0x0;
+    return 0;
 
 L_4ced:
     t_call_4cf1 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_4cf1->lpplprod):[faroff(t_call_4cf1->lpplprod)+0x3] < 0x3 ? L_4d38 : L_4d10 */
+    if ((t_call_4cf1->lpplprod->iprodMac < 0x3))
+        goto L_4d38;
+    else
+        goto L_4d10;
 
 L_4d10:
     if ((FCheckQueue(13, 0, grobjFleet, 0x6, 0x1, 0x0) != 0))
@@ -5385,7 +5451,7 @@ L_4d10:
 L_4d38:
     tutor.idtBold = 481;
     tutor.fProgress = 0x0;
-    return 0x0;
+    return 0;
 
 L_4d50:
     if ((FCheckMessages(14, 0xffff, 0) == 0))
@@ -5434,16 +5500,16 @@ L_4dd6:
 
 L_4de2:
     tutor.idtBold = 482;
-    return 0x0;
+    return 0;
 
 L_4dee:
     t_call_4df2 = LpflFromId(4);
-    /* untranslated: branch ((farseg(t_call_4df2->lpplord):[faroff(t_call_4df2->lpplord)+0xa] >> 0x8) & 0xf) == 0x2 ? L_4e28 : L_4e16 */
+    /* untranslated: branch ((part[0x6:2](t_call_4df2->lpplord->rgord[0x0]) >> 0x8) & 0xf) == 0x2 ? L_4e28 : L_4e16 */
 
 L_4e16:
     tutor.idtBold = 484;
     tutor.idh = 1518;
-    return 0x0;
+    return 0;
 
 L_4e28:
     if ((LpflFromId(8)->cord >= 3))
@@ -5487,7 +5553,7 @@ L_4eee:
     tutor.fNoErrors = 0x0;
 
 L_4efa:
-    return 0x0;
+    return 0;
 
 L_4f00:
     if ((FCheckFleetWP(0x8, 2, grobjPlanet, 0, 0xffff, 0xffff) != 0))
@@ -5497,12 +5563,12 @@ L_4f00:
 
 L_4f28:
     tutor.idtBold = 487;
-    return 0x0;
+    return 0;
 
 L_4f34:
     tutor.idtBold = 487;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_4f4f:
     if ((tutor.idt == 464))
@@ -5536,7 +5602,7 @@ L_4f76:
 
 L_4f9e:
     tutor.idtBold = 488;
-    return 0x0;
+    return 0;
 
 L_4faa:
     tutor.fNoErrors = 0x1;
@@ -5549,7 +5615,7 @@ L_4fde:
     tutor.fNoErrors = 0x0;
     FCheckFleetWP(0x2, 1, grobjPlanet, 12, 0xffff, 0xffff);
     tutor.idtBold = 489;
-    return 0x0;
+    return 0;
 
 L_5016:
     tutor.fNoErrors = 0x0;
@@ -5560,12 +5626,12 @@ L_5016:
 
 L_503e:
     tutor.idtBold = 490;
-    return 0x0;
+    return 0;
 
 L_504a:
     tutor.idtBold = 492;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_5065:
     if ((tutor.idt == 488))
@@ -5587,7 +5653,7 @@ L_507c:
 
 L_5098:
     tutor.idtBold = 496;
-    return 0x0;
+    return 0;
 
 L_50a4:
     if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
@@ -5613,7 +5679,7 @@ L_50bc:
 
 L_50e8:
     tutor.idtBold = 497;
-    return 0x0;
+    return 0;
 
 L_50f4:
     if ((hwndSlotDlg != 0x0))
@@ -5624,7 +5690,7 @@ L_50f4:
 L_50fe:
     tutor.idtBold = 499;
     tutor.idh = 1001;
-    return 0x0;
+    return 0;
 
 L_5110:
     if ((rgshdef[2].hul.rghs[0].iItem != 0x4))
@@ -5634,7 +5700,7 @@ L_5110:
 
 L_511e:
     tutor.idtBold = 503;
-    return 0x0;
+    return 0;
 
 L_512a:
     if ((FCheckShipBuilder(4, -1) != 0))
@@ -5681,14 +5747,17 @@ L_51bc:
     tutor.idtBold = 503;
 
 L_51c2:
-    return 0x0;
+    return 0;
 
 L_51c8:
-    return 0x1;
+    return 1;
 
 L_51ce:
     t_call_51d2 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_51d2->lpplprod):[faroff(t_call_51d2->lpplprod)+0x3] < 0x3 ? L_5219 : L_51f1 */
+    if ((t_call_51d2->lpplprod->iprodMac < 0x3))
+        goto L_5219;
+    else
+        goto L_51f1;
 
 L_51f1:
     if ((FCheckQueue(13, 0, grobjFleet, 0x2, 0x3, 0x0) != 0))
@@ -5698,7 +5767,7 @@ L_51f1:
 
 L_5219:
     tutor.idtBold = 504;
-    return 0x0;
+    return 0;
 
 L_5225:
     if ((FCheckMessages(4, 0xffff, 0) != 0))
@@ -5708,11 +5777,14 @@ L_5225:
 
 L_5241:
     tutor.idtBold = 505;
-    return 0x0;
+    return 0;
 
 L_524d:
     t_call_5251 = LpplFromId(17);
-    /* untranslated: branch byte farseg(t_call_5251->lpplprod):[faroff(t_call_5251->lpplprod)+0x3] != 0x3 ? L_5298 : L_5270 */
+    if ((t_call_5251->lpplprod->iprodMac != 0x3))
+        goto L_5298;
+    else
+        goto L_5270;
 
 L_5270:
     if ((FCheckQueue(17, 2, grobjPlanet, 0x5, 0x2, 0x1) != 0))
@@ -5734,7 +5806,7 @@ L_52b9:
     tutor.idtBold = 507;
 
 L_52bf:
-    return 0x0;
+    return 0;
 
 L_52c5:
     if ((FCheckMessages(6, 0xffff, 0) == 0))
@@ -5750,7 +5822,7 @@ L_52e1:
 
 L_52fd:
     tutor.idtBold = 508;
-    return 0x0;
+    return 0;
 
 L_5309:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -5760,13 +5832,13 @@ L_5309:
 
 L_5325:
     tutor.idtBold = 509;
-    return 0x0;
+    return 0;
 
 L_5331:
     tutor.idtBold = 511;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_5358:
     if ((tutor.idt == 496))
@@ -5794,7 +5866,7 @@ L_5377:
 
 L_5393:
     tutor.idtBold = 512;
-    return 0x0;
+    return 0;
 
 L_539f:
     if ((rgplr[0].cFleet != 0xa))
@@ -5823,7 +5895,7 @@ L_53e7:
 
 L_53ea:
     tutor.idtBold = t_merge_53ea_0001;
-    return 0x0;
+    return 0;
 
 L_53f3:
     if ((rgplr[0].cFleet != 0xa))
@@ -5833,7 +5905,7 @@ L_53f3:
 
 L_5401:
     tutor.idtBold = 515;
-    return 0x0;
+    return 0;
 
 L_540d:
     tutor.fNoErrors = 0x1;
@@ -5846,7 +5918,7 @@ L_5435:
     tutor.fNoErrors = 0x0;
     FCheckColonizeWP(0x9, 0, 0xffff);
     tutor.idtBold = 516;
-    return 0x0;
+    return 0;
 
 L_5461:
     if ((FCheckColonizeWP(0xa, 23, 0xffff) != 0))
@@ -5858,7 +5930,7 @@ L_547d:
     tutor.fNoErrors = 0x0;
     FCheckColonizeWP(0xa, 0, 0xffff);
     tutor.idtBold = 517;
-    return 0x0;
+    return 0;
 
 L_54a9:
     tutor.fNoErrors = 0x0;
@@ -5869,14 +5941,17 @@ L_54a9:
 
 L_54d1:
     tutor.idtBold = 518;
-    return 0x0;
+    return 0;
 
 L_54dd:
-    return 0x1;
+    return 1;
 
 L_54e3:
     t_call_54e7 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_54e7->lpplprod):[faroff(t_call_54e7->lpplprod)+0x3] < 0x4 ? L_552e : L_5506 */
+    if ((t_call_54e7->lpplprod->iprodMac < 0x4))
+        goto L_552e;
+    else
+        goto L_5506;
 
 L_5506:
     if ((FCheckQueue(13, 1, grobjFleet, 0x3, 0x3, 0x0) != 0))
@@ -5886,7 +5961,7 @@ L_5506:
 
 L_552e:
     tutor.idtBold = 521;
-    return 0x0;
+    return 0;
 
 L_553a:
     tutor.fNoErrors = 0x1;
@@ -5923,13 +5998,13 @@ L_55df:
     tutor.idtBold = 523;
 
 L_55e5:
-    return 0x0;
+    return 0;
 
 L_55eb:
     tutor.fNoErrors = 0x0;
     tutor.idtBold = 527;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_5612:
     if ((tutor.idt == 512))
@@ -5972,7 +6047,7 @@ L_5698:
     tutor.idtBold = 528;
 
 L_569e:
-    return 0x0;
+    return 0;
 
 L_56a4:
     tutor.fNoErrors = 0x0;
@@ -5983,7 +6058,7 @@ L_56a4:
 
 L_56cc:
     tutor.idtBold = 532;
-    return 0x0;
+    return 0;
 
 L_56db:
     t_call_56df = LpflFromId(12);
@@ -6005,7 +6080,7 @@ L_56f7:
         goto L_571b;
 
 L_571b:
-    return 0x1;
+    return 1;
 
 L_5724:
     if ((FCheckCargo(LpflFromId(12), 0, 0, 0, 630) != 0))
@@ -6040,10 +6115,10 @@ L_5794:
     tutor.idtBold = t_merge_5794_0001;
 
 L_5797:
-    return 0x0;
+    return 0;
 
 L_579d:
-    return 0x1;
+    return 1;
 
 L_57a3:
     t_call_57a7 = LpflFromId(12);
@@ -6083,7 +6158,7 @@ L_57f9:
     tutor.idtBold = 537;
 
 L_57ff:
-    return 0x0;
+    return 0;
 
 L_5805:
     if ((FCheckMessages(8, 0xffff, 0) != 0))
@@ -6093,7 +6168,7 @@ L_5805:
 
 L_5821:
     tutor.idtBold = 538;
-    return 0x0;
+    return 0;
 
 L_582d:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6103,7 +6178,7 @@ L_582d:
 
 L_5849:
     tutor.idtBold = 540;
-    return 0x0;
+    return 0;
 
 L_5855:
     tutor.idtBold = 542;
@@ -6117,10 +6192,10 @@ L_586b:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x9 ? L_587d : L_5877 */
 
 L_5877:
-    return 0x1;
+    return 1;
 
 L_587d:
-    return 0x0;
+    return 0;
 
 L_5883:
     if ((hwndSlotDlg != 0x0))
@@ -6205,11 +6280,14 @@ L_5986:
     tutor.idtBold = 549;
 
 L_598c:
-    return 0x0;
+    return 0;
 
 L_5992:
     t_call_5996 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_5996->lpplprod):[faroff(t_call_5996->lpplprod)+0x3] < 0x3 ? L_59dd : L_59b5 */
+    if ((t_call_5996->lpplprod->iprodMac < 0x3))
+        goto L_59dd;
+    else
+        goto L_59b5;
 
 L_59b5:
     if ((FCheckQueue(13, 0, grobjFleet, 0x8, 0xa, 0x0) != 0))
@@ -6219,12 +6297,12 @@ L_59b5:
 
 L_59dd:
     tutor.idtBold = 550;
-    return 0x0;
+    return 0;
 
 L_59e9:
     tutor.idtBold = 551;
     tutor.fTurnDone = 0x1;
-    return 0x1;
+    return 1;
 
 L_5a04:
     if ((tutor.idt == 528))
@@ -6270,7 +6348,7 @@ L_5a74:
     tutor.idtBold = 554;
 
 L_5a7a:
-    return 0x0;
+    return 0;
 
 L_5a80:
     if ((FCheckMessages(6, 0xffff, 0) != 0))
@@ -6280,7 +6358,7 @@ L_5a80:
 
 L_5a9c:
     tutor.idtBold = 555;
-    return 0x0;
+    return 0;
 
 L_5aa8:
     if ((FCheckFleetWP(0xc, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
@@ -6302,7 +6380,7 @@ L_5af1:
     tutor.idtBold = 556;
 
 L_5af7:
-    return 0x0;
+    return 0;
 
 L_5afd:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6312,13 +6390,13 @@ L_5afd:
 
 L_5b19:
     tutor.idtBold = 557;
-    return 0x0;
+    return 0;
 
 L_5b25:
     tutor.idtBold = 559;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_5b4c:
     if ((tutor.idt == 552))
@@ -6354,7 +6432,7 @@ L_5bc4:
     tutor.idtBold = 562;
 
 L_5bca:
-    return 0x0;
+    return 0;
 
 L_5bd0:
     tutor.fNoErrors = 0x0;
@@ -6365,7 +6443,7 @@ L_5bd0:
 
 L_5bf8:
     tutor.idtBold = 564;
-    return 0x0;
+    return 0;
 
 L_5c04:
     if ((FCheckFleetWP(0xd, 1, grobjPlanet, 10, 0xffff, 0xffff) != 0))
@@ -6375,7 +6453,7 @@ L_5c04:
 
 L_5c2c:
     tutor.idtBold = 565;
-    return 0x0;
+    return 0;
 
 L_5c38:
     if ((FCheckPlanetRoute(13, 10) != 0))
@@ -6385,10 +6463,10 @@ L_5c38:
 
 L_5c50:
     tutor.idtBold = 567;
-    return 0x0;
+    return 0;
 
 L_5c5c:
-    return 0x1;
+    return 1;
 
 L_5c62:
     if ((FCheckMessages(17, 0xffff, 0) != 0))
@@ -6398,7 +6476,7 @@ L_5c62:
 
 L_5c7e:
     tutor.idtBold = 569;
-    return 0x0;
+    return 0;
 
 L_5c8a:
     if ((FCheckResearch(3, 0, 30) != 0))
@@ -6408,7 +6486,7 @@ L_5c8a:
 
 L_5ca6:
     tutor.idtBold = 570;
-    return 0x0;
+    return 0;
 
 L_5cb2:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6418,7 +6496,7 @@ L_5cb2:
 
 L_5cce:
     tutor.idtBold = 571;
-    return 0x0;
+    return 0;
 
 L_5cda:
     tutor.fNoErrors = 0x1;
@@ -6442,11 +6520,11 @@ L_5d3b:
     tutor.idtBold = 574;
 
 L_5d41:
-    return 0x0;
+    return 0;
 
 L_5d47:
     tutor.fNoErrors = 0x0;
-    return 0x1;
+    return 1;
 
 L_5d59:
     if ((hwndSlotDlg == 0x0))
@@ -6514,7 +6592,7 @@ L_5e2a:
     tutor.idtBold = 581;
 
 L_5e30:
-    return 0x0;
+    return 0;
 
 L_5e39:
     /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0xa ? L_5e57 : L_5e45 */
@@ -6522,11 +6600,14 @@ L_5e39:
 L_5e45:
     tutor.idtBold = 577;
     tutor.idh = 6001;
-    return 0x0;
+    return 0;
 
 L_5e57:
     t_call_5e5b = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_5e5b->lpplprod):[faroff(t_call_5e5b->lpplprod)+0x3] < 0x3 ? L_5ea2 : L_5e7a */
+    if ((t_call_5e5b->lpplprod->iprodMac < 0x3))
+        goto L_5ea2;
+    else
+        goto L_5e7a;
 
 L_5e7a:
     if ((FCheckQueue(13, 0, grobjFleet, 0x9, 0xa, 0x0) != 0))
@@ -6536,13 +6617,13 @@ L_5e7a:
 
 L_5ea2:
     tutor.idtBold = 582;
-    return 0x0;
+    return 0;
 
 L_5eae:
     tutor.idtBold = 583;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_5ed5:
     if ((tutor.idt == 560))
@@ -6576,7 +6657,7 @@ L_5efc:
 
 L_5f18:
     tutor.idtBold = 586;
-    return 0x0;
+    return 0;
 
 L_5f24:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6598,13 +6679,13 @@ L_5f61:
     tutor.idtBold = 588;
 
 L_5f67:
-    return 0x0;
+    return 0;
 
 L_5f6d:
     tutor.idtBold = 590;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_5f94:
     if ((tutor.idt == 584))
@@ -6626,7 +6707,7 @@ L_5fab:
 
 L_5fc7:
     tutor.idtBold = 592;
-    return 0x0;
+    return 0;
 
 L_5fd3:
     if ((FCheckSelection(grobjPlanet, 5) != 0))
@@ -6636,11 +6717,14 @@ L_5fd3:
 
 L_5feb:
     tutor.idtBold = 592;
-    return 0x0;
+    return 0;
 
 L_5ff7:
     t_call_5ffb = LpplFromId(5);
-    /* untranslated: branch byte farseg(t_call_5ffb->lpplprod):[faroff(t_call_5ffb->lpplprod)+0x3] < 0x4 ? L_6042 : L_601a */
+    if ((t_call_5ffb->lpplprod->iprodMac < 0x4))
+        goto L_6042;
+    else
+        goto L_601a;
 
 L_601a:
     if ((FCheckQueue(5, 0, grobjPlanet, 0x8, 0x64, 0x1) != 0))
@@ -6650,7 +6734,7 @@ L_601a:
 
 L_6042:
     tutor.idtBold = 594;
-    return 0x0;
+    return 0;
 
 L_604e:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6660,13 +6744,13 @@ L_604e:
 
 L_606a:
     tutor.idtBold = 596;
-    return 0x0;
+    return 0;
 
 L_6076:
     tutor.idtBold = 598;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_609d:
     if ((tutor.idt == 592))
@@ -6688,7 +6772,7 @@ L_60b4:
 
 L_60d0:
     tutor.idtBold = 600;
-    return 0x0;
+    return 0;
 
 L_60dc:
     if ((tutor.fProgress != 0x0))
@@ -6704,7 +6788,7 @@ L_60ef:
 
 L_6102:
     tutor.idtBold = 602;
-    return 0x0;
+    return 0;
 
 L_610e:
     if ((FCheckMessages(18, 0xffff, 0) != 0))
@@ -6726,7 +6810,7 @@ L_614b:
     tutor.idtBold = 604;
 
 L_6151:
-    return 0x0;
+    return 0;
 
 L_6157:
     tutor.idtBold = 606;
@@ -6736,12 +6820,12 @@ L_6157:
         goto L_6179;
 
 L_6179:
-    return 0x0;
+    return 0;
 
 L_617f:
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_61a0:
     if ((tutor.idt == 600))
@@ -6763,11 +6847,14 @@ L_61b7:
 
 L_61d3:
     tutor.idtBold = 608;
-    return 0x0;
+    return 0;
 
 L_61df:
     t_call_61e3 = LpplFromId(13);
-    /* untranslated: branch byte farseg(t_call_61e3->lpplprod):[faroff(t_call_61e3->lpplprod)+0x3] < 0x3 ? L_622a : L_6202 */
+    if ((t_call_61e3->lpplprod->iprodMac < 0x3))
+        goto L_622a;
+    else
+        goto L_6202;
 
 L_6202:
     if ((FCheckQueue(13, 0, grobjFleet, 0x9, 0xa, 0x0) != 0))
@@ -6789,7 +6876,7 @@ L_624b:
     tutor.idtBold = 609;
 
 L_6251:
-    return 0x0;
+    return 0;
 
 L_6257:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6799,13 +6886,13 @@ L_6257:
 
 L_6273:
     tutor.idtBold = 611;
-    return 0x0;
+    return 0;
 
 L_627f:
     tutor.idtBold = 612;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_62a6:
     if ((tutor.idt == 608))
@@ -6827,12 +6914,12 @@ L_62bd:
         goto L_62df;
 
 L_62df:
-    return 0x0;
+    return 0;
 
 L_62e5:
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_6306:
     if ((tutor.idt == 616))
@@ -6854,13 +6941,13 @@ L_631d:
 
 L_6339:
     tutor.idtBold = 624;
-    return 0x0;
+    return 0;
 
 L_6345:
     tutor.idtBold = 628;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_636c:
     if ((tutor.idt == 624))
@@ -6873,7 +6960,7 @@ L_6374:
     goto L_63d2;
 
 L_637d:
-    return 0x1;
+    return 1;
 
 L_6383:
     if ((FCheckMessages(9999, 0xffff, 0) != 0))
@@ -6883,13 +6970,13 @@ L_6383:
 
 L_639f:
     tutor.idtBold = 636;
-    return 0x0;
+    return 0;
 
 L_63ab:
     tutor.idtBold = 637;
     tutor.fTurnDone = 0x1;
     tutor.fProgress = 0x0;
-    return 0x1;
+    return 1;
 
 L_63d2:
     if ((tutor.idt != 632))
@@ -6940,7 +7027,7 @@ L_64d0:
 L_6501:
     CchGetString(ids, szT);
     strcpy(((0x5264 + LOWORD((24 * iZip))) + 0xa), szT);
-    return 0x1;
+    return 1;
 
 L_6533:
     if ((vrgZip[iZip].fValid != 0x0))
@@ -6958,7 +7045,7 @@ L_6556:
     tutor.idh = 1520;
 
 L_655c:
-    return 0x0;
+    return 0;
 
 L_6562:
     piaCur = (0x5264 + LOWORD((0x18 * iZip)));
@@ -6990,7 +7077,7 @@ L_65c3:
         goto L_65d8;
 
 L_65d8:
-    return 0x0;
+    return 0;
 
 L_65e1:
     CchGetString(ids, szT);
@@ -7001,11 +7088,11 @@ L_65e1:
 
 L_6615:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_6621:
     TutorError(520);
-    return 0x0;
+    return 0;
 }
 
 int16_t FCheckTemplate(int16_t iTemplate) {
@@ -7022,25 +7109,25 @@ L_6690:
     vrgZipProd[0].fValid = 0x1;
     vrgZipProd[0].zpq1 = rgzpqTut[iTemplate];
     gd.fChgZipProd = 0x1;
-    return 0x1;
+    return 1;
 
 L_66c7:
     /* untranslated: branch (part[0xd:2](vrgZipProd[0x0]) & 0xff) != 0x0 ? L_66db : L_66d5 */
 
 L_66d5:
-    return 0x0;
+    return 0;
 
 L_66db:
     /* untranslated: branch (part[0xe:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].fNoResearch ? L_6704 : L_66fe */
 
 L_66fe:
-    return 0x0;
+    return 0;
 
 L_6704:
     /* untranslated: branch (part[0xf:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].cpq ? L_6733 : L_672d */
 
 L_672d:
-    return 0x0;
+    return 0;
 
 L_6733:
     i = 0;
@@ -7062,11 +7149,11 @@ L_675d:
         goto L_678c;
 
 L_678c:
-    return 0x0;
+    return 0;
 
 L_6795:
     gd.fChgZipProd = 0x1;
-    return 0x1;
+    return 1;
 }
 
 void TutorError(int16_t idsError) {
@@ -7119,7 +7206,7 @@ L_685c:
         goto L_687e;
 
 L_687e:
-    return 0x1;
+    return 1;
 
 L_6884:
     tutor.idh = 14008;
@@ -7147,7 +7234,7 @@ L_68a8:
         goto L_68b8;
 
 L_68b8:
-    return 0x0;
+    return 0;
 
 L_68c1:
     if (((md & grbitScan) == md))
@@ -7156,7 +7243,7 @@ L_68c1:
         goto L_68d2;
 
 L_68d2:
-    return 0x0;
+    return 0;
 
 L_68d8:
     if ((iZoom == -1))
@@ -7172,11 +7259,11 @@ L_68e1:
 
 L_68ec:
     tutor.idh = 14022;
-    return 0x0;
+    return 0;
 
 L_68f8:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckFleetName(int16_t id, StringId ids) {
@@ -7200,7 +7287,7 @@ L_6939:
         goto L_6942;
 
 L_6942:
-    return 0x1;
+    return 1;
 
 L_6948:
     if ((LOWORD(lpfl->lpszName) != 0x0))
@@ -7222,7 +7309,7 @@ L_695f:
 
 L_6968:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_6977:
     if ((ids != 0xffff))
@@ -7231,10 +7318,10 @@ L_6977:
         goto L_6980;
 
 L_6980:
-    return 0x1;
+    return 1;
 
 L_6986:
-    return 0x0;
+    return 0;
 
 L_698c:
     CchGetString(ids, szT);
@@ -7245,11 +7332,11 @@ L_698c:
 
 L_69bd:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_69c9:
     TutorError(1231);
-    return 0x0;
+    return 0;
 }
 
 int16_t FCheckSummary(GrobjClass grobj, int16_t id) {
@@ -7265,7 +7352,7 @@ L_69e2:
         goto L_69fb;
 
 L_69fb:
-    return 0x1;
+    return 1;
 
 L_6a01:
     fRet = 0;
@@ -7404,7 +7491,7 @@ L_6b16:
         goto L_6b26;
 
 L_6b26:
-    return 0x1;
+    return 1;
 
 L_6b2c:
     if ((grobj != grobjFleet))
@@ -7568,7 +7655,7 @@ L_6c48:
         goto L_6c67;
 
 L_6c67:
-    return 0x1;
+    return 1;
 
 L_6c6d:
     tutor.idh = 14001;
@@ -7584,7 +7671,7 @@ L_6c7d:
         goto L_6c91;
 
 L_6c91:
-    return 0x0;
+    return 0;
 
 L_6c9a:
     if ((imsg == 9999))
@@ -7605,7 +7692,7 @@ L_6cad:
         goto L_6cb9;
 
 L_6cb9:
-    return 0x0;
+    return 0;
 
 L_6cc2:
     if ((idm == 0xffff))
@@ -7634,7 +7721,7 @@ L_6ce7:
 L_6d14:
     SetFilteringGroups(idm, 1);
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_6d2f:
     if ((fFilter == 0))
@@ -7649,7 +7736,7 @@ L_6d38:
         goto L_6d65;
 
 L_6d65:
-    return 0x0;
+    return 0;
 
 L_6d6e:
     if ((fFilter != 0))
@@ -7664,11 +7751,11 @@ L_6d77:
         goto L_6d8b;
 
 L_6d8b:
-    return 0x0;
+    return 0;
 
 L_6d91:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
@@ -7682,11 +7769,11 @@ L_6dd0:
     /* untranslated: branch sext8to16(part[0x38:2](rgplr[0x0])) != pct ? L_6de2 : L_6ddc */
 
 L_6ddc:
-    return 0x1;
+    return 1;
 
 L_6de2:
     tutor.idh = 1070;
-    return 0x0;
+    return 0;
 }
 
 int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp) {
@@ -7695,7 +7782,7 @@ int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, 
     FLEET   *lpfl;
     int16_t  idh;
     int16_t  idhSav;
-    uint16_t t_merge_6ef9_0001;
+    int16_t  t_merge_6ef9_0001;
     uint16_t t_merge_6f33_0001;
 
 L_6df4:
@@ -7775,11 +7862,11 @@ L_6ee7:
         goto L_6ef0;
 
 L_6ef0:
-    t_merge_6ef9_0001 = 0x1ed;
+    t_merge_6ef9_0001 = 493;
     goto L_6ef9;
 
 L_6ef6:
-    t_merge_6ef9_0001 = 0x1ee;
+    t_merge_6ef9_0001 = 494;
 
 L_6ef9:
     TutorError(t_merge_6ef9_0001);
@@ -7861,7 +7948,7 @@ L_6faf:
         goto L_6fb8;
 
 L_6fb8:
-    return 0x0;
+    return 0;
 
 L_6fbe:
     tutor.idh = 1531;
@@ -7871,11 +7958,11 @@ L_6fbe:
         goto L_6fdb;
 
 L_6fdb:
-    return 0x0;
+    return 0;
 
 L_6fe1:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
@@ -7899,7 +7986,7 @@ L_701e:
         goto L_7027;
 
 L_7027:
-    return 0x0;
+    return 0;
 
 L_702d:
     tutor.idh = 1528;
@@ -7923,7 +8010,7 @@ L_704a:
         goto L_7076;
 
 L_7076:
-    return 0x0;
+    return 0;
 
 L_707c:
     if ((lpfl->lpplord->rgord[iord].tsell.iPlrX == iYears))
@@ -7932,11 +8019,11 @@ L_707c:
         goto L_70a8;
 
 L_70a8:
-    return 0x0;
+    return 0;
 
 L_70ae:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
@@ -7960,7 +8047,7 @@ L_70ea:
         goto L_70f3;
 
 L_70f3:
-    return 0x0;
+    return 0;
 
 L_70f9:
     tutor.idh = 1522;
@@ -7991,7 +8078,7 @@ L_7140:
         goto L_7169;
 
 L_7169:
-    return 0x0;
+    return 0;
 
 L_716f:
     if ((FCheckFleetWP(ifl, 1, grobjPlanet, id, 0x2, iWarp) == 0))
@@ -8001,10 +8088,10 @@ L_716f:
 
 L_7194:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_71a0:
-    return 0x0;
+    return 0;
 }
 
 int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, uint16_t iPlan, uint16_t iDist) {
@@ -8028,7 +8115,7 @@ L_71d6:
         goto L_71df;
 
 L_71df:
-    return 0x0;
+    return 0;
 
 L_71e5:
     tutor.idh = 3095;
@@ -8052,7 +8139,7 @@ L_7202:
         goto L_722d;
 
 L_722d:
-    return 0x0;
+    return 0;
 
 L_7233:
     if ((iDist == 0xffff))
@@ -8065,11 +8152,11 @@ L_723c:
 
 L_7262:
     tutor.idh = 1519;
-    return 0x0;
+    return 0;
 
 L_726e:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITEMACTION *lpiaGoal) {
@@ -8112,7 +8199,7 @@ L_72cf:
         goto L_72d8;
 
 L_72d8:
-    return 0x0;
+    return 0;
 
 L_72de:
     if ((FCheckFleetWP(ifl, iord, grobj, id, 0x1, iWarp) != 0))
@@ -8121,7 +8208,7 @@ L_72de:
         goto L_7302;
 
 L_7302:
-    return 0x0;
+    return 0;
 
 L_7308:
     ord = lpfl->lpplord->rgord[iord];
@@ -8389,12 +8476,12 @@ L_7628:
         goto L_7636;
 
 L_7636:
-    return 0x0;
+    return 0;
 
 L_763c:
     lpbtlplan = (rglpbtlplan[0] + LOWORD((0x24 * ibp)));
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3, int16_t wtColonists) {
@@ -8417,7 +8504,7 @@ L_7681:
         goto L_768a;
 
 L_768a:
-    return 0x0;
+    return 0;
 
 L_7690:
     tutor.idh = 1075;
@@ -8589,7 +8676,7 @@ L_77d8:
 
 L_77f1:
     tutor.idh = 1066;
-    return 0x0;
+    return 0;
 
 L_77fd:
     tutor.idh = 3040;
@@ -8599,7 +8686,7 @@ L_77fd:
         goto L_780d;
 
 L_780d:
-    return 0x0;
+    return 0;
 
 L_7813:
     cItemAct = lpshdefBuild->hul.rghs[iSlot].cItem;
@@ -8615,7 +8702,7 @@ L_7850:
         goto L_7859;
 
 L_7859:
-    return 0x1;
+    return 1;
 
 L_785f:
     if ((cInit >= phs->cItem))
@@ -8640,7 +8727,7 @@ BadCnt:
 
 BadCntSilent:
     tutor.idh = 3039;
-    return 0x0;
+    return 0;
 
 L_78b1:
     if ((cItemAct < phs->cItem))
@@ -8682,7 +8769,7 @@ L_7943:
 
 L_7952:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip) {
@@ -8698,7 +8785,7 @@ L_7964:
         goto L_7983;
 
 L_7983:
-    return 0x0;
+    return 0;
 
 L_7989:
     if ((iCategory == -1))
@@ -8713,7 +8800,7 @@ L_7992:
         goto L_799d;
 
 L_799d:
-    return 0x0;
+    return 0;
 
 L_79a3:
     iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
@@ -8730,30 +8817,31 @@ L_79d2:
 
 L_79dd:
     tutor.idh = idhSav;
-    return 0x1;
+    return 1;
 
 L_79e9:
-    return 0x0;
+    return 0;
 }
 
 int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
-    HS       hs2;
-    HS       hs3;
-    HS       hs;
-    HS       hs1;
-    HS       hs4;
-    uint16_t t_merge_81d4_0001;
+    HS      hs2;
+    HS      hs3;
+    HS      hs;
+    HS      hs1;
+    HS      hs4;
+    int16_t t_merge_81d4_0001;
+    int16_t t_call_7c62;
 
 L_79f6:
     goto L_81a9;
 
 L_7a05:
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7a0b:
     TutorError(497);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7a1d:
@@ -8761,7 +8849,7 @@ L_7a1d:
 
 NoCustom:
     TutorError(498);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7a35:
@@ -8775,7 +8863,7 @@ L_7a40:
 
 L_7a4c:
     TutorError(499);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7a5e:
@@ -8786,7 +8874,7 @@ L_7a5e:
 
 L_7a76:
     TutorError(510);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7a91:
@@ -8803,7 +8891,7 @@ L_7a9c:
 
 L_7aaf:
     TutorError(499);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7ac1:
@@ -8820,7 +8908,7 @@ L_7ad9:
 
 L_7ae3:
     TutorError(500);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7afe:
@@ -8834,7 +8922,7 @@ L_7b09:
 
 L_7b15:
     TutorError(499);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7b27:
@@ -8845,7 +8933,7 @@ L_7b27:
 
 L_7b3f:
     TutorError(510);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7b5a:
@@ -8859,7 +8947,7 @@ L_7b65:
 
 L_7b71:
     TutorError(499);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7b83:
@@ -8870,7 +8958,7 @@ L_7b83:
 
 L_7b9b:
     TutorError(510);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7bb6:
@@ -8884,7 +8972,7 @@ L_7bc1:
 
 L_7bcd:
     TutorError(499);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7bdf:
@@ -8895,7 +8983,7 @@ L_7bdf:
 
 L_7bf7:
     TutorError(510);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7c15:
@@ -8931,7 +9019,7 @@ L_7c35:
 L_7c3a:
 
 L_7c40:
-    t_merge_81d4_0001 = 0x1;
+    t_merge_81d4_0001 = 1;
     goto L_81d4;
 
 L_7c46:
@@ -8944,16 +9032,19 @@ L_7c4f:
         goto L_7c5a;
 
 L_7c5a:
-    FCheckShipBuilder(0, 2);
-    /* untranslated: branch callresult(int16_t) != 0 ? L_f0000000 : L_7c72 */
+    t_call_7c62 = FCheckShipBuilder(0, 2);
+    if ((t_call_7c62 != 0))
+        goto L_f0000000;
+    else
+        goto L_7c72;
 
 L_f0000000:
-    /* untranslated: t_merge_81d4_0001 = callresult(int16_t) */
+    t_merge_81d4_0001 = t_call_7c62;
     goto L_81d4;
 
 L_7c72:
     TutorError(511);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_7c90:
@@ -8978,7 +9069,7 @@ L_8163:
 
 L_8194:
     TutorError(503);
-    t_merge_81d4_0001 = 0x0;
+    t_merge_81d4_0001 = 0;
     goto L_81d4;
 
 L_81a9:
@@ -9023,7 +9114,7 @@ L_81da:
 
 L_81e9:
     TutorError(516);
-    return 0x0;
+    return 0;
 
 L_81fb:
     if ((*(vrgiflMerge) == -1))
@@ -9050,7 +9141,7 @@ L_8221:
         goto L_822e;
 
 L_822e:
-    return 0x1;
+    return 1;
 
 L_8237:
     if ((*(vrgiflMerge) != -1))
@@ -9077,7 +9168,7 @@ L_825d:
         goto L_826a;
 
 L_826a:
-    return 0x1;
+    return 1;
 
 L_8276:
     if ((game.turn == 0x17))
@@ -9096,5 +9187,5 @@ L_8283:
 L_8289:
     TutorError(514);
     tutor.idh = 1107;
-    return 0x0;
+    return 0;
 }

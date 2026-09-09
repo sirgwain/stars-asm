@@ -915,7 +915,7 @@ L_5a3b:
     iChunk = (idt >> 0x6);
     iOffset = (idt & 0x3f);
     pch = &(aTUTCmpr[aiTUTChunkOffset[iChunk]]);
-    pchLen = &(acTUT[iChunk * 0x40]);
+    pchLen = &(acTUT[(iChunk * 64)]);
     i = 0;
     goto L_5a94;
 

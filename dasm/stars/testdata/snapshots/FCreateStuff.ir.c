@@ -343,8 +343,8 @@ L_0a75:
 
 L_0a7f:
     AlertSz(PszFormatIds(idsUnableLoadBitmaps, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_0aa6:
-    return 0x1;
+    return 1;
 }

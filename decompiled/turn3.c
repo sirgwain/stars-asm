@@ -70,21 +70,23 @@ void SatisfyOrders(int16_t iPass) {
     int32_t        t_call_6a00;
     uint16_t       t_merge_6a79_0001;
     int32_t        t_call_6b87;
+    int32_t        t_call_6e24;
     int32_t        t_merge_6e41_0001;
-    uint16_t       t_merge_6e71_0001;
+    int32_t        t_call_6e39;
+    int32_t        t_merge_6e71_0001;
     int32_t        t_merge_70c3_0001;
     uint16_t       t_merge_7165_0001;
     int32_t        t_merge_72c7_0001;
     int32_t        t_merge_73e3_0001;
-    uint16_t       t_merge_7547_0001;
-    uint16_t       t_merge_76b8_0001;
+    int16_t        t_merge_7547_0001;
+    int16_t        t_merge_76b8_0001;
     int32_t        t_merge_77be_0001;
-    uint16_t       t_merge_7a20_0001;
-    uint16_t       t_merge_7aca_0001;
+    int16_t        t_merge_7a20_0001;
+    int16_t        t_merge_7aca_0001;
     int32_t        t_call_8089;
     int32_t        t_call_80c6;
     uint16_t       t_merge_8513_0001;
-    uint16_t       t_merge_915a_0001;
+    int16_t        t_merge_915a_0001;
 
 L_6798:
     if ((cFleet <= 0))
@@ -515,7 +517,7 @@ LTryDunnage:
     goto L_7b78;
 
 L_6cb5:
-    action = ord.txp.rgia[0x0].iAction;
+    action = ord.txp.rgia[j].iAction;
     if ((action == iActionNone))
         goto L_7b74;
     else
@@ -645,13 +647,13 @@ L_6e11:
         goto L_6e1a;
 
 L_6e1a:
-    LGetFleetStat(lpfl, 1);
-    /* untranslated: t_merge_6e41_0001 = callresult(int32_t) */
+    t_call_6e24 = LGetFleetStat(lpfl, 1);
+    t_merge_6e41_0001 = t_call_6e24;
     goto L_6e41;
 
 L_6e2f:
-    LGetFleetStat(lpfl, 2);
-    /* untranslated: t_merge_6e41_0001 = callresult(int32_t) */
+    t_call_6e39 = LGetFleetStat(lpfl, 2);
+    t_merge_6e41_0001 = t_call_6e39;
 
 L_6e41:
     amount = t_merge_6e41_0001;
@@ -673,7 +675,7 @@ L_6e5a:
         goto L_6e62;
 
 L_6e62:
-    t_merge_6e71_0001 = 0x1e8480;
+    t_merge_6e71_0001 = 2000000;
     goto L_6e71;
 
 L_6e6b:
@@ -699,11 +701,11 @@ L_6e85:
         goto L_6e8e;
 
 L_6e8e:
-    amountEdit = (uint32_t)(((uint32_t)((amount * (uint32_t)((ord.tsell & 0xfff)))) / 0x64));
+    /* untranslated: amountEdit = (uint32_t)((uint32_t)(amount * (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff)) / 0x64) */
     goto L_6eff;
 
 L_6ec9:
-    amountEdit = (uint32_t)(((int32_t)((amount / 0x64)) * (uint32_t)((ord.tsell & 0xfff))));
+    /* untranslated: amountEdit = (uint32_t)((int32_t)(amount / 0x64) * (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff)) */
 
 L_6eff:
     amountEdit = (amountEdit - lpfl->rgwtMin[j]);
@@ -737,7 +739,7 @@ L_6f49:
 L_6f52:
 
 L_6f58:
-    amountEdit = (uint32_t)((ord.tsell & 0xfff));
+    /* untranslated: amountEdit = (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff) */
     goto L_7018;
     if ((iLoad != 0))
         goto L_7b74;
@@ -747,7 +749,7 @@ L_6f58:
 L_6f7b:
 
 L_6f81:
-    amountEdit = (uint32_t)((ord.tsell & 0xfff));
+    /* untranslated: amountEdit = (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff) */
     goto L_7018;
     if ((iLoad == 0))
         goto L_7b74;
@@ -804,8 +806,8 @@ L_704c:
 L_7052:
 
 L_7058:
-    /* untranslated: LOWORD(amount) = (LOWORD(amount) neg 0x0) */
-    /* untranslated: HIWORD(amount) = ((HIWORD(amount) + 0x0) neg 0x0) */
+    LOWORD(amount) = (-LOWORD(amount));
+    HIWORD(amount) = (-(HIWORD(amount) + 0x0));
     if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[j])))
         goto L_70a6;
     else
@@ -910,7 +912,8 @@ L_7162:
 
 L_7165:
     idm = t_merge_7165_0001;
-    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, (ord.tsell & 0xfff), 0, xWP, idWP, 0);
+    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, (ss:[bp+(j * 2)-0x74] & 0xfff), 0, xWP, idWP, 0) ->
+     * callresult(int16_t) */
 
 L_71b1:
     if ((iLoad != 0))
@@ -921,8 +924,8 @@ L_71b1:
 L_71b7:
 
 L_71bd:
-    /* untranslated: LOWORD(amount) = (LOWORD(amount) neg 0x0) */
-    /* untranslated: HIWORD(amount) = ((HIWORD(amount) + 0x0) neg 0x0) */
+    LOWORD(amount) = (-LOWORD(amount));
+    HIWORD(amount) = (-(HIWORD(amount) + 0x0));
     goto Unload;
     if ((j != 4))
         goto L_71ef;
@@ -1166,7 +1169,7 @@ L_73dd:
 
 L_73e3:
     l = t_merge_73e3_0001;
-    /* untranslated: l2 = ChgCargo(ord.grobj, ord.id, j, words(((HIWORD(l) + 0x0) neg 0x0), (LOWORD(l) neg 0x0)), 0x0) */
+    /* untranslated: l2 = ChgCargo(ord.grobj, ord.id, j, words(neg((HIWORD(l) + 0x0)), neg(LOWORD(l))), 0x0) */
     if ((LOWORD(l2) != 0x0))
         goto L_7432;
     else
@@ -1179,7 +1182,7 @@ L_7429:
         goto L_7432;
 
 L_7432:
-    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(neg((HIWORD(l2) + 0x0)), neg(LOWORD(l2))), 0x0) */
     if ((LOWORD(l) != 0x0))
         goto L_7476;
     else
@@ -1214,11 +1217,11 @@ L_74f5:
         goto L_753e;
 
 L_753e:
-    t_merge_7547_0001 = 0x2b;
+    t_merge_7547_0001 = 43;
     goto L_7547;
 
 L_7544:
-    t_merge_7547_0001 = 0x2c;
+    t_merge_7547_0001 = 44;
 
 L_7547:
     FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0);
@@ -1236,14 +1239,20 @@ L_7560:
         goto L_7569;
 
 L_7569:
-    /* untranslated: branch LOWORD(amount) != (LOWORD(l2) neg 0x0) ? L_7586 : L_757e */
+    if ((LOWORD(amount) != (-LOWORD(l2))))
+        goto L_7586;
+    else
+        goto L_757e;
 
 L_757e:
-    /* untranslated: branch HIWORD(amount) == ((HIWORD(l2) + 0x0) neg 0x0) ? L_76d7 : L_7586 */
+    if ((HIWORD(amount) == (-(HIWORD(l2) + 0x0))))
+        goto L_76d7;
+    else
+        goto L_7586;
 
 L_7586:
     l = (amount + l2);
-    /* untranslated: l2 = ChgCargo(grobjPlanet, pl.id, j, words(((HIWORD(l) + 0x0) neg 0x0), (LOWORD(l) neg 0x0)), 0x0) */
+    /* untranslated: l2 = ChgCargo(grobjPlanet, pl.id, j, words(neg((HIWORD(l) + 0x0)), neg(LOWORD(l))), 0x0) */
     if ((LOWORD(l2) != 0x0))
         goto L_75d9;
     else
@@ -1256,7 +1265,7 @@ L_75d0:
         goto L_75d9;
 
 L_75d9:
-    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(neg((HIWORD(l2) + 0x0)), neg(LOWORD(l2))), 0x0) */
     if ((fMining == 0))
         goto L_7668;
     else
@@ -1273,11 +1282,11 @@ L_7668:
         goto L_76af;
 
 L_76af:
-    t_merge_76b8_0001 = 0x2b;
+    t_merge_76b8_0001 = 43;
     goto L_76b8;
 
 L_76b5:
-    t_merge_76b8_0001 = 0x2c;
+    t_merge_76b8_0001 = 44;
 
 L_76b8:
     FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0);
@@ -1480,7 +1489,10 @@ L_78ef:
         goto L_7902;
 
 L_7902:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * lpflWP->iPlayer))) + 0x70) + lpfl->iPlayer)]) != 0x2 ? L_793f : L_7932 */
+    if (((uint16_t)(rgplr[lpflWP->iPlayer].rgmdRelation[lpfl->iPlayer]) != 2))
+        goto L_793f;
+    else
+        goto L_7932;
 
 L_7932:
     amount = 0;
@@ -1534,11 +1546,11 @@ L_79ac:
         goto L_7a17;
 
 L_7a17:
-    t_merge_7a20_0001 = 0x2d;
+    t_merge_7a20_0001 = 45;
     goto L_7a20;
 
 L_7a1d:
-    t_merge_7a20_0001 = 0x2e;
+    t_merge_7a20_0001 = 46;
 
 L_7a20:
     FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0);
@@ -1570,11 +1582,11 @@ L_7a78:
         goto L_7ac1;
 
 L_7ac1:
-    t_merge_7aca_0001 = 0x2d;
+    t_merge_7aca_0001 = 45;
     goto L_7aca;
 
 L_7ac7:
-    t_merge_7aca_0001 = 0x2e;
+    t_merge_7aca_0001 = 46;
 
 L_7aca:
     FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0);
@@ -1595,10 +1607,10 @@ L_7af1:
         goto L_7afa;
 
 L_7afa:
-    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(((HIWORD(amount) + 0x0) neg 0x0), (LOWORD(amount) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, j, words(neg((HIWORD(amount) + 0x0)), neg(LOWORD(amount))), 0x0) */
 
 L_7b2a:
-    ord.tsell = ((ord.tsell & 0xfff) | 0x0);
+    /* untranslated: ss:[bp+(j * 2)-0x74] = ((ss:[bp+(j * 0x2)-0x74] & 0xfff) | 0x0) */
     goto L_7b74;
 
 L_7b4e:
@@ -1814,7 +1826,7 @@ L_7efa:
         goto L_7f03;
 
 L_7f03:
-    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, 4, words(((HIWORD(l2) + 0x0) neg 0x0), (LOWORD(l2) neg 0x0)), 0x0) */
+    /* untranslated: l = ChgCargo(grobjFleet, lpfl->id, 4, words(neg((HIWORD(l2) + 0x0)), neg(LOWORD(l2))), 0x0) */
 
 L_7f37:
     l = 0;
@@ -1873,8 +1885,8 @@ L_7fe3:
         goto L_7fed;
 
 L_7fed:
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (LOWORD(l) neg 0x0), (loword((uint32_t)(words(((HIWORD(l) + 0x0) neg
-     * 0x0), (LOWORD(l) neg 0x0)) >> 0x10)) & 0xffff), 4, xWP, idWP, 0) -> callresult(int16_t) */
+    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, neg(LOWORD(l)), (loword((uint32_t)(words(neg((HIWORD(l) + 0x0)),
+     * neg(LOWORD(l))) >> 0x10)) & 0xffff), 4, xWP, idWP, 0) -> callresult(int16_t) */
 
 L_804f:
     if ((fDone == 0))
@@ -2220,7 +2232,7 @@ L_858c:
 L_8596:
     shdefT = rglpshdef[lpfl->iPlayer][j];
     UpdateShdefCost(&(shdefT));
-    /* untranslated: lpshdefT = &dword ss:[&shdefT] */
+    lpshdefT = &(shdefT);
     goto L_860d;
 
 L_85e9:
@@ -2352,7 +2364,7 @@ L_88b9:
 L_88c3:
     shdefT = rglpshdef[lpfl->iPlayer][j];
     UpdateShdefCost(&(shdefT));
-    /* untranslated: lpshdefT = &dword ss:[&shdefT] */
+    lpshdefT = &(shdefT);
     goto L_893a;
 
 L_8916:
@@ -2455,7 +2467,7 @@ L_8b43:
         goto L_8b52;
 
 L_8b52:
-    /* untranslated: i = ((i + 1) neg 0) */
+    i = (-(i + 1));
     goto L_8b7f;
 
 L_8b62:
@@ -2509,7 +2521,7 @@ L_8d03:
         goto L_8d12;
 
 L_8d12:
-    /* untranslated: i = ((i + 1) neg 0) */
+    i = (-(i + 1));
     goto L_8d35;
 
 L_8d22:
@@ -2699,11 +2711,11 @@ L_90e7:
         goto L_9151;
 
 L_9151:
-    t_merge_915a_0001 = 0x128;
+    t_merge_915a_0001 = 296;
     goto L_915a;
 
 L_9157:
-    t_merge_915a_0001 = 0x127;
+    t_merge_915a_0001 = 295;
 
 L_915a:
     FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, (lppl->idRoute + 0xffff), 0, 0, 0, 0);
@@ -2853,7 +2865,10 @@ L_93bb:
         goto L_93da;
 
 L_93da:
-    /* untranslated: branch sext8to16(byte ds:[(((0x59a2 + loword((192 * iplrDest))) + 0x70) + lpfl->iPlayer)]) != 0x2 ? L_9433 : L_9407 */
+    if (((uint16_t)(rgplr[iplrDest].rgmdRelation[lpfl->iPlayer]) != 2))
+        goto L_9433;
+    else
+        goto L_9407;
 
 L_9407:
     FSendPlrMsg2(lpfl->iPlayer, 332, (lpfl->id | 0x8000), (0x30 | iplrDest), 0);

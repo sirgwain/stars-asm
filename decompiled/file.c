@@ -81,7 +81,7 @@ L_0181:
         goto L_0191;
 
 L_0191:
-    return 0x0;
+    return 0;
 
 L_0197:
     fmemmove(&(szTemp), lpb, cch);
@@ -244,7 +244,7 @@ L_05c5:
     lphul->wtEmpty = LOWORD(wt);
 
 L_05d5:
-    return 0x1;
+    return 1;
 }
 
 void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
@@ -263,7 +263,7 @@ L_05e2:
 
 L_0615:
     memmove(pplr, pbIn, 0x70);
-    /* untranslated: call memmove(pplr->rgmdRelation, part[0x71:2](pbIn), pbIn[112]) -> callresult(void *) */
+    memmove(((uint8_t *)(pplr) + 112), (pbIn + 113), pbIn[112]);
     iOff = ((112 + pbIn[112]) + 1);
     goto L_0684;
 
@@ -278,7 +278,7 @@ L_0684:
         goto L_0699;
 
 L_0699:
-    /* untranslated: call strcpy(pplr->szName, part[0x1:2](pbIn[iOff])) -> callresult(char *) */
+    strcpy(pplr->szName, ((pbIn + iOff) + 0x1));
     iOff = (iOff + (strlen(pplr->szName) + 2));
     goto L_0721;
 
@@ -305,7 +305,7 @@ L_0784:
         goto L_0799;
 
 L_0799:
-    /* untranslated: call strcpy(pplr->szNames, part[0x1:2](pbIn[iOff])) -> callresult(char *) */
+    strcpy(pplr->szNames, ((pbIn + iOff) + 0x1));
     goto L_07f7;
 
 L_07bb:
@@ -364,9 +364,11 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     uint16_t scratch_bp_m66;
     uint16_t t_merge_1877_0001;
     uint16_t t_merge_1e06_0001;
+    void    *t_call_1e2a;
     uint16_t scratch_bp_m4e;
     uint16_t t_merge_2580_0001;
     uint16_t t_merge_259d_0001;
+    int32_t  t_call_2884;
     uint16_t scratch_bp_m4a;
     int32_t  t_call_2896;
     uint16_t t_merge_2e23_0001;
@@ -412,7 +414,7 @@ L_089e:
     ShowWindow(hwndFrame, SW_HIDE);
 
 L_0909:
-    return 0x0;
+    return 0;
 
 L_090f:
     if ((FOpenFile(dtXY, -1, 32) == 0))
@@ -518,7 +520,7 @@ L_0aba:
 L_0ac7:
     dt = 3;
     grf = (grf | 0x3000);
-    /* untranslated: iPlayer = atoi(part[0x1:2](pszExt)) */
+    iPlayer = atoi((pszExt + 1));
     iPlayer = (iPlayer - 1);
 
 L_0ae9:
@@ -1684,9 +1686,9 @@ L_1e06:
     goto L_1ebb;
 
 L_1e22:
-    LpAlloc(0x7c, htFleets);
-    /* untranslated: rglpfl[i] = callresult(void *) */
-    /* untranslated: lpfl = callresult(void *) */
+    t_call_1e2a = LpAlloc(0x7c, htFleets);
+    rglpfl[i] = t_call_1e2a;
+    lpfl = t_call_1e2a;
     if ((FReadFleet(lpfl) == 0))
         goto LError;
     else
@@ -2266,9 +2268,9 @@ Corrupt:
     goto LError;
 
 L_2880:
-    filelength(hf);
-    /* untranslated: scratch_bp_m4a = loword(callresult(int32_t)) */
-    /* untranslated: scratch_bp_m48 = hiword(callresult(int32_t)) */
+    t_call_2884 = filelength(hf);
+    scratch_bp_m4a = LOWORD(t_call_2884);
+    scratch_bp_m48 = HIWORD(t_call_2884);
     t_call_2896 = tell(hf);
     if ((scratch_bp_m4a != LOWORD(t_call_2896)))
         goto L_28b2;
@@ -2805,7 +2807,7 @@ L_31f1:
         goto L_31fa;
 
 L_31fa:
-    return 0x1;
+    return 1;
 }
 
 int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPreInited) {
@@ -2951,7 +2953,7 @@ L_3499:
     goto L_3457;
 
 L_34ba:
-    return 0x0;
+    return 0;
 
 L_34c3:
     if (((bMask & 0x3) == 0x0))
@@ -2996,7 +2998,7 @@ L_351d:
         goto L_352d;
 
 L_352d:
-    return 0x0;
+    return 0;
 
 L_3533:
     pb = (pb + 0x1);
@@ -3027,7 +3029,7 @@ L_358e:
         goto L_359e;
 
 L_359e:
-    return 0x0;
+    return 0;
 
 L_35a4:
     pb = (pb + 0x1);
@@ -3224,7 +3226,7 @@ L_38dd:
     FSendPlrMsg2XGen(0, idm, lppl->id, abs(pct), lppl->id);
 
 L_3904:
-    return 0x1;
+    return 1;
 
 L_390a:
     if ((((rgbCur[2] >> 0xb) & 0x1) == 0x0))
@@ -3271,7 +3273,7 @@ L_3a34:
     lppl->wRouting = pb;
 
 L_3a40:
-    return 0x1;
+    return 1;
 }
 
 int16_t FReadFleet(FLEET *lpfl) {
@@ -3446,7 +3448,7 @@ L_3cd2:
     lpfl->wtFleet = pb;
     pb = (pb + 0x4);
     ReadRt();
-    return 0x1;
+    return 1;
 
 L_3d11:
     if ((hdrCur.rt == rtFleetA))
@@ -3456,7 +3458,7 @@ L_3d11:
 
 Corrupt:
     AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_3d4b:
     us = pb;
@@ -3613,7 +3615,7 @@ L_40b2:
     lpfl->lpszName = 0x0;
 
 L_40c1:
-    return 0x1;
+    return 1;
 }
 
 void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan) {
@@ -3737,13 +3739,13 @@ L_4323:
 }
 
 int16_t AskSaveDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    uint16_t t_merge_4383_0001;
+    int16_t t_merge_4383_0001;
 
 L_432a:
     goto L_43c5;
 
 L_4339:
-    return 0x1;
+    return 1;
 
 L_433f:
     if ((wParam == 0x429))
@@ -3770,7 +3772,7 @@ L_435d:
         goto L_436a;
 
 L_436a:
-    t_merge_4383_0001 = 0x0;
+    t_merge_4383_0001 = 0;
     goto L_4383;
 
 L_4370:
@@ -3780,15 +3782,15 @@ L_4370:
         goto L_437a;
 
 L_437a:
-    t_merge_4383_0001 = 0xffff;
+    t_merge_4383_0001 = -1;
     goto L_4383;
 
 L_4380:
-    t_merge_4383_0001 = 0x1;
+    t_merge_4383_0001 = 1;
 
 L_4383:
     EndDialog(hwnd, t_merge_4383_0001);
-    return 0x1;
+    return 1;
 
 L_4392:
     if ((wParam != 0x76))
@@ -3798,7 +3800,7 @@ L_4392:
 
 L_439b:
     WinHelp(hwnd, szHelpFile, 0x1, 0x442);
-    return 0x1;
+    return 1;
 
 L_43c5:
     if ((message == WM_DESTROY))
@@ -3819,13 +3821,13 @@ L_43d5:
         goto L_43e0;
 
 L_43e0:
-    return 0x0;
+    return 0;
 }
 
 void PromptSaveGame() {
     int16_t (**lpProc)();
     int16_t  fRet;
-    uint32_t t_merge_4433_0001;
+    DialogId t_merge_4433_0001;
     uint16_t t_merge_446d_0001;
 
 L_43ee:
@@ -3836,11 +3838,11 @@ L_43ee:
         goto L_4424;
 
 L_4424:
-    t_merge_4433_0001 = 0x7e9;
+    t_merge_4433_0001 = IDD_SAVE_TURN2;
     goto L_4433;
 
 L_442d:
-    t_merge_4433_0001 = 0x42c;
+    t_merge_4433_0001 = IDD_SAVE_TURN1;
 
 L_4433:
     fRet = DialogBox(hInst, t_merge_4433_0001, hwndFrame, lpProc);
@@ -4111,10 +4113,10 @@ L_48a9:
         goto L_48b1;
 
 L_48b1:
-    return 0x1;
+    return 1;
 
 L_48b7:
-    return 0x0;
+    return 0;
 }
 
 int16_t FValidSerialLong(uint32_t lSerial) {
@@ -4129,7 +4131,7 @@ L_48c4:
         goto L_48e3;
 
 L_48e3:
-    return 0x0;
+    return 0;
 
 L_48e9:
     lSeries = lSerial;
@@ -4199,7 +4201,7 @@ L_4994:
         goto L_499e;
 
 L_499e:
-    return 0x0;
+    return 0;
 
 L_49a4:
     if ((LOWORD(lSeries) != 0x12))
@@ -4262,10 +4264,10 @@ L_49f5:
         goto L_49fe;
 
 L_49fe:
-    return 0x0;
+    return 0;
 
 L_4a04:
-    return 0x1;
+    return 1;
 }
 
 void FileError(MessageId ids) {
@@ -4312,14 +4314,14 @@ L_4a99:
 }
 
 int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
-    RTBOF    rtbof;
-    StringId ids;
-    int16_t  fCheckMulti;
-    int16_t  fRewind;
-    int16_t  fSilentSav;
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
-    uint16_t t_merge_4c1e_0001;
+    RTBOF     rtbof;
+    StringId  ids;
+    int16_t   fCheckMulti;
+    int16_t   fRewind;
+    int16_t   fSilentSav;
+    jmp_buf  *penvMemSav[9];
+    jmp_buf   env[9];
+    MessageId t_merge_4c1e_0001;
 
 L_4ac2:
     fSilentSav = fFileErrSilent;
@@ -4341,7 +4343,7 @@ L_4b27:
     FileError(ids);
     StreamClose();
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_4b49:
     fFileErrSilent = 1;
@@ -4413,7 +4415,7 @@ L_4c2a:
 LBadFile:
     StreamClose();
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_4c47:
     /* untranslated: rtbof = part[0x0:16](rgbCur) */
@@ -4605,7 +4607,7 @@ L_4ee3:
     penvMem = penvMemSav;
     wVersFile = rtbof.wVersion;
     gd.fFileCrippled = rtbof.fCrippled;
-    return 0x1;
+    return 1;
 }
 
 int16_t FNewTurnAvail(int16_t idPlayer) {
@@ -4865,7 +4867,7 @@ L_524e:
     goto L_5266;
 
 L_525d:
-    return 0x1;
+    return 1;
 
 L_5266:
     if ((ids == idsUniverseDefinitionFileSeemsMissingCorrupt))
@@ -4910,7 +4912,7 @@ L_5296:
         goto L_52a1;
 
 L_52a1:
-    return 0x0;
+    return 0;
 }
 
 void StreamOpen(char *szFile, int16_t mdOpen) {

@@ -32,7 +32,7 @@ Step1:
         goto L_006b;
 
 L_006b:
-    return 0x0;
+    return 0;
 
 L_0071:
     if ((mdRet == 3))
@@ -53,7 +53,7 @@ Step2:
         goto L_00cc;
 
 L_00cc:
-    return 0x0;
+    return 0;
 
 L_00d2:
     if ((mdRet == 1))
@@ -82,7 +82,7 @@ Step3:
         goto L_0139;
 
 L_0139:
-    return 0x0;
+    return 0;
 
 L_013f:
     if ((mdRet == 1))
@@ -111,7 +111,7 @@ Step4:
         goto L_01a6;
 
 L_01a6:
-    return 0x0;
+    return 0;
 
 L_01ac:
     if ((mdRet == 1))
@@ -140,7 +140,7 @@ Step5:
         goto L_0213;
 
 L_0213:
-    return 0x0;
+    return 0;
 
 L_0219:
     if ((mdRet == 1))
@@ -169,7 +169,7 @@ Step6:
         goto L_0280;
 
 L_0280:
-    return 0x0;
+    return 0;
 
 L_0286:
     if ((mdRet == 1))
@@ -192,7 +192,7 @@ Finish:
         goto L_02a8;
 
 L_02a8:
-    return 0x0;
+    return 0;
 
 L_02ae:
     cpts = CAdvantagePoints(vplr.iPlayer);
@@ -202,7 +202,7 @@ L_02ae:
         goto L_02c8;
 
 L_02c8:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(idsAdvantagePointsCurrentlyHoleDPointsCannot), (cpts neg 0)) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString(idsAdvantagePointsCurrentlyHoleDPointsCannot), (-cpts));
     AlertSz(szWork, MB_ICONHAND);
     goto L_0319;
 
@@ -270,7 +270,7 @@ L_038c:
 L_039a:
 
 L_03a0:
-    return 0x1;
+    return 1;
 }
 
 int16_t RaceWizardDlg1(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -295,7 +295,8 @@ int16_t RaceWizardDlg1(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     notype      k;
     char        szBuf[32];
     uint16_t    t_merge_0b8c_0001;
-    uint16_t    t_merge_0f7d_0001;
+    HWND        t_call_0f64;
+    int16_t     t_merge_0f7d_0001;
 
 L_03ac:
     goto L_1016;
@@ -438,7 +439,7 @@ L_0687:
     EnableWindow(hwndCB, 0);
 
 L_0693:
-    return 0x1;
+    return 1;
 
 L_0699:
     pt.x = LOWORD(lParam);
@@ -505,12 +506,12 @@ L_07af:
 L_0823:
     vplr.iPlrBmp = iCur;
     ReleaseDC(hwnd, hdc);
-    return 0x1;
+    return 1;
 
 L_0851:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0879:
     i = 271;
@@ -653,7 +654,7 @@ L_0bae:
 
 L_0bb7:
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_0bcc:
     if ((wParam != 0x76))
@@ -663,7 +664,7 @@ L_0bcc:
 
 L_0bd5:
     WinHelp(hwnd, szHelpFile, 0x1, 0x3ff);
-    return 0x1;
+    return 1;
 
 L_0bf6:
     i = 0;
@@ -742,7 +743,7 @@ L_0c99:
 L_0d53:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_0d7a:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -826,21 +827,21 @@ L_0f1e:
     InvalidateAdvPtsRect(hwnd);
     i = GetRaceStat(pplr, rsUseLeftover);
     SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_SETCURSEL, i, 0);
-    GetDlgItem(hwnd, IDC_NEXT);
+    t_call_0f64 = GetDlgItem(hwnd, IDC_NEXT);
     if ((wParam == 0x115))
         goto L_0f7a;
     else
         goto L_0f74;
 
 L_0f74:
-    t_merge_0f7d_0001 = 0x1;
+    t_merge_0f7d_0001 = 1;
     goto L_0f7d;
 
 L_0f7a:
-    t_merge_0f7d_0001 = 0x0;
+    t_merge_0f7d_0001 = 0;
 
 L_0f7d:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_0f7d_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_0f64, t_merge_0f7d_0001);
     vplr.iPlrBmp = pplr->iPlrBmp;
     GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &(rc));
     ScreenToClient(hwnd, rc.right);
@@ -893,7 +894,7 @@ L_1046:
         goto L_1051;
 
 L_1051:
-    return 0x0;
+    return 0;
 }
 
 int16_t RaceWizardDlg2(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -928,8 +929,7 @@ L_106f:
     dy = ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2);
     yTop = LOWORD((0x3 * dyArial8));
     SetRect(vrgrcRCW, dxLabel, yTop, (dxLabel + dy), (yTop + dy));
-    /* untranslated: call SetRect(part[0x8:4](vrgrcRCW), ((dxLabel + dy) + 0x6), yTop, (((dxLabel + dxMiddle) - dy) + 0xfffa), (yTop + dy)) -> callresult(void)
-     */
+    SetRect((vrgrcRCW + 1), ((dxLabel + dy) + 0x6), yTop, (((dxLabel + dxMiddle) - dy) + 0xfffa), (yTop + dy));
     SetRect(hbrButtonFace[load(ds : [0x48ac]) * 0x1], ((dxLabel + dxMiddle) - dy), yTop, (dxLabel + dxMiddle), (yTop + dy));
     SetRect(hbrWindow[load(ds : [0x48ac]) * 0x1], dxLabel, ((yTop + dy) + 0x4), (LOWORD((3 * dy)) + dxLabel), (((dy * 2) + yTop) + 0x4));
     SetRect(hbrLightGray[load(ds : [0x48ac]) * 0x1], ((dxLabel + dxMiddle) - LOWORD((3 * dy))), ((yTop + dy) + 0x4), (dxLabel + dxMiddle),
@@ -1011,12 +1011,12 @@ L_149d:
 
 L_14a7:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_14c0:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_14e8:
     i = 291;
@@ -1060,7 +1060,7 @@ L_155e:
     viStore = -2;
     DrawRace2(hwnd, hdc, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_159d:
     GetCursorPos(&(pt));
@@ -1072,7 +1072,7 @@ L_159d:
 
 L_15ce:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_15e0:
     pt.x = LOWORD(lParam);
@@ -1087,7 +1087,7 @@ L_1618:
 
 L_1621:
     WinHelp(hwnd, szHelpFile, 0x1, 0x41d);
-    return 0x1;
+    return 1;
 
 L_1642:
     i = 0;
@@ -1119,7 +1119,7 @@ L_166b:
 L_1674:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_1698:
     if ((wParam < 0x123))
@@ -1204,7 +1204,7 @@ L_1781:
         goto L_178c;
 
 L_178c:
-    return 0x0;
+    return 0;
 }
 
 void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -1231,7 +1231,7 @@ void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
     uint16_t t_merge_1ae5_0001;
     uint16_t t_merge_1b22_0001;
     char    *t_merge_1b70_0001;
-    uint16_t t_merge_207b_0001;
+    StringId t_merge_207b_0001;
 
 L_179a:
     fCreatedDC = 0;
@@ -1396,7 +1396,7 @@ L_1b1f:
     t_merge_1b22_0001 = 0x2;
 
 L_1b22:
-    DrawBtn(hdc, vrgrcRCW[i].left, ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + (i * 8)), ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
 
 L_1b47:
     if ((iMod == 1))
@@ -1424,7 +1424,7 @@ L_1b6d:
     t_merge_1b70_0001 = 0x1345;
 
 L_1b70:
-    DrawBtn(hdc, vrgrcRCW[i].left, ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
+    DrawBtn(hdc, (vrgrcRCW + (i * 8)), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
 
 L_1b9d:
     if ((((0x1 << iPit) & iDraw) == 0x0))
@@ -1465,8 +1465,8 @@ L_1d2d:
 L_1d36:
     cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
     TextOut(hdc, vrgrcRCW->left, (*(vrgrcRCW + 0x7a) + 0x3), szWork, cch);
-    /* untranslated: call DrawBtn(hdc, part[0x78:2](vrgrcRCW), (0xa0 | bt1), 0, 0x0) -> callresult(void) */
-    /* untranslated: call DrawBtn(hdc, part[0x80:2](vrgrcRCW), (0xa1 | bt1), 0, 0x0) -> callresult(void) */
+    DrawBtn(hdc, (vrgrcRCW + 15), (0xa0 | bt1), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + 16), (0xa1 | bt1), 0, 0x0);
     goto L_1e09;
 
 L_1db7:
@@ -1634,11 +1634,11 @@ L_2068:
         goto L_2072;
 
 L_2072:
-    t_merge_207b_0001 = 0x188;
+    t_merge_207b_0001 = idsPlanetsWillHabitableRace;
     goto L_207b;
 
 L_2078:
-    t_merge_207b_0001 = 0x189;
+    t_merge_207b_0001 = idsVirtuallyPlanetsWillHabitableRace;
 
 L_207b:
     cch = CchGetString(t_merge_207b_0001, szWork);
@@ -1681,7 +1681,7 @@ L_2164:
         goto L_2177;
 
 L_2177:
-    return 0xffff;
+    return -1;
 
 L_217d:
     i = 0;
@@ -1723,13 +1723,13 @@ L_21d2:
         goto L_21eb;
 
 L_21eb:
-    return 0xffff;
+    return -1;
 
 L_21f1:
     return i;
 
 L_21f7:
-    return 0xffff;
+    return -1;
 }
 
 int16_t FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd) {
@@ -1759,7 +1759,7 @@ L_2204:
         goto L_2227;
 
 L_2227:
-    return 0x0;
+    return 0;
 
 L_222d:
     iMod = ((uint32_t)(irc) % 5);
@@ -1856,7 +1856,7 @@ L_23a3:
 
 L_2423:
     ReleaseCapture();
-    return 0x1;
+    return 1;
 
 L_242e:
     dWidth = 0;
@@ -1923,7 +1923,7 @@ L_24b2:
     psz = vrgszRCWWidth[1];
 
 L_24c2:
-    InitBtnTrack(&(btnt), hwnd, 0x0, vrgrcRCW[irc].left, bt, 80, 0, 0, psz);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + (irc * 8)), bt, 80, 0, 0, psz);
     if (((kbd & 0x4) == 0x0))
         goto L_2517;
     else
@@ -2072,7 +2072,7 @@ L_2740:
     vplr.rgEnvVar[i] = LOBYTE(((uint16_t)(vplr.rgEnvVarMin[i]) + ((uint32_t)(((uint16_t)(vplr.rgEnvVarMax[i]) - (uint16_t)(vplr.rgEnvVarMin[i]))) / 0x2)));
 
 L_2785:
-    return 0x1;
+    return 1;
 }
 
 int16_t RaceWizardDlg3(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -2104,12 +2104,12 @@ L_2801:
 
 L_2817:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_2830:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_2858:
     if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x0123)))
@@ -2137,7 +2137,7 @@ L_28ac:
 
 L_28dd:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_28ef:
     pt.x = LOWORD(lParam);
@@ -2148,7 +2148,7 @@ L_2927:
     hdc = BeginPaint(hwnd, &(ps));
     DrawRace3(hwnd, hdc, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_2960:
     if ((wParam != 0x76))
@@ -2158,7 +2158,7 @@ L_2960:
 
 L_2969:
     WinHelp(hwnd, szHelpFile, 0x1, 0x420);
-    return 0x1;
+    return 1;
 
 L_298a:
     i = 0;
@@ -2190,7 +2190,7 @@ L_29b3:
 L_29bc:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_29e0:
     if ((wParam != 0x123))
@@ -2252,7 +2252,7 @@ L_2a73:
         goto L_2a7e;
 
 L_2a7e:
-    return 0x0;
+    return 0;
 }
 
 void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -2457,8 +2457,8 @@ L_2d73:
         goto L_2e83;
 
 L_2e83:
-    DrawBtn(hdc, vrgrcRCW[irc].left, (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, vrgrcRCW[(irc + 1)].left, (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + (irc * 8)), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + ((irc + 1) * 0x8)), (0xa1 | bt), 0, 0x0);
 
 L_2eda:
     if ((iDraw != -1))
@@ -2546,7 +2546,7 @@ L_2fb8:
         goto L_2fdb;
 
 L_2fdb:
-    return 0x0;
+    return 0;
 
 L_2fe1:
     iMod = (irc & 0x1);
@@ -2566,7 +2566,7 @@ L_3008:
     bt = 161;
 
 L_3012:
-    InitBtnTrack(&(btnt), hwnd, 0x0, vrgrcRCW[irc].left, bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + (irc * 8)), bt, 80, 0, 0, 0x0);
     if (((kbd & 0x4) == 0x0))
         goto L_305f;
     else
@@ -2592,7 +2592,7 @@ L_30b1:
     DrawRace3(hwnd, btnt.hdc, i);
 
 L_30c5:
-    return 0x1;
+    return 1;
 }
 
 int16_t GetRaceStat(PLAYER *pplr, RaceStat iStat) {
@@ -2642,10 +2642,10 @@ L_319e:
         goto L_31a6;
 
 L_31a6:
-    return 0x1;
+    return 1;
 
 L_31ac:
-    return 0x0;
+    return 0;
 }
 
 void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet) {
@@ -2663,8 +2663,8 @@ L_31de:
     goto L_3203;
 
 L_31f0:
-    /* untranslated: LOWORD(pplr->grbitAttr) = (LOWORD(pplr->grbitAttr) & (LOWORD(grMask) ~ 0x0)) */
-    /* untranslated: HIWORD(pplr->grbitAttr) = (HIWORD(pplr->grbitAttr) & (HIWORD(grMask) ~ 0x0)) */
+    LOWORD(pplr->grbitAttr) = (LOWORD(pplr->grbitAttr) & (~LOWORD(grMask)));
+    HIWORD(pplr->grbitAttr) = (HIWORD(pplr->grbitAttr) & (~HIWORD(grMask)));
 
 L_3203:
     return;
@@ -2707,12 +2707,12 @@ L_3277:
 
 L_3281:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_329a:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_32c2:
     i = 271;
@@ -2798,12 +2798,12 @@ L_353b:
     goto L_3522;
 
 L_3559:
-    /* untranslated: call ExpandRc(&rc, ((dyArial8 neg 0) + 0xfffe), ((dyArial8 >> 0x1) neg 0x0)) -> callresult(void) */
+    ExpandRc(&(rc), ((-dyArial8) + 0xfffe), (-(dyArial8 >> 0x1)));
     rc.top = (rc.top + 4);
     DrawText(hdc, szT, cch, &(rc), 0x10);
     rcCargo = rc;
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_35be:
     if ((wParam != 0x76))
@@ -2813,7 +2813,7 @@ L_35be:
 
 L_35c7:
     WinHelp(hwnd, szHelpFile, 0x1, 0x408);
-    return 0x1;
+    return 1;
 
 L_35e8:
     i = 0;
@@ -2845,7 +2845,7 @@ L_3611:
 L_361a:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_3641:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -2917,7 +2917,7 @@ L_3775:
         goto L_3780;
 
 L_3780:
-    return 0x0;
+    return 0;
 }
 
 int16_t RaceWizardDlg5(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -2961,12 +2961,12 @@ L_3825:
 
 L_382e:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_3847:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_386f:
     i = 291;
@@ -3026,11 +3026,11 @@ L_38e5:
     cch = CchGetString((cColDrop + 306), szWork);
     TextOut(hdc, (rc.left + 8), (rc.top - (dyArial8 >> 0x1)), szWork, cch);
     cch = CchGetString((cColDrop + 320), szWork);
-    /* untranslated: call ExpandRc(&rc, ((dyArial8 neg 0) + 0xfffe), ((dyArial8 >> 0x1) neg 0x0)) -> callresult(void) */
+    ExpandRc(&(rc), ((-dyArial8) + 0xfffe), (-(dyArial8 >> 0x1)));
     rc.top = (rc.top + 4);
     DrawText(hdc, szWork, cch, &(rc), 0x10);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_3a7c:
     if ((wParam != 0x76))
@@ -3040,7 +3040,7 @@ L_3a7c:
 
 L_3a85:
     WinHelp(hwnd, szHelpFile, 0x1, 0x411);
-    return 0x1;
+    return 1;
 
 L_3aa6:
     i = 0;
@@ -3072,7 +3072,7 @@ L_3acf:
 L_3ad8:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_3afc:
     if ((wParam < 0x123))
@@ -3124,7 +3124,7 @@ L_3b95:
         goto L_3ba0;
 
 L_3ba0:
-    return 0x0;
+    return 0;
 }
 
 int16_t RaceWizardDlg6(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -3201,12 +3201,12 @@ L_3ced:
 
 L_3d03:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_3d1c:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_3d44:
     i = 271;
@@ -3282,7 +3282,7 @@ L_3f16:
 
 L_3f1f:
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_3f34:
     if ((wParam != 0x76))
@@ -3292,7 +3292,7 @@ L_3f34:
 
 L_3f3d:
     WinHelp(hwnd, szHelpFile, 0x1, 0x421);
-    return 0x1;
+    return 1;
 
 L_3f5e:
     i = 0;
@@ -3324,7 +3324,7 @@ L_3f87:
 L_3f90:
     StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_3fb7:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
@@ -3392,7 +3392,7 @@ L_4094:
         goto L_409f;
 
 L_409f:
-    return 0x0;
+    return 0;
 }
 
 void BoundsCheckPlayer(PLAYER *pplr) {
@@ -4141,8 +4141,11 @@ L_4bbd:
         goto L_4bc6;
 
 L_4bc6:
-    /* untranslated: cPoints = (cPoints + sext16to32(rgRaceDisEnvPts[((cCur neg 0x0) + 0xffff)])) */
-    /* untranslated: branch (cCur neg 0) <= 0x4 ? L_4c09 : L_4be9 */
+    cPoints = (cPoints + (uint32_t)(rgRaceDisEnvPts[((-cCur) + 0xffff)]));
+    if (((-cCur) <= 0x4))
+        goto L_4c09;
+    else
+        goto L_4be9;
 
 L_4be9:
     if ((GetRaceStat(pplr, rsResGen) >= 10))
@@ -4205,6 +4208,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
     int16_t  pctTerra;
     uint16_t t_merge_4d0e_0001;
     uint16_t t_merge_4d28_0001;
+    int32_t  t_call_54c6;
 
 L_4c6e:
     plrT = rgplr[0];
@@ -4729,10 +4733,10 @@ L_54a0:
     rgplr[0] = plrT;
 
 L_54b1:
-    __ftol();
+    t_call_54c6 = __ftol();
 
 L_54ce:
-    /* untranslated: return callresult(int32_t) */
+    return t_call_54c6;
 }
 
 void InvalidateAdvPtsRect(HWND hwnd) {
@@ -4781,7 +4785,7 @@ void DrawRaceAdvantagePoints(HDC hdc, RECT *prc, PLAYER *pplr) {
     int16_t    cch;
     RECT       rc;
     HFONT      hfontSav;
-    uint16_t   t_merge_56b3_0001;
+    COLORREF   t_merge_56b3_0001;
 
 L_55c6:
     plf = LocalAlloc(0x40, 0x32);
@@ -4923,13 +4927,13 @@ L_595c:
     memset(&(ofn), 0, 0x48);
     ofn.lStructSize = 0x48;
     ofn.hwndOwner = hwndRaceParent;
-    /* untranslated: ofn.lpstrFilter = &dword ss:[&szFilter] */
+    ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;
-    /* untranslated: ofn.lpstrFile = &dword ss:[&szFile] */
+    ofn.lpstrFile = szFile;
     ofn.nMaxFile = 0x100;
-    /* untranslated: ofn.lpstrFileTitle = &dword ss:[&szFileTitle] */
+    ofn.lpstrFileTitle = szFileTitle;
     ofn.nMaxFileTitle = 0x100;
-    /* untranslated: ofn.lpstrInitialDir = &dword ss:[&szDirName] */
+    ofn.lpstrInitialDir = szDirName;
     ofn.lpstrDefExt = "r1";
     ofn.Flags = 0x8806;
     if ((GetSaveFileName(&(ofn)) == 0))
@@ -4945,7 +4949,7 @@ L_5a0e:
 
 L_5a2b:
     AlertSz(PszFormatIds(idsStarsUnableSaveRaceDataFilePlease, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_5a52:
     WriteRtPlr(pplr, 0x0);
@@ -4956,10 +4960,10 @@ L_5a52:
     goto L_5aab;
 
 L_5aa5:
-    return 0x0;
+    return 0;
 
 L_5aab:
-    return 0x1;
+    return 1;
 }
 
 void SetRCWTitle(HWND hwnd, int16_t iStep) {
@@ -4984,8 +4988,11 @@ void CreateRandomRace(PLAYER *pplr) {
     int16_t  k;
     PLAYER   plrT;
     uint16_t t_merge_5c52_0001;
+    int16_t  t_call_5e7d;
     int16_t  t_merge_5e8b_0001;
+    int16_t  t_call_5ee7;
     int16_t  t_merge_5ef5_0001;
+    int16_t  t_call_6075;
     int16_t  t_6091;
     uint16_t t_merge_6109_0001;
     uint16_t t_merge_6184_0001;
@@ -5190,8 +5197,8 @@ L_5e70:
         goto L_5e79;
 
 L_5e79:
-    Random(3);
-    /* untranslated: t_merge_5e8b_0001 = callresult(int16_t) */
+    t_call_5e7d = Random(3);
+    t_merge_5e8b_0001 = t_call_5e7d;
     goto L_5e8b;
 
 L_5e88:
@@ -5220,8 +5227,8 @@ L_5eda:
         goto L_5ee3;
 
 L_5ee3:
-    Random(2);
-    /* untranslated: t_merge_5ef5_0001 = callresult(int16_t) */
+    t_call_5ee7 = Random(2);
+    t_merge_5ef5_0001 = t_call_5ee7;
     goto L_5ef5;
 
 L_5ef2:
@@ -5306,9 +5313,12 @@ L_606d:
     cPass = 0;
 
 L_6072:
-    CAdvantagePoints(pplr);
-    /* untranslated: cPts = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) < 0 ? L_6091 : L_6088 */
+    t_call_6075 = CAdvantagePoints(pplr);
+    cPts = t_call_6075;
+    if ((t_call_6075 < 0))
+        goto L_6091;
+    else
+        goto L_6088;
 
 L_6088:
     if ((cPts <= 50))
@@ -5332,10 +5342,13 @@ L_60a0:
 
 L_60da:
     iVal = Random(10);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_6103 : L_60fb */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_6103;
+    else
+        goto L_60fb;
 
 L_60fb:
-    /* untranslated: t_merge_6109_0001 = (cPts neg 0) */
+    t_merge_6109_0001 = (-cPts);
     goto L_6109;
 
 L_6103:
@@ -5359,10 +5372,13 @@ L_6115:
 L_6143:
     pplr->rgAttr[(i + 8)] = (pplr->rgAttr[(i + 8)] - 1);
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_617e : L_6176 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_617e;
+    else
+        goto L_6176;
 
 L_6176:
-    /* untranslated: t_merge_6184_0001 = (cPts neg 0) */
+    t_merge_6184_0001 = (-cPts);
     goto L_6184;
 
 L_617e:
@@ -5389,10 +5405,13 @@ L_61ad:
 L_61b6:
     pplr->rgAttr[(i + 8)] = (pplr->rgAttr[(i + 8)] + 1);
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_61f1 : L_61e9 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_61f1;
+    else
+        goto L_61e9;
 
 L_61e9:
-    /* untranslated: t_merge_61f7_0001 = (cPts neg 0) */
+    t_merge_61f7_0001 = (-cPts);
     goto L_61f7;
 
 L_61f1:
@@ -5425,10 +5444,13 @@ L_622c:
 L_6254:
     SetRaceGrbit(pplr, iVal, i);
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_628d : L_6285 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_628d;
+    else
+        goto L_6285;
 
 L_6285:
-    /* untranslated: t_merge_6293_0001 = (cPts neg 0) */
+    t_merge_6293_0001 = (-cPts);
     goto L_6293;
 
 L_628d:
@@ -5479,10 +5501,13 @@ L_62da:
 L_6302:
     SetRaceStat(pplr, iVal, (j + i));
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_633f : L_6337 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_633f;
+    else
+        goto L_6337;
 
 L_6337:
-    /* untranslated: t_merge_6345_0001 = (cPts neg 0) */
+    t_merge_6345_0001 = (-cPts);
     goto L_6345;
 
 L_633f:
@@ -5534,10 +5559,13 @@ L_6397:
 L_63aa:
     pplr->pctIdealGrowth = LOBYTE((j + 0xffff));
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_63de : L_63d6 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_63de;
+    else
+        goto L_63d6;
 
 L_63d6:
-    /* untranslated: t_merge_63e4_0001 = (cPts neg 0) */
+    t_merge_63e4_0001 = (-cPts);
     goto L_63e4;
 
 L_63de:
@@ -5561,10 +5589,13 @@ L_63f5:
 L_63fe:
     pplr->pctIdealGrowth = LOBYTE((j + 0x1));
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_6432 : L_642a */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_6432;
+    else
+        goto L_642a;
 
 L_642a:
-    /* untranslated: t_merge_6438_0001 = (cPts neg 0) */
+    t_merge_6438_0001 = (-cPts);
     goto L_6438;
 
 L_6432:
@@ -5596,10 +5627,13 @@ L_647c:
     pplr->rgEnvVarMin[iVal] = LOBYTE(j);
     pplr->rgEnvVarMax[iVal] = LOBYTE((j + 0x46));
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_64ef : L_64e7 */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_64ef;
+    else
+        goto L_64e7;
 
 L_64e7:
-    /* untranslated: t_merge_64f5_0001 = (cPts neg 0) */
+    t_merge_64f5_0001 = (-cPts);
     goto L_64f5;
 
 L_64ef:
@@ -5626,10 +5660,13 @@ L_6539:
     pplr->rgEnvVarMin[iVal] = -1;
     pplr->rgEnvVar[iVal] = -1;
     cPts = CAdvantagePoints(pplr);
-    /* untranslated: branch (cPts neg 0) <= (cPts - 50) ? L_65a3 : L_659b */
+    if (((-cPts) <= (cPts - 50)))
+        goto L_65a3;
+    else
+        goto L_659b;
 
 L_659b:
-    /* untranslated: t_merge_65a9_0001 = (cPts neg 0) */
+    t_merge_65a9_0001 = (-cPts);
     goto L_65a9;
 
 L_65a3:

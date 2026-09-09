@@ -34,6 +34,9 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 	if addr, ok := sr.addressFromNativePointerMemory(mem); ok {
 		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
 	}
+	if addr, ok := sr.addressFromStackAddressMemory(mem); ok {
+		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
+	}
 	if seg, ok := mem.Seg.(*machine.Reg); ok && (seg.Val == asm.RegDS || seg.Val == asm.RegCS) && mem.Base != nil {
 		addr, ok := sr.addressFromValue(mem.Base, sr.segFromRegister(seg.Val))
 		if ok {
@@ -69,6 +72,20 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 	}
 
 	return resolvedAddress{}, false
+}
+
+// addressFromStackAddressMemory resolves SS:[&local+offset] through the
+// addressed local object instead of preserving it as raw segmented memory.
+func (sr *symbolResolver) addressFromStackAddressMemory(mem machine.MemoryAddress) (resolvedAddress, bool) {
+	seg, ok := mem.Seg.(*machine.Reg)
+	if !ok || seg.Val != asm.RegSS || mem.Base == nil {
+		return resolvedAddress{}, false
+	}
+	addr, ok := sr.addressFromValue(mem.Base, 0)
+	if !ok || !addr.hasBase() {
+		return resolvedAddress{}, false
+	}
+	return sr.addMemoryAddressTerms(addr, mem), true
 }
 
 // resolvedAddressWithExpectedType preserves the contextual type of direct

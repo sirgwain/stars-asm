@@ -13,7 +13,7 @@ L_24fa:
         goto L_250d;
 
 L_250d:
-    return 0x0;
+    return 0;
 
 L_2513:
     if ((cFleet == 0))
@@ -97,7 +97,7 @@ L_25c5:
     pxf->id = lpfl->id;
 
 L_25fd:
-    return 0x1;
+    return 1;
 
 L_2606:
     lpth = lpThings;
@@ -142,7 +142,7 @@ L_2682:
     pxf->id = lpth->idFull;
 
 L_26ba:
-    return 0x1;
+    return 1;
 
 L_26c0:
     lpth = (lpth + 0x12);
@@ -154,5 +154,5 @@ L_26c4:
         goto L_26d2;
 
 L_26d2:
-    return 0x0;
+    return 0;
 }

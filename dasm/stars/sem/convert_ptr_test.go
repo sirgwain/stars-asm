@@ -320,6 +320,70 @@ func TestConvertTypedAddressResolvesStringLiteral(t *testing.T) {
 	}
 }
 
+// TestConvertTypedNearPointerOffsetPreservesPointerArithmetic verifies an
+// offset applied to a pointer value is not mistaken for pointer storage bytes.
+func TestConvertTypedNearPointerOffsetPreservesPointerArithmetic(t *testing.T) {
+	fx := testfixture.Stars(t)
+	fn := fx.SDB.GetFunction("WriteRtPlr")
+	if fn == nil {
+		t.Fatal("WriteRtPlr not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	var psz *typeinfo.FunctionVar
+	for i := range fn.Vars {
+		if fn.Vars[i].Name == "pb" {
+			psz = &fn.Vars[i]
+			break
+		}
+	}
+	if psz == nil {
+		t.Fatal("pb local not found")
+	}
+	value := machine.BinaryVal(machine.ValueOpAdd, frameLoad(ctx, 0, psz.BPOffset, 2), machine.ConstVal(1))
+
+	expected := &typeinfo.Pointer{Elem: typeinfo.LpStr.Elem, Class: typeinfo.PtrNear}
+	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, expected))
+	if got != "(pb + 1)" {
+		t.Fatalf("converted pointer offset = %q, want (pb + 1)", got)
+	}
+}
+
+// TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic verifies a
+// resolved byte lvalue does not replace the pointer expression passed to a call.
+func TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic(t *testing.T) {
+	fx := testfixture.Stars(t)
+	fn := fx.SDB.GetFunction("ReadRtPlr")
+	if fn == nil {
+		t.Fatal("ReadRtPlr not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	var pbIn, iOff *typeinfo.FunctionVar
+	for i := range fn.Params {
+		if fn.Params[i].Name == "pbIn" {
+			pbIn = &fn.Params[i]
+		}
+	}
+	for i := range fn.Vars {
+		if fn.Vars[i].Name == "iOff" {
+			iOff = &fn.Vars[i]
+			break
+		}
+	}
+	if pbIn == nil || iOff == nil {
+		t.Fatal("pbIn parameter or iOff local not found")
+	}
+	value := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAdd, frameLoad(ctx, 0, pbIn.BPOffset, 2), frameLoad(ctx, 0, iOff.BPOffset, 2)),
+		machine.ConstVal(1),
+	)
+
+	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, typeinfo.LpStr))
+	if got != "((pbIn + iOff) + 0x1)" {
+		t.Fatalf("converted indexed pointer offset = %q, want ((pbIn + iOff) + 0x1)", got)
+	}
+}
+
 // TestConvertMemoryPreservesInnerZeroArrayIndex verifies a dword access to
 // the first element of a nested array retains the source-level zero index.
 func TestConvertMemoryPreservesInnerZeroArrayIndex(t *testing.T) {

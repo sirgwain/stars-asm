@@ -7,29 +7,29 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-type branchCallResultProcessor struct{}
+type callResultProcessor struct{}
 
-type branchCallResultKey struct {
+type materializedCallResultKey struct {
 	function *typeinfo.Function
 	instOff  uint32
 }
 
 type callResultStats struct {
-	result     *CallResult
-	totalUses  int
-	branchUses int
+	result    *CallResult
+	defined   bool
+	totalUses int
 }
 
-// ProcessFunc materializes wide call results that feed multi-effect branch comparisons.
-func (p *branchCallResultProcessor) ProcessFunc(result *Result, f *Func) bool {
-	stats := collectBranchCallResultStats(f)
+// ProcessFunc materializes every non-inline call result that has a later use.
+func (p *callResultProcessor) ProcessFunc(result *Result, f *Func) bool {
+	stats := collectCallResultStats(f)
 	if len(stats) == 0 {
 		return false
 	}
 
-	temps := make(map[branchCallResultKey]*Temp)
+	temps := make(map[materializedCallResultKey]*Temp)
 	for key, stat := range stats {
-		if stat.result == nil || stat.totalUses <= 1 || stat.branchUses == 0 || !wideCallResult(stat.result) {
+		if stat.result == nil || !stat.defined || stat.totalUses == 0 {
 			continue
 		}
 		temps[key] = newCallResultTemp(stat.result)
@@ -49,9 +49,9 @@ func (p *branchCallResultProcessor) ProcessFunc(result *Result, f *Func) bool {
 	return changed
 }
 
-// collectBranchCallResultStats counts call-result uses while skipping call definitions.
-func collectBranchCallResultStats(f *Func) map[branchCallResultKey]*callResultStats {
-	stats := make(map[branchCallResultKey]*callResultStats)
+// collectCallResultStats counts call-result uses while skipping call definitions.
+func collectCallResultStats(f *Func) map[materializedCallResultKey]*callResultStats {
+	stats := make(map[materializedCallResultKey]*callResultStats)
 	if f == nil {
 		return stats
 	}
@@ -67,17 +67,12 @@ func collectBranchCallResultStats(f *Func) map[branchCallResultKey]*callResultSt
 						stats[key] = stat
 					}
 					stat.result = result
+					stat.defined = true
 				}
-				countCallResultUsesInCall(stats, callEffect.Call, false)
+				countCallResultUsesInCall(stats, callEffect.Call)
 				continue
 			}
-
-			branch, isBranch := effect.(*Branch)
-			if isBranch {
-				countCallResultUsesInExpr(stats, branch.Cond, true)
-				continue
-			}
-			countCallResultUsesInEffect(stats, effect, false)
+			countCallResultUsesInEffect(stats, effect)
 		}
 	}
 
@@ -85,28 +80,21 @@ func collectBranchCallResultStats(f *Func) map[branchCallResultKey]*callResultSt
 }
 
 // countCallResultUsesInEffect counts all call-result expressions in one effect.
-func countCallResultUsesInEffect(stats map[branchCallResultKey]*callResultStats, effect Effect, branch bool) {
+func countCallResultUsesInEffect(stats map[materializedCallResultKey]*callResultStats, effect Effect) {
 	walkEffect(effect, func(expr Expr) {
-		countCallResultUse(stats, expr, branch)
+		countCallResultUse(stats, expr)
 	})
 }
 
 // countCallResultUsesInCall counts call-result expressions inside one call expression.
-func countCallResultUsesInCall(stats map[branchCallResultKey]*callResultStats, call *Call, branch bool) {
+func countCallResultUsesInCall(stats map[materializedCallResultKey]*callResultStats, call *Call) {
 	walkCall(call, func(expr Expr) {
-		countCallResultUse(stats, expr, branch)
-	})
-}
-
-// countCallResultUsesInExpr counts call-result expressions inside one expression.
-func countCallResultUsesInExpr(stats map[branchCallResultKey]*callResultStats, expr Expr, branch bool) {
-	walkExpr(expr, func(expr Expr) {
-		countCallResultUse(stats, expr, branch)
+		countCallResultUse(stats, expr)
 	})
 }
 
 // countCallResultUse records one call-result expression when expr is a call result.
-func countCallResultUse(stats map[branchCallResultKey]*callResultStats, expr Expr, branch bool) {
+func countCallResultUse(stats map[materializedCallResultKey]*callResultStats, expr Expr) {
 	result, ok := expr.(*CallResult)
 	if !ok {
 		return
@@ -121,13 +109,10 @@ func countCallResultUse(stats map[branchCallResultKey]*callResultStats, expr Exp
 		stat.result = result
 	}
 	stat.totalUses++
-	if branch {
-		stat.branchUses++
-	}
 }
 
 // rewriteCallResultsToTemps replaces selected call-result definitions and uses.
-func rewriteCallResultsToTemps(effects []Effect, temps map[branchCallResultKey]*Temp) ([]Effect, bool) {
+func rewriteCallResultsToTemps(effects []Effect, temps map[materializedCallResultKey]*Temp) ([]Effect, bool) {
 	rewriter := &semRewriter{
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			result, ok := expr.(*CallResult)
@@ -169,8 +154,8 @@ func rewriteCallResultsToTemps(effects []Effect, temps map[branchCallResultKey]*
 }
 
 // keyForCallResult returns the stable identity for a call result.
-func keyForCallResult(result *CallResult) branchCallResultKey {
-	return branchCallResultKey{function: result.Function, instOff: result.InstOff}
+func keyForCallResult(result *CallResult) materializedCallResultKey {
+	return materializedCallResultKey{function: result.Function, instOff: result.InstOff}
 }
 
 // newCallResultTemp creates the semantic temp used to preserve a call result.
@@ -180,10 +165,4 @@ func newCallResultTemp(result *CallResult) *Temp {
 		ID:       machine.ValueID{InstOff: result.InstOff},
 		TypeInfo: result.ExprType(),
 	}
-}
-
-// wideCallResult reports whether result has a return type wider than one word.
-func wideCallResult(result *CallResult) bool {
-	typ := result.ExprType()
-	return typ != nil && typ.Bytes() > 2
 }

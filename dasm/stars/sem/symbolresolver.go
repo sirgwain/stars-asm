@@ -133,6 +133,12 @@ func (sr *symbolResolver) memoryPath(mem machine.MemoryAddress) (symresolve.Symb
 // exactMemoryPath resolves a memory access to its most specific typed path,
 // including union selections.
 func (sr *symbolResolver) exactMemoryPath(mem machine.MemoryAddress) (symresolve.SymbolPath, bool) {
+	// The exact-path cases below consume Base and Disp only. A separate
+	// machine index must remain on the normalized address projection path;
+	// otherwise resolving the BP-relative root would silently discard it.
+	if mem.Index != nil {
+		return nil, false
+	}
 
 	if _, ok := mem.Base.(*machine.FrameBase); ok {
 		// local bp+var

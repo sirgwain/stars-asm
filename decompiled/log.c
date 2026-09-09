@@ -547,7 +547,7 @@ L_9374:
     imemLogCur = imemLogPrev;
 
 L_937a:
-    WriteMemRt(38, game.cPlayer, game.lid[(0x59a2 + loword((0xc0 * load(ds : [0x018c])))) * 0x1]);
+    WriteMemRt(38, game.cPlayer, ((0x59a2 + LOWORD((192 * idPlayer))) + 0x70));
     if ((gd.fTutorial == 0x0))
         goto L_93ca;
     else
@@ -633,8 +633,8 @@ L_9460:
     goto L_949f;
 
 L_9472:
-    /* untranslated: LOWORD(lxNew.rgdItem[i]) = (LOWORD(lx.rgdItem[i]) neg 0x0) */
-    /* untranslated: HIWORD(lxNew.rgdItem[i]) = ((HIWORD(lx.rgdItem[i]) + 0x0) neg 0x0) */
+    LOWORD(lxNew.rgdItem[i]) = (-LOWORD(lx.rgdItem[i]));
+    HIWORD(lxNew.rgdItem[i]) = (-(HIWORD(lx.rgdItem[i]) + 0x0));
     i = (i + 1);
 
 L_949f:
@@ -931,6 +931,7 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
     int16_t  cb;
     int32_t  t_call_9cf5;
     int32_t  t_merge_9d34_0001;
+    int32_t  t_call_9d2c;
 
 L_99f6:
     iBiggest = 0;
@@ -1150,8 +1151,8 @@ L_9d12:
     goto L_9d34;
 
 L_9d1b:
-    labs(rgQuan[i]);
-    /* untranslated: t_merge_9d34_0001 = callresult(int32_t) */
+    t_call_9d2c = labs(rgQuan[i]);
+    t_merge_9d34_0001 = t_call_9d2c;
 
 L_9d34:
     iBiggest = t_merge_9d34_0001;
@@ -1178,7 +1179,7 @@ L_9d60:
 L_9d66:
 
 L_9d6c:
-    /* untranslated: prt = &dword ss:[&rgbuf] */
+    prt = &(rgbuf);
     /* untranslated: part[0x4:1](prt) = lobyte(((*(prt+0x4) & 0xf0) | (lobyte(plx1->grobj) & 0xf))) */
     /* untranslated: part[0x4:1](prt) = lobyte((prt->grobj1 | ((lobyte(plx2->grobj) & 0xf) * 0x10))) */
     LOWORD(prt) = plx1->id;
@@ -1256,7 +1257,7 @@ L_9e97:
 
 L_9ea1:
     rt = 2;
-    /* untranslated: prtx = &dword ss:[&rgbuf] */
+    prtx = &(rgbuf);
     i = 0;
     goto L_9f0a;
 
@@ -1290,7 +1291,7 @@ L_9f10:
 
 L_9f16:
     rt = 25;
-    /* untranslated: prtl = &dword ss:[&rgbuf] */
+    prtl = &(rgbuf);
     i = 0;
     goto L_9f85;
 
@@ -1450,7 +1451,7 @@ L_a178:
         goto L_a1e8;
 
 L_a1e8:
-    fmemcpy(lpv[2], rg, cb);
+    fmemcpy(lpv[2], ((uint8_t *)(rg) + 0), cb);
 
 L_a208:
     imemLogCur = (imemLogCur + (cb + 2));
@@ -1497,7 +1498,7 @@ L_a25e:
         goto L_a271;
 
 L_a271:
-    return 0x0;
+    return 0;
 
 L_a277:
     lpv = (lpLog + imemLogPrev);
@@ -1511,7 +1512,7 @@ L_a2a5:
     fmemcpy(pb, lpv[2], phdr->cb);
 
 L_a2ca:
-    return 0x1;
+    return 1;
 }
 
 int16_t FRunLogFile() {
@@ -1530,7 +1531,7 @@ L_a2d6:
         goto L_a2f9;
 
 L_a2f9:
-    return 0x1;
+    return 1;
 
 L_a2ff:
     fLogOff = 1;
@@ -1609,6 +1610,7 @@ int16_t FLoadLogFile(char *pszLog) {
     uint16_t hrsrc;
     int16_t  cSkip;
     int16_t  t_c8f8;
+    void    *t_call_cbfc;
 
 L_c7a2:
     fRet = 1;
@@ -1637,7 +1639,7 @@ L_c7ec:
 L_c7f6:
     GlobalUnlock(hres);
     FreeResource(hres);
-    return 0x0;
+    return 0;
 
 L_c80c:
     if ((hf != -1))
@@ -1646,11 +1648,11 @@ L_c80c:
         goto L_c816;
 
 L_c816:
-    return 0x1;
+    return 1;
 
 L_c81c:
     StreamClose();
-    return 0x0;
+    return 0;
 
 L_c827:
     if ((game.fTutorial == 0x0))
@@ -1681,7 +1683,7 @@ L_c855:
 
 BailOut:
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_c89b:
     vlpMemStream = LockResource(hres);
@@ -1775,7 +1777,7 @@ L_c9a1:
 
 L_c9a6:
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 
 L_c9b2:
     if ((rgbCur[10] == game.turn))
@@ -1882,9 +1884,9 @@ L_cbde:
         goto L_cbf1;
 
 L_cbf1:
-    LpAlloc(hdrCur.cb, htPlrMsg);
-    /* untranslated: LOWORD(lpmp) = faroff(callresult(void *)) */
-    /* untranslated: HIWORD(lpmp->lpmsgplrNext) = farseg(callresult(void *)) */
+    t_call_cbfc = LpAlloc(hdrCur.cb, htPlrMsg);
+    LOWORD(lpmp) = FAROFF(t_call_cbfc);
+    HIWORD(lpmp->lpmsgplrNext) = FARSEG(t_call_cbfc);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
     LOWORD(lpmp) = 0x0;
@@ -1959,12 +1961,12 @@ L_cd06:
         goto L_cd16;
 
 L_cd16:
-    return 0x1;
+    return 1;
 
 L_cd1c:
     StreamClose();
     *(pfError) = 3;
-    return 0x0;
+    return 0;
 
 L_cd2e:
     idsFileError = 0;
@@ -1983,7 +1985,7 @@ L_cd59:
     *(pfError) = idsFileError;
 
 L_cd61:
-    return 0x0;
+    return 0;
 
 L_cd67:
     ReadRt();
@@ -2065,8 +2067,7 @@ L_ce2d:
 
 L_ce40:
     /* untranslated: cb = (0x1a - ((0xc - (part[0xf:2](vrgZipProd[0x0]) & 0xff)) * 0x2)) */
-    /* untranslated: branch memcmp(part[0x28:2](rgcrPlrHistory[(0x59a2 + loword((0xc0 * load([bp+0x8]))))*0x1]), part[0xe:2](vrgZipProd[0x0]), cb) == 0 ? L_ce91
-     * : L_ce7e */
+    /* untranslated: branch memcmp(((0x59a2 + loword((192 * iPlayer))) + 0x56), part[0xe:2](vrgZipProd[0x0]), cb) == 0 ? L_ce91 : L_ce7e */
 
 L_ce7e:
     /* untranslated: call WriteMemRt(46, cb, part[0xe:2](vrgZipProd[0x0])) -> callresult(void) */
@@ -2080,7 +2081,7 @@ L_ce91:
 
 L_cebb:
     AlertSz(PszFormatIds(idsUnableCreateLogFile, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_cee2:
     penvMemSav = penvMem;
@@ -2093,7 +2094,7 @@ L_cee2:
 L_cf02:
     penvMem = penvMemSav;
     StreamClose();
-    return 0x0;
+    return 0;
 
 L_cf13:
     rtlh.cbLog = imemLogCur;
@@ -2136,7 +2137,7 @@ L_d010:
     penvMem = penvMemSav;
     DirtyGame(0);
     gd.fWriteTurnNum = 0x1;
-    return 0x1;
+    return 1;
 }
 
 int16_t FWriteTutorialMFile(int16_t iTurn) {
@@ -2175,7 +2176,7 @@ L_d097:
 L_d0a1:
     GlobalUnlock(hres);
     FreeResource(hres);
-    return 0x0;
+    return 0;
 
 L_d0b7:
     if ((hf != -1))
@@ -2184,11 +2185,11 @@ L_d0b7:
         goto L_d0c1;
 
 L_d0c1:
-    return 0x1;
+    return 1;
 
 L_d0c7:
     StreamClose();
-    return 0x0;
+    return 0;
 
 L_d0d2:
     if ((iTurn >= 32))
@@ -2213,7 +2214,7 @@ L_d11a:
 
 BailOut:
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_d13e:
     vlpMemStream = LockResource(hres);
@@ -2241,7 +2242,7 @@ L_d176:
     GlobalUnlock(hres);
     FreeResource(hres);
     penvMem = penvMemSav;
-    return 0x2;
+    return 2;
 
 L_d19e:
     vlpMemStream = (vlpMemStream + 0x1);
@@ -2295,20 +2296,20 @@ L_d26a:
     GlobalUnlock(hres);
     FreeResource(hres);
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t FWriteHistFile(int16_t iPlayer) {
-    PLANET   *lppl;
-    int16_t   i;
-    jmp_buf  *penvMemSav[9];
-    jmp_buf   env[9];
-    uint16_t  cTurnBase;
-    SHDEF    *lpshdef;
-    int16_t   j;
-    RTHISTHDR rthh;
-    uint8_t  *lpb;
-    uint16_t  t_merge_d39d_0001;
+    PLANET    *lppl;
+    int16_t    i;
+    jmp_buf   *penvMemSav[9];
+    jmp_buf    env[9];
+    uint16_t   cTurnBase;
+    SHDEF     *lpshdef;
+    int16_t    j;
+    RTHISTHDR  rthh;
+    uint8_t   *lpb;
+    RecordType t_merge_d39d_0001;
 
 L_d29e:
     if ((FCreateFile(dtHist, iPlayer, 0x0) != 0))
@@ -2318,7 +2319,7 @@ L_d29e:
 
 L_d2c2:
     AlertSz(PszFormatIds(idsUnableCreateHistoryFile, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_d2e9:
     penvMemSav = penvMem;
@@ -2331,7 +2332,7 @@ L_d2e9:
 L_d309:
     penvMem = penvMemSav;
     StreamClose();
-    return 0x0;
+    return 0;
 
 L_d31a:
     rthh.cPlanet = cPlanet;
@@ -2358,7 +2359,7 @@ L_d37e:
         goto L_d394;
 
 L_d394:
-    t_merge_d39d_0001 = 0xe;
+    t_merge_d39d_0001 = rtPlanetB;
     goto L_d39d;
 
 L_d39a:
@@ -2601,7 +2602,7 @@ L_d6b1:
     WriteRt(rtEOF, 0, 0x0);
     StreamClose();
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 }
 
 void EnumLogRts(int16_t (**pfn)(void *, int16_t, int16_t, void *, int16_t), void *lpPass, int16_t iPass) {

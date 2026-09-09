@@ -15,7 +15,7 @@ L_0000:
         goto L_0013;
 
 L_0013:
-    return 0x0;
+    return 0;
 
 L_0019:
     return FLookupPlanet(sel.scan.idpl, ppl);
@@ -56,7 +56,7 @@ L_009c:
     ppl->lpplprod = 0x0;
 
 L_00ba:
-    return 0x1;
+    return 1;
 
 L_00c0:
     if ((LOWORD(ppl->lpplprod) != 0x0))
@@ -86,7 +86,7 @@ L_012a:
 L_0153:
     fmemcpy(ppl->lpplprod->rgprod, lppl->lpplprod->rgprod, (lppl->lpplprod->iprodMac * 0x4));
     ppl->lpplprod->iprodMac = lppl->lpplprod->iprodMac;
-    return 0x1;
+    return 1;
 }
 
 THING *LpthFromId(int16_t idth) {
@@ -294,7 +294,7 @@ L_04a6:
         goto L_04be;
 
 L_04be:
-    return 0x0;
+    return 0;
 
 L_04c4:
     if ((iPlanet >= 0))
@@ -311,7 +311,7 @@ L_04cd:
 
 L_04de:
     LogChangePlanet(0x0, ppl);
-    return 0x1;
+    return 1;
 
 L_04f7:
     fWrite = 1;
@@ -454,10 +454,10 @@ L_072b:
         goto L_0734;
 
 L_0734:
-    return 0x1;
+    return 1;
 
 L_073a:
-    return 0x0;
+    return 0;
 }
 
 int32_t DpOfLpflIshdef(FLEET *lpfl, int16_t ishdef) {
@@ -486,7 +486,7 @@ L_07fe:
         goto L_0816;
 
 L_0816:
-    return 0x0;
+    return 0;
 
 L_081c:
     if ((idth >= 0))
@@ -556,10 +556,10 @@ L_08d6:
         goto L_08df;
 
 L_08df:
-    return 0x1;
+    return 1;
 
 L_08e5:
-    return 0x0;
+    return 0;
 }
 
 void SelectOursAtObject(POINT *ppt) {
@@ -623,10 +623,16 @@ L_099d:
         goto L_09a5;
 
 L_09a5:
-    /* untranslated: branch ss:[&pt] != lpfl->pt.x ? L_0966 : L_09bf */
+    if ((pt.x != lpfl->pt.x))
+        goto L_0966;
+    else
+        goto L_09bf;
 
 L_09bf:
-    /* untranslated: branch ss:[&pt+0x2] != lpfl->pt.y ? L_0966 : L_09c8 */
+    if ((pt.y != lpfl->pt.y))
+        goto L_0966;
+    else
+        goto L_09c8;
 
 L_09c8:
     if ((lpfl->iPlayer != idPlayer))
@@ -906,6 +912,7 @@ L_0e47:
 void ComputeShdefPowers() {
     int16_t iplr;
     int16_t ishdef;
+    int32_t t_call_0ed7;
 
 L_0e4e:
     iplr = 0;
@@ -943,8 +950,8 @@ L_0e91:
         goto L_0ebe;
 
 L_0ebe:
-    LComputePower(&(rglpshdef[iplr][ishdef]));
-    /* untranslated: part[0x87:4](rglpshdef[iplr][ishdef]) = callresult(int32_t) */
+    t_call_0ed7 = LComputePower(&(rglpshdef[iplr][ishdef]));
+    /* untranslated: part[0x87:4](rglpshdef[iplr][ishdef]) = t_call_0ed7 */
 
 L_0f0e:
     ishdef = (ishdef + 1);
@@ -1098,7 +1105,7 @@ L_1115:
         goto L_112c;
 
 L_112c:
-    return 0xffff;
+    return -1;
 
 L_1132:
     lphul = (rglpshdefSB[lppl->iPlayer] + LOWORD((lppl->isb * 0x93)));
@@ -1139,7 +1146,7 @@ L_11d6:
     return lphs->iItem;
 
 L_11e6:
-    return 0xffff;
+    return -1;
 }
 
 char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t fThe, int16_t grWord, PLAYER *pplr) {
@@ -1673,10 +1680,10 @@ L_1b99:
         goto L_1ba2;
 
 L_1ba2:
-    return 0x1;
+    return 1;
 
 L_1ba8:
-    return 0x0;
+    return 0;
 }
 
 void LinkFleets(int16_t fUnused) {
@@ -1752,24 +1759,40 @@ L_1c98:
     goto L_1d54;
 
 L_1ca1:
-    /* untranslated: branch lpflHead->pt.y > [rglpflSrc[i]+0xa] ? L_1d4f : L_1cc6 */
+    if ((lpflHead->pt.y > rglpflSrc[i]->pt.y))
+        goto L_1d4f;
+    else
+        goto L_1cc6;
 
 L_1cc6:
-    /* untranslated: branch lpflHead->pt.y < [rglpflSrc[i]+0xa] ? L_1cd4 : L_1ccb */
+    if ((lpflHead->pt.y < rglpflSrc[i]->pt.y))
+        goto L_1cd4;
+    else
+        goto L_1ccb;
 
 L_1ccb:
-    /* untranslated: branch lpflHead->pt.x > [rglpflSrc[i]+0x8] ? L_1d4f : L_1cd4 */
+    if ((lpflHead->pt.x > rglpflSrc[i]->pt.x))
+        goto L_1d4f;
+    else
+        goto L_1cd4;
 
 L_1cd4:
-    /* untranslated: branch lpflHead->pt.x != [rglpflSrc[i]+0x8] ? L_1d61 : L_1cf9 */
+    if ((lpflHead->pt.x != rglpflSrc[i]->pt.x))
+        goto L_1d61;
+    else
+        goto L_1cf9;
 
 L_1cf9:
-    /* untranslated: branch lpflHead->pt.y != [rglpflSrc[i]+0xa] ? L_1d61 : L_1d02 */
+    if ((lpflHead->pt.y != rglpflSrc[i]->pt.y))
+        goto L_1d61;
+    else
+        goto L_1d02;
 
 L_1d02:
-    /* untranslated: LOWORD(lpflHead->lpflNext) = [rglpflSrc[i]+0x68] */
-    /* untranslated: HIWORD(lpflHead->lpflNext) = [rglpflSrc[i]+0x6a] */
-    rglpflSrc[26] = lpflHead;
+    LOWORD(lpflHead->lpflNext) = LOWORD(rglpflSrc[i]->lpflNext);
+    HIWORD(lpflHead->lpflNext) = HIWORD(rglpflSrc[i]->lpflNext);
+    LOWORD(rglpflSrc[i]->lpflNext) = LOWORD(lpflHead);
+    HIWORD(rglpflSrc[i]->lpflNext) = HIWORD(lpflHead);
     i = -1;
 
 L_1d4f:
@@ -1879,10 +1902,10 @@ int16_t ICompFleetPoint(void *arg1, void *arg2) {
     int32_t l1;
 
 L_1f0c:
-    /* untranslated: LOWORD(l1) = [arg1+0x8] */
-    /* untranslated: HIWORD(l1) = [arg1+0xa] */
-    /* untranslated: LOWORD(l2) = [arg2+0x8] */
-    /* untranslated: HIWORD(l2) = [arg2+0xa] */
+    LOWORD(l1) = *(arg1 + 0x8);
+    HIWORD(l1) = *(arg1 + 0xa);
+    LOWORD(l2) = *(arg2 + 0x8);
+    HIWORD(l2) = *(arg2 + 0xa);
     l1 = (l1 - l2);
     if ((HIWORD(l1) > 0x0))
         goto L_1f71;
@@ -1938,8 +1961,8 @@ int16_t ICompFleetPoint2(void *arg1, void *arg2) {
 
 L_1fa2:
     l1 = arg1;
-    /* untranslated: LOWORD(l2) = [arg2+0x8] */
-    /* untranslated: HIWORD(l2) = [arg2+0xa] */
+    LOWORD(l2) = *(arg2 + 0x8);
+    HIWORD(l2) = *(arg2 + 0xa);
     l1 = (l1 - l2);
     if ((HIWORD(l1) > 0x0))
         goto L_2002;
@@ -1997,7 +2020,7 @@ L_2032:
         goto L_2045;
 
 L_2045:
-    return 0x0;
+    return 0;
 
 L_204b:
     return FLookupFleet(rglpfl[sel.scan.ifl]->id, pfl);
@@ -2082,7 +2105,7 @@ L_2160:
         goto L_2178;
 
 L_2178:
-    return 0x0;
+    return 0;
 
 L_217e:
     if ((idFleet >= 0))
@@ -2188,10 +2211,10 @@ L_2317:
         goto L_2320;
 
 L_2320:
-    return 0x1;
+    return 1;
 
 L_2326:
-    return 0x0;
+    return 0;
 }
 
 int16_t FDupFleet(FLEET *lpfl, FLEET *pfl) {
@@ -2227,7 +2250,7 @@ L_238a:
     FreePl(lpplordT);
 
 L_2398:
-    return 0x1;
+    return 1;
 
 L_239e:
     pfl->lpplord = lpplordT;
@@ -2258,7 +2281,7 @@ L_2417:
 L_2440:
     fmemcpy(pfl->lpplord->rgord, lpfl->lpplord->rgord, LOWORD((lpfl->lpplord->iordMac * 0x12)));
     pfl->lpplord->iordMac = lpfl->lpplord->iordMac;
-    return 0x1;
+    return 1;
 }
 
 int16_t FLookupObject(GrobjClass grobj, int16_t id, void *pobj) {
@@ -2299,7 +2322,7 @@ L_24fa:
         goto L_250d;
 
 L_250d:
-    return 0x0;
+    return 0;
 
 L_2513:
     if ((cFleet == 0))
@@ -2383,7 +2406,7 @@ L_25c5:
     pxf->id = lpfl->id;
 
 L_25fd:
-    return 0x1;
+    return 1;
 
 L_2606:
     lpth = lpThings;
@@ -2428,7 +2451,7 @@ L_2682:
     pxf->id = lpth->idFull;
 
 L_26ba:
-    return 0x1;
+    return 1;
 
 L_26c0:
     lpth = (lpth + 0x12);
@@ -2440,7 +2463,7 @@ L_26c4:
         goto L_26d2;
 
 L_26d2:
-    return 0x0;
+    return 0;
 }
 
 char *PszGetThingName(int16_t id) {
@@ -2648,7 +2671,7 @@ L_2a9f:
     szShdef[(cch + 1)] = 0;
 
 L_2ab8:
-    /* untranslated: lpsz = &dword ss:[&szShdef] */
+    lpsz = szShdef;
 
 L_2ac6:
     lpsz = &(*(PszGetCompressedString(idsFleet)));
@@ -2723,7 +2746,7 @@ L_2c13:
     szShdef[(cch + 1)] = 0;
 
 L_2c2c:
-    /* untranslated: lpsz = &dword ss:[&szShdef] */
+    lpsz = szShdef;
 
 L_2c37:
     _wsprintf(szWork, "%s #%d", LOWORD(lpsz), HIWORD(lpsz), ((w & 0x1ff) + 0x1));
@@ -2791,7 +2814,7 @@ L_2d2d:
         goto L_2d38;
 
 L_2d38:
-    return 0xffff;
+    return -1;
 }
 
 int16_t FDeleteFleet(int16_t idFleet, GrobjClass grobjSel, int16_t idSel) {
@@ -2843,7 +2866,7 @@ L_2da5:
         goto L_2db3;
 
 L_2db3:
-    return 0x0;
+    return 0;
 
 L_2dbc:
     if ((i != cFleet))
@@ -2852,7 +2875,7 @@ L_2dbc:
         goto L_2dc7;
 
 L_2dc7:
-    return 0x0;
+    return 0;
 
 L_2dcd:
     if ((idFleet != sel.fl.id))
@@ -2965,7 +2988,7 @@ L_2f93:
     sel.grobj = grobjNone;
     sel.scan.grobj = grobjNone;
     FFindSomethingAndSelectIt();
-    return 0x1;
+    return 1;
 
 L_2faa:
     sel.grobj = grobjNone;
@@ -2997,7 +3020,7 @@ L_2ff4:
     SetMsgTitle(hwndMessage);
 
 L_3000:
-    return 0x1;
+    return 1;
 }
 
 FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
@@ -3005,6 +3028,7 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     ORDER   *lpord;
     FLEET   *lpfl;
     int16_t  iflPrev;
+    void    *t_call_3123;
     uint16_t scratch_bp_m10;
     uint16_t t_merge_32dc_0001;
 
@@ -3074,9 +3098,9 @@ L_30df:
     fmemmove((rglpfl + ((i + 1) * 0x4)), rglpfl[i], ((cFleet - i) * 0x4));
 
 L_311b:
-    LpAlloc(0x7c, htFleets);
-    /* untranslated: lpfl = callresult(void *) */
-    /* untranslated: rglpfl[i] = callresult(void *) */
+    t_call_3123 = LpAlloc(0x7c, htFleets);
+    lpfl = t_call_3123;
+    rglpfl[i] = t_call_3123;
     cFleet = (cFleet + 1);
     /* untranslated: scratch_bp_m10 = ((part[0x4:2](rgplr[iPlr]) + 0x1) & 0xfff) */
     rgplr[iPlr].cFleet = 0x0;
@@ -3385,10 +3409,10 @@ L_39c8:
         goto L_39ee;
 
 L_39ee:
-    return 0x1;
+    return 1;
 
 L_39f4:
-    return 0x0;
+    return 0;
 }
 
 int16_t FFleetSplitAll(FLEET *pfl) {
@@ -3453,10 +3477,10 @@ L_3add:
         goto L_3af6;
 
 L_3af6:
-    return 0x1;
+    return 1;
 
 L_3afc:
-    return 0x0;
+    return 0;
 }
 
 char *PszGetLocName(GrobjClass grobj, int16_t id, int16_t x, int16_t y) {
@@ -3528,7 +3552,7 @@ int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall) {
     int16_t  j;
     int16_t  cYears;
     StringId ids;
-    uint16_t t_merge_3dcf_0001;
+    StringId t_merge_3dcf_0001;
 
 L_3bc8:
     cYears = 0;
@@ -3687,11 +3711,11 @@ L_3dba:
         goto L_3dc6;
 
 L_3dc6:
-    t_merge_3dcf_0001 = 0x49e;
+    t_merge_3dcf_0001 = idsDy;
     goto L_3dcf;
 
 L_3dcc:
-    t_merge_3dcf_0001 = 0x331;
+    t_merge_3dcf_0001 = idsDYear;
 
 L_3dcf:
     c = _wsprintf(sz, PszGetCompressedString(t_merge_3dcf_0001), cYears);
@@ -3816,16 +3840,17 @@ double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
     int32_t dy;
     int32_t dx;
     int32_t l;
+    double  t_call_404f;
 
 L_3fe4:
     dx = (uint32_t)((x2 - x1));
     dy = (uint32_t)((y2 - y1));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    sqrt((double)(l));
-    /* untranslated: __fac = callresult(double) */
+    t_call_404f = sqrt((double)(l));
+    __fac = t_call_404f;
 
 L_4069:
-    /* untranslated: return callresult(double) */
+    return t_call_404f;
 }
 
 int16_t FFindNearestObject(POINT pt, GrobjClass grobj, SCAN *pscan) {
@@ -4064,10 +4089,16 @@ L_42ed:
         goto L_42fb;
 
 L_42fb:
-    /* untranslated: branch lpfl->pt.x != ss:[&scan] ? L_4376 : L_4315 */
+    if ((lpfl->pt.x != scan.pt.x))
+        goto L_4376;
+    else
+        goto L_4315;
 
 L_4315:
-    /* untranslated: branch lpfl->pt.y != ss:[&scan+0x2] ? L_4376 : L_431e */
+    if ((lpfl->pt.y != scan.pt.y))
+        goto L_4376;
+    else
+        goto L_431e;
 
 L_431e:
     if (((scan.grobjFull & 0x2) == 0x0))
@@ -4198,10 +4229,16 @@ L_4491:
         goto L_449f;
 
 L_449f:
-    /* untranslated: branch lpth->pt.x != ss:[&scan] ? L_44fc : L_44b9 */
+    if ((lpth->pt.x != scan.pt.x))
+        goto L_44fc;
+    else
+        goto L_44b9;
 
 L_44b9:
-    /* untranslated: branch lpth->pt.y != ss:[&scan+0x2] ? L_44fc : L_44c2 */
+    if ((lpth->pt.y != scan.pt.y))
+        goto L_44fc;
+    else
+        goto L_44c2;
 
 L_44c2:
     if (((scan.grobjFull & 0x8) != 0x0))
@@ -4483,10 +4520,10 @@ L_4794:
         goto L_479d;
 
 L_479d:
-    return 0x1;
+    return 1;
 
 L_47a3:
-    return 0x0;
+    return 0;
 }
 
 void UpdateShdefCost(SHDEF *lpshdef) {
@@ -4775,7 +4812,7 @@ L_4d6e:
 
 L_4d76:
     idPlayer = iPlrSav;
-    return 0x0;
+    return 0;
 
 L_4d82:
     LookupBestPlanetaryScanner(&(part));
@@ -4791,7 +4828,7 @@ L_4d97:
         goto L_4da4;
 
 L_4da4:
-    /* untranslated: *pDeep = ((part.pcom[0x1].id neg 0x0) >> 0x1) */
+    *(pDeep) = ((-part.pcom[0x1].id) >> 0x1);
 
 L_4db4:
     dRange = abs(part.pcom[0x1].id);
@@ -5036,6 +5073,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     double   lBIPR4;
     double   lRange4;
     uint16_t t_merge_5142_0001;
+    SCANNER *t_call_52ec;
     uint16_t t_merge_53ea_0001;
 
 L_50d0:
@@ -5158,9 +5196,9 @@ L_52cd:
 L_52d9:
     fHasScanner = 1;
     iScanner = lphs->iItem;
-    LpscannerFromId(lphs->iItem);
-    /* untranslated: dRangeT = callresult(SCANNER *)->dRange */
-    /* untranslated: lT = (double)sext16to32(callresult(SCANNER *)->dRange) */
+    t_call_52ec = LpscannerFromId(lphs->iItem);
+    dRangeT = t_call_52ec->dRange;
+    lT = (double)((int32_t)(t_call_52ec->dRange));
     lT = (lT * lT);
     lT = (lT * lT);
     lT = (lT * (double)((uint32_t)(lphs->cItem)));
@@ -5406,7 +5444,7 @@ L_56b8:
         goto L_56d4;
 
 L_56d4:
-    return 0x0;
+    return 0;
 
 L_56dd:
     i = 0;
@@ -5902,10 +5940,11 @@ L_5dfb:
 }
 
 void DecorateHullName(int16_t iplr, int16_t ish, char *psz) {
-    int16_t i;
-    int16_t c;
-    SHDEF  *lpshdef;
-    int16_t iVal;
+    int16_t  i;
+    int16_t  c;
+    SHDEF   *lpshdef;
+    int16_t  iVal;
+    uint16_t t_call_5f2f;
 
 L_5e0e:
     lpshdef = (rglpshdef[iplr] + LOWORD((0x93 * ish)));
@@ -5981,9 +6020,9 @@ L_5f20:
 L_5f26:
 
 L_5f2c:
-    strlen(psz);
-    /* untranslated: c = callresult(uint16_t) */
-    /* untranslated: psz[callresult(uint16_t)] = 32 */
+    t_call_5f2f = strlen(psz);
+    c = t_call_5f2f;
+    psz[t_call_5f2f] = 32;
     psz[(c + 1)] = 40;
     /* untranslated: call IntToRoman(iVal, &part[0x2:1](psz[c])) -> callresult(void) */
     strcat(psz, 0x539);
@@ -6137,6 +6176,11 @@ int16_t FValidSerialNo(char *psz, int32_t *plSerial) {
     int32_t lCur;
     int32_t lSerial;
     int32_t l;
+    int32_t t_call_633d;
+    int32_t t_call_6376;
+    int32_t t_call_63af;
+    int32_t t_call_63e8;
+    int16_t t_call_64c4;
 
 L_62f8:
     lSerial = LongFromSerialCh((uint16_t)(*(psz)));
@@ -6161,14 +6205,14 @@ L_632d:
     lSerial = (lSerial ^ 0x15);
 
 L_6335:
-    LongFromSerialCh((uint16_t)(psz[1]));
-    /* untranslated: lSerial = ((uint32_t)(lSerial * 36) + callresult(int32_t)) */
-    LongFromSerialCh((uint16_t)(psz[4]));
-    /* untranslated: lSerial = ((uint32_t)(lSerial * 36) + callresult(int32_t)) */
-    LongFromSerialCh((uint16_t)(psz[7]));
-    /* untranslated: lSerial = ((uint32_t)(lSerial * 36) + callresult(int32_t)) */
-    LongFromSerialCh((uint16_t)(psz[3]));
-    /* untranslated: lSerial = ((uint32_t)(lSerial * 36) + callresult(int32_t)) */
+    t_call_633d = LongFromSerialCh((uint16_t)(psz[1]));
+    lSerial = ((uint32_t)((lSerial * 36)) + t_call_633d);
+    t_call_6376 = LongFromSerialCh((uint16_t)(psz[4]));
+    lSerial = ((uint32_t)((lSerial * 36)) + t_call_6376);
+    t_call_63af = LongFromSerialCh((uint16_t)(psz[7]));
+    lSerial = ((uint32_t)((lSerial * 36)) + t_call_63af);
+    t_call_63e8 = LongFromSerialCh((uint16_t)(psz[3]));
+    lSerial = ((uint32_t)((lSerial * 36)) + t_call_63e8);
     if ((plSerial == 0x0))
         goto L_6430;
     else
@@ -6213,8 +6257,8 @@ L_64b7:
         goto L_64c0;
 
 L_64c0:
-    Random(256);
-    /* untranslated: lBuild = ((int32_t)(lBuild * 256) + sext16to32(callresult(int16_t))) */
+    t_call_64c4 = Random(256);
+    lBuild = ((int32_t)((lBuild * 256)) + (int32_t)(t_call_64c4));
     lCur = (int32_t)((lCur >> 0x4));
     i = (i + 1);
 
@@ -6239,7 +6283,7 @@ L_6548:
         goto L_6550;
 
 L_6550:
-    return 0x0;
+    return 0;
 
 L_6556:
     lBuild = (int32_t)((lBuild / 36));
@@ -6256,7 +6300,7 @@ L_65a0:
         goto L_65a8;
 
 L_65a8:
-    return 0x0;
+    return 0;
 
 L_65ae:
     lBuild = (int32_t)((lBuild / 36));
@@ -6273,10 +6317,10 @@ L_65f8:
         goto L_6600;
 
 L_6600:
-    return 0x0;
+    return 0;
 
 L_6606:
-    return 0x1;
+    return 1;
 }
 
 int16_t FMatchTarget(FLEET *lpflTarget, int16_t mdTarget, int16_t fExact) {
@@ -6293,7 +6337,7 @@ L_6621:
         goto L_662a;
 
 L_662a:
-    return 0x0;
+    return 0;
 
 L_6633:
     ish = 0;
@@ -6342,7 +6386,7 @@ L_66be:
         goto L_66c7;
 
 L_66c7:
-    return 0x0;
+    return 0;
 
 L_66d0:
     if ((ish == 16))
@@ -6351,7 +6395,7 @@ L_66d0:
         goto L_66d9;
 
 L_66d9:
-    return 0x0;
+    return 0;
 
 L_66e2:
     ish = 0;
@@ -6394,7 +6438,7 @@ L_6764:
         goto L_676d;
 
 L_676d:
-    return 0x0;
+    return 0;
 
 L_6776:
     ish = 0;
@@ -6431,7 +6475,7 @@ L_67ef:
         goto L_67f8;
 
 L_67f8:
-    return 0x0;
+    return 0;
 
 L_6801:
     ish = 0;
@@ -6468,7 +6512,7 @@ L_687a:
         goto L_6883;
 
 L_6883:
-    return 0x0;
+    return 0;
 
 L_688f:
     if ((mdTarget == 3))
@@ -6503,7 +6547,7 @@ L_68af:
 L_68b4:
 
 L_68ba:
-    return 0x1;
+    return 1;
 }
 
 void ValidateWaypoints() {
@@ -7098,10 +7142,10 @@ int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate) {
     int32_t  pctFull;
     uint16_t scratch_bp_m22;
     uint16_t scratch_bp_m24;
-    uint16_t t_merge_7168_0001;
+    int32_t  t_merge_7168_0001;
     uint16_t scratch_bp_m2a;
     uint16_t scratch_bp_m2c;
-    uint16_t t_merge_7397_0001;
+    int32_t  t_merge_7397_0001;
     uint32_t scratch_bp_m30;
     uint16_t scratch_bp_m2e;
 
@@ -7125,7 +7169,7 @@ L_70aa:
         goto L_70b4;
 
 L_70b4:
-    return 0x0;
+    return 0;
 
 L_70bd:
     pctDesire = PctPlanetDesirability(lppl, lppl->iPlayer);
@@ -7137,20 +7181,29 @@ L_70bd:
         goto L_70f4;
 
 L_70f4:
-    /* untranslated: branch 0x0 < hiword((int32_t)((uint32_t)(lPopOld * sext16to32((pctDesire neg 0))) / 0xa)) ? L_7146 : L_7131 */
+    if ((0x0 < HIWORD((int32_t)(((uint32_t)((lPopOld * (uint32_t)((-pctDesire)))) / 0xa)))))
+        goto L_7146;
+    else
+        goto L_7131;
 
 L_7131:
-    /* untranslated: branch scratch_bp_m22 > hiword((int32_t)((uint32_t)(lPopOld * sext16to32((pctDesire neg 0))) / 0xa)) ? L_713d : L_7136 */
+    if ((scratch_bp_m22 > HIWORD((int32_t)(((uint32_t)((lPopOld * (uint32_t)((-pctDesire)))) / 0xa)))))
+        goto L_713d;
+    else
+        goto L_7136;
 
 L_7136:
-    /* untranslated: branch scratch_bp_m24 <= loword((int32_t)((uint32_t)(lPopOld * sext16to32((pctDesire neg 0))) / 0xa)) ? L_7146 : L_713d */
+    if ((scratch_bp_m24 <= LOWORD((int32_t)(((uint32_t)((lPopOld * (uint32_t)((-pctDesire)))) / 0xa)))))
+        goto L_7146;
+    else
+        goto L_713d;
 
 L_713d:
-    t_merge_7168_0001 = 0x1;
+    t_merge_7168_0001 = 1;
     goto L_7168;
 
 L_7146:
-    /* untranslated: t_merge_7168_0001 = (int32_t)((uint32_t)(lPopOld * sext16to32((pctDesire neg 0x0))) / 0xa) */
+    t_merge_7168_0001 = (int32_t)(((uint32_t)((lPopOld * (uint32_t)((-pctDesire)))) / 0xa));
 
 L_7168:
     lPopInc100 = t_merge_7168_0001;
@@ -7194,8 +7247,8 @@ L_71ee:
     DeltaCur = (DeltaCur + 100);
 
 L_71fa:
-    /* untranslated: LOWORD(lPopInc) = (LOWORD(lPopInc) neg 0x0) */
-    /* untranslated: HIWORD(lPopInc) = ((HIWORD(lPopInc) + 0x0) neg 0x0) */
+    LOWORD(lPopInc) = (-LOWORD(lPopInc));
+    HIWORD(lPopInc) = (-(HIWORD(lPopInc) + 0x0));
     goto LUpdateAndExit;
 
 L_7210:
@@ -7271,7 +7324,7 @@ L_730b:
         goto L_7313;
 
 L_7313:
-    return 0x0;
+    return 0;
 
 L_731f:
     if ((0xffff < (0x0 - HIWORD((int32_t)((pctFull / 10))))))
@@ -7292,13 +7345,13 @@ L_735a:
         goto L_7361;
 
 L_7361:
-    t_merge_7397_0001 = 0xfffffed4;
+    t_merge_7397_0001 = -300;
     goto L_7397;
 
 L_736a:
     scratch_bp_m30 = LOWORD((int32_t)((pctFull / 0xa)));
     scratch_bp_m2e = HIWORD((int32_t)((pctFull / 0xa)));
-    t_merge_7397_0001 = (0x63 - scratch_bp_m30);
+    t_merge_7397_0001 = (99 - scratch_bp_m30);
 
 L_7397:
     pctRetard = t_merge_7397_0001;
@@ -7435,6 +7488,7 @@ int16_t FCanFleetUseStargates(FLEET *lpfl, POINT ptSrc, POINT ptDst) {
     int16_t  ishdef;
     int16_t  isbsSrc;
     SCAN     scan;
+    int16_t  t_call_78d1;
     uint16_t t_merge_7950_0001;
     uint16_t scratch_bp_m30;
 
@@ -7446,7 +7500,7 @@ L_75e2:
         goto L_760e;
 
 L_760e:
-    return 0x0;
+    return 0;
 
 L_7614:
     lpplDst = LpplFromId(scan.idpl);
@@ -7492,7 +7546,7 @@ L_7669:
         goto L_7678;
 
 L_7678:
-    return 0x0;
+    return 0;
 
 L_767e:
     fUncertain = 1;
@@ -7506,7 +7560,7 @@ L_7686:
         goto L_76a0;
 
 L_76a0:
-    return 0x0;
+    return 0;
 
 LSrcChk:
     lpplSrc = 0x0;
@@ -7556,7 +7610,7 @@ L_7731:
         goto L_773a;
 
 L_773a:
-    return 0xffff;
+    return -1;
 
 LJumpgate:
     if ((FFleetCanJumpgate(lpfl) == 0))
@@ -7571,7 +7625,7 @@ L_7759:
         goto L_7762;
 
 L_7762:
-    return 0xffff;
+    return -1;
 
 L_7768:
     isbsSrc = isbsDst;
@@ -7608,7 +7662,7 @@ L_7799:
         goto L_77a8;
 
 L_77a8:
-    return 0x0;
+    return 0;
 
 L_77b1:
     if ((LOWORD(lpplSrc) != 0x0))
@@ -7629,10 +7683,10 @@ L_77c3:
         goto L_77d6;
 
 L_77d6:
-    return 0xffff;
+    return -1;
 
 L_77df:
-    return 0x0;
+    return 0;
 
 L_77e5:
     fCargo = 0;
@@ -7689,11 +7743,11 @@ L_7886:
         goto L_78a3;
 
 L_78a3:
-    MdCalcStargateDamage(isbsSrc, isbsDst, dTravel, rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty, &(pctDmg));
+    t_call_78d1 = MdCalcStargateDamage(isbsSrc, isbsDst, dTravel, rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty, &(pctDmg));
     goto L_78f6;
 
 L_78dc:
-    return 0x0;
+    return 0;
 
 L_78e2:
     if ((pctDmg <= 0))
@@ -7705,16 +7759,28 @@ L_78eb:
     fDanger = 1;
 
 L_78f6:
-    /* untranslated: branch callresult(int16_t) == -2 ? L_78dc : L_78fe */
+    if ((t_call_78d1 == -2))
+        goto L_78dc;
+    else
+        goto L_78fe;
 
 L_78fe:
-    /* untranslated: branch callresult(int16_t) == -1 ? L_78dc : L_7906 */
+    if ((t_call_78d1 == -1))
+        goto L_78dc;
+    else
+        goto L_7906;
 
 L_7906:
-    /* untranslated: branch callresult(int16_t) == 0 ? L_78dc : L_790e */
+    if ((t_call_78d1 == 0))
+        goto L_78dc;
+    else
+        goto L_790e;
 
 L_790e:
-    /* untranslated: branch callresult(int16_t) == 1 ? L_78e2 : L_7919 */
+    if ((t_call_78d1 == 1))
+        goto L_78e2;
+    else
+        goto L_7919;
 
 L_7919:
     ishdef = (ishdef + 1);
@@ -7812,7 +7878,7 @@ L_7a3d:
         goto L_7a48;
 
 L_7a48:
-    return 0x0;
+    return 0;
 
 L_7a4e:
     i = (i + 1);
@@ -7824,7 +7890,7 @@ L_7a52:
         goto L_7a5b;
 
 L_7a5b:
-    return 0x1;
+    return 1;
 }
 
 int32_t WtFromLpfl(FLEET *lpfl) {
@@ -7904,7 +7970,7 @@ L_7ba1:
 
 LFail:
     idPlayer = iplrSav;
-    return 0x0;
+    return 0;
 
 L_7bc7:
     j = 0;
@@ -7937,7 +8003,7 @@ L_7c43:
 
 L_7c4c:
     idPlayer = iplrSav;
-    return 0x1;
+    return 1;
 }
 
 int16_t IshFindSimilarDesign(HUL *lphul, int16_t iPlrDst) {
@@ -8037,7 +8103,7 @@ L_7e2e:
     return i;
 
 L_7e37:
-    return 0xffff;
+    return -1;
 }
 
 void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize) {

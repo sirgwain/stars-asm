@@ -23,7 +23,7 @@ L_0000:
         goto L_0070;
 
 L_0070:
-    return 0x0;
+    return 0;
 
 L_0076:
     wc.style = 0x20b;
@@ -38,7 +38,7 @@ L_0076:
         goto L_00bf;
 
 L_00bf:
-    return 0x0;
+    return 0;
 
 L_00c5:
     wc.style = 0x20b;
@@ -51,7 +51,7 @@ L_00c5:
         goto L_00ff;
 
 L_00ff:
-    return 0x0;
+    return 0;
 
 L_0105:
     wc.style = 0x20b;
@@ -64,7 +64,7 @@ L_0105:
         goto L_013f;
 
 L_013f:
-    return 0x0;
+    return 0;
 
 L_0145:
     wc.style = 0x208;
@@ -77,7 +77,7 @@ L_0145:
         goto L_017f;
 
 L_017f:
-    return 0x0;
+    return 0;
 
 L_0185:
     wc.style = 0x200;
@@ -91,7 +91,7 @@ L_0185:
         goto L_01c4;
 
 L_01c4:
-    return 0x0;
+    return 0;
 
 L_01ca:
     wc.style = 0xa00;
@@ -105,7 +105,7 @@ L_01ca:
         goto L_0209;
 
 L_0209:
-    return 0x0;
+    return 0;
 
 L_020f:
     wc.style = 0xa00;
@@ -119,7 +119,7 @@ L_020f:
         goto L_024e;
 
 L_024e:
-    return 0x0;
+    return 0;
 
 L_0254:
     wc.style = 0x200;
@@ -133,7 +133,7 @@ L_0254:
         goto L_0293;
 
 L_0293:
-    return 0x0;
+    return 0;
 
 L_0299:
     wc.style = 0x0;
@@ -152,7 +152,7 @@ L_0299:
         goto L_0306;
 
 L_0306:
-    return 0x0;
+    return 0;
 
 L_030c:
     wc.style = 0xb;
@@ -171,10 +171,10 @@ L_030c:
         goto L_0379;
 
 L_0379:
-    return 0x0;
+    return 0;
 
 L_037f:
-    return 0x1;
+    return 1;
 }
 
 void CreateChildWindows() {
@@ -338,14 +338,15 @@ int32_t FrameWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
     POINT       ptD;
     POINT       ptStart;
     POINT       ptChg;
-    uint16_t    t_merge_0740_0001;
+    int16_t     t_merge_0740_0001;
     uint16_t    t_merge_0db4_0001;
     HWND        t_merge_0ded_0001;
     uint16_t    t_merge_10ae_0001;
-    uint16_t    t_merge_150a_0001;
+    int16_t     t_merge_150a_0001;
     uint16_t    t_merge_152e_0001;
     HICON       t_merge_16e3_0001;
     uint16_t    t_merge_1887_0001;
+    POINT       t_call_1ba9;
 
 L_06d6:
     goto L_1d70;
@@ -364,11 +365,11 @@ L_06eb:
         goto L_0737;
 
 L_0737:
-    t_merge_0740_0001 = 0x1;
+    t_merge_0740_0001 = 1;
     goto L_0740;
 
 L_073d:
-    t_merge_0740_0001 = 0x0;
+    t_merge_0740_0001 = 0;
 
 L_0740:
     EnsureTileSize(t_merge_0740_0001);
@@ -395,10 +396,10 @@ L_076c:
 
 L_07b4:
     InvalidateRect(hwnd, 0x0, 1);
-    return 0x1;
+    return 1;
 
 L_07d2:
-    return 0x0;
+    return 0;
 
 L_07de:
     if ((wParam != hwnd))
@@ -846,16 +847,16 @@ L_0ed6:
     AdvanceTutor();
 
 L_0edb:
-    return 0x0;
+    return 0;
 
 L_0ee4:
     FGetSystemColors();
-    return 0x0;
+    return 0;
 
 L_0ef2:
     /* untranslated: part[0xc:2](lParam) = 0x208 */
     /* untranslated: part[0xe:2](lParam) = 0x17c */
-    return 0x0;
+    return 0;
 
 L_0f17:
     if ((wParam == 0x2))
@@ -873,7 +874,7 @@ L_0f27:
     vfs.dx = LOWORD(lParam);
     vfs.dy = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
     RefitFrameChildren();
-    return 0x0;
+    return 0;
 
 L_0f5b:
     CommandHandler(hwnd, wParam);
@@ -885,7 +886,7 @@ L_0f68:
 
 L_0f71:
     BringUpHostDlg();
-    return 0x1;
+    return 1;
 
 L_0f7f:
     ShowTutor(0);
@@ -1050,7 +1051,7 @@ L_122d:
     PostMessage(hwndFrame, WM_SYSCOMMAND, 0xf020, 0);
 
 L_1246:
-    return 0x1;
+    return 1;
 
 L_124f:
     SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
@@ -1115,7 +1116,7 @@ L_1378:
 
 L_1381:
     PostMessage(hwndFrame, WM_COMMAND, 0x6a, 0);
-    return 0x1;
+    return 1;
 
 L_13a3:
     SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
@@ -1276,11 +1277,11 @@ L_14f9:
         goto L_1501;
 
 L_1501:
-    t_merge_150a_0001 = 0x1;
+    t_merge_150a_0001 = 1;
     goto L_150a;
 
 L_1507:
-    t_merge_150a_0001 = 0x0;
+    t_merge_150a_0001 = 0;
 
 L_150a:
     idPlanet = IdFindAdjStarbase(sel.pl.id, t_merge_150a_0001);
@@ -1404,7 +1405,7 @@ L_1632:
 
 L_1669:
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_1683:
     if ((IsIconic(hwnd) == 0))
@@ -1548,7 +1549,7 @@ L_1a78:
 
 L_1a96:
     SetCursor(hcs);
-    return 0x1;
+    return 1;
 
 L_1aaa:
     pt.x = LOWORD(lParam);
@@ -1597,9 +1598,9 @@ L_1b75:
     ptD.y = (pt.y - ptStart.y);
     ptChg.x = (pt.x - ptOld.x);
     ptChg.y = (pt.y - ptOld.y);
-    InvertPaneBorder(hdc, grSel, ptD, &(ptChg));
-    /* untranslated: ptAct.x = loword(callresult(POINT)) */
-    /* untranslated: ptAct.y = hiword(callresult(POINT)) */
+    t_call_1ba9 = InvertPaneBorder(hdc, grSel, ptD, &(ptChg));
+    ptAct.x = LOWORD(t_call_1ba9);
+    ptAct.y = HIWORD(t_call_1ba9);
     ptOld.x = pt.x;
     ptOld.y = pt.y;
 
@@ -1859,7 +1860,7 @@ L_1e20:
 L_1e25:
 
 L_1e2b:
-    return 0x0;
+    return 0;
 }
 
 POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev) {
@@ -2157,7 +2158,7 @@ L_21f2:
 
 L_21fb:
     x = ((vfs.xTop + dpt.x) + 1);
-    /* untranslated: dChg = (dChg neg 0) */
+    dChg = (-dChg);
     goto L_2221;
 
 L_2212:
@@ -2874,7 +2875,7 @@ L_2c34:
     goto L_2c64;
 
 L_2c3c:
-    /* untranslated: rgbRaw[vrgbShuffleSerial[i]] = lobyte(setlobyte(i, rgbRaw2[i])) */
+    rgbRaw[vrgbShuffleSerial[i]] = LOBYTE(((i & 0xff00) | (rgbRaw2[i] & 0xff)));
     i = (i + 1);
 
 L_2c64:
@@ -2891,7 +2892,7 @@ L_2c6d:
         goto L_2c91;
 
 L_2c91:
-    return 0x0;
+    return 0;
 
 L_2c97:
     fSuccess = 1;
@@ -3067,7 +3068,7 @@ L_2edb:
 
 L_2ee4:
     SelectAdjPlanet(0, lppl->id);
-    return 0x1;
+    return 1;
 
 L_2efc:
     i = 0;
@@ -3103,10 +3104,10 @@ L_2f43:
 
 L_2f52:
     SelectAdjFleet(0, lpfl->id);
-    return 0x1;
+    return 1;
 
 L_2f6d:
-    return 0x0;
+    return 0;
 }
 
 void CommandHandler(HWND hwnd, uint16_t wParam) {
@@ -3160,7 +3161,7 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
     int16_t      ifl;
     FLEET       *lpfl;
     int16_t      id;
-    uint16_t     t_merge_3041_0001;
+    int16_t      t_merge_3041_0001;
     uint16_t     t_merge_3297_0001;
     uint16_t     t_merge_32d8_0001;
     uint16_t     t_merge_343d_0001;
@@ -3171,7 +3172,7 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
     uint16_t     t_merge_476d_0001;
     uint16_t     t_merge_47a9_0001;
     uint16_t     t_merge_4a14_0001;
-    uint16_t     t_merge_50ab_0001;
+    int16_t      t_merge_50ab_0001;
 
 L_2f7a:
     if ((wParam < 0x3a98))
@@ -3219,11 +3220,11 @@ L_3010:
         goto L_3038;
 
 L_3038:
-    t_merge_3041_0001 = 0x1;
+    t_merge_3041_0001 = 1;
     goto L_3041;
 
 L_303e:
-    t_merge_3041_0001 = 0x0;
+    t_merge_3041_0001 = 0;
 
 L_3041:
     EnsureTileSize(t_merge_3041_0001);
@@ -3288,7 +3289,10 @@ L_30e5:
         goto L_30ef;
 
 L_30ef:
-    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + ((wParam + 0xef34) * 0x100))]) == 0x0 ? L_536f : L_3112 */
+    if (((uint16_t)(vrgszMRU[((wParam - 4300) * 256)]) == 0))
+        goto L_536f;
+    else
+        goto L_3112;
 
 L_3112:
     iplrOld = idPlayer;
@@ -3588,8 +3592,8 @@ L_35f9:
     goto L_3d76;
 
 L_3602:
-    /* untranslated: xOff = loword(((dxMax neg 0x0) * xPage)) */
-    /* untranslated: yOff = loword(((dyMax neg 0x0) * yPage)) */
+    xOff = LOWORD(((-dxMax) * xPage));
+    yOff = LOWORD(((-dyMax) * yPage));
     cch = CchGetString(idsStarsUniverseMap, szWork);
     Escape(pd.hDC, 10, cch, szWork, 0x0);
     Rectangle(pd.hDC, xOff, yOff, (xOff + rc.right), (yOff + rc.bottom));
@@ -5064,11 +5068,11 @@ L_5099:
         goto L_50a2;
 
 L_50a2:
-    t_merge_50ab_0001 = 0x1;
+    t_merge_50ab_0001 = 1;
     goto L_50ab;
 
 L_50a8:
-    t_merge_50ab_0001 = 0x0;
+    t_merge_50ab_0001 = 0;
 
 L_50ab:
     DeleteCurWayPoint(t_merge_50ab_0001);
@@ -5622,7 +5626,10 @@ L_53cd:
     goto L_5456;
 
 L_53d5:
-    /* untranslated: branch sext8to16(byte HIWORD(vrgszMRU):[(LOWORD(vrgszMRU) + (i * 256))]) == 0x0 ? L_545f : L_53f5 */
+    if (((uint16_t)(vrgszMRU[(i * 256)]) == 0))
+        goto L_545f;
+    else
+        goto L_53f5;
 
 L_53f5:
     szWork[0] = 38;
@@ -5971,8 +5978,9 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
     char         szFilter[256];
     int16_t      fRet;
     GrobjClass   grobjIni;
-    uint16_t     t_merge_59be_0001;
-    uint16_t     t_merge_5ab0_0001;
+    char        *t_call_593a;
+    StringId     t_merge_59be_0001;
+    int16_t      t_merge_5ab0_0001;
 
 L_58f4:
     if ((ini.fStartupFile == 0x0))
@@ -5983,9 +5991,12 @@ L_58f4:
 L_590b:
     strcpy(szFile, szBase);
     *(strrchr(szBase, 92)) = 0;
-    strrchr(szFile, 46);
-    /* untranslated: pch = callresult(char *) */
-    /* untranslated: branch callresult(char *) != 0x0 ? L_5984 : L_594e */
+    t_call_593a = strrchr(szFile, 46);
+    pch = t_call_593a;
+    if ((t_call_593a != 0x0))
+        goto L_5984;
+    else
+        goto L_594e;
 
 L_594e:
     SetSzWorkFromDt(dtHost, -1);
@@ -6006,11 +6017,11 @@ L_59a2:
         goto L_59b5;
 
 L_59b5:
-    t_merge_59be_0001 = 0x317;
+    t_merge_59be_0001 = idsStarsGameFilesRFiles;
     goto L_59be;
 
 L_59bb:
-    t_merge_59be_0001 = 0x318;
+    t_merge_59be_0001 = idsStarsGameFilesMHstRStars;
 
 L_59be:
     CchGetString(t_merge_59be_0001, szFilter);
@@ -6039,11 +6050,11 @@ L_5a0a:
     memset(&(ofn), 0, 0x48);
     ofn.lStructSize = 0x48;
     ofn.hwndOwner = hwnd;
-    /* untranslated: ofn.lpstrFilter = &dword ss:[&szFilter] */
+    ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;
-    /* untranslated: ofn.lpstrFile = &dword ss:[&szFile] */
+    ofn.lpstrFile = szFile;
     ofn.nMaxFile = 0x100;
-    /* untranslated: ofn.lpstrFileTitle = &dword ss:[&szFileTitle] */
+    ofn.lpstrFileTitle = szFileTitle;
     ofn.nMaxFileTitle = 0x100;
     ofn.lpstrInitialDir = szDirName;
     ofn.Flags = 0x1804;
@@ -6060,11 +6071,11 @@ LGotFileName:
         goto L_5aa7;
 
 L_5aa7:
-    t_merge_5ab0_0001 = 0x1;
+    t_merge_5ab0_0001 = 1;
     goto L_5ab0;
 
 L_5aad:
-    t_merge_5ab0_0001 = 0x0;
+    t_merge_5ab0_0001 = 0;
 
 L_5ab0:
     fRet = FWasRaceFile(&(szFile[ofn.nFileOffset]), t_merge_5ab0_0001);
@@ -6121,11 +6132,11 @@ L_5b29:
         goto L_5b45;
 
 L_5b45:
-    return 0xffff;
+    return -1;
 
 L_5b4b:
     RaceCreationWizard(hwnd, 0, 0);
-    return 0x0;
+    return 0;
 
 L_5b64:
     szFile[(ofn.nFileExtension - 1)] = 0;
@@ -6147,7 +6158,7 @@ L_5bb6:
     fFileErrSilent = 0;
 
 L_5bc2:
-    return 0x0;
+    return 0;
 
 L_5bc8:
     if ((ini.fStartupFile == 0x0))
@@ -6237,7 +6248,7 @@ L_5d0a:
         goto L_5d22;
 
 L_5d22:
-    return 0x1;
+    return 1;
 
 L_5d28:
     ini.grobjSel = 0x0;
@@ -6262,7 +6273,7 @@ L_5d4b:
 
 L_5d60:
     BringUpHostDlg();
-    return 0x0;
+    return 0;
 
 L_5d6b:
     if ((ini.grobjSel != 0x0))
@@ -6280,10 +6291,10 @@ L_5d8d:
     FFindSomethingAndSelectIt();
 
 L_5d95:
-    return 0x0;
+    return 0;
 
 L_5d9b:
-    return 0x1;
+    return 1;
 }
 
 int16_t FWasRaceFile(char *szFile, int16_t fChkPass) {
@@ -6442,7 +6453,7 @@ L_5fbd:
     StreamClose();
     fFileErrSilent = fSav;
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 }
 
 void BringUpHostDlg() {
@@ -6579,7 +6590,7 @@ void DrawHostDialog2(HWND hwnd, HDC hdcIn) {
     COLORREF crBackSav;
     int16_t  x;
     char     szStat[30];
-    uint16_t t_merge_6379_0001;
+    COLORREF t_merge_6379_0001;
 
 L_6240:
     if ((hdcIn == 0x0))
@@ -7105,20 +7116,26 @@ int16_t HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     MSG         msg;
     HDC         hdc;
     PAINTSTRUCT ps;
-    uint16_t    t_merge_6cac_0001;
-    uint16_t    t_merge_6ce0_0001;
-    uint16_t    t_merge_6d14_0001;
+    HWND        t_call_6c71;
+    int16_t     t_merge_6cac_0001;
+    HWND        t_call_6cb9;
+    int16_t     t_merge_6ce0_0001;
+    HWND        t_call_6ced;
+    int16_t     t_merge_6d14_0001;
     uint16_t    t_merge_6f12_0001;
     uint16_t    t_merge_6f5d_0001;
     uint16_t    t_merge_6f77_0001;
     uint16_t    t_merge_6fbd_0001;
     uint16_t    t_merge_7057_0001;
-    uint16_t    t_merge_7107_0001;
-    uint16_t    t_merge_712d_0001;
-    uint16_t    t_merge_7198_0001;
-    uint16_t    t_merge_723c_0001;
-    uint16_t    t_merge_73b8_0001;
-    uint16_t    t_merge_7519_0001;
+    int16_t     t_merge_7107_0001;
+    int16_t     t_merge_712d_0001;
+    HWND        t_call_715f;
+    int16_t     t_merge_7198_0001;
+    HWND        t_call_7203;
+    int16_t     t_merge_723c_0001;
+    int16_t     t_merge_73b8_0001;
+    HWND        t_call_74e0;
+    int16_t     t_merge_7519_0001;
 
 L_6c16:
     goto L_756d;
@@ -7127,7 +7144,7 @@ L_6c25:
     StickyDlgPos(hwnd, ptStickyHostModeDlg.x, 1);
     SetWindowText(GetDlgItem(hwnd, 0x409), game.szName);
     SetWindowText(GetDlgItem(hwnd, 0x40a), szBase);
-    GetDlgItem(hwnd, 0x408);
+    t_call_6c71 = GetDlgItem(hwnd, 0x408);
     if ((gd.fReadOnly != 0x0))
         goto L_6ca9;
     else
@@ -7146,44 +7163,44 @@ L_6c99:
         goto L_6ca3;
 
 L_6ca3:
-    t_merge_6cac_0001 = 0x1;
+    t_merge_6cac_0001 = 1;
     goto L_6cac;
 
 L_6ca9:
-    t_merge_6cac_0001 = 0x0;
+    t_merge_6cac_0001 = 0;
 
 L_6cac:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_6cac_0001) -> callresult(int16_t) */
-    GetDlgItem(hwnd, 0x407);
+    EnableWindow(t_call_6c71, t_merge_6cac_0001);
+    t_call_6cb9 = GetDlgItem(hwnd, 0x407);
     if ((gd.fReadOnly != 0x0))
         goto L_6cdd;
     else
         goto L_6cd7;
 
 L_6cd7:
-    t_merge_6ce0_0001 = 0x1;
+    t_merge_6ce0_0001 = 1;
     goto L_6ce0;
 
 L_6cdd:
-    t_merge_6ce0_0001 = 0x0;
+    t_merge_6ce0_0001 = 0;
 
 L_6ce0:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_6ce0_0001) -> callresult(int16_t) */
-    GetDlgItem(hwnd, IDC_U16_0x07DF);
+    EnableWindow(t_call_6cb9, t_merge_6ce0_0001);
+    t_call_6ced = GetDlgItem(hwnd, IDC_U16_0x07DF);
     if ((gd.fReadOnly != 0x0))
         goto L_6d11;
     else
         goto L_6d0b;
 
 L_6d0b:
-    t_merge_6d14_0001 = 0x1;
+    t_merge_6d14_0001 = 1;
     goto L_6d14;
 
 L_6d11:
-    t_merge_6d14_0001 = 0x0;
+    t_merge_6d14_0001 = 0;
 
 L_6d14:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_6d14_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_6ced, t_merge_6d14_0001);
     uTimerId = SetTimer(hwnd, 0xd, 0x2710, 0x0);
 
 L_6d35:
@@ -7207,15 +7224,15 @@ Done:
         goto L_6d6c;
 
 L_6d6c:
-    return 0x1;
+    return 1;
 
 L_6d72:
-    return 0x0;
+    return 0;
 
 L_6d78:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_6da0:
     SetBkColor(wParam, crButtonFace);
@@ -7266,7 +7283,7 @@ L_6e32:
 
 L_6e3b:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_6e4a:
     if ((rgplr[iDiamond].fAi == 0x0))
@@ -7446,18 +7463,18 @@ L_709b:
     rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0x1fff) | 0xe000);
 
 L_70c3:
-    /* untranslated: rgplr[iDiamond].lSalt = words((HIWORD(rgplr[iDiamond].lSalt) ~ 0x0), (LOWORD(rgplr[iDiamond].lSalt) ~ 0x0)) */
+    /* untranslated: rgplr[iDiamond].lSalt = words(~(HIWORD(rgplr[iDiamond].lSalt)), ~(LOWORD(rgplr[iDiamond].lSalt))) */
     if ((iRet == 0))
         goto L_7104;
     else
         goto L_70fe;
 
 L_70fe:
-    t_merge_7107_0001 = 0x1;
+    t_merge_7107_0001 = 1;
     goto L_7107;
 
 L_7104:
-    t_merge_7107_0001 = 0x0;
+    t_merge_7107_0001 = 0;
 
 L_7107:
     FMarkFile(dtTurn, iDiamond, 8, t_merge_7107_0001);
@@ -7467,18 +7484,18 @@ L_7107:
         goto L_7124;
 
 L_7124:
-    t_merge_712d_0001 = 0x1;
+    t_merge_712d_0001 = 1;
     goto L_712d;
 
 L_712a:
-    t_merge_712d_0001 = 0x0;
+    t_merge_712d_0001 = 0;
 
 L_712d:
     FMarkFile(dtHost, iDiamond, 8, t_merge_712d_0001);
     gd.fAisDone = 0x0;
     fProcessingTimer = 1;
     CFindTurnsOutstanding();
-    GetDlgItem(hwnd, 0x408);
+    t_call_715f = GetDlgItem(hwnd, 0x408);
     if ((gd.fAllAis != 0x0))
         goto L_7195;
     else
@@ -7497,19 +7514,19 @@ L_7185:
         goto L_718f;
 
 L_718f:
-    t_merge_7198_0001 = 0x1;
+    t_merge_7198_0001 = 1;
     goto L_7198;
 
 L_7195:
-    t_merge_7198_0001 = 0x0;
+    t_merge_7198_0001 = 0;
 
 L_7198:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_7198_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_715f, t_merge_7198_0001);
     DrawHostDialog2(hwnd, 0x0);
     fProcessingTimer = 0;
 
 L_71b3:
-    return 0x0;
+    return 0;
 
 L_71b9:
     hdc = BeginPaint(hwnd, &(ps));
@@ -7534,7 +7551,7 @@ L_71e4:
         goto L_71fc;
 
 L_71fc:
-    GetDlgItem(hwnd, 0x408);
+    t_call_7203 = GetDlgItem(hwnd, 0x408);
     if ((gd.fAllAis != 0x0))
         goto L_7239;
     else
@@ -7553,19 +7570,19 @@ L_7229:
         goto L_7233;
 
 L_7233:
-    t_merge_723c_0001 = 0x1;
+    t_merge_723c_0001 = 1;
     goto L_723c;
 
 L_7239:
-    t_merge_723c_0001 = 0x0;
+    t_merge_723c_0001 = 0;
 
 L_723c:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_723c_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_7203, t_merge_723c_0001);
 
 L_7242:
     DrawHostDialog2(hwnd, hdc);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_7265:
     if ((wParam == 0x407))
@@ -7638,7 +7655,7 @@ L_72ea:
 
 L_7335:
     iPassCnt = 0;
-    return 0x1;
+    return 1;
 
 L_7344:
     if ((CFindTurnsOutstanding() == 0))
@@ -7653,7 +7670,7 @@ L_7351:
         goto L_737a;
 
 L_737a:
-    return 0x1;
+    return 1;
 
 L_7380:
     StickyDlgPos(hwnd, ptStickyHostModeDlg.x, 0);
@@ -7663,7 +7680,7 @@ L_7380:
         goto L_739f;
 
 L_739f:
-    t_merge_73b8_0001 = 0x0;
+    t_merge_73b8_0001 = 0;
     goto L_73b8;
 
 L_73a5:
@@ -7673,11 +7690,11 @@ L_73a5:
         goto L_73af;
 
 L_73af:
-    t_merge_73b8_0001 = 0xffff;
+    t_merge_73b8_0001 = -1;
     goto L_73b8;
 
 L_73b5:
-    t_merge_73b8_0001 = 0x1;
+    t_merge_73b8_0001 = 1;
 
 L_73b8:
     EndDialog(hwnd, t_merge_73b8_0001);
@@ -7706,7 +7723,7 @@ L_73eb:
     PostQuitMessage(vretExitValue);
 
 L_73f4:
-    return 0x1;
+    return 1;
 
 L_73fd:
     if ((wParam != 0x7df))
@@ -7752,7 +7769,7 @@ L_74c1:
         goto L_74d9;
 
 L_74d9:
-    GetDlgItem(hwnd, 0x408);
+    t_call_74e0 = GetDlgItem(hwnd, 0x408);
     if ((gd.fAllAis != 0x0))
         goto L_7516;
     else
@@ -7771,14 +7788,14 @@ L_7506:
         goto L_7510;
 
 L_7510:
-    t_merge_7519_0001 = 0x1;
+    t_merge_7519_0001 = 1;
     goto L_7519;
 
 L_7516:
-    t_merge_7519_0001 = 0x0;
+    t_merge_7519_0001 = 0;
 
 L_7519:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_7519_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_74e0, t_merge_7519_0001);
 
 L_751f:
     return fRet;
@@ -7791,7 +7808,7 @@ L_7528:
 
 L_7531:
     WinHelp(hwnd, szHelpFile, 0x1, 0x440);
-    return 0x1;
+    return 1;
 
 L_7555:
     KillTimer(hwnd, uTimerId);
@@ -7859,14 +7876,14 @@ L_75b5:
         goto L_75c0;
 
 L_75c0:
-    return 0x0;
+    return 0;
 }
 
 int16_t HostOptionsDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     RECT        rc;
     HDC         hdc;
     PAINTSTRUCT ps;
-    uint16_t    t_merge_767e_0001;
+    int16_t     t_merge_767e_0001;
 
 L_75ce:
     goto L_76c0;
@@ -7874,7 +7891,7 @@ L_75ce:
 L_75dd:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_7605:
     SetBkColor(wParam, crButtonFace);
@@ -7884,7 +7901,7 @@ L_761b:
     hdc = BeginPaint(hwnd, &(ps));
     DrawHostOptions(hwnd, hdc, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_7657:
     if ((wParam == 0x2))
@@ -7905,15 +7922,15 @@ L_7669:
         goto L_7675;
 
 L_7675:
-    t_merge_767e_0001 = 0x1;
+    t_merge_767e_0001 = 1;
     goto L_767e;
 
 L_767b:
-    t_merge_767e_0001 = 0x0;
+    t_merge_767e_0001 = 0;
 
 L_767e:
     EndDialog(hwnd, t_merge_767e_0001);
-    return 0x1;
+    return 1;
 
 L_768d:
     if ((wParam != 0x76))
@@ -7923,7 +7940,7 @@ L_768d:
 
 L_7696:
     WinHelp(hwnd, szHelpFile, 0x1, 0x440);
-    return 0x1;
+    return 1;
 
 L_76c0:
     if ((message == WM_DESTROY))
@@ -7962,7 +7979,7 @@ L_76e8:
         goto L_76f3;
 
 L_76f3:
-    return 0x0;
+    return 0;
 }
 
 void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -8629,7 +8646,7 @@ L_8b73:
     goto L_8b56;
 
 L_8c34:
-    strcpy(psz, vrgZipProd[i]);
+    strcpy(psz, (0x22f6 + LOWORD((40 * i))));
     goto L_8c53;
 
 L_8c4e:
@@ -9129,10 +9146,10 @@ L_92f0:
 
 L_933c:
     InvalidateRect(hwnd, 0x0, 1);
-    return 0x1;
+    return 1;
 
 L_935c:
-    return 0x0;
+    return 0;
 
 L_9368:
     if ((wParam != hwnd))
@@ -9351,7 +9368,7 @@ LTry16Color:
     rc.bottom = 0;
     dx = rcWnd.right;
     DrawABunchOfStars(hdc, &(rcWnd));
-    /* untranslated: plf->lfHeight = (sext16to32((rcWnd.bottom neg 0x0)) / 3) */
+    plf->lfHeight = ((uint32_t)((-rcWnd.bottom)) / 3);
     strcpy(plf->lfFaceName, LOWORD(rgszArial[0x3]));
     hfont = CreateFontIndirect(plf);
     SetTextColor(hdc, 0x9b009b);
@@ -9423,5 +9440,5 @@ L_9824:
 L_9829:
 
 L_982f:
-    return 0x0;
+    return 0;
 }

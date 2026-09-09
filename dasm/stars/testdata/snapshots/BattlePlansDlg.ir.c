@@ -5,15 +5,21 @@ int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     int16_t  fRet;
     RECT     rc;
     int16_t  cLen;
-    uint16_t t_merge_0756_0001;
-    uint16_t t_merge_077c_0001;
+    HWND     t_call_073d;
+    int16_t  t_merge_0756_0001;
+    HWND     t_call_0763;
+    int16_t  t_merge_077c_0001;
     uint16_t scratch_bp_m16;
-    uint16_t t_merge_1105_0001;
-    uint16_t t_merge_112b_0001;
+    HWND     t_call_10ec;
+    int16_t  t_merge_1105_0001;
+    HWND     t_call_1112;
+    int16_t  t_merge_112b_0001;
     uint16_t scratch_bp_m18;
     uint8_t  t_11bd;
-    uint16_t t_merge_160a_0001;
-    uint16_t t_merge_1630_0001;
+    HWND     t_call_15f1;
+    int16_t  t_merge_160a_0001;
+    HWND     t_call_1617;
+    int16_t  t_merge_1630_0001;
 
 L_0652:
     goto L_16d5;
@@ -49,36 +55,36 @@ L_06d8:
 
 L_0714:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0);
-    GetDlgItem(hwnd, IDC_RENAME);
+    t_call_073d = GetDlgItem(hwnd, IDC_RENAME);
     if ((iPlanSelDlg <= 0))
         goto L_0753;
     else
         goto L_074d;
 
 L_074d:
-    t_merge_0756_0001 = 0x1;
+    t_merge_0756_0001 = 1;
     goto L_0756;
 
 L_0753:
-    t_merge_0756_0001 = 0x0;
+    t_merge_0756_0001 = 0;
 
 L_0756:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_0756_0001) -> callresult(int16_t) */
-    GetDlgItem(hwnd, IDC_DELETE);
+    EnableWindow(t_call_073d, t_merge_0756_0001);
+    t_call_0763 = GetDlgItem(hwnd, IDC_DELETE);
     if ((iPlanSelDlg <= 0))
         goto L_0779;
     else
         goto L_0773;
 
 L_0773:
-    t_merge_077c_0001 = 0x1;
+    t_merge_077c_0001 = 1;
     goto L_077c;
 
 L_0779:
-    t_merge_077c_0001 = 0x0;
+    t_merge_077c_0001 = 0;
 
 L_077c:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_077c_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_0763, t_merge_077c_0001);
     i = 408;
     goto L_07b7;
 
@@ -196,7 +202,7 @@ L_0a57:
     AdvanceTutor();
 
 L_0a5c:
-    return 0x1;
+    return 1;
 
 L_0a62:
     idc = 1053;
@@ -238,7 +244,7 @@ L_0abf:
 L_0ad8:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0b00:
     if ((wParam == 0x1))
@@ -276,7 +282,7 @@ L_0b97:
 
 L_0ba9:
     iPlanSelDlg = -1;
-    return 0x1;
+    return 1;
 
 L_0bb8:
     if ((wParam != 0x41d))
@@ -454,36 +460,36 @@ L_10c3:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0);
 
 L_10e5:
-    GetDlgItem(hwnd, IDC_RENAME);
+    t_call_10ec = GetDlgItem(hwnd, IDC_RENAME);
     if ((iPlanSelDlg <= 0))
         goto L_1102;
     else
         goto L_10fc;
 
 L_10fc:
-    t_merge_1105_0001 = 0x1;
+    t_merge_1105_0001 = 1;
     goto L_1105;
 
 L_1102:
-    t_merge_1105_0001 = 0x0;
+    t_merge_1105_0001 = 0;
 
 L_1105:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_1105_0001) -> callresult(int16_t) */
-    GetDlgItem(hwnd, IDC_DELETE);
+    EnableWindow(t_call_10ec, t_merge_1105_0001);
+    t_call_1112 = GetDlgItem(hwnd, IDC_DELETE);
     if ((iPlanSelDlg <= 0))
         goto L_1128;
     else
         goto L_1122;
 
 L_1122:
-    t_merge_112b_0001 = 0x1;
+    t_merge_112b_0001 = 1;
     goto L_112b;
 
 L_1128:
-    t_merge_112b_0001 = 0x0;
+    t_merge_112b_0001 = 0;
 
 L_112b:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_112b_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_1112, t_merge_112b_0001);
     goto L_16f8;
 
 L_1134:
@@ -499,7 +505,7 @@ L_113e:
         goto L_1151;
 
 L_1151:
-    return 0x0;
+    return 0;
 
 L_1157:
     if ((fDirtyPlan == 0))
@@ -635,36 +641,36 @@ L_1537:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), CB_LIMITTEXT, btlplan.fDumpCargo, 0);
     wParam = 0x41f;
-    GetDlgItem(hwnd, IDC_RENAME);
+    t_call_15f1 = GetDlgItem(hwnd, IDC_RENAME);
     if ((iPlanSelDlg <= 0))
         goto L_1607;
     else
         goto L_1601;
 
 L_1601:
-    t_merge_160a_0001 = 0x1;
+    t_merge_160a_0001 = 1;
     goto L_160a;
 
 L_1607:
-    t_merge_160a_0001 = 0x0;
+    t_merge_160a_0001 = 0;
 
 L_160a:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_160a_0001) -> callresult(int16_t) */
-    GetDlgItem(hwnd, IDC_DELETE);
+    EnableWindow(t_call_15f1, t_merge_160a_0001);
+    t_call_1617 = GetDlgItem(hwnd, IDC_DELETE);
     if ((iPlanSelDlg <= 0))
         goto L_162d;
     else
         goto L_1627;
 
 L_1627:
-    t_merge_1630_0001 = 0x1;
+    t_merge_1630_0001 = 1;
     goto L_1630;
 
 L_162d:
-    t_merge_1630_0001 = 0x0;
+    t_merge_1630_0001 = 0;
 
 L_1630:
-    /* untranslated: call EnableWindow(callresult(HWND), t_merge_1630_0001) -> callresult(int16_t) */
+    EnableWindow(t_call_1617, t_merge_1630_0001);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
     i = btlplan.iplrAttack;
     if ((i < (idPlayer + 4)))
@@ -686,7 +692,7 @@ L_16a5:
 
 L_16ae:
     WinHelp(hwnd, szHelpFile, 0x1, 0x439);
-    return 0x1;
+    return 1;
 
 L_16d5:
     if ((message == WM_ERASEBKGND))
@@ -713,5 +719,5 @@ L_16ed:
         goto L_16f8;
 
 L_16f8:
-    return 0x0;
+    return 0;
 }

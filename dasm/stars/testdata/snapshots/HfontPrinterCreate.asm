@@ -2,9 +2,9 @@
 ;   addr: 0009:6aa6  len=202
 ;   sig:  HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont)
 ;   params:
-;     HDC              hdc            
-;     int16_t          iSize          
-;     int16_t *        pdyFont        
+;     HDC              hdc            [BP+0x6]
+;     int16_t          iSize          [BP+0x8]
+;     int16_t *        pdyFont        [BP+0xa]
 ;   locals:
 ;     LOGFONT *        plf            [BP-0x6]
 ;     HFONT            hfontNew       [BP-0x4]
@@ -36,8 +36,8 @@ PUSH      [bp-plf]                  ; [bp-0x6]
 CALLF     memset                    ; void * memset(void *dest, int16_t value, uint16_t count)
 ADD       sp, 0x0006          
                                     ; utilgen.c:2708
-PUSH      [bp+0x8]            
-PUSH      [bp+0x6]            
+PUSH      [bp+iSize]                ; [bp+0x8]
+PUSH      [bp+hdc]                  ; [bp+0x6]
 MOV       ax, 0x005a          
 PUSH      ax                  
 CALLF     GetDeviceCaps             ; int16_t GetDeviceCaps(HDC arg1, DeviceCapsIndex arg2)
@@ -65,7 +65,7 @@ PUSH      ax
 CALLF     CreateFontIndirect        ; HFONT CreateFontIndirect(LOGFONT *arg1)
 MOV       [bp-hfontNew], ax         ; [bp-0x4], ax
                                     ; utilgen.c:2712
-CMP       [bp+0xa], 0x0000    
+CMP       [bp+pdyFont], 0x0000      ; [bp+0xa], 0x0000
 JZ        L_6b5b              
 
 L_6b1f:
@@ -73,12 +73,12 @@ CMP       [bp-hfontNew], 0x0000     ; [bp-0x4], 0x0000
 JZ        L_6b5b              
 
 L_6b28:                             ; utilgen.c:2715
-PUSH      [bp+0x6]            
+PUSH      [bp+hdc]                  ; [bp+0x6]
 PUSH      [bp-hfontNew]             ; [bp-0x4]
 CALLF     SelectObject              ; HGDIOBJ SelectObject(HDC arg1, HGDIOBJ arg2)
 MOV       [bp-hfontSav], ax         ; [bp-0x28], ax
                                     ; utilgen.c:2717
-PUSH      [bp+0x6]            
+PUSH      [bp+hdc]                  ; [bp+0x6]
 LEA       ax, [bp-tm]               ; ax, [bp-0x26]
 MOV       dx, ss              
 PUSH      dx                  
@@ -87,10 +87,10 @@ CALLF     GetTextMetrics            ; int16_t GetTextMetrics(HDC arg1, TEXTMETRI
                                     ; utilgen.c:2718
 MOV       ax, [bp-tm]               ; ax, [bp-0x26]
 ADD       ax, [bp-tm+0x8]           ; ax, [bp-0x1e]
-MOV       bx, [bp+0xa]        
+MOV       bx, [bp+pdyFont]          ; bx, [bp+0xa]
 MOV       [bx], ax            
                                     ; utilgen.c:2720
-PUSH      [bp+0x6]            
+PUSH      [bp+hdc]                  ; [bp+0x6]
 PUSH      [bp-hfontSav]             ; [bp-0x28]
 CALLF     SelectObject              ; HGDIOBJ SelectObject(HDC arg1, HGDIOBJ arg2)
 

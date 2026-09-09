@@ -21,7 +21,7 @@ L_0000:
     branch RegisterClass(&wc) != 0x0 ? L_0076 : L_0070
 
 L_0070:
-    return 0x0
+    return 0
 
 L_0076:
     wc.style = 0x20b
@@ -33,7 +33,7 @@ L_0076:
     branch RegisterClass(&wc) != 0x0 ? L_00c5 : L_00bf
 
 L_00bf:
-    return 0x0
+    return 0
 
 L_00c5:
     wc.style = 0x20b
@@ -43,7 +43,7 @@ L_00c5:
     branch RegisterClass(&wc) != 0x0 ? L_0105 : L_00ff
 
 L_00ff:
-    return 0x0
+    return 0
 
 L_0105:
     wc.style = 0x20b
@@ -53,7 +53,7 @@ L_0105:
     branch RegisterClass(&wc) != 0x0 ? L_0145 : L_013f
 
 L_013f:
-    return 0x0
+    return 0
 
 L_0145:
     wc.style = 0x208
@@ -63,7 +63,7 @@ L_0145:
     branch RegisterClass(&wc) != 0x0 ? L_0185 : L_017f
 
 L_017f:
-    return 0x0
+    return 0
 
 L_0185:
     wc.style = 0x200
@@ -74,7 +74,7 @@ L_0185:
     branch RegisterClass(&wc) != 0x0 ? L_01ca : L_01c4
 
 L_01c4:
-    return 0x0
+    return 0
 
 L_01ca:
     wc.style = 0xa00
@@ -85,7 +85,7 @@ L_01ca:
     branch RegisterClass(&wc) != 0x0 ? L_020f : L_0209
 
 L_0209:
-    return 0x0
+    return 0
 
 L_020f:
     wc.style = 0xa00
@@ -96,7 +96,7 @@ L_020f:
     branch RegisterClass(&wc) != 0x0 ? L_0254 : L_024e
 
 L_024e:
-    return 0x0
+    return 0
 
 L_0254:
     wc.style = 0x200
@@ -107,7 +107,7 @@ L_0254:
     branch RegisterClass(&wc) != 0x0 ? L_0299 : L_0293
 
 L_0293:
-    return 0x0
+    return 0
 
 L_0299:
     wc.style = 0x0
@@ -123,7 +123,7 @@ L_0299:
     branch RegisterClass(&wc) != 0x0 ? L_030c : L_0306
 
 L_0306:
-    return 0x0
+    return 0
 
 L_030c:
     wc.style = 0xb
@@ -139,8 +139,8 @@ L_030c:
     branch RegisterClass(&wc) != 0x0 ? L_037f : L_0379
 
 L_0379:
-    return 0x0
+    return 0
 
 L_037f:
-    return 0x1
+    return 1
 

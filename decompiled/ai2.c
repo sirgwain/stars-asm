@@ -8,10 +8,10 @@ uint8_t vrgISAip[182] = {30, 31, 10, 30, 26, 4,  30, 26, 3, 30, 26, 2,  30, 0,  
 uint8_t vrgAiISResOrder[18] = {134, 100, 69, 37, 164, 4, 135, 102, 71, 40, 166, 7, 140, 109, 73, 43, 167, 10};
 
 void DoMaidAiTurn(PROD *rgprod) {
-    int32_t  rgResCost[4];
-    int32_t  rgResAvail[4];
-    int16_t  iroCur;
-    uint16_t t_merge_001c_0001;
+    int32_t rgResCost[4];
+    int32_t rgResAvail[4];
+    int16_t iroCur;
+    int16_t t_merge_001c_0001;
 
 L_0000:
     if ((game.turn >= 0x14))
@@ -20,11 +20,11 @@ L_0000:
         goto L_0013;
 
 L_0013:
-    t_merge_001c_0001 = 0x0;
+    t_merge_001c_0001 = 0;
     goto L_001c;
 
 L_0019:
-    t_merge_001c_0001 = 0xf;
+    t_merge_001c_0001 = 15;
 
 L_001c:
     iroCur = IroEnsureAi(0x0, 0, 0x0, t_merge_001c_0001);
@@ -74,7 +74,7 @@ L_019c:
         goto L_01a5;
 
 L_01a5:
-    return 0x1;
+    return 1;
 
 L_01ae:
     if ((cEquiv < (LOWORD(vrgAiArmadaPotency) & 0xff)))
@@ -83,10 +83,10 @@ L_01ae:
         goto L_01bc;
 
 L_01bc:
-    return 0x1;
+    return 1;
 
 L_01c2:
-    return 0x0;
+    return 0;
 }
 
 void DoAutomitronAiTurn(PROD *rgprod) {
@@ -127,7 +127,7 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     int16_t  fWrite;
     int16_t  iPlanet;
     int16_t  id;
-    uint16_t t_merge_021f_0001;
+    int16_t  t_merge_021f_0001;
     uint16_t t_merge_032d_0001;
     uint16_t t_merge_036b_0001;
     uint16_t t_merge_072d_0001;
@@ -147,11 +147,11 @@ L_01e0:
         goto L_0216;
 
 L_0216:
-    t_merge_021f_0001 = 0x0;
+    t_merge_021f_0001 = 0;
     goto L_021f;
 
 L_021c:
-    t_merge_021f_0001 = 0x14;
+    t_merge_021f_0001 = 20;
 
 L_021f:
     iroCur = IroEnsureAi(vrgAiISResOrder, 18, &(ishdefSBLatest), t_merge_021f_0001);
@@ -312,7 +312,7 @@ L_0485:
     goto L_0d31;
 
 L_04b4:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
     if ((lppl->iPlayer == idPlayer))
         goto L_056b;
     else
@@ -325,14 +325,14 @@ L_04e4:
         goto L_04f1;
 
 L_04f1:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(((lppl->fStarbase & 0xff) + 0x1)) */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = LOBYTE(((lppl->fStarbase & 0xff) + 0x1));
     if ((PctPlanetOptValue(lppl, idPlayer) <= 0))
         goto L_0561;
     else
         goto L_0540;
 
 L_0540:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x3))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 3)] = 0x1;
 
 L_0561:
     cplBadGuy = (cplBadGuy + 1);
@@ -352,7 +352,7 @@ L_057a:
 
 L_0594:
     cplNegative = (cplNegative + 1);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x2))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 2)] = 0x1;
     goto L_0d2d;
 
 L_05bf:
@@ -1019,7 +1019,10 @@ L_0eb0:
         goto L_0ebf;
 
 L_0ebf:
-    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] == 0x0 ? L_103a : L_0ee7 */
+    if ((vlpbAiPlanet[((idPlanDst * 16) + 3)] == 0x0))
+        goto LBlowAwayOrders;
+    else
+        goto L_0ee7;
 
 L_0ee7:
     if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
@@ -1069,8 +1072,7 @@ L_0fe0:
 
 L_1009:
     FLookupFleet(-1, sel.fl.id);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((idPlanDst * 0x10) + 0x3))] | 0x80) */
+    vlpbAiPlanet[((idPlanDst * 16) + 3)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x3)] | 0x80);
     goto L_0d5d;
 
 LBlowAwayOrders:
@@ -1113,7 +1115,10 @@ L_10d8:
         goto L_10e1;
 
 L_10e1:
-    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] != 0x0 ? L_0e77 : L_1106 */
+    if ((vlpbAiPlanet[((idPlanDst * 16) + 3)] != 0x0))
+        goto LCheckForColDrop;
+    else
+        goto L_1106;
 
 L_1106:
 
@@ -1357,7 +1362,7 @@ L_13f5:
 
 L_13fe:
     FColonizeAiFleet(lpfl, idPlanDst);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0xf))] = 0x4 */
+    vlpbAiPlanet[((idPlanDst * 16) + 15)] = 0x4;
 
 LTryFreighters:
     if ((FIsAiTransport(lpfl) == 0))
@@ -1451,15 +1456,24 @@ L_1520:
     j = (j + 1);
 
 L_1525:
-    /* untranslated: branch j >= HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_1589 : L_1549 */
+    if ((j >= vlpbAiData[((i * 20) + 6)]))
+        goto L_1589;
+    else
+        goto L_1549;
 
 L_1549:
-    /* untranslated: branch HIWORD(vlpbAiData):[((((LOWORD(vlpbAiData) + 0x4) + loword((20 * i))) + 0x4) + (j * 2))] == lpfl->id ? L_1589 : L_1580 */
+    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] == lpfl->id))
+        goto L_1589;
+    else
+        goto L_1580;
 
 L_1580:
 
 L_1589:
-    /* untranslated: branch j < HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_15b3 : L_15aa */
+    if ((j < vlpbAiData[((i * 20) + 6)]))
+        goto L_15b3;
+    else
+        goto L_15aa;
 
 L_15aa:
 
@@ -1470,7 +1484,7 @@ L_15b3:
         goto L_15c3;
 
 L_15c3:
-    /* untranslated: lppl = LpplFromId(HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((0x14 * i)))]) */
+    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
 
 L_15eb:
     if ((LOWORD(lppl) != 0x0))
@@ -1649,8 +1663,7 @@ L_17f7:
         goto L_1800;
 
 L_1800:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lppl->id * 0x10) + 0xa))] | 0x80) */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = (vlpbAiPlanet[((lppl->id * 16) + 0xa)] | 0x80);
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lppl->id].x;
@@ -2031,7 +2044,7 @@ void DoRototillAiTurn(PROD *rgprod) {
     int16_t  fWrite;
     int16_t  iPlanet;
     uint8_t  bT;
-    uint16_t t_merge_1e69_0001;
+    int16_t  t_merge_1e69_0001;
     THING  **t_merge_2a5b_0001;
     PLANET  *t_merge_2bd5_0001;
     PLANET  *t_merge_2d04_0001;
@@ -2049,11 +2062,11 @@ L_1e22:
         goto L_1e60;
 
 L_1e60:
-    t_merge_1e69_0001 = 0x0;
+    t_merge_1e69_0001 = 0;
     goto L_1e69;
 
 L_1e66:
-    t_merge_1e69_0001 = 0xf;
+    t_merge_1e69_0001 = 15;
 
 L_1e69:
     iroCur = IroEnsureAi(0x0, 0, &(ishdefSBLatest), t_merge_1e69_0001);
@@ -2098,7 +2111,7 @@ L_1f0a:
     goto L_22cf;
 
 L_1f35:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
     if ((lppl->iPlayer != -1))
         goto L_2017;
     else
@@ -2148,7 +2161,7 @@ L_1ff0:
     b = 0x7f;
 
 L_1ff4:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x1))] = b */
+    vlpbAiPlanet[((lppl->id * 16) + 1)] = b;
 
 L_2017:
     if ((lppl->iPlayer == idPlayer))
@@ -2163,14 +2176,14 @@ L_2026:
         goto L_2033;
 
 L_2033:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(((lppl->fStarbase & 0xff) + 0x1)) */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = LOBYTE(((lppl->fStarbase & 0xff) + 0x1));
     if ((PctPlanetOptValue(lppl, idPlayer) <= 0))
         goto L_20a3;
     else
         goto L_2082;
 
 L_2082:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x3))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 3)] = 0x1;
 
 L_20a3:
     cplBadGuy = (cplBadGuy + 1);
@@ -2190,7 +2203,7 @@ L_20bc:
 
 L_20d6:
     cplNegative = (cplNegative + 1);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x2))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 2)] = 0x1;
     goto L_22cb;
 
 L_2101:
@@ -2447,8 +2460,7 @@ L_2462:
     goto L_2476;
 
 L_2476:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((idPlanDst * 0x10) + 0x1))] | 0x80) */
+    vlpbAiPlanet[((idPlanDst * 16) + 1)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x1)] | 0x80);
     goto L_22f9;
 
 L_2497:
@@ -2508,7 +2520,10 @@ L_252e:
         goto L_253d;
 
 L_253d:
-    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] == 0x0 ? L_2402 : L_2565 */
+    if ((vlpbAiPlanet[((idPlanDst * 16) + 3)] == 0x0))
+        goto LBlowAwayOrders;
+    else
+        goto L_2565;
 
 L_2565:
     if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
@@ -2558,8 +2573,7 @@ L_265c:
 
 L_2685:
     FLookupFleet(-1, sel.fl.id);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((idPlanDst * 0x10) + 0x3))] | 0x80) */
+    vlpbAiPlanet[((idPlanDst * 16) + 3)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x3)] | 0x80);
     goto L_22f9;
 
 L_26bc:
@@ -2594,7 +2608,10 @@ L_2711:
         goto L_271a;
 
 L_271a:
-    /* untranslated: branch byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0x3))] != 0x0 ? L_24f5 : L_273f */
+    if ((vlpbAiPlanet[((idPlanDst * 16) + 3)] != 0x0))
+        goto LCheckForColDrop;
+    else
+        goto L_273f;
 
 L_273f:
 
@@ -2680,7 +2697,7 @@ L_2806:
 
 L_2813:
     ChangeMainObjSel(grobjFleet, lpfl->id);
-    /* untranslated: b = byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->idPlanet * 0x10) + 0x1))] */
+    b = vlpbAiPlanet[((lpfl->idPlanet * 16) + 1)];
     if ((b >= 0x4))
         goto L_279b;
     else
@@ -2708,10 +2725,8 @@ L_2886:
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
     FMoveAiFleet(lpfl, &(ord), 1);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lppl->id * 0x10) + 0x1))] | 0x80) */
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->idPlanet * 16) + 0x1))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lpfl->idPlanet * 0x10) + 0x1))] & 0x80) */
+    vlpbAiPlanet[((lppl->id * 16) + 1)] = (vlpbAiPlanet[((lppl->id * 16) + 0x1)] | 0x80);
+    vlpbAiPlanet[((lpfl->idPlanet * 16) + 1)] = (vlpbAiPlanet[((lpfl->idPlanet * 16) + 0x1)] & 0x80);
 
 L_2933:
     if ((lpfl->cord > 1))
@@ -2847,7 +2862,7 @@ L_2acf:
 
 L_2ad8:
     FColonizeAiFleet(lpfl, idPlanDst);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((idPlanDst * 16) + 0xf))] = 0x4 */
+    vlpbAiPlanet[((idPlanDst * 16) + 15)] = 0x4;
     goto L_279b;
 
 L_2b0a:
@@ -2957,15 +2972,24 @@ L_2c1e:
     j = (j + 1);
 
 L_2c22:
-    /* untranslated: branch j >= HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_2c82 : L_2c45 */
+    if ((j >= vlpbAiData[((i * 20) + 6)]))
+        goto L_2c82;
+    else
+        goto L_2c45;
 
 L_2c45:
-    /* untranslated: branch HIWORD(vlpbAiData):[((((LOWORD(vlpbAiData) + 0x4) + loword((20 * i))) + 0x4) + (j * 2))] == lpfl->id ? L_2c82 : L_2c79 */
+    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] == lpfl->id))
+        goto L_2c82;
+    else
+        goto L_2c79;
 
 L_2c79:
 
 L_2c82:
-    /* untranslated: branch j < HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((20 * i)))+0x2] ? L_2cab : L_2ca2 */
+    if ((j < vlpbAiData[((i * 20) + 6)]))
+        goto L_2cab;
+    else
+        goto L_2ca2;
 
 L_2ca2:
 
@@ -2976,7 +3000,7 @@ L_2cab:
         goto L_2cbb;
 
 L_2cbb:
-    /* untranslated: lppl = LpplFromId(HIWORD(vlpbAiData):[((LOWORD(vlpbAiData) + 0x4) + loword((0x14 * i)))]) */
+    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
 
 L_2ce3:
     if ((LOWORD(lppl) != 0x0))
@@ -3143,8 +3167,7 @@ L_2ed5:
         goto L_2ede;
 
 L_2ede:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lppl->id * 0x10) + 0xa))] | 0x80) */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = (vlpbAiPlanet[((lppl->id * 16) + 0xa)] | 0x80);
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lppl->id].x;

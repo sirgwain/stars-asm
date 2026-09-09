@@ -143,6 +143,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "resolve-late-addresses",
+			Purpose: "Project typed addresses exposed by semantic scratch substitution.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &resolveLateAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "resolve-late-bitfields",
 			Purpose: "Resolve declared bitfields exposed by semantic scratch-slot substitution.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
@@ -178,10 +185,10 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
-			Name:    "materialize-branch-call-results",
-			Purpose: "Materialize wide call results reused by branch comparison chains.",
+			Name:    "materialize-call-results",
+			Purpose: "Materialize non-inline call results that remain in later semantic expressions.",
 			Func: func(*FuncContext) SemFuncProcessor {
-				return &branchCallResultProcessor{}
+				return &callResultProcessor{}
 			},
 		},
 		{

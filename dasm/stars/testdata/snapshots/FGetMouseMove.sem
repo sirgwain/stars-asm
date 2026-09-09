@@ -15,7 +15,7 @@ L_4152:
     branch PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0 ? L_417c : L_4176
 
 L_4176:
-    return 0x1
+    return 1
 
 L_417c:
     goto L_41c3
@@ -27,10 +27,10 @@ L_4185:
     branch msg.message == 0x202 ? L_41ba : L_41b4
 
 L_41b4:
-    return 0x1
+    return 1
 
 L_41ba:
-    return 0x0
+    return 0
 
 
 L_41c3:

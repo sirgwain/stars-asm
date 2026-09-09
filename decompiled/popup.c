@@ -16,7 +16,7 @@ L_0012:
 L_0018:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0046:
     if ((GlobalPD.grPopup == grPopupComponent))
@@ -100,7 +100,7 @@ L_011b:
 L_0120:
 
 L_0126:
-    return 0x0;
+    return 0;
 }
 
 int16_t FIsPopupHullType(int16_t ishdef) {
@@ -113,7 +113,7 @@ L_015b:
     /* untranslated: branch part[0xa:2](GlobalPD) != 0xff ? L_016c : L_0166 */
 
 L_0166:
-    return 0x1;
+    return 1;
 
 L_016c:
     /* untranslated: imd = LphuldefFromId(rglpshdef[[part[0x2:4](GlobalPD)+0x2]][ishdef].hul.ihuldef)->imdCategory */
@@ -136,7 +136,7 @@ void DrawPopup(HWND hwnd, HDC hdc) {
     int16_t  csh;
     int16_t  dpT;
     char     szTB[40];
-    uint16_t t_merge_03dc_0001;
+    StringId t_merge_03dc_0001;
     uint16_t t_merge_0b79_0001;
 
 L_01c0:
@@ -210,11 +210,11 @@ L_03c9:
     /* untranslated: branch part[0xe:2](GlobalPD) < 0x1e ? L_03d9 : L_03d3 */
 
 L_03d3:
-    t_merge_03dc_0001 = 0x51e;
+    t_merge_03dc_0001 = idsHw;
     goto L_03dc;
 
 L_03d9:
-    t_merge_03dc_0001 = 0x51f;
+    t_merge_03dc_0001 = idsN30;
 
 L_03dc:
     c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(t_merge_03dc_0001)));
@@ -309,7 +309,7 @@ L_0708:
 
 L_0718:
     /* untranslated: call DecorateHullName((([part[0x2:4](GlobalPD)] >> 0x9) & 0xf), i, szTB) -> callresult(void) */
-    /* untranslated: lpsz = &dword ss:[&szTB] */
+    lpsz = szTB;
     TextOut(hdc, 4, yCur, lpsz, fstrlen(lpsz));
     /* untranslated: c = _wsprintf(szWork, PCTD, part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))]) */
     /* untranslated: call RightTextOut(hdc, ((rc.right - 4) - part[0x8:2](GlobalPD)), yCur, szWork, c, 0) -> callresult(void) */
@@ -454,12 +454,22 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     int16_t  t_merge_0eaa_0001;
     int16_t  t_merge_0f08_0001;
     int16_t  t_merge_108c_0001;
+    POINT    t_call_1099;
+    POINT    t_call_10b5;
+    POINT    t_call_10cd;
+    POINT    t_call_10e9;
+    POINT    t_call_1105;
     uint16_t t_merge_113b_0001;
+    POINT    t_call_1165;
     uint16_t t_merge_1189_0001;
     int16_t  t_merge_126d_0001;
+    int16_t  t_call_1265;
     uint16_t t_merge_12a3_0001;
+    int16_t  t_call_129b;
     int16_t  t_merge_12cc_0001;
+    int16_t  t_call_12c4;
     uint16_t t_merge_1302_0001;
+    int16_t  t_call_12fa;
 
 L_0c7c:
     pt.x = x;
@@ -536,7 +546,7 @@ L_0e33:
 L_0e46:
     dy = (dy + dyArial8);
     /* untranslated: call DecorateHullName((([part[0x2:4](GlobalPD)] >> 0x9) & 0xf), i, szTB) -> callresult(void) */
-    /* untranslated: lpsz = &dword ss:[&szTB] */
+    lpsz = szTB;
     dx = LOWORD(GetTextExtent(hdc, lpsz, fstrlen(lpsz)));
     if ((dxL <= dx))
         goto L_0ea7;
@@ -629,25 +639,25 @@ L_1089:
 L_108c:
     dx = (dx + t_merge_108c_0001);
     goto L_1225;
-    PtDisplayPlanetStateInfo(hdc, 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_1099 = PtDisplayPlanetStateInfo(hdc, 0);
+    ptT.x = LOWORD(t_call_1099);
+    ptT.y = HIWORD(t_call_1099);
     goto SetDxDy;
-    PtDisplayZipOrdInfo(hdc, 0, 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_10b5 = PtDisplayZipOrdInfo(hdc, 0, 0);
+    ptT.x = LOWORD(t_call_10b5);
+    ptT.y = HIWORD(t_call_10b5);
     goto SetDxDy;
-    PtDisplayPlanetPopInfo(hdc, 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_10cd = PtDisplayPlanetPopInfo(hdc, 0);
+    ptT.x = LOWORD(t_call_10cd);
+    ptT.y = HIWORD(t_call_10cd);
     goto SetDxDy;
-    PtDisplayResourceInfo(hdc, 200, 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_10e9 = PtDisplayResourceInfo(hdc, 200, 0);
+    ptT.x = LOWORD(t_call_10e9);
+    ptT.y = HIWORD(t_call_10e9);
     goto SetDxDy;
-    PtDisplayFactoryMineInfo(hdc, 200, 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_1105 = PtDisplayFactoryMineInfo(hdc, 200, 0);
+    ptT.x = LOWORD(t_call_1105);
+    ptT.y = HIWORD(t_call_1105);
 
 SetDxDy:
     dx = (ptT.x + 2);
@@ -669,9 +679,9 @@ L_113b:
     dx = (t_merge_113b_0001 + 344);
     dy = (((dyArial10 + 72) + LOWORD((0xc * dyArial8))) + 6);
     goto L_1225;
-    PtDisplayString(hdc, HIWORD(GlobalPD), 0);
-    /* untranslated: ptT.x = loword(callresult(POINT)) */
-    /* untranslated: ptT.y = hiword(callresult(POINT)) */
+    t_call_1165 = PtDisplayString(hdc, HIWORD(GlobalPD), 0);
+    ptT.x = LOWORD(t_call_1165);
+    ptT.y = HIWORD(t_call_1165);
     goto SetDxDy;
     if ((GlobalPD.grPopup != grPopupShdef))
         goto L_1186;
@@ -735,8 +745,8 @@ L_125b:
     goto L_126d;
 
 L_1261:
-    GetSystemMetrics(SM_CXSCREEN);
-    /* untranslated: t_merge_126d_0001 = (callresult(int16_t) - dx) */
+    t_call_1265 = GetSystemMetrics(SM_CXSCREEN);
+    t_merge_126d_0001 = (t_call_1265 - dx);
 
 L_126d:
     if ((0 <= t_merge_126d_0001))
@@ -759,8 +769,8 @@ L_1291:
     goto L_12a3;
 
 L_1297:
-    GetSystemMetrics(SM_CXSCREEN);
-    /* untranslated: t_merge_12a3_0001 = (callresult(int16_t) - dx) */
+    t_call_129b = GetSystemMetrics(SM_CXSCREEN);
+    t_merge_12a3_0001 = (t_call_129b - dx);
 
 L_12a3:
     pt.x = t_merge_12a3_0001;
@@ -774,8 +784,8 @@ L_12ba:
     goto L_12cc;
 
 L_12c0:
-    GetSystemMetrics(SM_CYSCREEN);
-    /* untranslated: t_merge_12cc_0001 = (callresult(int16_t) - dy) */
+    t_call_12c4 = GetSystemMetrics(SM_CYSCREEN);
+    t_merge_12cc_0001 = (t_call_12c4 - dy);
 
 L_12cc:
     if ((0 <= t_merge_12cc_0001))
@@ -798,8 +808,8 @@ L_12f0:
     goto L_1302;
 
 L_12f6:
-    GetSystemMetrics(SM_CYSCREEN);
-    /* untranslated: t_merge_1302_0001 = (callresult(int16_t) - dy) */
+    t_call_12fa = GetSystemMetrics(SM_CYSCREEN);
+    t_merge_1302_0001 = (t_call_12fa - dy);
 
 L_1302:
     pt.y = t_merge_1302_0001;
@@ -1529,7 +1539,7 @@ L_21b7:
     goto L_21d9;
 
 L_21c4:
-    /* untranslated: dChg = (abs((part[0x6:2](GlobalPD) - part[0xc:2](GlobalPD))) neg 0) */
+    /* untranslated: dChg = neg(abs((part[0x6:2](GlobalPD) - part[0xc:2](GlobalPD)))) */
 
 L_21d9:
     if ((dChg >= 0))
@@ -1538,7 +1548,7 @@ L_21d9:
         goto L_21e2;
 
 L_21e2:
-    /* untranslated: dChg = (dChg neg 0) */
+    dChg = (-dChg);
     ids = idsValueDAwayIdealValueRace;
     goto L_21f7;
 
@@ -1699,7 +1709,7 @@ L_261e:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillKillOffApproximately), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: c = _wsprintf(szWork, PCTDXPCTDPCTPCT, (sext16to32((pctDesire neg 0x0)) / 0xa), (sext16to32((pctDesire neg 0x0)) % 0xa)) */
+    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, ((uint32_t)((-pctDesire)) / 0xa), ((uint32_t)((-pctDesire)) % 0xa));
     DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOf), 0, fPrint);
@@ -2102,7 +2112,7 @@ POINT PtDisplayFactoryMineInfo(HDC hdc, int16_t dx, int16_t fPrint) {
     char    *psz;
     int16_t  cnt;
     int16_t  x;
-    uint16_t t_merge_3201_0001;
+    StringId t_merge_3201_0001;
     char    *t_merge_3293_0001;
 
 L_3110:
@@ -2146,11 +2156,11 @@ L_31e2:
     /* untranslated: branch part[0xa:2](GlobalPD) == 0x0 ? L_31fe : L_31f8 */
 
 L_31f8:
-    t_merge_3201_0001 = 0x4eb;
+    t_merge_3201_0001 = idsRaceIncapableBuildingFactories;
     goto L_3201;
 
 L_31fe:
-    t_merge_3201_0001 = 0x4ec;
+    t_merge_3201_0001 = idsRaceIncapableBuildingMinesHoweverColonistsHave;
 
 L_3201:
     psz = PszGetCompressedString(t_merge_3201_0001);

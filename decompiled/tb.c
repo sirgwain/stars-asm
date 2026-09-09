@@ -21,8 +21,8 @@ int32_t TbWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
     RECT        rc;
     HWND        hwndCE;
     int16_t     pct;
-    uint16_t    t_merge_02d6_0001;
-    uint16_t    t_merge_03b9_0001;
+    int16_t     t_merge_02d6_0001;
+    int16_t     t_merge_03b9_0001;
 
 L_001e:
     goto L_068b;
@@ -166,11 +166,11 @@ L_02c4:
         goto L_02cd;
 
 L_02cd:
-    t_merge_02d6_0001 = 0x1;
+    t_merge_02d6_0001 = 1;
     goto L_02d6;
 
 L_02d3:
-    t_merge_02d6_0001 = 0x0;
+    t_merge_02d6_0001 = 0;
 
 L_02d6:
     ExecuteButton(itb, t_merge_02d6_0001);
@@ -219,11 +219,11 @@ L_03a7:
         goto L_03b0;
 
 L_03b0:
-    t_merge_03b9_0001 = 0x1;
+    t_merge_03b9_0001 = 1;
     goto L_03b9;
 
 L_03b6:
-    t_merge_03b9_0001 = 0x0;
+    t_merge_03b9_0001 = 0;
 
 L_03b9:
     ExecuteButton(itb, t_merge_03b9_0001);
@@ -306,7 +306,7 @@ L_0501:
 L_050c:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_0537:
     SetBkColor(wParam, crButtonFace);
@@ -314,7 +314,7 @@ L_0537:
 
 L_0550:
     SetCursor(LoadCursor(0x0, MAKEINTRESOURCE(0x7f00)));
-    return 0x1;
+    return 1;
 
 L_0570:
     if ((LOWORD(lParam) != hwndTBRadar))
@@ -419,7 +419,7 @@ L_06d3:
 L_06d8:
 
 L_06de:
-    return 0x0;
+    return 0;
 }
 
 void DrawToolbar(HDC hdc, RECT *prc) {
@@ -578,7 +578,7 @@ L_0b37:
         goto L_0b43;
 
 L_0b43:
-    return 0xffff;
+    return -1;
 
 L_0b49:
     i = 0;
@@ -607,7 +607,7 @@ L_0b9c:
         goto L_0ba5;
 
 L_0ba5:
-    return 0xffff;
+    return -1;
 }
 
 int16_t DxOfBtn(int16_t itb) {
@@ -630,10 +630,10 @@ L_0bcd:
         goto L_0bd6;
 
 L_0bd6:
-    return 0x1d;
+    return 29;
 
 L_0bdf:
-    return 0xb;
+    return 11;
 
 L_0be5:
     if ((itb != -1))
@@ -642,7 +642,7 @@ L_0be5:
         goto L_0bee;
 
 L_0bee:
-    return 0x6;
+    return 6;
 
 L_0bf4:
     if ((itb != -2))
@@ -651,7 +651,7 @@ L_0bf4:
         goto L_0bfd;
 
 L_0bfd:
-    return 0x2;
+    return 2;
 
 L_0c03:
     goto L_0c22;
@@ -663,10 +663,10 @@ L_0c09:
         goto L_0c13;
 
 L_0c13:
-    return 0x3c;
+    return 60;
 
 L_0c19:
-    return 0x46;
+    return 70;
 
 L_0c22:
     if ((itb == -3))
@@ -675,7 +675,7 @@ L_0c22:
         goto L_0c2d;
 
 L_0c2d:
-    return 0x0;
+    return 0;
 }
 
 int16_t FIsButtonDown(int16_t itb) {
@@ -862,7 +862,7 @@ L_0e00:
     goto L_0e13;
 
 L_0e0a:
-    /* untranslated: grbitScan = (grbitScan & (grbitNew ~ 0x0)) */
+    grbitScan = (grbitScan & (~grbitNew));
 
 L_0e13:
     goto L_1644;
@@ -934,7 +934,7 @@ L_0ebc:
     rgid[c] = (uint32_t)(t_merge_0ebc_0001);
 
 L_0ecd:
-    /* untranslated: call CchGetString(i, part[0xa0:2](szWork[(load([bp-0x24]) + 0xfb02)*0x1e])) -> callresult(int16_t) */
+    CchGetString(i, (0x5844 + LOWORD(((i - 1278) * 0x1e))));
     c = (c + 1);
     rgszScan[c] = (0x5844 + LOWORD(((i + 0xfb02) * 0x1e)));
     i = (i + 1);
@@ -969,7 +969,7 @@ L_0f6b:
 
 L_0f6f:
     rgid[c] = (uint32_t)(t_merge_0f6f_0001);
-    CchGetString((i + 1280), szWork[i * 0x1e]);
+    CchGetString((i + 1280), (0x57a4 + LOWORD((30 * i))));
     c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD((0x1e * i)));
     i = (i + 1);
@@ -1036,7 +1036,7 @@ L_105e:
 
 L_1083:
     rgid[c] = 0;
-    CchGetString(i, szWork[(load([bp - 0x36]) + 0xfb05) * 0x14]);
+    CchGetString(i, (0x57a4 + LOWORD(((i - 1275) * 0x14))));
     c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD(((i + 0xfb05) * 0x14)));
     i = (i + 1);
@@ -1208,7 +1208,7 @@ L_12f7:
 
 L_130c:
     rgid[c] = 0;
-    /* untranslated: call CchGetString(i, part[0xc8:2](szWork[(load([bp-0x24]) + 0xfb05)*0x19])) -> callresult(int16_t) */
+    CchGetString(i, (0x586c + LOWORD(((i - 1275) * 0x19))));
     c = (c + 1);
     rgszScan[c] = (0x586c + LOWORD(((i + 0xfb05) * 0x19)));
     i = (i + 1);
@@ -1243,7 +1243,7 @@ L_13bf:
 
 L_13c3:
     rgid[c] = (uint32_t)(t_merge_13c3_0001);
-    CchGetString((i + 381), szWork[i * 0x19]);
+    CchGetString((i + 381), (0x57a4 + LOWORD((25 * i))));
     c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD((0x19 * i)));
     i = (i + 1);
@@ -1682,7 +1682,7 @@ L_1a1e:
 
 L_1a27:
     DestroyWindow(hwnd);
-    return 0x0;
+    return 0;
 
 L_1a38:
     if ((wParam != 0x0))
@@ -1713,7 +1713,7 @@ L_1a80:
     vidTimerTooltip = -1;
 
 L_1a86:
-    return 0x0;
+    return 0;
 
 L_1a8f:
     wParam = 0x39e;
@@ -1784,7 +1784,7 @@ L_1ba0:
     vidTimerTooltip = -1;
 
 L_1ba6:
-    return 0x0;
+    return 0;
 
 L_1baf:
     vtickTooltipLast = GetTickCount();
@@ -1816,12 +1816,12 @@ LKillTip:
     DestroyWindow(hwnd);
 
 L_1c0d:
-    return 0x0;
+    return 0;
 
 L_1c16:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrTooltip);
-    return 0x1;
+    return 1;
 
 L_1c41:
     hdc = BeginPaint(hwnd, &(ps));
@@ -1834,7 +1834,7 @@ L_1c41:
     ExtTextOut(hdc, 3, 3, 0x0, 0x0, szWork, cch, 0x0);
     SetBkMode(hdc, bkSav);
     EndPaint(hwnd, &(ps));
-    return 0x0;
+    return 0;
 
 L_1d08:
     if ((msg == WM_CREATE))
@@ -1895,6 +1895,8 @@ L_1d53:
 }
 
 int32_t FakeComboProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+    LRESULT t_call_1de0;
+
 L_1d72:
     goto L_1dae;
 
@@ -1925,13 +1927,15 @@ L_1dbe:
         goto L_1dc9;
 
 L_1dc9:
-    CallWindowProc(lpfnRealComboProc, hwnd, msg, wParam, lParam);
+    t_call_1de0 = CallWindowProc(lpfnRealComboProc, hwnd, msg, wParam, lParam);
 
 L_1de8:
-    /* untranslated: return callresult(LRESULT) */
+    return t_call_1de0;
 }
 
 int32_t FakeCEProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+    LRESULT t_call_1e5e;
+
 L_1df0:
     goto L_1e2c;
 
@@ -1962,8 +1966,8 @@ L_1e3c:
         goto L_1e47;
 
 L_1e47:
-    CallWindowProc(lpfnRealCEProc, hwnd, msg, wParam, lParam);
+    t_call_1e5e = CallWindowProc(lpfnRealCEProc, hwnd, msg, wParam, lParam);
 
 L_1e66:
-    /* untranslated: return callresult(LRESULT) */
+    return t_call_1e5e;
 }

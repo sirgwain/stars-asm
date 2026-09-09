@@ -81,8 +81,10 @@ void DoMacintiAiTurn(PROD *rgprod) {
     uint16_t t_merge_15cf_0001;
     uint16_t t_merge_186c_0001;
     uint16_t t_merge_18a9_0001;
+    int16_t  t_call_1c69;
     PLANET  *t_call_1e5a;
     PLANET  *t_call_269f;
+    int16_t  t_call_2829;
     uint16_t t_merge_2919_0001;
     uint16_t t_merge_2934_0001;
 
@@ -592,8 +594,7 @@ L_06f8:
         goto L_0702;
 
 L_0702:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 16) + 0xe))] = (byte
-     * HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 0x10) + 0xe))] | 0x1) */
+    vlpbAiPlanet[((lpfl->lpplord->rgord[0x1].id * 16) + 14)] = (vlpbAiPlanet[((lpfl->lpplord->rgord[0x1].id * 16) + 0xe)] | 0x1);
 
 L_0728:
     i = 2;
@@ -667,7 +668,7 @@ L_07eb:
         goto L_07f3;
 
 L_07f3:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xd))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 13)] = 0x1;
     goto L_07b4;
 
 L_0817:
@@ -733,8 +734,8 @@ L_08ff:
     i = (i + 1);
 
 L_0903:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(i) */
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = LOBYTE(i);
+    vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
 
 L_094a:
     lppl = (lppl + 0x38);
@@ -2345,9 +2346,12 @@ L_1c42:
         goto L_1c56;
 
 L_1c56:
-    IdRandomPlanetNearby(lpfl->pt, 105, 1);
-    /* untranslated: idPlanDst = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) == -1 ? L_1d0d : L_1c7c */
+    t_call_1c69 = IdRandomPlanetNearby(lpfl->pt, 105, 1);
+    idPlanDst = t_call_1c69;
+    if ((t_call_1c69 == -1))
+        goto L_1d0d;
+    else
+        goto L_1c7c;
 
 L_1c7c:
     if ((idPlanDst == lpfl->idPlanet))
@@ -3201,14 +3205,23 @@ L_281c:
         goto L_2825;
 
 L_2825:
-    Random(100);
-    /* untranslated: branch signhiword(callresult(int16_t)) > (HIWORD(l) + 0xffff) ? L_2867 : L_2847 */
+    t_call_2829 = Random(100);
+    if ((SIGNHIWORD(t_call_2829) > (HIWORD(l) + 0xffff)))
+        goto L_2867;
+    else
+        goto L_2847;
 
 L_2847:
-    /* untranslated: branch signhiword(callresult(int16_t)) < (HIWORD(l) + 0xffff) ? L_2853 : L_284c */
+    if ((SIGNHIWORD(t_call_2829) < (HIWORD(l) + 0xffff)))
+        goto L_2853;
+    else
+        goto L_284c;
 
 L_284c:
-    /* untranslated: branch callresult(int16_t) > (LOWORD(l) + 0xfff6) ? L_2867 : L_2853 */
+    if ((t_call_2829 > (LOWORD(l) + 0xfff6)))
+        goto L_2867;
+    else
+        goto L_2853;
 
 L_2853:
     if ((Random(20) != 0))
@@ -4023,7 +4036,7 @@ L_3499:
         goto L_34ad;
 
 L_34ad:
-    return 0x0;
+    return 0;
 
 L_34b3:
     ord.id = lpplBest->id;
@@ -4217,7 +4230,10 @@ L_3719:
 L_371e:
 
 L_3724:
-    /* untranslated: branch (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xe))] & 0x1) != 0x0 ? L_36cc : L_374f */
+    if (((vlpbAiPlanet[((lppl->id * 16) + 14)] & 0x1) != 0x0))
+        goto L_36cc;
+    else
+        goto L_374f;
 
 L_374f:
 
@@ -4374,8 +4390,7 @@ L_38f0:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, LOWORD(cColHaul));
     FLookupFleet(lpfl->id, sel.fl.id);
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplBest->id * 16) + 0xe))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lpplBest->id * 0x10) + 0xe))] | 0x1) */
+    vlpbAiPlanet[((lpplBest->id * 16) + 14)] = (vlpbAiPlanet[((lpplBest->id * 16) + 0xe)] | 0x1);
 
 LMoveToLpplBest:
     memset(&(ord), 0, 0x12);
@@ -4390,7 +4405,7 @@ LMoveToLpplBest:
     goto L_39ec;
 
 L_39ca:
-    ord.txp.rgia[0].iAction = iActionUnloadAll;
+    ord.txp.rgia[i].iAction = iActionUnloadAll;
     i = (i + 1);
 
 L_39ec:
@@ -4406,7 +4421,7 @@ L_39f5:
         goto L_3a13;
 
 L_3a13:
-    return 0xffff;
+    return -1;
 
 L_3a19:
     return lpplBest->id;
@@ -4794,7 +4809,7 @@ L_3e21:
 L_3e27:
 
 L_3e2d:
-    return 0xffff;
+    return -1;
 }
 
 void TargetMacArmada(FLEET *lpfl) {
@@ -4967,8 +4982,7 @@ L_406a:
         goto L_4073;
 
 L_4073:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTarget->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lpplTarget->id * 0x10) + 0xa))] | 0x80) */
+    vlpbAiPlanet[((lpplTarget->id * 16) + 10)] = (vlpbAiPlanet[((lpplTarget->id * 16) + 0xa)] | 0x80);
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lpplTarget->id].x;
@@ -5219,8 +5233,8 @@ L_4400:
     *(pcEquiv) = cEquiv;
 
 L_4408:
-    return 0x1;
+    return 1;
 
 L_440e:
-    return 0x0;
+    return 0;
 }

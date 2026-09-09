@@ -74,3 +74,54 @@ func TestLowerDeclaresSurvivingScratchSymbols(t *testing.T) {
 		t.Fatalf("scratch local = %#v, want uint16_t scratch_bp_m4", got.Locals[0])
 	}
 }
+
+// TestLowerByteReplacement verifies partial-register updates remain
+// expressible after semantic lowering.
+func TestLowerByteReplacement(t *testing.T) {
+	dst := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "word", Type: typeinfo.U16}}
+	src := &sem.Byte{
+		Parent:   dst,
+		Part:     machine.ByteHigh,
+		Value:    &sem.Const{TypeInfo: typeinfo.U16, U64: 3},
+		TypeInfo: typeinfo.U16,
+	}
+	fn := Lower(sem.Func{Blocks: []sem.Block{{
+		ID:      0x100,
+		Effects: []sem.Effect{&sem.Assign{Dst: dst, Src: src}},
+	}}}, &typeinfo.Function{Name: "ReplaceByte", Ret: typeinfo.U16})
+
+	assign, ok := fn.Blocks[0].Stmts[0].(*Assign)
+	if !ok {
+		t.Fatalf("stmt type = %T, want *Assign", fn.Blocks[0].Stmts[0])
+	}
+	replacement, ok := assign.Src.(*Binary)
+	if !ok || replacement.Op != "|" {
+		t.Fatalf("replacement = %#v, want bitwise-or expression", assign.Src)
+	}
+	insert, ok := replacement.RHS.(*Binary)
+	if !ok || insert.Op != "<<" {
+		t.Fatalf("insert = %#v, want shifted high-byte expression", replacement.RHS)
+	}
+}
+
+// TestAnalyzeReportsUnsupportedNodePath verifies untranslated metrics describe
+// the semantic node that actually prevented lowering.
+func TestAnalyzeReportsUnsupportedNodePath(t *testing.T) {
+	value := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "value", Type: typeinfo.U32}}
+	dst := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "word", Type: typeinfo.U16}}
+	fn := Lower(sem.Func{Blocks: []sem.Block{{
+		ID: 0x100,
+		Effects: []sem.Effect{&sem.Assign{
+			Dst: dst,
+			Src: &sem.Part{Base: value, ByteOff: 4, Width: 2, TypeInfo: typeinfo.U16},
+		}},
+	}}}, &typeinfo.Function{Name: "UnsupportedPart", Ret: typeinfo.U16})
+
+	got := fn.Analyze()
+	if got.Untranslated != 1 || got.UntranslatedAssign != 1 || got.UntranslatedPart != 1 {
+		t.Fatalf("analysis counts = %#v", got)
+	}
+	if count := got.UntranslatedFailures["assign.src:part"]; count != 1 {
+		t.Fatalf("assign.src:part count = %d, want 1", count)
+	}
+}

@@ -3,9 +3,9 @@ HfontPrinterCreate  (utilgen)
   addr: 0009:6aa6  len=202
   sig:  HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont)
   params:
-    HDC              hdc            
-    int16_t          iSize          
-    int16_t *        pdyFont        
+    HDC              hdc            [BP+0x6]
+    int16_t          iSize          [BP+0x8]
+    int16_t *        pdyFont        [BP+0xa]
   locals:
     LOGFONT *        plf            [BP-0x6]
     HFONT            hfontNew       [BP-0x4]
@@ -22,13 +22,13 @@ block L_6aa6:
     6ab7  call LocalAlloc(0x40, 0x32) -> callresult(HLOCAL)
     6abc  store[2] [bp-plf] = callresult(HLOCAL)
     6aca  call memset(load@6ac7/src([bp-plf]), 0x0, 0x32) -> callresult(void *)
-    6adc  call GetDeviceCaps(load(ss:[bp+0x6]), 0x5a) -> callresult(int16_t)
-    6ae6  call MulDiv(load(ss:[bp+0x8]), callresult(int16_t), 0x48) -> callresult(int16_t)
+    6adc  call GetDeviceCaps(load([bp+hdc]), 0x5a) -> callresult(int16_t)
+    6ae6  call MulDiv(load([bp+iSize]), callresult(int16_t), 0x48) -> callresult(int16_t)
     6af0  store[2] ds:[load([bp-plf])] = (callresult(int16_t) neg 0x0)
     6aff  call strcpy((load@6af9/src([bp-plf]) + 0x12), 0x6c6) -> callresult(char *)
     6b0e  call CreateFontIndirect(words(ds, load([bp-plf]))) -> callresult(HFONT)
     6b13  store[2] [bp-hfontNew] = callresult(HFONT)
-    6b1a  branch load(ss:[bp+0xa]) == 0x0 ? L_6b5b : L_6b1f
+    6b1a  branch load([bp+pdyFont]) == 0x0 ? L_6b5b : L_6b1f
 
 block L_6b1f:
   insts 47..48  off 0x6b1f..0x6b24
@@ -42,11 +42,11 @@ block L_6b28:
   preds: L_6b1f
   succs: L_6b5b
   effects:
-    6b2e  call SelectObject(load@6b28/src(ss:[bp+0x6]), load([bp-hfontNew])) -> callresult(HGDIOBJ)
+    6b2e  call SelectObject(load@6b28/src([bp+hdc]), load([bp-hfontNew])) -> callresult(HGDIOBJ)
     6b33  store[2] [bp-hfontSav] = callresult(HGDIOBJ)
-    6b40  call GetTextMetrics(load@6b36/src(ss:[bp+0x6]), words(ss, addr([bp-tm]))) -> callresult(int16_t)
-    6b4e  store[2] ds:[load(ss:[bp+0xa])] = (load([bp-tm]) + load([bp-tm+0x8]))
-    6b56  call SelectObject(load@6b50/src(ss:[bp+0x6]), load([bp-hfontSav])) -> callresult(HGDIOBJ)
+    6b40  call GetTextMetrics(load@6b36/src([bp+hdc]), words(ss, addr([bp-tm]))) -> callresult(int16_t)
+    6b4e  store[2] ds:[load([bp+pdyFont])] = (load([bp-tm]) + load([bp-tm+0x8]))
+    6b56  call SelectObject(load@6b50/src([bp+hdc]), load([bp-hfontSav])) -> callresult(HGDIOBJ)
 
 block L_6b5b:
   insts 67..70  off 0x6b5b..0x6b69

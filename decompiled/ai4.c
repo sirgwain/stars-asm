@@ -67,6 +67,7 @@ void DoCyberAiTurn(PROD *rgprod) {
     uint16_t       scratch_bp_m8e;
     PLANET        *t_call_0bfd;
     uint16_t       t_merge_0d8d_0001;
+    int16_t        t_call_126f;
     PLANET        *t_call_1741;
     int16_t        t_merge_18b8_0001;
     int32_t        t_call_193d;
@@ -389,8 +390,8 @@ L_063b:
     i = (i + 1);
 
 L_063f:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0xa))] = lobyte(i) */
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lppl->id * 16) + 0x9))] = 0x1 */
+    vlpbAiPlanet[((lppl->id * 16) + 10)] = LOBYTE(i);
+    vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
     goto L_081d;
 
 L_0686:
@@ -1160,7 +1161,7 @@ L_10e6:
         goto L_10f3;
 
 L_10f3:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpfl->lpplord->rgord[0x1].id * 16) + 0xf))] = 0x4 */
+    vlpbAiPlanet[((lpfl->lpplord->rgord[0x1].id * 16) + 15)] = 0x4;
 
 L_111c:
     if ((lpfl->rgcsh[2] > 0))
@@ -1261,9 +1262,12 @@ L_1248:
         goto L_125c;
 
 L_125c:
-    IdRandomPlanetNearby(lpfl->pt, 105, 1);
-    /* untranslated: idPlanDst = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) == -1 ? L_1317 : L_1283 */
+    t_call_126f = IdRandomPlanetNearby(lpfl->pt, 105, 1);
+    idPlanDst = t_call_126f;
+    if ((t_call_126f == -1))
+        goto L_1317;
+    else
+        goto L_1283;
 
 L_1283:
     if ((idPlanDst == lpfl->idPlanet))
@@ -2713,6 +2717,7 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
     SCAN     scan;
     uint16_t scratch_bp_m2a;
     uint16_t scratch_bp_m28;
+    int32_t  t_call_2b71;
     uint16_t scratch_bp_m24;
     uint16_t scratch_bp_m26;
 
@@ -2961,8 +2966,11 @@ L_2b41:
         goto L_2b50;
 
 L_2b50:
-    LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
-    /* untranslated: branch hiword(callresult(int32_t)) > signhiword(loword((iDistance * iDistance))) ? L_2ba8 : L_2b93 */
+    t_call_2b71 = LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
+    if ((HIWORD(t_call_2b71) > SIGNHIWORD(LOWORD((iDistance * iDistance)))))
+        goto L_2ba8;
+    else
+        goto L_2b93;
 
 L_2b93:
     if ((scratch_bp_m24 < SIGNHIWORD(LOWORD((iDistance * iDistance)))))
@@ -2977,13 +2985,13 @@ L_2b98:
         goto L_2b9f;
 
 L_2b9f:
-    return 0xffff;
+    return -1;
 
 L_2ba8:
     return (scan.idpl + 1);
 
 L_2bb4:
-    return 0xffff;
+    return -1;
 }
 
 int16_t FAddPacketToQueue(PLANET *lppl) {
@@ -3056,10 +3064,10 @@ L_2cad:
 
 L_2cb5:
     AddItemToQueue((iMineral + 14), 0x1, grobjPlanet, 0);
-    return 0x1;
+    return 1;
 
 L_2cd6:
-    return 0x0;
+    return 0;
 }
 
 void FillProductionQueue() {
@@ -3124,7 +3132,9 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
     int16_t  cAdd;
     uint16_t t_merge_302d_0001;
     uint16_t scratch_bp_m80;
+    int16_t  t_call_301b;
     uint16_t t_merge_30fb_0001;
+    int16_t  t_call_30e9;
     int16_t  t_merge_3375_0001;
     int16_t  t_merge_33fb_0001;
     int16_t  t_merge_3431_0001;
@@ -3134,7 +3144,7 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
     int16_t  t_merge_3595_0001;
     int16_t  t_merge_35f0_0001;
     uint16_t t_merge_36f1_0001;
-    uint16_t t_merge_3778_0001;
+    int16_t  t_merge_3778_0001;
 
 L_2d72:
     fInsert = 0;
@@ -3172,7 +3182,7 @@ L_2dfa:
         goto L_2e03;
 
 L_2e03:
-    return 0x0;
+    return 0;
 
 L_2e09:
     iMaxTerra = 0;
@@ -3292,8 +3302,8 @@ L_2ff6:
 
 L_2ffc:
     scratch_bp_m80 = CMaxOperableMines(lppl, idPlayer, 0);
-    CMinesOperating(lppl);
-    /* untranslated: t_merge_302d_0001 = ((scratch_bp_m80 - callresult(int16_t)) - iAddMines) */
+    t_call_301b = CMinesOperating(lppl);
+    t_merge_302d_0001 = ((scratch_bp_m80 - t_call_301b) - iAddMines);
 
 L_302d:
     iMaxMines = t_merge_302d_0001;
@@ -3323,8 +3333,8 @@ L_30c4:
 
 L_30ca:
     scratch_bp_m80 = CMaxOperableFactories(lppl, idPlayer, 0);
-    CFactoriesOperating(lppl);
-    /* untranslated: t_merge_30fb_0001 = ((scratch_bp_m80 - callresult(int16_t)) - iAddFactories) */
+    t_call_30e9 = CFactoriesOperating(lppl);
+    t_merge_30fb_0001 = ((scratch_bp_m80 - t_call_30e9) - iAddFactories);
 
 L_30fb:
     iMaxFactories = t_merge_30fb_0001;
@@ -3399,7 +3409,7 @@ L_3233:
 
 L_323c:
     AddItemToQueue(0xc, cAdd, grobjPlanet, 0);
-    return 0x1;
+    return 1;
 
 L_3259:
     if ((HIWORD(rgResLeft[0x0]) < 0x0))
@@ -3505,7 +3515,7 @@ L_332e:
         goto L_3336;
 
 L_3336:
-    return 0x0;
+    return 0;
 
 L_333c:
     if ((iMaxMines <= 0))
@@ -3820,11 +3830,11 @@ L_3766:
         goto L_376f;
 
 L_376f:
-    t_merge_3778_0001 = 0x0;
+    t_merge_3778_0001 = 0;
     goto L_3778;
 
 L_3775:
-    t_merge_3778_0001 = 0x1;
+    t_merge_3778_0001 = 1;
 
 L_3778:
     AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, t_merge_3778_0001);
@@ -3836,10 +3846,10 @@ L_378c:
         goto L_379d;
 
 L_379d:
-    return 0x1;
+    return 1;
 
 L_37a3:
-    return 0x0;
+    return 0;
 }
 
 void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
@@ -4113,7 +4123,7 @@ L_3d00:
         goto L_3d4d;
 
 L_3d4d:
-    return 0x0;
+    return 0;
 
 L_3d53:
     if ((lpplTest->iPlayer != idPlayer))
@@ -4165,13 +4175,13 @@ L_3dde:
         goto L_3de6;
 
 L_3de6:
-    return 0x1;
+    return 1;
 
 L_3dec:
-    return 0x0;
+    return 0;
 
 L_3df2:
-    return 0x0;
+    return 0;
 }
 
 int16_t FEnumDropOffStage2(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -4188,7 +4198,7 @@ L_3dfe:
         goto L_3e4b;
 
 L_3e4b:
-    return 0x0;
+    return 0;
 
 L_3e51:
     if ((lpplTest->iPlayer != idPlayer))
@@ -4234,13 +4244,13 @@ L_3edf:
         goto L_3ee7;
 
 L_3ee7:
-    return 0x1;
+    return 1;
 
 L_3eed:
-    return 0x0;
+    return 0;
 
 L_3ef3:
-    return 0x0;
+    return 0;
 }
 
 int16_t FEnumPickUp(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -4275,10 +4285,10 @@ L_3f35:
         goto L_3f4c;
 
 L_3f4c:
-    return 0x1;
+    return 1;
 
 L_3f52:
-    return 0x0;
+    return 0;
 }
 
 int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -4295,6 +4305,7 @@ int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
     uint32_t       scratch_bp_m2c;
     uint16_t       scratch_bp_m2a;
     uint80_t       scratch_bp_m26;
+    int32_t        t_call_41c9;
 
 L_3f5e:
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
@@ -4349,7 +4360,7 @@ L_4013:
         goto L_403d;
 
 L_403d:
-    return 0x0;
+    return 0;
 
 L_4043:
     if ((HIWORD(lpplSrc->rgwtMin[0x0]) < 0x0))
@@ -4462,17 +4473,20 @@ L_417b:
     dDistance = t_merge_417b_0001;
     dDistance = ((dDistance * dDistance) * 3.5);
     scratch_bp_m26 = (dDistance * dDistance);
-    LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]);
-    /* untranslated: branch (double)callresult(int32_t) > scratch_bp_m26 ? L_41f2 : L_41ec */
+    t_call_41c9 = LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]);
+    if (((double)(t_call_41c9) > scratch_bp_m26))
+        goto L_41f2;
+    else
+        goto L_41ec;
 
 L_41ec:
-    return 0x1;
+    return 1;
 
 L_41f2:
-    return 0x0;
+    return 0;
 
 L_41f8:
-    return 0x0;
+    return 0;
 }
 
 int16_t FEnumPktAttack(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -4487,6 +4501,7 @@ int16_t FEnumPktAttack(PLANET *lpplSrc, PLANET *lpplTest) {
     int16_t    iWarpDst;
     int16_t    dOffsetPlanTemp;
     double     dDistanceTgt;
+    int16_t    t_call_4345;
     uint80_t   scratch_bp_m3c;
     uint16_t   scratch_bp_m42;
     uint16_t   scratch_bp_m40;
@@ -4521,7 +4536,7 @@ L_429a:
         goto L_42be;
 
 L_42be:
-    return 0x0;
+    return 0;
 
 L_42c4:
     if ((lpplTest->fStarbase == 0x0))
@@ -4536,7 +4551,7 @@ L_42db:
         goto L_4310;
 
 L_4310:
-    return 0x0;
+    return 0;
 
 L_4319:
     iWarpDst = IWarpMAFromLppl(lpplTest, &(fTwoMA));
@@ -4549,16 +4564,16 @@ L_4337:
     iWarpDst = (iWarpDst + 1);
 
 L_433b:
-    IWarpMAFromLppl(lpplSrc, &(fTwoMA));
-    /* untranslated: iWarp = (callresult(int16_t) + 3) */
-    /* untranslated: dDistance = (double)sext16to32((callresult(int16_t) + 0x3)) */
+    t_call_4345 = IWarpMAFromLppl(lpplSrc, &(fTwoMA));
+    iWarp = (t_call_4345 + 3);
+    dDistance = (double)((int32_t)((t_call_4345 + 0x3)));
     if ((iWarp != iWarpDst))
         goto L_4375;
     else
         goto L_436f;
 
 L_436f:
-    return 0x0;
+    return 0;
 
 L_4375:
     dDistance = (dDistance * dDistance);
@@ -4598,7 +4613,7 @@ L_44b1:
         goto L_44c3;
 
 L_44c3:
-    return 0x0;
+    return 0;
 
 L_44c9:
     dMod = ((double)((uint32_t)(LOWORD(((LOWORD((iWarp * iWarp)) - LOWORD((iWarpDst * iWarpDst))) * (0x64 - (lpplTest->uDefGuess + 0x5)))))) / 16000);
@@ -4634,13 +4649,13 @@ L_4586:
         goto L_458e;
 
 L_458e:
-    return 0x1;
+    return 1;
 
 L_4594:
-    return 0x0;
+    return 0;
 
 L_459a:
-    return 0x0;
+    return 0;
 }
 
 int16_t FEnumCalcEnemyPlanets(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -4657,10 +4672,10 @@ L_45be:
         goto L_45cb;
 
 L_45cb:
-    return 0x1;
+    return 1;
 
 L_45d1:
-    return 0x0;
+    return 0;
 }
 
 int16_t iBuildCyberStarbase(PLANET *lppl) {
@@ -4698,7 +4713,7 @@ L_462a:
         goto L_4635;
 
 L_4635:
-    return 0xffff;
+    return -1;
 
 L_463b:
     ChangeMainObjSel(grobjPlanet, lppl->id);
@@ -5243,7 +5258,9 @@ int16_t iAddAttackFleet(PLANET *lppl, int16_t iAttackStr, int16_t iBestDestroyer
     int16_t  iRand;
     uint16_t t_merge_4f41_0001;
     uint16_t scratch_bp_me;
+    int16_t  t_call_4f32;
     uint16_t t_merge_4fae_0001;
+    int16_t  t_call_4f9f;
     uint16_t t_merge_4fdb_0001;
     uint16_t scratch_bp_mc;
 
@@ -5261,8 +5278,8 @@ L_4f0d:
 
 L_4f13:
     scratch_bp_me = CMaxOperableMines(lppl, idPlayer, 0);
-    CMinesOperating(lppl);
-    /* untranslated: t_merge_4f41_0001 = (scratch_bp_me - callresult(int16_t)) */
+    t_call_4f32 = CMinesOperating(lppl);
+    t_merge_4f41_0001 = (scratch_bp_me - t_call_4f32);
 
 L_4f41:
     iMaxMines = t_merge_4f41_0001;
@@ -5277,8 +5294,8 @@ L_4f7a:
 
 L_4f80:
     scratch_bp_me = CMaxOperableFactories(lppl, idPlayer, 0);
-    CFactoriesOperating(lppl);
-    /* untranslated: t_merge_4fae_0001 = (scratch_bp_me - callresult(int16_t)) */
+    t_call_4f9f = CFactoriesOperating(lppl);
+    t_merge_4fae_0001 = (scratch_bp_me - t_call_4f9f);
 
 L_4fae:
     iMaxFactories = t_merge_4fae_0001;
@@ -5307,7 +5324,7 @@ L_4fdb:
         goto L_4fe5;
 
 L_4fe5:
-    return 0x0;
+    return 0;
 
 L_4feb:
     if ((iBestBattle == -1))
@@ -5370,7 +5387,7 @@ L_511e:
     AddItemToQueue(((iBestBattle * 4) + 0x9), 0x1, grobjFleet, 1);
 
 L_513d:
-    return 0x1;
+    return 1;
 
 L_5143:
     if ((iBestSBDefender == -1))
@@ -5386,7 +5403,7 @@ L_514c:
 
 L_5155:
     AddItemToQueue(iBestSBDefender, 0x1, grobjFleet, 1);
-    return 0x2;
+    return 2;
 
 L_5172:
     if ((iBestDestroyer == -1))
@@ -5396,10 +5413,10 @@ L_5172:
 
 L_517b:
     AddItemToQueue(iBestDestroyer, 0x1, grobjFleet, 1);
-    return 0x3;
+    return 3;
 
 L_5198:
-    return 0x0;
+    return 0;
 }
 
 void TargetCyberArmada(FLEET *lpfl) {
@@ -5579,8 +5596,7 @@ L_5406:
         goto L_540f;
 
 L_540f:
-    /* untranslated: byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) + ((lpplTarget->id * 16) + 0xa))] = (byte HIWORD(vlpbAiPlanet):[(LOWORD(vlpbAiPlanet) +
-     * ((lpplTarget->id * 0x10) + 0xa))] | 0x80) */
+    vlpbAiPlanet[((lpplTarget->id * 16) + 10)] = (vlpbAiPlanet[((lpplTarget->id * 16) + 0xa)] | 0x80);
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
     ord.pt.x = rgptPlan[lpplTarget->id].x;

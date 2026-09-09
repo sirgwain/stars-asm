@@ -235,7 +235,11 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	case *machine.SignExtendValue:
 		return &SignExtend{Parent: c.convertValue(v.Parent), FromBits: v.FromBits, ToBits: v.ToBits, TypeInfo: intTypeForWidth(v.ToBits / 8)}
 	case *machine.Binary:
-		return &Binary{TypeInfo: typeinfo.U16, Op: convertOp(v.Op), LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS)}
+		op := convertOp(v.Op)
+		if op == OpNeg || op == OpNot {
+			return &Unary{TypeInfo: typeinfo.U16, Op: op, X: c.convertValue(v.LHS)}
+		}
+		return &Binary{TypeInfo: typeinfo.U16, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS)}
 	case *machine.ByteValue:
 		return c.convertByte(v)
 	case *machine.Cast:
@@ -308,8 +312,17 @@ func (c *machineConverter) convertValueWithoutBitfields(value machine.Value) Exp
 
 // convertByte converts a machine byte projection or replacement into semantic IR.
 func (c *machineConverter) convertByte(v *machine.ByteValue) Expr {
+	parent := c.convertValue(v.Parent)
+	if v.Value == nil {
+		if replacement, ok := parent.(*Byte); ok && replacement.Value != nil {
+			if replacement.Part == v.Part {
+				return byteProjection(replacement.Value, machine.ByteLow)
+			}
+			return byteProjection(replacement.Parent, v.Part)
+		}
+	}
 	byteValue := &Byte{
-		Parent:   c.convertValue(v.Parent),
+		Parent:   parent,
 		Part:     v.Part,
 		TypeInfo: typeinfo.U8,
 	}
@@ -318,6 +331,15 @@ func (c *machineConverter) convertByte(v *machine.ByteValue) Expr {
 		byteValue.TypeInfo = typeinfo.U16
 	}
 	return byteValue
+}
+
+// byteProjection returns a byte-valued expression without retaining a
+// redundant projection around an already byte-sized value.
+func byteProjection(value Expr, part machine.BytePart) Expr {
+	if value != nil && value.ExprType() != nil && value.ExprType().Bytes() == 1 && part == machine.ByteLow {
+		return value
+	}
+	return &Byte{Parent: value, Part: part, TypeInfo: typeinfo.U8}
 }
 
 // convertTempAssignments creates temp captures scheduled before instOff.

@@ -26,12 +26,12 @@ L_1261:
     iAboutPartial = 0
     call SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion()) -> callresult(void)
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0)
-    return 0x1
+    return 1
 
 L_12a9:
     call GetClientRect(hwnd, &rc) -> callresult(void)
     call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
-    return 0x1
+    return 1
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F)
@@ -110,7 +110,7 @@ L_1473:
     call KillTimer(hwnd, uTimerId) -> callresult(int16_t)
     uTimerId = 0x0
     call EndDialog(hwnd, 1) -> callresult(void)
-    return 0x1
+    return 1
 
 L_149a:
     branch wParam != 0x76 ? L_1510 : L_14a3
@@ -137,5 +137,5 @@ L_1505:
     branch message == WM_TIMER ? L_12d1 : L_1510
 
 L_1510:
-    return 0x0
+    return 0
 

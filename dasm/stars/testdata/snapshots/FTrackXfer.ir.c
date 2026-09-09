@@ -10,7 +10,9 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     BTN      btn;
     int32_t  cNew;
     RECT     rc;
+    int32_t  t_call_5beb;
     int32_t  t_merge_5c20_0001;
+    int32_t  t_call_5c18;
     int32_t  t_merge_5cf0_0001;
     int32_t  t_call_5cf5;
     uint16_t t_merge_5d7f_0001;
@@ -59,7 +61,7 @@ L_5a91:
         goto L_5a9c;
 
 L_5a9c:
-    return 0x0;
+    return 0;
 
 L_5aa2:
     iBtn = (i >> 0x1);
@@ -151,20 +153,20 @@ L_5bc0:
         goto L_5bc9;
 
 L_5bc9:
-    LGetFleetStat(&(pxfer[btn.iSide].fl), 1);
-    /* untranslated: t_merge_5c20_0001 = callresult(int32_t) */
+    t_call_5beb = LGetFleetStat(&(pxfer[btn.iSide].fl), 1);
+    t_merge_5c20_0001 = t_call_5beb;
     goto L_5c20;
 
 L_5bf6:
-    LGetFleetStat(&(pxfer[btn.iSide].fl), 2);
-    /* untranslated: t_merge_5c20_0001 = callresult(int32_t) */
+    t_call_5c18 = LGetFleetStat(&(pxfer[btn.iSide].fl), 2);
+    t_merge_5c20_0001 = t_call_5c18;
 
 L_5c20:
     cNew = t_merge_5c20_0001;
 
 L_5c26:
     cNew = (int32_t)(((uint32_t)(((uint32_t)((pt.x - btn.rc.left)) * cNew)) / (uint32_t)(((btn.rc.right - btn.rc.left) + 0xfffe))));
-    /* untranslated: cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, part[0x4:2](pxfer[btn.iSide])) */
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + (btn.iSide * 0x80)) + 0x4));
     dChg = (cNew - cCur);
     if ((btn.iSide != 0x0))
         goto L_5ce3;
@@ -176,7 +178,7 @@ L_5cda:
     goto L_5cf0;
 
 L_5ce3:
-    /* untranslated: t_merge_5cf0_0001 = words(((HIWORD(dChg) + 0x0) neg 0x0), (LOWORD(dChg) neg 0x0)) */
+    /* untranslated: t_merge_5cf0_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg))) */
 
 L_5cf0:
     t_call_5cf5 = XferSupply(iVal, t_merge_5cf0_0001);
@@ -343,7 +345,7 @@ L_5f25:
     goto L_5f3b;
 
 L_5f2e:
-    /* untranslated: t_merge_5f3b_0001 = words(((HIWORD(dChg) + 0x0) neg 0x0), (LOWORD(dChg) neg 0x0)) */
+    /* untranslated: t_merge_5f3b_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg))) */
 
 L_5f3b:
     t_call_5f40 = XferSupply(iVal, t_merge_5f3b_0001);
@@ -364,5 +366,5 @@ L_5f58:
 FinishUp:
     UpdateXferBtns();
     DrawXferDlg(hwnd, 0x0, &(rc), -2);
-    return 0x1;
+    return 1;
 }

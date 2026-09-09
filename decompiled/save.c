@@ -99,7 +99,7 @@ L_55af:
     pb = (pbStore + 0x70);
     pb = (pb + 0x1);
     *(pb) = LOBYTE(i);
-    memmove(pb, pplr->rgmdRelation, i);
+    memmove(pb, ((uint8_t *)(pplr) + 112), i);
     pb = (pb + i);
     goto L_5600;
 
@@ -114,7 +114,7 @@ L_5600:
         goto L_5616;
 
 L_5616:
-    /* untranslated: branch FCompressUserString(part[0x10:4](game[load([bp+0x6])*0x1]), part[0x1:4](pb), &cOut) == 0 ? L_565c : L_5644 */
+    /* untranslated: branch FCompressUserString(part[0x10:4](game[load([bp+0x6])*0x1]), (pb + 1), &cOut) == 0 ? L_565c : L_5644 */
 
 L_5644:
     *(pb) = LOBYTE(cOut);
@@ -122,7 +122,7 @@ L_5644:
     goto L_5696;
 
 L_565c:
-    /* untranslated: call strcpy(part[0x1:2](pb), pplr->szName) -> callresult(char *) */
+    strcpy((pb + 1), pplr->szName);
     *(pb) = 0x0;
     pb = (pb + (strlen(pplr->szName) + 0x2));
 
@@ -134,7 +134,7 @@ L_5696:
         goto L_56ac;
 
 L_56ac:
-    /* untranslated: branch FCompressUserString(&part[0x10:1](game.szName[pplr]), part[0x1:4](pb), &cOut) == 0 ? L_56f2 : L_56da */
+    /* untranslated: branch FCompressUserString(&part[0x10:1](game.szName[pplr]), (pb + 1), &cOut) == 0 ? L_56f2 : L_56da */
 
 L_56da:
     *(pb) = LOBYTE(cOut);
@@ -142,7 +142,7 @@ L_56da:
     goto L_572c;
 
 L_56f2:
-    /* untranslated: call strcpy(part[0x1:2](pb), pplr->szNames) -> callresult(char *) */
+    strcpy((pb + 1), pplr->szNames);
     *(pb) = 0x0;
     pb = (pb + (strlen(pplr->szNames) + 0x2));
 
@@ -202,7 +202,10 @@ L_5880:
         goto L_5893;
 
 L_5893:
-    /* untranslated: branch FCompressUserString(szHulName, part[0x1:4](pb), &cOut) == 0 ? L_58d5 : L_58bd */
+    if ((FCompressUserString(szHulName, (pb + 1), &(cOut)) == 0))
+        goto L_58d5;
+    else
+        goto L_58bd;
 
 L_58bd:
     *(pb) = LOBYTE(cOut);
@@ -210,7 +213,7 @@ L_58bd:
     goto L_5907;
 
 L_58d5:
-    /* untranslated: call strcpy(part[0x1:2](pb), szHulName) -> callresult(char *) */
+    strcpy((pb + 1), szHulName);
     *(pb) = 0x0;
     pb = (pb + (strlen(szHulName) + 0x2));
 
@@ -233,37 +236,37 @@ L_595e:
 }
 
 int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
-    int16_t  iMax;
-    FLEET   *lpflT;
-    int16_t  fNoAutoTrack;
-    BTLPLAN *lpbtlplan;
-    int16_t  j;
-    jmp_buf *penvMemSav[9];
-    int16_t  i;
-    ORDER   *lpord;
-    THING   *lpth;
-    FLEET   *lpfl;
-    jmp_buf  env[9];
-    int16_t  iord;
-    SHDEF   *lpshdef;
-    THING   *lpthMac;
-    int16_t  fRet;
-    PLANET  *lpplT;
-    SCAN     scan;
-    int16_t  mdTarget;
-    FLEET   *lpflTarget;
-    POINT    pt;
-    int32_t  dy;
-    int16_t  iflT;
-    FLEET   *lpflBest;
-    int16_t  fFoundIdeal;
-    int32_t  dx;
-    int32_t  lBest;
-    int32_t  l;
-    PLANET   pl;
-    int16_t  t_merge_5be5_0001;
-    uint16_t t_merge_5be5_0002;
-    uint16_t t_merge_6797_0001;
+    int16_t    iMax;
+    FLEET     *lpflT;
+    int16_t    fNoAutoTrack;
+    BTLPLAN   *lpbtlplan;
+    int16_t    j;
+    jmp_buf   *penvMemSav[9];
+    int16_t    i;
+    ORDER     *lpord;
+    THING     *lpth;
+    FLEET     *lpfl;
+    jmp_buf    env[9];
+    int16_t    iord;
+    SHDEF     *lpshdef;
+    THING     *lpthMac;
+    int16_t    fRet;
+    PLANET    *lpplT;
+    SCAN       scan;
+    int16_t    mdTarget;
+    FLEET     *lpflTarget;
+    POINT      pt;
+    int32_t    dy;
+    int16_t    iflT;
+    FLEET     *lpflBest;
+    int16_t    fFoundIdeal;
+    int32_t    dx;
+    int32_t    lBest;
+    int32_t    l;
+    PLANET     pl;
+    int16_t    t_merge_5be5_0001;
+    uint16_t   t_merge_5be5_0002;
+    DtFileType t_merge_6797_0001;
 
 L_5964:
     fRet = 1;
@@ -1003,11 +1006,11 @@ L_677e:
         goto L_678e;
 
 L_678e:
-    t_merge_6797_0001 = 0x2;
+    t_merge_6797_0001 = dtHost;
     goto L_6797;
 
 L_6794:
-    t_merge_6797_0001 = 0x3;
+    t_merge_6797_0001 = dtTurn;
 
 L_6797:
     if ((FCreateFile(t_merge_6797_0001, iPlayer, 0x0) == 0))
@@ -1596,11 +1599,11 @@ L_704e:
         goto L_7076;
 
 L_7076:
-    return 0x0;
+    return 0;
 
 L_707c:
     WriteBOF(iPlayer, 3, 1);
-    return 0x1;
+    return 1;
 }
 
 void WriteBattles(int16_t iPlayer) {
@@ -2504,7 +2507,7 @@ L_8267:
 
 L_8270:
     rgb[4] = ((rgb[0x4] & 0xf7ff) | ((fByte & 0x1) << 0xb));
-    /* untranslated: ss:[&rgb[0xc]] = us */
+    rgb[12] = us;
     pb = &(rgb[0xe]);
     if ((fByte == 0))
         goto L_8305;
@@ -2937,7 +2940,10 @@ L_89f9:
         goto L_8a2c;
 
 L_8a2c:
-    /* untranslated: branch FCompressUserString(szPlanName, part[0x1:4](pb), &cOut) == 0 ? L_8a67 : L_8a53 */
+    if ((FCompressUserString(szPlanName, (pb + 1), &(cOut)) == 0))
+        goto L_8a67;
+    else
+        goto L_8a53;
 
 L_8a53:
     *(pb) = LOBYTE(cOut);
@@ -2945,7 +2951,7 @@ L_8a53:
     goto L_8a94;
 
 L_8a67:
-    /* untranslated: call strcpy(part[0x1:2](pb), szPlanName) -> callresult(char *) */
+    strcpy((pb + 1), szPlanName);
     *(pb) = 0x0;
     pb = (pb + (strlen(szPlanName) + 0x2));
 
@@ -3186,13 +3192,13 @@ L_8e44:
 
 L_8e64:
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_8e70:
     StreamOpen(psz, 4114);
     WriteBOF(iPlayer, dt, 0);
     penvMem = penvMemSav;
-    return 0x1;
+    return 1;
 }
 
 void WriteBOF(int16_t iPlayer, int16_t dt, int16_t fMulti) {
@@ -3277,7 +3283,7 @@ L_90a4:
 L_90af:
     StreamClose();
     penvMem = penvMemSav;
-    return 0x0;
+    return 0;
 
 L_90c0:
     fFileErrSilent = 1;
@@ -3444,9 +3450,9 @@ L_9332:
     rgbCur[6] = ((rgbCur[0x6] & 0x1fff) | 0xe000);
 
 L_934a:
-    /* untranslated: rgbCur[12] = (rgbCur[12] ~ 0) */
-    /* untranslated: rgbCur[14] = (rgbCur[14] ~ 0) */
-    /* untranslated: call lseek(hf, sext16to32(((hdrCur.cb + 0x2) neg 0x0)), 1) -> callresult(int32_t) */
+    rgbCur[12] = (~rgbCur[12]);
+    rgbCur[14] = (~rgbCur[14]);
+    lseek(hf, (uint32_t)((-(hdrCur.cb + 0x2))), 1);
     SetFileSeeds(lSeedSav1, lSeedSav2);
     WriteRt(rtPlr, hdrCur.cb, rgbCur);
     if ((dt != dtTurn))
@@ -4142,8 +4148,12 @@ void SetVisPFFleets(int16_t iPlr) {
     int32_t  lVis2;
     uint16_t t_merge_a120_0001;
     uint16_t t_merge_a268_0001;
+    int16_t  t_call_a39c;
+    int16_t  t_call_a3ba;
     uint16_t scratch_bp_m44;
     uint16_t scratch_bp_m46;
+    int16_t  t_call_aa5f;
+    int16_t  t_call_aa88;
 
 L_a100:
     if ((iPlr != -1))
@@ -4295,10 +4305,16 @@ L_a30b:
         goto L_a319;
 
 L_a319:
-    /* untranslated: branch ss:[&pt] != lpfl2->pt.x ? L_a377 : L_a333 */
+    if ((pt.x != lpfl2->pt.x))
+        goto L_a377;
+    else
+        goto L_a333;
 
 L_a333:
-    /* untranslated: branch ss:[&pt+0x2] != lpfl2->pt.y ? L_a377 : L_a33c */
+    if ((pt.y != lpfl2->pt.y))
+        goto L_a377;
+    else
+        goto L_a33c;
 
 L_a33c:
     if ((lpfl2->fInclude == 0x0))
@@ -4324,14 +4340,20 @@ L_a377:
 L_a38b:
 
 L_a391:
-    abs((pt.x - lpfl2->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_a2b2 : L_a3af */
+    t_call_a39c = abs((pt.x - lpfl2->pt.x));
+    dx = t_call_a39c;
+    if ((t_call_a39c > iRadius))
+        goto L_a2b2;
+    else
+        goto L_a3af;
 
 L_a3af:
-    abs((pt.y - lpfl2->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_a2b2 : L_a3cd */
+    t_call_a3ba = abs((pt.y - lpfl2->pt.y));
+    dy = t_call_a3ba;
+    if ((t_call_a3ba > iRadius))
+        goto L_a2b2;
+    else
+        goto L_a3cd;
 
 L_a3cd:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -4777,14 +4799,20 @@ L_aa38:
 L_aa47:
 
 L_aa4d:
-    abs((rgptPlan[lppl->id].x - pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_abc2 : L_aa72 */
+    t_call_aa5f = abs((rgptPlan[lppl->id].x - pt.x));
+    dx = t_call_aa5f;
+    if ((t_call_aa5f > iRadius))
+        goto L_abc2;
+    else
+        goto L_aa72;
 
 L_aa72:
-    abs((rgptPlan[lppl->id].y - pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_abc2 : L_aa9b */
+    t_call_aa88 = abs((rgptPlan[lppl->id].y - pt.y));
+    dy = t_call_aa88;
+    if ((t_call_aa88 > iRadius))
+        goto L_abc2;
+    else
+        goto L_aa9b;
 
 L_aa9b:
     d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -4901,8 +4929,17 @@ void SetVisPFPlanets(int16_t iPlr) {
     int16_t  rgStargateRange[16];
     int32_t  lVis2;
     uint16_t t_merge_abfe_0001;
+    int16_t  t_call_ac7a;
+    int16_t  t_call_add8;
+    int16_t  t_call_adf6;
     uint16_t scratch_bp_m66;
     uint16_t scratch_bp_m68;
+    int16_t  t_call_b188;
+    int16_t  t_call_b1a6;
+    int16_t  t_call_b5eb;
+    int16_t  t_call_b614;
+    int16_t  t_call_b861;
+    int16_t  t_call_b88a;
 
 L_abde:
     if ((iPlr != -1))
@@ -4939,9 +4976,12 @@ L_ac2e:
 L_ac66:
 
 L_ac6c:
-    StargateRangeFromLppl(0x0, iPlr, i);
-    /* untranslated: rgStargateRange[i] = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) <= 0 ? L_ac9b : L_ac96 */
+    t_call_ac7a = StargateRangeFromLppl(0x0, iPlr, i);
+    rgStargateRange[i] = t_call_ac7a;
+    if ((t_call_ac7a <= 0))
+        goto L_ac9b;
+    else
+        goto L_ac96;
 
 L_ac96:
     fStargateView = 1;
@@ -5023,14 +5063,20 @@ L_adb3:
 L_adc7:
 
 L_adcd:
-    abs((pt.x - lpfl2->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_ad5d : L_adeb */
+    t_call_add8 = abs((pt.x - lpfl2->pt.x));
+    dx = t_call_add8;
+    if ((t_call_add8 > iRadius))
+        goto L_ad5d;
+    else
+        goto L_adeb;
 
 L_adeb:
-    abs((pt.y - lpfl2->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_ad5d : L_ae09 */
+    t_call_adf6 = abs((pt.y - lpfl2->pt.y));
+    dy = t_call_adf6;
+    if ((t_call_adf6 > iRadius))
+        goto L_ad5d;
+    else
+        goto L_ae09;
 
 L_ae09:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5259,14 +5305,20 @@ L_b163:
 L_b177:
 
 L_b17d:
-    abs((pt.x - lpth->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b409 : L_b19b */
+    t_call_b188 = abs((pt.x - lpth->pt.x));
+    dx = t_call_b188;
+    if ((t_call_b188 > iRadius))
+        goto L_b409;
+    else
+        goto L_b19b;
 
 L_b19b:
-    abs((pt.y - lpth->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b409 : L_b1b9 */
+    t_call_b1a6 = abs((pt.y - lpth->pt.y));
+    dy = t_call_b1a6;
+    if ((t_call_b1a6 > iRadius))
+        goto L_b409;
+    else
+        goto L_b1b9;
 
 L_b1b9:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5520,14 +5572,20 @@ L_b5cc:
 L_b5d3:
 
 L_b5d9:
-    abs((rgptPlan[lppl2->id].x - pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b70c : L_b5fe */
+    t_call_b5eb = abs((rgptPlan[lppl2->id].x - pt.x));
+    dx = t_call_b5eb;
+    if ((t_call_b5eb > iRadius))
+        goto L_b70c;
+    else
+        goto L_b5fe;
 
 L_b5fe:
-    abs((rgptPlan[lppl2->id].y - pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b70c : L_b627 */
+    t_call_b614 = abs((rgptPlan[lppl2->id].y - pt.y));
+    dy = t_call_b614;
+    if ((t_call_b614 > iRadius))
+        goto L_b70c;
+    else
+        goto L_b627;
 
 L_b627:
     d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5661,14 +5719,20 @@ L_b83a:
 L_b849:
 
 L_b84f:
-    abs((rgptPlan[lppl2->id].x - pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b9c4 : L_b874 */
+    t_call_b861 = abs((rgptPlan[lppl2->id].x - pt.x));
+    dx = t_call_b861;
+    if ((t_call_b861 > iRadius))
+        goto L_b9c4;
+    else
+        goto L_b874;
 
 L_b874:
-    abs((rgptPlan[lppl2->id].y - pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_b9c4 : L_b89d */
+    t_call_b88a = abs((rgptPlan[lppl2->id].y - pt.y));
+    dy = t_call_b88a;
+    if ((t_call_b88a > iRadius))
+        goto L_b9c4;
+    else
+        goto L_b89d;
 
 L_b89d:
     d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5787,8 +5851,16 @@ void SetVisPFThings(int16_t iPlr) {
     PLANET  *lpplMac2;
     int32_t  lVis2;
     uint16_t t_merge_ba0e_0001;
+    int16_t  t_call_bb81;
+    int16_t  t_call_bb9f;
     uint16_t scratch_bp_m3c;
     uint16_t scratch_bp_m3e;
+    int16_t  t_call_bde6;
+    int16_t  t_call_be04;
+    int16_t  t_call_c06f;
+    int16_t  t_call_c098;
+    int16_t  t_call_c327;
+    int16_t  t_call_c353;
     uint16_t scratch_bp_m2c;
     uint16_t scratch_bp_m2e;
 
@@ -5884,14 +5956,20 @@ L_bb5c:
 L_bb70:
 
 L_bb76:
-    abs((pt.x - lpfl2->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_bb06 : L_bb94 */
+    t_call_bb81 = abs((pt.x - lpfl2->pt.x));
+    dx = t_call_bb81;
+    if ((t_call_bb81 > iRadius))
+        goto L_bb06;
+    else
+        goto L_bb94;
 
 L_bb94:
-    abs((pt.y - lpfl2->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_bb06 : L_bbb2 */
+    t_call_bb9f = abs((pt.y - lpfl2->pt.y));
+    dy = t_call_bb9f;
+    if ((t_call_bb9f > iRadius))
+        goto L_bb06;
+    else
+        goto L_bbb2;
 
 L_bbb2:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -6033,14 +6111,20 @@ L_bdc1:
 L_bdd5:
 
 L_bddb:
-    abs((pt.x - lpth2->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_bff4 : L_bdf9 */
+    t_call_bde6 = abs((pt.x - lpth2->pt.x));
+    dx = t_call_bde6;
+    if ((t_call_bde6 > iRadius))
+        goto L_bff4;
+    else
+        goto L_bdf9;
 
 L_bdf9:
-    abs((pt.y - lpth2->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_bff4 : L_be17 */
+    t_call_be04 = abs((pt.y - lpth2->pt.y));
+    dy = t_call_be04;
+    if ((t_call_be04 > iRadius))
+        goto L_bff4;
+    else
+        goto L_be17;
 
 L_be17:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -6158,14 +6242,20 @@ L_c048:
 L_c057:
 
 L_c05d:
-    abs((rgptPlan[lppl2->id].x - pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_c1d2 : L_c082 */
+    t_call_c06f = abs((rgptPlan[lppl2->id].x - pt.x));
+    dx = t_call_c06f;
+    if ((t_call_c06f > iRadius))
+        goto L_c1d2;
+    else
+        goto L_c082;
 
 L_c082:
-    abs((rgptPlan[lppl2->id].y - pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch callresult(int16_t) > iRadius ? L_c1d2 : L_c0ab */
+    t_call_c098 = abs((rgptPlan[lppl2->id].y - pt.y));
+    dy = t_call_c098;
+    if ((t_call_c098 > iRadius))
+        goto L_c1d2;
+    else
+        goto L_c0ab;
 
 L_c0ab:
     d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -6337,26 +6427,44 @@ L_c30c:
 L_c316:
 
 L_c31c:
-    abs((pt.x - lpfl2->pt.x));
-    /* untranslated: dx = callresult(int16_t) */
-    /* untranslated: branch signhiword(callresult(int16_t)) > HIWORD(lRadius2) ? L_c29f : L_c33b */
+    t_call_c327 = abs((pt.x - lpfl2->pt.x));
+    dx = t_call_c327;
+    if ((SIGNHIWORD(t_call_c327) > HIWORD(lRadius2)))
+        goto L_c29f;
+    else
+        goto L_c33b;
 
 L_c33b:
-    /* untranslated: branch signhiword(callresult(int16_t)) < HIWORD(lRadius2) ? L_c348 : L_c340 */
+    if ((SIGNHIWORD(t_call_c327) < HIWORD(lRadius2)))
+        goto L_c348;
+    else
+        goto L_c340;
 
 L_c340:
-    /* untranslated: branch callresult(int16_t) > LOWORD(lRadius2) ? L_c29f : L_c348 */
+    if ((t_call_c327 > LOWORD(lRadius2)))
+        goto L_c29f;
+    else
+        goto L_c348;
 
 L_c348:
-    abs((pt.y - lpfl2->pt.y));
-    /* untranslated: dy = callresult(int16_t) */
-    /* untranslated: branch signhiword(callresult(int16_t)) > HIWORD(lRadius2) ? L_c29f : L_c367 */
+    t_call_c353 = abs((pt.y - lpfl2->pt.y));
+    dy = t_call_c353;
+    if ((SIGNHIWORD(t_call_c353) > HIWORD(lRadius2)))
+        goto L_c29f;
+    else
+        goto L_c367;
 
 L_c367:
-    /* untranslated: branch signhiword(callresult(int16_t)) < HIWORD(lRadius2) ? L_c374 : L_c36c */
+    if ((SIGNHIWORD(t_call_c353) < HIWORD(lRadius2)))
+        goto L_c374;
+    else
+        goto L_c36c;
 
 L_c36c:
-    /* untranslated: branch callresult(int16_t) > LOWORD(lRadius2) ? L_c29f : L_c374 */
+    if ((t_call_c353 > LOWORD(lRadius2)))
+        goto L_c29f;
+    else
+        goto L_c374;
 
 L_c374:
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));

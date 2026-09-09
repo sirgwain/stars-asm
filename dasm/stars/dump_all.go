@@ -222,6 +222,14 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		result.Analysis.IR.UntranslatedBranch += analysis.IRAnalysis.UntranslatedBranch
 		result.Analysis.IR.UntranslatedPart += analysis.IRAnalysis.UntranslatedPart
 		result.Analysis.IR.UntranslatedScratch += analysis.IRAnalysis.UntranslatedScratch
+		if len(analysis.IRAnalysis.UntranslatedFailures) != 0 {
+			if result.Analysis.IR.UntranslatedFailures == nil {
+				result.Analysis.IR.UntranslatedFailures = make(map[string]int)
+			}
+			for failure, count := range analysis.IRAnalysis.UntranslatedFailures {
+				result.Analysis.IR.UntranslatedFailures[failure] += count
+			}
+		}
 
 		// collect function path facts into a separate list
 		funcPathFacts.FunctionPathFacts = append(funcPathFacts.FunctionPathFacts, analysis.SemAnalysis.FunctionPathFacts...)

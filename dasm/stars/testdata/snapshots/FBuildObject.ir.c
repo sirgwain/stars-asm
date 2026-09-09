@@ -29,6 +29,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     uint16_t  t_merge_2763_0001;
     uint16_t  scratch_bp_m2e;
     uint16_t  scratch_bp_m16;
+    int16_t   t_call_2d26;
 
 L_19b2:
     if ((grobj != grobjFleet))
@@ -57,7 +58,7 @@ L_1a09:
         goto L_1a26;
 
 L_1a26:
-    return 0x0;
+    return 0;
 
 L_1a2c:
     idm = idmHasBuiltNew;
@@ -139,7 +140,7 @@ L_1c1f:
 L_1c55:
     lpshdef->cBuilt = (lpshdef->cBuilt + 0x1);
     lpshdef->cExist = (lpshdef->cExist + 0x1);
-    return 0x1;
+    return 1;
 
 L_1c78:
     if ((lppl->fStarbase == 0x0))
@@ -154,7 +155,7 @@ L_1c8f:
         goto L_1c98;
 
 L_1c98:
-    return 0x0;
+    return 0;
 
 L_1c9e:
     lpshdef = (rglpshdef[lppl->iPlayer] + LOWORD((0x93 * iItem)));
@@ -171,7 +172,7 @@ L_1cd6:
 
 L_1cf3:
     FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, (iItem + 1), 0);
-    return 0x0;
+    return 0;
 
 L_1d1d:
     if ((rgplr[lppl->iPlayer].cFleet != 0x200))
@@ -294,11 +295,11 @@ L_20c5:
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
     FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0, 0, 0);
-    return 0x1;
+    return 1;
 
 L_214f:
     FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0);
-    return 0x0;
+    return 0;
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id);
@@ -415,7 +416,7 @@ L_24d7:
     FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
 
 L_24fc:
-    return 0x0;
+    return 0;
 
 L_2502:
     goto L_2fc0;
@@ -484,7 +485,7 @@ L_2672:
 
 L_26be:
     FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0);
-    return 0x0;
+    return 0;
 
 L_26e7:
     if ((lppl->idFling != 0x0))
@@ -494,7 +495,7 @@ L_26e7:
 
 L_26f9:
     FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0);
-    return 0x0;
+    return 0;
 
 L_2722:
     if ((iItem != 6))
@@ -827,9 +828,9 @@ L_2cea:
 L_2cf2:
     lppl->rgwtMin[i] = 0;
     scratch_bp_m16 = Random(50);
-    Random(50);
-    /* untranslated: lppl->rgEnvVarOrig[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16)) */
-    /* untranslated: lppl->rgEnvVar[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16)) */
+    t_call_2d26 = Random(50);
+    lppl->rgEnvVarOrig[i] = LOBYTE(((t_call_2d26 + 0x1) + scratch_bp_m16));
+    lppl->rgEnvVar[i] = LOBYTE(((t_call_2d26 + 0x1) + scratch_bp_m16));
     lppl->rgMinConc[i] = LOBYTE(((Random(40) + 0x19) + Random(40)));
     i = (i + 1);
 
@@ -853,10 +854,10 @@ L_2f7f:
 L_2fc0:
 
 L_2fc3:
-    return 0x0;
+    return 0;
 
 L_2fc9:
-    return 0x1;
+    return 1;
 
 L_2fcf:
 }

@@ -463,16 +463,19 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     uint16_t t_merge_0201_0001;
     uint32_t t_merge_0951_0001_wide;
     uint16_t scratch_bp_m116;
+    int16_t  t_call_0a1b;
     uint16_t t_merge_18ed_0001;
     uint16_t t_merge_1e0f_0001;
     uint16_t t_merge_1e81_0001;
     uint16_t t_merge_1f75_0001;
+    int16_t  t_call_1f6d;
     uint32_t scratch_bp_m118;
     uint16_t scratch_bp_m11c;
     uint16_t scratch_bp_m11a;
-    uint16_t t_merge_312c_0001;
+    int16_t  t_merge_312c_0001;
     int16_t  t_35ff;
-    uint16_t t_merge_399c_0001;
+    int16_t  t_call_361d;
+    int16_t  t_merge_399c_0001;
     int16_t  t_40ef;
     uint16_t t_merge_4327_0001;
 
@@ -859,7 +862,7 @@ L_0823:
 
 L_084d:
     DestroyCurGame();
-    return 0x0;
+    return 0;
 
 L_0858:
     lpPlanets = LpAlloc(LOWORD((cPlanMax * 0x38)), htPlanets);
@@ -913,9 +916,9 @@ L_09a1:
     lppl->rgEnvVar[1] = LOBYTE((Random(90) + 0x1));
     lppl->rgEnvVar[1] = (lppl->rgEnvVar[1] + LOBYTE(Random(10)));
     lppl->rgEnvVarOrig[1] = lppl->rgEnvVar[1];
-    Random(99);
-    /* untranslated: lppl->rgEnvVarOrig[2] = lobyte((callresult(int16_t) + 0x1)) */
-    /* untranslated: lppl->rgEnvVar[2] = lobyte((callresult(int16_t) + 0x1)) */
+    t_call_0a1b = Random(99);
+    lppl->rgEnvVarOrig[2] = LOBYTE((t_call_0a1b + 0x1));
+    lppl->rgEnvVar[2] = LOBYTE((t_call_0a1b + 0x1));
     if ((game.fTutorial == 0x0))
         goto L_0ae7;
     else
@@ -1855,8 +1858,8 @@ L_1f5a:
     goto L_1f75;
 
 L_1f60:
-    CAdvantagePoints(&(rgplr[i]));
-    /* untranslated: t_merge_1f75_0001 = callresult(int16_t) */
+    t_call_1f6d = CAdvantagePoints(&(rgplr[i]));
+    t_merge_1f75_0001 = t_call_1f6d;
 
 L_1f75:
     iT = t_merge_1f75_0001;
@@ -2378,11 +2381,11 @@ L_3107:
         goto L_3123;
 
 L_3123:
-    t_merge_312c_0001 = 0x5;
+    t_merge_312c_0001 = 5;
     goto L_312c;
 
 L_3129:
-    t_merge_312c_0001 = 0x2;
+    t_merge_312c_0001 = 2;
 
 L_312c:
     CreateStartupShip(i, idHome, t_merge_312c_0001, 1);
@@ -2647,9 +2650,9 @@ L_3610:
     goto L_365d;
 
 L_3619:
-    Random(97);
-    /* untranslated: lpplPicked->rgEnvVarOrig[j] = lobyte((callresult(int16_t) + 0x2)) */
-    /* untranslated: lpplPicked->rgEnvVar[j] = lobyte((callresult(int16_t) + 0x2)) */
+    t_call_361d = Random(97);
+    lpplPicked->rgEnvVarOrig[j] = LOBYTE((t_call_361d + 0x2));
+    lpplPicked->rgEnvVar[j] = LOBYTE((t_call_361d + 0x2));
     j = (j + 1);
 
 L_365d:
@@ -2723,11 +2726,11 @@ L_3977:
         goto L_3993;
 
 L_3993:
-    t_merge_399c_0001 = 0x8;
+    t_merge_399c_0001 = 8;
     goto L_399c;
 
 L_3999:
-    t_merge_399c_0001 = 0x6;
+    t_merge_399c_0001 = 6;
 
 L_399c:
     CreateStartupShip(i, idHome, t_merge_399c_0001, 1);
@@ -3346,7 +3349,7 @@ L_43d8:
 L_4411:
     AlertSz(PszFormatIds(idsUnableCreateUniverseDefinitionFile, 0x0), MB_ICONHAND);
     DestroyCurGame();
-    return 0x0;
+    return 0;
 
 L_443d:
     WriteRt(rtGame, 64, game.lid);
@@ -3398,7 +3401,7 @@ L_45c5:
         goto L_45ce;
 
 L_45ce:
-    return 0x1;
+    return 1;
 
 L_45d4:
     if ((game.fSinglePlr == 0x0))
@@ -3416,7 +3419,7 @@ L_45e6:
 
 L_4623:
     AlertSz(PszFormatIds(idsUnableOpenNewTurnFile, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_464a:
     idPlayer = iplrSingle;
@@ -3430,13 +3433,14 @@ L_4672:
     CreateChildWindows();
 
 L_4683:
-    return 0x1;
+    return 1;
 }
 
 int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef) {
     int16_t ishMac;
     FLEET  *lpfl;
     char    t_46ad;
+    SHDEF  *t_call_46b8;
 
 L_4690:
     if ((fAddShdef == 0))
@@ -3448,8 +3452,8 @@ L_46a2:
     t_46ad = rgplr[iplr].cShDef;
     rgplr[iplr].cShDef = (rgplr[iplr].cShDef + 1);
     ishMac = (uint16_t)(t_46ad);
-    LpshdefT();
-    /* untranslated: rglpshdef[iplr][ishMac] = 147-byte farseg(callresult(SHDEF *)):[(faroff(callresult(SHDEF *)) + loword((0x93 * ishdef)))] */
+    t_call_46b8 = LpshdefT();
+    rglpshdef[iplr][ishMac] = t_call_46b8[ishdef];
     rglpshdef[iplr][ishMac].wFlags = ((rglpshdef[iplr][ishMac].wFlags & 0x83ff) | ((ishMac & 0x1f) * 0x400));
     ishdef = ishMac;
 
@@ -3482,6 +3486,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
     char   *pchT;
     int16_t idAi;
     int16_t lvlAi;
+    PLAYER *t_call_4eb9;
     int16_t t_merge_5cde_0001;
 
 L_4812:
@@ -3958,8 +3963,8 @@ L_4eaf:
     idAi = (idAi - 1);
 
 L_4eb3:
-    LpplrComp(idAi, lvlAi);
-    /* untranslated: rgplr[i] = 192-byte farseg(callresult(PLAYER *)):[faroff(callresult(PLAYER *))] */
+    t_call_4eb9 = LpplrComp(idAi, lvlAi);
+    rgplr[i] = *(t_call_4eb9);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfdff) | 0x200);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0x1fff) | ((idAi & 0x7) * 0x2000));
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xe3ff) | ((lvlAi & 0x7) * 0x400));
@@ -5032,7 +5037,7 @@ L_5a0e:
         goto L_5a26;
 
 L_5a26:
-    CchGetString((Random(24) + 1390), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x52])))) * 0x1]);
+    CchGetString((Random(24) + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
     /* untranslated: call _wsprintf(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), "%ss", &rgplr[i].szName) -> callresult(int16_t) */
 
 L_5a89:
@@ -5053,7 +5058,7 @@ L_5aa0:
     goto L_5ae1;
 
 L_5aa8:
-    if ((strcmp(game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x52])))) * 0x1], game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x6c])))) * 0x1]) == 0))
+    if ((strcmp(((0x59a2 + LOWORD((192 * i))) + 0x80), ((0x59a2 + LOWORD((192 * j))) + 0x80)) == 0))
         goto L_5aec;
     else
         goto L_5ad7;
@@ -5092,7 +5097,7 @@ L_5b15:
         goto L_5b20;
 
 L_5b20:
-    if ((strcmp(game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x6c])))) * 0x1], PszGetCompressedString((c + 1390))) == 0))
+    if ((strcmp(((0x59a2 + LOWORD((192 * j))) + 0x80), PszGetCompressedString((c + 1390))) == 0))
         goto L_5b57;
     else
         goto L_5b4e;
@@ -5118,9 +5123,8 @@ L_5b72:
     c = 0;
 
 L_5b7a:
-    CchGetString((c + 1390), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x52])))) * 0x1]);
-    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), game.wCrap[(0x59a2 + loword((0xc0 * load([bp-0x52]))))*0x1]) ->
-     * callresult(char *) */
+    CchGetString((c + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
+    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), ((0x59a2 + loword((192 * i))) + 0x80)) -> callresult(char *) */
     /* untranslated: call strcat(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), 0xa32) -> callresult(char *) */
 
 L_5be4:
@@ -5318,6 +5322,7 @@ L_5e58:
 
 void CreateTutorWorld() {
     int16_t i;
+    PLAYER *t_call_5f2e;
 
 L_5e5e:
     memset(game.lid, 0, 0x40);
@@ -5336,8 +5341,8 @@ L_5e5e:
     rgplr[0] = vrgplrDef[0];
     CchGetString(idsHumanoid, LOWORD(rgplr[0].szName));
     /* untranslated: call _wsprintf(part[0x0:4](rgplr[0].szNames), "%ss", &part[0x80:0](rgplr)) -> callresult(int16_t) */
-    LpplrComp(1, 0);
-    /* untranslated: rgplr[1] = 192-byte farseg(callresult(PLAYER *)):[faroff(callresult(PLAYER *))] */
+    t_call_5f2e = LpplrComp(1, 0);
+    rgplr[1] = *(t_call_5f2e);
     rgplr[1].fAi = 0x1;
     rgplr[1].lvlAi = 0x0;
     rgplr[1].idAi = 0x1;
@@ -5383,6 +5388,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     GAME     gameT;
     uint16_t t_merge_62b9_0001;
     uint16_t t_merge_62ff_0001;
+    PLAYER  *t_call_67d5;
     int16_t  t_merge_6c95_0001;
 
 L_6022:
@@ -5424,7 +5430,7 @@ L_60ab:
 L_60c9:
     vrgplrTypeNew[i] = LOBYTE(((i << 0x2) | 0x2));
     vrgplrNew[i] = rgplr[i];
-    vrgszFileNew[i * 0xd] = 0;
+    vrgszFileNew[(i * 13)] = 0;
     goto L_609c;
 
 L_611c:
@@ -5711,7 +5717,7 @@ L_6694:
     rgplr[i] = vrgplrDef[c];
 
 L_66d3:
-    CchGetString((c + 1383), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x2e])))) * 0x1]);
+    CchGetString((c + 1383), ((0x59a2 + LOWORD((192 * i))) + 0x80));
     /* untranslated: call _wsprintf(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), "%ss", &rgplr[i].szName) -> callresult(int16_t) */
     goto L_68cd;
 
@@ -5740,8 +5746,8 @@ L_67bd:
     idAi = Random(6);
 
 L_67cd:
-    LpplrComp(idAi, lvlAi);
-    /* untranslated: rgplr[i] = 192-byte farseg(callresult(PLAYER *)):[faroff(callresult(PLAYER *))] */
+    t_call_67d5 = LpplrComp(idAi, lvlAi);
+    rgplr[i] = *(t_call_67d5);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfdff) | 0x200);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xe3ff) | ((lvlAi & 0x7) * 0x400));
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0x1fff) | ((idAi & 0x7) * 0x2000));
@@ -5811,7 +5817,7 @@ L_697f:
         goto L_6997;
 
 L_6997:
-    CchGetString((Random(24) + 1390), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x2e])))) * 0x1]);
+    CchGetString((Random(24) + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
 
 L_69c0:
     if (((uint16_t)(rgplr[i].szNames[0]) != 0))
@@ -5840,7 +5846,7 @@ L_6a29:
     goto L_6a6d;
 
 L_6a32:
-    if ((strcmp(game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x2e])))) * 0x1], game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x206])))) * 0x1]) == 0))
+    if ((strcmp(((0x59a2 + LOWORD((192 * i))) + 0x80), ((0x59a2 + LOWORD((192 * j))) + 0x80)) == 0))
         goto L_6a79;
     else
         goto L_6a62;
@@ -5879,7 +5885,7 @@ L_6aa5:
         goto L_6ab1;
 
 L_6ab1:
-    if ((strcmp(game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x206])))) * 0x1], PszGetCompressedString((c + 1390))) == 0))
+    if ((strcmp(((0x59a2 + LOWORD((192 * j))) + 0x80), PszGetCompressedString((c + 1390))) == 0))
         goto L_6ae9;
     else
         goto L_6ae0;
@@ -5905,9 +5911,8 @@ L_6b05:
     c = 0;
 
 L_6b0d:
-    CchGetString((c + 1390), game.wCrap[(0x59a2 + loword((0xc0 * load([bp - 0x2e])))) * 0x1]);
-    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), game.wCrap[(0x59a2 + loword((0xc0 * load([bp-0x2e]))))*0x1]) ->
-     * callresult(char *) */
+    CchGetString((c + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
+    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), ((0x59a2 + loword((192 * i))) + 0x80)) -> callresult(char *) */
     /* untranslated: call strcat(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), 0xac0) -> callresult(char *) */
 
 L_6b77:
@@ -6748,15 +6753,15 @@ L_7586:
     szXY[2] = 0;
     ofn.lStructSize = 0x48;
     ofn.hwndOwner = hwndFrame;
-    /* untranslated: ofn.lpstrFilter = &dword ss:[&szFilter] */
+    ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;
-    /* untranslated: ofn.lpstrFile = &dword ss:[&szFile] */
+    ofn.lpstrFile = szFile;
     ofn.nMaxFile = 0x100;
-    /* untranslated: ofn.lpstrFileTitle = &dword ss:[&szFileTitle] */
+    ofn.lpstrFileTitle = szFileTitle;
     ofn.nMaxFileTitle = 0x100;
     ofn.lpstrInitialDir = szDirName;
     ofn.lpstrTitle = "Choose New Game Name";
-    /* untranslated: ofn.lpstrDefExt = &dword ss:[&szXY] */
+    ofn.lpstrDefExt = szXY;
     ofn.Flags = 0x8806;
     if ((GetSaveFileName(&(ofn)) == 0))
         goto L_769e;
@@ -6778,10 +6783,10 @@ L_7674:
 
 L_7685:
     strcpy(szFileSuggest, szFile);
-    return 0x1;
+    return 1;
 
 L_769e:
-    return 0x0;
+    return 0;
 }
 
 int16_t SimpleNewGameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -6820,12 +6825,12 @@ L_7737:
 L_7740:
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_7771:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_7799:
     i = 200;
@@ -6931,7 +6936,7 @@ L_7858:
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     rcGBox.top = (LOWORD((0x3 * dyArial8)) + rcGBox.bottom);
     rcGBox.bottom = 1000;
-    /* untranslated: call ExpandRc(&rcGBox, (dyArial8 neg 0), 0) -> callresult(void) */
+    ExpandRc(&(rcGBox), (-dyArial8), 0);
     c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
     dy = DrawText(hdc, szWork, c, &(rcGBox), 0x810);
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00D3), 0x0, rcGBox.left, ((rcGBox.top + dy) + ((uint32_t)(dyArial8) / 2)), 0, 0, 0x5);
@@ -6941,7 +6946,7 @@ L_7858:
     c = CchGetString(idsAdvancedGame, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_7bce:
     if ((wParam == 0x430))
@@ -7009,7 +7014,7 @@ L_7c4c:
     game.turn = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
     EndDialog(hwnd, wParam);
-    return 0x1;
+    return 1;
 
 L_7ca2:
     if ((wParam != 0xd4))
@@ -7020,7 +7025,7 @@ L_7ca2:
 L_7cac:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
     EndDialog(hwnd, wParam);
-    return 0x1;
+    return 1;
 
 L_7cd4:
     if ((wParam != 0xd2))
@@ -7092,7 +7097,7 @@ L_7e28:
 
 L_7e31:
     WinHelp(hwnd, szHelpFile, 0x1, 0x3ea);
-    return 0x1;
+    return 1;
 
 L_7e58:
     if ((message == WM_PAINT))
@@ -7125,7 +7130,7 @@ L_7e78:
         goto L_7e83;
 
 L_7e83:
-    return 0x0;
+    return 0;
 }
 
 int16_t NewGameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -7213,7 +7218,7 @@ L_80db:
 
 L_818b:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_81a4:
     i = 1000;
@@ -7261,7 +7266,7 @@ L_8220:
 L_8239:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_8261:
     hdc = BeginPaint(hwnd, &(ps));
@@ -7302,7 +7307,7 @@ L_8261:
     c = CchGetString(idsPlayerPositions, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_8510:
     if ((wParam != 0x76))
@@ -7312,7 +7317,7 @@ L_8510:
 
 L_8519:
     WinHelp(hwnd, szHelpFile, 0x1, 0x3f4);
-    return 0x1;
+    return 1;
 
 L_853a:
     iRet = 0;
@@ -7433,7 +7438,7 @@ L_875e:
 L_876e:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
     EndDialog(hwnd, iRet);
-    return 0x1;
+    return 1;
 
 L_8798:
     if ((message == WM_PAINT))
@@ -7466,7 +7471,7 @@ L_87b8:
         goto L_87c3;
 
 L_87c3:
-    return 0x0;
+    return 0;
 }
 
 int16_t NewGameDlg2(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -7548,12 +7553,12 @@ L_88f7:
 
 L_8923:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_893c:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_8964:
     i = 401;
@@ -7639,7 +7644,7 @@ L_8a61:
 
 L_8a67:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_8a76:
     if ((fRCWReadOnly != 0))
@@ -7742,7 +7747,7 @@ L_8c42:
 
 L_8c45:
     iChecked = t_merge_8c45_0001;
-    psz = PszPlayerName(0, 1, 1, 1, 0, vrgplrNew[i].iPlayer);
+    psz = PszPlayerName(0, 1, 1, 1, 0, (vrgplrNew + LOWORD((0xc0 * i))));
     AppendMenu(rghmenuSubPopup[1], (0x0 | iChecked), (i + 15032), psz);
     i = (i + 1);
 
@@ -8044,7 +8049,7 @@ L_90cc:
 
 L_90d5:
     vrgplrNew[iNewVal] = vplr;
-    strcpy(vrgszFileNew[iNewVal * 0xd], szRaceFile);
+    strcpy((vrgszFileNew + LOWORD((13 * iNewVal))), szRaceFile);
     iNewVal = ((iNewVal << 0x2) | 0x2);
 
 L_9124:
@@ -8067,7 +8072,7 @@ L_913c:
 
 L_9193:
     vplr = vrgplrNew[(iCurVal >> 0x2)];
-    strcpy(szRaceFile, vrgszFileNew[(load([bp - 0x50]) sar 0x2) * 0xd]);
+    strcpy(szRaceFile, (vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd))));
 
 L_91d3:
     lSaltCur = vplr.lSalt;
@@ -8113,7 +8118,7 @@ L_924a:
         goto L_925e;
 
 L_925e:
-    if ((strcmp(szRaceFile, vrgszFileNew[(load([bp - 0x50]) sar 0x2) * 0xd]) != 0))
+    if ((strcmp(szRaceFile, (vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd)))) != 0))
         goto PlaceNew;
     else
         goto L_9282;
@@ -8122,7 +8127,7 @@ L_9282:
 
 L_9288:
     vrgplrNew[(iCurVal >> 0x2)] = vplr;
-    strcpy(vrgszFileNew[(load([bp - 0x50]) sar 0x2) * 0xd], szRaceFile);
+    strcpy((vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd))), szRaceFile);
     iNewVal = iCurVal;
     iCurVal = -1;
 
@@ -8245,7 +8250,7 @@ L_9401:
     hdc = BeginPaint(hwnd, &(ps));
     DrawNewGame2(hwnd, hdc, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_943a:
     if ((wParam != 0x76))
@@ -8255,7 +8260,7 @@ L_943a:
 
 L_9443:
     WinHelp(hwnd, szHelpFile, 0x1, 0x3fc);
-    return 0x1;
+    return 1;
 
 L_9464:
     i = 0;
@@ -8309,7 +8314,7 @@ L_94b7:
 L_94db:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_9505:
     if ((message == WM_PAINT))
@@ -8360,7 +8365,7 @@ L_953d:
         goto L_9548;
 
 L_9548:
-    return 0x0;
+    return 0;
 }
 
 void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -8375,7 +8380,7 @@ void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw) {
     StringId ids;
     char     szT[20];
     uint16_t t_merge_97a0_0001;
-    uint16_t t_merge_989d_0001;
+    StringId t_merge_989d_0001;
 
 L_9556:
     fCreatedDC = 0;
@@ -8502,17 +8507,17 @@ L_97fb:
         goto L_980e;
 
 L_980e:
-    if (((uint16_t)(vrgszFileNew[iPlr * 0xd]) == 0))
+    if (((uint16_t)(vrgszFileNew[(iPlr * 13)]) == 0))
         goto L_984e;
     else
         goto L_9825;
 
 L_9825:
-    _wsprintf(szWork, " %s", &(vrgszFileNew[iPlr * 0xd]));
+    _wsprintf(szWork, " %s", &(vrgszFileNew[(iPlr * 13)]));
     goto DisplayName;
 
 L_984e:
-    if (((uint16_t)(vrgszFileNew[iPlr * 0xd]) == 0))
+    if (((uint16_t)(vrgszFileNew[(iPlr * 13)]) == 0))
         goto L_98bc;
     else
         goto L_9865;
@@ -8524,14 +8529,14 @@ L_9865:
         goto L_9894;
 
 L_9894:
-    t_merge_989d_0001 = 0x310;
+    t_merge_989d_0001 = idsS;
     goto L_989d;
 
 L_989a:
-    t_merge_989d_0001 = 0x311;
+    t_merge_989d_0001 = idsSS2;
 
 L_989d:
-    _wsprintf(szWork, PszGetCompressedString(t_merge_989d_0001), &(vrgplrNew[iPlr].szNames), &(vrgszFileNew[iPlr * 0xd]));
+    _wsprintf(szWork, PszGetCompressedString(t_merge_989d_0001), &(vrgplrNew[iPlr].szNames), &(vrgszFileNew[(iPlr * 13)]));
     goto DisplayName;
 
 L_98bc:
@@ -8598,6 +8603,7 @@ int16_t NewGameDlg3(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) 
     POINT       pt;
     HDC         hdc;
     PAINTSTRUCT ps;
+    HWND        t_call_9a24;
     uint16_t    t_merge_9a40_0001;
     uint16_t    t_merge_9ccc_0001;
 
@@ -8610,7 +8616,7 @@ L_9a03:
     goto L_9a85;
 
 L_9a1a:
-    GetDlgItem(hwnd, (i + 291));
+    t_call_9a24 = GetDlgItem(hwnd, (i + 291));
     if ((i < 2))
         goto L_9a3d;
     else
@@ -8624,7 +8630,7 @@ L_9a3d:
     t_merge_9a40_0001 = 0x0;
 
 L_9a40:
-    /* untranslated: call SendMessage(callresult(HWND), CB_LIMITTEXT, GetVCCheck(game.lid, (t_merge_9a40_0001 + i)), 0) -> callresult(LRESULT) */
+    SendMessage(t_call_9a24, CB_LIMITTEXT, GetVCCheck(game.lid, (t_merge_9a40_0001 + i)), 0);
     if ((fRCWReadOnly == 0))
         goto L_9a81;
     else
@@ -8644,12 +8650,12 @@ L_9a85:
 
 L_9a8e:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
-    return 0x1;
+    return 1;
 
 L_9aa7:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_9acf:
     i = 291;
@@ -8698,7 +8704,7 @@ L_9b45:
 
 L_9b76:
     SetCursor(hcurHand);
-    return 0x1;
+    return 1;
 
 L_9b88:
     pt.x = LOWORD(lParam);
@@ -8709,7 +8715,7 @@ L_9bc0:
     hdc = BeginPaint(hwnd, &(ps));
     DrawNewGame3(hwnd, hdc, -1);
     EndPaint(hwnd, &(ps));
-    return 0x1;
+    return 1;
 
 L_9bf9:
     if ((wParam != 0x76))
@@ -8719,7 +8725,7 @@ L_9bf9:
 
 L_9c02:
     WinHelp(hwnd, szHelpFile, 0x1, 0x3fd);
-    return 0x1;
+    return 1;
 
 L_9c23:
     i = 0;
@@ -8751,7 +8757,7 @@ L_9c4c:
 L_9c55:
     StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
     EndDialog(hwnd, i);
-    return 0x1;
+    return 1;
 
 L_9c79:
     if ((wParam < 0x123))
@@ -8832,7 +8838,7 @@ L_9d33:
         goto L_9d3e;
 
 L_9d3e:
-    return 0x0;
+    return 0;
 }
 
 void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -8996,8 +9002,8 @@ L_9fe9:
         goto L_a0fd;
 
 L_a0fd:
-    DrawBtn(hdc, vrgrcRCW[irc].left, (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, vrgrcRCW[(irc + 1)].left, (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + (irc * 8)), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + ((irc + 1) * 0x8)), (0xa1 | bt), 0, 0x0);
 
 L_a154:
     xLeft = (vrgrcRCW[irc].right + 4);
@@ -9064,7 +9070,7 @@ L_a210:
         goto L_a233;
 
 L_a233:
-    return 0x0;
+    return 0;
 
 L_a239:
     iMod = (irc & 0x1);
@@ -9084,7 +9090,7 @@ L_a260:
     bt = 161;
 
 L_a26a:
-    InitBtnTrack(&(btnt), hwnd, 0x0, vrgrcRCW[irc].left, bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + (irc * 8)), bt, 80, 0, 0, 0x0);
     if (((kbd & 0xc) == 0x0))
         goto L_a2b7;
     else
@@ -9110,7 +9116,7 @@ L_a2ff:
     DrawNewGame3(hwnd, btnt.hdc, i);
 
 L_a313:
-    return 0x1;
+    return 1;
 }
 
 void SetNGWTitle(HWND hwnd, int16_t iStep) {
@@ -9160,10 +9166,10 @@ L_b60c:
         goto L_b632;
 
 L_b632:
-    return 0x1;
+    return 1;
 
 L_b638:
-    return 0x0;
+    return 0;
 }
 
 int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {

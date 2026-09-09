@@ -220,3 +220,40 @@ func TestApplyOverridesAppliesFunctionParamSemantics(t *testing.T) {
 		t.Fatalf("arg2 semantic = %q, want %q", got, want)
 	}
 }
+
+// TestAddFunctionPreservesParamLocations verifies a signature override keeps
+// the stack locations learned from CodeView.
+func TestAddFunctionPreservesParamLocations(t *testing.T) {
+	sdb := &SymbolDB{
+		functionsByName:   make(map[string]*Function),
+		functionsByModule: make(map[string][]*Function),
+		functionsByAddr:   make(map[Addr]*Function),
+		functionsBySeg:    make(map[uint16][]*Function),
+	}
+	existing := &Function{
+		Name: "HfontPrinterCreate",
+		Conv: CCStdcall,
+		Params: []FunctionVar{
+			{Name: "hdc", Type: U16, BPOffset: 6},
+			{Name: "iSize", Type: I16, BPOffset: 8},
+			{Name: "pdyFont", Type: &Pointer{Elem: I16, Class: PtrNear}, BPOffset: 10},
+		},
+	}
+	sdb.AddFunction(existing)
+
+	sdb.AddFunction(&Function{
+		Name: "HfontPrinterCreate",
+		Conv: CCStdcall,
+		Params: []FunctionVar{
+			{Name: "hdc", Type: U16},
+			{Name: "iSize", Type: I16},
+			{Name: "pdyFont", Type: &Pointer{Elem: I16, Class: PtrNear}},
+		},
+	})
+
+	for i, want := range []int{6, 8, 10} {
+		if got := existing.Params[i].BPOffset; got != want {
+			t.Fatalf("param %d BP offset = %#x, want %#x", i, got, want)
+		}
+	}
+}

@@ -417,7 +417,7 @@ L_0682:
         goto L_068c;
 
 L_068c:
-    return 0xf;
+    return 15;
 
 L_0692:
     if ((pt.x > dUni))
@@ -432,7 +432,7 @@ L_069d:
         goto L_06a8;
 
 L_06a8:
-    return 0xf;
+    return 15;
 
 L_06ae:
     lpth = lpThings;
@@ -440,10 +440,16 @@ L_06ae:
     goto L_071c;
 
 L_06d9:
-    /* untranslated: branch ss:[&pt] != lpth->pt.x ? L_0718 : L_06f3 */
+    if ((pt.x != lpth->pt.x))
+        goto L_0718;
+    else
+        goto L_06f3;
 
 L_06f3:
-    /* untranslated: branch ss:[&pt+0x2] != lpth->pt.y ? L_0718 : L_06fc */
+    if ((pt.y != lpth->pt.y))
+        goto L_0718;
+    else
+        goto L_06fc;
 
 L_06fc:
     if ((LOWORD(lpth) != LOWORD(lpthWorm)))
@@ -458,7 +464,7 @@ L_070a:
         goto L_0712;
 
 L_0712:
-    return 0xf;
+    return 15;
 
 L_0718:
     lpth = (lpth + 0x12);
@@ -495,7 +501,7 @@ L_0758:
         goto L_0760;
 
 L_0760:
-    return 0xf;
+    return 15;
 
 L_0769:
     ifl = 0;
@@ -524,13 +530,19 @@ L_07a8:
         goto L_07b0;
 
 L_07b0:
-    /* untranslated: branch ss:[&pt] != lpfl->pt.x ? L_0771 : L_07ca */
+    if ((pt.x != lpfl->pt.x))
+        goto L_0771;
+    else
+        goto L_07ca;
 
 L_07ca:
-    /* untranslated: branch ss:[&pt+0x2] != lpfl->pt.y ? L_0771 : L_07d3 */
+    if ((pt.y != lpfl->pt.y))
+        goto L_0771;
+    else
+        goto L_07d3;
 
 L_07d3:
-    return 0xf;
+    return 15;
 
 L_07dc:
     if ((pt.x < 1010))
@@ -954,6 +966,7 @@ void DoThingInteractions(int16_t fPostMove) {
     uint16_t  t_merge_0d44_0001;
     int16_t   t_11bc;
     uint16_t  t_merge_123c_0001;
+    SHDEF    *t_call_1268;
     uint16_t  t_merge_17f8_0001;
     int16_t   t_1851;
     int32_t   t_merge_1922_0001;
@@ -1015,10 +1028,16 @@ L_0beb:
         goto L_0c02;
 
 L_0c02:
-    /* untranslated: branch lpfl->pt.x != ss:[&pt] ? L_0bac : L_0c1c */
+    if ((lpfl->pt.x != pt.x))
+        goto L_0bac;
+    else
+        goto L_0c1c;
 
 L_0c1c:
-    /* untranslated: branch lpfl->pt.y != ss:[&pt+0x2] ? L_0bac : L_0c22 */
+    if ((lpfl->pt.y != pt.y))
+        goto L_0bac;
+    else
+        goto L_0c22;
 
 L_0c22:
 
@@ -1321,7 +1340,7 @@ L_106d:
 L_108a:
 
 LGiveITech:
-    memcpy(&(rgTech), hbrWindowText[(0x59a2 + loword((0xc0 * load([bp - 0xa])))) * 0x1], 0x6);
+    memcpy(&(rgTech), ((0x59a2 + LOWORD((192 * iplr))) + 0x1a), 0x6);
     rgTech[iLowest] = (rgTech[iLowest] + 0x1);
     iplrSav = idPlayer;
     idPlayer = iplr;
@@ -1430,8 +1449,8 @@ L_1256:
     iOffset = (Random(2) + 1);
 
 L_1268:
-    LpshdefT();
-    /* untranslated: shdef = 147-byte farseg(callresult(SHDEF *)):[(faroff(callresult(SHDEF *)) + loword(((iOffset + 0x13) * 0x93)))] */
+    t_call_1268 = LpshdefT();
+    shdef = t_call_1268[(iOffset + 19)];
     ish = IshFindSimilarDesign(shdef, iplr);
     if ((ish >= 0))
         goto L_12f5;

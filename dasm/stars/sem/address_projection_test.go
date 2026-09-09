@@ -3,10 +3,54 @@ package sem
 import (
 	"testing"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
 )
+
+// TestConvertStackAddressMemoryProjectsLocalFields verifies SS:[&local+off]
+// is treated as an access to the addressed local aggregate.
+func TestConvertStackAddressMemoryProjectsLocalFields(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "ScannerWndProc")
+	pt := machine.AddressVal(frameMemoryAccess(ctx, 0x78f, -0x8, 2))
+	converter := &machineConverter{ctx: ctx}
+
+	tests := []struct {
+		disp int
+		want string
+	}{
+		{disp: 0, want: "pt.x"},
+		{disp: 2, want: "pt.y"},
+	}
+	for _, tt := range tests {
+		mem := machine.MemoryAddress{Seg: machine.RegVal(asm.RegSS), Base: pt, Disp: tt.disp, Width: 2}
+		if got := FormatExpr(converter.convertMemoryLValue(mem, 2)); got != tt.want {
+			t.Fatalf("converted SS address at +%d = %q, want %q", tt.disp, got, tt.want)
+		}
+	}
+}
+
+// TestConvertIndexedStackArrayPreservesIndex verifies a BP-relative local
+// root cannot erase a separate dynamic machine index.
+func TestConvertIndexedStackArrayPreservesIndex(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "PickANameAndBmp")
+	index := machine.BinaryVal(machine.ValueOpShl, frameLoad(ctx, 0xbe, -0x4, 2), machine.ConstVal(1))
+	mem := frameMemoryAccess(ctx, 0xbe, -0xc, 2)
+	mem.Seg = machine.RegVal(asm.RegSS)
+	mem.Index = index
+
+	if _, ok := ctx.symbols.exactMemoryPath(mem); ok {
+		t.Fatal("indexed frame address incorrectly produced an exact fallback path")
+	}
+	if got := FormatExpr((&machineConverter{ctx: ctx}).convertMemoryLValue(mem, 2)); got != "rgfBmpUsed[i]" {
+		t.Fatalf("converted indexed stack array = %q, want rgfBmpUsed[i]", got)
+	}
+}
 
 // TestConvertBitfieldThroughFixedArray verifies bitfields use the shared
 // pointer, struct, and array address projector before terminal selection.

@@ -55,7 +55,7 @@ L_1a09:
     branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0 ? L_1a2c : L_1a26
 
 L_1a26:
-    return 0x0
+    return 0
 
 L_1a2c:
     idm = idmHasBuiltNew
@@ -112,7 +112,7 @@ L_1c1f:
 L_1c55:
     lpshdef->cBuilt = (lpshdef->cBuilt + 0x1)
     lpshdef->cExist = (lpshdef->cExist + 0x1)
-    return 0x1
+    return 1
 
 L_1c78:
     branch lppl->fStarbase == 0x0 ? L_1c98 : L_1c8f
@@ -121,7 +121,7 @@ L_1c8f:
     branch iItem < 16 ? L_1c9e : L_1c98
 
 L_1c98:
-    return 0x0
+    return 0
 
 L_1c9e:
     lpshdef = (rglpshdef[lppl->iPlayer] + loword((0x93 * iItem)))
@@ -132,7 +132,7 @@ L_1cd6:
 
 L_1cf3:
     call FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, (iItem + 1), 0) -> callresult(int16_t)
-    return 0x0
+    return 0
 
 L_1d1d:
     branch rgplr[lppl->iPlayer].cFleet != 0x200 ? L_219c : L_1d3a
@@ -215,12 +215,12 @@ L_20c5:
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
     call FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
-    return 0x1
+    return 1
 
 
 L_214f:
     call FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
-    return 0x0
+    return 0
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id)
@@ -313,7 +313,7 @@ L_24d7:
 
 
 L_24fc:
-    return 0x0
+    return 0
 
 L_2502:
     goto L_2fc0
@@ -367,14 +367,14 @@ L_2672:
 
 L_26be:
     call FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0) -> callresult(int16_t)
-    return 0x0
+    return 0
 
 L_26e7:
     branch lppl->idFling != 0x0 ? L_2722 : L_26f9
 
 L_26f9:
     call FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0) -> callresult(int16_t)
-    return 0x0
+    return 0
 
 L_2722:
     branch iItem != 6 ? L_2730 : L_272b
@@ -609,9 +609,9 @@ L_2cea:
 L_2cf2:
     lppl->rgwtMin[i] = 0
     scratch_bp_m16 = Random(50)
-    call Random(50) -> callresult(int16_t)
-    lppl->rgEnvVarOrig[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
-    lppl->rgEnvVar[i] = lobyte(((callresult(int16_t) + 0x1) + scratch_bp_m16))
+    call Random(50) -> t_call_2d26
+    lppl->rgEnvVarOrig[i] = lobyte(((t_call_2d26 + 0x1) + scratch_bp_m16))
+    lppl->rgEnvVar[i] = lobyte(((t_call_2d26 + 0x1) + scratch_bp_m16))
     lppl->rgMinConc[i] = lobyte(((Random(40) + 0x19) + Random(40)))
     i = (i + 1)
 
@@ -649,9 +649,9 @@ L_2f7f:
 L_2fc0:
 
 L_2fc3:
-    return 0x0
+    return 0
 
 L_2fc9:
-    return 0x1
+    return 1
 
 L_2fcf:

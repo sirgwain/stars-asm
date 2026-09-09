@@ -425,6 +425,10 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_179c",
+          "value": "ithMineralPacket"
+        },
+        {
           "block": "L_19a2",
           "value": "ithWormhole"
         },
@@ -717,6 +721,14 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_299a",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_29da",
+          "value": "ithMineralPacket"
+        },
+        {
           "block": "L_29f3",
           "value": "ithMineralPacket"
         },
@@ -892,6 +904,34 @@
       "block_path_facts": [
         {
           "block": "L_39ba",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3a06",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3a23",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3a6b",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3a88",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3b11",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3b58",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_3b7b",
           "value": "ithMineralPacket"
         }
       ]
@@ -1306,6 +1346,22 @@
         },
         {
           "block": "L_1f03",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_20b0",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_2121",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_213e",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_2157",
           "value": "ithMineralPacket"
         }
       ]
@@ -1751,6 +1807,30 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_71c5",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_71e2",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_720f",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_722c",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_7266",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_727f",
+          "value": "ithMineralPacket"
+        },
+        {
           "block": "L_72d5",
           "value": "ithMineralPacket"
         },
@@ -1774,6 +1854,10 @@
         },
         {
           "block": "L_52a2",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_53a6",
           "value": "grobjFleet"
         }
       ]

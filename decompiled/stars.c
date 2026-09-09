@@ -27,7 +27,7 @@ L_0051:
 
 L_005e:
     AlertSz(PszFormatIds(idsUnableInitializeStars, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_0085:
     Randomize2(GetTickCount());
@@ -37,7 +37,7 @@ L_0085:
         goto L_00a1;
 
 L_00a1:
-    return 0x0;
+    return 0;
 
 L_00a7:
     if ((FGetSystemColors() != 0))
@@ -47,7 +47,7 @@ L_00a7:
 
 L_00b4:
     AlertSz(PszFormatIds(idsUnableInitializeStars, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_00db:
     if ((InitInstance(nCmdShow) != 0))
@@ -57,7 +57,7 @@ L_00db:
 
 L_00ee:
     AlertSz(PszFormatIds(idsUnableInitializeStars, 0x0), MB_ICONHAND);
-    return 0x0;
+    return 0;
 
 L_0115:
     lpT = lpCmdLine;
@@ -553,7 +553,7 @@ L_07aa:
         goto L_07e3;
 
 L_07e3:
-    return 0xffff;
+    return -1;
 
 L_07e9:
     i = 0;
@@ -602,7 +602,7 @@ L_08bc:
     return i;
 
 L_08c5:
-    return 0xffff;
+    return -1;
 }
 
 int16_t FGetSystemColors() {
@@ -1162,12 +1162,12 @@ L_1261:
     iAboutPartial = 0;
     SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
     uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0);
-    return 0x1;
+    return 1;
 
 L_12a9:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
@@ -1271,7 +1271,7 @@ L_1473:
     KillTimer(hwnd, uTimerId);
     uTimerId = 0x0;
     EndDialog(hwnd, 1);
-    return 0x1;
+    return 1;
 
 L_149a:
     if ((wParam != 0x76))
@@ -1315,7 +1315,7 @@ L_1505:
         goto L_1510;
 
 L_1510:
-    return 0x0;
+    return 0;
 }
 
 int16_t OrderInfoDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
@@ -1327,7 +1327,7 @@ L_151e:
 L_152d:
     GetClientRect(hwnd, &(rc));
     FillRect(wParam, &(rc), hbrButtonFace);
-    return 0x1;
+    return 1;
 
 L_1555:
     if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
@@ -1353,7 +1353,7 @@ L_1593:
 
 L_159c:
     EndDialog(hwnd, 1);
-    return 0x1;
+    return 1;
 
 L_15b4:
     if ((message == WM_ERASEBKGND))
@@ -1374,7 +1374,7 @@ L_15c4:
         goto L_15cf;
 
 L_15cf:
-    return 0x0;
+    return 0;
 }
 
 int16_t FHandleChar(HWND hwnd, uint16_t ch, int32_t lParam) {
@@ -1425,10 +1425,10 @@ L_1627:
 
 L_1632:
     SendMessage(hwndScanner, WM_CHAR, ch, lParam);
-    return 0x1;
+    return 1;
 
 L_164e:
-    return 0x0;
+    return 0;
 }
 
 int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
@@ -1440,10 +1440,10 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     uint16_t md;
     int16_t  iWarp;
     int16_t  iwp;
-    uint16_t t_merge_1756_0001;
-    uint16_t t_merge_1a23_0001;
+    int16_t  t_merge_1756_0001;
+    int16_t  t_merge_1a23_0001;
     int16_t  t_merge_1ad2_0001;
-    uint16_t t_merge_1bbd_0001;
+    int16_t  t_merge_1bbd_0001;
 
 L_165a:
     if ((iMsg != 256))
@@ -1471,7 +1471,7 @@ L_1680:
 
 L_168e:
     DestroyWindow(hwndBrowser);
-    return 0x1;
+    return 1;
 
 L_169d:
     if ((iKey != 27))
@@ -1487,7 +1487,7 @@ L_16a6:
 
 L_16b0:
     SendMessage(hwndPopup, WM_LBUTTONUP, 0x0, 0);
-    return 0x1;
+    return 1;
 
 L_16cf:
     if ((iKey != 27))
@@ -1503,7 +1503,7 @@ L_16d8:
 
 L_16e2:
     DestroyWindow(hwndReportDlg);
-    return 0x1;
+    return 1;
 
 L_16f4:
     if ((iMsg != 257))
@@ -1549,11 +1549,11 @@ L_1744:
         goto L_174d;
 
 L_174d:
-    t_merge_1756_0001 = 0x1;
+    t_merge_1756_0001 = 1;
     goto L_1756;
 
 L_1753:
-    t_merge_1756_0001 = 0x0;
+    t_merge_1756_0001 = 0;
 
 L_1756:
     TerminateToolbarFocus(t_merge_1756_0001);
@@ -1588,7 +1588,7 @@ L_17ae:
         goto L_17b8;
 
 L_17b8:
-    return 0x0;
+    return 0;
 
 L_17be:
     if ((iKey == 8))
@@ -1663,7 +1663,7 @@ L_1824:
         goto L_182e;
 
 L_182e:
-    return 0x0;
+    return 0;
 
 L_1834:
     hwndF = GetFocus();
@@ -1697,7 +1697,7 @@ L_186d:
         goto L_1884;
 
 L_1884:
-    return 0x0;
+    return 0;
 
 L_188a:
     i = 0;
@@ -1710,7 +1710,7 @@ L_1892:
         goto L_18a3;
 
 L_18a3:
-    return 0x0;
+    return 0;
 
 L_18a9:
     i = (i + 1);
@@ -1770,7 +1770,7 @@ L_1903:
         goto L_190e;
 
 L_190e:
-    return 0x0;
+    return 0;
 
 L_1914:
     if ((hwndBrowser == 0x0))
@@ -1785,7 +1785,7 @@ L_191e:
         goto L_1933;
 
 L_1933:
-    return 0x0;
+    return 0;
 
 L_1939:
     if ((iKey < 48))
@@ -1823,7 +1823,7 @@ L_1974:
     InvalidateRect(hwndTb, 0x0, 0);
 
 L_199c:
-    return 0x1;
+    return 1;
 
 L_19a2:
     goto L_19e4;
@@ -1884,22 +1884,22 @@ L_1a07:
         goto L_1a1a;
 
 L_1a1a:
-    t_merge_1a23_0001 = 0x1;
+    t_merge_1a23_0001 = 1;
     goto L_1a23;
 
 L_1a20:
-    t_merge_1a23_0001 = 0x0;
+    t_merge_1a23_0001 = 0;
 
 L_1a23:
     ExecuteButton(itb, t_merge_1a23_0001);
     InvalidateRect(hwndTb, 0x0, 0);
-    return 0x1;
+    return 1;
 
 L_1a4a:
     goto L_1bdd;
 
 L_1a50:
-    return 0x0;
+    return 0;
 
 L_1a56:
     if ((sel.grobj != grobjFleet))
@@ -1918,7 +1918,7 @@ L_1a74:
         goto L_1a7f;
 
 L_1a7f:
-    return 0x0;
+    return 0;
 
 L_1a85:
     SendMessage(hwndMessage, WM_KEYDOWN, iKey, dw);
@@ -1988,7 +1988,7 @@ L_1b25:
     DrawPlanShip(0x0, 16928);
 
 L_1b9a:
-    return 0x1;
+    return 1;
 
 L_1ba0:
     pt.x = 0;
@@ -1999,15 +1999,15 @@ L_1ba0:
         goto L_1bb4;
 
 L_1bb4:
-    t_merge_1bbd_0001 = 0xfffe;
+    t_merge_1bbd_0001 = -2;
     goto L_1bbd;
 
 L_1bba:
-    t_merge_1bbd_0001 = 0xffff;
+    t_merge_1bbd_0001 = -1;
 
 L_1bbd:
     ExecuteReportClick(pt, 2, 0, t_merge_1bbd_0001);
-    return 0x1;
+    return 1;
 
 L_1bdd:
     if ((iKey == 8))
@@ -2072,5 +2072,5 @@ L_1c25:
 L_1c2a:
 
 L_1c30:
-    return 0x1;
+    return 1;
 }
