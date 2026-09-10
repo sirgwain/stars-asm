@@ -683,6 +683,25 @@
       ]
     },
     {
+      "func": "DrawPlanShipBitmap",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_3349",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_3374",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
       "func": "DrawPopup",
       "root": "GlobalPD",
       "root_path": null,

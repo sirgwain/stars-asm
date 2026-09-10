@@ -6,10 +6,10 @@
     "loWords": 1766,
     "branchHiWords": 3689,
     "branchLoWords": 3061,
-    "segRegRefs": 14,
+    "segRegRefs": 11,
     "ir": {
-      "untranslated": 222,
-      "untranslatedAssign": 175,
+      "untranslated": 219,
+      "untranslatedAssign": 172,
       "untranslatedBitwise": 4,
       "untranslatedBranch": 18,
       "untranslatedPart": 178,
@@ -17,7 +17,6 @@
       "untranslatedFailures": {
         "assign.dst:memory": 17,
         "assign.dst:part": 103,
-        "assign.src.arg[0]:memory": 2,
         "assign.src.arg[0]:part": 2,
         "assign.src.arg[1].target:memory": 1,
         "assign.src.lhs.lhs:part": 35,
@@ -29,7 +28,7 @@
         "assign.src.value.lhs.lhs:memory": 1,
         "assign.src.value.lhs:part": 1,
         "assign.src.value.rhs:part": 1,
-        "assign.src:memory": 3,
+        "assign.src:memory": 2,
         "assign.src:part": 13,
         "assign.src:register": 9,
         "assign.src:words": 11,
@@ -725,16 +724,7 @@
     },
     "DrawPlanShipBitmap": {
       "temps": 3,
-      "loWords": 1,
-      "segRegRefs": 3,
-      "ir": {
-        "untranslated": 3,
-        "untranslatedAssign": 3,
-        "untranslatedFailures": {
-          "assign.src.arg[0]:memory": 2,
-          "assign.src:memory": 1
-        }
-      }
+      "loWords": 1
     },
     "DrawPlanetMinSum": {
       "temps": 1,

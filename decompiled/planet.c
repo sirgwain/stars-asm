@@ -2449,14 +2449,14 @@ L_3336:
         goto L_3349;
 
 L_3349:
-    /* untranslated: psz = PszGetPlanetName(ds:[obj]) */
-    /* untranslated: i = ds:[obj] */
+    psz = PszGetPlanetName(obj.ppl->id);
+    i = obj.ppl->id;
     i = (i + 8);
     iOffset = ((uint32_t)(i) % 28);
     goto L_3384;
 
 L_3374:
-    /* untranslated: psz = PszGetFleetName(ds:[obj]) */
+    psz = PszGetFleetName(obj.pfl->id);
 
 L_3384:
     if ((ptile->fFixCtls == 0x0))

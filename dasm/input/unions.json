@@ -114,6 +114,14 @@
       "value": "grobjFleet"
     },
     {
+      "func": "DrawPlanShipBitmap",
+      "root": "obj",
+      "type": "OBJ",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "value": "grobjPlanet"
+    },
+    {
       "func": "FBuildObject",
       "root": "lpth",
       "type": "THING",
