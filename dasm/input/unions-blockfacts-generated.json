@@ -1415,6 +1415,209 @@
       ]
     },
     {
+      "func": "FRunLogRecord",
+      "root": "rgxf",
+      "root_path": null,
+      "all_elements": true,
+      "type": "XFER",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_ad1d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ad4d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ad70",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_af99",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b003",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b124",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b180",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_b191",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b215",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b225",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_b25b",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b2ff",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b5a2",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b664",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b6c5",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b744",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b758",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_b786",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b7d4",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_b805",
+          "value": "grobjThing"
+        },
+        {
+          "block": "L_b819",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b847",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ba12",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ba30",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ba56",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_ba7d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bb44",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bb61",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bb66",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bb6e",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bb88",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bba2",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bba7",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bbaf",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bbca",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc20",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc3d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc42",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc4a",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc62",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc88",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc8d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bc94",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bcb1",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bcdc",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bcf7",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bd6d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_bdad",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
       "func": "FSalvageTargetFreighter2",
       "root": "lpth",
       "root_path": null,
@@ -3041,6 +3244,10 @@
       "enum": "GrobjClass",
       "block_path_facts": [
         {
+          "block": "L_5008",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_506e",
           "value": "grobjPlanet"
         },
@@ -3049,7 +3256,35 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_50d8",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_50f5",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_512b",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_517d",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_519a",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_5267",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_52a2",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_52ec",
           "value": "grobjFleet"
         },
         {
@@ -3061,7 +3296,19 @@
           "value": "grobjPlanet"
         },
         {
+          "block": "L_5373",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_53a6",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_5409",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_5456",
           "value": "grobjFleet"
         },
         {

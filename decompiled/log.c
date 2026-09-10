@@ -2072,20 +2072,26 @@ L_ad14:
     goto L_abb5;
 
 L_ad1d:
-    /* untranslated: branch FLookupObject((lpb[4] & 0xf), LOWORD(lpb), &part[0x4:256](rgxf)) != 0 ? L_ad4d : L_ad47 */
+    if ((FLookupObject((lpb[4] & 0xf), LOWORD(lpb), &(rgxf[0].fl)) != 0))
+        goto L_ad4d;
+    else
+        goto L_ad47;
 
 L_ad47:
     return 0;
 
 L_ad4d:
-    rgxf[0x1].th.idFull = 0xffff;
+    rgxf[0x1].fl.id = -1;
     if ((((lpb[4] >> 0x4) & 0xf) == 0x4))
         goto L_ade3;
     else
         goto L_ad70;
 
 L_ad70:
-    /* untranslated: branch FLookupObject(((lpb[4] sar 0x4) & 0xf), lpb[2], &part[0x84:256](rgxf)) != 0 ? L_ade3 : L_ada3 */
+    if ((FLookupObject(((lpb[4] >> 0x4) & 0xf), lpb[2], &(rgxf[1].fl)) != 0))
+        goto L_ade3;
+    else
+        goto L_ada3;
 
 L_ada3:
     if ((((lpb[4] >> 0x4) & 0xf) != 0x2))
@@ -2237,7 +2243,7 @@ L_af90:
         goto L_af99;
 
 L_af99:
-    /* untranslated: l = ChgCargo((lpb[4] & 0xf), LOWORD(lpb), i, cXfer, &part[0x4:256](rgxf)) */
+    l = ChgCargo((lpb[4] & 0xf), LOWORD(lpb), i, cXfer, &(rgxf[0].fl));
     if ((LOWORD(l) != LOWORD(cXfer)))
         goto L_afe5;
     else
@@ -2264,8 +2270,8 @@ L_b000:
 
 L_b003:
     id = t_merge_b003_0001;
-    id = (id | rgxf[0x0].th.idFull);
-    /* untranslated: call FSendPlrMsg(part[0x6:2](rgxf[0x0]), 221, id, id, (LOWORD(cXfer) - LOWORD(l)), i, LOWORD(cXfer), 0, 0, 0) -> callresult(int16_t) */
+    id = (id | rgxf[0x0].fl.id);
+    FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, (LOWORD(cXfer) - LOWORD(l)), i, LOWORD(cXfer), 0, 0, 0);
     rgcXfer[i] = l;
 
 L_b067:
@@ -2359,7 +2365,10 @@ L_b10f:
         goto L_b124;
 
 L_b124:
-    /* untranslated: branch part[0x6:2](rgxf[0x0]) == part[0x6:2](rgxf[0x1]) ? L_b2dd : L_b131 */
+    if ((rgxf[0].fl.iPlayer == rgxf[1].fl.iPlayer))
+        goto L_b2dd;
+    else
+        goto L_b131;
 
 L_b131:
     lpcdT = lpcd;
@@ -2406,13 +2415,16 @@ L_b177:
         goto L_b180;
 
 L_b180:
-    if ((lpcdT->idPlanetDst != rgxf[1].th.idFull))
+    if ((lpcdT->idPlanetDst != rgxf[1].pl.id))
         goto L_b202;
     else
         goto L_b191;
 
 L_b191:
-    /* untranslated: branch lpcdT->idPlr != part[0x6:2](rgxf[0x0]) ? L_b202 : L_b1a2 */
+    if ((lpcdT->idPlr != rgxf[0].fl.iPlayer))
+        goto L_b202;
+    else
+        goto L_b1a2;
 
 L_b1a2:
     if ((HIWORD(cXfer) > HIWORD(lpcdT->cColonist)))
@@ -2450,13 +2462,13 @@ L_b202:
     goto L_b15d;
 
 L_b215:
-    if ((lpcdT->idFleetSrc != rgxf[0].th.idFull))
+    if ((lpcdT->idFleetSrc != rgxf[0].fl.id))
         goto L_b239;
     else
         goto L_b225;
 
 L_b225:
-    if ((lpcdT->idPlanetDst == rgxf[1].th.idFull))
+    if ((lpcdT->idPlanetDst == rgxf[1].pl.id))
         goto L_b24f;
     else
         goto L_b239;
@@ -2478,11 +2490,14 @@ L_b24f:
         goto L_b25b;
 
 L_b25b:
-    LOWORD(lpcdT) = rgxf[0x0].th.idFull;
-    /* untranslated: lpcdT->idPlr = part[0x6:2](rgxf[0x0]) */
-    lpcdT->idPlanetDst = rgxf[0x1].th.idFull;
+    LOWORD(lpcdT) = rgxf[0x0].fl.id;
+    lpcdT->idPlr = rgxf[0x0].fl.iPlayer;
+    lpcdT->idPlanetDst = rgxf[0x1].fl.id;
     lpcdT->cColonist = 0;
-    /* untranslated: branch part[0x6:2](rgxf[0x1]) == 0xffff ? L_b29e : L_b298 */
+    if ((rgxf[1].fl.iPlayer == -1))
+        goto L_b29e;
+    else
+        goto L_b298;
 
 L_b298:
     t_merge_b2a1_0001 = 0x1;
@@ -2519,7 +2534,10 @@ L_b2ef:
         goto L_b2ff;
 
 L_b2ff:
-    /* untranslated: branch part[0x6:2](rgxf[0x1]) == part[0x6:2](rgxf[0x0]) ? L_b5a2 : L_b30c */
+    if ((rgxf[1].fl.iPlayer == rgxf[0].fl.iPlayer))
+        goto StealCargo;
+    else
+        goto L_b30c;
 
 L_b30c:
     if ((((lpb[4] >> 0x4) & 0xf) == 0x8))
@@ -2714,7 +2732,8 @@ L_b57b:
     goto L_af00;
 
 StealCargo:
-    /* untranslated: l = ChgCargo(((lpb[4] sar 0x4) & 0xf), lpb[2], i, words(neg((HIWORD(cXfer) + 0x0)), neg(LOWORD(cXfer))), &part[0x84:256](rgxf)) */
+    l = ChgCargo(((lpb[4] >> 0x4) & 0xf), lpb[2], i, (((uint32_t)((uint16_t)((-(HIWORD(cXfer) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(cXfer)))),
+                 &(rgxf[1].fl));
     if ((LOWORD(l) != (-LOWORD(cXfer))))
         goto L_b607;
     else
@@ -2751,8 +2770,7 @@ L_b65f:
     idm = (idm + 1);
 
 L_b664:
-    /* untranslated: call FSendPlrMsg(part[0x6:2](rgxf[0x0]), idm, (rgxf[0].th.idFull | 0x8000), rgxf[0].th.idFull, i, neg(LOWORD(l)), i, 0, 0, 0) ->
-     * callresult(int16_t) */
+    FSendPlrMsg(rgxf[0].fl.iPlayer, idm, (rgxf[0].fl.id | 0x8000), rgxf[0].fl.id, i, (-LOWORD(l)), i, 0, 0, 0);
     goto L_af00;
 
 L_b6a7:
@@ -2770,9 +2788,8 @@ L_b6c2:
 
 L_b6c5:
     id = t_merge_b6c5_0001;
-    id = (id | rgxf[0x0].th.idFull);
-    /* untranslated: call FSendPlrMsg(part[0x6:2](rgxf[0x0]), 221, id, id, (neg(LOWORD(l)) - LOWORD(cXfer)), i, neg(LOWORD(cXfer)), 0, 0, 0) ->
-     * callresult(int16_t) */
+    id = (id | rgxf[0x0].fl.id);
+    FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, ((-LOWORD(l)) - LOWORD(cXfer)), i, (-LOWORD(cXfer)), 0, 0, 0);
 
 DoNext:
     goto L_af00;
@@ -2838,7 +2855,10 @@ L_b816:
     goto L_c796;
 
 L_b819:
-    /* untranslated: branch FLookupObject(grobjFleet, LOWORD(lpb), &part[0x4:256](rgxf)) != 0 ? L_b83e : L_b838 */
+    if ((FLookupObject(grobjFleet, LOWORD(lpb), &(rgxf[0].fl)) != 0))
+        goto L_b83e;
+    else
+        goto L_b838;
 
 L_b838:
     return 0;
@@ -2989,19 +3009,28 @@ L_ba27:
     return 0;
 
 L_ba30:
-    /* untranslated: branch FLookupObject(grobjFleet, LOWORD(lpb), &part[0x4:256](rgxf)) != 0 ? L_ba56 : L_ba50 */
+    if ((FLookupObject(grobjFleet, LOWORD(lpb), &(rgxf[0].fl)) != 0))
+        goto L_ba56;
+    else
+        goto L_ba50;
 
 L_ba50:
     return 0;
 
 L_ba56:
-    /* untranslated: branch FLookupObject(grobjFleet, lpb[2], &part[0x84:256](rgxf)) != 0 ? L_ba7d : L_ba77 */
+    if ((FLookupObject(grobjFleet, lpb[2], &(rgxf[1].fl)) != 0))
+        goto L_ba7d;
+    else
+        goto L_ba77;
 
 L_ba77:
     return 0;
 
 L_ba7d:
-    /* untranslated: branch part[0x6:2](rgxf[0x1]) == part[0x6:2](rgxf[0x0]) ? L_ba90 : L_ba8a */
+    if ((rgxf[1].fl.iPlayer == rgxf[0].fl.iPlayer))
+        goto L_ba90;
+    else
+        goto L_ba8a;
 
 L_ba8a:
     return 0;
@@ -3082,32 +3111,50 @@ L_bb3b:
         goto L_bb44;
 
 L_bb44:
-    /* untranslated: branch (signhiword(ss:[bp+(i * 2)-0x114]) + HIWORD(cXfer)) > 0x0 ? L_bb88 : L_bb61 */
+    if (((SIGNHIWORD(rgxf[0].fl.rgcsh[i]) + HIWORD(cXfer)) > 0x0))
+        goto L_bb88;
+    else
+        goto L_bb61;
 
 L_bb61:
-    /* untranslated: branch (signhiword(ss:[bp+(i * 2)-0x114]) + HIWORD(cXfer)) < 0x0 ? L_bb6e : L_bb66 */
+    if (((SIGNHIWORD(rgxf[0].fl.rgcsh[i]) + HIWORD(cXfer)) < 0x0))
+        goto L_bb6e;
+    else
+        goto L_bb66;
 
 L_bb66:
-    /* untranslated: branch (ss:[bp+(i * 2)-0x114] + LOWORD(cXfer)) >= 0x0 ? L_bb88 : L_bb6e */
+    if (((rgxf[0].fl.rgcsh[i] + LOWORD(cXfer)) >= 0x0))
+        goto L_bb88;
+    else
+        goto L_bb6e;
 
 L_bb6e:
-    /* untranslated: cXfer = sext16to32(neg(ss:[bp+(i * 0x2)-0x114])) */
+    cXfer = (uint32_t)((-rgxf[0x0].fl.rgcsh[i]));
     goto L_bbca;
 
 L_bb88:
-    /* untranslated: branch signhiword((0x7ffe - ss:[bp+(i * 2)-0x114])) > HIWORD(cXfer) ? L_bbca : L_bba2 */
+    if ((SIGNHIWORD((32766 - rgxf[0].fl.rgcsh[i])) > HIWORD(cXfer)))
+        goto L_bbca;
+    else
+        goto L_bba2;
 
 L_bba2:
-    /* untranslated: branch signhiword((0x7ffe - ss:[bp+(i * 2)-0x114])) < HIWORD(cXfer) ? L_bbaf : L_bba7 */
+    if ((SIGNHIWORD((32766 - rgxf[0].fl.rgcsh[i])) < HIWORD(cXfer)))
+        goto L_bbaf;
+    else
+        goto L_bba7;
 
 L_bba7:
-    /* untranslated: branch (0x7ffe - ss:[bp+(i * 2)-0x114]) > LOWORD(cXfer) ? L_bbca : L_bbaf */
+    if (((32766 - rgxf[0].fl.rgcsh[i]) > LOWORD(cXfer)))
+        goto L_bbca;
+    else
+        goto L_bbaf;
 
 L_bbaf:
-    /* untranslated: cXfer = sext16to32(((0x7ffe - ss:[bp+(i * 0x2)-0x114]) + 0xffff)) */
+    cXfer = (uint32_t)(((0x7ffe - rgxf[0x0].fl.rgcsh[i]) + 0xffff));
 
 L_bbca:
-    /* untranslated: ss:[bp+(i * 2)-0x114] = (ss:[bp+(i * 0x2)-0x114] + LOWORD(cXfer)) */
+    rgxf[0x0].fl.rgcsh[i] = (rgxf[0x0].fl.rgcsh[i] + LOWORD(cXfer));
 
 L_bbde:
     if ((iPass != 0))
@@ -3158,32 +3205,50 @@ L_bc17:
         goto L_bc20;
 
 L_bc20:
-    /* untranslated: branch (signhiword(ss:[bp+(i * 2)-0x94]) - HIWORD(cXfer)) > 0x0 ? L_bc62 : L_bc3d */
+    if (((SIGNHIWORD(rgxf[1].fl.rgcsh[i]) - HIWORD(cXfer)) > 0x0))
+        goto L_bc62;
+    else
+        goto L_bc3d;
 
 L_bc3d:
-    /* untranslated: branch (signhiword(ss:[bp+(i * 2)-0x94]) - HIWORD(cXfer)) < 0x0 ? L_bc4a : L_bc42 */
+    if (((SIGNHIWORD(rgxf[1].fl.rgcsh[i]) - HIWORD(cXfer)) < 0x0))
+        goto L_bc4a;
+    else
+        goto L_bc42;
 
 L_bc42:
-    /* untranslated: branch (ss:[bp+(i * 2)-0x94] - LOWORD(cXfer)) >= 0x0 ? L_bc62 : L_bc4a */
+    if (((rgxf[1].fl.rgcsh[i] - LOWORD(cXfer)) >= 0x0))
+        goto L_bc62;
+    else
+        goto L_bc4a;
 
 L_bc4a:
-    /* untranslated: cXfer = sext16to32(ss:[bp+(i * 0x2)-0x94]) */
+    cXfer = (uint32_t)(rgxf[0x1].fl.rgcsh[i]);
     goto L_bcb1;
 
 L_bc62:
-    /* untranslated: branch signhiword((0x7ffe - ss:[bp+(i * 2)-0x94])) > neg((HIWORD(cXfer) + 0x0)) ? L_bcb1 : L_bc88 */
+    if ((SIGNHIWORD((32766 - rgxf[1].fl.rgcsh[i])) > (-(HIWORD(cXfer) + 0x0))))
+        goto L_bcb1;
+    else
+        goto L_bc88;
 
 L_bc88:
-    /* untranslated: branch signhiword((0x7ffe - ss:[bp+(i * 2)-0x94])) < neg((HIWORD(cXfer) + 0x0)) ? L_bc94 : L_bc8d */
+    if ((SIGNHIWORD((32766 - rgxf[1].fl.rgcsh[i])) < (-(HIWORD(cXfer) + 0x0))))
+        goto L_bc94;
+    else
+        goto L_bc8d;
 
 L_bc8d:
-    /* untranslated: branch (0x7ffe - ss:[bp+(i * 2)-0x94]) > neg(LOWORD(cXfer)) ? L_bcb1 : L_bc94 */
+    if (((32766 - rgxf[1].fl.rgcsh[i]) > (-LOWORD(cXfer))))
+        goto L_bcb1;
+    else
+        goto L_bc94;
 
 L_bc94:
-    /* untranslated: cXfer = sext16to32(neg(((0x7ffe - ss:[bp+(i * 0x2)-0x94]) + 0xffff))) */
+    cXfer = (uint32_t)((-((0x7ffe - rgxf[0x1].fl.rgcsh[i]) + 0xffff)));
 
 L_bcb1:
-    /* untranslated: ss:[bp+(i * 2)-0x94] = (ss:[bp+(i * 0x2)-0x94] - LOWORD(cXfer)) */
+    rgxf[0x1].fl.rgcsh[i] = (rgxf[0x1].fl.rgcsh[i] - LOWORD(cXfer));
 
 L_bcc5:
     iLook = (iLook + 1);
@@ -3206,8 +3271,8 @@ L_bcdc:
     goto L_bdd4;
 
 L_bcf7:
-    FLookupFleet(-1, (&(rgxf[iPass]) + 0x4));
-    lpfl = LpflFromId(rgxf[iPass].th.idFull);
+    FLookupFleet(-1, &(rgxf[iPass].fl));
+    lpfl = LpflFromId(rgxf[iPass].fl.id);
     if ((LOWORD(lpfl) != 0x0))
         goto L_bd4e;
     else
@@ -3227,7 +3292,10 @@ L_bd64:
     goto L_bd99;
 
 L_bd6d:
-    /* untranslated: branch ds:[((&rgxf[iPass] + 0x10) + (i * 2))] != 0x0 ? L_bda3 : L_bd94 */
+    if ((rgxf[iPass].fl.rgcsh[i] != 0))
+        goto L_bda3;
+    else
+        goto L_bd94;
 
 L_bd94:
     i = (i + 1);
@@ -3245,7 +3313,7 @@ L_bda3:
         goto L_bdad;
 
 L_bdad:
-    FDeleteFleet(rgxf[iPass].th.idFull, grobjNone, 0);
+    FDeleteFleet(rgxf[iPass].fl.id, grobjNone, 0);
 
 L_bdcf:
     iPass = (iPass + 1);

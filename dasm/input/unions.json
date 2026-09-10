@@ -130,6 +130,16 @@
       "value": "hstPlanetary"
     },
     {
+      "func": "FRunLogRecord",
+      "root": "rgxf",
+      "root_path": null,
+      "all_elements": true,
+      "type": "XFER",
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "value": "grobjFleet"
+    },
+    {
       "func": "MysteryTrader",
       "root": "lpth",
       "type": "THING",
@@ -152,6 +162,15 @@
       "path": ["ith"],
       "enum": "ThingType",
       "value": "ithMinefield"
+    },
+    {
+      "func": "TransferStuff",
+      "root": "xfer",
+      "type": "XFER",
+      "all_elements": true,
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "value": "grobjFleet"
     },
     {
       "func": "TransferToOthers",

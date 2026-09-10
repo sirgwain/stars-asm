@@ -4373,7 +4373,7 @@ L_4ff0:
         goto L_5008;
 
 L_5008:
-    if ((FLookupObject(xfer[i].grobj, xfer[i].id, ((uint8_t *)((xfer + i)) + 4)) != 0))
+    if ((FLookupObject(xfer[i].grobj, xfer[i].id, &(xfer[i].fl)) != 0))
         goto L_5056;
     else
         goto L_5050;
@@ -4407,7 +4407,7 @@ L_5097:
     goto L_5156;
 
 L_50d8:
-    xfer[i].th.idFull = 0xffff;
+    xfer[i].fl.id = -1;
     j = 0;
     goto L_5121;
 
@@ -4423,7 +4423,7 @@ L_5121:
         goto L_512b;
 
 L_512b:
-    EnumLogRts(FEnumCalcJettison, ((uint8_t *)((xfer + i)) + 4), id1);
+    EnumLogRts(FEnumCalcJettison, &(xfer[i].pl), id1);
 
 L_5156:
     i = (i + 1);
@@ -4446,7 +4446,10 @@ L_516e:
     goto L_51c8;
 
 L_517d:
-    /* untranslated: branch ss:[bp+(i * 2)-0xf2] != 0x0 ? L_51ad : L_5191 */
+    if ((xfer[0].fl.rgcsh[i] != 0))
+        goto L_51ad;
+    else
+        goto L_5191;
 
 L_5191:
     if ((xfer[1].grobj != grobjFleet))
@@ -4455,7 +4458,10 @@ L_5191:
         goto L_519a;
 
 L_519a:
-    /* untranslated: branch ss:[bp+(i * 2)-0x72] == 0x0 ? L_51c3 : L_51ad */
+    if ((xfer[1].fl.rgcsh[i] == 0))
+        goto L_51c3;
+    else
+        goto L_51ad;
 
 L_51ad:
     cXferValidHulls = (cXferValidHulls + 1);
@@ -4505,7 +4511,10 @@ L_525e:
     goto L_5282;
 
 L_5267:
-    /* untranslated: branch ss:[bp+(i * 2)-0x72] > 0x0 ? L_528c : L_527d */
+    if ((xfer[1].fl.rgcsh[i] > 0))
+        goto L_528c;
+    else
+        goto L_527d;
 
 L_527d:
     i = (i + 1);
@@ -4548,7 +4557,7 @@ L_52d4:
         goto L_52ec;
 
 L_52ec:
-    FLookupPlanet(-1, (&(xfer[i]) + 0x4));
+    FLookupPlanet(-1, &(xfer[i].fl));
     if ((xfer[i].grobj != grobjPlanet))
         goto L_542a;
     else
@@ -4579,7 +4588,7 @@ L_535b:
         goto L_5373;
 
 L_5373:
-    FLookupFleet(-1, (&(xfer[i]) + 0x4));
+    FLookupFleet(-1, &(xfer[i].fl));
     if ((mdXfer != mdXferShips))
         goto L_542a;
     else
@@ -4623,7 +4632,7 @@ L_53f1:
         goto L_5409;
 
 L_5409:
-    FLookupThing(-1, (&(xfer[i]) + 0x4));
+    FLookupThing(-1, &(xfer[i].fl));
 
 L_542a:
     i = (i + 1);
@@ -4654,7 +4663,7 @@ L_5453:
     t_merge_5456_0001 = 0x0;
 
 L_5456:
-    FDeleteFleet(xfer[iDelFleet].th.idFull, grobjFleet, xfer[t_merge_5456_0001].th.idFull);
+    FDeleteFleet(xfer[iDelFleet].fl.id, grobjFleet, xfer[t_merge_5456_0001].fl.id);
 
 L_5482:
     if ((mdXfer != mdXferShips))
