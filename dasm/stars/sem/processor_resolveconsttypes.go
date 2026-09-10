@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -47,6 +48,11 @@ func resolveConstTypesEffect(effect Effect) (Effect, bool) {
 		// inside those trees still provide enough information to type their
 		// constants.
 		rewriter := &semRewriter{
+			call: func(w *semRewriter, call *Call, meta machine.Meta) (*Call, bool, bool) {
+				next, childChanged := w.rewriteCallChildren(call)
+				resolved, changed := resolveConstTypesExpr(next, nil, false)
+				return resolved.(*Call), childChanged || changed, true
+			},
 			expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 				next, changed := w.rewriteExprChildren(expr)
 
@@ -67,6 +73,7 @@ func resolveConstTypesEffect(effect Effect) (Effect, bool) {
 // storage expressions.
 func resolveConstTypesLValue(value LValue, bitwise bool) (LValue, bool) {
 	switch v := value.(type) {
+
 	case *ArrayIndex:
 		base, baseChanged := resolveConstTypesExpr(v.Base, nil, bitwise)
 		index, indexChanged := resolveConstTypesExpr(v.Index, arrayIndexConstType(), bitwise)
@@ -104,6 +111,15 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 	expected = constTypeExpected(expected)
 
 	switch e := expr.(type) {
+	case *AddressOf:
+		target, changed := resolveConstTypesLValue(e.Target, bitwise)
+		if !changed {
+			return expr, false
+		}
+
+		next := *e
+		next.Target = target
+		return &next, true
 	case *Const:
 		if bitwise || expected == nil || sameConstType(e.TypeInfo, expected) {
 			return expr, false
@@ -130,14 +146,30 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 	case *Compare:
 		return resolveConstTypesCompare(e, expected)
 	case *Call:
+		next := *e
+		next.Args = append([]Expr(nil), e.Args...)
 		changed := false
 		for i, arg := range e.Args {
-			if value, argChanged := resolveConstTypesExpr(arg, arg.ExprType(), bitwise); argChanged {
-				e.Args[i] = value
-				changed = true
+			expected := arg.ExprType()
+			if e.Function != nil && i < len(e.Params) {
+				expected = e.Params[i].Type
+				// Passing an integer to a word-sized parameter already
+				// truncates it. Keep explicit lanes in wider and untyped uses.
+				if param, ok := expected.(*typeinfo.Primitive); ok && param.TypeKind == typeinfo.KInt && param.Size == 2 {
+					if word, ok := arg.(*Word); ok && word.Part == machine.WordLow && word.Parent.ExprType().Kind() == typeinfo.KInt {
+						arg = word.Parent
+						changed = true
+					}
+				}
 			}
+			value, argChanged := resolveConstTypesExpr(arg, expected, bitwise)
+			next.Args[i] = value
+			changed = changed || argChanged
 		}
-		return e, changed
+		if !changed {
+			return e, false
+		}
+		return &next, true
 	case *ArrayIndex:
 		base, baseChanged := resolveConstTypesExpr(e.Base, nil, bitwise)
 		index, indexChanged := resolveConstTypesExpr(e.Index, arrayIndexConstType(), bitwise)
@@ -335,6 +367,24 @@ func semanticPeerType(expr Expr) typeinfo.Type {
 		case *SignExtend:
 			expr = e.Parent
 			continue
+		case *Binary:
+			// Machine binary nodes retain their unsigned lane type. Recover
+			// the source type through same-width arithmetic so a nested
+			// signed difference still types a following 0xffff as -1.
+			if e.Op == OpAdd || e.Op == OpSub || e.Op == OpMul {
+				lhs := semanticPeerType(e.LHS)
+				rhs := semanticPeerType(e.RHS)
+				if _, constant := e.LHS.(*Const); constant {
+					lhs = rhs
+				}
+				if _, constant := e.RHS.(*Const); constant {
+					rhs = lhs
+				}
+				if scalar, ok := lhs.(*typeinfo.Primitive); ok && scalar.TypeKind == typeinfo.KInt &&
+					scalar.Size == e.ExprType().Bytes() && typeinfo.Equals(lhs, rhs) {
+					return lhs
+				}
+			}
 		}
 
 		if containsBitwiseExpr(expr) {

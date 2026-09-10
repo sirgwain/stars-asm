@@ -76,7 +76,7 @@ L_5adc:
         goto L_5ae8;
 
 L_5ae8:
-    if ((*(pxfer + 0x82) != 0x8))
+    if ((pxfer[1].grobj != grobjThing))
         goto L_5b0e;
     else
         goto L_5af6;
@@ -97,7 +97,10 @@ L_5b05:
     goto L_5b31;
 
 L_5b0e:
-    /* untranslated: branch part[0x6:2](pxfer[btn.iSide]) != idPlayer ? L_5f70 : L_5b31 */
+    if ((pxfer[btn.iSide].fl.iPlayer != idPlayer))
+        goto FinishUp;
+    else
+        goto L_5b31;
 
 L_5b31:
     SetCapture(hwnd);
@@ -131,13 +134,13 @@ L_5b6e:
         goto L_5b8c;
 
 L_5b8c:
-    if ((*(pxfer + 0x82) != 0x8))
+    if ((pxfer[1].grobj != grobjThing))
         goto L_5bc0;
     else
         goto L_5b9a;
 
 L_5b9a:
-    cNew = (uint32_t)(((uint32_t)((*(pxfer + 0x92) & 0x3fff)) * 0xa));
+    cNew = (uint32_t)((pxfer[1].th.thp.wtMax * 0xa));
     goto L_5c26;
 
 L_5bc0:
@@ -160,7 +163,7 @@ L_5c20:
 
 L_5c26:
     cNew = (int32_t)(((uint32_t)(((uint32_t)((pt.x - btn.rc.left)) * cNew)) / (uint32_t)(((btn.rc.right - btn.rc.left) + 0xfffe))));
-    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + (btn.iSide * 0x80)) + 0x4));
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + btn.iSide) + 0x4));
     dChg = (cNew - cCur);
     if ((btn.iSide != 0x0))
         goto L_5ce3;

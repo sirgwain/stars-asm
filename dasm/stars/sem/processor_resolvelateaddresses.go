@@ -16,6 +16,8 @@ type semanticAddressParts struct {
 	terms   []ScaledTerm
 	deref   bool
 	invalid bool
+	// addressValue distinguishes a complete address from its low word.
+	addressValue bool
 }
 
 // ProcessBlock projects raw semantic memory after scratch substitution has
@@ -59,6 +61,22 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 			return rewritten, changed || childChanged, true
 		},
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
+			switch value := expr.(type) {
+			case *PointerOffset:
+				if resolved, ok := p.resolvePointerArithmetic(value); ok {
+					next, _ := w.rewriteExprChildren(resolved)
+					return next, true, true
+				}
+			case *Binary:
+				// Pointer-typed binaries already use element steps. Machine
+				// arithmetic exposed by scratch substitution still uses bytes.
+				if !typeinfo.IsPointer(value.ExprType()) && (value.Op == OpAdd || value.Op == OpSub) {
+					if resolved, ok := p.resolvePointerArithmetic(value); ok {
+						next, _ := w.rewriteExprChildren(resolved)
+						return next, true, true
+					}
+				}
+			}
 			address, ok := expr.(*AddressOf)
 			if !ok {
 				return expr, false, false
@@ -72,6 +90,14 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 			return resolved, true, true
 		},
 		lvalue: func(w *semRewriter, value LValue) (LValue, bool, bool) {
+			// Pair the segment and offset before rewriting either lane's
+			// parent into an array address with a different semantic type.
+			if memory, ok := value.(*Memory); ok {
+				if resolved, ok := p.resolveMemory(memory); ok {
+					next, _ := w.rewriteLValueChildren(resolved)
+					return next, true, true
+				}
+			}
 			value, childChanged := w.rewriteLValueChildren(value)
 			if part, ok := value.(*Part); ok && part.Width > 0 && part.TypeInfo != nil {
 				converter := machineConverter{ctx: p.ctx}
@@ -91,6 +117,39 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 			return resolved, true, true
 		},
 	}
+}
+
+// resolvePointerArithmetic projects a byte address into a typed subobject
+// address without loading the subobject or following a pointer stored in it.
+func (p *resolveLateAddressesProcessor) resolvePointerArithmetic(expr Expr) (Expr, bool) {
+	parts := flattenSemanticAddress(expr, 1)
+	if parts.invalid || !parts.addressValue || parts.base == nil || parts.offset == 0 && len(parts.terms) == 0 {
+		return nil, false
+	}
+	converter := machineConverter{ctx: p.ctx}
+	projected, ok := converter.consumeAddressProjection(AddressExpr{Base: parts.base, Offset: parts.offset, Terms: parts.terms, Deref: parts.deref}, 0)
+	if !ok {
+		return nil, false
+	}
+	target, ok := projected.(LValue)
+	if !ok {
+		return nil, false
+	}
+	switch target.(type) {
+	case *Part, *Deref:
+		return nil, false
+	}
+	if index, ok := target.(*ArrayIndex); ok && typeinfo.IsPointer(index.Base.ExprType()) {
+		return objectAddress(index, 0, index.Base.ExprType()), true
+	}
+	class := typeinfo.PtrNear
+	if ptr, ok := parts.base.ExprType().(*typeinfo.Pointer); ok {
+		class = ptr.Class
+	}
+	if typeinfo.IsArray(target.ExprType()) {
+		return target, true
+	}
+	return &AddressOf{Target: target, TypeInfo: &typeinfo.Pointer{Elem: target.ExprType(), Class: class}}, true
 }
 
 // resolveAddressOfPart distinguishes pointer byte arithmetic from an address
@@ -199,11 +258,19 @@ func (p *resolveLateAddressesProcessor) addressFromMemory(memory *Memory) (Addre
 // typed base, a fixed byte displacement, and dynamic scaled byte terms.
 func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 	switch value := expr.(type) {
+	case *PointerOffset:
+		return mergeSemanticAddressParts(flattenSemanticAddress(value.Pointer, sign), flattenSemanticAddress(value.Offset, sign))
+	case *Unary:
+		if value.Op == OpNeg {
+			return flattenSemanticAddress(value.X, -sign)
+		}
 	case *Cast:
 		return flattenSemanticAddress(value.Value, sign)
 	case *Word:
 		if value.Part == machine.WordLow {
-			return flattenSemanticAddress(value.Parent, sign)
+			parts := flattenSemanticAddress(value.Parent, sign)
+			parts.addressValue = false
+			return parts
 		}
 	case *Binary:
 		switch value.Op {
@@ -213,7 +280,20 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 			if value.Op == OpSub {
 				rhsSign = -rhsSign
 			}
-			return mergeSemanticAddressParts(lhs, flattenSemanticAddress(value.RHS, rhsSign))
+			rhs := flattenSemanticAddress(value.RHS, rhsSign)
+			if ptr, ok := value.ExprType().(*typeinfo.Pointer); ok {
+				// Source pointer arithmetic counts elements; only machine
+				// integer arithmetic and PointerOffset count bytes.
+				delta := &rhs
+				if rhs.base != nil {
+					delta = &lhs
+				}
+				delta.offset *= ptr.Elem.Bytes()
+				for i := range delta.terms {
+					delta.terms[i].Scale *= ptr.Elem.Bytes()
+				}
+			}
+			return mergeSemanticAddressParts(lhs, rhs)
 		case OpMul:
 			if constant, other, ok := semanticConstOperand(value.LHS, value.RHS); ok {
 				return semanticAddressParts{terms: []ScaledTerm{{Expr: unwrapSemanticAddressWord(other), Scale: sign * signedWordOffset(uint(constant.U64))}}}
@@ -227,11 +307,14 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 		return semanticAddressParts{offset: sign * signedWordOffset(uint(value.U64))}
 	case *AddressOf:
 		if sign == 1 {
-			return semanticAddressParts{base: value.Target}
+			return semanticAddressParts{base: value.Target, addressValue: true}
 		}
 	default:
+		if expr != nil && sign == 1 && typeinfo.IsArray(expr.ExprType()) {
+			return semanticAddressParts{base: expr, addressValue: true}
+		}
 		if expr != nil && sign == 1 && typeinfo.IsPointer(expr.ExprType()) {
-			return semanticAddressParts{base: expr, deref: true}
+			return semanticAddressParts{base: expr, deref: true, addressValue: true}
 		}
 	}
 	if expr == nil {
@@ -243,11 +326,12 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 // mergeSemanticAddressParts combines normalized semantic address fragments
 // while rejecting a second base by retaining it as an ordinary term.
 func mergeSemanticAddressParts(a, b semanticAddressParts) semanticAddressParts {
-	out := semanticAddressParts{base: a.base, offset: a.offset + b.offset, deref: a.deref, invalid: a.invalid || b.invalid}
+	out := semanticAddressParts{base: a.base, offset: a.offset + b.offset, deref: a.deref, invalid: a.invalid || b.invalid, addressValue: a.addressValue}
 	out.terms = append(out.terms, a.terms...)
 	if out.base == nil {
 		out.base = b.base
 		out.deref = b.deref
+		out.addressValue = b.addressValue
 	} else if b.base != nil {
 		out.invalid = true
 	}

@@ -1,0 +1,105 @@
+/*
+LogChangeThing  (log)
+  addr: 000a:9908  len=238
+  sig:  void LogChangeThing(THING *lpth, THING *pthNew)
+  params:
+    THING *          lpth           [BP+0x6]
+    THING *          pthNew         [BP+0xa]
+  locals:
+    LOGXFER          lxNew          [BP-0x1e]
+    int16_t          fChg           [BP-0x6]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_9908:
+  insts 0..10  off 0x9908..0x9922
+  succs: L_9929, L_99f0
+  effects:
+    9911  store[2] [bp-fChg] = 0x0
+    9921  branch ((load([gd]) >> 0x1) & 0x1) != 0x0 ? L_99f0 : L_9929
+
+block L_9929:
+  insts 13..26  off 0x9929..0x9951
+  preds: L_9908
+  succs: L_99a5
+  effects:
+    9935  call memset(addr([bp-lxNew]), 0x0, 0x18) -> callresult(void *)
+    9942  store[2] [bp-lxNew] = load(ds:[load([bp+pthNew])])
+    9945  store[2] [bp-lxNew+0x2] = 0x8
+    994a  store[2] [bp-i] = 0x0
+    994f  goto L_99a5
+
+block L_9952:
+  insts 27..52  off 0x9952..0x9990
+  preds: L_99a5
+  succs: L_9994, L_999c
+  effects:
+    9987  store[2] ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x1a] = (load(ds:[((load([bp+pthNew]) + 0x8) + (load([bp-i]) << 0x1))]) - load(load([bp+lpth+0x2]):[((load([bp+lpth]) + 0x8) + (load([bp-i]) << 0x1))]))
+    9989  store[2] ss:[bp+((load([bp-i]) << 0x1) << 0x1)-0x18] = signhiword((load(ds:[((load([bp+pthNew]) + 0x8) + (load([bp-i]) << 0x1))]) - load(load([bp+lpth+0x2]):[((load([bp+lpth]) + 0x8) + (load([bp-i]) << 0x1))])))
+    998f  branch (load(ds:[((load([bp+pthNew]) + 0x8) + (load([bp-i]) << 0x1))]) - load(load([bp+lpth+0x2]):[((load([bp+lpth]) + 0x8) + (load([bp-i]) << 0x1))])) != 0x0 ? L_999c : L_9994
+
+block L_9994:
+  insts 54..55  off 0x9994..0x9998
+  preds: L_9952
+  succs: L_999c, L_99a1
+  effects:
+    9997  branch signhiword((load(ds:[((load([bp+pthNew]) + 0x8) + (load([bp-i]) << 0x1))]) - load(load([bp+lpth+0x2]):[((load([bp+lpth]) + 0x8) + (load([bp-i]) << 0x1))]))) == 0x0 ? L_99a1 : L_999c
+
+block L_999c:
+  insts 57..57  off 0x999c..0x99a0
+  preds: L_9952, L_9994
+  succs: L_99a1
+  effects:
+    999c  store[2] [bp-fChg] = 0x1
+
+block L_99a1:
+  insts 58..58  off 0x99a1..0x99a4
+  preds: L_9994, L_999c
+  succs: L_99a5
+  effects:
+    99a1  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_99a5:
+  insts 59..60  off 0x99a5..0x99aa
+  preds: L_9929, L_99a1
+  succs: L_9952, L_99ae
+  effects:
+    99a9  branch load([bp-i]) < 0x3 ? L_9952 : L_99ae
+
+block L_99ae:
+  insts 62..63  off 0x99ae..0x99b3
+  preds: L_99a5
+  succs: L_99b7, L_99f0
+  effects:
+    99b2  branch load([bp-fChg]) == 0x0 ? L_99f0 : L_99b7
+
+block L_99b7:
+  insts 65..66  off 0x99b7..0x99bd
+  preds: L_99ae
+  succs: L_99c1, L_99da
+  effects:
+    99bc  branch load([fValidLx]) == 0x0 ? L_99da : L_99c1
+
+block L_99c1:
+  insts 68..75  off 0x99c1..0x99d9
+  preds: L_99b7
+  succs: L_99f0
+  effects:
+    99c9  call LogMakeValidXfer(0x24ca, addr([bp-lxNew])) -> callresult(void)
+    99d1  store[2] [fValidLx] = 0x0
+    99d7  goto L_99f0
+
+block L_99da:
+  insts 76..83  off 0x99da..0x99ef
+  preds: L_99b7
+  succs: L_99f0
+  effects:
+    99e5  copy[0x18] *addr([lx]) = *addr(ds:[addr([bp-lxNew])])
+    99ea  store[2] [fValidLx] = 0x1
+
+block L_99f0:
+  insts 84..88  off 0x99f0..0x99f5
+  preds: L_9908, L_99ae, L_99c1, L_99da
+  effects:
+    99f5  return

@@ -613,7 +613,7 @@ L_6db5:
         goto L_6dbe;
 
 L_6dbe:
-    /* untranslated: amountWP = sext16to32(HIWORD(lpthWP):[((LOWORD(lpthWP) + 0x8) + (j * 0x2))]) */
+    amountWP = (uint32_t)(lpthWP->thp.rgwtMin[j]);
 
 L_6dde:
     goto L_6dff;
@@ -706,11 +706,11 @@ L_6e85:
         goto L_6e8e;
 
 L_6e8e:
-    /* untranslated: amountEdit = (uint32_t)((uint32_t)(amount * (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff)) / 0x64) */
+    amountEdit = (uint32_t)(((uint32_t)((amount * ord.txp.rgia[j].cQuan)) / 0x64));
     goto L_6eff;
 
 L_6ec9:
-    /* untranslated: amountEdit = (uint32_t)((int32_t)(amount / 0x64) * (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff)) */
+    amountEdit = (uint32_t)(((int32_t)((amount / 100)) * ord.txp.rgia[j].cQuan));
 
 L_6eff:
     amountEdit = (amountEdit - lpfl->rgwtMin[j]);
@@ -744,7 +744,7 @@ L_6f4c:
         goto L_6f58;
 
 L_6f58:
-    /* untranslated: amountEdit = (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff) */
+    amountEdit = ord.txp.rgia[j].cQuan;
     goto L_7018;
 
 L_6f75:
@@ -754,7 +754,7 @@ L_6f75:
         goto L_6f81;
 
 L_6f81:
-    /* untranslated: amountEdit = (uint32_t)(ss:[bp+(j * 0x2)-0x74] & 0xfff) */
+    amountEdit = ord.txp.rgia[j].cQuan;
     goto L_7018;
 
 L_6f9e:
@@ -938,8 +938,7 @@ L_7162:
 
 L_7165:
     idm = t_merge_7165_0001;
-    /* untranslated: call FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, (ss:[bp+(j * 2)-0x74] & 0xfff), 0, xWP, idWP, 0) ->
-     * callresult(int16_t) */
+    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, ord.txp.rgia[j].cQuan, 0, xWP, idWP, 0);
 
 L_71ae:
     goto Load;
@@ -1639,7 +1638,7 @@ L_7afa:
     l = ChgCargo(grobjFleet, lpfl->id, j, (((uint32_t)((uint16_t)((-(HIWORD(amount) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(amount)))), 0x0);
 
 L_7b2a:
-    /* untranslated: ss:[bp+(j * 2)-0x74] = ((ss:[bp+(j * 0x2)-0x74] & 0xfff) | 0x0) */
+    ord.txp.rgia[j].iAction = iActionNone;
     goto L_7b74;
 
 L_7b4e:
@@ -2287,7 +2286,7 @@ L_8596:
     goto L_860d;
 
 L_85e9:
-    lpshdefT = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * j)));
+    lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
 
 L_860d:
     lT = (uint32_t)(((uint32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i])));
@@ -2422,7 +2421,7 @@ L_88c3:
     goto L_893a;
 
 L_8916:
-    lpshdefT = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * j)));
+    lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
 
 L_893a:
     lT = (uint32_t)(((uint32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.resCost)));
@@ -2777,7 +2776,7 @@ L_9157:
     t_merge_915a_0001 = 295;
 
 L_915a:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, (lppl->idRoute + 0xffff), 0, 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, (lppl->idRoute - 1), 0, 0, 0, 0);
     goto L_67b6;
 
 L_916d:
@@ -3067,7 +3066,7 @@ L_96bc:
         goto L_96da;
 
 L_96da:
-    lpshdefDest = (rglpshdef[iplrDest] + LOWORD((0x93 * rgishMap[ish])));
+    lpshdefDest = (rglpshdef[iplrDest] + rgishMap[ish]);
     if ((lpshdefDest->fFree == 0x0))
         goto L_97d0;
     else
@@ -3224,7 +3223,7 @@ L_9b11:
     lpthBest = 0x0;
     lBest = 10000000;
     lpth = lpThings;
-    lpthMac = (lpThings + LOWORD((0x12 * cThing)));
+    lpthMac = (lpThings + cThing);
     goto L_9c86;
 
 L_9b5c:
@@ -3289,7 +3288,7 @@ L_9c61:
     lpthBest = lpth;
 
 L_9c81:
-    lpth = (lpth + 0x12);
+    lpth = (lpth + 1);
 
 L_9c86:
     if ((LOWORD(lpth) < LOWORD(lpthMac)))

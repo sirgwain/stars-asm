@@ -47,8 +47,8 @@ L_005d:
         goto L_0066;
 
 L_0066:
-    hwndTBRadar = CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((uint32_t)(((0x1c - dyArial8) + 0xfff8)) / 0x2) + 0x4), dx, (LOWORD((0xb * dyArial8)) + 0x1c),
-                               hwnd, 0x0, hInst, 0x0);
+    hwndTBRadar = CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((uint32_t)(((0x1c - dyArial8) + 0xfff8)) / 2) + 4), dx, (LOWORD((0xb * dyArial8)) + 28), hwnd,
+                               0x0, hInst, 0x0);
     SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[1], 0);
     iSel = -1;
     j = 0;
@@ -515,9 +515,9 @@ L_07dc:
     PatBlt(hdc, (pt.x + 1), (pt.y + 26), 1, 1, PATCOPY);
     SelectObject(hdc, hbrBotRight);
     PatBlt(hdc, (pt.x + 2), (pt.y + 27), (dx - 4), 1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xffff), (pt.y + 2), 1, 24, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 1), 1, 1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 26), 1, 1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 1), (pt.y + 2), 1, 24, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 2), (pt.y + 1), 1, 1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 2), (pt.y + 26), 1, 1, PATCOPY);
     SelectObject(hdc, hbrButtonFace);
     PatBlt(hdc, (pt.x + 2), (pt.y + 1), (dx - 4), 1, PATCOPY);
     PatBlt(hdc, (pt.x + 1), (pt.y + 2), 1, 24, PATCOPY);
@@ -536,17 +536,17 @@ L_098d:
 
 L_09e3:
     PatBlt(hdc, (pt.x + 2), (pt.y + 26), (dx - 4), 1, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 2), 1, 24, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 2), (pt.y + 2), 1, 24, PATCOPY);
 
 L_0a35:
     goto L_0a8a;
 
 L_0a38:
     PatBlt(hdc, (pt.x + 2), (pt.y + 25), (dx - 4), 2, PATCOPY);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffd), (pt.y + 2), 2, 24, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 3), (pt.y + 2), 2, 24, PATCOPY);
 
 L_0a8a:
-    DibBlt(hdc, ((pt.x + 2) + fDown), ((pt.y + 2) + fDown), dxDraw, 23, hdibToolbar, LOWORD((24 * ibtn)), 0, dxDraw, 23, 13369376);
+    DibBlt(hdc, ((pt.x + 2) + fDown), ((pt.y + 2) + fDown), dxDraw, 23, hdibToolbar, (24 * ibtn), 0, dxDraw, 23, 13369376);
     if ((fDown <= 1))
         goto L_0b0c;
     else
@@ -554,7 +554,7 @@ L_0a8a:
 
 L_0ad7:
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, ((pt.x + dx) + 0xfffe), (pt.y + 26), 1, 1, PATCOPY);
+    PatBlt(hdc, ((pt.x + dx) - 2), (pt.y + 26), 1, 1, PATCOPY);
 
 L_0b0c:
     return;
@@ -1024,7 +1024,7 @@ L_0ebc:
     rgid[c] = (uint32_t)(t_merge_0ebc_0001);
 
 L_0ecd:
-    CchGetString(i, (0x5844 + LOWORD(((i - 1278) * 0x1e))));
+    CchGetString(i, (0x5844 + LOWORD(((i - 1278) * 30))));
     c = (c + 1);
     rgszScan[c] = (0x5844 + LOWORD(((i + 0xfb02) * 0x1e)));
     i = (i + 1);
@@ -1129,7 +1129,7 @@ L_1076:
 
 L_1083:
     rgid[c] = 0;
-    CchGetString(i, (0x57a4 + LOWORD(((i - 1275) * 0x14))));
+    CchGetString(i, (0x57a4 + LOWORD(((i - 1275) * 20))));
     c = (c + 1);
     rgszScan[c] = (0x57a4 + LOWORD(((i + 0xfb05) * 0x14)));
     i = (i + 1);
@@ -1301,7 +1301,7 @@ L_12fa:
 
 L_130c:
     rgid[c] = 0;
-    CchGetString(i, (0x586c + LOWORD(((i - 1275) * 0x19))));
+    CchGetString(i, (0x586c + LOWORD(((i - 1275) * 25))));
     c = (c + 1);
     rgszScan[c] = (0x586c + LOWORD(((i + 0xfb05) * 0x19)));
     i = (i + 1);
@@ -1449,7 +1449,7 @@ L_153f:
     rgid[c] = (uint32_t)(t_merge_153f_0001);
     _wsprintf(szWork[i * 0x8], PCTDPCTPCT, vrgpctZoom[i]);
     c = (c + 1);
-    rgszScan[c] = (0x57a4 + (i * 8));
+    rgszScan[c] = (22436 + (i * 8));
     i = (i + 1);
 
 L_159d:
@@ -1569,7 +1569,7 @@ L_16ca:
 
 L_16d8:
     pct = (LOWORD((0xa * pct)) + ((uint16_t)(*(psz)) - 48));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     goto L_16bc;
 
 L_16f9:
@@ -1613,7 +1613,7 @@ L_173d:
     pct = 100;
 
 L_1742:
-    SendMessage(hwndTBRadar, CB_SETCURSEL, ((uint32_t)((100 - pct)) / 0xa), 0);
+    SendMessage(hwndTBRadar, CB_SETCURSEL, ((uint32_t)((100 - pct)) / 10), 0);
     _wsprintf(szWork, PCTDPCTPCT, pct);
     SetWindowText(hwndTBRadar, szWork);
     if ((pct == vpctRadarView))
@@ -1711,7 +1711,7 @@ L_1857:
         goto L_1862;
 
 L_1862:
-    if ((EqualRect(prc, vrcTooltip.left) != 0))
+    if ((EqualRect(prc, &(vrcTooltip)) != 0))
         goto L_19dd;
     else
         goto L_1880;
@@ -1868,7 +1868,7 @@ L_1aab:
 L_1abb:
     vtickTooltip1stVis = GetTickCount();
     GetCursorPos(&(pt));
-    if ((PtInRect(vrcTooltip.left, pt) == 0))
+    if ((PtInRect(&(vrcTooltip), pt) == 0))
         goto LKillTip;
     else
         goto L_1af0;
@@ -1885,7 +1885,7 @@ L_1b10:
 
 L_1b1d:
     ClientToScreen(hwndFrame, &(pt));
-    SetWindowPos(hwnd, 0xffff, pt.x, (((uint32_t)(LOWORD((3 * dyArial8))) / 0x2) + pt.y), 0, 0, 0x251);
+    SetWindowPos(hwnd, 0xffff, pt.x, (((uint32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, 0x251);
     UpdateWindow(hwnd);
     if ((vidTimerTooltip == -1))
         goto L_1b77;
@@ -1914,7 +1914,7 @@ L_1ba6:
 L_1baf:
     vtickTooltipLast = GetTickCount();
     GetCursorPos(&(pt));
-    if ((PtInRect(vrcTooltip.left, pt) == 0))
+    if ((PtInRect(&(vrcTooltip), pt) == 0))
         goto LKillTip;
     else
         goto L_1be1;

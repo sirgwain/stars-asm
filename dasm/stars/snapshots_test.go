@@ -43,6 +43,7 @@ var procs = []string{
 	"LpengineFromId",
 	"LphuldefFromId",
 	"LpscannerFromId",
+	"LogChangeThing",
 	"MineClick",
 	"PopRandom",
 	"PushRandom",

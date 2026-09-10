@@ -1025,7 +1025,7 @@ L_5ef1:
     goto L_5f62;
 
 L_5f19:
-    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 0x3) + (dyArial8 * 2)), 0, 0, 0x55);
+    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 3) + (dyArial8 * 2)), 0, 0, 0x55);
     i = (i + 1);
 
 L_5f62:
@@ -1035,11 +1035,11 @@ L_5f62:
         goto L_5f6b;
 
 L_5f6b:
-    SetRect(rcMsgText.left, 4, ((dyArial8 * 2) + 0x3), (dx - 52), (dy - 4));
-    SetRect(rcMsgTitle.left, 4, 4, (dx - 4), ((dyArial8 * 2) + 0xfffc));
+    SetRect(&(rcMsgText), 4, ((dyArial8 * 2) + 3), (dx - 52), (dy - 4));
+    SetRect(&(rcMsgTitle), 4, 4, (dx - 4), ((dyArial8 * 2) - 4));
     rc = rcMsgText;
     ExpandRc(&(rc), -4, -4);
-    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) + 0xffac), (rc.bottom - rc.top), SWP_NOZORDER);
+    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), SWP_NOZORDER);
     SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x5);
     rc.top = (rc.top + (dyShipDD + 3));
     SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER);
@@ -1287,8 +1287,8 @@ L_63dd:
     goto L_7207;
 
 L_63e0:
-    /* untranslated: part[0xc:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
-    /* untranslated: part[0xe:2](lParam) = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) */
     goto Default;
 
 L_640f:
@@ -1696,7 +1696,7 @@ L_6c1f:
 SetupNewMsg:
     gd.fGotoVCR = 0x0;
     SetMsgTitle(hwnd);
-    InvalidateRect(hwnd, rcMsgText.left, 1);
+    InvalidateRect(hwnd, &(rcMsgText), 1);
     if ((gd.fTutorial == 0x0))
         goto L_7207;
     else
@@ -2255,7 +2255,7 @@ L_732e:
     _wsprintf(szWork, PszGetCompressedString(idsSendMessagesDD), (iMsgSendCur + 1), vcmsgplrOut);
     rc = rcMsgText;
     ExpandRc(&(rc), -4, -4);
-    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) + 0xffac), (rc.bottom - rc.top), 0x44);
+    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), 0x44);
     SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x45);
     rc.top = (rc.top + (dyShipDD + 3));
     SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), 0x44);
@@ -2586,7 +2586,7 @@ L_77d8:
 
 FinishUp:
     strcpy(szMsgTitle, szWork);
-    InvalidateRect(hwndMessage, rcMsgTitle.left, 1);
+    InvalidateRect(hwndMessage, &(rcMsgTitle), 1);
 
 L_7802:
     return;
@@ -2611,7 +2611,7 @@ L_7821:
         goto L_782a;
 
 L_782a:
-    if ((i >= ((cMsg + vcmsgplrIn) + 0xffff)))
+    if ((i >= ((cMsg + vcmsgplrIn) - 1)))
         goto L_7848;
     else
         goto L_783c;
@@ -2892,7 +2892,7 @@ HtMsgType HtMsgBox(POINT pt) {
     uint16_t t_scratch_m6;
 
 L_7d8c:
-    if ((PtInRect(rcMsgTitle.left, pt) == 0))
+    if ((PtInRect(&(rcMsgTitle), pt) == 0))
         goto L_7e9d;
     else
         goto L_7daf;
@@ -2972,7 +2972,7 @@ L_7e6d:
         goto L_7e7f;
 
 L_7e7f:
-    if ((pt.x < ((rcMsgTitle.right - (rcMsgTitle.bottom - rcMsgTitle.top)) + 0xffe8)))
+    if ((pt.x < ((rcMsgTitle.right - (rcMsgTitle.bottom - rcMsgTitle.top)) - 24)))
         goto L_7e9d;
     else
         goto L_7e97;
@@ -3120,7 +3120,7 @@ L_80a3:
     return 0;
 
 L_80a9:
-    if (((imemMsgCur + 20) <= 0xffc8))
+    if (((imemMsgCur + 20) <= -56))
         goto L_80bd;
     else
         goto L_80b7;
@@ -3136,7 +3136,7 @@ L_80bd:
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
-    lpb = (lpb + 0x5);
+    lpb = (lpb + 5);
     lpbBase = lpb;
     grbit = 0x1;
     pi = &(p1);
@@ -3145,7 +3145,7 @@ L_80bd:
 
 L_8151:
     i = (i + 1);
-    pi = (pi + 0x2);
+    pi = (pi + 1);
     grbit = (grbit * 0x2);
 
 L_8168:
@@ -3165,12 +3165,12 @@ L_8189:
     lpmt->msghdr.grWord = 0x0;
     LOWORD(lpmt->msghdr) = (LOWORD(lpmt->msghdr) | scratch_bp_m16);
     LOWORD(lpb) = *(pi);
-    lpb = (lpb + 0x2);
+    lpb = (lpb + 2);
     goto L_8151;
 
 L_81cb:
     LOBYTE(LOWORD(lpb)) = LOBYTE(*(pi));
-    lpb = (lpb + 0x1);
+    lpb = (lpb + 1);
 
 L_81da:
     goto L_8151;
@@ -3193,7 +3193,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     uint16_t t_scratch_m50_2;
 
 L_823a:
-    if (((imemMsgCur + 20) <= 0xffc8))
+    if (((imemMsgCur + 20) <= -56))
         goto L_8257;
     else
         goto L_8251;
@@ -3208,7 +3208,7 @@ L_8257:
     bitfMsgSent[(iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(iMsg >> 0x3)] & (~(0x1 << (iMsg & 0x7)))) | (0x1 << (iMsg & 0x7))));
     pmsghdr->grWord = 0x0;
     pmsghdr->wGoto = iObj;
-    pb = (pb + 0x4);
+    pb = (pb + 4);
     grbit = 0x1;
     pi = &(p1);
     i = 0;
@@ -3216,7 +3216,7 @@ L_8257:
 
 L_82ea:
     i = (i + 1);
-    pi = (pi + 0x2);
+    pi = (pi + 1);
     grbit = (grbit * 0x2);
 
 L_8301:
@@ -3236,18 +3236,18 @@ L_8322:
     pmsghdr->grWord = 0x0;
     pmsghdr = (pmsghdr | t_scratch_m50_2);
     pb = *(pi);
-    pb = (pb + 0x2);
+    pb = (pb + 2);
     goto L_82ea;
 
 L_835e:
     *(pb) = LOBYTE(*(pi));
-    pb = (pb + 0x1);
+    pb = (pb + 1);
 
 L_836c:
     goto L_82ea;
 
 L_836f:
-    cSize = (pb - &(rgb));
+    cSize = (pb + (-&(rgb)));
     if ((fPrepend == 0))
         goto L_83c3;
     else
@@ -3319,7 +3319,7 @@ L_8467:
 L_8488:
     lpmh = lpb;
     u = lpmh->grWord;
-    lpb = (lpb + 0x4);
+    lpb = (lpb + 4);
     if ((iMsg != 0))
         goto L_84cd;
     else
@@ -3430,6 +3430,9 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     PART     part;
     int32_t  l;
     SHDEF   *lpshdef;
+    int16_t  t_merge_8804_0001;
+    int16_t  t_merge_881f_0001;
+    int16_t  t_merge_8837_0001;
 
 L_85cc:
     iMineral = -1;
@@ -3449,16 +3452,438 @@ L_85fa:
         goto L_8608;
 
 L_8608:
-    pch = (pch + 0x1);
+    pch = (pch + 1);
     *(pch) = *(pszFormat);
     goto L_8f4d;
 
 L_861b:
-    pszFormat = (pszFormat + 0x1);
+    pszFormat = (pszFormat + 1);
     goto L_8ecd;
 
+L_8628:
+    strcpy(pch, szWork);
+    pch = (pch + strlen(szWork));
+    goto L_8f4d;
+
+L_864b:
+    strcpy(pch, szBase);
+    pch = (pch + strlen(szBase));
+    goto L_8727;
+
+L_8674:
+    if ((idPlayer == -1))
+        goto L_86a2;
+    else
+        goto L_867e;
+
+L_867e:
+    c = _wsprintf(pch, ".x%d", (idPlayer + 1));
+    goto DoInt;
+
+L_86a2:
+    if ((idPlayer == -1))
+        goto L_86d0;
+    else
+        goto L_86ac;
+
+L_86ac:
+    c = _wsprintf(pch, ".m%d", (idPlayer + 1));
+    goto DoInt;
+
+L_86d0:
+    strcat(pch, 0xb5e);
+    pch = (pch + 4);
+    goto L_8f4d;
+
+L_86e8:
+    c = _wsprintf(pch, ".h%d", (idPlayer + 1));
+    goto DoInt;
+
+L_870c:
+    strcat(pch, 0xb68);
+    pch = (pch + 3);
+    goto L_8f4d;
+
+L_8727:
+    if (((uint16_t)(*(pszFormat)) == 102))
+        goto L_8674;
+    else
+        goto L_872f;
+
+L_872f:
+    if (((uint16_t)(*(pszFormat)) == 104))
+        goto L_86d0;
+    else
+        goto L_8737;
+
+L_8737:
+    if (((uint16_t)(*(pszFormat)) == 114))
+        goto L_86e8;
+    else
+        goto L_873f;
+
+L_873f:
+    if (((uint16_t)(*(pszFormat)) == 116))
+        goto L_86a2;
+    else
+        goto L_8747;
+
+L_8747:
+    if (((uint16_t)(*(pszFormat)) != 121))
+        goto L_8f4d;
+    else
+        goto L_874c;
+
+L_874c:
+    goto L_870c;
+
+L_8755:
+    pchT = rgszPlanetAttr[*(pParams)];
+    goto FinishString;
+
+L_8767:
+    pchT = PszCalcEnvVar((((*(pParams) >> 0x8) & 0xff) & 0xff), (*(pParams) & 0xff));
+    goto FinishString;
+
+L_8791:
+    pchT = PszGetCompressedString((*(pParams) + 1348));
+    goto FinishString;
+
+L_87a9:
+    c = _wsprintf(pch, PCTD, *(pParams));
+
+DoInt:
+    pch = (pch + c);
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+L_87d7:
+    if (((*(pParams) & 0x20) == 0x0))
+        goto L_8801;
+    else
+        goto L_87fb;
+
+L_87fb:
+    t_merge_8804_0001 = 1;
+    goto L_8804;
+
+L_8801:
+    t_merge_8804_0001 = 0;
+
+L_8804:
+    if (((*(pParams) & 0x10) == 0x0))
+        goto L_881c;
+    else
+        goto L_8816;
+
+L_8816:
+    t_merge_881f_0001 = 1;
+    goto L_881f;
+
+L_881c:
+    t_merge_881f_0001 = 0;
+
+L_881f:
+    if (((uint16_t)(*(pszFormat)) != 76))
+        goto L_8834;
+    else
+        goto L_882e;
+
+L_882e:
+    t_merge_8837_0001 = 1;
+    goto L_8837;
+
+L_8834:
+    t_merge_8837_0001 = 0;
+
+L_8837:
+    pchT = PszPlayerName((*(pParams) & 0xf), t_merge_8837_0001, t_merge_881f_0001, t_merge_8804_0001, ((*(pParams) & 0xc0) >> 0x6), 0x0);
+    goto FinishString;
+
+L_8850:
+    w = *(pParams);
+    if ((w == 0x0))
+        goto L_8f4d;
+    else
+        goto L_8867;
+
+L_8867:
+    if ((((w + 0xffff) & w) != 0x0))
+        goto L_88c1;
+    else
+        goto L_887a;
+
+L_887a:
+    c = 0;
+
+L_887f:
+    if (((w & 0x1) != 0x0))
+        goto L_889c;
+    else
+        goto L_888e;
+
+L_888e:
+    c = (c + 1);
+    w = (w >> 0x1);
+    goto L_887f;
+
+L_889c:
+    pchT = PszPlayerName(c, 0, 1, 1, 0, 0x0);
+    goto FinishString;
+
+L_88c1:
+    cOut = 0;
+    i = 0;
+    goto L_88e0;
+
+L_88ce:
+    i = (i + 1);
+    w = (w >> 0x1);
+
+L_88e0:
+    if ((i >= game.cPlayer))
+        goto DoNothing;
+    else
+        goto L_88eb;
+
+L_88eb:
+    if (((w & 0x1) == 0x0))
+        goto L_88ce;
+    else
+        goto L_88fd;
+
+L_88fd:
+    if ((cOut <= 0))
+        goto L_8944;
+    else
+        goto L_8906;
+
+L_8906:
+    if (((w & 0xfffe) == 0x0))
+        goto L_8930;
+    else
+        goto L_8915;
+
+L_8915:
+    pch = (pch + 1);
+    *(pch) = 44;
+    pch = (pch + 1);
+    *(pch) = 32;
+    goto L_8944;
+
+L_8930:
+    pch = (pch + CchGetString(idsAnd, pch));
+
+L_8944:
+    pchT = PszPlayerName(i, 0, 1, 1, 0, 0x0);
+    strcpy(pch, pchT);
+    pch = (pch + strlen(pchT));
+    cOut = (cOut + 1);
+    goto L_88ce;
+
+L_898e:
+    if ((*(pParams) == idPlayer))
+        goto DoNothing;
+    else
+        goto L_899f;
+
+L_899f:
+    CchGetString(idsOf2, szBuf);
+    pchT = PszPlayerName(*(pParams), 0, 0, 0, 0, 0x0);
+    strcat(szBuf, pchT);
+    strcat(szBuf, PszGetCompressedString(idsOrigin));
+    pchT = szBuf;
+    goto FinishString;
+
+L_8a09:
+    iMineral = *(pParams);
+    pchT = rgszMinerals[iMineral];
+    goto FinishString;
+
+L_8a21:
+    pchT = rgszMineField[*(pParams)];
+    goto FinishString;
+
+L_8a33:
+    if (((double)((int32_t)(((uint32_t)(*(pParams)) / 100))) < 10))
+        goto L_8a89;
+    else
+        goto L_8a5f;
+
+L_8a5f:
+    c = _wsprintf(pch, PCTDPCTPCT, ((uint32_t)(*(pParams)) / 100));
+    goto L_8aca;
+
+L_8a89:
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((uint32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((uint32_t)(*(pParams)) / 0x64) * 0x64))));
+
+L_8aca:
+    pch = (pch + c);
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+DoPlanet:
+    pchT = PszGetPlanetName(*(pParams));
+
+FinishString:
+    strcpy(pch, pchT);
+    pch = (pch + strlen(pchT));
+
+DoNothing:
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+L_8b11:
+    pchT = PszFleetNameFromWord(*(pParams));
+    goto FinishString;
+
+DoFleet:
+    w = (*(pParams) | 0x8000);
+    pchT = PszGetFleetName(w);
+    goto FinishString;
+
+L_8b46:
+    pchT = PszGetCompressedString((*(pParams) + 84));
+    goto FinishString;
+
+L_8b5e:
+    part.hs.grhst = *(pParams);
+    pParams = (pParams + 1);
+    part.hs.iItem = *(pParams);
+    if ((FLookupPart(&(part)) <= 0))
+        goto L_8ba8;
+    else
+        goto L_8ba2;
+
+L_8ba2:
+    goto L_8bab;
+
+L_8ba8:
+
+L_8bab:
+    fstrcpy(pch, part.pcom->szName);
+    pch = (pch + fstrlen(part.pcom->szName));
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+LThingName:
+    pchT = PszGetThingName(*(pParams));
+    goto FinishString;
+
+L_8c00:
+    w = *(pParams);
+    c = CchGetString((w + 0x4e2), pch);
+    pch = (pch + c);
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+L_8c2f:
+    if ((*(pParams) != -2))
+        goto L_8c45;
+    else
+        goto L_8c3b;
+
+L_8c3b:
+    pParams = (pParams + 1);
+    goto LThingName;
+
+L_8c45:
+    if ((*(pParams) == -1))
+        goto L_8c78;
+    else
+        goto L_8c51;
+
+L_8c51:
+    pchT = PszGetLocName(grobjNone, -1, *(pParams), pParams[1]);
+    pParams = (pParams + 1);
+    goto FinishString;
+
+L_8c78:
+    pParams = (pParams + 1);
+
+L_8c7c:
+    if (((*(pParams) & 0x8000) != 0x0))
+        goto DoFleet;
+    else
+        goto L_8c8a;
+
+L_8c8a:
+    goto DoPlanet;
+
+L_8c96:
+    w = ((*(pParams) >> 0x9) & 0xf);
+    pchT = PszPlayerName(w, 0, 0, 0, 0, 0x0);
+    goto FinishString;
+
+L_8ccf:
+    c = _wsprintf(pch, "%u", *(pParams));
+    pch = (pch + c);
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
+L_8cfd:
+    l = ((int32_t)(((uint32_t)(pParams[1]) << 0x10)) | (uint32_t)(*(pParams)));
+    pParams = (pParams + 2);
+    c = _wsprintf(pch, PCTLD, LOWORD(l), HIWORD(l));
+    pch = (pch + c);
+    if (((uint16_t)(*(pszFormat)) == 118))
+        goto L_8f4d;
+    else
+        goto L_8d71;
+
+L_8d71:
+    if (((uint16_t)(*(pszFormat)) != 86))
+        goto L_8d88;
+    else
+        goto L_8d7f;
+
+L_8d7f:
+    iMineral = *(pParams);
+
+L_8d88:
+    pchT = vrgszUnits[iMineral];
+    strcpy(pch, pchT);
+    pch = (pch + strlen(pchT));
+
+L_8db2:
+    goto L_8f4d;
+
+L_8db5:
+    c = (*(pParams) >> 0x5);
+    w = (*(pParams) & 0x1f);
+    if ((w < 0x10))
+        goto L_8e07;
+    else
+        goto L_8ddf;
+
+L_8ddf:
+    lpshdef = (rglpshdefSB[c] + (w + 0xfff0));
+    goto L_8e27;
+
+L_8e07:
+    lpshdef = (rglpshdef[c] + w);
+
+L_8e27:
+    if ((c == idPlayer))
+        goto L_8e84;
+    else
+        goto L_8e32;
+
+L_8e32:
+    pchT = PszPlayerName(c, 0, 0, 1, 0, 0x0);
+    _wsprintf(pch, "%s %s", pchT, (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef));
+    goto L_8ea3;
+
+L_8e84:
+    fstrcpy(pch, lpshdef->hul.szClass);
+
+L_8ea3:
+    pch = (pch + strlen(pch));
+    pParams = (pParams + 1);
+    goto L_8f4d;
+
 L_8eba:
-    pch = (pch + 0x1);
+    pch = (pch + 1);
     *(pch) = *(pszFormat);
     goto L_8f4d;
 
@@ -3469,10 +3894,119 @@ L_8ecd:
         goto L_8ed8;
 
 L_8ed8:
-    /* untranslated: {{L_8ed8 36572 14 5} JMP       cs:[bx-0x711f]       unhandled instruction} */
+    switch ((((uint16_t)(*(pszFormat)) - 69) * 0x2)) {
+    case 0x0:
+        goto L_8767;
+    case 0x2:
+        goto L_8b11;
+    case 0x4:
+        goto L_8c00;
+    case 0x6:
+        goto L_8eba;
+    case 0x8:
+        goto L_8791;
+    case 0xa:
+        goto L_8eba;
+    case 0xc:
+        goto L_8eba;
+    case 0xe:
+        goto L_87d7;
+    case 0x10:
+        goto L_8a21;
+    case 0x12:
+        goto L_8eba;
+    case 0x14:
+        goto L_8c96;
+    case 0x16:
+        goto L_8a33;
+    case 0x18:
+        goto L_8eba;
+    case 0x1a:
+        goto L_8eba;
+    case 0x1c:
+        goto L_898e;
+    case 0x1e:
+        goto L_8eba;
+    case 0x20:
+        goto L_8cfd;
+    case 0x22:
+        goto L_8cfd;
+    case 0x24:
+        goto L_8eba;
+    case 0x26:
+        goto DoNothing;
+    case 0x28:
+        goto L_8eba;
+    case 0x2a:
+        goto L_8850;
+    case 0x2c:
+        goto L_8eba;
+    case 0x2e:
+        goto L_8eba;
+    case 0x30:
+        goto L_8eba;
+    case 0x32:
+        goto L_8eba;
+    case 0x34:
+        goto L_8eba;
+    case 0x36:
+        goto L_8eba;
+    case 0x38:
+        goto L_8eba;
+    case 0x3a:
+        goto L_8eba;
+    case 0x3c:
+        goto L_8eba;
+    case 0x3e:
+        goto L_8eba;
+    case 0x40:
+        goto L_8755;
+    case 0x42:
+        goto L_864b;
+    case 0x44:
+        goto LThingName;
+    case 0x46:
+        goto L_864b;
+    case 0x48:
+        goto L_87a9;
+    case 0x4a:
+        goto L_8b46;
+    case 0x4c:
+        goto L_8b5e;
+    case 0x4e:
+        goto L_87d7;
+    case 0x50:
+        goto L_8a09;
+    case 0x52:
+        goto L_8c2f;
+    case 0x54:
+        goto L_8c7c;
+    case 0x56:
+        goto DoPlanet;
+    case 0x58:
+        goto L_8eba;
+    case 0x5a:
+        goto L_864b;
+    case 0x5c:
+        goto DoFleet;
+    case 0x5e:
+        goto L_864b;
+    case 0x60:
+        goto L_8ccf;
+    case 0x62:
+        goto L_8cfd;
+    case 0x64:
+        goto L_8628;
+    case 0x66:
+        goto L_8eba;
+    case 0x68:
+        goto L_864b;
+    case 0x6a:
+        goto L_8db5;
+    }
 
 L_8f4d:
-    pszFormat = (pszFormat + 0x1);
+    pszFormat = (pszFormat + 1);
     goto L_85ec;
 
 L_8f54:
@@ -3678,7 +4212,7 @@ L_92cf:
 
 L_92de:
     cDel = (cDel + 1);
-    /* untranslated: part[0x1:2](lpb) = ((lpb[0x1] & 0xfe00) | 0x1ff) */
+    /* untranslated: part[0x1:2](lpb) = ((lpb[1] & 0xfe00) | 0x1ff) */
 
 L_92f6:
     lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
@@ -3762,7 +4296,7 @@ L_9404:
     goto L_94d2;
 
 L_9411:
-    w = ((lpb[0x1] >> 0x9) & 0x7f);
+    w = ((lpb[1] >> 0x9) & 0x7f);
     if (((w & 0x1) != 0x1))
         goto L_9448;
     else
@@ -3776,7 +4310,7 @@ L_9448:
     t_merge_944b_0001 = 0x0;
 
 L_944b:
-    lpbT = ((lpb + 0x6) + t_merge_944b_0001);
+    lpbT = (lpb + (t_merge_944b_0001 + 0x6));
     if (((w & 0x2) == 0x0))
         goto L_9470;
     else
@@ -4104,7 +4638,7 @@ L_971d:
     goto L_980d;
 
 L_9742:
-    if (((cbMsg + 20) < 0x400))
+    if (((cbMsg + 20) < 1024))
         goto L_976f;
     else
         goto L_9751;
@@ -4262,7 +4796,7 @@ L_99fa:
     bitfMsgSent[(lpmh->iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & (~(0x1 << (lpmh->iMsg & 0x7)))) | (0x1 << (lpmh->iMsg & 0x7))));
     cMsg = (cMsg + 1);
     u = lpmh->grWord;
-    lpb = (lpb + 0x4);
+    lpb = (lpb + 4);
     iMax = (uint16_t)(rgcMsgArgs[lpmh->iMsg]);
     i = 0;
     goto L_9abf;
@@ -4477,7 +5011,7 @@ L_9ced:
 
 L_9d1e:
     cb = cbNew;
-    lpbMsg = (lpb2k + 0x400);
+    lpbMsg = (lpb2k + 1024);
     goto L_9d52;
 
 L_9d3a:
@@ -4586,7 +5120,7 @@ L_9ed8:
 
 L_9f1e:
     i = (i + 1);
-    pchLen = (pchLen + 0x1);
+    pchLen = (pchLen + 1);
 
 L_9f31:
     if ((i >= iOffset))
@@ -4637,7 +5171,7 @@ L_9f9b:
     goto L_9fc8;
 
 L_9fb2:
-    pch = (pch + 0x1);
+    pch = (pch + 1);
     i = (*(pch) & 0xf);
 
 L_9fc8:
@@ -4663,7 +5197,7 @@ L_9fda:
 
 L_9fec:
     *(pszOut) = rgMSGLookupTable[iBuild];
-    pszOut = (pszOut + 0x1);
+    pszOut = (pszOut + 1);
     iBuild = 0;
 
 L_a002:

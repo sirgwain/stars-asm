@@ -271,7 +271,7 @@ L_03ef:
 L_03fb:
     EnsureISShdefs(iroCur);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_0477;
 
 L_0435:
@@ -296,7 +296,7 @@ L_046e:
     cplanCol = (cplanCol + 0x1);
 
 L_0473:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_0477:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -306,7 +306,7 @@ L_0477:
 
 L_0485:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_0d31;
 
 L_04b4:
@@ -383,12 +383,12 @@ L_05f6:
     fWrite = 0;
     b = 0x0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0653;
 
 L_063d:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_0653:
     if ((i >= lpplProdGlob->iprodMac))
@@ -594,7 +594,7 @@ L_08f1:
         goto L_0905;
 
 L_0905:
-    if ((Random(((cFr * 2) + 0x1)) != 0))
+    if ((Random(((cFr * 2) + 1)) != 0))
         goto L_093c;
     else
         goto L_091e;
@@ -887,7 +887,7 @@ FinishProd:
     FinishProduction(fWrite);
 
 L_0d2d:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_0d31:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -1229,8 +1229,8 @@ L_123f:
 L_1255:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tsell.iPlrX = 0x5;
-    /* untranslated: part[0xa:2](sel.fl.lpplord->rgord[0]) = 0x5 */
+    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
     FLookupFleet(-1, sel.fl.id);
 
 L_12a1:
@@ -1364,7 +1364,7 @@ LTryFreighters:
 
 L_1449:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_14a5;
 
 L_1478:
@@ -1380,7 +1380,7 @@ L_1487:
         goto L_14a1;
 
 L_14a1:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_14a5:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -2046,7 +2046,7 @@ L_1e69:
     iroCur = IroEnsureAi(0x0, 0, &(ishdefSBLatest), t_merge_1e69_0001);
     EnsureCAShdefs(iroCur);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_1efc;
 
 L_1ebb:
@@ -2071,7 +2071,7 @@ L_1ef4:
     cplanCol = (cplanCol + 0x1);
 
 L_1ef8:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_1efc:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -2081,7 +2081,7 @@ L_1efc:
 
 L_1f0a:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_22cf;
 
 L_1f35:
@@ -2210,12 +2210,12 @@ L_2138:
     fWrite = 0;
     b = 0x0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_218e;
 
 L_217b:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_218e:
     if ((i >= lpplProdGlob->iprodMac))
@@ -2319,7 +2319,7 @@ L_22c0:
     FinishProduction(fWrite);
 
 L_22cb:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_22cf:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -2865,7 +2865,7 @@ LTryFreighters:
 
 L_2b4c:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_2ba4;
 
 L_2b77:
@@ -2881,7 +2881,7 @@ L_2b86:
         goto L_2ba0;
 
 L_2ba0:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_2ba4:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))

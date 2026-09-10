@@ -92,7 +92,7 @@ L_002a:
 
 L_0071:
     fmemset(vlpbAiData, 0, 0x2000);
-    LOWORD(lpiHistSize) = ((game.cPlanMax * 2) + 0x2);
+    LOWORD(lpiHistSize) = ((game.cPlanMax * 2) + 2);
 
 L_0097:
     fMarkedPlanets = 0;
@@ -245,7 +245,7 @@ L_0328:
     j = (j - 1);
 
 L_032c:
-    if ((j < ((i * 4) + 0x6)))
+    if ((j < ((i * 4) + 6)))
         goto L_03e9;
     else
         goto L_033e;
@@ -275,7 +275,7 @@ L_037b:
         goto L_0385;
 
 L_0385:
-    if ((j == ((i * 4) + 0x6)))
+    if ((j == ((i * 4) + 6)))
         goto L_03d5;
     else
         goto L_0397;
@@ -347,12 +347,12 @@ L_0505:
     lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
     fmemset(lpciPlanTemp, 0, (game.cPlanMax * 2));
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_0821;
 
 L_0564:
-    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
-    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
+    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
+    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
     if ((lpciPlan->iPktTarget <= 0x0))
         goto L_05e3;
     else
@@ -565,7 +565,7 @@ L_0809:
     LOWORD(lpciPlanTemp) = ((lpciPlanTemp->wInfo1 & 0xfbff) | 0x400);
 
 L_081d:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_0821:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -718,7 +718,7 @@ L_09e4:
     id = lpfl->idPlanet;
 
 L_09ef:
-    lpb = ((vlpbAiPlanet + (id * 16)) + 0xa);
+    lpb = (vlpbAiPlanet + ((id * 16) + 10));
     if ((*(lpb) == 0x0))
         goto L_0a2c;
     else
@@ -1313,8 +1313,8 @@ L_1317:
 L_132d:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tsell.iPlrX = 0x5;
-    /* untranslated: part[0xa:2](sel.fl.lpplord->rgord[0]) = 0x5 */
+    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
     FLookupFleet(-1, sel.fl.id);
     goto L_0b45;
 
@@ -1346,8 +1346,8 @@ L_13ca:
         goto L_13d2;
 
 L_13d2:
-    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
-    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
+    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
+    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -1697,7 +1697,7 @@ L_1847:
         goto L_185b;
 
 L_185b:
-    if ((Random(((cFr * 2) + 0x1)) != 0))
+    if ((Random(((cFr * 2) + 1)) != 0))
         goto L_1893;
     else
         goto L_1875;
@@ -1952,8 +1952,8 @@ L_1ad4:
         goto L_1aee;
 
 L_1aee:
-    lpciPlan = ((vlpbAiData + 0x2) + (lppl->id * 2));
-    lpciPlanTemp = ((vlpbAiData + dOffsetPlanTemp) + (lppl->id * 2));
+    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
+    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -2070,8 +2070,8 @@ L_1c8a:
         goto L_1c93;
 
 L_1c93:
-    lpciPlanDst = ((vlpbAiData + 0x2) + (lpplDst->id * 2));
-    lpciPlanT = ((vlpbAiData + dOffsetPlanTemp) + (lpplDst->id * 2));
+    lpciPlanDst = (vlpbAiData + ((lpplDst->id * 2) + 2));
+    lpciPlanT = (vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2)));
     iPacketAdd = 0;
     if ((lpplDst->isb == 0x1))
         goto L_1d20;
@@ -2343,7 +2343,7 @@ L_1ff7:
         goto L_200b;
 
 L_200b:
-    plMinMax = ((vlpbAiData + dOffsetPlanTemp) + (game.cPlanMax * 2));
+    plMinMax = (vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2)));
     rgResAvail[0] = (rgResAvail[0] - rgResCost[0]);
     rgResAvail[1] = (rgResAvail[1] - rgResCost[1]);
     rgResAvail[2] = (rgResAvail[2] - rgResCost[2]);
@@ -2415,8 +2415,8 @@ L_2150:
 L_2159:
     /* untranslated: part[0x0:4](cPacket) = 0x0 */
     cPacket[2] = 0;
-    lpciPlanDst = ((vlpbAiData + 0x2) + (lpplDst->id * 2));
-    lpciPlanT = ((vlpbAiData + dOffsetPlanTemp) + (lpplDst->id * 2));
+    lpciPlanDst = (vlpbAiData + ((lpplDst->id * 2) + 2));
+    lpciPlanT = (vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2)));
     iPacketAdd = 0;
     if ((lpplDst->fStarbase == 0x0))
         goto L_21ec;
@@ -2658,7 +2658,7 @@ L_26b1:
         goto L_26bb;
 
 L_26bb:
-    lpciPlanDst = ((vlpbAiData + 0x2) + (idPlanDst * 2));
+    lpciPlanDst = (vlpbAiData + ((idPlanDst * 2) + 2));
     if ((lpciPlanDst->iPktTarget != 0x0))
         goto L_276c;
     else
@@ -2863,7 +2863,7 @@ L_2971:
     }
 
 L_298a:
-    dAdjust = Random(LOWORD(__ftol()));
+    dAdjust = Random(__ftol());
     dAdjust = (dAdjust - LOWORD(__ftol()));
     if ((ptEdge.x == 0))
         goto L_29e8;
@@ -3258,12 +3258,12 @@ L_2e09:
     rgFactCost[3] = 0;
     rgAlchCost[3] = 0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_2e75;
 
 L_2e62:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_2e75:
     if ((i >= lpplProdGlob->iprodMac))
@@ -3358,7 +3358,7 @@ L_2fb5:
 
 L_2fbd:
     t_scratch_m7e = CMaxOperableMines(lppl, idPlayer, 0);
-    if ((0x0 <= ((t_scratch_m7e - CMinesOperating(lppl)) - iAddMines)))
+    if ((0 <= ((t_scratch_m7e - CMinesOperating(lppl)) - iAddMines)))
         goto L_2ffc;
     else
         goto L_2ff6;
@@ -3390,7 +3390,7 @@ L_3083:
 
 L_308b:
     t_scratch_m7e_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    if ((0x0 <= ((t_scratch_m7e_2 - CFactoriesOperating(lppl)) - iAddFactories)))
+    if ((0 <= ((t_scratch_m7e_2 - CFactoriesOperating(lppl)) - iAddFactories)))
         goto L_30ca;
     else
         goto L_30c4;
@@ -3920,7 +3920,7 @@ L_3778:
     AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, t_merge_3778_0001);
 
 L_378c:
-    if ((((iAddMines + iAddFactories) + iAddAlchemy) <= 0x0))
+    if ((((iAddMines + iAddFactories) + iAddAlchemy) <= 0))
         goto L_37a3;
     else
         goto L_379d;
@@ -4406,7 +4406,7 @@ int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
 
 L_3f5e:
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (vlpbAiData + 0x2);
+    lpciPlan = (vlpbAiData + 2);
     lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
     if ((lpplTest->isb == 0x1))
         goto L_3fe0;
@@ -4607,8 +4607,8 @@ L_4204:
     lMineral = 0;
     iWarpDst = 0;
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (vlpbAiData + 0x2);
-    plMinMax = ((vlpbAiData + dOffsetPlanTemp) + (game.cPlanMax * 2));
+    lpciPlan = (vlpbAiData + 2);
+    plMinMax = (vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2)));
     if ((lpplTest->iPlayer == idPlayer))
         goto L_42be;
     else
@@ -5351,7 +5351,7 @@ L_4eba:
     fRet = 0;
     iRand = Random(100);
     t_scratch_mc = CMaxOperableMines(lppl, idPlayer, 0);
-    if ((0x0 <= (t_scratch_mc - CMinesOperating(lppl))))
+    if ((0 <= (t_scratch_mc - CMinesOperating(lppl))))
         goto L_4f13;
     else
         goto L_4f0d;
@@ -5368,7 +5368,7 @@ L_4f13:
 L_4f41:
     iMaxMines = t_merge_4f41_0001;
     t_scratch_mc_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    if ((0x0 <= (t_scratch_mc_2 - CFactoriesOperating(lppl))))
+    if ((0 <= (t_scratch_mc_2 - CFactoriesOperating(lppl))))
         goto L_4f80;
     else
         goto L_4f7a;
@@ -5431,7 +5431,7 @@ L_4ffd:
         goto L_5024;
 
 L_5024:
-    AddItemToQueue(((iBestBattle * 4) + 0x6), 0x2, grobjFleet, 1);
+    AddItemToQueue(((iBestBattle * 4) + 6), 0x2, grobjFleet, 1);
 
 L_5043:
     if ((rgshdef[((iBestBattle * 4) + 7)].fFree != 0x0))
@@ -5440,7 +5440,7 @@ L_5043:
         goto L_506a;
 
 L_506a:
-    AddItemToQueue(((iBestBattle * 4) + 0x7), 0x2, grobjFleet, 1);
+    AddItemToQueue(((iBestBattle * 4) + 7), 0x2, grobjFleet, 1);
 
 L_5089:
     if ((rgshdef[((iBestBattle * 4) + 8)].fFree != 0x0))
@@ -5455,7 +5455,7 @@ L_50b0:
         goto L_50c4;
 
 L_50c4:
-    AddItemToQueue(((iBestBattle * 4) + 0x8), 0x1, grobjFleet, 1);
+    AddItemToQueue(((iBestBattle * 4) + 8), 0x1, grobjFleet, 1);
 
 L_50e3:
     if ((rgshdef[((iBestBattle * 4) + 9)].fFree != 0x0))
@@ -5470,7 +5470,7 @@ L_510a:
         goto L_511e;
 
 L_511e:
-    AddItemToQueue(((iBestBattle * 4) + 0x9), 0x1, grobjFleet, 1);
+    AddItemToQueue(((iBestBattle * 4) + 9), 0x1, grobjFleet, 1);
 
 L_513d:
     return 1;

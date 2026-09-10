@@ -553,7 +553,7 @@ L_025f:
 
 L_026c:
     qsort(rgptPlan, iMax, 0x4, ICompLong);
-    pptMax = (0x2f40 + (iMax * 4));
+    pptMax = (12096 + (iMax * 4));
     ppt = rgptPlan;
     goto L_0364;
 
@@ -564,12 +564,12 @@ L_02a3:
         goto L_02b3;
 
 L_02b3:
-    pptT = (ppt + 0x4);
+    pptT = (ppt + 1);
     iNewLine = (ppt->x + dGalMinDist);
     goto L_02d6;
 
 L_02d1:
-    pptT = (pptT + 0x4);
+    pptT = (pptT + 1);
 
 L_02d6:
     if ((pptT >= pptMax))
@@ -605,7 +605,7 @@ L_035c:
     goto L_02d1;
 
 L_035f:
-    ppt = (ppt + 0x4);
+    ppt = (ppt + 1);
 
 L_0364:
     if ((ppt < pptMax))
@@ -646,12 +646,12 @@ L_03db:
         goto L_03e8;
 
 L_03e8:
-    pptT = (pptT + 0x4);
+    pptT = (pptT + 1);
     pptT->x = ppt->x;
     pptT->y = ppt->y;
 
 L_03ff:
-    ppt = (ppt + 0x4);
+    ppt = (ppt + 1);
 
 L_0404:
     if ((ppt < pptMax))
@@ -874,15 +874,15 @@ L_084d:
     return 0;
 
 L_0858:
-    lpPlanets = LpAlloc(LOWORD((cPlanMax * 0x38)), htPlanets);
-    fmemset(lpPlanets, 0, LOWORD((cPlanMax * 56)));
+    lpPlanets = LpAlloc((cPlanMax * 56), htPlanets);
+    fmemset(lpPlanets, 0, (cPlanMax * 56));
     i = 0;
     lppl = lpPlanets;
     goto L_08c3;
 
 L_08ab:
     i = (i + 1);
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_08c3:
     if ((i >= cPlanMax))
@@ -1810,15 +1810,15 @@ L_1a4c:
 L_1a58:
     iMin = rgi[i];
     lpPlanets[iMin].iPlayer = i;
-    /* untranslated: part[0x4:2](lpPlanets[iMin]) = ((part[0x4:2](lpPlanets[iMin]) & 0xfdff) | 0x200) */
-    /* untranslated: part[0x2c:2](lpPlanets[iMin]) = ((part[0x2c:2](lpPlanets[iMin]) & 0xfff0) | 0x0) */
+    lpPlanets[iMin].fStarbase = 0x1;
+    lpPlanets[iMin].isb = 0x0;
     /* untranslated: part[0x18:4](lpPlanets[iMin]) = words(((part[0x1a:2](lpPlanets[iMin]) & 0xffbf) | 0x0), ((part[0x18:2](lpPlanets[iMin]) & 0xffff) | 0x0))
      */
     /* untranslated: part[0x14:4](lpPlanets[iMin]) = words(((part[0x16:2](lpPlanets[iMin]) & 0xf) | 0xa0), ((part[0x14:2](lpPlanets[iMin]) & 0xffff) | 0x0)) */
     /* untranslated: part[0x14:4](lpPlanets[iMin]) = words(((part[0x16:2](lpPlanets[iMin]) & 0xfff0) | 0x0), (lpPlanets[iMin].iDeltaPop | 0xa00)) */
     /* untranslated: part[0x18:4](lpPlanets[iMin]) = words(((part[0x1a:2](lpPlanets[iMin]) & 0xffff) | 0x0), ((part[0x18:2](lpPlanets[iMin]) & 0xf000) | 0xa))
      */
-    /* untranslated: part[0x4:2](lpPlanets[iMin]) = ((part[0x4:2](lpPlanets[iMin]) & 0xfbff) | 0x400) */
+    lpPlanets[iMin].fHomeworld = 0x1;
     if ((GetRaceGrbit(&(rgplr[i]), ibitRaceLowStartingPop) == 0))
         goto L_1cc5;
     else
@@ -1940,38 +1940,38 @@ L_2143:
 
 L_2167:
     ktLeft = LOWORD((0xa * iT));
-    pl = ((lpPlanets + LOWORD((0x38 * iMin))) + 0x1c);
-    if ((*(pl + 0x2) > *(pl + 0x6)))
+    pl = lpPlanets[iMin].rgwtMin;
+    if ((*(pl + 0x2) > HIWORD(pl[1])))
         goto L_21e8;
     else
         goto L_21a5;
 
 L_21a5:
-    if ((*(pl + 0x2) < *(pl + 0x6)))
+    if ((*(pl + 0x2) < HIWORD(pl[1])))
         goto L_21b2;
     else
         goto L_21aa;
 
 L_21aa:
-    if ((LOWORD(pl) >= LOWORD(pl[0x1])))
+    if ((LOWORD(pl) >= LOWORD(pl[1])))
         goto L_21e8;
     else
         goto L_21b2;
 
 L_21b2:
-    if ((*(pl + 0x2) > *(pl + 0xa)))
+    if ((*(pl + 0x2) > HIWORD(pl[2])))
         goto L_21df;
     else
         goto L_21c9;
 
 L_21c9:
-    if ((*(pl + 0x2) < *(pl + 0xa)))
+    if ((*(pl + 0x2) < HIWORD(pl[2])))
         goto L_21d6;
     else
         goto L_21ce;
 
 L_21ce:
-    if ((LOWORD(pl) >= LOWORD(pl[0x2])))
+    if ((LOWORD(pl) >= LOWORD(pl[2])))
         goto L_21df;
     else
         goto L_21d6;
@@ -1987,19 +1987,19 @@ L_21e5:
     goto L_221c;
 
 L_21e8:
-    if ((*(pl + 0x6) > *(pl + 0xa)))
+    if ((HIWORD(pl[1]) > HIWORD(pl[2])))
         goto L_2216;
     else
         goto L_21ff;
 
 L_21ff:
-    if ((*(pl + 0x6) < *(pl + 0xa)))
+    if ((HIWORD(pl[1]) < HIWORD(pl[2])))
         goto L_220d;
     else
         goto L_2204;
 
 L_2204:
-    if ((LOWORD(pl[0x1]) >= LOWORD(pl[0x2])))
+    if ((LOWORD(pl[1]) >= LOWORD(pl[2])))
         goto L_2216;
     else
         goto L_220d;
@@ -2059,7 +2059,7 @@ L_22f1:
     ktLeft = ((uint32_t)(iT) / 2);
 
 L_22ff:
-    pb = ((lpPlanets + LOWORD((0x38 * iMin))) + 0x9);
+    pb = lpPlanets[iMin].rgMinConc;
     iLow = 0;
     j = 0;
     goto L_2376;
@@ -2275,7 +2275,7 @@ L_2b78:
         goto L_2bae;
 
 L_2bae:
-    /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0xfdff) | 0x0) */
+    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0xfdff) | 0x0) */
     /* untranslated: t_scratch_m116_24 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
     /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_24) */
@@ -2307,8 +2307,8 @@ L_2c67:
 
 L_2c9d:
     lpshdef[1] = lpshdef[2];
-    /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0x83ff) | 0x4400) */
-    /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0xfdff) | 0x0) */
+    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0x83ff) | 0x4400) */
+    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0xfdff) | 0x0) */
     /* untranslated: t_scratch_m116_25 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
     /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_25) */
@@ -2327,7 +2327,7 @@ L_2d72:
 L_2d93:
     idHome = rgplr[i].idPlanetHome;
     lpshdef[1] = *(lpshdef);
-    /* untranslated: part[0x10e:2](lpshdef) = ((*(lpshdef+0x10e) & 0x83ff) | 0x4400) */
+    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0x83ff) | 0x4400) */
     *(lpshdef) = lpshdef[3];
     lpshdef->ishdef = 0x10;
     lpshdef->fFree = 0x0;
@@ -2336,7 +2336,7 @@ L_2d93:
     /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m118_25) */
     lpshdef->cExist = 0x0;
     lpshdef->cBuilt = 0x0;
-    /* untranslated: part[0x2c:2](lpPlanets[idHome]) = ((part[0x2c:2](lpPlanets[idHome]) & 0xfff0) | 0x1) */
+    lpPlanets[idHome].isb = 0x1;
 
 L_2ee5:
     goto L_1a47;
@@ -2384,7 +2384,7 @@ L_2faa:
 
 L_2ffc:
     CreateStartupShip(i, idHome, 4, 1);
-    /* untranslated: part[0x2e:2](lpPlanets[idHome]) = ((part[0x2e:2](lpPlanets[idHome]) & 0xc3ff) | 0x400) */
+    lpPlanets[idHome].iWarpFling = 0x1;
     goto L_318f;
 
 L_3053:
@@ -2556,21 +2556,21 @@ LGive2ndPlanet:
     ptHome.x = rgptPlan[idHome].x;
     ptHome.y = rgptPlan[idHome].y;
     cFit = 0;
-    lDistMin2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 15)) / 0x64));
+    lDistMin2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 15)) / 100));
     lDistMin2 = (uint32_t)((lDistMin2 * lDistMin2));
-    lDistMax2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 23)) / 0x64));
+    lDistMax2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 23)) / 100));
     lDistMax2 = (uint32_t)((lDistMax2 * lDistMax2));
-    lDistIdeal2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 20)) / 0x64));
+    lDistIdeal2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 20)) / 100));
     lDistIdeal2 = (uint32_t)((lDistIdeal2 * lDistIdeal2));
     lBest = 10000000;
-    pptMax = (0x2f40 + (cPlanMax * 4));
+    pptMax = (12096 + (cPlanMax * 4));
     ppt = rgptPlan;
     lppl = lpPlanets;
     goto L_3468;
 
 L_3450:
-    ppt = (ppt + 0x4);
-    lppl = (lppl + 0x38);
+    ppt = (ppt + 1);
+    lppl = (lppl + 1);
 
 L_3468:
     if ((ppt >= pptMax))
@@ -2830,13 +2830,13 @@ L_3a61:
 
 L_3a7a:
     chs = rglpshdef[i][j].hul.chs;
-    lphs = ((rglpshdef[i] + LOWORD((0x93 * j))) + 0x3a);
+    lphs = rglpshdef[i][j].hul.rghs;
     k = 0;
     goto L_3ae7;
 
 L_3acf:
     k = (k + 1);
-    lphs = (lphs + 0x4);
+    lphs = (lphs + 1);
 
 L_3ae7:
     if ((k >= chs))
@@ -3204,8 +3204,8 @@ L_4052:
 
 L_40a2:
     lpthLast = LpthFromId(idLast);
-    /* untranslated: part[0xc:2](lpth) = lpthLast->idFull */
-    /* untranslated: part[0xc:2](lpthLast) = lpth->idFull */
+    lpth->thw.idPartner = lpthLast->idFull;
+    lpthLast->thw.idPartner = lpth->idFull;
     goto L_40e3;
 
 L_40d8:
@@ -3453,7 +3453,7 @@ L_4411:
     return 0;
 
 L_443d:
-    WriteRt(rtGame, 64, game.lid);
+    WriteRt(rtGame, 64, game);
     xOld = 1000;
     i = 0;
     goto L_4563;
@@ -3987,7 +3987,7 @@ L_4def:
         goto L_4dfe;
 
 L_4dfe:
-    cNum = CParseNumbers(&(lpbStart[0x1]), rgl, 2);
+    cNum = CParseNumbers(&(lpbStart[1]), rgl, 2);
     idAi = LOWORD(rgl[0x0]);
     lvlAi = LOWORD(rgl[0x1]);
     if ((cNum < 2))
@@ -4194,7 +4194,7 @@ L_511d:
 
 L_5129:
     SetVCCheck(game.lid, 0, 1);
-    SetVCVal(game.lid, 0, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 0x5));
+    SetVCVal(game.lid, 0, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 5));
 
 L_5160:
     lpbStart = PszGetLine(&(lpb));
@@ -4340,8 +4340,8 @@ L_524a:
 L_5256:
     SetVCCheck(game.lid, 1, 1);
     SetVCCheck(game.lid, 2, 1);
-    SetVCVal(game.lid, 1, (LOWORD(rgl[0x1]) + 0xfff8));
-    SetVCVal(game.lid, 2, (LOWORD(rgl[0x2]) + 0xfffe));
+    SetVCVal(game.lid, 1, (LOWORD(rgl[0x1]) - 8));
+    SetVCVal(game.lid, 2, (LOWORD(rgl[0x2]) - 2));
 
 L_52b2:
     lpbStart = PszGetLine(&(lpb));
@@ -4450,7 +4450,7 @@ L_536f:
 
 L_537c:
     SetVCCheck(game.lid, 3, 1);
-    SetVCVal(game.lid, 3, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfc18)) / 0x3e8));
+    SetVCVal(game.lid, 3, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfc18)) / 1000));
 
 L_53b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4559,7 +4559,7 @@ L_546f:
 
 L_547c:
     SetVCCheck(game.lid, 4, 1);
-    SetVCVal(game.lid, 4, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 0xa));
+    SetVCVal(game.lid, 4, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 10));
 
 L_54b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4668,7 +4668,7 @@ L_556f:
 
 L_557c:
     SetVCCheck(game.lid, 5, 1);
-    SetVCVal(game.lid, 5, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 0xa));
+    SetVCVal(game.lid, 5, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 10));
 
 L_55b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4777,7 +4777,7 @@ L_566f:
 
 L_567c:
     SetVCCheck(game.lid, 6, 1);
-    SetVCVal(game.lid, 6, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 0xa));
+    SetVCVal(game.lid, 6, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 10));
 
 L_56b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4886,7 +4886,7 @@ L_576f:
 
 L_577c:
     SetVCCheck(game.lid, 7, 1);
-    SetVCVal(game.lid, 7, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 0xa));
+    SetVCVal(game.lid, 7, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 10));
 
 L_57b3:
     lpbStart = PszGetLine(&(lpb));
@@ -5001,11 +5001,11 @@ L_5874:
 
 L_5881:
     SetVCVal(game.lid, 8, LOWORD(rgl[0x0]));
-    SetVCVal(game.lid, 9, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 0xa));
+    SetVCVal(game.lid, 9, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 10));
 
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
-    lpb = ((lpbStart + fstrlen(lpbStart)) + 0xffff);
+    lpb = (lpbStart + (fstrlen(lpbStart) - 0x1));
     if (((LOWORD(lpb) - LOWORD(lpbStart)) < 0x3))
         goto L_593b;
     else
@@ -5018,13 +5018,13 @@ L_5904:
         goto L_5913;
 
 L_5913:
-    if (((uint16_t)(*(lpb - 0x1)) != 120))
+    if (((uint16_t)(lpb[(-1)]) != 120))
         goto L_593b;
     else
         goto L_5923;
 
 L_5923:
-    if (((uint16_t)(*(lpb - 0x2)) != 46))
+    if (((uint16_t)(lpb[(-2)]) != 46))
         goto L_593b;
     else
         goto L_5933;
@@ -5383,7 +5383,7 @@ L_5e5e:
     CchGetString(idsTutorialGame, game.szName);
     rgplr[0] = vrgplrDef[0];
     CchGetString(idsHumanoid, LOWORD(rgplr[0].szName));
-    /* untranslated: call _wsprintf(part[0x0:4](rgplr[0].szNames), "%ss", rgplr[0].szName) -> callresult(int16_t) */
+    _wsprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
     t_call_5f2e = LpplrComp(1, 0);
     rgplr[1] = *(t_call_5f2e);
     rgplr[1].fAi = 0x1;
@@ -6482,7 +6482,7 @@ L_7144:
         goto L_714f;
 
 L_714f:
-    if ((i >= (((uint32_t)((game.cPlayer + 1)) / 0x3) + 0x1)))
+    if ((i >= (((uint32_t)((game.cPlayer + 1)) / 3) + 0x1)))
         goto L_7175;
     else
         goto L_7166;
@@ -6493,7 +6493,7 @@ L_7166:
     goto L_7144;
 
 L_7175:
-    if ((i >= (((uint32_t)(((game.cPlayer + 1) * 0x2)) / 0x3) + 0x1)))
+    if ((i >= (((uint32_t)(((game.cPlayer + 1) * 2)) / 3) + 0x1)))
         goto L_719d;
     else
         goto L_718e;
@@ -6504,7 +6504,7 @@ L_718e:
     goto L_7144;
 
 L_719d:
-    if ((i >= (((uint32_t)(LOWORD(((game.cPlayer + 1) * 0x5))) / 0x6) + 0x1)))
+    if ((i >= (((uint32_t)(LOWORD(((game.cPlayer + 1) * 5))) / 0x6) + 0x1)))
         goto L_71c8;
     else
         goto L_71b9;
@@ -6528,7 +6528,7 @@ L_71da:
         goto L_71e5;
 
 L_71e5:
-    if ((i >= (((uint32_t)(((game.cPlayer + 5) * 0x2)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)(((game.cPlayer + 5) * 2)) / 7) + 0x1)))
         goto L_720d;
     else
         goto L_71fe;
@@ -6539,7 +6539,7 @@ L_71fe:
     goto L_71da;
 
 L_720d:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x3)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 3)) + 0x6)) / 0x7) + 0x1)))
         goto L_723b;
     else
         goto L_722c;
@@ -6550,7 +6550,7 @@ L_722c:
     goto L_71da;
 
 L_723b:
-    if ((i >= (((uint32_t)((((game.cPlayer - 1) * 0x4) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((((game.cPlayer - 1) * 4) + 6)) / 7) + 0x1)))
         goto L_7268;
     else
         goto L_7259;
@@ -6561,7 +6561,7 @@ L_7259:
     goto L_71da;
 
 L_7268:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x5)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x6)) / 0x7) + 0x1)))
         goto L_7296;
     else
         goto L_7287;
@@ -6572,7 +6572,7 @@ L_7287:
     goto L_71da;
 
 L_7296:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x6)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0x6)) / 0x7) + 0x1)))
         goto L_72c4;
     else
         goto L_72b5;
@@ -6596,7 +6596,7 @@ L_72d6:
         goto L_72e1;
 
 L_72e1:
-    if ((i >= (((uint32_t)(((game.cPlayer + 5) * 0x2)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)(((game.cPlayer + 5) * 2)) / 7) + 0x1)))
         goto L_7309;
     else
         goto L_72fa;
@@ -6607,7 +6607,7 @@ L_72fa:
     goto L_72d6;
 
 L_7309:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x3)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 3)) + 0x6)) / 0x7) + 0x1)))
         goto L_7337;
     else
         goto L_7328;
@@ -6618,7 +6618,7 @@ L_7328:
     goto L_72d6;
 
 L_7337:
-    if ((i >= (((uint32_t)((((game.cPlayer - 1) * 0x4) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((((game.cPlayer - 1) * 4) + 6)) / 7) + 0x1)))
         goto L_7364;
     else
         goto L_7355;
@@ -6629,7 +6629,7 @@ L_7355:
     goto L_72d6;
 
 L_7364:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x5)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x6)) / 0x7) + 0x1)))
         goto L_7392;
     else
         goto L_7383;
@@ -6640,7 +6640,7 @@ L_7383:
     goto L_72d6;
 
 L_7392:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x6)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0x6)) / 0x7) + 0x1)))
         goto L_73c0;
     else
         goto L_73b1;
@@ -6664,7 +6664,7 @@ L_73d2:
         goto L_73dd;
 
 L_73dd:
-    if ((i >= (((uint32_t)((game.cPlayer + 1)) / 0x3) + 0x1)))
+    if ((i >= (((uint32_t)((game.cPlayer + 1)) / 3) + 0x1)))
         goto L_7403;
     else
         goto L_73f4;
@@ -6675,7 +6675,7 @@ L_73f4:
     goto L_73d2;
 
 L_7403:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x6)) + 0xb)) / 0xc) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0xb)) / 0xc) + 0x1)))
         goto L_7431;
     else
         goto L_7422;
@@ -6686,7 +6686,7 @@ L_7422:
     goto L_73d2;
 
 L_7431:
-    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 0x5)) + 0x5)) / 0x6) + 0x1)))
+    if ((i >= (((uint32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x5)) / 0x6) + 0x1)))
         goto L_745f;
     else
         goto L_7450;
@@ -6741,7 +6741,7 @@ L_74a3:
         goto L_74b1;
 
 L_74b1:
-    c = ((Random(((game.cPlayer - i) + 0xffff)) + i) + 1);
+    c = ((Random(((game.cPlayer - i) - 1)) + i) + 1);
     ch = vrgplrTypeNew[i];
     vrgplrTypeNew[i] = vrgplrTypeNew[c];
     vrgplrTypeNew[c] = ch;
@@ -7560,7 +7560,7 @@ L_87e1:
     dyBut = (rc.bottom - rc.top);
     GetWindowRect(hwnd, &(rcT));
     dyCur = (rcT.bottom - rcT.top);
-    if ((dyCur >= ((dy + dyBut) + 0x6)))
+    if ((dyCur >= ((dy + dyBut) + 6)))
         goto L_8923;
     else
         goto L_884f;
@@ -7653,7 +7653,7 @@ L_89e7:
         goto L_8a0d;
 
 L_8a0d:
-    if ((pt.x >= ((xNewGameDiamond + dyArial8) + 0x1)))
+    if ((pt.x >= ((xNewGameDiamond + dyArial8) + 1)))
         goto L_9548;
     else
         goto L_8a1f;
@@ -7696,7 +7696,7 @@ L_8a83:
         goto L_8aae;
 
 L_8aae:
-    if ((pt.x >= ((xNewGameDiamond + dyArial8) + 0x1)))
+    if ((pt.x >= ((xNewGameDiamond + dyArial8) + 1)))
         goto L_9548;
     else
         goto L_8ac0;
@@ -7728,7 +7728,7 @@ L_8b08:
     goto L_8b85;
 
 L_8b34:
-    if ((iCurVal != ((i * 4) + 0x1)))
+    if ((iCurVal != ((i * 4) + 1)))
         goto L_8b4c;
     else
         goto L_8b46;
@@ -7762,7 +7762,7 @@ L_8b8e:
     goto L_8c95;
 
 L_8c2a:
-    if ((iCurVal != ((i * 4) + 0x2)))
+    if ((iCurVal != ((i * 4) + 2)))
         goto L_8c42;
     else
         goto L_8c3c;
@@ -7776,7 +7776,7 @@ L_8c42:
 
 L_8c45:
     iChecked = t_merge_8c45_0001;
-    psz = PszPlayerName(0, 1, 1, 1, 0, (vrgplrNew + LOWORD((0xc0 * i))));
+    psz = PszPlayerName(0, 1, 1, 1, 0, (vrgplrNew + i));
     AppendMenu(rghmenuSubPopup[1], (0x0 | iChecked), (i + 15032), psz);
     i = (i + 1);
 
@@ -7797,7 +7797,7 @@ L_8cb0:
     goto L_8d38;
 
 L_8ccc:
-    if ((iCurVal != (((j * 32) + (i * 4)) + 0x5)))
+    if ((iCurVal != (((j * 32) + (i * 4)) + 5)))
         goto L_8cf3;
     else
         goto L_8ced;
@@ -7821,7 +7821,7 @@ L_8d38:
         goto L_8d41;
 
 L_8d41:
-    if (((iCurVal & 0x1f) != ((i * 4) + 0x5)))
+    if (((iCurVal & 0x1f) != ((i * 4) + 5)))
         goto L_8d5e;
     else
         goto L_8d58;
@@ -8074,7 +8074,7 @@ L_90cc:
 
 L_90d5:
     vrgplrNew[iNewVal] = vplr;
-    strcpy((vrgszFileNew + LOWORD((13 * iNewVal))), szRaceFile);
+    strcpy((vrgszFileNew + (iNewVal * 13)), szRaceFile);
     iNewVal = ((iNewVal << 0x2) | 0x2);
 
 L_9121:
@@ -8100,7 +8100,7 @@ L_913c:
 
 L_9193:
     vplr = vrgplrNew[(iCurVal >> 0x2)];
-    strcpy(szRaceFile, (vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd))));
+    strcpy(szRaceFile, (vrgszFileNew + ((iCurVal >> 0x2) * 13)));
 
 L_91d3:
     lSaltCur = vplr.lSalt;
@@ -8144,14 +8144,14 @@ L_924a:
         goto L_925e;
 
 L_925e:
-    if ((strcmp(szRaceFile, (vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd)))) != 0))
+    if ((strcmp(szRaceFile, (vrgszFileNew + ((iCurVal >> 0x2) * 13))) != 0))
         goto PlaceNew;
     else
         goto L_9288;
 
 L_9288:
     vrgplrNew[(iCurVal >> 0x2)] = vplr;
-    strcpy((vrgszFileNew + LOWORD(((iCurVal >> 0x2) * 0xd))), szRaceFile);
+    strcpy((vrgszFileNew + ((iCurVal >> 0x2) * 13)), szRaceFile);
     iNewVal = iCurVal;
     iCurVal = -1;
 
@@ -8421,7 +8421,7 @@ L_957d:
     SelectObject(hdc, rghfontArial8[1]);
     xNewGameDiamond = (LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsPlayer16), 11)) + 12);
     yCur = 6;
-    SetRect(&(rcDiamond), xNewGameDiamond, yCur, ((xNewGameDiamond + dyArial8) + 0x1), ((yCur + dyArial8) + 0x1));
+    SetRect(&(rcDiamond), xNewGameDiamond, yCur, ((xNewGameDiamond + dyArial8) + 1), ((yCur + dyArial8) + 1));
     i = 0;
     goto L_99c5;
 
@@ -8817,7 +8817,7 @@ L_9cc9:
     t_merge_9ccc_0001 = 0x0;
 
 L_9ccc:
-    SetVCCheck(game.lid, ((wParam + 0xfedd) + t_merge_9ccc_0001), i);
+    SetVCCheck(game.lid, ((wParam - 291) + t_merge_9ccc_0001), i);
     DrawNewGame3(hwnd, 0x0, 8);
 
 L_9cf5:
@@ -9029,15 +9029,15 @@ L_9fe9:
     vrgrcRCW[irc].right = (vrgrcRCW[irc].left + 15);
     vrgrcRCW[irc].bottom = (((dyArial8 >> 0x1) + vrgrcRCW[irc].top) + 0x3);
     vrgrcRCW[(irc + 1)] = vrgrcRCW[irc];
-    OffsetRect(vrgrcRCW[(irc + 1)].left, 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) + 0xffff));
+    OffsetRect(vrgrcRCW[(irc + 1)].left, 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) - 1));
     if ((iDraw != -1))
         goto L_a154;
     else
         goto L_a0fd;
 
 L_a0fd:
-    DrawBtn(hdc, (vrgrcRCW + (irc * 8)), (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, (vrgrcRCW + ((irc + 1) * 0x8)), (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + irc), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + (irc + 1)), (0xa1 | bt), 0, 0x0);
 
 L_a154:
     xLeft = (vrgrcRCW[irc].right + 4);
@@ -9124,7 +9124,7 @@ L_a260:
     bt = 161;
 
 L_a26a:
-    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + (irc * 8)), bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, 0x0);
     if (((kbd & 0xc) == 0x0))
         goto L_a2b7;
     else
@@ -9275,6 +9275,38 @@ L_b73a:
 L_b740:
     goto L_b80e;
 
+L_b746:
+    val = (LOWORD((0x5 * val)) + 20);
+    goto L_b833;
+
+L_b755:
+    val = (val + 8);
+    goto L_b833;
+
+L_b761:
+    val = (val + 2);
+    goto L_b833;
+
+L_b76d:
+    val = (LOWORD((0x3e8 * val)) + 1000);
+    goto L_b833;
+
+L_b77c:
+    val = (LOWORD((0xa * val)) + 20);
+    goto L_b833;
+
+L_b78b:
+    val = (LOWORD((0xa * val)) + 10);
+    goto L_b833;
+
+L_b79a:
+    val = (LOWORD((0xa * val)) + 30);
+    goto L_b833;
+
+L_b7a9:
+    val = (LOWORD((0xa * val)) + 30);
+    goto L_b833;
+
 L_b7b8:
     c = 0;
     i = 0;
@@ -9323,7 +9355,28 @@ L_b80e:
         goto L_b816;
 
 L_b816:
-    /* untranslated: {{L_b816 47130 14 5} JMP       cs:[bx-0x47e1]       unhandled instruction} */
+    switch ((vc * 2)) {
+    case 0x0:
+        goto L_b746;
+    case 0x2:
+        goto L_b755;
+    case 0x4:
+        goto L_b761;
+    case 0x6:
+        goto L_b76d;
+    case 0x8:
+        goto L_b77c;
+    case 0xa:
+        goto L_b78b;
+    case 0xc:
+        goto L_b78b;
+    case 0xe:
+        goto L_b79a;
+    case 0x10:
+        goto L_b7b8;
+    case 0x12:
+        goto L_b7a9;
+    }
 
 L_b833:
     return val;

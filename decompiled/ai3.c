@@ -438,13 +438,13 @@ L_0575:
     rgRecycleShdef[7] = 0x2;
 
 L_0579:
-    lpb = (vlpbAiPlanet + 0xe);
+    lpb = (vlpbAiPlanet + 14);
     i = 0;
     goto L_05a5;
 
 L_0594:
     i = (i + 1);
-    lpb = (lpb + 0x10);
+    lpb = (lpb + 16);
 
 L_05a5:
     if ((i >= game.cPlanMax))
@@ -630,13 +630,13 @@ L_075e:
 
 L_0764:
     cFlMineLayersBase = cFlMineLayers;
-    lpb = (vlpbAiPlanet + 0xd);
+    lpb = (vlpbAiPlanet + 13);
     i = 0;
     goto L_0797;
 
 L_0786:
     i = (i + 1);
-    lpb = (lpb + 0x10);
+    lpb = (lpb + 16);
 
 L_0797:
     if ((i >= game.cPlanMax))
@@ -709,7 +709,7 @@ L_0867:
 L_086c:
     UpdateProgressGauge(-926);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_094e;
 
 L_08a7:
@@ -748,7 +748,7 @@ L_0903:
     vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
 
 L_094a:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_094e:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -847,12 +847,12 @@ L_0a4a:
     InitProduction(rgprod);
     fWrite = 0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0a90;
 
 L_0a7a:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_0a90:
     if ((i >= lpplProdGlob->iprodMac))
@@ -941,12 +941,12 @@ L_0b8c:
     lpplBest = 0x0;
     lLeast = 100000;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0bd9;
 
 L_0bc3:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_0bd9:
     if ((i >= lpplProdGlob->iprodMac))
@@ -1628,7 +1628,7 @@ L_1405:
         goto L_1419;
 
 L_1419:
-    if ((Random(((cFr * 2) + 0x1)) != 0))
+    if ((Random(((cFr * 2) + 1)) != 0))
         goto L_1454;
     else
         goto L_1432;
@@ -1821,12 +1821,12 @@ L_1603:
 
 L_160e:
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_1643;
 
 L_162d:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_1643:
     if ((i >= lpplProdGlob->iprodMac))
@@ -2347,8 +2347,8 @@ L_1d0d:
 L_1d23:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tsell.iPlrX = 0x5;
-    /* untranslated: part[0xa:2](sel.fl.lpplord->rgord[0]) = 0x5 */
+    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
     FLookupFleet(-1, sel.fl.id);
     goto L_1a3b;
 
@@ -2552,7 +2552,7 @@ L_2000:
     id = lpfl->idPlanet;
 
 L_200b:
-    lpb = ((vlpbAiPlanet + (id * 16)) + 0xa);
+    lpb = (vlpbAiPlanet + ((id * 16) + 10));
     if ((*(lpb) == 0x0))
         goto L_2154;
     else
@@ -3381,7 +3381,7 @@ L_2be8:
     t_merge_2beb_0001 = 0x0;
 
 L_2beb:
-    if ((FCreateAiShdef(ish, (0x18 - t_merge_2beb_0001), &(vrgMacAip[vrgMacIshAip[(fAdvanced + 21)]])) != 0))
+    if ((FCreateAiShdef(ish, (24 - t_merge_2beb_0001), &(vrgMacAip[vrgMacIshAip[(fAdvanced + 21)]])) != 0))
         goto L_2c51;
     else
         goto L_2c04;

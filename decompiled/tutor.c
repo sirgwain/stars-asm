@@ -740,7 +740,7 @@ LUpdatePage:
     GetWindowRect(tutor.hwnd, &(rc));
     ScreenToClient(tutor.hwnd, &(rc));
     ScreenToClient(tutor.hwnd, rc.right);
-    ExpandRc(&(rc), (-dyArial8), LOWORD((-2 * dyArial8)));
+    ExpandRc(&(rc), (-dyArial8), (-2 * dyArial8));
     InvalidateRect(tutor.hwnd, &(rc), 1);
 
 L_0bfb:
@@ -797,7 +797,7 @@ L_0c90:
     tutor.iScanZoom = iScanZoom;
     tutor.fTBVis = gd.fToolbar;
     tutor.zpq = vrgZipProd[0x0].zpq1;
-    /* untranslated: tutor.fValidQ = (part[0xd:2](vrgZipProd[0x0]) & 0xff) */
+    tutor.fValidQ = vrgZipProd[0x0].fValid;
     vrgZipProd[0].zpq1 = vrgZipProd[0x4].zpq1;
     /* untranslated: part[0xd:2](vrgZipProd[0x0]) = part[0xd:2](vrgZipProd[0x4]) */
     if ((gd.fToolbar != 0x0))
@@ -897,7 +897,7 @@ L_0e35:
     vrgZipProd[4].zpq1 = vrgZipProd[0x0].zpq1;
     /* untranslated: part[0xd:2](vrgZipProd[0x4]) = part[0xd:2](vrgZipProd[0x0]) */
     vrgZipProd[0].zpq1 = tutor.zpq;
-    /* untranslated: part[0xd:2](vrgZipProd[0x0]) = lobyte(tutor.fValidQ) */
+    vrgZipProd[0].fValid = LOBYTE(tutor.fValidQ);
     if ((gd.fToolbar == tutor.fTBVis))
         goto L_0f0e;
     else
@@ -3443,7 +3443,10 @@ L_3038:
         goto L_3050;
 
 L_3050:
-    /* untranslated: branch (part[0x6:2](sel.fl.lpplord->rgord[sel.iwpAct]) & 0xf) != 0x1 ? L_30a9 : L_3077 */
+    if ((sel.fl.lpplord->rgord[sel.iwpAct].grTask != grTaskXfer))
+        goto L_30a9;
+    else
+        goto L_3077;
 
 L_3077:
     t_call_308b = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
@@ -3823,7 +3826,10 @@ L_34da:
     return 1;
 
 L_34e0:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_34f2 : L_34ec */
+    if (((uint16_t)(rgplr[0].cShDef) != 7))
+        goto L_34f2;
+    else
+        goto L_34ec;
 
 L_34ec:
     return 1;
@@ -3926,7 +3932,10 @@ L_3625:
         goto L_3643;
 
 L_3643:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_3655 : L_364f */
+    if (((uint16_t)(rgplr[0].cShDef) != 7))
+        goto L_3655;
+    else
+        goto L_364f;
 
 L_364f:
     return 1;
@@ -5169,7 +5178,10 @@ L_47a7:
     return 0;
 
 L_47b3:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) < 0x8 ? L_47c9 : L_47bf */
+    if (((uint16_t)(rgplr[0].cShDef) < 8))
+        goto L_47c9;
+    else
+        goto L_47bf;
 
 L_47bf:
     if ((hwndSlotDlg == 0x0))
@@ -5193,7 +5205,10 @@ L_47e7:
     return 0;
 
 L_47f9:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x8 ? L_4829 : L_4805 */
+    if (((uint16_t)(rgplr[0].cShDef) >= 8))
+        goto L_4829;
+    else
+        goto L_4805;
 
 L_4805:
     if ((FCheckShipBuilder(4, -1) != 0))
@@ -5603,7 +5618,10 @@ L_4de2:
 
 L_4dee:
     t_call_4df2 = LpflFromId(4);
-    /* untranslated: branch ((part[0x6:2](t_call_4df2->lpplord->rgord[0x0]) >> 0x8) & 0xf) == 0x2 ? L_4e28 : L_4e16 */
+    if ((t_call_4df2->lpplord->rgord[0].grobj == grobjFleet))
+        goto L_4e28;
+    else
+        goto L_4e16;
 
 L_4e16:
     tutor.idtBold = 484;
@@ -6303,7 +6321,10 @@ L_5855:
         goto L_586b;
 
 L_586b:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x9 ? L_587d : L_5877 */
+    if (((uint16_t)(rgplr[0].cShDef) != 9))
+        goto L_587d;
+    else
+        goto L_5877;
 
 L_5877:
     return 1;
@@ -6320,7 +6341,10 @@ L_5883:
         goto L_588d;
 
 L_588d:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x9 ? L_5992 : L_5899 */
+    if (((uint16_t)(rgplr[0].cShDef) >= 9))
+        goto L_5992;
+    else
+        goto L_5899;
 
 L_5899:
     if ((FCheckShipBuilder(4, -1) != 0))
@@ -6329,7 +6353,10 @@ L_5899:
         goto L_58b1;
 
 L_58b1:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0x9 ? L_58c3 : L_58bd */
+    if (((uint16_t)(rgplr[0].cShDef) >= 9))
+        goto L_58c3;
+    else
+        goto L_58bd;
 
 L_58bd:
     t_merge_58c6_0001 = 0x221;
@@ -6723,7 +6750,10 @@ L_5e30:
     return 0;
 
 L_5e39:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) >= 0xa ? L_5e57 : L_5e45 */
+    if (((uint16_t)(rgplr[0].cShDef) >= 10))
+        goto L_5e57;
+    else
+        goto L_5e45;
 
 L_5e45:
     tutor.idtBold = 577;
@@ -7247,8 +7277,8 @@ L_6488:
 
 L_64ad:
     i = (i + 1);
-    piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x2);
+    piaCur = (piaCur + 1);
+    lpiaGoal = (lpiaGoal + 1);
 
 L_64c7:
     if ((i >= 5))
@@ -7291,8 +7321,8 @@ L_6562:
 
 L_657e:
     i = (i + 1);
-    piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x2);
+    piaCur = (piaCur + 1);
+    lpiaGoal = (lpiaGoal + 1);
 
 L_6598:
     if ((i >= 5))
@@ -7348,19 +7378,28 @@ L_6690:
     return 1;
 
 L_66c7:
-    /* untranslated: branch (part[0xd:2](vrgZipProd[0x0]) & 0xff) != 0x0 ? L_66db : L_66d5 */
+    if ((vrgZipProd[0].fValid != 0x0))
+        goto L_66db;
+    else
+        goto L_66d5;
 
 L_66d5:
     return 0;
 
 L_66db:
-    /* untranslated: branch (part[0xe:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].fNoResearch ? L_6704 : L_66fe */
+    if ((vrgZipProd[0].fNoResearch == rgzpqTut[iTemplate].fNoResearch))
+        goto L_6704;
+    else
+        goto L_66fe;
 
 L_66fe:
     return 0;
 
 L_6704:
-    /* untranslated: branch (part[0xf:2](vrgZipProd[0x0]) & 0xff) == rgzpqTut[iTemplate].cpq ? L_6733 : L_672d */
+    if ((vrgZipProd[0].cpq == rgzpqTut[iTemplate].cpq))
+        goto L_6733;
+    else
+        goto L_672d;
 
 L_672d:
     return 0;
@@ -7998,13 +8037,22 @@ L_6d91:
 
 int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
 L_6da4:
-    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) & 0xf) != iTech ? L_6de2 : L_6dbc */
+    if ((((uint16_t)(rgplr[0].iTechCur) & 0xf) != iTech))
+        goto L_6de2;
+    else
+        goto L_6dbc;
 
 L_6dbc:
-    /* untranslated: branch (sext8to16(part[0x39:2](rgplr[0x0])) sar 0x4) != iTechNext ? L_6de2 : L_6dd0 */
+    if ((((uint16_t)(rgplr[0].iTechCur) >> 0x4) != iTechNext))
+        goto L_6de2;
+    else
+        goto L_6dd0;
 
 L_6dd0:
-    /* untranslated: branch sext8to16(part[0x38:2](rgplr[0x0])) != pct ? L_6de2 : L_6ddc */
+    if (((uint16_t)(rgplr[0].pctResearch) != pct))
+        goto L_6de2;
+    else
+        goto L_6ddc;
 
 L_6ddc:
     return 1;
@@ -8309,7 +8357,7 @@ L_7133:
         goto L_7140;
 
 L_7140:
-    if ((FCheckCargo(lpfl, 0, 0, 0, LOWORD((25 * csh))) != 0))
+    if ((FCheckCargo(lpfl, 0, 0, 0, (25 * csh)) != 0))
         goto L_716f;
     else
         goto L_7169;
@@ -8385,7 +8433,10 @@ L_7233:
         goto L_723c;
 
 L_723c:
-    /* untranslated: branch part[0xa:2](lpfl->lpplord->rgord[iord]) == iDist ? L_726e : L_7262 */
+    if ((lpfl->lpplord->rgord[iord].tptl.iDist == iDist))
+        goto L_726e;
+    else
+        goto L_7262;
 
 L_7262:
     tutor.idh = 1519;
@@ -8456,8 +8507,8 @@ L_7308:
 
 L_7347:
     i = (i + 1);
-    piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x2);
+    piaCur = (piaCur + 1);
+    lpiaGoal = (lpiaGoal + 1);
 
 L_7361:
     if ((i >= 5))
@@ -8719,7 +8770,7 @@ L_7636:
     return 0;
 
 L_763c:
-    lpbtlplan = (rglpbtlplan[0] + LOWORD((0x24 * ibp)));
+    lpbtlplan = (rglpbtlplan[0] + ibp);
     tutor.idh = idhSav;
     return 1;
 }
@@ -9095,7 +9146,10 @@ L_7a35:
         goto L_7a40;
 
 L_7a40:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x7 ? L_7a5e : L_7a4c */
+    if (((uint16_t)(rgplr[0].cShDef) != 7))
+        goto L_7a5e;
+    else
+        goto L_7a4c;
 
 L_7a4c:
     TutorError(499);
@@ -9154,7 +9208,10 @@ L_7afe:
         goto L_7b09;
 
 L_7b09:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x8 ? L_7b27 : L_7b15 */
+    if (((uint16_t)(rgplr[0].cShDef) != 8))
+        goto L_7b27;
+    else
+        goto L_7b15;
 
 L_7b15:
     TutorError(499);
@@ -9179,7 +9236,10 @@ L_7b5a:
         goto L_7b65;
 
 L_7b65:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0x9 ? L_7b83 : L_7b71 */
+    if (((uint16_t)(rgplr[0].cShDef) != 9))
+        goto L_7b83;
+    else
+        goto L_7b71;
 
 L_7b71:
     TutorError(499);
@@ -9204,7 +9264,10 @@ L_7bb6:
         goto L_7bc1;
 
 L_7bc1:
-    /* untranslated: branch sext8to16(part[0x1:2](rgplr[0x0])) != 0xa ? L_7bdf : L_7bcd */
+    if (((uint16_t)(rgplr[0].cShDef) != 10))
+        goto L_7bdf;
+    else
+        goto L_7bcd;
 
 L_7bcd:
     TutorError(499);
@@ -9294,6 +9357,288 @@ L_7c95:
     goto L_7c4f;
 
 L_7c9e:
+    goto L_8158;
+
+L_7ca7:
+    hs.grhst = hstScanner;
+    HIWORD(hs) = 0x101;
+    hs2.grhst = hstEngine;
+    HIWORD(hs2) = 0x103;
+    hs3.grhst = hstMining;
+    HIWORD(hs3) = 0x102;
+    if ((tutor.idt == 336))
+        goto L_7ce2;
+    else
+        goto L_7cd0;
+
+L_7cd0:
+    TutorError(504);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7ce2:
+    if ((FCheckBuilderPart(0, &(hs2), 0x1) == 0))
+        goto L_7d52;
+    else
+        goto L_7cfe;
+
+L_7cfe:
+    if ((FCheckBuilderPart(1, &(hs), 0x1) == 0))
+        goto L_7d52;
+    else
+        goto L_7d1a;
+
+L_7d1a:
+    if ((FCheckBuilderPart(2, &(hs3), 0x1) == 0))
+        goto L_7d52;
+    else
+        goto L_7d36;
+
+L_7d36:
+    if ((FCheckBuilderPart(3, &(hs3), 0x1) != 0))
+        goto L_818e;
+    else
+        goto L_7d52;
+
+L_7d52:
+    TutorError(507);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7d67:
+    if ((tutor.idt != 416))
+        goto L_7e0f;
+    else
+        goto L_7d72;
+
+L_7d72:
+    hs.grhst = hstSpecialSB;
+    HIWORD(hs) = 0x100;
+    if ((FCheckBuilderPart(0, &(hs), 0x1) != 0))
+        goto L_7daa;
+    else
+        goto L_7d98;
+
+L_7d98:
+    TutorError(515);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7daa:
+    if ((fstricmp(PszGetCompressedString(idsGater), lpshdefBuild->hul.szClass) == 0))
+        goto L_7deb;
+    else
+        goto L_7dd9;
+
+L_7dd9:
+    TutorError(512);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7deb:
+    if ((lpshdefBuild->hul.ibmp == 137))
+        goto L_818e;
+    else
+        goto L_7dfa;
+
+L_7dfa:
+    TutorError(505);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7e0f:
+    TutorError(504);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7e24:
+    if ((tutor.idt != 448))
+        goto L_7ed1;
+    else
+        goto L_7e2f;
+
+L_7e2f:
+    hs.grhst = hstEngine;
+    HIWORD(hs) = 0x104;
+    hs1.grhst = hstMines;
+    HIWORD(hs1) = 0x301;
+    if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
+        goto L_7e7b;
+    else
+        goto L_7e5f;
+
+L_7e5f:
+    if ((FCheckBuilderPart(2, &(hs1), 0x3) != 0))
+        goto L_7e8d;
+    else
+        goto L_7e7b;
+
+L_7e7b:
+    TutorError(508);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7e8d:
+    if ((fstricmp(PszGetCompressedString(idsMineLayer), lpshdefBuild->hul.szClass) == 0))
+        goto L_818e;
+    else
+        goto L_7ebc;
+
+L_7ebc:
+    TutorError(513);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7ed1:
+    TutorError(504);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7ee6:
+    hs.grhst = hstEngine;
+    HIWORD(hs) = 0x104;
+    hs2.grhst = hstSpecialM;
+    HIWORD(hs2) = 0x100;
+    if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
+        goto L_7f32;
+    else
+        goto L_7f16;
+
+L_7f16:
+    if ((FCheckBuilderPart(1, &(hs2), 0x1) != 0))
+        goto L_818e;
+    else
+        goto L_7f32;
+
+L_7f32:
+    TutorError(507);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_7f47:
+    if ((tutor.idt != 544))
+        goto L_807d;
+    else
+        goto L_7f52;
+
+L_7f52:
+    hs.grhst = hstEngine;
+    HIWORD(hs) = 0x10a;
+    hs1.grhst = hstSpecialM;
+    HIWORD(hs1) = 0x105;
+    hs2.grhst = hstSpecialE;
+    HIWORD(hs2) = 0x105;
+    hs3.grhst = hstBeam;
+    HIWORD(hs3) = 0x103;
+    hs4.grhst = hstArmor;
+    HIWORD(hs4) = 0x202;
+    if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
+        goto L_8048;
+    else
+        goto L_7fa0;
+
+L_7fa0:
+    if ((FCheckBuilderPart(1, &(hs3), 0x1) == 0))
+        goto L_8048;
+    else
+        goto L_7fbc;
+
+L_7fbc:
+    if ((FCheckBuilderPart(2, &(hs3), 0x1) == 0))
+        goto L_8048;
+    else
+        goto L_7fd8;
+
+L_7fd8:
+    if ((FCheckBuilderPart(3, &(hs3), 0x1) == 0))
+        goto L_8048;
+    else
+        goto L_7ff4;
+
+L_7ff4:
+    if ((FCheckBuilderPart(4, &(hs4), 0x2) == 0))
+        goto L_8048;
+    else
+        goto L_8010;
+
+L_8010:
+    if ((FCheckBuilderPart(5, &(hs1), 0x1) == 0))
+        goto L_8048;
+    else
+        goto L_802c;
+
+L_802c:
+    if ((FCheckBuilderPart(6, &(hs2), 0x1) != 0))
+        goto L_805a;
+    else
+        goto L_8048;
+
+L_8048:
+    TutorError(506);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_805a:
+    if ((lpshdefBuild->hul.ibmp == 25))
+        goto L_818e;
+    else
+        goto L_8068;
+
+L_8068:
+    TutorError(505);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_807d:
+    TutorError(504);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_8092:
+    if ((tutor.idt != 576))
+        goto L_8140;
+    else
+        goto L_809d;
+
+L_809d:
+    hs.grhst = hstEngine;
+    HIWORD(hs) = 0x20a;
+    hs1.grhst = hstSpecialM;
+    HIWORD(hs1) = 0x105;
+    hs2.grhst = hstBomb;
+    HIWORD(hs2) = 0x401;
+    if ((FCheckBuilderPart(0, &(hs), 0x2) == 0))
+        goto L_812b;
+    else
+        goto L_80d7;
+
+L_80d7:
+    if ((FCheckBuilderPart(1, &(hs2), 0x4) == 0))
+        goto L_812b;
+    else
+        goto L_80f3;
+
+L_80f3:
+    if ((FCheckBuilderPart(2, &(hs2), 0x4) == 0))
+        goto L_812b;
+    else
+        goto L_810f;
+
+L_810f:
+    if ((FCheckBuilderPart(3, &(hs1), 0x1) != 0))
+        goto L_818e;
+    else
+        goto L_812b;
+
+L_812b:
+    TutorError(509);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
+
+L_8140:
+    TutorError(504);
+    t_merge_81d4_0001 = 0;
+    goto L_81d4;
 
 L_8158:
     if (((game.turn - 0xd) > 0x10))
@@ -9302,7 +9647,46 @@ L_8158:
         goto L_8163;
 
 L_8163:
-    /* untranslated: {{L_8163 33127 14 5} JMP       cs:[bx-0x7e94]       unhandled instruction} */
+    switch (((game.turn - 0xd) * 0x2)) {
+    case 0x0:
+        goto L_7ca7;
+    case 0x2:
+        goto NoCustom;
+    case 0x4:
+        goto NoCustom;
+    case 0x6:
+        goto NoCustom;
+    case 0x8:
+        goto NoCustom;
+    case 0xa:
+        goto NoCustom;
+    case 0xc:
+        goto NoCustom;
+    case 0xe:
+        goto L_7d67;
+    case 0x10:
+        goto NoCustom;
+    case 0x12:
+        goto L_7e24;
+    case 0x14:
+        goto NoCustom;
+    case 0x16:
+        goto NoCustom;
+    case 0x18:
+        goto L_7ee6;
+    case 0x1a:
+        goto NoCustom;
+    case 0x1c:
+        goto L_7f47;
+    case 0x1e:
+        goto NoCustom;
+    case 0x20:
+        goto L_8092;
+    }
+
+L_818e:
+    t_merge_81d4_0001 = 1;
+    goto L_81d4;
 
 L_8194:
     TutorError(503);

@@ -112,6 +112,7 @@ func aggregateUnionBlockPathFacts(facts map[machine.BlockID][]*typeinfo.UnionBlo
 			out = append(out, typeinfo.FunctionPathFactJSON{
 				Func:        fact.Func.Name,
 				Root:        fact.Root,
+				RootPath:    fact.RootPath,
 				AllElements: fact.AllElements,
 				Type:        fact.Type.String(),
 				Path:        append([]string(nil), fact.Path...),

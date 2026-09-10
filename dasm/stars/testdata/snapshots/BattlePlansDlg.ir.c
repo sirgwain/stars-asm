@@ -31,7 +31,7 @@ L_0661:
         goto L_0684;
 
 L_0684:
-    /* untranslated: iPlanSelDlg = (part[0x60:2](sel.fl) & 0xff) */
+    iPlanSelDlg = sel.fl.iplan;
 
 L_068d:
     btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];
@@ -276,7 +276,7 @@ L_0b6e:
         goto L_0b97;
 
 L_0b97:
-    /* untranslated: call FillBattleDD(((part[0x60:2](sel.fl) & 0xff) + 0x1)) -> callresult(void) */
+    FillBattleDD((sel.fl.iplan + 1));
 
 L_0ba9:
     iPlanSelDlg = -1;

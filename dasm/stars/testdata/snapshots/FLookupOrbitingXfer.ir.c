@@ -101,7 +101,7 @@ L_25fd:
 
 L_2606:
     lpth = lpThings;
-    lpthMac = (lpThings + LOWORD((0x12 * cThing)));
+    lpthMac = (lpThings + cThing);
     goto L_26c4;
 
 L_2631:
@@ -145,7 +145,7 @@ L_26ba:
     return 1;
 
 L_26c0:
-    lpth = (lpth + 0x12);
+    lpth = (lpth + 1);
 
 L_26c4:
     if ((LOWORD(lpth) < LOWORD(lpthMac)))

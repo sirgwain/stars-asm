@@ -246,10 +246,9 @@ func detectSwitchTable(instrs map[uint32]DecodedInst, dataBytes map[uint32]bool,
 	if mem.SegOverride != RegCS || mem.Base != RegBX || mem.index != RegNone {
 		return switchTable{}, false
 	}
-	if mem.Disp < int(baseOff) {
-		return switchTable{}, false
-	}
-	tableStart := uint32(mem.Disp)
+	// Indexed displacements are decoded as signed values, but the table base
+	// is a 16-bit CS offset. Preserve its bits for tables at or above 0x8000.
+	tableStart := uint32(uint16(mem.Disp))
 	if tableStart < baseOff || tableStart >= baseOff+limit {
 		return switchTable{}, false
 	}

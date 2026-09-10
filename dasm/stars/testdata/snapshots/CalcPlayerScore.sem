@@ -23,7 +23,7 @@ CalcPlayerScore  (util)
 L_58a6:
     call memset(&score, 0, 0x14) -> callresult(void *)
     lppl = lpPlanets
-    lpplMac = (lpPlanets + loword((0x38 * cPlanet)))
+    lpplMac = (lpPlanets + cPlanet)
     goto L_59c9
 
 L_58ee:
@@ -57,7 +57,7 @@ L_59ad:
     score.cResources = (score.cResources + sext16to32(CResourcesAtPlanet(lppl, iPlr)))
 
 L_59c5:
-    lppl = (lppl + 0x38)
+    lppl = (lppl + 1)
 
 L_59c9:
     branch LOWORD(lppl) < LOWORD(lpplMac) ? L_58ee : L_59d7

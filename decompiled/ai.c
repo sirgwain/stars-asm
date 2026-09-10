@@ -519,7 +519,7 @@ L_069b:
     fShouldColonize = FShouldWeBuildColonizers(&(cColFleet));
     UpdateProgressGauge(-926);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_078c;
 
 L_06e5:
@@ -558,7 +558,7 @@ L_0741:
     vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
 
 L_0788:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_078c:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -621,12 +621,12 @@ L_0818:
     InitProduction(rgprod);
     fWrite = 0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_0870;
 
 L_085a:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_0870:
     if ((i >= lpplProdGlob->iprodMac))
@@ -695,7 +695,7 @@ L_094e:
         goto L_095a;
 
 L_095a:
-    if ((cExistCargo < ((uint32_t)((cFr * 8)) / 0xa)))
+    if ((cExistCargo < ((uint32_t)((cFr * 8)) / 10)))
         goto L_0990;
     else
         goto L_0971;
@@ -729,7 +729,7 @@ L_09b7:
         goto L_09c0;
 
 L_09c0:
-    if ((Random((vlpbAiData[2] * 0x8)) != 0))
+    if ((Random((vlpbAiData[2] * 8)) != 0))
         goto TryShip2;
     else
         goto L_09e2;
@@ -897,7 +897,7 @@ L_0bb5:
         goto L_0bc9;
 
 L_0bc9:
-    if ((Random(((cFr * 2) + 0x1)) != 0))
+    if ((Random(((cFr * 2) + 1)) != 0))
         goto L_0c00;
     else
         goto L_0be2;
@@ -1419,8 +1419,8 @@ L_130d:
 L_1323:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tsell.iPlrX = 0x5;
-    /* untranslated: part[0xa:2](sel.fl.lpplord->rgord[0]) = 0x5 */
+    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
     FLookupFleet(-1, sel.fl.id);
     goto L_10bf;
 
@@ -1504,7 +1504,7 @@ L_147d:
     id = lpfl->idPlanet;
 
 L_1488:
-    lpb = ((vlpbAiPlanet + (id * 16)) + 0xa);
+    lpb = (vlpbAiPlanet + ((id * 16) + 10));
     if ((*(lpb) == 0x0))
         goto L_15d1;
     else
@@ -2259,7 +2259,7 @@ L_20dd:
         goto L_20f5;
 
 L_20f5:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < (LOWORD(((ish - 11) * 0x3)) + 0x4)))
+    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < (LOWORD(((ish - 11) * 3)) + 0x4)))
         goto L_21e7;
     else
         goto L_2122;
@@ -3254,7 +3254,7 @@ L_2ed3:
         goto L_2ede;
 
 L_2ede:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[0x3])) / 0x5));
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[0x3])) / 5));
     FLookupFleet(lpfl->id, sel.fl.id);
 
 L_2f23:
@@ -4112,7 +4112,7 @@ L_3932:
 L_393e:
     EnsureTurinDroneShdefs(iroCur);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_39bd;
 
 L_397b:
@@ -4137,7 +4137,7 @@ L_39b4:
     cplanCol = (cplanCol + 0x1);
 
 L_39b9:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_39bd:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -4147,7 +4147,7 @@ L_39bd:
 
 L_39cd:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_4873;
 
 L_39fe:
@@ -4325,12 +4325,12 @@ L_3cfd:
     fWrite = 0;
     b = 0x0;
     i = 0;
-    lpprod = (lpplProdGlob + 0x4);
+    lpprod = lpplProdGlob->rgprod;
     goto L_3d59;
 
 L_3d43:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_3d59:
     if ((i >= lpplProdGlob->iprodMac))
@@ -4646,7 +4646,7 @@ L_413f:
         goto L_4153;
 
 L_4153:
-    if ((Random(((cFr * 2) + 0x1)) != 0))
+    if ((Random(((cFr * 2) + 1)) != 0))
         goto L_418b;
     else
         goto L_416d;
@@ -5157,7 +5157,7 @@ FinishProd:
     FinishProduction(fWrite);
 
 L_486f:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_4873:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -5280,7 +5280,7 @@ L_49f7:
         goto L_4a04;
 
 L_4a04:
-    if ((((lpfl->lpplord + 0x4)->rgord[(lpfl->cord - 1)].pt.y & 0xf) == 0x0))
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].grTask == grTaskNone))
         goto L_4b45;
     else
         goto L_4a46;
@@ -6156,8 +6156,8 @@ L_582b:
 L_5841:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tsell.iPlrX = 0x5;
-    /* untranslated: part[0xa:2](sel.fl.lpplord->rgord[0]) = 0x5 */
+    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
     FLookupFleet(-1, sel.fl.id);
 
 L_588d:

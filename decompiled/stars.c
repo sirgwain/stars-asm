@@ -75,7 +75,7 @@ L_0130:
         goto L_013f;
 
 L_013f:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_0130;
 
 L_0146:
@@ -91,7 +91,7 @@ L_0155:
         goto L_0164;
 
 L_0164:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
 
 L_0168:
     if (((uint16_t)(*(lpT)) == 0))
@@ -113,7 +113,7 @@ L_0193:
     goto L_050d;
 
 L_01a2:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
 
 L_01a6:
     if (((uint16_t)(*(lpT)) == 0))
@@ -179,11 +179,11 @@ L_0226:
         goto L_0231;
 
 L_0231:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_01a6;
 
 L_0238:
-    lpT = (lpT - 0x1);
+    lpT = (lpT + (-1));
     goto L_050d;
 
 L_023f:
@@ -203,7 +203,7 @@ L_0260:
         goto L_0270;
 
 L_0270:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     i = ((LOWORD((0xa * i)) + (uint16_t)(*(lpT))) - 48);
     if ((i <= 1000))
         goto L_0250;
@@ -226,7 +226,7 @@ L_02ae:
         goto L_02be;
 
 L_02be:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_029e;
 
 L_02cb:
@@ -254,7 +254,7 @@ L_02fe:
     goto L_050d;
 
 L_030d:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
 
 L_0311:
     if (((uint16_t)(*(lpT)) != 32))
@@ -263,7 +263,7 @@ L_0311:
         goto L_0320;
 
 L_0320:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_0311;
 
 L_0327:
@@ -283,13 +283,13 @@ L_033b:
 
 L_034a:
     *(pch) = *(lpT);
-    pch = (pch + 0x1);
-    lpT = (lpT + 0x1);
+    pch = (pch + 1);
+    lpT = (lpT + 1);
     goto L_032c;
 
 L_0360:
     *(pch) = 0;
-    lpT = (lpT - 0x1);
+    lpT = (lpT + (-1));
     if ((FSetUpBatchProcessing() == 0))
         goto L_050d;
     else
@@ -334,7 +334,7 @@ L_03ec:
     goto L_050d;
 
 L_0409:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
 
 L_040d:
     if (((uint16_t)(*(lpT)) != 32))
@@ -343,7 +343,7 @@ L_040d:
         goto L_041c;
 
 L_041c:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_040d;
 
 L_0423:
@@ -369,13 +369,13 @@ L_0446:
 
 L_0450:
     *(pch) = *(lpT);
-    pch = (pch + 0x1);
-    lpT = (lpT + 0x1);
+    pch = (pch + 1);
+    lpT = (lpT + 1);
     goto L_0428;
 
 L_0466:
     *(pch) = 0;
-    lpT = (lpT - 0x1);
+    lpT = (lpT + (-1));
     lSaltLast = LSaltFromSz(szPassLast);
     goto L_050d;
 
@@ -502,7 +502,7 @@ L_0494:
     }
 
 L_050d:
-    lpT = (lpT + 0x1);
+    lpT = (lpT + 1);
     goto L_0168;
 
 L_0517:
@@ -522,8 +522,8 @@ L_052b:
 
 L_053a:
     *(pch) = *(lpT);
-    lpT = (lpT + 0x1);
-    pch = (pch + 0x1);
+    lpT = (lpT + 1);
+    pch = (pch + 1);
     goto L_051c;
 
 L_0550:
@@ -658,13 +658,13 @@ L_0753:
 
 L_075c:
     *(pch) = *(lpchBatch);
-    lpchBatch = (lpchBatch + 0x1);
-    pch = (pch + 0x1);
+    lpchBatch = (lpchBatch + 1);
+    pch = (pch + 1);
     goto L_0733;
 
 L_0774:
-    lpchBatch = (lpchBatch + 0x1);
-    *(pch - 0x1) = 0;
+    lpchBatch = (lpchBatch + 1);
+    pch[(-1)] = 0;
     fSuccess = 1;
 
 LError:
@@ -2107,7 +2107,7 @@ L_1acf:
 
 L_1ad2:
     iwp = t_merge_1ad2_0001;
-    /* untranslated: iWarp = ((part[0x6:2](sel.fl.lpplord->rgord[iwp]) >> 0x4) & 0xf) */
+    iWarp = sel.fl.lpplord->rgord[iwp].iWarp;
     if ((iKey != 188))
         goto L_1b0f;
     else

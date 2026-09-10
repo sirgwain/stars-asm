@@ -85,7 +85,7 @@ L_3c0f:
     goto L_47d5;
 
 L_3c2a:
-    /* untranslated: t_scratch_m12 = mpiTypeiItem[part[0xc:1](lpThings[sel.scan.ith])] */
+    t_scratch_m12 = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType];
     part.hs.iItem = t_scratch_m12;
     part.hs.grhst = hstMines;
     FLookupPart(&(part));
@@ -115,7 +115,7 @@ L_3cda:
 L_3cfa:
     rgid[c] = ishdef;
     fstrcpy(rgsz[c], rglpshdef[lpfl->iPlayer][ishdef].hul.szClass);
-    rgpsz[c] = (&(rgsz) + (c * 32));
+    rgpsz[c] = rgsz[c];
     c = (c + 1);
 
 L_3d77:
@@ -148,7 +148,7 @@ L_3dcb:
 
 L_3dd1:
     GlobalPD.grPopup = grPopupShdef;
-    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + LOWORD((0x93 * rgid[c])));
+    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + rgid[c]);
     if ((idPlayer == lpfl->iPlayer))
         goto L_3e1d;
     else
@@ -162,9 +162,10 @@ L_3e1d:
     t_merge_3e20_0001 = 0x0;
 
 L_3e20:
-    /* untranslated: part[0x8:2](GlobalPD) = t_merge_3e20_0001 */
-    /* untranslated: part[0x6:2](GlobalPD) = 0x0 */
-    /* untranslated: part[0xa:4](GlobalPD) = 0x10000 */
+    GlobalPD.fHideCounts = t_merge_3e20_0001;
+    GlobalPD.fShowDamage = 0;
+    GlobalPD.fToken = 0;
+    GlobalPD.fSummary = 1;
     goto L_3e84;
 
 L_3e38:
@@ -183,7 +184,7 @@ L_3e78:
     t_merge_3e7b_0001 = 0x0;
 
 L_3e7b:
-    /* untranslated: part[0x6:2](GlobalPD) = t_merge_3e7b_0001 */
+    GlobalPD.fRedDamage = t_merge_3e7b_0001;
     GlobalPD.grbit = 0xff;
 
 L_3e84:
@@ -193,7 +194,7 @@ L_3e84:
 L_3e99:
     GlobalPD.grPopup = grPopupShdef;
     lppl = LpplFromId(sel.scan.idpl);
-    /* untranslated: part[0x2:4](GlobalPD) = (rglpshdefSB[lppl->iPlayer] + loword((lppl->isb * 0x93))) */
+    GlobalPD.lpshdef = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
     if ((idPlayer == lppl->iPlayer))
         goto L_3ef3;
     else
@@ -207,9 +208,10 @@ L_3ef3:
     t_merge_3ef6_0001 = 0x0;
 
 L_3ef6:
-    /* untranslated: part[0x8:2](GlobalPD) = t_merge_3ef6_0001 */
-    /* untranslated: part[0x6:2](GlobalPD) = 0x1 */
-    /* untranslated: part[0xa:4](GlobalPD) = 0x10000 */
+    GlobalPD.fHideCounts = t_merge_3ef6_0001;
+    GlobalPD.fShowDamage = 1;
+    GlobalPD.fToken = 0;
+    GlobalPD.fSummary = 1;
     Popup(hwndMine, x, y);
     goto L_47d5;
 
@@ -222,19 +224,19 @@ L_3f20:
 L_3f41:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupPlanetEnv;
-    HIWORD(GlobalPD) = pl.id;
-    /* untranslated: part[0x4:2](GlobalPD) = (ht - 6) */
+    GlobalPD.idPlanet = pl.id;
+    GlobalPD.iPlanetVar = (ht - 6);
     if ((pl.det < 0x3))
         goto L_3f85;
     else
         goto L_3f74;
 
 L_3f74:
-    /* untranslated: part[0x6:2](GlobalPD) = sext8to16(pl.rgEnvVar[part[0x4:2](GlobalPD)]) */
+    GlobalPD.iPlanVal = (uint16_t)(pl.rgEnvVar[GlobalPD.iPlanetVar]);
     goto L_3f8b;
 
 L_3f85:
-    /* untranslated: part[0x6:2](GlobalPD) = 0xffff */
+    GlobalPD.iPlanVal = -1;
 
 L_3f8b:
     if ((pl.det < 0x3))
@@ -249,32 +251,39 @@ L_3f99:
         goto L_3fc0;
 
 L_3fc0:
-    /* untranslated: part[0x8:2](GlobalPD) = rgMin[part[0x4:2](GlobalPD)] */
-    /* untranslated: GlobalPD.grbit = rgMax[part[0x4:2](GlobalPD)] */
-    /* untranslated: branch part[0x8:2](GlobalPD) != 0xffff ? L_3fee : L_3fe8 */
+    GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar];
+    GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar];
+    if ((GlobalPD.iPlanMin != -1))
+        goto L_3fee;
+    else
+        goto L_3fe8;
 
 L_3fe8:
-    /* untranslated: part[0x8:2](GlobalPD) = part[0x6:2](GlobalPD) */
+    GlobalPD.iPlanMin = GlobalPD.iPlanVal;
 
 L_3fee:
-    if ((GlobalPD.grbit != 0xffff))
+    if ((GlobalPD.iPlanMax != -1))
         goto L_3ffe;
     else
         goto L_3ff8;
 
 L_3ff8:
-    /* untranslated: GlobalPD.grbit = part[0x6:2](GlobalPD) */
+    GlobalPD.iPlanMax = GlobalPD.iPlanVal;
 
 L_3ffe:
-    /* untranslated: branch part[0x8:2](GlobalPD) != GlobalPD.grbit ? L_401c : L_4010 */
+    if ((GlobalPD.iPlanMin != GlobalPD.iPlanMax))
+        goto L_401c;
+    else
+        goto NoTerra;
 
 NoTerra:
-    /* untranslated: part[0x8:4](GlobalPD) = 0xffffffff */
+    GlobalPD.iPlanMin = -1;
+    GlobalPD.iPlanMax = -1;
 
 L_401c:
-    /* untranslated: part[0xc:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVar[part[0x4:2](GlobalPD)]) */
-    /* untranslated: part[0xe:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVarMin[part[0x4:2](GlobalPD)]) */
-    /* untranslated: GlobalPD.iPlrMax = sext8to16(rgplr[idPlayer].rgEnvVarMax[part[0x4:2](GlobalPD)]) */
+    GlobalPD.iPlrVal = (uint16_t)(rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlrMin = (uint16_t)(rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlrMax = (uint16_t)(rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar]);
     Popup(hwndMine, x, y);
     goto L_47d5;
 
@@ -604,7 +613,7 @@ L_443c:
 
 L_4476:
     _wsprintf(rgsz[i], PCTDKT, rgi[i]);
-    psz[i] = (&(rgsz) + LOWORD((0xa * i)));
+    psz[i] = rgsz[i];
     if ((rgi[i] != cMinGrafMax))
         goto L_44d2;
     else
@@ -652,13 +661,12 @@ L_456c:
 L_456f:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupMineral;
-    /* untranslated: part[0x2:4](GlobalPD) = sext16to32((ht + 0xffff)) */
+    GlobalPD.rgi[0] = (uint32_t)((ht + 0xffff));
     i = 1;
     goto L_45b4;
 
 L_459b:
-    LOWORD(GlobalPD.rgi[i]) = 0xffff;
-    HIWORD(GlobalPD.rgi[i]) = 0xffff;
+    GlobalPD.rgi[i] = -1;
     i = (i + 1);
 
 L_45b4:
@@ -674,9 +682,8 @@ L_45bd:
         goto L_45cb;
 
 L_45cb:
-    /* untranslated: part[0xe:2](GlobalPD) = pl.rgpctMinLevel[(ht + 2)] */
-    GlobalPD.iPlrMax = 0;
-    /* untranslated: part[0x6:4](GlobalPD) = pl.fHomeworld */
+    GlobalPD.rgi[3] = (uint32_t)(pl.rgpctMinLevel[(ht + 2)]);
+    GlobalPD.rgi[1] = pl.fHomeworld;
     if ((pl.det <= 0x3))
         goto L_478e;
     else
@@ -684,7 +691,7 @@ L_45cb:
 
 L_4608:
     lVal = 0;
-    /* untranslated: part[0xa:4](GlobalPD) = pl.rgwtMin[(ht - 1)] */
+    GlobalPD.rgi[2] = pl.rgwtMin[(ht - 1)];
     EstMineralsMined(&(pl), rglQuan, -1, 0);
     GlobalPD.rgi[4] = rglQuan[(ht - 1)];
     if ((pl.iPlayer != -1))

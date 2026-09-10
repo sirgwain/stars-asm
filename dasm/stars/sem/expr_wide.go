@@ -54,14 +54,18 @@ func collapseWidePointerOffset(high, low Expr, expected typeinfo.Type) (Expr, bo
 		if !typeinfo.IsPointer(base.ExprType()) {
 			return nil, false
 		}
-		return &Binary{TypeInfo: base.ExprType(), Op: binary.Op, LHS: base, RHS: binary.RHS}, true
+		offset := binary.RHS
+		if binary.Op == OpSub {
+			offset = &Unary{TypeInfo: offset.ExprType(), Op: OpNeg, X: offset}
+		}
+		return &PointerOffset{TypeInfo: base.ExprType(), Pointer: base, Offset: offset}, true
 	}
 	if binary.Op == OpAdd {
 		if base, ok := collapseWideExprPair(high, binary.RHS, expected); ok {
 			if !typeinfo.IsPointer(base.ExprType()) {
 				return nil, false
 			}
-			return &Binary{TypeInfo: base.ExprType(), Op: OpAdd, LHS: binary.LHS, RHS: base}, true
+			return &PointerOffset{TypeInfo: base.ExprType(), Pointer: base, Offset: binary.LHS}, true
 		}
 	}
 	return nil, false

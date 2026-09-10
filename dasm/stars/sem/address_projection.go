@@ -401,6 +401,11 @@ func bitfieldFieldAccess(base Expr, field *typeinfo.StructField) *FieldAccess {
 
 // consumeAddressExpr resolves residual address terms according to the base expression type.
 func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr, bool) {
+	var ok bool
+	addr, ok = normalizeAddressBase(addr)
+	if !ok {
+		return nil, false
+	}
 	current := addr.Base
 	offset := addr.Offset
 	terms := append([]ScaledTerm(nil), addr.Terms...)
@@ -543,11 +548,54 @@ func (c *machineConverter) consumeDereferencedPointerStep(
 		return next, nextOffset, terms, true
 	}
 
-	if next, nextOffset, changed := consumeArrayConstIndex(current, ptr, offset, width, false); changed {
+	if next, nextOffset, changed := consumePointerConstIndex(current, ptr, offset, width); changed {
 		return next, nextOffset, terms, true
 	}
 
 	return current, offset, terms, false
+}
+
+// consumePointerConstIndex rebases a byte displacement through a typed pointer
+// into an element index plus a non-negative residual byte offset. Negative
+// displacements use mathematical floor division so, for example, ORDER *p at
+// byte offset -12 becomes p[-1] with residual +6 when sizeof(ORDER) == 18.
+func consumePointerConstIndex(base Expr, ptr *typeinfo.Pointer, offset int, width int) (Expr, int, bool) {
+	if ptr == nil || ptr.Elem == nil || ptr.Elem.Bytes() <= 0 || offset == 0 {
+		return nil, 0, false
+	}
+	elemSize := ptr.Elem.Bytes()
+	index, remainder := floorDivMod(offset, elemSize)
+	if index == 0 {
+		return nil, 0, false
+	}
+	if remainder != 0 && (width == 0 || remainder+width > elemSize) {
+		return nil, 0, false
+	}
+	return &ArrayIndex{Base: base, Index: signedIndexConst(index), TypeInfo: ptr.Elem}, remainder, true
+}
+
+// floorDivMod returns q and r such that value=q*divisor+r and 0<=r<divisor.
+func floorDivMod(value, divisor int) (int, int) {
+	q := value / divisor
+	r := value % divisor
+	if r < 0 {
+		q--
+		r += divisor
+	}
+	return q, r
+}
+
+// signedIndexConst returns a semantic integer constant without encoding a
+// negative value through Const.U64.
+func signedIndexConst(value int) Expr {
+	if value < 0 {
+		return &Unary{
+			TypeInfo: typeinfo.I16,
+			Op:       OpNeg,
+			X:        &Const{TypeInfo: typeinfo.I16, U64: uint64(-value)},
+		}
+	}
+	return &Const{TypeInfo: typeinfo.I16, U64: uint64(value)}
 }
 
 // indexedFlexibleArrayFieldAtOffset recognizes a trailing array member before
@@ -572,6 +620,11 @@ func indexedFlexibleArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms
 // consumeAddressProjection resolves an address-valued expression without
 // descending into the target after its offset is consumed.
 func (c *machineConverter) consumeAddressProjection(addr AddressExpr, width int) (Expr, bool) {
+	var ok bool
+	addr, ok = normalizeAddressBase(addr)
+	if !ok {
+		return nil, false
+	}
 	current := addr.Base
 	offset := addr.Offset
 	terms := append([]ScaledTerm(nil), addr.Terms...)
@@ -613,6 +666,24 @@ func (c *machineConverter) consumeAddressProjection(addr AddressExpr, width int)
 		offset = nextOffset
 		terms = nextTerms
 	}
+}
+
+// normalizeAddressBase exposes arithmetic inside a pointer value only when
+// the address still permits following that pointer. Taking an object's address
+// consumes this permission; pointer-valued fields remain storage thereafter.
+func normalizeAddressBase(addr AddressExpr) (AddressExpr, bool) {
+	if !addr.Deref {
+		return addr, true
+	}
+	parts := flattenSemanticAddress(addr.Base, 1)
+	if parts.invalid || parts.base == nil {
+		return AddressExpr{}, false
+	}
+	addr.Base = parts.base
+	addr.Offset += parts.offset
+	addr.Terms = append(parts.terms, addr.Terms...)
+	addr.Deref = parts.deref
+	return addr, true
 }
 
 // projectPointerAddress converts residual byte offsets into source-level
@@ -692,8 +763,8 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	if !ok {
 		return nil, 0, false
 	}
-	if field, fieldOff, ok := indexedArrayFieldAtOffset(strct, offset, terms); ok {
-		return &FieldAccess{Base: base, Field: field}, fieldOff, true
+	if arrays := c.indexedArrayFieldsAtOffset(base, strct, offset, terms); len(arrays) == 1 {
+		return arrays[0].Base, arrays[0].Offset, true
 	}
 	if field, fieldOff, ok := indexedArrayFieldAfterOffset(strct, offset, terms); ok {
 		return &FieldAccess{Base: base, Field: field}, fieldOff, true
@@ -736,33 +807,38 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	return &FieldAccess{Base: base, Field: match.Field}, 0, true
 }
 
-// indexedArrayFieldAtOffset selects an overlapping array field when a
-// residual term has the array element's byte scale.
-func indexedArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
-	var match *typeinfo.StructField
-	matchOff := 0
-	for _, current := range strct.FieldsContainingOffset(offset) {
+// indexedArrayFieldsAtOffset finds array fields, including those nested in
+// overlapping aggregates, whose element size matches a residual byte scale.
+// Union selections constrain the search, and all candidates are retained so
+// callers cannot choose an arbitrary interpretation of an ambiguous address.
+func (c *machineConverter) indexedArrayFieldsAtOffset(base Expr, strct *typeinfo.Struct, offset int, terms []ScaledTerm) []AddressExpr {
+	var matches []AddressExpr
+	if len(terms) == 0 {
+		return matches
+	}
+	for _, current := range c.unionFieldMatches(base, strct, strct.FieldsContainingOffset(offset)) {
+		field := &FieldAccess{Base: base, Field: current.Field}
 		array, ok := current.Field.Type.(*typeinfo.Array)
 		if !ok || array.Elem == nil || array.Elem.Bytes() <= 0 {
 			continue
 		}
-		indexed := false
 		for _, term := range terms {
 			if term.Scale == array.Elem.Bytes() {
-				indexed = true
+				matches = append(matches, AddressExpr{Base: field, Offset: current.Off, Terms: terms})
 				break
 			}
 		}
-		if !indexed {
-			continue
-		}
-		if match != nil {
-			return nil, 0, false
-		}
-		match = current.Field
-		matchOff = current.Off
 	}
-	return match, matchOff, match != nil
+	if len(matches) != 0 {
+		return matches
+	}
+	for _, current := range c.unionFieldMatches(base, strct, strct.FieldsContainingOffset(offset)) {
+		field := &FieldAccess{Base: base, Field: current.Field}
+		if nested, ok := current.Field.Type.(*typeinfo.Struct); ok {
+			matches = append(matches, c.indexedArrayFieldsAtOffset(field, nested, current.Off, terms)...)
+		}
+	}
+	return matches
 }
 
 // indexedArrayFieldAfterOffset recognizes a folded negative array index whose
@@ -841,6 +917,10 @@ func (c *machineConverter) unionFieldMatches(base Expr, strct *typeinfo.Struct, 
 			}
 		}
 	}
+	if selected {
+		return symresolve.SelectUnionMemberMatch(strct, matches, selection.Member)
+	}
+
 	if !selected {
 		rule, ok := c.ctx.sdb.UnionRules.UnionVariantForType(strct)
 		if !ok || rule.DefaultMember == nil {

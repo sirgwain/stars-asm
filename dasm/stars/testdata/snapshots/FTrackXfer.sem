@@ -58,7 +58,7 @@ L_5adc:
     branch iVal > 4 ? L_5f70 : L_5ae8
 
 L_5ae8:
-    branch *(pxfer+0x82) != 0x8 ? L_5b0e : L_5af6
+    branch pxfer[1].grobj != grobjThing ? L_5b0e : L_5af6
 
 L_5af6:
     branch iVal == 4 ? L_5f70 : L_5aff
@@ -70,7 +70,7 @@ L_5b05:
     goto L_5b31
 
 L_5b0e:
-    branch part[0x6:2](pxfer[btn.iSide]) != idPlayer ? L_5f70 : L_5b31
+    branch pxfer[btn.iSide].fl.iPlayer != idPlayer ? L_5f70 : L_5b31
 
 L_5b31:
     call SetCapture(hwnd) -> callresult(HWND)
@@ -92,10 +92,10 @@ L_5b6e:
     branch btn.iSide != 0x1 ? L_5bc0 : L_5b8c
 
 L_5b8c:
-    branch *(pxfer+0x82) != 0x8 ? L_5bc0 : L_5b9a
+    branch pxfer[1].grobj != grobjThing ? L_5bc0 : L_5b9a
 
 L_5b9a:
-    cNew = (uint32_t)((uint32_t)(*(pxfer+0x92) & 0x3fff) * 0xa)
+    cNew = (uint32_t)(pxfer[1].th.thp.wtMax * 0xa)
     goto L_5c26
 
 L_5bc0:
@@ -115,7 +115,7 @@ L_5c20:
 
 L_5c26:
     cNew = (int32_t)((uint32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) + 0xfffe)))
-    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + (btn.iSide * 0x80)) + 0x4))
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + btn.iSide) + 0x4))
     dChg = (cNew - cCur)
     branch btn.iSide != 0x0 ? L_5ce3 : L_5cda
 

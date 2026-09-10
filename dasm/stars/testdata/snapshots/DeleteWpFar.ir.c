@@ -20,12 +20,18 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    /* untranslated: branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))] !=
-     * loword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9eb6 */
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x !=
+         LOWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+        goto L_9ec7;
+    else
+        goto L_9eb6;
 
 L_9eb6:
-    /* untranslated: branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))+0x2] !=
-     * hiword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9ebf */
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y !=
+         HIWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+        goto L_9ec7;
+    else
+        goto L_9ebf;
 
 L_9ebf:
     fRecycle = 0;
@@ -35,8 +41,7 @@ L_9ec7:
     ord = lpfl->lpplord->rgord[iDel];
 
 L_9ef2:
-    fmemmove(((lpfl->lpplord + 0x4) + LOWORD((18 * iDel))), ((lpfl->lpplord + 0x4) + LOWORD(((iDel + 1) * 0x12))),
-             LOWORD((((lpfl->cord - iDel) + 0xffff) * 0x12)));
+    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), (((lpfl->cord - iDel) - 1) * 18));
     if ((fRecycle == 0))
         goto L_9fca;
     else

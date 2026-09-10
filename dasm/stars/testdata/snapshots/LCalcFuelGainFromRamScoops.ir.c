@@ -22,7 +22,7 @@ L_56dd:
 
 L_56fe:
     i = (i + 1);
-    lpshdef = (lpshdef + 0x93);
+    lpshdef = (lpshdef + 1);
 
 L_5712:
     if ((i >= 16))
@@ -37,7 +37,7 @@ L_571b:
         goto L_5738;
 
 L_5738:
-    rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36);
+    rgiFuel = LpengineFromId(lpshdef->hul.rghs[0x0].iItem)->rgcFuelUsed;
     pctShip10 = 0;
     if ((iWarp > 9))
         goto L_56fe;

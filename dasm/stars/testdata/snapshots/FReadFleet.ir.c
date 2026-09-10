@@ -17,7 +17,7 @@ L_3a4c:
     fmemmove(lpfl, rgbCur, 0xc);
     fByte = lpfl->fDone;
     us = rgbCur[12];
-    pb = &(rgbCur[0xe]);
+    pb = &(rgbCur[14]);
     if ((fByte == 0))
         goto L_3b2f;
     else
@@ -44,7 +44,7 @@ L_3ad7:
         goto L_3ae5;
 
 L_3ae5:
-    pb = (pb + 0x1);
+    pb = (pb + 1);
     lpfl->rgcsh[i] = *(pb);
     if ((lpfl->rgcsh[i] == 0))
         goto L_3abe;
@@ -79,7 +79,7 @@ L_3b56:
         goto L_3b64;
 
 L_3b64:
-    pus = (pus + 0x2);
+    pus = (pus + 1);
     lpfl->rgcsh[i] = *(pus);
     if ((lpfl->rgcsh[i] == 0))
         goto L_3b3d;
@@ -112,7 +112,7 @@ L_3bcb:
 
 L_3bdd:
     us = pb;
-    pb = (pb + 0x2);
+    pb = (pb + 2);
     i = 0;
     goto L_3c06;
 
@@ -131,17 +131,17 @@ L_3c0f:
 
 L_3c18:
     lpfl->rgwtMin[i] = (uint32_t)(*(pb));
-    pb = (pb + 0x1);
+    pb = (pb + 1);
     goto L_3bf6;
 
 L_3c47:
     lpfl->rgwtMin[i] = (uint32_t)(pb);
-    pb = (pb + 0x2);
+    pb = (pb + 2);
     goto L_3bf6;
 
 L_3c73:
     lpfl->rgwtMin[i] = pb;
-    pb = (pb + 0x4);
+    pb = (pb + 4);
     goto L_3bf6;
 
 L_3ca2:
@@ -173,9 +173,9 @@ L_3cc0:
 
 L_3cd2:
     lpfl->dirLong = pb;
-    pb = (pb + 0x4);
+    pb = (pb + 4);
     lpfl->wtFleet = pb;
-    pb = (pb + 0x4);
+    pb = (pb + 4);
     ReadRt();
     return 1;
 
@@ -191,7 +191,7 @@ Corrupt:
 
 L_3d4b:
     us = pb;
-    pb = (pb + 0x2);
+    pb = (pb + 2);
     pus = pb;
     i = 0;
     goto L_3d7a;
@@ -213,7 +213,7 @@ L_3d83:
         goto L_3d91;
 
 L_3d91:
-    pus = (pus + 0x2);
+    pus = (pus + 1);
     lpfl->rgdv[i].dp = *(pus);
     if ((lpfl->rgdv[i].pctDp < 0x1f4))
         goto L_3d6a;
@@ -228,18 +228,18 @@ L_3e0c:
 
 L_3e0f:
     pb = pus;
-    pb = (pb + 0x1);
+    pb = (pb + 1);
     lpfl->iplan = *(pb);
-    pb = (pb + 0x1);
+    pb = (pb + 1);
     lpfl->cord = *(pb);
     lpfl->lpplord = LpplAlloc(0x12, (lpfl->cord + 1), htOrd);
-    fmemset(lpfl->lpplord->rgord, 0, LOWORD(((lpfl->cord + 1) * 0x12)));
+    fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18));
     cord = lpfl->cord;
-    lpord = (lpfl->lpplord + 0x4);
+    lpord = lpfl->lpplord->rgord;
     goto L_3ec0;
 
 L_3eaf:
-    lpord = (lpord + 0x12);
+    lpord = (lpord + 1);
     cord = (cord - 1);
 
 L_3ec0:
@@ -327,12 +327,12 @@ L_3ff3:
 
 L_4003:
     lpfl->lpszName = LpAlloc((strlen(rgbCur[1]) + 0x1), htString);
-    fstrcpy(lpfl->lpszName, rgbCur[1]);
+    fstrcpy(lpfl->lpszName, &(rgbCur[1]));
     goto L_40aa;
 
 L_4047:
     cOut = 32;
-    FDecompressUserString(rgbCur[1], cch, szT, &(cOut));
+    FDecompressUserString(&(rgbCur[1]), cch, szT, &(cOut));
     lpfl->lpszName = LpAlloc((strlen(szT) + 0x1), htString);
     fstrcpy(lpfl->lpszName, szT);
 

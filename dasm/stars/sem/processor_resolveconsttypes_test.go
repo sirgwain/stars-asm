@@ -4,8 +4,62 @@ import (
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
+	"github.com/sirgwain/stars-asm/dasm/testfixture"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+// TestResolveConstTypesCallCount recovers signed arithmetic inside a byte
+// count and removes low-word truncation only when the callee supplies it.
+func TestResolveConstTypesCallCount(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "DeleteWpFar")
+	fn := fx.SDB.GetFunction("fmemmove")
+	if fn == nil {
+		t.Fatal("fmemmove not found")
+	}
+	lpfl := &Local{FunctionVar: ctx.fs.Params[0]}
+	iDel := &Local{FunctionVar: ctx.fs.Params[1]}
+	converter := machineConverter{ctx: ctx}
+	cord, ok := converter.consumeAddress(AddressExpr{Base: lpfl, Offset: 0x62, Deref: true}, 2)
+	if !ok {
+		t.Fatal("FLEET.cord did not resolve")
+	}
+	count := &Word{Part: machine.WordLow, Parent: &Binary{TypeInfo: typeinfo.U16, Op: OpMul,
+		LHS: &Binary{TypeInfo: typeinfo.U16, Op: OpAdd,
+			LHS: &Binary{TypeInfo: typeinfo.U16, Op: OpSub, LHS: cord, RHS: iDel},
+			RHS: &Const{TypeInfo: typeinfo.U16, U64: 0xffff}},
+		RHS: &Const{TypeInfo: typeinfo.U16, U64: 18}}}
+	for _, tc := range []struct {
+		name string
+		typ  typeinfo.Type
+		argc int
+		arg  Expr
+		want string
+	}{
+		{"word parameter", typeinfo.U16, 3, count, "(((lpfl->cord - iDel) - 1) * 18)"},
+		{"wide parameter", typeinfo.U32, 3, count, "loword((((lpfl->cord - iDel) - 1) * 18))"},
+		{"variadic argument", typeinfo.U16, 2, count, "loword((((lpfl->cord - iDel) - 1) * 18))"},
+		{"pointer offset word", typeinfo.U16, 3, &Word{Part: machine.WordLow, Parent: lpfl}, "loword(lpfl)"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			callee := *fn
+			callee.Params = append([]typeinfo.FunctionVar(nil), fn.Params...)
+			callee.Params[2].Type = tc.typ
+			callee.Params = callee.Params[:tc.argc]
+			call := &Call{Function: &callee, Args: []Expr{lpfl, lpfl, tc.arg}}
+			block := Block{ID: 0x9ef2, Effects: []Effect{&CallEffect{Call: call}}}
+			got, _ := (&resolveConstTypesProcessor{}).ProcessBlock(newResult(ctx.fs), Func{Blocks: []Block{block}}, block)
+			arg := got.Effects[0].(*CallEffect).Call.Args[2]
+			if FormatExpr(arg) != tc.want {
+				t.Fatalf("count = %s, want %s", FormatExpr(arg), tc.want)
+			}
+			if call.Args[2] != tc.arg {
+				t.Fatal("constant recovery mutated the input call")
+			}
+		})
+	}
+}
 
 func TestResolveConstTypesAppliesComparePeerTypeInBranch(t *testing.T) {
 	int16Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true}

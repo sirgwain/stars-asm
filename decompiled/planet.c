@@ -152,8 +152,8 @@ L_04cc:
     return (uint32_t)(hbrButtonFace);
 
 L_04f8:
-    /* untranslated: part[0xc:2](lParam) = ((dxWinFrame * 2) + 0xc6) */
-    /* untranslated: part[0xe:2](lParam) = (((dyWinFrame * 2) + 0xc6) + dyTitleBar) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = (((dyWinFrame * 2) + 198) + dyTitleBar) */
     goto Default;
 
 L_0527:
@@ -276,7 +276,7 @@ L_0733:
 
 L_073c:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_07bd;
 
 L_076f:
@@ -302,7 +302,7 @@ L_079c:
     return 0;
 
 L_07b8:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_07bd:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -885,7 +885,7 @@ L_1007:
     t_merge_100a_0001 = obj;
 
 L_100a:
-    ptile[i].pfn(hdc, (ptile + (i * 16)), t_merge_100a_0001);
+    ptile[i].pfn(hdc, (ptile + i), t_merge_100a_0001);
 
 L_1035:
     i = (i + 1);
@@ -989,7 +989,7 @@ L_1230:
 L_1234:
     DrawBtn(hdc, &(rcT), bt, 0, 0x0);
     SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, (prc->right - 18), (prc->top + 1), 1, ((rcT.bottom - prc->top) + 0xffff), PATCOPY);
+    PatBlt(hdc, (prc->right - 18), (prc->top + 1), 1, ((rcT.bottom - prc->top) - 1), PATCOPY);
 
 FinishUp:
     prc->top = (prc->top + (dyArial8 + 4));
@@ -1051,7 +1051,7 @@ L_1357:
     xRight = (rc.right - 4);
     yTop = rc.top;
     dxRight = dxMaxMineralQuan;
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x6]), xLeft, yTop, xRight, (loword((3 * dyArial8)) + yTop)) -> callresult(void) */
+    SetRect(&(rgrcRef[6]), xLeft, yTop, xRight, (LOWORD((3 * dyArial8)) + yTop));
     i = 0;
     goto L_147d;
 
@@ -1086,7 +1086,7 @@ L_1486:
     yTop = (yTop + 1);
     PatBlt(hdc, rc.left, yTop, (rc.right - rc.left), 1, PATCOPY);
     SelectObject(hdc, hbrSav);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x7]), xLeft, yTop, xRight, ((dyArial8 * 2) + yTop)) -> callresult(void) */
+    SetRect(&(rgrcRef[7]), xLeft, yTop, xRight, ((dyArial8 * 2) + yTop));
     if ((ptile->fMinDraw != 0x0))
         goto L_153d;
     else
@@ -1332,7 +1332,7 @@ L_19ab:
 
 L_19d6:
     SelectObject(hdc, rghfontArial8[0]);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x9]), xLeft, yTop, xRight, (yTop + dyArial8)) -> callresult(void) */
+    SetRect(&(rgrcRef[9]), xLeft, yTop, xRight, (yTop + dyArial8));
     c = CommaFormatLong(szWork, (uint32_t)((sel.pl.rgwtMin[3] * 100)));
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
@@ -1348,7 +1348,7 @@ L_1a5c:
     SelectObject(hdc, rghfontArial8[0]);
 
 L_1a9f:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x8]), xLeft, yTop, xRight, (yTop + dyArial8)) -> callresult(void) */
+    SetRect(&(rgrcRef[8]), xLeft, yTop, xRight, (yTop + dyArial8));
     t_call_1ac7 = CResourcesAtPlanet(&(sel.pl), idPlayer);
     cResAvail = t_call_1ac7;
     cRes = t_call_1ac7;
@@ -1387,7 +1387,7 @@ L_1bb9:
     SelectObject(hdc, rghfontArial8[0]);
 
 L_1bfc:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xb]), xLeft, yTop, xRight, ((dyArial8 * 2) + yTop)) -> callresult(void) */
+    SetRect(&(rgrcRef[11]), xLeft, yTop, xRight, ((dyArial8 * 2) + yTop));
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1c64;
     else
@@ -1490,7 +1490,7 @@ L_1e7c:
 
 L_1eb3:
     SelectObject(hdc, rghfontArial8[0]);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xa]), xLeft, yTop, xRight, (loword((3 * dyArial8)) + yTop)) -> callresult(void) */
+    SetRect(&(rgrcRef[10]), xLeft, yTop, xRight, (LOWORD((3 * dyArial8)) + yTop));
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1f16;
     else
@@ -1696,7 +1696,7 @@ L_232d:
         goto L_2340;
 
 L_2340:
-    lpshdef = (rglpshdefSB[idPlayer] + LOWORD((sel.pl.isb * 0x93)));
+    lpshdef = (rglpshdefSB[idPlayer] + sel.pl.isb);
     fstrcpy(szWork, lpshdef->hul.szClass);
     psz = szWork;
     goto L_2396;
@@ -1722,13 +1722,13 @@ L_23b6:
         goto L_2418;
 
 L_2418:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xe]), -5, -5, -6, -6) -> callresult(void) */
+    SetRect(&(rgrcRef[14]), -5, -5, -6, -6);
     rgrcRef[15] = rgrcRef[14];
     rgrcRef[16] = rgrcRef[14];
     goto L_2af4;
 
 L_2455:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xe]), xLeft, yTop, xRight, ((dyArial8 * 4) + yTop)) -> callresult(void) */
+    SetRect(&(rgrcRef[14]), xLeft, yTop, xRight, ((dyArial8 * 4) + yTop));
     SelectObject(hdc, rghfontArial8[1]);
     c = CchGetString(idsDockCapacity, szWork);
     l = GetTextExtent(hdc, szWork, c);
@@ -1858,7 +1858,7 @@ L_27f8:
     PatBlt(hdc, rc.left, yTop, (rc.right - rc.left), 1, PATCOPY);
     SelectObject(hdc, hbrSav);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x10]), xLeft, yTop, xRight, (yTop + dyArial8)) -> callresult(void) */
+    SetRect(&(rgrcRef[16]), xLeft, yTop, xRight, (yTop + dyArial8));
     c = CchGetString(idsMassDriver, szWork);
     TextOut(hdc, xLeft, yTop, szWork, c);
     iWarp = IWarpMAFromLppl(&(sel.pl), &(fTwo));
@@ -1910,7 +1910,7 @@ L_29c2:
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
     c = ((uint32_t)((xRight - xLeft)) / 3);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xd]), xLeft, yTop, (xLeft + c), ((yTop + dyArial8) + 0x6)) -> callresult(void) */
+    SetRect(&(rgrcRef[13]), xLeft, yTop, (xLeft + c), ((yTop + dyArial8) + 6));
     bt = 8;
     if ((iWarp != 0))
         goto L_2a34;
@@ -1928,7 +1928,7 @@ L_2a34:
         goto L_2a68;
 
 L_2a68:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xf]), ((xLeft + c) + 0x4), (yTop + 3), xRight, ((yTop + dyArial8) + 0x3)) -> callresult(void) */
+    SetRect(&(rgrcRef[15]), ((xLeft + c) + 4), (yTop + 3), xRight, ((yTop + dyArial8) + 3));
     if ((fTwo == 0))
         goto L_2ab3;
     else
@@ -1942,11 +1942,11 @@ L_2ab3:
     t_merge_2ab6_0001 = iWarp;
 
 L_2ab6:
-    DrawMassWarpGauge(hdc, rgrcRef[15].left, t_merge_2ab6_0001, (sel.pl.iWarpFling + 0x4));
+    DrawMassWarpGauge(hdc, rgrcRef[15].left, t_merge_2ab6_0001, (sel.pl.iWarpFling + 4));
     goto L_2af4;
 
 L_2ac9:
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0xf]), -5, -5, -6, -6) -> callresult(void) */
+    SetRect(&(rgrcRef[15]), -5, -5, -6, -6);
     rgrcRef[16] = rgrcRef[15];
 
 L_2af4:
@@ -2008,7 +2008,7 @@ L_2b5e:
     goto L_2b87;
 
 L_2b67:
-    if ((iCur >= ((iBest + fTwoMAs) + 0x3)))
+    if ((iCur >= ((iBest + fTwoMAs) + 3)))
         goto L_2b81;
     else
         goto L_2b78;
@@ -2255,7 +2255,7 @@ L_30a8:
 
 L_30ab:
     EnableWindow(rghwndBtn[12], t_merge_30ab_0001);
-    /* untranslated: call SetRect(part[0x0:4](rgrcRef[0x11]), xStart, yTop, (xStart + c), ((yTop + dyArial8) + (dyArial8 sar 0x1))) -> callresult(void) */
+    SetRect(&(rgrcRef[17]), xStart, yTop, (xStart + c), ((yTop + dyArial8) + (dyArial8 >> 0x1)));
     DrawBtn(hdc, rgrcRef[17].left, 8, gd.fSetRouteMode, PszGetCompressedString(idsRoute2));
 
 L_3105:
@@ -2546,7 +2546,7 @@ L_348c:
     SelectObject(hdc, hbrSav);
     SelectPalette(hdc, vhpal, 0);
     RealizePalette(hdc);
-    DibBlt(hdc, (xLeft + 3), (yTop + 3), 64, 64, hdibPlanets, (((uint32_t)(iOffset) % 7) * 0x40), (((uint32_t)(iOffset) / 7) * 0x40), 64, 64, 13369376);
+    DibBlt(hdc, (xLeft + 3), (yTop + 3), 64, 64, hdibPlanets, (((uint32_t)(iOffset) % 7) * 64), (((uint32_t)(iOffset) / 7) * 64), 64, 64, 13369376);
 
 DoBtns:
     dx = ((xRight - xLeft) - 95);
@@ -2734,7 +2734,7 @@ L_38b6:
     dxShipDD = (xRight - xLeft);
 
 L_38c0:
-    SetWindowPos(hwndShipDD, 0x0, xLeft, yTop, (xRight - xLeft), LOWORD((5 * dyShipDD)), swp);
+    SetWindowPos(hwndShipDD, 0x0, xLeft, yTop, (xRight - xLeft), (5 * dyShipDD), swp);
     ShowWindow(hwndShipDD, SW_SHOW);
     yTop = (yTop + (dyShipDD + 3));
     lSel = SendMessage(hwndShipDD, CB_GETCURSEL, 0x0, 0);
@@ -2970,7 +2970,7 @@ L_3bb6:
         goto L_3bc7;
 
 L_3bc7:
-    SetRect(&(rcGauge), xLeft, yTop, xRight, (((dyArial8 * 2) + yTop) + 0x8));
+    SetRect(&(rcGauge), xLeft, yTop, xRight, (((dyArial8 * 2) + yTop) + 8));
     FillRect(hdc, &(rcGauge), hbrButtonFace);
 
 L_3bfc:
@@ -3321,7 +3321,7 @@ L_4093:
 L_40a9:
     FillOrdersLB();
     FillFleetCompLB();
-    /* untranslated: call FillBattleDD(((part[0x60:2](sel.fl) & 0xff) + 0x1)) -> callresult(void) */
+    FillBattleDD((sel.fl.iplan + 1));
     idSkip = iObjSel;
     SendMessage(rghwndOrderDD[0], CB_SETCURSEL, sel.fl.lpplord->rgord[0].grTask, 0);
 
@@ -3544,7 +3544,7 @@ L_43e1:
 
 L_43e4:
     lpth = lpThings;
-    lpthMac = (lpThings + LOWORD((0x12 * cThing)));
+    lpthMac = (lpThings + cThing);
     goto L_44ac;
 
 L_440f:
@@ -3585,7 +3585,7 @@ L_448d:
     SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
 
 L_44a8:
-    lpth = (lpth + 0x12);
+    lpth = (lpth + 1);
 
 L_44ac:
     if ((LOWORD(lpth) < LOWORD(lpthMac)))
@@ -3644,7 +3644,7 @@ L_4527:
 
 L_4542:
     i = (i + 1);
-    lpPl = (lpPl + 0x38);
+    lpPl = (lpPl + 1);
 
 L_4555:
     if ((i >= cPlanet))
@@ -3726,7 +3726,7 @@ L_465f:
     i = vlprgidPlanet[i];
 
 L_4676:
-    lpPlT = (lpPlT + LOWORD((0x38 * i)));
+    lpPlT = (lpPlT + i);
     idPlanet = lpPlT->id;
     if ((lpPlT->iPlayer != idPlayer))
         goto L_4747;
@@ -3766,7 +3766,7 @@ L_474e:
     idAfter = -1;
     idBefore = -1;
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_4854;
 
 L_4793:
@@ -3827,7 +3827,7 @@ L_4847:
     idLast = lppl->id;
 
 L_4850:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_4854:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -4250,12 +4250,12 @@ L_4eba:
         goto L_4ee4;
 
 L_4ee4:
-    memmove((prgtile + ((i + 1) * 0x10)), (prgtile + (i * 16)), ((iCur - i) * 0x10));
+    memmove((prgtile + (i + 1)), (prgtile + i), ((iCur - i) * 16));
     iCur = (iCur + 1);
     goto L_4f6a;
 
 L_4f27:
-    memmove((prgtile + (iCur * 16)), (prgtile + ((iCur + 1) * 0x10)), (((i - iCur) + 0xffff) * 0x10));
+    memmove((prgtile + iCur), (prgtile + (iCur + 1)), (((i - iCur) - 1) * 16));
     i = (i - 1);
 
 L_4f6a:
@@ -4396,7 +4396,10 @@ L_517e:
     return 0x0;
 
 L_5187:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x6]), pt) == 0 ? L_5260 : L_51a1 */
+    if ((PtInRect(&(rgrcRef[6]), pt) == 0))
+        goto L_5260;
+    else
+        goto L_51a1;
 
 L_51a1:
     if ((fCursor == 0))
@@ -4410,21 +4413,20 @@ L_51aa:
 L_51b0:
     i = ((uint32_t)((pt.y - rgrcRef[0x6].top)) / dyArial8);
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.idPlanet = i;
-    /* untranslated: part[0x4:2](GlobalPD) = signhiword(i) */
-    GlobalPD.grbit = LOWORD(sel.pl.rgwtMin[i]);
-    /* untranslated: part[0xc:2](GlobalPD) = HIWORD(sel.pl.rgwtMin[i]) */
-    /* untranslated: part[0xe:2](GlobalPD) = sel.pl.rgMinConc[i] */
-    GlobalPD.iPlrMax = 0;
+    GlobalPD.rgi[0] = (uint32_t)(i);
+    GlobalPD.rgi[2] = sel.pl.rgwtMin[i];
+    GlobalPD.rgi[3] = (uint32_t)(sel.pl.rgMinConc[i]);
     EstMineralsMined(&(sel.pl), rglQuan, -1, 0);
     GlobalPD.rgi[4] = rglQuan[i];
-    /* untranslated: part[0x6:2](GlobalPD) = sel.pl.fHomeworld */
-    /* untranslated: part[0x8:2](GlobalPD) = 0x0 */
+    GlobalPD.rgi[1] = sel.pl.fHomeworld;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
 
 L_5260:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x7]), pt) == 0 ? L_5362 : L_527a */
+    if ((PtInRect(&(rgrcRef[7]), pt) == 0))
+        goto L_5362;
+    else
+        goto L_527a;
 
 L_527a:
     if ((fCursor == 0))
@@ -4437,7 +4439,7 @@ L_5283:
 
 L_5289:
     GlobalPD.grPopup = grPopupPlanetIndustry;
-    HIWORD(GlobalPD) = sel.pl.id;
+    GlobalPD.idPlan = sel.pl.id;
     if ((pt.y < (rgrcRef[7].top + dyArial8)))
         goto L_52aa;
     else
@@ -4451,29 +4453,32 @@ L_52aa:
     t_merge_52ad_0001 = 0x0;
 
 L_52ad:
-    GlobalPD.grbit = t_merge_52ad_0001;
-    if ((GlobalPD.grbit == 0x0))
+    GlobalPD.fFactory = t_merge_52ad_0001;
+    if ((GlobalPD.fFactory == 0))
         goto L_5305;
     else
         goto L_52ba;
 
 L_52ba:
-    /* untranslated: part[0x4:2](GlobalPD) = CMaxFactories(&sel.pl, idPlayer) */
-    /* untranslated: part[0x6:2](GlobalPD) = sel.pl.cFactories */
-    /* untranslated: part[0x8:2](GlobalPD) = CMaxOperableFactories(&sel.pl, idPlayer, 0) */
+    GlobalPD.cMax = CMaxFactories(&(sel.pl), idPlayer);
+    GlobalPD.cCur = sel.pl.cFactories;
+    GlobalPD.cOperate = CMaxOperableFactories(&(sel.pl), idPlayer, 0);
     goto L_534d;
 
 L_5305:
-    /* untranslated: part[0x4:2](GlobalPD) = CMaxMines(&sel.pl, idPlayer) */
-    /* untranslated: part[0x6:2](GlobalPD) = sel.pl.cMines */
-    /* untranslated: part[0x8:2](GlobalPD) = CMaxOperableMines(&sel.pl, idPlayer, 0) */
+    GlobalPD.cMax = CMaxMines(&(sel.pl), idPlayer);
+    GlobalPD.cCur = sel.pl.cMines;
+    GlobalPD.cOperate = CMaxOperableMines(&(sel.pl), idPlayer, 0);
 
 L_534d:
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
 
 L_5362:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x8]), pt) == 0 ? L_540c : L_537c */
+    if ((PtInRect(&(rgrcRef[8]), pt) == 0))
+        goto L_540c;
+    else
+        goto L_537c;
 
 L_537c:
     if ((fCursor == 0))
@@ -4486,10 +4491,10 @@ L_5385:
 
 L_538b:
     GlobalPD.grPopup = grPopupResources;
-    HIWORD(GlobalPD) = sel.pl.id;
+    GlobalPD.idPlanet = sel.pl.id;
     t_call_53a2 = CResourcesAtPlanet(&(sel.pl), idPlayer);
-    /* untranslated: part[0x6:2](GlobalPD) = t_call_53a2 */
-    /* untranslated: part[0x4:2](GlobalPD) = t_call_53a2 */
+    GlobalPD.iPlanVal = t_call_53a2;
+    GlobalPD.iPlanetVar = t_call_53a2;
     if ((sel.pl.fNoResearch != 0x0))
         goto L_53f7;
     else
@@ -4502,14 +4507,17 @@ L_53cd:
         goto L_53d5;
 
 L_53d5:
-    /* untranslated: part[0x6:2](GlobalPD) = (part[0x6:2](GlobalPD) - MulDiv(part[0x4:2](GlobalPD), sext8to16(rgplr[idPlayer].pctResearch), 100)) */
+    GlobalPD.iPlanVal = (GlobalPD.iPlanVal - MulDiv(GlobalPD.iPlanetVar, (uint16_t)(rgplr[idPlayer].pctResearch), 100));
 
 L_53f7:
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
 
 L_540c:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x9]), pt) == 0 ? L_5456 : L_5426 */
+    if ((PtInRect(&(rgrcRef[9]), pt) == 0))
+        goto L_5456;
+    else
+        goto L_5426;
 
 L_5426:
     if ((fCursor == 0))
@@ -4522,12 +4530,15 @@ L_542f:
 
 L_5435:
     GlobalPD.grPopup = grPopupPlanet;
-    HIWORD(GlobalPD) = sel.pl.id;
+    GlobalPD.idPlanet = sel.pl.id;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
 
 L_5456:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0xa]), pt) == 0 ? L_54c9 : L_5470 */
+    if ((PtInRect(&(rgrcRef[10]), pt) == 0))
+        goto L_54c9;
+    else
+        goto L_5470;
 
 L_5470:
     if ((sel.pl.cDefenses != 0x0))
@@ -4560,7 +4571,10 @@ L_54a2:
     goto L_5871;
 
 L_54c9:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0xb]), pt) == 0 ? L_55ab : L_54e3 */
+    if ((PtInRect(&(rgrcRef[11]), pt) == 0))
+        goto L_55ab;
+    else
+        goto L_54e3;
 
 L_54e3:
     if ((sel.pl.iScanner != 0x1f))
@@ -4600,7 +4614,7 @@ L_553e:
 
 L_555f:
     GlobalPD.grPopup = grPopupString;
-    HIWORD(GlobalPD) = 0xb4;
+    GlobalPD.dxOut = 180;
     GlobalPD.psz = szPopupBuffer;
     CchGetString(idsRaceCannotBuildPlanetaryScannersStarbasesHave, szPopupBuffer);
     goto L_5596;
@@ -4614,7 +4628,10 @@ L_5596:
     goto L_5871;
 
 L_55ab:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0xd]), pt) == 0 ? L_567a : L_55c5 */
+    if ((PtInRect(&(rgrcRef[13]), pt) == 0))
+        goto L_567a;
+    else
+        goto L_55c5;
 
 L_55c5:
     iWarp = IWarpMAFromLppl(&(sel.pl), 0x0);
@@ -4651,7 +4668,10 @@ L_564d:
     goto L_5871;
 
 L_567a:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0xe]), pt) == 0 ? L_56fb : L_5694 */
+    if ((PtInRect(&(rgrcRef[14]), pt) == 0))
+        goto L_56fb;
+    else
+        goto L_5694;
 
 L_5694:
     if ((fCursor == 0))
@@ -4664,16 +4684,19 @@ L_569d:
 
 L_56a3:
     GlobalPD.grPopup = grPopupShdef;
-    GlobalPD.lpshdef = (rglpshdefSB[idPlayer] + LOWORD((sel.pl.isb * 0x93)));
-    /* untranslated: part[0x8:2](GlobalPD) = 0x0 */
-    /* untranslated: part[0x6:2](GlobalPD) = 0x1 */
-    GlobalPD.grbit = 0x0;
-    /* untranslated: part[0xc:2](GlobalPD) = 0x0 */
+    GlobalPD.lpshdef = (rglpshdefSB[idPlayer] + sel.pl.isb);
+    GlobalPD.fHideCounts = 0;
+    GlobalPD.fShowDamage = 1;
+    GlobalPD.fToken = 0;
+    GlobalPD.fSummary = 0;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
 
 L_56fb:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x10]), pt) == 0 ? L_5795 : L_5715 */
+    if ((PtInRect(&(rgrcRef[16]), pt) == 0))
+        goto L_5795;
+    else
+        goto L_5715;
 
 L_5715:
     iWarp = IWarpMAFromLppl(&(sel.pl), 0x0);
@@ -4703,14 +4726,20 @@ L_5749:
     goto L_5871;
 
 L_5795:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0xf]), pt) == 0 ? L_57ca : L_57af */
+    if ((PtInRect(&(rgrcRef[15]), pt) == 0))
+        goto L_57ca;
+    else
+        goto L_57af;
 
 L_57af:
     ClickInShipOrders(pt, sks, 0, fRightBtn);
     goto L_5871;
 
 L_57ca:
-    /* untranslated: branch PtInRect(part[0x0:4](rgrcRef[0x11]), pt) == 0 ? L_5871 : L_57e4 */
+    if ((PtInRect(&(rgrcRef[17]), pt) == 0))
+        goto L_5871;
+    else
+        goto L_57e4;
 
 L_57e4:
     if ((fCursor == 0))
@@ -5223,7 +5252,7 @@ L_5fdb:
     return PszCalcGravity(iVar);
 
 L_5fe9:
-    _wsprintf(szWork, "%d%cC", ((iVar * 4) + 0xff38), 0xba);
+    _wsprintf(szWork, "%d%cC", ((iVar * 4) - 200), 0xba);
     goto L_604b;
 
 L_6011:
@@ -5433,7 +5462,7 @@ L_6294:
 
 L_6297:
     fDoubleDraw = 1;
-    pctDmg = (uint16_t)(psz[0x1]);
+    pctDmg = (uint16_t)(psz[1]);
 
 L_62a6:
     fFleet = 1;
@@ -5531,7 +5560,7 @@ L_6366:
 
 L_6369:
     fDoubleDraw = 1;
-    pctDmg = (uint16_t)(psz[0x1]);
+    pctDmg = (uint16_t)(psz[1]);
 
 L_6378:
     fFleet = 1;
@@ -5741,7 +5770,7 @@ L_65ed:
     goto L_65ce;
 
 L_65f4:
-    strncpy(&(szT[ich]), ((psz + ichT) + fFleet), (6 - ichT));
+    strncpy(&(szT[ich]), (psz + (ichT + fFleet)), (6 - ichT));
     ich = (ich + (6 - ichT));
     if ((fFleet != 0))
         goto LRightOut;
@@ -5914,12 +5943,12 @@ L_67e8:
 
 L_67f1:
     i = 0;
-    lpprod = (lpplprod + 0x4);
+    lpprod = lpplprod->rgprod;
     goto L_681f;
 
 L_680c:
     i = (i + 1);
-    lpprod = (lpprod + 0x4);
+    lpprod = (lpprod + 1);
 
 L_681f:
     if ((i >= lpplprod->iprodMac))
@@ -6432,7 +6461,7 @@ L_6faa:
         goto L_6fb5;
 
 L_6fb5:
-    if ((0xf >= (iMin - iPlanet)))
+    if ((15 >= (iMin - iPlanet)))
         goto L_6fcc;
     else
         goto L_6fc5;
@@ -6449,7 +6478,7 @@ L_6fd3:
     goto L_7000;
 
 L_6fdc:
-    if ((0xf >= (iPlanet - iMax)))
+    if ((15 >= (iPlanet - iMax)))
         goto L_6ff3;
     else
         goto L_6fec;
@@ -6903,7 +6932,7 @@ int16_t CMaxDefenses(PLANET *lppl, int16_t iplr) {
 
 L_7710:
     pctDesire = PctPlanetDesirability(lppl, iplr);
-    if ((0xa <= (pctDesire * 4)))
+    if ((10 <= (pctDesire * 4)))
         goto L_7744;
     else
         goto L_773e;
@@ -6926,7 +6955,7 @@ L_7755:
     goto L_7779;
 
 L_775b:
-    if ((0xa <= (pctDesire * 4)))
+    if ((10 <= (pctDesire * 4)))
         goto L_7772;
     else
         goto L_776c;
@@ -7203,7 +7232,7 @@ L_7bab:
     return 0;
 
 L_7bb1:
-    lphul = (rglpshdefSB[lppl->iPlayer] + LOWORD((lppl->isb * 0x93)));
+    lphul = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
     i = 0;
     goto L_7be7;
 
@@ -7310,11 +7339,11 @@ L_7d39:
     return 0;
 
 L_7d3f:
-    lphul = (rglpshdefSB[lppl->iPlayer] + LOWORD((lppl->isb * 0x93)));
+    lphul = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
     goto L_7d89;
 
 L_7d6c:
-    lphul = (rglpshdefSB[iplr] + LOWORD((0x93 * ish)));
+    lphul = (rglpshdefSB[iplr] + ish);
 
 L_7d89:
     i = 0;
@@ -7357,13 +7386,16 @@ L_7e3b:
     part.hs.grhst = lphul->rghs[i].grhst;
     HIWORD(part.hs) = HIWORD(lphul->rghs[i]);
     FLookupPart(&(part));
-    /* untranslated: branch part[0x36:2](part.pcom) != 0xffff ? L_7e80 : L_7e77 */
+    if ((part.pspecialsb->grAbility2 != -1))
+        goto L_7e80;
+    else
+        goto L_7e77;
 
 L_7e77:
     return 10000;
 
 L_7e80:
-    /* untranslated: return part[0x36:2](part.pcom) */
+    return part.pspecialsb->grAbility2;
 
 L_7e8d:
     return 0;
@@ -8058,12 +8090,12 @@ L_8967:
 
 L_896e:
     j = 0;
-    lphs = (lphul + 0x3a);
+    lphs = lphul->rghs;
     goto L_899c;
 
 L_8989:
     j = (j + 1);
-    lphs = (lphs + 0x4);
+    lphs = (lphs + 1);
 
 L_899c:
     if ((j >= chs))

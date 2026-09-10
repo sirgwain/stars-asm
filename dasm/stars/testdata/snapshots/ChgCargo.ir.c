@@ -182,19 +182,28 @@ L_61e4:
         goto L_61ed;
 
 L_61ed:
-    /* untranslated: return sext16to32(part[0x8:2](pth[iSupply*0x2])) */
+    return (uint32_t)(pth->thp.rgwtMin[iSupply]);
 
 L_6202:
-    /* untranslated: branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222 */
+    if (((SIGNHIWORD(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0))
+        goto L_6249;
+    else
+        goto L_6222;
 
 L_6222:
-    /* untranslated: branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227 */
+    if (((SIGNHIWORD(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0))
+        goto L_622f;
+    else
+        goto L_6227;
 
 L_6227:
-    /* untranslated: branch (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f */
+    if (((pth->thp.rgwtMin[iSupply] + LOWORD(dChg)) >= 0x0))
+        goto L_6249;
+    else
+        goto L_622f;
 
 L_622f:
-    /* untranslated: dChg = sext16to32(neg(part[0x8:2](pth[iSupply*0x2]))) */
+    dChg = (uint32_t)((-pth->thp.rgwtMin[iSupply]));
 
 L_6249:
     wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
@@ -202,7 +211,7 @@ L_6249:
     goto L_6295;
 
 L_6275:
-    /* untranslated: wtFree = (wtFree - sext16to32(part[0x8:2](pth[i*0x2]))) */
+    wtFree = (wtFree - (uint32_t)(pth->thp.rgwtMin[i]));
     i = (i + 1);
 
 L_6295:
@@ -233,7 +242,7 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    /* untranslated: part[0x8:2](pth[iSupply*0x2]) = (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg)) */
+    pth->thp.rgwtMin[iSupply] = (pth->thp.rgwtMin[iSupply] + LOWORD(dChg));
 
 L_62f3:
     if ((LOWORD(dChg) != 0x0))

@@ -31,6 +31,7 @@ type UnionVariantRule struct {
 type UnionFunctionPathFact struct {
 	Func        *Function
 	Root        string
+	RootPath    []string
 	AllElements bool
 	Type        *Struct
 	Path        []string
@@ -44,6 +45,7 @@ type UnionBlockPathFact struct {
 	Func        *Function
 	BlockOff    uint32
 	Root        string
+	RootPath    []string
 	AllElements bool
 	Type        *Struct
 	Path        []string

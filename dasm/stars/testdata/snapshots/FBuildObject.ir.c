@@ -56,7 +56,7 @@ L_19c4:
 
 L_19cd:
     iItem = (iItem - 16);
-    lpshdef = (rglpshdefSB[lppl->iPlayer] + LOWORD((0x93 * iItem)));
+    lpshdef = (rglpshdefSB[lppl->iPlayer] + iItem);
     if ((lpshdef->fFree != 0x0))
         goto L_1a26;
     else
@@ -140,7 +140,7 @@ L_1bd1:
         goto L_1bef;
 
 L_1bef:
-    lppl->iWarpFling = ((iWarp + fTwoMAs) + 0xfffc);
+    lppl->iWarpFling = ((iWarp + fTwoMAs) - 4);
     goto L_1c55;
 
 L_1c1f:
@@ -169,7 +169,7 @@ L_1c98:
     return 0;
 
 L_1c9e:
-    lpshdef = (rglpshdef[lppl->iPlayer] + LOWORD((0x93 * iItem)));
+    lpshdef = (rglpshdef[lppl->iPlayer] + iItem);
     if ((lpshdef->fFree != 0x0))
         goto L_1cf3;
     else
@@ -339,7 +339,7 @@ L_2242:
 
 L_2245:
     idm = t_merge_2245_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0, 0);
     goto L_2fc9;
 
 L_22a0:
@@ -357,7 +357,7 @@ L_22c4:
 
 L_22c7:
     idm = t_merge_22c7_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute + 0xffff), 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0);
 
 L_231e:
     goto L_2fc9;
@@ -668,7 +668,7 @@ L_2857:
 L_285b:
     iWarp = (iWarpAsked - 4);
     lpth = lpThings;
-    lpthMac = (lpThings + LOWORD((0x12 * cThing)));
+    lpthMac = (lpThings + cThing);
     goto L_295a;
 
 L_288f:
@@ -720,7 +720,7 @@ L_2941:
         goto L_2956;
 
 L_2956:
-    lpth = (lpth + 0x12);
+    lpth = (lpth + 1);
 
 L_295a:
     if ((LOWORD(lpth) < LOWORD(lpthMac)))
@@ -768,7 +768,7 @@ L_2a3f:
         goto L_2a48;
 
 L_2a48:
-    FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, (lppl->idFling + 0xffff));
+    FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, (lppl->idFling - 1));
     goto L_2fc9;
 
 L_2a78:
@@ -811,7 +811,7 @@ L_2b3e:
     lpth->thp.idPlanet = (lppl->idFling + 0xffff);
     lpth->pt.x = rgptPlan[lppl->id].x;
     lpth->pt.y = rgptPlan[lppl->id].y;
-    FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling + 0xffff));
+    FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1));
     goto L_2fc9;
 
 L_2c05:

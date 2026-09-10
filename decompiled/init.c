@@ -667,7 +667,7 @@ L_10bc:
     goto L_11ec;
 
 L_10cc:
-    pch = &(szWork[0x1]);
+    pch = &(szWork[1]);
     i = 0;
     goto L_1196;
 
@@ -679,7 +679,7 @@ L_10d9:
 
 L_10f4:
     j = (j + 1);
-    pch = (pch + 0x1);
+    pch = (pch + 1);
 
 L_1102:
     if ((j >= 4))
@@ -1472,7 +1472,7 @@ L_1dc7:
     vrgszMRU = LpAlloc(0x900, htPerm);
 
 L_1dde:
-    psz = ((&(szEntry) + strlen(szEntry)) + 0xffff);
+    psz = &(szEntry[(strlen(szEntry) - 1)]);
     i = 0;
     goto L_1e6b;
 
@@ -1764,7 +1764,7 @@ L_2544:
 
 L_2570:
     strcpy(szEntry, szSection);
-    psz = (&(szEntry) + strlen(szEntry));
+    psz = &(szEntry[strlen(szEntry)]);
     *(psz) = LOBYTE((i + 0x31));
     psz[1] = 0;
     GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
@@ -1787,7 +1787,7 @@ L_25f6:
 
 L_2603:
     iPass = (iPass + 1);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
 
 L_2611:
     if ((iPass >= 20))
@@ -1821,18 +1821,18 @@ L_2648:
 L_2655:
     t_scratch_m4e = (vrgZip[i].txp.rgia[iPass].cQuan | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
     vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     t_scratch_m4e = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
     vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     t_scratch_m4a_12 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
     vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
     vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_12);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     t_scratch_m4a_13 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
     vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
     vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_13);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     iPass = (iPass + 1);
 
 L_27c5:
@@ -1861,8 +1861,8 @@ L_2806:
 
 L_2822:
     strcpy(szEntry, szSection);
-    psz = (&(szEntry) + strlen(szEntry));
-    psz = (psz + 0x1);
+    psz = &(szEntry[strlen(szEntry)]);
+    psz = (psz + 1);
     *(psz) = 80;
     *(psz) = LOBYTE((i + 0x31));
     psz[1] = 0;
@@ -1881,7 +1881,7 @@ L_28a6:
 
 L_28b2:
     psz = szWork;
-    cpq = ((uint16_t)(psz[0x1]) - 97);
+    cpq = ((uint16_t)(psz[1]) - 97);
     if ((cpq < 0))
         goto L_2b61;
     else
@@ -1899,10 +1899,10 @@ L_28d9:
 
 L_28e1:
     iPass = (iPass + 1);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
 
 L_28ef:
-    if ((iPass >= ((cpq * 4) + 0x2)))
+    if ((iPass >= ((cpq * 4) + 2)))
         goto L_2923;
     else
         goto L_2901;
@@ -1920,7 +1920,7 @@ L_290f:
         goto L_2923;
 
 L_2923:
-    if ((iPass < ((cpq * 4) + 0x2)))
+    if ((iPass < ((cpq * 4) + 2)))
         goto L_2b61;
     else
         goto L_2938;
@@ -1951,19 +1951,19 @@ L_2981:
     vrgZipProd[i].fNoResearch = LOBYTE(t_scratch_m4c_6);
     vrgZipProd[i].fValid = 0x1;
     vrgZipProd[i].cpq = LOBYTE(cpq);
-    psz = (psz + 0x2);
+    psz = (psz + 2);
     iPass = 0;
     goto L_2b56;
 
 L_29c7:
     vrgZipProd[i].rgpq[iPass].w = ((uint16_t)(*(psz)) - 97);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x10));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x100));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x1000));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     if ((vrgZipProd[i].rgpq[iPass].cQuan <= 0x3fc))
         goto L_2af0;
     else
@@ -2111,7 +2111,7 @@ L_2d76:
     iTile = (iTile + 1);
 
 DoNext:
-    pszFormat = (pszFormat + 0x1);
+    pszFormat = (pszFormat + 1);
     goto L_2b9d;
 
 L_2d81:

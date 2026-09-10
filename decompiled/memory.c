@@ -287,7 +287,7 @@ L_045a:
     return lpbTop[2];
 
 L_0493:
-    lpb = (lphb + 0x10);
+    lpb = (lphb + 1);
     goto L_0575;
 
 L_04a7:
@@ -332,7 +332,7 @@ L_0524:
 
 L_0555:
     LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
-    lpbPrev = (lpbPrev + 0x2);
+    lpbPrev = (lpbPrev + 2);
     LOWORD(lphb) = (lphb->cbFree - (cbItem + 0x2));
     return lpbPrev;
 

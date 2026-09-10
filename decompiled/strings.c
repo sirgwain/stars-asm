@@ -1175,7 +1175,7 @@ L_745a:
 
 L_74a0:
     i = (i + 1);
-    pchLen = (pchLen + 0x1);
+    pchLen = (pchLen + 1);
 
 L_74b3:
     if ((i >= iOffset))
@@ -1226,7 +1226,7 @@ L_751d:
     goto L_754a;
 
 L_7534:
-    pch = (pch + 0x1);
+    pch = (pch + 1);
     i = (*(pch) & 0xf);
 
 L_754a:
@@ -1252,7 +1252,7 @@ L_755c:
 
 L_756e:
     *(pszOut) = rgSTRLookupTable[iBuild];
-    pszOut = (pszOut + 0x1);
+    pszOut = (pszOut + 1);
     iBuild = 0;
 
 L_7584:

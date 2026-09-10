@@ -58,8 +58,8 @@ L_7308:
 
 L_7347:
     i = (i + 1);
-    piaCur = (piaCur + 0x2);
-    lpiaGoal = (lpiaGoal + 0x2);
+    piaCur = (piaCur + 1);
+    lpiaGoal = (lpiaGoal + 1);
 
 L_7361:
     if ((i >= 5))

@@ -627,19 +627,19 @@ L_14d3:
         goto L_14de;
 
 L_14de:
-    if ((*(rgRes + 0xe) < 0x0))
+    if ((HIWORD(rgRes[3]) < 0x0))
         goto L_1712;
     else
         goto L_14ea;
 
 L_14ea:
-    if ((*(rgRes + 0xe) > 0x0))
+    if ((HIWORD(rgRes[3]) > 0x0))
         goto L_14f8;
     else
         goto L_14ef;
 
 L_14ef:
-    if ((LOWORD(rgRes[0x3]) <= 0x0))
+    if ((LOWORD(rgRes[3]) <= 0x0))
         goto L_1712;
     else
         goto L_14f8;

@@ -427,6 +427,9 @@ func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 		t.Fatal("CB_ADDSTRING LPARAM message type not selected")
 	}
 
+	fTrackSlotCtx := mustFuncContext(t, fx, res, "FTrackSlot")
+	ds := machine.RegVal(asm.RegDS)
+
 	tests := []struct {
 		name     string
 		ctx      *FuncContext
@@ -484,6 +487,34 @@ func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 			expected: addStringType,
 			want:     "rglpbtlplan[idPlayer][i].szName",
 			wantOk:   true,
+		},
+		{
+			name: "ds farpointer to indexed global struct index 0",
+			ctx:  fTrackSlotCtx,
+			value: &machine.StackWords{Words: []machine.Value{
+				ds,
+				machine.ConstVal(0x5926),
+			}},
+			expected: &typeinfo.Pointer{
+				Elem:  fx.SDB.GetStruct("RECT"),
+				Class: typeinfo.PtrFar,
+			},
+			want:   "rgrcBuildSpin",
+			wantOk: true,
+		},
+				{
+			name: "ds farpointer to indexed global struct index 1",
+			ctx:  fTrackSlotCtx,
+			value: &machine.StackWords{Words: []machine.Value{
+				ds,
+				machine.ConstVal(0x592e),
+			}},
+			expected: &typeinfo.Pointer{
+				Elem:  fx.SDB.GetStruct("RECT"),
+				Class: typeinfo.PtrFar,
+			},
+			want:   "rgrcBuildSpin[0x1]",
+			wantOk: true,
 		},
 	}
 	for _, tt := range tests {

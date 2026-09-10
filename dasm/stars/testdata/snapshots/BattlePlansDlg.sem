@@ -29,7 +29,7 @@ L_0661:
     branch sel.grobj != grobjFleet ? L_068d : L_0684
 
 L_0684:
-    iPlanSelDlg = (part[0x60:2](sel.fl) & 0xff)
+    iPlanSelDlg = sel.fl.iplan
 
 L_068d:
     btlplan = rglpbtlplan[idPlayer][iPlanSelDlg]
@@ -214,7 +214,7 @@ L_0b6e:
     branch sel.grobj != grobjFleet ? L_0ba9 : L_0b97
 
 L_0b97:
-    call FillBattleDD(((part[0x60:2](sel.fl) & 0xff) + 0x1)) -> callresult(void)
+    call FillBattleDD((sel.fl.iplan + 1)) -> callresult(void)
 
 L_0ba9:
     iPlanSelDlg = -1

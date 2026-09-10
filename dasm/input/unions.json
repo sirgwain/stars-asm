@@ -42,10 +42,17 @@
       "value_to_member": {
         "grPopupComponent": "part",
         "grPopupFleet": "lpfl",
-        "grPopupMineral": "idPlanet",
+        "grPopupMineral": "rgi",
+        "grPopupPlanet": "idPlanet",
+        "grPopupPlanetEnv": "idPlanet",
+        "grPopupPlanetIndustry": "idPlan",
+        "grPopupPlayer": "iPlayer",
+        "grPopupResources": "idPlanet",
         "grPopupShdef": "lpshdef",
         "grPopupShdefSB": "lpshdef",
-        "grPopupString": "psz"
+        "grPopupShipOrders": "lpfl",
+        "grPopupString": "psz",
+        "grPopupUnknownObj": "rgi"
       }
     },
     {
@@ -145,6 +152,15 @@
       "path": ["ith"],
       "enum": "ThingType",
       "value": "ithMinefield"
+    },
+    {
+      "func": "TransferToOthers",
+      "root": "rgxf",
+      "type": "XFER",
+      "all_elements": true,
+      "path": ["grobj"],
+      "enum": "GrobjClass",
+      "value": "grobjFleet"
     }
   ],
   "call_result_path_facts": [

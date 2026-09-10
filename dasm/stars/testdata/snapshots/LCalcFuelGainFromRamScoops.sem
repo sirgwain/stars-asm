@@ -29,7 +29,7 @@ L_56dd:
 
 L_56fe:
     i = (i + 1)
-    lpshdef = (lpshdef + 0x93)
+    lpshdef = (lpshdef + 1)
 
 L_5712:
     branch i >= 16 ? L_5880 : L_571b
@@ -38,7 +38,7 @@ L_571b:
     branch lpfl->rgcsh[i] == 0 ? L_56fe : L_5738
 
 L_5738:
-    rgiFuel = (LpengineFromId(lpshdef->hul.rghs[0x0].iItem) + 0x36)
+    rgiFuel = LpengineFromId(lpshdef->hul.rghs[0x0].iItem)->rgcFuelUsed
     pctShip10 = 0
     branch iWarp > 9 ? L_56fe : L_576c
 

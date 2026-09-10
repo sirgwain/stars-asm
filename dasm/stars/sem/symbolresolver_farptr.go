@@ -33,6 +33,18 @@ func (sr *symbolResolver) symbolFromFarPointerWordPair(segment machine.Value, of
 		}
 		if seg.Val == asm.RegDS || seg.Val == asm.RegCS {
 			if off, ok := offset.(*machine.Const); ok {
+				if ptr, ok := expected.(*typeinfo.Pointer); ok && ptr.Elem != nil {
+					if base, fieldOff, ok := sr.globalAddressBase(segNum, uint32(off.Val)); ok {
+						addr := resolvedAddress{
+							base:   base,
+							offset: fieldOff,
+						}
+						if sym, ok := sr.symbolPathFromAddressValue(addr, expected); ok {
+							return sym, true
+						}
+					}
+				}
+
 				if sym, ok := sr.globalSymbol(segNum, uint32(off.Val), 4); ok {
 					return sym, true
 				}

@@ -149,6 +149,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "resolve-late-fields",
+			Purpose: "Resolve ordinary declared fields hidden inside over-wide semantic accesses.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &resolveLateFieldsProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "resolve-late-bitfields",
 			Purpose: "Resolve declared bitfields exposed by semantic scratch-slot substitution.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {

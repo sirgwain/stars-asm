@@ -127,7 +127,7 @@ L_0166:
     return 1;
 
 L_016c:
-    /* untranslated: imd = LphuldefFromId(rglpshdef[[part[0x2:4](GlobalPD)+0x2]][ishdef].hul.ihuldef)->imdCategory */
+    imd = LphuldefFromId(rglpshdef[GlobalPD.lpfl->iPlayer][ishdef].hul.ihuldef)->imdCategory;
     return (mpimdgrbitBU[imd] & GlobalPD.grbit);
 }
 
@@ -159,24 +159,30 @@ L_01c0:
     goto L_0c14;
 
 L_022b:
-    /* untranslated: call CtrTextOut(hdc, (rc.right sar 0x1), 4, rgszMinerals[part[0x2:4](GlobalPD)], 0) -> callresult(void) */
+    CtrTextOut(hdc, (rc.right >> 0x1), 4, rgszMinerals[GlobalPD.rgi[0]], 0);
     SelectObject(hdc, rghfontArial8[0]);
     psz = PszGetCompressedString(idsMineralConcentration);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4);
     RightTextOut(hdc, dx, (dyArial8 + 4), PszGetCompressedString(idsSurface), 0, 0);
-    /* untranslated: branch part[0xc:2](GlobalPD) < 0x0 ? L_02fc : L_02c9 */
+    if ((HIWORD(GlobalPD.rgi[0x2]) < 0x0))
+        goto L_02fc;
+    else
+        goto L_02c9;
 
 L_02c9:
-    /* untranslated: branch part[0xc:2](GlobalPD) > 0x0 ? L_02d8 : L_02ce */
+    if ((HIWORD(GlobalPD.rgi[0x2]) > 0x0))
+        goto L_02d8;
+    else
+        goto L_02ce;
 
 L_02ce:
-    if ((GlobalPD.grbit < 0x0))
+    if ((LOWORD(GlobalPD.rgi[0x2]) < 0x0))
         goto L_02fc;
     else
         goto L_02d8;
 
 L_02d8:
-    /* untranslated: c = _wsprintf(szWork, "%ldkT", GlobalPD.grbit, part[0xc:2](GlobalPD)) */
+    c = _wsprintf(szWork, "%ldkT", LOWORD(GlobalPD.rgi[0x2]), HIWORD(GlobalPD.rgi[0x2]));
     goto L_0324;
 
 L_02fc:
@@ -185,7 +191,7 @@ L_02fc:
 
 L_0324:
     TextOut(hdc, dx, (dyArial8 + 4), szWork, c);
-    RightTextOut(hdc, dx, ((dyArial8 * 2) + 0x4), PszGetCompressedString(idsMineralConcentration), 0, 0);
+    RightTextOut(hdc, dx, ((dyArial8 * 2) + 4), PszGetCompressedString(idsMineralConcentration), 0, 0);
     if ((GlobalPD.iPlrMax < 0))
         goto L_0401;
     else
@@ -198,14 +204,23 @@ L_0376:
         goto L_037b;
 
 L_037b:
-    /* untranslated: branch part[0xe:2](GlobalPD) <= 0x0 ? L_0401 : L_0385 */
+    if ((LOWORD(GlobalPD.rgi[0x3]) <= 0x0))
+        goto L_0401;
+    else
+        goto L_0385;
 
 L_0385:
-    /* untranslated: c = _wsprintf(szWork, PCTLD, part[0xe:2](GlobalPD), GlobalPD.iPlrMax) */
-    /* untranslated: branch part[0x6:2](GlobalPD) != 0x0 ? L_03ba : L_03b0 */
+    c = _wsprintf(szWork, PCTLD, LOWORD(GlobalPD.rgi[0x3]), HIWORD(GlobalPD.rgi[0x3]));
+    if ((LOWORD(GlobalPD.rgi[0x1]) != 0x0))
+        goto L_03ba;
+    else
+        goto L_03b0;
 
 L_03b0:
-    /* untranslated: branch part[0x8:2](GlobalPD) == 0x0 ? L_0423 : L_03ba */
+    if ((HIWORD(GlobalPD.rgi[0x1]) == 0x0))
+        goto L_0423;
+    else
+        goto L_03ba;
 
 L_03ba:
     if ((GlobalPD.iPlrMax < 0))
@@ -220,7 +235,10 @@ L_03c4:
         goto L_03c9;
 
 L_03c9:
-    /* untranslated: branch part[0xe:2](GlobalPD) < 0x1e ? L_03d9 : L_03d3 */
+    if ((LOWORD(GlobalPD.rgi[0x3]) < 0x1e))
+        goto L_03d9;
+    else
+        goto L_03d3;
 
 L_03d3:
     t_merge_03dc_0001 = idsHw;
@@ -239,7 +257,7 @@ L_0401:
     c = _wsprintf(szWork, PszGetCompressedString(idsUnknown2));
 
 L_0423:
-    TextOut(hdc, dx, ((dyArial8 * 2) + 0x4), szWork, c);
+    TextOut(hdc, dx, ((dyArial8 * 2) + 4), szWork, c);
     if ((HIWORD(GlobalPD.rgi[0x4]) < 0x0))
         goto L_0c44;
     else
@@ -258,17 +276,17 @@ L_0450:
         goto L_045a;
 
 L_045a:
-    RightTextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 0x4), PszGetCompressedString(idsMiningRate), 0, 0);
+    RightTextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), PszGetCompressedString(idsMiningRate), 0, 0);
     CchGetString(idsLdktYr, szT);
     c = _wsprintf(szWork, szT, LOWORD(GlobalPD.rgi[0x4]), HIWORD(GlobalPD.rgi[0x4]));
-    TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 0x4), szWork, c);
+    TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), szWork, c);
 
 L_04d9:
     goto L_0c44;
 
 L_04dc:
-    CtrTextOut(hdc, (rc.right >> 0x1), 4, PszPlayerName(HIWORD(GlobalPD), 1, 1, 1, 0, 0x0), 0);
-    c = _wsprintf(szWork, PszGetCompressedString(idsPlayerD), (HIWORD(GlobalPD) + 0x1));
+    CtrTextOut(hdc, (rc.right >> 0x1), 4, PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, 0x0), 0);
+    c = _wsprintf(szWork, PszGetCompressedString(idsPlayerD), (GlobalPD.iPlayer + 1));
     CtrTextOut(hdc, (rc.right >> 0x1), (dyArial8 + 4), szWork, c);
     goto L_0c44;
 
@@ -288,8 +306,11 @@ L_05b0:
     SelectObject(hdc, rghfontArial8[1]);
     c = CchGetString(idsShipName, szWork);
     TextOut(hdc, 4, 4, szWork, c);
-    /* untranslated: call RightTextOut(hdc, ((rc.right - 4) - part[0x8:2](GlobalPD)), 4, 0xbf4, 1, 0) -> callresult(void) */
-    /* untranslated: branch part[0x8:2](GlobalPD) == 0x0 ? L_0673 : L_0619 */
+    RightTextOut(hdc, ((rc.right - 4) - GlobalPD.dxDamage), 4, 0xbf4, 1, 0);
+    if ((GlobalPD.dxDamage == 0))
+        goto L_0673;
+    else
+        goto L_0619;
 
 L_0619:
     c = CchGetString(idsDamage2, szWork);
@@ -303,7 +324,10 @@ L_0673:
     goto L_08d1;
 
 L_0690:
-    /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 2))] <= 0x0 ? L_08cd : L_06af */
+    if ((GlobalPD.lpfl->rgcsh[i] <= 0))
+        goto L_08cd;
+    else
+        goto L_06af;
 
 L_06af:
     if ((GlobalPD.grbit == 0x0))
@@ -318,10 +342,16 @@ L_06b9:
         goto L_06cc;
 
 L_06cc:
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_0718 : L_06d6 */
+    if ((GlobalPD.fRedDamage == 0))
+        goto L_0718;
+    else
+        goto L_06d6;
 
 L_06d6:
-    /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 2))] == 0x0 ? L_0708 : L_06f5 */
+    if ((GlobalPD.lpfl->rgdv[i].dp == 0x0))
+        goto L_0708;
+    else
+        goto L_06f5;
 
 L_06f5:
     SetTextColor(hdc, 0xff);
@@ -331,20 +361,25 @@ L_0708:
     SetTextColor(hdc, 0x0);
 
 L_0718:
-    /* untranslated: call DecorateHullName((([part[0x2:4](GlobalPD)] >> 0x9) & 0xf), i, szTB) -> callresult(void) */
+    DecorateHullName(GlobalPD.lpfl->iplr, i, szTB);
     lpsz = szTB;
     TextOut(hdc, 4, yCur, lpsz, fstrlen(lpsz));
-    /* untranslated: c = _wsprintf(szWork, PCTD, part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))]) */
-    /* untranslated: call RightTextOut(hdc, ((rc.right - 4) - part[0x8:2](GlobalPD)), yCur, szWork, c, 0) -> callresult(void) */
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_08c7 : L_07c8 */
+    c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i]);
+    RightTextOut(hdc, ((rc.right - 4) - GlobalPD.dxDamage), yCur, szWork, c, 0);
+    if ((GlobalPD.fRedDamage == 0))
+        goto L_08c7;
+    else
+        goto L_07c8;
 
 L_07c8:
-    /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 2))] == 0x0 ? L_08c7 : L_07e7 */
+    if ((GlobalPD.lpfl->rgdv[i].dp == 0x0))
+        goto L_08c7;
+    else
+        goto L_07e7;
 
 L_07e7:
-    /* untranslated: csh = part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))] */
-    /* untranslated: csh = loword((int32_t)((uint32_t)((uint32_t)(part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] & 0x7f) * sext16to32(csh)) /
-     * 0x64)) */
+    csh = GlobalPD.lpfl->rgcsh[i];
+    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)((GlobalPD.lpfl->rgdv[i].dp & 0x7f)) * (uint32_t)(csh))) / 0x64)));
     if ((csh > 0))
         goto L_084f;
     else
@@ -354,7 +389,7 @@ L_084a:
     csh = 1;
 
 L_084f:
-    /* untranslated: dpT = ((uint32_t)((part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 0x2))] >> 0x7) & 0x1ff) / 0x5) */
+    dpT = ((uint32_t)(((GlobalPD.lpfl->rgdv[i].dp >> 0x7) & 0x1ff)) / 0x5);
     if ((dpT != 0))
         goto L_0888;
     else
@@ -380,7 +415,10 @@ L_08d1:
         goto L_08da;
 
 L_08da:
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_0c44 : L_08e4 */
+    if ((GlobalPD.fRedDamage == 0))
+        goto L_0c44;
+    else
+        goto L_08e4;
 
 L_08e4:
     SetTextColor(hdc, 0x0);
@@ -394,17 +432,17 @@ L_08f7:
     SelectObject(hdc, rghfontArial8[1]);
     RightTextOut(hdc, dx, 4, psz, strlen(psz), 0);
     RightTextOut(hdc, dx, (dyArial8 + 4), PszGetCompressedString(idsId), 0, 0);
-    RightTextOut(hdc, dx, ((dyArial8 * 2) + 0x4), PszGetCompressedString(idsX), 0, 0);
-    RightTextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 0x4), PszGetCompressedString(idsY), 0, 0);
+    RightTextOut(hdc, dx, ((dyArial8 * 2) + 4), PszGetCompressedString(idsX), 0, 0);
+    RightTextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), PszGetCompressedString(idsY), 0, 0);
     psz = PszGetPlanetName(sel.scan.idpl);
     SelectObject(hdc, rghfontArial8[0]);
     TextOut(hdc, dx, 4, psz, strlen(psz));
     c = _wsprintf(szWork, PCTD, (sel.scan.idpl + 1));
     TextOut(hdc, dx, (dyArial8 + 4), szWork, c);
     c = _wsprintf(szWork, PCTD, sel.scan.pt.x);
-    TextOut(hdc, dx, ((dyArial8 * 2) + 0x4), szWork, c);
+    TextOut(hdc, dx, ((dyArial8 * 2) + 4), szWork, c);
     c = _wsprintf(szWork, PCTD, sel.scan.pt.y);
-    TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 0x4), szWork, c);
+    TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), szWork, c);
     goto L_0c44;
 
 L_0ad0:
@@ -428,7 +466,7 @@ L_0b21:
     goto L_0c44;
 
 L_0b36:
-    DisplayComponentInfo(hdc, rc.right, rc.bottom, HIWORD(GlobalPD));
+    DisplayComponentInfo(hdc, rc.right, rc.bottom, GlobalPD.part.hs.grhst);
     goto L_0c44;
 
 L_0b4e:
@@ -436,7 +474,10 @@ L_0b4e:
     goto L_0c44;
 
 L_0b63:
-    /* untranslated: branch [part[0x2:4](GlobalPD)] < 0x20 ? L_0b76 : L_0b70 */
+    if ((GlobalPD.lpshdef->hul.ihuldef < ihuldefOrbitalFort))
+        goto L_0b76;
+    else
+        goto L_0b70;
 
 L_0b70:
     t_merge_0b79_0001 = 0x1;
@@ -452,7 +493,7 @@ L_0b79:
     rc.left = (rc.left + 6);
     SelectObject(hdc, rghfontArial8[1]);
     SetBkMode(hdc, TRANSPARENT);
-    /* untranslated: call fstrcpy(szWork, words(part[0x4:2](GlobalPD), (HIWORD(GlobalPD) + 0x8))) -> callresult(char *) */
+    fstrcpy(szWork, GlobalPD.lpshdef->hul.szClass);
     CtrTextOut(hdc, (((rc.right - 76) >> 0x1) + 0x4c), 6, szWork, 0);
     DrawBuildSelHull(hwnd, hdc, -1, &(rc));
     goto L_0c44;
@@ -578,7 +619,7 @@ L_0d1f:
 
 L_0d22:
     SelectObject(hdc, rghfontArial8[1]);
-    psz = PszPlayerName(HIWORD(GlobalPD), 1, 1, 1, 0, 0x0);
+    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, 0x0);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8);
     dx2 = (LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8);
     if ((dx2 <= dx))
@@ -605,7 +646,10 @@ L_0daa:
     goto L_0f7b;
 
 L_0e0a:
-    /* untranslated: branch part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 2))] <= 0x0 ? L_0f77 : L_0e29 */
+    if ((GlobalPD.lpfl->rgcsh[i] <= 0))
+        goto L_0f77;
+    else
+        goto L_0e29;
 
 L_0e29:
     if ((GlobalPD.grbit == 0x0))
@@ -621,7 +665,7 @@ L_0e33:
 
 L_0e46:
     dy = (dy + dyArial8);
-    /* untranslated: call DecorateHullName((([part[0x2:4](GlobalPD)] >> 0x9) & 0xf), i, szTB) -> callresult(void) */
+    DecorateHullName(GlobalPD.lpfl->iplr, i, szTB);
     lpsz = szTB;
     dx = LOWORD(GetTextExtent(hdc, lpsz, fstrlen(lpsz)));
     if ((dxL <= dx))
@@ -638,7 +682,7 @@ L_0ea7:
 
 L_0eaa:
     dxL = t_merge_0eaa_0001;
-    /* untranslated: c = _wsprintf(szWork, PCTD, part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0xc) + (i * 0x2))]) */
+    c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i]);
     dx = LOWORD(GetTextExtent(hdc, szWork, c));
     if ((dxR <= dx))
         goto L_0f05;
@@ -654,10 +698,16 @@ L_0f05:
 
 L_0f08:
     dxR = t_merge_0f08_0001;
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0x0 ? L_0f77 : L_0f15 */
+    if ((GlobalPD.fRedDamage == 0))
+        goto L_0f77;
+    else
+        goto L_0f15;
 
 L_0f15:
-    /* untranslated: branch ((part[0x4:2](GlobalPD):[((HIWORD(GlobalPD) + 0x2c) + (i * 2))] >> 0x7) & 0x1ff) == 0x0 ? L_0f77 : L_0f3e */
+    if ((((GlobalPD.lpfl->rgdv[i].dp >> 0x7) & 0x1ff) == 0x0))
+        goto L_0f77;
+    else
+        goto L_0f3e;
 
 L_0f3e:
     if ((dxDamage != 0))
@@ -689,7 +739,7 @@ L_0f92:
     dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
 
 L_0fbf:
-    /* untranslated: part[0x8:2](GlobalPD) = dxDamage */
+    GlobalPD.dxDamage = dxDamage;
     dx = (((dxL + dxR) + 16) + dxDamage);
     goto L_1225;
 
@@ -771,7 +821,7 @@ L_113b:
     goto L_1225;
 
 L_115a:
-    t_call_1165 = PtDisplayString(hdc, HIWORD(GlobalPD), 0);
+    t_call_1165 = PtDisplayString(hdc, GlobalPD.dxOut, 0);
     ptT.x = LOWORD(t_call_1165);
     ptT.y = HIWORD(t_call_1165);
     goto SetDxDy;
@@ -791,7 +841,7 @@ L_1186:
 
 L_1189:
     mdBuild = t_merge_1189_0001;
-    /* untranslated: lpshdefBuild = part[0x2:4](GlobalPD) */
+    lpshdefBuild = GlobalPD.lpshdef;
     UpdateSlotGlobals();
     dx = 340;
     dy = (((dyArial8 + 306) + LOWORD((0x6 * dyArial8))) + 8);
@@ -1086,8 +1136,8 @@ L_1536:
         goto L_1545;
 
 L_1545:
-    psz = (psz + 0x1);
-    pszT = (pszT + 0x1);
+    psz = (psz + 1);
+    pszT = (pszT + 1);
     *(pszT) = *(psz);
     if (((uint16_t)(*(psz)) != 38))
         goto L_1536;
@@ -1095,7 +1145,7 @@ L_1545:
         goto L_1564;
 
 L_1564:
-    pszT = (pszT + 0x1);
+    pszT = (pszT + 1);
     *(pszT) = 38;
 
 L_1570:
@@ -1207,8 +1257,8 @@ L_16c1:
         goto L_16d0;
 
 L_16d0:
-    psz = (psz + 0x1);
-    pszT = (pszT + 0x1);
+    psz = (psz + 1);
+    pszT = (pszT + 1);
     *(pszT) = *(psz);
     if (((uint16_t)(*(psz)) != 38))
         goto L_16c1;
@@ -1216,7 +1266,7 @@ L_16d0:
         goto L_16ef;
 
 L_16ef:
-    pszT = (pszT + 0x1);
+    pszT = (pszT + 1);
     *(pszT) = 38;
 
 L_16fb:
@@ -1292,8 +1342,8 @@ L_17d4:
         goto L_17e3;
 
 L_17e3:
-    psz = (psz + 0x1);
-    pszT = (pszT + 0x1);
+    psz = (psz + 1);
+    pszT = (pszT + 1);
     *(pszT) = *(psz);
     if (((uint16_t)(*(psz)) != 38))
         goto L_17d4;
@@ -1301,7 +1351,7 @@ L_17e3:
         goto L_1802;
 
 L_1802:
-    pszT = (pszT + 0x1);
+    pszT = (pszT + 1);
     *(pszT) = 38;
 
 L_180e:
@@ -1427,22 +1477,25 @@ POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint) {
     StringId ids;
     int16_t  dChg;
     char     szOut[90];
-    uint16_t t_merge_1ef1_0001;
-    uint16_t t_merge_1f18_0001;
+    int16_t  t_merge_1ef1_0001;
+    int16_t  t_merge_1f18_0001;
 
 L_1938:
     y = 4;
     xMax = 4;
     x = 4;
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[0x4:2](GlobalPD)], 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, rgszPlanetAttr[GlobalPD.iPlanetVar], 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsCurrently), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: branch part[0x6:2](GlobalPD) < 0x0 ? L_19f3 : L_19c6 */
+    if ((GlobalPD.iPlanVal < 0))
+        goto L_19f3;
+    else
+        goto L_19c6;
 
 L_19c6:
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), part[0x6:2](GlobalPD)), 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, PszCalcEnvVar(GlobalPD.iPlanetVar, GlobalPD.iPlanVal), 0, fPrint);
     goto L_1a19;
 
 L_19f3:
@@ -1462,7 +1515,10 @@ L_1a4d:
 L_1a53:
     x = 4;
     y = (y + dyArial8);
-    /* untranslated: branch part[0xe:2](GlobalPD) != 0xffff ? L_1b13 : L_1a68 */
+    if ((GlobalPD.iPlrMin != -1))
+        goto L_1b13;
+    else
+        goto L_1a68;
 
 L_1a68:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonistsImmune), 0, fPrint);
@@ -1478,7 +1534,7 @@ L_1a9f:
     x = 4;
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsEffects), 0, fPrint);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[0x4:2](GlobalPD)], 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, rgszPlanetAttr[GlobalPD.iPlanetVar], 0, fPrint);
     DxStreamTextOut(hdc, &(x), y, 0xc16, 1, fPrint);
     goto L_1c65;
 
@@ -1495,14 +1551,14 @@ L_1b44:
 L_1b4a:
     x = 4;
     y = (y + dyArial8);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[0x4:2](GlobalPD)], 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, rgszPlanetAttr[GlobalPD.iPlanetVar], 0, fPrint);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsBetween), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), part[0xe:2](GlobalPD)), 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, PszCalcEnvVar(GlobalPD.iPlanetVar, GlobalPD.iPlrMin), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsAnd), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), GlobalPD.iPlrMax), 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, PszCalcEnvVar(GlobalPD.iPlanetVar, GlobalPD.iPlrMax), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, 0xc18, 1, fPrint);
 
@@ -1518,7 +1574,10 @@ L_1c70:
 L_1c76:
     x = 4;
     y = (y + dyArial8);
-    /* untranslated: branch part[0x8:2](GlobalPD) <= 0xffff ? L_1e9a : L_1c8b */
+    if ((GlobalPD.iPlanMin <= -1))
+        goto L_1e9a;
+    else
+        goto L_1c8b;
 
 L_1c8b:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsCurrentlyPossessTechnology), 0, fPrint);
@@ -1534,10 +1593,10 @@ L_1cc2:
     x = 4;
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsModify), 0, fPrint);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, rgszPlanetAttr[part[0x4:2](GlobalPD)], 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, rgszPlanetAttr[GlobalPD.iPlanetVar], 0, fPrint);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOn2), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     if ((x <= xMax))
         goto L_1d8b;
@@ -1552,11 +1611,11 @@ L_1d8b:
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWithinRange), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), part[0x8:2](GlobalPD)), 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, PszCalcEnvVar(GlobalPD.iPlanetVar, GlobalPD.iPlanMin), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsTo), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call DxStreamTextOut(hdc, &x, y, PszCalcEnvVar(part[0x4:2](GlobalPD), GlobalPD.grbit), 0, fPrint) -> callresult(int16_t) */
+    DxStreamTextOut(hdc, &(x), y, PszCalcEnvVar(GlobalPD.iPlanetVar, GlobalPD.iPlanMax), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, 0xc1a, 1, fPrint);
     if ((x <= xMax))
@@ -1572,30 +1631,48 @@ L_1e94:
 
 L_1e9a:
     x = 4;
-    /* untranslated: branch part[0x8:2](GlobalPD) <= 0xffff ? L_2172 : L_1ea9 */
+    if ((GlobalPD.iPlanMin <= -1))
+        goto L_2172;
+    else
+        goto L_1ea9;
 
 L_1ea9:
-    /* untranslated: branch part[0xe:2](GlobalPD) == 0xffff ? L_2172 : L_1eb3 */
+    if ((GlobalPD.iPlrMin == -1))
+        goto L_2172;
+    else
+        goto L_1eb3;
 
 L_1eb3:
-    /* untranslated: branch part[0x6:2](GlobalPD) == part[0xc:2](GlobalPD) ? L_2172 : L_1ebf */
+    if ((GlobalPD.iPlanVal == GlobalPD.iPlrVal))
+        goto L_2172;
+    else
+        goto L_1ebf;
 
 L_1ebf:
     iNewVal = -1;
-    /* untranslated: branch part[0x6:2](GlobalPD) >= part[0xc:2](GlobalPD) ? L_1ef7 : L_1ed0 */
+    if ((GlobalPD.iPlanVal >= GlobalPD.iPlrVal))
+        goto L_1ef7;
+    else
+        goto L_1ed0;
 
 L_1ed0:
-    /* untranslated: branch GlobalPD.grbit <= part[0x6:2](GlobalPD) ? L_1f1b : L_1edc */
+    if ((GlobalPD.iPlanMax <= GlobalPD.iPlanVal))
+        goto L_1f1b;
+    else
+        goto L_1edc;
 
 L_1edc:
-    /* untranslated: branch part[0xc:2](GlobalPD) >= GlobalPD.grbit ? L_1eee : L_1ee8 */
+    if ((GlobalPD.iPlrVal >= GlobalPD.iPlanMax))
+        goto L_1eee;
+    else
+        goto L_1ee8;
 
 L_1ee8:
-    /* untranslated: t_merge_1ef1_0001 = part[0xc:2](GlobalPD) */
+    t_merge_1ef1_0001 = GlobalPD.iPlrVal;
     goto L_1ef1;
 
 L_1eee:
-    t_merge_1ef1_0001 = GlobalPD.grbit;
+    t_merge_1ef1_0001 = GlobalPD.iPlanMax;
 
 L_1ef1:
     iNewVal = t_merge_1ef1_0001;
@@ -1604,17 +1681,23 @@ L_1ef4:
     goto L_1f1b;
 
 L_1ef7:
-    /* untranslated: branch part[0x8:2](GlobalPD) >= part[0x6:2](GlobalPD) ? L_1f1b : L_1f03 */
+    if ((GlobalPD.iPlanMin >= GlobalPD.iPlanVal))
+        goto L_1f1b;
+    else
+        goto L_1f03;
 
 L_1f03:
-    /* untranslated: branch part[0xc:2](GlobalPD) <= part[0x8:2](GlobalPD) ? L_1f15 : L_1f0f */
+    if ((GlobalPD.iPlrVal <= GlobalPD.iPlanMin))
+        goto L_1f15;
+    else
+        goto L_1f0f;
 
 L_1f0f:
-    /* untranslated: t_merge_1f18_0001 = part[0xc:2](GlobalPD) */
+    t_merge_1f18_0001 = GlobalPD.iPlrVal;
     goto L_1f18;
 
 L_1f15:
-    /* untranslated: t_merge_1f18_0001 = part[0x8:2](GlobalPD) */
+    t_merge_1f18_0001 = GlobalPD.iPlanMin;
 
 L_1f18:
     iNewVal = t_merge_1f18_0001;
@@ -1626,12 +1709,12 @@ L_1f1b:
         goto L_1f24;
 
 L_1f24:
-    lppl = LpplFromId(HIWORD(GlobalPD));
+    lppl = LpplFromId(GlobalPD.idPlanet);
     pctDesireOld = PctPlanetDesirability(lppl, idPlayer);
-    /* untranslated: iValSav = sext8to16(lppl->rgEnvVar[part[0x4:2](GlobalPD)]) */
-    /* untranslated: lppl->rgEnvVar[part[0x4:2](GlobalPD)] = lobyte(iNewVal) */
+    iValSav = (uint16_t)(lppl->rgEnvVar[GlobalPD.iPlanetVar]);
+    lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iNewVal);
     pctDesire = PctPlanetDesirability(lppl, idPlayer);
-    /* untranslated: lppl->rgEnvVar[part[0x4:2](GlobalPD)] = lobyte(iValSav) */
+    lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iValSav);
     if ((pctDesireOld >= pctDesire))
         goto L_2172;
     else
@@ -1641,11 +1724,11 @@ L_1fb6:
     cch = CchGetString(idsIfTerraform, szWork);
     WrapTextOut(hdc, &(x), &(y), szWork, cch, 4, (xMax - 4), 0x0, 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call WrapTextOut(hdc, &x, &y, rgszPlanetAttr[part[0x4:2](GlobalPD)], 0, 4, (xMax - 4), 0x0, 0, fPrint) -> callresult(void) */
+    WrapTextOut(hdc, &(x), &(y), rgszPlanetAttr[GlobalPD.iPlanetVar], 0, 4, (xMax - 4), 0x0, 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     WrapTextOut(hdc, &(x), &(y), PszGetCompressedString(idsTo), 0, 4, (xMax - 4), 0x0, 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    /* untranslated: call WrapTextOut(hdc, &x, &y, PszCalcEnvVar(part[0x4:2](GlobalPD), iNewVal), 0, 4, (xMax - 4), 0x0, 0, fPrint) -> callresult(void) */
+    WrapTextOut(hdc, &(x), &(y), PszCalcEnvVar(GlobalPD.iPlanetVar, iNewVal), 0, 4, (xMax - 4), 0x0, 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     cch = CchGetString(idsPlanetsValueWouldImprove, szWork);
     WrapTextOut(hdc, &(x), &(y), szWork, cch, 4, (xMax - 4), 0x0, 0, fPrint);
@@ -1654,30 +1737,45 @@ L_1fb6:
     WrapTextOut(hdc, &(x), &(y), szWork, cch, 4, (xMax - 4), 0x0, 0, fPrint);
 
 L_2172:
-    /* untranslated: branch part[0xe:2](GlobalPD) == 0xffff ? L_225e : L_217c */
+    if ((GlobalPD.iPlrMin == -1))
+        goto L_225e;
+    else
+        goto L_217c;
 
 L_217c:
-    /* untranslated: branch part[0x6:2](GlobalPD) == part[0xc:2](GlobalPD) ? L_225e : L_2188 */
+    if ((GlobalPD.iPlanVal == GlobalPD.iPlrVal))
+        goto L_225e;
+    else
+        goto L_2188;
 
 L_2188:
-    /* untranslated: branch part[0x6:2](GlobalPD) == 0xffff ? L_225e : L_2192 */
+    if ((GlobalPD.iPlanVal == -1))
+        goto L_225e;
+    else
+        goto L_2192;
 
 L_2192:
-    /* untranslated: branch part[0x6:2](GlobalPD) >= part[0xe:2](GlobalPD) ? L_21ab : L_219e */
+    if ((GlobalPD.iPlanVal >= GlobalPD.iPlrMin))
+        goto L_21ab;
+    else
+        goto L_219e;
 
 L_219e:
-    /* untranslated: dChg = (part[0xe:2](GlobalPD) - part[0x6:2](GlobalPD)) */
+    dChg = (GlobalPD.iPlrMin - GlobalPD.iPlanVal);
     goto L_21d9;
 
 L_21ab:
-    /* untranslated: branch part[0x6:2](GlobalPD) <= GlobalPD.iPlrMax ? L_21c4 : L_21b7 */
+    if ((GlobalPD.iPlanVal <= GlobalPD.iPlrMax))
+        goto L_21c4;
+    else
+        goto L_21b7;
 
 L_21b7:
-    /* untranslated: dChg = (part[0x6:2](GlobalPD) - GlobalPD.iPlrMax) */
+    dChg = (GlobalPD.iPlanVal - GlobalPD.iPlrMax);
     goto L_21d9;
 
 L_21c4:
-    /* untranslated: dChg = neg(abs((part[0x6:2](GlobalPD) - part[0xc:2](GlobalPD)))) */
+    dChg = (-abs((GlobalPD.iPlanVal - GlobalPD.iPlrVal)));
 
 L_21d9:
     if ((dChg >= 0))
@@ -2327,7 +2425,7 @@ L_3256:
     goto L_3319;
 
 L_3277:
-    /* untranslated: cnt = part[0x6:2](GlobalPD) */
+    cnt = GlobalPD.cCur;
 
 SetQuan:
     if ((cnt != 1))
@@ -2352,11 +2450,11 @@ L_32b6:
     goto L_3319;
 
 L_32c8:
-    /* untranslated: cnt = part[0x4:2](GlobalPD) */
+    cnt = GlobalPD.cMax;
     goto SetQuan;
 
 L_32d1:
-    /* untranslated: call _wsprintf(szWork, PCTD, part[0x8:2](GlobalPD)) -> callresult(int16_t) */
+    _wsprintf(szWork, PCTD, GlobalPD.cOperate);
     psz = szWork;
     goto L_3319;
 
@@ -2458,7 +2556,10 @@ L_3427:
     goto L_34d6;
 
 L_3439:
-    /* untranslated: branch part[0x6:2](GlobalPD) == part[0x4:2](GlobalPD) ? L_3536 : L_3448 */
+    if ((GlobalPD.iPlanVal == GlobalPD.iPlanetVar))
+        goto OutOfFor;
+    else
+        goto L_3448;
 
 L_3448:
     SelectObject(hdc, rghfontArial8[0]);
@@ -2467,7 +2568,7 @@ L_3448:
     goto L_34fb;
 
 L_3469:
-    /* untranslated: cnt = part[0x4:2](GlobalPD) */
+    cnt = GlobalPD.iPlanetVar;
 
 SetQuan:
     _wsprintf(szWork, PCTD, cnt);
@@ -2479,7 +2580,7 @@ L_3490:
     goto L_34fb;
 
 L_34a2:
-    /* untranslated: cnt = (part[0x4:2](GlobalPD) - part[0x6:2](GlobalPD)) */
+    cnt = (GlobalPD.iPlanetVar - GlobalPD.iPlanVal);
     if ((cnt > 0))
         goto SetQuan;
     else
@@ -2490,7 +2591,7 @@ L_34b8:
     goto L_34fb;
 
 L_34ca:
-    /* untranslated: cnt = part[0x6:2](GlobalPD) */
+    cnt = GlobalPD.iPlanVal;
     goto SetQuan;
 
 L_34d6:
@@ -2553,7 +2654,7 @@ L_355c:
     x = 4;
     y = 2;
     SelectObject(hdc, rghfontArial8[0]);
-    /* untranslated: call WrapTextOut(hdc, &x, &y, part[0x4:2](GlobalPD), 0, 4, dx, &xMax, 0, fPrint) -> callresult(void) */
+    WrapTextOut(hdc, &(x), &(y), GlobalPD.psz, 0, 4, dx, &(xMax), 0, fPrint);
     pt.x = (xMax + 4);
     pt.y = ((y + dyArial8) + 2);
 

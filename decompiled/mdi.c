@@ -199,19 +199,19 @@ L_03b8:
         goto L_03c2;
 
 L_03c2:
-    if (((uint16_t)(*(psz - 0x1)) == 92))
+    if (((uint16_t)(psz[(-1)]) == 92))
         goto L_03e7;
     else
         goto L_03d1;
 
 L_03d1:
-    if (((uint16_t)(*(psz - 0x1)) == 58))
+    if (((uint16_t)(psz[(-1)]) == 58))
         goto L_03e7;
     else
         goto L_03e0;
 
 L_03e0:
-    psz = (psz - 0x1);
+    psz = (psz + (-1));
     goto L_03b8;
 
 L_03e7:
@@ -456,7 +456,7 @@ L_08a8:
         goto L_08b3;
 
 L_08b3:
-    if (((rgOut[i] + 1) <= 0x3))
+    if (((rgOut[i] + 1) <= 3))
         goto L_08ea;
     else
         goto L_08c7;
@@ -577,13 +577,13 @@ L_0aa0:
 
 L_0aa9:
     *(pch) = *(lpchBatch);
-    lpchBatch = (lpchBatch + 0x1);
-    pch = (pch + 0x1);
+    lpchBatch = (lpchBatch + 1);
+    pch = (pch + 1);
     goto L_0a80;
 
 L_0ac1:
-    lpchBatch = (lpchBatch + 0x1);
-    *(pch - 0x1) = 0;
+    lpchBatch = (lpchBatch + 1);
+    pch[(-1)] = 0;
     ini.fStartupFile = 0x1;
     goto LBatchNext;
 
@@ -869,8 +869,8 @@ L_0ee4:
     return 0;
 
 L_0ef2:
-    /* untranslated: part[0xc:2](lParam) = 0x208 */
-    /* untranslated: part[0xe:2](lParam) = 0x17c */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x208 */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0x17c */
     return 0;
 
 L_0f17:
@@ -1498,9 +1498,9 @@ L_1721:
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (vfs.xTop + 1), 0, 1, (vfs.y1 + 2), PATCOPY);
     PatBlt(hdc, 0, (vfs.y1 + 1), (vfs.xTop + 1), 1, PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 1), (vfs.y1 + 6), 1, ((vfs.y2 - vfs.y1) + 0xfffc), PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 1), (vfs.y1 + 6), 1, ((vfs.y2 - vfs.y1) - 4), PATCOPY);
     PatBlt(hdc, 0, (vfs.y2 + 1), (vfs.xTop + 1), 1, PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 1), (vfs.y2 + 6), 1, ((vfs.dy - vfs.y2) + 0xfffa), PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 1), (vfs.y2 + 6), 1, ((vfs.dy - vfs.y2) - 6), PATCOPY);
     goto L_1a04;
 
 L_186b:
@@ -1520,13 +1520,13 @@ L_1887:
     yOffset = t_merge_1887_0001;
     PatBlt(hdc, (vfs.xTop + 5), yOffset, 2, ((vfs.y2 + 2) - yOffset), PATCOPY);
     PatBlt(hdc, 0, (vfs.y1 + 5), (vfs.xTop + 2), 2, PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 5), (vfs.y2 + 5), ((vfs.dx - vfs.xTop) + 0xfffb), 2, PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 5), (vfs.y2 + 6), 2, ((vfs.dy - vfs.y2) + 0xfffb), PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 5), (vfs.y2 + 5), ((vfs.dx - vfs.xTop) - 5), 2, PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 5), (vfs.y2 + 6), 2, ((vfs.dy - vfs.y2) - 5), PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (vfs.xTop + 1), yOffset, 1, ((vfs.y1 + 2) - yOffset), PATCOPY);
     PatBlt(hdc, 0, (vfs.y1 + 1), (vfs.xTop + 1), 1, PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 1), (vfs.y1 + 6), 1, ((vfs.dy - vfs.y1) + 0xfffa), PATCOPY);
-    PatBlt(hdc, (vfs.xTop + 6), (vfs.y2 + 1), ((vfs.dx - vfs.xTop) + 0xfffa), 1, PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 1), (vfs.y1 + 6), 1, ((vfs.dy - vfs.y1) - 6), PATCOPY);
+    PatBlt(hdc, (vfs.xTop + 6), (vfs.y2 + 1), ((vfs.dx - vfs.xTop) - 6), 1, PATCOPY);
     goto L_1a04;
 
 L_19e9:
@@ -1979,7 +1979,7 @@ L_1f15:
     goto L_1ed3;
 
 L_1f1b:
-    if (((vfs.xTop + dpt.x) >= 0xc6))
+    if (((vfs.xTop + dpt.x) >= 198))
         goto L_1f33;
     else
         goto L_1f29;
@@ -1997,7 +1997,7 @@ L_1f45:
     dpt.x = ((vfs.dx - vfs.xTop) - dxScanMin);
 
 L_1f52:
-    if (((vfs.xTop + dpt.x) <= 0x18c))
+    if (((vfs.xTop + dpt.x) <= 396))
         goto L_1f6a;
     else
         goto L_1f60;
@@ -2049,7 +2049,7 @@ L_1fd5:
 
 L_1fe4:
     dyMin = (LOWORD((0xd * dyArial8)) - 36);
-    if (((((vfs.dy - vfs.y2) + 0xfff8) - dpt.y) >= dyMin))
+    if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2016;
     else
         goto L_2006;
@@ -2068,7 +2068,7 @@ L_201f:
     dptT.y = dpt.y;
     dpt.x = (dptOld.x - pdptPrev->x);
     dpt.y = (dptOld.y - pdptPrev->y);
-    if (((vfs.xTop + dpt.x) >= 0xc6))
+    if (((vfs.xTop + dpt.x) >= 198))
         goto L_205a;
     else
         goto L_2050;
@@ -2086,7 +2086,7 @@ L_206c:
     dpt.x = ((vfs.dx - vfs.xTop) - dxScanMin);
 
 L_2079:
-    if (((vfs.xTop + dpt.x) <= 0x18c))
+    if (((vfs.xTop + dpt.x) <= 396))
         goto L_2091;
     else
         goto L_2087;
@@ -2101,7 +2101,7 @@ L_2091:
         goto L_209f;
 
 L_209f:
-    if (((vfs.y1 + dpt.y) >= 0x32))
+    if (((vfs.y1 + dpt.y) >= 50))
         goto L_20ba;
     else
         goto L_20ad;
@@ -2141,7 +2141,7 @@ L_20ff:
 
 L_210e:
     dyMin = (LOWORD((0xd * dyArial8)) - 36);
-    if (((((vfs.dy - vfs.y2) + 0xfff8) - dpt.y) >= dyMin))
+    if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2140;
     else
         goto L_2130;
@@ -2178,10 +2178,10 @@ L_2185:
         goto L_218e;
 
 L_218e:
-    PatBlt(hdc, (((vfs.xTop + dpt.x) - dptPrev.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
+    PatBlt(hdc, (((vfs.xTop + dpt.x) - dptPrev.x) + 1), 0, 6, vfs.dy, PATINVERT);
 
 L_21b7:
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 1), 0, 6, vfs.dy, PATINVERT);
     goto L_24a0;
 
 L_21e0:
@@ -2214,7 +2214,7 @@ L_2261:
 
 L_2264:
     dpt.x = 0;
-    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), (vfs.xTop + 1), 6, PATINVERT);
+    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 1), (vfs.xTop + 1), 6, PATINVERT);
     goto L_24a0;
 
 L_2295:
@@ -2225,51 +2225,51 @@ L_2295:
         goto L_22a4;
 
 L_22a4:
-    PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 0x1), (vfs.xTop + 1), 6, PATINVERT);
+    PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 1), (vfs.xTop + 1), 6, PATINVERT);
     goto L_24a0;
 
 L_22d0:
-    PatBlt(hdc, (vfs.xTop + 7), ((vfs.y2 + dpt.y) + 0x1), ((vfs.dx - vfs.xTop) + 0xfff9), 6, PATINVERT);
+    PatBlt(hdc, (vfs.xTop + 7), ((vfs.y2 + dpt.y) + 1), ((vfs.dx - vfs.xTop) - 7), 6, PATINVERT);
 
 L_2300:
     goto L_24a0;
 
 L_2303:
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
-    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 1), 0, 6, vfs.dy, PATINVERT);
+    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 1), ((vfs.xTop + dpt.x) + 1), 6, PATINVERT);
     goto L_24a0;
 
 L_2358:
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 1), 0, 6, vfs.dy, PATINVERT);
     if ((iWindowLayout != 0))
         goto L_23b7;
     else
         goto L_2388;
 
 L_2388:
-    PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
+    PatBlt(hdc, 0, ((vfs.y2 + dpt.y) + 1), ((vfs.xTop + dpt.x) + 1), 6, PATINVERT);
     goto L_24a0;
 
 L_23b7:
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x7), ((vfs.y2 + dpt.y) + 0x1), (((vfs.dx - dpt.x) - vfs.xTop) + 0xfff9), 6, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 7), ((vfs.y2 + dpt.y) + 1), (((vfs.dx - dpt.x) - vfs.xTop) - 7), 6, PATINVERT);
 
 L_23ed:
     goto L_24a0;
 
 L_23f0:
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x1), 0, 6, vfs.dy, PATINVERT);
-    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 0x1), ((vfs.xTop + dpt.x) + 0x1), 6, PATINVERT);
-    PatBlt(hdc, ((vfs.xTop + dpt.x) + 0x7), ((vfs.y2 + dpt.y) + 0x1), (((vfs.dx - dpt.x) - vfs.xTop) + 0xfff9), 6, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 1), 0, 6, vfs.dy, PATINVERT);
+    PatBlt(hdc, 0, ((vfs.y1 + dpt.y) + 1), ((vfs.xTop + dpt.x) + 1), 6, PATINVERT);
+    PatBlt(hdc, ((vfs.xTop + dpt.x) + 7), ((vfs.y2 + dpt.y) + 1), (((vfs.dx - dpt.x) - vfs.xTop) - 7), 6, PATINVERT);
     goto L_24a0;
 
 L_247e:
-    if (((grSel - 1) > 0x6))
+    if (((grSel - 1) > 6))
         goto L_2164;
     else
         goto L_2489;
 
 L_2489:
-    switch (((grSel - 1) * 0x2)) {
+    switch (((grSel - 1) * 2)) {
     case 0x0:
         goto L_2164;
     case 0x2:
@@ -2686,7 +2686,7 @@ L_2886:
     PushRandom(1114123);
     Randomize(lSerial);
     /* untranslated: part[0x0:4](rgbRaw) = lSerial */
-    memcpy(&(rgbRaw[0x4]), pbEnv, 0xb);
+    memcpy(&(rgbRaw[4]), pbEnv, 0xb);
     iRaw = 15;
     i = 0;
     goto L_2963;
@@ -2826,7 +2826,7 @@ L_2ac8:
     *(pszOut) = 42;
 
 L_2ace:
-    pszOut = (pszOut + 0x1);
+    pszOut = (pszOut + 1);
     i = (i + 1);
 
 L_2ad6:
@@ -2930,7 +2930,7 @@ L_2bce:
 L_2bd2:
     lTank = (lTank | (uint32_t)((b64 << cBits)));
     cBits = (cBits + 6);
-    pszIn = (pszIn + 0x1);
+    pszIn = (pszIn + 1);
 
 L_2bec:
     if ((cBits < 8))
@@ -3072,7 +3072,7 @@ L_2de1:
 
 L_2def:
     *(plSerial) = lSerial;
-    memcpy(pbEnv, &(rgbRaw[0x4]), 0xb);
+    memcpy(pbEnv, &(rgbRaw[4]), 0xb);
 
 L_2e10:
     return fSuccess;
@@ -3105,7 +3105,7 @@ L_2e54:
 
 L_2e63:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_2ea4;
 
 L_2e8e:
@@ -3115,7 +3115,7 @@ L_2e8e:
         goto L_2ea0;
 
 L_2ea0:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_2ea4:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -3378,7 +3378,7 @@ L_30ef:
 
 L_3112:
     iplrOld = idPlayer;
-    fstrcpy(szT, (vrgszMRU + ((wParam + 0xef34) * 0x100)));
+    fstrcpy(szT, (vrgszMRU + ((wParam + 0xef34) * 256)));
     psz = strrchr(szT, 46);
     if ((psz == 0x0))
         goto L_320e;
@@ -3741,9 +3741,9 @@ L_381e:
     SelectObject(pd.hDC, hfontPrintTiny);
 
 L_3829:
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((3 * dyPrint))) / 0x2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d4, 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((5 * dyPrint))) / 0x2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d6, 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((uint32_t)(LOWORD((9 * dyPrint))) / 0x2) + y) + 0x8) - dyPrintTiny), 0x3d8, 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((3 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d4, 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((5 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d6, 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((uint32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8) - dyPrintTiny), 0x3d8, 1);
     if ((hfontPrint == 0x0))
         goto L_38ed;
     else
@@ -3754,8 +3754,8 @@ L_38e2:
 
 L_38ed:
     DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((uint32_t)(dyPrint) / 2)), 1);
-    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((uint32_t)(LOWORD((7 * dyPrint))) / 0x2)), 0);
-    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((9 * dyPrint))) / 0x2) + y) + 0x8), 0);
+    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((uint32_t)(LOWORD((7 * dyPrint))) / 2)), 0);
+    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8), 0);
 
 L_396f:
     if (((grbitScan & 0xf) == 0x5))
@@ -3774,7 +3774,7 @@ L_3986:
 
 L_3991:
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_3bb7;
 
 L_39c0:
@@ -3807,7 +3807,7 @@ L_3b0e:
     t_merge_3b11_0001 = 0x3dc;
 
 L_3b11:
-    CtrTextOut(pd.hDC, LOWORD(x), ((LOWORD(y) + 0x4) - dyPrintTiny), t_merge_3b11_0001, 1);
+    CtrTextOut(pd.hDC, LOWORD(x), ((LOWORD(y) + 4) - dyPrintTiny), t_merge_3b11_0001, 1);
 
 L_3b35:
     DrawPlanetPrintDot(pd.hDC, LOWORD(x), LOWORD(y), 1);
@@ -3824,7 +3824,7 @@ L_3b66:
     CtrTextOut(pd.hDC, LOWORD(x), (LOWORD(y) - dyPrintTiny), szWork, cch);
 
 L_3bb3:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_3bb7:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -3866,7 +3866,7 @@ L_3bf0:
         goto L_3d08;
 
 L_3d08:
-    CtrTextOut(pd.hDC, LOWORD(x), (LOWORD(y) + 0xe), PszGetPlanetName(i), 0);
+    CtrTextOut(pd.hDC, LOWORD(x), (LOWORD(y) + 14), PszGetPlanetName(i), 0);
 
 L_3d38:
     goto L_3be1;
@@ -4097,7 +4097,7 @@ L_407a:
 L_4090:
     Randomize(0x499602d2);
     FWriteHistFile(idCur);
-    if ((FWriteTutorialMFile((game.turn + 0x1)) != 0))
+    if ((FWriteTutorialMFile((game.turn + 1)) != 0))
         goto L_40e6;
     else
         goto L_40c2;
@@ -4113,7 +4113,7 @@ L_40e6:
         goto L_40f0;
 
 L_40f0:
-    if ((FWriteTutorialMFile((game.turn + 0x2)) != 0))
+    if ((FWriteTutorialMFile((game.turn + 2)) != 0))
         goto L_412b;
     else
         goto L_4107;
@@ -4133,7 +4133,7 @@ L_412b:
     dwTickBase = ti.dwmsSinceStart;
 
 L_418a:
-    UpdateProgressGauge(((LOWORD(dwTickCur) - LOWORD(dwTickBase)) * 0x2));
+    UpdateProgressGauge(((LOWORD(dwTickCur) - LOWORD(dwTickBase)) * 2));
     TimerCount(ti);
     dwTickCur = ti.dwmsSinceStart;
     if ((HIWORD(dwTickCur) < HIWORD(dwTickBase)))
@@ -4496,7 +4496,7 @@ L_461d:
     vprptCur = &(vrptPlanet);
     ids = idsPlanetSummaryReportDPlanetC;
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_466a;
 
 L_4653:
@@ -4509,7 +4509,7 @@ L_4662:
     cObj = (cObj + 1);
 
 L_4666:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_466a:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))
@@ -5711,7 +5711,7 @@ L_53f5:
     szWork[0] = 38;
     szWork[1] = LOBYTE((i + 0x31));
     szWork[2] = 32;
-    fstrcpy(szWork[3], (vrgszMRU + (i * 256)));
+    fstrcpy(&(szWork[3]), (vrgszMRU + (i * 256)));
     InsertMenu(hmenuSub, (i + 9), 0x400, (i + 4300), szWork);
 
 L_5452:
@@ -6080,7 +6080,7 @@ L_594e:
     pch = strrchr(szFile, 46);
 
 L_5984:
-    ofn.nFileExtension = ((pch - &(szFile)) + 0x1);
+    ofn.nFileExtension = (pch + ((-&(szFile)) + 1));
     ofn.nFileOffset = 0x0;
     fFileErrSilent = 1;
     goto LGotFileName;
@@ -6255,7 +6255,7 @@ L_5bd6:
         goto L_5c07;
 
 L_5c07:
-    i = (pch - &(szFile));
+    i = (pch + (-&(szFile)));
     strncpy(szDirName, szFile, i);
     szDirName[i] = 0;
 
@@ -6683,7 +6683,7 @@ L_6266:
     SelectObject(hdc, rghfontArial8[1]);
     x = ((dyArial8 + 10) + LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN16), 4)));
     yCur = 48;
-    SetRect(&(rcDiamond), 6, yCur, (dyArial8 + 7), ((yCur + dyArial8) + 0x1));
+    SetRect(&(rcDiamond), 6, yCur, (dyArial8 + 7), ((yCur + dyArial8) + 1));
     i = 0;
     goto L_62f5;
 
@@ -8366,7 +8366,7 @@ L_7fe7:
 
 L_7ffa:
     i = (i + 1);
-    psz = (psz + 0x1);
+    psz = (psz + 1);
 
 L_8008:
     if ((i >= ctile))
@@ -8383,7 +8383,7 @@ L_8013:
 L_8031:
     iCol = (iCol + 0x1);
     *(psz) = 42;
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     goto L_8013;
 
 L_8042:
@@ -8629,7 +8629,7 @@ L_8900:
 
 L_8918:
     strcpy(szEntry, szSection);
-    psz = (&(szEntry) + strlen(szEntry));
+    psz = &(szEntry[strlen(szEntry)]);
     *(psz) = LOBYTE((i + 0x31));
     psz[1] = 0;
     if ((vrgZip[i].fValid == 0x0))
@@ -8643,13 +8643,13 @@ L_8967:
     goto L_8a2b;
 
 L_8974:
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((vrgZip[i].txp.rgia[iPass].iAction & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE((((vrgZip[i].txp.rgia[iPass].cQuan & 0xf) & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x4) & 0xf) & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x8) & 0xf) & 0xff) + 0x61));
     iPass = (iPass + 1);
 
@@ -8689,8 +8689,8 @@ L_8a9e:
 L_8aa6:
     CchGetString(idsZiporders, szSection);
     strcpy(szEntry, szSection);
-    psz = (&(szEntry) + strlen(szEntry));
-    psz = (psz + 0x1);
+    psz = &(szEntry[strlen(szEntry)]);
+    psz = (psz + 1);
     *(psz) = 80;
     *(psz) = LOBYTE((i + 0x31));
     psz[1] = 0;
@@ -8701,9 +8701,9 @@ L_8aa6:
 
 L_8b0f:
     psz = szWork;
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE((vrgZipProd[i].fNoResearch + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE((vrgZipProd[i].cpq + 0x61));
     iPass = 0;
     goto L_8b5a;
@@ -8718,13 +8718,13 @@ L_8b5a:
         goto L_8b73;
 
 L_8b73:
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE((((vrgZipProd[i].rgpq[iPass].w & 0xf) & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x4) & 0xf) & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x8) & 0xf) & 0xff) + 0x61));
-    psz = (psz + 0x1);
+    psz = (psz + 1);
     *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0xc) & 0xf) & 0xff) + 0x61));
     goto L_8b56;
 
@@ -8787,7 +8787,7 @@ L_8caf:
     goto L_90a7;
 
 L_8cb5:
-    if (((vfs.dx - vfs.dxPlanWant) >= 0x64))
+    if (((vfs.dx - vfs.dxPlanWant) >= 100))
         goto L_8cd0;
     else
         goto L_8cc4;
@@ -8850,7 +8850,7 @@ L_8d36:
 L_8d39:
     dyMin = t_merge_8d39_0001;
     vfs.dyMinWant = t_merge_8d39_0002;
-    if (((vfs.dy - ((dyMsg + dyMin) + 0x10)) >= 0x32))
+    if (((vfs.dy - ((dyMsg + dyMin) + 16)) >= 50))
         goto L_8dc1;
     else
         goto L_8d56;
@@ -8895,7 +8895,7 @@ L_8de6:
         goto L_8df9;
 
 L_8df9:
-    MoveWindow(hwndTb, (vfs.xTop + 8), 0, ((vfs.dx - vfs.xTop) + 0xfff8), 36, 1);
+    MoveWindow(hwndTb, (vfs.xTop + 8), 0, ((vfs.dx - vfs.xTop) - 8), 36, 1);
     yScanner = 36;
     goto L_8e4a;
 
@@ -8904,7 +8904,7 @@ L_8e28:
     yScanner = 0;
 
 L_8e4a:
-    MoveWindow(hwndScanner, (vfs.xTop + 8), yScanner, ((vfs.dx - vfs.xTop) + 0xfff8), (vfs.dy - yScanner), 1);
+    MoveWindow(hwndScanner, (vfs.xTop + 8), yScanner, ((vfs.dx - vfs.xTop) - 8), (vfs.dy - yScanner), 1);
     MoveWindow(hwndPlanet, 0, 0, vfs.xTop, vfs.y1, 1);
     MoveWindow(hwndMessage, 0, (vfs.y1 + 8), vfs.xTop, dyMsg, 1);
     MoveWindow(hwndMine, 0, (vfs.y2 + 8), vfs.xTop, dyMin, 1);
@@ -8913,7 +8913,7 @@ L_8ece:
     goto L_90c2;
 
 L_8ed1:
-    if (((vfs.dx - vfs.dx2PlanWant) >= 0xc8))
+    if (((vfs.dx - vfs.dx2PlanWant) >= 200))
         goto L_8eec;
     else
         goto L_8ee0;
@@ -8976,7 +8976,7 @@ L_8f52:
 L_8f55:
     dyMin = t_merge_8f55_0001;
     vfs.dy2MinWant = t_merge_8f55_0002;
-    if (((vfs.dy - (dyMsg + 8)) >= 0x64))
+    if (((vfs.dy - (dyMsg + 8)) >= 100))
         goto L_8f78;
     else
         goto L_8f6f;
@@ -8985,7 +8985,7 @@ L_8f6f:
     dyMsg = (vfs.dy - 108);
 
 L_8f78:
-    if (((vfs.dy - (dyMin + 8)) >= 0x64))
+    if (((vfs.dy - (dyMin + 8)) >= 100))
         goto L_8f95;
     else
         goto L_8f8c;
@@ -9017,10 +9017,10 @@ L_8fef:
     yScanner = 0;
 
 L_9011:
-    MoveWindow(hwndScanner, (vfs.xTop + 8), yScanner, ((vfs.dx - vfs.xTop) + 0xfff8), (vfs.y2 - yScanner), 1);
+    MoveWindow(hwndScanner, (vfs.xTop + 8), yScanner, ((vfs.dx - vfs.xTop) - 8), (vfs.y2 - yScanner), 1);
     MoveWindow(hwndPlanet, 0, yScanner, vfs.xTop, (vfs.y1 - yScanner), 1);
     MoveWindow(hwndMessage, 0, (vfs.y1 + 8), vfs.xTop, dyMsg, 1);
-    MoveWindow(hwndMine, (vfs.xTop + 8), (vfs.y2 + 8), ((vfs.dx - vfs.xTop) + 0xfff8), dyMin, 1);
+    MoveWindow(hwndMine, (vfs.xTop + 8), (vfs.y2 + 8), ((vfs.dx - vfs.xTop) - 8), dyMin, 1);
 
 L_90a1:
     goto L_90c2;
@@ -9171,7 +9171,7 @@ L_91f5:
 L_9200:
     psz = PszGetCompressedString((i + 479));
     rghwndBtnSplash[i] =
-        CreateWindow("BUTTON", psz, 0x50000000, xCur, ((rc.bottom - dy) - ((uint32_t)(LOWORD((0x5 * dyArial8))) / 0x2)), dx, dy, hwnd, i, hInst, 0x0);
+        CreateWindow("BUTTON", psz, 0x50000000, xCur, ((rc.bottom - dy) - ((uint32_t)(LOWORD((0x5 * dyArial8))) / 2)), dx, dy, hwnd, i, hInst, 0x0);
     if ((i != 2))
         goto L_92a2;
     else

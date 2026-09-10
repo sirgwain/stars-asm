@@ -126,19 +126,19 @@ L_61e4:
     branch HIWORD(dChg) != 0x0 ? L_6202 : L_61ed
 
 L_61ed:
-    return sext16to32(part[0x8:2](pth[iSupply*0x2]))
+    return sext16to32(pth->thp.rgwtMin[iSupply])
 
 L_6202:
-    branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222
+    branch (signhiword(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222
 
 L_6222:
-    branch (signhiword(part[0x8:2](pth[iSupply*0x2])) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227
+    branch (signhiword(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227
 
 L_6227:
-    branch (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f
+    branch (pth->thp.rgwtMin[iSupply] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f
 
 L_622f:
-    dChg = sext16to32(neg(part[0x8:2](pth[iSupply*0x2])))
+    dChg = sext16to32(neg(pth->thp.rgwtMin[iSupply]))
 
 L_6249:
     wtFree = (uint32_t)(pth->thp.wtMax * 0xa)
@@ -146,7 +146,7 @@ L_6249:
     goto L_6295
 
 L_6275:
-    wtFree = (wtFree - sext16to32(part[0x8:2](pth[i*0x2])))
+    wtFree = (wtFree - sext16to32(pth->thp.rgwtMin[i]))
     i = (i + 1)
 
 L_6295:
@@ -165,7 +165,7 @@ L_62bc:
     dChg = wtFree
 
 L_62ca:
-    part[0x8:2](pth[iSupply*0x2]) = (part[0x8:2](pth[iSupply*0x2]) + LOWORD(dChg))
+    pth->thp.rgwtMin[iSupply] = (pth->thp.rgwtMin[iSupply] + LOWORD(dChg))
 
 L_62f3:
     branch LOWORD(dChg) != 0x0 ? L_6305 : L_62fc

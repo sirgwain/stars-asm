@@ -3,6 +3,7 @@
     {
       "func": "BrowserWndProc",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -19,6 +20,7 @@
     {
       "func": "CalcPctSurvive",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -38,8 +40,30 @@
       ]
     },
     {
+      "func": "ChangeScanSel",
+      "root": "lpThings",
+      "root_path": null,
+      "all_elements": true,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_8d78",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_8f7d",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "CheckWeapons",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -48,6 +72,10 @@
       ],
       "enum": "HullSlotType",
       "block_path_facts": [
+        {
+          "block": "L_3ff0",
+          "value": "hstBeam"
+        },
         {
           "block": "L_4038",
           "value": "hstSpecialE"
@@ -77,6 +105,7 @@
     {
       "func": "ChgCargo",
       "root": "xfer",
+      "root_path": null,
       "all_elements": false,
       "type": "XFER",
       "path": [
@@ -109,6 +138,7 @@
     {
       "func": "ClickInPlanetOrders",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -119,6 +149,42 @@
         {
           "block": "L_51b0",
           "value": "grPopupMineral"
+        },
+        {
+          "block": "L_5289",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_52ad",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_52ba",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_5305",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_538b",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_53d5",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_540c",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_5435",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_5456",
+          "value": "grPopupPlanet"
         },
         {
           "block": "L_555f",
@@ -137,6 +203,7 @@
     {
       "func": "ClickInShipOrders",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -153,6 +220,7 @@
     {
       "func": "ClickInShipOrders",
       "root": "xf",
+      "root_path": null,
       "all_elements": false,
       "type": "XFER",
       "path": [
@@ -173,6 +241,7 @@
     {
       "func": "CMineSweepFromLphul",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -181,6 +250,10 @@
       ],
       "enum": "HullSlotType",
       "block_path_facts": [
+        {
+          "block": "L_2c77",
+          "value": "hstBeam"
+        },
         {
           "block": "L_2cb2",
           "value": "hstBeam"
@@ -198,6 +271,7 @@
     {
       "func": "DisplayComponentInfo",
       "root": "ppart",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -248,6 +322,10 @@
         },
         {
           "block": "L_3f26",
+          "value": "hstHull"
+        },
+        {
+          "block": "L_4354",
           "value": "hstHull"
         },
         {
@@ -377,8 +455,51 @@
       ]
     },
     {
+      "func": "DoAutomitronAiTurn",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_1255",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
+      "func": "DoCyberAiTurn",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_132d",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
       "func": "DoCyberFreighter",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -393,8 +514,97 @@
       ]
     },
     {
+      "func": "DoMacintiAiTurn",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_1d23",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
+      "func": "DoRobotoidAiTurn",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_1323",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
+      "func": "DoThingInteractions",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_0daf",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_11f2",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_1896",
+          "value": "ithMysteryTrader"
+        }
+      ]
+    },
+    {
+      "func": "DoTurinDroneAiTurn",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_5841",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
       "func": "DpFromPtokBrcToBrc",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -403,6 +613,10 @@
       ],
       "enum": "HullSlotType",
       "block_path_facts": [
+        {
+          "block": "L_4ea3",
+          "value": "hstBeam"
+        },
         {
           "block": "L_4f9f",
           "value": "hstBeam"
@@ -420,6 +634,7 @@
     {
       "func": "DrawBuildSelHull",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -460,6 +675,7 @@
     {
       "func": "DrawMineSurvey",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -500,6 +716,7 @@
     {
       "func": "DrawPlanShip",
       "root": "obj",
+      "root_path": null,
       "all_elements": false,
       "type": "OBJ",
       "path": [
@@ -520,6 +737,7 @@
     {
       "func": "DrawPlanShip",
       "root": "objNull",
+      "root_path": null,
       "all_elements": false,
       "type": "OBJ",
       "path": [
@@ -534,8 +752,154 @@
       ]
     },
     {
+      "func": "DrawPopup",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_022b",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_02c9",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_02ce",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_02d8",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_037b",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0385",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_03b0",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_03c9",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0423",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_044b",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0450",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_045a",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_04dc",
+          "value": "grPopupPlayer"
+        },
+        {
+          "block": "L_0561",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_05b0",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0690",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_06cc",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_06d6",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0718",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_07c8",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_07e7",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_084f",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_08da",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_08f7",
+          "value": "grPopupUnknownObj"
+        },
+        {
+          "block": "L_0ad0",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_0ae2",
+          "value": "grPopupShipOrders"
+        },
+        {
+          "block": "L_0afa",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_0b0c",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_0b21",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_0b36",
+          "value": "grPopupComponent"
+        },
+        {
+          "block": "L_0b4e",
+          "value": "grPopupString"
+        },
+        {
+          "block": "L_0b63",
+          "value": "grPopupShdef"
+        },
+        {
+          "block": "L_0b79",
+          "value": "grPopupShdef"
+        }
+      ]
+    },
+    {
       "func": "DrawScanner",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -564,6 +928,7 @@
     {
       "func": "DrawShipPlanet",
       "root": "obj",
+      "root_path": null,
       "all_elements": false,
       "type": "OBJ",
       "path": [
@@ -604,6 +969,7 @@
     {
       "func": "DrawShipScanPath",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -626,8 +992,26 @@
       ]
     },
     {
+      "func": "DrawSlotDlg",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_2f02",
+          "value": "grPopupShdef"
+        }
+      ]
+    },
+    {
       "func": "DrawXferDlg",
       "root": "pxfer",
+      "root_path": null,
       "all_elements": true,
       "type": "XFER",
       "path": [
@@ -644,6 +1028,7 @@
     {
       "func": "DropSalvage",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -696,6 +1081,7 @@
     {
       "func": "DumpPlanets",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -711,8 +1097,9 @@
       ]
     },
     {
-      "func": "FAttack",
+      "func": "DzMoveRangeToConsider",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -721,6 +1108,81 @@
       ],
       "enum": "HullSlotType",
       "block_path_facts": [
+        {
+          "block": "L_5433",
+          "value": "hstBeam"
+        },
+        {
+          "block": "L_5487",
+          "value": "hstBeam"
+        },
+        {
+          "block": "L_5496",
+          "value": "hstBeam"
+        }
+      ]
+    },
+    {
+      "func": "ExecuteReportClick",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_7d84",
+          "value": "grPopupShdef"
+        },
+        {
+          "block": "L_7e5e",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_7ea8",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_7fb2",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_809b",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_80e6",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_8273",
+          "value": "grPopupFleet"
+        }
+      ]
+    },
+    {
+      "func": "FAttack",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_6ab3",
+          "value": "hstBeam"
+        },
+        {
+          "block": "L_6b29",
+          "value": "hstBeam"
+        },
         {
           "block": "L_6b3c",
           "value": "hstBeam"
@@ -735,6 +1197,10 @@
         },
         {
           "block": "L_6da2",
+          "value": "hstBeam"
+        },
+        {
+          "block": "L_70d6",
           "value": "hstBeam"
         },
         {
@@ -770,6 +1236,7 @@
     {
       "func": "FBuildObject",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -820,8 +1287,35 @@
       ]
     },
     {
+      "func": "FCalcFleetBombDamage",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_1608",
+          "value": "hstBomb"
+        },
+        {
+          "block": "L_1615",
+          "value": "hstBomb"
+        },
+        {
+          "block": "L_16ac",
+          "value": "hstBomb"
+        }
+      ]
+    },
+    {
       "func": "FCanTerraformLppl",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -861,8 +1355,29 @@
       ]
     },
     {
+      "func": "FCheckPatrolWP",
+      "root": "lpfl",
+      "root_path": [
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_723c",
+          "value": "grTaskPatrol"
+        }
+      ]
+    },
+    {
       "func": "FDestIsWP0",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -877,8 +1392,26 @@
       ]
     },
     {
+      "func": "FIsPopupHullType",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_016c",
+          "value": "grPopupFleet"
+        }
+      ]
+    },
+    {
       "func": "FLoadGame",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -903,6 +1436,7 @@
     {
       "func": "FLookupPart",
       "root": "ppart",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -982,8 +1516,26 @@
       ]
     },
     {
+      "func": "FRunLogRecord",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_aa04",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "FSalvageTargetFreighter2",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1026,8 +1578,30 @@
       ]
     },
     {
+      "func": "FTrackResearchDlg",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_1b2e",
+          "value": "grPopupComponent"
+        },
+        {
+          "block": "L_1c1a",
+          "value": "grPopupString"
+        }
+      ]
+    },
+    {
       "func": "FTrackSlot",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -1052,6 +1626,7 @@
     {
       "func": "FTrackXfer",
       "root": "pxfer",
+      "root_path": null,
       "all_elements": true,
       "type": "XFER",
       "path": [
@@ -1059,6 +1634,10 @@
       ],
       "enum": "GrobjClass",
       "block_path_facts": [
+        {
+          "block": "L_5b0e",
+          "value": "grobjFleet"
+        },
         {
           "block": "L_5def",
           "value": "grobjFleet"
@@ -1084,6 +1663,7 @@
     {
       "func": "FTravelThroughMineFields",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1099,7 +1679,25 @@
     },
     {
       "func": "FTravelThroughMineFields",
+      "root": "lpthClosest",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_6717",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "FTravelThroughMineFields",
       "root": "lpthSalvage",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1116,6 +1714,7 @@
     {
       "func": "FWriteDataFile",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1158,8 +1757,43 @@
       ]
     },
     {
+      "func": "GenerateWorld",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_40a2",
+          "value": "ithWormhole"
+        }
+      ]
+    },
+    {
+      "func": "GenerateWorld",
+      "root": "lpthLast",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_40a2",
+          "value": "ithWormhole"
+        }
+      ]
+    },
+    {
       "func": "GetProductionCosts",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1185,6 +1819,7 @@
     {
       "func": "IdTargetFreighter",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1225,6 +1860,7 @@
     {
       "func": "IdTargetMacFreighter",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1239,8 +1875,26 @@
       ]
     },
     {
+      "func": "IncreaseAIMinefieldSizes",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_9cb0",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "LComputePower",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1270,6 +1924,7 @@
     {
       "func": "MarkTechsSeen",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1291,6 +1946,7 @@
     {
       "func": "MdCalcStargateDamage",
       "root": "partDst",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1332,6 +1988,7 @@
     {
       "func": "MdCalcStargateDamage",
       "root": "partSrc",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1377,6 +2034,7 @@
     {
       "func": "MineClick",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -1389,7 +2047,15 @@
           "value": "grPopupShdef"
         },
         {
+          "block": "L_3e20",
+          "value": "grPopupShdef"
+        },
+        {
           "block": "L_3e38",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_3e7b",
           "value": "grPopupFleet"
         },
         {
@@ -1397,14 +2063,134 @@
           "value": "grPopupShdef"
         },
         {
+          "block": "L_3e99",
+          "value": "grPopupShdef"
+        },
+        {
+          "block": "L_3ef6",
+          "value": "grPopupShdef"
+        },
+        {
+          "block": "L_3f41",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3f74",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3f85",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3fc0",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3fe8",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3fee",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3ff8",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_3ffe",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_4010",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_401c",
+          "value": "grPopupPlanetEnv"
+        },
+        {
           "block": "L_456c",
           "value": "grPopupMineral"
+        },
+        {
+          "block": "L_456f",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_459b",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_45cb",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_4608",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_4781",
+          "value": "grPopupMineral"
+        }
+      ]
+    },
+    {
+      "func": "MineClick",
+      "root": "lpThings",
+      "root_path": null,
+      "all_elements": true,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_3c2a",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "MineWndProc",
+      "root": "lpThings",
+      "root_path": null,
+      "all_elements": true,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_0321",
+          "value": "ithMinefield"
         }
       ]
     },
     {
       "func": "MoveFleets",
       "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_4d5b",
+          "value": "ithWormhole"
+        }
+      ]
+    },
+    {
+      "func": "MoveFleets",
+      "root": "lpthDest",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1421,6 +2207,7 @@
     {
       "func": "MoveThings",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1438,6 +2225,14 @@
         },
         {
           "block": "L_1b16",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_1b85",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_1bd2",
           "value": "ithMysteryTrader"
         },
         {
@@ -1493,6 +2288,7 @@
     {
       "func": "MysteryTrader",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1537,6 +2333,7 @@
     {
       "func": "PctJammerFromHul",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -1552,8 +2349,110 @@
       ]
     },
     {
+      "func": "Popup",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_0cc3",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0d0a",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0d0f",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_0d22",
+          "value": "grPopupPlayer"
+        },
+        {
+          "block": "L_0daa",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0e0a",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0e29",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0e46",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0eaa",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0f08",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0f15",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0fbf",
+          "value": "grPopupFleet"
+        },
+        {
+          "block": "L_0fd7",
+          "value": "grPopupUnknownObj"
+        },
+        {
+          "block": "L_1092",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_10aa",
+          "value": "grPopupShipOrders"
+        },
+        {
+          "block": "L_10c6",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_10de",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_10fa",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_1128",
+          "value": "grPopupComponent"
+        },
+        {
+          "block": "L_115a",
+          "value": "grPopupString"
+        },
+        {
+          "block": "L_1176",
+          "value": "grPopupShdef"
+        },
+        {
+          "block": "L_1189",
+          "value": "grPopupShdef"
+        }
+      ]
+    },
+    {
       "func": "ProductionDlg",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -1570,6 +2469,7 @@
     {
       "func": "PszGetDestName",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1586,6 +2486,7 @@
     {
       "func": "PszGetETA",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1602,6 +2503,7 @@
     {
       "func": "PszGetTaskName",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1646,6 +2548,14 @@
           "value": "grTaskXfer"
         },
         {
+          "block": "L_571d",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_577a",
+          "value": "grTaskXfer"
+        },
+        {
           "block": "L_57bd",
           "value": "grTaskLayMines"
         },
@@ -1666,6 +2576,7 @@
     {
       "func": "PszGetThingName",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1680,8 +2591,213 @@
       ]
     },
     {
+      "func": "PtDisplayFactoryMineInfo",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_3277",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_32c8",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_32d1",
+          "value": "grPopupPlanetIndustry"
+        }
+      ]
+    },
+    {
+      "func": "PtDisplayPlanetStateInfo",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_1938",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_19c6",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1a53",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1a9f",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1b4a",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1c76",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1cc2",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1d8b",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1e9a",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1ea9",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1eb3",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1ebf",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1ed0",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1edc",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1ee8",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1eee",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1ef7",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1f03",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1f0f",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1f15",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1f24",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_1fb6",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_2172",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_217c",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_2188",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_2192",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_219e",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_21ab",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_21b7",
+          "value": "grPopupPlanetEnv"
+        },
+        {
+          "block": "L_21c4",
+          "value": "grPopupPlanetEnv"
+        }
+      ]
+    },
+    {
+      "func": "PtDisplayResourceInfo",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_3439",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_3469",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_34a2",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_34ca",
+          "value": "grPopupResources"
+        }
+      ]
+    },
+    {
+      "func": "PtDisplayString",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_355c",
+          "value": "grPopupString"
+        }
+      ]
+    },
+    {
       "func": "SatisfyOrders",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1714,6 +2830,7 @@
     {
       "func": "SatisfyOrders",
       "root": "lpthBest",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1742,6 +2859,7 @@
     {
       "func": "SatisfyOrders",
       "root": "ord",
+      "root_path": null,
       "all_elements": false,
       "type": "ORDER",
       "path": [
@@ -1751,6 +2869,30 @@
       "block_path_facts": [
         {
           "block": "L_6cb5",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_6e8e",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_6ec9",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_6f58",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_6f81",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_7165",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_7b2a",
           "value": "grTaskXfer"
         },
         {
@@ -1766,6 +2908,7 @@
     {
       "func": "ScannerWndProc",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -1780,8 +2923,30 @@
       ]
     },
     {
+      "func": "SetMineralTitleBar",
+      "root": "lpThings",
+      "root_path": null,
+      "all_elements": true,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_4950",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_49d1",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "SetVisPFFleets",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1804,12 +2969,21 @@
         {
           "block": "L_a82d",
           "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_a8aa",
+          "value": "ithWormhole"
+        },
+        {
+          "block": "L_a956",
+          "value": "ithMinefield"
         }
       ]
     },
     {
       "func": "SetVisPFInit",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1838,6 +3012,7 @@
     {
       "func": "SetVisPFPlanets",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1860,12 +3035,21 @@
         {
           "block": "L_b304",
           "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_b381",
+          "value": "ithWormhole"
+        },
+        {
+          "block": "L_b3f2",
+          "value": "ithMinefield"
         }
       ]
     },
     {
       "func": "SetVisPFThings",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1886,6 +3070,7 @@
     {
       "func": "SetVisPFThings",
       "root": "lpth2",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1908,12 +3093,21 @@
         {
           "block": "L_bf62",
           "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_bfbc",
+          "value": "ithWormhole"
+        },
+        {
+          "block": "L_bfdd",
+          "value": "ithMinefield"
         }
       ]
     },
     {
       "func": "ShipCommandProc",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [
@@ -1928,8 +3122,60 @@
       ]
     },
     {
+      "func": "ShipCommandProc",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_342e",
+          "value": "grTaskPatrol"
+        },
+        {
+          "block": "L_37dc",
+          "value": "grTaskPatrol"
+        },
+        {
+          "block": "L_38db",
+          "value": "grTaskLayMines"
+        }
+      ]
+    },
+    {
+      "func": "StargateRangeFromLppl",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_7e3b",
+          "value": "hstSpecialSB"
+        },
+        {
+          "block": "L_7e80",
+          "value": "hstSpecialSB"
+        }
+      ]
+    },
+    {
       "func": "SweepForMines",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -1942,7 +3188,15 @@
           "value": "ithMinefield"
         },
         {
+          "block": "L_7a34",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_7d16",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7e11",
           "value": "ithMinefield"
         }
       ]
@@ -1950,6 +3204,7 @@
     {
       "func": "ThingDecay",
       "root": "lpth",
+      "root_path": null,
       "all_elements": false,
       "type": "THING",
       "path": [
@@ -2000,12 +3255,17 @@
         {
           "block": "L_74cc",
           "value": "ithMinefield"
+        },
+        {
+          "block": "L_760e",
+          "value": "ithMinefield"
         }
       ]
     },
     {
       "func": "TransferStuff",
       "root": "xfer",
+      "root_path": null,
       "all_elements": true,
       "type": "XFER",
       "path": [
@@ -2013,6 +3273,10 @@
       ],
       "enum": "GrobjClass",
       "block_path_facts": [
+        {
+          "block": "L_506e",
+          "value": "grobjPlanet"
+        },
         {
           "block": "L_5097",
           "value": "grobjFleet"
@@ -2022,14 +3286,110 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_5325",
+          "value": "grobjPlanet"
+        },
+        {
+          "block": "L_5343",
+          "value": "grobjPlanet"
+        },
+        {
           "block": "L_53a6",
           "value": "grobjFleet"
+        },
+        {
+          "block": "L_5654",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
+      "func": "TransferToOthers",
+      "root": "rgxf",
+      "root_path": null,
+      "all_elements": true,
+      "type": "XFER",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_30c9",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_3117",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_3136",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_3270",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_32f6",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_333f",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_3406",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_346d",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
+      "func": "UnmarkMineFields",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_7682",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "UpdateOrdersDDs",
+      "root": "sel",
+      "root_path": [
+        "fl",
+        "lpplord",
+        "rgord"
+      ],
+      "all_elements": true,
+      "type": "ORDER",
+      "path": [
+        "grTask"
+      ],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_9624",
+          "value": "grTaskPatrol"
         }
       ]
     },
     {
       "func": "UpdateShdefCost",
       "root": "part",
+      "root_path": null,
       "all_elements": false,
       "type": "PART",
       "path": [
@@ -2055,6 +3415,7 @@
     {
       "func": "UpdateXferBtns",
       "root": "pxfer",
+      "root_path": null,
       "all_elements": true,
       "type": "XFER",
       "path": [
@@ -2075,6 +3436,7 @@
     {
       "func": "VCRDlg",
       "root": "GlobalPD",
+      "root_path": null,
       "all_elements": false,
       "type": "POPUPDATA",
       "path": [

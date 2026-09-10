@@ -21,10 +21,10 @@ L_9e43:
     branch lpfl->cord == 2 ? L_9ebf : L_9e50
 
 L_9e50:
-    branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))] != loword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9eb6
+    branch lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != loword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9eb6
 
 L_9eb6:
-    branch hiword((lpfl->lpplord + 0x4)):[(loword((lpfl->lpplord + 0x4)) + loword(((lpfl->cord - 1) * 0x12)))+0x2] != hiword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9ebf
+    branch lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y != hiword(words(lpfl->lpplord->rgord[iDel].pt.y, lpfl->lpplord->rgord[iDel].pt.x)) ? L_9ec7 : L_9ebf
 
 L_9ebf:
     fRecycle = 0
@@ -34,7 +34,7 @@ L_9ec7:
     ord = lpfl->lpplord->rgord[iDel]
 
 L_9ef2:
-    call fmemmove(((lpfl->lpplord + 0x4) + loword((18 * iDel))), ((lpfl->lpplord + 0x4) + loword(((iDel + 1) * 0x12))), loword((((lpfl->cord - iDel) + 0xffff) * 0x12))) -> callresult(void *)
+    call fmemmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[(iDel + 1)], (((lpfl->cord - iDel) - 1) * 18)) -> callresult(void *)
     branch fRecycle == 0 ? L_9fca : L_9f69
 
 L_9f69:

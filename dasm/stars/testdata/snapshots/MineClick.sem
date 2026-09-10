@@ -94,7 +94,7 @@ L_3c0f:
     goto L_47d5
 
 L_3c2a:
-    t_scratch_m12 = mpiTypeiItem[part[0xc:1](lpThings[sel.scan.ith])]
+    t_scratch_m12 = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType]
     part.hs.iItem = t_scratch_m12
     part.hs.grhst = hstMines
     call FLookupPart(&part) -> callresult(int16_t)
@@ -118,7 +118,7 @@ L_3cda:
 L_3cfa:
     rgid[c] = ishdef
     call fstrcpy(rgsz[c], rglpshdef[lpfl->iPlayer][ishdef].hul.szClass) -> callresult(char *)
-    rgpsz[c] = (&rgsz + (c * 32))
+    rgpsz[c] = rgsz[c]
     c = (c + 1)
 
 L_3d77:
@@ -142,7 +142,7 @@ L_3dcb:
 
 L_3dd1:
     GlobalPD.grPopup = grPopupShdef
-    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + loword((0x93 * rgid[c])))
+    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + rgid[c])
     branch idPlayer == lpfl->iPlayer ? L_3e1d : L_3e17
 
 L_3e17:
@@ -153,9 +153,10 @@ L_3e1d:
     t_merge_3e20_0001 = 0x0
 
 L_3e20:
-    part[0x8:2](GlobalPD) = t_merge_3e20_0001
-    part[0x6:2](GlobalPD) = 0x0
-    part[0xa:4](GlobalPD) = 0x10000
+    GlobalPD.fHideCounts = t_merge_3e20_0001
+    GlobalPD.fShowDamage = 0
+    GlobalPD.fToken = 0
+    GlobalPD.fSummary = 1
     goto L_3e84
 
 L_3e38:
@@ -171,7 +172,7 @@ L_3e78:
     t_merge_3e7b_0001 = 0x0
 
 L_3e7b:
-    part[0x6:2](GlobalPD) = t_merge_3e7b_0001
+    GlobalPD.fRedDamage = t_merge_3e7b_0001
     GlobalPD.grbit = 0xff
 
 L_3e84:
@@ -181,7 +182,7 @@ L_3e84:
 L_3e99:
     GlobalPD.grPopup = grPopupShdef
     lppl = LpplFromId(sel.scan.idpl)
-    part[0x2:4](GlobalPD) = (rglpshdefSB[lppl->iPlayer] + loword((lppl->isb * 0x93)))
+    GlobalPD.lpshdef = (rglpshdefSB[lppl->iPlayer] + lppl->isb)
     branch idPlayer == lppl->iPlayer ? L_3ef3 : L_3eed
 
 L_3eed:
@@ -192,9 +193,10 @@ L_3ef3:
     t_merge_3ef6_0001 = 0x0
 
 L_3ef6:
-    part[0x8:2](GlobalPD) = t_merge_3ef6_0001
-    part[0x6:2](GlobalPD) = 0x1
-    part[0xa:4](GlobalPD) = 0x10000
+    GlobalPD.fHideCounts = t_merge_3ef6_0001
+    GlobalPD.fShowDamage = 1
+    GlobalPD.fToken = 0
+    GlobalPD.fSummary = 1
     call Popup(hwndMine, x, y) -> callresult(void)
     goto L_47d5
 
@@ -207,16 +209,16 @@ L_3f20:
 L_3f41:
     call FLookupPlanet(sel.scan.idpl, &pl) -> callresult(int16_t)
     GlobalPD.grPopup = grPopupPlanetEnv
-    HIWORD(GlobalPD) = pl.id
-    part[0x4:2](GlobalPD) = (ht - 6)
+    GlobalPD.idPlanet = pl.id
+    GlobalPD.iPlanetVar = (ht - 6)
     branch pl.det < 0x3 ? L_3f85 : L_3f74
 
 L_3f74:
-    part[0x6:2](GlobalPD) = sext8to16(pl.rgEnvVar[part[0x4:2](GlobalPD)])
+    GlobalPD.iPlanVal = sext8to16(pl.rgEnvVar[GlobalPD.iPlanetVar])
     goto L_3f8b
 
 L_3f85:
-    part[0x6:2](GlobalPD) = 0xffff
+    GlobalPD.iPlanVal = -1
 
 L_3f8b:
     branch pl.det < 0x3 ? L_4010 : L_3f99
@@ -225,29 +227,30 @@ L_3f99:
     branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0 ? L_4010 : L_3fc0
 
 L_3fc0:
-    part[0x8:2](GlobalPD) = rgMin[part[0x4:2](GlobalPD)]
-    GlobalPD.grbit = rgMax[part[0x4:2](GlobalPD)]
-    branch part[0x8:2](GlobalPD) != 0xffff ? L_3fee : L_3fe8
+    GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar]
+    GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar]
+    branch GlobalPD.iPlanMin != -1 ? L_3fee : L_3fe8
 
 L_3fe8:
-    part[0x8:2](GlobalPD) = part[0x6:2](GlobalPD)
+    GlobalPD.iPlanMin = GlobalPD.iPlanVal
 
 L_3fee:
-    branch GlobalPD.grbit != 0xffff ? L_3ffe : L_3ff8
+    branch GlobalPD.iPlanMax != -1 ? L_3ffe : L_3ff8
 
 L_3ff8:
-    GlobalPD.grbit = part[0x6:2](GlobalPD)
+    GlobalPD.iPlanMax = GlobalPD.iPlanVal
 
 L_3ffe:
-    branch part[0x8:2](GlobalPD) != GlobalPD.grbit ? L_401c : L_4010
+    branch GlobalPD.iPlanMin != GlobalPD.iPlanMax ? L_401c : L_4010
 
 NoTerra:
-    part[0x8:4](GlobalPD) = 0xffffffff
+    GlobalPD.iPlanMin = -1
+    GlobalPD.iPlanMax = -1
 
 L_401c:
-    part[0xc:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVar[part[0x4:2](GlobalPD)])
-    part[0xe:2](GlobalPD) = sext8to16(rgplr[idPlayer].rgEnvVarMin[part[0x4:2](GlobalPD)])
-    GlobalPD.iPlrMax = sext8to16(rgplr[idPlayer].rgEnvVarMax[part[0x4:2](GlobalPD)])
+    GlobalPD.iPlrVal = sext8to16(rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar])
+    GlobalPD.iPlrMin = sext8to16(rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar])
+    GlobalPD.iPlrMax = sext8to16(rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar])
     call Popup(hwndMine, x, y) -> callresult(void)
     goto L_47d5
 
@@ -478,7 +481,7 @@ L_443c:
 
 L_4476:
     call _wsprintf(rgsz[i], PCTDKT, rgi[i]) -> callresult(int16_t)
-    psz[i] = (&rgsz + loword((0xa * i)))
+    psz[i] = rgsz[i]
     branch rgi[i] != cMinGrafMax ? L_44d2 : L_44cc
 
 L_44cc:
@@ -511,13 +514,12 @@ L_456c:
 L_456f:
     call FLookupPlanet(sel.scan.idpl, &pl) -> callresult(int16_t)
     GlobalPD.grPopup = grPopupMineral
-    part[0x2:4](GlobalPD) = sext16to32((ht + 0xffff))
+    GlobalPD.rgi[0] = sext16to32((ht + 0xffff))
     i = 1
     goto L_45b4
 
 L_459b:
-    LOWORD(GlobalPD.rgi[i]) = 0xffff
-    HIWORD(GlobalPD.rgi[i]) = 0xffff
+    GlobalPD.rgi[i] = -1
     i = (i + 1)
 
 L_45b4:
@@ -527,14 +529,13 @@ L_45bd:
     branch pl.det < 0x3 ? L_478e : L_45cb
 
 L_45cb:
-    part[0xe:2](GlobalPD) = pl.rgpctMinLevel[(ht + 2)]
-    GlobalPD.iPlrMax = 0
-    part[0x6:4](GlobalPD) = pl.fHomeworld
+    GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[(ht + 2)]
+    GlobalPD.rgi[1] = pl.fHomeworld
     branch pl.det <= 0x3 ? L_478e : L_4608
 
 L_4608:
     lVal = 0
-    part[0xa:4](GlobalPD) = pl.rgwtMin[(ht - 1)]
+    GlobalPD.rgi[2] = pl.rgwtMin[(ht - 1)]
     call EstMineralsMined(&pl, rglQuan, -1, 0) -> callresult(void)
     GlobalPD.rgi[4] = rglQuan[(ht - 1)]
     branch pl.iPlayer != -1 ? L_478e : L_4670

@@ -40,7 +40,7 @@ func newDasmAllCmd() *cobra.Command {
 				EmitSem:     emitSem,
 				EmitEffects: emitEffects,
 				EmitASM:     emitAsm,
-				EmitStructs: emitStructs,
+				EmitStructs: emitStructs || emitC, // dump structs when c is output
 				Verbose:     verbose,
 			})
 

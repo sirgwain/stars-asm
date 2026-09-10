@@ -112,7 +112,7 @@ func TestLowerMachineResolvesNearPointerMemory(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "*ppch = (*ppch + 0x1)"
+	want := "*ppch = (*ppch + 1)"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}

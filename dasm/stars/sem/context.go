@@ -83,6 +83,22 @@ func (ctx *FuncContext) addUnionSelectionBlockFact(block machine.BlockID, select
 	})
 }
 
+// unionFactRootPath gets the root symbol and field path for a union fact like
+//
+//	"func": "DoAutomitronAiTurn",
+//	"root": "sel",
+//	"root_path": ["sel", "fl", "lpplord", "rgord"],
+func (ctx *FuncContext) unionFactRootPath(rootName string, fields []string) (symresolve.SymbolPath, bool) {
+	root, ok := ctx.symbolRootByName(rootName)
+	if !ok {
+		return nil, false
+	}
+	if len(fields) == 0 {
+		return root, true
+	}
+	return appendSymbolFieldPath(root, fields)
+}
+
 // SetUnionContexts installs block-entry union contexts for later passes.
 func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolve.UnionContext) {
 	merged := make(map[machine.BlockID]*symresolve.UnionContext, len(contexts))
@@ -176,7 +192,7 @@ func (ctx *FuncContext) initializeConfiguredUnionContexts() {
 		return
 	}
 	for _, fact := range ctx.sdb.UnionRules.FunctionFactsFor(ctx.fs) {
-		root, ok := ctx.symbolRootByName(fact.Root)
+		root, ok := ctx.unionFactRootPath(fact.Root, fact.RootPath)
 		if !ok {
 			continue
 		}
@@ -191,7 +207,7 @@ func (ctx *FuncContext) initializeConfiguredUnionContexts() {
 			continue
 		}
 		ctx.addUnionBlockPathFact(fact)
-		root, ok := ctx.symbolRootByName(fact.Root)
+		root, ok := ctx.unionFactRootPath(fact.Root, fact.RootPath)
 		if !ok {
 			continue
 		}

@@ -409,13 +409,13 @@ L_14d3:
     branch HIWORD(cCanBuild) == HIWORD(lMinNeeded) ? L_108f : L_14de
 
 L_14de:
-    branch *(rgRes+0xe) < 0x0 ? L_1712 : L_14ea
+    branch HIWORD(rgRes[3]) < 0x0 ? L_1712 : L_14ea
 
 L_14ea:
-    branch *(rgRes+0xe) > 0x0 ? L_14f8 : L_14ef
+    branch HIWORD(rgRes[3]) > 0x0 ? L_14f8 : L_14ef
 
 L_14ef:
-    branch LOWORD(rgRes[0x3]) <= 0x0 ? L_1712 : L_14f8
+    branch LOWORD(rgRes[3]) <= 0x0 ? L_1712 : L_14f8
 
 L_14f8:
     branch pprodPartial == 0x0 ? L_1712 : L_1501

@@ -259,9 +259,15 @@ func (l *unionLoader) parseFunctionPathFact(cfg FunctionPathFactJSON, sdb *Symbo
 	if _, ok := variant.MemberForValue(value.Value); !ok {
 		return nil, fmt.Errorf("union function fact %s value %s has no member mapping", cfg.Func, cfg.Value)
 	}
-	rootType, ok := functionOrGlobalRootType(fn, sdb, cfg.Root)
+	components := append([]string{cfg.Root}, cfg.RootPath...)
+
+	rootType, ok := functionOrGlobalPathType(fn, sdb, components)
 	if !ok {
-		return nil, fmt.Errorf("union function fact %s root %s not found", cfg.Func, cfg.Root)
+		return nil, fmt.Errorf(
+			"union function fact %s root path %s not found",
+			cfg.Func,
+			strings.Join(components, "."),
+		)
 	}
 	rootStruct, ok := conditionalSelectionRootType(rootType, cfg.AllElements)
 	if !ok || rootStruct != strct {
@@ -271,6 +277,7 @@ func (l *unionLoader) parseFunctionPathFact(cfg FunctionPathFactJSON, sdb *Symbo
 	return &UnionFunctionPathFact{
 		Func:        fn,
 		Root:        cfg.Root,
+		RootPath:    cfg.RootPath,
 		AllElements: cfg.AllElements,
 		Type:        strct,
 		Path:        append([]string(nil), cfg.Path...),
@@ -297,6 +304,7 @@ func (l *unionLoader) parseBlockPathFact(parent FunctionPathFactJSON, cfg BlockP
 		Func:        fact.Func,
 		BlockOff:    blockOff,
 		Root:        fact.Root,
+		RootPath:    fact.RootPath,
 		AllElements: fact.AllElements,
 		Type:        fact.Type,
 		Path:        append([]string(nil), fact.Path...),
@@ -637,6 +645,7 @@ type unionVariantJSON struct {
 type FunctionPathFactJSON struct {
 	Func           string              `json:"func"`
 	Root           string              `json:"root"`
+	RootPath       []string            `json:"root_path"`
 	AllElements    bool                `json:"all_elements"`
 	Type           string              `json:"type"`
 	Path           []string            `json:"path"`

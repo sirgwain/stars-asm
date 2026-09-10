@@ -17,7 +17,7 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
 L_58a6:
     memset(&(score), 0, 0x14);
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + LOWORD((0x38 * cPlanet)));
+    lpplMac = (lpPlanets + cPlanet);
     goto L_59c9;
 
 L_58ee:
@@ -69,7 +69,7 @@ L_59ad:
     score.cResources = (score.cResources + (uint32_t)(CResourcesAtPlanet(lppl, iPlr)));
 
 L_59c5:
-    lppl = (lppl + 0x38);
+    lppl = (lppl + 1);
 
 L_59c9:
     if ((LOWORD(lppl) < LOWORD(lpplMac)))

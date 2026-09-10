@@ -921,7 +921,7 @@ L_5a3b:
 
 L_5a81:
     i = (i + 1);
-    pchLen = (pchLen + 0x1);
+    pchLen = (pchLen + 1);
 
 L_5a94:
     if ((i >= iOffset))
@@ -972,7 +972,7 @@ L_5aff:
     goto L_5b2c;
 
 L_5b16:
-    pch = (pch + 0x1);
+    pch = (pch + 1);
     i = (*(pch) & 0xf);
 
 L_5b2c:
@@ -998,7 +998,7 @@ L_5b3e:
 
 L_5b50:
     *(pszOut) = rgTUTLookupTable[iBuild];
-    pszOut = (pszOut + 0x1);
+    pszOut = (pszOut + 1);
     iBuild = 0;
 
 L_5b66:
@@ -1006,5 +1006,5 @@ L_5b66:
 
 L_5b69:
     *(pszOut) = 0;
-    return (pszOut - pchOut);
+    return (pszOut + (-pchOut));
 }

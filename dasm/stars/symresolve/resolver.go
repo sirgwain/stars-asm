@@ -320,7 +320,7 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 	if ctx != nil {
 		selection, ok := ctx.SelectionFor(base, strct)
 		if ok {
-			return selectUnionMemberMatch(strct, matches, selection.Member)
+			return SelectUnionMemberMatch(strct, matches, selection.Member)
 		}
 	}
 	if ctx == nil {
@@ -330,11 +330,11 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 	if !ok || rule.DefaultMember == nil {
 		return matches
 	}
-	return selectUnionMemberMatch(strct, matches, rule.DefaultMember)
+	return SelectUnionMemberMatch(strct, matches, rule.DefaultMember)
 }
 
-// selectUnionMemberMatch narrows matches to the requested union member.
-func selectUnionMemberMatch(strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, member *typeinfo.StructField) []typeinfo.StructFieldMatch {
+// SelectUnionMemberMatch narrows matches to the requested union member.
+func SelectUnionMemberMatch(strct *typeinfo.Struct, matches []typeinfo.StructFieldMatch, member *typeinfo.StructField) []typeinfo.StructFieldMatch {
 	for _, match := range matches {
 		if match.Field == member {
 			return []typeinfo.StructFieldMatch{match}

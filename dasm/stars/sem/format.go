@@ -127,9 +127,6 @@ func formatAddressOf(e *AddressOf) string {
 	if base, ok := arrayAddressBase(e.Target, e.TypeInfo); ok {
 		return FormatExpr(base)
 	}
-	if base, ok := zeroIndexArrayBase(e.Target); ok {
-		return FormatExpr(base)
-	}
 	return "&" + FormatExpr(e.Target)
 }
 
@@ -144,18 +141,6 @@ func arrayAddressBase(target LValue, expected typeinfo.Type) (Expr, bool) {
 		return decayed, true
 	}
 	return nil, false
-}
-
-// zeroIndexArrayBase returns the array base for address-of array[0].
-func zeroIndexArrayBase(target LValue) (Expr, bool) {
-	index, ok := target.(*ArrayIndex)
-	if !ok || !constExprEquals(index.Index, 0) {
-		return nil, false
-	}
-	if _, ok := index.Base.ExprType().(*typeinfo.Array); !ok {
-		return nil, false
-	}
-	return index.Base, true
 }
 
 // formatFieldAccess renders a semantic field projection.
