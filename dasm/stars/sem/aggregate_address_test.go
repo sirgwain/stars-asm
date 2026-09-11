@@ -103,7 +103,7 @@ func TestAddressRecoveryUsesExpectedPointee(t *testing.T) {
 	bytePointer := &typeinfo.Pointer{Elem: buffer.ExprType().(*typeinfo.Array).Elem, Class: typeinfo.PtrNear}
 	interior := &AddressOf{Target: &Part{Base: buffer, ByteOff: 3, Width: 0, TypeInfo: typeinfo.U16}, TypeInfo: bytePointer}
 	resolved, ok = (&resolveLateAddressesProcessor{ctx: ctx}).resolveAddressOfPart(interior)
-	if !ok || FormatExpr(resolved) != "(rgbCur + 0x3)" {
+	if !ok || FormatExpr(resolved) != "(rgbCur + 3)" {
 		t.Fatalf("array address = %s, want rgbCur + 3", FormatExpr(resolved))
 	}
 	field := &AddressOf{Target: &Part{Base: ord, ByteOff: 4, Width: 0, TypeInfo: typeinfo.U16}, TypeInfo: &typeinfo.Pointer{Elem: typeinfo.I16, Class: typeinfo.PtrNear}}

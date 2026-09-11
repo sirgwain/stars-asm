@@ -661,7 +661,7 @@ L_456c:
 L_456f:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.rgi[0] = (uint32_t)((ht + 0xffff));
+    GlobalPD.rgi[0] = (uint32_t)((ht - 1));
     i = 1;
     goto L_45b4;
 

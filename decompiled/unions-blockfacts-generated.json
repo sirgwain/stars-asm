@@ -136,6 +136,24 @@
       ]
     },
     {
+      "func": "CLayMinesFromLpfl",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_29d7",
+          "value": "hstMines"
+        }
+      ]
+    },
+    {
       "func": "ClickInPlanetOrders",
       "root": "GlobalPD",
       "root_path": null,
@@ -239,6 +257,24 @@
       ]
     },
     {
+      "func": "CMineFromLpfl",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_26ac",
+          "value": "hstMining"
+        }
+      ]
+    },
+    {
       "func": "CMineSweepFromLphul",
       "root": "part",
       "root_path": null,
@@ -265,6 +301,24 @@
         {
           "block": "L_2ce9",
           "value": "hstBeam"
+        }
+      ]
+    },
+    {
+      "func": "CPtsCloakFromLphs",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_31c8",
+          "value": "hstSpecialE"
         }
       ]
     },
@@ -325,8 +379,24 @@
           "value": "hstHull"
         },
         {
+          "block": "L_413b",
+          "value": "hstSBHull"
+        },
+        {
+          "block": "L_4157",
+          "value": "hstSBHull"
+        },
+        {
+          "block": "L_4210",
+          "value": "hstSBHull"
+        },
+        {
           "block": "L_4354",
-          "value": "hstHull"
+          "value": "hstSBHull"
+        },
+        {
+          "block": "L_437a",
+          "value": "hstSBHull"
         },
         {
           "block": "L_43e7",
@@ -567,11 +637,39 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_0d44",
+          "value": "ithMysteryTrader"
+        },
+        {
           "block": "L_0daf",
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_0df8",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_113e",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_1180",
+          "value": "ithMysteryTrader"
+        },
+        {
           "block": "L_11f2",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_16c4",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_181c",
+          "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_1829",
           "value": "ithMysteryTrader"
         },
         {
@@ -614,6 +712,10 @@
       "enum": "HullSlotType",
       "block_path_facts": [
         {
+          "block": "L_4e5b",
+          "value": "hstBeam"
+        },
+        {
           "block": "L_4ea3",
           "value": "hstBeam"
         },
@@ -628,6 +730,24 @@
         {
           "block": "L_5114",
           "value": "hstTorp"
+        }
+      ]
+    },
+    {
+      "func": "DpShieldOfShdef",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_0faa",
+          "value": "hstShield"
         }
       ]
     },
@@ -684,6 +804,10 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_1234",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_125d",
           "value": "ithMineralPacket"
         },
@@ -700,15 +824,39 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_1869",
+          "value": "ithWormhole"
+        },
+        {
           "block": "L_19a2",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_1ac5",
+          "value": "ithMysteryTrader"
         },
         {
           "block": "L_1b75",
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_1bda",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_1d8c",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1df1",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1e0e",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1e6d",
           "value": "ithMinefield"
         }
       ]
@@ -937,8 +1085,36 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_211b",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_224b",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_2262",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_24bc",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_26d5",
+          "value": "ithWormhole"
+        },
+        {
+          "block": "L_26e9",
+          "value": "ithWormhole"
+        },
+        {
           "block": "L_2702",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_2813",
+          "value": "ithMysteryTrader"
         },
         {
           "block": "L_2916",
@@ -1409,6 +1585,31 @@
         {
           "block": "L_5131",
           "value": "grTaskXfer"
+        }
+      ]
+    },
+    {
+      "func": "FFleetInField",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_1cf6",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1d7e",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1d83",
+          "value": "ithMinefield"
         }
       ]
     },
@@ -1900,6 +2101,18 @@
         {
           "block": "L_513a",
           "value": "ithMinefield"
+        },
+        {
+          "block": "L_517c",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_5fd2",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_5fe9",
+          "value": "ithMinefield"
         }
       ]
     },
@@ -1915,7 +2128,44 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_609a",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_60d0",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_66e3",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_66f7",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_66fc",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_6717",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "FTravelThroughMineFields",
+      "root": "lpthHit",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_5650",
           "value": "ithMinefield"
         }
       ]
@@ -1953,8 +2203,16 @@
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_623b",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_6268",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_6d46",
+          "value": "ithMinefield"
         },
         {
           "block": "L_6d73",
@@ -1967,6 +2225,10 @@
         {
           "block": "L_6dd0",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_6ec1",
+          "value": "ithMinefield"
         },
         {
           "block": "L_6eee",
@@ -2013,6 +2275,32 @@
         {
           "block": "L_40a2",
           "value": "ithWormhole"
+        }
+      ]
+    },
+    {
+      "func": "GetPlanetScannerRange",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_4d97",
+          "value": "hstPlanetary"
+        },
+        {
+          "block": "L_4da4",
+          "value": "hstPlanetary"
+        },
+        {
+          "block": "L_4db4",
+          "value": "hstPlanetary"
         }
       ]
     },
@@ -2118,6 +2406,58 @@
       ]
     },
     {
+      "func": "InitFromHuldef",
+      "root": "part",
+      "root_path": null,
+      "all_elements": false,
+      "type": "PART",
+      "path": [
+        "hs",
+        "grhst"
+      ],
+      "enum": "HullSlotType",
+      "block_path_facts": [
+        {
+          "block": "L_3d57",
+          "value": "hstSpecialE"
+        }
+      ]
+    },
+    {
+      "func": "IValidateWormholePos",
+      "root": "lpthWorm",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_086a",
+          "value": "ithWormhole"
+        }
+      ]
+    },
+    {
+      "func": "KeepFleetsMoving",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_4639",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "LComputePower",
       "root": "part",
       "root_path": null,
@@ -2144,6 +2484,23 @@
         {
           "block": "L_0cea",
           "value": "hstSpecialE"
+        }
+      ]
+    },
+    {
+      "func": "LpthWormFind",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_13e2",
+          "value": "ithWormhole"
         }
       ]
     },
@@ -2475,6 +2832,18 @@
         },
         {
           "block": "L_1cb3",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_1ccd",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_1cda",
+          "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_1ce7",
           "value": "ithMineralPacket"
         },
         {
@@ -2810,6 +3179,10 @@
       ],
       "enum": "ThingType",
       "block_path_facts": [
+        {
+          "block": "L_2790",
+          "value": "ithMinefield"
+        },
         {
           "block": "L_27e5",
           "value": "ithMineralPacket"
@@ -3149,6 +3522,31 @@
       ]
     },
     {
+      "func": "SetAiFleetIdealSpeed",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_1e18",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1f3b",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_1f43",
+          "value": "ithMinefield"
+        }
+      ]
+    },
+    {
       "func": "SetMineralTitleBar",
       "root": "lpThings",
       "root_path": null,
@@ -3181,6 +3579,10 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_a5fb",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_a623",
           "value": "ithMysteryTrader"
         },
@@ -3197,8 +3599,28 @@
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_a85a",
+          "value": "ithWormhole"
+        },
+        {
           "block": "L_a8aa",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_a8cb",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_a936",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_a949",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_a94e",
+          "value": "ithMinefield"
         },
         {
           "block": "L_a956",
@@ -3232,6 +3654,10 @@
         {
           "block": "L_9fed",
           "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_a01a",
+          "value": "ithMinefield"
         }
       ]
     },
@@ -3246,6 +3672,10 @@
       ],
       "enum": "ThingType",
       "block_path_facts": [
+        {
+          "block": "L_b0de",
+          "value": "ithMinefield"
+        },
         {
           "block": "L_b106",
           "value": "ithMysteryTrader"
@@ -3263,8 +3693,16 @@
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_b331",
+          "value": "ithWormhole"
+        },
+        {
           "block": "L_b381",
           "value": "ithWormhole"
+        },
+        {
+          "block": "L_b3a2",
+          "value": "ithMinefield"
         },
         {
           "block": "L_b3f2",
@@ -3290,6 +3728,10 @@
         {
           "block": "L_baa4",
           "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_c275",
+          "value": "ithMinefield"
         }
       ]
     },
@@ -3305,6 +3747,10 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_bd3c",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_bd64",
           "value": "ithMysteryTrader"
         },
@@ -3319,6 +3765,10 @@
         {
           "block": "L_bf62",
           "value": "ithMysteryTrader"
+        },
+        {
+          "block": "L_bf8f",
+          "value": "ithWormhole"
         },
         {
           "block": "L_bfbc",
@@ -3410,7 +3860,63 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_77e4",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_784a",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_784f",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7858",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_78b3",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_78d7",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_78dc",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_78e3",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7900",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7913",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7918",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7920",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_7931",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7a0c",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7a11",
           "value": "ithMinefield"
         },
         {
@@ -3418,7 +3924,63 @@
           "value": "ithMinefield"
         },
         {
+          "block": "L_7bc9",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7c2f",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7c34",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7c3d",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7c98",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7cbc",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7cc1",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7cc8",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7ce5",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7cf8",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7cfd",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7d05",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_7d16",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7de9",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7dee",
           "value": "ithMinefield"
         },
         {
@@ -3479,7 +4041,39 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_737c",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7391",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_74cc",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7527",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7541",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_7593",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_75d5",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_75e8",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_75ed",
           "value": "ithMinefield"
         },
         {
@@ -3673,12 +4267,8 @@
           "value": "hstNone"
         },
         {
-          "block": "L_4986",
-          "value": "hstNone"
-        },
-        {
           "block": "L_4a02",
-          "value": "hstNone"
+          "value": "hstArmor"
         }
       ]
     },
@@ -3700,6 +4290,23 @@
         {
           "block": "L_677a",
           "value": "grobjFleet"
+        }
+      ]
+    },
+    {
+      "func": "ValidateWaypoints",
+      "root": "lpth",
+      "root_path": null,
+      "all_elements": false,
+      "type": "THING",
+      "path": [
+        "ith"
+      ],
+      "enum": "ThingType",
+      "block_path_facts": [
+        {
+          "block": "L_6b90",
+          "value": "ithWormhole"
         }
       ]
     },

@@ -37,7 +37,7 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 	if addr, ok := sr.addressFromStackAddressMemory(mem); ok {
 		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
 	}
-	if seg, ok := mem.Seg.(*machine.Reg); ok && (seg.Val == asm.RegDS || seg.Val == asm.RegCS) && mem.Base != nil {
+	if seg, ok := mem.Seg.(*machine.Reg); ok && seg.Val.IsSeg() && mem.Base != nil {
 		addr, ok := sr.addressFromValue(mem.Base, sr.segFromRegister(seg.Val))
 		if ok {
 			addr.deref = resolvedAddressIsPointer(addr)
@@ -57,6 +57,14 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 		}
 	}
 
+	if addr, ok := sr.addressFromFarPointerMemory(mem); ok {
+		return resolvedAddressWithExpectedType(
+			sr.addressWithExactPath(mem, addr),
+			expected,
+			mem.Width,
+		), true
+	}
+
 	if addr, ok := sr.addressFromSplitFarPointer(mem.Seg, mem.Base, mem.Disp); ok {
 		return resolvedAddressWithExpectedType(
 			sr.addressWithExactPath(mem, addr),
@@ -72,6 +80,41 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 	}
 
 	return resolvedAddress{}, false
+}
+
+// addressFromFarPointerMemory normalizes memory addressed through the
+// segment/offset projections of the same machine far-pointer value.
+//
+// For example:
+//
+//	farseg(load(dword [bp-psz])):
+//	    [faroff(load(dword [bp-psz])) + disp]
+//
+// means that the effective address was formed by following psz.  Preserve
+// that fact as deref=true; exact typed projection is handled separately.
+func (sr *symbolResolver) addressFromFarPointerMemory(mem machine.MemoryAddress) (resolvedAddress, bool) {
+	segment, ok := mem.Seg.(*machine.FarPointer)
+	if !ok {
+		return resolvedAddress{}, false
+	}
+
+	parent, ok := commonFarPointerParent(segment, mem.Base)
+	if !ok {
+		return resolvedAddress{}, false
+	}
+
+	addr, ok := sr.addressFromValue(parent, 0)
+	if !ok || !resolvedAddressIsPointer(addr) {
+		return resolvedAddress{}, false
+	}
+
+	// The machine effective address was formed from the pointer's
+	// segment:offset value, so exactly one pointer crossing is proven.
+	addr.deref = true
+
+	// Base has already been accounted for by parent. Add only the
+	// MemoryAddress displacement/index components.
+	return sr.addMemoryAddressTerms(addr, mem), true
 }
 
 // addressFromStackAddressMemory resolves SS:[&local+offset] through the

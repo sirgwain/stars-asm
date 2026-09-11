@@ -1273,19 +1273,19 @@ L_0fff:
     goto L_107d;
 
 L_1008:
-    d = ((uint32_t)((d * 0x8)) / 3);
+    d = ((uint32_t)((d * 8)) / 3);
     goto L_107d;
 
 L_101d:
-    d = ((uint32_t)((d * 0x4)) / 3);
+    d = ((uint32_t)((d * 4)) / 3);
     goto L_107d;
 
 L_1030:
-    d = ((uint32_t)((d * 0x4)) / 5);
+    d = ((uint32_t)((d * 4)) / 5);
     goto L_107d;
 
 L_1043:
-    d = ((uint32_t)((d * 0x2)) / 3);
+    d = ((uint32_t)((d * 2)) / 3);
     goto L_107d;
 
 L_1057:
@@ -2317,7 +2317,7 @@ L_2104:
         goto L_211b;
 
 L_211b:
-    if ((*(lpth + 0xc) != i))
+    if ((lpth->thm.iType != i))
         goto L_243c;
     else
         goto L_2132;
@@ -2413,7 +2413,7 @@ L_223a:
         goto L_224b;
 
 L_224b:
-    if ((*(lpth + 0xd) != fDetonating))
+    if ((lpth->thm.fDetonate != fDetonating))
         goto L_243c;
     else
         goto L_2262;
@@ -2421,7 +2421,7 @@ L_224b:
 L_2262:
     pt.x = lpth->pt.x;
     pt.y = lpth->pt.y;
-    sqrt((double)(*(lpth + 0x6)));
+    sqrt((double)(lpth->thm.cMines));
     dRange = LOWORD(__ftol());
     rc.left = PtToScan(((xOff + pt.x) - dRange));
     rc.top = PtToScan(((yOff - pt.y) - dRange));
@@ -2532,11 +2532,11 @@ L_248c:
 
 L_24bc:
     SetBrushOrg(hdc, ptOrigin.x, ptOrigin.y);
-    SelectObject(hdc, rghbrPat[*(lpth + 0xc)]);
+    SelectObject(hdc, rghbrPat[lpth->thm.iType]);
     SetTextColor(hdc, 0xffff00);
     pt.x = lpth->pt.x;
     pt.y = lpth->pt.y;
-    sqrt((double)(*(lpth + 0x6)));
+    sqrt((double)(lpth->thm.cMines));
     dRange = LOWORD(__ftol());
     rc.left = PtToScan(((xOff + pt.x) - dRange));
     rc.top = PtToScan(((yOff - pt.y) - dRange));
@@ -2598,13 +2598,13 @@ L_26a0:
         goto L_26d5;
 
 L_26d5:
-    if ((lpth->idFull >= *(lpth + 0xc)))
+    if ((lpth->idFull >= lpth->thw.idPartner))
         goto L_277e;
     else
         goto L_26e9;
 
 L_26e9:
-    if ((((0x1 << idPlayer) & *(lpth + 0xa)) == 0x0))
+    if ((((0x1 << idPlayer) & lpth->thw.grbitPlrTrav) == 0x0))
         goto L_277e;
     else
         goto L_2702;
@@ -2652,7 +2652,7 @@ L_2813:
     hbmpTrSav = SelectObject(hdcMem, hbmpScanShip);
     crFore = SetTextColor(hdc, 0xffff00);
     crBack = SetBkColor(hdc, 0x0);
-    GetDxDyOrientation((*(lpth + 0x6) - lpth->pt.x), (*(lpth + 0x8) - lpth->pt.y), &(ptO), &(ptD));
+    GetDxDyOrientation((lpth->tht.ptDest.x - lpth->pt.x), (lpth->tht.ptDest.y - lpth->pt.y), &(ptO), &(ptD));
     BitBlt(hdc, (pt.x - ((uint32_t)(ptD.x) / 2)), (pt.y - ((uint32_t)(ptD.y) / 2)), ptD.x, ptD.y, hdcMem, ptO.x, ptO.y, SRCPAINT);
     SetTextColor(hdc, crFore);
     SetBkColor(hdc, crBack);
@@ -2909,7 +2909,7 @@ L_2d33:
     goto L_2d74;
 
 L_2d42:
-    SelectObject(hdc, rghfontArial6);
+    SelectObject(hdc, rghfontArial6[0]);
     goto L_2d74;
 
 L_2d54:
@@ -3655,7 +3655,7 @@ L_38c3:
 
 L_38c6:
     l = lppl->rgwtMin[j];
-    l = (int32_t)((((uint32_t)(((uint32_t)(cMinGrafMax) / 0x28)) + l) / (uint32_t)(((uint32_t)(cMinGrafMax) / 0x14))));
+    l = (int32_t)((((uint32_t)(((uint32_t)(cMinGrafMax) / 40)) + l) / (uint32_t)(((uint32_t)(cMinGrafMax) / 20))));
     if ((HIWORD(l) < 0x0))
         goto L_393e;
     else
@@ -4270,7 +4270,7 @@ L_4313:
         goto L_4320;
 
 L_4320:
-    rgWhatsHere[idP] = (rgWhatsHere[idP] + LOBYTE((yBmp + 0x1)));
+    rgWhatsHere[idP] = (rgWhatsHere[idP] + LOBYTE((yBmp + 1)));
     yBmp = ((uint16_t)(rgWhatsHere[idP]) - 1);
     if ((fSelected == 0))
         goto L_43b9;
@@ -5646,8 +5646,8 @@ L_5b0b:
     goto L_5c63;
 
 L_5b14:
-    pt.x = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((uint32_t)(dx5) * (uint32_t)(i))) * 0x2)) + (int32_t)(j)) / 0xa))) + ptCur.x);
-    pt.y = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((uint32_t)(dy5) * (uint32_t)(i))) * 0x2)) + (int32_t)(j)) / 0xa))) + ptCur.y);
+    pt.x = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((uint32_t)(dx5) * (uint32_t)(i))) * 2)) + (int32_t)(j)) / 10))) + ptCur.x);
+    pt.y = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((uint32_t)(dy5) * (uint32_t)(i))) * 2)) + (int32_t)(j)) / 10))) + ptCur.y);
     if ((i <= 0))
         goto L_5c12;
     else
@@ -5874,8 +5874,8 @@ L_5fd9:
 
 L_5fe7:
     hpenSav = SelectObject(hdc, hpenStarbase);
-    pt.x = sel.fl.lpplord->rgord[0x0].pt.x;
-    pt.y = sel.fl.lpplord->rgord[0x0].pt.y;
+    pt.x = sel.fl.lpplord->rgord[0].pt.x;
+    pt.y = sel.fl.lpplord->rgord[0].pt.y;
     LogicalToScan(&(pt));
     MoveTo(hdc, pt.x, pt.y);
     i = 1;
@@ -5905,8 +5905,8 @@ L_6099:
 L_60a5:
     hpenSav = SelectObject(hdc, hpenShip);
     iRopSav = SetROP2(hdc, 7);
-    pt.x = sel.fl.lpplord->rgord[0x0].pt.x;
-    pt.y = sel.fl.lpplord->rgord[0x0].pt.y;
+    pt.x = sel.fl.lpplord->rgord[0].pt.x;
+    pt.y = sel.fl.lpplord->rgord[0].pt.y;
     if ((pt.x != sel.pt.x))
         goto L_60f8;
     else
@@ -7260,7 +7260,7 @@ L_7567:
 
 L_7590:
     cpt = 3;
-    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct + 0x1)].pt;
+    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct + 1)].pt;
     goto L_75c6;
 
 L_75c1:
@@ -7360,7 +7360,7 @@ L_7797:
 
 L_77c2:
     *(lpord) = *((lpord + (-1)));
-    LOWORD(lpord) = pscan->pt.x;
+    lpord->pt.x = pscan->pt.x;
     lpord->pt.y = pscan->pt.y;
     goto L_785a;
 
@@ -7428,8 +7428,8 @@ L_7942:
         goto L_794f;
 
 L_794f:
-    /* untranslated: call fmemset(part[0xfff6:4](*lpord), 0, 0xa) -> callresult(void *) */
-    /* untranslated: lpord-0xc = ((part[0x6:2](lpord[neg(1)]) & 0xfff0) | 0x0) */
+    fmemset(((uint8_t *)(lpord) + -10), 0, 0xa);
+    lpord[(-1)].grTask = grTaskNone;
     FLookupFleet(-1, sel.fl.id);
 
 L_7990:
@@ -7710,19 +7710,19 @@ L_7d6c:
 
 L_7d73:
     t_call_7d8d = LGetFleetStat(lpfl, 1);
-    if ((HIWORD(lpfl->rgwtMin[0x4]) < HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
+    if ((HIWORD(lpfl->rgwtMin[4]) < HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
         goto LOptimizeSpeed;
     else
         goto L_7daf;
 
 L_7daf:
-    if ((HIWORD(lpfl->rgwtMin[0x4]) > HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
+    if ((HIWORD(lpfl->rgwtMin[4]) > HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
         goto L_7dbd;
     else
         goto L_7db4;
 
 L_7db4:
-    if ((LOWORD(lpfl->rgwtMin[0x4]) < LOWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
+    if ((LOWORD(lpfl->rgwtMin[4]) < LOWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
         goto LOptimizeSpeed;
     else
         goto L_7dbd;
@@ -7773,19 +7773,19 @@ LTryLimitedSpeed:
 L_7e2a:
     lpord->iWarp = iWarp;
     lFuel = LFuelUseToWaypoint(lpfl, iwp, 1);
-    if ((HIWORD(lFuel) < HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(lFuel) < HIWORD(lpfl->rgwtMin[4])))
         goto L_7e89;
     else
         goto L_7e79;
 
 L_7e79:
-    if ((HIWORD(lFuel) > HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(lFuel) > HIWORD(lpfl->rgwtMin[4])))
         goto LDecWarp;
     else
         goto L_7e7e;
 
 L_7e7e:
-    if ((LOWORD(lFuel) > LOWORD(lpfl->rgwtMin[0x4])))
+    if ((LOWORD(lFuel) > LOWORD(lpfl->rgwtMin[4])))
         goto LDecWarp;
     else
         goto L_7e89;
@@ -8104,9 +8104,9 @@ L_8200:
     SetScanWp(i);
 
 L_820b:
-    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct + 0xffff)].pt;
-    ptPrev.x = rgpt[0x2].x;
-    ptPrev.y = rgpt[0x2].y;
+    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct - 1)].pt;
+    ptPrev.x = rgpt[2].x;
+    ptPrev.y = rgpt[2].y;
     if ((sel.iwpAct != (sel.fl.cord - 1)))
         goto L_8257;
     else
@@ -8118,9 +8118,9 @@ L_824f:
 
 L_8257:
     cpt = 4;
-    rgpt[3] = sel.fl.lpplord->rgord[(sel.iwpAct + 0x1)].pt;
-    ptNext.x = rgpt[0x3].x;
-    ptNext.y = rgpt[0x3].y;
+    rgpt[3] = sel.fl.lpplord->rgord[(sel.iwpAct + 1)].pt;
+    ptNext.x = rgpt[3].x;
+    ptNext.y = rgpt[3].y;
 
 L_8291:
     rgpt[0] = sel.fl.lpplord->rgord[sel.iwpAct].pt;
@@ -8322,8 +8322,8 @@ L_8508:
     sbar.psz = 0x0;
 
 L_850d:
-    sbar.pt.x = rgpt[0x0].x;
-    sbar.pt.y = rgpt[0x0].y;
+    sbar.pt.x = rgpt[0].x;
+    sbar.pt.y = rgpt[0].y;
     sbar.grbit = scan.grobj;
     LogicalToScan(rgpt);
     DrawScanXorLines(hdc, rgpt, cpt);
@@ -8607,7 +8607,7 @@ L_8960:
     lpord = &(sel.fl.lpplord->rgord[sel.iwpAct]);
     lpord->grobj = scan.grobj;
     lpord->id = i;
-    LOWORD(lpord) = scan.pt.x;
+    lpord->pt.x = scan.pt.x;
     lpord->pt.y = scan.pt.y;
     t_scratch_m8a_2 = IWarpBestForWaypoint(&(sel.fl), lpord);
     lpord->iWarp = t_scratch_m8a_2;
@@ -9396,7 +9396,7 @@ L_960c:
         goto L_9627;
 
 L_9627:
-    ifl = ((LOWORD((0xa * ifl)) + (uint16_t)(*(pch))) - 48);
+    ifl = ((LOWORD((10 * ifl)) + (uint16_t)(*(pch))) - 48);
     pch = (pch + 1);
     if ((ifl > 512))
         goto LNotAFleetId;
@@ -9507,8 +9507,8 @@ NoInfo:
     goto L_985e;
 
 L_97dd:
-    dx = (lpfl->lpplord->rgord[0x1].pt.x - lpfl->pt.x);
-    dy = (lpfl->lpplord->rgord[0x1].pt.y - lpfl->pt.y);
+    dx = (lpfl->lpplord->rgord[1].pt.x - lpfl->pt.x);
+    dy = (lpfl->lpplord->rgord[1].pt.y - lpfl->pt.y);
 
 L_9807:
     goto L_985e;

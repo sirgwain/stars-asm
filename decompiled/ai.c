@@ -599,19 +599,19 @@ L_07e1:
         goto L_07f8;
 
 L_07f8:
-    if ((HIWORD(lppl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
         goto L_0818;
     else
         goto L_0805;
 
 L_0805:
-    if ((HIWORD(lppl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
         goto L_07a2;
     else
         goto L_080a;
 
 L_080a:
-    if ((LOWORD(lppl->rgwtMin[0x3]) < 0xc8))
+    if ((LOWORD(lppl->rgwtMin[3]) < 0xc8))
         goto L_07a2;
     else
         goto L_0818;
@@ -1317,8 +1317,8 @@ L_110b:
         goto L_1126;
 
 L_1126:
-    dx = (lpfl->pt.x - lpfl->lpplord->rgord[0x1].pt.x);
-    dy = (lpfl->pt.y - lpfl->lpplord->rgord[0x1].pt.y);
+    dx = (lpfl->pt.x - lpfl->lpplord->rgord[1].pt.x);
+    dy = (lpfl->pt.y - lpfl->lpplord->rgord[1].pt.y);
     lDist = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
     if ((HIWORD(lDist) < 0x0))
         goto L_11df;
@@ -1402,8 +1402,7 @@ L_128b:
     ClearAiCurrentTask(lpfl, 1);
     ord.id = idPlanDst;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[idPlanDst].x;
-    ord.pt.y = rgptPlan[idPlanDst].y;
+    ord.pt = rgptPlan[idPlanDst];
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -1497,7 +1496,7 @@ L_1450:
         goto L_146b;
 
 L_146b:
-    id = lpfl->lpplord->rgord[0x1].id;
+    id = lpfl->lpplord->rgord[1].id;
     goto L_1488;
 
 L_147d:
@@ -1511,7 +1510,7 @@ L_1488:
         goto L_14bd;
 
 L_14bd:
-    LOBYTE(LOWORD(lpb)) = (*(lpb) | 0x80);
+    *(lpb) = (*(lpb) | 0x80);
 
 L_14c5:
     goto L_15d1;
@@ -1542,7 +1541,7 @@ L_1506:
         goto L_1521;
 
 L_1521:
-    idPlanDst = lpfl->lpplord->rgord[0x1].id;
+    idPlanDst = lpfl->lpplord->rgord[1].id;
 
 L_152f:
     goto L_153c;
@@ -1576,13 +1575,13 @@ L_1568:
         goto L_1577;
 
 L_1577:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_15d1;
     else
         goto L_1584;
 
 L_1584:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_15d1;
     else
         goto L_158e;
@@ -1674,19 +1673,19 @@ L_16a6:
         goto L_16b6;
 
 L_16b6:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
         goto L_1876;
     else
         goto L_16c3;
 
 L_16c3:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
         goto L_16d2;
     else
         goto L_16c8;
 
 L_16c8:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) <= 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
         goto L_1876;
     else
         goto L_16d2;
@@ -1699,8 +1698,7 @@ L_16d2:
 
 L_16f7:
     memset(&(ord), 0, 0x12);
-    ord.pt.x = rgptPlan[lpplDrop->id].x;
-    ord.pt.y = rgptPlan[lpplDrop->id].y;
+    ord.pt = rgptPlan[lpplDrop->id];
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
     ord.fValidTask = 0x1;
@@ -1725,8 +1723,7 @@ L_17e9:
     memset(&(ord), 0, 0x12);
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[lpplDrop->id].x;
-    ord.pt.y = rgptPlan[lpplDrop->id].y;
+    ord.pt = rgptPlan[lpplDrop->id];
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;
@@ -2944,19 +2941,19 @@ L_2aad:
         goto L_2abb;
 
 L_2abb:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
         goto L_2af3;
     else
         goto L_2ac5;
 
 L_2ac5:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
         goto L_2ad5;
     else
         goto L_2aca;
 
 L_2aca:
-    if ((LOWORD(sel.pl.rgwtMin[0x3]) <= 0xbb8))
+    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0xbb8))
         goto L_2af3;
     else
         goto L_2ad5;
@@ -2966,19 +2963,19 @@ L_2ad5:
     goto L_2b6d;
 
 L_2af3:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
         goto L_2b2b;
     else
         goto L_2afd;
 
 L_2afd:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
         goto L_2b0d;
     else
         goto L_2b02;
 
 L_2b02:
-    if ((LOWORD(sel.pl.rgwtMin[0x3]) <= 0x7d0))
+    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0x7d0))
         goto L_2b2b;
     else
         goto L_2b0d;
@@ -2988,19 +2985,19 @@ L_2b0d:
     goto L_2b6d;
 
 L_2b2b:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
         goto L_2b63;
     else
         goto L_2b35;
 
 L_2b35:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
         goto L_2b45;
     else
         goto L_2b3a;
 
 L_2b3a:
-    if ((LOWORD(sel.pl.rgwtMin[0x3]) <= 0x3e8))
+    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0x3e8))
         goto L_2b63;
     else
         goto L_2b45;
@@ -3078,8 +3075,7 @@ L_2c3d:
     vlpbAiPlanet[((lpplTarget->id * 16) + 10)] = (vlpbAiPlanet[((lpplTarget->id * 16) + 0xa)] | 0x80);
     ord.id = lpplTarget->id;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[lpplTarget->id].x;
-    ord.pt.y = rgptPlan[lpplTarget->id].y;
+    ord.pt = rgptPlan[lpplTarget->id];
 
 FinishTargeting:
     ord.grTask = grTaskNone;
@@ -3109,8 +3105,7 @@ L_2cfb:
 L_2d04:
     ord.id = lpflTarget->id;
     ord.grobj = grobjFleet;
-    ord.pt.x = lpflTarget->pt.x;
-    ord.pt.y = lpflTarget->pt.y;
+    ord.pt = lpflTarget->pt;
     goto FinishTargeting;
 
 L_2d30:
@@ -3236,25 +3231,25 @@ L_2eb2:
         goto L_2ec1;
 
 L_2ec1:
-    if ((HIWORD(lppl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
         goto TargetPotentArmada;
     else
         goto L_2ece;
 
 L_2ece:
-    if ((HIWORD(lppl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
         goto L_2ede;
     else
         goto L_2ed3;
 
 L_2ed3:
-    if ((LOWORD(lppl->rgwtMin[0x3]) <= 0x3e8))
+    if ((LOWORD(lppl->rgwtMin[3]) <= 0x3e8))
         goto TargetPotentArmada;
     else
         goto L_2ede;
 
 L_2ede:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[0x3])) / 5));
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[3])) / 5));
     FLookupFleet(lpfl->id, sel.fl.id);
 
 L_2f23:
@@ -3388,19 +3383,19 @@ L_30cc:
     t_merge_30e4_0003_wide = (int32_t)((lpfl->rgwtMin[3] / 2));
 
 L_30e4:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) > HIWORD(t_merge_30e4_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_30e4_0003_wide)))
         goto L_310c;
     else
         goto L_30f0;
 
 L_30f0:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) < HIWORD(t_merge_30e4_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_30e4_0003_wide)))
         goto L_30fe;
     else
         goto L_30f5;
 
 L_30f5:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) >= LOWORD(t_merge_30e4_0003_wide)))
+    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_30e4_0003_wide)))
         goto L_310c;
     else
         goto L_30fe;
@@ -4255,38 +4250,38 @@ L_3be3:
         goto L_3bfa;
 
 L_3bfa:
-    if ((HIWORD(lppl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
         goto L_3cfd;
     else
         goto L_3c07;
 
 L_3c07:
-    if ((HIWORD(lppl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
         goto L_3c17;
     else
         goto L_3c0c;
 
 L_3c0c:
-    if ((LOWORD(lppl->rgwtMin[0x3]) >= 0xc8))
+    if ((LOWORD(lppl->rgwtMin[3]) >= 0xc8))
         goto L_3cfd;
     else
         goto L_3c17;
 
 L_3c17:
     ChangeMainObjSel(grobjPlanet, lppl->id);
-    if ((HIWORD(lppl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
         goto L_3c4d;
     else
         goto L_3c36;
 
 L_3c36:
-    if ((HIWORD(lppl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
         goto L_3c46;
     else
         goto L_3c3b;
 
 L_3c3b:
-    if ((LOWORD(lppl->rgwtMin[0x3]) >= 0xc8))
+    if ((LOWORD(lppl->rgwtMin[3]) >= 0xc8))
         goto L_3c4d;
     else
         goto L_3c46;
@@ -5328,7 +5323,7 @@ L_4b07:
 L_4b0d:
 
 L_4b10:
-    idPlanDst = lpfl->lpplord->rgord[0x1].id;
+    idPlanDst = lpfl->lpplord->rgord[1].id;
 
 L_4b24:
     vlpbAiPlanet[((idPlanDst * 16) + 1)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x1)] | 0x80);
@@ -5360,7 +5355,7 @@ L_4b71:
         goto L_4b8c;
 
 L_4b8c:
-    idPlanDst = lpfl->lpplord->rgord[0x1].id;
+    idPlanDst = lpfl->lpplord->rgord[1].id;
 
 L_4b9a:
     goto LCheckForColDrop;
@@ -5406,19 +5401,19 @@ L_4bef:
         goto L_4c17;
 
 L_4c17:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
         goto LBlowAwayOrders;
     else
         goto L_4c24;
 
 L_4c24:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
         goto L_4c33;
     else
         goto L_4c29;
 
 L_4c29:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) <= 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
         goto LBlowAwayOrders;
     else
         goto L_4c33;
@@ -5437,8 +5432,7 @@ L_4c57:
 
 L_4c6e:
     memset(&(ord), 0, 0x12);
-    ord.pt.x = rgptPlan[idPlanDst].x;
-    ord.pt.y = rgptPlan[idPlanDst].y;
+    ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
     ord.grTask = grTaskXfer;
@@ -5504,7 +5498,7 @@ L_4df0:
         goto L_4e0b;
 
 L_4e0b:
-    idPlanDst = lpfl->lpplord->rgord[0x1].id;
+    idPlanDst = lpfl->lpplord->rgord[1].id;
 
 L_4e19:
     goto L_4e26;
@@ -5634,8 +5628,7 @@ L_4fa8:
     memset(&(ord), 0, 0x12);
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[lppl->id].x;
-    ord.pt.y = rgptPlan[lppl->id].y;
+    ord.pt = rgptPlan[lppl->id];
     ord.grTask = grTaskMine;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
@@ -5672,31 +5665,31 @@ L_50a8:
         goto L_50b4;
 
 L_50b4:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
         goto L_5170;
     else
         goto L_50be;
 
 L_50be:
-    if ((HIWORD(sel.pl.rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
         goto L_50cd;
     else
         goto L_50c3;
 
 L_50c3:
-    if ((LOWORD(sel.pl.rgwtMin[0x3]) >= 0x32))
+    if ((LOWORD(sel.pl.rgwtMin[3]) >= 0x32))
         goto L_5170;
     else
         goto L_50cd;
 
 L_50cd:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_5170;
     else
         goto L_50da;
 
 L_50da:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_5170;
     else
         goto L_50e4;
@@ -5804,8 +5797,7 @@ L_5290:
     memset(&(ord), 0, 0x12);
     ord.id = lpplDest->id;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[lpplDest->id].x;
-    ord.pt.y = rgptPlan[lpplDest->id].y;
+    ord.pt = rgptPlan[lpplDest->id];
     ord.grTask = grTaskXfer;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x6;
@@ -6084,8 +6076,7 @@ L_56e5:
     vlpbAiPlanet[((lppl->id * 16) + 10)] = (vlpbAiPlanet[((lppl->id * 16) + 0xa)] | 0x80);
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
-    ord.pt.x = rgptPlan[lppl->id].x;
-    ord.pt.y = rgptPlan[lppl->id].y;
+    ord.pt = rgptPlan[lppl->id];
     ord.grTask = grTaskNone;
     ord.fValidTask = 0x1;
     ord.iWarp = 0x4;

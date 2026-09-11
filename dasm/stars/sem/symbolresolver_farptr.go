@@ -63,6 +63,16 @@ func (sr *symbolResolver) symbolFromFarPointerWordPair(segment machine.Value, of
 				}
 			}
 			if ptr, ok := expected.(*typeinfo.Pointer); ok && ptr.Elem != nil {
+				// DS:offset is also how 16-bit code passes a near pointer through
+				// a far-pointer-shaped argument. When offset is based on a typed
+				// pointer parameter, resolve its field projection first; otherwise
+				// decompose would treat the fixed field offset as an absolute DGROUP
+				// address and misidentify pplr->szName as an interior of game.
+				if sr.hasTypedPointerTerm(offset) {
+					if sym, ok := sr.decomposePointerBase(ptr.Elem.Bytes(), offset, 0); ok {
+						return sym, true
+					}
+				}
 				if sym, ok := sr.decompose(segNum, ptr.Elem.Bytes(), offset, 0); ok {
 					return sym, true
 				}
@@ -91,6 +101,21 @@ func (sr *symbolResolver) symbolFromFarPointerWordPair(segment machine.Value, of
 		return off, true
 	}
 	return nil, false
+}
+
+// hasTypedPointerTerm reports whether an address expression contains a
+// resolved pointer value that can own a field projection.
+func (sr *symbolResolver) hasTypedPointerTerm(value machine.Value) bool {
+	for _, term := range collectAddTerms(value) {
+		if _, ok := term.(*machine.Const); ok {
+			continue
+		}
+		sym, ok := sr.symbolFromValue(term)
+		if ok && typeinfo.IsPointer(sym.Type()) {
+			return true
+		}
+	}
+	return false
 }
 
 // symbolFromNativePointerMemory resolves memory addressed by a collapsed

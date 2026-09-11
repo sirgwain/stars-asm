@@ -308,8 +308,7 @@ L_3fad:
         goto L_3fb7;
 
 L_3fb7:
-    lpfl->pt.x = rgptPlan[lpfl->idPlanet].x;
-    lpfl->pt.y = rgptPlan[lpfl->idPlanet].y;
+    lpfl->pt = rgptPlan[lpfl->idPlanet];
 
 L_3fdb:
     ReadRt();

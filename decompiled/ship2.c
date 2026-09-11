@@ -36,7 +36,7 @@ L_0074:
 
 L_0092:
     pszT = szWork;
-    psz = ((0x5264 + LOWORD(((i + 0xfbcf) * 0x18))) + 0xa);
+    psz = vrgZip[(i - 1073)].szName;
 
 L_00af:
     if (((uint16_t)(*(psz)) == 0))
@@ -150,7 +150,7 @@ L_0202:
         goto L_031e;
 
 L_031e:
-    xCtr = (LOWORD(GetTextExtent(hdc, rgszMinerals[0x2], 9)) + 8);
+    xCtr = (LOWORD(GetTextExtent(hdc, rgszMinerals[2], 9)) + 8);
     i = 0;
     goto L_0438;
 
@@ -270,7 +270,7 @@ L_055f:
         goto L_0579;
 
 L_0579:
-    strcpy(szWork, ((0x5264 + LOWORD((24 * iResTechNow))) + 0xa));
+    strcpy(szWork, vrgZip[iResTechNow].szName);
     goto L_05bd;
 
 L_059a:
@@ -293,7 +293,7 @@ L_0603:
     _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
 
 L_0626:
-    strcpy(((0x5264 + LOWORD((24 * iResTechNow))) + 0xa), szWork);
+    strcpy(vrgZip[iResTechNow].szName, szWork);
     pszT = &(szWork[64]);
     psz = szWork;
 
@@ -723,12 +723,12 @@ L_0cfe:
         goto L_0d6a;
 
 L_0d6a:
-    id = flSrc.lpplord->rgord[0x1].id;
+    id = flSrc.lpplord->rgord[1].id;
     goto L_0dc4;
 
 L_0d77:
-    pt.x = flSrc.lpplord->rgord[0x1].pt.x;
-    pt.y = flSrc.lpplord->rgord[0x1].pt.y;
+    pt.x = flSrc.lpplord->rgord[1].pt.x;
+    pt.y = flSrc.lpplord->rgord[1].pt.y;
     id = 0;
     goto L_0d94;
 
@@ -871,7 +871,7 @@ L_101d:
     goto L_103d;
 
 L_1025:
-    pctKill = LOBYTE(((uint32_t)(rgpct[ishdef]) / 0x3));
+    pctKill = LOBYTE(((uint32_t)(rgpct[ishdef]) / 3));
 
 L_103d:
     dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
@@ -973,7 +973,7 @@ L_11d5:
     dpPerShdefOld = 0;
 
 L_11db:
-    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(rgpct[ishdef]))) / 0x64)));
+    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(rgpct[ishdef]))) / 100)));
     if ((dpPerShdefNew != 0))
         goto L_1217;
     else
@@ -1351,7 +1351,7 @@ L_1847:
     pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 0x2710));
 
 L_186d:
-    *(ppctDmg) = LOWORD((int32_t)(((0x2710 - pctSurvive) / 0x64)));
+    *(ppctDmg) = LOWORD((int32_t)(((10000 - pctSurvive) / 0x64)));
     return 1;
 }
 
@@ -1671,7 +1671,7 @@ L_1e0b:
 
 L_1e1d:
     lpord->fNoAutoTrack = 0x1;
-    LOWORD(lpord) = lpflTarget->pt.x;
+    lpord->pt.x = lpflTarget->pt.x;
     lpord->pt.y = lpflTarget->pt.y;
     goto L_1dd2;
 
@@ -1704,8 +1704,8 @@ L_1e52:
     lpord->grobj = grobjPlanet;
     lpord->id = (lppl->idRoute - 1);
     lpplRoute = LpplFromId((lppl->idRoute - 1));
-    LOWORD(lpord) = rgptPlan[(lppl->idRoute + 0xffff)].x;
-    lpord->pt.y = rgptPlan[(lppl->idRoute + 0xffff)].y;
+    lpord->pt.x = rgptPlan[(lppl->idRoute - 1)].x;
+    lpord->pt.y = rgptPlan[(lppl->idRoute - 1)].y;
     lpord->fValidTask = 0x1;
     iWarp = IFindIdealWarp(lpfl, 0);
     DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y);
@@ -1920,19 +1920,19 @@ L_220b:
 
 L_2214:
     t_call_222b = EstFuelUse(lpfl, 0, iWarp, dTravel, 0);
-    if ((HIWORD(t_call_222b) < HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(t_call_222b) < HIWORD(lpfl->rgwtMin[4])))
         goto L_2254;
     else
         goto L_223f;
 
 L_223f:
-    if ((HIWORD(t_call_222b) > HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(t_call_222b) > HIWORD(lpfl->rgwtMin[4])))
         goto L_224d;
     else
         goto L_2244;
 
 L_2244:
-    if ((LOWORD(t_call_222b) <= LOWORD(lpfl->rgwtMin[0x4])))
+    if ((LOWORD(t_call_222b) <= LOWORD(lpfl->rgwtMin[4])))
         goto L_2254;
     else
         goto L_224d;
@@ -2268,7 +2268,7 @@ L_26ac:
     part.hs.grhst = lphs->grhst;
     HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pcom[1].id))));
+    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pmining->grAbility))));
 
 L_26f1:
     goto L_265d;
@@ -2509,7 +2509,7 @@ L_29d7:
     part.hs.grhst = lphs->grhst;
     HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pcom[1].id))));
+    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pmines->grAbility))));
     goto L_2988;
 
 L_2a1f:
@@ -3167,7 +3167,7 @@ L_31c8:
     part.hs.grhst = lphs->grhst;
     HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    cPts = part.pcom[1].id;
+    cPts = part.pspecial->grAbility;
 
 L_31ee:
     goto L_333b;
@@ -3376,7 +3376,7 @@ L_33a0:
         goto L_3407;
 
 L_3407:
-    strcat(szT, 0x16c4);
+    strcat(szT, " *");
 
 L_3417:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), CB_LIMITTEXT, 0x0, szT);
@@ -3660,8 +3660,7 @@ L_3785:
         goto L_37af;
 
 L_37af:
-    part.hs.grhst = lphul->rghs[ihs].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[ihs]);
+    part.hs = lphul->rghs[ihs];
     FLookupPart(&(part));
     iTech = 0;
     goto L_3843;

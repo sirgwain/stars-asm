@@ -913,7 +913,7 @@ L_18da:
         goto L_18e3;
 
 L_18e3:
-    lpprod = prod;
+    *(lpprod) = prod;
 
 L_18f3:
     if ((fAutoBuild == 0))

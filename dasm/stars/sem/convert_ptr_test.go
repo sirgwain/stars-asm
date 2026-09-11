@@ -348,6 +348,97 @@ func TestConvertTypedNearPointerOffsetPreservesPointerArithmetic(t *testing.T) {
 	}
 }
 
+// TestConvertTypedSegmentedPointerFieldResolvesThroughParameter verifies a
+// DS:offset argument based on a near pointer parameter projects the parameter
+// field instead of treating the field offset as an absolute DGROUP address.
+func TestConvertTypedSegmentedPointerFieldResolvesThroughParameter(t *testing.T) {
+	fx := testfixture.Stars(t)
+	fn := fx.SDB.GetFunction("WriteRtPlr")
+	if fn == nil {
+		t.Fatal("WriteRtPlr not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	pplr := frameLoad(ctx, 0, 0x6, 2)
+	offset := machine.BinaryVal(machine.ValueOpAdd, pplr, machine.ConstVal(0x80))
+	value := &machine.StackWords{Words: []machine.Value{
+		machine.RegVal(asm.RegDS),
+		offset,
+	}}
+	compress := fx.SDB.GetFunction("FCompressUserString")
+	if compress == nil {
+		t.Fatal("FCompressUserString not found")
+	}
+
+	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, compress.Params[0].Type))
+	if got != "pplr->szName" {
+		t.Fatalf("converted segmented pointer field = %q, want pplr->szName", got)
+	}
+}
+
+// TestConvertTypedCodeSegmentIndexedAddressPreservesArrayIndex verifies a
+// CS:offset address whose offset loads an array element keeps both the base
+// array and the loaded index when converted to a pointer argument.
+func TestConvertTypedCodeSegmentIndexedAddressPreservesArrayIndex(t *testing.T) {
+	fx := testfixture.Stars(t)
+	fn := fx.SDB.GetFunction("EnsureRobotoidShdefs")
+	if fn == nil {
+		t.Fatal("EnsureRobotoidShdefs not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	index := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.RegVal(asm.RegCS),
+		Base:  machine.ConstVal(0x1f7e),
+		Width: 2,
+	})
+	offset := machine.BinaryVal(machine.ValueOpAdd, machine.ConstVal(0x1f80), index)
+	value := &machine.StackWords{Words: []machine.Value{
+		machine.RegVal(asm.RegCS),
+		offset,
+	}}
+	create := fx.SDB.GetFunction("FCreateAiShdef")
+	if create == nil {
+		t.Fatal("FCreateAiShdef not found")
+	}
+
+	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, create.Params[2].Type))
+	if got != "&vrgRobAip[vrgRobIshAip[37]]" {
+		t.Fatalf("converted CS indexed pointer = %q, want &vrgRobAip[vrgRobIshAip[37]]", got)
+	}
+}
+
+// TestConvertNearPointerAssignmentUsesDestinationType verifies a two-byte
+// store into char * storage receives typed address recovery just like a wider
+// pointer value, preserving the indexed global array and field.
+func TestConvertNearPointerAssignmentUsesDestinationType(t *testing.T) {
+	fx := testfixture.Stars(t)
+	fn := fx.SDB.GetFunction("ZipOrderDlg")
+	if fn == nil {
+		t.Fatal("ZipOrderDlg not found")
+	}
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	i := frameLoad(ctx, 0xac, -0x6, 2)
+	index := machine.BinaryVal(machine.ValueOpAdd, i, machine.ConstVal(0xfbcf))
+	stride := machine.WordVal(
+		machine.BinaryVal(machine.ValueOpMul, index, machine.ConstVal(0x18)),
+		machine.WordLow,
+	)
+	src := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAdd, machine.ConstVal(0x5264), stride),
+		machine.ConstVal(0xa),
+	)
+	store := machine.StoreEffect{
+		MetaInfo: machine.Meta{InstOff: ctx.fs.Addr.Off + 0xac},
+		Addr:     frameMemoryAccess(ctx, 0xac, -0x32, 2),
+		Src:      src,
+		Width:    2,
+	}
+	got := FormatEffect((&machineConverter{ctx: ctx}).convertEffect(store))
+	if got != "psz = vrgZip[(i + 0xfbcf)].szName" {
+		t.Fatalf("converted near-pointer assignment = %q, want psz = vrgZip[(i + 0xfbcf)].szName", got)
+	}
+}
+
 // TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic verifies a
 // resolved byte lvalue does not replace the pointer expression passed to a call.
 func TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic(t *testing.T) {
@@ -411,7 +502,7 @@ func TestConvertMemoryPreservesInnerZeroArrayIndex(t *testing.T) {
 	}
 
 	got := FormatExpr((&machineConverter{ctx: ctx}).convertMemoryLValue(mem, 4))
-	if got != "rglRandStack[cRandStack][0x0]" {
+	if got != "rglRandStack[cRandStack][0]" {
 		addr, _ := ctx.symbols.addressFromMemory(mem, nil)
 		t.Fatalf("converted memory = %q, want nested zero index; address=%#v", got, addr)
 	}

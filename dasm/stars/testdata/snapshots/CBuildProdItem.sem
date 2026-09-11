@@ -596,7 +596,7 @@ L_18da:
     branch fAutoBuild != 0 ? L_18f3 : L_18e3
 
 L_18e3:
-    lpprod = prod
+    *lpprod = prod
 
 L_18f3:
     branch fAutoBuild == 0 ? L_19a5 : L_18fc

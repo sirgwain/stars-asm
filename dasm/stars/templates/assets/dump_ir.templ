@@ -1,2 +1,31 @@
 {{ .Func.Decl }} {
-{{ renderLocals . }}{{ renderBlocks . }}}
+{{ renderLocals . }}
+{{- range $i, $block := .Blocks -}}
+{{- if $i }}
+{{ end -}}
+{{ $block.Label }}:
+{{- if $.Options.ShowAsm }}
+  instrs:
+{{- range highlightText "nasm" (renderAsmBlock $.SemView $block.SemBlock) $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if and $.Options.ShowEffects $block.SemBlock.Machine }}
+  effects:
+{{- range highlightLines "c" $block.SemBlock.Machine $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if and $.Options.ShowSem $block.SemBlock.Effects }}
+  sem:
+{{- range highlightLines "c" $block.SemBlock.Effects $.Options.ShowColor }}
+    {{ . }}
+{{- end }}
+{{- end }}
+{{- if showIRSections $ }}
+  ir:
+{{- end }}
+{{- range $block.Stmts }}
+	{{ formatIRStmt . }}
+{{- end }}
+{{ end -}}}

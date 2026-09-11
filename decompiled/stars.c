@@ -204,7 +204,7 @@ L_0260:
 
 L_0270:
     lpT = (lpT + 1);
-    i = ((LOWORD((0xa * i)) + (uint16_t)(*(lpT))) - 48);
+    i = ((LOWORD((10 * i)) + (uint16_t)(*(lpT))) - 48);
     if ((i <= 1000))
         goto L_0250;
     else
@@ -848,9 +848,9 @@ L_098b:
 
 L_0ab7:
     lpbi = GlobalLock(hdibPlaque);
-    /* untranslated: part[0x40e:1](lpbi) = lobyte(LOWORD(crButtonFace)) */
-    /* untranslated: part[0x40d:1](lpbi) = lobyte((LOWORD(crButtonFace) >> 0x8)) */
-    /* untranslated: part[0x40c:1](lpbi) = lobyte(loword((uint32_t)(crButtonFace >> 0x10))) */
+    LOBYTE(HIWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE(LOWORD(crButtonFace));
+    HIBYTE(LOWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE((LOWORD(crButtonFace) >> 0x8));
+    LOBYTE(LOWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
     GlobalUnlock(hdibPlaque);
 
 L_0b09:
@@ -861,9 +861,9 @@ L_0b09:
 
 L_0b13:
     lpbi = GlobalLock(hdibToolbar);
-    /* untranslated: part[0x41e:1](lpbi) = lobyte(LOWORD(crButtonFace)) */
-    /* untranslated: part[0x41d:1](lpbi) = lobyte((LOWORD(crButtonFace) >> 0x8)) */
-    /* untranslated: part[0x41c:1](lpbi) = lobyte(loword((uint32_t)(crButtonFace >> 0x10))) */
+    lpbi[23].bmiColors[0].rgbRed = LOBYTE(LOWORD(crButtonFace));
+    lpbi[23].bmiColors[0].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
+    lpbi[23].bmiColors[0].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
     GlobalUnlock(hdibToolbar);
 
 L_0b65:
@@ -1263,8 +1263,8 @@ L_11c4:
         goto L_11cd;
 
 L_11cd:
-    DeleteObject(rghfontArial6);
-    DeleteObject(rghfontArial7);
+    DeleteObject(rghfontArial6[0]);
+    DeleteObject(rghfontArial7[0]);
     i = 0;
     goto L_1202;
 

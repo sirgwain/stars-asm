@@ -1997,7 +1997,7 @@ L_2b3b:
     iBest = (-iBest);
 
 L_2b43:
-    lMax = (uint32_t)((iBest + 0xffff));
+    lMax = (uint32_t)((iBest - 1));
     if ((iCur > (iBest + fTwoMAs)))
         goto L_2b67;
     else
@@ -2021,7 +2021,7 @@ L_2b81:
     hbr = hbrRed;
 
 L_2b87:
-    lCur = (uint32_t)((iCur + 0xfffc));
+    lCur = (uint32_t)((iCur - 4));
     l = LDrawGauge(hdc, prc, 1, &(lCur), &(hbr), lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
     c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), (LOWORD(l) + 0x4), (HIWORD(l) + 0x0));
@@ -2098,7 +2098,7 @@ L_2d47:
     t_merge_2d4a_0001 = 0x5;
 
 L_2d4a:
-    dyPlanetProdLB = LOWORD(((dyArial8 + 0x2) * t_merge_2d4a_0001));
+    dyPlanetProdLB = LOWORD(((dyArial8 + 2) * t_merge_2d4a_0001));
     dyWrong = (dyPlanetProdLB - (rcT.bottom - rcT.top));
     if ((dxPlanetProdLB != (xRight - xLeft)))
         goto L_2d8d;
@@ -2208,7 +2208,7 @@ L_2fd0:
     SelectObject(hdc, rghfontArial8[0]);
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
-    c = ((uint32_t)(((xRight - xLeft) + 0xfff0)) / 3);
+    c = ((uint32_t)(((xRight - xLeft) - 16)) / 3);
     xStart = xLeft;
     i = 11;
     goto L_3030;
@@ -3027,7 +3027,7 @@ L_3d15:
     yTop = (yTop + (dyArial8 + 4));
 
 L_3d1e:
-    c = ((uint32_t)(((xRight - xLeft) + 0xfff6)) / 3);
+    c = ((uint32_t)(((xRight - xLeft) - 10)) / 3);
     xStart = xLeft;
     i = 0;
     goto L_3d53;
@@ -3198,8 +3198,7 @@ L_3ee9:
         goto L_3f13;
 
 L_3f13:
-    sel.pt.x = rgptPlan[iObjSel].x;
-    sel.pt.y = rgptPlan[iObjSel].y;
+    sel.pt = rgptPlan[iObjSel];
     sel.scan.iwp = -1;
     sel.iwpAct = -1;
     i = 0;
@@ -3275,8 +3274,7 @@ L_4014:
         goto L_403e;
 
 L_403e:
-    sel.pt.x = sel.fl.pt.x;
-    sel.pt.y = sel.fl.pt.y;
+    sel.pt = sel.fl.pt;
     if ((sel.fl.idPlanet == -1))
         goto L_407a;
     else
@@ -3671,8 +3669,7 @@ L_457f:
         goto L_4591;
 
 L_4591:
-    scan.pt.x = rgptPlan[idPlanet].x;
-    scan.pt.y = rgptPlan[idPlanet].y;
+    scan.pt = rgptPlan[idPlanet];
     scan.grobj = 0x81;
     ChangeScanSel(&(scan), 0);
     goto FinishUp;
@@ -3734,8 +3731,7 @@ L_4676:
         goto L_469a;
 
 L_469a:
-    scan.pt.x = rgptPlan[idPlanet].x;
-    scan.pt.y = rgptPlan[idPlanet].y;
+    scan.pt = rgptPlan[idPlanet];
     scan.grobj = 0x81;
     ChangeScanSel(&(scan), 0);
     RedrawScanSel(0x0, 0);
@@ -4411,7 +4407,7 @@ L_51aa:
     return hcurArrowHelp;
 
 L_51b0:
-    i = ((uint32_t)((pt.y - rgrcRef[0x6].top)) / dyArial8);
+    i = ((uint32_t)((pt.y - rgrcRef[6].top)) / dyArial8);
     GlobalPD.grPopup = grPopupMineral;
     GlobalPD.rgi[0] = (uint32_t)(i);
     GlobalPD.rgi[2] = sel.pl.rgwtMin[i];
@@ -4806,7 +4802,7 @@ L_58d4:
         goto L_58ed;
 
 L_58ed:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 0x2) * 0x2) * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 2) * 2) * iMul)));
 
 L_590b:
     if ((rgtilePlanet[i].grbit != 4))
@@ -4815,7 +4811,7 @@ L_590b:
         goto L_5924;
 
 L_5924:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 0x4) * 0x2) * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 4) * 2) * iMul)));
 
 L_5942:
     if ((rgtilePlanet[i].grbit != 128))
@@ -4824,7 +4820,7 @@ L_5942:
         goto L_595c;
 
 L_595c:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((0xa * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((10 * iMul)));
 
 L_5975:
     i = (i + 1);
@@ -4846,7 +4842,7 @@ L_598a:
         goto L_59a3;
 
 L_59a3:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 * 0x4) + 0x2) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 * 4) + 2) * iMul)));
 
 L_59c3:
     if ((rgtileShip[i].grbit != 512))
@@ -4855,7 +4851,7 @@ L_59c3:
         goto L_59dd;
 
 L_59dd:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((((dyArial8 + 0x2) * 0x2) + 0x4) + dyArial8) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((((dyArial8 + 2) * 2) + 4) + dyArial8) * iMul)));
 
 L_5a02:
     if ((rgtileShip[i].grbit != 32))
@@ -4864,7 +4860,7 @@ L_5a02:
         goto L_5a1b;
 
 L_5a1b:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD(((dyArial8 + 0x9) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD(((dyArial8 + 9) * iMul)));
 
 L_5a37:
     if ((rgtileShip[i].grbit != 4))
@@ -4873,7 +4869,7 @@ L_5a37:
         goto L_5a50;
 
 L_5a50:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 + 0x4) * 0x2) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 + 4) * 2) * iMul)));
 
 L_5a6e:
     if ((rgtileShip[i].grbit != 128))
@@ -4882,7 +4878,7 @@ L_5a6e:
         goto L_5a88;
 
 L_5a88:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((0xa * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((10 * iMul)));
 
 L_5aa1:
     if ((rgtileShip[i].grbit != 256))
@@ -4900,7 +4896,7 @@ L_5ad3:
         goto L_5aec;
 
 L_5aec:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((0x6 * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((6 * iMul)));
 
 L_5b05:
     i = (i + 1);
@@ -5056,7 +5052,7 @@ L_5c86:
 L_5c8f:
     GetClientRect(hwndPlanet, &(rc));
     rc.top = yTop;
-    rc.left = (LOWORD((0xc6 * iCol)) + 4);
+    rc.left = (LOWORD((198 * iCol)) + 4);
     rc.right = (rc.left + 191);
     hdc = GetDC(hwndPlanet);
     FillRect(hdc, &(rc), hbrButtonFace);
@@ -5191,7 +5187,7 @@ L_5ef7:
     pctT = (-pctT);
 
 L_5eff:
-    rgpctBest[i] = (((uint32_t)(LOWORD((0x64 * pctT))) / abs((iSave - iEnv))) + 1);
+    rgpctBest[i] = (((uint32_t)(LOWORD((100 * pctT))) / abs((iSave - iEnv))) + 1);
     lppl->rgEnvVar[i] = LOBYTE(iSave);
 
 L_5f46:
@@ -5300,7 +5296,7 @@ L_607c:
     goto L_609d;
 
 L_608c:
-    iVal = (LOWORD(((d + 0xffe7) * 0x18)) + 200);
+    iVal = (LOWORD(((d - 25) * 24)) + 200);
 
 L_609d:
     if ((iGravity >= 50))
@@ -5699,7 +5695,7 @@ L_64d0:
     hfntSav = SelectObject(hdc, rghfontArial8[3]);
 
 L_64df:
-    pch = (psz + ich);
+    pch = &(psz[ich]);
     cch = (strlen(pch) + 1);
 
 L_64fb:
@@ -6422,7 +6418,7 @@ L_6ed7:
         goto L_6ee2;
 
 L_6ee2:
-    pctVar = LOWORD((abs((iPlanet - iPref)) * 0x64));
+    pctVar = LOWORD((abs((iPlanet - iPref)) * 100));
     if ((iPlanet >= iPref))
         goto L_6f28;
     else
@@ -6448,8 +6444,8 @@ L_6f49:
         goto L_6f72;
 
 L_6f72:
-    pctMod = (uint32_t)((pctMod * (uint32_t)(((d * 0x2) - dPenalty))));
-    pctMod = (int32_t)((pctMod / (uint32_t)((d * 0x2))));
+    pctMod = (uint32_t)((pctMod * (uint32_t)(((d * 2) - dPenalty))));
+    pctMod = (int32_t)((pctMod / (uint32_t)((d * 2))));
 
 L_6fa7:
     goto L_7000;
@@ -7061,13 +7057,13 @@ int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr) {
     int16_t iEnergy;
 
 L_788e:
-    if ((LOWORD(lppl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
         goto L_78b4;
     else
         goto L_78a4;
 
 L_78a4:
-    if ((HIWORD(lppl->rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
         goto L_78b4;
     else
         goto L_78ae;
@@ -7125,7 +7121,7 @@ L_7970:
         goto L_7990;
 
 L_7990:
-    iEnergy = (uint16_t)(rgplr[iplr].rgTech[0x0]);
+    iEnergy = (uint16_t)(rgplr[iplr].rgTech[0]);
     pctVal = PctPlanetDesirability(lppl, iplr);
     if ((iEnergy >= 1))
         goto L_79c4;
@@ -7162,7 +7158,7 @@ L_7a95:
 
 L_7ab1:
     iEff = GetRaceStat(&(rgplr[iplr]), rsFactProd);
-    cRes = (cRes + LOWORD((int32_t)((((uint32_t)(((uint32_t)(cFact) * (uint32_t)(iEff))) + 0x9) / 0xa))));
+    cRes = (cRes + LOWORD((int32_t)((((uint32_t)(((uint32_t)(cFact) * (uint32_t)(iEff))) + 9) / 10))));
 
 LFinishUp:
     if ((cRes != 0))
@@ -7383,8 +7379,7 @@ L_7e16:
         goto L_7e3b;
 
 L_7e3b:
-    part.hs.grhst = lphul->rghs[i].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[i]);
+    part.hs = lphul->rghs[i];
     FLookupPart(&(part));
     if ((part.pspecialsb->grAbility2 != -1))
         goto L_7e80;
@@ -8016,7 +8011,7 @@ L_87d0:
         goto L_87da;
 
 L_87da:
-    FreePl(lpPlanets[lppl].lpplprod);
+    FreePl(lpPlanets[lppl->id].lpplprod);
     lpPlanets[lppl->id].lpplprod = 0x0;
     lppl->lpplprod = 0x0;
 

@@ -147,19 +147,19 @@ L_1977:
     cRes = (cRes - (int32_t)(((uint32_t)((cRes * (uint32_t)((uint16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
 
 L_19aa:
-    if ((HIWORD(rgCost[0x3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((HIWORD(rgCost[3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_19d6;
     else
         goto L_19c6;
 
 L_19c6:
-    if ((HIWORD(rgCost[0x3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((HIWORD(rgCost[3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19cb;
 
 L_19cb:
-    if ((LOWORD(rgCost[0x3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((LOWORD(rgCost[3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19d6;

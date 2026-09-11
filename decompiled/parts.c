@@ -4923,7 +4923,7 @@ L_6250:
         goto L_6259;
 
 L_6259:
-    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[(fInAWhile - 0x1)]);
+    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[(fInAWhile - 1)]);
     return (((uint16_t)(rgTech[(fInAWhile - 1)]) - scratch_bp_mc) + 0x1);
 
 L_629c:

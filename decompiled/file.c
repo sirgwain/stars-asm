@@ -172,8 +172,7 @@ L_0384:
         goto L_03b1;
 
 L_03b1:
-    part.hs.grhst = lphul->rghs[c].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[c]);
+    part.hs = lphul->rghs[c];
     fOkay = FLookupPart(&(part));
     if ((idPlayer != -1))
         goto L_03fa;
@@ -234,11 +233,11 @@ L_0515:
 L_0523:
     lphul->rghs[0].grhst = hstEngine;
     lphul->rghs[0].iItem = 0x1;
-    lphul->rghs[0].cItem = lphulBase->rghs[0x0].cItem;
-    part.hs.grhst = lphul->rghs[0x0].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[0x0]);
+    lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
+    part.hs.grhst = lphul->rghs[0].grhst;
+    HIWORD(part.hs) = HIWORD(lphul->rghs[0]);
     FLookupPart(&(part));
-    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[0x0].cItem))));
+    wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[0].cItem))));
 
 L_05c2:
     goto L_036b;
@@ -281,13 +280,13 @@ L_0684:
         goto L_0699;
 
 L_0699:
-    strcpy(pplr->szName, (pbIn + (iOff + 1)));
+    strcpy(pplr->szName, (char *)(((uint8_t *)((pbIn + iOff)) + 1)));
     iOff = (iOff + (strlen(pplr->szName) + 2));
     goto L_0721;
 
 L_06d2:
     cOut = 32;
-    /* untranslated: call FDecompressUserString(part[0x1:4](pbIn[iOff]), pbIn[iOff], part[0x10:4](game[load([bp+0x6])*0x1]), &cOut) -> callresult(int16_t) */
+    FDecompressUserString((char *)(((uint8_t *)((pbIn + iOff)) + 1)), pbIn[iOff], pplr->szName, &(cOut));
     iOff = (iOff + (pbIn[iOff] + 1));
 
 L_0721:
@@ -297,7 +296,7 @@ L_0721:
         goto L_0739;
 
 L_0739:
-    psz = PszPlayerName(0, (_ctype[((uint16_t)(pplr->szName[0x0]) + 0x1)] & 0x1), 1, 0, 0, pplr);
+    psz = PszPlayerName(0, (_ctype[((uint16_t)(pplr->szName[0]) + 0x1)] & 0x1), 1, 0, 0, pplr);
     strcpy(pplr->szNames, psz);
     goto L_07f7;
 
@@ -308,12 +307,12 @@ L_0784:
         goto L_0799;
 
 L_0799:
-    strcpy(pplr->szNames, (pbIn + (iOff + 1)));
+    strcpy(pplr->szNames, (char *)(((uint8_t *)((pbIn + iOff)) + 1)));
     goto L_07f7;
 
 L_07bb:
     cOut = 32;
-    /* untranslated: call FDecompressUserString(part[0x1:4](pbIn[iOff]), pbIn[iOff], &part[0x10:1](game.szName[pplr]), &cOut) -> callresult(int16_t) */
+    FDecompressUserString((char *)(((uint8_t *)((pbIn + iOff)) + 1)), pbIn[iOff], pplr->szNames, &(cOut));
 
 L_07f7:
     pplr->fLearned = 0x0;
@@ -440,7 +439,7 @@ XYCorrupt:
 L_096a:
     game = *((GAME *)(rgbCur));
     game.fDirty = 0;
-    dGal = (LOWORD((0x190 * game.mdSize)) + 400);
+    dGal = (LOWORD((400 * game.mdSize)) + 400);
     dGalInv = (dGal + 2000);
     x = 1000;
     i = 0;
@@ -1111,7 +1110,7 @@ L_155b:
         goto L_1564;
 
 L_1564:
-    gd.fGameOverMan = ((rgbCur[0xe] >> 0xb) & 0x1);
+    gd.fGameOverMan = ((rgbCur[14] >> 0xb) & 0x1);
 
 LNextTurn:
     cturn = (cturn + 1);
@@ -2277,7 +2276,7 @@ L_28b2:
 
 L_28ca:
     game.turn = rgbCur[10];
-    game.wGen = ((rgbCur[0xe] >> 0xd) & 0x7);
+    game.wGen = ((rgbCur[14] >> 0xd) & 0x7);
     i = 0;
     goto L_2905;
 
@@ -2379,7 +2378,7 @@ L_2abb:
     AlertSz(szWork, MB_ICONASTERISK);
 
 L_2aed:
-    if ((strnicmp(pszExt, 0x759, 0x3) == 0))
+    if ((strnicmp(pszExt, "hst", 0x3) == 0))
         goto DoneNow;
     else
         goto L_2b0b;
@@ -2725,7 +2724,7 @@ L_3047:
 
 L_3051:
     strcpy(szT, pszFileName);
-    strcat(szT, 0x764);
+    strcat(szT, ".");
     strcat(szT, pszExt);
     if ((fstricmp(szT, vrgszMRU) == 0))
         goto L_31fa;
@@ -2774,7 +2773,7 @@ L_3129:
     goto L_31f1;
 
 L_3198:
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     fstrcpy(szT, (vrgszMRU + (i * 256)));
     WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
     i = (i + 1);
@@ -2856,10 +2855,10 @@ L_32ac:
     goto L_32de;
 
 L_32af:
-    lppl->fFirstYear = ((rgbCur[0x2] >> 0xf) & 0x1);
+    lppl->fFirstYear = ((rgbCur[2] >> 0xf) & 0x1);
 
 L_32de:
-    LOWORD(lppl) = ((LOWORD(rgbCur) << 0x5) >> 0x5);
+    lppl->id = ((LOWORD(rgbCur) << 0x5) >> 0x5);
     lppl->iPlayer = (LOWORD(rgbCur) >> 0xb);
     if ((lppl->det >= (rgbCur[2] & 0x7f)))
         goto L_3347;
@@ -2867,13 +2866,13 @@ L_32de:
         goto L_3322;
 
 L_3322:
-    lppl->det = (rgbCur[0x2] & 0x7f);
+    lppl->det = (rgbCur[2] & 0x7f);
 
 L_3347:
-    lppl->fInclude = ((rgbCur[0x2] >> 0x8) & 0x1);
-    lppl->fStarbase = ((rgbCur[0x2] >> 0x9) & 0x1);
-    lppl->fHomeworld = ((rgbCur[0x2] >> 0x7) & 0x1);
-    fRouting = ((rgbCur[0x2] >> 0xe) & 0x1);
+    lppl->fInclude = ((rgbCur[2] >> 0x8) & 0x1);
+    lppl->fStarbase = ((rgbCur[2] >> 0x9) & 0x1);
+    lppl->fHomeworld = ((rgbCur[2] >> 0x7) & 0x1);
+    fRouting = ((rgbCur[2] >> 0xe) & 0x1);
     if ((lppl->fStarbase == 0x0))
         goto L_341a;
     else
@@ -3200,7 +3199,7 @@ L_38b6:
     goto L_38dd;
 
 L_38cf:
-    pct = LOWORD((0xa * pct));
+    pct = LOWORD((10 * pct));
     idm = idmHaveFoundNewPlanetWhichUnfortunatelyHabitable;
 
 L_38dd:
@@ -3216,12 +3215,12 @@ L_390a:
         goto L_391d;
 
 L_391d:
-    /* untranslated: call fmemmove(part[0x14:4](*lppl), pb, 0x8) -> callresult(void *) */
+    fmemmove(lppl->rgbImp, pb, 0x8);
     pb = (pb + 8);
     goto L_39dc;
 
 L_3944:
-    lppl->fArtifact = ((rgbCur[0x2] >> 0xc) & 0x1);
+    lppl->fArtifact = ((rgbCur[2] >> 0xc) & 0x1);
     lppl->iScanner = 0x1f;
     lppl->cDefenses = 0x0;
 
@@ -3565,8 +3564,7 @@ L_3fad:
         goto L_3fb7;
 
 L_3fb7:
-    lpfl->pt.x = rgptPlan[lpfl->idPlanet].x;
-    lpfl->pt.y = rgptPlan[lpfl->idPlanet].y;
+    lpfl->pt = rgptPlan[lpfl->idPlanet];
 
 L_3fdb:
     ReadRt();
@@ -3918,19 +3916,19 @@ L_459d:
     gd.fGotoVCR = 0x0;
     gd.fFleetLinkValid = 0x0;
     ResetHb(htBattle);
-    if ((LOWORD(rglphb[0xb]) != 0x0))
+    if ((LOWORD(rglphb[11]) != 0x0))
         goto L_4601;
     else
         goto L_45f7;
 
 L_45f7:
-    if ((HIWORD(rglphb[0xb]) == 0x0))
+    if ((HIWORD(rglphb[11]) == 0x0))
         goto L_460b;
     else
         goto L_4601;
 
 L_4601:
-    HIWORD(rglphb[0xf]) = 0xffff;
+    HIWORD(rglphb[15]) = 0xffff;
 
 L_460b:
     ResetHb(htMisc);
@@ -4757,7 +4755,7 @@ L_50cc:
         goto L_50d8;
 
 L_50d8:
-    fReturn = ((rgbCur[0x6] >> 0x9) & 0x1);
+    fReturn = ((rgbCur[6] >> 0x9) & 0x1);
 
 L_50e6:
     goto L_510c;

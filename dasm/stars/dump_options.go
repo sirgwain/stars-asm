@@ -8,6 +8,7 @@ type DumpAsmOptions = startemplates.DumpAsmOptions
 type DumpCFGOptions = startemplates.DumpCFGOptions
 type DumpEffectsOptions = startemplates.DumpEffectsOptions
 type DumpSemOptions = startemplates.DumpSemOptions
+type DumpIROptions = startemplates.DumpIROptions
 type FuncDetailOptions = startemplates.FuncDetailOptions
 type FuncDetailCommentStyle = startemplates.FuncDetailCommentStyle
 

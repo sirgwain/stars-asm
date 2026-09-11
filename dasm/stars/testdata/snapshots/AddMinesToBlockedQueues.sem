@@ -95,13 +95,13 @@ L_1977:
     cRes = (cRes - (int32_t)((uint32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
 
 L_19aa:
-    branch HIWORD(rgCost[0x3]) < hiword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_19d6 : L_19c6
+    branch HIWORD(rgCost[3]) < hiword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_19d6 : L_19c6
 
 L_19c6:
-    branch HIWORD(rgCost[0x3]) > hiword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19cb
+    branch HIWORD(rgCost[3]) > hiword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19cb
 
 L_19cb:
-    branch LOWORD(rgCost[0x3]) > loword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19d6
+    branch LOWORD(rgCost[3]) > loword((uint32_t)(cRes * sext16to32((etaFirst - 1)))) ? L_17a3 : L_19d6
 
 L_19d6:
     t_scratch_m136 = (uint32_t)sel.pl.cMines

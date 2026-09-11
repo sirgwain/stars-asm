@@ -13,32 +13,66 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-// DumpIRView is the template view for low-level IR rendered as C.
+// DumpIRView is the template view for low-level IR and optional analysis sections.
 type DumpIRView struct {
-	Options DumpOptions
+	Options DumpIROptions
 	Func    ir.Func
 	Locals  []ir.Local
+	Blocks  []DumpIRBlockView
+	SemView DumpSemView
+}
+
+// DumpIRBlockView is the combined dump view for one IR block.
+type DumpIRBlockView struct {
+	Off      uint32
+	Label    string
+	SemBlock DumpSemBlockView
+	Stmts    []ir.Stmt
 }
 
 // NewDumpIRView creates a low-level IR dump view.
-func NewDumpIRView(fn ir.Func, opt DumpOptions) DumpIRView {
+func NewDumpIRView(fn ir.Func, opt DumpIROptions) DumpIRView {
 	fn.Blocks = irBlocksInRange(fn.Blocks, machine.BlockRange{
 		FromAddr: opt.FromAddr,
 		ToAddr:   opt.ToAddr,
 	})
-	return DumpIRView{
+	view := DumpIRView{
 		Options: opt,
 		Func:    fn,
 		Locals:  uniqueIRLocals(fn.Locals),
 	}
+	view.setIRBlocks()
+	return view
 }
 
-// RenderDumpIR renders explicit-block C intended for analysis, not prettiness.
+// NewDumpIRViewWithSem creates a combined ASM, machine-effect, semantic, and IR view.
+func NewDumpIRViewWithSem(fn ir.Func, semView DumpSemView, opt DumpIROptions) DumpIRView {
+	view := NewDumpIRView(fn, opt)
+	view.Options = opt
+	view.SemView = semView
+
+	semBlocksByOff := make(map[uint32]DumpSemBlockView, len(semView.Blocks))
+	for _, block := range semView.Blocks {
+		semBlocksByOff[block.Off] = block
+	}
+	for i := range view.Blocks {
+		if block, ok := semBlocksByOff[view.Blocks[i].Off]; ok {
+			view.Blocks[i].SemBlock = block
+		}
+	}
+	return view
+}
+
+// RenderDumpIR renders explicit-block IR intended for analysis, not prettiness.
 func RenderDumpIR(w io.Writer, view DumpIRView) error {
 	t := template.New("dump_ir.templ").
 		Funcs(template.FuncMap{
-			"renderLocals": renderIRLocals,
-			"renderBlocks": renderIRBlocks,
+			"renderLocals":   renderIRLocals,
+			"formatIRStmt":   formatIRStmt,
+			"renderAsmBlock": renderDumpSemAsmBlock,
+			"highlightLines": HighlightLines,
+			"highlightText":  HighlightTextLines,
+			"showIRSections": showIRSections,
 		})
 
 	tmpl, err := t.ParseFS(templatesFS, "assets/dump_ir.templ")
@@ -50,12 +84,33 @@ func RenderDumpIR(w io.Writer, view DumpIRView) error {
 	if err := tmpl.Execute(&buf, view); err != nil {
 		return err
 	}
+	if showIRSections(view) {
+		_, err := io.WriteString(w, buf.String())
+		return err
+	}
 	formatted, err := formatCSource(buf.String())
 	if err != nil {
 		return err
 	}
 	printHighlightedC(w, formatted, view.Options.ShowColor)
 	return nil
+}
+
+// setIRBlocks populates the IR-only block portion of a dump view.
+func (view *DumpIRView) setIRBlocks() {
+	view.Blocks = make([]DumpIRBlockView, len(view.Func.Blocks))
+	for i, block := range view.Func.Blocks {
+		view.Blocks[i] = DumpIRBlockView{
+			Off:   block.StartOff,
+			Label: block.Label,
+			Stmts: block.Stmts,
+		}
+	}
+}
+
+// showIRSections reports whether the combined dump needs section headers.
+func showIRSections(view DumpIRView) bool {
+	return view.Options.ShowAsm || view.Options.ShowEffects || view.Options.ShowSem
 }
 
 // renderIRLocals renders tab-indented local declarations.
@@ -69,21 +124,6 @@ func renderIRLocals(view DumpIRView) string {
 		fmt.Fprintf(&out, "\t%s;\n", typeinfo.TypeDecl(local.Type, local.Name))
 	}
 	out.WriteString("\n")
-	return out.String()
-}
-
-// renderIRBlocks renders labeled IR blocks with tab-indented statements.
-func renderIRBlocks(view DumpIRView) string {
-	var out strings.Builder
-	for i, block := range view.Func.Blocks {
-		if i > 0 {
-			out.WriteString("\n")
-		}
-		fmt.Fprintf(&out, "%s:\n", block.Label)
-		for _, stmt := range block.Stmts {
-			fmt.Fprintf(&out, "\t%s\n", formatIRStmt(stmt))
-		}
-	}
 	return out.String()
 }
 

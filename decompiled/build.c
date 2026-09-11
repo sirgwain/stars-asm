@@ -22,7 +22,7 @@ L_008c:
         goto L_00b5;
 
 L_00b5:
-    ptslotGlob.y = (ptslotGlob.y + LOWORD((0x3 * dyArial8)));
+    ptslotGlob.y = (ptslotGlob.y + LOWORD((3 * dyArial8)));
 
 L_00c0:
     fStarbaseMode = 0;
@@ -1630,8 +1630,7 @@ L_1b34:
         goto L_1b5e;
 
 L_1b5e:
-    part.hs.grhst = lpshdef->hul.rghs[j].grhst;
-    HIWORD(part.hs) = HIWORD(lpshdef->hul.rghs[j]);
+    part.hs = lpshdef->hul.rghs[j];
     if ((FLookupPart(&(part)) == 1))
         goto L_1b1e;
     else
@@ -2499,8 +2498,7 @@ L_2a93:
         goto L_2ae1;
 
 L_2ae1:
-    part.hs.grhst = lpshdefBuild->hul.rghs[i].grhst;
-    HIWORD(part.hs) = HIWORD(lpshdefBuild->hul.rghs[i]);
+    part.hs = lpshdefBuild->hul.rghs[i];
     FLookupPart(&(part));
     ibmp = part.pcom->ibmp;
     iInventSel = (ibmp >> 0x5);
@@ -2654,14 +2652,14 @@ L_2f16:
         goto L_2fea;
 
 L_2fea:
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     if ((LOWORD(GetTextExtent(hdc, szWork, c)) <= 0x32))
         goto L_301c;
     else
         goto L_3010;
 
 L_3010:
-    SelectObject(hdc, rghfontArial6);
+    SelectObject(hdc, rghfontArial6[0]);
 
 L_301c:
     RcCtrTextOut(hdc, &(rc), szWork, c);
@@ -2870,14 +2868,14 @@ L_3312:
 
 L_3318:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
-    ibmp = (((uint16_t)(szWork[0x2]) - 65) + LOWORD((((uint16_t)(szWork[0x3]) + 0xffbf) * 0x1a)));
+    ibmp = (((uint16_t)(szWork[2]) - 65) + LOWORD((((uint16_t)(szWork[3]) - 65) * 0x1a)));
     iSrc = -1;
     hs.grhst = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
-    hs.iItem = ((uint16_t)(szWork[0x1]) - 65);
+    hs.iItem = ((uint16_t)(szWork[1]) - 65);
     hs.cItem = 0x1;
     rcStart.left = 2;
     rcStart.right = 66;
-    rcStart.top = (LOWORD((((uint32_t)(y) / 0x42) * 0x42)) + 1);
+    rcStart.top = (LOWORD((((uint32_t)(y) / 66) * 0x42)) + 1);
     rcStart.bottom = (rcStart.top + 64);
     ClientToScreen(hwnd, &(rcStart));
     ClientToScreen(hwnd, rcStart.right);
@@ -3269,7 +3267,7 @@ L_3baf:
     SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_INSERTSTRING, iSel, szWork);
     hsShip.cItem = 0x1;
     hsShip.grhst = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
-    hsShip.iItem = ((uint16_t)(szWork[0x1]) - 65);
+    hsShip.iItem = ((uint16_t)(szWork[1]) - 65);
     goto HullPart;
 
 L_3c15:
@@ -3457,7 +3455,7 @@ L_3e8d:
         goto L_3e9e;
 
 L_3e9e:
-    strcat(szWord, 0xc96);
+    strcat(szWord, ", ");
     goto L_3eca;
 
 L_3eb1:
@@ -3517,7 +3515,7 @@ L_3fc0:
         goto L_3fe5;
 
 L_3fe5:
-    strcat(szWord, 0xc9d);
+    strcat(szWord, "s");
 
 L_3ff5:
     cch = _wsprintf(szWork, PszGetCompressedString(idsCostS), &(szWord));
@@ -3554,8 +3552,7 @@ L_4178:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[5], lstrlen(rgszMinerals[5]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[0x3])))),
-                    HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[0x3])))));
+    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[3])))), HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[3])))));
     RightTextOut(hdc, ((rc.right - dxkT) - 64), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((fStarbaseMode != 0))
         goto Restore;
@@ -3608,8 +3605,7 @@ L_4305:
         goto L_4317;
 
 L_4317:
-    part.hs.grhst = lphul->rghs[ihs].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[ihs]);
+    part.hs = lphul->rghs[ihs];
     if ((part.hs.grhst != hstSpecialE))
         goto L_43a8;
     else
@@ -3629,7 +3625,7 @@ L_4352:
 
 L_4360:
     FLookupPart(&(part));
-    pctJam = (uint32_t)((0x64 - part.pspecial->grAbility));
+    pctJam = (uint32_t)((100 - part.pspecial->grAbility));
     goto L_441f;
 
 L_4380:
@@ -3893,7 +3889,7 @@ L_45e1:
     SelectObject(hdc, rghfontArial8[0]);
     dxkT = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsKt), 2));
     SelectObject(hdc, rghfontArial8[1]);
-    dxMineral = (LOWORD(GetTextExtent(hdc, rgszMinerals[0x2], strlen(rgszMinerals[0x2]))) + 6);
+    dxMineral = (LOWORD(GetTextExtent(hdc, rgszMinerals[2], strlen(rgszMinerals[2]))) + 6);
     crForeSav = SetTextColor(hdc, 0x0);
     crBackSav = SetBkColor(hdc, crButtonFace);
     if ((hwndPopup == 0x0))
@@ -4210,7 +4206,7 @@ L_4c6b:
         goto L_4c7b;
 
 L_4c7b:
-    /* untranslated: part[0x87:4](lpshdefBuild) = LComputePower(lpshdefBuild) */
+    *(lpshdefBuild + 0x87) = LComputePower(lpshdefBuild);
     if ((*(lpshdefBuild + 0x87) != 0x0))
         goto L_4cb3;
     else
@@ -4903,7 +4899,7 @@ L_5a41:
     SendMessage(lpdis->hwndItem, CB_INSERTSTRING, lpdis->itemID, szWork);
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
-    ibmp = (((uint16_t)(szWork[0x2]) - 65) + LOWORD((((uint16_t)(szWork[0x3]) + 0xffbf) * 0x1a)));
+    ibmp = (((uint16_t)(szWork[2]) - 65) + LOWORD((((uint16_t)(szWork[3]) - 65) * 0x1a)));
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[(ibmp >> 0x5)], ((ibmp & 0x7) * 0x40), (((0x3 - (ibmp >> 0x3)) & 0x3) * 0x40), 64, 64,
            13369376);
     if (((lpdis->itemState & 0x10) == 0x0))
@@ -4976,7 +4972,7 @@ L_5c4f:
         goto L_5c5e;
 
 L_5c5e:
-    scratch_bp_m6 = LOWORD((0x93 * i));
+    scratch_bp_m6 = LOWORD((147 * i));
     return (rglpshdefSB[idPlayer] + scratch_bp_m6);
 
 L_5c81:
@@ -5088,7 +5084,7 @@ L_5d79:
         goto L_5d88;
 
 L_5d88:
-    scratch_bp_m8 = LOWORD((0x93 * j));
+    scratch_bp_m8 = LOWORD((147 * j));
     return (rglpshdefSB[i] + scratch_bp_m8);
 
 L_5daa:
@@ -5153,7 +5149,7 @@ L_5e2f:
         goto L_5e3e;
 
 L_5e3e:
-    scratch_bp_m8 = LOWORD((0x93 * j));
+    scratch_bp_m8 = LOWORD((147 * j));
     return (rglpshdef[i] + scratch_bp_m8);
 
 L_5e60:
@@ -5675,9 +5671,9 @@ L_6491:
         goto L_649a;
 
 L_649a:
-    sz[1] = LOBYTE((i + 0x41));
-    sz[2] = LOBYTE((((uint32_t)(part.pcom->ibmp) % 0x1a) + 0x41));
-    sz[3] = LOBYTE((((uint32_t)(part.pcom->ibmp) / 0x1a) + 0x41));
+    sz[1] = LOBYTE((i + 65));
+    sz[2] = LOBYTE((((uint32_t)(part.pcom->ibmp) % 26) + 0x41));
+    sz[3] = LOBYTE((((uint32_t)(part.pcom->ibmp) / 26) + 0x41));
     fstrcpy(&(sz[4]), part.pcom->szName);
     SendMessage(hwndLB, CB_LIMITTEXT, 0x0, sz);
 
@@ -5873,7 +5869,7 @@ L_6837:
 L_6840:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
     HIWORD(GlobalPD) = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
-    GlobalPD.part.hs.iItem = ((uint16_t)(szWork[0x1]) - 65);
+    GlobalPD.part.hs.iItem = ((uint16_t)(szWork[1]) - 65);
     FLookupPart(HIWORD(GlobalPD));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));

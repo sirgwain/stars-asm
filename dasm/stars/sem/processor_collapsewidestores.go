@@ -121,6 +121,12 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 		}
 	}
 
+	// Compiler-lowered struct/union copy. Generic wideStorageDestination
+	// deliberately rejects aggregates, so prove both sides independently.
+	if collapsed, ok := p.collapseWideAggregateCopy(low, high); ok {
+		return collapsed, true
+	}
+
 	wideAddress, ok := p.ctx.symbols.wideStorageDestination(low.Addr, high.Addr)
 	if !ok {
 		return low, false
@@ -289,6 +295,34 @@ func (p *collapseWideStoresProcessor) maskedMachineWordKeep(dst machine.MemoryAd
 		return nil, 0, false
 	}
 	return load, keep.Val, true
+}
+
+// collapseWideAggregateCopy reconstructs a compiler-lowered four-byte
+// struct/union assignment from its adjacent word loads and stores.
+func (p *collapseWideStoresProcessor) collapseWideAggregateCopy(low machine.StoreEffect, high machine.StoreEffect) (machine.StoreEffect, bool) {
+	lowLoad, lowOK := low.Src.(*machine.Load)
+	highLoad, highOK := high.Src.(*machine.Load)
+	if !lowOK || !highOK {
+		return low, false
+	}
+
+	wideDst, dstType, ok := p.ctx.symbols.wideAggregateStorage(low.Addr, high.Addr)
+	if !ok {
+		return low, false
+	}
+
+	wideSrc, srcType, ok := p.ctx.symbols.wideAggregateStorage(lowLoad.Addr, highLoad.Addr)
+	if !ok || !typeinfo.Equals(dstType, srcType) {
+		return low, false
+	}
+
+	src := *lowLoad
+	src.Addr = wideSrc
+
+	low.Addr = wideDst
+	low.Src = &src
+	low.Width = 4
+	return low, true
 }
 
 // adjacentWideArithmeticInstructions reports whether two effects came from an

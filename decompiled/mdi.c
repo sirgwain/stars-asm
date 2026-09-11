@@ -432,7 +432,7 @@ L_080d:
 L_082c:
     fFileErrSilent = 1;
     ClearFile(7);
-    if ((FLoadGame(szBase, 0x38e) == 0))
+    if ((FLoadGame(szBase, "hst") == 0))
         goto LExit;
     else
         goto L_0856;
@@ -485,7 +485,7 @@ L_095e:
         goto L_09a1;
 
 L_09a1:
-    strcat(szTemp, 0x3b7);
+    strcat(szTemp, " - HACKER");
 
 L_09b1:
     OutputSz(7, szTemp);
@@ -910,7 +910,7 @@ L_0f7f:
     fErrSav = fFileErrSilent;
     fFileErrSilent = 1;
     gd.fDontDoLogFiles = 0x1;
-    if ((FLoadGame(szBase, 0x3c8) != 0))
+    if ((FLoadGame(szBase, "m1") != 0))
         goto L_0fdb;
     else
         goto L_0fc6;
@@ -2048,7 +2048,7 @@ L_1fd5:
     goto L_2016;
 
 L_1fe4:
-    dyMin = (LOWORD((0xd * dyArial8)) - 36);
+    dyMin = (LOWORD((13 * dyArial8)) - 36);
     if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2016;
     else
@@ -2140,7 +2140,7 @@ L_20ff:
     goto L_2140;
 
 L_210e:
-    dyMin = (LOWORD((0xd * dyArial8)) - 36);
+    dyMin = (LOWORD((13 * dyArial8)) - 36);
     if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2140;
     else
@@ -2879,7 +2879,7 @@ L_2b46:
         goto L_2b54;
 
 L_2b54:
-    b64 = LOBYTE(((uint16_t)(*(pszIn)) + 0xffbf));
+    b64 = LOBYTE(((uint16_t)(*(pszIn)) - 65));
     goto L_2bd2;
 
 L_2b63:
@@ -2895,7 +2895,7 @@ L_2b71:
         goto L_2b7f;
 
 L_2b7f:
-    b64 = LOBYTE(((uint16_t)(*(pszIn)) + 0xffb9));
+    b64 = LOBYTE(((uint16_t)(*(pszIn)) - 71));
     goto L_2bd2;
 
 L_2b8e:
@@ -2911,7 +2911,7 @@ L_2b9c:
         goto L_2baa;
 
 L_2baa:
-    b64 = LOBYTE(((uint16_t)(*(pszIn)) + 0x4));
+    b64 = LOBYTE(((uint16_t)(*(pszIn)) + 4));
     goto L_2bd2;
 
 L_2bb9:
@@ -3658,7 +3658,7 @@ L_3583:
         goto L_358c;
 
 L_358c:
-    ldy = (ldx - (uint32_t)(((uint32_t)(LOWORD((0x3 * dxDPI))) / 0x2)));
+    ldy = (ldx - (uint32_t)(((uint32_t)(LOWORD((3 * dxDPI))) / 0x2)));
 
 L_35ab:
     dSize = LOWORD(ldy);
@@ -3741,9 +3741,9 @@ L_381e:
     SelectObject(pd.hDC, hfontPrintTiny);
 
 L_3829:
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((3 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d4, 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((5 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), 0x3d6, 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((uint32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8) - dyPrintTiny), 0x3d8, 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((3 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), "|", 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((uint32_t)(LOWORD((5 * dyPrint))) / 2) + y) - ((uint32_t)(dyPrintTiny) / 2)), "+", 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((uint32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8) - dyPrintTiny), "2", 1);
     if ((hfontPrint == 0x0))
         goto L_38ed;
     else
@@ -3778,8 +3778,8 @@ L_3991:
     goto L_3bb7;
 
 L_39c0:
-    x = (uint32_t)((rgptPlan[lppl->id].x + 0xfc18));
-    y = (uint32_t)(((dGalInv + 0xfc18) - rgptPlan[lppl->id].y));
+    x = (uint32_t)((rgptPlan[lppl->id].x - 1000));
+    y = (uint32_t)(((dGalInv - 1000) - rgptPlan[lppl->id].y));
     x = (((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(xOff));
     y = (((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(yOff));
     if ((lppl->iPlayer != idPlayer))
@@ -3800,11 +3800,11 @@ L_3ad5:
         goto L_3b08;
 
 L_3b08:
-    t_merge_3b11_0001 = 0x3da;
+    t_merge_3b11_0001 = "|";
     goto L_3b11;
 
 L_3b0e:
-    t_merge_3b11_0001 = 0x3dc;
+    t_merge_3b11_0001 = "+";
 
 L_3b11:
     CtrTextOut(pd.hDC, LOWORD(x), ((LOWORD(y) + 4) - dyPrintTiny), t_merge_3b11_0001, 1);
@@ -3855,8 +3855,8 @@ L_3be5:
         goto L_3bf0;
 
 L_3bf0:
-    x = (uint32_t)((rgptPlan[i].x + 0xfc18));
-    y = (uint32_t)(((dGalInv + 0xfc18) - rgptPlan[i].y));
+    x = (uint32_t)((rgptPlan[i].x - 1000));
+    y = (uint32_t)(((dGalInv - 1000) - rgptPlan[i].y));
     x = (((int32_t)(((uint32_t)((x * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(xOff));
     y = (((int32_t)(((uint32_t)((y * (uint32_t)(dSize))) / (uint32_t)(dGal))) + (int32_t)(dMargin)) + (int32_t)(yOff));
     DrawPlanetPrintDot(pd.hDC, LOWORD(x), LOWORD(y), 0);
@@ -4124,7 +4124,7 @@ L_4107:
 
 L_412b:
     strcpy(szWork, szBase);
-    strcat(szWork, 0x3e5);
+    strcat(szWork, ".x1");
     remove(szWork);
     DirtyGame(0);
     ShowProgressGauge();
@@ -5709,7 +5709,7 @@ L_53d5:
 
 L_53f5:
     szWork[0] = 38;
-    szWork[1] = LOBYTE((i + 0x31));
+    szWork[1] = LOBYTE((i + 49));
     szWork[2] = 32;
     fstrcpy(&(szWork[3]), (vrgszMRU + (i * 256)));
     InsertMenu(hmenuSub, (i + 9), 0x400, (i + 4300), szWork);
@@ -5929,7 +5929,7 @@ L_56f1:
 
 L_5714:
     DestroyCurGame();
-    FLoadGame(szBase, 0x3f0);
+    FLoadGame(szBase, "hst");
 
 L_5729:
     iPlayer = 0;
@@ -6002,7 +6002,7 @@ L_5848:
 
 L_586c:
     DestroyCurGame();
-    FLoadGame(szBase, 0x3f4);
+    FLoadGame(szBase, "hst");
 
 L_5881:
     fFileErrSilent = fErrSav;
@@ -6734,7 +6734,7 @@ L_641b:
         goto L_643c;
 
 L_643c:
-    strcat(szWork, 0x403);
+    strcat(szWork, " - HACKER");
     cch = (cch + 9);
 
 L_6450:
@@ -6795,7 +6795,7 @@ L_65ba:
 
 L_65ee:
     dday = ((uint32_t)(dhour) / 24);
-    dhour = (dhour - LOWORD((dday * 0x18)));
+    dhour = (dhour - LOWORD((dday * 24)));
     cch = _wsprintf(szWork, PszGetCompressedString(idsDDaysD02d02d), dday, dhour, dmin, LOWORD(dsec));
 
 L_663a:
@@ -7343,7 +7343,7 @@ L_6de8:
         goto L_6df4;
 
 L_6df4:
-    iDiamond = ((uint32_t)((pt.y + 0xffd0)) / (dyArial8 + 4));
+    iDiamond = ((uint32_t)((pt.y - 48)) / (dyArial8 + 4));
     if ((iDiamond >= game.cPlayer))
         goto L_75c0;
     else
@@ -8154,7 +8154,7 @@ L_78a2:
         goto L_78cd;
 
 L_78cd:
-    strcat(szWork, 0x421);
+    strcat(szWork, "s");
 
 L_78dd:
     strcat(szWork, PszGetCompressedString(idsOut));
@@ -8466,7 +8466,7 @@ L_8133:
     _wsprintf(szWork, "%lx", LOWORD(game.lid), HIWORD(game.lid));
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsScanzoom, szEntry);
-    LOWORD(szWork) = LOBYTE((iScanZoom + 0x35));
+    LOWORD(szWork) = LOBYTE((iScanZoom + 53));
     szWork[1] = 0;
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     if ((gd.fChgScanner == 0x0))
@@ -8630,7 +8630,7 @@ L_8900:
 L_8918:
     strcpy(szEntry, szSection);
     psz = &(szEntry[strlen(szEntry)]);
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     if ((vrgZip[i].fValid == 0x0))
         goto L_8a53;
@@ -8660,7 +8660,7 @@ L_8a2b:
         goto L_8a34;
 
 L_8a34:
-    strcpy(psz, ((0x5264 + LOWORD((24 * i))) + 0xa));
+    strcpy(psz, vrgZip[i].szName);
     goto L_8a58;
 
 L_8a53:
@@ -8692,7 +8692,7 @@ L_8aa6:
     psz = &(szEntry[strlen(szEntry)]);
     psz = (psz + 1);
     *(psz) = 80;
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     if ((vrgZipProd[i].fValid == 0x0))
         goto L_8c4e;
@@ -8815,7 +8815,7 @@ L_8ce7:
 L_8cea:
     vfs.xTop = t_merge_8cea_0001;
     dyMsgMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
-    dyMinMin = (LOWORD((0xd * dyArial8)) - 36);
+    dyMinMin = (LOWORD((13 * dyArial8)) - 36);
     if ((vfs.dyMsgWant <= dyMsgMin))
         goto L_8d1b;
     else
@@ -8941,7 +8941,7 @@ L_8f03:
 L_8f06:
     vfs.xTop = t_merge_8f06_0001;
     dyMsgMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
-    dyMinMin = (LOWORD((0xd * dyArial8)) - 36);
+    dyMinMin = (LOWORD((13 * dyArial8)) - 36);
     if ((vfs.dy2MsgWant <= dyMsgMin))
         goto L_8f37;
     else
@@ -9157,7 +9157,7 @@ L_91bb:
         goto L_91e0;
 
 L_91e0:
-    t_merge_91f5_0001 = ((uint32_t)(LOWORD((0x5 * dyArial8))) / 0x2);
+    t_merge_91f5_0001 = ((uint32_t)(LOWORD((5 * dyArial8))) / 0x2);
     goto L_91f5;
 
 L_91f0:
@@ -9171,7 +9171,7 @@ L_91f5:
 L_9200:
     psz = PszGetCompressedString((i + 479));
     rghwndBtnSplash[i] =
-        CreateWindow("BUTTON", psz, 0x50000000, xCur, ((rc.bottom - dy) - ((uint32_t)(LOWORD((0x5 * dyArial8))) / 2)), dx, dy, hwnd, i, hInst, 0x0);
+        CreateWindow("BUTTON", psz, 0x50000000, xCur, ((rc.bottom - dy) - ((uint32_t)(LOWORD((5 * dyArial8))) / 2)), dx, dy, hwnd, i, hInst, 0x0);
     if ((i != 2))
         goto L_92a2;
     else
@@ -9467,7 +9467,7 @@ LTry16Color:
     dx = rcWnd.right;
     DrawABunchOfStars(hdc, &(rcWnd));
     plf->lfHeight = ((uint32_t)((-rcWnd.bottom)) / 3);
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x3]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[3]));
     hfont = CreateFontIndirect(plf);
     SetTextColor(hdc, 0x9b009b);
     if ((hfont == 0x0))
@@ -9479,8 +9479,8 @@ L_96f0:
     hfontSav = SelectObject(hdc, hfont);
     SetBkMode(hdc, TRANSPARENT);
     rcT = rcWnd;
-    rcT.bottom = ((uint32_t)(LOWORD((0x3 * rcT.bottom))) / 4);
-    RcCtrTextOut(hdc, &(rcT), 0x441, 6);
+    rcT.bottom = ((uint32_t)(LOWORD((3 * rcT.bottom))) / 4);
+    RcCtrTextOut(hdc, &(rcT), "Stars!", 6);
     SelectObject(hdc, hfontSav);
     DeleteObject(hfont);
 
@@ -9489,8 +9489,8 @@ L_9752:
     SetBkMode(hdc, TRANSPARENT);
     SzVersion();
     GetWindowRect(rghwndBtnSplash[0], &(rcT));
-    rcWnd.top = (rcT.top - ((uint32_t)(LOWORD((0x9 * dyArial8))) / 2));
-    rcWnd.bottom = (((uint32_t)(LOWORD((0x3 * dyArial8))) / 2) + rcWnd.top);
+    rcWnd.top = (rcT.top - ((uint32_t)(LOWORD((9 * dyArial8))) / 2));
+    rcWnd.bottom = (((uint32_t)(LOWORD((3 * dyArial8))) / 2) + rcWnd.top);
     RcCtrTextOut(hdc, &(rcWnd), szWork, strlen(szWork));
     EndPaint(hwnd, &(ps));
     LocalFree(plf);

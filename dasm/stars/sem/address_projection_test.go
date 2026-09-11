@@ -160,8 +160,8 @@ func TestConvertBitfieldThroughFixedArray(t *testing.T) {
 		machine.BinaryVal(machine.ValueOpShr, load, machine.ConstVal(8)),
 		machine.ConstVal(0xff),
 	)
-	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(value)); got != "lpshdef->hul.rghs[0x0].cItem" {
-		t.Fatalf("converted bitfield = %q, want lpshdef->hul.rghs[0x0].cItem", got)
+	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(value)); got != "lpshdef->hul.rghs[0].cItem" {
+		t.Fatalf("converted bitfield = %q, want lpshdef->hul.rghs[0].cItem", got)
 	}
 }
 
@@ -323,4 +323,31 @@ func TestNegativePointerOffsets(t *testing.T) {
 			t.Fatalf("negative void pointer offset = %s, want raw dereference at -2", FormatExpr(value))
 		}
 	})
+}
+
+// TestIndexedLocalArrayNegativeResidual projects a dynamic local array access
+// whose folded index leaves a positive field offset in the preceding element.
+func TestIndexedLocalArrayNegativeResidual(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DrawBtn")
+
+	cpt := frameLoad(ctx, 0x5d5, -0x3c, 2)
+	index := machine.BinaryVal(
+		machine.ValueOpShl,
+		machine.BinaryVal(
+			machine.ValueOpShl,
+			machine.BinaryVal(machine.ValueOpAdd, cpt, machine.ConstVal(0xffff)),
+			machine.ConstVal(1),
+		),
+		machine.ConstVal(1),
+	)
+	mem := frameMemoryAccess(ctx, 0x5d5, -0x2e, 2)
+	mem.Seg = machine.RegVal(asm.RegSS)
+	mem.Index = index
+
+	got := FormatExpr((&machineConverter{ctx: ctx}).convertMemoryLValue(mem, mem.Width))
+	if got != "rgptDraw[(cpt - 0x1)].y" {
+		t.Fatalf("converted indexed local array = %q, want rgptDraw[(cpt - 0x1)].y", got)
+	}
 }

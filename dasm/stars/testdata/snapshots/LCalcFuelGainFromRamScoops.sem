@@ -38,7 +38,7 @@ L_571b:
     branch lpfl->rgcsh[i] == 0 ? L_56fe : L_5738
 
 L_5738:
-    rgiFuel = LpengineFromId(lpshdef->hul.rghs[0x0].iItem)->rgcFuelUsed
+    rgiFuel = LpengineFromId(lpshdef->hul.rghs[0].iItem)->rgcFuelUsed
     pctShip10 = 0
     branch iWarp > 9 ? L_56fe : L_576c
 
@@ -46,25 +46,25 @@ L_576c:
     branch rgiFuel[iWarp] != 0 ? L_5852 : L_5784
 
 L_5784:
-    pctShip10 = (pctShip10 + lpshdef->hul.rghs[0x0].cItem)
+    pctShip10 = (pctShip10 + lpshdef->hul.rghs[0].cItem)
     branch rgiFuel[(iWarp + 1)] != 0 ? L_5852 : L_57b7
 
 L_57b7:
-    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0x0].cItem * 0x2))
+    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0].cItem * 0x2))
     branch iWarp >= 9 ? L_5852 : L_57da
 
 L_57da:
     branch rgiFuel[(iWarp + 2)] != 0 ? L_5852 : L_57f5
 
 L_57f5:
-    pctShip10 = (pctShip10 + (uint32_t)loword((lpshdef->hul.rghs[0x0].cItem * 0x3)))
+    pctShip10 = (pctShip10 + (uint32_t)loword((lpshdef->hul.rghs[0].cItem * 0x3)))
     branch iWarp >= 8 ? L_5852 : L_581b
 
 L_581b:
     branch rgiFuel[(iWarp + 3)] != 0 ? L_5852 : L_5836
 
 L_5836:
-    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0x0].cItem * 0x4))
+    pctShip10 = (pctShip10 + (uint32_t)(lpshdef->hul.rghs[0].cItem * 0x4))
 
 L_5852:
     pct10 = (pct10 + (uint32_t)(pctShip10 * sext16to32(lpfl->rgcsh[i])))

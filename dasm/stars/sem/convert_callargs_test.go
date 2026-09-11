@@ -7,6 +7,7 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 // TestLowerMachineResolvesIndexedStructFunctionPointerCall verifies indirect
@@ -69,5 +70,50 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 	want := "call ptile[i].pfn(0x3333, 0x2222, 0x1111)"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
+	}
+}
+
+// TestConvertTypedIndexedGlobalAddresses preserves all constants in a
+// multi-term address before projecting it through the PLAYER array.
+func TestConvertTypedIndexedGlobalAddresses(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "CMaxMines")
+	iplr := frameLoad(ctx, ctx.fs.Addr.Off, 0xa, 2)
+	index := machine.WordVal(
+		machine.BinaryVal(machine.ValueOpMul, machine.ConstVal(0xc0), iplr),
+		machine.WordLow,
+	)
+	address := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(
+			machine.ValueOpAdd,
+			machine.ConstVal(0x59a2),
+			index,
+		),
+		machine.ConstVal(0x80),
+	)
+	converter := &machineConverter{ctx: ctx}
+	cch := fx.SDB.GetFunction("CchGetString")
+	if got := FormatExpr(converter.convertValueTyped(address, cch.Params[1].Type)); got != "rgplr[iplr].szName" {
+		t.Fatalf("near indexed global address = %q, want rgplr[iplr].szName", got)
+	}
+
+	wsprintf := fx.SDB.GetFunction("_wsprintf")
+	destination := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAdd, machine.ConstVal(0x59a2), index),
+		machine.ConstVal(0xa0),
+	)
+	farAddress := &machine.StackWords{Words: []machine.Value{
+		machine.RegVal(asm.RegDS),
+		destination,
+	}}
+	if got := FormatExpr(converter.convertValueTyped(farAddress, wsprintf.Params[0].Type)); got != "rgplr[iplr].szNames" {
+		t.Fatalf("far indexed global address = %q, want rgplr[iplr].szNames", got)
+	}
+
+	if _, ok := wsprintf.Params[0].Type.(*typeinfo.Pointer); !ok {
+		t.Fatal("_wsprintf destination is not a pointer type")
 	}
 }

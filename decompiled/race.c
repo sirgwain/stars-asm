@@ -237,7 +237,7 @@ L_0383:
     goto L_038c;
 
 L_0389:
-    t_merge_038c_0001 = 0x1328;
+    t_merge_038c_0001 = "stars.r1";
 
 L_038c:
     if ((FSaveRace(t_merge_038c_0001, vplr.iPlayer) == 0))
@@ -475,7 +475,7 @@ L_079b:
         goto L_07af;
 
 L_07af:
-    iCur = ((uint32_t)(((iCur + 0x20) + iDir)) % 32);
+    iCur = ((uint32_t)(((iCur + 32) + iDir)) % 32);
     DibBlt(hdc, (rgrcBuildSpin[0].left - 2), (rgrcBuildSpin[0].top - 35), 32, 32, hdibRaces, ((iCur & 0x7) * 0x20), ((0x3 - (iCur >> 0x3)) * 0x20), 32, 32,
            13369376);
     goto L_079b;
@@ -552,7 +552,7 @@ L_092d:
         goto L_0937;
 
 L_0937:
-    pplr = (0xda2 + LOWORD((0xc0 * (j + 0xfef1))));
+    pplr = &(vrgplrDef[(j - 271)]);
     goto L_0956;
 
 L_0951:
@@ -784,7 +784,7 @@ L_0ef9:
         goto L_0f03;
 
 L_0f03:
-    pplr = (0xda2 + LOWORD(((wParam + 0xfef1) * 0xc0)));
+    pplr = &(vrgplrDef[(wParam - 271)]);
     goto L_0f1e;
 
 L_0f19:
@@ -897,14 +897,13 @@ L_106f:
     dxLabel = (LOWORD(GetTextExtent(hdc, szTemp, cch)) + 10);
     dxMiddle = (LOWORD(GetTextExtent(hdc, "200mR", 5)) + 10);
     dxMiddle = ((rc.right - dxLabel) - dxMiddle);
-    dy = ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2);
-    yTop = LOWORD((0x3 * dyArial8));
+    dy = ((uint32_t)(LOWORD((3 * dyArial8))) / 2);
+    yTop = LOWORD((3 * dyArial8));
     SetRect(vrgrcRCW, dxLabel, yTop, (dxLabel + dy), (yTop + dy));
     SetRect((vrgrcRCW + 1), ((dxLabel + dy) + 6), yTop, (((dxLabel + dxMiddle) - dy) - 6), (yTop + dy));
-    SetRect(hbrButtonFace[load(ds : [0x48ac]) * 0x1], ((dxLabel + dxMiddle) - dy), yTop, (dxLabel + dxMiddle), (yTop + dy));
-    SetRect(hbrWindow[load(ds : [0x48ac]) * 0x1], dxLabel, ((yTop + dy) + 4), (LOWORD((3 * dy)) + dxLabel), (((dy * 2) + yTop) + 4));
-    SetRect(hbrLightGray[load(ds : [0x48ac]) * 0x1], ((dxLabel + dxMiddle) - LOWORD((3 * dy))), ((yTop + dy) + 4), (dxLabel + dxMiddle),
-            (((dy * 2) + yTop) + 4));
+    SetRect((vrgrcRCW + 2), ((dxLabel + dxMiddle) - dy), yTop, (dxLabel + dxMiddle), (yTop + dy));
+    SetRect((vrgrcRCW + 3), dxLabel, ((yTop + dy) + 4), (LOWORD((3 * dy)) + dxLabel), (((dy * 2) + yTop) + 4));
+    SetRect((vrgrcRCW + 4), ((dxLabel + dxMiddle) - LOWORD((3 * dy))), ((yTop + dy) + 4), (dxLabel + dxMiddle), (((dy * 2) + yTop) + 4));
     i = 0;
     goto L_12e0;
 
@@ -954,11 +953,11 @@ L_137e:
     cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
     t_scratch_m30 = LOWORD(GetTextExtent(hdc, "15%", 3));
     vrgrcRCW[15].left = (((dxLabel + LOWORD(GetTextExtent(hdc, szWork, cch))) + t_scratch_m30) + 4);
-    vrgrcRCW[15].top = ((LOWORD((0x9 * dy)) + yTop) - 3);
+    vrgrcRCW[15].top = ((LOWORD((9 * dy)) + yTop) - 3);
     vrgrcRCW[15].right = (vrgrcRCW[15].left + 15);
     vrgrcRCW[15].bottom = (((dyArial8 >> 0x1) + vrgrcRCW[15].top) + 0x3);
     vrgrcRCW[16] = vrgrcRCW[15];
-    /* untranslated: call OffsetRect(part[0x10:4](game[load(ds:[0x48ac])*0x1]), 0, ((vrgrcRCW[15].bottom - vrgrcRCW[15].top) - 1)) -> callresult(void) */
+    OffsetRect((vrgrcRCW + 16), 0, ((vrgrcRCW[15].bottom - vrgrcRCW[15].top) - 1));
     crcRCW = 17;
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
@@ -1387,11 +1386,11 @@ L_1b5e:
         goto L_1b67;
 
 L_1b67:
-    t_merge_1b70_0001 = 0x133b;
+    t_merge_1b70_0001 = "<<     >>";
     goto L_1b70;
 
 L_1b6d:
-    t_merge_1b70_0001 = 0x1345;
+    t_merge_1b70_0001 = ">>     <<";
 
 L_1b70:
     DrawBtn(hdc, (vrgrcRCW + i), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
@@ -1522,7 +1521,7 @@ L_1f67:
     goto L_1f80;
 
 L_1f72:
-    l2 = (l2 + (uint32_t)((0x64 - iStore)));
+    l2 = (l2 + (uint32_t)((100 - iStore)));
 
 L_1f80:
     iStore = (iStore + 1);
@@ -1628,7 +1627,7 @@ L_20bd:
     rc.left = vrgrcRCW->left;
     rc.top = ((vrgrcRCW[15].top + dyArial8) + 8);
     rc.right = (vrgrcRCW[15].right + 20);
-    rc.bottom = (LOWORD((0x3 * dyArial8)) + rc.top);
+    rc.bottom = (LOWORD((3 * dyArial8)) + rc.top);
     SelectObject(hdc, hbrButtonFace);
     PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), PATCOPY);
     DrawText(hdc, szWork, cch, &(rc), 0x10);
@@ -1907,8 +1906,8 @@ L_24c2:
         goto L_2505;
 
 L_2505:
-    dWidth = LOWORD((0xa * dWidth));
-    dShift = LOWORD((0xa * dShift));
+    dWidth = LOWORD((10 * dWidth));
+    dShift = LOWORD((10 * dShift));
 
 L_2517:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -1988,7 +1987,7 @@ L_25ba:
         goto L_2602;
 
 L_2602:
-    iMin = (iMin - LOBYTE(((uint16_t)(iMax) + 0xff9c)));
+    iMin = (iMin - LOBYTE(((uint16_t)(iMax)-100)));
     iMax = 100;
 
 L_2610:
@@ -2309,7 +2308,7 @@ L_2b05:
     crBkSav = SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crWindowText);
     SelectObject(hdc, rghfontArial8[1]);
-    yTop = (LOWORD((0x3 * dyArial8)) + 6);
+    yTop = (LOWORD((3 * dyArial8)) + 6);
     dxDig = LOWORD(GetTextExtent(hdc, "9", 1));
     dxkT = LOWORD(GetTextExtent(hdc, "kT", 2));
     ids = idsOneResourceGeneratedEachYearEvery;
@@ -2349,7 +2348,7 @@ L_2bec:
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0123), 0x0, 6, yTop, (rc.right - 12), ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
 
 L_2c22:
-    yTop = (yTop + ((uint32_t)(LOWORD((0x5 * dyArial8))) / 2));
+    yTop = (yTop + ((uint32_t)(LOWORD((5 * dyArial8))) / 2));
 
 L_2c32:
     if ((fMacintosh == 0))
@@ -2410,11 +2409,11 @@ L_2d0b:
         goto L_2d1a;
 
 L_2d1a:
-    strcat(szWork, 0x1358);
+    strcat(szWork, "00");
     goto L_2d3d;
 
 L_2d2d:
-    strcat(szWork, 0x135b);
+    strcat(szWork, "kT");
 
 L_2d3d:
     dx = (dx + dxItem);
@@ -2561,7 +2560,7 @@ L_3012:
         goto L_3056;
 
 L_3056:
-    dShift = LOWORD((0x3 * dShift));
+    dShift = LOWORD((3 * dShift));
 
 L_305f:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -3618,7 +3617,7 @@ L_453c:
         goto L_4545;
 
 L_4545:
-    iSpread = (LOWORD(((iSpread + 0xfff3) * 0x3)) + 21);
+    iSpread = (LOWORD(((iSpread - 13) * 3)) + 21);
     goto L_45df;
 
 L_4559:
@@ -3673,7 +3672,7 @@ L_45c0:
     goto L_45df;
 
 L_45c3:
-    cPoints = (cPoints + (uint32_t)(((uint32_t)((0x6 - iSpread)) * 4200)));
+    cPoints = (cPoints + (uint32_t)(((uint32_t)((6 - iSpread)) * 4200)));
 
 L_45df:
     lInnate = (int32_t)(((uint32_t)((lInnate * (uint32_t)(iSpread))) / 0x18));
@@ -3689,7 +3688,7 @@ L_461e:
         goto L_4636;
 
 L_4636:
-    cPoints = (cPoints + (uint32_t)((abs(((uint16_t)(pplr->rgEnvVar[i]) + 0xffce)) * 0x4)));
+    cPoints = (cPoints + (uint32_t)((abs(((uint16_t)(pplr->rgEnvVar[i]) - 50)) * 4)));
     goto L_4664;
 
 L_4660:
@@ -3834,7 +3833,7 @@ L_47e7:
         goto L_47f0;
 
 L_47f0:
-    cPoints = (cPoints + (uint32_t)(LOWORD(((i + 0xfff6) * 0x78))));
+    cPoints = (cPoints + (uint32_t)(LOWORD(((i - 10) * 120))));
 
 L_4802:
     if ((raMajor == 8))
@@ -3853,11 +3852,11 @@ L_480b:
         goto L_485e;
 
 L_485e:
-    cCur = (cCur + LOWORD((0x64 * rgi[0x0])));
+    cCur = (cCur + LOWORD((100 * rgi[0])));
     goto L_4873;
 
 L_486a:
-    cCur = (cCur + LOWORD((0x79 * rgi[0x0])));
+    cCur = (cCur + LOWORD((121 * rgi[0])));
 
 L_4873:
     if ((rgi[1] >= 0))
@@ -3866,11 +3865,11 @@ L_4873:
         goto L_487c;
 
 L_487c:
-    cCur = (cCur - LOWORD((0x37 * rgi[0x1])));
+    cCur = (cCur - LOWORD((55 * rgi[1])));
     goto L_4896;
 
 L_4888:
-    cCur = (cCur - LOWORD((LOWORD((rgi[0x1] * rgi[0x1])) * 0x3c)));
+    cCur = (cCur - LOWORD((LOWORD((rgi[1] * rgi[1])) * 0x3c)));
 
 L_4896:
     if ((rgi[2] <= 0))
@@ -3879,11 +3878,11 @@ L_4896:
         goto L_489f;
 
 L_489f:
-    cCur = (cCur + LOWORD((0x28 * rgi[0x2])));
+    cCur = (cCur + LOWORD((40 * rgi[2])));
     goto L_48b4;
 
 L_48ab:
-    cCur = (cCur + LOWORD((0x23 * rgi[0x2])));
+    cCur = (cCur + LOWORD((35 * rgi[2])));
 
 L_48b4:
     if ((cCur <= 700))
@@ -3892,7 +3891,7 @@ L_48b4:
         goto L_48be;
 
 L_48be:
-    cCur = (((uint32_t)((cCur + 0xfd44)) / 3) + 700);
+    cCur = (((uint32_t)((cCur - 700)) / 3) + 700);
 
 L_48d0:
     if ((rgi[2] > -7))
@@ -3907,7 +3906,7 @@ L_48d9:
         goto L_48e2;
 
 L_48e2:
-    cCur = (cCur - LOWORD(((0xfffa - rgi[0x2]) * 0x1e)));
+    cCur = (cCur - LOWORD(((-6 - rgi[2]) * 30)));
     goto L_4915;
 
 L_48f3:
@@ -3917,7 +3916,7 @@ L_48f3:
         goto L_48fc;
 
 L_48fc:
-    cCur = (cCur - (LOWORD(((0xfff4 - rgi[0x2]) * 0x2d)) + 225));
+    cCur = (cCur - (LOWORD(((-12 - rgi[2]) * 45)) + 225));
     goto L_4915;
 
 L_4910:
@@ -3930,7 +3929,7 @@ L_4915:
         goto L_491e;
 
 L_491e:
-    cCur = (cCur - LOWORD((LOWORD(((0xfffe - rgi[0x0]) * 0x14)) * 0x3)));
+    cCur = (cCur - LOWORD((LOWORD(((-2 - rgi[0]) * 20)) * 0x3)));
 
 L_4931:
     cPoints = (cPoints + (uint32_t)(cCur));
@@ -3953,11 +3952,11 @@ L_495b:
         goto L_49ae;
 
 L_49ae:
-    cCur = (cCur + LOWORD((0x64 * rgi[0x0])));
+    cCur = (cCur + LOWORD((100 * rgi[0])));
     goto L_49c3;
 
 L_49ba:
-    cCur = (cCur + LOWORD((0xa9 * rgi[0x0])));
+    cCur = (cCur + LOWORD((169 * rgi[0])));
 
 L_49c3:
     if ((rgi[1] > 0))
@@ -3966,7 +3965,7 @@ L_49c3:
         goto L_49cc;
 
 L_49cc:
-    cCur = (cCur - (LOWORD((0x41 * rgi[0x1])) - 80));
+    cCur = (cCur - (LOWORD((65 * rgi[1])) - 80));
     goto L_49e0;
 
 L_49db:
@@ -3979,11 +3978,11 @@ L_49e0:
         goto L_49e9;
 
 L_49e9:
-    cCur = (cCur + LOWORD((0x28 * rgi[0x2])));
+    cCur = (cCur + LOWORD((40 * rgi[2])));
     goto L_49fe;
 
 L_49f5:
-    cCur = (cCur + LOWORD((0x23 * rgi[0x2])));
+    cCur = (cCur + LOWORD((35 * rgi[2])));
 
 L_49fe:
     cPoints = (cPoints + (uint32_t)(cCur));
@@ -4037,7 +4036,7 @@ L_4a87:
         goto L_4a95;
 
 L_4a95:
-    cPoints = (cPoints - (uint32_t)(LOWORD((LOWORD(((cBad + cGood) * 0xa)) * ((cBad + cGood) + 0xfffc)))));
+    cPoints = (cPoints - (uint32_t)(LOWORD((LOWORD(((cBad + cGood) * 10)) * ((cBad + cGood) - 4)))));
 
 L_4ab2:
     if (((cGood - cBad) <= 3))
@@ -4046,7 +4045,7 @@ L_4ab2:
         goto L_4ac0;
 
 L_4ac0:
-    cPoints = (cPoints - (uint32_t)(LOWORD((((cGood - cBad) + 0xfffd) * 0x3c))));
+    cPoints = (cPoints - (uint32_t)(LOWORD((((cGood - cBad) - 3) * 60))));
 
 L_4ad5:
     if (((cBad - cGood) <= 3))
@@ -4055,7 +4054,7 @@ L_4ad5:
         goto L_4ae3;
 
 L_4ae3:
-    cPoints = (cPoints - (uint32_t)(LOWORD((((cBad - cGood) + 0xfffd) * 0x28))));
+    cPoints = (cPoints - (uint32_t)(LOWORD((((cBad - cGood) - 3) * 40))));
 
 L_4af8:
     if ((GetRaceGrbit(pplr, ibitRaceNoAdvScanner) == 0))
@@ -4143,7 +4142,7 @@ L_4bbd:
         goto L_4bc6;
 
 L_4bc6:
-    cPoints = (cPoints + (uint32_t)(rgRaceDisEnvPts[((-cCur) + 0xffff)]));
+    cPoints = (cPoints + (uint32_t)(rgRaceDisEnvPts[((-cCur) - 1)]));
     if (((-cCur) <= 0x4))
         goto L_4c09;
     else
@@ -4413,7 +4412,7 @@ L_4fa5:
     goto L_4fc7;
 
 L_4faf:
-    iTry = (((uint32_t)(LOWORD((i * rgInc[0x0]))) / (rgSteps[0] - 1)) + rgBase[0]);
+    iTry = (((uint32_t)(LOWORD((i * rgInc[0]))) / (rgSteps[0] - 1)) + rgBase[0]);
 
 L_4fc7:
     if ((iTerra == 0))
@@ -4428,7 +4427,7 @@ L_4fd1:
         goto L_4fe3;
 
 L_4fe3:
-    iDelta = ((uint16_t)(pplr->rgEnvVar[0x0]) - iTry);
+    iDelta = ((uint16_t)(pplr->rgEnvVar[0]) - iTry);
     if ((abs(iDelta) > pctTerra))
         goto L_500f;
     else
@@ -4453,7 +4452,7 @@ L_5024:
 
 L_502c:
     rgDelta[0] = iDelta;
-    iTry = ((uint16_t)(pplr->rgEnvVar[0x0]) - iDelta);
+    iTry = ((uint16_t)(pplr->rgEnvVar[0]) - iDelta);
 
 L_5042:
     pl.rgEnvVar[0] = LOBYTE(iTry);
@@ -4487,7 +4486,7 @@ L_508c:
     goto L_50ae;
 
 L_5096:
-    iTry = (((uint32_t)(LOWORD((j * rgInc[0x1]))) / (rgSteps[1] - 1)) + rgBase[1]);
+    iTry = (((uint32_t)(LOWORD((j * rgInc[1]))) / (rgSteps[1] - 1)) + rgBase[1]);
 
 L_50ae:
     if ((iTerra == 0))
@@ -4502,7 +4501,7 @@ L_50b8:
         goto L_50ca;
 
 L_50ca:
-    iDelta = ((uint16_t)(pplr->rgEnvVar[0x1]) - iTry);
+    iDelta = ((uint16_t)(pplr->rgEnvVar[1]) - iTry);
     if ((abs(iDelta) > pctTerra))
         goto L_50f6;
     else
@@ -4527,7 +4526,7 @@ L_510b:
 
 L_5113:
     rgDelta[1] = iDelta;
-    iTry = ((uint16_t)(pplr->rgEnvVar[0x1]) - iDelta);
+    iTry = ((uint16_t)(pplr->rgEnvVar[1]) - iDelta);
 
 L_5129:
     pl.rgEnvVar[1] = LOBYTE(iTry);
@@ -4561,7 +4560,7 @@ L_5168:
     goto L_518a;
 
 L_5172:
-    iTry = (((uint32_t)(LOWORD((k * rgInc[0x2]))) / (rgSteps[2] - 1)) + rgBase[2]);
+    iTry = (((uint32_t)(LOWORD((k * rgInc[2]))) / (rgSteps[2] - 1)) + rgBase[2]);
 
 L_518a:
     if ((iTerra == 0))
@@ -4576,7 +4575,7 @@ L_5194:
         goto L_51a6;
 
 L_51a6:
-    iDelta = ((uint16_t)(pplr->rgEnvVar[0x2]) - iTry);
+    iDelta = ((uint16_t)(pplr->rgEnvVar[2]) - iTry);
     if ((abs(iDelta) > pctTerra))
         goto L_51d2;
     else
@@ -4601,7 +4600,7 @@ L_51e7:
 
 L_51ef:
     rgDelta[2] = iDelta;
-    iTry = ((uint16_t)(pplr->rgEnvVar[0x2]) - iDelta);
+    iTry = ((uint16_t)(pplr->rgEnvVar[2]) - iDelta);
 
 L_5205:
     pl.rgEnvVar[2] = LOBYTE(iTry);
@@ -4669,7 +4668,7 @@ L_531b:
         goto L_532a;
 
 L_532a:
-    l1 = (int32_t)(((uint32_t)((l1 * (uint32_t)(rgInc[0x2]))) / 0x64));
+    l1 = (int32_t)(((uint32_t)((l1 * (uint32_t)(rgInc[2]))) / 0x64));
     goto L_5375;
 
 L_5358:
@@ -4686,7 +4685,7 @@ L_538d:
         goto L_539c;
 
 L_539c:
-    l2 = ((l2 * (double)((int32_t)(rgInc[0x1]))) / (double)(0x64));
+    l2 = ((l2 * (double)((int32_t)(rgInc[1]))) / (double)(0x64));
     goto L_53f6;
 
 L_53d5:
@@ -4703,7 +4702,7 @@ L_5409:
         goto L_5418;
 
 L_5418:
-    l3 = ((l3 * (double)((int32_t)(rgInc[0x0]))) / (double)(0x64));
+    l3 = ((l3 * (double)((int32_t)(rgInc[0]))) / (double)(0x64));
     goto L_5476;
 
 L_5453:
@@ -4749,7 +4748,7 @@ L_54d4:
     plf = LocalAlloc(0x40, 0x32);
     hdc = GetDC(hwnd);
     plf->lfHeight = -24;
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
     hfont = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, hfont);
     GetTextMetrics(hdc, &(tm));
@@ -5029,7 +5028,7 @@ L_5b6d:
         goto L_5b76;
 
 L_5b76:
-    pplr->pctIdealGrowth = LOBYTE((Random(4) + 0x2));
+    pplr->pctIdealGrowth = LOBYTE((Random(4) + 2));
     goto L_5e59;
 
 L_5b8e:
@@ -5055,7 +5054,7 @@ L_5bd3:
         goto L_5bdc;
 
 L_5bdc:
-    pplr->pctIdealGrowth = LOBYTE((Random(4) + 0x3));
+    pplr->pctIdealGrowth = LOBYTE((Random(4) + 3));
     goto L_5e59;
 
 L_5bf4:
@@ -5110,7 +5109,7 @@ L_5c5e:
     goto L_5ca6;
 
 L_5c91:
-    pplr->pctIdealGrowth = LOBYTE((Random(4) + 0x2));
+    pplr->pctIdealGrowth = LOBYTE((Random(4) + 2));
 
 L_5ca6:
     i = (i + 1);
@@ -5122,7 +5121,7 @@ L_5caa:
         goto L_5cb3;
 
 L_5cb3:
-    pplr->pctIdealGrowth = LOBYTE((Random(5) + 0x2));
+    pplr->pctIdealGrowth = LOBYTE((Random(5) + 2));
     goto L_5e59;
 
 L_5ccb:
@@ -5132,7 +5131,7 @@ L_5ccb:
 L_5cd3:
     j = ((Random(40) * 2) + 20);
     k = Random(((100 - j) + 1));
-    pplr->rgEnvVar[i] = LOBYTE((((uint32_t)(j) / 0x2) + k));
+    pplr->rgEnvVar[i] = LOBYTE((((uint32_t)(j) / 2) + k));
     pplr->rgEnvVarMin[i] = LOBYTE(k);
     pplr->rgEnvVarMax[i] = LOBYTE((k + j));
     i = (i + 1);
@@ -5178,12 +5177,12 @@ L_5de1:
 L_5dea:
     i = Random(3);
     j = Random(81);
-    pplr->rgEnvVar[i] = LOBYTE((j + 0xa));
+    pplr->rgEnvVar[i] = LOBYTE((j + 10));
     pplr->rgEnvVarMin[i] = LOBYTE(j);
-    pplr->rgEnvVarMax[i] = LOBYTE((j + 0x14));
+    pplr->rgEnvVarMax[i] = LOBYTE((j + 20));
 
 L_5e44:
-    pplr->pctIdealGrowth = LOBYTE((Random(9) + 0x7));
+    pplr->pctIdealGrowth = LOBYTE((Random(9) + 7));
 
 L_5e59:
     iVal = Random(3);
@@ -5258,7 +5257,7 @@ L_5f61:
     goto L_5f86;
 
 L_5f69:
-    pplr->rgAttr[i] = vrgplrDef[0x0].rgAttr[i];
+    pplr->rgAttr[i] = vrgplrDef[0].rgAttr[i];
     i = (i + 1);
 
 L_5f86:
@@ -5362,7 +5361,7 @@ L_6109:
 
 L_6115:
     i = Random(6);
-    j = (uint16_t)(pplr->rgAttr[(i + 0x8)]);
+    j = (uint16_t)(pplr->rgAttr[(i + 8)]);
     if ((j <= 0))
         goto L_61ad;
     else
@@ -5547,7 +5546,7 @@ L_6397:
         goto L_63aa;
 
 L_63aa:
-    pplr->pctIdealGrowth = LOBYTE((j + 0xffff));
+    pplr->pctIdealGrowth = LOBYTE((j - 1));
     cPts = CAdvantagePoints(pplr);
     if (((-cPts) <= (cPts - 50)))
         goto L_63de;
@@ -5575,7 +5574,7 @@ L_63f5:
         goto L_63fe;
 
 L_63fe:
-    pplr->pctIdealGrowth = LOBYTE((j + 0x1));
+    pplr->pctIdealGrowth = LOBYTE((j + 1));
     cPts = CAdvantagePoints(pplr);
     if (((-cPts) <= (cPts - 50)))
         goto L_6432;
@@ -5609,9 +5608,9 @@ L_6455:
 
 L_647c:
     j = Random(31);
-    pplr->rgEnvVar[iVal] = LOBYTE((j + 0x23));
+    pplr->rgEnvVar[iVal] = LOBYTE((j + 35));
     pplr->rgEnvVarMin[iVal] = LOBYTE(j);
-    pplr->rgEnvVarMax[iVal] = LOBYTE((j + 0x46));
+    pplr->rgEnvVarMax[iVal] = LOBYTE((j + 70));
     cPts = CAdvantagePoints(pplr);
     if (((-cPts) <= (cPts - 50)))
         goto L_64ef;

@@ -1709,19 +1709,19 @@ L_7baa:
 
 L_7bca:
     amount = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[4])))
         goto L_7dfb;
     else
         goto L_7c05;
 
 L_7c05:
-    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[4])))
         goto L_7c12;
     else
         goto L_7c0a;
 
 L_7c0a:
-    if ((LOWORD(amount) <= LOWORD(lpfl->rgwtMin[0x4])))
+    if ((LOWORD(amount) <= LOWORD(lpfl->rgwtMin[4])))
         goto L_7dfb;
     else
         goto L_7c12;
@@ -1806,19 +1806,19 @@ L_7df5:
     goto FinishFleet;
 
 L_7dfb:
-    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[4])))
         goto L_804f;
     else
         goto L_7e0e;
 
 L_7e0e:
-    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[4])))
         goto L_7e1b;
     else
         goto L_7e13;
 
 L_7e13:
-    if ((LOWORD(amount) >= LOWORD(lpfl->rgwtMin[0x4])))
+    if ((LOWORD(amount) >= LOWORD(lpfl->rgwtMin[4])))
         goto L_804f;
     else
         goto L_7e1b;
@@ -1829,19 +1829,19 @@ L_7e1b:
 L_7e2e:
     lpfl->rgwtMin[4] = amount;
     amount = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[4])))
         goto L_7e2e;
     else
         goto L_7e7a;
 
 L_7e7a:
-    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[0x4])))
+    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[4])))
         goto L_7e87;
     else
         goto L_7e7f;
 
 L_7e7f:
-    if ((LOWORD(amount) < LOWORD(lpfl->rgwtMin[0x4])))
+    if ((LOWORD(amount) < LOWORD(lpfl->rgwtMin[4])))
         goto L_7e2e;
     else
         goto L_7e87;
@@ -2121,13 +2121,13 @@ L_821e:
     goto CancelOrder;
 
 L_825a:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_829a;
     else
         goto L_8267;
 
 L_8267:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_829a;
     else
         goto L_8271;
@@ -2926,19 +2926,19 @@ L_9407:
     goto CancelOrder;
 
 L_9433:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) < 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
         goto L_9479;
     else
         goto L_9440;
 
 L_9440:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) > 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
         goto L_944f;
     else
         goto L_9445;
 
 L_9445:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) <= 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
         goto L_9479;
     else
         goto L_944f;
@@ -3038,10 +3038,8 @@ L_9627:
     ifltcur = (ifltcur + 1);
 
 L_962b:
-    lpflNew->pt.x = lpfl->pt.x;
-    lpflNew->pt.y = lpfl->pt.y;
-    lpflNew->lpplord->rgord[0].pt.x = lpfl->pt.x;
-    lpflNew->lpplord->rgord[0].pt.y = lpfl->pt.y;
+    lpflNew->pt = lpfl->pt;
+    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
     ish = 0;
     goto L_96a9;
 
@@ -3191,7 +3189,7 @@ L_9a84:
         goto L_9a95;
 
 L_9a95:
-    lpfl->lpplord->rgord[0].tsell.iPlrX = (lpfl->lpplord->rgord[0x0].tsell.iPlrX - 0x1);
+    lpfl->lpplord->rgord[0].tsell.iPlrX = (lpfl->lpplord->rgord[0].tsell.iPlrX - 0x1);
 
 L_9aa1:
     j = 0;
@@ -3353,8 +3351,7 @@ L_9df0:
     goto L_9ea2;
 
 L_9e1a:
-    lpth->pt.x = lpfl->pt.x;
-    lpth->pt.y = lpfl->pt.y;
+    lpth->pt = lpfl->pt;
     lpth->thm.cMines = cMine;
     lpth->thm.iType = LOBYTE(j);
 

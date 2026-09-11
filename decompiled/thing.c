@@ -162,9 +162,9 @@ L_02a0:
     yStart = (pt.y - r);
     yEnd = (pt.y + r);
     cPl = 0;
-    pptEnd = (12096 + (game.cPlanMax * 4));
-    dx = (rgptPlan[(game.cPlanMax + 0xffff)].x - rgptPlan[0x0].x);
-    i = LOWORD((int32_t)(((uint32_t)(((uint32_t)((pt.x - rgptPlan[0x0].x)) * (uint32_t)(game.cPlanMax))) / (uint32_t)(dx))));
+    pptEnd = &(rgptPlan[game.cPlanMax]);
+    dx = (rgptPlan[(game.cPlanMax - 1)].x - rgptPlan[0].x);
+    i = LOWORD((int32_t)(((uint32_t)(((uint32_t)((pt.x - rgptPlan[0].x)) * (uint32_t)(game.cPlanMax))) / (uint32_t)(dx))));
     if ((i < game.cPlanMax))
         goto L_035d;
     else
@@ -183,7 +183,7 @@ L_0366:
     i = 0;
 
 L_036b:
-    ppt = (12096 + (i * 4));
+    ppt = &(rgptPlan[i]);
 
 L_037a:
     if ((ppt->x < xStart))
@@ -394,7 +394,7 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
 
 L_064c:
     iRet = 0;
-    dUni = (LOWORD((0x190 * game.mdSize)) + 1400);
+    dUni = (LOWORD((400 * game.mdSize)) + 1400);
     pt.x = lpthWorm->pt.x;
     pt.y = lpthWorm->pt.y;
     if ((pt.x < 1000))
@@ -590,7 +590,7 @@ L_086a:
     dx = (uint32_t)((pt.x - lpth->pt.x));
     dy = (uint32_t)((pt.y - lpth->pt.y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    if ((lpth->idFull != *(lpthWorm + 0xc)))
+    if ((lpth->idFull != lpthWorm->thw.idPartner))
         goto L_0950;
     else
         goto L_08d6;
@@ -1127,7 +1127,7 @@ L_0d44:
     fMaxTech = t_merge_0d44_0001;
     grbitPlrTrader = rgplr[lpfl->iPlayer].grbitTrader;
     iplr = lpfl->iPlayer;
-    if ((((0x1 << iplr) & *(lpth + 0xc)) == 0x0))
+    if ((((0x1 << iplr) & lpth->tht.grbitPlr) == 0x0))
         goto L_0daf;
     else
         goto L_0d7d;
@@ -1146,7 +1146,7 @@ L_0daf:
         goto L_0df8;
 
 L_0df8:
-    if (((*(lpth + 0xe) & grbitPlrTrader) == 0x0))
+    if (((lpth->tht.grbitTrader & grbitPlrTrader) == 0x0))
         goto LGivePart;
     else
         goto L_0e0a;
@@ -1326,7 +1326,7 @@ L_106d:
         goto LGiveITech;
 
 LGiveITech:
-    memcpy(&(rgTech), ((0x59a2 + LOWORD((192 * iplr))) + 0x1a), 0x6);
+    memcpy(&(rgTech), &(rgplr[iplr].rgTech), 0x6);
     rgTech[iLowest] = (rgTech[iLowest] + 0x1);
     iplrSav = idPlayer;
     idPlayer = iplr;
@@ -1363,7 +1363,7 @@ L_113e:
 
 LGivePart:
     cTry = 25;
-    grbitTrader = *(lpth + 0xe);
+    grbitTrader = lpth->tht.grbitTrader;
     if ((grbitTrader != 0x0))
         goto L_11ae;
     else
@@ -1543,10 +1543,8 @@ L_145b:
     ifl = (ifl + 1);
 
 L_145f:
-    lpflNew->pt.x = lpfl->pt.x;
-    lpflNew->pt.y = lpfl->pt.y;
-    lpflNew->lpplord->rgord[0].pt.x = lpfl->pt.x;
-    lpflNew->lpplord->rgord[0].pt.y = lpfl->pt.y;
+    lpflNew->pt = lpfl->pt;
+    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
     lpflNew->fHereAllTurn = 0x1;
     lpshdefDest = (rglpshdef[iplr] + ish);
     if ((lpshdefDest->fFree == 0x0))
@@ -1611,7 +1609,7 @@ L_16a2:
         goto L_16c4;
 
 L_16c4:
-    if ((((0x1 << lppl->iPlayer) & *(lpth + 0xc)) != 0x0))
+    if ((((0x1 << lppl->iPlayer) & lpth->tht.grbitPlr) != 0x0))
         goto L_1a6b;
     else
         goto L_16e2;
@@ -1704,14 +1702,14 @@ L_1811:
         goto L_181c;
 
 L_181c:
-    if ((*(lpth + 0xe) == 0x0))
+    if ((lpth->tht.grbitTrader == 0x0))
         goto LAutoTech;
     else
         goto L_1829;
 
 L_1829:
     cTry = 50;
-    grbitTrader = *(lpth + 0xe);
+    grbitTrader = lpth->tht.grbitTrader;
 
 L_1838:
     if (((grbitTrader & rgplr[iplr].grbitTrader) == 0x0))

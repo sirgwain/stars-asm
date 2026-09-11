@@ -337,3 +337,34 @@ func (sr *symbolResolver) sameResolvedStorage(a machine.MemoryAddress, b machine
 	bPath, bOK := sr.memoryPath(b)
 	return bOK && symresolve.Equals(aPath, bPath)
 }
+
+// wideAggregateStorage proves that two adjacent word accesses cover exactly
+// one four-byte struct or union object.
+func (sr *symbolResolver) wideAggregateStorage(low machine.MemoryAddress, high machine.MemoryAddress) (machine.MemoryAddress, typeinfo.Type, bool) {
+	if _, ok := sr.adjacentResolvedStorage(low, high); !ok {
+		return machine.MemoryAddress{}, nil, false
+	}
+
+	wide := low
+	wide.Width = 4
+
+	resolved, ok := sr.addressFromMemory(wide, nil)
+	if !ok {
+		return machine.MemoryAddress{}, nil, false
+	}
+
+	lane, ok := sr.storageLaneFromMemory(wide, resolved)
+	if !ok ||
+		lane.offset != 0 ||
+		lane.object == nil ||
+		!symbolPathHasDeclaredRoot(lane.object) {
+		return machine.MemoryAddress{}, nil, false
+	}
+
+	typ, ok := lane.object.Type().(*typeinfo.Struct)
+	if !ok || typ.Bytes() != 4 {
+		return machine.MemoryAddress{}, nil, false
+	}
+
+	return wide, typ, true
+}

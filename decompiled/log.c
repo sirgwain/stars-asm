@@ -539,7 +539,7 @@ L_9374:
     imemLogCur = imemLogPrev;
 
 L_937a:
-    WriteMemRt(38, game.cPlayer, ((0x59a2 + LOWORD((192 * idPlayer))) + 0x70));
+    WriteMemRt(38, game.cPlayer, &(rgplr[idPlayer].rgmdRelation));
     if ((gd.fTutorial == 0x0))
         goto L_93ca;
     else
@@ -825,10 +825,10 @@ L_979a:
 L_97b5:
     /* untranslated: part[0x0:4](rgbCur) = (uint32_t)pplNew->id */
     rgbCur[4] = 0;
-    rgbCur[2] = ((rgbCur[0x2] & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0)));
-    rgbCur[2] = ((rgbCur[0x2] & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1)));
-    rgbCur[2] = ((rgbCur[0x2] & 0xffff87ff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->iWarpFling)) & 0xf)) << 0xb)));
-    rgbCur[2] = ((rgbCur[0x2] & 0xfe007fff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idRoute)) & 0x3ff)) << 0xf)));
+    rgbCur[2] = ((rgbCur[2] & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0)));
+    rgbCur[2] = ((rgbCur[2] & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1)));
+    rgbCur[2] = ((rgbCur[2] & 0xffff87ff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->iWarpFling)) & 0xf)) << 0xb)));
+    rgbCur[2] = ((rgbCur[2] & 0xfe007fff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idRoute)) & 0x3ff)) << 0xf)));
     WriteMemRt(35, 6, rgbCur);
 
 L_9901:
@@ -1178,9 +1178,9 @@ L_9d60:
 
 L_9d6c:
     prt = &(rgbuf);
-    /* untranslated: part[0x4:1](prt) = lobyte(((*(prt+0x4) & 0xf0) | (lobyte(plx1->grobj) & 0xf))) */
-    /* untranslated: part[0x4:1](prt) = lobyte((prt->grobj1 | ((lobyte(plx2->grobj) & 0xf) * 0x10))) */
-    LOWORD(prt) = plx1->id;
+    *(prt + 0x4) = LOBYTE(((*(prt + 0x4) & 0xf0) | (LOBYTE(plx1->grobj) & 0xf)));
+    *(prt + 0x4) = LOBYTE((prt->grobj1 | ((LOBYTE(plx2->grobj) & 0xf) * 0x10)));
+    prt->id1 = plx1->id;
     prt->id2 = plx2->id;
     prt->grbitItems = LOBYTE(grbit);
     cb = 6;
@@ -1794,7 +1794,7 @@ L_a7d4:
     return 0;
 
 L_a7dd:
-    fmemcpy(game.lid[(0x59a2 + loword((0xc0 * load(ds : [0x018c])))) * 0x1], lpb, game.cPlayer);
+    fmemcpy(&(rgplr[idPlayer].rgmdRelation), lpb, game.cPlayer);
     goto L_c796;
 
 L_a807:
@@ -1813,7 +1813,7 @@ L_a822:
     return 0;
 
 L_a828:
-    /* untranslated: call fmemcpy(part[0x28:4](rgcrPlrHistory[(0x59a2 + loword((0xc0 * load(ds:[0x018c]))))*0x1]), lpb, cb) -> callresult(void *) */
+    fmemcpy(&(rgplr[idPlayer].zpq1), lpb, cb);
 
 L_a84f:
     goto L_c796;
@@ -2081,7 +2081,7 @@ L_ad47:
     return 0;
 
 L_ad4d:
-    rgxf[0x1].fl.id = -1;
+    rgxf[1].fl.id = -1;
     if ((((lpb[4] >> 0x4) & 0xf) == 0x4))
         goto L_ade3;
     else
@@ -2137,7 +2137,7 @@ L_ae30:
         goto L_ae39;
 
 L_ae39:
-    rgcXfer[i] = (uint32_t)((uint16_t)(lpb[(iLook + 0x6)]));
+    rgcXfer[i] = (uint32_t)((uint16_t)(lpb[(iLook + 6)]));
     goto L_aecd;
 
 L_ae66:
@@ -2147,7 +2147,7 @@ L_ae66:
         goto L_ae6f;
 
 L_ae6f:
-    rgcXfer[i] = (uint32_t)(lpb[((iLook * 2) + 0x6)]);
+    rgcXfer[i] = (uint32_t)(lpb[((iLook * 2) + 6)]);
     goto L_aecd;
 
 L_ae9d:
@@ -2270,7 +2270,7 @@ L_b000:
 
 L_b003:
     id = t_merge_b003_0001;
-    id = (id | rgxf[0x0].fl.id);
+    id = (id | rgxf[0].fl.id);
     FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, (LOWORD(cXfer) - LOWORD(l)), i, LOWORD(cXfer), 0, 0, 0);
     rgcXfer[i] = l;
 
@@ -2490,9 +2490,9 @@ L_b24f:
         goto L_b25b;
 
 L_b25b:
-    LOWORD(lpcdT) = rgxf[0x0].fl.id;
-    lpcdT->idPlr = rgxf[0x0].fl.iPlayer;
-    lpcdT->idPlanetDst = rgxf[0x1].fl.id;
+    lpcdT->idFleetSrc = rgxf[0].fl.id;
+    lpcdT->idPlr = rgxf[0].fl.iPlayer;
+    lpcdT->idPlanetDst = rgxf[1].fl.id;
     lpcdT->cColonist = 0;
     if ((rgxf[1].fl.iPlayer == -1))
         goto L_b29e;
@@ -2724,7 +2724,7 @@ L_b544:
 L_b54c:
     cXferFull = (cXferFull + 1);
     fmemset(lpxfCur, 0, 0x19);
-    LOWORD(lpxfCur) = LOWORD(lpb);
+    lpxfCur->id1 = LOWORD(lpb);
     lpxfCur->id2 = lpb[2];
 
 L_b57b:
@@ -2788,7 +2788,7 @@ L_b6c2:
 
 L_b6c5:
     id = t_merge_b6c5_0001;
-    id = (id | rgxf[0x0].fl.id);
+    id = (id | rgxf[0].fl.id);
     FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, ((-LOWORD(l)) - LOWORD(cXfer)), i, (-LOWORD(cXfer)), 0, 0, 0);
 
 DoNext:
@@ -3062,7 +3062,7 @@ L_bad4:
         goto L_bae3;
 
 L_bae3:
-    cXfer = (uint32_t)(lpb[((iLook * 2) + 0x7)]);
+    cXfer = (uint32_t)(lpb[((iLook * 2) + 7)]);
     if ((iPass != 0))
         goto L_bb23;
     else
@@ -3129,7 +3129,7 @@ L_bb66:
         goto L_bb6e;
 
 L_bb6e:
-    cXfer = (uint32_t)((-rgxf[0x0].fl.rgcsh[i]));
+    cXfer = (uint32_t)((-rgxf[0].fl.rgcsh[i]));
     goto L_bbca;
 
 L_bb88:
@@ -3151,10 +3151,10 @@ L_bba7:
         goto L_bbaf;
 
 L_bbaf:
-    cXfer = (uint32_t)(((0x7ffe - rgxf[0x0].fl.rgcsh[i]) + 0xffff));
+    cXfer = (uint32_t)(((32766 - rgxf[0].fl.rgcsh[i]) - 1));
 
 L_bbca:
-    rgxf[0x0].fl.rgcsh[i] = (rgxf[0x0].fl.rgcsh[i] + LOWORD(cXfer));
+    rgxf[0].fl.rgcsh[i] = (rgxf[0].fl.rgcsh[i] + LOWORD(cXfer));
 
 L_bbde:
     if ((iPass != 0))
@@ -3223,7 +3223,7 @@ L_bc42:
         goto L_bc4a;
 
 L_bc4a:
-    cXfer = (uint32_t)(rgxf[0x1].fl.rgcsh[i]);
+    cXfer = (uint32_t)(rgxf[1].fl.rgcsh[i]);
     goto L_bcb1;
 
 L_bc62:
@@ -3245,10 +3245,10 @@ L_bc8d:
         goto L_bc94;
 
 L_bc94:
-    cXfer = (uint32_t)((-((0x7ffe - rgxf[0x1].fl.rgcsh[i]) + 0xffff)));
+    cXfer = (uint32_t)((-((32766 - rgxf[1].fl.rgcsh[i]) - 1)));
 
 L_bcb1:
-    rgxf[0x1].fl.rgcsh[i] = (rgxf[0x1].fl.rgcsh[i] - LOWORD(cXfer));
+    rgxf[1].fl.rgcsh[i] = (rgxf[1].fl.rgcsh[i] - LOWORD(cXfer));
 
 L_bcc5:
     iLook = (iLook + 1);
@@ -3389,7 +3389,7 @@ L_be71:
 L_be77:
     fmemmove(&(lpfl->lpplord->rgord[iLook]), &(lpfl->lpplord->rgord[((iLook + fExtra) + 1)]), ((((lpfl->cord - iLook) - fExtra) - 1) * 18));
     lpfl->cord = (lpfl->cord - (fExtra + 1));
-    lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - LOBYTE((fExtra + 0x1)));
+    lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - LOBYTE((fExtra + 1)));
     goto L_c796;
 
 L_bf1c:
@@ -3651,8 +3651,9 @@ L_c531:
         goto L_c543;
 
 L_c543:
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xff7f) | hiword((int32_t)((uint32_t)(loword((uint32_t)(lpb[2] & 0x1)) & 0x1) << 0x17))),
-     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(loword((uint32_t)(lpb[2] & 0x1)) & 0x1) << 0x17)))) */
+    *(lppl + 0x18) =
+        (((uint32_t)((uint16_t)(((*(lppl + 0x1a) & 0xff7f) | HIWORD((int32_t)(((uint32_t)((LOWORD((uint32_t)((lpb[2] & 0x1))) & 0x1)) << 0x17)))))) << 0x10) |
+         (uint16_t)(((*(lppl + 0x18) & 0xffff) | LOWORD((int32_t)(((uint32_t)((LOWORD((uint32_t)((lpb[2] & 0x1))) & 0x1)) << 0x17))))));
     lppl->idFling = (LOWORD((uint32_t)((lpb[2] >> 0x1))) & 0x3ff);
     lppl->iWarpFling = (LOWORD((uint32_t)((lpb[2] >> 0xb))) & 0xf);
     lppl->idRoute = (LOWORD((uint32_t)((lpb[2] >> 0xf))) & 0x3ff);
@@ -4010,14 +4011,14 @@ L_c9ee:
 
 L_c9fd:
     wVersFile = rgbCur[8];
-    gd.fFileCrippled = ((rgbCur[0xe] >> 0xc) & 0x1);
+    gd.fFileCrippled = ((rgbCur[14] >> 0xc) & 0x1);
     if ((gd.fGeneratingTurn == 0x0))
         goto L_ca7f;
     else
         goto L_ca3a;
 
 L_ca3a:
-    rgplr[idPlayer].wFlags = ((rgplr[idPlayer].wFlags & 0xfffd) | ((((rgbCur[0xe] >> 0xc) & 0x1) & 0x1) * 0x2));
+    rgplr[idPlayer].wFlags = ((rgplr[idPlayer].wFlags & 0xfffd) | ((((rgbCur[14] >> 0xc) & 0x1) & 0x1) * 0x2));
 
 L_ca7f:
     ReadRt();
@@ -4094,11 +4095,11 @@ L_cbde:
 
 L_cbf1:
     t_call_cbfc = LpAlloc(hdrCur.cb, htPlrMsg);
-    LOWORD(lpmp) = FAROFF(t_call_cbfc);
+    LOWORD(lpmp->lpmsgplrNext) = FAROFF(t_call_cbfc);
     HIWORD(lpmp->lpmsgplrNext) = FARSEG(t_call_cbfc);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
-    LOWORD(lpmp) = 0x0;
+    LOWORD(lpmp->lpmsgplrNext) = 0x0;
     HIWORD(lpmp->lpmsgplrNext) = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     ReadRt();
@@ -4275,11 +4276,11 @@ L_ce2d:
         goto L_ce40;
 
 L_ce40:
-    cb = (26 - ((12 - vrgZipProd[0x0].cpq) * 2));
-    /* untranslated: branch memcmp(((0x59a2 + loword((192 * iPlayer))) + 0x56), part[0xe:2](vrgZipProd[0x0]), cb) == 0 ? L_ce91 : L_ce7e */
+    cb = (26 - ((12 - vrgZipProd[0].cpq) * 2));
+    /* untranslated: branch memcmp(&rgplr[iPlayer].zpq1, part[0xe:2](vrgZipProd[0]), cb) == 0 ? L_ce91 : L_ce7e */
 
 L_ce7e:
-    /* untranslated: call WriteMemRt(46, cb, part[0xe:2](vrgZipProd[0x0])) -> callresult(void) */
+    /* untranslated: call WriteMemRt(46, cb, part[0xe:2](vrgZipProd[0])) -> callresult(void) */
 
 L_ce91:
     strcpy(szBase, pszFileBase);
@@ -4480,11 +4481,11 @@ L_d1dd:
         goto L_d1f9;
 
 L_d1f9:
-    t_merge_d202_0001 = 0x9aa;
+    t_merge_d202_0001 = ".hst";
     goto L_d202;
 
 L_d1ff:
-    t_merge_d202_0001 = 0x9af;
+    t_merge_d202_0001 = ".m1";
 
 L_d202:
     strcpy(&(szT[cch]), t_merge_d202_0001);

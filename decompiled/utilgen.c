@@ -410,7 +410,7 @@ L_197a:
         goto L_1995;
 
 L_1995:
-    dw = ((uint32_t)((dw * 0xa)) + (int32_t)(((uint16_t)(*(pch)) + 0xffd0)));
+    dw = ((uint32_t)((dw * 0xa)) + (int32_t)(((uint16_t)(*(pch)) - 48)));
     pch = (pch + 1);
     goto L_197a;
 
@@ -603,7 +603,7 @@ void XorFileBuf(char *rgb, int16_t cb) {
 L_1cc4:
     lPrev = 0;
     pl = rgb;
-    plMac = (pl + (cb >> 0x2));
+    plMac = &(pl[(cb >> 0x2)]);
     goto L_1d04;
 
 L_1cf3:
@@ -1388,7 +1388,7 @@ L_2650:
 
 Top:
     pch = pchStart;
-    pchEnd = (pchStart + cLen);
+    pchEnd = &(pchStart[cLen]);
     ChopTrailingSpaces(pch, &(pchEnd));
     dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd + (-pch))));
     fItFit = 1;
@@ -1440,7 +1440,7 @@ L_2728:
         goto L_2735;
 
 L_2735:
-    pchEnd = (pchStart + cLen);
+    pchEnd = &(pchStart[cLen]);
     dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd + (-pchStart))));
 
 L_275f:
@@ -1732,7 +1732,7 @@ L_2b40:
 L_2b4c:
     plf = LocalAlloc(0x40, 0x32);
     plf->lfWeight = 900;
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
     if ((dx <= dy))
         goto L_2b8a;
     else
@@ -2323,7 +2323,7 @@ L_364a:
 L_3664:
     SetCapture(pbtnt->hwnd);
     DrawBtn(pbtnt->hdc, &(pbtnt->rc), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
-    t_scratch_m10 = (int32_t)(LOWORD((0x3 * pbtnt->dTimer)));
+    t_scratch_m10 = (int32_t)(LOWORD((3 * pbtnt->dTimer)));
     pbtnt->lTicks = (GetCurrentTime() + t_scratch_m10);
     pbtnt->fFirst = 0x0;
     return 1;
@@ -2588,7 +2588,7 @@ L_3bc7:
     goto L_3c31;
 
 L_3c03:
-    rgptDraw[ipt].x = ((rgptDraw[0x0].x * 2) - rgptDraw[(-rgptDraw[ipt].x)].x);
+    rgptDraw[ipt].x = ((rgptDraw[0].x * 2) - rgptDraw[(-rgptDraw[ipt].x)].x);
 
 L_3c31:
     rgptDraw[ipt].y = LOWORD((int32_t)(((uint32_t)(((uint32_t)(rgptDraw[ipt].y) * dxFace)) / 0xb)));
@@ -2713,16 +2713,16 @@ L_3e3f:
 
 L_3e42:
     dy = t_merge_3e42_0001;
-    x = rgptDraw[0x1].x;
-    dx = ((rgptDraw[0x2].x - x) + 1);
-    y = rgptDraw[0x1].y;
+    x = rgptDraw[1].x;
+    dx = ((rgptDraw[2].x - x) + 1);
+    y = rgptDraw[1].y;
     if ((fBar == 0))
         goto L_3ec0;
     else
         goto L_3e66;
 
 L_3e66:
-    /* untranslated: call PatBlt(hdc, x, ss:[bp+((cpt - 1) * 4)-0x2e], dx, 1, PATCOPY) -> callresult(int16_t) */
+    PatBlt(hdc, x, rgptDraw[(cpt - 1)].y, dx, 1, PATCOPY);
 
 L_3e92:
     goto L_3ec0;
@@ -2757,9 +2757,9 @@ L_3edb:
 
 L_3ede:
     dx = t_merge_3ede_0001;
-    y = rgptDraw[0x2].y;
-    dy = ((rgptDraw[0x1].y - y) + 1);
-    x = rgptDraw[0x1].x;
+    y = rgptDraw[2].y;
+    dy = ((rgptDraw[1].y - y) + 1);
+    x = rgptDraw[1].x;
     if ((fBar == 0))
         goto L_3f5b;
     else
@@ -2796,11 +2796,11 @@ L_3f6d:
         goto L_3f7f;
 
 L_3f7f:
-    t_merge_3f88_0001 = rgptDraw[0x3].x;
+    t_merge_3f88_0001 = rgptDraw[3].x;
     goto L_3f88;
 
 L_3f85:
-    t_merge_3f88_0001 = rgptDraw[0x4].x;
+    t_merge_3f88_0001 = rgptDraw[4].x;
 
 L_3f88:
     if ((rgptDraw[3].y >= rgptDraw[4].y))
@@ -2809,11 +2809,11 @@ L_3f88:
         goto L_3f94;
 
 L_3f94:
-    t_merge_3f9d_0001 = rgptDraw[0x3].y;
+    t_merge_3f9d_0001 = rgptDraw[3].y;
     goto L_3f9d;
 
 L_3f9a:
-    t_merge_3f9d_0001 = rgptDraw[0x4].y;
+    t_merge_3f9d_0001 = rgptDraw[4].y;
 
 L_3f9d:
     if ((rgptDraw[3].x <= rgptDraw[4].x))
@@ -2822,11 +2822,11 @@ L_3f9d:
         goto L_3fa9;
 
 L_3fa9:
-    t_merge_3fb2_0001 = rgptDraw[0x3].x;
+    t_merge_3fb2_0001 = rgptDraw[3].x;
     goto L_3fb2;
 
 L_3faf:
-    t_merge_3fb2_0001 = rgptDraw[0x4].x;
+    t_merge_3fb2_0001 = rgptDraw[4].x;
 
 L_3fb2:
     if ((rgptDraw[3].y <= rgptDraw[4].y))
@@ -2835,11 +2835,11 @@ L_3fb2:
         goto L_3fc1;
 
 L_3fc1:
-    t_merge_3fca_0001 = rgptDraw[0x3].y;
+    t_merge_3fca_0001 = rgptDraw[3].y;
     goto L_3fca;
 
 L_3fc7:
-    t_merge_3fca_0001 = rgptDraw[0x4].y;
+    t_merge_3fca_0001 = rgptDraw[4].y;
 
 L_3fca:
     SetRect(&(rc), t_merge_3f88_0001, t_merge_3f9d_0001, (t_merge_3fb2_0001 + 1), (t_merge_3fca_0001 + 1));
@@ -5026,7 +5026,7 @@ L_5fc0:
 
 L_5ffa:
     drive = (i + 2);
-    fn[0] = LOBYTE((drive + 0x41));
+    fn[0] = LOBYTE((drive + 65));
     l = 0;
     uDate = 0x0;
     if ((GetDriveType((i + 2)) != 0x3))
@@ -5444,7 +5444,7 @@ L_672e:
 
 L_675d:
     SetBkColor(hdc, crButtonFace);
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     if ((iNumOnly > 0))
         goto L_6788;
     else
@@ -5579,7 +5579,7 @@ L_695c:
     *(ppszBeg) = (psz + 1);
 
 L_696f:
-    LOBYTE(LOWORD(psz)) = 0x0;
+    *(psz) = 0;
 
 L_697f:
     return pszStart;
@@ -5636,7 +5636,7 @@ L_69f0:
 
 L_69ff:
     fValid = 1;
-    lNum = ((uint32_t)((lNum * 10)) + (int32_t)(((uint16_t)(*(psz)) + 0xffd0)));
+    lNum = ((uint32_t)((lNum * 10)) + (int32_t)(((uint16_t)(*(psz)) - 48)));
     goto L_6a6e;
 
 L_6a3b:
@@ -5679,7 +5679,7 @@ L_6aa6:
     plf = LocalAlloc(0x40, 0x32);
     memset(plf, 0, 0x32);
     plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
     hfontNew = CreateFontIndirect(plf);
     if ((pdyFont == 0x0))
         goto L_6b5b;

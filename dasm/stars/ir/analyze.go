@@ -3,6 +3,7 @@ package ir
 import "strings"
 
 type AnalyzeResult struct {
+	NumStatements        int            `json:"numStatements,omitempty"`
 	Untranslated         int            `json:"untranslated,omitempty"`
 	UntranslatedAssign   int            `json:"untranslatedAssign,omitempty"`
 	UntranslatedBitwise  int            `json:"untranslatedBitwise,omitempty"`
@@ -17,6 +18,12 @@ func (fn *Func) Analyze() AnalyzeResult {
 
 	for _, block := range fn.Blocks {
 		for _, stmt := range block.Stmts {
+			switch stmt.(type) {
+			case *Goto, *IfGoto, *TableJump:
+			default:
+				result.NumStatements++
+			}
+
 			switch c := stmt.(type) {
 			case *Comment:
 				result.Untranslated++

@@ -273,7 +273,7 @@ L_1ed6:
 
 L_1edb:
     dpOrig = (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*lpfl->rgdv[iItem].pctDp)) / 0xa)) * (uint32_t)(cshDamaged))) / 0x32));
-    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshDamaged) * 0x64)) / (uint32_t)((cshOrig + cBuilt)))));
+    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshDamaged) * 100)) / (uint32_t)((cshOrig + cBuilt)))));
     if ((lpfl->rgdv[iItem].pctSh != 0x0))
         goto L_1ff4;
     else
@@ -293,7 +293,7 @@ L_203c:
     cshDamaged = 1;
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 0x5)) / (uint32_t)(cshDamaged))) * 0x64)) / (uint32_t)(dpShdef))));
+    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 5)) / (uint32_t)(cshDamaged))) * 0x64)) / (uint32_t)(dpShdef))));
     goto L_20de;
 
 L_20c5:
@@ -758,7 +758,7 @@ L_29da:
 L_29f3:
     /* untranslated: t_scratch_m2e = (((sext16to32((lpth->thp.rgwtMin[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff) */
     lpth->thp.wtMax = 0x0;
-    /* untranslated: part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | t_scratch_m2e) */
+    /* untranslated: part[0x8:2](lpth->thp) = (part[0x8:2](lpth->thp) | t_scratch_m2e) */
     i = (i + 1);
 
 L_2a3f:
@@ -796,7 +796,7 @@ L_2ad1:
     lpth->thp.rgwtMin[i] = rgwt[i];
     /* untranslated: t_scratch_m2e_2 = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff) */
     lpth->thp.wtMax = 0x0;
-    /* untranslated: part[0xe:2](lpth) = (part[0x8:2](lpth->thp) | t_scratch_m2e_2) */
+    /* untranslated: part[0x8:2](lpth->thp) = (part[0x8:2](lpth->thp) | t_scratch_m2e_2) */
     i = (i + 1);
 
 L_2b35:
@@ -809,8 +809,7 @@ L_2b3e:
     lpth->thp.iWarp = iWarp;
     lpth->thp.iDecayRate = iDecayRate;
     lpth->thp.idPlanet = (lppl->idFling + 0xffff);
-    lpth->pt.x = rgptPlan[lppl->id].x;
-    lpth->pt.y = rgptPlan[lppl->id].y;
+    lpth->pt = rgptPlan[lppl->id];
     FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1));
     goto L_2fc9;
 
@@ -851,10 +850,10 @@ L_2cf2:
     lppl->rgwtMin[i] = 0;
     t_scratch_m16_6 = Random(50);
     t_call_2d26 = Random(50);
-    lppl->rgEnvVarOrig[i] = LOBYTE(((t_call_2d26 + 0x1) + t_scratch_m16_6));
-    lppl->rgEnvVar[i] = LOBYTE(((t_call_2d26 + 0x1) + t_scratch_m16_6));
+    lppl->rgEnvVarOrig[i] = LOBYTE(((t_call_2d26 + 1) + t_scratch_m16_6));
+    lppl->rgEnvVar[i] = LOBYTE(((t_call_2d26 + 1) + t_scratch_m16_6));
     t_scratch_m16_7 = Random(40);
-    lppl->rgMinConc[i] = LOBYTE(((Random(40) + 0x19) + t_scratch_m16_7));
+    lppl->rgMinConc[i] = LOBYTE(((Random(40) + 25) + t_scratch_m16_7));
     i = (i + 1);
 
 L_2d9c:

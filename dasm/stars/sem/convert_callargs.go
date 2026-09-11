@@ -76,14 +76,28 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 	_, words := value.(*machine.StackWords)
 	_, binary := value.(*machine.Binary)
 	addressValue := words && typeinfo.IsFarPointer(expected) || binary && typeinfo.IsPointer(expected)
-	if pointerExpected && addressValue && !typeinfo.IsPointer(path.Type()) && typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
-		target := LValue(&SymbolRef{Path: path})
-		if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
-			if lvalue, ok := expr.(LValue); ok {
-				target = lvalue
+	if pointerExpected && addressValue && !typeinfo.IsPointer(path.Type()) {
+		// A resolved address such as rgplr[i]+0x80 names a field inside an
+		// aggregate, but its symbolic path still has PLAYER as its result
+		// type. Project it as an address with width zero so the field array is
+		// preserved for pointer compatibility and array decay; using the
+		// expected pointer width here would produce Part(field, 0, 2/4).
+		if offset, ok := path.(*symresolve.SymbolOffset); ok && offset.Offset != 0 {
+			if target, ok := c.convertSymbolAddressPath(path); ok {
+				if lvalue, ok := target.(LValue); ok {
+					return convertAddressArgTargetTyped(lvalue, expected, ptr)
+				}
 			}
 		}
-		return convertAddressArgTargetTyped(target, expected, ptr)
+		if typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
+			target := LValue(&SymbolRef{Path: path})
+			if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
+				if lvalue, ok := expr.(LValue); ok {
+					target = lvalue
+				}
+			}
+			return convertAddressArgTargetTyped(target, expected, ptr)
+		}
 	}
 	if pointerExpected && binary && !typeinfo.IsPointer(path.Type()) {
 		// Keep computed pointer values on the address-projection path. A
@@ -132,6 +146,28 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 		}
 	}
 	return c.convertSymbolPath(path, expected)
+}
+
+// convertSymbolAddressPath converts a symbolic address path to its addressed
+// lvalue without creating a narrow value slice from the terminal object.
+func (c *machineConverter) convertSymbolAddressPath(path symresolve.SymbolPath) (Expr, bool) {
+	// This handles both near-pointer arithmetic and DS:offset far-pointer
+	// pairs after symbol resolution, for example rgplr[i].szName and
+	// rgplr[i].szNames. The result is the lvalue being addressed, not a
+	// narrow load of that lvalue.
+	addr := resolvedAddressFromPath(path)
+	if addr.base == nil {
+		return nil, false
+	}
+	base, ok := c.convertSymbolPath(addr.base, addr.base.Type())
+	if !ok {
+		return nil, false
+	}
+	return c.consumeAddressProjection(AddressExpr{
+		Base:   base,
+		Offset: addr.offset,
+		Deref:  addr.deref,
+	}, 0)
 }
 
 // convertSymbolPath converts a resolved symbol path into the corresponding

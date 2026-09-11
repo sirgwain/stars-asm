@@ -83,7 +83,13 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		}
 		dst := c.convertMemoryLValue(e.Addr, e.Width)
 		src := c.convertValue(e.Src)
-		if e.Width > 2 {
+		_, binaryAddress := e.Src.(*machine.Binary)
+		binaryAddress = binaryAddress && !machineValueContainsAddress(e.Src)
+		if e.Width > 2 || (typeinfo.IsNearPointer(dst.ExprType()) && binaryAddress) {
+			// Two-byte near-pointer stores carry an address in the same width as
+			// ordinary words. Restrict the extra typed recovery to binary address
+			// arithmetic: explicit address operands and union-backed pointer fields
+			// already have more specific address recovery paths.
 			src = c.convertValueTyped(e.Src, dst.ExprType())
 		}
 		if c.ctx.maskedStorageWrite(e.Addr, e.Src) {
@@ -156,6 +162,40 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 	default:
 		return &RawEffect{Effect: effect, MetaInfo: effect.EffectMeta()}
 	}
+}
+
+// machineValueContainsAddress reports whether a machine expression already
+// contains an explicit address-of operand that should be preserved for later
+// typed array projection.
+func machineValueContainsAddress(value machine.Value) bool {
+	switch v := value.(type) {
+	case *machine.Address:
+		return true
+	case *machine.Binary:
+		return machineValueContainsAddress(v.LHS) || machineValueContainsAddress(v.RHS)
+	case *machine.WordValue:
+		return machineValueContainsAddress(v.Parent)
+	case *machine.StackWords:
+		for _, word := range v.Words {
+			if machineValueContainsAddress(word) {
+				return true
+			}
+		}
+	case *machine.Cast:
+		return machineValueContainsAddress(v.Value)
+	case *machine.SignExtendValue:
+		return machineValueContainsAddress(v.Parent)
+	case *machine.FarPointer:
+		return machineValueContainsAddress(v.Parent) ||
+			machineValueContainsAddress(v.Segment) ||
+			machineValueContainsAddress(v.Offset)
+	case *machine.ByteValue:
+		if v.Value != nil && machineValueContainsAddress(*v.Value) {
+			return true
+		}
+		return machineValueContainsAddress(v.Parent)
+	}
+	return false
 }
 
 // convertCallTarget resolves direct and indirect machine call targets.

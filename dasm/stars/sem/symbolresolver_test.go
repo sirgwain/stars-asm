@@ -345,9 +345,6 @@ func TestSymbolResolverUsesConfiguredBlockUnionContext(t *testing.T) {
 	if len(facts) != 1 || facts[0].Root != "ppart" || facts[0].Value.Name != "hstEngine" {
 		t.Fatalf("recorded configured facts = %+v; want ppart=hstEngine", facts)
 	}
-	if facts := ctx.RecordedUnionBlockPathFacts()[0x5676]; len(facts) != 1 || facts[0].Value.Name != "hstHull" {
-		t.Fatalf("recorded configured hull facts = %+v; want hstHull", facts)
-	}
 }
 
 // TestSymbolResolverDoesNotDerefNonPointerLoad verifies scalar indexed

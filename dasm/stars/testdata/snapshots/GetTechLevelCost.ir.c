@@ -19,7 +19,7 @@ L_1def:
         goto L_1df8;
 
 L_1df8:
-    lCost = ((uint32_t)(LOWORD((0xa * cTech))) + rglTechCost[iLevel]);
+    lCost = ((uint32_t)(LOWORD((10 * cTech))) + rglTechCost[iLevel]);
     i = (GetRaceStat(&(rgplr[iplr]), (iTech + 8)) - 1);
     if ((i == 0))
         goto L_1e83;

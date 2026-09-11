@@ -72,3 +72,10 @@ func IsIntLike(typ Type) bool {
 	}
 	return false
 }
+
+func IsCStringPointer(typ Type) bool {
+	if p, ok := typ.(*Pointer); ok {
+		return p.IsCStringPointer()
+	}
+	return false
+}

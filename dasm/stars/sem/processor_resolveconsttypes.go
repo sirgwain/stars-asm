@@ -441,19 +441,15 @@ func sameConstType(a, b typeinfo.Type) bool {
 	return a.String() == b.String()
 }
 
-// resolveConstTypesChildren is the generic fallback for expressions that
-// aren't themselves interesting but can contain child expressions.
+// resolveConstTypesChildren recursively resolves constants contained by an
+// expression whose own type does not impose a constant type.
 func resolveConstTypesChildren(expr Expr, bitwise bool) (Expr, bool) {
 	rewriter := &semRewriter{
 		expr: func(w *semRewriter, child Expr) (Expr, bool, bool) {
-			if child == expr {
-				return child, false, true
-			}
-
 			next, changed := resolveConstTypesExpr(child, nil, bitwise)
-			return next, changed, false
+			return next, changed, true
 		},
 	}
 
-	return rewriter.rewriteExpr(expr)
+	return rewriter.rewriteExprChildren(expr)
 }

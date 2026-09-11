@@ -217,6 +217,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		result.Analysis.BranchLoWords += analysis.SemAnalysis.BranchLoWords
 		result.Analysis.SegRegRefs += analysis.SemAnalysis.SegRegRefs
 		result.Analysis.IR.Untranslated += analysis.IRAnalysis.Untranslated
+		result.Analysis.IR.NumStatements += analysis.IRAnalysis.NumStatements
 		result.Analysis.IR.UntranslatedAssign += analysis.IRAnalysis.UntranslatedAssign
 		result.Analysis.IR.UntranslatedBitwise += analysis.IRAnalysis.UntranslatedBitwise
 		result.Analysis.IR.UntranslatedBranch += analysis.IRAnalysis.UntranslatedBranch
@@ -304,7 +305,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		if opt.EmitIR || opt.EmitC {
 			// record the IR body for later
 			var buf bytes.Buffer
-			if err := renderFuncIR(&buf, analysis, templates.DumpOptions{}); err != nil {
+			if err := renderFuncIR(&buf, analysis, templates.DumpIROptions{ShowIR: true}); err != nil {
 				return result, fmt.Errorf("dump ir %s: %w", function.Name, err)
 			}
 			funcIRBodies[function.Name] = buf.String()

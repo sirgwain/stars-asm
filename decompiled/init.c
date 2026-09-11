@@ -402,9 +402,9 @@ L_0b82:
 L_0b8b:
     strcpy(plf->lfFaceName, rgszArial);
     plf->lfHeight = (-MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    rghfontArial6 = CreateFontIndirect(plf);
+    rghfontArial6[0] = CreateFontIndirect(plf);
     plf->lfHeight = (-MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    rghfontArial7 = CreateFontIndirect(plf);
+    rghfontArial7[0] = CreateFontIndirect(plf);
     plf->lfHeight = (-MulDiv(8, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     i = 0;
     goto L_0c66;
@@ -421,7 +421,7 @@ L_0c66:
         goto L_0c6f;
 
 L_0c6f:
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
     plf->lfEscapement = 3150;
     rghfontArial8[4] = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
@@ -429,10 +429,10 @@ L_0c6f:
     dyArial8 = (tm.tmHeight + tm.tmExternalLeading);
     l = GetTextExtent(hdc, "88888888kT", 10);
     dxMaxMineralQuan = LOWORD(l);
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     GetTextMetrics(hdc, &(tm));
     dyArial7 = (tm.tmHeight + tm.tmExternalLeading);
-    SelectObject(hdc, rghfontArial6);
+    SelectObject(hdc, rghfontArial6[0]);
     GetTextMetrics(hdc, &(tm));
     dyArial6 = (tm.tmHeight + tm.tmExternalLeading);
     SelectObject(hdc, rghfontArial10[0]);
@@ -710,7 +710,7 @@ L_112f:
         goto L_1140;
 
 L_1140:
-    rg[i] = (LOWORD((0xa * rg[i])) + ((uint16_t)(*(pch)) - 48));
+    rg[i] = (LOWORD((10 * rg[i])) + ((uint16_t)(*(pch)) - 48));
     goto L_10f4;
 
 L_116f:
@@ -1291,7 +1291,7 @@ L_1949:
         goto L_1955;
 
 L_1955:
-    ini.idPlayer = ((uint16_t)(szWork[0x1]) - 66);
+    ini.idPlayer = ((uint16_t)(szWork[1]) - 66);
     goto L_196e;
 
 L_1962:
@@ -1330,7 +1330,7 @@ L_1a45:
         goto L_1a55;
 
 L_1a55:
-    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) + 0xffd0)));
+    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) - 48)));
     goto L_1aa0;
 
 L_1a6c:
@@ -1346,7 +1346,7 @@ L_1a7c:
         goto L_1a8c;
 
 L_1a8c:
-    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) + 0xffa9)));
+    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) - 87)));
 
 L_1aa0:
     i = (i + 1);
@@ -1477,7 +1477,7 @@ L_1dde:
     goto L_1e6b;
 
 L_1dff:
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     cch = GetPrivateProfileString(szSection, szEntry, ".", (vrgszMRU + (i * 256)), 256, szIniFile);
     if ((cch >= 4))
         goto L_1e67;
@@ -1697,8 +1697,8 @@ L_239d:
     strdate(szWork);
     szWork[5] = 0;
     szWork[2] = 0;
-    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(szWork[0x6]) * 0x1f)) * 0xc));
-    t_scratch_m4c = LOWORD((atoi(szWork) * 0x1f));
+    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(szWork[6]) * 31)) * 0xc));
+    t_scratch_m4c = LOWORD((atoi(szWork) * 31));
     uDateCur = ((atoi(szWork[3]) + t_scratch_m4c) + t_scratch_m4a_8);
     CchGetString(idsHistoryinfo, szEntry);
     uDateInstalled = GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
@@ -1765,7 +1765,7 @@ L_2544:
 L_2570:
     strcpy(szEntry, szSection);
     psz = &(szEntry[strlen(szEntry)]);
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
     cch = strlen(szWork);
@@ -1842,7 +1842,7 @@ L_27c5:
         goto L_27ce;
 
 L_27ce:
-    strcpy(((0x5264 + LOWORD((24 * i))) + 0xa), psz);
+    strcpy(vrgZip[i].szName, psz);
     vrgZip[i].fValid = 0x1;
 
 L_27f9:
@@ -1864,7 +1864,7 @@ L_2822:
     psz = &(szEntry[strlen(szEntry)]);
     psz = (psz + 1);
     *(psz) = 80;
-    *(psz) = LOBYTE((i + 0x31));
+    *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
     cch = strlen(szWork);

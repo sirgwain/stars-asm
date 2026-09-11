@@ -17,6 +17,7 @@
         "hstMining": "pmining",
         "hstMines": "pmines",
         "hstSpecialSB": "pspecialsb",
+        "hstSBHull": "phul",
         "hstSpecialE": "pspecial",
         "hstSpecialM": "pspecial",
         "hstTerra": "pterra",

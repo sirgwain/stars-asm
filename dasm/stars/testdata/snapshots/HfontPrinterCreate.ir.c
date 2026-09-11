@@ -8,7 +8,7 @@ L_6aa6:
     plf = LocalAlloc(0x40, 0x32);
     memset(plf, 0, 0x32);
     plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[0x1]));
+    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
     hfontNew = CreateFontIndirect(plf);
     if ((pdyFont == 0x0))
         goto L_6b5b;

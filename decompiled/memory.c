@@ -31,7 +31,7 @@ L_0082:
     lphb->hmem = hmem;
     lphb->cbBlock = cb;
     lphb->cbSlop = (cb + 0xfff0);
-    LOWORD(lphb) = (cb + 0xfff0);
+    lphb->cbFree = (cb + 0xfff0);
     lphb->ibTop = 0x10;
     lphb->ht = LOBYTE(ht);
     lphb->lphbNext = rglphb[ht];
@@ -147,7 +147,7 @@ L_029b:
 
 L_02ac:
     lphbNew->cbBlock = (lphbNew->cbBlock + cbGrow);
-    LOWORD(lphbNew) = (lphbNew->cbFree + cbGrow);
+    lphbNew->cbFree = (lphbNew->cbFree + cbGrow);
     lphbNew->cbSlop = (lphbNew->cbSlop + cbGrow);
     return lphbNew;
 }
@@ -204,7 +204,7 @@ L_0348:
 L_0369:
     lphb->ibTop = 0x10;
     lphb->cbSlop = (lphb->cbBlock + 0xfff0);
-    LOWORD(lphb) = (lphb->cbBlock + 0xfff0);
+    lphb->cbFree = (lphb->cbBlock + 0xfff0);
     lphb = lphb->lphbNext;
 
 L_039a:
@@ -282,7 +282,7 @@ L_0436:
 L_045a:
     LOWORD(lpbTop) = (cb + 0xfffe);
     lphb->ibTop = (lphb->ibTop + cb);
-    LOWORD(lphb) = (lphb->cbFree - cb);
+    lphb->cbFree = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
     return lpbTop[2];
 
@@ -333,7 +333,7 @@ L_0524:
 L_0555:
     LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
     lpbPrev = (lpbPrev + 2);
-    LOWORD(lphb) = (lphb->cbFree - (cbItem + 0x2));
+    lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
     return lpbPrev;
 
 L_0575:
@@ -479,9 +479,9 @@ L_06db:
 
 L_06ea:
     lphb->cbSlop = (lphb->cbSlop - cbGrow);
-    LOWORD(lphb) = (lphb->cbFree - cbGrow);
+    lphb->cbFree = (lphb->cbFree - cbGrow);
     lphb->ibTop = (lphb->ibTop + cbGrow);
-    lp - 0x2 = cb;
+    *(lp - 0x2) = cb;
     goto L_0799;
 
 L_0714:
@@ -530,8 +530,8 @@ L_07ba:
 L_07c6:
     lphb = LphbFromLpHt(lp, ht);
     cbFree = (*(lp - 0x2) + 0x2);
-    lp - 0x2 = (*(lp - 0x2) | 0x1);
-    LOWORD(lphb) = (lphb->cbFree + cbFree);
+    *(lp - 0x2) = (*(lp - 0x2) | 0x1);
+    lphb->cbFree = (lphb->cbFree + cbFree);
     if (((((LOWORD(lp) - LOWORD(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
         goto L_082f;
     else

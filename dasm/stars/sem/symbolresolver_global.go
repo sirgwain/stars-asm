@@ -10,22 +10,21 @@ import (
 // decompose decomposes a binary value into path parts
 func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Value, disp int) (symresolve.SymbolPath, bool) {
 	var fixed = disp
-	var other = baseVal
+	var other machine.Value
 
-	// if this is a simple 0x1234 + (index*scale)
-	// parse it now
-	if bin, ok := baseVal.(*machine.Binary); ok && bin.Op == machine.ValueOpAdd {
-		switch {
-		case isConst(bin.LHS):
-			c := bin.LHS.(*machine.Const)
+	// Flatten the complete additive address before resolving its absolute
+	// portion. In particular, an address such as
+	// 0x59a2 + (0xc0 * i) + 0xa0 must resolve 0x5a42 as an address within
+	// rgplr, rather than resolving 0xa0 as an interior address in game.
+	for _, term := range collectAddTerms(baseVal) {
+		if c, ok := term.(*machine.Const); ok {
 			fixed += int(c.Val)
-			other = bin.RHS
-
-		case isConst(bin.RHS):
-			c := bin.RHS.(*machine.Const)
-			fixed += int(c.Val)
-			other = bin.LHS
+			continue
 		}
+		if other != nil {
+			return sr.decomposePointerBase(width, baseVal, disp)
+		}
+		other = term
 	}
 
 	// resolve base from either the binary const, or the mem.Disp if this wasn't a binary add index
@@ -157,11 +156,6 @@ func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value,
 		return &symresolve.SymbolOffset{Base: path, Offset: offLeft, Result: path.Type()}, true
 	}
 	return &symresolve.SymbolOffset{Base: base, Offset: fixed, Result: base.Type()}, true
-}
-
-func isConst(value machine.Value) bool {
-	_, ok := value.(*machine.Const)
-	return ok
 }
 
 func (sr *symbolResolver) decomposeTerm(value machine.Value) (machine.Value, int) {

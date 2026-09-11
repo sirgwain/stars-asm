@@ -411,7 +411,7 @@ L_1224:
     branch btlplan.szName[(cLen - 3)] == 40 ? L_1254 : L_123c
 
 L_123c:
-    call strcpy(&btlplan.szName[cLen], 0xd9c) -> callresult(char *)
+    call strcpy(&btlplan.szName[cLen], " (2)") -> callresult(char *)
     goto L_128b
 
 L_1254:

@@ -365,7 +365,7 @@ L_0506:
         goto L_0518;
 
 L_0518:
-    imd = LphuldefFromId(rglpshdef[lptok->iplr]->hul.rgTech[(LOWORD((lptok->ishdef * 0x93)) - 0x2)])->imdCategory;
+    imd = LphuldefFromId(rglpshdef[lptok->iplr]->hul.rgTech[(LOWORD((lptok->ishdef * 0x93)) - 2)])->imdCategory;
     if ((imd <= 1))
         goto L_057b;
     else
@@ -875,7 +875,7 @@ L_0f56:
 
 L_0f8f:
     dx = (rc.right - rc.left);
-    dx = ((((((uint32_t)(dxyVCRBoard) / 2) + 8) - ((uint32_t)(LOWORD((0x7 * dx))) / 2)) - 24) + LOWORD(((dx + 0x8) * i)));
+    dx = ((((((uint32_t)(dxyVCRBoard) / 2) + 8) - ((uint32_t)(LOWORD((7 * dx))) / 2)) - 24) + LOWORD(((dx + 8) * i)));
     dx = (dx - rc.left);
     goto L_0fdd;
 
@@ -1064,8 +1064,8 @@ L_131b:
     return 1;
 
 L_1321:
-    pt.x = ((uint32_t)((pt.x + 0xfff8)) / (dxyVCRSquare + 3));
-    pt.y = ((uint32_t)((pt.y + 0xfff8)) / (dxyVCRSquare + 3));
+    pt.x = ((uint32_t)((pt.x - 8)) / (dxyVCRSquare + 3));
+    pt.y = ((uint32_t)((pt.y - 8)) / (dxyVCRSquare + 3));
     if ((pt.x < 10))
         goto L_14ad;
     else
@@ -1906,7 +1906,7 @@ L_250c:
     goto L_26a4;
 
 L_258e:
-    itokT = vlpbrVCR->rgkill[(i + 0xffff)].itok;
+    itokT = vlpbrVCR->rgkill[(i - 1)].itok;
     if ((itokT != vlpbrVCR->itokAttack))
         goto L_2603;
     else
@@ -1922,7 +1922,7 @@ L_25d7:
     fJam = (fJam | (vlpbrVCR->rgkill[(i + 0xffff)].grfWeapon & 0xc0));
 
 L_2603:
-    j = (j + vlpbrVCR->rgkill[(i + 0xffff)].cshKill);
+    j = (j + vlpbrVCR->rgkill[(i - 1)].cshKill);
     if ((rgfSeen[itokT] != 0x0))
         goto L_269f;
     else
@@ -2081,12 +2081,12 @@ L_2897:
         goto L_28c8;
 
 L_28c8:
-    strcpy(&(szWork[c]), 0x1424);
+    strcpy(&(szWork[c]), ".");
     c = (c + 1);
     goto L_28fd;
 
 L_28e4:
-    strcpy(&(szWork[c]), 0x1426);
+    strcpy(&(szWork[c]), "s.");
     c = (c + 2);
 
 L_28fd:
@@ -2202,7 +2202,7 @@ L_2c5b:
     SetTextColor(hdc, 0x7f0000);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
-    xT = (((uint32_t)((rc.right - (dxyVCRBoard + 0xe))) / 2) + x);
+    xT = (((uint32_t)((rc.right - (dxyVCRBoard + 14))) / 2) + x);
     SetTextColor(hdc, crButtonText);
     if ((cshNew <= 0))
         goto L_3317;
@@ -2398,11 +2398,11 @@ L_3314:
 L_3317:
     c = CchGetString(idsDead3, szWork);
     TextOut(hdc, x, y, szWork, c);
-    y = (y + LOWORD((0x5 * dyArial8)));
+    y = (y + LOWORD((5 * dyArial8)));
 
 L_334f:
     SetRect(&(rc), x, (y + 4), ((x + dyArial8) + 4), ((y + dyArial8) + 8));
-    DrawBtn(hdc, &(rc), 8, 0, 0x1430);
+    DrawBtn(hdc, &(rc), 8, 0, "?");
 
 L_339a:
     iStart = 0;
@@ -2468,7 +2468,7 @@ L_3582:
         goto L_35a4;
 
 L_35a4:
-    ibmp = rglpshdefSB[vrgtok[j].iplr][(vrgtok[j].ishdef + 0xfff0)].hul.ibmp;
+    ibmp = rglpshdefSB[vrgtok[j].iplr][(vrgtok[j].ishdef - 16)].hul.ibmp;
     goto L_3660;
 
 L_3605:
@@ -2735,14 +2735,14 @@ L_3ae2:
     ptokSrc = (vrgtok + vlpbrVCR->itok);
     x = (ptokSrc->brc & 0xf);
     y = (ptokSrc->brc >> 0x4);
-    ptSrc.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    ptSrc.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptSrc.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptSrc.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
     t_scratch_m76_3 = ((uint32_t)(dxyVCRSquare) / 2);
-    ptTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + t_scratch_m76_3) + 1);
-    ptBottom.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + t_scratch_m76_3) + 1);
+    ptTop.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_3) + 1);
+    ptBottom.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_3) + 1);
     t_scratch_m76_4 = ((uint32_t)(dxyVCRSquare) / 2);
-    ptRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + t_scratch_m76_4) + 1);
-    ptLeft.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + t_scratch_m76_4) + 1);
+    ptRight.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_4) + 1);
+    ptLeft.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_4) + 1);
     ptBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptLeft.y);
     ptTop.y = (ptLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
     ptLeft.x = (ptBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
@@ -2798,14 +2798,14 @@ L_3d18:
     y = (ptokAttack->brc >> 0x4);
     dx = ((ptokSrc->brc & 0xf) - x);
     dy = ((ptokSrc->brc >> 0x4) - y);
-    ptDest.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    ptDest.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
     t_scratch_m76_8 = ((uint32_t)(dxyVCRSquare) / 2);
-    ptDestTop.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + t_scratch_m76_8) + 1);
-    ptDestBottom.x = (((LOWORD(((dxyVCRSquare + 0x3) * x)) + 10) + t_scratch_m76_8) + 1);
+    ptDestTop.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_8) + 1);
+    ptDestBottom.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_8) + 1);
     t_scratch_m76_9 = ((uint32_t)(dxyVCRSquare) / 2);
-    ptDestRight.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + t_scratch_m76_9) + 1);
-    ptDestLeft.y = (((LOWORD(((dxyVCRSquare + 0x3) * y)) + 10) + t_scratch_m76_9) + 1);
+    ptDestRight.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_9) + 1);
+    ptDestLeft.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_9) + 1);
     ptDestBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptDestLeft.y);
     ptDestTop.y = (ptDestLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
     ptDestLeft.x = (ptDestBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
@@ -3425,7 +3425,7 @@ L_4843:
     rgsz[c] = psz;
     rgid[c] = i;
     strcpy(psz, szWork);
-    psz = (psz + (cch + 1));
+    psz = (char *)(((uint8_t *)((psz + cch)) + 1));
     if ((i != viVCRFocus))
         goto L_4890;
     else

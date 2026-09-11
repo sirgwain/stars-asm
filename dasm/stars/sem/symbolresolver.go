@@ -18,6 +18,13 @@ func newSymbolResolver(ctx *FuncContext) *symbolResolver {
 // symbolFromValueTyped resolves symbols from values based on their type
 // i.e. (0x59a2 + loword((0xc0 * load([bp+iplr]) for PLAYER* will resolve to rgplr
 func (sr *symbolResolver) symbolFromValueTyped(value machine.Value, expected typeinfo.Type) (symresolve.SymbolPath, bool) {
+	// The compiler commonly wraps a near-pointer expression in loword when
+	// it is passed through 16-bit arithmetic, e.g. loword(rgplr + stride*i).
+	// Remove only this representation wrapper: a wider machine Cast may carry
+	// meaningful source type information and must remain intact.
+	if word, ok := value.(*machine.WordValue); ok && word.Part == machine.WordLow {
+		value = word.Parent
+	}
 	ds := sr.segFromRegister(asm.RegDS)
 	switch v := value.(type) {
 
@@ -63,6 +70,14 @@ func (sr *symbolResolver) symbolFromValueTyped(value machine.Value, expected typ
 		if typeinfo.IsNearPointer(expected) {
 			if g, ok := sr.globalSymbol(ds, uint32(v.Val), 2); ok {
 				return g, true
+			}
+
+			// for non null constants that are near char pointers, resolve a literal from the DS
+			// this for things like strcpy(szWork, 0x1424)
+			if v.Val != 0 && typeinfo.IsCStringPointer(expected) {
+				if literal, ok := sr.res.ResolveLiteral(ds, uint32(v.Val)); ok {
+					return &symresolve.SymbolLiteral{Literal: literal, Typ: expected}, true
+				}
 			}
 		}
 		return &symresolve.SymbolConst{Const: v, Typ: expected}, true

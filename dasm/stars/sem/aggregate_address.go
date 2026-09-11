@@ -62,7 +62,7 @@ func (c *machineConverter) typedAddressTarget(base LValue, offset int, expected 
 		if offset == 0 && pointerExpected && typeinfo.Equals(ptr.Elem, typ.Elem) {
 			return base, true
 		}
-		index := &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.U16, U64: uint64(offset / typ.Elem.Bytes())}, TypeInfo: typ.Elem}
+		index := &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.I16, U64: uint64(offset / typ.Elem.Bytes())}, TypeInfo: typ.Elem}
 		return c.typedAddressTarget(index, offset%typ.Elem.Bytes(), expected)
 	case *typeinfo.Struct:
 		var target LValue

@@ -1875,8 +1875,7 @@ L_6ec1:
         goto L_6eca;
 
 L_6eca:
-    scan.pt.x = lpth->pt.x;
-    scan.pt.y = lpth->pt.y;
+    scan.pt = lpth->pt;
     scan.grobj = grobjThing;
     ChangeScanSel(&(scan), 0);
     CtrPointScan(scan.pt, 1);
@@ -2764,7 +2763,7 @@ L_799c:
         goto L_79d5;
 
 L_79d5:
-    xyStart = (((uint32_t)(((prc->bottom - prc->top) + 0xfff5)) / 2) + prc->top);
+    xyStart = (((uint32_t)(((prc->bottom - prc->top) - 11)) / 2) + prc->top);
     if ((iMsgCur < 0))
         goto DoMinMax;
     else
@@ -2859,7 +2858,7 @@ L_7b8d:
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (xDst + 1), prc->top, 1, (prc->bottom - prc->top), PATCOPY);
     SelectObject(hdc, hbrSav);
-    yDst = (((uint32_t)(((prc->bottom - prc->top) + 0xfff1)) / 2) + prc->top);
+    yDst = (((uint32_t)(((prc->bottom - prc->top) - 15)) / 2) + prc->top);
     xDst = (prc->right - (prc->bottom - yDst));
     SelectObject(hdcMem, hbmpMono);
     BitBlt(hdc, xDst, yDst, 15, 15, hdcMem, 0, ySrcMask, SRCAND);
@@ -2877,7 +2876,7 @@ Cleanup:
 L_7ced:
     SelectObject(hdcMem, hbmpMsg);
     xDst = (prc->right - 45);
-    yDst = (((uint32_t)(((prc->bottom - prc->top) + 0xfff9)) / 2) + prc->top);
+    yDst = (((uint32_t)(((prc->bottom - prc->top) - 7)) / 2) + prc->top);
     PatBlt(hdc, (xDst - 1), (yDst - 1), 17, 11, BLACKNESS);
     BitBlt(hdc, xDst, yDst, 15, 9, hdcMem, 0, 56, SRCCOPY);
 
@@ -3169,7 +3168,7 @@ L_8189:
     goto L_8151;
 
 L_81cb:
-    LOBYTE(LOWORD(lpb)) = LOBYTE(*(pi));
+    *(lpb) = LOBYTE(*(pi));
     lpb = (lpb + 1);
 
 L_81da:
@@ -3462,12 +3461,12 @@ L_861b:
 
 L_8628:
     strcpy(pch, szWork);
-    pch = (pch + strlen(szWork));
+    pch = &(pch[strlen(szWork)]);
     goto L_8f4d;
 
 L_864b:
     strcpy(pch, szBase);
-    pch = (pch + strlen(szBase));
+    pch = &(pch[strlen(szBase)]);
     goto L_8727;
 
 L_8674:
@@ -3491,7 +3490,7 @@ L_86ac:
     goto DoInt;
 
 L_86d0:
-    strcat(pch, 0xb5e);
+    strcat(pch, ".hst");
     pch = (pch + 4);
     goto L_8f4d;
 
@@ -3500,7 +3499,7 @@ L_86e8:
     goto DoInt;
 
 L_870c:
-    strcat(pch, 0xb68);
+    strcat(pch, ".xy");
     pch = (pch + 3);
     goto L_8f4d;
 
@@ -3553,7 +3552,7 @@ L_87a9:
     c = _wsprintf(pch, PCTD, *(pParams));
 
 DoInt:
-    pch = (pch + c);
+    pch = &(pch[c]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3672,12 +3671,12 @@ L_8915:
     goto L_8944;
 
 L_8930:
-    pch = (pch + CchGetString(idsAnd, pch));
+    pch = &(pch[CchGetString(idsAnd, pch)]);
 
 L_8944:
     pchT = PszPlayerName(i, 0, 1, 1, 0, 0x0);
     strcpy(pch, pchT);
-    pch = (pch + strlen(pchT));
+    pch = &(pch[strlen(pchT)]);
     cOut = (cOut + 1);
     goto L_88ce;
 
@@ -3715,10 +3714,10 @@ L_8a5f:
     goto L_8aca;
 
 L_8a89:
-    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((uint32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((uint32_t)(*(pParams)) / 0x64) * 0x64))));
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((uint32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((uint32_t)(*(pParams)) / 100) * 0x64))));
 
 L_8aca:
-    pch = (pch + c);
+    pch = &(pch[c]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3727,7 +3726,7 @@ DoPlanet:
 
 FinishString:
     strcpy(pch, pchT);
-    pch = (pch + strlen(pchT));
+    pch = &(pch[strlen(pchT)]);
 
 DoNothing:
     pParams = (pParams + 1);
@@ -3762,7 +3761,7 @@ L_8ba8:
 
 L_8bab:
     fstrcpy(pch, part.pcom->szName);
-    pch = (pch + fstrlen(part.pcom->szName));
+    pch = &(pch[fstrlen(part.pcom->szName)]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3773,7 +3772,7 @@ LThingName:
 L_8c00:
     w = *(pParams);
     c = CchGetString((w + 0x4e2), pch);
-    pch = (pch + c);
+    pch = &(pch[c]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3817,7 +3816,7 @@ L_8c96:
 
 L_8ccf:
     c = _wsprintf(pch, "%u", *(pParams));
-    pch = (pch + c);
+    pch = &(pch[c]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3825,7 +3824,7 @@ L_8cfd:
     l = ((int32_t)(((uint32_t)(pParams[1]) << 0x10)) | (uint32_t)(*(pParams)));
     pParams = (pParams + 2);
     c = _wsprintf(pch, PCTLD, LOWORD(l), HIWORD(l));
-    pch = (pch + c);
+    pch = &(pch[c]);
     if (((uint16_t)(*(pszFormat)) == 118))
         goto L_8f4d;
     else
@@ -3843,7 +3842,7 @@ L_8d7f:
 L_8d88:
     pchT = vrgszUnits[iMineral];
     strcpy(pch, pchT);
-    pch = (pch + strlen(pchT));
+    pch = &(pch[strlen(pchT)]);
 
 L_8db2:
     goto L_8f4d;
@@ -3878,7 +3877,7 @@ L_8e84:
     fstrcpy(pch, lpshdef->hul.szClass);
 
 L_8ea3:
-    pch = (pch + strlen(pch));
+    pch = &(pch[strlen(pch)]);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -4065,7 +4064,7 @@ L_9031:
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, 0x0);
-    cch = CchGetString(((uint16_t)(szWork[0xc8]) - 54), szT);
+    cch = CchGetString(((uint16_t)(szWork[200]) - 54), szT);
     DrawText(hdc, szT, cch, &(rcEdit), 0x810);
     EndPaint(hwnd, &(ps));
     return 1;
@@ -4212,7 +4211,7 @@ L_92cf:
 
 L_92de:
     cDel = (cDel + 1);
-    /* untranslated: part[0x1:2](lpb) = ((lpb[1] & 0xfe00) | 0x1ff) */
+    lpb[1] = ((lpb[1] & 0xfe00) | 0x1ff);
 
 L_92f6:
     lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
@@ -4877,11 +4876,11 @@ L_9b4d:
 
 L_9b56:
     t_call_9b61 = LpAlloc(hdrCur.cb, htPlrMsg);
-    LOWORD(lpmp) = FAROFF(t_call_9b61);
+    LOWORD(lpmp->lpmsgplrNext) = FAROFF(t_call_9b61);
     HIWORD(lpmp->lpmsgplrNext) = FARSEG(t_call_9b61);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
-    LOWORD(lpmp) = 0x0;
+    LOWORD(lpmp->lpmsgplrNext) = 0x0;
     HIWORD(lpmp->lpmsgplrNext) = 0x0;
     vcmsgplrIn = (vcmsgplrIn + 1);
 
@@ -4956,7 +4955,7 @@ L_9c63:
 
 L_9c6c:
     DirtyGame(1);
-    LOWORD(lpmpPrev) = LOWORD(lpmpCur->lpmsgplrNext);
+    LOWORD(lpmpPrev->lpmsgplrNext) = LOWORD(lpmpCur->lpmsgplrNext);
     HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur->lpmsgplrNext);
     FreeLp(lpmpCur, htPlrMsg);
     vcmsgplrOut = (vcmsgplrOut - 1);
@@ -5060,13 +5059,13 @@ L_9de2:
 L_9e01:
     DirtyGame(1);
     lpmpCur = LpAlloc(cbNew, htPlrMsg);
-    LOWORD(lpmpCur) = 0x0;
+    LOWORD(lpmpCur->lpmsgplrNext) = 0x0;
     HIWORD(lpmpCur->lpmsgplrNext) = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     lpmpCur->iInRe = iMsgCur;
 
 L_9e40:
-    LOWORD(lpmpPrev) = LOWORD(lpmpCur);
+    LOWORD(lpmpPrev->lpmsgplrNext) = LOWORD(lpmpCur);
     HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur);
     lpmpCur->iPlrFrom = idPlayer;
     lpmpCur->iPlrTo = iPlrTo;

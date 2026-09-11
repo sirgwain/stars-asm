@@ -237,8 +237,7 @@ L_3fad:
     branch game.turn != 0x0 ? L_3d24 : L_3fb7
 
 L_3fb7:
-    lpfl->pt.x = rgptPlan[lpfl->idPlanet].x
-    lpfl->pt.y = rgptPlan[lpfl->idPlanet].y
+    lpfl->pt = rgptPlan[lpfl->idPlanet]
 
 L_3fdb:
     call ReadRt() -> callresult(void)

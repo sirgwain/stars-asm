@@ -219,14 +219,14 @@ L_040a:
     rc.right = (rc.right - (LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN999mr), 5)) + 6));
     SelectObject(hdc, rghfontArial8[1]);
     dxPop = (LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsPopulation1000000), 21)) + 6);
-    dx = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[0x1], strlen(rgszPlanetAttr[0x1]))) + 6);
+    dx = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[1], strlen(rgszPlanetAttr[1]))) + 6);
     if (((dx * 4) <= rc.right))
         goto L_04db;
     else
         goto L_04bf;
 
 L_04bf:
-    rc.left = (rc.left + (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[0x1], 4)) + 6));
+    rc.left = (rc.left + (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[1], 4)) + 6));
     goto L_04e1;
 
 L_04db:
@@ -241,10 +241,10 @@ L_04e1:
     rcPop.right = rc.right;
     rcPop.left = (rc.right - dxPop);
     InvalidateRect(hwndMine, &(rcPop), 1);
-    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 0x4)) + 0xfffe)) / 6);
+    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 4)) - 2)) / 6);
     dyRow = ((dyRow + 0x1) & 0xfffe);
     rc.top = (rc.top + (((LOWORD((0x5 * dyArial8)) >> 0x1) + LOWORD((0x3 * dyRow))) + 0x1));
-    rc.bottom = (LOWORD((0x3 * dyRow)) + rc.top);
+    rc.bottom = (LOWORD((3 * dyRow)) + rc.top);
     InvalidateRect(hwndMine, &(rc), 0);
     return;
 }
@@ -810,7 +810,7 @@ L_116f:
         goto L_1234;
 
 L_1234:
-    ibmp = *(lpth + 0xc);
+    ibmp = lpth->thm.iType;
     goto L_12ae;
 
 L_1246:
@@ -916,8 +916,8 @@ L_16a2:
     TextOut(hdc, xLeft, yTop, szT, strlen(szT));
 
 L_1763:
-    yTop = (yTop + ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2));
-    xLeft = (xLeft + LOWORD(GetTextExtent(hdc, rgszMinerals[0x2], strlen(rgszMinerals[0x2]))));
+    yTop = (yTop + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
+    xLeft = (xLeft + LOWORD(GetTextExtent(hdc, rgszMinerals[2], strlen(rgszMinerals[2]))));
     i = 0;
     goto L_1843;
 
@@ -955,10 +955,10 @@ L_1869:
     cch = CchGetString(idsDD5, szT);
     c = _wsprintf(szWork, szT, lpth->pt.x, lpth->pt.y);
     TextOut(hdc, xLeft, yTop, szWork, c);
-    yTop = (yTop + ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2));
+    yTop = (yTop + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
     c = CchGetString(idsDestination2, szWork);
     RightTextOut(hdc, (xLeft - 4), yTop, szWork, c, 0);
-    if ((((0x1 << idPlayer) & *(lpth + 0xa)) == 0x0))
+    if ((((0x1 << idPlayer) & lpth->thw.grbitPlrTrav) == 0x0))
         goto L_19f8;
     else
         goto L_19a2;
@@ -986,7 +986,7 @@ L_19f8:
 
 L_1a0b:
     TextOut(hdc, xLeft, yTop, szWork, c);
-    yTop = (yTop + ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2));
+    yTop = (yTop + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
     c = CchGetString(idsStability, szWork);
     RightTextOut(hdc, (xLeft - 4), yTop, szWork, c, 0);
     c = CchGetString((PctWormholeMoves(lpth) + 967), szWork);
@@ -1005,7 +1005,7 @@ L_1ac5:
     SetBkColor(hdc, crButtonFace);
     SelectObject(hdc, rghfontArial8[1]);
     SetRect(&(rc), xLeft, yTop, (prc->right - 8), (prc->bottom - 8));
-    if ((((0x1 << idPlayer) & *(lpth + 0xc)) != 0x0))
+    if ((((0x1 << idPlayer) & lpth->tht.grbitPlr) != 0x0))
         goto L_1b75;
     else
         goto L_1b38;
@@ -1035,12 +1035,12 @@ L_1bda:
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldTypeS, szT);
-    c = _wsprintf(szWork, szT, rgszMineField[*(lpth + 0xc)]);
+    c = _wsprintf(szWork, szT, rgszMineField[lpth->thm.iType]);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldRadiusDLYLdMines, szT);
-    sqrt((double)(*(lpth + 0x6)));
-    c = _wsprintf(szWork, szT, LOWORD(__ftol()), *(lpth + 0x6), *(lpth + 0x8));
+    sqrt((double)(lpth->thm.cMines));
+    c = _wsprintf(szWork, szT, LOWORD(__ftol()), LOWORD(lpth->thm.cMines), HIWORD(lpth->thm.cMines));
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) == raMines))
@@ -1079,7 +1079,7 @@ L_1de5:
     pctDecay = 50;
 
 L_1df1:
-    if ((*(lpth + 0xd) == 0x0))
+    if ((lpth->thm.fDetonate == 0x0))
         goto L_1e0e;
     else
         goto L_1e04;
@@ -1088,7 +1088,7 @@ L_1e04:
     pctDecay = (pctDecay + 25);
 
 L_1e0e:
-    lDecay = (int32_t)(((uint32_t)((*(lpth + 0x6) * pctDecay)) / 0x64));
+    lDecay = (int32_t)(((uint32_t)((lpth->thm.cMines * pctDecay)) / 0x64));
     if ((HIWORD(lDecay) > HIWORD(pctDecay)))
         goto L_1e6d;
     else
@@ -1110,7 +1110,7 @@ L_1e5d:
     lDecay = pctDecay;
 
 L_1e6d:
-    if ((*(lpth + 0xc) == 0x2))
+    if ((lpth->thm.iType == 0x2))
         goto L_1eb6;
     else
         goto L_1e80;
@@ -1222,7 +1222,7 @@ L_2106:
     SelectObject(hdc, rghfontArial8[0]);
     dxRLabels = (LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN999mr), 5)) + 6);
     SelectObject(hdc, rghfontArial8[1]);
-    dxLabels = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[0x1], strlen(rgszPlanetAttr[0x1]))) + 6);
+    dxLabels = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[1], strlen(rgszPlanetAttr[1]))) + 6);
     if (((dxLabels * 4) <= rc.right))
         goto L_2195;
     else
@@ -1230,12 +1230,12 @@ L_2106:
 
 L_2175:
     fShortLabels = 1;
-    dxLabels = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[0x1], 4)) + 6);
+    dxLabels = (LOWORD(GetTextExtent(hdc, rgszPlanetAttr[1], 4)) + 6);
 
 L_2195:
     xL = (rc.left + dxLabels);
     xR = (rc.right - dxRLabels);
-    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 0x4)) + 0xfffe)) / 6);
+    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 4)) - 2)) / 6);
     dyRow = ((dyRow + 0x1) & 0xfffe);
     yCur = (rc.top + 2);
     if ((pl.fStarbase == 0x0))
@@ -1467,7 +1467,7 @@ L_274d:
         goto L_277e;
 
 L_277e:
-    strcat(szWork, 0x502);
+    strcat(szWork, "s");
     c = (c + 1);
 
 L_2793:
@@ -1673,7 +1673,7 @@ L_2e1a:
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (xR - 1), (yCur + 1), 1, (LOWORD((3 * dyRow)) + 2), PATCOPY);
     PatBlt(hdc, xL, ((LOWORD((3 * dyRow)) + yCur) + 2), (xR - xL), 1, PATCOPY);
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     c = _wsprintf(szWork, PCTD, cMinGrafMax);
     dxNum = LOWORD(GetTextExtent(hdc, szWork, c));
     dxBar = ((xR - xL) - 3);
@@ -1685,7 +1685,7 @@ L_2e1a:
         goto L_2f9b;
 
 L_2f9b:
-    dNum = LOWORD((((uint32_t)((dNum + 0x31)) / 0x32) * 0xa));
+    dNum = LOWORD((((uint32_t)((dNum + 49)) / 50) * 0xa));
     goto L_305a;
 
 L_2fb4:
@@ -1695,7 +1695,7 @@ L_2fb4:
         goto L_2fbf;
 
 L_2fbf:
-    dNum = LOWORD((((uint32_t)((dNum + 0x31)) / 0x32) * 0x32));
+    dNum = LOWORD((((uint32_t)((dNum + 49)) / 50) * 0x32));
     goto L_305a;
 
 L_2fd8:
@@ -1705,7 +1705,7 @@ L_2fd8:
         goto L_2fe3;
 
 L_2fe3:
-    dNum = LOWORD((((uint32_t)((dNum + 0x63)) / 0x64) * 0x64));
+    dNum = LOWORD((((uint32_t)((dNum + 99)) / 100) * 0x64));
     goto L_305a;
 
 L_2ffc:
@@ -1715,7 +1715,7 @@ L_2ffc:
         goto L_3007;
 
 L_3007:
-    dNum = LOWORD((((uint32_t)((dNum + 0xf9)) / 0xfa) * 0xfa));
+    dNum = LOWORD((((uint32_t)((dNum + 249)) / 250) * 0xfa));
     goto L_305a;
 
 L_3020:
@@ -1725,16 +1725,16 @@ L_3020:
         goto L_302b;
 
 L_302b:
-    dNum = LOWORD((((uint32_t)((dNum + 0x1f3)) / 0x1f4) * 0x1f4));
+    dNum = LOWORD((((uint32_t)((dNum + 499)) / 500) * 0x1f4));
     goto L_305a;
 
 L_3044:
-    dNum = LOWORD((((uint32_t)((dNum + 0x3e7)) / 0x3e8) * 0x3e8));
+    dNum = LOWORD((((uint32_t)((dNum + 999)) / 1000) * 0x3e8));
 
 L_305a:
     cNum = ((uint32_t)(cMinGrafMax) / dNum);
     SetTextColor(hdc, crButtonText);
-    dy = ((LOWORD((0x3 * dyRow)) + yCur) + 4);
+    dy = ((LOWORD((3 * dyRow)) + yCur) + 4);
     i = 0;
     goto L_3131;
 
@@ -1752,7 +1752,7 @@ L_3131:
         goto L_313d;
 
 L_313d:
-    RightTextOut(hdc, (xL - 4), dy, 0x504, 2, 0);
+    RightTextOut(hdc, (xL - 4), dy, "kT", 2, 0);
     if ((pl.iPlayer != idPlayer))
         goto L_318d;
     else
@@ -2312,7 +2312,7 @@ L_3a04:
 L_3a0a:
     rc.top = (rc.top - 4);
     yCur = (rc.top + 2);
-    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 0x4)) + 0xfffe)) / 6);
+    dyRow = ((uint32_t)((((rc.bottom - rc.top) - (dyArial8 * 4)) - 2)) / 6);
     dyRow = ((dyRow + 0x1) & 0xfffe);
     yCur = (yCur + ((dyArial8 * 2) - 2));
     if ((y >= yCur))
@@ -3065,7 +3065,7 @@ L_456c:
 L_456f:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.rgi[0] = (uint32_t)((ht + 0xffff));
+    GlobalPD.rgi[0] = (uint32_t)((ht - 1));
     i = 1;
     goto L_45b4;
 
@@ -4120,13 +4120,13 @@ L_53d8:
         goto L_53e5;
 
 L_53e5:
-    if ((LOWORD(lppl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
         goto L_5429;
     else
         goto L_53f2;
 
 L_53f2:
-    if ((HIWORD(lppl->rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
         goto L_5429;
     else
         goto L_53fc;

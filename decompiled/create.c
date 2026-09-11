@@ -493,10 +493,10 @@ int16_t GenerateWorld(int16_t fBatchMode) {
 L_0136:
     iMin = 0;
     cKill = 0;
-    dGal = (LOWORD((0x190 * game.mdSize)) + 400);
+    dGal = (LOWORD((400 * game.mdSize)) + 400);
     dGalInv = (dGal + 2000);
-    cPlanMax = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dGal) * (uint32_t)(dGal))) / 0x1388)));
-    cPlanMax = (cPlanMax + LOWORD((((uint32_t)(cPlanMax) / 0x4) * (game.mdDensity + 0xffff))));
+    cPlanMax = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dGal) * (uint32_t)(dGal))) / 5000)));
+    cPlanMax = (cPlanMax + LOWORD((((uint32_t)(cPlanMax) / 4) * (game.mdDensity - 1))));
     if ((game.mdDensity < 3))
         goto L_01b3;
     else
@@ -553,7 +553,7 @@ L_025f:
 
 L_026c:
     qsort(rgptPlan, iMax, 0x4, ICompLong);
-    pptMax = (12096 + (iMax * 4));
+    pptMax = &(rgptPlan[iMax]);
     ppt = rgptPlan;
     goto L_0364;
 
@@ -756,8 +756,8 @@ L_0569:
         goto L_0574;
 
 L_0574:
-    rgptPlan[j].x = ((uint32_t)(((rgptPlan[iBest].x * 0x2) + rgptPlan[j].x)) / 3);
-    rgptPlan[j].y = ((uint32_t)(((rgptPlan[iBest].y * 0x2) + rgptPlan[j].y)) / 3);
+    rgptPlan[j].x = ((uint32_t)(((rgptPlan[iBest].x * 2) + rgptPlan[j].x)) / 3);
+    rgptPlan[j].y = ((uint32_t)(((rgptPlan[iBest].y * 2) + rgptPlan[j].y)) / 3);
     goto L_0739;
 
 L_05d9:
@@ -802,13 +802,13 @@ L_0663:
         goto L_066e;
 
 L_066e:
-    rgptPlan[j].x = ((uint32_t)(((rgptPlan[j].x * 0x2) + rgptPlan[iBest].x)) / 3);
-    rgptPlan[j].y = ((uint32_t)(((rgptPlan[j].y * 0x2) + rgptPlan[iBest].y)) / 3);
+    rgptPlan[j].x = ((uint32_t)(((rgptPlan[j].x * 2) + rgptPlan[iBest].x)) / 3);
+    rgptPlan[j].y = ((uint32_t)(((rgptPlan[j].y * 2) + rgptPlan[iBest].y)) / 3);
     goto L_0739;
 
 L_06d3:
-    rgptPlan[j].x = ((uint32_t)(((rgptPlan[j].x * 0x4) + rgptPlan[iBest].x)) / 5);
-    rgptPlan[j].y = ((uint32_t)(((rgptPlan[j].y * 0x4) + rgptPlan[iBest].y)) / 5);
+    rgptPlan[j].x = ((uint32_t)(((rgptPlan[j].x * 4) + rgptPlan[iBest].x)) / 5);
+    rgptPlan[j].y = ((uint32_t)(((rgptPlan[j].y * 4) + rgptPlan[iBest].y)) / 5);
 
 L_0739:
     i = (i + 1);
@@ -891,7 +891,7 @@ L_08c3:
         goto L_08d0;
 
 L_08d0:
-    LOWORD(lppl) = i;
+    lppl->id = i;
     lppl->iPlayer = -1;
     lppl->det = 0x7;
     lppl->iScanner = 0x1f;
@@ -915,19 +915,20 @@ L_094d:
 
 L_0951:
     t_scratch_m118_2 = (uint32_t)(t_merge_0951_0001);
-    /* untranslated: part[0x18:4](lppl) = words(((*(lppl+0x1a) & 0xffbf) | hiword((int32_t)((uint32_t)(LOWORD(t_scratch_m118_2) & 0x1) << 0x16))),
-     * ((*(lppl+0x18) & 0xffff) | loword((int32_t)((uint32_t)(LOWORD(t_scratch_m118_2) & 0x1) << 0x16)))) */
+    *(lppl + 0x18) =
+        (((uint32_t)((uint16_t)(((*(lppl + 0x1a) & 0xffbf) | HIWORD((int32_t)(((uint32_t)((LOWORD(t_scratch_m118_2) & 0x1)) << 0x16)))))) << 0x10) |
+         (uint16_t)(((*(lppl + 0x18) & 0xffff) | LOWORD((int32_t)(((uint32_t)((LOWORD(t_scratch_m118_2) & 0x1)) << 0x16))))));
 
 L_09a1:
-    lppl->rgEnvVar[0] = LOBYTE((Random(90) + 0x1));
+    lppl->rgEnvVar[0] = LOBYTE((Random(90) + 1));
     lppl->rgEnvVar[0] = (lppl->rgEnvVar[0] + LOBYTE(Random(10)));
     lppl->rgEnvVarOrig[0] = lppl->rgEnvVar[0];
-    lppl->rgEnvVar[1] = LOBYTE((Random(90) + 0x1));
+    lppl->rgEnvVar[1] = LOBYTE((Random(90) + 1));
     lppl->rgEnvVar[1] = (lppl->rgEnvVar[1] + LOBYTE(Random(10)));
     lppl->rgEnvVarOrig[1] = lppl->rgEnvVar[1];
     t_call_0a1b = Random(99);
-    lppl->rgEnvVarOrig[2] = LOBYTE((t_call_0a1b + 0x1));
-    lppl->rgEnvVar[2] = LOBYTE((t_call_0a1b + 0x1));
+    lppl->rgEnvVarOrig[2] = LOBYTE((t_call_0a1b + 1));
+    lppl->rgEnvVar[2] = LOBYTE((t_call_0a1b + 1));
     if ((game.fTutorial == 0x0))
         goto L_0ae7;
     else
@@ -988,14 +989,14 @@ L_0afe:
 L_0b1a:
     lppl->rgwtMin[j] = 0;
     t_scratch_m116_2 = Random(45);
-    lppl->rgMinConc[j] = LOBYTE(((Random(45) + t_scratch_m116_2) + 0x1f));
+    lppl->rgMinConc[j] = LOBYTE(((Random(45) + t_scratch_m116_2) + 31));
     if (((uint16_t)(lppl->rgEnvVar[2]) < 90))
         goto L_0bd3;
     else
         goto L_0b8c;
 
 L_0b8c:
-    lppl->rgMinConc[j] = (lppl->rgMinConc[j] + LOBYTE(((uint32_t)(Random((0x63 - lppl->rgMinConc[j]))) / 0x2)));
+    lppl->rgMinConc[j] = (lppl->rgMinConc[j] + LOBYTE(((uint32_t)(Random((99 - lppl->rgMinConc[j]))) / 2)));
 
 L_0bd3:
     lppl->rgpctMinLevel[j] = 0x0;
@@ -1051,7 +1052,7 @@ L_0ca4:
 L_0cae:
     jj = Random(30);
     j = Random(3);
-    lppl->rgMinConc[j] = LOBYTE((jj + 0x1));
+    lppl->rgMinConc[j] = LOBYTE((jj + 1));
     goto L_08ab;
 
 L_0cf0:
@@ -1061,7 +1062,7 @@ L_0cf0:
 L_0cf8:
     jj = Random(30);
     j = Random(3);
-    lppl->rgMinConc[j] = LOBYTE((jj + 0x1));
+    lppl->rgMinConc[j] = LOBYTE((jj + 1));
     iT = (iT * 2);
 
 L_0d3e:
@@ -1078,7 +1079,7 @@ L_0d4b:
     goto L_0e6d;
 
 L_0d54:
-    lpPlanets->rgwtMin[j] = (uint32_t)((Random(LOWORD((lpPlanets->rgMinConc[j] * 0xa))) + 0xa));
+    lpPlanets->rgwtMin[j] = (uint32_t)((Random((lpPlanets->rgMinConc[j] * 10)) + 10));
     if ((HIWORD(lpPlanets->rgwtMin[j]) > 0x0))
         goto L_0e03;
     else
@@ -1097,7 +1098,7 @@ L_0dc9:
         goto L_0dd3;
 
 L_0dd3:
-    lpPlanets->rgwtMin[j] = (lpPlanets->rgwtMin[j] + (uint32_t)((Random(150) + 0x9b)));
+    lpPlanets->rgwtMin[j] = (lpPlanets->rgwtMin[j] + (uint32_t)((Random(150) + 155)));
 
 L_0e03:
     if ((game.fBBSPlay == 0x0))
@@ -1152,14 +1153,14 @@ L_0f14:
 RetryAll:
     lBest = 100000000;
     dMin = (((uint32_t)(dGal) / 4) + 1000);
-    dMax = (((uint32_t)(LOWORD((0x3 * dGal))) / 4) + 1000);
+    dMax = (((uint32_t)(LOWORD((3 * dGal))) / 4) + 1000);
     i = 0;
     goto L_110f;
 
 L_0fd7:
     rgi[0] = Random(cPlanMax);
-    pt.x = rgptPlan[rgi[0x0]].x;
-    pt.y = rgptPlan[rgi[0x0]].y;
+    pt.x = rgptPlan[rgi[0]].x;
+    pt.y = rgptPlan[rgi[0]].y;
     if ((pt.x >= dMin))
         goto L_101b;
     else
@@ -1832,7 +1833,7 @@ L_1cc5:
     lpPlanets[iMin].rgwtMin[3] = 250;
 
 L_1ce4:
-    lpPlanets[iMin].uGuesses = ((lpPlanets[iMin].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[iMin].rgwtMin[0x3])) / 0x4) & 0xfff));
+    lpPlanets[iMin].uGuesses = ((lpPlanets[iMin].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[iMin].rgwtMin[3])) / 0x4) & 0xfff));
     j = 0;
     goto L_1eaf;
 
@@ -1939,7 +1940,7 @@ L_2143:
     goto L_25bb;
 
 L_2167:
-    ktLeft = LOWORD((0xa * iT));
+    ktLeft = LOWORD((10 * iT));
     pl = lpPlanets[iMin].rgwtMin;
     if ((*(pl + 0x2) > HIWORD(pl[1])))
         goto L_21e8;
@@ -2085,7 +2086,7 @@ L_2376:
 
 L_2380:
     pb[iLow] = (pb[iLow] + LOBYTE(ktLeft));
-    ktLeft = ((uint32_t)((ktLeft + 0x1)) / 2);
+    ktLeft = ((uint32_t)((ktLeft + 1)) / 2);
     j = 0;
     goto L_23cd;
 
@@ -2111,7 +2112,7 @@ L_2476:
     goto L_25e6;
 
 L_2515:
-    lpPlanets[iMin].cDefenses = (lpPlanets[iMin].cDefenses + LOWORD((int32_t)(((uint32_t)(((uint32_t)((iT + 0x5)) / 0xa)) * 0x1))));
+    lpPlanets[iMin].cDefenses = (lpPlanets[iMin].cDefenses + LOWORD((int32_t)(((uint32_t)(((uint32_t)((iT + 5)) / 10)) * 0x1))));
     goto L_25e6;
 
 L_25bb:
@@ -2172,7 +2173,7 @@ L_2741:
     goto L_27a5;
 
 L_2757:
-    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[0x0]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[0x0]) - (uint16_t)(rgplr[i].rgEnvVarMin[0x0]))) / 2));
+    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[0]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[0]) - (uint16_t)(rgplr[i].rgEnvVarMin[0]))) / 2));
 
 L_27a5:
     t_scratch_m116_15 = iT;
@@ -2188,7 +2189,7 @@ L_27ff:
     goto L_2863;
 
 L_2815:
-    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[0x1]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[0x1]) - (uint16_t)(rgplr[i].rgEnvVarMin[0x1]))) / 2));
+    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[1]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[1]) - (uint16_t)(rgplr[i].rgEnvVarMin[1]))) / 2));
 
 L_2863:
     t_scratch_m116_17 = iT;
@@ -2204,7 +2205,7 @@ L_28bd:
     goto L_2921;
 
 L_28d3:
-    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[0x2]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[0x2]) - (uint16_t)(rgplr[i].rgEnvVarMin[0x2]))) / 2));
+    iT = ((uint16_t)(rgplr[i].rgEnvVarMin[2]) + ((uint32_t)(((uint16_t)(rgplr[i].rgEnvVarMax[2]) - (uint16_t)(rgplr[i].rgEnvVarMin[2]))) / 2));
 
 L_2921:
     t_scratch_m116_19 = iT;
@@ -2275,12 +2276,12 @@ L_2b78:
         goto L_2bae;
 
 L_2bae:
-    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0xfdff) | 0x0) */
+    lpshdef[1].fFree = 0x0;
     /* untranslated: t_scratch_m116_24 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
     /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_24) */
-    /* untranslated: part[0x116:4](lpshdef) = 0x1 */
-    /* untranslated: part[0x112:4](lpshdef) = 0x1 */
+    lpshdef[1].cExist = 0x1;
+    lpshdef[1].cBuilt = 0x1;
 
 L_2c2f:
     goto L_1a47;
@@ -2307,13 +2308,13 @@ L_2c67:
 
 L_2c9d:
     lpshdef[1] = lpshdef[2];
-    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0x83ff) | 0x4400) */
-    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0xfdff) | 0x0) */
+    lpshdef[1].ishdef = 0x11;
+    lpshdef[1].fFree = 0x0;
     /* untranslated: t_scratch_m116_25 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
     /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_25) */
-    /* untranslated: part[0x116:4](lpshdef) = 0x1 */
-    /* untranslated: part[0x112:4](lpshdef) = 0x1 */
+    lpshdef[1].cExist = 0x1;
+    lpshdef[1].cBuilt = 0x1;
 
 L_2d6f:
     goto L_1a47;
@@ -2327,7 +2328,7 @@ L_2d72:
 L_2d93:
     idHome = rgplr[i].idPlanetHome;
     lpshdef[1] = *(lpshdef);
-    /* untranslated: part[0x10e:2](lpshdef) = ((lpshdef[1].wFlags & 0x83ff) | 0x4400) */
+    lpshdef[1].ishdef = 0x11;
     *(lpshdef) = lpshdef[3];
     lpshdef->ishdef = 0x10;
     lpshdef->fFree = 0x0;
@@ -2563,7 +2564,7 @@ LGive2ndPlanet:
     lDistIdeal2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 20)) / 100));
     lDistIdeal2 = (uint32_t)((lDistIdeal2 * lDistIdeal2));
     lBest = 10000000;
-    pptMax = (12096 + (cPlanMax * 4));
+    pptMax = &(rgptPlan[cPlanMax]);
     ppt = rgptPlan;
     lppl = lpPlanets;
     goto L_3468;
@@ -2712,8 +2713,8 @@ L_3610:
 
 L_3619:
     t_call_361d = Random(97);
-    lpplPicked->rgEnvVarOrig[j] = LOBYTE((t_call_361d + 0x2));
-    lpplPicked->rgEnvVar[j] = LOBYTE((t_call_361d + 0x2));
+    lpplPicked->rgEnvVarOrig[j] = LOBYTE((t_call_361d + 2));
+    lpplPicked->rgEnvVar[j] = LOBYTE((t_call_361d + 2));
     j = (j + 1);
 
 L_365d:
@@ -2754,12 +2755,12 @@ L_36fe:
     lpplPicked->cFactories = 0x4;
     lpplPicked->cMines = 0xa;
     lpplPicked->rgwtMin[3] = (int32_t)(((int32_t)((lpPlanets[idHome].rgwtMin[3] * 2)) / 0x5));
-    lpplPicked->uPopGuess = ((uint32_t)(LOWORD(lpplPicked->rgwtMin[0x3])) / 0x4);
+    lpplPicked->uPopGuess = ((uint32_t)(LOWORD(lpplPicked->rgwtMin[3])) / 0x4);
     j = 0;
     goto L_3854;
 
 L_381f:
-    lpplPicked->rgwtMin[j] = (uint32_t)((Random(200) + 0x64));
+    lpplPicked->rgwtMin[j] = (uint32_t)((Random(200) + 100));
     j = (j + 1);
 
 L_3854:
@@ -2771,7 +2772,7 @@ L_3854:
 L_385e:
     lpplPicked->iScanner = 0x0;
     lpPlanets[idHome].rgwtMin[3] = (int32_t)(((int32_t)((lpPlanets[idHome].rgwtMin[3] * 4)) / 0x5));
-    lpPlanets[idHome].uGuesses = ((lpPlanets[idHome].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[idHome].rgwtMin[0x3])) / 0x4) & 0xfff));
+    lpPlanets[idHome].uGuesses = ((lpPlanets[idHome].uGuesses & 0xf000) | (((uint32_t)(LOWORD(lpPlanets[idHome].rgwtMin[3])) / 0x4) & 0xfff));
     CreateStartupShip(i, lpplPicked->id, 0, 0);
     goto L_39dd;
 
@@ -3748,7 +3749,7 @@ L_4ac6:
         goto L_4acf;
 
 L_4acf:
-    game.mdSize = LOWORD(rgl[0x0]);
+    game.mdSize = LOWORD(rgl[0]);
 
 L_4ad8:
     if ((cNum < 2))
@@ -3757,7 +3758,7 @@ L_4ad8:
         goto L_4ae1;
 
 L_4ae1:
-    game.mdDensity = LOWORD(rgl[0x1]);
+    game.mdDensity = LOWORD(rgl[1]);
 
 L_4aea:
     if ((cNum < 3))
@@ -3766,7 +3767,7 @@ L_4aea:
         goto L_4af3;
 
 L_4af3:
-    game.mdStartDist = LOWORD(rgl[0x2]);
+    game.mdStartDist = LOWORD(rgl[2]);
 
 L_4afc:
     if ((cNum < 4))
@@ -3851,7 +3852,7 @@ L_4bdd:
         goto L_4be6;
 
 L_4be6:
-    game.fExtraFuel = LOWORD(rgl[0x0]);
+    game.fExtraFuel = LOWORD(rgl[0]);
 
 L_4c04:
     if ((cNum < 2))
@@ -3860,7 +3861,7 @@ L_4c04:
         goto L_4c0d;
 
 L_4c0d:
-    game.fSlowTech = LOWORD(rgl[0x1]);
+    game.fSlowTech = LOWORD(rgl[1]);
 
 L_4c2d:
     if ((cNum < 3))
@@ -3869,7 +3870,7 @@ L_4c2d:
         goto L_4c36;
 
 L_4c36:
-    game.fBBSPlay = LOWORD(rgl[0x2]);
+    game.fBBSPlay = LOWORD(rgl[2]);
 
 L_4c5e:
     if ((cNum < 4))
@@ -3878,7 +3879,7 @@ L_4c5e:
         goto L_4c67;
 
 L_4c67:
-    game.fNoRandom = LOWORD(rgl[0x3]);
+    game.fNoRandom = LOWORD(rgl[3]);
 
 L_4c8b:
     if ((cNum < 5))
@@ -3887,7 +3888,7 @@ L_4c8b:
         goto L_4c94;
 
 L_4c94:
-    game.fAisBand = LOWORD(rgl[0x4]);
+    game.fAisBand = LOWORD(rgl[4]);
 
 L_4cba:
     if ((cNum < 6))
@@ -3896,7 +3897,7 @@ L_4cba:
         goto L_4cc3;
 
 L_4cc3:
-    game.fVisScores = LOWORD(rgl[0x5]);
+    game.fVisScores = LOWORD(rgl[5]);
 
 L_4ce6:
     if ((cNum < 7))
@@ -3905,7 +3906,7 @@ L_4ce6:
         goto L_4cef;
 
 L_4cef:
-    game.fClumping = LOWORD(rgl[0x6]);
+    game.fClumping = LOWORD(rgl[6]);
 
 L_4d13:
     lpbStart = PszGetLine(&(lpb));
@@ -3916,37 +3917,37 @@ L_4d13:
         goto L_4d47;
 
 L_4d47:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_4d75;
     else
         goto L_4d50;
 
 L_4d50:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_4d5e;
     else
         goto L_4d55;
 
 L_4d55:
-    if ((LOWORD(rgl[0x0]) < 0x1))
+    if ((LOWORD(rgl[0]) < 0x1))
         goto L_4d75;
     else
         goto L_4d5e;
 
 L_4d5e:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_4d99;
     else
         goto L_4d67;
 
 L_4d67:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_4d75;
     else
         goto L_4d6c;
 
 L_4d6c:
-    if ((LOWORD(rgl[0x0]) <= 0x10))
+    if ((LOWORD(rgl[0]) <= 0x10))
         goto L_4d99;
     else
         goto L_4d75;
@@ -3962,7 +3963,7 @@ L_4d99:
         goto L_4dab;
 
 L_4dab:
-    cPlr = LOWORD(rgl[0x0]);
+    cPlr = LOWORD(rgl[0]);
     game.cPlayer = cPlr;
     i = 0;
     goto L_501b;
@@ -3988,8 +3989,8 @@ L_4def:
 
 L_4dfe:
     cNum = CParseNumbers(&(lpbStart[1]), rgl, 2);
-    idAi = LOWORD(rgl[0x0]);
-    lvlAi = LOWORD(rgl[0x1]);
+    idAi = LOWORD(rgl[0]);
+    lvlAi = LOWORD(rgl[1]);
     if ((cNum < 2))
         goto L_4e5d;
     else
@@ -4097,37 +4098,37 @@ L_5063:
         goto L_5071;
 
 L_5071:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_507a;
 
 L_507a:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5088;
     else
         goto L_507f;
 
 L_507f:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5088;
 
 L_5088:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_50dd;
     else
         goto L_5091;
 
 L_5091:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5096;
 
 L_5096:
-    if ((LOWORD(rgl[0x0]) <= 0x1))
+    if ((LOWORD(rgl[0]) <= 0x1))
         goto L_50dd;
     else
         goto LBadDefVc;
@@ -4139,13 +4140,13 @@ LBadDefVc:
     goto LError;
 
 L_50dd:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_5160;
     else
         goto L_50e6;
 
 L_50e6:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_5160;
     else
         goto L_50ef;
@@ -4157,44 +4158,44 @@ L_50ef:
         goto L_50f8;
 
 L_50f8:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5101;
 
 L_5101:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_510f;
     else
         goto L_5106;
 
 L_5106:
-    if ((LOWORD(rgl[0x1]) < 0x14))
+    if ((LOWORD(rgl[1]) < 0x14))
         goto LBadDefVc;
     else
         goto L_510f;
 
 L_510f:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_5129;
     else
         goto L_5118;
 
 L_5118:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_511d;
 
 L_511d:
-    if ((LOWORD(rgl[0x1]) > 0x64))
+    if ((LOWORD(rgl[1]) > 0x64))
         goto LBadDefVc;
     else
         goto L_5129;
 
 L_5129:
     SetVCCheck(game.lid, 0, 1);
-    SetVCVal(game.lid, 0, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 5));
+    SetVCVal(game.lid, 0, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 5));
 
 L_5160:
     lpbStart = PszGetLine(&(lpb));
@@ -4212,49 +4213,49 @@ L_519d:
         goto L_51ab;
 
 L_51ab:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_51b4;
 
 L_51b4:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_51c2;
     else
         goto L_51b9;
 
 L_51b9:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_51c2;
 
 L_51c2:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_51dc;
     else
         goto L_51cb;
 
 L_51cb:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_51d0;
 
 L_51d0:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_51dc;
 
 L_51dc:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_52b2;
     else
         goto L_51e5;
 
 L_51e5:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_52b2;
     else
         goto L_51ee;
@@ -4266,73 +4267,73 @@ L_51ee:
         goto L_51f7;
 
 L_51f7:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5200;
 
 L_5200:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_520e;
     else
         goto L_5205;
 
 L_5205:
-    if ((LOWORD(rgl[0x1]) < 0x8))
+    if ((LOWORD(rgl[1]) < 0x8))
         goto LBadDefVc;
     else
         goto L_520e;
 
 L_520e:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5217;
 
 L_5217:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_5225;
     else
         goto L_521c;
 
 L_521c:
-    if ((LOWORD(rgl[0x1]) > 0x1a))
+    if ((LOWORD(rgl[1]) > 0x1a))
         goto LBadDefVc;
     else
         goto L_5225;
 
 L_5225:
-    if ((HIWORD(rgl[0x2]) < 0x0))
+    if ((HIWORD(rgl[2]) < 0x0))
         goto LBadDefVc;
     else
         goto L_522e;
 
 L_522e:
-    if ((HIWORD(rgl[0x2]) > 0x0))
+    if ((HIWORD(rgl[2]) > 0x0))
         goto L_523c;
     else
         goto L_5233;
 
 L_5233:
-    if ((LOWORD(rgl[0x2]) < 0x2))
+    if ((LOWORD(rgl[2]) < 0x2))
         goto LBadDefVc;
     else
         goto L_523c;
 
 L_523c:
-    if ((HIWORD(rgl[0x2]) < 0x0))
+    if ((HIWORD(rgl[2]) < 0x0))
         goto L_5256;
     else
         goto L_5245;
 
 L_5245:
-    if ((HIWORD(rgl[0x2]) > 0x0))
+    if ((HIWORD(rgl[2]) > 0x0))
         goto LBadDefVc;
     else
         goto L_524a;
 
 L_524a:
-    if ((LOWORD(rgl[0x2]) > 0x6))
+    if ((LOWORD(rgl[2]) > 0x6))
         goto LBadDefVc;
     else
         goto L_5256;
@@ -4340,8 +4341,8 @@ L_524a:
 L_5256:
     SetVCCheck(game.lid, 1, 1);
     SetVCCheck(game.lid, 2, 1);
-    SetVCVal(game.lid, 1, (LOWORD(rgl[0x1]) - 8));
-    SetVCVal(game.lid, 2, (LOWORD(rgl[0x2]) - 2));
+    SetVCVal(game.lid, 1, (LOWORD(rgl[1]) - 8));
+    SetVCVal(game.lid, 2, (LOWORD(rgl[2]) - 2));
 
 L_52b2:
     lpbStart = PszGetLine(&(lpb));
@@ -4359,49 +4360,49 @@ L_52ef:
         goto L_52fd;
 
 L_52fd:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5306;
 
 L_5306:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5314;
     else
         goto L_530b;
 
 L_530b:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5314;
 
 L_5314:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_532e;
     else
         goto L_531d;
 
 L_531d:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5322;
 
 L_5322:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_532e;
 
 L_532e:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_53b3;
     else
         goto L_5337;
 
 L_5337:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_53b3;
     else
         goto L_5340;
@@ -4413,44 +4414,44 @@ L_5340:
         goto L_5349;
 
 L_5349:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5352;
 
 L_5352:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5361;
     else
         goto L_5357;
 
 L_5357:
-    if ((LOWORD(rgl[0x1]) < 0x3e8))
+    if ((LOWORD(rgl[1]) < 0x3e8))
         goto LBadDefVc;
     else
         goto L_5361;
 
 L_5361:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_537c;
     else
         goto L_536a;
 
 L_536a:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_536f;
 
 L_536f:
-    if ((LOWORD(rgl[0x1]) > 0x4e20))
+    if ((LOWORD(rgl[1]) > 0x4e20))
         goto LBadDefVc;
     else
         goto L_537c;
 
 L_537c:
     SetVCCheck(game.lid, 3, 1);
-    SetVCVal(game.lid, 3, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfc18)) / 1000));
+    SetVCVal(game.lid, 3, ((uint32_t)((LOWORD(rgl[1]) + 0xfc18)) / 1000));
 
 L_53b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4468,49 +4469,49 @@ L_53f0:
         goto L_53fe;
 
 L_53fe:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5407;
 
 L_5407:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5415;
     else
         goto L_540c;
 
 L_540c:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5415;
 
 L_5415:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_542f;
     else
         goto L_541e;
 
 L_541e:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5423;
 
 L_5423:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_542f;
 
 L_542f:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_54b3;
     else
         goto L_5438;
 
 L_5438:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_54b3;
     else
         goto L_5441;
@@ -4522,44 +4523,44 @@ L_5441:
         goto L_544a;
 
 L_544a:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5453;
 
 L_5453:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5461;
     else
         goto L_5458;
 
 L_5458:
-    if ((LOWORD(rgl[0x1]) < 0x14))
+    if ((LOWORD(rgl[1]) < 0x14))
         goto LBadDefVc;
     else
         goto L_5461;
 
 L_5461:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_547c;
     else
         goto L_546a;
 
 L_546a:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_546f;
 
 L_546f:
-    if ((LOWORD(rgl[0x1]) > 0x12c))
+    if ((LOWORD(rgl[1]) > 0x12c))
         goto LBadDefVc;
     else
         goto L_547c;
 
 L_547c:
     SetVCCheck(game.lid, 4, 1);
-    SetVCVal(game.lid, 4, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffec)) / 10));
+    SetVCVal(game.lid, 4, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 10));
 
 L_54b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4577,49 +4578,49 @@ L_54f0:
         goto L_54fe;
 
 L_54fe:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5507;
 
 L_5507:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5515;
     else
         goto L_550c;
 
 L_550c:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5515;
 
 L_5515:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_552f;
     else
         goto L_551e;
 
 L_551e:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5523;
 
 L_5523:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_552f;
 
 L_552f:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_55b3;
     else
         goto L_5538;
 
 L_5538:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_55b3;
     else
         goto L_5541;
@@ -4631,44 +4632,44 @@ L_5541:
         goto L_554a;
 
 L_554a:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5553;
 
 L_5553:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5561;
     else
         goto L_5558;
 
 L_5558:
-    if ((LOWORD(rgl[0x1]) < 0xa))
+    if ((LOWORD(rgl[1]) < 0xa))
         goto LBadDefVc;
     else
         goto L_5561;
 
 L_5561:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_557c;
     else
         goto L_556a;
 
 L_556a:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_556f;
 
 L_556f:
-    if ((LOWORD(rgl[0x1]) > 0x1f4))
+    if ((LOWORD(rgl[1]) > 0x1f4))
         goto LBadDefVc;
     else
         goto L_557c;
 
 L_557c:
     SetVCCheck(game.lid, 5, 1);
-    SetVCVal(game.lid, 5, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 10));
+    SetVCVal(game.lid, 5, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
 
 L_55b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4686,49 +4687,49 @@ L_55f0:
         goto L_55fe;
 
 L_55fe:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5607;
 
 L_5607:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5615;
     else
         goto L_560c;
 
 L_560c:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5615;
 
 L_5615:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_562f;
     else
         goto L_561e;
 
 L_561e:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5623;
 
 L_5623:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_562f;
 
 L_562f:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_56b3;
     else
         goto L_5638;
 
 L_5638:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_56b3;
     else
         goto L_5641;
@@ -4740,44 +4741,44 @@ L_5641:
         goto L_564a;
 
 L_564a:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5653;
 
 L_5653:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5661;
     else
         goto L_5658;
 
 L_5658:
-    if ((LOWORD(rgl[0x1]) < 0xa))
+    if ((LOWORD(rgl[1]) < 0xa))
         goto LBadDefVc;
     else
         goto L_5661;
 
 L_5661:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_567c;
     else
         goto L_566a;
 
 L_566a:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_566f;
 
 L_566f:
-    if ((LOWORD(rgl[0x1]) > 0x12c))
+    if ((LOWORD(rgl[1]) > 0x12c))
         goto LBadDefVc;
     else
         goto L_567c;
 
 L_567c:
     SetVCCheck(game.lid, 6, 1);
-    SetVCVal(game.lid, 6, ((uint32_t)((LOWORD(rgl[0x1]) + 0xfff6)) / 10));
+    SetVCVal(game.lid, 6, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
 
 L_56b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4795,49 +4796,49 @@ L_56f0:
         goto L_56fe;
 
 L_56fe:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5707;
 
 L_5707:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5715;
     else
         goto L_570c;
 
 L_570c:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5715;
 
 L_5715:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_572f;
     else
         goto L_571e;
 
 L_571e:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5723;
 
 L_5723:
-    if ((LOWORD(rgl[0x0]) > 0x1))
+    if ((LOWORD(rgl[0]) > 0x1))
         goto LBadDefVc;
     else
         goto L_572f;
 
 L_572f:
-    if ((LOWORD(rgl[0x0]) != 0x1))
+    if ((LOWORD(rgl[0]) != 0x1))
         goto L_57b3;
     else
         goto L_5738;
 
 L_5738:
-    if ((HIWORD(rgl[0x0]) != 0x0))
+    if ((HIWORD(rgl[0]) != 0x0))
         goto L_57b3;
     else
         goto L_5741;
@@ -4849,44 +4850,44 @@ L_5741:
         goto L_574a;
 
 L_574a:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5753;
 
 L_5753:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5761;
     else
         goto L_5758;
 
 L_5758:
-    if ((LOWORD(rgl[0x1]) < 0x1e))
+    if ((LOWORD(rgl[1]) < 0x1e))
         goto LBadDefVc;
     else
         goto L_5761;
 
 L_5761:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_577c;
     else
         goto L_576a;
 
 L_576a:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_576f;
 
 L_576f:
-    if ((LOWORD(rgl[0x1]) > 0x384))
+    if ((LOWORD(rgl[1]) > 0x384))
         goto LBadDefVc;
     else
         goto L_577c;
 
 L_577c:
     SetVCCheck(game.lid, 7, 1);
-    SetVCVal(game.lid, 7, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 10));
+    SetVCVal(game.lid, 7, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
 
 L_57b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4904,55 +4905,55 @@ L_57f0:
         goto L_57fe;
 
 L_57fe:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5807;
 
 L_5807:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5815;
     else
         goto L_580c;
 
 L_580c:
-    if ((LOWORD(rgl[0x0]) < 0x0))
+    if ((LOWORD(rgl[0]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5815;
 
 L_5815:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_582f;
     else
         goto L_581e;
 
 L_581e:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5823;
 
 L_5823:
-    if ((LOWORD(rgl[0x0]) > 0x7))
+    if ((LOWORD(rgl[0]) > 0x7))
         goto LBadDefVc;
     else
         goto L_582f;
 
 L_582f:
-    if ((HIWORD(rgl[0x0]) < 0x0))
+    if ((HIWORD(rgl[0]) < 0x0))
         goto L_58bb;
     else
         goto L_5838;
 
 L_5838:
-    if ((HIWORD(rgl[0x0]) > 0x0))
+    if ((HIWORD(rgl[0]) > 0x0))
         goto L_5846;
     else
         goto L_583d;
 
 L_583d:
-    if ((LOWORD(rgl[0x0]) <= 0x0))
+    if ((LOWORD(rgl[0]) <= 0x0))
         goto L_58bb;
     else
         goto L_5846;
@@ -4964,44 +4965,44 @@ L_5846:
         goto L_584f;
 
 L_584f:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto LBadDefVc;
     else
         goto L_5858;
 
 L_5858:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto L_5866;
     else
         goto L_585d;
 
 L_585d:
-    if ((LOWORD(rgl[0x1]) < 0x1e))
+    if ((LOWORD(rgl[1]) < 0x1e))
         goto LBadDefVc;
     else
         goto L_5866;
 
 L_5866:
-    if ((HIWORD(rgl[0x1]) < 0x0))
+    if ((HIWORD(rgl[1]) < 0x0))
         goto L_5881;
     else
         goto L_586f;
 
 L_586f:
-    if ((HIWORD(rgl[0x1]) > 0x0))
+    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
     else
         goto L_5874;
 
 L_5874:
-    if ((LOWORD(rgl[0x1]) > 0x1f4))
+    if ((LOWORD(rgl[1]) > 0x1f4))
         goto LBadDefVc;
     else
         goto L_5881;
 
 L_5881:
-    SetVCVal(game.lid, 8, LOWORD(rgl[0x0]));
-    SetVCVal(game.lid, 9, ((uint32_t)((LOWORD(rgl[0x1]) + 0xffe2)) / 10));
+    SetVCVal(game.lid, 8, LOWORD(rgl[0]));
+    SetVCVal(game.lid, 9, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
 
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
@@ -5030,7 +5031,7 @@ L_5923:
         goto L_5933;
 
 L_5933:
-    lpb - 0x2 = 0x0;
+    lpb[(-2)] = 0;
 
 L_593b:
     fstrcpy(szBase, lpbStart);
@@ -5078,8 +5079,8 @@ L_5a0e:
         goto L_5a26;
 
 L_5a26:
-    CchGetString((Random(24) + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
-    /* untranslated: call _wsprintf(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), "%ss", &rgplr[i].szName) -> callresult(int16_t) */
+    CchGetString((Random(24) + 1390), rgplr[i].szName);
+    _wsprintf(rgplr[i].szNames, "%ss", &(rgplr[i].szName));
 
 L_5a86:
     goto L_5979;
@@ -5102,7 +5103,7 @@ L_5aa0:
     goto L_5ae1;
 
 L_5aa8:
-    if ((strcmp(((0x59a2 + LOWORD((192 * i))) + 0x80), ((0x59a2 + LOWORD((192 * j))) + 0x80)) == 0))
+    if ((strcmp(rgplr[i].szName, rgplr[j].szName) == 0))
         goto L_5aec;
     else
         goto L_5add;
@@ -5139,7 +5140,7 @@ L_5b15:
         goto L_5b20;
 
 L_5b20:
-    if ((strcmp(((0x59a2 + LOWORD((192 * j))) + 0x80), PszGetCompressedString((c + 1390))) != 0))
+    if ((strcmp(rgplr[j].szName, PszGetCompressedString((c + 1390))) != 0))
         goto L_5b11;
     else
         goto L_5b57;
@@ -5164,9 +5165,9 @@ L_5b77:
     goto L_5b09;
 
 L_5b7a:
-    CchGetString((c + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
-    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), ((0x59a2 + loword((192 * i))) + 0x80)) -> callresult(char *) */
-    /* untranslated: call strcat(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), 0xa32) -> callresult(char *) */
+    CchGetString((c + 1390), rgplr[i].szName);
+    strcpy(rgplr[i].szNames, rgplr[i].szName);
+    strcat(rgplr[i].szNames, "s");
 
 L_5be1:
     goto L_5a91;
@@ -5746,8 +5747,8 @@ L_6694:
     rgplr[i] = vrgplrDef[c];
 
 L_66d3:
-    CchGetString((c + 1383), ((0x59a2 + LOWORD((192 * i))) + 0x80));
-    /* untranslated: call _wsprintf(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), "%ss", &rgplr[i].szName) -> callresult(int16_t) */
+    CchGetString((c + 1383), rgplr[i].szName);
+    _wsprintf(rgplr[i].szNames, "%ss", &(rgplr[i].szName));
     goto L_68cd;
 
 L_672d:
@@ -5846,7 +5847,7 @@ L_697f:
         goto L_6997;
 
 L_6997:
-    CchGetString((Random(24) + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
+    CchGetString((Random(24) + 1390), rgplr[i].szName);
 
 L_69c0:
     if (((uint16_t)(rgplr[i].szNames[0]) != 0))
@@ -5855,7 +5856,7 @@ L_69c0:
         goto L_69d8;
 
 L_69d8:
-    /* untranslated: call _wsprintf(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), "%ss", &rgplr[i].szName) -> callresult(int16_t) */
+    _wsprintf(rgplr[i].szNames, "%ss", &(rgplr[i].szName));
 
 L_6a0f:
     goto L_68e8;
@@ -5878,7 +5879,7 @@ L_6a29:
     goto L_6a6d;
 
 L_6a32:
-    if ((strcmp(((0x59a2 + LOWORD((192 * i))) + 0x80), ((0x59a2 + LOWORD((192 * j))) + 0x80)) == 0))
+    if ((strcmp(rgplr[i].szName, rgplr[j].szName) == 0))
         goto L_6a79;
     else
         goto L_6a68;
@@ -5915,7 +5916,7 @@ L_6aa5:
         goto L_6ab1;
 
 L_6ab1:
-    if ((strcmp(((0x59a2 + LOWORD((192 * j))) + 0x80), PszGetCompressedString((c + 1390))) != 0))
+    if ((strcmp(rgplr[j].szName, PszGetCompressedString((c + 1390))) != 0))
         goto L_6aa0;
     else
         goto L_6ae9;
@@ -5940,9 +5941,9 @@ L_6b0a:
     goto L_6a97;
 
 L_6b0d:
-    CchGetString((c + 1390), ((0x59a2 + LOWORD((192 * i))) + 0x80));
-    /* untranslated: call strcpy(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), ((0x59a2 + loword((192 * i))) + 0x80)) -> callresult(char *) */
-    /* untranslated: call strcat(&part[0x10:1](game.szName[(0x59a2 + loword((192 * i)))]), 0xac0) -> callresult(char *) */
+    CchGetString((c + 1390), rgplr[i].szName);
+    strcpy(rgplr[i].szNames, rgplr[i].szName);
+    strcat(rgplr[i].szNames, "s");
 
 L_6b74:
     goto L_6a1a;
@@ -6991,7 +6992,7 @@ L_7858:
     SelectObject(hdc, rghfontArial8[1]);
     c = CchGetString(idsPlayerRace, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
-    rcGBox.top = (LOWORD((0x3 * dyArial8)) + rcGBox.bottom);
+    rcGBox.top = (LOWORD((3 * dyArial8)) + rcGBox.bottom);
     rcGBox.bottom = 1000;
     ExpandRc(&(rcGBox), (-dyArial8), 0);
     c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
@@ -7665,7 +7666,7 @@ L_8a1f:
         goto L_8a2b;
 
 L_8a2b:
-    iDiamond = ((uint32_t)((pt.y + 0xfffa)) / (dyArial8 + 4));
+    iDiamond = ((uint32_t)((pt.y - 6)) / (dyArial8 + 4));
     if ((iDiamond >= 16))
         goto L_9548;
     else
@@ -7708,7 +7709,7 @@ L_8ac0:
         goto L_8acc;
 
 L_8acc:
-    iDiamond = ((uint32_t)((pt.y + 0xfffa)) / (dyArial8 + 4));
+    iDiamond = ((uint32_t)((pt.y - 6)) / (dyArial8 + 4));
     if ((iDiamond >= 16))
         goto L_9548;
     else
@@ -8925,7 +8926,7 @@ L_9d9b:
     bkMode = SetBkMode(hdc, OPAQUE);
     crBkSav = SetBkColor(hdc, crButtonFace);
     SelectObject(hdc, rghfontArial8[1]);
-    yTop = (LOWORD((0x3 * dyArial8)) + 6);
+    yTop = (LOWORD((3 * dyArial8)) + 6);
     dxDig = LOWORD(GetTextExtent(hdc, "9", 1));
     ids = idsOwns;
     irc = 0;
@@ -8959,7 +8960,7 @@ L_9e87:
 
 L_9e99:
     xLeft = rcCBox.left;
-    yTop = ((rcCBox.bottom + 6) + ((uint32_t)(LOWORD((0x3 * dyArial8))) / 2));
+    yTop = ((rcCBox.bottom + 6) + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
 
 L_9eb7:
     t_9ebb = ids;
@@ -8997,8 +8998,8 @@ L_9f42:
         goto L_9f8b;
 
 L_9f8b:
-    dxItem = (dxItem + ((uint32_t)(LOWORD((0x3 * dxDig))) / 2));
-    strcat(szWork, 0xaf4);
+    dxItem = (dxItem + ((uint32_t)(LOWORD((3 * dxDig))) / 2));
+    strcat(szWork, "%");
 
 L_9faa:
     xLeft = (xLeft + dxItem);
@@ -9131,7 +9132,7 @@ L_a26a:
         goto L_a2ae;
 
 L_a2ae:
-    dShift = LOWORD((0x5 * dShift));
+    dShift = LOWORD((5 * dShift));
 
 L_a2b7:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -9249,7 +9250,7 @@ L_b6ba:
 
 L_b6db:
     val = cur;
-    pgame->rgvc[8] = LOBYTE(((pgame->rgvc[0x8] & 0x80) | (cur & 0xff)));
+    pgame->rgvc[8] = LOBYTE(((pgame->rgvc[8] & 0x80) | (cur & 0xff)));
 
 L_b703:
 
@@ -9276,7 +9277,7 @@ L_b740:
     goto L_b80e;
 
 L_b746:
-    val = (LOWORD((0x5 * val)) + 20);
+    val = (LOWORD((5 * val)) + 20);
     goto L_b833;
 
 L_b755:
@@ -9288,23 +9289,23 @@ L_b761:
     goto L_b833;
 
 L_b76d:
-    val = (LOWORD((0x3e8 * val)) + 1000);
+    val = (LOWORD((1000 * val)) + 1000);
     goto L_b833;
 
 L_b77c:
-    val = (LOWORD((0xa * val)) + 20);
+    val = (LOWORD((10 * val)) + 20);
     goto L_b833;
 
 L_b78b:
-    val = (LOWORD((0xa * val)) + 10);
+    val = (LOWORD((10 * val)) + 10);
     goto L_b833;
 
 L_b79a:
-    val = (LOWORD((0xa * val)) + 30);
+    val = (LOWORD((10 * val)) + 30);
     goto L_b833;
 
 L_b7a9:
-    val = (LOWORD((0xa * val)) + 30);
+    val = (LOWORD((10 * val)) + 30);
     goto L_b833;
 
 L_b7b8:

@@ -514,7 +514,7 @@ L_456c:
 L_456f:
     call FLookupPlanet(sel.scan.idpl, &pl) -> callresult(int16_t)
     GlobalPD.grPopup = grPopupMineral
-    GlobalPD.rgi[0] = sext16to32((ht + 0xffff))
+    GlobalPD.rgi[0] = sext16to32((ht - 1))
     i = 1
     goto L_45b4
 

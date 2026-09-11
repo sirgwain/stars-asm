@@ -85,7 +85,7 @@ L_0126:
     t_merge_0129_0001 = 0x4;
 
 L_0129:
-    dyShipLB = LOWORD(((dyArial8 + 0x2) * t_merge_0129_0001));
+    dyShipLB = LOWORD(((dyArial8 + 2) * t_merge_0129_0001));
     dWrong = (dyShipLB - (rcT.bottom - rcT.top));
     if ((dxShipLB != (xRight - xLeft)))
         goto L_016c;
@@ -338,19 +338,19 @@ L_07b7:
     SelectObject(hdc, rghfontArial8[0]);
     lTot = LFuelUseToWaypoint(&(sel.fl), iScanActual, 0);
     c = _wsprintf(szWork, PszGetCompressedString(idsLdmg), LOWORD(lTot), HIWORD(lTot));
-    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[0x4])))
+    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[4])))
         goto L_0833;
     else
         goto L_0816;
 
 L_0816:
-    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[0x4])))
+    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[4])))
         goto L_0823;
     else
         goto L_081b;
 
 L_081b:
-    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[0x4])))
+    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[4])))
         goto L_0833;
     else
         goto L_0823;
@@ -360,19 +360,19 @@ L_0823:
 
 L_0833:
     RightTextOut(hdc, xRight, yTop, szWork, c, (dxRight - 20));
-    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[0x4])))
+    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[4])))
         goto L_087e;
     else
         goto L_0861;
 
 L_0861:
-    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[0x4])))
+    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[4])))
         goto L_086e;
     else
         goto L_0866;
 
 L_0866:
-    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[0x4])))
+    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[4])))
         goto L_087e;
     else
         goto L_086e;
@@ -725,7 +725,7 @@ L_0fbd:
         goto L_0fc6;
 
 L_0fc6:
-    i = LOWORD(SendMessage(rghwndOrderDD[0x1], CB_GETCURSEL, 0x0, 0));
+    i = LOWORD(SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0));
     if ((i != 0))
         goto L_0ff3;
     else
@@ -905,7 +905,7 @@ L_1254:
     psz = PszGetCompressedString(ids);
     SetTextColor(hdc, 0x7f);
     SetRect(&(rc), xLeft, yTopMsg, xRight, (yBot + 2));
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     DrawText(hdc, psz, strlen(psz), &(rc), 0x810);
     SetTextColor(hdc, crButtonText);
 
@@ -1017,13 +1017,13 @@ FoundColony:
         goto L_1478;
 
 L_1478:
-    if ((LOWORD(sel.fl.rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(sel.fl.rgwtMin[3]) != 0x0))
         goto L_1494;
     else
         goto L_1482;
 
 L_1482:
-    if ((HIWORD(sel.fl.rgwtMin[0x3]) != 0x0))
+    if ((HIWORD(sel.fl.rgwtMin[3]) != 0x0))
         goto L_1494;
     else
         goto L_148c;
@@ -1060,7 +1060,7 @@ L_14c5:
 L_14cb:
     SetTextColor(hdc, t_merge_14cb_0001);
     SetRect(&(rc), xLeft, yTopMsg, xRight, (yBot + 2));
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     DrawText(hdc, psz, strlen(psz), &(rc), 0x810);
     SetTextColor(hdc, crButtonText);
     goto L_17af;
@@ -1127,7 +1127,7 @@ L_15b7:
         goto L_15c1;
 
 L_15c1:
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     dyCur = dyArial7;
     goto L_15e8;
 
@@ -1159,7 +1159,7 @@ L_165d:
     c = _wsprintf(szWork, PCTLD, LOWORD(rgl[i]), HIWORD(rgl[i]));
     DxStreamTextOut(hdc, &(dxRight), yTopMsg, szWork, c, 1);
     SetTextColor(hdc, crButtonText);
-    DxStreamTextOut(hdc, &(dxRight), yTopMsg, 0x97f, 4, 1);
+    DxStreamTextOut(hdc, &(dxRight), yTopMsg, "kT  ", 4, 1);
     i = (i + 1);
 
 L_16ed:
@@ -1185,11 +1185,11 @@ L_1706:
         goto L_1710;
 
 L_1710:
-    SelectObject(hdc, rghfontArial6);
+    SelectObject(hdc, rghfontArial6[0]);
     goto ShowString;
 
 L_171f:
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
 
 ShowString:
     if ((ids != 229))
@@ -1285,7 +1285,7 @@ L_189a:
 
 L_189d:
     yTop = (t_merge_189d_0001 + rc.top);
-    dx = ((uint32_t)(((xRight - xLeft) + 0xfff0)) / 3);
+    dx = ((uint32_t)(((xRight - xLeft) - 16)) / 3);
     dy = (LOWORD((0x3 * dyArial8)) >> 0x1);
     if ((obj.pfl->idPlanet == -1))
         goto L_18e3;
@@ -1566,7 +1566,7 @@ L_1dbd:
     SetTextColor(hdc, crButtonText);
 
 L_1e20:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(pfl->rgwtMin[0x3]), HIWORD(pfl->rgwtMin[0x3]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(pfl->rgwtMin[3]), HIWORD(pfl->rgwtMin[3]));
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
 
@@ -1641,7 +1641,7 @@ L_1fa8:
     t_merge_1fab_0001 = 0x5;
 
 L_1fab:
-    dyFleetCompLB = LOWORD(((dyArial8 + 0x2) * t_merge_1fab_0001));
+    dyFleetCompLB = LOWORD(((dyArial8 + 2) * t_merge_1fab_0001));
     dyWrong = (dyFleetCompLB - (rcT.bottom - rcT.top));
     if ((dxFleetCompLB != (xRight - xLeft)))
         goto L_1fee;
@@ -1795,7 +1795,7 @@ L_2331:
 L_234c:
     yTop = (yTop + ((dyArial8 + 2) - gd.fSmallTileMode));
     xStart = xLeft;
-    c = ((uint32_t)(((xRight - xLeft) + 0xfff6)) / 3);
+    c = ((uint32_t)(((xRight - xLeft) - 10)) / 3);
     i = 8;
     goto L_2397;
 
@@ -3353,8 +3353,7 @@ L_3deb:
 L_3df9:
     pt.x = lpfl->pt.x;
     pt.y = lpfl->pt.y;
-    scan.pt.x = lpfl->pt.x;
-    scan.pt.y = lpfl->pt.y;
+    scan.pt = lpfl->pt;
     scan.grobj = 0x83;
     ChangeScanSel(&(scan), 0);
     goto FinishUp;
@@ -3434,8 +3433,7 @@ L_3f25:
     idNew = lpflT->id;
     pt.x = lpflT->pt.x;
     pt.y = lpflT->pt.y;
-    scan.pt.x = lpflT->pt.x;
-    scan.pt.y = lpflT->pt.y;
+    scan.pt = lpflT->pt;
     scan.grobj = 0x82;
     ChangeScanSel(&(scan), 0);
     RedrawScanSel(0x0, 0);
@@ -3802,31 +3800,31 @@ L_45d3:
 L_45dc:
     lMax = 11;
     rgSize[0] = sel.fl.lpplord->rgord[sel.iwpAct].iWarp;
-    if ((HIWORD(rgSize[0x0]) > 0x0))
+    if ((HIWORD(rgSize[0]) > 0x0))
         goto L_465a;
     else
         goto L_461f;
 
 L_461f:
-    if ((HIWORD(rgSize[0x0]) < 0x0))
+    if ((HIWORD(rgSize[0]) < 0x0))
         goto L_462d;
     else
         goto L_4624;
 
 L_4624:
-    if ((LOWORD(rgSize[0x0]) > 0xa))
+    if ((LOWORD(rgSize[0]) > 0xa))
         goto L_465a;
     else
         goto L_462d;
 
 L_462d:
-    if ((LOWORD(rgSize[0x0]) != 0xa))
+    if ((LOWORD(rgSize[0]) != 0xa))
         goto L_4663;
     else
         goto L_4636;
 
 L_4636:
-    if ((HIWORD(rgSize[0x0]) != 0x0))
+    if ((HIWORD(rgSize[0]) != 0x0))
         goto L_4663;
     else
         goto L_463f;
@@ -3856,31 +3854,31 @@ L_466c:
 L_4675:
     lMax = 10;
     rgSize[0] = (uint32_t)(sel.fl.lpplord->rgord[sel.iwpAct].tsell.iPlrX);
-    if ((HIWORD(rgSize[0x0]) > 0x0))
+    if ((HIWORD(rgSize[0]) > 0x0))
         goto L_46e8;
     else
         goto L_46ad;
 
 L_46ad:
-    if ((HIWORD(rgSize[0x0]) < 0x0))
+    if ((HIWORD(rgSize[0]) < 0x0))
         goto L_46bb;
     else
         goto L_46b2;
 
 L_46b2:
-    if ((LOWORD(rgSize[0x0]) > 0xa))
+    if ((LOWORD(rgSize[0]) > 0xa))
         goto L_46e8;
     else
         goto L_46bb;
 
 L_46bb:
-    if ((LOWORD(rgSize[0x0]) != 0xa))
+    if ((LOWORD(rgSize[0]) != 0xa))
         goto L_46f1;
     else
         goto L_46c4;
 
 L_46c4:
-    if ((HIWORD(rgSize[0x0]) != 0x0))
+    if ((HIWORD(rgSize[0]) != 0x0))
         goto L_46f1;
     else
         goto L_46cd;
@@ -4187,7 +4185,7 @@ L_4d27:
     goto L_4c64;
 
 L_4d2d:
-    SelectObject(hdc, rghfontArial7);
+    SelectObject(hdc, rghfontArial7[0]);
     SetTextColor(hdc, 0xffffff);
     if ((cDiff <= 1))
         goto L_4d8e;
@@ -4564,13 +4562,13 @@ L_52ec:
         goto L_5325;
 
 L_5325:
-    if ((LOWORD(lPopPrev) != LOWORD(xfer[i].pl.rgwtMin[0x3])))
+    if ((LOWORD(lPopPrev) != LOWORD(xfer[i].pl.rgwtMin[3])))
         goto L_542a;
     else
         goto L_5343;
 
 L_5343:
-    if ((HIWORD(lPopPrev) != HIWORD(xfer[i].pl.rgwtMin[0x3])))
+    if ((HIWORD(lPopPrev) != HIWORD(xfer[i].pl.rgwtMin[3])))
         goto L_542a;
     else
         goto L_534c;
@@ -5157,8 +5155,8 @@ L_5c20:
     cNew = t_merge_5c20_0001;
 
 L_5c26:
-    cNew = (int32_t)(((uint32_t)(((uint32_t)((pt.x - btn.rc.left)) * cNew)) / (uint32_t)(((btn.rc.right - btn.rc.left) + 0xfffe))));
-    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((pxfer + btn.iSide) + 0x4));
+    cNew = (int32_t)(((uint32_t)(((uint32_t)((pt.x - btn.rc.left)) * cNew)) / (uint32_t)(((btn.rc.right - btn.rc.left) - 2))));
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((uint8_t *)((pxfer + btn.iSide)) + 4));
     dChg = (cNew - cCur);
     if ((btn.iSide != 0x0))
         goto L_5ce3;
@@ -5891,7 +5889,7 @@ L_651c:
     HIWORD(cQuan) = (-(HIWORD(cQuan) + 0x0));
 
 L_652f:
-    cAvailable = ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, 0, ((pxfer + iSrc) + 0x4));
+    cAvailable = ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, 0, ((uint8_t *)((pxfer + iSrc)) + 4));
     if ((HIWORD(cQuan) < HIWORD(cAvailable)))
         goto L_65a4;
     else
@@ -5967,7 +5965,7 @@ L_6619:
     t_merge_661c_0001 = 0x0;
 
 L_661c:
-    dChg = ChgCargo(pxfer[t_merge_661c_0001].grobj, pxfer[t_merge_65fd_0001].id, iSupply, cQuan, ((pxfer + t_merge_65d1_0001) + 0x4));
+    dChg = ChgCargo(pxfer[t_merge_661c_0001].grobj, pxfer[t_merge_65fd_0001].id, iSupply, cQuan, ((uint8_t *)((pxfer + t_merge_65d1_0001)) + 4));
     if ((LOWORD(dChg) != 0x0))
         goto L_664a;
     else
@@ -5981,7 +5979,7 @@ L_6641:
 
 L_664a:
     ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg)))),
-             ((pxfer + iSrc) + 0x4));
+             ((uint8_t *)((pxfer + iSrc)) + 4));
 
 L_6699:
     return dChg;
@@ -6115,7 +6113,7 @@ L_67f9:
     t_merge_67fc_0001 = 0x0;
 
 L_67fc:
-    lLeft = ChgCargo(pxfer[t_merge_67fc_0001].grobj, pxfer[t_merge_67dd_0001].id, iVal, 0, ((pxfer + t_merge_67af_0001) + 0x4));
+    lLeft = ChgCargo(pxfer[t_merge_67fc_0001].grobj, pxfer[t_merge_67dd_0001].id, iVal, 0, ((uint8_t *)((pxfer + t_merge_67af_0001)) + 4));
     if ((LOWORD(lLeft) != 0x0))
         goto L_682a;
     else
@@ -6438,7 +6436,7 @@ L_6c96:
         goto L_6ca0;
 
 L_6ca0:
-    dy = (dy - LOWORD(((dyArial8 + 0x6) * 0x6)));
+    dy = (dy - LOWORD(((dyArial8 + 6) * 6)));
 
 L_6cae:
     SetRect(&(rcBtn), ((dxCtr - (dyArial8 + 3)) + 1), dy, (dxCtr + 1), ((dyArial8 + 3) + dy));
@@ -7119,7 +7117,7 @@ L_7852:
     goto L_78ac;
 
 L_7866:
-    RightTextOut(hdc, (xLeft - 8), yTop, ((0x3f00 + LOWORD((147 * rgXferValidHulls[i]))) + 0x8), 0, 0);
+    RightTextOut(hdc, (xLeft - 8), yTop, rgshdef[rgXferValidHulls[i]].hul.szClass, 0, 0);
     yTop = (yTop + (dyArial8 + 6));
     i = (i + 1);
 
@@ -7304,7 +7302,7 @@ L_7be9:
         goto L_7bf2;
 
 L_7bf2:
-    yTop = (yTop - LOWORD(((dyArial8 + 0x6) * 0x6)));
+    yTop = (yTop - LOWORD(((dyArial8 + 6) * 6)));
     OffsetRc(&(rc), 0, ((dyArial8 + 6) * 6));
 
 L_7c1c:
@@ -7463,7 +7461,7 @@ L_7d88:
 
 L_7da2:
     cMax = (cMax + 1);
-    rgszZip[cMax] = ((0x5264 + LOWORD((0x18 * i))) + 0xa);
+    rgszZip[cMax] = vrgZip[i].szName;
 
 L_7dc6:
     i = (i + 1);
@@ -7882,13 +7880,13 @@ L_854f:
         goto L_8559;
 
 L_8559:
-    if ((LOWORD(rgid[0x0]) != 0x0))
+    if ((LOWORD(rgid[0]) != 0x0))
         goto L_8591;
     else
         goto L_8563;
 
 L_8563:
-    if ((HIWORD(rgid[0x0]) != 0x1000))
+    if ((HIWORD(rgid[0]) != 0x1000))
         goto L_8591;
     else
         goto L_856e;
@@ -7934,7 +7932,7 @@ L_8619:
 
 L_864d:
     lpord->grobj = grobjPlanet;
-    lpord->id = LOWORD(rgid[0x0]);
+    lpord->id = LOWORD(rgid[0]);
 
 L_8673:
     FLookupFleet(-1, sel.fl.id);
@@ -8001,8 +7999,8 @@ L_8769:
 L_8783:
     irc = 15;
     iWarp = IWarpMAFromLppl(&(sel.pl), &(fTwoMAs));
-    lTempMax = (uint32_t)((iWarp + 0xffff));
-    lMax = (uint32_t)((iWarp + 0xffff));
+    lTempMax = (uint32_t)((iWarp - 1));
+    lMax = (uint32_t)((iWarp - 1));
     lTempMin = 1;
     lCur = sel.pl.iWarpFling;
     goto L_8b82;
@@ -8254,7 +8252,7 @@ L_8b9e:
     return hcurHand;
 
 L_8ba4:
-    dx = (uint32_t)(((rgrcRef[irc].right - rgrcRef[irc].left) + 0xfffe));
+    dx = (uint32_t)(((rgrcRef[irc].right - rgrcRef[irc].left) - 2));
     xRnd = (int32_t)(((int32_t)((dx / (lMax + 0x1))) >> 0x1));
     hdc = GetDC(hwndPlanet);
     SetCapture(hwndPlanet);
@@ -8834,13 +8832,13 @@ L_9462:
 
 DoMinerals:
     SendMessage(rghwndOrderDD[1], CB_RESETCONTENT, 0x0, 0);
-    if ((LOWORD(rglSel[0x0]) != 0x1))
+    if ((LOWORD(rglSel[0]) != 0x1))
         goto L_95b6;
     else
         goto L_948d;
 
 L_948d:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_95b6;
     else
         goto L_9496;
@@ -8940,13 +8938,13 @@ L_9594:
     goto L_987f;
 
 L_95b6:
-    if ((LOWORD(rglSel[0x0]) != 0x7))
+    if ((LOWORD(rglSel[0]) != 0x7))
         goto L_968c;
     else
         goto L_95bf;
 
 L_95bf:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_968c;
     else
         goto L_95c8;
@@ -8975,13 +8973,13 @@ L_9624:
     goto L_987f;
 
 L_968c:
-    if ((LOWORD(rglSel[0x0]) != 0x9))
+    if ((LOWORD(rglSel[0]) != 0x9))
         goto L_9751;
     else
         goto L_9695;
 
 L_9695:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_9751;
     else
         goto L_969e;
@@ -9020,13 +9018,13 @@ L_9710:
     goto L_987f;
 
 L_9751:
-    if ((LOWORD(rglSel[0x0]) != 0x6))
+    if ((LOWORD(rglSel[0]) != 0x6))
         goto L_987f;
     else
         goto L_975a;
 
 L_975a:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_987f;
     else
         goto L_9763;
@@ -9068,13 +9066,13 @@ L_9821:
 
 L_9824:
     rglSel[1] = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
-    if ((LOWORD(rglSel[0x0]) != 0x1))
+    if ((LOWORD(rglSel[0]) != 0x1))
         goto L_987f;
     else
         goto L_984c;
 
 L_984c:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_987f;
     else
         goto L_9855;
@@ -9086,7 +9084,7 @@ L_9855:
         goto L_985e;
 
 L_985e:
-    iSel = LOWORD(rglSel[0x1]);
+    iSel = LOWORD(rglSel[1]);
     if ((iSel != 0))
         goto L_9878;
     else
@@ -9110,13 +9108,13 @@ L_987f:
 
 L_9888:
     SendMessage(rghwndOrderDD[2], CB_RESETCONTENT, 0x0, 0);
-    if ((LOWORD(rglSel[0x0]) != 0x1))
+    if ((LOWORD(rglSel[0]) != 0x1))
         goto L_99a6;
     else
         goto L_98aa;
 
 L_98aa:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_99a6;
     else
         goto L_98b3;
@@ -9132,13 +9130,13 @@ L_98bb:
         goto L_98c4;
 
 L_98c4:
-    if ((LOWORD(rglSel[0x1]) != 0x0))
+    if ((LOWORD(rglSel[1]) != 0x0))
         goto L_98e8;
     else
         goto L_98cd;
 
 L_98cd:
-    if ((HIWORD(rglSel[0x1]) != 0x0))
+    if ((HIWORD(rglSel[1]) != 0x0))
         goto L_98e8;
     else
         goto L_98d6;
@@ -9161,7 +9159,7 @@ L_9912:
         goto L_991b;
 
 L_991b:
-    iSel = LOWORD(rglSel[0x1]);
+    iSel = LOWORD(rglSel[1]);
     if ((iSel != 0))
         goto L_9935;
     else
@@ -9190,19 +9188,19 @@ L_99a6:
         goto L_99af;
 
 L_99af:
-    if ((LOWORD(rglSel[0x0]) != 0x1))
+    if ((LOWORD(rglSel[0]) != 0x1))
         goto L_9a30;
     else
         goto L_99b8;
 
 L_99b8:
-    if ((HIWORD(rglSel[0x0]) != 0x0))
+    if ((HIWORD(rglSel[0]) != 0x0))
         goto L_9a30;
     else
         goto L_99c1;
 
 L_99c1:
-    iSel = LOWORD(rglSel[0x1]);
+    iSel = LOWORD(rglSel[1]);
     if ((iSel != 0))
         goto L_99db;
     else
@@ -9284,7 +9282,7 @@ L_9b31:
 
 L_9b3f:
     rgpt[0] = sel.fl.lpplord->rgord[sel.iwpAct].pt;
-    rgpt[1] = sel.fl.lpplord->rgord[(sel.iwpAct + 0xffff)].pt;
+    rgpt[1] = sel.fl.lpplord->rgord[(sel.iwpAct - 1)].pt;
     if ((sel.iwpAct >= (sel.fl.cord - 1)))
         goto L_9bcd;
     else
@@ -9292,7 +9290,7 @@ L_9b3f:
 
 L_9b9c:
     cpt = 3;
-    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct + 0x1)].pt;
+    rgpt[2] = sel.fl.lpplord->rgord[(sel.iwpAct + 1)].pt;
     goto L_9bd2;
 
 L_9bcd:
@@ -9468,7 +9466,7 @@ L_9fe4:
         goto L_a00c;
 
 L_a00c:
-    iWarp = lpfl->lpplord->rgord[(iOrd + 0x1)].iWarp;
+    iWarp = lpfl->lpplord->rgord[(iOrd + 1)].iWarp;
 
 L_a03d:
     fEfficient = GetRaceGrbit(&(rgplr[lpfl->iPlayer]), ibitRaceIFE);
@@ -10169,7 +10167,7 @@ L_a9f4:
     goto L_ae59;
 
 L_aa2f:
-    iWarp = lpord[(i + 0x1)].iWarp;
+    iWarp = lpord[(i + 1)].iWarp;
     if ((iWarp <= 0))
         goto L_ab55;
     else
@@ -10182,7 +10180,7 @@ L_aa5f:
         goto L_aa68;
 
 L_aa68:
-    dbl = (DGetDistance(lpord[i].pt.x, lpord[i].pt.y, lpord[(i + 0x1)].pt.x, lpord[(i + 0x1)].pt.y) + 0.99999);
+    dbl = (DGetDistance(lpord[i].pt.x, lpord[i].pt.y, lpord[(i + 1)].pt.x, lpord[(i + 1)].pt.y) + 0.99999);
     dist = LOWORD(__ftol());
     dbl = ((dbl / (double)((int32_t)(iWarp))) / (double)((int32_t)(iWarp)));
     cYears = LOWORD(__ftol());
@@ -10201,8 +10199,8 @@ L_ab64:
 
 L_ab6d:
     lOneYearUse = EstFuelUse(lpfl, i, iWarp, (uint32_t)(LOWORD((iWarp * iWarp))), 0);
-    lFuelGain = (uint32_t)((lOneYearUse * (uint32_t)((cYears + 0xffff))));
-    lFuelGain = (lFuelGain + EstFuelUse(lpfl, i, iWarp, (uint32_t)((dist - LOWORD((LOWORD((iWarp * iWarp)) * (cYears + 0xffff))))), 0));
+    lFuelGain = (uint32_t)((lOneYearUse * (uint32_t)((cYears - 1))));
+    lFuelGain = (lFuelGain + EstFuelUse(lpfl, i, iWarp, (uint32_t)((dist - LOWORD((LOWORD((iWarp * iWarp)) * (cYears - 1))))), 0));
     if ((HIWORD(lFuelGain) < HIWORD(l)))
         goto L_ac0b;
     else
@@ -10300,7 +10298,7 @@ L_acf8:
     goto L_ad56;
 
 L_ad07:
-    lOneYearUse = ((uint32_t)(((lOneYearUse - lFuelGain) * (uint32_t)((cYears + 0xffff)))) + lOneYearUse);
+    lOneYearUse = ((uint32_t)(((lOneYearUse - lFuelGain) * (uint32_t)((cYears - 1)))) + lOneYearUse);
     if ((HIWORD(lOneYearUse) > HIWORD(l)))
         goto L_ad56;
     else
@@ -11143,19 +11141,19 @@ L_bd24:
         goto L_bd2d;
 
 L_bd2d:
-    if ((HIWORD(rgpflNew[i]->rgwtMin[0x4]) > 0x0))
+    if ((HIWORD(rgpflNew[i]->rgwtMin[4]) > 0x0))
         goto L_bd78;
     else
         goto L_bd44;
 
 L_bd44:
-    if ((HIWORD(rgpflNew[i]->rgwtMin[0x4]) < 0x0))
+    if ((HIWORD(rgpflNew[i]->rgwtMin[4]) < 0x0))
         goto L_bd53;
     else
         goto L_bd49;
 
 L_bd49:
-    if ((LOWORD(rgpflNew[i]->rgwtMin[0x4]) > 0xafc8))
+    if ((LOWORD(rgpflNew[i]->rgwtMin[4]) > 0xafc8))
         goto L_bd78;
     else
         goto L_bd53;
@@ -11978,8 +11976,8 @@ L_c9f6:
     goto L_ca67;
 
 L_ca38:
-    rgfl[0x0].rgcsh[i] = (rgfl[0x0].rgcsh[i] + rgfl[0x1].rgcsh[i]);
-    rgfl[0x1].rgcsh[i] = 0;
+    rgfl[0].rgcsh[i] = (rgfl[0].rgcsh[i] + rgfl[1].rgcsh[i]);
+    rgfl[1].rgcsh[i] = 0;
     i = (i + 1);
 
 L_ca67:
@@ -12296,7 +12294,7 @@ L_cedb:
         goto L_cefb;
 
 L_cefb:
-    cExcess = LOWORD((0x5 * cExcess));
+    cExcess = LOWORD((5 * cExcess));
     if ((cExcess <= 80))
         goto L_cf2d;
     else

@@ -79,7 +79,7 @@ L_59c9:
 
 L_59d7:
     score.lScore = (score.lScore + (int32_t)((score.cResources / 30)));
-    score.lScore = (score.lScore + (uint32_t)(LOWORD((0x3 * score.cStarbase))));
+    score.lScore = (score.lScore + (uint32_t)(LOWORD((3 * score.cStarbase))));
     if ((rgplr[iPlr].fDead != 0x0))
         goto L_5aa7;
     else
@@ -108,7 +108,7 @@ L_5a52:
         goto L_5a5b;
 
 L_5a5b:
-    score.lScore = (score.lScore + (uint32_t)(((iTech * 0x2) + 0xfffd)));
+    score.lScore = (score.lScore + (uint32_t)(((iTech * 2) - 3)));
     goto L_5a9a;
 
 L_5a6d:
@@ -118,11 +118,11 @@ L_5a6d:
         goto L_5a76;
 
 L_5a76:
-    score.lScore = (score.lScore + (uint32_t)((LOWORD((0x3 * iTech)) + 0xfff7)));
+    score.lScore = (score.lScore + (uint32_t)((LOWORD((3 * iTech)) + 0xfff7)));
     goto L_5a9a;
 
 L_5a89:
-    score.lScore = (score.lScore + (uint32_t)(((iTech * 0x4) + 0xffee)));
+    score.lScore = (score.lScore + (uint32_t)(((iTech * 4) - 18)));
 
 L_5a9a:
     i = (i + 1);
@@ -288,19 +288,19 @@ L_5c8d:
     goto L_5c22;
 
 L_5c93:
-    if ((HIWORD(rgcsh[0x1]) > SIGNHIWORD(score.cPlanet)))
+    if ((HIWORD(rgcsh[1]) > SIGNHIWORD(score.cPlanet)))
         goto L_5cb5;
     else
         goto L_5c9f;
 
 L_5c9f:
-    if ((HIWORD(rgcsh[0x1]) < SIGNHIWORD(score.cPlanet)))
+    if ((HIWORD(rgcsh[1]) < SIGNHIWORD(score.cPlanet)))
         goto L_5cac;
     else
         goto L_5ca4;
 
 L_5ca4:
-    if ((LOWORD(rgcsh[0x1]) >= score.cPlanet))
+    if ((LOWORD(rgcsh[1]) >= score.cPlanet))
         goto L_5cb5;
     else
         goto L_5cac;
@@ -314,19 +314,19 @@ L_5cb5:
 
 L_5cb9:
     t_scratch_m60_2 = (int32_t)((t_merge_5cb9_0001 * 2));
-    if ((HIWORD(rgcsh[0x0]) > SIGNHIWORD(score.cPlanet)))
+    if ((HIWORD(rgcsh[0]) > SIGNHIWORD(score.cPlanet)))
         goto L_5cf1;
     else
         goto L_5cdb;
 
 L_5cdb:
-    if ((HIWORD(rgcsh[0x0]) < SIGNHIWORD(score.cPlanet)))
+    if ((HIWORD(rgcsh[0]) < SIGNHIWORD(score.cPlanet)))
         goto L_5ce8;
     else
         goto L_5ce0;
 
 L_5ce0:
-    if ((LOWORD(rgcsh[0x0]) >= score.cPlanet))
+    if ((LOWORD(rgcsh[0]) >= score.cPlanet))
         goto L_5cf1;
     else
         goto L_5ce8;
@@ -340,19 +340,19 @@ L_5cf1:
 
 L_5cf5:
     score.lScore = (score.lScore + ((int32_t)((t_merge_5cf5_0001 / 2)) + t_scratch_m60_2));
-    if ((HIWORD(rgcsh[0x2]) < 0x0))
+    if ((HIWORD(rgcsh[2]) < 0x0))
         goto L_5d57;
     else
         goto L_5d15;
 
 L_5d15:
-    if ((HIWORD(rgcsh[0x2]) > 0x0))
+    if ((HIWORD(rgcsh[2]) > 0x0))
         goto L_5d23;
     else
         goto L_5d1a;
 
 L_5d1a:
-    if ((LOWORD(rgcsh[0x2]) <= 0x0))
+    if ((LOWORD(rgcsh[2]) <= 0x0))
         goto L_5d57;
     else
         goto L_5d23;

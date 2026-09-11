@@ -294,9 +294,9 @@ L_03c0:
     ScreenToClient(hwnd, &(rc));
     ScreenToClient(hwnd, rc.right);
     rc.top = (rc.top + (dyArial8 * 2));
-    rc.bottom = (rc.bottom - ((uint32_t)((dyArial8 * 0x2)) / 3));
-    rc.left = (rc.left + ((uint32_t)((dyArial8 * 0x2)) / 3));
-    rc.right = (rc.right - ((uint32_t)((dyArial8 * 0x2)) / 3));
+    rc.bottom = (rc.bottom - ((uint32_t)((dyArial8 * 2)) / 3));
+    rc.left = (rc.left + ((uint32_t)((dyArial8 * 2)) / 3));
+    rc.right = (rc.right - ((uint32_t)((dyArial8 * 2)) / 3));
     SelectObject(hdc, hbrButtonShadow);
     PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), 1, PATCOPY);
     PatBlt(hdc, rc.left, rc.top, 1, (rc.bottom - rc.top), PATCOPY);
@@ -318,7 +318,7 @@ L_058b:
         goto L_05ae;
 
 L_05ae:
-    fPara = (_ctype[((uint16_t)(rgch[0x0]) + 0x1)] & 0x1);
+    fPara = (_ctype[((uint16_t)(rgch[0]) + 0x1)] & 0x1);
     if ((fPara == 0))
         goto L_05e8;
     else
@@ -497,7 +497,7 @@ L_07ea:
         goto L_0806;
 
 L_0806:
-    strcat(szBase, 0x148a);
+    strcat(szBase, ".xy");
     if ((access(szBase, 0) == -1))
         goto L_08a4;
     else
@@ -511,7 +511,7 @@ L_082e:
 
 L_0857:
     szBase[cch] = 0;
-    strcat(szBase, 0x148e);
+    strcat(szBase, ".m1");
     ini.fStartupFile = 0x1;
     if ((FOpenGame(hwndFrame, 0) <= 0))
         goto L_0898;
@@ -541,7 +541,7 @@ L_08b6:
 
 L_08c0:
     CreateTutorWorld();
-    /* untranslated: call memset(part[0xe:2](vrgZipProd[0x0]), 0, 0x1a) -> callresult(void *) */
+    /* untranslated: call memset(part[0xe:2](vrgZipProd[0]), 0, 0x1a) -> callresult(void *) */
     vrgZipProd[0].fValid = 0x1;
     gd.fChgZipProd = 0x1;
 
@@ -796,10 +796,10 @@ L_0c90:
     tutor.grbitScan = grbitScan;
     tutor.iScanZoom = iScanZoom;
     tutor.fTBVis = gd.fToolbar;
-    tutor.zpq = vrgZipProd[0x0].zpq1;
-    tutor.fValidQ = vrgZipProd[0x0].fValid;
-    vrgZipProd[0].zpq1 = vrgZipProd[0x4].zpq1;
-    /* untranslated: part[0xd:2](vrgZipProd[0x0]) = part[0xd:2](vrgZipProd[0x4]) */
+    tutor.zpq = vrgZipProd[0].zpq1;
+    tutor.fValidQ = vrgZipProd[0].fValid;
+    vrgZipProd[0].zpq1 = vrgZipProd[4].zpq1;
+    /* untranslated: part[0xd:2](vrgZipProd[0]) = part[0xd:2](vrgZipProd[4]) */
     if ((gd.fToolbar != 0x0))
         goto L_0db2;
     else
@@ -894,8 +894,8 @@ L_0e1c:
 L_0e35:
     grbitScan = tutor.grbitScan;
     iScanZoom = tutor.iScanZoom;
-    vrgZipProd[4].zpq1 = vrgZipProd[0x0].zpq1;
-    /* untranslated: part[0xd:2](vrgZipProd[0x4]) = part[0xd:2](vrgZipProd[0x0]) */
+    vrgZipProd[4].zpq1 = vrgZipProd[0].zpq1;
+    /* untranslated: part[0xd:2](vrgZipProd[4]) = part[0xd:2](vrgZipProd[0]) */
     vrgZipProd[0].zpq1 = tutor.zpq;
     vrgZipProd[0].fValid = LOBYTE(tutor.fValidQ);
     if ((gd.fToolbar == tutor.fTBVis))
@@ -5109,13 +5109,13 @@ L_46a8:
 
 L_46ae:
     t_call_46b2 = LpflFromId(3);
-    if ((LOWORD(t_call_46b2->rgwtMin[0x4]) != 0x17f))
+    if ((LOWORD(t_call_46b2->rgwtMin[4]) != 0x17f))
         goto L_46d3;
     else
         goto L_46c9;
 
 L_46c9:
-    if ((HIWORD(t_call_46b2->rgwtMin[0x4]) == 0x0))
+    if ((HIWORD(t_call_46b2->rgwtMin[4]) == 0x0))
         goto L_4706;
     else
         goto L_46d3;
@@ -7271,7 +7271,7 @@ L_6460:
 
 L_6488:
     vrgZip[iZip].fValid = 0x1;
-    piaCur = (0x5264 + LOWORD((0x18 * iZip)));
+    piaCur = (0x5264 + LOWORD((24 * iZip)));
     i = 0;
     goto L_64c7;
 
@@ -7292,7 +7292,7 @@ L_64d0:
 
 L_6501:
     CchGetString(ids, szT);
-    strcpy(((0x5264 + LOWORD((24 * iZip))) + 0xa), szT);
+    strcpy(vrgZip[iZip].szName, szT);
     return 1;
 
 L_6533:
@@ -7314,7 +7314,7 @@ L_655c:
     return 0;
 
 L_6562:
-    piaCur = (0x5264 + LOWORD((0x18 * iZip)));
+    piaCur = (0x5264 + LOWORD((24 * iZip)));
     tutor.idh = 1519;
     i = 0;
     goto L_6598;
@@ -7347,7 +7347,7 @@ L_65d8:
 
 L_65e1:
     CchGetString(ids, szT);
-    if ((strcmpi(szT, ((0x5264 + LOWORD((24 * iZip))) + 0xa)) != 0))
+    if ((strcmpi(szT, vrgZip[iZip].szName) != 0))
         goto L_6621;
     else
         goto L_6615;
@@ -8805,13 +8805,13 @@ L_7690:
         goto L_769f;
 
 L_769f:
-    if ((LOWORD(lpfl->rgwtMin[0x0]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[0]) != 0x0))
         goto L_7716;
     else
         goto L_76ac;
 
 L_76ac:
-    if ((HIWORD(lpfl->rgwtMin[0x0]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[0]) != 0x0))
         goto L_7716;
     else
         goto L_76b6;
@@ -8823,13 +8823,13 @@ L_76b6:
         goto L_76bf;
 
 L_76bf:
-    if ((LOWORD(lpfl->rgwtMin[0x1]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[1]) != 0x0))
         goto L_7716;
     else
         goto L_76cc;
 
 L_76cc:
-    if ((HIWORD(lpfl->rgwtMin[0x1]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[1]) != 0x0))
         goto L_7716;
     else
         goto L_76d6;
@@ -8841,13 +8841,13 @@ L_76d6:
         goto L_76df;
 
 L_76df:
-    if ((LOWORD(lpfl->rgwtMin[0x2]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[2]) != 0x0))
         goto L_7716;
     else
         goto L_76ec;
 
 L_76ec:
-    if ((HIWORD(lpfl->rgwtMin[0x2]) != 0x0))
+    if ((HIWORD(lpfl->rgwtMin[2]) != 0x0))
         goto L_7716;
     else
         goto L_76f6;
@@ -8859,13 +8859,13 @@ L_76f6:
         goto L_76ff;
 
 L_76ff:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) != 0x0))
+    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
         goto L_7716;
     else
         goto L_770c;
 
 L_770c:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) == 0x0))
+    if ((HIWORD(lpfl->rgwtMin[3]) == 0x0))
         goto L_7725;
     else
         goto L_7716;
@@ -8875,49 +8875,49 @@ L_7716:
     goto LReturn;
 
 L_7725:
-    if ((LOWORD(lpfl->rgwtMin[0x3]) != wtColonists))
+    if ((LOWORD(lpfl->rgwtMin[3]) != wtColonists))
         goto LReturn;
     else
         goto L_7735;
 
 L_7735:
-    if ((HIWORD(lpfl->rgwtMin[0x3]) != SIGNHIWORD(wtColonists)))
+    if ((HIWORD(lpfl->rgwtMin[3]) != SIGNHIWORD(wtColonists)))
         goto LReturn;
     else
         goto L_773e;
 
 L_773e:
-    if ((LOWORD(lpfl->rgwtMin[0x0]) != wtMin1))
+    if ((LOWORD(lpfl->rgwtMin[0]) != wtMin1))
         goto LReturn;
     else
         goto L_774e;
 
 L_774e:
-    if ((HIWORD(lpfl->rgwtMin[0x0]) != SIGNHIWORD(wtMin1)))
+    if ((HIWORD(lpfl->rgwtMin[0]) != SIGNHIWORD(wtMin1)))
         goto LReturn;
     else
         goto L_7757;
 
 L_7757:
-    if ((LOWORD(lpfl->rgwtMin[0x1]) != wtMin2))
+    if ((LOWORD(lpfl->rgwtMin[1]) != wtMin2))
         goto LReturn;
     else
         goto L_7767;
 
 L_7767:
-    if ((HIWORD(lpfl->rgwtMin[0x1]) != SIGNHIWORD(wtMin2)))
+    if ((HIWORD(lpfl->rgwtMin[1]) != SIGNHIWORD(wtMin2)))
         goto LReturn;
     else
         goto L_7770;
 
 L_7770:
-    if ((LOWORD(lpfl->rgwtMin[0x2]) != wtMin3))
+    if ((LOWORD(lpfl->rgwtMin[2]) != wtMin3))
         goto LReturn;
     else
         goto L_7780;
 
 L_7780:
-    if ((HIWORD(lpfl->rgwtMin[0x2]) != SIGNHIWORD(wtMin3)))
+    if ((HIWORD(lpfl->rgwtMin[2]) != SIGNHIWORD(wtMin3)))
         goto LReturn;
     else
         goto L_7789;

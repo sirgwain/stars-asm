@@ -26,7 +26,7 @@ L_1def:
     branch i < 6 ? L_1dd0 : L_1df8
 
 L_1df8:
-    lCost = (sext16to32(loword((0xa * cTech))) + rglTechCost[iLevel])
+    lCost = (sext16to32(loword((10 * cTech))) + rglTechCost[iLevel])
     i = (GetRaceStat(&rgplr[iplr], (iTech + 8)) - 1)
     branch i == 0 ? L_1e83 : L_1e40
 

@@ -155,7 +155,7 @@ func TestDASM_IRSnapshots(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 
 			if err := dumpFunction(fx.SDB, name, "ir.c", func(w io.Writer, f *typeinfo.Function) {
-				if err := DumpFuncIR(w, fx.Image, fx.SDB, f, templates.DumpOptions{}); err != nil {
+				if err := DumpFuncIR(w, fx.Image, fx.SDB, f, templates.DumpIROptions{ShowIR: true}); err != nil {
 					t.Fatal(err)
 				}
 			}); err != nil {

@@ -976,7 +976,12 @@ func consumeArrayTerm(base Expr, typ typeinfo.Type, offset int, terms []ScaledTe
 		return nil, 0, nil, false
 	}
 	nextOffset := offset
-	if offset%elem.Bytes() == 0 {
+	if offset < 0 {
+		// support negative array indexing
+		indexOffset, remainder := floorDivMod(offset, elem.Bytes())
+		index = offsetArrayIndex(index, indexOffset)
+		nextOffset = remainder
+	} else if offset%elem.Bytes() == 0 {
 		index = offsetArrayIndex(index, offset/elem.Bytes())
 		nextOffset = 0
 	}
@@ -1036,7 +1041,7 @@ func consumeArrayConstIndex(base Expr, typ typeinfo.Type, offset int, width int,
 			return nil, 0, false
 		}
 	}
-	if offset == 0 && (!allowZero || width == 0 || typ.Bytes() == width || elem.Bytes() < width) {
+	if offset == 0 && (!allowZero || width == 0 || elem.Bytes() < width) {
 		return nil, 0, false
 	}
 	index := offset / elem.Bytes()
@@ -1044,7 +1049,7 @@ func consumeArrayConstIndex(base Expr, typ typeinfo.Type, offset int, width int,
 	if remainder != 0 && (width == 0 || remainder+width > elem.Bytes()) {
 		return nil, 0, false
 	}
-	return &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.U16, U64: uint64(index)}, TypeInfo: elem}, remainder, true
+	return &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.I16, U64: uint64(index)}, TypeInfo: elem}, remainder, true
 }
 
 // zeroLengthArrayFieldAtOffset returns the flexible array field spanning offset.

@@ -53,3 +53,12 @@ type DumpSemOptions struct {
 	// DiffPasses limits per-pass diffs to the named semantic passes.
 	DiffPasses []string
 }
+
+// DumpIROptions controls the sections rendered alongside low-level IR.
+type DumpIROptions struct {
+	DumpOptions
+	ShowAsm     bool
+	ShowEffects bool
+	ShowSem     bool
+	ShowIR      bool
+}
