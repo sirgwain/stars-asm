@@ -27,11 +27,12 @@ type FuncContext struct {
 	fromAddr       uint32
 	toAddr         uint32
 
-	unionContexts          map[machine.BlockID]*symresolve.UnionContext
-	currentUnionContext    *symresolve.UnionContext
-	unionBlockPathFacts    map[machine.BlockID][]*typeinfo.UnionBlockPathFact
-	configuredUnionBase    *symresolve.UnionContext
-	configuredUnionByBlock map[machine.BlockID]*symresolve.UnionContext
+	unionContexts            map[machine.BlockID]*symresolve.UnionContext
+	currentUnionContext      *symresolve.UnionContext
+	unionBlockPathFacts      map[machine.BlockID][]*typeinfo.UnionBlockPathFact
+	configuredUnionBase      *symresolve.UnionContext
+	configuredUnionByBlock   map[machine.BlockID]*symresolve.UnionContext
+	configuredMembersByBlock map[machine.BlockID]*symresolve.UnionContext
 }
 
 // RecordedUnionBlockPathFacts returns configured and discovered union selections grouped by block.
@@ -124,6 +125,11 @@ func (ctx *FuncContext) SetCurrentBlock(id machine.BlockID) {
 			ctx.currentUnionContext = derived
 		}
 	}
+	// Direct member choices describe this block's interpretation only. They
+	// never enter the discriminator flow state or propagate to successors.
+	if members := ctx.configuredMembersByBlock[id]; members != nil {
+		ctx.currentUnionContext = symresolve.MergeUnionContexts(ctx.currentUnionContext, members)
+	}
 }
 
 // ClearCurrentBlock clears the active block-specific union context.
@@ -188,6 +194,7 @@ func (ctx *FuncContext) initializeConfiguredUnionContexts() {
 	// configured function and block facts below override that default by path.
 	ctx.configuredUnionBase = symresolve.NewUnionContext()
 	ctx.configuredUnionByBlock = make(map[machine.BlockID]*symresolve.UnionContext)
+	ctx.configuredMembersByBlock = make(map[machine.BlockID]*symresolve.UnionContext)
 	if ctx.sdb.UnionRules == nil {
 		return
 	}
@@ -222,6 +229,26 @@ func (ctx *FuncContext) initializeConfiguredUnionContexts() {
 		} else {
 			blockContext.Add(root, fact.Rule, fact.Value)
 		}
+	}
+	for _, fact := range ctx.sdb.UnionRules.BlockMemberFacts {
+		if fact.Func != ctx.fs {
+			continue
+		}
+		block := machine.BlockID(fact.BlockOff)
+		members := ctx.configuredMembersByBlock[block]
+		if members == nil {
+			members = symresolve.NewUnionContext()
+			ctx.configuredMembersByBlock[block] = members
+		}
+		if fact.CallResult != nil {
+			members.AddCallResultMember(fact)
+			continue
+		}
+		root, ok := ctx.unionFactRootPath(fact.Root, fact.RootPath)
+		if !ok {
+			panic("validated union block member root did not resolve: " + fact.Root)
+		}
+		members.AddMember(root, fact)
 	}
 }
 

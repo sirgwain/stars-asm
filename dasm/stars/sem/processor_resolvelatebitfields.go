@@ -290,6 +290,14 @@ func unshiftSemanticBitfieldStorageOperand(address AddressExpr, storageWidth int
 // arithmetic delta.
 func unshiftSemanticBitfieldShiftedOperand(value Expr, bitOff int) (Expr, bool) {
 	value = unwrapSemanticBitfieldValue(value)
+	if constant, ok := value.(*Const); ok {
+		if bitOff < 0 || bitOff >= 64 || constant.U64&((uint64(1)<<bitOff)-1) != 0 {
+			return nil, false
+		}
+		next := *constant
+		next.U64 >>= bitOff
+		return &next, true
+	}
 	if shift, ok := value.(*Binary); ok && shift.Op == OpShl {
 		amount, ok := semanticShiftAmount(shift.RHS)
 		if !ok || amount != bitOff {

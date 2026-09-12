@@ -1,0 +1,7 @@
+L_2c9d:
+    lpshdef[1] = lpshdef[2]
+    lpshdef[1].ishdef = 0x11
+    lpshdef[1].fFree = 0x0
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1)
+    lpshdef[1].cExist = 0x1
+    lpshdef[1].cBuilt = 0x1

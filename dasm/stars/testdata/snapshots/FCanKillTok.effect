@@ -1,0 +1,112 @@
+/*
+FCanKillTok  (battle)
+  addr: 001f:391e  len=264
+  sig:  int16_t FCanKillTok(TOK *ptok1, TOK *ptok2)
+  params:
+    TOK *            ptok1          [BP+0x6]
+    TOK *            ptok2          [BP+0xa]
+  locals:
+    int32_t          lp2            [BP-0xa]
+    int32_t          lp1            [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_391e:
+  insts 0..28  off 0x391e..0x3975
+  succs: L_3979, L_398f
+  effects:
+    392d  call LpshdefFromTok(words(load([bp+ptok1+0x2]), load([bp+ptok1]))) -> callresult(SHDEF *)
+    3943  store[2] [bp-lp1] = load@3939/src(farseg(callresult(SHDEF *)):[faroff(callresult(SHDEF *))+0x87])
+    3946  store[2] [bp-lp1+0x2] = load@393e/src(farseg(callresult(SHDEF *)):[faroff(callresult(SHDEF *))+0x89])
+    394f  call LpshdefFromTok(words(load([bp+ptok2+0x2]), load([bp+ptok2]))) -> callresult(SHDEF *)
+    3965  store[2] [bp-lp2] = load@395b/src(farseg(callresult(SHDEF *)):[faroff(callresult(SHDEF *))+0x87])
+    3968  store[2] [bp-lp2+0x2] = load@3960/src(farseg(callresult(SHDEF *)):[faroff(callresult(SHDEF *))+0x89])
+    3974  branch load([bp-lp2+0x2]) < load([bp-lp1+0x2]) ? L_398f : L_3979
+
+block L_3979:
+  insts 30..30  off 0x3979..0x397a
+  preds: L_391e
+  succs: L_397e, L_3986
+  effects:
+    3979  branch load([bp-lp2+0x2]) > load([bp-lp1+0x2]) ? L_3986 : L_397e
+
+block L_397e:
+  insts 32..33  off 0x397e..0x3982
+  preds: L_3979
+  succs: L_3986, L_398f
+  effects:
+    3981  branch load([bp-lp2]) <= load([bp-lp1]) ? L_398f : L_3986
+
+block L_3986:
+  insts 35..36  off 0x3986..0x398b
+  preds: L_3979, L_397e
+  succs: L_3a20
+  effects:
+    3989  goto L_3a20
+
+block L_398f:
+  insts 37..46  off 0x398f..0x39ad
+  preds: L_391e, L_397e
+  succs: L_39b1, L_39c6
+  effects:
+    39ac  branch (load([bp-lp2+0x2]) & 0x7fff) > (load([bp-lp1+0x2]) & 0x7fff) ? L_39c6 : L_39b1
+
+block L_39b1:
+  insts 48..48  off 0x39b1..0x39b2
+  preds: L_398f
+  succs: L_39b6, L_39bd
+  effects:
+    39b1  branch (load([bp-lp2+0x2]) & 0x7fff) < (load([bp-lp1+0x2]) & 0x7fff) ? L_39bd : L_39b6
+
+block L_39b6:
+  insts 50..51  off 0x39b6..0x39b9
+  preds: L_39b1
+  succs: L_39bd, L_39c6
+  effects:
+    39b8  branch (load([bp-lp2]) & 0xf000) >= (load([bp-lp1]) & 0xf000) ? L_39c6 : L_39bd
+
+block L_39bd:
+  insts 53..54  off 0x39bd..0x39c2
+  preds: L_39b1, L_39b6
+  succs: L_3a20
+  effects:
+    39c0  goto L_3a20
+
+block L_39c6:
+  insts 55..64  off 0x39c6..0x39e4
+  preds: L_398f, L_39b6
+  succs: L_39e8, L_3a1a
+  effects:
+    39e3  branch (load([bp-lp2]) & 0xff00) != (load([bp-lp1]) & 0xff00) ? L_3a1a : L_39e8
+
+block L_39e8:
+  insts 66..67  off 0x39e8..0x39eb
+  preds: L_39c6
+  succs: L_39ef, L_3a1a
+  effects:
+    39ea  branch (load([bp-lp2+0x2]) & 0x7fff) != (load([bp-lp1+0x2]) & 0x7fff) ? L_3a1a : L_39ef
+
+block L_39ef:
+  insts 69..80  off 0x39ef..0x3a10
+  preds: L_39e8
+  succs: L_3a14, L_3a1a
+  effects:
+    3a0f  branch ((load(farseg(load(dword [bp+ptok1])):[faroff(load(dword [bp+ptok1]))+0x19]) >> 0x8) & 0xf) < ((load(farseg(load(dword [bp+ptok2])):[faroff(load(dword [bp+ptok2]))+0x19]) >> 0x8) & 0xf) ? L_3a1a : L_3a14
+
+block L_3a14:
+  insts 82..83  off 0x3a14..0x3a19
+  preds: L_39ef
+  succs: L_3a20
+  effects:
+    3a17  goto L_3a20
+
+block L_3a1a:
+  insts 84..84  off 0x3a1a..0x3a1f
+  preds: L_39c6, L_39e8, L_39ef
+  succs: L_3a20
+
+block L_3a20:
+  insts 86..90  off 0x3a20..0x3a25
+  preds: L_3986, L_39bd, L_3a14, L_3a1a
+  effects:
+    3a25  return merge(Join: L_3a20, (L_3986:0x0, L_39bd:0x1, L_3a14:0x1, L_3a1a:0x0))

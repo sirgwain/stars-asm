@@ -370,16 +370,13 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t            t_merge_11fb_0001;
     HULDEF            *t_call_132a;
     uint16_t           t_merge_13e5_0001;
-    uint16_t           t_scratch_m50;
     uint16_t           t_merge_178d_0001;
     uint16_t           t_merge_1c0b_0001;
     HULDEF            *t_call_1cbd;
     uint16_t           t_merge_1d40_0001;
     uint16_t           t_scratch_m4e_4;
-    uint16_t           t_scratch_m4e_5;
     int16_t            t_merge_1fe4_0001;
     int16_t            t_merge_23ac_0001;
-    uint16_t           t_scratch_m4e_8;
     int16_t            t_merge_2580_0001;
     uint16_t           t_merge_25d3_0001;
 
@@ -1320,9 +1317,7 @@ L_15fd:
         goto L_163c;
 
 L_163c:
-    /* untranslated: t_scratch_m50 = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
-    rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m50) */
+    rgplr[idPlayer].cshdefSB = (rgplr[idPlayer].cshdefSB + 0xf);
     goto L_1690;
 
 L_1680:
@@ -1752,9 +1747,7 @@ L_1d40:
         goto L_1d7f;
 
 L_1d7f:
-    /* untranslated: t_scratch_m4e_5 = ((part[0x4:2](rgplr[idPlayer]) + 0x1000) & 0xf000) */
-    rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m4e_5) */
+    rgplr[idPlayer].cshdefSB = (rgplr[idPlayer].cshdefSB + 0x1);
     goto L_1dd3;
 
 L_1dc3:
@@ -2107,9 +2100,7 @@ L_2434:
 L_243e:
     shdefBuild.fFree = 0x1;
     rglpshdefSB[idPlayer][(ishdefBuild - 16)] = shdefBuild;
-    /* untranslated: t_scratch_m4e_8 = ((part[0x4:2](rgplr[idPlayer]) + 0xf000) & 0xf000) */
-    rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_m4e_8) */
+    rgplr[idPlayer].cshdefSB = (rgplr[idPlayer].cshdefSB + 0xf);
     LogChangeShDef(&(shdefBuild));
     goto L_253e;
 
@@ -4200,20 +4191,20 @@ L_4c6b:
         goto L_4c7b;
 
 L_4c7b:
-    *(lpshdefBuild + 0x87) = LComputePower(lpshdefBuild);
-    if ((*(lpshdefBuild + 0x87) != 0x0))
+    lpshdefBuild->lPower = LComputePower(lpshdefBuild);
+    if ((LOWORD(lpshdefBuild->lPower) != 0x0))
         goto L_4cb3;
     else
         goto L_4ca8;
 
 L_4ca8:
-    if ((*(lpshdefBuild + 0x89) == 0x0))
+    if ((HIWORD(lpshdefBuild->lPower) == 0x0))
         goto L_4d2b;
     else
         goto L_4cb3;
 
 L_4cb3:
-    cch = _wsprintf(szWork, PCTLD, *(lpshdefBuild + 0x87), *(lpshdefBuild + 0x89));
+    cch = _wsprintf(szWork, PCTLD, LOWORD(lpshdefBuild->lPower), HIWORD(lpshdefBuild->lPower));
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, dxMaxMineralQuan);
     cch = CchGetString(idsRating, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);

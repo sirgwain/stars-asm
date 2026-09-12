@@ -64,8 +64,6 @@ void DoCyberAiTurn(PROD *rgprod) {
     PLANET        *lpplEnemy;
     uint16_t       t_merge_01f2_0001;
     uint16_t       t_merge_0240_0001;
-    uint16_t       t_scratch_m8e_3;
-    uint16_t       t_scratch_m8e_4;
     PLANET        *t_call_0bfd;
     uint16_t       t_merge_0d8d_0001;
     uint16_t       t_scratch_m90_2;
@@ -359,9 +357,7 @@ L_0564:
         goto L_05bc;
 
 L_05bc:
-    t_scratch_m8e_3 = ((lpciPlan->wInfo + 0xffe0) & 0x60);
-    lpciPlan->iPktTarget = 0x0;
-    lpciPlan->wInfo = (lpciPlan->wInfo | t_scratch_m8e_3);
+    lpciPlan->iPktTarget = (lpciPlan->iPktTarget + 0x7ff);
 
 L_05e3:
     if ((lppl->iPlayer == idPlayer))
@@ -786,9 +782,7 @@ L_0a98:
         goto L_0ac5;
 
 L_0ac5:
-    t_scratch_m8e_4 = ((lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 + 0x8) & 0x18);
-    lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst = 0x0;
-    lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 = (lpciPlanTemp[lpfl->lpplord->rgord[1].id].wInfo1 | t_scratch_m8e_4);
+    lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst = (lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst + 0x1);
 
 L_0b2e:
     goto L_084b;
@@ -3937,11 +3931,7 @@ void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
     int16_t  fDropOff;
     int16_t  idPlanDst;
     SCAN     scan;
-    uint16_t t_396c;
     uint16_t t_merge_3a76_0001;
-    uint16_t t_scratch_m32;
-    uint16_t t_scratch_m32_2;
-    uint16_t t_3c85;
 
 L_37b0:
     fDropOff = 0;
@@ -4035,9 +4025,8 @@ L_3916:
     ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
-    /* untranslated: t_396c = part[0x6:2](ord) */
     ord.grTask = grTaskXfer;
-    /* untranslated: part[0x6:2](ord) = ((((t_396c & 0xfff0) | 0x1) & 0xefff) | 0x1000) */
+    ord.fValidTask = 0x1;
     ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
@@ -4141,9 +4130,7 @@ L_3aed:
         goto L_3b46;
 
 L_3b46:
-    t_scratch_m32 = ((lpciPlanTemp[lpplCur->id].wInfo1 + 0x2) & 0x6);
-    lpciPlanTemp[lpplCur->id].cIdleFreighters = 0x0;
-    lpciPlanTemp[lpplCur->id].wInfo1 = (lpciPlanTemp[lpplCur->id].wInfo1 | t_scratch_m32);
+    lpciPlanTemp[lpplCur->id].cIdleFreighters = (lpciPlanTemp[lpplCur->id].cIdleFreighters + 0x1);
 
 L_3b98:
     goto LTarget;
@@ -4155,9 +4142,7 @@ L_3b9b:
         goto L_3bc1;
 
 L_3bc1:
-    t_scratch_m32_2 = ((lpciPlanTemp[lpplDst->id].wInfo1 + 0x8) & 0x18);
-    lpciPlanTemp[lpplDst->id].cFreightersDst = 0x0;
-    lpciPlanTemp[lpplDst->id].wInfo1 = (lpciPlanTemp[lpplDst->id].wInfo1 | t_scratch_m32_2);
+    lpciPlanTemp[lpplDst->id].cFreightersDst = (lpciPlanTemp[lpplDst->id].cFreightersDst + 0x1);
 
 L_3c13:
     goto LTarget;
@@ -4182,9 +4167,8 @@ L_3c44:
     ord.pt = rgptPlan[lpplDst->id];
     ord.grobj = grobjPlanet;
     ord.id = lpplDst->id;
-    /* untranslated: t_3c85 = part[0x6:2](ord) */
     ord.grTask = grTaskNone;
-    /* untranslated: part[0x6:2](ord) = ((((t_3c85 & 0xfff0) | 0x0) & 0xefff) | 0x1000) */
+    ord.fValidTask = 0x1;
     ord.iWarp = (uint16_t)(IFindIdealWarp(lpfl, 1));
     if ((FMoveAiFleet(lpfl, &(ord), 0) == 0))
         goto L_3cfa;
@@ -5502,14 +5486,13 @@ L_5198:
 }
 
 void TargetCyberArmada(FLEET *lpfl) {
-    FLEET   *lpflTarget;
-    ORDER    ord;
-    PLANET  *lppl;
-    int16_t  cshBomb;
-    int16_t  cshWar;
-    PLANET  *lpplTarget;
-    int32_t  t_call_51ee;
-    uint16_t t_545d;
+    FLEET  *lpflTarget;
+    ORDER   ord;
+    PLANET *lppl;
+    int16_t cshBomb;
+    int16_t cshWar;
+    PLANET *lpplTarget;
+    int32_t t_call_51ee;
 
 L_51a4:
     if ((lpfl->cord <= 1))
@@ -5678,10 +5661,9 @@ L_540f:
     ord.pt = rgptPlan[lpplTarget->id];
 
 FinishTargeting:
-    /* untranslated: t_545d = part[0x6:2](ord) */
     ord.grTask = grTaskNone;
-    /* untranslated: part[0x6:2](ord) = ((((t_545d & 0xfff0) | 0x0) & 0xefff) | 0x1000) */
-    /* untranslated: part[0x6:2](ord) = ((((((t_545d & 0xfff0) | 0x0) & 0xefff) | 0x1000) & 0xff0f) | 0x40) */
+    ord.fValidTask = 0x1;
+    ord.iWarp = 0x4;
     if ((FMoveAiFleet(lpfl, &(ord), 0) == 0))
         goto L_567b;
     else

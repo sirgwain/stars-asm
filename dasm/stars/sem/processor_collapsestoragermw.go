@@ -19,6 +19,24 @@ type storageRMWRewrite struct {
 
 // ProcessMachineBlock collapses scratch-backed bitfield updates in one machine block.
 func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f machine.FuncEffects, b machine.BlockEffects) (machine.BlockEffects, bool) {
+	// A register may retain the value just stored and feed the next bitfield
+	// update. Recover that value as current storage before stale-load capture.
+	original := b.Effects
+	changed := false
+	for i := 1; i < len(original); i++ {
+		previous, previousOK := original[i-1].(machine.StoreEffect)
+		store, storeOK := original[i].(machine.StoreEffect)
+		if !previousOK || !storeOK {
+			continue
+		}
+		if recovered, ok := p.recoverStoredBitfieldRMW(previous, store); ok {
+			if !changed {
+				b.Effects = append([]machine.Effect(nil), original...)
+			}
+			b.Effects[i] = recovered
+			changed = true
+		}
+	}
 	rewrites := make([]storageRMWRewrite, 0)
 	occupied := make([]bool, len(b.Effects))
 	for i := 0; i+2 < len(b.Effects); i++ {
@@ -59,7 +77,7 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 		}
 	}
 	if len(rewrites) == 0 {
-		return b, false
+		return b, changed
 	}
 
 	replaceAt := make(map[int]storageRMWRewrite, len(rewrites))
@@ -87,6 +105,42 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 	}
 	b.Effects = effects
 	return b, true
+}
+
+// recoverStoredBitfieldRMW replaces a retained expression from the immediately
+// preceding store with a fresh load, then validates the resulting declared field
+// update. Adjacency and load identities prevent crossing mutations or confusing
+// equal-looking expressions computed from different versions of storage.
+func (p *collapseStorageRMWProcessor) recoverStoredBitfieldRMW(previous, store machine.StoreEffect) (machine.StoreEffect, bool) {
+	if previous.Width != store.Width || !p.ctx.sameResolvedStorage(previous.Addr, store.Addr) {
+		return store, false
+	}
+	if _, ok := previous.Src.(*machine.Binary); !ok {
+		return store, false
+	}
+	address := store.Addr
+	address.Origin = machine.Origin{InstOff: store.MetaInfo.InstOff, Role: machine.OperandSrc}
+	rewriter := &machineRewriter{
+		value: func(w *machineRewriter, value machine.Value) (machine.Value, bool, bool) {
+			if machine.ValueEquals(value, previous.Src) {
+				return machine.LoadVal(address), true, true
+			}
+			return value, false, false
+		},
+	}
+	source, changed := rewriter.rewriteMachineValue(store.Src)
+	if !changed {
+		return store, false
+	}
+	bitfield, ok := recognizeBitfieldWrite(p.ctx, store.Addr, source)
+	if !ok {
+		return store, false
+	}
+	if _, ok := resolveDeclaredBitfield(p.ctx, store.Addr, bitfield.Access); !ok {
+		return store, false
+	}
+	store.Src = source
+	return store, true
 }
 
 // collapseScratchBitfieldCopy reconstructs a masked update assembled in two

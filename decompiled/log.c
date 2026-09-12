@@ -1579,9 +1579,6 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     XFERFULL *lpxfMax;
     MessageId idm;
     FLEET    *t_call_a85e;
-    uint16_t  t_scratch_m542;
-    uint16_t  t_scratch_m542_2;
-    uint16_t  t_scratch_m542_3;
     uint16_t  t_merge_b003_0001;
     int32_t   t_merge_b1d8_0001;
     uint16_t  t_merge_b2a1_0001;
@@ -1596,8 +1593,8 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     FLEET    *t_call_c15b;
     FLEET    *t_call_c3bb;
     FLEET    *t_call_c3f6;
-    uint16_t  t_scratch_m542_5;
-    uint16_t  t_scratch_m542_6;
+    uint16_t  t_scratch_m542_2;
+    uint16_t  t_scratch_m542_3;
 
 L_a38c:
     lpxfCur = 0x0;
@@ -1995,9 +1992,7 @@ L_ab2c:
         goto L_ab5c;
 
 L_ab5c:
-    /* untranslated: t_scratch_m542 = ((part[0x4:2](rgplr[iLook]) + 0xf000) & 0xf000) */
-    rgplr[iLook].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[iLook]) = (part[0x4:2](rgplr[iLook]) | t_scratch_m542) */
+    rgplr[iLook].cshdefSB = (rgplr[iLook].cshdefSB + 0xf);
     goto L_c796;
 
 L_aba2:
@@ -2019,9 +2014,7 @@ L_abcd:
         goto L_abd7;
 
 L_abd7:
-    /* untranslated: t_scratch_m542_2 = ((part[0x4:2](rgplr[iLook]) + 0x1000) & 0xf000) */
-    rgplr[iLook].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[iLook]) = (part[0x4:2](rgplr[iLook]) | t_scratch_m542_2) */
+    rgplr[iLook].cshdefSB = (rgplr[iLook].cshdefSB + 0x1);
     goto L_ac30;
 
 L_ac1d:
@@ -2040,9 +2033,7 @@ L_ac3a:
         goto L_ac6b;
 
 L_ac6b:
-    /* untranslated: t_scratch_m542_3 = ((part[0x4:2](rgplr[iLook]) + 0xf000) & 0xf000) */
-    rgplr[iLook].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[iLook]) = (part[0x4:2](rgplr[iLook]) | t_scratch_m542_3) */
+    rgplr[iLook].cshdefSB = (rgplr[iLook].cshdefSB + 0xf);
     return 0;
 
 L_acb7:
@@ -3606,8 +3597,8 @@ L_c41c:
         goto L_c425;
 
 L_c425:
-    t_scratch_m542_5 = lpb[2];
-    lpfl->fRepOrders = t_scratch_m542_5;
+    t_scratch_m542_2 = lpb[2];
+    lpfl->fRepOrders = t_scratch_m542_2;
     goto L_c796;
 
 L_c457:
@@ -3623,8 +3614,8 @@ L_c46b:
         goto L_c47b;
 
 L_c47b:
-    t_scratch_m542_6 = lpb[4];
-    lpfl->lpplord->rgord[lpb[2]].grTask = t_scratch_m542_6;
+    t_scratch_m542_3 = lpb[4];
+    lpfl->lpplord->rgord[lpb[2]].grTask = t_scratch_m542_3;
 
 L_c508:
     goto L_c796;

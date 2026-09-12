@@ -318,6 +318,10 @@ func (r *Resolver) unionContextMatches(base SymbolPath, strct *typeinfo.Struct, 
 		return matches
 	}
 	if ctx != nil {
+		offset := matches[0].Field.Offset + matches[0].Off
+		if member, ok := ctx.MemberFor(base, strct, offset, false); ok {
+			return SelectUnionMemberMatch(strct, matches, member)
+		}
 		selection, ok := ctx.SelectionFor(base, strct)
 		if ok {
 			return SelectUnionMemberMatch(strct, matches, selection.Member)

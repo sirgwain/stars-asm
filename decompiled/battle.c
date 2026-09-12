@@ -3256,8 +3256,8 @@ int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
     int32_t lp2;
 
 L_391e:
-    lp1 = *(LpshdefFromTok(ptok1) + 0x87);
-    lp2 = *(LpshdefFromTok(ptok2) + 0x87);
+    lp1 = LpshdefFromTok(ptok1)->lPower;
+    lp2 = LpshdefFromTok(ptok2)->lPower;
     if ((HIWORD(lp2) < HIWORD(lp1)))
         goto L_398f;
     else
@@ -8242,7 +8242,6 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
     int16_t   ishdef;
     int32_t   dp;
     uint16_t  pctDpNew;
-    uint16_t  t_scratch_m38_2;
 
 L_81d4:
     dp = *(pdpBeam);
@@ -8427,9 +8426,7 @@ L_8551:
     goto L_85c4;
 
 L_859a:
-    t_scratch_m38_2 = ((*(lppl + 0x2c) + 0x10) & 0xfff0);
-    lppl->pctDp = 0x0;
-    *(lppl + 0x2c) = (*(lppl + 0x2c) | t_scratch_m38_2);
+    lppl->pctDp = (lppl->pctDp + 0x1);
 
 L_85c4:
     lpbBattleCur[6] = ((lpbBattleCur[6] & 0x7f) | ((lppl->pctDp & 0x1ff) << 0x7));
@@ -8903,8 +8900,6 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     int32_t  lwt;
     int16_t  t_8f4b;
     uint16_t t_scratch_m278_2;
-    uint16_t t_scratch_m27c_2;
-    uint16_t t_scratch_m27c_3;
     int16_t  t_scratch_m278_3;
 
 L_8bcc:
@@ -9295,15 +9290,11 @@ L_93c5:
     goto L_91a1;
 
 L_93e4:
-    t_scratch_m27c_2 = ((ptok->wFlags + 0xffe0) & 0x3e0);
-    ptok->dzDis = 0x0;
-    ptok->wFlags = (ptok->wFlags | t_scratch_m27c_2);
+    ptok->dzDis = (ptok->dzDis + 0x7ff);
 
 L_9411:
     DxyMoveTokTo(ptok, j, rggrfAttack[ptok->iplr]);
-    t_scratch_m27c_3 = ((ptok->wFlags + 0xc000) & 0xc000);
-    ptok->dMovesLeft = 0x0;
-    ptok->wFlags = (ptok->wFlags | t_scratch_m27c_3);
+    ptok->dMovesLeft = (ptok->dMovesLeft + 0x3);
     if ((ptok->grobj == grobjPlanet))
         goto L_94a9;
     else

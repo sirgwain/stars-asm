@@ -1,6 +1,7 @@
 package symresolve
 
 import (
+	"maps"
 	"sort"
 	"strings"
 
@@ -18,15 +19,26 @@ type UnionSelection struct {
 
 // UnionContext carries path-sensitive union selections for symbolic resolution.
 type UnionContext struct {
+	members           map[unionMemberKey]*typeinfo.StructField
 	selections        map[string]UnionSelection
 	elementSelections map[string]UnionSelection
 	enumSelections    map[string]*typeinfo.Enum
 	selectionObserver func(UnionSelection)
 }
 
+// unionMemberKey identifies a direct choice independently of discriminator rules.
+type unionMemberKey struct {
+	Path        string
+	CallResult  *typeinfo.Function
+	Type        *typeinfo.Struct
+	Region      *typeinfo.StructOverlapRegion
+	AllElements bool
+}
+
 // NewUnionContext creates an empty union resolution context.
 func NewUnionContext() *UnionContext {
 	return &UnionContext{
+		members:           make(map[unionMemberKey]*typeinfo.StructField),
 		selections:        make(map[string]UnionSelection),
 		elementSelections: make(map[string]UnionSelection),
 		enumSelections:    make(map[string]*typeinfo.Enum),
@@ -39,6 +51,7 @@ func (c *UnionContext) Clone() *UnionContext {
 		return NewUnionContext()
 	}
 	out := NewUnionContext()
+	maps.Copy(out.members, c.members)
 	for key, selection := range c.selections {
 		out.selections[key] = selection
 	}
@@ -59,6 +72,7 @@ func MergeUnionContexts(derived, configured *UnionContext) *UnionContext {
 	if configured == nil {
 		return out
 	}
+	maps.Copy(out.members, configured.members)
 	for key, selection := range configured.selections {
 		out.selections[key] = selection
 	}
@@ -69,6 +83,67 @@ func MergeUnionContexts(derived, configured *UnionContext) *UnionContext {
 		out.enumSelections[key] = enumType
 	}
 	return out
+}
+
+// AddMember records a validated direct member fact at its resolved root path.
+func (c *UnionContext) AddMember(root SymbolPath, fact *typeinfo.UnionBlockMemberFact) {
+	key := unionMemberKey{Path: symbolPathSelectionKey(root), Type: fact.Type, Region: fact.Region, AllElements: fact.AllElements}
+	c.members[key] = fact.Member
+}
+
+// AddCallResultMember records a direct member choice for a callee's results.
+func (c *UnionContext) AddCallResultMember(fact *typeinfo.UnionBlockMemberFact) {
+	key := unionMemberKey{CallResult: fact.CallResult, Type: fact.Type, Region: fact.Region}
+	c.members[key] = fact.Member
+}
+
+// CallResultMemberFor selects the overlap region accessed on a callee's result.
+func (c *UnionContext) CallResultMemberFor(callee *typeinfo.Function, strct *typeinfo.Struct, offset int) (*typeinfo.StructField, bool) {
+	for i := range strct.OverlapRegions {
+		region := &strct.OverlapRegions[i]
+		if offset >= region.Start && offset < region.End {
+			member, ok := c.members[unionMemberKey{CallResult: callee, Type: strct, Region: region}]
+			return member, ok
+		}
+	}
+	return nil, false
+}
+
+// MemberFor returns the direct member covering an access offset. Indexed means
+// base already denotes a collection containing the accessed element. Collection
+// lookup walks indexes and transparent wrappers, but never crosses a field path.
+func (c *UnionContext) MemberFor(base SymbolPath, strct *typeinfo.Struct, offset int, indexed bool) (*typeinfo.StructField, bool) {
+	var region *typeinfo.StructOverlapRegion
+	for i := range strct.OverlapRegions {
+		candidate := &strct.OverlapRegions[i]
+		if offset >= candidate.Start && offset < candidate.End {
+			region = candidate
+			break
+		}
+	}
+	if region == nil {
+		return nil, false
+	}
+	for {
+		key := unionMemberKey{Path: symbolPathSelectionKey(base), Type: strct, Region: region, AllElements: indexed}
+		if member, ok := c.members[key]; ok {
+			return member, true
+		}
+		switch path := base.(type) {
+		case *SymbolTerm:
+			base = path.Base
+			indexed = true
+		case *SymbolDeref:
+			base = path.Base
+		case *SymbolOffset:
+			if path.Offset != 0 {
+				return nil, false
+			}
+			base = path.Base
+		default:
+			return nil, false
+		}
+	}
 }
 
 // AddAllElements records one union member selection for every indexed element of a root.
@@ -201,10 +276,13 @@ func (c *UnionContext) EnumFor(path SymbolPath) (*typeinfo.Enum, bool) {
 
 // Equal reports whether two contexts contain identical selections.
 func (c *UnionContext) Equal(other *UnionContext) bool {
-	if c == nil || len(c.selections) == 0 && len(c.elementSelections) == 0 && len(c.enumSelections) == 0 {
-		return other == nil || len(other.selections) == 0 && len(other.elementSelections) == 0 && len(other.enumSelections) == 0
+	if c == nil || len(c.selections) == 0 && len(c.elementSelections) == 0 && len(c.enumSelections) == 0 && len(c.members) == 0 {
+		return other == nil || len(other.selections) == 0 && len(other.elementSelections) == 0 && len(other.enumSelections) == 0 && len(other.members) == 0
 	}
 	if other == nil || len(c.selections) != len(other.selections) || len(c.elementSelections) != len(other.elementSelections) || len(c.enumSelections) != len(other.enumSelections) {
+		return false
+	}
+	if !maps.Equal(c.members, other.members) {
 		return false
 	}
 	for key, selection := range c.selections {
@@ -233,6 +311,14 @@ func IntersectUnionContexts(contexts []*UnionContext) *UnionContext {
 		return NewUnionContext()
 	}
 	out := contexts[0].Clone()
+	for key, member := range out.members {
+		for _, ctx := range contexts[1:] {
+			if ctx.members[key] != member {
+				delete(out.members, key)
+				break
+			}
+		}
+	}
 	for key, selection := range out.selections {
 		for _, ctx := range contexts[1:] {
 			other, ok := ctx.selections[key]

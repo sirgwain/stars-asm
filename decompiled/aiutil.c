@@ -1449,7 +1449,7 @@ L_1503:
         goto L_1520;
 
 L_1520:
-    /* untranslated: ul = (ul + (uint32_t)(part[0x87:4](rglpshdef[iplr][ishdef]) * sext16to32(lpfl->rgcsh[ishdef]))) */
+    ul = (ul + (uint32_t)((rglpshdef[iplr][ishdef].lPower * (uint32_t)(lpfl->rgcsh[ishdef]))));
     if ((0x0 != 0x0))
         goto L_1595;
     else
@@ -5066,13 +5066,22 @@ L_4ac7:
         goto L_4ad0;
 
 L_4ad0:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) < 0x0 ? L_4b0b : L_4af5 */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0))
+        goto L_4b0b;
+    else
+        goto L_4af5;
 
 L_4af5:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) > 0x0 ? L_4b05 : L_4afa */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0))
+        goto L_4b05;
+    else
+        goto L_4afa;
 
 L_4afa:
-    /* untranslated: branch part[0x87:2](rglpshdef[idPlayer][i]) <= 0x0 ? L_4b0b : L_4b05 */
+    if ((LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0))
+        goto L_4b0b;
+    else
+        goto L_4b05;
 
 L_4b05:
     return 1;
@@ -5101,13 +5110,22 @@ L_4b23:
         goto L_4b46;
 
 L_4b46:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) < 0x0 ? L_4b81 : L_4b6b */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0))
+        goto L_4b81;
+    else
+        goto L_4b6b;
 
 L_4b6b:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) > 0x0 ? L_4b7b : L_4b70 */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0))
+        goto L_4b7b;
+    else
+        goto L_4b70;
 
 L_4b70:
-    /* untranslated: branch part[0x87:2](rglpshdef[idPlayer][i]) <= 0x0 ? L_4b81 : L_4b7b */
+    if ((LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0))
+        goto L_4b81;
+    else
+        goto L_4b7b;
 
 L_4b7b:
     return 1;
@@ -5223,13 +5241,22 @@ L_4c78:
         goto L_4c9b;
 
 L_4c9b:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) < 0x0 ? L_4cd6 : L_4cc0 */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0))
+        goto L_4cd6;
+    else
+        goto L_4cc0;
 
 L_4cc0:
-    /* untranslated: branch part[0x89:2](rglpshdef[idPlayer][i]) > 0x0 ? L_4cd0 : L_4cc5 */
+    if ((HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0))
+        goto L_4cd0;
+    else
+        goto L_4cc5;
 
 L_4cc5:
-    /* untranslated: branch part[0x87:2](rglpshdef[idPlayer][i]) <= 0x0 ? L_4cd6 : L_4cd0 */
+    if ((LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0))
+        goto L_4cd6;
+    else
+        goto L_4cd0;
 
 L_4cd0:
     return 1;
@@ -8406,10 +8433,9 @@ L_7bc3:
 }
 
 int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t isb) {
-    int16_t  i;
-    SHDEF    shdef;
-    HS      *lphs;
-    uint16_t t_scratch_m9e;
+    int16_t i;
+    SHDEF   shdef;
+    HS     *lphs;
 
 L_7bca:
     if ((aisb >= 0))
@@ -8524,9 +8550,7 @@ L_7d2a:
         goto L_7d42;
 
 L_7d42:
-    t_scratch_m9e = ((*(lphs + 0x2) + 0xff00) & 0xff00);
-    lphs->cItem = 0x0;
-    *(lphs + 0x2) = (*(lphs + 0x2) | t_scratch_m9e);
+    lphs->cItem = (lphs->cItem + 0xff);
 
 L_7d72:
     goto L_7c6f;

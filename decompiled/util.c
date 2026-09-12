@@ -968,7 +968,7 @@ L_0e91:
 
 L_0ebe:
     t_call_0ed7 = LComputePower(&(rglpshdef[iplr][ishdef]));
-    /* untranslated: part[0x87:4](rglpshdef[iplr][ishdef]) = t_call_0ed7 */
+    rglpshdef[iplr][ishdef].lPower = t_call_0ed7;
 
 L_0f0e:
     ishdef = (ishdef + 1);
@@ -4717,7 +4717,7 @@ L_4b6d:
 L_4b76:
     lphul->resCost = LOWORD(resCost);
     lphul->wtEmpty = LOWORD(wt);
-    *(lpshdef + 0x87) = 0xffffffff;
+    lpshdef->lPower = -1;
     return;
 }
 

@@ -933,8 +933,8 @@ L_11c0:
 
 L_11ed:
     t_call_120d = PctCloakFromHuldef(&(rglpshdefSB[i][j].hul), i, 0x0);
-    /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = sext16to32((100 - t_call_120d)) */
-    /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = (uint32_t)(part[0x87:4](rglpshdefSB[i][j]) * part[0x87:4](rglpshdefSB[i][j])) */
+    rglpshdefSB[i][j].lVisible = (int32_t)((100 - t_call_120d));
+    rglpshdefSB[i][j].lVisible = (uint32_t)((rglpshdefSB[i][j].lVisible * rglpshdefSB[i][j].lVisible));
 
 L_12ce:
     j = (j + 1);
@@ -1309,7 +1309,6 @@ void MoveThings(int16_t fPostProd) {
     double    r;
     int16_t   t_scratch_m36;
     uint16_t  t_merge_1992_0001;
-    uint16_t  t_scratch_m36_2;
     int16_t   t_19fb;
     uint16_t  t_merge_1bd2_0001;
     uint16_t  t_merge_200d_0001;
@@ -1380,9 +1379,7 @@ L_199e:
     goto L_19f6;
 
 L_19cb:
-    t_scratch_m36_2 = ((LOWORD(lpth->thw) + 0x4) & 0xffc);
-    lpth->thw.cLastMove = 0x0;
-    LOWORD(lpth->thw) = (LOWORD(lpth->thw) | t_scratch_m36_2);
+    lpth->thw.cLastMove = (lpth->thw.cLastMove + 0x1);
 
 L_19f6:
     iMax = 16;
@@ -4602,7 +4599,6 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     uint16_t t_merge_4fc4_0001;
     uint16_t t_scratch_m1ee;
     uint16_t t_merge_4fdd_0001;
-    uint16_t t_58cd;
     int32_t  t_merge_5ae4_0001;
     int32_t  t_call_5e09;
     int16_t  t_merge_63a1_0001;
@@ -5067,9 +5063,8 @@ L_5897:
     flSrc = *(lpfl);
     memset(&(flDead), 0, 0x7c);
     flDead.iPlayer = flSrc.iPlayer;
-    /* untranslated: t_58cd = part[0x4:2](flDead) */
     flDead.fDead = 0x1;
-    /* untranslated: part[0x4:2](flDead) = ((((t_58cd & 0xfbff) | 0x400) & 0xff00) | 0x7) */
+    flDead.det = 0x7;
     i = 0;
     goto L_5ce3;
 

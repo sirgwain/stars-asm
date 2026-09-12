@@ -7439,7 +7439,6 @@ L_6795:
 
 void TutorError(int16_t idsError) {
     uint16_t t_scratch_m4;
-    uint16_t t_scratch_m6;
 
 L_67ae:
     if ((tutor.fNoErrors == 0x0))
@@ -7459,9 +7458,7 @@ L_67d8:
 
 L_67e4:
     t_scratch_m4 = tutor.cError;
-    t_scratch_m6 = ((tutor.wFlags + 0x40) & 0x1c0);
-    tutor.cError = 0x0;
-    tutor.wFlags = (tutor.wFlags | t_scratch_m6);
+    tutor.cError = (tutor.cError + 0x1);
     if ((t_scratch_m4 < 0x3))
         goto L_6856;
     else

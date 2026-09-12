@@ -10,6 +10,56 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestBitfieldArithmeticFoldedConstants verifies machine and late semantic
+// recovery of aligned arithmetic constants while rejecting possible low-bit carries.
+func TestBitfieldArithmeticFoldedConstants(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "GenerateWorld")
+	ctx.SetCurrentBlock(0x2c9d)
+	players := fx.SDB.GetGlobal("rgplr")
+	storage := machine.MemoryAddress{Seg: machine.ConstVal(fx.SDB.DGroupFrame), Base: machine.ConstVal(uint(players.Addr.Off)), Disp: 4, Width: 2}
+	converter := machineConverter{ctx: ctx, result: newResult(ctx.fs)}
+	for _, tc := range []struct {
+		name  string
+		op    machine.ValueOp
+		delta uint
+		want  string
+	}{
+		{name: "increment", op: machine.ValueOpAdd, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB + 0x1)"},
+		{name: "decrement", op: machine.ValueOpSub, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB - 0x1)"},
+		{name: "toggle", op: machine.ValueOpXor, delta: 0x2000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB ^ 0x2)"},
+		{name: "unaligned constant", op: machine.ValueOpAdd, delta: 0x1001},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			value := machine.BinaryVal(machine.ValueOpOr,
+				machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(storage), machine.ConstVal(0xfff)),
+				machine.BinaryVal(machine.ValueOpAnd,
+					machine.BinaryVal(tc.op, machine.LoadVal(storage), machine.ConstVal(tc.delta)), machine.ConstVal(0xf000)))
+			_, recognized := recognizeBitfieldWrite(ctx, storage, value)
+			if recognized != (tc.want != "") {
+				t.Fatalf("machine recognition = %v", recognized)
+			}
+			if recognized {
+				got := converter.convertEffect(machine.StoreEffect{Addr: storage, Width: 2, Src: value})
+				if text := FormatEffect(got); text != tc.want {
+					t.Fatalf("machine update = %s, want %s", text, tc.want)
+				}
+			}
+			assign := &Assign{Dst: converter.convertMemoryLValue(storage, 2), Src: converter.convertValueWithoutBitfields(value)}
+			block := Block{ID: 0x2c9d, Effects: []Effect{assign}}
+			got, changed := (&resolveLateBitfieldsProcessor{ctx: ctx}).ProcessBlock(newResult(ctx.fs), Func{Blocks: []Block{block}}, block)
+			if tc.want != "" && (!changed || FormatEffect(got.Effects[0]) != tc.want) {
+				t.Fatalf("semantic update = %s, want %s", FormatEffect(got.Effects[0]), tc.want)
+			}
+			if tc.want == "" {
+				if _, recognized := semanticBitfieldStore(assign.Dst, assign.Src); recognized {
+					t.Fatal("semantic recovery accepted an unaligned constant")
+				}
+			}
+		})
+	}
+}
+
 // TestConvertMachineBitfieldValues verifies physical recognition and semantic
 // projection across direct loads and an uncollapsed 32-bit word pair.
 func TestConvertMachineBitfieldValues(t *testing.T) {

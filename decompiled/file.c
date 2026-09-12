@@ -362,12 +362,10 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     char    *psz;
     char     szEntry[16];
     uint16_t t_merge_0b9b_0001;
-    uint16_t t_scratch_m48_4;
     uint16_t t_merge_1877_0001;
-    uint16_t t_scratch_m48_7;
+    uint16_t t_scratch_m48_6;
     uint16_t t_merge_1e06_0001;
     void    *t_call_1e2a;
-    uint16_t t_scratch_m48_13;
     uint16_t t_merge_2580_0001;
     uint16_t t_merge_259d_0001;
     int32_t  t_call_2884;
@@ -817,9 +815,7 @@ L_0fca:
 
 L_0ff6:
     idPlayer = iplrSav;
-    /* untranslated: t_scratch_m48_4 = ((part[0x4:2](rgplr[i]) + 0xf000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_4) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0xf);
     ReadRt();
     goto L_0ea5;
 
@@ -1402,8 +1398,8 @@ L_1a12:
         goto L_1a1c;
 
 L_1a1c:
-    t_scratch_m48_7 = lppl->lpplprod->iprodMax;
-    if ((t_scratch_m48_7 > (hdrCur.cb / 0x4)))
+    t_scratch_m48_6 = lppl->lpplprod->iprodMax;
+    if ((t_scratch_m48_6 > (hdrCur.cb / 0x4)))
         goto L_1a6a;
     else
         goto L_1a48;
@@ -1854,9 +1850,7 @@ L_2129:
     goto L_21b0;
 
 L_2172:
-    /* untranslated: t_scratch_m48_13 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_13) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
 
 L_21b0:
     j = (j + 1);

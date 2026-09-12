@@ -283,7 +283,7 @@ func (l *symboldbLoader) loadUnions(inputDir string) error {
 		return fmt.Errorf("union extension files: %w", err)
 	}
 	for _, path := range files {
-		if err := unionLoader.appendUnionFunctionPathFacts(path, l.sdb, rules); err != nil {
+		if err := unionLoader.appendUnionFacts(path, l.sdb, rules); err != nil {
 			return err
 		}
 	}

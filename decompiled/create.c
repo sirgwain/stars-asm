@@ -477,14 +477,11 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     uint16_t      t_scratch_m116_15;
     uint16_t      t_scratch_m116_17;
     uint16_t      t_scratch_m116_19;
-    uint16_t      t_scratch_m116_24;
-    uint16_t      t_scratch_m116_25;
-    uint16_t      t_scratch_m118_24;
     int16_t       t_merge_312c_0001;
     int16_t       t_35ff;
     int16_t       t_call_361d;
     int16_t       t_merge_399c_0001;
-    int16_t       t_scratch_m116_26;
+    int16_t       t_scratch_m116_24;
     uint16_t      t_scratch_m120;
     int16_t       t_40ef;
     uint16_t      t_merge_4327_0001;
@@ -2269,9 +2266,7 @@ L_2b78:
 
 L_2bae:
     lpshdef[1].fFree = 0x0;
-    /* untranslated: t_scratch_m116_24 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_24) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
     lpshdef[1].cExist = 0x1;
     lpshdef[1].cBuilt = 0x1;
 
@@ -2302,9 +2297,7 @@ L_2c9d:
     lpshdef[1] = lpshdef[2];
     lpshdef[1].ishdef = 0x11;
     lpshdef[1].fFree = 0x0;
-    /* untranslated: t_scratch_m116_25 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m116_25) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
     lpshdef[1].cExist = 0x1;
     lpshdef[1].cBuilt = 0x1;
 
@@ -2324,9 +2317,7 @@ L_2d93:
     *(lpshdef) = lpshdef[3];
     lpshdef->ishdef = 0x10;
     lpshdef->fFree = 0x0;
-    /* untranslated: t_scratch_m118_24 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m118_24) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
     lpshdef->cExist = 0x0;
     lpshdef->cBuilt = 0x0;
     lpPlanets[idHome].isb = 0x1;
@@ -3168,8 +3159,8 @@ L_3fff:
     goto L_4037;
 
 L_4007:
-    t_scratch_m116_26 = Random(vrgWormholeVar[game.mdSize]);
-    iBest = (vrgWormholeMin[game.mdSize] + t_scratch_m116_26);
+    t_scratch_m116_24 = Random(vrgWormholeVar[game.mdSize]);
+    iBest = (vrgWormholeMin[game.mdSize] + t_scratch_m116_24);
 
 L_4037:
     if ((iBest <= 0))

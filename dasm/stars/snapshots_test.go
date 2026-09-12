@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/templates"
@@ -29,8 +30,10 @@ var procs = []string{
 	"FCreateStuff",
 	"FCheckXferWP",
 	"FBuildObject",
+	"FCanKillTok",
 	"FGetBestDefensePart",
 	"FGetMouseMove",
+	"FIsAiAttack",
 	"FLookupOrbitingXfer",
 	"FLookupPart",
 	"FOpenFile",
@@ -49,6 +52,39 @@ var procs = []string{
 	"PopRandom",
 	"PushRandom",
 	"SzVersion",
+}
+
+// TestDASM_BitfieldUpdateSnapshots verifies the reported compiler patterns and
+// records their resolved block output alongside the full-function snapshots.
+func TestDASM_BitfieldUpdateSnapshots(t *testing.T) {
+	fx := testfixture.Stars(t)
+	for _, tc := range []struct {
+		name string
+		from uint32
+		want string
+	}{
+		{name: "DoCyberFreighter", from: 0x3916, want: "ord.fValidTask = 0x1"},
+		{name: "GenerateWorld", from: 0x2c9d, want: "rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1)"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			err := dumpFunction(fx.SDB, tc.name, fmt.Sprintf("L_%04x.sem", tc.from), func(w io.Writer, f *typeinfo.Function) {
+				var output bytes.Buffer
+				if err := DumpFuncSem(&output, fx.Image, fx.SDB, f, DumpSemOptions{DumpOptions: DumpOptions{FromAddr: tc.from}}); err != nil {
+					t.Fatal(err)
+				}
+				text := output.String()
+				if !strings.Contains(text, tc.want) || strings.Contains(text, "part[") || strings.Contains(text, "t_scratch_") || strings.Contains(text, "t_396c") {
+					t.Fatalf("unresolved bitfield update:\n%s", text)
+				}
+				if _, err := w.Write(output.Bytes()); err != nil {
+					t.Fatal(err)
+				}
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
 }
 
 func dumpFunction(sdb *typeinfo.SymbolDB, name, ext string, dumper func(w io.Writer, f *typeinfo.Function)) error {

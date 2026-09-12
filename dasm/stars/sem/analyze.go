@@ -19,6 +19,7 @@ type AnalyzeResult struct {
 	BranchLoWords     int                             `json:"branchLoWords,omitempty"`
 	SegRegRefs        int                             `json:"segRegRefs,omitempty"`
 	FunctionPathFacts []typeinfo.FunctionPathFactJSON `json:"functionPathFacts,omitempty"`
+	BlockMemberFacts  []typeinfo.BlockMemberFactJSON  `json:"blockMemberFacts,omitempty"`
 }
 
 func (fn *Func) Analyze(ctx *FuncContext) AnalyzeResult {
@@ -68,8 +69,51 @@ func (fn *Func) Analyze(ctx *FuncContext) AnalyzeResult {
 	result.Temps = len(temps)
 	if ctx != nil {
 		result.FunctionPathFacts = aggregateUnionBlockPathFacts(ctx.RecordedUnionBlockPathFacts())
+		if ctx.sdb.UnionRules != nil {
+			for _, fact := range ctx.sdb.UnionRules.BlockMemberFacts {
+				if fact.Func != ctx.fs {
+					continue
+				}
+				serialized := typeinfo.BlockMemberFactJSON{
+					Func: fact.Func.Name, Root: fact.Root, RootPath: append([]string(nil), fact.RootPath...),
+					AllElements: fact.AllElements, Type: fact.Type.String(),
+					Block: machine.BlockID(fact.BlockOff).String(), Member: fact.Member.Name,
+				}
+				if fact.CallResult != nil {
+					serialized.CallResult = fact.CallResult.Name
+				}
+				result.BlockMemberFacts = append(result.BlockMemberFacts, serialized)
+			}
+			slices.SortFunc(result.BlockMemberFacts, compareBlockMemberFacts)
+		}
 	}
 	return result
+}
+
+// compareBlockMemberFacts orders direct choices for deterministic fact exports.
+func compareBlockMemberFacts(left, right typeinfo.BlockMemberFactJSON) int {
+	if n := cmp.Compare(left.Block, right.Block); n != 0 {
+		return n
+	}
+	if n := cmp.Compare(left.Root, right.Root); n != 0 {
+		return n
+	}
+	if n := cmp.Compare(left.CallResult, right.CallResult); n != 0 {
+		return n
+	}
+	if n := slices.Compare(left.RootPath, right.RootPath); n != 0 {
+		return n
+	}
+	if n := cmp.Compare(left.Type, right.Type); n != 0 {
+		return n
+	}
+	if left.AllElements != right.AllElements {
+		if left.AllElements {
+			return 1
+		}
+		return -1
+	}
+	return cmp.Compare(left.Member, right.Member)
 }
 
 // aggregateUnionBlockPathFacts groups block selections into union-loader function fact records.

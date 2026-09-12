@@ -4568,5 +4568,170 @@
         }
       ]
     }
+  ],
+  "block_member_facts": [
+    {
+      "func": "ComputeShdefPowers",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_0ebe",
+      "member": "lPower"
+    },
+    {
+      "func": "DrawBuildSelHull",
+      "root": "lpshdefBuild",
+      "type": "SHDEF",
+      "block": "L_4c7b",
+      "member": "lPower"
+    },
+    {
+      "func": "DrawBuildSelHull",
+      "root": "lpshdefBuild",
+      "type": "SHDEF",
+      "block": "L_4ca8",
+      "member": "lPower"
+    },
+    {
+      "func": "DrawBuildSelHull",
+      "root": "lpshdefBuild",
+      "type": "SHDEF",
+      "block": "L_4cb3",
+      "member": "lPower"
+    },
+    {
+      "func": "FCanKillTok",
+      "call_result": "LpshdefFromTok",
+      "type": "SHDEF",
+      "block": "L_391e",
+      "member": "lPower"
+    },
+    {
+      "func": "FGenerateTurn",
+      "root": "rglpshdefSB",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_11ed",
+      "member": "lVisible"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4ad0",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4af5",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4afa",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4b46",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4b6b",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiAttack",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4b70",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiTransport",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4c9b",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiTransport",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4cc0",
+      "member": "lPower"
+    },
+    {
+      "func": "FIsAiTransport",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_4cc5",
+      "member": "lPower"
+    },
+    {
+      "func": "SetVisPFFleets",
+      "root": "rglpshdefSB",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_ab0c",
+      "member": "lVisible"
+    },
+    {
+      "func": "SetVisPFPlanets",
+      "root": "rglpshdefSB",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_b674",
+      "member": "lVisible"
+    },
+    {
+      "func": "SetVisPFPlanets",
+      "root": "rglpshdefSB",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_b90e",
+      "member": "lVisible"
+    },
+    {
+      "func": "SetVisPFThings",
+      "root": "rglpshdefSB",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_c11c",
+      "member": "lVisible"
+    },
+    {
+      "func": "UlFleetPower",
+      "root": "rglpshdef",
+      "all_elements": true,
+      "type": "SHDEF",
+      "block": "L_1520",
+      "member": "lPower"
+    },
+    {
+      "func": "UpdateShdefCost",
+      "root": "lpshdef",
+      "type": "SHDEF",
+      "block": "L_4b76",
+      "member": "lPower"
+    }
   ]
 }

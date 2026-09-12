@@ -59,6 +59,11 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 			return nil, err
 		}
 	}
+	for _, factJSON := range cfg.BlockMemberFacts {
+		if err := l.appendBlockMemberFact(factJSON, sdb, rules); err != nil {
+			return nil, err
+		}
+	}
 
 	for _, factJSON := range cfg.CallResultPathFacts {
 		fact, err := l.parseCallResultPathFact(factJSON, sdb, rules)
@@ -95,8 +100,8 @@ func (l *unionLoader) loadUnionRules(path string, sdb *SymbolDB) (*UnionRules, e
 	return rules, nil
 }
 
-// appendUnionFunctionPathFacts loads and appends function path facts from one union extension file.
-func (l *unionLoader) appendUnionFunctionPathFacts(path string, sdb *SymbolDB, rules *UnionRules) error {
+// appendUnionFacts loads and appends path and member facts from one union extension file.
+func (l *unionLoader) appendUnionFacts(path string, sdb *SymbolDB, rules *UnionRules) error {
 	f, err := os.Open(path)
 	if err != nil {
 		return fmt.Errorf("union rules %s: %w", path, err)
@@ -113,13 +118,122 @@ func (l *unionLoader) appendUnionFunctionPathFacts(path string, sdb *SymbolDB, r
 		return fmt.Errorf("union rules parse %s: %w", path, err)
 	}
 	if len(cfg.UnionVariants) != 0 || len(cfg.CallResultPathFacts) != 0 || len(cfg.ExternalDiscriminatorAliases) != 0 || len(cfg.ConditionalSelectionFacts) != 0 {
-		return fmt.Errorf("union extension %s may only contain function_path_facts", path)
+		return fmt.Errorf("union extension %s may only contain function_path_facts and block_member_facts", path)
 	}
 	for _, factJSON := range cfg.FunctionPathFacts {
 		if err := l.appendFunctionPathFact(factJSON, sdb, rules); err != nil {
 			return err
 		}
 	}
+	for _, factJSON := range cfg.BlockMemberFacts {
+		if err := l.appendBlockMemberFact(factJSON, sdb, rules); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// appendBlockMemberFact validates and indexes a direct block member choice.
+func (l *unionLoader) appendBlockMemberFact(cfg BlockMemberFactJSON, sdb *SymbolDB, rules *UnionRules) error {
+	fn := sdb.GetFunction(cfg.Func)
+	if fn == nil {
+		return fmt.Errorf("union block member fact function %s not found", cfg.Func)
+	}
+	blockOff, err := parseUnionBlockOffset(cfg.Block)
+	if err != nil {
+		return fmt.Errorf("union block member fact %s block %q: %w", cfg.Func, cfg.Block, err)
+	}
+	if blockOff < fn.Addr.Off || blockOff >= fn.Addr.Off+uint32(fn.Len) {
+		return fmt.Errorf("union block member fact %s block %s is outside the function", cfg.Func, cfg.Block)
+	}
+	strct := sdb.GetStruct(cfg.Type)
+	if strct == nil {
+		return fmt.Errorf("union block member fact type %s not found for %s", cfg.Type, cfg.Func)
+	}
+	if (cfg.Root == "") == (cfg.CallResult == "") {
+		return fmt.Errorf("union block member fact %s must specify exactly one of root or call_result", cfg.Func)
+	}
+	components := append([]string{cfg.Root}, cfg.RootPath...)
+	var rootType Type
+	var callee *Function
+	if cfg.CallResult != "" {
+		if len(cfg.RootPath) != 0 || cfg.AllElements {
+			return fmt.Errorf("union block member fact %s call_result cannot use root_path or all_elements", cfg.Func)
+		}
+		callee = sdb.GetFunction(cfg.CallResult)
+		if callee == nil {
+			return fmt.Errorf("union block member fact %s call_result function %s not found", cfg.Func, cfg.CallResult)
+		}
+		rootType = callee.Ret
+	} else {
+		var ok bool
+		rootType, ok = functionOrGlobalPathType(fn, sdb, components)
+		if !ok {
+			return fmt.Errorf("union block member fact %s root path %s not found", cfg.Func, strings.Join(components, "."))
+		}
+	}
+	targetType := rootType
+	if cfg.AllElements {
+		indexed := false
+	containers:
+		for {
+			switch typ := targetType.(type) {
+			case *Pointer:
+				targetType = typ.Elem
+			case *Array:
+				targetType = typ.Elem
+			default:
+				break containers
+			}
+			indexed = true
+		}
+		if !indexed {
+			return fmt.Errorf("union block member fact %s root %s is not a collection", cfg.Func, cfg.Root)
+		}
+	} else {
+		targetType, _ = UnwrapPointer(targetType)
+	}
+	if targetType != strct {
+		if callee != nil {
+			return fmt.Errorf("union block member fact %s call_result %s returns %s, not %s", cfg.Func, callee.Name, rootType, cfg.Type)
+		}
+		return fmt.Errorf("union block member fact %s root %s is %s, not %s", cfg.Func, cfg.Root, rootType, cfg.Type)
+	}
+	member := structFieldByName(strct, cfg.Member)
+	if member == nil {
+		return fmt.Errorf("union block member fact %s member %s.%s not found", cfg.Func, cfg.Type, cfg.Member)
+	}
+	var region *StructOverlapRegion
+	for i := range strct.OverlapRegions {
+		candidate := &strct.OverlapRegions[i]
+		if member.Offset >= candidate.Start && member.End <= candidate.End {
+			region = candidate
+			break
+		}
+	}
+	if region == nil {
+		return fmt.Errorf("union block member fact %s member %s.%s does not belong to an overlap region", cfg.Func, cfg.Type, cfg.Member)
+	}
+	name := funcLookupName(fn.Name)
+	if rules.blockMemberFactsByFunc[name] == nil {
+		rules.blockMemberFactsByFunc[name] = make(map[uint32][]*UnionBlockMemberFact)
+	}
+	for _, existing := range rules.blockMemberFactsByFunc[name][blockOff] {
+		if existing.Root == cfg.Root && existing.CallResult == callee && slices.Equal(existing.RootPath, cfg.RootPath) &&
+			existing.AllElements == cfg.AllElements && existing.Type == strct && existing.Region == region {
+			if existing.Member == member {
+				// Manual facts and exported facts can repeat the same selection.
+				return nil
+			}
+			return fmt.Errorf("conflicting union block member facts for %s %s root %s call_result %s: %s and %s", cfg.Func, cfg.Block, strings.Join(components, "."), cfg.CallResult, existing.Member.Name, member.Name)
+		}
+	}
+	fact := &UnionBlockMemberFact{
+		Func: fn, CallResult: callee, BlockOff: blockOff, Root: cfg.Root, RootPath: append([]string(nil), cfg.RootPath...),
+		AllElements: cfg.AllElements, Type: strct, Region: region, Member: member,
+	}
+	rules.BlockMemberFacts = append(rules.BlockMemberFacts, fact)
+	rules.blockMemberFactsByFunc[name][blockOff] = append(rules.blockMemberFactsByFunc[name][blockOff], fact)
 	return nil
 }
 
@@ -169,6 +283,7 @@ func emptyUnionRules() *UnionRules {
 		variantsByType:                     make(map[string]*UnionVariantRule),
 		functionPathFactsByFunc:            make(map[string][]*UnionFunctionPathFact),
 		blockPathFactsByFunc:               make(map[string]map[uint32][]*UnionBlockPathFact),
+		blockMemberFactsByFunc:             make(map[string]map[uint32][]*UnionBlockMemberFact),
 		callResultPathFactsByFunc:          make(map[string][]*UnionCallResultPathFact),
 		callResultPathFactsByParam:         make(map[string][]*UnionCallResultPathFact),
 		externalDiscriminatorAliasesByFunc: make(map[string][]*UnionExternalDiscriminatorAlias),
@@ -626,11 +741,24 @@ func funcLookupName(name string) string {
 }
 
 type unionConfigJSON struct {
+	BlockMemberFacts             []BlockMemberFactJSON            `json:"block_member_facts"`
 	UnionVariants                []unionVariantJSON               `json:"union_variants"`
 	FunctionPathFacts            []FunctionPathFactJSON           `json:"function_path_facts"`
 	CallResultPathFacts          []callResultPathFactJSON         `json:"call_result_path_facts"`
 	ExternalDiscriminatorAliases []externalDiscriminatorAliasJSON `json:"external_discriminator_aliases"`
 	ConditionalSelectionFacts    []conditionalSelectionFactJSON   `json:"conditional_selection_facts"`
+}
+
+// BlockMemberFactJSON is a direct member selection scoped to one function block.
+type BlockMemberFactJSON struct {
+	Func        string   `json:"func"`
+	Root        string   `json:"root,omitempty"`
+	CallResult  string   `json:"call_result,omitempty"`
+	RootPath    []string `json:"root_path,omitempty"`
+	AllElements bool     `json:"all_elements,omitempty"`
+	Type        string   `json:"type"`
+	Block       string   `json:"block"`
+	Member      string   `json:"member"`
 }
 
 type unionVariantJSON struct {

@@ -911,6 +911,35 @@ func (c *machineConverter) unionFieldMatches(base Expr, strct *typeinfo.Struct, 
 	var selection symresolve.UnionSelection
 	var selected bool
 	if unionCtx := c.ctx.unionContext(); unionCtx != nil {
+		memberBase := base
+		indexed := false
+		for {
+			var callee *typeinfo.Function
+			if result := callResultExpr(memberBase); result != nil {
+				callee = result.Function
+			} else if call, ok := memberBase.(*Call); ok {
+				callee = call.Function
+			}
+			if callee != nil && !indexed {
+				offset := matches[0].Field.Offset + matches[0].Off
+				if member, ok := unionCtx.CallResultMemberFor(callee, strct, offset); ok {
+					return symresolve.SelectUnionMemberMatch(strct, matches, member)
+				}
+			}
+			if path, ok := symbolPathForExpr(memberBase); ok {
+				offset := matches[0].Field.Offset + matches[0].Off
+				if member, ok := unionCtx.MemberFor(path, strct, offset, indexed); ok {
+					return symresolve.SelectUnionMemberMatch(strct, matches, member)
+				}
+				break
+			}
+			index, ok := memberBase.(*ArrayIndex)
+			if !ok {
+				break
+			}
+			memberBase = index.Base
+			indexed = true
+		}
 		if path, ok := symbolPathForExpr(base); ok {
 			selection, selected = unionCtx.SelectionFor(path, strct)
 		} else if index, ok := base.(*ArrayIndex); ok {

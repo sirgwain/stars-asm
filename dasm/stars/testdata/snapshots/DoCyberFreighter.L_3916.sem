@@ -1,0 +1,12 @@
+L_3916:
+    call FLookupFleet(lpfl->id, &sel.fl) -> callresult(int16_t)
+    idPlanDst = lpplCur->id
+    call memset(&ord, 0, 0x12) -> callresult(void *)
+    ord.pt = rgptPlan[idPlanDst]
+    ord.grobj = grobjPlanet
+    ord.id = idPlanDst
+    ord.grTask = grTaskXfer
+    ord.fValidTask = 0x1
+    ord.txp.rgia[3].iAction = iActionUnloadAll
+    call ChangeMainObjSel(grobjFleet, lpfl->id) -> callresult(void)
+    branch sel.fl.lpplord->rgord[0].id != idPlanDst ? L_39f2 : L_39af

@@ -28,8 +28,9 @@ type DumpAllAnalysis struct {
 	IR ir.AnalyzeResult `json:"ir,omitzero"`
 }
 
-type UnionFunctionPathFacts struct {
+type UnionFacts struct {
 	FunctionPathFacts []typeinfo.FunctionPathFactJSON `json:"function_path_facts"`
+	BlockMemberFacts  []typeinfo.BlockMemberFactJSON  `json:"block_member_facts,omitempty"`
 }
 
 func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (DumpAllResult, error) {
@@ -58,7 +59,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 	result.Functions = make(map[string]DumpAllAnalysis, len(funcs))
 	funcAnalyses := make(map[string]FuncAnalysis, len(funcs))
 	funcIRBodies := make(map[string]string, len(funcs))
-	funcPathFacts := UnionFunctionPathFacts{
+	funcPathFacts := UnionFacts{
 		FunctionPathFacts: make([]typeinfo.FunctionPathFactJSON, 0, len(funcs)),
 	}
 
@@ -234,7 +235,9 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 
 		// collect function path facts into a separate list
 		funcPathFacts.FunctionPathFacts = append(funcPathFacts.FunctionPathFacts, analysis.SemAnalysis.FunctionPathFacts...)
+		funcPathFacts.BlockMemberFacts = append(funcPathFacts.BlockMemberFacts, analysis.SemAnalysis.BlockMemberFacts...)
 		analysis.SemAnalysis.FunctionPathFacts = nil
+		analysis.SemAnalysis.BlockMemberFacts = nil
 
 		// collect per function analysis
 		result.Functions[function.Name] = DumpAllAnalysis{AnalyzeResult: analysis.SemAnalysis, IR: analysis.IRAnalysis}

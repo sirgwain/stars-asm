@@ -10,6 +10,70 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestRecoverStoredBitfieldRMW verifies consecutive ORDER updates reuse the
+// stored value without confusing older loads or crossing intervening effects.
+func TestRecoverStoredBitfieldRMW(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "DoCyberFreighter")
+	ctx.SetCurrentBlock(0x3916)
+	storage := frameMemoryAccess(ctx, 0x396c-ctx.fs.Addr.Off, -0xe, 2)
+	for _, tc := range []struct {
+		name                                                           string
+		olderLoad, otherDestination, interveningStore, interveningCall bool
+	}{
+		{name: "retained value"},
+		{name: "different load identity", olderLoad: true},
+		{name: "different destination", otherDestination: true},
+		{name: "intervening store", interveningStore: true},
+		{name: "intervening call", interveningCall: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			value := machine.BinaryVal(machine.ValueOpOr,
+				machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(storage), machine.ConstVal(0xfff0)), machine.ConstVal(1))
+			previous := machine.StoreEffect{MetaInfo: machine.Meta{BlockID: 0x3916, InstOff: 0x3975}, Addr: storage, Width: 2, Src: value}
+			retained := value
+			if tc.olderLoad {
+				older := storage
+				older.Origin.InstOff = 0x395a
+				retained = machine.BinaryVal(machine.ValueOpOr,
+					machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(older), machine.ConstVal(0xfff0)), machine.ConstVal(1))
+			}
+			store := machine.StoreEffect{MetaInfo: machine.Meta{BlockID: 0x3916, InstOff: 0x397e}, Addr: storage, Width: 2,
+				Src: machine.BinaryVal(machine.ValueOpOr,
+					machine.BinaryVal(machine.ValueOpAnd, retained, machine.ConstVal(0xefff)), machine.ConstVal(0x1000))}
+			if tc.otherDestination {
+				previous.Addr.Disp += 2
+			}
+			effects := []machine.Effect{previous}
+			if tc.interveningStore {
+				effects = append(effects, machine.StoreEffect{Addr: storage, Width: 2, Src: machine.ConstVal(0)})
+			}
+			if tc.interveningCall {
+				effects = append(effects, machine.CallEffect{Target: fx.SDB.GetFunction("ChangeMainObjSel"), Args: []machine.Value{machine.ConstVal(2), machine.ConstVal(1)}})
+			}
+			effects = append(effects, store)
+			block := machine.BlockEffects{Block: 0x3916, Effects: effects}
+			fn := machine.FuncEffects{CFG: &machine.CFG{}, Blocks: []machine.BlockEffects{block}}
+			got, changed := (&collapseStorageRMWProcessor{ctx: ctx}).ProcessMachineBlock(newResult(ctx.fs), fn, block)
+			want := !tc.olderLoad && !tc.otherDestination && !tc.interveningStore && !tc.interveningCall
+			if changed != want {
+				t.Fatalf("changed = %v, want %v", changed, want)
+			}
+			if want {
+				converted := (&machineConverter{ctx: ctx, result: newResult(ctx.fs)}).convertEffects(got.Effects)
+				if len(converted) != 2 {
+					t.Fatalf("got %d effects, want two field assignments without stale-load capture", len(converted))
+				}
+				for i, want := range []string{"ord.grTask = grTaskXfer", "ord.fValidTask = 0x1"} {
+					if text := FormatEffect(converted[i]); text != want {
+						t.Fatalf("effect %d = %s, want %s", i, text, want)
+					}
+				}
+			}
+		})
+	}
+}
+
 // TestCollapseScratchBitfieldCopy recovers PROD updates assembled in scratch
 // words while preserving live scratch storage and unrelated destination bits.
 func TestCollapseScratchBitfieldCopy(t *testing.T) {

@@ -463,6 +463,14 @@ func unshiftMachineBitfieldStorageOperand(mem machine.MemoryAddress, value machi
 // unshiftMachineBitfieldShiftedOperand removes the field-position shift and representation-only integer widening.
 func unshiftMachineBitfieldShiftedOperand(value machine.Value, bitOff int) (machine.Value, bool) {
 	value = unwrapMachineBitfieldValue(unwrapMachineCasts(value))
+	if constant, ok := value.(*machine.Const); ok {
+		if bitOff < 0 || bitOff >= 64 || constant.Val&((uint(1)<<bitOff)-1) != 0 {
+			return nil, false
+		}
+		next := *constant
+		next.Val >>= bitOff
+		return &next, true
+	}
 	if shift, ok := value.(*machine.Binary); ok && shift.Op == machine.ValueOpShl {
 		amount, ok := shift.RHS.(*machine.Const)
 		if !ok || int(amount.Val) != bitOff {
@@ -471,8 +479,11 @@ func unshiftMachineBitfieldShiftedOperand(value machine.Value, bitOff int) (mach
 		value = unwrapMachineCasts(shift.LHS)
 	} else if multiply, ok := value.(*machine.Binary); ok && multiply.Op == machine.ValueOpMul {
 		factor, source, ok := constOperand(multiply.LHS, multiply.RHS)
+		if !ok {
+			return nil, false
+		}
 		shift, shiftOK := powerOfTwoShift(factor.Val)
-		if !ok || !shiftOK || shift != bitOff {
+		if !shiftOK || shift != bitOff {
 			return nil, false
 		}
 		value = unwrapMachineCasts(source)

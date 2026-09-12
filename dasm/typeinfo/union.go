@@ -5,6 +5,7 @@ type UnionRules struct {
 	Variants                     []*UnionVariantRule
 	FunctionPathFacts            []*UnionFunctionPathFact
 	BlockPathFacts               []*UnionBlockPathFact
+	BlockMemberFacts             []*UnionBlockMemberFact
 	CallResultPathFacts          []*UnionCallResultPathFact
 	ExternalDiscriminatorAliases []*UnionExternalDiscriminatorAlias
 	ConditionalSelectionFacts    []*UnionConditionalSelectionFact
@@ -12,10 +13,29 @@ type UnionRules struct {
 	variantsByType                     map[string]*UnionVariantRule
 	functionPathFactsByFunc            map[string][]*UnionFunctionPathFact
 	blockPathFactsByFunc               map[string]map[uint32][]*UnionBlockPathFact
+	blockMemberFactsByFunc             map[string]map[uint32][]*UnionBlockMemberFact
 	callResultPathFactsByFunc          map[string][]*UnionCallResultPathFact
 	callResultPathFactsByParam         map[string][]*UnionCallResultPathFact
 	externalDiscriminatorAliasesByFunc map[string][]*UnionExternalDiscriminatorAlias
 	conditionalSelectionFactsByFunc    map[string][]*UnionConditionalSelectionFact
+}
+
+// UnionBlockMemberFact selects a member of one overlap region in an exact block.
+type UnionBlockMemberFact struct {
+	Func        *Function
+	CallResult  *Function
+	BlockOff    uint32
+	Root        string
+	RootPath    []string
+	AllElements bool
+	Type        *Struct
+	Region      *StructOverlapRegion
+	Member      *StructField
+}
+
+// BlockMemberFactsFor returns direct member choices for one function block.
+func (r *UnionRules) BlockMemberFactsFor(fn *Function, blockOff uint32) []*UnionBlockMemberFact {
+	return r.blockMemberFactsByFunc[funcLookupName(fn.Name)][blockOff]
 }
 
 // UnionVariantRule maps a discriminator enum value to a concrete union member.

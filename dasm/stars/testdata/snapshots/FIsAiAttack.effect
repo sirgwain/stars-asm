@@ -1,0 +1,169 @@
+/*
+FIsAiAttack  (aiutil)
+  addr: 0013:4a72  len=296
+  sig:  int16_t FIsAiAttack(FLEET *lpfl)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+  locals:
+    int16_t          i              [BP-0x6]
+    int16_t          ihul           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_4a72:
+  insts 0..6  off 0x4a72..0x4a82
+  succs: L_4b85
+  effects:
+    4a7b  store[2] [bp-i] = 0x0
+    4a80  goto L_4b85
+
+block L_4a83:
+  insts 7..16  off 0x4a83..0x4a9c
+  preds: L_4b85
+  succs: L_4aa0, L_4b81
+  effects:
+    4a9b  branch load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-i]) << 0x1))]) <= 0x0 ? L_4b81 : L_4aa0
+
+block L_4aa0:
+  insts 18..24  off 0x4aa0..0x4ab4
+  preds: L_4a83
+  succs: L_4ab8, L_4ac7
+  effects:
+    4aac  store[2] [bp-ihul] = load(ds:[loword((0x93 * load([bp-i])))+0x3f00])
+    4ab3  branch load([bp-ihul]) <= 0x5 ? L_4ac7 : L_4ab8
+
+block L_4ab8:
+  insts 26..27  off 0x4ab8..0x4abd
+  preds: L_4aa0
+  succs: L_4ac1, L_4ac7
+  effects:
+    4abc  branch load([bp-ihul]) > 0xa ? L_4ac7 : L_4ac1
+
+block L_4ac1:
+  insts 29..30  off 0x4ac1..0x4ac6
+  preds: L_4ab8
+  succs: L_4b94
+  effects:
+    4ac4  goto L_4b94
+
+block L_4ac7:
+  insts 31..32  off 0x4ac7..0x4acc
+  preds: L_4aa0, L_4ab8
+  succs: L_4ad0, L_4b11
+  effects:
+    4acb  branch load([bp-ihul]) != 0x5 ? L_4b11 : L_4ad0
+
+block L_4ad0:
+  insts 34..44  off 0x4ad0..0x4af1
+  preds: L_4ac7
+  succs: L_4af5, L_4b0b
+  effects:
+    4af0  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x89]) < 0x0 ? L_4b0b : L_4af5
+
+block L_4af5:
+  insts 46..46  off 0x4af5..0x4af6
+  preds: L_4ad0
+  succs: L_4afa, L_4b05
+  effects:
+    4af5  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x89]) > 0x0 ? L_4b05 : L_4afa
+
+block L_4afa:
+  insts 48..49  off 0x4afa..0x4b01
+  preds: L_4af5
+  succs: L_4b05, L_4b0b
+  effects:
+    4b00  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x87]) <= 0x0 ? L_4b0b : L_4b05
+
+block L_4b05:
+  insts 51..52  off 0x4b05..0x4b0a
+  preds: L_4af5, L_4afa
+  succs: L_4b94
+  effects:
+    4b08  goto L_4b94
+
+block L_4b0b:
+  insts 53..53  off 0x4b0b..0x4b0d
+  preds: L_4ad0, L_4afa
+  succs: L_4b0e
+
+block L_4b0e:
+  insts 54..54  off 0x4b0e..0x4b10
+  preds: L_4b0b
+  succs: L_4b94
+  effects:
+    4b0e  goto L_4b94
+
+block L_4b11:
+  insts 55..56  off 0x4b11..0x4b16
+  preds: L_4ac7
+  succs: L_4b1a, L_4b23
+  effects:
+    4b15  branch load([bp-ihul]) == 0x1f ? L_4b23 : L_4b1a
+
+block L_4b1a:
+  insts 58..59  off 0x4b1a..0x4b1f
+  preds: L_4b11
+  succs: L_4b23, L_4b81
+  effects:
+    4b1e  branch load([bp-ihul]) != 0x1d ? L_4b81 : L_4b23
+
+block L_4b23:
+  insts 61..73  off 0x4b23..0x4b42
+  preds: L_4b11, L_4b1a
+  succs: L_4b46, L_4b81
+  effects:
+    4b36  call WtMaxShdefStat(words(ds, (0x3f00 + loword((0x93 * load([bp-i]))))), 0x2) -> callresult(int16_t)
+    4b41  branch callresult(int16_t) >= 0x1f4 ? L_4b81 : L_4b46
+
+block L_4b46:
+  insts 75..85  off 0x4b46..0x4b67
+  preds: L_4b23
+  succs: L_4b6b, L_4b81
+  effects:
+    4b66  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x89]) < 0x0 ? L_4b81 : L_4b6b
+
+block L_4b6b:
+  insts 87..87  off 0x4b6b..0x4b6c
+  preds: L_4b46
+  succs: L_4b70, L_4b7b
+  effects:
+    4b6b  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x89]) > 0x0 ? L_4b7b : L_4b70
+
+block L_4b70:
+  insts 89..90  off 0x4b70..0x4b77
+  preds: L_4b6b
+  succs: L_4b7b, L_4b81
+  effects:
+    4b76  branch load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x100]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-i]))))+0x87]) <= 0x0 ? L_4b81 : L_4b7b
+
+block L_4b7b:
+  insts 92..93  off 0x4b7b..0x4b80
+  preds: L_4b6b, L_4b70
+  succs: L_4b94
+  effects:
+    4b7e  goto L_4b94
+
+block L_4b81:
+  insts 94..94  off 0x4b81..0x4b84
+  preds: L_4a83, L_4b1a, L_4b23, L_4b46, L_4b70
+  succs: L_4b85
+  effects:
+    4b81  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_4b85:
+  insts 95..96  off 0x4b85..0x4b8a
+  preds: L_4a72, L_4b81
+  succs: L_4a83, L_4b8e
+  effects:
+    4b89  branch load([bp-i]) < 0x10 ? L_4a83 : L_4b8e
+
+block L_4b8e:
+  insts 98..98  off 0x4b8e..0x4b93
+  preds: L_4b85
+  succs: L_4b94
+
+block L_4b94:
+  insts 100..104  off 0x4b94..0x4b99
+  preds: L_4ac1, L_4b05, L_4b0e, L_4b7b, L_4b8e
+  effects:
+    4b99  return merge(Join: L_4b94, (L_4ac1:0x1, L_4b05:0x1, L_4b0e:0x0, L_4b7b:0x1, L_4b8e:0x0))

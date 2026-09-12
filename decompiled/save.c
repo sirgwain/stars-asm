@@ -1650,7 +1650,6 @@ void WriteBattles(int16_t iPlayer) {
     BTLDATA *lpbtldata;
     int16_t  cb;
     int16_t  iplr;
-    uint16_t t_scratch_m2a_2;
     int16_t  t_merge_782d_0001;
 
 L_709c:
@@ -1790,9 +1789,7 @@ L_728a:
 
 L_731b:
     rglpshdefSB[iplr][(lpbtldata->rgtok[i].ishdef - 16)].wFlags = ((rglpshdefSB[iplr][(lpbtldata->rgtok[i].ishdef + 0xfff0)].wFlags & 0xfeff) | 0x100);
-    /* untranslated: t_scratch_m2a_2 = ((part[0x4:2](rgplr[iplr]) + 0x1000) & 0xf000) */
-    rgplr[iplr].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[iplr]) = (part[0x4:2](rgplr[iplr]) | t_scratch_m2a_2) */
+    rgplr[iplr].cshdefSB = (rgplr[iplr].cshdefSB + 0x1);
 
 L_73db:
     rglpshdefSB[iplr][(lpbtldata->rgtok[i].ishdef - 16)].wFlags = ((rglpshdefSB[iplr][(lpbtldata->rgtok[i].ishdef + 0xfff0)].wFlags & 0xff00) | 0x7);
@@ -3019,8 +3016,7 @@ L_8ad5:
 }
 
 void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
-    SHDEF   *lpshdef;
-    uint16_t t_scratch_m8_3;
+    SHDEF *lpshdef;
 
 L_8adc:
     if ((lppl->fInclude != 0x0))
@@ -3086,9 +3082,7 @@ L_8c1e:
 L_8c5f:
     lpshdef->fInclude = 0x1;
     lpshdef->det = 0x0;
-    /* untranslated: t_scratch_m8_3 = ((part[0x4:2](rgplr[lppl->iPlayer]) + 0x1000) & 0xf000) */
-    rgplr[lppl->iPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lppl->iPlayer]) = (part[0x4:2](rgplr[lppl->iPlayer]) | t_scratch_m8_3) */
+    rgplr[lppl->iPlayer].cshdefSB = (rgplr[lppl->iPlayer].cshdefSB + 0x1);
 
 L_8cd1:
     if ((lpshdef->det >= 0x3))
@@ -3704,11 +3698,10 @@ void SetVisPFInit(int16_t iPlr) {
     uint16_t grbitPlr;
     int16_t  iSteal;
     uint16_t t_merge_968f_0001;
-    uint16_t t_scratch_m24_11;
     uint16_t t_merge_9dab_0001;
     int32_t  t_call_9dfc;
     uint16_t t_merge_9fb0_0001;
-    uint16_t t_scratch_m24_15;
+    uint16_t t_scratch_m24_14;
 
 L_9654:
     raMajor = GetRaceStat(&(rgplr[iPlr]), rsMajorAdv);
@@ -3851,9 +3844,7 @@ L_9984:
     rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xfeff) | 0x100);
     rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xff00) | 0x7);
     rglpshdefSB[i][j].cExist = 0x0;
-    /* untranslated: t_scratch_m24_11 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m24_11) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
     goto L_9abe;
 
 L_9a78:
@@ -4145,8 +4136,8 @@ L_9fad:
     t_merge_9fb0_0001 = 0x0;
 
 L_9fb0:
-    t_scratch_m24_15 = t_merge_9fb0_0001;
-    lpth->thw.fInclude = t_scratch_m24_15;
+    t_scratch_m24_14 = t_merge_9fb0_0001;
+    lpth->thw.fInclude = t_scratch_m24_14;
     goto L_a0e7;
 
 L_9fd7:
@@ -4915,7 +4906,7 @@ L_aaff:
         goto L_ab0c;
 
 L_ab0c:
-    /* untranslated: lVis2 = part[0x87:4](rglpshdefSB[lppl->iPlayer][lppl->isb]) */
+    lVis2 = rglpshdefSB[lppl->iPlayer][lppl->isb].lVisible;
     if ((HIWORD(lVis2) > 0x0))
         goto LMark101;
     else
@@ -5665,7 +5656,7 @@ L_b66c:
         goto L_b674;
 
 L_b674:
-    /* untranslated: lVis2 = part[0x87:4](rglpshdefSB[lppl2->iPlayer][lppl2->isb]) */
+    lVis2 = rglpshdefSB[lppl2->iPlayer][lppl2->isb].lVisible;
     if ((HIWORD(lVis2) > 0x0))
         goto LMarkStargate;
     else
@@ -5819,7 +5810,7 @@ L_b901:
         goto L_b90e;
 
 L_b90e:
-    /* untranslated: lVis2 = part[0x87:4](rglpshdefSB[lppl2->iPlayer][lppl2->isb]) */
+    lVis2 = rglpshdefSB[lppl2->iPlayer][lppl2->isb].lVisible;
     if ((HIWORD(lVis2) > 0x0))
         goto LMark102;
     else
@@ -6338,7 +6329,7 @@ L_c10f:
         goto L_c11c;
 
 L_c11c:
-    /* untranslated: lVis2 = part[0x87:4](rglpshdefSB[lppl2->iPlayer][lppl2->isb]) */
+    lVis2 = rglpshdefSB[lppl2->iPlayer][lppl2->isb].lVisible;
     if ((HIWORD(lVis2) > 0x0))
         goto LMark103;
     else
@@ -6567,7 +6558,6 @@ void SetVisPFFinish(int16_t iPlr) {
     int16_t  j;
     int16_t  i;
     uint16_t t_merge_c44e_0001;
-    uint16_t t_scratch_ma_14;
 
 L_c41c:
     if ((GetRaceStat(&(rgplr[iPlr]), rsMajorAdv) != raAttack))
@@ -6669,9 +6659,7 @@ L_c75d:
 LFinShdefSB:
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfeff) | 0x100);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfff8) | 0x3);
-    /* untranslated: t_scratch_ma_14 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
-    rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_ma_14) */
+    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
 
 L_c83c:
     j = (j + 1);
