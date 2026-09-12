@@ -28,6 +28,42 @@ func (sr *symbolResolver) symbolPathFromAddressValue(addr resolvedAddress, expec
 	return symbolPathForExpr(projected)
 }
 
+// symbolPathFromSingleIndexedAddress resolves a normalized address with one
+// scaled index term, preserving raw indexes such as merges that cannot be
+// represented independently as a SymbolPath.
+func (sr *symbolResolver) symbolPathFromSingleIndexedAddress(addr resolvedAddress, width int) (symresolve.SymbolPath, bool) {
+	if addr.base == nil || len(addr.terms) != 1 {
+		return nil, false
+	}
+
+	term := addr.terms[0]
+
+	result := indexedTermResult(addr.base.Type(), term.scale)
+	if result == nil {
+		return nil, false
+	}
+
+	indexed := &symresolve.SymbolTerm{
+		Base:   addr.base,
+		Scale:  term.scale,
+		Result: result,
+	}
+
+	if index, ok := sr.symbolFromAddressTermValue(term.value); ok {
+		indexed.Index = index
+	} else {
+		// Important for PhiValue/Merge and other legitimate machine values
+		// which have no standalone SymbolPath.
+		indexed.IndexVal = term.value
+	}
+
+	if addr.offset == 0 {
+		return indexed, true
+	}
+
+	return sr.symbolFromResolvedAccess(indexed, addr.offset, width)
+}
+
 // symbolFromAddressedVar resolves the symbol denoted by a variable-relative
 // address, preserving the aggregate itself for offset zero.
 func (sr *symbolResolver) symbolFromAddressedVar(v typeinfo.Var, fieldOff int) (symresolve.SymbolPath, bool) {
@@ -117,6 +153,13 @@ func scratchTypeForWidth(width int) typeinfo.Type {
 func (sr *symbolResolver) symbolFromVarAccess(v typeinfo.Var, fieldOff int, width int) (symresolve.SymbolPath, bool) {
 	root := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: v})
 	typ := v.VarType()
+
+	// A full-width access to a declared aggregate denotes the aggregate
+	// itself, not its first member.
+	if fieldOff == 0 && typ != nil && typ.Bytes() == width && isAggregateType(typ) {
+		return root, true
+	}
+
 	if typeinfo.IsPointer(typ) && fieldOff+width <= typ.Bytes() {
 		return &symresolve.SymbolOffset{Base: root, Offset: fieldOff, Result: typ}, true
 	}
@@ -195,18 +238,41 @@ func (sr *symbolResolver) symbolFromFlexibleArrayAccess(base symresolve.SymbolPa
 
 // symbolFromIndexedField resolves pointer + field offset + scaled index when
 // the field itself is an indexed array.
-func (sr *symbolResolver) symbolFromIndexedField(base symresolve.SymbolPath, fixed int, width int, index machine.Value, scale int) (symresolve.SymbolPath, bool) {
-	field, offLeft, ok := sr.res.ResolveFieldPathInContext(base, fixed, sr.unionContext())
-	if !ok || offLeft != 0 {
+func (sr *symbolResolver) symbolFromIndexedField(
+	base symresolve.SymbolPath,
+	fixed int,
+	width int,
+	index machine.Value,
+	scale int,
+) (symresolve.SymbolPath, bool) {
+	field, elemOff, ok := sr.res.ResolveFieldPathInContext(base, fixed, sr.unionContext())
+	if !ok {
 		return nil, false
 	}
+
 	array, ok := field.Type().(*typeinfo.Array)
-	if !ok || array.Elem == nil || array.Elem.Bytes() != scale {
+	if !ok || array.Elem == nil {
 		return nil, false
 	}
+
+	elemSize := array.Elem.Bytes()
+	if elemSize <= 0 || elemSize != scale {
+		return nil, false
+	}
+
+	// The fixed part may land within the indexed element, e.g.
+	//
+	//     rgwtMin[j]     -> elemOff 0
+	//     rgwtMin[j] + 2 -> elemOff 2
+	//
+	// but it must remain completely inside that element.
+	if elemOff < 0 || elemOff >= elemSize || (width > 0 && elemOff+width > elemSize) {
+		return nil, false
+	}
+
 	term := &symresolve.SymbolTerm{
 		Base:   field,
-		Scale:  scale,
+		Scale:  elemSize,
 		Result: array.Elem,
 	}
 	if indexSymbol, ok := sr.symbolFromAddressTermValue(index); ok {
@@ -214,10 +280,16 @@ func (sr *symbolResolver) symbolFromIndexedField(base symresolve.SymbolPath, fix
 	} else {
 		term.IndexVal = index
 	}
-	if width == array.Elem.Bytes() {
+
+	if elemOff == 0 && width == elemSize {
 		return term, true
 	}
-	return &symresolve.SymbolOffset{Base: term, Offset: 0, Result: array.Elem}, true
+
+	return &symresolve.SymbolOffset{
+		Base:   term,
+		Offset: elemOff,
+		Result: array.Elem,
+	}, true
 }
 
 // pointerIndexElementType returns the element type reached by indexing a

@@ -294,10 +294,6 @@ func stripCComments(s string) string {
 }
 
 type symbolicConfigJSON struct {
-	Enums struct {
-		Import        string   `json:"import"`
-		ImportHeaders []string `json:"import_headers"`
-	} `json:"enums"`
 	Uses           []useRuleJSON           `json:"uses"`
 	Messages       []messageRuleJSON       `json:"messages"`
 	DependentEnums []dependentEnumRuleJSON `json:"dependent_enums"`

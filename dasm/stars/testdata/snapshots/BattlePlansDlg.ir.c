@@ -1,5 +1,5 @@
 int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t idc;
     int16_t i;
     int16_t fRet;
@@ -23,7 +23,7 @@ L_0652:
     goto L_16d5;
 
 L_0661:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 1);
     iPlanSelDlg = 0;
     if ((sel.grobj != grobjFleet))
         goto L_068d;
@@ -265,10 +265,10 @@ L_0b12:
 
 L_0b1c:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
 
 L_0b6e:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 0);
     EndDialog(hwnd, iPlanSelDlg);
     if ((sel.grobj != grobjFleet))
         goto L_0ba9;
@@ -307,7 +307,7 @@ L_0c0f:
 
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_0c71:
@@ -320,7 +320,7 @@ L_0c71:
         goto L_0cf7;
 
 L_0cf7:
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, (iPlanSelDlg - 1), 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
     i = 0;
@@ -422,7 +422,7 @@ L_0f92:
         goto LRename;
 
 LRename:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 0);
     lpProc = MakeProcInstance(NewPlanNameDlg, hInst);
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc);
     FreeProcInstance(lpProc);
@@ -510,7 +510,7 @@ L_1157:
 
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_11b9:
@@ -621,7 +621,7 @@ L_14d5:
 
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_1537:

@@ -649,7 +649,7 @@ int16_t ICompLong(void *arg1, void *arg2) {
 L_1d74:
 
 L_1d90:
-    return (arg1 - arg2);
+    return (*(arg1) - *(arg2));
 }
 
 char *PszGetCompressedPlanet(int16_t id) {
@@ -894,8 +894,8 @@ L_2079:
     goto L_20cf;
 
 L_2090:
-    RgFromStream(&(rgb), 0x800);
-    if ((_lwrite(hfDst, &(rgb), 0x800) != 0x800))
+    RgFromStream(rgb, 0x800);
+    if ((_lwrite(hfDst, rgb, 0x800) != 0x800))
         goto LStreamError;
     else
         goto L_20c4;
@@ -934,8 +934,8 @@ L_20f3:
         goto L_20fd;
 
 L_20fd:
-    RgFromStream(&(rgb), LOWORD(cb));
-    _lwrite(hfDst, &(rgb), LOWORD(cb));
+    RgFromStream(rgb, LOWORD(cb));
+    _lwrite(hfDst, rgb, LOWORD(cb));
 
 LStreamError:
     StreamClose();
@@ -1023,7 +1023,7 @@ L_225e:
     *(psz) = 0;
 
 L_226d:
-    return (psz + (-pszTT));
+    return (psz - pszTT);
 }
 
 char *PszFromInt(int16_t i, int16_t *pcch) {
@@ -1303,7 +1303,7 @@ L_251e:
     *(pchOut) = 0;
 
 L_252d:
-    return (pchOut + (-psz));
+    return (pchOut - psz);
 }
 
 void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen) {
@@ -1390,7 +1390,7 @@ Top:
     pch = pchStart;
     pchEnd = &(pchStart[cLen]);
     ChopTrailingSpaces(pch, &(pchEnd));
-    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd + (-pch))));
+    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd - pch)));
     fItFit = 1;
 
 L_2694:
@@ -1414,7 +1414,7 @@ L_26aa:
 L_26b3:
     fItFit = 0;
     ChopLastWord(pch, &(pchEnd));
-    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd + (-pch))));
+    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd - pch)));
     goto L_2694;
 
 L_26e3:
@@ -1425,7 +1425,7 @@ L_26e3:
 
 L_26ec:
     AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
-    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd + (-pchStart))));
+    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
 
 L_271a:
     if ((pchStart != pchEnd))
@@ -1441,7 +1441,7 @@ L_2728:
 
 L_2735:
     pchEnd = &(pchStart[cLen]);
-    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd + (-pchStart))));
+    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
 
 L_275f:
     if ((fPrint == 0))
@@ -1450,7 +1450,7 @@ L_275f:
         goto L_2768;
 
 L_2768:
-    TextOut(hdc, *(px), *(py), pchStart, (pchEnd + (-pchStart)));
+    TextOut(hdc, *(px), *(py), pchStart, (pchEnd - pchStart));
 
 L_2788:
     *(px) = (*(px) + dx);
@@ -1732,7 +1732,7 @@ L_2b40:
 L_2b4c:
     plf = LocalAlloc(0x40, 0x32);
     plf->lfWeight = 900;
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
+    strcpy(plf->lfFaceName, rgszArial[1]);
     if ((dx <= dy))
         goto L_2b8a;
     else
@@ -2536,14 +2536,14 @@ L_3ae1:
 
 L_3b00:
     cpt = 3;
-    memcpy(&(rgptDraw), rgptTriangle, (cpt * 4));
+    memcpy(rgptDraw, rgptTriangle, (cpt * 4));
     dx = 8;
     dy = 4;
     goto L_3b51;
 
 L_3b2a:
     cpt = 5;
-    memcpy(&(rgptDraw), rgptArrow, (cpt * 4));
+    memcpy(rgptDraw, rgptArrow, (cpt * 4));
     dx = 6;
     dy = 6;
 
@@ -3281,7 +3281,7 @@ L_4641:
     *(pchOut) = (*(pchOut) | LOBYTE((iNyb & 0xf)));
     pchOut = (pchOut + 1);
     fHalf = 0;
-    if (((pchOut + (-&(szWork))) < 0x400))
+    if (((pchOut - szWork) < 0x400))
         goto L_4671;
     else
         goto L_466b;
@@ -3308,7 +3308,7 @@ L_468b:
     pchOut = (pchOut + 1);
 
 L_4697:
-    if (((pchOut + (-&(szWork))) <= *(pcOut)))
+    if (((pchOut - szWork) <= *(pcOut)))
         goto L_46b1;
     else
         goto L_46ab;
@@ -3317,8 +3317,8 @@ L_46ab:
     return 0;
 
 L_46b1:
-    *(pcOut) = (pchOut + (-&(szWork)));
-    fmemcpy(szOut, &(szWork), *(pcOut));
+    *(pcOut) = (pchOut - szWork);
+    fmemcpy(szOut, szWork, *(pcOut));
     return 1;
 }
 
@@ -3452,7 +3452,7 @@ L_4819:
 L_481c:
     *(pchOut) = LOBYTE(ChFromNybble(iNyb));
     pchOut = (pchOut + 1);
-    if (((pchOut + (-&(szWork))) <= *(pcOut)))
+    if (((pchOut - szWork) <= *(pcOut)))
         goto L_484d;
     else
         goto L_4847;
@@ -3747,7 +3747,7 @@ L_4bb4:
     ppal = LocalAlloc(0x40, ((cColors * 4) + 8));
     ppal->palNumEntries = cColors;
     ppal->palVersion = 0x300;
-    fmemcpy(ppal->palPalEntry, lpb[40], (cColors * 4));
+    fmemcpy(ppal->palPalEntry, &(lpb[40]), (cColors * 4));
     i = 0;
     goto L_4c64;
 
@@ -4541,7 +4541,7 @@ L_58d1:
 }
 
 int16_t FCheckPassword() {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t fRet;
     int32_t lSaltDef;
     HWND    t_merge_59a8_0001;
@@ -4580,7 +4580,7 @@ L_5918:
     return 1;
 
 L_591e:
-    if (((uint16_t)(LOWORD(vszDefPass)) == 0x0))
+    if (((uint16_t)(vszDefPass[0]) == 0))
         goto L_5959;
     else
         goto L_592a;
@@ -5679,7 +5679,7 @@ L_6aa6:
     plf = LocalAlloc(0x40, 0x32);
     memset(plf, 0, 0x32);
     plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
+    strcpy(plf->lfFaceName, rgszArial[1]);
     hfontNew = CreateFontIndirect(plf);
     if ((pdyFont == 0x0))
         goto L_6b5b;

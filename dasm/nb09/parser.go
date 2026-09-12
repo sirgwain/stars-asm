@@ -898,8 +898,8 @@ func parseModifier(d []byte) *LFModifier {
 		return nil
 	}
 	return &LFModifier{
-		UType: le.Uint16(d[0:2]),
-		Mod:   le.Uint16(d[2:4]),
+		Mod:   le.Uint16(d[0:2]),
+		UType: le.Uint16(d[2:4]),
 	}
 }
 

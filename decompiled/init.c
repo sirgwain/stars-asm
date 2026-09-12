@@ -421,7 +421,7 @@ L_0c66:
         goto L_0c6f;
 
 L_0c6f:
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
+    strcpy(plf->lfFaceName, rgszArial[1]);
     plf->lfEscapement = 3150;
     rghfontArial8[4] = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
@@ -626,19 +626,19 @@ L_1020:
         goto L_1070;
 
 L_1070:
-    if (((uint16_t)(LOWORD(szWork)) == 0x4d))
+    if (((uint16_t)(szWork[0]) == 77))
         goto L_10cc;
     else
         goto L_107c;
 
 L_107c:
-    if (((uint16_t)(LOWORD(szWork)) == 0x52))
+    if (((uint16_t)(szWork[0]) == 82))
         goto L_10cc;
     else
         goto L_1088;
 
 L_1088:
-    if (((uint16_t)(LOWORD(szWork)) == 0x49))
+    if (((uint16_t)(szWork[0]) == 73))
         goto L_10cc;
     else
         goto NoRc;
@@ -736,7 +736,7 @@ L_119f:
     rc.top = rg[1];
     rc.right = rg[2];
     rc.bottom = rg[3];
-    if (((uint16_t)(LOWORD(szWork)) != 0x4d))
+    if (((uint16_t)(szWork[0]) != 77))
         goto L_11c9;
     else
         goto L_11c3;
@@ -750,7 +750,7 @@ L_11c9:
 
 L_11cc:
     fMaximized = t_merge_11cc_0001;
-    if (((uint16_t)(LOWORD(szWork)) != 0x49))
+    if (((uint16_t)(szWork[0]) != 73))
         goto L_11e1;
     else
         goto L_11db;
@@ -812,8 +812,6 @@ void ReadIniSettings() {
     uint16_t   t_scratch_m4a_8;
     uint16_t   t_scratch_m4c;
     uint16_t   t_merge_2483_0001;
-    uint16_t   t_scratch_m4a_12;
-    uint16_t   t_scratch_m4a_13;
     uint16_t   t_merge_2981_0001;
     uint16_t   t_scratch_m4c_6;
 
@@ -1212,7 +1210,7 @@ L_17b4:
     goto L_17d7;
 
 L_17c3:
-    FSerialAndEnvFromSz(vSerialNumber, vrgbMachineConfig, szWork);
+    FSerialAndEnvFromSz(&(vSerialNumber), vrgbMachineConfig, szWork);
 
 L_17d7:
     CchGetString(idsPlanettiles, szEntry);
@@ -1252,25 +1250,25 @@ L_1908:
     goto L_193d;
 
 L_191a:
-    if (((uint16_t)(LOWORD(szWork)) == 0x45))
+    if (((uint16_t)(szWork[0]) == 69))
         goto L_1908;
     else
         goto L_1922;
 
 L_1922:
-    if (((uint16_t)(LOWORD(szWork)) == 0x4e))
+    if (((uint16_t)(szWork[0]) == 78))
         goto L_18db;
     else
         goto L_192a;
 
 L_192a:
-    if (((uint16_t)(LOWORD(szWork)) == 0x50))
+    if (((uint16_t)(szWork[0]) == 80))
         goto L_18ea;
     else
         goto L_1932;
 
 L_1932:
-    if (((uint16_t)(LOWORD(szWork)) != 0x53))
+    if (((uint16_t)(szWork[0]) != 83))
         goto L_18db;
     else
         goto L_1937;
@@ -1304,7 +1302,7 @@ L_196e:
         goto L_1986;
 
 L_1986:
-    ini.iObjSel = atoi(szWork[2]);
+    ini.iObjSel = atoi(&(szWork[2]));
 
 L_1995:
     CchGetString(idsMessage, szEntry);
@@ -1697,9 +1695,9 @@ L_239d:
     strdate(szWork);
     szWork[5] = 0;
     szWork[2] = 0;
-    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(szWork[6]) * 31)) * 0xc));
+    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(&(szWork[6])) * 31)) * 0xc));
     t_scratch_m4c = LOWORD((atoi(szWork) * 31));
-    uDateCur = ((atoi(szWork[3]) + t_scratch_m4c) + t_scratch_m4a_8);
+    uDateCur = ((atoi(&(szWork[3])) + t_scratch_m4c) + t_scratch_m4a_8);
     CchGetString(idsHistoryinfo, szEntry);
     uDateInstalled = GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     if ((uDateCur >= uDateInstalled))
@@ -1825,13 +1823,9 @@ L_2655:
     t_scratch_m4e = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
     vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
     psz = (psz + 1);
-    t_scratch_m4a_12 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
-    vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_12);
+    vrgZip[i].txp.rgia[iPass].cQuan = ((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]);
     psz = (psz + 1);
-    t_scratch_m4a_13 = (((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]) & 0xfff);
-    vrgZip[i].txp.rgia[iPass].cQuan = 0x0;
-    vrgZip[i].txp.rgia[iPass] = (vrgZip[i].txp.rgia[iPass] | t_scratch_m4a_13);
+    vrgZip[i].txp.rgia[iPass].cQuan = ((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]);
     psz = (psz + 1);
     iPass = (iPass + 1);
 
@@ -1932,7 +1926,7 @@ L_2938:
         goto L_294e;
 
 L_294e:
-    strcpy((0x22f6 + LOWORD((40 * i))), psz);
+    strcpy(vrgZipProd[i].szName, psz);
     psz = szWork;
     if (((uint16_t)(*(psz)) == 97))
         goto L_297e;

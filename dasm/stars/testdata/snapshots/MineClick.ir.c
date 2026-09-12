@@ -63,7 +63,7 @@ L_3b94:
 
 L_3b9e:
     lppl = LpplFromId(sel.scan.idpl);
-    HIWORD(GlobalPD) = lppl->iPlayer;
+    GlobalPD.iPlayer = lppl->iPlayer;
     goto L_3c0f;
 
 L_3bbd:
@@ -73,11 +73,11 @@ L_3bbd:
         goto L_3bc7;
 
 L_3bc7:
-    HIWORD(GlobalPD) = lpThings[sel.scan.ith].iplr;
+    GlobalPD.iPlayer = lpThings[sel.scan.ith].iplr;
     goto L_3c0f;
 
 L_3beb:
-    HIWORD(GlobalPD) = rglpfl[sel.scan.ifl]->iplr;
+    GlobalPD.iPlayer = rglpfl[sel.scan.ifl]->iplr;
 
 L_3c0f:
     GlobalPD.grPopup = grPopupPlayer;
@@ -217,7 +217,7 @@ L_3ef6:
 
 L_3f20:
     GlobalPD.grPopup = grPopupPlanet;
-    HIWORD(GlobalPD) = sel.scan.idpl;
+    GlobalPD.idPlanet = sel.scan.idpl;
     Popup(hwndMine, x, y);
     goto L_47d5;
 

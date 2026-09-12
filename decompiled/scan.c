@@ -75,8 +75,7 @@ L_0071:
 
 L_007a:
     hdc = GetDC(hwndScanner);
-    pt.x = sel.scan.pt.x;
-    pt.y = sel.scan.pt.y;
+    pt = sel.scan.pt;
     LogicalToScan(&(pt));
     iRopSav = SetROP2(hdc, 7);
     hpenSav = SelectObject(hdc, hpenYellow);
@@ -418,7 +417,7 @@ L_0570:
     sel.pl.idFling = (scan.idpl + 1);
 
 L_058f:
-    FLookupPlanet(-1, sel.pl.id);
+    FLookupPlanet(-1, &(sel.pl));
     gd.fSetMassMode = 0x0;
     DrawShipScanPath(0x0, 1);
     DrawPlanShip(0x0, 16640);
@@ -463,7 +462,7 @@ L_0630:
     sel.pl.idRoute = (scan.idpl + 1);
 
 L_064f:
-    FLookupPlanet(-1, sel.pl.id);
+    FLookupPlanet(-1, &(sel.pl));
     gd.fSetRouteMode = 0x0;
     DrawShipScanPath(0x0, 1);
     DrawPlanShip(0x0, 16448);
@@ -499,8 +498,7 @@ L_06c5:
 
 L_06cf:
     iChecked = -1;
-    pt.x = scan.pt.x;
-    pt.y = scan.pt.y;
+    pt = scan.pt;
     if (((scan.grobjFull & 0x1) == 0x0))
         goto L_072b;
     else
@@ -1612,8 +1610,7 @@ L_13ea:
         goto L_1411;
 
 L_1411:
-    ptSelMain.x = sel.pt.x;
-    ptSelMain.y = sel.pt.y;
+    ptSelMain = sel.pt;
     goto L_1430;
 
 L_1423:
@@ -2111,8 +2108,7 @@ L_1d96:
         goto L_1da8;
 
 L_1da8:
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     if ((pt.x < xMin))
         goto L_1d0d;
     else
@@ -2419,8 +2415,7 @@ L_224b:
         goto L_2262;
 
 L_2262:
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     sqrt((double)(lpth->thm.cMines));
     dRange = LOWORD(__ftol());
     rc.left = PtToScan(((xOff + pt.x) - dRange));
@@ -2534,8 +2529,7 @@ L_24bc:
     SetBrushOrg(hdc, ptOrigin.x, ptOrigin.y);
     SelectObject(hdc, rghbrPat[lpth->thm.iType]);
     SetTextColor(hdc, 0xffff00);
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     sqrt((double)(lpth->thm.cMines));
     dRange = LOWORD(__ftol());
     rc.left = PtToScan(((xOff + pt.x) - dRange));
@@ -2589,8 +2583,7 @@ L_2686:
         goto L_26a0;
 
 L_26a0:
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     LogicalToScan(&(pt));
     if ((lpth->ith != ithWormhole))
         goto L_277e;
@@ -2625,8 +2618,7 @@ L_2723:
 
 L_272b:
     MoveTo(hdc, pt.x, pt.y);
-    pt2.x = lpthDest->pt.x;
-    pt2.y = lpthDest->pt.y;
+    pt2 = lpthDest->pt;
     LogicalToScan(&(pt2));
     LineTo(hdc, pt2.x, pt2.y);
     LineTo(hdc, pt2.x, (pt2.y + 1));
@@ -2867,8 +2859,7 @@ L_2c27:
         goto L_2c38;
 
 L_2c38:
-    pt.x = lpfl->lpplord->rgord[iord].pt.x;
-    pt.y = lpfl->lpplord->rgord[iord].pt.y;
+    pt = lpfl->lpplord->rgord[iord].pt;
     pt.x = PtToScan((xOff + pt.x));
     pt.y = PtToScan((yOff - pt.y));
     if ((iord != 0))
@@ -2893,7 +2884,7 @@ L_2cc0:
     SelectClipRgn(hdc, hrgnHuge);
     GetClientRect(hwndScanner, &(rc));
     ExcludeClipRect(hdc, 0, (rc.bottom - dySBar), rc.right, rc.bottom);
-    memset(&(rgWhatsHere), 0, 0x3e7);
+    memset(rgWhatsHere, 0, 0x3e7);
     goto L_2d54;
 
 L_2d15:
@@ -3174,8 +3165,7 @@ L_3111:
         goto L_311a;
 
 L_311a:
-    pt.x = sel.pt.x;
-    pt.y = sel.pt.y;
+    pt = sel.pt;
     LogicalToScan(&(pt));
     BitBlt(hdc, (pt.x - 5), ((pt.y + 11) + j), 11, 12, hdcMem, 0, 80, SRCAND);
     BitBlt(hdc, (pt.x - 5), ((pt.y + 11) + j), 11, 12, hdcMem, 0, 57, SRCPAINT);
@@ -3188,8 +3178,7 @@ L_31a0:
         goto L_31aa;
 
 L_31aa:
-    pt.x = sel.scan.pt.x;
-    pt.y = sel.scan.pt.y;
+    pt = sel.scan.pt;
     LogicalToScan(&(pt));
     BitBlt(hdc, (pt.x - 3), ((pt.y + 7) + j), 7, 8, hdcMem, 22, 80, SRCAND);
     BitBlt(hdc, (pt.x - 3), ((pt.y + 7) + j), 7, 8, hdcMem, 22, 49, SRCPAINT);
@@ -4177,13 +4166,11 @@ L_41fc:
         goto L_4211;
 
 L_4211:
-    pt.x = rgptPlan[idP].x;
-    pt.y = rgptPlan[idP].y;
+    pt = rgptPlan[idP];
     goto L_423b;
 
 L_422a:
-    pt.x = lpflT->pt.x;
-    pt.y = lpflT->pt.y;
+    pt = lpflT->pt;
 
 L_423b:
     if ((pt.x < xMin))
@@ -5415,8 +5402,7 @@ L_54bc:
 
 L_54c6:
     lpth = (lpThings + sel.scan.ith);
-    ptCur.x = lpth->pt.x;
-    ptCur.y = lpth->pt.y;
+    ptCur = lpth->pt;
     if ((lpth->ith != ithMysteryTrader))
         goto L_5543;
     else
@@ -5470,8 +5456,7 @@ LNextCheck:
 
 L_562d:
     lpfl = rglpfl[sel.scan.ifl];
-    ptCur.x = lpfl->pt.x;
-    ptCur.y = lpfl->pt.y;
+    ptCur = lpfl->pt;
     if ((lpfl->fdirValid == 0x0))
         goto LNoObjPath;
     else
@@ -5716,12 +5701,10 @@ LDrawPath:
     iRopSav = SetROP2(hdc, 7);
     GetClientRect(hwndScanner, &(rc));
     ExcludeClipRect(hdc, rc.left, (rc.bottom - dySBar), rc.right, rc.bottom);
-    pt.x = rgptPlan[sel.pl.id].x;
-    pt.y = rgptPlan[sel.pl.id].y;
+    pt = rgptPlan[sel.pl.id];
     LogicalToScan(&(pt));
     MoveTo(hdc, pt.x, pt.y);
-    pt.x = rgptPlan[id].x;
-    pt.y = rgptPlan[id].y;
+    pt = rgptPlan[id];
     LogicalToScan(&(pt));
     LineTo(hdc, pt.x, pt.y);
     SetROP2(hdc, iRopSav);
@@ -5758,10 +5741,9 @@ L_5dfa:
         goto L_5e07;
 
 L_5e07:
-    memset(&(rgDup), 0, (sel.fl.cord * 2));
+    memset(rgDup, 0, (sel.fl.cord * 2));
     lpord1 = sel.fl.lpplord->rgord;
-    pt.x = lpord1->pt.x;
-    pt.y = lpord1->pt.y;
+    pt = lpord1->pt;
     i = 1;
     goto L_5e67;
 
@@ -5777,8 +5759,7 @@ L_5e67:
 
 L_5e73:
     lpord2 = (lpord1 + 1);
-    pt2.x = lpord2->pt.x;
-    pt2.y = lpord2->pt.y;
+    pt2 = lpord2->pt;
     if ((rgDup[i] != 0))
         goto DoNext;
     else
@@ -5854,8 +5835,7 @@ L_5f8c:
     goto L_5ebd;
 
 DoNext:
-    pt.x = pt2.x;
-    pt.y = pt2.y;
+    pt = pt2;
     goto L_5e4f;
 
 L_5fa2:
@@ -5874,8 +5854,7 @@ L_5fd9:
 
 L_5fe7:
     hpenSav = SelectObject(hdc, hpenStarbase);
-    pt.x = sel.fl.lpplord->rgord[0].pt.x;
-    pt.y = sel.fl.lpplord->rgord[0].pt.y;
+    pt = sel.fl.lpplord->rgord[0].pt;
     LogicalToScan(&(pt));
     MoveTo(hdc, pt.x, pt.y);
     i = 1;
@@ -5891,12 +5870,10 @@ L_6036:
         goto L_6042;
 
 L_6042:
-    pt2.x = sel.fl.lpplord->rgord[i].pt.x;
-    pt2.y = sel.fl.lpplord->rgord[i].pt.y;
+    pt2 = sel.fl.lpplord->rgord[i].pt;
     LogicalToScan(&(pt2));
     LineTo(hdc, pt2.x, pt2.y);
-    pt.x = pt2.x;
-    pt.y = pt2.y;
+    pt = pt2;
     goto L_6031;
 
 L_6099:
@@ -5905,8 +5882,7 @@ L_6099:
 L_60a5:
     hpenSav = SelectObject(hdc, hpenShip);
     iRopSav = SetROP2(hdc, 7);
-    pt.x = sel.fl.lpplord->rgord[0].pt.x;
-    pt.y = sel.fl.lpplord->rgord[0].pt.y;
+    pt = sel.fl.lpplord->rgord[0].pt;
     if ((pt.x != sel.pt.x))
         goto L_60f8;
     else
@@ -5943,8 +5919,7 @@ L_615c:
         goto L_6168;
 
 L_6168:
-    pt2.x = sel.fl.lpplord->rgord[i].pt.x;
-    pt2.y = sel.fl.lpplord->rgord[i].pt.y;
+    pt2 = sel.fl.lpplord->rgord[i].pt;
     if ((pt2.x != sel.pt.x))
         goto L_61ae;
     else
@@ -6010,8 +5985,7 @@ L_6279:
     SelectObject(hdc, hpenShip);
 
 L_6285:
-    pt.x = pt2.x;
-    pt.y = pt2.y;
+    pt = pt2;
     goto L_6157;
 
 L_6298:
@@ -6198,8 +6172,7 @@ L_6580:
         goto L_65cc;
 
 L_65cc:
-    pt.x = psbar->pt.x;
-    pt.y = psbar->pt.y;
+    pt = psbar->pt;
     goto GotCoords;
 
 L_65de:
@@ -6209,8 +6182,7 @@ L_65de:
         goto L_65e7;
 
 L_65e7:
-    pt.x = sel.scan.pt.x;
-    pt.y = sel.scan.pt.y;
+    pt = sel.scan.pt;
     goto GotCoords;
 
 L_65f7:
@@ -6394,8 +6366,7 @@ L_6883:
         goto L_68f6;
 
 L_68f6:
-    pt.x = psbar->pt.x;
-    pt.y = psbar->pt.y;
+    pt = psbar->pt;
     goto L_692c;
 
 L_6908:
@@ -6405,8 +6376,7 @@ L_6908:
         goto L_6911;
 
 L_6911:
-    pt.x = sel.scan.pt.x;
-    pt.y = sel.scan.pt.y;
+    pt = sel.scan.pt;
     goto L_692c;
 
 L_6921:
@@ -6426,8 +6396,7 @@ L_6935:
         goto L_6941;
 
 L_6941:
-    pt2.x = psbar->pscan->pt.x;
-    pt2.y = psbar->pscan->pt.y;
+    pt2 = psbar->pscan->pt;
     goto L_697e;
 
 L_6955:
@@ -6443,8 +6412,7 @@ L_695f:
         goto L_6969;
 
 L_6969:
-    pt2.x = sel.pt.x;
-    pt2.y = sel.pt.y;
+    pt2 = sel.pt;
     goto L_697e;
 
 L_6979:
@@ -6913,8 +6881,7 @@ L_7035:
         goto L_703e;
 
 L_703e:
-    pt.x = sel.pt.x;
-    pt.y = sel.pt.y;
+    pt = sel.pt;
     LogicalToScan(&(pt));
     SetRect(&(rc), ((pt.x - 11) - dOff), ((pt.y - 11) - dOff), ((pt.x + 12) + dOff), ((pt.y + 23) + dOff));
     DrawScanner(hdc, &(rc));
@@ -6938,8 +6905,7 @@ L_70b2:
         goto L_70ba;
 
 L_70ba:
-    pt.x = sel_scan.pt.x;
-    pt.y = sel_scan.pt.y;
+    pt = sel_scan.pt;
     LogicalToScan(&(pt));
     SetRect(&(rc), ((pt.x - 6) - dOff), ((pt.y - 6) - dOff), ((pt.x + 7) + dOff), ((pt.y + 15) + dOff));
     DrawScanner(hdc, &(rc));
@@ -7293,8 +7259,7 @@ L_7644:
     pscan->idpl = -1;
     pscan->ifl = -1;
     pscan->iwp = (sel.iwpAct + 1);
-    pscan->pt.x = ptIn.x;
-    pscan->pt.y = ptIn.y;
+    pscan->pt = ptIn;
 
 L_7680:
     lpord = &(sel.fl.lpplord->rgord[sel.iwpAct]);
@@ -7356,12 +7321,11 @@ L_7788:
         goto L_7797;
 
 L_7797:
-    fmemmove(lpord[1], lpord, (((sel.fl.cord - sel.iwpAct) - 1) * 18));
+    fmemmove(&(lpord[1]), lpord, (((sel.fl.cord - sel.iwpAct) - 1) * 18));
 
 L_77c2:
     *(lpord) = *((lpord + (-1)));
-    lpord->pt.x = pscan->pt.x;
-    lpord->pt.y = pscan->pt.y;
+    lpord->pt = pscan->pt;
     goto L_785a;
 
 L_77ff:
@@ -7415,7 +7379,7 @@ L_787d:
     pscan->grobjFull = (pscan->grobjFull | 0x4);
     pscan->iwp = (sel.iwpAct + 1);
     RedrawScanSel(0x0, 0);
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     if ((lpord[(-1)].grTask != grTaskLayMines))
         goto L_7990;
     else
@@ -7430,7 +7394,7 @@ L_7942:
 L_794f:
     fmemset(((uint8_t *)(lpord) + -10), 0, 0xa);
     lpord[(-1)].grTask = grTaskNone;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_7990:
     ChangeScanSel(pscan, 1);
@@ -8144,8 +8108,7 @@ L_82ee:
     hdc = GetDC(hwndScanner);
     hcurSav = SetCursor(hcurCloseGrab);
     SetCapture(hwndScanner);
-    ptNew.x = pt.x;
-    ptNew.y = pt.y;
+    ptNew = pt;
 
 L_8333:
     if ((FGetMouseMove(&(ptNew)) == 0))
@@ -8253,8 +8216,7 @@ L_83e4:
 
 L_8401:
     fFirst = 0;
-    ptLogical.x = ptNew.x;
-    ptLogical.y = ptNew.y;
+    ptLogical = ptNew;
     ScanToLogical(&(ptLogical));
     if (((GetAsyncKeyState(16) & 0xfffe) == 0x0))
         goto L_8438;
@@ -8331,8 +8293,7 @@ L_850d:
     DrawScannerSBar(hdc, 0x0, &(sbar), 0);
 
 DoNext:
-    pt.x = ptNew.x;
-    pt.y = ptNew.y;
+    pt = ptNew;
 
 L_8565:
     goto L_8333;
@@ -8370,8 +8331,7 @@ L_8593:
         goto L_859c;
 
 L_859c:
-    scan.pt.x = ptLogical.x;
-    scan.pt.y = ptLogical.y;
+    scan.pt = ptLogical;
     scan.grobj = grobjOther;
     scan.iwp = sel.iwpAct;
 
@@ -8607,11 +8567,10 @@ L_8960:
     lpord = &(sel.fl.lpplord->rgord[sel.iwpAct]);
     lpord->grobj = scan.grobj;
     lpord->id = i;
-    lpord->pt.x = scan.pt.x;
-    lpord->pt.y = scan.pt.y;
+    lpord->pt = scan.pt;
     t_scratch_m8a_2 = IWarpBestForWaypoint(&(sel.fl), lpord);
     lpord->iWarp = t_scratch_m8a_2;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     scan.iwp = sel.iwpAct;
     scan.grobjFull = (scan.grobjFull | 0x4);
     sel.iwpAct = -2;
@@ -8757,7 +8716,7 @@ L_8cd6:
     FFindNearestObject(pscan->pt, pscan->grobj, pscan);
 
 L_8cef:
-    if ((memcmp(pscan, sel.scan.pt.x, 0x10) == 0))
+    if ((memcmp(pscan, &(sel.scan), 0x10) == 0))
         goto L_9095;
     else
         goto L_8d0d;
@@ -9161,7 +9120,7 @@ L_9286:
     goto L_9429;
 
 L_9295:
-    StickyDlgPos(hwnd, ptStickyFindDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyFindDlg), 1);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x27, 0);
     return 1;
 
@@ -9212,7 +9171,7 @@ L_936d:
     return 0;
 
 L_93c2:
-    StickyDlgPos(hwnd, ptStickyFindDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyFindDlg), 0);
     if ((wParam != 0x1))
         goto L_93e7;
     else
@@ -9540,7 +9499,7 @@ void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD) {
     double   dbl;
     int16_t  iBmp;
     int32_t  t_call_990c;
-    uint32_t t_merge_9938_0001_wide;
+    uint16_t t_merge_9938_0001;
 
 L_987c:
     iBmp = 0;
@@ -9568,15 +9527,15 @@ LFinishUp:
         goto L_992f;
 
 L_992f:
-    t_merge_9938_0001_wide = 0x90009;
+    t_merge_9938_0001 = 0x9;
     goto L_9938;
 
 L_9935:
-    t_merge_9938_0001_wide = 0x70007;
+    t_merge_9938_0001 = 0x7;
 
 L_9938:
-    pptD->y = LOWORD(t_merge_9938_0001_wide);
-    pptD->x = HIWORD(t_merge_9938_0001_wide);
+    pptD->y = t_merge_9938_0001;
+    pptD->x = t_merge_9938_0001;
     if ((iScanZoom < 0))
         goto L_9957;
     else
@@ -9616,10 +9575,8 @@ int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt) {
 
 L_9974:
     fVirgin = 1;
-    ptLogLast.x = pscan->pt.x;
-    ptLogLast.y = pscan->pt.y;
-    ptBase.x = pscan->pt.x;
-    ptBase.y = pscan->pt.y;
+    ptLogLast = pscan->pt;
+    ptBase = pscan->pt;
     LogicalToScan(&(ptBase));
     GetClientRect(hwndScanner, &(rc));
     rc.bottom = (rc.bottom - dySBar);
@@ -9628,8 +9585,7 @@ L_9974:
     sbar.pscan = pscan;
     hpenSav = SelectObject(hdc, hpenShip);
     iropSav = SetROP2(hdc, 7);
-    ptNew.x = pt.x;
-    ptNew.y = pt.y;
+    ptNew = pt;
     LogicalToScan(&(ptNew));
 
 L_9a11:
@@ -9713,8 +9669,7 @@ L_9a95:
 
 L_9a98:
     ptNew.y = t_merge_9a98_0001;
-    ptLogical.x = ptNew.x;
-    ptLogical.y = ptNew.y;
+    ptLogical = ptNew;
     ScanToLogical(&(ptLogical));
     if (((GetAsyncKeyState(16) & 0xfffe) == 0x0))
         goto L_9acd;
@@ -9736,8 +9691,7 @@ L_9ad0:
         goto L_9af0;
 
 L_9af0:
-    ptLogical.x = scan.pt.x;
-    ptLogical.y = scan.pt.y;
+    ptLogical = scan.pt;
 
 L_9afc:
     if ((ptLogLast.x != ptLogical.x))
@@ -9752,8 +9706,7 @@ L_9b0a:
         goto L_9b15;
 
 L_9b15:
-    ptNew.x = ptLogical.x;
-    ptNew.y = ptLogical.y;
+    ptNew = ptLogical;
     LogicalToScan(&(ptNew));
     if ((fVirgin == 0))
         goto L_9b6f;
@@ -9831,14 +9784,11 @@ L_9c32:
     sbar.psz = 0x0;
 
 L_9c37:
-    sbar.pt.x = ptLogical.x;
-    sbar.pt.y = ptLogical.y;
+    sbar.pt = ptLogical;
     sbar.grbit = scan.grobj;
     DrawScannerSBar(hdc, 0x0, &(sbar), 0);
-    pt.x = ptNew.x;
-    pt.y = ptNew.y;
-    ptLogLast.x = ptLogical.x;
-    ptLogLast.y = ptLogical.y;
+    pt = ptNew;
+    ptLogLast = ptLogical;
     goto L_9a11;
 
 L_9c7b:

@@ -52,7 +52,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SetTimer                  ; uint16_t SetTimer(HWND arg1, uint16_t arg2, uint16_t arg3, int32_t (**arg4)())
+CALLF     SetTimer                  ; uint16_t SetTimer(HWND arg1, uint16_t arg2, uint16_t arg3, int32_t (*arg4)())
 MOV       [uTimerId], ax            ; [0x01a2], ax
                                     ; stars.c:760
 MOV       ax, 0x0001          
@@ -276,7 +276,7 @@ MOV       dx, 0x127d
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [bp-lpProc], ax           ; [bp-0xe], ax
 MOV       [bp-lpProc+0x2], dx       ; [bp-0xc], dx
                                     ; stars.c:840
@@ -288,11 +288,11 @@ PUSH      ax
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]
-CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, DialogId arg2, HWND arg3, BOOL (**arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, DialogId arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
                                     ; stars.c:841
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]
-CALLF     FreeProcInstance          ; void FreeProcInstance(int32_t (**arg1)())
+CALLF     FreeProcInstance          ; void FreeProcInstance(int32_t (*arg1)())
 
 L_14df:                             ; stars.c:843
 JMP       L_1510              

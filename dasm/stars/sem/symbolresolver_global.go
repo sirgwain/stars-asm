@@ -102,8 +102,10 @@ func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Va
 func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value, disp int) (symresolve.SymbolPath, bool) {
 	fixed := disp
 	terms := collectAddTerms(baseVal)
+
 	var base symresolve.SymbolPath
 	var index machine.Value
+
 	for _, term := range terms {
 		if c, ok := term.(*machine.Const); ok {
 			fixed += int(c.Val)
@@ -121,9 +123,11 @@ func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value,
 		}
 		index = term
 	}
+
 	if base == nil {
 		return nil, false
 	}
+
 	if index != nil {
 		indexVal := stripLowWord(index)
 		indexBase, scale := sr.decomposeTerm(indexVal)
@@ -131,9 +135,16 @@ func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value,
 			indexBase = indexVal
 			scale = 1
 		}
-		if term, ok := sr.symbolFromIndexedField(base, fixed, width, indexBase, scale); ok {
-			return term, true
+
+		// Only resolve an indexed field when we're describing an actual
+		// memory access. An address-valued expression must preserve the
+		// addressed object for later typed projection.
+		if width > 0 {
+			if term, ok := sr.symbolFromIndexedField(base, fixed, width, indexBase, scale); ok {
+				return term, true
+			}
 		}
+
 		term := &symresolve.SymbolTerm{
 			Base:   base,
 			Scale:  scale,
@@ -146,15 +157,29 @@ func (sr *symbolResolver) decomposePointerBase(width int, baseVal machine.Value,
 		}
 		base = term
 	}
+
+	// width == 0 means this is an address value, not a load from that
+	// address. Preserve the complete addressed object and residual byte
+	// offset; typed call conversion can choose a subobject later.
+	if width == 0 {
+		if fixed == 0 {
+			return base, true
+		}
+		return &symresolve.SymbolOffset{Base: base, Offset: fixed, Result: base.Type()}, true
+	}
+
 	if typeinfo.IsPointer(base.Type()) && fixed+width <= base.Type().Bytes() {
 		return &symresolve.SymbolOffset{Base: base, Offset: fixed, Result: base.Type()}, true
 	}
+
 	if path, ok := sr.res.ResolveFieldPathLoadInContext(base, fixed, width, sr.unionContext()); ok {
 		return path, true
 	}
+
 	if path, offLeft, ok := sr.res.ResolveFieldPathInContext(base, fixed, sr.unionContext()); ok {
 		return &symresolve.SymbolOffset{Base: path, Offset: offLeft, Result: path.Type()}, true
 	}
+
 	return &symresolve.SymbolOffset{Base: base, Offset: fixed, Result: base.Type()}, true
 }
 
@@ -220,7 +245,7 @@ func (sr *symbolResolver) flexibleGlobalAddressBase(segNum uint16, offset uint32
 			match = global
 		}
 	}
-	if match == nil || !isZeroLengthArray(match.Type) {
+	if match == nil || !isZeroOrOneLengthArray(match.Type) {
 		return nil, 0, false
 	}
 	return &symresolve.SymbolRoot{Symbol: match}, int(offset - match.Addr.Off), true

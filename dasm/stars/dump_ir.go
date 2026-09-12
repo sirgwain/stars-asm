@@ -36,7 +36,7 @@ func renderFuncIRWithSections(w io.Writer, analysis FuncAnalysis, opt DumpIROpti
 		analysis.Annotations,
 		analysis.Annotations,
 	)
-	view := startemplates.NewDumpIRViewWithSem(analysis.IR, semView, startemplates.DumpIROptions{
+	view := startemplates.NewDumpIRViewWithSem(analysis.IR, semView, DumpIROptions{
 		DumpOptions: opt.DumpOptions,
 		ShowAsm:     opt.ShowAsm,
 		ShowEffects: opt.ShowEffects,

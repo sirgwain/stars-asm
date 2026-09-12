@@ -4,8 +4,7 @@ int16_t FLookupPart(PART *ppart) {
 
 L_524e:
     raMajor = GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv);
-    hs.grhst = ppart->hs.grhst;
-    HIWORD(hs) = HIWORD(ppart->hs);
+    hs = ppart->hs;
     goto L_6019;
 
 L_5287:
@@ -379,13 +378,13 @@ L_5676:
         goto L_569b;
 
 L_569b:
-    if ((hs.iItem == ihuldefMediumFreighter))
+    if ((hs.iItem == 0x1))
         goto L_56b7;
     else
         goto L_56a9;
 
 L_56a9:
-    if ((hs.iItem != ihuldefSuperFreighter))
+    if ((hs.iItem != 0x3))
         goto L_56de;
     else
         goto L_56b7;
@@ -400,7 +399,7 @@ L_56d8:
     return -1;
 
 L_56de:
-    if ((hs.iItem != ihuldefScout))
+    if ((hs.iItem != 0x4))
         goto L_609c;
     else
         goto L_56ec;

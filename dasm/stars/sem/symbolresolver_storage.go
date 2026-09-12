@@ -77,8 +77,21 @@ func (sr *symbolResolver) storageLaneFromResolvedAddress(addr resolvedAddress) (
 		path = part.Base
 	}
 	if len(addr.terms) != 0 && !symbolPathContainsTerm(path) {
-		path = nil
-		offset = 0
+		// The normalized storage address may contain multiple dynamic terms
+		// which apply at different type levels, for example:
+		//
+		//     rgplr + i*sizeof(PLAYER) + offsetof(rgResSpent) + j*sizeof(int32_t)
+		//
+		// Reuse normal typed address projection rather than trying to flatten
+		// those terms onto one symbolic base.
+		if projected, ok := sr.symbolPathFromAddressValue(addr, nil); ok &&
+			symbolPathContainsTerm(projected) {
+			path = projected
+			offset = 0
+		} else {
+			path = nil
+			offset = 0
+		}
 	}
 	if path == nil {
 		path = addr.base

@@ -11,8 +11,8 @@ L_0000:
     hInst = hInstance;
     szBase[0] = 0;
     ini.wFlags = 0x0;
-    memset(tutor.wFlags, 0, 0x2c);
-    memset(vtimer.mdForce, 0, 0xa);
+    memset(&(tutor), 0, 0x2c);
+    memset(&(vtimer), 0, 0xa);
     vtimer.fAutoGenWhenIn = 1;
     if ((hPrevInstance != 0x0))
         goto L_0085;
@@ -317,7 +317,7 @@ L_03c8:
     goto L_050d;
 
 L_03d7:
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_03e9;
     else
         goto L_03e3;
@@ -848,9 +848,9 @@ L_098b:
 
 L_0ab7:
     lpbi = GlobalLock(hdibPlaque);
-    LOBYTE(HIWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE(LOWORD(crButtonFace));
-    HIBYTE(LOWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    LOBYTE(LOWORD(lpbi[23].bmiHeader.biXPelsPerMeter)) = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    lpbi->bmiColors[249].rgbRed = LOBYTE(LOWORD(crButtonFace));
+    lpbi->bmiColors[249].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
+    lpbi->bmiColors[249].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
     GlobalUnlock(hdibPlaque);
 
 L_0b09:
@@ -861,9 +861,9 @@ L_0b09:
 
 L_0b13:
     lpbi = GlobalLock(hdibToolbar);
-    lpbi[23].bmiColors[0].rgbRed = LOBYTE(LOWORD(crButtonFace));
-    lpbi[23].bmiColors[0].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    lpbi[23].bmiColors[0].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    lpbi->bmiColors[253].rgbRed = LOBYTE(LOWORD(crButtonFace));
+    lpbi->bmiColors[253].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
+    lpbi->bmiColors[253].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
     GlobalUnlock(hdibToolbar);
 
 L_0b65:
@@ -1295,7 +1295,7 @@ int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     HDC     hdc;
     int16_t i;
     HWND    hwndCtl;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
 
 L_1252:
     goto L_14e5;
@@ -2133,8 +2133,8 @@ L_1b1c:
         goto L_1b25;
 
 L_1b25:
-    /* untranslated: part[0x6:2](sel.fl.lpplord->rgord[iwp]) = ((part[0x6:2](sel.fl.lpplord->rgord[iwp]) & 0xff0f) | ((iWarp & 0xf) * 0x10)) */
-    FLookupFleet(-1, sel.fl.id);
+    sel.fl.lpplord->rgord[iwp].iWarp = iWarp;
+    FLookupFleet(-1, &(sel.fl));
     DrawPlanShip(0x0, 16928);
 
 L_1b9a:

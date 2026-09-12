@@ -238,17 +238,35 @@ func (sr *symbolResolver) symbolFromFarPointer(seg *machine.FarPointer, off mach
 	}
 
 	base, ok := sr.symbolFromValue(parent)
-	if !ok {
+	if !ok || !typeinfo.IsPointer(base.Type()) {
 		return nil, false
 	}
 
-	if disp == 0 {
-		return base, true
-	}
+	// Always try typed projection first, including displacement zero.
+	//
+	// This is important for fields at offset zero. For example:
+	//
+	//     lpmpPrev->lpmsgplrNext
+	//
+	// is a pointer field beginning at offset zero. Previously the disp == 0
+	// shortcut returned lpmpPrev itself before giving typed projection a
+	// chance to identify lpmsgplrNext.
 	if path, ok := sr.symbolFromResolvedAccess(base, disp, width); ok {
 		return path, true
 	}
 
+	// At displacement zero the memory access is through the pointer, not the
+	// storage containing the pointer. If there is no more-specific typed
+	// projection, retain that dereference explicitly.
+	if disp == 0 {
+		return &symresolve.SymbolDeref{Base: base}, true
+	}
+
+	// For unresolved nonzero accesses, retain the pointer-relative physical
+	// storage path. Packed structs/unions and bitfield backing storage
+	// intentionally reach this fallback because a byte offset alone is not
+	// enough to choose a logical member. Later mask/bitfield analysis uses
+	// the typed pointer root plus byte offset to make that choice.
 	return &symresolve.SymbolOffset{Base: base, Offset: disp, Result: base.Type()}, true
 }
 

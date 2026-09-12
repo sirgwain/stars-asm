@@ -465,8 +465,8 @@ func hPopSeg(seg Reg) opHandler {
 	}
 }
 
-func moffs16(addr uint16) Operand {
-	return Operand{Kind: OKMem, Mem: MemRef{Direct: true, Disp: int(addr), dispLen: 2}}
+func moffs16(addr uint16, width int) Operand {
+	return Operand{Kind: OKMem, Mem: MemRef{Direct: true, Disp: int(addr), dispLen: 2, MemSize: width}}
 }
 
 func hAXImm16ALU(opb byte) opHandler {
@@ -501,7 +501,7 @@ func hMovAXMoffs() opHandler {
 		if !ok {
 			return db1(d.b)
 		}
-		return mk0(d, "MOV", OpMOV, Operand{Kind: OKReg, Reg: RegAX}, moffs16(addr))
+		return mk0(d, "MOV", OpMOV, Operand{Kind: OKReg, Reg: RegAX}, moffs16(addr, 2))
 	}
 }
 
@@ -511,7 +511,7 @@ func hMovMoffsAX() opHandler {
 		if !ok {
 			return db1(d.b)
 		}
-		return mk0(d, "MOV", OpMOV, moffs16(addr), Operand{Kind: OKReg, Reg: RegAX})
+		return mk0(d, "MOV", OpMOV, moffs16(addr, 2), Operand{Kind: OKReg, Reg: RegAX})
 	}
 }
 
@@ -521,7 +521,7 @@ func hMovALMoffs() opHandler {
 		if !ok {
 			return db1(d.b)
 		}
-		return mk0(d, "MOV", OpMOV, Operand{Kind: OKReg, Reg: reg8IndexToReg(0)}, moffs16(addr))
+		return mk0(d, "MOV", OpMOV, Operand{Kind: OKReg, Reg: reg8IndexToReg(0)}, moffs16(addr, 1))
 	}
 }
 
@@ -531,7 +531,7 @@ func hMovMoffsAL() opHandler {
 		if !ok {
 			return db1(d.b)
 		}
-		return mk0(d, "MOV", OpMOV, moffs16(addr), Operand{Kind: OKReg, Reg: reg8IndexToReg(0)})
+		return mk0(d, "MOV", OpMOV, moffs16(addr, 1), Operand{Kind: OKReg, Reg: reg8IndexToReg(0)})
 	}
 }
 

@@ -205,8 +205,16 @@
           "value": "grPopupPlanet"
         },
         {
+          "block": "L_54a2",
+          "value": "grPopupComponent"
+        },
+        {
           "block": "L_555f",
           "value": "grPopupString"
+        },
+        {
+          "block": "L_5584",
+          "value": "grPopupComponent"
         },
         {
           "block": "L_56a3",
@@ -793,6 +801,23 @@
       ]
     },
     {
+      "func": "DrawFleetComp",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_1e72",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
       "func": "DrawMineSurvey",
       "root": "lpth",
       "root_path": null,
@@ -858,6 +883,57 @@
         {
           "block": "L_1e6d",
           "value": "ithMinefield"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanetMinSum",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_12b2",
+          "value": "grobjPlanet"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanetProduction",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_2c38",
+          "value": "grobjPlanet"
+        }
+      ]
+    },
+    {
+      "func": "DrawPlanetShipList",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_377e",
+          "value": "grobjPlanet"
         }
       ]
     },
@@ -1123,6 +1199,40 @@
       ]
     },
     {
+      "func": "DrawShipCargo",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_1a54",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
+      "func": "DrawShipOrders",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_0000",
+          "value": "grobjFleet"
+        }
+      ]
+    },
+    {
       "func": "DrawShipPlanet",
       "root": "obj",
       "root_path": null,
@@ -1185,6 +1295,23 @@
         {
           "block": "L_5572",
           "value": "ithMineralPacket"
+        }
+      ]
+    },
+    {
+      "func": "DrawShipWayPtOrders",
+      "root": "obj",
+      "root_path": null,
+      "all_elements": false,
+      "type": "OBJ",
+      "path": [
+        "grobj"
+      ],
+      "enum": "GrobjClass",
+      "block_path_facts": [
+        {
+          "block": "L_09ed",
+          "value": "grobjFleet"
         }
       ]
     },
@@ -1335,6 +1462,14 @@
           "value": "grPopupShdef"
         },
         {
+          "block": "L_7df9",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_7e37",
+          "value": "grPopupComponent"
+        },
+        {
           "block": "L_7e5e",
           "value": "grPopupResources"
         },
@@ -1347,6 +1482,14 @@
           "value": "grPopupMineral"
         },
         {
+          "block": "L_8070",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
+          "block": "L_808e",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
           "block": "L_809b",
           "value": "grPopupPlanetIndustry"
         },
@@ -1357,6 +1500,23 @@
         {
           "block": "L_8273",
           "value": "grPopupFleet"
+        }
+      ]
+    },
+    {
+      "func": "FakeListProc",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_6840",
+          "value": "grPopupComponent"
         }
       ]
     },
@@ -2626,6 +2786,18 @@
       "enum": "GrPopupType",
       "block_path_facts": [
         {
+          "block": "L_3b9e",
+          "value": "grPopupPlayer"
+        },
+        {
+          "block": "L_3bc7",
+          "value": "grPopupPlayer"
+        },
+        {
+          "block": "L_3beb",
+          "value": "grPopupPlayer"
+        },
+        {
           "block": "L_3dd1",
           "value": "grPopupShdef"
         },
@@ -2652,6 +2824,10 @@
         {
           "block": "L_3ef6",
           "value": "grPopupShdef"
+        },
+        {
+          "block": "L_3f20",
+          "value": "grPopupPlanet"
         },
         {
           "block": "L_3f41",
@@ -3205,12 +3381,61 @@
           "value": "grPopupPlanetIndustry"
         },
         {
+          "block": "L_32b6",
+          "value": "grPopupPlanetIndustry"
+        },
+        {
           "block": "L_32c8",
           "value": "grPopupPlanetIndustry"
         },
         {
           "block": "L_32d1",
           "value": "grPopupPlanetIndustry"
+        }
+      ]
+    },
+    {
+      "func": "PtDisplayPlanetPopInfo",
+      "root": "GlobalPD",
+      "root_path": null,
+      "all_elements": false,
+      "type": "POPUPDATA",
+      "path": [
+        "grPopup"
+      ],
+      "enum": "GrPopupType",
+      "block_path_facts": [
+        {
+          "block": "L_228e",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_22cf",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_23f4",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_254a",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_25e5",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_261e",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_27c0",
+          "value": "grPopupPlanet"
+        },
+        {
+          "block": "L_28e7",
+          "value": "grPopupPlanet"
         }
       ]
     },
@@ -3364,6 +3589,10 @@
         },
         {
           "block": "L_3469",
+          "value": "grPopupResources"
+        },
+        {
+          "block": "L_3490",
           "value": "grPopupResources"
         },
         {

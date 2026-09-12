@@ -638,7 +638,7 @@ L_0b62:
 
 L_0b84:
     lpfl->lpplord->rgord[1] = lpflTarget->lpplord->rgord[1];
-    lpfl->lpplord->rgord[1].txp.rgia = lpfl->lpplord->rgord[0].txp.rgia;
+    lpfl->lpplord->rgord[1].txp = lpfl->lpplord->rgord[0].txp;
     lpfl->cord = 2;
     lpfl->lpplord->iordMac = 0x2;
 
@@ -932,7 +932,7 @@ L_11c0:
         goto L_11ed;
 
 L_11ed:
-    t_call_120d = PctCloakFromHuldef(rglpshdefSB[i][j], i, 0x0);
+    t_call_120d = PctCloakFromHuldef(&(rglpshdefSB[i][j].hul), i, 0x0);
     /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = sext16to32((100 - t_call_120d)) */
     /* untranslated: part[0x87:4](rglpshdefSB[i][j]) = (uint32_t)(part[0x87:4](rglpshdefSB[i][j]) * part[0x87:4](rglpshdefSB[i][j])) */
 
@@ -984,7 +984,7 @@ L_146d:
 L_1473:
     j = 856;
     fDone = 0;
-    memset(&(rgfNoXFile), 0, 0x10);
+    memset(rgfNoXFile, 0, 0x10);
     i = 0;
     goto L_15cf;
 
@@ -1352,8 +1352,7 @@ L_1943:
 
 L_194c:
     k = 0;
-    ptBase.x = lpth->pt.x;
-    ptBase.y = lpth->pt.y;
+    ptBase = lpth->pt;
     t_scratch_m36 = Random(100);
     if ((t_scratch_m36 >= PctWormholeMoves(lpth)))
         goto L_198f;
@@ -1438,8 +1437,7 @@ L_1ab5:
 
 L_1ac0:
     iMax = iLow;
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
 
 L_1ad7:
     goto L_19fb;
@@ -1451,8 +1449,7 @@ L_1ada:
         goto L_1ae3;
 
 L_1ae3:
-    lpth->pt.x = pt.x;
-    lpth->pt.y = pt.y;
+    lpth->pt = pt;
 
 L_1af4:
     goto L_2ed3;
@@ -1543,8 +1540,7 @@ L_1c1e:
 L_1c3e:
     dRange = lpth->tht.iWarp;
     dRange = LOWORD((dRange * dRange));
-    ptDst.x = lpth->tht.ptDest.x;
-    ptDst.y = lpth->tht.ptDest.y;
+    ptDst = lpth->tht.ptDest;
     fAnythingMoved = 1;
     if ((idm == idmMysteryTraderHasDecidedMakeAnotherPass))
         goto L_2ed3;
@@ -1610,12 +1606,10 @@ L_1d37:
     dRange = (dRange >> 0x1);
 
 L_1d3d:
-    ptDst.x = rgptPlan[lpth->thp.idPlanet].x;
-    ptDst.y = rgptPlan[lpth->thp.idPlanet].y;
+    ptDst = rgptPlan[lpth->thp.idPlanet];
 
 MoveTh:
-    ptSrc.x = lpth->pt.x;
-    ptSrc.y = lpth->pt.y;
+    ptSrc = lpth->pt;
     d = DGetDistance(ptSrc.x, ptSrc.y, ptDst.x, ptDst.y);
     dLeft = LOWORD(__ftol());
     if ((dLeft > dRange))
@@ -2589,8 +2583,7 @@ L_2e7b:
         goto L_2e86;
 
 L_2e86:
-    lpth->pt.x = ptSrc.x;
-    lpth->pt.y = ptSrc.y;
+    lpth->pt = ptSrc;
 
 L_2e97:
     if ((fPostProd == 0))
@@ -2910,7 +2903,7 @@ void MoveFleets() {
     int32_t    t_call_48bc;
     double     t_merge_4a09_0001;
     double     t_merge_4a2b_0001;
-    uint32_t   t_merge_4c51_0003_wide;
+    uint32_t   t_merge_4c51_0002_wide;
     int32_t    t_merge_4ca3_0001;
     uint16_t   t_merge_4e4b_0001;
     GrobjClass t_scratch_m5c_2;
@@ -3077,10 +3070,8 @@ L_3535:
 L_354f:
     fJumpgate = 0;
     gd.fRadiatingEngine = 0x0;
-    ptMsg.x = lpord->pt.x;
-    ptMsg.y = lpord->pt.y;
-    ptBeg.x = lpord->pt.x;
-    ptBeg.y = lpord->pt.y;
+    ptMsg = lpord->pt;
+    ptBeg = lpord->pt;
     if ((lpord->grobj != grobjPlanet))
         goto L_35c5;
     else
@@ -3387,8 +3378,7 @@ L_3ceb:
     goto LMakeItToDest;
 
 L_3d10:
-    ptBeg.x = lpfl->pt.x;
-    ptBeg.y = lpfl->pt.y;
+    ptBeg = lpfl->pt;
     if ((cPass <= 0))
         goto L_3d5b;
     else
@@ -4184,8 +4174,7 @@ L_497a:
         goto LMakeItToDest;
 
 LMakeItToDest:
-    lpfl->pt.x = ptEnd.x;
-    lpfl->pt.y = ptEnd.y;
+    lpfl->pt = ptEnd;
     if ((lpord[1].grobj != grobjPlanet))
         goto L_49bc;
     else
@@ -4350,26 +4339,26 @@ L_4c3a:
         goto L_4c42;
 
 L_4c42:
-    t_merge_4c51_0003_wide = 0x1;
+    t_merge_4c51_0002_wide = 0x1;
     goto L_4c51;
 
 L_4c4b:
-    t_merge_4c51_0003_wide = pct;
+    t_merge_4c51_0002_wide = pct;
 
 L_4c51:
-    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_4c51_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_4c51_0002_wide)))
         goto L_4c79;
     else
         goto L_4c5d;
 
 L_4c5d:
-    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_4c51_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_4c51_0002_wide)))
         goto L_4c6b;
     else
         goto L_4c62;
 
 L_4c62:
-    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_4c51_0003_wide)))
+    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_4c51_0002_wide)))
         goto L_4c79;
     else
         goto L_4c6b;
@@ -4471,8 +4460,7 @@ L_4e08:
     lpfl->idPlanet = scan.idpl;
 
 L_4e12:
-    lpord->pt.x = lpfl->pt.x;
-    lpord->pt.y = lpfl->pt.y;
+    lpord->pt = lpfl->pt;
     lpord->id = lpfl->idPlanet;
     if ((lpfl->idPlanet != -1))
         goto L_4e48;
@@ -4673,10 +4661,8 @@ L_4ff9:
     goto LHitSkip1;
 
 L_5001:
-    ptSrc.x = lpfl->pt.x;
-    ptSrc.y = lpfl->pt.y;
-    ptDst.x = lpfl->lpplord->rgord[1].pt.x;
-    ptDst.y = lpfl->lpplord->rgord[1].pt.y;
+    ptSrc = lpfl->pt;
+    ptDst = lpfl->lpplord->rgord[1].pt;
     iWarp = 3;
 
 L_502e:
@@ -5486,8 +5472,7 @@ L_6134:
     goto L_6156;
 
 L_6137:
-    ptAct.x = lpthHit->pt.x;
-    ptAct.y = lpthHit->pt.y;
+    ptAct = lpthHit->pt;
     lpthClosest = lpthHit;
 
 L_6156:

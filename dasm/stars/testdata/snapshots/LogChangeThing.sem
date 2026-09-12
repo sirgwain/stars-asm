@@ -24,8 +24,7 @@ L_9929:
     goto L_99a5
 
 L_9952:
-    LOWORD(lxNew.rgdItem[i]) = (pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])
-    HIWORD(lxNew.rgdItem[i]) = signhiword((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]))
+    lxNew.rgdItem[i] = sext16to32((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]))
     branch (pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0 ? L_999c : L_9994
 
 L_9994:
@@ -47,7 +46,7 @@ L_99b7:
     branch fValidLx == 0 ? L_99da : L_99c1
 
 L_99c1:
-    call LogMakeValidXfer(lx.id, &lxNew) -> callresult(void)
+    call LogMakeValidXfer(&lx, &lxNew) -> callresult(void)
     fValidLx = 0
     goto L_99f0
 

@@ -473,14 +473,13 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     uint16_t      t_scratch_m116_10;
     uint16_t      t_merge_1f75_0001;
     int16_t       t_call_1f6d;
-    uint16_t      t_scratch_m118_15;
     uint16_t      t_scratch_m116_12;
     uint16_t      t_scratch_m116_15;
     uint16_t      t_scratch_m116_17;
     uint16_t      t_scratch_m116_19;
     uint16_t      t_scratch_m116_24;
     uint16_t      t_scratch_m116_25;
-    uint16_t      t_scratch_m118_25;
+    uint16_t      t_scratch_m118_24;
     int16_t       t_merge_312c_0001;
     int16_t       t_35ff;
     int16_t       t_call_361d;
@@ -674,8 +673,7 @@ L_0438:
     lBest = 10000000;
     iBest = 0;
     j = Random(cPlanMax);
-    pt.x = rgptPlan[j].x;
-    pt.y = rgptPlan[j].y;
+    pt = rgptPlan[j];
     k = 0;
     goto L_0533;
 
@@ -823,7 +821,7 @@ L_074b:
     qsort(rgptPlan, cPlanMax, 0x4, ICompLong);
 
 L_0768:
-    memset(&(grUsed), 0, 0x80);
+    memset(grUsed, 0, 0x80);
     i = 0;
     goto L_0816;
 
@@ -1159,8 +1157,7 @@ RetryAll:
 
 L_0fd7:
     rgi[0] = Random(cPlanMax);
-    pt.x = rgptPlan[rgi[0]].x;
-    pt.y = rgptPlan[rgi[0]].y;
+    pt = rgptPlan[rgi[0]];
     if ((pt.x >= dMin))
         goto L_101b;
     else
@@ -1304,8 +1301,7 @@ L_11de:
 
 L_11e7:
     rgi[i] = Random(cPlanMax);
-    pt.x = rgptPlan[rgi[i]].x;
-    pt.y = rgptPlan[rgi[i]].y;
+    pt = rgptPlan[rgi[i]];
     if ((pt.x < dMin))
         goto L_1377;
     else
@@ -1454,8 +1450,7 @@ L_13d1:
         goto L_13ed;
 
 L_13ed:
-    pt.x = rgptPlan[rgi[i]].x;
-    pt.y = rgptPlan[rgi[i]].y;
+    pt = rgptPlan[rgi[i]];
     if ((pt.x < dMin))
         goto L_13a1;
     else
@@ -1611,8 +1606,7 @@ L_1664:
 
 L_16d6:
     rgplr[i].rgTech[j] = 0;
-    LOWORD(rgplr[i].rgResSpent[j]) = 0x0;
-    HIWORD(rgplr[i].rgResSpent[j]) = 0x0;
+    rgplr[i].rgResSpent[j] = 0x0;
     j = (j + 1);
 
 L_1719:
@@ -1931,9 +1925,7 @@ L_2028:
     pct10 = ((PctTrueMaxGrowth(i) * 2) + 10);
     lpPlanets[iMin].rgwtMin[3] = (uint32_t)((lpPlanets[iMin].rgwtMin[3] * (uint32_t)(pct10)));
     lpPlanets[iMin].rgwtMin[3] = (int32_t)((lpPlanets[iMin].rgwtMin[3] / 10));
-    t_scratch_m118_15 = ((lpPlanets[iMin].uPopGuess << 0x2) & 0xfff);
-    lpPlanets[iMin].uPopGuess = 0x0;
-    lpPlanets[iMin].uGuesses = (lpPlanets[iMin].uGuesses | t_scratch_m118_15);
+    lpPlanets[iMin].uPopGuess = (lpPlanets[iMin].uPopGuess << 0x2);
 
 L_2143:
     j = GetRaceStat(&(rgplr[i]), rsUseLeftover);
@@ -1954,7 +1946,7 @@ L_21a5:
         goto L_21aa;
 
 L_21aa:
-    if ((LOWORD(pl) >= LOWORD(pl[1])))
+    if ((*(pl) >= LOWORD(pl[1])))
         goto L_21e8;
     else
         goto L_21b2;
@@ -1972,7 +1964,7 @@ L_21c9:
         goto L_21ce;
 
 L_21ce:
-    if ((LOWORD(pl) >= LOWORD(pl[2])))
+    if ((*(pl) >= LOWORD(pl[2])))
         goto L_21df;
     else
         goto L_21d6;
@@ -2112,7 +2104,7 @@ L_2476:
     goto L_25e6;
 
 L_2515:
-    lpPlanets[iMin].cDefenses = (lpPlanets[iMin].cDefenses + LOWORD((int32_t)(((uint32_t)(((uint32_t)((iT + 5)) / 10)) * 0x1))));
+    lpPlanets[iMin].cDefenses = (lpPlanets[iMin].cDefenses + ((uint32_t)((iT + 5)) / 10));
     goto L_25e6;
 
 L_25bb:
@@ -2244,7 +2236,7 @@ L_2a4a:
     /* untranslated: part[0x4:2](rgplr[i]) = (rgplr[i].cFleet | 0x1000) */
     lpshdef = LpAlloc(0x5be, htShips);
     fmemmove(lpshdef, LpshdefSBT(), 0x24c);
-    fmemset(lpshdef[4], 0, 0x372);
+    fmemset(&(lpshdef[4]), 0, 0x372);
     lpshdef->cBuilt = 0x1;
     lpshdef->cExist = 0x1;
     rglpshdefSB[i] = lpshdef;
@@ -2332,9 +2324,9 @@ L_2d93:
     *(lpshdef) = lpshdef[3];
     lpshdef->ishdef = 0x10;
     lpshdef->fFree = 0x0;
-    /* untranslated: t_scratch_m118_25 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
+    /* untranslated: t_scratch_m118_24 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m118_25) */
+    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m118_24) */
     lpshdef->cExist = 0x0;
     lpshdef->cBuilt = 0x0;
     lpPlanets[idHome].isb = 0x1;
@@ -2554,8 +2546,7 @@ L_3304:
 LGive2ndPlanet:
     lpplPicked = 0x0;
     lpplClosest = 0x0;
-    ptHome.x = rgptPlan[idHome].x;
-    ptHome.y = rgptPlan[idHome].y;
+    ptHome = rgptPlan[idHome];
     cFit = 0;
     lDistMin2 = (int32_t)(((uint32_t)(((uint32_t)(dGal) * 15)) / 100));
     lDistMin2 = (uint32_t)((lDistMin2 * lDistMin2));
@@ -3241,8 +3232,7 @@ L_414f:
 
 L_415c:
     iMax = iLow;
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
 
 L_4178:
     goto L_40ef;
@@ -3254,8 +3244,7 @@ L_417b:
         goto L_4185;
 
 L_4185:
-    lpth->pt.x = pt.x;
-    lpth->pt.y = pt.y;
+    lpth->pt = pt;
 
 L_4199:
     j = (j + 1);
@@ -3454,7 +3443,7 @@ L_4411:
     return 0;
 
 L_443d:
-    WriteRt(rtGame, 64, game);
+    WriteRt(rtGame, 64, &(game));
     xOld = 1000;
     i = 0;
     goto L_4563;
@@ -3611,7 +3600,7 @@ L_485f:
     TurnLog(idsGeneratingYearD);
 
 L_4893:
-    memset(game.lid, 0, 0x40);
+    memset(&(game), 0, 0x40);
     StreamOpen(pszFile, 32);
     cb = LOWORD(filelength(hf));
     if ((cb < 16000))
@@ -4194,8 +4183,8 @@ L_511d:
         goto L_5129;
 
 L_5129:
-    SetVCCheck(game.lid, 0, 1);
-    SetVCVal(game.lid, 0, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 5));
+    SetVCCheck(&(game), 0, 1);
+    SetVCVal(&(game), 0, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 5));
 
 L_5160:
     lpbStart = PszGetLine(&(lpb));
@@ -4339,10 +4328,10 @@ L_524a:
         goto L_5256;
 
 L_5256:
-    SetVCCheck(game.lid, 1, 1);
-    SetVCCheck(game.lid, 2, 1);
-    SetVCVal(game.lid, 1, (LOWORD(rgl[1]) - 8));
-    SetVCVal(game.lid, 2, (LOWORD(rgl[2]) - 2));
+    SetVCCheck(&(game), 1, 1);
+    SetVCCheck(&(game), 2, 1);
+    SetVCVal(&(game), 1, (LOWORD(rgl[1]) - 8));
+    SetVCVal(&(game), 2, (LOWORD(rgl[2]) - 2));
 
 L_52b2:
     lpbStart = PszGetLine(&(lpb));
@@ -4450,8 +4439,8 @@ L_536f:
         goto L_537c;
 
 L_537c:
-    SetVCCheck(game.lid, 3, 1);
-    SetVCVal(game.lid, 3, ((uint32_t)((LOWORD(rgl[1]) + 0xfc18)) / 1000));
+    SetVCCheck(&(game), 3, 1);
+    SetVCVal(&(game), 3, ((uint32_t)((LOWORD(rgl[1]) + 0xfc18)) / 1000));
 
 L_53b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4559,8 +4548,8 @@ L_546f:
         goto L_547c;
 
 L_547c:
-    SetVCCheck(game.lid, 4, 1);
-    SetVCVal(game.lid, 4, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 10));
+    SetVCCheck(&(game), 4, 1);
+    SetVCVal(&(game), 4, ((uint32_t)((LOWORD(rgl[1]) + 0xffec)) / 10));
 
 L_54b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4668,8 +4657,8 @@ L_556f:
         goto L_557c;
 
 L_557c:
-    SetVCCheck(game.lid, 5, 1);
-    SetVCVal(game.lid, 5, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
+    SetVCCheck(&(game), 5, 1);
+    SetVCVal(&(game), 5, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
 
 L_55b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4777,8 +4766,8 @@ L_566f:
         goto L_567c;
 
 L_567c:
-    SetVCCheck(game.lid, 6, 1);
-    SetVCVal(game.lid, 6, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
+    SetVCCheck(&(game), 6, 1);
+    SetVCVal(&(game), 6, ((uint32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
 
 L_56b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4886,8 +4875,8 @@ L_576f:
         goto L_577c;
 
 L_577c:
-    SetVCCheck(game.lid, 7, 1);
-    SetVCVal(game.lid, 7, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
+    SetVCCheck(&(game), 7, 1);
+    SetVCVal(&(game), 7, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
 
 L_57b3:
     lpbStart = PszGetLine(&(lpb));
@@ -5001,8 +4990,8 @@ L_5874:
         goto L_5881;
 
 L_5881:
-    SetVCVal(game.lid, 8, LOWORD(rgl[0]));
-    SetVCVal(game.lid, 9, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
+    SetVCVal(&(game), 8, LOWORD(rgl[0]));
+    SetVCVal(&(game), 9, ((uint32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
 
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
@@ -5369,7 +5358,7 @@ void CreateTutorWorld() {
     PLAYER *t_call_5f2e;
 
 L_5e5e:
-    memset(game.lid, 0, 0x40);
+    memset(&(game), 0, 0x40);
     game.cPlayer = 2;
     game.fTutorial = 0x1;
     game.mdDensity = 0;
@@ -5383,14 +5372,14 @@ L_5e5e:
     game.rgvc[8] = 0x81;
     CchGetString(idsTutorialGame, game.szName);
     rgplr[0] = vrgplrDef[0];
-    CchGetString(idsHumanoid, LOWORD(rgplr[0].szName));
+    CchGetString(idsHumanoid, rgplr[0].szName);
     _wsprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
     t_call_5f2e = LpplrComp(1, 0);
     rgplr[1] = *(t_call_5f2e);
     rgplr[1].fAi = 0x1;
     rgplr[1].lvlAi = 0x0;
     rgplr[1].idAi = 0x1;
-    CchGetString(idsBerserker, LOWORD(rgplr[1].szName));
+    CchGetString(idsBerserker, rgplr[1].szName);
     Randomize(0x499602d2);
     i = 1;
     goto L_6007;
@@ -5416,7 +5405,7 @@ L_6010:
 void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     int16_t iStepMaxSoFar;
     int16_t mdRet;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  fIdleSav;
     int16_t  rgplrbmp[16];
     int16_t  i;
@@ -5485,7 +5474,7 @@ L_6124:
 
 L_612a:
     gameT = game;
-    memset(game.lid, 0, 0x40);
+    memset(&(game), 0, 0x40);
     game.cPlanMax = gameT.cPlanMax;
     game.cPlayer = gameT.cPlayer;
     vrgplrTypeNew[0] = 0x1;
@@ -5541,7 +5530,7 @@ L_6247:
         goto L_6265;
 
 L_6265:
-    LOWORD(vrgplrTypeNew) = LOBYTE((((game.turn & 0xff) << 0x2) | 0x1));
+    vrgplrTypeNew[0] = LOBYTE((((game.turn & 0xff) << 0x2) | 0x1));
     goto L_628a;
 
 L_6278:
@@ -6179,7 +6168,7 @@ L_6e56:
         goto L_6e63;
 
 L_6e63:
-    SetVCVal(game.lid, 9, (game.mdSize * 2));
+    SetVCVal(&(game), 9, (game.mdSize * 2));
     if ((iStepMaxSoFar >= 1))
         goto L_74f1;
     else
@@ -6882,7 +6871,7 @@ L_7737:
 
 L_7740:
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 1);
     return 1;
 
 L_7771:
@@ -7066,7 +7055,7 @@ L_7c42:
 L_7c4c:
     game.mdSize = (i - 1000);
     game.turn = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
     EndDialog(hwnd, wParam);
     return 1;
 
@@ -7077,7 +7066,7 @@ L_7ca2:
         goto L_7cac;
 
 L_7cac:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
     EndDialog(hwnd, wParam);
     return 1;
 
@@ -7271,7 +7260,7 @@ L_80db:
     EnableWindow(GetDlgItem(hwnd, 0x3fd), 0);
 
 L_818b:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 1);
     return 1;
 
 L_81a4:
@@ -7480,7 +7469,7 @@ L_875e:
     strcpy(game.szName, szBase);
 
 L_876e:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
     EndDialog(hwnd, iRet);
     return 1;
 
@@ -7596,7 +7585,7 @@ L_88f7:
     SetWindowPos(hwnd, 0x0, 0, 0, (rcT.right - rcT.left), (((dy + rcT.bottom) - rcT.top) - rc.bottom), 0x6);
 
 L_8923:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 1);
     return 1;
 
 L_893c:
@@ -7777,7 +7766,7 @@ L_8c42:
 
 L_8c45:
     iChecked = t_merge_8c45_0001;
-    psz = PszPlayerName(0, 1, 1, 1, 0, (vrgplrNew + i));
+    psz = PszPlayerName(0, 1, 1, 1, 0, &(vrgplrNew[i]));
     AppendMenu(rghmenuSubPopup[1], (0x0 | iChecked), (i + 15032), psz);
     i = (i + 1);
 
@@ -8319,7 +8308,7 @@ L_9496:
         goto L_949f;
 
 L_949f:
-    if (((LOWORD(vrgplrTypeNew) & 0xff) != 0x0))
+    if ((vrgplrTypeNew[0] != 0x0))
         goto L_94db;
     else
         goto L_94ad;
@@ -8335,7 +8324,7 @@ L_94b7:
     goto L_9548;
 
 L_94db:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -8666,7 +8655,7 @@ L_9a3d:
     t_merge_9a40_0001 = 0x0;
 
 L_9a40:
-    SendMessage(t_call_9a24, CB_LIMITTEXT, GetVCCheck(game.lid, (t_merge_9a40_0001 + i)), 0);
+    SendMessage(t_call_9a24, CB_LIMITTEXT, GetVCCheck(&(game), (t_merge_9a40_0001 + i)), 0);
     if ((fRCWReadOnly == 0))
         goto L_9a81;
     else
@@ -8685,7 +8674,7 @@ L_9a85:
         goto L_9a8e;
 
 L_9a8e:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 1);
     return 1;
 
 L_9aa7:
@@ -8787,7 +8776,7 @@ L_9c4c:
         goto L_9c55;
 
 L_9c55:
-    StickyDlgPos(hwnd, ptStickyNewDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -8818,7 +8807,7 @@ L_9cc9:
     t_merge_9ccc_0001 = 0x0;
 
 L_9ccc:
-    SetVCCheck(game.lid, ((wParam - 291) + t_merge_9ccc_0001), i);
+    SetVCCheck(&(game), ((wParam - 291) + t_merge_9ccc_0001), i);
     DrawNewGame3(hwnd, 0x0, 8);
 
 L_9cf5:
@@ -8991,7 +8980,7 @@ L_9f3b:
     goto L_a1c9;
 
 L_9f42:
-    _wsprintf(szWork, PCTD, GetVCVal(game.lid, vcCur, 0));
+    _wsprintf(szWork, PCTD, GetVCVal(&(game), vcCur, 0));
     if (((uint16_t)(rgNG3Width[i][j]) >= 0))
         goto L_9faa;
     else
@@ -9037,8 +9026,8 @@ L_9fe9:
         goto L_a0fd;
 
 L_a0fd:
-    DrawBtn(hdc, (vrgrcRCW + irc), (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, (vrgrcRCW + (irc + 1)), (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, &(vrgrcRCW[irc]), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, &(vrgrcRCW[(irc + 1)]), (0xa1 | bt), 0, 0x0);
 
 L_a154:
     xLeft = (vrgrcRCW[irc].right + 4);
@@ -9125,7 +9114,7 @@ L_a260:
     bt = 161;
 
 L_a26a:
-    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, &(vrgrcRCW[irc]), bt, 80, 0, 0, 0x0);
     if (((kbd & 0xc) == 0x0))
         goto L_a2b7;
     else
@@ -9141,8 +9130,8 @@ L_a2b7:
         goto L_a2cb;
 
 L_a2cb:
-    iStat = GetVCVal(game.lid, i, 1);
-    if ((SetVCVal(game.lid, i, (iStat + dShift)) == iStat))
+    iStat = GetVCVal(&(game), i, 1);
+    if ((SetVCVal(&(game), i, (iStat + dShift)) == iStat))
         goto L_a2b7;
     else
         goto L_a2ff;

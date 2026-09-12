@@ -67,6 +67,13 @@ func (p *coalesceWideTempsProcessor) findCandidate(f *Func) (wideTempCandidate, 
 			if low.temp.Name == high.temp.Name {
 				continue
 			}
+			// Two identical scalar merges are not evidence of low/high lanes.
+			// Repeated uses of one machine phi can produce duplicate semantic merge
+			// temps before lowering.
+			if sameTempDefinitionSources(low, high) {
+				continue
+			}
+
 			defs, typ, ok := reconstructWideTempDefs(p.ctx, low, high, nil)
 			if !ok {
 				continue
@@ -103,6 +110,21 @@ func (p *coalesceWideTempsProcessor) findCandidate(f *Func) (wideTempCandidate, 
 		}
 	}
 	return wideTempCandidate{}, false
+}
+
+func sameTempDefinitionSources(a, b wideTempInfo) bool {
+	if len(a.defs) != len(b.defs) {
+		return false
+	}
+
+	for i := range a.defs {
+		if a.defs[i].block != b.defs[i].block ||
+			!sameExpr(a.defs[i].src, b.defs[i].src) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // collectWideTempInfos returns semantic temp assignment profiles.

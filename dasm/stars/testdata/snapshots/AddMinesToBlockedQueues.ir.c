@@ -321,7 +321,7 @@ L_1c41:
 
 L_1c4a:
     sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1);
-    fmemmove(sel.pl.lpplprod->rgprod, sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4));
+    fmemmove(sel.pl.lpplprod->rgprod, &(sel.pl.lpplprod->rgprod[1]), (sel.pl.lpplprod->iprodMac * 0x4));
     goto L_17a3;
 
 L_1c8f:

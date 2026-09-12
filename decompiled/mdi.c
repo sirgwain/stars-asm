@@ -314,7 +314,7 @@ int32_t FrameWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
     POINT      pt;
     char      *pch;
     char       szTemp[80];
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t     fRet;
     int32_t     lSerial;
     int16_t     fErrSav;
@@ -1596,11 +1596,9 @@ L_1ae7:
     ptD.y = 0;
     ptD.x = 0;
     InvertPaneBorder(hdc, grSel, ptD, 0x0);
-    ptStart.x = pt.x;
-    ptStart.y = pt.y;
+    ptStart = pt;
     SetCapture(hwnd);
-    ptOld.x = pt.x;
-    ptOld.y = pt.y;
+    ptOld = pt;
     ptAct.y = 0;
     ptAct.x = 0;
 
@@ -1630,8 +1628,7 @@ L_1b75:
     t_call_1ba9 = InvertPaneBorder(hdc, grSel, ptD, &(ptChg));
     ptAct.x = LOWORD(t_call_1ba9);
     ptAct.y = HIWORD(t_call_1ba9);
-    ptOld.x = pt.x;
-    ptOld.y = pt.y;
+    ptOld = pt;
 
 L_1bc3:
     goto L_1b4b;
@@ -1918,8 +1915,7 @@ POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev) {
     int16_t dyMin;
 
 L_1e3c:
-    dptOld.x = dpt.x;
-    dptOld.y = dpt.y;
+    dptOld = dpt;
     if ((pdptPrev == 0x0))
         goto L_1e92;
     else
@@ -2064,8 +2060,7 @@ L_2016:
         goto L_201f;
 
 L_201f:
-    dptT.x = dpt.x;
-    dptT.y = dpt.y;
+    dptT = dpt;
     dpt.x = (dptOld.x - pdptPrev->x);
     dpt.y = (dptOld.y - pdptPrev->y);
     if (((vfs.xTop + dpt.x) >= 198))
@@ -2152,8 +2147,7 @@ L_2130:
 L_2140:
     dptPrev.x = (dptT.x - dpt.x);
     dptPrev.y = (dptT.y - dpt.y);
-    dpt.x = dptT.x;
-    dpt.y = dptT.y;
+    dpt = dptT;
 
 L_215e:
     goto L_247e;
@@ -3197,7 +3191,7 @@ L_2f6d:
 void CommandHandler(HWND hwnd, uint16_t wParam) {
     POINT pt;
     HMENU hmenu;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t      dy;
     char         szExt[4];
     int16_t      dx;
@@ -5097,8 +5091,7 @@ L_4f37:
         goto L_4ffa;
 
 L_4ffa:
-    pt.x = sel.scan.pt.x;
-    pt.y = sel.scan.pt.y;
+    pt = sel.scan.pt;
     goto L_501c;
 
 L_500a:
@@ -5724,7 +5717,7 @@ L_5456:
         goto L_545f;
 
 L_545f:
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_548a;
     else
         goto L_5472;
@@ -5744,7 +5737,7 @@ L_548a:
 
 L_548d:
     EnableMenuItem(hmenu, 0x6a, (t_merge_548d_0001 | 0x0));
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_54af;
     else
         goto L_54a9;
@@ -5758,7 +5751,7 @@ L_54af:
 
 L_54b2:
     EnableMenuItem(hmenu, 0x69, (t_merge_54b2_0001 | 0x0));
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_54ff;
     else
         goto L_54ce;
@@ -5796,7 +5789,7 @@ L_54ff:
 
 L_5502:
     EnableMenuItem(hmenu, 0x10e, (t_merge_5502_0001 | 0x0));
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_5536;
     else
         goto L_551e;
@@ -5816,7 +5809,7 @@ L_5536:
 
 L_5539:
     EnableMenuItem(hmenu, 0x7de, (t_merge_5539_0001 | 0x0));
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_556d;
     else
         goto L_5555;
@@ -6255,7 +6248,7 @@ L_5bd6:
         goto L_5c07;
 
 L_5c07:
-    i = (pch + (-&(szFile)));
+    i = (pch - szFile);
     strncpy(szDirName, szFile, i);
     szDirName[i] = 0;
 
@@ -6532,7 +6525,7 @@ L_5fbd:
 
 void BringUpHostDlg() {
     POINT pt;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t fRet;
 
 L_5ffc:
@@ -7185,7 +7178,7 @@ L_6c0f:
 }
 
 int16_t HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t     fRet;
     RECT        rc;
     int16_t     mf;
@@ -7225,7 +7218,7 @@ L_6c16:
     goto L_756d;
 
 L_6c25:
-    StickyDlgPos(hwnd, ptStickyHostModeDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyHostModeDlg), 1);
     SetWindowText(GetDlgItem(hwnd, 0x409), game.szName);
     SetWindowText(GetDlgItem(hwnd, 0x40a), szBase);
     t_call_6c71 = GetDlgItem(hwnd, 0x408);
@@ -7760,7 +7753,7 @@ L_737a:
     return 1;
 
 L_7380:
-    StickyDlgPos(hwnd, ptStickyHostModeDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyHostModeDlg), 0);
     if ((wParam != 0x2))
         goto L_73a5;
     else
@@ -8466,7 +8459,7 @@ L_8133:
     _wsprintf(szWork, "%lx", LOWORD(game.lid), HIWORD(game.lid));
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsScanzoom, szEntry);
-    LOWORD(szWork) = LOBYTE((iScanZoom + 53));
+    szWork[0] = LOBYTE((iScanZoom + 53));
     szWork[1] = 0;
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     if ((gd.fChgScanner == 0x0))
@@ -8516,7 +8509,7 @@ L_8448:
     t_merge_844b_0001 = 0x1;
 
 L_844b:
-    LOWORD(szWork) = LOBYTE((t_merge_844b_0001 + 0x30));
+    szWork[0] = LOBYTE((t_merge_844b_0001 + 0x30));
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     if ((gd.fWriteTurnNum == 0x0))
         goto L_84d6;
@@ -8729,7 +8722,7 @@ L_8b73:
     goto L_8b56;
 
 L_8c34:
-    strcpy(psz, (0x22f6 + LOWORD((40 * i))));
+    strcpy(psz, vrgZipProd[i].szName);
     goto L_8c53;
 
 L_8c4e:
@@ -8761,14 +8754,10 @@ void RefitFrameChildren() {
     int16_t  yScanner;
     int16_t  t_merge_8cea_0001;
     int16_t  t_merge_8d1e_0001;
-    int16_t  t_merge_8d1e_0002;
     int16_t  t_merge_8d39_0001;
-    int16_t  t_merge_8d39_0002;
     int16_t  t_merge_8f06_0001;
     int16_t  t_merge_8f3a_0001;
-    int16_t  t_merge_8f3a_0002;
     int16_t  t_merge_8f55_0001;
-    int16_t  t_merge_8f55_0002;
     uint16_t t_merge_910b_0001;
 
 L_8c88:
@@ -8823,16 +8812,14 @@ L_8cea:
 
 L_8d15:
     t_merge_8d1e_0001 = vfs.dyMsgWant;
-    t_merge_8d1e_0002 = vfs.dyMsgWant;
     goto L_8d1e;
 
 L_8d1b:
     t_merge_8d1e_0001 = dyMsgMin;
-    t_merge_8d1e_0002 = dyMsgMin;
 
 L_8d1e:
     dyMsg = t_merge_8d1e_0001;
-    vfs.dyMsgWant = t_merge_8d1e_0002;
+    vfs.dyMsgWant = t_merge_8d1e_0001;
     if ((vfs.dyMinWant <= dyMinMin))
         goto L_8d36;
     else
@@ -8840,16 +8827,14 @@ L_8d1e:
 
 L_8d30:
     t_merge_8d39_0001 = vfs.dyMinWant;
-    t_merge_8d39_0002 = vfs.dyMinWant;
     goto L_8d39;
 
 L_8d36:
     t_merge_8d39_0001 = dyMinMin;
-    t_merge_8d39_0002 = dyMinMin;
 
 L_8d39:
     dyMin = t_merge_8d39_0001;
-    vfs.dyMinWant = t_merge_8d39_0002;
+    vfs.dyMinWant = t_merge_8d39_0001;
     if (((vfs.dy - ((dyMsg + dyMin) + 16)) >= 50))
         goto L_8dc1;
     else
@@ -8949,16 +8934,14 @@ L_8f06:
 
 L_8f31:
     t_merge_8f3a_0001 = vfs.dy2MsgWant;
-    t_merge_8f3a_0002 = vfs.dy2MsgWant;
     goto L_8f3a;
 
 L_8f37:
     t_merge_8f3a_0001 = dyMsgMin;
-    t_merge_8f3a_0002 = dyMsgMin;
 
 L_8f3a:
     dyMsg = t_merge_8f3a_0001;
-    vfs.dy2MsgWant = t_merge_8f3a_0002;
+    vfs.dy2MsgWant = t_merge_8f3a_0001;
     if ((vfs.dy2MinWant <= dyMinMin))
         goto L_8f52;
     else
@@ -8966,16 +8949,14 @@ L_8f3a:
 
 L_8f4c:
     t_merge_8f55_0001 = vfs.dy2MinWant;
-    t_merge_8f55_0002 = vfs.dy2MinWant;
     goto L_8f55;
 
 L_8f52:
     t_merge_8f55_0001 = dyMinMin;
-    t_merge_8f55_0002 = dyMinMin;
 
 L_8f55:
     dyMin = t_merge_8f55_0001;
-    vfs.dy2MinWant = t_merge_8f55_0002;
+    vfs.dy2MinWant = t_merge_8f55_0001;
     if (((vfs.dy - (dyMsg + 8)) >= 100))
         goto L_8f78;
     else
@@ -9178,7 +9159,7 @@ L_9200:
         goto L_9271;
 
 L_9271:
-    if (((uint16_t)(LOWORD(szBase)) == 0x0))
+    if (((uint16_t)(szBase[0]) == 0))
         goto L_9295;
     else
         goto L_927d;
@@ -9467,7 +9448,7 @@ LTry16Color:
     dx = rcWnd.right;
     DrawABunchOfStars(hdc, &(rcWnd));
     plf->lfHeight = ((uint32_t)((-rcWnd.bottom)) / 3);
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[3]));
+    strcpy(plf->lfFaceName, rgszArial[3]);
     hfont = CreateFontIndirect(plf);
     SetTextColor(hdc, 0x9b009b);
     if ((hfont == 0x0))

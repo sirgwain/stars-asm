@@ -789,6 +789,14 @@ func (l *symboldbLoader) loadEnums(inputDir string) error {
 		return err
 	}
 
+	// separate enums for win defines
+	winDefineEnums, err := enumLoader.loadEnumsFromHeader(filepath.Join(inputDir, "enums-windefines.h"))
+	if err != nil {
+		return err
+	}
+
+	enums = append(enums, winDefineEnums...)
+
 	rules, err := enumLoader.loadEnumRules(filepath.Join(inputDir, "enums.json"))
 	if err != nil {
 		return err

@@ -12,7 +12,7 @@ int16_t ZipOrderDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) 
     int16_t        cch;
     int16_t        xCtr;
     XferActionType iAction;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t t_merge_0524_0001;
 
 L_0000:
@@ -82,7 +82,7 @@ L_0145:
         goto L_014f;
 
 L_014f:
-    StickyDlgPos(hwnd, ptStickyZipOrderDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyZipOrderDlg), 1);
     if ((gd.fTutorial == 0x0))
         goto L_017a;
     else
@@ -225,7 +225,7 @@ L_04ed:
 
 L_04f6:
     hwndZipOrderDlg = 0x0;
-    StickyDlgPos(hwnd, ptStickyZipOrderDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyZipOrderDlg), 0);
     if ((wParam != 0x1))
         goto L_0521;
     else
@@ -284,7 +284,7 @@ L_05bd:
         goto L_05f7;
 
 L_05f7:
-    if (((uint16_t)(LOWORD(szWork)) != 0x0))
+    if (((uint16_t)(szWork[0]) != 0))
         goto L_0626;
     else
         goto L_0603;
@@ -329,7 +329,7 @@ L_0684:
 
 L_06b0:
     vrgZip[iResTechNow].fValid = 0x1;
-    vrgZip[iResTechNow].txp.rgia = sel.fl.lpplord->rgord[sel.iwpAct].txp.rgia;
+    vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
     InvalidateRect(hwnd, 0x0, 1);
 
 L_0718:
@@ -436,7 +436,7 @@ L_08a6:
     SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, 0x15);
     SendDlgItemMessage(hwnd, 268, 0x415, 0xc, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-    StickyDlgPos(hwnd, ptStickyRenameDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
     return 1;
 
 L_0931:
@@ -476,7 +476,7 @@ L_09a9:
     GetDlgItemText(hwnd, IDC_EDIT1, szWork, 14);
 
 L_09c0:
-    StickyDlgPos(hwnd, ptStickyRenameDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
     if ((wParam != 0x1))
         goto L_09e5;
     else
@@ -557,7 +557,7 @@ L_0a77:
     SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, 0x15);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-    StickyDlgPos(hwnd, ptStickyRenameDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
     return 1;
 
 L_0b03:
@@ -598,7 +598,7 @@ L_0b7b:
     FStringFitsScreen(szWork, 160);
 
 L_0ba5:
-    StickyDlgPos(hwnd, ptStickyRenameDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
     if ((wParam != 0x1))
         goto L_0bca;
     else
@@ -715,7 +715,7 @@ L_0cfe:
     cshdef = 0;
     cshKill = 0;
     cshOrig = 0;
-    memset(&(rgpct), 0, 0x20);
+    memset(rgpct, 0, 0x20);
     flSrc = *(lpfl);
     if ((flSrc.lpplord->rgord[1].grobj != grobjPlanet))
         goto L_0d77;
@@ -727,8 +727,7 @@ L_0d6a:
     goto L_0dc4;
 
 L_0d77:
-    pt.x = flSrc.lpplord->rgord[1].pt.x;
-    pt.y = flSrc.lpplord->rgord[1].pt.y;
+    pt = flSrc.lpplord->rgord[1].pt;
     id = 0;
     goto L_0d94;
 
@@ -1671,8 +1670,7 @@ L_1e0b:
 
 L_1e1d:
     lpord->fNoAutoTrack = 0x1;
-    lpord->pt.x = lpflTarget->pt.x;
-    lpord->pt.y = lpflTarget->pt.y;
+    lpord->pt = lpflTarget->pt;
     goto L_1dd2;
 
 L_1e4c:
@@ -1704,8 +1702,7 @@ L_1e52:
     lpord->grobj = grobjPlanet;
     lpord->id = (lppl->idRoute - 1);
     lpplRoute = LpplFromId((lppl->idRoute - 1));
-    lpord->pt.x = rgptPlan[(lppl->idRoute - 1)].x;
-    lpord->pt.y = rgptPlan[(lppl->idRoute - 1)].y;
+    lpord->pt = rgptPlan[(lppl->idRoute - 1)];
     lpord->fValidTask = 0x1;
     iWarp = IFindIdealWarp(lpfl, 0);
     DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y);
@@ -3363,7 +3360,7 @@ L_3376:
     goto L_3684;
 
 L_3385:
-    StickyDlgPos(hwnd, ptStickyMergeFleetsDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyMergeFleetsDlg), 1);
     i = 0;
     goto L_3497;
 
@@ -3499,7 +3496,7 @@ L_35b3:
     return 1;
 
 L_35b9:
-    StickyDlgPos(hwnd, ptStickyMergeFleetsDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyMergeFleetsDlg), 0);
     if ((wParam != 0x1))
         goto L_35de;
     else

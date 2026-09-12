@@ -451,25 +451,27 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 	}
 	if offset == 0 && len(terms) == 0 {
 		if ptr, ok := current.ExprType().(*typeinfo.Pointer); ok && deref && width > 0 && ptr.Elem != nil {
-
-			if ptr.Elem.Bytes() == width {
-				if _, field := current.(*FieldAccess); !field {
+			if _, field := current.(*FieldAccess); !field {
+				if ptr.Elem.Bytes() == width {
 					return &Deref{Pointer: current, Width: width, TypeInfo: ptr.Elem}, true
 				}
-			}
 
-			// A partial load of a pointer value through another pointer:
-			//
-			//     char **ppszBeg
-			//     load word [ppszBeg]
-			//
-			// represents LOWORD(*ppszBeg), not ppszBeg and not an
-			// arbitrary partial load of the pointee object.
-			if partialPointerPointee(ptr, 0, width) {
-				if _, field := current.(*FieldAccess); !field {
+				// A partial load of a pointer value through another pointer:
+				//
+				//     char **ppszBeg
+				//     load word [ppszBeg]
+				//
+				// represents LOWORD(*ppszBeg), not ppszBeg and not an
+				// arbitrary partial load of the pointee object.
+				if partialPointerPointee(ptr, 0, width) {
 					whole := &Deref{Pointer: current, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
 					return &Part{Base: whole, ByteOff: 0, Width: width, TypeInfo: intTypeForWidth(width)}, true
 				}
+
+				// The machine address was formed through this pointer. A width
+				// mismatch therefore describes an access to memory at *current,
+				// not a partial access to the pointer variable itself.
+				return &Deref{Pointer: current, Width: width, TypeInfo: intTypeForWidth(width)}, true
 			}
 		}
 
@@ -601,7 +603,7 @@ func signedIndexConst(value int) Expr {
 // indexedFlexibleArrayFieldAtOffset recognizes a trailing array member before
 // pointer arithmetic folds its byte offset into an index of the parent struct.
 func indexedFlexibleArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
-	field, fieldOff, ok := zeroLengthArrayFieldAtOffset(strct, offset)
+	field, fieldOff, ok := zeroOrOneLengthArrayFieldAtOffset(strct, offset)
 	if !ok {
 		return nil, 0, false
 	}
@@ -772,7 +774,7 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	matches := strct.FieldsContainingOffset(offset)
 	matches = c.unionFieldMatches(base, strct, matches)
 	if len(matches) == 0 {
-		field, fieldOff, ok := zeroLengthArrayFieldAtOffset(strct, offset)
+		field, fieldOff, ok := zeroOrOneLengthArrayFieldAtOffset(strct, offset)
 		if !ok {
 			return nil, 0, false
 		}
@@ -1052,11 +1054,11 @@ func consumeArrayConstIndex(base Expr, typ typeinfo.Type, offset int, width int,
 	return &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.I16, U64: uint64(index)}, TypeInfo: elem}, remainder, true
 }
 
-// zeroLengthArrayFieldAtOffset returns the flexible array field spanning offset.
-func zeroLengthArrayFieldAtOffset(strct *typeinfo.Struct, offset int) (*typeinfo.StructField, int, bool) {
+// zeroOrOneLengthArrayFieldAtOffset returns the flexible array field spanning offset.
+func zeroOrOneLengthArrayFieldAtOffset(strct *typeinfo.Struct, offset int) (*typeinfo.StructField, int, bool) {
 	for i := range strct.Fields {
 		field := &strct.Fields[i]
-		if !isZeroLengthArray(field.Type) || offset < field.Offset {
+		if !isZeroOrOneLengthArray(field.Type) || offset < field.Offset {
 			continue
 		}
 		return field, offset - field.Offset, true
@@ -1064,10 +1066,10 @@ func zeroLengthArrayFieldAtOffset(strct *typeinfo.Struct, offset int) (*typeinfo
 	return nil, 0, false
 }
 
-// isZeroLengthArray reports whether typ is a flexible array marker.
-func isZeroLengthArray(typ typeinfo.Type) bool {
+// isZeroOrOneLengthArray reports whether typ is a flexible array marker for this compiler (T[0] or T[1]).
+func isZeroOrOneLengthArray(typ typeinfo.Type) bool {
 	array, ok := typ.(*typeinfo.Array)
-	return ok && array.Count == 0
+	return ok && (array.Count == 0 || array.Count == 1)
 }
 
 // indexElementType returns the element type for semantic indexing.

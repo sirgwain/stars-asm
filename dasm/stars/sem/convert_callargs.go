@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -89,6 +90,18 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 				}
 			}
 		}
+
+		// The resolved address may be a containing aggregate whose subobject
+		// at this same address is the expected pointee type. For example,
+		// SHDEF begins with HUL at offset zero.
+		if target, ok := c.convertSymbolPath(path, path.Type()); ok {
+			if lvalue, ok := target.(LValue); ok {
+				if projected, ok := c.typedAddressTarget(lvalue, 0, expected); ok {
+					return convertAddressArgTargetTyped(projected, expected, ptr)
+				}
+			}
+		}
+
 		if typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
 			target := LValue(&SymbolRef{Path: path})
 			if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
@@ -265,6 +278,31 @@ func (c *machineConverter) convertAddressArgTyped(value machine.Value, expected 
 	if !ok {
 		return nil, false
 	}
+
+	// A non-zero constant passed where a near pointer is expected is
+	// potentially a DS-relative address. Resolve the addressed aggregate,
+	// not a value of pointer-width at that address.
+	if cn, ok := value.(*machine.Const); ok &&
+		cn.Val != 0 &&
+		ptrType.Class == typeinfo.PtrNear {
+
+		ds := c.ctx.segFromRegister(asm.RegDS)
+
+		if resolved, ok := c.ctx.symbols.addressFromValue(value, ds); ok &&
+			resolved.hasBase() {
+
+			if semantic, ok := c.semanticResolvedAddress(resolved); ok {
+				if projected, ok := c.consumeAddressProjection(semantic, 0); ok {
+					if target, ok := projected.(LValue); ok {
+						if expr, ok := convertAddressArgTargetTyped(target, expected, ptrType); ok {
+							return expr, true
+						}
+					}
+				}
+			}
+		}
+	}
+
 	addr, addrOK := value.(*machine.Address)
 	if !addrOK {
 		words, wordsOK := value.(*machine.StackWords)

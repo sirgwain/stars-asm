@@ -24,6 +24,7 @@ var procs = []string{
 	"ChgCargo",
 	"CMaxMines",
 	"DeleteWpFar",
+	"DoBombing",
 	"DropSalvage",
 	"FCreateStuff",
 	"FCheckXferWP",

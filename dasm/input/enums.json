@@ -1,7 +1,4 @@
 {
-  "enums": {
-    "import_headers": ["./enums.h"]
-  },
   "uses": [
     { "kind": "global", "name": "mdBuild", "enum": "MdBuild" },
     { "kind": "global", "name": "mdXferDlg", "enum": "MdXfer" },

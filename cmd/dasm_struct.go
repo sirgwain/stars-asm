@@ -38,9 +38,9 @@ func newDasmStructCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&structName, "struct", "", "the struct to dump")
+	cmd.Flags().StringVar(&structName, "name", "", "the struct to dump")
 	cmd.Flags().BoolVar(&all, "all", false, "dump all structs")
-	cmd.MarkFlagsMutuallyExclusive("struct", "all")
-	cmd.MarkFlagsOneRequired("struct", "all")
+	cmd.MarkFlagsMutuallyExclusive("name", "all")
+	cmd.MarkFlagsOneRequired("name", "all")
 	return cmd
 }

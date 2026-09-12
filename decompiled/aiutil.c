@@ -201,8 +201,7 @@ L_01c9:
 
 L_01f1:
     part.hs.cItem = lphul->rghs[ihs].cItem;
-    shdef.hul.rghs[ihs].grhst = part.hs.grhst;
-    HIWORD(shdef.hul.rghs[ihs]) = HIWORD(part.hs);
+    shdef.hul.rghs[ihs] = part.hs;
     goto L_01b3;
 
 L_024b:
@@ -369,14 +368,13 @@ L_03f3:
 }
 
 int16_t FGetAIPart(int16_t aip, PART *ppart) {
-    int16_t  cTry;
-    int16_t  iOffset;
-    int16_t  i;
-    int16_t  cItem;
-    PART     part;
-    int16_t  t_047d;
-    int16_t  t_04ee;
-    uint16_t t_scratch_m14_2;
+    int16_t cTry;
+    int16_t iOffset;
+    int16_t i;
+    int16_t cItem;
+    PART    part;
+    int16_t t_047d;
+    int16_t t_04ee;
 
 L_043e:
     iOffset = 0;
@@ -429,9 +427,7 @@ L_0511:
     return 1;
 
 L_0526:
-    t_scratch_m14_2 = ((HIWORD(part.hs) + 0xffff) & 0xff);
-    part.hs.iItem = 0x0;
-    HIWORD(part.hs) = (HIWORD(part.hs) | t_scratch_m14_2);
+    part.hs.iItem = (part.hs.iItem + 0xffff);
     goto L_04ee;
 
 L_0546:
@@ -448,7 +444,7 @@ void PickANameAndBmp(SHDEF *pshdef, StringId ids, int16_t cids, int16_t ibmpStar
     int16_t ishdef;
 
 L_055a:
-    memset(&(rgfBmpUsed), 0, 0x8);
+    memset(rgfBmpUsed, 0, 0x8);
     if ((pshdef->ishdef < 0x10))
         goto L_062c;
     else
@@ -646,7 +642,6 @@ int16_t FChangeAiShdef(SHDEF *pshdef, int16_t ishdef) {
     int16_t  ishdefWork;
     SHDEF    shdef;
     uint16_t t_merge_099a_0001;
-    uint16_t t_scratch_ma0_2;
 
 L_08a2:
     shdef = *(pshdef);
@@ -696,9 +691,7 @@ L_099a:
         goto L_09a6;
 
 L_09a6:
-    /* untranslated: t_scratch_ma0_2 = (((iDir * 0x1000) + part[0x4:2](rgplr[idPlayer])) & 0xf000) */
-    rgplr[idPlayer].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[idPlayer]) = (part[0x4:2](rgplr[idPlayer]) | t_scratch_ma0_2) */
+    rgplr[idPlayer].cshdefSB = (rgplr[idPlayer].cshdefSB + iDir);
     goto L_0a88;
 
 L_09f9:
@@ -1100,8 +1093,7 @@ L_10c1:
 LFindNearest:
     lpb = (vlpbAiPlanet + 15);
     d2 = 99999999;
-    pt.x = lpflCol->pt.x;
-    pt.y = lpflCol->pt.y;
+    pt = lpflCol->pt;
     idBest = -1;
     i = 0;
     goto L_1136;
@@ -1506,8 +1498,7 @@ L_15b7:
 L_15c9:
     lpb = (vlpbAiPlanet + 15);
     d2 = 99999999;
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     idBest = -1;
     i = 0;
     goto L_1615;
@@ -1977,7 +1968,7 @@ L_1c41:
 
 L_1c4a:
     sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1);
-    fmemmove(sel.pl.lpplprod->rgprod, sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * 0x4));
+    fmemmove(sel.pl.lpplprod->rgprod, &(sel.pl.lpplprod->rgprod[1]), (sel.pl.lpplprod->iprodMac * 0x4));
     goto L_17a3;
 
 L_1c8f:
@@ -2197,7 +2188,7 @@ WarpSet:
 
 L_1fc3:
     sel.fl.lpplord->rgord[1].iWarp = i;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_1ff7:
     return;
@@ -2243,8 +2234,7 @@ L_2040:
     lpflClosest = 0x0;
     lpflT = lpflEnemy;
     lDistBest = 1000000;
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     memset(&(ord), 0, 0x12);
     goto L_2248;
 
@@ -2453,8 +2443,7 @@ L_2302:
     return 0;
 
 L_2308:
-    pt.x = lpflClosest->pt.x;
-    pt.y = lpflClosest->pt.y;
+    pt = lpflClosest->pt;
     lpplClosest = 0x0;
     lDistBest = 1000000;
     lppl = lpPlanets;
@@ -2590,8 +2579,7 @@ L_24ff:
     return IdTargetAttack(lpfl, lpflAtk, lpflEnemy, 0);
 
 L_2520:
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     lpplClosest = 0x0;
     lDistBest = 1000000;
     lppl = lpPlanets;
@@ -3031,8 +3019,7 @@ L_2b1b:
     pctFull = (100 - LOWORD((int32_t)(((uint32_t)((wtCargoFree * 100)) / wtCargoMax))));
     scoreBest = 0;
     idBest = -1;
-    pt.x = lpflFr->pt.x;
-    pt.y = lpflFr->pt.y;
+    pt = lpflFr->pt;
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
     goto L_3276;
@@ -3606,7 +3593,7 @@ L_34ae:
     XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, 1000);
 
 L_34d3:
-    FLookupFleet(lpflFr->id, sel.fl.id);
+    FLookupFleet(lpflFr->id, &(sel.fl));
 
 L_34e5:
     if ((LOWORD(lpthBest) != 0x0))
@@ -3707,7 +3694,7 @@ L_35df:
     XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, 100);
 
 L_3604:
-    FLookupFleet(lpflFr->id, sel.fl.id);
+    FLookupFleet(lpflFr->id, &(sel.fl));
     ord.txp.rgia[3].iAction = iActionUnloadAll;
     goto L_37c7;
 
@@ -3838,7 +3825,7 @@ L_3744:
     l = (int32_t)(((uint32_t)((lpplHome->rgwtMin[3] * l)) / 0x64));
     ChangeMainObjSel(grobjFleet, lpflFr->id);
     XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, LOWORD(l));
-    FLookupFleet(lpflFr->id, sel.fl.id);
+    FLookupFleet(lpflFr->id, &(sel.fl));
     ord.txp.rgia[3].iAction = iActionUnloadAll;
 
 L_37c7:
@@ -3995,8 +3982,7 @@ int16_t FSalvageTargetFreighter2(FLEET *lpflFr, int16_t fNeedy, int16_t iWorst, 
 
 L_395a:
     fSalvage = 0;
-    pt.x = lpflFr->pt.x;
-    pt.y = lpflFr->pt.y;
+    pt = lpflFr->pt;
     lpth = lpThings;
     lpthMac = (lpThings + cThing);
     goto L_3cf0;
@@ -4072,7 +4058,7 @@ L_3ac3:
 
 L_3acc:
     fSalvage = 1;
-    FLookupFleet(lpflFr->id, sel.fl.id);
+    FLookupFleet(lpflFr->id, &(sel.fl));
     goto L_3cec;
 
 L_3ae9:
@@ -4281,13 +4267,13 @@ L_3dc0:
 
 L_3dca:
     sel.fl.cord = 1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_3de0:
     sel.fl.lpplord->rgord[iord] = *(pord);
     sel.fl.cord = (iord + 1);
     sel.fl.lpplord->iordMac = LOBYTE((iord + 1));
-    t_call_3e3f = FLookupFleet(-1, sel.fl.id);
+    t_call_3e3f = FLookupFleet(-1, &(sel.fl));
 
 L_3e4a:
     return t_call_3e3f;
@@ -4432,7 +4418,7 @@ L_3ff2:
 
 L_4003:
     iprod = 0;
-    fmemmove(lpplProdGlob->rgprod[1], lpplProdGlob->rgprod, (lpplProdGlob->iprodMac * 0x4));
+    fmemmove(&(lpplProdGlob->rgprod[1]), lpplProdGlob->rgprod, (lpplProdGlob->iprodMac * 0x4));
     fmemset(lpplProdGlob->rgprod, 0, 0x4);
     goto L_407b;
 
@@ -5295,7 +5281,7 @@ L_4d18:
         goto L_4d3a;
 
 L_4d3a:
-    if ((LOWORD(vlpbAiData) > 0x2))
+    if ((*(vlpbAiData) > 0x2))
         goto L_4d51;
     else
         goto L_4d47;
@@ -5596,8 +5582,7 @@ L_51af:
         goto L_51ce;
 
 L_51ce:
-    pt.x = rgptPlan[id].x;
-    pt.y = rgptPlan[id].y;
+    pt = rgptPlan[id];
     dx = (pt.x - rgptPlan[lppl->id].x);
     dy = (pt.y - rgptPlan[lppl->id].y);
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5742,8 +5727,7 @@ L_5453:
         goto L_5477;
 
 L_5477:
-    pt.x = rgptPlan[vlpbAiData[((i * 20) + 4)]].x;
-    pt.y = rgptPlan[vlpbAiData[((i * 20) + 4)]].y;
+    pt = rgptPlan[vlpbAiData[((i * 20) + 4)]];
     dx = (pt.x - lpfl->pt.x);
     dy = (pt.y - lpfl->pt.y);
     l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
@@ -5841,7 +5825,7 @@ L_56b0:
     goto L_5588;
 
 L_56b3:
-    LOWORD(vlpbAiData) = (LOWORD((vlpbAiData[2] * 0x14)) + 0x4);
+    *(vlpbAiData) = (LOWORD((vlpbAiData[2] * 0x14)) + 0x4);
 
 L_56ca:
     return;
@@ -6204,7 +6188,7 @@ L_5ba7:
     return;
 }
 
-FLEET *LpflFindClosestEnum(FLEET *lpfl, int16_t (**pfn)(FLEET *, FLEET *)) {
+FLEET *LpflFindClosestEnum(FLEET *lpfl, int16_t (*pfn)(FLEET *, FLEET *)) {
     FLEET  *lpflT;
     POINT   pt;
     int16_t dy;
@@ -6217,8 +6201,7 @@ FLEET *LpflFindClosestEnum(FLEET *lpfl, int16_t (**pfn)(FLEET *, FLEET *)) {
 L_5bae:
     lBest = 10000000;
     lpflBest = 0x0;
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     ish = 0;
     goto L_5be8;
 
@@ -6284,7 +6267,7 @@ L_5cce:
     return lpflBest;
 }
 
-PLANET *LpplFindClosestEnum(PLANET *lppl, int16_t (**pfn)(PLANET *, PLANET *)) {
+PLANET *LpplFindClosestEnum(PLANET *lppl, int16_t (*pfn)(PLANET *, PLANET *)) {
     POINT   pt;
     int16_t dy;
     PLANET *lpplTMac;
@@ -6297,8 +6280,7 @@ PLANET *LpplFindClosestEnum(PLANET *lppl, int16_t (**pfn)(PLANET *, PLANET *)) {
 L_5cd4:
     lBest = 10000000;
     lpplBest = 0x0;
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     lpplT = lpPlanets;
     lpplTMac = (lpPlanets + cPlanet);
     goto L_5de9;
@@ -6349,7 +6331,7 @@ L_5e00:
     return lpplBest;
 }
 
-PLANET *LpplFindBestEnum(PLANET *lppl, int16_t (**pfn)(PLANET *, PLANET *)) {
+PLANET *LpplFindBestEnum(PLANET *lppl, int16_t (*pfn)(PLANET *, PLANET *)) {
     int16_t iBest;
     POINT   pt;
     int16_t dy;
@@ -6365,8 +6347,7 @@ L_5e06:
     iBest = 1;
     lBest = 10000000;
     lpplBest = 0x0;
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     lpplT = lpPlanets;
     lpplTMac = (lpPlanets + cPlanet);
     goto L_5f37;
@@ -6557,7 +6538,7 @@ L_60d2:
 
 L_60e4:
     sel.fl.lpplord->rgord[0].grTask = grTaskNone;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     return;
 }
 
@@ -6638,8 +6619,7 @@ L_61de:
     lpflClosest = 0x0;
     lpflT = lpflEnemy;
     lDistBest = 1000000;
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     memset(&(ord), 0, 0x12);
     if ((FFleetMightHaveTeeth(lpfl) == 0))
         goto LFindPlanet;
@@ -6833,8 +6813,7 @@ L_6478:
     return 0;
 
 L_647e:
-    pt.x = lpflClosest->pt.x;
-    pt.y = lpflClosest->pt.y;
+    pt = lpflClosest->pt;
     lpplClosest = 0x0;
     lDistBest = 1000000;
     lppl = lpPlanets;
@@ -7528,8 +7507,7 @@ int16_t IdplFindClosestStarbase(FLEET *lpfl, int16_t fBigOnes) {
 L_6e04:
     lBest = 10000000;
     lpplBest = 0x0;
-    pt.x = lpfl->lpplord->rgord[0].pt.x;
-    pt.y = lpfl->lpplord->rgord[0].pt.y;
+    pt = lpfl->lpplord->rgord[0].pt;
     lpplT = lpPlanets;
     lpplTMac = (lpPlanets + cPlanet);
     goto L_6f48;
@@ -7663,8 +7641,7 @@ void MoveToNearestPlanetOrEnemy(FLEET *lpfl, int16_t dEnemyRange) {
 L_7014:
     lBest = 10000000;
     lpplBest = 0x0;
-    pt.x = lpfl->lpplord->rgord[0].pt.x;
-    pt.y = lpfl->lpplord->rgord[0].pt.y;
+    pt = lpfl->lpplord->rgord[0].pt;
     lpplT = lpPlanets;
     lpplTMac = (lpPlanets + cPlanet);
     goto L_7128;
@@ -8433,7 +8410,6 @@ int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t 
     SHDEF    shdef;
     HS      *lphs;
     uint16_t t_scratch_m9e;
-    uint16_t t_scratch_m9e_2;
 
 L_7bca:
     if ((aisb >= 0))
@@ -8520,9 +8496,7 @@ L_7c81:
         goto L_7caf;
 
 L_7caf:
-    t_scratch_m9e = (((lphs->cItem >> (0x3 - iLevel)) & 0xff) * 0x100);
-    lphs->cItem = 0x0;
-    *(lphs + 0x2) = (*(lphs + 0x2) | t_scratch_m9e);
+    lphs->cItem = (lphs->cItem >> (0x3 - iLevel));
     goto L_7c6f;
 
 L_7cf4:
@@ -8550,9 +8524,9 @@ L_7d2a:
         goto L_7d42;
 
 L_7d42:
-    t_scratch_m9e_2 = ((*(lphs + 0x2) + 0xff00) & 0xff00);
+    t_scratch_m9e = ((*(lphs + 0x2) + 0xff00) & 0xff00);
     lphs->cItem = 0x0;
-    *(lphs + 0x2) = (*(lphs + 0x2) | t_scratch_m9e_2);
+    *(lphs + 0x2) = (*(lphs + 0x2) | t_scratch_m9e);
 
 L_7d72:
     goto L_7c6f;
@@ -8581,7 +8555,7 @@ int16_t FAIFling(PLANET *lppl, int32_t *rgResAvail) {
     PROD    *lpprod;
     int16_t  iKeep;
     uint16_t t_merge_8346_0001;
-    int32_t  t_merge_83cd_0003_wide;
+    int32_t  t_merge_83cd_0002_wide;
     int32_t  t_merge_8415_0001;
 
 L_7dd6:
@@ -8680,7 +8654,7 @@ L_7f1d:
         goto L_7f22;
 
 L_7f22:
-    if ((((rgResAvail + LOWORD(rgResAvail[1])) + LOWORD(rgResAvail[2])) <= 0xbb8))
+    if ((((*(rgResAvail) + LOWORD(rgResAvail[1])) + LOWORD(rgResAvail[2])) <= 0xbb8))
         goto L_844c;
     else
         goto L_7f2a;
@@ -8704,8 +8678,7 @@ L_7f5b:
         goto L_7f6f;
 
 L_7f6f:
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     iT = 0;
     goto L_7fc5;
 
@@ -8849,7 +8822,7 @@ L_81b0:
 L_81b9:
     sel.pl.iWarpFling = (iLevelBest - 4);
     sel.pl.idFling = (lpplBest->id + 1);
-    FLookupPlanet(-1, sel.pl.id);
+    FLookupPlanet(-1, &(sel.pl));
     if ((HIWORD(rgResAvail[2]) < 0x0))
         goto L_8256;
     else
@@ -8889,7 +8862,7 @@ L_8262:
         goto L_8267;
 
 L_8267:
-    if ((rgResAvail <= 0xbb8))
+    if ((*(rgResAvail) <= 0xbb8))
         goto L_82c1;
     else
         goto L_8270;
@@ -8947,7 +8920,7 @@ L_82cd:
         goto L_82d2;
 
 L_82d2:
-    if ((rgResAvail <= 0x5dc))
+    if ((*(rgResAvail) <= 0x5dc))
         goto L_832c;
     else
         goto L_82db;
@@ -9048,26 +9021,26 @@ L_83b5:
         goto L_83be;
 
 L_83be:
-    t_merge_83cd_0003_wide = l;
+    t_merge_83cd_0002_wide = l;
     goto L_83cd;
 
 L_83c7:
-    t_merge_83cd_0003_wide = 1;
+    t_merge_83cd_0002_wide = 1;
 
 L_83cd:
-    if ((0x0 > HIWORD(t_merge_83cd_0003_wide)))
+    if ((0x0 > HIWORD(t_merge_83cd_0002_wide)))
         goto L_83ef;
     else
         goto L_83da;
 
 L_83da:
-    if ((0x0 < HIWORD(t_merge_83cd_0003_wide)))
+    if ((0x0 < HIWORD(t_merge_83cd_0002_wide)))
         goto L_83e6;
     else
         goto L_83df;
 
 L_83df:
-    if ((0x19 >= LOWORD(t_merge_83cd_0003_wide)))
+    if ((0x19 >= LOWORD(t_merge_83cd_0002_wide)))
         goto L_83ef;
     else
         goto L_83e6;
@@ -10708,7 +10681,7 @@ L_9a0a:
 
 LDoTheSplit:
     ChangeMainObjSel(grobjFleet, lpfl->id);
-    lpflNew = LpflNewSplit(sel.fl.id);
+    lpflNew = LpflNewSplit(&(sel.fl));
     flNew = *(lpflNew);
     i = 0;
     goto L_9a9b;
@@ -10733,8 +10706,8 @@ L_9a9b:
         goto L_9aa4;
 
 L_9aa4:
-    FleetTransferCargoBalance(sel.fl.id, &(flNew));
-    FLookupFleet(-1, sel.fl.id);
+    FleetTransferCargoBalance(&(sel.fl), &(flNew));
+    FLookupFleet(-1, &(sel.fl));
     FLookupFleet(-1, &(flNew));
     goto LTopOfLoop;
 
@@ -11078,8 +11051,7 @@ int16_t FShouldPlanetBuildColonizer(PLANET *lpplSrc) {
 
 L_9f30:
     lBest = 10000000;
-    pt.x = rgptPlan[lpplSrc->id].x;
-    pt.y = rgptPlan[lpplSrc->id].y;
+    pt = rgptPlan[lpplSrc->id];
     if ((game.turn >= 0x3c))
         goto L_9f6b;
     else

@@ -30,8 +30,6 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   t_merge_2609_0001;
     uint16_t  t_merge_274b_0001;
     uint16_t  t_merge_2763_0001;
-    uint16_t  t_scratch_m2e;
-    uint16_t  t_scratch_m2e_2;
     int16_t   t_scratch_m16_6;
     int16_t   t_call_2d26;
     int16_t   t_scratch_m16_7;
@@ -756,9 +754,7 @@ L_29da:
     lpth->thp.rgwtMin[i] = 32760;
 
 L_29f3:
-    /* untranslated: t_scratch_m2e = (((sext16to32((lpth->thp.rgwtMin[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff) */
-    lpth->thp.wtMax = 0x0;
-    /* untranslated: part[0x8:2](lpth->thp) = (part[0x8:2](lpth->thp) | t_scratch_m2e) */
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((uint32_t)((lpth->thp.rgwtMin[i] + 9)) / 10));
     i = (i + 1);
 
 L_2a3f:
@@ -794,9 +790,7 @@ L_2ac9:
 
 L_2ad1:
     lpth->thp.rgwtMin[i] = rgwt[i];
-    /* untranslated: t_scratch_m2e_2 = (((sext16to32((rgwt[i] + 0x9)) / 0xa) + part[0x8:2](lpth->thp)) & 0x3fff) */
-    lpth->thp.wtMax = 0x0;
-    /* untranslated: part[0x8:2](lpth->thp) = (part[0x8:2](lpth->thp) | t_scratch_m2e_2) */
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((uint32_t)((rgwt[i] + 9)) / 10));
     i = (i + 1);
 
 L_2b35:

@@ -68,6 +68,48 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 					return next, true, true
 				}
 			case *Binary:
+				next := value
+				changed := false
+
+				// In pointer difference expressions, a machine address of an array
+				// normally represents the array's ordinary C pointer decay.
+				if value.Op == OpSub {
+					if typeinfo.IsPointer(value.LHS.ExprType()) {
+						if rhs, ok := decayAddressOfArray(value.RHS, value.LHS.ExprType()); ok {
+							copy := *value
+							copy.RHS = rhs
+							next = &copy
+							changed = true
+						}
+					}
+
+					if typeinfo.IsPointer(next.RHS.ExprType()) {
+						if lhs, ok := decayAddressOfArray(next.LHS, next.RHS.ExprType()); ok {
+							if next == value {
+								copy := *value
+								next = &copy
+							}
+							next.LHS = lhs
+							changed = true
+						}
+					}
+				}
+
+				// Pointer-typed binaries already use element steps. Machine
+				// arithmetic exposed by scratch substitution still uses bytes.
+				if !typeinfo.IsPointer(next.ExprType()) &&
+					(next.Op == OpAdd || next.Op == OpSub) {
+
+					if resolved, ok := p.resolvePointerArithmetic(next); ok {
+						child, _ := w.rewriteExprChildren(resolved)
+						return child, true, true
+					}
+				}
+
+				if changed {
+					child, childChanged := w.rewriteExprChildren(next)
+					return child, changed || childChanged, true
+				}
 				// Pointer-typed binaries already use element steps. Machine
 				// arithmetic exposed by scratch substitution still uses bytes.
 				if !typeinfo.IsPointer(value.ExprType()) && (value.Op == OpAdd || value.Op == OpSub) {
@@ -122,6 +164,12 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 // resolvePointerArithmetic projects a byte address into a typed subobject
 // address without loading the subobject or following a pointer stored in it.
 func (p *resolveLateAddressesProcessor) resolvePointerArithmetic(expr Expr) (Expr, bool) {
+	if binary, ok := expr.(*Binary); ok && binary.Op == OpSub {
+		if semanticAddressValued(binary.LHS) && semanticAddressValued(binary.RHS) {
+			return nil, false
+		}
+	}
+
 	parts := flattenSemanticAddress(expr, 1)
 	if parts.invalid || !parts.addressValue || parts.base == nil || parts.offset == 0 && len(parts.terms) == 0 {
 		return nil, false
@@ -323,6 +371,19 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 	return semanticAddressParts{terms: []ScaledTerm{{Expr: unwrapSemanticAddressWord(expr), Scale: sign}}}
 }
 
+func decayAddressOfArray(expr Expr, expected typeinfo.Type) (Expr, bool) {
+	address, ok := expr.(*AddressOf)
+	if !ok {
+		return expr, false
+	}
+
+	decayed, ok := decayArrayLValue(address.Target, expected)
+	if !ok {
+		return expr, false
+	}
+	return decayed, true
+}
+
 // mergeSemanticAddressParts combines normalized semantic address fragments
 // while rejecting a second base by retaining it as an ordinary term.
 func mergeSemanticAddressParts(a, b semanticAddressParts) semanticAddressParts {
@@ -355,6 +416,17 @@ func unwrapSemanticAddressWord(expr Expr) Expr {
 			return expr
 		}
 	}
+}
+
+func semanticAddressValued(expr Expr) bool {
+	if expr == nil {
+		return false
+	}
+	if typeinfo.IsPointer(expr.ExprType()) || typeinfo.IsArray(expr.ExprType()) {
+		return true
+	}
+	_, ok := expr.(*AddressOf)
+	return ok
 }
 
 // semanticFarSegmentParent returns the pointer represented by the high word

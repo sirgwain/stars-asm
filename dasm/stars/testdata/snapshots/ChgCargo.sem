@@ -72,8 +72,7 @@ L_6110:
     branch (LOWORD(ppl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0 ? L_613c : L_6118
 
 L_6118:
-    LOWORD(dChg) = neg(LOWORD(ppl->rgwtMin[iSupply]))
-    HIWORD(dChg) = neg((HIWORD(ppl->rgwtMin[iSupply]) + 0x0))
+    dChg = neg(ppl->rgwtMin[iSupply])
 
 L_613c:
     ppl->rgwtMin[iSupply] = (ppl->rgwtMin[iSupply] + dChg)
@@ -215,8 +214,7 @@ L_63a8:
     branch (LOWORD(pfl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0 ? L_63d4 : L_63b0
 
 L_63b0:
-    LOWORD(dChg) = neg(LOWORD(pfl->rgwtMin[iSupply]))
-    HIWORD(dChg) = neg((HIWORD(pfl->rgwtMin[iSupply]) + 0x0))
+    dChg = neg(pfl->rgwtMin[iSupply])
 
 L_63d4:
     branch iSupply != 3 ? L_63f9 : L_63dd
@@ -232,21 +230,21 @@ L_63f9:
 
 L_6402:
     call GetFuelFree(pfl) -> t_call_640a
-    t_merge_6425_0003_wide = t_call_640a
+    t_merge_6425_0002_wide = t_call_640a
     goto L_6425
 
 L_6415:
     call GetCargoFree(pfl) -> t_call_641d
-    t_merge_6425_0003_wide = t_call_641d
+    t_merge_6425_0002_wide = t_call_641d
 
 L_6425:
-    branch HIWORD(dChg) > hiword(t_merge_6425_0003_wide) ? L_6443 : L_642d
+    branch HIWORD(dChg) > hiword(t_merge_6425_0002_wide) ? L_6443 : L_642d
 
 L_642d:
-    branch HIWORD(dChg) < hiword(t_merge_6425_0003_wide) ? L_643a : L_6432
+    branch HIWORD(dChg) < hiword(t_merge_6425_0002_wide) ? L_643a : L_6432
 
 L_6432:
-    branch LOWORD(dChg) >= loword(t_merge_6425_0003_wide) ? L_6443 : L_643a
+    branch LOWORD(dChg) >= loword(t_merge_6425_0002_wide) ? L_6443 : L_643a
 
 L_643a:
     t_merge_646f_0001 = dChg

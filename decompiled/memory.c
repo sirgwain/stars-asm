@@ -280,11 +280,11 @@ L_0436:
         goto L_045a;
 
 L_045a:
-    LOWORD(lpbTop) = (cb + 0xfffe);
+    *(lpbTop) = (cb + 0xfffe);
     lphb->ibTop = (lphb->ibTop + cb);
     lphb->cbFree = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
-    return lpbTop[2];
+    return &(lpbTop[2]);
 
 L_0493:
     lpb = (lphb + 1);
@@ -292,8 +292,8 @@ L_0493:
 
 L_04a7:
     lpbPrev = lpb;
-    fFree = (LOWORD(lpb) & 0x1);
-    cbItem = (LOWORD(lpb) & 0xfffe);
+    fFree = (*(lpb) & 0x1);
+    cbItem = (*(lpb) & 0xfffe);
     lpb = (lpb + (cbItem + 0x2));
     if ((fFree == 0))
         goto L_0575;
@@ -307,7 +307,7 @@ L_04dd:
         goto L_04eb;
 
 L_04eb:
-    if (((LOWORD(lpb) & 0x1) == 0x0))
+    if (((*(lpb) & 0x1) == 0x0))
         goto L_0524;
     else
         goto L_04fc;
@@ -319,19 +319,19 @@ L_04fc:
         goto L_0512;
 
 L_0512:
-    lpb = (lpb + ((LOWORD(lpb) & 0xfffe) + 0x2));
+    lpb = (lpb + ((*(lpb) & 0xfffe) + 0x2));
     goto L_04dd;
 
 L_0524:
     cbItem = ((LOWORD(lpb) - LOWORD(lpbPrev)) + 0xfffe);
-    LOWORD(lpbPrev) = (cbItem | 0x1);
+    *(lpbPrev) = (cbItem | 0x1);
     if (((cbItem + 0x2) < cb))
         goto L_0575;
     else
         goto L_0555;
 
 L_0555:
-    LOWORD(lpbPrev) = (LOWORD(lpbPrev) & 0xfffe);
+    *(lpbPrev) = (*(lpbPrev) & 0xfffe);
     lpbPrev = (lpbPrev + 2);
     lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
     return lpbPrev;

@@ -87,8 +87,7 @@ L_5b63:
     branch pt.y == ptOld.y ? L_5b44 : L_5b6e
 
 L_5b6e:
-    ptOld.x = pt.x
-    ptOld.y = pt.y
+    ptOld = pt
     branch btn.iSide != 0x1 ? L_5bc0 : L_5b8c
 
 L_5b8c:
@@ -222,14 +221,14 @@ L_5e8c:
     branch btn.iSide != 0x0 ? L_5eca : L_5ec4
 
 L_5ec4:
-    t_merge_5ecd_0001_wide = 0x10001
+    t_merge_5ecd_0001 = 0x1
     goto L_5ecd
 
 L_5eca:
-    t_merge_5ecd_0001_wide = 0x0
+    t_merge_5ecd_0001 = 0x0
 
 L_5ecd:
-    pxfer[loword(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] = (pxfer[hiword(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] - i)
+    pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i)
     call DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn) -> callresult(void)
 
 L_5efe:

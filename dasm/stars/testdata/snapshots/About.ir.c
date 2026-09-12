@@ -3,7 +3,7 @@ int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     HDC     hdc;
     int16_t i;
     HWND    hwndCtl;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
 
 L_1252:
     goto L_14e5;

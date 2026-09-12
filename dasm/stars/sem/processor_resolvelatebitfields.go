@@ -217,14 +217,8 @@ func unshiftSemanticBitfieldSet(address AddressExpr, storageWidth int, value Exp
 		return arithmetic, true
 	}
 
-	source := value
-	if shift, ok := source.(*Binary); ok && shift.Op == OpShl {
-		amount, ok := semanticShiftAmount(shift.RHS)
-		if !ok || amount != bitOff {
-			return nil, false
-		}
-		source = unwrapSemanticBitfieldValue(shift.LHS)
-	} else if bitOff != 0 {
+	source, ok := unshiftSemanticBitfieldShiftedOperand(value, bitOff)
+	if !ok {
 		return nil, false
 	}
 
@@ -255,7 +249,7 @@ func unshiftSemanticBitfieldArithmetic(address AddressExpr, storageWidth int, va
 		return nil, false
 	}
 	arithmetic, ok := unwrapSemanticBitfieldValue(unmasked).(*Binary)
-	if !ok || (arithmetic.Op != OpAdd && arithmetic.Op != OpSub) {
+	if !ok || (arithmetic.Op != OpAdd && arithmetic.Op != OpSub && arithmetic.Op != OpXor) {
 		return nil, false
 	}
 
@@ -264,11 +258,11 @@ func unshiftSemanticBitfieldArithmetic(address AddressExpr, storageWidth int, va
 	if lhsStorage && rhsShifted {
 		return &Binary{TypeInfo: arithmetic.TypeInfo, Op: arithmetic.Op, LHS: field, RHS: delta}, true
 	}
-	if arithmetic.Op == OpAdd {
+	if arithmetic.Op == OpAdd || arithmetic.Op == OpXor {
 		field, rhsStorage := unshiftSemanticBitfieldStorageOperand(address, storageWidth, arithmetic.RHS, bitOff, bitWidth)
 		delta, lhsShifted := unshiftSemanticBitfieldShiftedOperand(arithmetic.LHS, bitOff)
 		if rhsStorage && lhsShifted {
-			return &Binary{TypeInfo: arithmetic.TypeInfo, Op: OpAdd, LHS: field, RHS: delta}, true
+			return &Binary{TypeInfo: arithmetic.TypeInfo, Op: arithmetic.Op, LHS: field, RHS: delta}, true
 		}
 	}
 	return nil, false
@@ -594,8 +588,44 @@ func semanticBitfieldStorage(expr Expr) (AddressExpr, int, bool) {
 		}, storage.Width, true
 
 	default:
-		return AddressExpr{}, 0, false
+		// Typed address recovery may already have projected the physical
+		// storage word to an aggregate made entirely from one bitfield
+		// storage unit, e.g. ITEMACTION. Treat that object as the backing
+		// storage so the late-bitfield pass can select its declared field.
+		lvalue, ok := value.(LValue)
+		if !ok {
+			return AddressExpr{}, 0, false
+		}
+		width, ok := semanticBitfieldAggregateStorageWidth(lvalue.ExprType())
+		if !ok {
+			return AddressExpr{}, 0, false
+		}
+		return AddressExpr{Base: lvalue}, width, true
 	}
+}
+
+// semanticBitfieldAggregateStorageWidth reports whether typ is a struct whose
+// entire representation is one declared bitfield storage unit.
+//
+// Such an aggregate can appear after typed address recovery has projected a
+// physical word all the way to an object such as ITEMACTION.  C cannot apply
+// integer operators to that object directly, but its bitfields still describe
+// the underlying machine storage exactly.
+func semanticBitfieldAggregateStorageWidth(typ typeinfo.Type) (int, bool) {
+	strct, ok := typ.(*typeinfo.Struct)
+	if !ok || strct.SKind != typeinfo.StructKindStruct || strct.Bytes() <= 0 || len(strct.Fields) == 0 {
+		return 0, false
+	}
+
+	width := strct.Bytes()
+	for i := range strct.Fields {
+		field := &strct.Fields[i]
+		if field.Bitfield == nil || field.Offset != 0 || field.Bitfield.StorageSize != width {
+			return 0, false
+		}
+	}
+
+	return width, true
 }
 
 // unwrapSemanticBitfieldValue removes representation-only wrappers from a semantic bitfield value.

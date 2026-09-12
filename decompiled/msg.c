@@ -935,7 +935,7 @@ int32_t MessageWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     MSGPLR     *lpmsgplr;
     THING      *lpth;
     SCAN        scan;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  fRet;
     int32_t  lSerial;
     char    *t_call_5cbd;
@@ -1303,7 +1303,7 @@ L_641e:
 
 L_643a:
     hdc = BeginPaint(hwnd, &(ps));
-    _Draw3dFrame(hdc, rcMsgTitle.left, 0);
+    _Draw3dFrame(hdc, &(rcMsgTitle), 0);
     crFore = SetTextColor(hdc, crButtonText);
     crBack = SetBkColor(hdc, crButtonFace);
     cch = strlen(szMsgTitle);
@@ -1326,8 +1326,8 @@ L_64ca:
     goto L_64a7;
 
 L_64d1:
-    RcCtrTextOut(hdc, rcMsgTitle.left, szMsgTitle, cch);
-    DecorateMsgTitleBar(hdc, rcMsgTitle.left);
+    RcCtrTextOut(hdc, &(rcMsgTitle), szMsgTitle, cch);
+    DecorateMsgTitleBar(hdc, &(rcMsgTitle));
     rc = rcMsgText;
     dx = (rc.right - rc.left);
     dy = (rc.bottom - rc.top);
@@ -1404,7 +1404,7 @@ L_66d2:
     t_merge_66fb_0001 = t_call_66f1;
 
 L_66fb:
-    /* untranslated: cch = (cch + _wsprintf(lpb2k[cch], szT, &dword ds:[t_merge_66fb_0001], 0xd, 0xa)) */
+    cch = (cch + _wsprintf(lpb2k[cch], szT, &(*(t_merge_66fb_0001)), 0xd, 0xa));
     if ((lpmsgplr->cLen < 0))
         goto L_6762;
     else
@@ -1884,7 +1884,7 @@ L_6f02:
     goto L_7163;
 
 L_6f05:
-    SelectOursAtObject(vptMsg.x);
+    SelectOursAtObject(&(vptMsg));
     if ((gd.fGotoVCR == 0x0))
         goto L_6f33;
     else
@@ -1990,7 +1990,7 @@ L_70b0:
 L_70b3:
     vpartBrowser.hs.grhst = (0x1 << ((idMsgObj >> 0x8) & 0xf));
     vpartBrowser.hs.iItem = (idMsgObj & 0xff);
-    FLookupPart(vpartBrowser.hs.grhst);
+    FLookupPart(&(vpartBrowser));
     if ((hwndBrowser == 0x0))
         goto L_7115;
     else
@@ -3021,7 +3021,7 @@ L_7f39:
 
 L_7f3c:
     lpb = (lpMsg + imemMsgCur);
-    fmemmove(lpb, &(rgbWork), cbMsg);
+    fmemmove(lpb, rgbWork, cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
     return 1;
@@ -3054,7 +3054,7 @@ L_7fd1:
 
 L_7fd4:
     fmemmove((lpMsg + cbMsg), lpMsg, imemMsgCur);
-    fmemmove(lpMsg, &(rgbWork), cbMsg);
+    fmemmove(lpMsg, rgbWork, cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
     return 1;
@@ -3131,7 +3131,7 @@ L_80bd:
     lpb = &(*(pb));
     lpmt = lpb;
     scratch_bp_m16 = (iPlr & 0xf);
-    LOBYTE(LOWORD(lpmt)) = LOBYTE(((LOBYTE(LOWORD(lpmt)) & 0xf0) | scratch_bp_m16));
+    *(lpmt) = LOBYTE(((*(lpmt) & 0xf0) | scratch_bp_m16));
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
@@ -3163,7 +3163,7 @@ L_8189:
     scratch_bp_m16 = (((grbit << 0x9) | LOWORD(lpmt->msghdr)) & 0xfe00);
     lpmt->msghdr.grWord = 0x0;
     LOWORD(lpmt->msghdr) = (LOWORD(lpmt->msghdr) | scratch_bp_m16);
-    LOWORD(lpb) = *(pi);
+    *(lpb) = *(pi);
     lpb = (lpb + 2);
     goto L_8151;
 
@@ -3176,7 +3176,7 @@ L_81da:
 
 L_81dd:
     scratch_bp_m16 = LOBYTE((LOWORD(lpb) - LOWORD(lpbBase)));
-    LOBYTE(LOWORD(lpmt)) = LOBYTE((lpmt->iPlr | ((scratch_bp_m16 & 0xf) * 0x10)));
+    *(lpmt) = LOBYTE((lpmt->iPlr | ((scratch_bp_m16 & 0xf) * 0x10)));
     scratch_bp_m16 = pb;
     return (LOWORD(lpb) - scratch_bp_m16);
 }
@@ -3231,10 +3231,10 @@ L_8312:
         goto L_8322;
 
 L_8322:
-    t_scratch_m50_2 = (((grbit << 0x9) | pmsghdr) & 0xfe00);
+    t_scratch_m50_2 = (((grbit << 0x9) | *(pmsghdr)) & 0xfe00);
     pmsghdr->grWord = 0x0;
-    pmsghdr = (pmsghdr | t_scratch_m50_2);
-    pb = *(pi);
+    *(pmsghdr) = (*(pmsghdr) | t_scratch_m50_2);
+    *(pb) = *(pi);
     pb = (pb + 2);
     goto L_82ea;
 
@@ -3246,7 +3246,7 @@ L_836c:
     goto L_82ea;
 
 L_836f:
-    cSize = (pb + (-&(rgb)));
+    cSize = (pb - rgb);
     if ((fPrepend == 0))
         goto L_83c3;
     else
@@ -3254,11 +3254,11 @@ L_836f:
 
 L_8383:
     fmemmove((lpMsg + cSize), lpMsg, imemMsgCur);
-    fmemmove(lpMsg, &(rgb), cSize);
+    fmemmove(lpMsg, rgb, cSize);
     goto L_83e4;
 
 L_83c3:
-    fmemmove((lpMsg + imemMsgCur), &(rgb), cSize);
+    fmemmove((lpMsg + imemMsgCur), rgb, cSize);
 
 L_83e4:
     imemMsgCur = (imemMsgCur + cSize);
@@ -3346,7 +3346,7 @@ L_84f1:
         goto L_84ff;
 
 L_84ff:
-    t_merge_8511_0001 = LOWORD(lpb);
+    t_merge_8511_0001 = *(lpb);
     goto L_8511;
 
 L_8508:
@@ -4316,7 +4316,7 @@ L_944b:
         goto L_9467;
 
 L_9467:
-    t_merge_9479_0001 = LOWORD(lpbT);
+    t_merge_9479_0001 = *(lpbT);
     goto L_9479;
 
 L_9470:
@@ -4643,7 +4643,7 @@ L_9742:
         goto L_9751;
 
 L_9751:
-    WriteRt(rtMsg, cbMsg, &(rgb));
+    WriteRt(rtMsg, cbMsg, rgb);
     cbMsg = 0;
 
 L_976f:
@@ -4659,7 +4659,7 @@ L_9784:
         goto L_9797;
 
 L_9797:
-    fmemmove(&(rgb[cbMsg]), lpb[1], (((*(lpb) >> 0x4) & 0xf) + 0x4));
+    fmemmove(&(rgb[cbMsg]), &(lpb[1]), (((*(lpb) >> 0x4) & 0xf) + 0x4));
     cbMsg = (cbMsg + (((*(lpb) >> 0x4) & 0xf) + 0x4));
 
 L_97f1:
@@ -4678,7 +4678,7 @@ L_981c:
         goto L_9826;
 
 L_9826:
-    WriteRt(rtMsg, cbMsg, &(rgb));
+    WriteRt(rtMsg, cbMsg, rgb);
 
 L_983e:
     lpmp = vlpmsgplrOut;
@@ -4752,7 +4752,6 @@ void ReadPlayerMessages() {
     uint8_t *lpb;
     uint16_t u;
     uint16_t t_merge_9aaf_0001;
-    void    *t_call_9b61;
 
 L_994a:
     imemMsgT = 0x0;
@@ -4778,7 +4777,7 @@ L_9991:
         goto L_99ab;
 
 L_99ab:
-    fmemmove(lpb[imemMsgT], rgbCur, hdrCur.cb);
+    fmemmove(&(lpb[imemMsgT]), rgbCur, hdrCur.cb);
     imemMsgT = (imemMsgT + hdrCur.cb);
 
 L_99d7:
@@ -4875,13 +4874,10 @@ L_9b4d:
         goto L_9b56;
 
 L_9b56:
-    t_call_9b61 = LpAlloc(hdrCur.cb, htPlrMsg);
-    LOWORD(lpmp->lpmsgplrNext) = FAROFF(t_call_9b61);
-    HIWORD(lpmp->lpmsgplrNext) = FARSEG(t_call_9b61);
+    lpmp->lpmsgplrNext = LpAlloc(hdrCur.cb, htPlrMsg);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy(lpmp, rgbCur, hdrCur.cb);
-    LOWORD(lpmp->lpmsgplrNext) = 0x0;
-    HIWORD(lpmp->lpmsgplrNext) = 0x0;
+    lpmp->lpmsgplrNext = 0x0;
     vcmsgplrIn = (vcmsgplrIn + 1);
 
 LOutOfMem:
@@ -4955,8 +4951,7 @@ L_9c63:
 
 L_9c6c:
     DirtyGame(1);
-    LOWORD(lpmpPrev->lpmsgplrNext) = LOWORD(lpmpCur->lpmsgplrNext);
-    HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur->lpmsgplrNext);
+    lpmpPrev->lpmsgplrNext = lpmpCur->lpmsgplrNext;
     FreeLp(lpmpCur, htPlrMsg);
     vcmsgplrOut = (vcmsgplrOut - 1);
     if ((iMsgSendCur <= 0))
@@ -5059,14 +5054,12 @@ L_9de2:
 L_9e01:
     DirtyGame(1);
     lpmpCur = LpAlloc(cbNew, htPlrMsg);
-    LOWORD(lpmpCur->lpmsgplrNext) = 0x0;
-    HIWORD(lpmpCur->lpmsgplrNext) = 0x0;
+    lpmpCur->lpmsgplrNext = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     lpmpCur->iInRe = iMsgCur;
 
 L_9e40:
-    LOWORD(lpmpPrev->lpmsgplrNext) = LOWORD(lpmpCur);
-    HIWORD(lpmpPrev->lpmsgplrNext) = HIWORD(lpmpCur);
+    lpmpPrev->lpmsgplrNext = lpmpCur;
     lpmpCur->iPlrFrom = idPlayer;
     lpmpCur->iPlrTo = iPlrTo;
     lpmpCur->cLen = cb;

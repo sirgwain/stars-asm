@@ -118,7 +118,7 @@ L_01c4:
         goto L_01cf;
 
 L_01cf:
-    fmemmove(lpth[1], lpth, ((cThing - i) * 18));
+    fmemmove(&(lpth[1]), lpth, ((cThing - i) * 18));
 
 L_01f6:
     cThing = (cThing + 1);
@@ -134,7 +134,7 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    fmemmove(lpth, lpth[1], (((cThing - ((uint32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
+    fmemmove(lpth, &(lpth[1]), (((cThing - ((uint32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
 
 L_0294:
     cThing = (cThing - 1);
@@ -395,8 +395,7 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
 L_064c:
     iRet = 0;
     dUni = (LOWORD((400 * game.mdSize)) + 1400);
-    pt.x = lpthWorm->pt.x;
-    pt.y = lpthWorm->pt.y;
+    pt = lpthWorm->pt;
     if ((pt.x < 1000))
         goto L_068c;
     else
@@ -960,7 +959,6 @@ void DoThingInteractions(int16_t fPostMove) {
     int16_t   iPass;
     uint16_t  t_merge_0cf3_0001;
     uint16_t  t_merge_0d44_0001;
-    int32_t   t_scratch_m58;
     int16_t   t_11bc;
     uint16_t  t_merge_123c_0001;
     SHDEF    *t_call_1268;
@@ -987,8 +985,7 @@ L_0b7a:
         goto L_0b93;
 
 L_0b93:
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     ifl = 0;
     goto L_0bb0;
 
@@ -1326,7 +1323,7 @@ L_106d:
         goto LGiveITech;
 
 LGiveITech:
-    memcpy(&(rgTech), &(rgplr[iplr].rgTech), 0x6);
+    memcpy(rgTech, rgplr[iplr].rgTech, 0x6);
     rgTech[iLowest] = (rgTech[iLowest] + 0x1);
     iplrSav = idPlayer;
     idPlayer = iplr;
@@ -1355,9 +1352,7 @@ L_1132:
     lSpent = (lSpent + wtNext);
 
 L_113e:
-    t_scratch_m58 = lSpent;
-    LOWORD(rgplr[iplr].rgResSpent[iLowest]) = LOWORD(t_scratch_m58);
-    HIWORD(rgplr[iplr].rgResSpent[iLowest]) = HIWORD(t_scratch_m58);
+    rgplr[iplr].rgResSpent[iLowest] = lSpent;
     UpdateResearchStatus(0);
     goto L_0fac;
 
@@ -1438,7 +1433,7 @@ L_1256:
 L_1268:
     t_call_1268 = LpshdefT();
     shdef = t_call_1268[(iOffset + 19)];
-    ish = IshFindSimilarDesign(shdef, iplr);
+    ish = IshFindSimilarDesign(&(shdef.hul), iplr);
     if ((ish >= 0))
         goto L_12f5;
     else

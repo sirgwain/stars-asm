@@ -24,7 +24,7 @@ L_0652:
     goto L_16d5
 
 L_0661:
-    call StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 1) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 1) -> callresult(void)
     iPlanSelDlg = 0
     branch sel.grobj != grobjFleet ? L_068d : L_0684
 
@@ -206,10 +206,10 @@ L_0b12:
 
 L_0b1c:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    call LogChangeBtlplan(btlplan) -> callresult(void)
+    call LogChangeBtlplan(&btlplan) -> callresult(void)
 
 L_0b6e:
-    call StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0) -> callresult(void)
     call EndDialog(hwnd, iPlanSelDlg) -> callresult(void)
     branch sel.grobj != grobjFleet ? L_0ba9 : L_0b97
 
@@ -236,7 +236,7 @@ L_0c0f:
 
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    call LogChangeBtlplan(btlplan) -> callresult(void)
+    call LogChangeBtlplan(&btlplan) -> callresult(void)
     fDirtyPlan = 0
 
 L_0c71:
@@ -246,7 +246,7 @@ L_0c71:
     branch FDeleteBattlePlan(iPlanSelDlg, 1) == 0 ? L_0dd0 : L_0cf7
 
 L_0cf7:
-    call LogChangeBtlplan(btlplan) -> callresult(void)
+    call LogChangeBtlplan(&btlplan) -> callresult(void)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, (iPlanSelDlg - 1), 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0) -> callresult(LRESULT)
     i = 0
@@ -324,7 +324,7 @@ L_0f92:
     branch wParam != 0x41b ? L_1134 : L_0f9c
 
 LRename:
-    call StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0) -> callresult(void)
     lpProc = MakeProcInstance(NewPlanNameDlg, hInst)
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc)
     call FreeProcInstance(lpProc) -> callresult(void)
@@ -391,7 +391,7 @@ L_1157:
 
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    call LogChangeBtlplan(btlplan) -> callresult(void)
+    call LogChangeBtlplan(&btlplan) -> callresult(void)
     fDirtyPlan = 0
 
 L_11b9:
@@ -472,7 +472,7 @@ L_14d5:
 
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
-    call LogChangeBtlplan(btlplan) -> callresult(void)
+    call LogChangeBtlplan(&btlplan) -> callresult(void)
     fDirtyPlan = 0
 
 L_1537:

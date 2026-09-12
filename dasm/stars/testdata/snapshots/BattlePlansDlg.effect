@@ -40,7 +40,7 @@ block L_0684:
   preds: L_0661
   succs: L_068d
   effects:
-    068a  store[2] [iPlanSelDlg] = (load([sel+0x7c]) & 0xff)
+    068a  store[2] [iPlanSelDlg] = load(byte [sel+0x7c])
 
 block L_068d:
   insts 21..41  off 0x068d..0x06c0
@@ -444,7 +444,7 @@ block L_0b97:
   preds: L_0b6e
   succs: L_0ba9
   effects:
-    0ba1  call FillBattleDD(((load([sel+0x7c]) & 0xff) + 0x1)) -> callresult(void)
+    0ba1  call FillBattleDD((load(byte [sel+0x7c]) + 0x1)) -> callresult(void)
 
 block L_0ba9:
   insts 497..499  off 0x0ba9..0x0bb4

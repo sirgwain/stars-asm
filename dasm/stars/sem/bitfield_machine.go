@@ -318,6 +318,14 @@ func machineValueMaskedWithin(value machine.Value, allowed uint) bool {
 		amount, ok := machineShiftAmount(shift.RHS)
 		return ok && amount >= 0 && amount < 64 && machineValueMaskedWithin(shift.LHS, allowed>>amount)
 	}
+	if multiply, ok := value.(*machine.Binary); ok && multiply.Op == machine.ValueOpMul {
+		factor, source, ok := constOperand(multiply.LHS, multiply.RHS)
+		if !ok {
+			return false
+		}
+		shift, ok := powerOfTwoShift(factor.Val)
+		return ok && shift < 64 && machineValueMaskedWithin(source, allowed>>shift)
+	}
 	return false
 }
 
@@ -365,13 +373,9 @@ func unshiftMachineBitfieldSet(mem machine.MemoryAddress, value machine.Value, b
 	}
 
 	source := value
-	if shift, ok := value.(*machine.Binary); ok && shift.Op == machine.ValueOpShl {
-		amount, ok := shift.RHS.(*machine.Const)
-		if !ok || int(amount.Val) != bitOff {
-			return nil, false
-		}
-		source = shift.LHS
-	} else if bitOff != 0 {
+	var ok bool
+	source, ok = unshiftMachineBitfieldShiftedOperand(source, bitOff)
+	if !ok {
 		return nil, false
 	}
 	source = unwrapMachineBitfieldValue(source)
@@ -396,6 +400,19 @@ func unshiftMachineBitfieldSet(mem machine.MemoryAddress, value machine.Value, b
 	return unmasked, true
 }
 
+// powerOfTwoShift returns the bit shift represented by a positive power of two.
+func powerOfTwoShift(value uint) (int, bool) {
+	if value == 0 || value&(value-1) != 0 {
+		return 0, false
+	}
+	shift := 0
+	for value > 1 {
+		value >>= 1
+		shift++
+	}
+	return shift, true
+}
+
 // unshiftMachineBitfieldArithmetic recovers a field-relative add or subtract from a masked wide storage calculation.
 func unshiftMachineBitfieldArithmetic(mem machine.MemoryAddress, value machine.Value, bitOff int, bitWidth int, changed uint, same func(machine.MemoryAddress, machine.MemoryAddress) bool) (machine.Value, bool) {
 	and, ok := unwrapMachineCasts(value).(*machine.Binary)
@@ -407,7 +424,7 @@ func unshiftMachineBitfieldArithmetic(mem machine.MemoryAddress, value machine.V
 		return nil, false
 	}
 	arithmetic, ok := unwrapMachineCasts(unmasked).(*machine.Binary)
-	if !ok || (arithmetic.Op != machine.ValueOpAdd && arithmetic.Op != machine.ValueOpSub) {
+	if !ok || (arithmetic.Op != machine.ValueOpAdd && arithmetic.Op != machine.ValueOpSub && arithmetic.Op != machine.ValueOpXor) {
 		return nil, false
 	}
 
@@ -416,11 +433,11 @@ func unshiftMachineBitfieldArithmetic(mem machine.MemoryAddress, value machine.V
 	if lhsStorage && rhsShifted {
 		return machine.BinaryVal(arithmetic.Op, field, delta), true
 	}
-	if arithmetic.Op == machine.ValueOpAdd {
+	if arithmetic.Op == machine.ValueOpAdd || arithmetic.Op == machine.ValueOpXor {
 		field, rhsStorage := unshiftMachineBitfieldStorageOperand(mem, arithmetic.RHS, bitOff, bitWidth, same)
 		delta, lhsShifted := unshiftMachineBitfieldShiftedOperand(arithmetic.LHS, bitOff)
 		if rhsStorage && lhsShifted {
-			return machine.BinaryVal(machine.ValueOpAdd, field, delta), true
+			return machine.BinaryVal(arithmetic.Op, field, delta), true
 		}
 	}
 	return nil, false
@@ -454,7 +471,8 @@ func unshiftMachineBitfieldShiftedOperand(value machine.Value, bitOff int) (mach
 		value = unwrapMachineCasts(shift.LHS)
 	} else if multiply, ok := value.(*machine.Binary); ok && multiply.Op == machine.ValueOpMul {
 		factor, source, ok := constOperand(multiply.LHS, multiply.RHS)
-		if !ok || bitOff < 0 || bitOff >= 64 || uint64(factor.Val) != uint64(1)<<bitOff {
+		shift, shiftOK := powerOfTwoShift(factor.Val)
+		if !ok || !shiftOK || shift != bitOff {
 			return nil, false
 		}
 		value = unwrapMachineCasts(source)

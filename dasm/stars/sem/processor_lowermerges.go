@@ -34,10 +34,16 @@ func (p *lowerMergesProcessor) ProcessFunc(result *Result, f *Func) bool {
 	return changed
 }
 
+type loweredMerge struct {
+	merge *Merge
+	temp  *Temp
+}
+
 // processFuncOnce lowers the merge expressions present at the start of one pass.
 func (p *lowerMergesProcessor) processFuncOnce(f *Func) bool {
 	pending := make(map[mergeEdge][]Effect)
 	blockIndexes := blockIndexByID(f.Blocks)
+	lowered := make([]loweredMerge, 0)
 	changed := false
 
 	for i := range f.Blocks {
@@ -49,11 +55,27 @@ func (p *lowerMergesProcessor) processFuncOnce(f *Func) bool {
 				}
 
 				arms, _ := w.rewriteMergeArms(merge.Arms)
-				join := merge.Join
-				temp := p.newMergeTemp(merge)
+				normalized := &Merge{
+					TypeInfo: merge.TypeInfo,
+					Join:     merge.Join,
+					Arms:     arms,
+				}
+
+				for _, existing := range lowered {
+					if sameExpr(existing.merge, normalized) {
+						return existing.temp, true, true
+					}
+				}
+
+				temp := p.newMergeTemp(normalized)
+				lowered = append(lowered, loweredMerge{
+					merge: normalized,
+					temp:  temp,
+				})
+
 				for _, arm := range arms {
-					pending[mergeEdge{from: arm.Block, to: join}] = append(
-						pending[mergeEdge{from: arm.Block, to: join}],
+					pending[mergeEdge{from: arm.Block, to: merge.Join}] = append(
+						pending[mergeEdge{from: arm.Block, to: merge.Join}],
 						&Assign{
 							MetaInfo: machine.Meta{BlockID: arm.Block},
 							Dst:      temp,
@@ -61,9 +83,11 @@ func (p *lowerMergesProcessor) processFuncOnce(f *Func) bool {
 						},
 					)
 				}
+
 				return temp, true, true
 			},
 		}
+
 		effects, effectsChanged := rewriter.rewriteEffects(f.Blocks[i].Effects)
 		if !effectsChanged {
 			continue

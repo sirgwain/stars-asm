@@ -466,7 +466,7 @@ L_0b21:
     goto L_0c44;
 
 L_0b36:
-    DisplayComponentInfo(hdc, rc.right, rc.bottom, GlobalPD.part.hs.grhst);
+    DisplayComponentInfo(hdc, rc.right, rc.bottom, &(GlobalPD.part));
     goto L_0c44;
 
 L_0b4e:
@@ -1831,7 +1831,7 @@ L_228e:
     y = 4;
     xMax = 4;
     x = 4;
-    FLookupPlanet(HIWORD(GlobalPD), &(pl));
+    FLookupPlanet(GlobalPD.idPlanet, &(pl));
     SelectObject(hdc, rghfontArial8[0]);
     if ((pl.iPlayer != idPlayer))
         goto L_23eb;
@@ -1841,7 +1841,7 @@ L_228e:
 L_22cf:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsPopulation3), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsIs), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
@@ -1875,7 +1875,7 @@ L_23eb:
 L_23f4:
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsEnemyPopulation), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     if ((pl.det < 0x3))
         goto L_2500;
@@ -1908,7 +1908,7 @@ L_2528:
 
 L_254a:
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsUninhabited2), 0, fPrint);
 
@@ -1930,7 +1930,7 @@ L_25c7:
         goto L_25e5;
 
 L_25e5:
-    lMax = CalcPlanetMaxPop(HIWORD(GlobalPD), idPlayer);
+    lMax = CalcPlanetMaxPop(GlobalPD.idPlanet, idPlayer);
     pctDesire = PctPlanetDesirability(&(pl), idPlayer);
     if ((pctDesire >= 0))
         goto L_279c;
@@ -1939,7 +1939,7 @@ L_25e5:
 
 L_261e:
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillKillOffApproximately), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
@@ -1999,7 +1999,7 @@ L_27b6:
 
 L_27c0:
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillSupportPopulation), 0, fPrint);
     if ((x <= xMax))
@@ -2042,7 +2042,7 @@ L_28e7:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsIfColonize), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(HIWORD(GlobalPD)), 0, fPrint);
+    DxStreamTextOut(hdc, &(x), y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWould), 0, fPrint);
     if ((x <= xMax))
@@ -2441,12 +2441,12 @@ L_328e:
     t_merge_3293_0001 = pszTypes;
 
 L_3293:
-    /* untranslated: call _wsprintf(szWork, "%d %s", cnt, &dword ds:[t_merge_3293_0001]) -> callresult(int16_t) */
+    _wsprintf(szWork, "%d %s", cnt, &(*(t_merge_3293_0001)));
     psz = szWork;
     goto L_3319;
 
 L_32b6:
-    psz = PszGetPlanetName(HIWORD(GlobalPD));
+    psz = PszGetPlanetName(GlobalPD.idPlan);
     goto L_3319;
 
 L_32c8:
@@ -2576,7 +2576,7 @@ SetQuan:
     goto L_34fb;
 
 L_3490:
-    psz = PszGetPlanetName(HIWORD(GlobalPD));
+    psz = PszGetPlanetName(GlobalPD.idPlanet);
     goto L_34fb;
 
 L_34a2:

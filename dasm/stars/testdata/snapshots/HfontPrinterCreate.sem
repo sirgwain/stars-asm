@@ -19,7 +19,7 @@ L_6aa6:
     plf = LocalAlloc(0x40, 0x32)
     call memset(plf, 0, 0x32) -> callresult(void *)
     plf->lfHeight = neg(MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72))
-    call strcpy(plf->lfFaceName, LOWORD(rgszArial[1])) -> callresult(char *)
+    call strcpy(plf->lfFaceName, rgszArial[1]) -> callresult(char *)
     hfontNew = CreateFontIndirect(plf)
     branch pdyFont == 0x0 ? L_6b5b : L_6b1f
 

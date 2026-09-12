@@ -176,8 +176,8 @@ func TestTypeDeclFunctionPointers(t *testing.T) {
 		want string
 	}{
 		{name: "function", typ: fn, want: "void pfn(uint16_t, TILE *, OBJ)"},
-		{name: "function pointer", typ: &Pointer{Elem: fn}, want: "void (**pfn)(uint16_t, TILE *, OBJ)"},
-		{name: "function pointer pointer", typ: &Pointer{Elem: &Pointer{Elem: fn, Class: PtrFar}, Class: PtrFar}, want: "void (***pfn)(uint16_t, TILE *, OBJ)"},
+		{name: "function pointer", typ: &Pointer{Elem: fn}, want: "void (*pfn)(uint16_t, TILE *, OBJ)"},
+		{name: "function pointer pointer", typ: &Pointer{Elem: &Pointer{Elem: fn, Class: PtrFar}, Class: PtrFar}, want: "void (**pfn)(uint16_t, TILE *, OBJ)"},
 	}
 
 	for _, tt := range tests {

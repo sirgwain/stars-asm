@@ -20,7 +20,7 @@ L_0088:
     goto L_048d;
 
 L_0097:
-    StickyDlgPos(hwnd, ptStickyRelationsDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRelationsDlg), 1);
     if ((idPlayer != 0))
         goto L_00d9;
     else
@@ -103,7 +103,7 @@ L_02e2:
         goto L_02eb;
 
 L_02eb:
-    StickyDlgPos(hwnd, ptStickyRelationsDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRelationsDlg), 0);
     i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), CB_GETLBTEXTLEN, 0x0, 0));
     if ((i < idPlayer))
         goto L_0332;
@@ -334,7 +334,7 @@ L_0644:
 }
 
 int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t idc;
     int16_t i;
     int16_t fRet;
@@ -358,7 +358,7 @@ L_0652:
     goto L_16d5;
 
 L_0661:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 1);
     iPlanSelDlg = 0;
     if ((sel.grobj != grobjFleet))
         goto L_068d;
@@ -600,10 +600,10 @@ L_0b12:
 
 L_0b1c:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
 
 L_0b6e:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 0);
     EndDialog(hwnd, iPlanSelDlg);
     if ((sel.grobj != grobjFleet))
         goto L_0ba9;
@@ -642,7 +642,7 @@ L_0c0f:
 
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_0c71:
@@ -655,7 +655,7 @@ L_0c71:
         goto L_0cf7;
 
 L_0cf7:
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, (iPlanSelDlg - 1), 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
     i = 0;
@@ -757,7 +757,7 @@ L_0f92:
         goto LRename;
 
 LRename:
-    StickyDlgPos(hwnd, ptStickyBattlePlansDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBattlePlansDlg), 0);
     lpProc = MakeProcInstance(NewPlanNameDlg, hInst);
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc);
     FreeProcInstance(lpProc);
@@ -845,7 +845,7 @@ L_1157:
 
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_11b9:
@@ -956,7 +956,7 @@ L_14d5:
 
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    LogChangeBtlplan(btlplan);
+    LogChangeBtlplan(&(btlplan));
     fDirtyPlan = 0;
 
 L_1537:
@@ -1182,7 +1182,7 @@ L_184a:
 
 L_185d:
     rglpbtlplan[idPlayer][i] = rglpbtlplan[idPlayer][(i + 1)];
-    LOWORD(rglpbtlplan[idPlayer][i]) = ((LOWORD(rglpbtlplan[idPlayer][i]) & 0xff0f) | ((i & 0xf) * 0x10));
+    rglpbtlplan[idPlayer][i].iplan = i;
     goto L_1846;
 
 L_191d:
@@ -1629,7 +1629,7 @@ L_1fcf:
         goto L_1fec;
 
 L_1fec:
-    if ((FHullHasTeeth(rglpshdef[lpfl->iplr][ishdef]) == 0))
+    if ((FHullHasTeeth(&(rglpshdef[lpfl->iplr][ishdef].hul)) == 0))
         goto L_2059;
     else
         goto L_2020;
@@ -1868,9 +1868,8 @@ L_2457:
     goto L_2413;
 
 L_245d:
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
-    DropSalvage(lpthBattle, lpfl->rgwtMin, lpfl->iplr, &(pt));
+    pt = lpfl->pt;
+    DropSalvage(&(lpthBattle), lpfl->rgwtMin, lpfl->iplr, &(pt));
 
 L_249a:
     i = 0;
@@ -2160,7 +2159,7 @@ L_2952:
     cflTotal = 0;
     *(pgrfSpectator) = 0x0;
     memset(rggrfAttack, 0, 0x20);
-    memset(&(rgcsh), 0, 0x40);
+    memset(rgcsh, 0, 0x40);
     if ((lpfl->idPlanet == -1))
         goto L_2b38;
     else
@@ -2177,7 +2176,7 @@ L_29e1:
     iplrStarbase = lppl->iPlayer;
     grfPlayer = (grfPlayer | (0x1 << iplrStarbase));
     iplrAttack = rglpbtlplan[iplrStarbase]->iplrAttack;
-    if ((FHullHasTeeth(rglpshdefSB[iplrStarbase][lppl->isb]) == 0))
+    if ((FHullHasTeeth(&(rglpshdefSB[iplrStarbase][lppl->isb].hul)) == 0))
         goto L_2b38;
     else
         goto L_2a42;
@@ -2745,7 +2744,7 @@ L_3189:
     ctokNew = (ctokNew + 1);
 
 L_318d:
-    memset(&(rgctok), 0, 0x10);
+    memset(rgctok, 0, 0x10);
 
 L_31a1:
     if ((lpflCur->fInclude == 0x0))
@@ -3434,7 +3433,7 @@ L_3bba:
         goto L_3bc4;
 
 L_3bc4:
-    LOWORD(lpbBattleT) = 0xffff;
+    *(lpbBattleT) = 0xffff;
     FreeLp(lpbBattleT, htBattle);
     lpbBattleT = 0x0;
 
@@ -3451,7 +3450,7 @@ L_3bf7:
         goto L_3c01;
 
 L_3c01:
-    LOWORD(lpbBattleCur) = 0xffff;
+    *(lpbBattleCur) = 0xffff;
 
 L_3c0a:
     DoBombing();
@@ -4174,7 +4173,7 @@ L_45b4:
     fDampeningField = 0;
     lpwtCargoCur = vlpwtCargo;
     ishdef = 0;
-    memset(&(mpiplrdibrc), 255, 0x10);
+    memset(mpiplrdibrc, 255, 0x10);
     iplr = 0;
     goto L_45fe;
 
@@ -4202,7 +4201,7 @@ L_462d:
     goto L_45fa;
 
 L_4630:
-    memset(&(rgfTorp), 0, 0x10);
+    memset(rgfTorp, 0, 0x10);
     lpflCur = lpfl;
     ptok = vrgtok;
     if ((lpfl->idPlanet == -1))
@@ -4416,7 +4415,7 @@ L_4bc2:
     ptokT->spd = t_scratch_m44_6;
 
 L_4be6:
-    lpbBattleCur = *(ptokT);
+    *((TOK *)(lpbBattleCur)) = *(ptokT);
     lpbBattleCur = (lpbBattleCur + 29);
     if ((ptokT->initMin == 0xff))
         goto L_4c40;
@@ -5731,8 +5730,7 @@ L_5e55:
     return (((uint32_t)((uint16_t)((-(HIWORD(dpGive) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dpGive))));
 
 L_5e65:
-    LOWORD(score) = (-LOWORD(dpGive));
-    HIWORD(score) = (-(HIWORD(dpGive) + 0x0));
+    score = (-dpGive);
     if ((LOWORD(score) != 0x0))
         goto L_5e8a;
     else
@@ -5867,8 +5865,7 @@ L_5fb3:
     goto L_5fdc;
 
 L_5fbb:
-    LOWORD(rgscoreNear[x][y]) = 0xc380;
-    HIWORD(rgscoreNear[x][y]) = 0x1c9;
+    rgscoreNear[x][y] = 30000000;
     y = (y + 1);
 
 L_5fdc:
@@ -8024,8 +8021,7 @@ L_7e04:
     goto L_7e33;
 
 L_7e0c:
-    LOWORD(flDead.rgwtMin[i]) = LOWORD(flSrc.rgwtMin[i]);
-    HIWORD(flDead.rgwtMin[i]) = HIWORD(flSrc.rgwtMin[i]);
+    flDead.rgwtMin[i] = flSrc.rgwtMin[i];
     i = (i + 1);
 
 L_7e33:
@@ -8056,7 +8052,7 @@ L_7e8c:
     flDead.iPlayer = flSrc.iPlayer;
     flDead.pt = flSrc.pt;
     flDead.idPlanet = flSrc.idPlanet;
-    CreateSalvage(&(flDead), lpthBattle);
+    CreateSalvage(&(flDead), &(lpthBattle));
 
 L_7eb8:
     if ((lpfl->fDead != 0x0))
@@ -8970,9 +8966,9 @@ L_8c99:
     lpbSav = lpbBattleCur;
     lpbBattleCur = lpbBattleT;
     lpbMax = (lpbBattleT + (-72));
-    memset(&(rgPlrLosses), 0, 0x200);
+    memset(rgPlrLosses, 0, 0x200);
     vrgPlrLosses = rgPlrLosses;
-    memset(&(rgfInit), 0, 0x40);
+    memset(rgfInit, 0, 0x40);
     fmemset(vrgtok, 0, 0x1d00);
     vctok = 0;
     lpbtldata = lpbBattleCur;
@@ -9551,7 +9547,7 @@ L_98bb:
         goto L_98c2;
 
 L_98c2:
-    LOWORD(lpbSav) = 0xffff;
+    *(lpbSav) = 0xffff;
     lpbBattleT = 0x0;
     goto L_990b;
 
@@ -9571,7 +9567,6 @@ int16_t ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint1
     int32_t  l;
     uint16_t t_merge_9933_0001;
     int16_t  t_scratch_m10_2;
-    int32_t  t_scratch_m12;
 
 L_9918:
     if ((idm == 0xffff))
@@ -9682,9 +9677,7 @@ L_9b00:
     l = (int32_t)((l >> 0x1));
 
 L_9b14:
-    t_scratch_m12 = l;
-    LOWORD(rgplr[iplr].rgResSpent[iTech]) = (LOWORD(rgplr[iplr].rgResSpent[iTech]) + LOWORD(t_scratch_m12));
-    HIWORD(rgplr[iplr].rgResSpent[iTech]) = (HIWORD(rgplr[iplr].rgResSpent[iTech]) + HIWORD(t_scratch_m12));
+    rgplr[iplr].rgResSpent[iTech] = (rgplr[iplr].rgResSpent[iTech] + l);
     if ((fBattle == 0))
         goto L_9bb3;
     else
@@ -9757,7 +9750,7 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
 L_9c0e:
     iplrStarbase = -1;
     lppl = 0x0;
-    memset(&(rgcfl), 0, 0x10);
+    memset(rgcfl, 0, 0x10);
     if ((lpflBtl->idPlanet == -1))
         goto L_9d01;
     else
@@ -11294,7 +11287,6 @@ void DoBombing() {
     uint16_t  t_merge_b3b0_0001;
     int16_t   t_call_b590;
     uint16_t  t_merge_b5b9_0001;
-    uint32_t  t_scratch_m4e_2;
     int16_t   t_merge_b97d_0001;
     int16_t   t_merge_b9c4_0001;
     uint16_t  t_merge_ba31_0001;
@@ -11944,9 +11936,7 @@ L_b691:
         goto L_b69a;
 
 L_b69a:
-    t_scratch_m4e_2 = (((uint32_t)((uint16_t)(((*(lppl + 0x16) - HIWORD((int32_t)((cKillFact << 0x14)))) & 0xfff0))) << 0x10) | (uint16_t)(0x0));
-    lppl->cFactories = 0x0;
-    *(lppl + 0x14) = (*(lppl + 0x14) | t_scratch_m4e_2);
+    lppl->cFactories = (lppl->cFactories - cKillFact);
 
 L_b6f1:
     if ((HIWORD(cKillMine) < 0x0))

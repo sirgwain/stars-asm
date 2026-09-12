@@ -37,7 +37,7 @@ L_0061:
     shdef.cBuilt = lprt->cBuilt;
     shdef.cExist = lprt->cExist;
     lpb = lprt->rghs;
-    fmemmove(&(shdef.hul.rghs), lpb, (lprt->chs * 0x4));
+    fmemmove(shdef.hul.rghs, lpb, (lprt->chs * 0x4));
     lpb = (lpb + (lprt->chs * 4));
     goto L_0105;
 
@@ -84,7 +84,7 @@ L_0191:
     return 0;
 
 L_0197:
-    fmemmove(&(szTemp), lpb, cch);
+    fmemmove(szTemp, lpb, cch);
     FDecompressUserString(szTemp, cch, shdef.hul.szClass, &(cOut));
 
 L_01d3:
@@ -367,14 +367,12 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     uint16_t t_scratch_m48_7;
     uint16_t t_merge_1e06_0001;
     void    *t_call_1e2a;
-    uint16_t t_scratch_m48_10;
-    uint16_t t_scratch_m48_14;
+    uint16_t t_scratch_m48_13;
     uint16_t t_merge_2580_0001;
     uint16_t t_merge_259d_0001;
     int32_t  t_call_2884;
     int32_t  t_call_2896;
     uint16_t t_merge_2e23_0001;
-    uint16_t t_scratch_m48_19;
 
 L_0810:
     grf = 0;
@@ -646,7 +644,7 @@ L_0cc2:
         goto L_0cd5;
 
 L_0cd5:
-    i = (uint16_t)(LOWORD(rgbCur));
+    i = (uint16_t)(rgbCur[0]);
     ReadRtPlr(&(rgplr[i]), rgbCur);
     rgplr[i].cPlanet = 0;
     rgplr[i].cFleet = 0x0;
@@ -930,7 +928,7 @@ L_118f:
         goto L_1198;
 
 L_1198:
-    fmemmove(rgsxPlr[iplr], rgsxPlr[iplr][1], ((isx - 1) * 24));
+    fmemmove(rgsxPlr[iplr], &(rgsxPlr[iplr][1]), ((isx - 1) * 24));
 
 L_11d1:
     isx = (isx - 1);
@@ -939,7 +937,7 @@ L_11d5:
     goto L_1251;
 
 L_11d8:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), rgsxPlr[iplr][isx], ((rgcsxPlr[iplr] - isx) * 24));
+    fmemmove((rgsxPlr[iplr] + (isx + 1)), &(rgsxPlr[iplr][isx]), ((rgcsxPlr[iplr] - isx) * 24));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_1233:
@@ -1171,7 +1169,7 @@ L_1637:
         goto L_163e;
 
 L_163e:
-    LOWORD(lpbBattleCur) = 0xffff;
+    *(lpbBattleCur) = 0xffff;
     lpbBattleCur = LpAlloc(0xffc8, htBattle);
 
 L_165e:
@@ -1193,7 +1191,7 @@ L_1698:
         goto L_16a2;
 
 L_16a2:
-    LOWORD(lpbBattleCur) = 0xffff;
+    *(lpbBattleCur) = 0xffff;
     if ((((wVersFile >> 0x5) & 0x7f) >= 0x50))
         goto L_16c8;
     else
@@ -1209,7 +1207,7 @@ L_16c8:
         goto L_16db;
 
 L_16db:
-    i = (uint16_t)(LOWORD(rgbCur));
+    i = (uint16_t)(rgbCur[0]);
     ReadRtPlr(&(rgplr[i]), rgbCur);
     cPlanet = (cPlanet + rgplr[i].cPlanet);
     rgplr[i].cPlanet = 0;
@@ -1364,7 +1362,7 @@ L_1974:
         goto L_197f;
 
 L_197f:
-    fmemmove(lppl[1], lppl, ((cPlanetHist - j) * 56));
+    fmemmove(&(lppl[1]), lppl, ((cPlanetHist - j) * 56));
 
 L_19a6:
     cPlanetHist = (cPlanetHist + 1);
@@ -1681,9 +1679,7 @@ L_1e22:
         goto L_1e6d;
 
 L_1e6d:
-    /* untranslated: t_scratch_m48_10 = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
-    rgplr[lpfl->iPlayer].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | t_scratch_m48_10) */
+    rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 0x1);
     i = (i + 1);
 
 L_1ebb:
@@ -1858,9 +1854,9 @@ L_2129:
     goto L_21b0;
 
 L_2172:
-    /* untranslated: t_scratch_m48_14 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
+    /* untranslated: t_scratch_m48_13 = ((part[0x4:2](rgplr[i]) + 0x1000) & 0xf000) */
     rgplr[i].cshdefSB = 0x0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_14) */
+    /* untranslated: part[0x4:2](rgplr[i]) = (part[0x4:2](rgplr[i]) | t_scratch_m48_13) */
 
 L_21b0:
     j = (j + 1);
@@ -1995,7 +1991,7 @@ L_239d:
         goto L_23a6;
 
 L_23a6:
-    fmemmove(rgsxPlr[iplr], rgsxPlr[iplr][1], ((isx - 1) * 24));
+    fmemmove(rgsxPlr[iplr], &(rgsxPlr[iplr][1]), ((isx - 1) * 24));
 
 L_23df:
     isx = (isx - 1);
@@ -2004,7 +2000,7 @@ L_23e3:
     goto L_245f;
 
 L_23e6:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), rgsxPlr[iplr][isx], ((rgcsxPlr[iplr] - isx) * 24));
+    fmemmove((rgsxPlr[iplr] + (isx + 1)), &(rgsxPlr[iplr][isx]), ((rgcsxPlr[iplr] - isx) * 24));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_2441:
@@ -2173,7 +2169,7 @@ L_26c3:
         goto L_26ce;
 
 L_26ce:
-    fmemmove(lpth[1], lpth, ((cThing - j) * 18));
+    fmemmove(&(lpth[1]), lpth, ((cThing - j) * 18));
     fmemset(lpth, 0, 0x12);
 
 L_270b:
@@ -2692,9 +2688,7 @@ L_2fbb:
 
 L_2fc3:
     j = lpfl->iPlayer;
-    /* untranslated: t_scratch_m48_19 = ((part[0x4:2](rgplr[j]) + 0x1) & 0xfff) */
-    rgplr[j].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[j]) = (part[0x4:2](rgplr[j]) | t_scratch_m48_19) */
+    rgplr[j].cFleet = (rgplr[j].cFleet + 0x1);
     goto L_2f84;
 
 DoneNow:
@@ -3029,7 +3023,7 @@ L_35cf:
         goto L_35df;
 
 L_35df:
-    lppl->uGuesses = pb;
+    lppl->uGuesses = *(pb);
     pb = (pb + 2);
 
 L_35ef:
@@ -3073,12 +3067,12 @@ L_3678:
     goto L_362b;
 
 L_36a7:
-    lppl->rgwtMin[i] = (uint32_t)(pb);
+    lppl->rgwtMin[i] = (uint32_t)(*(pb));
     pb = (pb + 2);
     goto L_362b;
 
 L_36d3:
-    lppl->rgwtMin[i] = pb;
+    lppl->rgwtMin[i] = *(pb);
     pb = (pb + 4);
     goto L_362b;
 
@@ -3133,7 +3127,7 @@ L_377c:
         goto L_3785;
 
 L_3785:
-    lppl->turn = pb;
+    lppl->turn = *(pb);
     pb = (pb + 2);
     goto L_3904;
 
@@ -3237,7 +3231,7 @@ L_39e9:
         goto L_3a00;
 
 L_3a00:
-    lppl->lStarbase = pb;
+    lppl->lStarbase = *(pb);
     lppl->fNoHeal = 0x0;
     pb = (pb + 4);
 
@@ -3248,7 +3242,7 @@ L_3a2b:
         goto L_3a34;
 
 L_3a34:
-    lppl->wRouting = pb;
+    lppl->wRouting = *(pb);
 
 L_3a40:
     return 1;
@@ -3367,7 +3361,7 @@ L_3bcb:
         goto L_3bdd;
 
 L_3bdd:
-    us = pb;
+    us = *(pb);
     pb = (pb + 2);
     i = 0;
     goto L_3c06;
@@ -3391,12 +3385,12 @@ L_3c18:
     goto L_3bf6;
 
 L_3c47:
-    lpfl->rgwtMin[i] = (uint32_t)(pb);
+    lpfl->rgwtMin[i] = (uint32_t)(*(pb));
     pb = (pb + 2);
     goto L_3bf6;
 
 L_3c73:
-    lpfl->rgwtMin[i] = pb;
+    lpfl->rgwtMin[i] = *(pb);
     pb = (pb + 4);
     goto L_3bf6;
 
@@ -3428,9 +3422,9 @@ L_3cc0:
         goto L_3cd2;
 
 L_3cd2:
-    lpfl->dirLong = pb;
+    lpfl->dirLong = *(pb);
     pb = (pb + 4);
-    lpfl->wtFleet = pb;
+    lpfl->wtFleet = *(pb);
     pb = (pb + 4);
     ReadRt();
     return 1;
@@ -3446,7 +3440,7 @@ Corrupt:
     return 0;
 
 L_3d4b:
-    us = pb;
+    us = *(pb);
     pb = (pb + 2);
     pus = pb;
     i = 0;
@@ -3574,14 +3568,14 @@ L_3fdb:
         goto L_3ff3;
 
 L_3ff3:
-    cch = (uint16_t)(LOWORD(rgbCur));
+    cch = (uint16_t)(rgbCur[0]);
     if ((cch != 0))
         goto L_4047;
     else
         goto L_4003;
 
 L_4003:
-    lpfl->lpszName = LpAlloc((strlen(rgbCur[1]) + 0x1), htString);
+    lpfl->lpszName = LpAlloc((strlen(&(rgbCur[1])) + 0x1), htString);
     fstrcpy(lpfl->lpszName, &(rgbCur[1]));
     goto L_40aa;
 
@@ -3624,9 +3618,9 @@ L_410c:
 
 L_412a:
     cOut = 32;
-    fmemmove(&(szTemp), lpb, cOut);
+    fmemmove(szTemp, lpb, cOut);
     FDecompressUserString(szTemp, cch, szName, &(cOut));
-    fmemmove(lpbtlplan->szName, &(szName), cOut);
+    fmemmove(lpbtlplan->szName, szName, cOut);
 
 L_4185:
     lpbtlplan->iplan = iplan;
@@ -3803,7 +3797,7 @@ L_43e0:
 }
 
 void PromptSaveGame() {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  fRet;
     DialogId t_merge_4433_0001;
     uint16_t t_merge_446d_0001;
@@ -3928,7 +3922,7 @@ L_45f7:
         goto L_4601;
 
 L_4601:
-    HIWORD(rglphb[15]) = 0xffff;
+    rglphb[11][1].cbBlock = 0xffff;
 
 L_460b:
     ResetHb(htMisc);
@@ -4749,7 +4743,7 @@ L_50b4:
         goto L_50cc;
 
 L_50cc:
-    if (((uint16_t)(LOWORD(rgbCur)) != iPlayer))
+    if (((uint16_t)(rgbCur[0]) != iPlayer))
         goto L_50b4;
     else
         goto L_50d8;
@@ -4812,7 +4806,7 @@ L_5161:
 
 void ReadRt() {
 L_5168:
-    RgFromStream(hdrCur, 0x2);
+    RgFromStream(&(hdrCur), 0x2);
     if ((hdrCur.cb == 0x0))
         goto L_51a8;
     else

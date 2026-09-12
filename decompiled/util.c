@@ -603,8 +603,7 @@ L_0917:
     goto L_0b2b;
 
 L_0930:
-    pt.x = rgptPlan[ppt->y].x;
-    pt.y = rgptPlan[ppt->y].y;
+    pt = rgptPlan[ppt->y];
     goto L_0959;
 
 L_094b:
@@ -1628,7 +1627,7 @@ L_1b0d:
         goto L_1b12;
 
 L_1b12:
-    if ((pdmgPeopleSmart < 0x3e8))
+    if ((*(pdmgPeopleSmart) < 0x3e8))
         goto L_1b27;
     else
         goto L_1b1b;
@@ -1651,7 +1650,7 @@ L_1b36:
 
 L_1b39:
     *(pfMulti) = t_merge_1b39_0001;
-    if ((pdmgPeople != 0x0))
+    if ((*(pdmgPeople) != 0x0))
         goto L_1ba2;
     else
         goto L_1b49;
@@ -1663,7 +1662,7 @@ L_1b49:
         goto L_1b52;
 
 L_1b52:
-    if ((pdmgPeopleMin != 0x0))
+    if ((*(pdmgPeopleMin) != 0x0))
         goto L_1ba2;
     else
         goto L_1b5d;
@@ -1675,7 +1674,7 @@ L_1b5d:
         goto L_1b66;
 
 L_1b66:
-    if ((pdmgPeopleSmart != 0x0))
+    if ((*(pdmgPeopleSmart) != 0x0))
         goto L_1ba2;
     else
         goto L_1b71;
@@ -1687,7 +1686,7 @@ L_1b71:
         goto L_1b7a;
 
 L_1b7a:
-    if ((pdmgBldg != 0x0))
+    if ((*(pdmgBldg) != 0x0))
         goto L_1ba2;
     else
         goto L_1b85;
@@ -1699,7 +1698,7 @@ L_1b85:
         goto L_1b8e;
 
 L_1b8e:
-    if ((ppctTerra != 0x0))
+    if ((*(ppctTerra) != 0x0))
         goto L_1ba2;
     else
         goto L_1b99;
@@ -1818,10 +1817,8 @@ L_1cf9:
         goto L_1d02;
 
 L_1d02:
-    LOWORD(lpflHead->lpflNext) = LOWORD(rglpflSrc[i]->lpflNext);
-    HIWORD(lpflHead->lpflNext) = HIWORD(rglpflSrc[i]->lpflNext);
-    LOWORD(rglpflSrc[i]->lpflNext) = LOWORD(lpflHead);
-    HIWORD(rglpflSrc[i]->lpflNext) = HIWORD(lpflHead);
+    lpflHead->lpflNext = rglpflSrc[i]->lpflNext;
+    rglpflSrc[i]->lpflNext = lpflHead;
     i = -1;
 
 L_1d4c:
@@ -1884,9 +1881,8 @@ L_1e49:
         goto L_1e56;
 
 L_1e56:
-    pt.x = lpflTail->pt.x;
-    pt.y = lpflTail->pt.y;
-    pSearch = bsearch(&(pt), &(rglpflSrc), cSrc, 0x4, ICompFleetPoint2);
+    pt = lpflTail->pt;
+    pSearch = bsearch(&(pt), rglpflSrc, cSrc, 0x4, ICompFleetPoint2);
     if ((pSearch == 0x0))
         goto L_1ed2;
     else
@@ -1928,10 +1924,10 @@ int16_t ICompFleetPoint(void *arg1, void *arg2) {
     int32_t l1;
 
 L_1f0c:
-    LOWORD(l1) = *(arg1 + 0x8);
-    HIWORD(l1) = *(arg1 + 0xa);
-    LOWORD(l2) = *(arg2 + 0x8);
-    HIWORD(l2) = *(arg2 + 0xa);
+    /* untranslated: LOWORD(l1) = farseg(*arg1):[faroff(*arg1)+0x8] */
+    /* untranslated: HIWORD(l1) = farseg(*arg1):[faroff(*arg1)+0xa] */
+    /* untranslated: LOWORD(l2) = farseg(*arg2):[faroff(*arg2)+0x8] */
+    /* untranslated: HIWORD(l2) = farseg(*arg2):[faroff(*arg2)+0xa] */
     l1 = (l1 - l2);
     if ((HIWORD(l1) > 0x0))
         goto L_1f71;
@@ -1986,9 +1982,9 @@ int16_t ICompFleetPoint2(void *arg1, void *arg2) {
     int32_t l1;
 
 L_1fa2:
-    l1 = arg1;
-    LOWORD(l2) = *(arg2 + 0x8);
-    HIWORD(l2) = *(arg2 + 0xa);
+    l1 = *(arg1);
+    /* untranslated: LOWORD(l2) = farseg(*arg2):[faroff(*arg2)+0x8] */
+    /* untranslated: HIWORD(l2) = farseg(*arg2):[faroff(*arg2)+0xa] */
     l1 = (l1 - l2);
     if ((HIWORD(l1) > 0x0))
         goto L_2002;
@@ -3058,9 +3054,8 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     FLEET     *lpfl;
     int16_t    iflPrev;
     void      *t_call_3123;
-    uint16_t   t_scratch_m10;
     uint16_t   t_merge_32dc_0001;
-    GrobjClass t_scratch_m10_3;
+    GrobjClass t_scratch_m10_2;
 
 L_300c:
     iflPrev = -1;
@@ -3126,13 +3121,11 @@ L_311b:
     lpfl = t_call_3123;
     rglpfl[i] = t_call_3123;
     cFleet = (cFleet + 1);
-    /* untranslated: t_scratch_m10 = ((part[0x4:2](rgplr[iPlr]) + 0x1) & 0xfff) */
-    rgplr[iPlr].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[iPlr]) = (part[0x4:2](rgplr[iPlr]) | t_scratch_m10) */
+    rgplr[iPlr].cFleet = (rgplr[iPlr].cFleet + 0x1);
     fmemset(lpfl, 0, 0x7c);
-    lpfl->id = ((lpfl->id & 0xfe00) | ((iflPrev + 0x1) & 0x1ff));
+    lpfl->ifl = (iflPrev + 1);
     lpfl->iPlayer = iPlr;
-    lpfl->id = ((lpfl->id & 0xe1ff) | ((iPlr & 0xf) << 0x9));
+    lpfl->iplr = iPlr;
     lpfl->det = 0x7;
     lpfl->idPlanet = idPl;
     if ((idPl == -1))
@@ -3150,8 +3143,7 @@ L_3231:
     lpfl->lpplord->iordMac = 0x1;
     lpfl->fdirValid = 0x0;
     lpord = lpfl->lpplord->rgord;
-    lpord->pt.x = lpfl->pt.x;
-    lpord->pt.y = lpfl->pt.y;
+    lpord->pt = lpfl->pt;
     lpord->id = lpfl->idPlanet;
     if ((lpfl->idPlanet == -1))
         goto L_32d9;
@@ -3166,8 +3158,8 @@ L_32d9:
     t_merge_32dc_0001 = 0x4;
 
 L_32dc:
-    t_scratch_m10_3 = t_merge_32dc_0001;
-    lpord->grobj = t_scratch_m10_3;
+    t_scratch_m10_2 = t_merge_32dc_0001;
+    lpord->grobj = t_scratch_m10_2;
     lpord->iWarp = 0x0;
     lpord->fValidTask = 0x1;
     lpord->grTask = grTaskNone;
@@ -3247,8 +3239,8 @@ L_34d8:
     lpflMerge = 0x0;
     cflMerge = 0;
     fCshOverflow = 0;
-    memset(&(rgdp), 0, 0x40);
-    memset(&(rgcshDamaged), 0, 0x20);
+    memset(rgdp, 0, 0x40);
+    memset(rgcshDamaged, 0, 0x20);
     iplr = pfl->iPlayer;
     i = 0;
     goto L_37b1;
@@ -4330,8 +4322,7 @@ L_458d:
     goto L_46f2;
 
 L_4599:
-    ptWp.x = sel.fl.lpplord->rgord[i].pt.x;
-    ptWp.y = sel.fl.lpplord->rgord[i].pt.y;
+    ptWp = sel.fl.lpplord->rgord[i].pt;
     dx = (pt.x - ptWp.x);
     dy = (pt.y - ptWp.y);
     lTry = (uint32_t)(((uint32_t)(dx) * (uint32_t)(dx)));
@@ -4446,8 +4437,7 @@ L_46b7:
     lSquare = lTry;
 
 SelectSpace:
-    scan.pt.x = ptWp.x;
-    scan.pt.y = ptWp.y;
+    scan.pt = ptWp;
     scan.iwp = i;
     scan.ith = -1;
     scan.idpl = -1;
@@ -6811,8 +6801,7 @@ L_6c17:
     goto L_6b1a;
 
 L_6c38:
-    lpord->pt.x = lpth->pt.x;
-    lpord->pt.y = lpth->pt.y;
+    lpord->pt = lpth->pt;
 
 L_6c4d:
     goto L_6b1a;
@@ -7135,8 +7124,7 @@ L_700d:
 
 L_7016:
     lpord->id = lpflTarget->id;
-    lpord->pt.x = lpflTarget->pt.x;
-    lpord->pt.y = lpflTarget->pt.y;
+    lpord->pt = lpflTarget->pt;
     lpflTarget->fTargeted = 0x1;
 
 L_704c:
@@ -7278,8 +7266,7 @@ L_71ee:
     DeltaCur = (DeltaCur + 100);
 
 L_71fa:
-    LOWORD(lPopInc) = (-LOWORD(lPopInc));
-    HIWORD(lPopInc) = (-(HIWORD(lPopInc) + 0x0));
+    lPopInc = (-lPopInc);
     goto LUpdateAndExit;
 
 L_7210:

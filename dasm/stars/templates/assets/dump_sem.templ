@@ -4,6 +4,9 @@
 {{ end -}}
 {{ $block.Label }}:
 {{- if $.Options.ShowAsm }}
+{{- if $block.Preds }}
+  preds: {{ join $block.Preds ", " }}
+{{- end }}
   instrs:
 {{- range highlightText "nasm" (renderAsmBlock $ $block) $.Options.ShowColor }}
     {{ . }}

@@ -834,8 +834,7 @@ L_704c:
         goto L_7058;
 
 L_7058:
-    LOWORD(amount) = (-LOWORD(amount));
-    HIWORD(amount) = (-(HIWORD(amount) + 0x0));
+    amount = (-amount);
     if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[j])))
         goto L_70a6;
     else
@@ -950,8 +949,7 @@ L_71b1:
         goto L_71bd;
 
 L_71bd:
-    LOWORD(amount) = (-LOWORD(amount));
-    HIWORD(amount) = (-(HIWORD(amount) + 0x0));
+    amount = (-amount);
     goto Unload;
 
 L_71d3:
@@ -2166,7 +2164,7 @@ L_8306:
 
 L_8324:
     csh = (csh + lpfl->rgcsh[i]);
-    MarkTechsSeen(rglpshdef[lpfl->iPlayer][i], lpfl->iPlayer);
+    MarkTechsSeen(&(rglpshdef[lpfl->iPlayer][i].hul), lpfl->iPlayer);
     j = 0;
     goto L_837b;
 
@@ -2374,8 +2372,7 @@ L_87da:
         goto L_8819;
 
 L_8819:
-    LOWORD(pl.rgwtMin[i]) = LOWORD(lAmt);
-    HIWORD(pl.rgwtMin[i]) = HIWORD(lAmt);
+    pl.rgwtMin[i] = lAmt;
     goto L_8866;
 
 L_8836:
@@ -2963,7 +2960,7 @@ L_94a6:
     goto L_95b9;
 
 L_94b9:
-    ishMatch = IshFindSimilarDesign(rglpshdef[lpfl->iPlayer][ish], iplrDest);
+    ishMatch = IshFindSimilarDesign(&(rglpshdef[lpfl->iPlayer][ish].hul), iplrDest);
     if ((ishMatch == -1))
         goto L_9506;
     else

@@ -76,7 +76,7 @@ L_00ec:
         goto L_00f6;
 
 L_00f6:
-    LOWORD(vlpbAiData) = 0x2;
+    *(vlpbAiData) = 0x2;
 
 L_00ff:
     if ((LOWORD(vlpbAiPlanet) != 0x0))
@@ -336,7 +336,7 @@ L_03cc:
     j = 50;
 
 L_03d1:
-    LOWORD(vrgAiArmadaPotency) = LOBYTE(j);
+    vrgAiArmadaPotency[0] = LOBYTE(j);
     vrgAiArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
@@ -372,7 +372,7 @@ L_0435:
 
 L_0441:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_0441_0001);
-    memset(&(rgRecycleShdef), 0, 0x10);
+    memset(rgRecycleShdef, 0, 0x10);
     if ((game.turn >= 0x78))
         goto L_046a;
     else
@@ -445,13 +445,13 @@ L_0501:
 
 L_0586:
     SplitOutShdefs(rgRecycleShdef);
-    memset(&(rgRecycleSBShdef), 0, 0x10);
+    memset(rgRecycleSBShdef, 0, 0x10);
     rgRecycleSBShdef[0] = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
-    memset(&(rgRecycleSBShdef), 0, 0x10);
+    memset(rgRecycleSBShdef, 0, 0x10);
     rgRecycleSBShdef[1] = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
-    memset(&(rgRecycleSBShdef), 0, 0x10);
+    memset(rgRecycleSBShdef, 0, 0x10);
     rgRecycleSBShdef[13] = 0x2;
     rgRecycleSBShdef[12] = 0x2;
     rgRecycleSBShdef[11] = 0x2;
@@ -1009,7 +1009,7 @@ L_0cf0:
         goto L_0cfa;
 
 L_0cfa:
-    if (((lpfl->rgcsh[9] + lpfl->rgcsh[10]) >= (vrgAiArmadaPotency[2] & 0xff)))
+    if (((lpfl->rgcsh[9] + lpfl->rgcsh[10]) >= vrgAiArmadaPotency[2]))
         goto L_0d54;
     else
         goto L_0d20;
@@ -1116,7 +1116,7 @@ L_0e57:
         goto L_0e60;
 
 L_0e60:
-    GetTrueHullCost(idPlayer, rgshdef[iLatest], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatest].hul), rgCosts);
     j = 0;
     goto L_0edb;
 
@@ -1228,7 +1228,7 @@ L_0fdc:
     goto L_107f;
 
 L_0fe4:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestDestroyer], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestDestroyer].hul), rgCosts);
     j = 0;
     goto L_1054;
 
@@ -1341,7 +1341,7 @@ L_11ae:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_11df:
     if ((lpfl->iPlayer == idPlayer))
@@ -1420,7 +1420,7 @@ L_1323:
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
     sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
     sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     goto L_10bf;
 
 L_1375:
@@ -1590,7 +1590,7 @@ L_158e:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     ClearAiCurrentTask(lpfl, 0);
 
 L_15d1:
@@ -1608,7 +1608,7 @@ L_15db:
 L_15e8:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     goto L_10bf;
 
 L_1623:
@@ -1706,7 +1706,7 @@ L_16f7:
     ord.txp.rgia[3].iAction = iActionUnloadAll;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0] = ord;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     lpplDrop = LpplFindClosestEnum(lpplDrop, FEnumOurStarbase);
     if ((LOWORD(lpplDrop) != 0x0))
         goto L_17e9;
@@ -1760,7 +1760,7 @@ L_18a6:
 L_18b3:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_18eb:
     goto L_10bf;
@@ -1774,7 +1774,7 @@ L_18ee:
 
 L_190d:
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 10);
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_1944:
     if ((idPlanDst == -1))
@@ -1903,7 +1903,7 @@ L_1a8e:
 L_1aa0:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.iplan = 0x4;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_1ac7:
     lppl = 0x0;
@@ -2083,7 +2083,7 @@ L_1d00:
 L_1d14:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     goto L_1c04;
 
 L_1d52:
@@ -2783,7 +2783,7 @@ int16_t IdTargetArmada(FLEET *lpfl) {
     int32_t lPopEnemy;
     int32_t cXfer;
     int32_t t_call_28d8;
-    int32_t t_merge_30e4_0003_wide;
+    int32_t t_merge_30e4_0002_wide;
     int32_t t_merge_315a_0001;
 
 L_288e:
@@ -2929,13 +2929,13 @@ L_2a88:
         goto L_2a9f;
 
 L_2a9f:
-    if ((cshWar < (LOWORD(vrgAiArmadaPotency) & 0xff)))
+    if ((cshWar < vrgAiArmadaPotency[0]))
         goto L_2d30;
     else
         goto L_2aad;
 
 L_2aad:
-    if ((cshBomb < (vrgAiArmadaPotency[2] & 0xff)))
+    if ((cshBomb < vrgAiArmadaPotency[2]))
         goto L_2d30;
     else
         goto L_2abb;
@@ -3029,7 +3029,7 @@ L_2b7b:
 
 L_2b84:
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, LOWORD(cCol));
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 TargetPotentArmada:
     if ((game.fAisBand == 0x0))
@@ -3115,7 +3115,7 @@ L_2d30:
         goto L_2d4f;
 
 L_2d4f:
-    if ((cshWar > ((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x2)))
+    if ((cshWar > (vrgAiArmadaPotency[0] * 0x2)))
         goto L_2d68;
     else
         goto L_2d5f;
@@ -3133,7 +3133,7 @@ L_2d68:
         goto L_2d7c;
 
 L_2d7c:
-    if ((cshWar <= LOWORD(((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x3))))
+    if ((cshWar <= LOWORD((vrgAiArmadaPotency[0] * 0x3))))
         goto L_2da3;
     else
         goto L_2d8f;
@@ -3160,13 +3160,13 @@ L_2dbd:
     goto L_31af;
 
 L_2dc6:
-    if ((cshWar < (vrgAiArmadaPotency[1] & 0xff)))
+    if ((cshWar < vrgAiArmadaPotency[1]))
         goto L_2de2;
     else
         goto L_2dd4;
 
 L_2dd4:
-    if ((cshBomb >= (vrgAiArmadaPotency[3] & 0xff)))
+    if ((cshBomb >= vrgAiArmadaPotency[3]))
         goto L_2e9f;
     else
         goto L_2de2;
@@ -3179,7 +3179,7 @@ L_2de2:
         goto L_2e13;
 
 L_2e13:
-    if ((cshWar <= ((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x2)))
+    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x2)))
         goto L_2e37;
     else
         goto L_2e23;
@@ -3191,7 +3191,7 @@ L_2e23:
         goto L_2e37;
 
 L_2e37:
-    if ((cshWar <= ((LOWORD(vrgAiArmadaPotency) & 0xff) * 0x4)))
+    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x4)))
         goto L_2e5d;
     else
         goto L_2e49;
@@ -3250,7 +3250,7 @@ L_2ed3:
 
 L_2ede:
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[3])) / 5));
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_2f23:
     goto TargetPotentArmada;
@@ -3376,26 +3376,26 @@ L_30bb:
         goto L_30c3;
 
 L_30c3:
-    t_merge_30e4_0003_wide = cXfer;
+    t_merge_30e4_0002_wide = cXfer;
     goto L_30e4;
 
 L_30cc:
-    t_merge_30e4_0003_wide = (int32_t)((lpfl->rgwtMin[3] / 2));
+    t_merge_30e4_0002_wide = (int32_t)((lpfl->rgwtMin[3] / 2));
 
 L_30e4:
-    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_30e4_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_30e4_0002_wide)))
         goto L_310c;
     else
         goto L_30f0;
 
 L_30f0:
-    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_30e4_0003_wide)))
+    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_30e4_0002_wide)))
         goto L_30fe;
     else
         goto L_30f5;
 
 L_30f5:
-    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_30e4_0003_wide)))
+    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_30e4_0002_wide)))
         goto L_310c;
     else
         goto L_30fe;
@@ -3453,7 +3453,7 @@ L_3178:
 
 L_3182:
     XferAiTroopers(lpfl->id, lppl->id, LOWORD(cXfer));
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_31af:
     return 0;
@@ -3502,7 +3502,7 @@ L_3233:
     return 1;
 
 L_323c:
-    if ((cEquiv < (LOWORD(vrgAiArmadaPotency) & 0xff)))
+    if ((cEquiv < vrgAiArmadaPotency[0]))
         goto L_3250;
     else
         goto L_324a;
@@ -4013,7 +4013,7 @@ L_3769:
     j = 50;
 
 L_376e:
-    LOWORD(vrgAiArmadaPotency) = LOBYTE(j);
+    vrgAiArmadaPotency[0] = LOBYTE(j);
     vrgAiArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
@@ -4049,7 +4049,7 @@ L_37d2:
 
 L_37de:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_37de_0001);
-    memset(&(rgRecycleShdef), 0, 0x10);
+    memset(rgRecycleShdef, 0, 0x10);
     if ((game.turn >= 0x78))
         goto L_3808;
     else
@@ -4309,7 +4309,7 @@ L_3ce3:
         goto L_3cea;
 
 L_3cea:
-    FLookupPlanet(-1, sel.pl.id);
+    FLookupPlanet(-1, &(sel.pl));
 
 L_3cfa:
     goto L_486f;
@@ -4708,7 +4708,7 @@ L_421f:
         goto L_4229;
 
 L_4229:
-    if (((lpfl->rgcsh[13] + lpfl->rgcsh[14]) < (vrgAiArmadaPotency[2] & 0xff)))
+    if (((lpfl->rgcsh[13] + lpfl->rgcsh[14]) < vrgAiArmadaPotency[2]))
         goto L_4274;
     else
         goto L_424f;
@@ -4781,7 +4781,7 @@ L_4340:
     goto L_43e5;
 
 L_4348:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestBattle], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestBattle].hul), rgCosts);
     j = 0;
     goto L_43b9;
 
@@ -4887,7 +4887,7 @@ L_44b8:
     goto L_455b;
 
 L_44c0:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestCruiser], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestCruiser].hul), rgCosts);
     j = 0;
     goto L_4530;
 
@@ -4993,7 +4993,7 @@ L_462e:
     goto L_46d1;
 
 L_4636:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestDestroyer], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestDestroyer].hul), rgCosts);
     j = 0;
     goto L_46a6;
 
@@ -5105,7 +5105,7 @@ L_47b7:
     goto L_485a;
 
 L_47bf:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestTroop], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestTroop].hul), rgCosts);
     j = 0;
     goto L_482f;
 
@@ -5296,7 +5296,7 @@ LBlowAwayOrders:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     ClearAiCurrentTask(lpfl, 0);
     goto L_4932;
 
@@ -5458,7 +5458,7 @@ L_4d32:
     sel.fl.lpplord->rgord[1] = ord;
 
 L_4d5a:
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     vlpbAiPlanet[((idPlanDst * 16) + 3)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x3)] | 0x80);
     FMoveToNearestStarbase(lpfl, 0);
     goto L_4932;
@@ -5727,7 +5727,7 @@ L_511b:
 LScrapFleet:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_516d:
     goto L_4eb0;
@@ -5749,7 +5749,7 @@ L_519c:
 L_51a8:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 25);
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
     lppl = LpplFromId(lpfl->idPlanet);
     goto L_5215;
 
@@ -5967,19 +5967,19 @@ L_5552:
         goto L_5569;
 
 L_5569:
-    if (((lpfl->rgcsh[13] + lpfl->rgcsh[14]) < (vrgAiArmadaPotency[2] & 0xff)))
+    if (((lpfl->rgcsh[13] + lpfl->rgcsh[14]) < vrgAiArmadaPotency[2]))
         goto L_4eb0;
     else
         goto L_558c;
 
 L_558c:
-    if (((lpfl->rgcsh[4] + lpfl->rgcsh[5]) < (vrgAiArmadaPotency[1] & 0xff)))
+    if (((lpfl->rgcsh[4] + lpfl->rgcsh[5]) < vrgAiArmadaPotency[1]))
         goto L_4eb0;
     else
         goto L_55b2;
 
 L_55b2:
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
     goto LTargetBomber;
 
 L_55c7:
@@ -6149,7 +6149,7 @@ L_5841:
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
     sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
     sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_588d:
     goto L_4eb0;
@@ -6183,7 +6183,7 @@ L_58ee:
         goto L_5906;
 
 L_5906:
-    FCreateAiShdef(8, 12, &(vrgTDAip[(vrgTDIshAip[12] & 0xff)]));
+    FCreateAiShdef(8, 12, &(vrgTDAip[vrgTDIshAip[12]]));
 
 L_5926:
     if ((rgshdef[9].fFree == 0x0))
@@ -6204,7 +6204,7 @@ L_5951:
         goto L_5969;
 
 L_5969:
-    FCreateAiShdef(9, 13, &(vrgTDAip[(vrgTDIshAip[15] & 0xff)]));
+    FCreateAiShdef(9, 13, &(vrgTDAip[vrgTDIshAip[15]]));
 
 L_5989:
     if ((rgshdef[10].fFree == 0x0))
@@ -6291,7 +6291,7 @@ L_5a95:
     FChangeAiShdef(&(shdef), 1);
 
 L_5ac5:
-    FCreateAiShdef(1, 15, &(vrgTDAip[(LOWORD(vrgTDIshAip) & 0xff)]));
+    FCreateAiShdef(1, 15, &(vrgTDAip[vrgTDIshAip[0]]));
 
 L_5ae5:
     if ((rgshdef[0].fFree != 0x0))
@@ -6323,7 +6323,7 @@ L_5b1f:
     FChangeAiShdef(&(shdef), 0);
 
 L_5b4f:
-    FCreateAiShdef(0, 5, &(vrgTDAip[(vrgTDIshAip[1] & 0xff)]));
+    FCreateAiShdef(0, 5, &(vrgTDAip[vrgTDIshAip[1]]));
 
 L_5b6f:
     if ((rgshdef[2].fFree != 0x0))
@@ -6367,7 +6367,7 @@ L_5bd9:
     FChangeAiShdef(&(shdef), 2);
 
 L_5c09:
-    FCreateAiShdef(2, 22, &(vrgTDAip[(vrgTDIshAip[17] & 0xff)]));
+    FCreateAiShdef(2, 22, &(vrgTDAip[vrgTDIshAip[17]]));
 
 L_5c29:
     if ((rgshdef[12].fFree != 0x0))
@@ -6400,7 +6400,7 @@ L_5c68:
         goto L_5c80;
 
 L_5c80:
-    FCreateAiShdef(12, 11, &(vrgTDAip[(vrgTDIshAip[14] & 0xff)]));
+    FCreateAiShdef(12, 11, &(vrgTDAip[vrgTDIshAip[14]]));
 
 L_5ca0:
     if ((rgshdef[13].fFree == 0x0))
@@ -6427,7 +6427,7 @@ L_5ce3:
         goto L_5cfb;
 
 L_5cfb:
-    FCreateAiShdef(13, 18, &(vrgTDAip[(vrgTDIshAip[13] & 0xff)]));
+    FCreateAiShdef(13, 18, &(vrgTDAip[vrgTDIshAip[13]]));
 
 L_5d1b:
     if ((rgshdef[14].fFree == 0x0))
@@ -6460,7 +6460,7 @@ L_5d76:
         goto L_5d8e;
 
 L_5d8e:
-    FCreateAiShdef(14, 18, &(vrgTDAip[(vrgTDIshAip[13] & 0xff)]));
+    FCreateAiShdef(14, 18, &(vrgTDAip[vrgTDIshAip[13]]));
 
 L_5dae:
     if ((rgshdef[4].fFree == 0x0))
@@ -6546,7 +6546,7 @@ L_5ee9:
     goto L_5f22;
 
 L_5ef2:
-    if ((FCreateAiShdef(15, 12, &(vrgTDAip[(vrgTDIshAip[12] & 0xff)])) != 0))
+    if ((FCreateAiShdef(15, 12, &(vrgTDAip[vrgTDIshAip[12]])) != 0))
         goto L_5f2c;
     else
         goto L_5f1d;

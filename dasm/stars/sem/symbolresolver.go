@@ -95,7 +95,7 @@ func (sr *symbolResolver) symbolFromValueTyped(value machine.Value, expected typ
 			// A resolved pointer-valued term is authoritative. Constants beside
 			// it are byte displacements, even when their numeric value happens
 			// to fall inside a DGROUP global.
-			if path, ok := sr.decomposePointerBase(2, v, 0); ok {
+			if path, ok := sr.decomposePointerBase(0, v, 0); ok {
 				return path, true
 			}
 			return sr.decompose(ds, 2, v, 0)
@@ -130,9 +130,32 @@ func (sr *symbolResolver) memoryPath(mem machine.MemoryAddress) (symresolve.Symb
 	if path, ok := addr.path(); ok {
 		return path, true
 	}
+
+	// Ordinary indexed storage does not imply a pointer dereference.
+	//
+	// For example:
+	//
+	//     FLEET *rgpflNew[2];
+	//     load(ss:[bp + i*2 - rgpflNew])
+	//
+	// normalizes to the rgpflNew array root plus an i*2 residual term.
+	// Project that through the declared aggregate just as semantic address
+	// conversion does.
 	if !addr.deref {
+		if addr.base == nil || addr.base.Type() == nil || !isAggregateType(addr.base.Type()) {
+			return nil, false
+		}
+
+		if path, ok := sr.symbolPathFromSingleIndexedAddress(addr, mem.Width); ok {
+			return path, true
+		}
+
+		if path, ok := sr.symbolPathFromAddressValue(addr, nil); ok {
+			return path, true
+		}
 		return nil, false
 	}
+
 	converter := &machineConverter{ctx: sr.FuncContext}
 	semantic, ok := converter.semanticResolvedAddress(addr)
 	if !ok {

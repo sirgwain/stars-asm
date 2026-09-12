@@ -11,7 +11,7 @@ char    rgRaceStatMin[16] = {7, 5, 5, 5, 5, 2, 5};
 
 int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrite) {
     int16_t mdRet;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     RECT    rgrcStack[17];
     int16_t cpts;
     char   *t_merge_038c_0001;
@@ -175,7 +175,7 @@ L_02a8:
     return 0;
 
 L_02ae:
-    cpts = CAdvantagePoints(vplr.iPlayer);
+    cpts = CAdvantagePoints(&(vplr));
     if ((cpts >= 0))
         goto L_0344;
     else
@@ -227,7 +227,7 @@ L_0344:
         goto L_0373;
 
 L_0373:
-    if (((uint16_t)(LOWORD(szRaceFile)) == 0x0))
+    if (((uint16_t)(szRaceFile[0]) == 0))
         goto L_0389;
     else
         goto L_0383;
@@ -240,7 +240,7 @@ L_0389:
     t_merge_038c_0001 = "stars.r1";
 
 L_038c:
-    if ((FSaveRace(t_merge_038c_0001, vplr.iPlayer) == 0))
+    if ((FSaveRace(t_merge_038c_0001, &(vplr)) == 0))
         goto Step1;
     else
         goto L_03a0;
@@ -268,7 +268,7 @@ int16_t RaceWizardDlg1(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     int16_t     j;
     int16_t     cch;
     RECT        rcGBox;
-    notype      k;
+    int16_t     k;
     char        szBuf[32];
     uint16_t    t_merge_0b8c_0001;
     HWND        t_call_0f64;
@@ -282,7 +282,7 @@ L_03bb:
     SetRCWTitle(hwnd, iPanelActive);
     SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
     SetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames);
-    if (((uint16_t)(LOWORD(vplr.szName)) != 0x0))
+    if (((uint16_t)(vplr.szName[0]) != 0))
         goto L_0435;
     else
         goto L_040b;
@@ -292,7 +292,7 @@ L_040b:
     SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
 
 L_0435:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     if ((game.fTutorial == 0x0))
         goto L_0478;
     else
@@ -320,7 +320,7 @@ L_0478:
 
 L_0480:
     vplr.iPlrBmp = vrgplrDef[i].iPlrBmp;
-    if ((fmemcmp(vplr, vrgplrDef[i], 0x80) == 0))
+    if ((fmemcmp(&(vplr), &(vrgplrDef[i]), 0x80) == 0))
         goto L_04f0;
     else
         goto L_04e3;
@@ -358,7 +358,7 @@ L_05b5:
         goto L_05bf;
 
 L_05bf:
-    i = GetRaceStat(vplr.iPlayer, rsUseLeftover);
+    i = GetRaceStat(&(vplr), rsUseLeftover);
     SendMessage(hwndCB, CB_SETCURSEL, i, 0);
     if ((LOWORD(vplr.lSalt) != 0x0))
         goto L_05fe;
@@ -552,7 +552,8 @@ L_092d:
         goto L_0937;
 
 L_0937:
-    pplr = &(vrgplrDef[(j - 271)]);
+    k = (j - 271);
+    pplr = &(vrgplrDef[k]);
     goto L_0956;
 
 L_0951:
@@ -697,20 +698,21 @@ L_0c6c:
         goto L_0c76;
 
 L_0c76:
-    vplr = vrgplrDef[(j - 271)];
+    k = (j - 271);
+    vplr = vrgplrDef[k];
 
 L_0c99:
     GetDlgItemText(hwnd, IDC_EDIT1, vplr.szName, 32);
     GetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames, 32);
-    GetRaceStat(vplr.iPlayer, rsUseLeftover);
+    GetRaceStat(&(vplr), rsUseLeftover);
     GetDlgItemText(hwnd, IDC_U16_0x010D, szRacePass, 16);
     j = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
-    SetRaceStat(vplr.iPlayer, rsUseLeftover, j);
+    SetRaceStat(&(vplr), rsUseLeftover, j);
     vplr.lSalt = LSaltFromSz(szRacePass);
     vplr.iPlrBmp = iPlrBmp;
 
 L_0d53:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -773,7 +775,7 @@ L_0e66:
     CchGetString((wParam + 0x458), vplr.szName);
     SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
     memset(vplr.szNames, 0, 0x20);
-    psz = PszPlayerName(0, 1, 1, 0, 0, vplr.iPlayer);
+    psz = PszPlayerName(0, 1, 1, 0, 0, &(vplr));
     strcpy(vplr.szNames, psz);
     SetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames);
 
@@ -981,7 +983,7 @@ L_149d:
         goto L_14a7;
 
 L_14a7:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     return 1;
 
 L_14c0:
@@ -1084,7 +1086,7 @@ L_166b:
         goto L_1674;
 
 L_1674:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -1362,7 +1364,7 @@ L_1b1f:
     t_merge_1b22_0001 = 0x2;
 
 L_1b22:
-    DrawBtn(hdc, (vrgrcRCW + i), ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
+    DrawBtn(hdc, &(vrgrcRCW[i]), ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
 
 L_1b44:
     goto L_1a9e;
@@ -1393,7 +1395,7 @@ L_1b6d:
     t_merge_1b70_0001 = ">>     <<";
 
 L_1b70:
-    DrawBtn(hdc, (vrgrcRCW + i), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
+    DrawBtn(hdc, &(vrgrcRCW[i]), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
 
 L_1b9a:
     goto L_1a9e;
@@ -1899,7 +1901,7 @@ L_24b2:
     psz = vrgszRCWWidth[1];
 
 L_24c2:
-    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, psz);
+    InitBtnTrack(&(btnt), hwnd, 0x0, &(vrgrcRCW[irc]), bt, 80, 0, 0, psz);
     if (((kbd & 0x4) == 0x0))
         goto L_2517;
     else
@@ -2073,14 +2075,14 @@ L_2792:
 
 L_27a1:
     SetRCWTitle(hwnd, iPanelActive);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(vplr.iPlayer, ibitRaceCheapFact), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(&(vplr), ibitRaceCheapFact), 0);
     if ((fRCWReadOnly != 0))
         goto L_2801;
     else
         goto L_27e9;
 
 L_27e9:
-    if ((GetRaceStat(vplr.iPlayer, rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(vplr), rsMajorAdv) != raMacintosh))
         goto L_2817;
     else
         goto L_2801;
@@ -2089,7 +2091,7 @@ L_2801:
     EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0123), 0);
 
 L_2817:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     return 1;
 
 L_2830:
@@ -2172,7 +2174,7 @@ L_29b3:
         goto L_29bc;
 
 L_29bc:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -2184,7 +2186,7 @@ L_29e0:
 
 L_29ea:
     i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), WM_USER, 0x0, 0));
-    SetRaceGrbit(vplr.iPlayer, ibitRaceCheapFact, i);
+    SetRaceGrbit(&(vplr), ibitRaceCheapFact, i);
     DrawRace3(hwnd, 0x0, 99);
 
 L_2a35:
@@ -2278,7 +2280,7 @@ L_2ac2:
 
 L_2ac5:
     bt = t_merge_2ac5_0001;
-    if ((GetRaceStat(vplr.iPlayer, rsMajorAdv) != raMacintosh))
+    if ((GetRaceStat(&(vplr), rsMajorAdv) != raMacintosh))
         goto L_2ae6;
     else
         goto L_2ae0;
@@ -2383,7 +2385,7 @@ L_2c72:
 L_2c8b:
     dx = (LOWORD(GetTextExtent(hdc, szWork, cch)) + 6);
     dxItem = LOWORD((abs((uint16_t)(rgRW3Width[i])) * dxDig));
-    _wsprintf(szWork, PCTD, GetRaceStat(vplr.iPlayer, (uint16_t)(rgRW3IStat[i])));
+    _wsprintf(szWork, PCTD, GetRaceStat(&(vplr), (uint16_t)(rgRW3IStat[i])));
     if (((uint16_t)(rgRW3Width[i]) >= 0))
         goto L_2d3d;
     else
@@ -2444,8 +2446,8 @@ L_2d73:
         goto L_2e83;
 
 L_2e83:
-    DrawBtn(hdc, (vrgrcRCW + irc), (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, (vrgrcRCW + (irc + 1)), (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, &(vrgrcRCW[irc]), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, &(vrgrcRCW[(irc + 1)]), (0xa1 | bt), 0, 0x0);
 
 L_2eda:
     if ((iDraw != -1))
@@ -2553,7 +2555,7 @@ L_3008:
     bt = 161;
 
 L_3012:
-    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, &(vrgrcRCW[irc]), bt, 80, 0, 0, 0x0);
     if (((kbd & 0x4) == 0x0))
         goto L_305f;
     else
@@ -2569,8 +2571,8 @@ L_305f:
         goto L_3073;
 
 L_3073:
-    iStat = GetRaceStat(vplr.iPlayer, (uint16_t)(rgRW3IStat[i]));
-    if ((SetRaceStat(vplr.iPlayer, (uint16_t)(rgRW3IStat[i]), (iStat + dShift)) == iStat))
+    iStat = GetRaceStat(&(vplr), (uint16_t)(rgRW3IStat[i]));
+    if ((SetRaceStat(&(vplr), (uint16_t)(rgRW3IStat[i]), (iStat + dShift)) == iStat))
         goto L_305f;
     else
         goto L_30b1;
@@ -2675,7 +2677,7 @@ L_320a:
 
 L_3219:
     SetRCWTitle(hwnd, iPanelActive);
-    CheckRadioButton(hwnd, 271, 280, (GetRaceStat(vplr.iPlayer, rsMajorAdv) + 271));
+    CheckRadioButton(hwnd, 271, 280, (GetRaceStat(&(vplr), rsMajorAdv) + 271));
     if ((fRCWReadOnly == 0))
         goto L_3281;
     else
@@ -2696,7 +2698,7 @@ L_3277:
         goto L_3281;
 
 L_3281:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     return 1;
 
 L_329a:
@@ -2766,7 +2768,7 @@ L_3338:
     _Draw3dFrame(hdc, &(rc), -1);
     cch = CchGetString(idsDescriptionTrait, szWork);
     TextOut(hdc, (rc.left + 8), (rc.top - (dyArial8 >> 0x1)), szWork, cch);
-    ids = (LOWORD((GetRaceStat(vplr.iPlayer, rsMajorAdv) * 0x3)) + 0x114);
+    ids = (LOWORD((GetRaceStat(&(vplr), rsMajorAdv) * 0x3)) + 0x114);
     cch = 0;
     i = 0;
     goto L_3532;
@@ -2829,7 +2831,7 @@ L_3611:
         goto L_361a;
 
 L_361a:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -2853,20 +2855,20 @@ L_3667:
 
 L_3671:
     i = (wParam - 271);
-    SetRaceStat(vplr.iPlayer, rsMajorAdv, i);
-    if ((GetRaceStat(vplr.iPlayer, rsMajorAdv) != raMacintosh))
+    SetRaceStat(&(vplr), rsMajorAdv, i);
+    if ((GetRaceStat(&(vplr), rsMajorAdv) != raMacintosh))
         goto L_3731;
     else
         goto L_36a5;
 
 L_36a5:
-    SetRaceStat(vplr.iPlayer, rsFactProd, 10);
-    SetRaceStat(vplr.iPlayer, rsFactBuild, 10);
-    SetRaceStat(vplr.iPlayer, rsFactOperate, 10);
-    SetRaceStat(vplr.iPlayer, rsMineProd, 10);
-    SetRaceStat(vplr.iPlayer, rsMineBuild, 5);
-    SetRaceStat(vplr.iPlayer, rsMineOperate, 10);
-    SetRaceGrbit(vplr.iPlayer, ibitRaceCheapFact, 0);
+    SetRaceStat(&(vplr), rsFactProd, 10);
+    SetRaceStat(&(vplr), rsFactBuild, 10);
+    SetRaceStat(&(vplr), rsFactOperate, 10);
+    SetRaceStat(&(vplr), rsMineProd, 10);
+    SetRaceStat(&(vplr), rsMineBuild, 5);
+    SetRaceStat(&(vplr), rsMineOperate, 10);
+    SetRaceGrbit(&(vplr), ibitRaceCheapFact, 0);
 
 L_3731:
     InvalidateAdvPtsRect(hwnd);
@@ -2930,7 +2932,7 @@ L_379d:
 L_37ba:
     hwndCtl = GetDlgItem(hwnd, (i + 291));
     SetWindowText(hwndCtl, PszGetCompressedString((i + 306)));
-    SendMessage(hwndCtl, CB_LIMITTEXT, GetRaceGrbit(vplr.iPlayer, i), 0);
+    SendMessage(hwndCtl, CB_LIMITTEXT, GetRaceGrbit(&(vplr), i), 0);
     if ((fRCWReadOnly == 0))
         goto L_3821;
     else
@@ -2949,7 +2951,7 @@ L_3825:
         goto L_382e;
 
 L_382e:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     return 1;
 
 L_3847:
@@ -3055,7 +3057,7 @@ L_3acf:
         goto L_3ad8;
 
 L_3ad8:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -3074,7 +3076,7 @@ L_3b06:
 L_3b10:
     i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
     cColDrop = (wParam - 291);
-    SetRaceGrbit(vplr.iPlayer, cColDrop, i);
+    SetRaceGrbit(&(vplr), cColDrop, i);
     InvalidateAdvPtsRect(hwnd);
     InvalidateRect(hwnd, &(rcCargo), 0);
 
@@ -3134,7 +3136,7 @@ L_3bbd:
     goto L_3c19;
 
 L_3bd4:
-    t_scratch_me = GetRaceStat(vplr.iPlayer, (i + 8));
+    t_scratch_me = GetRaceStat(&(vplr), (i + 8));
     CheckRadioButton(hwnd, (LOWORD((3 * i)) + 271), (LOWORD((3 * i)) + 273), ((LOWORD((3 * i)) + 271) + t_scratch_me));
     i = (i + 1);
 
@@ -3165,7 +3167,7 @@ L_3c4d:
         goto L_3c57;
 
 L_3c57:
-    if ((GetRaceStat(vplr.iPlayer, rsMajorAdv) != raNone))
+    if ((GetRaceStat(&(vplr), rsMajorAdv) != raNone))
         goto L_3c75;
     else
         goto L_3c6f;
@@ -3180,7 +3182,7 @@ L_3c75:
 L_3c78:
     _wsprintf(szWork, PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech), (t_merge_3c78_0001 + 0x3));
     SetWindowText(GetDlgItem(hwnd, IDC_U16_0x0123), szWork);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(vplr.iPlayer, ibitRaceTech3), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(&(vplr), ibitRaceTech3), 0);
     if ((fRCWReadOnly == 0))
         goto L_3d03;
     else
@@ -3190,7 +3192,7 @@ L_3ced:
     EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0123), 0);
 
 L_3d03:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 1);
     return 1;
 
 L_3d1c:
@@ -3308,7 +3310,7 @@ L_3f87:
         goto L_3f90;
 
 L_3f90:
-    StickyDlgPos(hwnd, ptStickyRaceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyRaceDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -3332,7 +3334,7 @@ L_3fdd:
 
 L_3fe7:
     i = (wParam - 271);
-    SetRaceStat(vplr.iPlayer, (((uint32_t)(i) / 3) + 0x8), ((uint32_t)(i) % 3));
+    SetRaceStat(&(vplr), (((uint32_t)(i) / 3) + 0x8), ((uint32_t)(i) % 3));
     InvalidateAdvPtsRect(hwnd);
     goto L_409f;
 
@@ -3344,7 +3346,7 @@ L_4021:
 
 L_402b:
     i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
-    SetRaceGrbit(vplr.iPlayer, ibitRaceTech3, i);
+    SetRaceGrbit(&(vplr), ibitRaceTech3, i);
     InvalidateAdvPtsRect(hwnd);
 
 L_406e:
@@ -4748,7 +4750,7 @@ L_54d4:
     plf = LocalAlloc(0x40, 0x32);
     hdc = GetDC(hwnd);
     plf->lfHeight = -24;
-    strcpy(plf->lfFaceName, LOWORD(rgszArial[1]));
+    strcpy(plf->lfFaceName, rgszArial[1]);
     hfont = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, hfont);
     GetTextMetrics(hdc, &(tm));

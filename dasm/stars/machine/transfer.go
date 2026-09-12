@@ -369,7 +369,7 @@ func (ctx *extractor) handleBinary(st *state, inst asm.DecodedInst, meta Meta, o
 
 func (ctx *extractor) handleUnary(st *state, inst asm.DecodedInst, meta Meta, op ValueOp) []Effect {
 	lhs := st.readOperand(inst.Off, OperandDst, inst.Dst)
-	out := BinaryVal(op, lhs, ConstVal(0))
+	out := &Binary{Op: op, LHS: lhs, RHS: ConstVal(0), Producer: meta}
 
 	mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, out)
 	if isMem {

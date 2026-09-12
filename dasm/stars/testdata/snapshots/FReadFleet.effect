@@ -481,7 +481,7 @@ block L_3ff3:
   preds: L_3fdb
   succs: L_4003, L_4047
   effects:
-    3ff7  store[2] [bp-cch] = sext8to16(load([rgbCur]))
+    3ff7  store[2] [bp-cch] = sext8to16(load(byte [rgbCur]))
     3ffe  branch load([bp-cch]) != 0x0 ? L_4047 : L_4003
 
 block L_4003:

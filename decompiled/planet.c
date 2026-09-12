@@ -885,7 +885,7 @@ L_1007:
     t_merge_100a_0001 = obj;
 
 L_100a:
-    ptile[i].pfn(hdc, (ptile + i), t_merge_100a_0001);
+    ptile[i].pfn(hdc, &(ptile[i]), t_merge_100a_0001);
 
 L_1035:
     i = (i + 1);
@@ -1011,7 +1011,7 @@ void DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t t_149b;
 
 L_12b2:
-    ppl = obj;
+    ppl = obj.ppl;
     if ((ptile->fFixCtls == 0x0))
         goto L_131f;
     else
@@ -1921,7 +1921,7 @@ L_2a30:
     bt = (bt | 0x4);
 
 L_2a34:
-    DrawBtn(hdc, rgrcRef[13].left, bt, gd.fSetMassMode, PszGetCompressedString(idsSetDest));
+    DrawBtn(hdc, &(rgrcRef[13]), bt, gd.fSetMassMode, PszGetCompressedString(idsSetDest));
     if ((iWarp <= 0))
         goto L_2ac9;
     else
@@ -1942,7 +1942,7 @@ L_2ab3:
     t_merge_2ab6_0001 = iWarp;
 
 L_2ab6:
-    DrawMassWarpGauge(hdc, rgrcRef[15].left, t_merge_2ab6_0001, (sel.pl.iWarpFling + 4));
+    DrawMassWarpGauge(hdc, &(rgrcRef[15]), t_merge_2ab6_0001, (sel.pl.iWarpFling + 4));
     goto L_2af4;
 
 L_2ac9:
@@ -2052,7 +2052,7 @@ void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t  t_merge_30ab_0001;
 
 L_2c38:
-    ppl = obj;
+    ppl = obj.ppl;
     if ((ptile->fFixCtls == 0x0))
         goto L_2ca2;
     else
@@ -2256,7 +2256,7 @@ L_30a8:
 L_30ab:
     EnableWindow(rghwndBtn[12], t_merge_30ab_0001);
     SetRect(&(rgrcRef[17]), xStart, yTop, (xStart + c), ((yTop + dyArial8) + (dyArial8 >> 0x1)));
-    DrawBtn(hdc, rgrcRef[17].left, 8, gd.fSetRouteMode, PszGetCompressedString(idsRoute2));
+    DrawBtn(hdc, &(rgrcRef[17]), 8, gd.fSetRouteMode, PszGetCompressedString(idsRoute2));
 
 L_3105:
     return;
@@ -2649,7 +2649,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t  t_merge_3de0_0001;
 
 L_377e:
-    pfl = obj;
+    pfl = obj.ppl;
     fDoneDrawing = 0;
     fObjIsThing = 0;
     if ((ptile->fFixCtls == 0x0))
@@ -3192,7 +3192,7 @@ L_3ed7:
 
 L_3ee9:
     InvalidateReport(0, 0);
-    if ((FLookupPlanet(iObjSel, sel.pl.id) == 0))
+    if ((FLookupPlanet(iObjSel, &(sel.pl)) == 0))
         goto L_4299;
     else
         goto L_3f13;
@@ -3245,7 +3245,7 @@ L_3fa0:
         goto L_3fab;
 
 L_3fab:
-    FDupFleet(lpfl, sel.fl.id);
+    FDupFleet(lpfl, &(sel.fl));
     sel.grobjFull = 0x3;
     goto L_3fd2;
 
@@ -3268,7 +3268,7 @@ L_4011:
 
 L_4014:
     InvalidateReport(1, 0);
-    if ((FLookupFleet(iObjSel, sel.fl.id) == 0))
+    if ((FLookupFleet(iObjSel, &(sel.fl)) == 0))
         goto L_4299;
     else
         goto L_403e;
@@ -3287,7 +3287,7 @@ L_4056:
         goto L_4062;
 
 L_4062:
-    if ((FLookupPlanet(sel.fl.idPlanet, sel.pl.id) != 0))
+    if ((FLookupPlanet(sel.fl.idPlanet, &(sel.pl)) != 0))
         goto L_4080;
     else
         goto L_407a;
@@ -3448,13 +3448,11 @@ L_42a0:
         goto L_42cc;
 
 L_42cc:
-    ptSel.x = rgptPlan[sel.id].x;
-    ptSel.y = rgptPlan[sel.id].y;
+    ptSel = rgptPlan[sel.id];
     goto L_42f2;
 
 L_42e5:
-    ptSel.x = sel.fl.pt.x;
-    ptSel.y = sel.fl.pt.y;
+    ptSel = sel.fl.pt;
 
 L_42f2:
     i = 0;
@@ -3520,7 +3518,7 @@ L_4383:
 
 L_438c:
     PszGetFleetName(lpfl->id);
-    memmove(szWork[1], szWork, 0x32);
+    memmove(&(szWork[1]), szWork, 0x32);
     if ((lpfl->iPlayer != idPlayer))
         goto L_43c3;
     else
@@ -3534,7 +3532,7 @@ L_43c3:
     t_merge_43c6_0001 = 0x78;
 
 L_43c6:
-    LOWORD(szWork) = LOBYTE(t_merge_43c6_0001);
+    szWork[0] = LOBYTE(t_merge_43c6_0001);
     SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
 
 L_43e1:
@@ -3565,7 +3563,7 @@ L_443f:
 
 L_4448:
     PszGetThingName(lpth->idFull);
-    memmove(szWork[1], szWork, 0x32);
+    memmove(&(szWork[1]), szWork, 0x32);
     if ((lpth->iplr != idPlayer))
         goto L_448a;
     else
@@ -3579,7 +3577,7 @@ L_448a:
     t_merge_448d_0001 = 0x78;
 
 L_448d:
-    LOWORD(szWork) = LOBYTE(t_merge_448d_0001);
+    szWork[0] = LOBYTE(t_merge_448d_0001);
     SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
 
 L_44a8:
@@ -4070,8 +4068,7 @@ L_4bf7:
     hdc = GetDC(hwndPlanet);
     DrawFuzzyBorder(hdc, &(rcTitle));
     SetCapture(hwndPlanet);
-    ptNew.x = pt.x;
-    ptNew.y = pt.y;
+    ptNew = pt;
 
 L_4c27:
     if ((FGetMouseMove(&(ptNew)) == 0))
@@ -4094,8 +4091,7 @@ L_4c46:
 L_4c51:
     DrawFuzzyBorder(hdc, &(rcTitle));
     OffsetRc(&(rcTitle), (ptNew.x - pt.x), (ptNew.y - pt.y));
-    pt.x = ptNew.x;
-    pt.y = ptNew.y;
+    pt = ptNew;
     DrawFuzzyBorder(hdc, &(rcTitle));
 
 L_4c95:
@@ -4246,12 +4242,12 @@ L_4eba:
         goto L_4ee4;
 
 L_4ee4:
-    memmove((prgtile + (i + 1)), (prgtile + i), ((iCur - i) * 16));
+    memmove(&(prgtile[(i + 1)]), &(prgtile[i]), ((iCur - i) * 16));
     iCur = (iCur + 1);
     goto L_4f6a;
 
 L_4f27:
-    memmove((prgtile + iCur), (prgtile + (iCur + 1)), (((i - iCur) - 1) * 16));
+    memmove(&(prgtile[iCur]), &(prgtile[(iCur + 1)]), (((i - iCur) - 1) * 16));
     i = (i - 1);
 
 L_4f6a:
@@ -4370,8 +4366,6 @@ uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRi
     BTNT     btnt;
     uint16_t t_merge_52ad_0001;
     int16_t  t_call_53a2;
-    uint16_t t_scratch_m2c;
-    uint16_t t_scratch_m2a;
 
 L_515c:
     if ((sel.grobj == grobjPlanet))
@@ -4561,7 +4555,7 @@ L_549c:
     return hcurArrowHelp;
 
 L_54a2:
-    FGetBestDefensePart(HIWORD(GlobalPD));
+    FGetBestDefensePart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
@@ -4616,7 +4610,7 @@ L_555f:
     goto L_5596;
 
 L_5584:
-    LookupBestPlanetaryScanner(HIWORD(GlobalPD));
+    LookupBestPlanetaryScanner(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
 
 L_5596:
@@ -4649,7 +4643,7 @@ L_55f3:
     return hcurHand;
 
 L_55f9:
-    InitBtnTrack(&(btnt), hwndPlanet, 0x0, rgrcRef[13].left, 8, 80, gd.fSetMassMode, 1, PszGetCompressedString(idsSetDest));
+    InitBtnTrack(&(btnt), hwndPlanet, 0x0, &(rgrcRef[13]), 8, 80, gd.fSetMassMode, 1, PszGetCompressedString(idsSetDest));
 
 L_5636:
     if ((FTrackBtn(&(btnt)) != 0))
@@ -4658,9 +4652,7 @@ L_5636:
         goto L_564d;
 
 L_564d:
-    t_scratch_m2c = (((btnt.fDown << 0x8) ^ HIWORD(gd)) & 0x100);
-    gd.fSetMassMode = 0x0;
-    HIWORD(gd) = (HIWORD(gd) | t_scratch_m2c);
+    gd.fSetMassMode = (gd.fSetMassMode ^ btnt.fDown);
     goto L_5871;
 
 L_567a:
@@ -4716,7 +4708,7 @@ L_5743:
 L_5749:
     GlobalPD.part.hs.grhst = hstSpecialSB;
     GlobalPD.part.hs.iItem = (iWarp + 2);
-    FLookupPart(GlobalPD.part.hs.grhst);
+    FLookupPart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwndPlanet, pt.x, pt.y);
     goto L_5871;
@@ -4747,7 +4739,7 @@ L_57ed:
     return hcurHand;
 
 L_57f3:
-    InitBtnTrack(&(btnt), hwndPlanet, 0x0, rgrcRef[17].left, 8, 80, gd.fSetRouteMode, 1, PszGetCompressedString(idsRoute2));
+    InitBtnTrack(&(btnt), hwndPlanet, 0x0, &(rgrcRef[17]), 8, 80, gd.fSetRouteMode, 1, PszGetCompressedString(idsRoute2));
 
 L_5830:
     if ((FTrackBtn(&(btnt)) != 0))
@@ -4756,9 +4748,7 @@ L_5830:
         goto L_5847;
 
 L_5847:
-    t_scratch_m2a = (((btnt.fDown << 0xd) ^ HIWORD(gd)) & 0x2000);
-    gd.fSetRouteMode = 0x0;
-    HIWORD(gd) = (HIWORD(gd) | t_scratch_m2a);
+    gd.fSetRouteMode = (gd.fSetRouteMode ^ btnt.fDown);
 
 L_5871:
     return 0x0;

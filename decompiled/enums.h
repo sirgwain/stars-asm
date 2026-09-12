@@ -1,21 +1,21 @@
 typedef enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount } HeapType;
 
 typedef enum GrPopupType {
-    grPopupMineral        = 1,
-    grPopupPlayer         = 2,
-    grPopupFleet          = 3,
-    grPopupUnknownObj     = 4,
-    grPopupPlanetEnv      = 5,
-    grPopupShipOrders     = 6,
-    grPopupPlanet         = 7,
+    grPopupMineral = 1,
+    grPopupPlayer = 2,
+    grPopupFleet = 3,
+    grPopupUnknownObj = 4,
+    grPopupPlanetEnv = 5,
+    grPopupShipOrders = 6,
+    grPopupPlanet = 7,
     grPopupPlanetIndustry = 8,
-    grPopupComponent      = 9,
-    grPopupString         = 10,
-    grPopupShdef          = 11,
-    grPopupResources      = 12,
-    grPopupUnknown        = 13,
-    grPopupShdefSB        = 14,
-    grPopupShdefBuild     = 15,
+    grPopupComponent = 9,
+    grPopupString = 10,
+    grPopupShdef = 11,
+    grPopupResources = 12,
+    grPopupUnknown = 13,
+    grPopupShdefSB = 14,
+    grPopupShdefBuild = 15,
 } GrPopupType;
 
 typedef enum HtMineType {
@@ -42,7 +42,6 @@ typedef enum HtMsgType {
     htMsgZoom = 2,
     htMsgMode = 3,
 } HtMsgType;
-
 
 typedef enum DtFileType {
     dtXY = 0,
@@ -130,17 +129,17 @@ typedef enum HullSlotType {
     hstTerra = 0x2000,
     hstHull = 0x4000,
     hstPlanetary = 0x8000,
-    hstWeapon      = hstBeam | hstTorp,
-    hstShArm       = hstShield | hstArmor,
-    hstSpecialEM   = hstSpecialE | hstSpecialM,
-    hstScanSpec    = hstScanner | hstSpecialE | hstSpecialM,
-    hstShWeap      = hstShield | hstBeam | hstTorp,
-    hstSomeSB      = hstSpecialSB | hstSpecialE,
-    hstSpecMine    = hstSpecialE | hstMines,
-    hstShSpec      = hstShield | hstSpecialE | hstSpecialM,
+    hstWeapon = hstBeam | hstTorp,
+    hstShArm = hstShield | hstArmor,
+    hstSpecialEM = hstSpecialE | hstSpecialM,
+    hstScanSpec = hstScanner | hstSpecialE | hstSpecialM,
+    hstShWeap = hstShield | hstBeam | hstTorp,
+    hstSomeSB = hstSpecialSB | hstSpecialE,
+    hstSpecMine = hstSpecialE | hstMines,
+    hstShSpec = hstShield | hstSpecialE | hstSpecialM,
     hstScanSpecArm = hstScanner | hstArmor | hstSpecialE | hstSpecialM,
-    hstEnabled     = 0x19FF,
-    hstSome        = 0x193E,
+    hstEnabled = 0x19FF,
+    hstSome = 0x193E,
 
 } HullSlotType;
 
@@ -224,15 +223,15 @@ typedef enum ThingType {
 } ThingType;
 
 typedef enum MdBuild {
-    mdBuildShdef      = 0,
-    mdBuildHuldef     = 1,
+    mdBuildShdef = 0,
+    mdBuildHuldef = 1,
     mdBuildEnemyShdef = 2,
-    mdBuildComp       = 3,
-    mdBuildEdit       = 4,
+    mdBuildComp = 3,
+    mdBuildEdit = 4,
 } MdBuild;
 
 typedef enum MdXfer {
-    mdXferNone  = -1,
+    mdXferNone = -1,
     mdXferCargo = 0,
     mdXferShips = 1,
 } MdXfer;
@@ -2720,276 +2719,6 @@ typedef enum TutorId {
     idt0639Blank = 0x127f,
 } TutorId;
 
-typedef enum ButtonNotify {
-    BN_CLICKED        = 0,
-    BN_PAINT          = 1,
-    BN_HILITE         = 2,
-    BN_UNHILITE       = 3,
-    BN_DISABLE        = 4,
-    BN_DOUBLECLICKED  = 5,
-} ButtonNotify;
-
-typedef enum EditNotify {
-    EN_SETFOCUS  = 0x0100,
-    EN_KILLFOCUS = 0x0200,
-    EN_CHANGE    = 0x0300,
-    EN_UPDATE    = 0x0400,
-    EN_ERRSPACE  = 0x0500,
-    EN_MAXTEXT   = 0x0501,
-    EN_HSCROLL   = 0x0601,
-    EN_VSCROLL   = 0x0602,
-} EditNotify;
-
-typedef enum ListBoxNotify {
-    LBN_ERRSPACE  = -2,
-    LBN_SELCHANGE = 1,
-    LBN_DBLCLK    = 2,
-    LBN_SELCANCEL = 3,
-    LBN_SETFOCUS  = 4,
-    LBN_KILLFOCUS = 5,
-} ListBoxNotify;
-
-typedef enum ComboBoxNotify {
-    CBN_ERRSPACE     = -1,
-    CBN_SELCHANGE    = 1,
-    CBN_DBLCLK       = 2,
-    CBN_SETFOCUS     = 3,
-    CBN_KILLFOCUS    = 4,
-    CBN_EDITCHANGE   = 5,
-    CBN_EDITUPDATE   = 6,
-    CBN_DROPDOWN     = 7,
-    CBN_CLOSEUP      = 8,
-    CBN_SELENDOK     = 9,
-    CBN_SELENDCANCEL = 10,
-} ComboBoxNotify;
-
-typedef enum ScrollCode {
-    SB_LINEUP        = 0,
-    SB_LINELEFT      = 0,
-    SB_LINEDOWN      = 1,
-    SB_LINERIGHT     = 1,
-    SB_PAGEUP        = 2,
-    SB_PAGELEFT      = 2,
-    SB_PAGEDOWN      = 3,
-    SB_PAGERIGHT     = 3,
-    SB_THUMBPOSITION = 4,
-    SB_THUMBTRACK    = 5,
-    SB_TOP           = 6,
-    SB_LEFT          = 6,
-    SB_BOTTOM        = 7,
-    SB_RIGHT         = 7,
-    SB_ENDSCROLL     = 8,
-} ScrollCode;
-
-// Windows enums for easier debugging
-typedef enum WMType {
-    WM_NULL = 0x0000,
-    WM_CREATE = 0x0001,
-    WM_DESTROY = 0x0002,
-    WM_MOVE = 0x0003,
-    WM_SIZE = 0x0005,
-    WM_ACTIVATE = 0x0006,
-    WM_SETFOCUS = 0x0007,
-    WM_KILLFOCUS = 0x0008,
-    WM_ENABLE = 0x000A,
-    WM_SETREDRAW = 0x000B,
-    WM_SETTEXT = 0x000C,
-    WM_GETTEXT = 0x000D,
-    WM_GETTEXTLENGTH = 0x000E,
-    WM_PAINT = 0x000F,
-    WM_CLOSE = 0x0010,
-    WM_QUERYENDSESSION = 0x0011,
-    WM_QUIT = 0x0012,
-    WM_QUERYOPEN = 0x0013,
-    WM_ERASEBKGND = 0x0014,
-    WM_SYSCOLORCHANGE = 0x0015,
-    WM_ENDSESSION = 0x0016,
-    WM_SYSTEMERROR = 0x0017,
-    WM_SHOWWINDOW = 0x0018,
-    WM_CTLCOLOR = 0x0019,
-    WM_WININICHANGE = 0x001A,
-    WM_DEVMODECHANGE = 0x001B,
-    WM_ACTIVATEAPP = 0x001C,
-    WM_FONTCHANGE = 0x001D,
-    WM_TIMECHANGE = 0x001E,
-    WM_CANCELMODE = 0x001F,
-    WM_SETCURSOR = 0x0020,
-    WM_MOUSEACTIVATE = 0x0021,
-    WM_CHILDACTIVATE = 0x0022,
-    WM_QUEUESYNC = 0x0023,
-    WM_GETMINMAXINFO = 0x0024,
-    WM_ICONERASEBKGND = 0x0027,
-    WM_NEXTDLGCTL = 0x0028,
-    WM_SPOOLERSTATUS = 0x002A,
-    WM_DRAWITEM = 0x002B,
-    WM_MEASUREITEM = 0x002C,
-    WM_DELETEITEM = 0x002D,
-    WM_VKEYTOITEM = 0x002E,
-    WM_CHARTOITEM = 0x002F,
-    WM_SETFONT = 0x0030,
-    WM_GETFONT = 0x0031,
-    WM_QUERYDRAGICON = 0x0037,
-    WM_COMPAREITEM = 0x0039,
-    WM_COMPACTING = 0x0041,
-    WM_COMMNOTIFY = 0x0044,
-    WM_WINDOWPOSCHANGING = 0x0046,
-    WM_WINDOWPOSCHANGED = 0x0047,
-    WM_POWER = 0x0048,
-
-    WM_NCMOUSEMOVE = 0x00A0,
-    WM_NCLBUTTONDOWN = 0x00A1,
-    WM_NCLBUTTONUP = 0x00A2,
-    WM_NCLBUTTONDBLCLK = 0x00A3,
-    WM_NCRBUTTONDOWN = 0x00A4,
-    WM_NCRBUTTONUP = 0x00A5,
-    WM_NCRBUTTONDBLCLK = 0x00A6,
-    WM_NCMBUTTONDOWN = 0x00A7,
-    WM_NCMBUTTONUP = 0x00A8,
-    WM_NCMBUTTONDBLCLK = 0x00A9,
-
-    WM_KEYDOWN = 0x0100,
-    WM_KEYUP = 0x0101,
-    WM_CHAR = 0x0102,
-    WM_DEADCHAR = 0x0103,
-    WM_SYSKEYDOWN = 0x0104,
-    WM_SYSKEYUP = 0x0105,
-    WM_SYSCHAR = 0x0106,
-    WM_SYSDEADCHAR = 0x0107,
-
-    WM_INITDIALOG = 0x0110,
-    WM_COMMAND = 0x0111,
-    WM_SYSCOMMAND = 0x0112,
-    WM_TIMER = 0x0113,
-    WM_HSCROLL = 0x0114,
-    WM_VSCROLL = 0x0115,
-    WM_INITMENU = 0x0116,
-    WM_INITMENUPOPUP = 0x0117,
-    WM_MENUSELECT = 0x011F,
-    WM_MENUCHAR = 0x0120,
-    WM_ENTERIDLE = 0x0121,
-
-    WM_MOUSEMOVE = 0x0200,
-    WM_LBUTTONDOWN = 0x0201,
-    WM_LBUTTONUP = 0x0202,
-    WM_LBUTTONDBLCLK = 0x0203,
-    WM_RBUTTONDOWN = 0x0204,
-    WM_RBUTTONUP = 0x0205,
-    WM_RBUTTONDBLCLK = 0x0206,
-    WM_MBUTTONDOWN = 0x0207,
-    WM_MBUTTONUP = 0x0208,
-    WM_MBUTTONDBLCLK = 0x0209,
-
-    WM_PARENTNOTIFY = 0x0210,
-
-    WM_MDICREATE = 0x0220,
-    WM_MDIDESTROY = 0x0221,
-    WM_MDIACTIVATE = 0x0222,
-    WM_MDIRESTORE = 0x0223,
-    WM_MDINEXT = 0x0224,
-    WM_MDIMAXIMIZE = 0x0225,
-    WM_MDITILE = 0x0226,
-    WM_MDICASCADE = 0x0227,
-    WM_MDIICONARRANGE = 0x0228,
-    WM_MDIGETACTIVE = 0x0229,
-    WM_MDISETMENU = 0x0230,
-    WM_DROPFILES = 0x0233,
-
-    WM_CUT = 0x0300,
-    WM_COPY = 0x0301,
-    WM_PASTE = 0x0302,
-    WM_CLEAR = 0x0303,
-    WM_UNDO = 0x0304,
-    WM_RENDERFORMAT = 0x0305,
-    WM_RENDERALLFORMATS = 0x0306,
-    WM_DESTROYCLIPBOARD = 0x0307,
-    WM_DRAWCLIPBOARD = 0x0308,
-    WM_PAINTCLIPBOARD = 0x0309,
-    WM_VSCROLLCLIPBOARD = 0x030A,
-    WM_SIZECLIPBOARD = 0x030B,
-    WM_ASKCBFORMATNAME = 0x030C,
-    WM_CHANGECBCHAIN = 0x030D,
-    WM_HSCROLLCLIPBOARD = 0x030E,
-    WM_QUERYNEWPALETTE = 0x030F,
-    WM_PALETTEISCHANGING = 0x0310,
-    WM_PALETTECHANGED = 0x0311,
-
-    WM_PENWINFIRST = 0x0380,
-    WM_PENWINLAST = 0x038F,
-    WM_COALESCE_FIRST = 0x0390,
-    WM_COALESCE_LAST = 0x039F,
-
-    WM_USER = 0x0400,
-
-    // combo box messages
-    CB_LIMITTEXT = 0x0401,
-    CB_ADDSTRING = 0x0403,
-    CB_DELETESTRING = 0x0404,
-    CB_DIR = 0x0405,
-    CB_GETCOUNT = 0x0406,
-    CB_GETCURSEL = 0x0407,
-    CB_GETLBTEXT = 0x0408,
-    CB_GETLBTEXTLEN = 0x0409,
-    CB_INSERTSTRING = 0x040A,
-    CB_RESETCONTENT = 0x040B,
-    CB_SETCURSEL = 0x040E,
-    CB_SETEXTENDEDUI = 0x0415,
-    CB_FINDSTRINGEXACT = 0x0418,
-
-    WM_STARS_STARTUP = 0x0464,
-    WM_STARS_HOST = 0x0465,
-    WM_STARS_CONTINUE = 0x0466,
-} WMType;
-
-typedef enum CtlColorType {
-    CTLCOLOR_MSGBOX    = 0,
-    CTLCOLOR_EDIT      = 1,
-    CTLCOLOR_LISTBOX   = 2,
-    CTLCOLOR_BTN       = 3,
-    CTLCOLOR_DLG       = 4,
-    CTLCOLOR_SCROLLBAR = 5,
-    CTLCOLOR_STATIC    = 6
-} CtlColorType;
-
-typedef enum MessageBoxType {
-    /* buttons */
-    MB_OK = 0x0000,
-    MB_OKCANCEL = 0x0001,
-    MB_ABORTRETRYIGNORE = 0x0002,
-    MB_YESNOCANCEL = 0x0003,
-    MB_YESNO = 0x0004,
-    MB_RETRYCANCEL = 0x0005,
-
-    /* icons */
-    MB_ICONHAND = 0x0010, /* stop / error */
-    MB_ICONQUESTION = 0x0020,
-    MB_ICONEXCLAMATION = 0x0030,
-    MB_ICONASTERISK = 0x0040,
-
-    /* default button */
-    // MB_DEFBUTTON1 = 0x0000,
-    MB_DEFBUTTON2 = 0x0100,
-    MB_DEFBUTTON3 = 0x0200,
-
-    /* modality */
-    // MB_APPLMODAL = 0x0000,
-    MB_SYSTEMMODAL = 0x1000,
-    MB_TASKMODAL = 0x2000,
-
-    /* Win16-specific / misc */
-    MB_HELP = 0x4000,
-    MB_NOFOCUS = 0x8000
-} MessageBoxType;
-
-typedef enum {
-    IDOK = 1,
-    IDCANCEL,
-    IDABORT,
-    IDRETRY,
-    IDIGNORE,
-    IDYES,
-    IDNO
-} MessageBoxResult;
-
 typedef enum GrStat {
     grStatFuel = 1,
     grStatCargo = 2,
@@ -3878,188 +3607,3 @@ typedef enum GrfWeapon {
     bitFMissile = 0x0008,
     bitFDeflected = 0x0080,
 } GrfWeapon;
-
-typedef enum {
-    BLACKNESS   = 0x42,
-    WHITENESS   = 0xFF,
-    PATCOPY     = 0x00F00021,
-    PATINVERT   = 0x005A0049,
-    DSTINVERT   = 0x00550009,
-    NOTCOPYPEN  = 0x33,
-} PatBltRop;
-
-typedef enum SystemMetric {
-    SM_CXSCREEN   = 0,
-    SM_CYSCREEN   = 1,
-    SM_CXVSCROLL  = 2,
-    SM_CYHSCROLL  = 3,
-    SM_CYCAPTION  = 4,
-    SM_CXDLGFRAME = 7,
-    SM_CYDLGFRAME = 8,
-    SM_CXFRAME    = 32,
-    SM_CYFRAME    = 33,
-} SystemMetric;
-
-typedef enum DeviceCapsIndex {
-    HORZRES    = 8,
-    VERTRES    = 10,
-    BITSPIXEL  = 12,
-    PLANES     = 14,
-    LOGPIXELSX = 88,
-    LOGPIXELSY = 90,
-} DeviceCapsIndex;
-
-typedef enum ShowWindowCmd {
-    SW_HIDE           = 0,
-    SW_SHOWNORMAL     = 1,
-    SW_SHOWMINIMIZED  = 2,
-    SW_SHOWMAXIMIZED  = 3,
-    SW_SHOWNOACTIVATE = 4,
-    SW_SHOW           = 5,
-    SW_MINIMIZE       = 6,
-    SW_SHOWMINNOACTIVE= 7,
-    SW_SHOWNA         = 8,
-    SW_RESTORE        = 9,
-} ShowWindowCmd;
-
-typedef enum WindowStyle {
-    WS_OVERLAPPED       = 0x00000000,
-    WS_POPUP            = 0x80000000,
-    WS_CHILD            = 0x40000000,
-    WS_CLIPSIBLINGS     = 0x04000000,
-    WS_CLIPCHILDREN     = 0x02000000,
-    WS_VISIBLE          = 0x10000000,
-    WS_DISABLED         = 0x08000000,
-    WS_MINIMIZE         = 0x20000000,
-    WS_MAXIMIZE         = 0x01000000,
-    WS_CAPTION          = 0x00c00000,
-    WS_BORDER           = 0x00800000,
-    WS_DLGFRAME         = 0x00400000,
-    WS_VSCROLL          = 0x00200000,
-    WS_HSCROLL          = 0x00100000,
-    WS_SYSMENU          = 0x00080000,
-    WS_THICKFRAME       = 0x00040000,
-    WS_MINIMIZEBOX      = 0x00020000,
-    WS_MAXIMIZEBOX      = 0x00010000,
-    WS_GROUP            = 0x00020000,
-    WS_TABSTOP          = 0x00010000,
-    WS_OVERLAPPEDWINDOW = 0x00cf0000,
-    WS_POPUPWINDOW      = 0x80880000,
-    WS_CHILDWINDOW      = 0x40000000,
-    WS_TILED            = 0x00000000,
-    WS_ICONIC           = 0x20000000,
-    WS_SIZEBOX          = 0x00040000,
-    WS_TILEDWINDOW      = 0x00cf0000,
-} WindowStyle;
-
-typedef enum WindowExStyle {
-    WS_EX_DLGMODALFRAME  = 0x00000001,
-    WS_EX_NOPARENTNOTIFY = 0x00000004,
-    WS_EX_TOPMOST        = 0x00000008,
-    WS_EX_ACCEPTFILES    = 0x00000010,
-    WS_EX_TRANSPARENT    = 0x00000020,
-} WindowExStyle;
-
-typedef enum SetWindowPosFlags {
-    SWP_NOSIZE        = 0x0001,
-    SWP_NOMOVE        = 0x0002,
-    SWP_NOZORDER      = 0x0004,
-    SWP_NOREDRAW      = 0x0008,
-    SWP_NOACTIVATE    = 0x0010,
-    SWP_FRAMECHANGED  = 0x0020,
-    SWP_SHOWWINDOW    = 0x0040,
-    SWP_HIDEWINDOW    = 0x0080,
-    SWP_NOCOPYBITS    = 0x0100,
-    SWP_NOOWNERZORDER = 0x0200,
-} SetWindowPosFlags;
-
-typedef enum WindowLongOffset {
-    GWL_WNDPROC    = -4,
-    GWW_HINSTANCE  = -6,
-    GWW_HWNDPARENT = -8,
-    GWW_ID         = -12,
-    GWL_STYLE      = -16,
-    GWL_EXSTYLE    = -20,
-} WindowLongOffset;
-
-typedef enum GetWindowCmd {
-    GW_HWNDFIRST = 0,
-    GW_HWNDLAST  = 1,
-    GW_HWNDNEXT  = 2,
-    GW_HWNDPREV  = 3,
-    GW_OWNER     = 4,
-    GW_CHILD     = 5,
-} GetWindowCmd;
-
-typedef enum WinHelpCommand {
-    HELP_CONTEXT  = 0x0001,
-    HELP_QUIT     = 0x0002,
-    HELP_INDEX    = 0x0003,
-} WinHelpCommand;
-
-typedef enum StockObjectId {
-    WHITE_BRUSH         = 0,
-    LTGRAY_BRUSH        = 1,
-    GRAY_BRUSH          = 2,
-    DKGRAY_BRUSH        = 3,
-    BLACK_BRUSH         = 4,
-    NULL_BRUSH          = 5,
-    WHITE_PEN           = 6,
-    BLACK_PEN           = 7,
-    NULL_PEN            = 8,
-    OEM_FIXED_FONT      = 10,
-    ANSI_FIXED_FONT     = 11,
-    ANSI_VAR_FONT       = 12,
-    SYSTEM_FONT         = 13,
-    DEVICE_DEFAULT_FONT = 14,
-    DEFAULT_PALETTE     = 15,
-    SYSTEM_FIXED_FONT   = 16,
-} StockObjectId;
-
-typedef enum BkMode {
-    TRANSPARENT = 1,
-    OPAQUE      = 2,
-} BkMode;
-
-typedef enum BitBltRop {
-    SRCCOPY    = 0x00CC0020,
-    SRCPAINT   = 0x00EE0086,
-    SRCAND     = 0x008800C6,
-    SRCINVERT  = 0x00660046,
-    SRCERASE   = 0x00440328,
-    NOTSRCCOPY = 0x00330008,
-    NOTSRCERASE= 0x001100A6,
-    MERGECOPY  = 0x00C000CA,
-    MERGEPAINT = 0x00BB0226,
-    PATPAINT   = 0x00FB0A09,
-} BitBltRop;
-
-typedef enum MenuFlags {
-    MF_BYCOMMAND   = 0x0000,
-    MF_GRAYED      = 0x0001,
-    MF_DISABLED    = 0x0002,
-    MF_BITMAP      = 0x0004,
-    MF_CHECKED     = 0x0008,
-    MF_POPUP       = 0x0010,
-    MF_MENUBARBREAK= 0x0020,
-    MF_MENUBREAK   = 0x0040,
-    MF_HILITE      = 0x0080,
-    MF_OWNERDRAW   = 0x0100,
-    MF_BYPOSITION  = 0x0400,
-    MF_SEPARATOR   = 0x0800,
-} MenuFlags;
-
-typedef enum TrackPopupMenuFlags {
-    TPM_LEFTBUTTON = 0x0000,
-    TPM_RIGHTBUTTON= 0x0002,
-    TPM_LEFTALIGN  = 0x0000,
-    TPM_CENTERALIGN= 0x0004,
-    TPM_RIGHTALIGN = 0x0008,
-} TrackPopupMenuFlags;
-
-typedef enum StandardCursorId {
-    IDC_ARROW = 32512,
-    IDC_IBEAM = 32513,
-    IDC_WAIT  = 32514,
-    IDC_CROSS = 32515,
-} StandardCursorId;

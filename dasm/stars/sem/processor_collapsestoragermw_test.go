@@ -115,15 +115,18 @@ func TestCollapseScratchWordBitfieldRMW(t *testing.T) {
 	dst := frameMemoryAccess(ctx, 0x2239-ctx.fs.Addr.Off, -0xc, 2)
 	scratch := frameMemoryAccess(ctx, 0x2236-ctx.fs.Addr.Off, -0x12, 2)
 	for _, tc := range []struct {
-		name                          string
-		liveHere, liveNext, interrupt bool
-		keep                          uint
-		want                          bool
+		name                 string
+		liveHere, liveNext   bool
+		interrupt, unrelated bool
+		keep                 uint
+		want                 bool
+		wantEffects          int
 	}{
-		{name: "word increment", keep: 0xff00, want: true},
+		{name: "word increment", keep: 0xff00, want: true, wantEffects: 1},
+		{name: "unrelated effect between definition and use", keep: 0xff00, unrelated: true, want: true, wantEffects: 2},
 		{name: "live in same block", keep: 0xff00, liveHere: true},
 		{name: "live in another block", keep: 0xff00, liveNext: true},
-		{name: "intervening effect", keep: 0xff00, interrupt: true},
+		{name: "intervening scratch use", keep: 0xff00, interrupt: true},
 		{name: "incompatible mask", keep: 0xfff0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -140,6 +143,11 @@ func TestCollapseScratchWordBitfieldRMW(t *testing.T) {
 			if tc.interrupt {
 				effects = append(effects[:1], append([]machine.Effect{otherUse}, effects[1:]...)...)
 			}
+			if tc.unrelated {
+				effects = append(effects[:1], append([]machine.Effect{
+					machine.StoreEffect{Addr: frameMemoryAccess(ctx, 0, -8, 2), Width: 2, Src: machine.ConstVal(7)},
+				}, effects[1:]...)...)
+			}
 			block := machine.BlockEffects{Block: blockID, Effects: effects}
 			fn := machine.FuncEffects{Blocks: []machine.BlockEffects{block}}
 			if tc.liveNext {
@@ -150,10 +158,10 @@ func TestCollapseScratchWordBitfieldRMW(t *testing.T) {
 				t.Fatalf("changed = %v, want %v", changed, tc.want)
 			}
 			if tc.want {
-				if len(got.Effects) != 1 {
-					t.Fatalf("got %d effects, want one field update", len(got.Effects))
+				if len(got.Effects) != tc.wantEffects {
+					t.Fatalf("got %d effects, want %d", len(got.Effects), tc.wantEffects)
 				}
-				converted := (&machineConverter{ctx: ctx, result: newResult(ctx.fs)}).convertEffect(got.Effects[0])
+				converted := (&machineConverter{ctx: ctx, result: newResult(ctx.fs)}).convertEffect(got.Effects[len(got.Effects)-1])
 				if text := FormatEffect(converted); text != "part.hs.iItem = (part.hs.iItem + 0x1)" {
 					t.Fatalf("field update = %s", text)
 				}
@@ -161,6 +169,77 @@ func TestCollapseScratchWordBitfieldRMW(t *testing.T) {
 				t.Fatal("unmatched update lost an effect")
 			}
 		})
+	}
+}
+
+// TestCollapseScratchBitfieldRMWRestoresLowLaneStorage verifies that a low
+// scratch lane is rebuilt from the full destination storage before matching arithmetic.
+func TestCollapseScratchBitfieldRMWRestoresLowLaneStorage(t *testing.T) {
+	testCollapseScratchBitfieldRMWLowLane(t, machine.ValueOpAdd, asm.OpADD)
+}
+
+// TestCollapseScratchBitfieldRMWRestoresLowLaneSubtraction verifies that a low
+// scratch lane built with SUB is rebuilt from the full destination storage.
+func TestCollapseScratchBitfieldRMWRestoresLowLaneSubtraction(t *testing.T) {
+	testCollapseScratchBitfieldRMWLowLane(t, machine.ValueOpSub, asm.OpSUB)
+}
+
+// testCollapseScratchBitfieldRMWLowLane exercises storage reconstruction for a low scratch lane.
+func testCollapseScratchBitfieldRMWLowLane(t *testing.T, valueOp machine.ValueOp, instOp asm.Op) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "FBuildObject")
+	blockID := machine.BlockID(0x2609)
+	ctx.SetCurrentBlock(blockID)
+
+	lppl := machine.LoadVal(frameMemoryAccess(ctx, 0x2609-ctx.fs.Addr.Off, 0x6, 4))
+	dst := machine.MemoryAddress{
+		Seg:   machine.FarPointerVal(lppl, machine.FarPointerSegment),
+		Base:  machine.FarPointerVal(lppl, machine.FarPointerOffset),
+		Disp:  0x18,
+		Width: 4,
+	}
+	scratchLow := frameMemoryAccess(ctx, 0x2615-ctx.fs.Addr.Off, -0x18, 2)
+	scratchHigh := scratchLow
+	scratchHigh.Disp += 2
+	scratchWide := scratchLow
+	scratchWide.Width = 4
+	delta := machine.LoadVal(frameMemoryAccess(ctx, 0x2609-ctx.fs.Addr.Off, 0xe, 4))
+	lowArithmetic := &machine.Binary{
+		Op:       valueOp,
+		LHS:      machine.LoadVal(dst),
+		RHS:      machine.WordVal(delta, machine.WordLow),
+		Producer: machine.Meta{BlockID: blockID, InstOff: 0x2610, InstOp: instOp},
+	}
+	clear := machine.StoreEffect{
+		Addr:  dst,
+		Width: 4,
+		Src: machine.BinaryVal(
+			machine.ValueOpOr,
+			machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(dst), machine.ConstVal(0xfffff000)),
+			machine.ConstVal(0),
+		),
+	}
+	effects := []machine.Effect{
+		machine.StoreEffect{Addr: scratchLow, Width: 2, Src: machine.BinaryVal(machine.ValueOpAnd, lowArithmetic, machine.ConstVal(0xfff))},
+		machine.StoreEffect{Addr: scratchHigh, Width: 2, Src: machine.ConstVal(0)},
+		clear,
+		machine.StoreEffect{Addr: dst, Width: 4, Src: machine.BinaryVal(machine.ValueOpOr, machine.LoadVal(dst), machine.LoadVal(scratchWide))},
+	}
+
+	got, changed := (&collapseStorageRMWProcessor{ctx: ctx}).ProcessMachineBlock(nil, machine.FuncEffects{}, machine.BlockEffects{Block: blockID, Effects: effects})
+	if !changed || len(got.Effects) != 1 {
+		t.Fatalf("collapsed effects = (%v, %d), want (true, 1)", changed, len(got.Effects))
+	}
+	store, ok := got.Effects[0].(machine.StoreEffect)
+	if !ok {
+		t.Fatalf("collapsed effect = %T, want machine.StoreEffect", got.Effects[0])
+	}
+	bitfield, ok := recognizeBitfieldWrite(ctx, dst, store.Src)
+	if !ok {
+		t.Fatal("collapsed low-lane update was not recognized as a bitfield write")
+	}
+	if bitfield.Access.BitOff != 0 || bitfield.Access.BitWidth != 12 {
+		t.Fatalf("bitfield access = (%d, %d), want (0, 12)", bitfield.Access.BitOff, bitfield.Access.BitWidth)
 	}
 }
 
@@ -225,12 +304,15 @@ func TestCollapseScratchBitfieldRMWPreservesOldStorageValue(t *testing.T) {
 			Width: 4,
 		},
 	}
+	effects = append(effects[:4], append([]machine.Effect{
+		machine.StoreEffect{Addr: frameMemoryAccess(ctx, 0, -0x20, 2), Src: machine.ConstVal(7), Width: 2},
+	}, effects[4:]...)...)
 
 	got, changed := (&collapseStorageRMWProcessor{ctx: ctx}).ProcessMachineBlock(nil, machine.FuncEffects{}, machine.BlockEffects{Block: block, Effects: effects})
-	if !changed || len(got.Effects) != 3 {
-		t.Fatalf("collapsed effects = (%v, %d), want (true, 3)", changed, len(got.Effects))
+	if !changed || len(got.Effects) != 4 {
+		t.Fatalf("collapsed effects = (%v, %d), want (true, 4)", changed, len(got.Effects))
 	}
-	store, ok := got.Effects[2].(machine.StoreEffect)
+	store, ok := got.Effects[3].(machine.StoreEffect)
 	if !ok {
 		t.Fatalf("collapsed effect = %T, want machine.StoreEffect", got.Effects[2])
 	}

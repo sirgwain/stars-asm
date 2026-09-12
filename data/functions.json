@@ -200,7 +200,7 @@
   {
     "addr": "0000:0000",
     "name": "SetWindowsHookEx",
-    "type": "uint16_t_HHOOK(int16_t idhook, int32_t (**lpfn)(), HINSTANCE hinstance, HTASK htask)",
+    "type": "uint16_t_HHOOK(int16_t idhook, uint16_t_HOOKPROC lpfn, HINSTANCE hinstance, HTASK htask)",
     "module": "override"
   },
   {
@@ -2012,7 +2012,7 @@
   {
     "addr": "0000:0000",
     "name": "NotifyRegister",
-    "type": "int16_t(HTASK htask, int32_t (**lpfn)(), uint16_t wflags)",
+    "type": "int16_t(HTASK htask, uint16_t_LPFNNOTIFYCALLBACK lpfn, uint16_t wflags)",
     "module": "override"
   },
   {
@@ -6769,7 +6769,7 @@
   {
     "addr": "000b:4faa",
     "name": "TransferStuff",
-    "type": "int16_t(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass grobj2, int16_t mdXfer)",
+    "type": "int16_t(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass grobj2, MdXfer mdXfer)",
     "len": 1755,
     "blocks": 2,
     "labels": 2,
@@ -11231,13 +11231,13 @@
   {
     "addr": "0024:09c8",
     "name": "setjmp",
-    "type": "int16_t(jmp_buf env[9])",
+    "type": "int16_t(int16_t *env)",
     "module": "override"
   },
   {
     "addr": "0024:09ed",
     "name": "longjmp",
-    "type": "void(jmp_buf env[9], int16_t value)",
+    "type": "void(int16_t *env, int16_t value)",
     "module": "override"
   },
   {

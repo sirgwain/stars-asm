@@ -970,7 +970,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnFakeComboProc], ax   ; [0x2544], ax
 MOV       [lpfnFakeComboProc+0x2], dx ; [0x2546], dx
                                     ; init.c:195
@@ -979,7 +979,7 @@ MOV       dx, 0x08e1
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnFakeCEProc], ax      ; [0x2748], ax
 MOV       [lpfnFakeCEProc+0x2], dx  ; [0x274a], dx
                                     ; init.c:196
@@ -988,7 +988,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnFakeEditProc], ax    ; [0x2538], ax
 MOV       [lpfnFakeEditProc+0x2], dx; [0x253a], dx
                                     ; init.c:197
@@ -997,7 +997,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnFakeListProc], ax    ; [0x2402], ax
 MOV       [lpfnFakeListProc+0x2], dx; [0x2404], dx
                                     ; init.c:198
@@ -1006,7 +1006,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnHostTimerProc], ax   ; [0x51fe], ax
 MOV       [lpfnHostTimerProc+0x2], dx ; [0x5200], dx
                                     ; init.c:199
@@ -1015,7 +1015,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnBrowserDlgProc], ax  ; [0x51d0], ax
 MOV       [lpfnBrowserDlgProc+0x2], dx ; [0x51d2], dx
                                     ; init.c:200
@@ -1024,7 +1024,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnReportDlgProc], ax   ; [0x3efc], ax
 MOV       [lpfnReportDlgProc+0x2], dx ; [0x3efe], dx
                                     ; init.c:201
@@ -1033,7 +1033,7 @@ MOV       dx, 0x07e9
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (**arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
 MOV       [lpfnGaugeDlgProc], ax    ; [0x2408], ax
 MOV       [lpfnGaugeDlgProc+0x2], dx; [0x240a], dx
                                     ; init.c:203

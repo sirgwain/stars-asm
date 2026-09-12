@@ -347,31 +347,6 @@ func TestSymbolResolverUsesConfiguredBlockUnionContext(t *testing.T) {
 	}
 }
 
-// TestSymbolResolverDoesNotDerefNonPointerLoad verifies scalar indexed
-// addressing is not represented as a pointer dereference.
-func TestSymbolResolverDoesNotDerefNonPointerLoad(t *testing.T) {
-	fx := testfixture.Stars(t)
-	res := symresolve.NewResolver(fx.Image, fx.SDB)
-	ctx := mustFuncContext(t, fx, res, "BattlePlansDlg")
-	sr := newSymbolResolver(ctx)
-	ds := machine.RegVal(asm.RegDS)
-
-	mem := machine.MemoryAddress{
-		Seg: ds,
-		Base: machine.LoadVal(machine.MemoryAddress{
-			Seg:   ds,
-			Disp:  0x018c,
-			Width: 2,
-		}),
-		Disp:  0x4830,
-		Width: 1,
-	}
-
-	if path, ok := sr.memoryPath(mem); ok {
-		t.Fatalf("symbolFromMemoryAccess() = %v, %v; want unresolved non-pointer access", path, ok)
-	}
-}
-
 func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 
 	fx := testfixture.Stars(t)
@@ -499,7 +474,7 @@ func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 			want:   "rgrcBuildSpin",
 			wantOk: true,
 		},
-				{
+		{
 			name: "ds farpointer to indexed global struct index 1",
 			ctx:  fTrackSlotCtx,
 			value: &machine.StackWords{Words: []machine.Value{
@@ -526,5 +501,33 @@ func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 				t.Errorf("symbolFromValueTyped() = %v, want %v", got.String(), tt.want)
 			}
 		})
+	}
+}
+
+func TestSymbolResolverIndexedLocalPointerElement(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "FleetTransferCargoBalance")
+	ctx.SetCurrentBlock(0xc1c3)
+
+	sr := newSymbolResolver(ctx)
+
+	rel := uint32(0xc1c3) - ctx.fs.Addr.Off
+	i := frameLoad(ctx, rel, -0x90, 2)
+
+	mem := frameMemoryAccess(ctx, rel, -0x8a, 2)
+	mem.Seg = machine.RegVal(asm.RegSS)
+	mem.Index = machine.BinaryVal(
+		machine.ValueOpShl,
+		i,
+		machine.ConstVal(1),
+	)
+
+	path, ok := sr.memoryPath(mem)
+	if !ok {
+		t.Fatal("rgpflNew[i] did not resolve")
+	}
+	if got := path.String(); got != "rgpflNew[i]" {
+		t.Fatalf("path = %q, want rgpflNew[i]", got)
 	}
 }

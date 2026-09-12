@@ -1006,5 +1006,5 @@ L_5b66:
 
 L_5b69:
     *(pszOut) = 0;
-    return (pszOut + (-pchOut));
+    return (pszOut - pchOut);
 }

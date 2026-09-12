@@ -18,8 +18,7 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    LOWORD(lxNew.rgdItem[i]) = (pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]);
-    HIWORD(lxNew.rgdItem[i]) = SIGNHIWORD((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
+    lxNew.rgdItem[i] = (uint32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
     if (((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0))
         goto L_999c;
     else
@@ -56,7 +55,7 @@ L_99b7:
         goto L_99c1;
 
 L_99c1:
-    LogMakeValidXfer(lx.id, &(lxNew));
+    LogMakeValidXfer(&(lx), &(lxNew));
     fValidLx = 0;
     goto L_99f0;
 

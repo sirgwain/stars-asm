@@ -19,7 +19,7 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     uint16_t t_merge_5def_0001;
     uint16_t t_merge_5e4d_0001;
     uint16_t t_merge_5e34_0001;
-    uint32_t t_merge_5ecd_0001_wide;
+    uint16_t t_merge_5ecd_0001;
     int32_t  t_merge_5f3b_0001;
     int32_t  t_call_5f40;
 
@@ -126,8 +126,7 @@ L_5b63:
         goto L_5b6e;
 
 L_5b6e:
-    ptOld.x = pt.x;
-    ptOld.y = pt.y;
+    ptOld = pt;
     if ((btn.iSide != 0x1))
         goto L_5bc0;
     else
@@ -312,14 +311,14 @@ L_5e8c:
         goto L_5ec4;
 
 L_5ec4:
-    t_merge_5ecd_0001_wide = 0x10001;
+    t_merge_5ecd_0001 = 0x1;
     goto L_5ecd;
 
 L_5eca:
-    t_merge_5ecd_0001_wide = 0x0;
+    t_merge_5ecd_0001 = 0x0;
 
 L_5ecd:
-    pxfer[LOWORD(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] = (pxfer[HIWORD(t_merge_5ecd_0001_wide)].fl.rgcsh[iVal] - i);
+    pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i);
     DrawXferDlg(hwnd, btnt.hdc, &(rc), iBtn);
 
 L_5efe:

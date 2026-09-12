@@ -22,7 +22,7 @@ ZIPPRODQ1  rgzpqTut[2] = {{
 int16_t TutorDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     HMENU hmenu;
     RECT  rc;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  fRet;
     uint16_t t_merge_0108_0001;
 
@@ -32,7 +32,7 @@ L_0000:
 L_000f:
     tutor.hwnd = hwnd;
     SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, 0x3);
-    StickyDlgPos(hwnd, ptStickyTutorDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyTutorDlg), 1);
     return 1;
 
 L_004e:
@@ -114,7 +114,7 @@ L_01a9:
     return 1;
 
 L_01cb:
-    StickyDlgPos(hwnd, ptStickyTutorDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyTutorDlg), 0);
     tutor.hwnd = 0x0;
     hmenu = GetASubMenu(hwndFrame, 5);
     CheckMenuItem(hmenu, 0x9c5, 0x0);
@@ -399,7 +399,7 @@ L_06b4:
         goto L_06d0;
 
 L_06d0:
-    memset(tutor.wFlags, 0, 0x2c);
+    memset(&(tutor), 0, 0x2c);
     if ((LOWORD(lpfnTutorDlgProc) != 0x0))
         goto L_0748;
     else
@@ -541,7 +541,7 @@ L_08b6:
 
 L_08c0:
     CreateTutorWorld();
-    /* untranslated: call memset(part[0xe:2](vrgZipProd[0]), 0, 0x1a) -> callresult(void *) */
+    memset(((uint8_t *)((ZIPPRODQ *)(vrgZipProd)) + 14), 0, 0x1a);
     vrgZipProd[0].fValid = 0x1;
     gd.fChgZipProd = 0x1;
 
@@ -779,7 +779,7 @@ L_0c5a:
     tutor.fFreeing = 0x1;
 
 L_0c66:
-    memset(tutor.wFlags, 0, 0x2c);
+    memset(&(tutor), 0, 0x2c);
     Randomize2(GetTickCount());
 
 L_0c89:
@@ -788,6 +788,7 @@ L_0c89:
 
 void SaveGameState() {
     HMENU    hmenu;
+    uint16_t t_scratch_m6_2;
     uint16_t t_merge_0d66_0001;
     uint16_t t_merge_0da7_0001;
 
@@ -797,9 +798,10 @@ L_0c90:
     tutor.iScanZoom = iScanZoom;
     tutor.fTBVis = gd.fToolbar;
     tutor.zpq = vrgZipProd[0].zpq1;
-    tutor.fValidQ = vrgZipProd[0].fValid;
+    t_scratch_m6_2 = vrgZipProd[0].fValid;
+    tutor.fValidQ = t_scratch_m6_2;
     vrgZipProd[0].zpq1 = vrgZipProd[4].zpq1;
-    /* untranslated: part[0xd:2](vrgZipProd[0]) = part[0xd:2](vrgZipProd[4]) */
+    vrgZipProd[0].fValid = vrgZipProd[4].fValid;
     if ((gd.fToolbar != 0x0))
         goto L_0db2;
     else
@@ -895,7 +897,7 @@ L_0e35:
     grbitScan = tutor.grbitScan;
     iScanZoom = tutor.iScanZoom;
     vrgZipProd[4].zpq1 = vrgZipProd[0].zpq1;
-    /* untranslated: part[0xd:2](vrgZipProd[4]) = part[0xd:2](vrgZipProd[0]) */
+    vrgZipProd[4].fValid = vrgZipProd[0].fValid;
     vrgZipProd[0].zpq1 = tutor.zpq;
     vrgZipProd[0].fValid = LOBYTE(tutor.fValidQ);
     if ((gd.fToolbar == tutor.fTBVis))
@@ -7271,7 +7273,7 @@ L_6460:
 
 L_6488:
     vrgZip[iZip].fValid = 0x1;
-    piaCur = (0x5264 + LOWORD((24 * iZip)));
+    piaCur = vrgZip[iZip].txp.rgia;
     i = 0;
     goto L_64c7;
 
@@ -7314,7 +7316,7 @@ L_655c:
     return 0;
 
 L_6562:
-    piaCur = (0x5264 + LOWORD((24 * iZip)));
+    piaCur = vrgZip[iZip].txp.rgia;
     tutor.idh = 1519;
     i = 0;
     goto L_6598;
@@ -7362,7 +7364,9 @@ L_6621:
 }
 
 int16_t FCheckTemplate(int16_t iTemplate) {
-    int16_t i;
+    int16_t  i;
+    uint16_t t_scratch_m6;
+    uint16_t t_scratch_m6_2;
 
 L_666e:
     tutor.idh = 3117;
@@ -7387,7 +7391,8 @@ L_66d5:
     return 0;
 
 L_66db:
-    if ((vrgZipProd[0].fNoResearch == rgzpqTut[iTemplate].fNoResearch))
+    t_scratch_m6 = vrgZipProd[0].fNoResearch;
+    if ((t_scratch_m6 == rgzpqTut[iTemplate].fNoResearch))
         goto L_6704;
     else
         goto L_66fe;
@@ -7396,7 +7401,8 @@ L_66fe:
     return 0;
 
 L_6704:
-    if ((vrgZipProd[0].cpq == rgzpqTut[iTemplate].cpq))
+    t_scratch_m6_2 = vrgZipProd[0].cpq;
+    if ((t_scratch_m6_2 == rgzpqTut[iTemplate].cpq))
         goto L_6733;
     else
         goto L_672d;
@@ -8761,7 +8767,7 @@ L_760a:
         goto L_7628;
 
 L_7628:
-    if ((ibp <= (LOWORD(rgcbtlplan) & 0xff)))
+    if ((ibp <= rgcbtlplan[0]))
         goto L_763c;
     else
         goto L_7636;

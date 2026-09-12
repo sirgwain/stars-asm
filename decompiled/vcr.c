@@ -1,7 +1,7 @@
 #include "common.h"
 
 void BattleVCR(int16_t iBattle) {
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     jmp_buf *penvMemSav[9];
     jmp_buf  env[9];
     HB      *lphb;
@@ -895,7 +895,7 @@ L_1021:
 
 L_102a:
     EnableVCRButtons();
-    StickyDlgPos(hwnd, ptStickyVCRDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyVCRDlg), 1);
     fAnimate = 1;
     return 1;
 
@@ -1168,7 +1168,7 @@ L_1531:
 
 L_1543:
     t_scratch_m18_3 = brc;
-    if ((t_scratch_m18_3 != (vbrcVCRFocus & 0xff)))
+    if ((t_scratch_m18_3 != vbrcVCRFocus))
         goto L_1566;
     else
         goto L_155c;
@@ -1445,7 +1445,7 @@ L_1879:
     tutor.fProgress = 0x1;
 
 L_1885:
-    StickyDlgPos(hwnd, ptStickyVCRDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyVCRDlg), 0);
     EndDialog(hwnd, i);
     return 1;
 
@@ -1686,6 +1686,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     uint8_t  t_merge_2d54_0001;
     uint16_t t_scratch_m19e_5;
     int16_t  t_merge_37ca_0001;
+    uint16_t t_scratch_m19e_8;
     uint16_t t_scratch_m19e_9;
 
 L_1c62:
@@ -1714,7 +1715,7 @@ L_1c89:
 L_1c95:
     hbrSav = SelectObject(hdc, hbrButtonFace);
     bkMode = SetBkMode(hdc, TRANSPARENT);
-    memset(&(rgfSeen), 0, 0x100);
+    memset(rgfSeen, 0, 0x100);
     GetClientRect(hwndVCRDlg, &(rc));
     if ((iStart != -2))
         goto L_1d15;
@@ -2132,14 +2133,14 @@ L_2965:
     SetTextColor(hdc, crButtonText);
 
 L_29a2:
-    if (((vbrcVCRFocus & 0xff) == 0xff))
+    if ((vbrcVCRFocus == 0xff))
         goto L_339a;
     else
         goto L_29b0;
 
 L_29b0:
     y = 200;
-    c = _wsprintf(szWork, PszGetCompressedString(idsSelectionDD), ((vbrcVCRFocus & 0xff) & 0xf), ((vbrcVCRFocus & 0xff) >> 0x4));
+    c = _wsprintf(szWork, PszGetCompressedString(idsSelectionDD), (vbrcVCRFocus & 0xf), (vbrcVCRFocus >> 0x4));
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
     if ((viVCRFocus < 0))
@@ -2343,7 +2344,7 @@ L_30dd:
         goto L_30ff;
 
 L_30ff:
-    if (((vbrcVCRFocus & 0xff) == 0xff))
+    if ((vbrcVCRFocus == 0xff))
         goto L_3136;
     else
         goto L_310d;
@@ -2537,7 +2538,8 @@ L_3807:
     PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 10), (LOWORD(((dxyVCRSquare + 3) * y)) + 10), (dxyVCRSquare + 2), (dxyVCRSquare + 2), BLACKNESS);
 
 L_3840:
-    if (((vbrcVCRFocus & 0xff) != ((((y & 0xf) << 0x4) | (x & 0xf)) & 0xff)))
+    t_scratch_m19e_8 = vbrcVCRFocus;
+    if ((t_scratch_m19e_8 != ((((y & 0xf) << 0x4) | (x & 0xf)) & 0xff)))
         goto L_387b;
     else
         goto L_3871;
@@ -2841,10 +2843,8 @@ L_3eaf:
         goto L_3ec2;
 
 L_3ec2:
-    ptBeam1.x = ptRight.x;
-    ptBeam1.y = ptRight.y;
-    ptBeam2.x = ptLeft.x;
-    ptBeam2.y = ptLeft.y;
+    ptBeam1 = ptRight;
+    ptBeam2 = ptLeft;
     if ((dy <= 0))
         goto L_3eec;
     else
@@ -2917,10 +2917,8 @@ L_3f53:
         goto L_3f66;
 
 L_3f66:
-    ptBeam1.x = ptTop.x;
-    ptBeam1.y = ptTop.y;
-    ptBeam2.x = ptBottom.x;
-    ptBeam2.y = ptBottom.y;
+    ptBeam1 = ptTop;
+    ptBeam2 = ptBottom;
     if ((dx <= 0))
         goto L_3f90;
     else
@@ -2987,25 +2985,18 @@ L_3fe4:
         goto L_3fed;
 
 L_3fed:
-    ptRay2.x = ptDestBottom.x;
-    ptRay2.y = ptDestBottom.y;
-    ptRay1.x = ptDestRight.x;
-    ptRay1.y = ptDestRight.y;
-    ptBeam1.x = ptTop.x;
-    ptBeam1.y = ptTop.y;
+    ptRay2 = ptDestBottom;
+    ptRay1 = ptDestRight;
+    ptBeam1 = ptTop;
     goto L_4038;
 
 L_4014:
-    ptRay2.x = ptDestRight.x;
-    ptRay2.y = ptDestRight.y;
-    ptRay1.x = ptDestTop.x;
-    ptRay1.y = ptDestTop.y;
-    ptBeam1.x = ptBottom.x;
-    ptBeam1.y = ptBottom.y;
+    ptRay2 = ptDestRight;
+    ptRay1 = ptDestTop;
+    ptBeam1 = ptBottom;
 
 L_4038:
-    ptBeam2.x = ptLeft.x;
-    ptBeam2.y = ptLeft.y;
+    ptBeam2 = ptLeft;
     ptTorp.x = ptLeft.x;
     ptTorp.y = ptBeam1.y;
     goto L_40bf;
@@ -3017,25 +3008,18 @@ L_4053:
         goto L_405c;
 
 L_405c:
-    ptBeam1.x = ptTop.x;
-    ptBeam1.y = ptTop.y;
-    ptRay1.x = ptDestBottom.x;
-    ptRay1.y = ptDestBottom.y;
-    ptRay2.x = ptDestLeft.x;
-    ptRay2.y = ptDestLeft.y;
+    ptBeam1 = ptTop;
+    ptRay1 = ptDestBottom;
+    ptRay2 = ptDestLeft;
     goto L_40a7;
 
 L_4083:
-    ptBeam1.x = ptBottom.x;
-    ptBeam1.y = ptBottom.y;
-    ptRay1.x = ptDestLeft.x;
-    ptRay1.y = ptDestLeft.y;
-    ptRay2.x = ptDestTop.x;
-    ptRay2.y = ptDestTop.y;
+    ptBeam1 = ptBottom;
+    ptRay1 = ptDestLeft;
+    ptRay2 = ptDestTop;
 
 L_40a7:
-    ptBeam2.x = ptRight.x;
-    ptBeam2.y = ptRight.y;
+    ptBeam2 = ptRight;
     ptTorp.x = ptRight.x;
     ptTorp.y = ptBeam1.y;
 
@@ -3129,8 +3113,7 @@ L_41f6:
 
 L_41f9:
     cFrame = LOWORD((t_scratch_m7e * t_merge_41f9_0001));
-    ptBase.x = ptTorp.x;
-    ptBase.y = ptTorp.y;
+    ptBase = ptTorp;
     dxFrame = (ptTorp.x - ptDest.x);
     dyFrame = (ptTorp.y - ptDest.y);
     ti.dwSize = 0xc;

@@ -154,7 +154,7 @@ L_56f2:
     pb = (pb + (strlen(pplr->szNames) + 0x2));
 
 L_572c:
-    WriteRt(rtPlr, (pb + (-pbStore)), pbStore);
+    WriteRt(rtPlr, (pb - pbStore), pbStore);
     return;
 }
 
@@ -231,12 +231,12 @@ L_5907:
         goto L_5910;
 
 L_5910:
-    memmove(*(ppbStore), &(rgb), (pb + (-&(rgb))));
-    *(ppbStore) = (*(ppbStore) + (pb + (-&(rgb))));
+    memmove(*(ppbStore), rgb, (pb - rgb));
+    *(ppbStore) = (*(ppbStore) + (pb - rgb));
     goto L_595e;
 
 L_593f:
-    WriteRt(rtShDef, (pb + (-&(rgb))), &(rgb));
+    WriteRt(rtShDef, (pb - rgb), rgb);
 
 L_595e:
     return;
@@ -649,7 +649,7 @@ L_5eb5:
         goto L_5ec2;
 
 L_5ec2:
-    fmemmove(lpord[2], lpord[1], ((lpfl->cord - 1) * 18));
+    fmemmove(&(lpord[2]), &(lpord[1]), ((lpfl->cord - 1) * 18));
 
 L_5ef4:
     if ((lpfl->cord != 1))
@@ -658,7 +658,7 @@ L_5ef4:
         goto L_5f01;
 
 L_5f01:
-    fmemset(lpord[1], 0, 0x12);
+    fmemset(&(lpord[1]), 0, 0x12);
     lpord[1].fValidTask = 0x1;
     lpord[1].grTask = grTaskPatrol;
     /* untranslated: part[0x8:4](lpord[1]) = *(lpord+0x8) */
@@ -1090,7 +1090,7 @@ L_687a:
         goto L_6884;
 
 L_6884:
-    WriteRt(rtChgPassword, 4, lSaltCur);
+    WriteRt(rtChgPassword, 4, &(lSaltCur));
 
 L_689b:
     WritePlayerMessages(iPlayer);
@@ -1361,7 +1361,7 @@ L_6c6e:
         goto L_6c78;
 
 L_6c78:
-    WriteRt(rtScore, 24, vlprgScoreX[i]);
+    WriteRt(rtScore, 24, &(vlprgScoreX[i]));
 
 L_6c9a:
     goto L_6c1a;
@@ -1611,7 +1611,7 @@ L_700e:
         goto L_7019;
 
 L_7019:
-    WriteRt(rtEOF, 2, game.turn);
+    WriteRt(rtEOF, 2, &(game.turn));
     StreamClose();
 
 FreeUp:
@@ -1651,7 +1651,6 @@ void WriteBattles(int16_t iPlayer) {
     int16_t  cb;
     int16_t  iplr;
     uint16_t t_scratch_m2a_2;
-    uint16_t t_scratch_m28_7;
     int16_t  t_merge_782d_0001;
 
 L_709c:
@@ -1840,9 +1839,7 @@ L_7699:
         goto L_76b0;
 
 L_76b0:
-    /* untranslated: t_scratch_m28_7 = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
-    rgplr[lpfl->iPlayer].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | t_scratch_m28_7) */
+    rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 0x1);
     lpfl->fInclude = 0x1;
     lpfl->det = 0x0;
 
@@ -2066,7 +2063,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     uint16_t t_scratch_m5c_11;
 
 L_7a6a:
-    memset(&(rgb), 0, 0x50);
+    memset(rgb, 0, 0x50);
     LOWORD(rgb) = ((LOWORD(rgb) & 0xf800) | (lppl->id & 0x7ff));
     LOWORD(rgb) = ((LOWORD(rgb) & 0x7ff) | ((lppl->iPlayer & 0x1f) << 0xb));
     rgb[2] = ((rgb[2] & 0xff80) | (lppl->det & 0x7f));
@@ -2225,7 +2222,7 @@ L_7da9:
         goto L_7db6;
 
 L_7db6:
-    pb = lppl->uGuesses;
+    *(pb) = lppl->uGuesses;
     pb = (pb + 2);
 
 L_7dc6:
@@ -2319,14 +2316,14 @@ L_7eaa:
 
 L_7eb3:
     *(pbBase) = (*(pbBase) | LOBYTE((bMask & 0xff)));
-    pb = LOWORD(lppl->rgwtMin[i]);
+    *(pb) = LOWORD(lppl->rgwtMin[i]);
     pb[2] = HIWORD(lppl->rgwtMin[i]);
     pb = (pb + 4);
     goto L_7ded;
 
 L_7eed:
     *(pbBase) = (*(pbBase) | LOBYTE((bMask & 0xaa)));
-    pb = LOWORD(lppl->rgwtMin[i]);
+    *(pb) = LOWORD(lppl->rgwtMin[i]);
     pb = (pb + 2);
 
 L_7f21:
@@ -2376,11 +2373,11 @@ L_7fb3:
         goto L_7fbc;
 
 L_7fbc:
-    pb = lppl->turn;
+    *(pb) = lppl->turn;
     pb = (pb + 2);
 
 L_7fcc:
-    WriteRt(rtPlanetB, (pb + (-&(rgb))), &(rgb));
+    WriteRt(rtPlanetB, (pb - rgb), rgb);
     goto L_81bf;
 
 L_7feb:
@@ -2481,7 +2478,7 @@ L_8153:
         goto L_816a;
 
 L_816a:
-    pb = *(lppl + 0x2c);
+    *(pb) = *(lppl + 0x2c);
     pb[2] = *(lppl + 0x2e);
     pb = (pb + 4);
 
@@ -2492,11 +2489,11 @@ L_8181:
         goto L_8193;
 
 L_8193:
-    pb = lppl->wRouting;
+    *(pb) = lppl->wRouting;
     pb = (pb + 2);
 
 L_81a3:
-    WriteRt(rtPlanet, (pb + (-&(rgb))), &(rgb));
+    WriteRt(rtPlanet, (pb - rgb), rgb);
 
 L_81bf:
     return;
@@ -2513,7 +2510,7 @@ void WriteFleet(FLEET *lpfl) {
     int32_t   wt;
 
 L_81c6:
-    fmemmove(&(rgb), lpfl, 0xc);
+    fmemmove(rgb, lpfl, 0xc);
     fByte = 1;
     grMask = 0x1;
     us = 0x0;
@@ -2710,14 +2707,14 @@ L_846c:
 
 L_8475:
     us = (us | (grMask & 0x3ff));
-    pb = LOWORD(lpfl->rgwtMin[i]);
+    *(pb) = LOWORD(lpfl->rgwtMin[i]);
     pb[2] = HIWORD(lpfl->rgwtMin[i]);
     pb = (pb + 4);
     goto L_83a3;
 
 L_84af:
     us = (us | (grMask & 0x2aa));
-    pb = LOWORD(lpfl->rgwtMin[i]);
+    *(pb) = LOWORD(lpfl->rgwtMin[i]);
     pb = (pb + 2);
 
 L_84e3:
@@ -2742,7 +2739,7 @@ L_8526:
 
 L_8538:
     wt = 0;
-    pb = *(lpfl + 0x74);
+    *(pb) = *(lpfl + 0x74);
     pb[2] = *(lpfl + 0x76);
     pb = (pb + 4);
     i = 0;
@@ -2781,10 +2778,10 @@ L_861c:
         goto L_8626;
 
 L_8626:
-    pb = LOWORD(wt);
+    *(pb) = LOWORD(wt);
     pb[2] = HIWORD(wt);
     pb = (pb + 4);
-    WriteRt(0x11, (pb + (-&(rgb))), &(rgb));
+    WriteRt(0x11, (pb - rgb), rgb);
     goto L_87ae;
 
 L_865e:
@@ -2816,7 +2813,7 @@ L_86b7:
     goto L_8673;
 
 L_86ba:
-    pb = us;
+    *(pb) = us;
     pb = (pb + 2);
     pus = pb;
     i = 0;
@@ -2847,7 +2844,7 @@ L_872c:
     *(pb) = lpfl->iplan;
     pb = (pb + 1);
     *(pb) = LOBYTE(lpfl->cord);
-    WriteRt(rtFleetA, (pb + (-&(rgb))), &(rgb));
+    WriteRt(rtFleetA, (pb - rgb), rgb);
     WriteOrders(lpfl);
     if ((LOWORD(lpfl->lpszName) != 0x0))
         goto L_879b;
@@ -2906,16 +2903,15 @@ L_8810:
     cOut = (fstrlen(lpsz) + 1);
 
 L_883d:
-    WriteRt(rtString, (cOut + 1), &(rgb));
+    WriteRt(rtString, (cOut + 1), rgb);
 
 L_8857:
     return;
 }
 
 void MarkFleet(FLEET *lpfl, int16_t det) {
-    int16_t  i;
-    SHDEF   *lpshdef;
-    uint16_t t_scratch_ma;
+    int16_t i;
+    SHDEF  *lpshdef;
 
 L_885e:
     if ((lpfl->fInclude != 0x0))
@@ -2928,9 +2924,7 @@ L_887e:
     lpfl->fInclude = 0x1;
     lpfl->det = 0x0;
     lpfl->fdirValid = 0x1;
-    /* untranslated: t_scratch_ma = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
-    rgplr[lpfl->iPlayer].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | t_scratch_ma) */
+    rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 0x1);
     i = 0;
     goto L_897a;
 
@@ -2972,7 +2966,7 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog) {
     int16_t  cOut;
 
 L_89b8:
-    fmemmove(&(rgb), lpbtlplan, 0x4);
+    fmemmove(rgb, lpbtlplan, 0x4);
     if ((lpbtlplan->fDelete == 0x0))
         goto L_89f9;
     else
@@ -3014,11 +3008,11 @@ L_8a94:
         goto L_8a9d;
 
 L_8a9d:
-    WriteMemRt(30, (pb + (-&(rgb))), &(rgb));
+    WriteMemRt(30, (pb - rgb), rgb);
     goto L_8ad5;
 
 L_8ab9:
-    WriteRt(rtBtlPlan, (pb + (-&(rgb))), &(rgb));
+    WriteRt(rtBtlPlan, (pb - rgb), rgb);
 
 L_8ad5:
     return;
@@ -3478,7 +3472,7 @@ L_92b1:
         goto L_92d9;
 
 L_92d9:
-    if (((uint16_t)(LOWORD(rgbCur)) != iPlayer))
+    if (((uint16_t)(rgbCur[0]) != iPlayer))
         goto L_92b1;
     else
         goto L_92e5;
@@ -3711,11 +3705,10 @@ void SetVisPFInit(int16_t iPlr) {
     int16_t  iSteal;
     uint16_t t_merge_968f_0001;
     uint16_t t_scratch_m24_11;
-    uint16_t t_scratch_m24_13;
     uint16_t t_merge_9dab_0001;
     int32_t  t_call_9dfc;
     uint16_t t_merge_9fb0_0001;
-    uint16_t t_scratch_m24_16;
+    uint16_t t_scratch_m24_15;
 
 L_9654:
     raMajor = GetRaceStat(&(rgplr[iPlr]), rsMajorAdv);
@@ -3979,9 +3972,7 @@ L_9c4a:
 L_9c61:
     lpfl->fInclude = 0x1;
     lpfl->det = 0x7;
-    /* untranslated: t_scratch_m24_13 = ((part[0x4:2](rgplr[lpfl->iPlayer]) + 0x1) & 0xfff) */
-    rgplr[lpfl->iPlayer].cFleet = 0x0;
-    /* untranslated: part[0x4:2](rgplr[lpfl->iPlayer]) = (part[0x4:2](rgplr[lpfl->iPlayer]) | t_scratch_m24_13) */
+    rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 0x1);
     j = 0;
     goto L_9d47;
 
@@ -4154,8 +4145,8 @@ L_9fad:
     t_merge_9fb0_0001 = 0x0;
 
 L_9fb0:
-    t_scratch_m24_16 = t_merge_9fb0_0001;
-    lpth->thw.fInclude = t_scratch_m24_16;
+    t_scratch_m24_15 = t_merge_9fb0_0001;
+    lpth->thw.fInclude = t_scratch_m24_15;
     goto L_a0e7;
 
 L_9fd7:
@@ -4342,8 +4333,7 @@ L_a268:
     iRadius = t_merge_a268_0001;
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
     lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     j = 0;
     goto L_a2b6;
 
@@ -4860,8 +4850,7 @@ L_a9bf:
 L_a9c8:
     iRadius = iRadPlanet;
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    pt.x = lpfl->pt.x;
-    pt.y = lpfl->pt.y;
+    pt = lpfl->pt;
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
     goto L_abc6;
@@ -5096,8 +5085,7 @@ L_acfa:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
     lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     j = 0;
     goto L_ad61;
 
@@ -5292,8 +5280,7 @@ L_afe1:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
     lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     lpth = lpThings;
     lpthMac = (lpThings + cThing);
     goto L_b40d;
@@ -5587,8 +5574,7 @@ L_b47f:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
     lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     if ((fStargateView == 0))
         goto L_b71e;
     else
@@ -5760,8 +5746,7 @@ L_b782:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
     lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
-    pt.x = rgptPlan[lppl->id].x;
-    pt.y = rgptPlan[lppl->id].y;
+    pt = rgptPlan[lppl->id];
     if ((iRadPlanet <= 0))
         goto L_b9d6;
     else
@@ -5976,8 +5961,7 @@ L_baa4:
     iRadius = (lpth->thp.iWarp + 4);
     iRadius = LOWORD((iRadius * iRadius));
     lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     j = 0;
     goto L_bb0a;
 
@@ -6443,8 +6427,7 @@ L_c25a:
 
 L_c275:
     lRadius2 = lpth->thm.cMines;
-    pt.x = lpth->pt.x;
-    pt.y = lpth->pt.y;
+    pt = lpth->pt;
     j = 0;
     goto L_c2a3;
 

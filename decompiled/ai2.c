@@ -77,7 +77,7 @@ L_01a5:
     return 1;
 
 L_01ae:
-    if ((cEquiv < (LOWORD(vrgAiArmadaPotency) & 0xff)))
+    if ((cEquiv < vrgAiArmadaPotency[0]))
         goto L_01c2;
     else
         goto L_01bc;
@@ -193,7 +193,7 @@ L_02ae:
     j = 50;
 
 L_02b4:
-    LOWORD(vrgAiArmadaPotency) = LOBYTE(j);
+    vrgAiArmadaPotency[0] = LOBYTE(j);
     vrgAiArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
@@ -229,7 +229,7 @@ L_0320:
 
 L_032d:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_032d_0001);
-    memset(&(rgRecycleShdef), 0, 0x10);
+    memset(rgRecycleShdef, 0, 0x10);
     if ((game.turn >= 0x78))
         goto L_0357;
     else
@@ -661,7 +661,7 @@ L_09d0:
         goto L_09da;
 
 L_09da:
-    if (((lpfl->rgcsh[2] + lpfl->rgcsh[3]) < (vrgAiArmadaPotency[2] & 0xff)))
+    if (((lpfl->rgcsh[2] + lpfl->rgcsh[3]) < vrgAiArmadaPotency[2]))
         goto L_0a25;
     else
         goto L_0a00;
@@ -734,7 +734,7 @@ L_0aef:
     goto L_0b98;
 
 L_0af7:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestCruiser], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestCruiser].hul), rgCosts);
     j = 0;
     goto L_0b6c;
 
@@ -840,7 +840,7 @@ L_0c6d:
     goto L_0d18;
 
 L_0c75:
-    GetTrueHullCost(idPlayer, rgshdef[iLatestBattle], rgCosts);
+    GetTrueHullCost(idPlayer, &(rgshdef[iLatestBattle].hul), rgCosts);
     j = 0;
     goto L_0ceb;
 
@@ -1056,7 +1056,7 @@ L_0fe0:
     sel.fl.lpplord->rgord[1] = ord;
 
 L_1009:
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     vlpbAiPlanet[((idPlanDst * 16) + 3)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x3)] | 0x80);
     goto L_0d5d;
 
@@ -1064,7 +1064,7 @@ LBlowAwayOrders:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     ClearAiCurrentTask(lpfl, 0);
     goto L_0d5d;
 
@@ -1202,7 +1202,7 @@ L_11e0:
 LScrapFleet:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_1222:
     goto L_1162;
@@ -1230,7 +1230,7 @@ L_1255:
     sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
     sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
     sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_12a1:
     goto L_1162;
@@ -1340,7 +1340,7 @@ L_13a0:
 L_13ac:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 150);
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_13f5:
     if ((idPlanDst == -1))
@@ -1547,7 +1547,7 @@ L_16bd:
         goto L_16cd;
 
 L_16cd:
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
     goto LTargetBomber;
 
 L_16e2:
@@ -1711,7 +1711,7 @@ L_1954:
         goto L_196c;
 
 L_196c:
-    FCreateAiShdef(4, 1, &(vrgISAip[(vrgISIshAip[14] & 0xff)]));
+    FCreateAiShdef(4, 1, &(vrgISAip[vrgISIshAip[14]]));
 
 L_198c:
     if ((rgshdef[5].fFree == 0x0))
@@ -1726,7 +1726,7 @@ L_199f:
         goto L_19b7;
 
 L_19b7:
-    FCreateAiShdef(5, 3, &(vrgISAip[(vrgISIshAip[18] & 0xff)]));
+    FCreateAiShdef(5, 3, &(vrgISAip[vrgISIshAip[18]]));
 
 L_19d7:
     if ((rgshdef[14].fFree == 0x0))
@@ -1807,7 +1807,7 @@ L_1ad9:
     FChangeAiShdef(&(shdef), 1);
 
 L_1b09:
-    FCreateAiShdef(1, 1, &(vrgISAip[(LOWORD(vrgISIshAip) & 0xff)]));
+    FCreateAiShdef(1, 1, &(vrgISAip[vrgISIshAip[0]]));
 
 L_1b29:
     if ((rgshdef[0].fFree != 0x0))
@@ -1839,7 +1839,7 @@ L_1b63:
     FChangeAiShdef(&(shdef), 0);
 
 L_1b93:
-    FCreateAiShdef(0, 4, &(vrgISAip[(vrgISIshAip[1] & 0xff)]));
+    FCreateAiShdef(0, 4, &(vrgISAip[vrgISIshAip[1]]));
 
 L_1bb3:
     if ((rgshdef[6].fFree == 0x0))
@@ -1866,7 +1866,7 @@ L_1bf6:
         goto L_1c0e;
 
 L_1c0e:
-    FCreateAiShdef(6, 11, &(vrgISAip[(vrgISIshAip[17] & 0xff)]));
+    FCreateAiShdef(6, 11, &(vrgISAip[vrgISIshAip[17]]));
 
 L_1c2e:
     if ((rgshdef[2].fFree == 0x0))
@@ -1899,7 +1899,7 @@ L_1c89:
         goto L_1ca1;
 
 L_1ca1:
-    FCreateAiShdef(2, 17, &(vrgISAip[(vrgISIshAip[15] & 0xff)]));
+    FCreateAiShdef(2, 17, &(vrgISAip[vrgISIshAip[15]]));
 
 L_1cc1:
     if ((rgshdef[3].fFree == 0x0))
@@ -1932,7 +1932,7 @@ L_1d1c:
         goto L_1d34;
 
 L_1d34:
-    FCreateAiShdef(3, 19, &(vrgISAip[(vrgISIshAip[16] & 0xff)]));
+    FCreateAiShdef(3, 19, &(vrgISAip[vrgISIshAip[16]]));
 
 L_1d54:
     if ((rgshdef[9].fFree == 0x0))
@@ -2409,7 +2409,7 @@ LBlowAwayOrders:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.cord = 1;
     sel.fl.lpplord->iordMac = 0x1;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     ClearAiCurrentTask(lpfl, 0);
     goto L_22f9;
 
@@ -2541,7 +2541,7 @@ L_265c:
     sel.fl.lpplord->rgord[1] = ord;
 
 L_2685:
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
     vlpbAiPlanet[((idPlanDst * 16) + 3)] = (vlpbAiPlanet[((idPlanDst * 16) + 0x3)] | 0x80);
     goto L_22f9;
 
@@ -2787,7 +2787,7 @@ L_29e5:
 LScrapFleet:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, sel.fl.id);
+    FLookupFleet(-1, &(sel.fl));
 
 L_2a37:
     goto L_279b;
@@ -2822,7 +2822,7 @@ L_2a7a:
 L_2a86:
     ChangeMainObjSel(grobjFleet, lpfl->id);
     XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 25);
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
 
 L_2acf:
     if ((idPlanDst == -1))
@@ -3033,7 +3033,7 @@ L_2d9b:
         goto L_2dab;
 
 L_2dab:
-    FLookupFleet(lpfl->id, sel.fl.id);
+    FLookupFleet(lpfl->id, &(sel.fl));
     goto LTargetBomber;
 
 L_2dc0:

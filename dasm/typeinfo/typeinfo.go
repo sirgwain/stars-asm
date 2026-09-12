@@ -233,9 +233,6 @@ func pointerDecl(p Pointer, name string) string {
 	if p.Elem == nil {
 		return "*" + name
 	}
-	if isFunctionType(p.Elem) {
-		return TypeDecl(p.Elem, "**"+name)
-	}
 	return TypeDecl(p.Elem, "*"+name)
 }
 

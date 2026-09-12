@@ -155,7 +155,7 @@ L_0292:
     GetClientRect(hwnd, &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, ((((dxResLeft + dxResRight) + rcWindow.right) - rcWindow.left) - rc.right),
                  (((y + rcWindow.bottom) - rcWindow.top) - rc.bottom), 0x6);
-    StickyDlgPos(hwnd, ptStickyResDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyResDlg), 1);
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
     lResTotal = 0;
@@ -402,7 +402,7 @@ L_0832:
     AdvanceTutor();
 
 L_0843:
-    StickyDlgPos(hwnd, ptStickyResDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyResDlg), 0);
     EndDialog(hwnd, fChg);
     pctResGlob = -1;
     if ((gd.fTutorial == 0x0))
@@ -1064,8 +1064,8 @@ L_1773:
     rcSpinTop.bottom = (((dyArial8 >> 0x1) + rc.top) + 0x1);
     rcSpinBot = rcSpinTop;
     OffsetRect(&(rcSpinBot), 0, ((rcSpinTop.bottom - rcSpinTop.top) - 1));
-    DrawBtn(hdc, rcSpinTop.left, 160, 0, 0x0);
-    DrawBtn(hdc, rcSpinBot.left, 161, 0, 0x0);
+    DrawBtn(hdc, &(rcSpinTop), 160, 0, 0x0);
+    DrawBtn(hdc, &(rcSpinBot), 161, 0, 0x0);
 
 DrawProjBudg:
     rc.top = (rc.top + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
@@ -1213,7 +1213,7 @@ L_1b20:
 L_1b2e:
     i = ((uint32_t)((y - yTopFutureTech)) / dyArial8);
     GlobalPD.part.hs = rghsFutureTech[i];
-    FLookupPart(GlobalPD.part.hs.grhst);
+    FLookupPart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, x, y);
     return 1;
@@ -1442,7 +1442,6 @@ int16_t BrowserDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     uint16_t    t_merge_220d_0001;
     uint16_t    t_merge_2470_0001;
     int32_t     t_merge_24db_0001;
-    uint16_t    t_scratch_m40_2;
     uint16_t    t_merge_25d7_0001;
     uint16_t    t_merge_2628_0001;
     uint16_t    t_merge_263e_0001;
@@ -1472,7 +1471,7 @@ L_1f1d:
     t_scratch_m3e = (GetSystemMetrics(SM_CYDLGFRAME) * 2);
     SetWindowPos(hwnd, 0x0, 0, 0, ((t_merge_1f1d_0001 + 358) + t_scratch_m3a),
                  (((((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + LOWORD((3 * dyArial8))) + 25) + t_scratch_m3e) + t_scratch_m3c), 0x6);
-    StickyDlgPos(hwnd, ptStickyBrowserDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyBrowserDlg), 1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[1]);
     hwndDD = GetDlgItem(hwnd, IDC_U16_0x010B);
@@ -1553,7 +1552,7 @@ L_21b0:
     vpartBrowser.hs.iItem = 0x0;
 
 L_21c2:
-    FLookupPart(vpartBrowser.hs.grhst);
+    FLookupPart(&(vpartBrowser));
     if ((dyArial8 <= 14))
         goto L_220a;
     else
@@ -1641,7 +1640,7 @@ L_2349:
     return 1;
 
 L_2370:
-    StickyDlgPos(hwnd, ptStickyBrowserDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBrowserDlg), 0);
     hwndBrowser = 0x0;
     fBrowserValid = 0;
     hmenu = GetASubMenu(hwndFrame, 5);
@@ -1655,7 +1654,7 @@ L_23b5:
         goto L_23be;
 
 L_23be:
-    StickyDlgPos(hwnd, ptStickyBrowserDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyBrowserDlg), 0);
     hwndBrowser = 0x0;
     fBrowserValid = 0;
     hmenu = GetASubMenu(hwndFrame, 5);
@@ -1747,7 +1746,7 @@ L_24db:
     vpartBrowser.hs.iItem = 0x0;
 
 L_24f9:
-    md = FLookupPart(vpartBrowser.hs.grhst);
+    md = FLookupPart(&(vpartBrowser));
     if ((md != 0))
         goto L_2520;
     else
@@ -1770,9 +1769,7 @@ L_2529:
         goto L_2535;
 
 L_2535:
-    t_scratch_m40_2 = ((HIWORD(vpartBrowser.hs) + 0x1) & 0xff);
-    vpartBrowser.hs.iItem = 0x0;
-    HIWORD(vpartBrowser.hs) = (HIWORD(vpartBrowser.hs) | t_scratch_m40_2);
+    vpartBrowser.hs.iItem = (vpartBrowser.hs.iItem + 0x1);
     goto L_24f9;
 
 L_2557:
@@ -1890,7 +1887,7 @@ Top:
         goto L_2687;
 
 L_2687:
-    md = FLookupPart(vpartBrowser.hs.grhst);
+    md = FLookupPart(&(vpartBrowser));
     if ((md != 0))
         goto L_2775;
     else
@@ -2007,7 +2004,7 @@ L_2790:
         goto L_2799;
 
 L_2799:
-    if ((FShouldPartBeHidden(vpartBrowser.hs.grhst) != 0))
+    if ((FShouldPartBeHidden(&(vpartBrowser)) != 0))
         goto L_2641;
     else
         goto L_27b3;
@@ -2049,7 +2046,7 @@ L_27ec:
         goto L_27f7;
 
 L_27f7:
-    if ((FLookupPart(vpartBrowser.hs.grhst) == 1))
+    if ((FLookupPart(&(vpartBrowser)) == 1))
         goto L_2868;
     else
         goto NullItem;
@@ -2118,7 +2115,7 @@ L_2876:
 L_2888:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
-    DisplayComponentInfo(hdc, rc.right, rc.bottom, vpartBrowser.hs.grhst);
+    DisplayComponentInfo(hdc, rc.right, rc.bottom, &(vpartBrowser));
     EndPaint(hwnd, &(ps));
     goto L_2ab4;
 
@@ -5209,8 +5206,7 @@ L_67cb:
     lSpent = (int32_t)((lSpent * 2));
 
 L_67df:
-    LOWORD(lCur) = (-LOWORD(lSpent));
-    HIWORD(lCur) = (-(HIWORD(lSpent) + 0x0));
+    lCur = (-lSpent);
 
 L_67f2:
     if (((uint16_t)(rgTech[i]) <= (uint16_t)(pTech[i])))

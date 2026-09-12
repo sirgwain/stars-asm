@@ -1,0 +1,741 @@
+/*
+DoBombing  (battle)
+  addr: 001f:aefa  len=3993
+  sig:  void DoBombing()
+  locals:
+    int32_t          dmgPeopleSmart [BP-0x4a]
+    float            pctSuccess     [BP-0x46]
+    float            pctSmart       [BP-0x42]
+    int32_t          dmgBombPeople  [BP-0x3e]
+    int32_t          cPPE           [BP-0x3a]
+    FLEET *          lpfl           [BP-0x36]
+    int16_t          ifl            [BP-0x32]
+    PLANET *         lppl           [BP-0x30]
+    int32_t          pctTerra       [BP-0x2c]
+    int32_t          cKillFact      [BP-0x28]
+    int32_t          cKillDefenses  [BP-0x24]
+    MessageId        idmSrc         [BP-0x20]
+    int32_t          dmgBombFloor   [BP-0x1e]
+    int32_t          cKillMine      [BP-0x1a]
+    int32_t          cKillPeopleS   [BP-0x16]
+    int32_t          dmgBombBldg    [BP-0x12]
+    int32_t          cKillPeople    [BP-0xe]
+    int16_t          fMulti         [BP-0xa]
+    int32_t          modKill        [BP-0x8]
+    MessageId        idmDst         [BP-0x4]
+    block 001F:B10B  len=0x43
+      double           pctSuccessHalf [BP-0x52]
+    block 001F:B7E8  len=0x1EC
+      int16_t          i              [BP-0x50]
+      int16_t          dChg           [BP-0x4e]
+      int16_t          pctTot         [BP-0x4c]
+
+  stats: blocks=2  labels=1
+    GenericBombMsg: L_bac4
+*/
+L_aefa:
+    ifl = 0
+    goto L_af0f
+
+L_af0b:
+    ifl = (ifl + 1)
+
+L_af0f:
+    branch ifl >= cFleet ? L_be8d : L_af1a
+
+L_af1a:
+    lpfl = rglpfl[ifl]
+    branch LOWORD(rglpfl[ifl]) != 0x0 ? L_af4a : L_af42
+
+L_af42:
+    branch HIWORD(rglpfl[ifl]) == 0x0 ? L_be8d : L_af4a
+
+L_af4a:
+    branch lpfl->fDead != 0x0 ? L_af0b : L_af61
+
+L_af61:
+    branch lpfl->idPlanet == -1 ? L_af0b : L_af6e
+
+L_af6e:
+    branch lpfl->fBombed != 0x0 ? L_af0b : L_af88
+
+L_af88:
+    lppl = (lpPlanets + lpfl->idPlanet)
+    branch lppl->iPlayer == lpfl->iPlayer ? L_af0b : L_afb5
+
+L_afb5:
+    branch lppl->iPlayer == -1 ? L_af0b : L_afc2
+
+L_afc2:
+    branch FAttackPlayer(lpfl, lppl->iPlayer) == 0 ? L_af0b : L_afdf
+
+L_afdf:
+    branch lppl->fStarbase != 0x0 ? L_af0b : L_aff9
+
+L_aff9:
+    branch FCalcFleetBombDamage(lpfl, &dmgBombPeople, &dmgBombFloor, &dmgPeopleSmart, &dmgBombBldg, &pctTerra, &fMulti) == 0 ? L_af0b : L_b02a
+
+L_b02a:
+    call CalcPctSurvive(lppl, &pctSuccess, &pctSmart) -> callresult(void)
+    branch pctSuccess >= 1 ? L_b14e : L_b055
+
+L_b055:
+    branch HIWORD(dmgBombPeople) < 0x0 ? L_b08a : L_b05e
+
+L_b05e:
+    branch HIWORD(dmgBombPeople) > 0x0 ? L_b06c : L_b063
+
+L_b063:
+    branch LOWORD(dmgBombPeople) <= 0x0 ? L_b08a : L_b06c
+
+L_b06c:
+    dmgBombPeople = __ftol()
+
+L_b08a:
+    branch HIWORD(dmgBombFloor) < 0x0 ? L_b0bf : L_b093
+
+L_b093:
+    branch HIWORD(dmgBombFloor) > 0x0 ? L_b0a1 : L_b098
+
+L_b098:
+    branch LOWORD(dmgBombFloor) <= 0x0 ? L_b0bf : L_b0a1
+
+L_b0a1:
+    dmgBombFloor = __ftol()
+
+L_b0bf:
+    branch HIWORD(dmgPeopleSmart) < 0x0 ? L_b0f4 : L_b0c8
+
+L_b0c8:
+    branch HIWORD(dmgPeopleSmart) > 0x0 ? L_b0d6 : L_b0cd
+
+L_b0cd:
+    branch LOWORD(dmgPeopleSmart) <= 0x0 ? L_b0f4 : L_b0d6
+
+L_b0d6:
+    dmgPeopleSmart = __ftol()
+
+L_b0f4:
+    branch HIWORD(dmgBombBldg) < 0x0 ? L_b14e : L_b0fd
+
+L_b0fd:
+    branch HIWORD(dmgBombBldg) > 0x0 ? L_b10b : L_b102
+
+L_b102:
+    branch LOWORD(dmgBombBldg) <= 0x0 ? L_b14e : L_b10b
+
+L_b10b:
+    pctSuccessHalf = (1 - ((1 - pctSuccess) / 2))
+    dmgBombBldg = __ftol()
+
+L_b14e:
+    cPPE = ((lppl->cMines + lppl->cFactories) + (uint32_t)lppl->cDefenses)
+    cKillDefenses = 0
+    cKillPeople = 0
+    cKillMine = 0
+    cKillFact = 0
+    branch HIWORD(dmgBombBldg) < 0x0 ? L_b45c : L_b1fa
+
+L_b1fa:
+    branch HIWORD(dmgBombBldg) > 0x0 ? L_b208 : L_b1ff
+
+L_b1ff:
+    branch LOWORD(dmgBombBldg) <= 0x0 ? L_b45c : L_b208
+
+L_b208:
+    branch HIWORD(cPPE) < 0x0 ? L_b45c : L_b211
+
+L_b211:
+    branch HIWORD(cPPE) > 0x0 ? L_b21f : L_b216
+
+L_b216:
+    branch LOWORD(cPPE) <= 0x0 ? L_b45c : L_b21f
+
+L_b21f:
+    cKillFact = (uint32_t)(lppl->cFactories * dmgBombBldg)
+    modKill = (int32_t)(cKillFact % cPPE)
+    cKillFact = (int32_t)(cKillFact / cPPE)
+    branch HIWORD(modKill) < 0x0 ? L_b2c8 : L_b284
+
+L_b284:
+    branch HIWORD(modKill) > 0x0 ? L_b292 : L_b289
+
+L_b289:
+    branch LOWORD(modKill) <= 0x0 ? L_b2c8 : L_b292
+
+L_b292:
+    call Random(LOWORD(cPPE)) -> t_call_b299
+    branch signhiword(t_call_b299) > HIWORD(modKill) ? L_b2be : L_b2aa
+
+L_b2aa:
+    branch signhiword(t_call_b299) < HIWORD(modKill) ? L_b2b7 : L_b2af
+
+L_b2af:
+    branch t_call_b299 >= LOWORD(modKill) ? L_b2be : L_b2b7
+
+L_b2b7:
+    t_merge_b2c2_0001 = 0x1
+    goto L_b2c2
+
+L_b2be:
+    t_merge_b2c2_0001 = 0x0
+
+L_b2c2:
+    cKillFact = (cKillFact + (uint32_t)t_merge_b2c2_0001)
+
+L_b2c8:
+    branch HIWORD(cKillFact) < 0x0 ? L_b315 : L_b2e9
+
+L_b2e9:
+    branch HIWORD(cKillFact) > 0x0 ? L_b2f6 : L_b2ee
+
+L_b2ee:
+    branch LOWORD(cKillFact) <= lppl->cFactories ? L_b315 : L_b2f6
+
+L_b2f6:
+    cKillFact = lppl->cFactories
+
+L_b315:
+    cKillDefenses = (uint32_t)(lppl->cDefenses * dmgBombBldg)
+    modKill = (int32_t)(cKillDefenses % cPPE)
+    cKillDefenses = (int32_t)(cKillDefenses / cPPE)
+    branch HIWORD(modKill) < 0x0 ? L_b3b6 : L_b372
+
+L_b372:
+    branch HIWORD(modKill) > 0x0 ? L_b380 : L_b377
+
+L_b377:
+    branch LOWORD(modKill) <= 0x0 ? L_b3b6 : L_b380
+
+L_b380:
+    call Random(LOWORD(cPPE)) -> t_call_b387
+    branch signhiword(t_call_b387) > HIWORD(modKill) ? L_b3ac : L_b398
+
+L_b398:
+    branch signhiword(t_call_b387) < HIWORD(modKill) ? L_b3a5 : L_b39d
+
+L_b39d:
+    branch t_call_b387 >= LOWORD(modKill) ? L_b3ac : L_b3a5
+
+L_b3a5:
+    t_merge_b3b0_0001 = 0x1
+    goto L_b3b0
+
+L_b3ac:
+    t_merge_b3b0_0001 = 0x0
+
+L_b3b0:
+    cKillDefenses = (cKillDefenses + (uint32_t)t_merge_b3b0_0001)
+
+L_b3b6:
+    branch HIWORD(cKillDefenses) < 0x0 ? L_b3f3 : L_b3cf
+
+L_b3cf:
+    branch HIWORD(cKillDefenses) > 0x0 ? L_b3dc : L_b3d4
+
+L_b3d4:
+    branch LOWORD(cKillDefenses) <= lppl->cDefenses ? L_b3f3 : L_b3dc
+
+L_b3dc:
+    cKillDefenses = lppl->cDefenses
+
+L_b3f3:
+    cKillMine = (dmgBombBldg - (cKillFact + cKillDefenses))
+    branch HIWORD(cKillMine) < 0x0 ? L_b45c : L_b430
+
+L_b430:
+    branch HIWORD(cKillMine) > 0x0 ? L_b43d : L_b435
+
+L_b435:
+    branch LOWORD(cKillMine) <= lppl->cMines ? L_b45c : L_b43d
+
+L_b43d:
+    cKillMine = lppl->cMines
+
+L_b45c:
+    branch HIWORD(dmgBombPeople) > 0x0 ? L_b4a1 : L_b465
+
+L_b465:
+    branch HIWORD(dmgBombPeople) < 0x0 ? L_b473 : L_b46a
+
+L_b46a:
+    branch LOWORD(dmgBombPeople) > 0x0 ? L_b4a1 : L_b473
+
+L_b473:
+    branch HIWORD(dmgBombFloor) > 0x0 ? L_b4a1 : L_b47c
+
+L_b47c:
+    branch HIWORD(dmgBombFloor) < 0x0 ? L_b48a : L_b481
+
+L_b481:
+    branch LOWORD(dmgBombFloor) > 0x0 ? L_b4a1 : L_b48a
+
+L_b48a:
+    branch HIWORD(dmgPeopleSmart) < 0x0 ? L_b65b : L_b493
+
+L_b493:
+    branch HIWORD(dmgPeopleSmart) > 0x0 ? L_b4a1 : L_b498
+
+L_b498:
+    branch LOWORD(dmgPeopleSmart) <= 0x0 ? L_b65b : L_b4a1
+
+L_b4a1:
+    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_b65b : L_b4ae
+
+L_b4ae:
+    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_b4bd : L_b4b3
+
+L_b4b3:
+    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_b65b : L_b4bd
+
+L_b4bd:
+    cKillPeopleS = (int32_t)((uint32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 0x3e8)
+    branch HIWORD(cKillPeopleS) < HIWORD(lppl->rgwtMin[3]) ? L_b51f : L_b4fb
+
+L_b4fb:
+    branch HIWORD(cKillPeopleS) > HIWORD(lppl->rgwtMin[3]) ? L_b508 : L_b500
+
+L_b500:
+    branch LOWORD(cKillPeopleS) < LOWORD(lppl->rgwtMin[3]) ? L_b51f : L_b508
+
+L_b508:
+    cKillPeopleS = (lppl->rgwtMin[3] - 1)
+
+L_b51f:
+    cKillPeople = (uint32_t)((lppl->rgwtMin[3] - cKillPeopleS) * dmgBombPeople)
+    modKill = (int32_t)(cKillPeople % 1000)
+    cKillPeople = (int32_t)(cKillPeople / 1000)
+    branch HIWORD(modKill) < 0x0 ? L_b5bf : L_b57e
+
+L_b57e:
+    branch HIWORD(modKill) > 0x0 ? L_b58c : L_b583
+
+L_b583:
+    branch LOWORD(modKill) <= 0x0 ? L_b5bf : L_b58c
+
+L_b58c:
+    call Random(1000) -> t_call_b590
+    branch signhiword(t_call_b590) > HIWORD(modKill) ? L_b5b5 : L_b5a1
+
+L_b5a1:
+    branch signhiword(t_call_b590) < HIWORD(modKill) ? L_b5ae : L_b5a6
+
+L_b5a6:
+    branch t_call_b590 > LOWORD(modKill) ? L_b5b5 : L_b5ae
+
+L_b5ae:
+    t_merge_b5b9_0001 = 0x1
+    goto L_b5b9
+
+L_b5b5:
+    t_merge_b5b9_0001 = 0x0
+
+L_b5b9:
+    cKillPeople = (cKillPeople + (uint32_t)t_merge_b5b9_0001)
+
+L_b5bf:
+    cKillPeople = (cKillPeople + cKillPeopleS)
+    branch HIWORD(dmgBombPeople) < 0x0 ? L_b603 : L_b5d4
+
+L_b5d4:
+    branch HIWORD(dmgBombPeople) > 0x0 ? L_b5e2 : L_b5d9
+
+L_b5d9:
+    branch LOWORD(dmgBombPeople) <= 0x0 ? L_b603 : L_b5e2
+
+L_b5e2:
+    branch HIWORD(cKillPeople) > 0x0 ? L_b603 : L_b5eb
+
+L_b5eb:
+    branch HIWORD(cKillPeople) < 0x0 ? L_b5f9 : L_b5f0
+
+L_b5f0:
+    branch LOWORD(cKillPeople) > 0x0 ? L_b603 : L_b5f9
+
+L_b5f9:
+    cKillPeople = 1
+
+L_b603:
+    branch HIWORD(cKillPeople) > HIWORD(dmgBombFloor) ? L_b62a : L_b611
+
+L_b611:
+    branch HIWORD(cKillPeople) < HIWORD(dmgBombFloor) ? L_b61e : L_b616
+
+L_b616:
+    branch LOWORD(cKillPeople) >= LOWORD(dmgBombFloor) ? L_b62a : L_b61e
+
+L_b61e:
+    cKillPeople = dmgBombFloor
+
+L_b62a:
+    branch HIWORD(cKillPeople) < HIWORD(lppl->rgwtMin[3]) ? L_b65b : L_b63d
+
+L_b63d:
+    branch HIWORD(cKillPeople) > HIWORD(lppl->rgwtMin[3]) ? L_b64a : L_b642
+
+L_b642:
+    branch LOWORD(cKillPeople) <= LOWORD(lppl->rgwtMin[3]) ? L_b65b : L_b64a
+
+L_b64a:
+    cKillPeople = lppl->rgwtMin[3]
+
+L_b65b:
+    branch HIWORD(cKillPeople) < 0x0 ? L_b683 : L_b664
+
+L_b664:
+    branch HIWORD(cKillPeople) > 0x0 ? L_b672 : L_b669
+
+L_b669:
+    branch LOWORD(cKillPeople) <= 0x0 ? L_b683 : L_b672
+
+L_b672:
+    lppl->rgwtMin[3] = (lppl->rgwtMin[3] - cKillPeople)
+
+L_b683:
+    branch HIWORD(cKillFact) < 0x0 ? L_b6f1 : L_b68c
+
+L_b68c:
+    branch HIWORD(cKillFact) > 0x0 ? L_b69a : L_b691
+
+L_b691:
+    branch LOWORD(cKillFact) <= 0x0 ? L_b6f1 : L_b69a
+
+L_b69a:
+    lppl->cFactories = (lppl->cFactories - cKillFact)
+
+L_b6f1:
+    branch HIWORD(cKillMine) < 0x0 ? L_b761 : L_b6fa
+
+L_b6fa:
+    branch HIWORD(cKillMine) > 0x0 ? L_b708 : L_b6ff
+
+L_b6ff:
+    branch LOWORD(cKillMine) <= 0x0 ? L_b761 : L_b708
+
+L_b708:
+    lppl->cMines = (lppl->cMines - cKillMine)
+
+L_b761:
+    branch HIWORD(cKillDefenses) < 0x0 ? L_b7d1 : L_b76a
+
+L_b76a:
+    branch HIWORD(cKillDefenses) > 0x0 ? L_b778 : L_b76f
+
+L_b76f:
+    branch LOWORD(cKillDefenses) <= 0x0 ? L_b7d1 : L_b778
+
+L_b778:
+    lppl->cDefenses = (lppl->cDefenses - cKillDefenses)
+
+L_b7d1:
+    branch HIWORD(pctTerra) < 0x0 ? L_b9d4 : L_b7da
+
+L_b7da:
+    branch HIWORD(pctTerra) > 0x0 ? L_b7e8 : L_b7df
+
+L_b7df:
+    branch LOWORD(pctTerra) <= 0x0 ? L_b9d4 : L_b7e8
+
+L_b7e8:
+    pctTot = 0
+    pctTerra = (pctTerra - __ftol())
+    branch HIWORD(pctTerra) < 0x0 ? L_b84b : L_b832
+
+L_b832:
+    branch HIWORD(pctTerra) > 0x0 ? L_b841 : L_b837
+
+L_b837:
+    branch LOWORD(pctTerra) <= 0x1f4 ? L_b84b : L_b841
+
+L_b841:
+    pctTerra = 500
+
+L_b84b:
+    i = 0
+    goto L_b930
+
+L_b853:
+    dChg = (sext8to16(lppl->rgEnvVar[i]) - sext8to16(lppl->rgEnvVarOrig[i]))
+    branch dChg <= 0 ? L_b8d8 : L_b895
+
+L_b895:
+    branch signhiword(dChg) < HIWORD(pctTerra) ? L_b8b7 : L_b8a1
+
+L_b8a1:
+    branch signhiword(dChg) > HIWORD(pctTerra) ? L_b8ae : L_b8a6
+
+L_b8a6:
+    branch dChg < LOWORD(pctTerra) ? L_b8b7 : L_b8ae
+
+L_b8ae:
+    dChg = LOWORD(pctTerra)
+
+L_b8b7:
+    lppl->rgEnvVar[i] = (lppl->rgEnvVar[i] - lobyte(dChg))
+    pctTot = (pctTot + dChg)
+    goto L_b92c
+
+L_b8d8:
+    branch dChg >= 0 ? L_b92c : L_b8e1
+
+L_b8e1:
+    branch signhiword(neg(dChg)) < HIWORD(pctTerra) ? L_b90c : L_b8ef
+
+L_b8ef:
+    branch signhiword(neg(dChg)) > HIWORD(pctTerra) ? L_b8fc : L_b8f4
+
+L_b8f4:
+    branch neg(dChg) < LOWORD(pctTerra) ? L_b90c : L_b8fc
+
+L_b8fc:
+    dChg = neg(LOWORD(pctTerra))
+
+L_b90c:
+    lppl->rgEnvVar[i] = (lppl->rgEnvVar[i] - lobyte(dChg))
+    pctTot = (pctTot + neg(dChg))
+
+L_b92c:
+    i = (i + 1)
+
+L_b930:
+    branch i < 3 ? L_b853 : L_b939
+
+L_b939:
+    branch pctTot <= 0 ? L_b9d4 : L_b942
+
+L_b942:
+    branch fMulti == 0 ? L_b97a : L_b974
+
+L_b974:
+    t_merge_b97d_0001 = 378
+    goto L_b97d
+
+L_b97a:
+    t_merge_b97d_0001 = 302
+
+L_b97d:
+    call FSendPlrMsg(lpfl->iPlayer, t_merge_b97d_0001, (lpfl->id | 0x8000), lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
+    branch fMulti == 0 ? L_b9c1 : L_b9bb
+
+L_b9bb:
+    t_merge_b9c4_0001 = 379
+    goto L_b9c4
+
+L_b9c1:
+    t_merge_b9c4_0001 = 302
+
+L_b9c4:
+    call FSendPlrMsg(lppl->iPlayer, t_merge_b9c4_0001, lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
+
+L_b9d4:
+    cPPE = ((cKillMine + cKillFact) + cKillDefenses)
+    branch HIWORD(cPPE) < 0x0 ? L_bd61 : L_b9f5
+
+L_b9f5:
+    branch HIWORD(cPPE) > 0x0 ? L_ba03 : L_b9fa
+
+L_b9fa:
+    branch LOWORD(cPPE) <= 0x0 ? L_bd61 : L_ba03
+
+L_ba03:
+    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_ba6b : L_ba10
+
+L_ba10:
+    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_ba1f : L_ba15
+
+L_ba15:
+    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_ba6b : L_ba1f
+
+L_ba1f:
+    branch fMulti == 0 ? L_ba2e : L_ba28
+
+L_ba28:
+    t_merge_ba31_0001 = 0x169
+    goto L_ba31
+
+L_ba2e:
+    t_merge_ba31_0001 = 0x63
+
+L_ba31:
+    idmSrc = t_merge_ba31_0001
+    branch fMulti == 0 ? L_ba43 : L_ba3d
+
+L_ba3d:
+    t_merge_ba46_0001 = 0x173
+    goto L_ba46
+
+L_ba43:
+    t_merge_ba46_0001 = 0x6d
+
+L_ba46:
+    idmDst = t_merge_ba46_0001
+    branch HIWORD(cPPE) < 0x0 ? L_ba98 : L_ba52
+
+L_ba52:
+    branch HIWORD(cPPE) > 0x0 ? L_ba60 : L_ba57
+
+L_ba57:
+    branch LOWORD(cPPE) <= 0x1 ? L_ba98 : L_ba60
+
+L_ba60:
+    idmSrc = (idmSrc + 1)
+    idmDst = (idmDst + 1)
+
+L_ba68:
+    goto L_ba98
+
+L_ba6b:
+    branch fMulti == 0 ? L_ba7a : L_ba74
+
+L_ba74:
+    t_merge_ba7d_0001 = 0x17c
+    goto L_ba7d
+
+L_ba7a:
+    t_merge_ba7d_0001 = 0x8f
+
+L_ba7d:
+    idmSrc = t_merge_ba7d_0001
+    branch fMulti == 0 ? L_ba8f : L_ba89
+
+L_ba89:
+    t_merge_ba92_0001 = 0x17d
+    goto L_ba92
+
+L_ba8f:
+    t_merge_ba92_0001 = 0x90
+
+L_ba92:
+    idmDst = t_merge_ba92_0001
+    goto L_bac4
+
+L_ba98:
+    branch HIWORD(cKillPeople) < 0x0 ? L_bc0a : L_baa1
+
+L_baa1:
+    branch HIWORD(cKillPeople) > 0x0 ? L_baaf : L_baa6
+
+L_baa6:
+    branch LOWORD(cKillPeople) <= 0x0 ? L_bc0a : L_baaf
+
+L_baaf:
+    branch pctSuccess != 1 ? L_bb47 : L_bac4
+
+GenericBombMsg:
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), 0, 0, 0) -> callresult(int16_t)
+    goto L_be65
+
+L_bb47:
+    idmSrc = (idmSrc + 5)
+    idmDst = (idmDst + 5)
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0) -> callresult(int16_t)
+
+L_bc07:
+    goto L_be65
+
+L_bc0a:
+    idmSrc = (idmSrc - 2)
+    idmDst = (idmDst - 2)
+    branch pctSuccess != 1 ? L_bca4 : L_bc27
+
+L_bc27:
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0) -> callresult(int16_t)
+    goto L_be65
+
+L_bca4:
+    idmSrc = (idmSrc + 5)
+    idmDst = (idmDst + 5)
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0) -> callresult(int16_t)
+
+L_bd5e:
+    goto L_be65
+
+L_bd61:
+    branch HIWORD(cKillPeople) < 0x0 ? L_be65 : L_bd6a
+
+L_bd6a:
+    branch HIWORD(cKillPeople) > 0x0 ? L_bd78 : L_bd6f
+
+L_bd6f:
+    branch LOWORD(cKillPeople) <= 0x0 ? L_be65 : L_bd78
+
+L_bd78:
+    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_bdc1 : L_bd85
+
+L_bd85:
+    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_bd94 : L_bd8a
+
+L_bd8a:
+    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_bdc1 : L_bd94
+
+L_bd94:
+    branch fMulti == 0 ? L_bda3 : L_bd9d
+
+L_bd9d:
+    t_merge_bda6_0001 = 0x166
+    goto L_bda6
+
+L_bda3:
+    t_merge_bda6_0001 = 0x60
+
+L_bda6:
+    idmSrc = t_merge_bda6_0001
+    branch fMulti == 0 ? L_bdb8 : L_bdb2
+
+L_bdb2:
+    t_merge_bdbb_0001 = 0x170
+    goto L_bdbb
+
+L_bdb8:
+    t_merge_bdbb_0001 = 0x6a
+
+L_bdbb:
+    idmDst = t_merge_bdbb_0001
+    goto L_bdeb
+
+L_bdc1:
+    branch fMulti == 0 ? L_bdd0 : L_bdca
+
+L_bdca:
+    t_merge_bdd3_0001 = 0x17c
+    goto L_bdd3
+
+L_bdd0:
+    t_merge_bdd3_0001 = 0x8f
+
+L_bdd3:
+    idmSrc = t_merge_bdd3_0001
+    branch fMulti == 0 ? L_bde5 : L_bddf
+
+L_bddf:
+    t_merge_bde8_0001 = 0x17d
+    goto L_bde8
+
+L_bde5:
+    t_merge_bde8_0001 = 0x90
+
+L_bde8:
+    idmDst = t_merge_bde8_0001
+
+L_bdeb:
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), 0, 0, 0, 0) -> callresult(int16_t)
+
+L_be65:
+    branch LOWORD(lppl->rgwtMin[3]) != 0x0 ? L_af0b : L_be72
+
+L_be72:
+    branch HIWORD(lppl->rgwtMin[3]) != 0x0 ? L_af0b : L_be7c
+
+L_be7c:
+    call UninhabitPlanet(lppl) -> callresult(void)
+
+L_be8a:
+    goto L_af0b
+
+L_be8d:
+    return

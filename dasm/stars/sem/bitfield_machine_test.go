@@ -189,6 +189,37 @@ func TestBitfieldStoreDisjointAdd(t *testing.T) {
 	}
 }
 
+// TestBitfieldStoreMultiplyShift verifies multiply-by-a-power-of-two encoding
+// is treated like a left shift during bitfield recognition.
+func TestBitfieldStoreMultiplyShift(t *testing.T) {
+	mem := machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: -2, Width: 2}
+	source := machine.RegVal(asm.RegAX)
+	multiply := machine.BinaryVal(
+		machine.ValueOpMul,
+		machine.BinaryVal(machine.ValueOpAnd, source, machine.ConstVal(0x7)),
+		machine.ConstVal(2),
+	)
+	stored := machine.BinaryVal(
+		machine.ValueOpAdd,
+		machine.BinaryVal(machine.ValueOpAnd, machine.LoadVal(mem), machine.ConstVal(0xfff1)),
+		multiply,
+	)
+
+	_, bitOff, bitWidth, got, ok := bitfieldStore(mem, stored, sameStorage)
+	if !ok {
+		t.Fatal("multiply-shift bitfield store was not recognized")
+	}
+	if bitOff != 1 || bitWidth != 3 || !machine.ValueEquals(got, source) {
+		t.Fatalf("bitfield store = (off %d, width %d, value %v), want (1, 3, AX)", bitOff, bitWidth, got)
+	}
+	if !machineValueMaskedWithin(multiply, 0x000e) {
+		t.Fatal("multiply-shift value was not proven within its destination mask")
+	}
+	if machineValueMaskedWithin(multiply, 0x0007) {
+		t.Fatal("multiply-shift value exceeded an incompatible destination mask")
+	}
+}
+
 // TestConvertChainedShiftBitfield verifies address-index bitfields retain
 // compiler-emitted successive right shifts during machine recognition.
 func TestConvertChainedShiftBitfield(t *testing.T) {

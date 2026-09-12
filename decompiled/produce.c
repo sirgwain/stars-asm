@@ -3,7 +3,7 @@
 int16_t ChangeProduction(int16_t fClear) {
     jmp_buf  env[9];
     jmp_buf *penvMemSav[9];
-    int16_t (**lpProcProd)();
+    int16_t (*lpProcProd)();
     PROD    rgprod[64];
     int16_t fSuccess;
 
@@ -485,7 +485,7 @@ L_0d7e:
 
 L_0d86:
     t_scratch_m20 = pProdGlob[iSrc].grobj;
-    if ((t_scratch_m20 != (LOWORD((uint32_t)((lpprod >> 0x11))) & 0x7)))
+    if ((t_scratch_m20 != lpprod->grobj))
         goto L_0e45;
     else
         goto L_0ddd;
@@ -498,7 +498,7 @@ L_0ddd:
 
 L_0de4:
     t_scratch_m20_2 = pProdGlob[iSrc].iItem;
-    if ((t_scratch_m20_2 != (LOWORD((uint32_t)((lpprod >> 0xa))) & 0x7f)))
+    if ((t_scratch_m20_2 != lpprod->iItem))
         goto L_0e45;
     else
         goto L_0e3b;
@@ -531,7 +531,7 @@ L_0e5f:
         goto L_0e7f;
 
 L_0e7f:
-    fmemcpy(lpprod, lpprod[1], ((lpplProdGlob->iprodMac - (ipl + 1)) * 0x4));
+    fmemcpy(lpprod, &(lpprod[1]), ((lpplProdGlob->iprodMac - (ipl + 1)) * 0x4));
     ipl = (ipl - 1);
 
 L_0ebe:
@@ -651,8 +651,8 @@ L_10d9:
 L_10f5:
     sel.pl.lpplprod = lpplProdGlob;
     lpplProdGlob = 0x0;
-    FLookupPlanet(-1, sel.pl.id);
-    FLookupPlanet(sel.pl.id, sel.pl.id);
+    FLookupPlanet(-1, &(sel.pl));
+    FLookupPlanet(sel.pl.id, &(sel.pl));
     if ((fAi != 0))
         goto L_11c4;
     else
@@ -709,7 +709,7 @@ int16_t ProductionDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam
     char               sz255[2];
     char              *rgszZip[6];
     ZIPPRODQ           rgzp[4];
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  fRet;
     uint16_t hcs;
     int16_t  t_184a;
@@ -822,7 +822,7 @@ L_1544:
     ptStickyProduceDlg.y = 0;
 
 L_154a:
-    StickyDlgPos(hwnd, ptStickyProduceDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyProduceDlg), 1);
     return 1;
 
 L_1563:
@@ -927,7 +927,7 @@ L_16fe:
 
 L_1717:
     cMax = (cMax + 1);
-    rgszZip[cMax] = (0x22f6 + LOWORD((40 * i)));
+    rgszZip[cMax] = vrgZipProd[i].szName;
 
 L_1732:
     i = (i + 1);
@@ -950,7 +950,7 @@ L_173f:
         goto L_17a3;
 
 L_17a3:
-    memcpy(&(rgzp), vrgZipProd, 0xa0);
+    memcpy(rgzp, vrgZipProd, 0xa0);
     lpProc = MakeProcInstance(ZipProdDlg, hInst);
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_ZIP_PROD), hwnd, lpProc);
     FreeProcInstance(lpProc);
@@ -960,7 +960,7 @@ L_17a3:
         goto L_1808;
 
 L_1808:
-    memcpy(vrgZipProd, &(rgzp), 0xa0);
+    memcpy(vrgZipProd, rgzp, 0xa0);
 
 L_181d:
     goto L_1986;
@@ -1533,7 +1533,7 @@ L_20df:
         goto L_20ea;
 
 L_20ea:
-    fmemmove(&(lpplProdGlob->rgprod[(iDst + 1)]), lpplProdGlob->rgprod[iDst], ((iMac - iDst) * 4));
+    fmemmove(&(lpplProdGlob->rgprod[(iDst + 1)]), &(lpplProdGlob->rgprod[iDst]), ((iMac - iDst) * 4));
 
 L_2130:
     lpplProdGlob->rgprod[iDst] = prod;
@@ -1837,7 +1837,7 @@ L_2755:
     goto L_2820;
 
 L_275d:
-    if ((LOWORD((uint32_t)(pProdGlob[iSrc].grobj)) != (LOWORD((uint32_t)((lpprod >> 0x11))) & 0x7)))
+    if ((LOWORD((uint32_t)(pProdGlob[iSrc].grobj)) != lpprod->grobj))
         goto L_281c;
     else
         goto L_27b4;
@@ -1849,7 +1849,7 @@ L_27b4:
         goto L_27bb;
 
 L_27bb:
-    if ((LOWORD((uint32_t)(pProdGlob[iSrc].iItem)) != (LOWORD((uint32_t)((lpprod >> 0xa))) & 0x7f)))
+    if ((LOWORD((uint32_t)(pProdGlob[iSrc].iItem)) != lpprod->iItem))
         goto L_281c;
     else
         goto L_2812;
@@ -2068,7 +2068,7 @@ L_2e98:
 
 L_2f5c:
     hwndProdDlg = 0x0;
-    StickyDlgPos(hwnd, ptStickyProduceDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyProduceDlg), 0);
     if ((wParam != 0x1))
         goto L_2f87;
     else
@@ -4357,8 +4357,7 @@ L_53f9:
     goto L_5427;
 
 L_5401:
-    LOWORD(pl.rgwtMin[j]) = LOWORD(rgRes[j]);
-    HIWORD(pl.rgwtMin[j]) = HIWORD(rgRes[j]);
+    pl.rgwtMin[j] = rgRes[j];
     j = (j + 1);
 
 L_5427:
@@ -4421,7 +4420,7 @@ int16_t ZipProdDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     char       *pszT;
     RECT        rcGBox;
     int16_t     cch;
-    int16_t (**lpProc)();
+    int16_t (*lpProc)();
     int16_t  cpq;
     int16_t  t_merge_5926_0001;
     uint16_t t_scratch_m3c;
@@ -4457,7 +4456,7 @@ L_5592:
 
 L_55b4:
     pszT = szWork;
-    psz = (0x22f6 + LOWORD((40 * iBase)));
+    psz = vrgZipProd[iBase].szName;
 
 L_55c7:
     if (((uint16_t)(*(psz)) == 0))
@@ -4503,7 +4502,7 @@ L_565d:
         goto L_5667;
 
 L_5667:
-    StickyDlgPos(hwnd, ptStickyZipProdDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickyZipProdDlg), 1);
     if ((gd.fTutorial == 0x0))
         goto L_5692;
     else
@@ -4615,7 +4614,7 @@ L_58f5:
         goto L_58fe;
 
 L_58fe:
-    StickyDlgPos(hwnd, ptStickyZipProdDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickyZipProdDlg), 0);
     if ((wParam != 0x1))
         goto L_5923;
     else
@@ -4661,7 +4660,7 @@ L_5967:
         goto L_5981;
 
 L_5981:
-    strcpy(szWork, (0x22f6 + LOWORD((40 * iResTechNow))));
+    strcpy(szWork, vrgZipProd[iResTechNow].szName);
     goto L_59c0;
 
 L_599d:
@@ -4681,7 +4680,7 @@ L_59e4:
         goto L_5a07;
 
 L_5a07:
-    if (((uint16_t)(LOWORD(szWork)) != 0x0))
+    if (((uint16_t)(szWork[0]) != 0))
         goto L_5a36;
     else
         goto L_5a13;
@@ -4690,7 +4689,7 @@ L_5a13:
     _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
 
 L_5a36:
-    strcpy((0x22f6 + LOWORD((40 * iResTechNow))), szWork);
+    strcpy(vrgZipProd[iResTechNow].szName, szWork);
     pszT = &(szWork[64]);
     psz = szWork;
 

@@ -109,8 +109,7 @@ L_021d:
     ShowTooltip(0xffff, 0x0);
     pt.x = LOWORD(lParam);
     pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
-    ptBtn.x = pt.x;
-    ptBtn.y = pt.y;
+    ptBtn = pt;
     itb = ItbFromPpt(&(ptBtn));
     if ((itb < 0))
         goto L_06de;
@@ -273,8 +272,7 @@ L_0473:
         goto L_047e;
 
 L_047e:
-    vptTbLast.x = pt.x;
-    vptTbLast.y = pt.y;
+    vptTbLast = pt;
     itb = ItbFromPpt(&(pt));
     if ((itb < 0))
         goto L_04f8;

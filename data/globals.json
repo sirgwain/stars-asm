@@ -1022,13 +1022,13 @@
   {
     "addr": "0025:042e",
     "name": "vhpalSplash",
-    "type": "uint16_t",
+    "type": "HPALETTE",
     "module": "globals"
   },
   {
     "addr": "0025:0430",
     "name": "vhdibTitle",
-    "type": "uint16_t",
+    "type": "HGLOBAL",
     "module": "globals"
   },
   {
@@ -1304,7 +1304,7 @@
   {
     "addr": "0025:0984",
     "name": "mdXferDlg",
-    "type": "int16_t",
+    "type": "MdXfer",
     "module": "globals"
   },
   {
@@ -3026,13 +3026,13 @@
   {
     "addr": "0025:4b94",
     "name": "crcRCW",
-    "type": "COLORREF",
+    "type": "int16_t",
     "module": "globals"
   },
   {
     "addr": "0025:4b96",
     "name": "crgbtnXfer",
-    "type": "COLORREF",
+    "type": "int16_t",
     "module": "globals"
   },
   {
@@ -3320,7 +3320,7 @@
   {
     "addr": "0025:5314",
     "name": "vhpal",
-    "type": "uint16_t",
+    "type": "HPALETTE",
     "module": "globals"
   },
   {

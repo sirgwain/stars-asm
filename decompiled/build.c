@@ -10,12 +10,11 @@ StringId     rgidsCat[14] = {idsWeapons2,     idsDevices,  idsArmor3,   idsBeamW
                              idsMiningRobots, idsScanners, idsShields3, idsElectrical,  idsMechanical, idsTorpedoes, idsOrbital};
 
 int16_t ShipBuilder(POINT ptDlgSize) {
-    int16_t (**lpProcSlot)();
+    int16_t (*lpProcSlot)();
     int16_t fSuccess;
 
 L_008c:
-    ptslotGlob.x = ptDlgSize.x;
-    ptslotGlob.y = ptDlgSize.y;
+    ptslotGlob = ptDlgSize;
     if ((gd.mdScreenSize <= 0x0))
         goto L_00c0;
     else
@@ -394,7 +393,7 @@ L_055f:
     GetClientRect(hwnd, &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, (((ptslotGlob.x + rcWindow.right) - rcWindow.left) - rc.right),
                  (((ptslotGlob.y + rcWindow.bottom) - rcWindow.top) - rc.bottom), 0x6);
-    StickyDlgPos(hwnd, ptStickySlotDlg.x, 1);
+    StickyDlgPos(hwnd, &(ptStickySlotDlg), 1);
     UpdateSlotGlobals();
     hwndItem = GetDlgItem(hwnd, IDC_U16_0x080C);
     SetWindowPos(hwndItem, 0x0, (ptslotGlob.x - 256), 32, 240, 266, SWP_NOZORDER);
@@ -2125,7 +2124,7 @@ L_253e:
 
 L_2546:
     SetBuildSelection(-2);
-    StickyDlgPos(hwnd, ptStickySlotDlg.x, 0);
+    StickyDlgPos(hwnd, &(ptStickySlotDlg), 0);
     hwndSlotDlg = 0x0;
     if ((wParam != 0x1))
         goto L_257d;
@@ -2445,7 +2444,7 @@ L_291c:
 L_2938:
     RcCtrTextOut(hdc, &(rc), PszGetCompressedString(idsCargo3), 0);
     c = _wsprintf(szWork, PCTDKT, WtMaxShdefStat(lpshdefBuild, 2));
-    RcCtrTextOut(hdc, rcCargo.left, szWork, 0);
+    RcCtrTextOut(hdc, &(rcCargo), szWork, 0);
     goto L_2a34;
 
 L_29a0:
@@ -2469,7 +2468,7 @@ L_29dd:
     RcCtrTextOut(hdc, &(rc), szWork, 0);
 
 L_2a14:
-    RcCtrTextOut(hdc, rcCargo.left, PszGetCompressedString(idsSpace), 0);
+    RcCtrTextOut(hdc, &(rcCargo), PszGetCompressedString(idsSpace), 0);
 
 L_2a34:
     rc.top = rc.bottom;
@@ -2837,8 +2836,7 @@ L_325e:
     return 0;
 
 L_3264:
-    hs.grhst = lpshdefBuild->hul.rghs[iSrc].grhst;
-    HIWORD(hs) = HIWORD(lpshdefBuild->hul.rghs[iSrc]);
+    hs = lpshdefBuild->hul.rghs[iSrc];
     if ((hs.cItem > 0x0))
         goto L_32ad;
     else
@@ -2849,8 +2847,7 @@ L_329c:
     return 0;
 
 L_32ad:
-    part.hs.grhst = hs.grhst;
-    HIWORD(part.hs) = HIWORD(hs);
+    part.hs = hs;
     FLookupPart(&(part));
     ibmp = part.pcom->ibmp;
     rcStart = vrgrcSlot[iSrc];
@@ -2870,7 +2867,7 @@ L_3318:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
     ibmp = (((uint16_t)(szWork[2]) - 65) + LOWORD((((uint16_t)(szWork[3]) - 65) * 0x1a)));
     iSrc = -1;
-    hs.grhst = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
+    hs.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
     hs.iItem = ((uint16_t)(szWork[1]) - 65);
     hs.cItem = 0x1;
     rcStart.left = 2;
@@ -3073,8 +3070,7 @@ L_3741:
     BitBlt(hdcMemFull, ptTileSize.x, ptTileSize.y, ptTileSize.x, ptTileSize.y, hdcMem, 0, 0, SRCCOPY);
 
 L_37a5:
-    ptOld.x = pt.x;
-    ptOld.y = pt.y;
+    ptOld = pt;
     ptD.x = (pt.x - x);
     ptD.y = (pt.y - y);
     SelectObject(hdcMem, hbmpOld);
@@ -3266,7 +3262,7 @@ L_3b7b:
 L_3baf:
     SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_INSERTSTRING, iSel, szWork);
     hsShip.cItem = 0x1;
-    hsShip.grhst = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
+    hsShip.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
     hsShip.iItem = ((uint16_t)(szWork[1]) - 65);
     goto HullPart;
 
@@ -3283,8 +3279,7 @@ L_3c1f:
         goto L_3c2c;
 
 L_3c2c:
-    hsShip.grhst = lpshdefBuild->hul.rghs[iselSlot].grhst;
-    HIWORD(hsShip) = HIWORD(lpshdefBuild->hul.rghs[iselSlot]);
+    hsShip = lpshdefBuild->hul.rghs[iselSlot];
     t_call_3c58 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
     hsHul.grhst = t_call_3c58->hul.rghs[iselSlot].grhst;
     HIWORD(hsHul) = HIWORD(t_call_3c58->hul.rghs[iselSlot]);
@@ -3477,8 +3472,7 @@ L_3ee3:
     goto Restore;
 
 HullPart:
-    part.hs.grhst = hsShip.grhst;
-    HIWORD(part.hs) = HIWORD(hsShip);
+    part.hs = hsShip;
     FLookupPart(&(part));
     dxkT = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsKt), 2));
     if ((hsShip.cItem == 0x1))
@@ -4193,7 +4187,7 @@ L_4c04:
     t_merge_4c09_0001 = 0xcbf;
 
 L_4c09:
-    /* untranslated: cch = _wsprintf(szWork, &dword ds:[t_merge_4c09_0001], LOWORD(dpShield), HIWORD(dpShield)) */
+    cch = _wsprintf(szWork, &(*(t_merge_4c09_0001)), LOWORD(dpShield), HIWORD(dpShield));
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 10));
     cch = CchGetString(idsShields, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -4597,7 +4591,6 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     HULDEF  *t_call_5761;
     uint16_t t_scratch_m1a_2;
     uint16_t t_merge_58c1_0001;
-    uint16_t t_scratch_m1a_3;
 
 L_5476:
     GetClientRect(hwndSlotDlg, &(rc));
@@ -4744,8 +4737,7 @@ L_572f:
     return 0;
 
 L_5735:
-    hsDst.grhst = lpshdefBuild->hul.rghs[i].grhst;
-    HIWORD(hsDst) = HIWORD(lpshdefBuild->hul.rghs[i]);
+    hsDst = lpshdefBuild->hul.rghs[i];
     t_call_5761 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
     hsHul.grhst = t_call_5761->hul.rghs[i].grhst;
     HIWORD(hsHul) = HIWORD(t_call_5761->hul.rghs[i]);
@@ -4845,14 +4837,11 @@ L_58c1:
         goto L_58cd;
 
 L_58cd:
-    t_scratch_m1a_3 = ((HIWORD(lpshdefBuild->hul.rghs[iSrc]) - ((cNew - hsDst.cItem) << 0x8)) & 0xff00);
-    lpshdefBuild->hul.rghs[iSrc].cItem = 0x0;
-    HIWORD(lpshdefBuild->hul.rghs[iSrc]) = (HIWORD(lpshdefBuild->hul.rghs[iSrc]) | t_scratch_m1a_3);
+    lpshdefBuild->hul.rghs[iSrc].cItem = (lpshdefBuild->hul.rghs[iSrc].cItem - (cNew - hsDst.cItem));
 
 L_594b:
     hsDst.cItem = cNew;
-    lpshdefBuild->hul.rghs[i].grhst = hsDst.grhst;
-    HIWORD(lpshdefBuild->hul.rghs[i]) = HIWORD(hsDst);
+    lpshdefBuild->hul.rghs[i] = hsDst;
     UpdateShdefCost(lpshdefBuild);
     SetBuildSelection(i);
     GetClientRect(hwndSlotDlg, &(rc));
@@ -4934,7 +4923,7 @@ L_5b5f:
     cr = t_merge_5b5f_0001;
     crForeSav = SetTextColor(lpdis->hDC, cr);
     bkSav = SetBkMode(lpdis->hDC, TRANSPARENT);
-    TextOut(lpdis->hDC, (rc.left + 66), ((rc.top + 32) - (dyArial8 >> 0x1)), &(szWork[4]), strlen(szWork[4]));
+    TextOut(lpdis->hDC, (rc.left + 66), ((rc.top + 32) - (dyArial8 >> 0x1)), &(szWork[4]), strlen(&(szWork[4])));
     SetTextColor(lpdis->hDC, crForeSav);
     SetBkMode(lpdis->hDC, bkSav);
     HandleFocusState(lpdis, (inflate + 2));
@@ -5868,9 +5857,9 @@ L_6837:
 
 L_6840:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
-    HIWORD(GlobalPD) = (0x1 << ((uint16_t)(LOWORD(szWork)) + 0xffbf));
+    GlobalPD.part.hs.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
     GlobalPD.part.hs.iItem = ((uint16_t)(szWork[1]) - 65);
-    FLookupPart(HIWORD(GlobalPD));
+    FLookupPart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));
     return 0;
@@ -6086,7 +6075,7 @@ L_6be8:
         goto L_6bf7;
 
 L_6bf7:
-    FLookupPlanet(sel.pl.id, sel.pl.id);
+    FLookupPlanet(sel.pl.id, &(sel.pl));
     FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, 0x0);
 
 L_6c23:
@@ -6225,7 +6214,7 @@ L_6ddc:
         goto L_6deb;
 
 L_6deb:
-    FLookupPlanet(sel.pl.id, sel.pl.id);
+    FLookupPlanet(sel.pl.id, &(sel.pl));
     FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, 0x0);
 
 L_6e17:

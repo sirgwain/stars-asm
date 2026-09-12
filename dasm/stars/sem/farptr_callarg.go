@@ -6,6 +6,7 @@ import (
 )
 
 // decayArrayLValue returns an array lvalue where C would decay it to a pointer.
+// decayArrayLValue returns an array lvalue where C would decay it to a pointer.
 func decayArrayLValue(target LValue, expected typeinfo.Type) (Expr, bool) {
 	targetType, ok := target.ExprType().(*typeinfo.Array)
 	if !ok {
@@ -15,6 +16,12 @@ func decayArrayLValue(target LValue, expected typeinfo.Type) (Expr, bool) {
 	expectedPtr, ok := expected.(*typeinfo.Pointer)
 	if !ok {
 		return target, false
+	}
+
+	// An array decays to a pointer to its first element, and any object
+	// pointer is implicitly convertible to void *.
+	if expectedPtr.Elem.Kind() == typeinfo.KVoid {
+		return target, true
 	}
 
 	if expectedPtr.IsCStringPointer() && targetType.IsCStringArray() {
