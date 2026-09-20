@@ -1074,16 +1074,10 @@ L_1720:
 
 L_172b:
     lpfl = rglpfl[iflMac];
-    if ((LOWORD(rglpfl[iflMac]) != 0x0))
+    if ((rglpfl[iflMac] != 0x0))
         goto L_175b;
     else
-        goto L_1753;
-
-L_1753:
-    if ((HIWORD(rglpfl[iflMac]) == 0x0))
         goto L_181a;
-    else
-        goto L_175b;
 
 L_175b:
     if ((lpfl->iPlayer < idPlayer))
@@ -1255,16 +1249,10 @@ L_19a1:
 
 L_19ac:
     lpfl = rglpfl[ifl];
-    if ((LOWORD(rglpfl[ifl]) != 0x0))
+    if ((rglpfl[ifl] != 0x0))
         goto L_19dc;
     else
-        goto L_19d4;
-
-L_19d4:
-    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_1b6e;
-    else
-        goto L_19dc;
 
 L_19dc:
     if ((lpfl->fDead != 0x0))
@@ -1295,19 +1283,7 @@ L_1a56:
     goto L_1b35;
 
 L_1a63:
-    if ((HIWORD(lpfl->rgwtMin[i]) < 0x0))
-        goto L_1b31;
-    else
-        goto L_1a83;
-
-L_1a83:
-    if ((HIWORD(lpfl->rgwtMin[i]) > 0x0))
-        goto L_1a91;
-    else
-        goto L_1a88;
-
-L_1a88:
-    if ((LOWORD(lpfl->rgwtMin[i]) <= 0x0))
+    if ((lpfl->rgwtMin[i] <= 0))
         goto L_1b31;
     else
         goto L_1a91;
@@ -1324,13 +1300,7 @@ L_1a9a:
 
 L_1ab5:
     lSell = (int32_t)(((uint32_t)((lpfl->rgwtMin[i] * pctSell)) / 0x64));
-    if ((LOWORD(lSell) != 0x0))
-        goto L_1b0e;
-    else
-        goto L_1afb;
-
-L_1afb:
-    if ((HIWORD(lSell) != 0x0))
+    if ((lSell != 0))
         goto L_1b0e;
     else
         goto L_1b04;
@@ -1380,18 +1350,6 @@ L_1ba6:
         goto L_1bbd;
 
 L_1bbd:
-    if ((0x0 < 0x0))
-        goto L_1cf1;
-    else
-        goto L_1bde;
-
-L_1bde:
-    if ((0x0 > 0x0))
-        goto L_1beb;
-    else
-        goto L_1be3;
-
-L_1be3:
     if ((lppl->cMines <= 0x0))
         goto L_1cf1;
     else
@@ -1406,22 +1364,10 @@ L_1beb:
 L_1bff:
     pctSell = (uint32_t)((Random(31) + 5));
     lSell = (int32_t)(((uint32_t)((lppl->cMines * pctSell)) / 0x64));
-    if ((HIWORD(lSell) > 0x0))
-        goto L_1c71;
-    else
-        goto L_1c59;
-
-L_1c59:
-    if ((HIWORD(lSell) < 0x0))
+    if ((lSell <= 0))
         goto L_1c67;
     else
-        goto L_1c5e;
-
-L_1c5e:
-    if ((LOWORD(lSell) > 0x0))
         goto L_1c71;
-    else
-        goto L_1c67;
 
 L_1c67:
     lSell = 1;
@@ -1441,37 +1387,13 @@ L_1d05:
     i = Random(3);
     pctSell = (uint32_t)((Random(41) + 5));
     lSell = (int32_t)(((uint32_t)((lppl->rgwtMin[i] * pctSell)) / 0x64));
-    if ((HIWORD(lSell) < 0x0))
-        goto L_1dfe;
-    else
-        goto L_1d70;
-
-L_1d70:
-    if ((HIWORD(lSell) > 0x0))
-        goto L_1d7e;
-    else
-        goto L_1d75;
-
-L_1d75:
-    if ((LOWORD(lSell) <= 0x0))
+    if ((lSell <= 0))
         goto L_1dfe;
     else
         goto L_1d7e;
 
 L_1d7e:
-    if ((HIWORD(lSell) < 0x0))
-        goto L_1da0;
-    else
-        goto L_1d87;
-
-L_1d87:
-    if ((HIWORD(lSell) > 0x0))
-        goto L_1d96;
-    else
-        goto L_1d8c;
-
-L_1d8c:
-    if ((LOWORD(lSell) <= 0x7530))
+    if ((lSell <= 30000))
         goto L_1da0;
     else
         goto L_1d96;
@@ -1805,13 +1727,7 @@ L_234a:
     goto L_238b;
 
 L_235b:
-    if ((LOWORD(lpfl->rgwtMin[i]) != 0x0))
-        goto L_2394;
-    else
-        goto L_237a;
-
-L_237a:
-    if ((HIWORD(lpfl->rgwtMin[i]) != 0x0))
+    if ((lpfl->rgwtMin[i] != 0))
         goto L_2394;
     else
         goto L_2387;
@@ -1958,41 +1874,23 @@ L_25c2:
         goto L_25cb;
 
 L_25cb:
-    if ((LOWORD(wtTotal) != 0x0))
+    if ((wtTotal != 0))
         goto L_25dd;
     else
-        goto L_25d4;
-
-L_25d4:
-    if ((HIWORD(wtTotal) == 0x0))
         goto L_2571;
-    else
-        goto L_25dd;
 
 L_25dd:
-    if ((LOWORD(lpth) != 0x0))
-        goto L_2657;
-    else
-        goto L_25e6;
-
-L_25e6:
-    if ((HIWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2657;
     else
         goto L_25ef;
 
 L_25ef:
     lpth = LpthNew(iplr, ithMineralPacket);
-    if ((LOWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2619;
     else
-        goto L_260d;
-
-L_260d:
-    if ((HIWORD(lpth) == 0x0))
         goto L_294c;
-    else
-        goto L_2619;
 
 L_2619:
     lpth->thp.iWarp = 0x0;
@@ -2029,19 +1927,7 @@ L_2700:
     goto L_291e;
 
 L_2708:
-    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) < 0x0))
-        goto L_2842;
-    else
-        goto L_2746;
-
-L_2746:
-    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) > 0x0))
-        goto L_2753;
-    else
-        goto L_274b;
-
-L_274b:
-    if (((LOWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + LOWORD(rgwtMinerals[i])) <= 0x7530))
+    if ((((uint32_t)((lpth->thp.wtMax * 0xa)) + rgwtMinerals[i]) <= 0x7530))
         goto L_2842;
     else
         goto L_2753;
@@ -2053,16 +1939,10 @@ L_2753:
     lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(wt));
     rgwtMinerals[i] = (rgwtMinerals[i] - wt);
     lpth = LpthNew(iplr, ithMineralPacket);
-    if ((LOWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2804;
     else
-        goto L_27f8;
-
-L_27f8:
-    if ((HIWORD(lpth) == 0x0))
         goto L_294c;
-    else
-        goto L_2804;
 
 L_2804:
     lpth->thp.iWarp = 0x0;
@@ -2078,19 +1958,7 @@ L_2842:
     rgwtMinerals[i] = 0;
 
 L_2900:
-    if ((HIWORD(wtTotal) > 0x0))
-        goto L_291a;
-    else
-        goto L_2909;
-
-L_2909:
-    if ((HIWORD(wtTotal) < 0x0))
-        goto L_2927;
-    else
-        goto L_290e;
-
-L_290e:
-    if ((LOWORD(wtTotal) <= 0x0))
+    if ((wtTotal <= 0))
         goto L_2927;
     else
         goto L_291a;
@@ -2105,22 +1973,10 @@ L_291e:
         goto L_2927;
 
 L_2927:
-    if ((HIWORD(wtTotal) > 0x0))
-        goto L_2700;
-    else
-        goto L_2930;
-
-L_2930:
-    if ((HIWORD(wtTotal) < 0x0))
+    if ((wtTotal <= 0))
         goto L_293e;
     else
-        goto L_2935;
-
-L_2935:
-    if ((LOWORD(wtTotal) > 0x0))
         goto L_2700;
-    else
-        goto L_293e;
 
 L_293e:
     *(plpth) = lpth;
@@ -2400,13 +2256,7 @@ L_2d54:
 
 LNextFleet:
     lpflCur = lpflCur->lpflNext;
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_2b44;
-    else
-        goto L_2d9b;
-
-L_2d9b:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_2b44;
     else
         goto L_2da3;
@@ -2509,13 +2359,7 @@ L_2e97:
     goto L_2e58;
 
 L_2e9d:
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_2eb8;
-    else
-        goto L_2eab;
-
-L_2eab:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_2eb8;
     else
         goto L_2eb3;
@@ -2609,13 +2453,7 @@ L_2fbc:
         goto L_2fd6;
 
 L_2fd6:
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_2e9d;
-    else
-        goto L_2fe4;
-
-L_2fe4:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_2e9d;
     else
         goto L_2fec;
@@ -2687,13 +2525,7 @@ L_30e8:
 
 L_3104:
     lpflCur = lpflCur->lpflNext;
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_3027;
-    else
-        goto L_3123;
-
-L_3123:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_3027;
     else
         goto L_312b;
@@ -2794,13 +2626,7 @@ L_3254:
 
 L_3267:
     lpflCur = lpflCur->lpflNext;
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_31a1;
-    else
-        goto L_3286;
-
-L_3286:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_31a1;
     else
         goto L_328e;
@@ -2856,13 +2682,7 @@ L_3302:
 
 L_3351:
     lpflCur = lpflCur->lpflNext;
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_3298;
-    else
-        goto L_3370;
-
-L_3370:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_3298;
     else
         goto L_3378;
@@ -2900,13 +2720,7 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
     uint16_t t_merge_387e_0001;
 
 L_339c:
-    if ((LOWORD(lpshdef) != 0x0))
-        goto L_33d8;
-    else
-        goto L_33ae;
-
-L_33ae:
-    if ((HIWORD(lpshdef) != 0x0))
+    if ((lpshdef != 0x0))
         goto L_33d8;
     else
         goto L_33b7;
@@ -3106,16 +2920,10 @@ L_36b8:
 
 L_36c1:
     spd = ((iWarp - 4) + cThruster);
-    if ((LOWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_36df;
     else
-        goto L_36d6;
-
-L_36d6:
-    if ((HIWORD(lpfl) == 0x0))
         goto L_3711;
-    else
-        goto L_36df;
 
 L_36df:
     if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raAttack))
@@ -3135,16 +2943,10 @@ L_370c:
 
 L_3711:
     wt = lpshdef->hul.wtEmpty;
-    if ((LOWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_372d;
     else
-        goto L_3724;
-
-L_3724:
-    if ((HIWORD(lpfl) == 0x0))
         goto L_3809;
-    else
-        goto L_372d;
 
 L_372d:
     wtCargoShdefMax = WtMaxShdefStat(lpshdef, 2);
@@ -3177,16 +2979,10 @@ L_37d9:
     ptok->dwt = t_scratch_m22;
 
 L_3809:
-    if ((LOWORD(ptok) != 0x0))
+    if ((ptok != 0x0))
         goto L_381b;
     else
-        goto L_3812;
-
-L_3812:
-    if ((HIWORD(ptok) == 0x0))
         goto L_3825;
-    else
-        goto L_381b;
 
 L_381b:
     ptok->wt = wt;
@@ -3258,19 +3054,7 @@ int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
 L_391e:
     lp1 = LpshdefFromTok(ptok1)->lPower;
     lp2 = LpshdefFromTok(ptok2)->lPower;
-    if ((HIWORD(lp2) < HIWORD(lp1)))
-        goto L_398f;
-    else
-        goto L_3979;
-
-L_3979:
-    if ((HIWORD(lp2) > HIWORD(lp1)))
-        goto L_3986;
-    else
-        goto L_397e;
-
-L_397e:
-    if ((LOWORD(lp2) <= LOWORD(lp1)))
+    if ((lp2 <= lp1))
         goto L_398f;
     else
         goto L_3986;
@@ -3279,34 +3063,16 @@ L_3986:
     return 0;
 
 L_398f:
-    if (((HIWORD(lp2) & 0x7fff) > (HIWORD(lp1) & 0x7fff)))
-        goto L_39c6;
-    else
-        goto L_39b1;
-
-L_39b1:
-    if (((HIWORD(lp2) & 0x7fff) < (HIWORD(lp1) & 0x7fff)))
+    if (((lp2 & 0x7ffff000) < (lp1 & 0x7ffff000)))
         goto L_39bd;
     else
-        goto L_39b6;
-
-L_39b6:
-    if (((LOWORD(lp2) & 0xf000) >= (LOWORD(lp1) & 0xf000)))
         goto L_39c6;
-    else
-        goto L_39bd;
 
 L_39bd:
     return 1;
 
 L_39c6:
-    if (((LOWORD(lp2) & 0xff00) != (LOWORD(lp1) & 0xff00)))
-        goto L_3a1a;
-    else
-        goto L_39e8;
-
-L_39e8:
-    if (((HIWORD(lp2) & 0x7fff) != (HIWORD(lp1) & 0x7fff)))
+    if (((lp2 & 0x7fffff00) != (lp1 & 0x7fffff00)))
         goto L_3a1a;
     else
         goto L_39ef;
@@ -3351,16 +3117,10 @@ L_3a74:
 
 L_3a7f:
     lpfl = rglpfl[ifl];
-    if ((LOWORD(rglpfl[ifl]) != 0x0))
+    if ((rglpfl[ifl] != 0x0))
         goto L_3aaf;
     else
-        goto L_3aa7;
-
-L_3aa7:
-    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_3b70;
-    else
-        goto L_3aaf;
 
 L_3aaf:
     lpfl->fBombed = 0x0;
@@ -3376,16 +3136,10 @@ L_3ada:
         goto L_3af1;
 
 L_3af1:
-    if ((LOWORD(lpfl->lpflNext) != 0x0))
+    if ((lpfl->lpflNext != 0x0))
         goto L_3b0b;
     else
-        goto L_3afe;
-
-L_3afe:
-    if ((HIWORD(lpfl->lpflNext) == 0x0))
         goto L_3a70;
-    else
-        goto L_3b0b;
 
 L_3b0b:
     t_call_3b1d = CplrBattle(lpfl, rggrfAttack, &(grfPlayer), &(grfSpectator));
@@ -3421,16 +3175,10 @@ L_3b70:
     FreeLp(vrgtok, htMisc);
     vlpwtCargo = 0x0;
     vrgtok = 0x0;
-    if ((LOWORD(lpbBattleT) != 0x0))
+    if ((lpbBattleT != 0x0))
         goto L_3bc4;
     else
-        goto L_3bba;
-
-L_3bba:
-    if ((HIWORD(lpbBattleT) == 0x0))
         goto L_3bed;
-    else
-        goto L_3bc4;
 
 L_3bc4:
     *(lpbBattleT) = 0xffff;
@@ -3438,16 +3186,10 @@ L_3bc4:
     lpbBattleT = 0x0;
 
 L_3bed:
-    if ((LOWORD(lpbBattleCur) != 0x0))
+    if ((lpbBattleCur != 0x0))
         goto L_3c01;
     else
-        goto L_3bf7;
-
-L_3bf7:
-    if ((HIWORD(lpbBattleCur) == 0x0))
         goto L_3c0a;
-    else
-        goto L_3c01;
 
 L_3c01:
     *(lpbBattleCur) = 0xffff;
@@ -3470,19 +3212,7 @@ L_3c16:
 
 L_3c58:
     dpNew = ((uint32_t)(ptok->dpShield) + (int32_t)((dpOrig / 10)));
-    if ((HIWORD(dpNew) < HIWORD(dpOrig)))
-        goto L_3ca6;
-    else
-        goto L_3c8d;
-
-L_3c8d:
-    if ((HIWORD(dpNew) > HIWORD(dpOrig)))
-        goto L_3c9a;
-    else
-        goto L_3c92;
-
-L_3c92:
-    if ((LOWORD(dpNew) <= LOWORD(dpOrig)))
+    if ((dpNew <= dpOrig))
         goto L_3ca6;
     else
         goto L_3c9a;
@@ -4011,16 +3741,10 @@ L_4345:
     goto L_3f51;
 
 L_4348:
-    if ((LOWORD(pctHit) != 0x2710))
+    if ((pctHit != 10000))
         goto L_435b;
     else
-        goto L_4352;
-
-L_4352:
-    if ((HIWORD(pctHit) == 0x0))
         goto L_439f;
-    else
-        goto L_435b;
 
 L_435b:
     ptok->pctJam = LOBYTE((0x64 - LOWORD((int32_t)(((pctHit + 50) / 0x64)))));
@@ -4048,31 +3772,13 @@ L_43b9:
     ptok->pctJam = (ptok->pctJam - LOBYTE(((uint32_t)(ptok->pctJam) / 0x4)));
 
 L_43d0:
-    if ((LOWORD(pctCap) != 0x3e8))
+    if ((pctCap != 1000))
         goto L_43e3;
     else
-        goto L_43da;
-
-L_43da:
-    if ((HIWORD(pctCap) == 0x0))
         goto L_441f;
-    else
-        goto L_43e3;
 
 L_43e3:
-    if ((HIWORD(pctCap) < 0x0))
-        goto L_4405;
-    else
-        goto L_43ec;
-
-L_43ec:
-    if ((HIWORD(pctCap) > 0x0))
-        goto L_43fb;
-    else
-        goto L_43f1;
-
-L_43f1:
-    if ((LOWORD(pctCap) <= 0x9f6))
+    if ((pctCap <= 2550))
         goto L_4405;
     else
         goto L_43fb;
@@ -4089,16 +3795,10 @@ L_441f:
     ptok->dxyLim = dxyLim;
     ptok->initMin = LOBYTE(initMin);
     ptok->initMac = LOBYTE(initMac);
-    if ((0x0 != 0x0))
+    if (((uint32_t)((HIWORD(ldp) & 0xffff)) != 0x0))
         goto L_44b4;
     else
-        goto L_44ac;
-
-L_44ac:
-    if (((HIWORD(ldp) & 0xffff) == 0x0))
         goto L_44c0;
-    else
-        goto L_44b4;
 
 L_44b4:
     ptok->dpShield = 0xffff;
@@ -4336,13 +4036,7 @@ L_4a5f:
 
 L_4a68:
     lpflCur = lpflCur->lpflNext;
-    if ((LOWORD(lpflCur) != LOWORD(lpfl)))
-        goto L_485e;
-    else
-        goto L_4a87;
-
-L_4a87:
-    if ((HIWORD(lpflCur) != HIWORD(lpfl)))
+    if ((lpflCur != lpfl))
         goto L_485e;
     else
         goto LTooManyTokens;
@@ -4573,22 +4267,10 @@ L_4e58:
 
 L_4e5b:
     dRange = (uint32_t)((t_merge_4e5b_0001 + part.pbeam->dRangeMax));
-    if ((HIWORD(dRange) > SIGNHIWORD(dz)))
-        goto L_4e88;
-    else
-        goto L_4e75;
-
-L_4e75:
-    if ((HIWORD(dRange) < SIGNHIWORD(dz)))
+    if ((dRange < (uint32_t)(dz)))
         goto L_4e82;
     else
-        goto L_4e7a;
-
-L_4e7a:
-    if ((LOWORD(dRange) >= dz))
         goto L_4e88;
-    else
-        goto L_4e82;
 
 L_4e82:
     t_merge_4e8b_0001 = 0x1;
@@ -4630,19 +4312,7 @@ L_4f0d:
         goto L_4f16;
 
 L_4f16:
-    if ((HIWORD(dRange) < 0x0))
-        goto L_4f60;
-    else
-        goto L_4f1f;
-
-L_4f1f:
-    if ((HIWORD(dRange) > 0x0))
-        goto L_4f2d;
-    else
-        goto L_4f24;
-
-L_4f24:
-    if ((LOWORD(dRange) <= 0x0))
+    if ((dRange <= 0))
         goto L_4f60;
     else
         goto L_4f2d;
@@ -4667,19 +4337,7 @@ L_4f9f:
 
 L_4fb1:
     dpShieldsLeft = (uint32_t)(((uint32_t)(ptokTarget->dpShield) * (uint32_t)(ptok->csh)));
-    if ((HIWORD(dp) < HIWORD(dpShieldsLeft)))
-        goto L_4ffb;
-    else
-        goto L_4fe2;
-
-L_4fe2:
-    if ((HIWORD(dp) > HIWORD(dpShieldsLeft)))
-        goto L_4fef;
-    else
-        goto L_4fe7;
-
-L_4fe7:
-    if ((LOWORD(dp) <= LOWORD(dpShieldsLeft)))
+    if ((dp <= dpShieldsLeft))
         goto L_4ffb;
     else
         goto L_4fef;
@@ -4695,22 +4353,10 @@ L_4ffb:
 
 L_5004:
     dp = (int32_t)((dp / ((uint32_t)((dz + 10)) - dRange)));
-    if ((HIWORD(dp) > 0x0))
-        goto L_505b;
-    else
-        goto L_503a;
-
-L_503a:
-    if ((HIWORD(dp) < 0x0))
+    if ((dp < part.hs.cItem))
         goto L_5047;
     else
-        goto L_503f;
-
-L_503f:
-    if ((LOWORD(dp) >= part.hs.cItem))
         goto L_505b;
-    else
-        goto L_5047;
 
 L_5047:
     dp = part.hs.cItem;
@@ -4739,22 +4385,10 @@ L_5146:
 
 L_514f:
     dp = (int32_t)((dp / ((uint32_t)((dz + 10)) - dRange)));
-    if ((HIWORD(dp) > 0x0))
-        goto L_51a6;
-    else
-        goto L_5185;
-
-L_5185:
-    if ((HIWORD(dp) < 0x0))
+    if ((dp < part.hs.cItem))
         goto L_5192;
     else
-        goto L_518a;
-
-L_518a:
-    if ((LOWORD(dp) >= part.hs.cItem))
         goto L_51a6;
-    else
-        goto L_5192;
 
 L_5192:
     dp = part.hs.cItem;
@@ -4787,19 +4421,7 @@ L_51cb:
         goto L_5220;
 
 L_5220:
-    if ((HIWORD(dpMax) < 0x0))
-        goto L_52d3;
-    else
-        goto L_5229;
-
-L_5229:
-    if ((HIWORD(dpMax) > 0x0))
-        goto L_5237;
-    else
-        goto L_522e;
-
-L_522e:
-    if ((LOWORD(dpMax) <= 0x0))
+    if ((dpMax <= 0))
         goto L_52d3;
     else
         goto L_5237;
@@ -4809,40 +4431,16 @@ L_5237:
              (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpShdef * ptokTarget->dv.pctDp)) / 0xa)) * ptokTarget->dv.pctSh)) / 0xa)) *
                                     (uint32_t)(ptokTarget->csh))) /
                         0x1f4)));
-    if ((HIWORD(dpMax) > 0x0))
-        goto L_52d3;
-    else
-        goto L_52bb;
-
-L_52bb:
-    if ((HIWORD(dpMax) < 0x0))
+    if ((dpMax <= 0))
         goto L_52c9;
     else
-        goto L_52c0;
-
-L_52c0:
-    if ((LOWORD(dpMax) > 0x0))
         goto L_52d3;
-    else
-        goto L_52c9;
 
 L_52c9:
     dpMax = 1;
 
 L_52d3:
-    if ((HIWORD(dpTotal) < HIWORD(dpMax)))
-        goto L_5303;
-    else
-        goto L_52e1;
-
-L_52e1:
-    if ((HIWORD(dpTotal) > HIWORD(dpMax)))
-        goto L_52ee;
-    else
-        goto L_52e6;
-
-L_52e6:
-    if ((LOWORD(dpTotal) <= LOWORD(dpMax)))
+    if ((dpTotal <= dpMax))
         goto L_5303;
     else
         goto L_52ee;
@@ -4877,7 +4475,6 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
     PART     part;
     uint16_t t_merge_537b_0001;
     uint16_t t_scratch_m1a;
-    int32_t  t_call_569a;
 
 L_5312:
     brcCur = ptok->brc;
@@ -5064,20 +4661,7 @@ L_5669:
         goto L_5682;
 
 L_5682:
-    t_call_569a = DpFromPtokBrcToBrc(ptok, 0x0, 0x0, ptokTarget, 0);
-    if ((HIWORD(t_call_569a) < 0x0))
-        goto L_553f;
-    else
-        goto L_56aa;
-
-L_56aa:
-    if ((HIWORD(t_call_569a) > 0x0))
-        goto L_56b7;
-    else
-        goto L_56af;
-
-L_56af:
-    if ((LOWORD(t_call_569a) <= 0x0))
+    if ((DpFromPtokBrcToBrc(ptok, 0x0, 0x0, ptokTarget, 0) <= 0))
         goto L_553f;
     else
         goto L_56b7;
@@ -5650,22 +5234,10 @@ L_5d0f:
 L_5d12:
     dpTaken = DpFromPtokBrcToBrc(ptok, 0x0, ((((i & 0xf) << 0x4) | 0x0) & 0xff), ptokSrc, t_merge_5d12_0001);
     scoreThem = ScoreFromGiveAndTakeAndTactic(dpTaken, dpGiven, ptok->mdTactic);
-    if ((HIWORD(scoreThem) > HIWORD(scoreThemBest)))
-        goto L_5db5;
-    else
-        goto L_5d7e;
-
-L_5d7e:
-    if ((HIWORD(scoreThem) < HIWORD(scoreThemBest)))
+    if ((scoreThem <= scoreThemBest))
         goto L_5d8b;
     else
-        goto L_5d83;
-
-L_5d83:
-    if ((LOWORD(scoreThem) > LOWORD(scoreThemBest)))
         goto L_5db5;
-    else
-        goto L_5d8b;
 
 L_5d8b:
     scoreThemBest = scoreThem;
@@ -5683,19 +5255,7 @@ L_5db9:
         goto L_5dc4;
 
 L_5dc4:
-    if ((HIWORD(dpGivenCur) < HIWORD(dpGivenBest)))
-        goto L_5deb;
-    else
-        goto L_5dd2;
-
-L_5dd2:
-    if ((HIWORD(dpGivenCur) > HIWORD(dpGivenBest)))
-        goto L_5ddf;
-    else
-        goto L_5dd7;
-
-L_5dd7:
-    if ((LOWORD(dpGivenCur) <= LOWORD(dpGivenBest)))
+    if ((dpGivenCur <= dpGivenBest))
         goto L_5deb;
     else
         goto L_5ddf;
@@ -5731,32 +5291,14 @@ L_5e55:
 
 L_5e65:
     score = (-dpGive);
-    if ((LOWORD(score) != 0x0))
+    if ((score != 0))
         goto L_5e8a;
     else
-        goto L_5e81;
-
-L_5e81:
-    if ((HIWORD(score) == 0x0))
         goto L_5edc;
-    else
-        goto L_5e8a;
 
 L_5e8a:
     score = (int32_t)(((uint32_t)((score * 100)) / (dpTake + 1)));
-    if ((HIWORD(score) < 0x0))
-        goto L_5ee8;
-    else
-        goto L_5ec1;
-
-L_5ec1:
-    if ((HIWORD(score) > 0x0))
-        goto L_5ecf;
-    else
-        goto L_5ec6;
-
-L_5ec6:
-    if ((LOWORD(score) < 0x0))
+    if ((score < 0))
         goto L_5ee8;
     else
         goto L_5ecf;
@@ -5994,31 +5536,13 @@ L_619c:
     HIWORD(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]) = HIWORD(score);
 
 L_61c9:
-    if ((HIWORD(score) < HIWORD(scoreBest)))
-        goto L_6205;
-    else
-        goto L_61d7;
-
-L_61d7:
-    if ((HIWORD(score) > HIWORD(scoreBest)))
-        goto L_61e4;
-    else
-        goto L_61dc;
-
-L_61dc:
-    if ((LOWORD(score) < LOWORD(scoreBest)))
+    if ((score < scoreBest))
         goto L_6205;
     else
         goto L_61e4;
 
 L_61e4:
-    if ((LOWORD(score) != LOWORD(scoreBest)))
-        goto L_6260;
-    else
-        goto L_61f2;
-
-L_61f2:
-    if ((HIWORD(score) != HIWORD(scoreBest)))
+    if ((score != scoreBest))
         goto L_6260;
     else
         goto L_61fa;
@@ -6030,13 +5554,7 @@ L_61fa:
         goto L_6205;
 
 L_6205:
-    if ((LOWORD(score) != LOWORD(scoreBest)))
-        goto L_6243;
-    else
-        goto L_6213;
-
-L_6213:
-    if ((HIWORD(score) != HIWORD(scoreBest)))
+    if ((score != scoreBest))
         goto L_6243;
     else
         goto L_621b;
@@ -6165,40 +5683,16 @@ L_6353:
     goto L_63f2;
 
 L_6367:
-    if ((HIWORD(rgscoreNear[i][dy]) > HIWORD(lLow)))
-        goto L_63ee;
-    else
-        goto L_6389;
-
-L_6389:
-    if ((HIWORD(rgscoreNear[i][dy]) < HIWORD(lLow)))
+    if ((rgscoreNear[i][dy] <= lLow))
         goto L_6395;
     else
-        goto L_638e;
-
-L_638e:
-    if ((LOWORD(rgscoreNear[i][dy]) > LOWORD(lLow)))
         goto L_63ee;
-    else
-        goto L_6395;
 
 L_6395:
-    if ((HIWORD(rgscoreNear[i][dy]) > HIWORD(lLow)))
-        goto L_63ea;
-    else
-        goto L_63b7;
-
-L_63b7:
-    if ((HIWORD(rgscoreNear[i][dy]) < HIWORD(lLow)))
+    if ((rgscoreNear[i][dy] < lLow))
         goto L_63c3;
     else
-        goto L_63bc;
-
-L_63bc:
-    if ((LOWORD(rgscoreNear[i][dy]) >= LOWORD(lLow)))
         goto L_63ea;
-    else
-        goto L_63c3;
 
 L_63c3:
     lLow = rgscoreNear[i][dy];
@@ -6223,13 +5717,7 @@ L_63fb:
     goto L_6450;
 
 L_6411:
-    if ((LOWORD(rgscoreNear[i][dy]) != LOWORD(lLow)))
-        goto L_644c;
-    else
-        goto L_6432;
-
-L_6432:
-    if ((HIWORD(rgscoreNear[i][dy]) != HIWORD(lLow)))
+    if ((rgscoreNear[i][dy] != lLow))
         goto L_644c;
     else
         goto L_643a;
@@ -6283,40 +5771,16 @@ L_648f:
     goto L_652e;
 
 L_64a3:
-    if ((HIWORD(rgscoreNear[dx][i]) > HIWORD(lLow)))
-        goto L_652a;
-    else
-        goto L_64c5;
-
-L_64c5:
-    if ((HIWORD(rgscoreNear[dx][i]) < HIWORD(lLow)))
+    if ((rgscoreNear[dx][i] <= lLow))
         goto L_64d1;
     else
-        goto L_64ca;
-
-L_64ca:
-    if ((LOWORD(rgscoreNear[dx][i]) > LOWORD(lLow)))
         goto L_652a;
-    else
-        goto L_64d1;
 
 L_64d1:
-    if ((HIWORD(rgscoreNear[dx][i]) > HIWORD(lLow)))
-        goto L_6526;
-    else
-        goto L_64f3;
-
-L_64f3:
-    if ((HIWORD(rgscoreNear[dx][i]) < HIWORD(lLow)))
+    if ((rgscoreNear[dx][i] < lLow))
         goto L_64ff;
     else
-        goto L_64f8;
-
-L_64f8:
-    if ((LOWORD(rgscoreNear[dx][i]) >= LOWORD(lLow)))
         goto L_6526;
-    else
-        goto L_64ff;
 
 L_64ff:
     lLow = rgscoreNear[dx][i];
@@ -6341,13 +5805,7 @@ L_6537:
     goto L_658c;
 
 L_654d:
-    if ((LOWORD(rgscoreNear[dx][i]) != LOWORD(lLow)))
-        goto L_6588;
-    else
-        goto L_656e;
-
-L_656e:
-    if ((HIWORD(rgscoreNear[dx][i]) != HIWORD(lLow)))
+    if ((rgscoreNear[dx][i] != lLow))
         goto L_6588;
     else
         goto L_6576;
@@ -6434,31 +5892,13 @@ L_661d:
     rgptDeltas[1].y = dy;
 
 L_6628:
-    if ((HIWORD(rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y]) < HIWORD(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
-        goto L_66d1;
-    else
-        goto L_6669;
-
-L_6669:
-    if ((HIWORD(rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y]) > HIWORD(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
-        goto L_6675;
-    else
-        goto L_666e;
-
-L_666e:
-    if ((LOWORD(rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y]) < LOWORD(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
+    if ((rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y] < (int32_t)(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
         goto L_66d1;
     else
         goto L_6675;
 
 L_6675:
-    if ((LOWORD(rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y]) != LOWORD(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
-        goto L_66d9;
-    else
-        goto L_66b5;
-
-L_66b5:
-    if ((HIWORD(rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y]) != HIWORD(rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y])))
+    if ((rgscoreNear[rgptDeltas[0].x][rgptDeltas[0].y] != rgscoreNear[rgptDeltas[1].x][rgptDeltas[1].y]))
         goto L_66d9;
     else
         goto L_66bd;
@@ -6484,16 +5924,10 @@ L_6707:
     brcBest = LOBYTE((((yCur & 0xf) << 0x4) | (xCur & 0xf)));
 
 L_6720:
-    if ((LOWORD(scoreBest) != 0xc380))
+    if ((scoreBest != 30000000))
         goto L_6734;
     else
-        goto L_672a;
-
-L_672a:
-    if ((HIWORD(scoreBest) == 0x1c9))
         goto LReturnDxy;
-    else
-        goto L_6734;
 
 L_6734:
     if (((brcBest & 0xf) > 0x9))
@@ -6528,16 +5962,10 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
     int16_t t_scratch_m12;
 
 L_6790:
-    if ((LOWORD(cTorpBase) != 0x0))
+    if ((cTorpBase != 0))
         goto L_67ab;
     else
-        goto L_67a2;
-
-L_67a2:
-    if ((HIWORD(cTorpBase) == 0x0))
         goto L_67b4;
-    else
-        goto L_67ab;
 
 L_67ab:
     if ((pctBase != 0))
@@ -6550,16 +5978,10 @@ L_67b4:
 
 L_67bd:
     pctJam = (uint32_t)(ptok->pctJam);
-    if ((LOWORD(pctJam) != 0x0))
+    if ((pctJam != 0))
         goto L_67e2;
     else
-        goto L_67d9;
-
-L_67d9:
-    if ((HIWORD(pctJam) == 0x0))
         goto L_682e;
-    else
-        goto L_67e2;
 
 L_67e2:
     if ((pctBC == 0))
@@ -6569,22 +5991,10 @@ L_67e2:
 
 L_67eb:
     pctJam = (pctJam - (uint32_t)(pctBC));
-    if ((HIWORD(pctJam) > 0x0))
-        goto L_6829;
-    else
-        goto L_67fe;
-
-L_67fe:
-    if ((HIWORD(pctJam) < 0x0))
+    if ((pctJam < 0))
         goto L_680c;
     else
-        goto L_6803;
-
-L_6803:
-    if ((LOWORD(pctJam) >= 0x0))
         goto L_6829;
-    else
-        goto L_680c;
 
 L_680c:
     pctBC = (-LOWORD(pctJam));
@@ -6605,16 +6015,10 @@ L_6837:
     goto L_68c4;
 
 L_6877:
-    if ((LOWORD(pctJam) != 0x0))
+    if ((pctJam != 0))
         goto L_6889;
     else
-        goto L_6880;
-
-L_6880:
-    if ((HIWORD(pctJam) == 0x0))
         goto L_68ba;
-    else
-        goto L_6889;
 
 L_6889:
     pctHit = (int32_t)(((uint32_t)(((uint32_t)(pctBase) * (100 - pctJam))) / 0x64));
@@ -6624,40 +6028,16 @@ L_68ba:
     pctHit = (uint32_t)(pctBase);
 
 L_68c4:
-    if ((HIWORD(pctHit) > 0x0))
-        goto L_68e5;
-    else
-        goto L_68cd;
-
-L_68cd:
-    if ((HIWORD(pctHit) < 0x0))
+    if ((pctHit < 1))
         goto L_68db;
     else
-        goto L_68d2;
-
-L_68d2:
-    if ((LOWORD(pctHit) >= 0x1))
         goto L_68e5;
-    else
-        goto L_68db;
 
 L_68db:
     pctHit = 1;
 
 L_68e5:
-    if ((HIWORD(pctHit) < 0x0))
-        goto L_6905;
-    else
-        goto L_68ee;
-
-L_68ee:
-    if ((HIWORD(pctHit) > 0x0))
-        goto L_68fc;
-    else
-        goto L_68f3;
-
-L_68f3:
-    if ((LOWORD(pctHit) < 0x64))
+    if ((pctHit < 100))
         goto L_6905;
     else
         goto L_68fc;
@@ -6666,19 +6046,7 @@ L_68fc:
     return cTorpBase;
 
 L_6905:
-    if ((HIWORD(cTorpBase) < 0x0))
-        goto L_6946;
-    else
-        goto L_690e;
-
-L_690e:
-    if ((HIWORD(cTorpBase) > 0x0))
-        goto L_691d;
-    else
-        goto L_6913;
-
-L_6913:
-    if ((LOWORD(cTorpBase) <= 0xc8))
+    if ((cTorpBase <= 200))
         goto L_6946;
     else
         goto L_691d;
@@ -6706,19 +6074,7 @@ L_697f:
     i = (i + 1);
 
 L_6983:
-    if ((SIGNHIWORD(i) < HIWORD(cTorpBase)))
-        goto L_6958;
-    else
-        goto L_698f;
-
-L_698f:
-    if ((SIGNHIWORD(i) > HIWORD(cTorpBase)))
-        goto L_699c;
-    else
-        goto L_6994;
-
-L_6994:
-    if ((i < LOWORD(cTorpBase)))
+    if (((uint32_t)(i) < cTorpBase))
         goto L_6958;
     else
         goto L_699c;
@@ -7058,22 +6414,10 @@ L_6ef9:
 L_6f13:
     lpshdefE = LpshdefFromTok(ptokE);
     lValue = (uint32_t)((((uint32_t)(lpshdefE->hul.resCost) + (uint32_t)(lpshdefE->hul.rgwtOreCost[1])) * (uint32_t)(ptokE->csh)));
-    if ((HIWORD(lValue) > 0x1))
-        goto L_6f8c;
-    else
-        goto L_6f61;
-
-L_6f61:
-    if ((HIWORD(lValue) < 0x1))
+    if ((lValue < 100000))
         goto L_6f70;
     else
-        goto L_6f66;
-
-L_6f66:
-    if ((LOWORD(lValue) >= 0x86a0))
         goto L_6f8c;
-    else
-        goto L_6f70;
 
 L_6f70:
     lValue = (uint32_t)((lValue * 100));
@@ -7098,22 +6442,10 @@ L_6ff3:
                                   0x1f4)));
 
 L_706e:
-    if ((HIWORD(dpArmorLeft) > 0x0))
-        goto L_708f;
-    else
-        goto L_7077;
-
-L_7077:
-    if ((HIWORD(dpArmorLeft) < 0x0))
+    if ((dpArmorLeft <= 0))
         goto L_7085;
     else
-        goto L_707c;
-
-L_707c:
-    if ((LOWORD(dpArmorLeft) > 0x0))
         goto L_708f;
-    else
-        goto L_7085;
 
 L_7085:
     dpArmorLeft = 1;
@@ -7137,22 +6469,10 @@ L_70d6:
         goto L_70e8;
 
 L_70e8:
-    if ((HIWORD(dpShieldLeft) > 0x0))
-        goto L_710c;
-    else
-        goto L_70f1;
-
-L_70f1:
-    if ((HIWORD(dpShieldLeft) < 0x0))
+    if ((dpShieldLeft <= 0))
         goto L_70ff;
     else
-        goto L_70f6;
-
-L_70f6:
-    if ((LOWORD(dpShieldLeft) > 0x0))
         goto L_710c;
-    else
-        goto L_70ff;
 
 L_70ff:
     score = 0;
@@ -7166,22 +6486,10 @@ L_713e:
 
 L_7141:
     score = (int32_t)(((uint32_t)((lValue * 100)) / ((dpArmorLeft + dpShieldLeft) + 0x1)));
-    if ((HIWORD(score) > 0x0))
-        goto L_750c;
-    else
-        goto L_717e;
-
-L_717e:
-    if ((HIWORD(score) < 0x0))
+    if ((score <= 0))
         goto L_718c;
     else
-        goto L_7183;
-
-L_7183:
-    if ((LOWORD(score) > 0x0))
         goto L_750c;
-    else
-        goto L_718c;
 
 L_718c:
     score = 1;
@@ -7207,19 +6515,7 @@ L_7216:
     pctHit = (pctHit - (int32_t)(((uint32_t)((pctHit * (uint32_t)((ptokE->pctJam - t_scratch_m7a_5)))) / 0x64)));
 
 L_7257:
-    if ((HIWORD(pctHit) < 0x0))
-        goto L_74e9;
-    else
-        goto L_7260;
-
-L_7260:
-    if ((HIWORD(pctHit) > 0x0))
-        goto L_726e;
-    else
-        goto L_7265;
-
-L_7265:
-    if ((LOWORD(pctHit) <= 0x0))
+    if ((pctHit <= 0))
         goto L_74e9;
     else
         goto L_726e;
@@ -7245,22 +6541,10 @@ L_7290:
 
 L_7293:
     fCapMissile = t_merge_7293_0001;
-    if ((HIWORD(dpArmorLeft) > 0x1))
-        goto L_72e0;
-    else
-        goto L_729f;
-
-L_729f:
-    if ((HIWORD(dpArmorLeft) < 0x1))
+    if ((dpArmorLeft < 100000))
         goto L_72ae;
     else
-        goto L_72a4;
-
-L_72a4:
-    if ((LOWORD(dpArmorLeft) >= 0x86a0))
         goto L_72e0;
-    else
-        goto L_72ae;
 
 L_72ae:
     nts = (int32_t)(((int32_t)(((uint32_t)((dpArmorLeft * 100)) * 0x2)) / pctHit));
@@ -7270,22 +6554,10 @@ L_72e0:
     nts = (uint32_t)(((int32_t)((dpArmorLeft / pctHit)) * 0xc8));
 
 L_7307:
-    if ((HIWORD(dpShieldLeft) > 0x1))
-        goto L_7386;
-    else
-        goto L_7310;
-
-L_7310:
-    if ((HIWORD(dpShieldLeft) < 0x1))
+    if ((dpShieldLeft < 100000))
         goto L_731f;
     else
-        goto L_7315;
-
-L_7315:
-    if ((LOWORD(dpShieldLeft) >= 0x86a0))
         goto L_7386;
-    else
-        goto L_731f;
 
 L_731f:
     nds = (int32_t)(((uint32_t)((dpShieldLeft * 100)) / ((int32_t)((pctHit / 2)) + (int32_t)(((100 - pctHit) / 0x8)))));
@@ -7297,22 +6569,10 @@ L_7386:
 L_73ea:
     ntk =
         (int32_t)(((uint32_t)(((dpArmorLeft - (int32_t)(((uint32_t)((nds * pctHit)) / 0xc8))) * 0x64)) / (uint32_t)((pctHit * (uint32_t)((fCapMissile + 1))))));
-    if ((HIWORD(nts) > (HIWORD(nds) + HIWORD(ntk))))
-        goto L_7476;
-    else
-        goto L_745e;
-
-L_745e:
-    if ((HIWORD(nts) < (HIWORD(nds) + HIWORD(ntk))))
+    if ((nts < (nds + ntk)))
         goto L_746c;
     else
-        goto L_7463;
-
-L_7463:
-    if ((LOWORD(nts) >= (LOWORD(nds) + LOWORD(ntk))))
         goto L_7476;
-    else
-        goto L_746c;
 
 L_746c:
     t_merge_7484_0001 = nts;
@@ -7323,41 +6583,17 @@ L_7476:
 
 L_7484:
     score = t_merge_7484_0001;
-    if ((HIWORD(score) < 0x0))
-        goto L_74dc;
-    else
-        goto L_7493;
-
-L_7493:
-    if ((HIWORD(score) > 0x0))
-        goto L_74a1;
-    else
-        goto L_7498;
-
-L_7498:
-    if ((LOWORD(score) <= 0x0))
+    if ((score <= 0))
         goto L_74dc;
     else
         goto L_74a1;
 
 L_74a1:
     score = (int32_t)((lValue / score));
-    if ((HIWORD(score) > 0x0))
-        goto L_750c;
-    else
-        goto L_74c1;
-
-L_74c1:
-    if ((HIWORD(score) < 0x0))
+    if ((score <= 0))
         goto L_74cf;
     else
-        goto L_74c6;
-
-L_74c6:
-    if ((LOWORD(score) > 0x0))
         goto L_750c;
-    else
-        goto L_74cf;
 
 L_74cf:
     score = 1;
@@ -7393,19 +6629,7 @@ L_7506:
     goto L_7199;
 
 L_750c:
-    if ((HIWORD(score) < HIWORD(scoreBest)))
-        goto L_6e38;
-    else
-        goto L_751a;
-
-L_751a:
-    if ((HIWORD(score) > HIWORD(scoreBest)))
-        goto L_7527;
-    else
-        goto L_751f;
-
-L_751f:
-    if ((LOWORD(score) <= LOWORD(scoreBest)))
+    if ((score <= scoreBest))
         goto L_6e38;
     else
         goto L_7527;
@@ -7419,13 +6643,7 @@ L_7545:
     goto L_6e38;
 
 L_7548:
-    if ((LOWORD(ptokTarget) != 0x0))
-        goto L_756a;
-    else
-        goto L_7551;
-
-L_7551:
-    if ((HIWORD(ptokTarget) != 0x0))
+    if ((ptokTarget != 0x0))
         goto L_756a;
     else
         goto L_755d;
@@ -7440,16 +6658,10 @@ L_7561:
         goto L_756a;
 
 L_756a:
-    if ((LOWORD(ptokTarget) != 0x0))
+    if ((ptokTarget != 0x0))
         goto L_757f;
     else
-        goto L_7573;
-
-L_7573:
-    if ((HIWORD(ptokTarget) == 0x0))
         goto L_6a02;
-    else
-        goto L_757f;
 
 L_757f:
     dz = DzFromBrcBrc(ptokTarget->brc, ptok->brc);
@@ -7523,76 +6735,28 @@ L_7721:
     ctokDamaged = (ctokDamaged + 1);
 
 L_7725:
-    if ((HIWORD(dp) < 0x0))
-        goto L_7804;
-    else
-        goto L_772e;
-
-L_772e:
-    if ((HIWORD(dp) > 0x0))
-        goto L_773c;
-    else
-        goto L_7733;
-
-L_7733:
-    if ((LOWORD(dp) <= 0x0))
+    if ((dp <= 0))
         goto L_7804;
     else
         goto L_773c;
 
 L_773c:
-    if ((HIWORD(dpT) < 0x0))
-        goto L_7804;
-    else
-        goto L_7745;
-
-L_7745:
-    if ((HIWORD(dpT) > 0x0))
-        goto L_7753;
-    else
-        goto L_774a;
-
-L_774a:
-    if ((LOWORD(dpT) <= 0x0))
+    if ((dpT <= 0))
         goto L_7804;
     else
         goto L_7753;
 
 L_7753:
-    if ((HIWORD(dpMain) > 0x1))
-        goto L_77a8;
-    else
-        goto L_775c;
-
-L_775c:
-    if ((HIWORD(dpMain) < 0x1))
+    if ((dpMain < 65536))
         goto L_776a;
     else
-        goto L_7761;
-
-L_7761:
-    if ((LOWORD(dpMain) >= 0x0))
         goto L_77a8;
-    else
-        goto L_776a;
 
 L_776a:
-    if ((HIWORD(dp) > 0x1))
-        goto L_77a8;
-    else
-        goto L_7773;
-
-L_7773:
-    if ((HIWORD(dp) < 0x1))
+    if ((dp < 65536))
         goto L_7781;
     else
-        goto L_7778;
-
-L_7778:
-    if ((LOWORD(dp) >= 0x0))
         goto L_77a8;
-    else
-        goto L_7781;
 
 L_7781:
     lValue = (int32_t)(((uint32_t)((dpMain * dp)) / dpT));
@@ -7602,22 +6766,10 @@ L_77a8:
     lValue = __ftol();
 
 L_77c5:
-    if (((HIWORD(dpMain) + 0xffff) > HIWORD(lValue)))
-        goto L_77f5;
-    else
-        goto L_77d9;
-
-L_77d9:
-    if (((HIWORD(dpMain) + 0xffff) < HIWORD(lValue)))
+    if (((dpMain - 1) < lValue))
         goto L_77e6;
     else
-        goto L_77de;
-
-L_77de:
-    if (((LOWORD(dpMain) + 0xffff) >= LOWORD(lValue)))
         goto L_77f5;
-    else
-        goto L_77e6;
 
 L_77e6:
     t_merge_77fb_0001 = (dpMain - 1);
@@ -7637,19 +6789,7 @@ L_780e:
     goto L_7c84;
 
 L_7811:
-    if ((HIWORD(cTorpsLeft) > 0x0))
-        goto L_782b;
-    else
-        goto L_781a;
-
-L_781a:
-    if ((HIWORD(cTorpsLeft) < 0x0))
-        goto L_7c84;
-    else
-        goto L_781f;
-
-L_781f:
-    if ((LOWORD(cTorpsLeft) <= 0x0))
+    if ((cTorpsLeft <= 0))
         goto L_7c84;
     else
         goto L_782b;
@@ -7688,22 +6828,10 @@ L_7970:
         goto L_797e;
 
 L_797e:
-    if ((HIWORD(dpShieldLeft) > 0x0))
-        goto L_79a9;
-    else
-        goto L_7987;
-
-L_7987:
-    if ((HIWORD(dpShieldLeft) < 0x0))
+    if ((dpShieldLeft <= 0))
         goto L_7995;
     else
-        goto L_798c;
-
-L_798c:
-    if ((LOWORD(dpShieldLeft) > 0x0))
         goto L_79a9;
-    else
-        goto L_7995;
 
 L_7995:
     dp = (int32_t)((dp * 2));
@@ -7713,40 +6841,16 @@ L_79a9:
 
 L_79ad:
     i = ptokTarget->csh;
-    if ((SIGNHIWORD(i) > HIWORD(cTorpBase)))
-        goto L_79f6;
-    else
-        goto L_79c3;
-
-L_79c3:
-    if ((SIGNHIWORD(i) < HIWORD(cTorpBase)))
+    if (((uint32_t)(i) < cTorpBase))
         goto L_79d0;
     else
-        goto L_79c8;
-
-L_79c8:
-    if ((i >= LOWORD(cTorpBase)))
         goto L_79f6;
-    else
-        goto L_79d0;
 
 L_79d0:
-    if ((HIWORD((uint32_t)((cTorpHit * dp))) > HIWORD(dpArmorLeft)))
-        goto L_7b3c;
-    else
-        goto L_79e9;
-
-L_79e9:
-    if ((HIWORD((uint32_t)((cTorpHit * dp))) < HIWORD(dpArmorLeft)))
+    if (((int32_t)((uint32_t)((cTorpHit * dp))) <= dpArmorLeft))
         goto L_79f6;
     else
-        goto L_79ee;
-
-L_79ee:
-    if ((LOWORD((uint32_t)((cTorpHit * dp))) > LOWORD(dpArmorLeft)))
         goto L_7b3c;
-    else
-        goto L_79f6;
 
 L_79f6:
     cTorpFire = cTorpHit;
@@ -7757,22 +6861,10 @@ L_7a1a:
     cTorpFire = (int32_t)(((((uint32_t)(((uint32_t)(i)*cTorpHit)) + cTorpBase) + 0xffffffff) / cTorpBase));
     cTorpMiss = ((uint32_t)(i)-cTorpFire);
     dpShieldCur = (dpShieldLeft - (int32_t)(((uint32_t)((cTorpMiss * dp)) / 0x8)));
-    if ((HIWORD(dpShieldCur) > 0x0))
-        goto L_7aab;
-    else
-        goto L_7a93;
-
-L_7a93:
-    if ((HIWORD(dpShieldCur) < 0x0))
+    if ((dpShieldCur < 0))
         goto L_7aa1;
     else
-        goto L_7a98;
-
-L_7a98:
-    if ((LOWORD(dpShieldCur) >= 0x0))
         goto L_7aab;
-    else
-        goto L_7aa1;
 
 L_7aa1:
     dpShieldCur = 0;
@@ -7780,80 +6872,32 @@ L_7aa1:
 L_7aab:
     dpShieldCur = (dpShieldCur - (int32_t)(((uint32_t)((cTorpFire * dp)) / 0x2)));
     dpHitArmor = (int32_t)(((uint32_t)((cTorpFire * dp)) / 0x2));
-    if ((HIWORD(dpShieldCur) > 0x0))
-        goto L_7b1a;
-    else
-        goto L_7b00;
-
-L_7b00:
-    if ((HIWORD(dpShieldCur) < 0x0))
+    if ((dpShieldCur < 0))
         goto L_7b0e;
     else
-        goto L_7b05;
-
-L_7b05:
-    if ((LOWORD(dpShieldCur) >= 0x0))
         goto L_7b1a;
-    else
-        goto L_7b0e;
 
 L_7b0e:
     dpHitArmor = (dpHitArmor - dpShieldCur);
 
 L_7b1a:
-    if ((HIWORD(dpHitArmor) < HIWORD(dpArmorLeft)))
+    if ((dpHitArmor < dpArmorLeft))
         goto L_7b38;
     else
-        goto L_7b28;
-
-L_7b28:
-    if ((HIWORD(dpHitArmor) > HIWORD(dpArmorLeft)))
         goto L_7b55;
-    else
-        goto L_7b2d;
-
-L_7b2d:
-    if ((LOWORD(dpHitArmor) >= LOWORD(dpArmorLeft)))
-        goto L_7b55;
-    else
-        goto L_7b38;
 
 L_7b38:
     i = (i + 1);
 
 L_7b3c:
-    if ((SIGNHIWORD(i) < HIWORD(cTorpBase)))
-        goto L_7a1a;
-    else
-        goto L_7b48;
-
-L_7b48:
-    if ((SIGNHIWORD(i) > HIWORD(cTorpBase)))
-        goto L_7b55;
-    else
-        goto L_7b4d;
-
-L_7b4d:
-    if ((i <= LOWORD(cTorpBase)))
+    if (((uint32_t)(i) <= cTorpBase))
         goto L_7a1a;
     else
         goto L_7b55;
 
 L_7b55:
     dpCol = (int32_t)(((uint32_t)((cTorpMiss * dp)) / 0x8));
-    if ((HIWORD(dpCol) < 0x0))
-        goto L_7bca;
-    else
-        goto L_7b84;
-
-L_7b84:
-    if ((HIWORD(dpCol) > 0x0))
-        goto L_7b92;
-    else
-        goto L_7b89;
-
-L_7b89:
-    if ((LOWORD(dpCol) <= 0x0))
+    if ((dpCol <= 0))
         goto L_7bca;
     else
         goto L_7b92;
@@ -7898,22 +6942,10 @@ L_7c79:
         goto L_7c84;
 
 L_7c84:
-    if ((HIWORD(dpMain) > 0x0))
-        goto LFindAnotherTarget;
-    else
-        goto L_7c8d;
-
-L_7c8d:
-    if ((HIWORD(dpMain) < 0x0))
+    if ((dpMain <= 0))
         goto L_7c9b;
     else
-        goto L_7c92;
-
-L_7c92:
-    if ((LOWORD(dpMain) > 0x0))
         goto LFindAnotherTarget;
-    else
-        goto L_7c9b;
 
 L_7c9b:
     if ((HIWORD(cTorpsLeft) < 0x0))
@@ -8138,16 +7170,10 @@ L_8061:
 
 L_806a:
     rgwtMinerals[i] = (rgwtMinerals[i] + pfl->rgwtMin[i]);
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_80a3;
     else
-        goto L_809a;
-
-L_809a:
-    if ((HIWORD(lppl) == 0x0))
         goto L_8109;
-    else
-        goto L_80a3;
 
 L_80a3:
     if ((lppl->fStarbase == 0x0))
@@ -8175,13 +7201,7 @@ L_810d:
         goto L_8116;
 
 L_8116:
-    if ((LOWORD(lppl) != 0x0))
-        goto L_81bb;
-    else
-        goto L_811f;
-
-L_811f:
-    if ((HIWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_81bb;
     else
         goto L_8128;
@@ -8203,16 +7223,10 @@ L_817f:
         goto L_8188;
 
 L_8188:
-    if ((LOWORD(wtTotal) != 0x0))
+    if ((wtTotal != 0))
         goto L_819a;
     else
-        goto L_8191;
-
-L_8191:
-    if ((HIWORD(wtTotal) == 0x0))
         goto L_81bb;
-    else
-        goto L_819a;
 
 L_819a:
     DropSalvage(plpth, rgwtMinerals, pfl->iPlayer, &(pfl->pt));
@@ -8257,19 +7271,7 @@ L_8225:
     dpOrig = (uint32_t)(ptok->dpShield);
     dpT = ((uint32_t)(ptok->dpShield) - dpOrig);
     dpOrig = (uint32_t)((dpOrig * (uint32_t)(ptok->csh)));
-    if ((HIWORD(dpOrig) < HIWORD(dp)))
-        goto L_82d6;
-    else
-        goto L_8276;
-
-L_8276:
-    if ((HIWORD(dpOrig) > HIWORD(dp)))
-        goto L_8283;
-    else
-        goto L_827b;
-
-L_827b:
-    if ((LOWORD(dpOrig) <= LOWORD(dp)))
+    if ((dpOrig <= dp))
         goto L_82d6;
     else
         goto L_8283;
@@ -8299,16 +7301,10 @@ L_830d:
     return 0;
 
 L_8313:
-    if ((LOWORD(dp) != 0x0))
+    if ((dp != 0))
         goto L_8325;
     else
-        goto L_831c;
-
-L_831c:
-    if ((HIWORD(dp) == 0x0))
         goto L_832e;
-    else
-        goto L_8325;
 
 L_8325:
     if ((fShieldsOnly == 0))
@@ -8317,13 +7313,7 @@ L_8325:
         goto L_832e;
 
 L_832e:
-    if ((LOWORD(dpTorp) != 0x0))
-        goto L_8387;
-    else
-        goto L_8337;
-
-L_8337:
-    if ((HIWORD(dpTorp) != 0x0))
+    if ((dpTorp != 0))
         goto L_8387;
     else
         goto L_8340;
@@ -8378,19 +7368,7 @@ L_842f:
     dp = (dp + (int32_t)(((uint32_t)((dpShdef * dv.pctDp)) / 0x1f4)));
 
 L_845f:
-    if ((HIWORD(dp) < HIWORD(dpShdef)))
-        goto L_8514;
-    else
-        goto L_846d;
-
-L_846d:
-    if ((HIWORD(dp) > HIWORD(dpShdef)))
-        goto L_847a;
-    else
-        goto L_8472;
-
-L_8472:
-    if ((LOWORD(dp) < LOWORD(dpShdef)))
+    if ((dp < dpShdef))
         goto L_8514;
     else
         goto L_847a;
@@ -8479,13 +7457,7 @@ L_8709:
 
 L_870e:
     ddpOrig = (int32_t)(((uint32_t)((dpShdef * dv.pctDp)) / 0x1f4));
-    if ((LOWORD(ddpOrig) != 0x0))
-        goto L_876c;
-    else
-        goto L_8747;
-
-L_8747:
-    if ((HIWORD(ddpOrig) != 0x0))
+    if ((ddpOrig != 0))
         goto L_876c;
     else
         goto L_8750;
@@ -8513,19 +7485,7 @@ L_879c:
     dpShdef = (dpShdef - ddpOrig);
 
 L_87ae:
-    if ((HIWORD(dp) < HIWORD(dpShdef)))
-        goto L_8815;
-    else
-        goto L_87bc;
-
-L_87bc:
-    if ((HIWORD(dp) > HIWORD(dpShdef)))
-        goto L_87c9;
-    else
-        goto L_87c1;
-
-L_87c1:
-    if ((LOWORD(dp) < LOWORD(dpShdef)))
+    if ((dp < dpShdef))
         goto L_8815;
     else
         goto L_87c9;
@@ -8537,16 +7497,10 @@ L_87c9:
         goto L_87d2;
 
 L_87d2:
-    if ((LOWORD(cKillMax) != 0x0))
+    if ((cKillMax != 0))
         goto L_87e4;
     else
-        goto L_87db;
-
-L_87db:
-    if ((HIWORD(cKillMax) == 0x0))
         goto L_8815;
-    else
-        goto L_87e4;
 
 L_87e4:
     dp = (dp - dpShdef);
@@ -8570,19 +7524,7 @@ L_8815:
     csh = (csh + (cshOrig - i));
 
 L_8836:
-    if ((HIWORD(dp) < HIWORD(dpShdef)))
-        goto L_889d;
-    else
-        goto L_8844;
-
-L_8844:
-    if ((HIWORD(dp) > HIWORD(dpShdef)))
-        goto L_8851;
-    else
-        goto L_8849;
-
-L_8849:
-    if ((LOWORD(dp) < LOWORD(dpShdef)))
+    if ((dp < dpShdef))
         goto L_889d;
     else
         goto L_8851;
@@ -8594,16 +7536,10 @@ L_8851:
         goto L_885a;
 
 L_885a:
-    if ((LOWORD(cKillMax) != 0x0))
+    if ((cKillMax != 0))
         goto L_886c;
     else
-        goto L_8863;
-
-L_8863:
-    if ((HIWORD(cKillMax) == 0x0))
         goto L_889d;
-    else
-        goto L_886c;
 
 L_886c:
     dp = (dp - dpShdef);
@@ -8621,37 +7557,19 @@ L_889a:
     goto L_8836;
 
 L_889d:
-    if ((HIWORD(cKillMax) > 0x0))
-        goto L_88be;
-    else
-        goto L_88a6;
-
-L_88a6:
-    if ((HIWORD(cKillMax) < 0x0))
+    if ((cKillMax <= 0))
         goto L_88b4;
     else
-        goto L_88ab;
-
-L_88ab:
-    if ((LOWORD(cKillMax) > 0x0))
         goto L_88be;
-    else
-        goto L_88b4;
 
 L_88b4:
     dp = 0;
 
 L_88be:
-    if ((LOWORD(dp) != 0x0))
+    if ((dp != 0))
         goto L_88d0;
     else
-        goto L_88c7;
-
-L_88c7:
-    if ((HIWORD(dp) == 0x0))
         goto L_898b;
-    else
-        goto L_88d0;
 
 L_88d0:
     if ((csh == 0))
@@ -8670,13 +7588,7 @@ L_88e2:
 
 L_8913:
     dp = (int32_t)((dp / (uint32_t)(csh)));
-    if ((LOWORD(dp) != 0x0))
-        goto L_8946;
-    else
-        goto L_8933;
-
-L_8933:
-    if ((HIWORD(dp) != 0x0))
+    if ((dp != 0))
         goto L_8946;
     else
         goto L_893c;
@@ -8746,19 +7658,7 @@ L_8a50:
     dp = 0;
 
 L_8aa5:
-    if ((HIWORD(dp) < HIWORD(dpTorp)))
-        goto L_8ad7;
-    else
-        goto L_8ab3;
-
-L_8ab3:
-    if ((HIWORD(dp) > HIWORD(dpTorp)))
-        goto L_8ac0;
-    else
-        goto L_8ab8;
-
-L_8ab8:
-    if ((LOWORD(dp) <= LOWORD(dpTorp)))
+    if ((dp <= dpTorp))
         goto L_8ad7;
     else
         goto L_8ac0;
@@ -8903,13 +7803,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     int16_t  t_scratch_m278_3;
 
 L_8bcc:
-    if ((LOWORD(lpbBattleLog) != 0x0))
-        goto L_8c3e;
-    else
-        goto L_8bdf;
-
-L_8bdf:
-    if ((HIWORD(lpbBattleLog) != 0x0))
+    if ((lpbBattleLog != 0x0))
         goto L_8c3e;
     else
         goto L_8be9;
@@ -8931,13 +7825,7 @@ L_8c19:
     lpbBattleCur = lpbBattleLog;
 
 L_8c3e:
-    if ((LOWORD(lpbBattleT) != 0x0))
-        goto L_8c99;
-    else
-        goto L_8c48;
-
-L_8c48:
-    if ((HIWORD(lpbBattleT) != 0x0))
+    if ((lpbBattleT != 0x0))
         goto L_8c99;
     else
         goto L_8c52;
@@ -9008,25 +7896,13 @@ L_8df6:
 
 L_8dff:
     lpflT = lpflT->lpflNext;
-    if ((LOWORD(lpflT) != LOWORD(lpfl)))
+    if ((lpflT != lpfl))
         goto L_8e26;
     else
-        goto L_8e1e;
-
-L_8e1e:
-    if ((HIWORD(lpflT) == HIWORD(lpfl)))
         goto L_8e38;
-    else
-        goto L_8e26;
 
 L_8e26:
-    if ((LOWORD(lpflT) != 0x0))
-        goto L_8d7e;
-    else
-        goto L_8e2f;
-
-L_8e2f:
-    if ((HIWORD(lpflT) != 0x0))
+    if ((lpflT != 0x0))
         goto L_8d7e;
     else
         goto L_8e38;
@@ -9520,22 +8396,10 @@ L_9834:
     lpbtldata->cbData = (LOWORD(lpbBattleCur) - LOWORD(lpbtldata));
     SendBattleMessages(lpfl, cplr, lpbtldata->id, rgPlrLosses, grfPlayer, cShipsInvolved, cShdefsInvolved, grfSpectator);
     lpbtldata->grfPlr = grfPlayer;
-    if (((0x0 - 0x0) > 0x0))
-        goto L_98d9;
-    else
-        goto L_98b6;
-
-L_98b6:
-    if (((0x0 - 0x0) < 0x0))
+    if (((0xffc8 - (uint32_t)((LOWORD(lpbSav) & 0xffff))) < (uint32_t)(lpbtldata->cbData)))
         goto L_98c2;
     else
-        goto L_98bb;
-
-L_98bb:
-    if (((0xffc8 - (LOWORD(lpbSav) & 0xffff)) >= lpbtldata->cbData))
         goto L_98d9;
-    else
-        goto L_98c2;
 
 L_98c2:
     *(lpbSav) = 0xffff;
@@ -9831,25 +8695,13 @@ L_9d88:
 
 L_9d91:
     lpfl = lpfl->lpflNext;
-    if ((LOWORD(lpfl) != LOWORD(lpflBtl)))
+    if ((lpfl != lpflBtl))
         goto L_9db8;
     else
-        goto L_9db0;
-
-L_9db0:
-    if ((HIWORD(lpfl) == HIWORD(lpflBtl)))
         goto L_9dca;
-    else
-        goto L_9db8;
 
 L_9db8:
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_9d2b;
-    else
-        goto L_9dc1;
-
-L_9dc1:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_9d2b;
     else
         goto L_9dca;
@@ -9893,19 +8745,7 @@ L_9e23:
         goto L_9e2e;
 
 L_9e2e:
-    if ((HIWORD(lpopStarbase) < 0x0))
-        goto L_9e4e;
-    else
-        goto L_9e37;
-
-L_9e37:
-    if ((HIWORD(lpopStarbase) > 0x0))
-        goto L_9e46;
-    else
-        goto L_9e3c;
-
-L_9e3c:
-    if ((LOWORD(lpopStarbase) <= 0x3e8))
+    if ((lpopStarbase <= 1000))
         goto L_9e4e;
     else
         goto L_9e46;
@@ -10180,25 +9020,13 @@ L_a0d8:
 
 L_a114:
     lpfl = lpfl->lpflNext;
-    if ((LOWORD(lpfl) != LOWORD(lpflBtl)))
+    if ((lpfl != lpflBtl))
         goto L_a13b;
     else
-        goto L_a133;
-
-L_a133:
-    if ((HIWORD(lpfl) == HIWORD(lpflBtl)))
         goto L_a14d;
-    else
-        goto L_a13b;
 
 L_a13b:
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_a061;
-    else
-        goto L_a144;
-
-L_a144:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_a061;
     else
         goto L_a14d;
@@ -10239,16 +9067,10 @@ L_a1d3:
         goto L_a207;
 
 L_a207:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_a219;
     else
-        goto L_a210;
-
-L_a210:
-    if ((HIWORD(lppl) == 0x0))
         goto L_a235;
-    else
-        goto L_a219;
 
 L_a219:
     if ((lppl->iPlayer == -1))
@@ -10476,16 +9298,10 @@ L_a41e:
         goto L_a454;
 
 L_a454:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_a466;
     else
-        goto L_a45d;
-
-L_a45d:
-    if ((HIWORD(lppl) == 0x0))
         goto L_a482;
-    else
-        goto L_a466;
 
 L_a466:
     if ((lppl->iPlayer == -1))
@@ -10636,25 +9452,13 @@ L_a5ed:
 
 L_a5f6:
     lpfl = lpfl->lpflNext;
-    if ((LOWORD(lpfl) != LOWORD(lpflBtl)))
+    if ((lpfl != lpflBtl))
         goto L_a61d;
     else
-        goto L_a615;
-
-L_a615:
-    if ((HIWORD(lpfl) == HIWORD(lpflBtl)))
         goto L_a62f;
-    else
-        goto L_a61d;
 
 L_a61d:
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_a56f;
-    else
-        goto L_a626;
-
-L_a626:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_a56f;
     else
         goto L_a62f;
@@ -10871,16 +9675,10 @@ L_a9f5:
         goto L_aa00;
 
 L_aa00:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_aa12;
     else
-        goto L_aa09;
-
-L_aa09:
-    if ((HIWORD(lppl) == 0x0))
         goto L_aa2e;
-    else
-        goto L_aa12;
 
 L_aa12:
     if ((lppl->iPlayer == -1))
@@ -10968,16 +9766,10 @@ L_ab98:
         goto L_aba1;
 
 L_aba1:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_abb3;
     else
-        goto L_abaa;
-
-L_abaa:
-    if ((HIWORD(lppl) == 0x0))
         goto L_abcf;
-    else
-        goto L_abb3;
 
 L_abb3:
     if ((lppl->iPlayer == -1))
@@ -10998,16 +9790,10 @@ L_abe8:
     goto L_ad23;
 
 L_abeb:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_abfd;
     else
-        goto L_abf4;
-
-L_abf4:
-    if ((HIWORD(lppl) == 0x0))
         goto L_ac47;
-    else
-        goto L_abfd;
 
 L_abfd:
     if ((lppl->iPlayer != iplr))
@@ -11037,40 +9823,22 @@ L_ac61:
 
 L_ac73:
     lpfl = lpfl->lpflNext;
-    if ((LOWORD(lpfl) != LOWORD(lpflBtl)))
+    if ((lpfl != lpflBtl))
         goto L_ac9a;
     else
-        goto L_ac92;
-
-L_ac92:
-    if ((HIWORD(lpfl) == HIWORD(lpflBtl)))
         goto L_acac;
-    else
-        goto L_ac9a;
 
 L_ac9a:
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_ac61;
-    else
-        goto L_aca3;
-
-L_aca3:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_ac61;
     else
         goto L_acac;
 
 L_acac:
-    if ((LOWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_acbe;
     else
-        goto L_acb5;
-
-L_acb5:
-    if ((HIWORD(lpfl) == 0x0))
         goto L_ad23;
-    else
-        goto L_acbe;
 
 L_acbe:
     if ((lpfl->iPlayer != iplr))
@@ -11105,40 +9873,22 @@ L_ad52:
 
 L_ad6c:
     lpfl = lpfl->lpflNext;
-    if ((LOWORD(lpfl) != LOWORD(lpflBtl)))
+    if ((lpfl != lpflBtl))
         goto L_ad93;
     else
-        goto L_ad8b;
-
-L_ad8b:
-    if ((HIWORD(lpfl) == HIWORD(lpflBtl)))
         goto L_ada5;
-    else
-        goto L_ad93;
 
 L_ad93:
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_ad43;
-    else
-        goto L_ad9c;
-
-L_ad9c:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_ad43;
     else
         goto L_ada5;
 
 L_ada5:
-    if ((LOWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_adb7;
     else
-        goto L_adae;
-
-L_adae:
-    if ((HIWORD(lpfl) == 0x0))
         goto L_9dd2;
-    else
-        goto L_adb7;
 
 L_adb7:
     if ((lpfl->iPlayer != iplr))
@@ -11272,11 +10022,8 @@ void DoBombing() {
     int16_t   pctTot;
     int16_t   dChg;
     int16_t   i;
-    int16_t   t_call_b299;
     uint16_t  t_merge_b2c2_0001;
-    int16_t   t_call_b387;
     uint16_t  t_merge_b3b0_0001;
-    int16_t   t_call_b590;
     uint16_t  t_merge_b5b9_0001;
     int16_t   t_merge_b97d_0001;
     int16_t   t_merge_b9c4_0001;
@@ -11304,16 +10051,10 @@ L_af0f:
 
 L_af1a:
     lpfl = rglpfl[ifl];
-    if ((LOWORD(rglpfl[ifl]) != 0x0))
+    if ((rglpfl[ifl] != 0x0))
         goto L_af4a;
     else
-        goto L_af42;
-
-L_af42:
-    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_be8d;
-    else
-        goto L_af4a;
 
 L_af4a:
     if ((lpfl->fDead != 0x0))
@@ -11372,19 +10113,7 @@ L_b02a:
         goto L_b055;
 
 L_b055:
-    if ((HIWORD(dmgBombPeople) < 0x0))
-        goto L_b08a;
-    else
-        goto L_b05e;
-
-L_b05e:
-    if ((HIWORD(dmgBombPeople) > 0x0))
-        goto L_b06c;
-    else
-        goto L_b063;
-
-L_b063:
-    if ((LOWORD(dmgBombPeople) <= 0x0))
+    if ((dmgBombPeople <= 0))
         goto L_b08a;
     else
         goto L_b06c;
@@ -11393,19 +10122,7 @@ L_b06c:
     dmgBombPeople = __ftol();
 
 L_b08a:
-    if ((HIWORD(dmgBombFloor) < 0x0))
-        goto L_b0bf;
-    else
-        goto L_b093;
-
-L_b093:
-    if ((HIWORD(dmgBombFloor) > 0x0))
-        goto L_b0a1;
-    else
-        goto L_b098;
-
-L_b098:
-    if ((LOWORD(dmgBombFloor) <= 0x0))
+    if ((dmgBombFloor <= 0))
         goto L_b0bf;
     else
         goto L_b0a1;
@@ -11414,19 +10131,7 @@ L_b0a1:
     dmgBombFloor = __ftol();
 
 L_b0bf:
-    if ((HIWORD(dmgPeopleSmart) < 0x0))
-        goto L_b0f4;
-    else
-        goto L_b0c8;
-
-L_b0c8:
-    if ((HIWORD(dmgPeopleSmart) > 0x0))
-        goto L_b0d6;
-    else
-        goto L_b0cd;
-
-L_b0cd:
-    if ((LOWORD(dmgPeopleSmart) <= 0x0))
+    if ((dmgPeopleSmart <= 0))
         goto L_b0f4;
     else
         goto L_b0d6;
@@ -11435,19 +10140,7 @@ L_b0d6:
     dmgPeopleSmart = __ftol();
 
 L_b0f4:
-    if ((HIWORD(dmgBombBldg) < 0x0))
-        goto L_b14e;
-    else
-        goto L_b0fd;
-
-L_b0fd:
-    if ((HIWORD(dmgBombBldg) > 0x0))
-        goto L_b10b;
-    else
-        goto L_b102;
-
-L_b102:
-    if ((LOWORD(dmgBombBldg) <= 0x0))
+    if ((dmgBombBldg <= 0))
         goto L_b14e;
     else
         goto L_b10b;
@@ -11462,37 +10155,13 @@ L_b14e:
     cKillPeople = 0;
     cKillMine = 0;
     cKillFact = 0;
-    if ((HIWORD(dmgBombBldg) < 0x0))
-        goto L_b45c;
-    else
-        goto L_b1fa;
-
-L_b1fa:
-    if ((HIWORD(dmgBombBldg) > 0x0))
-        goto L_b208;
-    else
-        goto L_b1ff;
-
-L_b1ff:
-    if ((LOWORD(dmgBombBldg) <= 0x0))
+    if ((dmgBombBldg <= 0))
         goto L_b45c;
     else
         goto L_b208;
 
 L_b208:
-    if ((HIWORD(cPPE) < 0x0))
-        goto L_b45c;
-    else
-        goto L_b211;
-
-L_b211:
-    if ((HIWORD(cPPE) > 0x0))
-        goto L_b21f;
-    else
-        goto L_b216;
-
-L_b216:
-    if ((LOWORD(cPPE) <= 0x0))
+    if ((cPPE <= 0))
         goto L_b45c;
     else
         goto L_b21f;
@@ -11501,41 +10170,16 @@ L_b21f:
     cKillFact = (uint32_t)((lppl->cFactories * dmgBombBldg));
     modKill = (int32_t)((cKillFact % cPPE));
     cKillFact = (int32_t)((cKillFact / cPPE));
-    if ((HIWORD(modKill) < 0x0))
-        goto L_b2c8;
-    else
-        goto L_b284;
-
-L_b284:
-    if ((HIWORD(modKill) > 0x0))
-        goto L_b292;
-    else
-        goto L_b289;
-
-L_b289:
-    if ((LOWORD(modKill) <= 0x0))
+    if ((modKill <= 0))
         goto L_b2c8;
     else
         goto L_b292;
 
 L_b292:
-    t_call_b299 = Random(LOWORD(cPPE));
-    if ((SIGNHIWORD(t_call_b299) > HIWORD(modKill)))
-        goto L_b2be;
-    else
-        goto L_b2aa;
-
-L_b2aa:
-    if ((SIGNHIWORD(t_call_b299) < HIWORD(modKill)))
+    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b2b7;
     else
-        goto L_b2af;
-
-L_b2af:
-    if ((t_call_b299 >= LOWORD(modKill)))
         goto L_b2be;
-    else
-        goto L_b2b7;
 
 L_b2b7:
     t_merge_b2c2_0001 = 0x1;
@@ -11548,19 +10192,7 @@ L_b2c2:
     cKillFact = (cKillFact + (uint32_t)(t_merge_b2c2_0001));
 
 L_b2c8:
-    if ((HIWORD(cKillFact) < 0x0))
-        goto L_b315;
-    else
-        goto L_b2e9;
-
-L_b2e9:
-    if ((HIWORD(cKillFact) > 0x0))
-        goto L_b2f6;
-    else
-        goto L_b2ee;
-
-L_b2ee:
-    if ((LOWORD(cKillFact) <= lppl->cFactories))
+    if ((cKillFact <= lppl->cFactories))
         goto L_b315;
     else
         goto L_b2f6;
@@ -11572,41 +10204,16 @@ L_b315:
     cKillDefenses = (uint32_t)((lppl->cDefenses * dmgBombBldg));
     modKill = (int32_t)((cKillDefenses % cPPE));
     cKillDefenses = (int32_t)((cKillDefenses / cPPE));
-    if ((HIWORD(modKill) < 0x0))
-        goto L_b3b6;
-    else
-        goto L_b372;
-
-L_b372:
-    if ((HIWORD(modKill) > 0x0))
-        goto L_b380;
-    else
-        goto L_b377;
-
-L_b377:
-    if ((LOWORD(modKill) <= 0x0))
+    if ((modKill <= 0))
         goto L_b3b6;
     else
         goto L_b380;
 
 L_b380:
-    t_call_b387 = Random(LOWORD(cPPE));
-    if ((SIGNHIWORD(t_call_b387) > HIWORD(modKill)))
-        goto L_b3ac;
-    else
-        goto L_b398;
-
-L_b398:
-    if ((SIGNHIWORD(t_call_b387) < HIWORD(modKill)))
+    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b3a5;
     else
-        goto L_b39d;
-
-L_b39d:
-    if ((t_call_b387 >= LOWORD(modKill)))
         goto L_b3ac;
-    else
-        goto L_b3a5;
 
 L_b3a5:
     t_merge_b3b0_0001 = 0x1;
@@ -11619,19 +10226,7 @@ L_b3b0:
     cKillDefenses = (cKillDefenses + (uint32_t)(t_merge_b3b0_0001));
 
 L_b3b6:
-    if ((HIWORD(cKillDefenses) < 0x0))
-        goto L_b3f3;
-    else
-        goto L_b3cf;
-
-L_b3cf:
-    if ((HIWORD(cKillDefenses) > 0x0))
-        goto L_b3dc;
-    else
-        goto L_b3d4;
-
-L_b3d4:
-    if ((LOWORD(cKillDefenses) <= lppl->cDefenses))
+    if ((cKillDefenses <= lppl->cDefenses))
         goto L_b3f3;
     else
         goto L_b3dc;
@@ -11641,19 +10236,7 @@ L_b3dc:
 
 L_b3f3:
     cKillMine = (dmgBombBldg - (cKillFact + cKillDefenses));
-    if ((HIWORD(cKillMine) < 0x0))
-        goto L_b45c;
-    else
-        goto L_b430;
-
-L_b430:
-    if ((HIWORD(cKillMine) > 0x0))
-        goto L_b43d;
-    else
-        goto L_b435;
-
-L_b435:
-    if ((LOWORD(cKillMine) <= lppl->cMines))
+    if ((cKillMine <= lppl->cMines))
         goto L_b45c;
     else
         goto L_b43d;
@@ -11662,55 +10245,19 @@ L_b43d:
     cKillMine = lppl->cMines;
 
 L_b45c:
-    if ((HIWORD(dmgBombPeople) > 0x0))
-        goto L_b4a1;
-    else
-        goto L_b465;
-
-L_b465:
-    if ((HIWORD(dmgBombPeople) < 0x0))
+    if ((dmgBombPeople <= 0))
         goto L_b473;
     else
-        goto L_b46a;
-
-L_b46a:
-    if ((LOWORD(dmgBombPeople) > 0x0))
         goto L_b4a1;
-    else
-        goto L_b473;
 
 L_b473:
-    if ((HIWORD(dmgBombFloor) > 0x0))
-        goto L_b4a1;
-    else
-        goto L_b47c;
-
-L_b47c:
-    if ((HIWORD(dmgBombFloor) < 0x0))
+    if ((dmgBombFloor <= 0))
         goto L_b48a;
     else
-        goto L_b481;
-
-L_b481:
-    if ((LOWORD(dmgBombFloor) > 0x0))
         goto L_b4a1;
-    else
-        goto L_b48a;
 
 L_b48a:
-    if ((HIWORD(dmgPeopleSmart) < 0x0))
-        goto L_b65b;
-    else
-        goto L_b493;
-
-L_b493:
-    if ((HIWORD(dmgPeopleSmart) > 0x0))
-        goto L_b4a1;
-    else
-        goto L_b498;
-
-L_b498:
-    if ((LOWORD(dmgPeopleSmart) <= 0x0))
+    if ((dmgPeopleSmart <= 0))
         goto L_b65b;
     else
         goto L_b4a1;
@@ -11759,41 +10306,16 @@ L_b51f:
     cKillPeople = (uint32_t)(((lppl->rgwtMin[3] - cKillPeopleS) * dmgBombPeople));
     modKill = (int32_t)((cKillPeople % 1000));
     cKillPeople = (int32_t)((cKillPeople / 1000));
-    if ((HIWORD(modKill) < 0x0))
-        goto L_b5bf;
-    else
-        goto L_b57e;
-
-L_b57e:
-    if ((HIWORD(modKill) > 0x0))
-        goto L_b58c;
-    else
-        goto L_b583;
-
-L_b583:
-    if ((LOWORD(modKill) <= 0x0))
+    if ((modKill <= 0))
         goto L_b5bf;
     else
         goto L_b58c;
 
 L_b58c:
-    t_call_b590 = Random(1000);
-    if ((SIGNHIWORD(t_call_b590) > HIWORD(modKill)))
-        goto L_b5b5;
-    else
-        goto L_b5a1;
-
-L_b5a1:
-    if ((SIGNHIWORD(t_call_b590) < HIWORD(modKill)))
+    if (((uint32_t)(Random(1000)) <= modKill))
         goto L_b5ae;
     else
-        goto L_b5a6;
-
-L_b5a6:
-    if ((t_call_b590 > LOWORD(modKill)))
         goto L_b5b5;
-    else
-        goto L_b5ae;
 
 L_b5ae:
     t_merge_b5b9_0001 = 0x1;
@@ -11807,61 +10329,25 @@ L_b5b9:
 
 L_b5bf:
     cKillPeople = (cKillPeople + cKillPeopleS);
-    if ((HIWORD(dmgBombPeople) < 0x0))
-        goto L_b603;
-    else
-        goto L_b5d4;
-
-L_b5d4:
-    if ((HIWORD(dmgBombPeople) > 0x0))
-        goto L_b5e2;
-    else
-        goto L_b5d9;
-
-L_b5d9:
-    if ((LOWORD(dmgBombPeople) <= 0x0))
+    if ((dmgBombPeople <= 0))
         goto L_b603;
     else
         goto L_b5e2;
 
 L_b5e2:
-    if ((HIWORD(cKillPeople) > 0x0))
-        goto L_b603;
-    else
-        goto L_b5eb;
-
-L_b5eb:
-    if ((HIWORD(cKillPeople) < 0x0))
+    if ((cKillPeople <= 0))
         goto L_b5f9;
     else
-        goto L_b5f0;
-
-L_b5f0:
-    if ((LOWORD(cKillPeople) > 0x0))
         goto L_b603;
-    else
-        goto L_b5f9;
 
 L_b5f9:
     cKillPeople = 1;
 
 L_b603:
-    if ((HIWORD(cKillPeople) > HIWORD(dmgBombFloor)))
-        goto L_b62a;
-    else
-        goto L_b611;
-
-L_b611:
-    if ((HIWORD(cKillPeople) < HIWORD(dmgBombFloor)))
+    if ((cKillPeople < dmgBombFloor))
         goto L_b61e;
     else
-        goto L_b616;
-
-L_b616:
-    if ((LOWORD(cKillPeople) >= LOWORD(dmgBombFloor)))
         goto L_b62a;
-    else
-        goto L_b61e;
 
 L_b61e:
     cKillPeople = dmgBombFloor;
@@ -11888,19 +10374,7 @@ L_b64a:
     cKillPeople = lppl->rgwtMin[3];
 
 L_b65b:
-    if ((HIWORD(cKillPeople) < 0x0))
-        goto L_b683;
-    else
-        goto L_b664;
-
-L_b664:
-    if ((HIWORD(cKillPeople) > 0x0))
-        goto L_b672;
-    else
-        goto L_b669;
-
-L_b669:
-    if ((LOWORD(cKillPeople) <= 0x0))
+    if ((cKillPeople <= 0))
         goto L_b683;
     else
         goto L_b672;
@@ -11909,19 +10383,7 @@ L_b672:
     lppl->rgwtMin[3] = (lppl->rgwtMin[3] - cKillPeople);
 
 L_b683:
-    if ((HIWORD(cKillFact) < 0x0))
-        goto L_b6f1;
-    else
-        goto L_b68c;
-
-L_b68c:
-    if ((HIWORD(cKillFact) > 0x0))
-        goto L_b69a;
-    else
-        goto L_b691;
-
-L_b691:
-    if ((LOWORD(cKillFact) <= 0x0))
+    if ((cKillFact <= 0))
         goto L_b6f1;
     else
         goto L_b69a;
@@ -11930,19 +10392,7 @@ L_b69a:
     lppl->cFactories = (lppl->cFactories - cKillFact);
 
 L_b6f1:
-    if ((HIWORD(cKillMine) < 0x0))
-        goto L_b761;
-    else
-        goto L_b6fa;
-
-L_b6fa:
-    if ((HIWORD(cKillMine) > 0x0))
-        goto L_b708;
-    else
-        goto L_b6ff;
-
-L_b6ff:
-    if ((LOWORD(cKillMine) <= 0x0))
+    if ((cKillMine <= 0))
         goto L_b761;
     else
         goto L_b708;
@@ -11951,19 +10401,7 @@ L_b708:
     lppl->cMines = (lppl->cMines - cKillMine);
 
 L_b761:
-    if ((HIWORD(cKillDefenses) < 0x0))
-        goto L_b7d1;
-    else
-        goto L_b76a;
-
-L_b76a:
-    if ((HIWORD(cKillDefenses) > 0x0))
-        goto L_b778;
-    else
-        goto L_b76f;
-
-L_b76f:
-    if ((LOWORD(cKillDefenses) <= 0x0))
+    if ((cKillDefenses <= 0))
         goto L_b7d1;
     else
         goto L_b778;
@@ -11972,19 +10410,7 @@ L_b778:
     lppl->cDefenses = (lppl->cDefenses - cKillDefenses);
 
 L_b7d1:
-    if ((HIWORD(pctTerra) < 0x0))
-        goto L_b9d4;
-    else
-        goto L_b7da;
-
-L_b7da:
-    if ((HIWORD(pctTerra) > 0x0))
-        goto L_b7e8;
-    else
-        goto L_b7df;
-
-L_b7df:
-    if ((LOWORD(pctTerra) <= 0x0))
+    if ((pctTerra <= 0))
         goto L_b9d4;
     else
         goto L_b7e8;
@@ -11992,19 +10418,7 @@ L_b7df:
 L_b7e8:
     pctTot = 0;
     pctTerra = (pctTerra - __ftol());
-    if ((HIWORD(pctTerra) < 0x0))
-        goto L_b84b;
-    else
-        goto L_b832;
-
-L_b832:
-    if ((HIWORD(pctTerra) > 0x0))
-        goto L_b841;
-    else
-        goto L_b837;
-
-L_b837:
-    if ((LOWORD(pctTerra) <= 0x1f4))
+    if ((pctTerra <= 500))
         goto L_b84b;
     else
         goto L_b841;
@@ -12024,19 +10438,7 @@ L_b853:
         goto L_b895;
 
 L_b895:
-    if ((SIGNHIWORD(dChg) < HIWORD(pctTerra)))
-        goto L_b8b7;
-    else
-        goto L_b8a1;
-
-L_b8a1:
-    if ((SIGNHIWORD(dChg) > HIWORD(pctTerra)))
-        goto L_b8ae;
-    else
-        goto L_b8a6;
-
-L_b8a6:
-    if ((dChg < LOWORD(pctTerra)))
+    if (((uint32_t)(dChg) < pctTerra))
         goto L_b8b7;
     else
         goto L_b8ae;
@@ -12056,19 +10458,7 @@ L_b8d8:
         goto L_b8e1;
 
 L_b8e1:
-    if ((SIGNHIWORD((-dChg)) < HIWORD(pctTerra)))
-        goto L_b90c;
-    else
-        goto L_b8ef;
-
-L_b8ef:
-    if ((SIGNHIWORD((-dChg)) > HIWORD(pctTerra)))
-        goto L_b8fc;
-    else
-        goto L_b8f4;
-
-L_b8f4:
-    if (((-dChg) < LOWORD(pctTerra)))
+    if (((uint32_t)((-dChg)) < pctTerra))
         goto L_b90c;
     else
         goto L_b8fc;
@@ -12127,19 +10517,7 @@ L_b9c4:
 
 L_b9d4:
     cPPE = ((cKillMine + cKillFact) + cKillDefenses);
-    if ((HIWORD(cPPE) < 0x0))
-        goto L_bd61;
-    else
-        goto L_b9f5;
-
-L_b9f5:
-    if ((HIWORD(cPPE) > 0x0))
-        goto L_ba03;
-    else
-        goto L_b9fa;
-
-L_b9fa:
-    if ((LOWORD(cPPE) <= 0x0))
+    if ((cPPE <= 0))
         goto L_bd61;
     else
         goto L_ba03;
@@ -12191,19 +10569,7 @@ L_ba43:
 
 L_ba46:
     idmDst = t_merge_ba46_0001;
-    if ((HIWORD(cPPE) < 0x0))
-        goto L_ba98;
-    else
-        goto L_ba52;
-
-L_ba52:
-    if ((HIWORD(cPPE) > 0x0))
-        goto L_ba60;
-    else
-        goto L_ba57;
-
-L_ba57:
-    if ((LOWORD(cPPE) <= 0x1))
+    if ((cPPE <= 1))
         goto L_ba98;
     else
         goto L_ba60;
@@ -12247,19 +10613,7 @@ L_ba92:
     goto GenericBombMsg;
 
 L_ba98:
-    if ((HIWORD(cKillPeople) < 0x0))
-        goto L_bc0a;
-    else
-        goto L_baa1;
-
-L_baa1:
-    if ((HIWORD(cKillPeople) > 0x0))
-        goto L_baaf;
-    else
-        goto L_baa6;
-
-L_baa6:
-    if ((LOWORD(cKillPeople) <= 0x0))
+    if ((cKillPeople <= 0))
         goto L_bc0a;
     else
         goto L_baaf;
@@ -12307,19 +10661,7 @@ L_bd5e:
     goto L_be65;
 
 L_bd61:
-    if ((HIWORD(cKillPeople) < 0x0))
-        goto L_be65;
-    else
-        goto L_bd6a;
-
-L_bd6a:
-    if ((HIWORD(cKillPeople) > 0x0))
-        goto L_bd78;
-    else
-        goto L_bd6f;
-
-L_bd6f:
-    if ((LOWORD(cKillPeople) <= 0x0))
+    if ((cKillPeople <= 0))
         goto L_be65;
     else
         goto L_bd78;

@@ -260,16 +260,10 @@ L_044d:
     MapWindowPoints(hwnd, hwndTb, &(pt), 0x1);
 
 L_0464:
-    if ((pt.x != vptTbLast.x))
+    if ((pt != vptTbLast))
         goto L_047e;
     else
-        goto L_0473;
-
-L_0473:
-    if ((pt.y == vptTbLast.y))
         goto L_06de;
-    else
-        goto L_047e;
 
 L_047e:
     vptTbLast = pt;
@@ -1645,8 +1639,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
     int16_t  cch;
     int16_t  fShowNow;
     uint16_t t_merge_1817_0001;
-    uint32_t t_scratch_m10_wide;
-    uint32_t t_call_1991;
+    uint32_t t_scratch_m10;
     uint16_t t_merge_19c1_0001;
 
 L_17ea:
@@ -1737,24 +1730,11 @@ L_1942:
 
 L_1957:
     SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), 0x216);
-    t_scratch_m10_wide = (vtickTooltipLast + 0x190);
-    t_call_1991 = GetTickCount();
-    if ((HIWORD(t_scratch_m10_wide) > HIWORD(t_call_1991)))
-        goto L_19b8;
-    else
-        goto L_19a3;
-
-L_19a3:
-    if ((HIWORD(t_scratch_m10_wide) < HIWORD(t_call_1991)))
+    t_scratch_m10 = (vtickTooltipLast + 0x190);
+    if ((t_scratch_m10 < GetTickCount()))
         goto L_19af;
     else
-        goto L_19a8;
-
-L_19a8:
-    if ((LOWORD(t_scratch_m10_wide) >= LOWORD(t_call_1991)))
         goto L_19b8;
-    else
-        goto L_19af;
 
 L_19af:
     if ((fVisCur == 0))
@@ -1918,22 +1898,10 @@ L_1baf:
         goto L_1be1;
 
 L_1be1:
-    if (((HIWORD(vtickTooltip1stVis) + 0x0) > HIWORD(vtickTooltipLast)))
-        goto L_1c0d;
-    else
-        goto L_1bf7;
-
-L_1bf7:
-    if (((HIWORD(vtickTooltip1stVis) + 0x0) < HIWORD(vtickTooltipLast)))
+    if (((vtickTooltip1stVis + 0x2710) < vtickTooltipLast))
         goto LKillTip;
     else
-        goto L_1bfc;
-
-L_1bfc:
-    if (((LOWORD(vtickTooltip1stVis) + 0x2710) >= LOWORD(vtickTooltipLast)))
         goto L_1c0d;
-    else
-        goto LKillTip;
 
 LKillTip:
     DestroyWindow(hwnd);

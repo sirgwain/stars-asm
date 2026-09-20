@@ -7,22 +7,10 @@ L_7248:
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
     iEff = GetRaceStat(&(rgplr[iplr]), rsMineOperate);
     cMax = (int32_t)(((uint32_t)((lPopMax * (uint32_t)(iEff))) / 0x64));
-    if ((HIWORD(cMax) > 0x0))
-        goto L_72ca;
-    else
-        goto L_72b2;
-
-L_72b2:
-    if ((HIWORD(cMax) < 0x0))
+    if ((cMax < 10))
         goto L_72c0;
     else
-        goto L_72b7;
-
-L_72b7:
-    if ((LOWORD(cMax) >= 0xa))
         goto L_72ca;
-    else
-        goto L_72c0;
 
 L_72c0:
     cMax = 10;

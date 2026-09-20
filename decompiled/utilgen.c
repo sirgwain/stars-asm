@@ -270,22 +270,10 @@ L_16d2:
     s2 = lRandSeed2;
     k = (int32_t)((s1 / 53668));
     s1 = ((uint32_t)(((s1 - (uint32_t)((k * 53668))) * 0x9c4e)) - (uint32_t)((k * 12211)));
-    if ((HIWORD(s1) > 0x0))
-        goto L_1783;
-    else
-        goto L_176c;
-
-L_176c:
-    if ((HIWORD(s1) < 0x0))
+    if ((s1 < 0))
         goto L_177a;
     else
-        goto L_1771;
-
-L_1771:
-    if ((LOWORD(s1) >= 0x0))
         goto L_1783;
-    else
-        goto L_177a;
 
 L_177a:
     s1 = (s1 + 2147483563);
@@ -293,44 +281,20 @@ L_177a:
 L_1783:
     k = (int32_t)((s2 / 52774));
     s2 = ((uint32_t)(((s2 - (uint32_t)((k * 52774))) * 0x9ef4)) - (uint32_t)((k * 3791)));
-    if ((HIWORD(s2) > 0x0))
-        goto L_1812;
-    else
-        goto L_17fa;
-
-L_17fa:
-    if ((HIWORD(s2) < 0x0))
+    if ((s2 < 0))
         goto L_1808;
     else
-        goto L_17ff;
-
-L_17ff:
-    if ((LOWORD(s2) >= 0x0))
         goto L_1812;
-    else
-        goto L_1808;
 
 L_1808:
     s2 = (s2 + 2147483399);
 
 L_1812:
     z = (s1 - s2);
-    if ((HIWORD(z) > 0x0))
-        goto L_1844;
-    else
-        goto L_182d;
-
-L_182d:
-    if ((HIWORD(z) < 0x0))
+    if ((z < 1))
         goto L_183b;
     else
-        goto L_1832;
-
-L_1832:
-    if ((LOWORD(z) >= 0x1))
         goto L_1844;
-    else
-        goto L_183b;
 
 L_183b:
     z = (z + 2147483562);
@@ -415,13 +379,7 @@ L_1995:
     goto L_197a;
 
 L_19cf:
-    if ((LOWORD(dw) != 0x0))
-        goto L_19e7;
-    else
-        goto L_19d8;
-
-L_19d8:
-    if ((HIWORD(dw) != 0x0))
+    if ((dw != 0x0))
         goto L_19e7;
     else
         goto L_19e1;
@@ -542,22 +500,10 @@ L_1b54:
     s2 = lFileSeed2;
     k = (int32_t)((s1 / 53668));
     s1 = ((uint32_t)(((s1 - (uint32_t)((k * 53668))) * 0x9c4e)) - (uint32_t)((k * 12211)));
-    if ((HIWORD(s1) > 0x0))
-        goto L_1c05;
-    else
-        goto L_1bee;
-
-L_1bee:
-    if ((HIWORD(s1) < 0x0))
+    if ((s1 < 0))
         goto L_1bfc;
     else
-        goto L_1bf3;
-
-L_1bf3:
-    if ((LOWORD(s1) >= 0x0))
         goto L_1c05;
-    else
-        goto L_1bfc;
 
 L_1bfc:
     s1 = (s1 + 2147483563);
@@ -565,22 +511,10 @@ L_1bfc:
 L_1c05:
     k = (int32_t)((s2 / 52774));
     s2 = ((uint32_t)(((s2 - (uint32_t)((k * 52774))) * 0x9ef4)) - (uint32_t)((k * 3791)));
-    if ((HIWORD(s2) > 0x0))
-        goto L_1c94;
-    else
-        goto L_1c7c;
-
-L_1c7c:
-    if ((HIWORD(s2) < 0x0))
+    if ((s2 < 0))
         goto L_1c8a;
     else
-        goto L_1c81;
-
-L_1c81:
-    if ((LOWORD(s2) >= 0x0))
         goto L_1c94;
-    else
-        goto L_1c8a;
 
 L_1c8a:
     s2 = (s2 + 2147483399);
@@ -904,34 +838,16 @@ L_20c4:
     cb = (cb - 2048);
 
 L_20cf:
-    if ((HIWORD(cb) > 0x0))
-        goto L_2090;
-    else
-        goto L_20d9;
-
-L_20d9:
-    if ((HIWORD(cb) < 0x0))
+    if ((cb <= 2048))
         goto L_20e9;
     else
-        goto L_20de;
-
-L_20de:
-    if ((LOWORD(cb) > 0x800))
         goto L_2090;
-    else
-        goto L_20e9;
 
 L_20e9:
-    if ((LOWORD(cb) != 0x0))
+    if ((cb != 0))
         goto L_20fd;
     else
-        goto L_20f3;
-
-L_20f3:
-    if ((HIWORD(cb) == 0x0))
         goto LStreamError;
-    else
-        goto L_20fd;
 
 L_20fd:
     RgFromStream(rgb, LOWORD(cb));
@@ -1072,19 +988,7 @@ char *PszFromLongK(int32_t l, int16_t *pcch) {
     uint16_t t_merge_234c_0001;
 
 L_22fe:
-    if ((HIWORD(l) < 0x0))
-        goto L_2325;
-    else
-        goto L_2310;
-
-L_2310:
-    if ((HIWORD(l) > 0x0))
-        goto L_231f;
-    else
-        goto L_2315;
-
-L_2315:
-    if ((LOWORD(l) < 0x2710))
+    if ((l < 10000))
         goto L_2325;
     else
         goto L_231f;
@@ -1098,19 +1002,7 @@ L_2325:
 
 L_2328:
     fLarge = t_merge_2328_0001;
-    if ((HIWORD(l) < 0xf))
-        goto L_2349;
-    else
-        goto L_2334;
-
-L_2334:
-    if ((HIWORD(l) > 0xf))
-        goto L_2343;
-    else
-        goto L_2339;
-
-L_2339:
-    if ((LOWORD(l) < 0x4240))
+    if ((l < 1000000))
         goto L_2349;
     else
         goto L_2343;
@@ -1131,19 +1023,7 @@ L_234c:
 
 L_2358:
     l = (int32_t)(((l + 500000) / 0xf4240));
-    if ((HIWORD(l) < 0x0))
-        goto L_23ea;
-    else
-        goto L_2382;
-
-L_2382:
-    if ((HIWORD(l) > 0x0))
-        goto L_2391;
-    else
-        goto L_2387;
-
-L_2387:
-    if ((LOWORD(l) <= 0x3e7))
+    if ((l <= 999))
         goto L_23ea;
     else
         goto L_2391;
@@ -1162,19 +1042,7 @@ L_239e:
 
 L_23a7:
     l = (int32_t)(((l + 500) / 0x3e8));
-    if ((HIWORD(l) < 0x0))
-        goto L_23ea;
-    else
-        goto L_23d1;
-
-L_23d1:
-    if ((HIWORD(l) > 0x0))
-        goto L_23e0;
-    else
-        goto L_23d6;
-
-L_23d6:
-    if ((LOWORD(l) <= 0x3e7))
+    if ((l <= 999))
         goto L_23ea;
     else
         goto L_23e0;
@@ -1240,22 +1108,10 @@ L_2491:
         goto L_249a;
 
 L_249a:
-    if ((HIWORD(l) > 0x0))
-        goto L_24b6;
-    else
-        goto L_24a3;
-
-L_24a3:
-    if ((HIWORD(l) < 0x0))
+    if ((l < 0))
         goto L_24b1;
     else
-        goto L_24a8;
-
-L_24a8:
-    if ((LOWORD(l) >= 0x0))
         goto L_24b6;
-    else
-        goto L_24b1;
 
 L_24b1:
     cSkip = 4;
@@ -2092,37 +1948,13 @@ L_31a2:
     rc = *(prc);
     FrameRect(hdc, &(rc), hbrWindowText);
     ExpandRc(&(rc), -1, -1);
-    if ((HIWORD(cTot) > 0x0))
-        goto L_3205;
-    else
-        goto L_31f4;
-
-L_31f4:
-    if ((HIWORD(cTot) < 0x0))
-        goto FinRet;
-    else
-        goto L_31f9;
-
-L_31f9:
-    if ((LOWORD(cTot) <= 0x0))
+    if ((cTot <= 0))
         goto FinRet;
     else
         goto L_3205;
 
 L_3205:
-    if ((HIWORD(cTot) < 0x98))
-        goto L_3224;
-    else
-        goto L_320f;
-
-L_320f:
-    if ((HIWORD(cTot) > 0x98))
-        goto L_321e;
-    else
-        goto L_3214;
-
-L_3214:
-    if ((LOWORD(cTot) < 0x9680))
+    if ((cTot < 10000000))
         goto L_3224;
     else
         goto L_321e;
@@ -2351,19 +2183,7 @@ L_373f:
 
 L_3796:
     ticksNew = GetCurrentTime();
-    if ((HIWORD(ticksNew) < HIWORD(pbtnt->lTicks)))
-        goto L_36fe;
-    else
-        goto L_37b2;
-
-L_37b2:
-    if ((HIWORD(ticksNew) > HIWORD(pbtnt->lTicks)))
-        goto L_37bf;
-    else
-        goto L_37b7;
-
-L_37b7:
-    if ((LOWORD(ticksNew) < LOWORD(pbtnt->lTicks)))
+    if ((ticksNew < pbtnt->lTicks))
         goto L_36fe;
     else
         goto L_37bf;
@@ -3107,13 +2927,7 @@ L_4470:
     goto L_44ac;
 
 L_4479:
-    if ((LOWORD(rgcrCache[i]) != LOWORD(cr)))
-        goto L_44ac;
-    else
-        goto L_448f;
-
-L_448f:
-    if ((HIWORD(rgcrCache[i]) != HIWORD(cr)))
+    if ((rgcrCache[i] != cr))
         goto L_44ac;
     else
         goto L_4498;
@@ -3636,28 +3450,16 @@ uint16_t DibNumColors(void *pv) {
 L_4a9a:
     lpbi = pv;
     lpbc = pv;
-    if ((LOWORD(lpbi->biSize) != 0xc))
+    if ((lpbi->biSize != 0xc))
         goto L_4ad1;
     else
-        goto L_4ac7;
-
-L_4ac7:
-    if ((HIWORD(lpbi->biSize) == 0x0))
         goto L_4b03;
-    else
-        goto L_4ad1;
 
 L_4ad1:
-    if ((LOWORD(lpbi->biClrUsed) != 0x0))
+    if ((lpbi->biClrUsed != 0x0))
         goto L_4ae8;
     else
-        goto L_4ade;
-
-L_4ade:
-    if ((HIWORD(lpbi->biClrUsed) == 0x0))
         goto L_4af6;
-    else
-        goto L_4ae8;
 
 L_4ae8:
     return LOWORD(lpbi->biClrUsed);
@@ -3717,13 +3519,7 @@ HPALETTE HpalFromDib(HGLOBAL hdib) {
 
 L_4b50:
     lpb = LockResource(hdib);
-    if ((LOWORD(lpb) != 0x0))
-        goto L_4b7f;
-    else
-        goto L_4b70;
-
-L_4b70:
-    if ((HIWORD(lpb) != 0x0))
+    if ((lpb != 0x0))
         goto L_4b7f;
     else
         goto L_4b79;
@@ -3812,13 +3608,7 @@ uint16_t PaletteSize(void *pv) {
 L_4d60:
     lpbi = pv;
     NumColors = DibNumColors(lpbi);
-    if ((LOWORD(lpbi->biSize) != 0xc))
-        goto L_4da8;
-    else
-        goto L_4d92;
-
-L_4d92:
-    if ((HIWORD(lpbi->biSize) != 0x0))
+    if ((lpbi->biSize != 0xc))
         goto L_4da8;
     else
         goto L_4d9c;
@@ -3846,13 +3636,7 @@ L_4dca:
 
 L_4de9:
     lpbi = GlobalLock(hdib);
-    if ((LOWORD(lpbi) != 0x0))
-        goto L_4e0f;
-    else
-        goto L_4e00;
-
-L_4e00:
-    if ((HIWORD(lpbi) != 0x0))
+    if ((lpbi != 0x0))
         goto L_4e0f;
     else
         goto L_4e09;
@@ -3942,13 +3726,7 @@ L_4fd9:
     GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
     bi = *(lpbi);
     GlobalUnlock(hdib);
-    if ((LOWORD(bi.biSizeImage) != 0x0))
-        goto L_50ce;
-    else
-        goto L_5048;
-
-L_5048:
-    if ((HIWORD(bi.biSizeImage) != 0x0))
+    if ((bi.biSizeImage != 0x0))
         goto L_50ce;
     else
         goto L_5051;
@@ -3956,16 +3734,10 @@ L_5048:
 L_5051:
     bi.biSizeImage =
         (uint32_t)(((int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(bm.bmWidth) * (uint32_t)(biBits))) + 0x1f) / 0x20)) * 0x4)) * (uint32_t)(bm.bmHeight)));
-    if ((LOWORD(biStyle) != 0x0))
+    if ((biStyle != 0x0))
         goto L_50a6;
     else
-        goto L_509d;
-
-L_509d:
-    if ((HIWORD(biStyle) == 0x0))
         goto L_50ce;
-    else
-        goto L_50a6;
 
 L_50a6:
     bi.biSizeImage = (uint32_t)(((uint32_t)((bi.biSizeImage * 0x3)) / 0x2));
@@ -4052,13 +3824,7 @@ FreeAndFail:
 
 L_52a6:
     lpstr = LockResource(hdib);
-    if ((LOWORD(lpstr) != 0x0))
-        goto L_52d1;
-    else
-        goto L_52bd;
-
-L_52bd:
-    if ((HIWORD(lpstr) != 0x0))
+    if ((lpstr != 0x0))
         goto L_52d1;
     else
         goto CloseAndFail;
@@ -4088,19 +3854,7 @@ L_5310:
     goto L_5396;
 
 L_5328:
-    if ((HIWORD(dwSize) < 0x0))
-        goto L_5346;
-    else
-        goto L_5331;
-
-L_5331:
-    if ((HIWORD(dwSize) > 0x0))
-        goto L_5340;
-    else
-        goto L_5336;
-
-L_5336:
-    if ((LOWORD(dwSize) <= 0x7530))
+    if ((dwSize <= 0x7530))
         goto L_5346;
     else
         goto L_5340;
@@ -4128,13 +3882,7 @@ L_5373:
     HIWORD(lpInBuf) = (((SIGNHIWORD(nBytes) + 0x0) << 0xffff) + HIWORD(lpInBuf));
 
 L_5396:
-    if ((LOWORD(dwSize) != 0x0))
-        goto L_5328;
-    else
-        goto L_539f;
-
-L_539f:
-    if ((HIWORD(dwSize) != 0x0))
+    if ((dwSize != 0x0))
         goto L_5328;
     else
         goto L_53a8;
@@ -4168,55 +3916,19 @@ L_53b4:
     dxdy = (uint32_t)((dx * dy));
     dx2 = (uint32_t)((dx * dx));
     dy2 = (uint32_t)((dy * dy));
-    if ((HIWORD(dxdy) > 0x7))
-        goto L_5464;
-    else
-        goto L_5425;
-
-L_5425:
-    if ((HIWORD(dxdy) < 0x7))
+    if ((dxdy <= 500000))
         goto L_5434;
     else
-        goto L_542a;
-
-L_542a:
-    if ((LOWORD(dxdy) > 0xa120))
         goto L_5464;
-    else
-        goto L_5434;
 
 L_5434:
-    if ((HIWORD(dx2) > 0x7))
-        goto L_5464;
-    else
-        goto L_543d;
-
-L_543d:
-    if ((HIWORD(dx2) < 0x7))
+    if ((dx2 <= 500000))
         goto L_544c;
     else
-        goto L_5442;
-
-L_5442:
-    if ((LOWORD(dx2) > 0xa120))
         goto L_5464;
-    else
-        goto L_544c;
 
 L_544c:
-    if ((HIWORD(dy2) < 0x7))
-        goto L_54e5;
-    else
-        goto L_5455;
-
-L_5455:
-    if ((HIWORD(dy2) > 0x7))
-        goto L_5464;
-    else
-        goto L_545a;
-
-L_545a:
-    if ((LOWORD(dy2) <= 0xa120))
+    if ((dy2 <= 500000))
         goto L_54e5;
     else
         goto L_5464;
@@ -4233,16 +3945,10 @@ L_54e5:
                     (dx2 + dy2)));
 
 L_5558:
-    if ((LOWORD(dx) != 0x0))
+    if ((dx != 0))
         goto L_556a;
     else
-        goto L_5561;
-
-L_5561:
-    if ((HIWORD(dx) == 0x0))
         goto L_55af;
-    else
-        goto L_556a;
 
 L_556a:
     yI = ((uint32_t)(ptL1.y) + (int32_t)(((uint32_t)(((xI - (uint32_t)(ptL1.x)) * dy)) / dx)));
@@ -4255,22 +3961,10 @@ L_55b9:
     dxI = (xI - (uint32_t)(ptC.x));
     dyI = (yI - (uint32_t)(ptC.y));
     r2I = ((uint32_t)((dxI * dxI)) + (uint32_t)((dyI * dyI)));
-    if ((HIWORD(r2) > HIWORD(r2I)))
-        goto L_563a;
-    else
-        goto L_5627;
-
-L_5627:
-    if ((HIWORD(r2) < HIWORD(r2I)))
+    if ((r2 <= r2I))
         goto L_5634;
     else
-        goto L_562c;
-
-L_562c:
-    if ((LOWORD(r2) > LOWORD(r2I)))
         goto L_563a;
-    else
-        goto L_5634;
 
 L_5634:
     return 0;
@@ -4282,22 +3976,10 @@ L_563a:
     sqrt((double)(lT));
     dCtr = LOWORD(__ftol());
     lT = (r2 - r2I);
-    if ((HIWORD(lT) > 0x0))
-        goto L_56f0;
-    else
-        goto L_56dc;
-
-L_56dc:
-    if ((HIWORD(lT) < 0x0))
+    if ((lT <= 0))
         goto L_56ea;
     else
-        goto L_56e1;
-
-L_56e1:
-    if ((LOWORD(lT) > 0x0))
         goto L_56f0;
-    else
-        goto L_56ea;
 
 L_56ea:
     return 0;
@@ -4311,22 +3993,10 @@ L_56f0:
         goto L_5722;
 
 L_5722:
-    if ((HIWORD(xI) > SIGNHIWORD(ptL1.x)))
-        goto L_57c5;
-    else
-        goto L_572e;
-
-L_572e:
-    if ((HIWORD(xI) < SIGNHIWORD(ptL1.x)))
+    if ((xI < (uint32_t)(ptL1.x)))
         goto L_573b;
     else
-        goto L_5733;
-
-L_5733:
-    if ((LOWORD(xI) >= ptL1.x))
         goto L_57c5;
-    else
-        goto L_573b;
 
 L_573b:
     dCtr = (-dCtr);
@@ -4341,19 +4011,7 @@ L_5746:
         goto L_5751;
 
 L_5751:
-    if ((HIWORD(xI) < SIGNHIWORD(ptL1.x)))
-        goto L_57c5;
-    else
-        goto L_575d;
-
-L_575d:
-    if ((HIWORD(xI) > SIGNHIWORD(ptL1.x)))
-        goto L_576a;
-    else
-        goto L_5762;
-
-L_5762:
-    if ((LOWORD(xI) <= ptL1.x))
+    if ((xI <= (uint32_t)(ptL1.x)))
         goto L_57c5;
     else
         goto L_576a;
@@ -4371,22 +4029,10 @@ L_5775:
         goto L_5780;
 
 L_5780:
-    if ((HIWORD(yI) > SIGNHIWORD(ptL1.y)))
-        goto L_57c5;
-    else
-        goto L_578c;
-
-L_578c:
-    if ((HIWORD(yI) < SIGNHIWORD(ptL1.y)))
+    if ((yI < (uint32_t)(ptL1.y)))
         goto L_5799;
     else
-        goto L_5791;
-
-L_5791:
-    if ((LOWORD(yI) >= ptL1.y))
         goto L_57c5;
-    else
-        goto L_5799;
 
 L_5799:
     dCtr = (-dCtr);
@@ -4395,19 +4041,7 @@ L_57a1:
     goto L_57c5;
 
 L_57a4:
-    if ((HIWORD(yI) < SIGNHIWORD(ptL1.y)))
-        goto L_57c5;
-    else
-        goto L_57b0;
-
-L_57b0:
-    if ((HIWORD(yI) > SIGNHIWORD(ptL1.y)))
-        goto L_57bd;
-    else
-        goto L_57b5;
-
-L_57b5:
-    if ((LOWORD(yI) <= ptL1.y))
+    if ((yI <= (uint32_t)(ptL1.y)))
         goto L_57c5;
     else
         goto L_57bd;
@@ -4547,28 +4181,16 @@ int16_t FCheckPassword() {
     HWND    t_merge_59a8_0001;
 
 L_58d8:
-    if ((LOWORD(lSaltCur) != 0x0))
+    if ((lSaltCur != 0))
         goto L_58f5;
     else
-        goto L_58eb;
-
-L_58eb:
-    if ((HIWORD(lSaltCur) == 0x0))
         goto L_5918;
-    else
-        goto L_58f5;
 
 L_58f5:
-    if ((LOWORD(lSaltLast) != LOWORD(lSaltCur)))
+    if ((lSaltLast != lSaltCur))
         goto L_590e;
     else
-        goto L_5905;
-
-L_5905:
-    if ((HIWORD(lSaltLast) == HIWORD(lSaltCur)))
         goto L_5918;
-    else
-        goto L_590e;
 
 L_590e:
     if ((fAi == 0))
@@ -4587,13 +4209,7 @@ L_591e:
 
 L_592a:
     lSaltDef = LSaltFromSz(vszDefPass);
-    if ((LOWORD(lSaltDef) != LOWORD(lSaltCur)))
-        goto L_5959;
-    else
-        goto L_594b;
-
-L_594b:
-    if ((HIWORD(lSaltDef) != HIWORD(lSaltCur)))
+    if ((lSaltDef != lSaltCur))
         goto L_5959;
     else
         goto L_5953;
@@ -4665,13 +4281,7 @@ L_5a43:
     goto L_59f8;
 
 L_5a46:
-    if ((LOWORD(lSalt) != 0x0))
-        goto L_5a62;
-    else
-        goto L_5a4f;
-
-L_5a4f:
-    if ((HIWORD(lSalt) != 0x0))
+    if ((lSalt != 0))
         goto L_5a62;
     else
         goto L_5a58;
@@ -4734,16 +4344,10 @@ L_5b34:
 L_5b3d:
     GetDlgItemText(hwnd, IDC_EDIT1, szPass, 60);
     lSalt = LSaltFromSz(szPass);
-    if ((LOWORD(lSalt) != LOWORD(lSaltCur)))
+    if ((lSalt != lSaltCur))
         goto L_5b7d;
     else
-        goto L_5b75;
-
-L_5b75:
-    if ((HIWORD(lSalt) == HIWORD(lSaltCur)))
         goto L_5c03;
-    else
-        goto L_5b7d;
 
 L_5b7d:
     vcPasswordFailures = (vcPasswordFailures + 0x1);
@@ -4908,16 +4512,10 @@ L_5de8:
     lSalt = LSaltFromSz(szPass);
     GetWindowText(GetDlgItem(hwnd, IDC_U16_0x010D), szPass, 18);
     lSalt2 = LSaltFromSz(szPass);
-    if ((LOWORD(lSalt) != LOWORD(lSalt2)))
+    if ((lSalt != lSalt2))
         goto L_5e5c;
     else
-        goto L_5e54;
-
-L_5e54:
-    if ((HIWORD(lSalt) == HIWORD(lSalt2)))
         goto L_5eb1;
-    else
-        goto L_5e5c;
 
 L_5e5c:
     AlertSz(PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, 0x0), MB_ICONHAND);
@@ -5150,13 +4748,7 @@ L_6287:
     l = (uint32_t)(dos_getdiskfree((i + 3), &(df)));
 
 L_62a3:
-    if ((LOWORD(l) != 0x0))
-        goto L_6344;
-    else
-        goto L_62ac;
-
-L_62ac:
-    if ((HIWORD(l) != 0x0))
+    if ((l != 0))
         goto L_6344;
     else
         goto L_62b5;
@@ -5165,19 +4757,7 @@ L_62b5:
     l = (int32_t)(((uint32_t)(((uint32_t)(df.total_clusters) * (uint32_t)(df.bytes_per_sector))) / 0x200));
     l = (uint32_t)((l * (uint32_t)(df.sectors_per_cluster)));
     l = (int32_t)((l / 195312));
-    if ((HIWORD(l) < 0x0))
-        goto L_6332;
-    else
-        goto L_631a;
-
-L_631a:
-    if ((HIWORD(l) > 0x0))
-        goto L_6328;
-    else
-        goto L_631f;
-
-L_631f:
-    if ((LOWORD(l) <= 0xf))
+    if ((l <= 15))
         goto L_6332;
     else
         goto L_6328;

@@ -797,19 +797,7 @@ L_104b:
     lSpent = (int32_t)((lSpent * 2));
 
 L_1063:
-    if ((0x0 < (HIWORD(l) - HIWORD(lSpent))))
-        goto L_1095;
-    else
-        goto L_1080;
-
-L_1080:
-    if ((0x0 > (HIWORD(l) - HIWORD(lSpent))))
-        goto L_108c;
-    else
-        goto L_1085;
-
-L_1085:
-    if ((0x0 <= (LOWORD(l) - LOWORD(lSpent))))
+    if ((0x0 <= (l - lSpent)))
         goto L_1095;
     else
         goto L_108c;
@@ -854,13 +842,7 @@ L_1121:
     RightTextOut(hdc, xCtr, rc.top, szWork, c, 0);
     rc.top = (rc.top + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsResourcesNeededComplete), 0, 0);
-    if ((LOWORD(l) != 0xffff))
-        goto L_1256;
-    else
-        goto L_1236;
-
-L_1236:
-    if ((HIWORD(l) != 0xffff))
+    if ((l != -1))
         goto L_1256;
     else
         goto L_1240;
@@ -878,13 +860,7 @@ L_1277:
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsEstimatedTimeCompletion), 0, 0);
 
 DrawYearComplete:
-    if ((LOWORD(l) != 0xffff))
-        goto L_130b;
-    else
-        goto L_12d2;
-
-L_12d2:
-    if ((HIWORD(l) != 0xffff))
+    if ((l != -1))
         goto L_130b;
     else
         goto L_12dc;
@@ -895,13 +871,7 @@ L_12dc:
     goto L_144a;
 
 L_130b:
-    if ((LOWORD(l) != 0x0))
-        goto L_1331;
-    else
-        goto L_1315;
-
-L_1315:
-    if ((HIWORD(l) != 0x0))
+    if ((l != 0))
         goto L_1331;
     else
         goto L_131f;
@@ -911,13 +881,7 @@ L_131f:
     goto PrintYear;
 
 L_1331:
-    if ((LOWORD(lResBudget) != 0x0))
-        goto L_1374;
-    else
-        goto L_133b;
-
-L_133b:
-    if ((HIWORD(lResBudget) != 0x0))
+    if ((lResBudget != 0))
         goto L_1374;
     else
         goto L_1345;
@@ -941,13 +905,7 @@ L_13bc:
     l = (int32_t)((((l + lRBEffective) + 0xffffffff) / lRBEffective));
 
 PrintYear:
-    if ((LOWORD(l) != 0x1))
-        goto L_1403;
-    else
-        goto L_13f3;
-
-L_13f3:
-    if ((HIWORD(l) != 0x0))
+    if ((l != 1))
         goto L_1403;
     else
         goto L_13fd;
@@ -1699,37 +1657,13 @@ L_246d:
 L_2470:
     fShowAll = t_merge_2470_0001;
     lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x010B), CB_GETCURSEL, 0x0, 0);
-    if ((HIWORD(lSel) > 0x0))
-        goto L_24b5;
-    else
-        goto L_24a4;
-
-L_24a4:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_2868;
-    else
-        goto L_24a9;
-
-L_24a9:
-    if ((LOWORD(lSel) < 0x0))
+    if ((lSel < 0))
         goto L_2868;
     else
         goto L_24b5;
 
 L_24b5:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_24d5;
-    else
-        goto L_24be;
-
-L_24be:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_24cc;
-    else
-        goto L_24c3;
-
-L_24c3:
-    if ((LOWORD(lSel) <= 0x1))
+    if ((lSel <= 1))
         goto L_24d5;
     else
         goto L_24cc;
@@ -1794,13 +1728,7 @@ L_2586:
     iItemStart = vpartBrowser.hs.iItem;
     cIter = 0;
     lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x010B), CB_GETCURSEL, 0x0, 0);
-    if ((LOWORD(lSel) != 0x0))
-        goto L_25d4;
-    else
-        goto L_25c5;
-
-L_25c5:
-    if ((HIWORD(lSel) != 0x0))
+    if ((lSel != 0))
         goto L_25d4;
     else
         goto L_25ce;
@@ -2339,13 +2267,7 @@ L_2ac6:
     PatBlt(hdc, 0, 0, 1, dy, PATCOPY);
     PatBlt(hdc, 4, ((dy - (dyArial8 * 2)) - 2), (dx - 8), 1, PATCOPY);
     SetBkMode(hdc, TRANSPARENT);
-    if ((LOWORD(ppart->pcom) != 0x0))
-        goto L_2c05;
-    else
-        goto L_2bae;
-
-L_2bae:
-    if ((HIWORD(ppart->pcom) != 0x0))
+    if ((ppart->pcom != 0x0))
         goto L_2c05;
     else
         goto L_2bb7;
@@ -2480,19 +2402,7 @@ L_2f75:
     l = CostOfDevelopingItem(ppart->pcom->rgTech);
 
 L_2f93:
-    if ((HIWORD(l) < 0x1))
-        goto L_300e;
-    else
-        goto L_2f9c;
-
-L_2f9c:
-    if ((HIWORD(l) > 0x1))
-        goto L_2fab;
-    else
-        goto L_2fa1;
-
-L_2fa1:
-    if ((LOWORD(l) <= 0x869f))
+    if ((l <= 99999))
         goto L_300e;
     else
         goto L_2fab;
@@ -2503,19 +2413,7 @@ L_2fab:
     goto L_30fc;
 
 L_300e:
-    if ((HIWORD(l) < 0x0))
-        goto L_3071;
-    else
-        goto L_3017;
-
-L_3017:
-    if ((HIWORD(l) > 0x0))
-        goto L_3025;
-    else
-        goto L_301c;
-
-L_301c:
-    if ((LOWORD(l) <= 0x0))
+    if ((l <= 0))
         goto L_3071;
     else
         goto L_3025;
@@ -2526,13 +2424,7 @@ L_3025:
     goto L_30fc;
 
 L_3071:
-    if ((LOWORD(l) != 0xffff))
-        goto L_30d1;
-    else
-        goto L_307a;
-
-L_307a:
-    if ((HIWORD(l) != 0xffff))
+    if ((l != -1))
         goto L_30d1;
     else
         goto L_3083;
@@ -2703,13 +2595,7 @@ L_3390:
         goto L_345b;
 
 L_345b:
-    if ((LOWORD(l) != 0x0))
-        goto L_34b6;
-    else
-        goto L_3464;
-
-L_3464:
-    if ((HIWORD(l) != 0x0))
+    if ((l != 0))
         goto L_34b6;
     else
         goto L_346d;
@@ -5038,13 +4924,7 @@ L_6531:
     SelectObject(hdc, rghfontArial7[0]);
 
 L_653d:
-    if ((LOWORD(l) != 0xffff))
-        goto L_655b;
-    else
-        goto L_6549;
-
-L_6549:
-    if ((HIWORD(l) != 0xffff))
+    if ((l != -1))
         goto L_655b;
     else
         goto L_6552;
@@ -5059,13 +4939,7 @@ L_655b:
 L_6561:
     SetTextColor(hdc, t_merge_6561_0001);
     DrawText(hdc, szWork, c, &(rcT), 0x810);
-    if ((LOWORD(l) != 0xffff))
-        goto L_65a7;
-    else
-        goto L_658e;
-
-L_658e:
-    if ((HIWORD(l) != 0xffff))
+    if ((l != -1))
         goto L_65a7;
     else
         goto L_6597;
@@ -5102,16 +4976,10 @@ L_6619:
 
 L_662b:
     lRes = (uint32_t)(CResourcesAtPlanet(lppl, idPlayer));
-    if ((LOWORD(lppl->lpplprod) != 0x0))
+    if ((lppl->lpplprod != 0x0))
         goto L_665b;
     else
-        goto L_6651;
-
-L_6651:
-    if ((HIWORD(lppl->lpplprod) == 0x0))
         goto L_6671;
-    else
-        goto L_665b;
 
 L_665b:
     if ((lppl->lpplprod->iprodMac != 0x0))
@@ -5220,19 +5088,7 @@ L_681d:
     goto L_67f2;
 
 L_684f:
-    if ((0x0 < HIWORD(lCur)))
-        goto L_6873;
-    else
-        goto L_685d;
-
-L_685d:
-    if ((0x0 > HIWORD(lCur)))
-        goto L_686a;
-    else
-        goto L_6862;
-
-L_6862:
-    if ((0x0 <= LOWORD(lCur)))
+    if ((0 <= lCur))
         goto L_6873;
     else
         goto L_686a;

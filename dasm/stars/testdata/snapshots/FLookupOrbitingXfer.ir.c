@@ -36,16 +36,10 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i];
-    if ((LOWORD(rglpfl[i]) != 0x0))
+    if ((rglpfl[i] != 0x0))
         goto L_2564;
     else
-        goto L_255c;
-
-L_255c:
-    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_2606;
-    else
-        goto L_2564;
 
 L_2564:
     if ((lpfl->idPlanet != idPlanet))
@@ -66,13 +60,7 @@ L_2581:
         goto L_258a;
 
 L_258a:
-    if ((lpfl->pt.x != sel.pt.x))
-        goto L_2525;
-    else
-        goto L_25a4;
-
-L_25a4:
-    if ((lpfl->pt.y != sel.pt.y))
+    if ((lpfl->pt != sel.pt))
         goto L_2525;
     else
         goto L_25ad;
@@ -111,13 +99,7 @@ L_2631:
         goto L_2647;
 
 L_2647:
-    if ((lpth->pt.x != sel.pt.x))
-        goto L_26c0;
-    else
-        goto L_2661;
-
-L_2661:
-    if ((lpth->pt.y != sel.pt.y))
+    if ((lpth->pt != sel.pt))
         goto L_26c0;
     else
         goto L_266a;

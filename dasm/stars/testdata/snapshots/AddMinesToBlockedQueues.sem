@@ -30,47 +30,33 @@ L_17a7:
 
 L_17b2:
     lppl = vrglpplAi[ipl]
-    branch LOWORD(vrglpplAi[ipl]) != 0x0 ? L_17e2 : L_17da
+    branch vrglpplAi[ipl] != 0x0 ? L_17e2 : L_1cef
 
-L_17da:
-    branch HIWORD(vrglpplAi[ipl]) == 0x0 ? L_1cef : L_17e2
 
 L_17e2:
-    branch LOWORD(lppl->lpplprod) != 0x0 ? L_17fc : L_17ef
+    branch lppl->lpplprod != 0x0 ? L_17fc : L_17a3
 
-L_17ef:
-    branch HIWORD(lppl->lpplprod) == 0x0 ? L_17a3 : L_17fc
 
 L_17fc:
     prod = lppl->lpplprod->rgprod[0]
-    branch prod.grobj != grobjPlanet ? L_18c8 : L_182d
+    branch prod.grobj != grobjPlanet ? L_18c8 : L_1835
 
-L_182d:
-    branch 0x0 != 0x0 ? L_18c8 : L_1835
 
 L_1835:
-    branch prod.iItem != mdIdleMine ? L_1859 : L_1851
+    branch prod.iItem != mdIdleMine ? L_1859 : L_17a3
 
-L_1851:
-    branch 0x0 == 0x0 ? L_17a3 : L_1859
 
 L_1859:
-    branch prod.iItem != iobjAlchemy ? L_187d : L_1875
+    branch prod.iItem != iobjAlchemy ? L_187d : L_17a3
 
-L_1875:
-    branch 0x0 == 0x0 ? L_17a3 : L_187d
 
 L_187d:
-    branch prod.iItem != mdIdleAlchemy ? L_18a1 : L_1899
+    branch prod.iItem != mdIdleAlchemy ? L_18a1 : L_17a3
 
-L_1899:
-    branch 0x0 == 0x0 ? L_17a3 : L_18a1
 
 L_18a1:
-    branch prod.iItem != mdIdleTerraform ? L_18c8 : L_18bd
+    branch prod.iItem != mdIdleTerraform ? L_18c8 : L_17a3
 
-L_18bd:
-    branch 0x0 == 0x0 ? L_17a3 : L_18c8
 
 L_18c8:
     call ChangeMainObjSel(grobjPlanet, lppl->id) -> callresult(void)
@@ -86,10 +72,8 @@ L_1912:
 L_1917:
     call GetProductionCosts(lppl, &prod, rgCost, idPlayer, 1) -> callresult(void)
     cRes = sext16to32(CResourcesAtPlanet(&sel.pl, idPlayer))
-    branch sel.pl.fNoResearch != 0x0 ? L_19aa : L_196f
+    branch sel.pl.fNoResearch != 0x0 ? L_19aa : L_1977
 
-L_196f:
-    branch 0x0 != 0x0 ? L_19aa : L_1977
 
 L_1977:
     cRes = (cRes - (int32_t)((uint32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
@@ -106,26 +90,18 @@ L_19cb:
 L_19d6:
     t_scratch_m136 = (uint32_t)sel.pl.cMines
     cMaxBuild = (sext16to32(CMaxOperableMines(&sel.pl, idPlayer, 1)) - t_scratch_m136)
-    branch HIWORD(cMaxBuild) > 0x0 ? L_1a3e : L_1a26
+    branch cMaxBuild < 0 ? L_1a34 : L_1a3e
 
-L_1a26:
-    branch HIWORD(cMaxBuild) < 0x0 ? L_1a34 : L_1a2b
 
-L_1a2b:
-    branch LOWORD(cMaxBuild) >= 0x0 ? L_1a3e : L_1a34
 
 L_1a34:
     cMaxBuild = 0
 
 L_1a3e:
     cResMine = sext16to32(GetRaceStat(&rgplr[idPlayer], rsMineBuild))
-    branch hiword((uint32_t)(cResMine * cMaxBuild)) > HIWORD(cRes) ? L_1a93 : L_1a77
+    branch (int32_t)(uint32_t)(cResMine * cMaxBuild) <= cRes ? L_1a84 : L_1a93
 
-L_1a77:
-    branch hiword((uint32_t)(cResMine * cMaxBuild)) < HIWORD(cRes) ? L_1a84 : L_1a7c
 
-L_1a7c:
-    branch loword((uint32_t)(cResMine * cMaxBuild)) > LOWORD(cRes) ? L_1a93 : L_1a84
 
 L_1a84:
     cBuild = cMaxBuild
@@ -136,13 +112,9 @@ L_1a93:
 
 L_1aaa:
     call InitProduction(rgprod) -> callresult(void)
-    branch HIWORD(cBuild) < 0x0 ? L_1b74 : L_1ac0
+    branch cBuild <= 0 ? L_1b74 : L_1ace
 
-L_1ac0:
-    branch HIWORD(cBuild) > 0x0 ? L_1ace : L_1ac5
 
-L_1ac5:
-    branch LOWORD(cBuild) <= 0x0 ? L_1b74 : L_1ace
 
 L_1ace:
     call AddItemToQueue(0x8, LOWORD(cBuild), grobjPlanet, 0) -> callresult(void)
@@ -177,26 +149,18 @@ L_1bda:
     branch etaBetterAlchemy < etaBetterMines ? L_17a3 : L_1be6
 
 L_1be6:
-    branch HIWORD(cBuild) > 0x0 ? L_1c03 : L_1bef
+    branch cBuild < 1 ? L_17a3 : L_1c03
 
-L_1bef:
-    branch HIWORD(cBuild) < 0x0 ? L_17a3 : L_1bf4
 
-L_1bf4:
-    branch LOWORD(cBuild) < 0x1 ? L_17a3 : L_1c03
 
 L_1c03:
     sel.pl.lpplprod->rgprod[0].iItem = mdIdleMine
     branch etaFirst < etaBetterMines ? L_1c4a : L_1c33
 
 L_1c33:
-    branch HIWORD(cBuild) > 0x0 ? L_1c8f : L_1c3c
+    branch cBuild <= 0 ? L_1c4a : L_1c8f
 
-L_1c3c:
-    branch HIWORD(cBuild) < 0x0 ? L_1c4a : L_1c41
 
-L_1c41:
-    branch LOWORD(cBuild) > 0x0 ? L_1c8f : L_1c4a
 
 L_1c4a:
     sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1)

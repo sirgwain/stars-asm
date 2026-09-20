@@ -94,16 +94,12 @@ L_4c6c:
     goto L_4c36
 
 L_4c7b:
-    branch LOWORD(game.lid) != 0x0 ? L_4c8f : L_4c85
+    branch game.lid != 0 ? L_4c8f : L_4ebd
 
-L_4c85:
-    branch HIWORD(game.lid) == 0x0 ? L_4ebd : L_4c8f
 
 L_4c8f:
-    branch LOWORD(rtbof.lidGame) != LOWORD(game.lid) ? L_4ca6 : L_4c9e
+    branch rtbof.lidGame != game.lid ? L_4ca6 : L_4cb8
 
-L_4c9e:
-    branch HIWORD(rtbof.lidGame) == HIWORD(game.lid) ? L_4cb8 : L_4ca6
 
 L_4ca6:
     call FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl) -> callresult(void)

@@ -114,28 +114,16 @@ L_4c6c:
     goto LBadFile;
 
 L_4c7b:
-    if ((LOWORD(game.lid) != 0x0))
+    if ((game.lid != 0))
         goto L_4c8f;
     else
-        goto L_4c85;
-
-L_4c85:
-    if ((HIWORD(game.lid) == 0x0))
         goto L_4ebd;
-    else
-        goto L_4c8f;
 
 L_4c8f:
-    if ((LOWORD(rtbof.lidGame) != LOWORD(game.lid)))
+    if ((rtbof.lidGame != game.lid))
         goto L_4ca6;
     else
-        goto L_4c9e;
-
-L_4c9e:
-    if ((HIWORD(rtbof.lidGame) == HIWORD(game.lid)))
         goto L_4cb8;
-    else
-        goto L_4ca6;
 
 L_4ca6:
     FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);

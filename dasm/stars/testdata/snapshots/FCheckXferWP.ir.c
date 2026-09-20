@@ -26,13 +26,7 @@ L_72af:
 
 L_72b4:
     lpfl = LpflFromId(ifl);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_72de;
-    else
-        goto L_72cf;
-
-L_72cf:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_72de;
     else
         goto L_72d8;

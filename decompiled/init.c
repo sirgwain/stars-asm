@@ -1455,13 +1455,7 @@ L_1da7:
     ini.fStartupFile = 0x0;
 
 L_1db3:
-    if ((LOWORD(vrgszMRU) != 0x0))
-        goto L_1dde;
-    else
-        goto L_1dbd;
-
-L_1dbd:
-    if ((HIWORD(vrgszMRU) != 0x0))
+    if ((vrgszMRU != 0x0))
         goto L_1dde;
     else
         goto L_1dc7;

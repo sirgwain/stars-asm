@@ -14,34 +14,24 @@ FCanKillTok  (battle)
 L_391e:
     lp1 = LpshdefFromTok(ptok1)->lPower
     lp2 = LpshdefFromTok(ptok2)->lPower
-    branch HIWORD(lp2) < HIWORD(lp1) ? L_398f : L_3979
+    branch lp2 <= lp1 ? L_398f : L_3986
 
-L_3979:
-    branch HIWORD(lp2) > HIWORD(lp1) ? L_3986 : L_397e
 
-L_397e:
-    branch LOWORD(lp2) <= LOWORD(lp1) ? L_398f : L_3986
 
 L_3986:
     return 0
 
 L_398f:
-    branch (HIWORD(lp2) & 0x7fff) > (HIWORD(lp1) & 0x7fff) ? L_39c6 : L_39b1
+    branch (lp2 & 0x7ffff000) < (lp1 & 0x7ffff000) ? L_39bd : L_39c6
 
-L_39b1:
-    branch (HIWORD(lp2) & 0x7fff) < (HIWORD(lp1) & 0x7fff) ? L_39bd : L_39b6
 
-L_39b6:
-    branch (LOWORD(lp2) & 0xf000) >= (LOWORD(lp1) & 0xf000) ? L_39c6 : L_39bd
 
 L_39bd:
     return 1
 
 L_39c6:
-    branch (LOWORD(lp2) & 0xff00) != (LOWORD(lp1) & 0xff00) ? L_3a1a : L_39e8
+    branch (lp2 & 0x7fffff00) != (lp1 & 0x7fffff00) ? L_3a1a : L_39ef
 
-L_39e8:
-    branch (HIWORD(lp2) & 0x7fff) != (HIWORD(lp1) & 0x7fff) ? L_3a1a : L_39ef
 
 L_39ef:
     branch ptok1->spd < ptok2->spd ? L_3a1a : L_3a14

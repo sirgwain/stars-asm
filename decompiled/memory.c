@@ -49,13 +49,7 @@ HB *LphbReAlloc(HB *lphb) {
     uint16_t cbGrow;
 
 L_0108:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_012c;
-    else
-        goto L_011a;
-
-L_011a:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_012c;
     else
         goto L_0123;
@@ -96,13 +90,7 @@ LReAllocOOM:
 L_01db:
     lphbNew = GlobalLock(hmem);
     lphbNew->hmem = hmem;
-    if ((LOWORD(rglphb[lphbNew->ht]) != LOWORD(lphb)))
-        goto L_023c;
-    else
-        goto L_0212;
-
-L_0212:
-    if ((HIWORD(rglphb[lphbNew->ht]) != HIWORD(lphb)))
+    if ((rglphb[lphbNew->ht] != lphb))
         goto L_023c;
     else
         goto L_021b;
@@ -115,28 +103,16 @@ L_023c:
     lphbT = rglphb[lphbNew->ht];
 
 L_025a:
-    if ((LOWORD(lphbT) != 0x0))
+    if ((lphbT != 0x0))
         goto L_026c;
     else
-        goto L_0263;
-
-L_0263:
-    if ((HIWORD(lphbT) == 0x0))
         goto L_029b;
-    else
-        goto L_026c;
 
 L_026c:
-    if ((LOWORD(lphbT->lphbNext) != LOWORD(lphb)))
+    if ((lphbT->lphbNext != lphb))
         goto L_0287;
     else
-        goto L_027e;
-
-L_027e:
-    if ((HIWORD(lphbT->lphbNext) == HIWORD(lphb)))
         goto L_029b;
-    else
-        goto L_0287;
 
 L_0287:
     lphbT = lphbT->lphbNext;
@@ -179,13 +155,7 @@ L_02f9:
     lphb = lphbNext;
 
 L_0330:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_02f9;
-    else
-        goto L_0339;
-
-L_0339:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_02f9;
     else
         goto L_0342;
@@ -208,13 +178,7 @@ L_0369:
     lphb = lphb->lphbNext;
 
 L_039a:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_0369;
-    else
-        goto L_03a3;
-
-L_03a3:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0369;
     else
         goto L_03ac;
@@ -236,16 +200,10 @@ L_03b2:
     cb = ((cb + 0x3) & 0xfffe);
 
 L_03dc:
-    if ((LOWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_03ee;
     else
-        goto L_03e5;
-
-L_03e5:
-    if ((HIWORD(lphb) == 0x0))
         goto L_0410;
-    else
-        goto L_03ee;
 
 L_03ee:
     if ((lphb->cbFree >= cb))
@@ -258,13 +216,7 @@ LTryNextBlock:
     goto L_03dc;
 
 L_0410:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_0436;
-    else
-        goto L_0419;
-
-L_0419:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0436;
     else
         goto L_0422;
@@ -369,37 +321,13 @@ L_05b0:
     goto L_0623;
 
 L_05c8:
-    if ((HIWORD(lp) < HIWORD(lphb)))
-        goto L_0612;
-    else
-        goto L_05db;
-
-L_05db:
-    if ((HIWORD(lp) > HIWORD(lphb)))
-        goto L_05e7;
-    else
-        goto L_05e0;
-
-L_05e0:
-    if ((LOWORD(lp) <= LOWORD(lphb)))
+    if ((lp <= lphb))
         goto L_0612;
     else
         goto L_05e7;
 
 L_05e7:
-    if ((HIWORD(lp) > HIWORD(lphb)))
-        goto L_0612;
-    else
-        goto L_0603;
-
-L_0603:
-    if ((HIWORD(lp) < HIWORD(lphb)))
-        goto L_0635;
-    else
-        goto L_0608;
-
-L_0608:
-    if ((LOWORD(lp) < (LOWORD(lphb) + lphb->cbBlock)))
+    if ((lp < (lphb + lphb->cbBlock)))
         goto L_0635;
     else
         goto L_0612;
@@ -408,25 +336,13 @@ L_0612:
     lphb = lphb->lphbNext;
 
 L_0623:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_05c8;
-    else
-        goto L_062c;
-
-L_062c:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_05c8;
     else
         goto L_0635;
 
 L_0635:
-    if ((LOWORD(lphb) != 0x0))
-        goto L_0650;
-    else
-        goto L_063e;
-
-L_063e:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0650;
     else
         goto L_0647;
@@ -460,13 +376,7 @@ L_069c:
     lphb = LphbFromLpHt(lp, ht);
 
 LGrewHeap:
-    if (((LOWORD(lphb) + lphb->ibTop) != (LOWORD(lp) + cbCur)))
-        goto L_0714;
-    else
-        goto L_06d4;
-
-L_06d4:
-    if ((HIWORD(lphb) != HIWORD(lp)))
+    if (((lphb + lphb->ibTop) != (lp + cbCur)))
         goto L_0714;
     else
         goto L_06db;
@@ -516,16 +426,10 @@ void FreeLp(void *lp, HeapType ht) {
     HB      *lphb;
 
 L_07a8:
-    if ((LOWORD(lp) != 0x0))
+    if ((lp != 0x0))
         goto L_07c6;
     else
-        goto L_07ba;
-
-L_07ba:
-    if ((HIWORD(lp) == 0x0))
         goto L_082f;
-    else
-        goto L_07c6;
 
 L_07c6:
     lphb = LphbFromLpHt(lp, ht);
@@ -571,16 +475,10 @@ L_0912:
 
 void FreePl(PL *lppl) {
 L_0918:
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_0936;
     else
-        goto L_092a;
-
-L_092a:
-    if ((HIWORD(lppl) == 0x0))
         goto L_0953;
-    else
-        goto L_0936;
 
 L_0936:
     FreeLp(lppl, lppl->ht);

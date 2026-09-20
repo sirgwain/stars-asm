@@ -67,41 +67,23 @@ L_25c2:
         goto L_25cb;
 
 L_25cb:
-    if ((LOWORD(wtTotal) != 0x0))
+    if ((wtTotal != 0))
         goto L_25dd;
     else
-        goto L_25d4;
-
-L_25d4:
-    if ((HIWORD(wtTotal) == 0x0))
         goto L_2571;
-    else
-        goto L_25dd;
 
 L_25dd:
-    if ((LOWORD(lpth) != 0x0))
-        goto L_2657;
-    else
-        goto L_25e6;
-
-L_25e6:
-    if ((HIWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2657;
     else
         goto L_25ef;
 
 L_25ef:
     lpth = LpthNew(iplr, ithMineralPacket);
-    if ((LOWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2619;
     else
-        goto L_260d;
-
-L_260d:
-    if ((HIWORD(lpth) == 0x0))
         goto L_294c;
-    else
-        goto L_2619;
 
 L_2619:
     lpth->thp.iWarp = 0x0;
@@ -138,19 +120,7 @@ L_2700:
     goto L_291e;
 
 L_2708:
-    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) < 0x0))
-        goto L_2842;
-    else
-        goto L_2746;
-
-L_2746:
-    if (((HIWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + HIWORD(rgwtMinerals[i])) > 0x0))
-        goto L_2753;
-    else
-        goto L_274b;
-
-L_274b:
-    if (((LOWORD((uint32_t)((lpth->thp.wtMax * 0xa))) + LOWORD(rgwtMinerals[i])) <= 0x7530))
+    if ((((uint32_t)((lpth->thp.wtMax * 0xa)) + rgwtMinerals[i]) <= 0x7530))
         goto L_2842;
     else
         goto L_2753;
@@ -162,16 +132,10 @@ L_2753:
     lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(wt));
     rgwtMinerals[i] = (rgwtMinerals[i] - wt);
     lpth = LpthNew(iplr, ithMineralPacket);
-    if ((LOWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2804;
     else
-        goto L_27f8;
-
-L_27f8:
-    if ((HIWORD(lpth) == 0x0))
         goto L_294c;
-    else
-        goto L_2804;
 
 L_2804:
     lpth->thp.iWarp = 0x0;
@@ -187,19 +151,7 @@ L_2842:
     rgwtMinerals[i] = 0;
 
 L_2900:
-    if ((HIWORD(wtTotal) > 0x0))
-        goto L_291a;
-    else
-        goto L_2909;
-
-L_2909:
-    if ((HIWORD(wtTotal) < 0x0))
-        goto L_2927;
-    else
-        goto L_290e;
-
-L_290e:
-    if ((LOWORD(wtTotal) <= 0x0))
+    if ((wtTotal <= 0))
         goto L_2927;
     else
         goto L_291a;
@@ -214,22 +166,10 @@ L_291e:
         goto L_2927;
 
 L_2927:
-    if ((HIWORD(wtTotal) > 0x0))
-        goto L_2700;
-    else
-        goto L_2930;
-
-L_2930:
-    if ((HIWORD(wtTotal) < 0x0))
+    if ((wtTotal <= 0))
         goto L_293e;
     else
-        goto L_2935;
-
-L_2935:
-    if ((LOWORD(wtTotal) > 0x0))
         goto L_2700;
-    else
-        goto L_293e;
 
 L_293e:
     *(plpth) = lpth;

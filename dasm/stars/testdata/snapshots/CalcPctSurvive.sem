@@ -26,10 +26,8 @@ L_0317:
     branch lppl->iPlayer == -1 ? L_0487 : L_0324
 
 L_0324:
-    branch lppl->cDefenses != 0x0 ? L_0345 : L_033d
+    branch lppl->cDefenses != 0x0 ? L_0345 : L_0487
 
-L_033d:
-    branch 0x0 == 0x0 ? L_0487 : L_0345
 
 L_0345:
     iPlrSav = idPlayer
@@ -39,13 +37,9 @@ L_0345:
 L_0369:
     cDefenses = lppl->cDefenses
     cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0)
-    branch signhiword(cMax) > HIWORD(cDefenses) ? L_03bf : L_03a8
+    branch sext16to32(cMax) < cDefenses ? L_03b5 : L_03bf
 
-L_03a8:
-    branch signhiword(cMax) < HIWORD(cDefenses) ? L_03b5 : L_03ad
 
-L_03ad:
-    branch cMax >= LOWORD(cDefenses) ? L_03bf : L_03b5
 
 L_03b5:
     cDefenses = sext16to32(cMax)

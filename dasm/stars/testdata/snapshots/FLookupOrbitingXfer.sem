@@ -36,10 +36,8 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i]
-    branch LOWORD(rglpfl[i]) != 0x0 ? L_2564 : L_255c
+    branch rglpfl[i] != 0x0 ? L_2564 : L_2606
 
-L_255c:
-    branch HIWORD(rglpfl[i]) == 0x0 ? L_2606 : L_2564
 
 L_2564:
     branch lpfl->idPlanet != idPlanet ? L_2525 : L_2573
@@ -51,10 +49,8 @@ L_2581:
     branch idSkip == -1 ? L_25ad : L_258a
 
 L_258a:
-    branch lpfl->pt.x != sel.pt.x ? L_2525 : L_25a4
+    branch lpfl->pt != sel.pt ? L_2525 : L_25ad
 
-L_25a4:
-    branch lpfl->pt.y != sel.pt.y ? L_2525 : L_25ad
 
 L_25ad:
     t_25ad = iNth
@@ -81,10 +77,8 @@ L_2631:
     branch lpth->ith != ithMineralPacket ? L_26c0 : L_2647
 
 L_2647:
-    branch lpth->pt.x != sel.pt.x ? L_26c0 : L_2661
+    branch lpth->pt != sel.pt ? L_26c0 : L_266a
 
-L_2661:
-    branch lpth->pt.y != sel.pt.y ? L_26c0 : L_266a
 
 L_266a:
     t_266a = iNth

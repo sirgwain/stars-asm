@@ -312,16 +312,10 @@ CheckThing:
     goto L_4113;
 
 L_40ce:
-    if ((lpThings[i].pt.x != scan.pt.x))
+    if ((lpThings[i].pt != (((uint32_t)((uint16_t)(scan.pt.y)) << 0x10) | (uint16_t)(scan.pt.x))))
         goto L_410f;
     else
-        goto L_4103;
-
-L_4103:
-    if ((lpThings[i].pt.y == scan.pt.y))
         goto L_411e;
-    else
-        goto L_410f;
 
 L_410f:
     i = (i + 1);
@@ -395,16 +389,10 @@ L_41b1:
 
 L_41bc:
     lpfl = rglpfl[i];
-    if ((LOWORD(rglpfl[i]) != 0x0))
+    if ((rglpfl[i] != 0x0))
         goto L_41ec;
     else
-        goto L_41e4;
-
-L_41e4:
-    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_4215;
-    else
-        goto L_41ec;
 
 L_41ec:
     if ((scan.pt.x != lpfl->pt.x))
@@ -464,13 +452,7 @@ CheckPlanet:
     scan.grobj = grobjPlanet;
     idNew = scan.idpl;
     lppl = LpplFromId(idNew);
-    if ((LOWORD(lppl) != 0x0))
-        goto L_42d5;
-    else
-        goto L_42c4;
-
-L_42c4:
-    if ((HIWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_42d5;
     else
         goto L_42cd;
@@ -513,16 +495,10 @@ L_42ff:
 
 L_430a:
     lpfl = rglpfl[i];
-    if ((LOWORD(rglpfl[i]) != 0x0))
+    if ((rglpfl[i] != 0x0))
         goto L_433a;
     else
-        goto L_4332;
-
-L_4332:
-    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_4363;
-    else
-        goto L_433a;
 
 L_433a:
     if ((scan.pt.x != lpfl->pt.x))
@@ -714,16 +690,10 @@ L_467c:
 
 L_4687:
     lpfl = rglpfl[ifl];
-    if ((LOWORD(rglpfl[ifl]) != 0x0))
+    if ((rglpfl[ifl] != 0x0))
         goto L_46b7;
     else
-        goto L_46af;
-
-L_46af:
-    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_476a;
-    else
-        goto L_46b7;
 
 L_46b7:
     if ((lpfl->idPlanet != pl.id))
@@ -751,19 +721,7 @@ L_46ec:
 
 L_4705:
     cMines = CMineFromLpfl(lpfl);
-    if ((HIWORD(cMines) < 0x0))
-        goto L_4678;
-    else
-        goto L_4722;
-
-L_4722:
-    if ((HIWORD(cMines) > 0x0))
-        goto L_4730;
-    else
-        goto L_4727;
-
-L_4727:
-    if ((LOWORD(cMines) <= 0x0))
+    if ((cMines <= 0))
         goto L_4678;
     else
         goto L_4730;
@@ -776,19 +734,7 @@ L_4767:
     goto L_4678;
 
 L_476a:
-    if ((HIWORD(lVal) < 0x0))
-        goto L_478e;
-    else
-        goto L_4773;
-
-L_4773:
-    if ((HIWORD(lVal) > 0x0))
-        goto L_4781;
-    else
-        goto L_4778;
-
-L_4778:
-    if ((LOWORD(lVal) <= 0x0))
+    if ((lVal <= 0))
         goto L_478e;
     else
         goto L_4781;

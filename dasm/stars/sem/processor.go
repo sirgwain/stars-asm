@@ -116,6 +116,13 @@ func PreProcessorSpecs() []PreProcessor {
 				return &collapseStorageRMWProcessor{ctx: ctx}
 			},
 		},
+		{
+			Name:    "collapse-wide-compares",
+			Purpose: "Collapse compiler-lowered multiword comparison ladders into wide predicates.",
+			Func: func(ctx *FuncContext) MachineFuncProcessor {
+				return &collapseWideComparesProcessor{ctx: ctx}
+			},
+		},
 		// {
 		// 	Name:    "symbol-debug",
 		// 	Purpose: "Attempt to resolve all symbols after machine pre-processing.",

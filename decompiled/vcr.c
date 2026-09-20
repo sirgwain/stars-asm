@@ -43,16 +43,10 @@ L_0088:
 
 L_0095:
     lphb = lphb->lphbNext;
-    if ((LOWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_00bb;
     else
-        goto L_00af;
-
-L_00af:
-    if ((HIWORD(lphb) == 0x0))
         goto L_0286;
-    else
-        goto L_00bb;
 
 L_00bb:
     vlpbdVCR = (lphb + 0x12);
@@ -96,46 +90,28 @@ L_01cf:
     DialogBox(hInst, MAKEINTRESOURCE(IDD_VCR), hwndFrame, lpProc);
 
 LCleanup:
-    if ((LOWORD(lpProc) != 0x0))
+    if ((lpProc != 0x0))
         goto L_0213;
     else
-        goto L_020a;
-
-L_020a:
-    if ((HIWORD(lpProc) == 0x0))
         goto L_021e;
-    else
-        goto L_0213;
 
 L_0213:
     FreeProcInstance(lpProc);
 
 L_021e:
-    if ((LOWORD(vrgtok) != 0x0))
+    if ((vrgtok != 0x0))
         goto L_0232;
     else
-        goto L_0228;
-
-L_0228:
-    if ((HIWORD(vrgtok) == 0x0))
         goto L_0246;
-    else
-        goto L_0232;
 
 L_0232:
     FreeLp(vrgtok, htMisc);
 
 L_0246:
-    if ((LOWORD(vrgdpVCR) != 0x0))
+    if ((vrgdpVCR != 0x0))
         goto L_025a;
     else
-        goto L_0250;
-
-L_0250:
-    if ((HIWORD(vrgdpVCR) == 0x0))
         goto L_026e;
-    else
-        goto L_025a;
 
 L_025a:
     FreeLp(vrgdpVCR, htMisc);
@@ -156,13 +132,7 @@ int16_t CBattles() {
 L_028c:
     cBattles = 0;
     lphb = rglphb[11];
-    if ((LOWORD(lphb) != 0x0))
-        goto L_02bf;
-    else
-        goto L_02b0;
-
-L_02b0:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_02bf;
     else
         goto L_02b9;
@@ -181,16 +151,10 @@ L_02d3:
 
 L_02df:
     lphb = lphb->lphbNext;
-    if ((LOWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0302;
     else
-        goto L_02f9;
-
-L_02f9:
-    if ((HIWORD(lphb) == 0x0))
         goto L_030f;
-    else
-        goto L_0302;
 
 L_0302:
     if ((lphb->ibTop > 0x10))
@@ -229,13 +193,7 @@ BTLDATA *BtlDataGet(int16_t i) {
 
 L_0362:
     lphb = rglphb[11];
-    if ((LOWORD(lphb) != 0x0))
-        goto L_0393;
-    else
-        goto L_0381;
-
-L_0381:
-    if ((HIWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0393;
     else
         goto L_038a;
@@ -254,16 +212,10 @@ L_03a7:
 
 L_03b3:
     lphb = lphb->lphbNext;
-    if ((LOWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_03d6;
     else
-        goto L_03cd;
-
-L_03cd:
-    if ((HIWORD(lphb) == 0x0))
         goto L_03e3;
-    else
-        goto L_03d6;
 
 L_03d6:
     if ((lphb->ibTop > 0x10))
@@ -543,16 +495,10 @@ int32_t LdpFromItokDv(int16_t itok, DV *lpdv) {
     int32_t  dp;
 
 L_07a8:
-    if ((LOWORD(lpdv) != 0x0))
+    if ((lpdv != 0x0))
         goto L_07c3;
     else
-        goto L_07ba;
-
-L_07ba:
-    if ((HIWORD(lpdv) == 0x0))
         goto L_07cf;
-    else
-        goto L_07c3;
 
 L_07c3:
     dv.dp = lpdv->dp;
@@ -700,22 +646,8 @@ L_0b29:
         goto L_0b4d;
 
 L_0b4d:
-    if ((HIWORD((uint32_t)(((uint32_t)(ptok->dpShield) * (uint32_t)(ptok->csh)))) <
-         HIWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
-        goto L_0c48;
-    else
-        goto L_0bcf;
-
-L_0bcf:
-    if ((HIWORD((uint32_t)(((uint32_t)(ptok->dpShield) * (uint32_t)(ptok->csh)))) >
-         HIWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
-        goto L_0bdb;
-    else
-        goto L_0bd4;
-
-L_0bd4:
-    if ((LOWORD((uint32_t)(((uint32_t)(ptok->dpShield) * (uint32_t)(ptok->csh)))) <=
-         LOWORD((int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1))))))
+    if (((int32_t)((uint32_t)(((uint32_t)(ptok->dpShield) * (uint32_t)(ptok->csh)))) <=
+         (int32_t)(((uint32_t)((vlpbrVCR->rgkill[i].dpShield & 0x1fff)) << ((vlpbrVCR->rgkill[i].dpShield >> 0xd) << 0x1)))))
         goto L_0c48;
     else
         goto L_0bdb;
@@ -1948,32 +1880,14 @@ L_26ae:
     c = _wsprintf(szWork, PszGetCompressedString(idsDDDoing), (brcT & 0xf), (brcT >> 0x4));
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
-    if ((LOWORD(dpShields) != 0x0))
+    if ((dpShields != 0))
         goto L_271e;
     else
-        goto L_2715;
-
-L_2715:
-    if ((HIWORD(dpShields) == 0x0))
         goto L_27b1;
-    else
-        goto L_271e;
 
 L_271e:
     CchGetString(idsAnd, szT);
-    if ((HIWORD(dpArmor) < 0x0))
-        goto L_274f;
-    else
-        goto L_2738;
-
-L_2738:
-    if ((HIWORD(dpArmor) > 0x0))
-        goto L_2746;
-    else
-        goto L_273d;
-
-L_273d:
-    if ((LOWORD(dpArmor) <= 0x0))
+    if ((dpArmor <= 0))
         goto L_274f;
     else
         goto L_2746;
@@ -2004,16 +1918,10 @@ L_2766:
     y = (y + dyArial8);
 
 L_27b1:
-    if ((LOWORD(dpArmor) != 0x0))
+    if ((dpArmor != 0))
         goto L_27c3;
     else
-        goto L_27ba;
-
-L_27ba:
-    if ((HIWORD(dpArmor) == 0x0))
         goto L_2820;
-    else
-        goto L_27c3;
 
 L_27c3:
     if ((j <= 0))
@@ -2040,25 +1948,13 @@ L_2820:
         goto L_282f;
 
 L_282f:
-    if ((LOWORD(dpShields) != 0x0))
-        goto L_288d;
-    else
-        goto L_2838;
-
-L_2838:
-    if ((HIWORD(dpShields) != 0x0))
+    if ((dpShields != 0))
         goto L_288d;
     else
         goto L_2841;
 
 L_2841:
-    if ((LOWORD(dpArmor) != 0x0))
-        goto L_288d;
-    else
-        goto L_284a;
-
-L_284a:
-    if ((HIWORD(dpArmor) != 0x0))
+    if ((dpArmor != 0))
         goto L_288d;
     else
         goto L_2853;
@@ -2108,13 +2004,7 @@ L_2927:
         goto L_294a;
 
 L_294a:
-    if ((LOWORD(dpArmor) != 0x0))
-        goto L_2962;
-    else
-        goto L_2953;
-
-L_2953:
-    if ((HIWORD(dpArmor) != 0x0))
+    if ((dpArmor != 0))
         goto L_2962;
     else
         goto L_295c;
@@ -2266,13 +2156,7 @@ L_2e88:
 
 L_2e8e:
     dpT = (uint32_t)((dv.pctDp / 0x5));
-    if ((LOWORD(dpT) != 0x0))
-        goto L_2ecc;
-    else
-        goto L_2eb6;
-
-L_2eb6:
-    if ((HIWORD(dpT) != 0x0))
+    if ((dpT != 0))
         goto L_2ecc;
     else
         goto L_2ec0;
@@ -2298,22 +2182,10 @@ L_2f60:
     TextOut(hdc, xT, y, szWork, c);
     SetTextColor(hdc, crButtonText);
     y = (y + dyArial8);
-    if (((HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)) > 0x0))
-        goto L_2fea;
-    else
-        goto L_2fc6;
-
-L_2fc6:
-    if (((HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)) < 0x0))
+    if ((((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew))) - dpShields) <= 0x0))
         goto L_2fd3;
     else
-        goto L_2fcb;
-
-L_2fcb:
-    if (((LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - LOWORD(dpShields)) > 0x0))
         goto L_2fea;
-    else
-        goto L_2fd3;
 
 L_2fd3:
     c = CchGetString(idsShieldsNone, szWork);
@@ -2482,22 +2354,10 @@ L_3693:
     goto L_34cd;
 
 L_3696:
-    if ((HIWORD(dpT) > 0x0))
-        goto L_36bb;
-    else
-        goto L_369f;
-
-L_369f:
-    if ((HIWORD(dpT) < 0x0))
+    if ((dpT < 32767))
         goto L_36ae;
     else
-        goto L_36a4;
-
-L_36a4:
-    if ((LOWORD(dpT) >= 0x7fff))
         goto L_36bb;
-    else
-        goto L_36ae;
 
 L_36ae:
     csh = LOWORD(dpT);
@@ -2623,37 +2483,13 @@ L_3a3e:
 L_3a69:
     TimerCount(ti);
     dwTickCur = ti.dwmsSinceStart;
-    if ((HIWORD(dwTickCur) < HIWORD(dwTickLast)))
-        goto L_3abb;
-    else
-        goto L_3a8f;
-
-L_3a8f:
-    if ((HIWORD(dwTickCur) > HIWORD(dwTickLast)))
-        goto L_3a9c;
-    else
-        goto L_3a94;
-
-L_3a94:
-    if ((LOWORD(dwTickCur) < LOWORD(dwTickLast)))
+    if ((dwTickCur < dwTickLast))
         goto L_3abb;
     else
         goto L_3a9c;
 
 L_3a9c:
-    if ((HIWORD(dwTickCur) < (SIGNHIWORD(ctick) + HIWORD(dwTickLast))))
-        goto L_3a69;
-    else
-        goto L_3aae;
-
-L_3aae:
-    if ((HIWORD(dwTickCur) > (SIGNHIWORD(ctick) + HIWORD(dwTickLast))))
-        goto L_3abb;
-    else
-        goto L_3ab3;
-
-L_3ab3:
-    if ((LOWORD(dwTickCur) < (ctick + LOWORD(dwTickLast))))
+    if ((dwTickCur < ((uint32_t)(ctick) + dwTickLast)))
         goto L_3a69;
     else
         goto L_3abb;
@@ -3129,37 +2965,13 @@ L_424b:
 L_42a1:
     TimerCount(ti);
     dwTickCur = ti.dwmsSinceStart;
-    if ((HIWORD(dwTickCur) < HIWORD(dwTickLast)))
-        goto L_4301;
-    else
-        goto L_42c7;
-
-L_42c7:
-    if ((HIWORD(dwTickCur) > HIWORD(dwTickLast)))
-        goto L_42d4;
-    else
-        goto L_42cc;
-
-L_42cc:
-    if ((LOWORD(dwTickCur) < LOWORD(dwTickLast)))
+    if ((dwTickCur < dwTickLast))
         goto L_4301;
     else
         goto L_42d4;
 
 L_42d4:
-    if ((HIWORD(dwTickCur) < ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((10 * viSpeedVCR))))))
-        goto L_42a1;
-    else
-        goto L_42f4;
-
-L_42f4:
-    if ((HIWORD(dwTickCur) > ((HIWORD(dwTickLast) + 0x0) - SIGNHIWORD(LOWORD((10 * viSpeedVCR))))))
-        goto L_4301;
-    else
-        goto L_42f9;
-
-L_42f9:
-    if ((LOWORD(dwTickCur) < ((LOWORD(dwTickLast) + 0x23) - LOWORD((10 * viSpeedVCR)))))
+    if ((dwTickCur < ((dwTickLast + 0x23) - (uint32_t)(LOWORD((10 * viSpeedVCR))))))
         goto L_42a1;
     else
         goto L_4301;

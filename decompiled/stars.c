@@ -645,16 +645,10 @@ L_0733:
         goto L_0743;
 
 L_0743:
-    if ((LOWORD(lpchBatch) != LOWORD(lpchBatchMac)))
+    if ((lpchBatch != lpchBatchMac))
         goto L_075c;
     else
-        goto L_0753;
-
-L_0753:
-    if ((HIWORD(lpchBatch) == HIWORD(lpchBatchMac)))
         goto L_0774;
-    else
-        goto L_075c;
 
 L_075c:
     *(pch) = *(lpchBatch);
@@ -722,13 +716,7 @@ L_080b:
         goto L_0828;
 
 L_0828:
-    if ((LOWORD(vrgts[iplr].lSerialNumber) != LOWORD(vrgts[i].lSerialNumber)))
-        goto L_07f1;
-    else
-        goto L_0867;
-
-L_0867:
-    if ((HIWORD(vrgts[iplr].lSerialNumber) != HIWORD(vrgts[i].lSerialNumber)))
+    if ((vrgts[iplr].lSerialNumber != vrgts[i].lSerialNumber))
         goto L_07f1;
     else
         goto L_0870;
@@ -1080,16 +1068,10 @@ L_0d98:
     FreeProcInstance(lpfnFakeListProc);
     FreeProcInstance(lpfnHostTimerProc);
     FreeProcInstance(lpfnBrowserDlgProc);
-    if ((LOWORD(lpfnTutorDlgProc) != 0x0))
+    if ((lpfnTutorDlgProc != 0x0))
         goto L_0dfa;
     else
-        goto L_0df0;
-
-L_0df0:
-    if ((HIWORD(lpfnTutorDlgProc) == 0x0))
         goto L_0e07;
-    else
-        goto L_0dfa;
 
 L_0dfa:
     FreeProcInstance(lpfnTutorDlgProc);

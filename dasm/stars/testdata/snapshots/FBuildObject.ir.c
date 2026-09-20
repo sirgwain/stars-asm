@@ -78,13 +78,7 @@ L_1a2c:
 
 L_1a3e:
     idm = (idm + 1);
-    if ((lpshdef->hul.wtCargoMax != 0xffff))
-        goto L_1a60;
-    else
-        goto L_1a54;
-
-L_1a54:
-    if ((0x0 != 0x0))
+    if (((uint32_t)(lpshdef->hul.wtCargoMax) != 0xffff))
         goto L_1a60;
     else
         goto L_1a5c;
@@ -204,16 +198,10 @@ L_1d46:
 
 L_1d51:
     lpfl = rglpfl[i];
-    if ((LOWORD(rglpfl[i]) != 0x0))
+    if ((rglpfl[i] != 0x0))
         goto L_1d81;
     else
-        goto L_1d79;
-
-L_1d79:
-    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_214f;
-    else
-        goto L_1d81;
 
 L_1d81:
     if ((lpfl->iPlayer > lppl->iPlayer))
@@ -228,13 +216,7 @@ L_1d97:
         goto L_1dad;
 
 L_1dad:
-    if ((lpfl->lpplord->rgord[0].pt.x != rgptPlan[lppl->id].x))
-        goto L_1d42;
-    else
-        goto L_1dcb;
-
-L_1dcb:
-    if ((lpfl->lpplord->rgord[0].pt.y != rgptPlan[lppl->id].y))
+    if ((lpfl->lpplord->rgord[0].pt != rgptPlan[lppl->id]))
         goto L_1d42;
     else
         goto L_1ded;
@@ -583,19 +565,7 @@ L_277c:
 
 L_2785:
     l = (uint32_t)(((uint32_t)(cSize) * (uint32_t)(cBuilt)));
-    if ((HIWORD(l) < 0x0))
-        goto L_27be;
-    else
-        goto L_27a5;
-
-L_27a5:
-    if ((HIWORD(l) > 0x0))
-        goto L_27b4;
-    else
-        goto L_27aa;
-
-L_27aa:
-    if ((LOWORD(l) <= 0x7ff8))
+    if ((l <= 32760))
         goto L_27be;
     else
         goto L_27b4;
@@ -682,13 +652,7 @@ L_28ab:
         goto L_28c1;
 
 L_28c1:
-    if ((lpth->pt.x != rgptPlan[lppl->id].x))
-        goto L_2956;
-    else
-        goto L_28e7;
-
-L_28e7:
-    if ((lpth->pt.y != rgptPlan[lppl->id].y))
+    if ((lpth->pt != rgptPlan[lppl->id]))
         goto L_2956;
     else
         goto L_28f0;
@@ -727,16 +691,10 @@ L_295a:
         goto L_2968;
 
 L_2968:
-    if ((LOWORD(lpth) != LOWORD(lpthMac)))
+    if ((lpth != lpthMac))
         goto L_297e;
     else
-        goto L_2976;
-
-L_2976:
-    if ((HIWORD(lpth) == HIWORD(lpthMac)))
         goto L_2a78;
-    else
-        goto L_297e;
 
 L_297e:
     lpth->thp.wtMax = 0x0;
@@ -769,13 +727,7 @@ L_2a48:
 
 L_2a78:
     lpth = LpthNew(lppl->iPlayer, ithMineralPacket);
-    if ((LOWORD(lpth) != 0x0))
-        goto L_2ac9;
-    else
-        goto L_2a9a;
-
-L_2a9a:
-    if ((HIWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_2ac9;
     else
         goto L_2aa3;

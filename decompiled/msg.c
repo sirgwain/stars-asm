@@ -1246,13 +1246,7 @@ L_633d:
     iMsgSendCur = (iMsgSendCur + 1);
 
 L_6352:
-    if ((LOWORD(lpmp) != 0x0))
-        goto L_6315;
-    else
-        goto L_635b;
-
-L_635b:
-    if ((HIWORD(lpmp) != 0x0))
+    if ((lpmp != 0x0))
         goto L_6315;
     else
         goto L_6364;
@@ -1863,16 +1857,10 @@ L_6e71:
 
 L_6ea6:
     lpth = LpthFromId(vptMsg.x);
-    if ((LOWORD(lpth) != 0x0))
+    if ((lpth != 0x0))
         goto L_6eca;
     else
-        goto L_6ec1;
-
-L_6ec1:
-    if ((HIWORD(lpth) == 0x0))
         goto L_7163;
-    else
-        goto L_6eca;
 
 L_6eca:
     scan.pt = lpth->pt;
@@ -1970,13 +1958,7 @@ L_7064:
     goto L_7163;
 
 L_7088:
-    if ((LOWORD(vSerialNumber) != 0x0))
-        goto L_7163;
-    else
-        goto L_7092;
-
-L_7092:
-    if ((HIWORD(vSerialNumber) != 0x0))
+    if ((vSerialNumber != 0))
         goto L_7163;
     else
         goto L_709c;
@@ -2151,7 +2133,6 @@ void SetMsgTitle(HWND hwnd) {
     int16_t  t_7442;
     int16_t  t_merge_75c4_0001;
     int16_t  t_merge_75eb_0001;
-    FLEET   *t_call_7723;
     uint16_t t_scratch_m6e;
     int16_t  t_merge_77d8_0001;
 
@@ -2290,16 +2271,10 @@ L_7451:
     goto L_7442;
 
 L_7464:
-    if ((LOWORD(lpmp) != 0x0))
+    if ((lpmp != 0x0))
         goto L_7476;
     else
-        goto L_746d;
-
-L_746d:
-    if ((HIWORD(lpmp) == 0x0))
         goto L_74fa;
-    else
-        goto L_7476;
 
 L_7476:
     SendMessage(hwndMsgDrop, CB_SETCURSEL, lpmp->iPlrTo, 0);
@@ -2508,17 +2483,10 @@ L_7716:
         goto L_771f;
 
 L_771f:
-    t_call_7723 = LpflFromId(idMsgObj);
-    if ((FAROFF(t_call_7723) != 0x0))
+    if ((LpflFromId(idMsgObj) != 0x0))
         goto L_773b;
     else
-        goto L_7733;
-
-L_7733:
-    if ((FARSEG(t_call_7723) == 0x0))
         goto L_7744;
-    else
-        goto L_773b;
 
 L_773b:
     mdMsgObj = 2;
@@ -4331,16 +4299,10 @@ L_947f:
 
 LLookupPlanet:
     lppl = LpplFromId(w);
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_94ad;
     else
-        goto L_94a4;
-
-L_94a4:
-    if ((HIWORD(lppl) == 0x0))
         goto L_95d5;
-    else
-        goto L_94ad;
 
 L_94ad:
     MarkPlanet(lppl, iPlayer, 0x3);
@@ -4602,13 +4564,7 @@ L_96d9:
     lpmp = lpmp->lpmsgplrNext;
 
 L_96e9:
-    if ((LOWORD(lpmp) != 0x0))
-        goto L_9629;
-    else
-        goto L_96f2;
-
-L_96f2:
-    if ((HIWORD(lpmp) != 0x0))
+    if ((lpmp != 0x0))
         goto L_9629;
     else
         goto L_96fb;
@@ -4709,13 +4665,7 @@ L_98a9:
     lpmp = lpmp->lpmsgplrNext;
 
 L_98bc:
-    if ((LOWORD(lpmp) != 0x0))
-        goto L_9850;
-    else
-        goto L_98c6;
-
-L_98c6:
-    if ((HIWORD(lpmp) != 0x0))
+    if ((lpmp != 0x0))
         goto L_9850;
     else
         goto L_98d0;
@@ -4833,16 +4783,10 @@ L_9ad8:
     lpmp = vlpmsgplrIn;
 
 L_9ae3:
-    if ((LOWORD(lpmp->lpmsgplrNext) != 0x0))
+    if ((lpmp->lpmsgplrNext != 0x0))
         goto L_9af9;
     else
-        goto L_9aef;
-
-L_9aef:
-    if ((HIWORD(lpmp->lpmsgplrNext) == 0x0))
         goto L_9b0c;
-    else
-        goto L_9af9;
 
 L_9af9:
     lpmp = lpmp->lpmsgplrNext;
@@ -4938,16 +4882,10 @@ L_9c51:
         goto L_9c5a;
 
 L_9c5a:
-    if ((LOWORD(lpmpCur) != 0x0))
+    if ((lpmpCur != 0x0))
         goto L_9c6c;
     else
-        goto L_9c63;
-
-L_9c63:
-    if ((HIWORD(lpmpCur) == 0x0))
         goto L_9cb2;
-    else
-        goto L_9c6c;
 
 L_9c6c:
     DirtyGame(1);
@@ -5015,16 +4953,10 @@ L_9d3a:
 L_9d52:
     cbNew = (abs(cb) + 12);
     iPlrTo = LOWORD(SendMessage(hwndMsgDrop, CB_GETCURSEL, 0x0, 0));
-    if ((LOWORD(lpmpCur) != 0x0))
+    if ((lpmpCur != 0x0))
         goto L_9d91;
     else
-        goto L_9d88;
-
-L_9d88:
-    if ((HIWORD(lpmpCur) == 0x0))
         goto L_9e01;
-    else
-        goto L_9d91;
 
 L_9d91:
     if ((cb != lpmpCur->cLen))

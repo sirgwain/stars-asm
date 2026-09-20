@@ -139,6 +139,53 @@ func addBlockEdges(cfg *CFG) error {
 	return nil
 }
 
+// RewriteOutgoingEdges replaces the outgoing edges for the supplied blocks and
+// rebuilds all graph indexes and SCC-derived facts from the resulting topology.
+func (cfg *CFG) RewriteOutgoingEdges(replacements map[BlockID][]BlockID) error {
+	for from, successors := range replacements {
+		if cfg.byID[from] == nil {
+			return fmt.Errorf("rewrite edges from unknown block %s", from)
+		}
+		for _, to := range successors {
+			if cfg.byID[to] == nil {
+				return fmt.Errorf("rewrite edge %s -> unknown block %s", from, to)
+			}
+		}
+	}
+
+	for from, successors := range replacements {
+		cfg.succ[from] = uniqueSortedBlockIDs(successors)
+	}
+
+	cfg.pred = make(map[BlockID][]BlockID, len(cfg.Blocks))
+	cfg.Graph = newBlockGraph()
+	for _, block := range cfg.Blocks {
+		if err := cfg.Graph.AddVertex(block); err != nil {
+			return fmt.Errorf("rebuild cfg vertex %s: %w", block, err)
+		}
+	}
+	for from, successors := range cfg.succ {
+		for _, to := range successors {
+			cfg.pred[to] = append(cfg.pred[to], from)
+			if err := cfg.Graph.AddEdge(from, to); err != nil {
+				return fmt.Errorf("rebuild cfg edge %s -> %s: %w", from, to, err)
+			}
+		}
+	}
+	for id := range cfg.pred {
+		slices.Sort(cfg.pred[id])
+	}
+	cfg.buildGraphFacts()
+	return nil
+}
+
+// uniqueSortedBlockIDs returns a sorted copy of ids without duplicates.
+func uniqueSortedBlockIDs(ids []BlockID) []BlockID {
+	out := append([]BlockID(nil), ids...)
+	slices.Sort(out)
+	return slices.Compact(out)
+}
+
 // InsertSyntheticBlockOnEdge replaces one CFG edge with a new synthetic block.
 func (cfg *CFG) InsertSyntheticBlockOnEdge(from BlockID, to BlockID, id BlockID) error {
 	if cfg.byID[from] == nil {

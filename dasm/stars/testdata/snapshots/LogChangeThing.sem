@@ -25,10 +25,8 @@ L_9929:
 
 L_9952:
     lxNew.rgdItem[i] = sext16to32((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]))
-    branch (pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0 ? L_999c : L_9994
+    branch sext16to32((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) != 0 ? L_999c : L_99a1
 
-L_9994:
-    branch signhiword((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) == 0x0 ? L_99a1 : L_999c
 
 L_999c:
     fChg = 1

@@ -29,19 +29,7 @@ L_58ee:
 L_5900:
     score.cPlanet = (score.cPlanet + 1);
     lTemp = (int32_t)(((lppl->rgwtMin[3] + 999) / 0x3e8));
-    if ((HIWORD(lTemp) < 0x0))
-        goto L_594b;
-    else
-        goto L_5933;
-
-L_5933:
-    if ((HIWORD(lTemp) > 0x0))
-        goto L_5941;
-    else
-        goto L_5938;
-
-L_5938:
-    if ((LOWORD(lTemp) <= 0x6))
+    if ((lTemp <= 6))
         goto L_594b;
     else
         goto L_5941;
@@ -149,44 +137,20 @@ L_5adc:
 
 L_5aed:
     lPower = LComputePower(&(rglpshdef[iPlr][i]));
-    if ((HIWORD(lPower) > 0x0))
-        goto L_5b3c;
-    else
-        goto L_5b1d;
-
-L_5b1d:
-    if ((HIWORD(lPower) < 0x0))
+    if ((lPower <= 0))
         goto L_5b2b;
     else
-        goto L_5b22;
-
-L_5b22:
-    if ((LOWORD(lPower) > 0x0))
         goto L_5b3c;
-    else
-        goto L_5b2b;
 
 L_5b2b:
     rgType[i] = 0;
     goto L_5b73;
 
 L_5b3c:
-    if ((HIWORD(lPower) > 0x0))
-        goto L_5b65;
-    else
-        goto L_5b45;
-
-L_5b45:
-    if ((HIWORD(lPower) < 0x0))
+    if ((lPower < 2000))
         goto L_5b54;
     else
-        goto L_5b4a;
-
-L_5b4a:
-    if ((LOWORD(lPower) >= 0x7d0))
         goto L_5b65;
-    else
-        goto L_5b54;
 
 L_5b54:
     rgType[i] = 1;
@@ -233,16 +197,10 @@ L_5bb6:
 
 L_5bc1:
     lpfl = rglpfl[ifl];
-    if ((LOWORD(rglpfl[ifl]) != 0x0))
+    if ((rglpfl[ifl] != 0x0))
         goto L_5bf1;
     else
-        goto L_5be9;
-
-L_5be9:
-    if ((HIWORD(rglpfl[ifl]) == 0x0))
         goto L_5c93;
-    else
-        goto L_5bf1;
 
 L_5bf1:
     if ((lpfl->iPlayer != iPlr))

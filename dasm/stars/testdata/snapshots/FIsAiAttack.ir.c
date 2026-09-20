@@ -35,19 +35,7 @@ L_4ac7:
         goto L_4ad0;
 
 L_4ad0:
-    if ((HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0))
-        goto L_4b0b;
-    else
-        goto L_4af5;
-
-L_4af5:
-    if ((HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0))
-        goto L_4b05;
-    else
-        goto L_4afa;
-
-L_4afa:
-    if ((LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0))
+    if ((rglpshdef[idPlayer][i].lPower <= 0))
         goto L_4b0b;
     else
         goto L_4b05;
@@ -79,19 +67,7 @@ L_4b23:
         goto L_4b46;
 
 L_4b46:
-    if ((HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0))
-        goto L_4b81;
-    else
-        goto L_4b6b;
-
-L_4b6b:
-    if ((HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0))
-        goto L_4b7b;
-    else
-        goto L_4b70;
-
-L_4b70:
-    if ((LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0))
+    if ((rglpshdef[idPlayer][i].lPower <= 0))
         goto L_4b81;
     else
         goto L_4b7b;

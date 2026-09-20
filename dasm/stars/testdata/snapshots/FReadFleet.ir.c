@@ -284,16 +284,10 @@ L_3f61:
     lpfl->idPlanet = -1;
 
 L_3f6a:
-    if ((lpfl->pt.x != rgptPlan[lpfl->idPlanet].x))
+    if ((lpfl->pt != rgptPlan[lpfl->idPlanet]))
         goto L_3fa4;
     else
-        goto L_3f85;
-
-L_3f85:
-    if ((lpfl->pt.y == rgptPlan[lpfl->idPlanet].y))
         goto L_3fdb;
-    else
-        goto L_3fa4;
 
 L_3fa4:
     if ((i != 0))

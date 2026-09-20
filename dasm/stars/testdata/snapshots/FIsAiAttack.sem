@@ -31,13 +31,9 @@ L_4ac7:
     branch ihul != 5 ? L_4b11 : L_4ad0
 
 L_4ad0:
-    branch HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0 ? L_4b0b : L_4af5
+    branch rglpshdef[idPlayer][i].lPower <= 0 ? L_4b0b : L_4b05
 
-L_4af5:
-    branch HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0 ? L_4b05 : L_4afa
 
-L_4afa:
-    branch LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0 ? L_4b0b : L_4b05
 
 L_4b05:
     return 1
@@ -57,13 +53,9 @@ L_4b23:
     branch WtMaxShdefStat(&rgshdef[i], 2) >= 500 ? L_4b81 : L_4b46
 
 L_4b46:
-    branch HIWORD(rglpshdef[idPlayer][i].lPower) < 0x0 ? L_4b81 : L_4b6b
+    branch rglpshdef[idPlayer][i].lPower <= 0 ? L_4b81 : L_4b7b
 
-L_4b6b:
-    branch HIWORD(rglpshdef[idPlayer][i].lPower) > 0x0 ? L_4b7b : L_4b70
 
-L_4b70:
-    branch LOWORD(rglpshdef[idPlayer][i].lPower) <= 0x0 ? L_4b81 : L_4b7b
 
 L_4b7b:
     return 1

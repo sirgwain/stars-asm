@@ -14,14 +14,12 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     int32_t  t_merge_5c20_0001;
     int32_t  t_call_5c18;
     int32_t  t_merge_5cf0_0001;
-    int32_t  t_call_5cf5;
     uint16_t t_merge_5d7f_0001;
     uint16_t t_merge_5def_0001;
     uint16_t t_merge_5e4d_0001;
     uint16_t t_merge_5e34_0001;
     uint16_t t_merge_5ecd_0001;
     int32_t  t_merge_5f3b_0001;
-    int32_t  t_call_5f40;
 
 L_5a16:
     GetClientRect(hwnd, &(rc));
@@ -114,16 +112,10 @@ L_5b44:
         goto L_5b58;
 
 L_5b58:
-    if ((pt.x != ptOld.x))
+    if ((pt != ptOld))
         goto L_5b6e;
     else
-        goto L_5b63;
-
-L_5b63:
-    if ((pt.y == ptOld.y))
         goto L_5b44;
-    else
-        goto L_5b6e;
 
 L_5b6e:
     ptOld = pt;
@@ -177,17 +169,10 @@ L_5ce3:
     t_merge_5cf0_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
 
 L_5cf0:
-    t_call_5cf5 = XferSupply(iVal, t_merge_5cf0_0001);
-    if ((LOWORD(t_call_5cf5) != 0x0))
+    if ((XferSupply(iVal, t_merge_5cf0_0001) != 0))
         goto L_5d0d;
     else
-        goto L_5d05;
-
-L_5d05:
-    if ((HIWORD(t_call_5cf5) == 0x0))
         goto L_5b44;
-    else
-        goto L_5d0d;
 
 L_5d0d:
     DrawXferDlg(hwnd, 0x0, &(rc), iVal);
@@ -350,17 +335,10 @@ L_5f2e:
     t_merge_5f3b_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
 
 L_5f3b:
-    t_call_5f40 = XferSupply(iVal, t_merge_5f3b_0001);
-    if ((LOWORD(t_call_5f40) != 0x0))
+    if ((XferSupply(iVal, t_merge_5f3b_0001) != 0))
         goto L_5f58;
     else
-        goto L_5f50;
-
-L_5f50:
-    if ((HIWORD(t_call_5f40) == 0x0))
         goto L_5dad;
-    else
-        goto L_5f58;
 
 L_5f58:
     DrawXferDlg(hwnd, btnt.hdc, &(rc), iVal);

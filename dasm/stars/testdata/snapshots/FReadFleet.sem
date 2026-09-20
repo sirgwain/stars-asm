@@ -225,10 +225,8 @@ L_3f61:
     lpfl->idPlanet = -1
 
 L_3f6a:
-    branch lpfl->pt.x != rgptPlan[lpfl->idPlanet].x ? L_3fa4 : L_3f85
+    branch lpfl->pt != rgptPlan[lpfl->idPlanet] ? L_3fa4 : L_3fdb
 
-L_3f85:
-    branch lpfl->pt.y == rgptPlan[lpfl->idPlanet].y ? L_3fdb : L_3fa4
 
 L_3fa4:
     branch i != 0 ? L_3d24 : L_3fad

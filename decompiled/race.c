@@ -360,16 +360,10 @@ L_05b5:
 L_05bf:
     i = GetRaceStat(&(vplr), rsUseLeftover);
     SendMessage(hwndCB, CB_SETCURSEL, i, 0);
-    if ((LOWORD(vplr.lSalt) != 0x0))
+    if ((vplr.lSalt != 0))
         goto L_05fe;
     else
-        goto L_05f4;
-
-L_05f4:
-    if ((HIWORD(vplr.lSalt) == 0x0))
         goto L_0611;
-    else
-        goto L_05fe;
 
 L_05fe:
     SetDlgItemText(hwnd, IDC_U16_0x010D, szRacePass);
@@ -1542,22 +1536,10 @@ L_1fb6:
         goto L_1fbf;
 
 L_1fbf:
-    if ((HIWORD(l) > 0x0))
-        goto L_1fe4;
-    else
-        goto L_1fc9;
-
-L_1fc9:
-    if ((HIWORD(l) < 0x0))
+    if ((l < 1))
         goto L_1fd8;
     else
-        goto L_1fce;
-
-L_1fce:
-    if ((LOWORD(l) >= 0x1))
         goto L_1fe4;
-    else
-        goto L_1fd8;
 
 L_1fd8:
     l = 1;
@@ -1565,13 +1547,7 @@ L_1fd8:
 L_1fe4:
     l2 = (int32_t)((((int32_t)((l >> 0x1)) + 0xf4240) / l));
     iStore = LOWORD(l2);
-    if ((LOWORD(l) != 0x4240))
-        goto L_2034;
-    else
-        goto L_2024;
-
-L_2024:
-    if ((HIWORD(l) != 0xf))
+    if ((l != 1000000))
         goto L_2034;
     else
         goto L_202e;
@@ -1587,25 +1563,13 @@ L_2034:
 
 L_2040:
     viStore = iStore;
-    if ((LOWORD(l2) != 0x1))
-        goto L_208b;
-    else
-        goto L_2050;
-
-L_2050:
-    if ((HIWORD(l2) != 0x0))
+    if ((l2 != 1))
         goto L_208b;
     else
         goto L_2059;
 
 L_2059:
-    if ((LOWORD(l) != 0x4240))
-        goto L_2078;
-    else
-        goto L_2068;
-
-L_2068:
-    if ((HIWORD(l) != 0xf))
+    if ((l != 1000000))
         goto L_2078;
     else
         goto L_2072;
@@ -2622,16 +2586,10 @@ L_316f:
 
 int16_t GetRaceGrbit(PLAYER *pplr, RaceGrbit ibit) {
 L_3176:
-    if (((LOWORD((int32_t)((0x1 << ibit))) & LOWORD(pplr->grbitAttr)) != 0x0))
+    if ((((int32_t)((0x1 << ibit)) & pplr->grbitAttr) != 0x0))
         goto L_31a6;
     else
-        goto L_319e;
-
-L_319e:
-    if (((HIWORD((int32_t)((0x1 << ibit))) & HIWORD(pplr->grbitAttr)) == 0x0))
         goto L_31ac;
-    else
-        goto L_31a6;
 
 L_31a6:
     return 1;
@@ -4615,22 +4573,10 @@ L_5205:
 
 L_5244:
     pctDesire = (pctDesire - (uint32_t)((iDelta - pctTerra)));
-    if ((HIWORD(pctDesire) > 0x0))
-        goto L_527a;
-    else
-        goto L_525f;
-
-L_525f:
-    if ((HIWORD(pctDesire) < 0x0))
+    if ((pctDesire < 0))
         goto L_526e;
     else
-        goto L_5264;
-
-L_5264:
-    if ((LOWORD(pctDesire) >= 0x0))
         goto L_527a;
-    else
-        goto L_526e;
 
 L_526e:
     pctDesire = 0;

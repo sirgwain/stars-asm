@@ -400,26 +400,14 @@ L_06b4:
 
 L_06d0:
     memset(&(tutor), 0, 0x2c);
-    if ((LOWORD(lpfnTutorDlgProc) != 0x0))
-        goto L_0748;
-    else
-        goto L_06ee;
-
-L_06ee:
-    if ((HIWORD(lpfnTutorDlgProc) != 0x0))
+    if ((lpfnTutorDlgProc != 0x0))
         goto L_0748;
     else
         goto L_06f8;
 
 L_06f8:
     lpfnTutorDlgProc = MakeProcInstance(TutorDlg, hInst);
-    if ((LOWORD(lpfnTutorDlgProc) != 0x0))
-        goto L_0748;
-    else
-        goto L_071a;
-
-L_071a:
-    if ((HIWORD(lpfnTutorDlgProc) != 0x0))
+    if ((lpfnTutorDlgProc != 0x0))
         goto L_0748;
     else
         goto L_0724;
@@ -478,13 +466,7 @@ L_07d0:
     iScanZoom = 0;
 
 L_07d6:
-    if ((LOWORD(game.lid) != 0x0))
-        goto L_093b;
-    else
-        goto L_07e0;
-
-L_07e0:
-    if ((HIWORD(game.lid) != 0x0))
+    if ((game.lid != 0))
         goto L_093b;
     else
         goto L_07ea;
@@ -528,13 +510,7 @@ L_08a4:
     szBase[cch] = 0;
 
 L_08ac:
-    if ((LOWORD(game.lid) != 0x0))
-        goto L_08ea;
-    else
-        goto L_08b6;
-
-L_08b6:
-    if ((HIWORD(game.lid) != 0x0))
+    if ((game.lid != 0))
         goto L_08ea;
     else
         goto L_08c0;
@@ -858,16 +834,10 @@ L_0dcc:
     InvalidateReport(1, 0);
 
 L_0de8:
-    if ((LOWORD(game.lid) != 0x0))
+    if ((game.lid != 0))
         goto L_0dfc;
     else
-        goto L_0df2;
-
-L_0df2:
-    if ((HIWORD(game.lid) == 0x0))
         goto L_0e15;
-    else
-        goto L_0dfc;
 
 L_0dfc:
     if ((game.fTutorial != 0x0))
@@ -1018,7 +988,6 @@ int16_t FTutorTaskDone() {
     uint16_t t_merge_2e97_0001;
     uint16_t t_merge_2f4b_0001;
     uint16_t t_merge_2fa3_0001;
-    LRESULT  t_call_308b;
     PLANET  *t_call_30cb;
     uint16_t t_merge_314a_0001;
     uint16_t t_merge_3246_0001;
@@ -1046,7 +1015,6 @@ int16_t FTutorTaskDone() {
     FLEET   *t_call_46b2;
     PLANET  *t_call_4710;
     PLANET  *t_call_48b9;
-    FLEET   *t_call_4bfa;
     uint16_t t_merge_4c70_0001;
     PLANET  *t_call_4cf1;
     FLEET   *t_call_4df2;
@@ -1054,9 +1022,7 @@ int16_t FTutorTaskDone() {
     PLANET  *t_call_5251;
     uint16_t t_merge_53ea_0001;
     PLANET  *t_call_54e7;
-    FLEET   *t_call_56df;
     uint16_t t_merge_5794_0001;
-    FLEET   *t_call_57a7;
     uint16_t t_merge_58c6_0001;
     PLANET  *t_call_5996;
     PLANET  *t_call_5e5b;
@@ -1261,13 +1227,7 @@ L_1241:
         goto L_1269;
 
 L_1269:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_1283;
-    else
-        goto L_1273;
-
-L_1273:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_1283;
     else
         goto L_127d;
@@ -1772,13 +1732,7 @@ L_19f8:
     goto L_1a21;
 
 L_1a01:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_1a1b;
-    else
-        goto L_1a0b;
-
-L_1a0b:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_1a1b;
     else
         goto L_1a15;
@@ -1828,13 +1782,7 @@ L_1ab1:
     goto L_1ada;
 
 L_1aba:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_1ad4;
-    else
-        goto L_1ac4;
-
-L_1ac4:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_1ad4;
     else
         goto L_1ace;
@@ -2122,13 +2070,7 @@ L_1e1a:
         goto L_1e42;
 
 L_1e42:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_1e5c;
-    else
-        goto L_1e4c;
-
-L_1e4c:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_1e5c;
     else
         goto L_1e56;
@@ -2592,13 +2534,7 @@ L_249f:
     goto L_24c5;
 
 L_24a5:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_24bf;
-    else
-        goto L_24af;
-
-L_24af:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_24bf;
     else
         goto L_24b9;
@@ -3110,13 +3046,7 @@ L_2bb7:
         goto L_2bcf;
 
 L_2bcf:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_2be9;
-    else
-        goto L_2bd9;
-
-L_2bd9:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_2be9;
     else
         goto L_2be3;
@@ -3148,13 +3078,7 @@ L_2c12:
     return 1;
 
 L_2c18:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_2c38;
-    else
-        goto L_2c22;
-
-L_2c22:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_2c38;
     else
         goto L_2c2c;
@@ -3193,16 +3117,10 @@ L_2c74:
         goto L_2c87;
 
 L_2c87:
-    if ((LOWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_2c9b;
     else
-        goto L_2c91;
-
-L_2c91:
-    if ((HIWORD(lpplProdGlob) == 0x0))
         goto L_2ca7;
-    else
-        goto L_2c9b;
 
 L_2c9b:
     tutor.idtBold = 257;
@@ -3451,14 +3369,7 @@ L_3050:
         goto L_3077;
 
 L_3077:
-    t_call_308b = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
-    if ((LOWORD(t_call_308b) != 0x4))
-        goto L_30a9;
-    else
-        goto L_3098;
-
-L_3098:
-    if ((HIWORD(t_call_308b) != 0x0))
+    if ((SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0) != 4))
         goto L_30a9;
     else
         goto L_30a0;
@@ -3598,13 +3509,7 @@ L_3216:
         goto L_3229;
 
 L_3229:
-    if ((LOWORD(vrgtok) != 0x0))
-        goto L_3243;
-    else
-        goto L_3233;
-
-L_3233:
-    if ((HIWORD(vrgtok) != 0x0))
+    if ((vrgtok != 0x0))
         goto L_3243;
     else
         goto L_323d;
@@ -4100,13 +4005,7 @@ L_3875:
         goto L_389d;
 
 L_389d:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_38b7;
-    else
-        goto L_38a7;
-
-L_38a7:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_38b7;
     else
         goto L_38b1;
@@ -4479,13 +4378,7 @@ L_3db4:
         goto L_3ddc;
 
 L_3ddc:
-    if ((LOWORD(lpplProdGlob) != 0x0))
-        goto L_3df6;
-    else
-        goto L_3de6;
-
-L_3de6:
-    if ((HIWORD(lpplProdGlob) != 0x0))
+    if ((lpplProdGlob != 0x0))
         goto L_3df6;
     else
         goto L_3df0;
@@ -5473,17 +5366,10 @@ L_4be1:
     return 0;
 
 L_4bf6:
-    t_call_4bfa = LpflFromId(2);
-    if ((FAROFF(t_call_4bfa) != 0x0))
+    if ((LpflFromId(2) != 0x0))
         goto L_4c12;
     else
-        goto L_4c0a;
-
-L_4c0a:
-    if ((FARSEG(t_call_4bfa) == 0x0))
         goto L_4ca7;
-    else
-        goto L_4c12;
 
 L_4c12:
     if ((FCheckMessages(3, 0xffff, 0) != 0))
@@ -5600,16 +5486,10 @@ L_4daf:
         goto L_4dc2;
 
 L_4dc2:
-    if ((LOWORD(vrgtok) != 0x0))
+    if ((vrgtok != 0x0))
         goto L_4dd6;
     else
-        goto L_4dcc;
-
-L_4dcc:
-    if ((HIWORD(vrgtok) == 0x0))
         goto L_4de2;
-    else
-        goto L_4dd6;
 
 L_4dd6:
     tutor.fProgress = 0x1;
@@ -6195,17 +6075,10 @@ L_56cc:
     return 0;
 
 L_56db:
-    t_call_56df = LpflFromId(12);
-    if ((FAROFF(t_call_56df) != 0x0))
+    if ((LpflFromId(12) != 0x0))
         goto L_56f7;
     else
-        goto L_56ef;
-
-L_56ef:
-    if ((FARSEG(t_call_56df) == 0x0))
         goto L_571b;
-    else
-        goto L_56f7;
 
 L_56f7:
     if ((LpflFromId(12)->fDead == 0x0))
@@ -6255,17 +6128,10 @@ L_579d:
     return 1;
 
 L_57a3:
-    t_call_57a7 = LpflFromId(12);
-    if ((FAROFF(t_call_57a7) != 0x0))
+    if ((LpflFromId(12) != 0x0))
         goto L_57bf;
     else
-        goto L_57b7;
-
-L_57b7:
-    if ((FARSEG(t_call_57a7) == 0x0))
         goto L_5805;
-    else
-        goto L_57bf;
 
 L_57bf:
     if ((FCheckSelection(grobjFleet, 11) != 0))
@@ -7553,13 +7419,7 @@ L_690a:
     idhSav = tutor.idh;
     tutor.idh = 3054;
     lpfl = LpflFromId(id);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_6948;
-    else
-        goto L_6939;
-
-L_6939:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_6948;
     else
         goto L_6942;
@@ -7568,13 +7428,7 @@ L_6942:
     return 1;
 
 L_6948:
-    if ((LOWORD(lpfl->lpszName) != 0x0))
-        goto L_698c;
-    else
-        goto L_6955;
-
-L_6955:
-    if ((HIWORD(lpfl->lpszName) != 0x0))
+    if ((lpfl->lpszName != 0x0))
         goto L_698c;
     else
         goto L_695f;
@@ -8079,16 +7933,10 @@ L_6df4:
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
     tutor.idh = 1526;
-    if ((LOWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_6e35;
     else
-        goto L_6e29;
-
-L_6e29:
-    if ((HIWORD(lpfl) == 0x0))
         goto LReturn;
-    else
-        goto L_6e35;
 
 L_6e35:
     tutor.idh = 3062;
@@ -8224,13 +8072,7 @@ int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute) {
 L_6f86:
     idhSav = tutor.idh;
     lppl = LpplFromId(idpl);
-    if ((LOWORD(lppl) != 0x0))
-        goto L_6fbe;
-    else
-        goto L_6faf;
-
-L_6faf:
-    if ((HIWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_6fbe;
     else
         goto L_6fb8;
@@ -8262,13 +8104,7 @@ int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
 L_6ff4:
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_702d;
-    else
-        goto L_701e;
-
-L_701e:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_702d;
     else
         goto L_7027;
@@ -8323,13 +8159,7 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
 L_70c0:
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_70f9;
-    else
-        goto L_70ea;
-
-L_70ea:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_70f9;
     else
         goto L_70f3;
@@ -8391,13 +8221,7 @@ int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, u
 L_71ac:
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_71e5;
-    else
-        goto L_71d6;
-
-L_71d6:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_71e5;
     else
         goto L_71df;
@@ -8478,13 +8302,7 @@ L_72af:
 
 L_72b4:
     lpfl = LpflFromId(ifl);
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_72de;
-    else
-        goto L_72cf;
-
-L_72cf:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_72de;
     else
         goto L_72d8;
@@ -8620,28 +8438,16 @@ L_7469:
 
 L_746f:
     lppl = LpplFromId(ipl);
-    if ((LOWORD(lppl) != 0x0))
+    if ((lppl != 0x0))
         goto L_7492;
     else
-        goto L_7489;
-
-L_7489:
-    if ((HIWORD(lppl) == 0x0))
         goto LReturn;
-    else
-        goto L_7492;
 
 L_7492:
-    if ((LOWORD(lppl->lpplprod) != 0x0))
+    if ((lppl->lpplprod != 0x0))
         goto L_74a9;
     else
-        goto L_749f;
-
-L_749f:
-    if ((HIWORD(lppl->lpplprod) == 0x0))
         goto LReturn;
-    else
-        goto L_74a9;
 
 L_74a9:
     if ((lppl->lpplprod->iprodMac <= iprod))
@@ -8651,44 +8457,26 @@ L_74a9:
 
 L_74c2:
     prod = lppl->lpplprod->rgprod[iprod];
-    if ((prod.grobj != grobj))
-        goto L_753a;
-    else
-        goto L_750b;
-
-L_750b:
-    if ((0x0 != 0x0))
+    if ((prod.grobj != (uint32_t)(grobj)))
         goto L_753a;
     else
         goto L_7512;
 
 L_7512:
-    if ((prod.iItem != iItem))
+    if ((prod.iItem != (uint32_t)(iItem)))
         goto L_753a;
     else
-        goto L_7533;
-
-L_7533:
-    if ((0x0 == 0x0))
         goto L_7549;
-    else
-        goto L_753a;
 
 L_753a:
     TutorError(491);
     goto LReturn;
 
 L_7549:
-    if ((prod.cItem != cItem))
+    if ((prod.cItem != (uint32_t)(cItem)))
         goto L_7569;
     else
-        goto L_7562;
-
-L_7562:
-    if ((0x0 == 0x0))
         goto L_7578;
-    else
-        goto L_7569;
 
 L_7569:
     TutorError(496);
@@ -8701,16 +8489,10 @@ L_7578:
         goto L_7581;
 
 L_7581:
-    if ((lppl->fNoResearch != fNoResearch))
+    if ((lppl->fNoResearch != (uint32_t)(fNoResearch)))
         goto L_75ae;
     else
-        goto L_75a7;
-
-L_75a7:
-    if ((0x0 == 0x0))
         goto L_75bd;
-    else
-        goto L_75ae;
 
 L_75ae:
     TutorError(1305);
@@ -8786,13 +8568,7 @@ int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3,
 L_7664:
     idhSav = tutor.idh;
     fRet = 0;
-    if ((LOWORD(lpfl) != 0x0))
-        goto L_7690;
-    else
-        goto L_7681;
-
-L_7681:
-    if ((HIWORD(lpfl) != 0x0))
+    if ((lpfl != 0x0))
         goto L_7690;
     else
         goto L_768a;
