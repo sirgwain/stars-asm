@@ -10,7 +10,6 @@ decompiled/asm
 decompiled/c
 decompiled/sem
 decompiled/ir
-decompiled/compile-analysis.json
 snippets/
 scripts/zip-src.sh
 *.zip
