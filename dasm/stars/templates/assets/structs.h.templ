@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include <windows.h>
 
+#include "enums.h"
+
+{{range $i, $s := .ForwardDeclarations}}
+typedef {{.Kind}} {{.TagName}} {{.TypedefName}};
+{{- end}}
+
 {{range $i, $s := .Structs}}
 {{- if $i }}
 {{- end }}

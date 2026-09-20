@@ -1,3 +1,6 @@
+#ifndef STARS_DECOMPILED_ENUMS_H
+#define STARS_DECOMPILED_ENUMS_H
+
 typedef enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount } HeapType;
 
 typedef enum GrPopupType {
@@ -3314,6 +3317,11 @@ typedef enum DialogId {
     IDD_FIND = 4202, /* FindDlg */
 } DialogId;
 
+#undef IDOK
+#undef IDCANCEL
+#undef IDHELP
+#undef IDC_HELP
+
 typedef enum ControlId {
     IDOK = 1,
     IDCANCEL = 2,
@@ -3539,19 +3547,6 @@ typedef enum MdOpenFlags {
     mdNoOpenErr = 0x4000,
 } MdOpenFlags;
 
-typedef enum VictoryCondition {
-    vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
-    vcAttainsTechLevel = 1,       /* "Attains Tech X in Y fields." (level) */
-    vcAttainsTechFields = 2,      /* number of tech fields */
-    vcExceedsScore = 3,           /* "Exceeds a score of X." */
-    vcExceedsSecondPlaceBy = 4,   /* "Exceeds second place score by X." */
-    vcProductionCapacity = 5,     /* "Has a production capacity of X thousand." */
-    vcOwnsCapitalShips = 6,       /* "Owns X capital ships." */
-    vcHighestScoreAfterYears = 7, /* "Has the highest score after X years." */
-    vcMeetsNumCriteria = 8,       /* "Winner must meet X of the above selected criteria." */
-    vcMinYearsBeforeWin = 9       /* "At least X years must pass before a winner is declared." */
-} VictoryCondition;
-
 typedef enum TaskType {
     grTaskNone = 0,
     grTaskXfer = 1, /* transport / transfer cargo */
@@ -3607,3 +3602,5 @@ typedef enum GrfWeapon {
     bitFMissile = 0x0008,
     bitFDeflected = 0x0080,
 } GrfWeapon;
+
+#endif

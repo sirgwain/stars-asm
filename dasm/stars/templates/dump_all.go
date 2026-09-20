@@ -48,7 +48,9 @@ func RenderDumpHeader(w io.Writer, view DumpSourceView) error {
 	}
 
 	var buf strings.Builder
-	tmpl.Execute(&buf, view)
+	if err := tmpl.Execute(&buf, view); err != nil {
+		return err
+	}
 
 	formatted, err := formatCSource(buf.String())
 	if err != nil {
@@ -70,7 +72,9 @@ func RenderDumpSource(w io.Writer, view DumpSourceView) error {
 	}
 
 	var buf strings.Builder
-	tmpl.Execute(&buf, view)
+	if err := tmpl.Execute(&buf, view); err != nil {
+		return err
+	}
 
 	formatted, err := formatCSource(buf.String())
 	if err != nil {
@@ -92,7 +96,9 @@ func RenderCommon(w io.Writer, view DumpCommonView) error {
 	}
 
 	var buf strings.Builder
-	tmpl.Execute(&buf, view)
+	if err := tmpl.Execute(&buf, view); err != nil {
+		return err
+	}
 
 	formatted, err := formatCSource(buf.String())
 	if err != nil {

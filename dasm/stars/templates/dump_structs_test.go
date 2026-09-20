@@ -12,7 +12,7 @@ func TestRenderDumpStructs(t *testing.T) {
 	s := &typeinfo.Struct{
 		Name:    "_sample",
 		Typedef: "Sample",
-		Size:    2,
+		Size:    4,
 		Fields: []typeinfo.StructField{
 			{
 				Name:   "value",
@@ -21,8 +21,16 @@ func TestRenderDumpStructs(t *testing.T) {
 				Size:   2,
 				End:    2,
 			},
+			{
+				Name:   "next",
+				Type:   &typeinfo.Pointer{Elem: nil},
+				Offset: 2,
+				Size:   2,
+				End:    4,
+			},
 		},
 	}
+	s.Fields[1].Type.(*typeinfo.Pointer).Elem = s
 
 	var buf bytes.Buffer
 	if err := RenderDumpStructs(&buf, NewDumpStructsView([]*typeinfo.Struct{s}, DumpOptions{})); err != nil {
@@ -33,9 +41,12 @@ func TestRenderDumpStructs(t *testing.T) {
 	for _, want := range []string{
 		"#ifndef STARS_DECOMPILED_STRUCTS_H",
 		"#include <stdint.h>",
-		"typedef struct _sample {",
+		"#include \"enums.h\"",
+		"typedef struct _sample Sample;",
+		"struct _sample {",
 		"    uint16_t value; /* +0x0000 (2) */",
-		"} Sample;           /* size=0x2 */",
+		"    Sample  *next;  /* +0x0002 (2) */",
+		"}; /* size=0x4 */",
 		"#endif",
 	} {
 		if !strings.Contains(got, want) {
