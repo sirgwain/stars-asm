@@ -232,7 +232,7 @@ L_3f41:
         goto L_3f74;
 
 L_3f74:
-    GlobalPD.iPlanVal = (uint16_t)(pl.rgEnvVar[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlanVal = (int16_t)(pl.rgEnvVar[GlobalPD.iPlanetVar]);
     goto L_3f8b;
 
 L_3f85:
@@ -281,9 +281,9 @@ NoTerra:
     GlobalPD.iPlanMax = -1;
 
 L_401c:
-    GlobalPD.iPlrVal = (uint16_t)(rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar]);
-    GlobalPD.iPlrMin = (uint16_t)(rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar]);
-    GlobalPD.iPlrMax = (uint16_t)(rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlrVal = (int16_t)(rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlrMin = (int16_t)(rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar]);
+    GlobalPD.iPlrMax = (int16_t)(rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar]);
     Popup(hwndMine, x, y);
     goto L_47d5;
 
@@ -312,10 +312,16 @@ CheckThing:
     goto L_4113;
 
 L_40ce:
-    if ((lpThings[i].pt != (((uint32_t)((uint16_t)(scan.pt.y)) << 0x10) | (uint16_t)(scan.pt.x))))
+    if ((lpThings[i].pt.x != scan.pt.x))
         goto L_410f;
     else
+        goto L_4103;
+
+L_4103:
+    if ((lpThings[i].pt.y == scan.pt.y))
         goto L_411e;
+    else
+        goto L_410f;
 
 L_410f:
     i = (i + 1);
@@ -637,7 +643,7 @@ L_456c:
 L_456f:
     FLookupPlanet(sel.scan.idpl, &(pl));
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.rgi[0] = (uint32_t)((ht - 1));
+    GlobalPD.rgi[0] = (int32_t)((ht - 1));
     i = 1;
     goto L_45b4;
 

@@ -34,7 +34,7 @@ L_00d9:
     t_merge_00dc_0001 = 0x0;
 
 L_00dc:
-    CheckRadioButton(hwnd, 2004, 2006, ((uint16_t)(rgplr[idPlayer].rgmdRelation[t_merge_00dc_0001]) - 44));
+    CheckRadioButton(hwnd, 2004, 2006, ((int16_t)(rgplr[idPlayer].rgmdRelation[t_merge_00dc_0001]) - 44));
     i = 0;
     goto L_00f9;
 
@@ -161,7 +161,7 @@ L_03f9:
     i = (i + 1);
 
 L_03fd:
-    CheckRadioButton(hwnd, 2004, 2006, ((uint16_t)(rgplr[idPlayer].rgmdRelation[i]) - 44));
+    CheckRadioButton(hwnd, 2004, 2006, ((int16_t)(rgplr[idPlayer].rgmdRelation[i]) - 44));
     goto L_04c0;
 
 L_042d:
@@ -1211,7 +1211,7 @@ L_1944:
 
 L_194f:
     rgfCheater[i] = LOBYTE(rgplr[i].fCheater);
-    if (((uint16_t)(LOBYTE(rgplr[i].fCheater)) == 0x0))
+    if (((int16_t)(LOBYTE(rgplr[i].fCheater)) == 0x0))
         goto L_1940;
     else
         goto L_1977;
@@ -1261,7 +1261,7 @@ L_19dc:
         goto L_19f3;
 
 L_19f3:
-    if (((uint16_t)(rgfCheater[lpfl->iPlayer]) == 0))
+    if (((int16_t)(rgfCheater[lpfl->iPlayer]) == 0))
         goto L_199d;
     else
         goto L_1a0a;
@@ -1295,7 +1295,7 @@ L_1a91:
         goto L_1a9a;
 
 L_1a9a:
-    pctSell = (uint32_t)((Random(11) + 10));
+    pctSell = (int32_t)((Random(11) + 10));
     fSellOff = 1;
 
 L_1ab5:
@@ -1344,7 +1344,7 @@ L_1b99:
         goto L_1ba6;
 
 L_1ba6:
-    if (((uint16_t)(rgfCheater[lppl->iPlayer]) == 0))
+    if (((int16_t)(rgfCheater[lppl->iPlayer]) == 0))
         goto L_1dfe;
     else
         goto L_1bbd;
@@ -1362,7 +1362,7 @@ L_1beb:
         goto L_1bff;
 
 L_1bff:
-    pctSell = (uint32_t)((Random(31) + 5));
+    pctSell = (int32_t)((Random(31) + 5));
     lSell = (int32_t)(((uint32_t)((lppl->cMines * pctSell)) / 0x64));
     if ((lSell <= 0))
         goto L_1c67;
@@ -1385,7 +1385,7 @@ L_1cf1:
 
 L_1d05:
     i = Random(3);
-    pctSell = (uint32_t)((Random(41) + 5));
+    pctSell = (int32_t)((Random(41) + 5));
     lSell = (int32_t)(((uint32_t)((lppl->rgwtMin[i] * pctSell)) / 0x64));
     if ((lSell <= 0))
         goto L_1dfe;
@@ -1863,7 +1863,7 @@ L_2571:
     goto L_25c2;
 
 L_2579:
-    rgwtMinerals[i] = (uint32_t)(Random(10));
+    rgwtMinerals[i] = (int32_t)(Random(10));
     wtTotal = (wtTotal + rgwtMinerals[i]);
     i = (i + 1);
 
@@ -1904,8 +1904,8 @@ L_2657:
     goto L_26cc;
 
 L_265f:
-    rgwtMinerals[i] = (rgwtMinerals[i] + (uint32_t)(lpth->thp.rgwtMin[i]));
-    wtTotal = (wtTotal + (uint32_t)(lpth->thp.rgwtMin[i]));
+    rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)(lpth->thp.rgwtMin[i]));
+    wtTotal = (wtTotal + (int32_t)(lpth->thp.rgwtMin[i]));
     lpth->thp.rgwtMin[i] = 0;
     i = (i + 1);
 
@@ -2070,7 +2070,7 @@ L_2a84:
         goto L_2a8f;
 
 L_2a8f:
-    mdRel = (uint16_t)(rgplr[iplrStarbase].rgmdRelation[i]);
+    mdRel = (int16_t)(rgplr[iplrStarbase].rgmdRelation[i]);
     if ((mdRel == 2))
         goto L_2ac5;
     else
@@ -2195,7 +2195,7 @@ L_2cb9:
         goto L_2cc4;
 
 L_2cc4:
-    mdRel = (uint16_t)(rgplr[iplrCur].rgmdRelation[i]);
+    mdRel = (int16_t)(rgplr[iplrCur].rgmdRelation[i]);
     if ((mdRel == 2))
         goto L_2cfa;
     else
@@ -2402,7 +2402,7 @@ L_2f0e:
         goto L_2f19;
 
 L_2f19:
-    if (((uint16_t)(rgplr[iplrCur].rgmdRelation[i]) != 1))
+    if (((int16_t)(rgplr[iplrCur].rgmdRelation[i]) != 1))
         goto L_2eff;
     else
         goto L_2f39;
@@ -2502,7 +2502,7 @@ L_306f:
         goto L_30ab;
 
 L_30ab:
-    rgcsh[iplrCur] = (rgcsh[iplrCur] + (uint32_t)(lpflCur->rgcsh[ishdef]));
+    rgcsh[iplrCur] = (rgcsh[iplrCur] + (int32_t)(lpflCur->rgcsh[ishdef]));
 
 L_30d4:
     cshdef = (cshdef + 1);
@@ -2849,7 +2849,7 @@ L_3616:
     goto L_34c5;
 
 L_361f:
-    cThruster = (cThruster + ((uint32_t)((cHalfThruster + 1)) / 2));
+    cThruster = (cThruster + ((int32_t)((cHalfThruster + 1)) / 2));
     if ((iEngine == -1))
         goto L_3640;
     else
@@ -3285,7 +3285,7 @@ L_3d93:
         goto L_3da6;
 
 L_3da6:
-    pct = (pct + ((uint32_t)(LOWORD(((100 - pct) * pctBC))) / 100));
+    pct = (pct + ((int32_t)(LOWORD(((100 - pct) * pctBC))) / 100));
     goto L_3d8f;
 
 L_3dc1:
@@ -3336,7 +3336,7 @@ L_3e0c:
         goto L_3e1f;
 
 L_3e1f:
-    pct = (pct + ((uint32_t)(LOWORD(((100 - pct) * pctBC))) / 100));
+    pct = (pct + ((int32_t)(LOWORD(((100 - pct) * pctBC))) / 100));
     goto L_3e08;
 
 L_3e37:
@@ -3493,7 +3493,7 @@ L_4099:
     goto L_40fd;
 
 L_40c9:
-    pctCap = (int32_t)(((uint32_t)((pctCap * ((uint32_t)(part.pspecial->grAbility) + 100))) / 0x64));
+    pctCap = (int32_t)(((uint32_t)((pctCap * ((int32_t)(part.pspecial->grAbility) + 100))) / 0x64));
     i = (i - 1);
 
 L_40fd:
@@ -3553,7 +3553,7 @@ L_4149:
     goto L_41b1;
 
 L_4179:
-    pctBeamDef = (int32_t)(((uint32_t)((pctBeamDef * (100 - (uint32_t)(part.pspecial->grAbility)))) / 0x64));
+    pctBeamDef = (int32_t)(((uint32_t)((pctBeamDef * (100 - (int32_t)(part.pspecial->grAbility)))) / 0x64));
     i = (i - 1);
 
 L_41b1:
@@ -3663,7 +3663,7 @@ L_4277:
     goto L_42bc;
 
 L_4288:
-    pctHit = (uint32_t)((pctHit * (uint32_t)(pctJam)));
+    pctHit = (uint32_t)((pctHit * (int32_t)(pctJam)));
     pctHit = (int32_t)((pctHit / 100));
     i = (i - 1);
 
@@ -3769,7 +3769,7 @@ L_43a7:
         goto L_43b9;
 
 L_43b9:
-    ptok->pctJam = (ptok->pctJam - LOBYTE(((uint32_t)(ptok->pctJam) / 0x4)));
+    ptok->pctJam = (ptok->pctJam - LOBYTE(((int32_t)(ptok->pctJam) / 0x4)));
 
 L_43d0:
     if ((pctCap != 1000))
@@ -4020,7 +4020,7 @@ L_490a:
     t_scratch_m44_2 = SpdOfShip(lpflCur, ishdef, ptok, fDumpCargo, 0x0);
     ptok->spd = t_scratch_m44_2;
     ptok = (ptok + 1);
-    if ((((uint32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 0x1d) > 0xff))
+    if ((((int32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 0x1d) > 0xff))
         goto LTooManyTokens;
     else
         goto L_4a5b;
@@ -4042,7 +4042,7 @@ L_4a68:
         goto LTooManyTokens;
 
 LTooManyTokens:
-    vctok = ((uint32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 29);
+    vctok = ((int32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 29);
     RandomizeTokOrder();
     ptokT = vrgtok;
     goto L_4c7e;
@@ -4266,8 +4266,8 @@ L_4e58:
     t_merge_4e5b_0001 = 0x0;
 
 L_4e5b:
-    dRange = (uint32_t)((t_merge_4e5b_0001 + part.pbeam->dRangeMax));
-    if ((dRange < (uint32_t)(dz)))
+    dRange = (int32_t)((t_merge_4e5b_0001 + part.pbeam->dRangeMax));
+    if ((dRange < (int32_t)(dz)))
         goto L_4e82;
     else
         goto L_4e88;
@@ -4293,7 +4293,7 @@ L_4e97:
         goto L_4ea3;
 
 L_4ea3:
-    dp = (uint32_t)(((uint32_t)(part.pbeam->dp) * part.hs.cItem));
+    dp = (uint32_t)(((int32_t)(part.pbeam->dp) * part.hs.cItem));
     goto L_51b5;
 
 L_4ece:
@@ -4303,7 +4303,7 @@ L_4ece:
         goto L_4ee0;
 
 L_4ee0:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptok->pctCap))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptok->pctCap))) / 0x64));
 
 L_4f0d:
     if ((dz <= 0))
@@ -4318,7 +4318,7 @@ L_4f16:
         goto L_4f2d;
 
 L_4f2d:
-    dp = (dp - (int32_t)(((int32_t)(((uint32_t)((dp * (uint32_t)(dz))) / 0xa)) / dRange)));
+    dp = (dp - (int32_t)(((int32_t)(((uint32_t)((dp * (int32_t)(dz))) / 0xa)) / dRange)));
 
 L_4f60:
     if ((ptokTarget->pctBeamDef >= 0x64))
@@ -4327,7 +4327,7 @@ L_4f60:
         goto L_4f72;
 
 L_4f72:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptokTarget->pctBeamDef))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptokTarget->pctBeamDef))) / 0x64));
 
 L_4f9f:
     if (((part.pbeam->grfAbilities & 0x1) == 0x0))
@@ -4352,7 +4352,7 @@ L_4ffb:
         goto L_5004;
 
 L_5004:
-    dp = (int32_t)((dp / ((uint32_t)((dz + 10)) - dRange)));
+    dp = (int32_t)((dp / ((int32_t)((dz + 10)) - dRange)));
     if ((dp < part.hs.cItem))
         goto L_5047;
     else
@@ -4368,14 +4368,14 @@ L_505b:
 L_507b:
     cTorpBase = (uint32_t)(((uint32_t)((part.hs.cItem * (uint32_t)(ptok->csh))) * 0xc8));
     cTorpHit = CTorpHit(cTorpBase, ptokTarget, part.ptorp->dHitChance, ptok->pctBC);
-    dp = (int32_t)(((uint32_t)(((uint32_t)(part.ptorp->dp) * cTorpHit)) / 0xc8));
+    dp = (int32_t)(((uint32_t)(((int32_t)(part.ptorp->dp) * cTorpHit)) / 0xc8));
     if ((ptokTarget->dpShield <= 0x0))
         goto L_5146;
     else
         goto L_5114;
 
 L_5114:
-    dp = (dp + (int32_t)(((uint32_t)(((cTorpBase - cTorpHit) * (uint32_t)(part.ptorp->dp))) / 0x640)));
+    dp = (dp + (int32_t)(((uint32_t)(((cTorpBase - cTorpHit) * (int32_t)(part.ptorp->dp))) / 0x640)));
 
 L_5146:
     if ((fOutOfRange == 0))
@@ -4384,7 +4384,7 @@ L_5146:
         goto L_514f;
 
 L_514f:
-    dp = (int32_t)((dp / ((uint32_t)((dz + 10)) - dRange)));
+    dp = (int32_t)((dp / ((int32_t)((dz + 10)) - dRange)));
     if ((dp < part.hs.cItem))
         goto L_5192;
     else
@@ -5990,7 +5990,7 @@ L_67e2:
         goto L_67eb;
 
 L_67eb:
-    pctJam = (pctJam - (uint32_t)(pctBC));
+    pctJam = (pctJam - (int32_t)(pctBC));
     if ((pctJam < 0))
         goto L_680c;
     else
@@ -6011,7 +6011,7 @@ L_682e:
         goto L_6837;
 
 L_6837:
-    pctHit = (100 - (int32_t)(((uint32_t)(((100 - (uint32_t)(pctBase)) * (uint32_t)((100 - pctBC)))) / 100)));
+    pctHit = (100 - (int32_t)(((uint32_t)(((100 - (int32_t)(pctBase)) * (int32_t)((100 - pctBC)))) / 100)));
     goto L_68c4;
 
 L_6877:
@@ -6021,11 +6021,11 @@ L_6877:
         goto L_68ba;
 
 L_6889:
-    pctHit = (int32_t)(((uint32_t)(((uint32_t)(pctBase) * (100 - pctJam))) / 0x64));
+    pctHit = (int32_t)(((uint32_t)(((int32_t)(pctBase) * (100 - pctJam))) / 0x64));
     goto L_68c4;
 
 L_68ba:
-    pctHit = (uint32_t)(pctBase);
+    pctHit = (int32_t)(pctBase);
 
 L_68c4:
     if ((pctHit < 1))
@@ -6074,7 +6074,7 @@ L_697f:
     i = (i + 1);
 
 L_6983:
-    if (((uint32_t)(i) < cTorpBase))
+    if (((int32_t)(i) < cTorpBase))
         goto L_6958;
     else
         goto L_699c;
@@ -6224,7 +6224,7 @@ L_6b3c:
         goto L_6b4e;
 
 L_6b4e:
-    dp = (uint32_t)(((uint32_t)(((uint32_t)(part.pbeam->dp) * (uint32_t)(cItem))) * (uint32_t)(ptok->csh)));
+    dp = (uint32_t)(((uint32_t)(((int32_t)(part.pbeam->dp) * (int32_t)(cItem))) * (uint32_t)(ptok->csh)));
     if ((part.pbeam->dp < 200))
         goto L_6b92;
     else
@@ -6244,7 +6244,7 @@ L_6b97:
         goto L_6ba9;
 
 L_6ba9:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptok->pctCap))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptok->pctCap))) / 0x64));
 
 L_6bd6:
     dpT = dp;
@@ -6306,7 +6306,7 @@ L_6ce0:
         goto L_6cf2;
 
 L_6cf2:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptokE->pctBeamDef))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptokE->pctBeamDef))) / 0x64));
 
 L_6d1f:
     if ((FDamageTok(ptokE, itok, &(dp), 0, grfWeapon, (part.pbeam->grfAbilities & 0x1), 0x0) == 0))
@@ -6338,13 +6338,13 @@ L_6d99:
         goto L_6da2;
 
 L_6da2:
-    dpMain = (uint32_t)(((uint32_t)(((uint32_t)(part.pbeam->dp) * (uint32_t)(cItem))) * (uint32_t)(ptok->csh)));
+    dpMain = (uint32_t)(((uint32_t)(((int32_t)(part.pbeam->dp) * (int32_t)(cItem))) * (uint32_t)(ptok->csh)));
     cTorpsLeft = 0;
     goto LFindAnotherTarget;
 
 L_6ddd:
     dpMain = 0;
-    cTorpsLeft = (uint32_t)(((uint32_t)(cItem) * (uint32_t)(ptok->csh)));
+    cTorpsLeft = (uint32_t)(((int32_t)(cItem) * (uint32_t)(ptok->csh)));
 
 LFindAnotherTarget:
     fPrimary = 1;
@@ -6498,7 +6498,7 @@ L_7196:
     goto L_750c;
 
 L_7199:
-    pctHit = (uint32_t)(part.ptorp->dHitChance);
+    pctHit = (int32_t)(part.ptorp->dHitChance);
     t_scratch_m7a_3 = ptok->pctBC;
     if ((t_scratch_m7a_3 < ptokE->pctJam))
         goto L_7216;
@@ -6507,12 +6507,12 @@ L_7199:
 
 L_71ca:
     t_scratch_m7a_4 = ptokE->pctJam;
-    pctHit = (pctHit + (int32_t)(((uint32_t)(((100 - pctHit) * (uint32_t)((ptok->pctBC - t_scratch_m7a_4)))) / 0x64)));
+    pctHit = (pctHit + (int32_t)(((uint32_t)(((100 - pctHit) * (int32_t)((ptok->pctBC - t_scratch_m7a_4)))) / 0x64)));
     goto L_7257;
 
 L_7216:
     t_scratch_m7a_5 = ptok->pctBC;
-    pctHit = (pctHit - (int32_t)(((uint32_t)((pctHit * (uint32_t)((ptokE->pctJam - t_scratch_m7a_5)))) / 0x64)));
+    pctHit = (pctHit - (int32_t)(((uint32_t)((pctHit * (int32_t)((ptokE->pctJam - t_scratch_m7a_5)))) / 0x64)));
 
 L_7257:
     if ((pctHit <= 0))
@@ -6568,7 +6568,7 @@ L_7386:
 
 L_73ea:
     ntk =
-        (int32_t)(((uint32_t)(((dpArmorLeft - (int32_t)(((uint32_t)((nds * pctHit)) / 0xc8))) * 0x64)) / (uint32_t)((pctHit * (uint32_t)((fCapMissile + 1))))));
+        (int32_t)(((uint32_t)(((dpArmorLeft - (int32_t)(((uint32_t)((nds * pctHit)) / 0xc8))) * 0x64)) / (uint32_t)((pctHit * (int32_t)((fCapMissile + 1))))));
     if ((nts < (nds + ntk)))
         goto L_746c;
     else
@@ -6675,7 +6675,7 @@ L_75a6:
         goto L_75c4;
 
 L_75c4:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptok->pctCap))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptok->pctCap))) / 0x64));
 
 L_75f1:
     if ((ptokTarget->pctBeamDef >= 0x64))
@@ -6684,7 +6684,7 @@ L_75f1:
         goto L_7603;
 
 L_7603:
-    dp = (int32_t)(((uint32_t)((dp * (uint32_t)(ptokTarget->pctBeamDef))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (int32_t)(ptokTarget->pctBeamDef))) / 0x64));
 
 L_7630:
     if ((dz <= 0))
@@ -6699,7 +6699,7 @@ L_7639:
         goto L_7646;
 
 L_7646:
-    dp = (int32_t)(((uint32_t)((dp * (0x64 - (int32_t)(((uint32_t)(((uint32_t)(dz) * 10)) / (uint32_t)(part.pbeam->dRangeMax)))))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (0x64 - (int32_t)(((uint32_t)(((int32_t)(dz) * 10)) / (int32_t)(part.pbeam->dRangeMax)))))) / 0x64));
 
 L_7696:
     if ((part.pbeam->dp < 200))
@@ -6815,7 +6815,7 @@ L_78d9:
                     0x1f4)));
 
 L_7954:
-    dp = (uint32_t)(part.ptorp->dp);
+    dp = (int32_t)(part.ptorp->dp);
     if ((part.hs.iItem < itorpJihadMissile))
         goto L_79ad;
     else
@@ -6841,7 +6841,7 @@ L_79a9:
 
 L_79ad:
     i = ptokTarget->csh;
-    if (((uint32_t)(i) < cTorpBase))
+    if (((int32_t)(i) < cTorpBase))
         goto L_79d0;
     else
         goto L_79f6;
@@ -6858,8 +6858,8 @@ L_79f6:
     goto L_7b55;
 
 L_7a1a:
-    cTorpFire = (int32_t)(((((uint32_t)(((uint32_t)(i)*cTorpHit)) + cTorpBase) + 0xffffffff) / cTorpBase));
-    cTorpMiss = ((uint32_t)(i)-cTorpFire);
+    cTorpFire = (int32_t)(((((uint32_t)(((int32_t)(i)*cTorpHit)) + cTorpBase) + 0xffffffff) / cTorpBase));
+    cTorpMiss = ((int32_t)(i)-cTorpFire);
     dpShieldCur = (dpShieldLeft - (int32_t)(((uint32_t)((cTorpMiss * dp)) / 0x8)));
     if ((dpShieldCur < 0))
         goto L_7aa1;
@@ -6890,7 +6890,7 @@ L_7b38:
     i = (i + 1);
 
 L_7b3c:
-    if (((uint32_t)(i) <= cTorpBase))
+    if (((int32_t)(i) <= cTorpBase))
         goto L_7a1a;
     else
         goto L_7b55;
@@ -7157,7 +7157,7 @@ L_7fe8:
     lpshdefT = (rglpshdef[pfl->iPlayer] + j);
 
 L_8008:
-    rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)(((uint32_t)(((uint32_t)(pfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i]))) / 0x3)));
+    rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)(((uint32_t)(((int32_t)(pfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i]))) / 0x3)));
 
 L_805d:
     j = (j + 1);
@@ -7446,7 +7446,7 @@ L_8694:
         goto L_86d8;
 
 L_86d8:
-    cshOrigDamaged = LOWORD((int32_t)(((uint32_t)(((uint32_t)(csh)*dv.pctSh)) / 0x64)));
+    cshOrigDamaged = LOWORD((int32_t)(((uint32_t)(((int32_t)(csh)*dv.pctSh)) / 0x64)));
     if ((cshOrigDamaged != 0))
         goto L_870e;
     else
@@ -7584,10 +7584,10 @@ L_88d9:
         goto L_88e2;
 
 L_88e2:
-    dp = (dp + (((uint32_t)((ddpOrig * (uint32_t)(cshOrigDamaged))) + (int32_t)(csh)) - 1));
+    dp = (dp + (((uint32_t)((ddpOrig * (int32_t)(cshOrigDamaged))) + (int32_t)(csh)) - 1));
 
 L_8913:
-    dp = (int32_t)((dp / (uint32_t)(csh)));
+    dp = (int32_t)((dp / (int32_t)(csh)));
     if ((dp != 0))
         goto L_8946;
     else
@@ -7617,7 +7617,7 @@ L_898b:
         goto L_8994;
 
 L_8994:
-    pctSh = LOWORD((int32_t)(((((uint32_t)(((uint32_t)(cshOrigDamaged) * 100)) + (int32_t)(csh)) - 1) / (uint32_t)(csh))));
+    pctSh = LOWORD((int32_t)(((((uint32_t)(((int32_t)(cshOrigDamaged) * 100)) + (int32_t)(csh)) - 1) / (int32_t)(csh))));
     pctDp = ptok->dv.pctDp;
     goto L_89f1;
 
@@ -7955,7 +7955,7 @@ L_8ec8:
     lppl->fNoHeal = 0x1;
 
 L_8ee6:
-    InitializeBoard(lpfl, ((uint32_t)(LOWORD(((cplr - 1) * cplr))) / 2), grfPlayer, rgfInit, &(initMin), &(initMac));
+    InitializeBoard(lpfl, ((int32_t)(LOWORD(((cplr - 1) * cplr))) / 2), grfPlayer, rgfInit, &(initMin), &(initMac));
     lpbtldata->cplr = LOBYTE(cplr);
     lpbtldata->ctok = LOBYTE(vctok);
     lpbtldata->idPlanet = lpfl->idPlanet;
@@ -8516,13 +8516,13 @@ L_9a78:
 
 L_9a80:
     iTech = Random(6);
-    if (((uint16_t)(rgplr[iplr].rgTech[iTech]) >= rgTechBattle[iTech]))
+    if (((int16_t)(rgplr[iplr].rgTech[iTech]) >= rgTechBattle[iTech]))
         goto L_9bf4;
     else
         goto L_9ac0;
 
 L_9ac0:
-    l = GetTechLevelCost(iTech, ((uint16_t)(rgplr[iplr].rgTech[iTech]) + 1), iplr);
+    l = GetTechLevelCost(iTech, ((int16_t)(rgplr[iplr].rgTech[iTech]) + 1), iplr);
     if ((game.fSlowTech == 0x0))
         goto L_9b14;
     else
@@ -9928,7 +9928,7 @@ L_ae56:
     return 1;
 
 L_ae5c:
-    if (((uint16_t)(rgplr[iplrCur].rgmdRelation[iplr]) == 1))
+    if (((int16_t)(rgplr[iplrCur].rgmdRelation[iplr]) == 1))
         goto L_ae82;
     else
         goto L_ae7c;
@@ -9942,7 +9942,7 @@ L_ae85:
     return 0;
 
 L_ae88:
-    if (((uint16_t)(rgplr[iplrCur].rgmdRelation[iplr]) != 2))
+    if (((int16_t)(rgplr[iplrCur].rgmdRelation[iplr]) != 2))
         goto L_aeae;
     else
         goto L_aea8;
@@ -10176,7 +10176,7 @@ L_b21f:
         goto L_b292;
 
 L_b292:
-    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
+    if (((int32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b2b7;
     else
         goto L_b2be;
@@ -10210,7 +10210,7 @@ L_b315:
         goto L_b380;
 
 L_b380:
-    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
+    if (((int32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b3a5;
     else
         goto L_b3ac;
@@ -10312,7 +10312,7 @@ L_b51f:
         goto L_b58c;
 
 L_b58c:
-    if (((uint32_t)(Random(1000)) <= modKill))
+    if (((int32_t)(Random(1000)) <= modKill))
         goto L_b5ae;
     else
         goto L_b5b5;
@@ -10431,14 +10431,14 @@ L_b84b:
     goto L_b930;
 
 L_b853:
-    dChg = ((uint16_t)(lppl->rgEnvVar[i]) - (uint16_t)(lppl->rgEnvVarOrig[i]));
+    dChg = ((int16_t)(lppl->rgEnvVar[i]) - (int16_t)(lppl->rgEnvVarOrig[i]));
     if ((dChg <= 0))
         goto L_b8d8;
     else
         goto L_b895;
 
 L_b895:
-    if (((uint32_t)(dChg) < pctTerra))
+    if (((int32_t)(dChg) < pctTerra))
         goto L_b8b7;
     else
         goto L_b8ae;
@@ -10458,7 +10458,7 @@ L_b8d8:
         goto L_b8e1;
 
 L_b8e1:
-    if (((uint32_t)((-dChg)) < pctTerra))
+    if (((int32_t)((-dChg)) < pctTerra))
         goto L_b90c;
     else
         goto L_b8fc;

@@ -189,7 +189,7 @@ L_0fa8:
     cMax = 0;
 
 L_0fad:
-    if (((uint32_t)(prod.cItem) <= (uint32_t)(cMax)))
+    if (((uint32_t)(prod.cItem) <= (uint32_t)((int32_t)(cMax))))
         goto L_0fdc;
     else
         goto L_1000;
@@ -514,7 +514,7 @@ L_1787:
     goto L_17ae;
 
 L_1795:
-    rgRes[i] = (rgRes[i] + (uint32_t)(cBuilt));
+    rgRes[i] = (rgRes[i] + (int32_t)(cBuilt));
     i = (i + 1);
 
 L_17ae:

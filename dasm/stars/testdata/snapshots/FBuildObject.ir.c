@@ -216,7 +216,13 @@ L_1d97:
         goto L_1dad;
 
 L_1dad:
-    if ((lpfl->lpplord->rgord[0].pt != rgptPlan[lppl->id]))
+    if ((lpfl->lpplord->rgord[0].pt.x != rgptPlan[lppl->id].x))
+        goto L_1d42;
+    else
+        goto L_1dcb;
+
+L_1dcb:
+    if ((lpfl->lpplord->rgord[0].pt.y != rgptPlan[lppl->id].y))
         goto L_1d42;
     else
         goto L_1ded;
@@ -242,7 +248,7 @@ L_1e2c:
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
     cshOrig = lpfl->rgcsh[iItem];
-    cshDamaged = LOWORD((int32_t)(((uint32_t)((lpfl->rgdv[iItem].pctSh * (uint32_t)(cshOrig))) / 0x64)));
+    cshDamaged = LOWORD((int32_t)(((uint32_t)((lpfl->rgdv[iItem].pctSh * (int32_t)(cshOrig))) / 0x64)));
     if ((cshDamaged != 0))
         goto L_1edb;
     else
@@ -252,8 +258,8 @@ L_1ed6:
     cshDamaged = 1;
 
 L_1edb:
-    dpOrig = (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*lpfl->rgdv[iItem].pctDp)) / 0xa)) * (uint32_t)(cshDamaged))) / 0x32));
-    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshDamaged) * 100)) / (uint32_t)((cshOrig + cBuilt)))));
+    dpOrig = (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*lpfl->rgdv[iItem].pctDp)) / 0xa)) * (int32_t)(cshDamaged))) / 0x32));
+    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(((uint32_t)(((int32_t)(cshDamaged) * 100)) / (int32_t)((cshOrig + cBuilt)))));
     if ((lpfl->rgdv[iItem].pctSh != 0x0))
         goto L_1ff4;
     else
@@ -263,7 +269,7 @@ L_1fc0:
     lpfl->rgdv[iItem].pctSh = 0x1;
 
 L_1ff4:
-    cshDamaged = LOWORD((int32_t)(((uint32_t)((lpfl->rgdv[iItem].pctSh * (uint32_t)((cshOrig + cBuilt)))) / 0x64)));
+    cshDamaged = LOWORD((int32_t)(((uint32_t)((lpfl->rgdv[iItem].pctSh * (int32_t)((cshOrig + cBuilt)))) / 0x64)));
     if ((cshDamaged != 0))
         goto L_2041;
     else
@@ -273,7 +279,7 @@ L_203c:
     cshDamaged = 1;
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 5)) / (uint32_t)(cshDamaged))) * 0x64)) / (uint32_t)(dpShdef))));
+    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 5)) / (int32_t)(cshDamaged))) * 0x64)) / (uint32_t)(dpShdef))));
     goto L_20de;
 
 L_20c5:
@@ -564,7 +570,7 @@ L_277c:
         goto L_2785;
 
 L_2785:
-    l = (uint32_t)(((uint32_t)(cSize) * (uint32_t)(cBuilt)));
+    l = (uint32_t)(((int32_t)(cSize) * (int32_t)(cBuilt)));
     if ((l <= 32760))
         goto L_27be;
     else
@@ -652,7 +658,13 @@ L_28ab:
         goto L_28c1;
 
 L_28c1:
-    if ((lpth->pt != rgptPlan[lppl->id]))
+    if ((lpth->pt.x != rgptPlan[lppl->id].x))
+        goto L_2956;
+    else
+        goto L_28e7;
+
+L_28e7:
+    if ((lpth->pt.y != rgptPlan[lppl->id].y))
         goto L_2956;
     else
         goto L_28f0;
@@ -712,7 +724,7 @@ L_29da:
     lpth->thp.rgwtMin[i] = 32760;
 
 L_29f3:
-    lpth->thp.wtMax = (lpth->thp.wtMax + ((uint32_t)((lpth->thp.rgwtMin[i] + 9)) / 10));
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((int32_t)((lpth->thp.rgwtMin[i] + 9)) / 10));
     i = (i + 1);
 
 L_2a3f:
@@ -742,7 +754,7 @@ L_2ac9:
 
 L_2ad1:
     lpth->thp.rgwtMin[i] = rgwt[i];
-    lpth->thp.wtMax = (lpth->thp.wtMax + ((uint32_t)((rgwt[i] + 9)) / 10));
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((int32_t)((rgwt[i] + 9)) / 10));
     i = (i + 1);
 
 L_2b35:
@@ -842,7 +854,7 @@ L_2df5:
 
 L_2df8:
     t_scratch_m18 = t_merge_2df8_0001;
-    cAllowed = ((uint16_t)(lppl->rgEnvVar[iEnv]) + t_scratch_m18);
+    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_scratch_m18);
     if ((99 >= cAllowed))
         goto L_2e2c;
     else

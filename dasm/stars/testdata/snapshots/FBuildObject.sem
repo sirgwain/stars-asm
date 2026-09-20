@@ -157,8 +157,10 @@ L_1d97:
     branch lpfl->iPlayer < lppl->iPlayer ? L_1d42 : L_1dad
 
 L_1dad:
-    branch lpfl->lpplord->rgord[0].pt != rgptPlan[lppl->id] ? L_1d42 : L_1ded
+    branch lpfl->lpplord->rgord[0].pt.x != rgptPlan[lppl->id].x ? L_1d42 : L_1dcb
 
+L_1dcb:
+    branch lpfl->lpplord->rgord[0].pt.y != rgptPlan[lppl->id].y ? L_1d42 : L_1ded
 
 L_1ded:
     branch (32766 - cBuilt) <= lpfl->rgcsh[iItem] ? L_1d42 : L_1e0f
@@ -485,8 +487,10 @@ L_28ab:
     branch lpth->ith != ithMineralPacket ? L_2956 : L_28c1
 
 L_28c1:
-    branch lpth->pt != rgptPlan[lppl->id] ? L_2956 : L_28f0
+    branch lpth->pt.x != rgptPlan[lppl->id].x ? L_2956 : L_28e7
 
+L_28e7:
+    branch lpth->pt.y != rgptPlan[lppl->id].y ? L_2956 : L_28f0
 
 L_28f0:
     branch lpth->thp.iWarp != iWarp ? L_2956 : L_2909

@@ -89,36 +89,36 @@ L_1912:
 
 L_1917:
     GetProductionCosts(lppl, &(prod), rgCost, idPlayer, 1);
-    cRes = (uint32_t)(CResourcesAtPlanet(&(sel.pl), idPlayer));
+    cRes = (int32_t)(CResourcesAtPlanet(&(sel.pl), idPlayer));
     if ((sel.pl.fNoResearch != 0x0))
         goto L_19aa;
     else
         goto L_1977;
 
 L_1977:
-    cRes = (cRes - (int32_t)(((uint32_t)((cRes * (uint32_t)((uint16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
+    cRes = (cRes - (int32_t)(((uint32_t)((cRes * (int32_t)((int16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
 
 L_19aa:
-    if ((HIWORD(rgCost[3]) < HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((HIWORD(rgCost[3]) < HIWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
         goto L_19d6;
     else
         goto L_19c6;
 
 L_19c6:
-    if ((HIWORD(rgCost[3]) > HIWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((HIWORD(rgCost[3]) > HIWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19cb;
 
 L_19cb:
-    if ((LOWORD(rgCost[3]) > LOWORD((uint32_t)((cRes * (uint32_t)((etaFirst - 1)))))))
+    if ((LOWORD(rgCost[3]) > LOWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
         goto L_17a3;
     else
         goto L_19d6;
 
 L_19d6:
     t_scratch_m136 = (uint32_t)(sel.pl.cMines);
-    cMaxBuild = ((uint32_t)(CMaxOperableMines(&(sel.pl), idPlayer, 1)) - t_scratch_m136);
+    cMaxBuild = ((int32_t)(CMaxOperableMines(&(sel.pl), idPlayer, 1)) - t_scratch_m136);
     if ((cMaxBuild < 0))
         goto L_1a34;
     else
@@ -128,7 +128,7 @@ L_1a34:
     cMaxBuild = 0;
 
 L_1a3e:
-    cResMine = (uint32_t)(GetRaceStat(&(rgplr[idPlayer]), rsMineBuild));
+    cResMine = (int32_t)(GetRaceStat(&(rgplr[idPlayer]), rsMineBuild));
     if (((int32_t)((uint32_t)((cResMine * cMaxBuild))) <= cRes))
         goto L_1a84;
     else

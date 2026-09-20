@@ -379,7 +379,7 @@ L_07c8:
 
 L_07e7:
     csh = GlobalPD.lpfl->rgcsh[i];
-    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)((GlobalPD.lpfl->rgdv[i].dp & 0x7f)) * (uint32_t)(csh))) / 0x64)));
+    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)((GlobalPD.lpfl->rgdv[i].dp & 0x7f)) * (int32_t)(csh))) / 0x64)));
     if ((csh > 0))
         goto L_084f;
     else
@@ -1100,7 +1100,7 @@ L_152e:
     pszT = szTemp;
 
 L_1536:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_1573;
     else
         goto L_1545;
@@ -1109,7 +1109,7 @@ L_1545:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_1536;
     else
         goto L_1564;
@@ -1201,13 +1201,13 @@ L_1649:
     fCheckedCur = LOWORD(rgids[i]);
 
 L_165e:
-    if (((uint16_t)(*(rgsz[i])) != -1))
+    if (((int16_t)(*(rgsz[i])) != -1))
         goto L_16a9;
     else
         goto L_1675;
 
 L_1675:
-    if (((uint16_t)(rgsz[i][1]) != 0))
+    if (((int16_t)(rgsz[i][1]) != 0))
         goto L_16a9;
     else
         goto L_168d;
@@ -1221,7 +1221,7 @@ L_16a9:
     psz = rgsz[i];
 
 L_16c1:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_16fe;
     else
         goto L_16d0;
@@ -1230,7 +1230,7 @@ L_16d0:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_16c1;
     else
         goto L_16ef;
@@ -1286,13 +1286,13 @@ L_175a:
     goto L_1883;
 
 L_1771:
-    if (((uint16_t)(*(rgsz[i])) != -1))
+    if (((int16_t)(*(rgsz[i])) != -1))
         goto L_17bc;
     else
         goto L_1788;
 
 L_1788:
-    if (((uint16_t)(rgsz[i][1]) != 0))
+    if (((int16_t)(rgsz[i][1]) != 0))
         goto L_17bc;
     else
         goto L_17a0;
@@ -1306,7 +1306,7 @@ L_17bc:
     psz = rgsz[i];
 
 L_17d4:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_1811;
     else
         goto L_17e3;
@@ -1315,7 +1315,7 @@ L_17e3:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_17d4;
     else
         goto L_1802;
@@ -1675,7 +1675,7 @@ L_1f1b:
 L_1f24:
     lppl = LpplFromId(GlobalPD.idPlanet);
     pctDesireOld = PctPlanetDesirability(lppl, idPlayer);
-    iValSav = (uint16_t)(lppl->rgEnvVar[GlobalPD.iPlanetVar]);
+    iValSav = (int16_t)(lppl->rgEnvVar[GlobalPD.iPlanetVar]);
     lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iNewVal);
     pctDesire = PctPlanetDesirability(lppl, idPlayer);
     lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iValSav);
@@ -1907,7 +1907,7 @@ L_261e:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillKillOffApproximately), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, ((uint32_t)((-pctDesire)) / 0xa), ((uint32_t)((-pctDesire)) % 0xa));
+    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, ((int32_t)((-pctDesire)) / 0xa), ((int32_t)((-pctDesire)) % 0xa));
     DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOf), 0, fPrint);

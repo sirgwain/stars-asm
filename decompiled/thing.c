@@ -128,7 +128,7 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    fmemmove(lpth, &(lpth[1]), (((cThing - ((uint32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
+    fmemmove(lpth, &(lpth[1]), (((cThing - ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
 
 L_0294:
     cThing = (cThing - 1);
@@ -158,7 +158,7 @@ L_02a0:
     cPl = 0;
     pptEnd = &(rgptPlan[game.cPlanMax]);
     dx = (rgptPlan[(game.cPlanMax - 1)].x - rgptPlan[0].x);
-    i = LOWORD((int32_t)(((uint32_t)(((uint32_t)((pt.x - rgptPlan[0].x)) * (uint32_t)(game.cPlanMax))) / (uint32_t)(dx))));
+    i = LOWORD((int32_t)(((uint32_t)(((int32_t)((pt.x - rgptPlan[0].x)) * (int32_t)(game.cPlanMax))) / (int32_t)(dx))));
     if ((i < game.cPlanMax))
         goto L_035d;
     else
@@ -228,7 +228,7 @@ L_03cb:
 L_03d9:
     dx = (ppt->x - pt.x);
     dy = (ppt->y - pt.y);
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= r2))
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= r2))
         goto L_0437;
     else
         goto L_043b;
@@ -293,7 +293,7 @@ L_04b3:
 
 L_04cd:
     rghbr[0] = rghbrMineral[md];
-    rgSize[0] = (uint32_t)(lpth->thp.rgwtMin[md]);
+    rgSize[0] = (int32_t)(lpth->thp.rgwtMin[md]);
 
 L_04f7:
     goto L_055b;
@@ -310,7 +310,7 @@ L_0503:
 
 L_050b:
     rghbr[i] = rghbrMineral[i];
-    rgSize[i] = (uint32_t)(lpth->thp.rgwtMin[i]);
+    rgSize[i] = (int32_t)(lpth->thp.rgwtMin[i]);
     i = (i + 1);
 
 L_054d:
@@ -413,7 +413,13 @@ L_06ae:
     goto L_071c;
 
 L_06d9:
-    if ((pt != lpth->pt))
+    if ((pt.x != lpth->pt.x))
+        goto L_0718;
+    else
+        goto L_06f3;
+
+L_06f3:
+    if ((pt.y != lpth->pt.y))
         goto L_0718;
     else
         goto L_06fc;
@@ -450,7 +456,13 @@ L_0736:
         goto L_0741;
 
 L_0741:
-    if ((pt != rgptPlan[i]))
+    if ((pt.x != rgptPlan[i].x))
+        goto L_0732;
+    else
+        goto L_0758;
+
+L_0758:
+    if ((pt.y != rgptPlan[i].y))
         goto L_0732;
     else
         goto L_0760;
@@ -479,7 +491,13 @@ L_0780:
         goto L_07dc;
 
 L_07b0:
-    if ((pt != lpfl->pt))
+    if ((pt.x != lpfl->pt.x))
+        goto L_0771;
+    else
+        goto L_07ca;
+
+L_07ca:
+    if ((pt.y != lpfl->pt.y))
         goto L_0771;
     else
         goto L_07d3;
@@ -532,8 +550,8 @@ L_0851:
         goto L_09c7;
 
 L_086a:
-    dx = (uint32_t)((pt.x - lpth->pt.x));
-    dy = (uint32_t)((pt.y - lpth->pt.y));
+    dx = (int32_t)((pt.x - lpth->pt.x));
+    dy = (int32_t)((pt.y - lpth->pt.y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
     if ((lpth->idFull != lpthWorm->thw.idPartner))
         goto L_0950;
@@ -644,8 +662,8 @@ L_09e5:
         goto L_09f0;
 
 L_09f0:
-    dx = (uint32_t)((pt.x - rgptPlan[i].x));
-    dy = (uint32_t)((pt.y - rgptPlan[i].y));
+    dx = (int32_t)((pt.x - rgptPlan[i].x));
+    dy = (int32_t)((pt.y - rgptPlan[i].y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
     if ((l < 784))
         goto L_0a6e;
@@ -696,7 +714,7 @@ int16_t PctWormholeMoves(THING *lpth) {
     int16_t pct;
 
 L_0adc:
-    pct = ((uint32_t)(lpth->thw.cLastMove) / 5);
+    pct = ((int32_t)(lpth->thw.cLastMove) / 5);
     pct = (pct - (2 - lpth->thw.iStable));
     if ((pct >= 0))
         goto L_0b1f;
@@ -815,7 +833,13 @@ L_0beb:
         goto L_0c02;
 
 L_0c02:
-    if ((lpfl->pt != pt))
+    if ((lpfl->pt.x != pt.x))
+        goto L_0bac;
+    else
+        goto L_0c1c;
+
+L_0c1c:
+    if ((lpfl->pt.y != pt.y))
         goto L_0bac;
     else
         goto L_0c28;
@@ -872,7 +896,7 @@ L_0cf3:
     goto L_0d29;
 
 L_0cfe:
-    if (((uint16_t)(rgplr[lpfl->iPlayer].rgTech[i]) < cPlrTrueMaxTech))
+    if (((int16_t)(rgplr[lpfl->iPlayer].rgTech[i]) < cPlrTrueMaxTech))
         goto L_0d32;
     else
         goto L_0d25;
@@ -951,7 +975,7 @@ L_0e63:
     goto L_0eba;
 
 L_0e97:
-    cTechCur = (cTechCur + (uint16_t)(rgplr[lpfl->iPlayer].rgTech[i]));
+    cTechCur = (cTechCur + (int16_t)(rgplr[lpfl->iPlayer].rgTech[i]));
     i = (i + 1);
 
 L_0eba:
@@ -1050,7 +1074,7 @@ L_0fca:
 
 L_0fde:
     iLowest = Random(6);
-    if (((uint16_t)(rgplr[iplr].rgTech[iLowest]) < cPlrTrueMaxTech))
+    if (((int16_t)(rgplr[iplr].rgTech[iLowest]) < cPlrTrueMaxTech))
         goto LGiveITech;
     else
         goto L_1010;
@@ -1061,7 +1085,7 @@ L_1010:
     goto L_1064;
 
 L_101d:
-    if (((uint16_t)(rgplr[iplr].rgTech[i]) >= (uint16_t)(rgplr[iplr].rgTech[iLowest])))
+    if (((int16_t)(rgplr[iplr].rgTech[i]) >= (int16_t)(rgplr[iplr].rgTech[iLowest])))
         goto L_1060;
     else
         goto L_105a;
@@ -1079,7 +1103,7 @@ L_1064:
         goto L_106d;
 
 L_106d:
-    if (((uint16_t)(rgplr[iplr].rgTech[iLowest]) >= cPlrTrueMaxTech))
+    if (((int16_t)(rgplr[iplr].rgTech[iLowest]) >= cPlrTrueMaxTech))
         goto L_0bac;
     else
         goto LGiveITech;
@@ -1303,8 +1327,8 @@ L_14de:
     idPlayer = -1;
 
 L_1584:
-    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (uint32_t)(cGive));
-    lpshdefDest->cExist = (lpshdefDest->cExist + (uint32_t)(cGive));
+    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (int32_t)(cGive));
+    lpshdefDest->cExist = (lpshdefDest->cExist + (int32_t)(cGive));
     lpflNew->rgcsh[ish] = cGive;
     lpflNew->rgwtMin[4] = LGetFleetStat(lpflNew, 1);
 
@@ -1354,14 +1378,14 @@ L_16c4:
         goto L_16e2;
 
 L_16e2:
-    dx = (uint32_t)((rgptPlan[lppl->id].x - pt.x));
+    dx = (int32_t)((rgptPlan[lppl->id].x - pt.x));
     if ((dx <= 100))
         goto L_1714;
     else
         goto L_1a7d;
 
 L_1714:
-    dy = (uint32_t)((rgptPlan[lppl->id].y - pt.y));
+    dy = (int32_t)((rgptPlan[lppl->id].y - pt.y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
     if ((l <= 10000))
         goto L_1783;
@@ -1483,7 +1507,7 @@ LAutoTech:
     goto L_198d;
 
 L_196e:
-    iLvl = (iLvl + (uint16_t)(rgplr[iplr].rgTech[i]));
+    iLvl = (iLvl + (int16_t)(rgplr[iplr].rgTech[i]));
     i = (i + 1);
 
 L_198d:
@@ -1522,7 +1546,7 @@ L_19da:
     goto L_1a2e;
 
 L_19e7:
-    if (((uint16_t)(rgplr[iplr].rgTech[i]) >= (uint16_t)(rgplr[iplr].rgTech[iLvl])))
+    if (((int16_t)(rgplr[iplr].rgTech[i]) >= (int16_t)(rgplr[iplr].rgTech[iLvl])))
         goto L_1a2a;
     else
         goto L_1a24;

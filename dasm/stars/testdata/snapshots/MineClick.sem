@@ -273,8 +273,10 @@ CheckThing:
     goto L_4113
 
 L_40ce:
-    branch lpThings[i].pt != words(scan.pt.y, scan.pt.x) ? L_410f : L_411e
+    branch lpThings[i].pt.x != scan.pt.x ? L_410f : L_4103
 
+L_4103:
+    branch lpThings[i].pt.y == scan.pt.y ? L_411e : L_410f
 
 L_410f:
     i = (i + 1)

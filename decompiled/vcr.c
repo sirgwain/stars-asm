@@ -526,7 +526,7 @@ L_0876:
     csh = 1;
 
 L_087b:
-    dp = (dp - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (uint32_t)(csh))) / 0x32)));
+    dp = (dp - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (int32_t)(csh))) / 0x32)));
 
 L_08c9:
 
@@ -807,7 +807,7 @@ L_0f56:
 
 L_0f8f:
     dx = (rc.right - rc.left);
-    dx = ((((((uint32_t)(dxyVCRBoard) / 2) + 8) - ((uint32_t)(LOWORD((7 * dx))) / 2)) - 24) + LOWORD(((dx + 8) * i)));
+    dx = ((((((int32_t)(dxyVCRBoard) / 2) + 8) - ((int32_t)(LOWORD((7 * dx))) / 2)) - 24) + LOWORD(((dx + 8) * i)));
     dx = (dx - rc.left);
     goto L_0fdd;
 
@@ -996,8 +996,8 @@ L_131b:
     return 1;
 
 L_1321:
-    pt.x = ((uint32_t)((pt.x - 8)) / (dxyVCRSquare + 3));
-    pt.y = ((uint32_t)((pt.y - 8)) / (dxyVCRSquare + 3));
+    pt.x = ((int32_t)((pt.x - 8)) / (dxyVCRSquare + 3));
+    pt.y = ((int32_t)((pt.y - 8)) / (dxyVCRSquare + 3));
     if ((pt.x < 10))
         goto L_14ad;
     else
@@ -1503,8 +1503,8 @@ L_1a64:
 L_1a6d:
     dpShdef = LpshdefFromTok(&(vrgtok[itok]))->hul.dp;
     cshT = (vrgtok[itok].csh - cshKill);
-    dpArmor = (uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(cshT)));
-    cshT = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT)*dv.pctSh)) / 0x64)));
+    dpArmor = (uint32_t)(((uint32_t)(dpShdef) * (int32_t)(cshT)));
+    cshT = LOWORD((int32_t)(((uint32_t)(((int32_t)(cshT)*dv.pctSh)) / 0x64)));
     if ((cshT > 0))
         goto L_1b05;
     else
@@ -1514,7 +1514,7 @@ L_1b00:
     cshT = 1;
 
 L_1b05:
-    dpArmor = (dpArmor - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (uint32_t)(cshT))) / 0x32)));
+    dpArmor = (dpArmor - (int32_t)(((uint32_t)(((int32_t)(((uint32_t)(((uint32_t)(dpShdef)*dv.pctDp)) / 0xa)) * (int32_t)(cshT))) / 0x32)));
     goto L_1b8e;
 
 L_1b56:
@@ -2093,7 +2093,7 @@ L_2c5b:
     SetTextColor(hdc, 0x7f0000);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
-    xT = (((uint32_t)((rc.right - (dxyVCRBoard + 14))) / 2) + x);
+    xT = (((int32_t)((rc.right - (dxyVCRBoard + 14))) / 2) + x);
     SetTextColor(hdc, crButtonText);
     if ((cshNew <= 0))
         goto L_3317;
@@ -2145,7 +2145,7 @@ L_2e34:
 
 L_2e4b:
     csh = (csh - cshT);
-    csh = LOWORD((int32_t)(((uint32_t)((dv.pctSh * (uint32_t)(csh))) / 0x64)));
+    csh = LOWORD((int32_t)(((uint32_t)((dv.pctSh * (int32_t)(csh))) / 0x64)));
     if ((csh > 0))
         goto L_2e8e;
     else
@@ -2182,7 +2182,7 @@ L_2f60:
     TextOut(hdc, xT, y, szWork, c);
     SetTextColor(hdc, crButtonText);
     y = (y + dyArial8);
-    if ((((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew))) - dpShields) <= 0x0))
+    if ((((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew))) - dpShields) <= 0x0))
         goto L_2fd3;
     else
         goto L_2fea;
@@ -2193,8 +2193,8 @@ L_2fd3:
 
 L_2fea:
     c = _wsprintf(szWork, PszGetCompressedString(idsShieldsLd),
-                  (LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - LOWORD(dpShields)),
-                  (HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (uint32_t)(cshNew)))) - HIWORD(dpShields)));
+                  (LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew)))) - LOWORD(dpShields)),
+                  (HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew)))) - HIWORD(dpShields)));
 
 L_303d:
     TextOut(hdc, x, y, szWork, c);
@@ -2286,8 +2286,8 @@ L_33a4:
     goto L_39e8;
 
 L_33ae:
-    x = ((uint32_t)(i) % 10);
-    y = ((uint32_t)(i) / 10);
+    x = ((int32_t)(i) % 10);
+    y = ((int32_t)(i) / 10);
     PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 10), (LOWORD(((dxyVCRSquare + 3) * y)) + 10), (dxyVCRSquare + 2), 1, BLACKNESS);
     PatBlt(hdc, (LOWORD(((dxyVCRSquare + 3) * x)) + 10), (LOWORD(((dxyVCRSquare + 3) * y)) + 10), 1, (dxyVCRSquare + 2), BLACKNESS);
     PatBlt(hdc, (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + dxyVCRSquare) + 1), (LOWORD(((dxyVCRSquare + 3) * y)) + 10), 1, (dxyVCRSquare + 2), BLACKNESS);
@@ -2489,7 +2489,7 @@ L_3a69:
         goto L_3a9c;
 
 L_3a9c:
-    if ((dwTickCur < ((uint32_t)(ctick) + dwTickLast)))
+    if ((dwTickCur < ((int32_t)(ctick) + dwTickLast)))
         goto L_3a69;
     else
         goto L_3abb;
@@ -2573,18 +2573,18 @@ L_3ae2:
     ptokSrc = (vrgtok + vlpbrVCR->itok);
     x = (ptokSrc->brc & 0xf);
     y = (ptokSrc->brc >> 0x4);
-    ptSrc.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    ptSrc.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    t_scratch_m76_3 = ((uint32_t)(dxyVCRSquare) / 2);
+    ptSrc.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
+    ptSrc.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
+    t_scratch_m76_3 = ((int32_t)(dxyVCRSquare) / 2);
     ptTop.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_3) + 1);
     ptBottom.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_3) + 1);
-    t_scratch_m76_4 = ((uint32_t)(dxyVCRSquare) / 2);
+    t_scratch_m76_4 = ((int32_t)(dxyVCRSquare) / 2);
     ptRight.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_4) + 1);
     ptLeft.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_4) + 1);
-    ptBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptLeft.y);
-    ptTop.y = (ptLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
-    ptLeft.x = (ptBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
-    ptRight.x = (((uint32_t)(dxyVCRSquare) / 3) + ptBottom.x);
+    ptBottom.y = (((int32_t)(dxyVCRSquare) / 3) + ptLeft.y);
+    ptTop.y = (ptLeft.y - ((int32_t)(dxyVCRSquare) / 3));
+    ptLeft.x = (ptBottom.x - ((int32_t)(dxyVCRSquare) / 3));
+    ptRight.x = (((int32_t)(dxyVCRSquare) / 3) + ptBottom.x);
     iHit = 0;
 
 LNextTarget:
@@ -2636,18 +2636,18 @@ L_3d18:
     y = (ptokAttack->brc >> 0x4);
     dx = ((ptokSrc->brc & 0xf) - x);
     dy = ((ptokSrc->brc >> 0x4) - y);
-    ptDest.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    ptDest.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    t_scratch_m76_8 = ((uint32_t)(dxyVCRSquare) / 2);
+    ptDest.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
+    t_scratch_m76_8 = ((int32_t)(dxyVCRSquare) / 2);
     ptDestTop.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_8) + 1);
     ptDestBottom.x = (((LOWORD(((dxyVCRSquare + 3) * x)) + 10) + t_scratch_m76_8) + 1);
-    t_scratch_m76_9 = ((uint32_t)(dxyVCRSquare) / 2);
+    t_scratch_m76_9 = ((int32_t)(dxyVCRSquare) / 2);
     ptDestRight.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_9) + 1);
     ptDestLeft.y = (((LOWORD(((dxyVCRSquare + 3) * y)) + 10) + t_scratch_m76_9) + 1);
-    ptDestBottom.y = (((uint32_t)(dxyVCRSquare) / 3) + ptDestLeft.y);
-    ptDestTop.y = (ptDestLeft.y - ((uint32_t)(dxyVCRSquare) / 3));
-    ptDestLeft.x = (ptDestBottom.x - ((uint32_t)(dxyVCRSquare) / 3));
-    ptDestRight.x = (((uint32_t)(dxyVCRSquare) / 3) + ptDestBottom.x);
+    ptDestBottom.y = (((int32_t)(dxyVCRSquare) / 3) + ptDestLeft.y);
+    ptDestTop.y = (ptDestLeft.y - ((int32_t)(dxyVCRSquare) / 3));
+    ptDestLeft.x = (ptDestBottom.x - ((int32_t)(dxyVCRSquare) / 3));
+    ptDestRight.x = (((int32_t)(dxyVCRSquare) / 3) + ptDestBottom.x);
     iHit = iFrame;
     if ((dx != 0))
         goto L_3e93;
@@ -2971,7 +2971,7 @@ L_42a1:
         goto L_42d4;
 
 L_42d4:
-    if ((dwTickCur < ((dwTickLast + 0x23) - (uint32_t)(LOWORD((10 * viSpeedVCR))))))
+    if ((dwTickCur < ((dwTickLast + 0x23) - (int32_t)(LOWORD((10 * viSpeedVCR))))))
         goto L_42a1;
     else
         goto L_4301;
@@ -2979,8 +2979,8 @@ L_42d4:
 L_4301:
     dwTickLast = dwTickCur;
     BitBlt(hdc, (ptTorp.x - 16), (ptTorp.y - 16), 32, 32, hdcMem, 0, 0, SRCCOPY);
-    ptTorp.x = (ptBase.x - LOWORD((int32_t)(((uint32_t)(((uint32_t)(dxFrame) * (uint32_t)(iFrame))) / (uint32_t)(cFrame)))));
-    ptTorp.y = (ptBase.y - LOWORD((int32_t)(((uint32_t)(((uint32_t)(dyFrame) * (uint32_t)(iFrame))) / (uint32_t)(cFrame)))));
+    ptTorp.x = (ptBase.x - LOWORD((int32_t)(((uint32_t)(((int32_t)(dxFrame) * (int32_t)(iFrame))) / (int32_t)(cFrame)))));
+    ptTorp.y = (ptBase.y - LOWORD((int32_t)(((uint32_t)(((int32_t)(dyFrame) * (int32_t)(iFrame))) / (int32_t)(cFrame)))));
     iFrame = (iFrame + 1);
 
 L_438e:
@@ -3038,8 +3038,8 @@ L_4435:
 L_4438:
     fKill = t_merge_4438_0001;
     ptokAttack = (vrgtok + vlpbrVCR->rgkill[iFrame].itok);
-    ptDest.x = (((LOWORD(((ptokAttack->brc & 0xf) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
-    ptDest.y = (((LOWORD(((ptokAttack->brc >> 0x4) * (dxyVCRSquare + 0x3))) + 10) + ((uint32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.x = (((LOWORD(((ptokAttack->brc & 0xf) * (dxyVCRSquare + 0x3))) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
+    ptDest.y = (((LOWORD(((ptokAttack->brc >> 0x4) * (dxyVCRSquare + 0x3))) + 10) + ((int32_t)(dxyVCRSquare) / 2)) + 1);
     if ((fKill == 0))
         goto L_44f9;
     else

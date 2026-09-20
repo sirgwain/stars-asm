@@ -138,7 +138,7 @@ L_017d:
 
 L_0182:
     vrgAiCyberArmadaPotency[0] = LOBYTE(j);
-    vrgAiCyberArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
+    vrgAiCyberArmadaPotency[1] = LOBYTE(((int32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
         goto L_01b6;
@@ -159,7 +159,7 @@ L_01bf:
 
 L_01c4:
     vrgAiCyberArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((uint32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
         goto L_01e6;
     else
         goto L_01e0;
@@ -169,7 +169,7 @@ L_01e0:
     goto L_01f2;
 
 L_01e6:
-    t_merge_01f2_0001 = (((uint32_t)(j) / 2) + 0xffff);
+    t_merge_01f2_0001 = (((int32_t)(j) / 2) + 0xffff);
 
 L_01f2:
     vrgAiCyberArmadaPotency[3] = LOBYTE(t_merge_01f2_0001);
@@ -214,7 +214,7 @@ L_0243:
     rgRecycleShdef[iLatestDestroyer] = 0x0;
     CheckAiShdefStatus(14, 15, cRecyclePeriod, &(iLatestSBDefender), rgRecycleShdef);
     rgRecycleShdef[iLatestDestroyer] = 0x0;
-    cExistCargo = (uint32_t)(CheckAiShdefStatus(2, 3, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef));
+    cExistCargo = (int32_t)(CheckAiShdefStatus(2, 3, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef));
     rgRecycleShdef[iLatestCargo] = 0x0;
     iLatestBattle = -1;
     i = 0;
@@ -1318,7 +1318,7 @@ L_13d2:
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
-    lNewPop = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
+    lNewPop = (uint32_t)((lppl->rgwtMin[3] * (int32_t)(PctTrueMaxGrowth(idPlayer))));
     GetResourcesAvailable(lppl, rgResAvail);
     GetProdQCost(lppl, rgResCost);
     i = 0;
@@ -1913,7 +1913,7 @@ L_1c1e:
 
 L_1c29:
     iPacketMax = LOWORD((int32_t)((rgResAvail[3] / 2)));
-    iPacketMax = ((uint32_t)(iPacketMax) / 5);
+    iPacketMax = ((int32_t)(iPacketMax) / 5);
     if ((iPacketMax >= 7))
         goto L_1c65;
     else
@@ -2212,7 +2212,7 @@ L_200b:
     rgResAvail[2] = (rgResAvail[2] - rgResCost[2]);
     lMineral = (((rgResAvail[0] - 70) + (rgResAvail[1] - 70)) + (rgResAvail[2] - 70));
     cResLeft = LOWORD((int32_t)((rgResAvail[3] / 2)));
-    lPackets = (uint32_t)(((uint32_t)((cResLeft - 5)) / 5));
+    lPackets = (int32_t)(((int32_t)((cResLeft - 5)) / 5));
     if ((lMineral < (int32_t)((uint32_t)((lPackets * 70)))))
         goto L_20d9;
     else
@@ -2828,7 +2828,7 @@ L_2b41:
 
 L_2b50:
     t_call_2b71 = LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
-    if (((int32_t)(t_call_2b71) < (uint32_t)(LOWORD((iDistance * iDistance)))))
+    if (((int32_t)(t_call_2b71) < (int32_t)(LOWORD((iDistance * iDistance)))))
         goto L_2b9f;
     else
         goto L_2ba8;
@@ -3306,7 +3306,7 @@ L_337b:
     iAddMines = 0;
 
 L_3380:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((uint32_t)(iAddMines)*rgMineCost[3])));
+    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddMines)*rgMineCost[3])));
     iAddFactories = 0;
     iAddAlchemy = 0;
     fInsert = 1;
@@ -3463,7 +3463,7 @@ L_359b:
     iAddFactories = 0;
 
 L_35a0:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((uint32_t)(iAddFactories)*rgFactCost[3])));
+    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddFactories)*rgFactCost[3])));
     if ((iMaxMines <= 0))
         goto L_35f6;
     else
@@ -3490,7 +3490,7 @@ L_35f6:
     iAddMines = 0;
 
 L_35fb:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((uint32_t)(iAddMines)*rgMineCost[3])));
+    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddMines)*rgMineCost[3])));
 
 LAdd:
     if ((HIWORD(rgAlchCost[3]) < 0x0))
@@ -3511,37 +3511,37 @@ L_3620:
         goto L_3629;
 
 L_3629:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) != 26))
         goto L_36f7;
     else
         goto L_3641;
 
 L_3641:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[5]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[5]) != 26))
         goto L_36f7;
     else
         goto L_3659;
 
 L_3659:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[0]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[0]) != 26))
         goto L_36f7;
     else
         goto L_3671;
 
 L_3671:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) != 26))
         goto L_36f7;
     else
         goto L_3689;
 
 L_3689:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) != 26))
         goto L_36f7;
     else
         goto L_36a1;
 
 L_36a1:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) != 26))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) != 26))
         goto L_36f7;
     else
         goto L_36b9;
@@ -3567,7 +3567,7 @@ L_36f7:
     iAddAlchemy = 0;
 
 L_36fc:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((uint32_t)(iAddAlchemy)*rgAlchCost[3])));
+    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddAlchemy)*rgAlchCost[3])));
     if ((iAddFactories <= 0))
         goto L_3733;
     else

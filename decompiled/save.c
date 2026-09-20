@@ -81,7 +81,7 @@ L_557b:
     goto L_55a5;
 
 L_5584:
-    if (((uint16_t)(pplr->rgmdRelation[i]) != 0))
+    if (((int16_t)(pplr->rgmdRelation[i]) != 0))
         goto L_55af;
     else
         goto L_55a0;
@@ -109,7 +109,7 @@ L_55f4:
 
 L_5600:
     cOut = 31;
-    if (((uint16_t)(pplr->szName[0]) == 0))
+    if (((int16_t)(pplr->szName[0]) == 0))
         goto L_565c;
     else
         goto L_5616;
@@ -132,7 +132,7 @@ L_565c:
 
 L_5696:
     cOut = 31;
-    if (((uint16_t)(pplr->szNames[0]) == 0))
+    if (((int16_t)(pplr->szNames[0]) == 0))
         goto L_56f2;
     else
         goto L_56ac;
@@ -203,7 +203,7 @@ L_585b:
 
 L_5880:
     cOut = 31;
-    if (((uint16_t)(szHulName[0]) == 0))
+    if (((int16_t)(szHulName[0]) == 0))
         goto L_58d5;
     else
         goto L_5893;
@@ -483,8 +483,8 @@ L_5c80:
         goto L_5c92;
 
 L_5c92:
-    dx = (uint32_t)((lpflTarget->pt.x - pt.x));
-    dy = (uint32_t)((lpflTarget->pt.y - pt.y));
+    dx = (int32_t)((lpflTarget->pt.x - pt.x));
+    dy = (int32_t)((lpflTarget->pt.y - pt.y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
     if ((fFoundIdeal != 0))
         goto L_5d0c;
@@ -579,7 +579,7 @@ L_5e1f:
         goto L_6160;
 
 L_5e31:
-    if ((lBest <= (int32_t)((uint32_t)(((uint32_t)(j) * (uint32_t)(j))))))
+    if ((lBest <= (int32_t)((uint32_t)(((int32_t)(j) * (int32_t)(j))))))
         goto L_5e57;
     else
         goto L_6160;
@@ -2054,7 +2054,7 @@ L_7ce9:
 L_7cf1:
     pb = (pb + 1);
     *(pb) = lppl->rgEnvVar[i];
-    if (((uint16_t)(lppl->rgEnvVar[i]) == (uint16_t)(lppl->rgEnvVarOrig[i])))
+    if (((int16_t)(lppl->rgEnvVar[i]) == (int16_t)(lppl->rgEnvVarOrig[i])))
         goto L_7d56;
     else
         goto L_7d4a;
@@ -2521,7 +2521,7 @@ L_856c:
         goto L_858a;
 
 L_858a:
-    wt = (wt + (uint32_t)(((uint32_t)(lpfl->rgcsh[i]) * (uint32_t)(rglpshdef[lpfl->iPlayer][i].hul.wtEmpty))));
+    wt = (wt + (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (uint32_t)(rglpshdef[lpfl->iPlayer][i].hul.wtEmpty))));
 
 L_85d9:
     i = (i + 1);
@@ -2638,7 +2638,7 @@ L_87b4:
         goto L_8857;
 
 L_87cf:
-    if (((uint16_t)(*(lpsz)) == 0))
+    if (((int16_t)(*(lpsz)) == 0))
         goto L_8857;
     else
         goto L_87e1;
@@ -2737,7 +2737,7 @@ L_89f9:
     pb = &(rgb[4]);
     fstrcpy(szPlanName, lpbtlplan->szName);
     cOut = 31;
-    if (((uint16_t)(szPlanName[0]) == 0))
+    if (((int16_t)(szPlanName[0]) == 0))
         goto L_8a67;
     else
         goto L_8a2c;
@@ -3214,7 +3214,7 @@ L_92b1:
         goto L_92d9;
 
 L_92d9:
-    if (((uint16_t)(rgbCur[0]) != iPlayer))
+    if (((int16_t)(rgbCur[0]) != iPlayer))
         goto L_92b1;
     else
         goto L_92e5;
@@ -3248,7 +3248,7 @@ L_9332:
 L_934a:
     rgbCur[12] = (~rgbCur[12]);
     rgbCur[14] = (~rgbCur[14]);
-    lseek(hf, (uint32_t)((-(hdrCur.cb + 0x2))), 1);
+    lseek(hf, (int32_t)((-(hdrCur.cb + 0x2))), 1);
     SetFileSeeds(lSeedSav1, lSeedSav2);
     WriteRt(rtPlr, hdrCur.cb, rgbCur);
     if ((dt != dtTurn))
@@ -4044,8 +4044,8 @@ L_a265:
 
 L_a268:
     iRadius = t_merge_a268_0001;
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
+    lRadPlanet2 = (uint32_t)(((int32_t)(iRadPlanet) * (int32_t)(iRadPlanet)));
     pt = lpfl->pt;
     j = 0;
     goto L_a2b6;
@@ -4079,7 +4079,13 @@ L_a30b:
         goto L_a319;
 
 L_a319:
-    if ((pt != lpfl2->pt))
+    if ((pt.x != lpfl2->pt.x))
+        goto L_a377;
+    else
+        goto L_a333;
+
+L_a333:
+    if ((pt.y != lpfl2->pt.y))
         goto L_a377;
     else
         goto L_a33c;
@@ -4122,8 +4128,8 @@ L_a3af:
         goto L_a3cd;
 
 L_a3cd:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_a41a;
     else
         goto L_a2b2;
@@ -4148,7 +4154,7 @@ L_a442:
         goto L_a45c;
 
 L_a45c:
-    pctCloak = ((uint32_t)(LOWORD((pctCloak * pctDetect))) / 100);
+    pctCloak = ((int32_t)(LOWORD((pctCloak * pctDetect))) / 100);
 
 L_a46b:
     if ((pctCloak != 0))
@@ -4161,7 +4167,7 @@ L_a474:
     goto L_a2b2;
 
 L_a489:
-    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (uint32_t)((100 - pctCloak)))) / 0x64)) * (uint32_t)((100 - pctCloak)))) / 0x64))))
+    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (int32_t)((100 - pctCloak)))) / 0x64)) * (int32_t)((100 - pctCloak)))) / 0x64))))
         goto L_a4e0;
     else
         goto L_a2b2;
@@ -4173,7 +4179,7 @@ L_a4e0:
         goto L_a4ed;
 
 L_a4ed:
-    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadPlanet2 * (uint32_t)((100 - pctCloak)))) / 0x64)) * (uint32_t)((100 - pctCloak)))) / 0x64))))
+    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadPlanet2 * (int32_t)((100 - pctCloak)))) / 0x64)) * (int32_t)((100 - pctCloak)))) / 0x64))))
         goto L_a544;
     else
         goto L_a2b2;
@@ -4270,7 +4276,7 @@ L_a680:
 L_a69a:
     dx = abs((pt.x - lpth->pt.x));
     dy = abs((pt.y - lpth->pt.y));
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
     if ((l <= lRadius2))
         goto L_a72f;
     else
@@ -4412,7 +4418,7 @@ L_a9bf:
 
 L_a9c8:
     iRadius = iRadPlanet;
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
     pt = lpfl->pt;
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
@@ -4447,8 +4453,8 @@ L_aa72:
         goto L_aa9b;
 
 L_aa9b:
-    d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    d2 = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_aae8;
     else
         goto L_abc2;
@@ -4610,8 +4616,8 @@ L_ace8:
 
 L_acfa:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
+    lRadPlanet2 = (uint32_t)(((int32_t)(iRadPlanet) * (int32_t)(iRadPlanet)));
     pt = rgptPlan[lppl->id];
     j = 0;
     goto L_ad61;
@@ -4661,8 +4667,8 @@ L_adeb:
         goto L_ae09;
 
 L_ae09:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_ae56;
     else
         goto L_ad5d;
@@ -4691,7 +4697,7 @@ L_ae98:
     goto L_ad5d;
 
 L_aead:
-    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (uint32_t)((100 - pctCloak)))) / 0x64)) * (uint32_t)((100 - pctCloak)))) / 0x64))))
+    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (int32_t)((100 - pctCloak)))) / 0x64)) * (int32_t)((100 - pctCloak)))) / 0x64))))
         goto L_af04;
     else
         goto L_ad5d;
@@ -4703,7 +4709,7 @@ L_af04:
         goto L_af11;
 
 L_af11:
-    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadPlanet2 * (uint32_t)((100 - pctCloak)))) / 0x64)) * (uint32_t)((100 - pctCloak)))) / 0x64))))
+    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadPlanet2 * (int32_t)((100 - pctCloak)))) / 0x64)) * (int32_t)((100 - pctCloak)))) / 0x64))))
         goto L_af68;
     else
         goto L_ad5d;
@@ -4745,8 +4751,8 @@ L_afcf:
 
 L_afe1:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
+    lRadPlanet2 = (uint32_t)(((int32_t)(iRadPlanet) * (int32_t)(iRadPlanet)));
     pt = rgptPlan[lppl->id];
     lpth = lpThings;
     lpthMac = (lpThings + cThing);
@@ -4847,8 +4853,8 @@ L_b19b:
         goto L_b1b9;
 
 L_b1b9:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_b206;
     else
         goto L_b409;
@@ -4979,8 +4985,8 @@ L_b46d:
 
 L_b47f:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
+    lRadPlanet2 = (uint32_t)(((int32_t)(iRadPlanet) * (int32_t)(iRadPlanet)));
     pt = rgptPlan[lppl->id];
     if ((fStargateView == 0))
         goto L_b71e;
@@ -5001,7 +5007,7 @@ L_b4fa:
 
 L_b513:
     iRadius = rgStargateRange[lppl->isb];
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
     lppl2 = lpPlanets;
     lpplMac2 = (lpPlanets + cPlanet);
     goto L_b710;
@@ -5053,8 +5059,8 @@ L_b5fe:
         goto L_b627;
 
 L_b627:
-    d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    d2 = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_b674;
     else
         goto L_b70c;
@@ -5115,8 +5121,8 @@ L_b770:
 
 L_b782:
     iRadius = GetPlanetScannerRange(lppl, &(iRadPlanet));
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
-    lRadPlanet2 = (uint32_t)(((uint32_t)(iRadPlanet) * (uint32_t)(iRadPlanet)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
+    lRadPlanet2 = (uint32_t)(((int32_t)(iRadPlanet) * (int32_t)(iRadPlanet)));
     pt = rgptPlan[lppl->id];
     if ((iRadPlanet <= 0))
         goto L_b9d6;
@@ -5159,8 +5165,8 @@ L_b874:
         goto L_b89d;
 
 L_b89d:
-    d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    d2 = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_b8ea;
     else
         goto L_b9c4;
@@ -5295,7 +5301,7 @@ L_baa4:
     lpth->thp.fInclude = 0x1;
     iRadius = (lpth->thp.iWarp + 4);
     iRadius = LOWORD((iRadius * iRadius));
-    lRadius2 = (uint32_t)(((uint32_t)(iRadius) * (uint32_t)(iRadius)));
+    lRadius2 = (uint32_t)(((int32_t)(iRadius) * (int32_t)(iRadius)));
     pt = lpth->pt;
     j = 0;
     goto L_bb0a;
@@ -5345,8 +5351,8 @@ L_bb94:
         goto L_bbb2;
 
 L_bbb2:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_bbff;
     else
         goto L_bb06;
@@ -5363,7 +5369,7 @@ L_bc19:
     goto L_bb06;
 
 L_bc2e:
-    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (uint32_t)((100 - pctCloak)))) / 0x64)) * (uint32_t)((100 - pctCloak)))) / 0x64))))
+    if ((l <= (int32_t)(((uint32_t)(((int32_t)(((uint32_t)((lRadius2 * (int32_t)((100 - pctCloak)))) / 0x64)) * (int32_t)((100 - pctCloak)))) / 0x64))))
         goto L_bc85;
     else
         goto L_bb06;
@@ -5474,8 +5480,8 @@ L_bdf9:
         goto L_be17;
 
 L_be17:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_be64;
     else
         goto L_bff4;
@@ -5585,8 +5591,8 @@ L_c082:
         goto L_c0ab;
 
 L_c0ab:
-    d2 = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    d2 = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_c0f8;
     else
         goto L_c1d2;
@@ -5710,7 +5716,7 @@ L_c30c:
 L_c31c:
     t_call_c327 = abs((pt.x - lpfl2->pt.x));
     dx = t_call_c327;
-    if (((uint32_t)(t_call_c327) <= lRadius2))
+    if (((int32_t)(t_call_c327) <= lRadius2))
         goto L_c348;
     else
         goto L_c29f;
@@ -5718,14 +5724,14 @@ L_c31c:
 L_c348:
     t_call_c353 = abs((pt.y - lpfl2->pt.y));
     dy = t_call_c353;
-    if (((uint32_t)(t_call_c353) <= lRadius2))
+    if (((int32_t)(t_call_c353) <= lRadius2))
         goto L_c374;
     else
         goto L_c29f;
 
 L_c374:
-    l = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
-    if ((((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy)))) <= lRadius2))
+    l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
+    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= lRadius2))
         goto L_c3c1;
     else
         goto L_c29f;

@@ -10,6 +10,20 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestConvertSignExtendUsesSignedType verifies CWD-style widening remains
+// signed when it crosses from machine values into semantic expressions.
+func TestConvertSignExtendUsesSignedType(t *testing.T) {
+	converter := machineConverter{}
+	expr := converter.convertValue(machine.SignExtendVal(machine.ConstVal(1), 16, 32))
+	extended, ok := expr.(*SignExtend)
+	if !ok {
+		t.Fatalf("converted expression = %T, want *SignExtend", expr)
+	}
+	if extended.TypeInfo != typeinfo.I32 {
+		t.Fatalf("sign-extension type = %v, want %v", extended.TypeInfo, typeinfo.I32)
+	}
+}
+
 func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 	fx := testfixture.Stars(t)
 	res := symresolve.NewResolver(fx.Image, fx.SDB)

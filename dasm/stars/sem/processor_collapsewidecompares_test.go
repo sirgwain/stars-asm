@@ -86,6 +86,57 @@ func TestCollapseWideCompareEquality(t *testing.T) {
 	}
 }
 
+// TestCollapseWideCompareRejectsFourByteAggregate verifies adjacent fields of
+// a four-byte struct are not treated as the lanes of one scalar value.
+func TestCollapseWideCompareRejectsFourByteAggregate(t *testing.T) {
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JNE", 0x1100),
+		jccForWideCompareTest(0x1002, "JNE", 0x1100),
+		retForWideCompareTest(0x1004),
+		retForWideCompareTest(0x1100),
+	})
+	point := &typeinfo.Struct{Name: "POINT", SKind: typeinfo.StructKindStruct, Size: 4}
+	img := &asm.ImageNE{}
+	sdb := &typeinfo.SymbolDB{}
+	fs := &typeinfo.Function{
+		Name: "ComparePoints",
+		Addr: typeinfo.Addr{Seg: 1, Off: 0x1000},
+		Len:  0x200,
+		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
+		Vars: []typeinfo.FunctionVar{{Name: "pt", Type: point, BPOffset: -4}},
+	}
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	load := func(disp int) machine.Value {
+		return machine.LoadVal(machine.MemoryAddress{
+			Base:   machine.FrameBaseVal(),
+			Disp:   disp,
+			Width:  2,
+			Origin: machine.Origin{InstOff: 0x1000, Role: machine.OperandSrc},
+		})
+	}
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		compareBlock(0x1000, "JNE", load(-4), machine.ConstVal(0), 0x1100, 0x1002),
+		compareBlock(0x1002, "JNE", load(-2), machine.ConstVal(0), 0x1100, 0x1004),
+		{Block: 0x1004},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{ctx: ctx}).ProcessMachineFunc(nil, &fn); changed {
+		t.Fatal("ProcessMachineFunc changed = true, want four-byte aggregate rejection")
+	}
+}
+
+// TestPreserveCompareDomainCastsSignExtensionForUnsignedCompare verifies the
+// signed result of CWD-style widening is explicitly cast for unsigned Jccs.
+func TestPreserveCompareDomainCastsSignExtensionForUnsignedCompare(t *testing.T) {
+	extended := machine.SignExtendVal(machine.ConstVal(1), 16, 32)
+	lhs, _ := (&collapseWideComparesProcessor{}).preserveCompareDomain(extended, machine.ConstVal(0), compareUnsigned)
+	cast, ok := lhs.(*machine.Cast)
+	if !ok || cast.To != typeinfo.U32 {
+		t.Fatalf("unsigned compare lhs = %#v, want uint32_t cast", lhs)
+	}
+}
+
 // TestCollapseWideCompareRejectsSideEffectingScaffold verifies source-level
 // work in an intermediate block prevents control-flow removal.
 func TestCollapseWideCompareRejectsSideEffectingScaffold(t *testing.T) {

@@ -110,7 +110,7 @@ L_01a0:
         goto L_01a9;
 
 L_01a9:
-    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(tutor.idh));
+    WinHelp(hwnd, szHelpFile, 0x1, (int32_t)(tutor.idh));
     return 1;
 
 L_01cb:
@@ -200,7 +200,7 @@ L_02f4:
         goto L_02fd;
 
 L_02fd:
-    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(tutor.idh));
+    WinHelp(hwnd, szHelpFile, 0x1, (int32_t)(tutor.idh));
     return 1;
 
 L_031f:
@@ -294,16 +294,16 @@ L_03c0:
     ScreenToClient(hwnd, &(rc));
     ScreenToClient(hwnd, rc.right);
     rc.top = (rc.top + (dyArial8 * 2));
-    rc.bottom = (rc.bottom - ((uint32_t)((dyArial8 * 2)) / 3));
-    rc.left = (rc.left + ((uint32_t)((dyArial8 * 2)) / 3));
-    rc.right = (rc.right - ((uint32_t)((dyArial8 * 2)) / 3));
+    rc.bottom = (rc.bottom - ((int32_t)((dyArial8 * 2)) / 3));
+    rc.left = (rc.left + ((int32_t)((dyArial8 * 2)) / 3));
+    rc.right = (rc.right - ((int32_t)((dyArial8 * 2)) / 3));
     SelectObject(hdc, hbrButtonShadow);
     PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), 1, PATCOPY);
     PatBlt(hdc, rc.left, rc.top, 1, (rc.bottom - rc.top), PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, rc.left, (rc.bottom - 1), (rc.right - rc.left), 1, PATCOPY);
     PatBlt(hdc, (rc.right - 1), rc.top, 1, (rc.bottom - rc.top), PATCOPY);
-    ExpandRc(&(rc), (-((uint32_t)(dyArial8) / 2)), (-((uint32_t)(dyArial8) / 2)));
+    ExpandRc(&(rc), (-((int32_t)(dyArial8) / 2)), (-((int32_t)(dyArial8) / 2)));
     yTop = rc.top;
     FillRect(hdc, &(rc), hbrButtonFace);
     SetTextColor(hdc, crButtonText);
@@ -318,7 +318,7 @@ L_058b:
         goto L_05ae;
 
 L_05ae:
-    fPara = (_ctype[((uint16_t)(rgch[0]) + 0x1)] & 0x1);
+    fPara = (_ctype[((int16_t)(rgch[0]) + 0x1)] & 0x1);
     if ((fPara == 0))
         goto L_05e8;
     else
@@ -332,7 +332,7 @@ L_05cc:
         goto L_05dc;
 
 L_05dc:
-    yTop = (yTop + ((uint32_t)(dyArial8) / 2));
+    yTop = (yTop + ((int32_t)(dyArial8) / 2));
 
 L_05e8:
     if (((tutor.idt + didt) != tutor.idtBold))
@@ -710,7 +710,7 @@ L_0b4c:
         goto LUpdatePage;
 
 LUpdatePage:
-    _wsprintf(szTitle, PszGetCompressedString(idsStarsTutorPageD80), (((uint32_t)(tutor.idt) / 8) + 0x1));
+    _wsprintf(szTitle, PszGetCompressedString(idsStarsTutorPageD80), (((int32_t)(tutor.idt) / 8) + 0x1));
     SetWindowText(tutor.hwnd, szTitle);
     ShowTutor(1);
     GetWindowRect(tutor.hwnd, &(rc));
@@ -3733,7 +3733,7 @@ L_34da:
     return 1;
 
 L_34e0:
-    if (((uint16_t)(rgplr[0].cShDef) != 7))
+    if (((int16_t)(rgplr[0].cShDef) != 7))
         goto L_34f2;
     else
         goto L_34ec;
@@ -3839,7 +3839,7 @@ L_3625:
         goto L_3643;
 
 L_3643:
-    if (((uint16_t)(rgplr[0].cShDef) != 7))
+    if (((int16_t)(rgplr[0].cShDef) != 7))
         goto L_3655;
     else
         goto L_364f;
@@ -5073,7 +5073,7 @@ L_47a7:
     return 0;
 
 L_47b3:
-    if (((uint16_t)(rgplr[0].cShDef) < 8))
+    if (((int16_t)(rgplr[0].cShDef) < 8))
         goto L_47c9;
     else
         goto L_47bf;
@@ -5100,7 +5100,7 @@ L_47e7:
     return 0;
 
 L_47f9:
-    if (((uint16_t)(rgplr[0].cShDef) >= 8))
+    if (((int16_t)(rgplr[0].cShDef) >= 8))
         goto L_4829;
     else
         goto L_4805;
@@ -6189,7 +6189,7 @@ L_5855:
         goto L_586b;
 
 L_586b:
-    if (((uint16_t)(rgplr[0].cShDef) != 9))
+    if (((int16_t)(rgplr[0].cShDef) != 9))
         goto L_587d;
     else
         goto L_5877;
@@ -6209,7 +6209,7 @@ L_5883:
         goto L_588d;
 
 L_588d:
-    if (((uint16_t)(rgplr[0].cShDef) >= 9))
+    if (((int16_t)(rgplr[0].cShDef) >= 9))
         goto L_5992;
     else
         goto L_5899;
@@ -6221,7 +6221,7 @@ L_5899:
         goto L_58b1;
 
 L_58b1:
-    if (((uint16_t)(rgplr[0].cShDef) >= 9))
+    if (((int16_t)(rgplr[0].cShDef) >= 9))
         goto L_58c3;
     else
         goto L_58bd;
@@ -6618,7 +6618,7 @@ L_5e30:
     return 0;
 
 L_5e39:
-    if (((uint16_t)(rgplr[0].cShDef) >= 10))
+    if (((int16_t)(rgplr[0].cShDef) >= 10))
         goto L_5e57;
     else
         goto L_5e45;
@@ -7894,19 +7894,19 @@ L_6d91:
 
 int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
 L_6da4:
-    if ((((uint16_t)(rgplr[0].iTechCur) & 0xf) != iTech))
+    if ((((int16_t)(rgplr[0].iTechCur) & 0xf) != iTech))
         goto L_6de2;
     else
         goto L_6dbc;
 
 L_6dbc:
-    if ((((uint16_t)(rgplr[0].iTechCur) >> 0x4) != iTechNext))
+    if ((((int16_t)(rgplr[0].iTechCur) >> 0x4) != iTechNext))
         goto L_6de2;
     else
         goto L_6dd0;
 
 L_6dd0:
-    if (((uint16_t)(rgplr[0].pctResearch) != pct))
+    if (((int16_t)(rgplr[0].pctResearch) != pct))
         goto L_6de2;
     else
         goto L_6ddc;
@@ -8925,7 +8925,7 @@ L_7a35:
         goto L_7a40;
 
 L_7a40:
-    if (((uint16_t)(rgplr[0].cShDef) != 7))
+    if (((int16_t)(rgplr[0].cShDef) != 7))
         goto L_7a5e;
     else
         goto L_7a4c;
@@ -8987,7 +8987,7 @@ L_7afe:
         goto L_7b09;
 
 L_7b09:
-    if (((uint16_t)(rgplr[0].cShDef) != 8))
+    if (((int16_t)(rgplr[0].cShDef) != 8))
         goto L_7b27;
     else
         goto L_7b15;
@@ -9015,7 +9015,7 @@ L_7b5a:
         goto L_7b65;
 
 L_7b65:
-    if (((uint16_t)(rgplr[0].cShDef) != 9))
+    if (((int16_t)(rgplr[0].cShDef) != 9))
         goto L_7b83;
     else
         goto L_7b71;
@@ -9043,7 +9043,7 @@ L_7bb6:
         goto L_7bc1;
 
 L_7bc1:
-    if (((uint16_t)(rgplr[0].cShDef) != 10))
+    if (((int16_t)(rgplr[0].cShDef) != 10))
         goto L_7bdf;
     else
         goto L_7bcd;

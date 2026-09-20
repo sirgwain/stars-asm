@@ -676,16 +676,16 @@ L_12be:
     SetWindowPos(hwnd, 0x0, 0, 0, dx, dy, 0x6);
     GetClientRect(hwnd, &(rc));
     xCtr = (rc.right >> 0x1);
-    dyLB = ((rc.bottom - ((uint32_t)(LOWORD((17 * dyArial8))) / 2)) - 24);
-    rc.left = (((uint32_t)(LOWORD((11 * rc.right))) / 20) + 16);
-    dxPBtn = ((uint32_t)((rc.right - rc.left)) / 4);
-    rc.bottom = (rc.bottom - (((uint32_t)(LOWORD((3 * dyArial8))) / 2) + 6));
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x008B), 0x0, 6, rc.bottom, (rc.left - 12), ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    dyLB = ((rc.bottom - ((int32_t)(LOWORD((17 * dyArial8))) / 2)) - 24);
+    rc.left = (((int32_t)(LOWORD((11 * rc.right))) / 20) + 16);
+    dxPBtn = ((int32_t)((rc.right - rc.left)) / 4);
+    rc.bottom = (rc.bottom - (((int32_t)(LOWORD((3 * dyArial8))) / 2) + 6));
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x008B), 0x0, 6, rc.bottom, (rc.left - 12), ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
     i = 0;
     goto L_13c4;
 
 L_137d:
-    SetWindowPos(GetDlgItem(hwnd, rgidProdBtns[i]), 0x0, rc.left, rc.bottom, (dxPBtn - 6), ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, rgidProdBtns[i]), 0x0, rc.left, rc.bottom, (dxPBtn - 6), ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
     rc.left = (rc.left + dxPBtn);
     i = (i + 1);
 
@@ -698,7 +698,7 @@ L_13c4:
 L_13cd:
     dxPBtn = (dxPBtn + 24);
     rc.left = (xCtr - ((dxPBtn + 0xfffa) >> 0x1));
-    dy = ((((uint32_t)((dyLB - LOWORD((9 * dyArial8)))) / 5) + ((uint32_t)(LOWORD((3 * dyArial8))) / 2)) - 3);
+    dy = ((((int32_t)((dyLB - LOWORD((9 * dyArial8)))) / 5) + ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 3);
     rc.top = 8;
     if ((dy <= 50))
         goto L_1437;
@@ -706,7 +706,7 @@ L_13cd:
         goto L_141e;
 
 L_141e:
-    rc.top = (rc.top + ((uint32_t)(LOWORD(((dy - 50) * 5))) / 2));
+    rc.top = (rc.top + ((int32_t)(LOWORD(((dy - 50) * 5))) / 2));
     dy = 50;
 
 L_1437:
@@ -714,7 +714,7 @@ L_1437:
     goto L_1486;
 
 L_143f:
-    SetWindowPos(GetDlgItem(hwnd, rgidProdBtns[i]), 0x0, rc.left, rc.top, (dxPBtn - 6), ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, rgidProdBtns[i]), 0x0, rc.left, rc.top, (dxPBtn - 6), ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
     rc.top = (rc.top + dy);
     i = (i + 1);
 
@@ -923,7 +923,7 @@ L_1860:
         goto L_1869;
 
 L_1869:
-    ProdCommandHandler(hwnd, 0x816, (uint32_t)(cMax));
+    ProdCommandHandler(hwnd, 0x816, (int32_t)(cMax));
 
 L_187e:
     goto L_1986;
@@ -1484,7 +1484,7 @@ L_24b6:
         goto L_25cd;
 
 L_25cd:
-    if (((int32_t)((lSel + 1)) < (uint32_t)(iMac)))
+    if (((int32_t)((lSel + 1)) < (int32_t)(iMac)))
         goto L_25fc;
     else
         goto L_2678;
@@ -1812,7 +1812,7 @@ L_3054:
         goto L_30a1;
 
 L_30a1:
-    if ((lSel < (uint32_t)(iMac)))
+    if ((lSel < (int32_t)(iMac)))
         goto L_30bd;
     else
         goto L_3429;
@@ -2177,7 +2177,7 @@ L_395b:
         goto L_3964;
 
 L_3964:
-    rc.bottom = (rc.bottom + ((uint32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.bottom = (rc.bottom + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
     SelectObject(hdc, rghfontArial8[1]);
     c = _wsprintf(szT, PszGetCompressedString(idsDDoneCompletion), prod.pct);
     if ((PszProductionETA(&(sel.pl), lpplProdGlob, LOWORD(lSel), 0x0, 0x0) != 0x57a4))
@@ -2206,7 +2206,7 @@ L_3a3d:
 
 L_3a46:
     GetClientRect(hwnd, &(rc));
-    rc.top = (rc.bottom - (((uint32_t)(LOWORD((5 * dyArial8))) / 2) + 12));
+    rc.top = (rc.bottom - (((int32_t)(LOWORD((5 * dyArial8))) / 2) + 12));
     rc.bottom = ((dyArial8 | 0x1) + rc.top);
     rc.left = 6;
     rc.right = (rc.left + dyArial8);
@@ -2526,7 +2526,7 @@ L_4111:
 
 L_4119:
     costHalf = ((uint32_t)(rgCosts[i]) / 2);
-    costUpg = (rgCosts[i] - ((uint32_t)(rgCostsCur[i]) / 2));
+    costUpg = (rgCosts[i] - ((int32_t)(rgCostsCur[i]) / 2));
     if ((costHalf <= costUpg))
         goto L_416f;
     else
@@ -2605,17 +2605,17 @@ L_431a:
 L_4322:
     rgCostsPartCur[j] = LOWORD((rgCostsPartCur[j] * lphulCur->rghs[i].cItem));
     rgCostsPartNew[j] = LOWORD((rgCostsPartNew[j] * lphulNew->rghs[i].cItem));
-    if ((((uint32_t)(LOWORD((3 * rgCostsPartNew[j]))) / 0xa) <= (rgCostsPartNew[j] - ((uint32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa))))
+    if ((((int32_t)(LOWORD((3 * rgCostsPartNew[j]))) / 0xa) <= (rgCostsPartNew[j] - ((int32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa))))
         goto L_43f9;
     else
         goto L_43e1;
 
 L_43e1:
-    t_merge_4424_0001 = ((uint32_t)(LOWORD((3 * rgCostsPartNew[j]))) / 0xa);
+    t_merge_4424_0001 = ((int32_t)(LOWORD((3 * rgCostsPartNew[j]))) / 0xa);
     goto L_4424;
 
 L_43f9:
-    scratch_bp_m52 = ((uint32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa);
+    scratch_bp_m52 = ((int32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa);
     t_merge_4424_0001 = (rgCostsPartNew[j] - scratch_bp_m52);
 
 L_4424:
@@ -2658,17 +2658,17 @@ L_44c3:
 L_44cb:
     rgCostsPartCur[j] = LOWORD((rgCostsPartCur[j] * lphulCur->rghs[i].cItem));
     rgCostsPartNew[j] = LOWORD((rgCostsPartNew[j] * lphulNew->rghs[i].cItem));
-    if ((((uint32_t)((rgCostsPartNew[j] * 2)) / 10) <= (rgCostsPartNew[j] - ((uint32_t)((rgCostsPartCur[j] * 8)) / 10))))
+    if ((((int32_t)((rgCostsPartNew[j] * 2)) / 10) <= (rgCostsPartNew[j] - ((int32_t)((rgCostsPartCur[j] * 8)) / 10))))
         goto L_45a5;
     else
         goto L_458e;
 
 L_458e:
-    t_merge_45d3_0001 = ((uint32_t)((rgCostsPartNew[j] * 2)) / 10);
+    t_merge_45d3_0001 = ((int32_t)((rgCostsPartNew[j] * 2)) / 10);
     goto L_45d3;
 
 L_45a5:
-    scratch_bp_m52 = ((uint32_t)((rgCostsPartCur[j] * 8)) / 10);
+    scratch_bp_m52 = ((int32_t)((rgCostsPartCur[j] * 8)) / 10);
     t_merge_45d3_0001 = (rgCostsPartNew[j] - scratch_bp_m52);
 
 L_45d3:
@@ -2837,7 +2837,7 @@ L_4895:
     goto L_48b9;
 
 L_489d:
-    rgCost[i] = (uint32_t)((2 - cost));
+    rgCost[i] = (int32_t)((2 - cost));
     i = (i + 1);
 
 L_48b9:
@@ -2852,10 +2852,10 @@ L_48bf:
 L_48c5:
     rgCost[1] = 0x0;
     *(rgCost) = 0x0;
-    rgCost[2] = (uint32_t)((4 - cost));
+    rgCost[2] = (int32_t)((4 - cost));
 
 L_48f0:
-    rgCost[3] = (uint32_t)(GetRaceStat(&(rgplr[iplr]), rsFactBuild));
+    rgCost[3] = (int32_t)(GetRaceStat(&(rgplr[iplr]), rsFactBuild));
     goto L_4eef;
 
 L_4915:
@@ -2873,7 +2873,7 @@ L_4936:
         goto L_493f;
 
 L_493f:
-    rgCost[3] = (uint32_t)(GetRaceStat(&(rgplr[iplr]), rsMineBuild));
+    rgCost[3] = (int32_t)(GetRaceStat(&(rgplr[iplr]), rsMineBuild));
     goto L_4eef;
 
 L_4964:
@@ -2884,7 +2884,7 @@ L_4964:
     goto L_49b6;
 
 L_4989:
-    rgCost[i] = (uint32_t)(part.pplanetary->rgwtOreCost[i]);
+    rgCost[i] = (int32_t)(part.pplanetary->rgwtOreCost[i]);
     i = (i + 1);
 
 L_49b6:
@@ -3004,7 +3004,7 @@ L_4b3d:
         goto L_4b5d;
 
 L_4b5d:
-    t_merge_4b68_0001 = (uint32_t)(j);
+    t_merge_4b68_0001 = (int32_t)(j);
     goto L_4b68;
 
 L_4b64:
@@ -3066,7 +3066,7 @@ L_4bcf:
     goto L_4bf3;
 
 L_4bda:
-    rgCost[i] = (uint32_t)(j);
+    rgCost[i] = (int32_t)(j);
     i = (i + 1);
 
 L_4bf3:
@@ -3383,14 +3383,14 @@ L_5065:
         goto L_506e;
 
 L_506e:
-    rgRes[3] = (uint32_t)(CResourcesAtPlanet(&(pl), lppl->iPlayer));
+    rgRes[3] = (int32_t)(CResourcesAtPlanet(&(pl), lppl->iPlayer));
     if ((pl.fNoResearch != 0x0))
         goto L_50f4;
     else
         goto L_50af;
 
 L_50af:
-    cResearch = (int32_t)(((uint32_t)((rgRes[3] * (uint32_t)((uint16_t)(rgplr[lppl->iPlayer].pctResearch)))) / 0x64));
+    cResearch = (int32_t)(((uint32_t)((rgRes[3] * (int32_t)((int16_t)(rgplr[lppl->iPlayer].pctResearch)))) / 0x64));
     rgRes[3] = (rgRes[3] - cResearch);
     goto L_50fe;
 
@@ -3703,7 +3703,7 @@ L_55b4:
     psz = vrgZipProd[iBase].szName;
 
 L_55c7:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_55fd;
     else
         goto L_55d5;
@@ -3712,7 +3712,7 @@ L_55d5:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_55c7;
     else
         goto L_55f0;
@@ -3924,7 +3924,7 @@ L_59e4:
         goto L_5a07;
 
 L_5a07:
-    if (((uint16_t)(szWork[0]) != 0))
+    if (((int16_t)(szWork[0]) != 0))
         goto L_5a36;
     else
         goto L_5a13;
@@ -3938,7 +3938,7 @@ L_5a36:
     psz = szWork;
 
 L_5a59:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_5a8f;
     else
         goto L_5a67;
@@ -3947,7 +3947,7 @@ L_5a67:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_5a59;
     else
         goto L_5a82;

@@ -56,7 +56,7 @@ L_2571:
     goto L_25c2;
 
 L_2579:
-    rgwtMinerals[i] = (uint32_t)(Random(10));
+    rgwtMinerals[i] = (int32_t)(Random(10));
     wtTotal = (wtTotal + rgwtMinerals[i]);
     i = (i + 1);
 
@@ -97,8 +97,8 @@ L_2657:
     goto L_26cc;
 
 L_265f:
-    rgwtMinerals[i] = (rgwtMinerals[i] + (uint32_t)(lpth->thp.rgwtMin[i]));
-    wtTotal = (wtTotal + (uint32_t)(lpth->thp.rgwtMin[i]));
+    rgwtMinerals[i] = (rgwtMinerals[i] + (int32_t)(lpth->thp.rgwtMin[i]));
+    wtTotal = (wtTotal + (int32_t)(lpth->thp.rgwtMin[i]));
     lpth->thp.rgwtMin[i] = 0;
     i = (i + 1);
 

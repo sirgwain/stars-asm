@@ -295,7 +295,7 @@ L_03cc:
 
 L_03d1:
     vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
+    vrgAiArmadaPotency[1] = LOBYTE(((int32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
         goto L_0405;
@@ -316,7 +316,7 @@ L_040e:
 
 L_0413:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((uint32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
         goto L_0435;
     else
         goto L_042f;
@@ -326,7 +326,7 @@ L_042f:
     goto L_0441;
 
 L_0435:
-    t_merge_0441_0001 = (((uint32_t)(j) / 2) + 0xffff);
+    t_merge_0441_0001 = (((int32_t)(j) / 2) + 0xffff);
 
 L_0441:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_0441_0001);
@@ -603,13 +603,13 @@ L_08f3:
     goto L_07a2;
 
 L_0902:
-    if ((((uint32_t)(rgplr[idPlayer].cPlanet) / 8) <= (vlpbAiData[2] * 0x4)))
+    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 8) <= (vlpbAiData[2] * 0x4)))
         goto L_0942;
     else
         goto L_092a;
 
 L_092a:
-    t_merge_094e_0001 = ((uint32_t)(rgplr[idPlayer].cPlanet) / 8);
+    t_merge_094e_0001 = ((int32_t)(rgplr[idPlayer].cPlanet) / 8);
     goto L_094e;
 
 L_0942:
@@ -623,7 +623,7 @@ L_094e:
         goto L_095a;
 
 L_095a:
-    if ((cExistCargo < ((uint32_t)((cFr * 8)) / 10)))
+    if ((cExistCargo < ((int32_t)((cFr * 8)) / 10)))
         goto L_0990;
     else
         goto L_0971;
@@ -680,7 +680,7 @@ L_09f9:
 L_0a11:
     AddItemToQueue(0x1, 0x1, grobjFleet, 1);
     fWrite = 1;
-    l = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
+    l = (uint32_t)((lppl->rgwtMin[3] * (int32_t)(PctTrueMaxGrowth(idPlayer))));
     cRes = CResourcesAtPlanet(lppl, idPlayer);
     if ((l <= 2300))
         goto TryShip2;
@@ -919,19 +919,19 @@ L_0d54:
         goto L_0d5d;
 
 L_0d5d:
-    if ((HIWORD(rgshdef[iLatestMeta].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 7) + 0x6)))))
+    if ((HIWORD(rgshdef[iLatestMeta].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
         goto L_0db2;
     else
         goto L_0d90;
 
 L_0d90:
-    if ((HIWORD(rgshdef[iLatestMeta].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 7) + 0x6)))))
+    if ((HIWORD(rgshdef[iLatestMeta].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
         goto L_0d9e;
     else
         goto L_0d95;
 
 L_0d95:
-    if ((LOWORD(rgshdef[iLatestMeta].cExist) < LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 7) + 0x6)))))
+    if ((LOWORD(rgshdef[iLatestMeta].cExist) < LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
         goto L_0db2;
     else
         goto L_0d9e;
@@ -1028,19 +1028,19 @@ TryShip3:
         goto L_0f1b;
 
 L_0f1b:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
     else
         goto L_0f4e;
 
 L_0f4e:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_0f5c;
     else
         goto L_0f53;
 
 L_0f53:
-    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
     else
         goto L_0f5c;
@@ -1145,7 +1145,7 @@ L_110b:
 L_1126:
     dx = (lpfl->pt.x - lpfl->lpplord->rgord[1].pt.x);
     dy = (lpfl->pt.y - lpfl->lpplord->rgord[1].pt.y);
-    lDist = ((uint32_t)(((uint32_t)(dx) * (uint32_t)(dx))) + (uint32_t)(((uint32_t)(dy) * (uint32_t)(dy))));
+    lDist = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
     if ((lDist <= 40000))
         goto L_11df;
     else
@@ -2004,13 +2004,13 @@ L_20bf:
         goto L_20dd;
 
 L_20dd:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 2))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 2))
         goto L_21e7;
     else
         goto L_20f5;
 
 L_20f5:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < (LOWORD(((ish - 11) * 3)) + 0x4)))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < (LOWORD(((ish - 11) * 3)) + 0x4)))
         goto L_21e7;
     else
         goto L_2122;
@@ -2028,7 +2028,7 @@ L_212b:
         goto L_2149;
 
 L_2149:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) >= 10))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) >= 10))
         goto L_2197;
     else
         goto L_2161;
@@ -2085,31 +2085,31 @@ L_21f4:
         goto L_2207;
 
 L_2207:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 5))
         goto L_22f5;
     else
         goto L_221f;
 
 L_221f:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 6))
         goto L_22f5;
     else
         goto L_2237;
 
 L_2237:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 6))
         goto L_22f5;
     else
         goto L_224f;
 
 L_224f:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 6))
         goto L_22f5;
     else
         goto L_2267;
 
 L_2267:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[0]) < 2))
+    if (((int16_t)(rgplr[idPlayer].rgTech[0]) < 2))
         goto L_22f5;
     else
         goto L_227f;
@@ -2146,25 +2146,25 @@ L_22f5:
         goto L_2308;
 
 L_2308:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 10))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 10))
         goto L_23de;
     else
         goto L_2320;
 
 L_2320:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 8))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 8))
         goto L_23de;
     else
         goto L_2338;
 
 L_2338:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 9))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 9))
         goto L_23de;
     else
         goto L_2350;
 
 L_2350:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 14))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 14))
         goto L_23de;
     else
         goto L_2368;
@@ -2205,25 +2205,25 @@ L_23e6:
         goto L_2404;
 
 L_2404:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 10))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 10))
         goto L_251b;
     else
         goto L_241c;
 
 L_241c:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 10))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 10))
         goto L_251b;
     else
         goto L_2434;
 
 L_2434:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 9))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 9))
         goto L_251b;
     else
         goto L_244c;
 
 L_244c:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[0]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[0]) < 6))
         goto L_251b;
     else
         goto L_2464;
@@ -2299,37 +2299,37 @@ L_2530:
         goto L_254e;
 
 L_254e:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[5]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[5]) < 4))
         goto L_268d;
     else
         goto L_2566;
 
 L_2566:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 10))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 10))
         goto L_268d;
     else
         goto L_257e;
 
 L_257e:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 12))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 12))
         goto L_268d;
     else
         goto L_2596;
 
 L_2596:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 12))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 12))
         goto L_268d;
     else
         goto L_25ae;
 
 L_25ae:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[0]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[0]) < 6))
         goto L_268d;
     else
         goto L_25c6;
 
 L_25c6:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 15))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 15))
         goto L_268d;
     else
         goto L_25de;
@@ -2405,7 +2405,7 @@ L_26a2:
         goto L_26c0;
 
 L_26c0:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 14))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 14))
         goto L_2779;
     else
         goto L_26d8;
@@ -2484,31 +2484,31 @@ L_27b9:
         goto L_27c3;
 
 L_27c3:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[5]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[5]) < 4))
         goto L_2888;
     else
         goto L_27db;
 
 L_27db:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 5))
         goto L_2888;
     else
         goto L_27f3;
 
 L_27f3:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 6))
         goto L_2888;
     else
         goto L_280b;
 
 L_280b:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 6))
         goto L_2888;
     else
         goto L_2823;
 
 L_2823:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[0]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[0]) < 6))
         goto L_2888;
     else
         goto L_283b;
@@ -2953,7 +2953,7 @@ L_2ed3:
         goto L_2ede;
 
 L_2ede:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((uint32_t)(LOWORD(lppl->rgwtMin[3])) / 5));
+    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, ((int32_t)(LOWORD(lppl->rgwtMin[3])) / 5));
     FLookupFleet(lpfl->id, &(sel.fl));
 
 L_2f23:
@@ -3489,7 +3489,7 @@ L_3769:
 
 L_376e:
     vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE(((uint32_t)((j & 0xff)) / 0x2));
+    vrgAiArmadaPotency[1] = LOBYTE(((int32_t)((j & 0xff)) / 0x2));
     j = 6;
     if ((game.turn <= 0x73))
         goto L_37a2;
@@ -3510,7 +3510,7 @@ L_37ab:
 
 L_37b0:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((uint32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
         goto L_37d2;
     else
         goto L_37cc;
@@ -3520,7 +3520,7 @@ L_37cc:
     goto L_37de;
 
 L_37d2:
-    t_merge_37de_0001 = (((uint32_t)(j) / 2) + 0xffff);
+    t_merge_37de_0001 = (((int32_t)(j) / 2) + 0xffff);
 
 L_37de:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_37de_0001);
@@ -3557,7 +3557,7 @@ L_3820:
     CheckAiShdefStatus(4, 5, cRecyclePeriod, &(iLatestBattle), rgRecycleShdef);
     CheckAiShdefStatus(12, 12, cRecyclePeriod, &(iLatestLayer), rgRecycleShdef);
     CheckAiShdefStatus(15, 15, cRecyclePeriod, &(iLatestTroop), rgRecycleShdef);
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 7))
         goto L_3906;
     else
         goto L_38e6;
@@ -3649,7 +3649,7 @@ L_3a6a:
     goto L_3a94;
 
 L_3a72:
-    bT = LOBYTE(((uint32_t)(lppl->rgMinConc[i]) / 0x2));
+    bT = LOBYTE(((int32_t)(lppl->rgMinConc[i]) / 0x2));
 
 L_3a94:
     b = (b + LOBYTE(bT));
@@ -3872,13 +3872,13 @@ L_3e50:
         goto L_3e5a;
 
 L_3e5a:
-    if ((((uint32_t)(game.cPlanMax) / 4) >= 0x20))
+    if ((((int32_t)(game.cPlanMax) / 4) >= 0x20))
         goto L_3e77;
     else
         goto L_3e6b;
 
 L_3e6b:
-    t_merge_3e7a_0001 = ((uint32_t)(game.cPlanMax) / 4);
+    t_merge_3e7a_0001 = ((int32_t)(game.cPlanMax) / 4);
     goto L_3e7a;
 
 L_3e77:
@@ -3925,13 +3925,13 @@ L_3ec0:
     fWrite = 1;
 
 L_3ede:
-    if ((((uint32_t)(rgplr[idPlayer].cPlanet) / 10) <= (vlpbAiData[2] * 0x2)))
+    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 10) <= (vlpbAiData[2] * 0x2)))
         goto L_3f1c;
     else
         goto L_3f04;
 
 L_3f04:
-    t_merge_3f26_0001 = ((uint32_t)(rgplr[idPlayer].cPlanet) / 10);
+    t_merge_3f26_0001 = ((int32_t)(rgplr[idPlayer].cPlanet) / 10);
     goto L_3f26;
 
 L_3f1c:
@@ -3939,7 +3939,7 @@ L_3f1c:
 
 L_3f26:
     cFr = t_merge_3f26_0001;
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 5))
         goto L_3fa0;
     else
         goto L_3f42;
@@ -3957,7 +3957,7 @@ L_3f4c:
         goto L_3f58;
 
 L_3f58:
-    if ((cExistCargo >= ((uint32_t)(LOWORD((10 * cFr))) / 0x7)))
+    if ((cExistCargo >= ((int32_t)(LOWORD((10 * cFr))) / 0x7)))
         goto L_3fa0;
     else
         goto L_3f6d;
@@ -4010,7 +4010,7 @@ L_3fcd:
     fWrite = 1;
 
 L_4033:
-    l = (uint32_t)((lppl->rgwtMin[3] * (uint32_t)(PctTrueMaxGrowth(idPlayer))));
+    l = (uint32_t)((lppl->rgwtMin[3] * (int32_t)(PctTrueMaxGrowth(idPlayer))));
     cRes = CResourcesAtPlanet(lppl, idPlayer);
     if ((rgshdef[12].fFree != 0x0))
         goto L_418b;
@@ -4163,19 +4163,19 @@ L_4274:
         goto L_427e;
 
 L_427e:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 24) + 0x4)))))
+    if ((HIWORD(rgshdef[iLatestBattle].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
         goto L_43ee;
     else
         goto L_42b2;
 
 L_42b2:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 24) + 0x4)))))
+    if ((HIWORD(rgshdef[iLatestBattle].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
         goto L_42c0;
     else
         goto L_42b7;
 
 L_42b7:
-    if ((LOWORD(rgshdef[iLatestBattle].cExist) >= LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 24) + 0x4)))))
+    if ((LOWORD(rgshdef[iLatestBattle].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
         goto L_43ee;
     else
         goto L_42c0;
@@ -4245,19 +4245,19 @@ L_43ee:
         goto L_43f7;
 
 L_43f7:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestCruiser].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_4564;
     else
         goto L_442a;
 
 L_442a:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestCruiser].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_4438;
     else
         goto L_442f;
 
 L_442f:
-    if ((LOWORD(rgshdef[iLatestCruiser].cExist) >= LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((LOWORD(rgshdef[iLatestCruiser].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_4564;
     else
         goto L_4438;
@@ -4327,19 +4327,19 @@ L_4564:
         goto L_456d;
 
 L_456d:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 4) + 0xc)))))
+    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
         goto L_46da;
     else
         goto L_45a0;
 
 L_45a0:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 4) + 0xc)))))
+    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
         goto L_45ae;
     else
         goto L_45a5;
 
 L_45a5:
-    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 4) + 0xc)))))
+    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
         goto L_46da;
     else
         goto L_45ae;
@@ -4415,19 +4415,19 @@ L_46e3:
         goto L_46f6;
 
 L_46f6:
-    if ((HIWORD(rgshdef[iLatestTroop].cExist) > HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestTroop].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
     else
         goto L_4729;
 
 L_4729:
-    if ((HIWORD(rgshdef[iLatestTroop].cExist) < HIWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((HIWORD(rgshdef[iLatestTroop].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_4737;
     else
         goto L_472e;
 
 L_472e:
-    if ((LOWORD(rgshdef[iLatestTroop].cExist) >= LOWORD((uint32_t)((((uint32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((LOWORD(rgshdef[iLatestTroop].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
     else
         goto L_4737;
@@ -5272,7 +5272,13 @@ L_55f4:
         goto L_4eb0;
 
 L_5606:
-    if ((lpfl->pt != lpflT->pt))
+    if ((lpfl->pt.x != lpflT->pt.x))
+        goto L_55e3;
+    else
+        goto L_5619;
+
+L_5619:
+    if ((lpfl->pt.y != lpflT->pt.y))
         goto L_55e3;
     else
         goto L_562c;
@@ -5356,7 +5362,7 @@ L_579a:
         goto L_57a7;
 
 L_57a7:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 6))
         goto L_57cc;
     else
         goto L_57bf;
@@ -5417,13 +5423,13 @@ L_58ba:
         goto L_58d6;
 
 L_58d6:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 5))
         goto L_5926;
     else
         goto L_58ee;
 
 L_58ee:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 8))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 8))
         goto L_5926;
     else
         goto L_5906;
@@ -5438,13 +5444,13 @@ L_5926:
         goto L_5939;
 
 L_5939:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 7))
         goto L_5989;
     else
         goto L_5951;
 
 L_5951:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 11))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 11))
         goto L_5989;
     else
         goto L_5969;
@@ -5459,25 +5465,25 @@ L_5989:
         goto L_599c;
 
 L_599c:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 5))
         goto L_5a51;
     else
         goto L_59b4;
 
 L_59b4:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 5))
         goto L_5a51;
     else
         goto L_59cc;
 
 L_59cc:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 4))
         goto L_5a51;
     else
         goto L_59e4;
 
 L_59e4:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 5))
         goto L_5a51;
     else
         goto L_59fc;
@@ -5590,13 +5596,13 @@ L_5b8c:
         goto L_5b96;
 
 L_5b96:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 7))
         goto L_5c29;
     else
         goto L_5bae;
 
 L_5bae:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 4))
         goto L_5c29;
     else
         goto L_5bc6;
@@ -5634,13 +5640,13 @@ L_5c46:
         goto L_5c50;
 
 L_5c50:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 4))
         goto L_5ca0;
     else
         goto L_5c68;
 
 L_5c68:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[5]) < 4))
+    if (((int16_t)(rgplr[idPlayer].rgTech[5]) < 4))
         goto L_5ca0;
     else
         goto L_5c80;
@@ -5655,19 +5661,19 @@ L_5ca0:
         goto L_5cb3;
 
 L_5cb3:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 8))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 8))
         goto L_5d1b;
     else
         goto L_5ccb;
 
 L_5ccb:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 7))
         goto L_5d1b;
     else
         goto L_5ce3;
 
 L_5ce3:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 6))
         goto L_5d1b;
     else
         goto L_5cfb;
@@ -5682,25 +5688,25 @@ L_5d1b:
         goto L_5d2e;
 
 L_5d2e:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 11))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 11))
         goto L_5dae;
     else
         goto L_5d46;
 
 L_5d46:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 12))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 12))
         goto L_5dae;
     else
         goto L_5d5e;
 
 L_5d5e:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 15))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 15))
         goto L_5dae;
     else
         goto L_5d76;
 
 L_5d76:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 9))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 9))
         goto L_5dae;
     else
         goto L_5d8e;
@@ -5715,25 +5721,25 @@ L_5dae:
         goto L_5dc1;
 
 L_5dc1:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 5))
         goto L_5e76;
     else
         goto L_5dd9;
 
 L_5dd9:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 6))
         goto L_5e76;
     else
         goto L_5df1;
 
 L_5df1:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 13))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 13))
         goto L_5e76;
     else
         goto L_5e09;
 
 L_5e09:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 7))
         goto L_5e76;
     else
         goto L_5e21;
@@ -5764,25 +5770,25 @@ L_5e76:
         goto L_5e89;
 
 L_5e89:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[1]) < 5))
+    if (((int16_t)(rgplr[idPlayer].rgTech[1]) < 5))
         goto L_5f2c;
     else
         goto L_5ea1;
 
 L_5ea1:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[4]) < 6))
+    if (((int16_t)(rgplr[idPlayer].rgTech[4]) < 6))
         goto L_5f2c;
     else
         goto L_5eb9;
 
 L_5eb9:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[3]) < 13))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < 13))
         goto L_5f2c;
     else
         goto L_5ed1;
 
 L_5ed1:
-    if (((uint16_t)(rgplr[idPlayer].rgTech[2]) < 7))
+    if (((int16_t)(rgplr[idPlayer].rgTech[2]) < 7))
         goto L_5f2c;
     else
         goto L_5ee9;

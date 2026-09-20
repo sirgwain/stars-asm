@@ -37,13 +37,13 @@ L_0345:
 L_0369:
     cDefenses = lppl->cDefenses;
     cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
-    if (((uint32_t)(cMax) < cDefenses))
+    if (((int32_t)(cMax) < cDefenses))
         goto L_03b5;
     else
         goto L_03bf;
 
 L_03b5:
-    cDefenses = (uint32_t)(cMax);
+    cDefenses = (int32_t)(cMax);
 
 L_03bf:
     pct = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 1000)), (double)(cDefenses));

@@ -39,7 +39,7 @@ L_0092:
     psz = vrgZip[(i - 1073)].szName;
 
 L_00af:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_00e5;
     else
         goto L_00bd;
@@ -48,7 +48,7 @@ L_00bd:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_00af;
     else
         goto L_00d8;
@@ -284,7 +284,7 @@ L_05bd:
         goto L_05f7;
 
 L_05f7:
-    if (((uint16_t)(szWork[0]) != 0))
+    if (((int16_t)(szWork[0]) != 0))
         goto L_0626;
     else
         goto L_0603;
@@ -298,7 +298,7 @@ L_0626:
     psz = szWork;
 
 L_064e:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_0684;
     else
         goto L_065c;
@@ -307,7 +307,7 @@ L_065c:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_064e;
     else
         goto L_0677;
@@ -741,7 +741,13 @@ L_0d94:
         goto L_0d9f;
 
 L_0d9f:
-    if ((pt != rgptPlan[id]))
+    if ((pt.x != rgptPlan[id].x))
+        goto L_0d90;
+    else
+        goto L_0db6;
+
+L_0db6:
+    if ((pt.y != rgptPlan[id].y))
         goto L_0d90;
     else
         goto L_0dc4;
@@ -758,7 +764,7 @@ L_0dcd:
 
 L_0de0:
     cshdef = (cshdef + 1);
-    cshOrig = (cshOrig + (uint32_t)(flSrc.rgcsh[ishdef]));
+    cshOrig = (cshOrig + (int32_t)(flSrc.rgcsh[ishdef]));
     t_call_0e31 = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &(rgpct[ishdef]));
     goto L_0eca;
 
@@ -846,7 +852,7 @@ L_0f98:
         goto L_0fac;
 
 L_0fac:
-    cshKill = (cshKill + (uint32_t)(flSrc.rgcsh[ishdef]));
+    cshKill = (cshKill + (int32_t)(flSrc.rgcsh[ishdef]));
     flSrc.rgcsh[ishdef] = 0;
     flSrc.rgdv[ishdef].dp = 0x0;
     cshdef = (cshdef - 1);
@@ -864,7 +870,7 @@ L_101d:
     goto L_103d;
 
 L_1025:
-    pctKill = LOBYTE(((uint32_t)(rgpct[ishdef]) / 3));
+    pctKill = LOBYTE(((int32_t)(rgpct[ishdef]) / 3));
 
 L_103d:
     dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
@@ -874,7 +880,7 @@ L_103d:
         goto L_1075;
 
 L_1075:
-    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(cshT) * (uint32_t)(flSrc.rgdv[ishdef].pctSh))) / 0x64)));
+    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((int32_t)(cshT) * (int32_t)(flSrc.rgdv[ishdef].pctSh))) / 0x64)));
     if ((cshDamagedOld != 0))
         goto L_10c0;
     else
@@ -935,7 +941,7 @@ L_1152:
     goto L_10d8;
 
 L_1155:
-    cshKill = (cshKill + (uint32_t)((flSrc.rgcsh[ishdef] - cshT)));
+    cshKill = (cshKill + (int32_t)((flSrc.rgcsh[ishdef] - cshT)));
 
 L_116f:
     if ((cshT == 0))
@@ -950,7 +956,7 @@ L_1179:
         goto L_118c;
 
 L_118c:
-    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(flSrc.rgdv[ishdef].pctDp))) / 0x1f4)));
+    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(flSrc.rgdv[ishdef].pctDp))) / 0x1f4)));
     if ((dpPerShdefOld != 0))
         goto L_11db;
     else
@@ -966,7 +972,7 @@ L_11d5:
     dpPerShdefOld = 0;
 
 L_11db:
-    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(rgpct[ishdef]))) / 100)));
+    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(rgpct[ishdef]))) / 100)));
     if ((dpPerShdefNew != 0))
         goto L_1217;
     else
@@ -988,7 +994,7 @@ L_1221:
         goto L_1230;
 
 L_1230:
-    cshKill = (cshKill + (uint32_t)(cshDamagedOld));
+    cshKill = (cshKill + (int32_t)(cshDamagedOld));
     cshT = (cshT - cshDamagedOld);
 
 L_1245:
@@ -998,8 +1004,8 @@ L_1245:
         goto L_124f;
 
 L_124f:
-    dp = ((uint32_t)(((uint32_t)(dpPerShdefNew) * (uint32_t)(cshT))) + (uint32_t)(((uint32_t)(dpPerShdefOld) * (uint32_t)(cshDamagedOld))));
-    pct = LOWORD((int32_t)(((uint32_t)(((int32_t)((dp / (uint32_t)(cshT))) * 0x1f4)) / (uint32_t)(dpShdef))));
+    dp = ((uint32_t)(((int32_t)(dpPerShdefNew) * (int32_t)(cshT))) + (uint32_t)(((int32_t)(dpPerShdefOld) * (int32_t)(cshDamagedOld))));
+    pct = LOWORD((int32_t)(((uint32_t)(((int32_t)((dp / (int32_t)(cshT))) * 0x1f4)) / (int32_t)(dpShdef))));
     if ((pct != 0))
         goto L_12d4;
     else
@@ -1109,7 +1115,7 @@ L_152e:
     partDst.hs.iItem = isbsDst;
     FLookupPart(&(partSrc));
     FLookupPart(&(partDst));
-    dBaseDistance = (uint32_t)(partSrc.pspecialsb->grAbility2);
+    dBaseDistance = (int32_t)(partSrc.pspecialsb->grAbility2);
     if ((dBaseDistance != -1))
         goto L_15b2;
     else
@@ -1134,7 +1140,7 @@ L_15f1:
         goto L_15fe;
 
 L_15fe:
-    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((uint32_t)(partSrc.pspecialsb->grAbility) * 5)))))
+    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)))))
         goto L_163a;
     else
         goto L_1683;
@@ -1146,7 +1152,7 @@ L_163a:
         goto L_1647;
 
 L_1647:
-    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((uint32_t)(partDst.pspecialsb->grAbility) * 5)))))
+    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)))))
         goto L_1689;
     else
         goto L_1683;
@@ -1155,7 +1161,7 @@ L_1683:
     return -2;
 
 L_1689:
-    if (((uint32_t)(dDist) <= dBaseDistance))
+    if (((int32_t)(dDist) <= dBaseDistance))
         goto L_170f;
     else
         goto L_16a2;
@@ -1184,8 +1190,8 @@ L_171e:
         goto L_172b;
 
 L_172b:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(partSrc.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
-                             (uint32_t)(partSrc.pspecialsb->grAbility)));
+    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
+                             (int32_t)(partSrc.pspecialsb->grAbility)));
     if ((pctSurviveT <= 0))
         goto TotalDeath;
     else
@@ -1207,8 +1213,8 @@ L_17cd:
         goto L_17da;
 
 L_17da:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((uint32_t)(partDst.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
-                             (uint32_t)(partDst.pspecialsb->grAbility)));
+    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
+                             (int32_t)(partDst.pspecialsb->grAbility)));
     if ((pctSurviveT <= 0))
         goto TotalDeath;
     else
@@ -1322,7 +1328,13 @@ L_1ae4:
     goto L_1977;
 
 L_1ae7:
-    if ((lpfl->pt != lpfl->lpplord->rgord[1].pt))
+    if ((lpfl->pt.x != lpfl->lpplord->rgord[1].pt.x))
+        goto L_18b8;
+    else
+        goto L_1b02;
+
+L_1b02:
+    if ((lpfl->pt.y != lpfl->lpplord->rgord[1].pt.y))
         goto L_18b8;
     else
         goto L_1b0b;
@@ -1701,12 +1713,12 @@ L_2194:
         goto L_219d;
 
 L_219d:
-    cTurns = (int32_t)(((int32_t)((dTravel / (uint32_t)(iWarp))) / (uint32_t)(iWarp)));
+    cTurns = (int32_t)(((int32_t)((dTravel / (int32_t)(iWarp))) / (int32_t)(iWarp)));
     goto L_2202;
 
 L_21c4:
     iWarp = (iWarp - 1);
-    if (((int32_t)(((int32_t)((dTravel / (uint32_t)(iWarp))) / (uint32_t)(iWarp))) <= cTurns))
+    if (((int32_t)(((int32_t)((dTravel / (int32_t)(iWarp))) / (int32_t)(iWarp))) <= cTurns))
         goto L_2202;
     else
         goto L_21fb;
@@ -1913,7 +1925,13 @@ L_24e5:
         goto L_24fb;
 
 L_24fb:
-    if ((lpflT->pt != lpfl->pt))
+    if ((lpflT->pt.x != lpfl->pt.x))
+        goto L_2463;
+    else
+        goto L_250e;
+
+L_250e:
+    if ((lpflT->pt.y != lpfl->pt.y))
         goto L_2463;
     else
         goto L_2521;
@@ -2015,13 +2033,13 @@ L_26ac:
     part.hs.grhst = lphs->grhst;
     HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pmining->grAbility))));
+    cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmining->grAbility))));
 
 L_26f1:
     goto L_265d;
 
 L_26f4:
-    cMineTot = (cMineTot + (uint32_t)((cMine * (uint32_t)(lpfl->rgcsh[i]))));
+    cMineTot = (cMineTot + (uint32_t)((cMine * (int32_t)(lpfl->rgcsh[i]))));
 
 L_271f:
     i = (i + 1);
@@ -2102,7 +2120,7 @@ L_283c:
     goto L_27e7;
 
 L_283f:
-    pctTot = (pctTot + (uint32_t)((pct * (uint32_t)(lpfl->rgcsh[i]))));
+    pctTot = (pctTot + (uint32_t)((pct * (int32_t)(lpfl->rgcsh[i]))));
 
 L_286a:
     i = (i + 1);
@@ -2244,7 +2262,7 @@ L_29d7:
     part.hs.grhst = lphs->grhst;
     HIWORD(part.hs) = *(lphs + 0x2);
     FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (uint32_t)(part.pmines->grAbility))));
+    cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmines->grAbility))));
     goto L_2988;
 
 L_2a1f:
@@ -2287,7 +2305,7 @@ L_2a81:
     cMine = (int32_t)((cMine * 2));
 
 L_2a95:
-    cMineTot = (cMineTot + (uint32_t)((cMine * (uint32_t)(lpfl->rgcsh[i]))));
+    cMineTot = (cMineTot + (uint32_t)((cMine * (int32_t)(lpfl->rgcsh[i]))));
 
 L_2ac0:
     i = (i + 1);
@@ -2337,7 +2355,7 @@ L_2b41:
 L_2b5e:
     lphul = (rglpshdef[lpfl->iPlayer] + i);
     lPow = CMineSweepFromLphul(lphul);
-    lPowTot = (lPowTot + (uint32_t)((lPow * (uint32_t)(lpfl->rgcsh[i]))));
+    lPowTot = (lPowTot + (uint32_t)((lPow * (int32_t)(lpfl->rgcsh[i]))));
 
 L_2bbe:
     i = (i + 1);
@@ -2428,7 +2446,7 @@ L_2cb2:
         goto L_2cca;
 
 L_2cca:
-    lRange = (uint32_t)(part.pbeam->dRangeMax);
+    lRange = (int32_t)(part.pbeam->dRangeMax);
 
 L_2cd8:
     if ((fStarbase == 0))
@@ -2440,7 +2458,7 @@ L_2ce1:
     lRange = (lRange + 1);
 
 L_2ce9:
-    lPow = (lPow + (uint32_t)(((uint32_t)(((uint32_t)((lRange * lRange)) * lphs->cItem)) * (uint32_t)(part.pbeam->dp))));
+    lPow = (lPow + (uint32_t)(((uint32_t)(((uint32_t)((lRange * lRange)) * lphs->cItem)) * (int32_t)(part.pbeam->dp))));
 
 L_2d2c:
     goto L_2c4d;
@@ -2492,7 +2510,7 @@ L_2d9e:
 L_2dbb:
     lphul = (rglpshdef[lpfl->iPlayer] + i);
     chs = lphul->chs;
-    wtFleetCur = (uint32_t)(((uint32_t)(lpfl->rgcsh[i]) * (uint32_t)(lphul->wtEmpty)));
+    wtFleetCur = (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (uint32_t)(lphul->wtEmpty)));
     cPtsCur = 0;
     if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raStealth))
         goto L_2e51;
@@ -2518,7 +2536,7 @@ L_2e7f:
         goto L_2e8a;
 
 L_2e8a:
-    cPtsCur = (cPtsCur + (uint32_t)(CPtsCloakFromLphs(lphs)));
+    cPtsCur = (cPtsCur + (int32_t)(CPtsCloakFromLphs(lphs)));
     goto L_2e6c;
 
 L_2ea2:
@@ -2705,7 +2723,7 @@ L_3106:
         goto L_3115;
 
 L_3115:
-    return (((uint32_t)(cScore) / 24) + 0x4b);
+    return (((int32_t)(cScore) / 24) + 0x4b);
 
 L_3124:
     cScore = (cScore - 312);
@@ -3008,7 +3026,7 @@ L_3484:
     t_merge_3487_0001 = 0x0;
 
 L_3487:
-    SendMessage(t_call_343f, CB_GETCOUNT, t_merge_3487_0001, (uint32_t)(i));
+    SendMessage(t_call_343f, CB_GETCOUNT, t_merge_3487_0001, (int32_t)(i));
     i = (i + 1);
 
 L_3497:
@@ -3158,7 +3176,7 @@ L_365a:
     t_merge_365d_0001 = 0x0;
 
 L_365d:
-    SendMessage(t_call_3640, CB_GETCOUNT, t_merge_365d_0001, (uint32_t)(i));
+    SendMessage(t_call_3640, CB_GETCOUNT, t_merge_365d_0001, (int32_t)(i));
     i = (i + 1);
 
 L_366d:
@@ -3219,7 +3237,7 @@ L_36b6:
 
 L_3701:
     t_scratch_m12_2 = rgTechBattle[iTech];
-    if ((t_scratch_m12_2 <= (uint16_t)(part.phul->rgTech[iTech])))
+    if ((t_scratch_m12_2 <= (int16_t)(part.phul->rgTech[iTech])))
         goto L_373d;
     else
         goto L_3730;
@@ -3229,7 +3247,7 @@ L_3730:
     goto L_3753;
 
 L_373d:
-    t_merge_3753_0001 = (uint16_t)(part.phul->rgTech[iTech]);
+    t_merge_3753_0001 = (int16_t)(part.phul->rgTech[iTech]);
 
 L_3753:
     rgTechBattle[iTech] = LOBYTE(t_merge_3753_0001);
@@ -3268,7 +3286,7 @@ L_37af:
 
 L_37e6:
     t_scratch_m12_3 = rgTechBattle[iTech];
-    if ((t_scratch_m12_3 <= (uint16_t)(part.pcom->rgTech[iTech])))
+    if ((t_scratch_m12_3 <= (int16_t)(part.pcom->rgTech[iTech])))
         goto L_3822;
     else
         goto L_3815;
@@ -3278,7 +3296,7 @@ L_3815:
     goto L_3838;
 
 L_3822:
-    t_merge_3838_0001 = (uint16_t)(part.pcom->rgTech[iTech]);
+    t_merge_3838_0001 = (int16_t)(part.pcom->rgTech[iTech]);
 
 L_3838:
     rgTechBattle[iTech] = LOBYTE(t_merge_3838_0001);

@@ -545,7 +545,7 @@ L_6db5:
         goto L_6dbe;
 
 L_6dbe:
-    amountWP = (uint32_t)(lpthWP->thp.rgwtMin[j]);
+    amountWP = (int32_t)(lpthWP->thp.rgwtMin[j]);
 
 L_6dde:
     goto L_6dff;
@@ -1279,7 +1279,7 @@ L_78ef:
         goto L_7902;
 
 L_7902:
-    if (((uint16_t)(rgplr[lpflWP->iPlayer].rgmdRelation[lpfl->iPlayer]) != 2))
+    if (((int16_t)(rgplr[lpflWP->iPlayer].rgmdRelation[lpfl->iPlayer]) != 2))
         goto L_793f;
     else
         goto L_7932;
@@ -1941,7 +1941,7 @@ L_85e9:
     lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
 
 L_860d:
-    lT = (uint32_t)(((uint32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i])));
+    lT = (uint32_t)(((int32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i])));
     if ((lpshdefT->fGift == 0x0))
         goto L_8689;
     else
@@ -2075,7 +2075,7 @@ L_8916:
     lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
 
 L_893a:
-    lT = (uint32_t)(((uint32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.resCost)));
+    lT = (uint32_t)(((int32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.resCost)));
     if ((lpshdefT->fGift == 0x0))
         goto L_89a4;
     else
@@ -2119,7 +2119,7 @@ L_8a1d:
         goto L_8a26;
 
 L_8a26:
-    lAmt = (uint32_t)(CResourcesAtPlanet(&(pl), pl.iPlayer));
+    lAmt = (int32_t)(CResourcesAtPlanet(&(pl), pl.iPlayer));
     lResUltimate = (int32_t)(((uint32_t)((lResUltimate * lAmt)) / (lResUltimate + lAmt)));
 
 L_8a77:
@@ -2519,7 +2519,7 @@ L_93bb:
         goto L_93da;
 
 L_93da:
-    if (((uint16_t)(rgplr[iplrDest].rgmdRelation[lpfl->iPlayer]) != 2))
+    if (((int16_t)(rgplr[iplrDest].rgmdRelation[lpfl->iPlayer]) != 2))
         goto L_9433;
     else
         goto L_9407;
@@ -2678,8 +2678,8 @@ L_971d:
 L_97d0:
     lpflNew->rgcsh[rgishMap[ish]] = (lpflNew->rgcsh[rgishMap[ish]] + lpfl->rgcsh[ish]);
     lpflNew->rgdv[rgishMap[ish]].dp = lpfl->rgdv[ish].dp;
-    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (uint32_t)(lpfl->rgcsh[ish]));
-    lpshdefDest->cExist = (lpshdefDest->cExist + (uint32_t)(lpfl->rgcsh[ish]));
+    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (int32_t)(lpfl->rgcsh[ish]));
+    lpshdefDest->cExist = (lpshdefDest->cExist + (int32_t)(lpfl->rgcsh[ish]));
 
 L_9895:
     ish = (ish + 1);
@@ -2828,8 +2828,8 @@ L_9b93:
         goto L_9ba9;
 
 L_9ba9:
-    dx = (uint32_t)((lpfl->pt.x - lpth->pt.x));
-    dy = (uint32_t)((lpfl->pt.y - lpth->pt.y));
+    dx = (int32_t)((lpfl->pt.x - lpth->pt.x));
+    dy = (int32_t)((lpfl->pt.y - lpth->pt.y));
     l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
     if ((lpth->thm.cMines < l))
         goto L_9c81;
@@ -2868,9 +2868,9 @@ L_9cab:
         goto L_9dc1;
 
 L_9cc9:
-    lpthBest->pt.x = LOWORD((int32_t)((((uint32_t)(((uint32_t)(lpthBest->pt.x) * lpthBest->thm.cMines)) + (uint32_t)(((uint32_t)(lpfl->pt.x) * cMine))) /
+    lpthBest->pt.x = LOWORD((int32_t)((((uint32_t)(((int32_t)(lpthBest->pt.x) * lpthBest->thm.cMines)) + (uint32_t)(((int32_t)(lpfl->pt.x) * cMine))) /
                                        (cMine + lpthBest->thm.cMines))));
-    lpthBest->pt.y = LOWORD((int32_t)((((uint32_t)(((uint32_t)(lpthBest->pt.y) * lpthBest->thm.cMines)) + (uint32_t)(((uint32_t)(lpfl->pt.y) * cMine))) /
+    lpthBest->pt.y = LOWORD((int32_t)((((uint32_t)(((int32_t)(lpthBest->pt.y) * lpthBest->thm.cMines)) + (uint32_t)(((int32_t)(lpfl->pt.y) * cMine))) /
                                        (cMine + lpthBest->thm.cMines))));
     lpthBest->thm.cMines = (lpthBest->thm.cMines + cMine);
     idm = idmHasIncreasedMinefieldMines;

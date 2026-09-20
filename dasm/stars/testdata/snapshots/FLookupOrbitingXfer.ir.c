@@ -60,7 +60,13 @@ L_2581:
         goto L_258a;
 
 L_258a:
-    if ((lpfl->pt != sel.pt))
+    if ((lpfl->pt.x != sel.pt.x))
+        goto L_2525;
+    else
+        goto L_25a4;
+
+L_25a4:
+    if ((lpfl->pt.y != sel.pt.y))
         goto L_2525;
     else
         goto L_25ad;
@@ -99,7 +105,13 @@ L_2631:
         goto L_2647;
 
 L_2647:
-    if ((lpth->pt != sel.pt))
+    if ((lpth->pt.x != sel.pt.x))
+        goto L_26c0;
+    else
+        goto L_2661;
+
+L_2661:
+    if ((lpth->pt.y != sel.pt.y))
         goto L_26c0;
     else
         goto L_266a;

@@ -165,7 +165,7 @@ L_8db7:
         goto L_8dc0;
 
 L_8dc0:
-    if (((uint16_t)(*(szName)) != 0))
+    if (((int16_t)(*(szName)) != 0))
         goto L_8ded;
     else
         goto L_8dce;
@@ -438,7 +438,7 @@ L_9229:
         goto L_9238;
 
 L_9238:
-    if (((uint16_t)(pbWp[cbWp]) == 0))
+    if (((int16_t)(pbWp[cbWp]) == 0))
         goto L_9229;
     else
         goto L_9251;
@@ -491,7 +491,7 @@ L_92f8:
         goto L_9307;
 
 L_9307:
-    if (((uint16_t)(pbWp[cbWp]) == 0))
+    if (((int16_t)(pbWp[cbWp]) == 0))
         goto L_92f8;
     else
         goto L_9320;
@@ -787,8 +787,8 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    lxNew.rgdItem[i] = (uint32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
-    if (((uint32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) != 0))
+    lxNew.rgdItem[i] = (int32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
+    if (((int32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) != 0))
         goto L_999c;
     else
         goto L_99a1;
@@ -936,7 +936,7 @@ L_9b46:
         goto L_9b59;
 
 L_9b59:
-    rgQuan[i] = (uint32_t)((uint16_t)(prt->rgcQuan[iOff]));
+    rgQuan[i] = (int32_t)((int16_t)(prt->rgcQuan[iOff]));
     iOff = (iOff + 1);
 
 L_9b85:
@@ -963,7 +963,7 @@ L_9ba9:
         goto L_9bbc;
 
 L_9bbc:
-    rgQuan[i] = (uint32_t)(prtx->rgcQuan[iOff]);
+    rgQuan[i] = (int32_t)(prtx->rgcQuan[iOff]);
     iOff = (iOff + 1);
 
 L_9be9:
@@ -1918,7 +1918,7 @@ L_ae30:
         goto L_ae39;
 
 L_ae39:
-    rgcXfer[i] = (uint32_t)((uint16_t)(lpb[(iLook + 6)]));
+    rgcXfer[i] = (int32_t)((int16_t)(lpb[(iLook + 6)]));
     goto L_aecd;
 
 L_ae66:
@@ -1928,7 +1928,7 @@ L_ae66:
         goto L_ae6f;
 
 L_ae6f:
-    rgcXfer[i] = (uint32_t)(lpb[((iLook * 2) + 6)]);
+    rgcXfer[i] = (int32_t)(lpb[((iLook * 2) + 6)]);
     goto L_aecd;
 
 L_ae9d:
@@ -2661,7 +2661,7 @@ L_bad4:
         goto L_bae3;
 
 L_bae3:
-    cXfer = (uint32_t)(lpb[((iLook * 2) + 7)]);
+    cXfer = (int32_t)(lpb[((iLook * 2) + 7)]);
     if ((iPass != 0))
         goto L_bb23;
     else
@@ -2686,23 +2686,23 @@ L_bb2d:
         goto L_bb44;
 
 L_bb44:
-    if ((((uint32_t)(rgxf[0].fl.rgcsh[i]) + cXfer) < 0x0))
+    if ((((int32_t)(rgxf[0].fl.rgcsh[i]) + cXfer) < 0x0))
         goto L_bb6e;
     else
         goto L_bb88;
 
 L_bb6e:
-    cXfer = (uint32_t)((-rgxf[0].fl.rgcsh[i]));
+    cXfer = (int32_t)((-rgxf[0].fl.rgcsh[i]));
     goto L_bbca;
 
 L_bb88:
-    if (((uint32_t)((32766 - rgxf[0].fl.rgcsh[i])) <= cXfer))
+    if (((int32_t)((32766 - rgxf[0].fl.rgcsh[i])) <= cXfer))
         goto L_bbaf;
     else
         goto L_bbca;
 
 L_bbaf:
-    cXfer = (uint32_t)(((32766 - rgxf[0].fl.rgcsh[i]) - 1));
+    cXfer = (int32_t)(((32766 - rgxf[0].fl.rgcsh[i]) - 1));
 
 L_bbca:
     rgxf[0].fl.rgcsh[i] = (rgxf[0].fl.rgcsh[i] + LOWORD(cXfer));
@@ -2732,13 +2732,13 @@ L_bc09:
         goto L_bcc5;
 
 L_bc20:
-    if ((((uint32_t)(rgxf[1].fl.rgcsh[i]) - cXfer) < 0x0))
+    if ((((int32_t)(rgxf[1].fl.rgcsh[i]) - cXfer) < 0x0))
         goto L_bc4a;
     else
         goto L_bc62;
 
 L_bc4a:
-    cXfer = (uint32_t)(rgxf[1].fl.rgcsh[i]);
+    cXfer = (int32_t)(rgxf[1].fl.rgcsh[i]);
     goto L_bcb1;
 
 L_bc62:
@@ -2760,7 +2760,7 @@ L_bc8d:
         goto L_bc94;
 
 L_bc94:
-    cXfer = (uint32_t)((-((32766 - rgxf[1].fl.rgcsh[i]) - 1)));
+    cXfer = (int32_t)((-((32766 - rgxf[1].fl.rgcsh[i]) - 1)));
 
 L_bcb1:
     rgxf[1].fl.rgcsh[i] = (rgxf[1].fl.rgcsh[i] - LOWORD(cXfer));
@@ -3146,13 +3146,13 @@ L_c698:
 
 L_c69b:
     ch = *(lpb);
-    if (((uint16_t)(ch) < 0))
+    if (((int16_t)(ch) < 0))
         goto BombOut;
     else
         goto L_c6b2;
 
 L_c6b2:
-    if (((uint16_t)(ch) > 100))
+    if (((int16_t)(ch) > 100))
         goto BombOut;
     else
         goto L_c6c2;
@@ -3160,13 +3160,13 @@ L_c6b2:
 L_c6c2:
     rgplr[idPlayer].pctResearch = ch;
     ch = lpb[1];
-    if ((((uint16_t)(ch) & 0xf) >= 0x6))
+    if ((((int16_t)(ch) & 0xf) >= 0x6))
         goto BombOut;
     else
         goto L_c6f0;
 
 L_c6f0:
-    if (((((uint16_t)(ch) >> 0x4) & 0xf) > 0x7))
+    if (((((int16_t)(ch) >> 0x4) & 0xf) > 0x7))
         goto BombOut;
     else
         goto L_c70b;

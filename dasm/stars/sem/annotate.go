@@ -363,3 +363,14 @@ func intTypeForWidth(width int) typeinfo.Type {
 	}
 	return &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: fmt.Sprintf("uint%d_t", width*8), Size: width}
 }
+
+// signedIntTypeForWidth returns a signed integer type for width in bytes.
+func signedIntTypeForWidth(width int) typeinfo.Type {
+	if width == 2 {
+		return typeinfo.I16
+	}
+	if width == 4 {
+		return typeinfo.I32
+	}
+	return &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: fmt.Sprintf("int%d_t", width*8), Size: width, Signed: true}
+}

@@ -177,7 +177,7 @@ L_b21f:
         goto L_b292;
 
 L_b292:
-    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
+    if (((int32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b2b7;
     else
         goto L_b2be;
@@ -211,7 +211,7 @@ L_b315:
         goto L_b380;
 
 L_b380:
-    if (((uint32_t)(Random(LOWORD(cPPE))) < modKill))
+    if (((int32_t)(Random(LOWORD(cPPE))) < modKill))
         goto L_b3a5;
     else
         goto L_b3ac;
@@ -313,7 +313,7 @@ L_b51f:
         goto L_b58c;
 
 L_b58c:
-    if (((uint32_t)(Random(1000)) <= modKill))
+    if (((int32_t)(Random(1000)) <= modKill))
         goto L_b5ae;
     else
         goto L_b5b5;
@@ -432,14 +432,14 @@ L_b84b:
     goto L_b930;
 
 L_b853:
-    dChg = ((uint16_t)(lppl->rgEnvVar[i]) - (uint16_t)(lppl->rgEnvVarOrig[i]));
+    dChg = ((int16_t)(lppl->rgEnvVar[i]) - (int16_t)(lppl->rgEnvVarOrig[i]));
     if ((dChg <= 0))
         goto L_b8d8;
     else
         goto L_b895;
 
 L_b895:
-    if (((uint32_t)(dChg) < pctTerra))
+    if (((int32_t)(dChg) < pctTerra))
         goto L_b8b7;
     else
         goto L_b8ae;
@@ -459,7 +459,7 @@ L_b8d8:
         goto L_b8e1;
 
 L_b8e1:
-    if (((uint32_t)((-dChg)) < pctTerra))
+    if (((int32_t)((-dChg)) < pctTerra))
         goto L_b90c;
     else
         goto L_b8fc;

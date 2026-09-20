@@ -296,7 +296,7 @@ L_0721:
         goto L_0739;
 
 L_0739:
-    psz = PszPlayerName(0, (_ctype[((uint16_t)(pplr->szName[0]) + 0x1)] & 0x1), 1, 0, 0, pplr);
+    psz = PszPlayerName(0, (_ctype[((int16_t)(pplr->szName[0]) + 0x1)] & 0x1), 1, 0, 0, pplr);
     strcpy(pplr->szNames, psz);
     goto L_07f7;
 
@@ -484,25 +484,25 @@ L_0a60:
 
 L_0a7b:
     StreamClose();
-    if (((uint16_t)(*(pszExt)) == 104))
+    if (((int16_t)(*(pszExt)) == 104))
         goto L_0a9c;
     else
         goto L_0a8e;
 
 L_0a8e:
-    if (((uint16_t)(*(pszExt)) != 72))
+    if (((int16_t)(*(pszExt)) != 72))
         goto L_0ac7;
     else
         goto L_0a9c;
 
 L_0a9c:
-    if (((uint16_t)(pszExt[1]) == 115))
+    if (((int16_t)(pszExt[1]) == 115))
         goto L_0aba;
     else
         goto L_0aab;
 
 L_0aab:
-    if (((uint16_t)(pszExt[1]) != 83))
+    if (((int16_t)(pszExt[1]) != 83))
         goto L_0ac7;
     else
         goto L_0aba;
@@ -641,7 +641,7 @@ L_0cc2:
         goto L_0cd5;
 
 L_0cd5:
-    i = (uint16_t)(rgbCur[0]);
+    i = (int16_t)(rgbCur[0]);
     ReadRtPlr(&(rgplr[i]), rgbCur);
     rgplr[i].cPlanet = 0;
     rgplr[i].cFleet = 0x0;
@@ -658,7 +658,7 @@ L_0d39:
         goto L_0d4c;
 
 L_0d4c:
-    if (((uint16_t)(rgplr[i].cShDef) != 0))
+    if (((int16_t)(rgplr[i].cShDef) != 0))
         goto L_0d75;
     else
         goto L_0d63;
@@ -1136,7 +1136,7 @@ L_16c8:
         goto L_16db;
 
 L_16db:
-    i = (uint16_t)(rgbCur[0]);
+    i = (int16_t)(rgbCur[0]);
     ReadRtPlr(&(rgplr[i]), rgbCur);
     cPlanet = (cPlanet + rgplr[i].cPlanet);
     rgplr[i].cPlanet = 0;
@@ -1451,7 +1451,7 @@ L_1c64:
     j = (j + 1);
 
 L_1c68:
-    if ((j >= (uint16_t)(rgplr[i].cShDef)))
+    if ((j >= (int16_t)(rgplr[i].cShDef)))
         goto L_1cd2;
     else
         goto L_1c7f;
@@ -3322,10 +3322,16 @@ L_3f61:
     lpfl->idPlanet = -1;
 
 L_3f6a:
-    if ((lpfl->pt != rgptPlan[lpfl->idPlanet]))
+    if ((lpfl->pt.x != rgptPlan[lpfl->idPlanet].x))
         goto L_3fa4;
     else
+        goto L_3f85;
+
+L_3f85:
+    if ((lpfl->pt.y == rgptPlan[lpfl->idPlanet].y))
         goto L_3fdb;
+    else
+        goto L_3fa4;
 
 L_3fa4:
     if ((i != 0))
@@ -3350,7 +3356,7 @@ L_3fdb:
         goto L_3ff3;
 
 L_3ff3:
-    cch = (uint16_t)(rgbCur[0]);
+    cch = (int16_t)(rgbCur[0]);
     if ((cch != 0))
         goto L_4047;
     else
@@ -4429,7 +4435,7 @@ L_50b4:
         goto L_50cc;
 
 L_50cc:
-    if (((uint16_t)(rgbCur[0]) != iPlayer))
+    if (((int16_t)(rgbCur[0]) != iPlayer))
         goto L_50b4;
     else
         goto L_50d8;

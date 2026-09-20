@@ -157,7 +157,7 @@ L_0fa8:
     cMax = 0
 
 L_0fad:
-    branch (uint32_t)prod.cItem <= sext16to32(cMax) ? L_0fdc : L_1000
+    branch (uint32_t)prod.cItem <= (uint32_t)sext16to32(cMax) ? L_0fdc : L_1000
 
 
 

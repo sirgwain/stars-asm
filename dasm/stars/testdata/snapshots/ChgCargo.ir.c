@@ -151,16 +151,16 @@ L_61db:
         goto L_61ed;
 
 L_61ed:
-    return (uint32_t)(pth->thp.rgwtMin[iSupply]);
+    return (int32_t)(pth->thp.rgwtMin[iSupply]);
 
 L_6202:
-    if ((((uint32_t)(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0))
+    if ((((int32_t)(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0))
         goto L_622f;
     else
         goto L_6249;
 
 L_622f:
-    dChg = (uint32_t)((-pth->thp.rgwtMin[iSupply]));
+    dChg = (int32_t)((-pth->thp.rgwtMin[iSupply]));
 
 L_6249:
     wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
@@ -168,7 +168,7 @@ L_6249:
     goto L_6295;
 
 L_6275:
-    wtFree = (wtFree - (uint32_t)(pth->thp.rgwtMin[i]));
+    wtFree = (wtFree - (int32_t)(pth->thp.rgwtMin[i]));
     i = (i + 1);
 
 L_6295:

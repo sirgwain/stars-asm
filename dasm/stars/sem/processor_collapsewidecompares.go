@@ -230,7 +230,12 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 		if !ok || path.Type() == nil || path.Type().Bytes() != 4 {
 			return false
 		}
-		return true
+		switch path.Type().Kind() {
+		case typeinfo.KInt, typeinfo.KPointer:
+			return true
+		default:
+			return false
+		}
 	case *machine.Binary:
 		return p.validWideCompareOperand(v.LHS) && p.validWideCompareOperand(v.RHS)
 	case *machine.Cast:

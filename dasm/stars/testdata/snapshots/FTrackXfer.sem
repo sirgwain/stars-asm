@@ -81,8 +81,10 @@ L_5b44:
     branch FGetMouseMove(&pt) == 0 ? L_5d26 : L_5b58
 
 L_5b58:
-    branch pt != ptOld ? L_5b6e : L_5b44
+    branch pt.x != ptOld.x ? L_5b6e : L_5b63
 
+L_5b63:
+    branch pt.y == ptOld.y ? L_5b44 : L_5b6e
 
 L_5b6e:
     ptOld = pt

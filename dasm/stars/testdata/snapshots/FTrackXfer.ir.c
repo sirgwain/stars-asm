@@ -112,10 +112,16 @@ L_5b44:
         goto L_5b58;
 
 L_5b58:
-    if ((pt != ptOld))
+    if ((pt.x != ptOld.x))
         goto L_5b6e;
     else
+        goto L_5b63;
+
+L_5b63:
+    if ((pt.y == ptOld.y))
         goto L_5b44;
+    else
+        goto L_5b6e;
 
 L_5b6e:
     ptOld = pt;
@@ -153,7 +159,7 @@ L_5c20:
     cNew = t_merge_5c20_0001;
 
 L_5c26:
-    cNew = (int32_t)(((uint32_t)(((uint32_t)((pt.x - btn.rc.left)) * cNew)) / (uint32_t)(((btn.rc.right - btn.rc.left) - 2))));
+    cNew = (int32_t)(((uint32_t)(((int32_t)((pt.x - btn.rc.left)) * cNew)) / (int32_t)(((btn.rc.right - btn.rc.left) - 2))));
     cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((uint8_t *)((pxfer + btn.iSide)) + 4));
     dChg = (cNew - cCur);
     if ((btn.iSide != 0x0))

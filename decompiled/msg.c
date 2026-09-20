@@ -2310,12 +2310,12 @@ L_7529:
 
 L_7532:
     CchGetString(idsYearDCMessagesDD, szT);
-    _wsprintf(szWork, szT, (game.turn + 0x960), (uint16_t)(ch), (iMsgCur + 1), cMsgTot);
+    _wsprintf(szWork, szT, (game.turn + 0x960), (int16_t)(ch), (iMsgCur + 1), cMsgTot);
     goto L_75a3;
 
 L_7571:
     CchGetString(idsYearDCMessagesNone, szT);
-    _wsprintf(szWork, szT, (game.turn + 0x960), (uint16_t)(ch));
+    _wsprintf(szWork, szT, (game.turn + 0x960), (int16_t)(ch));
 
 L_75a3:
     if ((IMsgPrev(0) == -1))
@@ -2731,7 +2731,7 @@ L_799c:
         goto L_79d5;
 
 L_79d5:
-    xyStart = (((uint32_t)(((prc->bottom - prc->top) - 11)) / 2) + prc->top);
+    xyStart = (((int32_t)(((prc->bottom - prc->top) - 11)) / 2) + prc->top);
     if ((iMsgCur < 0))
         goto DoMinMax;
     else
@@ -2826,7 +2826,7 @@ L_7b8d:
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (xDst + 1), prc->top, 1, (prc->bottom - prc->top), PATCOPY);
     SelectObject(hdc, hbrSav);
-    yDst = (((uint32_t)(((prc->bottom - prc->top) - 15)) / 2) + prc->top);
+    yDst = (((int32_t)(((prc->bottom - prc->top) - 15)) / 2) + prc->top);
     xDst = (prc->right - (prc->bottom - yDst));
     SelectObject(hdcMem, hbmpMono);
     BitBlt(hdc, xDst, yDst, 15, 15, hdcMem, 0, ySrcMask, SRCAND);
@@ -2844,7 +2844,7 @@ Cleanup:
 L_7ced:
     SelectObject(hdcMem, hbmpMsg);
     xDst = (prc->right - 45);
-    yDst = (((uint32_t)(((prc->bottom - prc->top) - 7)) / 2) + prc->top);
+    yDst = (((int32_t)(((prc->bottom - prc->top) - 7)) / 2) + prc->top);
     PatBlt(hdc, (xDst - 1), (yDst - 1), 17, 11, BLACKNESS);
     BitBlt(hdc, xDst, yDst, 15, 9, hdcMem, 0, 56, SRCCOPY);
 
@@ -3116,7 +3116,7 @@ L_8151:
     grbit = (grbit * 0x2);
 
 L_8168:
-    if ((i >= (uint16_t)(rgcMsgArgs[iMsg])))
+    if ((i >= (int16_t)(rgcMsgArgs[iMsg])))
         goto L_81dd;
     else
         goto L_8179;
@@ -3187,7 +3187,7 @@ L_82ea:
     grbit = (grbit * 0x2);
 
 L_8301:
-    if ((i >= (uint16_t)(rgcMsgArgs[iMsg])))
+    if ((i >= (int16_t)(rgcMsgArgs[iMsg])))
         goto L_836f;
     else
         goto L_8312;
@@ -3297,7 +3297,7 @@ L_84b2:
     pmb->wGoto = lpmh->wGoto;
 
 L_84cd:
-    iMax = (uint16_t)(rgcMsgArgs[lpmh->iMsg]);
+    iMax = (int16_t)(rgcMsgArgs[lpmh->iMsg]);
     i = 0;
     goto L_8549;
 
@@ -3407,13 +3407,13 @@ L_85cc:
     pch = szMsgBuf;
 
 L_85ec:
-    if (((uint16_t)(*(pszFormat)) == 0))
+    if (((int16_t)(*(pszFormat)) == 0))
         goto L_8f54;
     else
         goto L_85fa;
 
 L_85fa:
-    if (((uint16_t)(*(pszFormat)) == 92))
+    if (((int16_t)(*(pszFormat)) == 92))
         goto L_861b;
     else
         goto L_8608;
@@ -3472,31 +3472,31 @@ L_870c:
     goto L_8f4d;
 
 L_8727:
-    if (((uint16_t)(*(pszFormat)) == 102))
+    if (((int16_t)(*(pszFormat)) == 102))
         goto L_8674;
     else
         goto L_872f;
 
 L_872f:
-    if (((uint16_t)(*(pszFormat)) == 104))
+    if (((int16_t)(*(pszFormat)) == 104))
         goto L_86d0;
     else
         goto L_8737;
 
 L_8737:
-    if (((uint16_t)(*(pszFormat)) == 114))
+    if (((int16_t)(*(pszFormat)) == 114))
         goto L_86e8;
     else
         goto L_873f;
 
 L_873f:
-    if (((uint16_t)(*(pszFormat)) == 116))
+    if (((int16_t)(*(pszFormat)) == 116))
         goto L_86a2;
     else
         goto L_8747;
 
 L_8747:
-    if (((uint16_t)(*(pszFormat)) != 121))
+    if (((int16_t)(*(pszFormat)) != 121))
         goto L_8f4d;
     else
         goto L_874c;
@@ -3551,7 +3551,7 @@ L_881c:
     t_merge_881f_0001 = 0;
 
 L_881f:
-    if (((uint16_t)(*(pszFormat)) != 76))
+    if (((int16_t)(*(pszFormat)) != 76))
         goto L_8834;
     else
         goto L_882e;
@@ -3672,17 +3672,17 @@ L_8a21:
     goto FinishString;
 
 L_8a33:
-    if (((double)((int32_t)(((uint32_t)(*(pParams)) / 100))) < 10))
+    if (((double)((int32_t)(((int32_t)(*(pParams)) / 100))) < 10))
         goto L_8a89;
     else
         goto L_8a5f;
 
 L_8a5f:
-    c = _wsprintf(pch, PCTDPCTPCT, ((uint32_t)(*(pParams)) / 100));
+    c = _wsprintf(pch, PCTDPCTPCT, ((int32_t)(*(pParams)) / 100));
     goto L_8aca;
 
 L_8a89:
-    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((uint32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((uint32_t)(*(pParams)) / 100) * 0x64))));
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((int32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((int32_t)(*(pParams)) / 100) * 0x64))));
 
 L_8aca:
     pch = &(pch[c]);
@@ -3793,13 +3793,13 @@ L_8cfd:
     pParams = (pParams + 2);
     c = _wsprintf(pch, PCTLD, LOWORD(l), HIWORD(l));
     pch = &(pch[c]);
-    if (((uint16_t)(*(pszFormat)) == 118))
+    if (((int16_t)(*(pszFormat)) == 118))
         goto L_8f4d;
     else
         goto L_8d71;
 
 L_8d71:
-    if (((uint16_t)(*(pszFormat)) != 86))
+    if (((int16_t)(*(pszFormat)) != 86))
         goto L_8d88;
     else
         goto L_8d7f;
@@ -3855,13 +3855,13 @@ L_8eba:
     goto L_8f4d;
 
 L_8ecd:
-    if ((((uint16_t)(*(pszFormat)) - 69) > 0x35))
+    if ((((int16_t)(*(pszFormat)) - 69) > 0x35))
         goto L_8eba;
     else
         goto L_8ed8;
 
 L_8ed8:
-    switch ((((uint16_t)(*(pszFormat)) - 69) * 0x2)) {
+    switch ((((int16_t)(*(pszFormat)) - 69) * 0x2)) {
     case 0x0:
         goto L_8767;
     case 0x2:
@@ -4032,7 +4032,7 @@ L_9031:
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, 0x0);
-    cch = CchGetString(((uint16_t)(szWork[200]) - 54), szT);
+    cch = CchGetString(((int16_t)(szWork[200]) - 54), szT);
     DrawText(hdc, szT, cch, &(rcEdit), 0x810);
     EndPaint(hwnd, &(ps));
     return 1;
@@ -4745,7 +4745,7 @@ L_99fa:
     cMsg = (cMsg + 1);
     u = lpmh->grWord;
     lpb = (lpb + 4);
-    iMax = (uint16_t)(rgcMsgArgs[lpmh->iMsg]);
+    iMax = (int16_t)(rgcMsgArgs[lpmh->iMsg]);
     i = 0;
     goto L_9abf;
 
@@ -5026,7 +5026,7 @@ char *PszGetCompressedMessage(MessageId idm) {
 
 L_9eb8:
     iNibble = 0;
-    if ((idm != (uint16_t)(iLastMsgGet)))
+    if ((idm != (int16_t)(iLastMsgGet)))
         goto L_9ed8;
     else
         goto L_9ed2;
