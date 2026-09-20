@@ -1,0 +1,67 @@
+name: MinGW compile analysis
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  mingw-syntax:
+    name: MinGW syntax analysis
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+          cache: true
+
+      - name: Install MinGW
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-mingw-w64-x86-64
+
+      - name: Generate MinGW compile analysis
+        run: make compile-analysis
+
+      - name: Record baseline diff
+        run: |
+          mkdir -p dist
+          git diff -- decompiled/compile-analysis.json > dist/compile-analysis.diff
+
+      - name: Add report summary
+        if: always()
+        run: |
+          if [[ -f decompiled/compile-analysis.json ]]; then
+            {
+              echo "### MinGW syntax analysis"
+              echo
+              jq -r '
+                "- Translation units: \(.summary.translationUnits)\n" +
+                "- Translation units with errors: \(.summary.failedTranslationUnits)\n" +
+                "- Compiler errors: \(.summary.errors)\n" +
+                "- Unique errors: \(.summary.uniqueErrors)"
+              ' decompiled/compile-analysis.json
+              if git diff --quiet -- decompiled/compile-analysis.json; then
+                echo "- Checked-in baseline: current"
+              else
+                echo "- Checked-in baseline: differs (see artifact)"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload compile analysis
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mingw-compile-analysis-${{ github.sha }}
+          path: |
+            decompiled/compile-analysis.json
+            dist/compile-analysis.diff
+          if-no-files-found: error
+          retention-days: 30
