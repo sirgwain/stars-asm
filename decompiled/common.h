@@ -7,6 +7,32 @@
 #include <setjmp.h>
 
 #include "enums.h"
+
+typedef jmp_buf ENV;
+
+// enums that are actually win defines
+typedef uint16_t ScrollCode;
+typedef uint16_t WMType;
+typedef uint16_t WM_TYPE;
+typedef uint16_t CtlColorType;
+typedef uint16_t MessageBoxType;
+typedef uint16_t PatBltRop;
+typedef uint16_t SystemMetric;
+typedef uint16_t DeviceCapsIndex;
+typedef uint16_t ShowWindowCmd;
+typedef uint16_t WindowStyle;
+typedef uint16_t WindowExStyle;
+typedef uint16_t SetWindowPosFlags;
+typedef uint16_t WindowLongOffset;
+typedef uint16_t GetWindowCmd;
+typedef uint16_t WinHelpCommand;
+typedef uint16_t StockObjectId;
+typedef uint16_t BkMode;
+typedef uint16_t BitBltRop;
+
+// WM_CTLCOLOR is replaced with many, default to dlg to now
+#define WM_CTLCOLOR WM_CTLCOLORDLG
+
 #include "structs.h"
 
 #include "ai.h"
@@ -48,31 +74,5 @@
 #include "util.h"
 #include "utilgen.h"
 #include "vcr.h"
-
-typedef jmp_buf ENV;
-
-// enums that are actually win defines
-typedef uint16_t ScrollCode;
-typedef uint16_t WMType;
-typedef uint16_t WM_TYPE;
-typedef uint16_t WM_TYPE;
-typedef uint16_t CtlColorType;
-typedef uint16_t MessageBoxType;
-typedef uint16_t PatBltRop;
-typedef uint16_t SystemMetric;
-typedef uint16_t DeviceCapsIndex;
-typedef uint16_t ShowWindowCmd;
-typedef uint16_t WindowStyle;
-typedef uint16_t WindowExStyle;
-typedef uint16_t SetWindowPosFlags;
-typedef uint16_t WindowLongOffset;
-typedef uint16_t GetWindowCmd;
-typedef uint16_t WinHelpCommand;
-typedef uint16_t StockObjectId;
-typedef uint16_t BkMode;
-typedef uint16_t BitBltRop;
-
-// WM_CTLCOLOR is replaced with many, default to dlg to now
-#define WM_CTLCOLOR WM_CTLCOLORDLG
 
 #endif

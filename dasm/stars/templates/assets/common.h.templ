@@ -5,20 +5,14 @@
 #include <windows.h>
 
 #include <setjmp.h>
-  
-#include "structs.h"
-#include "enums.h"
 
-{{range $i, $s := .Modules}}
-#include "{{.}}.h"
-{{- end}}
+#include "enums.h"
 
 typedef jmp_buf ENV;
 
 // enums that are actually win defines
 typedef uint16_t ScrollCode;
 typedef uint16_t WMType;
-typedef uint16_t WM_TYPE;
 typedef uint16_t WM_TYPE;
 typedef uint16_t CtlColorType;
 typedef uint16_t MessageBoxType;
@@ -38,5 +32,11 @@ typedef uint16_t BitBltRop;
 
 // WM_CTLCOLOR is replaced with many, default to dlg to now
 #define WM_CTLCOLOR WM_CTLCOLORDLG
+
+#include "structs.h"
+
+{{range $i, $s := .Modules}}
+#include "{{.}}.h"
+{{- end}}
 
 #endif

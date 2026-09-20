@@ -4,26 +4,139 @@
 #include <stdint.h>
 #include <windows.h>
 
-typedef struct _aipart {
+#include "enums.h"
+
+typedef struct _aipart          AIPART;
+typedef struct _aistarbase      AISTARBASE;
+typedef struct _aihist          AIHIST;
+typedef struct _armor           ARMOR;
+typedef struct _beam            BEAM;
+typedef struct _bomb            BOMB;
+typedef struct _btlplan         BTLPLAN;
+typedef struct _coldrop         COLDROP;
+typedef struct _compart         COMPART;
+typedef struct _cyberinfo       CYBERINFO;
+typedef struct _cyberinfotemp   CYBERINFOTEMP;
+typedef struct _dv              DV;
+typedef struct _engine          ENGINE;
+typedef struct _fleetid         FLEETID;
+typedef struct _framestuff      FRAMESTUFF;
+typedef struct _game            GAME;
+typedef struct _gdata           GDATA;
+typedef struct _hb              HB;
+typedef struct _hdr             HDR;
+typedef struct _hs              HS;
+typedef struct _hul             HUL;
+typedef struct _huldef          HULDEF;
+typedef struct _itemaction      ITEMACTION;
+typedef struct _kill            KILL;
+typedef struct _btlrec          BTLREC;
+typedef struct _btlrec26        BTLREC26;
+typedef struct _logxfer         LOGXFER;
+typedef struct _logxferf        LOGXFERF;
+typedef struct _lsb             LSB;
+typedef struct _mdplr           MDPLR;
+typedef struct _mines           MINES;
+typedef struct _mining          MINING;
+typedef struct _msgbig          MSGBIG;
+typedef struct _msghdr          MSGHDR;
+typedef struct _msgplr          MSGPLR;
+typedef struct _msgturn         MSGTURN;
+typedef struct _obj             OBJ;
+typedef struct _part            PART;
+typedef struct _pl              PL;
+typedef struct _planet          PLANET;
+typedef struct _planetary       PLANETARY;
+typedef struct _planetminimal   PLANETMINIMAL;
+typedef struct _planetsome      PLANETSOME;
+typedef struct _fleet           FLEET;
+typedef struct _fleetsome       FLEETSOME;
+typedef struct _popupdata       POPUPDATA;
+typedef struct _prod            PROD;
+typedef struct PLPROD           PLPROD;
+typedef struct _prodq1          PRODQ1;
+typedef struct _btn             BTN;
+typedef struct _btnt            BTNT;
+typedef struct _drawcir         DRAWCIR;
+typedef struct _rpt             RPT;
+typedef struct _rtbof           RTBOF;
+typedef struct _rtchgname       RTCHGNAME;
+typedef struct _rtChgPlanetLong RTCHGPLANETLONG;
+typedef struct _rtChgProdQ      RTCHGPRODQ;
+typedef struct _rthisthdr       RTHISTHDR;
+typedef struct _rtloghdr        RTLOGHDR;
+typedef struct _rtlogthing      RTLOGTHING;
+typedef struct _rtplanet        RTPLANET;
+typedef struct _rtshdef         RTSHDEF;
+typedef struct _rtchgshdef      RTCHGSHDEF;
+typedef struct _rtshipint       RTSHIPINT;
+typedef struct _rtshipint2      RTSHIPINT2;
+typedef struct _rtxfer          RTXFER;
+typedef struct _rtxferf         RTXFERF;
+typedef struct _rtxferl         RTXFERL;
+typedef struct _rtxferx         RTXFERX;
+typedef struct _sbar            SBAR;
+typedef struct _scan            SCAN;
+typedef struct _scanner         SCANNER;
+typedef struct _score           SCORE;
+typedef struct _scorex          SCOREX;
+typedef struct _selSome         SELSOME;
+typedef struct _shdef           SHDEF;
+typedef struct _shield          SHIELD;
+typedef struct _special         SPECIAL;
+typedef struct _specialsb       SPECIALSB;
+typedef struct _starpack        STARPACK;
+typedef struct _tasklaymines    TASKLAYMINES;
+typedef struct _taskpatrol      TASKPATROL;
+typedef struct _tasksell        TASKSELL;
+typedef struct _taskxport       TASKXPORT;
+typedef struct _order           ORDER;
+typedef struct PLORD            PLORD;
+typedef struct _rtwaypt         RTWAYPT;
+typedef struct _terra           TERRA;
+typedef struct _thmine          THMINE;
+typedef struct _thpack          THPACK;
+typedef struct _thtrader        THTRADER;
+typedef struct _thworm          THWORM;
+typedef struct _thing           THING;
+typedef struct _sel             SEL;
+typedef struct _tile            TILE;
+typedef struct _timer           TIMER;
+typedef struct _tok             TOK;
+typedef struct _btldata         BTLDATA;
+typedef struct _torp            TORP;
+typedef struct _turnserial      TURNSERIAL;
+typedef struct _vers            VERS;
+typedef struct _wn              WN;
+typedef struct _ini             INI;
+typedef struct _xfer            XFER;
+typedef struct _xferfull        XFERFULL;
+typedef struct _ziporder        ZIPORDER;
+typedef struct _zipprodq1       ZIPPRODQ1;
+typedef struct _player          PLAYER;
+typedef struct _tutor           TUTOR;
+typedef struct _zipprodq        ZIPPRODQ;
+
+struct _aipart {
     uint16_t ibit : 4, /* +0x0000 (2) @bit0 */
         iItem : 5,     /* @bit4 */
         cItem : 4,     /* @bit9 */
         fRandom : 3;   /* @bit13 */
-} AIPART;              /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _aistarbase {
+struct _aistarbase {
     int16_t idPlanet;   /* +0x0000 (2) */
     int16_t cFreighter; /* +0x0002 (2) */
     int16_t rgflid[8];  /* +0x0004 (16) */
-} AISTARBASE;           /* size=0x14 */
+}; /* size=0x14 */
 
-typedef struct _aihist {
+struct _aihist {
     uint16_t   cbAiHist;  /* +0x0000 (2) */
     int16_t    cStarbase; /* +0x0002 (2) */
     AISTARBASE rgasb[64]; /* +0x0004 (1280) */
-} AIHIST;                 /* size=0x504 */
+}; /* size=0x504 */
 
-typedef struct _armor {
+struct _armor {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -32,9 +145,9 @@ typedef struct _armor {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  dp;             /* +0x0034 (2) */
-} ARMOR;                     /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _beam {
+struct _beam {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -46,9 +159,9 @@ typedef struct _beam {
     int16_t  dp;             /* +0x0036 (2) */
     int16_t  init;           /* +0x0038 (2) */
     int16_t  grfAbilities;   /* +0x003A (2) */
-} BEAM;                      /* size=0x3c */
+}; /* size=0x3c */
 
-typedef struct _bomb {
+struct _bomb {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -59,9 +172,9 @@ typedef struct _bomb {
     int16_t  cRounds;        /* +0x0034 (2) */
     int16_t  dDmgCol;        /* +0x0036 (2) */
     int16_t  dDmgBldg;       /* +0x0038 (2) */
-} BOMB;                      /* size=0x3a */
+}; /* size=0x3a */
 
-typedef struct _btlplan {
+struct _btlplan {
     uint16_t iplr : 4,      /* +0x0000 (2) @bit0 */
         iplan : 4,          /* @bit4 */
         mdTactic : 4,       /* @bit8 */
@@ -73,18 +186,18 @@ typedef struct _btlplan {
         iplrAttack : 5,     /* @bit8 */
         unused2 : 3;        /* @bit13 */
     char szName[32];        /* +0x0004 (32) */
-} BTLPLAN;                  /* size=0x24 */
+}; /* size=0x24 */
 
-typedef struct _coldrop {
+struct _coldrop {
     int16_t  idFleetSrc;       /* +0x0000 (2) */
     int16_t  idPlr;            /* +0x0002 (2) */
     int16_t  idPlanetDst;      /* +0x0004 (2) */
     uint16_t fCanColonize : 1, /* +0x0006 (2) @bit0 */
         unused : 15;           /* @bit1 */
     int32_t cColonist;         /* +0x0008 (4) */
-} COLDROP;                     /* size=0xc */
+}; /* size=0xc */
 
-typedef struct _compart {
+struct _compart {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -92,9 +205,9 @@ typedef struct _compart {
     uint16_t resCost;        /* +0x002A (2) */
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
-} COMPART;                   /* size=0x34 */
+}; /* size=0x34 */
 
-typedef struct _cyberinfo {
+struct _cyberinfo {
     union {
         uint16_t iLstPktDir : 3, /* +0x0000 (2) @bit0 */
             fBltColony : 1,      /* @bit3 */
@@ -104,9 +217,9 @@ typedef struct _cyberinfo {
             unused : 8;          /* @bit8 */
         uint16_t wInfo;          /* +0x0000 (2) */
     };
-} CYBERINFO; /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _cyberinfotemp {
+struct _cyberinfotemp {
     union {
         uint16_t fIdleColonizers : 1, /* +0x0000 (2) @bit0 */
             cIdleFreighters : 2,      /* @bit1 */
@@ -120,17 +233,17 @@ typedef struct _cyberinfotemp {
             unused : 5;               /* @bit11 */
         uint16_t wInfo1;              /* +0x0000 (2) */
     };
-} CYBERINFOTEMP; /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _dv {
+struct _dv {
     union {
         uint16_t dp;        /* +0x0000 (2) */
         uint16_t pctSh : 7, /* +0x0000 (2) @bit0 */
             pctDp : 9;      /* @bit7 */
     };
-} DV; /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _engine {
+struct _engine {
     int16_t  id;              /* +0x0000 (2) */
     char     rgTech[6];       /* +0x0002 (6) */
     char     szName[32];      /* +0x0008 (32) */
@@ -140,15 +253,15 @@ typedef struct _engine {
     int16_t  ibmp;            /* +0x0032 (2) */
     int16_t  grfAbilities;    /* +0x0034 (2) */
     int16_t  rgcFuelUsed[12]; /* +0x0036 (24) */
-} ENGINE;                     /* size=0x4e */
+}; /* size=0x4e */
 
-typedef struct _fleetid {
+struct _fleetid {
     uint16_t ifl : 9, /* +0x0000 (2) @bit0 */
         iplr : 4,     /* @bit9 */
         junk : 3;     /* @bit13 */
-} FLEETID;            /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _framestuff {
+struct _framestuff {
     int16_t dx;          /* +0x0000 (2) */
     int16_t dy;          /* +0x0002 (2) */
     int16_t xTop;        /* +0x0004 (2) */
@@ -160,9 +273,9 @@ typedef struct _framestuff {
     int16_t dx2PlanWant; /* +0x0010 (2) */
     int16_t dy2MsgWant;  /* +0x0012 (2) */
     int16_t dy2MinWant;  /* +0x0014 (2) */
-} FRAMESTUFF;            /* size=0x16 */
+}; /* size=0x16 */
 
-typedef struct _game {
+struct _game {
     int32_t lid;         /* +0x0000 (4) */
     int16_t mdSize;      /* +0x0004 (2) */
     int16_t mdDensity;   /* +0x0006 (2) */
@@ -187,9 +300,9 @@ typedef struct _game {
     uint16_t turn;       /* +0x0012 (2) */
     uint8_t  rgvc[12];   /* +0x0014 (12) */
     char     szName[32]; /* +0x0020 (32) */
-} GAME;                  /* size=0x40 */
+}; /* size=0x40 */
 
-typedef struct _gdata {
+struct _gdata {
     union {
         int32_t grBits; /* +0x0000 (4) */
         struct {
@@ -248,9 +361,9 @@ typedef struct _gdata {
         };
     };
     uint16_t fUnused2 : 14; /* +0x0008 (2) @bit0 */
-} GDATA;                    /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _hb {
+struct _hb {
     uint16_t cbFree;   /* +0x0000 (2) */
     uint16_t cbBlock;  /* +0x0002 (2) */
     uint16_t cbSlop;   /* +0x0004 (2) */
@@ -259,20 +372,20 @@ typedef struct _hb {
     uint16_t hmem;     /* +0x000C (2) */
     uint8_t  ht;       /* +0x000E (1) */
     uint8_t  unused1;  /* +0x000F (1) */
-} HB;                  /* size=0x10 */
+}; /* size=0x10 */
 
-typedef struct _hdr {
+struct _hdr {
     uint16_t cb : 10, /* +0x0000 (2) @bit0 */
         rt : 6;       /* @bit10 */
-} HDR;                /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _hs {
+struct _hs {
     HullSlotType grhst;     /* +0x0000 (2) */
     uint16_t     iItem : 8, /* +0x0002 (2) @bit0 */
         cItem : 8;          /* @bit8 */
-} HS;                       /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _hul {
+struct _hul {
     HulDef   ihuldef;        /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szClass[32];    /* +0x0008 (32) */
@@ -285,9 +398,9 @@ typedef struct _hul {
     uint16_t dp;             /* +0x0038 (2) */
     HS       rghs[16];       /* +0x003A (64) */
     uint8_t  chs;            /* +0x007A (1) */
-} HUL;                       /* size=0x7b */
+}; /* size=0x7b */
 
-typedef struct _huldef {
+struct _huldef {
     HUL      hul;        /* +0x0000 (123) */
     uint16_t init : 6,   /* +0x007B (2) @bit0 */
         imdAttack : 4,   /* @bit6 */
@@ -295,22 +408,22 @@ typedef struct _huldef {
         unused : 2;      /* @bit14 */
     uint16_t wrcCargo;   /* +0x007D (2) */
     uint8_t  rgbrc[16];  /* +0x007F (16) */
-} HULDEF;                /* size=0x8f */
+}; /* size=0x8f */
 
-typedef struct _itemaction {
+struct _itemaction {
     uint16_t cQuan : 12, /* +0x0000 (2) @bit0 */
         iAction : 4;     /* @bit12 */
-} ITEMACTION;            /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _kill {
+struct _kill {
     uint8_t  itok;      /* +0x0000 (1) */
     uint8_t  grfWeapon; /* +0x0001 (1) */
     uint16_t cshKill;   /* +0x0002 (2) */
     uint16_t dpShield;  /* +0x0004 (2) */
     DV       dv;        /* +0x0006 (2) */
-} KILL;                 /* size=0x8 */
+}; /* size=0x8 */
 
-typedef struct _btlrec {
+struct _btlrec {
     uint8_t  itok;       /* +0x0000 (1) */
     uint8_t  brcDest;    /* +0x0001 (1) */
     int16_t  ctok;       /* +0x0002 (2) */
@@ -318,9 +431,9 @@ typedef struct _btlrec {
         dzDis : 4,       /* @bit4 */
         itokAttack : 8;  /* @bit8 */
     KILL rgkill[0];      /* +0x0006 (0) */
-} BTLREC;                /* size=0x6 */
+}; /* size=0x6 */
 
-typedef struct _btlrec26 {
+struct _btlrec26 {
     uint8_t  itok;       /* +0x0000 (1) */
     uint8_t  brcDest;    /* +0x0001 (1) */
     uint8_t  itokAttack; /* +0x0002 (1) */
@@ -329,36 +442,36 @@ typedef struct _btlrec26 {
         dzDis : 4,       /* @bit4 */
         unused : 8;      /* @bit8 */
     KILL rgkill[0];      /* +0x0006 (0) */
-} BTLREC26;              /* size=0x6 */
+}; /* size=0x6 */
 
-typedef struct _logxfer {
+struct _logxfer {
     int16_t    id;         /* +0x0000 (2) */
     GrobjClass grobj;      /* +0x0002 (2) */
     int32_t    rgdItem[5]; /* +0x0004 (20) */
-} LOGXFER;                 /* size=0x18 */
+}; /* size=0x18 */
 
-typedef struct _logxferf {
+struct _logxferf {
     int16_t    id;          /* +0x0000 (2) */
     GrobjClass grobj;       /* +0x0002 (2) */
     int16_t    rgdItem[16]; /* +0x0004 (32) */
-} LOGXFERF;                 /* size=0x24 */
+}; /* size=0x24 */
 
-typedef struct _lsb {
+struct _lsb {
     uint16_t isb : 4,      /* +0x0000 (2) @bit0 */
         pctDp : 12;        /* @bit4 */
     uint16_t idFling : 10, /* +0x0002 (2) @bit0 */
         iWarpFling : 4,    /* @bit10 */
         unused3 : 2;       /* @bit14 */
-} LSB;                     /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _mdplr {
+struct _mdplr {
     uint16_t reserved : 9, /* +0x0000 (2) @bit0 */
         fAi : 1,           /* @bit9 */
         lvlAi : 3,         /* @bit10 */
         idAi : 3;          /* @bit13 */
-} MDPLR;                   /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _mines {
+struct _mines {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -367,9 +480,9 @@ typedef struct _mines {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
-} MINES;                     /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _mining {
+struct _mining {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -378,44 +491,44 @@ typedef struct _mining {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
-} MINING;                    /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _msgbig {
+struct _msgbig {
     int16_t iMsg;       /* +0x0000 (2) */
     int16_t wGoto;      /* +0x0002 (2) */
     int16_t rgParam[7]; /* +0x0004 (14) */
-} MSGBIG;               /* size=0x12 */
+}; /* size=0x12 */
 
-typedef struct _msghdr {
+struct _msghdr {
     uint16_t iMsg : 9, /* +0x0000 (2) @bit0 */
         grWord : 7;    /* @bit9 */
     int16_t wGoto;     /* +0x0002 (2) */
-} MSGHDR;              /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _msgplr {
+struct _msgplr {
     MSGPLR *lpmsgplrNext; /* +0x0000 (4) */
     int16_t iPlrFrom;     /* +0x0004 (2) */
     int16_t iPlrTo;       /* +0x0006 (2) */
     int16_t iInRe;        /* +0x0008 (2) */
     int16_t cLen;         /* +0x000A (2) */
     uint8_t rgbMsg[0];    /* +0x000C (0) */
-} MSGPLR;                 /* size=0xc */
+}; /* size=0xc */
 
-typedef struct _msgturn {
+struct _msgturn {
     uint8_t iPlr : 4, /* +0x0000 (1) @bit0 */
         cbParams : 4; /* @bit4 */
     MSGHDR msghdr;    /* +0x0001 (4) */
-} MSGTURN;            /* size=0x5 */
+}; /* size=0x5 */
 
-typedef struct _obj {
+struct _obj {
     union {
         PLANET *ppl; /* +0x0000 (2) */
         FLEET  *pfl; /* +0x0000 (2) */
         THING  *pth; /* +0x0000 (2) */
     };
-} OBJ; /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _part {
+struct _part {
     HS hs; /* +0x0000 (4) */
     union {
         COMPART   *pcom;       /* +0x0004 (4) */
@@ -434,9 +547,9 @@ typedef struct _part {
         PLANETARY *pplanetary; /* +0x0004 (4) */
         TERRA     *pterra;     /* +0x0004 (4) */
     };
-} PART; /* size=0x8 */
+}; /* size=0x8 */
 
-typedef struct _pl {
+struct _pl {
     uint16_t cbItem : 8, /* +0x0000 (2) @bit0 */
         fMark : 1,       /* @bit8 */
         ht : 3,          /* @bit9 */
@@ -444,9 +557,9 @@ typedef struct _pl {
     uint8_t iMax;        /* +0x0002 (1) */
     uint8_t iMac;        /* +0x0003 (1) */
     uint8_t rgb[0];      /* +0x0004 (0) */
-} PL;                    /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _planet {
+struct _planet {
     int16_t  id;              /* +0x0000 (2) */
     int16_t  iPlayer;         /* +0x0002 (2) */
     uint16_t det : 8,         /* +0x0004 (2) @bit0 */
@@ -499,9 +612,9 @@ typedef struct _planet {
     };
     int16_t turn;     /* +0x0032 (2) */
     PLPROD *lpplprod; /* +0x0034 (4) */
-} PLANET;             /* size=0x38 */
+}; /* size=0x38 */
 
-typedef struct _planetary {
+struct _planetary {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -510,9 +623,9 @@ typedef struct _planetary {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
-} PLANETARY;                 /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _planetminimal {
+struct _planetminimal {
     int16_t  id;        /* +0x0000 (2) */
     int16_t  iPlayer;   /* +0x0002 (2) */
     uint16_t det : 8,   /* +0x0004 (2) @bit0 */
@@ -521,9 +634,9 @@ typedef struct _planetminimal {
         unusedA : 1,    /* @bit10 */
         fFirstYear : 1, /* @bit11 */
         unusedB : 4;    /* @bit12 */
-} PLANETMINIMAL;        /* size=0x6 */
+}; /* size=0x6 */
 
-typedef struct _planetsome {
+struct _planetsome {
     int16_t  id;               /* +0x0000 (2) */
     int16_t  iPlayer;          /* +0x0002 (2) */
     uint16_t det : 8,          /* +0x0004 (2) @bit0 */
@@ -541,9 +654,9 @@ typedef struct _planetsome {
             uDefGuess : 4;       /* @bit12 */
         uint16_t uGuesses;       /* +0x0015 (2) */
     };
-} PLANETSOME; /* size=0x17 */
+}; /* size=0x17 */
 
-typedef struct _fleet {
+struct _fleet {
     union {
         int16_t  id;      /* +0x0000 (2) */
         uint16_t ifl : 9, /* +0x0000 (2) @bit0 */
@@ -595,9 +708,9 @@ typedef struct _fleet {
         };
     };
     char *lpszName; /* +0x0078 (4) */
-} FLEET;            /* size=0x7c */
+}; /* size=0x7c */
 
-typedef struct _fleetsome {
+struct _fleetsome {
     int16_t  id;        /* +0x0000 (2) */
     int16_t  iPlayer;   /* +0x0002 (2) */
     uint16_t det : 8,   /* +0x0004 (2) @bit0 */
@@ -608,9 +721,9 @@ typedef struct _fleetsome {
         unused : 4;     /* @bit12 */
     int16_t idPlanet;   /* +0x0006 (2) */
     POINT   pt;         /* +0x0008 (4) */
-} FLEETSOME;            /* size=0xc */
+}; /* size=0xc */
 
-typedef struct _popupdata {
+struct _popupdata {
     GrPopupType grPopup; /* +0x0000 (2) */
     union {
         int32_t rgi[5]; /* +0x0002 (20) */
@@ -652,17 +765,17 @@ typedef struct _popupdata {
             int16_t itok;        /* +0x000E (2) */
         };
     };
-} POPUPDATA; /* size=0x16 */
+}; /* size=0x16 */
 
-typedef struct _prod {
+struct _prod {
     uint32_t cItem : 10, /* +0x0000 (4) @bit0 */
         iItem : 7,       /* @bit10 */
         grobj : 3,       /* @bit17 */
         pct : 7,         /* @bit20 */
         unused : 5;      /* @bit27 */
-} PROD;                  /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct PLPROD {
+struct PLPROD {
     uint16_t cbItem : 8, /* +0x0000 (2) @bit0 */
         fMark : 1,       /* @bit8 */
         ht : 3,          /* @bit9 */
@@ -670,17 +783,17 @@ typedef struct PLPROD {
     uint8_t iprodMax;    /* +0x0002 (1) */
     uint8_t iprodMac;    /* +0x0003 (1) */
     PROD    rgprod[0];   /* +0x0004 (0) */
-} PLPROD;                /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _prodq1 {
+struct _prodq1 {
     union {
         uint16_t w;          /* +0x0000 (2) */
         uint16_t mdIdle : 6, /* +0x0000 (2) @bit0 */
             cQuan : 10;      /* @bit6 */
     };
-} PRODQ1; /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _btn {
+struct _btn {
     RECT     rc;           /* +0x0000 (8) */
     int16_t  bt;           /* +0x0008 (2) */
     int16_t  iVal;         /* +0x000A (2) */
@@ -688,9 +801,9 @@ typedef struct _btn {
         fDisabled : 1,     /* @bit1 */
         iSide : 2,         /* @bit2 */
         fUnused : 12;      /* @bit4 */
-} BTN;                     /* size=0xe */
+}; /* size=0xe */
 
-typedef struct _btnt {
+struct _btnt {
     HWND     hwnd;        /* +0x0000 (2) */
     HDC      hdc;         /* +0x0002 (2) */
     RECT     rc;          /* +0x0004 (8) */
@@ -704,9 +817,9 @@ typedef struct _btnt {
         fCreatedDC : 1,   /* @bit3 */
         fNoEndRedraw : 1, /* @bit4 */
         fUnused : 11;     /* @bit5 */
-} BTNT;                   /* size=0x18 */
+}; /* size=0x18 */
 
-typedef struct _drawcir {
+struct _drawcir {
     int16_t *rgx;        /* +0x0000 (2) */
     int16_t *rgy;        /* +0x0002 (2) */
     int16_t *rgrad;      /* +0x0004 (2) */
@@ -716,9 +829,9 @@ typedef struct _drawcir {
     RECT     rcClip;     /* +0x000C (8) */
     int16_t  fCovered;   /* +0x0014 (2) */
     int16_t  fHollowOut; /* +0x0016 (2) */
-} DRAWCIR;               /* size=0x18 */
+}; /* size=0x18 */
 
-typedef struct _rpt {
+struct _rpt {
     int32_t grbitVisible; /* +0x0000 (4) */
     int16_t irpt;         /* +0x0004 (2) */
     int16_t cFields;      /* +0x0006 (2) */
@@ -736,9 +849,9 @@ typedef struct _rpt {
     HWND    hwndVScroll;  /* +0x0030 (2) */
     HWND    hwndHScroll;  /* +0x0032 (2) */
     int16_t cColScroll;   /* +0x0034 (2) */
-} RPT;                    /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _rtbof {
+struct _rtbof {
     char    rgid[4]; /* +0x0000 (4) */
     int32_t lidGame; /* +0x0004 (4) */
     union {
@@ -757,15 +870,15 @@ typedef struct _rtbof {
         fGameOverMan : 1, /* @bit11 */
         fCrippled : 1,    /* @bit12 */
         wGen : 3;         /* @bit13 */
-} RTBOF;                  /* size=0x10 */
+}; /* size=0x10 */
 
-typedef struct _rtchgname {
+struct _rtchgname {
     int16_t id;      /* +0x0000 (2) */
     int16_t grobj;   /* +0x0002 (2) */
     uint8_t rgb[33]; /* +0x0004 (33) */
-} RTCHGNAME;         /* size=0x25 */
+}; /* size=0x25 */
 
-typedef struct _rtChgPlanetLong {
+struct _rtChgPlanetLong {
     int16_t id; /* +0x0000 (2) */
     union {
         uint32_t ul;              /* +0x0002 (4) */
@@ -775,30 +888,30 @@ typedef struct _rtChgPlanetLong {
             idRoute : 10,         /* @bit15 */
             unused : 7;           /* @bit25 */
     };
-} RTCHGPLANETLONG; /* size=0x6 */
+}; /* size=0x6 */
 
-typedef struct _rtChgProdQ {
+struct _rtChgProdQ {
     int16_t id;        /* +0x0000 (2) */
     PROD    rgprod[0]; /* +0x0002 (0) */
-} RTCHGPRODQ;          /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _rthisthdr {
+struct _rthisthdr {
     int16_t cPlanet;      /* +0x0000 (2) */
     int16_t cPlanetExtra; /* +0x0002 (2) */
-} RTHISTHDR;              /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _rtloghdr {
+struct _rtloghdr {
     int16_t cbLog;         /* +0x0000 (2) */
     int32_t lSerialNumber; /* +0x0002 (4) */
     uint8_t rgbConfig[11]; /* +0x0006 (11) */
-} RTLOGHDR;                /* size=0x11 */
+}; /* size=0x11 */
 
-typedef struct _rtlogthing {
+struct _rtlogthing {
     uint16_t idFull;    /* +0x0000 (2) */
     int16_t  fDetonate; /* +0x0002 (2) */
-} RTLOGTHING;           /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _rtplanet {
+struct _rtplanet {
     int16_t id : 11,     /* +0x0000 (2) @bit0 */
         iPlayer : 5;     /* @bit11 */
     uint16_t det : 7,    /* +0x0002 (2) @bit0 */
@@ -811,9 +924,9 @@ typedef struct _rtplanet {
         fIncSurfMin : 1, /* @bit13 */
         fRouting : 1,    /* @bit14 */
         fFirstYear : 1;  /* @bit15 */
-} RTPLANET;              /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _rtshdef {
+struct _rtshdef {
     union {
         uint16_t det : 8, /* +0x0000 (2) @bit0 */
             fInclude : 1, /* @bit8 */
@@ -833,72 +946,72 @@ typedef struct _rtshdef {
     uint32_t cBuilt;  /* +0x0009 (4) */
     uint32_t cExist;  /* +0x000D (4) */
     HS       rghs[0]; /* +0x0011 (0) */
-} RTSHDEF;            /* size=0x11 */
+}; /* size=0x11 */
 
-typedef struct _rtchgshdef {
+struct _rtchgshdef {
     uint16_t mdChg : 4, /* +0x0000 (2) @bit0 */
         iPlr : 4,       /* @bit4 */
         ishdef : 5,     /* @bit8 */
         junk : 3;       /* @bit13 */
     RTSHDEF rtshdef;    /* +0x0002 (17) */
-} RTCHGSHDEF;           /* size=0x13 */
+}; /* size=0x13 */
 
-typedef struct _rtshipint {
+struct _rtshipint {
     int16_t id; /* +0x0000 (2) */
     int16_t i;  /* +0x0002 (2) */
-} RTSHIPINT;    /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _rtshipint2 {
+struct _rtshipint2 {
     int16_t id; /* +0x0000 (2) */
     int16_t i;  /* +0x0002 (2) */
     int16_t i2; /* +0x0004 (2) */
-} RTSHIPINT2;   /* size=0x6 */
+}; /* size=0x6 */
 
-typedef struct _rtxfer {
+struct _rtxfer {
     uint16_t id1;        /* +0x0000 (2) */
     uint16_t id2;        /* +0x0002 (2) */
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     uint8_t grbitItems;  /* +0x0005 (1) */
     char    rgcQuan[1];  /* +0x0006 (1) */
-} RTXFER;                /* size=0x7 */
+}; /* size=0x7 */
 
-typedef struct _rtxferf {
+struct _rtxferf {
     uint16_t id1;        /* +0x0000 (2) */
     uint16_t id2;        /* +0x0002 (2) */
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     uint16_t grbitItems; /* +0x0005 (2) */
     int16_t  rgcQuan[1]; /* +0x0007 (2) */
-} RTXFERF;               /* size=0x9 */
+}; /* size=0x9 */
 
-typedef struct _rtxferl {
+struct _rtxferl {
     uint16_t id1;        /* +0x0000 (2) */
     uint16_t id2;        /* +0x0002 (2) */
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     uint8_t grbitItems;  /* +0x0005 (1) */
     int32_t rgcQuan[1];  /* +0x0006 (4) */
-} RTXFERL;               /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _rtxferx {
+struct _rtxferx {
     uint16_t id1;        /* +0x0000 (2) */
     uint16_t id2;        /* +0x0002 (2) */
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     uint8_t grbitItems;  /* +0x0005 (1) */
     int16_t rgcQuan[1];  /* +0x0006 (2) */
-} RTXFERX;               /* size=0x8 */
+}; /* size=0x8 */
 
-typedef struct _sbar {
+struct _sbar {
     int16_t grbit; /* +0x0000 (2) */
     int16_t id;    /* +0x0002 (2) */
     POINT   pt;    /* +0x0004 (4) */
     char   *psz;   /* +0x0008 (2) */
     SCAN   *pscan; /* +0x000A (2) */
-} SBAR;            /* size=0xc */
+}; /* size=0xc */
 
-typedef struct _scan {
+struct _scan {
     POINT      pt;        /* +0x0000 (4) */
     GrobjClass grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
@@ -906,9 +1019,9 @@ typedef struct _scan {
     int16_t    ifl;       /* +0x000A (2) */
     int16_t    iwp;       /* +0x000C (2) */
     int16_t    ith;       /* +0x000E (2) */
-} SCAN;                   /* size=0x10 */
+}; /* size=0x10 */
 
-typedef struct _scanner {
+struct _scanner {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -918,18 +1031,18 @@ typedef struct _scanner {
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  dRange;         /* +0x0034 (2) */
     int16_t  grfAbilities;   /* +0x0036 (2) */
-} SCANNER;                   /* size=0x38 */
+}; /* size=0x38 */
 
-typedef struct _score {
+struct _score {
     int32_t  lScore;      /* +0x0000 (4) */
     int32_t  cResources;  /* +0x0004 (4) */
     int16_t  cPlanet;     /* +0x0008 (2) */
     int16_t  cStarbase;   /* +0x000A (2) */
     uint16_t rgcsh[3];    /* +0x000C (6) */
     int16_t  cTechLevels; /* +0x0012 (2) */
-} SCORE;                  /* size=0x14 */
+}; /* size=0x14 */
 
-typedef struct _scorex {
+struct _scorex {
     union {
         uint16_t wWord;       /* +0x0000 (2) */
         uint16_t iPlayer : 5, /* +0x0000 (2) @bit0 */
@@ -943,18 +1056,18 @@ typedef struct _scorex {
         uint16_t turn;  /* +0x0002 (2) */
     };
     SCORE score; /* +0x0004 (20) */
-} SCOREX;        /* size=0x18 */
+}; /* size=0x18 */
 
-typedef struct _selSome {
+struct _selSome {
     POINT      pt;        /* +0x0000 (4) */
     int16_t    grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
     int16_t    id;        /* +0x0008 (2) */
     int16_t    iwpAct;    /* +0x000A (2) */
     SCAN       scan;      /* +0x000C (16) */
-} SELSOME;                /* size=0x1c */
+}; /* size=0x1c */
 
-typedef struct _shdef {
+struct _shdef {
     HUL hul; /* +0x0000 (123) */
     union {
         uint16_t det : 8, /* +0x007B (2) @bit0 */
@@ -976,9 +1089,9 @@ typedef struct _shdef {
     uint16_t dScanRange2; /* +0x008F (2) */
     uint8_t  pctDetect;   /* +0x0091 (1) */
     uint8_t  iSteal;      /* +0x0092 (1) */
-} SHDEF;                  /* size=0x93 */
+}; /* size=0x93 */
 
-typedef struct _shield {
+struct _shield {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -987,9 +1100,9 @@ typedef struct _shield {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  dp;             /* +0x0034 (2) */
-} SHIELD;                    /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _special {
+struct _special {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -998,9 +1111,9 @@ typedef struct _special {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
-} SPECIAL;                   /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _specialsb {
+struct _specialsb {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -1010,33 +1123,33 @@ typedef struct _specialsb {
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
     int16_t  grAbility2;     /* +0x0036 (2) */
-} SPECIALSB;                 /* size=0x38 */
+}; /* size=0x38 */
 
-typedef struct _starpack {
+struct _starpack {
     uint32_t dx : 10, /* +0x0000 (4) @bit0 */
         y : 12,       /* @bit10 */
         id : 10;      /* @bit22 */
-} STARPACK;           /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _tasklaymines {
+struct _tasklaymines {
     uint16_t cTime;    /* +0x0000 (2) */
     uint16_t cTimeOld; /* +0x0002 (2) */
-} TASKLAYMINES;        /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _taskpatrol {
+struct _taskpatrol {
     uint16_t iWarp; /* +0x0000 (2) */
     uint16_t iDist; /* +0x0002 (2) */
-} TASKPATROL;       /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _tasksell {
+struct _tasksell {
     uint16_t iPlrX; /* +0x0000 (2) */
-} TASKSELL;         /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _taskxport {
+struct _taskxport {
     ITEMACTION rgia[5]; /* +0x0000 (10) */
-} TASKXPORT;            /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _order {
+struct _order {
     POINT    pt;          /* +0x0000 (4) */
     int16_t  id;          /* +0x0004 (2) */
     uint16_t grTask : 4,  /* +0x0006 (2) @bit0 */
@@ -1051,9 +1164,9 @@ typedef struct _order {
         TASKPATROL   tptl;  /* +0x0008 (4) */
         TASKSELL     tsell; /* +0x0008 (2) */
     };
-} ORDER; /* size=0x12 */
+}; /* size=0x12 */
 
-typedef struct PLORD {
+struct PLORD {
     uint16_t cbItem : 8, /* +0x0000 (2) @bit0 */
         fMark : 1,       /* @bit8 */
         ht : 3,          /* @bit9 */
@@ -1061,15 +1174,15 @@ typedef struct PLORD {
     uint8_t iordMax;     /* +0x0002 (1) */
     uint8_t iordMac;     /* +0x0003 (1) */
     ORDER   rgord[0];    /* +0x0004 (0) */
-} PLORD;                 /* size=0x4 */
+}; /* size=0x4 */
 
-typedef struct _rtwaypt {
+struct _rtwaypt {
     int16_t id;     /* +0x0000 (2) */
     int16_t iWaypt; /* +0x0002 (2) */
     ORDER   order;  /* +0x0004 (18) */
-} RTWAYPT;          /* size=0x16 */
+}; /* size=0x16 */
 
-typedef struct _terra {
+struct _terra {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -1078,17 +1191,17 @@ typedef struct _terra {
     int16_t  rgwtOreCost[3]; /* +0x002C (6) */
     int16_t  ibmp;           /* +0x0032 (2) */
     int16_t  grAbility;      /* +0x0034 (2) */
-} TERRA;                     /* size=0x36 */
+}; /* size=0x36 */
 
-typedef struct _thmine {
+struct _thmine {
     int32_t  cMines;      /* +0x0000 (4) */
     uint16_t grbitPlr;    /* +0x0004 (2) */
     uint8_t  iType;       /* +0x0006 (1) */
     uint8_t  fDetonate;   /* +0x0007 (1) */
     uint16_t grbitPlrNow; /* +0x0008 (2) */
-} THMINE;                 /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _thpack {
+struct _thpack {
     uint16_t idPlanet : 10, /* +0x0000 (2) @bit0 */
         iWarp : 4,          /* @bit10 */
         fMoved : 1,         /* @bit14 */
@@ -1096,18 +1209,18 @@ typedef struct _thpack {
     int16_t  rgwtMin[3];    /* +0x0002 (6) */
     uint16_t wtMax : 14,    /* +0x0008 (2) @bit0 */
         iDecayRate : 2;     /* @bit14 */
-} THPACK;                   /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _thtrader {
+struct _thtrader {
     POINT    ptDest;      /* +0x0000 (4) */
     uint16_t iWarp : 4,   /* +0x0004 (2) @bit0 */
         fInclude : 1,     /* @bit4 */
         unused : 11;      /* @bit5 */
     uint16_t grbitPlr;    /* +0x0006 (2) */
     uint16_t grbitTrader; /* +0x0008 (2) */
-} THTRADER;               /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _thworm {
+struct _thworm {
     uint16_t iStable : 2,  /* +0x0000 (2) @bit0 */
         cLastMove : 10,    /* @bit2 */
         fDestKnown : 1,    /* @bit12 */
@@ -1115,9 +1228,9 @@ typedef struct _thworm {
     uint16_t grbitPlr;     /* +0x0002 (2) */
     uint16_t grbitPlrTrav; /* +0x0004 (2) */
     uint16_t idPartner;    /* +0x0006 (2) */
-} THWORM;                  /* size=0x8 */
+}; /* size=0x8 */
 
-typedef struct _thing {
+struct _thing {
     union {
         uint16_t idFull; /* +0x0000 (2) */
         uint16_t id : 9, /* +0x0000 (2) @bit0 */
@@ -1133,9 +1246,9 @@ typedef struct _thing {
         THTRADER tht;     /* +0x0006 (10) */
     };
     uint16_t turn; /* +0x0010 (2) */
-} THING;           /* size=0x12 */
+}; /* size=0x12 */
 
-typedef struct _sel {
+struct _sel {
     POINT      pt;        /* +0x0000 (4) */
     GrobjClass grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
@@ -1145,9 +1258,9 @@ typedef struct _sel {
     FLEET      fl;        /* +0x001C (124) */
     PLANET     pl;        /* +0x0098 (56) */
     THING      th;        /* +0x00D0 (18) */
-} SEL;                    /* size=0xe2 */
+}; /* size=0xe2 */
 
-typedef struct _tile {
+struct _tile {
     int16_t yTop;                       /* +0x0000 (2) */
     int16_t dyFull;                     /* +0x0002 (2) */
     int16_t grbit;                      /* +0x0004 (2) */
@@ -1162,9 +1275,9 @@ typedef struct _tile {
         fMinDraw : 1;                   /* @bit12 */
     uint16_t fUnused : 4;               /* +0x000C (2) @bit0 */
     uint16_t idh;                       /* +0x000E (2) */
-} TILE;                                 /* size=0x10 */
+}; /* size=0x10 */
 
-typedef struct _timer {
+struct _timer {
     int16_t mdForce;        /* +0x0000 (2) */
     int16_t fAutoGenWhenIn; /* +0x0002 (2) */
     union {
@@ -1173,9 +1286,9 @@ typedef struct _timer {
             cPlr : 4;           /* @bit12 */
     };
     int32_t tickcount; /* +0x0006 (4) */
-} TIMER;               /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _tok {
+struct _tok {
     uint16_t   id;            /* +0x0000 (2) */
     uint8_t    iplr;          /* +0x0002 (1) */
     GrobjClass grobj;         /* +0x0003 (1) */
@@ -1213,9 +1326,9 @@ typedef struct _tok {
             dMovesLeft : 2;   /* @bit14 */
         uint16_t wFlags;      /* +0x001B (2) */
     };
-} TOK; /* size=0x1d */
+}; /* size=0x1d */
 
-typedef struct _btldata {
+struct _btldata {
     uint16_t id;       /* +0x0000 (2) */
     uint8_t  cplr;     /* +0x0002 (1) */
     uint8_t  ctok;     /* +0x0003 (1) */
@@ -1224,9 +1337,9 @@ typedef struct _btldata {
     uint16_t idPlanet; /* +0x0008 (2) */
     POINT    pt;       /* +0x000A (4) */
     TOK      rgtok[0]; /* +0x000E (0) */
-} BTLDATA;             /* size=0xe */
+}; /* size=0xe */
 
-typedef struct _torp {
+struct _torp {
     int16_t  id;             /* +0x0000 (2) */
     char     rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
@@ -1238,29 +1351,29 @@ typedef struct _torp {
     int16_t  dp;             /* +0x0036 (2) */
     int16_t  init;           /* +0x0038 (2) */
     int16_t  dHitChance;     /* +0x003A (2) */
-} TORP;                      /* size=0x3c */
+}; /* size=0x3c */
 
-typedef struct _turnserial {
+struct _turnserial {
     int32_t lSerialNumber; /* +0x0000 (4) */
     uint8_t rgbConfig[11]; /* +0x0004 (11) */
     uint8_t bPad;          /* +0x000F (1) */
-} TURNSERIAL;              /* size=0x10 */
+}; /* size=0x10 */
 
-typedef struct _vers {
+struct _vers {
     uint16_t verInc : 5, /* +0x0000 (2) @bit0 */
         verMinor : 7,    /* @bit5 */
         verMajor : 4;    /* @bit12 */
-} VERS;                  /* size=0x2 */
+}; /* size=0x2 */
 
-typedef struct _wn {
+struct _wn {
     RECT     rc;             /* +0x0000 (8) */
     uint16_t fMaximized : 1, /* +0x0008 (2) @bit0 */
         fMinimized : 1,      /* @bit1 */
         fInitalized : 1,     /* @bit2 */
         fUnused : 13;        /* @bit3 */
-} WN;                        /* size=0xa */
+}; /* size=0xa */
 
-typedef struct _ini {
+struct _ini {
     WN wnFrame; /* +0x0000 (10) */
     union {
         uint16_t fStartupFile : 1, /* +0x000A (2) @bit0 */
@@ -1284,9 +1397,9 @@ typedef struct _ini {
     int32_t  lid;      /* +0x0012 (4) */
     int16_t  cTurnGen; /* +0x0016 (2) */
     int16_t  iMsg;     /* +0x0018 (2) */
-} INI;                 /* size=0x1a */
+}; /* size=0x1a */
 
-typedef struct _xfer {
+struct _xfer {
     int16_t    id;    /* +0x0000 (2) */
     GrobjClass grobj; /* +0x0002 (2) */
     union {
@@ -1294,29 +1407,29 @@ typedef struct _xfer {
         PLANET pl; /* +0x0004 (56) */
         THING  th; /* +0x0004 (18) */
     };
-} XFER; /* size=0x80 */
+}; /* size=0x80 */
 
-typedef struct _xferfull {
+struct _xferfull {
     uint16_t id1;        /* +0x0000 (2) */
     uint16_t id2;        /* +0x0002 (2) */
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     int32_t rgcQuan[5];  /* +0x0005 (20) */
-} XFERFULL;              /* size=0x19 */
+}; /* size=0x19 */
 
-typedef struct _ziporder {
+struct _ziporder {
     TASKXPORT txp;        /* +0x0000 (10) */
     char      szName[13]; /* +0x000A (13) */
     uint8_t   fValid;     /* +0x0017 (1) */
-} ZIPORDER;               /* size=0x18 */
+}; /* size=0x18 */
 
-typedef struct _zipprodq1 {
+struct _zipprodq1 {
     uint8_t fNoResearch; /* +0x0000 (1) */
     uint8_t cpq;         /* +0x0001 (1) */
     PRODQ1  rgpq[12];    /* +0x0002 (24) */
-} ZIPPRODQ1;             /* size=0x1a */
+}; /* size=0x1a */
 
-typedef struct _player {
+struct _player {
     char     iPlayer;     /* +0x0000 (1) */
     char     cShDef;      /* +0x0001 (1) */
     int16_t  cPlanet;     /* +0x0002 (2) */
@@ -1361,9 +1474,9 @@ typedef struct _player {
     int8_t    rgmdRelation[16]; /* +0x0070 (16) */
     char      szName[32];       /* +0x0080 (32) */
     char      szNames[32];      /* +0x00A0 (32) */
-} PLAYER;                       /* size=0xc0 */
+}; /* size=0xc0 */
 
-typedef struct _tutor {
+struct _tutor {
     union {
         int16_t  wFlags;       /* +0x0000 (2) */
         uint16_t fVisible : 1, /* +0x0000 (2) @bit0 */
@@ -1390,9 +1503,9 @@ typedef struct _tutor {
     uint16_t  grbitScan; /* +0x000E (2) */
     HWND      hwnd;      /* +0x0010 (2) */
     ZIPPRODQ1 zpq;       /* +0x0012 (26) */
-} TUTOR;                 /* size=0x2c */
+}; /* size=0x2c */
 
-typedef struct _zipprodq {
+struct _zipprodq {
     char    szName[13]; /* +0x0000 (13) */
     uint8_t fValid;     /* +0x000D (1) */
     union {
@@ -1403,6 +1516,6 @@ typedef struct _zipprodq {
             PRODQ1  rgpq[12];    /* +0x0010 (24) */
         };
     };
-} ZIPPRODQ; /* size=0x28 */
+}; /* size=0x28 */
 
 #endif

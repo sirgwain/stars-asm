@@ -11,13 +11,14 @@ import (
 )
 
 type StructDetailView struct {
-	Struct      *typeinfo.Struct
-	Options     DumpOptions
-	Kind        string
-	TagName     string
-	TypedefName string
-	Size        int
-	Body        string
+	Struct         *typeinfo.Struct
+	Options        DumpOptions
+	Kind           string
+	TagName        string
+	TypedefName    string
+	Size           int
+	Body           string
+	DefinitionOnly bool
 }
 
 func NewStructDetailView(s *typeinfo.Struct, opt DumpOptions) StructDetailView {

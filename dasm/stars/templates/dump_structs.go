@@ -10,17 +10,22 @@ import (
 )
 
 type DumpStructsView struct {
-	Options DumpOptions
-	Structs []StructDetailView
+	Options             DumpOptions
+	ForwardDeclarations []StructDetailView
+	Structs             []StructDetailView
 }
 
 func NewDumpStructsView(structs []*typeinfo.Struct, opt DumpOptions) DumpStructsView {
 	view := DumpStructsView{
-		Options: opt,
-		Structs: make([]StructDetailView, 0, len(structs)),
+		Options:             opt,
+		ForwardDeclarations: make([]StructDetailView, 0, len(structs)),
+		Structs:             make([]StructDetailView, 0, len(structs)),
 	}
 	for _, s := range structs {
-		view.Structs = append(view.Structs, NewStructDetailView(s, opt))
+		detail := NewStructDetailView(s, opt)
+		view.ForwardDeclarations = append(view.ForwardDeclarations, detail)
+		detail.DefinitionOnly = true
+		view.Structs = append(view.Structs, detail)
 	}
 	return view
 }
