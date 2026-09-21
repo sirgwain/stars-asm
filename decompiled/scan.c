@@ -7090,7 +7090,6 @@ int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord) {
     int16_t iWarpOld;
     SCAN    scan;
     int32_t t_call_7d2b;
-    int32_t t_call_7d8d;
 
 L_7a18:
     iWarpSav = lpord->iWarp;
@@ -7294,20 +7293,7 @@ L_7d1e:
         goto LOptimizeSpeed;
 
 L_7d73:
-    t_call_7d8d = LGetFleetStat(lpfl, 1);
-    if ((HIWORD(lpfl->rgwtMin[4]) < HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
-        goto LOptimizeSpeed;
-    else
-        goto L_7daf;
-
-L_7daf:
-    if ((HIWORD(lpfl->rgwtMin[4]) > HIWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
-        goto L_7dbd;
-    else
-        goto L_7db4;
-
-L_7db4:
-    if ((LOWORD(lpfl->rgwtMin[4]) < LOWORD((int32_t)(((uint32_t)((t_call_7d8d * 7)) / 0xa)))))
+    if ((lpfl->rgwtMin[4] < (int32_t)(((uint32_t)((LGetFleetStat(lpfl, 1) * 7)) / 0xa))))
         goto LOptimizeSpeed;
     else
         goto L_7dbd;
@@ -7352,22 +7338,10 @@ LTryLimitedSpeed:
 L_7e2a:
     lpord->iWarp = iWarp;
     lFuel = LFuelUseToWaypoint(lpfl, iwp, 1);
-    if ((HIWORD(lFuel) < HIWORD(lpfl->rgwtMin[4])))
+    if ((lFuel <= lpfl->rgwtMin[4]))
         goto L_7e89;
     else
-        goto L_7e79;
-
-L_7e79:
-    if ((HIWORD(lFuel) > HIWORD(lpfl->rgwtMin[4])))
         goto LDecWarp;
-    else
-        goto L_7e7e;
-
-L_7e7e:
-    if ((LOWORD(lFuel) > LOWORD(lpfl->rgwtMin[4])))
-        goto LDecWarp;
-    else
-        goto L_7e89;
 
 L_7e89:
     if ((lppl != 0x0))
@@ -7394,19 +7368,7 @@ L_7ec1:
         goto L_7f00;
 
 L_7f00:
-    if ((HIWORD(lFuel) < HIWORD((int32_t)((lpfl->rgwtMin[4] / 2)))))
-        goto L_7f48;
-    else
-        goto L_7f20;
-
-L_7f20:
-    if ((HIWORD(lFuel) > HIWORD((int32_t)((lpfl->rgwtMin[4] / 2)))))
-        goto L_7f2d;
-    else
-        goto L_7f25;
-
-L_7f25:
-    if ((LOWORD(lFuel) <= LOWORD((int32_t)((lpfl->rgwtMin[4] / 2)))))
+    if ((lFuel <= (int32_t)((lpfl->rgwtMin[4] / 2))))
         goto L_7f48;
     else
         goto L_7f2d;

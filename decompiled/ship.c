@@ -325,19 +325,7 @@ L_07b7:
     SelectObject(hdc, rghfontArial8[0]);
     lTot = LFuelUseToWaypoint(&(sel.fl), iScanActual, 0);
     c = _wsprintf(szWork, PszGetCompressedString(idsLdmg), LOWORD(lTot), HIWORD(lTot));
-    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[4])))
-        goto L_0833;
-    else
-        goto L_0816;
-
-L_0816:
-    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[4])))
-        goto L_0823;
-    else
-        goto L_081b;
-
-L_081b:
-    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[4])))
+    if ((lTot <= sel.fl.rgwtMin[4]))
         goto L_0833;
     else
         goto L_0823;
@@ -347,19 +335,7 @@ L_0823:
 
 L_0833:
     RightTextOut(hdc, xRight, yTop, szWork, c, (dxRight - 20));
-    if ((HIWORD(lTot) < HIWORD(sel.fl.rgwtMin[4])))
-        goto L_087e;
-    else
-        goto L_0861;
-
-L_0861:
-    if ((HIWORD(lTot) > HIWORD(sel.fl.rgwtMin[4])))
-        goto L_086e;
-    else
-        goto L_0866;
-
-L_0866:
-    if ((LOWORD(lTot) <= LOWORD(sel.fl.rgwtMin[4])))
+    if ((lTot <= sel.fl.rgwtMin[4]))
         goto L_087e;
     else
         goto L_086e;
@@ -956,13 +932,7 @@ FoundColony:
         goto L_1478;
 
 L_1478:
-    if ((LOWORD(sel.fl.rgwtMin[3]) != 0x0))
-        goto L_1494;
-    else
-        goto L_1482;
-
-L_1482:
-    if ((HIWORD(sel.fl.rgwtMin[3]) != 0x0))
+    if ((sel.fl.rgwtMin[3] != 0))
         goto L_1494;
     else
         goto L_148c;
@@ -3505,31 +3475,13 @@ L_45d3:
 L_45dc:
     lMax = 11;
     rgSize[0] = sel.fl.lpplord->rgord[sel.iwpAct].iWarp;
-    if ((HIWORD(rgSize[0]) > 0x0))
-        goto L_465a;
-    else
-        goto L_461f;
-
-L_461f:
-    if ((HIWORD(rgSize[0]) < 0x0))
+    if ((rgSize[0] <= 10))
         goto L_462d;
     else
-        goto L_4624;
-
-L_4624:
-    if ((LOWORD(rgSize[0]) > 0xa))
         goto L_465a;
-    else
-        goto L_462d;
 
 L_462d:
-    if ((LOWORD(rgSize[0]) != 0xa))
-        goto L_4663;
-    else
-        goto L_4636;
-
-L_4636:
-    if ((HIWORD(rgSize[0]) != 0x0))
+    if ((rgSize[0] != 10))
         goto L_4663;
     else
         goto L_463f;
@@ -3559,31 +3511,13 @@ L_466c:
 L_4675:
     lMax = 10;
     rgSize[0] = (uint32_t)(sel.fl.lpplord->rgord[sel.iwpAct].tsell.iPlrX);
-    if ((HIWORD(rgSize[0]) > 0x0))
-        goto L_46e8;
-    else
-        goto L_46ad;
-
-L_46ad:
-    if ((HIWORD(rgSize[0]) < 0x0))
+    if ((rgSize[0] <= 10))
         goto L_46bb;
     else
-        goto L_46b2;
-
-L_46b2:
-    if ((LOWORD(rgSize[0]) > 0xa))
         goto L_46e8;
-    else
-        goto L_46bb;
 
 L_46bb:
-    if ((LOWORD(rgSize[0]) != 0xa))
-        goto L_46f1;
-    else
-        goto L_46c4;
-
-L_46c4:
-    if ((HIWORD(rgSize[0]) != 0x0))
+    if ((rgSize[0] != 10))
         goto L_46f1;
     else
         goto L_46cd;
@@ -4241,13 +4175,7 @@ L_52ec:
         goto L_5325;
 
 L_5325:
-    if ((LOWORD(lPopPrev) != LOWORD(xfer[i].pl.rgwtMin[3])))
-        goto L_542a;
-    else
-        goto L_5343;
-
-L_5343:
-    if ((HIWORD(lPopPrev) != HIWORD(xfer[i].pl.rgwtMin[3])))
+    if ((lPopPrev != xfer[i].pl.rgwtMin[3]))
         goto L_542a;
     else
         goto L_534c;
@@ -7370,13 +7298,7 @@ L_854f:
         goto L_8559;
 
 L_8559:
-    if ((LOWORD(rgid[0]) != 0x0))
-        goto L_8591;
-    else
-        goto L_8563;
-
-L_8563:
-    if ((HIWORD(rgid[0]) != 0x1000))
+    if ((rgid[0] != 268435456))
         goto L_8591;
     else
         goto L_856e;
@@ -8217,13 +8139,7 @@ L_9462:
 
 DoMinerals:
     SendMessage(rghwndOrderDD[1], CB_RESETCONTENT, 0x0, 0);
-    if ((LOWORD(rglSel[0]) != 0x1))
-        goto L_95b6;
-    else
-        goto L_948d;
-
-L_948d:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 1))
         goto L_95b6;
     else
         goto L_9496;
@@ -8316,13 +8232,7 @@ L_9594:
     goto L_987f;
 
 L_95b6:
-    if ((LOWORD(rglSel[0]) != 0x7))
-        goto L_968c;
-    else
-        goto L_95bf;
-
-L_95bf:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 7))
         goto L_968c;
     else
         goto L_95c8;
@@ -8351,13 +8261,7 @@ L_9624:
     goto L_987f;
 
 L_968c:
-    if ((LOWORD(rglSel[0]) != 0x9))
-        goto L_9751;
-    else
-        goto L_9695;
-
-L_9695:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 9))
         goto L_9751;
     else
         goto L_969e;
@@ -8396,13 +8300,7 @@ L_9710:
     goto L_987f;
 
 L_9751:
-    if ((LOWORD(rglSel[0]) != 0x6))
-        goto L_987f;
-    else
-        goto L_975a;
-
-L_975a:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 6))
         goto L_987f;
     else
         goto L_9763;
@@ -8444,13 +8342,7 @@ L_9821:
 
 L_9824:
     rglSel[1] = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0x0, 0);
-    if ((LOWORD(rglSel[0]) != 0x1))
-        goto L_987f;
-    else
-        goto L_984c;
-
-L_984c:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 1))
         goto L_987f;
     else
         goto L_9855;
@@ -8486,13 +8378,7 @@ L_987f:
 
 L_9888:
     SendMessage(rghwndOrderDD[2], CB_RESETCONTENT, 0x0, 0);
-    if ((LOWORD(rglSel[0]) != 0x1))
-        goto L_99a6;
-    else
-        goto L_98aa;
-
-L_98aa:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 1))
         goto L_99a6;
     else
         goto L_98b3;
@@ -8508,13 +8394,7 @@ L_98bb:
         goto L_98c4;
 
 L_98c4:
-    if ((LOWORD(rglSel[1]) != 0x0))
-        goto L_98e8;
-    else
-        goto L_98cd;
-
-L_98cd:
-    if ((HIWORD(rglSel[1]) != 0x0))
+    if ((rglSel[1] != 0))
         goto L_98e8;
     else
         goto L_98d6;
@@ -8566,13 +8446,7 @@ L_99a6:
         goto L_99af;
 
 L_99af:
-    if ((LOWORD(rglSel[0]) != 0x1))
-        goto L_9a30;
-    else
-        goto L_99b8;
-
-L_99b8:
-    if ((HIWORD(rglSel[0]) != 0x0))
+    if ((rglSel[0] != 1))
         goto L_9a30;
     else
         goto L_99c1;
@@ -10227,22 +10101,10 @@ L_bd0e:
         goto L_be2c;
 
 L_bd2d:
-    if ((HIWORD(rgpflNew[i]->rgwtMin[4]) > 0x0))
-        goto L_bd78;
-    else
-        goto L_bd44;
-
-L_bd44:
-    if ((HIWORD(rgpflNew[i]->rgwtMin[4]) < 0x0))
+    if ((rgpflNew[i]->rgwtMin[4] <= 45000))
         goto L_bd53;
     else
-        goto L_bd49;
-
-L_bd49:
-    if ((LOWORD(rgpflNew[i]->rgwtMin[4]) > 0xafc8))
         goto L_bd78;
-    else
-        goto L_bd53;
 
 L_bd53:
     if ((rgFuelCapLoss[i] <= 45000))

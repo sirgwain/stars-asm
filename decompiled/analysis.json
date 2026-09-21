@@ -1,14 +1,14 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1700,
+    "temps": 1693,
     "hiWords": 194,
     "loWords": 1507,
-    "branchHiWords": 575,
-    "branchLoWords": 878,
+    "branchHiWords": 118,
+    "branchLoWords": 625,
     "segRegRefs": 8,
     "ir": {
-      "numStatements": 34759,
+      "numStatements": 34752,
       "untranslated": 76,
       "untranslatedAssign": 60,
       "untranslatedBranch": 6,
@@ -58,8 +58,6 @@
     "AddMinesToBlockedQueues": {
       "temps": 1,
       "loWords": 3,
-      "branchHiWords": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 33
       }
@@ -96,17 +94,14 @@
       }
     },
     "AutoRouteFleet": {
-      "temps": 1,
-      "branchHiWords": 4,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 35
+        "numStatements": 34
       }
     },
     "AutoTerraform": {
       "temps": 2,
-      "branchHiWords": 2,
-      "branchLoWords": 4,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 23
       }
@@ -138,8 +133,6 @@
     "BreedColonistsInTransit": {
       "temps": 3,
       "loWords": 3,
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 21
       }
@@ -304,8 +297,6 @@
     },
     "CResourcesAtPlanet": {
       "loWords": 3,
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 19
       }
@@ -341,8 +332,7 @@
     "CalcPlayerScore": {
       "temps": 3,
       "loWords": 2,
-      "branchHiWords": 6,
-      "branchLoWords": 5,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 48
       }
@@ -434,8 +424,6 @@
     "ChgPopFromPlanet": {
       "temps": 2,
       "loWords": 4,
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 42
       }
@@ -470,8 +458,8 @@
       "temps": 8,
       "hiWords": 1,
       "loWords": 9,
-      "branchHiWords": 3,
-      "branchLoWords": 7,
+      "branchHiWords": 2,
+      "branchLoWords": 6,
       "ir": {
         "numStatements": 204
       }
@@ -620,8 +608,6 @@
       }
     },
     "DestroyCurGame": {
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 88
       }
@@ -686,8 +672,8 @@
     },
     "DoAutomitronAiTurn": {
       "temps": 6,
-      "branchHiWords": 20,
-      "branchLoWords": 18,
+      "branchHiWords": 9,
+      "branchLoWords": 12,
       "ir": {
         "numStatements": 199
       }
@@ -701,8 +687,7 @@
     "DoBombing": {
       "temps": 13,
       "loWords": 16,
-      "branchHiWords": 15,
-      "branchLoWords": 10,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 110
       }
@@ -710,16 +695,14 @@
     "DoCyberAiTurn": {
       "temps": 10,
       "loWords": 2,
-      "branchHiWords": 21,
-      "branchLoWords": 13,
+      "branchHiWords": 1,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 228
       }
     },
     "DoCyberFreighter": {
       "temps": 1,
-      "branchHiWords": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 43
       }
@@ -727,8 +710,6 @@
     "DoCyberPackets": {
       "temps": 8,
       "loWords": 6,
-      "branchHiWords": 26,
-      "branchLoWords": 13,
       "ir": {
         "numStatements": 118,
         "untranslated": 1,
@@ -742,8 +723,8 @@
     "DoMacintiAiTurn": {
       "temps": 12,
       "loWords": 3,
-      "branchHiWords": 18,
-      "branchLoWords": 13,
+      "branchHiWords": 8,
+      "branchLoWords": 7,
       "ir": {
         "numStatements": 357
       }
@@ -764,16 +745,16 @@
     "DoRobotoidAiTurn": {
       "temps": 13,
       "loWords": 2,
-      "branchHiWords": 13,
-      "branchLoWords": 9,
+      "branchHiWords": 8,
+      "branchLoWords": 6,
       "ir": {
         "numStatements": 257
       }
     },
     "DoRototillAiTurn": {
       "temps": 4,
-      "branchHiWords": 12,
-      "branchLoWords": 13,
+      "branchHiWords": 3,
+      "branchLoWords": 8,
       "ir": {
         "numStatements": 152
       }
@@ -789,8 +770,8 @@
     "DoTurinDroneAiTurn": {
       "temps": 8,
       "loWords": 1,
-      "branchHiWords": 33,
-      "branchLoWords": 22,
+      "branchHiWords": 24,
+      "branchLoWords": 17,
       "ir": {
         "numStatements": 290
       }
@@ -900,8 +881,7 @@
     "DrawFleetGauge": {
       "hiWords": 7,
       "loWords": 7,
-      "branchHiWords": 6,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 34
       }
@@ -1053,8 +1033,7 @@
       "temps": 2,
       "hiWords": 3,
       "loWords": 10,
-      "branchHiWords": 5,
-      "branchLoWords": 5,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 97
       }
@@ -1119,12 +1098,10 @@
       }
     },
     "DrawReportItem": {
-      "temps": 13,
+      "temps": 11,
       "loWords": 18,
-      "branchHiWords": 8,
-      "branchLoWords": 4,
       "ir": {
-        "numStatements": 243
+        "numStatements": 241
       }
     },
     "DrawResearchDlg": {
@@ -1187,8 +1164,6 @@
       "temps": 4,
       "hiWords": 1,
       "loWords": 4,
-      "branchHiWords": 8,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 107
       }
@@ -1217,8 +1192,7 @@
       "temps": 4,
       "hiWords": 2,
       "loWords": 9,
-      "branchHiWords": 1,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 177
       }
@@ -1286,8 +1260,7 @@
       "temps": 3,
       "hiWords": 2,
       "loWords": 16,
-      "branchHiWords": 4,
-      "branchLoWords": 6,
+      "branchLoWords": 4,
       "ir": {
         "numStatements": 116
       }
@@ -1475,8 +1448,7 @@
     "EstMineralsMined": {
       "temps": 3,
       "loWords": 1,
-      "branchHiWords": 1,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 54
       }
@@ -1516,8 +1488,6 @@
       }
     },
     "FAddPacketToQueue": {
-      "branchHiWords": 16,
-      "branchLoWords": 8,
       "ir": {
         "numStatements": 8
       }
@@ -1632,8 +1602,6 @@
       }
     },
     "FCheckCargo": {
-      "branchHiWords": 8,
-      "branchLoWords": 8,
       "ir": {
         "numStatements": 10
       }
@@ -1909,23 +1877,18 @@
       }
     },
     "FEnumDropOffStage1": {
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 6
       }
     },
     "FEnumDropOffStage2": {
-      "branchHiWords": 2,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 6
       }
     },
     "FEnumNeedMinerals": {
       "temps": 2,
-      "branchHiWords": 6,
-      "branchLoWords": 3,
       "ir": {
         "numStatements": 22
       }
@@ -1936,8 +1899,6 @@
       }
     },
     "FEnumPickUp": {
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 2
       }
@@ -1952,8 +1913,7 @@
     "FFillProdMinesAndFactories": {
       "temps": 18,
       "loWords": 13,
-      "branchHiWords": 10,
-      "branchLoWords": 17,
+      "branchLoWords": 12,
       "ir": {
         "numStatements": 95
       }
@@ -2326,8 +2286,6 @@
       }
     },
     "FQueueAiDefenses": {
-      "branchHiWords": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -2339,8 +2297,6 @@
     },
     "FQueueAiTerraforming": {
       "temps": 2,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 27
       }
@@ -2755,8 +2711,6 @@
     "FleetTransferCargoBalance": {
       "temps": 37,
       "loWords": 6,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 148
       }
@@ -2824,8 +2778,6 @@
     },
     "FuelFleets": {
       "temps": 3,
-      "branchHiWords": 8,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 22
       }
@@ -2834,8 +2786,7 @@
       "temps": 2,
       "hiWords": 1,
       "loWords": 25,
-      "branchHiWords": 81,
-      "branchLoWords": 72,
+      "branchLoWords": 28,
       "ir": {
         "numStatements": 163
       }
@@ -3017,8 +2968,8 @@
       }
     },
     "HandleBasicAiTasks": {
-      "branchHiWords": 4,
-      "branchLoWords": 3,
+      "branchHiWords": 2,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 19
       }
@@ -3209,12 +3160,10 @@
       }
     },
     "IWarpBestForWaypoint": {
-      "temps": 2,
+      "temps": 1,
       "loWords": 4,
-      "branchHiWords": 12,
-      "branchLoWords": 6,
       "ir": {
-        "numStatements": 41
+        "numStatements": 40
       }
     },
     "IWarpMAFromLppl": {
@@ -3256,43 +3205,35 @@
     "IdTargetArmada": {
       "temps": 2,
       "loWords": 3,
-      "branchHiWords": 20,
-      "branchLoWords": 11,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 58
       }
     },
     "IdTargetAttack": {
-      "temps": 1,
-      "branchHiWords": 4,
-      "branchLoWords": 7,
+      "branchLoWords": 5,
       "ir": {
-        "numStatements": 81
+        "numStatements": 80
       }
     },
     "IdTargetFreighter": {
       "temps": 3,
       "loWords": 7,
-      "branchHiWords": 26,
-      "branchLoWords": 15,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 120
       }
     },
     "IdTargetMacFreighter": {
       "loWords": 2,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 78
       }
     },
     "IdTargetScout": {
-      "temps": 1,
-      "branchHiWords": 4,
-      "branchLoWords": 4,
+      "branchLoWords": 2,
       "ir": {
-        "numStatements": 53
+        "numStatements": 52
       }
     },
     "IdmGetMessageN": {
@@ -3306,8 +3247,7 @@
       }
     },
     "IdplFindClosestStarbase": {
-      "branchHiWords": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -3886,8 +3826,6 @@
     "MeteorStrike": {
       "temps": 1,
       "loWords": 1,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 53
       }
@@ -3921,8 +3859,7 @@
     "MoveFleets": {
       "temps": 18,
       "loWords": 30,
-      "branchHiWords": 23,
-      "branchLoWords": 15,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 210
       }
@@ -3930,8 +3867,7 @@
     "MoveThings": {
       "temps": 22,
       "loWords": 23,
-      "branchHiWords": 6,
-      "branchLoWords": 7,
+      "branchLoWords": 4,
       "ir": {
         "numStatements": 186
       }
@@ -4158,8 +4094,6 @@
       }
     },
     "PlanetaryClimateChange": {
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 16
       }
@@ -4173,8 +4107,6 @@
       "temps": 19,
       "hiWords": 6,
       "loWords": 21,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 111
       }
@@ -4236,8 +4168,7 @@
     },
     "Produce": {
       "temps": 1,
-      "branchHiWords": 1,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 73
       }
@@ -4362,12 +4293,9 @@
       }
     },
     "PszGetETA": {
-      "temps": 1,
       "loWords": 1,
-      "branchHiWords": 4,
-      "branchLoWords": 2,
       "ir": {
-        "numStatements": 17
+        "numStatements": 16
       }
     },
     "PszGetFleetName": {
@@ -4439,8 +4367,6 @@
     "PtDisplayPlanetPopInfo": {
       "hiWords": 6,
       "loWords": 7,
-      "branchHiWords": 5,
-      "branchLoWords": 3,
       "ir": {
         "numStatements": 109
       }
@@ -4478,8 +4404,7 @@
       }
     },
     "QueueAiStarbases": {
-      "branchHiWords": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 16
       }
@@ -4487,8 +4412,6 @@
     "QuickBuildDefenses": {
       "temps": 2,
       "loWords": 5,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 34
       }
@@ -4751,8 +4674,8 @@
       "temps": 18,
       "hiWords": 7,
       "loWords": 48,
-      "branchHiWords": 17,
-      "branchLoWords": 12,
+      "branchHiWords": 6,
+      "branchLoWords": 6,
       "ir": {
         "numStatements": 368
       }
@@ -5194,8 +5117,6 @@
     },
     "TransferStuff": {
       "temps": 1,
-      "branchHiWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 73
       }
@@ -5257,8 +5178,7 @@
       "temps": 1,
       "hiWords": 3,
       "loWords": 5,
-      "branchHiWords": 1,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 21
       }
@@ -5266,8 +5186,6 @@
     "UpdateOrdersDDs": {
       "temps": 2,
       "loWords": 4,
-      "branchHiWords": 8,
-      "branchLoWords": 8,
       "ir": {
         "numStatements": 65
       }
@@ -5282,8 +5200,7 @@
       "temps": 2,
       "hiWords": 1,
       "loWords": 7,
-      "branchHiWords": 4,
-      "branchLoWords": 5,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 16
       }
@@ -5329,8 +5246,7 @@
     "ValidateStarbaseHistory": {
       "temps": 2,
       "loWords": 1,
-      "branchHiWords": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 67
       }
@@ -5521,8 +5437,6 @@
       }
     },
     "iBuildCyberStarbase": {
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 6
       }

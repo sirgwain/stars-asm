@@ -545,19 +545,7 @@ L_07e1:
         goto L_07f8;
 
 L_07f8:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_0818;
-    else
-        goto L_0805;
-
-L_0805:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_07a2;
-    else
-        goto L_080a;
-
-L_080a:
-    if ((LOWORD(lppl->rgwtMin[3]) < 0xc8))
+    if ((lppl->rgwtMin[3] < 200))
         goto L_07a2;
     else
         goto L_0818;
@@ -1383,13 +1371,7 @@ L_1568:
         goto L_1577;
 
 L_1577:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_15d1;
-    else
-        goto L_1584;
-
-L_1584:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_15d1;
     else
         goto L_158e;
@@ -1475,19 +1457,7 @@ L_16a6:
         goto L_16b6;
 
 L_16b6:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_1876;
-    else
-        goto L_16c3;
-
-L_16c3:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_16d2;
-    else
-        goto L_16c8;
-
-L_16c8:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_1876;
     else
         goto L_16d2;
@@ -2536,7 +2506,7 @@ int16_t IdTargetArmada(FLEET *lpfl) {
     int32_t lPopUs;
     int32_t lPopEnemy;
     int32_t cXfer;
-    int32_t t_merge_30e4_0002_wide;
+    int32_t t_merge_30e4_0001;
     int32_t t_merge_315a_0001;
 
 L_288e:
@@ -2675,19 +2645,7 @@ L_2aad:
         goto L_2abb;
 
 L_2abb:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
-        goto L_2af3;
-    else
-        goto L_2ac5;
-
-L_2ac5:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_2ad5;
-    else
-        goto L_2aca;
-
-L_2aca:
-    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0xbb8))
+    if ((sel.pl.rgwtMin[3] <= 3000))
         goto L_2af3;
     else
         goto L_2ad5;
@@ -2697,19 +2655,7 @@ L_2ad5:
     goto L_2b6d;
 
 L_2af3:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
-        goto L_2b2b;
-    else
-        goto L_2afd;
-
-L_2afd:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_2b0d;
-    else
-        goto L_2b02;
-
-L_2b02:
-    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0x7d0))
+    if ((sel.pl.rgwtMin[3] <= 2000))
         goto L_2b2b;
     else
         goto L_2b0d;
@@ -2719,19 +2665,7 @@ L_2b0d:
     goto L_2b6d;
 
 L_2b2b:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
-        goto L_2b63;
-    else
-        goto L_2b35;
-
-L_2b35:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_2b45;
-    else
-        goto L_2b3a;
-
-L_2b3a:
-    if ((LOWORD(sel.pl.rgwtMin[3]) <= 0x3e8))
+    if ((sel.pl.rgwtMin[3] <= 1000))
         goto L_2b63;
     else
         goto L_2b45;
@@ -2935,19 +2869,7 @@ L_2eb2:
         goto L_2ec1;
 
 L_2ec1:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto TargetPotentArmada;
-    else
-        goto L_2ece;
-
-L_2ece:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_2ede;
-    else
-        goto L_2ed3;
-
-L_2ed3:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x3e8))
+    if ((lppl->rgwtMin[3] <= 1000))
         goto TargetPotentArmada;
     else
         goto L_2ede;
@@ -3002,66 +2924,30 @@ L_3056:
 
 L_306e:
     cXfer = (int32_t)(((uint32_t)((lPopEnemy * 5)) / 0x4));
-    if ((HIWORD(cXfer) < HIWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
-        goto L_30cc;
-    else
-        goto L_30b6;
-
-L_30b6:
-    if ((HIWORD(cXfer) > HIWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
-        goto L_30c3;
-    else
-        goto L_30bb;
-
-L_30bb:
-    if ((LOWORD(cXfer) <= LOWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
+    if ((cXfer <= (int32_t)((lpfl->rgwtMin[3] / 2))))
         goto L_30cc;
     else
         goto L_30c3;
 
 L_30c3:
-    t_merge_30e4_0002_wide = cXfer;
+    t_merge_30e4_0001 = cXfer;
     goto L_30e4;
 
 L_30cc:
-    t_merge_30e4_0002_wide = (int32_t)((lpfl->rgwtMin[3] / 2));
+    t_merge_30e4_0001 = (int32_t)((lpfl->rgwtMin[3] / 2));
 
 L_30e4:
-    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_30e4_0002_wide)))
-        goto L_310c;
-    else
-        goto L_30f0;
-
-L_30f0:
-    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_30e4_0002_wide)))
+    if ((lpfl->rgwtMin[3] < t_merge_30e4_0001))
         goto L_30fe;
     else
-        goto L_30f5;
-
-L_30f5:
-    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_30e4_0002_wide)))
         goto L_310c;
-    else
-        goto L_30fe;
 
 L_30fe:
     t_merge_315a_0001 = lpfl->rgwtMin[3];
     goto L_315a;
 
 L_310c:
-    if ((HIWORD(cXfer) < HIWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
-        goto L_3142;
-    else
-        goto L_312c;
-
-L_312c:
-    if ((HIWORD(cXfer) > HIWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
-        goto L_3139;
-    else
-        goto L_3131;
-
-L_3131:
-    if ((LOWORD(cXfer) <= LOWORD((int32_t)((lpfl->rgwtMin[3] / 2)))))
+    if ((cXfer <= (int32_t)((lpfl->rgwtMin[3] / 2))))
         goto L_3142;
     else
         goto L_3139;
@@ -3725,41 +3611,17 @@ L_3be3:
         goto L_3bfa;
 
 L_3bfa:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_3cfd;
-    else
-        goto L_3c07;
-
-L_3c07:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
+    if ((lppl->rgwtMin[3] < 200))
         goto L_3c17;
     else
-        goto L_3c0c;
-
-L_3c0c:
-    if ((LOWORD(lppl->rgwtMin[3]) >= 0xc8))
         goto L_3cfd;
-    else
-        goto L_3c17;
 
 L_3c17:
     ChangeMainObjSel(grobjPlanet, lppl->id);
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_3c4d;
-    else
-        goto L_3c36;
-
-L_3c36:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
+    if ((lppl->rgwtMin[3] < 200))
         goto L_3c46;
     else
-        goto L_3c3b;
-
-L_3c3b:
-    if ((LOWORD(lppl->rgwtMin[3]) >= 0xc8))
         goto L_3c4d;
-    else
-        goto L_3c46;
 
 L_3c46:
     t_merge_3c51_0001 = 0x1;
@@ -4719,19 +4581,7 @@ L_4bef:
         goto L_4c17;
 
 L_4c17:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto LBlowAwayOrders;
-    else
-        goto L_4c24;
-
-L_4c24:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_4c33;
-    else
-        goto L_4c29;
-
-L_4c29:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto LBlowAwayOrders;
     else
         goto L_4c33;
@@ -4965,31 +4815,13 @@ L_50a8:
         goto L_50b4;
 
 L_50b4:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_5170;
-    else
-        goto L_50be;
-
-L_50be:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
+    if ((sel.pl.rgwtMin[3] < 50))
         goto L_50cd;
     else
-        goto L_50c3;
-
-L_50c3:
-    if ((LOWORD(sel.pl.rgwtMin[3]) >= 0x32))
         goto L_5170;
-    else
-        goto L_50cd;
 
 L_50cd:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_5170;
-    else
-        goto L_50da;
-
-L_50da:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_5170;
     else
         goto L_50e4;

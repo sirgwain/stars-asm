@@ -126,6 +126,53 @@ func TestCollapseWideCompareRejectsFourByteAggregate(t *testing.T) {
 	}
 }
 
+// TestCollapseWideCompareArrayElementReloads verifies a scalar array element
+// remains eligible when the compiler reloads its high lane at a new origin.
+func TestCollapseWideCompareArrayElementReloads(t *testing.T) {
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JL", 0x1100),
+		jccForWideCompareTest(0x1002, "JG", 0x1006),
+		jccForWideCompareTest(0x1004, "JBE", 0x1100),
+		retForWideCompareTest(0x1006),
+		retForWideCompareTest(0x1100),
+	})
+	values := &typeinfo.Array{Elem: typeinfo.I32, Count: 4}
+	img := &asm.ImageNE{}
+	sdb := &typeinfo.SymbolDB{}
+	fs := &typeinfo.Function{
+		Name: "CompareArrayElement",
+		Addr: typeinfo.Addr{Seg: 1, Off: 0x1000},
+		Len:  0x200,
+		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
+		Vars: []typeinfo.FunctionVar{{Name: "values", Type: values, BPOffset: -16}},
+	}
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	load := func(disp int, instOff uint32) machine.Value {
+		return machine.LoadVal(machine.MemoryAddress{
+			Base:   machine.FrameBaseVal(),
+			Disp:   disp,
+			Width:  2,
+			Origin: machine.Origin{InstOff: instOff, Role: machine.OperandSrc},
+		})
+	}
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		compareBlock(0x1000, "JL", load(-2, 0x1000), machine.ConstVal(0), 0x1100, 0x1002),
+		compareBlock(0x1002, "JG", load(-2, 0x1002), machine.ConstVal(0), 0x1006, 0x1004),
+		compareBlock(0x1004, "JBE", load(-4, 0x1004), machine.ConstVal(0), 0x1100, 0x1006),
+		{Block: 0x1006},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{ctx: ctx}).ProcessMachineFunc(nil, &fn); !changed {
+		t.Fatal("ProcessMachineFunc changed = false, want scalar array element collapse")
+	}
+	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
+	loadValue, ok := branch.Predicate.LHS.(*machine.Load)
+	if !ok || loadValue.Addr.Width != 4 {
+		t.Fatalf("wide lhs = %#v, want four-byte array element load", branch.Predicate.LHS)
+	}
+}
+
 // TestPreserveCompareDomainCastsSignExtensionForUnsignedCompare verifies the
 // signed result of CWD-style widening is explicitly cast for unsigned Jccs.
 func TestPreserveCompareDomainCastsSignExtensionForUnsignedCompare(t *testing.T) {

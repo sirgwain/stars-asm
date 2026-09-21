@@ -3591,37 +3591,13 @@ L_4d13:
         goto L_4d47;
 
 L_4d47:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto L_4d75;
-    else
-        goto L_4d50;
-
-L_4d50:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_4d5e;
-    else
-        goto L_4d55;
-
-L_4d55:
-    if ((LOWORD(rgl[0]) < 0x1))
+    if ((rgl[0] < 1))
         goto L_4d75;
     else
         goto L_4d5e;
 
 L_4d5e:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto L_4d99;
-    else
-        goto L_4d67;
-
-L_4d67:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_4d75;
-    else
-        goto L_4d6c;
-
-L_4d6c:
-    if ((LOWORD(rgl[0]) <= 0x10))
+    if ((rgl[0] <= 16))
         goto L_4d99;
     else
         goto L_4d75;
@@ -3772,37 +3748,13 @@ L_5063:
         goto L_5071;
 
 L_5071:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_507a;
-
-L_507a:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5088;
-    else
-        goto L_507f;
-
-L_507f:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5088;
 
 L_5088:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto L_50dd;
-    else
-        goto L_5091;
-
-L_5091:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5096;
-
-L_5096:
-    if ((LOWORD(rgl[0]) <= 0x1))
+    if ((rgl[0] <= 1))
         goto L_50dd;
     else
         goto LBadDefVc;
@@ -3814,13 +3766,7 @@ LBadDefVc:
     goto LError;
 
 L_50dd:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_5160;
-    else
-        goto L_50e6;
-
-L_50e6:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_5160;
     else
         goto L_50ef;
@@ -3832,40 +3778,16 @@ L_50ef:
         goto L_50f8;
 
 L_50f8:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5101;
-
-L_5101:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_510f;
-    else
-        goto L_5106;
-
-L_5106:
-    if ((LOWORD(rgl[1]) < 0x14))
+    if ((rgl[1] < 20))
         goto LBadDefVc;
     else
         goto L_510f;
 
 L_510f:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 100))
         goto L_5129;
     else
-        goto L_5118;
-
-L_5118:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_511d;
-
-L_511d:
-    if ((LOWORD(rgl[1]) > 0x64))
-        goto LBadDefVc;
-    else
-        goto L_5129;
 
 L_5129:
     SetVCCheck(&(game), 0, 1);
@@ -3887,49 +3809,19 @@ L_519d:
         goto L_51ab;
 
 L_51ab:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_51b4;
-
-L_51b4:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_51c2;
-    else
-        goto L_51b9;
-
-L_51b9:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_51c2;
 
 L_51c2:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_51dc;
     else
-        goto L_51cb;
-
-L_51cb:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_51d0;
-
-L_51d0:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_51dc;
 
 L_51dc:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_52b2;
-    else
-        goto L_51e5;
-
-L_51e5:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_52b2;
     else
         goto L_51ee;
@@ -3941,76 +3833,28 @@ L_51ee:
         goto L_51f7;
 
 L_51f7:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5200;
-
-L_5200:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_520e;
-    else
-        goto L_5205;
-
-L_5205:
-    if ((LOWORD(rgl[1]) < 0x8))
+    if ((rgl[1] < 8))
         goto LBadDefVc;
     else
         goto L_520e;
 
 L_520e:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5217;
-
-L_5217:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 26))
         goto L_5225;
     else
-        goto L_521c;
-
-L_521c:
-    if ((LOWORD(rgl[1]) > 0x1a))
         goto LBadDefVc;
-    else
-        goto L_5225;
 
 L_5225:
-    if ((HIWORD(rgl[2]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_522e;
-
-L_522e:
-    if ((HIWORD(rgl[2]) > 0x0))
-        goto L_523c;
-    else
-        goto L_5233;
-
-L_5233:
-    if ((LOWORD(rgl[2]) < 0x2))
+    if ((rgl[2] < 2))
         goto LBadDefVc;
     else
         goto L_523c;
 
 L_523c:
-    if ((HIWORD(rgl[2]) < 0x0))
+    if ((rgl[2] <= 6))
         goto L_5256;
     else
-        goto L_5245;
-
-L_5245:
-    if ((HIWORD(rgl[2]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_524a;
-
-L_524a:
-    if ((LOWORD(rgl[2]) > 0x6))
-        goto LBadDefVc;
-    else
-        goto L_5256;
 
 L_5256:
     SetVCCheck(&(game), 1, 1);
@@ -4034,49 +3878,19 @@ L_52ef:
         goto L_52fd;
 
 L_52fd:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5306;
-
-L_5306:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5314;
-    else
-        goto L_530b;
-
-L_530b:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5314;
 
 L_5314:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_532e;
     else
-        goto L_531d;
-
-L_531d:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5322;
-
-L_5322:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_532e;
 
 L_532e:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_53b3;
-    else
-        goto L_5337;
-
-L_5337:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_53b3;
     else
         goto L_5340;
@@ -4088,40 +3902,16 @@ L_5340:
         goto L_5349;
 
 L_5349:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5352;
-
-L_5352:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5361;
-    else
-        goto L_5357;
-
-L_5357:
-    if ((LOWORD(rgl[1]) < 0x3e8))
+    if ((rgl[1] < 1000))
         goto LBadDefVc;
     else
         goto L_5361;
 
 L_5361:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 20000))
         goto L_537c;
     else
-        goto L_536a;
-
-L_536a:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_536f;
-
-L_536f:
-    if ((LOWORD(rgl[1]) > 0x4e20))
-        goto LBadDefVc;
-    else
-        goto L_537c;
 
 L_537c:
     SetVCCheck(&(game), 3, 1);
@@ -4143,49 +3933,19 @@ L_53f0:
         goto L_53fe;
 
 L_53fe:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5407;
-
-L_5407:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5415;
-    else
-        goto L_540c;
-
-L_540c:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5415;
 
 L_5415:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_542f;
     else
-        goto L_541e;
-
-L_541e:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5423;
-
-L_5423:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_542f;
 
 L_542f:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_54b3;
-    else
-        goto L_5438;
-
-L_5438:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_54b3;
     else
         goto L_5441;
@@ -4197,40 +3957,16 @@ L_5441:
         goto L_544a;
 
 L_544a:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5453;
-
-L_5453:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5461;
-    else
-        goto L_5458;
-
-L_5458:
-    if ((LOWORD(rgl[1]) < 0x14))
+    if ((rgl[1] < 20))
         goto LBadDefVc;
     else
         goto L_5461;
 
 L_5461:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 300))
         goto L_547c;
     else
-        goto L_546a;
-
-L_546a:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_546f;
-
-L_546f:
-    if ((LOWORD(rgl[1]) > 0x12c))
-        goto LBadDefVc;
-    else
-        goto L_547c;
 
 L_547c:
     SetVCCheck(&(game), 4, 1);
@@ -4252,49 +3988,19 @@ L_54f0:
         goto L_54fe;
 
 L_54fe:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5507;
-
-L_5507:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5515;
-    else
-        goto L_550c;
-
-L_550c:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5515;
 
 L_5515:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_552f;
     else
-        goto L_551e;
-
-L_551e:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5523;
-
-L_5523:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_552f;
 
 L_552f:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_55b3;
-    else
-        goto L_5538;
-
-L_5538:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_55b3;
     else
         goto L_5541;
@@ -4306,40 +4012,16 @@ L_5541:
         goto L_554a;
 
 L_554a:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5553;
-
-L_5553:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5561;
-    else
-        goto L_5558;
-
-L_5558:
-    if ((LOWORD(rgl[1]) < 0xa))
+    if ((rgl[1] < 10))
         goto LBadDefVc;
     else
         goto L_5561;
 
 L_5561:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 500))
         goto L_557c;
     else
-        goto L_556a;
-
-L_556a:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_556f;
-
-L_556f:
-    if ((LOWORD(rgl[1]) > 0x1f4))
-        goto LBadDefVc;
-    else
-        goto L_557c;
 
 L_557c:
     SetVCCheck(&(game), 5, 1);
@@ -4361,49 +4043,19 @@ L_55f0:
         goto L_55fe;
 
 L_55fe:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5607;
-
-L_5607:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5615;
-    else
-        goto L_560c;
-
-L_560c:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5615;
 
 L_5615:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_562f;
     else
-        goto L_561e;
-
-L_561e:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5623;
-
-L_5623:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_562f;
 
 L_562f:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_56b3;
-    else
-        goto L_5638;
-
-L_5638:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_56b3;
     else
         goto L_5641;
@@ -4415,40 +4067,16 @@ L_5641:
         goto L_564a;
 
 L_564a:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5653;
-
-L_5653:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5661;
-    else
-        goto L_5658;
-
-L_5658:
-    if ((LOWORD(rgl[1]) < 0xa))
+    if ((rgl[1] < 10))
         goto LBadDefVc;
     else
         goto L_5661;
 
 L_5661:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 300))
         goto L_567c;
     else
-        goto L_566a;
-
-L_566a:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_566f;
-
-L_566f:
-    if ((LOWORD(rgl[1]) > 0x12c))
-        goto LBadDefVc;
-    else
-        goto L_567c;
 
 L_567c:
     SetVCCheck(&(game), 6, 1);
@@ -4470,49 +4098,19 @@ L_56f0:
         goto L_56fe;
 
 L_56fe:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5707;
-
-L_5707:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5715;
-    else
-        goto L_570c;
-
-L_570c:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5715;
 
 L_5715:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 1))
         goto L_572f;
     else
-        goto L_571e;
-
-L_571e:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5723;
-
-L_5723:
-    if ((LOWORD(rgl[0]) > 0x1))
-        goto LBadDefVc;
-    else
-        goto L_572f;
 
 L_572f:
-    if ((LOWORD(rgl[0]) != 0x1))
-        goto L_57b3;
-    else
-        goto L_5738;
-
-L_5738:
-    if ((HIWORD(rgl[0]) != 0x0))
+    if ((rgl[0] != 1))
         goto L_57b3;
     else
         goto L_5741;
@@ -4524,40 +4122,16 @@ L_5741:
         goto L_574a;
 
 L_574a:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5753;
-
-L_5753:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5761;
-    else
-        goto L_5758;
-
-L_5758:
-    if ((LOWORD(rgl[1]) < 0x1e))
+    if ((rgl[1] < 30))
         goto LBadDefVc;
     else
         goto L_5761;
 
 L_5761:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 900))
         goto L_577c;
     else
-        goto L_576a;
-
-L_576a:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_576f;
-
-L_576f:
-    if ((LOWORD(rgl[1]) > 0x384))
-        goto LBadDefVc;
-    else
-        goto L_577c;
 
 L_577c:
     SetVCCheck(&(game), 7, 1);
@@ -4579,55 +4153,19 @@ L_57f0:
         goto L_57fe;
 
 L_57fe:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5807;
-
-L_5807:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5815;
-    else
-        goto L_580c;
-
-L_580c:
-    if ((LOWORD(rgl[0]) < 0x0))
+    if ((rgl[0] < 0))
         goto LBadDefVc;
     else
         goto L_5815;
 
 L_5815:
-    if ((HIWORD(rgl[0]) < 0x0))
+    if ((rgl[0] <= 7))
         goto L_582f;
     else
-        goto L_581e;
-
-L_581e:
-    if ((HIWORD(rgl[0]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5823;
-
-L_5823:
-    if ((LOWORD(rgl[0]) > 0x7))
-        goto LBadDefVc;
-    else
-        goto L_582f;
 
 L_582f:
-    if ((HIWORD(rgl[0]) < 0x0))
-        goto L_58bb;
-    else
-        goto L_5838;
-
-L_5838:
-    if ((HIWORD(rgl[0]) > 0x0))
-        goto L_5846;
-    else
-        goto L_583d;
-
-L_583d:
-    if ((LOWORD(rgl[0]) <= 0x0))
+    if ((rgl[0] <= 0))
         goto L_58bb;
     else
         goto L_5846;
@@ -4639,40 +4177,16 @@ L_5846:
         goto L_584f;
 
 L_584f:
-    if ((HIWORD(rgl[1]) < 0x0))
-        goto LBadDefVc;
-    else
-        goto L_5858;
-
-L_5858:
-    if ((HIWORD(rgl[1]) > 0x0))
-        goto L_5866;
-    else
-        goto L_585d;
-
-L_585d:
-    if ((LOWORD(rgl[1]) < 0x1e))
+    if ((rgl[1] < 30))
         goto LBadDefVc;
     else
         goto L_5866;
 
 L_5866:
-    if ((HIWORD(rgl[1]) < 0x0))
+    if ((rgl[1] <= 500))
         goto L_5881;
     else
-        goto L_586f;
-
-L_586f:
-    if ((HIWORD(rgl[1]) > 0x0))
         goto LBadDefVc;
-    else
-        goto L_5874;
-
-L_5874:
-    if ((LOWORD(rgl[1]) > 0x1f4))
-        goto LBadDefVc;
-    else
-        goto L_5881;
 
 L_5881:
     SetVCVal(&(game), 8, LOWORD(rgl[0]));

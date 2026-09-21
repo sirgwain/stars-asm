@@ -360,19 +360,7 @@ L_05bf:
         goto L_05d6;
 
 L_05d6:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_05f6;
-    else
-        goto L_05e3;
-
-L_05e3:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_0d2d;
-    else
-        goto L_05e8;
-
-L_05e8:
-    if ((LOWORD(lppl->rgwtMin[3]) < 0x5dc))
+    if ((lppl->rgwtMin[3] < 1500))
         goto L_0d2d;
     else
         goto L_05f6;
@@ -921,19 +909,7 @@ L_0ebf:
         goto L_0ee7;
 
 L_0ee7:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto LBlowAwayOrders;
-    else
-        goto L_0ef4;
-
-L_0ef4:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_0f03;
-    else
-        goto L_0ef9;
-
-L_0ef9:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto LBlowAwayOrders;
     else
         goto L_0f03;
@@ -1080,22 +1056,10 @@ L_11c0:
         goto L_11ce;
 
 L_11ce:
-    if ((HIWORD(lpfl->rgwtMin[4]) > 0x0))
-        goto L_1162;
-    else
-        goto L_11db;
-
-L_11db:
-    if ((HIWORD(lpfl->rgwtMin[4]) < 0x0))
+    if ((lpfl->rgwtMin[4] < 2))
         goto LScrapFleet;
     else
-        goto L_11e0;
-
-L_11e0:
-    if ((LOWORD(lpfl->rgwtMin[4]) >= 0x2))
         goto L_1162;
-    else
-        goto LScrapFleet;
 
 LScrapFleet:
     ChangeMainObjSel(grobjFleet, lpfl->id);
@@ -1159,31 +1123,13 @@ L_12e0:
         goto L_12ec;
 
 L_12ec:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_1374;
-    else
-        goto L_12f6;
-
-L_12f6:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
+    if ((sel.pl.rgwtMin[3] < 200))
         goto L_1306;
     else
-        goto L_12fb;
-
-L_12fb:
-    if ((LOWORD(sel.pl.rgwtMin[3]) >= 0xc8))
         goto L_1374;
-    else
-        goto L_1306;
 
 L_1306:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_1374;
-    else
-        goto L_1313;
-
-L_1313:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_1374;
     else
         goto L_131d;
@@ -1529,19 +1475,7 @@ L_189b:
         goto L_18bb;
 
 L_18bb:
-    if ((HIWORD(lpfl->rgwtMin[4]) > 0x0))
-        goto L_18da;
-    else
-        goto L_18c8;
-
-L_18c8:
-    if ((HIWORD(lpfl->rgwtMin[4]) < 0x0))
-        goto LScrapFleet;
-    else
-        goto L_18cd;
-
-L_18cd:
-    if ((LOWORD(lpfl->rgwtMin[4]) < 0x2))
+    if ((lpfl->rgwtMin[4] < 2))
         goto LScrapFleet;
     else
         goto L_18da;
@@ -2047,19 +1981,7 @@ L_2101:
         goto L_2118;
 
 L_2118:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_2138;
-    else
-        goto L_2125;
-
-L_2125:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_22cb;
-    else
-        goto L_212a;
-
-L_212a:
-    if ((LOWORD(lppl->rgwtMin[3]) < 0x3e8))
+    if ((lppl->rgwtMin[3] < 1000))
         goto L_22cb;
     else
         goto L_2138;
@@ -2328,19 +2250,7 @@ L_253d:
         goto L_2565;
 
 L_2565:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto LBlowAwayOrders;
-    else
-        goto L_2572;
-
-L_2572:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_2581;
-    else
-        goto L_2577;
-
-L_2577:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto LBlowAwayOrders;
     else
         goto L_2581;
@@ -2539,31 +2449,13 @@ L_2972:
         goto L_297e;
 
 L_297e:
-    if ((HIWORD(sel.pl.rgwtMin[3]) > 0x0))
-        goto L_2a3a;
-    else
-        goto L_2988;
-
-L_2988:
-    if ((HIWORD(sel.pl.rgwtMin[3]) < 0x0))
+    if ((sel.pl.rgwtMin[3] < 50))
         goto L_2997;
     else
-        goto L_298d;
-
-L_298d:
-    if ((LOWORD(sel.pl.rgwtMin[3]) >= 0x32))
         goto L_2a3a;
-    else
-        goto L_2997;
 
 L_2997:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_2a3a;
-    else
-        goto L_29a4;
-
-L_29a4:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_2a3a;
     else
         goto L_29ae;
@@ -2931,19 +2823,7 @@ L_2f98:
         goto L_2fa6;
 
 L_2fa6:
-    if ((HIWORD(lpfl->rgwtMin[4]) > 0x0))
-        goto L_2fc5;
-    else
-        goto L_2fb3;
-
-L_2fb3:
-    if ((HIWORD(lpfl->rgwtMin[4]) < 0x0))
-        goto LScrapFleet;
-    else
-        goto L_2fb8;
-
-L_2fb8:
-    if ((LOWORD(lpfl->rgwtMin[4]) < 0x2))
+    if ((lpfl->rgwtMin[4] < 2))
         goto LScrapFleet;
     else
         goto L_2fc5;

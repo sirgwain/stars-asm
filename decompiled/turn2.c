@@ -132,16 +132,10 @@ L_02c1:
     rgResAvail[3] = (int32_t)(((int32_t)((rgResAvail[3] * 4)) / 0x5));
 
 L_02e4:
-    if ((LOWORD(rgResAvail[3]) != 0x0))
+    if ((rgResAvail[3] != 0))
         goto L_02f9;
     else
-        goto L_02ed;
-
-L_02ed:
-    if ((HIWORD(rgResAvail[3]) == 0x0))
         goto L_0c51;
-    else
-        goto L_02f9;
 
 L_02f9:
     if ((fNoResearch == 0))
@@ -3079,22 +3073,10 @@ L_42af:
     pl.rgwtMin[3] = (int32_t)(((uint32_t)((pl.rgwtMin[3] * (cMax - c2nd))) / cMax));
 
 L_42db:
-    if ((HIWORD(pl.rgwtMin[3]) > 0x0))
-        goto WritePlanet;
-    else
-        goto L_42e4;
-
-L_42e4:
-    if ((HIWORD(pl.rgwtMin[3]) < 0x0))
+    if ((pl.rgwtMin[3] < 1))
         goto L_42f2;
     else
-        goto L_42e9;
-
-L_42e9:
-    if ((LOWORD(pl.rgwtMin[3]) >= 0x1))
         goto WritePlanet;
-    else
-        goto L_42f2;
 
 L_42f2:
     pl.rgwtMin[3] = 1;
@@ -3121,22 +3103,10 @@ L_4329:
 L_4354:
     iTech = Random(6);
     iBonus = (Random(301) + 100);
-    if ((HIWORD(pl.rgwtMin[3]) > 0x0))
-        goto L_43a2;
-    else
-        goto L_4380;
-
-L_4380:
-    if ((HIWORD(pl.rgwtMin[3]) < 0x0))
+    if ((pl.rgwtMin[3] < 10))
         goto L_438e;
     else
-        goto L_4385;
-
-L_4385:
-    if ((LOWORD(pl.rgwtMin[3]) >= 0xa))
         goto L_43a2;
-    else
-        goto L_438e;
 
 L_438e:
     iBonus = ((int32_t)(LOWORD((LOWORD(pl.rgwtMin[3]) * iBonus))) / 10);
@@ -3569,22 +3539,10 @@ L_4a73:
         goto L_4a87;
 
 L_4a87:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_4aca;
-    else
-        goto L_4a94;
-
-L_4a94:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
+    if ((lppl->rgwtMin[3] < 1000))
         goto L_4aa4;
     else
-        goto L_4a99;
-
-L_4a99:
-    if ((LOWORD(lppl->rgwtMin[3]) >= 0x3e8))
         goto L_4aca;
-    else
-        goto L_4aa4;
 
 L_4aa4:
     t_scratch_m42_2 = Random(1000);
@@ -4001,16 +3959,10 @@ L_50d4:
         goto L_50e1;
 
 L_50e1:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_50fb;
     else
-        goto L_50ee;
-
-L_50ee:
-    if ((HIWORD(lppl->rgwtMin[3]) == 0x0))
         goto NextPlanet;
-    else
-        goto L_50fb;
 
 L_50fb:
     lPopChg = ChgPopFromPlanet(lppl, 1);
@@ -4026,19 +3978,7 @@ L_5128:
         goto NextPlanet;
 
 L_513f:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto NextPlanet;
-    else
-        goto L_514c;
-
-L_514c:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_515b;
-    else
-        goto L_5151;
-
-L_5151:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x0))
+    if ((lppl->rgwtMin[3] <= 0))
         goto NextPlanet;
     else
         goto L_515b;
@@ -4067,13 +4007,7 @@ NextPlanet:
         goto L_5261;
 
 L_5261:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
-        goto L_52f9;
-    else
-        goto L_526e;
-
-L_526e:
-    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_52f9;
     else
         goto L_5278;
@@ -4144,16 +4078,10 @@ L_532c:
     goto L_5590;
 
 L_5360:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_5377;
     else
-        goto L_536d;
-
-L_536d:
-    if ((HIWORD(lppl->rgwtMin[3]) == 0x0))
         goto L_5583;
-    else
-        goto L_5377;
 
 L_5377:
     l = lppl->rgwtMin[3];
@@ -4294,19 +4222,7 @@ L_562e:
         goto L_565c;
 
 L_565c:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_5685;
-    else
-        goto L_5669;
-
-L_5669:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_5678;
-    else
-        goto L_566e;
-
-L_566e:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x32))
+    if ((lppl->rgwtMin[3] <= 50))
         goto L_5685;
     else
         goto L_5678;
@@ -4675,19 +4591,7 @@ L_5c74:
         goto L_5ca2;
 
 L_5ca2:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_5ccb;
-    else
-        goto L_5caf;
-
-L_5caf:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_5cbe;
-    else
-        goto L_5cb4;
-
-L_5cb4:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x32))
+    if ((lppl->rgwtMin[3] <= 50))
         goto L_5ccb;
     else
         goto L_5cbe;
@@ -6552,16 +6456,10 @@ L_7f1f:
         goto L_7f36;
 
 L_7f36:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_7f50;
     else
-        goto L_7f43;
-
-L_7f43:
-    if ((HIWORD(lpfl->rgwtMin[3]) == 0x0))
         goto L_7ec9;
-    else
-        goto L_7f50;
 
 L_7f50:
     lColGain = (int32_t)(((uint32_t)((lpfl->rgwtMin[3] * (int32_t)((int16_t)(rgplr[lpfl->iPlayer].pctIdealGrowth)))) / 0xc8));

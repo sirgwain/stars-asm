@@ -212,23 +212,15 @@ L_b48a:
 
 
 L_b4a1:
-    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_b65b : L_b4ae
+    branch lppl->rgwtMin[3] <= 0 ? L_b65b : L_b4bd
 
-L_b4ae:
-    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_b4bd : L_b4b3
 
-L_b4b3:
-    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_b65b : L_b4bd
 
 L_b4bd:
     cKillPeopleS = (int32_t)((uint32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 0x3e8)
-    branch HIWORD(cKillPeopleS) < HIWORD(lppl->rgwtMin[3]) ? L_b51f : L_b4fb
+    branch cKillPeopleS < lppl->rgwtMin[3] ? L_b51f : L_b508
 
-L_b4fb:
-    branch HIWORD(cKillPeopleS) > HIWORD(lppl->rgwtMin[3]) ? L_b508 : L_b500
 
-L_b500:
-    branch LOWORD(cKillPeopleS) < LOWORD(lppl->rgwtMin[3]) ? L_b51f : L_b508
 
 L_b508:
     cKillPeopleS = (lppl->rgwtMin[3] - 1)
@@ -279,13 +271,9 @@ L_b61e:
     cKillPeople = dmgBombFloor
 
 L_b62a:
-    branch HIWORD(cKillPeople) < HIWORD(lppl->rgwtMin[3]) ? L_b65b : L_b63d
+    branch cKillPeople <= lppl->rgwtMin[3] ? L_b65b : L_b64a
 
-L_b63d:
-    branch HIWORD(cKillPeople) > HIWORD(lppl->rgwtMin[3]) ? L_b64a : L_b642
 
-L_b642:
-    branch LOWORD(cKillPeople) <= LOWORD(lppl->rgwtMin[3]) ? L_b65b : L_b64a
 
 L_b64a:
     cKillPeople = lppl->rgwtMin[3]
@@ -413,13 +401,9 @@ L_b9d4:
 
 
 L_ba03:
-    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_ba6b : L_ba10
+    branch lppl->rgwtMin[3] <= 0 ? L_ba6b : L_ba1f
 
-L_ba10:
-    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_ba1f : L_ba15
 
-L_ba15:
-    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_ba6b : L_ba1f
 
 L_ba1f:
     branch fMulti == 0 ? L_ba2e : L_ba28
@@ -527,13 +511,9 @@ L_bd61:
 
 
 L_bd78:
-    branch HIWORD(lppl->rgwtMin[3]) < 0x0 ? L_bdc1 : L_bd85
+    branch lppl->rgwtMin[3] <= 0 ? L_bdc1 : L_bd94
 
-L_bd85:
-    branch HIWORD(lppl->rgwtMin[3]) > 0x0 ? L_bd94 : L_bd8a
 
-L_bd8a:
-    branch LOWORD(lppl->rgwtMin[3]) <= 0x0 ? L_bdc1 : L_bd94
 
 L_bd94:
     branch fMulti == 0 ? L_bda3 : L_bd9d
@@ -589,10 +569,8 @@ L_bdeb:
     call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), 0, 0, 0, 0) -> callresult(int16_t)
 
 L_be65:
-    branch LOWORD(lppl->rgwtMin[3]) != 0x0 ? L_af0b : L_be72
+    branch lppl->rgwtMin[3] != 0 ? L_af0b : L_be7c
 
-L_be72:
-    branch HIWORD(lppl->rgwtMin[3]) != 0x0 ? L_af0b : L_be7c
 
 L_be7c:
     call UninhabitPlanet(lppl) -> callresult(void)

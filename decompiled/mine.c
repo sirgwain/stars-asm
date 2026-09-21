@@ -3898,13 +3898,7 @@ L_53d8:
         goto L_53e5;
 
 L_53e5:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
-        goto L_5429;
-    else
-        goto L_53f2;
-
-L_53f2:
-    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_5429;
     else
         goto L_53fc;

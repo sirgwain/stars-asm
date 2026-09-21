@@ -10263,38 +10263,14 @@ L_b48a:
         goto L_b4a1;
 
 L_b4a1:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_b65b;
-    else
-        goto L_b4ae;
-
-L_b4ae:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_b4bd;
-    else
-        goto L_b4b3;
-
-L_b4b3:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x0))
+    if ((lppl->rgwtMin[3] <= 0))
         goto L_b65b;
     else
         goto L_b4bd;
 
 L_b4bd:
     cKillPeopleS = (int32_t)(((uint32_t)((lppl->rgwtMin[3] * dmgPeopleSmart)) / 0x3e8));
-    if ((HIWORD(cKillPeopleS) < HIWORD(lppl->rgwtMin[3])))
-        goto L_b51f;
-    else
-        goto L_b4fb;
-
-L_b4fb:
-    if ((HIWORD(cKillPeopleS) > HIWORD(lppl->rgwtMin[3])))
-        goto L_b508;
-    else
-        goto L_b500;
-
-L_b500:
-    if ((LOWORD(cKillPeopleS) < LOWORD(lppl->rgwtMin[3])))
+    if ((cKillPeopleS < lppl->rgwtMin[3]))
         goto L_b51f;
     else
         goto L_b508;
@@ -10353,19 +10329,7 @@ L_b61e:
     cKillPeople = dmgBombFloor;
 
 L_b62a:
-    if ((HIWORD(cKillPeople) < HIWORD(lppl->rgwtMin[3])))
-        goto L_b65b;
-    else
-        goto L_b63d;
-
-L_b63d:
-    if ((HIWORD(cKillPeople) > HIWORD(lppl->rgwtMin[3])))
-        goto L_b64a;
-    else
-        goto L_b642;
-
-L_b642:
-    if ((LOWORD(cKillPeople) <= LOWORD(lppl->rgwtMin[3])))
+    if ((cKillPeople <= lppl->rgwtMin[3]))
         goto L_b65b;
     else
         goto L_b64a;
@@ -10523,19 +10487,7 @@ L_b9d4:
         goto L_ba03;
 
 L_ba03:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_ba6b;
-    else
-        goto L_ba10;
-
-L_ba10:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_ba1f;
-    else
-        goto L_ba15;
-
-L_ba15:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x0))
+    if ((lppl->rgwtMin[3] <= 0))
         goto L_ba6b;
     else
         goto L_ba1f;
@@ -10667,19 +10619,7 @@ L_bd61:
         goto L_bd78;
 
 L_bd78:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_bdc1;
-    else
-        goto L_bd85;
-
-L_bd85:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_bd94;
-    else
-        goto L_bd8a;
-
-L_bd8a:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x0))
+    if ((lppl->rgwtMin[3] <= 0))
         goto L_bdc1;
     else
         goto L_bd94;
@@ -10750,13 +10690,7 @@ L_bdeb:
     FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), 0, 0, 0, 0);
 
 L_be65:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
-        goto L_af0b;
-    else
-        goto L_be72;
-
-L_be72:
-    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_af0b;
     else
         goto L_be7c;

@@ -1547,7 +1547,6 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     int16_t ishdef;
     int16_t ishdefBig;
     int16_t isbsSrc;
-    int32_t t_call_222b;
 
 L_1e52:
     lpfl->cord = 2;
@@ -1740,20 +1739,7 @@ L_220b:
         goto L_2214;
 
 L_2214:
-    t_call_222b = EstFuelUse(lpfl, 0, iWarp, dTravel, 0);
-    if ((HIWORD(t_call_222b) < HIWORD(lpfl->rgwtMin[4])))
-        goto L_2254;
-    else
-        goto L_223f;
-
-L_223f:
-    if ((HIWORD(t_call_222b) > HIWORD(lpfl->rgwtMin[4])))
-        goto L_224d;
-    else
-        goto L_2244;
-
-L_2244:
-    if ((LOWORD(t_call_222b) <= LOWORD(lpfl->rgwtMin[4])))
+    if ((EstFuelUse(lpfl, 0, iWarp, dTravel, 0) <= lpfl->rgwtMin[4]))
         goto L_2254;
     else
         goto L_224d;

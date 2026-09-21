@@ -2229,40 +2229,16 @@ L_2a1c:
     lColKilled = dmgRaw;
 
 L_2a28:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_2aba;
-    else
-        goto L_2a35;
-
-L_2a35:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_2a44;
-    else
-        goto L_2a3a;
-
-L_2a3a:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x0))
+    if ((lppl->rgwtMin[3] <= 0))
         goto L_2aba;
     else
         goto L_2a44;
 
 L_2a44:
-    if ((HIWORD(lColKilled) > HIWORD(lppl->rgwtMin[3])))
-        goto L_2a7b;
-    else
-        goto L_2a57;
-
-L_2a57:
-    if ((HIWORD(lColKilled) < HIWORD(lppl->rgwtMin[3])))
+    if ((lColKilled < lppl->rgwtMin[3]))
         goto L_2a64;
     else
-        goto L_2a5c;
-
-L_2a5c:
-    if ((LOWORD(lColKilled) >= LOWORD(lppl->rgwtMin[3])))
         goto L_2a7b;
-    else
-        goto L_2a64;
 
 L_2a64:
     if ((lColKilled < 0))
@@ -2644,22 +2620,10 @@ L_3201:
 
 L_3213:
     t_call_321d = LGetFleetStat(lpfl, 1);
-    if ((HIWORD(t_call_321d) > ((HIWORD(lpfl->rgwtMin[4]) + HIWORD(csh)) + HIWORD((uint32_t)((cPods * 50))))))
-        goto L_3281;
-    else
-        goto L_3260;
-
-L_3260:
-    if ((HIWORD(t_call_321d) < ((HIWORD(lpfl->rgwtMin[4]) + HIWORD(csh)) + HIWORD((uint32_t)((cPods * 50))))))
+    if (((int32_t)(t_call_321d) < ((lpfl->rgwtMin[4] + csh) + (uint32_t)((cPods * 50)))))
         goto L_326c;
     else
-        goto L_3265;
-
-L_3265:
-    if ((LOWORD(t_call_321d) >= ((LOWORD(lpfl->rgwtMin[4]) + LOWORD(csh)) + LOWORD((uint32_t)((cPods * 50))))))
         goto L_3281;
-    else
-        goto L_326c;
 
 L_326c:
     t_call_3276 = LGetFleetStat(lpfl, 1);
@@ -2739,7 +2703,7 @@ void MoveFleets() {
     int32_t    t_call_48bc;
     double     t_merge_4a09_0001;
     double     t_merge_4a2b_0001;
-    uint32_t   t_merge_4c51_0002_wide;
+    uint16_t   t_merge_4c51_0001;
     int32_t    t_merge_4ca3_0001;
     uint16_t   t_merge_4e4b_0001;
     GrobjClass t_scratch_m5c_2;
@@ -3056,19 +3020,7 @@ L_38ad:
         goto L_38d1;
 
 L_38d1:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_392c;
-    else
-        goto L_38de;
-
-L_38de:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_38ed;
-    else
-        goto L_38e3;
-
-L_38e3:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_392c;
     else
         goto L_38ed;
@@ -3203,22 +3155,10 @@ L_3d5b:
     ptEnd.y = lpord[1].pt.y;
     dRange = EstFuelUse(lpfl, 0, -1, -1, 1);
     wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((HIWORD(wtFuel2Dest) > HIWORD(lpfl->rgwtMin[4])))
-        goto L_3de2;
-    else
-        goto L_3dcf;
-
-L_3dcf:
-    if ((HIWORD(wtFuel2Dest) < HIWORD(lpfl->rgwtMin[4])))
+    if ((wtFuel2Dest <= lpfl->rgwtMin[4]))
         goto L_3ddc;
     else
-        goto L_3dd4;
-
-L_3dd4:
-    if ((LOWORD(wtFuel2Dest) > LOWORD(lpfl->rgwtMin[4])))
         goto L_3de2;
-    else
-        goto L_3ddc;
 
 L_3ddc:
     t_merge_3de5_0001 = 0x1;
@@ -3258,19 +3198,7 @@ L_3e6c:
         goto L_3e75;
 
 L_3e75:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_3f5f;
-    else
-        goto L_3e82;
-
-L_3e82:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_3e91;
-    else
-        goto L_3e87;
-
-L_3e87:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0xa))
+    if ((lpfl->rgwtMin[3] <= 10))
         goto L_3f5f;
     else
         goto L_3e91;
@@ -3537,19 +3465,7 @@ L_44a8:
     dTravel = (dTravel - (int32_t)(lpfl->dMoveUsed));
 
 L_44c7:
-    if ((0x0 < (HIWORD(lpfl->rgwtMin[4]) - HIWORD(wtFuelUsed))))
-        goto L_44fa;
-    else
-        goto L_44e5;
-
-L_44e5:
-    if ((0x0 > (HIWORD(lpfl->rgwtMin[4]) - HIWORD(wtFuelUsed))))
-        goto L_44f1;
-    else
-        goto L_44ea;
-
-L_44ea:
-    if ((0x0 <= (LOWORD(lpfl->rgwtMin[4]) - LOWORD(wtFuelUsed))))
+    if ((0x0 <= (lpfl->rgwtMin[4] - wtFuelUsed)))
         goto L_44fa;
     else
         goto L_44f1;
@@ -3565,13 +3481,7 @@ L_450b:
     lpfl->rgwtMin[4] = t_merge_450b_0001;
 
 L_4516:
-    if ((LOWORD(lpfl->rgwtMin[4]) != 0x0))
-        goto L_465d;
-    else
-        goto L_4523;
-
-L_4523:
-    if ((HIWORD(lpfl->rgwtMin[4]) != 0x0))
+    if ((lpfl->rgwtMin[4] != 0))
         goto L_465d;
     else
         goto L_452d;
@@ -3892,19 +3802,7 @@ L_4b2d:
         goto L_4b40;
 
 L_4b40:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_4ce4;
-    else
-        goto L_4b4d;
-
-L_4b4d:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_4b5c;
-    else
-        goto L_4b52;
-
-L_4b52:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_4ce4;
     else
         goto L_4b5c;
@@ -3937,29 +3835,17 @@ L_4bb6:
         goto L_4c42;
 
 L_4c42:
-    t_merge_4c51_0002_wide = 0x1;
+    t_merge_4c51_0001 = 0x1;
     goto L_4c51;
 
 L_4c4b:
-    t_merge_4c51_0002_wide = pct;
+    t_merge_4c51_0001 = pct;
 
 L_4c51:
-    if ((HIWORD(lpfl->rgwtMin[3]) > HIWORD(t_merge_4c51_0002_wide)))
-        goto L_4c79;
-    else
-        goto L_4c5d;
-
-L_4c5d:
-    if ((HIWORD(lpfl->rgwtMin[3]) < HIWORD(t_merge_4c51_0002_wide)))
+    if ((lpfl->rgwtMin[3] < t_merge_4c51_0001))
         goto L_4c6b;
     else
-        goto L_4c62;
-
-L_4c62:
-    if ((LOWORD(lpfl->rgwtMin[3]) >= LOWORD(t_merge_4c51_0002_wide)))
         goto L_4c79;
-    else
-        goto L_4c6b;
 
 L_4c6b:
     t_merge_4ca3_0001 = lpfl->rgwtMin[3];
@@ -4065,19 +3951,7 @@ L_4e4b:
 L_4e78:
     t_call_4e92 = EstFuelUse(lpfl, 0, -1, -1, 0);
     wtFuel2Dest = t_call_4e92;
-    if ((HIWORD(t_call_4e92) < HIWORD(lpfl->rgwtMin[4])))
-        goto L_32f6;
-    else
-        goto L_4eac;
-
-L_4eac:
-    if ((HIWORD(t_call_4e92) > HIWORD(lpfl->rgwtMin[4])))
-        goto L_4eba;
-    else
-        goto L_4eb1;
-
-L_4eb1:
-    if ((LOWORD(t_call_4e92) <= LOWORD(lpfl->rgwtMin[4])))
+    if ((t_call_4e92 <= lpfl->rgwtMin[4]))
         goto L_32f6;
     else
         goto L_4eba;

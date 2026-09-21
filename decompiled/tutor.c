@@ -8584,13 +8584,7 @@ L_7690:
         goto L_769f;
 
 L_769f:
-    if ((LOWORD(lpfl->rgwtMin[0]) != 0x0))
-        goto L_7716;
-    else
-        goto L_76ac;
-
-L_76ac:
-    if ((HIWORD(lpfl->rgwtMin[0]) != 0x0))
+    if ((lpfl->rgwtMin[0] != 0))
         goto L_7716;
     else
         goto L_76b6;
@@ -8602,13 +8596,7 @@ L_76b6:
         goto L_76bf;
 
 L_76bf:
-    if ((LOWORD(lpfl->rgwtMin[1]) != 0x0))
-        goto L_7716;
-    else
-        goto L_76cc;
-
-L_76cc:
-    if ((HIWORD(lpfl->rgwtMin[1]) != 0x0))
+    if ((lpfl->rgwtMin[1] != 0))
         goto L_7716;
     else
         goto L_76d6;
@@ -8620,13 +8608,7 @@ L_76d6:
         goto L_76df;
 
 L_76df:
-    if ((LOWORD(lpfl->rgwtMin[2]) != 0x0))
-        goto L_7716;
-    else
-        goto L_76ec;
-
-L_76ec:
-    if ((HIWORD(lpfl->rgwtMin[2]) != 0x0))
+    if ((lpfl->rgwtMin[2] != 0))
         goto L_7716;
     else
         goto L_76f6;
@@ -8638,65 +8620,35 @@ L_76f6:
         goto L_76ff;
 
 L_76ff:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_7716;
     else
-        goto L_770c;
-
-L_770c:
-    if ((HIWORD(lpfl->rgwtMin[3]) == 0x0))
         goto L_7725;
-    else
-        goto L_7716;
 
 L_7716:
     TutorError(495);
     goto LReturn;
 
 L_7725:
-    if ((LOWORD(lpfl->rgwtMin[3]) != wtColonists))
-        goto LReturn;
-    else
-        goto L_7735;
-
-L_7735:
-    if ((HIWORD(lpfl->rgwtMin[3]) != SIGNHIWORD(wtColonists)))
+    if ((lpfl->rgwtMin[3] != (int32_t)(wtColonists)))
         goto LReturn;
     else
         goto L_773e;
 
 L_773e:
-    if ((LOWORD(lpfl->rgwtMin[0]) != wtMin1))
-        goto LReturn;
-    else
-        goto L_774e;
-
-L_774e:
-    if ((HIWORD(lpfl->rgwtMin[0]) != SIGNHIWORD(wtMin1)))
+    if ((lpfl->rgwtMin[0] != (int32_t)(wtMin1)))
         goto LReturn;
     else
         goto L_7757;
 
 L_7757:
-    if ((LOWORD(lpfl->rgwtMin[1]) != wtMin2))
-        goto LReturn;
-    else
-        goto L_7767;
-
-L_7767:
-    if ((HIWORD(lpfl->rgwtMin[1]) != SIGNHIWORD(wtMin2)))
+    if ((lpfl->rgwtMin[1] != (int32_t)(wtMin2)))
         goto LReturn;
     else
         goto L_7770;
 
 L_7770:
-    if ((LOWORD(lpfl->rgwtMin[2]) != wtMin3))
-        goto LReturn;
-    else
-        goto L_7780;
-
-L_7780:
-    if ((HIWORD(lpfl->rgwtMin[2]) != SIGNHIWORD(wtMin3)))
+    if ((lpfl->rgwtMin[2] != (int32_t)(wtMin3)))
         goto LReturn;
     else
         goto L_7789;

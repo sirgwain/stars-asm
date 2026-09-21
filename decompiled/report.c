@@ -2852,12 +2852,10 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
     int16_t  iItem;
     PLANET   pl;
     int16_t  fEnough;
-    int32_t  t_call_3758;
     COLORREF t_merge_39e1_0001;
     COLORREF t_merge_3a8e_0001;
     COLORREF t_merge_3aff_0001;
     int16_t  t_call_3d42;
-    int32_t  t_call_4201;
     uint16_t t_merge_422c_0001;
     uint16_t t_scratch_m8a;
     uint16_t t_scratch_m8a_2;
@@ -2997,23 +2995,10 @@ L_3748:
     goto L_4eb8;
 
 L_374b:
-    t_call_3758 = CalcPlanetMaxPop(lppl->id, lppl->iPlayer);
-    if ((HIWORD(t_call_3758) > HIWORD(lppl->rgwtMin[3])))
-        goto L_378a;
-    else
-        goto L_376c;
-
-L_376c:
-    if ((HIWORD(t_call_3758) < HIWORD(lppl->rgwtMin[3])))
+    if ((CalcPlanetMaxPop(lppl->id, lppl->iPlayer) < lppl->rgwtMin[3]))
         goto L_377a;
     else
-        goto L_3771;
-
-L_3771:
-    if ((LOWORD(t_call_3758) >= LOWORD(lppl->rgwtMin[3])))
         goto L_378a;
-    else
-        goto L_377a;
 
 L_377a:
     SetTextColor(hdc, 0xff);
@@ -3399,20 +3384,7 @@ L_41c7:
         goto L_41d4;
 
 L_41d4:
-    t_call_4201 = EstFuelUse(lpfl, 0, lpfl->lpplord->rgord[1].iWarp, -1, 0);
-    if ((HIWORD(lpfl->rgwtMin[4]) < HIWORD(t_call_4201)))
-        goto L_4229;
-    else
-        goto L_4215;
-
-L_4215:
-    if ((HIWORD(lpfl->rgwtMin[4]) > HIWORD(t_call_4201)))
-        goto L_4223;
-    else
-        goto L_421a;
-
-L_421a:
-    if ((LOWORD(lpfl->rgwtMin[4]) < LOWORD(t_call_4201)))
+    if ((lpfl->rgwtMin[4] < EstFuelUse(lpfl, 0, lpfl->lpplord->rgord[1].iWarp, -1, 0)))
         goto L_4229;
     else
         goto L_4223;
@@ -4230,7 +4202,6 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
     int16_t i;
     ORDER   ord;
     char   *psz;
-    int32_t t_call_52fe;
 
 L_51a8:
     ord = lpfl->lpplord->rgord[0];
@@ -4321,20 +4292,7 @@ L_5290:
         goto L_52d9;
 
 L_52d9:
-    t_call_52fe = EstFuelUse(lpfl, 0, ord.iWarp, -1, 0);
-    if ((HIWORD(t_call_52fe) < HIWORD(lpfl->rgwtMin[4])))
-        goto L_5330;
-    else
-        goto L_5312;
-
-L_5312:
-    if ((HIWORD(t_call_52fe) > HIWORD(lpfl->rgwtMin[4])))
-        goto L_5320;
-    else
-        goto L_5317;
-
-L_5317:
-    if ((LOWORD(t_call_52fe) <= LOWORD(lpfl->rgwtMin[4])))
+    if ((EstFuelUse(lpfl, 0, ord.iWarp, -1, 0) <= lpfl->rgwtMin[4]))
         goto L_5330;
     else
         goto L_5320;
