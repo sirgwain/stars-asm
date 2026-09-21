@@ -32,13 +32,9 @@ L_58ee:
 L_5900:
     score.cPlanet = (score.cPlanet + 1)
     lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 0x3e8)
-    branch HIWORD(lTemp) < 0x0 ? L_594b : L_5933
+    branch lTemp <= 6 ? L_594b : L_5941
 
-L_5933:
-    branch HIWORD(lTemp) > 0x0 ? L_5941 : L_5938
 
-L_5938:
-    branch LOWORD(lTemp) <= 0x6 ? L_594b : L_5941
 
 L_5941:
     lTemp = 6
@@ -116,26 +112,18 @@ L_5adc:
 
 L_5aed:
     lPower = LComputePower(&rglpshdef[iPlr][i])
-    branch HIWORD(lPower) > 0x0 ? L_5b3c : L_5b1d
+    branch lPower <= 0 ? L_5b2b : L_5b3c
 
-L_5b1d:
-    branch HIWORD(lPower) < 0x0 ? L_5b2b : L_5b22
 
-L_5b22:
-    branch LOWORD(lPower) > 0x0 ? L_5b3c : L_5b2b
 
 L_5b2b:
     rgType[i] = 0
     goto L_5b73
 
 L_5b3c:
-    branch HIWORD(lPower) > 0x0 ? L_5b65 : L_5b45
+    branch lPower < 2000 ? L_5b54 : L_5b65
 
-L_5b45:
-    branch HIWORD(lPower) < 0x0 ? L_5b54 : L_5b4a
 
-L_5b4a:
-    branch LOWORD(lPower) >= 0x7d0 ? L_5b65 : L_5b54
 
 L_5b54:
     rgType[i] = 1
@@ -173,10 +161,8 @@ L_5bb6:
 
 L_5bc1:
     lpfl = rglpfl[ifl]
-    branch LOWORD(rglpfl[ifl]) != 0x0 ? L_5bf1 : L_5be9
+    branch rglpfl[ifl] != 0x0 ? L_5bf1 : L_5c93
 
-L_5be9:
-    branch HIWORD(rglpfl[ifl]) == 0x0 ? L_5c93 : L_5bf1
 
 L_5bf1:
     branch lpfl->iPlayer != iPlr ? L_5bb2 : L_5c00

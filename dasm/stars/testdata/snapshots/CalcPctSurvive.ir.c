@@ -24,13 +24,7 @@ L_0324:
     if ((lppl->cDefenses != 0x0))
         goto L_0345;
     else
-        goto L_033d;
-
-L_033d:
-    if ((0x0 == 0x0))
         goto L_0487;
-    else
-        goto L_0345;
 
 L_0345:
     iPlrSav = idPlayer;
@@ -43,25 +37,13 @@ L_0345:
 L_0369:
     cDefenses = lppl->cDefenses;
     cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
-    if ((SIGNHIWORD(cMax) > HIWORD(cDefenses)))
-        goto L_03bf;
-    else
-        goto L_03a8;
-
-L_03a8:
-    if ((SIGNHIWORD(cMax) < HIWORD(cDefenses)))
+    if (((int32_t)(cMax) < cDefenses))
         goto L_03b5;
     else
-        goto L_03ad;
-
-L_03ad:
-    if ((cMax >= LOWORD(cDefenses)))
         goto L_03bf;
-    else
-        goto L_03b5;
 
 L_03b5:
-    cDefenses = (uint32_t)(cMax);
+    cDefenses = (int32_t)(cMax);
 
 L_03bf:
     pct = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 1000)), (double)(cDefenses));

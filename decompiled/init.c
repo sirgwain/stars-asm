@@ -366,7 +366,7 @@ L_0ab2:
     goto L_0b13;
 
 L_0ad3:
-    if (((uint16_t)(rgszArial[i][0]) != 0))
+    if (((int16_t)(rgszArial[i][0]) != 0))
         goto L_0b0f;
     else
         goto L_0aed;
@@ -626,19 +626,19 @@ L_1020:
         goto L_1070;
 
 L_1070:
-    if (((uint16_t)(szWork[0]) == 77))
+    if (((int16_t)(szWork[0]) == 77))
         goto L_10cc;
     else
         goto L_107c;
 
 L_107c:
-    if (((uint16_t)(szWork[0]) == 82))
+    if (((int16_t)(szWork[0]) == 82))
         goto L_10cc;
     else
         goto L_1088;
 
 L_1088:
-    if (((uint16_t)(szWork[0]) == 73))
+    if (((int16_t)(szWork[0]) == 73))
         goto L_10cc;
     else
         goto NoRc;
@@ -688,7 +688,7 @@ L_1102:
         goto L_110b;
 
 L_110b:
-    if (((uint16_t)(*(pch)) != 45))
+    if (((int16_t)(*(pch)) != 45))
         goto L_1121;
     else
         goto L_1119;
@@ -698,19 +698,19 @@ L_1119:
     goto L_10f4;
 
 L_1121:
-    if (((uint16_t)(*(pch)) < 48))
+    if (((int16_t)(*(pch)) < 48))
         goto NoRc;
     else
         goto L_112f;
 
 L_112f:
-    if (((uint16_t)(*(pch)) > 57))
+    if (((int16_t)(*(pch)) > 57))
         goto NoRc;
     else
         goto L_1140;
 
 L_1140:
-    rg[i] = (LOWORD((10 * rg[i])) + ((uint16_t)(*(pch)) - 48));
+    rg[i] = (LOWORD((10 * rg[i])) + ((int16_t)(*(pch)) - 48));
     goto L_10f4;
 
 L_116f:
@@ -736,7 +736,7 @@ L_119f:
     rc.top = rg[1];
     rc.right = rg[2];
     rc.bottom = rg[3];
-    if (((uint16_t)(szWork[0]) != 77))
+    if (((int16_t)(szWork[0]) != 77))
         goto L_11c9;
     else
         goto L_11c3;
@@ -750,7 +750,7 @@ L_11c9:
 
 L_11cc:
     fMaximized = t_merge_11cc_0001;
-    if (((uint16_t)(szWork[0]) != 73))
+    if (((int16_t)(szWork[0]) != 73))
         goto L_11e1;
     else
         goto L_11db;
@@ -1250,25 +1250,25 @@ L_1908:
     goto L_193d;
 
 L_191a:
-    if (((uint16_t)(szWork[0]) == 69))
+    if (((int16_t)(szWork[0]) == 69))
         goto L_1908;
     else
         goto L_1922;
 
 L_1922:
-    if (((uint16_t)(szWork[0]) == 78))
+    if (((int16_t)(szWork[0]) == 78))
         goto L_18db;
     else
         goto L_192a;
 
 L_192a:
-    if (((uint16_t)(szWork[0]) == 80))
+    if (((int16_t)(szWork[0]) == 80))
         goto L_18ea;
     else
         goto L_1932;
 
 L_1932:
-    if (((uint16_t)(szWork[0]) != 83))
+    if (((int16_t)(szWork[0]) != 83))
         goto L_18db;
     else
         goto L_1937;
@@ -1277,19 +1277,19 @@ L_1937:
     goto L_18f9;
 
 L_193d:
-    if (((uint16_t)(szWork[1]) < 66))
+    if (((int16_t)(szWork[1]) < 66))
         goto L_1962;
     else
         goto L_1949;
 
 L_1949:
-    if (((uint16_t)(szWork[1]) > 81))
+    if (((int16_t)(szWork[1]) > 81))
         goto L_1962;
     else
         goto L_1955;
 
 L_1955:
-    ini.idPlayer = ((uint16_t)(szWork[1]) - 66);
+    ini.idPlayer = ((int16_t)(szWork[1]) - 66);
     goto L_196e;
 
 L_1962:
@@ -1316,35 +1316,35 @@ L_1995:
 
 L_1a1f:
     ini.lid = (int32_t)((ini.lid * 16));
-    if (((uint16_t)(szWork[i]) < 48))
+    if (((int16_t)(szWork[i]) < 48))
         goto L_1a6c;
     else
         goto L_1a45;
 
 L_1a45:
-    if (((uint16_t)(szWork[i]) > 57))
+    if (((int16_t)(szWork[i]) > 57))
         goto L_1a6c;
     else
         goto L_1a55;
 
 L_1a55:
-    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) - 48)));
+    ini.lid = (ini.lid + (int32_t)(((int16_t)(szWork[i]) - 48)));
     goto L_1aa0;
 
 L_1a6c:
-    if (((uint16_t)(szWork[i]) < 97))
+    if (((int16_t)(szWork[i]) < 97))
         goto L_1aa0;
     else
         goto L_1a7c;
 
 L_1a7c:
-    if (((uint16_t)(szWork[i]) > 102))
+    if (((int16_t)(szWork[i]) > 102))
         goto L_1aa0;
     else
         goto L_1a8c;
 
 L_1a8c:
-    ini.lid = (ini.lid + (uint32_t)(((uint16_t)(szWork[i]) - 87)));
+    ini.lid = (ini.lid + (int32_t)(((int16_t)(szWork[i]) - 87)));
 
 L_1aa0:
     i = (i + 1);
@@ -1455,13 +1455,7 @@ L_1da7:
     ini.fStartupFile = 0x0;
 
 L_1db3:
-    if ((LOWORD(vrgszMRU) != 0x0))
-        goto L_1dde;
-    else
-        goto L_1dbd;
-
-L_1dbd:
-    if ((HIWORD(vrgszMRU) != 0x0))
+    if ((vrgszMRU != 0x0))
         goto L_1dde;
     else
         goto L_1dc7;
@@ -1500,7 +1494,7 @@ L_1e74:
     goto L_1efd;
 
 L_1e82:
-    if (((uint16_t)(vrgszMRU[(i * 256)]) == 0))
+    if (((int16_t)(vrgszMRU[(i * 256)]) == 0))
         goto L_1ef9;
     else
         goto L_1ea2;
@@ -1794,13 +1788,13 @@ L_2611:
         goto L_261a;
 
 L_261a:
-    if (((uint16_t)(*(psz)) < 97))
+    if (((int16_t)(*(psz)) < 97))
         goto L_263c;
     else
         goto L_2628;
 
 L_2628:
-    if (((uint16_t)(*(psz)) <= 112))
+    if (((int16_t)(*(psz)) <= 112))
         goto L_2603;
     else
         goto L_263c;
@@ -1817,15 +1811,15 @@ L_2648:
     goto L_27c5;
 
 L_2655:
-    t_scratch_m4e = (vrgZip[i].txp.rgia[iPass].cQuan | ((((uint16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
+    t_scratch_m4e = (vrgZip[i].txp.rgia[iPass].cQuan | ((((int16_t)(*(psz)) + 0xff9f) & 0xf) * 0x1000));
     vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
     psz = (psz + 1);
-    t_scratch_m4e = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((uint16_t)(*(psz)) + 0xff9f) & 0xfff));
+    t_scratch_m4e = ((vrgZip[i].txp.rgia[iPass] & 0xf000) | (((int16_t)(*(psz)) + 0xff9f) & 0xfff));
     vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
     psz = (psz + 1);
-    vrgZip[i].txp.rgia[iPass].cQuan = ((((uint16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]);
+    vrgZip[i].txp.rgia[iPass].cQuan = ((((int16_t)(*(psz)) + 0xff9f) * 0x10) | vrgZip[i].txp.rgia[iPass]);
     psz = (psz + 1);
-    vrgZip[i].txp.rgia[iPass].cQuan = ((((uint16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]);
+    vrgZip[i].txp.rgia[iPass].cQuan = ((((int16_t)(*(psz)) + 0xff9f) * 0x100) | vrgZip[i].txp.rgia[iPass]);
     psz = (psz + 1);
     iPass = (iPass + 1);
 
@@ -1875,7 +1869,7 @@ L_28a6:
 
 L_28b2:
     psz = szWork;
-    cpq = ((uint16_t)(psz[1]) - 97);
+    cpq = ((int16_t)(psz[1]) - 97);
     if ((cpq < 0))
         goto L_2b61;
     else
@@ -1902,13 +1896,13 @@ L_28ef:
         goto L_2901;
 
 L_2901:
-    if (((uint16_t)(*(psz)) < 97))
+    if (((int16_t)(*(psz)) < 97))
         goto L_2923;
     else
         goto L_290f;
 
 L_290f:
-    if (((uint16_t)(*(psz)) <= 112))
+    if (((int16_t)(*(psz)) <= 112))
         goto L_28e1;
     else
         goto L_2923;
@@ -1928,7 +1922,7 @@ L_2938:
 L_294e:
     strcpy(vrgZipProd[i].szName, psz);
     psz = szWork;
-    if (((uint16_t)(*(psz)) == 97))
+    if (((int16_t)(*(psz)) == 97))
         goto L_297e;
     else
         goto L_2978;
@@ -1950,13 +1944,13 @@ L_2981:
     goto L_2b56;
 
 L_29c7:
-    vrgZipProd[i].rgpq[iPass].w = ((uint16_t)(*(psz)) - 97);
+    vrgZipProd[i].rgpq[iPass].w = ((int16_t)(*(psz)) - 97);
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x10));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x10));
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x100));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x100));
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((uint16_t)(*(psz)) + 0xff9f) * 0x1000));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x1000));
     psz = (psz + 1);
     if ((vrgZipProd[i].rgpq[iPass].cQuan <= 0x3fc))
         goto L_2af0;
@@ -2013,13 +2007,13 @@ L_2b8a:
     iTile = 0;
 
 L_2b9d:
-    if (((uint16_t)(*(pszFormat)) == 0))
+    if (((int16_t)(*(pszFormat)) == 0))
         goto L_2d81;
     else
         goto L_2bab;
 
 L_2bab:
-    if (((uint16_t)(*(pszFormat)) != 42))
+    if (((int16_t)(*(pszFormat)) != 42))
         goto L_2bc9;
     else
         goto L_2bb9;
@@ -2037,24 +2031,24 @@ L_2bc6:
     goto DoNext;
 
 L_2bc9:
-    if (((_ctype[((uint16_t)(*(pszFormat)) + 1)] & 0x3) == 0x0))
+    if (((_ctype[((int16_t)(*(pszFormat)) + 1)] & 0x3) == 0x0))
         goto DoNext;
     else
         goto L_2be7;
 
 L_2be7:
-    fPopped = (_ctype[((uint16_t)(*(pszFormat)) + 0x1)] & 0x1);
+    fPopped = (_ctype[((int16_t)(*(pszFormat)) + 0x1)] & 0x1);
     if ((fPopped == 0))
         goto L_2c12;
     else
         goto L_2c06;
 
 L_2c06:
-    t_merge_2c1b_0001 = ((uint16_t)(*(pszFormat)) - 65);
+    t_merge_2c1b_0001 = ((int16_t)(*(pszFormat)) - 65);
     goto L_2c1b;
 
 L_2c12:
-    t_merge_2c1b_0001 = ((uint16_t)(*(pszFormat)) - 97);
+    t_merge_2c1b_0001 = ((int16_t)(*(pszFormat)) - 97);
 
 L_2c1b:
     iBit = t_merge_2c1b_0001;

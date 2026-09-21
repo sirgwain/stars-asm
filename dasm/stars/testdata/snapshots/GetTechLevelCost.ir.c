@@ -9,7 +9,7 @@ L_1dba:
     goto L_1def;
 
 L_1dd0:
-    cTech = (cTech + (uint16_t)(rgplr[iplr].rgTech[i]));
+    cTech = (cTech + (int16_t)(rgplr[iplr].rgTech[i]));
     i = (i + 1);
 
 L_1def:
@@ -19,7 +19,7 @@ L_1def:
         goto L_1df8;
 
 L_1df8:
-    lCost = ((uint32_t)(LOWORD((10 * cTech))) + rglTechCost[iLevel]);
+    lCost = ((int32_t)(LOWORD((10 * cTech))) + rglTechCost[iLevel]);
     i = (GetRaceStat(&(rgplr[iplr]), (iTech + 8)) - 1);
     if ((i == 0))
         goto L_1e83;

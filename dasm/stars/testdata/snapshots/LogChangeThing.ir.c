@@ -18,17 +18,11 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    lxNew.rgdItem[i] = (uint32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
-    if (((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0))
+    lxNew.rgdItem[i] = (int32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]));
+    if (((int32_t)((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) != 0))
         goto L_999c;
     else
-        goto L_9994;
-
-L_9994:
-    if ((SIGNHIWORD((pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i])) == 0x0))
         goto L_99a1;
-    else
-        goto L_999c;
 
 L_999c:
     fChg = 1;

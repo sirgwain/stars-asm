@@ -1,0 +1,36 @@
+name: Test and decompile
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-dasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+          cache: true
+
+      - name: Install clang-format
+        run: python3 -m pip install clang-format==20.1.8
+
+      - name: Run tests and regenerate snapshots
+        run: go test ./...
+
+      - name: Verify checked-in snapshots
+        run: git diff --exit-code -- dasm/stars/testdata/snapshots
+
+      - name: Regenerate all decompiler output
+        run: go run . dasm all --all
+
+      - name: Verify checked-in generated output
+        run: git diff --exit-code

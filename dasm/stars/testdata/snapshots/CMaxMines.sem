@@ -16,13 +16,9 @@ L_7248:
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr)
     iEff = GetRaceStat(&rgplr[iplr], rsMineOperate)
     cMax = (int32_t)((uint32_t)(lPopMax * sext16to32(iEff)) / 0x64)
-    branch HIWORD(cMax) > 0x0 ? L_72ca : L_72b2
+    branch cMax < 10 ? L_72c0 : L_72ca
 
-L_72b2:
-    branch HIWORD(cMax) < 0x0 ? L_72c0 : L_72b7
 
-L_72b7:
-    branch LOWORD(cMax) >= 0xa ? L_72ca : L_72c0
 
 L_72c0:
     cMax = 10

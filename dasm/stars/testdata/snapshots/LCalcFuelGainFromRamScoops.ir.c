@@ -87,7 +87,7 @@ L_5836:
     pctShip10 = (pctShip10 + (uint32_t)((lpshdef->hul.rghs[0].cItem * 0x4)));
 
 L_5852:
-    pct10 = (pct10 + (uint32_t)((pctShip10 * (uint32_t)(lpfl->rgcsh[i]))));
+    pct10 = (pct10 + (uint32_t)((pctShip10 * (int32_t)(lpfl->rgcsh[i]))));
 
 L_587d:
     goto L_56fe;

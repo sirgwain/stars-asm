@@ -54,22 +54,16 @@ L_60b1:
     return 0
 
 L_60ba:
-    branch LOWORD(dChg) != 0x0 ? L_60e6 : L_60c3
+    branch dChg != 0 ? L_60e6 : L_60cc
 
-L_60c3:
-    branch HIWORD(dChg) != 0x0 ? L_60e6 : L_60cc
 
 L_60cc:
     return ppl->rgwtMin[iSupply]
 
 L_60e6:
-    branch (HIWORD(ppl->rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0 ? L_613c : L_610b
+    branch (ppl->rgwtMin[iSupply] + dChg) < 0x0 ? L_6118 : L_613c
 
-L_610b:
-    branch (HIWORD(ppl->rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0 ? L_6118 : L_6110
 
-L_6110:
-    branch (LOWORD(ppl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0 ? L_613c : L_6118
 
 L_6118:
     dChg = neg(ppl->rgwtMin[iSupply])
@@ -78,10 +72,8 @@ L_613c:
     ppl->rgwtMin[iSupply] = (ppl->rgwtMin[iSupply] + dChg)
 
 L_6159:
-    branch LOWORD(dChg) != 0x0 ? L_616b : L_6162
+    branch dChg != 0 ? L_616b : L_64bd
 
-L_6162:
-    branch HIWORD(dChg) == 0x0 ? L_64bd : L_616b
 
 L_616b:
     branch pobj != 0x0 ? L_64bd : L_6174
@@ -119,22 +111,16 @@ L_61d2:
     branch iSupply > 4 ? L_62f3 : L_61db
 
 L_61db:
-    branch LOWORD(dChg) != 0x0 ? L_6202 : L_61e4
+    branch dChg != 0 ? L_6202 : L_61ed
 
-L_61e4:
-    branch HIWORD(dChg) != 0x0 ? L_6202 : L_61ed
 
 L_61ed:
     return sext16to32(pth->thp.rgwtMin[iSupply])
 
 L_6202:
-    branch (signhiword(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0 ? L_6249 : L_6222
+    branch (sext16to32(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0 ? L_622f : L_6249
 
-L_6222:
-    branch (signhiword(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0 ? L_622f : L_6227
 
-L_6227:
-    branch (pth->thp.rgwtMin[iSupply] + LOWORD(dChg)) >= 0x0 ? L_6249 : L_622f
 
 L_622f:
     dChg = sext16to32(neg(pth->thp.rgwtMin[iSupply]))
@@ -152,13 +138,9 @@ L_6295:
     branch i < 3 ? L_6275 : L_629f
 
 L_629f:
-    branch HIWORD(dChg) < HIWORD(wtFree) ? L_62ca : L_62af
+    branch dChg <= wtFree ? L_62ca : L_62bc
 
-L_62af:
-    branch HIWORD(dChg) > HIWORD(wtFree) ? L_62bc : L_62b4
 
-L_62b4:
-    branch LOWORD(dChg) <= LOWORD(wtFree) ? L_62ca : L_62bc
 
 L_62bc:
     dChg = wtFree
@@ -167,10 +149,8 @@ L_62ca:
     pth->thp.rgwtMin[iSupply] = (pth->thp.rgwtMin[iSupply] + LOWORD(dChg))
 
 L_62f3:
-    branch LOWORD(dChg) != 0x0 ? L_6305 : L_62fc
+    branch dChg != 0 ? L_6305 : L_64bd
 
-L_62fc:
-    branch HIWORD(dChg) == 0x0 ? L_64bd : L_6305
 
 L_6305:
     branch pobj != 0x0 ? L_64bd : L_630e
@@ -196,22 +176,16 @@ L_6349:
     branch iSupply > 4 ? L_6492 : L_6352
 
 L_6352:
-    branch LOWORD(dChg) != 0x0 ? L_637e : L_635b
+    branch dChg != 0 ? L_637e : L_6364
 
-L_635b:
-    branch HIWORD(dChg) != 0x0 ? L_637e : L_6364
 
 L_6364:
     return pfl->rgwtMin[iSupply]
 
 L_637e:
-    branch (HIWORD(pfl->rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0 ? L_63d4 : L_63a3
+    branch (pfl->rgwtMin[iSupply] + dChg) < 0x0 ? L_63b0 : L_63d4
 
-L_63a3:
-    branch (HIWORD(pfl->rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0 ? L_63b0 : L_63a8
 
-L_63a8:
-    branch (LOWORD(pfl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0 ? L_63d4 : L_63b0
 
 L_63b0:
     dChg = neg(pfl->rgwtMin[iSupply])
@@ -230,21 +204,17 @@ L_63f9:
 
 L_6402:
     call GetFuelFree(pfl) -> t_call_640a
-    t_merge_6425_0002_wide = t_call_640a
+    t_merge_6425_0001 = t_call_640a
     goto L_6425
 
 L_6415:
     call GetCargoFree(pfl) -> t_call_641d
-    t_merge_6425_0002_wide = t_call_641d
+    t_merge_6425_0001 = t_call_641d
 
 L_6425:
-    branch HIWORD(dChg) > hiword(t_merge_6425_0002_wide) ? L_6443 : L_642d
+    branch dChg < t_merge_6425_0001 ? L_643a : L_6443
 
-L_642d:
-    branch HIWORD(dChg) < hiword(t_merge_6425_0002_wide) ? L_643a : L_6432
 
-L_6432:
-    branch LOWORD(dChg) >= loword(t_merge_6425_0002_wide) ? L_6443 : L_643a
 
 L_643a:
     t_merge_646f_0001 = dChg
@@ -267,10 +237,8 @@ L_646f:
     pfl->rgwtMin[iSupply] = (pfl->rgwtMin[iSupply] + dChg)
 
 L_6492:
-    branch LOWORD(dChg) != 0x0 ? L_64a4 : L_649b
+    branch dChg != 0 ? L_64a4 : L_64bd
 
-L_649b:
-    branch HIWORD(dChg) == 0x0 ? L_64bd : L_64a4
 
 L_64a4:
     branch pobj != 0x0 ? L_64bd : L_64ad

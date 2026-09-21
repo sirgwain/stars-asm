@@ -126,11 +126,8 @@ L_5ce3:
     t_merge_5cf0_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg)))
 
 L_5cf0:
-    call XferSupply(iVal, t_merge_5cf0_0001) -> t_call_5cf5
-    branch loword(t_call_5cf5) != 0x0 ? L_5d0d : L_5d05
+    branch XferSupply(iVal, t_merge_5cf0_0001) != 0 ? L_5d0d : L_5b44
 
-L_5d05:
-    branch hiword(t_call_5cf5) == 0x0 ? L_5b44 : L_5d0d
 
 L_5d0d:
     call DrawXferDlg(hwnd, 0x0, &rc, iVal) -> callresult(void)
@@ -251,11 +248,8 @@ L_5f2e:
     t_merge_5f3b_0001 = words(neg((HIWORD(dChg) + 0x0)), neg(LOWORD(dChg)))
 
 L_5f3b:
-    call XferSupply(iVal, t_merge_5f3b_0001) -> t_call_5f40
-    branch loword(t_call_5f40) != 0x0 ? L_5f58 : L_5f50
+    branch XferSupply(iVal, t_merge_5f3b_0001) != 0 ? L_5f58 : L_5dad
 
-L_5f50:
-    branch hiword(t_call_5f40) == 0x0 ? L_5dad : L_5f58
 
 L_5f58:
     call DrawXferDlg(hwnd, btnt.hdc, &rc, iVal) -> callresult(void)

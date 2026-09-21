@@ -36,10 +36,8 @@ L_72af:
 
 L_72b4:
     lpfl = LpflFromId(ifl)
-    branch LOWORD(lpfl) != 0x0 ? L_72de : L_72cf
+    branch lpfl != 0x0 ? L_72de : L_72d8
 
-L_72cf:
-    branch HIWORD(lpfl) != 0x0 ? L_72de : L_72d8
 
 L_72d8:
     return 0

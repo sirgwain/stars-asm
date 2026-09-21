@@ -329,10 +329,8 @@ L_41b1:
 
 L_41bc:
     lpfl = rglpfl[i]
-    branch LOWORD(rglpfl[i]) != 0x0 ? L_41ec : L_41e4
+    branch rglpfl[i] != 0x0 ? L_41ec : L_4215
 
-L_41e4:
-    branch HIWORD(rglpfl[i]) == 0x0 ? L_4215 : L_41ec
 
 L_41ec:
     branch scan.pt.x != lpfl->pt.x ? L_41ad : L_4206
@@ -374,10 +372,8 @@ CheckPlanet:
     scan.grobj = grobjPlanet
     idNew = scan.idpl
     lppl = LpplFromId(idNew)
-    branch LOWORD(lppl) != 0x0 ? L_42d5 : L_42c4
+    branch lppl != 0x0 ? L_42d5 : L_42cd
 
-L_42c4:
-    branch HIWORD(lppl) != 0x0 ? L_42d5 : L_42cd
 
 L_42cd:
     fOurs = 0
@@ -411,10 +407,8 @@ L_42ff:
 
 L_430a:
     lpfl = rglpfl[i]
-    branch LOWORD(rglpfl[i]) != 0x0 ? L_433a : L_4332
+    branch rglpfl[i] != 0x0 ? L_433a : L_4363
 
-L_4332:
-    branch HIWORD(rglpfl[i]) == 0x0 ? L_4363 : L_433a
 
 L_433a:
     branch scan.pt.x != lpfl->pt.x ? L_42fb : L_4354
@@ -552,10 +546,8 @@ L_467c:
 
 L_4687:
     lpfl = rglpfl[ifl]
-    branch LOWORD(rglpfl[ifl]) != 0x0 ? L_46b7 : L_46af
+    branch rglpfl[ifl] != 0x0 ? L_46b7 : L_476a
 
-L_46af:
-    branch HIWORD(rglpfl[ifl]) == 0x0 ? L_476a : L_46b7
 
 L_46b7:
     branch lpfl->idPlanet != pl.id ? L_4678 : L_46c6
@@ -571,13 +563,9 @@ L_46ec:
 
 L_4705:
     cMines = CMineFromLpfl(lpfl)
-    branch HIWORD(cMines) < 0x0 ? L_4678 : L_4722
+    branch cMines <= 0 ? L_4678 : L_4730
 
-L_4722:
-    branch HIWORD(cMines) > 0x0 ? L_4730 : L_4727
 
-L_4727:
-    branch LOWORD(cMines) <= 0x0 ? L_4678 : L_4730
 
 L_4730:
     call EstMineralsMined(&pl, rglT, cMines, 0) -> callresult(void)
@@ -587,13 +575,9 @@ L_4767:
     goto L_4678
 
 L_476a:
-    branch HIWORD(lVal) < 0x0 ? L_478e : L_4773
+    branch lVal <= 0 ? L_478e : L_4781
 
-L_4773:
-    branch HIWORD(lVal) > 0x0 ? L_4781 : L_4778
 
-L_4778:
-    branch LOWORD(lVal) <= 0x0 ? L_478e : L_4781
 
 L_4781:
     GlobalPD.rgi[4] = lVal

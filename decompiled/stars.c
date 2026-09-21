@@ -63,13 +63,13 @@ L_0115:
     lpT = lpCmdLine;
 
 L_0121:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0571;
     else
         goto L_0130;
 
 L_0130:
-    if (((uint16_t)(*(lpT)) != 32))
+    if (((int16_t)(*(lpT)) != 32))
         goto L_0146;
     else
         goto L_013f;
@@ -79,13 +79,13 @@ L_013f:
     goto L_0130;
 
 L_0146:
-    if (((uint16_t)(*(lpT)) == 45))
+    if (((int16_t)(*(lpT)) == 45))
         goto L_0164;
     else
         goto L_0155;
 
 L_0155:
-    if (((uint16_t)(*(lpT)) != 47))
+    if (((int16_t)(*(lpT)) != 47))
         goto L_0517;
     else
         goto L_0164;
@@ -94,13 +94,13 @@ L_0164:
     lpT = (lpT + 1);
 
 L_0168:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0121;
     else
         goto L_0177;
 
 L_0177:
-    if (((uint16_t)(*(lpT)) == 32))
+    if (((int16_t)(*(lpT)) == 32))
         goto L_0121;
     else
         goto L_0186;
@@ -116,13 +116,13 @@ L_01a2:
     lpT = (lpT + 1);
 
 L_01a6:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0238;
     else
         goto L_01b5;
 
 L_01b5:
-    if (((uint16_t)(*(lpT)) == 32))
+    if (((int16_t)(*(lpT)) == 32))
         goto L_0238;
     else
         goto L_01c4;
@@ -143,37 +143,37 @@ L_01ec:
     goto L_0231;
 
 L_01fe:
-    if (((uint16_t)(*(lpT)) == 70))
+    if (((int16_t)(*(lpT)) == 70))
         goto L_01ce;
     else
         goto L_0206;
 
 L_0206:
-    if (((uint16_t)(*(lpT)) == 77))
+    if (((int16_t)(*(lpT)) == 77))
         goto L_01ec;
     else
         goto L_020e;
 
 L_020e:
-    if (((uint16_t)(*(lpT)) == 80))
+    if (((int16_t)(*(lpT)) == 80))
         goto L_01dd;
     else
         goto L_0216;
 
 L_0216:
-    if (((uint16_t)(*(lpT)) == 102))
+    if (((int16_t)(*(lpT)) == 102))
         goto L_01ce;
     else
         goto L_021e;
 
 L_021e:
-    if (((uint16_t)(*(lpT)) == 109))
+    if (((int16_t)(*(lpT)) == 109))
         goto L_01ec;
     else
         goto L_0226;
 
 L_0226:
-    if (((uint16_t)(*(lpT)) == 112))
+    if (((int16_t)(*(lpT)) == 112))
         goto L_01dd;
     else
         goto L_0231;
@@ -191,20 +191,20 @@ L_023f:
     i = 0;
 
 L_0250:
-    if (((uint16_t)(lpT[1]) < 48))
+    if (((int16_t)(lpT[1]) < 48))
         goto L_02cb;
     else
         goto L_0260;
 
 L_0260:
-    if (((uint16_t)(lpT[1]) > 57))
+    if (((int16_t)(lpT[1]) > 57))
         goto L_02cb;
     else
         goto L_0270;
 
 L_0270:
     lpT = (lpT + 1);
-    i = ((LOWORD((10 * i)) + (uint16_t)(*(lpT))) - 48);
+    i = ((LOWORD((10 * i)) + (int16_t)(*(lpT))) - 48);
     if ((i <= 1000))
         goto L_0250;
     else
@@ -214,13 +214,13 @@ L_0299:
     i = 1000;
 
 L_029e:
-    if (((uint16_t)(lpT[1]) < 48))
+    if (((int16_t)(lpT[1]) < 48))
         goto L_02cb;
     else
         goto L_02ae;
 
 L_02ae:
-    if (((uint16_t)(lpT[1]) > 57))
+    if (((int16_t)(lpT[1]) > 57))
         goto L_02cb;
     else
         goto L_02be;
@@ -257,7 +257,7 @@ L_030d:
     lpT = (lpT + 1);
 
 L_0311:
-    if (((uint16_t)(*(lpT)) != 32))
+    if (((int16_t)(*(lpT)) != 32))
         goto L_0327;
     else
         goto L_0320;
@@ -270,13 +270,13 @@ L_0327:
     pch = szBase;
 
 L_032c:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0360;
     else
         goto L_033b;
 
 L_033b:
-    if (((uint16_t)(*(lpT)) == 32))
+    if (((int16_t)(*(lpT)) == 32))
         goto L_0360;
     else
         goto L_034a;
@@ -317,7 +317,7 @@ L_03c8:
     goto L_050d;
 
 L_03d7:
-    if (((uint16_t)(szBase[0]) == 0))
+    if (((int16_t)(szBase[0]) == 0))
         goto L_03e9;
     else
         goto L_03e3;
@@ -337,7 +337,7 @@ L_0409:
     lpT = (lpT + 1);
 
 L_040d:
-    if (((uint16_t)(*(lpT)) != 32))
+    if (((int16_t)(*(lpT)) != 32))
         goto L_0423;
     else
         goto L_041c;
@@ -350,13 +350,13 @@ L_0423:
     pch = szPassLast;
 
 L_0428:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0466;
     else
         goto L_0437;
 
 L_0437:
-    if (((uint16_t)(*(lpT)) == 32))
+    if (((int16_t)(*(lpT)) == 32))
         goto L_0466;
     else
         goto L_0446;
@@ -380,13 +380,13 @@ L_0466:
     goto L_050d;
 
 L_0489:
-    if ((((uint16_t)(*(lpT)) - 65) > 0x37))
+    if ((((int16_t)(*(lpT)) - 65) > 0x37))
         goto L_050d;
     else
         goto L_0494;
 
 L_0494:
-    switch ((((uint16_t)(*(lpT)) - 65) * 0x2)) {
+    switch ((((int16_t)(*(lpT)) - 65) * 0x2)) {
     case 0x0:
         goto L_02e0;
     case 0x2:
@@ -509,13 +509,13 @@ L_0517:
     pch = szBase;
 
 L_051c:
-    if (((uint16_t)(*(lpT)) == 0))
+    if (((int16_t)(*(lpT)) == 0))
         goto L_0550;
     else
         goto L_052b;
 
 L_052b:
-    if (((uint16_t)(*(lpT)) == 32))
+    if (((int16_t)(*(lpT)) == 32))
         goto L_0550;
     else
         goto L_053a;
@@ -639,22 +639,16 @@ L_06cf:
     pch = szBase;
 
 L_0733:
-    if (((uint16_t)(*(lpchBatch)) == 10))
+    if (((int16_t)(*(lpchBatch)) == 10))
         goto L_0774;
     else
         goto L_0743;
 
 L_0743:
-    if ((LOWORD(lpchBatch) != LOWORD(lpchBatchMac)))
+    if ((lpchBatch != lpchBatchMac))
         goto L_075c;
     else
-        goto L_0753;
-
-L_0753:
-    if ((HIWORD(lpchBatch) == HIWORD(lpchBatchMac)))
         goto L_0774;
-    else
-        goto L_075c;
 
 L_075c:
     *(pch) = *(lpchBatch);
@@ -722,13 +716,7 @@ L_080b:
         goto L_0828;
 
 L_0828:
-    if ((LOWORD(vrgts[iplr].lSerialNumber) != LOWORD(vrgts[i].lSerialNumber)))
-        goto L_07f1;
-    else
-        goto L_0867;
-
-L_0867:
-    if ((HIWORD(vrgts[iplr].lSerialNumber) != HIWORD(vrgts[i].lSerialNumber)))
+    if ((vrgts[iplr].lSerialNumber != vrgts[i].lSerialNumber))
         goto L_07f1;
     else
         goto L_0870;
@@ -1080,16 +1068,10 @@ L_0d98:
     FreeProcInstance(lpfnFakeListProc);
     FreeProcInstance(lpfnHostTimerProc);
     FreeProcInstance(lpfnBrowserDlgProc);
-    if ((LOWORD(lpfnTutorDlgProc) != 0x0))
+    if ((lpfnTutorDlgProc != 0x0))
         goto L_0dfa;
     else
-        goto L_0df0;
-
-L_0df0:
-    if ((HIWORD(lpfnTutorDlgProc) == 0x0))
         goto L_0e07;
-    else
-        goto L_0dfa;
 
 L_0dfa:
     FreeProcInstance(lpfnTutorDlgProc);

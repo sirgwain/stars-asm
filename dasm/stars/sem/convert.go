@@ -283,7 +283,7 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 			Segment: c.convertValue(v.Segment),
 		}
 	case *machine.SignExtendValue:
-		return &SignExtend{Parent: c.convertValue(v.Parent), FromBits: v.FromBits, ToBits: v.ToBits, TypeInfo: intTypeForWidth(v.ToBits / 8)}
+		return &SignExtend{Parent: c.convertValue(v.Parent), FromBits: v.FromBits, ToBits: v.ToBits, TypeInfo: signedIntTypeForWidth(v.ToBits / 8)}
 	case *machine.Binary:
 		op := convertOp(v.Op)
 		if op == OpNeg || op == OpNot {

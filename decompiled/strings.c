@@ -1157,7 +1157,7 @@ char *PszGetCompressedString(StringId ids) {
 
 L_743a:
     iNibble = 0;
-    if ((ids != (uint16_t)(iLastStrGet)))
+    if ((ids != (int16_t)(iLastStrGet)))
         goto L_745a;
     else
         goto L_7454;

@@ -36,10 +36,8 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i]
-    branch LOWORD(rglpfl[i]) != 0x0 ? L_2564 : L_255c
+    branch rglpfl[i] != 0x0 ? L_2564 : L_2606
 
-L_255c:
-    branch HIWORD(rglpfl[i]) == 0x0 ? L_2606 : L_2564
 
 L_2564:
     branch lpfl->idPlanet != idPlanet ? L_2525 : L_2573

@@ -35,16 +35,10 @@ L_00c0:
         goto L_0123;
 
 L_0123:
-    if ((LOWORD(sel.pl.lpplprod) != 0x0))
+    if ((sel.pl.lpplprod != 0x0))
         goto L_0137;
     else
-        goto L_012d;
-
-L_012d:
-    if ((HIWORD(sel.pl.lpplprod) == 0x0))
         goto L_0153;
-    else
-        goto L_0137;
 
 L_0137:
     FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, 0x0);
@@ -119,22 +113,10 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
 
 L_027c:
     cshQueued = CshQueued(lpshdef->ishdef, &(fProgress), fEdit);
-    if ((HIWORD(lpshdef->cExist) > 0x0))
-        goto L_02ce;
-    else
-        goto L_02b5;
-
-L_02b5:
-    if ((HIWORD(lpshdef->cExist) < 0x0))
+    if ((lpshdef->cExist <= 0x0))
         goto L_02c5;
     else
-        goto L_02ba;
-
-L_02ba:
-    if ((LOWORD(lpshdef->cExist) > 0x0))
         goto L_02ce;
-    else
-        goto L_02c5;
 
 L_02c5:
     if ((cshQueued == 0))
@@ -170,19 +152,7 @@ L_02f2:
 
 L_02f5:
     CchGetString(idsWorkDone, rgch);
-    if ((HIWORD(lpshdef->cExist) < 0x0))
-        goto L_03ab;
-    else
-        goto L_0313;
-
-L_0313:
-    if ((HIWORD(lpshdef->cExist) > 0x0))
-        goto L_0323;
-    else
-        goto L_0318;
-
-L_0318:
-    if ((LOWORD(lpshdef->cExist) <= 0x0))
+    if ((lpshdef->cExist <= 0x0))
         goto L_03ab;
     else
         goto L_0323;
@@ -209,13 +179,7 @@ L_033d:
     /* untranslated: t_merge_0342_0002 = ds */
 
 L_0342:
-    if ((LOWORD(lpshdef->cExist) != 0x1))
-        goto L_0368;
-    else
-        goto L_0355;
-
-L_0355:
-    if ((HIWORD(lpshdef->cExist) != 0x0))
+    if ((lpshdef->cExist != 0x1))
         goto L_0368;
     else
         goto L_0360;
@@ -272,13 +236,7 @@ L_03e2:
     goto L_047e;
 
 L_0419:
-    if ((LOWORD(lpshdef->cExist) != 0x1))
-        goto L_043a;
-    else
-        goto L_0427;
-
-L_0427:
-    if ((HIWORD(lpshdef->cExist) != 0x0))
+    if ((lpshdef->cExist != 0x1))
         goto L_043a;
     else
         goto L_0432;
@@ -306,19 +264,7 @@ L_04bb:
     return 0;
 
 L_04c1:
-    if ((HIWORD(lpshdef->cExist) < 0x0))
-        goto L_0528;
-    else
-        goto L_04cf;
-
-L_04cf:
-    if ((HIWORD(lpshdef->cExist) > 0x0))
-        goto L_04df;
-    else
-        goto L_04d4;
-
-L_04d4:
-    if ((LOWORD(lpshdef->cExist) <= 0x0))
+    if ((lpshdef->cExist <= 0x0))
         goto L_0528;
     else
         goto L_04df;
@@ -368,10 +314,13 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int16_t            t_merge_11a4_0001;
     HWND               t_call_11bb;
     int16_t            t_merge_11fb_0001;
+    int32_t            t_1287;
+    int32_t            t_12f4;
     HULDEF            *t_call_132a;
     uint16_t           t_merge_13e5_0001;
     uint16_t           t_merge_178d_0001;
     uint16_t           t_merge_1c0b_0001;
+    int32_t            t_1c39;
     HULDEF            *t_call_1cbd;
     uint16_t           t_merge_1d40_0001;
     uint16_t           t_scratch_m4e_4;
@@ -404,12 +353,12 @@ L_055f:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     SetWindowPos(hwndItem, 0x0, (ptslotGlob.x - 264), 8, 240, 100, SWP_NOZORDER);
     FillBuildDD(hwndItem, mdBuild);
-    SetWindowPos(GetDlgItem(hwnd, IDOK), 0x0, (ptslotGlob.x - 226), ((ptslotGlob.y - ((uint32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((uint32_t)(LOWORD((3 * dyArial8))) / 2), 0x84);
-    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, (ptslotGlob.x - 148), ((ptslotGlob.y - ((uint32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
-    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (ptslotGlob.x - 74), ((ptslotGlob.y - ((uint32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((uint32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDOK), 0x0, (ptslotGlob.x - 226), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), 0x84);
+    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, (ptslotGlob.x - 148), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (ptslotGlob.x - 74), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
     SetDlgItemText(hwnd, IDCANCEL, PszGetCompressedString(idsDone));
     if ((gd.fTutorial == 0x0))
         goto L_07c4;
@@ -816,13 +765,7 @@ L_1014:
         goto L_101e;
 
 L_101e:
-    if ((LOWORD(lSel) != 0xffff))
-        goto L_103d;
-    else
-        goto L_1027;
-
-L_1027:
-    if ((HIWORD(lSel) != 0xffff))
+    if ((lSel != -1))
         goto L_103d;
     else
         goto L_1030;
@@ -870,16 +813,10 @@ L_10b3:
         goto L_10bd;
 
 L_10bd:
-    if ((LOWORD(lSel) != 0xffff))
+    if ((lSel != -1))
         goto L_10d2;
     else
-        goto L_10c6;
-
-L_10c6:
-    if ((HIWORD(lSel) == 0xffff))
         goto LClearSelection;
-    else
-        goto L_10d2;
 
 L_10d2:
     if ((mdBuild != mdBuildShdef))
@@ -911,13 +848,7 @@ L_1110:
     lpshdefBuild = NthValidShdef(LOWORD(lSel));
     CshQueued(lpshdefBuild->ishdef, &(fProgress), 0);
     t_call_1152 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
-    if ((LOWORD(lpshdefBuild->cExist) != 0x0))
-        goto L_11a1;
-    else
-        goto L_1167;
-
-L_1167:
-    if ((HIWORD(lpshdefBuild->cExist) != 0x0))
+    if ((lpshdefBuild->cExist != 0x0))
         goto L_11a1;
     else
         goto L_1172;
@@ -935,19 +866,7 @@ L_117b:
         goto L_1184;
 
 L_1184:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_11a1;
-    else
-        goto L_118d;
-
-L_118d:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_119b;
-    else
-        goto L_1192;
-
-L_1192:
-    if ((LOWORD(lSel) <= 0x0))
+    if ((lSel <= 0))
         goto L_11a1;
     else
         goto L_119b;
@@ -968,31 +887,13 @@ L_11a4:
 
 L_11b3:
     t_call_11bb = GetDlgItem(hwndSlotDlg, IDC_DELETE);
-    if ((HIWORD(lSel) < 0x0))
-        goto L_11f8;
-    else
-        goto L_11ca;
-
-L_11ca:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_11d8;
-    else
-        goto L_11cf;
-
-L_11cf:
-    if ((LOWORD(lSel) <= 0x0))
+    if ((lSel <= 0))
         goto L_11f8;
     else
         goto L_11d8;
 
 L_11d8:
-    if ((LOWORD(lpshdefBuild->cExist) != 0x0))
-        goto L_11f8;
-    else
-        goto L_11e7;
-
-L_11e7:
-    if ((HIWORD(lpshdefBuild->cExist) != 0x0))
+    if ((lpshdefBuild->cExist != 0x0))
         goto L_11f8;
     else
         goto L_11f2;
@@ -1046,20 +947,9 @@ L_1261:
         goto L_1287;
 
 L_1287:
+    t_1287 = lSel;
     lSel = (lSel - 1);
-    if ((HIWORD(lSel) > 0x0))
-        goto L_12ad;
-    else
-        goto L_129d;
-
-L_129d:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_12ba;
-    else
-        goto L_12a2;
-
-L_12a2:
-    if ((LOWORD(lSel) <= 0x0))
+    if ((t_1287 <= 0))
         goto L_12ba;
     else
         goto L_12ad;
@@ -1090,20 +980,9 @@ L_12ce:
         goto L_12f4;
 
 L_12f4:
+    t_12f4 = lSel;
     lSel = (lSel - 1);
-    if ((HIWORD(lSel) > 0x0))
-        goto L_131a;
-    else
-        goto L_130a;
-
-L_130a:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_1327;
-    else
-        goto L_130f;
-
-L_130f:
-    if ((LOWORD(lSel) <= 0x0))
+    if ((t_12f4 <= 0))
         goto L_1327;
     else
         goto L_131a;
@@ -1163,13 +1042,7 @@ L_13e5:
 L_13fb:
     SetBuildSelection(-2);
     DrawBuildSelHull(hwnd, 0x0, -1, 0x0);
-    if ((LOWORD(lpshdefBuild) != 0x0))
-        goto L_1477;
-    else
-        goto L_1428;
-
-L_1428:
-    if ((HIWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_1477;
     else
         goto L_1432;
@@ -1248,34 +1121,16 @@ L_152f:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     lSel = SendMessage(hwndItem, CB_GETCURSEL, 0x0, 0);
     lpshdef = NthValidShdef(LOWORD(lSel));
-    if ((HIWORD(lSel) < 0x0))
-        goto L_2641;
-    else
-        goto L_157a;
-
-L_157a:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_1588;
-    else
-        goto L_157f;
-
-L_157f:
-    if ((LOWORD(lSel) < 0x0))
+    if ((lSel < 0))
         goto L_2641;
     else
         goto L_1588;
 
 L_1588:
-    if ((LOWORD(lpshdef) != 0x0))
+    if ((lpshdef != 0x0))
         goto L_159d;
     else
-        goto L_1591;
-
-L_1591:
-    if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
-    else
-        goto L_159d;
 
 L_159d:
     if ((fStarbaseMode == 0))
@@ -1284,13 +1139,7 @@ L_159d:
         goto L_15a7;
 
 L_15a7:
-    if ((LOWORD(lSel) != 0x0))
-        goto L_15dd;
-    else
-        goto L_15b0;
-
-L_15b0:
-    if ((HIWORD(lSel) != 0x0))
+    if ((lSel != 0))
         goto L_15dd;
     else
         goto L_15b9;
@@ -1339,13 +1188,7 @@ L_16ca:
         goto L_16eb;
 
 L_16eb:
-    if ((LOWORD(lpshdefBuild) != 0x0))
-        goto L_1758;
-    else
-        goto L_16f5;
-
-L_16f5:
-    if ((HIWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_1758;
     else
         goto L_16ff;
@@ -1353,13 +1196,7 @@ L_16f5:
 L_16ff:
     EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 0);
     EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), 0);
-    if ((LOWORD(lpshdefBuild) != 0x0))
-        goto L_1758;
-    else
-        goto L_1737;
-
-L_1737:
-    if ((HIWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_1758;
     else
         goto L_1741;
@@ -1420,19 +1257,7 @@ L_17ec:
 L_1803:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     lSel = SendMessage(hwndItem, CB_GETCURSEL, 0x0, 0);
-    if ((HIWORD(lSel) > 0x0))
-        goto L_184a;
-    else
-        goto L_1839;
-
-L_1839:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_2641;
-    else
-        goto L_183e;
-
-L_183e:
-    if ((LOWORD(lSel) < 0x0))
+    if ((lSel < 0))
         goto L_2641;
     else
         goto L_184a;
@@ -1541,34 +1366,16 @@ L_19a0:
     goto L_2641;
 
 L_19c4:
-    if ((HIWORD(lSel) < 0x0))
-        goto L_2641;
-    else
-        goto L_19cd;
-
-L_19cd:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_19db;
-    else
-        goto L_19d2;
-
-L_19d2:
-    if ((LOWORD(lSel) < 0x0))
+    if ((lSel < 0))
         goto L_2641;
     else
         goto L_19db;
 
 L_19db:
-    if ((LOWORD(lpshdef) != 0x0))
+    if ((lpshdef != 0x0))
         goto L_19f0;
     else
-        goto L_19e4;
-
-L_19e4:
-    if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
-    else
-        goto L_19f0;
 
 L_19f0:
     if ((fStarbaseMode == 0))
@@ -1683,23 +1490,12 @@ L_1c13:
         goto L_1c39;
 
 L_1c39:
+    t_1c39 = lSel;
     lSel = (lSel - 1);
-    if ((HIWORD(lSel) > 0x0))
-        goto L_1bf4;
-    else
-        goto L_1c4f;
-
-L_1c4f:
-    if ((HIWORD(lSel) < 0x0))
+    if ((t_1c39 <= 0))
         goto L_1c62;
     else
-        goto L_1c54;
-
-L_1c54:
-    if ((LOWORD(lSel) > 0x0))
         goto L_1bf4;
-    else
-        goto L_1c62;
 
 L_1c62:
     if ((fStarbaseMode == 0))
@@ -1815,34 +1611,16 @@ L_1ecf:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     lSel = SendMessage(hwndItem, CB_GETCURSEL, 0x0, 0);
     lpshdef = NthValidShdef(LOWORD(lSel));
-    if ((HIWORD(lSel) < 0x0))
-        goto L_2641;
-    else
-        goto L_1f1a;
-
-L_1f1a:
-    if ((HIWORD(lSel) > 0x0))
-        goto L_1f28;
-    else
-        goto L_1f1f;
-
-L_1f1f:
-    if ((LOWORD(lSel) < 0x0))
+    if ((lSel < 0))
         goto L_2641;
     else
         goto L_1f28;
 
 L_1f28:
-    if ((LOWORD(lpshdef) != 0x0))
+    if ((lpshdef != 0x0))
         goto L_1f3d;
     else
-        goto L_1f31;
-
-L_1f31:
-    if ((HIWORD(lpshdef) == 0x0))
         goto L_2641;
-    else
-        goto L_1f3d;
 
 L_1f3d:
     if ((fStarbaseMode != 0))
@@ -1857,16 +1635,10 @@ L_1f47:
         goto EditDesign;
 
 EditDesign:
-    if ((LOWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_1f7e;
     else
-        goto L_1f71;
-
-L_1f71:
-    if ((HIWORD(lpshdefBuild) == 0x0))
         goto L_2641;
-    else
-        goto L_1f7e;
 
 L_1f7e:
     InvalidateRect(hwnd, 0x0, 1);
@@ -2269,16 +2041,10 @@ L_2650:
         goto L_2668;
 
 L_2668:
-    if ((LOWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_267f;
     else
-        goto L_2672;
-
-L_2672:
-    if ((HIWORD(lpshdefBuild) == 0x0))
         goto L_3064;
-    else
-        goto L_267f;
 
 L_267f:
     lphuldef = LphuldefFromId(lpshdefBuild->hul.ihuldef);
@@ -2426,7 +2192,7 @@ L_2916:
     FillRect(hdc, &(rc), t_merge_2916_0001);
 
 L_291c:
-    rc.bottom = (((uint32_t)((rc.bottom - rc.top)) / 2) + rc.top);
+    rc.bottom = (((int32_t)((rc.bottom - rc.top)) / 2) + rc.top);
     if ((fStarbaseMode != 0))
         goto L_29a0;
     else
@@ -2439,13 +2205,7 @@ L_2938:
     goto L_2a34;
 
 L_29a0:
-    if ((lphuldef->hul.wtCargoMax != 0xffff))
-        goto L_29dd;
-    else
-        goto L_29b2;
-
-L_29b2:
-    if ((0x0 != 0x0))
+    if (((uint32_t)(lphuldef->hul.wtCargoMax) != 0xffff))
         goto L_29dd;
     else
         goto L_29ba;
@@ -2710,13 +2470,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
 
 L_306a:
     fFirst = 1;
-    if ((LOWORD(lpshdefBuild) != 0x0))
-        goto L_3092;
-    else
-        goto L_3082;
-
-L_3082:
-    if ((HIWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_3092;
     else
         goto L_308c;
@@ -2856,14 +2610,14 @@ L_3312:
 
 L_3318:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
-    ibmp = (((uint16_t)(szWork[2]) - 65) + LOWORD((((uint16_t)(szWork[3]) - 65) * 0x1a)));
+    ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
     iSrc = -1;
-    hs.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
-    hs.iItem = ((uint16_t)(szWork[1]) - 65);
+    hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    hs.iItem = ((int16_t)(szWork[1]) - 65);
     hs.cItem = 0x1;
     rcStart.left = 2;
     rcStart.right = 66;
-    rcStart.top = (LOWORD((((uint32_t)(y) / 66) * 0x42)) + 1);
+    rcStart.top = (LOWORD((((int32_t)(y) / 66) * 0x42)) + 1);
     rcStart.bottom = (rcStart.top + 64);
     ClientToScreen(hwnd, &(rcStart));
     ClientToScreen(hwnd, rcStart.right);
@@ -3072,7 +2826,7 @@ L_37a5:
 
 L_37d7:
     BitBlt(hdcMem, 0, 0, ptTileSize.x, ptTileSize.y, hdc, (rcStart.left + ptD.x), (rcStart.top + ptD.y), SRCCOPY);
-    DibBlt(hdc, (rcStart.left + ptD.x), (rcStart.top + ptD.y), 64, 64, rghdibInventory[((uint32_t)(ibmp) / 32)], (ibmpX * 64), ((3 - ibmpY) * 64), 64, 64,
+    DibBlt(hdc, (rcStart.left + ptD.x), (rcStart.top + ptD.y), 64, 64, rghdibInventory[((int32_t)(ibmp) / 32)], (ibmpX * 64), ((3 - ibmpY) * 64), 64, 64,
            13369376);
     goto L_3988;
 
@@ -3080,7 +2834,7 @@ L_3860:
     dxStart = 0;
     dyStart = 0;
     BitBlt(hdcMem, 0, 0, ptTileSize.x, ptTileSize.y, hdcMemFull, (ptTileSize.x + ptDNew.x), (ptTileSize.y + ptDNew.y), SRCCOPY);
-    DibBlt(hdcMemFull, (ptTileSize.x + ptDNew.x), (ptTileSize.y + ptDNew.y), 64, 64, rghdibInventory[((uint32_t)(ibmp) / 32)], (ibmpX * 64), ((3 - ibmpY) * 64),
+    DibBlt(hdcMemFull, (ptTileSize.x + ptDNew.x), (ptTileSize.y + ptDNew.y), 64, 64, rghdibInventory[((int32_t)(ibmp) / 32)], (ibmpX * 64), ((3 - ibmpY) * 64),
            64, 64, 13369376);
     rc = rcStart;
     OffsetRc(&(rc), ptD.x, ptD.y);
@@ -3253,21 +3007,15 @@ L_3b7b:
 L_3baf:
     SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_INSERTSTRING, iSel, szWork);
     hsShip.cItem = 0x1;
-    hsShip.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
-    hsShip.iItem = ((uint16_t)(szWork[1]) - 65);
+    hsShip.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    hsShip.iItem = ((int16_t)(szWork[1]) - 65);
     goto HullPart;
 
 L_3c15:
-    if ((LOWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_3c2c;
     else
-        goto L_3c1f;
-
-L_3c1f:
-    if ((HIWORD(lpshdefBuild) == 0x0))
         goto Restore;
-    else
-        goto L_3c2c;
 
 L_3c2c:
     hsShip = lpshdefBuild->hul.rghs[iselSlot];
@@ -3355,19 +3103,19 @@ L_3d70:
         goto L_3d92;
 
 L_3d92:
-    if (((uint16_t)(szWord[(cch - 1)]) != 115))
+    if (((int16_t)(szWord[(cch - 1)]) != 115))
         goto L_3df6;
     else
         goto L_3da8;
 
 L_3da8:
-    if (((uint16_t)(szWord[(cch - 2)]) != 101))
+    if (((int16_t)(szWord[(cch - 2)]) != 101))
         goto L_3de5;
     else
         goto L_3dbe;
 
 L_3dbe:
-    if (((uint16_t)(szWord[(cch - 3)]) != 111))
+    if (((int16_t)(szWord[(cch - 3)]) != 111))
         goto L_3de5;
     else
         goto L_3dd4;
@@ -3387,7 +3135,7 @@ L_3df6:
     goto L_3e21;
 
 L_3e0a:
-    if (((uint16_t)(*(pch)) == 40))
+    if (((int16_t)(*(pch)) == 40))
         goto L_3e2d;
     else
         goto L_3e1c;
@@ -3402,7 +3150,7 @@ L_3e21:
         goto L_3e2d;
 
 L_3e2d:
-    if (((uint16_t)(*(pch)) != 40))
+    if (((int16_t)(*(pch)) != 40))
         goto L_3e84;
     else
         goto L_3e3c;
@@ -3414,13 +3162,13 @@ L_3e3c:
         goto L_3e48;
 
 L_3e48:
-    if (((uint16_t)(pch[(-1)]) != 32))
+    if (((int16_t)(pch[(-1)]) != 32))
         goto L_3e84;
     else
         goto L_3e58;
 
 L_3e58:
-    if (((uint16_t)(pch[(-2)]) != 115))
+    if (((int16_t)(pch[(-2)]) != 115))
         goto L_3e84;
     else
         goto L_3e68;
@@ -3519,7 +3267,7 @@ L_406c:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[k], lstrlen(rgszMinerals[k]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[k])))), HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[k])))));
+    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[k])))), HIWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[k])))));
     RightTextOut(hdc, ((rc.right - dxkT) - 64), rc.top, szWork, cch, dxMaxMineralQuan);
     TextOut(hdc, ((rc.right - dxkT) - 64), rc.top, PszGetCompressedString(idsKt), 2);
     k = (k + 1);
@@ -3537,7 +3285,7 @@ L_4178:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[5], lstrlen(rgszMinerals[5]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[3])))), HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(rgCosts[3])))));
+    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[3])))), HIWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[3])))));
     RightTextOut(hdc, ((rc.right - dxkT) - 64), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((fStarbaseMode != 0))
         goto Restore;
@@ -3548,8 +3296,8 @@ L_4239:
     rc.left = (rc.left - 8);
     rc.top = (rc.top + dyArial8);
     SelectObject(hdc, rghfontArial8[1]);
-    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), LOWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(part.pcom->cMass)))),
-                    HIWORD((uint32_t)(((uint32_t)(c) * (uint32_t)(part.pcom->cMass)))));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), LOWORD((uint32_t)(((int32_t)(c) * (int32_t)(part.pcom->cMass)))),
+                    HIWORD((uint32_t)(((int32_t)(c) * (int32_t)(part.pcom->cMass)))));
     TextOut(hdc, rc.left, rc.top, szWork, cch);
 
 Restore:
@@ -3610,7 +3358,7 @@ L_4352:
 
 L_4360:
     FLookupPart(&(part));
-    pctJam = (uint32_t)((100 - part.pspecial->grAbility));
+    pctJam = (int32_t)((100 - part.pspecial->grAbility));
     goto L_441f;
 
 L_4380:
@@ -3681,22 +3429,10 @@ L_4415:
     pctJam = 100;
 
 L_441f:
-    if ((HIWORD(pctJam) > 0x0))
-        goto L_4301;
-    else
-        goto L_4428;
-
-L_4428:
-    if ((HIWORD(pctJam) < 0x0))
+    if ((pctJam < 100))
         goto L_4436;
     else
-        goto L_442d;
-
-L_442d:
-    if ((LOWORD(pctJam) >= 0x64))
         goto L_4301;
-    else
-        goto L_4436;
 
 L_4436:
     i = part.hs.cItem;
@@ -3717,28 +3453,16 @@ L_4481:
     goto L_4447;
 
 L_4487:
-    if ((HIWORD(pctHit) > 0x0))
-        goto L_44a8;
-    else
-        goto L_4490;
-
-L_4490:
-    if ((HIWORD(pctHit) < 0x0))
+    if ((pctHit < 100))
         goto L_449e;
     else
-        goto L_4495;
-
-L_4495:
-    if ((LOWORD(pctHit) >= 0x64))
         goto L_44a8;
-    else
-        goto L_449e;
 
 L_449e:
     pctHit = 100;
 
 L_44a8:
-    pctJam = (uint32_t)((0x64 - ((uint32_t)((LOWORD(pctHit) + 0x32)) / 0x64)));
+    pctJam = (int32_t)((0x64 - ((int32_t)((LOWORD(pctHit) + 0x32)) / 0x64)));
     if ((lphul->ihuldef <= ihuldefOrbitalFort))
         goto L_44ed;
     else
@@ -3748,19 +3472,7 @@ L_44d4:
     pctJam = (pctJam - (int32_t)((pctJam / 4)));
 
 L_44ed:
-    if ((HIWORD(pctJam) < 0x0))
-        goto L_450e;
-    else
-        goto L_44f6;
-
-L_44f6:
-    if ((HIWORD(pctJam) > 0x0))
-        goto L_4504;
-    else
-        goto L_44fb;
-
-L_44fb:
-    if ((LOWORD(pctJam) <= 0x5f))
+    if ((pctJam <= 95))
         goto L_450e;
     else
         goto L_4504;
@@ -3856,16 +3568,10 @@ L_45ab:
     rc = *(prc);
 
 L_45ba:
-    if ((LOWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_45ce;
     else
-        goto L_45c4;
-
-L_45c4:
-    if ((HIWORD(lpshdefBuild) == 0x0))
         goto LReleaseDC;
-    else
-        goto L_45ce;
 
 L_45ce:
     lphul = lpshdefBuild;
@@ -3897,28 +3603,16 @@ L_467a:
 L_4684:
     GetVCRStats(viVCRFocus, &(dp), &(dv), &(dpShield), &(csh));
     dpShield = ((uint32_t)(vrgtok[viVCRFocus].dpShield) - dpShield);
-    if ((HIWORD(dpShield) > 0x0))
-        goto L_46e7;
-    else
-        goto L_46cf;
-
-L_46cf:
-    if ((HIWORD(dpShield) < 0x0))
+    if ((dpShield < 0))
         goto L_46dd;
     else
-        goto L_46d4;
-
-L_46d4:
-    if ((LOWORD(dpShield) >= 0x0))
         goto L_46e7;
-    else
-        goto L_46dd;
 
 L_46dd:
     dpShield = 0;
 
 L_46e7:
-    dpShield = (uint32_t)((dpShield * (uint32_t)(csh)));
+    dpShield = (uint32_t)((dpShield * (int32_t)(csh)));
     if ((csh == 0))
         goto LDeadToken;
     else
@@ -4158,13 +3852,7 @@ L_4b53:
         goto L_4bdb;
 
 L_4bdb:
-    if ((LOWORD(dpShield) != 0x0))
-        goto L_4c04;
-    else
-        goto L_4bea;
-
-L_4bea:
-    if ((HIWORD(dpShield) != 0x0))
+    if ((dpShield != 0))
         goto L_4c04;
     else
         goto L_4bf3;
@@ -4192,16 +3880,10 @@ L_4c6b:
 
 L_4c7b:
     lpshdefBuild->lPower = LComputePower(lpshdefBuild);
-    if ((LOWORD(lpshdefBuild->lPower) != 0x0))
+    if ((lpshdefBuild->lPower != 0))
         goto L_4cb3;
     else
-        goto L_4ca8;
-
-L_4ca8:
-    if ((HIWORD(lpshdefBuild->lPower) == 0x0))
         goto L_4d2b;
-    else
-        goto L_4cb3;
 
 L_4cb3:
     cch = _wsprintf(szWork, PCTLD, LOWORD(lpshdefBuild->lPower), HIWORD(lpshdefBuild->lPower));
@@ -4459,7 +4141,7 @@ L_5291:
     pct = 1;
 
 L_5296:
-    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)(csh)*dv.pctSh)) / 0x64)));
+    csh = LOWORD((int32_t)(((uint32_t)(((int32_t)(csh)*dv.pctSh)) / 0x64)));
     if ((csh > 0))
         goto L_52cc;
     else
@@ -4489,16 +4171,10 @@ L_532d:
     dp = 0;
 
 L_5337:
-    if ((LOWORD(dp) != 0x0))
+    if ((dp != 0))
         goto L_5349;
     else
-        goto L_5340;
-
-L_5340:
-    if ((HIWORD(dp) == 0x0))
         goto LDeadToken;
-    else
-        goto L_5349;
 
 L_5349:
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 15));
@@ -4879,7 +4555,7 @@ L_5a41:
     SendMessage(lpdis->hwndItem, CB_INSERTSTRING, lpdis->itemID, szWork);
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
-    ibmp = (((uint16_t)(szWork[2]) - 65) + LOWORD((((uint16_t)(szWork[3]) - 65) * 0x1a)));
+    ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[(ibmp >> 0x5)], ((ibmp & 0x7) * 0x40), (((0x3 - (ibmp >> 0x3)) & 0x3) * 0x40), 64, 64,
            13369376);
     if (((lpdis->itemState & 0x10) == 0x0))
@@ -4892,13 +4568,7 @@ L_5b32:
     goto L_5b5f;
 
 L_5b3c:
-    if ((LOWORD(crWindow) != 0x0))
-        goto L_5b59;
-    else
-        goto L_5b46;
-
-L_5b46:
-    if ((HIWORD(crWindow) != 0x0))
+    if ((crWindow != 0x0))
         goto L_5b59;
     else
         goto L_5b50;
@@ -5028,16 +4698,10 @@ L_5d13:
         goto L_5d1e;
 
 L_5d1e:
-    if ((LOWORD(rglpshdefSB[i]) != 0x0))
+    if ((rglpshdefSB[i] != 0x0))
         goto L_5d39;
     else
-        goto L_5d2f;
-
-L_5d2f:
-    if ((HIWORD(rglpshdefSB[i]) == 0x0))
         goto L_5d0f;
-    else
-        goto L_5d39;
 
 L_5d39:
     if ((i == idPlayer))
@@ -5093,16 +4757,10 @@ L_5dc9:
         goto L_5dd4;
 
 L_5dd4:
-    if ((LOWORD(rglpshdef[i]) != 0x0))
+    if ((rglpshdef[i] != 0x0))
         goto L_5def;
     else
-        goto L_5de5;
-
-L_5de5:
-    if ((HIWORD(rglpshdef[i]) == 0x0))
         goto L_5dc5;
-    else
-        goto L_5def;
 
 L_5def:
     if ((i == idPlayer))
@@ -5281,13 +4939,7 @@ L_5fee:
 L_5ff1:
     CshQueued((t_merge_5ff1_0001 + i), &(fProgress), 0);
     t_call_6005 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
-    if ((LOWORD(lpshdef[i].cExist) != 0x0))
-        goto L_6040;
-    else
-        goto L_6026;
-
-L_6026:
-    if ((HIWORD(lpshdef[i].cExist) != 0x0))
+    if ((lpshdef[i].cExist != 0x0))
         goto L_6040;
     else
         goto L_6031;
@@ -5308,16 +4960,10 @@ L_6040:
 L_6043:
     EnableWindow(t_call_6005, t_merge_6043_0001);
     EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 1);
-    if ((LOWORD(lpshdef[i].cExist) != 0x0))
+    if ((lpshdef[i].cExist != 0x0))
         goto L_6086;
     else
-        goto L_607b;
-
-L_607b:
-    if ((HIWORD(lpshdef[i].cExist) == 0x0))
         goto L_608c;
-    else
-        goto L_6086;
 
 L_6086:
     t_merge_608f_0001 = 0x1;
@@ -5378,16 +5024,10 @@ L_610d:
 
 L_611c:
     lpshdef = t_merge_611c_0001;
-    if ((LOWORD(lpshdef) != 0x0))
+    if ((lpshdef != 0x0))
         goto L_6134;
     else
-        goto L_612b;
-
-L_612b:
-    if ((HIWORD(lpshdef) == 0x0))
         goto L_60d4;
-    else
-        goto L_6134;
 
 L_6134:
     j = 0;
@@ -5652,8 +5292,8 @@ L_6491:
 
 L_649a:
     sz[1] = LOBYTE((i + 65));
-    sz[2] = LOBYTE((((uint32_t)(part.pcom->ibmp) % 26) + 0x41));
-    sz[3] = LOBYTE((((uint32_t)(part.pcom->ibmp) / 26) + 0x41));
+    sz[2] = LOBYTE((((int32_t)(part.pcom->ibmp) % 26) + 0x41));
+    sz[3] = LOBYTE((((int32_t)(part.pcom->ibmp) / 26) + 0x41));
     fstrcpy(&(sz[4]), part.pcom->szName);
     SendMessage(hwndLB, CB_LIMITTEXT, 0x0, sz);
 
@@ -5686,13 +5326,7 @@ void UpdateSlotGlobals() {
     HULDEF  *lphuldef;
 
 L_6528:
-    if ((LOWORD(lpshdefBuild) != 0x0))
-        goto L_654d;
-    else
-        goto L_653b;
-
-L_653b:
-    if ((HIWORD(lpshdefBuild) != 0x0))
+    if ((lpshdefBuild != 0x0))
         goto L_654d;
     else
         goto L_6545;
@@ -5848,8 +5482,8 @@ L_6837:
 
 L_6840:
     SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
-    GlobalPD.part.hs.grhst = (0x1 << ((uint16_t)(szWork[0]) + 0xffbf));
-    GlobalPD.part.hs.iItem = ((uint16_t)(szWork[1]) - 65);
+    GlobalPD.part.hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    GlobalPD.part.hs.iItem = ((int16_t)(szWork[1]) - 65);
     FLookupPart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
     Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));
@@ -5892,19 +5526,19 @@ L_694c:
         goto L_6972;
 
 L_6972:
-    if (((uint16_t)(lpsz[(cLen - 1)]) != 41))
+    if (((int16_t)(lpsz[(cLen - 1)]) != 41))
         goto L_69d3;
     else
         goto L_698e;
 
 L_698e:
-    if (((_ctype[((uint16_t)(lpsz[(cLen - 2)]) + 1)] & 0x4) == 0x0))
+    if (((_ctype[((int16_t)(lpsz[(cLen - 2)]) + 1)] & 0x4) == 0x0))
         goto L_69d3;
     else
         goto L_69b7;
 
 L_69b7:
-    if (((uint16_t)(lpsz[(cLen - 3)]) == 40))
+    if (((int16_t)(lpsz[(cLen - 3)]) == 40))
         goto L_69f2;
     else
         goto L_69d3;
@@ -5914,7 +5548,7 @@ L_69d3:
     goto L_6a39;
 
 L_69f2:
-    if (((uint16_t)(lpsz[(cLen - 2)]) != 57))
+    if (((int16_t)(lpsz[(cLen - 2)]) != 57))
         goto L_6a25;
     else
         goto L_6a0e;
@@ -5937,16 +5571,10 @@ void KillQueuedMassPackets(PLANET *lppl) {
     PROD   *lpprod;
 
 L_6a52:
-    if ((LOWORD(lppl->lpplprod) != 0x0))
+    if ((lppl->lpplprod != 0x0))
         goto L_6a72;
     else
-        goto L_6a68;
-
-L_6a68:
-    if ((HIWORD(lppl->lpplprod) == 0x0))
         goto L_6c23;
-    else
-        goto L_6a72;
 
 L_6a72:
     if ((lppl->lpplprod->iprodMac == 0x0))
@@ -5974,45 +5602,15 @@ L_6ad7:
     if ((lpprod->grobj != grobjPlanet))
         goto L_6b59;
     else
-        goto L_6af7;
-
-L_6af7:
-    if ((0x0 != 0x0))
-        goto L_6b59;
-    else
         goto L_6aff;
 
 L_6aff:
-    if ((0x0 < 0x0))
-        goto L_6b59;
-    else
-        goto L_6b1f;
-
-L_6b1f:
-    if ((0x0 > 0x0))
-        goto L_6b2c;
-    else
-        goto L_6b24;
-
-L_6b24:
     if ((lpprod->iItem < iobjPacketIron))
         goto L_6b59;
     else
         goto L_6b2c;
 
 L_6b2c:
-    if ((0x0 < 0x0))
-        goto L_6aae;
-    else
-        goto L_6b4c;
-
-L_6b4c:
-    if ((0x0 > 0x0))
-        goto L_6b59;
-    else
-        goto L_6b51;
-
-L_6b51:
     if ((lpprod->iItem <= iobjPacketMixed))
         goto L_6aae;
     else
@@ -6079,16 +5677,10 @@ void KillQueuedShips(PLANET *lppl) {
     PROD   *lpprod;
 
 L_6c2a:
-    if ((LOWORD(lppl->lpplprod) != 0x0))
+    if ((lppl->lpplprod != 0x0))
         goto L_6c4a;
     else
-        goto L_6c40;
-
-L_6c40:
-    if ((HIWORD(lppl->lpplprod) == 0x0))
         goto L_6e17;
-    else
-        goto L_6c4a;
 
 L_6c4a:
     if ((lppl->lpplprod->iprodMac == 0x0))
@@ -6116,27 +5708,9 @@ L_6caf:
     if ((lpprod->grobj != grobjFleet))
         goto L_6d04;
     else
-        goto L_6ccf;
-
-L_6ccf:
-    if ((0x0 != 0x0))
-        goto L_6d04;
-    else
         goto L_6cd7;
 
 L_6cd7:
-    if ((0x0 < 0x0))
-        goto L_6c86;
-    else
-        goto L_6cf7;
-
-L_6cf7:
-    if ((0x0 > 0x0))
-        goto L_6d04;
-    else
-        goto L_6cfc;
-
-L_6cfc:
     if ((lpprod->iItem < iobjPacketGerm))
         goto L_6c86;
     else
@@ -6144,12 +5718,6 @@ L_6cfc:
 
 L_6d04:
     if ((lpprod->grobj != grobjFleet))
-        goto L_6d4d;
-    else
-        goto L_6d24;
-
-L_6d24:
-    if ((0x0 != 0x0))
         goto L_6d4d;
     else
         goto L_6d2c;

@@ -36,16 +36,10 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i];
-    if ((LOWORD(rglpfl[i]) != 0x0))
+    if ((rglpfl[i] != 0x0))
         goto L_2564;
     else
-        goto L_255c;
-
-L_255c:
-    if ((HIWORD(rglpfl[i]) == 0x0))
         goto L_2606;
-    else
-        goto L_2564;
 
 L_2564:
     if ((lpfl->idPlanet != idPlanet))

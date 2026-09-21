@@ -4849,22 +4849,22 @@ L_6148:
     goto L_6211;
 
 L_6168:
-    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[i]);
-    if ((scratch_bp_mc >= (uint16_t)(rgTech[i])))
+    scratch_bp_mc = (int16_t)(rgplr[idPlayer].rgTech[i]);
+    if ((scratch_bp_mc >= (int16_t)(rgTech[i])))
         goto L_620d;
     else
         goto L_61a1;
 
 L_61a1:
     cMiss = (cMiss + 1);
-    if ((i != ((uint16_t)(rgplr[idPlayer].iTechCur) & 0xf)))
+    if ((i != ((int16_t)(rgplr[idPlayer].iTechCur) & 0xf)))
         goto L_620d;
     else
         goto L_61c0;
 
 L_61c0:
-    scratch_bp_mc = ((uint16_t)(rgplr[idPlayer].rgTech[i]) + 1);
-    if ((scratch_bp_mc != (uint16_t)(rgTech[i])))
+    scratch_bp_mc = ((int16_t)(rgplr[idPlayer].rgTech[i]) + 1);
+    if ((scratch_bp_mc != (int16_t)(rgTech[i])))
         goto L_6204;
     else
         goto L_61fc;
@@ -4922,8 +4922,8 @@ L_6250:
         goto L_6259;
 
 L_6259:
-    scratch_bp_mc = (uint16_t)(rgplr[idPlayer].rgTech[(fInAWhile - 1)]);
-    return (((uint16_t)(rgTech[(fInAWhile - 1)]) - scratch_bp_mc) + 0x1);
+    scratch_bp_mc = (int16_t)(rgplr[idPlayer].rgTech[(fInAWhile - 1)]);
+    return (((int16_t)(rgTech[(fInAWhile - 1)]) - scratch_bp_mc) + 0x1);
 
 L_629c:
     return 99;

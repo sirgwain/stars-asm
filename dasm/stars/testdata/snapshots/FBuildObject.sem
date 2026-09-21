@@ -63,10 +63,8 @@ L_1a2c:
 
 L_1a3e:
     idm = (idm + 1)
-    branch lpshdef->hul.wtCargoMax != 0xffff ? L_1a60 : L_1a54
+    branch (uint32_t)lpshdef->hul.wtCargoMax != 0xffff ? L_1a60 : L_1a5c
 
-L_1a54:
-    branch 0x0 != 0x0 ? L_1a60 : L_1a5c
 
 L_1a5c:
     idm = (idm + 1)
@@ -149,10 +147,8 @@ L_1d46:
 
 L_1d51:
     lpfl = rglpfl[i]
-    branch LOWORD(rglpfl[i]) != 0x0 ? L_1d81 : L_1d79
+    branch rglpfl[i] != 0x0 ? L_1d81 : L_214f
 
-L_1d79:
-    branch HIWORD(rglpfl[i]) == 0x0 ? L_214f : L_1d81
 
 L_1d81:
     branch lpfl->iPlayer > lppl->iPlayer ? L_214f : L_1d97
@@ -429,13 +425,9 @@ L_277c:
 
 L_2785:
     l = (uint32_t)(sext16to32(cSize) * sext16to32(cBuilt))
-    branch HIWORD(l) < 0x0 ? L_27be : L_27a5
+    branch l <= 32760 ? L_27be : L_27b4
 
-L_27a5:
-    branch HIWORD(l) > 0x0 ? L_27b4 : L_27aa
 
-L_27aa:
-    branch LOWORD(l) <= 0x7ff8 ? L_27be : L_27b4
 
 L_27b4:
     l = 32760
@@ -519,10 +511,8 @@ L_295a:
     branch LOWORD(lpth) < LOWORD(lpthMac) ? L_288f : L_2968
 
 L_2968:
-    branch LOWORD(lpth) != LOWORD(lpthMac) ? L_297e : L_2976
+    branch lpth != lpthMac ? L_297e : L_2a78
 
-L_2976:
-    branch HIWORD(lpth) == HIWORD(lpthMac) ? L_2a78 : L_297e
 
 L_297e:
     lpth->thp.wtMax = 0x0
@@ -549,10 +539,8 @@ L_2a48:
 
 L_2a78:
     lpth = LpthNew(lppl->iPlayer, ithMineralPacket)
-    branch LOWORD(lpth) != 0x0 ? L_2ac9 : L_2a9a
+    branch lpth != 0x0 ? L_2ac9 : L_2aa3
 
-L_2a9a:
-    branch HIWORD(lpth) != 0x0 ? L_2ac9 : L_2aa3
 
 L_2aa3:
     call FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0) -> callresult(int16_t)

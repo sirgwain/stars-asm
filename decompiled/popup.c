@@ -379,7 +379,7 @@ L_07c8:
 
 L_07e7:
     csh = GlobalPD.lpfl->rgcsh[i];
-    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)((GlobalPD.lpfl->rgdv[i].dp & 0x7f)) * (uint32_t)(csh))) / 0x64)));
+    csh = LOWORD((int32_t)(((uint32_t)(((uint32_t)((GlobalPD.lpfl->rgdv[i].dp & 0x7f)) * (int32_t)(csh))) / 0x64)));
     if ((csh > 0))
         goto L_084f;
     else
@@ -1012,7 +1012,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     uint16_t t_merge_163a_0001;
     uint16_t t_merge_171c_0001;
     uint16_t t_merge_175a_0001;
-    int32_t  t_merge_184f_0001_wide;
+    int32_t  t_merge_184f_0001;
     uint16_t t_merge_186e_0001;
 
 L_136c:
@@ -1044,13 +1044,7 @@ L_13bf:
         goto L_13c8;
 
 L_13c8:
-    if ((LOWORD(rgids[i]) != 0xffff))
-        goto L_1401;
-    else
-        goto L_13dc;
-
-L_13dc:
-    if ((HIWORD(rgids[i]) != 0xffff))
+    if ((rgids[i] != -1))
         goto L_1401;
     else
         goto L_13e5;
@@ -1060,64 +1054,40 @@ L_13e5:
     goto L_1883;
 
 L_1401:
-    if ((0x0 != 0x0))
+    if (((uint32_t)((HIWORD(rgids[i]) & 0x1000)) != 0x0))
         goto L_1429;
     else
-        goto L_1421;
-
-L_1421:
-    if (((HIWORD(rgids[i]) & 0x1000) == 0x0))
         goto L_1432;
-    else
-        goto L_1429;
 
 L_1429:
     psz = 0xc09;
     goto L_152e;
 
 L_1432:
-    if ((0x0 != 0x0))
+    if (((uint32_t)((HIWORD(rgids[i]) & 0x4000)) != 0x0))
         goto L_145a;
     else
-        goto L_1452;
-
-L_1452:
-    if (((HIWORD(rgids[i]) & 0x4000) == 0x0))
         goto L_147b;
-    else
-        goto L_145a;
 
 L_145a:
     psz = PszGetCompressedString(LOWORD(rgids[i]));
     goto L_152e;
 
 L_147b:
-    if ((0x0 != 0x0))
+    if (((uint32_t)((HIWORD(rgids[i]) & 0x2000)) != 0x0))
         goto L_14a3;
     else
-        goto L_149b;
-
-L_149b:
-    if (((HIWORD(rgids[i]) & 0x2000) == 0x0))
         goto L_14c4;
-    else
-        goto L_14a3;
 
 L_14a3:
     psz = PszGetThingName(LOWORD(rgids[i]));
     goto L_152e;
 
 L_14c4:
-    if ((0x0 != 0x0))
+    if (((uint32_t)((HIWORD(rgids[i]) & 0x8000)) != 0x0))
         goto L_14ec;
     else
-        goto L_14e4;
-
-L_14e4:
-    if (((HIWORD(rgids[i]) & 0x8000) == 0x0))
         goto L_1510;
-    else
-        goto L_14ec;
 
 L_14ec:
     psz = PszGetFleetName((LOWORD(rgids[i]) | 0x8000));
@@ -1130,7 +1100,7 @@ L_152e:
     pszT = szTemp;
 
 L_1536:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_1573;
     else
         goto L_1545;
@@ -1139,7 +1109,7 @@ L_1545:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_1536;
     else
         goto L_1564;
@@ -1231,13 +1201,13 @@ L_1649:
     fCheckedCur = LOWORD(rgids[i]);
 
 L_165e:
-    if (((uint16_t)(*(rgsz[i])) != -1))
+    if (((int16_t)(*(rgsz[i])) != -1))
         goto L_16a9;
     else
         goto L_1675;
 
 L_1675:
-    if (((uint16_t)(rgsz[i][1]) != 0))
+    if (((int16_t)(rgsz[i][1]) != 0))
         goto L_16a9;
     else
         goto L_168d;
@@ -1251,7 +1221,7 @@ L_16a9:
     psz = rgsz[i];
 
 L_16c1:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_16fe;
     else
         goto L_16d0;
@@ -1260,7 +1230,7 @@ L_16d0:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_16c1;
     else
         goto L_16ef;
@@ -1316,13 +1286,13 @@ L_175a:
     goto L_1883;
 
 L_1771:
-    if (((uint16_t)(*(rgsz[i])) != -1))
+    if (((int16_t)(*(rgsz[i])) != -1))
         goto L_17bc;
     else
         goto L_1788;
 
 L_1788:
-    if (((uint16_t)(rgsz[i][1]) != 0))
+    if (((int16_t)(rgsz[i][1]) != 0))
         goto L_17bc;
     else
         goto L_17a0;
@@ -1336,7 +1306,7 @@ L_17bc:
     psz = rgsz[i];
 
 L_17d4:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_1811;
     else
         goto L_17e3;
@@ -1345,7 +1315,7 @@ L_17e3:
     psz = (psz + 1);
     pszT = (pszT + 1);
     *(pszT) = *(psz);
-    if (((uint16_t)(*(psz)) != 38))
+    if (((int16_t)(*(psz)) != 38))
         goto L_17d4;
     else
         goto L_1802;
@@ -1365,7 +1335,7 @@ L_1811:
         goto L_1825;
 
 L_1825:
-    t_merge_184f_0001_wide = rgids[i];
+    t_merge_184f_0001 = rgids[i];
     goto L_184f;
 
 L_1839:
@@ -1375,23 +1345,17 @@ L_1839:
         goto L_1844;
 
 L_1844:
-    t_merge_184f_0001_wide = 1;
+    t_merge_184f_0001 = 1;
     goto L_184f;
 
 L_184b:
-    t_merge_184f_0001_wide = 0;
+    t_merge_184f_0001 = 0;
 
 L_184f:
-    if (((LOWORD(t_merge_184f_0001_wide) | 0x0) != 0x0))
+    if (((t_merge_184f_0001 | 0x0) != 0x0))
         goto L_1865;
     else
-        goto L_185d;
-
-L_185d:
-    if (((HIWORD(t_merge_184f_0001_wide) | 0x0) == 0x0))
         goto L_186b;
-    else
-        goto L_1865;
 
 L_1865:
     t_merge_186e_0001 = 0x8;
@@ -1711,7 +1675,7 @@ L_1f1b:
 L_1f24:
     lppl = LpplFromId(GlobalPD.idPlanet);
     pctDesireOld = PctPlanetDesirability(lppl, idPlayer);
-    iValSav = (uint16_t)(lppl->rgEnvVar[GlobalPD.iPlanetVar]);
+    iValSav = (int16_t)(lppl->rgEnvVar[GlobalPD.iPlanetVar]);
     lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iNewVal);
     pctDesire = PctPlanetDesirability(lppl, idPlayer);
     lppl->rgEnvVar[GlobalPD.iPlanetVar] = LOBYTE(iValSav);
@@ -1943,7 +1907,7 @@ L_261e:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsWillKillOffApproximately), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, ((uint32_t)((-pctDesire)) / 0xa), ((uint32_t)((-pctDesire)) % 0xa));
+    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, ((int32_t)((-pctDesire)) / 0xa), ((int32_t)((-pctDesire)) % 0xa));
     DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsOf), 0, fPrint);
@@ -1980,19 +1944,7 @@ L_279c:
         goto L_27a7;
 
 L_27a7:
-    if ((HIWORD(lMax) < 0x0))
-        goto L_28ce;
-    else
-        goto L_27b1;
-
-L_27b1:
-    if ((HIWORD(lMax) > 0x0))
-        goto L_27c0;
-    else
-        goto L_27b6;
-
-L_27b6:
-    if ((LOWORD(lMax) <= 0x0))
+    if ((lMax <= 0))
         goto L_28ce;
     else
         goto L_27c0;
@@ -2021,19 +1973,7 @@ L_283d:
     goto L_2a58;
 
 L_28ce:
-    if ((HIWORD(lMax) < 0x0))
-        goto L_2a51;
-    else
-        goto L_28d8;
-
-L_28d8:
-    if ((HIWORD(lMax) > 0x0))
-        goto L_28e7;
-    else
-        goto L_28dd;
-
-L_28dd:
-    if ((LOWORD(lMax) <= 0x0))
+    if ((lMax <= 0))
         goto L_2a51;
     else
         goto L_28e7;
@@ -2122,22 +2062,10 @@ L_2aac:
         goto L_2b6e;
 
 L_2b6e:
-    if ((HIWORD(lPopChg) > 0x0))
-        goto L_2b9f;
-    else
-        goto L_2b78;
-
-L_2b78:
-    if ((HIWORD(lPopChg) < 0x0))
+    if ((lPopChg <= 0))
         goto L_2b87;
     else
-        goto L_2b7d;
-
-L_2b7d:
-    if ((LOWORD(lPopChg) > 0x0))
         goto L_2b9f;
-    else
-        goto L_2b87;
 
 L_2b87:
     c = CchGetString(idsWillGrowYear, szT);

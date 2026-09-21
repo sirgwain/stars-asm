@@ -6,7 +6,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     PLANET *ppl;
     int32_t wtFree;
     int32_t t_call_640a;
-    int32_t t_merge_6425_0002_wide;
+    int32_t t_merge_6425_0001;
     int32_t t_call_641d;
     int32_t t_merge_646f_0001;
     int32_t t_call_6454;
@@ -65,13 +65,7 @@ L_60b1:
     return 0;
 
 L_60ba:
-    if ((LOWORD(dChg) != 0x0))
-        goto L_60e6;
-    else
-        goto L_60c3;
-
-L_60c3:
-    if ((HIWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_60e6;
     else
         goto L_60cc;
@@ -80,22 +74,10 @@ L_60cc:
     return ppl->rgwtMin[iSupply];
 
 L_60e6:
-    if (((HIWORD(ppl->rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0))
-        goto L_613c;
-    else
-        goto L_610b;
-
-L_610b:
-    if (((HIWORD(ppl->rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0))
+    if (((ppl->rgwtMin[iSupply] + dChg) < 0x0))
         goto L_6118;
     else
-        goto L_6110;
-
-L_6110:
-    if (((LOWORD(ppl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0))
         goto L_613c;
-    else
-        goto L_6118;
 
 L_6118:
     dChg = (-ppl->rgwtMin[iSupply]);
@@ -104,16 +86,10 @@ L_613c:
     ppl->rgwtMin[iSupply] = (ppl->rgwtMin[iSupply] + dChg);
 
 L_6159:
-    if ((LOWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_616b;
     else
-        goto L_6162;
-
-L_6162:
-    if ((HIWORD(dChg) == 0x0))
         goto L_64bd;
-    else
-        goto L_616b;
 
 L_616b:
     if ((pobj != 0x0))
@@ -169,40 +145,22 @@ L_61d2:
         goto L_61db;
 
 L_61db:
-    if ((LOWORD(dChg) != 0x0))
-        goto L_6202;
-    else
-        goto L_61e4;
-
-L_61e4:
-    if ((HIWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_6202;
     else
         goto L_61ed;
 
 L_61ed:
-    return (uint32_t)(pth->thp.rgwtMin[iSupply]);
+    return (int32_t)(pth->thp.rgwtMin[iSupply]);
 
 L_6202:
-    if (((SIGNHIWORD(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0))
-        goto L_6249;
-    else
-        goto L_6222;
-
-L_6222:
-    if (((SIGNHIWORD(pth->thp.rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0))
+    if ((((int32_t)(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0))
         goto L_622f;
     else
-        goto L_6227;
-
-L_6227:
-    if (((pth->thp.rgwtMin[iSupply] + LOWORD(dChg)) >= 0x0))
         goto L_6249;
-    else
-        goto L_622f;
 
 L_622f:
-    dChg = (uint32_t)((-pth->thp.rgwtMin[iSupply]));
+    dChg = (int32_t)((-pth->thp.rgwtMin[iSupply]));
 
 L_6249:
     wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
@@ -210,7 +168,7 @@ L_6249:
     goto L_6295;
 
 L_6275:
-    wtFree = (wtFree - (uint32_t)(pth->thp.rgwtMin[i]));
+    wtFree = (wtFree - (int32_t)(pth->thp.rgwtMin[i]));
     i = (i + 1);
 
 L_6295:
@@ -220,19 +178,7 @@ L_6295:
         goto L_629f;
 
 L_629f:
-    if ((HIWORD(dChg) < HIWORD(wtFree)))
-        goto L_62ca;
-    else
-        goto L_62af;
-
-L_62af:
-    if ((HIWORD(dChg) > HIWORD(wtFree)))
-        goto L_62bc;
-    else
-        goto L_62b4;
-
-L_62b4:
-    if ((LOWORD(dChg) <= LOWORD(wtFree)))
+    if ((dChg <= wtFree))
         goto L_62ca;
     else
         goto L_62bc;
@@ -244,16 +190,10 @@ L_62ca:
     pth->thp.rgwtMin[iSupply] = (pth->thp.rgwtMin[iSupply] + LOWORD(dChg));
 
 L_62f3:
-    if ((LOWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_6305;
     else
-        goto L_62fc;
-
-L_62fc:
-    if ((HIWORD(dChg) == 0x0))
         goto L_64bd;
-    else
-        goto L_6305;
 
 L_6305:
     if ((pobj != 0x0))
@@ -288,13 +228,7 @@ L_6349:
         goto L_6352;
 
 L_6352:
-    if ((LOWORD(dChg) != 0x0))
-        goto L_637e;
-    else
-        goto L_635b;
-
-L_635b:
-    if ((HIWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_637e;
     else
         goto L_6364;
@@ -303,22 +237,10 @@ L_6364:
     return pfl->rgwtMin[iSupply];
 
 L_637e:
-    if (((HIWORD(pfl->rgwtMin[iSupply]) + HIWORD(dChg)) > 0x0))
-        goto L_63d4;
-    else
-        goto L_63a3;
-
-L_63a3:
-    if (((HIWORD(pfl->rgwtMin[iSupply]) + HIWORD(dChg)) < 0x0))
+    if (((pfl->rgwtMin[iSupply] + dChg) < 0x0))
         goto L_63b0;
     else
-        goto L_63a8;
-
-L_63a8:
-    if (((LOWORD(pfl->rgwtMin[iSupply]) + LOWORD(dChg)) >= 0x0))
         goto L_63d4;
-    else
-        goto L_63b0;
 
 L_63b0:
     dChg = (-pfl->rgwtMin[iSupply]);
@@ -346,30 +268,18 @@ L_63f9:
 
 L_6402:
     t_call_640a = GetFuelFree(pfl);
-    t_merge_6425_0002_wide = t_call_640a;
+    t_merge_6425_0001 = t_call_640a;
     goto L_6425;
 
 L_6415:
     t_call_641d = GetCargoFree(pfl);
-    t_merge_6425_0002_wide = t_call_641d;
+    t_merge_6425_0001 = t_call_641d;
 
 L_6425:
-    if ((HIWORD(dChg) > HIWORD(t_merge_6425_0002_wide)))
-        goto L_6443;
-    else
-        goto L_642d;
-
-L_642d:
-    if ((HIWORD(dChg) < HIWORD(t_merge_6425_0002_wide)))
+    if ((dChg < t_merge_6425_0001))
         goto L_643a;
     else
-        goto L_6432;
-
-L_6432:
-    if ((LOWORD(dChg) >= LOWORD(t_merge_6425_0002_wide)))
         goto L_6443;
-    else
-        goto L_643a;
 
 L_643a:
     t_merge_646f_0001 = dChg;
@@ -395,16 +305,10 @@ L_646f:
     pfl->rgwtMin[iSupply] = (pfl->rgwtMin[iSupply] + dChg);
 
 L_6492:
-    if ((LOWORD(dChg) != 0x0))
+    if ((dChg != 0))
         goto L_64a4;
     else
-        goto L_649b;
-
-L_649b:
-    if ((HIWORD(dChg) == 0x0))
         goto L_64bd;
-    else
-        goto L_64a4;
 
 L_64a4:
     if ((pobj != 0x0))

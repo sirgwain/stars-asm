@@ -33,7 +33,7 @@ L_002d:
     goto L_0211;
 
 L_003a:
-    itb = (uint16_t)(vrgTBBtn[i]);
+    itb = (int16_t)(vrgTBBtn[i]);
     dx = DxOfBtn(itb);
     if ((itb > -3))
         goto L_0207;
@@ -48,7 +48,7 @@ L_005d:
 
 L_0066:
     hwndTBRadar =
-        CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((uint32_t)(((28 - dyArial8) - 8)) / 2) + 4), dx, (LOWORD((11 * dyArial8)) + 28), hwnd, 0x0, hInst, 0x0);
+        CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((int32_t)(((28 - dyArial8) - 8)) / 2) + 4), dx, (LOWORD((11 * dyArial8)) + 28), hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[1], 0);
     iSel = -1;
     j = 0;
@@ -438,14 +438,14 @@ L_06f0:
     goto L_077d;
 
 L_0723:
-    ibtn = (uint16_t)(vrgTBBtn[i]);
+    ibtn = (int16_t)(vrgTBBtn[i]);
     if ((ibtn < 0))
         goto L_0762;
     else
         goto L_0738;
 
 L_0738:
-    DrawBitmapButton(hdc, pt, (uint16_t)(vrgTBBtn[i]), FIsButtonDown(ibtn));
+    DrawBitmapButton(hdc, pt, (int16_t)(vrgTBBtn[i]), FIsButtonDown(ibtn));
     goto L_076b;
 
 L_0762:
@@ -590,7 +590,7 @@ L_0b49:
     goto L_0b9c;
 
 L_0b51:
-    dx = DxOfBtn((uint16_t)(vrgTBBtn[i]));
+    dx = DxOfBtn((int16_t)(vrgTBBtn[i]));
     if (((x + dx) <= ppt->x))
         goto L_0b92;
     else
@@ -599,7 +599,7 @@ L_0b51:
 L_0b76:
     ppt->x = x;
     ppt->y = 4;
-    return (uint16_t)(vrgTBBtn[i]);
+    return (int16_t)(vrgTBBtn[i]);
 
 L_0b92:
     x = (x + dx);
@@ -1554,30 +1554,30 @@ L_169e:
     pct = 0;
 
 L_16bc:
-    if (((uint16_t)(*(psz)) < 48))
+    if (((int16_t)(*(psz)) < 48))
         goto L_16f9;
     else
         goto L_16ca;
 
 L_16ca:
-    if (((uint16_t)(*(psz)) > 57))
+    if (((int16_t)(*(psz)) > 57))
         goto L_16f9;
     else
         goto L_16d8;
 
 L_16d8:
-    pct = (LOWORD((10 * pct)) + ((uint16_t)(*(psz)) - 48));
+    pct = (LOWORD((10 * pct)) + ((int16_t)(*(psz)) - 48));
     psz = (psz + 1);
     goto L_16bc;
 
 L_16f9:
-    if (((uint16_t)(*(psz)) == 0))
+    if (((int16_t)(*(psz)) == 0))
         goto L_1723;
     else
         goto L_1707;
 
 L_1707:
-    if (((uint16_t)(*(psz)) == 37))
+    if (((int16_t)(*(psz)) == 37))
         goto L_1723;
     else
         goto L_1715;
@@ -1611,7 +1611,7 @@ L_173d:
     pct = 100;
 
 L_1742:
-    SendMessage(hwndTBRadar, CB_SETCURSEL, ((uint32_t)((100 - pct)) / 10), 0);
+    SendMessage(hwndTBRadar, CB_SETCURSEL, ((int32_t)((100 - pct)) / 10), 0);
     _wsprintf(szWork, PCTDPCTPCT, pct);
     SetWindowText(hwndTBRadar, szWork);
     if ((pct == vpctRadarView))
@@ -1645,8 +1645,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
     int16_t  cch;
     int16_t  fShowNow;
     uint16_t t_merge_1817_0001;
-    uint32_t t_scratch_m10_wide;
-    uint32_t t_call_1991;
+    uint32_t t_scratch_m10;
     uint16_t t_merge_19c1_0001;
 
 L_17ea:
@@ -1737,24 +1736,11 @@ L_1942:
 
 L_1957:
     SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), 0x216);
-    t_scratch_m10_wide = (vtickTooltipLast + 0x190);
-    t_call_1991 = GetTickCount();
-    if ((HIWORD(t_scratch_m10_wide) > HIWORD(t_call_1991)))
-        goto L_19b8;
-    else
-        goto L_19a3;
-
-L_19a3:
-    if ((HIWORD(t_scratch_m10_wide) < HIWORD(t_call_1991)))
+    t_scratch_m10 = (vtickTooltipLast + 0x190);
+    if ((t_scratch_m10 < GetTickCount()))
         goto L_19af;
     else
-        goto L_19a8;
-
-L_19a8:
-    if ((LOWORD(t_scratch_m10_wide) >= LOWORD(t_call_1991)))
         goto L_19b8;
-    else
-        goto L_19af;
 
 L_19af:
     if ((fVisCur == 0))
@@ -1883,7 +1869,7 @@ L_1b10:
 
 L_1b1d:
     ClientToScreen(hwndFrame, &(pt));
-    SetWindowPos(hwnd, 0xffff, pt.x, (((uint32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, 0x251);
+    SetWindowPos(hwnd, 0xffff, pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, 0x251);
     UpdateWindow(hwnd);
     if ((vidTimerTooltip == -1))
         goto L_1b77;
@@ -1918,22 +1904,10 @@ L_1baf:
         goto L_1be1;
 
 L_1be1:
-    if (((HIWORD(vtickTooltip1stVis) + 0x0) > HIWORD(vtickTooltipLast)))
-        goto L_1c0d;
-    else
-        goto L_1bf7;
-
-L_1bf7:
-    if (((HIWORD(vtickTooltip1stVis) + 0x0) < HIWORD(vtickTooltipLast)))
+    if (((vtickTooltip1stVis + 0x2710) < vtickTooltipLast))
         goto LKillTip;
     else
-        goto L_1bfc;
-
-L_1bfc:
-    if (((LOWORD(vtickTooltip1stVis) + 0x2710) >= LOWORD(vtickTooltipLast)))
         goto L_1c0d;
-    else
-        goto LKillTip;
 
 LKillTip:
     DestroyWindow(hwnd);
