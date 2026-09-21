@@ -232,10 +232,15 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 			return false
 		}
 		typ := path.Type()
-		if offset, ok := path.(*symresolve.SymbolOffset); ok {
-			if array, ok := typ.(*typeinfo.Array); ok && array.Elem != nil && array.Elem.Bytes() == 4 &&
-				offset.Offset >= 0 && offset.Offset%4 == 0 && offset.Offset+4 <= array.Bytes() {
-				typ = array.Elem
+		if typ.Bytes() != 4 || (typ.Kind() != typeinfo.KInt && typ.Kind() != typeinfo.KPointer) {
+			offset, ok := path.(*symresolve.SymbolOffset)
+			if !ok {
+				return false
+			}
+			var resolved bool
+			typ, resolved = p.wideCompareScalarTypeAtOffset(offset.Base, offset.Offset)
+			if !resolved {
+				return false
 			}
 		}
 		if typ.Bytes() != 4 {
@@ -261,6 +266,54 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 		}
 	}
 	return true
+}
+
+// wideCompareScalarTypeAtOffset resolves a fixed storage offset through
+// nested structs and arrays and returns only the exact leaf type it selects.
+func (p *collapseWideComparesProcessor) wideCompareScalarTypeAtOffset(base symresolve.SymbolPath, offset int) (typeinfo.Type, bool) {
+	if offset < 0 {
+		return nil, false
+	}
+	path := base
+	for {
+		typ := path.Type()
+		if offset == 0 && typ.Bytes() == 4 && (typ.Kind() == typeinfo.KInt || typ.Kind() == typeinfo.KPointer) {
+			return typ, true
+		}
+		switch aggregate := typ.(type) {
+		case *typeinfo.Pointer:
+			if aggregate.Elem == nil {
+				return nil, false
+			}
+			path = &symresolve.SymbolDeref{Base: path}
+		case *typeinfo.Array:
+			if aggregate.Elem == nil || aggregate.Elem.Bytes() <= 0 ||
+				offset+4 > aggregate.Bytes() {
+				return nil, false
+			}
+			elemSize := aggregate.Elem.Bytes()
+			index := offset / elemSize
+			offset %= elemSize
+			path = &symresolve.SymbolTerm{
+				Base:     path,
+				IndexVal: machine.ConstVal(uint(index)),
+				Scale:    elemSize,
+				Result:   aggregate.Elem,
+			}
+		case *typeinfo.Struct:
+			field, remainder, ok := p.ctx.res.ResolveContainingFieldPathInContext(path, offset, p.ctx.unionContext())
+			if !ok {
+				return nil, false
+			}
+			path = field
+			offset = remainder
+		default:
+			if _, ok := path.(*symresolve.SymbolDeref); ok && typ.Bytes() > 0 && offset%typ.Bytes() == 0 {
+				return typ, true
+			}
+			return typ, offset == 0
+		}
+	}
 }
 
 // preserveCompareDomain adds a machine-domain cast only when a known recovered

@@ -7,6 +7,7 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
+	"github.com/sirgwain/stars-asm/dasm/testfixture"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -126,6 +127,52 @@ func TestCollapseWideCompareRejectsFourByteAggregate(t *testing.T) {
 	}
 }
 
+// TestCollapseWideCompareRejectsStructArrayElement verifies typed array
+// projection does not turn two adjacent fields into one wide scalar.
+func TestCollapseWideCompareRejectsStructArrayElement(t *testing.T) {
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JNE", 0x1100),
+		jccForWideCompareTest(0x1002, "JNE", 0x1100),
+		retForWideCompareTest(0x1004),
+		retForWideCompareTest(0x1100),
+	})
+	point := &typeinfo.Struct{Name: "POINT", SKind: typeinfo.StructKindStruct, Size: 4}
+	point.Fields = []typeinfo.StructField{
+		{Name: "x", Offset: 0, Size: 2, End: 2, Type: typeinfo.I16},
+		{Name: "y", Offset: 2, Size: 2, End: 4, Type: typeinfo.I16},
+	}
+	point.FinalizeLayout()
+	points := &typeinfo.Array{Elem: point, Count: 2}
+	img := &asm.ImageNE{}
+	sdb := &typeinfo.SymbolDB{}
+	fs := &typeinfo.Function{
+		Name: "ComparePointArray",
+		Addr: typeinfo.Addr{Seg: 1, Off: 0x1000},
+		Len:  0x200,
+		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
+		Vars: []typeinfo.FunctionVar{{Name: "points", Type: points, BPOffset: -8}},
+	}
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	load := func(disp int) machine.Value {
+		return machine.LoadVal(machine.MemoryAddress{
+			Base:   machine.FrameBaseVal(),
+			Disp:   disp,
+			Width:  2,
+			Origin: machine.Origin{InstOff: 0x1000, Role: machine.OperandSrc},
+		})
+	}
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		compareBlock(0x1000, "JNE", load(-8), machine.ConstVal(0), 0x1100, 0x1002),
+		compareBlock(0x1002, "JNE", load(-6), machine.ConstVal(0), 0x1100, 0x1004),
+		{Block: 0x1004},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{ctx: ctx}).ProcessMachineFunc(nil, &fn); changed {
+		t.Fatal("ProcessMachineFunc changed = true, want struct array element rejection")
+	}
+}
+
 // TestCollapseWideCompareArrayElementReloads verifies a scalar array element
 // remains eligible when the compiler reloads its high lane at a new origin.
 func TestCollapseWideCompareArrayElementReloads(t *testing.T) {
@@ -170,6 +217,48 @@ func TestCollapseWideCompareArrayElementReloads(t *testing.T) {
 	loadValue, ok := branch.Predicate.LHS.(*machine.Load)
 	if !ok || loadValue.Addr.Width != 4 {
 		t.Fatalf("wide lhs = %#v, want four-byte array element load", branch.Predicate.LHS)
+	}
+}
+
+// TestCollapseWideCompareDynamicStructArrayField verifies a low/high equality
+// ladder through a runtime struct-array index resolves to its scalar field.
+func TestCollapseWideCompareDynamicStructArrayField(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DoCyberAiTurn")
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JNE", 0x1100),
+		jccForWideCompareTest(0x1002, "JNE", 0x1100),
+		retForWideCompareTest(0x1004),
+		retForWideCompareTest(0x1100),
+	})
+
+	rel := uint32(0x036c) - ctx.fs.Addr.Off
+	j := frameLoad(ctx, rel, -0x5a, 2)
+	indexed := machine.BinaryVal(machine.ValueOpMul, machine.ConstVal(0x93), j)
+	base := machine.BinaryVal(machine.ValueOpAdd, machine.ConstVal(0x3f00), machine.WordVal(indexed, machine.WordLow))
+	load := func(disp int, instOff uint32) machine.Value {
+		return machine.LoadVal(machine.MemoryAddress{
+			Seg:    machine.RegVal(asm.RegDS),
+			Base:   base,
+			Disp:   disp,
+			Width:  2,
+			Origin: machine.Origin{InstOff: instOff, Role: machine.OperandSrc},
+		})
+	}
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		compareBlock(0x1000, "JNE", load(0x83, 0x1000), machine.ConstVal(0), 0x1100, 0x1002),
+		compareBlock(0x1002, "JNE", load(0x85, 0x1002), machine.ConstVal(0), 0x1100, 0x1004),
+		{Block: 0x1004},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{ctx: ctx}).ProcessMachineFunc(nil, &fn); !changed {
+		t.Fatal("ProcessMachineFunc changed = false, want dynamic struct-array field collapse")
+	}
+	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
+	if got := FormatExpr((&machineConverter{ctx: ctx}).convertValue(branch.Predicate.LHS)); got != "rgshdef[j].cExist" {
+		t.Fatalf("wide lhs = %s, want rgshdef[j].cExist", got)
 	}
 }
 

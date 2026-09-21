@@ -4,8 +4,8 @@
     "temps": 1693,
     "hiWords": 194,
     "loWords": 1507,
-    "branchHiWords": 118,
-    "branchLoWords": 625,
+    "branchHiWords": 55,
+    "branchLoWords": 585,
     "segRegRefs": 8,
     "ir": {
       "numStatements": 34752,
@@ -391,8 +391,6 @@
     },
     "CheckAiShdefStatus": {
       "loWords": 1,
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 12
       }
@@ -672,8 +670,7 @@
     },
     "DoAutomitronAiTurn": {
       "temps": 6,
-      "branchHiWords": 9,
-      "branchLoWords": 12,
+      "branchLoWords": 7,
       "ir": {
         "numStatements": 199
       }
@@ -695,8 +692,7 @@
     "DoCyberAiTurn": {
       "temps": 10,
       "loWords": 2,
-      "branchHiWords": 1,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 228
       }
@@ -723,8 +719,8 @@
     "DoMacintiAiTurn": {
       "temps": 12,
       "loWords": 3,
-      "branchHiWords": 8,
-      "branchLoWords": 7,
+      "branchHiWords": 2,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 357
       }
@@ -745,16 +741,14 @@
     "DoRobotoidAiTurn": {
       "temps": 13,
       "loWords": 2,
-      "branchHiWords": 8,
-      "branchLoWords": 6,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 257
       }
     },
     "DoRototillAiTurn": {
       "temps": 4,
-      "branchHiWords": 3,
-      "branchLoWords": 8,
+      "branchLoWords": 6,
       "ir": {
         "numStatements": 152
       }
@@ -770,8 +764,7 @@
     "DoTurinDroneAiTurn": {
       "temps": 8,
       "loWords": 1,
-      "branchHiWords": 24,
-      "branchLoWords": 17,
+      "branchLoWords": 5,
       "ir": {
         "numStatements": 290
       }
@@ -1376,23 +1369,17 @@
     "EnsureCyberAiShdefs": {
       "temps": 1,
       "loWords": 2,
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 41
       }
     },
     "EnsureISShdefs": {
-      "branchHiWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 18
       }
     },
     "EnsureMacintiShdefs": {
       "temps": 5,
-      "branchHiWords": 3,
-      "branchLoWords": 3,
       "ir": {
         "numStatements": 47
       }
@@ -1413,8 +1400,7 @@
     },
     "EnsureRobotoidShdefs": {
       "temps": 4,
-      "branchHiWords": 1,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 35
       }
@@ -1427,8 +1413,6 @@
       }
     },
     "EnsureTurinDroneShdefs": {
-      "branchHiWords": 4,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 24
       }

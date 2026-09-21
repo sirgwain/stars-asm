@@ -253,13 +253,7 @@ L_033e:
         goto L_035c;
 
 L_035c:
-    if ((LOWORD(rgshdef[j].cExist) != 0x0))
-        goto L_03d5;
-    else
-        goto L_0371;
-
-L_0371:
-    if ((HIWORD(rgshdef[j].cExist) != 0x0))
+    if ((rgshdef[j].cExist != 0x0))
         goto L_03d5;
     else
         goto L_037b;
@@ -4055,13 +4049,7 @@ L_484c:
         goto L_486b;
 
 L_486b:
-    if ((LOWORD(rgshdef[0].cExist) != 0x0))
-        goto L_48b9;
-    else
-        goto L_4875;
-
-L_4875:
-    if ((HIWORD(rgshdef[0].cExist) != 0x0))
+    if ((rgshdef[0].cExist != 0x0))
         goto L_48b9;
     else
         goto L_487f;

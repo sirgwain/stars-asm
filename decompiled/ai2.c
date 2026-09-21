@@ -461,13 +461,7 @@ L_07a4:
         goto L_07ae;
 
 L_07ae:
-    if ((LOWORD(rgshdef[1].cExist) != 0x0))
-        goto L_07ea;
-    else
-        goto L_07b8;
-
-L_07b8:
-    if ((HIWORD(rgshdef[1].cExist) != 0x0))
+    if ((rgshdef[1].cExist != 0x0))
         goto L_07ea;
     else
         goto L_07c2;
@@ -636,22 +630,10 @@ L_0a25:
         goto L_0a2e;
 
 L_0a2e:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
-        goto L_0ba1;
-    else
-        goto L_0a61;
-
-L_0a61:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((rgshdef[iLatestCruiser].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8))))
         goto L_0a6f;
     else
-        goto L_0a66;
-
-L_0a66:
-    if ((LOWORD(rgshdef[iLatestCruiser].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_0ba1;
-    else
-        goto L_0a6f;
 
 L_0a6f:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -718,22 +700,10 @@ L_0ba1:
         goto L_0bab;
 
 L_0bab:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
-        goto FinishProd;
-    else
-        goto L_0bdf;
-
-L_0bdf:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
+    if ((rgshdef[iLatestBattle].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4))))
         goto L_0bed;
     else
-        goto L_0be4;
-
-L_0be4:
-    if ((LOWORD(rgshdef[iLatestBattle].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
         goto FinishProd;
-    else
-        goto L_0bed;
 
 L_0bed:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -1580,13 +1550,7 @@ L_1a9f:
         goto L_1ab2;
 
 L_1ab2:
-    if ((LOWORD(rgshdef[1].cExist) != 0x0))
-        goto L_1b29;
-    else
-        goto L_1abc;
-
-L_1abc:
-    if ((HIWORD(rgshdef[1].cExist) != 0x0))
+    if ((rgshdef[1].cExist != 0x0))
         goto L_1b29;
     else
         goto L_1ac6;
@@ -1612,13 +1576,7 @@ L_1b29:
         goto L_1b3c;
 
 L_1b3c:
-    if ((LOWORD(rgshdef[0].cExist) != 0x0))
-        goto L_1bb3;
-    else
-        goto L_1b46;
-
-L_1b46:
-    if ((HIWORD(rgshdef[0].cExist) != 0x0))
+    if ((rgshdef[0].cExist != 0x0))
         goto L_1bb3;
     else
         goto L_1b50;
@@ -2045,34 +2003,16 @@ L_225b:
         goto L_2264;
 
 L_2264:
-    if ((LOWORD(rgshdef[1].cExist) != 0x0))
+    if ((rgshdef[1].cExist != 0x0))
         goto L_2278;
     else
-        goto L_226e;
-
-L_226e:
-    if ((HIWORD(rgshdef[1].cExist) == 0x0))
         goto L_229e;
-    else
-        goto L_2278;
 
 L_2278:
-    if (((HIWORD(rgshdef[1].cExist) + 0x0) > 0x0))
-        goto L_22c0;
-    else
-        goto L_2292;
-
-L_2292:
-    if (((HIWORD(rgshdef[1].cExist) + 0x0) < 0x0))
+    if (((rgshdef[1].cExist + 0x1) < (uint32_t)(cplanCol)))
         goto L_229e;
     else
-        goto L_2297;
-
-L_2297:
-    if (((LOWORD(rgshdef[1].cExist) + 0x1) >= cplanCol))
         goto L_22c0;
-    else
-        goto L_229e;
 
 L_229e:
     fColonyShipInQueue = 1;
