@@ -54,6 +54,38 @@ func TestCollapseWideCompareOrdering(t *testing.T) {
 	}
 }
 
+// TestCollapseWideCompareOrderingThroughJumpOutcome verifies a pure jump
+// trampoline does not make one logical comparison result look like two targets.
+func TestCollapseWideCompareOrderingThroughJumpOutcome(t *testing.T) {
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JL", 0x1100),
+		jccForWideCompareTest(0x1002, "JG", 0x100a),
+		jccForWideCompareTest(0x1004, "JB", 0x1100),
+		{Off: 0x1006, Len: 1, Op: asm.OpNOP, Mnemonic: "NOP"},
+		{Off: 0x1007, Len: 3, Op: asm.OpJMP, Mnemonic: "JMP", Target: 0x100a},
+		retForWideCompareTest(0x100a),
+		retForWideCompareTest(0x1100),
+	})
+	lhs := &machine.CallResult{Type: typeinfo.I32, InstOff: 0x9000}
+	rhs := &machine.CallResult{Type: typeinfo.I32, InstOff: 0x9002}
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		compareBlock(0x1000, "JL", machine.WordVal(lhs, machine.WordHigh), machine.WordVal(rhs, machine.WordHigh), 0x1100, 0x1002),
+		compareBlock(0x1002, "JG", machine.WordVal(lhs, machine.WordHigh), machine.WordVal(rhs, machine.WordHigh), 0x100a, 0x1004),
+		compareBlock(0x1004, "JB", machine.WordVal(lhs, machine.WordLow), machine.WordVal(rhs, machine.WordLow), 0x1100, 0x1006),
+		{Block: 0x1006, Effects: []machine.Effect{machine.JumpEffect{To: 0x100a}}},
+		{Block: 0x100a},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+		t.Fatal("ProcessMachineFunc changed = false, want jump outcome collapse")
+	}
+	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
+	if got, want := []machine.BlockID{branch.TrueBlock, branch.FalseBlock}, []machine.BlockID{0x1100, 0x100a}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("wide targets = %#v, want %#v", got, want)
+	}
+}
+
 // TestCollapseWideCompareEquality verifies an inverted low/high inequality tree
 // is proved by outcomes rather than by one fixed branch arrangement.
 func TestCollapseWideCompareEquality(t *testing.T) {

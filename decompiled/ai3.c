@@ -876,22 +876,10 @@ L_0c15:
         goto L_0c43;
 
 L_0c43:
-    if ((0x0 > 0x0))
-        goto L_0bc3;
-    else
-        goto L_0c64;
-
-L_0c64:
-    if ((0x0 < 0x0))
-        goto LTryCargo;
-    else
-        goto L_0c69;
-
-L_0c69:
     if ((lpprod->iItem <= iobjPacketMixed))
         goto LTryCargo;
     else
-        goto L_0c6e;
+        goto L_0bc3;
 
 L_0c6e:
     goto L_0bc3;
@@ -911,19 +899,7 @@ L_0c93:
         goto L_0ca1;
 
 L_0ca1:
-    if ((HIWORD(lppl->rgwtMin[((int32_t)(i) % 3)]) < 0x0))
-        goto L_0c8f;
-    else
-        goto L_0cc7;
-
-L_0cc7:
-    if ((HIWORD(lppl->rgwtMin[((int32_t)(i) % 3)]) > 0x0))
-        goto L_0cdc;
-    else
-        goto L_0ccc;
-
-L_0ccc:
-    if ((LOWORD(lppl->rgwtMin[((int32_t)(i) % 3)]) <= 0x1388))
+    if ((lppl->rgwtMin[((int32_t)(i) % 3)] <= 5000))
         goto L_0c8f;
     else
         goto L_0cdc;

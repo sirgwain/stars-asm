@@ -102,6 +102,17 @@ func (sr *symbolResolver) storageLaneFromResolvedAddress(addr resolvedAddress) (
 		if len(addr.terms) == 1 {
 			term := addr.terms[0]
 			result := indexedTermResult(path.Type(), term.scale)
+			if result == nil && addr.deref {
+				deref := &symresolve.SymbolDeref{Base: path}
+				field, remainder, ok := sr.res.ResolveContainingFieldPathInContext(deref, offset, sr.unionContext())
+				if ok {
+					if fieldResult := indexedTermResult(field.Type(), term.scale); fieldResult != nil {
+						path = field
+						offset = remainder
+						result = fieldResult
+					}
+				}
+			}
 			if result == nil {
 				return resolvedStorageLane{}, false
 			}

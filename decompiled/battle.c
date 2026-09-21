@@ -6948,22 +6948,10 @@ L_7c84:
         goto LFindAnotherTarget;
 
 L_7c9b:
-    if ((HIWORD(cTorpsLeft) < 0x0))
+    if ((cTorpsLeft <= 0))
         goto L_6a02;
     else
-        goto L_7ca4;
-
-L_7ca4:
-    if ((HIWORD(cTorpsLeft) > 0x0))
         goto LFindAnotherTarget;
-    else
-        goto L_7ca9;
-
-L_7ca9:
-    if ((LOWORD(cTorpsLeft) > 0x0))
-        goto LFindAnotherTarget;
-    else
-        goto L_7caf;
 
 L_7caf:
     goto L_6a02;

@@ -6491,22 +6491,10 @@ L_73ed:
         goto L_741b;
 
 L_741b:
-    if ((HIWORD(rglpshdefSB[idPlayer][i].cExist) < 0x0))
+    if ((rglpshdefSB[idPlayer][i].cExist <= 0x0))
         goto L_73db;
     else
-        goto L_7440;
-
-L_7440:
-    if ((HIWORD(rglpshdefSB[idPlayer][i].cExist) > 0x0))
         goto LOrbital;
-    else
-        goto L_7445;
-
-L_7445:
-    if ((LOWORD(rglpshdefSB[idPlayer][i].cExist) > 0x0))
-        goto LOrbital;
-    else
-        goto L_744d;
 
 L_744d:
     goto L_73db;
@@ -6601,22 +6589,10 @@ L_75e0:
         goto L_7613;
 
 L_7613:
-    if ((HIWORD(rglpshdefSB[idPlayer][(iSetNew + 2)].cExist) < 0x0))
+    if ((rglpshdefSB[idPlayer][(iSetNew + 2)].cExist <= 0x0))
         goto L_7650;
     else
-        goto L_763d;
-
-L_763d:
-    if ((HIWORD(rglpshdefSB[idPlayer][(iSetNew + 2)].cExist) > 0x0))
         goto L_7682;
-    else
-        goto L_7642;
-
-L_7642:
-    if ((LOWORD(rglpshdefSB[idPlayer][(iSetNew + 2)].cExist) > 0x0))
-        goto L_7682;
-    else
-        goto L_7650;
 
 L_7650:
     FCreateAiStarbase(iSetNew, 1, -1, -1);
@@ -6830,22 +6806,10 @@ L_7988:
         goto L_79c1;
 
 L_79c1:
-    if ((HIWORD(rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].cExist) < 0x0))
+    if ((rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].cExist <= 0x0))
         goto L_7a04;
     else
-        goto L_79f1;
-
-L_79f1:
-    if ((HIWORD(rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].cExist) > 0x0))
         goto L_7a11;
-    else
-        goto L_79f6;
-
-L_79f6:
-    if ((LOWORD(rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].cExist) > 0x0))
-        goto L_7a11;
-    else
-        goto L_7a04;
 
 L_7a04:
     j = (j + 1);
@@ -8495,22 +8459,10 @@ L_9607:
         goto L_9626;
 
 L_9626:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
+    if ((lppl->rgwtMin[3] < 40))
+        goto L_95c8;
+    else
         goto L_9692;
-    else
-        goto L_9633;
-
-L_9633:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_95c8;
-    else
-        goto L_9638;
-
-L_9638:
-    if ((LOWORD(lppl->rgwtMin[3]) < 0x28))
-        goto L_95c8;
-    else
-        goto L_963f;
 
 L_963f:
     goto L_9692;

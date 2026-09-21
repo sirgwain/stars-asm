@@ -2289,22 +2289,10 @@ L_b4a0:
 
 L_b4a7:
     lpxfCur = 0x0;
-    if ((HIWORD(cXfer) < 0x0))
+    if ((cXfer <= 0))
         goto L_af00;
     else
-        goto L_b4ba;
-
-L_b4ba:
-    if ((HIWORD(cXfer) > 0x0))
         goto StealCargo;
-    else
-        goto L_b4bf;
-
-L_b4bf:
-    if ((LOWORD(cXfer) > 0x0))
-        goto StealCargo;
-    else
-        goto L_b4c5;
 
 L_b4c5:
     goto L_af00;
