@@ -4624,10 +4624,7 @@ LFinishHit:
 L_5d91:
     dx = (ptDst.x - ptSrc.x);
     dy = (ptDst.y - ptSrc.y);
-    sqrt((double)((
-        ((uint32_t)((uint16_t)((HIWORD((uint32_t)(((int32_t)(dx) * (int32_t)(dx)))) + HIWORD((uint32_t)(((int32_t)(dy) * (int32_t)((ptDst.y - ptSrc.y))))))))
-         << 0x10) |
-        (uint16_t)((LOWORD((uint32_t)(((int32_t)(dx) * (int32_t)(dx)))) + LOWORD((uint32_t)(((int32_t)(dy) * (int32_t)((ptDst.y - ptSrc.y))))))))));
+    sqrt((double)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)((ptDst.y - ptSrc.y)))))));
     t_call_5e09 = __ftol();
     dTravel = LOWORD(t_call_5e09);
     ptAct.x = (MulDiv(dx, dEnd, t_call_5e09) + ptSrc.x);

@@ -289,7 +289,7 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 		if op == OpNeg || op == OpNot {
 			return &Unary{TypeInfo: typeinfo.U16, Op: op, X: c.convertValue(v.LHS)}
 		}
-		return &Binary{TypeInfo: typeinfo.U16, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS)}
+		return &Binary{TypeInfo: typeinfo.U16, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS), Producer: v.Producer}
 	case *machine.ByteValue:
 		return c.convertByte(v)
 	case *machine.Cast:

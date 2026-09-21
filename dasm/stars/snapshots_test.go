@@ -87,6 +87,28 @@ func TestDASM_BitfieldUpdateSnapshots(t *testing.T) {
 	}
 }
 
+// TestDASM_WideArithmeticSnapshot records the real ADD/ADC distance expression
+// in FAddWayPoint and verifies that its scratch-backed word pair is rebuilt.
+func TestDASM_WideArithmeticSnapshot(t *testing.T) {
+	fx := testfixture.Stars(t)
+	err := dumpFunction(fx.SDB, "FAddWayPoint", "L_75c6.sem", func(w io.Writer, f *typeinfo.Function) {
+		var output bytes.Buffer
+		if err := DumpFuncSem(&output, fx.Image, fx.SDB, f, DumpSemOptions{DumpOptions: DumpOptions{FromAddr: 0x75c6, ToAddr: 0x7644}}); err != nil {
+			t.Fatal(err)
+		}
+		text := output.String()
+		if strings.Contains(text, "words(") || !strings.Contains(text, "sext16to32(dx) * sext16to32(dx)") {
+			t.Fatalf("unresolved wide arithmetic:\n%s", text)
+		}
+		if _, err := w.Write(output.Bytes()); err != nil {
+			t.Fatal(err)
+		}
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func dumpFunction(sdb *typeinfo.SymbolDB, name, ext string, dumper func(w io.Writer, f *typeinfo.Function)) error {
 	f := sdb.GetFunction(name)
 	if f == nil {

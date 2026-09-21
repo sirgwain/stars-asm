@@ -247,6 +247,7 @@ type Binary struct {
 	Op       Op
 	LHS      Expr
 	RHS      Expr
+	Producer machine.Meta
 }
 
 // expr marks Binary as an expression.

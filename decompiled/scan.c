@@ -6892,10 +6892,7 @@ L_75c6:
     dx = (ptIn.x - pscan->pt.x);
     dy = (ptIn.y - pscan->pt.y);
     lDist = ScanToPt(20);
-    if (((int32_t)((
-             ((uint32_t)((uint16_t)((HIWORD((uint32_t)(((int32_t)(dx) * (int32_t)(dx)))) + HIWORD((uint32_t)(((int32_t)(dy) * (int32_t)(dy))))))) << 0x10) |
-             (uint16_t)((LOWORD((uint32_t)(((int32_t)(dx) * (int32_t)(dx)))) + LOWORD((uint32_t)(((int32_t)(dy) * (int32_t)(dy)))))))) <=
-         (int32_t)(LOWORD((lDist * lDist)))))
+    if (((int32_t)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))))) <= (int32_t)(LOWORD((lDist * lDist)))))
         goto L_7680;
     else
         goto L_7644;
