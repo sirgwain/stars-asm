@@ -6633,13 +6633,7 @@ int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr) {
     int16_t iEnergy;
 
 L_788e:
-    if ((LOWORD(lppl->rgwtMin[3]) != 0x0))
-        goto L_78b4;
-    else
-        goto L_78a4;
-
-L_78a4:
-    if ((HIWORD(lppl->rgwtMin[3]) != 0x0))
+    if ((lppl->rgwtMin[3] != 0))
         goto L_78b4;
     else
         goto L_78ae;

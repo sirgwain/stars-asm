@@ -430,64 +430,28 @@ L_06e5:
         goto L_06f7;
 
 L_06f7:
-    if ((HIWORD(lppl->rgwtMin[0]) > 0x0))
-        goto L_0727;
-    else
-        goto L_0704;
-
-L_0704:
-    if ((HIWORD(lppl->rgwtMin[0]) < 0x0))
+    if ((lppl->rgwtMin[0] < 10))
         goto L_0713;
     else
-        goto L_0709;
-
-L_0709:
-    if ((LOWORD(lppl->rgwtMin[0]) >= 0xa))
         goto L_0727;
-    else
-        goto L_0713;
 
 L_0713:
     lpciPlanTemp->fNeedsMin1 = 0x1;
 
 L_0727:
-    if ((HIWORD(lppl->rgwtMin[1]) > 0x0))
-        goto L_0757;
-    else
-        goto L_0734;
-
-L_0734:
-    if ((HIWORD(lppl->rgwtMin[1]) < 0x0))
+    if ((lppl->rgwtMin[1] < 10))
         goto L_0743;
     else
-        goto L_0739;
-
-L_0739:
-    if ((LOWORD(lppl->rgwtMin[1]) >= 0xa))
         goto L_0757;
-    else
-        goto L_0743;
 
 L_0743:
     lpciPlanTemp->fNeedsMin2 = 0x1;
 
 L_0757:
-    if ((HIWORD(lppl->rgwtMin[2]) > 0x0))
-        goto L_081d;
-    else
-        goto L_0764;
-
-L_0764:
-    if ((HIWORD(lppl->rgwtMin[2]) < 0x0))
+    if ((lppl->rgwtMin[2] < 10))
         goto L_0773;
     else
-        goto L_0769;
-
-L_0769:
-    if ((LOWORD(lppl->rgwtMin[2]) >= 0xa))
         goto L_081d;
-    else
-        goto L_0773;
 
 L_0773:
     lpciPlanTemp->fNeedsMin3 = 0x1;
@@ -496,64 +460,28 @@ L_0787:
     goto L_081d;
 
 L_078a:
-    if ((HIWORD(lppl->rgwtMin[0]) > 0x0))
-        goto L_07bb;
-    else
-        goto L_0797;
-
-L_0797:
-    if ((HIWORD(lppl->rgwtMin[0]) < 0x0))
+    if ((lppl->rgwtMin[0] < 1000))
         goto L_07a7;
     else
-        goto L_079c;
-
-L_079c:
-    if ((LOWORD(lppl->rgwtMin[0]) >= 0x3e8))
         goto L_07bb;
-    else
-        goto L_07a7;
 
 L_07a7:
     lpciPlanTemp->fNeedsMin1 = 0x1;
 
 L_07bb:
-    if ((HIWORD(lppl->rgwtMin[1]) > 0x0))
-        goto L_07ec;
-    else
-        goto L_07c8;
-
-L_07c8:
-    if ((HIWORD(lppl->rgwtMin[1]) < 0x0))
+    if ((lppl->rgwtMin[1] < 1000))
         goto L_07d8;
     else
-        goto L_07cd;
-
-L_07cd:
-    if ((LOWORD(lppl->rgwtMin[1]) >= 0x3e8))
         goto L_07ec;
-    else
-        goto L_07d8;
 
 L_07d8:
     lpciPlanTemp->fNeedsMin2 = 0x1;
 
 L_07ec:
-    if ((HIWORD(lppl->rgwtMin[2]) > 0x0))
-        goto L_081d;
-    else
-        goto L_07f9;
-
-L_07f9:
-    if ((HIWORD(lppl->rgwtMin[2]) < 0x0))
+    if ((lppl->rgwtMin[2] < 1000))
         goto L_0809;
     else
-        goto L_07fe;
-
-L_07fe:
-    if ((LOWORD(lppl->rgwtMin[2]) >= 0x3e8))
         goto L_081d;
-    else
-        goto L_0809;
 
 L_0809:
     lpciPlanTemp->fNeedsMin3 = 0x1;
@@ -744,19 +672,7 @@ L_0a54:
         goto L_0a61;
 
 L_0a61:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_084b;
-    else
-        goto L_0a6e;
-
-L_0a6e:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_0a7d;
-    else
-        goto L_0a73;
-
-L_0a73:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_084b;
     else
         goto L_0a7d;
@@ -1360,19 +1276,7 @@ L_153c:
         goto L_1547;
 
 L_1547:
-    if (((HIWORD(rgResAvail[3]) - HIWORD(rgResCost[3])) < 0x0))
-        goto L_1586;
-    else
-        goto L_155b;
-
-L_155b:
-    if (((HIWORD(rgResAvail[3]) - HIWORD(rgResCost[3])) > 0x0))
-        goto L_1568;
-    else
-        goto L_1560;
-
-L_1560:
-    if (((LOWORD(rgResAvail[3]) - LOWORD(rgResCost[3])) <= 0x46))
+    if (((rgResAvail[3] - rgResCost[3]) <= 0x46))
         goto L_1586;
     else
         goto L_1568;
@@ -1466,19 +1370,7 @@ L_16c6:
     lpciPlan->fBltColony = 0x0;
 
 L_16d8:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_1777;
-    else
-        goto L_16e5;
-
-L_16e5:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_16f5;
-    else
-        goto L_16ea;
-
-L_16ea:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x7d0))
+    if ((lppl->rgwtMin[3] <= 2000))
         goto L_1777;
     else
         goto L_16f5;
@@ -1858,55 +1750,19 @@ L_1bc0:
         goto L_1bd2;
 
 L_1bd2:
-    if ((HIWORD(lppl->rgwtMin[0]) > 0x0))
-        goto L_1c29;
-    else
-        goto L_1bdf;
-
-L_1bdf:
-    if ((HIWORD(lppl->rgwtMin[0]) < 0x0))
+    if ((lppl->rgwtMin[0] <= 700))
         goto L_1bef;
     else
-        goto L_1be4;
-
-L_1be4:
-    if ((LOWORD(lppl->rgwtMin[0]) > 0x2bc))
         goto L_1c29;
-    else
-        goto L_1bef;
 
 L_1bef:
-    if ((HIWORD(lppl->rgwtMin[1]) > 0x0))
-        goto L_1c29;
-    else
-        goto L_1bfc;
-
-L_1bfc:
-    if ((HIWORD(lppl->rgwtMin[1]) < 0x0))
+    if ((lppl->rgwtMin[1] <= 700))
         goto L_1c0c;
     else
-        goto L_1c01;
-
-L_1c01:
-    if ((LOWORD(lppl->rgwtMin[1]) > 0x2bc))
         goto L_1c29;
-    else
-        goto L_1c0c;
 
 L_1c0c:
-    if ((HIWORD(lppl->rgwtMin[2]) < 0x0))
-        goto L_1fa3;
-    else
-        goto L_1c19;
-
-L_1c19:
-    if ((HIWORD(lppl->rgwtMin[2]) > 0x0))
-        goto L_1c29;
-    else
-        goto L_1c1e;
-
-L_1c1e:
-    if ((LOWORD(lppl->rgwtMin[2]) <= 0x2bc))
+    if ((lppl->rgwtMin[2] <= 700))
         goto L_1fa3;
     else
         goto L_1c29;
@@ -1967,37 +1823,13 @@ L_1d29:
     iMinLimit = 1000;
 
 L_1d2f:
-    if ((HIWORD(lpplDst->rgwtMin[0]) > SIGNHIWORD(iMinLimit)))
-        goto L_1dbe;
-    else
-        goto L_1d40;
-
-L_1d40:
-    if ((HIWORD(lpplDst->rgwtMin[0]) < SIGNHIWORD(iMinLimit)))
+    if ((lpplDst->rgwtMin[0] < (int32_t)(iMinLimit)))
         goto L_1d4e;
     else
-        goto L_1d45;
-
-L_1d45:
-    if ((LOWORD(lpplDst->rgwtMin[0]) >= iMinLimit))
         goto L_1dbe;
-    else
-        goto L_1d4e;
 
 L_1d4e:
-    if ((HIWORD(lppl->rgwtMin[0]) < 0x0))
-        goto L_1dbe;
-    else
-        goto L_1d5b;
-
-L_1d5b:
-    if ((HIWORD(lppl->rgwtMin[0]) > 0x0))
-        goto L_1d6b;
-    else
-        goto L_1d60;
-
-L_1d60:
-    if ((LOWORD(lppl->rgwtMin[0]) <= 0x2bc))
+    if ((lppl->rgwtMin[0] <= 700))
         goto L_1dbe;
     else
         goto L_1d6b;
@@ -2023,37 +1855,13 @@ L_1d7f:
     fWrite = 1;
 
 L_1dbe:
-    if ((HIWORD(lpplDst->rgwtMin[1]) > SIGNHIWORD(iMinLimit)))
-        goto L_1e4d;
-    else
-        goto L_1dcf;
-
-L_1dcf:
-    if ((HIWORD(lpplDst->rgwtMin[1]) < SIGNHIWORD(iMinLimit)))
+    if ((lpplDst->rgwtMin[1] < (int32_t)(iMinLimit)))
         goto L_1ddd;
     else
-        goto L_1dd4;
-
-L_1dd4:
-    if ((LOWORD(lpplDst->rgwtMin[1]) >= iMinLimit))
         goto L_1e4d;
-    else
-        goto L_1ddd;
 
 L_1ddd:
-    if ((HIWORD(lppl->rgwtMin[1]) < 0x0))
-        goto L_1e4d;
-    else
-        goto L_1dea;
-
-L_1dea:
-    if ((HIWORD(lppl->rgwtMin[1]) > 0x0))
-        goto L_1dfa;
-    else
-        goto L_1def;
-
-L_1def:
-    if ((LOWORD(lppl->rgwtMin[1]) <= 0x2bc))
+    if ((lppl->rgwtMin[1] <= 700))
         goto L_1e4d;
     else
         goto L_1dfa;
@@ -2079,37 +1887,13 @@ L_1e0e:
     fWrite = 1;
 
 L_1e4d:
-    if ((HIWORD(lpplDst->rgwtMin[2]) > SIGNHIWORD(iMinLimit)))
-        goto L_1edc;
-    else
-        goto L_1e5e;
-
-L_1e5e:
-    if ((HIWORD(lpplDst->rgwtMin[2]) < SIGNHIWORD(iMinLimit)))
+    if ((lpplDst->rgwtMin[2] < (int32_t)(iMinLimit)))
         goto L_1e6c;
     else
-        goto L_1e63;
-
-L_1e63:
-    if ((LOWORD(lpplDst->rgwtMin[2]) >= iMinLimit))
         goto L_1edc;
-    else
-        goto L_1e6c;
 
 L_1e6c:
-    if ((HIWORD(lppl->rgwtMin[2]) < 0x0))
-        goto L_1edc;
-    else
-        goto L_1e79;
-
-L_1e79:
-    if ((HIWORD(lppl->rgwtMin[2]) > 0x0))
-        goto L_1e89;
-    else
-        goto L_1e7e;
-
-L_1e7e:
-    if ((LOWORD(lppl->rgwtMin[2]) <= 0x2bc))
+    if ((lppl->rgwtMin[2] <= 700))
         goto L_1edc;
     else
         goto L_1e89;
@@ -2322,43 +2106,19 @@ L_2419:
 
 L_241c:
     iMin = 0;
-    if ((HIWORD(rgResAvail[iMin]) > HIWORD(rgResAvail[1])))
-        goto L_244f;
-    else
-        goto L_243d;
-
-L_243d:
-    if ((HIWORD(rgResAvail[iMin]) < HIWORD(rgResAvail[1])))
+    if ((rgResAvail[iMin] < rgResAvail[1]))
         goto L_2449;
     else
-        goto L_2442;
-
-L_2442:
-    if ((LOWORD(rgResAvail[iMin]) >= LOWORD(rgResAvail[1])))
         goto L_244f;
-    else
-        goto L_2449;
 
 L_2449:
     iMin = 1;
 
 L_244f:
-    if ((HIWORD(rgResAvail[iMin]) > HIWORD(rgResAvail[2])))
-        goto L_247c;
-    else
-        goto L_246a;
-
-L_246a:
-    if ((HIWORD(rgResAvail[iMin]) < HIWORD(rgResAvail[2])))
+    if ((rgResAvail[iMin] < rgResAvail[2]))
         goto L_2476;
     else
-        goto L_246f;
-
-L_246f:
-    if ((LOWORD(rgResAvail[iMin]) >= LOWORD(rgResAvail[2])))
         goto L_247c;
-    else
-        goto L_2476;
 
 L_2476:
     iMin = 2;
@@ -2852,43 +2612,19 @@ L_2bc0:
     iMineral = 0;
     GetResourcesAvailable(lppl, rgResAvail);
     GetProdQCost(lppl, rgResCost);
-    if (((HIWORD(rgResAvail[iMineral]) - HIWORD(rgResCost[iMineral])) > (HIWORD(rgResAvail[1]) - HIWORD(rgResCost[1]))))
-        goto L_2c38;
-    else
-        goto L_2c27;
-
-L_2c27:
-    if (((HIWORD(rgResAvail[iMineral]) - HIWORD(rgResCost[iMineral])) < (HIWORD(rgResAvail[1]) - HIWORD(rgResCost[1]))))
+    if (((rgResAvail[iMineral] - rgResCost[iMineral]) < (rgResAvail[1] - rgResCost[1])))
         goto L_2c33;
     else
-        goto L_2c2c;
-
-L_2c2c:
-    if (((LOWORD(rgResAvail[iMineral]) - LOWORD(rgResCost[iMineral])) >= (LOWORD(rgResAvail[1]) - LOWORD(rgResCost[1]))))
         goto L_2c38;
-    else
-        goto L_2c33;
 
 L_2c33:
     iMineral = 1;
 
 L_2c38:
-    if (((HIWORD(rgResAvail[iMineral]) - HIWORD(rgResCost[iMineral])) > (HIWORD(rgResAvail[2]) - HIWORD(rgResCost[2]))))
-        goto L_2c7e;
-    else
-        goto L_2c6d;
-
-L_2c6d:
-    if (((HIWORD(rgResAvail[iMineral]) - HIWORD(rgResCost[iMineral])) < (HIWORD(rgResAvail[2]) - HIWORD(rgResCost[2]))))
+    if (((rgResAvail[iMineral] - rgResCost[iMineral]) < (rgResAvail[2] - rgResCost[2])))
         goto L_2c79;
     else
-        goto L_2c72;
-
-L_2c72:
-    if (((LOWORD(rgResAvail[iMineral]) - LOWORD(rgResCost[iMineral])) >= (LOWORD(rgResAvail[2]) - LOWORD(rgResCost[2]))))
         goto L_2c7e;
-    else
-        goto L_2c79;
 
 L_2c79:
     iMineral = 2;
@@ -2999,22 +2735,10 @@ L_2de3:
         goto L_2dec;
 
 L_2dec:
-    if ((HIWORD(rgResLeft[3]) > 0x0))
-        goto L_2e09;
-    else
-        goto L_2df5;
-
-L_2df5:
-    if ((HIWORD(rgResLeft[3]) < 0x0))
+    if ((rgResLeft[3] < 0))
         goto L_2e03;
     else
-        goto L_2dfa;
-
-L_2dfa:
-    if ((LOWORD(rgResLeft[3]) >= 0x0))
         goto L_2e09;
-    else
-        goto L_2e03;
 
 L_2e03:
     return 0;
@@ -3198,58 +2922,22 @@ L_323c:
     return 1;
 
 L_3259:
-    if ((HIWORD(rgResLeft[0]) < 0x0))
-        goto L_329e;
-    else
-        goto L_3262;
-
-L_3262:
-    if ((HIWORD(rgResLeft[0]) > 0x0))
-        goto L_3270;
-    else
-        goto L_3267;
-
-L_3267:
-    if ((LOWORD(rgResLeft[0]) <= 0x0))
+    if ((rgResLeft[0] <= 0))
         goto L_329e;
     else
         goto L_3270;
 
 L_3270:
-    if ((HIWORD(rgResLeft[1]) < 0x0))
-        goto L_329e;
-    else
-        goto L_3279;
-
-L_3279:
-    if ((HIWORD(rgResLeft[1]) > 0x0))
-        goto L_3287;
-    else
-        goto L_327e;
-
-L_327e:
-    if ((LOWORD(rgResLeft[1]) <= 0x0))
+    if ((rgResLeft[1] <= 0))
         goto L_329e;
     else
         goto L_3287;
 
 L_3287:
-    if ((HIWORD(rgResLeft[2]) > 0x0))
-        goto L_33a9;
-    else
-        goto L_3290;
-
-L_3290:
-    if ((HIWORD(rgResLeft[2]) < 0x0))
+    if ((rgResLeft[2] <= 0))
         goto L_329e;
     else
-        goto L_3295;
-
-L_3295:
-    if ((LOWORD(rgResLeft[2]) > 0x0))
         goto L_33a9;
-    else
-        goto L_329e;
 
 L_329e:
     if ((lppl->lpplprod != 0x0))
@@ -3493,19 +3181,7 @@ L_35fb:
     rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddMines)*rgMineCost[3])));
 
 LAdd:
-    if ((HIWORD(rgAlchCost[3]) < 0x0))
-        goto L_36f7;
-    else
-        goto L_361b;
-
-L_361b:
-    if ((HIWORD(rgAlchCost[3]) > 0x0))
-        goto L_3629;
-    else
-        goto L_3620;
-
-L_3620:
-    if ((LOWORD(rgAlchCost[3]) <= 0x0))
+    if ((rgAlchCost[3] <= 0))
         goto L_36f7;
     else
         goto L_3629;
@@ -3666,19 +3342,7 @@ L_3829:
         goto L_3838;
 
 L_3838:
-    if ((HIWORD(lpplCur->rgwtMin[3]) < 0x0))
-        goto L_3894;
-    else
-        goto L_3845;
-
-L_3845:
-    if ((HIWORD(lpplCur->rgwtMin[3]) > 0x0))
-        goto L_3855;
-    else
-        goto L_384a;
-
-L_384a:
-    if ((LOWORD(lpplCur->rgwtMin[3]) <= 0x7d0))
+    if ((lpplCur->rgwtMin[3] <= 2000))
         goto L_3894;
     else
         goto L_3855;
@@ -3750,19 +3414,7 @@ L_3a1a:
     goto L_3a79;
 
 L_3a51:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_3a73;
-    else
-        goto L_3a5e;
-
-L_3a5e:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_3a6d;
-    else
-        goto L_3a63;
-
-L_3a63:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_3a73;
     else
         goto L_3a6d;
@@ -3882,22 +3534,10 @@ L_3d53:
         goto L_3d62;
 
 L_3d62:
-    if ((HIWORD(lpplTest->rgwtMin[3]) > 0x0))
-        goto L_3df2;
-    else
-        goto L_3d6f;
-
-L_3d6f:
-    if ((HIWORD(lpplTest->rgwtMin[3]) < 0x0))
+    if ((lpplTest->rgwtMin[3] < 200))
         goto L_3d7f;
     else
-        goto L_3d74;
-
-L_3d74:
-    if ((LOWORD(lpplTest->rgwtMin[3]) >= 0xc8))
         goto L_3df2;
-    else
-        goto L_3d7f;
 
 L_3d7f:
     if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x0))
@@ -3945,22 +3585,10 @@ L_3e51:
         goto L_3e60;
 
 L_3e60:
-    if (((0x0 + HIWORD(lpplTest->rgwtMin[3])) > 0x0))
-        goto L_3ef3;
-    else
-        goto L_3e99;
-
-L_3e99:
-    if (((0x0 + HIWORD(lpplTest->rgwtMin[3])) < 0x0))
+    if ((((uint32_t)(LOWORD((lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2))) + lpplTest->rgwtMin[3]) < 0x3e8))
         goto L_3ea6;
     else
-        goto L_3e9e;
-
-L_3e9e:
-    if (((LOWORD((lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2)) + LOWORD(lpplTest->rgwtMin[3])) >= 0x3e8))
         goto L_3ef3;
-    else
-        goto L_3ea6;
 
 L_3ea6:
     if ((LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) <= 160000))
@@ -3988,19 +3616,7 @@ L_3f00:
         goto L_3f18;
 
 L_3f18:
-    if ((HIWORD(lpplTest->rgwtMin[3]) < 0x0))
-        goto L_3f52;
-    else
-        goto L_3f25;
-
-L_3f25:
-    if ((HIWORD(lpplTest->rgwtMin[3]) > 0x0))
-        goto L_3f35;
-    else
-        goto L_3f2a;
-
-L_3f2a:
-    if ((LOWORD(lpplTest->rgwtMin[3]) <= 0x898))
+    if ((lpplTest->rgwtMin[3] <= 2200))
         goto L_3f52;
     else
         goto L_3f35;
@@ -4090,19 +3706,7 @@ L_403d:
     return 0;
 
 L_4043:
-    if ((HIWORD(lpplSrc->rgwtMin[0]) < 0x0))
-        goto L_4085;
-    else
-        goto L_4050;
-
-L_4050:
-    if ((HIWORD(lpplSrc->rgwtMin[0]) > 0x0))
-        goto L_4060;
-    else
-        goto L_4055;
-
-L_4055:
-    if ((LOWORD(lpplSrc->rgwtMin[0]) <= 0x2bc))
+    if ((lpplSrc->rgwtMin[0] <= 700))
         goto L_4085;
     else
         goto L_4060;
@@ -4114,19 +3718,7 @@ L_4060:
         goto L_4085;
 
 L_4085:
-    if ((HIWORD(lpplSrc->rgwtMin[1]) < 0x0))
-        goto L_40c7;
-    else
-        goto L_4092;
-
-L_4092:
-    if ((HIWORD(lpplSrc->rgwtMin[1]) > 0x0))
-        goto L_40a2;
-    else
-        goto L_4097;
-
-L_4097:
-    if ((LOWORD(lpplSrc->rgwtMin[1]) <= 0x2bc))
+    if ((lpplSrc->rgwtMin[1] <= 700))
         goto L_40c7;
     else
         goto L_40a2;
@@ -4138,19 +3730,7 @@ L_40a2:
         goto L_40c7;
 
 L_40c7:
-    if ((HIWORD(lpplSrc->rgwtMin[2]) < 0x0))
-        goto L_41f8;
-    else
-        goto L_40d4;
-
-L_40d4:
-    if ((HIWORD(lpplSrc->rgwtMin[2]) > 0x0))
-        goto L_40e4;
-    else
-        goto L_40d9;
-
-L_40d9:
-    if ((LOWORD(lpplSrc->rgwtMin[2]) <= 0x2bc))
+    if ((lpplSrc->rgwtMin[2] <= 700))
         goto L_41f8;
     else
         goto L_40e4;
@@ -4408,22 +3988,10 @@ L_45fe:
         goto L_4618;
 
 L_4618:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_463b;
-    else
-        goto L_4625;
-
-L_4625:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
+    if ((lppl->rgwtMin[3] < 500))
         goto L_4635;
     else
-        goto L_462a;
-
-L_462a:
-    if ((LOWORD(lppl->rgwtMin[3]) >= 0x1f4))
         goto L_463b;
-    else
-        goto L_4635;
 
 L_4635:
     return -1;

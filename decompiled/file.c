@@ -3686,16 +3686,10 @@ L_459d:
     gd.fGotoVCR = 0x0;
     gd.fFleetLinkValid = 0x0;
     ResetHb(htBattle);
-    if ((LOWORD(rglphb[11]) != 0x0))
+    if ((rglphb[11] != 0x0))
         goto L_4601;
     else
-        goto L_45f7;
-
-L_45f7:
-    if ((HIWORD(rglphb[11]) == 0x0))
         goto L_460b;
-    else
-        goto L_4601;
 
 L_4601:
     rglphb[11][1].cbBlock = 0xffff;

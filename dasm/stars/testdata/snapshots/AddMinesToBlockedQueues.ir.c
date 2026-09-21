@@ -99,22 +99,10 @@ L_1977:
     cRes = (cRes - (int32_t)(((uint32_t)((cRes * (int32_t)((int16_t)(rgplr[idPlayer].pctResearch)))) / 0x64)));
 
 L_19aa:
-    if ((HIWORD(rgCost[3]) < HIWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
+    if ((rgCost[3] <= (int32_t)((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
         goto L_19d6;
     else
-        goto L_19c6;
-
-L_19c6:
-    if ((HIWORD(rgCost[3]) > HIWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
         goto L_17a3;
-    else
-        goto L_19cb;
-
-L_19cb:
-    if ((LOWORD(rgCost[3]) > LOWORD((uint32_t)((cRes * (int32_t)((etaFirst - 1)))))))
-        goto L_17a3;
-    else
-        goto L_19d6;
 
 L_19d6:
     t_scratch_m136 = (uint32_t)(sel.pl.cMines);

@@ -575,19 +575,7 @@ L_06cb:
         goto L_06e6;
 
 L_06e6:
-    if ((HIWORD(lpfl->rgwtMin[3]) < 0x0))
-        goto L_0728;
-    else
-        goto L_06f3;
-
-L_06f3:
-    if ((HIWORD(lpfl->rgwtMin[3]) > 0x0))
-        goto L_0702;
-    else
-        goto L_06f8;
-
-L_06f8:
-    if ((LOWORD(lpfl->rgwtMin[3]) <= 0x0))
+    if ((lpfl->rgwtMin[3] <= 0))
         goto L_0728;
     else
         goto L_0702;
@@ -770,19 +758,7 @@ L_09a3:
         goto L_09ba;
 
 L_09ba:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto L_0964;
-    else
-        goto L_09c7;
-
-L_09c7:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_09d7;
-    else
-        goto L_09cc;
-
-L_09cc:
-    if ((LOWORD(lppl->rgwtMin[3]) < 0xc8))
+    if ((lppl->rgwtMin[3] < 200))
         goto L_0964;
     else
         goto L_09d7;
@@ -871,19 +847,7 @@ L_0b41:
         goto L_0b5b;
 
 L_0b5b:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto LTryCargo;
-    else
-        goto L_0b68;
-
-L_0b68:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_0b78;
-    else
-        goto L_0b6d;
-
-L_0b6d:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x2710))
+    if ((lppl->rgwtMin[3] <= 10000))
         goto LTryCargo;
     else
         goto L_0b78;
@@ -1591,19 +1555,7 @@ L_15e8:
         goto L_15f1;
 
 L_15f1:
-    if ((HIWORD(lppl->rgwtMin[3]) < 0x0))
-        goto LTryCruiser;
-    else
-        goto L_15fe;
-
-L_15fe:
-    if ((HIWORD(lppl->rgwtMin[3]) > 0x0))
-        goto L_160e;
-    else
-        goto L_1603;
-
-L_1603:
-    if ((LOWORD(lppl->rgwtMin[3]) <= 0x2710))
+    if ((lppl->rgwtMin[3] <= 10000))
         goto LTryCruiser;
     else
         goto L_160e;
@@ -2334,13 +2286,7 @@ L_20eb:
         goto L_20fa;
 
 L_20fa:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_2154;
-    else
-        goto L_2107;
-
-L_2107:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_2154;
     else
         goto L_2111;
@@ -2502,13 +2448,7 @@ L_2313:
         goto L_2321;
 
 L_2321:
-    if ((LOWORD(lpfl->rgwtMin[3]) != 0x0))
-        goto L_234d;
-    else
-        goto L_232e;
-
-L_232e:
-    if ((HIWORD(lpfl->rgwtMin[3]) != 0x0))
+    if ((lpfl->rgwtMin[3] != 0))
         goto L_234d;
     else
         goto L_2338;
@@ -3666,19 +3606,7 @@ L_3580:
         goto L_359a;
 
 L_359a:
-    if ((HIWORD(lpplHere->rgwtMin[3]) > 0x0))
-        goto L_35ba;
-    else
-        goto L_35a7;
-
-L_35a7:
-    if ((HIWORD(lpplHere->rgwtMin[3]) < 0x0))
-        goto LFindPickup;
-    else
-        goto L_35ac;
-
-L_35ac:
-    if ((LOWORD(lpplHere->rgwtMin[3]) < 0x3e8))
+    if ((lpplHere->rgwtMin[3] < 1000))
         goto LFindPickup;
     else
         goto L_35ba;

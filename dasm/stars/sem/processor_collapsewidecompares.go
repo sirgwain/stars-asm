@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -177,7 +178,7 @@ func (p *collapseWideComparesProcessor) matchOrderingNodes(nodes []wideCompareNo
 				high = append(high, i)
 			}
 		}
-		if !sameCompareOperands(nodes[high[0]], nodes[high[1]]) {
+		if !p.sameCompareOperands(nodes[high[0]], nodes[high[1]]) {
 			continue
 		}
 		lhs, rhs, ok := p.pairCompareOperands(nodes[lowIndex], nodes[high[0]])
@@ -227,10 +228,20 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 			return true
 		}
 		path, ok := p.ctx.symbols.symbolFromValue(v)
-		if !ok || path.Type() == nil || path.Type().Bytes() != 4 {
+		if !ok || path.Type() == nil {
 			return false
 		}
-		switch path.Type().Kind() {
+		typ := path.Type()
+		if offset, ok := path.(*symresolve.SymbolOffset); ok {
+			if array, ok := typ.(*typeinfo.Array); ok && array.Elem != nil && array.Elem.Bytes() == 4 &&
+				offset.Offset >= 0 && offset.Offset%4 == 0 && offset.Offset+4 <= array.Bytes() {
+				typ = array.Elem
+			}
+		}
+		if typ.Bytes() != 4 {
+			return false
+		}
+		switch typ.Kind() {
 		case typeinfo.KInt, typeinfo.KPointer:
 			return true
 		default:
@@ -447,9 +458,22 @@ func allCompareDomain(nodes []wideCompareNode, domain compareDomain) bool {
 	return true
 }
 
-// sameCompareOperands reports whether two predicates compare identical lanes.
-func sameCompareOperands(a, b wideCompareNode) bool {
-	return machine.ValueEquals(a.branch.Predicate.LHS, b.branch.Predicate.LHS) && machine.ValueEquals(a.branch.Predicate.RHS, b.branch.Predicate.RHS)
+// sameCompareOperands reports whether two predicates compare equivalent lanes.
+func (p *collapseWideComparesProcessor) sameCompareOperands(a, b wideCompareNode) bool {
+	return p.sameCompareValue(a.branch.Predicate.LHS, b.branch.Predicate.LHS) &&
+		p.sameCompareValue(a.branch.Predicate.RHS, b.branch.Predicate.RHS)
+}
+
+// sameCompareValue ignores instruction provenance after proving value equivalence.
+func (p *collapseWideComparesProcessor) sameCompareValue(a, b machine.Value) bool {
+	if machine.ValueEquals(a, b) {
+		return true
+	}
+	if aConst, ok := a.(*machine.Const); ok {
+		bConst, ok := b.(*machine.Const)
+		return ok && aConst.Val == bConst.Val
+	}
+	return p.ctx != nil && p.ctx.symbols.sameResolvedMachineValue(a, b)
 }
 
 // branchTargets returns both destinations of a compare branch.
