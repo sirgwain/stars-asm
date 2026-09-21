@@ -158,10 +158,11 @@ func (p *collapseWideComparesProcessor) matchOrdering(f *machine.FuncEffects, ro
 				continue
 			}
 			nodes := []wideCompareNode{root, second, third}
-			if len(finalTargets(nodes)) != 2 {
+			canonicalTargets := len(finalTargets(nodes)) != 2
+			if canonicalTargets && len(canonicalFinalTargets(f, nodes)) != 2 {
 				continue
 			}
-			if match, ok := p.matchOrderingNodes(nodes); ok {
+			if match, ok := p.matchOrderingNodes(f, nodes, canonicalTargets); ok {
 				return match, true
 			}
 		}
@@ -170,7 +171,7 @@ func (p *collapseWideComparesProcessor) matchOrdering(f *machine.FuncEffects, ro
 }
 
 // matchOrderingNodes proves lane identity, signedness, and the final wide relation.
-func (p *collapseWideComparesProcessor) matchOrderingNodes(nodes []wideCompareNode) (wideCompareMatch, bool) {
+func (p *collapseWideComparesProcessor) matchOrderingNodes(f *machine.FuncEffects, nodes []wideCompareNode, canonicalTargets bool) (wideCompareMatch, bool) {
 	for lowIndex := range nodes {
 		high := make([]int, 0, 2)
 		for i := range nodes {
@@ -196,6 +197,9 @@ func (p *collapseWideComparesProcessor) matchOrderingNodes(nodes []wideCompareNo
 		results := make([]machine.BlockID, len(outcomes))
 		for i, outcome := range outcomes {
 			results[i] = evaluateOrderingTree(nodes[0].block, nodes, lowIndex, outcome.high, outcome.low)
+			if canonicalTargets {
+				results[i] = comparisonOutcomeTarget(f, results[i])
+			}
 		}
 		for _, relation := range []compareRelation{compareLT, compareLE, compareGT, compareGE} {
 			trueBlock, falseBlock, ok := relationTargets(relation, outcomes, results)
@@ -228,10 +232,18 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 			return true
 		}
 		path, ok := p.ctx.symbols.symbolFromValue(v)
-		if !ok || path.Type() == nil {
+		var typ typeinfo.Type
+		if ok {
+			typ = path.Type()
+		} else if addr, resolved := p.ctx.symbols.addressFromMemory(v.Addr, nil); resolved {
+			lane, resolved := p.ctx.symbols.storageLaneFromMemory(v.Addr, addr)
+			if resolved {
+				typ, _ = p.wideCompareScalarTypeAtOffset(lane.object, lane.offset)
+			}
+		}
+		if typ == nil {
 			return false
 		}
-		typ := path.Type()
 		if typ.Bytes() != 4 || (typ.Kind() != typeinfo.KInt && typ.Kind() != typeinfo.KPointer) {
 			offset, ok := path.(*symresolve.SymbolOffset)
 			if !ok {
@@ -549,6 +561,38 @@ func finalTargets(nodes []wideCompareNode) []machine.BlockID {
 		}
 	}
 	return out
+}
+
+// canonicalFinalTargets returns comparison destinations after following pure
+// jump blocks which may otherwise make one outcome appear as several targets.
+func canonicalFinalTargets(f *machine.FuncEffects, nodes []wideCompareNode) []machine.BlockID {
+	var out []machine.BlockID
+	for _, target := range finalTargets(nodes) {
+		target = comparisonOutcomeTarget(f, target)
+		if !slices.Contains(out, target) {
+			out = append(out, target)
+		}
+	}
+	return out
+}
+
+// comparisonOutcomeTarget follows side-effect-free jump blocks so equivalent
+// comparison outcomes share one canonical destination.
+func comparisonOutcomeTarget(f *machine.FuncEffects, target machine.BlockID) machine.BlockID {
+	visited := map[machine.BlockID]bool{}
+	for target != 0 && !visited[target] {
+		visited[target] = true
+		index := slices.IndexFunc(f.Blocks, func(block machine.BlockEffects) bool { return block.Block == target })
+		if index < 0 || len(f.Blocks[index].Effects) != 1 {
+			break
+		}
+		jump, ok := f.Blocks[index].Effects[0].(machine.JumpEffect)
+		if !ok {
+			break
+		}
+		target = jump.To
+	}
+	return target
 }
 
 // allSameTarget reports whether targets is non-empty and contains one ID.

@@ -3978,22 +3978,10 @@ L_418a:
         goto L_41d4;
 
 L_41d4:
-    if ((HIWORD(dwTickCur) < (HIWORD(dwTickBase) + 0x0)))
+    if ((dwTickCur < (dwTickBase + 0x1f4)))
         goto L_418a;
     else
-        goto L_41e8;
-
-L_41e8:
-    if ((HIWORD(dwTickCur) > (HIWORD(dwTickBase) + 0x0)))
         goto LTutorialFinishUp;
-    else
-        goto L_41ed;
-
-L_41ed:
-    if ((LOWORD(dwTickCur) >= (LOWORD(dwTickBase) + 0x1f4)))
-        goto LTutorialFinishUp;
-    else
-        goto L_41f2;
 
 L_41f2:
     goto L_418a;

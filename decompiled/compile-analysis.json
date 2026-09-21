@@ -475,7 +475,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7812,
+            "line": 7800,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -494,7 +494,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7813,
+            "line": 7801,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -513,7 +513,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7820,
+            "line": 7808,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -532,7 +532,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7834,
+            "line": 7822,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -551,7 +551,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7835,
+            "line": 7823,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -570,7 +570,7 @@
         {
           "caret": {
             "file": "decompiled/battle.c",
-            "line": 7842,
+            "line": 7830,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1585,7 +1585,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3128,
+            "line": 3116,
             "column": 50,
             "byteColumn": 50,
             "displayColumn": 50
@@ -1594,14 +1594,14 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3128,
+            "line": 3116,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
           },
           "finish": {
             "file": "decompiled/log.c",
-            "line": 3128,
+            "line": 3116,
             "column": 48,
             "byteColumn": 48,
             "displayColumn": 48
@@ -1620,7 +1620,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3129,
+            "line": 3117,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -1629,14 +1629,14 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3129,
+            "line": 3117,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/log.c",
-            "line": 3129,
+            "line": 3117,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
@@ -1655,7 +1655,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3302,
+            "line": 3290,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -1674,7 +1674,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3303,
+            "line": 3291,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1693,7 +1693,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3310,
+            "line": 3298,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1712,7 +1712,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3362,
+            "line": 3350,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1731,7 +1731,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3443,
+            "line": 3431,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1750,7 +1750,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3576,
+            "line": 3564,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1769,7 +1769,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3592,
+            "line": 3580,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -1788,7 +1788,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3593,
+            "line": 3581,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1807,7 +1807,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3600,
+            "line": 3588,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1826,7 +1826,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3678,
+            "line": 3666,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1845,7 +1845,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3733,
+            "line": 3721,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -1864,7 +1864,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3734,
+            "line": 3722,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1883,7 +1883,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3741,
+            "line": 3729,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1902,7 +1902,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3783,
+            "line": 3771,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1921,7 +1921,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3802,
+            "line": 3790,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -1940,7 +1940,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3803,
+            "line": 3791,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1959,7 +1959,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3810,
+            "line": 3798,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1978,7 +1978,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3856,
+            "line": 3844,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -1997,7 +1997,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3876,
+            "line": 3864,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2016,7 +2016,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3931,
+            "line": 3919,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2035,7 +2035,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3958,
+            "line": 3946,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -2054,7 +2054,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3959,
+            "line": 3947,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2073,7 +2073,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 3966,
+            "line": 3954,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2092,7 +2092,7 @@
         {
           "caret": {
             "file": "decompiled/log.c",
-            "line": 4228,
+            "line": 4216,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2400,14 +2400,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5669,
+            "line": 5657,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 5669,
+            "line": 5657,
             "column": 28,
             "byteColumn": 28,
             "displayColumn": 28
@@ -2426,21 +2426,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5712,
+            "line": 5700,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 5712,
+            "line": 5700,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 5712,
+            "line": 5700,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -2490,7 +2490,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5804,
+            "line": 5792,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
@@ -2509,7 +2509,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6105,
+            "line": 6093,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -2528,7 +2528,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6106,
+            "line": 6094,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2547,7 +2547,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6114,
+            "line": 6102,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -2566,7 +2566,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6232,
+            "line": 6220,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13

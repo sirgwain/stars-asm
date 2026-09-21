@@ -4,8 +4,8 @@
     "temps": 1693,
     "hiWords": 194,
     "loWords": 1507,
-    "branchHiWords": 55,
-    "branchLoWords": 585,
+    "branchHiWords": 37,
+    "branchLoWords": 574,
     "segRegRefs": 8,
     "ir": {
       "numStatements": 34752,
@@ -473,8 +473,7 @@
     "CommandHandler": {
       "temps": 13,
       "loWords": 22,
-      "branchHiWords": 4,
-      "branchLoWords": 7,
+      "branchLoWords": 5,
       "ir": {
         "numStatements": 357
       }
@@ -719,8 +718,7 @@
     "DoMacintiAiTurn": {
       "temps": 12,
       "loWords": 3,
-      "branchHiWords": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 357
       }
@@ -1350,8 +1348,6 @@
     },
     "EnsureAiStarbaseDesigns": {
       "temps": 2,
-      "branchHiWords": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 32
       }
@@ -1386,8 +1382,7 @@
     },
     "EnsureMacintiStarbaseDesigns": {
       "temps": 4,
-      "branchHiWords": 2,
-      "branchLoWords": 6,
+      "branchLoWords": 3,
       "segRegRefs": 1,
       "ir": {
         "numStatements": 48,
@@ -1496,8 +1491,6 @@
     },
     "FAttack": {
       "temps": 10,
-      "branchHiWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 136
       }
@@ -2333,8 +2326,8 @@
       "temps": 16,
       "hiWords": 2,
       "loWords": 16,
-      "branchHiWords": 7,
-      "branchLoWords": 14,
+      "branchHiWords": 5,
+      "branchLoWords": 13,
       "ir": {
         "numStatements": 235,
         "untranslated": 2,
@@ -2952,8 +2945,7 @@
       }
     },
     "HandleBasicAiTasks": {
-      "branchHiWords": 2,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 19
       }

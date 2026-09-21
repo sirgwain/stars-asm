@@ -1,13 +1,52 @@
 package sem
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+// TestStorageLaneProjectsDynamicPointerFieldIndex verifies a residual runtime
+// index is applied after selecting an array field through a pointer.
+func TestStorageLaneProjectsDynamicPointerFieldIndex(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "DoMacintiAiTurn")
+	index := slices.IndexFunc(ctx.fs.Vars, func(v typeinfo.FunctionVar) bool { return v.Name == "lppl" })
+	if index < 0 {
+		t.Fatal("lppl local not found")
+	}
+
+	addr := resolvedAddress{
+		base:   &symresolve.SymbolRoot{Symbol: &ctx.fs.Vars[index]},
+		offset: 0x1c,
+		terms: []resolvedAddressTerm{{
+			value: machine.BinaryVal(machine.ValueOpMod, machine.SignExtendVal(machine.RegVal(asm.RegAX), 16, 32), machine.ConstVal(3)),
+			scale: 4,
+		}},
+		deref: true,
+	}
+	lane, ok := ctx.symbols.storageLaneFromResolvedAddress(addr)
+	if !ok {
+		t.Fatal("dynamic pointer field lane did not resolve")
+	}
+	term, ok := lane.object.(*symresolve.SymbolTerm)
+	if !ok {
+		t.Fatalf("lane object = %T, want *symresolve.SymbolTerm", lane.object)
+	}
+	field, ok := term.Base.(*symresolve.SymbolField)
+	if !ok || field.Field.Name != "rgwtMin" {
+		t.Fatalf("indexed base = %v, want lppl->rgwtMin", term.Base)
+	}
+	if lane.offset != 0 || lane.size != 4 {
+		t.Fatalf("lane range = (%d, %d), want (0, 4)", lane.offset, lane.size)
+	}
+}
 
 func TestCollapseWideMachineStorePairNestedIndexedField(t *testing.T) {
 	fx := testfixture.Stars(t)
