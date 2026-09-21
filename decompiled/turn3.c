@@ -1525,19 +1525,7 @@ L_7e1b:
 L_7e2e:
     lpfl->rgwtMin[4] = amount;
     amount = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((HIWORD(amount) < HIWORD(lpfl->rgwtMin[4])))
-        goto L_7e2e;
-    else
-        goto L_7e7a;
-
-L_7e7a:
-    if ((HIWORD(amount) > HIWORD(lpfl->rgwtMin[4])))
-        goto L_7e87;
-    else
-        goto L_7e7f;
-
-L_7e7f:
-    if ((LOWORD(amount) < LOWORD(lpfl->rgwtMin[4])))
+    if ((amount < lpfl->rgwtMin[4]))
         goto L_7e2e;
     else
         goto L_7e87;

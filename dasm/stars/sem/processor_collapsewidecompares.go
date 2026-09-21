@@ -158,8 +158,9 @@ func (p *collapseWideComparesProcessor) matchOrdering(f *machine.FuncEffects, ro
 				continue
 			}
 			nodes := []wideCompareNode{root, second, third}
-			canonicalTargets := len(finalTargets(nodes)) != 2
-			if canonicalTargets && len(canonicalFinalTargets(f, nodes)) != 2 {
+			outcomes := orderingOutcomeTargets(nodes)
+			canonicalTargets := len(outcomes) != 2
+			if canonicalTargets && len(canonicalTargetsFor(f, outcomes)) != 2 {
 				continue
 			}
 			if match, ok := p.matchOrderingNodes(f, nodes, canonicalTargets); ok {
@@ -472,7 +473,10 @@ func evaluateCompareTree(root machine.BlockID, nodes []wideCompareNode, lowIndex
 // evaluateOrderingTree follows an ordering tree for supplied high/low outcomes.
 func evaluateOrderingTree(root machine.BlockID, nodes []wideCompareNode, lowIndex, highOutcome, lowOutcome int) machine.BlockID {
 	current := root
-	for range len(nodes) + 1 {
+	for step := range len(nodes) + 1 {
+		if step > 0 && current == root {
+			return root
+		}
 		index := slices.IndexFunc(nodes, func(node wideCompareNode) bool { return node.block == current })
 		if index < 0 {
 			return current
@@ -488,6 +492,19 @@ func evaluateOrderingTree(root machine.BlockID, nodes []wideCompareNode, lowInde
 		}
 	}
 	return 0
+}
+
+// orderingOutcomeTargets includes a retry edge to the comparison root as a
+// logical outcome while keeping the remaining comparison scaffold internal.
+func orderingOutcomeTargets(nodes []wideCompareNode) []machine.BlockID {
+	out := finalTargets(nodes)
+	root := nodes[0].block
+	for _, node := range nodes {
+		if slices.Contains(branchTargets(node.branch), root) && !slices.Contains(out, root) {
+			out = append(out, root)
+		}
+	}
+	return out
 }
 
 // relationTargets verifies that results exactly partition according to relation.
@@ -563,11 +580,10 @@ func finalTargets(nodes []wideCompareNode) []machine.BlockID {
 	return out
 }
 
-// canonicalFinalTargets returns comparison destinations after following pure
-// jump blocks which may otherwise make one outcome appear as several targets.
-func canonicalFinalTargets(f *machine.FuncEffects, nodes []wideCompareNode) []machine.BlockID {
+// canonicalTargetsFor resolves pure jump trampolines in a target set.
+func canonicalTargetsFor(f *machine.FuncEffects, targets []machine.BlockID) []machine.BlockID {
 	var out []machine.BlockID
-	for _, target := range finalTargets(nodes) {
+	for _, target := range targets {
 		target = comparisonOutcomeTarget(f, target)
 		if !slices.Contains(out, target) {
 			out = append(out, target)
