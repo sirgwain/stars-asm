@@ -2,10 +2,10 @@
   "OutDir": "./decompiled",
   "analysis": {
     "temps": 1692,
-    "hiWords": 194,
-    "loWords": 1507,
-    "branchHiWords": 29,
-    "branchLoWords": 570,
+    "hiWords": 192,
+    "loWords": 1505,
+    "branchHiWords": 27,
+    "branchLoWords": 568,
     "segRegRefs": 8,
     "ir": {
       "numStatements": 34751,
@@ -1473,8 +1473,7 @@
     },
     "FAddWayPoint": {
       "temps": 1,
-      "branchHiWords": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 55
       }
@@ -2493,8 +2492,7 @@
     },
     "FTravelThroughMineFields": {
       "temps": 9,
-      "hiWords": 2,
-      "loWords": 12,
+      "loWords": 10,
       "branchLoWords": 7,
       "ir": {
         "numStatements": 178

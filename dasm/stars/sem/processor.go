@@ -142,6 +142,11 @@ func ProcessorSpecs() []Processor {
 			Func:    func(*FuncContext) SemFuncProcessor { return &scratchRecoveryProcessor{} },
 		},
 		{
+			Name:    "collapse-wide-arithmetic",
+			Purpose: "Reconstruct carry-aware wide arithmetic exposed by scratch recovery.",
+			Sem:     func(*FuncContext) SemBlockProcessor { return &collapseWideArithmeticProcessor{} },
+		},
+		{
 			Name:    "union-context",
 			Purpose: "Resolve union context for dependent enums.",
 			Func: func(ctx *FuncContext) SemFuncProcessor {
