@@ -907,19 +907,7 @@ L_0d54:
         goto L_0d5d;
 
 L_0d5d:
-    if ((HIWORD(rgshdef[iLatestMeta].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
-        goto L_0db2;
-    else
-        goto L_0d90;
-
-L_0d90:
-    if ((HIWORD(rgshdef[iLatestMeta].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
-        goto L_0d9e;
-    else
-        goto L_0d95;
-
-L_0d95:
-    if ((LOWORD(rgshdef[iLatestMeta].cExist) < LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6)))))
+    if ((rgshdef[iLatestMeta].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 7) + 0x6))))
         goto L_0db2;
     else
         goto L_0d9e;
@@ -1016,22 +1004,10 @@ TryShip3:
         goto L_0f1b;
 
 L_0f1b:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
-        goto FinishProd;
-    else
-        goto L_0f4e;
-
-L_0f4e:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((rgshdef[iLatestDestroyer].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8))))
         goto L_0f5c;
     else
-        goto L_0f53;
-
-L_0f53:
-    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
-    else
-        goto L_0f5c;
 
 L_0f5c:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -2442,13 +2418,7 @@ L_2790:
         goto L_27af;
 
 L_27af:
-    if ((LOWORD(rgshdef[0].cExist) != 0x0))
-        goto L_2888;
-    else
-        goto L_27b9;
-
-L_27b9:
-    if ((HIWORD(rgshdef[0].cExist) != 0x0))
+    if ((rgshdef[0].cExist != 0x0))
         goto L_2888;
     else
         goto L_27c3;
@@ -3747,37 +3717,13 @@ L_3e77:
     t_merge_3e7a_0001 = 0x20;
 
 L_3e7a:
-    if ((HIWORD(rgshdef[0].cExist) > 0x0))
-        goto L_3ede;
-    else
-        goto L_3e86;
-
-L_3e86:
-    if ((HIWORD(rgshdef[0].cExist) < 0x0))
+    if ((rgshdef[0].cExist < (uint32_t)(t_merge_3e7a_0001)))
         goto L_3e94;
     else
-        goto L_3e8b;
-
-L_3e8b:
-    if ((LOWORD(rgshdef[0].cExist) >= t_merge_3e7a_0001))
         goto L_3ede;
-    else
-        goto L_3e94;
 
 L_3e94:
-    if ((HIWORD(rgshdef[0].cExist) < HIWORD((uint32_t)((rgshdef[0].cBuilt / 0xa)))))
-        goto L_3ede;
-    else
-        goto L_3eb2;
-
-L_3eb2:
-    if ((HIWORD(rgshdef[0].cExist) > HIWORD((uint32_t)((rgshdef[0].cBuilt / 0xa)))))
-        goto L_3ec0;
-    else
-        goto L_3eb7;
-
-L_3eb7:
-    if ((LOWORD(rgshdef[0].cExist) <= LOWORD((uint32_t)((rgshdef[0].cBuilt / 0xa)))))
+    if ((rgshdef[0].cExist <= (uint32_t)((rgshdef[0].cBuilt / 0xa))))
         goto L_3ede;
     else
         goto L_3ec0;
@@ -3847,22 +3793,10 @@ L_3faa:
         goto L_3fb4;
 
 L_3fb4:
-    if ((HIWORD(rgshdef[1].cExist) > 0x0))
-        goto L_4033;
-    else
-        goto L_3fbe;
-
-L_3fbe:
-    if ((HIWORD(rgshdef[1].cExist) < 0x0))
+    if ((rgshdef[1].cExist < 0x2))
         goto L_3fcd;
     else
-        goto L_3fc3;
-
-L_3fc3:
-    if ((LOWORD(rgshdef[1].cExist) >= 0x2))
         goto L_4033;
-    else
-        goto L_3fcd;
 
 L_3fcd:
     AddItemToQueue(0x1, 0x1, grobjFleet, 1);
@@ -4025,22 +3959,10 @@ L_4274:
         goto L_427e;
 
 L_427e:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
-        goto L_43ee;
-    else
-        goto L_42b2;
-
-L_42b2:
-    if ((HIWORD(rgshdef[iLatestBattle].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
+    if ((rgshdef[iLatestBattle].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4))))
         goto L_42c0;
     else
-        goto L_42b7;
-
-L_42b7:
-    if ((LOWORD(rgshdef[iLatestBattle].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 24) + 0x4)))))
         goto L_43ee;
-    else
-        goto L_42c0;
 
 L_42c0:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -4107,22 +4029,10 @@ L_43ee:
         goto L_43f7;
 
 L_43f7:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
-        goto L_4564;
-    else
-        goto L_442a;
-
-L_442a:
-    if ((HIWORD(rgshdef[iLatestCruiser].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((rgshdef[iLatestCruiser].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8))))
         goto L_4438;
     else
-        goto L_442f;
-
-L_442f:
-    if ((LOWORD(rgshdef[iLatestCruiser].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto L_4564;
-    else
-        goto L_4438;
 
 L_4438:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -4189,22 +4099,10 @@ L_4564:
         goto L_456d;
 
 L_456d:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
-        goto L_46da;
-    else
-        goto L_45a0;
-
-L_45a0:
-    if ((HIWORD(rgshdef[iLatestDestroyer].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
+    if ((rgshdef[iLatestDestroyer].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc))))
         goto L_45ae;
     else
-        goto L_45a5;
-
-L_45a5:
-    if ((LOWORD(rgshdef[iLatestDestroyer].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 4) + 0xc)))))
         goto L_46da;
-    else
-        goto L_45ae;
 
 L_45ae:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -4277,22 +4175,10 @@ L_46e3:
         goto L_46f6;
 
 L_46f6:
-    if ((HIWORD(rgshdef[iLatestTroop].cExist) > HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
-        goto FinishProd;
-    else
-        goto L_4729;
-
-L_4729:
-    if ((HIWORD(rgshdef[iLatestTroop].cExist) < HIWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
+    if ((rgshdef[iLatestTroop].cExist < (uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8))))
         goto L_4737;
     else
-        goto L_472e;
-
-L_472e:
-    if ((LOWORD(rgshdef[iLatestTroop].cExist) >= LOWORD((uint32_t)((((int32_t)(game.cPlanMax) / 12) + 0x8)))))
         goto FinishProd;
-    else
-        goto L_4737;
 
 L_4737:
     GetResourcesAvailable(lppl, rgResAvail);
@@ -5346,13 +5232,7 @@ L_5a51:
         goto L_5a64;
 
 L_5a64:
-    if ((LOWORD(rgshdef[1].cExist) != 0x0))
-        goto L_5ae5;
-    else
-        goto L_5a6e;
-
-L_5a6e:
-    if ((HIWORD(rgshdef[1].cExist) != 0x0))
+    if ((rgshdef[1].cExist != 0x0))
         goto L_5ae5;
     else
         goto L_5a78;
@@ -5384,13 +5264,7 @@ L_5ae5:
         goto L_5af8;
 
 L_5af8:
-    if ((LOWORD(rgshdef[0].cExist) != 0x0))
-        goto L_5b6f;
-    else
-        goto L_5b02;
-
-L_5b02:
-    if ((HIWORD(rgshdef[0].cExist) != 0x0))
+    if ((rgshdef[0].cExist != 0x0))
         goto L_5b6f;
     else
         goto L_5b0c;
@@ -5416,13 +5290,7 @@ L_5b6f:
         goto L_5b82;
 
 L_5b82:
-    if ((LOWORD(rgshdef[2].cExist) != 0x0))
-        goto L_5c29;
-    else
-        goto L_5b8c;
-
-L_5b8c:
-    if ((HIWORD(rgshdef[2].cExist) != 0x0))
+    if ((rgshdef[2].cExist != 0x0))
         goto L_5c29;
     else
         goto L_5b96;
@@ -5460,13 +5328,7 @@ L_5c29:
         goto L_5c3c;
 
 L_5c3c:
-    if ((LOWORD(rgshdef[12].cExist) != 0x0))
-        goto L_5ca0;
-    else
-        goto L_5c46;
-
-L_5c46:
-    if ((HIWORD(rgshdef[12].cExist) != 0x0))
+    if ((rgshdef[12].cExist != 0x0))
         goto L_5ca0;
     else
         goto L_5c50;

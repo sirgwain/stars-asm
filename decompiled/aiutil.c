@@ -8876,13 +8876,7 @@ L_9ba6:
         goto L_9bbf;
 
 L_9bbf:
-    if ((LOWORD(rgshdef[i].cExist) != 0x0))
-        goto L_9c1a;
-    else
-        goto L_9bd4;
-
-L_9bd4:
-    if ((HIWORD(rgshdef[i].cExist) != 0x0))
+    if ((rgshdef[i].cExist != 0x0))
         goto L_9c1a;
     else
         goto L_9bde;

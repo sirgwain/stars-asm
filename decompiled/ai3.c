@@ -116,13 +116,7 @@ L_0083:
         goto L_00a5;
 
 L_00a5:
-    if ((LOWORD(rgshdef[7].cExist) != 0x0))
-        goto L_00f8;
-    else
-        goto L_00af;
-
-L_00af:
-    if ((HIWORD(rgshdef[7].cExist) != 0x0))
+    if ((rgshdef[7].cExist != 0x0))
         goto L_00f8;
     else
         goto L_00b9;
@@ -310,13 +304,7 @@ L_0319:
     i = 14;
 
 LUpgradeMiner:
-    if ((LOWORD(rgshdef[i].cExist) != 0x0))
-        goto L_037b;
-    else
-        goto L_0333;
-
-L_0333:
-    if ((HIWORD(rgshdef[i].cExist) != 0x0))
+    if ((rgshdef[i].cExist != 0x0))
         goto L_037b;
     else
         goto L_033d;
@@ -1184,22 +1172,10 @@ L_115c:
         goto L_1166;
 
 L_1166:
-    if ((HIWORD(rgshdef[iLatestMiner].cExist) > 0x0))
-        goto TryShip2b;
-    else
-        goto L_117b;
-
-L_117b:
-    if ((HIWORD(rgshdef[iLatestMiner].cExist) < 0x0))
+    if ((rgshdef[iLatestMiner].cExist < 0x1388))
         goto L_118b;
     else
-        goto L_1180;
-
-L_1180:
-    if ((LOWORD(rgshdef[iLatestMiner].cExist) >= 0x1388))
         goto TryShip2b;
-    else
-        goto L_118b;
 
 L_118b:
     if ((Random(2) != 0))
@@ -1314,22 +1290,10 @@ L_131f:
         goto L_1328;
 
 L_1328:
-    if ((HIWORD(rgshdef[iLatestMiner].cExist) > 0x0))
-        goto L_1454;
-    else
-        goto L_133d;
-
-L_133d:
-    if ((HIWORD(rgshdef[iLatestMiner].cExist) < 0x0))
+    if ((rgshdef[iLatestMiner].cExist < 0x1d4c))
         goto L_134d;
     else
-        goto L_1342;
-
-L_1342:
-    if ((LOWORD(rgshdef[iLatestMiner].cExist) >= 0x1d4c))
         goto L_1454;
-    else
-        goto L_134d;
 
 L_134d:
     if ((Random(4) != 0))
@@ -3120,13 +3084,7 @@ L_2e5c:
         goto L_2e6f;
 
 L_2e6f:
-    if ((LOWORD(rgshdef[2].cExist) != 0x0))
-        goto L_2eb3;
-    else
-        goto L_2e79;
-
-L_2e79:
-    if ((HIWORD(rgshdef[2].cExist) != 0x0))
+    if ((rgshdef[2].cExist != 0x0))
         goto L_2eb3;
     else
         goto L_2e83;
@@ -3214,13 +3172,7 @@ L_2fb3:
         goto L_2fc6;
 
 L_2fc6:
-    if ((LOWORD(rgshdef[1].cExist) != 0x0))
-        goto L_3035;
-    else
-        goto L_2fd0;
-
-L_2fd0:
-    if ((HIWORD(rgshdef[1].cExist) != 0x0))
+    if ((rgshdef[1].cExist != 0x0))
         goto L_3035;
     else
         goto L_2fda;
@@ -3419,13 +3371,7 @@ L_326e:
         goto L_328d;
 
 L_328d:
-    if ((LOWORD(rgshdef[0].cExist) != 0x0))
-        goto L_3366;
-    else
-        goto L_3297;
-
-L_3297:
-    if ((HIWORD(rgshdef[0].cExist) != 0x0))
+    if ((rgshdef[0].cExist != 0x0))
         goto L_3366;
     else
         goto L_32a1;
