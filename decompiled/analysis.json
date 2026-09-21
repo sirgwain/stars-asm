@@ -1,14 +1,14 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1693,
+    "temps": 1692,
     "hiWords": 194,
     "loWords": 1507,
-    "branchHiWords": 37,
-    "branchLoWords": 574,
+    "branchHiWords": 29,
+    "branchLoWords": 570,
     "segRegRefs": 8,
     "ir": {
-      "numStatements": 34752,
+      "numStatements": 34751,
       "untranslated": 76,
       "untranslatedAssign": 60,
       "untranslatedBranch": 6,
@@ -4650,8 +4650,8 @@
       "temps": 18,
       "hiWords": 7,
       "loWords": 48,
-      "branchHiWords": 6,
-      "branchLoWords": 6,
+      "branchHiWords": 2,
+      "branchLoWords": 4,
       "ir": {
         "numStatements": 368
       }
@@ -5008,11 +5008,9 @@
       }
     },
     "StreamOpen": {
-      "temps": 2,
-      "branchHiWords": 4,
-      "branchLoWords": 2,
+      "temps": 1,
       "ir": {
-        "numStatements": 13
+        "numStatements": 12
       }
     },
     "SweepForMines": {

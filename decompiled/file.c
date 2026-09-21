@@ -4583,7 +4583,6 @@ void StreamOpen(char *szFile, int16_t mdOpen) {
     int16_t  fNoErr;
     uint32_t dwTickCur;
     uint16_t t_merge_52d8_0001;
-    uint32_t t_call_537e;
 
 L_52ae:
     dwTick = 0x0;
@@ -4642,23 +4641,10 @@ L_5373:
     dwTickCur = (dwTickCur + 0x1f4);
 
 L_537e:
-    t_call_537e = GetTickCount();
-    if ((HIWORD(t_call_537e) > HIWORD(dwTickCur)))
+    if ((GetTickCount() < dwTickCur))
+        goto L_537e;
+    else
         goto Retry;
-    else
-        goto L_538c;
-
-L_538c:
-    if ((HIWORD(t_call_537e) < HIWORD(dwTickCur)))
-        goto L_537e;
-    else
-        goto L_5391;
-
-L_5391:
-    if ((LOWORD(t_call_537e) < LOWORD(dwTickCur)))
-        goto L_537e;
-    else
-        goto L_5397;
 
 L_5397:
     goto Retry;

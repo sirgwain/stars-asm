@@ -86,6 +86,49 @@ func TestCollapseWideCompareOrderingThroughJumpOutcome(t *testing.T) {
 	}
 }
 
+// TestCollapseWideCompareOrderingWithRootRetry verifies a self-looping retry
+// outcome can be collapsed without dropping work performed in the root block.
+func TestCollapseWideCompareOrderingWithRootRetry(t *testing.T) {
+	cfg := cfgForWideCompareTest(t, []asm.DecodedInst{
+		jccForWideCompareTest(0x1000, "JA", 0x1100),
+		jccForWideCompareTest(0x1002, "JB", 0x1000),
+		jccForWideCompareTest(0x1004, "JB", 0x1000),
+		{Off: 0x1006, Len: 1, Op: asm.OpNOP, Mnemonic: "NOP"},
+		{Off: 0x1007, Len: 3, Op: asm.OpJMP, Mnemonic: "JMP", Target: 0x1100},
+		retForWideCompareTest(0x1100),
+	})
+	lhs := &machine.CallResult{Type: typeinfo.U32, InstOff: 0x9000}
+	rhs := &machine.CallResult{Type: typeinfo.U32, InstOff: 0x9002}
+	rootBranch := wideCompareBranch(0x1000, "JA", machine.WordVal(lhs, machine.WordHigh), machine.WordVal(rhs, machine.WordHigh), 0x1100, 0x1002)
+	fn := machine.FuncEffects{CFG: cfg, Blocks: []machine.BlockEffects{
+		{Block: 0x1000, Effects: []machine.Effect{machine.CallEffect{MetaInfo: machine.Meta{BlockID: 0x1000}, Result: lhs}, rootBranch}},
+		compareBlock(0x1002, "JB", machine.WordVal(lhs, machine.WordHigh), machine.WordVal(rhs, machine.WordHigh), 0x1000, 0x1004),
+		compareBlock(0x1004, "JB", machine.WordVal(lhs, machine.WordLow), machine.WordVal(rhs, machine.WordLow), 0x1000, 0x1006),
+		{Block: 0x1006, Effects: []machine.Effect{machine.JumpEffect{To: 0x1100}}},
+		{Block: 0x1100},
+	}}
+
+	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+		t.Fatal("ProcessMachineFunc changed = false, want root-retry collapse")
+	}
+	if got, want := len(fn.Blocks[0].Effects), 2; got != want {
+		t.Fatalf("root effects = %d, want %d with call preserved", got, want)
+	}
+	if _, ok := fn.Blocks[0].Effects[0].(machine.CallEffect); !ok {
+		t.Fatalf("root first effect = %T, want machine.CallEffect", fn.Blocks[0].Effects[0])
+	}
+	branch := fn.Blocks[0].Effects[1].(machine.BranchEffect)
+	if got, want := branch.Predicate.Op, "JB"; got != want {
+		t.Fatalf("wide predicate op = %q, want %q", got, want)
+	}
+	if got, want := []machine.BlockID{branch.TrueBlock, branch.FalseBlock}, []machine.BlockID{0x1000, 0x1100}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("wide targets = %#v, want %#v", got, want)
+	}
+	if got, want := cfg.Successors(0x1000), []machine.BlockID{0x1000, 0x1100}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("root successors = %#v, want %#v", got, want)
+	}
+}
+
 // TestCollapseWideCompareEquality verifies an inverted low/high inequality tree
 // is proved by outcomes rather than by one fixed branch arrangement.
 func TestCollapseWideCompareEquality(t *testing.T) {
