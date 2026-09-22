@@ -1,6 +1,6 @@
 #include "common.h"
 
-int16_t WinMain(uint16_t hInstance, uint16_t hPrevInstance, char *lpCmdLine, int16_t nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     char    *pch;
     char    *lpT;
     int16_t  i;
@@ -618,7 +618,7 @@ L_0690:
 
 int16_t FSetUpBatchProcessing() {
     char   *pch;
-    jmp_buf env[9];
+    jmp_buf env;
     int16_t fSuccess;
     int16_t cb;
 

@@ -248,12 +248,12 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     int16_t    fNoAutoTrack;
     BTLPLAN   *lpbtlplan;
     int16_t    j;
-    jmp_buf   *penvMemSav[9];
+    jmp_buf   *penvMemSav;
     int16_t    i;
     ORDER     *lpord;
     THING     *lpth;
     FLEET     *lpfl;
-    jmp_buf    env[9];
+    jmp_buf    env;
     int16_t    iord;
     SHDEF     *lpshdef;
     THING     *lpthMac;
@@ -2963,8 +2963,8 @@ L_8e0f:
 }
 
 int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName) {
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     char    *psz;
 
 L_8e16:
@@ -3050,8 +3050,8 @@ L_9043:
 int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
     StringId ids;
     RTBOF    rtbof;
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  fChange;
     int16_t  fSuccess;
     int16_t  fSilentSav;
@@ -3377,7 +3377,7 @@ L_9569:
 
 L_9585:
     AlertSz(PszFormatIds(idsErrorWritingFile, 0x0), MB_ICONHAND);
-    longjmp(penvMem, -1);
+    StarsLongJump(penvMem, -1);
 
 L_95b6:
     return;

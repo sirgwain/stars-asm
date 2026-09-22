@@ -7372,11 +7372,11 @@ L_850c:
 void DumpUniverse() {
     StringId ids;
     int16_t  i;
-    jmp_buf  env[9];
+    jmp_buf  env;
     int16_t  fOpen;
     int16_t  fSuccess;
     int16_t  fSilentSav;
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     int16_t  cch;
     uint16_t t_merge_867d_0001;
 
@@ -7490,11 +7490,11 @@ void DumpPlanets() {
     char     szForm[256];
     int16_t  j;
     int16_t  i;
-    jmp_buf  env[9];
+    jmp_buf  env;
     int16_t  fOpen;
     int16_t  fSuccess;
     int16_t  fSilentSav;
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     char    *psz;
     int16_t  cch;
     int32_t  l;
@@ -8044,11 +8044,11 @@ void DumpFleets() {
     FLEET   *lpfl;
     int16_t  j;
     int16_t  i;
-    jmp_buf  env[9];
+    jmp_buf  env;
     int16_t  fOpen;
     int16_t  fSuccess;
     int16_t  fSilentSav;
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     char    *psz;
     int16_t  cch;
     int32_t  l;

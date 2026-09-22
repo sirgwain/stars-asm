@@ -79,11 +79,12 @@ type overrideDBJSON struct {
 }
 
 type functionsJSON struct {
-	Name     string           `json:"name"`
-	Rename   string           `json:"rename"`
-	CallConv string           `json:"callconv"`
-	Ret      string           `json:"ret"`
-	Params   []funcParamsJSON `json:"params"`
+	NativeDecl string           `json:"native_decl"`
+	Name       string           `json:"name"`
+	Rename     string           `json:"rename"`
+	CallConv   string           `json:"callconv"`
+	Ret        string           `json:"ret"`
+	Params     []funcParamsJSON `json:"params"`
 }
 
 type globalsJSON struct {
@@ -264,20 +265,26 @@ func (o *overrideDB) loadFunctions(path string) error {
 		}
 
 		function := Function{
-			Name:    f.Name,
-			Conv:    CallConvFromString(f.CallConv),
-			Module:  OverrideModule,
-			Ret:     ret,
-			Params:  params,
-			VarArgs: varargs,
+			Name:       f.Name,
+			NativeDecl: f.NativeDecl,
+			Conv:       CallConvFromString(f.CallConv),
+			Module:     OverrideModule,
+			Ret:        ret,
+			Params:     params,
+			VarArgs:    varargs,
+		}
+
+		// Preserve the original function identity when renaming a defined body.
+		if existing := o.sdb.GetFunction(f.Name); existing != nil {
+			function.Addr = existing.Addr
 		}
 
 		// if we have a public symbol, grab the address and rename the function
 		if public := o.sdb.GetPublic(f.Name); public != nil {
 			function.Addr = public.Addr
-			if f.Rename != "" {
-				function.Name = f.Rename
-			}
+		}
+		if f.Rename != "" {
+			function.Name = f.Rename
 		}
 
 		o.sdb.AddFunction(&function)
@@ -384,20 +391,16 @@ func (o *overrideDB) resolveNamedType(name, cType string) (Type, error) {
 			return nil, fmt.Errorf("failed to parse array %s %s", cType, name)
 		}
 
-		typ := o.cTypeToType(name, base)
+		typ := o.cTypeToType("", base)
 		if typ == nil {
 			return nil, fmt.Errorf("array basetype not found %s %s", cType, name)
 		}
 
-		// "int32_t[4][2]" -> []int{2,4}
-		// TODO: only works with 1 dim...
 		for _, dim := range dims {
-			array := Array{
-				Elem:  typ,
-				Count: dim,
-			}
-			return &array, nil
+			typ = &Array{Elem: typ, Count: dim}
 		}
+		typ.(*Array).Name = name
+		return typ, nil
 	}
 
 	// convert simple types

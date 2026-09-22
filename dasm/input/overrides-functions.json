@@ -1,5 +1,27 @@
 {
   "functions": [
+    {
+      "name": "WinMain",
+      "native_decl": "int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)",
+      "ret": "int16_t",
+      "params": [
+        { "name": "hInstance", "ctype": "uint16_t" },
+        { "name": "hPrevInstance", "ctype": "uint16_t" },
+        { "name": "lpCmdLine", "ctype": "char far *" },
+        { "name": "nCmdShow", "ctype": "int16_t" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "CopyFile",
+      "rename": "StarsCopyFile",
+      "ret": "void",
+      "params": [
+        { "name": "szSrc", "ctype": "char *" },
+        { "name": "szDst", "ctype": "char *" }
+      ],
+      "callconv": "pascal"
+    },
     { "name": "HbrGet", "ret": "HBRUSH", "params": [{ "name": "cr", "ctype": "COLORREF" }], "callconv": "stdcall" },
     { "name": "HpalFromDib", "ret": "HPALETTE", "params": [{ "name": "hdib", "ctype": "HGLOBAL" }], "callconv": "stdcall" },
     { "name": "HpalBlackReserved", "ret": "HPALETTE", "params": [], "callconv": "stdcall" },
@@ -279,10 +301,10 @@
     },
     {
       "name": "_longjmp",
-      "rename": "longjmp",
+      "rename": "StarsLongJump",
       "ret": "void",
       "params": [
-        { "name": "env", "ctype": "int16_t *" },
+        { "name": "env", "ctype": "ENV *" },
         { "name": "value", "ctype": "int16_t" }
       ],
       "callconv": "cdecl"

@@ -93,12 +93,17 @@ func (p *Pointer) IsCStringPointer() bool {
 
 // Array describes a fixed-length array type.
 type Array struct {
+	// Name preserves a C array typedef while Elem and Count describe Win16 storage.
+	Name  string
 	Elem  Type
 	Count int
 }
 
 func (a *Array) Kind() Kind { return KArray }
 func (a *Array) String() string {
+	if a.Name != "" {
+		return a.Name
+	}
 	return fmt.Sprintf("%s[%d]", typeString(a.Elem), a.Count)
 }
 
@@ -233,6 +238,9 @@ func pointerDecl(p Pointer, name string) string {
 	if p.Elem == nil {
 		return "*" + name
 	}
+	if a, ok := p.Elem.(*Array); ok && a.Name == "" {
+		return TypeDecl(p.Elem, "(*"+name+")")
+	}
 	return TypeDecl(p.Elem, "*"+name)
 }
 
@@ -246,6 +254,9 @@ func isFunctionType(typ Type) bool {
 }
 
 func arrayDecl(a Array, name string) string {
+	if a.Name != "" {
+		return a.Name + " " + name
+	}
 	if a.Elem == nil {
 		return name
 	}

@@ -26,7 +26,7 @@ void    XorFileBuf(char *rgb, int16_t cb);
 int16_t ICompLong(void *arg1, void *arg2);
 char   *PszGetCompressedPlanet(int16_t id);
 void    OutputFileString(char *szFile, char *sz);
-void    CopyFile(char *szSrc, char *szDst);
+void    StarsCopyFile(char *szSrc, char *szDst);
 int16_t AlertSz(char *sz, MessageBoxType mbType);
 int16_t CchGetString(StringId ids, char *psz);
 char   *PszFromInt(int16_t i, int16_t *pcch);

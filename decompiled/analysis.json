@@ -484,12 +484,6 @@
         "numStatements": 7
       }
     },
-    "CopyFile": {
-      "loWords": 2,
-      "ir": {
-        "numStatements": 18
-      }
-    },
     "CostOfDevelopingItem": {
       "temps": 1,
       "ir": {
@@ -4988,6 +4982,12 @@
     "StargateRangeFromLppl": {
       "ir": {
         "numStatements": 10
+      }
+    },
+    "StarsCopyFile": {
+      "loWords": 2,
+      "ir": {
+        "numStatements": 18
       }
     },
     "StartTutor": {

@@ -8,7 +8,11 @@
 
 #include "enums.h"
 
+// Native storage; the analysis model retains the original 18-byte layout.
 typedef jmp_buf ENV;
+
+// Dereference the saved pointer to the native jump-buffer array.
+#define StarsLongJump(env, value) longjmp(*(env), (value))
 
 // enums that are actually win defines
 typedef uint16_t ScrollCode;

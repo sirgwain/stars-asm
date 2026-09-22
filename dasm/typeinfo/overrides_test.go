@@ -257,3 +257,71 @@ func TestAddFunctionPreservesParamLocations(t *testing.T) {
 		}
 	}
 }
+
+// TestNamedArrayDeclarations preserves native typedef spelling and source storage size.
+func TestNamedArrayDeclarations(t *testing.T) {
+	o := newOverrideDB(&SymbolDB{}, newTypeResolver(nb09.TypeStream{}))
+	env, err := o.resolveNamedType("jmp_buf", "int16_t[9]")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if env.Bytes() != 18 {
+		t.Fatalf("source size = %d, want 18", env.Bytes())
+	}
+	tests := []struct {
+		typ  Type
+		want string
+	}{
+		{env, "jmp_buf value"},
+		{&Pointer{Elem: env}, "jmp_buf *value"},
+		{&Array{Elem: env, Count: 2}, "jmp_buf value[2]"},
+		{&Pointer{Elem: &Array{Elem: I16, Count: 9}}, "int16_t (*value)[9]"},
+		{&Array{Elem: &Pointer{Elem: I16}, Count: 9}, "int16_t *value[9]"},
+		{&Pointer{Elem: &Pointer{Elem: &Array{Elem: I16, Count: 9}}}, "int16_t (**value)[9]"},
+	}
+	for _, tt := range tests {
+		if got := TypeDecl(tt.typ, "value"); got != tt.want {
+			t.Errorf("declaration = %q, want %q", got, tt.want)
+		}
+	}
+	matrix, err := o.resolveNamedType("", "int16_t[4][2]")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := TypeDecl(matrix, "matrix"); got != "int16_t matrix[4][2]" || matrix.Bytes() != 16 {
+		t.Fatalf("matrix = %s (%d bytes)", got, matrix.Bytes())
+	}
+}
+
+// TestFunctionOverrideRenamesDefinedBody retains body metadata and original parameter locations.
+func TestFunctionOverrideRenamesDefinedBody(t *testing.T) {
+	sdb := &SymbolDB{
+		functionsByName:   make(map[string]*Function),
+		functionsByModule: make(map[string][]*Function),
+		functionsByAddr:   make(map[Addr]*Function),
+		functionsBySeg:    make(map[uint16][]*Function),
+		publicsByName:     make(map[string]*Public),
+	}
+	addr := Addr{Seg: 4, Off: 0x123}
+	original := &Function{Name: "CopyFile", Addr: addr, Module: "utilgen", Len: 100, Ret: I16,
+		Params: []FunctionVar{{Name: "value", Type: I16, BPOffset: 6}},
+		Vars:   []FunctionVar{{Name: "local", Type: I16, BPOffset: -2}}}
+	sdb.AddFunction(original)
+	path := filepath.Join(t.TempDir(), "overrides.json")
+	if err := os.WriteFile(path, []byte(`{"functions":[{"name":"CopyFile","rename":"StarsCopyFile","native_decl":"int StarsCopyFile(int value)","ret":"int16_t","params":[{"name":"value","ctype":"int16_t"}],"callconv":"pascal"}]}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	o := newOverrideDB(sdb, newTypeResolver(nb09.TypeStream{}))
+	if err := o.loadFunctions(path); err != nil {
+		t.Fatal(err)
+	}
+	if len(sdb.Functions) != 1 || sdb.GetFunction("StarsCopyFile") != original || sdb.GetFunction("CopyFile") != original || sdb.GetFunctionByAddr(addr) != original || sdb.GetFunctionsForModule("utilgen")[0] != original {
+		t.Fatal("rename lost original function identity")
+	}
+	if original.Len != 100 || len(original.Vars) != 1 || original.Params[0].BPOffset != 6 || original.Ret.Bytes() != 2 {
+		t.Fatal("override changed source body or ABI storage")
+	}
+	if original.CDecl() != "int StarsCopyFile(int value)" {
+		t.Fatal(original.CDecl())
+	}
+}

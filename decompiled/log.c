@@ -3273,8 +3273,8 @@ L_c796:
 
 int16_t FLoadLogFile(char *pszLog) {
     uint16_t hres;
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  fRet;
     int16_t  cbLog;
     int16_t  iCur;
@@ -3567,8 +3567,8 @@ L_ccae:
 }
 
 int16_t FCheckLogFile(int16_t iplr, int16_t *pfError) {
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  fRet;
     int16_t  cbLog;
     int16_t  iCur;
@@ -3668,8 +3668,8 @@ Done:
 }
 
 int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  iCur;
     HDR     *lprts;
     RTLOGHDR rtlh;
@@ -3778,8 +3778,8 @@ int16_t FWriteTutorialMFile(int16_t iTurn) {
     uint16_t hrsrc;
     char     szT[30];
     uint16_t hres;
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  cch;
     int16_t  cSkip;
     int16_t  t_d1a3;
@@ -3923,8 +3923,8 @@ L_d26a:
 int16_t FWriteHistFile(int16_t iPlayer) {
     PLANET    *lppl;
     int16_t    i;
-    jmp_buf   *penvMemSav[9];
-    jmp_buf    env[9];
+    jmp_buf   *penvMemSav;
+    jmp_buf    env;
     uint16_t   cTurnBase;
     SHDEF     *lpshdef;
     int16_t    j;
