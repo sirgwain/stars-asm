@@ -155,7 +155,14 @@ func (sdb *SymbolDB) GetMessage(value int) *MessageRule {
 // AddFunction adds a new function to the symboldb
 func (sdb *SymbolDB) AddFunction(f *Function) {
 	existing := sdb.GetFunction(f.Name)
+	if existing == nil && f.IsOverride() && f.Addr != (Addr{}) {
+		existing = sdb.GetFunctionByAddr(f.Addr)
+	}
 	if existing != nil {
+		// Keep aliases and address/module indexes attached to the same body.
+		existing.Name = f.Name
+		existing.NativeDecl = f.NativeDecl
+		sdb.functionsByName[strings.ToLower(f.Name)] = existing
 		// update the existing signature
 		oldParams := existing.Params
 		existing.Conv = f.Conv

@@ -14,6 +14,8 @@ const ParamSemanticCallbackProc = "callback_proc"
 
 // Function describes a function from nb09 data
 type Function struct {
+	// NativeDecl overrides emitted C without changing the Win16 analysis signature.
+	NativeDecl string
 	Name       string
 	Addr       Addr
 	Len        uint16
@@ -221,6 +223,9 @@ type SourceLine struct {
 }
 
 func (f *Function) CDecl() string {
+	if f.NativeDecl != "" {
+		return f.NativeDecl
+	}
 	name := f.Name
 	if name == "" {
 		name = "/*anon*/"

@@ -4,8 +4,8 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     int16_t   fCheckMulti;
     int16_t   fRewind;
     int16_t   fSilentSav;
-    jmp_buf  *penvMemSav[9];
-    jmp_buf   env[9];
+    jmp_buf  *penvMemSav;
+    jmp_buf   env;
     MessageId t_merge_4c1e_0001;
 
 L_4ac2:

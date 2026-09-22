@@ -6,299 +6,130 @@
   },
   "summary": {
     "translationUnits": 39,
-    "failedTranslationUnits": 39,
-    "errors": 419,
-    "uniqueErrors": 328
+    "failedTranslationUnits": 30,
+    "errors": 255,
+    "uniqueErrors": 240
   },
   "files": {
     "decompiled/ai.c": {
-      "errors": 2
+      "errors": 0
     },
     "decompiled/ai2.c": {
-      "errors": 2
+      "errors": 0
     },
     "decompiled/ai3.c": {
-      "errors": 6
+      "errors": 4
     },
     "decompiled/ai4.c": {
-      "errors": 2
+      "errors": 0
     },
     "decompiled/aiutil.c": {
-      "errors": 4
+      "errors": 2
     },
     "decompiled/battle.c": {
-      "errors": 10
+      "errors": 2
     },
     "decompiled/build.c": {
-      "errors": 9
+      "errors": 7
     },
     "decompiled/create.c": {
-      "errors": 10
+      "errors": 4
     },
     "decompiled/file.c": {
-      "errors": 15
+      "errors": 6
     },
     "decompiled/globals.c": {
-      "errors": 2
+      "errors": 0
     },
     "decompiled/init.c": {
-      "errors": 6
+      "errors": 4
     },
     "decompiled/log.c": {
-      "errors": 38
+      "errors": 12
     },
     "decompiled/mdi.c": {
-      "errors": 20
-    },
-    "decompiled/memory.c": {
-      "errors": 7
-    },
-    "decompiled/mine.c": {
-      "errors": 4
-    },
-    "decompiled/msg.c": {
-      "errors": 13
-    },
-    "decompiled/parts.c": {
-      "errors": 2
-    },
-    "decompiled/planet.c": {
-      "errors": 2
-    },
-    "decompiled/popup.c": {
       "errors": 14
     },
-    "decompiled/produce.c": {
-      "errors": 41
-    },
-    "decompiled/race.c": {
-      "errors": 4
-    },
-    "decompiled/report.c": {
-      "errors": 30
-    },
-    "decompiled/research.c": {
-      "errors": 6
-    },
-    "decompiled/save.c": {
-      "errors": 22
-    },
-    "decompiled/scan.c": {
-      "errors": 4
-    },
-    "decompiled/ship.c": {
+    "decompiled/memory.c": {
       "errors": 5
     },
-    "decompiled/ship2.c": {
+    "decompiled/mine.c": {
+      "errors": 2
+    },
+    "decompiled/msg.c": {
+      "errors": 8
+    },
+    "decompiled/parts.c": {
+      "errors": 0
+    },
+    "decompiled/planet.c": {
+      "errors": 0
+    },
+    "decompiled/popup.c": {
+      "errors": 12
+    },
+    "decompiled/produce.c": {
+      "errors": 35
+    },
+    "decompiled/race.c": {
+      "errors": 2
+    },
+    "decompiled/report.c": {
+      "errors": 16
+    },
+    "decompiled/research.c": {
+      "errors": 4
+    },
+    "decompiled/save.c": {
       "errors": 10
     },
-    "decompiled/stars.c": {
-      "errors": 6
-    },
-    "decompiled/strings.c": {
+    "decompiled/scan.c": {
       "errors": 2
     },
-    "decompiled/tb.c": {
-      "errors": 7
-    },
-    "decompiled/thing.c": {
-      "errors": 2
-    },
-    "decompiled/turn.c": {
-      "errors": 6
-    },
-    "decompiled/turn2.c": {
-      "errors": 7
-    },
-    "decompiled/turn3.c": {
+    "decompiled/ship.c": {
       "errors": 3
     },
-    "decompiled/tutor.c": {
-      "errors": 47
+    "decompiled/ship2.c": {
+      "errors": 8
     },
-    "decompiled/tutor2.c": {
+    "decompiled/stars.c": {
+      "errors": 1
+    },
+    "decompiled/strings.c": {
+      "errors": 0
+    },
+    "decompiled/tb.c": {
+      "errors": 5
+    },
+    "decompiled/thing.c": {
+      "errors": 0
+    },
+    "decompiled/turn.c": {
       "errors": 2
     },
+    "decompiled/turn2.c": {
+      "errors": 5
+    },
+    "decompiled/turn3.c": {
+      "errors": 1
+    },
+    "decompiled/tutor.c": {
+      "errors": 45
+    },
+    "decompiled/tutor2.c": {
+      "errors": 0
+    },
     "decompiled/util.c": {
-      "errors": 7
+      "errors": 5
     },
     "decompiled/utilgen.c": {
-      "errors": 27
+      "errors": 21
     },
     "decompiled/vcr.c": {
-      "errors": 13
+      "errors": 8
     }
   },
   "diagnostics": [
-    {
-      "translationUnits": [
-        "decompiled/ai.c",
-        "decompiled/ai2.c",
-        "decompiled/ai3.c",
-        "decompiled/ai4.c",
-        "decompiled/aiutil.c",
-        "decompiled/battle.c",
-        "decompiled/build.c",
-        "decompiled/create.c",
-        "decompiled/file.c",
-        "decompiled/globals.c",
-        "decompiled/init.c",
-        "decompiled/log.c",
-        "decompiled/mdi.c",
-        "decompiled/memory.c",
-        "decompiled/mine.c",
-        "decompiled/msg.c",
-        "decompiled/parts.c",
-        "decompiled/planet.c",
-        "decompiled/popup.c",
-        "decompiled/produce.c",
-        "decompiled/race.c",
-        "decompiled/report.c",
-        "decompiled/research.c",
-        "decompiled/save.c",
-        "decompiled/scan.c",
-        "decompiled/ship.c",
-        "decompiled/ship2.c",
-        "decompiled/stars.c",
-        "decompiled/strings.c",
-        "decompiled/tb.c",
-        "decompiled/thing.c",
-        "decompiled/turn.c",
-        "decompiled/turn2.c",
-        "decompiled/turn3.c",
-        "decompiled/tutor.c",
-        "decompiled/tutor2.c",
-        "decompiled/util.c",
-        "decompiled/utilgen.c",
-        "decompiled/vcr.c"
-      ],
-      "kind": "error",
-      "message": "conflicting types for ‘WinMain’; have ‘int16_t(uint16_t,  uint16_t,  char *, int16_t)’ {aka ‘short int(short unsigned int,  short unsigned int,  char *, short int)’}",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/stars.h",
-            "line": 7,
-            "column": 9,
-            "byteColumn": 9,
-            "displayColumn": 9
-          },
-          "finish": {
-            "file": "decompiled/stars.h",
-            "line": 7,
-            "column": 15,
-            "byteColumn": 15,
-            "displayColumn": 15
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "previous declaration of ‘WinMain’ with type ‘int(struct HINSTANCE__ *, struct HINSTANCE__ *, CHAR *, int)’ {aka ‘int(struct HINSTANCE__ *, struct HINSTANCE__ *, char *, int)’}",
-          "locations": [
-            {
-              "caret": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 1128,
-                "column": 14,
-                "byteColumn": 14,
-                "displayColumn": 14
-              },
-              "finish": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 1128,
-                "column": 20,
-                "byteColumn": 20,
-                "displayColumn": 20
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 39
-    },
-    {
-      "translationUnits": [
-        "decompiled/ai.c",
-        "decompiled/ai2.c",
-        "decompiled/ai3.c",
-        "decompiled/ai4.c",
-        "decompiled/aiutil.c",
-        "decompiled/battle.c",
-        "decompiled/build.c",
-        "decompiled/create.c",
-        "decompiled/file.c",
-        "decompiled/globals.c",
-        "decompiled/init.c",
-        "decompiled/log.c",
-        "decompiled/mdi.c",
-        "decompiled/memory.c",
-        "decompiled/mine.c",
-        "decompiled/msg.c",
-        "decompiled/parts.c",
-        "decompiled/planet.c",
-        "decompiled/popup.c",
-        "decompiled/produce.c",
-        "decompiled/race.c",
-        "decompiled/report.c",
-        "decompiled/research.c",
-        "decompiled/save.c",
-        "decompiled/scan.c",
-        "decompiled/ship.c",
-        "decompiled/ship2.c",
-        "decompiled/stars.c",
-        "decompiled/strings.c",
-        "decompiled/tb.c",
-        "decompiled/thing.c",
-        "decompiled/turn.c",
-        "decompiled/turn2.c",
-        "decompiled/turn3.c",
-        "decompiled/tutor.c",
-        "decompiled/tutor2.c",
-        "decompiled/util.c",
-        "decompiled/utilgen.c",
-        "decompiled/vcr.c"
-      ],
-      "kind": "error",
-      "message": "conflicting types for ‘CopyFileA’; have ‘void(char *, char *)’",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/utilgen.h",
-            "line": 29,
-            "column": 9,
-            "byteColumn": 9,
-            "displayColumn": 9
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "previous declaration of ‘CopyFileA’ with type ‘WINBOOL(const CHAR *, const CHAR *, WINBOOL)’ {aka ‘int(const char *, const char *, int)’}",
-          "locations": [
-            {
-              "caret": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 2273,
-                "column": 29,
-                "byteColumn": 29,
-                "displayColumn": 29
-              },
-              "finish": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 2273,
-                "column": 37,
-                "byteColumn": 37,
-                "displayColumn": 37
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 39
-    },
     {
       "translationUnits": [
         "decompiled/ai3.c"
@@ -467,120 +298,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7800,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7801,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7808,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7822,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7823,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/battle.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/battle.c",
-            "line": 7830,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/build.c",
         "decompiled/build.c"
       ],
@@ -692,44 +409,6 @@
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/create.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/create.c",
-            "line": 800,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/create.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/create.c",
-            "line": 801,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
           }
         }
       ],
@@ -852,44 +531,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/create.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/create.c",
-            "line": 3323,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/create.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/create.c",
-            "line": 4546,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/file.c"
       ],
       "kind": "error",
@@ -977,44 +618,6 @@
         "decompiled/file.c"
       ],
       "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 379,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 380,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
       "message": "incompatible type for argument 2 of ‘DialogBoxParamA’",
       "locations": [
         {
@@ -1034,21 +637,21 @@
           "locations": [
             {
               "caret": {
-                "file": "/usr/share/mingw-w64/include/winuser.h",
+                "file": "/workspace/scratch/1ab30d987797/toolchains/mingw/usr/share/mingw-w64/include/winuser.h",
                 "line": 2414,
                 "column": 72,
                 "byteColumn": 72,
                 "displayColumn": 72
               },
               "start": {
-                "file": "/usr/share/mingw-w64/include/winuser.h",
+                "file": "/workspace/scratch/1ab30d987797/toolchains/mingw/usr/share/mingw-w64/include/winuser.h",
                 "line": 2414,
                 "column": 65,
                 "byteColumn": 65,
                 "displayColumn": 65
               },
               "finish": {
-                "file": "/usr/share/mingw-w64/include/winuser.h",
+                "file": "/workspace/scratch/1ab30d987797/toolchains/mingw/usr/share/mingw-w64/include/winuser.h",
                 "line": 2414,
                 "column": 85,
                 "byteColumn": 85,
@@ -1056,101 +659,6 @@
               }
             }
           ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 4002,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 4003,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 4013,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 4085,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 4266,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
         }
       ],
       "occurrences": 1
@@ -1647,462 +1155,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3290,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3291,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3298,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3350,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3431,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3564,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3580,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3581,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3588,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3666,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3721,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3722,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3729,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3771,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3790,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3791,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3798,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3844,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3864,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3919,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3946,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3947,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 3954,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/log.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/log.c",
-            "line": 4216,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/mdi.c"
       ],
       "kind": "error",
@@ -2501,82 +1553,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 6093,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 6094,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 6102,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 6220,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/memory.c"
       ],
       "kind": "error",
@@ -2943,63 +1919,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/msg.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/msg.c",
-            "line": 4796,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/msg.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/msg.c",
-            "line": 4797,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/msg.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/msg.c",
-            "line": 4804,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/popup.c"
       ],
       "kind": "error",
@@ -3305,82 +2224,6 @@
             "column": 7,
             "byteColumn": 7,
             "displayColumn": 7
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/produce.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/produce.c",
-            "line": 11,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/produce.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/produce.c",
-            "line": 12,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/produce.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/produce.c",
-            "line": 41,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/produce.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/produce.c",
-            "line": 80,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
           }
         }
       ],
@@ -4446,234 +3289,6 @@
     },
     {
       "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7403,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7404,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7422,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7481,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7526,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7527,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 7545,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 8034,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 8078,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 8079,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 8097,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 8508,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
         "decompiled/research.c"
       ],
       "kind": "error",
@@ -4841,44 +3456,6 @@
         "decompiled/save.c"
       ],
       "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 887,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 888,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
       "message": "lvalue required as left operand of assignment",
       "locations": [
         {
@@ -4980,158 +3557,6 @@
           "caret": {
             "file": "decompiled/save.c",
             "line": 2512,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 2985,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 2986,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 2993,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 2999,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 3067,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 3068,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 3086,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/save.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/save.c",
-            "line": 3330,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -5458,56 +3883,6 @@
         "decompiled/stars.c"
       ],
       "kind": "error",
-      "message": "conflicting types for ‘WinMain’; have ‘int16_t(uint16_t,  uint16_t,  char *, int16_t)’ {aka ‘short int(short unsigned int,  short unsigned int,  char *, short int)’}",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/stars.c",
-            "line": 3,
-            "column": 9,
-            "byteColumn": 9,
-            "displayColumn": 9
-          },
-          "finish": {
-            "file": "decompiled/stars.c",
-            "line": 3,
-            "column": 15,
-            "byteColumn": 15,
-            "displayColumn": 15
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "previous declaration of ‘WinMain’ with type ‘int(struct HINSTANCE__ *, struct HINSTANCE__ *, CHAR *, int)’ {aka ‘int(struct HINSTANCE__ *, struct HINSTANCE__ *, char *, int)’}",
-          "locations": [
-            {
-              "caret": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 1128,
-                "column": 14,
-                "byteColumn": 14,
-                "displayColumn": 14
-              },
-              "finish": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 1128,
-                "column": 20,
-                "byteColumn": 20,
-                "displayColumn": 20
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/stars.c"
-      ],
-      "kind": "error",
       "message": "‘WM_STARS_STARTUP’ undeclared (first use in this function)",
       "locations": [
         {
@@ -5549,44 +3924,6 @@
               }
             }
           ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/stars.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/stars.c",
-            "line": 627,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/stars.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/stars.c",
-            "line": 665,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
         }
       ],
       "occurrences": 1
@@ -5712,44 +4049,6 @@
             "column": 56,
             "byteColumn": 56,
             "displayColumn": 56
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/turn.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/turn.c",
-            "line": 120,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/turn.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/turn.c",
-            "line": 121,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
           }
         }
       ],
@@ -7172,106 +5471,6 @@
         "decompiled/utilgen.c"
       ],
       "kind": "error",
-      "message": "conflicting types for ‘CopyFileA’; have ‘void(char *, char *)’",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/utilgen.c",
-            "line": 794,
-            "column": 6,
-            "byteColumn": 6,
-            "displayColumn": 6
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "previous declaration of ‘CopyFileA’ with type ‘WINBOOL(const CHAR *, const CHAR *, WINBOOL)’ {aka ‘int(const char *, const char *, int)’}",
-          "locations": [
-            {
-              "caret": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 2273,
-                "column": 29,
-                "byteColumn": 29,
-                "displayColumn": 29
-              },
-              "finish": {
-                "file": "/usr/share/mingw-w64/include/winbase.h",
-                "line": 2273,
-                "column": 37,
-                "byteColumn": 37,
-                "displayColumn": 37
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/utilgen.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/utilgen.c",
-            "line": 807,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/utilgen.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/utilgen.c",
-            "line": 808,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/utilgen.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/utilgen.c",
-            "line": 867,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/utilgen.c"
-      ],
-      "kind": "error",
       "message": "wrong type argument to unary minus",
       "locations": [
         {
@@ -7667,63 +5866,6 @@
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/vcr.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/vcr.c",
-            "line": 11,
-            "column": 16,
-            "byteColumn": 16,
-            "displayColumn": 16
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/vcr.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/vcr.c",
-            "line": 63,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/vcr.c"
-      ],
-      "kind": "error",
-      "message": "assignment to expression with array type",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/vcr.c",
-            "line": 70,
-            "column": 13,
-            "byteColumn": 13,
-            "displayColumn": 13
           }
         }
       ],

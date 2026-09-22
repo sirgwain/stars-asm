@@ -47,7 +47,7 @@ func pointersEqual(a, b *Pointer) bool {
 
 // arraysEqual reports whether two array types have the same length and element type.
 func arraysEqual(a, b *Array) bool {
-	return a.Count == b.Count && Equals(a.Elem, b.Elem)
+	return a.Name == b.Name && a.Count == b.Count && Equals(a.Elem, b.Elem)
 }
 
 // structsEqual reports whether two aggregate types have the same nominal identity.

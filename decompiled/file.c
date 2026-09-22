@@ -325,13 +325,13 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     STARPACK sp;
     int16_t  cPlanetAlloc;
     int16_t  fHaveHistoryData;
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     int16_t  fSilentSav;
     PLANET  *lppl;
     int16_t  i;
     THING   *lpth;
     FLEET   *lpfl;
-    jmp_buf  env[9];
+    jmp_buf  env;
     int16_t  cturn;
     THING   *lpthMac;
     int16_t  iPlayer;
@@ -3987,8 +3987,8 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     int16_t   fCheckMulti;
     int16_t   fRewind;
     int16_t   fSilentSav;
-    jmp_buf  *penvMemSav[9];
-    jmp_buf   env[9];
+    jmp_buf  *penvMemSav;
+    jmp_buf   env;
     MessageId t_merge_4c1e_0001;
 
 L_4ac2:
@@ -4659,7 +4659,7 @@ L_53aa:
     FileError(idmPlanetaryDefensesGroundTroopsDestroyedInvadingTr);
 
 L_53b6:
-    longjmp(penvMem, -1);
+    StarsLongJump(penvMem, -1);
 
 L_53c6:
     return;
@@ -4706,7 +4706,7 @@ L_5440:
 
 L_545c:
     FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
-    longjmp(penvMem, -1);
+    StarsLongJump(penvMem, -1);
 
 L_5478:
     return;

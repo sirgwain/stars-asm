@@ -1,8 +1,8 @@
 #include "common.h"
 
 int16_t ChangeProduction(int16_t fClear) {
-    jmp_buf  env[9];
-    jmp_buf *penvMemSav[9];
+    jmp_buf  env;
+    jmp_buf *penvMemSav;
     int16_t (*lpProcProd)();
     PROD    rgprod[64];
     int16_t fSuccess;

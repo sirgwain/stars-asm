@@ -6,8 +6,8 @@
 ;     int16_t          iPlayer        [BP+0x8]
 ;     int16_t          md             [BP+0xa]
 ;   locals:
-;     jmp_buf[9]       env            [BP-0x2e]
-;     jmp_buf[9] *     penvMemSav     [BP-0x1c]
+;     jmp_buf          env            [BP-0x2e]
+;     jmp_buf *        penvMemSav     [BP-0x1c]
 ;     int16_t          fSilentSav     [BP-0x1a]
 ;     int16_t          fRewind        [BP-0x18]
 ;     int16_t          fCheckMulti    [BP-0x16]

@@ -6080,8 +6080,8 @@ int16_t FWasRaceFile(char *szFile, int16_t fChkPass) {
     int16_t  idsError;
     int32_t  lSaltSav;
     PLAYER   plr;
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     int16_t  fRet;
     int16_t  fSav;
 

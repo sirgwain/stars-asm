@@ -404,7 +404,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     int16_t       iBest;
     int16_t       cKill;
     char          grUsed[128];
-    jmp_buf      *penvMemSav[9];
+    jmp_buf      *penvMemSav;
     POINT        *ppt;
     int16_t       raMajor;
     int16_t       k;
@@ -418,7 +418,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     PLANET       *lppl;
     int16_t       iMin;
     int16_t       i;
-    jmp_buf       env[9];
+    jmp_buf       env;
     int16_t       xOld;
     int16_t       iplrSingle;
     POINT        *pptMax;
@@ -3306,7 +3306,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
     int16_t i;
     int16_t fSuccess;
     char   *lpbStart;
-    jmp_buf env[9];
+    jmp_buf env;
     int16_t j;
     char   *lpb;
     char   *lpbDef;

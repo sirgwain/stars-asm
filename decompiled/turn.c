@@ -12,12 +12,12 @@ int16_t FGenerateTurn() {
     int16_t  j;
     uint8_t  mpiplr2[16];
     uint8_t  rgfNoXFile[16];
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     int16_t  ifl;
     FLEET   *lpfl;
     char    *pchCur;
     int16_t  i;
-    jmp_buf  env[9];
+    jmp_buf  env;
     char     szT[256];
     HCURSOR  hcurSav;
     int16_t  idCur;
@@ -1009,7 +1009,7 @@ L_158b:
         goto L_15a0;
 
 L_15a0:
-    CopyFile(szBase, szT);
+    StarsCopyFile(szT, szBase);
     goto L_15c5;
 
 L_15b4:

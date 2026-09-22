@@ -24,7 +24,7 @@ L_0034:
 
 L_0051:
     AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    longjmp(penvMem, -1);
+    StarsLongJump(penvMem, -1);
 
 L_0082:
     lphb = GlobalLock(hmem);
@@ -85,7 +85,7 @@ L_017b:
 
 LReAllocOOM:
     AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    longjmp(penvMem, -1);
+    StarsLongJump(penvMem, -1);
 
 L_01db:
     lphbNew = GlobalLock(hmem);

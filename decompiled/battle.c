@@ -7782,8 +7782,8 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     uint16_t rgPlrLosses[256];
     uint16_t wtNext;
     int16_t  itok;
-    jmp_buf  env[9];
-    jmp_buf *penvMemSav[9];
+    jmp_buf  env;
+    jmp_buf *penvMemSav;
     PLANET  *lppl;
     int32_t  lwt;
     int16_t  t_8f4b;

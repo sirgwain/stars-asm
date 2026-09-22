@@ -4693,11 +4693,11 @@ void ReadPlayerMessages() {
     uint8_t *lpbMax;
     int16_t  iMax;
     int16_t  fOOM;
-    jmp_buf *penvMemSav[9];
+    jmp_buf *penvMemSav;
     MSGHDR  *lpmh;
     uint16_t imemMsgT;
     int16_t  i;
-    jmp_buf  env[9];
+    jmp_buf  env;
     MSGPLR  *lpmp;
     uint8_t *lpb;
     uint16_t u;

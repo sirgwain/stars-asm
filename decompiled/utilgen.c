@@ -791,14 +791,14 @@ L_1ff3:
     return;
 }
 
-void CopyFile(char *szSrc, char *szDst) {
+void StarsCopyFile(char *szSrc, char *szDst) {
     char     rgb[2048];
     int16_t  fFileErrSav;
     OFSTRUCT of;
-    jmp_buf  env[9];
+    jmp_buf  env;
     int16_t  hfDst;
     int32_t  cb;
-    jmp_buf *penvSav[9];
+    jmp_buf *penvSav;
 
 L_1ffa:
     fFileErrSav = fFileErrSilent;

@@ -440,7 +440,7 @@ extern int32_t   lSaltLast;
 extern int32_t   rglPopMac[5];
 extern int32_t   rglRandStack[4][2];
 extern int32_t   vSerialNumber;
-extern jmp_buf  *penvMem[9];
+extern jmp_buf  *penvMem;
 extern uint16_t *vlprgidFleet;
 extern uint16_t *vlprgidMisc;
 extern uint16_t *vlprgidPlanet;

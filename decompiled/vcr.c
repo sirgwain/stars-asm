@@ -2,8 +2,8 @@
 
 void BattleVCR(int16_t iBattle) {
     int16_t (*lpProc)();
-    jmp_buf *penvMemSav[9];
-    jmp_buf  env[9];
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
     HB      *lphb;
 
 L_0000:
