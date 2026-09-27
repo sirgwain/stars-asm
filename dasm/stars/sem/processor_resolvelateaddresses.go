@@ -40,7 +40,7 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 				return effect, false, false
 			}
 			next := *assign
-			next.Src = recoverExpectedValue(assign.Src, assign.Dst.ExprType())
+			next.Src = (&machineConverter{ctx: p.ctx}).recoverExpectedValue(assign.Src, assign.Dst.ExprType())
 			rewritten, changed := w.rewriteEffectChildren(&next)
 			return rewritten, changed || next.Src != assign.Src, true
 		},
@@ -53,7 +53,7 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 			changed := false
 			for i, arg := range next.Args {
 				if i < len(call.Params) {
-					next.Args[i] = recoverExpectedValue(arg, call.Params[i].Type)
+					next.Args[i] = (&machineConverter{ctx: p.ctx}).recoverExpectedValue(arg, call.Params[i].Type)
 					changed = changed || next.Args[i] != arg
 				}
 			}

@@ -1,0 +1,181 @@
+/*
+DpShieldOfShdef  (util)
+  addr: 0008:0f24  len=469
+  sig:  int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    PART             part           [BP-0x1a]
+    HUL *            lphul          [BP-0x12]
+    int32_t          dpShdef        [BP-0xe]
+    int16_t          ihs            [BP-0xa]
+    HS *             lphs           [BP-0x8]
+    int16_t          chs            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_0f24:
+  insts 0..22  off 0x0f24..0x0f68
+  succs: L_0f7c
+  effects:
+    0f2d  store[2] [bp-dpShdef] = 0x0
+    0f32  store[2] [bp-dpShdef+0x2] = 0x0
+    0f3d  store[2] [bp-lphul] = load([bp+lpshdef])
+    0f40  store[2] [bp-lphul+0x2] = load([bp+lpshdef+0x2])
+    0f4e  store[2] [bp-lphs] = (load([bp-lphul]) + 0x3a)
+    0f51  store[2] [bp-lphs+0x2] = load([bp-lphul+0x2])
+    0f5e  store[2] [bp-chs] = load(byte farseg(load(dword [bp-lphul])):[faroff(load(dword [bp-lphul]))+0x7a])
+    0f61  store[2] [bp-ihs] = 0x0
+    0f66  goto L_0f7c
+
+block L_0f69:
+  insts 23..28  off 0x0f69..0x0f7b
+  preds: L_0faa, L_1020, L_1040, L_104c, L_107b
+  succs: L_0f7c
+  effects:
+    0f6c  store[2] [bp-ihs] = (load([bp-ihs]) + 0x1)
+    0f76  store[2] [bp-lphs] = (load([bp-lphs]) + 0x4)
+
+block L_0f7c:
+  insts 29..31  off 0x0f7c..0x0f83
+  preds: L_0f24, L_0f69
+  succs: L_0f87, L_107e
+  effects:
+    0f82  branch load([bp-ihs]) >= load([bp-chs]) ? L_107e : L_0f87
+
+block L_0f87:
+  insts 33..35  off 0x0f87..0x0f8f
+  preds: L_0f7c
+  succs: L_0f93, L_0feb
+  effects:
+    0f8e  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x4 ? L_0feb : L_0f93
+
+block L_0f93:
+  insts 37..43  off 0x0f93..0x0fa6
+  preds: L_0f87
+  succs: L_0faa, L_0feb
+  effects:
+    0fa5  branch ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff) <= 0x0 ? L_0feb : L_0faa
+
+block L_0faa:
+  insts 45..65  off 0x0faa..0x0fea
+  preds: L_0f93
+  succs: L_0f69
+  effects:
+    0fb4  store[2] [bp-part] = load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))])
+    0fb7  store[2] [bp-part+0x2] = load@0fb0/src(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2])
+    0fbe  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
+    0fe2  store[2] [bp-dpShdef] = (load([bp-dpShdef]) + loword((load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]) * ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff))))
+    0fe5  store[2] [bp-dpShdef+0x2] = (load([bp-dpShdef+0x2]) + 0x0)
+    0fe8  goto L_0f69
+
+block L_0feb:
+  insts 66..68  off 0x0feb..0x0ff3
+  preds: L_0f87, L_0f93
+  succs: L_0ff7, L_1040
+  effects:
+    0ff2  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x8 ? L_1040 : L_0ff7
+
+block L_0ff7:
+  insts 70..76  off 0x0ff7..0x100a
+  preds: L_0feb
+  succs: L_100e, L_1040
+  effects:
+    1009  branch ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff) <= 0x0 ? L_1040 : L_100e
+
+block L_100e:
+  insts 78..82  off 0x100e..0x101c
+  preds: L_0ff7
+  succs: L_1020, L_1040
+  effects:
+    101b  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0x6 ? L_1040 : L_1020
+
+block L_1020:
+  insts 84..94  off 0x1020..0x103f
+  preds: L_100e
+  succs: L_0f69
+  effects:
+    1037  store[2] [bp-dpShdef] = (load([bp-dpShdef]) + loword((((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff) * 0x32)))
+    103a  store[2] [bp-dpShdef+0x2] = (load([bp-dpShdef+0x2]) + 0x0)
+    103d  goto L_0f69
+
+block L_1040:
+  insts 95..97  off 0x1040..0x1048
+  preds: L_0feb, L_0ff7, L_100e
+  succs: L_0f69, L_104c
+  effects:
+    1047  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x8 ? L_0f69 : L_104c
+
+block L_104c:
+  insts 99..103  off 0x104c..0x105a
+  preds: L_1040
+  succs: L_0f69, L_105e
+  effects:
+    1059  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0x9 ? L_0f69 : L_105e
+
+block L_105e:
+  insts 105..114  off 0x105e..0x107a
+  preds: L_104c
+  succs: L_107b
+  effects:
+    1075  store[2] [bp-dpShdef] = (load([bp-dpShdef]) + loword((((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff) * 0x64)))
+    1078  store[2] [bp-dpShdef+0x2] = (load([bp-dpShdef+0x2]) + 0x0)
+
+block L_107b:
+  insts 115..115  off 0x107b..0x107d
+  preds: L_105e
+  succs: L_0f69
+  effects:
+    107b  goto L_0f69
+
+block L_107e:
+  insts 116..126  off 0x107e..0x109a
+  preds: L_0f7c
+  succs: L_109e, L_10c1
+  effects:
+    108e  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([bp+iplr])))), 0xd) -> callresult(int16_t)
+    1099  branch callresult(int16_t) == 0x0 ? L_10c1 : L_109e
+
+block L_109e:
+  insts 128..140  off 0x109e..0x10c0
+  preds: L_107e
+  succs: L_10c1
+  effects:
+    10af  call __aFlshl(words(load([bp-dpShdef+0x2]), load([bp-dpShdef])), 0x1) -> callresult(int32_t)
+    10b6  call __aFldiv(words(hiword(callresult(int32_t)), loword(callresult(int32_t))), words(0x0, 0x5)) -> callresult(int32_t)
+    10bb  store[2] [bp-dpShdef] = (load@10bb/dst([bp-dpShdef]) + loword(callresult(int32_t)))
+    10be  store[2] [bp-dpShdef+0x2] = (load@10be/dst([bp-dpShdef+0x2]) + hiword(callresult(int32_t)))
+
+block L_10c1:
+  insts 141..146  off 0x10c1..0x10d1
+  preds: L_107e, L_109e
+  succs: L_10d5, L_10dd
+  effects:
+    10d0  branch 0x0 != 0x0 ? L_10dd : L_10d5
+
+block L_10d5:
+  insts 148..149  off 0x10d5..0x10d9
+  preds: L_10c1
+  succs: L_10dd, L_10e7
+  effects:
+    10d8  branch (load([bp-dpShdef+0x2]) & 0xffff) == 0x0 ? L_10e7 : L_10dd
+
+block L_10dd:
+  insts 151..152  off 0x10dd..0x10e6
+  preds: L_10c1, L_10d5
+  succs: L_10e7
+  effects:
+    10dd  store[2] [bp-dpShdef] = 0xffff
+    10e2  store[2] [bp-dpShdef+0x2] = 0x0
+
+block L_10e7:
+  insts 153..155  off 0x10e7..0x10f2
+  preds: L_10d5, L_10dd
+  succs: L_10f3
+
+block L_10f3:
+  insts 157..161  off 0x10f3..0x10f8
+  preds: L_10e7
+  effects:
+    10f8  return words(0x0, load([bp-dpShdef]))

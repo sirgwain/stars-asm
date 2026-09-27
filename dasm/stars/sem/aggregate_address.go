@@ -4,7 +4,10 @@ import "github.com/sirgwain/stars-asm/dasm/typeinfo"
 
 // recoverExpectedValue uses a destination or parameter type to recover a
 // complete aggregate load or the pointee of an address-valued expression.
-func recoverExpectedValue(expr Expr, expected typeinfo.Type) Expr {
+func (c *machineConverter) recoverExpectedValue(expr Expr, expected typeinfo.Type) Expr {
+	if projected, ok := c.leadingMemberAddress(expr, expected); ok {
+		return projected
+	}
 	if address, ok := expr.(*AddressOf); ok && typeinfo.IsPointer(expected) && !typeinfo.Equals(address.TypeInfo, expected) {
 		next := *address
 		next.TypeInfo = expected
@@ -45,6 +48,39 @@ func recoverExpectedValue(expr Expr, expected typeinfo.Type) Expr {
 		return expr
 	}
 	return &Deref{Pointer: pointer, Width: aggregate.Bytes(), TypeInfo: aggregate}
+}
+
+// leadingMemberAddress projects the address of a struct onto its unique
+// member at offset zero whose type is the expected pointee, for example
+// &lpshdef->hul or &rglpshdef[i][ish].hul where SHDEF begins with HUL hul.
+// The address is either a struct pointer value or an AddressOf a struct.
+func (c *machineConverter) leadingMemberAddress(expr Expr, expected typeinfo.Type) (Expr, bool) {
+	// Only embedded aggregates are projected. A byte or scalar pointer to a
+	// record is a raw view of it, not its first member.
+	want, ok := expected.(*typeinfo.Pointer)
+	if !ok {
+		return nil, false
+	}
+	if _, ok := want.Elem.(*typeinfo.Struct); !ok {
+		return nil, false
+	}
+	var base LValue
+	if address, ok := expr.(*AddressOf); ok {
+		base = address.Target
+	} else if ptr, ok := expr.ExprType().(*typeinfo.Pointer); ok {
+		base = &Deref{Pointer: expr, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
+	} else {
+		return nil, false
+	}
+	if _, ok := base.ExprType().(*typeinfo.Struct); !ok || typeinfo.Equals(want.Elem, base.ExprType()) {
+		return nil, false
+	}
+	target, ok := c.typedAddressTarget(base, 0, expected)
+	if !ok {
+		return nil, false
+	}
+	// Render members selected through the pointer as p->hul, not (*p).hul.
+	return &AddressOf{Target: normalizeBitfieldAggregateBase(target).(LValue), TypeInfo: expected}, true
 }
 
 // typedAddressTarget selects a unique addressable subobject using the expected
@@ -100,6 +136,14 @@ func objectAddress(base LValue, offset int, expected typeinfo.Type) Expr {
 		elem := indexElementType(value.Base.ExprType())
 		if ptr, ok := value.Base.ExprType().(*typeinfo.Pointer); ok {
 			class = ptr.Class
+		}
+		// Whole elements of residual offset move into the index, as with
+		// &szWork[(i - 1278) * 30 + 160] rather than byte arithmetic.
+		if size := elem.Bytes(); size > 0 && offset%size == 0 {
+			next := *value
+			next.Index = offsetArrayIndex(value.Index, offset/size)
+			value = &next
+			offset = 0
 		}
 		address = &AddressOf{Target: value, TypeInfo: &typeinfo.Pointer{Elem: elem, Class: class}}
 	default:

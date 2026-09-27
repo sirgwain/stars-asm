@@ -799,7 +799,7 @@ L_0f51:
 
 L_0f56:
     GetWindowRect(GetDlgItem(hwnd, ibtn), &(rc));
-    MapWindowPoints(0x0, hwnd, &(rc), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rc)), 0x2);
     if ((dxyVCRSquare < 64))
         goto L_0fd8;
     else
@@ -3120,7 +3120,7 @@ L_45d2:
         goto L_45ee;
 
 L_45ee:
-    if ((PszPlayerName(vrgtok[i].iplr, 0, 0, 0, 0, 0x0) != 0x57a4))
+    if ((PszPlayerName(vrgtok[i].iplr, 0, 0, 0, 0, 0x0) != szWork))
         goto L_4632;
     else
         goto L_462c;
@@ -3214,7 +3214,7 @@ L_4843:
     rgsz[c] = psz;
     rgid[c] = i;
     strcpy(psz, szWork);
-    psz = (char *)(((uint8_t *)((psz + cch)) + 1));
+    psz = (psz + (cch + 1));
     if ((i != viVCRFocus))
         goto L_4890;
     else

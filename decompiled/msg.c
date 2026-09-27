@@ -1399,7 +1399,7 @@ L_66d2:
     t_merge_66fb_0001 = t_call_66f1;
 
 L_66fb:
-    cch = (cch + _wsprintf(lpb2k[cch], szT, t_merge_66fb_0001, 0xd, 0xa));
+    cch = (cch + _wsprintf((lpb2k + cch), szT, t_merge_66fb_0001, 0xd, 0xa));
     if ((lpmsgplr->cLen < 0))
         goto L_6762;
     else
@@ -1407,11 +1407,11 @@ L_66fb:
 
 L_672b:
     i = 1000;
-    FDecompressUserString(lpmsgplr->rgbMsg, lpmsgplr->cLen, lpb2k[cch], &(i));
+    FDecompressUserString(lpmsgplr->rgbMsg, lpmsgplr->cLen, (lpb2k + cch), &(i));
     goto L_6786;
 
 L_6762:
-    fstrcpy(lpb2k[cch], lpmsgplr->rgbMsg);
+    fstrcpy((lpb2k + cch), lpmsgplr->rgbMsg);
 
 L_6786:
     lpsz = lpb2k;
@@ -4034,7 +4034,7 @@ L_9031:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     GetWindowRect(GetDlgItem(hwnd, IDC_EDIT1), &(rcEdit));
-    ScreenToClient(hwnd, rcEdit.right);
+    ScreenToClient(hwnd, (POINT *)(&(rcEdit.right)));
     rcEdit.left = 8;
     rcEdit.right = (rc.right - 8);
     rcEdit.top = (rcEdit.bottom + 8);
@@ -4790,7 +4790,7 @@ L_9aca:
         goto L_9ad8;
 
 L_9ad8:
-    lpmp = vlpmsgplrIn;
+    lpmp = (MSGPLR *)(&(vlpmsgplrIn));
 
 L_9ae3:
     if ((lpmp->lpmsgplrNext != 0x0))
@@ -4855,7 +4855,7 @@ int16_t FFinishPlrMsgEntry(int16_t dInc) {
     int16_t  t_9bf0;
 
 L_9bd6:
-    lpmpPrev = vlpmsgplrOut;
+    lpmpPrev = (MSGPLR *)(&(vlpmsgplrOut));
     i = iMsgSendCur;
 
 L_9bf0:
@@ -4946,7 +4946,7 @@ L_9ce7:
 
 L_9ced:
     cbNew = cb;
-    if ((FCompressUserString(lpb2k, lpb2k[1024], &(cbNew)) == 0))
+    if ((FCompressUserString(lpb2k, (lpb2k + 1024), &(cbNew)) == 0))
         goto L_9d3a;
     else
         goto L_9d1e;

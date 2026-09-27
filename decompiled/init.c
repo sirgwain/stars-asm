@@ -400,7 +400,7 @@ L_0b82:
         goto L_0b8b;
 
 L_0b8b:
-    strcpy(plf->lfFaceName, rgszArial);
+    strcpy(plf->lfFaceName, rgszArial[0]);
     plf->lfHeight = (-MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     rghfontArial6[0] = CreateFontIndirect(plf);
     plf->lfHeight = (-MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72));
@@ -826,7 +826,7 @@ L_124c:
     ini.fWait = 0x0;
     CchGetString(idsWindows, szSection);
     CchGetString(idsStarsIni, szIniFile);
-    GetIniWinRc(szSection, szIniFile, idsMain, ini.wnFrame.rc.left);
+    GetIniWinRc(szSection, szIniFile, idsMain, &(ini.wnFrame));
     GetIniWinRc(szSection, szIniFile, idsReportfleetwin, &(wnT));
     if ((wnT.rc.left == -32768))
         goto L_12f2;
@@ -2002,7 +2002,7 @@ L_2b65:
         goto L_2b6e;
 
 L_2b6e:
-    CchGetString(idsDefault, vrgZipProd);
+    CchGetString(idsDefault, vrgZipProd[0].szName);
     vrgZipProd[0].fValid = 0x1;
     return;
 }

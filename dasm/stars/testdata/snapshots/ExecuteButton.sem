@@ -1,0 +1,498 @@
+/*
+ExecuteButton  (tb)
+  addr: 000e:0db6  len=2250
+  sig:  void ExecuteButton(int16_t itb, int16_t fDown)
+  params:
+    int16_t          itb            [BP+0x6]
+    int16_t          fDown          [BP+0x8]
+  locals:
+    uint16_t         grbitNew       [BP-0x4]
+    block 000E:0E4E  len=0x228
+      int16_t          iSel           [BP-0x58]
+      int32_t[12]      rgid           [BP-0x56]
+      uint16_t         grbit          [BP-0x26]
+      int16_t          i              [BP-0x24]
+      int16_t          c              [BP-0x22]
+      char *[12]       rgszScan       [BP-0x20]
+      POINT            pt             [BP-0x8]
+    block 000E:1076  len=0x284
+      int16_t          iSel           [BP-0x8a]
+      int32_t[20]      rgid           [BP-0x88]
+      int16_t          c              [BP-0x38]
+      int16_t          i              [BP-0x36]
+      int16_t          ish            [BP-0x34]
+      char *[20]       rgszScan       [BP-0x32]
+      POINT            pt             [BP-0xa]
+      uint16_t         grbitSh        [BP-0x6]
+    block 000E:12FA  len=0x21F
+      int16_t          iSel           [BP-0x58]
+      int32_t[12]      rgid           [BP-0x56]
+      uint16_t         grbit          [BP-0x26]
+      int16_t          i              [BP-0x24]
+      int16_t          c              [BP-0x22]
+      char *[12]       rgszScan       [BP-0x20]
+      POINT            pt             [BP-0x8]
+    block 000E:1519  len=0xF3
+      int16_t          iSel           [BP-0x44]
+      int32_t[9]       rgid           [BP-0x42]
+      int16_t          i              [BP-0x1e]
+      int16_t          c              [BP-0x1c]
+      char *[9]        rgszScan       [BP-0x1a]
+      POINT            pt             [BP-0x8]
+
+  stats: blocks=4  labels=3
+    LInvalS: L_12cb
+    LBitDiddle: L_ df7
+    LInvalE: L_14ea
+*/
+L_0db6:
+    gd.fChgScanner = 0x1
+    goto L_160f
+
+L_0dd4:
+    branch fDown == 0 ? L_167a : L_0de0
+
+L_0de0:
+    grbitScan = (itb + (grbitScan & 0x3ff0))
+    goto L_1644
+
+L_0df2:
+    grbitNew = 0x10
+
+LBitDiddle:
+    branch fDown == 0 ? L_0e0a : L_0e00
+
+L_0e00:
+    grbitScan = (grbitScan | grbitNew)
+    goto L_1644
+
+L_0e0a:
+    grbitScan = (grbitScan & ~(grbitNew))
+
+L_0e13:
+    goto L_1644
+
+L_0e16:
+    grbitNew = 0x20
+    goto L_0df7
+
+L_0e1e:
+    grbitNew = 0x80
+    goto L_0df7
+
+L_0e26:
+    grbitNew = 0x100
+    goto L_0df7
+
+L_0e2e:
+    grbitNew = 0x400
+    goto L_0df7
+
+L_0e36:
+    grbitNew = 0x1000
+    goto L_0df7
+
+L_0e3e:
+    grbitNew = 0x200
+    goto L_0df7
+
+L_0e46:
+    grbitNew = 0x800
+    goto L_0df7
+
+L_0e4e:
+    grbit = 0x1
+    c = 0
+    branch (grbitScan & 0x40) != 0x0 ? L_0e6c : L_0e66
+
+L_0e66:
+    grbitScanMines = 0x0
+
+L_0e6c:
+    i = 1278
+    goto L_0f0d
+
+L_0e74:
+    branch i != 1278 ? L_0ea7 : L_0e7e
+
+L_0e7e:
+    branch grbitScanMines != 0xf ? L_0e8f : L_0e88
+
+L_0e88:
+    t_merge_0e93_0001 = 0x1
+    goto L_0e93
+
+L_0e8f:
+    t_merge_0e93_0001 = 0x0
+
+L_0e93:
+    rgid[c] = (uint32_t)t_merge_0e93_0001
+    goto L_0ecd
+
+L_0ea7:
+    branch grbitScanMines != 0x0 ? L_0eb8 : L_0eb1
+
+L_0eb1:
+    t_merge_0ebc_0001 = 0x1
+    goto L_0ebc
+
+L_0eb8:
+    t_merge_0ebc_0001 = 0x0
+
+L_0ebc:
+    rgid[c] = (uint32_t)t_merge_0ebc_0001
+
+L_0ecd:
+    call CchGetString(i, &szWork[(((i - 1278) * 30) + 160)]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[(((i - 1278) * 30) + 160)]
+    i = (i + 1)
+
+L_0f0d:
+    branch i <= 1279 ? L_0e74 : L_0f17
+
+L_0f17:
+    rgid[c] = 0
+    szWork[250] = -1
+    szWork[251] = 0
+    c = (c + 1)
+    rgszScan[c] = &szWork[250]
+    i = 0
+    goto L_0fba
+
+L_0f50:
+    branch ((0x1 << i) & grbitScanMines) == 0x0 ? L_0f6b : L_0f64
+
+L_0f64:
+    t_merge_0f6f_0001 = 0x1
+    goto L_0f6f
+
+L_0f6b:
+    t_merge_0f6f_0001 = 0x0
+
+L_0f6f:
+    rgid[c] = (uint32_t)t_merge_0f6f_0001
+    call CchGetString((i + 1280), &szWork[(i * 30)]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[(i * 30)]
+    i = (i + 1)
+
+L_0fba:
+    branch i < 4 ? L_0f50 : L_0fc3
+
+L_0fc3:
+    call GetCursorPos(&pt) -> callresult(void)
+    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    branch iSel == -1 ? L_167a : L_1013
+
+L_1013:
+    branch iSel >= 3 ? L_1037 : L_101c
+
+L_101c:
+    branch iSel != 0 ? L_102e : L_1025
+
+L_1025:
+    grbitScanMines = 0xf
+    goto L_1047
+
+L_102e:
+    grbitScanMines = 0x0
+
+L_1034:
+    goto L_1047
+
+L_1037:
+    iSel = (iSel - 3)
+    grbitScanMines = (grbitScanMines ^ (0x1 << iSel))
+
+L_1047:
+    branch grbitScanMines == 0x0 ? L_1059 : L_1051
+
+L_1051:
+    grbitScan = (grbitScan | 0x40)
+    goto L_105e
+
+L_1059:
+    grbitScan = (grbitScan & 0xffbf)
+
+L_105e:
+    call InvalidateRect(hwndTb, 0x0, 1) -> callresult(void)
+    goto L_1644
+
+L_1076:
+    c = 0
+    i = 1275
+    goto L_10d9
+
+L_1083:
+    rgid[c] = 0
+    call CchGetString(i, &szWork[((i - 1275) * 20)]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[((i - 1275) * 20)]
+    i = (i + 1)
+
+L_10d9:
+    branch i <= 1277 ? L_1083 : L_10e3
+
+L_10e3:
+    rgid[c] = 0
+    szWork[200] = -1
+    szWork[201] = 0
+    c = (c + 1)
+    rgszScan[c] = &szWork[200]
+    ish = 0
+    grbitSh = 0x1
+    goto L_1135
+
+L_1125:
+    ish = (ish + 1)
+    grbitSh = (grbitSh * 0x2)
+
+L_1135:
+    branch ish >= 16 ? L_11ab : L_113e
+
+L_113e:
+    branch rgshdef[ish].fFree != 0x0 ? L_1125 : L_115c
+
+L_115c:
+    branch (grbitSh & grbitScanShip) == 0x0 ? L_1172 : L_116b
+
+L_116b:
+    t_merge_1176_0001 = 0x1
+    goto L_1176
+
+L_1172:
+    t_merge_1176_0001 = 0x0
+
+L_1176:
+    rgid[c] = (uint32_t)t_merge_1176_0001
+    c = (c + 1)
+    rgszScan[c] = rgshdef[ish].hul.szClass
+
+L_11a8:
+    goto L_1125
+
+L_11ab:
+    call GetCursorPos(&pt) -> callresult(void)
+    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    branch iSel == -1 ? L_167a : L_11fe
+
+L_11fe:
+    branch iSel >= 4 ? L_1251 : L_1208
+
+L_1208:
+    branch iSel != 0 ? L_121b : L_1212
+
+L_1212:
+    grbitScanShip = 0xffff
+    goto L_1233
+
+L_121b:
+    branch iSel != 1 ? L_122d : L_1225
+
+L_1225:
+    grbitScanShip = (grbitScanShip ^ 0xffff)
+    goto L_1233
+
+L_122d:
+    grbitScanShip = 0x0
+
+L_1233:
+    branch (grbitScan & 0x200) != 0x0 ? L_12e6 : L_1241
+
+L_1241:
+    branch grbitScanShip != 0x0 ? L_12cb : L_1248
+
+L_1248:
+    goto L_12e6
+
+L_1251:
+    iSel = (iSel - 4)
+    ish = 0
+    goto L_1294
+
+L_125e:
+    branch rgshdef[ish].fFree != 0x0 ? L_1290 : L_127c
+
+L_127c:
+    iSel = (iSel - 1)
+    branch iSel < 0 ? L_129d : L_1290
+
+L_1290:
+    ish = (ish + 1)
+
+L_1294:
+    branch ish < 16 ? L_125e : L_129d
+
+L_129d:
+    grbitScanShip = (grbitScanShip ^ (0x1 << ish))
+    branch (grbitScan & 0x200) != 0x0 ? L_12e6 : L_12b7
+
+L_12b7:
+    branch ((0x1 << ish) & grbitScanShip) == 0x0 ? L_12e6 : L_12cb
+
+LInvalS:
+    grbitScan = (grbitScan | 0x200)
+    call InvalidateRect(hwndTb, 0x0, 1) -> callresult(void)
+
+L_12e6:
+    branch (grbitScan & 0x200) == 0x0 ? L_167a : L_12f1
+
+L_12f1:
+    goto L_1644
+
+L_12fa:
+    grbit = 0x1
+    c = 0
+    i = 1275
+    goto L_1361
+
+L_130c:
+    rgid[c] = 0
+    call CchGetString(i, &szWork[(((i - 1275) * 25) + 200)]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[(((i - 1275) * 25) + 200)]
+    i = (i + 1)
+
+L_1361:
+    branch i <= 1277 ? L_130c : L_136b
+
+L_136b:
+    rgid[c] = 0
+    szWork[300] = -1
+    szWork[301] = 0
+    c = (c + 1)
+    rgszScan[c] = &szWork[300]
+    i = 0
+    goto L_140e
+
+L_13a4:
+    branch ((0x1 << i) & grbitScanEShip) == 0x0 ? L_13bf : L_13b8
+
+L_13b8:
+    t_merge_13c3_0001 = 0x1
+    goto L_13c3
+
+L_13bf:
+    t_merge_13c3_0001 = 0x0
+
+L_13c3:
+    rgid[c] = (uint32_t)t_merge_13c3_0001
+    call CchGetString((i + 381), &szWork[(i * 25)]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[(i * 25)]
+    i = (i + 1)
+
+L_140e:
+    branch i < 8 ? L_13a4 : L_1417
+
+L_1417:
+    call GetCursorPos(&pt) -> callresult(void)
+    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    branch iSel == -1 ? L_167a : L_1467
+
+L_1467:
+    branch iSel >= 4 ? L_14b8 : L_1470
+
+L_1470:
+    branch iSel != 0 ? L_1482 : L_1479
+
+L_1479:
+    grbitScanEShip = 0xff
+    goto L_149a
+
+L_1482:
+    branch iSel != 1 ? L_1494 : L_148b
+
+L_148b:
+    grbitScanEShip = (grbitScanEShip ^ 0xff)
+    goto L_149a
+
+L_1494:
+    grbitScanEShip = 0x0
+
+L_149a:
+    branch (grbitScan & 0x800) != 0x0 ? L_1505 : L_14a8
+
+L_14a8:
+    branch grbitScanEShip != 0x0 ? L_14ea : L_14af
+
+L_14af:
+    goto L_1505
+
+L_14b8:
+    iSel = (iSel - 4)
+    grbitScanEShip = (grbitScanEShip ^ (0x1 << iSel))
+    branch (grbitScan & 0x800) != 0x0 ? L_1505 : L_14d6
+
+L_14d6:
+    branch ((0x1 << iSel) & grbitScanEShip) == 0x0 ? L_1505 : L_14ea
+
+LInvalE:
+    grbitScan = (grbitScan | 0x800)
+    call InvalidateRect(hwndTb, 0x0, 1) -> callresult(void)
+
+L_1505:
+    branch (grbitScan & 0x800) == 0x0 ? L_167a : L_1510
+
+L_1510:
+    goto L_1644
+
+L_1519:
+    c = 0
+    i = 0
+    goto L_159d
+
+L_1526:
+    branch (iScanZoom + 4) != i ? L_153b : L_1534
+
+L_1534:
+    t_merge_153f_0001 = 0x1
+    goto L_153f
+
+L_153b:
+    t_merge_153f_0001 = 0x0
+
+L_153f:
+    rgid[c] = (uint32_t)t_merge_153f_0001
+    call _wsprintf(&szWork[(i * 8)], PCTDPCTPCT, vrgpctZoom[i]) -> callresult(int16_t)
+    c = (c + 1)
+    rgszScan[c] = &szWork[(i * 8)]
+    i = (i + 1)
+
+L_159d:
+    branch i < 9 ? L_1526 : L_15a6
+
+L_15a6:
+    call GetCursorPos(&pt) -> callresult(void)
+    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    branch iSel == -1 ? L_167a : L_15f6
+
+L_15f6:
+    call CommandHandler(hwndFrame, (iSel + 3901)) -> callresult(void)
+    goto L_167a
+
+L_160f:
+    branch itb > 17 ? L_167a : L_1617
+
+L_1617:
+    tablejump (itb * 2) [0x0: L_0dd4, 0x2: L_0dd4, 0x4: L_0dd4, 0x6: L_0dd4, 0x8: L_0dd4, 0xa: L_0dd4, 0xc: L_0df2, 0xe: L_0e16, 0x10: L_0e4e, 0x12: L_0e1e, 0x14: L_0e26, 0x16: L_0e2e, 0x18: L_0e3e, 0x1a: L_1076, 0x1c: L_0e46, 0x1e: L_12fa, 0x20: L_1519, 0x22: L_0e36]
+
+L_1644:
+    branch itb == 6 ? L_1662 : L_164d
+
+L_164d:
+    call InvalidateRect(hwndScanner, 0x0, 1) -> callresult(void)
+
+L_1662:
+    branch gd.fTutorial == 0x0 ? L_167a : L_1675
+
+L_1675:
+    call AdvanceTutor() -> callresult(void)
+
+L_167a:
+    return

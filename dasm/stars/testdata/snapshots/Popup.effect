@@ -1,0 +1,631 @@
+/*
+Popup  (popup)
+  addr: 0019:0c7c  len=1775
+  sig:  void Popup(HWND hwnd, int16_t x, int16_t y)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+  locals:
+    POINT            ptT            [BP-0x18]
+    int16_t          dx             [BP-0x14]
+    char *           psz            [BP-0x12]
+    HFONT            hfontSav       [BP-0x10]
+    int16_t          c              [BP-0xe]
+    int16_t          i              [BP-0xc]
+    int16_t          dy             [BP-0xa]
+    POINT            pt             [BP-0x8]
+    HDC              hdc            [BP-0x4]
+    block 0019:0D22  len=0x88
+      char *           psz            [BP-0x1c]
+      int16_t          dx2            [BP-0x1a]
+    block 0019:0DAA  len=0x22D
+      char *           psz            [BP-0x24]
+      int16_t          dxR            [BP-0x22]
+      char *           lpsz           [BP-0x20]
+      int16_t          dxL            [BP-0x1c]
+      int16_t          dxDamage       [BP-0x1a]
+      block 0019:0E46  len=0x131
+        char[40]         szTB           [BP-0x4c]
+    block 0019:0FD7  len=0xBB
+      int16_t          dxCoord        [BP-0x1e]
+      char *           psz            [BP-0x1c]
+      int16_t          dxName         [BP-0x1a]
+
+  stats: blocks=4  labels=1
+    SetDxDy: L_1113
+*/
+block L_0c7c:
+  insts 0..23  off 0x0c7c..0x0cbf
+  succs: L_11f5
+  effects:
+    0c88  store[2] [bp-pt] = load([bp+x])
+    0c8e  store[2] [bp-pt+0x2] = load([bp+y])
+    0c9b  call ClientToScreen(load@0c91/src([bp+hwnd]), words(ss, addr([bp-pt]))) -> callresult(void)
+    0ca3  call GetDC(load@0ca0/src([bp+hwnd])) -> callresult(HDC)
+    0ca8  store[2] [bp-hdc] = callresult(HDC)
+    0cb2  call SelectObject(load([bp-hdc]), load([rghfontArial8])) -> callresult(HGDIOBJ)
+    0cb7  store[2] [bp-hfontSav] = callresult(HGDIOBJ)
+    0cbd  goto L_11f5
+
+block L_0cc3:
+  insts 25..47  off 0x0cc3..0x0d06
+  preds: L_1200
+  succs: L_0d0a, L_1225
+  effects:
+    0cc7  call PszGetCompressedString(0x25e) -> callresult(char *)
+    0ccf  store[2] [bp-psz] = callresult(char *)
+    0cdf  call strlen(load@0cdc/src([bp-psz])) -> callresult(uint16_t)
+    0ce8  call GetTextExtent(load([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0cf0  store[2] [bp-dx] = (loword(callresult(uint32_t)) + 0x8)
+    0cfd  store[2] [bp-dy] = (loword((0x3 * load([dyArial8]))) + 0x8)
+    0d05  branch load([GlobalPD+0x14]) < 0x0 ? L_1225 : L_0d0a
+
+block L_0d0a:
+  insts 49..49  off 0x0d0a..0x0d0b
+  preds: L_0cc3
+  succs: L_0d0f, L_0d19
+  effects:
+    0d0a  branch load([GlobalPD+0x14]) > 0x0 ? L_0d19 : L_0d0f
+
+block L_0d0f:
+  insts 51..52  off 0x0d0f..0x0d15
+  preds: L_0d0a
+  succs: L_0d19, L_1225
+  effects:
+    0d14  branch load([GlobalPD+0x12]) < 0x0 ? L_1225 : L_0d19
+
+block L_0d19:
+  insts 54..55  off 0x0d19..0x0d1e
+  preds: L_0d0a, L_0d0f
+  succs: L_0d1f
+  effects:
+    0d1c  store[2] [bp-dy] = (load([bp-dy]) + load([dyArial8]))
+
+block L_0d1f:
+  insts 56..56  off 0x0d1f..0x0d21
+  preds: L_0d19
+  succs: L_1225
+  effects:
+    0d1f  goto L_1225
+
+block L_0d22:
+  insts 57..98  off 0x0d22..0x0d92
+  preds: L_1200
+  succs: L_0d96, L_0d9c
+  effects:
+    0d29  call SelectObject(load@0d22/src([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    0d46  call PszPlayerName(load([GlobalPD+0x2]), 0x1, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+    0d4e  store[2] [bp-psz] = callresult(char *)
+    0d5e  call strlen(load@0d5b/src([bp-psz])) -> callresult(uint16_t)
+    0d67  call GetTextExtent(load@0d51/src([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0d6f  store[2] [bp-dx] = (loword(callresult(uint32_t)) + 0x8)
+    0d80  call GetTextExtent(load@0d72/src([bp-hdc]), words(ds, 0xbfe), 0xa) -> callresult(uint32_t)
+    0d88  store[2] [bp-dx2] = (loword(callresult(uint32_t)) + 0x8)
+    0d91  branch load([bp-dx2]) <= load([bp-dx]) ? L_0d9c : L_0d96
+
+block L_0d96:
+  insts 100..101  off 0x0d96..0x0d9b
+  preds: L_0d22
+  succs: L_0d9c
+  effects:
+    0d99  store[2] [bp-dx] = load([bp-dx2])
+
+block L_0d9c:
+  insts 102..106  off 0x0d9c..0x0da9
+  preds: L_0d22, L_0d96
+  succs: L_1225
+  effects:
+    0da4  store[2] [bp-dy] = ((load([dyArial8]) << 0x1) + 0x8)
+    0da7  goto L_1225
+
+block L_0daa:
+  insts 107..135  off 0x0daa..0x0e09
+  preds: L_1200
+  succs: L_0f7b
+  effects:
+    0daa  store[2] [bp-dxR] = 0x0
+    0daf  store[2] [bp-dxDamage] = 0x0
+    0dba  store[2] [bp-dy] = (load([dyArial8]) + 0x8)
+    0dc4  call SelectObject(load@0dbd/src([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    0dcd  call PszGetCompressedString(0x25b) -> callresult(char *)
+    0dd5  store[2] [bp-psz] = callresult(char *)
+    0de5  call strlen(load@0de2/src([bp-psz])) -> callresult(uint16_t)
+    0dee  call GetTextExtent(load@0dd8/src([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0df3  store[2] [bp-dxL] = loword(callresult(uint32_t))
+    0dfd  call SelectObject(load@0df6/src([bp-hdc]), load([rghfontArial8])) -> callresult(HGDIOBJ)
+    0e02  store[2] [bp-i] = 0x0
+    0e07  goto L_0f7b
+
+block L_0e0a:
+  insts 136..145  off 0x0e0a..0x0e25
+  preds: L_0f7b
+  succs: L_0e29, L_0f77
+  effects:
+    0e24  branch load(load([GlobalPD+0x4]):[((load([GlobalPD+0x2]) + 0xc) + (load([bp-i]) << 0x1))]) <= 0x0 ? L_0f77 : L_0e29
+
+block L_0e29:
+  insts 147..148  off 0x0e29..0x0e2f
+  preds: L_0e0a
+  succs: L_0e33, L_0e46
+  effects:
+    0e2e  branch load([GlobalPD+0xa]) == 0x0 ? L_0e46 : L_0e33
+
+block L_0e33:
+  insts 150..154  off 0x0e33..0x0e42
+  preds: L_0e29
+  succs: L_0e46, L_0f77
+  effects:
+    0e36  call FIsPopupHullType(load([bp-i])) -> callresult(int16_t)
+    0e41  branch callresult(int16_t) == 0x0 ? L_0f77 : L_0e46
+
+block L_0e46:
+  insts 156..185  off 0x0e46..0x0e9d
+  preds: L_0e29, L_0e33
+  succs: L_0ea1, L_0ea7
+  effects:
+    0e49  store[2] [bp-dy] = (load([bp-dy]) + load([dyArial8]))
+    0e63  call DecorateHullName(((load(farseg(load(dword [GlobalPD+0x2])):[faroff(load(dword [GlobalPD+0x2]))]) >> 0x9) & 0xf), load([bp-i]), addr([bp-szTB])) -> callresult(void)
+    0e70  store[2] [bp-lpsz] = addr([bp-szTB])
+    0e73  store[2] [bp-lpsz+0x2] = ss
+    0e85  call fstrlen(words(load([bp-lpsz+0x2]), load([bp-lpsz]))) -> callresult(uint16_t)
+    0e8e  call GetTextExtent(load([bp-hdc]), words(load([bp-lpsz+0x2]), load([bp-lpsz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0e93  store[2] [bp-dx] = loword(callresult(uint32_t))
+    0e9c  branch load([bp-dxL]) <= load([bp-dx]) ? L_0ea7 : L_0ea1
+
+block L_0ea1:
+  insts 187..188  off 0x0ea1..0x0ea6
+  preds: L_0e46
+  succs: L_0eaa
+  effects:
+    0ea4  goto L_0eaa
+
+block L_0ea7:
+  insts 189..189  off 0x0ea7..0x0ea9
+  preds: L_0e46
+  succs: L_0eaa
+
+block L_0eaa:
+  insts 190..221  off 0x0eaa..0x0efb
+  preds: L_0ea1, L_0ea7
+  succs: L_0eff, L_0f05
+  effects:
+    0eaa  store[2] [bp-dxL] = merge(Join: L_0eaa, (L_0ea1:load([bp-0x1c]), L_0ea7:load([bp-0x14])))
+    0ed4  call _wsprintf(words(ds, 0x57a4), words(ds, load([PCTD])), load(load([GlobalPD+0x4]):[((load([GlobalPD+0x2]) + 0xc) + (load([bp-i]) << 0x1))])) -> callresult(int16_t)
+    0edc  store[2] [bp-c] = callresult(int16_t)
+    0eec  call GetTextExtent(load([bp-hdc]), words(ds, 0x57a4), load([bp-c])) -> callresult(uint32_t)
+    0ef1  store[2] [bp-dx] = loword(callresult(uint32_t))
+    0efa  branch load([bp-dxR]) <= load@0ef4/src([bp-dx]) ? L_0f05 : L_0eff
+
+block L_0eff:
+  insts 223..224  off 0x0eff..0x0f04
+  preds: L_0eaa
+  succs: L_0f08
+  effects:
+    0f02  goto L_0f08
+
+block L_0f05:
+  insts 225..225  off 0x0f05..0x0f07
+  preds: L_0eaa
+  succs: L_0f08
+
+block L_0f08:
+  insts 226..228  off 0x0f08..0x0f11
+  preds: L_0eff, L_0f05
+  succs: L_0f15, L_0f77
+  effects:
+    0f08  store[2] [bp-dxR] = merge(Join: L_0f08, (L_0eff:load([bp-0x22]), L_0f05:load([bp-0x14])))
+    0f10  branch load([GlobalPD+0x6]) == 0x0 ? L_0f77 : L_0f15
+
+block L_0f15:
+  insts 230..243  off 0x0f15..0x0f3a
+  preds: L_0f08
+  succs: L_0f3e, L_0f77
+  effects:
+    0f39  branch ((load(load([GlobalPD+0x4]):[((load([GlobalPD+0x2]) + 0x2c) + (load([bp-i]) << 0x1))]) >> 0x7) & 0x1ff) == 0x0 ? L_0f77 : L_0f3e
+
+block L_0f3e:
+  insts 245..246  off 0x0f3e..0x0f43
+  preds: L_0f15
+  succs: L_0f47, L_0f77
+  effects:
+    0f42  branch load([bp-dxDamage]) != 0x0 ? L_0f77 : L_0f47
+
+block L_0f47:
+  insts 248..264  off 0x0f47..0x0f76
+  preds: L_0f3e
+  succs: L_0f77
+  effects:
+    0f4b  call PszGetCompressedString(0x50b) -> callresult(char *)
+    0f53  store[2] [bp-psz] = callresult(char *)
+    0f63  call strlen(load@0f60/src([bp-psz])) -> callresult(uint16_t)
+    0f6c  call GetTextExtent(load([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0f74  store[2] [bp-dxDamage] = (loword(callresult(uint32_t)) + 0x4)
+
+block L_0f77:
+  insts 265..265  off 0x0f77..0x0f7a
+  preds: L_0e0a, L_0e33, L_0f08, L_0f15, L_0f3e, L_0f47
+  succs: L_0f7b
+  effects:
+    0f77  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0f7b:
+  insts 266..267  off 0x0f7b..0x0f80
+  preds: L_0daa, L_0f77
+  succs: L_0e0a, L_0f84
+  effects:
+    0f7f  branch load([bp-i]) < 0x10 ? L_0e0a : L_0f84
+
+block L_0f84:
+  insts 269..272  off 0x0f84..0x0f8e
+  preds: L_0f7b
+  succs: L_0f92, L_0fbf
+  effects:
+    0f8d  branch load([bp-dy]) != (load([dyArial8]) + 0x8) ? L_0fbf : L_0f92
+
+block L_0f92:
+  insts 274..289  off 0x0f92..0x0fbe
+  preds: L_0f84
+  succs: L_0fbf
+  effects:
+    0f96  call PszGetCompressedString(0x25b) -> callresult(char *)
+    0f9e  store[2] [bp-psz] = callresult(char *)
+    0fae  call strlen(load@0fab/src([bp-psz])) -> callresult(uint16_t)
+    0fb7  call GetTextExtent(load([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    0fbc  store[2] [bp-dxL] = loword(callresult(uint32_t))
+
+block L_0fbf:
+  insts 290..297  off 0x0fbf..0x0fd6
+  preds: L_0f84, L_0f92
+  succs: L_1225
+  effects:
+    0fc2  store[2] [GlobalPD+0x8] = load@0fbf/src([bp-dxDamage])
+    0fd1  store[2] [bp-dx] = (((load([bp-dxL]) + load([bp-dxR])) + 0x10) + load@0fce/src([bp-dxDamage]))
+    0fd4  goto L_1225
+
+block L_0fd7:
+  insts 298..355  off 0x0fd7..0x107f
+  preds: L_1200
+  succs: L_1083, L_1089
+  effects:
+    0fde  call SelectObject(load@0fd7/src([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    0fed  store[2] [bp-dy] = (((load([dyArial8]) << 0x1) << 0x1) + 0x8)
+    0ff4  call PszGetCompressedString(0x25c) -> callresult(char *)
+    0ffc  store[2] [bp-psz] = callresult(char *)
+    100c  call strlen(load@1009/src([bp-psz])) -> callresult(uint16_t)
+    1015  call GetTextExtent(load@0fff/src([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    101d  store[2] [bp-dx] = (loword(callresult(uint32_t)) + 0x8)
+    1024  call PszGetPlanetName(load([sel+0x14])) -> callresult(char *)
+    102c  store[2] [bp-psz] = callresult(char *)
+    1036  call SelectObject(load@102f/src([bp-hdc]), load([rghfontArial8])) -> callresult(HGDIOBJ)
+    1048  call strlen(load@1045/src([bp-psz])) -> callresult(uint16_t)
+    1051  call GetTextExtent(load@103b/src([bp-hdc]), words(ds, load([bp-psz])), callresult(uint16_t)) -> callresult(uint32_t)
+    1056  store[2] [bp-dxName] = loword(callresult(uint32_t))
+    1060  call PszGetCompressedString(0x25d) -> callresult(char *)
+    1070  call GetTextExtent(load@1059/src([bp-hdc]), words(ds, callresult(char *)), 0x4) -> callresult(uint32_t)
+    1075  store[2] [bp-dxCoord] = loword(callresult(uint32_t))
+    107e  branch load([bp-dxName]) <= load([bp-dxCoord]) ? L_1089 : L_1083
+
+block L_1083:
+  insts 357..358  off 0x1083..0x1088
+  preds: L_0fd7
+  succs: L_108c
+  effects:
+    1086  goto L_108c
+
+block L_1089:
+  insts 359..359  off 0x1089..0x108b
+  preds: L_0fd7
+  succs: L_108c
+
+block L_108c:
+  insts 360..361  off 0x108c..0x1091
+  preds: L_1083, L_1089
+  succs: L_1225
+  effects:
+    108c  store[2] [bp-dx] = (load([bp-dx]) + merge(Join: L_108c, (L_1083:load([bp-0x1a]), L_1089:load([bp-0x1e]))))
+    108f  goto L_1225
+
+block L_1092:
+  insts 362..369  off 0x1092..0x10a9
+  preds: L_1200
+  succs: L_1113
+  effects:
+    1099  call PtDisplayPlanetStateInfo(load([bp-hdc]), 0x0) -> callresult(POINT)
+    10a1  store[2] [bp-ptT] = loword(callresult(POINT))
+    10a4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10a7  goto L_1113
+
+block L_10aa:
+  insts 370..379  off 0x10aa..0x10c5
+  preds: L_1200
+  succs: L_1113
+  effects:
+    10b5  call PtDisplayZipOrdInfo(load([bp-hdc]), 0x0, 0x0) -> callresult(POINT)
+    10bd  store[2] [bp-ptT] = loword(callresult(POINT))
+    10c0  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10c3  goto L_1113
+
+block L_10c6:
+  insts 380..387  off 0x10c6..0x10dd
+  preds: L_1200
+  succs: L_1113
+  effects:
+    10cd  call PtDisplayPlanetPopInfo(load([bp-hdc]), 0x0) -> callresult(POINT)
+    10d5  store[2] [bp-ptT] = loword(callresult(POINT))
+    10d8  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10db  goto L_1113
+
+block L_10de:
+  insts 388..397  off 0x10de..0x10f9
+  preds: L_1200
+  succs: L_1113
+  effects:
+    10e9  call PtDisplayResourceInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT)
+    10f1  store[2] [bp-ptT] = loword(callresult(POINT))
+    10f4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10f7  goto L_1113
+
+block L_10fa:
+  insts 398..406  off 0x10fa..0x1112
+  preds: L_1200
+  succs: L_1113
+  effects:
+    1105  call PtDisplayFactoryMineInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT)
+    110d  store[2] [bp-ptT] = loword(callresult(POINT))
+    1110  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+
+block SetDxDy:
+  insts 407..413  off 0x1113..0x1127
+  preds: L_1092, L_10aa, L_10c6, L_10de, L_10fa, L_115a
+  succs: L_1225
+  effects:
+    1119  store[2] [bp-dx] = (load([bp-ptT]) + 0x2)
+    1122  store[2] [bp-dy] = (load([bp-ptT+0x2]) + 0x2)
+    1125  goto L_1225
+
+block L_1128:
+  insts 414..415  off 0x1128..0x112e
+  preds: L_1200
+  succs: L_1132, L_1138
+  effects:
+    112d  branch load([dyArial8]) <= 0xe ? L_1138 : L_1132
+
+block L_1132:
+  insts 417..418  off 0x1132..0x1137
+  preds: L_1128
+  succs: L_113b
+  effects:
+    1135  goto L_113b
+
+block L_1138:
+  insts 419..419  off 0x1138..0x113a
+  preds: L_1128
+  succs: L_113b
+
+block L_113b:
+  insts 420..429  off 0x113b..0x1159
+  preds: L_1132, L_1138
+  succs: L_1225
+  effects:
+    113e  store[2] [bp-dx] = (merge(Join: L_113b, (L_1132:0x28, L_1138:0x0)) + 0x158)
+    1154  store[2] [bp-dy] = (((load([dyArial10]) + 0x48) + loword((0xc * load([dyArial8])))) + 0x6)
+    1157  goto L_1225
+
+block L_115a:
+  insts 430..438  off 0x115a..0x1175
+  preds: L_1200
+  succs: L_1113
+  effects:
+    1165  call PtDisplayString(load([bp-hdc]), load([GlobalPD+0x2]), 0x0) -> callresult(POINT)
+    116d  store[2] [bp-ptT] = loword(callresult(POINT))
+    1170  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    1173  goto L_1113
+
+block L_1176:
+  insts 439..440  off 0x1176..0x117c
+  preds: L_1200
+  succs: L_1180, L_1186
+  effects:
+    117b  branch load([GlobalPD]) != 0xb ? L_1186 : L_1180
+
+block L_1180:
+  insts 442..443  off 0x1180..0x1185
+  preds: L_1176
+  succs: L_1189
+  effects:
+    1183  goto L_1189
+
+block L_1186:
+  insts 444..444  off 0x1186..0x1188
+  preds: L_1176
+  succs: L_1189
+
+block L_1189:
+  insts 445..464  off 0x1189..0x11ca
+  preds: L_1180, L_1186
+  succs: L_11ce, L_1225
+  effects:
+    1189  store[2] [mdBuild] = merge(Join: L_1189, (L_1180:0x0, L_1186:0x1))
+    1193  store[2] [lpshdefBuild] = load([GlobalPD+0x2])
+    1196  store[2] [lpshdefBuild+0x2] = load([GlobalPD+0x4])
+    119a  call UpdateSlotGlobals() -> callresult(void)
+    119f  store[2] [bp-dx] = 0x154
+    11b8  store[2] [bp-dy] = (((load@11ab/src([dyArial8]) + 0x132) + loword((0x6 * load([dyArial8])))) + 0x8)
+    11c9  branch ((load([gd]) >> 0xe) & 0x3) <= 0x0 ? L_1225 : L_11ce
+
+block L_11ce:
+  insts 466..467  off 0x11ce..0x11d4
+  preds: L_1189
+  succs: L_11d8, L_1225
+  effects:
+    11d3  branch load([GlobalPD]) != 0xb ? L_1225 : L_11d8
+
+block L_11d8:
+  insts 469..471  off 0x11d8..0x11e1
+  preds: L_11ce
+  succs: L_11e2
+  effects:
+    11df  store[2] [bp-dy] = (load([bp-dy]) + loword((0x3 * load([dyArial8]))))
+
+block L_11e2:
+  insts 472..472  off 0x11e2..0x11e4
+  preds: L_11d8
+  succs: L_1225
+  effects:
+    11e2  goto L_1225
+
+block L_11e5:
+  insts 473..475  off 0x11e5..0x11f1
+  preds: L_1200
+  succs: L_1225
+  effects:
+    11e5  store[2] [bp-dx] = 0x78
+    11ea  store[2] [bp-dy] = 0x50
+    11ef  goto L_1225
+
+block L_11f5:
+  insts 476..478  off 0x11f5..0x11fc
+  preds: L_0c7c
+  succs: L_1200, L_1225
+  effects:
+    11fb  branch (load([GlobalPD]) - 0x1) > 0xd ? L_1225 : L_1200
+
+block L_1200:
+  insts 480..482  off 0x1200..0x1208
+  preds: L_11f5
+  succs: L_0cc3, L_0d22, L_0daa, L_0fd7, L_1092, L_10aa, L_10c6, L_10de, L_10fa, L_1128, L_115a, L_1176, L_11e5
+  effects:
+    1204  tablejump ((load([GlobalPD]) - 0x1) << 0x1) [L_0cc3, L_0d22, L_0daa, L_0fd7, L_1092, L_10aa, L_10c6, L_10fa, L_1128, L_115a, L_1176, L_10de, L_11e5, L_1176]
+
+block L_1225:
+  insts 497..512  off 0x1225..0x1257
+  preds: L_0cc3, L_0d0f, L_0d1f, L_0d9c, L_0fbf, L_108c, L_1113, L_113b, L_1189, L_11ce, L_11e2, L_11e5, L_11f5
+  succs: L_125b, L_1261
+  effects:
+    122b  call SelectObject(load@1225/src([bp-hdc]), load([bp-hfontSav])) -> callresult(HGDIOBJ)
+    1236  call ReleaseDC(load([bp+hwnd]), load@1233/src([bp-hdc])) -> callresult(int16_t)
+    123e  store[2] [bp-pt] = (load@123e/dst([bp-pt]) - load@123b/src([bp-dx]))
+    1244  store[2] [bp-pt+0x2] = (load([bp-pt+0x2]) - load([bp-dy]))
+    124b  call GetSystemMetrics(0x0) -> callresult(int16_t)
+    1256  branch load@1253/dst([bp-pt]) >= (callresult(int16_t) - load@1250/src([bp-dx])) ? L_1261 : L_125b
+
+block L_125b:
+  insts 514..515  off 0x125b..0x1260
+  preds: L_1225
+  succs: L_126d
+  effects:
+    125e  goto L_126d
+
+block L_1261:
+  insts 516..519  off 0x1261..0x126c
+  preds: L_1225
+  succs: L_126d
+  effects:
+    1265  call GetSystemMetrics(0x0) -> callresult(int16_t)
+
+block L_126d:
+  insts 520..522  off 0x126d..0x1273
+  preds: L_125b, L_1261
+  succs: L_1277, L_127d
+  effects:
+    1272  branch 0x0 <= merge(Join: L_126d, (L_125b:load([bp-0x8]), L_1261:(callresult(int16_t) - load([bp-0x14])))) ? L_127d : L_1277
+
+block L_1277:
+  insts 524..525  off 0x1277..0x127c
+  preds: L_126d
+  succs: L_12a3
+  effects:
+    127a  goto L_12a3
+
+block L_127d:
+  insts 526..531  off 0x127d..0x128d
+  preds: L_126d
+  succs: L_1291, L_1297
+  effects:
+    1281  call GetSystemMetrics(0x0) -> callresult(int16_t)
+    128c  branch load([bp-pt]) >= (callresult(int16_t) - load([bp-dx])) ? L_1297 : L_1291
+
+block L_1291:
+  insts 533..534  off 0x1291..0x1296
+  preds: L_127d
+  succs: L_12a3
+  effects:
+    1294  goto L_12a3
+
+block L_1297:
+  insts 535..538  off 0x1297..0x12a2
+  preds: L_127d
+  succs: L_12a3
+  effects:
+    129b  call GetSystemMetrics(0x0) -> callresult(int16_t)
+
+block L_12a3:
+  insts 539..545  off 0x12a3..0x12b6
+  preds: L_1277, L_1291, L_1297
+  succs: L_12ba, L_12c0
+  effects:
+    12a3  store[2] [bp-pt] = merge(Join: L_12a3, (L_1277:0x0, L_1291:load([bp-0x8]), L_1297:(callresult(int16_t) - load([bp-0x14]))))
+    12aa  call GetSystemMetrics(0x1) -> callresult(int16_t)
+    12b5  branch load([bp-pt+0x2]) >= (callresult(int16_t) - load([bp-dy])) ? L_12c0 : L_12ba
+
+block L_12ba:
+  insts 547..548  off 0x12ba..0x12bf
+  preds: L_12a3
+  succs: L_12cc
+  effects:
+    12bd  goto L_12cc
+
+block L_12c0:
+  insts 549..552  off 0x12c0..0x12cb
+  preds: L_12a3
+  succs: L_12cc
+  effects:
+    12c4  call GetSystemMetrics(0x1) -> callresult(int16_t)
+
+block L_12cc:
+  insts 553..555  off 0x12cc..0x12d2
+  preds: L_12ba, L_12c0
+  succs: L_12d6, L_12dc
+  effects:
+    12d1  branch 0x0 <= merge(Join: L_12cc, (L_12ba:load([bp-0x6]), L_12c0:(callresult(int16_t) - load([bp-0xa])))) ? L_12dc : L_12d6
+
+block L_12d6:
+  insts 557..558  off 0x12d6..0x12db
+  preds: L_12cc
+  succs: L_1302
+  effects:
+    12d9  goto L_1302
+
+block L_12dc:
+  insts 559..564  off 0x12dc..0x12ec
+  preds: L_12cc
+  succs: L_12f0, L_12f6
+  effects:
+    12e0  call GetSystemMetrics(0x1) -> callresult(int16_t)
+    12eb  branch load([bp-pt+0x2]) >= (callresult(int16_t) - load([bp-dy])) ? L_12f6 : L_12f0
+
+block L_12f0:
+  insts 566..567  off 0x12f0..0x12f5
+  preds: L_12dc
+  succs: L_1302
+  effects:
+    12f3  goto L_1302
+
+block L_12f6:
+  insts 568..571  off 0x12f6..0x1301
+  preds: L_12dc
+  succs: L_1302
+  effects:
+    12fa  call GetSystemMetrics(0x1) -> callresult(int16_t)
+
+block L_1302:
+  insts 572..614  off 0x1302..0x136a
+  preds: L_12d6, L_12f0, L_12f6
+  effects:
+    1302  store[2] [bp-pt+0x2] = merge(Join: L_1302, (L_12d6:0x0, L_12f0:load([bp-0x6]), L_12f6:(callresult(int16_t) - load([bp-0xa]))))
+    133b  call CreateWindow(words(ds, 0x210), words(0x0, 0x0), words(0x9080, 0x0), load([bp-pt]), load@131f/src([bp-pt+0x2]), load([bp-dx]), load@1325/src([bp-dy]), load([bp+hwnd]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    1340  store[2] [hwndPopup] = callresult(HWND)
+    1357  call SendMessage(load@1343/src([hwndPopup]), 0x30, load([rghfontArial8]), words(0x0, 0x0)) -> callresult(LRESULT)
+    1360  call SetCapture(load@135c/src([hwndPopup])) -> callresult(HWND)
+    136a  return

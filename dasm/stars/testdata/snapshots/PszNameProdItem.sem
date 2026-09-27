@@ -1,0 +1,90 @@
+/*
+PszNameProdItem  (produce)
+  addr: 001b:3c92  len=653
+  sig:  char * PszNameProdItem(PROD *lpprod)
+  params:
+    PROD *           lpprod         [BP+0x6]
+  locals:
+    uint32_t         iItem          [BP-0x6]
+    block 001B:3D94  len=0x8A
+      int16_t          iDelta         [BP-0x8]
+
+  stats: blocks=1  labels=1
+    LBogus: L_3d3b
+*/
+L_3c92:
+    iItem = lpprod->iItem
+    branch lpprod->grobj != grobjFleet ? L_3e7c : L_3ce1
+
+
+L_3ce1:
+    branch iItem < 0x10 ? L_3e21 : L_3cf8
+
+
+
+L_3cf8:
+    iItem = (iItem - 0x10)
+    branch ((rglpshdefSB[idPlayer][iItem].wFlags >> 0x9) & 0x1) == 0x0 ? L_3d46 : L_3d3b
+
+LBogus:
+    szWork[0] = 0
+    return szWork
+
+L_3d46:
+    call fstrcpy(szWork, rglpshdefSB[idPlayer][iItem].hul.szClass) -> callresult(char *)
+    branch sel.pl.fStarbase == 0x0 ? L_3f13 : L_3d94
+
+L_3d94:
+    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)(iItem * 0x93) - 2)])
+    branch iDelta <= 0 ? L_3e05 : L_3df2
+
+L_3df2:
+    call strcat(szWork, " (downgrade)") -> callresult(char *)
+    goto L_3f13
+
+L_3e05:
+    branch iDelta >= 0 ? L_3f13 : L_3e0e
+
+L_3e0e:
+    call strcat(szWork, " (upgrade)") -> callresult(char *)
+
+L_3e1e:
+    goto L_3f13
+
+L_3e21:
+    branch rgshdef[iItem].fFree != 0x0 ? L_3d3b : L_3e4f
+
+L_3e4f:
+    call strcpy(szWork, rgshdef[iItem].hul.szClass) -> callresult(char *)
+
+L_3e79:
+    goto L_3f13
+
+L_3e7c:
+    branch iItem < 0x12 ? L_3ed8 : L_3e93
+
+
+
+L_3e93:
+    branch iItem <= 0x1a ? L_3eaa : L_3ed8
+
+
+
+L_3eaa:
+    call fstrcpy(szWork, LpplanetaryFromId((LOWORD(iItem) - 18))->szName) -> callresult(char *)
+    goto L_3f13
+
+L_3ed8:
+    branch iItem != 0x1b ? L_3efd : L_3eea
+
+
+L_3eea:
+    call CchGetString(idsPlanetaryScanner, szWork) -> callresult(int16_t)
+    goto L_3f13
+
+L_3efd:
+    call CchGetString((LOWORD(iItem) + 0x7e), szWork) -> callresult(int16_t)
+
+L_3f13:
+    return szWork
+

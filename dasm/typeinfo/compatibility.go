@@ -47,6 +47,17 @@ func isCallCompatible(formal, actual Type, seen map[typePair]bool) bool {
 	}
 }
 
+// IsSignednessVariant reports whether two integer types have the same width
+// and differ only in signedness.
+func IsSignednessVariant(a, b Type) bool {
+	pa, ok := a.(*Primitive)
+	if !ok || pa.TypeKind != KInt {
+		return false
+	}
+	pb, ok := b.(*Primitive)
+	return ok && pb.TypeKind == KInt && pa.Size == pb.Size && pa.Signed != pb.Signed
+}
+
 // primitivesCallCompatible reports whether scalar values share the same call ABI shape.
 func primitivesCallCompatible(formal, actual *Primitive) bool {
 	switch formal.TypeKind {

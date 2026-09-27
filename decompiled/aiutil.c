@@ -178,7 +178,7 @@ L_0175:
     return 0;
 
 L_017b:
-    lphul = part.pcom;
+    lphul = part.phul;
     shdef.hul = *(lphul);
     shdef.hul.ihuldef = lphul->ihuldef;
     ihs = 0;
@@ -5428,7 +5428,7 @@ L_6163:
         goto L_6180;
 
 L_6180:
-    lphul = (rglpshdef[lpfl->iplr] + ishdef);
+    lphul = &(rglpshdef[lpfl->iplr][ishdef].hul);
     if ((FHullHasTeeth(lphul) == 0))
         goto L_61c4;
     else

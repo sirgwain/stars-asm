@@ -557,9 +557,9 @@ L_0956:
     GetClientRect(hwnd, &(rc));
     DrawRaceAdvantagePoints(hdc, &(rc), pplr);
     GetWindowRect(GetDlgItem(hwnd, IDC_RADRACE1), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0116), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -569,7 +569,7 @@ L_0956:
     cch = CchGetString(idsPredefinedRaces, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, cch);
     GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &(rcGBox));
-    ScreenToClient(hwnd, rcGBox.right);
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox.right)));
     pt.x = (rcGBox.right + 32);
     pt.y = (rcGBox.bottom - 32);
     iOffset = vplr.iPlrBmp;
@@ -807,7 +807,7 @@ L_0f7d:
     EnableWindow(t_call_0f64, t_merge_0f7d_0001);
     vplr.iPlrBmp = pplr->iPlrBmp;
     GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rc.left = (rc.right + 32);
     rc.top = (rc.bottom - 32);
     rc.right = (rc.left + 32);
@@ -905,9 +905,9 @@ L_106f:
 
 L_1212:
     vrgrcRCW[(i + 5)] = vrgrcRCW[i];
-    OffsetRect(vrgrcRCW[(i + 5)].left, 0, (3 * dy));
+    OffsetRect((RECT *)(&(vrgrcRCW[(i + 5)].left)), 0, (3 * dy));
     vrgrcRCW[(i + 10)] = vrgrcRCW[i];
-    OffsetRect(vrgrcRCW[(i + 10)].left, 0, (6 * dy));
+    OffsetRect((RECT *)(&(vrgrcRCW[(i + 10)].left)), 0, (6 * dy));
     i = (i + 1);
 
 L_12e0:
@@ -1629,7 +1629,7 @@ L_217d:
     goto L_21b2;
 
 L_2185:
-    if ((PtInRect(vrgrcRCW[i].left, pt) != 0))
+    if ((PtInRect((RECT *)(&(vrgrcRCW[i].left)), pt) != 0))
         goto L_21bd;
     else
         goto L_21ae;
@@ -2400,7 +2400,7 @@ L_2d73:
     vrgrcRCW[irc].right = (vrgrcRCW[irc].left + 15);
     vrgrcRCW[irc].bottom = (((dyArial8 >> 0x1) + vrgrcRCW[irc].top) + 0x3);
     vrgrcRCW[(irc + 1)] = vrgrcRCW[irc];
-    OffsetRect(vrgrcRCW[(irc + 1)].left, 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) - 1));
+    OffsetRect((RECT *)(&(vrgrcRCW[(irc + 1)].left)), 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) - 1));
     if ((iDraw != -1))
         goto L_2eda;
     else
@@ -2707,9 +2707,9 @@ L_3338:
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     GetWindowRect(GetDlgItem(hwnd, IDC_RADRACE1), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0118), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), (dyArial8 + 2), (dyArial8 >> 0x1));
@@ -2722,7 +2722,7 @@ L_3338:
     rc.left = (rc.left + 12);
     rc.right = (rc.right - 12);
     GetWindowRect(GetDlgItem(hwnd, IDC_HELP), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     rc.bottom = (rcGBox.top - 6);
     _Draw3dFrame(hdc, &(rc), -1);
     cch = CchGetString(idsDescriptionTrait, szWork);
@@ -2960,13 +2960,13 @@ L_38e5:
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0130), &(rcGBox));
-    ScreenToClient(hwnd, rcGBox.right);
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox.right)));
     GetClientRect(hwnd, &(rc));
     rc.top = (rcGBox.bottom + 12);
     rc.left = (rc.left + 12);
     rc.right = (rc.right - 12);
     GetWindowRect(GetDlgItem(hwnd, IDC_HELP), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     rc.bottom = (rcGBox.top - 12);
     _Draw3dFrame(hdc, &(rc), -1);
     rcCargo = rc;
@@ -3211,9 +3211,9 @@ L_3dd9:
 
 L_3e31:
     GetWindowRect(GetDlgItem(hwnd, (LOWORD((3 * i)) + 0x10f)), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, (LOWORD((3 * i)) + 0x111)), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));

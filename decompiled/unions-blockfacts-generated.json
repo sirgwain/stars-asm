@@ -4651,6 +4651,13 @@
     },
     {
       "func": "DrawPlanetShipList",
+      "root": "obj",
+      "type": "OBJ",
+      "block": "L_377e",
+      "member": "pfl"
+    },
+    {
+      "func": "DrawPlanetShipList",
       "root": "xf",
       "type": "XFER",
       "block": "L_3a01",
@@ -4669,6 +4676,13 @@
       "type": "SHDEF",
       "block": "L_391e",
       "member": "lPower"
+    },
+    {
+      "func": "FCreateAiShdef",
+      "root": "part",
+      "type": "PART",
+      "block": "L_017b",
+      "member": "phul"
     },
     {
       "func": "FGenerateTurn",
@@ -4795,6 +4809,13 @@
       "member": "tptl"
     },
     {
+      "func": "GetProductionCosts",
+      "root": "part",
+      "type": "PART",
+      "block": "L_418e",
+      "member": "phul"
+    },
+    {
       "func": "SetVisPFFleets",
       "root": "rglpshdefSB",
       "all_elements": true,
@@ -4827,6 +4848,22 @@
       "member": "lVisible"
     },
     {
+      "func": "TransferStuff",
+      "root": "xfer",
+      "all_elements": true,
+      "type": "XFER",
+      "block": "L_52ec",
+      "member": "pl"
+    },
+    {
+      "func": "TransferStuff",
+      "root": "xfer",
+      "all_elements": true,
+      "type": "XFER",
+      "block": "L_5409",
+      "member": "th"
+    },
+    {
       "func": "UlFleetPower",
       "root": "rglpshdef",
       "all_elements": true,
@@ -4840,6 +4877,13 @@
       "type": "SCOREX",
       "block": "L_6896",
       "member": "iRank"
+    },
+    {
+      "func": "UpdateShdefCost",
+      "root": "part",
+      "type": "PART",
+      "block": "L_4800",
+      "member": "phul"
     },
     {
       "func": "UpdateShdefCost",

@@ -1,0 +1,231 @@
+/*
+PszNameProdItem  (produce)
+  addr: 001b:3c92  len=653
+  sig:  char * PszNameProdItem(PROD *lpprod)
+  params:
+    PROD *           lpprod         [BP+0x6]
+  locals:
+    uint32_t         iItem          [BP-0x6]
+    block 001B:3D94  len=0x8A
+      int16_t          iDelta         [BP-0x8]
+
+  stats: blocks=1  labels=1
+    LBogus: L_3d3b
+*/
+block L_3c92:
+  insts 0..22  off 0x3c92..0x3cd5
+  succs: L_3cd9, L_3e7c
+  effects:
+    3ca8  call __aFulshr(words(load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))+0x2]), load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))])), 0xa) -> callresult(uint32_t)
+    3cb3  store[2] [bp-iItem] = (loword(callresult(uint32_t)) & 0x7f)
+    3cb6  store[2] [bp-iItem+0x2] = 0x0
+    3cc6  call __aFulshr(words(load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))+0x2]), load(farseg(load(dword [bp+lpprod])):[faroff(load(dword [bp+lpprod]))])), 0x11) -> callresult(uint32_t)
+    3cd4  branch (loword(callresult(uint32_t)) & 0x7) != 0x2 ? L_3e7c : L_3cd9
+
+block L_3cd9:
+  insts 24..25  off 0x3cd9..0x3cdd
+  preds: L_3c92
+  succs: L_3ce1, L_3e7c
+  effects:
+    3cdc  branch 0x0 != 0x0 ? L_3e7c : L_3ce1
+
+block L_3ce1:
+  insts 27..28  off 0x3ce1..0x3ce6
+  preds: L_3cd9
+  succs: L_3cea, L_3e21
+  effects:
+    3ce5  branch load([bp-iItem+0x2]) < 0x0 ? L_3e21 : L_3cea
+
+block L_3cea:
+  insts 30..30  off 0x3cea..0x3ceb
+  preds: L_3ce1
+  succs: L_3cef, L_3cf8
+  effects:
+    3cea  branch load([bp-iItem+0x2]) > 0x0 ? L_3cf8 : L_3cef
+
+block L_3cef:
+  insts 32..33  off 0x3cef..0x3cf4
+  preds: L_3cea
+  succs: L_3cf8, L_3e21
+  effects:
+    3cf3  branch load([bp-iItem]) < 0x10 ? L_3e21 : L_3cf8
+
+block L_3cf8:
+  insts 35..56  off 0x3cf8..0x3d37
+  preds: L_3cea, L_3cef
+  succs: L_3d3b, L_3d46
+  effects:
+    3cf8  store[2] [bp-iItem] = (load@3cf8/dst([bp-iItem]) - 0x10)
+    3cfc  store[2] [bp-iItem+0x2] = (load@3cfc/dst([bp-iItem+0x2]) - 0x0)
+    3d0e  call __aFulmul(words(load([bp-iItem+0x2]), load([bp-iItem])), words(0x0, 0x93)) -> callresult(uint32_t)
+    3d36  branch ((load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14e]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14c]) + loword(callresult(uint32_t)))+0x7b]) >> 0x9) & 0x1) == 0x0 ? L_3d46 : L_3d3b
+
+block LBogus:
+  insts 58..60  off 0x3d3b..0x3d45
+  preds: L_3cf8, L_3e21
+  succs: L_3f19
+  effects:
+    3d3b  store[1] byte [szWork] = 0x0
+    3d43  goto L_3f19
+
+block L_3d46:
+  insts 61..89  off 0x3d46..0x3d90
+  preds: L_3cf8
+  succs: L_3d94, L_3f13
+  effects:
+    3d54  call __aFulmul(words(load([bp-iItem+0x2]), load([bp-iItem])), words(0x0, 0x93)) -> callresult(uint32_t)
+    3d79  call fstrcpy(words(ds, 0x57a4), words(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14e]), ((load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14c]) + loword(callresult(uint32_t))) + 0x8))) -> callresult(char *)
+    3d8f  branch ((load([sel+0x9c]) >> 0x9) & 0x1) == 0x0 ? L_3f13 : L_3d94
+
+block L_3d94:
+  insts 91..122  off 0x3d94..0x3dee
+  preds: L_3d46
+  succs: L_3df2, L_3e05
+  effects:
+    3dc4  store[2] ss:[bp-0xa] = load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14e]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14c]) + loword(((load([sel+0xc4]) & 0xf) * 0x93)))])
+    3dc7  call __aFulmul(words(load([bp-iItem+0x2]), load([bp-iItem])), words(0x0, 0x93)) -> callresult(uint32_t)
+    3de6  store[2] [bp-iDelta] = (load(ss:[bp-0xa]) - load(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14e]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x14c]) + loword(callresult(uint32_t)))]))
+    3ded  branch load([bp-iDelta]) <= 0x0 ? L_3e05 : L_3df2
+
+block L_3df2:
+  insts 124..130  off 0x3df2..0x3e04
+  preds: L_3d94
+  succs: L_3f13
+  effects:
+    3dfa  call strcat(0x57a4, 0xce8) -> callresult(char *)
+    3e02  goto L_3f13
+
+block L_3e05:
+  insts 131..132  off 0x3e05..0x3e0a
+  preds: L_3d94
+  succs: L_3e0e, L_3f13
+  effects:
+    3e09  branch load([bp-iDelta]) >= 0x0 ? L_3f13 : L_3e0e
+
+block L_3e0e:
+  insts 134..139  off 0x3e0e..0x3e1d
+  preds: L_3e05
+  succs: L_3e1e
+  effects:
+    3e16  call strcat(0x57a4, 0xcf5) -> callresult(char *)
+
+block L_3e1e:
+  insts 140..140  off 0x3e1e..0x3e20
+  preds: L_3e0e
+  succs: L_3f13
+  effects:
+    3e1e  goto L_3f13
+
+block L_3e21:
+  insts 141..155  off 0x3e21..0x3e48
+  preds: L_3ce1, L_3cef
+  succs: L_3d3b, L_3e4f
+  effects:
+    3e2f  call __aFulmul(words(load([bp-iItem+0x2]), load([bp-iItem])), words(0x0, 0x93)) -> callresult(uint32_t)
+    3e47  branch ((load(ds:[(0x3f00 + loword(callresult(uint32_t)))+0x7b]) >> 0x9) & 0x1) != 0x0 ? L_3d3b : L_3e4f
+
+block L_3e4f:
+  insts 158..173  off 0x3e4f..0x3e78
+  preds: L_3e21
+  succs: L_3e79
+  effects:
+    3e5d  call __aFulmul(words(load([bp-iItem+0x2]), load([bp-iItem])), words(0x0, 0x93)) -> callresult(uint32_t)
+    3e71  call strcpy(0x57a4, ((0x3f00 + loword(callresult(uint32_t))) + 0x8)) -> callresult(char *)
+
+block L_3e79:
+  insts 174..174  off 0x3e79..0x3e7b
+  preds: L_3e4f
+  succs: L_3f13
+  effects:
+    3e79  goto L_3f13
+
+block L_3e7c:
+  insts 175..176  off 0x3e7c..0x3e81
+  preds: L_3c92, L_3cd9
+  succs: L_3e85, L_3ed8
+  effects:
+    3e80  branch load([bp-iItem+0x2]) < 0x0 ? L_3ed8 : L_3e85
+
+block L_3e85:
+  insts 178..178  off 0x3e85..0x3e86
+  preds: L_3e7c
+  succs: L_3e8a, L_3e93
+  effects:
+    3e85  branch load([bp-iItem+0x2]) > 0x0 ? L_3e93 : L_3e8a
+
+block L_3e8a:
+  insts 180..181  off 0x3e8a..0x3e8f
+  preds: L_3e85
+  succs: L_3e93, L_3ed8
+  effects:
+    3e8e  branch load([bp-iItem]) < 0x12 ? L_3ed8 : L_3e93
+
+block L_3e93:
+  insts 183..184  off 0x3e93..0x3e98
+  preds: L_3e85, L_3e8a
+  succs: L_3e9c, L_3ed8
+  effects:
+    3e97  branch load([bp-iItem+0x2]) > 0x0 ? L_3ed8 : L_3e9c
+
+block L_3e9c:
+  insts 186..186  off 0x3e9c..0x3e9d
+  preds: L_3e93
+  succs: L_3ea1, L_3eaa
+  effects:
+    3e9c  branch load([bp-iItem+0x2]) < 0x0 ? L_3eaa : L_3ea1
+
+block L_3ea1:
+  insts 188..189  off 0x3ea1..0x3ea6
+  preds: L_3e9c
+  succs: L_3eaa, L_3ed8
+  effects:
+    3ea5  branch load([bp-iItem]) > 0x1a ? L_3ed8 : L_3eaa
+
+block L_3eaa:
+  insts 191..208  off 0x3eaa..0x3ed7
+  preds: L_3e9c, L_3ea1
+  succs: L_3f13
+  effects:
+    3eb7  call LpplanetaryFromId((load([bp-iItem]) + 0xffee)) -> callresult(PLANETARY *)
+    3ecd  call fstrcpy(words(ds, 0x57a4), words(farseg(callresult(PLANETARY *)), (faroff(callresult(PLANETARY *)) + 0x8))) -> callresult(char *)
+    3ed5  goto L_3f13
+
+block L_3ed8:
+  insts 209..210  off 0x3ed8..0x3edd
+  preds: L_3e7c, L_3e8a, L_3e93, L_3ea1
+  succs: L_3ee1, L_3efd
+  effects:
+    3edc  branch load([bp-iItem]) != 0x1b ? L_3efd : L_3ee1
+
+block L_3ee1:
+  insts 212..213  off 0x3ee1..0x3ee6
+  preds: L_3ed8
+  succs: L_3eea, L_3efd
+  effects:
+    3ee5  branch load([bp-iItem+0x2]) != 0x0 ? L_3efd : L_3eea
+
+block L_3eea:
+  insts 215..221  off 0x3eea..0x3efc
+  preds: L_3ee1
+  succs: L_3f13
+  effects:
+    3ef2  call CchGetString(0x51b, 0x57a4) -> callresult(int16_t)
+    3efa  goto L_3f13
+
+block L_3efd:
+  insts 222..229  off 0x3efd..0x3f12
+  preds: L_3ed8, L_3ee1
+  succs: L_3f13
+  effects:
+    3f0b  call CchGetString((load([bp-iItem]) + 0x7e), 0x57a4) -> callresult(int16_t)
+
+block L_3f13:
+  insts 230..230  off 0x3f13..0x3f18
+  preds: L_3d46, L_3df2, L_3e05, L_3e1e, L_3e79, L_3eaa, L_3eea, L_3efd
+  succs: L_3f19
+
+block L_3f19:
+  insts 232..236  off 0x3f19..0x3f1e
+  preds: L_3d3b, L_3f13
+  effects:
+    3f1e  return merge(Join: L_3f19, (L_3d3b:0x57a4, L_3f13:0x57a4))

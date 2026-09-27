@@ -190,10 +190,10 @@ L_038c:
         goto L_039f;
 
 L_039f:
-    psz = ((0x56a2 + strlen(szBase)) + 0xffff);
+    psz = &(szBase[(strlen(szBase) - 1)]);
 
 L_03b8:
-    if ((psz <= 0x56a2))
+    if ((psz <= szBase))
         goto L_03e7;
     else
         goto L_03c2;
@@ -344,7 +344,6 @@ int32_t FrameWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     uint16_t    t_merge_152e_0001;
     HICON       t_merge_16e3_0001;
     uint16_t    t_merge_1887_0001;
-    POINT       t_call_1ba9;
 
 L_06d6:
     goto L_1d70;
@@ -1396,7 +1395,7 @@ L_161b:
 
 L_1632:
     GetClientRect(hwndScanner, &(rc2));
-    MapWindowPoints(hwndScanner, hwnd, &(rc2), 0x2);
+    MapWindowPoints(hwndScanner, hwnd, (POINT *)(&(rc2)), 0x2);
     ExcludeClipRect(wParam, rc2.left, rc2.top, rc2.right, rc2.bottom);
 
 L_1669:
@@ -1583,9 +1582,7 @@ L_1b75:
     ptD.y = (pt.y - ptStart.y);
     ptChg.x = (pt.x - ptOld.x);
     ptChg.y = (pt.y - ptOld.y);
-    t_call_1ba9 = InvertPaneBorder(hdc, grSel, ptD, &(ptChg));
-    ptAct.x = LOWORD(t_call_1ba9);
-    ptAct.y = HIWORD(t_call_1ba9);
+    ptAct = InvertPaneBorder(hdc, grSel, ptD, &(ptChg));
     ptOld = pt;
 
 L_1bc3:

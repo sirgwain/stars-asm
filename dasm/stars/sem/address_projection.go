@@ -192,8 +192,10 @@ func resolveDeclaredBitfield(ctx *FuncContext, mem machine.MemoryAddress, access
 	return field.Field, true
 }
 
-// resolveAddressValue resolves a machine address-valued expression through typed semantic projection.
-func (c *machineConverter) resolveAddressValue(value machine.Value) (Expr, bool) {
+// resolveAddressValue resolves a machine address-valued expression through
+// typed semantic projection. A non-zero segNum interprets constants in
+// address arithmetic as global addresses in that segment, as in szWork + 30*i.
+func (c *machineConverter) resolveAddressValue(value machine.Value, segNum uint16) (Expr, bool) {
 	switch value.(type) {
 	case *machine.Binary, *machine.Address:
 	default:
@@ -216,7 +218,7 @@ func (c *machineConverter) resolveAddressValue(value machine.Value) (Expr, bool)
 			return &AddressOf{Target: target, TypeInfo: typeinfo.U16}, true
 		}
 	}
-	if resolved, ok := c.ctx.symbols.addressFromValue(value, 0); ok && resolved.hasBase() {
+	if resolved, ok := c.ctx.symbols.addressFromValue(value, segNum); ok && resolved.hasBase() {
 		addr, ok := c.semanticResolvedAddress(resolved)
 		if !ok {
 			return nil, false

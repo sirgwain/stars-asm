@@ -1076,7 +1076,7 @@ L_9d60:
         goto L_9d6c;
 
 L_9d6c:
-    prt = &(rgbuf);
+    prt = (RTXFER *)(rgbuf);
     prt->grobj1 = ((uint32_t)(plx1->grobj) & 0xf);
     prt->grobj2 = ((uint32_t)(plx2->grobj) & 0xf);
     prt->id1 = plx1->id;
@@ -1125,7 +1125,7 @@ L_9e89:
 
 L_9ea1:
     rt = 2;
-    prtx = &(rgbuf);
+    prtx = (RTXFERX *)(rgbuf);
     i = 0;
     goto L_9f0a;
 
@@ -1154,7 +1154,7 @@ L_9f10:
 
 L_9f16:
     rt = 25;
-    prtl = &(rgbuf);
+    prtl = (RTXFERL *)(rgbuf);
     i = 0;
     goto L_9f85;
 
@@ -1657,7 +1657,7 @@ L_a8b4:
         goto L_a8cc;
 
 L_a8cc:
-    if ((FDecompressUserString(lpb[5], i, szT, &(cOut)) == 0))
+    if ((FDecompressUserString((lpb + 5), i, szT, &(cOut)) == 0))
         goto L_a942;
     else
         goto L_a8fa;
@@ -1678,8 +1678,8 @@ L_a954:
     goto L_c796;
 
 L_a967:
-    lpfl->lpszName = LpAlloc((fstrlen(lpb[5]) + 0x1), htString);
-    fstrcpy(lpfl->lpszName, lpb[5]);
+    lpfl->lpszName = LpAlloc((fstrlen((lpb + 5)) + 0x1), htString);
+    fstrcpy(lpfl->lpszName, (lpb + 5));
 
 L_a9b9:
     goto L_c796;
@@ -1817,7 +1817,7 @@ L_ac30:
         goto L_ac3a;
 
 L_ac3a:
-    if ((FReadShDef(lpb[2], rglpshdefSB[iLook], idPlayer) != 0))
+    if ((FReadShDef((RTSHDEF *)((lpb + 2)), rglpshdefSB[iLook], idPlayer) != 0))
         goto L_c796;
     else
         goto L_ac6b;
@@ -1827,7 +1827,7 @@ L_ac6b:
     return 0;
 
 L_acb7:
-    if ((FReadShDef(lpb[2], rglpshdef[iLook], idPlayer) != 0))
+    if ((FReadShDef((RTSHDEF *)((lpb + 2)), rglpshdef[iLook], idPlayer) != 0))
         goto L_c796;
     else
         goto L_ace8;
@@ -3507,7 +3507,7 @@ L_cb9a:
 
 L_cba5:
     ReadRt();
-    lpmp = vlpmsgplrOut;
+    lpmp = (MSGPLR *)(&(vlpmsgplrOut));
 
 L_cbb5:
     if ((lpmp->lpmsgplrNext != 0x0))

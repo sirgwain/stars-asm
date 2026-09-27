@@ -1,0 +1,208 @@
+/*
+CreateChildWindows  (mdi)
+  addr: 0005:038c  len=841
+  sig:  void CreateChildWindows()
+  locals:
+    char[15]         szGame         [BP-0x7c]
+    char *           psz            [BP-0x6c]
+    POINT            pt             [BP-0x6a]
+    char[100]        szData         [BP-0x66]
+
+  stats: blocks=0  labels=0
+*/
+block L_038c:
+  insts 0..6  off 0x038c..0x039b
+  succs: L_039f, L_0480
+  effects:
+    039a  branch load([idPlayer]) == 0xffff ? L_0480 : L_039f
+
+block L_039f:
+  insts 8..16  off 0x039f..0x03b7
+  preds: L_038c
+  succs: L_03b8
+  effects:
+    03a3  call strlen(0x56a2) -> callresult(uint16_t)
+    03b5  store[2] [bp-psz] = ((0x56a2 + callresult(uint16_t)) + 0xffff)
+
+block L_03b8:
+  insts 17..18  off 0x03b8..0x03be
+  preds: L_039f, L_03e0
+  succs: L_03c2, L_03e7
+  effects:
+    03bd  branch load([bp-psz]) <= 0x56a2 ? L_03e7 : L_03c2
+
+block L_03c2:
+  insts 20..24  off 0x03c2..0x03cd
+  preds: L_03b8
+  succs: L_03d1, L_03e7
+  effects:
+    03cc  branch sext8to16(load(byte ds:[load([bp-psz])-0x1])) == 0x5c ? L_03e7 : L_03d1
+
+block L_03d1:
+  insts 26..30  off 0x03d1..0x03dc
+  preds: L_03c2
+  succs: L_03e0, L_03e7
+  effects:
+    03db  branch sext8to16(load(byte ds:[load([bp-psz])-0x1])) == 0x3a ? L_03e7 : L_03e0
+
+block L_03e0:
+  insts 32..33  off 0x03e0..0x03e6
+  preds: L_03d1
+  succs: L_03b8
+  effects:
+    03e0  store[2] [bp-psz] = (load([bp-psz]) - 0x1)
+    03e4  goto L_03b8
+
+block L_03e7:
+  insts 34..98  off 0x03e7..0x047f
+  preds: L_03b8, L_03c2, L_03d1
+  succs: L_04ad
+  effects:
+    03e7  store[1] byte [bp-szGame+0x8] = 0x0
+    03f6  call strncpy(addr([bp-szGame]), load([bp-psz]), 0x8) -> callresult(char *)
+    0402  call strlwr(addr([bp-szGame])) -> callresult(char *)
+    041c  call strlen(addr([bp-szGame])) -> callresult(uint16_t)
+    042d  call _wsprintf(words(ss, (addr([bp-szGame]) + callresult(uint16_t))), words(ds, 0x36e), (load@040a/src([idPlayer]) + 0x1)) -> callresult(int16_t)
+    0454  call PszPlayerName(load@0450/src([idPlayer]), 0x0, 0x1, 0x0, 0x0, 0x0) -> callresult(char *)
+    0475  call _wsprintf(words(ss, addr([bp-szData])), words(ds, 0x373), 0x90, ds, callresult(char *), ds, addr([bp-szGame]), ss) -> callresult(int16_t)
+    047d  goto L_04ad
+
+block L_0480:
+  insts 99..118  off 0x0480..0x04ac
+  preds: L_038c
+  succs: L_04ad
+  effects:
+    0488  call CchGetString(0x52b, 0x57a4) -> callresult(int16_t)
+    04a5  call _wsprintf(words(ss, addr([bp-szData])), words(ds, 0x57a4), 0x90, ds) -> callresult(int16_t)
+
+block L_04ad:
+  insts 119..126  off 0x04ad..0x04c3
+  preds: L_03e7, L_0480
+  succs: L_04ca, L_06cf
+  effects:
+    04b8  call SetWindowText(load([hwndFrame]), words(ss, addr([bp-szData]))) -> callresult(void)
+    04c2  branch load([idPlayer]) == 0xffff ? L_06cf : L_04ca
+
+block L_04ca:
+  insts 129..130  off 0x04ca..0x04d0
+  preds: L_04ad
+  succs: L_04d4, L_051a
+  effects:
+    04cf  branch load([hwndScanner]) != 0x0 ? L_051a : L_04d4
+
+block L_04d4:
+  insts 132..162  off 0x04d4..0x0519
+  preds: L_04ca
+  succs: L_0547
+  effects:
+    050f  call CreateWindow(words(ds, 0x1e2), words(0x0, 0x0), words(0x5000, 0x0), 0xff38, 0xff38, 0xa, 0xa, load([hwndFrame]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    0514  store[2] [hwndScanner] = callresult(HWND)
+    0517  goto L_0547
+
+block L_051a:
+  insts 163..176  off 0x051a..0x0546
+  preds: L_04ca
+  succs: L_0547
+  effects:
+    052a  call InvalidateRect(load@051a/src([hwndScanner]), words(0x0, 0x0), 0x1) -> callresult(void)
+    052f  store[2] [yScanTop] = 0x3e8
+    0538  store[2] [xScanTop] = 0x3e8
+    053f  call SetScanScrollBars(load@053b/src([hwndScanner])) -> callresult(void)
+
+block L_0547:
+  insts 177..178  off 0x0547..0x054d
+  preds: L_04d4, L_051a
+  succs: L_0551, L_0595
+  effects:
+    054c  branch load([hwndMine]) != 0x0 ? L_0595 : L_0551
+
+block L_0551:
+  insts 180..208  off 0x0551..0x0594
+  preds: L_0547
+  succs: L_05aa
+  effects:
+    058a  call CreateWindow(words(ds, 0x1ec), words(0x0, 0x0), words(0x5000, 0x0), 0xfe0c, 0xfe0c, load([bp-pt]), load([bp-pt+0x2]), load([hwndFrame]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    058f  store[2] [hwndMine] = callresult(HWND)
+    0592  goto L_05aa
+
+block L_0595:
+  insts 209..216  off 0x0595..0x05a9
+  preds: L_0547
+  succs: L_05aa
+  effects:
+    05a5  call InvalidateRect(load([hwndMine]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_05aa:
+  insts 217..218  off 0x05aa..0x05b0
+  preds: L_0551, L_0595
+  succs: L_05b4, L_05fa
+  effects:
+    05af  branch load([hwndPlanet]) != 0x0 ? L_05fa : L_05b4
+
+block L_05b4:
+  insts 220..250  off 0x05b4..0x05f9
+  preds: L_05aa
+  succs: L_060f
+  effects:
+    05ef  call CreateWindow(words(ds, 0x1f6), words(0x0, 0x0), words(0x5000, 0x0), 0xfe0c, 0xfe0c, 0xa, 0xa, load([hwndFrame]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    05f4  store[2] [hwndPlanet] = callresult(HWND)
+    05f7  goto L_060f
+
+block L_05fa:
+  insts 251..258  off 0x05fa..0x060e
+  preds: L_05aa
+  succs: L_060f
+  effects:
+    060a  call InvalidateRect(load([hwndPlanet]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_060f:
+  insts 259..260  off 0x060f..0x0615
+  preds: L_05b4, L_05fa
+  succs: L_0619, L_065f
+  effects:
+    0614  branch load([hwndTb]) != 0x0 ? L_065f : L_0619
+
+block L_0619:
+  insts 262..292  off 0x0619..0x065e
+  preds: L_060f
+  succs: L_0674
+  effects:
+    0654  call CreateWindow(words(ds, 0x242), words(0x0, 0x0), words(0x5000, 0x0), 0xfe0c, 0xfe0c, 0xa, 0xa, load([hwndFrame]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    0659  store[2] [hwndTb] = callresult(HWND)
+    065c  goto L_0674
+
+block L_065f:
+  insts 293..300  off 0x065f..0x0673
+  preds: L_060f
+  succs: L_0674
+  effects:
+    066f  call InvalidateRect(load([hwndTb]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_0674:
+  insts 301..302  off 0x0674..0x067a
+  preds: L_0619, L_065f
+  succs: L_067e, L_0687
+  effects:
+    0679  branch load([hwndMessage]) == 0x0 ? L_0687 : L_067e
+
+block L_067e:
+  insts 304..305  off 0x067e..0x0686
+  preds: L_0674
+  succs: L_0687
+  effects:
+    0682  call DestroyWindow(load([hwndMessage])) -> callresult(int16_t)
+
+block L_0687:
+  insts 306..336  off 0x0687..0x06ce
+  preds: L_0674, L_067e
+  succs: L_06cf
+  effects:
+    06c2  call CreateWindow(words(ds, 0x202), words(0x0, 0x0), words(0x5000, 0x0), 0xfe0c, 0xfe0c, 0xa, 0xa, load([hwndFrame]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    06c7  store[2] [hwndMessage] = callresult(HWND)
+    06ca  call RefitFrameChildren() -> callresult(void)
+
+block L_06cf:
+  insts 337..341  off 0x06cf..0x06d4
+  preds: L_04ad, L_0687
+  effects:
+    06d4  return

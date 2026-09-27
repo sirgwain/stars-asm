@@ -2137,7 +2137,7 @@ L_8be2:
 
 L_8beb:
     lpthWP = 0x0;
-    DropSalvage(&(lpthWP), pl.rgwtMin, lpfl->iplr, ord);
+    DropSalvage(&(lpthWP), pl.rgwtMin, lpfl->iplr, &(ord.pt));
     FSendPlrMsg2(lpfl->iPlayer, 91, -6, lpthWP->idFull, WFromLpfl(lpfl));
     goto L_8d7d;
 

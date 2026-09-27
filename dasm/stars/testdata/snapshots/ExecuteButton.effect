@@ -1,0 +1,961 @@
+/*
+ExecuteButton  (tb)
+  addr: 000e:0db6  len=2250
+  sig:  void ExecuteButton(int16_t itb, int16_t fDown)
+  params:
+    int16_t          itb            [BP+0x6]
+    int16_t          fDown          [BP+0x8]
+  locals:
+    uint16_t         grbitNew       [BP-0x4]
+    block 000E:0E4E  len=0x228
+      int16_t          iSel           [BP-0x58]
+      int32_t[12]      rgid           [BP-0x56]
+      uint16_t         grbit          [BP-0x26]
+      int16_t          i              [BP-0x24]
+      int16_t          c              [BP-0x22]
+      char *[12]       rgszScan       [BP-0x20]
+      POINT            pt             [BP-0x8]
+    block 000E:1076  len=0x284
+      int16_t          iSel           [BP-0x8a]
+      int32_t[20]      rgid           [BP-0x88]
+      int16_t          c              [BP-0x38]
+      int16_t          i              [BP-0x36]
+      int16_t          ish            [BP-0x34]
+      char *[20]       rgszScan       [BP-0x32]
+      POINT            pt             [BP-0xa]
+      uint16_t         grbitSh        [BP-0x6]
+    block 000E:12FA  len=0x21F
+      int16_t          iSel           [BP-0x58]
+      int32_t[12]      rgid           [BP-0x56]
+      uint16_t         grbit          [BP-0x26]
+      int16_t          i              [BP-0x24]
+      int16_t          c              [BP-0x22]
+      char *[12]       rgszScan       [BP-0x20]
+      POINT            pt             [BP-0x8]
+    block 000E:1519  len=0xF3
+      int16_t          iSel           [BP-0x44]
+      int32_t[9]       rgid           [BP-0x42]
+      int16_t          i              [BP-0x1e]
+      int16_t          c              [BP-0x1c]
+      char *[9]        rgszScan       [BP-0x1a]
+      POINT            pt             [BP-0x8]
+
+  stats: blocks=4  labels=3
+    LInvalS: L_12cb
+    LBitDiddle: L_ df7
+    LInvalE: L_14ea
+*/
+block L_0db6:
+  insts 0..10  off 0x0db6..0x0dd0
+  succs: L_160f
+  effects:
+    0dc8  store[2] [gd+0x4] = ((load([gd+0x4]) & 0xffbf) | 0x40)
+    0dce  goto L_160f
+
+block L_0dd4:
+  insts 12..13  off 0x0dd4..0x0dd9
+  preds: L_1617
+  succs: L_0de0, L_167a
+  effects:
+    0dd8  branch load([bp+fDown]) == 0x0 ? L_167a : L_0de0
+
+block L_0de0:
+  insts 16..21  off 0x0de0..0x0df1
+  preds: L_0dd4
+  succs: L_1644
+  effects:
+    0deb  store[2] [grbitScan] = (load([bp+itb]) + (load([grbitScan]) & 0x3ff0))
+    0def  goto L_1644
+
+block L_0df2:
+  insts 22..22  off 0x0df2..0x0df6
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0df2  store[2] [bp-grbitNew] = 0x10
+
+block LBitDiddle:
+  insts 23..24  off 0x0df7..0x0dfc
+  preds: L_0df2, L_0e16, L_0e1e, L_0e26, L_0e2e, L_0e36, L_0e3e, L_0e46
+  succs: L_0e00, L_0e0a
+  effects:
+    0dfb  branch load([bp+fDown]) == 0x0 ? L_0e0a : L_0e00
+
+block L_0e00:
+  insts 26..28  off 0x0e00..0x0e09
+  preds: L_0df7
+  succs: L_1644
+  effects:
+    0e03  store[2] [grbitScan] = (load([grbitScan]) | load([bp-grbitNew]))
+    0e07  goto L_1644
+
+block L_0e0a:
+  insts 29..31  off 0x0e0a..0x0e12
+  preds: L_0df7
+  succs: L_0e13
+  effects:
+    0e0f  store[2] [grbitScan] = (load([grbitScan]) & (load([bp-grbitNew]) ~ 0x0))
+
+block L_0e13:
+  insts 32..32  off 0x0e13..0x0e15
+  preds: L_0e0a
+  succs: L_1644
+  effects:
+    0e13  goto L_1644
+
+block L_0e16:
+  insts 33..34  off 0x0e16..0x0e1d
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e16  store[2] [bp-grbitNew] = 0x20
+    0e1b  goto L_0df7
+
+block L_0e1e:
+  insts 35..36  off 0x0e1e..0x0e25
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e1e  store[2] [bp-grbitNew] = 0x80
+    0e23  goto L_0df7
+
+block L_0e26:
+  insts 37..38  off 0x0e26..0x0e2d
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e26  store[2] [bp-grbitNew] = 0x100
+    0e2b  goto L_0df7
+
+block L_0e2e:
+  insts 39..40  off 0x0e2e..0x0e35
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e2e  store[2] [bp-grbitNew] = 0x400
+    0e33  goto L_0df7
+
+block L_0e36:
+  insts 41..42  off 0x0e36..0x0e3d
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e36  store[2] [bp-grbitNew] = 0x1000
+    0e3b  goto L_0df7
+
+block L_0e3e:
+  insts 43..44  off 0x0e3e..0x0e45
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e3e  store[2] [bp-grbitNew] = 0x200
+    0e43  goto L_0df7
+
+block L_0e46:
+  insts 45..46  off 0x0e46..0x0e4d
+  preds: L_1617
+  succs: L_0df7
+  effects:
+    0e46  store[2] [bp-grbitNew] = 0x800
+    0e4b  goto L_0df7
+
+block L_0e4e:
+  insts 47..52  off 0x0e4e..0x0e62
+  preds: L_1617
+  succs: L_0e66, L_0e6c
+  effects:
+    0e4e  store[2] [bp-grbit] = 0x1
+    0e53  store[2] [bp-c] = 0x0
+    0e61  branch (load([grbitScan]) & 0x40) != 0x0 ? L_0e6c : L_0e66
+
+block L_0e66:
+  insts 54..54  off 0x0e66..0x0e6b
+  preds: L_0e4e
+  succs: L_0e6c
+  effects:
+    0e66  store[2] [grbitScanMines] = 0x0
+
+block L_0e6c:
+  insts 55..56  off 0x0e6c..0x0e73
+  preds: L_0e4e, L_0e66
+  succs: L_0f0d
+  effects:
+    0e6c  store[2] [bp-i] = 0x4fe
+    0e71  goto L_0f0d
+
+block L_0e74:
+  insts 57..58  off 0x0e74..0x0e7a
+  preds: L_0f0d
+  succs: L_0e7e, L_0ea7
+  effects:
+    0e79  branch load([bp-i]) != 0x4fe ? L_0ea7 : L_0e7e
+
+block L_0e7e:
+  insts 60..61  off 0x0e7e..0x0e84
+  preds: L_0e74
+  succs: L_0e88, L_0e8f
+  effects:
+    0e83  branch load([grbitScanMines]) != 0xf ? L_0e8f : L_0e88
+
+block L_0e88:
+  insts 63..65  off 0x0e88..0x0e8e
+  preds: L_0e7e
+  succs: L_0e93
+  effects:
+    0e8c  goto L_0e93
+
+block L_0e8f:
+  insts 66..67  off 0x0e8f..0x0e92
+  preds: L_0e7e
+  succs: L_0e93
+
+block L_0e93:
+  insts 68..75  off 0x0e93..0x0ea6
+  preds: L_0e88, L_0e8f
+  succs: L_0ecd
+  effects:
+    0e9f  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = merge(Join: L_0e93, (L_0e88:0x1, L_0e8f:0x0))
+    0ea1  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    0ea4  goto L_0ecd
+
+block L_0ea7:
+  insts 76..77  off 0x0ea7..0x0ead
+  preds: L_0e74
+  succs: L_0eb1, L_0eb8
+  effects:
+    0eac  branch load([grbitScanMines]) != 0x0 ? L_0eb8 : L_0eb1
+
+block L_0eb1:
+  insts 79..81  off 0x0eb1..0x0eb7
+  preds: L_0ea7
+  succs: L_0ebc
+  effects:
+    0eb5  goto L_0ebc
+
+block L_0eb8:
+  insts 82..83  off 0x0eb8..0x0ebb
+  preds: L_0ea7
+  succs: L_0ebc
+
+block L_0ebc:
+  insts 84..90  off 0x0ebc..0x0ecc
+  preds: L_0eb1, L_0eb8
+  succs: L_0ecd
+  effects:
+    0ec8  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = merge(Join: L_0ebc, (L_0eb1:0x1, L_0eb8:0x0))
+    0eca  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+
+block L_0ecd:
+  insts 91..113  off 0x0ecd..0x0f0c
+  preds: L_0e93, L_0ebc
+  succs: L_0f0d
+  effects:
+    0ee1  call CchGetString(load@0ede/src([bp-i]), (0x5844 + loword(((load([bp-i]) + 0xfb02) * 0x1e)))) -> callresult(int16_t)
+    0efc  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    0f07  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = (0x5844 + loword(((load([bp-i]) + 0xfb02) * 0x1e)))
+    0f09  store[2] [bp-i] = (load@0f09/dst([bp-i]) + 0x1)
+
+block L_0f0d:
+  insts 114..115  off 0x0f0d..0x0f13
+  preds: L_0e6c, L_0ecd
+  succs: L_0e74, L_0f17
+  effects:
+    0f12  branch load([bp-i]) <= 0x4ff ? L_0e74 : L_0f17
+
+block L_0f17:
+  insts 117..133  off 0x0f17..0x0f4f
+  preds: L_0f0d
+  succs: L_0fba
+  effects:
+    0f23  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = 0x0
+    0f27  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    0f2c  store[1] byte [szWork+0xfa] = 0xff
+    0f31  store[1] byte [szWork+0xfb] = 0x0
+    0f39  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    0f44  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = 0x589e
+    0f48  store[2] [bp-i] = 0x0
+    0f4d  goto L_0fba
+
+block L_0f50:
+  insts 134..139  off 0x0f50..0x0f60
+  preds: L_0fba
+  succs: L_0f64, L_0f6b
+  effects:
+    0f5f  branch ((0x1 << load([bp-i])) & load([grbitScanMines])) == 0x0 ? L_0f6b : L_0f64
+
+block L_0f64:
+  insts 141..143  off 0x0f64..0x0f6a
+  preds: L_0f50
+  succs: L_0f6f
+  effects:
+    0f68  goto L_0f6f
+
+block L_0f6b:
+  insts 144..145  off 0x0f6b..0x0f6e
+  preds: L_0f50
+  succs: L_0f6f
+
+block L_0f6f:
+  insts 146..173  off 0x0f6f..0x0fb9
+  preds: L_0f64, L_0f6b
+  succs: L_0fba
+  effects:
+    0f7b  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = merge(Join: L_0f6f, (L_0f64:0x1, L_0f6b:0x0))
+    0f7d  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    0f93  call CchGetString((load@0f8c/src([bp-i]) + 0x500), (0x57a4 + loword((0x1e * load([bp-i]))))) -> callresult(int16_t)
+    0fa9  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    0fb4  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = (0x57a4 + loword((0x1e * load([bp-i]))))
+    0fb6  store[2] [bp-i] = (load@0fb6/dst([bp-i]) + 0x1)
+
+block L_0fba:
+  insts 174..175  off 0x0fba..0x0fbf
+  preds: L_0f17, L_0f6f
+  succs: L_0f50, L_0fc3
+  effects:
+    0fbe  branch load([bp-i]) < 0x4 ? L_0f50 : L_0fc3
+
+block L_0fc3:
+  insts 177..204  off 0x0fc3..0x100c
+  preds: L_0fba
+  succs: L_1013, L_167a
+  effects:
+    0fca  call GetCursorPos(words(ss, addr([bp-pt]))) -> callresult(void)
+    0fda  call ScreenToClient(load@0fcf/src([hwndTb]), words(ss, addr([bp-pt]))) -> callresult(void)
+    0ffc  call PopupMenu(load@0ff8/src([hwndTb]), load([bp-pt]), load([bp-pt+0x2]), load([bp-c]), addr([bp-rgid]), addr([bp-rgszScan]), 0xfffe, 0x0) -> callresult(int16_t)
+    1004  store[2] [bp-iSel] = callresult(int16_t)
+    100b  branch load([bp-iSel]) == 0xffff ? L_167a : L_1013
+
+block L_1013:
+  insts 207..208  off 0x1013..0x1018
+  preds: L_0fc3
+  succs: L_101c, L_1037
+  effects:
+    1017  branch load([bp-iSel]) >= 0x3 ? L_1037 : L_101c
+
+block L_101c:
+  insts 210..211  off 0x101c..0x1021
+  preds: L_1013
+  succs: L_1025, L_102e
+  effects:
+    1020  branch load([bp-iSel]) != 0x0 ? L_102e : L_1025
+
+block L_1025:
+  insts 213..214  off 0x1025..0x102d
+  preds: L_101c
+  succs: L_1047
+  effects:
+    1025  store[2] [grbitScanMines] = 0xf
+    102b  goto L_1047
+
+block L_102e:
+  insts 215..215  off 0x102e..0x1033
+  preds: L_101c
+  succs: L_1034
+  effects:
+    102e  store[2] [grbitScanMines] = 0x0
+
+block L_1034:
+  insts 216..216  off 0x1034..0x1036
+  preds: L_102e
+  succs: L_1047
+  effects:
+    1034  goto L_1047
+
+block L_1037:
+  insts 217..221  off 0x1037..0x1046
+  preds: L_1013
+  succs: L_1047
+  effects:
+    1037  store[2] [bp-iSel] = (load@1037/dst([bp-iSel]) - 0x3)
+    1043  store[2] [grbitScanMines] = (load([grbitScanMines]) ^ (0x1 << load@103b/src([bp-iSel])))
+
+block L_1047:
+  insts 222..223  off 0x1047..0x104d
+  preds: L_1025, L_1034, L_1037
+  succs: L_1051, L_1059
+  effects:
+    104c  branch load([grbitScanMines]) == 0x0 ? L_1059 : L_1051
+
+block L_1051:
+  insts 225..226  off 0x1051..0x1058
+  preds: L_1047
+  succs: L_105e
+  effects:
+    1051  store[2] [grbitScan] = (load([grbitScan]) | 0x40)
+    1056  goto L_105e
+
+block L_1059:
+  insts 227..227  off 0x1059..0x105d
+  preds: L_1047
+  succs: L_105e
+  effects:
+    1059  store[2] [grbitScan] = (load([grbitScan]) & 0xffbf)
+
+block L_105e:
+  insts 228..236  off 0x105e..0x1075
+  preds: L_1051, L_1059
+  succs: L_1644
+  effects:
+    106e  call InvalidateRect(load([hwndTb]), words(0x0, 0x0), 0x1) -> callresult(void)
+    1073  goto L_1644
+
+block L_1076:
+  insts 237..239  off 0x1076..0x1082
+  preds: L_1617
+  succs: L_10d9
+  effects:
+    1076  store[2] [bp-c] = 0x0
+    107b  store[2] [bp-i] = 0x4fb
+    1080  goto L_10d9
+
+block L_1083:
+  insts 240..269  off 0x1083..0x10d8
+  preds: L_10d9
+  succs: L_10d9
+  effects:
+    1090  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x88] = 0x0
+    1094  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x86] = 0x0
+    10ad  call CchGetString(load@10aa/src([bp-i]), (0x57a4 + loword(((load([bp-i]) + 0xfb05) * 0x14)))) -> callresult(int16_t)
+    10c8  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    10d3  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x32] = (0x57a4 + loword(((load([bp-i]) + 0xfb05) * 0x14)))
+    10d5  store[2] [bp-i] = (load@10d5/dst([bp-i]) + 0x1)
+
+block L_10d9:
+  insts 270..271  off 0x10d9..0x10df
+  preds: L_1076, L_1083
+  succs: L_1083, L_10e3
+  effects:
+    10de  branch load([bp-i]) <= 0x4fd ? L_1083 : L_10e3
+
+block L_10e3:
+  insts 273..291  off 0x10e3..0x1124
+  preds: L_10d9
+  succs: L_1135
+  effects:
+    10f0  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x88] = 0x0
+    10f4  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x86] = 0x0
+    10f9  store[1] byte [szWork+0xc8] = 0xff
+    10fe  store[1] byte [szWork+0xc9] = 0x0
+    1106  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    1111  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x32] = 0x586c
+    1115  store[2] [bp-ish] = 0x0
+    111a  store[2] [bp-grbitSh] = 0x1
+    1122  goto L_1135
+
+block L_1125:
+  insts 292..296  off 0x1125..0x1134
+  preds: L_113e, L_11a8
+  succs: L_1135
+  effects:
+    1128  store[2] [bp-ish] = (load([bp-ish]) + 0x1)
+    112f  store[2] [bp-grbitSh] = (load([bp-grbitSh]) << 0x1)
+
+block L_1135:
+  insts 297..298  off 0x1135..0x113a
+  preds: L_10e3, L_1125
+  succs: L_113e, L_11ab
+  effects:
+    1139  branch load([bp-ish]) >= 0x10 ? L_11ab : L_113e
+
+block L_113e:
+  insts 300..309  off 0x113e..0x1158
+  preds: L_1135
+  succs: L_1125, L_115c
+  effects:
+    1157  branch ((load(ds:[(0x3f00 + loword((0x93 * load([bp-ish]))))+0x7b]) >> 0x9) & 0x1) != 0x0 ? L_1125 : L_115c
+
+block L_115c:
+  insts 311..314  off 0x115c..0x1167
+  preds: L_113e
+  succs: L_116b, L_1172
+  effects:
+    1166  branch (load([bp-grbitSh]) & load([grbitScanShip])) == 0x0 ? L_1172 : L_116b
+
+block L_116b:
+  insts 316..318  off 0x116b..0x1171
+  preds: L_115c
+  succs: L_1176
+  effects:
+    116f  goto L_1176
+
+block L_1172:
+  insts 319..320  off 0x1172..0x1175
+  preds: L_115c
+  succs: L_1176
+
+block L_1176:
+  insts 321..339  off 0x1176..0x11a7
+  preds: L_116b, L_1172
+  succs: L_11a8
+  effects:
+    1183  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x88] = merge(Join: L_1176, (L_116b:0x1, L_1172:0x0))
+    1185  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x86] = 0x0
+    119b  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    11a6  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x32] = ((0x3f00 + loword((0x93 * load([bp-ish])))) + 0x8)
+
+block L_11a8:
+  insts 340..340  off 0x11a8..0x11aa
+  preds: L_1176
+  succs: L_1125
+  effects:
+    11a8  goto L_1125
+
+block L_11ab:
+  insts 341..368  off 0x11ab..0x11f7
+  preds: L_1135
+  succs: L_11fe, L_167a
+  effects:
+    11b2  call GetCursorPos(words(ss, addr([bp-pt]))) -> callresult(void)
+    11c2  call ScreenToClient(load@11b7/src([hwndTb]), words(ss, addr([bp-pt]))) -> callresult(void)
+    11e5  call PopupMenu(load@11e1/src([hwndTb]), load([bp-pt]), load([bp-pt+0x2]), load([bp-c]), addr([bp-rgid]), addr([bp-rgszScan]), 0xfffe, 0x0) -> callresult(int16_t)
+    11ed  store[2] [bp-iSel] = callresult(int16_t)
+    11f6  branch load([bp-iSel]) == 0xffff ? L_167a : L_11fe
+
+block L_11fe:
+  insts 371..372  off 0x11fe..0x1204
+  preds: L_11ab
+  succs: L_1208, L_1251
+  effects:
+    1203  branch load([bp-iSel]) >= 0x4 ? L_1251 : L_1208
+
+block L_1208:
+  insts 374..375  off 0x1208..0x120e
+  preds: L_11fe
+  succs: L_1212, L_121b
+  effects:
+    120d  branch load([bp-iSel]) != 0x0 ? L_121b : L_1212
+
+block L_1212:
+  insts 377..378  off 0x1212..0x121a
+  preds: L_1208
+  succs: L_1233
+  effects:
+    1212  store[2] [grbitScanShip] = 0xffff
+    1218  goto L_1233
+
+block L_121b:
+  insts 379..380  off 0x121b..0x1221
+  preds: L_1208
+  succs: L_1225, L_122d
+  effects:
+    1220  branch load([bp-iSel]) != 0x1 ? L_122d : L_1225
+
+block L_1225:
+  insts 382..383  off 0x1225..0x122c
+  preds: L_121b
+  succs: L_1233
+  effects:
+    1225  store[2] [grbitScanShip] = (load([grbitScanShip]) ^ 0xffff)
+    122a  goto L_1233
+
+block L_122d:
+  insts 384..384  off 0x122d..0x1232
+  preds: L_121b
+  succs: L_1233
+  effects:
+    122d  store[2] [grbitScanShip] = 0x0
+
+block L_1233:
+  insts 385..388  off 0x1233..0x123d
+  preds: L_1212, L_1225, L_122d
+  succs: L_1241, L_12e6
+  effects:
+    123c  branch (load([grbitScan]) & 0x200) != 0x0 ? L_12e6 : L_1241
+
+block L_1241:
+  insts 390..391  off 0x1241..0x1247
+  preds: L_1233
+  succs: L_1248, L_12cb
+  effects:
+    1246  branch load([grbitScanShip]) != 0x0 ? L_12cb : L_1248
+
+block L_1248:
+  insts 392..392  off 0x1248..0x124a
+  preds: L_1241
+  succs: L_12e6
+  effects:
+    1248  goto L_12e6
+
+block L_1251:
+  insts 395..397  off 0x1251..0x125d
+  preds: L_11fe
+  succs: L_1294
+  effects:
+    1251  store[2] [bp-iSel] = (load([bp-iSel]) - 0x4)
+    1256  store[2] [bp-ish] = 0x0
+    125b  goto L_1294
+
+block L_125e:
+  insts 398..407  off 0x125e..0x1278
+  preds: L_1294
+  succs: L_127c, L_1290
+  effects:
+    1277  branch ((load(ds:[(0x3f00 + loword((0x93 * load([bp-ish]))))+0x7b]) >> 0x9) & 0x1) != 0x0 ? L_1290 : L_127c
+
+block L_127c:
+  insts 409..412  off 0x127c..0x1289
+  preds: L_125e
+  succs: L_1290, L_129d
+  effects:
+    127c  store[2] [bp-iSel] = (load@127c/dst([bp-iSel]) - 0x1)
+    1288  branch load@1281/src([bp-iSel]) < 0x0 ? L_129d : L_1290
+
+block L_1290:
+  insts 415..415  off 0x1290..0x1293
+  preds: L_125e, L_127c
+  succs: L_1294
+  effects:
+    1290  store[2] [bp-ish] = (load([bp-ish]) + 0x1)
+
+block L_1294:
+  insts 416..417  off 0x1294..0x1299
+  preds: L_1251, L_1290
+  succs: L_125e, L_129d
+  effects:
+    1298  branch load([bp-ish]) < 0x10 ? L_125e : L_129d
+
+block L_129d:
+  insts 419..426  off 0x129d..0x12b3
+  preds: L_127c, L_1294
+  succs: L_12b7, L_12e6
+  effects:
+    12a5  store[2] [grbitScanShip] = (load([grbitScanShip]) ^ (0x1 << load([bp-ish])))
+    12b2  branch (load([grbitScan]) & 0x200) != 0x0 ? L_12e6 : L_12b7
+
+block L_12b7:
+  insts 428..433  off 0x12b7..0x12c7
+  preds: L_129d
+  succs: L_12cb, L_12e6
+  effects:
+    12c6  branch ((0x1 << load([bp-ish])) & load([grbitScanShip])) == 0x0 ? L_12e6 : L_12cb
+
+block LInvalS:
+  insts 435..443  off 0x12cb..0x12e5
+  preds: L_1241, L_12b7
+  succs: L_12e6
+  effects:
+    12cb  store[2] [grbitScan] = (load([grbitScan]) | 0x200)
+    12e1  call InvalidateRect(load([hwndTb]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_12e6:
+  insts 444..447  off 0x12e6..0x12f0
+  preds: L_1233, L_1248, L_129d, L_12b7, L_12cb
+  succs: L_12f1, L_167a
+  effects:
+    12ef  branch (load([grbitScan]) & 0x200) == 0x0 ? L_167a : L_12f1
+
+block L_12f1:
+  insts 448..448  off 0x12f1..0x12f3
+  preds: L_12e6
+  succs: L_1644
+  effects:
+    12f1  goto L_1644
+
+block L_12fa:
+  insts 451..454  off 0x12fa..0x130b
+  preds: L_1617
+  succs: L_1361
+  effects:
+    12fa  store[2] [bp-grbit] = 0x1
+    12ff  store[2] [bp-c] = 0x0
+    1304  store[2] [bp-i] = 0x4fb
+    1309  goto L_1361
+
+block L_130c:
+  insts 455..484  off 0x130c..0x1360
+  preds: L_1361
+  succs: L_1361
+  effects:
+    1318  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = 0x0
+    131c  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    1335  call CchGetString(load@1332/src([bp-i]), (0x586c + loword(((load([bp-i]) + 0xfb05) * 0x19)))) -> callresult(int16_t)
+    1350  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    135b  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = (0x586c + loword(((load([bp-i]) + 0xfb05) * 0x19)))
+    135d  store[2] [bp-i] = (load@135d/dst([bp-i]) + 0x1)
+
+block L_1361:
+  insts 485..486  off 0x1361..0x1367
+  preds: L_12fa, L_130c
+  succs: L_130c, L_136b
+  effects:
+    1366  branch load([bp-i]) <= 0x4fd ? L_130c : L_136b
+
+block L_136b:
+  insts 488..504  off 0x136b..0x13a3
+  preds: L_1361
+  succs: L_140e
+  effects:
+    1377  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = 0x0
+    137b  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    1380  store[1] byte [szWork+0x12c] = 0xff
+    1385  store[1] byte [szWork+0x12d] = 0x0
+    138d  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    1398  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = 0x58d0
+    139c  store[2] [bp-i] = 0x0
+    13a1  goto L_140e
+
+block L_13a4:
+  insts 505..510  off 0x13a4..0x13b4
+  preds: L_140e
+  succs: L_13b8, L_13bf
+  effects:
+    13b3  branch ((0x1 << load([bp-i])) & load([grbitScanEShip])) == 0x0 ? L_13bf : L_13b8
+
+block L_13b8:
+  insts 512..514  off 0x13b8..0x13be
+  preds: L_13a4
+  succs: L_13c3
+  effects:
+    13bc  goto L_13c3
+
+block L_13bf:
+  insts 515..516  off 0x13bf..0x13c2
+  preds: L_13a4
+  succs: L_13c3
+
+block L_13c3:
+  insts 517..544  off 0x13c3..0x140d
+  preds: L_13b8, L_13bf
+  succs: L_140e
+  effects:
+    13cf  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x56] = merge(Join: L_13c3, (L_13b8:0x1, L_13bf:0x0))
+    13d1  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x54] = 0x0
+    13e7  call CchGetString((load@13e0/src([bp-i]) + 0x17d), (0x57a4 + loword((0x19 * load([bp-i]))))) -> callresult(int16_t)
+    13fd  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    1408  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x20] = (0x57a4 + loword((0x19 * load([bp-i]))))
+    140a  store[2] [bp-i] = (load@140a/dst([bp-i]) + 0x1)
+
+block L_140e:
+  insts 545..546  off 0x140e..0x1413
+  preds: L_136b, L_13c3
+  succs: L_13a4, L_1417
+  effects:
+    1412  branch load([bp-i]) < 0x8 ? L_13a4 : L_1417
+
+block L_1417:
+  insts 548..575  off 0x1417..0x1460
+  preds: L_140e
+  succs: L_1467, L_167a
+  effects:
+    141e  call GetCursorPos(words(ss, addr([bp-pt]))) -> callresult(void)
+    142e  call ScreenToClient(load@1423/src([hwndTb]), words(ss, addr([bp-pt]))) -> callresult(void)
+    1450  call PopupMenu(load@144c/src([hwndTb]), load([bp-pt]), load([bp-pt+0x2]), load([bp-c]), addr([bp-rgid]), addr([bp-rgszScan]), 0xfffe, 0x0) -> callresult(int16_t)
+    1458  store[2] [bp-iSel] = callresult(int16_t)
+    145f  branch load([bp-iSel]) == 0xffff ? L_167a : L_1467
+
+block L_1467:
+  insts 578..579  off 0x1467..0x146c
+  preds: L_1417
+  succs: L_1470, L_14b8
+  effects:
+    146b  branch load([bp-iSel]) >= 0x4 ? L_14b8 : L_1470
+
+block L_1470:
+  insts 581..582  off 0x1470..0x1475
+  preds: L_1467
+  succs: L_1479, L_1482
+  effects:
+    1474  branch load([bp-iSel]) != 0x0 ? L_1482 : L_1479
+
+block L_1479:
+  insts 584..585  off 0x1479..0x1481
+  preds: L_1470
+  succs: L_149a
+  effects:
+    1479  store[2] [grbitScanEShip] = 0xff
+    147f  goto L_149a
+
+block L_1482:
+  insts 586..587  off 0x1482..0x1487
+  preds: L_1470
+  succs: L_148b, L_1494
+  effects:
+    1486  branch load([bp-iSel]) != 0x1 ? L_1494 : L_148b
+
+block L_148b:
+  insts 589..590  off 0x148b..0x1493
+  preds: L_1482
+  succs: L_149a
+  effects:
+    148b  store[2] [grbitScanEShip] = (load([grbitScanEShip]) ^ 0xff)
+    1491  goto L_149a
+
+block L_1494:
+  insts 591..591  off 0x1494..0x1499
+  preds: L_1482
+  succs: L_149a
+  effects:
+    1494  store[2] [grbitScanEShip] = 0x0
+
+block L_149a:
+  insts 592..595  off 0x149a..0x14a4
+  preds: L_1479, L_148b, L_1494
+  succs: L_14a8, L_1505
+  effects:
+    14a3  branch (load([grbitScan]) & 0x800) != 0x0 ? L_1505 : L_14a8
+
+block L_14a8:
+  insts 597..598  off 0x14a8..0x14ae
+  preds: L_149a
+  succs: L_14af, L_14ea
+  effects:
+    14ad  branch load([grbitScanEShip]) != 0x0 ? L_14ea : L_14af
+
+block L_14af:
+  insts 599..599  off 0x14af..0x14b1
+  preds: L_14a8
+  succs: L_1505
+  effects:
+    14af  goto L_1505
+
+block L_14b8:
+  insts 602..610  off 0x14b8..0x14d2
+  preds: L_1467
+  succs: L_14d6, L_1505
+  effects:
+    14b8  store[2] [bp-iSel] = (load@14b8/dst([bp-iSel]) - 0x4)
+    14c4  store[2] [grbitScanEShip] = (load([grbitScanEShip]) ^ (0x1 << load@14bc/src([bp-iSel])))
+    14d1  branch (load([grbitScan]) & 0x800) != 0x0 ? L_1505 : L_14d6
+
+block L_14d6:
+  insts 612..617  off 0x14d6..0x14e6
+  preds: L_14b8
+  succs: L_14ea, L_1505
+  effects:
+    14e5  branch ((0x1 << load([bp-iSel])) & load([grbitScanEShip])) == 0x0 ? L_1505 : L_14ea
+
+block LInvalE:
+  insts 619..627  off 0x14ea..0x1504
+  preds: L_14a8, L_14d6
+  succs: L_1505
+  effects:
+    14ea  store[2] [grbitScan] = (load([grbitScan]) | 0x800)
+    1500  call InvalidateRect(load([hwndTb]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_1505:
+  insts 628..631  off 0x1505..0x150f
+  preds: L_149a, L_14af, L_14b8, L_14d6, L_14ea
+  succs: L_1510, L_167a
+  effects:
+    150e  branch (load([grbitScan]) & 0x800) == 0x0 ? L_167a : L_1510
+
+block L_1510:
+  insts 632..632  off 0x1510..0x1512
+  preds: L_1505
+  succs: L_1644
+  effects:
+    1510  goto L_1644
+
+block L_1519:
+  insts 635..637  off 0x1519..0x1525
+  preds: L_1617
+  succs: L_159d
+  effects:
+    1519  store[2] [bp-c] = 0x0
+    151e  store[2] [bp-i] = 0x0
+    1523  goto L_159d
+
+block L_1526:
+  insts 638..641  off 0x1526..0x1530
+  preds: L_159d
+  succs: L_1534, L_153b
+  effects:
+    152f  branch (load([iScanZoom]) + 0x4) != load([bp-i]) ? L_153b : L_1534
+
+block L_1534:
+  insts 643..645  off 0x1534..0x153a
+  preds: L_1526
+  succs: L_153f
+  effects:
+    1538  goto L_153f
+
+block L_153b:
+  insts 646..647  off 0x153b..0x153e
+  preds: L_1526
+  succs: L_153f
+
+block L_153f:
+  insts 648..685  off 0x153f..0x159c
+  preds: L_1534, L_153b
+  succs: L_159d
+  effects:
+    154b  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x42] = merge(Join: L_153f, (L_1534:0x1, L_153b:0x0))
+    154d  store[2] ss:[bp+((load([bp-c]) << 0x1) << 0x1)-0x40] = 0x0
+    1573  call _wsprintf(words(ds, (0x57a4 + (((load([bp-i]) << 0x1) << 0x1) << 0x1))), words(ds, load([PCTDPCTPCT])), load(cs:[(load([bp-i]) << 0x1)+0xda4])) -> callresult(int16_t)
+    158c  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    1597  store[2] ss:[bp+(load([bp-c]) << 0x1)-0x1a] = (0x57a4 + (((load@157b/src([bp-i]) << 0x1) << 0x1) << 0x1))
+    1599  store[2] [bp-i] = (load@1599/dst([bp-i]) + 0x1)
+
+block L_159d:
+  insts 686..687  off 0x159d..0x15a2
+  preds: L_1519, L_153f
+  succs: L_1526, L_15a6
+  effects:
+    15a1  branch load([bp-i]) < 0x9 ? L_1526 : L_15a6
+
+block L_15a6:
+  insts 689..716  off 0x15a6..0x15ef
+  preds: L_159d
+  succs: L_15f6, L_167a
+  effects:
+    15ad  call GetCursorPos(words(ss, addr([bp-pt]))) -> callresult(void)
+    15bd  call ScreenToClient(load@15b2/src([hwndTb]), words(ss, addr([bp-pt]))) -> callresult(void)
+    15df  call PopupMenu(load@15db/src([hwndTb]), load([bp-pt]), load([bp-pt+0x2]), load([bp-c]), addr([bp-rgid]), addr([bp-rgszScan]), 0xfffe, 0x0) -> callresult(int16_t)
+    15e7  store[2] [bp-iSel] = callresult(int16_t)
+    15ee  branch load([bp-iSel]) == 0xffff ? L_167a : L_15f6
+
+block L_15f6:
+  insts 719..725  off 0x15f6..0x160b
+  preds: L_15a6
+  succs: L_167a
+  effects:
+    1601  call CommandHandler(load([hwndFrame]), (load([bp-iSel]) + 0xf3d)) -> callresult(void)
+    1609  goto L_167a
+
+block L_160f:
+  insts 726..727  off 0x160f..0x1613
+  preds: L_0db6
+  succs: L_1617, L_167a
+  effects:
+    1612  branch load([bp+itb]) > 0x11 ? L_167a : L_1617
+
+block L_1617:
+  insts 729..731  off 0x1617..0x161f
+  preds: L_160f
+  succs: L_0dd4, L_0df2, L_0e16, L_0e1e, L_0e26, L_0e2e, L_0e36, L_0e3e, L_0e46, L_0e4e, L_1076, L_12fa, L_1519
+  effects:
+    161b  tablejump (load([bp+itb]) << 0x1) [L_0dd4, L_0dd4, L_0dd4, L_0dd4, L_0dd4, L_0dd4, L_0df2, L_0e16, L_0e4e, L_0e1e, L_0e26, L_0e2e, L_0e3e, L_1076, L_0e46, L_12fa, L_1519, L_0e36]
+
+block L_1644:
+  insts 750..751  off 0x1644..0x1649
+  preds: L_0de0, L_0e00, L_0e13, L_105e, L_12f1, L_1510
+  succs: L_164d, L_1662
+  effects:
+    1648  branch load([bp+itb]) == 0x6 ? L_1662 : L_164d
+
+block L_164d:
+  insts 753..760  off 0x164d..0x1661
+  preds: L_1644
+  succs: L_1662
+  effects:
+    165d  call InvalidateRect(load([hwndScanner]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_1662:
+  insts 761..766  off 0x1662..0x1671
+  preds: L_1644, L_164d
+  succs: L_1675, L_167a
+  effects:
+    1670  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_167a : L_1675
+
+block L_1675:
+  insts 768..768  off 0x1675..0x1679
+  preds: L_1662
+  succs: L_167a
+  effects:
+    1675  call AdvanceTutor() -> callresult(void)
+
+block L_167a:
+  insts 769..773  off 0x167a..0x167f
+  preds: L_0dd4, L_0fc3, L_11ab, L_12e6, L_1417, L_1505, L_15a6, L_15f6, L_160f, L_1662, L_1675
+  effects:
+    167f  return

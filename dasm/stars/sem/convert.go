@@ -85,11 +85,13 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		src := c.convertValue(e.Src)
 		_, binaryAddress := e.Src.(*machine.Binary)
 		binaryAddress = binaryAddress && !machineValueContainsAddress(e.Src)
-		if e.Width > 2 || (typeinfo.IsNearPointer(dst.ExprType()) && binaryAddress) {
+		constAddress, _ := e.Src.(*machine.Const)
+		if e.Width > 2 || (typeinfo.IsNearPointer(dst.ExprType()) && (binaryAddress || constAddress != nil && constAddress.Val != 0)) {
 			// Two-byte near-pointer stores carry an address in the same width as
 			// ordinary words. Restrict the extra typed recovery to binary address
-			// arithmetic: explicit address operands and union-backed pointer fields
-			// already have more specific address recovery paths.
+			// arithmetic and non-null DS-relative constants: explicit address
+			// operands and union-backed pointer fields already have more specific
+			// address recovery paths.
 			src = c.convertValueTyped(e.Src, dst.ExprType())
 		}
 		if c.ctx.maskedStorageWrite(e.Addr, e.Src) {
@@ -111,10 +113,10 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		if lvalue, ok := c.convertCopyAddress(e.Src, e.Width); ok {
 			src = lvalue
 		}
-		if target, ok := recoverExpectedValue(dst, src.ExprType()).(LValue); ok {
+		if target, ok := c.recoverExpectedValue(dst, src.ExprType()).(LValue); ok {
 			dst = target
 		}
-		src = recoverExpectedValue(src, dst.ExprType())
+		src = c.recoverExpectedValue(src, dst.ExprType())
 		assign := &Assign{
 			MetaInfo: e.MetaInfo,
 			Dst:      dst,
@@ -248,7 +250,7 @@ func (c *machineConverter) convertValues(values []machine.Value) []Expr {
 // convertValue converts one machine value into a semantic expression.
 func (c *machineConverter) convertValue(value machine.Value) Expr {
 	if _, address := value.(*machine.Address); address {
-		if resolved, ok := c.resolveAddressValue(value); ok {
+		if resolved, ok := c.resolveAddressValue(value, 0); ok {
 			return resolved
 		}
 	}
@@ -574,7 +576,25 @@ func (c machineConverter) convertPredicate(v *machine.PredicateValue) Expr {
 	if v.Kind != machine.PredicateCompare {
 		return &RawValue{Value: v}
 	}
-	return &Compare{Op: compareOp(v.Op), LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS)}
+	lhs := c.convertValue(v.LHS)
+	rhs := c.convertValue(v.RHS)
+	if address, ok := c.convertComparedAddress(v.RHS, lhs.ExprType()); ok {
+		rhs = address
+	} else if address, ok := c.convertComparedAddress(v.LHS, rhs.ExprType()); ok {
+		lhs = address
+	}
+	return &Compare{Op: compareOp(v.Op), LHS: lhs, RHS: rhs}
+}
+
+// convertComparedAddress resolves a non-null constant compared against a
+// near pointer as the DS-relative global address it denotes, for example
+// psz <= szBase rather than psz <= 0x56a2.
+func (c machineConverter) convertComparedAddress(value machine.Value, other typeinfo.Type) (Expr, bool) {
+	constant, ok := value.(*machine.Const)
+	if !ok || constant.Val == 0 || !typeinfo.IsNearPointer(other) {
+		return nil, false
+	}
+	return c.convertAddressArgTyped(value, other)
 }
 
 // convertPhi converts a machine phi into a semantic merge expression.

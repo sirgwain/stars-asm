@@ -55,7 +55,7 @@ func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Va
 		Result: base.Type(),
 	}
 
-	other = stripLowWord(other)
+	other = unwrapAddressWord(other)
 
 	if index, scale := sr.decomposeTerm(other); index != nil {
 		var term symresolve.SymbolPath

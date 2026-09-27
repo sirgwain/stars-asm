@@ -181,7 +181,7 @@ L_5794:
     rgb[15] = HIWORD(lpshdef->cExist);
     pb = &(rgb[17]);
     fmemmove(pb, lpshdef->hul.rghs, (rgb[6] * 0x4));
-    pb = (pb + (4 * rgb[6]));
+    pb = (pb + (rgb[6] * 4));
     goto L_5829;
 
 L_5816:
@@ -3004,7 +3004,7 @@ void WriteBOF(int16_t iPlayer, int16_t dt, int16_t fMulti) {
 
 L_8ea4:
     memset(&(rtbof), 0, 0x10);
-    strncpy(&(rtbof), "J3J3", 0x4);
+    strncpy(rtbof.rgid, "J3J3", 0x4);
     rtbof.lidGame = game.lid;
     rtbof.wGen = game.wGen;
     rtbof.verInc = 0x0;

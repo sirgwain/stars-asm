@@ -2552,7 +2552,7 @@ L_308a:
         goto L_30aa;
 
 L_30aa:
-    lphul = (rglpshdef[lpfl->iPlayer] + i);
+    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
     j = (lphul->chs - 1);
     goto L_3173;
 

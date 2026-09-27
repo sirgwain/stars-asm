@@ -2487,7 +2487,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t  t_merge_3de0_0001;
 
 L_377e:
-    pfl = obj.ppl;
+    pfl = obj.pfl;
     fDoneDrawing = 0;
     fObjIsThing = 0;
     if ((ptile->fFixCtls == 0x0))
@@ -6776,7 +6776,7 @@ L_7bab:
     return 0;
 
 L_7bb1:
-    lphul = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
+    lphul = &(rglpshdefSB[lppl->iPlayer][lppl->isb].hul);
     i = 0;
     goto L_7be7;
 
@@ -6877,11 +6877,11 @@ L_7d39:
     return 0;
 
 L_7d3f:
-    lphul = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
+    lphul = &(rglpshdefSB[lppl->iPlayer][lppl->isb].hul);
     goto L_7d89;
 
 L_7d6c:
-    lphul = (rglpshdefSB[iplr] + ish);
+    lphul = &(rglpshdefSB[iplr][ish].hul);
 
 L_7d89:
     i = 0;

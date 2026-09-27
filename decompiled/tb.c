@@ -287,7 +287,7 @@ LShowTip:
     rc.right = (DxOfBtn(itb) + rc.left);
     rc.top = pt.y;
     rc.bottom = 28;
-    MapWindowPoints(hwndTb, 0x0, &(rc), 0x2);
+    MapWindowPoints(hwndTb, 0x0, (POINT *)(&(rc)), 0x2);
     ShowTooltip(ids, &(rc));
     goto L_06de;
 
@@ -1022,9 +1022,9 @@ L_0ebc:
     rgid[c] = (uint32_t)(t_merge_0ebc_0001);
 
 L_0ecd:
-    CchGetString(i, (char *)(((uint8_t *)(&(szWork[(load([bp - 0x24]) + 0xfb02) * 0x1e])) + 160)));
+    CchGetString(i, &(szWork[(((i - 1278) * 30) + 160)]));
     c = (c + 1);
-    rgszScan[c] = (char *)(((uint8_t *)(&(szWork[(load([bp - 0x24]) + 0xfb02) * 0x1e])) + 160));
+    rgszScan[c] = &(szWork[(((i - 1278) * 30) + 160)]);
     i = (i + 1);
 
 L_0f0d:
@@ -1038,7 +1038,7 @@ L_0f17:
     szWork[250] = -1;
     szWork[251] = 0;
     c = (c + 1);
-    rgszScan[c] = 0x589e;
+    rgszScan[c] = &(szWork[250]);
     i = 0;
     goto L_0fba;
 
@@ -1057,9 +1057,9 @@ L_0f6b:
 
 L_0f6f:
     rgid[c] = (uint32_t)(t_merge_0f6f_0001);
-    CchGetString((i + 1280), (0x57a4 + LOWORD((30 * i))));
+    CchGetString((i + 1280), &(szWork[(i * 30)]));
     c = (c + 1);
-    rgszScan[c] = (0x57a4 + LOWORD((30 * i)));
+    rgszScan[c] = &(szWork[(i * 30)]);
     i = (i + 1);
 
 L_0fba:
@@ -1127,9 +1127,9 @@ L_1076:
 
 L_1083:
     rgid[c] = 0;
-    CchGetString(i, (0x57a4 + LOWORD(((i - 1275) * 20))));
+    CchGetString(i, &(szWork[((i - 1275) * 20)]));
     c = (c + 1);
-    rgszScan[c] = (0x57a4 + LOWORD(((i - 1275) * 20)));
+    rgszScan[c] = &(szWork[((i - 1275) * 20)]);
     i = (i + 1);
 
 L_10d9:
@@ -1143,7 +1143,7 @@ L_10e3:
     szWork[200] = -1;
     szWork[201] = 0;
     c = (c + 1);
-    rgszScan[c] = 0x586c;
+    rgszScan[c] = &(szWork[200]);
     ish = 0;
     grbitSh = 0x1;
     goto L_1135;
@@ -1299,9 +1299,9 @@ L_12fa:
 
 L_130c:
     rgid[c] = 0;
-    CchGetString(i, (char *)(((uint8_t *)(&(szWork[(load([bp - 0x24]) + 0xfb05) * 0x19])) + 200)));
+    CchGetString(i, &(szWork[(((i - 1275) * 25) + 200)]));
     c = (c + 1);
-    rgszScan[c] = (char *)(((uint8_t *)(&(szWork[(load([bp - 0x24]) + 0xfb05) * 0x19])) + 200));
+    rgszScan[c] = &(szWork[(((i - 1275) * 25) + 200)]);
     i = (i + 1);
 
 L_1361:
@@ -1315,7 +1315,7 @@ L_136b:
     szWork[300] = -1;
     szWork[301] = 0;
     c = (c + 1);
-    rgszScan[c] = 0x58d0;
+    rgszScan[c] = &(szWork[300]);
     i = 0;
     goto L_140e;
 
@@ -1334,9 +1334,9 @@ L_13bf:
 
 L_13c3:
     rgid[c] = (uint32_t)(t_merge_13c3_0001);
-    CchGetString((i + 381), (0x57a4 + LOWORD((25 * i))));
+    CchGetString((i + 381), &(szWork[(i * 25)]));
     c = (c + 1);
-    rgszScan[c] = (0x57a4 + LOWORD((25 * i)));
+    rgszScan[c] = &(szWork[(i * 25)]);
     i = (i + 1);
 
 L_140e:
@@ -1445,9 +1445,9 @@ L_153b:
 
 L_153f:
     rgid[c] = (uint32_t)(t_merge_153f_0001);
-    _wsprintf(szWork[i * 0x8], PCTDPCTPCT, vrgpctZoom[i]);
+    _wsprintf(&(szWork[(i * 8)]), PCTDPCTPCT, vrgpctZoom[i]);
     c = (c + 1);
-    rgszScan[c] = (22436 + (i * 8));
+    rgszScan[c] = &(szWork[(i * 8)]);
     i = (i + 1);
 
 L_159d:

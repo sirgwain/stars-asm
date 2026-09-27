@@ -19,7 +19,7 @@ func TestAggregateBufferCopyRecovery(t *testing.T) {
 	for _, width := range []int{16, 14} {
 		t.Run(typeinfo.UintForWidth(width).String(), func(t *testing.T) {
 			part := &Part{Base: buffer, Width: width, TypeInfo: typeinfo.UintForWidth(width)}
-			got := recoverExpectedValue(part, rtbof.ExprType())
+			got := (&machineConverter{ctx: ctx}).recoverExpectedValue(part, rtbof.ExprType())
 			if width != 16 {
 				if got != part {
 					t.Fatal("partial copy was expanded into a whole RTBOF")

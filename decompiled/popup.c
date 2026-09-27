@@ -535,13 +535,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     int16_t  t_merge_0eaa_0001;
     int16_t  t_merge_0f08_0001;
     int16_t  t_merge_108c_0001;
-    POINT    t_call_1099;
-    POINT    t_call_10b5;
-    POINT    t_call_10cd;
-    POINT    t_call_10e9;
-    POINT    t_call_1105;
     uint16_t t_merge_113b_0001;
-    POINT    t_call_1165;
     uint16_t t_merge_1189_0001;
     int16_t  t_merge_126d_0001;
     int16_t  t_call_1265;
@@ -727,33 +721,23 @@ L_108c:
     goto L_1225;
 
 L_1092:
-    t_call_1099 = PtDisplayPlanetStateInfo(hdc, 0);
-    ptT.x = LOWORD(t_call_1099);
-    ptT.y = HIWORD(t_call_1099);
+    ptT = PtDisplayPlanetStateInfo(hdc, 0);
     goto SetDxDy;
 
 L_10aa:
-    t_call_10b5 = PtDisplayZipOrdInfo(hdc, 0, 0);
-    ptT.x = LOWORD(t_call_10b5);
-    ptT.y = HIWORD(t_call_10b5);
+    ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
     goto SetDxDy;
 
 L_10c6:
-    t_call_10cd = PtDisplayPlanetPopInfo(hdc, 0);
-    ptT.x = LOWORD(t_call_10cd);
-    ptT.y = HIWORD(t_call_10cd);
+    ptT = PtDisplayPlanetPopInfo(hdc, 0);
     goto SetDxDy;
 
 L_10de:
-    t_call_10e9 = PtDisplayResourceInfo(hdc, 200, 0);
-    ptT.x = LOWORD(t_call_10e9);
-    ptT.y = HIWORD(t_call_10e9);
+    ptT = PtDisplayResourceInfo(hdc, 200, 0);
     goto SetDxDy;
 
 L_10fa:
-    t_call_1105 = PtDisplayFactoryMineInfo(hdc, 200, 0);
-    ptT.x = LOWORD(t_call_1105);
-    ptT.y = HIWORD(t_call_1105);
+    ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
 
 SetDxDy:
     dx = (ptT.x + 2);
@@ -779,9 +763,7 @@ L_113b:
     goto L_1225;
 
 L_115a:
-    t_call_1165 = PtDisplayString(hdc, GlobalPD.dxOut, 0);
-    ptT.x = LOWORD(t_call_1165);
-    ptT.y = HIWORD(t_call_1165);
+    ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
     goto SetDxDy;
 
 L_1176:
@@ -1018,7 +1000,7 @@ L_1401:
         goto L_1432;
 
 L_1429:
-    psz = 0xc09;
+    psz = "Deep Space";
     goto L_152e;
 
 L_1432:
@@ -2232,13 +2214,13 @@ L_3110:
         goto L_3141;
 
 L_3141:
-    pszType = 0xc2d;
-    pszTypes = 0xc35;
+    pszType = "Factory";
+    pszTypes = "Factories";
     goto L_3158;
 
 L_314e:
-    pszType = 0xc3f;
-    pszTypes = 0xc44;
+    pszType = "Mine";
+    pszTypes = "Mines";
 
 L_3158:
     SelectObject(hdc, rghfontArial8[1]);

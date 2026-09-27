@@ -98,22 +98,15 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 		// The resolved address may be a containing aggregate whose subobject
 		// at this same address is the expected pointee type. For example,
 		// SHDEF begins with HUL at offset zero.
-		if target, ok := c.convertSymbolPath(path, path.Type()); ok {
-			if lvalue, ok := target.(LValue); ok {
-				if projected, ok := c.typedAddressTarget(lvalue, 0, expected); ok {
-					return convertAddressArgTargetTyped(projected, expected, ptr)
+		if expr, ok := c.convertSymbolPath(path, path.Type()); ok && !addressWordIsLoad(value) {
+			if _, raw := expr.(*SymbolRef); !raw {
+				if target, ok := expr.(LValue); ok {
+					return c.typedAddressArg(target, target, 0, expected, ptr), true
 				}
 			}
 		}
-
 		if typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
-			target := LValue(&SymbolRef{Path: path})
-			if expr, ok := c.convertSymbolPath(path, path.Type()); ok {
-				if lvalue, ok := expr.(LValue); ok {
-					target = lvalue
-				}
-			}
-			return convertAddressArgTargetTyped(target, expected, ptr)
+			return convertAddressArgTargetTyped(&SymbolRef{Path: path}, expected, ptr)
 		}
 	}
 	if pointerExpected && binary && !typeinfo.IsPointer(path.Type()) {
@@ -163,6 +156,17 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 		}
 	}
 	return c.convertSymbolPath(path, expected)
+}
+
+// addressWordIsLoad reports whether the offset word of an address-valued
+// machine value is a pointer loaded from storage rather than a formed address.
+// The symbol path of such a value names the storage, not the addressed object.
+func addressWordIsLoad(value machine.Value) bool {
+	if words, ok := value.(*machine.StackWords); ok {
+		value = words.Words[len(words.Words)-1]
+	}
+	_, ok := unwrapAddressWord(value).(*machine.Load)
+	return ok
 }
 
 // convertSymbolAddressPath converts a symbolic address path to its addressed
@@ -228,9 +232,12 @@ func (c *machineConverter) convertSymbolPath(path symresolve.SymbolPath, expecte
 			return nil, false
 		}
 		elem := indexElementType(base.ExprType())
-		if elem == nil || elem.Bytes() != p.Scale {
+		if elem == nil || elem.Bytes() <= 0 || p.Scale%elem.Bytes() != 0 {
 			return &SymbolRef{Path: path}, true
 		}
+		// A stride that is a multiple of the element size indexes by a
+		// scaled count, as with szWork[(i - 1278) * 30] into a char buffer.
+		index = scaledArrayIndexTerm(index, p.Scale/elem.Bytes())
 		return &ArrayIndex{Base: base, Index: index, TypeInfo: elem}, true
 	case *symresolve.SymbolDeref:
 		base, ok := c.convertSymbolPath(p.Base, p.Base.Type())
@@ -298,9 +305,7 @@ func (c *machineConverter) convertAddressArgTyped(value machine.Value, expected 
 			if semantic, ok := c.semanticResolvedAddress(resolved); ok {
 				if projected, ok := c.consumeAddressProjection(semantic, 0); ok {
 					if target, ok := projected.(LValue); ok {
-						if expr, ok := convertAddressArgTargetTyped(target, expected, ptrType); ok {
-							return expr, true
-						}
+						return c.typedAddressArg(target, target, 0, expected, ptrType), true
 					}
 				}
 			}
@@ -335,7 +340,75 @@ func (c *machineConverter) convertAddressArgTyped(value machine.Value, expected 
 		width = addr.Addr.Width
 	}
 	target := c.convertAddressArgTarget(addr.Addr, width, ptrType.Elem)
-	return convertAddressArgTargetTyped(target, expected, ptrType)
+	base, offset, ok := c.addressArgObject(addr.Addr)
+	if !ok {
+		base, offset = target, 0
+	}
+	return c.typedAddressArg(target, base, offset, expected, ptrType), true
+}
+
+// typedAddressArg converts an address to the expected pointer type. The
+// unique subobject of base at offset whose type is the expected pointee is
+// preferred, for example &btn.rc where BTN begins with RECT rc, or the szName
+// array beginning a ZIPPROD passed as char *. Otherwise target, the
+// resolver's lvalue at the address, is used, with an explicit cast when its
+// type is not compatible; the address itself is never lowered to a value.
+func (c *machineConverter) typedAddressArg(target LValue, base LValue, offset int, expected typeinfo.Type, ptrType *typeinfo.Pointer) Expr {
+	if projected, ok := c.typedAddressTarget(base, offset, expected); ok {
+		if expr, ok := convertAddressArgTargetTyped(projected, expected, ptrType); ok {
+			return expr
+		}
+	}
+	if expr, ok := convertAddressArgTargetTyped(target, expected, ptrType); ok {
+		return expr
+	}
+	// Integer pointees that differ only in signedness share a representation,
+	// and C converts between their pointers without a cast.
+	if array, ok := target.ExprType().(*typeinfo.Array); ok && typeinfo.IsSignednessVariant(ptrType.Elem, array.Elem) {
+		return target
+	}
+	if typeinfo.IsSignednessVariant(ptrType.Elem, target.ExprType()) {
+		return &AddressOf{Target: target, TypeInfo: expected}
+	}
+	if part, ok := target.(*Part); ok {
+		return objectAddress(part.Base, part.ByteOff, expected)
+	}
+	return objectAddress(target, 0, expected)
+}
+
+// addressArgObject resolves the outermost object addressed by a machine
+// address and the byte offset of that address within the object, without
+// committing to the resolver's choice of field at the offset.
+func (c *machineConverter) addressArgObject(mem machine.MemoryAddress) (LValue, int, bool) {
+	sym, ok := c.ctx.symbols.symbolFromAddressAddress(mem)
+	if !ok {
+		return nil, 0, false
+	}
+	offset := 0
+	for {
+		switch path := sym.(type) {
+		case *symresolve.SymbolOffset:
+			offset += path.Offset
+			sym = path.Base
+			continue
+		case *symresolve.SymbolField:
+			if path.Field.Bitfield == nil {
+				offset += path.Field.Offset
+				sym = path.Base
+				continue
+			}
+		}
+		break
+	}
+	if offset < 0 {
+		return nil, 0, false
+	}
+	expr, ok := c.convertSymbolPath(sym, sym.Type())
+	if !ok {
+		return nil, 0, false
+	}
+	base, ok := expr.(LValue)
+	return base, offset, ok
 }
 
 // convertComputedAddressArgTyped converts address arithmetic that could not
@@ -348,7 +421,13 @@ func (c *machineConverter) convertComputedAddressArgTyped(value machine.Value, e
 	if _, ok := value.(*machine.Binary); !ok {
 		return nil, false
 	}
-	resolved, ok := c.resolveAddressValue(value)
+	// Near pointer arithmetic is DS-relative, so a constant base is the
+	// address of a global.
+	segNum := uint16(0)
+	if ptrType.Class == typeinfo.PtrNear {
+		segNum = c.ctx.segFromRegister(asm.RegDS)
+	}
+	resolved, ok := c.resolveAddressValue(value, segNum)
 	if !ok {
 		return nil, false
 	}
@@ -376,17 +455,22 @@ func convertAddressArgTargetTyped(target LValue, expected typeinfo.Type, ptrType
 		return &AddressOf{Target: target, TypeInfo: expected}, true
 	}
 
-	if ptrType.Elem.Kind() != typeinfo.KVoid && !typeinfo.IsCallCompatible(ptrType.Elem, target.ExprType()) {
-		if decayed, ok := decayArrayLValue(target, expected); ok {
-			return decayed, true
-		}
+	pointee := target.ExprType()
+	var address Expr = &AddressOf{Target: target, TypeInfo: expected}
+	if decayed, ok := decayArrayLValue(target, expected); ok {
+		pointee = target.ExprType().(*typeinfo.Array).Elem
+		address = decayed
+	} else if ptrType.Elem.Kind() != typeinfo.KVoid && !typeinfo.IsCallCompatible(ptrType.Elem, pointee) {
 		return nil, false
 	}
-	if decayed, ok := decayArrayLValue(target, expected); ok {
-		return decayed, true
-	}
 
-	return &AddressOf{Target: target, TypeInfo: expected}, true
+	// Call compatibility accepts a struct whose leading fields match the
+	// pointee's layout, such as RECT for POINT. C still requires the
+	// conversion to be explicit.
+	if _, ok := pointee.(*typeinfo.Struct); ok && !typeinfo.Equals(ptrType.Elem, pointee) && ptrType.Elem.Kind() != typeinfo.KVoid {
+		return &Cast{To: expected.String(), TypeInfo: expected, Value: address}, true
+	}
+	return address, true
 }
 
 // convertAddressArgTarget resolves the lvalue named by an address-valued
@@ -407,7 +491,7 @@ func (c *machineConverter) convertAddressArgTarget(mem machine.MemoryAddress, wi
 				return lvalue
 			}
 		}
-		if resolved, ok := c.resolveAddressValue(&machine.Address{Addr: mem}); ok {
+		if resolved, ok := c.resolveAddressValue(&machine.Address{Addr: mem}, 0); ok {
 			if addressOf, ok := resolved.(*AddressOf); ok {
 				return addressOf.Target
 			}

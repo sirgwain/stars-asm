@@ -1,0 +1,324 @@
+/*
+Popup  (popup)
+  addr: 0019:0c7c  len=1775
+  sig:  void Popup(HWND hwnd, int16_t x, int16_t y)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+  locals:
+    POINT            ptT            [BP-0x18]
+    int16_t          dx             [BP-0x14]
+    char *           psz            [BP-0x12]
+    HFONT            hfontSav       [BP-0x10]
+    int16_t          c              [BP-0xe]
+    int16_t          i              [BP-0xc]
+    int16_t          dy             [BP-0xa]
+    POINT            pt             [BP-0x8]
+    HDC              hdc            [BP-0x4]
+    block 0019:0D22  len=0x88
+      char *           psz            [BP-0x1c]
+      int16_t          dx2            [BP-0x1a]
+    block 0019:0DAA  len=0x22D
+      char *           psz            [BP-0x24]
+      int16_t          dxR            [BP-0x22]
+      char *           lpsz           [BP-0x20]
+      int16_t          dxL            [BP-0x1c]
+      int16_t          dxDamage       [BP-0x1a]
+      block 0019:0E46  len=0x131
+        char[40]         szTB           [BP-0x4c]
+    block 0019:0FD7  len=0xBB
+      int16_t          dxCoord        [BP-0x1e]
+      char *           psz            [BP-0x1c]
+      int16_t          dxName         [BP-0x1a]
+
+  stats: blocks=4  labels=1
+    SetDxDy: L_1113
+*/
+L_0c7c:
+    pt.x = x
+    pt.y = y
+    call ClientToScreen(hwnd, &pt) -> callresult(void)
+    hdc = GetDC(hwnd)
+    hfontSav = SelectObject(hdc, rghfontArial8[0])
+    goto L_11f5
+
+L_0cc3:
+    psz = PszGetCompressedString(idsMineralConcentration0000000kt)
+    dx = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 8)
+    dy = (loword((3 * dyArial8)) + 8)
+    branch GlobalPD.rgi[4] < 0 ? L_1225 : L_0d19
+
+
+
+L_0d19:
+    dy = (dy + dyArial8)
+
+L_0d1f:
+    goto L_1225
+
+L_0d22:
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, 0x0)
+    dx = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 8)
+    dx2 = (loword(GetTextExtent(hdc, "Player #16", 10)) + 8)
+    branch dx2 <= dx ? L_0d9c : L_0d96
+
+L_0d96:
+    dx = dx2
+
+L_0d9c:
+    dy = ((dyArial8 * 2) + 8)
+    goto L_1225
+
+L_0daa:
+    dxR = 0
+    dxDamage = 0
+    dy = (dyArial8 + 8)
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    psz = PszGetCompressedString(idsShipName)
+    dxL = loword(GetTextExtent(hdc, psz, strlen(psz)))
+    call SelectObject(hdc, rghfontArial8[0]) -> callresult(HGDIOBJ)
+    i = 0
+    goto L_0f7b
+
+L_0e0a:
+    branch GlobalPD.lpfl->rgcsh[i] <= 0 ? L_0f77 : L_0e29
+
+L_0e29:
+    branch GlobalPD.grbit == 0x0 ? L_0e46 : L_0e33
+
+L_0e33:
+    branch FIsPopupHullType(i) == 0 ? L_0f77 : L_0e46
+
+L_0e46:
+    dy = (dy + dyArial8)
+    call DecorateHullName(GlobalPD.lpfl->iplr, i, szTB) -> callresult(void)
+    lpsz = &szTB[0]
+    dx = loword(GetTextExtent(hdc, lpsz, fstrlen(lpsz)))
+    branch dxL <= dx ? L_0ea7 : L_0ea1
+
+L_0ea1:
+    t_merge_0eaa_0001 = dxL
+    goto L_0eaa
+
+L_0ea7:
+    t_merge_0eaa_0001 = dx
+
+L_0eaa:
+    dxL = t_merge_0eaa_0001
+    c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i])
+    dx = loword(GetTextExtent(hdc, szWork, c))
+    branch dxR <= dx ? L_0f05 : L_0eff
+
+L_0eff:
+    t_merge_0f08_0001 = dxR
+    goto L_0f08
+
+L_0f05:
+    t_merge_0f08_0001 = dx
+
+L_0f08:
+    dxR = t_merge_0f08_0001
+    branch GlobalPD.fRedDamage == 0 ? L_0f77 : L_0f15
+
+L_0f15:
+    branch ((GlobalPD.lpfl->rgdv[i].dp >> 0x7) & 0x1ff) == 0x0 ? L_0f77 : L_0f3e
+
+L_0f3e:
+    branch dxDamage != 0 ? L_0f77 : L_0f47
+
+L_0f47:
+    psz = PszGetCompressedString(idsN9999999)
+    dxDamage = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 4)
+
+L_0f77:
+    i = (i + 1)
+
+L_0f7b:
+    branch i < 16 ? L_0e0a : L_0f84
+
+L_0f84:
+    branch dy != (dyArial8 + 8) ? L_0fbf : L_0f92
+
+L_0f92:
+    psz = PszGetCompressedString(idsShipName)
+    dxL = loword(GetTextExtent(hdc, psz, strlen(psz)))
+
+L_0fbf:
+    GlobalPD.dxDamage = dxDamage
+    dx = (((dxL + dxR) + 16) + dxDamage)
+    goto L_1225
+
+L_0fd7:
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    dy = ((dyArial8 * 4) + 8)
+    psz = PszGetCompressedString(idsPlanet)
+    dx = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 8)
+    psz = PszGetPlanetName(sel.scan.idpl)
+    call SelectObject(hdc, rghfontArial8[0]) -> callresult(HGDIOBJ)
+    dxName = loword(GetTextExtent(hdc, psz, strlen(psz)))
+    dxCoord = loword(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4))
+    branch dxName <= dxCoord ? L_1089 : L_1083
+
+L_1083:
+    t_merge_108c_0001 = dxName
+    goto L_108c
+
+L_1089:
+    t_merge_108c_0001 = dxCoord
+
+L_108c:
+    dx = (dx + t_merge_108c_0001)
+    goto L_1225
+
+L_1092:
+    ptT = PtDisplayPlanetStateInfo(hdc, 0)
+    goto L_1113
+
+L_10aa:
+    ptT = PtDisplayZipOrdInfo(hdc, 0, 0)
+    goto L_1113
+
+L_10c6:
+    ptT = PtDisplayPlanetPopInfo(hdc, 0)
+    goto L_1113
+
+L_10de:
+    ptT = PtDisplayResourceInfo(hdc, 200, 0)
+    goto L_1113
+
+L_10fa:
+    ptT = PtDisplayFactoryMineInfo(hdc, 200, 0)
+
+SetDxDy:
+    dx = (ptT.x + 2)
+    dy = (ptT.y + 2)
+    goto L_1225
+
+L_1128:
+    branch dyArial8 <= 14 ? L_1138 : L_1132
+
+L_1132:
+    t_merge_113b_0001 = 0x28
+    goto L_113b
+
+L_1138:
+    t_merge_113b_0001 = 0x0
+
+L_113b:
+    dx = (t_merge_113b_0001 + 344)
+    dy = (((dyArial10 + 72) + loword((12 * dyArial8))) + 6)
+    goto L_1225
+
+L_115a:
+    ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0)
+    goto L_1113
+
+L_1176:
+    branch GlobalPD.grPopup != grPopupShdef ? L_1186 : L_1180
+
+L_1180:
+    t_merge_1189_0001 = 0x0
+    goto L_1189
+
+L_1186:
+    t_merge_1189_0001 = 0x1
+
+L_1189:
+    mdBuild = t_merge_1189_0001
+    lpshdefBuild = GlobalPD.lpshdef
+    call UpdateSlotGlobals() -> callresult(void)
+    dx = 340
+    dy = (((dyArial8 + 306) + loword((6 * dyArial8))) + 8)
+    branch gd.mdScreenSize <= 0x0 ? L_1225 : L_11ce
+
+L_11ce:
+    branch GlobalPD.grPopup != grPopupShdef ? L_1225 : L_11d8
+
+L_11d8:
+    dy = (dy + loword((3 * dyArial8)))
+
+L_11e2:
+    goto L_1225
+
+L_11e5:
+    dx = 120
+    dy = 80
+    goto L_1225
+
+L_11f5:
+    branch (GlobalPD.grPopup - 1) > 0xd ? L_1225 : L_1200
+
+L_1200:
+    tablejump ((GlobalPD.grPopup - 1) * 0x2) [0x0: L_0cc3, 0x2: L_0d22, 0x4: L_0daa, 0x6: L_0fd7, 0x8: L_1092, 0xa: L_10aa, 0xc: L_10c6, 0xe: L_10fa, 0x10: L_1128, 0x12: L_115a, 0x14: L_1176, 0x16: L_10de, 0x18: L_11e5, 0x1a: L_1176]
+
+L_1225:
+    call SelectObject(hdc, hfontSav) -> callresult(HGDIOBJ)
+    call ReleaseDC(hwnd, hdc) -> callresult(int16_t)
+    pt.x = (pt.x - dx)
+    pt.y = (pt.y - dy)
+    branch pt.x >= (GetSystemMetrics(SM_CXSCREEN) - dx) ? L_1261 : L_125b
+
+L_125b:
+    t_merge_126d_0001 = pt.x
+    goto L_126d
+
+L_1261:
+    call GetSystemMetrics(SM_CXSCREEN) -> t_call_1265
+    t_merge_126d_0001 = (t_call_1265 - dx)
+
+L_126d:
+    branch 0 <= t_merge_126d_0001 ? L_127d : L_1277
+
+L_1277:
+    t_merge_12a3_0001 = 0x0
+    goto L_12a3
+
+L_127d:
+    branch pt.x >= (GetSystemMetrics(SM_CXSCREEN) - dx) ? L_1297 : L_1291
+
+L_1291:
+    t_merge_12a3_0001 = pt.x
+    goto L_12a3
+
+L_1297:
+    call GetSystemMetrics(SM_CXSCREEN) -> t_call_129b
+    t_merge_12a3_0001 = (t_call_129b - dx)
+
+L_12a3:
+    pt.x = t_merge_12a3_0001
+    branch pt.y >= (GetSystemMetrics(SM_CYSCREEN) - dy) ? L_12c0 : L_12ba
+
+L_12ba:
+    t_merge_12cc_0001 = pt.y
+    goto L_12cc
+
+L_12c0:
+    call GetSystemMetrics(SM_CYSCREEN) -> t_call_12c4
+    t_merge_12cc_0001 = (t_call_12c4 - dy)
+
+L_12cc:
+    branch 0 <= t_merge_12cc_0001 ? L_12dc : L_12d6
+
+L_12d6:
+    t_merge_1302_0001 = 0x0
+    goto L_1302
+
+L_12dc:
+    branch pt.y >= (GetSystemMetrics(SM_CYSCREEN) - dy) ? L_12f6 : L_12f0
+
+L_12f0:
+    t_merge_1302_0001 = pt.y
+    goto L_1302
+
+L_12f6:
+    call GetSystemMetrics(SM_CYSCREEN) -> t_call_12fa
+    t_merge_1302_0001 = (t_call_12fa - dy)
+
+L_1302:
+    pt.y = t_merge_1302_0001
+    hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP|WS_VISIBLE|WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0)
+    call SendMessage(hwndPopup, WM_SETFONT, rghfontArial8[0], 0) -> callresult(LRESULT)
+    call SetCapture(hwndPopup) -> callresult(HWND)
+    return

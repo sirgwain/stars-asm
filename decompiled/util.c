@@ -885,7 +885,7 @@ int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
 
 L_0f24:
     dpShdef = 0;
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     lphs = lphul->rghs;
     chs = lphul->chs;
     ihs = 0;
@@ -1010,7 +1010,7 @@ L_112c:
     return -1;
 
 L_1132:
-    lphul = (rglpshdefSB[lppl->iPlayer] + lppl->isb);
+    lphul = &(rglpshdefSB[lppl->iPlayer][lppl->isb].hul);
     lphs = lphul->rghs;
     chs = lphul->chs;
     ihs = 0;
@@ -4036,9 +4036,9 @@ L_47fb:
     fWeakArmor = 0;
 
 L_4800:
-    lphul = LphuldefFromId(lpshdef->hul.ihuldef);
+    lphul = &(LphuldefFromId(lpshdef->hul.ihuldef)->hul);
     part.hs.grhst = hstNone;
-    part.pcom = lphul;
+    part.phul = lphul;
     GetTruePartCost(idPlayer, &(part), rgCosts);
     c = 0;
     goto L_4865;
@@ -4057,7 +4057,7 @@ L_486e:
     resCost = (uint32_t)(rgCosts[3]);
     wt = (uint32_t)(lphul->wtEmpty);
     lpshdef->hul.dp = lphul->dp;
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     c = 0;
     goto L_48b0;
 
@@ -5416,7 +5416,7 @@ L_5f2c:
     c = t_call_5f2f;
     psz[t_call_5f2f] = 32;
     psz[(c + 1)] = 40;
-    IntToRoman(iVal, (char *)(((uint8_t *)((psz + c)) + 2)));
+    IntToRoman(iVal, (psz + (c + 2)));
     strcat(psz, ")");
 
 L_5f78:

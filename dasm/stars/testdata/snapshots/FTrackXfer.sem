@@ -140,7 +140,7 @@ L_5d26:
     goto L_5f70
 
 L_5d2e:
-    call InitBtnTrack(&btnt, hwnd, 0x0, btn, btn.bt, 80, 0, 0, 0x0) -> callresult(void)
+    call InitBtnTrack(&btnt, hwnd, 0x0, &btn.rc, btn.bt, 80, 0, 0, 0x0) -> callresult(void)
     branch (fkb & 0x8) == 0x0 ? L_5d88 : L_5d66
 
 L_5d66:

@@ -291,8 +291,8 @@ L_03c0:
     GetWindowRect(hwnd, &(rc));
     GetWindowRect(GetDlgItem(hwnd, IDCANCEL), &(rcBtn));
     rc.bottom = rcBtn.top;
-    ScreenToClient(hwnd, &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc)));
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rc.top = (rc.top + (dyArial8 * 2));
     rc.bottom = (rc.bottom - ((int32_t)((dyArial8 * 2)) / 3));
     rc.left = (rc.left + ((int32_t)((dyArial8 * 2)) / 3));
@@ -714,8 +714,8 @@ LUpdatePage:
     SetWindowText(tutor.hwnd, szTitle);
     ShowTutor(1);
     GetWindowRect(tutor.hwnd, &(rc));
-    ScreenToClient(tutor.hwnd, &(rc));
-    ScreenToClient(tutor.hwnd, rc.right);
+    ScreenToClient(tutor.hwnd, (POINT *)(&(rc)));
+    ScreenToClient(tutor.hwnd, (POINT *)(&(rc.right)));
     ExpandRc(&(rc), (-dyArial8), (-2 * dyArial8));
     InvalidateRect(tutor.hwnd, &(rc), 1);
 

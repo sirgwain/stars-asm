@@ -191,7 +191,7 @@ L_5d26:
     goto FinishUp;
 
 L_5d2e:
-    InitBtnTrack(&(btnt), hwnd, 0x0, btn, btn.bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, &(btn.rc), btn.bt, 80, 0, 0, 0x0);
     if (((fkb & 0x8) == 0x0))
         goto L_5d88;
     else

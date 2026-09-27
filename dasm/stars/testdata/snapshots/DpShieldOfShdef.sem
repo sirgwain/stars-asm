@@ -1,0 +1,91 @@
+/*
+DpShieldOfShdef  (util)
+  addr: 0008:0f24  len=469
+  sig:  int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+  locals:
+    PART             part           [BP-0x1a]
+    HUL *            lphul          [BP-0x12]
+    int32_t          dpShdef        [BP-0xe]
+    int16_t          ihs            [BP-0xa]
+    HS *             lphs           [BP-0x8]
+    int16_t          chs            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_0f24:
+    dpShdef = 0
+    lphul = &lpshdef->hul
+    lphs = lphul->rghs
+    chs = lphul->chs
+    ihs = 0
+    goto L_0f7c
+
+L_0f69:
+    ihs = (ihs + 1)
+    lphs = &lphs[1]
+
+L_0f7c:
+    branch ihs >= chs ? L_107e : L_0f87
+
+L_0f87:
+    branch lphs->grhst != hstShield ? L_0feb : L_0f93
+
+L_0f93:
+    branch lphs->cItem <= 0x0 ? L_0feb : L_0faa
+
+L_0faa:
+    part.hs.grhst = lphs->grhst
+    t_fields_1 = &part.hs
+    t_fields_2 = lphs->iItem
+    t_fields_3 = lphs->cItem
+    t_fields_1->iItem = t_fields_2
+    t_fields_1->cItem = t_fields_3
+    call FLookupPart(&part) -> callresult(int16_t)
+    dpShdef = (dpShdef + (uint32_t)loword((part.pshield->dp * lphs->cItem)))
+    goto L_0f69
+
+L_0feb:
+    branch lphs->grhst != hstArmor ? L_1040 : L_0ff7
+
+L_0ff7:
+    branch lphs->cItem <= 0x0 ? L_1040 : L_100e
+
+L_100e:
+    branch lphs->iItem != iarmorFieldedKelarium ? L_1040 : L_1020
+
+L_1020:
+    dpShdef = (dpShdef + (uint32_t)loword((lphs->cItem * 0x32)))
+    goto L_0f69
+
+L_1040:
+    branch lphs->grhst != hstArmor ? L_0f69 : L_104c
+
+L_104c:
+    branch lphs->iItem != iarmorMegaPolyShell ? L_0f69 : L_105e
+
+L_105e:
+    dpShdef = (dpShdef + (uint32_t)loword((lphs->cItem * 0x64)))
+
+L_107b:
+    goto L_0f69
+
+L_107e:
+    branch GetRaceGrbit(&rgplr[iplr], ibitRaceRegeneratingShields) == 0 ? L_10c1 : L_109e
+
+L_109e:
+    dpShdef = (dpShdef + (int32_t)((int32_t)(dpShdef * 2) / 5))
+
+L_10c1:
+    branch (uint32_t)(HIWORD(dpShdef) & 0xffff) != 0x0 ? L_10dd : L_10e7
+
+
+L_10dd:
+    dpShdef = 65535
+
+L_10e7:
+
+L_10f3:
+    return (uint32_t)LOWORD(dpShdef)

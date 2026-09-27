@@ -362,7 +362,7 @@ L_0437:
         goto L_0446;
 
 L_0446:
-    if ((pch >= 0x22ef))
+    if ((pch >= &(szPassLast[15])))
         goto L_0466;
     else
         goto L_0450;

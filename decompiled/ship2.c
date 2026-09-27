@@ -132,9 +132,9 @@ L_0202:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     GetWindowRect(GetDlgItem(hwnd, 0x431), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0434), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -1985,7 +1985,7 @@ L_25ed:
         goto L_260a;
 
 L_260a:
-    lphuldef = (rglpshdef[lpfl->iPlayer] + i);
+    lphuldef = &(rglpshdef[lpfl->iPlayer][i].hul);
     chs = lphuldef->chs;
     cMine = 0;
     j = 0;
@@ -2079,7 +2079,7 @@ L_2777:
         goto L_2794;
 
 L_2794:
-    lphuldef = (rglpshdef[lpfl->iPlayer] + i);
+    lphuldef = &(rglpshdef[lpfl->iPlayer][i].hul);
     chs = lphuldef->chs;
     pct = 0;
     j = 0;
@@ -2221,7 +2221,7 @@ L_2927:
         goto L_2935;
 
 L_2935:
-    lphul = (rglpshdef[lpfl->iPlayer] + i);
+    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
     chs = lphul->chs;
     cMine = 0;
     j = 0;
@@ -2355,7 +2355,7 @@ L_2b41:
         goto L_2b5e;
 
 L_2b5e:
-    lphul = (rglpshdef[lpfl->iPlayer] + i);
+    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
     lPow = CMineSweepFromLphul(lphul);
     lPowTot = (lPowTot + (uint32_t)((lPow * (int32_t)(lpfl->rgcsh[i]))));
 
@@ -2517,7 +2517,7 @@ L_2d9e:
         goto L_2dbb;
 
 L_2dbb:
-    lphul = (rglpshdef[lpfl->iPlayer] + i);
+    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
     chs = lphul->chs;
     wtFleetCur = (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (uint32_t)(lphul->wtEmpty)));
     cPtsCur = 0;

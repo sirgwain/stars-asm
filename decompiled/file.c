@@ -153,8 +153,8 @@ L_0301:
         goto L_0321;
 
 L_0321:
-    lphul = (lpshdef + ishdef);
-    lphulBase = LphuldefFromId(lphul->ihuldef);
+    lphul = &(lpshdef[ishdef].hul);
+    lphulBase = &(LphuldefFromId(lphul->ihuldef)->hul);
     wt = (uint32_t)(lphulBase->wtEmpty);
     c = 0;
     goto L_0370;
@@ -287,13 +287,13 @@ L_0684:
         goto L_0699;
 
 L_0699:
-    strcpy(pplr->szName, (char *)(((uint8_t *)((pbIn + iOff)) + 1)));
+    strcpy(pplr->szName, (char *)((pbIn + (iOff + 1))));
     iOff = (iOff + (strlen(pplr->szName) + 2));
     goto L_0721;
 
 L_06d2:
     cOut = 32;
-    FDecompressUserString((char *)(((uint8_t *)((pbIn + iOff)) + 1)), pbIn[iOff], pplr->szName, &(cOut));
+    FDecompressUserString((char *)((pbIn + (iOff + 1))), pbIn[iOff], pplr->szName, &(cOut));
     iOff = (iOff + (pbIn[iOff] + 1));
 
 L_0721:
@@ -314,12 +314,12 @@ L_0784:
         goto L_0799;
 
 L_0799:
-    strcpy(pplr->szNames, (char *)(((uint8_t *)((pbIn + iOff)) + 1)));
+    strcpy(pplr->szNames, (char *)((pbIn + (iOff + 1))));
     goto L_07f7;
 
 L_07bb:
     cOut = 32;
-    FDecompressUserString((char *)(((uint8_t *)((pbIn + iOff)) + 1)), pbIn[iOff], pplr->szNames, &(cOut));
+    FDecompressUserString((char *)((pbIn + (iOff + 1))), pbIn[iOff], pplr->szNames, &(cOut));
 
 L_07f7:
     pplr->fLearned = 0x0;
@@ -723,7 +723,7 @@ L_0e51:
     idPlayer = -1;
 
 L_0e57:
-    if ((FReadShDef(rgbCur, rglpshdef[i], iplrSav) == 0))
+    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdef[i], iplrSav) == 0))
         goto CorruptHist;
     else
         goto L_0e83;
@@ -802,7 +802,7 @@ L_0fc4:
     idPlayer = -1;
 
 L_0fca:
-    if ((FReadShDef(rgbCur, rglpshdefSB[i], iplrSav) == 0))
+    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdefSB[i], iplrSav) == 0))
         goto CorruptHist;
     else
         goto L_0ff6;
@@ -1470,7 +1470,7 @@ L_1c7f:
         goto L_1c92;
 
 L_1c92:
-    if ((FReadShDef(rgbCur, rglpshdef[i], iplrSav) == 0))
+    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdef[i], iplrSav) == 0))
         goto Corrupt;
     else
         goto L_1cb8;
@@ -1675,7 +1675,7 @@ L_200a:
         goto L_201d;
 
 L_201d:
-    if ((FReadShDef(rgbCur, rglpshdefSB[i], iplrSav) == 0))
+    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdefSB[i], iplrSav) == 0))
         goto Corrupt;
     else
         goto L_2043;

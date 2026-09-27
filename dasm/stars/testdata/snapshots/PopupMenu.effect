@@ -1,0 +1,697 @@
+/*
+PopupMenu  (popup)
+  addr: 0019:136c  len=1484
+  sig:  int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+    int16_t          cString        [BP+0xc]
+    int32_t *        rgids          [BP+0xe]
+    char * *         rgsz           [BP+0x10]
+    int16_t          iChecked       [BP+0x12]
+    int16_t          fRightBtn      [BP+0x14]
+  locals:
+    MSG              msg            [BP-0xa6]
+    char *           psz            [BP-0x94]
+    char *           pszT           [BP-0x92]
+    HMENU            hmenuPopup     [BP-0x90]
+    HMENU            hmenuSub       [BP-0x8e]
+    char[128]        szTemp         [BP-0x8c]
+    int16_t          i              [BP-0xc]
+    POINT            pt             [BP-0xa]
+    int16_t          tpm            [BP-0x6]
+    char *           pszTitle       [BP-0x4]
+    block 0019:15BF  len=0x1AF
+      char *           psz            [BP-0xac]
+      int16_t          fCheckedCur    [BP-0xaa]
+      int16_t          fChecked       [BP-0xa8]
+
+  stats: blocks=1  labels=0
+*/
+block L_136c:
+  insts 0..20  off 0x136c..0x13ac
+  succs: L_1887
+  effects:
+    1375  store[2] [bp-hmenuSub] = 0x0
+    137e  store[2] [bp-pt] = load([bp+x])
+    1384  store[2] [bp-pt+0x2] = load([bp+y])
+    1391  call ClientToScreen(load([bp+hwnd]), words(ss, addr([bp-pt]))) -> callresult(void)
+    1396  call CreatePopupMenu() -> callresult(HMENU)
+    139b  store[2] [bp-hmenuPopup] = callresult(HMENU)
+    139f  store[2] [iPopMenuSel] = 0xffff
+    13a5  store[2] [bp-i] = 0x0
+    13aa  goto L_1887
+
+block L_13ad:
+  insts 21..22  off 0x13ad..0x13b2
+  preds: L_1887
+  succs: L_13b6, L_15ad
+  effects:
+    13b1  branch load([bp+rgids]) == 0x0 ? L_15ad : L_13b6
+
+block L_13b6:
+  insts 24..25  off 0x13b6..0x13bb
+  preds: L_13ad
+  succs: L_13bf, L_13c8
+  effects:
+    13ba  branch load([bp+iChecked]) != 0xfffe ? L_13c8 : L_13bf
+
+block L_13bf:
+  insts 27..28  off 0x13bf..0x13c4
+  preds: L_13b6
+  succs: L_13c8, L_15ad
+  effects:
+    13c3  branch load([bp+rgsz]) != 0x0 ? L_15ad : L_13c8
+
+block L_13c8:
+  insts 30..36  off 0x13c8..0x13d8
+  preds: L_13b6, L_13bf
+  succs: L_13dc, L_1401
+  effects:
+    13d7  branch load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))]) != 0xffff ? L_1401 : L_13dc
+
+block L_13dc:
+  insts 38..39  off 0x13dc..0x13e1
+  preds: L_13c8
+  succs: L_13e5, L_1401
+  effects:
+    13e0  branch load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) != 0xffff ? L_1401 : L_13e5
+
+block L_13e5:
+  insts 41..51  off 0x13e5..0x1400
+  preds: L_13dc
+  succs: L_1883
+  effects:
+    13f9  call AppendMenu(load([bp-hmenuPopup]), 0x800, 0x0, words(0x0, 0x0)) -> callresult(int16_t)
+    13fe  goto L_1883
+
+block L_1401:
+  insts 52..62  off 0x1401..0x141d
+  preds: L_13c8, L_13dc
+  succs: L_1421, L_1429
+  effects:
+    141c  branch 0x0 != 0x0 ? L_1429 : L_1421
+
+block L_1421:
+  insts 64..65  off 0x1421..0x1425
+  preds: L_1401
+  succs: L_1429, L_1432
+  effects:
+    1424  branch (load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) & 0x1000) == 0x0 ? L_1432 : L_1429
+
+block L_1429:
+  insts 67..68  off 0x1429..0x1431
+  preds: L_1401, L_1421
+  succs: L_152e
+  effects:
+    1429  store[2] [bp-psz] = 0xc09
+    142f  goto L_152e
+
+block L_1432:
+  insts 69..79  off 0x1432..0x144e
+  preds: L_1421
+  succs: L_1452, L_145a
+  effects:
+    144d  branch 0x0 != 0x0 ? L_145a : L_1452
+
+block L_1452:
+  insts 81..82  off 0x1452..0x1456
+  preds: L_1432
+  succs: L_145a, L_147b
+  effects:
+    1455  branch (load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) & 0x4000) == 0x0 ? L_147b : L_145a
+
+block L_145a:
+  insts 84..95  off 0x145a..0x147a
+  preds: L_1432, L_1452
+  succs: L_152e
+  effects:
+    146c  call PszGetCompressedString(load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))])) -> callresult(char *)
+    1474  store[2] [bp-psz] = callresult(char *)
+    1478  goto L_152e
+
+block L_147b:
+  insts 96..106  off 0x147b..0x1497
+  preds: L_1452
+  succs: L_149b, L_14a3
+  effects:
+    1496  branch 0x0 != 0x0 ? L_14a3 : L_149b
+
+block L_149b:
+  insts 108..109  off 0x149b..0x149f
+  preds: L_147b
+  succs: L_14a3, L_14c4
+  effects:
+    149e  branch (load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) & 0x2000) == 0x0 ? L_14c4 : L_14a3
+
+block L_14a3:
+  insts 111..122  off 0x14a3..0x14c3
+  preds: L_147b, L_149b
+  succs: L_152e
+  effects:
+    14b5  call PszGetThingName(load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))])) -> callresult(char *)
+    14bd  store[2] [bp-psz] = callresult(char *)
+    14c1  goto L_152e
+
+block L_14c4:
+  insts 123..133  off 0x14c4..0x14e0
+  preds: L_149b
+  succs: L_14e4, L_14ec
+  effects:
+    14df  branch 0x0 != 0x0 ? L_14ec : L_14e4
+
+block L_14e4:
+  insts 135..136  off 0x14e4..0x14e8
+  preds: L_14c4
+  succs: L_14ec, L_1510
+  effects:
+    14e7  branch (load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) & 0x8000) == 0x0 ? L_1510 : L_14ec
+
+block L_14ec:
+  insts 138..150  off 0x14ec..0x150f
+  preds: L_14c4, L_14e4
+  succs: L_152e
+  effects:
+    1501  call PszGetFleetName((load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))]) | 0x8000)) -> callresult(char *)
+    1509  store[2] [bp-psz] = callresult(char *)
+    150d  goto L_152e
+
+block L_1510:
+  insts 151..161  off 0x1510..0x152d
+  preds: L_14e4
+  succs: L_152e
+  effects:
+    1522  call PszGetPlanetName(load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))])) -> callresult(char *)
+    152a  store[2] [bp-psz] = callresult(char *)
+
+block L_152e:
+  insts 162..163  off 0x152e..0x1535
+  preds: L_1429, L_145a, L_14a3, L_14ec, L_1510
+  succs: L_1536
+  effects:
+    1532  store[2] [bp-pszT] = addr([bp-szTemp])
+
+block L_1536:
+  insts 164..168  off 0x1536..0x1541
+  preds: L_152e, L_1545, L_1570
+  succs: L_1545, L_1573
+  effects:
+    1540  branch sext8to16(load(byte ds:[load([bp-psz])])) == 0x0 ? L_1573 : L_1545
+
+block L_1545:
+  insts 170..178  off 0x1545..0x1560
+  preds: L_1536
+  succs: L_1536, L_1564
+  effects:
+    1549  store[2] [bp-psz] = (load([bp-psz]) + 0x1)
+    1554  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    1559  store[1] byte ds:[load([bp-pszT])] = load(byte ds:[load([bp-psz])])
+    155f  branch sext8to16(load(byte ds:[load([bp-psz])])) != 0x26 ? L_1536 : L_1564
+
+block L_1564:
+  insts 180..182  off 0x1564..0x156f
+  preds: L_1545
+  succs: L_1570
+  effects:
+    1568  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    156d  store[1] byte ds:[load([bp-pszT])] = 0x26
+
+block L_1570:
+  insts 183..183  off 0x1570..0x1572
+  preds: L_1564
+  succs: L_1536
+  effects:
+    1570  goto L_1536
+
+block L_1573:
+  insts 184..189  off 0x1573..0x1585
+  preds: L_1536
+  succs: L_1589, L_158f
+  effects:
+    1577  store[1] byte ds:[load([bp-pszT])] = 0x0
+    1584  branch load([bp-i]) != load([bp+iChecked]) ? L_158f : L_1589
+
+block L_1589:
+  insts 191..192  off 0x1589..0x158e
+  preds: L_1573
+  succs: L_1592
+  effects:
+    158c  goto L_1592
+
+block L_158f:
+  insts 193..193  off 0x158f..0x1591
+  preds: L_1573
+  succs: L_1592
+
+block L_1592:
+  insts 194..203  off 0x1592..0x15a9
+  preds: L_1589, L_158f
+  succs: L_15aa
+  effects:
+    15a5  call AppendMenu(load([bp-hmenuPopup]), (merge(Join: L_1592, (L_1589:0x8, L_158f:0x0)) | 0x0), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
+
+block L_15aa:
+  insts 204..204  off 0x15aa..0x15ac
+  preds: L_1592
+  succs: L_1883
+  effects:
+    15aa  goto L_1883
+
+block L_15ad:
+  insts 205..210  off 0x15ad..0x15bb
+  preds: L_13ad, L_13bf
+  succs: L_15bf, L_1771
+  effects:
+    15ba  branch load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))]) != 0x0 ? L_1771 : L_15bf
+
+block L_15bf:
+  insts 212..220  off 0x15bf..0x15d6
+  preds: L_15ad
+  succs: L_15da, L_15f1
+  effects:
+    15ce  store[2] [bp-pszTitle] = load(ds:[(load([bp+rgsz]) + ((load([bp-i]) + 0x1) << 0x1))])
+    15d5  branch load([bp+rgids]) == 0x0 ? L_15f1 : L_15da
+
+block L_15da:
+  insts 222..230  off 0x15da..0x15f0
+  preds: L_15bf
+  succs: L_15f4
+  effects:
+    15ee  goto L_15f4
+
+block L_15f1:
+  insts 231..231  off 0x15f1..0x15f3
+  preds: L_15bf
+  succs: L_15f4
+
+block L_15f4:
+  insts 232..236  off 0x15f4..0x1607
+  preds: L_15da, L_15f1
+  succs: L_1738
+  effects:
+    15f4  store[2] [bp-fChecked] = merge(Join: L_15f4, (L_15da:load(ds:[(load([bp+0xe]) + (((load([bp-0xc]) + 0x1) << 0x1) << 0x1))]), L_15f1:0x0))
+    15f8  call CreatePopupMenu() -> callresult(HMENU)
+    15fd  store[2] [bp-hmenuSub] = callresult(HMENU)
+    1601  store[2] [bp-i] = (load([bp-i]) + 0x2)
+    1605  goto L_1738
+
+block L_1608:
+  insts 237..242  off 0x1608..0x1616
+  preds: L_1738
+  succs: L_161d, L_1743
+  effects:
+    1615  branch load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))]) == 0x0 ? L_1743 : L_161d
+
+block L_161d:
+  insts 245..246  off 0x161d..0x1622
+  preds: L_1608
+  succs: L_1626, L_1649
+  effects:
+    1621  branch load([bp+rgids]) != 0x0 ? L_1649 : L_1626
+
+block L_1626:
+  insts 248..250  off 0x1626..0x162d
+  preds: L_161d
+  succs: L_1631, L_1637
+  effects:
+    162c  branch load([bp-i]) != load([bp+iChecked]) ? L_1637 : L_1631
+
+block L_1631:
+  insts 252..253  off 0x1631..0x1636
+  preds: L_1626
+  succs: L_163a
+  effects:
+    1634  goto L_163a
+
+block L_1637:
+  insts 254..254  off 0x1637..0x1639
+  preds: L_1626
+  succs: L_163a
+
+block L_163a:
+  insts 255..258  off 0x163a..0x1648
+  preds: L_1631, L_1637
+  succs: L_165e
+  effects:
+    163a  store[2] [bp-fCheckedCur] = merge(Join: L_163a, (L_1631:0x1, L_1637:0x0))
+    1642  store[2] [bp-fChecked] = (load([bp-fChecked]) | load([bp-fCheckedCur]))
+    1646  goto L_165e
+
+block L_1649:
+  insts 259..266  off 0x1649..0x165d
+  preds: L_161d
+  succs: L_165e
+  effects:
+    165a  store[2] [bp-fCheckedCur] = load(ds:[(load([bp+rgids]) + ((load([bp-i]) << 0x1) << 0x1))])
+
+block L_165e:
+  insts 267..275  off 0x165e..0x1671
+  preds: L_163a, L_1649
+  succs: L_1675, L_16a9
+  effects:
+    1670  branch sext8to16(load(byte ds:[load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])])) != 0xffff ? L_16a9 : L_1675
+
+block L_1675:
+  insts 277..285  off 0x1675..0x1689
+  preds: L_165e
+  succs: L_168d, L_16a9
+  effects:
+    1688  branch sext8to16(load(byte ds:[load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])+0x1])) != 0x0 ? L_16a9 : L_168d
+
+block L_168d:
+  insts 287..297  off 0x168d..0x16a8
+  preds: L_1675
+  succs: L_1734
+  effects:
+    16a1  call AppendMenu(load([bp-hmenuSub]), 0x800, 0x0, words(0x0, 0x0)) -> callresult(int16_t)
+    16a6  goto L_1734
+
+block L_16a9:
+  insts 298..305  off 0x16a9..0x16c0
+  preds: L_165e, L_1675
+  succs: L_16c1
+  effects:
+    16ad  store[2] [bp-pszT] = addr([bp-szTemp])
+    16bd  store[2] [bp-psz] = load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])
+
+block L_16c1:
+  insts 306..310  off 0x16c1..0x16cc
+  preds: L_16a9, L_16d0, L_16fb
+  succs: L_16d0, L_16fe
+  effects:
+    16cb  branch sext8to16(load(byte ds:[load([bp-psz])])) == 0x0 ? L_16fe : L_16d0
+
+block L_16d0:
+  insts 312..320  off 0x16d0..0x16eb
+  preds: L_16c1
+  succs: L_16c1, L_16ef
+  effects:
+    16d4  store[2] [bp-psz] = (load([bp-psz]) + 0x1)
+    16df  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    16e4  store[1] byte ds:[load([bp-pszT])] = load(byte ds:[load([bp-psz])])
+    16ea  branch sext8to16(load(byte ds:[load([bp-psz])])) != 0x26 ? L_16c1 : L_16ef
+
+block L_16ef:
+  insts 322..324  off 0x16ef..0x16fa
+  preds: L_16d0
+  succs: L_16fb
+  effects:
+    16f3  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    16f8  store[1] byte ds:[load([bp-pszT])] = 0x26
+
+block L_16fb:
+  insts 325..325  off 0x16fb..0x16fd
+  preds: L_16ef
+  succs: L_16c1
+  effects:
+    16fb  goto L_16c1
+
+block L_16fe:
+  insts 326..330  off 0x16fe..0x170f
+  preds: L_16c1
+  succs: L_1713, L_1719
+  effects:
+    1702  store[1] byte ds:[load([bp-pszT])] = 0x0
+    170e  branch load([bp-fCheckedCur]) == 0x0 ? L_1719 : L_1713
+
+block L_1713:
+  insts 332..333  off 0x1713..0x1718
+  preds: L_16fe
+  succs: L_171c
+  effects:
+    1716  goto L_171c
+
+block L_1719:
+  insts 334..334  off 0x1719..0x171b
+  preds: L_16fe
+  succs: L_171c
+
+block L_171c:
+  insts 335..344  off 0x171c..0x1733
+  preds: L_1713, L_1719
+  succs: L_1734
+  effects:
+    172f  call AppendMenu(load([bp-hmenuSub]), (merge(Join: L_171c, (L_1713:0x8, L_1719:0x0)) | 0x0), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
+
+block L_1734:
+  insts 345..345  off 0x1734..0x1737
+  preds: L_168d, L_171c
+  succs: L_1738
+  effects:
+    1734  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1738:
+  insts 346..348  off 0x1738..0x173f
+  preds: L_15f4, L_1734
+  succs: L_1608, L_1743
+  effects:
+    173e  branch load([bp-i]) < load([bp+cString]) ? L_1608 : L_1743
+
+block L_1743:
+  insts 350..352  off 0x1743..0x174d
+  preds: L_1608, L_1738
+  succs: L_1751, L_1757
+  effects:
+    174c  branch load([bp-fChecked]) == 0x0 ? L_1757 : L_1751
+
+block L_1751:
+  insts 354..355  off 0x1751..0x1756
+  preds: L_1743
+  succs: L_175a
+  effects:
+    1754  goto L_175a
+
+block L_1757:
+  insts 356..356  off 0x1757..0x1759
+  preds: L_1743
+  succs: L_175a
+
+block L_175a:
+  insts 357..365  off 0x175a..0x1770
+  preds: L_1751, L_1757
+  succs: L_1883
+  effects:
+    1769  call AppendMenu(load([bp-hmenuPopup]), (merge(Join: L_175a, (L_1751:0x8, L_1757:0x0)) | 0x10), load([bp-hmenuSub]), words(ds, load([bp-pszTitle]))) -> callresult(int16_t)
+    176e  goto L_1883
+
+block L_1771:
+  insts 366..374  off 0x1771..0x1784
+  preds: L_15ad
+  succs: L_1788, L_17bc
+  effects:
+    1783  branch sext8to16(load(byte ds:[load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])])) != 0xffff ? L_17bc : L_1788
+
+block L_1788:
+  insts 376..384  off 0x1788..0x179c
+  preds: L_1771
+  succs: L_17a0, L_17bc
+  effects:
+    179b  branch sext8to16(load(byte ds:[load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])+0x1])) != 0x0 ? L_17bc : L_17a0
+
+block L_17a0:
+  insts 386..396  off 0x17a0..0x17bb
+  preds: L_1788
+  succs: L_1883
+  effects:
+    17b4  call AppendMenu(load([bp-hmenuPopup]), 0x800, 0x0, words(0x0, 0x0)) -> callresult(int16_t)
+    17b9  goto L_1883
+
+block L_17bc:
+  insts 397..404  off 0x17bc..0x17d3
+  preds: L_1771, L_1788
+  succs: L_17d4
+  effects:
+    17c0  store[2] [bp-pszT] = addr([bp-szTemp])
+    17d0  store[2] [bp-psz] = load(ds:[(load([bp+rgsz]) + (load([bp-i]) << 0x1))])
+
+block L_17d4:
+  insts 405..409  off 0x17d4..0x17df
+  preds: L_17bc, L_17e3, L_180e
+  succs: L_17e3, L_1811
+  effects:
+    17de  branch sext8to16(load(byte ds:[load([bp-psz])])) == 0x0 ? L_1811 : L_17e3
+
+block L_17e3:
+  insts 411..419  off 0x17e3..0x17fe
+  preds: L_17d4
+  succs: L_17d4, L_1802
+  effects:
+    17e7  store[2] [bp-psz] = (load([bp-psz]) + 0x1)
+    17f2  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    17f7  store[1] byte ds:[load([bp-pszT])] = load(byte ds:[load([bp-psz])])
+    17fd  branch sext8to16(load(byte ds:[load([bp-psz])])) != 0x26 ? L_17d4 : L_1802
+
+block L_1802:
+  insts 421..423  off 0x1802..0x180d
+  preds: L_17e3
+  succs: L_180e
+  effects:
+    1806  store[2] [bp-pszT] = (load([bp-pszT]) + 0x1)
+    180b  store[1] byte ds:[load([bp-pszT])] = 0x26
+
+block L_180e:
+  insts 424..424  off 0x180e..0x1810
+  preds: L_1802
+  succs: L_17d4
+  effects:
+    180e  goto L_17d4
+
+block L_1811:
+  insts 425..429  off 0x1811..0x1821
+  preds: L_17d4
+  succs: L_1825, L_1839
+  effects:
+    1815  store[1] byte ds:[load([bp-pszT])] = 0x0
+    1820  branch load([bp+iChecked]) != 0xfffe ? L_1839 : L_1825
+
+block L_1825:
+  insts 431..438  off 0x1825..0x1838
+  preds: L_1811
+  succs: L_184f
+  effects:
+    1836  goto L_184f
+
+block L_1839:
+  insts 439..441  off 0x1839..0x1840
+  preds: L_1811
+  succs: L_1844, L_184b
+  effects:
+    183f  branch load([bp-i]) != load([bp+iChecked]) ? L_184b : L_1844
+
+block L_1844:
+  insts 443..445  off 0x1844..0x184a
+  preds: L_1839
+  succs: L_184f
+  effects:
+    1848  goto L_184f
+
+block L_184b:
+  insts 446..447  off 0x184b..0x184e
+  preds: L_1839
+  succs: L_184f
+
+block L_184f:
+  insts 448..451  off 0x184f..0x1859
+  preds: L_1825, L_1844, L_184b
+  succs: L_185d, L_1865
+  effects:
+    1858  branch (merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))]), L_1844:0x1, L_184b:0x0)) | 0x0) != 0x0 ? L_1865 : L_185d
+
+block L_185d:
+  insts 453..454  off 0x185d..0x1861
+  preds: L_184f
+  succs: L_1865, L_186b
+  effects:
+    1860  branch (merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))+0x2]), L_1844:0x0, L_184b:0x0)) | 0x0) == 0x0 ? L_186b : L_1865
+
+block L_1865:
+  insts 456..457  off 0x1865..0x186a
+  preds: L_184f, L_185d
+  succs: L_186e
+  effects:
+    1868  goto L_186e
+
+block L_186b:
+  insts 458..458  off 0x186b..0x186d
+  preds: L_185d
+  succs: L_186e
+
+block L_186e:
+  insts 459..467  off 0x186e..0x1882
+  preds: L_1865, L_186b
+  succs: L_1883
+  effects:
+    187e  call AppendMenu(load([bp-hmenuPopup]), merge(Join: L_186e, (L_1865:0x8, L_186b:0x0)), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
+
+block L_1883:
+  insts 468..468  off 0x1883..0x1886
+  preds: L_13e5, L_15aa, L_175a, L_17a0, L_186e
+  succs: L_1887
+  effects:
+    1883  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1887:
+  insts 469..471  off 0x1887..0x188e
+  preds: L_136c, L_1883
+  succs: L_13ad, L_1892
+  effects:
+    188d  branch load([bp-i]) < load([bp+cString]) ? L_13ad : L_1892
+
+block L_1892:
+  insts 473..474  off 0x1892..0x1897
+  preds: L_1887
+  succs: L_189b, L_18a3
+  effects:
+    1896  branch load([bp+fRightBtn]) == 0x0 ? L_18a3 : L_189b
+
+block L_189b:
+  insts 476..477  off 0x189b..0x18a2
+  preds: L_1892
+  succs: L_18a8
+  effects:
+    189b  store[2] [bp-tpm] = 0x2
+    18a0  goto L_18a8
+
+block L_18a3:
+  insts 478..478  off 0x18a3..0x18a7
+  preds: L_1892
+  succs: L_18a8
+  effects:
+    18a3  store[2] [bp-tpm] = 0x0
+
+block L_18a8:
+  insts 479..495  off 0x18a8..0x18da
+  preds: L_189b, L_18a3
+  succs: L_18de, L_18e7
+  effects:
+    18c6  call TrackPopupMenu(load@18a8/src([bp-hmenuPopup]), load([bp-tpm]), load([bp-pt]), load([bp-pt+0x2]), 0x0, load([hwndFrame]), words(0x0, 0x0)) -> callresult(int16_t)
+    18cf  call DestroyMenu(load@18cb/src([bp-hmenuPopup])) -> callresult(int16_t)
+    18d9  branch load([bp-hmenuSub]) == 0x0 ? L_18e7 : L_18de
+
+block L_18de:
+  insts 497..498  off 0x18de..0x18e6
+  preds: L_18a8
+  succs: L_18e7
+  effects:
+    18e2  call DestroyMenu(load([bp-hmenuSub])) -> callresult(int16_t)
+
+block L_18e7:
+  insts 499..512  off 0x18e7..0x1908
+  preds: L_18a8, L_18de
+  succs: L_190c, L_192c
+  effects:
+    18ff  call PeekMessage(words(ss, addr([bp-msg])), load([hwndFrame]), 0x111, 0x111, 0x2) -> callresult(int16_t)
+    1907  branch callresult(int16_t) == 0x0 ? L_192c : L_190c
+
+block L_190c:
+  insts 514..515  off 0x190c..0x1913
+  preds: L_18e7
+  succs: L_1917, L_192c
+  effects:
+    1912  branch load([bp-msg+0x4]) < 0x3a98 ? L_192c : L_1917
+
+block L_1917:
+  insts 517..518  off 0x1917..0x191e
+  preds: L_190c
+  succs: L_1922, L_192c
+  effects:
+    191d  branch load([bp-msg+0x4]) >= 0x3afc ? L_192c : L_1922
+
+block L_1922:
+  insts 520..522  off 0x1922..0x192b
+  preds: L_1917
+  succs: L_192c
+  effects:
+    1929  store[2] [iPopMenuSel] = (load([bp-msg+0x4]) + 0xc568)
+
+block L_192c:
+  insts 523..523  off 0x192c..0x1931
+  preds: L_18e7, L_190c, L_1917, L_1922
+  succs: L_1932
+
+block L_1932:
+  insts 525..529  off 0x1932..0x1937
+  preds: L_192c
+  effects:
+    1937  return load([iPopMenuSel])

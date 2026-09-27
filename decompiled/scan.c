@@ -8338,8 +8338,8 @@ L_8d78:
     rcMine.bottom = (rcMine.top - iRad);
     rcMine.left = (rcMine.left - iRad);
     rcMine.top = (rcMine.top + iRad);
-    LogicalToScan(&(rcMine));
-    LogicalToScan(rcMine.right);
+    LogicalToScan((POINT *)(&(rcMine)));
+    LogicalToScan((POINT *)(&(rcMine.right)));
     InflateRect(&(rcMine), 1, 1);
 
 L_8e24:
@@ -8430,8 +8430,8 @@ L_8f7d:
     rcMine.bottom = (rcMine.top - iRad);
     rcMine.left = (rcMine.left - iRad);
     rcMine.top = (rcMine.top + iRad);
-    LogicalToScan(&(rcMine));
-    LogicalToScan(rcMine.right);
+    LogicalToScan((POINT *)(&(rcMine)));
+    LogicalToScan((POINT *)(&(rcMine.right)));
     InflateRect(&(rcMine), 1, 1);
 
 L_9029:

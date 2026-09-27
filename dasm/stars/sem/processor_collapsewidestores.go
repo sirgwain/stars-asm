@@ -130,6 +130,9 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 	if collapsed, ok := p.collapseWideAggregateCopy(low, high); ok {
 		return collapsed, true
 	}
+	if collapsed, ok := p.collapseWideAggregateReturn(low, high); ok {
+		return collapsed, true
+	}
 
 	wideAddress, ok := p.ctx.symbols.wideStorageDestination(low.Addr, high.Addr)
 	if !ok {
@@ -446,6 +449,31 @@ func (p *collapseWideStoresProcessor) collapseWideAggregateCopy(low machine.Stor
 
 	low.Addr = wideDst
 	low.Src = &src
+	low.Width = 4
+	return low, true
+}
+
+// collapseWideAggregateReturn restores the assignment of a four-byte struct
+// returned in DX:AX. The compiler stores loword and hiword of the call result
+// into the destination's two words, as with pt = PtDisplayPlanetStateInfo(...).
+func (p *collapseWideStoresProcessor) collapseWideAggregateReturn(low machine.StoreEffect, high machine.StoreEffect) (machine.StoreEffect, bool) {
+	lowWord, lowOK := low.Src.(*machine.WordValue)
+	highWord, highOK := high.Src.(*machine.WordValue)
+	if !lowOK || !highOK || lowWord.Part != machine.WordLow || highWord.Part != machine.WordHigh {
+		return low, false
+	}
+	result, ok := lowWord.Parent.(*machine.CallResult)
+	if !ok || !machine.ValueEquals(result, highWord.Parent) {
+		return low, false
+	}
+
+	wideDst, dstType, ok := p.ctx.symbols.wideAggregateStorage(low.Addr, high.Addr)
+	if !ok || !typeinfo.Equals(dstType, result.Type) {
+		return low, false
+	}
+
+	low.Addr = wideDst
+	low.Src = result
 	low.Width = 4
 	return low, true
 }

@@ -200,7 +200,7 @@ L_037d:
         goto L_0387;
 
 L_0387:
-    psz = 0x97e;
+    psz = "";
     goto L_03f4;
 
 L_038f:
@@ -3256,7 +3256,7 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat) {
     HUL    *lphul;
 
 L_41b2:
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     goto L_4496;
 
 L_41cd:
@@ -4168,7 +4168,7 @@ L_52d4:
         goto L_52ec;
 
 L_52ec:
-    FLookupPlanet(-1, &(xfer[i].fl));
+    FLookupPlanet(-1, &(xfer[i].pl));
     if ((xfer[i].grobj != grobjPlanet))
         goto L_542a;
     else
@@ -4237,7 +4237,7 @@ L_53f1:
         goto L_5409;
 
 L_5409:
-    FLookupThing(-1, &(xfer[i].fl));
+    FLookupThing(-1, &(xfer[i].th));
 
 L_542a:
     i = (i + 1);
@@ -4778,7 +4778,7 @@ L_5d26:
     goto FinishUp;
 
 L_5d2e:
-    InitBtnTrack(&(btnt), hwnd, 0x0, btn, btn.bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, &(btn.rc), btn.bt, 80, 0, 0, 0x0);
     if (((fkb & 0x8) == 0x0))
         goto L_5d88;
     else

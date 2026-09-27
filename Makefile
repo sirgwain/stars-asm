@@ -1,4 +1,4 @@
-.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check
+.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile
 
 DIST_DIR    := dist
 CLI_BIN     := $(DIST_DIR)/stars-asm
@@ -7,6 +7,8 @@ COVER_BIN   := $(COVER_DIR)/stars-cov
 COVER_OUT   := $(COVER_DIR)/cover.out
 COVER_HTML  := $(COVER_DIR)/coverage.html
 MINGW_CC    ?= x86_64-w64-mingw32-gcc
+SRC_DIR     := decompiled
+FILES       ?= $(wildcard $(SRC_DIR)/*.c)
 
 help:
 	@echo "Targets:"
@@ -16,6 +18,7 @@ help:
 	@echo "  coverage-report  Run 'dasm all' and open HTML coverage report"
 	@echo "  compile-analysis Generate non-failing MinGW syntax diagnostics"
 	@echo "  compile-check    Generate MinGW diagnostics and fail on C errors"
+	@echo "  compile          Print MinGW diagnostics to the terminal (FILES=decompiled/ai.c to limit)"
 	@echo "  tidy             Run go mod tidy in both modules"
 	@echo "  fmt              Run go fmt in all modules"
 	@echo "  clean            Remove ./dist/"
@@ -43,6 +46,12 @@ compile-analysis:
 
 compile-check:
 	go run ./tools/compile-analysis -fail-on-errors -cc "$(MINGW_CC)" -out decompiled/compile-analysis.json decompiled
+
+# print MinGW syntax diagnostics to the terminal, using the same flags as compile-analysis
+compile:
+	@for f in $(FILES); do \
+		$(MINGW_CC) -std=gnu11 -fsyntax-only -fdiagnostics-color=always -fmax-errors=0 -w -I$(SRC_DIR) $$f; \
+	done; true
 
 # dump a coverage report to identify ai generated slop that is not actually being used
 coverage-report:

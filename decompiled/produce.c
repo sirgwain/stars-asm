@@ -725,7 +725,7 @@ L_148f:
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0416), 0x0, 6, 6, (rc.left - 12), dyLB, SWP_NOZORDER);
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0416), &(rcT));
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0417), 0x0, (rc.left + dxPBtn), 6, (rc.left - 12), (rcT.bottom - rcT.top), SWP_NOZORDER);
-    ScreenToClient(hwnd, rcT.right);
+    ScreenToClient(hwnd, (POINT *)(&(rcT.right)));
     yTopFutureTech = rcT.bottom;
     InitializeProductionDlg(hwnd);
     if ((gd.mdScreenSize != 0x1))
@@ -2083,8 +2083,8 @@ L_3661:
 L_3664:
     idc = t_merge_3664_0001;
     GetWindowRect(GetDlgItem(hwnd, idc), &(rc));
-    ScreenToClient(hwnd, &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc)));
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     lSel = SendMessage(GetDlgItem(hwnd, idc), CB_GETLBTEXTLEN, 0x0, 0);
     if ((lSel < 0))
         goto L_3a39;
@@ -2207,7 +2207,7 @@ L_3964:
     rc.bottom = (rc.bottom + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
     SelectObject(hdc, rghfontArial8[1]);
     c = _wsprintf(szT, PszGetCompressedString(idsDDoneCompletion), prod.pct);
-    if ((PszProductionETA(&(sel.pl), lpplProdGlob, LOWORD(lSel), 0x0, 0x0) != 0x57a4))
+    if ((PszProductionETA(&(sel.pl), lpplProdGlob, LOWORD(lSel), 0x0, 0x0) != szWork))
         goto L_39ec;
     else
         goto L_39e6;
@@ -2405,7 +2405,7 @@ L_3e21:
         goto L_3e4f;
 
 L_3e4f:
-    strcpy(szWork, (char *)(((uint8_t *)(&(rgshdef[(uint32_t)(words(load([bp - 0x4]), load([bp - 0x6])) * words(0x0, 0x93)) * 0x1])) + 8)));
+    strcpy(szWork, rgshdef[iItem].hul.szClass);
 
 L_3e79:
     goto L_3f13;
@@ -2525,7 +2525,7 @@ L_4052:
     goto L_4033;
 
 L_4058:
-    GetTrueHullCost(iplr, (lpshdef + iItem), rgCosts);
+    GetTrueHullCost(iplr, &(lpshdef[iItem].hul), rgCosts);
     if ((fStarbase == 0))
         goto L_475b;
     else
@@ -2538,8 +2538,8 @@ L_408d:
         goto L_40a4;
 
 L_40a4:
-    lphulCur = (rglpshdefSB[iplr] + lppl->isb);
-    lphulNew = (lpshdef + iItem);
+    lphulCur = &(rglpshdefSB[iplr][lppl->isb].hul);
+    lphulNew = &(lpshdef[iItem].hul);
     GetTrueHullCost(iplr, lphulCur, rgCostsCur);
     if ((lphulCur->ihuldef == lphulNew->ihuldef))
         goto L_418e;
@@ -2578,9 +2578,9 @@ L_4188:
     goto L_4119;
 
 L_418e:
-    lphulT = LphuldefFromId(lphulCur->ihuldef);
+    lphulT = &(LphuldefFromId(lphulCur->ihuldef)->hul);
     part.hs.grhst = hstNone;
-    part.pcom = lphulT;
+    part.phul = lphulT;
     GetTruePartCost(iplr, &(part), rgCostsPartCur);
     i = 0;
     goto L_41ea;
@@ -3704,7 +3704,7 @@ L_549f:
     GetClientRect(hwnd, &(rc2));
     dy = ((rc.bottom - rc.top) - rc2.bottom);
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0417), &(rc2));
-    MapWindowPoints(0x0, hwnd, &(rc2), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rc2)), 0x2);
     vyZPDStatic = (rc2.bottom + 2);
     dy = (dy + ((rc2.bottom + dyArial8) + 6));
     SetWindowPos(hwnd, 0x0, 0, 0, (rc.right - rc.left), dy, SWP_NOMOVE | SWP_NOZORDER);
@@ -3820,9 +3820,9 @@ L_571a:
     hdc = BeginPaint(hwnd, &(ps));
     GetClientRect(hwnd, &(rc));
     GetWindowRect(GetDlgItem(hwnd, 0x431), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0434), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));

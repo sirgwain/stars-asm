@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1685,
-    "hiWords": 66,
-    "loWords": 1390,
+    "temps": 1678,
+    "hiWords": 59,
+    "loWords": 1374,
     "branchHiWords": 26,
     "branchLoWords": 567,
     "ir": {
-      "numStatements": 34706
+      "numStatements": 34692
     }
   },
   "functions": {
@@ -1338,7 +1338,6 @@
     },
     "ExecuteButton": {
       "temps": 6,
-      "loWords": 6,
       "ir": {
         "numStatements": 130
       }
@@ -2557,12 +2556,11 @@
       }
     },
     "FrameWndProc": {
-      "temps": 9,
-      "hiWords": 1,
-      "loWords": 5,
+      "temps": 8,
+      "loWords": 4,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 256
+        "numStatements": 254
       }
     },
     "FreeHb": {
@@ -3860,11 +3858,10 @@
       }
     },
     "Popup": {
-      "temps": 19,
-      "hiWords": 6,
-      "loWords": 21,
+      "temps": 13,
+      "loWords": 15,
       "ir": {
-        "numStatements": 111
+        "numStatements": 99
       }
     },
     "PopupMenu": {
@@ -4441,7 +4438,7 @@
     },
     "ScoreXDlg": {
       "temps": 1,
-      "loWords": 5,
+      "loWords": 2,
       "branchLoWords": 2,
       "ir": {
         "numStatements": 49

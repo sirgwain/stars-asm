@@ -1,0 +1,67 @@
+/*
+FFleetMightHaveTeeth  (aiutil)
+  addr: 0013:6152  len=139
+  sig:  int16_t FFleetMightHaveTeeth(FLEET *lpfl)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+  locals:
+    int16_t          ishdef         [BP-0x8]
+    HUL *            lphul          [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_6152:
+  insts 0..6  off 0x6152..0x6162
+  succs: L_61c8
+  effects:
+    615b  store[2] [bp-ishdef] = 0x0
+    6160  goto L_61c8
+
+block L_6163:
+  insts 7..16  off 0x6163..0x617c
+  preds: L_61c8
+  succs: L_6180, L_61c4
+  effects:
+    617b  branch load(load([bp+lpfl+0x2]):[((load([bp+lpfl]) + 0xc) + (load([bp-ishdef]) << 0x1))]) == 0x0 ? L_61c4 : L_6180
+
+block L_6180:
+  insts 18..37  off 0x6180..0x61ba
+  preds: L_6163
+  succs: L_61be, L_61c4
+  effects:
+    61a2  store[2] [bp-lphul] = (load(ds:[((((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))]) >> 0x9) & 0xf) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-ishdef]))))
+    61a5  store[2] [bp-lphul+0x2] = load(ds:[((((load(farseg(load(dword [bp+lpfl])):[faroff(load(dword [bp+lpfl]))]) >> 0x9) & 0xf) << 0x1) << 0x1)+0x100])
+    61ae  call FHullHasTeeth(words(load([bp-lphul+0x2]), load([bp-lphul]))) -> callresult(int16_t)
+    61b9  branch callresult(int16_t) == 0x0 ? L_61c4 : L_61be
+
+block L_61be:
+  insts 39..40  off 0x61be..0x61c3
+  preds: L_6180
+  succs: L_61d7
+  effects:
+    61c1  goto L_61d7
+
+block L_61c4:
+  insts 41..41  off 0x61c4..0x61c7
+  preds: L_6163, L_6180
+  succs: L_61c8
+  effects:
+    61c4  store[2] [bp-ishdef] = (load([bp-ishdef]) + 0x1)
+
+block L_61c8:
+  insts 42..43  off 0x61c8..0x61cd
+  preds: L_6152, L_61c4
+  succs: L_6163, L_61d1
+  effects:
+    61cc  branch load([bp-ishdef]) < 0x10 ? L_6163 : L_61d1
+
+block L_61d1:
+  insts 45..45  off 0x61d1..0x61d6
+  preds: L_61c8
+  succs: L_61d7
+
+block L_61d7:
+  insts 47..51  off 0x61d7..0x61dc
+  preds: L_61be, L_61d1
+  effects:
+    61dc  return merge(Join: L_61d7, (L_61be:0x1, L_61d1:0x0))

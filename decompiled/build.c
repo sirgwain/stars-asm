@@ -480,9 +480,9 @@ L_0982:
 
 L_099e:
     GetWindowRect(GetDlgItem(hwnd, IDC_PREV), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_NEXT2), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -493,9 +493,9 @@ L_099e:
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, cch);
     SelectObject(hdc, rghfontArial8[0]);
     GetWindowRect(GetDlgItem(hwnd, IDC_FIRST), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_DOWN), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -2607,12 +2607,12 @@ L_3318:
     rcStart.right = 66;
     rcStart.top = (LOWORD((((int32_t)(y) / 66) * 0x42)) + 1);
     rcStart.bottom = (rcStart.top + 64);
-    ClientToScreen(hwnd, &(rcStart));
-    ClientToScreen(hwnd, rcStart.right);
+    ClientToScreen(hwnd, (POINT *)(&(rcStart)));
+    ClientToScreen(hwnd, (POINT *)(&(rcStart.right)));
     ClientToScreen(hwnd, &(pt));
     hwnd = hwndSlotDlg;
-    ScreenToClient(hwnd, &(rcStart));
-    ScreenToClient(hwnd, rcStart.right);
+    ScreenToClient(hwnd, (POINT *)(&(rcStart)));
+    ScreenToClient(hwnd, (POINT *)(&(rcStart.right)));
     ScreenToClient(hwnd, &(pt));
     x = pt.x;
     y = pt.y;
@@ -3566,7 +3566,7 @@ L_45ba:
         goto LReleaseDC;
 
 L_45ce:
-    lphul = lpshdefBuild;
+    lphul = &(lpshdefBuild->hul);
 
 L_45e1:
     SelectObject(hdc, rghfontArial8[0]);
@@ -3908,14 +3908,14 @@ L_4d5b:
     i = -1;
 
 L_4d60:
-    i = PctCloakFromHuldef(lpshdefBuild, i, 0x0);
-    j = PctJammerFromHul(lpshdefBuild);
+    i = PctCloakFromHuldef(&(lpshdefBuild->hul), i, 0x0);
+    j = PctJammerFromHul(&(lpshdefBuild->hul));
     cch = _wsprintf(szWork, PszGetCompressedString(idsDD4), i, j);
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, dxMaxMineralQuan);
     cch = CchGetString(idsCloakJam, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
     rc.top = (rc.top + dyArial8);
-    i = InitFromHuldef(lpshdefBuild, 0x0);
+    i = InitFromHuldef(&(lpshdefBuild->hul), 0x0);
     if ((fStarbaseMode != 0))
         goto L_4e3f;
     else
@@ -5020,7 +5020,7 @@ L_613c:
         goto L_6160;
 
 L_6160:
-    if ((PszPlayerName(i, 1, 0, 0, 0, 0x0) != 0x57a4))
+    if ((PszPlayerName(i, 1, 0, 0, 0, 0x0) != szWork))
         goto L_618d;
     else
         goto L_6187;

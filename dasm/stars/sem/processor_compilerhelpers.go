@@ -150,7 +150,7 @@ func (p *compilerHelpersProcessors) lowerBinaryCompilerHelperValue(op machine.Va
 	if len(args) < 2 {
 		return nil, false
 	}
-	result := machine.BinaryResult(op, args[0], args[1])
+	result := machine.BinaryResult(op, wideConstArg(args[0]), wideConstArg(args[1]))
 	if binary, ok := result.(*machine.Binary); ok {
 		typed := *binary
 		typed.Type = to
@@ -175,4 +175,20 @@ func (p *compilerHelpersProcessors) rewriter() *machineRewriter {
 			return value, false, true
 		},
 	}
+}
+
+// wideConstArg folds a 32-bit helper argument pushed as constant high and low
+// words into one constant, for example words(0x0, 0x93) -> 0x93, so scaled
+// terms such as iItem * sizeof(SHDEF) keep a recognizable constant factor.
+func wideConstArg(value machine.Value) machine.Value {
+	words, ok := value.(*machine.StackWords)
+	if !ok || len(words.Words) != 2 {
+		return value
+	}
+	high, highOK := words.Words[0].(*machine.Const)
+	low, lowOK := words.Words[1].(*machine.Const)
+	if !highOK || !lowOK {
+		return value
+	}
+	return machine.ConstVal((high.Val&0xffff)<<16 | low.Val&0xffff)
 }

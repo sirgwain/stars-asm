@@ -185,7 +185,7 @@ L_037a:
         goto L_0387;
 
 L_0387:
-    if ((ppt <= 0x2f40))
+    if ((ppt <= rgptPlan))
         goto L_0398;
     else
         goto L_0391;
@@ -1335,7 +1335,7 @@ L_15e6:
     goto L_0bac;
 
 L_15e9:
-    idm = IdmGiveTraderPart(grbitTrader, iplr, iGoto);
+    idm = IdmGiveTraderPart(grbitTrader, iplr, &(iGoto));
     FSendPlrMsg2(lpfl->iplr, idm, iGoto, WFromLpfl(lpfl), 0);
 
 L_162e:

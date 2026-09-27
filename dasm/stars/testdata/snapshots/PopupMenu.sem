@@ -1,0 +1,339 @@
+/*
+PopupMenu  (popup)
+  addr: 0019:136c  len=1484
+  sig:  int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn)
+  params:
+    HWND             hwnd           [BP+0x6]
+    int16_t          x              [BP+0x8]
+    int16_t          y              [BP+0xa]
+    int16_t          cString        [BP+0xc]
+    int32_t *        rgids          [BP+0xe]
+    char * *         rgsz           [BP+0x10]
+    int16_t          iChecked       [BP+0x12]
+    int16_t          fRightBtn      [BP+0x14]
+  locals:
+    MSG              msg            [BP-0xa6]
+    char *           psz            [BP-0x94]
+    char *           pszT           [BP-0x92]
+    HMENU            hmenuPopup     [BP-0x90]
+    HMENU            hmenuSub       [BP-0x8e]
+    char[128]        szTemp         [BP-0x8c]
+    int16_t          i              [BP-0xc]
+    POINT            pt             [BP-0xa]
+    int16_t          tpm            [BP-0x6]
+    char *           pszTitle       [BP-0x4]
+    block 0019:15BF  len=0x1AF
+      char *           psz            [BP-0xac]
+      int16_t          fCheckedCur    [BP-0xaa]
+      int16_t          fChecked       [BP-0xa8]
+
+  stats: blocks=1  labels=0
+*/
+L_136c:
+    hmenuSub = 0x0
+    pt.x = x
+    pt.y = y
+    call ClientToScreen(hwnd, &pt) -> callresult(void)
+    hmenuPopup = CreatePopupMenu()
+    iPopMenuSel = -1
+    i = 0
+    goto L_1887
+
+L_13ad:
+    branch rgids == 0x0 ? L_15ad : L_13b6
+
+L_13b6:
+    branch iChecked != -2 ? L_13c8 : L_13bf
+
+L_13bf:
+    branch rgsz != 0x0 ? L_15ad : L_13c8
+
+L_13c8:
+    branch rgids[i] != -1 ? L_1401 : L_13e5
+
+
+L_13e5:
+    call AppendMenu(hmenuPopup, 0x800, 0x0, 0x0) -> callresult(int16_t)
+    goto L_1883
+
+L_1401:
+    branch (uint32_t)(HIWORD(rgids[i]) & 0x1000) != 0x0 ? L_1429 : L_1432
+
+
+L_1429:
+    psz = "Deep Space"
+    goto L_152e
+
+L_1432:
+    branch (uint32_t)(HIWORD(rgids[i]) & 0x4000) != 0x0 ? L_145a : L_147b
+
+
+L_145a:
+    psz = PszGetCompressedString(LOWORD(rgids[i]))
+    goto L_152e
+
+L_147b:
+    branch (uint32_t)(HIWORD(rgids[i]) & 0x2000) != 0x0 ? L_14a3 : L_14c4
+
+
+L_14a3:
+    psz = PszGetThingName(LOWORD(rgids[i]))
+    goto L_152e
+
+L_14c4:
+    branch (uint32_t)(HIWORD(rgids[i]) & 0x8000) != 0x0 ? L_14ec : L_1510
+
+
+L_14ec:
+    psz = PszGetFleetName((LOWORD(rgids[i]) | 0x8000))
+    goto L_152e
+
+L_1510:
+    psz = PszGetPlanetName(LOWORD(rgids[i]))
+
+L_152e:
+    pszT = szTemp
+
+L_1536:
+    branch sext8to16(*psz) == 0 ? L_1573 : L_1545
+
+L_1545:
+    psz = &psz[1]
+    pszT = &pszT[1]
+    *pszT = *psz
+    branch sext8to16(*psz) != 38 ? L_1536 : L_1564
+
+L_1564:
+    pszT = &pszT[1]
+    *pszT = 38
+
+L_1570:
+    goto L_1536
+
+L_1573:
+    *pszT = 0
+    branch i != iChecked ? L_158f : L_1589
+
+L_1589:
+    t_merge_1592_0001 = 0x8
+    goto L_1592
+
+L_158f:
+    t_merge_1592_0001 = 0x0
+
+L_1592:
+    call AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 15000), szTemp) -> callresult(int16_t)
+
+L_15aa:
+    goto L_1883
+
+L_15ad:
+    branch rgsz[i] != 0x0 ? L_1771 : L_15bf
+
+L_15bf:
+    pszTitle = rgsz[(i + 1)]
+    branch rgids == 0x0 ? L_15f1 : L_15da
+
+L_15da:
+    t_merge_15f4_0001 = LOWORD(rgids[(i + 1)])
+    goto L_15f4
+
+L_15f1:
+    t_merge_15f4_0001 = 0x0
+
+L_15f4:
+    fChecked = t_merge_15f4_0001
+    hmenuSub = CreatePopupMenu()
+    i = (i + 2)
+    goto L_1738
+
+L_1608:
+    branch rgsz[i] == 0x0 ? L_1743 : L_161d
+
+L_161d:
+    branch rgids != 0x0 ? L_1649 : L_1626
+
+L_1626:
+    branch i != iChecked ? L_1637 : L_1631
+
+L_1631:
+    t_merge_163a_0001 = 0x1
+    goto L_163a
+
+L_1637:
+    t_merge_163a_0001 = 0x0
+
+L_163a:
+    fCheckedCur = t_merge_163a_0001
+    fChecked = (fChecked | fCheckedCur)
+    goto L_165e
+
+L_1649:
+    fCheckedCur = LOWORD(rgids[i])
+
+L_165e:
+    branch sext8to16(*rgsz[i]) != -1 ? L_16a9 : L_1675
+
+L_1675:
+    branch sext8to16(rgsz[i][1]) != 0 ? L_16a9 : L_168d
+
+L_168d:
+    call AppendMenu(hmenuSub, 0x800, 0x0, 0x0) -> callresult(int16_t)
+    goto L_1734
+
+L_16a9:
+    pszT = szTemp
+    psz = rgsz[i]
+
+L_16c1:
+    branch sext8to16(*psz) == 0 ? L_16fe : L_16d0
+
+L_16d0:
+    psz = &psz[1]
+    pszT = &pszT[1]
+    *pszT = *psz
+    branch sext8to16(*psz) != 38 ? L_16c1 : L_16ef
+
+L_16ef:
+    pszT = &pszT[1]
+    *pszT = 38
+
+L_16fb:
+    goto L_16c1
+
+L_16fe:
+    *pszT = 0
+    branch fCheckedCur == 0 ? L_1719 : L_1713
+
+L_1713:
+    t_merge_171c_0001 = 0x8
+    goto L_171c
+
+L_1719:
+    t_merge_171c_0001 = 0x0
+
+L_171c:
+    call AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 15000), szTemp) -> callresult(int16_t)
+
+L_1734:
+    i = (i + 1)
+
+L_1738:
+    branch i < cString ? L_1608 : L_1743
+
+L_1743:
+    branch fChecked == 0 ? L_1757 : L_1751
+
+L_1751:
+    t_merge_175a_0001 = 0x8
+    goto L_175a
+
+L_1757:
+    t_merge_175a_0001 = 0x0
+
+L_175a:
+    call AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), hmenuSub, pszTitle) -> callresult(int16_t)
+    goto L_1883
+
+L_1771:
+    branch sext8to16(*rgsz[i]) != -1 ? L_17bc : L_1788
+
+L_1788:
+    branch sext8to16(rgsz[i][1]) != 0 ? L_17bc : L_17a0
+
+L_17a0:
+    call AppendMenu(hmenuPopup, 0x800, 0x0, 0x0) -> callresult(int16_t)
+    goto L_1883
+
+L_17bc:
+    pszT = szTemp
+    psz = rgsz[i]
+
+L_17d4:
+    branch sext8to16(*psz) == 0 ? L_1811 : L_17e3
+
+L_17e3:
+    psz = &psz[1]
+    pszT = &pszT[1]
+    *pszT = *psz
+    branch sext8to16(*psz) != 38 ? L_17d4 : L_1802
+
+L_1802:
+    pszT = &pszT[1]
+    *pszT = 38
+
+L_180e:
+    goto L_17d4
+
+L_1811:
+    *pszT = 0
+    branch iChecked != -2 ? L_1839 : L_1825
+
+L_1825:
+    t_merge_184f_0001 = rgids[i]
+    goto L_184f
+
+L_1839:
+    branch i != iChecked ? L_184b : L_1844
+
+L_1844:
+    t_merge_184f_0001 = 1
+    goto L_184f
+
+L_184b:
+    t_merge_184f_0001 = 0
+
+L_184f:
+    branch (t_merge_184f_0001 | 0x0) != 0x0 ? L_1865 : L_186b
+
+
+L_1865:
+    t_merge_186e_0001 = 0x8
+    goto L_186e
+
+L_186b:
+    t_merge_186e_0001 = 0x0
+
+L_186e:
+    call AppendMenu(hmenuPopup, t_merge_186e_0001, (i + 15000), szTemp) -> callresult(int16_t)
+
+L_1883:
+    i = (i + 1)
+
+L_1887:
+    branch i < cString ? L_13ad : L_1892
+
+L_1892:
+    branch fRightBtn == 0 ? L_18a3 : L_189b
+
+L_189b:
+    tpm = 2
+    goto L_18a8
+
+L_18a3:
+    tpm = 0
+
+L_18a8:
+    call TrackPopupMenu(hmenuPopup, tpm, pt.x, pt.y, 0, hwndFrame, 0x0) -> callresult(int16_t)
+    call DestroyMenu(hmenuPopup) -> callresult(int16_t)
+    branch hmenuSub == 0x0 ? L_18e7 : L_18de
+
+L_18de:
+    call DestroyMenu(hmenuSub) -> callresult(int16_t)
+
+L_18e7:
+    branch PeekMessage(&msg, hwndFrame, 0x111, 0x111, 0x2) == 0 ? L_192c : L_190c
+
+L_190c:
+    branch msg.wParam < 0x3a98 ? L_192c : L_1917
+
+L_1917:
+    branch msg.wParam >= 0x3afc ? L_192c : L_1922
+
+L_1922:
+    iPopMenuSel = (msg.wParam - 15000)
+
+L_192c:
+
+L_1932:
+    return iPopMenuSel

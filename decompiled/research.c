@@ -924,7 +924,7 @@ L_1406:
 L_144a:
     RightTextOut(hdc, (xCtr - 60), ((rc.top + dyArial8) + 5), PszGetCompressedString(idsFieldResearch), 0, 0);
     GetClientRect(GetDlgItem(hwnd, 0x43b), &(rcT));
-    MapWindowPoints(GetDlgItem(hwnd, 0x43b), hwnd, &(rcT), 0x2);
+    MapWindowPoints(GetDlgItem(hwnd, 0x43b), hwnd, (POINT *)(&(rcT)), 0x2);
     if ((rcT.top == ((rc.top + dyArial8) + 2)))
         goto DrawResourceAlloc;
     else

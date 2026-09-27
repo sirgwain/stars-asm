@@ -1062,8 +1062,8 @@ L_1120:
     goto L_11da;
 
 L_113b:
-    strcpy((0x57a4 + LOWORD((40 * i))), szT);
-    psz = ((0x57a4 + LOWORD((40 * i))) + cchHistory);
+    strcpy(&(szWork[(i * 40)]), szT);
+    psz = &(szWork[((i * 40) + cchHistory)]);
     cch = CchGetString((i + 435), psz);
     psz[(cch - 1)] = 0;
     if ((gd.iCurGraph != i))
@@ -1081,7 +1081,7 @@ L_11a5:
 L_11a9:
     rgid[c] = (uint32_t)(t_merge_11a9_0001);
     c = (c + 1);
-    rgszScan[c] = (0x57a4 + LOWORD((40 * i)));
+    rgszScan[c] = &(szWork[(i * 40)]);
     i = (i + 1);
 
 L_11da:
@@ -1283,7 +1283,7 @@ L_150a:
     dyFrame = ((rcWindow.bottom - rcWindow.top) - rc.bottom);
     SetWindowPos(hwnd, 0x0, 0, 0, (dxFrame + dx), (dyFrame + dy), SWP_NOMOVE | SWP_NOZORDER);
     GetWindowRect(GetDlgItem(hwnd, IDCANCEL), &(rc));
-    MapWindowPoints(0x0, hwnd, &(rc), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rc)), 0x2);
     OffsetRect(&(rc), 0, ((dy - 4) - rc.bottom));
     dx = ((int32_t)((dx - LOWORD(((rc.right - rc.left) * 3)))) / 4);
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00C6), 0x0, dx, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -3889,7 +3889,7 @@ L_4def:
         goto L_4e01;
 
 L_4e01:
-    psz = 0x15fd;
+    psz = "--";
     cch = 2;
     goto L_4e3a;
 
@@ -5524,8 +5524,7 @@ L_666d:
     goto L_679e;
 
 L_66d3:
-    iRet = strcmp((char *)(((uint8_t *)(&(rgshdef[(uint32_t)(words(load([bp - 0x62]), load([bp - 0x64])) * words(0x0, 0x93)) * 0x1])) + 8)),
-                  (char *)(((uint8_t *)(&(rgshdef[(uint32_t)(words(load([bp - 0x54]), load([bp - 0x56])) * words(0x0, 0x93)) * 0x1])) + 8)));
+    iRet = strcmp(rgshdef[l1].hul.szClass, rgshdef[l2].hul.szClass);
     if ((iRet != 0))
         goto L_6786;
     else

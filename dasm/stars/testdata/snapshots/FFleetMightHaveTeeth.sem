@@ -1,0 +1,35 @@
+/*
+FFleetMightHaveTeeth  (aiutil)
+  addr: 0013:6152  len=139
+  sig:  int16_t FFleetMightHaveTeeth(FLEET *lpfl)
+  params:
+    FLEET *          lpfl           [BP+0x6]
+  locals:
+    int16_t          ishdef         [BP-0x8]
+    HUL *            lphul          [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_6152:
+    ishdef = 0
+    goto L_61c8
+
+L_6163:
+    branch lpfl->rgcsh[ishdef] == 0 ? L_61c4 : L_6180
+
+L_6180:
+    lphul = &rglpshdef[lpfl->iplr][ishdef].hul
+    branch FHullHasTeeth(lphul) == 0 ? L_61c4 : L_61be
+
+L_61be:
+    return 1
+
+L_61c4:
+    ishdef = (ishdef + 1)
+
+L_61c8:
+    branch ishdef < 16 ? L_6163 : L_61d1
+
+L_61d1:
+    return 0
+

@@ -71,9 +71,9 @@ L_0177:
 L_019f:
     hdc = BeginPaint(hwnd, &(ps));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x07D5), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x07D6), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -1434,7 +1434,7 @@ L_1e27:
         goto L_1e44;
 
 L_1e44:
-    lphul = (rglpshdef[lpfl->iplr] + ishdef);
+    lphul = &(rglpshdef[lpfl->iplr][ishdef].hul);
     imd = LphuldefFromId(lphul->ihuldef)->imdAttack;
     if ((FHullHasBombs(lphul) == 0))
         goto L_1ea9;
@@ -1645,7 +1645,7 @@ void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef) {
 L_212a:
     iplr = lpfl->iplr;
     lpshdef = (rglpshdef[iplr] + ishdef);
-    if ((FHullHasTeeth(lpshdef) == 0))
+    if ((FHullHasTeeth(&(lpshdef->hul)) == 0))
         goto L_218e;
     else
         goto L_2177;
@@ -1655,7 +1655,7 @@ L_2177:
     goto L_222d;
 
 L_218e:
-    if ((FHullHasBombs(lpshdef) == 0))
+    if ((FHullHasBombs(&(lpshdef->hul)) == 0))
         goto L_21bb;
     else
         goto L_21a4;
@@ -3367,7 +3367,7 @@ void CheckInitiative(TOK *ptok) {
 L_3e68:
     lpshdef = LpshdefFromTok(ptok);
     idPlayer = ptok->iplr;
-    ptok->initBase = LOBYTE(InitFromHuldef(lpshdef, &(pctBC)));
+    ptok->initBase = LOBYTE(InitFromHuldef(&(lpshdef->hul), &(pctBC)));
     idPlayer = -1;
     ptok->pctBC = LOBYTE(pctBC);
     return;
@@ -3400,7 +3400,7 @@ L_3ec2:
     initMin = -1;
     initMac = -1;
     lpshdef = LpshdefFromTok(ptok);
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     dxyMax = -1;
     dxyLim = -1;
     ldp = DpShieldOfShdef(lpshdef, ptok->iplr);
@@ -4215,7 +4215,7 @@ L_4d75:
     return 0;
 
 L_4d7e:
-    lphul = LpshdefFromTok(ptok);
+    lphul = &(LpshdefFromTok(ptok)->hul);
     ihs = 0;
     goto L_4d9e;
 
@@ -4496,7 +4496,7 @@ L_537b:
 L_53a7:
     dzNonSapper = -1;
     lpshdef = LpshdefFromTok(ptok);
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     ihs = 0;
     goto L_53d8;
 
@@ -6130,7 +6130,7 @@ L_69ac:
     ctokDamaged = 0;
     ptok = (vrgtok + itokAttacker);
     lpshdef = LpshdefFromTok(ptok);
-    lphul = lpshdef;
+    lphul = &(lpshdef->hul);
     ihs = 0;
     goto L_6a06;
 
@@ -6977,7 +6977,7 @@ L_7cf3:
         goto L_7cfc;
 
 L_7cfc:
-    MarkTechsSeen(LpshdefFromTok(ptok), ptok->iplr);
+    MarkTechsSeen(&(LpshdefFromTok(ptok)->hul), ptok->iplr);
 
 L_7d1f:
     flSrc = *(lpfl);

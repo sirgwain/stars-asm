@@ -6144,9 +6144,9 @@ L_783f:
 L_7858:
     hdc = BeginPaint(hwnd, &(ps));
     GetWindowRect(GetDlgItem(hwnd, 0xc8), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x00CB), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -6156,9 +6156,9 @@ L_7858:
     c = CchGetString(idsDifficultyLevel, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     GetWindowRect(GetDlgItem(hwnd, 0x3e8), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, 0x3ec), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -6168,7 +6168,7 @@ L_7858:
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     rcGBox.top = (rcGBox.bottom + 8);
     GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &(rcGBox));
-    MapWindowPoints(0x0, hwnd, &(rcGBox), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rcGBox)), 0x2);
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
     rcGBox.bottom = (rcGBox.bottom + (dyArial8 * 2));
     _Draw3dFrame(hdc, &(rcGBox), -1);
@@ -6493,9 +6493,9 @@ L_8239:
 L_8261:
     hdc = BeginPaint(hwnd, &(ps));
     GetWindowRect(GetDlgItem(hwnd, 0x3e8), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, 0x3ec), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -6505,9 +6505,9 @@ L_8261:
     c = CchGetString(idsUniverseSize, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     GetWindowRect(GetDlgItem(hwnd, 0x3ed), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, 0x3f0), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -6517,9 +6517,9 @@ L_8261:
     c = CchGetString(idsDensity, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
     GetWindowRect(GetDlgItem(hwnd, 0x3f1), &(rcGBox));
-    ScreenToClient(hwnd, &(rcGBox));
+    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
     GetWindowRect(GetDlgItem(hwnd, 0x3f4), &(rc));
-    ScreenToClient(hwnd, rc.right);
+    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
@@ -6743,7 +6743,7 @@ L_884f:
 L_8857:
     hwndBtn = GetDlgItem(hwnd, rgidRaceBtn[i]);
     GetWindowRect(hwndBtn, &(rc));
-    MapWindowPoints(0x0, hwnd, &(rc), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rc)), 0x2);
     OffsetRect(&(rc), 0, (dy - rc.top));
     SetWindowPos(hwndBtn, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     i = (i + 1);
@@ -7245,7 +7245,7 @@ L_90cc:
 
 L_90d5:
     vrgplrNew[iNewVal] = vplr;
-    strcpy((vrgszFileNew + (13 * iNewVal)), szRaceFile);
+    strcpy((vrgszFileNew + (iNewVal * 13)), szRaceFile);
     iNewVal = ((iNewVal << 0x2) | 0x2);
 
 L_9121:
@@ -7271,7 +7271,7 @@ L_913c:
 
 L_9193:
     vplr = vrgplrNew[(iCurVal >> 0x2)];
-    strcpy(szRaceFile, (vrgszFileNew + (13 * (iCurVal >> 0x2))));
+    strcpy(szRaceFile, (vrgszFileNew + ((iCurVal >> 0x2) * 13)));
 
 L_91d3:
     lSaltCur = vplr.lSalt;
@@ -7309,14 +7309,14 @@ L_924a:
         goto L_925e;
 
 L_925e:
-    if ((strcmp(szRaceFile, (vrgszFileNew + (13 * (iCurVal >> 0x2)))) != 0))
+    if ((strcmp(szRaceFile, (vrgszFileNew + ((iCurVal >> 0x2) * 13))) != 0))
         goto PlaceNew;
     else
         goto L_9288;
 
 L_9288:
     vrgplrNew[(iCurVal >> 0x2)] = vplr;
-    strcpy((vrgszFileNew + (13 * (iCurVal >> 0x2))), szRaceFile);
+    strcpy((vrgszFileNew + ((iCurVal >> 0x2) * 13)), szRaceFile);
     iNewVal = iCurVal;
     iCurVal = -1;
 
@@ -8106,7 +8106,7 @@ L_9e15:
 
 L_9e1e:
     GetWindowRect(GetDlgItem(hwnd, (i + 291)), &(rcCBox));
-    MapWindowPoints(0x0, hwnd, &(rcCBox), 0x2);
+    MapWindowPoints(0x0, hwnd, (POINT *)(&(rcCBox)), 0x2);
     xLeft = (rcCBox.right + 2);
     yTop = ((((int32_t)((rcCBox.bottom - rcCBox.top)) / 0x2) + rcCBox.top) - (dyArial8 >> 0x1));
     goto L_9eb7;
@@ -8194,7 +8194,7 @@ L_9fe9:
     vrgrcRCW[irc].right = (vrgrcRCW[irc].left + 15);
     vrgrcRCW[irc].bottom = (((dyArial8 >> 0x1) + vrgrcRCW[irc].top) + 0x3);
     vrgrcRCW[(irc + 1)] = vrgrcRCW[irc];
-    OffsetRect(vrgrcRCW[(irc + 1)].left, 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) - 1));
+    OffsetRect((RECT *)(&(vrgrcRCW[(irc + 1)].left)), 0, ((vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) - 1));
     if ((iDraw != -1))
         goto L_a154;
     else
