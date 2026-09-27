@@ -1,10 +1,10 @@
 /*
 BattlePlansDlg  (battle)
   addr: 001f:0652  len=4276
-  sig:  int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+  sig:  int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    WMType           message        [BP+0xc]
+    uint16_t         message        [BP+0xc]
     uint16_t         wParam         [BP+0xa]
     int32_t          lParam         [BP+0x6]
   locals:

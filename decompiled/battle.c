@@ -7,7 +7,7 @@ uint8_t rgbrcStart[136] = {68,  65,  88,  20,  136, 129, 17,  136, 129, 24,  20,
                            49,  81,  113, 130, 132, 134, 136, 104, 72,  40,  23,  21,  19,  17,  49,  81,  113, 130, 132, 134, 136, 104, 72,
                            40,  23,  21,  19,  68,  17,  49,  81,  113, 130, 132, 134, 136, 104, 72,  40,  23,  21,  19,  51,  102};
 
-int16_t RelationsDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RelationsDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -228,7 +228,7 @@ L_04c0:
     return 0;
 }
 
-int16_t NewPlanNameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t NewPlanNameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT    rc;
     int16_t t_merge_05e2_0001;
 
@@ -236,7 +236,7 @@ L_04ce:
     goto L_0621;
 
 L_04dd:
-    SetWindowPos(hwnd, 0x0, (ptStickyBattlePlansDlg.x + 70), (ptStickyBattlePlansDlg.y + 70), 0, 0, 0x15);
+    SetWindowPos(hwnd, 0x0, (ptStickyBattlePlansDlg.x + 70), (ptStickyBattlePlansDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
     SetDlgItemText(hwnd, IDC_EDIT1, btlplan.szName);
     return 1;
@@ -333,7 +333,7 @@ L_0644:
     return 0;
 }
 
-int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t (*lpProc)();
     int16_t idc;
     int16_t i;
@@ -1126,7 +1126,7 @@ L_17c9:
         goto L_17d2;
 
 L_17d2:
-    if ((AlertSz(PszFormatIds(idsCurrentlyHaveFleetsUsingBattlePlanIf, 0x0), 0x31) != 2))
+    if ((AlertSz(PszFormatIds(idsCurrentlyHaveFleetsUsingBattlePlanIf, 0x0), MB_OKCANCEL | MB_ICONEXCLAMATION) != IDCANCEL))
         goto L_1804;
     else
         goto L_17fb;

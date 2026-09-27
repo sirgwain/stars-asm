@@ -6,7 +6,7 @@
 
 extern uint16_t mpimdgrbitBU[8];
 
-int32_t PopupWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int32_t PopupWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 int16_t FIsPopupHullType(int16_t ishdef);
 void    DrawPopup(HWND hwnd, HDC hdc);
 void    Popup(HWND hwnd, int16_t x, int16_t y);

@@ -1,0 +1,12 @@
+#ifndef STARS_DECOMPILED_WIN16DEFINES_H
+#define STARS_DECOMPILED_WIN16DEFINES_H
+
+// Win16 constants. windows.h provides most of them; the rest, such as
+// Win16-only messages and application WM_USER messages, are defined here.
+{{- range .Defines}}
+#ifndef {{.Name}}
+#define {{.Name}} {{.Value}}
+#endif
+{{- end}}
+
+#endif

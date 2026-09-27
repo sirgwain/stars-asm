@@ -1,9 +1,9 @@
 ; AlertSz  (utilgen)
 ;   addr: 0009:2160  len=189
-;   sig:  int16_t AlertSz(char *sz, MessageBoxType mbType)
+;   sig:  int16_t AlertSz(char *sz, int16_t mbType)
 ;   params:
 ;     char *           sz             [BP+0x6]
-;     MessageBoxType   mbType         [BP+0x8]
+;     int16_t          mbType         [BP+0x8]
 ;   locals:
 ;     char[256]        szT            [BP-0x102]
 ;
@@ -53,7 +53,7 @@ LEA       ax, [bp-szT]              ; ax, [bp-0x102]
 MOV       dx, ss              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR *lpszout, LPCSTR *lpszfmt)
+CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR lpszout, LPCSTR lpszfmt)
 ADD       sp, 0x000c          
                                     ; utilgen.c:421
 LEA       ax, [bp-szT]              ; ax, [bp-0x102]
@@ -95,7 +95,7 @@ PUSH      dx
 PUSH      ax                  
 MOV       ax, [bp+mbType]           ; ax, [bp+0x8]
 PUSH      ax                  
-CALLF     MessageBox                ; int16_t MessageBox(HWND arg1, LPCSTR *arg2, LPCSTR *arg3, MessageBoxType arg4)
+CALLF     MessageBox                ; int16_t MessageBox(HWND arg1, LPCSTR arg2, LPCSTR arg3, uint16_t arg4)
 
 L_2217:                             ; utilgen.c:426
 POP       di                  

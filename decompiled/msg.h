@@ -10,7 +10,7 @@ extern char    aMSGCmpr[22836];
 extern char    rgMSGLookupTable[72];
 extern int16_t aiMSGChunkOffset[7];
 
-int32_t   MessageWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int32_t   MessageWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void      SetMsgTitle(HWND hwnd);
 int16_t   IMsgNext(int16_t fFilteredOnly);
 int16_t   IMsgPrev(int16_t fFilteredOnly);

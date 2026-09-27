@@ -73,7 +73,7 @@ func writeLoaderInputFiles(t *testing.T, dir string) {
 	t.Helper()
 	files := map[string]string{
 		"enums.h":              "",
-		"enums-windefines.h":   "",
+		"win16defines.json":    `{"families": []}`,
 		"enums.json":           "{}",
 		"overrides-types.json": "{}",
 	}

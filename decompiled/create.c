@@ -6004,7 +6004,7 @@ L_7586:
     ofn.lpstrInitialDir = szDirName;
     ofn.lpstrTitle = "Choose New Game Name";
     ofn.lpstrDefExt = szXY;
-    ofn.Flags = 0x8806;
+    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_NOREADONLYRETURN;
     if ((GetSaveFileName(&(ofn)) == 0))
         goto L_769e;
     else
@@ -6031,7 +6031,7 @@ L_769e:
     return 0;
 }
 
-int16_t SimpleNewGameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t SimpleNewGameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HWND        hwndDD;
@@ -6180,7 +6180,7 @@ L_7858:
     ExpandRc(&(rcGBox), (-dyArial8), 0);
     c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
     dy = DrawText(hdc, szWork, c, &(rcGBox), 0x810);
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00D3), 0x0, rcGBox.left, ((rcGBox.top + dy) + ((int32_t)(dyArial8) / 2)), 0, 0, 0x5);
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00D3), 0x0, rcGBox.left, ((rcGBox.top + dy) + ((int32_t)(dyArial8) / 2)), 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     rcGBox.bottom = ((rcGBox.top + dy) + (dyArial8 * 2));
     ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
     _Draw3dFrame(hdc, &(rcGBox), -2);
@@ -6357,7 +6357,7 @@ L_7e83:
     return 0;
 }
 
-int16_t NewGameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t NewGameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -6688,7 +6688,7 @@ L_87c3:
     return 0;
 }
 
-int16_t NewGameDlg2(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t NewGameDlg2(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     RECT        rcT;
@@ -6745,7 +6745,7 @@ L_8857:
     GetWindowRect(hwndBtn, &(rc));
     MapWindowPoints(0x0, hwnd, &(rc), 0x2);
     OffsetRect(&(rc), 0, (dy - rc.top));
-    SetWindowPos(hwndBtn, 0x0, rc.left, rc.top, 0, 0, 0x5);
+    SetWindowPos(hwndBtn, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     i = (i + 1);
 
 L_88cb:
@@ -6763,7 +6763,7 @@ L_88d4:
         goto L_88f7;
 
 L_88f7:
-    SetWindowPos(hwnd, 0x0, 0, 0, (rcT.right - rcT.left), (((dy + rcT.bottom) - rcT.top) - rc.bottom), 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, (rcT.right - rcT.left), (((dy + rcT.bottom) - rcT.top) - rc.bottom), SWP_NOMOVE | SWP_NOZORDER);
 
 L_8923:
     StickyDlgPos(hwnd, &(ptStickyNewDlg), 1);
@@ -7797,7 +7797,7 @@ L_99ed:
     return;
 }
 
-int16_t NewGameDlg3(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t NewGameDlg3(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     POINT       pt;

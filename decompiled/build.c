@@ -49,10 +49,10 @@ L_0159:
     return 0;
 }
 
-void ShowMainControls(HWND hwnd, ShowWindowCmd sw) {
-    HWND          t_call_022d;
-    ShowWindowCmd t_merge_0245_0001;
-    StringId      t_merge_0264_0001;
+void ShowMainControls(HWND hwnd, int16_t sw) {
+    HWND     t_call_022d;
+    int16_t  t_merge_0245_0001;
+    StringId t_merge_0264_0001;
 
 L_0160:
     ShowWindow(GetDlgItem(hwnd, IDC_IMPORT), sw);
@@ -244,7 +244,7 @@ L_043f:
     _wsprintf(szWork, PszGetCompressedString((ids + 2)), LOWORD(lpshdef->cExist), lpshdef->hul.szClass, t_merge_043f_0001);
 
 L_047e:
-    id = MessageBox(GetFocus(), szWork, PszGetCompressedString((fEdit + 742)), 0x2024);
+    id = MessageBox(GetFocus(), szWork, PszGetCompressedString((fEdit + 742)), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL);
     SetFocus(hwnd);
     if ((id != 7))
         goto L_04c1;
@@ -273,7 +273,7 @@ L_0543:
     return 1;
 }
 
-int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t SlotDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT               rcWindow;
     HDC                hdc;
     RECT               rcGBox;
@@ -298,7 +298,7 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int32_t            t_merge_0cc3_0001;
     uint16_t           t_merge_0dce_0001;
     uint16_t           t_merge_0e24_0001;
-    ShowWindowCmd      t_merge_0e84_0001;
+    int16_t            t_merge_0e84_0001;
     int32_t            t_merge_107a_0001;
     uint16_t           t_merge_1110_0001;
     HWND               t_call_1152;
@@ -328,7 +328,7 @@ L_055f:
     GetWindowRect(hwnd, &(rcWindow));
     GetClientRect(hwnd, &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, (((ptslotGlob.x + rcWindow.right) - rcWindow.left) - rc.right),
-                 (((ptslotGlob.y + rcWindow.bottom) - rcWindow.top) - rc.bottom), 0x6);
+                 (((ptslotGlob.y + rcWindow.bottom) - rcWindow.top) - rc.bottom), SWP_NOMOVE | SWP_NOZORDER);
     StickyDlgPos(hwnd, &(ptStickySlotDlg), 1);
     UpdateSlotGlobals();
     hwndItem = GetDlgItem(hwnd, IDC_U16_0x080C);
@@ -344,7 +344,7 @@ L_055f:
     SetWindowPos(hwndItem, 0x0, (ptslotGlob.x - 264), 8, 240, 100, SWP_NOZORDER);
     FillBuildDD(hwndItem, mdBuild);
     SetWindowPos(GetDlgItem(hwnd, IDOK), 0x0, (ptslotGlob.x - 226), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), 0x84);
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_HIDEWINDOW);
     SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, (ptslotGlob.x - 148), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
                  ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (ptslotGlob.x - 74), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
@@ -631,7 +631,7 @@ L_0dcb:
     t_merge_0dce_0001 = 0x8;
 
 L_0dce:
-    SetWindowPos(hwndItem, 0x0, ((ptslotGlob.x - 256) - t_merge_0dce_0001), 8, 0, 0, 0x5);
+    SetWindowPos(hwndItem, 0x0, ((ptslotGlob.x - 256) - t_merge_0dce_0001), 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     GetClientRect(hwnd, &(rc));
     left = rc.left;
     if (((rc.right >> 0x1) >= (rc.right - 352)))
@@ -1651,9 +1651,9 @@ L_1fe4:
     FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), t_merge_1fe4_0001);
     FillBuildDD(GetDlgItem(hwnd, IDC_COMBOBOX), mdBuild);
     ShowMainControls(hwnd, SW_HIDE);
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x080C), 0x0, 16, 32, 0, 0, 0x45);
-    SetWindowPos(GetDlgItem(hwnd, IDC_COMBOBOX), 0x0, 16, 8, 0, 0, 0x45);
-    SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), 0x0, (ptslotGlob.x - 264), 8, 240, (LOWORD((3 * dyArial8)) >> 0x1), 0x44);
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x080C), 0x0, 16, 32, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+    SetWindowPos(GetDlgItem(hwnd, IDC_COMBOBOX), 0x0, 16, 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+    SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), 0x0, (ptslotGlob.x - 264), 8, 240, (LOWORD((3 * dyArial8)) >> 0x1), SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass);
     SendMessage(GetDlgItem(hwnd, IDC_EDITNAME), CB_SETEXTENDEDUI, 0x1f, 0);
     if ((gd.fTutorial == 0x0))
@@ -3506,7 +3506,7 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
     char    *t_merge_478e_0001;
     uint16_t t_merge_4957_0001;
     char    *t_call_4bf7;
-    LPCSTR  *t_merge_4c09_0001;
+    LPCSTR   t_merge_4c09_0001;
     uint16_t t_merge_4ee0_0001;
     uint16_t t_merge_4ff3_0001;
     uint16_t t_merge_50b2_0001;
@@ -4513,13 +4513,13 @@ L_59e4:
 }
 
 void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
-    COLORREF      cr;
-    COLORREF      crForeSav;
-    int16_t       ibmp;
-    int16_t       bkSav;
-    RECT          rc;
-    StockObjectId t_merge_5a41_0001;
-    COLORREF      t_merge_5b5f_0001;
+    COLORREF cr;
+    COLORREF crForeSav;
+    int16_t  ibmp;
+    int16_t  bkSav;
+    RECT     rc;
+    int16_t  t_merge_5a41_0001;
+    COLORREF t_merge_5b5f_0001;
 
 L_59f0:
     CopyRect(&(rc), &(lpdis->rcItem));
@@ -5198,7 +5198,8 @@ L_63a9:
     t_merge_63ac_0001 = 0x0;
 
 L_63ac:
-    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 8) + t_merge_638b_0001), 0x6);
+    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 8) + t_merge_638b_0001),
+                 SWP_NOMOVE | SWP_NOZORDER);
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
     return;
 }
@@ -5398,7 +5399,7 @@ L_674b:
     return 0;
 }
 
-int32_t FakeListProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t FakeListProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     POINT   pt;
     int16_t iSel;
 

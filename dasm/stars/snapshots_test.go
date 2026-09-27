@@ -51,6 +51,7 @@ var procs = []string{
 	"LogChangeThing",
 	"MineClick",
 	"PopRandom",
+	"ReportDlg",
 	"PushRandom",
 	"SzVersion",
 }

@@ -314,7 +314,7 @@ L_186d:
     return LOWORD((uint32_t)((z % (int32_t)(c))));
 }
 
-int16_t RandomSeedDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RandomSeedDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     char     szValue[33];
     char    *pch;
     uint32_t dw;
@@ -325,7 +325,7 @@ L_188a:
     goto L_1a1c;
 
 L_1899:
-    SetWindowPos(hwnd, 0x0, 256, 256, 0, 0, 0x15);
+    SetWindowPos(hwnd, 0x0, 256, 256, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
     return 1;
 
@@ -871,7 +871,7 @@ L_2159:
     return;
 }
 
-int16_t AlertSz(char *sz, MessageBoxType mbType) {
+int16_t AlertSz(char *sz, int16_t mbType) {
     char    szT[256];
     int16_t t_merge_21e5_0001;
 
@@ -909,7 +909,7 @@ L_21e2:
 
 L_21e5:
     OutputSz(t_merge_21e5_0001, szT);
-    return 6;
+    return IDYES;
 
 L_21f7:
     return MessageBox(GetFocus(), sz, "Stars!", mbType);
@@ -1927,7 +1927,7 @@ L_3179:
     rc.top = 0;
 
 L_317e:
-    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, 0x15);
+    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 
 L_319c:
     return;
@@ -4286,7 +4286,7 @@ L_5a62:
     return lSalt;
 }
 
-int16_t PasswordDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t PasswordDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     char    szPass[60];
     RECT    rc;
     int32_t lSalt;
@@ -4438,7 +4438,7 @@ L_5cab:
     return 0;
 }
 
-int16_t NewPasswordDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t NewPasswordDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     char    szPass[20];
     RECT    rc;
     int32_t lSalt2;
@@ -4875,7 +4875,7 @@ L_6477:
     return;
 }
 
-int16_t ProgressGaugeDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ProgressGaugeDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
@@ -4897,7 +4897,7 @@ L_648d:
     GetWindowRect(hwnd, &(rc));
     rc.left = ((dx - (rc.right - rc.left)) >> 0x1);
     rc.top = ((dy - (rc.bottom - rc.top)) >> 0x1);
-    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, 0x5);
+    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     return 1;
 
 L_6549:

@@ -2,7 +2,7 @@
 
 uint16_t mpimdgrbitBU[8] = {8, 8, 16, 32, 128, 64, 8, 8};
 
-int32_t PopupWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int32_t PopupWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
@@ -946,7 +946,7 @@ L_12f6:
 
 L_1302:
     pt.y = t_merge_1302_0001;
-    hwndPopup = CreateWindow(szPopup, 0x0, 0x90800000, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
+    hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP | WS_VISIBLE | WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndPopup, WM_SETFONT, rghfontArial8[0], 0);
     SetCapture(hwndPopup);
     return;

@@ -789,10 +789,28 @@ func (l *symboldbLoader) loadEnums(inputDir string) error {
 		return err
 	}
 
-	// separate enums for win defines
-	winDefineEnums, err := enumLoader.loadEnumsFromHeader(filepath.Join(inputDir, "enums-windefines.h"))
+	// Win16 SDK constant families, emitted as #defines rather than enums
+	winDefineEnums, err := enumLoader.loadWin16Defines(inputDir)
 	if err != nil {
 		return err
+	}
+
+	// enums.h values render as A|B only for enums listed as bit flags
+	cfg, err := enumLoader.loadEnumConfig(filepath.Join(inputDir, "enums.json"))
+	if err != nil {
+		return err
+	}
+	for _, name := range cfg.FlagEnums {
+		found := false
+		for _, e := range enums {
+			if e.Name == name {
+				e.EnumKind = EnumFlags
+				found = true
+			}
+		}
+		if !found {
+			return fmt.Errorf("flag_enums: enum %s not found in enums.h", name)
+		}
 	}
 
 	enums = append(enums, winDefineEnums...)
@@ -941,7 +959,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 			if g == nil {
 				return fmt.Errorf("unable to find global %s", rule.Name)
 			}
-			g.Type = enumWithStorageSize(typ, g.Type)
+			g.Type = EnumWithStorageSize(typ, g.Type)
 			continue
 		}
 
@@ -952,7 +970,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 			}
 
 			if rule.Kind == UseCallResult && len(rule.WhenArgs) == 0 {
-				f.Ret = enumWithStorageSize(typ, f.Ret)
+				f.Ret = EnumWithStorageSize(typ, f.Ret)
 				continue
 			}
 
@@ -962,7 +980,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 					if p.Name != rule.ParamName {
 						continue
 					}
-					p.Type = enumWithStorageSize(typ, p.Type)
+					p.Type = EnumWithStorageSize(typ, p.Type)
 					break
 				}
 				continue
@@ -974,7 +992,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 					if v.Name != rule.Name {
 						continue
 					}
-					v.Type = enumWithStorageSize(typ, v.Type)
+					v.Type = EnumWithStorageSize(typ, v.Type)
 					break
 				}
 				continue
@@ -993,7 +1011,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 				if f.Name != rule.FieldName {
 					continue
 				}
-				f.Type = enumWithStorageSize(typ, f.Type)
+				f.Type = EnumWithStorageSize(typ, f.Type)
 				changed = true
 				break
 			}
@@ -1006,13 +1024,19 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 	return nil
 }
 
-// enumWithStorageSize returns an enum type whose byte width matches the type it
-// annotates.
-func enumWithStorageSize(enum *Enum, original Type) *Enum {
-	if enum == nil || original == nil || original.Bytes() == enum.Bytes() {
+// EnumWithStorageSize returns the enum annotating an item of the original
+// type, with the item's width and its original type as declared storage. A
+// use as wide as the enum's typedef shares the enum itself, which declares by
+// name; union and dependent-enum rules match enums by identity.
+func EnumWithStorageSize(enum *Enum, original Type) *Enum {
+	if enum == nil || original == nil {
+		return enum
+	}
+	if enum.Typedef != nil && original.Bytes() == enum.Typedef.Bytes() {
 		return enum
 	}
 	next := *enum
 	next.Size = original.Bytes()
+	next.Storage = original
 	return &next
 }

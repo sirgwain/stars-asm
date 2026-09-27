@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <windows.h>
 
-int32_t  PlanetWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int32_t  PlanetWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void     DrawPlanShip(HDC hdc, int16_t grbit);
 int16_t  FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle);
 void     DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj);

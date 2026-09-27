@@ -616,8 +616,7 @@ func (c *machineConverter) convertValueInBlock(block machine.BlockID, value mach
 	if previousBlock != nil {
 		c.ctx.SetCurrentBlock(*previousBlock)
 	} else {
-		c.ctx.currentBlock = nil
-		c.ctx.currentUnionContext = nil
+		c.ctx.ClearCurrentBlock()
 	}
 	c.ctx.currentInstOff = previousInstOff
 	return expr

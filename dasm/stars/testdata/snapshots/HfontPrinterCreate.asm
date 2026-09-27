@@ -40,7 +40,7 @@ PUSH      [bp+iSize]                ; [bp+0x8]
 PUSH      [bp+hdc]                  ; [bp+0x6]
 MOV       ax, 0x005a          
 PUSH      ax                  
-CALLF     GetDeviceCaps             ; int16_t GetDeviceCaps(HDC arg1, DeviceCapsIndex arg2)
+CALLF     GetDeviceCaps             ; int16_t GetDeviceCaps(HDC arg1, int16_t arg2)
 PUSH      ax                  
 MOV       ax, 0x0048          
 PUSH      ax                  

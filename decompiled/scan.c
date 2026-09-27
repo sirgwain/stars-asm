@@ -3,7 +3,7 @@
 uint32_t rgcrScanMine[3] = {16711680, 65535, 255};
 int16_t  vrgPopRad[19] = {25, 50, 100, 200, 400, 800, 1000, 1500, 2250, 3000, 4000, 5000, 6000, 7500, 9000, 11000, 14000, 18000, 25000};
 
-int32_t ScannerWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t ScannerWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     POINT       pt;
     PAINTSTRUCT ps;
@@ -351,7 +351,7 @@ L_04de:
     goto L_04e7;
 
 L_04e4:
-    t_merge_04e7_0001 = 0xf;
+    t_merge_04e7_0001 = grobjPlanet | grobjFleet | grobjOther | grobjThing;
 
 L_04e7:
     FFindNearestObject(pt, t_merge_04e7_0001, &(scan));
@@ -7960,7 +7960,7 @@ L_8636:
         goto L_8650;
 
 L_8650:
-    if ((AlertSz(PszFormatIds(idsSureWantDeleteCurrentWaypoint, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsSureWantDeleteCurrentWaypoint, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto L_867f;
     else
         goto L_8679;
@@ -8660,7 +8660,7 @@ L_9279:
     return 1;
 }
 
-int16_t FindDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int16_t FindDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     char    szName[40];
     RECT    rc;
     int16_t t_merge_93ea_0001;

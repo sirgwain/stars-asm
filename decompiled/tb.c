@@ -3,7 +3,7 @@
 char    vrgTBBtn[29] = "";
 int16_t vrgpctZoom[9] = {25, 38, 50, 75, 100, 125, 150, 200, 400};
 
-int32_t TbWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t TbWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     fInside;
     POINT       pt;
@@ -1735,7 +1735,7 @@ L_1942:
     InvalidateRect(hwndTooltip, 0x0, 1);
 
 L_1957:
-    SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), 0x216);
+    SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
     t_scratch_m10 = (vtickTooltipLast + 0x190);
     if ((t_scratch_m10 < GetTickCount()))
         goto L_19af;
@@ -1763,7 +1763,7 @@ L_19dd:
     return;
 }
 
-int32_t TooltipWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t TooltipWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     POINT       pt;
     PAINTSTRUCT ps;
@@ -1869,7 +1869,7 @@ L_1b10:
 
 L_1b1d:
     ClientToScreen(hwndFrame, &(pt));
-    SetWindowPos(hwnd, 0xffff, pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, 0x251);
+    SetWindowPos(hwnd, 0xffff, pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
     UpdateWindow(hwnd);
     if ((vidTimerTooltip == -1))
         goto L_1b77;
@@ -1991,7 +1991,7 @@ L_1d53:
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-int32_t FakeComboProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t FakeComboProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     LRESULT t_call_1de0;
 
 L_1d72:
@@ -2030,7 +2030,7 @@ L_1de8:
     return t_call_1de0;
 }
 
-int32_t FakeCEProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t FakeCEProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     LRESULT t_call_1e5e;
 
 L_1df0:

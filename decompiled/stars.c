@@ -1272,7 +1272,7 @@ L_124c:
     return szWork;
 }
 
-int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT    rc;
     HDC     hdc;
     int16_t i;
@@ -1444,7 +1444,7 @@ L_1510:
     return 0;
 }
 
-int16_t OrderInfoDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t OrderInfoDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT rc;
 
 L_151e:

@@ -4,7 +4,7 @@ uint16_t rggrbitBrParts[17] = {6655, 8, 16, 64, 2048, 1, 4096, 256, 128, 512, 32
 int32_t  rglTechCost[27] = {0,     50,    80,    130,   210,   340,   550,   890,   1440,  2330,  3770,  6100,  9870, 13850,
                             18040, 22440, 27050, 31870, 36900, 42140, 47590, 53250, 59120, 65200, 71490, 77990, 84700};
 
-int16_t ResearchDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ResearchDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     y;
     int16_t     i;
@@ -69,7 +69,7 @@ L_011e:
 
 L_0140:
     hwndRad = GetDlgItem(hwnd, i);
-    SetWindowPos(hwndRad, 0x0, 16, y, dxResRadio, ((int32_t)(LOWORD((3 * dyArial8))) / 2), 0x44);
+    SetWindowPos(hwndRad, 0x0, 16, y, dxResRadio, ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
     y = (y + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
     i = (i + 1);
 
@@ -148,13 +148,13 @@ L_0292:
     dxResRight = (dxResRight + (dx + 48));
     y = (y + LOWORD((10 * dyArial8)));
     SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, ((dxResLeft + dxResRight) - 152), ((y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 8), 70,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), 0x44);
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, ((dxResLeft + dxResRight) - 76), ((y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 8), 70,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), 0x44);
+                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
     GetWindowRect(hwnd, &(rcWindow));
     GetClientRect(hwnd, &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, ((((dxResLeft + dxResRight) + rcWindow.right) - rcWindow.left) - rc.right),
-                 (((y + rcWindow.bottom) - rcWindow.top) - rc.bottom), 0x6);
+                 (((y + rcWindow.bottom) - rcWindow.top) - rc.bottom), SWP_NOMOVE | SWP_NOZORDER);
     StickyDlgPos(hwnd, &(ptStickyResDlg), 1);
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
@@ -931,7 +931,7 @@ L_144a:
         goto L_14c9;
 
 L_14c9:
-    SetWindowPos(GetDlgItem(hwnd, 0x43b), 0x0, (xCtr - 60), ((rc.top + dyArial8) + 2), ((rc.right - xCtr) + 50), (9 * dyArial8), 0xc);
+    SetWindowPos(GetDlgItem(hwnd, 0x43b), 0x0, (xCtr - 60), ((rc.top + dyArial8) + 2), ((rc.right - xCtr) + 50), (9 * dyArial8), SWP_NOZORDER | SWP_NOREDRAW);
 
 DrawResourceAlloc:
     rc.top = (((int32_t)(LOWORD((3 * dyArial8))) / 2) + rc.bottom);
@@ -1368,7 +1368,7 @@ L_1eb0:
     return lCost;
 }
 
-int16_t BrowserDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t BrowserDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     HMENU       hmenu;
     int16_t     i;
@@ -1431,7 +1431,8 @@ L_1f1d:
     t_scratch_m3c = GetSystemMetrics(SM_CYCAPTION);
     t_scratch_m3e = (GetSystemMetrics(SM_CYDLGFRAME) * 2);
     SetWindowPos(hwnd, 0x0, 0, 0, ((t_merge_1f1d_0001 + 358) + t_scratch_m3a),
-                 (((((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + LOWORD((3 * dyArial8))) + 25) + t_scratch_m3e) + t_scratch_m3c), 0x6);
+                 (((((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + LOWORD((3 * dyArial8))) + 25) + t_scratch_m3e) + t_scratch_m3c),
+                 SWP_NOMOVE | SWP_NOZORDER);
     StickyDlgPos(hwnd, &(ptStickyBrowserDlg), 1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[1]);
@@ -1527,7 +1528,7 @@ L_220a:
     t_merge_220d_0001 = 0x0;
 
 L_220d:
-    hwndBrowserChild = CreateWindow(szBrowser, 0x0, 0x50000000, 6, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + 12), (t_merge_220d_0001 + 344),
+    hwndBrowserChild = CreateWindow(szBrowser, 0x0, WS_CHILD | WS_VISIBLE, 6, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + 12), (t_merge_220d_0001 + 344),
                                     (((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6), hwnd, 0x0, hInst, 0x0);
     i = 1087;
     goto L_226b;
@@ -2035,7 +2036,7 @@ L_2868:
     return 0;
 }
 
-int32_t BrowserWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int32_t BrowserWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     POINT       pt;
     int16_t     i;

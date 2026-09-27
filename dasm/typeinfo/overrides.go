@@ -364,7 +364,8 @@ func (o *overrideDB) resolveNamedType(name, cType string) (Type, error) {
 		if strings.Contains(strings.ToLower(cType), "far *") || strings.Contains(strings.ToLower(cType), "far*") || strings.Contains(strings.ToLower(cType), "huge*") || strings.Contains(strings.ToLower(cType), "huge *") {
 			ptrClass = PtrFar
 		}
-		typ := o.cTypeToType(name, strings.TrimSpace(
+		// A pointer alias such as LPCSTR names the pointer, not its pointee.
+		typ := o.cTypeToType("", strings.TrimSpace(
 			strings.ReplaceAll(
 				strings.ReplaceAll(
 					strings.ReplaceAll(
@@ -378,6 +379,7 @@ func (o *overrideDB) resolveNamedType(name, cType string) (Type, error) {
 			return nil, fmt.Errorf("failed to parse pointer %s %s", cType, name)
 		}
 		ptr := Pointer{
+			Name:  name,
 			Elem:  typ,
 			Class: ptrClass,
 		}

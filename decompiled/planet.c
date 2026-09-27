@@ -1,6 +1,6 @@
 #include "common.h"
 
-int32_t PlanetWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int32_t PlanetWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC                hdc;
     PAINTSTRUCT        ps;
     XFER               xf;
@@ -152,8 +152,8 @@ L_04cc:
     return (uint32_t)(hbrButtonFace);
 
 L_04f8:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) (invalid-destination) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = (((dyWinFrame * 2) + 198) + dyTitleBar) (invalid-destination) */
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.x = ((dxWinFrame * 2) + 198);
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = (((dyWinFrame * 2) + 198) + dyTitleBar);
     goto Default;
 
 L_0527:
@@ -554,7 +554,7 @@ L_0bb2:
         goto L_0bce;
 
 L_0bce:
-    if ((AlertSz(PszFormatIds(idsSureWantDeleteEverythingPlanetsProductionQueue, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsSureWantDeleteEverythingPlanetsProductionQueue, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto L_0d04;
     else
         goto L_0bfa;
@@ -2098,7 +2098,7 @@ L_3030:
         goto L_3039;
 
 L_3039:
-    SetWindowPos(rghwndBtn[i], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), 0x14);
+    SetWindowPos(rghwndBtn[i], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(rghwndBtn[i], SW_SHOW);
     goto L_301d;
 
@@ -2451,7 +2451,7 @@ L_3735:
         goto L_3740;
 
 L_3740:
-    SetWindowPos(rghwndBtn[i], 0x0, xLeft, yTop, dx, dy, 0x14);
+    SetWindowPos(rghwndBtn[i], 0x0, xLeft, yTop, dx, dy, SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(rghwndBtn[i], SW_SHOW);
     goto L_3708;
 
@@ -2863,7 +2863,7 @@ L_3d53:
         goto L_3d5c;
 
 L_3d5c:
-    SetWindowPos(rghwndBtn[((int32_t)((i + 1)) % 3)], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), 0x14);
+    SetWindowPos(rghwndBtn[((int32_t)((i + 1)) % 3)], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), SWP_NOZORDER | SWP_NOACTIVATE);
     if ((i != 2))
         goto L_3da3;
     else
@@ -3060,7 +3060,7 @@ L_3fa0:
 
 L_3fab:
     FDupFleet(lpfl, &(sel.fl));
-    sel.grobjFull = 0x3;
+    sel.grobjFull = grobjPlanet | grobjFleet;
     goto L_3fd2;
 
 L_3fc6:
@@ -5111,7 +5111,7 @@ void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
     int16_t  fSelected;
     RECT     rc;
     uint16_t t_merge_618b_0001;
-    WMType   t_merge_61b8_0001;
+    uint16_t t_merge_61b8_0001;
 
 L_6128:
     fSelected = (lpdis->itemState & 0x1);

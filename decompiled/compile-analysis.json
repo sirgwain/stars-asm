@@ -7,8 +7,8 @@
   "summary": {
     "translationUnits": 39,
     "failedTranslationUnits": 34,
-    "errors": 1599,
-    "uniqueErrors": 1599
+    "errors": 1589,
+    "uniqueErrors": 1589
   },
   "files": {
     "decompiled/ai.c": {
@@ -30,13 +30,13 @@
       "errors": 41
     },
     "decompiled/build.c": {
-      "errors": 76
+      "errors": 74
     },
     "decompiled/create.c": {
       "errors": 71
     },
     "decompiled/file.c": {
-      "errors": 35
+      "errors": 34
     },
     "decompiled/globals.c": {
       "errors": 12
@@ -48,7 +48,7 @@
       "errors": 55
     },
     "decompiled/mdi.c": {
-      "errors": 120
+      "errors": 117
     },
     "decompiled/memory.c": {
       "errors": 10
@@ -75,7 +75,7 @@
       "errors": 65
     },
     "decompiled/report.c": {
-      "errors": 51
+      "errors": 49
     },
     "decompiled/research.c": {
       "errors": 89
@@ -93,7 +93,7 @@
       "errors": 30
     },
     "decompiled/stars.c": {
-      "errors": 34
+      "errors": 33
     },
     "decompiled/strings.c": {
       "errors": 0
@@ -114,7 +114,7 @@
       "errors": 1
     },
     "decompiled/tutor.c": {
-      "errors": 24
+      "errors": 23
     },
     "decompiled/tutor2.c": {
       "errors": 0
@@ -2293,7 +2293,7 @@
         "decompiled/battle.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -3030,7 +3030,7 @@
         "decompiled/build.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -5921,46 +5921,6 @@
         "decompiled/build.c"
       ],
       "kind": "error",
-      "message": "assignment to 'const CHAR **' {aka 'const char **'} from incompatible pointer type 'char *'",
-      "option": "-Wincompatible-pointer-types",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/build.c",
-            "line": 3852,
-            "column": 23,
-            "byteColumn": 23,
-            "displayColumn": 23
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/build.c"
-      ],
-      "kind": "error",
-      "message": "assignment to 'const CHAR **' {aka 'const char **'} from incompatible pointer type 'char *'",
-      "option": "-Wincompatible-pointer-types",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/build.c",
-            "line": 3856,
-            "column": 23,
-            "byteColumn": 23,
-            "displayColumn": 23
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/build.c"
-      ],
-      "kind": "error",
       "message": "passing argument 1 of 'PctCloakFromHuldef' from incompatible pointer type",
       "option": "-Wincompatible-pointer-types",
       "locations": [
@@ -6653,14 +6613,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5276,
+            "line": 5277,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5276,
+            "line": 5277,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -6680,14 +6640,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5277,
+            "line": 5278,
             "column": 44,
             "byteColumn": 44,
             "displayColumn": 44
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5277,
+            "line": 5278,
             "column": 45,
             "byteColumn": 45,
             "displayColumn": 45
@@ -6738,14 +6698,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5439,
+            "line": 5440,
             "column": 20,
             "byteColumn": 20,
             "displayColumn": 20
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5439,
+            "line": 5440,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
@@ -6818,14 +6778,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5440,
+            "line": 5441,
             "column": 20,
             "byteColumn": 20,
             "displayColumn": 20
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5440,
+            "line": 5441,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
@@ -6898,14 +6858,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5463,
+            "line": 5464,
             "column": 46,
             "byteColumn": 46,
             "displayColumn": 46
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5463,
+            "line": 5464,
             "column": 51,
             "byteColumn": 51,
             "displayColumn": 51
@@ -6956,14 +6916,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5494,
+            "line": 5495,
             "column": 27,
             "byteColumn": 27,
             "displayColumn": 27
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5494,
+            "line": 5495,
             "column": 42,
             "byteColumn": 42,
             "displayColumn": 42
@@ -7036,14 +6996,14 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5501,
+            "line": 5502,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5501,
+            "line": 5502,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
@@ -7063,21 +7023,21 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5620,
+            "line": 5621,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "start": {
             "file": "decompiled/build.c",
-            "line": 5620,
+            "line": 5621,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5620,
+            "line": 5621,
             "column": 25,
             "byteColumn": 25,
             "displayColumn": 25
@@ -7128,21 +7088,21 @@
         {
           "caret": {
             "file": "decompiled/build.c",
-            "line": 5729,
+            "line": 5730,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "start": {
             "file": "decompiled/build.c",
-            "line": 5729,
+            "line": 5730,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/build.c",
-            "line": 5729,
+            "line": 5730,
             "column": 25,
             "byteColumn": 25,
             "displayColumn": 25
@@ -7529,7 +7489,7 @@
         "decompiled/create.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -7697,7 +7657,7 @@
         "decompiled/create.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -7865,7 +7825,7 @@
         "decompiled/create.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -8033,7 +7993,7 @@
         "decompiled/create.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -11984,7 +11944,7 @@
         "decompiled/file.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -12067,57 +12027,6 @@
                 "column": 63,
                 "byteColumn": 63,
                 "displayColumn": 63
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/file.c"
-      ],
-      "kind": "error",
-      "message": "passing argument 2 of 'DialogBoxParamA' makes pointer from integer without a cast",
-      "option": "-Wint-conversion",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/file.c",
-            "line": 3603,
-            "column": 12,
-            "byteColumn": 12,
-            "displayColumn": 12
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "expected 'LPCSTR' {aka 'const char *'} but argument is of type 'DialogId'",
-          "locations": [
-            {
-              "caret": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 2414,
-                "column": 72,
-                "byteColumn": 72,
-                "displayColumn": 72
-              },
-              "start": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 2414,
-                "column": 65,
-                "byteColumn": 65,
-                "displayColumn": 65
-              },
-              "finish": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 2414,
-                "column": 85,
-                "byteColumn": 85,
-                "displayColumn": 85
               }
             }
           ]
@@ -15654,7 +15563,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15698,7 +15607,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15742,7 +15651,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15786,7 +15695,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int32_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15830,7 +15739,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'void (*)(struct HWND__ *, WMType,  uint16_t,  uint32_t)' {aka 'void (*)(struct HWND__ *, short unsigned int,  short unsigned int,  unsigned int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'void (*)(struct HWND__ *, uint16_t,  uint16_t,  uint32_t)' {aka 'void (*)(struct HWND__ *, short unsigned int,  short unsigned int,  unsigned int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15874,7 +15783,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -15962,7 +15871,7 @@
         "decompiled/init.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -19934,56 +19843,6 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "'WM_STARS_HOST' undeclared (first use in this function)",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 1055,
-            "column": 23,
-            "byteColumn": 23,
-            "displayColumn": 23
-          },
-          "finish": {
-            "file": "decompiled/mdi.c",
-            "line": 1055,
-            "column": 35,
-            "byteColumn": 35,
-            "displayColumn": 35
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "each undeclared identifier is reported only once for each function it appears in",
-          "locations": [
-            {
-              "caret": {
-                "file": "decompiled/mdi.c",
-                "line": 1055,
-                "column": 23,
-                "byteColumn": 23,
-                "displayColumn": 23
-              },
-              "finish": {
-                "file": "decompiled/mdi.c",
-                "line": 1055,
-                "column": 35,
-                "byteColumn": 35,
-                "displayColumn": 35
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
       "message": "passing argument 1 of 'FillRect' makes pointer from integer without a cast",
       "option": "-Wint-conversion",
       "locations": [
@@ -20348,58 +20207,6 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "'WM_STARS_STARTUP' undeclared (first use in this function)",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 1836,
-            "column": 17,
-            "byteColumn": 17,
-            "displayColumn": 17
-          },
-          "finish": {
-            "file": "decompiled/mdi.c",
-            "line": 1836,
-            "column": 32,
-            "byteColumn": 32,
-            "displayColumn": 32
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
-      "message": "'WM_STARS_CONTINUE' undeclared (first use in this function)",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/mdi.c",
-            "line": 1848,
-            "column": 17,
-            "byteColumn": 17,
-            "displayColumn": 17
-          },
-          "finish": {
-            "file": "decompiled/mdi.c",
-            "line": 1848,
-            "column": 33,
-            "byteColumn": 33,
-            "displayColumn": 33
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/mdi.c"
-      ],
-      "kind": "error",
       "message": "assignment to 'uint16_t' {aka 'short unsigned int'} from 'HCURSOR' {aka 'struct HICON__ *'} makes integer from pointer without a cast",
       "option": "-Wint-conversion",
       "locations": [
@@ -20586,7 +20393,7 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -20828,7 +20635,7 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -21016,7 +20823,7 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -21184,7 +20991,7 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -21684,14 +21491,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4460,
+            "line": 4461,
             "column": 43,
             "byteColumn": 43,
             "displayColumn": 43
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 4460,
+            "line": 4461,
             "column": 59,
             "byteColumn": 59,
             "displayColumn": 59
@@ -21764,7 +21571,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4593,
+            "line": 4594,
             "column": 17,
             "byteColumn": 17,
             "displayColumn": 17
@@ -21809,13 +21616,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4611,
+            "line": 4612,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -21859,7 +21666,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4612,
+            "line": 4613,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -21910,7 +21717,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4612,
+            "line": 4613,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -21977,13 +21784,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4653,
+            "line": 4654,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22027,7 +21834,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4654,
+            "line": 4655,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
@@ -22078,7 +21885,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4654,
+            "line": 4655,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
@@ -22145,13 +21952,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4677,
+            "line": 4678,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22195,7 +22002,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4678,
+            "line": 4679,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
@@ -22246,7 +22053,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4678,
+            "line": 4679,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
@@ -22313,13 +22120,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4785,
+            "line": 4786,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22363,7 +22170,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4786,
+            "line": 4787,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22414,7 +22221,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4786,
+            "line": 4787,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22487,7 +22294,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 4801,
+            "line": 4802,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -22507,7 +22314,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5405,
+            "line": 5406,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
@@ -22527,7 +22334,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5546,
+            "line": 5547,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -22547,7 +22354,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5586,
+            "line": 5587,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -22567,7 +22374,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5604,
+            "line": 5605,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -22586,21 +22393,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5709,
+            "line": 5710,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 5709,
+            "line": 5710,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 5709,
+            "line": 5710,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -22651,14 +22458,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5763,
+            "line": 5764,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 5763,
+            "line": 5764,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -22677,7 +22484,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 5801,
+            "line": 5802,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
@@ -22691,13 +22498,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6268,
+            "line": 6269,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22741,7 +22548,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6269,
+            "line": 6270,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22792,7 +22599,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6269,
+            "line": 6270,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -22865,14 +22672,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6278,
+            "line": 6279,
             "column": 43,
             "byteColumn": 43,
             "displayColumn": 43
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6278,
+            "line": 6279,
             "column": 59,
             "byteColumn": 59,
             "displayColumn": 59
@@ -22945,7 +22752,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6344,
+            "line": 6345,
             "column": 17,
             "byteColumn": 17,
             "displayColumn": 17
@@ -22996,21 +22803,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6383,
+            "line": 6384,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 6383,
+            "line": 6384,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6383,
+            "line": 6384,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -23054,7 +22861,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6384,
+            "line": 6385,
             "column": 28,
             "byteColumn": 28,
             "displayColumn": 28
@@ -23074,14 +22881,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6520,
+            "line": 6521,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6520,
+            "line": 6521,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -23101,14 +22908,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6993,
+            "line": 6994,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6993,
+            "line": 6994,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -23159,14 +22966,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6997,
+            "line": 6998,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6997,
+            "line": 6998,
             "column": 21,
             "byteColumn": 21,
             "displayColumn": 21
@@ -23217,14 +23024,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 6998,
+            "line": 6999,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 6998,
+            "line": 6999,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -23238,13 +23045,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7496,
+            "line": 7497,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23288,7 +23095,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7497,
+            "line": 7498,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23339,7 +23146,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7497,
+            "line": 7498,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23406,13 +23213,13 @@
         "decompiled/mdi.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7509,
+            "line": 7510,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23456,7 +23263,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7510,
+            "line": 7511,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23507,7 +23314,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7510,
+            "line": 7511,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -23580,14 +23387,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7646,
+            "line": 7647,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 7646,
+            "line": 7647,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -23638,14 +23445,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7650,
+            "line": 7651,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 7650,
+            "line": 7651,
             "column": 21,
             "byteColumn": 21,
             "displayColumn": 21
@@ -23696,14 +23503,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7651,
+            "line": 7652,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 7651,
+            "line": 7652,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -23723,14 +23530,14 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 7787,
+            "line": 7788,
             "column": 42,
             "byteColumn": 42,
             "displayColumn": 42
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 7787,
+            "line": 7788,
             "column": 58,
             "byteColumn": 58,
             "displayColumn": 58
@@ -23803,7 +23610,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8706,
+            "line": 8707,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -23823,7 +23630,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8830,
+            "line": 8831,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -23874,7 +23681,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8830,
+            "line": 8831,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -23925,7 +23732,7 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8829,
+            "line": 8830,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -23945,21 +23752,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8849,
+            "line": 8850,
             "column": 33,
             "byteColumn": 33,
             "displayColumn": 33
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 8849,
+            "line": 8850,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 8849,
+            "line": 8850,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
@@ -24010,21 +23817,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 8858,
+            "line": 8859,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 8858,
+            "line": 8859,
             "column": 17,
             "byteColumn": 17,
             "displayColumn": 17
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 8858,
+            "line": 8859,
             "column": 34,
             "byteColumn": 34,
             "displayColumn": 34
@@ -24075,21 +23882,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 9132,
+            "line": 9133,
             "column": 37,
             "byteColumn": 37,
             "displayColumn": 37
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 9132,
+            "line": 9133,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 9132,
+            "line": 9133,
             "column": 39,
             "byteColumn": 39,
             "displayColumn": 39
@@ -24133,21 +23940,21 @@
         {
           "caret": {
             "file": "decompiled/mdi.c",
-            "line": 9135,
+            "line": 9136,
             "column": 34,
             "byteColumn": 34,
             "displayColumn": 34
           },
           "start": {
             "file": "decompiled/mdi.c",
-            "line": 9135,
+            "line": 9136,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
           },
           "finish": {
             "file": "decompiled/mdi.c",
-            "line": 9135,
+            "line": 9136,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
@@ -26439,21 +26246,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1043,
+            "line": 1044,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 1043,
+            "line": 1044,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1043,
+            "line": 1044,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -26504,14 +26311,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1050,
+            "line": 1051,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1050,
+            "line": 1051,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -26562,14 +26369,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1295,
+            "line": 1296,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1295,
+            "line": 1296,
             "column": 21,
             "byteColumn": 21,
             "displayColumn": 21
@@ -26620,7 +26427,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1313,
+            "line": 1314,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -26640,14 +26447,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1374,
+            "line": 1375,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1374,
+            "line": 1375,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -26667,21 +26474,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1409,
+            "line": 1410,
             "column": 66,
             "byteColumn": 66,
             "displayColumn": 66
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 1409,
+            "line": 1410,
             "column": 61,
             "byteColumn": 61,
             "displayColumn": 61
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1409,
+            "line": 1410,
             "column": 70,
             "byteColumn": 70,
             "displayColumn": 70
@@ -26732,14 +26539,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1413,
+            "line": 1414,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1413,
+            "line": 1414,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -26759,14 +26566,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1502,
+            "line": 1503,
             "column": 25,
             "byteColumn": 25,
             "displayColumn": 25
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 1502,
+            "line": 1503,
             "column": 31,
             "byteColumn": 31,
             "displayColumn": 31
@@ -26786,7 +26593,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1928,
+            "line": 1929,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -26830,7 +26637,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1942,
+            "line": 1943,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -26881,7 +26688,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 1942,
+            "line": 1943,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -26954,21 +26761,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2181,
+            "line": 2182,
             "column": 28,
             "byteColumn": 28,
             "displayColumn": 28
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2181,
+            "line": 2182,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2181,
+            "line": 2182,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
@@ -27019,21 +26826,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2228,
+            "line": 2229,
             "column": 31,
             "byteColumn": 31,
             "displayColumn": 31
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2228,
+            "line": 2229,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2228,
+            "line": 2229,
             "column": 33,
             "byteColumn": 33,
             "displayColumn": 33
@@ -27084,21 +26891,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2239,
+            "line": 2240,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2239,
+            "line": 2240,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2239,
+            "line": 2240,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -27149,71 +26956,6 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2255,
-            "column": 30,
-            "byteColumn": 30,
-            "displayColumn": 30
-          },
-          "start": {
-            "file": "decompiled/msg.c",
-            "line": 2255,
-            "column": 18,
-            "byteColumn": 18,
-            "displayColumn": 18
-          },
-          "finish": {
-            "file": "decompiled/msg.c",
-            "line": 2255,
-            "column": 32,
-            "byteColumn": 32,
-            "displayColumn": 32
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "expected 'HWND' {aka 'struct HWND__ *'} but argument is of type 'uint16_t' {aka 'short unsigned int'}",
-          "locations": [
-            {
-              "caret": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 3048,
-                "column": 47,
-                "byteColumn": 47,
-                "displayColumn": 47
-              },
-              "start": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 3048,
-                "column": 42,
-                "byteColumn": 42,
-                "displayColumn": 42
-              },
-              "finish": {
-                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
-                "line": 3048,
-                "column": 50,
-                "byteColumn": 50,
-                "displayColumn": 50
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/msg.c"
-      ],
-      "kind": "error",
-      "message": "passing argument 1 of 'EnableWindow' makes pointer from integer without a cast",
-      "option": "-Wint-conversion",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/msg.c",
             "line": 2256,
             "column": 30,
             "byteColumn": 30,
@@ -27344,21 +27086,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2334,
+            "line": 2258,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2334,
+            "line": 2258,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2334,
+            "line": 2258,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -27409,21 +27151,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2348,
+            "line": 2335,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2348,
+            "line": 2335,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2348,
+            "line": 2335,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -27474,21 +27216,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2355,
+            "line": 2349,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2355,
+            "line": 2349,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2355,
+            "line": 2349,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -27539,21 +27281,86 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2552,
+            "line": 2356,
             "column": 30,
             "byteColumn": 30,
             "displayColumn": 30
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 2552,
+            "line": 2356,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2552,
+            "line": 2356,
+            "column": 32,
+            "byteColumn": 32,
+            "displayColumn": 32
+          }
+        }
+      ],
+      "children": [
+        {
+          "kind": "note",
+          "message": "expected 'HWND' {aka 'struct HWND__ *'} but argument is of type 'uint16_t' {aka 'short unsigned int'}",
+          "locations": [
+            {
+              "caret": {
+                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
+                "line": 3048,
+                "column": 47,
+                "byteColumn": 47,
+                "displayColumn": 47
+              },
+              "start": {
+                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
+                "line": 3048,
+                "column": 42,
+                "byteColumn": 42,
+                "displayColumn": 42
+              },
+              "finish": {
+                "file": "/opt/homebrew/Cellar/mingw-w64/13.0.0_1/toolchain-x86_64/x86_64-w64-mingw32/include/winuser.h",
+                "line": 3048,
+                "column": 50,
+                "byteColumn": 50,
+                "displayColumn": 50
+              }
+            }
+          ]
+        }
+      ],
+      "occurrences": 1
+    },
+    {
+      "translationUnits": [
+        "decompiled/msg.c"
+      ],
+      "kind": "error",
+      "message": "passing argument 1 of 'EnableWindow' makes pointer from integer without a cast",
+      "option": "-Wint-conversion",
+      "locations": [
+        {
+          "caret": {
+            "file": "decompiled/msg.c",
+            "line": 2553,
+            "column": 30,
+            "byteColumn": 30,
+            "displayColumn": 30
+          },
+          "start": {
+            "file": "decompiled/msg.c",
+            "line": 2553,
+            "column": 18,
+            "byteColumn": 18,
+            "displayColumn": 18
+          },
+          "finish": {
+            "file": "decompiled/msg.c",
+            "line": 2553,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
@@ -27604,14 +27411,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 2992,
+            "line": 2993,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 2992,
+            "line": 2993,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -27631,7 +27438,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3103,
+            "line": 3104,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -27650,7 +27457,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3153,
+            "line": 3154,
             "column": 25,
             "byteColumn": 25,
             "displayColumn": 25
@@ -27659,21 +27466,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3153,
+            "line": 3154,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 3153,
+            "line": 3154,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 3153,
+            "line": 3154,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -27693,7 +27500,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3179,
+            "line": 3180,
             "column": 13,
             "byteColumn": 13,
             "displayColumn": 13
@@ -27713,7 +27520,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3291,
+            "line": 3292,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -27733,7 +27540,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 3296,
+            "line": 3297,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -27753,14 +27560,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4019,
+            "line": 4020,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4019,
+            "line": 4020,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -27811,14 +27618,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4029,
+            "line": 4030,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4029,
+            "line": 4030,
             "column": 21,
             "byteColumn": 21,
             "displayColumn": 21
@@ -27869,14 +27676,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4030,
+            "line": 4031,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4030,
+            "line": 4031,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -27896,21 +27703,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4036,
+            "line": 4037,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 4036,
+            "line": 4037,
             "column": 26,
             "byteColumn": 26,
             "displayColumn": 26
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4036,
+            "line": 4037,
             "column": 37,
             "byteColumn": 37,
             "displayColumn": 37
@@ -27961,21 +27768,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4041,
+            "line": 4042,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 4041,
+            "line": 4042,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4041,
+            "line": 4042,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -28019,7 +27826,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4167,
+            "line": 4168,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -28039,7 +27846,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4213,
+            "line": 4214,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -28059,7 +27866,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4261,
+            "line": 4262,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -28079,7 +27886,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4600,
+            "line": 4601,
             "column": 9,
             "byteColumn": 9,
             "displayColumn": 9
@@ -28099,7 +27906,7 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4752,
+            "line": 4753,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -28119,14 +27926,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4832,
+            "line": 4833,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4832,
+            "line": 4833,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -28146,21 +27953,21 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4948,
+            "line": 4949,
             "column": 42,
             "byteColumn": 42,
             "displayColumn": 42
           },
           "start": {
             "file": "decompiled/msg.c",
-            "line": 4948,
+            "line": 4949,
             "column": 37,
             "byteColumn": 37,
             "displayColumn": 37
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4948,
+            "line": 4949,
             "column": 47,
             "byteColumn": 47,
             "displayColumn": 47
@@ -28211,14 +28018,14 @@
         {
           "caret": {
             "file": "decompiled/msg.c",
-            "line": 4983,
+            "line": 4984,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
           },
           "finish": {
             "file": "decompiled/msg.c",
-            "line": 4983,
+            "line": 4984,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -29522,7 +29329,7 @@
         "decompiled/planet.c"
       ],
       "kind": "error",
-      "message": "passing argument 1 of '(ptile + (sizetype)((long long unsigned int)i * 24))-\u003epfn' makes integer from pointer without a cast",
+      "message": "passing argument 1 of '(ptile + (sizetype)((long long unsigned int)i * 20))-\u003epfn' makes integer from pointer without a cast",
       "option": "-Wint-conversion",
       "locations": [
         {
@@ -39660,7 +39467,7 @@
         "decompiled/produce.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -40304,7 +40111,7 @@
         "decompiled/produce.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -42221,7 +42028,7 @@
         "decompiled/produce.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -42505,7 +42312,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -42673,7 +42480,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -42841,7 +42648,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -43009,7 +42816,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -43177,7 +42984,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -43345,7 +43152,7 @@
         "decompiled/race.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -47803,46 +47610,6 @@
         "decompiled/report.c"
       ],
       "kind": "error",
-      "message": "assignment to 'const CHAR **' {aka 'const char **'} from incompatible pointer type 'char *'",
-      "option": "-Wincompatible-pointer-types",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 4660,
-            "column": 23,
-            "byteColumn": 23,
-            "displayColumn": 23
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
-      "message": "assignment to 'const CHAR **' {aka 'const char **'} from incompatible pointer type 'char *'",
-      "option": "-Wincompatible-pointer-types",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/report.c",
-            "line": 4664,
-            "column": 23,
-            "byteColumn": 23,
-            "displayColumn": 23
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/report.c"
-      ],
-      "kind": "error",
       "message": "passing argument 4 of 'qsort' from incompatible pointer type",
       "option": "-Wincompatible-pointer-types",
       "locations": [
@@ -48951,21 +48718,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1437,
+            "line": 1438,
             "column": 47,
             "byteColumn": 47,
             "displayColumn": 47
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 1437,
+            "line": 1438,
             "column": 34,
             "byteColumn": 34,
             "displayColumn": 34
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 1437,
+            "line": 1438,
             "column": 49,
             "byteColumn": 49,
             "displayColumn": 49
@@ -49009,7 +48776,7 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1530,
+            "line": 1531,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -49060,14 +48827,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1536,
+            "line": 1537,
             "column": 44,
             "byteColumn": 44,
             "displayColumn": 44
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 1536,
+            "line": 1537,
             "column": 68,
             "byteColumn": 68,
             "displayColumn": 68
@@ -49118,14 +48885,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1560,
+            "line": 1561,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 1560,
+            "line": 1561,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -49176,14 +48943,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1595,
+            "line": 1596,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 1595,
+            "line": 1596,
             "column": 21,
             "byteColumn": 21,
             "displayColumn": 21
@@ -49234,14 +49001,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1596,
+            "line": 1597,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 1596,
+            "line": 1597,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -49261,7 +49028,7 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1607,
+            "line": 1608,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -49281,7 +49048,7 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 1621,
+            "line": 1622,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -49301,14 +49068,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2064,
+            "line": 2065,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2064,
+            "line": 2065,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -49359,21 +49126,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2289,
+            "line": 2290,
             "column": 37,
             "byteColumn": 37,
             "displayColumn": 37
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2289,
+            "line": 2290,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2289,
+            "line": 2290,
             "column": 39,
             "byteColumn": 39,
             "displayColumn": 39
@@ -49417,21 +49184,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2310,
+            "line": 2311,
             "column": 60,
             "byteColumn": 60,
             "displayColumn": 60
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2310,
+            "line": 2311,
             "column": 45,
             "byteColumn": 45,
             "displayColumn": 45
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2310,
+            "line": 2311,
             "column": 87,
             "byteColumn": 87,
             "displayColumn": 87
@@ -49482,21 +49249,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2314,
+            "line": 2315,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2314,
+            "line": 2315,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2314,
+            "line": 2315,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49540,21 +49307,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2502,
+            "line": 2503,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2502,
+            "line": 2503,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2502,
+            "line": 2503,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49598,21 +49365,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2505,
+            "line": 2506,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2505,
+            "line": 2506,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2505,
+            "line": 2506,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49656,21 +49423,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2558,
+            "line": 2559,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2558,
+            "line": 2559,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2558,
+            "line": 2559,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49714,21 +49481,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2621,
+            "line": 2622,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2621,
+            "line": 2622,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2621,
+            "line": 2622,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49772,21 +49539,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2728,
+            "line": 2729,
             "column": 40,
             "byteColumn": 40,
             "displayColumn": 40
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2728,
+            "line": 2729,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2728,
+            "line": 2729,
             "column": 42,
             "byteColumn": 42,
             "displayColumn": 42
@@ -49830,14 +49597,14 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2868,
+            "line": 2869,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2868,
+            "line": 2869,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -49857,21 +49624,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 2956,
+            "line": 2957,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 2956,
+            "line": 2957,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 2956,
+            "line": 2957,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49915,21 +49682,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3213,
+            "line": 3214,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3213,
+            "line": 3214,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3213,
+            "line": 3214,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -49973,21 +49740,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3215,
+            "line": 3216,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3215,
+            "line": 3216,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3215,
+            "line": 3216,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50031,21 +49798,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3290,
+            "line": 3291,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3290,
+            "line": 3291,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3290,
+            "line": 3291,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50089,21 +49856,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3310,
+            "line": 3311,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3310,
+            "line": 3311,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3310,
+            "line": 3311,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50147,21 +49914,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3348,
+            "line": 3349,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3348,
+            "line": 3349,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3348,
+            "line": 3349,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50205,21 +49972,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3357,
+            "line": 3358,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3357,
+            "line": 3358,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3357,
+            "line": 3358,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50263,21 +50030,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3362,
+            "line": 3363,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3362,
+            "line": 3363,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3362,
+            "line": 3363,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50321,21 +50088,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3403,
+            "line": 3404,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3403,
+            "line": 3404,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3403,
+            "line": 3404,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50379,21 +50146,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3405,
+            "line": 3406,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3405,
+            "line": 3406,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3405,
+            "line": 3406,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50437,21 +50204,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3434,
+            "line": 3435,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3434,
+            "line": 3435,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3434,
+            "line": 3435,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50495,21 +50262,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3437,
+            "line": 3438,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3437,
+            "line": 3438,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3437,
+            "line": 3438,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50553,21 +50320,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3479,
+            "line": 3480,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3479,
+            "line": 3480,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3479,
+            "line": 3480,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50611,21 +50378,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3482,
+            "line": 3483,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3482,
+            "line": 3483,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3482,
+            "line": 3483,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50669,21 +50436,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3521,
+            "line": 3522,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3521,
+            "line": 3522,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3521,
+            "line": 3522,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50727,21 +50494,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3532,
+            "line": 3533,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3532,
+            "line": 3533,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3532,
+            "line": 3533,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50785,21 +50552,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3534,
+            "line": 3535,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3534,
+            "line": 3535,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3534,
+            "line": 3535,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50843,21 +50610,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3539,
+            "line": 3540,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3539,
+            "line": 3540,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3539,
+            "line": 3540,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50901,21 +50668,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3541,
+            "line": 3542,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3541,
+            "line": 3542,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3541,
+            "line": 3542,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -50959,21 +50726,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3546,
+            "line": 3547,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3546,
+            "line": 3547,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3546,
+            "line": 3547,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51017,21 +50784,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3548,
+            "line": 3549,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3548,
+            "line": 3549,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3548,
+            "line": 3549,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51075,21 +50842,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3559,
+            "line": 3560,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3559,
+            "line": 3560,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3559,
+            "line": 3560,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51133,21 +50900,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3582,
+            "line": 3583,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3582,
+            "line": 3583,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3582,
+            "line": 3583,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51191,21 +50958,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3594,
+            "line": 3595,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3594,
+            "line": 3595,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3594,
+            "line": 3595,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51249,21 +51016,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3632,
+            "line": 3633,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3632,
+            "line": 3633,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3632,
+            "line": 3633,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51307,21 +51074,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3634,
+            "line": 3635,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3634,
+            "line": 3635,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3634,
+            "line": 3635,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51365,21 +51132,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3639,
+            "line": 3640,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3639,
+            "line": 3640,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3639,
+            "line": 3640,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51423,21 +51190,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3641,
+            "line": 3642,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3641,
+            "line": 3642,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3641,
+            "line": 3642,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51481,21 +51248,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3646,
+            "line": 3647,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3646,
+            "line": 3647,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3646,
+            "line": 3647,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51539,21 +51306,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3648,
+            "line": 3649,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3648,
+            "line": 3649,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3648,
+            "line": 3649,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51597,21 +51364,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3653,
+            "line": 3654,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3653,
+            "line": 3654,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3653,
+            "line": 3654,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51655,21 +51422,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3655,
+            "line": 3656,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3655,
+            "line": 3656,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3655,
+            "line": 3656,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51713,21 +51480,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3688,
+            "line": 3689,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3688,
+            "line": 3689,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3688,
+            "line": 3689,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51771,21 +51538,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3691,
+            "line": 3692,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3691,
+            "line": 3692,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3691,
+            "line": 3692,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51829,21 +51596,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3832,
+            "line": 3833,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3832,
+            "line": 3833,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3832,
+            "line": 3833,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51887,21 +51654,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3835,
+            "line": 3836,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3835,
+            "line": 3836,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3835,
+            "line": 3836,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -51945,21 +51712,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3994,
+            "line": 3995,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3994,
+            "line": 3995,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3994,
+            "line": 3995,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52003,21 +51770,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 3997,
+            "line": 3998,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 3997,
+            "line": 3998,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 3997,
+            "line": 3998,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52061,21 +51828,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4123,
+            "line": 4124,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4123,
+            "line": 4124,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4123,
+            "line": 4124,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52119,21 +51886,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4126,
+            "line": 4127,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4126,
+            "line": 4127,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4126,
+            "line": 4127,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52177,21 +51944,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4200,
+            "line": 4201,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4200,
+            "line": 4201,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4200,
+            "line": 4201,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52235,21 +52002,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4202,
+            "line": 4203,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4202,
+            "line": 4203,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4202,
+            "line": 4203,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52293,21 +52060,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4221,
+            "line": 4222,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4221,
+            "line": 4222,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4221,
+            "line": 4222,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52351,21 +52118,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4223,
+            "line": 4224,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4223,
+            "line": 4224,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4223,
+            "line": 4224,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52409,21 +52176,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4240,
+            "line": 4241,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4240,
+            "line": 4241,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4240,
+            "line": 4241,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52467,21 +52234,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4242,
+            "line": 4243,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4242,
+            "line": 4243,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4242,
+            "line": 4243,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52525,21 +52292,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4329,
+            "line": 4330,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4329,
+            "line": 4330,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4329,
+            "line": 4330,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52583,21 +52350,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4332,
+            "line": 4333,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4332,
+            "line": 4333,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4332,
+            "line": 4333,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52641,21 +52408,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4341,
+            "line": 4342,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4341,
+            "line": 4342,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4341,
+            "line": 4342,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52699,21 +52466,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4370,
+            "line": 4371,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4370,
+            "line": 4371,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4370,
+            "line": 4371,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52757,21 +52524,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4473,
+            "line": 4474,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4473,
+            "line": 4474,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4473,
+            "line": 4474,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52815,21 +52582,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4480,
+            "line": 4481,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4480,
+            "line": 4481,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4480,
+            "line": 4481,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52873,21 +52640,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4483,
+            "line": 4484,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4483,
+            "line": 4484,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4483,
+            "line": 4484,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52931,21 +52698,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4547,
+            "line": 4548,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4547,
+            "line": 4548,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4547,
+            "line": 4548,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -52989,21 +52756,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4550,
+            "line": 4551,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4550,
+            "line": 4551,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4550,
+            "line": 4551,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -53047,21 +52814,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4581,
+            "line": 4582,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4581,
+            "line": 4582,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4581,
+            "line": 4582,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -53105,21 +52872,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4584,
+            "line": 4585,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4584,
+            "line": 4585,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4584,
+            "line": 4585,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -53163,21 +52930,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4598,
+            "line": 4599,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4598,
+            "line": 4599,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4598,
+            "line": 4599,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -53221,21 +52988,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4927,
+            "line": 4928,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4927,
+            "line": 4928,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4927,
+            "line": 4928,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -53279,21 +53046,21 @@
         {
           "caret": {
             "file": "decompiled/research.c",
-            "line": 4931,
+            "line": 4932,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "start": {
             "file": "decompiled/research.c",
-            "line": 4931,
+            "line": 4932,
             "column": 23,
             "byteColumn": 23,
             "displayColumn": 23
           },
           "finish": {
             "file": "decompiled/research.c",
-            "line": 4931,
+            "line": 4932,
             "column": 38,
             "byteColumn": 38,
             "displayColumn": 38
@@ -59382,7 +59149,7 @@
         "decompiled/ship.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -59550,7 +59317,7 @@
         "decompiled/ship.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -59718,7 +59485,7 @@
         "decompiled/ship.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -60592,7 +60359,7 @@
       "children": [
         {
           "kind": "note",
-          "message": "expected 'int16_t (*)(void *, int16_t,  int16_t,  void *, int16_t)' {aka 'short int (*)(void *, short int,  short int,  void *, short int)'} but argument is of type 'int16_t (*)(void *, RecordType,  int16_t,  PLANET *, int16_t)' {aka 'short int (*)(void *, RecordType,  short int,  struct _planet *, short int)'}",
+          "message": "expected 'int16_t (*)(void *, int16_t,  int16_t,  void *, int16_t)' {aka 'short int (*)(void *, short int,  short int,  void *, short int)'} but argument is of type 'int16_t (*)(void *, RecordType,  int16_t,  PLANET *, int16_t)' {aka 'short int (*)(void *, short unsigned int,  short int,  struct _planet *, short int)'}",
           "locations": [
             {
               "caret": {
@@ -60649,7 +60416,7 @@
         "decompiled/ship.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -61539,7 +61306,7 @@
         "decompiled/ship.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -64215,7 +63982,7 @@
         "decompiled/ship2.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -65213,56 +64980,6 @@
             "byteColumn": 11,
             "displayColumn": 11
           }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/stars.c"
-      ],
-      "kind": "error",
-      "message": "'WM_STARS_STARTUP' undeclared (first use in this function)",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/stars.c",
-            "line": 538,
-            "column": 28,
-            "byteColumn": 28,
-            "displayColumn": 28
-          },
-          "finish": {
-            "file": "decompiled/stars.c",
-            "line": 538,
-            "column": 43,
-            "byteColumn": 43,
-            "displayColumn": 43
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "each undeclared identifier is reported only once for each function it appears in",
-          "locations": [
-            {
-              "caret": {
-                "file": "decompiled/stars.c",
-                "line": 538,
-                "column": 28,
-                "byteColumn": 28,
-                "displayColumn": 28
-              },
-              "finish": {
-                "file": "decompiled/stars.c",
-                "line": 538,
-                "column": 43,
-                "byteColumn": 43,
-                "displayColumn": 43
-              }
-            }
-          ]
         }
       ],
       "occurrences": 1
@@ -66703,7 +66420,7 @@
         "decompiled/stars.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -69742,7 +69459,7 @@
         "decompiled/tutor.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -69898,56 +69615,6 @@
                 "column": 36,
                 "byteColumn": 36,
                 "displayColumn": 36
-              }
-            }
-          ]
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/tutor.c"
-      ],
-      "kind": "error",
-      "message": "'WM_STARS_CONTINUE' undeclared (first use in this function)",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/tutor.c",
-            "line": 81,
-            "column": 28,
-            "byteColumn": 28,
-            "displayColumn": 28
-          },
-          "finish": {
-            "file": "decompiled/tutor.c",
-            "line": 81,
-            "column": 44,
-            "byteColumn": 44,
-            "displayColumn": 44
-          }
-        }
-      ],
-      "children": [
-        {
-          "kind": "note",
-          "message": "each undeclared identifier is reported only once for each function it appears in",
-          "locations": [
-            {
-              "caret": {
-                "file": "decompiled/tutor.c",
-                "line": 81,
-                "column": 28,
-                "byteColumn": 28,
-                "displayColumn": 28
-              },
-              "finish": {
-                "file": "decompiled/tutor.c",
-                "line": 81,
-                "column": 44,
-                "byteColumn": 44,
-                "displayColumn": 44
               }
             }
           ]
@@ -70326,7 +69993,7 @@
         "decompiled/tutor.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int32_t (*)()' {aka 'int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -73819,7 +73486,7 @@
         "decompiled/utilgen.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {
@@ -75100,7 +74767,7 @@
         "decompiled/vcr.c"
       ],
       "kind": "error",
-      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, WMType,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
+      "message": "assignment to 'int16_t (*)()' {aka 'short int (*)()'} from incompatible pointer type 'int16_t (*)(struct HWND__ *, uint16_t,  uint16_t,  int32_t)' {aka 'short int (*)(struct HWND__ *, short unsigned int,  short unsigned int,  int)'}",
       "option": "-Wincompatible-pointer-types",
       "locations": [
         {

@@ -9,7 +9,7 @@ extern char    rgTOWidth[2][2];
 
 int16_t  InitMDIApp();
 void     CreateChildWindows();
-int32_t  FrameWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam);
+int32_t  FrameWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 POINT    InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev);
 uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel);
 void     RestoreSelection();
@@ -27,14 +27,14 @@ void     DrawHostDialog2(HWND hwnd, HDC hdcIn);
 void     VerifyTurns();
 int16_t  CTurnsOutSafe();
 int16_t  CFindTurnsOutstanding();
-int16_t  HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
-int16_t  HostOptionsDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int16_t  HostModeDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
+int16_t  HostOptionsDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void     DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw);
-void     HostTimerProc(HWND hwnd, WMType msg, uint16_t idTimer, uint32_t dwTime);
+void     HostTimerProc(HWND hwnd, uint16_t msg, uint16_t idTimer, uint32_t dwTime);
 void     GetWindowRc(HWND hwnd, RECT *prc);
 void     SetWindowIniString(char *sz, HWND hwnd);
 void     WriteIniSettings();
 void     RefitFrameChildren();
-int32_t  TitleWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam);
+int32_t  TitleWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 
 #endif

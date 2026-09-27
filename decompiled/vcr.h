@@ -11,7 +11,7 @@ int32_t  CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU);
 int32_t  CBattleKills(BTLDATA *lpbd, int16_t fOurDead);
 int32_t  LdpFromItokDv(int16_t itok, DV *lpdv);
 int16_t  SetVCRBoard(int16_t iStep);
-int16_t  VCRDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int16_t  VCRDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void     GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, int16_t *pcsh);
 void     DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd);
 void     Delay(int16_t ctick);

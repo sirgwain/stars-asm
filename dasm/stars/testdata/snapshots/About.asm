@@ -1,9 +1,9 @@
 ; About  (stars)
 ;   addr: 0004:1252  len=716
-;   sig:  int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+;   sig:  int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
 ;   params:
 ;     HWND             hwnd           [BP+0xe]
-;     WMType           message        [BP+0xc]
+;     uint16_t         message        [BP+0xc]
 ;     uint16_t         wParam         [BP+0xa]
 ;     int32_t          lParam         [BP+0x6]
 ;   locals:
@@ -41,7 +41,7 @@ CALLF     SzVersion                 ; char * SzVersion()
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SetWindowText             ; void SetWindowText(HWND arg1, LPCSTR *arg2)
+CALLF     SetWindowText             ; void SetWindowText(HWND arg1, LPCSTR arg2)
                                     ; stars.c:759
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x000e          
@@ -120,7 +120,7 @@ CALLF     SelectObject              ; HGDIOBJ SelectObject(HDC arg1, HGDIOBJ arg
 PUSH      [bp-hdc]                  ; [bp-0xc]
 MOV       ax, 0x0002          
 PUSH      ax                  
-CALLF     SetBkMode                 ; int16_t SetBkMode(HDC arg1, BkMode arg2)
+CALLF     SetBkMode                 ; int16_t SetBkMode(HDC arg1, int16_t arg2)
                                     ; stars.c:788
 PUSH      [bp-hdc]                  ; [bp-0xc]
 PUSH      [crButtonFace+0x2]        ; [0x22bc]
@@ -288,7 +288,7 @@ PUSH      ax
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]
-CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, DialogId arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
                                     ; stars.c:841
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]

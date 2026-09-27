@@ -54,6 +54,13 @@ type PassSnapshot struct {
 func PreProcessorSpecs() []PreProcessor {
 	return []PreProcessor{
 		{
+			Name:    "message-context",
+			Purpose: "Record the window message a window procedure handles in each block.",
+			Func: func(ctx *FuncContext) MachineFuncProcessor {
+				return &messageContextProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "compiler-helpers",
 			Purpose: "Lower pure compiler runtime helpers into structured machine values.",
 			Machine: func(*FuncContext) MachineBlockProcessor {

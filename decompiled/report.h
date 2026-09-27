@@ -9,7 +9,7 @@ extern uint16_t mpicolgrbitBU[12];
 int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 void    SetHScrollBar();
 void    DrawReport(HWND hwnd, HDC hdc, RECT *prc);
-int16_t ScoreXDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int16_t ScoreXDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void    InitScoreDlg(HWND hwnd, int16_t fVictory);
 void    DrawVCReport(HDC hdc);
 void    DrawScoreReport(HDC hdc);
@@ -30,6 +30,6 @@ void    ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow);
 void    DumpUniverse();
 void    DumpPlanets();
 void    DumpFleets();
-int16_t PrintMapDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam);
+int16_t PrintMapDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 
 #endif

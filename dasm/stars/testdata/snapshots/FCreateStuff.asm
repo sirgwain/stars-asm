@@ -21,12 +21,12 @@ MOV       [bp-fFailed], 0x0000      ; [bp-0x4], 0x0000
                                     ; init.c:36
 MOV       ax, 0x0000          
 PUSH      ax                  
-CALLF     GetSystemMetrics          ; int16_t GetSystemMetrics(SystemMetric arg1)
+CALLF     GetSystemMetrics          ; int16_t GetSystemMetrics(int16_t arg1)
 MOV       [bp-dx], ax               ; [bp-0xc], ax
                                     ; init.c:37
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetSystemMetrics          ; int16_t GetSystemMetrics(SystemMetric arg1)
+CALLF     GetSystemMetrics          ; int16_t GetSystemMetrics(int16_t arg1)
 MOV       [bp-dy], ax               ; [bp-0x6], ax
                                     ; init.c:39
 CMP       [bp-dx], 0x0320           ; [bp-0xc], 0x0320
@@ -514,7 +514,7 @@ MOV       ax, 0x05e6
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-hbmp], ax             ; [bp-0xa], ax
                                     ; init.c:110
 PUSH      [bp-hbmp]                 ; [bp-0xa]
@@ -536,7 +536,7 @@ OR        ax, 0x0000
 OR        dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-hbmp], ax             ; [bp-0xa], ax
                                     ; init.c:116
 PUSH      [bp-hbmp]                 ; [bp-0xa]
@@ -560,7 +560,7 @@ MOV       ax, 0x05f2
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-hbmp], ax             ; [bp-0xa], ax
                                     ; init.c:121
 PUSH      [bp-hbmp]                 ; [bp-0xa]
@@ -575,7 +575,7 @@ MOV       ax, 0x05fb
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-hbmp], ax             ; [bp-0xa], ax
                                     ; init.c:125
 PUSH      [bp-hbmp]                 ; [bp-0xa]
@@ -590,7 +590,7 @@ MOV       ax, 0x0603
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurScanner], ax         ; [0x4a66], ax
                                     ; init.c:129
 PUSH      [hInst]                   ; [0x5310]
@@ -598,7 +598,7 @@ MOV       ax, 0x060e
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurScanAdd], ax         ; [0x57a2], ax
                                     ; init.c:130
 PUSH      [hInst]                   ; [0x5310]
@@ -606,7 +606,7 @@ MOV       ax, 0x0619
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurOpenGrab], ax        ; [0x4b7a], ax
                                     ; init.c:131
 PUSH      [hInst]                   ; [0x5310]
@@ -614,7 +614,7 @@ MOV       ax, 0x0625
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurCloseGrab], ax       ; [0x5304], ax
                                     ; init.c:132
 PUSH      [hInst]                   ; [0x5310]
@@ -622,7 +622,7 @@ MOV       ax, 0x007a
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurTrashCan], ax        ; [0x258a], ax
                                     ; init.c:133
 PUSH      [hInst]                   ; [0x5310]
@@ -630,7 +630,7 @@ MOV       ax, 0x0079
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurNoWay], ax           ; [0x3ee4], ax
                                     ; init.c:134
 PUSH      [hInst]                   ; [0x5310]
@@ -638,7 +638,7 @@ MOV       ax, 0x0102
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurResizeWE], ax        ; [0x23f0], ax
                                     ; init.c:135
 PUSH      [hInst]                   ; [0x5310]
@@ -646,7 +646,7 @@ MOV       ax, 0x0104
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurResizeNS], ax        ; [0x26c6], ax
                                     ; init.c:136
 PUSH      [hInst]                   ; [0x5310]
@@ -654,7 +654,7 @@ MOV       ax, 0x0107
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurResize4Way], ax      ; [0x51ce], ax
                                     ; init.c:137
 PUSH      [hInst]                   ; [0x5310]
@@ -662,7 +662,7 @@ MOV       ax, 0x0108
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurArrowHelp], ax       ; [0x48ae], ax
                                     ; init.c:138
 PUSH      [hInst]                   ; [0x5310]
@@ -670,7 +670,7 @@ MOV       ax, 0x0109
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hcurHand], ax            ; [0x525e], ax
                                     ; init.c:140
 PUSH      [hInst]                   ; [0x5310]
@@ -678,7 +678,7 @@ MOV       ax, 0x0632
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpScanner], ax         ; [0x4a5a], ax
                                     ; init.c:141
 PUSH      [hInst]                   ; [0x5310]
@@ -686,7 +686,7 @@ MOV       ax, 0x0058
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpScanShip], ax        ; [0x4b7e], ax
                                     ; init.c:142
 PUSH      [hInst]                   ; [0x5310]
@@ -694,7 +694,7 @@ MOV       ax, 0x063d
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpUnknownPlanet], ax   ; [0x3efa], ax
                                     ; init.c:143
 PUSH      [hInst]                   ; [0x5310]
@@ -702,7 +702,7 @@ MOV       ax, 0x00f9
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpNumbers], ax         ; [0x597a], ax
                                     ; init.c:145
 MOV       ax, 0x0070          
@@ -842,7 +842,7 @@ MOV       ax, 0x0077
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpBackBld], ax         ; [0x24e2], ax
                                     ; init.c:175
 PUSH      [hInst]                   ; [0x5310]
@@ -850,7 +850,7 @@ MOV       ax, 0x0086
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpMsg], ax             ; [0x260a], ax
                                     ; init.c:176
 PUSH      [hInst]                   ; [0x5310]
@@ -858,7 +858,7 @@ MOV       ax, 0x00c7
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadBitmap                ; HBITMAP LoadBitmap(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hbmpMono], ax            ; [0x5992], ax
                                     ; init.c:178
 MOV       ax, 0x0437          
@@ -872,7 +872,7 @@ MOV       ax, 0x064e
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hiconStars], ax          ; [0x0356], ax
                                     ; init.c:181
 PUSH      [hInst]                   ; [0x5310]
@@ -880,7 +880,7 @@ MOV       ax, 0x0657
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hiconHost], ax           ; [0x0358], ax
                                     ; init.c:182
 PUSH      [hInst]                   ; [0x5310]
@@ -888,7 +888,7 @@ MOV       ax, 0x065f
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [hiconWait], ax           ; [0x035a], ax
                                     ; init.c:183
 PUSH      [hInst]                   ; [0x5310]
@@ -896,7 +896,7 @@ MOV       ax, 0x0667
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR], ax          ; [0x24e6], ax
                                     ; init.c:184
 PUSH      [hInst]                   ; [0x5310]
@@ -904,7 +904,7 @@ MOV       ax, 0x0670
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0x2], ax      ; [0x24e8], ax
                                     ; init.c:185
 PUSH      [hInst]                   ; [0x5310]
@@ -912,7 +912,7 @@ MOV       ax, 0x0679
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0x4], ax      ; [0x24ea], ax
                                     ; init.c:186
 PUSH      [hInst]                   ; [0x5310]
@@ -920,7 +920,7 @@ MOV       ax, 0x0682
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0x6], ax      ; [0x24ec], ax
                                     ; init.c:187
 PUSH      [hInst]                   ; [0x5310]
@@ -928,7 +928,7 @@ MOV       ax, 0x068b
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0x8], ax      ; [0x24ee], ax
                                     ; init.c:188
 PUSH      [hInst]                   ; [0x5310]
@@ -936,7 +936,7 @@ MOV       ax, 0x0694
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0xa], ax      ; [0x24f0], ax
                                     ; init.c:189
 PUSH      [hInst]                   ; [0x5310]
@@ -944,7 +944,7 @@ MOV       ax, 0x069d
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadIcon                  ; HICON LoadIcon(HINSTANCE arg1, LPCSTR arg2)
 MOV       [rghiconVCR+0xc], ax      ; [0x24f2], ax
                                     ; init.c:191
 MOV       ax, 0x0004          
@@ -1138,7 +1138,7 @@ PUSH      ax
 CALLF     PszFormatIds              ; char * PszFormatIds(StringId ids, int16_t *pParams)
 ADD       sp, 0x0006          
 PUSH      ax                  
-CALLF     AlertSz                   ; int16_t AlertSz(char *sz, MessageBoxType mbType)
+CALLF     AlertSz                   ; int16_t AlertSz(char *sz, int16_t mbType)
 ADD       sp, 0x0004          
                                     ; init.c:215
 MOV       ax, 0x0000          

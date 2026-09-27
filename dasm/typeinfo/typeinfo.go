@@ -71,7 +71,7 @@ func (p *Primitive) WithName(name string) *Primitive {
 
 func (p *Primitive) IsCharLikeByteType() bool {
 	switch p.Name {
-	case "char", "const char", "signed char", "unsigned char", "int8_t", "LPSTR", "LPCSTR":
+	case "char", "const char", "signed char", "unsigned char", "int8_t":
 		return true
 	default:
 		return false
@@ -80,12 +80,20 @@ func (p *Primitive) IsCharLikeByteType() bool {
 
 // Pointer describes a Win16 pointer type.
 type Pointer struct {
+	// Name preserves a C pointer typedef, such as LPCSTR, while Elem and
+	// Class describe Win16 storage.
+	Name  string
 	Elem  Type
 	Class PtrClass
 }
 
 func (p *Pointer) Kind() Kind { return KPointer }
+
+// String returns the pointer typedef name, or the pointee followed by *.
 func (p *Pointer) String() string {
+	if p.Name != "" {
+		return p.Name
+	}
 	if p.Elem == nil {
 		return "*"
 	}
@@ -101,9 +109,8 @@ func (p *Pointer) Bytes() int {
 	}
 }
 
-// IsCStringPointer reports whether a type represents a C byte-string pointer.
-// This accepts direct pointer-to-char forms and common Win16 aliases like
-// LPCSTR/LPSTR when alias expansion is unavailable.
+// IsCStringPointer reports whether a type represents a C byte-string pointer,
+// including named aliases such as LPCSTR whose pointee is char.
 func (p *Pointer) IsCStringPointer() bool {
 	switch v := p.Elem.(type) {
 	case *Primitive:
@@ -259,6 +266,9 @@ func TypeDecl(typ Type, name string) string {
 }
 
 func pointerDecl(p Pointer, name string) string {
+	if p.Name != "" {
+		return p.Name + " " + name
+	}
 	if p.Elem == nil {
 		return "*" + name
 	}

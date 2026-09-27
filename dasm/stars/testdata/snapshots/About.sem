@@ -1,10 +1,10 @@
 /*
 About  (stars)
   addr: 0004:1252  len=716
-  sig:  int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+  sig:  int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    WMType           message        [BP+0xc]
+    uint16_t         message        [BP+0xc]
     uint16_t         wParam         [BP+0xa]
     int32_t          lParam         [BP+0x6]
   locals:

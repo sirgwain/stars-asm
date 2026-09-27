@@ -727,7 +727,7 @@ L_0e7f:
     return viStepVCRCur;
 }
 
-int16_t VCRDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t VCRDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     i;
     int16_t     ibtn;
@@ -764,7 +764,7 @@ L_0e9f:
     GetClientRect(hwnd, &(rc));
     dyFrame = ((rcWindow.bottom - rcWindow.top) - rc.bottom);
     GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x00A1), &(rc));
-    SetWindowPos(hwnd, 0x0, 0, 0, (dxyVCRBoard + 250), (((dyFrame + 24) + dxyVCRBoard) + (rc.bottom - rc.top)), 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, (dxyVCRBoard + 250), (((dyFrame + 24) + dxyVCRBoard) + (rc.bottom - rc.top)), SWP_NOMOVE | SWP_NOZORDER);
     i = 0;
     goto L_1021;
 
@@ -816,7 +816,7 @@ L_0fd8:
 
 L_0fdd:
     OffsetRect(&(rc), dx, ((dxyVCRBoard + 16) - rc.top));
-    SetWindowPos(GetDlgItem(hwnd, ibtn), 0x0, rc.left, rc.top, 0, 0, 0x5);
+    SetWindowPos(GetDlgItem(hwnd, ibtn), 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     i = (i + 1);
 
 L_1021:

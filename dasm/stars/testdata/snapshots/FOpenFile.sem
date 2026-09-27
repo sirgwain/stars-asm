@@ -154,7 +154,7 @@ L_4dcf:
     branch rtbof.fInUse == 0x0 ? L_4e11 : L_4de2
 
 L_4de2:
-    branch AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), 0x2024) != 6 ? L_4c36 : L_4e08
+    branch AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO|MB_ICONQUESTION|MB_TASKMODAL) != IDYES ? L_4c36 : L_4e08
 
 L_4e08:
     goto L_4ebd

@@ -6,6 +6,17 @@ type Enum struct {
 	Values   []EnumValue
 	Size     int
 
+	// Typedef is the integer type the enum name is declared as in the
+	// generated enums.h, sized to the original 16-bit int. It is nil for
+	// Win16 constant families, whose name is never declared and whose values
+	// are emitted as #defines.
+	Typedef Type
+
+	// Storage is the declared type of the item this enum annotates. A use
+	// whose storage differs in width from Typedef, such as a 1-byte field,
+	// declares Storage instead of the enum name.
+	Storage Type
+
 	valuesByName map[string]EnumValue
 }
 
@@ -32,7 +43,15 @@ func (e *Enum) Bytes() int {
 	return 2
 }
 
+// String returns the C type name for a declaration: the enum name where its
+// typedef fits the annotated storage, otherwise the storage type.
 func (e *Enum) String() string {
+	if e.Typedef != nil && (e.Storage == nil || e.Storage.Bytes() == e.Typedef.Bytes()) {
+		return e.Name
+	}
+	if e.Storage != nil {
+		return e.Storage.String()
+	}
 	return e.Name
 }
 
@@ -109,6 +128,10 @@ type ArgConstraint struct {
 	ParamName string
 	Value     int
 }
+
+// MessageEnumName is the enum naming window message identifiers. Message
+// payload rules and window procedure message parameters are keyed by it.
+const MessageEnumName = "WMType"
 
 // MessageRule describes the typed payload carried by one window message.
 type MessageRule struct {

@@ -33,6 +33,11 @@ type FuncContext struct {
 	configuredUnionBase      *symresolve.UnionContext
 	configuredUnionByBlock   map[machine.BlockID]*symresolve.UnionContext
 	configuredMembersByBlock map[machine.BlockID]*symresolve.UnionContext
+
+	// messageByBlock is the window message a window procedure is known to be
+	// handling on entry to each block.
+	messageByBlock map[machine.BlockID]*typeinfo.MessageRule
+	currentMessage *typeinfo.MessageRule
 }
 
 // RecordedUnionBlockPathFacts returns configured and discovered union selections grouped by block.
@@ -116,6 +121,7 @@ func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolv
 // SetCurrentBlock selects the union context for a block being processed.
 func (ctx *FuncContext) SetCurrentBlock(id machine.BlockID) {
 	ctx.currentBlock = &id
+	ctx.currentMessage = ctx.messageByBlock[id]
 	ctx.currentUnionContext = ctx.configuredUnionBase
 	if configured := ctx.configuredUnionByBlock[id]; configured != nil {
 		ctx.currentUnionContext = configured
@@ -137,6 +143,7 @@ func (ctx *FuncContext) ClearCurrentBlock() {
 	ctx.currentBlock = nil
 	ctx.currentInstOff = 0
 	ctx.currentUnionContext = nil
+	ctx.currentMessage = nil
 }
 
 // unionContext returns the active path-sensitive union context.

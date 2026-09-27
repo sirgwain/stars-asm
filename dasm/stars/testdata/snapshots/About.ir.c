@@ -1,4 +1,4 @@
-int16_t About(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT    rc;
     HDC     hdc;
     int16_t i;

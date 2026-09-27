@@ -1,9 +1,10 @@
 #ifndef STARS_DECOMPILED_ENUMS_H
 #define STARS_DECOMPILED_ENUMS_H
 
-typedef enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount } HeapType;
+enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount };
+typedef uint16_t HeapType;
 
-typedef enum GrPopupType {
+enum GrPopupType {
     grPopupMineral = 1,
     grPopupPlayer = 2,
     grPopupFleet = 3,
@@ -19,9 +20,10 @@ typedef enum GrPopupType {
     grPopupUnknown = 13,
     grPopupShdefSB = 14,
     grPopupShdefBuild = 15,
-} GrPopupType;
+};
+typedef uint16_t GrPopupType;
 
-typedef enum HtMineType {
+enum HtMineType {
     htMineNone = 0,
     htMineMineralConc1 = 1,
     htMineMineralConc2 = 2,
@@ -37,24 +39,27 @@ typedef enum HtMineType {
     htMinePlanet = 12,
     htMineStarbase = 13,
     htMineMinefieldType = 14,
-} HtMineType;
+};
+typedef uint16_t HtMineType;
 
-typedef enum HtMsgType {
+enum HtMsgType {
     htMsgNone = 0,
     htMsgCurrent = 1,
     htMsgZoom = 2,
     htMsgMode = 3,
-} HtMsgType;
+};
+typedef uint16_t HtMsgType;
 
-typedef enum DtFileType {
+enum DtFileType {
     dtXY = 0,
     dtLog = 1,
     dtHost = 2,
     dtTurn = 3,
     dtHist = 4,
-} DtFileType;
+};
+typedef uint16_t DtFileType;
 
-typedef enum RaceGrbit {
+enum RaceGrbit {
     ibitRaceIFE = 0x00,
     ibitRaceTT = 0x01,
     ibitRaceARM = 0x02,
@@ -72,9 +77,10 @@ typedef enum RaceGrbit {
     ibitRaceAIPlayer = 0x1e,
     ibitRaceCheapFact = 0x1f,
     ibitRaceLast = 32,
-} RaceGrbit;
+};
+typedef uint16_t RaceGrbit;
 
-typedef enum RaceStat {
+enum RaceStat {
     rsResGen = 0,
     rsFactProd = 1,
     rsFactBuild = 2,
@@ -90,9 +96,10 @@ typedef enum RaceStat {
     rsTechBonus5 = 12,
     rsTechBonus6 = 13,
     rsMajorAdv = 14,
-} RaceStat;
+};
+typedef uint16_t RaceStat;
 
-typedef enum RaceAttribute {
+enum RaceAttribute {
     raCheapCol = 0,
     raStealth = 1,
     raAttack = 2,
@@ -104,17 +111,19 @@ typedef enum RaceAttribute {
     raMacintosh = 8,
     raNone = 9,
     raMax = 10,
-} RaceAttribute;
+};
+typedef uint16_t RaceAttribute;
 
-typedef enum GrobjClass {
+enum GrobjClass {
     grobjNone = 0x0,
     grobjPlanet = 0x1,
     grobjFleet = 0x2,
     grobjOther = 0x4,
     grobjThing = 0x8,
-} GrobjClass;
+};
+typedef uint16_t GrobjClass;
 
-typedef enum HullSlotType {
+enum HullSlotType {
     hstNone = 0x0000,
     hstEngine = 0x0001,
     hstScanner = 0x0002,
@@ -144,9 +153,10 @@ typedef enum HullSlotType {
     hstEnabled = 0x19FF,
     hstSome = 0x193E,
 
-} HullSlotType;
+};
+typedef uint16_t HullSlotType;
 
-typedef enum HulDef {
+enum HulDef {
     ihuldefSmallFreighter = 0,
     ihuldefMediumFreighter = 1,
     ihuldefLargeFreighter = 2,
@@ -184,16 +194,18 @@ typedef enum HulDef {
     ihuldefSpaceStation = 34,
     ihuldefUltraStation = 35,
     ihuldefDeathStart = 36,
-} HulDef;
+};
+typedef uint16_t HulDef;
 
-typedef enum StartingStarbase {
+enum StartingStarbase {
     Starbase = 0,
     AcceleratorPlatform = 1,
     PortholetoBeyond = 2,
     StarterColony = 3,
-} StartingStarbase;
+};
+typedef uint16_t StartingStarbase;
 
-typedef enum StartingShip {
+enum StartingShip {
     LilliputianFreighter = 0,
     ShadowTransport = 1,
     SmaugarianPeepingTom = 2,
@@ -216,30 +228,34 @@ typedef enum StartingShip {
     MTLifeboat = 19,
     MTScout = 20,
     MTProbe = 21,
-} StartingShip;
+};
+typedef uint16_t StartingShip;
 
-typedef enum ThingType {
+enum ThingType {
     ithMinefield = 0,
     ithMineralPacket = 1,
     ithWormhole = 2,
     ithMysteryTrader = 3,
-} ThingType;
+};
+typedef uint16_t ThingType;
 
-typedef enum MdBuild {
+enum MdBuild {
     mdBuildShdef = 0,
     mdBuildHuldef = 1,
     mdBuildEnemyShdef = 2,
     mdBuildComp = 3,
     mdBuildEdit = 4,
-} MdBuild;
+};
+typedef uint16_t MdBuild;
 
-typedef enum MdXfer {
+enum MdXfer {
     mdXferNone = -1,
     mdXferCargo = 0,
     mdXferShips = 1,
-} MdXfer;
+};
+typedef int16_t MdXfer;
 
-typedef enum ProdItemType {
+enum ProdItemType {
     iobjMine = 0,
     iobjFactory = 1,
     iobjDefense = 2,
@@ -272,9 +288,10 @@ typedef enum ProdItemType {
     iobjPlanetaryScannerLast = 26,
     iobjPlanetaryScanner = 27,
     iobjUnknown = 31,
-} ProdItemType;
+};
+typedef uint16_t ProdItemType;
 
-typedef enum StringId {
+enum StringId {
     idsUniverseDefinitionFileSeemsMissingCorrupt = 0x0000,
     idsPlayerLogFileAppearsCorruptUnableLoad = 0x0001,
     idsHistoryFileAppearsCorruptHistoricalDataWill = 0x0002,
@@ -1689,8 +1706,9 @@ typedef enum StringId {
     idsHooveron = 0x0583,
     idsNee = 0x0584,
     idsKurkonian = 0x0585,
-} StringId;
-typedef enum MessageId {
+};
+typedef uint16_t StringId;
+enum MessageId {
     idmColonistsDroppedMassacredGroundTroops = 0x0000,
     idmColonistsDroppedDestroyedPlanetaryDefensesRestMa = 0x0001,
     idmColonistsForcedTransportDiedBecauseDidColonize = 0x0002,
@@ -2078,8 +2096,9 @@ typedef enum MessageId {
     idmDueExcessiveFleetManeuveringBattleAreaFleets = 0x0180,
     idmBombardedKtMineralPacketFortunatelyOneHome = 0x0181,
     idmHackedRaceDiscoveredRaceStatisticsHaveAltered = 0x0182,
-} MessageId;
-typedef enum TutorId {
+};
+typedef uint16_t MessageId;
+enum TutorId {
     idtWelcomeStarsTutorialWillGuideThrough36 = 0x1000,
     idtHomePlanetCoupleScoutsDestroyerFreighterColony = 0x1001,
     idtThereFiveMessagesMessagesPaneEachYear = 0x1002,
@@ -2720,15 +2739,17 @@ typedef enum TutorId {
     idtWhenGenerateYoureOwn = 0x127d,
     idt0638Blank = 0x127e,
     idt0639Blank = 0x127f,
-} TutorId;
+};
+typedef uint16_t TutorId;
 
-typedef enum GrStat {
+enum GrStat {
     grStatFuel = 1,
     grStatCargo = 2,
 
-} GrStat;
+};
+typedef uint16_t GrStat;
 
-typedef enum iengine {
+enum iengine {
     iengineSettlersDelight = 0,
     iengineQuickJump5 = 1,
     iengineFuelMizer = 2,
@@ -2746,9 +2767,10 @@ typedef enum iengine {
     iengineTransGalacticMizerScoop = 14,
     iengineGalaxyScoop = 15,
     iengineCount = 16,
-} iengine;
+};
+typedef uint16_t iengine;
 
-typedef enum iarmor {
+enum iarmor {
     iarmorTritanium = 0,
     iarmorCrobmnium = 1,
     iarmorCarbonicArmor = 2,
@@ -2762,9 +2784,10 @@ typedef enum iarmor {
     iarmorValanium = 10,
     iarmorSuperlatanium = 11,
     iarmorCount = 12,
-} iarmor;
+};
+typedef uint16_t iarmor;
 
-typedef enum iscanner {
+enum iscanner {
     iscannerBatScanner = 0,
     iscannerRhinoScanner = 1,
     iscannerMoleScanner = 2,
@@ -2782,9 +2805,10 @@ typedef enum iscanner {
     iscannerRobberBaronScanner = 14,
     iscannerPeerlessScanner = 15,
     iscannerCount = 16,
-} iscanner;
+};
+typedef uint16_t iscanner;
 
-typedef enum ishield {
+enum ishield {
     ishieldMoleSkinShield = 0,
     ishieldCowHideShield = 1,
     ishieldWolverineDiffuseShield = 2,
@@ -2796,9 +2820,10 @@ typedef enum ishield {
     ishieldElephantHideFortress = 8,
     ishieldCompletePhaseShield = 9,
     ishieldCount = 10,
-} ishield;
+};
+typedef uint16_t ishield;
 
-typedef enum ispecialE {
+enum ispecialE {
     ispecialETransportCloaking = 0,
     ispecialEStealthCloak = 1,
     ispecialESuperStealthCloak = 2,
@@ -2817,9 +2842,10 @@ typedef enum ispecialE {
     ispecialETachyonDetector = 15,
     ispecialEAntiMatterGenerator = 16,
     ispecialECount = 17,
-} ispecialE;
+};
+typedef uint16_t ispecialE;
 
-typedef enum ispecialM {
+enum ispecialM {
     ispecialMColonizationModule = 0,
     ispecialMOrbitalConstructionModule = 1,
     ispecialMCargoPod = 2,
@@ -2832,9 +2858,10 @@ typedef enum ispecialM {
     ispecialMJumpGate = 9,
     ispecialMBeamDeflector = 10,
     ispecialMCount = 11,
-} ispecialM;
+};
+typedef uint16_t ispecialM;
 
-typedef enum imines {
+enum imines {
     iminesMineDispenser40 = 0,
     iminesMineDispenser50 = 1,
     iminesMineDispenser80 = 2,
@@ -2846,9 +2873,10 @@ typedef enum imines {
     iminesSpeedTrap30 = 8,
     iminesSpeedTrap50 = 9,
     iminesCount = 10,
-} imines;
+};
+typedef uint16_t imines;
 
-typedef enum imining {
+enum imining {
     iminingRoboMidgetMiner = 0,
     iminingRoboMiniMiner = 1,
     iminingRoboMiner = 2,
@@ -2858,9 +2886,10 @@ typedef enum imining {
     iminingAlienMiner = 6,
     iminingOrbitalAdjuster = 7,
     iminingCount = 8,
-} imining;
+};
+typedef uint16_t imining;
 
-typedef enum iplanetary {
+enum iplanetary {
     iplanetaryViewer50 = 0,
     iplanetaryViewer90 = 1,
     iplanetaryScoper150 = 2,
@@ -2877,9 +2906,10 @@ typedef enum iplanetary {
     iplanetaryNeutronShield = 13,
     iplanetaryGenesisDevice = 14,
     iplanetaryCount = 15,
-} iplanetary;
+};
+typedef uint16_t iplanetary;
 
-typedef enum iterra {
+enum iterra {
     iterraTotalTerraform3 = 0,
     iterraTotalTerraform5 = 1,
     iterraTotalTerraform7 = 2,
@@ -2901,9 +2931,10 @@ typedef enum iterra {
     iterraRadiationTerraform11 = 18,
     iterraRadiationTerraform15 = 19,
     iterraCount = 20,
-} iterra;
+};
+typedef uint16_t iterra;
 
-typedef enum ibomb {
+enum ibomb {
     ibombLadyFingerBomb = 0,
     ibombBlackCatBomb = 1,
     ibombM70Bomb = 2,
@@ -2920,9 +2951,10 @@ typedef enum ibomb {
     ibombPeerlessBomb = 13,
     ibombAnnihilatorBomb = 14,
     ibombCount = 15,
-} ibomb;
+};
+typedef uint16_t ibomb;
 
-typedef enum itorp {
+enum itorp {
     itorpAlphaTorpedo = 0,
     itorpBetaTorpedo = 1,
     itorpDeltaTorpedo = 2,
@@ -2936,9 +2968,10 @@ typedef enum itorp {
     itorpDoomsdayMissile = 10,
     itorpArmageddonMissile = 11,
     itorpCount = 12,
-} itorp;
+};
+typedef uint16_t itorp;
 
-typedef enum ibeam {
+enum ibeam {
     ibeamLaser = 0,
     ibeamXRayLaser = 1,
     ibeamMiniGun = 2,
@@ -2964,9 +2997,10 @@ typedef enum ibeam {
     ibeamStreamingPulverizer = 22,
     ibeamAntiMatterPulverizer = 23,
     ibeamCount = 24,
-} ibeam;
+};
+typedef uint16_t ibeam;
 
-typedef enum ispecialSB {
+enum ispecialSB {
     ispecialSBStargate100250 = 0,
     ispecialSBStargateAny300 = 1,
     ispecialSBStargate150600 = 2,
@@ -2984,9 +3018,10 @@ typedef enum ispecialSB {
     ispecialSBUltraDriver12 = 14,
     ispecialSBUltraDriver13 = 15,
     ispecialSBCount = 16,
-} ispecialSB;
+};
+typedef uint16_t ispecialSB;
 
-typedef enum GrbitTrader {
+enum GrbitTrader {
     grbitTraderNone = 0x0000,
     grbitTraderCargo = 0x0001,
     grbitTraderSpecial = 0x0002,
@@ -3002,17 +3037,19 @@ typedef enum GrbitTrader {
     grbitTraderJumpgate = 0x0800,
     grbitTraderLifeboat = 0x1000,
     grbitTraderAll = 0x1fff,
-} GrbitTrader;
+};
+typedef uint16_t GrbitTrader;
 
-typedef enum LookupResult {
+enum LookupResult {
     LookupInvalid = 0,     // “out of range” / not a valid part id in group
     LookupDisallowed = -1, // disallowed for race/trait/other rule
     LookupOk = 1,          // meets tech reqs (original CheckTechRequirements == 1)
     LookupNear = 2,        // “one level away in current research field”
     LookupNeedMany = 99    // multiple tech deficits
-} LookupResult;
+};
+typedef int16_t LookupResult;
 
-typedef enum RecordType {
+enum RecordType {
     /*
      * NOTE: Stars! file records encode a 6-bit "record type" (rt) plus a 10-bit
      * byte count (cb) in a 16-bit header word.
@@ -3066,9 +3103,10 @@ typedef enum RecordType {
     rtScore = 45,             /* decompile: loop `if (rt != 0x2d) break;` in score load path */
     rtLogPlayerZpq1 = 46,     /* Host-only opaque blob (size capped at 0x1A bytes) copied into rgplr[idPlayer].zpq1. */
     rtMax = 47                /* one past highest observed (0x2d) */
-} RecordType;
+};
+typedef uint16_t RecordType;
 
-typedef enum cbStructSize {
+enum cbStructSize {
     cbABC = 6,
     cbAIHIST = 1284,
     cbAIPART = 2,
@@ -3254,9 +3292,10 @@ typedef enum cbStructSize {
     cbZIPPRODQ = 40,
     cbZIPPRODQ1 = 26,
     cbcomplex = 16,
-} cbStructSize;
+};
+typedef uint16_t cbStructSize;
 
-typedef enum DialogId {
+enum DialogId {
     /* ship / fleet */
     IDD_MERGE_FLEETS = 82, /* MergeFleetsDlg */
     IDD_TRANSFER = 91,     /* TransferDlg */
@@ -3315,14 +3354,15 @@ typedef enum DialogId {
 
     /* find */
     IDD_FIND = 4202, /* FindDlg */
-} DialogId;
+};
+typedef uint16_t DialogId;
 
 #undef IDOK
 #undef IDCANCEL
 #undef IDHELP
 #undef IDC_HELP
 
-typedef enum ControlId {
+enum ControlId {
     IDOK = 1,
     IDCANCEL = 2,
     IDHELP = 9,
@@ -3397,9 +3437,10 @@ typedef enum ControlId {
 
     IDC_COMBOBOX = 0x081A,
 
-} ControlId;
+};
+typedef uint16_t ControlId;
 
-typedef enum WParamMessageId {
+enum WParamMessageId {
     IDM_DEBUG_DUMP_FLEETS = 0x0053,   // DumpFleets()
     IDM_DEBUG_DUMP_PLANETS = 0x0054,  // DumpPlanets()
     IDM_DEBUG_DUMP_UNIVERSE = 0x0055, // DumpUniverse()
@@ -3520,9 +3561,10 @@ typedef enum WParamMessageId {
     WMX_UNKNOWN_006C = 0x006C,
     WMX_UNKNOWN_006F = 0x006F,
 
-} WParamMessageId;
+};
+typedef uint16_t WParamMessageId;
 
-typedef enum VictoryCondition {
+enum VictoryCondition {
     vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
     vcAttainsTechLevel = 1,       /* "Attains Tech X in Y fields." (level) */
     vcAttainsTechFields = 2,      /* number of tech fields */
@@ -3533,9 +3575,10 @@ typedef enum VictoryCondition {
     vcHighestScoreAfterYears = 7, /* "Has the highest score after X years." */
     vcMeetsNumCriteria = 8,       /* "Winner must meet X of the above selected criteria." */
     vcMinYearsBeforeWin = 9       /* "At least X years must pass before a winner is declared." */
-} VictoryCondition;
+};
+typedef uint16_t VictoryCondition;
 
-typedef enum MdOpenFlags {
+enum MdOpenFlags {
     /* access + share combinations */
     mdRead = 0x0020,      /* OF_READ | OF_SHARE_DENY_WRITE */
     mdReadWrite = 0x0012, /* OF_READWRITE | OF_SHARE_EXCLUSIVE */
@@ -3545,9 +3588,10 @@ typedef enum MdOpenFlags {
 
     /* Stars!-specific modifier */
     mdNoOpenErr = 0x4000,
-} MdOpenFlags;
+};
+typedef uint16_t MdOpenFlags;
 
-typedef enum TaskType {
+enum TaskType {
     grTaskNone = 0,
     grTaskXfer = 1, /* transport / transfer cargo */
     grTaskColonize = 2,
@@ -3558,9 +3602,10 @@ typedef enum TaskType {
     grTaskPatrol = 7,
     grTaskAutoRoute = 8, /* auto-route / auto-order */
     grTaskGive = 9,
-} TaskType;
+};
+typedef uint16_t TaskType;
 
-typedef enum XferActionType {
+enum XferActionType {
     iActionNone = 0, /* implicit / cleared */
 
     iActionLoadAll = 1,     /* "Load All Available"        */
@@ -3573,9 +3618,10 @@ typedef enum XferActionType {
     iActionSetAmount = 8,   /* "Set Amount to..."          */
     iActionSetWaypoint = 9, /* "Set Waypoint to..."        */
     /* iActionLoadOptimal is encoded via iActionLoadDunnage + fuel path */
-} XferActionType;
+};
+typedef uint16_t XferActionType;
 
-typedef enum MdTarget {
+enum MdTarget {
     mdTargetNone = 0,              /* "None/Disengage" */
     mdTargetAny = 1,               /* "Any" */
     mdTargetStarbase = 2,          /* "Starbase" */
@@ -3584,23 +3630,26 @@ typedef enum MdTarget {
     mdTargetUnarmedShips = 5,      /* "Unarmed Ships" */
     mdTargetFuelTransports = 6,    /* "Fuel Transports" */
     mdTargetFreighters = 7,        /* "Freighters" */
-} MdTarget;
+};
+typedef uint16_t MdTarget;
 
-typedef enum BattleTactic {
+enum BattleTactic {
     mdTacticDisengage = 0,             /* "Disengage" */
     mdTacticDisengageIfChallenged = 1, /* "Disengage if challenged" */
     mdTacticMinDamageToSelf = 2,       /* "Minimize damage to self" */
     mdTacticMaxNetDamage = 3,          /* "Maximize net damage" */
     mdTacticMaxDamageRatio = 4,        /* "Maximize damage ratio" */
     mdTacticMaxDamage = 5,             /* "Maximize damage" */
-} BattleTactic;
+};
+typedef uint16_t BattleTactic;
 
-typedef enum GrfWeapon {
+enum GrfWeapon {
     bitFBeamLow = 0x0001,
     bitFBeamHigh = 0x0002,
     bitFTorp = 0x0004,
     bitFMissile = 0x0008,
     bitFDeflected = 0x0080,
-} GrfWeapon;
+};
+typedef uint16_t GrfWeapon;
 
 #endif

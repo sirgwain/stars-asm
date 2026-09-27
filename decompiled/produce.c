@@ -610,7 +610,7 @@ L_11fe:
     return;
 }
 
-int16_t ProductionDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ProductionDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC                hdc;
     PAINTSTRUCT        ps;
     RECT               rc;
@@ -670,7 +670,7 @@ L_12ac:
     dy = (LOWORD((24 * dyArial8)) + 24);
 
 L_12be:
-    SetWindowPos(hwnd, 0x0, 0, 0, dx, dy, 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, dx, dy, SWP_NOMOVE | SWP_NOZORDER);
     GetClientRect(hwnd, &(rc));
     xCtr = (rc.right >> 0x1);
     dyLB = ((rc.bottom - ((int32_t)(LOWORD((17 * dyArial8))) / 2)) - 24);
@@ -2444,37 +2444,37 @@ L_3f13:
 }
 
 void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne) {
-    uint16_t     rgCostsCur[4];
-    ProdItemType iItem;
-    uint16_t     rgCosts[4];
-    int16_t      i;
-    int16_t      j;
-    SHDEF       *lpshdef;
-    int16_t      raMajor;
-    uint32_t     cItem;
-    int16_t      fStarbase;
-    PART         part;
-    int16_t      cost;
-    int16_t      chs;
-    HUL         *lphulNew;
-    HUL         *lphulCur;
-    int16_t      costUpg;
-    int16_t      costHalf;
-    HUL         *lphulT;
-    int16_t      rgCostsPartCur[4];
-    int16_t      rgCostsPartNew[4];
-    uint16_t     t_merge_4424_0001;
-    uint16_t     t_merge_4465_0001;
-    uint16_t     t_merge_45d3_0001;
-    uint16_t     t_merge_4614_0001;
-    uint16_t     t_merge_46f2_0001;
-    uint16_t     t_merge_4733_0001;
-    uint16_t     t_merge_4a9d_0001;
-    uint16_t     t_merge_4b32_0001;
-    uint32_t     t_merge_4b68_0001;
-    uint16_t     t_merge_4b9a_0001;
-    uint16_t     t_merge_4bcf_0001;
-    uint16_t     t_merge_4c10_0001;
+    uint16_t rgCostsCur[4];
+    uint32_t iItem;
+    uint16_t rgCosts[4];
+    int16_t  i;
+    int16_t  j;
+    SHDEF   *lpshdef;
+    int16_t  raMajor;
+    uint32_t cItem;
+    int16_t  fStarbase;
+    PART     part;
+    int16_t  cost;
+    int16_t  chs;
+    HUL     *lphulNew;
+    HUL     *lphulCur;
+    int16_t  costUpg;
+    int16_t  costHalf;
+    HUL     *lphulT;
+    int16_t  rgCostsPartCur[4];
+    int16_t  rgCostsPartNew[4];
+    uint16_t t_merge_4424_0001;
+    uint16_t t_merge_4465_0001;
+    uint16_t t_merge_45d3_0001;
+    uint16_t t_merge_4614_0001;
+    uint16_t t_merge_46f2_0001;
+    uint16_t t_merge_4733_0001;
+    uint16_t t_merge_4a9d_0001;
+    uint16_t t_merge_4b32_0001;
+    uint32_t t_merge_4b68_0001;
+    uint16_t t_merge_4b9a_0001;
+    uint16_t t_merge_4bcf_0001;
+    uint16_t t_merge_4c10_0001;
 
 L_3f20:
     raMajor = GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv);
@@ -3675,7 +3675,7 @@ L_5489:
     return;
 }
 
-int16_t ZipProdDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ZipProdDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     int16_t     i;
@@ -3707,7 +3707,7 @@ L_549f:
     MapWindowPoints(0x0, hwnd, &(rc2), 0x2);
     vyZPDStatic = (rc2.bottom + 2);
     dy = (dy + ((rc2.bottom + dyArial8) + 6));
-    SetWindowPos(hwnd, 0x0, 0, 0, (rc.right - rc.left), dy, 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, (rc.right - rc.left), dy, SWP_NOMOVE | SWP_NOZORDER);
     CheckRadioButton(hwnd, 1073, 1076, 1073);
     EnableZipProdBtns(hwnd, 0);
     iResTechNow = 0;

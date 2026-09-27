@@ -50,7 +50,7 @@ L_005f:
 L_0097:
     ReleaseDC(hwnd, hdc);
     SortReportCache(vprptCur->irpt, vprptCur->icolSort);
-    SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, 0xe);
+    SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
     StickyDlgPos(hwnd, &(vprptCur->ptDlg), 1);
     vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, 0x40000001, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
@@ -121,7 +121,7 @@ L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL);
     SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + 1), swp);
     SetHScrollBar();
-    if ((msg != 0x1))
+    if ((msg != WM_CREATE))
         goto L_030b;
     else
         goto L_0304;
@@ -135,8 +135,8 @@ L_030f:
     return 0;
 
 L_0312:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x12c (invalid-destination) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0xdc (invalid-destination) */
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.x = 300;
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = 220;
     return 0;
 
 L_0337:
@@ -236,7 +236,7 @@ L_0495:
         goto L_049e;
 
 L_049e:
-    if ((msg != 0x204))
+    if ((msg != WM_RBUTTONDOWN))
         goto L_04ae;
     else
         goto L_04a8;
@@ -574,73 +574,73 @@ L_094e:
     return 1;
 
 L_0965:
-    if ((msg == 0x1))
+    if ((msg == WM_CREATE))
         goto L_0027;
     else
         goto L_096d;
 
 L_096d:
-    if ((msg == 0x2))
+    if ((msg == WM_DESTROY))
         goto L_0860;
     else
         goto L_0975;
 
 L_0975:
-    if ((msg == 0x5))
+    if ((msg == WM_SIZE))
         goto L_019b;
     else
         goto L_097d;
 
 L_097d:
-    if ((msg == 0xf))
+    if ((msg == WM_PAINT))
         goto L_0818;
     else
         goto L_0985;
 
 L_0985:
-    if ((msg == 0x14))
+    if ((msg == WM_ERASEBKGND))
         goto L_0337;
     else
         goto L_098d;
 
 L_098d:
-    if ((msg == 0x24))
+    if ((msg == WM_GETMINMAXINFO))
         goto L_0312;
     else
         goto L_0995;
 
 L_0995:
-    if ((msg == 0x111))
+    if ((msg == WM_COMMAND))
         goto L_0945;
     else
         goto L_099d;
 
 L_099d:
-    if ((msg == 0x114))
+    if ((msg == WM_HSCROLL))
         goto L_067c;
     else
         goto L_09a5;
 
 L_09a5:
-    if ((msg == 0x115))
+    if ((msg == WM_VSCROLL))
         goto L_04fc;
     else
         goto L_09ad;
 
 L_09ad:
-    if ((msg == 0x201))
+    if ((msg == WM_LBUTTONDOWN))
         goto L_0362;
     else
         goto L_09b5;
 
 L_09b5:
-    if ((msg == 0x203))
+    if ((msg == WM_LBUTTONDBLCLK))
         goto L_0362;
     else
         goto L_09bd;
 
 L_09bd:
-    if ((msg == 0x204))
+    if ((msg == WM_RBUTTONDOWN))
         goto L_0362;
     else
         goto L_09c8;
@@ -945,7 +945,7 @@ L_0f5f:
     return;
 }
 
-int16_t ScoreXDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ScoreXDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -1281,15 +1281,15 @@ L_150a:
     GetClientRect(hwnd, &(rc));
     dxFrame = ((rcWindow.right - rcWindow.left) - rc.right);
     dyFrame = ((rcWindow.bottom - rcWindow.top) - rc.bottom);
-    SetWindowPos(hwnd, 0x0, 0, 0, (dxFrame + dx), (dyFrame + dy), 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, (dxFrame + dx), (dyFrame + dy), SWP_NOMOVE | SWP_NOZORDER);
     GetWindowRect(GetDlgItem(hwnd, IDCANCEL), &(rc));
     MapWindowPoints(0x0, hwnd, &(rc), 0x2);
     OffsetRect(&(rc), 0, ((dy - 4) - rc.bottom));
     dx = ((int32_t)((dx - LOWORD(((rc.right - rc.left) * 3)))) / 4);
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00C6), 0x0, dx, rc.top, 0, 0, 0x5);
-    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, ((dx * 2) + (rc.right - rc.left)), rc.top, 0, 0, 0x5);
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00C6), 0x0, dx, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, ((dx * 2) + (rc.right - rc.left)), rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     t_scratch_m22_2 = ((rc.right - rc.left) * 2);
-    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (LOWORD((3 * dx)) + t_scratch_m22_2), rc.top, 0, 0, 0x5);
+    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (LOWORD((3 * dx)) + t_scratch_m22_2), rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     SetWindowText(hwnd, PszGetCompressedString((fVictory + 1210)));
     return;
 }
@@ -4364,7 +4364,7 @@ char *PszGetTaskName(FLEET *lpfl, int16_t *picr) {
     ORDER          ord;
     int16_t        fPercent;
     char          *psz;
-    LPCSTR        *t_merge_577a_0001;
+    LPCSTR         t_merge_577a_0001;
 
 L_53b8:
     icr = -1;
@@ -8509,7 +8509,7 @@ L_a1ad:
     return;
 }
 
-int16_t PrintMapDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int16_t PrintMapDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     int16_t i;
     RECT    rc;
     HWND    hwndEdit;

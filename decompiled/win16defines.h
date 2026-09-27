@@ -1,0 +1,1186 @@
+#ifndef STARS_DECOMPILED_WIN16DEFINES_H
+#define STARS_DECOMPILED_WIN16DEFINES_H
+
+// Win16 constants. windows.h provides most of them; the rest, such as
+// Win16-only messages and application WM_USER messages, are defined here.
+#ifndef BN_CLICKED
+#define BN_CLICKED 0x0000
+#endif
+#ifndef BN_PAINT
+#define BN_PAINT 0x0001
+#endif
+#ifndef BN_HILITE
+#define BN_HILITE 0x0002
+#endif
+#ifndef BN_UNHILITE
+#define BN_UNHILITE 0x0003
+#endif
+#ifndef BN_DISABLE
+#define BN_DISABLE 0x0004
+#endif
+#ifndef BN_DOUBLECLICKED
+#define BN_DOUBLECLICKED 0x0005
+#endif
+#ifndef EN_SETFOCUS
+#define EN_SETFOCUS 0x0100
+#endif
+#ifndef EN_KILLFOCUS
+#define EN_KILLFOCUS 0x0200
+#endif
+#ifndef EN_CHANGE
+#define EN_CHANGE 0x0300
+#endif
+#ifndef EN_UPDATE
+#define EN_UPDATE 0x0400
+#endif
+#ifndef EN_ERRSPACE
+#define EN_ERRSPACE 0x0500
+#endif
+#ifndef EN_MAXTEXT
+#define EN_MAXTEXT 0x0501
+#endif
+#ifndef EN_HSCROLL
+#define EN_HSCROLL 0x0601
+#endif
+#ifndef EN_VSCROLL
+#define EN_VSCROLL 0x0602
+#endif
+#ifndef LBN_ERRSPACE
+#define LBN_ERRSPACE (-2)
+#endif
+#ifndef LBN_SELCHANGE
+#define LBN_SELCHANGE 0x0001
+#endif
+#ifndef LBN_DBLCLK
+#define LBN_DBLCLK 0x0002
+#endif
+#ifndef LBN_SELCANCEL
+#define LBN_SELCANCEL 0x0003
+#endif
+#ifndef LBN_SETFOCUS
+#define LBN_SETFOCUS 0x0004
+#endif
+#ifndef LBN_KILLFOCUS
+#define LBN_KILLFOCUS 0x0005
+#endif
+#ifndef CBN_ERRSPACE
+#define CBN_ERRSPACE (-1)
+#endif
+#ifndef CBN_SELCHANGE
+#define CBN_SELCHANGE 0x0001
+#endif
+#ifndef CBN_DBLCLK
+#define CBN_DBLCLK 0x0002
+#endif
+#ifndef CBN_SETFOCUS
+#define CBN_SETFOCUS 0x0003
+#endif
+#ifndef CBN_KILLFOCUS
+#define CBN_KILLFOCUS 0x0004
+#endif
+#ifndef CBN_EDITCHANGE
+#define CBN_EDITCHANGE 0x0005
+#endif
+#ifndef CBN_EDITUPDATE
+#define CBN_EDITUPDATE 0x0006
+#endif
+#ifndef CBN_DROPDOWN
+#define CBN_DROPDOWN 0x0007
+#endif
+#ifndef CBN_CLOSEUP
+#define CBN_CLOSEUP 0x0008
+#endif
+#ifndef CBN_SELENDOK
+#define CBN_SELENDOK 0x0009
+#endif
+#ifndef CBN_SELENDCANCEL
+#define CBN_SELENDCANCEL 0x000A
+#endif
+#ifndef SB_LINEUP
+#define SB_LINEUP 0x0000
+#endif
+#ifndef SB_LINELEFT
+#define SB_LINELEFT 0x0000
+#endif
+#ifndef SB_LINEDOWN
+#define SB_LINEDOWN 0x0001
+#endif
+#ifndef SB_LINERIGHT
+#define SB_LINERIGHT 0x0001
+#endif
+#ifndef SB_PAGEUP
+#define SB_PAGEUP 0x0002
+#endif
+#ifndef SB_PAGELEFT
+#define SB_PAGELEFT 0x0002
+#endif
+#ifndef SB_PAGEDOWN
+#define SB_PAGEDOWN 0x0003
+#endif
+#ifndef SB_PAGERIGHT
+#define SB_PAGERIGHT 0x0003
+#endif
+#ifndef SB_THUMBPOSITION
+#define SB_THUMBPOSITION 0x0004
+#endif
+#ifndef SB_THUMBTRACK
+#define SB_THUMBTRACK 0x0005
+#endif
+#ifndef SB_TOP
+#define SB_TOP 0x0006
+#endif
+#ifndef SB_LEFT
+#define SB_LEFT 0x0006
+#endif
+#ifndef SB_BOTTOM
+#define SB_BOTTOM 0x0007
+#endif
+#ifndef SB_RIGHT
+#define SB_RIGHT 0x0007
+#endif
+#ifndef SB_ENDSCROLL
+#define SB_ENDSCROLL 0x0008
+#endif
+#ifndef WM_NULL
+#define WM_NULL 0x0000
+#endif
+#ifndef WM_CREATE
+#define WM_CREATE 0x0001
+#endif
+#ifndef WM_DESTROY
+#define WM_DESTROY 0x0002
+#endif
+#ifndef WM_MOVE
+#define WM_MOVE 0x0003
+#endif
+#ifndef WM_SIZE
+#define WM_SIZE 0x0005
+#endif
+#ifndef WM_ACTIVATE
+#define WM_ACTIVATE 0x0006
+#endif
+#ifndef WM_SETFOCUS
+#define WM_SETFOCUS 0x0007
+#endif
+#ifndef WM_KILLFOCUS
+#define WM_KILLFOCUS 0x0008
+#endif
+#ifndef WM_ENABLE
+#define WM_ENABLE 0x000A
+#endif
+#ifndef WM_SETREDRAW
+#define WM_SETREDRAW 0x000B
+#endif
+#ifndef WM_SETTEXT
+#define WM_SETTEXT 0x000C
+#endif
+#ifndef WM_GETTEXT
+#define WM_GETTEXT 0x000D
+#endif
+#ifndef WM_GETTEXTLENGTH
+#define WM_GETTEXTLENGTH 0x000E
+#endif
+#ifndef WM_PAINT
+#define WM_PAINT 0x000F
+#endif
+#ifndef WM_CLOSE
+#define WM_CLOSE 0x0010
+#endif
+#ifndef WM_QUERYENDSESSION
+#define WM_QUERYENDSESSION 0x0011
+#endif
+#ifndef WM_QUIT
+#define WM_QUIT 0x0012
+#endif
+#ifndef WM_QUERYOPEN
+#define WM_QUERYOPEN 0x0013
+#endif
+#ifndef WM_ERASEBKGND
+#define WM_ERASEBKGND 0x0014
+#endif
+#ifndef WM_SYSCOLORCHANGE
+#define WM_SYSCOLORCHANGE 0x0015
+#endif
+#ifndef WM_ENDSESSION
+#define WM_ENDSESSION 0x0016
+#endif
+#ifndef WM_SYSTEMERROR
+#define WM_SYSTEMERROR 0x0017
+#endif
+#ifndef WM_SHOWWINDOW
+#define WM_SHOWWINDOW 0x0018
+#endif
+#ifndef WM_CTLCOLOR
+#define WM_CTLCOLOR 0x0019
+#endif
+#ifndef WM_WININICHANGE
+#define WM_WININICHANGE 0x001A
+#endif
+#ifndef WM_DEVMODECHANGE
+#define WM_DEVMODECHANGE 0x001B
+#endif
+#ifndef WM_ACTIVATEAPP
+#define WM_ACTIVATEAPP 0x001C
+#endif
+#ifndef WM_FONTCHANGE
+#define WM_FONTCHANGE 0x001D
+#endif
+#ifndef WM_TIMECHANGE
+#define WM_TIMECHANGE 0x001E
+#endif
+#ifndef WM_CANCELMODE
+#define WM_CANCELMODE 0x001F
+#endif
+#ifndef WM_SETCURSOR
+#define WM_SETCURSOR 0x0020
+#endif
+#ifndef WM_MOUSEACTIVATE
+#define WM_MOUSEACTIVATE 0x0021
+#endif
+#ifndef WM_CHILDACTIVATE
+#define WM_CHILDACTIVATE 0x0022
+#endif
+#ifndef WM_QUEUESYNC
+#define WM_QUEUESYNC 0x0023
+#endif
+#ifndef WM_GETMINMAXINFO
+#define WM_GETMINMAXINFO 0x0024
+#endif
+#ifndef WM_ICONERASEBKGND
+#define WM_ICONERASEBKGND 0x0027
+#endif
+#ifndef WM_NEXTDLGCTL
+#define WM_NEXTDLGCTL 0x0028
+#endif
+#ifndef WM_SPOOLERSTATUS
+#define WM_SPOOLERSTATUS 0x002A
+#endif
+#ifndef WM_DRAWITEM
+#define WM_DRAWITEM 0x002B
+#endif
+#ifndef WM_MEASUREITEM
+#define WM_MEASUREITEM 0x002C
+#endif
+#ifndef WM_DELETEITEM
+#define WM_DELETEITEM 0x002D
+#endif
+#ifndef WM_VKEYTOITEM
+#define WM_VKEYTOITEM 0x002E
+#endif
+#ifndef WM_CHARTOITEM
+#define WM_CHARTOITEM 0x002F
+#endif
+#ifndef WM_SETFONT
+#define WM_SETFONT 0x0030
+#endif
+#ifndef WM_GETFONT
+#define WM_GETFONT 0x0031
+#endif
+#ifndef WM_QUERYDRAGICON
+#define WM_QUERYDRAGICON 0x0037
+#endif
+#ifndef WM_COMPAREITEM
+#define WM_COMPAREITEM 0x0039
+#endif
+#ifndef WM_COMPACTING
+#define WM_COMPACTING 0x0041
+#endif
+#ifndef WM_COMMNOTIFY
+#define WM_COMMNOTIFY 0x0044
+#endif
+#ifndef WM_WINDOWPOSCHANGING
+#define WM_WINDOWPOSCHANGING 0x0046
+#endif
+#ifndef WM_WINDOWPOSCHANGED
+#define WM_WINDOWPOSCHANGED 0x0047
+#endif
+#ifndef WM_POWER
+#define WM_POWER 0x0048
+#endif
+#ifndef WM_NCMOUSEMOVE
+#define WM_NCMOUSEMOVE 0x00A0
+#endif
+#ifndef WM_NCLBUTTONDOWN
+#define WM_NCLBUTTONDOWN 0x00A1
+#endif
+#ifndef WM_NCLBUTTONUP
+#define WM_NCLBUTTONUP 0x00A2
+#endif
+#ifndef WM_NCLBUTTONDBLCLK
+#define WM_NCLBUTTONDBLCLK 0x00A3
+#endif
+#ifndef WM_NCRBUTTONDOWN
+#define WM_NCRBUTTONDOWN 0x00A4
+#endif
+#ifndef WM_NCRBUTTONUP
+#define WM_NCRBUTTONUP 0x00A5
+#endif
+#ifndef WM_NCRBUTTONDBLCLK
+#define WM_NCRBUTTONDBLCLK 0x00A6
+#endif
+#ifndef WM_NCMBUTTONDOWN
+#define WM_NCMBUTTONDOWN 0x00A7
+#endif
+#ifndef WM_NCMBUTTONUP
+#define WM_NCMBUTTONUP 0x00A8
+#endif
+#ifndef WM_NCMBUTTONDBLCLK
+#define WM_NCMBUTTONDBLCLK 0x00A9
+#endif
+#ifndef WM_KEYDOWN
+#define WM_KEYDOWN 0x0100
+#endif
+#ifndef WM_KEYUP
+#define WM_KEYUP 0x0101
+#endif
+#ifndef WM_CHAR
+#define WM_CHAR 0x0102
+#endif
+#ifndef WM_DEADCHAR
+#define WM_DEADCHAR 0x0103
+#endif
+#ifndef WM_SYSKEYDOWN
+#define WM_SYSKEYDOWN 0x0104
+#endif
+#ifndef WM_SYSKEYUP
+#define WM_SYSKEYUP 0x0105
+#endif
+#ifndef WM_SYSCHAR
+#define WM_SYSCHAR 0x0106
+#endif
+#ifndef WM_SYSDEADCHAR
+#define WM_SYSDEADCHAR 0x0107
+#endif
+#ifndef WM_INITDIALOG
+#define WM_INITDIALOG 0x0110
+#endif
+#ifndef WM_COMMAND
+#define WM_COMMAND 0x0111
+#endif
+#ifndef WM_SYSCOMMAND
+#define WM_SYSCOMMAND 0x0112
+#endif
+#ifndef WM_TIMER
+#define WM_TIMER 0x0113
+#endif
+#ifndef WM_HSCROLL
+#define WM_HSCROLL 0x0114
+#endif
+#ifndef WM_VSCROLL
+#define WM_VSCROLL 0x0115
+#endif
+#ifndef WM_INITMENU
+#define WM_INITMENU 0x0116
+#endif
+#ifndef WM_INITMENUPOPUP
+#define WM_INITMENUPOPUP 0x0117
+#endif
+#ifndef WM_MENUSELECT
+#define WM_MENUSELECT 0x011F
+#endif
+#ifndef WM_MENUCHAR
+#define WM_MENUCHAR 0x0120
+#endif
+#ifndef WM_ENTERIDLE
+#define WM_ENTERIDLE 0x0121
+#endif
+#ifndef WM_MOUSEMOVE
+#define WM_MOUSEMOVE 0x0200
+#endif
+#ifndef WM_LBUTTONDOWN
+#define WM_LBUTTONDOWN 0x0201
+#endif
+#ifndef WM_LBUTTONUP
+#define WM_LBUTTONUP 0x0202
+#endif
+#ifndef WM_LBUTTONDBLCLK
+#define WM_LBUTTONDBLCLK 0x0203
+#endif
+#ifndef WM_RBUTTONDOWN
+#define WM_RBUTTONDOWN 0x0204
+#endif
+#ifndef WM_RBUTTONUP
+#define WM_RBUTTONUP 0x0205
+#endif
+#ifndef WM_RBUTTONDBLCLK
+#define WM_RBUTTONDBLCLK 0x0206
+#endif
+#ifndef WM_MBUTTONDOWN
+#define WM_MBUTTONDOWN 0x0207
+#endif
+#ifndef WM_MBUTTONUP
+#define WM_MBUTTONUP 0x0208
+#endif
+#ifndef WM_MBUTTONDBLCLK
+#define WM_MBUTTONDBLCLK 0x0209
+#endif
+#ifndef WM_PARENTNOTIFY
+#define WM_PARENTNOTIFY 0x0210
+#endif
+#ifndef WM_MDICREATE
+#define WM_MDICREATE 0x0220
+#endif
+#ifndef WM_MDIDESTROY
+#define WM_MDIDESTROY 0x0221
+#endif
+#ifndef WM_MDIACTIVATE
+#define WM_MDIACTIVATE 0x0222
+#endif
+#ifndef WM_MDIRESTORE
+#define WM_MDIRESTORE 0x0223
+#endif
+#ifndef WM_MDINEXT
+#define WM_MDINEXT 0x0224
+#endif
+#ifndef WM_MDIMAXIMIZE
+#define WM_MDIMAXIMIZE 0x0225
+#endif
+#ifndef WM_MDITILE
+#define WM_MDITILE 0x0226
+#endif
+#ifndef WM_MDICASCADE
+#define WM_MDICASCADE 0x0227
+#endif
+#ifndef WM_MDIICONARRANGE
+#define WM_MDIICONARRANGE 0x0228
+#endif
+#ifndef WM_MDIGETACTIVE
+#define WM_MDIGETACTIVE 0x0229
+#endif
+#ifndef WM_MDISETMENU
+#define WM_MDISETMENU 0x0230
+#endif
+#ifndef WM_DROPFILES
+#define WM_DROPFILES 0x0233
+#endif
+#ifndef WM_CUT
+#define WM_CUT 0x0300
+#endif
+#ifndef WM_COPY
+#define WM_COPY 0x0301
+#endif
+#ifndef WM_PASTE
+#define WM_PASTE 0x0302
+#endif
+#ifndef WM_CLEAR
+#define WM_CLEAR 0x0303
+#endif
+#ifndef WM_UNDO
+#define WM_UNDO 0x0304
+#endif
+#ifndef WM_RENDERFORMAT
+#define WM_RENDERFORMAT 0x0305
+#endif
+#ifndef WM_RENDERALLFORMATS
+#define WM_RENDERALLFORMATS 0x0306
+#endif
+#ifndef WM_DESTROYCLIPBOARD
+#define WM_DESTROYCLIPBOARD 0x0307
+#endif
+#ifndef WM_DRAWCLIPBOARD
+#define WM_DRAWCLIPBOARD 0x0308
+#endif
+#ifndef WM_PAINTCLIPBOARD
+#define WM_PAINTCLIPBOARD 0x0309
+#endif
+#ifndef WM_VSCROLLCLIPBOARD
+#define WM_VSCROLLCLIPBOARD 0x030A
+#endif
+#ifndef WM_SIZECLIPBOARD
+#define WM_SIZECLIPBOARD 0x030B
+#endif
+#ifndef WM_ASKCBFORMATNAME
+#define WM_ASKCBFORMATNAME 0x030C
+#endif
+#ifndef WM_CHANGECBCHAIN
+#define WM_CHANGECBCHAIN 0x030D
+#endif
+#ifndef WM_HSCROLLCLIPBOARD
+#define WM_HSCROLLCLIPBOARD 0x030E
+#endif
+#ifndef WM_QUERYNEWPALETTE
+#define WM_QUERYNEWPALETTE 0x030F
+#endif
+#ifndef WM_PALETTEISCHANGING
+#define WM_PALETTEISCHANGING 0x0310
+#endif
+#ifndef WM_PALETTECHANGED
+#define WM_PALETTECHANGED 0x0311
+#endif
+#ifndef WM_PENWINFIRST
+#define WM_PENWINFIRST 0x0380
+#endif
+#ifndef WM_PENWINLAST
+#define WM_PENWINLAST 0x038F
+#endif
+#ifndef WM_COALESCE_FIRST
+#define WM_COALESCE_FIRST 0x0390
+#endif
+#ifndef WM_COALESCE_LAST
+#define WM_COALESCE_LAST 0x039F
+#endif
+#ifndef WM_USER
+#define WM_USER 0x0400
+#endif
+#ifndef CB_LIMITTEXT
+#define CB_LIMITTEXT 0x0401
+#endif
+#ifndef CB_ADDSTRING
+#define CB_ADDSTRING 0x0403
+#endif
+#ifndef CB_DELETESTRING
+#define CB_DELETESTRING 0x0404
+#endif
+#ifndef CB_DIR
+#define CB_DIR 0x0405
+#endif
+#ifndef CB_GETCOUNT
+#define CB_GETCOUNT 0x0406
+#endif
+#ifndef CB_GETCURSEL
+#define CB_GETCURSEL 0x0407
+#endif
+#ifndef CB_GETLBTEXT
+#define CB_GETLBTEXT 0x0408
+#endif
+#ifndef CB_GETLBTEXTLEN
+#define CB_GETLBTEXTLEN 0x0409
+#endif
+#ifndef CB_INSERTSTRING
+#define CB_INSERTSTRING 0x040A
+#endif
+#ifndef CB_RESETCONTENT
+#define CB_RESETCONTENT 0x040B
+#endif
+#ifndef CB_SETCURSEL
+#define CB_SETCURSEL 0x040E
+#endif
+#ifndef CB_SETEXTENDEDUI
+#define CB_SETEXTENDEDUI 0x0415
+#endif
+#ifndef CB_FINDSTRINGEXACT
+#define CB_FINDSTRINGEXACT 0x0418
+#endif
+#ifndef WM_STARS_STARTUP
+#define WM_STARS_STARTUP 0x0464
+#endif
+#ifndef WM_STARS_HOST
+#define WM_STARS_HOST 0x0465
+#endif
+#ifndef WM_STARS_CONTINUE
+#define WM_STARS_CONTINUE 0x0466
+#endif
+#ifndef CTLCOLOR_MSGBOX
+#define CTLCOLOR_MSGBOX 0x0000
+#endif
+#ifndef CTLCOLOR_EDIT
+#define CTLCOLOR_EDIT 0x0001
+#endif
+#ifndef CTLCOLOR_LISTBOX
+#define CTLCOLOR_LISTBOX 0x0002
+#endif
+#ifndef CTLCOLOR_BTN
+#define CTLCOLOR_BTN 0x0003
+#endif
+#ifndef CTLCOLOR_DLG
+#define CTLCOLOR_DLG 0x0004
+#endif
+#ifndef CTLCOLOR_SCROLLBAR
+#define CTLCOLOR_SCROLLBAR 0x0005
+#endif
+#ifndef CTLCOLOR_STATIC
+#define CTLCOLOR_STATIC 0x0006
+#endif
+#ifndef MB_OK
+#define MB_OK 0x0000
+#endif
+#ifndef MB_RETRYCANCEL
+#define MB_RETRYCANCEL 0x0005
+#endif
+#ifndef MB_YESNO
+#define MB_YESNO 0x0004
+#endif
+#ifndef MB_YESNOCANCEL
+#define MB_YESNOCANCEL 0x0003
+#endif
+#ifndef MB_ABORTRETRYIGNORE
+#define MB_ABORTRETRYIGNORE 0x0002
+#endif
+#ifndef MB_OKCANCEL
+#define MB_OKCANCEL 0x0001
+#endif
+#ifndef MB_ICONASTERISK
+#define MB_ICONASTERISK 0x0040
+#endif
+#ifndef MB_ICONEXCLAMATION
+#define MB_ICONEXCLAMATION 0x0030
+#endif
+#ifndef MB_ICONQUESTION
+#define MB_ICONQUESTION 0x0020
+#endif
+#ifndef MB_ICONHAND
+#define MB_ICONHAND 0x0010
+#endif
+#ifndef MB_DEFBUTTON3
+#define MB_DEFBUTTON3 0x0200
+#endif
+#ifndef MB_DEFBUTTON2
+#define MB_DEFBUTTON2 0x0100
+#endif
+#ifndef MB_TASKMODAL
+#define MB_TASKMODAL 0x2000
+#endif
+#ifndef MB_SYSTEMMODAL
+#define MB_SYSTEMMODAL 0x1000
+#endif
+#ifndef MB_NOFOCUS
+#define MB_NOFOCUS 0x8000
+#endif
+#ifndef IDOK
+#define IDOK 0x0001
+#endif
+#ifndef IDCANCEL
+#define IDCANCEL 0x0002
+#endif
+#ifndef IDABORT
+#define IDABORT 0x0003
+#endif
+#ifndef IDRETRY
+#define IDRETRY 0x0004
+#endif
+#ifndef IDIGNORE
+#define IDIGNORE 0x0005
+#endif
+#ifndef IDYES
+#define IDYES 0x0006
+#endif
+#ifndef IDNO
+#define IDNO 0x0007
+#endif
+#ifndef BLACKNESS
+#define BLACKNESS 0x0042
+#endif
+#ifndef WHITENESS
+#define WHITENESS 0xFF0062
+#endif
+#ifndef PATCOPY
+#define PATCOPY 0xF00021
+#endif
+#ifndef PATINVERT
+#define PATINVERT 0x5A0049
+#endif
+#ifndef DSTINVERT
+#define DSTINVERT 0x550009
+#endif
+#ifndef SM_CXSCREEN
+#define SM_CXSCREEN 0x0000
+#endif
+#ifndef SM_CYSCREEN
+#define SM_CYSCREEN 0x0001
+#endif
+#ifndef SM_CXVSCROLL
+#define SM_CXVSCROLL 0x0002
+#endif
+#ifndef SM_CYHSCROLL
+#define SM_CYHSCROLL 0x0003
+#endif
+#ifndef SM_CYCAPTION
+#define SM_CYCAPTION 0x0004
+#endif
+#ifndef SM_CXDLGFRAME
+#define SM_CXDLGFRAME 0x0007
+#endif
+#ifndef SM_CYDLGFRAME
+#define SM_CYDLGFRAME 0x0008
+#endif
+#ifndef SM_CXFRAME
+#define SM_CXFRAME 0x0020
+#endif
+#ifndef SM_CYFRAME
+#define SM_CYFRAME 0x0021
+#endif
+#ifndef HORZRES
+#define HORZRES 0x0008
+#endif
+#ifndef VERTRES
+#define VERTRES 0x000A
+#endif
+#ifndef BITSPIXEL
+#define BITSPIXEL 0x000C
+#endif
+#ifndef PLANES
+#define PLANES 0x000E
+#endif
+#ifndef LOGPIXELSX
+#define LOGPIXELSX 0x0058
+#endif
+#ifndef LOGPIXELSY
+#define LOGPIXELSY 0x005A
+#endif
+#ifndef SW_HIDE
+#define SW_HIDE 0x0000
+#endif
+#ifndef SW_SHOWNORMAL
+#define SW_SHOWNORMAL 0x0001
+#endif
+#ifndef SW_SHOWMINIMIZED
+#define SW_SHOWMINIMIZED 0x0002
+#endif
+#ifndef SW_SHOWMAXIMIZED
+#define SW_SHOWMAXIMIZED 0x0003
+#endif
+#ifndef SW_SHOWNOACTIVATE
+#define SW_SHOWNOACTIVATE 0x0004
+#endif
+#ifndef SW_SHOW
+#define SW_SHOW 0x0005
+#endif
+#ifndef SW_MINIMIZE
+#define SW_MINIMIZE 0x0006
+#endif
+#ifndef SW_SHOWMINNOACTIVE
+#define SW_SHOWMINNOACTIVE 0x0007
+#endif
+#ifndef SW_SHOWNA
+#define SW_SHOWNA 0x0008
+#endif
+#ifndef SW_RESTORE
+#define SW_RESTORE 0x0009
+#endif
+#ifndef WS_OVERLAPPED
+#define WS_OVERLAPPED 0x0000
+#endif
+#ifndef WS_POPUP
+#define WS_POPUP 0x80000000
+#endif
+#ifndef WS_CHILD
+#define WS_CHILD 0x40000000
+#endif
+#ifndef WS_CLIPSIBLINGS
+#define WS_CLIPSIBLINGS 0x4000000
+#endif
+#ifndef WS_CLIPCHILDREN
+#define WS_CLIPCHILDREN 0x2000000
+#endif
+#ifndef WS_VISIBLE
+#define WS_VISIBLE 0x10000000
+#endif
+#ifndef WS_DISABLED
+#define WS_DISABLED 0x8000000
+#endif
+#ifndef WS_MINIMIZE
+#define WS_MINIMIZE 0x20000000
+#endif
+#ifndef WS_MAXIMIZE
+#define WS_MAXIMIZE 0x1000000
+#endif
+#ifndef WS_CAPTION
+#define WS_CAPTION 0xC00000
+#endif
+#ifndef WS_BORDER
+#define WS_BORDER 0x800000
+#endif
+#ifndef WS_DLGFRAME
+#define WS_DLGFRAME 0x400000
+#endif
+#ifndef WS_VSCROLL
+#define WS_VSCROLL 0x200000
+#endif
+#ifndef WS_HSCROLL
+#define WS_HSCROLL 0x100000
+#endif
+#ifndef WS_SYSMENU
+#define WS_SYSMENU 0x80000
+#endif
+#ifndef WS_THICKFRAME
+#define WS_THICKFRAME 0x40000
+#endif
+#ifndef WS_MINIMIZEBOX
+#define WS_MINIMIZEBOX 0x20000
+#endif
+#ifndef WS_MAXIMIZEBOX
+#define WS_MAXIMIZEBOX 0x10000
+#endif
+#ifndef WS_GROUP
+#define WS_GROUP 0x20000
+#endif
+#ifndef WS_TABSTOP
+#define WS_TABSTOP 0x10000
+#endif
+#ifndef WS_OVERLAPPEDWINDOW
+#define WS_OVERLAPPEDWINDOW 0xCF0000
+#endif
+#ifndef WS_POPUPWINDOW
+#define WS_POPUPWINDOW 0x80880000
+#endif
+#ifndef WS_CHILDWINDOW
+#define WS_CHILDWINDOW 0x40000000
+#endif
+#ifndef WS_TILED
+#define WS_TILED 0x0000
+#endif
+#ifndef WS_ICONIC
+#define WS_ICONIC 0x20000000
+#endif
+#ifndef WS_SIZEBOX
+#define WS_SIZEBOX 0x40000
+#endif
+#ifndef WS_TILEDWINDOW
+#define WS_TILEDWINDOW 0xCF0000
+#endif
+#ifndef WS_EX_DLGMODALFRAME
+#define WS_EX_DLGMODALFRAME 0x0001
+#endif
+#ifndef WS_EX_NOPARENTNOTIFY
+#define WS_EX_NOPARENTNOTIFY 0x0004
+#endif
+#ifndef WS_EX_TOPMOST
+#define WS_EX_TOPMOST 0x0008
+#endif
+#ifndef WS_EX_ACCEPTFILES
+#define WS_EX_ACCEPTFILES 0x0010
+#endif
+#ifndef WS_EX_TRANSPARENT
+#define WS_EX_TRANSPARENT 0x0020
+#endif
+#ifndef SWP_NOSIZE
+#define SWP_NOSIZE 0x0001
+#endif
+#ifndef SWP_NOMOVE
+#define SWP_NOMOVE 0x0002
+#endif
+#ifndef SWP_NOZORDER
+#define SWP_NOZORDER 0x0004
+#endif
+#ifndef SWP_NOREDRAW
+#define SWP_NOREDRAW 0x0008
+#endif
+#ifndef SWP_NOACTIVATE
+#define SWP_NOACTIVATE 0x0010
+#endif
+#ifndef SWP_FRAMECHANGED
+#define SWP_FRAMECHANGED 0x0020
+#endif
+#ifndef SWP_SHOWWINDOW
+#define SWP_SHOWWINDOW 0x0040
+#endif
+#ifndef SWP_HIDEWINDOW
+#define SWP_HIDEWINDOW 0x0080
+#endif
+#ifndef SWP_NOCOPYBITS
+#define SWP_NOCOPYBITS 0x0100
+#endif
+#ifndef SWP_NOOWNERZORDER
+#define SWP_NOOWNERZORDER 0x0200
+#endif
+#ifndef GWL_WNDPROC
+#define GWL_WNDPROC (-4)
+#endif
+#ifndef GWW_HINSTANCE
+#define GWW_HINSTANCE (-6)
+#endif
+#ifndef GWW_HWNDPARENT
+#define GWW_HWNDPARENT (-8)
+#endif
+#ifndef GWW_ID
+#define GWW_ID (-12)
+#endif
+#ifndef GWL_STYLE
+#define GWL_STYLE (-16)
+#endif
+#ifndef GWL_EXSTYLE
+#define GWL_EXSTYLE (-20)
+#endif
+#ifndef GW_HWNDFIRST
+#define GW_HWNDFIRST 0x0000
+#endif
+#ifndef GW_HWNDLAST
+#define GW_HWNDLAST 0x0001
+#endif
+#ifndef GW_HWNDNEXT
+#define GW_HWNDNEXT 0x0002
+#endif
+#ifndef GW_HWNDPREV
+#define GW_HWNDPREV 0x0003
+#endif
+#ifndef GW_OWNER
+#define GW_OWNER 0x0004
+#endif
+#ifndef GW_CHILD
+#define GW_CHILD 0x0005
+#endif
+#ifndef HELP_CONTEXT
+#define HELP_CONTEXT 0x0001
+#endif
+#ifndef HELP_QUIT
+#define HELP_QUIT 0x0002
+#endif
+#ifndef HELP_INDEX
+#define HELP_INDEX 0x0003
+#endif
+#ifndef WHITE_BRUSH
+#define WHITE_BRUSH 0x0000
+#endif
+#ifndef LTGRAY_BRUSH
+#define LTGRAY_BRUSH 0x0001
+#endif
+#ifndef GRAY_BRUSH
+#define GRAY_BRUSH 0x0002
+#endif
+#ifndef DKGRAY_BRUSH
+#define DKGRAY_BRUSH 0x0003
+#endif
+#ifndef BLACK_BRUSH
+#define BLACK_BRUSH 0x0004
+#endif
+#ifndef NULL_BRUSH
+#define NULL_BRUSH 0x0005
+#endif
+#ifndef WHITE_PEN
+#define WHITE_PEN 0x0006
+#endif
+#ifndef BLACK_PEN
+#define BLACK_PEN 0x0007
+#endif
+#ifndef NULL_PEN
+#define NULL_PEN 0x0008
+#endif
+#ifndef OEM_FIXED_FONT
+#define OEM_FIXED_FONT 0x000A
+#endif
+#ifndef ANSI_FIXED_FONT
+#define ANSI_FIXED_FONT 0x000B
+#endif
+#ifndef ANSI_VAR_FONT
+#define ANSI_VAR_FONT 0x000C
+#endif
+#ifndef SYSTEM_FONT
+#define SYSTEM_FONT 0x000D
+#endif
+#ifndef DEVICE_DEFAULT_FONT
+#define DEVICE_DEFAULT_FONT 0x000E
+#endif
+#ifndef DEFAULT_PALETTE
+#define DEFAULT_PALETTE 0x000F
+#endif
+#ifndef SYSTEM_FIXED_FONT
+#define SYSTEM_FIXED_FONT 0x0010
+#endif
+#ifndef TRANSPARENT
+#define TRANSPARENT 0x0001
+#endif
+#ifndef OPAQUE
+#define OPAQUE 0x0002
+#endif
+#ifndef SRCCOPY
+#define SRCCOPY 0xCC0020
+#endif
+#ifndef SRCPAINT
+#define SRCPAINT 0xEE0086
+#endif
+#ifndef SRCAND
+#define SRCAND 0x8800C6
+#endif
+#ifndef SRCINVERT
+#define SRCINVERT 0x660046
+#endif
+#ifndef SRCERASE
+#define SRCERASE 0x440328
+#endif
+#ifndef NOTSRCCOPY
+#define NOTSRCCOPY 0x330008
+#endif
+#ifndef NOTSRCERASE
+#define NOTSRCERASE 0x1100A6
+#endif
+#ifndef MERGECOPY
+#define MERGECOPY 0xC000CA
+#endif
+#ifndef MERGEPAINT
+#define MERGEPAINT 0xBB0226
+#endif
+#ifndef PATPAINT
+#define PATPAINT 0xFB0A09
+#endif
+#ifndef MF_BYCOMMAND
+#define MF_BYCOMMAND 0x0000
+#endif
+#ifndef MF_GRAYED
+#define MF_GRAYED 0x0001
+#endif
+#ifndef MF_DISABLED
+#define MF_DISABLED 0x0002
+#endif
+#ifndef MF_BITMAP
+#define MF_BITMAP 0x0004
+#endif
+#ifndef MF_CHECKED
+#define MF_CHECKED 0x0008
+#endif
+#ifndef MF_POPUP
+#define MF_POPUP 0x0010
+#endif
+#ifndef MF_MENUBARBREAK
+#define MF_MENUBARBREAK 0x0020
+#endif
+#ifndef MF_MENUBREAK
+#define MF_MENUBREAK 0x0040
+#endif
+#ifndef MF_HILITE
+#define MF_HILITE 0x0080
+#endif
+#ifndef MF_OWNERDRAW
+#define MF_OWNERDRAW 0x0100
+#endif
+#ifndef MF_BYPOSITION
+#define MF_BYPOSITION 0x0400
+#endif
+#ifndef MF_SEPARATOR
+#define MF_SEPARATOR 0x0800
+#endif
+#ifndef TPM_LEFTBUTTON
+#define TPM_LEFTBUTTON 0x0000
+#endif
+#ifndef TPM_RIGHTBUTTON
+#define TPM_RIGHTBUTTON 0x0002
+#endif
+#ifndef TPM_LEFTALIGN
+#define TPM_LEFTALIGN 0x0000
+#endif
+#ifndef TPM_CENTERALIGN
+#define TPM_CENTERALIGN 0x0004
+#endif
+#ifndef TPM_RIGHTALIGN
+#define TPM_RIGHTALIGN 0x0008
+#endif
+#ifndef IDC_ARROW
+#define IDC_ARROW 0x7F00
+#endif
+#ifndef IDC_IBEAM
+#define IDC_IBEAM 0x7F01
+#endif
+#ifndef IDC_WAIT
+#define IDC_WAIT 0x7F02
+#endif
+#ifndef IDC_CROSS
+#define IDC_CROSS 0x7F03
+#endif
+#ifndef OFN_READONLY
+#define OFN_READONLY 0x0001
+#endif
+#ifndef OFN_OVERWRITEPROMPT
+#define OFN_OVERWRITEPROMPT 0x0002
+#endif
+#ifndef OFN_HIDEREADONLY
+#define OFN_HIDEREADONLY 0x0004
+#endif
+#ifndef OFN_NOCHANGEDIR
+#define OFN_NOCHANGEDIR 0x0008
+#endif
+#ifndef OFN_SHOWHELP
+#define OFN_SHOWHELP 0x0010
+#endif
+#ifndef OFN_ENABLEHOOK
+#define OFN_ENABLEHOOK 0x0020
+#endif
+#ifndef OFN_ENABLETEMPLATE
+#define OFN_ENABLETEMPLATE 0x0040
+#endif
+#ifndef OFN_ENABLETEMPLATEHANDLE
+#define OFN_ENABLETEMPLATEHANDLE 0x0080
+#endif
+#ifndef OFN_NOVALIDATE
+#define OFN_NOVALIDATE 0x0100
+#endif
+#ifndef OFN_ALLOWMULTISELECT
+#define OFN_ALLOWMULTISELECT 0x0200
+#endif
+#ifndef OFN_EXTENSIONDIFFERENT
+#define OFN_EXTENSIONDIFFERENT 0x0400
+#endif
+#ifndef OFN_PATHMUSTEXIST
+#define OFN_PATHMUSTEXIST 0x0800
+#endif
+#ifndef OFN_FILEMUSTEXIST
+#define OFN_FILEMUSTEXIST 0x1000
+#endif
+#ifndef OFN_CREATEPROMPT
+#define OFN_CREATEPROMPT 0x2000
+#endif
+#ifndef OFN_SHAREAWARE
+#define OFN_SHAREAWARE 0x4000
+#endif
+#ifndef OFN_NOREADONLYRETURN
+#define OFN_NOREADONLYRETURN 0x8000
+#endif
+#ifndef OFN_NOTESTFILECREATE
+#define OFN_NOTESTFILECREATE 0x10000
+#endif
+#ifndef PD_ALLPAGES
+#define PD_ALLPAGES 0x0000
+#endif
+#ifndef PD_SELECTION
+#define PD_SELECTION 0x0001
+#endif
+#ifndef PD_PAGENUMS
+#define PD_PAGENUMS 0x0002
+#endif
+#ifndef PD_NOSELECTION
+#define PD_NOSELECTION 0x0004
+#endif
+#ifndef PD_NOPAGENUMS
+#define PD_NOPAGENUMS 0x0008
+#endif
+#ifndef PD_COLLATE
+#define PD_COLLATE 0x0010
+#endif
+#ifndef PD_PRINTTOFILE
+#define PD_PRINTTOFILE 0x0020
+#endif
+#ifndef PD_PRINTSETUP
+#define PD_PRINTSETUP 0x0040
+#endif
+#ifndef PD_NOWARNING
+#define PD_NOWARNING 0x0080
+#endif
+#ifndef PD_RETURNDC
+#define PD_RETURNDC 0x0100
+#endif
+#ifndef PD_RETURNIC
+#define PD_RETURNIC 0x0200
+#endif
+#ifndef PD_RETURNDEFAULT
+#define PD_RETURNDEFAULT 0x0400
+#endif
+#ifndef PD_SHOWHELP
+#define PD_SHOWHELP 0x0800
+#endif
+#ifndef PD_ENABLEPRINTHOOK
+#define PD_ENABLEPRINTHOOK 0x1000
+#endif
+#ifndef PD_ENABLESETUPHOOK
+#define PD_ENABLESETUPHOOK 0x2000
+#endif
+#ifndef PD_ENABLEPRINTTEMPLATE
+#define PD_ENABLEPRINTTEMPLATE 0x4000
+#endif
+#ifndef PD_ENABLESETUPTEMPLATE
+#define PD_ENABLESETUPTEMPLATE 0x8000
+#endif
+#ifndef PD_ENABLEPRINTTEMPLATEHANDLE
+#define PD_ENABLEPRINTTEMPLATEHANDLE 0x10000
+#endif
+#ifndef PD_ENABLESETUPTEMPLATEHANDLE
+#define PD_ENABLESETUPTEMPLATEHANDLE 0x20000
+#endif
+#ifndef PD_USEDEVMODECOPIES
+#define PD_USEDEVMODECOPIES 0x40000
+#endif
+#ifndef PD_DISABLEPRINTTOFILE
+#define PD_DISABLEPRINTTOFILE 0x80000
+#endif
+#ifndef PD_HIDEPRINTTOFILE
+#define PD_HIDEPRINTTOFILE 0x100000
+#endif
+
+#endif

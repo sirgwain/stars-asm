@@ -1,10 +1,10 @@
 /*
 AlertSz  (utilgen)
   addr: 0009:2160  len=189
-  sig:  int16_t AlertSz(char *sz, MessageBoxType mbType)
+  sig:  int16_t AlertSz(char *sz, int16_t mbType)
   params:
     char *           sz             [BP+0x6]
-    MessageBoxType   mbType         [BP+0x8]
+    int16_t          mbType         [BP+0x8]
   locals:
     char[256]        szT            [BP-0x102]
 
@@ -32,7 +32,7 @@ L_21e2:
 
 L_21e5:
     call OutputSz(t_merge_21e5_0001, szT) -> callresult(void)
-    return 6
+    return IDYES
 
 L_21f7:
     return MessageBox(GetFocus(), sz, "Stars!", mbType)

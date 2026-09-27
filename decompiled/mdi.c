@@ -240,7 +240,7 @@ L_04ca:
         goto L_04d4;
 
 L_04d4:
-    hwndScanner = CreateWindow(szScan, 0x0, 0x50000000, -200, -200, 10, 10, hwndFrame, 0x0, hInst, 0x0);
+    hwndScanner = CreateWindow(szScan, 0x0, WS_CHILD | WS_VISIBLE, -200, -200, 10, 10, hwndFrame, 0x0, hInst, 0x0);
     goto L_0547;
 
 L_051a:
@@ -256,7 +256,7 @@ L_0547:
         goto L_0551;
 
 L_0551:
-    hwndMine = CreateWindow(szMine, 0x0, 0x50000000, -500, -500, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+    hwndMine = CreateWindow(szMine, 0x0, WS_CHILD | WS_VISIBLE, -500, -500, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
     goto L_05aa;
 
 L_0595:
@@ -269,7 +269,7 @@ L_05aa:
         goto L_05b4;
 
 L_05b4:
-    hwndPlanet = CreateWindow(szPlanet, 0x0, 0x50000000, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
+    hwndPlanet = CreateWindow(szPlanet, 0x0, WS_CHILD | WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
     goto L_060f;
 
 L_05fa:
@@ -282,7 +282,7 @@ L_060f:
         goto L_0619;
 
 L_0619:
-    hwndTb = CreateWindow(szTb, 0x0, 0x50000000, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
+    hwndTb = CreateWindow(szTb, 0x0, WS_CHILD | WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
     goto L_0674;
 
 L_065f:
@@ -298,14 +298,14 @@ L_067e:
     DestroyWindow(hwndMessage);
 
 L_0687:
-    hwndMessage = CreateWindow(szMessage, 0x0, 0x50000000, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
+    hwndMessage = CreateWindow(szMessage, 0x0, WS_CHILD | WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0);
     RefitFrameChildren();
 
 L_06cf:
     return;
 }
 
-int32_t FrameWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t FrameWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     HDC        hdc;
     int16_t    i;
     HPALETTE   hpalSav;
@@ -720,7 +720,7 @@ LShowStartup:
 L_0cf8:
     pt.x = GetSystemMetrics(SM_CXSCREEN);
     pt.y = GetSystemMetrics(SM_CYSCREEN);
-    hwndTitle = CreateWindow(szTitle, "Stars!", 0x90000000, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+    hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
     fFreeingTitle = 0;
 
 L_0d56:
@@ -833,8 +833,8 @@ L_0ee4:
     return 0;
 
 L_0ef2:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x208 (invalid-destination) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0x17c (invalid-destination) */
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.x = 520;
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = 380;
     return 0;
 
 L_0f17:
@@ -987,7 +987,7 @@ L_1143:
     goto L_1190;
 
 L_116c:
-    id = AlertSz(PszFormatIds(idsNewTurnAvailableWouldLikeLoad, 0x0), 0x2023);
+    id = AlertSz(PszFormatIds(idsNewTurnAvailableWouldLikeLoad, 0x0), MB_YESNOCANCEL | MB_ICONQUESTION | MB_TASKMODAL);
 
 L_1190:
     if ((id != 6))
@@ -1062,7 +1062,7 @@ L_129a:
         goto L_12a4;
 
 L_12a4:
-    id = AlertSz(PszFormatIds(idsTurnHasSubmittedChangesMadeAfterTurn, 0x0), 0x2023);
+    id = AlertSz(PszFormatIds(idsTurnHasSubmittedChangesMadeAfterTurn, 0x0), MB_YESNOCANCEL | MB_ICONQUESTION | MB_TASKMODAL);
     if ((id != 6))
         goto L_1378;
     else
@@ -3389,7 +3389,7 @@ L_333f:
     cPageY = vrgcPrintMapPage[1];
     memset(&(pd), 0, 0x34);
     pd.lStructSize = 0x34;
-    pd.Flags = 0x500;
+    pd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
     if ((PrintDlg(&(pd)) == 0))
         goto L_3e00;
     else
@@ -3840,7 +3840,7 @@ L_3f30:
         goto L_3f42;
 
 L_3f42:
-    if ((AlertSz(PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto L_536f;
     else
         goto L_3f6e;
@@ -3893,7 +3893,7 @@ L_3fc5:
 
 L_3fcf:
     _wsprintf(szWork, PszGetCompressedString(idsSureWantForceGenerateDTurnsRow), iPassCnt);
-    if ((MessageBox(GetFocus(), szWork, "Stars!", 0x2034) != 6))
+    if ((MessageBox(GetFocus(), szWork, "Stars!", MB_YESNO | MB_ICONEXCLAMATION | MB_TASKMODAL) != IDYES))
         goto L_536f;
     else
         goto L_401a;
@@ -4008,7 +4008,7 @@ L_4243:
     goto L_536f;
 
 L_426a:
-    if ((AlertSz(PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould, 0x0), 0x2024) == 6))
+    if ((AlertSz(PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) == IDYES))
         goto LWaitForTurn;
     else
         goto L_4290;
@@ -4319,8 +4319,9 @@ L_4695:
 
 L_4698:
     _wsprintf(szWork, psz, cObj, t_merge_4698_0001);
-    hwndReportDlg = CreateWindow(szReport, szWork, 0x80cf0000, 0, 0, 100, 100, hwndFrame, 0x0, hInst, 0x0);
-    SetWindowPos(hwndReportDlg, 0x0, 0, 0, 0, 0, 0x47);
+    hwndReportDlg = CreateWindow(szReport, szWork, WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0, 0, 100, 100,
+                                 hwndFrame, 0x0, hInst, 0x0);
+    SetWindowPos(hwndReportDlg, 0x0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW);
     CheckMenuItem(hmenu, wParam, mf);
     goto L_536f;
 
@@ -4421,7 +4422,7 @@ LNewTurnAvail:
         goto L_482e;
 
 L_482e:
-    id = AlertSz(PszFormatIds(idsSorryTurnHasAlreadyGeneratedAnyChanges, 0x0), 0x31);
+    id = AlertSz(PszFormatIds(idsSorryTurnHasAlreadyGeneratedAnyChanges, 0x0), MB_OKCANCEL | MB_ICONEXCLAMATION);
     if ((id == 2))
         goto L_536f;
     else
@@ -4590,7 +4591,7 @@ L_4b37:
     InitializeMenu(0x0);
     pt.x = GetSystemMetrics(SM_CXSCREEN);
     pt.y = GetSystemMetrics(SM_CYSCREEN);
-    hwndTitle = CreateWindow(szTitle, "Stars!", 0x90000000, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+    hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
     fFreeingTitle = 0;
     ShowWindow(hwndFrame, SW_HIDE);
     goto L_536f;
@@ -5854,7 +5855,7 @@ L_5a0a:
     ofn.lpstrFileTitle = szFileTitle;
     ofn.nMaxFileTitle = 0x100;
     ofn.lpstrInitialDir = szDirName;
-    ofn.Flags = 0x1804;
+    ofn.Flags = OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
     if ((GetOpenFileName(&(ofn)) == 0))
         goto L_5d95;
     else
@@ -6341,7 +6342,7 @@ L_61b4:
 L_61d9:
     pt.x = GetSystemMetrics(SM_CXSCREEN);
     pt.y = GetSystemMetrics(SM_CYSCREEN);
-    hwndTitle = CreateWindow(szTitle, "Stars!", 0x90000000, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+    hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
     fFreeingTitle = 0;
 
 L_623a:
@@ -6860,7 +6861,7 @@ L_6c0f:
     return cOut;
 }
 
-int16_t HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t HostModeDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t (*lpProc)();
     int16_t     fRet;
     RECT        rc;
@@ -7403,7 +7404,7 @@ L_72e0:
 
 L_72ea:
     _wsprintf(szWork, PszGetCompressedString(idsSureWantForceGenerateDTurnsRow), (iPassCnt + 1));
-    if ((MessageBox(GetFocus(), szWork, "Stars!", 0x2034) == 6))
+    if ((MessageBox(GetFocus(), szWork, "Stars!", MB_YESNO | MB_ICONEXCLAMATION | MB_TASKMODAL) == IDYES))
         goto L_7380;
     else
         goto L_7335;
@@ -7419,7 +7420,7 @@ L_7344:
         goto L_7351;
 
 L_7351:
-    if ((AlertSz(PszFormatIds(idsSureWishGenerateOptionDoesGuaranteePlayers, 0x0), 0x1024) == 6))
+    if ((AlertSz(PszFormatIds(idsSureWishGenerateOptionDoesGuaranteePlayers, 0x0), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL) == IDYES))
         goto L_7380;
     else
         goto L_737a;
@@ -7632,7 +7633,7 @@ L_75c0:
     return 0;
 }
 
-int16_t HostOptionsDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t HostOptionsDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT        rc;
     HDC         hdc;
     PAINTSTRUCT ps;
@@ -7740,7 +7741,7 @@ L_7706:
     return;
 }
 
-void HostTimerProc(HWND hwnd, WMType msg, uint16_t idTimer, uint32_t dwTime) {
+void HostTimerProc(HWND hwnd, uint16_t msg, uint16_t idTimer, uint32_t dwTime) {
     HWND    hwndT;
     char    szExt[4];
     int16_t cOut;
@@ -8735,7 +8736,7 @@ L_911f:
     return;
 }
 
-int32_t TitleWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t TitleWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     i;
     HPALETTE    hpalSav;
@@ -8827,7 +8828,7 @@ L_91f5:
 L_9200:
     psz = PszGetCompressedString((i + 479));
     rghwndBtnSplash[i] =
-        CreateWindow("BUTTON", psz, 0x50000000, xCur, ((rc.bottom - dy) - ((int32_t)(LOWORD((5 * dyArial8))) / 2)), dx, dy, hwnd, i, hInst, 0x0);
+        CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE, xCur, ((rc.bottom - dy) - ((int32_t)(LOWORD((5 * dyArial8))) / 2)), dx, dy, hwnd, i, hInst, 0x0);
     if ((i != 2))
         goto L_92a2;
     else

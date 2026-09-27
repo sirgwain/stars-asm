@@ -1067,7 +1067,7 @@ ADD       cx, ax
 MOV       dx, ss              
 PUSH      dx                  
 PUSH      cx                  
-CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR *lpszout, LPCSTR *lpszfmt)
+CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR lpszout, LPCSTR lpszfmt)
 ADD       sp, 0x000a          
                                     ; mine.c:1479
 MOV       ax, 0x000a          

@@ -1,10 +1,10 @@
 /*
 AlertSz  (utilgen)
   addr: 0009:2160  len=189
-  sig:  int16_t AlertSz(char *sz, MessageBoxType mbType)
+  sig:  int16_t AlertSz(char *sz, int16_t mbType)
   params:
     char *           sz             [BP+0x6]
-    MessageBoxType   mbType         [BP+0x8]
+    int16_t          mbType         [BP+0x8]
   locals:
     char[256]        szT            [BP-0x102]
 

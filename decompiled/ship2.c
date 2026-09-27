@@ -1,6 +1,6 @@
 #include "common.h"
 
-int16_t ZipOrderDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t ZipOrderDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC            hdc;
     int16_t        i;
     PAINTSTRUCT    ps;
@@ -412,7 +412,7 @@ L_0832:
     return;
 }
 
-int16_t RenameZipDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RenameZipDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     StringId ids;
     RECT     rc;
     int16_t  t_merge_09e8_0001;
@@ -436,7 +436,7 @@ L_08a1:
 
 L_08a6:
     SetWindowText(hwnd, PszGetCompressedString(ids));
-    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, 0x15);
+    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     SendDlgItemMessage(hwnd, 268, 0x415, 0xc, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
@@ -547,7 +547,7 @@ L_0a59:
     return 0;
 }
 
-int16_t RenameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RenameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT    rc;
     int32_t lSel;
     int16_t t_merge_0bcd_0001;
@@ -557,7 +557,7 @@ L_0a68:
 
 L_0a77:
     SetWindowText(hwnd, PszGetCompressedString(idsRenameFleet));
-    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, 0x15);
+    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
@@ -2990,7 +2990,7 @@ L_336a:
     return cPts;
 }
 
-int16_t MergeFleetsDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int16_t MergeFleetsDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
     int16_t i;
     RECT    rc;
     char    szT[80];

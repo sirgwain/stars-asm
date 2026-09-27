@@ -104,9 +104,38 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 			return result, fmt.Errorf("close %s: %w", commonPath, err)
 		}
 
-		// copy enums.h
-		if err := copyFile("./dasm/input/enums.h", filepath.Join(opt.OutDir, "enums.h")); err != nil {
+		// win16defines.h
+		definesPath := filepath.Join(opt.OutDir, "win16defines.h")
+		f, err = os.Create(definesPath)
+		if err != nil {
 			return DumpAllResult{}, err
+		}
+
+		slog.Debug("Dumping win16defines.h", "path", definesPath)
+		if err := templates.RenderWin16Defines(f, templates.NewWin16DefinesView(sdb.Enums)); err != nil {
+			f.Close()
+			return DumpAllResult{}, err
+		}
+		if err := f.Close(); err != nil {
+			return result, fmt.Errorf("close %s: %w", definesPath, err)
+		}
+
+		// enums.h
+		source, err := os.ReadFile("./dasm/input/enums.h")
+		if err != nil {
+			return DumpAllResult{}, err
+		}
+		enumsPath := filepath.Join(opt.OutDir, "enums.h")
+		f, err = os.Create(enumsPath)
+		if err != nil {
+			return DumpAllResult{}, err
+		}
+		if err := templates.RenderEnums(f, string(source), sdb.Enums); err != nil {
+			f.Close()
+			return DumpAllResult{}, err
+		}
+		if err := f.Close(); err != nil {
+			return result, fmt.Errorf("close %s: %w", enumsPath, err)
 		}
 
 		for _, module := range sdb.Modules {
@@ -414,12 +443,4 @@ func moduleIRBodies(functions []*typeinfo.Function, rendered map[string]string) 
 		bodies[function.Name] = body
 	}
 	return bodies, nil
-}
-
-func copyFile(src, dst string) error {
-	data, err := os.ReadFile(src)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(dst, data, 0o644)
 }

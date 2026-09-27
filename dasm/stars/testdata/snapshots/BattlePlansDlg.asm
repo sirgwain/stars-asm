@@ -1,9 +1,9 @@
 ; BattlePlansDlg  (battle)
 ;   addr: 001f:0652  len=4276
-;   sig:  int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam)
+;   sig:  int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
 ;   params:
 ;     HWND             hwnd           [BP+0xe]
-;     WMType           message        [BP+0xc]
+;     uint16_t         message        [BP+0xc]
 ;     uint16_t         wParam         [BP+0xa]
 ;     int32_t          lParam         [BP+0x6]
 ;   locals:
@@ -104,7 +104,7 @@ MOV       ax, 0x0004
 ADD       cx, ax              
 PUSH      dx                  
 PUSH      cx                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 JMP       L_06c1              
 
 L_0714:                             ; battle.c:235
@@ -121,7 +121,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:236
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041b          
@@ -180,7 +180,7 @@ ADD       sp, 0x0002
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 ADD       [bp-i], 0x0001            ; [bp-0xa], 0x0001
 
 L_07b7:
@@ -204,7 +204,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:243
 MOV       [bp-i], 0x0190            ; [bp-0xa], 0x0190
 JMP       L_0820              
@@ -225,7 +225,7 @@ ADD       sp, 0x0002
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 ADD       [bp-i], 0x0001            ; [bp-0xa], 0x0001
 
 L_0820:
@@ -247,7 +247,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:248
 MOV       ax, [game+0x10]           ; ax, [0x0080]
 SHR       ax, 0x0001          
@@ -276,7 +276,7 @@ ADD       sp, 0x0002
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 ADD       [bp-i], 0x0001            ; [bp-0xa], 0x0001
 
 L_0896:
@@ -326,7 +326,7 @@ ADD       sp, 0x000c
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 
 L_08fe:                             ; battle.c:257
 JMP       L_08a7              
@@ -360,7 +360,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:262
 JMP       L_09a8              
 
@@ -381,7 +381,7 @@ ADD       sp, 0x0002
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:265
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x0422          
@@ -396,7 +396,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:266
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x0422          
@@ -427,7 +427,7 @@ ADD       sp, 0x0002
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 ADD       [bp-i], 0x0001            ; [bp-0xa], 0x0001
 
 L_09dd:
@@ -453,7 +453,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:274
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041d          
@@ -471,7 +471,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:275
 MOV       [fDirtyPlan], 0x0000      ; [0x26b2], 0x0000
                                     ; battle.c:276
@@ -772,7 +772,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:336
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041e          
@@ -787,7 +787,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:337
 MOV       [bp-i], 0x0000            ; [bp-0xa], 0x0000
 JMP       L_0d56              
@@ -824,7 +824,7 @@ MOV       ax, 0x0004
 ADD       cx, ax              
 PUSH      dx                  
 PUSH      cx                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 JMP       L_0d52              
 
 L_0da5:                             ; battle.c:340
@@ -842,7 +842,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:341
 JMP       LSelectName         
 
@@ -898,7 +898,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 MOV       [bp-i], ax                ; [bp-0xa], ax
                                     ; battle.c:352
 MOV       ax, [bp-i]                ; ax, [bp-0xa]
@@ -930,7 +930,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 MOV       [bp-i], ax                ; [bp-0xa], ax
                                     ; battle.c:358
 MOV       ax, [bp-i]                ; ax, [bp-0xa]
@@ -966,7 +966,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 MOV       [bp-i], ax                ; [bp-0xa], ax
                                     ; battle.c:364
 MOV       ax, [game+0x10]           ; ax, [0x0080]
@@ -1022,7 +1022,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 MOV       [bp-i], ax                ; [bp-0xa], ax
                                     ; battle.c:374
 MOV       ax, [bp-i]                ; ax, [bp-0xa]
@@ -1068,7 +1068,7 @@ PUSH      ax
 PUSH      [hwndFrame]               ; [0x258c]
 PUSH      [bp-lpProc+0x2]           ; [bp-0x4]
 PUSH      [bp-lpProc]               ; [bp-0x6]
-CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, DialogId arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
 MOV       [bp-fRet], ax             ; [bp-0xc], ax
                                     ; battle.c:383
 PUSH      [bp-lpProc+0x2]           ; [bp-0x4]
@@ -1121,7 +1121,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:390
 MOV       [bp-i], 0x0000            ; [bp-0xa], 0x0000
 JMP       L_1074              
@@ -1158,7 +1158,7 @@ MOV       ax, 0x0004
 ADD       cx, ax              
 PUSH      dx                  
 PUSH      cx                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 JMP       L_1070              
 
 L_10c3:                             ; battle.c:393
@@ -1175,7 +1175,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 
 L_10e5:                             ; battle.c:395
 PUSH      [bp+hwnd]                 ; [bp+0xe]
@@ -1414,7 +1414,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:432
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041e          
@@ -1429,7 +1429,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:433
 MOV       [bp-i], 0x0000            ; [bp-0xa], 0x0000
 JMP       L_1345              
@@ -1466,7 +1466,7 @@ MOV       ax, 0x0004
 ADD       cx, ax              
 PUSH      dx                  
 PUSH      cx                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 JMP       L_1341              
 
 L_1394:                             ; battle.c:436
@@ -1483,7 +1483,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:437
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041f          
@@ -1499,7 +1499,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:438
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x0420          
@@ -1519,7 +1519,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:439
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041d          
@@ -1537,7 +1537,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:440
 MOV       cx, 0x0008          
 MOV       ax, [btlplan+0x2]         ; ax, [0x51d6]
@@ -1567,7 +1567,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:445
 MOV       [fDirtyPlan], 0x0001      ; [0x26b2], 0x0001
                                     ; battle.c:446
@@ -1602,7 +1602,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 MOV       [bp-i], ax                ; [bp-0xa], ax
                                     ; battle.c:454
 MOV       ax, [iPlanSelDlg]         ; ax, [0x0d9a]
@@ -1685,7 +1685,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:466
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x0420          
@@ -1705,7 +1705,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:467
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 MOV       ax, 0x041d          
@@ -1723,7 +1723,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:468
 MOV       [bp+wParam], 0x041f       ; [bp+0xa], 0x041f
                                     ; battle.c:469
@@ -1781,7 +1781,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
                                     ; battle.c:472
 MOV       cx, 0x0008          
 MOV       ax, [btlplan+0x2]         ; ax, [0x51d6]
@@ -1811,7 +1811,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, WMType arg2, WPARAM arg3, LPARAM arg4)
+CALLF     SendMessage               ; LRESULT SendMessage(HWND arg1, uint16_t arg2, WPARAM arg3, LPARAM arg4)
 
 L_16a2:                             ; battle.c:478
 JMP       L_16f8              
@@ -1832,7 +1832,7 @@ MOV       ax, 0x0439
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     WinHelp                   ; int16_t WinHelp(HWND hwndmain, LPCSTR *lpszhelp, uint16_t uscommand, uint32_t uldata)
+CALLF     WinHelp                   ; int16_t WinHelp(HWND hwndmain, LPCSTR lpszhelp, uint16_t uscommand, uint32_t uldata)
                                     ; battle.c:481
 MOV       ax, 0x0001          
 JMP       L_16fe              

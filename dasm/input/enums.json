@@ -1,4 +1,6 @@
 {
+  "flag_enums": ["GrobjClass", "GrbitTrader", "GrfWeapon"],
+
   "uses": [
     { "kind": "global", "name": "mdBuild", "enum": "MdBuild" },
     { "kind": "global", "name": "mdXferDlg", "enum": "MdXfer" },
@@ -79,6 +81,8 @@
     { "kind": "local", "func": "TbWndProc", "name": "ids", "enum": "StringId" },
 
     { "kind": "field", "struct": "_hdr", "field": "rt", "enum": "RecordType" },
+    { "kind": "field", "struct": "tagOFN", "field": "Flags", "enum": "OpenFileNameFlags" },
+    { "kind": "field", "struct": "tagPD", "field": "Flags", "enum": "PrintDlgFlags" },
     { "kind": "field", "struct": "_hs", "field": "grhst", "enum": "HullSlotType" },
     { "kind": "field", "struct": "_hul", "field": "ihuldef", "enum": "HulDef" },
     { "kind": "field", "struct": "_logxfer", "field": "grobj", "enum": "GrobjClass" },
@@ -106,6 +110,8 @@
 
     { "kind": "call_result", "func": "HtMineWindow", "enum": "HtMineType" },
     { "kind": "call_result", "func": "HtMsgBox", "enum": "HtMsgType" },
+    { "kind": "call_result", "func": "AlertSz", "enum": "MessageBoxResult" },
+    { "kind": "call_result", "func": "MessageBox", "enum": "MessageBoxResult" },
 
     { "kind": "param", "func": "FillBuildDD", "param": "md", "enum": "MdBuild" },
 
@@ -239,6 +245,7 @@
     { "kind": "param", "func": "FakeListProc", "param": "msg", "enum": "WMType" },
     { "kind": "param", "func": "FindDlg", "param": "msg", "enum": "WMType" },
     { "kind": "param", "func": "FrameWndProc", "param": "msg", "enum": "WMType" },
+    { "kind": "param", "func": "ReportDlg", "param": "msg", "enum": "WMType" },
     { "kind": "param", "func": "HostTimerProc", "param": "msg", "enum": "WMType" },
     { "kind": "param", "func": "MergeFleetsDlg", "param": "msg", "enum": "WMType" },
     { "kind": "param", "func": "PrintMapDlg", "param": "msg", "enum": "WMType" },
@@ -341,55 +348,55 @@
     {
       "msg": "WM_GETMINMAXINFO",
       "lparam": {
-        "whole": { "cast_type": "MINMAXINFO" }
+        "whole": { "cast_type": "MINMAXINFO far *" }
       }
     },
     {
       "msg": "WM_CREATE",
       "lparam": {
-        "whole": { "cast_type": "CREATESTRUCT" }
+        "whole": { "cast_type": "CREATESTRUCT far *" }
       }
     },
     {
       "msg": "WM_WINDOWPOSCHANGING",
       "lparam": {
-        "whole": { "cast_type": "WINDOWPOS" }
+        "whole": { "cast_type": "WINDOWPOS far *" }
       }
     },
     {
       "msg": "WM_WINDOWPOSCHANGED",
       "lparam": {
-        "whole": { "cast_type": "WINDOWPOS" }
+        "whole": { "cast_type": "WINDOWPOS far *" }
       }
     },
     {
       "msg": "WM_DRAWITEM",
       "lparam": {
-        "whole": { "cast_type": "DRAWITEMSTRUCT" }
+        "whole": { "cast_type": "DRAWITEMSTRUCT far *" }
       }
     },
     {
       "msg": "WM_MEASUREITEM",
       "lparam": {
-        "whole": { "cast_type": "MEASUREITEMSTRUCT" }
+        "whole": { "cast_type": "MEASUREITEMSTRUCT far *" }
       }
     },
     {
       "msg": "WM_DELETEITEM",
       "lparam": {
-        "whole": { "cast_type": "DELETEITEMSTRUCT" }
+        "whole": { "cast_type": "DELETEITEMSTRUCT far *" }
       }
     },
     {
       "msg": "WM_COMPAREITEM",
       "lparam": {
-        "whole": { "cast_type": "COMPAREITEMSTRUCT" }
+        "whole": { "cast_type": "COMPAREITEMSTRUCT far *" }
       }
     },
     {
       "msg": "WM_MDICREATE",
       "lparam": {
-        "whole": { "cast_type": "MDICREATESTRUCT" }
+        "whole": { "cast_type": "MDICREATESTRUCT far *" }
       }
     },
     {

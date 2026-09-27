@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <windows.h>
 
-int32_t    MineWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int32_t    MineWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 void       InvalidateMineralBars();
 void       GetMineFieldCounts(uint16_t id, int16_t *pithm, int16_t *pcthm);
 void       DrawMineSurvey(HDC hdc, RECT *prc);

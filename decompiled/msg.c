@@ -908,7 +908,7 @@ char    rgMSGLookupTable[72] = {32,  101, 111, 116, 97, 115, 110, 105, 114, 108,
                                 69,  78,  33,  71,  72, 113, 42,  87,  40,  41,  50,  53,  58, 81,  82, 49,  66,  47,  52, 54,  90, 55,  56,  63};
 int16_t aiMSGChunkOffset[7] = {0, 2854, 6582, 10933, 14692, 18914, 22612};
 
-int32_t MessageWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int32_t MessageWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     i;
     char       *psz;
@@ -1025,7 +1025,8 @@ L_5ef1:
     goto L_5f62;
 
 L_5f19:
-    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 3) + (dyArial8 * 2)), 0, 0, 0x55);
+    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 3) + (dyArial8 * 2)), 0, 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
     i = (i + 1);
 
 L_5f62:
@@ -1040,7 +1041,7 @@ L_5f6b:
     rc = rcMsgText;
     ExpandRc(&(rc), -4, -4);
     SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), SWP_NOZORDER);
-    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x5);
+    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     rc.top = (rc.top + (dyShipDD + 3));
     SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER);
     goto Default;
@@ -1281,8 +1282,8 @@ L_63dd:
     goto L_7207;
 
 L_63e0:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) (invalid-destination) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) (invalid-destination) */
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.x = ((dxWinFrame * 2) + 198);
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0x16);
     goto Default;
 
 L_640f:
@@ -1519,7 +1520,7 @@ L_6960:
 L_6998:
     SetWindowText(hwndMsgScroll, lpsz);
     ExpandRc(&(rc), 4, 4);
-    SetWindowPos(hwndMsgScroll, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), 0x44);
+    SetWindowPos(hwndMsgScroll, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER | SWP_SHOWWINDOW);
 
 L_69e0:
     SetBkMode(hdc, iMode);
@@ -2235,10 +2236,10 @@ L_732e:
     _wsprintf(szWork, PszGetCompressedString(idsSendMessagesDD), (iMsgSendCur + 1), vcmsgplrOut);
     rc = rcMsgText;
     ExpandRc(&(rc), -4, -4);
-    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), 0x44);
-    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, 0x45);
+    SetWindowPos(hwndMsgDrop, 0x0, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), SWP_NOZORDER | SWP_SHOWWINDOW);
+    SetWindowPos(rghwndMsgBtn[3], 0x0, (rc.right - 50), rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
     rc.top = (rc.top + (dyShipDD + 3));
-    SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), 0x44);
+    SetWindowPos(hwndMsgEdit, 0x0, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER | SWP_SHOWWINDOW);
     if ((iMsgSendCur <= 0))
         goto L_740c;
     else

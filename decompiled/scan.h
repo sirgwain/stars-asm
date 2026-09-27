@@ -7,7 +7,7 @@
 extern uint32_t rgcrScanMine[3];
 extern int16_t  vrgPopRad[19];
 
-int32_t ScannerWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam);
+int32_t ScannerWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 int16_t PtToScan(int16_t d);
 int16_t ScanToPt(int16_t d);
 int16_t DrawScanner(HDC hdc, RECT *prc);
@@ -32,7 +32,7 @@ void    DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt);
 int16_t SetScanWp(int16_t iNew);
 void    ChangeScanSel(SCAN *pscan, int16_t fValidScan);
 int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs);
-int16_t FindDlg(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam);
+int16_t FindDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam);
 int16_t FSelectSz(char *szName);
 void    GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD);
 void    GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD);

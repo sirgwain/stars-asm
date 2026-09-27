@@ -1,4 +1,4 @@
-int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t (*lpProc)();
     int16_t idc;
     int16_t i;

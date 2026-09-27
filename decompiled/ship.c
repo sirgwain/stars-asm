@@ -348,7 +348,7 @@ L_087e:
 
 DoCheckBox:
     SendMessage(hwndRepCB, CB_LIMITTEXT, sel.fl.fRepOrders, 0);
-    SetWindowPos(hwndRepCB, 0x0, xLeft, yTop, 0, 0, 0x15);
+    SetWindowPos(hwndRepCB, 0x0, xLeft, yTop, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(hwndRepCB, SW_SHOW);
     SetRect(&(rgrcRef[12]), (xRight - (dyArial8 | 0x1)), yTop, xRight, ((dyArial8 | 0x1) + yTop));
     DrawDiamond(hdc, &(rgrcRef[12]), hbrBBlue);
@@ -1290,7 +1290,7 @@ L_1a0d:
         goto L_1a16;
 
 L_1a16:
-    SetWindowPos(rghwndBtn[i], 0x0, xLeft, yTop, dx, dy, 0x14);
+    SetWindowPos(rghwndBtn[i], 0x0, xLeft, yTop, dx, dy, SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(rghwndBtn[i], SW_SHOW);
     goto L_19fb;
 
@@ -1671,7 +1671,7 @@ L_2397:
         goto L_23a0;
 
 L_23a0:
-    SetWindowPos(rghwndBtn[i], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), 0x14);
+    SetWindowPos(rghwndBtn[i], 0x0, xStart, yTop, c, ((dyArial8 >> 0x1) + dyArial8), SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(rghwndBtn[i], SW_SHOW);
     goto L_2384;
 
@@ -3786,8 +3786,8 @@ L_4cba:
 
 L_4cc6:
     yCur = t_merge_4cc6_0001;
-    PatBlt(hdc, xCur, (((int32_t)((dxyPlus - 1)) / 2) + yCur), dxyPlus, dxyPlusWidth, 0xff0062);
-    PatBlt(hdc, (((int32_t)((dxyPlus - 1)) / 2) + xCur), yCur, dxyPlusWidth, dxyPlus, 0xff0062);
+    PatBlt(hdc, xCur, (((int32_t)((dxyPlus - 1)) / 2) + yCur), dxyPlus, dxyPlusWidth, WHITENESS);
+    PatBlt(hdc, (((int32_t)((dxyPlus - 1)) / 2) + xCur), yCur, dxyPlusWidth, dxyPlus, WHITENESS);
     i = (i + 1);
 
 L_4d1f:
@@ -4393,7 +4393,7 @@ L_5673:
     return 0;
 }
 
-int16_t TransferDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t TransferDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     int16_t     dyMore;
     PAINTSTRUCT ps;
@@ -4426,7 +4426,7 @@ L_56c1:
 L_56e3:
     dyMore = ((int32_t)(rc.bottom) / 2);
     rc.bottom = (rc.bottom + dyMore);
-    SetWindowPos(hwnd, 0x0, 0, 0, rc.right, rc.bottom, 0x6);
+    SetWindowPos(hwnd, 0x0, 0, 0, rc.right, rc.bottom, SWP_NOMOVE | SWP_NOZORDER);
     GetClientRect(hwnd, &(rc));
     dyMore = (dyMore - (GetSystemMetrics(SM_CYCAPTION) + 2));
     dx = (GetSystemMetrics(SM_CXDLGFRAME) + 4);
@@ -9003,7 +9003,7 @@ L_a6f9:
     return lFuel;
 }
 
-int32_t FakeEditProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
+int32_t FakeEditProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
 L_a700:
     goto L_a73c;
 

@@ -1,0 +1,969 @@
+/*
+ReportDlg  (report)
+  addr: 0022:0018  len=2511
+  sig:  int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    uint16_t         msg            [BP+0xc]
+    uint16_t         wParam         [BP+0xa]
+    int32_t          lParam         [BP+0x6]
+  locals:
+    RECT             rc             [BP-0xe]
+    HMENU            hmenu          [BP-0x6]
+    HDC              hdc            [BP-0x4]
+    block 0022:0027  len=0x174
+      int16_t          dx             [BP-0x12]
+      int16_t          i              [BP-0x10]
+    block 0022:019B  len=0x177
+      int16_t          dx             [BP-0x14]
+      int16_t          cRow           [BP-0x12]
+      uint16_t         swp            [BP-0x10]
+    block 0022:0362  len=0x19A
+      int16_t          xCur           [BP-0x1c]
+      int16_t          iRow           [BP-0x1a]
+      int16_t          iCol           [BP-0x18]
+      int16_t          ibit           [BP-0x16]
+      int16_t          i              [BP-0x14]
+      POINT            pt             [BP-0x12]
+    block 0022:04FC  len=0x180
+      int16_t          iNew           [BP-0x12]
+      int16_t          iCur           [BP-0x10]
+    block 0022:067C  len=0x19C
+      int16_t          iNew           [BP-0x12]
+      int16_t          iCur           [BP-0x10]
+      block 0022:0788  len=0x87
+        int16_t          ibit           [BP-0x16]
+        int16_t          i              [BP-0x14]
+    block 0022:0818  len=0x48
+      PAINTSTRUCT      ps             [BP-0x2e]
+    block 0022:0860  len=0xE5
+      MessageId        idm            [BP-0x10]
+
+  stats: blocks=8  labels=0
+*/
+block L_0018:
+  insts 0..6  off 0x0018..0x0026
+  succs: L_0965
+  effects:
+    0024  goto L_0965
+
+block L_0027:
+  insts 7..16  off 0x0027..0x004b
+  preds: L_0965
+  succs: L_0050
+  effects:
+    002a  store[2] [hwndReportDlg] = load@0027/src([bp+hwnd])
+    0030  call GetDC(load@002d/src([bp+hwnd])) -> callresult(HDC)
+    0035  store[2] [bp-hdc] = callresult(HDC)
+    003f  call SelectObject(load([bp-hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    0044  store[2] [bp-i] = 0x0
+    0049  goto L_0050
+
+block L_004c:
+  insts 17..17  off 0x004c..0x004f
+  preds: L_005f
+  succs: L_0050
+  effects:
+    004c  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_0050:
+  insts 18..21  off 0x0050..0x005b
+  preds: L_0027, L_004c
+  succs: L_005f, L_0097
+  effects:
+    005a  branch load([bp-i]) >= load(ds:[load([vprptCur])+0x6]) ? L_0097 : L_005f
+
+block L_005f:
+  insts 23..42  off 0x005f..0x0096
+  preds: L_0050
+  succs: L_004c
+  effects:
+    0070  call DxReportColHdr(load(ds:[load([vprptCur])+0x4]), load([bp-i]), 0x57a4, load([bp-hdc])) -> callresult(int16_t)
+    0078  store[2] [bp-dx] = callresult(int16_t)
+    0092  store[1] byte ds:[((load([vprptCur]) + 0x1a) + load([bp-i]))] = lobyte((words(signhiword(load([bp-dx])), load([bp-dx])) / 0x2))
+    0094  goto L_004c
+
+block L_0097:
+  insts 43..142  off 0x0097..0x0192
+  preds: L_0050
+  succs: L_0196, L_019b
+  effects:
+    009d  call ReleaseDC(load@0097/src([bp+hwnd]), load([bp-hdc])) -> callresult(int16_t)
+    00b0  call SortReportCache(load(ds:[load([vprptCur])+0x4]), load(ds:[load([vprptCur])+0xa])) -> callresult(void)
+    00d9  call SetWindowPos(load@00b8/src([bp+hwnd]), 0x0, 0x0, 0x0, load(ds:[load([vprptCur])+0x14]), load(ds:[load([vprptCur])+0x16]), 0xe) -> callresult(int16_t)
+    00ef  call StickyDlgPos(load@00ec/src([bp+hwnd]), (load([vprptCur]) + 0x10), 0x1) -> callresult(void)
+    0131  call CreateWindow(words(ds, 0x15cc), words(0x0, 0x0), words(0x4000, 0x1), 0x0, 0x0, 0x32, 0x32, load@011e/src([bp+hwnd]), 0x0, load@0125/src([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    013a  store[2] ds:[load([vprptCur])+0x30] = callresult(HWND)
+    0177  call CreateWindow(words(ds, 0x15d6), words(0x0, 0x0), words(0x4000, 0x0), 0x0, 0x0, 0x32, 0x32, load@0164/src([bp+hwnd]), 0x0, load@016b/src([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    0180  store[2] ds:[load([vprptCur])+0x32] = callresult(HWND)
+    0191  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_019b : L_0196
+
+block L_0196:
+  insts 144..144  off 0x0196..0x019a
+  preds: L_0097
+  succs: L_019b
+  effects:
+    0196  call AdvanceTutor() -> callresult(void)
+
+block L_019b:
+  insts 145..161  off 0x019b..0x01c8
+  preds: L_0097, L_0196, L_0975
+  succs: L_01cc, L_01d2
+  effects:
+    01a5  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    01ba  store[2] [bp-cRow] = (words(signhiword((load([bp-rc+0x6]) + 0xffdc)), (load([bp-rc+0x6]) + 0xffdc)) / (load([dyArial8]) + 0x4))
+    01c7  branch load([bp-cRow]) >= load(ds:[load([vprptCur])+0x2a]) ? L_01d2 : L_01cc
+
+block L_01cc:
+  insts 163..164  off 0x01cc..0x01d1
+  preds: L_019b
+  succs: L_01d9
+  effects:
+    01cf  goto L_01d9
+
+block L_01d2:
+  insts 165..166  off 0x01d2..0x01d8
+  preds: L_019b
+  succs: L_01d9
+
+block L_01d9:
+  insts 167..173  off 0x01d9..0x01ef
+  preds: L_01cc, L_01d2
+  succs: L_01f3, L_021c
+  effects:
+    01dd  store[2] ds:[load([vprptCur])+0x2c] = merge(Join: L_01d9, (L_01cc:load([bp-0x12]), L_01d2:load(ds:[load(ds:[0x15ac])+0x2a])))
+    01ee  branch load(ds:[load([vprptCur])+0x2c]) < load@01e4/src(ds:[load([vprptCur])+0x2a]) ? L_021c : L_01f3
+
+block L_01f3:
+  insts 175..187  off 0x01f3..0x021b
+  preds: L_01d9
+  succs: L_02b5
+  effects:
+    01f3  store[2] [bp-swp] = 0x84
+    01fc  store[2] ds:[load([vprptCur])+0xe] = 0x0
+    0214  call SetScrollPos(load(ds:[load([vprptCur])+0x30]), 0x2, 0x0, 0x0) -> callresult(int16_t)
+    0219  goto L_02b5
+
+block L_021c:
+  insts 188..195  off 0x021c..0x0237
+  preds: L_01d9
+  succs: L_023b, L_0273
+  effects:
+    021c  store[2] [bp-swp] = 0x44
+    0236  branch (load(ds:[load([vprptCur])+0xe]) + load(ds:[load([vprptCur])+0x2c])) <= load(ds:[load([vprptCur])+0x2a]) ? L_0273 : L_023b
+
+block L_023b:
+  insts 197..199  off 0x023b..0x0244
+  preds: L_021c
+  succs: L_0248, L_0273
+  effects:
+    0243  branch load(ds:[load([vprptCur])+0xe]) <= 0x0 ? L_0273 : L_0248
+
+block L_0248:
+  insts 201..209  off 0x0248..0x0266
+  preds: L_023b
+  succs: L_026a, L_0273
+  effects:
+    025a  store[2] ds:[load([vprptCur])+0xe] = (load(ds:[load([vprptCur])+0x2a]) - load(ds:[load([vprptCur])+0x2c]))
+    0265  branch load(ds:[load([vprptCur])+0xe]) >= 0x0 ? L_0273 : L_026a
+
+block L_026a:
+  insts 211..212  off 0x026a..0x0272
+  preds: L_0248
+  succs: L_0273
+  effects:
+    026e  store[2] ds:[load([vprptCur])+0xe] = 0x0
+
+block L_0273:
+  insts 213..235  off 0x0273..0x02b4
+  preds: L_021c, L_023b, L_0248, L_026a
+  succs: L_02b5
+  effects:
+    0289  call SetScrollPos(load@0277/src(ds:[load([vprptCur])+0x30]), 0x2, load(ds:[load([vprptCur])+0xe]), 0x0) -> callresult(int16_t)
+    02b0  call SetScrollRange(load@0292/src(ds:[load([vprptCur])+0x30]), 0x2, 0x0, (load(ds:[load([vprptCur])+0x2a]) - load(ds:[load([vprptCur])+0x2c])), 0x1) -> callresult(void)
+
+block L_02b5:
+  insts 236..261  off 0x02b5..0x0300
+  preds: L_01f3, L_0273
+  succs: L_0304, L_030b
+  effects:
+    02b9  call GetSystemMetrics(0x2) -> callresult(int16_t)
+    02be  store[2] [bp-dx] = callresult(int16_t)
+    02f1  call SetWindowPos(load(ds:[load([vprptCur])+0x30]), 0x0, (load([bp-rc+0x4]) - load@02cf/src([bp-dx])), (load@02d3/src([dyArial8]) + 0x6), load@02da/src([bp-dx]), (loword(((load([dyArial8]) + 0x4) * load(ds:[load([vprptCur])+0x2c]))) + 0x1), load([bp-swp])) -> callresult(int16_t)
+    02f6  call SetHScrollBar() -> callresult(void)
+    02ff  branch load([bp+msg]) != 0x1 ? L_030b : L_0304
+
+block L_0304:
+  insts 263..265  off 0x0304..0x030a
+  preds: L_02b5
+  succs: L_09df
+  effects:
+    0308  goto L_09df
+
+block L_030b:
+  insts 266..267  off 0x030b..0x030e
+  preds: L_02b5
+  succs: L_030f
+
+block L_030f:
+  insts 268..268  off 0x030f..0x0311
+  preds: L_030b
+  succs: L_09df
+  effects:
+    030f  goto L_09df
+
+block L_0312:
+  insts 269..279  off 0x0312..0x0336
+  preds: L_098d
+  succs: L_09df
+  effects:
+    031a  store[2] load([bp+lParam+0x2]):[load([bp+lParam])+0xc] = 0x12c
+    0328  store[2] load([bp+lParam+0x2]):[load([bp+lParam])+0xe] = 0xdc
+    0334  goto L_09df
+
+block L_0337:
+  insts 280..295  off 0x0337..0x0361
+  preds: L_0985
+  succs: L_09df
+  effects:
+    0341  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    0354  call FillRect(load([bp+wParam]), words(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    035f  goto L_09df
+
+block L_0362:
+  insts 296..308  off 0x0362..0x038c
+  preds: L_09ad, L_09b5, L_09bd
+  succs: L_0390, L_09c8
+  effects:
+    0362  store[2] [bp-xCur] = 0x2
+    036d  store[2] [bp-pt] = load@0367/src([bp+lParam])
+    0379  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0384  store[2] [bp-pt+0x2] = (loword(callresult(uint32_t)) & 0xffff)
+    038b  branch load([bp-pt+0x2]) < 0x2 ? L_09c8 : L_0390
+
+block L_0390:
+  insts 310..311  off 0x0390..0x0395
+  preds: L_0362
+  succs: L_039c, L_09c8
+  effects:
+    0394  branch load([bp-pt]) < 0x2 ? L_09c8 : L_039c
+
+block L_039c:
+  insts 314..317  off 0x039c..0x03a6
+  preds: L_0390
+  succs: L_03aa, L_03b2
+  effects:
+    03a5  branch load([bp-pt+0x2]) >= (load([dyArial8]) + 0x6) ? L_03b2 : L_03aa
+
+block L_03aa:
+  insts 319..320  off 0x03aa..0x03b1
+  preds: L_039c
+  succs: L_03f1
+  effects:
+    03aa  store[2] [bp-iRow] = 0xffff
+    03af  goto L_03f1
+
+block L_03b2:
+  insts 321..337  off 0x03b2..0x03e0
+  preds: L_039c
+  succs: L_03e7, L_09c8
+  effects:
+    03be  store[2] ss:[bp-0x1e] = (load@03b2/src([dyArial8]) + 0x4)
+    03d2  store[2] [bp-iRow] = (words(signhiword(((load([bp-pt+0x2]) + 0xfffe) - load(ss:[bp-0x1e]))), ((load([bp-pt+0x2]) + 0xfffe) - load(ss:[bp-0x1e]))) / (load@03c8/src([dyArial8]) + 0x4))
+    03df  branch load([bp-iRow]) >= load(ds:[load([vprptCur])+0x2c]) ? L_09c8 : L_03e7
+
+block L_03e7:
+  insts 340..342  off 0x03e7..0x03f0
+  preds: L_03b2
+  succs: L_03f1
+  effects:
+    03ee  store[2] [bp-iRow] = (load([bp-iRow]) + load(ds:[load([vprptCur])+0xe]))
+
+block L_03f1:
+  insts 343..347  off 0x03f1..0x0405
+  preds: L_03aa, L_03e7
+  succs: L_0416
+  effects:
+    03f1  store[2] [bp-iCol] = 0xffff
+    03f6  store[2] [bp-i] = 0x0
+    03fb  store[2] [bp-ibit] = 0x1
+    0403  goto L_0416
+
+block L_0406:
+  insts 348..352  off 0x0406..0x0415
+  preds: L_043a, L_044b, L_045a
+  succs: L_0416
+  effects:
+    0409  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    0410  store[2] [bp-ibit] = (load([bp-ibit]) << 0x1)
+
+block L_0416:
+  insts 353..356  off 0x0416..0x0421
+  preds: L_03f1, L_0406
+  succs: L_0425, L_0489
+  effects:
+    0420  branch load([bp-i]) >= load(ds:[load([vprptCur])+0x6]) ? L_0489 : L_0425
+
+block L_0425:
+  insts 358..364  off 0x0425..0x0436
+  preds: L_0416
+  succs: L_043a, L_0442
+  effects:
+    0435  branch (load([bp-ibit]) & load(ds:[load([vprptCur])])) != 0x0 ? L_0442 : L_043a
+
+block L_043a:
+  insts 366..367  off 0x043a..0x043e
+  preds: L_0425
+  succs: L_0406, L_0442
+  effects:
+    043d  branch (signhiword(load([bp-ibit])) & load(ds:[load([vprptCur])+0x2])) == 0x0 ? L_0406 : L_0442
+
+block L_0442:
+  insts 369..370  off 0x0442..0x0447
+  preds: L_0425, L_043a
+  succs: L_044b, L_045a
+  effects:
+    0446  branch load([bp-i]) == 0x0 ? L_045a : L_044b
+
+block L_044b:
+  insts 372..375  off 0x044b..0x0456
+  preds: L_0442
+  succs: L_0406, L_045a
+  effects:
+    0455  branch load([bp-i]) < load(ds:[load([vprptCur])+0x8]) ? L_0406 : L_045a
+
+block L_045a:
+  insts 377..388  off 0x045a..0x0479
+  preds: L_0442, L_044b
+  succs: L_0406, L_047d
+  effects:
+    046f  store[2] [bp-xCur] = (load@046f/dst([bp-xCur]) + (load(byte ds:[((load([vprptCur]) + 0x1a) + load([bp-i]))]) << 0x1))
+    0478  branch load@0475/dst([bp-xCur]) <= load([bp-pt]) ? L_0406 : L_047d
+
+block L_047d:
+  insts 390..391  off 0x047d..0x0485
+  preds: L_045a
+  succs: L_0489
+  effects:
+    0480  store[2] [bp-iCol] = load([bp-i])
+
+block L_0489:
+  insts 394..395  off 0x0489..0x048e
+  preds: L_0416, L_047d
+  succs: L_0495, L_09c8
+  effects:
+    048d  branch load([bp-iCol]) == 0xffff ? L_09c8 : L_0495
+
+block L_0495:
+  insts 398..399  off 0x0495..0x049a
+  preds: L_0489
+  succs: L_049e, L_04c6
+  effects:
+    0499  branch load([bp-iRow]) != 0xffff ? L_04c6 : L_049e
+
+block L_049e:
+  insts 401..402  off 0x049e..0x04a4
+  preds: L_0495
+  succs: L_04a8, L_04ae
+  effects:
+    04a3  branch load([bp+msg]) != 0x204 ? L_04ae : L_04a8
+
+block L_04a8:
+  insts 404..405  off 0x04a8..0x04ad
+  preds: L_049e
+  succs: L_04b1
+  effects:
+    04ab  goto L_04b1
+
+block L_04ae:
+  insts 406..406  off 0x04ae..0x04b0
+  preds: L_049e
+  succs: L_04b1
+
+block L_04b1:
+  insts 407..413  off 0x04b1..0x04c5
+  preds: L_04a8, L_04ae
+  succs: L_04e1
+  effects:
+    04bb  call ReportColumnPopup(words(load([bp-pt+0x2]), load([bp-pt])), load([bp-iCol]), merge(Join: L_04b1, (L_04a8:0x1, L_04ae:0x0))) -> callresult(void)
+    04c3  goto L_04e1
+
+block L_04c6:
+  insts 414..421  off 0x04c6..0x04e0
+  preds: L_0495
+  succs: L_04e1
+  effects:
+    04d9  call ExecuteReportClick(words(load([bp-pt+0x2]), load([bp-pt])), load(ds:[load([vprptCur])+0x4]), load([bp-iCol]), load([bp-iRow])) -> callresult(void)
+
+block L_04e1:
+  insts 422..427  off 0x04e1..0x04f0
+  preds: L_04b1, L_04c6
+  succs: L_04f4, L_09c8
+  effects:
+    04ef  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_09c8 : L_04f4
+
+block L_04f4:
+  insts 429..429  off 0x04f4..0x04f8
+  preds: L_04e1
+  succs: L_04f9
+  effects:
+    04f4  call AdvanceTutor() -> callresult(void)
+
+block L_04f9:
+  insts 430..430  off 0x04f9..0x04fb
+  preds: L_04f4
+  succs: L_09c8
+  effects:
+    04f9  goto L_09c8
+
+block L_04fc:
+  insts 431..445  off 0x04fc..0x0528
+  preds: L_09a5
+  succs: L_0576
+  effects:
+    0505  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0515  call GetScrollPos((loword(callresult(uint32_t)) & 0xffff), 0x2) -> callresult(int16_t)
+    051a  store[2] [bp-iCur] = callresult(int16_t)
+    0520  store[2] [bp-iNew] = load([bp-iCur])
+    0526  goto L_0576
+
+block L_0529:
+  insts 446..447  off 0x0529..0x0530
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0529  store[2] [bp-iNew] = 0x7d0
+    052e  goto L_0597
+
+block L_0531:
+  insts 448..449  off 0x0531..0x0537
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0531  store[2] [bp-iNew] = (load([bp-iNew]) + 0x1)
+    0535  goto L_0597
+
+block L_0538:
+  insts 450..451  off 0x0538..0x053e
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0538  store[2] [bp-iNew] = (load([bp-iNew]) - 0x1)
+    053c  goto L_0597
+
+block L_053f:
+  insts 452..456  off 0x053f..0x054e
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0549  store[2] [bp-iNew] = (load([bp-iNew]) + (load(ds:[load([vprptCur])+0x2c]) + 0xffff))
+    054c  goto L_0597
+
+block L_054f:
+  insts 457..461  off 0x054f..0x055e
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0559  store[2] [bp-iNew] = (load([bp-iNew]) - (load(ds:[load([vprptCur])+0x2c]) + 0xffff))
+    055c  goto L_0597
+
+block L_055f:
+  insts 462..465  off 0x055f..0x056a
+  preds: L_057e
+  succs: L_0597
+  effects:
+    0565  store[2] [bp-iNew] = load([bp+lParam])
+    0568  goto L_0597
+
+block L_056b:
+  insts 466..467  off 0x056b..0x0572
+  preds: L_057e
+  succs: L_0597
+  effects:
+    056b  store[2] [bp-iNew] = 0x0
+    0570  goto L_0597
+
+block L_0576:
+  insts 468..469  off 0x0576..0x057a
+  preds: L_04fc
+  succs: L_057e, L_0597
+  effects:
+    0579  branch load([bp+wParam]) > 0x7 ? L_0597 : L_057e
+
+block L_057e:
+  insts 471..473  off 0x057e..0x0586
+  preds: L_0576
+  succs: L_0529, L_0531, L_0538, L_053f, L_054f, L_055f, L_056b
+  effects:
+    0582  tablejump (load([bp+wParam]) << 0x1) [L_0538, L_0531, L_054f, L_053f, L_055f, L_055f, L_056b, L_0529]
+
+block L_0597:
+  insts 482..487  off 0x0597..0x05a9
+  preds: L_0529, L_0531, L_0538, L_053f, L_054f, L_055f, L_056b, L_0576
+  succs: L_05ad, L_05be
+  effects:
+    05a8  branch load([bp-iNew]) <= (load(ds:[load([vprptCur])+0x2a]) - load(ds:[load([vprptCur])+0x2c])) ? L_05be : L_05ad
+
+block L_05ad:
+  insts 489..493  off 0x05ad..0x05bd
+  preds: L_0597
+  succs: L_05be
+  effects:
+    05bb  store[2] [bp-iNew] = (load(ds:[load([vprptCur])+0x2a]) - load(ds:[load([vprptCur])+0x2c]))
+
+block L_05be:
+  insts 494..495  off 0x05be..0x05c3
+  preds: L_0597, L_05ad
+  succs: L_05c7, L_05cc
+  effects:
+    05c2  branch load([bp-iNew]) >= 0x0 ? L_05cc : L_05c7
+
+block L_05c7:
+  insts 497..497  off 0x05c7..0x05cb
+  preds: L_05be
+  succs: L_05cc
+  effects:
+    05c7  store[2] [bp-iNew] = 0x0
+
+block L_05cc:
+  insts 498..500  off 0x05cc..0x05d3
+  preds: L_05be, L_05c7
+  succs: L_05d7, L_0673
+  effects:
+    05d2  branch load([bp-iNew]) == load([bp-iCur]) ? L_0673 : L_05d7
+
+block L_05d7:
+  insts 502..557  off 0x05d7..0x0672
+  preds: L_05cc
+  succs: L_0673
+  effects:
+    05de  store[2] ds:[load([vprptCur])+0xe] = load@05db/src([bp-iNew])
+    05eb  call GetClientRect(load@05e1/src([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    05f0  store[2] [bp-rc] = 0x2
+    05f9  call GetSystemMetrics(0x2) -> callresult(int16_t)
+    05fe  store[2] [bp-rc+0x4] = (load([bp-rc+0x4]) - callresult(int16_t))
+    0607  store[2] [bp-rc+0x2] = (load@0601/src([dyArial8]) + 0x6)
+    061a  store[2] [bp-rc+0x6] = (loword(((load([dyArial8]) + 0x4) * load(ds:[load([vprptCur])+0x2c]))) + load([bp-rc+0x2]))
+    0641  call ScrollWindow(load@061d/src([bp+hwnd]), 0x0, loword(((load([dyArial8]) + 0x4) * (load([bp-iCur]) - load([bp-iNew])))), words(ss, addr([bp-rc])), words(ss, addr([bp-rc]))) -> callresult(void)
+    064f  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0666  call SetScrollPos((loword(callresult(uint32_t)) & 0xffff), 0x2, load@065f/src([bp-iNew]), 0x1) -> callresult(int16_t)
+    066e  call UpdateWindow(load@066b/src([bp+hwnd])) -> callresult(void)
+
+block L_0673:
+  insts 558..560  off 0x0673..0x067b
+  preds: L_05cc, L_05d7
+  succs: L_09df
+  effects:
+    0679  goto L_09df
+
+block L_067c:
+  insts 561..575  off 0x067c..0x06a8
+  preds: L_099d
+  succs: L_06e4
+  effects:
+    0685  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0695  call GetScrollPos((loword(callresult(uint32_t)) & 0xffff), 0x2) -> callresult(int16_t)
+    069a  store[2] [bp-iCur] = callresult(int16_t)
+    06a0  store[2] [bp-iNew] = load([bp-iCur])
+    06a6  goto L_06e4
+
+block L_06a9:
+  insts 576..577  off 0x06a9..0x06b0
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06a9  store[2] [bp-iNew] = 0x7d0
+    06ae  goto L_0705
+
+block L_06b1:
+  insts 578..579  off 0x06b1..0x06b7
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06b1  store[2] [bp-iNew] = (load([bp-iNew]) + 0x1)
+    06b5  goto L_0705
+
+block L_06b8:
+  insts 580..581  off 0x06b8..0x06be
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06b8  store[2] [bp-iNew] = (load([bp-iNew]) - 0x1)
+    06bc  goto L_0705
+
+block L_06bf:
+  insts 582..583  off 0x06bf..0x06c5
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06bf  store[2] [bp-iNew] = (load([bp-iNew]) + 0x3)
+    06c3  goto L_0705
+
+block L_06c6:
+  insts 584..585  off 0x06c6..0x06cc
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06c6  store[2] [bp-iNew] = (load([bp-iNew]) - 0x3)
+    06ca  goto L_0705
+
+block L_06cd:
+  insts 586..589  off 0x06cd..0x06d8
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06d3  store[2] [bp-iNew] = load([bp+lParam])
+    06d6  goto L_0705
+
+block L_06d9:
+  insts 590..591  off 0x06d9..0x06e0
+  preds: L_06ec
+  succs: L_0705
+  effects:
+    06d9  store[2] [bp-iNew] = 0x0
+    06de  goto L_0705
+
+block L_06e4:
+  insts 592..593  off 0x06e4..0x06e8
+  preds: L_067c
+  succs: L_06ec, L_0705
+  effects:
+    06e7  branch load([bp+wParam]) > 0x7 ? L_0705 : L_06ec
+
+block L_06ec:
+  insts 595..597  off 0x06ec..0x06f4
+  preds: L_06e4
+  succs: L_06a9, L_06b1, L_06b8, L_06bf, L_06c6, L_06cd, L_06d9
+  effects:
+    06f0  tablejump (load([bp+wParam]) << 0x1) [L_06b8, L_06b1, L_06c6, L_06bf, L_06cd, L_06cd, L_06d9, L_06a9]
+
+block L_0705:
+  insts 606..609  off 0x0705..0x0710
+  preds: L_06a9, L_06b1, L_06b8, L_06bf, L_06c6, L_06cd, L_06d9, L_06e4
+  succs: L_0714, L_071e
+  effects:
+    070f  branch load([bp-iNew]) <= load(ds:[load([vprptCur])+0x34]) ? L_071e : L_0714
+
+block L_0714:
+  insts 611..613  off 0x0714..0x071d
+  preds: L_0705
+  succs: L_071e
+  effects:
+    071b  store[2] [bp-iNew] = load(ds:[load([vprptCur])+0x34])
+
+block L_071e:
+  insts 614..615  off 0x071e..0x0723
+  preds: L_0705, L_0714
+  succs: L_0727, L_072c
+  effects:
+    0722  branch load([bp-iNew]) >= 0x0 ? L_072c : L_0727
+
+block L_0727:
+  insts 617..617  off 0x0727..0x072b
+  preds: L_071e
+  succs: L_072c
+  effects:
+    0727  store[2] [bp-iNew] = 0x0
+
+block L_072c:
+  insts 618..620  off 0x072c..0x0733
+  preds: L_071e, L_0727
+  succs: L_0737, L_080f
+  effects:
+    0732  branch load([bp-iNew]) == load([bp-iCur]) ? L_080f : L_0737
+
+block L_0737:
+  insts 622..648  off 0x0737..0x0784
+  preds: L_072c
+  succs: L_0788, L_080f
+  effects:
+    0740  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0757  call SetScrollPos((loword(callresult(uint32_t)) & 0xffff), 0x2, load@0750/src([bp-iNew]), 0x1) -> callresult(int16_t)
+    0765  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    0775  call GetScrollPos((loword(callresult(uint32_t)) & 0xffff), 0x2) -> callresult(int16_t)
+    077a  store[2] [bp-iNew] = callresult(int16_t)
+    0783  branch load@0780/dst([bp-iNew]) == load([bp-iCur]) ? L_080f : L_0788
+
+block L_0788:
+  insts 650..653  off 0x0788..0x0797
+  preds: L_0737
+  succs: L_07a8
+  effects:
+    0788  store[2] [bp-i] = 0x1
+    078d  store[2] [bp-ibit] = 0x2
+    0795  goto L_07a8
+
+block L_0798:
+  insts 654..658  off 0x0798..0x07a7
+  preds: L_07cc, L_07d4
+  succs: L_07a8
+  effects:
+    079b  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    07a2  store[2] [bp-ibit] = (load([bp-ibit]) << 0x1)
+
+block L_07a8:
+  insts 659..662  off 0x07a8..0x07b3
+  preds: L_0788, L_0798
+  succs: L_07b7, L_07e9
+  effects:
+    07b2  branch load([bp-i]) >= load(ds:[load([vprptCur])+0x6]) ? L_07e9 : L_07b7
+
+block L_07b7:
+  insts 664..670  off 0x07b7..0x07c8
+  preds: L_07a8
+  succs: L_07cc, L_07d4
+  effects:
+    07c7  branch (load([bp-ibit]) & load(ds:[load([vprptCur])])) != 0x0 ? L_07d4 : L_07cc
+
+block L_07cc:
+  insts 672..673  off 0x07cc..0x07d0
+  preds: L_07b7
+  succs: L_0798, L_07d4
+  effects:
+    07cf  branch (signhiword(load([bp-ibit])) & load(ds:[load([vprptCur])+0x2])) == 0x0 ? L_0798 : L_07d4
+
+block L_07d4:
+  insts 675..678  off 0x07d4..0x07df
+  preds: L_07b7, L_07cc
+  succs: L_0798, L_07e9
+  effects:
+    07d7  store[2] [bp-iNew] = (load@07d7/dst([bp-iNew]) - 0x1)
+    07de  branch load@07d4/src([bp-iNew]) > 0x0 ? L_0798 : L_07e9
+
+block L_07e9:
+  insts 682..694  off 0x07e9..0x080e
+  preds: L_07a8, L_07d4
+  succs: L_080f
+  effects:
+    07f0  store[2] ds:[load([vprptCur])+0x8] = load([bp-i])
+    0802  call InvalidateRect(load@07f3/src([bp+hwnd]), words(0x0, 0x0), 0x1) -> callresult(void)
+    080a  call UpdateWindow(load@0807/src([bp+hwnd])) -> callresult(void)
+
+block L_080f:
+  insts 695..697  off 0x080f..0x0817
+  preds: L_072c, L_0737, L_07e9
+  succs: L_09df
+  effects:
+    0815  goto L_09df
+
+block L_0818:
+  insts 698..723  off 0x0818..0x085f
+  preds: L_097d
+  succs: L_09df
+  effects:
+    0822  call BeginPaint(load@0818/src([bp+hwnd]), words(ss, addr([bp-ps]))) -> callresult(HDC)
+    0827  store[2] [bp-hdc] = callresult(HDC)
+    0834  call DrawReport(load@0831/src([bp+hwnd]), load([bp-hdc]), addr([bp-ps+0x4])) -> callresult(void)
+    0846  call EndPaint(load@083c/src([bp+hwnd]), words(ss, addr([bp-ps]))) -> callresult(void)
+    0854  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xfdff) | 0x0)
+    085d  goto L_09df
+
+block L_0860:
+  insts 724..757  off 0x0860..0x08ca
+  preds: L_096d
+  succs: L_08f1
+  effects:
+    0871  call StickyDlgPos(load@086e/src([bp+hwnd]), (load([vprptCur]) + 0x10), 0x0) -> callresult(void)
+    0883  call GetWindowRect(load@0879/src([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    0892  store[2] ds:[load([vprptCur])+0x14] = (load([bp-rc+0x4]) - load([bp-rc]))
+    089f  store[2] ds:[load([vprptCur])+0x16] = (load([bp-rc+0x6]) - load([bp-rc+0x2]))
+    08a2  store[2] [hwndReportDlg] = 0x0
+    08a8  store[2] [fBrowserValid] = 0x0
+    08b6  call GetASubMenu(load([hwndFrame]), 0x4) -> callresult(uint16_t)
+    08be  store[2] [bp-hmenu] = callresult(uint16_t)
+    08c8  goto L_08f1
+
+block L_08ce:
+  insts 759..760  off 0x08ce..0x08d5
+  preds: L_08f9
+  succs: L_0914
+  effects:
+    08ce  store[2] [bp-idm] = 0x8ff
+    08d3  goto L_0914
+
+block L_08d6:
+  insts 761..762  off 0x08d6..0x08dd
+  preds: L_0901
+  succs: L_0914
+  effects:
+    08d6  store[2] [bp-idm] = 0x900
+    08db  goto L_0914
+
+block L_08de:
+  insts 763..764  off 0x08de..0x08e5
+  preds: L_08f1
+  succs: L_0914
+  effects:
+    08de  store[2] [bp-idm] = 0x8fd
+    08e3  goto L_0914
+
+block L_08e6:
+  insts 765..766  off 0x08e6..0x08ed
+  preds: L_0909
+  succs: L_0914
+  effects:
+    08e6  store[2] [bp-idm] = 0x901
+    08eb  goto L_0914
+
+block L_08f1:
+  insts 767..768  off 0x08f1..0x08f5
+  preds: L_0860
+  succs: L_08de, L_08f9
+  effects:
+    08f4  branch load(ds:[load([vprptCur])+0x4]) == 0x0 ? L_08de : L_08f9
+
+block L_08f9:
+  insts 770..771  off 0x08f9..0x08fd
+  preds: L_08f1
+  succs: L_08ce, L_0901
+  effects:
+    08fc  branch load(ds:[load([vprptCur])+0x4]) == 0x1 ? L_08ce : L_0901
+
+block L_0901:
+  insts 773..774  off 0x0901..0x0905
+  preds: L_08f9
+  succs: L_08d6, L_0909
+  effects:
+    0904  branch load(ds:[load([vprptCur])+0x4]) == 0x2 ? L_08d6 : L_0909
+
+block L_0909:
+  insts 776..777  off 0x0909..0x090d
+  preds: L_0901
+  succs: L_08e6, L_0914
+  effects:
+    090c  branch load(ds:[load([vprptCur])+0x4]) == 0x3 ? L_08e6 : L_0914
+
+block L_0914:
+  insts 780..792  off 0x0914..0x0939
+  preds: L_08ce, L_08d6, L_08de, L_08e6, L_0909
+  succs: L_093d, L_09c8
+  effects:
+    091f  call CheckMenuItem(load([bp-hmenu]), load([bp-idm]), 0x0) -> callresult(int16_t)
+    0924  store[2] [vprptCur] = 0x0
+    0938  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_09c8 : L_093d
+
+block L_093d:
+  insts 794..794  off 0x093d..0x0941
+  preds: L_0914
+  succs: L_0942
+  effects:
+    093d  call AdvanceTutor() -> callresult(void)
+
+block L_0942:
+  insts 795..795  off 0x0942..0x0944
+  preds: L_093d
+  succs: L_09c8
+  effects:
+    0942  goto L_09c8
+
+block L_0945:
+  insts 796..797  off 0x0945..0x094a
+  preds: L_0995
+  succs: L_094e, L_09c8
+  effects:
+    0949  branch load([bp+wParam]) != 0x2 ? L_09c8 : L_094e
+
+block L_094e:
+  insts 799..803  off 0x094e..0x095e
+  preds: L_0945
+  succs: L_09df
+  effects:
+    0951  call DestroyWindow(load([bp+hwnd])) -> callresult(int16_t)
+    095c  goto L_09df
+
+block L_0965:
+  insts 805..806  off 0x0965..0x0969
+  preds: L_0018
+  succs: L_0027, L_096d
+  effects:
+    0968  branch load([bp+msg]) == 0x1 ? L_0027 : L_096d
+
+block L_096d:
+  insts 808..809  off 0x096d..0x0971
+  preds: L_0965
+  succs: L_0860, L_0975
+  effects:
+    0970  branch load([bp+msg]) == 0x2 ? L_0860 : L_0975
+
+block L_0975:
+  insts 811..812  off 0x0975..0x0979
+  preds: L_096d
+  succs: L_019b, L_097d
+  effects:
+    0978  branch load([bp+msg]) == 0x5 ? L_019b : L_097d
+
+block L_097d:
+  insts 814..815  off 0x097d..0x0981
+  preds: L_0975
+  succs: L_0818, L_0985
+  effects:
+    0980  branch load([bp+msg]) == 0xf ? L_0818 : L_0985
+
+block L_0985:
+  insts 817..818  off 0x0985..0x0989
+  preds: L_097d
+  succs: L_0337, L_098d
+  effects:
+    0988  branch load([bp+msg]) == 0x14 ? L_0337 : L_098d
+
+block L_098d:
+  insts 820..821  off 0x098d..0x0991
+  preds: L_0985
+  succs: L_0312, L_0995
+  effects:
+    0990  branch load([bp+msg]) == 0x24 ? L_0312 : L_0995
+
+block L_0995:
+  insts 823..824  off 0x0995..0x0999
+  preds: L_098d
+  succs: L_0945, L_099d
+  effects:
+    0998  branch load([bp+msg]) == 0x111 ? L_0945 : L_099d
+
+block L_099d:
+  insts 826..827  off 0x099d..0x09a1
+  preds: L_0995
+  succs: L_067c, L_09a5
+  effects:
+    09a0  branch load([bp+msg]) == 0x114 ? L_067c : L_09a5
+
+block L_09a5:
+  insts 829..830  off 0x09a5..0x09a9
+  preds: L_099d
+  succs: L_04fc, L_09ad
+  effects:
+    09a8  branch load([bp+msg]) == 0x115 ? L_04fc : L_09ad
+
+block L_09ad:
+  insts 832..833  off 0x09ad..0x09b1
+  preds: L_09a5
+  succs: L_0362, L_09b5
+  effects:
+    09b0  branch load([bp+msg]) == 0x201 ? L_0362 : L_09b5
+
+block L_09b5:
+  insts 835..836  off 0x09b5..0x09b9
+  preds: L_09ad
+  succs: L_0362, L_09bd
+  effects:
+    09b8  branch load([bp+msg]) == 0x203 ? L_0362 : L_09bd
+
+block L_09bd:
+  insts 838..839  off 0x09bd..0x09c1
+  preds: L_09b5
+  succs: L_0362, L_09c8
+  effects:
+    09c0  branch load([bp+msg]) == 0x204 ? L_0362 : L_09c8
+
+block L_09c8:
+  insts 842..847  off 0x09c8..0x09de
+  preds: L_0362, L_0390, L_03b2, L_0489, L_04e1, L_04f9, L_0914, L_0942, L_0945, L_09bd
+  succs: L_09df
+  effects:
+    09d7  call DefWindowProc(load([bp+hwnd]), load([bp+msg]), load([bp+wParam]), words(load([bp+lParam+0x2]), load([bp+lParam]))) -> callresult(LRESULT)
+
+block L_09df:
+  insts 849..853  off 0x09df..0x09e6
+  preds: L_0304, L_030f, L_0312, L_0337, L_0673, L_080f, L_0818, L_094e, L_09c8
+  effects:
+    09e4  return merge(Join: L_09df, (L_0304:words(0x0, 0x1), L_030f:words(0x0, 0x0), L_0312:words(0x0, 0x0), L_0337:words(0x0, 0x1), L_0673:words(0x0, 0x0), L_080f:words(0x0, 0x0), L_0818:words(0x0, 0x1), L_094e:words(0x0, 0x1), L_09c8:words(hiword(callresult(LRESULT)), loword(callresult(LRESULT)))))

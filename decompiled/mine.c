@@ -1,6 +1,6 @@
 #include "common.h"
 
-int32_t MineWndProc(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int32_t MineWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;

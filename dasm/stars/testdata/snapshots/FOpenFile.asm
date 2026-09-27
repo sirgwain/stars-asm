@@ -383,7 +383,7 @@ PUSH      ax
 CALLF     PszFormatIds              ; char * PszFormatIds(StringId ids, int16_t *pParams)
 ADD       sp, 0x0006          
 PUSH      ax                  
-CALLF     AlertSz                   ; int16_t AlertSz(char *sz, MessageBoxType mbType)
+CALLF     AlertSz                   ; int16_t AlertSz(char *sz, int16_t mbType)
 ADD       sp, 0x0004          
 CMP       ax, 0x0006          
 JNZ       LBadFile            

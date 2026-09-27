@@ -10,10 +10,13 @@
 typedef {{.Kind}} {{.TagName}} {{.TypedefName}};
 {{- end}}
 
+// Win16 structs are byte-packed; keep the original field offsets.
+#pragma pack(push, 1)
 {{range $i, $s := .Structs}}
 {{- if $i }}
 {{- end }}
 {{ template "struct.detail" $s }}
 {{ end }}
+#pragma pack(pop)
 
 #endif

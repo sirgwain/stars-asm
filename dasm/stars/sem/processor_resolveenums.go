@@ -198,7 +198,12 @@ func (p *resolveEnumsProcessor) callResultEnum(call *Call) (*typeinfo.Enum, bool
 		if enumType == nil {
 			continue
 		}
-		return enumType, true
+		// A rule without argument constraints already retyped the function's
+		// return; otherwise fit the enum to the declared return storage.
+		if ret, ok := call.Function.Ret.(*typeinfo.Enum); ok && ret.Name == enumType.Name {
+			return ret, true
+		}
+		return typeinfo.EnumWithStorageSize(enumType, call.Function.Ret), true
 	}
 	if enumType, ok := call.Function.Ret.(*typeinfo.Enum); ok {
 		return enumType, true

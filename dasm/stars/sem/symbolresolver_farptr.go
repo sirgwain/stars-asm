@@ -125,7 +125,11 @@ func (sr *symbolResolver) symbolFromNativePointerMemory(mem machine.MemoryAddres
 		return nil, false
 	}
 	base, ok := sr.symbolFromValue(mem.Base)
-	if !ok || !typeinfo.IsPointer(base.Type()) {
+	if !ok {
+		return nil, false
+	}
+	base = sr.messagePointerView(base)
+	if !typeinfo.IsPointer(base.Type()) {
 		return nil, false
 	}
 	if path, ok := sr.symbolFromResolvedAccess(base, mem.Disp, mem.Width); ok {
@@ -156,7 +160,7 @@ func (sr *symbolResolver) addressFromSplitFarPointer(segment machine.Value, offs
 	}
 
 	return resolvedAddress{
-		base:   root,
+		base:   sr.messagePointerView(root),
 		offset: fixed,
 		terms:  terms,
 		deref:  true,
@@ -238,7 +242,11 @@ func (sr *symbolResolver) symbolFromFarPointer(seg *machine.FarPointer, off mach
 	}
 
 	base, ok := sr.symbolFromValue(parent)
-	if !ok || !typeinfo.IsPointer(base.Type()) {
+	if !ok {
+		return nil, false
+	}
+	base = sr.messagePointerView(base)
+	if !typeinfo.IsPointer(base.Type()) {
 		return nil, false
 	}
 

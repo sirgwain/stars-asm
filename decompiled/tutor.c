@@ -19,7 +19,7 @@ ZIPPRODQ1  rgzpqTut[2] = {{
                               .rgpq = {{.w = 132, .mdIdle = 4, .cQuan = 2}, {.w = 193, .mdIdle = 1, .cQuan = 3}, {.w = 192, .cQuan = 3}},
                          }};
 
-int16_t TutorDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t TutorDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     HMENU hmenu;
     RECT  rc;
     int16_t (*lpProc)();
@@ -31,7 +31,7 @@ L_0000:
 
 L_000f:
     tutor.hwnd = hwnd;
-    SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, 0x3);
+    SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
     StickyDlgPos(hwnd, &(ptStickyTutorDlg), 1);
     return 1;
 
@@ -162,7 +162,7 @@ L_025b:
     return 0;
 }
 
-int16_t PanicDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t PanicDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     RECT rc;
 
 L_026a:
@@ -242,7 +242,7 @@ L_0366:
 }
 
 void ShowTutor(int16_t fShow) {
-    ShowWindowCmd t_merge_03a0_0001;
+    int16_t t_merge_03a0_0001;
 
 L_0374:
     if ((tutor.hwnd == 0x0))
@@ -486,7 +486,7 @@ L_0806:
         goto L_082e;
 
 L_082e:
-    if ((AlertSz(PszFormatIds(idsTutorialHasRunBeforeWouldLikeDestroy, 0x0), 0x2024) == 6))
+    if ((AlertSz(PszFormatIds(idsTutorialHasRunBeforeWouldLikeDestroy, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) == IDYES))
         goto L_08a4;
     else
         goto L_0857;
@@ -929,7 +929,7 @@ L_0f36:
         goto L_0f49;
 
 L_0f49:
-    if ((AlertSz(PszFormatIds(idsCurrentlyRunningStarsTutorialDoWantExit, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsCurrentlyRunningStarsTutorialDoWantExit, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto L_0f87;
     else
         goto L_0f72;

@@ -2,17 +2,15 @@
   "OutDir": "./decompiled",
   "analysis": {
     "temps": 1685,
-    "hiWords": 77,
-    "loWords": 1401,
+    "hiWords": 69,
+    "loWords": 1393,
     "branchHiWords": 26,
     "branchLoWords": 567,
     "ir": {
       "numStatements": 34709,
-      "untranslated": 14,
-      "untranslatedAssign": 14,
+      "untranslated": 6,
+      "untranslatedAssign": 6,
       "untranslatedFailures": {
-        "assign.dst:invalid-destination": 8,
-        "assign.dst:memory": 8,
         "assign.src:memory": 6
       }
     }
@@ -2565,17 +2563,11 @@
     },
     "FrameWndProc": {
       "temps": 9,
-      "hiWords": 3,
-      "loWords": 7,
+      "hiWords": 1,
+      "loWords": 5,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 256,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:invalid-destination": 2,
-          "assign.dst:memory": 2
-        }
+        "numStatements": 256
       }
     },
     "FreeHb": {
@@ -3619,17 +3611,10 @@
     },
     "MessageWndProc": {
       "temps": 15,
-      "hiWords": 2,
-      "loWords": 10,
+      "loWords": 8,
       "branchLoWords": 11,
       "ir": {
-        "numStatements": 216,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:invalid-destination": 2,
-          "assign.dst:memory": 2
-        }
+        "numStatements": 216
       }
     },
     "MeteorStrike": {
@@ -3875,17 +3860,10 @@
     },
     "PlanetWndProc": {
       "temps": 4,
-      "hiWords": 2,
-      "loWords": 4,
+      "loWords": 2,
       "branchLoWords": 23,
       "ir": {
-        "numStatements": 103,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:invalid-destination": 2,
-          "assign.dst:memory": 2
-        }
+        "numStatements": 103
       }
     },
     "PlanetaryClimateChange": {
@@ -4380,16 +4358,9 @@
     },
     "ReportDlg": {
       "temps": 3,
-      "hiWords": 2,
-      "loWords": 13,
+      "loWords": 11,
       "ir": {
-        "numStatements": 122,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:invalid-destination": 2,
-          "assign.dst:memory": 2
-        }
+        "numStatements": 122
       }
     },
     "ResearchDlg": {

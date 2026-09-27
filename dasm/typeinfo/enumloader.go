@@ -8,7 +8,6 @@ import (
 	"io"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -123,10 +122,15 @@ func parseHeaderEnums(text string) ([]*Enum, error) {
 		if err != nil {
 			return nil, fmt.Errorf("enum %s: %w", name, err)
 		}
+		typedef, err := enumTypedef(vals)
+		if err != nil {
+			return nil, fmt.Errorf("enum %s: %w", name, err)
+		}
 		result = append(result, &Enum{
 			Name:     name,
-			EnumKind: inferEnumKind(vals),
+			EnumKind: EnumExact,
 			Values:   vals,
+			Typedef:  typedef,
 		})
 	}
 	return result, nil
@@ -151,7 +155,12 @@ func parseEnumBody(body string) ([]EnumValue, error) {
 		var v int
 		if hasEq {
 			expr = strings.TrimSpace(expr)
-			n, err := evalEnumExpr(expr, resolved)
+			n, err := evalConstExpr(expr, func(name string) (int, error) {
+				if v, ok := resolved[name]; ok {
+					return v, nil
+				}
+				return 0, fmt.Errorf("unknown name %q", name)
+			})
 			if err != nil {
 				return nil, fmt.Errorf("bad value for %s: %q: %w", name, expr, err)
 			}
@@ -170,111 +179,21 @@ func parseEnumBody(body string) ([]EnumValue, error) {
 	return vals, nil
 }
 
-func evalEnumExpr(expr string, resolved map[string]int) (int, error) {
-	expr = trimOuterParens(strings.TrimSpace(expr))
-	if expr == "" {
-		return 0, fmt.Errorf("empty expression")
-	}
-
-	parts := splitTopLevel(expr, '|')
-	if len(parts) > 1 {
-		var out int
-		for _, part := range parts {
-			v, err := evalEnumExpr(part, resolved)
-			if err != nil {
-				return 0, err
-			}
-			out |= v
-		}
-		return out, nil
-	}
-
-	if v, ok := resolved[expr]; ok {
-		return v, nil
-	}
-	if n, err := strconv.ParseInt(expr, 0, 64); err == nil {
-		return int(n), nil
-	}
-	return 0, fmt.Errorf("unknown token %q", expr)
-}
-
-func trimOuterParens(expr string) string {
-	expr = strings.TrimSpace(expr)
-	for len(expr) >= 2 && expr[0] == '(' && expr[len(expr)-1] == ')' {
-		depth := 0
-		wrapsWholeExpr := true
-		for i, ch := range expr {
-			switch ch {
-			case '(':
-				depth++
-			case ')':
-				depth--
-				if depth < 0 {
-					return expr
-				}
-				if depth == 0 && i != len(expr)-1 {
-					wrapsWholeExpr = false
-				}
-			}
-		}
-		if depth != 0 || !wrapsWholeExpr {
-			return expr
-		}
-		expr = strings.TrimSpace(expr[1 : len(expr)-1])
-	}
-	return expr
-}
-
-func splitTopLevel(expr string, sep rune) []string {
-	var parts []string
-	start := 0
-	depth := 0
-	for i, ch := range expr {
-		switch ch {
-		case '(':
-			depth++
-		case ')':
-			if depth > 0 {
-				depth--
-			}
-		default:
-			if ch == sep && depth == 0 {
-				parts = append(parts, strings.TrimSpace(expr[start:i]))
-				start = i + 1
-			}
+// enumTypedef returns the 16-bit integer type that holds every value of an
+// enum: int16_t when any value is negative, otherwise uint16_t.
+func enumTypedef(values []EnumValue) (Type, error) {
+	typ := U16
+	for _, v := range values {
+		if v.Value < 0 {
+			typ = I16
 		}
 	}
-	if len(parts) == 0 {
-		return []string{strings.TrimSpace(expr)}
-	}
-	parts = append(parts, strings.TrimSpace(expr[start:]))
-	return parts
-}
-
-func inferEnumKind(values []EnumValue) EnumKind {
-	if len(values) == 0 {
-		return EnumExact
-	}
-	var nonZero, singleBit int
-	for v := range values {
-		if v == 0 {
-			continue
-		}
-		nonZero++
-		if v&(v-1) == 0 {
-			singleBit++
+	for _, v := range values {
+		if typ == I16 && (v.Value < -0x8000 || v.Value > 0x7fff) || typ == U16 && v.Value > 0xffff {
+			return nil, fmt.Errorf("%s = %d does not fit %s", v.Name, v.Value, typ)
 		}
 	}
-	if nonZero > 0 && singleBit*100/nonZero >= 80 {
-		return EnumFlags
-	}
-	max := 0
-	for v := range values {
-		if v > max {
-			max = v
-		}
-	}
-	return EnumExact
+	return typ, nil
 }
 
 func stripCComments(s string) string {
@@ -294,6 +213,7 @@ func stripCComments(s string) string {
 }
 
 type symbolicConfigJSON struct {
+	FlagEnums      []string                `json:"flag_enums"`
 	Uses           []useRuleJSON           `json:"uses"`
 	Messages       []messageRuleJSON       `json:"messages"`
 	DependentEnums []dependentEnumRuleJSON `json:"dependent_enums"`
@@ -380,13 +300,13 @@ func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
 
 // parseMessageRuleJSON resolves one message payload record to type metadata.
 func parseMessageRuleJSON(cfg messageRuleJSON, sdb *SymbolDB, resolver *typeResolver) (*MessageRule, error) {
-	messageEnum := sdb.GetEnum("WMType")
+	messageEnum := sdb.GetEnum(MessageEnumName)
 	if messageEnum == nil {
-		return nil, fmt.Errorf("message enum WMType not found")
+		return nil, fmt.Errorf("message enum %s not found", MessageEnumName)
 	}
 	messageValue, ok := enumValueByName(messageEnum, cfg.Message)
 	if !ok {
-		return nil, fmt.Errorf("message %s not found in WMType", cfg.Message)
+		return nil, fmt.Errorf("message %s not found in %s", cfg.Message, MessageEnumName)
 	}
 	wparam, err := parseMessagePayloadJSON(cfg.Message, "wparam", cfg.WParam, sdb, resolver)
 	if err != nil {

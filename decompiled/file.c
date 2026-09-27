@@ -414,7 +414,7 @@ L_0894:
 L_089e:
     pt.x = GetSystemMetrics(SM_CXSCREEN);
     pt.y = GetSystemMetrics(SM_CYSCREEN);
-    hwndTitle = CreateWindow(szTitle, "Stars!", 0x90000000, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+    hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
     fFreeingTitle = 0;
     ShowWindow(hwndFrame, SW_HIDE);
 
@@ -3493,7 +3493,7 @@ L_4323:
     return;
 }
 
-int16_t AskSaveDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t AskSaveDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t t_merge_4383_0001;
 
 L_432a:
@@ -3582,7 +3582,7 @@ L_43e0:
 void PromptSaveGame() {
     int16_t (*lpProc)();
     int16_t  fRet;
-    DialogId t_merge_4433_0001;
+    LPCSTR   t_merge_4433_0001;
     uint16_t t_merge_446d_0001;
 
 L_43ee:
@@ -3593,11 +3593,11 @@ L_43ee:
         goto L_4424;
 
 L_4424:
-    t_merge_4433_0001 = IDD_SAVE_TURN2;
+    t_merge_4433_0001 = MAKEINTRESOURCE(IDD_SAVE_TURN2);
     goto L_4433;
 
 L_442d:
-    t_merge_4433_0001 = IDD_SAVE_TURN1;
+    t_merge_4433_0001 = MAKEINTRESOURCE(IDD_SAVE_TURN1);
 
 L_4433:
     fRet = DialogBox(hInst, t_merge_4433_0001, hwndFrame, lpProc);
@@ -4201,7 +4201,7 @@ L_4dcf:
         goto L_4de2;
 
 L_4de2:
-    if ((AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto LBadFile;
     else
         goto L_4e08;

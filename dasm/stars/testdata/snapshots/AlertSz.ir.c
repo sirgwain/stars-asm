@@ -1,4 +1,4 @@
-int16_t AlertSz(char *sz, MessageBoxType mbType) {
+int16_t AlertSz(char *sz, int16_t mbType) {
     char    szT[256];
     int16_t t_merge_21e5_0001;
 
@@ -36,7 +36,7 @@ L_21e2:
 
 L_21e5:
     OutputSz(t_merge_21e5_0001, szT);
-    return 6;
+    return IDYES;
 
 L_21f7:
     return MessageBox(GetFocus(), sz, "Stars!", mbType);

@@ -28,7 +28,7 @@ MOV       ax, 0x57a4
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR *lpszout, LPCSTR *lpszfmt)
+CALLF     _wsprintf                 ; int16_t _wsprintf(LPSTR lpszout, LPCSTR lpszfmt)
 ADD       sp, 0x000e          
                                     ; stars.c:738
 MOV       ax, szWork                ; ax, 0x57a4

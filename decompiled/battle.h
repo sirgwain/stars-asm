@@ -6,9 +6,9 @@
 
 extern uint8_t rgbrcStart[136];
 
-int16_t RelationsDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
-int16_t NewPlanNameDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
-int16_t BattlePlansDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam);
+int16_t RelationsDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
+int16_t NewPlanNameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
+int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam);
 int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn);
 void    SpankTheCheaters();
 int16_t FFleetHasBombs(FLEET *lpfl);

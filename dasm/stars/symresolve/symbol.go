@@ -209,6 +209,27 @@ func (s *SymbolDeref) Type() typeinfo.Type {
 	return s.Base.Type()
 }
 
+// SymbolCast views another symbolic path as a different type of the same
+// width, such as a window procedure's lParam viewed as the message's struct
+// pointer.
+type SymbolCast struct {
+	Base SymbolPath
+	To   typeinfo.Type
+}
+
+// symbolPath marks SymbolCast as a symbolic path node.
+func (*SymbolCast) symbolPath() {}
+
+// String returns the C cast expression for the viewed path.
+func (s *SymbolCast) String() string {
+	return "((" + typeinfo.TypeDecl(s.To, "") + ")" + s.Base.String() + ")"
+}
+
+// Type returns the viewed type.
+func (s *SymbolCast) Type() typeinfo.Type {
+	return s.To
+}
+
 // SymbolOffset is an unresolved byte offset from another symbolic path.
 type SymbolOffset struct {
 	Base   SymbolPath

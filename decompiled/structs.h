@@ -117,6 +117,9 @@ typedef struct _player          PLAYER;
 typedef struct _tutor           TUTOR;
 typedef struct _zipprodq        ZIPPRODQ;
 
+// Win16 structs are byte-packed; keep the original field offsets.
+#pragma pack(push, 1)
+
 struct _aipart {
     uint16_t ibit : 4, /* +0x0000 (2) @bit0 */
         iItem : 5,     /* @bit4 */
@@ -1289,32 +1292,32 @@ struct _timer {
 }; /* size=0xa */
 
 struct _tok {
-    uint16_t   id;            /* +0x0000 (2) */
-    uint8_t    iplr;          /* +0x0002 (1) */
-    GrobjClass grobj;         /* +0x0003 (1) */
-    uint8_t    ishdef;        /* +0x0004 (1) */
-    uint8_t    brc;           /* +0x0005 (1) */
-    uint8_t    initBase;      /* +0x0006 (1) */
-    uint8_t    initMin;       /* +0x0007 (1) */
-    uint8_t    initMac;       /* +0x0008 (1) */
-    uint8_t    itokTarget;    /* +0x0009 (1) */
-    uint8_t    pctCloak;      /* +0x000A (1) */
-    uint8_t    pctJam;        /* +0x000B (1) */
-    uint8_t    pctBC;         /* +0x000C (1) */
-    uint8_t    pctCap;        /* +0x000D (1) */
-    uint8_t    pctBeamDef;    /* +0x000E (1) */
-    uint16_t   wt;            /* +0x000F (2) */
-    uint16_t   dpShield;      /* +0x0011 (2) */
-    uint16_t   csh;           /* +0x0013 (2) */
-    DV         dv;            /* +0x0015 (2) */
-    uint16_t   mdTarget1 : 4, /* +0x0017 (2) @bit0 */
-        mdTarget2 : 4,        /* @bit4 */
-        mdTactic : 4,         /* @bit8 */
-        mdTarget0 : 4;        /* @bit12 */
-    uint16_t dxyLim : 4,      /* +0x0019 (2) @bit0 */
-        dxyMax : 4,           /* @bit4 */
-        spd : 4,              /* @bit8 */
-        cTarget : 4;          /* @bit12 */
+    uint16_t id;            /* +0x0000 (2) */
+    uint8_t  iplr;          /* +0x0002 (1) */
+    uint8_t  grobj;         /* +0x0003 (1) */
+    uint8_t  ishdef;        /* +0x0004 (1) */
+    uint8_t  brc;           /* +0x0005 (1) */
+    uint8_t  initBase;      /* +0x0006 (1) */
+    uint8_t  initMin;       /* +0x0007 (1) */
+    uint8_t  initMac;       /* +0x0008 (1) */
+    uint8_t  itokTarget;    /* +0x0009 (1) */
+    uint8_t  pctCloak;      /* +0x000A (1) */
+    uint8_t  pctJam;        /* +0x000B (1) */
+    uint8_t  pctBC;         /* +0x000C (1) */
+    uint8_t  pctCap;        /* +0x000D (1) */
+    uint8_t  pctBeamDef;    /* +0x000E (1) */
+    uint16_t wt;            /* +0x000F (2) */
+    uint16_t dpShield;      /* +0x0011 (2) */
+    uint16_t csh;           /* +0x0013 (2) */
+    DV       dv;            /* +0x0015 (2) */
+    uint16_t mdTarget1 : 4, /* +0x0017 (2) @bit0 */
+        mdTarget2 : 4,      /* @bit4 */
+        mdTactic : 4,       /* @bit8 */
+        mdTarget0 : 4;      /* @bit12 */
+    uint16_t dxyLim : 4,    /* +0x0019 (2) @bit0 */
+        dxyMax : 4,         /* @bit4 */
+        spd : 4,            /* @bit8 */
+        cTarget : 4;        /* @bit12 */
     union {
         uint16_t fActive : 1, /* +0x001B (2) @bit0 */
             fDetector : 1,    /* @bit1 */
@@ -1517,5 +1520,7 @@ struct _zipprodq {
         };
     };
 }; /* size=0x28 */
+
+#pragma pack(pop)
 
 #endif

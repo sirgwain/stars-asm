@@ -33,7 +33,7 @@ MOV       ax, 0x7f00
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-wc+0xe], ax           ; [bp-0xe], ax
                                     ; mdi.c:99
 MOV       [bp-wc+0x10], 0x000d      ; [bp-0xc], 0x000d
@@ -73,7 +73,7 @@ MOV       [bp-wc+0x14], 0x0000      ; [bp-0x8], 0x0000
                                     ; mdi.c:111
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:112
 MOV       ax, 0x0202          
@@ -101,7 +101,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:120
 MOV       ax, 0x0004          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:121
 MOV       ax, 0x01e2          
@@ -129,7 +129,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:129
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:130
 MOV       ax, 0x01ec          
@@ -157,7 +157,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:138
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:139
 MOV       ax, 0x0242          
@@ -185,7 +185,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:147
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:148
 MOV       [bp-wc+0xc], 0x0000       ; [bp-0x10], 0x0000
@@ -215,7 +215,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:157
 MOV       ax, 0x0000          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:158
 MOV       [bp-wc+0xc], 0x0000       ; [bp-0x10], 0x0000
@@ -245,7 +245,7 @@ MOV       [bp-wc+0x4], 0x0152       ; [bp-0x18], 0x0152
                                     ; mdi.c:167
 MOV       ax, 0x0000          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:168
 MOV       [bp-wc+0xc], 0x0000       ; [bp-0x10], 0x0000
@@ -275,7 +275,7 @@ MOV       [bp-wc+0x4], 0xffff       ; [bp-0x18], 0xffff
                                     ; mdi.c:177
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:178
 MOV       [bp-wc+0xc], 0x0000       ; [bp-0x10], 0x0000
@@ -318,12 +318,12 @@ MOV       ax, 0x7f00
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-wc+0xe], ax           ; [bp-0xe], ax
                                     ; mdi.c:192
 MOV       ax, 0x0004          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:193
 MOV       [bp-wc+0x12], 0x0000      ; [bp-0xa], 0x0000
@@ -367,12 +367,12 @@ MOV       ax, 0x7f00
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR *arg2)
+CALLF     LoadCursor                ; HCURSOR LoadCursor(HINSTANCE arg1, LPCSTR arg2)
 MOV       [bp-wc+0xe], ax           ; [bp-0xe], ax
                                     ; mdi.c:207
 MOV       ax, 0x0001          
 PUSH      ax                  
-CALLF     GetStockObject            ; HGDIOBJ GetStockObject(StockObjectId arg1)
+CALLF     GetStockObject            ; HGDIOBJ GetStockObject(int16_t arg1)
 MOV       [bp-wc+0x10], ax          ; [bp-0xc], ax
                                     ; mdi.c:208
 MOV       [bp-wc+0x12], 0x0000      ; [bp-0xa], 0x0000

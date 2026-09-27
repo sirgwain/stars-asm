@@ -211,7 +211,7 @@ L_4dcf:
         goto L_4de2;
 
 L_4de2:
-    if ((AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), 0x2024) != 6))
+    if ((AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
         goto LBadFile;
     else
         goto L_4e08;

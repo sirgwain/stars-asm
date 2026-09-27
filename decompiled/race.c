@@ -249,7 +249,7 @@ L_03a0:
     return 1;
 }
 
-int16_t RaceWizardDlg1(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg1(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     int16_t     iPlrBmp;
@@ -863,7 +863,7 @@ L_1051:
     return 0;
 }
 
-int16_t RaceWizardDlg2(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg2(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -2024,7 +2024,7 @@ L_2785:
     return 1;
 }
 
-int16_t RaceWizardDlg3(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg3(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     POINT       pt;
@@ -2621,7 +2621,7 @@ L_3203:
     return;
 }
 
-int16_t RaceWizardDlg4(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg4(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -2870,7 +2870,7 @@ L_3780:
     return 0;
 }
 
-int16_t RaceWizardDlg5(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg5(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HWND        hwndCtl;
@@ -3076,7 +3076,7 @@ L_3ba0:
     return 0;
 }
 
-int16_t RaceWizardDlg6(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
+int16_t RaceWizardDlg6(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -4880,7 +4880,7 @@ L_595c:
     ofn.nMaxFileTitle = 0x100;
     ofn.lpstrInitialDir = szDirName;
     ofn.lpstrDefExt = "r1";
-    ofn.Flags = 0x8806;
+    ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_NOREADONLYRETURN;
     if ((GetSaveFileName(&(ofn)) == 0))
         goto L_5aa5;
     else
