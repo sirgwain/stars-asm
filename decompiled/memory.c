@@ -225,18 +225,18 @@ L_0422:
     lphb = LphbAlloc(cb, ht);
 
 L_0436:
-    lpbTop = (lphb + lphb->ibTop);
+    lpbTop = ((uint8_t *)(lphb) + lphb->ibTop);
     if ((lphb->cbSlop < cb))
         goto L_0493;
     else
         goto L_045a;
 
 L_045a:
-    *(lpbTop) = (cb + 0xfffe);
+    RawStore16(lpbTop, (cb + 0xfffe));
     lphb->ibTop = (lphb->ibTop + cb);
     lphb->cbFree = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
-    return &(lpbTop[2]);
+    return (lpbTop + 2);
 
 L_0493:
     lpb = (lphb + 1);
@@ -244,9 +244,9 @@ L_0493:
 
 L_04a7:
     lpbPrev = lpb;
-    fFree = (*(lpb) & 0x1);
-    cbItem = (*(lpb) & 0xfffe);
-    lpb = (lpb + (cbItem + 0x2));
+    fFree = (RawLoad16(lpb) & 0x1);
+    cbItem = (RawLoad16(lpb) & 0xfffe);
+    lpb = (lpb + (2 + cbItem));
     if ((fFree == 0))
         goto L_0575;
     else
@@ -259,7 +259,7 @@ L_04dd:
         goto L_04eb;
 
 L_04eb:
-    if (((*(lpb) & 0x1) == 0x0))
+    if (((RawLoad16(lpb) & 0x1) == 0x0))
         goto L_0524;
     else
         goto L_04fc;
@@ -271,19 +271,19 @@ L_04fc:
         goto L_0512;
 
 L_0512:
-    lpb = (lpb + ((*(lpb) & 0xfffe) + 0x2));
+    lpb = (lpb + (2 + (RawLoad16(lpb) & 0xfffe)));
     goto L_04dd;
 
 L_0524:
     cbItem = ((LOWORD(lpb) - LOWORD(lpbPrev)) + 0xfffe);
-    *(lpbPrev) = (cbItem | 0x1);
+    RawStore16(lpbPrev, (cbItem | 0x1));
     if (((cbItem + 0x2) < cb))
         goto L_0575;
     else
         goto L_0555;
 
 L_0555:
-    *(lpbPrev) = (*(lpbPrev) & 0xfffe);
+    RawStore16(lpbPrev, (RawLoad16(lpbPrev) & 0xfffe));
     lpbPrev = (lpbPrev + 2);
     lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
     return lpbPrev;
@@ -327,7 +327,7 @@ L_05c8:
         goto L_05e7;
 
 L_05e7:
-    if ((lp < (lphb + lphb->cbBlock)))
+    if ((lp < ((uint8_t *)(lphb) + lphb->cbBlock)))
         goto L_0635;
     else
         goto L_0612;
@@ -361,7 +361,7 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
     uint16_t cbGrow;
 
 L_0660:
-    cbCur = *(lp - 0x2);
+    cbCur = RawLoad16(((uint8_t *)(lp)-0x2));
     cb = ((cb + 0x1) & 0xfffe);
     cbGrow = (cb - cbCur);
     if ((cb > cbCur))
@@ -376,7 +376,7 @@ L_069c:
     lphb = LphbFromLpHt(lp, ht);
 
 LGrewHeap:
-    if (((lphb + lphb->ibTop) != (lp + cbCur)))
+    if ((((uint8_t *)(lphb) + lphb->ibTop) != ((uint8_t *)(lp) + cbCur)))
         goto L_0714;
     else
         goto L_06db;
@@ -391,7 +391,7 @@ L_06ea:
     lphb->cbSlop = (lphb->cbSlop - cbGrow);
     lphb->cbFree = (lphb->cbFree - cbGrow);
     lphb->ibTop = (lphb->ibTop + cbGrow);
-    *(lp - 0x2) = cb;
+    RawStore16(((uint8_t *)(lp)-0x2), cb);
     goto L_0799;
 
 L_0714:
@@ -433,8 +433,8 @@ L_07a8:
 
 L_07c6:
     lphb = LphbFromLpHt(lp, ht);
-    cbFree = (*(lp - 0x2) + 0x2);
-    *(lp - 0x2) = (*(lp - 0x2) | 0x1);
+    cbFree = (RawLoad16(((uint8_t *)(lp)-0x2)) + 0x2);
+    RawStore16(((uint8_t *)(lp)-0x2), (RawLoad16(((uint8_t *)(lp)-0x2)) | 0x1));
     lphb->cbFree = (lphb->cbFree + cbFree);
     if (((((LOWORD(lp) - LOWORD(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
         goto L_082f;

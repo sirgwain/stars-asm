@@ -181,12 +181,13 @@ func (w *machineRewriter) rewriteMachineValueChildren(value machine.Value) (mach
 			return value, false
 		}
 		if v.Producer.InstOp == asm.OpADC || v.Producer.InstOp == asm.OpSBB {
-			return &machine.Binary{Op: v.Op, LHS: lhs, RHS: rhs, Producer: v.Producer}, true
+			return &machine.Binary{Op: v.Op, LHS: lhs, RHS: rhs, Producer: v.Producer, Type: v.Type}, true
 		}
 		next := machine.BinaryResult(v.Op, lhs, rhs)
 		if binary, ok := next.(*machine.Binary); ok {
 			copy := *binary
 			copy.Producer = v.Producer
+			copy.Type = v.Type
 			next = &copy
 		}
 		return next, true

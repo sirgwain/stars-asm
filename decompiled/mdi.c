@@ -211,7 +211,7 @@ L_03d1:
         goto L_03e0;
 
 L_03e0:
-    psz = (psz + (-1));
+    psz = (psz - 1);
     goto L_03b8;
 
 L_03e7:
@@ -219,12 +219,12 @@ L_03e7:
     strncpy(szGame, psz, 0x8);
     strlwr(szGame);
     _wsprintf(&(szGame[strlen(szGame)]), ".m%d", (idPlayer + 1));
-    _wsprintf(szData, "Stars! -- %s -- %s -- %s", &(game.szName), PszPlayerName(idPlayer, 0, 1, 0, 0, 0x0), &(szGame));
+    _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, 0x0), szGame);
     goto L_04ad;
 
 L_0480:
     CchGetString(idsStarsSHostMode, szWork);
-    _wsprintf(szData, szWork, &(game.szName));
+    _wsprintf(szData, szWork, game.szName);
 
 L_04ad:
     SetWindowText(hwndFrame, szData);
@@ -441,7 +441,7 @@ L_0856:
     VerifyTurns();
     DestroyCurGame();
     EnsureAis();
-    _wsprintf(szTemp, "\"%s\" Year: %d", &(game.szName), (game.turn + 0x960));
+    _wsprintf(szTemp, "\"%s\" Year: %d", game.szName, (game.turn + 0x960));
     OutputSz(7, szTemp);
     i = 0;
     goto L_08a8;
@@ -833,8 +833,8 @@ L_0ee4:
     return 0;
 
 L_0ef2:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x208 */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0x17c */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x208 (invalid-destination) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0x17c (invalid-destination) */
     return 0;
 
 L_0f17:
@@ -895,7 +895,7 @@ L_0fdb:
 
 L_0ffc:
     gd.fGeneratingTurn = 0x1;
-    _wsprintf(szWork, "%s.x1", &(szBase));
+    _wsprintf(szWork, "%s.x1", szBase);
     if ((FLoadLogFile(szWork) == 0))
         goto L_103e;
     else
@@ -2611,7 +2611,7 @@ L_2886:
     iPass = 0;
     PushRandom(1114123);
     Randomize(lSerial);
-    /* untranslated: part[0x0:4](rgbRaw) = lSerial */
+    /* untranslated: part[0x0:4](rgbRaw) = lSerial (aggregate-slice) */
     memcpy(&(rgbRaw[4]), pbEnv, 0xb);
     iRaw = 15;
     i = 0;
@@ -2882,7 +2882,7 @@ L_2c34:
     goto L_2c64;
 
 L_2c3c:
-    rgbRaw[vrgbShuffleSerial[i]] = LOBYTE(((i & 0xff00) | (rgbRaw2[i] & 0xff)));
+    rgbRaw[vrgbShuffleSerial[i]] = LOBYTE((int16_t)((((uint16_t)(i) & 0xff00) | ((uint16_t)(rgbRaw2[i]) & 0xff))));
     i = (i + 1);
 
 L_2c64:
@@ -3274,7 +3274,7 @@ L_30ef:
 
 L_3112:
     iplrOld = idPlayer;
-    fstrcpy(szT, (vrgszMRU + ((wParam + 0xef34) * 256)));
+    fstrcpy(szT, (vrgszMRU + (256 * (wParam - 4300))));
     psz = strrchr(szT, 46);
     if ((psz == 0x0))
         goto L_320e;
@@ -5432,7 +5432,7 @@ L_53f5:
     szWork[0] = 38;
     szWork[1] = LOBYTE((i + 49));
     szWork[2] = 32;
-    fstrcpy(&(szWork[3]), (vrgszMRU + (i * 256)));
+    fstrcpy(&(szWork[3]), (vrgszMRU + (256 * i)));
     InsertMenu(hmenuSub, (i + 9), 0x400, (i + 4300), szWork);
 
 L_5452:
@@ -5613,13 +5613,17 @@ L_56ad:
 }
 
 void EnsureAis() {
-    int16_t fHostSav;
-    int16_t fErrSav;
-    int16_t fOpened;
-    int16_t fWorkDone;
-    int16_t fSubmitSav;
-    int16_t iPlayer;
-    MDPLR   rgmdplr[16];
+    int16_t  fHostSav;
+    int16_t  fErrSav;
+    int16_t  fOpened;
+    int16_t  fWorkDone;
+    int16_t  fSubmitSav;
+    int16_t  iPlayer;
+    MDPLR    rgmdplr[16];
+    uint32_t t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
+    uint32_t t_fields_4;
 
 L_56bc:
     fSubmitSav = gd.fSubmit;
@@ -5654,7 +5658,14 @@ L_5735:
         goto L_5740;
 
 L_5740:
-    rgmdplr[iPlayer] = rgplr[iPlayer].wMdPlr;
+    t_fields_1 = ((uint32_t)(rgplr[iPlayer].wMdPlr) & 0x1ff);
+    t_fields_2 = (((uint32_t)(rgplr[iPlayer].wMdPlr) >> 0x9) & 0x1);
+    t_fields_3 = (((uint32_t)(rgplr[iPlayer].wMdPlr) >> 0xa) & 0x7);
+    t_fields_4 = (((uint32_t)(rgplr[iPlayer].wMdPlr) >> 0xd) & 0x7);
+    rgmdplr[iPlayer].reserved = t_fields_1;
+    rgmdplr[iPlayer].fAi = t_fields_2;
+    rgmdplr[iPlayer].lvlAi = t_fields_3;
+    rgmdplr[iPlayer].idAi = t_fields_4;
     goto L_5731;
 
 L_575d:
@@ -6412,11 +6423,11 @@ L_6379:
         goto L_63ac;
 
 L_63ac:
-    cch = _wsprintf(szWork, " %s", &(szStat));
+    cch = _wsprintf(szWork, " %s", szStat);
     goto L_641b;
 
 L_63cf:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsSS), PszPlayerName(i, 1, 1, 1, 0, 0x0), &(szStat));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsSS), PszPlayerName(i, 1, 1, 1, 0, 0x0), szStat);
 
 L_641b:
     if ((rgplr[i].fHacker == 0x0))
@@ -6551,7 +6562,7 @@ L_67ac:
     goto L_68d6;
 
 L_67be:
-    _wsprintf(szWork, "%s.x%d", &(szBase), (i + 1));
+    _wsprintf(szWork, "%s.x%d", szBase, (i + 1));
     idPlayer = i;
     if ((FLoadLogFile(szWork) == 0))
         goto L_6817;
@@ -8124,7 +8135,7 @@ L_8133:
     _wsprintf(szWork, PCTD, iMsgCur);
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsGameid, szEntry);
-    _wsprintf(szWork, "%lx", LOWORD(game.lid), HIWORD(game.lid));
+    _wsprintf(szWork, "%lx", game.lid);
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsScanzoom, szEntry);
     szWork[0] = LOBYTE((iScanZoom + 53));
@@ -8192,7 +8203,7 @@ L_8485:
 
 L_84d6:
     CchGetString(idsFile1, szEntry);
-    _wsprintf(szWork, "%s.m%d", &(szBase), (idPlayer + 1));
+    _wsprintf(szWork, "%s.m%d", szBase, (idPlayer + 1));
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
 
 L_852b:

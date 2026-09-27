@@ -19,6 +19,9 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     int16_t  c;
     HUL     *lphul;
     PART     part;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_0006:
     memset(&(shdef), 0, 0x93);
@@ -32,17 +35,17 @@ L_0006:
         goto L_0061;
 
 L_0061:
-    shdef.hul.dp = *(lprt + 0x4);
+    shdef.hul.dp = lprt->dp;
     shdef.turn = lprt->turn;
     shdef.cBuilt = lprt->cBuilt;
     shdef.cExist = lprt->cExist;
     lpb = lprt->rghs;
     fmemmove(shdef.hul.rghs, lpb, (lprt->chs * 0x4));
-    lpb = (lpb + (lprt->chs * 4));
+    lpb = (lpb + (4 * lprt->chs));
     goto L_0105;
 
 L_00e7:
-    shdef.hul.wtEmpty = *(lprt + 0x4);
+    shdef.hul.wtEmpty = lprt->wtEmpty;
     lpb = &(lprt->chs);
 
 L_0105:
@@ -141,7 +144,7 @@ L_02de:
         goto L_02e8;
 
 L_02e8:
-    UpdateShdefCost(&(lpshdef[ishdef]));
+    UpdateShdefCost((lpshdef + ishdef));
 
 L_0301:
     if ((lpshdef[ishdef].det != 0x7))
@@ -235,7 +238,11 @@ L_0523:
     lphul->rghs[0].iItem = 0x1;
     lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
     part.hs.grhst = lphul->rghs[0].grhst;
-    HIWORD(part.hs) = HIWORD(lphul->rghs[0]);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphul->rghs[0].iItem;
+    t_fields_3 = lphul->rghs[0].cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     wt = (wt + (uint32_t)(LOWORD((part.pcom->cMass * lphul->rghs[0].cItem))));
 
@@ -899,7 +906,7 @@ L_118f:
         goto L_1198;
 
 L_1198:
-    fmemmove(rgsxPlr[iplr], &(rgsxPlr[iplr][1]), ((isx - 1) * 24));
+    fmemmove(rgsxPlr[iplr], (rgsxPlr[iplr] + 1), ((isx - 1) * 24));
 
 L_11d1:
     isx = (isx - 1);
@@ -908,7 +915,7 @@ L_11d5:
     goto L_1251;
 
 L_11d8:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), &(rgsxPlr[iplr][isx]), ((rgcsxPlr[iplr] - isx) * 24));
+    fmemmove((rgsxPlr[iplr] + (isx + 1)), (rgsxPlr[iplr] + isx), ((rgcsxPlr[iplr] - isx) * 24));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_1233:
@@ -1104,7 +1111,7 @@ L_160e:
         goto L_165e;
 
 L_163e:
-    *(lpbBattleCur) = 0xffff;
+    RawStore16(lpbBattleCur, 0xffff);
     lpbBattleCur = LpAlloc(0xffc8, htBattle);
 
 L_165e:
@@ -1120,7 +1127,7 @@ L_168e:
         goto L_16c8;
 
 L_16a2:
-    *(lpbBattleCur) = 0xffff;
+    RawStore16(lpbBattleCur, 0xffff);
     if ((((wVersFile >> 0x5) & 0x7f) >= 0x50))
         goto L_16c8;
     else
@@ -1285,7 +1292,7 @@ L_1974:
         goto L_197f;
 
 L_197f:
-    fmemmove(&(lppl[1]), lppl, ((cPlanetHist - j) * 56));
+    fmemmove((lppl + 1), lppl, ((cPlanetHist - j) * 56));
 
 L_19a6:
     cPlanetHist = (cPlanetHist + 1);
@@ -1702,7 +1709,7 @@ L_2072:
         goto L_207d;
 
 L_207d:
-    /* untranslated: part[0x4:2](rgplr[i]) = (rgplr[i].cFleet | 0x0) */
+    rgplr[i].cshdefSB = 0x0;
     if ((rglpshdefSB[i] != 0x0))
         goto L_20c0;
     else
@@ -1858,7 +1865,7 @@ L_239d:
         goto L_23a6;
 
 L_23a6:
-    fmemmove(rgsxPlr[iplr], &(rgsxPlr[iplr][1]), ((isx - 1) * 24));
+    fmemmove(rgsxPlr[iplr], (rgsxPlr[iplr] + 1), ((isx - 1) * 24));
 
 L_23df:
     isx = (isx - 1);
@@ -1867,7 +1874,7 @@ L_23e3:
     goto L_245f;
 
 L_23e6:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), &(rgsxPlr[iplr][isx]), ((rgcsxPlr[iplr] - isx) * 24));
+    fmemmove((rgsxPlr[iplr] + (isx + 1)), (rgsxPlr[iplr] + isx), ((rgcsxPlr[iplr] - isx) * 24));
     rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
 
 L_2441:
@@ -2018,7 +2025,7 @@ L_26c3:
         goto L_26ce;
 
 L_26ce:
-    fmemmove(&(lpth[1]), lpth, ((cThing - j) * 18));
+    fmemmove((lpth + 1), lpth, ((cThing - j) * 18));
     fmemset(lpth, 0, 0x12);
 
 L_270b:
@@ -2076,7 +2083,7 @@ L_27d8:
     rglpbtlplan[iP] = LpAlloc(0x240, htShips);
 
 L_27f7:
-    UnpackBattlePlan(rgbCur, &(rglpbtlplan[iP][rgcbtlplan[iP]]), rgcbtlplan[iP]);
+    UnpackBattlePlan(rgbCur, (rglpbtlplan[iP] + rgcbtlplan[iP]), rgcbtlplan[iP]);
     rgcbtlplan[iP] = (rgcbtlplan[iP] + 0x1);
     ReadRt();
     goto L_279b;
@@ -2125,7 +2132,7 @@ L_2910:
     rgplr[i].cShDef = 0;
     rgplr[i].cFleet = 0x0;
     rgplr[i].cPlanet = 0;
-    /* untranslated: part[0x4:2](rgplr[i]) = (rgplr[i].cFleet | 0x0) */
+    rgplr[i].cshdefSB = 0x0;
     rgcbtlplan[i] = 0x0;
     goto L_2901;
 
@@ -2398,7 +2405,7 @@ L_2e33:
         goto L_2e43;
 
 L_2e43:
-    _wsprintf(szWork, "%s.x%s", pszFileName, &(pszExt[1]));
+    _wsprintf(szWork, "%s.x%s", pszFileName, (pszExt + 1));
     if ((FLoadLogFile(szWork) == 0))
         goto L_2e8d;
     else
@@ -2518,7 +2525,7 @@ L_30a2:
     goto L_30dd;
 
 L_30aa:
-    if ((fstricmp(szT, (vrgszMRU + (i * 256))) == 0))
+    if ((fstricmp(szT, (vrgszMRU + (256 * i))) == 0))
         goto L_3120;
     else
         goto L_30d9;
@@ -2536,7 +2543,7 @@ L_30e3:
     goto L_30aa;
 
 L_30e9:
-    fstrcpy((vrgszMRU + (i * 256)), (vrgszMRU + ((i - 1) * 256)));
+    fstrcpy((vrgszMRU + (256 * i)), (vrgszMRU + (256 * (i - 1))));
     i = (i - 1);
 
 L_3120:
@@ -2556,7 +2563,7 @@ L_3129:
 
 L_3198:
     *(psz) = LOBYTE((i + 49));
-    fstrcpy(szT, (vrgszMRU + (i * 256)));
+    fstrcpy(szT, (vrgszMRU + (256 * i)));
     WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
     i = (i + 1);
 
@@ -2811,7 +2818,7 @@ L_35cf:
         goto L_35df;
 
 L_35df:
-    lppl->uGuesses = *(pb);
+    lppl->uGuesses = RawLoad16(pb);
     pb = (pb + 2);
 
 L_35ef:
@@ -2855,12 +2862,12 @@ L_3678:
     goto L_362b;
 
 L_36a7:
-    lppl->rgwtMin[i] = (uint32_t)(*(pb));
+    lppl->rgwtMin[i] = (uint32_t)(RawLoad16(pb));
     pb = (pb + 2);
     goto L_362b;
 
 L_36d3:
-    lppl->rgwtMin[i] = *(pb);
+    lppl->rgwtMin[i] = RawLoad32(pb);
     pb = (pb + 4);
     goto L_362b;
 
@@ -2915,7 +2922,7 @@ L_377c:
         goto L_3785;
 
 L_3785:
-    lppl->turn = *(pb);
+    lppl->turn = RawLoad16(pb);
     pb = (pb + 2);
     goto L_3904;
 
@@ -3019,7 +3026,7 @@ L_39e9:
         goto L_3a00;
 
 L_3a00:
-    lppl->lStarbase = *(pb);
+    lppl->lStarbase = RawLoad32(pb);
     lppl->fNoHeal = 0x0;
     pb = (pb + 4);
 
@@ -3030,7 +3037,7 @@ L_3a2b:
         goto L_3a34;
 
 L_3a34:
-    lppl->wRouting = *(pb);
+    lppl->wRouting = RawLoad16(pb);
 
 L_3a40:
     return 1;
@@ -3149,7 +3156,7 @@ L_3bcb:
         goto L_3bdd;
 
 L_3bdd:
-    us = *(pb);
+    us = RawLoad16(pb);
     pb = (pb + 2);
     i = 0;
     goto L_3c06;
@@ -3173,12 +3180,12 @@ L_3c18:
     goto L_3bf6;
 
 L_3c47:
-    lpfl->rgwtMin[i] = (uint32_t)(*(pb));
+    lpfl->rgwtMin[i] = (uint32_t)(RawLoad16(pb));
     pb = (pb + 2);
     goto L_3bf6;
 
 L_3c73:
-    lpfl->rgwtMin[i] = *(pb);
+    lpfl->rgwtMin[i] = RawLoad32(pb);
     pb = (pb + 4);
     goto L_3bf6;
 
@@ -3210,9 +3217,9 @@ L_3cc0:
         goto L_3cd2;
 
 L_3cd2:
-    lpfl->dirLong = *(pb);
+    lpfl->dirLong = RawLoad32(pb);
     pb = (pb + 4);
-    lpfl->wtFleet = *(pb);
+    lpfl->wtFleet = RawLoad32(pb);
     pb = (pb + 4);
     ReadRt();
     return 1;
@@ -3228,7 +3235,7 @@ Corrupt:
     return 0;
 
 L_3d4b:
-    us = *(pb);
+    us = RawLoad16(pb);
     pb = (pb + 2);
     pus = pb;
     i = 0;
@@ -3431,7 +3438,7 @@ L_41ac:
         goto L_4323;
 
 L_41d7:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
 
 L_41eb:
     if ((lpbd->id != 0xffff))
@@ -3453,7 +3460,7 @@ L_421a:
         goto L_422a;
 
 L_422a:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
     goto L_41eb;
 
 L_4241:
@@ -3465,7 +3472,7 @@ L_4241:
 L_4251:
     lpbr = &(lpbd->rgtok[lpbd->ctok]);
     lpbr26 = lpbr;
-    lpbd = (lpbd + lpbd->cbData);
+    lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
 
 L_42a0:
     if ((LOWORD(lpbr) >= LOWORD(lpbd)))

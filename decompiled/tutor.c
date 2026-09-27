@@ -3830,9 +3830,11 @@ L_3622:
 
 L_3625:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x103;
+    hs.iItem = 0x3;
+    hs.cItem = 0x1;
     hs1.grhst = hstScanner;
-    HIWORD(hs1) = 0x101;
+    hs1.iItem = 0x1;
+    hs1.cItem = 0x1;
     if ((hwndSlotDlg != 0x0))
         goto L_3655;
     else
@@ -5086,9 +5088,11 @@ L_47bf:
 
 L_47c9:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
+    hs.iItem = 0x4;
+    hs.cItem = 0x1;
     hs1.grhst = hstMines;
-    HIWORD(hs1) = 0x301;
+    hs1.iItem = 0x1;
+    hs1.cItem = 0x3;
     if ((hwndSlotDlg != 0x0))
         goto L_47f9;
     else
@@ -5674,9 +5678,11 @@ L_50b2:
 
 L_50bc:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
+    hs.iItem = 0x4;
+    hs.cItem = 0x1;
     hs2.grhst = hstSpecialM;
-    HIWORD(hs2) = 0x100;
+    hs2.iItem = 0x0;
+    hs2.cItem = 0x1;
     if ((FCheckScanner(3, -1) != 0))
         goto L_50f4;
     else
@@ -9092,11 +9098,14 @@ L_7c9e:
 
 L_7ca7:
     hs.grhst = hstScanner;
-    HIWORD(hs) = 0x101;
+    hs.iItem = 0x1;
+    hs.cItem = 0x1;
     hs2.grhst = hstEngine;
-    HIWORD(hs2) = 0x103;
+    hs2.iItem = 0x3;
+    hs2.cItem = 0x1;
     hs3.grhst = hstMining;
-    HIWORD(hs3) = 0x102;
+    hs3.iItem = 0x2;
+    hs3.cItem = 0x1;
     if ((tutor.idt == 336))
         goto L_7ce2;
     else
@@ -9144,7 +9153,8 @@ L_7d67:
 
 L_7d72:
     hs.grhst = hstSpecialSB;
-    HIWORD(hs) = 0x100;
+    hs.iItem = 0x0;
+    hs.cItem = 0x1;
     if ((FCheckBuilderPart(0, &(hs), 0x1) != 0))
         goto L_7daa;
     else
@@ -9190,9 +9200,11 @@ L_7e24:
 
 L_7e2f:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
+    hs.iItem = 0x4;
+    hs.cItem = 0x1;
     hs1.grhst = hstMines;
-    HIWORD(hs1) = 0x301;
+    hs1.iItem = 0x1;
+    hs1.cItem = 0x3;
     if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
         goto L_7e7b;
     else
@@ -9227,9 +9239,11 @@ L_7ed1:
 
 L_7ee6:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x104;
+    hs.iItem = 0x4;
+    hs.cItem = 0x1;
     hs2.grhst = hstSpecialM;
-    HIWORD(hs2) = 0x100;
+    hs2.iItem = 0x0;
+    hs2.cItem = 0x1;
     if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
         goto L_7f32;
     else
@@ -9254,15 +9268,20 @@ L_7f47:
 
 L_7f52:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x10a;
+    hs.iItem = 0xa;
+    hs.cItem = 0x1;
     hs1.grhst = hstSpecialM;
-    HIWORD(hs1) = 0x105;
+    hs1.iItem = 0x5;
+    hs1.cItem = 0x1;
     hs2.grhst = hstSpecialE;
-    HIWORD(hs2) = 0x105;
+    hs2.iItem = 0x5;
+    hs2.cItem = 0x1;
     hs3.grhst = hstBeam;
-    HIWORD(hs3) = 0x103;
+    hs3.iItem = 0x3;
+    hs3.cItem = 0x1;
     hs4.grhst = hstArmor;
-    HIWORD(hs4) = 0x202;
+    hs4.iItem = 0x2;
+    hs4.cItem = 0x2;
     if ((FCheckBuilderPart(0, &(hs), 0x1) == 0))
         goto L_8048;
     else
@@ -9333,11 +9352,14 @@ L_8092:
 
 L_809d:
     hs.grhst = hstEngine;
-    HIWORD(hs) = 0x20a;
+    hs.iItem = 0xa;
+    hs.cItem = 0x2;
     hs1.grhst = hstSpecialM;
-    HIWORD(hs1) = 0x105;
+    hs1.iItem = 0x5;
+    hs1.cItem = 0x1;
     hs2.grhst = hstBomb;
-    HIWORD(hs2) = 0x401;
+    hs2.iItem = 0x1;
+    hs2.cItem = 0x4;
     if ((FCheckBuilderPart(0, &(hs), 0x2) == 0))
         goto L_812b;
     else

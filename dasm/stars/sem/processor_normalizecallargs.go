@@ -23,8 +23,10 @@ func (p *normalizeCallArgsProcessor) ProcessMachineBlock(result *Result, f machi
 			call.Args = args
 			next, indirectChanged := p.normalizeMachineIndirectCallArgs(call)
 			call = next
-			next, normalizedChanged := normalizeMachineVarArgDataFarPointers(call)
-			return next, accessChanged || argsChanged || indirectChanged || normalizedChanged, true
+			next, normalizedChanged := p.normalizeMachineVarArgDataFarPointers(call)
+			call = next
+			next, phiChanged := distributeMachineFarPointerPhis(call)
+			return next, accessChanged || argsChanged || indirectChanged || normalizedChanged || phiChanged, true
 		},
 	}
 	effects, changed := rewriter.rewriteMachineEffects(b.Effects)
@@ -141,7 +143,7 @@ func indirectMachineStackWordsValue(words []machine.Value) machine.Value {
 }
 
 // normalizeMachineVarArgDataFarPointers rebuilds DS:offset far pointers split across varargs.
-func normalizeMachineVarArgDataFarPointers(call machine.CallEffect) (machine.CallEffect, bool) {
+func (p *normalizeCallArgsProcessor) normalizeMachineVarArgDataFarPointers(call machine.CallEffect) (machine.CallEffect, bool) {
 	start, ok := callVarArgStart(call.Target)
 	if !ok {
 		return call, false
@@ -154,13 +156,11 @@ func normalizeMachineVarArgDataFarPointers(call machine.CallEffect) (machine.Cal
 	args := make([]machine.Value, 0, len(call.Args))
 	args = append(args, call.Args[:start]...)
 	for i := start; i < len(call.Args); i++ {
-		if i+1 < len(call.Args) {
-			if _, ok := call.Args[i+1].(*machine.Reg); ok {
-				args = append(args, &machine.StackWords{Words: []machine.Value{call.Args[i+1], call.Args[i]}})
-				i++
-				changed = true
-				continue
-			}
+		if i+1 < len(call.Args) && (machineSegmentWord(call.Args[i+1]) || p.splitFarPointerWords(call.Args[i+1], call.Args[i])) {
+			args = append(args, machineFarPointerWords(call.Args[i+1], call.Args[i]))
+			i++
+			changed = true
+			continue
 		}
 		args = append(args, call.Args[i])
 	}
@@ -169,6 +169,153 @@ func normalizeMachineVarArgDataFarPointers(call machine.CallEffect) (machine.Cal
 	}
 	call.Args = args
 	return call, true
+}
+
+// distributeMachineFarPointerPhis pushes segment words into phi-selected
+// offsets for grouped far-pointer args, e.g. words(ds, merge(0x160b, 0x1613))
+// becomes merge(words(ds, 0x160b), words(ds, 0x1613)).
+func distributeMachineFarPointerPhis(call machine.CallEffect) (machine.CallEffect, bool) {
+	var args []machine.Value
+	for i, arg := range call.Args {
+		words, ok := arg.(*machine.StackWords)
+		if !ok || len(words.Words) != 2 || !machineSegmentWord(words.Words[0]) {
+			continue
+		}
+		if _, ok := words.Words[1].(*machine.PhiValue); !ok {
+			continue
+		}
+		if args == nil {
+			args = append([]machine.Value(nil), call.Args...)
+		}
+		args[i] = machineFarPointerWords(words.Words[0], words.Words[1])
+	}
+	if args == nil {
+		return call, false
+	}
+	call.Args = args
+	return call, true
+}
+
+// machineSegmentWord reports whether a vararg stack word is a segment
+// register, or a phi selecting only segment registers.
+func machineSegmentWord(value machine.Value) bool {
+	switch v := value.(type) {
+	case *machine.Reg:
+		return true
+	case *machine.PhiValue:
+		for _, arm := range v.Arms {
+			if !machineSegmentReg(arm.Value) {
+				return false
+			}
+		}
+		return len(v.Arms) > 0
+	default:
+		return false
+	}
+}
+
+// splitFarPointerWords reports whether segment and offset are the high and
+// low words of one 32-bit scalar or pointer in storage, with an optional
+// constant offset added to the low word, e.g. load([bp+0xa]),
+// load([bp+0x8])+0x8. Adjacent 16-bit objects such as x, y do not pair.
+func (p *normalizeCallArgsProcessor) splitFarPointerWords(segment, offset machine.Value) bool {
+	high, ok := segment.(*machine.Load)
+	if !ok || high.Addr.Width != 2 {
+		return false
+	}
+	if binary, ok := offset.(*machine.Binary); ok && binary.Op == machine.ValueOpAdd {
+		if _, ok := binary.RHS.(*machine.Const); !ok {
+			return false
+		}
+		offset = binary.LHS
+	}
+	low, ok := offset.(*machine.Load)
+	if !ok || low.Addr.Width != 2 {
+		return false
+	}
+	if low.Addr.Disp+2 != high.Addr.Disp ||
+		!machine.ValueEquals(low.Addr.Seg, high.Addr.Seg) ||
+		!machine.ValueEquals(low.Addr.Base, high.Addr.Base) ||
+		!machine.ValueEquals(low.Addr.Index, high.Addr.Index) {
+		return false
+	}
+	access := low.Addr
+	access.Width = 4
+	resolved, ok := p.ctx.symbols.addressFromMemory(access, nil)
+	if !ok {
+		return false
+	}
+	path, ok := resolved.path()
+	if !ok {
+		return false
+	}
+	typ := path.Type()
+	return typ.Bytes() == 4 && (typ.Kind() == typeinfo.KInt || typ.Kind() == typeinfo.KPointer)
+}
+
+// machineSegmentReg reports whether value is a segment register.
+func machineSegmentReg(value machine.Value) bool {
+	reg, ok := value.(*machine.Reg)
+	return ok && reg.Val.IsSeg()
+}
+
+// machineVarArgFarPointer reports whether a normalized vararg is a
+// segment:offset pair, or a phi selecting only such pairs.
+func machineVarArgFarPointer(value machine.Value) bool {
+	switch v := value.(type) {
+	case *machine.StackWords:
+		return len(v.Words) == 2 && machineSegmentReg(v.Words[0])
+	case *machine.Address:
+		// collapse-widevalues folds words(seg, offset) into a far address.
+		return v.Addr.Width == 4 && machineSegmentReg(v.Addr.Seg)
+	case *machine.PhiValue:
+		for _, arm := range v.Arms {
+			if !machineVarArgFarPointer(arm.Value) {
+				return false
+			}
+		}
+		return len(v.Arms) > 0
+	default:
+		return false
+	}
+}
+
+// machineFarPointerWords pairs a segment and offset word into one far-pointer
+// argument. Phi words are distributed so each arm carries a complete
+// segment:offset pair, e.g. (ds, phi(0xc85, 0xc86)) becomes
+// phi(words(ds, 0xc85), words(ds, 0xc86)).
+func machineFarPointerWords(segment, offset machine.Value) machine.Value {
+	segPhi, segIsPhi := segment.(*machine.PhiValue)
+	offPhi, offIsPhi := offset.(*machine.PhiValue)
+	switch {
+	case offIsPhi && !segIsPhi:
+		arms := make([]machine.PhiArm, len(offPhi.Arms))
+		for i, arm := range offPhi.Arms {
+			arms[i] = machine.PhiArm{Block: arm.Block, Value: machineFarPointerWords(segment, arm.Value)}
+		}
+		return &machine.PhiValue{Join: offPhi.Join, Arms: arms}
+	case segIsPhi && offIsPhi && machinePhiArmsAligned(segPhi, offPhi):
+		arms := make([]machine.PhiArm, len(offPhi.Arms))
+		for i, arm := range offPhi.Arms {
+			arms[i] = machine.PhiArm{Block: arm.Block, Value: machineFarPointerWords(segPhi.Arms[i].Value, arm.Value)}
+		}
+		return &machine.PhiValue{Join: offPhi.Join, Arms: arms}
+	}
+	return &machine.StackWords{Words: []machine.Value{segment, offset}}
+}
+
+// machinePhiArmsAligned reports whether two phis join at the same block with
+// arms from the same predecessors in the same order.
+func machinePhiArmsAligned(a, b *machine.PhiValue) bool {
+	if a.Join != b.Join || len(a.Arms) != len(b.Arms) {
+		return false
+	}
+	for i := range a.Arms {
+		if a.Arms[i].Block == nil || b.Arms[i].Block == nil || a.Arms[i].Block.ID != b.Arms[i].Block.ID {
+			return false
+		}
+	}
+	return true
 }
 
 // callVarArgStart returns the first variadic argument index for known vararg calls.

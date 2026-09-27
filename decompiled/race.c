@@ -1358,7 +1358,7 @@ L_1b1f:
     t_merge_1b22_0001 = 0x2;
 
 L_1b22:
-    DrawBtn(hdc, &(vrgrcRCW[i]), ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + i), ((t_merge_1b22_0001 | bt) | bt1), 0, 0x0);
 
 L_1b44:
     goto L_1a9e;
@@ -1389,7 +1389,7 @@ L_1b6d:
     t_merge_1b70_0001 = ">>     <<";
 
 L_1b70:
-    DrawBtn(hdc, &(vrgrcRCW[i]), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
+    DrawBtn(hdc, (vrgrcRCW + i), ((0x8 | bt) | bt1), 0, t_merge_1b70_0001);
 
 L_1b9a:
     goto L_1a9e;
@@ -1524,7 +1524,7 @@ L_1f80:
     goto L_1f31;
 
 L_1f88:
-    l = (int32_t)(((uint32_t)((l * l2)) / 0x9));
+    l = (int32_t)(((uint32_t)((l * l2)) / 9));
 
 L_1fb2:
     i = (i + 1);
@@ -1587,7 +1587,7 @@ L_207b:
 
 L_208b:
     CchGetString(idsCanExpect1DPlanetsWillHabitable, szT);
-    cch = _wsprintf(szWork, szT, LOWORD(l2), HIWORD(l2));
+    cch = _wsprintf(szWork, szT, l2);
 
 L_20bd:
     rc.left = vrgrcRCW->left;
@@ -1865,7 +1865,7 @@ L_24b2:
     psz = vrgszRCWWidth[1];
 
 L_24c2:
-    InitBtnTrack(&(btnt), hwnd, 0x0, &(vrgrcRCW[irc]), bt, 80, 0, 0, psz);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, psz);
     if (((kbd & 0x4) == 0x0))
         goto L_2517;
     else
@@ -2410,8 +2410,8 @@ L_2d73:
         goto L_2e83;
 
 L_2e83:
-    DrawBtn(hdc, &(vrgrcRCW[irc]), (0xa0 | bt), 0, 0x0);
-    DrawBtn(hdc, &(vrgrcRCW[(irc + 1)]), (0xa1 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + irc), (0xa0 | bt), 0, 0x0);
+    DrawBtn(hdc, (vrgrcRCW + (irc + 1)), (0xa1 | bt), 0, 0x0);
 
 L_2eda:
     if ((iDraw != -1))
@@ -2519,7 +2519,7 @@ L_3008:
     bt = 161;
 
 L_3012:
-    InitBtnTrack(&(btnt), hwnd, 0x0, &(vrgrcRCW[irc]), bt, 80, 0, 0, 0x0);
+    InitBtnTrack(&(btnt), hwnd, 0x0, (vrgrcRCW + irc), bt, 80, 0, 0, 0x0);
     if (((kbd & 0x4) == 0x0))
         goto L_305f;
     else
@@ -2599,7 +2599,9 @@ L_31ac:
 }
 
 void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet) {
-    uint32_t grMask;
+    uint32_t  grMask;
+    uint32_t *t_assign_1;
+    uint32_t *t_assign_2;
 
 L_31b8:
     grMask = (int32_t)((0x1 << ibit));
@@ -2613,8 +2615,10 @@ L_31de:
     goto L_3203;
 
 L_31f0:
-    LOWORD(pplr->grbitAttr) = (LOWORD(pplr->grbitAttr) & (~LOWORD(grMask)));
-    HIWORD(pplr->grbitAttr) = (HIWORD(pplr->grbitAttr) & (~HIWORD(grMask)));
+    t_assign_1 = &(pplr->grbitAttr);
+    *(t_assign_1) = (((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((LOWORD(pplr->grbitAttr) & (~LOWORD(grMask)))) & 0xffff));
+    t_assign_2 = &(pplr->grbitAttr);
+    *(t_assign_2) = (((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)((HIWORD(pplr->grbitAttr) & (~HIWORD(grMask)))) & 0xffff) << 0x10));
 
 L_3203:
     return;
@@ -3735,11 +3739,11 @@ L_4709:
         goto L_4718;
 
 L_4718:
-    cPoints = (cPoints - (int32_t)(((uint32_t)(((uint32_t)(((int32_t)(cOperate) * (int32_t)(cProduce))) * (int32_t)(pctGrowth))) / 2)));
+    cPoints = (cPoints - (int32_t)(((uint32_t)(((uint32_t)(((int32_t)(cOperate) * (int32_t)(cProduce))) * (int32_t)(pctGrowth))) / 0x2)));
     goto L_4781;
 
 L_474e:
-    cPoints = (cPoints - (int32_t)(((uint32_t)(((uint32_t)(((int32_t)(cOperate) * (int32_t)(cProduce))) * (int32_t)(pctGrowth))) / 9)));
+    cPoints = (cPoints - (int32_t)(((uint32_t)(((uint32_t)(((int32_t)(cOperate) * (int32_t)(cProduce))) * (int32_t)(pctGrowth))) / 0x9)));
 
 L_4781:
     i = GetRaceStat(pplr, rsResGen);

@@ -1281,8 +1281,8 @@ L_63dd:
     goto L_7207;
 
 L_63e0:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) (invalid-destination) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = ((loword((0xd * dyArial8)) sar 0x1) + 0x16) (invalid-destination) */
     goto Default;
 
 L_640f:
@@ -1398,7 +1398,7 @@ L_66d2:
     t_merge_66fb_0001 = t_call_66f1;
 
 L_66fb:
-    cch = (cch + _wsprintf(lpb2k[cch], szT, &(*(t_merge_66fb_0001)), 0xd, 0xa));
+    cch = (cch + _wsprintf(lpb2k[cch], szT, t_merge_66fb_0001, 0xd, 0xa));
     if ((lpmsgplr->cLen < 0))
         goto L_6762;
     else
@@ -1430,7 +1430,7 @@ L_67af:
         goto L_67b9;
 
 L_67b9:
-    lpsz = &(*(PszGetCompressedString(idsMessagesHaveSentYearFilteredIfWant)));
+    lpsz = PszGetCompressedString(idsMessagesHaveSentYearFilteredIfWant);
     goto L_683c;
 
 L_67d0:
@@ -1452,11 +1452,11 @@ L_6807:
         goto L_6811;
 
 L_6811:
-    lpsz = &(*(PszGetCompressedString(idsMessageTypeHasFilteredWillShownDefault)));
+    lpsz = PszGetCompressedString(idsMessageTypeHasFilteredWillShownDefault);
     goto L_683c;
 
 L_6828:
-    lpsz = &(*(PszGetMessageN(iMsgCur)));
+    lpsz = PszGetMessageN(iMsgCur);
 
 L_683c:
     SetTextColor(hdc, 0xffffff);
@@ -1494,7 +1494,7 @@ L_6885:
 L_68c6:
     cch = CchGetString(idsFiltered, szWork);
     DiaganolTextOut(hdc, &(rc), szWork, cch);
-    lpsz = &(*(PszGetMessageN(iMsgCur)));
+    lpsz = PszGetMessageN(iMsgCur);
 
 L_6903:
     SetTextColor(hdc, crButtonText);
@@ -2988,7 +2988,7 @@ L_7f39:
     return 0;
 
 L_7f3c:
-    lpb = (lpMsg + imemMsgCur);
+    lpb = ((uint8_t *)(lpMsg) + imemMsgCur);
     fmemmove(lpb, rgbWork, cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
@@ -3021,7 +3021,7 @@ L_7fd1:
     return 0;
 
 L_7fd4:
-    fmemmove((lpMsg + cbMsg), lpMsg, imemMsgCur);
+    fmemmove(((uint8_t *)(lpMsg) + cbMsg), lpMsg, imemMsgCur);
     fmemmove(lpMsg, rgbWork, cbMsg);
     imemMsgCur = (imemMsgCur + cbMsg);
     cMsg = (cMsg + 1);
@@ -3037,6 +3037,11 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     uint8_t *lpb;
     uint8_t *lpbBase;
     uint16_t scratch_bp_m16;
+    uint32_t t_fields_1;
+    uint32_t t_fields_2;
+    MSGHDR  *t_fields_3;
+    uint32_t t_fields_4;
+    uint32_t t_fields_5;
 
 L_802a:
     if ((iPlr != -1))
@@ -3096,10 +3101,13 @@ L_80b7:
     return -1;
 
 L_80bd:
-    lpb = &(*(pb));
+    lpb = pb;
     lpmt = lpb;
     scratch_bp_m16 = (iPlr & 0xf);
-    *(lpmt) = LOBYTE(((*(lpmt) & 0xf0) | scratch_bp_m16));
+    t_fields_1 = ((uint32_t)(scratch_bp_m16) & 0xf);
+    t_fields_2 = (lpmt->cbParams | (((uint32_t)(scratch_bp_m16) >> 0x4) & 0xf));
+    lpmt->iPlr = t_fields_1;
+    lpmt->cbParams = t_fields_2;
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
@@ -3128,10 +3136,14 @@ L_8179:
         goto L_8189;
 
 L_8189:
-    scratch_bp_m16 = (((grbit << 0x9) | LOWORD(lpmt->msghdr)) & 0xfe00);
+    scratch_bp_m16 = (((grbit << 0x9) | (lpmt->msghdr.iMsg | (lpmt->msghdr.grWord << 0x9))) & 0xfe00);
     lpmt->msghdr.grWord = 0x0;
-    LOWORD(lpmt->msghdr) = (LOWORD(lpmt->msghdr) | scratch_bp_m16);
-    *(lpb) = *(pi);
+    t_fields_3 = &(lpmt->msghdr);
+    t_fields_4 = (t_fields_3->iMsg | ((uint32_t)(scratch_bp_m16) & 0x1ff));
+    t_fields_5 = (t_fields_3->grWord | (((uint32_t)(scratch_bp_m16) >> 0x9) & 0x7f));
+    t_fields_3->iMsg = t_fields_4;
+    t_fields_3->grWord = t_fields_5;
+    RawStore16(lpb, *(pi));
     lpb = (lpb + 2);
     goto L_8151;
 
@@ -3144,7 +3156,7 @@ L_81da:
 
 L_81dd:
     scratch_bp_m16 = LOBYTE((LOWORD(lpb) - LOWORD(lpbBase)));
-    *(lpmt) = LOBYTE((lpmt->iPlr | ((scratch_bp_m16 & 0xf) * 0x10)));
+    lpmt->cbParams = ((uint32_t)(scratch_bp_m16) & 0xf);
     scratch_bp_m16 = pb;
     return (LOWORD(lpb) - scratch_bp_m16);
 }
@@ -3158,6 +3170,8 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     uint16_t cSize;
     MSGHDR  *pmsghdr;
     uint16_t t_scratch_m50_2;
+    uint32_t t_fields_1;
+    uint32_t t_fields_2;
 
 L_823a:
     if (((imemMsgCur + 20) <= -56))
@@ -3199,10 +3213,13 @@ L_8312:
         goto L_8322;
 
 L_8322:
-    t_scratch_m50_2 = (((grbit << 0x9) | *(pmsghdr)) & 0xfe00);
+    t_scratch_m50_2 = (((grbit << 0x9) | (pmsghdr->iMsg | (pmsghdr->grWord << 0x9))) & 0xfe00);
     pmsghdr->grWord = 0x0;
-    *(pmsghdr) = (*(pmsghdr) | t_scratch_m50_2);
-    *(pb) = *(pi);
+    t_fields_1 = (pmsghdr->iMsg | ((uint32_t)(t_scratch_m50_2) & 0x1ff));
+    t_fields_2 = (pmsghdr->grWord | (((uint32_t)(t_scratch_m50_2) >> 0x9) & 0x7f));
+    pmsghdr->iMsg = t_fields_1;
+    pmsghdr->grWord = t_fields_2;
+    RawStore16(pb, *(pi));
     pb = (pb + 2);
     goto L_82ea;
 
@@ -3221,12 +3238,12 @@ L_836f:
         goto L_8383;
 
 L_8383:
-    fmemmove((lpMsg + cSize), lpMsg, imemMsgCur);
+    fmemmove(((uint8_t *)(lpMsg) + cSize), lpMsg, imemMsgCur);
     fmemmove(lpMsg, rgb, cSize);
     goto L_83e4;
 
 L_83c3:
-    fmemmove((lpMsg + imemMsgCur), rgb, cSize);
+    fmemmove(((uint8_t *)(lpMsg) + imemMsgCur), rgb, cSize);
 
 L_83e4:
     imemMsgCur = (imemMsgCur + cSize);
@@ -3314,7 +3331,7 @@ L_84f1:
         goto L_84ff;
 
 L_84ff:
-    t_merge_8511_0001 = *(lpb);
+    t_merge_8511_0001 = RawLoad16(lpb);
     goto L_8511;
 
 L_8508:
@@ -3337,7 +3354,7 @@ L_8536:
     t_merge_8539_0001 = 0x0;
 
 L_8539:
-    lpb = (lpb + (t_merge_8539_0001 + 0x1));
+    lpb = (lpb + (1 + t_merge_8539_0001));
     u = (u >> 0x1);
     i = (i + 1);
 
@@ -3429,12 +3446,12 @@ L_861b:
 
 L_8628:
     strcpy(pch, szWork);
-    pch = &(pch[strlen(szWork)]);
+    pch = (pch + strlen(szWork));
     goto L_8f4d;
 
 L_864b:
     strcpy(pch, szBase);
-    pch = &(pch[strlen(szBase)]);
+    pch = (pch + strlen(szBase));
     goto L_8727;
 
 L_8674:
@@ -3520,7 +3537,7 @@ L_87a9:
     c = _wsprintf(pch, PCTD, *(pParams));
 
 DoInt:
-    pch = &(pch[c]);
+    pch = (pch + c);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3639,12 +3656,12 @@ L_8915:
     goto L_8944;
 
 L_8930:
-    pch = &(pch[CchGetString(idsAnd, pch)]);
+    pch = (pch + CchGetString(idsAnd, pch));
 
 L_8944:
     pchT = PszPlayerName(i, 0, 1, 1, 0, 0x0);
     strcpy(pch, pchT);
-    pch = &(pch[strlen(pchT)]);
+    pch = (pch + strlen(pchT));
     cOut = (cOut + 1);
     goto L_88ce;
 
@@ -3685,7 +3702,7 @@ L_8a89:
     c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((int32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((int32_t)(*(pParams)) / 100) * 0x64))));
 
 L_8aca:
-    pch = &(pch[c]);
+    pch = (pch + c);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3694,7 +3711,7 @@ DoPlanet:
 
 FinishString:
     strcpy(pch, pchT);
-    pch = &(pch[strlen(pchT)]);
+    pch = (pch + strlen(pchT));
 
 DoNothing:
     pParams = (pParams + 1);
@@ -3729,7 +3746,7 @@ L_8ba8:
 
 L_8bab:
     fstrcpy(pch, part.pcom->szName);
-    pch = &(pch[fstrlen(part.pcom->szName)]);
+    pch = (pch + fstrlen(part.pcom->szName));
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3740,7 +3757,7 @@ LThingName:
 L_8c00:
     w = *(pParams);
     c = CchGetString((w + 0x4e2), pch);
-    pch = &(pch[c]);
+    pch = (pch + c);
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -3784,15 +3801,15 @@ L_8c96:
 
 L_8ccf:
     c = _wsprintf(pch, "%u", *(pParams));
-    pch = &(pch[c]);
+    pch = (pch + c);
     pParams = (pParams + 1);
     goto L_8f4d;
 
 L_8cfd:
     l = ((int32_t)(((uint32_t)(pParams[1]) << 0x10)) | (uint32_t)(*(pParams)));
     pParams = (pParams + 2);
-    c = _wsprintf(pch, PCTLD, LOWORD(l), HIWORD(l));
-    pch = &(pch[c]);
+    c = _wsprintf(pch, PCTLD, l);
+    pch = (pch + c);
     if (((int16_t)(*(pszFormat)) == 118))
         goto L_8f4d;
     else
@@ -3810,7 +3827,7 @@ L_8d7f:
 L_8d88:
     pchT = vrgszUnits[iMineral];
     strcpy(pch, pchT);
-    pch = &(pch[strlen(pchT)]);
+    pch = (pch + strlen(pchT));
 
 L_8db2:
     goto L_8f4d;
@@ -3824,7 +3841,7 @@ L_8db5:
         goto L_8ddf;
 
 L_8ddf:
-    lpshdef = (rglpshdefSB[c] + (w + 0xfff0));
+    lpshdef = (rglpshdefSB[c] + (w - 16));
     goto L_8e27;
 
 L_8e07:
@@ -3838,14 +3855,14 @@ L_8e27:
 
 L_8e32:
     pchT = PszPlayerName(c, 0, 0, 1, 0, 0x0);
-    _wsprintf(pch, "%s %s", pchT, (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef));
+    _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass);
     goto L_8ea3;
 
 L_8e84:
     fstrcpy(pch, lpshdef->hul.szClass);
 
 L_8ea3:
-    pch = &(pch[strlen(pch)]);
+    pch = (pch + strlen(pch));
     pParams = (pParams + 1);
     goto L_8f4d;
 
@@ -4182,7 +4199,7 @@ L_92de:
     lpb[1] = ((lpb[1] & 0xfe00) | 0x1ff);
 
 L_92f6:
-    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_9310:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -4227,7 +4244,7 @@ L_938b:
     return 1;
 
 L_9391:
-    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_93ab:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -4277,14 +4294,14 @@ L_9448:
     t_merge_944b_0001 = 0x0;
 
 L_944b:
-    lpbT = (lpb + (t_merge_944b_0001 + 0x6));
+    lpbT = (lpb + (t_merge_944b_0001 + 6));
     if (((w & 0x2) == 0x0))
         goto L_9470;
     else
         goto L_9467;
 
 L_9467:
-    t_merge_9479_0001 = *(lpbT);
+    t_merge_9479_0001 = RawLoad16(lpbT);
     goto L_9479;
 
 L_9470:
@@ -4507,7 +4524,7 @@ L_95ca:
         goto L_95d5;
 
 L_95d5:
-    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_95ef:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -4615,11 +4632,11 @@ L_9784:
         goto L_9797;
 
 L_9797:
-    fmemmove(&(rgb[cbMsg]), &(lpb[1]), (((*(lpb) >> 0x4) & 0xf) + 0x4));
+    fmemmove(&(rgb[cbMsg]), (lpb + 1), (((*(lpb) >> 0x4) & 0xf) + 0x4));
     cbMsg = (cbMsg + (((*(lpb) >> 0x4) & 0xf) + 0x4));
 
 L_97f1:
-    lpb = (lpb + (((*(lpb) >> 0x4) & 0xf) + 0x5));
+    lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_980d:
     if ((LOWORD(lpb) < LOWORD(lpbMax)))
@@ -4706,7 +4723,7 @@ void ReadPlayerMessages() {
 L_994a:
     imemMsgT = 0x0;
     fOOM = 0;
-    lpb = (lpMsg + imemMsgCur);
+    lpb = ((uint8_t *)(lpMsg) + imemMsgCur);
 
 L_9970:
     if ((hdrCur.rt != rtMsg))
@@ -4727,7 +4744,7 @@ L_9991:
         goto L_99ab;
 
 L_99ab:
-    fmemmove(&(lpb[imemMsgT]), rgbCur, hdrCur.cb);
+    fmemmove((lpb + imemMsgT), rgbCur, hdrCur.cb);
     imemMsgT = (imemMsgT + hdrCur.cb);
 
 L_99d7:
@@ -4763,7 +4780,7 @@ L_9aac:
     t_merge_9aaf_0001 = 0x0;
 
 L_9aaf:
-    lpb = (lpb + (t_merge_9aaf_0001 + 0x1));
+    lpb = (lpb + (1 + t_merge_9aaf_0001));
     u = (u >> 0x1);
     i = (i + 1);
 

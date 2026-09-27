@@ -838,7 +838,7 @@ L_1121:
     rc.top = (rc.top + dyArial8);
     CchGetString((iResTechNow + 84), szTemp);
     CchGetString(idsSTechLevelD, szTemp2);
-    c = _wsprintf(szWork, szTemp2, &(szTemp), ((int16_t)(rgplr[idPlayer].rgTech[iResTechNow]) + 1));
+    c = _wsprintf(szWork, szTemp2, szTemp, ((int16_t)(rgplr[idPlayer].rgTech[iResTechNow]) + 1));
     RightTextOut(hdc, xCtr, rc.top, szWork, c, 0);
     rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsResourcesNeededComplete), 0, 0);
@@ -852,7 +852,7 @@ L_1240:
     goto L_1277;
 
 L_1256:
-    c = _wsprintf(szWork, PCTLD, LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PCTLD, l);
 
 L_1277:
     TextOut(hdc, xCtr, rc.top, szWork, c);
@@ -918,7 +918,7 @@ L_1403:
     t_merge_1406_0001 = 0x73;
 
 L_1406:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdYearC), LOWORD(l), HIWORD(l), t_merge_1406_0001);
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdYearC), l, t_merge_1406_0001);
     TextOut(hdc, xCtr, rc.top, szWork, c);
 
 L_144a:
@@ -955,7 +955,7 @@ DrawAnnualRes:
 
 L_15a5:
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsAnnualResourcesPlanets), 0, 0);
-    c = _wsprintf(szWork, PCTLD, LOWORD(lResTotal), HIWORD(lResTotal));
+    c = _wsprintf(szWork, PCTLD, lResTotal);
     RightTextOut(hdc, xNum, rc.top, szWork, c, 0);
 
 DrawTotalSpent:
@@ -1042,7 +1042,7 @@ L_1861:
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsYearsProjectedResearchBudget), 0, 0);
 
 DrawProjBudgData:
-    c = _wsprintf(szWork, PCTLD, LOWORD(lResBudget), HIWORD(lResBudget));
+    c = _wsprintf(szWork, PCTLD, lResBudget);
     RightTextOut(hdc, xNum, rc.top, szWork, c, (xNum - xCtr));
     if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceGeneralizedResearch) != 0))
         goto L_190b;
@@ -1404,6 +1404,9 @@ int16_t BrowserDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     uint16_t    t_merge_2628_0001;
     uint16_t    t_merge_263e_0001;
     uint16_t    t_scratch_m4a;
+    HS         *t_fields_1;
+    uint32_t    t_fields_2;
+    uint32_t    t_fields_3;
     int16_t     t_2675;
 
 L_1ed8:
@@ -1792,9 +1795,13 @@ L_263e:
     iOff = t_merge_263e_0001;
 
 L_2641:
-    t_scratch_m4a = ((iOff + HIWORD(vpartBrowser.hs)) & 0xff);
+    t_scratch_m4a = ((iOff + (vpartBrowser.hs.iItem | (vpartBrowser.hs.cItem << 0x8))) & 0xff);
     vpartBrowser.hs.iItem = 0x0;
-    HIWORD(vpartBrowser.hs) = (HIWORD(vpartBrowser.hs) | t_scratch_m4a);
+    t_fields_1 = &(vpartBrowser.hs);
+    t_fields_2 = (t_fields_1->iItem | ((uint32_t)(t_scratch_m4a) & 0xff));
+    t_fields_3 = (t_fields_1->cItem | (((uint32_t)(t_scratch_m4a) >> 0x8) & 0xff));
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     if ((t_scratch_m4a != iItemStart))
         goto Top;
     else
@@ -2419,7 +2426,7 @@ L_300e:
         goto L_3025;
 
 L_3025:
-    c = _wsprintf(szWork, PszGetCompressedString(idsCostLd), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsCostLd), l);
     TextOut(hdc, 5, ((yCur + dyArial8) + 4), szWork, c);
     goto L_30fc;
 
@@ -4697,7 +4704,7 @@ L_61c6:
     x = (MulDiv(i, dxQuan, 20) + xBase);
     y = yBase;
     y = (y - LOWORD((int32_t)(((uint32_t)(((1000000 - lpct) * (int32_t)(dyPct))) / 0x30d40))));
-    lpct = (int32_t)(((uint32_t)((lpct * ldelta)) / 0x3e8));
+    lpct = (int32_t)(((uint32_t)((lpct * ldelta)) / 1000));
     if ((i != 0))
         goto L_625d;
     else

@@ -537,7 +537,7 @@ void XorFileBuf(char *rgb, int16_t cb) {
 L_1cc4:
     lPrev = 0;
     pl = rgb;
-    plMac = &(pl[(cb >> 0x2)]);
+    plMac = (pl + (cb >> 0x2));
     goto L_1d04;
 
 L_1cf3:
@@ -583,7 +583,7 @@ int16_t ICompLong(void *arg1, void *arg2) {
 L_1d74:
 
 L_1d90:
-    return (*(arg1) - *(arg2));
+    return (RawLoad16(arg1) - RawLoad16(arg2));
 }
 
 char *PszGetCompressedPlanet(int16_t id) {
@@ -965,7 +965,7 @@ char *PszFromLong(int32_t l, int16_t *pcch) {
     int16_t cch;
 
 L_22b6:
-    cch = _wsprintf(szFormatNumber, PCTLD, LOWORD(l), HIWORD(l));
+    cch = _wsprintf(szFormatNumber, PCTLD, l);
     if ((*(pcch) == 0))
         goto L_22f1;
     else
@@ -1088,7 +1088,7 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
     int16_t t_24f7;
 
 L_2440:
-    c = _wsprintf(rgch, PCTLD, LOWORD(l), HIWORD(l));
+    c = _wsprintf(rgch, PCTLD, l);
     pch = rgch;
     pchOut = psz;
     cSkip = ((int32_t)(c) % 3);
@@ -1244,7 +1244,7 @@ L_2650:
 
 Top:
     pch = pchStart;
-    pchEnd = &(pchStart[cLen]);
+    pchEnd = (pchStart + cLen);
     ChopTrailingSpaces(pch, &(pchEnd));
     dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd - pch)));
     fItFit = 1;
@@ -1280,7 +1280,7 @@ L_26e3:
         goto L_26ec;
 
 L_26ec:
-    AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
+    AddBackTrailingSpaces(&(pchEnd), (pchStart + cLen));
     dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
 
 L_271a:
@@ -1296,7 +1296,7 @@ L_2728:
         goto L_2735;
 
 L_2735:
-    pchEnd = &(pchStart[cLen]);
+    pchEnd = (pchStart + cLen);
     dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
 
 L_275f:
@@ -1331,7 +1331,7 @@ L_27b2:
         goto WrapIt;
 
 WrapIt:
-    AddBackTrailingSpaces(&(pchEnd), &(pchStart[cLen]));
+    AddBackTrailingSpaces(&(pchEnd), (pchStart + cLen));
     cLen = (pchStart + (cLen + (-pchEnd)));
     pchStart = pchEnd;
     *(py) = (*(py) + dyArial8);
@@ -1382,7 +1382,7 @@ L_2858:
         goto L_2869;
 
 L_2869:
-    *(ppEnd) = (*(ppEnd) + (-1));
+    *(ppEnd) = (*(ppEnd)-1);
     goto L_284b;
 
 L_2872:
@@ -1398,7 +1398,7 @@ L_287f:
         goto L_2890;
 
 L_2890:
-    *(ppEnd) = (*(ppEnd) + (-1));
+    *(ppEnd) = (*(ppEnd)-1);
     goto L_2872;
 
 L_2899:
@@ -1414,7 +1414,7 @@ L_28a6:
         goto L_28b7;
 
 L_28b7:
-    *(ppEnd) = (*(ppEnd) + (-1));
+    *(ppEnd) = (*(ppEnd)-1);
     goto L_2899;
 
 L_28c0:
@@ -1437,7 +1437,7 @@ L_28dc:
         goto L_28ed;
 
 L_28ed:
-    *(ppEnd) = (*(ppEnd) + (-1));
+    *(ppEnd) = (*(ppEnd)-1);
     goto L_28cf;
 
 L_28f6:
@@ -3381,7 +3381,7 @@ L_4999:
         goto L_49b8;
 
 L_49b8:
-    return (((pch + (-5116)) << 0x4) | 0xe);
+    return (((pch - 5116) << 0x4) | 0xe);
 
 L_49cf:
     return ((ch << 0x4) | 0xf);
@@ -3436,7 +3436,7 @@ L_4a6c:
         goto L_4a75;
 
 L_4a75:
-    /* untranslated: return byte ds:[(iVal - 52)+0x1400] */
+    return rgchcomp[(iVal - 52)];
 
 L_4a82:
     return rgchcompstrlower[(iVal - 25)];
@@ -3543,7 +3543,7 @@ L_4bb4:
     ppal = LocalAlloc(0x40, ((cColors * 4) + 8));
     ppal->palNumEntries = cColors;
     ppal->palVersion = 0x300;
-    fmemcpy(ppal->palPalEntry, &(lpb[40]), (cColors * 4));
+    fmemcpy(ppal->palPalEntry, (lpb + 40), (cColors * 4));
     i = 0;
     goto L_4c64;
 
@@ -3645,8 +3645,8 @@ L_4e09:
     return 0;
 
 L_4e0f:
-    t_scratch_me = ((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
-    pBuf = (t_scratch_me + PaletteSize(lpbi));
+    t_scratch_me = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
+    pBuf = (char *)((uint8_t *)(t_scratch_me) + PaletteSize(lpbi));
     StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, lpbi, 0x0, rop);
     GlobalUnlock(hdib);
     return 1;
@@ -3764,8 +3764,8 @@ L_5118:
 
 L_5146:
     lpbi = GlobalLock(hdib);
-    t_scratch_m4a = ((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
-    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), (t_scratch_m4a + PaletteSize(lpbi)), lpbi, 0x0) != 0))
+    t_scratch_m4a = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
+    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((uint8_t *)(t_scratch_m4a) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
         goto L_51da;
     else
         goto L_51ac;
@@ -3879,7 +3879,7 @@ L_536d:
 L_5373:
     dwSize = (dwSize - (int32_t)(nBytes));
     lpInBuf = (lpInBuf + nBytes);
-    HIWORD(lpInBuf) = (((SIGNHIWORD(nBytes) + 0x0) << 0xffff) + HIWORD(lpInBuf));
+    /* untranslated: HIWORD(lpInBuf) = (((signhiword(nBytes) + 0x0) << 0xffff) + HIWORD(lpInBuf)) (pointer-fragment) */
 
 L_5396:
     if ((dwSize != 0x0))

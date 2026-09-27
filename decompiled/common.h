@@ -5,6 +5,22 @@
 #include <windows.h>
 
 #include <setjmp.h>
+#include <string.h>
+
+// Raw Win16 storage is byte-addressed and may be unaligned, so scalar
+// accesses through it copy bytes instead of dereferencing a cast pointer.
+static inline uint16_t RawLoad16(const void *p) {
+    uint16_t v;
+    memcpy(&v, p, sizeof v);
+    return v;
+}
+static inline uint32_t RawLoad32(const void *p) {
+    uint32_t v;
+    memcpy(&v, p, sizeof v);
+    return v;
+}
+static inline void RawStore16(void *p, uint16_t v) { memcpy(p, &v, sizeof v); }
+static inline void RawStore32(void *p, uint32_t v) { memcpy(p, &v, sizeof v); }
 
 #include "enums.h"
 

@@ -386,9 +386,12 @@ func (sr *symbolResolver) wideAggregateStorage(low machine.MemoryAddress, high m
 	}
 
 	typ, ok := lane.object.Type().(*typeinfo.Struct)
-	if !ok || typ.Bytes() != 4 {
+	if !ok || typ.Bytes() != 4 || typ.SKind != typeinfo.StructKindStruct || len(typ.OverlapRegions) != 0 {
 		return machine.MemoryAddress{}, nil, false
 	}
 
+	if _, ok := typ.ScalarBitPartition(0, 32); !ok {
+		return machine.MemoryAddress{}, nil, false
+	}
 	return wide, typ, true
 }

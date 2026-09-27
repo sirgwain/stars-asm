@@ -31,6 +31,8 @@ int32_t ScannerWndProc(HWND hwnd, WMType msg, uint16_t wParam, int32_t lParam) {
     HWND        t_merge_0053_0001;
     GrobjClass  t_merge_04e7_0001;
     uint16_t    t_merge_081f_0001;
+    int32_t    *t_assign_1;
+    int32_t    *t_assign_2;
     uint16_t    t_merge_0b3c_0001;
     int16_t     t_merge_0cd2_0001;
     int16_t     t_merge_0d88_0001;
@@ -622,8 +624,10 @@ L_0883:
 
 L_08a3:
     c = (c + 1);
-    LOWORD(rgid[c]) = (lpth->idFull | 0x0);
-    HIWORD(rgid[c]) = 0x2000;
+    t_assign_1 = &(rgid[c]);
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    t_assign_2 = &(rgid[c]);
+    *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
     if ((c >= 100))
         goto L_08ec;
     else
@@ -5287,8 +5291,8 @@ L_5b0b:
     goto L_5c63;
 
 L_5b14:
-    pt.x = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((int32_t)(dx5) * (int32_t)(i))) * 2)) + (int32_t)(j)) / 10))) + ptCur.x);
-    pt.y = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((int32_t)(dy5) * (int32_t)(i))) * 2)) + (int32_t)(j)) / 10))) + ptCur.y);
+    pt.x = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((int32_t)(dx5) * (int32_t)(i))) * 0x2)) + (int32_t)(j)) / 0xa))) + ptCur.x);
+    pt.y = (LOWORD((int32_t)((((int32_t)(((uint32_t)(((int32_t)(dy5) * (int32_t)(i))) * 0x2)) + (int32_t)(j)) / 0xa))) + ptCur.y);
     if ((i <= 0))
         goto L_5c12;
     else
@@ -6139,7 +6143,7 @@ L_6a15:
         goto L_6a21;
 
 L_6a21:
-    CchGetString(idsFrom, &(psz[strlen(psz)]));
+    CchGetString(idsFrom, (psz + strlen(psz)));
     strcat((psz + 8), PszGetLocName(sel.grobj, sel.id, pt2.x, pt2.y));
 
 L_6a66:
@@ -6965,10 +6969,10 @@ L_7788:
         goto L_7797;
 
 L_7797:
-    fmemmove(&(lpord[1]), lpord, (((sel.fl.cord - sel.iwpAct) - 1) * 18));
+    fmemmove((lpord + 1), lpord, (((sel.fl.cord - sel.iwpAct) - 1) * 18));
 
 L_77c2:
-    *(lpord) = *((lpord + (-1)));
+    *(lpord) = *((lpord - 1));
     lpord->pt = pscan->pt;
     goto L_785a;
 
@@ -7290,7 +7294,7 @@ L_7d1e:
         goto LOptimizeSpeed;
 
 L_7d73:
-    if ((lpfl->rgwtMin[4] < (int32_t)(((uint32_t)((LGetFleetStat(lpfl, 1) * 7)) / 0xa))))
+    if ((lpfl->rgwtMin[4] < (int32_t)(((uint32_t)((LGetFleetStat(lpfl, 1) * 7)) / 10))))
         goto LOptimizeSpeed;
     else
         goto L_7dbd;

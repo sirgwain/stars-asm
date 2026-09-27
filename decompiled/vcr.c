@@ -27,7 +27,7 @@ L_004d:
 
 L_0059:
     lphb = rglphb[11];
-    vlpbdVCR = (lphb + 0x12);
+    vlpbdVCR = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
 
 L_0079:
     if ((vlpbdVCR->id == iBattle))
@@ -49,17 +49,17 @@ L_0095:
         goto L_0286;
 
 L_00bb:
-    vlpbdVCR = (lphb + 0x12);
+    vlpbdVCR = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
     goto L_0079;
 
 L_00d1:
-    vlpbdVCR = (vlpbdVCR + vlpbdVCR->cbData);
+    vlpbdVCR = (BTLDATA *)((uint8_t *)(vlpbdVCR) + vlpbdVCR->cbData);
 
 L_00eb:
     goto L_0079;
 
 L_00ee:
-    vlpbdVCRNext = (vlpbdVCR + vlpbdVCR->cbData);
+    vlpbdVCRNext = (BTLDATA *)((uint8_t *)(vlpbdVCR) + vlpbdVCR->cbData);
     penvMem = &(env);
     if ((setjmp(env) == 0))
         goto L_014c;
@@ -141,7 +141,7 @@ L_02b9:
     return 0;
 
 L_02bf:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
 
 L_02d3:
     if ((lpbd->id != 0xffff))
@@ -166,7 +166,7 @@ L_030f:
     return cBattles;
 
 L_0315:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
     goto L_02d3;
 
 L_0329:
@@ -179,7 +179,7 @@ L_0336:
     return cBattles;
 
 L_033f:
-    lpbd = (lpbd + lpbd->cbData);
+    lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
     cBattles = (cBattles + 1);
 
 L_0358:
@@ -202,7 +202,7 @@ L_038a:
     return 0x0;
 
 L_0393:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
 
 L_03a7:
     if ((lpbd->id != 0xffff))
@@ -227,7 +227,7 @@ L_03e3:
     return 0x0;
 
 L_03ec:
-    lpbd = (lphb + 0x12);
+    lpbd = (BTLDATA *)((uint8_t *)(lphb) + 0x12);
     goto L_03a7;
 
 L_0400:
@@ -251,7 +251,7 @@ L_0428:
     return lpbd;
 
 L_0431:
-    lpbd = (lpbd + lpbd->cbData);
+    lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
 
 L_0446:
     goto L_03a7;
@@ -422,7 +422,7 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead) {
 
 L_062e:
     lpbr = &(lpbd->rgtok[lpbd->ctok]);
-    lpbdNext = (lpbd + lpbd->cbData);
+    lpbdNext = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
     cKilled = 0;
 
 L_0684:
@@ -508,7 +508,7 @@ L_07cf:
     dv.dp = 0x0;
 
 L_07d4:
-    dpShdef = LpshdefFromTok(&(vrgtok[itok]))->hul.dp;
+    dpShdef = LpshdefFromTok((vrgtok + itok))->hul.dp;
     dp = (uint32_t)(((uint32_t)(dpShdef) * (uint32_t)(vrgtok[itok].csh)));
     if ((dv.dp == 0x0))
         goto L_08c9;
@@ -707,7 +707,7 @@ L_0d15:
         goto L_0d25;
 
 L_0d25:
-    vrgtok[vlpbrVCR->itok].brc = LOBYTE(((LOWORD(vlpbdVCRNext) & 0xff00) | (vlpbrVCR->brcDest & 0xff)));
+    vrgtok[vlpbrVCR->itok].brc = LOBYTE((((uint16_t)(LOWORD(vlpbdVCRNext)) & 0xff00) | ((uint16_t)(vlpbrVCR->brcDest) & 0xff)));
     vbrcVCRFocus = vrgtok[vlpbrVCR->itok].brc;
     viVCRFocus = vlpbrVCR->itok;
     vrgtok[vlpbrVCR->itok].wFlags = ((vrgtok[vlpbrVCR->itok].wFlags & 0xfc1f) | ((vlpbrVCR->dzDis & 0x1f) * 0x20));
@@ -1029,7 +1029,7 @@ L_136c:
         goto L_1394;
 
 L_1394:
-    GlobalPD.lpshdef = (rglpshdefSB[vrgtok[viVCRFocus].iplr] + (vrgtok[viVCRFocus].ishdef + 0xfff0));
+    GlobalPD.lpshdef = (rglpshdefSB[vrgtok[viVCRFocus].iplr] + (vrgtok[viVCRFocus].ishdef - 16));
     goto L_1446;
 
 L_13f0:
@@ -1501,7 +1501,7 @@ L_1a64:
         goto L_1a6d;
 
 L_1a6d:
-    dpShdef = LpshdefFromTok(&(vrgtok[itok]))->hul.dp;
+    dpShdef = LpshdefFromTok((vrgtok + itok))->hul.dp;
     cshT = (vrgtok[itok].csh - cshKill);
     dpArmor = (uint32_t)(((uint32_t)(dpShdef) * (int32_t)(cshT)));
     cshT = LOWORD((int32_t)(((uint32_t)(((int32_t)(cshT)*dv.pctSh)) / 0x64)));
@@ -1611,8 +1611,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     int16_t  cshNew;
     uint16_t t_merge_1c7d_0001;
     uint16_t t_merge_1fe0_0001;
-    uint16_t t_merge_2766_0001;
-    uint16_t t_merge_2766_0002;
+    char    *t_merge_2766_0001;
     uint16_t t_merge_27d6_0001;
     StringId t_merge_2965_0001;
     uint8_t  t_merge_2d54_0001;
@@ -1755,7 +1754,7 @@ L_20b0:
         goto L_20da;
 
 L_20da:
-    lpshdef = (rglpshdefSB[vrgtok[vlpbrVCR->itok].iplr] + (vrgtok[vlpbrVCR->itok].ishdef + 0xfff0));
+    lpshdef = (rglpshdefSB[vrgtok[vlpbrVCR->itok].iplr] + (vrgtok[vlpbrVCR->itok].ishdef - 16));
     goto L_21b6;
 
 L_214b:
@@ -1769,7 +1768,7 @@ L_21b6:
         goto L_21e3;
 
 L_21e3:
-    c = _wsprintf(szWork, PszGetCompressedString(idsSD), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), csh);
+    c = _wsprintf(szWork, PszGetCompressedString(idsSD), lpshdef->hul.szClass, csh);
     goto L_224a;
 
 L_221c:
@@ -1806,7 +1805,7 @@ L_2342:
         goto L_2372;
 
 L_2372:
-    lpshdef = (rglpshdefSB[vrgtok[vlpbrVCR->itokAttack].iplr] + (vrgtok[vlpbrVCR->itokAttack].ishdef + 0xfff0));
+    lpshdef = (rglpshdefSB[vrgtok[vlpbrVCR->itokAttack].iplr] + (vrgtok[vlpbrVCR->itokAttack].ishdef - 16));
     goto L_2472;
 
 L_23f5:
@@ -1820,7 +1819,7 @@ L_2472:
         goto L_24a5;
 
 L_24a5:
-    c = _wsprintf(szWork, PszGetCompressedString(idsSD), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), csh);
+    c = _wsprintf(szWork, PszGetCompressedString(idsSD), lpshdef->hul.szClass, csh);
     goto L_250c;
 
 L_24de:
@@ -1893,8 +1892,7 @@ L_271e:
         goto L_2746;
 
 L_2746:
-    t_merge_2766_0001 = &(szT);
-    /* untranslated: t_merge_2766_0002 = ss */
+    t_merge_2766_0001 = szT;
     goto L_2766;
 
 L_274f:
@@ -1904,16 +1902,14 @@ L_274f:
         goto L_2759;
 
 L_2759:
-    t_merge_2766_0001 = 0x1420;
-    /* untranslated: t_merge_2766_0002 = ds */
+    t_merge_2766_0001 = ",";
     goto L_2766;
 
 L_2761:
-    t_merge_2766_0001 = 0x1422;
-    /* untranslated: t_merge_2766_0002 = ds */
+    t_merge_2766_0001 = ".";
 
 L_2766:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageShieldsS), LOWORD(dpShields), HIWORD(dpShields), t_merge_2766_0001, t_merge_2766_0002);
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageShieldsS), dpShields, t_merge_2766_0001);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
 
@@ -1937,7 +1933,7 @@ L_27d3:
     t_merge_27d6_0001 = 0x2e;
 
 L_27d6:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageArmorC), LOWORD(dpArmor), HIWORD(dpArmor), t_merge_27d6_0001);
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageArmorC), dpArmor, t_merge_27d6_0001);
     TextOut(hdc, x, y, szWork, c);
     y = (y + dyArial8);
 
@@ -2050,7 +2046,7 @@ L_2a1b:
         goto L_2aae;
 
 L_2aae:
-    lpshdef = (rglpshdefSB[vrgtok[viVCRFocus].iplr] + (vrgtok[viVCRFocus].ishdef + 0xfff0));
+    lpshdef = (rglpshdefSB[vrgtok[viVCRFocus].iplr] + (vrgtok[viVCRFocus].ishdef - 16));
     goto L_2b66;
 
 L_2b0d:
@@ -2073,7 +2069,7 @@ L_2bbe:
         goto L_2bc8;
 
 L_2bc8:
-    c = _wsprintf(szWork, PszGetCompressedString(idsSD), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), csh);
+    c = _wsprintf(szWork, PszGetCompressedString(idsSD), lpshdef->hul.szClass, csh);
     goto L_2c2f;
 
 L_2c01:
@@ -2132,7 +2128,7 @@ L_2d54:
     c = _wsprintf(szWork, PszGetCompressedString(idsMovementS), &(rgszSpeed[(i * 3)]));
     TextOut(hdc, xT, y, szWork, c);
     y = (y + dyArial8);
-    c = _wsprintf(szWork, PszGetCompressedString(idsArmorLd), LOWORD(dpT), HIWORD(dpT));
+    c = _wsprintf(szWork, PszGetCompressedString(idsArmorLd), dpT);
     TextOut(hdc, x, y, szWork, c);
     if ((dv.dp != 0x0))
         goto L_2e4b;
@@ -3144,14 +3140,14 @@ L_4635:
         goto L_4666;
 
 L_4666:
-    lpshdef = (rglpshdefSB[vrgtok[i].iplr] + (vrgtok[i].ishdef + 0xfff0));
+    lpshdef = (rglpshdefSB[vrgtok[i].iplr] + (vrgtok[i].ishdef - 16));
     goto L_471a;
 
 L_46c3:
     lpshdef = (rglpshdef[vrgtok[i].iplr] + vrgtok[i].ishdef);
 
 L_471a:
-    cch = (cch + _wsprintf(&(szWork[cch]), " %s * %d", (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), vrgtok[i].csh));
+    cch = (cch + _wsprintf(&(szWork[cch]), " %s * %d", lpshdef->hul.szClass, vrgtok[i].csh));
     if ((fAttack == 0))
         goto L_481e;
     else

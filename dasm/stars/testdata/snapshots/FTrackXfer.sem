@@ -114,7 +114,7 @@ L_5c20:
 
 L_5c26:
     cNew = (int32_t)((uint32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) - 2)))
-    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ptroff((pxfer + btn.iSide), 4))
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ptroff(&pxfer[btn.iSide], 4))
     dChg = (cNew - cCur)
     branch btn.iSide != 0x0 ? L_5ce3 : L_5cda
 

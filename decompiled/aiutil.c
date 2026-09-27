@@ -660,7 +660,7 @@ L_0a16:
 
 L_0a3a:
     lpshdefBase[ishdefWork].wFlags = ((lpshdefBase[ishdefWork].wFlags & 0xfdff) | 0x200);
-    LogChangeShDef(&(lpshdefBase[ishdefWork]));
+    LogChangeShDef((lpshdefBase + ishdefWork));
 
 L_0a88:
     lpshdefBase[ishdefWork] = shdef;
@@ -2939,7 +2939,7 @@ L_3625:
         goto L_37c7;
 
 L_3642:
-    if ((lpplHome->rgwtMin[3] <= (int32_t)(((uint32_t)((lpplBest->rgwtMin[3] * 3)) / 0x2))))
+    if ((lpplHome->rgwtMin[3] <= (int32_t)(((uint32_t)((lpplBest->rgwtMin[3] * 3)) / 2))))
         goto L_37c7;
     else
         goto L_3683;
@@ -2984,7 +2984,7 @@ L_371e:
     l = (int32_t)(((lpplHome->rgwtMin[3] - 400) / 0x64));
 
 L_3744:
-    l = (int32_t)(((uint32_t)((lpplHome->rgwtMin[3] * l)) / 0x64));
+    l = (int32_t)(((uint32_t)((lpplHome->rgwtMin[3] * l)) / 100));
     ChangeMainObjSel(grobjFleet, lpflFr->id);
     XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, LOWORD(l));
     FLookupFleet(lpflFr->id, &(sel.fl));
@@ -4326,7 +4326,7 @@ L_4d18:
         goto L_4d3a;
 
 L_4d3a:
-    if ((*(vlpbAiData) > 0x2))
+    if ((RawLoad16(vlpbAiData) > 0x2))
         goto L_4d51;
     else
         goto L_4d47;
@@ -4780,7 +4780,7 @@ L_56b0:
     goto L_5588;
 
 L_56b3:
-    *(vlpbAiData) = (LOWORD((vlpbAiData[2] * 0x14)) + 0x4);
+    RawStore16(vlpbAiData, (LOWORD((vlpbAiData[2] * 0x14)) + 0x4));
 
 L_56ca:
     return;
@@ -6645,7 +6645,10 @@ L_777a:
     t_merge_777d_0001 = 2;
 
 L_777d:
-    /* untranslated: branch FCreateAiStarbase(i, t_merge_777d_0001, byte cs:[(i - 1)+0x76de], i) == 0 ? L_779f : L_7791 */
+    if ((FCreateAiStarbase(i, t_merge_777d_0001, vrgSBMacAisb[(i - 1)], i) == 0))
+        goto L_779f;
+    else
+        goto L_7791;
 
 L_7791:
     rgSB[i] = 0x0;
@@ -8143,7 +8146,7 @@ L_8f97:
 L_8faf:
     AddItemToQueue(pProdGlob[i].iItem, t_merge_8faf_0001, grobjPlanet, 1);
     pProdGlob[i].cItem = 0x0;
-    GetProductionCosts(lppl, &(pProdGlob[i]), rgItemCost, idPlayer, 1);
+    GetProductionCosts(lppl, (pProdGlob + i), rgItemCost, idPlayer, 1);
     j = 0;
     goto L_90ab;
 
@@ -8266,7 +8269,7 @@ L_9263:
         goto L_926c;
 
 L_926c:
-    GetProductionCosts(lppl, &(pProdGlob[i]), rgItemCost, idPlayer, 1);
+    GetProductionCosts(lppl, (pProdGlob + i), rgItemCost, idPlayer, 1);
     j = 0;
     goto L_930a;
 

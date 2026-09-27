@@ -48,7 +48,7 @@ L_19c4:
 
 L_19cd:
     iItem = (iItem - 16)
-    lpshdef = (rglpshdefSB[lppl->iPlayer] + iItem)
+    lpshdef = &rglpshdefSB[lppl->iPlayer][iItem]
     branch lpshdef->fFree != 0x0 ? L_1a26 : L_1a09
 
 L_1a09:
@@ -122,7 +122,7 @@ L_1c98:
     return 0
 
 L_1c9e:
-    lpshdef = (rglpshdef[lppl->iPlayer] + iItem)
+    lpshdef = &rglpshdef[lppl->iPlayer][iItem]
     branch lpshdef->fFree != 0x0 ? L_1cf3 : L_1cd6
 
 L_1cd6:
@@ -196,7 +196,7 @@ L_203c:
     cshDamaged = 1
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 5) / sext16to32(cshDamaged)) * 0x64) / (uint32_t)dpShdef))
+    lpfl->rgdv[iItem].pctDp = loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 5) / sext16to32(cshDamaged)) * 100) / (uint32_t)dpShdef))
     goto L_20de
 
 L_20c5:
@@ -477,7 +477,7 @@ L_2857:
 L_285b:
     iWarp = (iWarpAsked - 4)
     lpth = lpThings
-    lpthMac = (lpThings + cThing)
+    lpthMac = &lpThings[cThing]
     goto L_295a
 
 L_288f:
@@ -505,7 +505,7 @@ L_2941:
     branch lpth->thp.wtMax < 0x65e ? L_2968 : L_2956
 
 L_2956:
-    lpth = (lpth + 1)
+    lpth = &lpth[1]
 
 L_295a:
     branch LOWORD(lpth) < LOWORD(lpthMac) ? L_288f : L_2968

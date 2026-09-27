@@ -104,7 +104,7 @@ func collapseWideExprType(expected typeinfo.Type, exprs ...Expr) typeinfo.Type {
 			return expr.ExprType()
 		}
 	}
-	return intTypeForWidth(4)
+	return typeinfo.UintForWidth(4)
 }
 
 // collapseWideWords matches two word args that reconstruct one wide expression.
@@ -128,7 +128,7 @@ func collapseWideConstWords(high, low Expr) (Expr, bool) {
 	if !hiOK || !loOK || exprWidth(high) != 2 || exprWidth(low) != 2 {
 		return nil, false
 	}
-	return &Const{TypeInfo: intTypeForWidth(4), U64: ((hiConst.U64 & 0xffff) << 16) | (loConst.U64 & 0xffff)}, true
+	return &Const{TypeInfo: typeinfo.UintForWidth(4), U64: ((hiConst.U64 & 0xffff) << 16) | (loConst.U64 & 0xffff)}, true
 }
 
 // collapseWideWordPair matches one high word and one low word from the same value.
@@ -142,7 +142,7 @@ func collapseWideWordPair(high, low Expr) (Expr, bool) {
 	hiParent, hiOK = wordPartParent(high, machine.WordSignHigh)
 	loParent, loOK = lowWordParent(low)
 	if hiOK && loOK && sameExpr(hiParent, loParent) && exprWidth(loParent) == 2 {
-		return &SignExtend{Parent: loParent, FromBits: 16, ToBits: 32, TypeInfo: intTypeForWidth(4)}, true
+		return &SignExtend{Parent: loParent, FromBits: 16, ToBits: 32, TypeInfo: typeinfo.UintForWidth(4)}, true
 	}
 	return nil, false
 }

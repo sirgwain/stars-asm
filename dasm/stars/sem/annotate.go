@@ -352,25 +352,3 @@ func memoryAnnotationKey(mem machine.MemoryAddress) string {
 func valueAnnotationKey(value machine.Value) string {
 	return fmt.Sprint(value)
 }
-
-// intTypeForWidth returns a generic integer type for width in bytes.
-func intTypeForWidth(width int) typeinfo.Type {
-	if width == 1 {
-		return typeinfo.U8
-	}
-	if width == 2 {
-		return typeinfo.U16
-	}
-	return &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: fmt.Sprintf("uint%d_t", width*8), Size: width}
-}
-
-// signedIntTypeForWidth returns a signed integer type for width in bytes.
-func signedIntTypeForWidth(width int) typeinfo.Type {
-	if width == 2 {
-		return typeinfo.I16
-	}
-	if width == 4 {
-		return typeinfo.I32
-	}
-	return &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: fmt.Sprintf("int%d_t", width*8), Size: width, Signed: true}
-}

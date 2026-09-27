@@ -103,7 +103,7 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		c.recordMemoryWrite(e.Addr, e.Width)
 		return assign
 	case machine.CopyEffect:
-		dst := LValue(&RawValue{Value: e.Dst, TypeInfo: intTypeForWidth(e.Width)})
+		dst := LValue(&RawValue{Value: e.Dst, TypeInfo: typeinfo.UintForWidth(e.Width)})
 		if lvalue, ok := c.convertCopyAddress(e.Dst, e.Width); ok {
 			dst = lvalue
 		}
@@ -283,13 +283,17 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 			Segment: c.convertValue(v.Segment),
 		}
 	case *machine.SignExtendValue:
-		return &SignExtend{Parent: c.convertValue(v.Parent), FromBits: v.FromBits, ToBits: v.ToBits, TypeInfo: signedIntTypeForWidth(v.ToBits / 8)}
+		return &SignExtend{Parent: c.convertValue(v.Parent), FromBits: v.FromBits, ToBits: v.ToBits, TypeInfo: typeinfo.IntForWidth(v.ToBits / 8)}
 	case *machine.Binary:
 		op := convertOp(v.Op)
 		if op == OpNeg || op == OpNot {
 			return &Unary{TypeInfo: typeinfo.U16, Op: op, X: c.convertValue(v.LHS)}
 		}
-		return &Binary{TypeInfo: typeinfo.U16, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS), Producer: v.Producer}
+		typ := typeinfo.Type(typeinfo.U16)
+		if v.Type != nil {
+			typ = v.Type
+		}
+		return &Binary{TypeInfo: typ, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS), Producer: v.Producer}
 	case *machine.ByteValue:
 		return c.convertByte(v)
 	case *machine.Cast:
@@ -408,7 +412,7 @@ func (c *machineConverter) convertTempAssignments(instOff uint32) []Effect {
 			TypeInfo: storage.ExprType(),
 		}
 		if temp.TypeInfo == nil {
-			temp.TypeInfo = intTypeForWidth(load.Addr.Width)
+			temp.TypeInfo = typeinfo.UintForWidth(load.Addr.Width)
 		}
 		c.tempByLoad[load.ID] = temp
 		assigns = append(assigns, &Assign{
@@ -547,7 +551,7 @@ func derefType(pointer Expr, width int) typeinfo.Type {
 	if ptr, ok := pointer.ExprType().(*typeinfo.Pointer); ok && ptr.Elem != nil && ptr.Elem.Bytes() == width {
 		return ptr.Elem
 	}
-	return intTypeForWidth(width)
+	return typeinfo.UintForWidth(width)
 }
 
 // unresolvedMemory converts a raw machine memory address to an unresolved semantic lvalue.
@@ -559,7 +563,7 @@ func unresolvedMemory(ctx *FuncContext, result *Result, mem machine.MemoryAddres
 		Disp:     mem.Disp,
 		Width:    mem.Width,
 		Index:    converter.convertValue(mem.Index),
-		TypeInfo: intTypeForWidth(mem.Width),
+		TypeInfo: typeinfo.UintForWidth(mem.Width),
 	}
 }
 

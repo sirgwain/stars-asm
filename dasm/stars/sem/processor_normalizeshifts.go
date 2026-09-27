@@ -50,7 +50,7 @@ func (p *normalizeShiftsProcessor) normalizeShiftBinary(w *machineRewriter, v *m
 	rhs, rhsChanged := p.withValueBitwiseContext(childBitwiseContext, func() (machine.Value, bool) {
 		return w.rewriteMachineValue(v.RHS)
 	})
-	next := &machine.Binary{Op: v.Op, LHS: lhs, RHS: rhs, Producer: v.Producer}
+	next := &machine.Binary{Op: v.Op, LHS: lhs, RHS: rhs, Producer: v.Producer, Type: v.Type}
 	changed := lhsChanged || rhsChanged
 
 	if combined, ok := combineNestedShift(next); ok {
@@ -59,7 +59,7 @@ func (p *normalizeShiftsProcessor) normalizeShiftBinary(w *machineRewriter, v *m
 	}
 	if next.Op == machine.ValueOpShl && !bitwiseContext {
 		if multiplier, ok := shiftMultiplier(next.RHS); ok {
-			return machine.BinaryVal(machine.ValueOpMul, next.LHS, multiplier), true
+			return &machine.Binary{Op: machine.ValueOpMul, LHS: next.LHS, RHS: multiplier, Type: next.Type}, true
 		}
 	}
 	if !changed {
@@ -112,7 +112,7 @@ func combineNestedShift(v *machine.Binary) (*machine.Binary, bool) {
 	if !ok {
 		return nil, false
 	}
-	return &machine.Binary{Op: v.Op, LHS: lhs.LHS, RHS: machine.ConstVal(lhsRHS.Val + rhs.Val), Producer: v.Producer}, true
+	return &machine.Binary{Op: v.Op, LHS: lhs.LHS, RHS: machine.ConstVal(lhsRHS.Val + rhs.Val), Producer: v.Producer, Type: v.Type}, true
 }
 
 // shiftMultiplier converts a left shift count into a multiplication constant.

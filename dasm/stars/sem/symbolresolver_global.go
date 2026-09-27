@@ -28,9 +28,18 @@ func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Va
 	}
 
 	// resolve base from either the binary const, or the mem.Disp if this wasn't a binary add index
-	base, ok := sr.globalSymbol(segNum, uint32(fixed), width)
-	if !ok && segNum == sr.segFromRegister(asm.RegCS) {
-		base, ok = sr.globalSymbolByOffset(uint32(fixed), width)
+	base, ok := sr.segmentGlobalSymbol(segNum, fixed, width)
+	if !ok && other != nil && fixed != disp {
+		// The compiler folds constant index adjustments into the base value,
+		// e.g. vrgSBMacAisb[i-1] is cs:[(i + 0xffff) + 0x76de]. When the
+		// folded address names no global, resolve the displacement itself
+		// and move the adjustment back into the index.
+		if index, folded := sr.foldIndexAdjustment(stripLowWord(other), int(int16(fixed-disp))); folded {
+			if base, ok = sr.segmentGlobalSymbol(segNum, disp, width); ok {
+				fixed = disp
+				other = index
+			}
+		}
 	}
 	if !ok {
 		return sr.decomposePointerBase(width, baseVal, disp)
@@ -95,6 +104,37 @@ func (sr *symbolResolver) decompose(segNum uint16, width int, baseVal machine.Va
 		Offset: rootOff,
 		Result: term.Type(),
 	}, true
+}
+
+// segmentGlobalSymbol resolves a global in segNum, falling back to an
+// offset-only lookup for code-segment data.
+func (sr *symbolResolver) segmentGlobalSymbol(segNum uint16, offset int, width int) (symresolve.SymbolPath, bool) {
+	if base, ok := sr.globalSymbol(segNum, uint32(offset), width); ok {
+		return base, true
+	}
+	if segNum == sr.segFromRegister(asm.RegCS) {
+		return sr.globalSymbolByOffset(uint32(offset), width)
+	}
+	return nil, false
+}
+
+// foldIndexAdjustment adds a signed byte adjustment to a scaled index value,
+// turning (i*2) with -2 into ((i + -1) * 2). It fails when the adjustment is
+// not a whole number of elements.
+func (sr *symbolResolver) foldIndexAdjustment(index machine.Value, adjust int) (machine.Value, bool) {
+	base, scale := sr.decomposeTerm(index)
+	if base == nil {
+		base = index
+		scale = 1
+	}
+	if scale <= 0 || adjust%scale != 0 {
+		return nil, false
+	}
+	adjusted := machine.BinaryVal(machine.ValueOpAdd, base, machine.ConstVal(uint(adjust/scale)&0xffff))
+	if scale == 1 {
+		return adjusted, true
+	}
+	return machine.BinaryVal(machine.ValueOpMul, adjusted, machine.ConstVal(uint(scale))), true
 }
 
 // decomposePointerBase decomposes DS-relative memory that starts from a typed
@@ -245,7 +285,7 @@ func (sr *symbolResolver) flexibleGlobalAddressBase(segNum uint16, offset uint32
 			match = global
 		}
 	}
-	if match == nil || !isZeroOrOneLengthArray(match.Type) {
+	if match == nil || !typeinfo.IsFlexibleArray(match.Type) {
 		return nil, 0, false
 	}
 	return &symresolve.SymbolRoot{Symbol: match}, int(offset - match.Addr.Off), true

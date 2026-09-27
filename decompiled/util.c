@@ -808,7 +808,7 @@ L_0db0:
     pctCap = 255;
 
 L_0dba:
-    dpBeams = (int32_t)(((uint32_t)((dpBeams * pctCap)) / 0x64));
+    dpBeams = (int32_t)(((uint32_t)((dpBeams * pctCap)) / 100));
 
 L_0de0:
     dSpeed = SpdOfShip(0x0, 0, 0x0, 0, lpshdef);
@@ -853,7 +853,7 @@ L_0e91:
         goto L_0ebe;
 
 L_0ebe:
-    t_call_0ed7 = LComputePower(&(rglpshdef[iplr][ishdef]));
+    t_call_0ed7 = LComputePower((rglpshdef[iplr] + ishdef));
     rglpshdef[iplr][ishdef].lPower = t_call_0ed7;
 
 L_0f0e:
@@ -873,12 +873,15 @@ L_0f1e:
 }
 
 int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
-    int16_t chs;
-    HS     *lphs;
-    int16_t ihs;
-    int32_t dpShdef;
-    HUL    *lphul;
-    PART    part;
+    int16_t  chs;
+    HS      *lphs;
+    int16_t  ihs;
+    int32_t  dpShdef;
+    HUL     *lphul;
+    PART     part;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_0f24:
     dpShdef = 0;
@@ -912,7 +915,11 @@ L_0f93:
 
 L_0faa:
     part.hs.grhst = lphs->grhst;
-    HIWORD(part.hs) = *(lphs + 0x2);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphs->iItem;
+    t_fields_3 = lphs->cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     dpShdef = (dpShdef + (uint32_t)(LOWORD((part.pshield->dp * lphs->cItem))));
     goto L_0f69;
@@ -964,7 +971,7 @@ L_107e:
         goto L_109e;
 
 L_109e:
-    dpShdef = (dpShdef + (int32_t)(((int32_t)((dpShdef * 2)) / 0x5)));
+    dpShdef = (dpShdef + (int32_t)(((int32_t)((dpShdef * 2)) / 5)));
 
 L_10c1:
     if (((uint32_t)((HIWORD(dpShdef) & 0xffff)) != 0x0))
@@ -1120,7 +1127,7 @@ L_12bc:
         goto L_12c7;
 
 L_12c7:
-    pchEnd = (pchEnd + (-1));
+    pchEnd = (pchEnd - 1);
     *(pchEnd) = 0;
     goto L_12ae;
 
@@ -1738,7 +1745,7 @@ int16_t ICompFleetPoint2(void *arg1, void *arg2) {
     int32_t l1;
 
 L_1fa2:
-    l1 = *(arg1);
+    l1 = RawLoad32(arg1);
     /* untranslated: LOWORD(l2) = farseg(*arg2):[faroff(*arg2)+0x8] */
     /* untranslated: HIWORD(l2) = farseg(*arg2):[faroff(*arg2)+0xa] */
     l1 = (l1 - l2);
@@ -2218,7 +2225,7 @@ L_278c:
     szPlr[0] = 0;
 
 L_2790:
-    _wsprintf(szWork, PszGetCompressedString(idsSSMineField), &(szPlr), rgszMineField[lpth->thm.iType]);
+    _wsprintf(szWork, PszGetCompressedString(idsSSMineField), szPlr, rgszMineField[lpth->thm.iType]);
     goto L_2920;
 
 L_27cf:
@@ -2251,7 +2258,7 @@ L_2876:
     szPlr[0] = 0;
 
 L_287a:
-    _wsprintf(szWork, PszGetCompressedString(idsSmineralPacket), &(szPlr));
+    _wsprintf(szWork, PszGetCompressedString(idsSmineralPacket), szPlr);
     goto L_2920;
 
 L_28a3:
@@ -2322,7 +2329,7 @@ L_29c3:
         goto L_2a05;
 
 L_29da:
-    _wsprintf(szWork, "%s%s", &(szPlr), LOWORD(lpfl->lpszName), HIWORD(lpfl->lpszName));
+    _wsprintf(szWork, "%s%s", szPlr, lpfl->lpszName);
     goto L_2b04;
 
 L_2a05:
@@ -2339,7 +2346,7 @@ L_2a17:
         goto L_2a35;
 
 L_2a35:
-    lpsz = &(*(PszGetCompressedString(idsFleet)));
+    lpsz = PszGetCompressedString(idsFleet);
     goto L_2ada;
 
 L_2a4c:
@@ -2370,10 +2377,10 @@ L_2ac3:
     goto L_2ada;
 
 L_2ac6:
-    lpsz = &(*(PszGetCompressedString(idsFleet)));
+    lpsz = PszGetCompressedString(idsFleet);
 
 L_2ada:
-    _wsprintf(szWork, "%s%s #%d", &(szPlr), LOWORD(lpsz), HIWORD(lpsz), (ifl + 1));
+    _wsprintf(szWork, "%s%s #%d", szPlr, lpsz, (ifl + 1));
 
 L_2b04:
 
@@ -2417,7 +2424,7 @@ L_2b5e:
         goto L_2ba3;
 
 L_2ba3:
-    lpsz = &(*(PszGetCompressedString(idsFleet)));
+    lpsz = PszGetCompressedString(idsFleet);
     goto L_2c37;
 
 L_2bba:
@@ -2445,7 +2452,7 @@ L_2c2c:
     lpsz = szShdef;
 
 L_2c37:
-    _wsprintf(szWork, "%s #%d", LOWORD(lpsz), HIWORD(lpsz), ((w & 0x1ff) + 0x1));
+    _wsprintf(szWork, "%s #%d", lpsz, ((w & 0x1ff) + 0x1));
 
 L_2c63:
     return szWork;
@@ -3469,11 +3476,11 @@ L_3f00:
         goto L_3f7e;
 
 L_3f7e:
-    _wsprintf(szWork, PszGetCompressedString(idsLdLdLightYears), LOWORD(d2), HIWORD(d2), LOWORD(d), HIWORD(d));
+    _wsprintf(szWork, PszGetCompressedString(idsLdLdLightYears), d2, d);
     goto L_3fd7;
 
 L_3fac:
-    _wsprintf(szWork, PszGetCompressedString(idsLdLdLY), LOWORD(d2), HIWORD(d2), LOWORD(d), HIWORD(d));
+    _wsprintf(szWork, PszGetCompressedString(idsLdLdLY), d2, d);
 
 L_3fd7:
 
@@ -4237,7 +4244,7 @@ L_4c4f:
         goto L_4cb5;
 
 L_4cb5:
-    dRange = LOWORD((int32_t)(((uint32_t)(((int32_t)(dRange) * 1412)) / 1000)));
+    dRange = LOWORD((int32_t)(((uint32_t)(((int32_t)(dRange) * 1412)) / 0x3e8)));
     if ((pDeep == 0x0))
         goto LFinishUp;
     else
@@ -4458,7 +4465,7 @@ L_4ff2:
         goto L_500f;
 
 L_500f:
-    dRangeBest = GetShdefScannerRange(&(rglpshdef[iplr][i]), iplr, &(dPlanRangeBest), &(pctDetect), &(iSteal));
+    dRangeBest = GetShdefScannerRange((rglpshdef[iplr] + i), iplr, &(dPlanRangeBest), &(pctDetect), &(iSteal));
     if ((ppctDetect == 0x0))
         goto L_5060;
     else
@@ -5144,7 +5151,7 @@ L_5adc:
     goto L_5b73;
 
 L_5aed:
-    lPower = LComputePower(&(rglpshdef[iPlr][i]));
+    lPower = LComputePower((rglpshdef[iPlr] + i));
     if ((lPower <= 0))
         goto L_5b2b;
     else
@@ -6501,7 +6508,7 @@ L_7313:
     return 0;
 
 L_731f:
-    if (((int32_t)(0xfffffed4) <= (0x63 - (int32_t)((pctFull / 10)))))
+    if (((int32_t)(0xfffffed4) <= (99 - (int32_t)((pctFull / 10)))))
         goto L_736a;
     else
         goto L_7361;
@@ -6528,11 +6535,11 @@ L_73b4:
         goto L_741e;
 
 L_73f5:
-    pctGrow100 = (int32_t)(((uint32_t)((pctGrow100 * pctRetard)) / 0x89544));
+    pctGrow100 = (int32_t)(((uint32_t)((pctGrow100 * pctRetard)) / 562500));
     goto L_7462;
 
 L_741e:
-    pctGrow100 = (uint32_t)(((int32_t)(((uint32_t)(((int32_t)((pctGrow100 / 10)) * pctRetard)) / 0x89544)) * 0xa));
+    pctGrow100 = (uint32_t)(((int32_t)(((uint32_t)(((int32_t)((pctGrow100 / 10)) * pctRetard)) / 562500)) * 10));
 
 L_7462:
     lPopInc100 = (uint32_t)((lPopOld * (int32_t)((pctGrow100 / 100))));
@@ -6542,7 +6549,7 @@ L_7462:
         goto L_74c7;
 
 L_74a1:
-    lPopInc100 = (int32_t)(((uint32_t)((lPopOld * pctGrow100)) / 0x64));
+    lPopInc100 = (int32_t)(((uint32_t)((lPopOld * pctGrow100)) / 100));
 
 L_74c7:
     lPopInc = (int32_t)((lPopInc100 / 100));
@@ -7237,7 +7244,7 @@ void OutputSz(int16_t dt, char *sz) {
     char szTemp[256];
 
 L_7fe6:
-    _wsprintf(szFile, "%s.%s", &(szBase), mpdtsz[dt]);
+    _wsprintf(szFile, "%s.%s", szBase, mpdtsz[dt]);
     if ((access(szFile, 0) != -1))
         goto L_8065;
     else
@@ -7250,7 +7257,7 @@ L_8033:
 L_8065:
     strdate(szDate);
     strtime(szTime);
-    _wsprintf(szTemp, "%s %s - %s\r\n", &(szDate), &(szTime), LOWORD(sz), HIWORD(sz));
+    _wsprintf(szTemp, "%s %s - %s\r\n", szDate, szTime, sz);
     OutputFileString(szFile, szTemp);
     return;
 }

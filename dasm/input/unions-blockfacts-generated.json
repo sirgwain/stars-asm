@@ -2181,6 +2181,21 @@
     },
     {
       "func": "FWriteDataFile",
+      "root": "lpord",
+      "root_path": null,
+      "all_elements": false,
+      "type": "ORDER",
+      "path": ["grTask"],
+      "enum": "TaskType",
+      "block_path_facts": [
+        {
+          "block": "L_5f01",
+          "value": "grTaskPatrol"
+        }
+      ]
+    },
+    {
+      "func": "FWriteDataFile",
       "root": "lpth",
       "root_path": null,
       "all_elements": false,
@@ -4296,6 +4311,27 @@
       "member": "lPower"
     },
     {
+      "func": "DrawHistoryReport",
+      "root": "lpsx",
+      "type": "SCOREX",
+      "block": "L_2e41",
+      "member": "turn"
+    },
+    {
+      "func": "DrawHistoryReport",
+      "root": "lpsx",
+      "type": "SCOREX",
+      "block": "L_2e72",
+      "member": "turn"
+    },
+    {
+      "func": "DrawHistoryReport",
+      "root": "lpsx",
+      "type": "SCOREX",
+      "block": "L_2e8b",
+      "member": "turn"
+    },
+    {
       "func": "FCanKillTok",
       "call_result": "LpshdefFromTok",
       "type": "SHDEF",
@@ -4383,6 +4419,20 @@
       "member": "lPower"
     },
     {
+      "func": "FReadShDef",
+      "root": "lprt",
+      "type": "RTSHDEF",
+      "block": "L_0061",
+      "member": "dp"
+    },
+    {
+      "func": "FReadShDef",
+      "root": "lprt",
+      "type": "RTSHDEF",
+      "block": "L_00e7",
+      "member": "wtEmpty"
+    },
+    {
       "func": "SetVisPFFleets",
       "root": "rglpshdefSB",
       "all_elements": true,
@@ -4421,6 +4471,13 @@
       "type": "SHDEF",
       "block": "L_1520",
       "member": "lPower"
+    },
+    {
+      "func": "UpdatePlayerScores",
+      "root": "vlprgScoreX",
+      "type": "SCOREX",
+      "block": "L_6896",
+      "member": "iRank"
     },
     {
       "func": "UpdateShdefCost",

@@ -145,12 +145,18 @@ func helperResultType(helper HelperInfo) typeinfo.Type {
 }
 
 // lowerBinaryCompilerHelperValue lowers a two-argument helper to a binary value
-// when both operands are usable.
+// computed at the helper's result type when both operands are usable.
 func (p *compilerHelpersProcessors) lowerBinaryCompilerHelperValue(op machine.ValueOp, to typeinfo.Type, args []machine.Value) (machine.Value, bool) {
 	if len(args) < 2 {
 		return nil, false
 	}
-	return machine.CastVal(machine.BinaryResult(op, args[0], args[1]), to), true
+	result := machine.BinaryResult(op, args[0], args[1])
+	if binary, ok := result.(*machine.Binary); ok {
+		typed := *binary
+		typed.Type = to
+		result = &typed
+	}
+	return machine.CastVal(result, to), true
 }
 
 // rewriter returns the machine tree rewrite for compiler helper replacements.

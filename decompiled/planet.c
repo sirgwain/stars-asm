@@ -152,8 +152,8 @@ L_04cc:
     return (uint32_t)(hbrButtonFace);
 
 L_04f8:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = (((dyWinFrame * 2) + 198) + dyTitleBar) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = ((dxWinFrame * 2) + 198) (invalid-destination) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = (((dyWinFrame * 2) + 198) + dyTitleBar) (invalid-destination) */
     goto Default;
 
 L_0527:
@@ -867,7 +867,7 @@ L_1007:
     t_merge_100a_0001 = obj;
 
 L_100a:
-    ptile[i].pfn(hdc, &(ptile[i]), t_merge_100a_0001);
+    ptile[i].pfn(hdc, (ptile + i), t_merge_100a_0001);
 
 L_1035:
     i = (i + 1);
@@ -1051,7 +1051,7 @@ L_13b3:
 L_1404:
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crButtonText);
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(ppl->rgwtMin[i]), HIWORD(ppl->rgwtMin[i]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), ppl->rgwtMin[i]);
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
     i = (i + 1);
@@ -1687,7 +1687,7 @@ L_269a:
     goto L_26d8;
 
 L_26b0:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLddp), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLddp), l);
 
 L_26d8:
     SelectObject(hdc, rghfontArial8[0]);
@@ -4044,12 +4044,12 @@ L_4eba:
         goto L_4ee4;
 
 L_4ee4:
-    memmove(&(prgtile[(i + 1)]), &(prgtile[i]), ((iCur - i) * 16));
+    memmove((prgtile + (i + 1)), (prgtile + i), ((iCur - i) * 16));
     iCur = (iCur + 1);
     goto L_4f6a;
 
 L_4f27:
-    memmove(&(prgtile[iCur]), &(prgtile[(iCur + 1)]), (((i - iCur) - 1) * 16));
+    memmove((prgtile + iCur), (prgtile + (iCur + 1)), (((i - iCur) - 1) * 16));
     i = (i - 1);
 
 L_4f6a:
@@ -5457,7 +5457,7 @@ L_64d0:
     hfntSav = SelectObject(hdc, rghfontArial8[3]);
 
 L_64df:
-    pch = &(psz[ich]);
+    pch = (psz + ich);
     cch = (strlen(pch) + 1);
 
 L_64fb:
@@ -6164,7 +6164,7 @@ L_701f:
 L_702a:
     sqrt(((double)(pctPos) / 3));
     pctPos = __ftol();
-    pctPos = (int32_t)(((uint32_t)((pctPos * pctMod)) / 0x2710));
+    pctPos = (int32_t)(((uint32_t)((pctPos * pctMod)) / 10000));
     return LOWORD(pctPos);
 }
 
@@ -6704,7 +6704,7 @@ L_7a95:
 
 L_7ab1:
     iEff = GetRaceStat(&(rgplr[iplr]), rsFactProd);
-    cRes = (cRes + LOWORD((int32_t)((((uint32_t)(((int32_t)(cFact) * (int32_t)(iEff))) + 9) / 10))));
+    cRes = (cRes + LOWORD((int32_t)((((uint32_t)(((int32_t)(cFact) * (int32_t)(iEff))) + 0x9) / 0xa))));
 
 LFinishUp:
     if ((cRes != 0))

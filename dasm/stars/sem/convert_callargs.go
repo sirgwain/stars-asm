@@ -23,6 +23,10 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 				out[i] = expr
 				continue
 			}
+		} else if fn != nil && machineVarArgFarPointer(value) {
+			// Win16 varargs only pass segment:offset pairs for far pointers,
+			// which wsprintf-style callees consume as %s strings.
+			expected = typeinfo.LpStr
 		}
 		out[i] = c.convertValueTyped(value, expected)
 	}

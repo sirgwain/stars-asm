@@ -112,7 +112,7 @@ func TestLowerMachineResolvesNearPointerMemory(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "*ppch = (*ppch + 1)"
+	want := "*ppch = &*ppch[1]"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -343,8 +343,8 @@ func TestConvertTypedNearPointerOffsetPreservesPointerArithmetic(t *testing.T) {
 
 	expected := &typeinfo.Pointer{Elem: typeinfo.LpStr.Elem, Class: typeinfo.PtrNear}
 	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, expected))
-	if got != "(pb + 1)" {
-		t.Fatalf("converted pointer offset = %q, want (pb + 1)", got)
+	if got != "&pb[1]" {
+		t.Fatalf("converted pointer offset = %q, want &pb[1]", got)
 	}
 }
 
@@ -470,8 +470,8 @@ func TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic(t *testing.T
 	)
 
 	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, typeinfo.LpStr))
-	if got != "((pbIn + iOff) + 0x1)" {
-		t.Fatalf("converted indexed pointer offset = %q, want ((pbIn + iOff) + 0x1)", got)
+	if got != "&pbIn[(1 + iOff)]" {
+		t.Fatalf("converted indexed pointer offset = %q, want &pbIn[(1 + iOff)]", got)
 	}
 }
 

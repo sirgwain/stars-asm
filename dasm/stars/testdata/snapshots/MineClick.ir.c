@@ -585,7 +585,7 @@ L_4439:
 
 L_443c:
     iChecked = -1;
-    /* untranslated: part[0x0:4](rgi) = 0x1f40064 */
+    /* untranslated: part[0x0:4](rgi) = 0x1f40064 (aggregate-slice) */
     rgi[2] = 1000;
     rgi[4] = 5000;
     rgi[6] = 10000;

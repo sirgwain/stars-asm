@@ -15,6 +15,8 @@ type lowerer struct {
 	temps    []Local
 	tempSeen map[string]bool
 	scratch  map[string]int
+	names    string
+	nextTemp int
 }
 
 // Lower converts post-processed semantic IR into low-level C-like IR.
@@ -28,13 +30,21 @@ func Lower(src sem.Func, fn *typeinfo.Function) Func {
 		scratch:  make(map[string]int),
 	}
 	out := Func{Name: fn.Name, Decl: fn.CDecl()}
+	l.names = out.Decl
+	for _, b := range src.Blocks {
+		for _, e := range b.Effects {
+			l.names += " " + sem.FormatEffect(e)
+		}
+	}
 
 	for _, v := range fn.Vars {
 		out.Locals = append(out.Locals, Local{Name: v.Name, Type: v.Type})
+		l.names += " " + v.Name
 	}
 
 	for _, v := range src.RecoveredLocals {
 		out.Locals = append(out.Locals, Local{Name: v.Name, Type: v.Type})
+		l.names += " " + v.Name
 	}
 
 	for _, b := range src.Blocks {
@@ -46,7 +56,7 @@ func Lower(src sem.Func, fn *typeinfo.Function) Func {
 			}
 		}
 		for _, effect := range b.Effects {
-			block.Stmts = append(block.Stmts, l.lowerEffect(effect))
+			block.Stmts = append(block.Stmts, l.lowerEffect(effect)...)
 		}
 		out.Blocks = append(out.Blocks, block)
 	}
@@ -54,32 +64,28 @@ func Lower(src sem.Func, fn *typeinfo.Function) Func {
 	return out
 }
 
-func (l *lowerer) lowerEffect(effect sem.Effect) Stmt {
+// lowerEffect lowers an effect into an ordered sequence of statements.
+func (l *lowerer) lowerEffect(effect sem.Effect) []Stmt {
 	switch e := effect.(type) {
 	case *sem.Assign:
-		dst, ok1 := l.lowerExpr(e.Dst)
-		src, ok2 := l.lowerExpr(e.Src)
-		if ok1 && ok2 {
-			return &Assign{Dst: dst, Src: src}
-		}
+		return l.lowerAssign(e)
 	case *sem.CallEffect:
 		call, ok := l.lowerExpr(e.Call)
 		if ok {
 			if e.Result == nil {
-				return &ExprStmt{Expr: call}
+				return []Stmt{&ExprStmt{Expr: call}}
 			}
 			if _, unused := e.Result.(*sem.CallResult); unused {
-				return &ExprStmt{Expr: call}
+				return []Stmt{&ExprStmt{Expr: call}}
 			}
-			result, rok := l.lowerExpr(e.Result)
-			if rok {
-				return &Assign{Dst: result, Src: call}
+			if dst, ok := e.Result.(sem.LValue); ok {
+				return l.lowerAssign(&sem.Assign{Dst: dst, Src: e.Call})
 			}
 		}
 	case *sem.Branch:
 		cond, ok := l.lowerExpr(e.Cond)
 		if ok {
-			return &IfGoto{Cond: cond, TrueLabel: l.blockLabel(e.TrueBlock), FalseLabel: l.blockLabel(e.FalseBlock)}
+			return []Stmt{&IfGoto{Cond: cond, TrueLabel: l.blockLabel(e.TrueBlock), FalseLabel: l.blockLabel(e.FalseBlock)}}
 		}
 	case *sem.TableJump:
 		index, ok := l.lowerExpr(e.Index)
@@ -88,22 +94,22 @@ func (l *lowerer) lowerEffect(effect sem.Effect) Stmt {
 			for i, target := range e.Targets {
 				labels[i] = l.blockLabel(target)
 			}
-			return &TableJump{Index: index, Labels: labels}
+			return []Stmt{&TableJump{Index: index, Labels: labels}}
 		}
 	case *sem.Jump:
-		return &Goto{Label: l.blockLabel(e.To)}
+		return []Stmt{&Goto{Label: l.blockLabel(e.To)}}
 	case *sem.Return:
 		if e.Value == nil {
-			return &Return{}
+			return []Stmt{&Return{}}
 		}
 		value, ok := l.lowerExpr(e.Value)
 		if ok {
-			return &Return{Value: value}
+			return []Stmt{&Return{Value: value}}
 		}
 	case *sem.RawEffect:
-		return untranslatedEffect(effect)
+		return []Stmt{untranslatedEffect(effect)}
 	}
-	return untranslatedEffect(effect)
+	return []Stmt{untranslatedEffect(effect)}
 }
 
 // untranslatedEffect preserves an unsupported semantic effect together with
@@ -232,8 +238,18 @@ func collectUnsupportedExpr(expr sem.Expr, path string, failures *[]LowerFailure
 		collectUnsupportedExpr(e.Pointer, path+".pointer", failures)
 		collectUnsupportedExpr(e.Offset, path+".offset", failures)
 	case *sem.Deref:
+		if _, failure := derefAccess(e); failure != "" {
+			*failures = append(*failures, LowerFailure{Kind: failure, Path: path})
+			return
+		}
 		collectUnsupportedExpr(e.Pointer, path+".pointer", failures)
 	case *sem.AddressOf:
+		if deref, ok := e.Target.(*sem.Deref); ok {
+			if _, failure := derefAddressType(e, deref); failure != "" {
+				*failures = append(*failures, LowerFailure{Kind: failure, Path: path})
+				return
+			}
+		}
 		collectUnsupportedExpr(e.Target, path+".target", failures)
 	case *sem.Part:
 		if e.Width != 2 || e.ByteOff != 0 && e.ByteOff != 2 {
@@ -313,7 +329,7 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok1 || !ok2 || !ok3 {
 			return nil, false
 		}
-		return &Binary{Op: op, LHS: lhs, RHS: rhs}, true
+		return byteBinary(e, op, lhs, rhs), true
 	case *sem.Byte:
 		parent, ok := l.lowerExpr(e.Parent)
 		if !ok {
@@ -330,7 +346,15 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok {
 			return nil, false
 		}
-		return lowerByteReplacement(parent, value, e.Part), true
+		typ := e.Parent.ExprType()
+		if typ.Kind() != typeinfo.KInt || (typ.Bytes() != 2 && typ.Bytes() != 4 && typ.Bytes() != 8) {
+			return nil, false
+		}
+		offset := 0
+		if e.Part == machine.ByteHigh {
+			offset = 1
+		}
+		return scalarReplacement(parent, value, typ, offset, 1), true
 	case *sem.Cast:
 		v, ok := l.lowerExpr(e.Value)
 		if !ok {
@@ -419,19 +443,55 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok1 || !ok2 {
 			return nil, false
 		}
-		return &PointerOffset{Pointer: ptr, Offset: off}, true
+		return &PointerOffset{Pointer: ptr, Offset: off, Type: nonBytePointer(e.TypeInfo)}, true
 	case *sem.Deref:
+		access, failure := derefAccess(e)
+		if failure != "" {
+			return nil, false
+		}
 		ptr, ok := l.lowerExpr(e.Pointer)
 		if !ok {
 			return nil, false
 		}
-		return &Deref{Pointer: ptr, ByteOff: e.ByteOff}, true
+		switch access.form {
+		case derefIndex:
+			return &Index{Base: ptr, Index: &IntConst{Value: uint64(access.index), Text: fmt.Sprint(access.index)}}, true
+		case derefRaw:
+			return &Deref{Pointer: ptr, ByteOff: e.ByteOff, Type: access.typ}, true
+		}
+		return &Deref{Pointer: ptr}, true
 	case *sem.AddressOf:
 		if base, ok := addressOfArrayBase(e); ok {
 			return l.lowerExpr(base)
 		}
 		if base, ok := addressOfZeroIndexArrayBase(e); ok {
 			return l.lowerExpr(base)
+		}
+		// An element step from a pointer is ordinary C pointer arithmetic.
+		if index, ok := e.Target.(*sem.ArrayIndex); ok && typeinfo.IsPointer(index.Base.ExprType()) {
+			op, stepsExpr := "+", index.Index
+			if neg, ok := stepsExpr.(*sem.Unary); ok && neg.Op == sem.OpNeg {
+				op, stepsExpr = "-", neg.X
+			}
+			base, ok1 := l.lowerExpr(index.Base)
+			steps, ok2 := l.lowerExpr(stepsExpr)
+			if !ok1 || !ok2 {
+				return nil, false
+			}
+			return &Binary{Op: op, LHS: base, RHS: steps}, true
+		}
+		// The address of a dereference is its pointer displaced by raw bytes,
+		// typed as the address declares.
+		if deref, ok := e.Target.(*sem.Deref); ok {
+			typ, failure := derefAddressType(e, deref)
+			if failure != "" {
+				return nil, false
+			}
+			ptr, ok := l.lowerExpr(deref.Pointer)
+			if !ok || deref.ByteOff == 0 {
+				return ptr, ok
+			}
+			return rawAddress(ptr, deref.ByteOff, typ), true
 		}
 		target, ok := l.lowerExpr(e.Target)
 		if !ok {
@@ -481,22 +541,6 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		return nil, false
 	default:
 		return nil, false
-	}
-}
-
-// lowerByteReplacement renders a partial-register byte update as ordinary
-// mask-and-shift arithmetic on the containing word.
-func lowerByteReplacement(parent, value Expr, part machine.BytePart) Expr {
-	keepMask := uint64(0xff00)
-	insert := Expr(&Binary{Op: "&", LHS: value, RHS: &IntConst{Value: 0xff}})
-	if part == machine.ByteHigh {
-		keepMask = 0x00ff
-		insert = &Binary{Op: "<<", LHS: insert, RHS: &IntConst{Value: 8}}
-	}
-	return &Binary{
-		Op:  "|",
-		LHS: &Binary{Op: "&", LHS: parent, RHS: &IntConst{Value: keepMask}},
-		RHS: insert,
 	}
 }
 
@@ -630,4 +674,122 @@ func lowerCompareOp(op sem.CompareOp) (string, bool) {
 	default:
 		return "", false
 	}
+}
+
+// byteBinary lowers a binary operation. Semantic pointer arithmetic counts
+// bytes, so for pointees wider than a byte, pointer adjustments and
+// differences are written on byte pointers rather than scaled by C.
+func byteBinary(e *sem.Binary, op string, lhs, rhs Expr) Expr {
+	lhsElem, lhsPointer := pointerElemBytes(e.LHS.ExprType())
+	rhsElem, rhsPointer := pointerElemBytes(e.RHS.ExprType())
+	lhsInt, rhsInt := e.LHS.ExprType().Kind() == typeinfo.KInt, e.RHS.ExprType().Kind() == typeinfo.KInt
+	switch {
+	case e.Op == sem.OpSub && lhsPointer && rhsPointer && (lhsElem != 1 || rhsElem != 1):
+		return &Binary{Op: "-", LHS: &Cast{Type: "uint8_t *", Value: lhs}, RHS: &Cast{Type: "uint8_t *", Value: rhs}}
+	case e.Op == sem.OpAdd && rhsPointer && lhsInt && rhsElem != 1:
+		return &PointerOffset{Pointer: rhs, Offset: lhs, Type: nonBytePointer(e.RHS.ExprType())}
+	case (e.Op == sem.OpAdd || e.Op == sem.OpSub) && lhsPointer && rhsInt && lhsElem != 1:
+		if e.Op == sem.OpSub {
+			rhs = &Unary{Op: "-", X: rhs}
+		}
+		return &PointerOffset{Pointer: lhs, Offset: rhs, Type: nonBytePointer(e.LHS.ExprType())}
+	}
+	return &Binary{Op: op, LHS: lhs, RHS: rhs}
+}
+
+// pointerElemBytes returns the pointee size of a pointer type.
+func pointerElemBytes(typ typeinfo.Type) (int, bool) {
+	pointer, ok := typ.(*typeinfo.Pointer)
+	if !ok {
+		return 0, false
+	}
+	return pointer.Elem.Bytes(), true
+}
+
+// nonBytePointer returns a pointer type that must be restored after byte
+// arithmetic, or nil for byte and void pointers that need no conversion.
+func nonBytePointer(typ typeinfo.Type) typeinfo.Type {
+	pointer, ok := typ.(*typeinfo.Pointer)
+	if !ok || typeinfo.Equals(pointer.Elem, typeinfo.U8) || pointer.Elem.Kind() == typeinfo.KVoid {
+		return nil
+	}
+	return pointer
+}
+
+// derefAddressType returns the pointer type for the address of a dereference:
+// nil when no conversion is needed. An address typed as something other than
+// a pointer, or at offset zero as a pointer to a different element type than
+// the dereferenced one (void excepted), is reported instead of choosing either
+// type. Near and far classes are not compared: that conversion is implicit.
+func derefAddressType(address *sem.AddressOf, deref *sem.Deref) (typeinfo.Type, string) {
+	if _, failure := derefAccess(deref); failure != "" {
+		return nil, failure
+	}
+	want, ok := address.TypeInfo.(*typeinfo.Pointer)
+	if !ok {
+		return nil, "address-type-conflict"
+	}
+	pointer, ok := deref.Pointer.ExprType().(*typeinfo.Pointer)
+	if deref.ByteOff == 0 && want.Elem.Kind() != typeinfo.KVoid && (!ok || !typeinfo.Equals(want.Elem, pointer.Elem)) {
+		return nil, "address-type-conflict"
+	}
+	return nonBytePointer(want), ""
+}
+
+// derefForm selects how a semantic dereference is written in C.
+type derefForm int
+
+const (
+	// derefPointee reads the pointer's own pointee.
+	derefPointee derefForm = iota
+	// derefIndex reads a whole scalar element at an aligned displacement.
+	derefIndex
+	// derefRaw reads a typed value at a raw byte displacement.
+	derefRaw
+)
+
+// derefLowering describes the C access chosen for a semantic dereference.
+type derefLowering struct {
+	form  derefForm
+	typ   typeinfo.Type
+	index int
+}
+
+// derefAccess chooses a width-correct C access for a dereference. Byte
+// displacements are never applied through C pointer arithmetic on the pointee
+// type, and an unresolved offset inside an aggregate pointee is rejected
+// because its original Win16 layout need not match the native struct.
+func derefAccess(e *sem.Deref) (derefLowering, string) {
+	var elem typeinfo.Type
+	switch typ := e.Pointer.ExprType().(type) {
+	case *typeinfo.Pointer:
+		elem = typ.Elem
+	case *typeinfo.Array:
+		elem = typ.Elem
+	default:
+		return derefLowering{}, "unknown-pointer-type"
+	}
+	access := e.TypeInfo
+	if access == nil || access.Bytes() != e.Width {
+		return derefLowering{}, "unknown-access-type"
+	}
+	size := elem.Bytes()
+	sameRepresentation := typeinfo.Equals(elem, access) ||
+		elem.Kind() == typeinfo.KInt && access.Kind() == typeinfo.KInt && size == e.Width
+	if e.ByteOff == 0 && sameRepresentation {
+		return derefLowering{form: derefPointee}, ""
+	}
+	switch elem.Kind() {
+	case typeinfo.KStruct, typeinfo.KUnion, typeinfo.KArray:
+		if size <= 0 || e.ByteOff < size && e.ByteOff+e.Width > 0 {
+			return derefLowering{}, "original-layout-offset"
+		}
+	}
+	if sameRepresentation && size > 0 && e.ByteOff%size == 0 {
+		return derefLowering{form: derefIndex, index: e.ByteOff / size}, ""
+	}
+	if access.Kind() != typeinfo.KInt {
+		return derefLowering{}, "unknown-access-type"
+	}
+	return derefLowering{form: derefRaw, typ: access}, ""
 }

@@ -101,7 +101,7 @@ func objectAddress(base LValue, offset int, expected typeinfo.Type) Expr {
 		if ptr, ok := value.Base.ExprType().(*typeinfo.Pointer); ok {
 			class = ptr.Class
 		}
-		address = &Binary{TypeInfo: &typeinfo.Pointer{Elem: elem, Class: class}, Op: OpAdd, LHS: value.Base, RHS: value.Index}
+		address = &AddressOf{Target: value, TypeInfo: &typeinfo.Pointer{Elem: elem, Class: class}}
 	default:
 		if array, ok := base.ExprType().(*typeinfo.Array); ok {
 			address = base
@@ -115,20 +115,8 @@ func objectAddress(base LValue, offset int, expected typeinfo.Type) Expr {
 		}
 	}
 	if offset != 0 {
-		var displacement Expr = &Const{TypeInfo: typeinfo.I16, U64: uint64(absInt(offset))}
-		if offset < 0 {
-			displacement = &Unary{TypeInfo: typeinfo.I16, Op: OpNeg, X: displacement}
-		}
-		address = &PointerOffset{Pointer: address, Offset: displacement, TypeInfo: &typeinfo.Pointer{Elem: typeinfo.U8, Class: class}}
+		address = &PointerOffset{Pointer: address, Offset: signedIndexConst(offset), TypeInfo: &typeinfo.Pointer{Elem: typeinfo.U8, Class: class}}
 	}
-	if ptr, ok := expected.(*typeinfo.Pointer); ok {
-		actual := address.ExprType()
-		if array, ok := actual.(*typeinfo.Array); ok {
-			actual = &typeinfo.Pointer{Elem: array.Elem, Class: class}
-		}
-		if !typeinfo.Equals(ptr, actual) && ptr.Elem.Kind() != typeinfo.KVoid {
-			return &Cast{To: ptr.String(), TypeInfo: ptr, Value: address}
-		}
-	}
-	return address
+	want, _ := expected.(*typeinfo.Pointer)
+	return castAddress(address, want, class)
 }

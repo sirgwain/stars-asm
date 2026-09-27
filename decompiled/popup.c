@@ -1918,7 +1918,7 @@ L_283d:
     x = 4;
     y = (y + dyArial8);
     SelectObject(hdc, rghfontArial8[1]);
-    c = _wsprintf(szWork, PCTLD00, LOWORD(lMax), HIWORD(lMax));
+    c = _wsprintf(szWork, PCTLD00, lMax);
     DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonists3), 0, fPrint);
@@ -1950,7 +1950,7 @@ L_2998:
     y = (y + dyArial8);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsSupport), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    c = _wsprintf(szWork, PCTLD00, LOWORD(lMax), HIWORD(lMax));
+    c = _wsprintf(szWork, PCTLD00, lMax);
     DxStreamTextOut(hdc, &(x), y, szWork, c, fPrint);
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsColonists3), 0, fPrint);
@@ -2013,7 +2013,7 @@ L_2b87:
 
 L_2b9f:
     psz = PszGetCompressedString(idsWillGrowLd00Ld00Year);
-    c = _wsprintf(szT, psz, LOWORD(lPopChg), HIWORD(lPopChg), (LOWORD(pl.rgwtMin[3]) + LOWORD(lPopChg)), (HIWORD(pl.rgwtMin[3]) + HIWORD(lPopChg)));
+    c = _wsprintf(szT, psz, lPopChg, (LOWORD(pl.rgwtMin[3]) + LOWORD(lPopChg)), (HIWORD(pl.rgwtMin[3]) + HIWORD(lPopChg)));
 
 L_2be3:
     WrapTextOut(hdc, &(x), &(y), szT, c, 4, xMax, 0x0, 0, fPrint);
@@ -2309,7 +2309,7 @@ L_328e:
     t_merge_3293_0001 = pszTypes;
 
 L_3293:
-    _wsprintf(szWork, "%d %s", cnt, &(*(t_merge_3293_0001)));
+    _wsprintf(szWork, "%d %s", cnt, t_merge_3293_0001);
     psz = szWork;
     goto L_3319;
 

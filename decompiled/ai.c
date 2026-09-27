@@ -64,7 +64,7 @@ L_00cb:
         goto L_00ff;
 
 L_00f6:
-    *(vlpbAiData) = 0x2;
+    RawStore16(vlpbAiData, 0x2);
 
 L_00ff:
     if ((vlpbAiPlanet != 0x0))
@@ -1281,7 +1281,7 @@ L_147d:
     id = lpfl->idPlanet;
 
 L_1488:
-    lpb = (vlpbAiPlanet + ((id * 16) + 10));
+    lpb = (vlpbAiPlanet + (10 + (16 * id)));
     if ((*(lpb) == 0x0))
         goto L_15d1;
     else
@@ -2861,7 +2861,7 @@ L_2f38:
     lPopUs = lpfl->rgwtMin[3];
     lPopEnemy = (int32_t)((lppl->uPopGuess * 0x4));
     pctDef = ((uint32_t)((lppl->uDefGuess * 0x6)) + 6);
-    pctDef = (int32_t)(((uint32_t)((pctDef * 3)) / 0x4));
+    pctDef = (int32_t)(((uint32_t)((pctDef * 3)) / 4));
     lPopEnemy = (int32_t)(((uint32_t)((lPopEnemy * 100)) / (100 - pctDef)));
     if ((lPopEnemy < (int32_t)((lPopUs / 5))))
         goto L_306e;
@@ -2893,7 +2893,7 @@ L_3056:
         goto L_306e;
 
 L_306e:
-    cXfer = (int32_t)(((uint32_t)((lPopEnemy * 5)) / 0x4));
+    cXfer = (int32_t)(((uint32_t)((lPopEnemy * 5)) / 4));
     if ((cXfer <= (int32_t)((lpfl->rgwtMin[3] / 2))))
         goto L_30cc;
     else

@@ -103,13 +103,11 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
     StringId ids;
     int16_t  cshQueued;
     uint16_t t_merge_02f2_0001;
-    uint16_t t_merge_0342_0001;
-    uint16_t t_merge_0342_0002;
-    uint16_t t_merge_036d_0001;
-    uint16_t t_merge_03ca_0001;
-    uint16_t t_merge_03ca_0002;
-    uint16_t t_merge_03e2_0001;
-    uint16_t t_merge_043f_0001;
+    char    *t_merge_0342_0001;
+    char    *t_merge_036d_0001;
+    char    *t_merge_03ca_0001;
+    char    *t_merge_03e2_0001;
+    char    *t_merge_043f_0001;
 
 L_027c:
     cshQueued = CshQueued(lpshdef->ishdef, &(fProgress), fEdit);
@@ -170,13 +168,11 @@ L_032c:
         goto L_0335;
 
 L_0335:
-    t_merge_0342_0001 = &(rgch);
-    /* untranslated: t_merge_0342_0002 = ss */
+    t_merge_0342_0001 = rgch;
     goto L_0342;
 
 L_033d:
-    t_merge_0342_0001 = 0xc84;
-    /* untranslated: t_merge_0342_0002 = ds */
+    t_merge_0342_0001 = "";
 
 L_0342:
     if ((lpshdef->cExist != 0x1))
@@ -185,15 +181,14 @@ L_0342:
         goto L_0360;
 
 L_0360:
-    t_merge_036d_0001 = 0xc85;
+    t_merge_036d_0001 = "";
     goto L_036d;
 
 L_0368:
-    t_merge_036d_0001 = 0xc86;
+    t_merge_036d_0001 = "s";
 
 L_036d:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString(ids), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
-     * ds:[t_merge_036d_0001], cshQueued, t_merge_0342_0001, t_merge_0342_0002) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString(ids), LOWORD(lpshdef->cExist), lpshdef->hul.szClass, t_merge_036d_0001, cshQueued, t_merge_0342_0001);
     goto L_047e;
 
 L_03ab:
@@ -209,13 +204,11 @@ L_03b4:
         goto L_03bd;
 
 L_03bd:
-    t_merge_03ca_0001 = &(rgch);
-    /* untranslated: t_merge_03ca_0002 = ss */
+    t_merge_03ca_0001 = rgch;
     goto L_03ca;
 
 L_03c5:
-    t_merge_03ca_0001 = 0xc88;
-    /* untranslated: t_merge_03ca_0002 = ds */
+    t_merge_03ca_0001 = "";
 
 L_03ca:
     if ((cshQueued != 1))
@@ -224,15 +217,14 @@ L_03ca:
         goto L_03d5;
 
 L_03d5:
-    t_merge_03e2_0001 = 0xc89;
+    t_merge_03e2_0001 = "";
     goto L_03e2;
 
 L_03dd:
-    t_merge_03e2_0001 = 0xc8a;
+    t_merge_03e2_0001 = "s";
 
 L_03e2:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 1)), cshQueued, (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
-     * ds:[t_merge_03e2_0001], t_merge_03ca_0001, t_merge_03ca_0002) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString((ids + 1)), cshQueued, lpshdef->hul.szClass, t_merge_03e2_0001, t_merge_03ca_0001);
     goto L_047e;
 
 L_0419:
@@ -242,15 +234,14 @@ L_0419:
         goto L_0432;
 
 L_0432:
-    t_merge_043f_0001 = 0xc8c;
+    t_merge_043f_0001 = "";
     goto L_043f;
 
 L_043a:
-    t_merge_043f_0001 = 0xc8d;
+    t_merge_043f_0001 = "s";
 
 L_043f:
-    /* untranslated: call _wsprintf(szWork, PszGetCompressedString((ids + 2)), LOWORD(lpshdef->cExist), (LOWORD(lpshdef) + 0x8), HIWORD(lpshdef), &dword
-     * ds:[t_merge_043f_0001]) -> callresult(int16_t) */
+    _wsprintf(szWork, PszGetCompressedString((ids + 2)), LOWORD(lpshdef->cExist), lpshdef->hul.szClass, t_merge_043f_0001);
 
 L_047e:
     id = MessageBox(GetFocus(), szWork, PszGetCompressedString((fEdit + 742)), 0x2024);
@@ -2393,8 +2384,7 @@ L_2f16:
     SelectPalette(hdc, vhpal, 0);
     RealizePalette(hdc);
     DibBlt(hdc, ptPlaque.x, ptPlaque.y, 60, 30, hdibPlaque, 0, 0, 60, 30, 13369376);
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdLd), LOWORD(lpshdefBuild->cExist), HIWORD(lpshdefBuild->cExist), LOWORD(lpshdefBuild->cBuilt),
-                  HIWORD(lpshdefBuild->cBuilt));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdLd), lpshdefBuild->cExist, lpshdefBuild->cBuilt);
     SelectObject(hdc, rghfontArial8[1]);
     if ((LOWORD(GetTextExtent(hdc, szWork, c)) <= 0x32))
         goto L_301c;
@@ -2952,6 +2942,8 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t  iSel;
     char    *pch;
     HULDEF  *t_call_3c58;
+    uint32_t t_fields_1;
+    uint32_t t_fields_2;
     StringId t_merge_3caf_0001;
     uint16_t t_merge_3cd7_0001;
     uint16_t t_merge_3f7f_0001;
@@ -3021,7 +3013,10 @@ L_3c2c:
     hsShip = lpshdefBuild->hul.rghs[iselSlot];
     t_call_3c58 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
     hsHul.grhst = t_call_3c58->hul.rghs[iselSlot].grhst;
-    HIWORD(hsHul) = HIWORD(t_call_3c58->hul.rghs[iselSlot]);
+    t_fields_1 = t_call_3c58->hul.rghs[iselSlot].iItem;
+    t_fields_2 = t_call_3c58->hul.rghs[iselSlot].cItem;
+    hsHul.iItem = t_fields_1;
+    hsHul.cItem = t_fields_2;
     if ((hsShip.cItem != 0x0))
         goto HullPart;
     else
@@ -3141,7 +3136,7 @@ L_3e0a:
         goto L_3e1c;
 
 L_3e1c:
-    pch = (pch + (-1));
+    pch = (pch - 1);
 
 L_3e21:
     if ((pch > &(szWord)))
@@ -3174,7 +3169,7 @@ L_3e58:
         goto L_3e68;
 
 L_3e68:
-    strcpy((pch - 2), (pch - 1));
+    strcpy((pch + -2), (pch + -1));
 
 L_3e84:
     if ((grhst == 0x0))
@@ -3251,7 +3246,7 @@ L_3fe5:
     strcat(szWord, "s");
 
 L_3ff5:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsCostS), &(szWord));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsCostS), szWord);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
     rc.left = (rc.left + 8);
     rc.right = (rc.right - 8);
@@ -3510,11 +3505,10 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
     int16_t  pctDetect;
     int16_t  pct;
     int16_t  t_merge_458e_0001;
-    uint16_t t_merge_478e_0001;
-    uint16_t t_merge_478e_0002;
+    char    *t_merge_478e_0001;
     uint16_t t_merge_4957_0001;
     char    *t_call_4bf7;
-    char    *t_merge_4c09_0001;
+    LPCSTR  *t_merge_4c09_0001;
     uint16_t t_merge_4ee0_0001;
     uint16_t t_merge_4ff3_0001;
     uint16_t t_merge_50b2_0001;
@@ -3650,16 +3644,14 @@ L_4767:
         goto L_4781;
 
 L_4781:
-    t_merge_478e_0001 = &(rgch);
-    /* untranslated: t_merge_478e_0002 = ss */
+    t_merge_478e_0001 = rgch;
     goto L_478e;
 
 L_4789:
-    t_merge_478e_0001 = 0xcbe;
-    /* untranslated: t_merge_478e_0002 = ds */
+    t_merge_478e_0001 = "";
 
 L_478e:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsCostOneSS), (LOWORD(lphul) + 0x8), HIWORD(lphul), t_merge_478e_0001, t_merge_478e_0002);
+    cch = _wsprintf(szWork, PszGetCompressedString(idsCostOneSS), lphul->szClass, t_merge_478e_0001);
 
 L_47bf:
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -3804,7 +3796,7 @@ L_4a3c:
     lwt = (uint32_t)(lphul->wtEmpty);
 
 L_4a4c:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), LOWORD(lwt), HIWORD(lwt));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), lwt);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
 
 L_4a8c:
@@ -3841,7 +3833,7 @@ L_4acb:
     rc.top = (rc.top + dyArial8);
 
 L_4b53:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsLddp), LOWORD(dp), HIWORD(dp));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsLddp), dp);
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 10));
     cch = CchGetString(idsArmor, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -3863,10 +3855,10 @@ L_4bf3:
     goto L_4c09;
 
 L_4c04:
-    t_merge_4c09_0001 = 0xcbf;
+    t_merge_4c09_0001 = "%lddp";
 
 L_4c09:
-    cch = _wsprintf(szWork, &(*(t_merge_4c09_0001)), LOWORD(dpShield), HIWORD(dpShield));
+    cch = _wsprintf(szWork, t_merge_4c09_0001, dpShield);
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, (dxMaxMineralQuan + 10));
     cch = CchGetString(idsShields, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -3886,7 +3878,7 @@ L_4c7b:
         goto L_4d2b;
 
 L_4cb3:
-    cch = _wsprintf(szWork, PCTLD, LOWORD(lpshdefBuild->lPower), HIWORD(lpshdefBuild->lPower));
+    cch = _wsprintf(szWork, PCTLD, lpshdefBuild->lPower);
     RightTextOut(hdc, (rc.right - 8), rc.top, szWork, cch, dxMaxMineralQuan);
     cch = CchGetString(idsRating, szWork);
     TextOut(hdc, rc.left, rc.top, szWork, cch);
@@ -4256,6 +4248,8 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     uint16_t scratch_bp_m1e;
     uint16_t t_scratch_m1a;
     HULDEF  *t_call_5761;
+    uint32_t t_fields_1;
+    uint32_t t_fields_2;
     uint16_t t_scratch_m1a_2;
     uint16_t t_merge_58c1_0001;
 
@@ -4375,7 +4369,7 @@ L_5603:
     goto L_5646;
 
 L_5609:
-    scratch_bp_m1c = HIWORD(lpshdefBuild->hul.rghs[iSrc]);
+    scratch_bp_m1c = (lpshdefBuild->hul.rghs[iSrc].iItem | (lpshdefBuild->hul.rghs[iSrc].cItem << 0x8));
     scratch_bp_m1e = hsSrc.cItem;
     t_merge_5646_0001 = (((scratch_bp_m1c >> 0x8) & 0xff) - scratch_bp_m1e);
 
@@ -4407,7 +4401,10 @@ L_5735:
     hsDst = lpshdefBuild->hul.rghs[i];
     t_call_5761 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
     hsHul.grhst = t_call_5761->hul.rghs[i].grhst;
-    HIWORD(hsHul) = HIWORD(t_call_5761->hul.rghs[i]);
+    t_fields_1 = t_call_5761->hul.rghs[i].iItem;
+    t_fields_2 = t_call_5761->hul.rghs[i].cItem;
+    hsHul.iItem = t_fields_1;
+    hsHul.cItem = t_fields_2;
     if (((hsHul.grhst & 0x1) == 0x0))
         goto L_57a4;
     else
@@ -4623,7 +4620,7 @@ L_5c4f:
 
 L_5c5e:
     scratch_bp_m6 = LOWORD((147 * i));
-    return (rglpshdefSB[idPlayer] + scratch_bp_m6);
+    return (SHDEF *)((uint8_t *)(rglpshdefSB[idPlayer]) + scratch_bp_m6);
 
 L_5c81:
     i = (i + 1);
@@ -4729,7 +4726,7 @@ L_5d79:
 
 L_5d88:
     scratch_bp_m8 = LOWORD((147 * j));
-    return (rglpshdefSB[i] + scratch_bp_m8);
+    return (SHDEF *)((uint8_t *)(rglpshdefSB[i]) + scratch_bp_m8);
 
 L_5daa:
     j = (j + 1);
@@ -4788,7 +4785,7 @@ L_5e2f:
 
 L_5e3e:
     scratch_bp_m8 = LOWORD((147 * j));
-    return (rglpshdef[i] + scratch_bp_m8);
+    return (SHDEF *)((uint8_t *)(rglpshdef[i]) + scratch_bp_m8);
 
 L_5e60:
     j = (j + 1);
@@ -5544,7 +5541,7 @@ L_69b7:
         goto L_69d3;
 
 L_69d3:
-    fstrcpy(&(lpsz[cLen]), " (2)");
+    fstrcpy((lpsz + cLen), " (2)");
     goto L_6a39;
 
 L_69f2:

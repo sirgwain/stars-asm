@@ -112,7 +112,7 @@ L_01c4:
         goto L_01cf;
 
 L_01cf:
-    fmemmove(&(lpth[1]), lpth, ((cThing - i) * 18));
+    fmemmove((lpth + 1), lpth, ((cThing - i) * 18));
 
 L_01f6:
     cThing = (cThing + 1);
@@ -128,7 +128,7 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    fmemmove(lpth, &(lpth[1]), (((cThing - ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
+    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
 
 L_0294:
     cThing = (cThing - 1);
@@ -192,7 +192,7 @@ L_0387:
         goto L_0391;
 
 L_0391:
-    ppt = (ppt + (-1));
+    ppt = (ppt - 1);
     goto L_037a;
 
 L_0398:
@@ -340,11 +340,11 @@ L_05a2:
         goto L_05ab;
 
 L_05ab:
-    c = _wsprintf(szWork, "%ldkT", LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, "%ldkT", l);
     goto L_05f2;
 
 L_05cd:
-    c = _wsprintf(szWork, "%ld of %ldkT", LOWORD(l), HIWORD(l), LOWORD(lMax), HIWORD(lMax));
+    c = _wsprintf(szWork, "%ld of %ldkT", l, lMax);
 
 L_05f2:
     l = GetTextExtent(hdc, szWork, c);

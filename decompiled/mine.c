@@ -507,7 +507,7 @@ L_0ad3:
 
 L_0adc:
     CchGetString(idsShipCountLd, szT);
-    c = _wsprintf(szWork, szT, LOWORD(cShip), HIWORD(cShip));
+    c = _wsprintf(szWork, szT, cShip);
     TextOut(hdc, (prc->left + 86), yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((lpfl->det == 0x7))
@@ -572,7 +572,7 @@ L_0d09:
 
 L_0d0c:
     c = CchGetString(t_merge_0d0c_0001, szT);
-    c = _wsprintf(szWork, szT, LOWORD(cMass), HIWORD(cMass));
+    c = _wsprintf(szWork, szT, cMass);
     TextOut(hdc, (prc->left + 86), yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((lpfl->det != 0x7))
@@ -700,7 +700,7 @@ L_0fce:
 
 L_1022:
     pszT = PszGetCompressedString(idsFleetCanDestroyLdMinesPerYear);
-    c = _wsprintf(szWork, pszT, LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, pszT, l);
     TextOut(hdc, (prc->left + 86), yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
 
@@ -1010,7 +1010,7 @@ L_1bda:
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldRadiusDLYLdMines, szT);
     sqrt((double)(lpth->thm.cMines));
-    c = _wsprintf(szWork, szT, LOWORD(__ftol()), LOWORD(lpth->thm.cMines), HIWORD(lpth->thm.cMines));
+    c = _wsprintf(szWork, szT, LOWORD(__ftol()), lpth->thm.cMines);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) == raMines))
@@ -1046,7 +1046,7 @@ L_1e04:
     pctDecay = (pctDecay + 25);
 
 L_1e0e:
-    lDecay = (int32_t)(((uint32_t)((lpth->thm.cMines * pctDecay)) / 0x64));
+    lDecay = (int32_t)(((uint32_t)((lpth->thm.cMines * pctDecay)) / 100));
     if ((lDecay < pctDecay))
         goto L_1e5d;
     else
@@ -1079,7 +1079,7 @@ L_1eae:
 
 L_1eb6:
     CchGetString(idsDecayRateLdYear, szT);
-    c = _wsprintf(szWork, szT, LOWORD(lDecay), HIWORD(lDecay));
+    c = _wsprintf(szWork, szT, lDecay);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((lpth->iplr != idPlayer))
@@ -1141,9 +1141,9 @@ L_2043:
     goto L_20fc;
 
 L_204c:
-    rgplr[idPlayer].rgEnvVar[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVar[c] & 0xff)));
-    rgplr[idPlayer].rgEnvVarMin[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVarMin[c] & 0xff)));
-    rgplr[idPlayer].rgEnvVarMax[c] = LOBYTE(((c & 0xff00) | (rgplr[pl.iPlayer].rgEnvVarMax[c] & 0xff)));
+    rgplr[idPlayer].rgEnvVar[c] = LOBYTE((int16_t)((((uint16_t)(c) & 0xff00) | ((uint16_t)(rgplr[pl.iPlayer].rgEnvVar[c]) & 0xff))));
+    rgplr[idPlayer].rgEnvVarMin[c] = LOBYTE((int16_t)((((uint16_t)(c) & 0xff00) | ((uint16_t)(rgplr[pl.iPlayer].rgEnvVarMin[c]) & 0xff))));
+    rgplr[idPlayer].rgEnvVarMax[c] = LOBYTE((int16_t)((((uint16_t)(c) & 0xff00) | ((uint16_t)(rgplr[pl.iPlayer].rgEnvVarMax[c]) & 0xff))));
     c = (c + 1);
 
 L_20fc:
@@ -1333,7 +1333,7 @@ L_25ae:
         goto L_2602;
 
 L_2602:
-    c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(idsCLd00), 0xb1, LOWORD(l), HIWORD(l)));
+    c = (c + _wsprintf(&(szWork[c]), PszGetCompressedString(idsCLd00), 0xb1, l));
     goto L_2650;
 
 L_2638:
@@ -2857,7 +2857,7 @@ L_4439:
 
 L_443c:
     iChecked = -1;
-    /* untranslated: part[0x0:4](rgi) = 0x1f40064 */
+    /* untranslated: part[0x0:4](rgi) = 0x1f40064 (aggregate-slice) */
     rgi[2] = 1000;
     rgi[4] = 5000;
     rgi[6] = 10000;
@@ -3533,6 +3533,8 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
     int16_t  iChecked;
     SCAN     scan;
     uint16_t t_merge_5017_0001;
+    int32_t *t_assign_1;
+    int32_t *t_assign_2;
     uint16_t t_merge_520d_0001;
     uint16_t t_merge_530f_0001;
 
@@ -3690,8 +3692,10 @@ L_50c6:
 
 L_50cd:
     c = (c + 1);
-    LOWORD(rgid[c]) = (lpth->idFull | 0x0);
-    HIWORD(rgid[c]) = 0x2000;
+    t_assign_1 = &(rgid[c]);
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    t_assign_2 = &(rgid[c]);
+    *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 
 L_50f3:
     lpth = (lpth + 1);
@@ -3981,7 +3985,7 @@ L_5503:
         goto L_5523;
 
 L_5523:
-    lQuan = (int32_t)(((uint32_t)((lQuanAct * lMineEff)) / 0xa));
+    lQuan = (int32_t)(((uint32_t)((lQuanAct * lMineEff)) / 10));
     goto L_5558;
 
 L_554c:
@@ -4075,7 +4079,7 @@ L_5723:
     lConc = 25;
 
 L_572d:
-    lLeft = (int32_t)(((int32_t)(((uint32_t)((lLevel * 12500)) / 0x100)) / lConc));
+    lLeft = (int32_t)(((int32_t)(((uint32_t)((lLevel * 12500)) / 256)) / lConc));
     if ((lLeft <= lQuanAct))
         goto L_577d;
     else

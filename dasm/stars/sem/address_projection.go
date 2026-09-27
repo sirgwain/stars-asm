@@ -465,18 +465,18 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 				// arbitrary partial load of the pointee object.
 				if partialPointerPointee(ptr, 0, width) {
 					whole := &Deref{Pointer: current, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
-					return &Part{Base: whole, ByteOff: 0, Width: width, TypeInfo: intTypeForWidth(width)}, true
+					return &Part{Base: whole, ByteOff: 0, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 				}
 
 				// The machine address was formed through this pointer. A width
 				// mismatch therefore describes an access to memory at *current,
 				// not a partial access to the pointer variable itself.
-				return &Deref{Pointer: current, Width: width, TypeInfo: intTypeForWidth(width)}, true
+				return &Deref{Pointer: current, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 			}
 		}
 
 		if base, ok := current.(LValue); ok && width > 0 && current.ExprType() != nil && current.ExprType().Bytes() > width {
-			return &Part{Base: base, ByteOff: 0, Width: width, TypeInfo: intTypeForWidth(width)}, true
+			return &Part{Base: base, ByteOff: 0, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 		}
 
 		return current, true
@@ -486,7 +486,7 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 		if _, field := current.(*FieldAccess); !field {
 			if partialPointerPointee(ptr, offset, width) {
 				whole := &Deref{Pointer: current, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
-				return &Part{Base: whole, ByteOff: offset, Width: width, TypeInfo: intTypeForWidth(width)}, true
+				return &Part{Base: whole, ByteOff: offset, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 			}
 
 			return &Deref{Pointer: current, ByteOff: offset, Width: width, TypeInfo: derefType(current, width)}, true
@@ -494,7 +494,7 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 	}
 
 	if base, ok := current.(LValue); ok && len(terms) == 0 && offset >= 0 {
-		return &Part{Base: base, ByteOff: offset, Width: width, TypeInfo: intTypeForWidth(width)}, true
+		return &Part{Base: base, ByteOff: offset, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 	}
 	return nil, false
 }
@@ -600,10 +600,24 @@ func signedIndexConst(value int) Expr {
 	return &Const{TypeInfo: typeinfo.I16, U64: uint64(value)}
 }
 
+// byteOffsetConst returns the value of a constant signed 16-bit byte offset,
+// accepting the negated form built by signedIndexConst.
+func byteOffsetConst(offset Expr) (int, bool) {
+	if neg, ok := offset.(*Unary); ok && neg.Op == OpNeg {
+		value, ok := byteOffsetConst(neg.X)
+		return -value, ok
+	}
+	c, ok := offset.(*Const)
+	if !ok {
+		return 0, false
+	}
+	return signedWordOffset(uint(c.U64)), true
+}
+
 // indexedFlexibleArrayFieldAtOffset recognizes a trailing array member before
 // pointer arithmetic folds its byte offset into an index of the parent struct.
 func indexedFlexibleArrayFieldAtOffset(strct *typeinfo.Struct, offset int, terms []ScaledTerm) (*typeinfo.StructField, int, bool) {
-	field, fieldOff, ok := zeroOrOneLengthArrayFieldAtOffset(strct, offset)
+	field, fieldOff, ok := strct.FlexibleArrayFieldAt(offset)
 	if !ok {
 		return nil, 0, false
 	}
@@ -723,7 +737,7 @@ func projectPointerAddress(pointer Expr, offset int, terms []ScaledTerm) (Expr, 
 	if steps == nil {
 		return pointer, true
 	}
-	return &Binary{TypeInfo: pointer.ExprType(), Op: OpAdd, LHS: pointer, RHS: steps}, true
+	return &AddressOf{Target: &ArrayIndex{Base: pointer, Index: steps, TypeInfo: ptr.Elem}, TypeInfo: pointer.ExprType()}, true
 }
 
 // appendSignedPointerStep adds or subtracts one logical pointer-step component.
@@ -774,7 +788,7 @@ func (c *machineConverter) consumeStructField(base Expr, typ typeinfo.Type, offs
 	matches := strct.FieldsContainingOffset(offset)
 	matches = c.unionFieldMatches(base, strct, matches)
 	if len(matches) == 0 {
-		field, fieldOff, ok := zeroOrOneLengthArrayFieldAtOffset(strct, offset)
+		field, fieldOff, ok := strct.FlexibleArrayFieldAt(offset)
 		if !ok {
 			return nil, 0, false
 		}
@@ -1081,24 +1095,6 @@ func consumeArrayConstIndex(base Expr, typ typeinfo.Type, offset int, width int,
 		return nil, 0, false
 	}
 	return &ArrayIndex{Base: base, Index: &Const{TypeInfo: typeinfo.I16, U64: uint64(index)}, TypeInfo: elem}, remainder, true
-}
-
-// zeroOrOneLengthArrayFieldAtOffset returns the flexible array field spanning offset.
-func zeroOrOneLengthArrayFieldAtOffset(strct *typeinfo.Struct, offset int) (*typeinfo.StructField, int, bool) {
-	for i := range strct.Fields {
-		field := &strct.Fields[i]
-		if !isZeroOrOneLengthArray(field.Type) || offset < field.Offset {
-			continue
-		}
-		return field, offset - field.Offset, true
-	}
-	return nil, 0, false
-}
-
-// isZeroOrOneLengthArray reports whether typ is a flexible array marker for this compiler (T[0] or T[1]).
-func isZeroOrOneLengthArray(typ typeinfo.Type) bool {
-	array, ok := typ.(*typeinfo.Array)
-	return ok && (array.Count == 0 || array.Count == 1)
 }
 
 // indexElementType returns the element type for semantic indexing.

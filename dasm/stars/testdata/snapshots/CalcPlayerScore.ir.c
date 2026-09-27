@@ -136,7 +136,7 @@ L_5adc:
     goto L_5b73;
 
 L_5aed:
-    lPower = LComputePower(&(rglpshdef[iPlr][i]));
+    lPower = LComputePower((rglpshdef[iPlr] + i));
     if ((lPower <= 0))
         goto L_5b2b;
     else

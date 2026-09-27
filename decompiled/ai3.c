@@ -362,12 +362,12 @@ L_0438:
     rgRecycleSBShdef[1] = 0x2;
     SplitOutShdefs(rgRecycleSBShdef);
     memset(rgRecycleSBShdef, 0, 0xa);
-    HIBYTE(LOWORD(l)) = 0x2;
-    LOBYTE(LOWORD(l)) = 0x2;
+    l = (int32_t)((((uint32_t)(l) & 0xffff00ff) | (((uint32_t)(0x2) & 0xff) << 0x8)));
+    l = (int32_t)((((uint32_t)(l) & 0xffffff00) | ((uint32_t)(0x2) & 0xff)));
     SplitOutShdefs(rgRecycleSBShdef);
     memset(rgRecycleSBShdef, 0, 0xa);
-    HIBYTE(fTonsOfMinerals) = 0x2;
-    LOBYTE(fTonsOfMinerals) = 0x2;
+    fTonsOfMinerals = (int16_t)((((uint16_t)(fTonsOfMinerals) & 0xff) | (((uint16_t)(0x2) & 0xff) << 0x8)));
+    fTonsOfMinerals = (int16_t)((((uint16_t)(fTonsOfMinerals) & 0xff00) | ((uint16_t)(0x2) & 0xff)));
     SplitOutShdefs(rgRecycleSBShdef);
 
 L_04ec:
@@ -2160,7 +2160,7 @@ L_2000:
     id = lpfl->idPlanet;
 
 L_200b:
-    lpb = (vlpbAiPlanet + ((id * 16) + 10));
+    lpb = (vlpbAiPlanet + (10 + (16 * id)));
     if ((*(lpb) == 0x0))
         goto L_2154;
     else

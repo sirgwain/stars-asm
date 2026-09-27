@@ -84,14 +84,19 @@ func (d valueDumper) value(value Value, depth int) string {
 // binary returns Go source for a binary value, retaining producer provenance
 // when the value came directly from an instruction.
 func (d valueDumper) binary(v *Binary, depth int) string {
-	if v.Producer == (Meta{}) {
+	if v.Producer == (Meta{}) && v.Type == nil {
 		return d.call("machine.BinaryVal", depth, dumpValueOp(v.Op), d.value(v.LHS, depth+1), d.value(v.RHS, depth+1))
 	}
 	fields := []string{
 		"Op: " + dumpValueOp(v.Op),
 		"LHS: " + d.value(v.LHS, depth+1),
 		"RHS: " + d.value(v.RHS, depth+1),
-		"Producer: " + d.meta(v.Producer, depth+1),
+	}
+	if v.Producer != (Meta{}) {
+		fields = append(fields, "Producer: "+d.meta(v.Producer, depth+1))
+	}
+	if v.Type != nil {
+		fields = append(fields, "Type: "+dumpType(v.Type))
 	}
 	return d.structLiteral("&machine.Binary", depth, fields)
 }

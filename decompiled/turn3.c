@@ -1927,7 +1927,7 @@ L_86a8:
         goto L_86b6;
 
 L_86b6:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 3)) / 0x4));
+    lAmt = (int32_t)(((uint32_t)((lAmt * 3)) / 4));
     goto L_87da;
 
 L_86e5:
@@ -1953,11 +1953,11 @@ L_8721:
         goto L_872b;
 
 L_872b:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 0xa));
+    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 10));
     goto L_87da;
 
 L_875a:
-    lAmt = (int32_t)(((int32_t)((lAmt * 4)) / 0x5));
+    lAmt = (int32_t)(((int32_t)((lAmt * 4)) / 5));
 
 L_8781:
     goto L_87da;
@@ -1969,7 +1969,7 @@ L_8784:
         goto L_878e;
 
 L_878e:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 0x14));
+    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 20));
     goto L_87da;
 
 L_87bd:

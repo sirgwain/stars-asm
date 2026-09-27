@@ -628,7 +628,7 @@ L_09e4:
     id = lpfl->idPlanet;
 
 L_09ef:
-    lpb = (vlpbAiPlanet + ((id * 16) + 10));
+    lpb = (vlpbAiPlanet + (10 + (16 * id)));
     if ((*(lpb) == 0x0))
         goto L_0a2c;
     else
@@ -2024,7 +2024,7 @@ L_2147:
         goto L_25dc;
 
 L_2159:
-    /* untranslated: part[0x0:4](cPacket) = 0x0 */
+    /* untranslated: part[0x0:4](cPacket) = 0x0 (aggregate-slice) */
     cPacket[2] = 0;
     lpciPlanDst = (vlpbAiData + ((lpplDst->id * 2) + 2));
     lpciPlanT = (vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2)));
@@ -2828,7 +2828,7 @@ L_2ffc:
 
 L_302d:
     iMaxMines = t_merge_302d_0001;
-    GetProductionCosts(lppl, &(pProdGlob[i]), rgMineCost, idPlayer, 1);
+    GetProductionCosts(lppl, (pProdGlob + i), rgMineCost, idPlayer, 1);
 
 L_305b:
     if ((pProdGlob[i].iItem != mdIdleFactory))
@@ -2854,7 +2854,7 @@ L_30ca:
 
 L_30fb:
     iMaxFactories = t_merge_30fb_0001;
-    GetProductionCosts(lppl, &(pProdGlob[i]), rgFactCost, idPlayer, 1);
+    GetProductionCosts(lppl, (pProdGlob + i), rgFactCost, idPlayer, 1);
 
 L_3129:
     if ((pProdGlob[i].iItem != mdIdleAlchemy))
@@ -2863,7 +2863,7 @@ L_3129:
         goto L_3159;
 
 L_3159:
-    GetProductionCosts(lppl, &(pProdGlob[i]), rgAlchCost, idPlayer, 1);
+    GetProductionCosts(lppl, (pProdGlob + i), rgAlchCost, idPlayer, 1);
 
 L_3184:
     if ((pProdGlob[i].iItem != mdIdleTerraform))

@@ -148,13 +148,23 @@ type AddressOf struct{ Target Expr }
 
 func (*AddressOf) expr() {}
 
+// Deref is an access through Pointer. Type is nil for the pointer's own
+// pointee; otherwise it is the integer type accessed at ByteOff raw bytes from
+// Pointer, so the displacement is never scaled by the pointee size and the
+// access does not assume alignment.
 type Deref struct {
 	Pointer Expr
 	ByteOff int
+	Type    typeinfo.Type
 }
 
 func (*Deref) expr() {}
 
-type PointerOffset struct{ Pointer, Offset Expr }
+// PointerOffset advances Pointer by Offset bytes. Type is the resulting
+// pointer type, or nil for a byte pointer.
+type PointerOffset struct {
+	Pointer, Offset Expr
+	Type            typeinfo.Type
+}
 
 func (*PointerOffset) expr() {}

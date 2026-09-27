@@ -160,7 +160,10 @@ L_033f:
     SetTextColor(hdc, 0x0);
     iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
     cch = CchGetString((iAction + 109), szWork);
-    /* untranslated: branch sext8to16(byte ds:[(cch - 1)+0x57a4]) != 0x2e ? L_0408 : L_03d1 */
+    if (((int16_t)(szWork[(cch - 1)]) != 46))
+        goto L_0408;
+    else
+        goto L_03d1;
 
 L_03d1:
     _wsprintf(&(szWork[(cch - 3)]), " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
@@ -972,7 +975,7 @@ L_11d5:
     dpPerShdefOld = 0;
 
 L_11db:
-    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(rgpct[ishdef]))) / 100)));
+    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(rgpct[ishdef]))) / 0x64)));
     if ((dpPerShdefNew != 0))
         goto L_1217;
     else
@@ -1005,7 +1008,7 @@ L_1245:
 
 L_124f:
     dp = ((uint32_t)(((int32_t)(dpPerShdefNew) * (int32_t)(cshT))) + (uint32_t)(((int32_t)(dpPerShdefOld) * (int32_t)(cshDamagedOld))));
-    pct = LOWORD((int32_t)(((uint32_t)(((int32_t)((dp / (int32_t)(cshT))) * 0x1f4)) / (int32_t)(dpShdef))));
+    pct = LOWORD((int32_t)(((uint32_t)(((int32_t)((dp / (int32_t)(cshT))) * 500)) / (int32_t)(dpShdef))));
     if ((pct != 0))
         goto L_12d4;
     else
@@ -1190,7 +1193,7 @@ L_171e:
         goto L_172b;
 
 L_172b:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
+    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 0x9c4)) /
                              (int32_t)(partSrc.pspecialsb->grAbility)));
     if ((pctSurviveT <= 0))
         goto TotalDeath;
@@ -1198,7 +1201,7 @@ L_172b:
         goto L_1798;
 
 L_1798:
-    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 0x2710));
+    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 10000));
 
 L_17be:
     if ((wt <= partDst.pspecialsb->grAbility))
@@ -1213,7 +1216,7 @@ L_17cd:
         goto L_17da;
 
 L_17da:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 2500)) /
+    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 0x9c4)) /
                              (int32_t)(partDst.pspecialsb->grAbility)));
     if ((pctSurviveT <= 0))
         goto TotalDeath;
@@ -1221,7 +1224,7 @@ L_17da:
         goto L_1847;
 
 L_1847:
-    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 0x2710));
+    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 10000));
 
 L_186d:
     *(ppctDmg) = LOWORD((int32_t)(((10000 - pctSurvive) / 0x64)));
@@ -1959,14 +1962,17 @@ L_25c4:
 }
 
 int32_t CMineFromLpfl(FLEET *lpfl) {
-    int32_t cMine;
-    int16_t j;
-    int16_t i;
-    HUL    *lphuldef;
-    PART    part;
-    int32_t cMineTot;
-    int16_t chs;
-    HS     *lphs;
+    int32_t  cMine;
+    int16_t  j;
+    int16_t  i;
+    HUL     *lphuldef;
+    PART     part;
+    int32_t  cMineTot;
+    int16_t  chs;
+    HS      *lphs;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_25d2:
     cMineTot = 0;
@@ -2017,7 +2023,11 @@ L_269a:
 
 L_26ac:
     part.hs.grhst = lphs->grhst;
-    HIWORD(part.hs) = *(lphs + 0x2);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphs->iItem;
+    t_fields_3 = lphs->cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmining->grAbility))));
 
@@ -2134,6 +2144,9 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
     int32_t  cMineTot;
     int16_t  chs;
     HS      *lphs;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_2886:
     cMineTot = 0;
@@ -2246,7 +2259,11 @@ L_29c5:
 
 L_29d7:
     part.hs.grhst = lphs->grhst;
-    HIWORD(part.hs) = *(lphs + 0x2);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphs->iItem;
+    t_fields_3 = lphs->cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmines->grAbility))));
     goto L_2988;
@@ -2374,6 +2391,9 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     int32_t  lPow;
     PART     part;
     uint16_t t_merge_2c18_0001;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_2bfa:
     if ((lphul->ihuldef < ihuldefOrbitalFort))
@@ -2414,7 +2434,11 @@ L_2c6b:
 
 L_2c77:
     part.hs.grhst = lphs->grhst;
-    HIWORD(part.hs) = *(lphs + 0x2);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphs->iItem;
+    t_fields_3 = lphs->cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     if (((part.pbeam->grfAbilities & 0x2) == 0x0))
         goto L_2cb2;
@@ -2748,8 +2772,11 @@ L_3164:
 }
 
 int16_t CPtsCloakFromLphs(HS *lphs) {
-    int16_t cPts;
-    PART    part;
+    int16_t  cPts;
+    PART     part;
+    HS      *t_fields_1;
+    uint32_t t_fields_2;
+    uint32_t t_fields_3;
 
 L_3170:
     cPts = 0;
@@ -2778,7 +2805,11 @@ L_31b6:
 
 L_31c8:
     part.hs.grhst = lphs->grhst;
-    HIWORD(part.hs) = *(lphs + 0x2);
+    t_fields_1 = &(part.hs);
+    t_fields_2 = lphs->iItem;
+    t_fields_3 = lphs->cItem;
+    t_fields_1->iItem = t_fields_2;
+    t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
     cPts = part.pspecial->grAbility;
 

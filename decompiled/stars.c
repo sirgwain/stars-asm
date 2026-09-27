@@ -183,7 +183,7 @@ L_0231:
     goto L_01a6;
 
 L_0238:
-    lpT = (lpT + (-1));
+    lpT = (lpT - 1);
     goto L_050d;
 
 L_023f:
@@ -289,7 +289,7 @@ L_034a:
 
 L_0360:
     *(pch) = 0;
-    lpT = (lpT + (-1));
+    lpT = (lpT - 1);
     if ((FSetUpBatchProcessing() == 0))
         goto L_050d;
     else
@@ -375,7 +375,7 @@ L_0450:
 
 L_0466:
     *(pch) = 0;
-    lpT = (lpT + (-1));
+    lpT = (lpT - 1);
     lSaltLast = LSaltFromSz(szPassLast);
     goto L_050d;
 

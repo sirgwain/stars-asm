@@ -135,8 +135,8 @@ L_030f:
     return 0;
 
 L_0312:
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x12c */
-    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0xdc */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xc] = 0x12c (invalid-destination) */
+    /* untranslated: HIWORD(lParam):[LOWORD(lParam)+0xe] = 0xdc (invalid-destination) */
     return 0;
 
 L_0337:
@@ -1600,7 +1600,7 @@ L_1ca1:
 
 L_1cc0:
     idsT = 965;
-    vcVal = LOWORD((int32_t)(((uint32_t)(((int32_t)(vcVal) * (int32_t)(game.cPlanMax))) / 100)));
+    vcVal = LOWORD((int32_t)(((uint32_t)(((int32_t)(vcVal) * (int32_t)(game.cPlanMax))) / 0x64)));
     goto L_1cf1;
 
 L_1ceb:
@@ -2085,7 +2085,7 @@ L_277e:
     iYearBase = (game.turn + 0xff9c);
 
 L_2787:
-    cYears = (uint32_t)(((int32_t)(((uint32_t)((game.turn + 0x4)) / 0x5)) * 0x5));
+    cYears = (uint32_t)(((int32_t)(((uint32_t)((game.turn + 0x4)) / 0x5)) * 5));
     if ((cYears <= 100))
         goto L_27d8;
     else
@@ -2102,7 +2102,7 @@ L_27d8:
         goto L_27ef;
 
 L_27ef:
-    cYears = (uint32_t)(((int32_t)(((cYears + 5) / 0xa)) * 0xa));
+    cYears = (uint32_t)(((int32_t)(((cYears + 5) / 0xa)) * 10));
 
 L_281f:
     xCur = rcChart.left;
@@ -2191,7 +2191,7 @@ L_2977:
         goto L_298a;
 
 L_298a:
-    cCur = LFetchScoreXVal(&(rgsxPlr[i][j]), gd.iCurGraph);
+    cCur = LFetchScoreXVal((rgsxPlr[i] + j), gd.iCurGraph);
     if ((cCur <= cScaleMax))
         goto L_2972;
     else
@@ -2309,7 +2309,7 @@ L_2b8a:
     goto L_2bd4;
 
 L_2b99:
-    cInc = (uint32_t)(((int32_t)(((int32_t)((cScaleMax / 12)) / 0x1f4)) * 0x1f4));
+    cInc = (uint32_t)(((int32_t)(((int32_t)((cScaleMax / 12)) / 500)) * 500));
 
 L_2bd4:
     xCur = (rcChart.left - 6);
@@ -2324,7 +2324,7 @@ L_2bef:
         goto L_2c30;
 
 L_2c30:
-    cch = _wsprintf(szWork, PCTLD, LOWORD(cCur), HIWORD(cCur));
+    cch = _wsprintf(szWork, PCTLD, cCur);
     RightTextOut(hdc, xCur, (yCur - ((int32_t)(dyArial8) / 2)), szWork, cch, 0);
     PatBlt(hdc, (rcChart.left - 2), yCur, (dx + 4), 1, PATCOPY);
     cCur = (cCur + cInc);
@@ -2428,19 +2428,19 @@ L_2e2e:
 
 L_2e41:
     lpsx = (rgsxPlr[i] + j);
-    if ((*(lpsx + 0x2) < iYearBase))
+    if ((lpsx->turn < iYearBase))
         goto L_2e29;
     else
         goto L_2e72;
 
 L_2e72:
-    if ((*(lpsx + 0x2) > (LOWORD(cYears) + iYearBase)))
+    if ((lpsx->turn > (LOWORD(cYears) + iYearBase)))
         goto L_2e29;
     else
         goto L_2e8b;
 
 L_2e8b:
-    dYear = (*(lpsx + 0x2) - iYearBase);
+    dYear = (lpsx->turn - iYearBase);
     cCur = LFetchScoreXVal(lpsx, gd.iCurGraph);
     pt.x = (LOWORD((int32_t)(((uint32_t)(((uint32_t)(dYear) * (int32_t)(dx))) / cYears))) + rcChart.left);
     pt.y = (rcChart.bottom - LOWORD((int32_t)(((uint32_t)((cCur * (int32_t)(dy))) / cScaleMax))));
@@ -2883,7 +2883,7 @@ L_3419:
         goto L_3430;
 
 L_3430:
-    lpsz = &(*(szDblDash));
+    lpsz = szDblDash;
     goto L_346a;
 
 L_343e:
@@ -4364,7 +4364,7 @@ char *PszGetTaskName(FLEET *lpfl, int16_t *picr) {
     ORDER          ord;
     int16_t        fPercent;
     char          *psz;
-    uint16_t       t_merge_577a_0001;
+    LPCSTR        *t_merge_577a_0001;
 
 L_53b8:
     icr = -1;
@@ -4657,14 +4657,14 @@ L_574d:
         goto L_576d;
 
 L_576d:
-    t_merge_577a_0001 = 0x160b;
+    t_merge_577a_0001 = "%s %dmg";
     goto L_577a;
 
 L_5775:
-    t_merge_577a_0001 = 0x1613;
+    t_merge_577a_0001 = "%s %dkT";
 
 L_577a:
-    /* untranslated: call _wsprintf(szWork, &dword ds:[t_merge_577a_0001], psz, ord.txp.rgia[icr].cQuan) -> callresult(int16_t) */
+    _wsprintf(szWork, t_merge_577a_0001, psz, ord.txp.rgia[icr].cQuan);
 
 L_578b:
     return szWork;
@@ -5020,8 +5020,8 @@ TryTier2:
     goto L_7448;
 
 L_5bfc:
-    lppl1 = (lpPlanets + *(arg1));
-    lppl2 = (lpPlanets + *(arg2));
+    lppl1 = (lpPlanets + RawLoad16(arg1));
+    lppl2 = (lpPlanets + RawLoad16(arg2));
     goto L_63a3;
 
 L_5c35:
@@ -5426,8 +5426,8 @@ L_63ab:
     }
 
 L_63d5:
-    lpfl1 = rglpfl[*(arg1)];
-    lpfl2 = rglpfl[*(arg2)];
+    lpfl1 = rglpfl[RawLoad16(arg1)];
+    lpfl2 = rglpfl[RawLoad16(arg2)];
     goto L_69bf;
 
 L_6422:
@@ -5715,8 +5715,8 @@ L_69c7:
     }
 
 L_69eb:
-    ibtl1 = *(arg1);
-    ibtl2 = *(arg2);
+    ibtl1 = RawLoad16(arg1);
+    ibtl2 = RawLoad16(arg2);
     lpbd1 = BtlDataGet(ibtl1);
     lpbd2 = BtlDataGet(ibtl2);
     if ((lpbd1 != 0x0))
@@ -5945,8 +5945,8 @@ L_6d35:
     }
 
 L_6d5f:
-    lpfl1 = rglpfl[*(arg1)];
-    lpfl2 = rglpfl[*(arg2)];
+    lpfl1 = rglpfl[RawLoad16(arg1)];
+    lpfl2 = rglpfl[RawLoad16(arg2)];
     goto L_741c;
 
 L_6dac:
@@ -7424,7 +7424,7 @@ L_858b:
 
 L_859f:
     fFileErrSilent = 1;
-    _wsprintf(szWork, "%s.map", &(szBase));
+    _wsprintf(szWork, "%s.map", szBase);
     StreamOpen(szWork, 4114);
     fOpen = 1;
     RgToStream("#\tX\tY\tName\r\n", 0xc);
@@ -7463,7 +7463,7 @@ L_867a:
 
 L_867d:
     ids = t_merge_867d_0001;
-    _wsprintf(szWork, PszGetCompressedString(ids), &(szBase));
+    _wsprintf(szWork, PszGetCompressedString(ids), szBase);
     if ((fSuccess == 0))
         goto L_86c1;
     else
@@ -7553,11 +7553,11 @@ L_8770:
         goto L_878e;
 
 L_878e:
-    _wsprintf(szFile, "%s.p%d", &(szBase), (idPlayer + 1));
+    _wsprintf(szFile, "%s.p%d", szBase, (idPlayer + 1));
     goto L_87d4;
 
 L_87b6:
-    _wsprintf(szFile, "%s.pla", &(szBase));
+    _wsprintf(szFile, "%s.pla", szBase);
 
 L_87d4:
     StreamOpen(szFile, 4114);
@@ -8016,7 +8016,7 @@ L_94c2:
 
 L_94c5:
     ids = t_merge_94c5_0001;
-    _wsprintf(szWork, PszGetCompressedString(ids), &(szFile));
+    _wsprintf(szWork, PszGetCompressedString(ids), szFile);
     if ((fSuccess == 0))
         goto L_950b;
     else
@@ -8105,11 +8105,11 @@ L_95c2:
         goto L_95e0;
 
 L_95e0:
-    _wsprintf(szFile, "%s.f%d", &(szBase), (idPlayer + 1));
+    _wsprintf(szFile, "%s.f%d", szBase, (idPlayer + 1));
     goto L_9626;
 
 L_9608:
-    _wsprintf(szFile, "%s.fle", &(szBase));
+    _wsprintf(szFile, "%s.fle", szBase);
 
 L_9626:
     StreamOpen(szFile, 4114);
@@ -8490,7 +8490,7 @@ L_a154:
 
 L_a157:
     ids = t_merge_a157_0001;
-    _wsprintf(szWork, PszGetCompressedString(ids), &(szFile));
+    _wsprintf(szWork, PszGetCompressedString(ids), szFile);
     if ((fSuccess == 0))
         goto L_a19d;
     else

@@ -270,7 +270,7 @@ L_b4a1:
         goto L_b4bd;
 
 L_b4bd:
-    cKillPeopleS = (int32_t)(((uint32_t)((lppl->rgwtMin[3] * dmgPeopleSmart)) / 0x3e8));
+    cKillPeopleS = (int32_t)(((uint32_t)((lppl->rgwtMin[3] * dmgPeopleSmart)) / 1000));
     if ((cKillPeopleS < lppl->rgwtMin[3]))
         goto L_b51f;
     else

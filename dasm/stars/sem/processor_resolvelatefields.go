@@ -68,6 +68,11 @@ func (p *resolveLateFieldsProcessor) rewriter() *semRewriter {
 		},
 		lvalue: func(w *semRewriter, value LValue) (LValue, bool, bool) {
 			value, childChanged := w.rewriteLValueChildren(value)
+			if deref, ok := value.(*Deref); ok {
+				if field, ok := p.resolveUnionDeref(deref); ok {
+					return field, true, true
+				}
+			}
 
 			// A Part whose semantic type is already narrower than its physical
 			// width carries enough information to select that exact field.
@@ -224,4 +229,24 @@ func unwrapSemanticLateFieldValue(expr Expr) Expr {
 			return expr
 		}
 	}
+}
+
+// resolveUnionDeref resolves a dereference inside a struct whose union
+// ambiguity is settled by the union context or a configured union rule to one
+// exact-width, non-bitfield member.
+func (p *resolveLateFieldsProcessor) resolveUnionDeref(deref *Deref) (LValue, bool) {
+	ptr, ok := deref.Pointer.ExprType().(*typeinfo.Pointer)
+	if !ok {
+		return nil, false
+	}
+	strct, ok := ptr.Elem.(*typeinfo.Struct)
+	if !ok || deref.ByteOff < 0 || deref.Width <= 0 || deref.ByteOff+deref.Width > strct.Bytes() {
+		return nil, false
+	}
+	converter := machineConverter{ctx: p.ctx}
+	matches := converter.unionFieldMatches(pointeeLValue(deref.Pointer, strct), strct, strct.FieldsContainingOffset(deref.ByteOff))
+	if len(matches) != 1 || matches[0].Off != 0 || matches[0].Field.Bitfield != nil || matches[0].Field.Type.Bytes() != deref.Width {
+		return nil, false
+	}
+	return bitfieldFieldAccess(deref.Pointer, matches[0].Field), true
 }

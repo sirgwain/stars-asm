@@ -6,7 +6,9 @@ import (
 )
 
 type resolveLateBitfieldsProcessor struct {
-	ctx *FuncContext
+	ctx      *FuncContext
+	names    map[string]bool
+	nextTemp int
 }
 
 // semanticBitRange describes a physical bit range extracted from semantic storage.
@@ -24,7 +26,60 @@ type semanticBitfieldWrite struct {
 
 // ProcessBlock resolves bitfield extracts revealed by semantic scratch-slot substitution.
 func (p *resolveLateBitfieldsProcessor) ProcessBlock(result *Result, f Func, b Block) (Block, bool) {
-	effects, changed := p.rewriter().rewriteEffects(b.Effects)
+	if p.names == nil {
+		p.names = make(map[string]bool)
+		for _, block := range f.Blocks {
+			for _, effect := range block.Effects {
+				walkEffect(effect, func(e Expr) {
+					switch v := e.(type) {
+					case *Temp:
+						p.names[v.Name] = true
+					case *Local:
+						p.names[v.Name] = true
+					case *Global:
+						p.names[v.Name] = true
+					}
+				})
+			}
+		}
+	}
+	var expanded []Effect
+	changed := false
+	for i := 0; i < len(b.Effects); i++ {
+		effect := b.Effects[i]
+		if a, ok := effect.(*Assign); ok {
+			if i+1 < len(b.Effects) {
+				if next, ok := b.Effects[i+1].(*Assign); ok {
+					if copy, ok := coalesceAggregateCopy(a, next); ok {
+						expanded = append(expanded, copy)
+						changed = true
+						i++
+						continue
+					}
+				}
+			}
+			rewriter := p.rewriter()
+			rewritten, didRewrite, _ := rewriter.effect(rewriter, a)
+			if didRewrite {
+				effect = rewritten
+				changed = true
+				a = rewritten.(*Assign)
+			}
+			if packed, ok := packAggregateSource(a); ok {
+				effect, a = packed, packed
+				changed = true
+			}
+			if writes, ok := p.expandAggregateWrite(a); ok {
+				expanded = append(expanded, writes...)
+				changed = true
+				continue
+			}
+		}
+		expanded = append(expanded, effect)
+	}
+	effects, rewritten := p.rewriter().rewriteEffects(expanded)
+	changed = changed || rewritten
+
 	if !changed {
 		return b, false
 	}
@@ -65,6 +120,29 @@ func (p *resolveLateBitfieldsProcessor) rewriter() *semRewriter {
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			if field, ok := p.resolve(expr); ok {
 				return field, true, true
+			}
+			switch value := expr.(type) {
+			case *Words:
+				// Word pairs that reassemble one whole object stay a plain object read.
+				if len(value.Words) == 2 {
+					if _, ok := collapseWideWordPair(value.Words[0], value.Words[1]); ok {
+						return expr, false, true
+					}
+				}
+			case *Part, *Word, *Deref:
+				// Only partial slices are packed; whole-object reads stay object reads.
+				if _, typ, start, width, ok := aggregateStorageRange(expr); ok && width <= 32 && (start != 0 || width != typ.Bytes()*8) {
+					if packed, ok := aggregateBits(expr, 0, width); ok {
+						return packed, true, true
+					}
+				}
+			case *Binary:
+				// Arithmetic on a whole struct operand exposes its packed representation.
+				if value.LHS.ExprType().Kind() == typeinfo.KStruct || value.RHS.ExprType().Kind() == typeinfo.KStruct {
+					if packed, ok := aggregateBits(expr, 0, expr.ExprType().Bytes()*8); ok {
+						return packed, true, true
+					}
+				}
 			}
 			return expr, false, false
 		},

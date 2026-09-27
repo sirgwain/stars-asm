@@ -346,7 +346,7 @@ L_131c:
     goto L_1398;
 
 L_1324:
-    AddCost = ((int32_t)(((uint32_t)((rgCost[i] * pct)) / 0x64)) - rgCostPaid[i]);
+    AddCost = ((int32_t)(((uint32_t)((rgCost[i] * pct)) / 100)) - rgCostPaid[i]);
     rgRes[i] = (rgRes[i] - AddCost);
     rgCostPaid[i] = (rgCostPaid[i] + AddCost);
     i = (i + 1);
@@ -458,7 +458,7 @@ L_15ec:
 L_15f8:
     pctT = t_merge_15f8_0001;
     pprodPartial->pct = LOWORD(pctT);
-    rgRes[3] = (rgRes[3] - (int32_t)(((uint32_t)((pctT * lAlchCost)) / 0x64)));
+    rgRes[3] = (rgRes[3] - (int32_t)(((uint32_t)((pctT * lAlchCost)) / 100)));
 
 L_1656:
     goto L_1712;

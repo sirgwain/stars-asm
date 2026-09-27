@@ -249,7 +249,7 @@ func machineValueType(value machine.Value) typeinfo.Type {
 	case *machine.Cast:
 		return v.To
 	case *machine.SignExtendValue:
-		return signedIntTypeForWidth(v.ToBits / 8)
+		return typeinfo.IntForWidth(v.ToBits / 8)
 	default:
 		return nil
 	}

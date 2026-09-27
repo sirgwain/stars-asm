@@ -1299,7 +1299,7 @@ L_1a9a:
     fSellOff = 1;
 
 L_1ab5:
-    lSell = (int32_t)(((uint32_t)((lpfl->rgwtMin[i] * pctSell)) / 0x64));
+    lSell = (int32_t)(((uint32_t)((lpfl->rgwtMin[i] * pctSell)) / 100));
     if ((lSell != 0))
         goto L_1b0e;
     else
@@ -1386,7 +1386,7 @@ L_1cf1:
 L_1d05:
     i = Random(3);
     pctSell = (int32_t)((Random(41) + 5));
-    lSell = (int32_t)(((uint32_t)((lppl->rgwtMin[i] * pctSell)) / 0x64));
+    lSell = (int32_t)(((uint32_t)((lppl->rgwtMin[i] * pctSell)) / 100));
     if ((lSell <= 0))
         goto L_1dfe;
     else
@@ -3040,11 +3040,11 @@ L_388e:
 
 L_38a9:
     t_scratch_m4 = LOWORD(((ptok->ishdef + 0xfff0) * 0x93));
-    return (rglpshdefSB[ptok->iplr] + t_scratch_m4);
+    return (SHDEF *)((uint8_t *)(rglpshdefSB[ptok->iplr]) + t_scratch_m4);
 
 L_38e3:
     t_scratch_m4 = LOWORD((ptok->ishdef * 0x93));
-    return (rglpshdef[ptok->iplr] + t_scratch_m4);
+    return (SHDEF *)((uint8_t *)(rglpshdef[ptok->iplr]) + t_scratch_m4);
 }
 
 int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
@@ -3181,7 +3181,7 @@ L_3b70:
         goto L_3bed;
 
 L_3bc4:
-    *(lpbBattleT) = 0xffff;
+    RawStore16(lpbBattleT, 0xffff);
     FreeLp(lpbBattleT, htBattle);
     lpbBattleT = 0x0;
 
@@ -3192,7 +3192,7 @@ L_3bed:
         goto L_3c0a;
 
 L_3c01:
-    *(lpbBattleCur) = 0xffff;
+    RawStore16(lpbBattleCur, 0xffff);
 
 L_3c0a:
     DoBombing();
@@ -5369,6 +5369,8 @@ int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack) {
     POINT    rgptDeltas[2];
     uint16_t t_scratch_m5c;
     uint16_t t_scratch_m5c_2;
+    int32_t *t_assign_1;
+    int32_t *t_assign_2;
     int16_t  t_scratch_m5c_3;
     uint16_t t_merge_6353_0001;
     int16_t  t_643a;
@@ -5532,8 +5534,10 @@ L_6176:
         goto L_619c;
 
 L_619c:
-    LOWORD(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]) = LOWORD(score);
-    HIWORD(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]) = HIWORD(score);
+    t_assign_1 = &(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]);
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(LOWORD(score)) & 0xffff)));
+    t_assign_2 = &(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]);
+    *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(HIWORD(score)) & 0xffff) << 0x10)));
 
 L_61c9:
     if ((score < scoreBest))
@@ -6011,7 +6015,7 @@ L_682e:
         goto L_6837;
 
 L_6837:
-    pctHit = (100 - (int32_t)(((uint32_t)(((100 - (int32_t)(pctBase)) * (int32_t)((100 - pctBC)))) / 100)));
+    pctHit = (100 - (int32_t)(((uint32_t)(((100 - (int32_t)(pctBase)) * (int32_t)((100 - pctBC)))) / 0x64)));
     goto L_68c4;
 
 L_6877:
@@ -6052,7 +6056,7 @@ L_6905:
         goto L_691d;
 
 L_691d:
-    cTorpHit = (int32_t)(((uint32_t)((cTorpBase * pctHit)) / 0x64));
+    cTorpHit = (int32_t)(((uint32_t)((cTorpBase * pctHit)) / 100));
     goto L_699c;
 
 L_6946:
@@ -6547,11 +6551,11 @@ L_7293:
         goto L_72e0;
 
 L_72ae:
-    nts = (int32_t)(((int32_t)(((uint32_t)((dpArmorLeft * 100)) * 0x2)) / pctHit));
+    nts = (int32_t)(((int32_t)(((uint32_t)((dpArmorLeft * 100)) * 2)) / pctHit));
     goto L_7307;
 
 L_72e0:
-    nts = (uint32_t)(((int32_t)((dpArmorLeft / pctHit)) * 0xc8));
+    nts = (uint32_t)(((int32_t)((dpArmorLeft / pctHit)) * 200));
 
 L_7307:
     if ((dpShieldLeft < 100000))
@@ -6564,11 +6568,10 @@ L_731f:
     goto L_73ea;
 
 L_7386:
-    nds = (uint32_t)(((int32_t)((dpShieldLeft / ((int32_t)((pctHit / 2)) + (int32_t)(((100 - pctHit) / 0x8))))) * 0x64));
+    nds = (uint32_t)(((int32_t)((dpShieldLeft / ((int32_t)((pctHit / 2)) + (int32_t)(((100 - pctHit) / 0x8))))) * 100));
 
 L_73ea:
-    ntk =
-        (int32_t)(((uint32_t)(((dpArmorLeft - (int32_t)(((uint32_t)((nds * pctHit)) / 0xc8))) * 0x64)) / (uint32_t)((pctHit * (int32_t)((fCapMissile + 1))))));
+    ntk = (int32_t)(((uint32_t)(((dpArmorLeft - (int32_t)(((uint32_t)((nds * pctHit)) / 200))) * 0x64)) / (uint32_t)((pctHit * (int32_t)((fCapMissile + 1))))));
     if ((nts < (nds + ntk)))
         goto L_746c;
     else
@@ -6699,7 +6702,7 @@ L_7639:
         goto L_7646;
 
 L_7646:
-    dp = (int32_t)(((uint32_t)((dp * (0x64 - (int32_t)(((uint32_t)(((int32_t)(dz) * 10)) / (int32_t)(part.pbeam->dRangeMax)))))) / 0x64));
+    dp = (int32_t)(((uint32_t)((dp * (100 - (int32_t)(((uint32_t)(((int32_t)(dz) * 10)) / (int32_t)(part.pbeam->dRangeMax)))))) / 0x64));
 
 L_7696:
     if ((part.pbeam->dp < 200))
@@ -6860,7 +6863,7 @@ L_79f6:
 L_7a1a:
     cTorpFire = (int32_t)(((((uint32_t)(((int32_t)(i)*cTorpHit)) + cTorpBase) + 0xffffffff) / cTorpBase));
     cTorpMiss = ((int32_t)(i)-cTorpFire);
-    dpShieldCur = (dpShieldLeft - (int32_t)(((uint32_t)((cTorpMiss * dp)) / 0x8)));
+    dpShieldCur = (dpShieldLeft - (int32_t)(((uint32_t)((cTorpMiss * dp)) / 8)));
     if ((dpShieldCur < 0))
         goto L_7aa1;
     else
@@ -6870,8 +6873,8 @@ L_7aa1:
     dpShieldCur = 0;
 
 L_7aab:
-    dpShieldCur = (dpShieldCur - (int32_t)(((uint32_t)((cTorpFire * dp)) / 0x2)));
-    dpHitArmor = (int32_t)(((uint32_t)((cTorpFire * dp)) / 0x2));
+    dpShieldCur = (dpShieldCur - (int32_t)(((uint32_t)((cTorpFire * dp)) / 2)));
+    dpHitArmor = (int32_t)(((uint32_t)((cTorpFire * dp)) / 2));
     if ((dpShieldCur < 0))
         goto L_7b0e;
     else
@@ -6896,7 +6899,7 @@ L_7b3c:
         goto L_7b55;
 
 L_7b55:
-    dpCol = (int32_t)(((uint32_t)((cTorpMiss * dp)) / 0x8));
+    dpCol = (int32_t)(((uint32_t)((cTorpMiss * dp)) / 8));
     if ((dpCol <= 0))
         goto L_7bca;
     else
@@ -6912,7 +6915,7 @@ L_7bc6:
     ctokDamaged = (ctokDamaged + 1);
 
 L_7bca:
-    dpT = (int32_t)(((uint32_t)((cTorpFire * dp)) / 0x2));
+    dpT = (int32_t)(((uint32_t)((cTorpFire * dp)) / 2));
     cTorpBase = (cTorpFire + cTorpMiss);
     FDamageTok(ptokTarget, itokTarget, &(dpT), dpT, grfWeapon, 0, &(cTorpBase));
     ctokDamaged = (ctokDamaged + 1);
@@ -7461,7 +7464,7 @@ L_875d:
     ddpOrig = 0;
 
 L_876c:
-    pwLosses = &(vrgPlrLosses[((ptok->iplr << 0x4) + ishdef)]);
+    pwLosses = (vrgPlrLosses + ((ptok->iplr << 0x4) + ishdef));
     *(pwLosses) = (*(pwLosses) | 0x8000);
     if ((cshOrigDamaged == 0))
         goto L_8836;
@@ -7605,7 +7608,7 @@ L_898b:
         goto L_8994;
 
 L_8994:
-    pctSh = LOWORD((int32_t)(((((uint32_t)(((int32_t)(cshOrigDamaged) * 100)) + (int32_t)(csh)) - 1) / (int32_t)(csh))));
+    pctSh = LOWORD((int32_t)(((((uint32_t)(((int32_t)(cshOrigDamaged) * 100)) + (int32_t)(csh)) + 0xffffffff) / (int32_t)(csh))));
     pctDp = ptok->dv.pctDp;
     goto L_89f1;
 
@@ -7836,7 +7839,7 @@ L_8c82:
 L_8c99:
     lpbSav = lpbBattleCur;
     lpbBattleCur = lpbBattleT;
-    lpbMax = (lpbBattleT + (-72));
+    lpbMax = (lpbBattleT - 72);
     memset(rgPlrLosses, 0, 0x200);
     vrgPlrLosses = rgPlrLosses;
     memset(rgfInit, 0, 0x40);
@@ -7992,7 +7995,7 @@ L_9039:
         goto L_9072;
 
 L_9072:
-    RegenShield(&(vrgtok[itok]));
+    RegenShield((vrgtok + itok));
 
 L_908d:
     itok = (itok + 1);
@@ -8181,7 +8184,7 @@ L_9498:
     goto L_91a1;
 
 L_94a9:
-    lpbBattleCur = (lpbBattleCur + (-6));
+    lpbBattleCur = (lpbBattleCur - 6);
 
 L_94ae:
     goto L_91a1;
@@ -8341,7 +8344,7 @@ L_9700:
         goto L_97d9;
 
 L_97d9:
-    lpbBattleCur = (lpbBattleCur + (-6));
+    lpbBattleCur = (lpbBattleCur - 6);
     goto L_97f5;
 
 L_97e1:
@@ -8390,7 +8393,7 @@ L_9834:
         goto L_98d9;
 
 L_98c2:
-    *(lpbSav) = 0xffff;
+    RawStore16(lpbSav, 0xffff);
     lpbBattleT = 0x0;
     goto L_990b;
 
@@ -8994,7 +8997,7 @@ L_a087:
         goto L_a090;
 
 L_a090:
-    cUs = (cUs + lpfl->rgcsh[(((pwUs - rgPlrLosses) >> 0x1) - (lpfl->iPlayer << 0x4))]);
+    cUs = (cUs + lpfl->rgcsh[((((uint8_t *)(pwUs) - (uint8_t *)(rgPlrLosses)) >> 0x1) - (lpfl->iPlayer << 0x4))]);
     goto L_a114;
 
 L_a0cf:
@@ -9004,7 +9007,7 @@ L_a0cf:
         goto L_a0d8;
 
 L_a0d8:
-    cThem = (cThem + lpfl->rgcsh[(((pwThem - rgPlrLosses) >> 0x1) - (lpfl->iPlayer << 0x4))]);
+    cThem = (cThem + lpfl->rgcsh[((((uint8_t *)(pwThem) - (uint8_t *)(rgPlrLosses)) >> 0x1) - (lpfl->iPlayer << 0x4))]);
 
 L_a114:
     lpfl = lpfl->lpflNext;
@@ -9026,7 +9029,7 @@ L_a14d:
         goto L_a156;
 
 L_a156:
-    i = ((pwUs - rgPlrLosses) >> 0x1);
+    i = (((uint8_t *)(pwUs) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     i = (((i & 0xf0) << 0x1) | (i & 0xf));
     goto L_a190;
 
@@ -9040,7 +9043,7 @@ L_a190:
         goto L_a199;
 
 L_a199:
-    j = ((pwThem - rgPlrLosses) >> 0x1);
+    j = (((uint8_t *)(pwThem) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     j = (((j & 0xf0) << 0x1) | (j & 0xf));
     goto L_a1d3;
 
@@ -9257,7 +9260,7 @@ L_a398:
         goto L_a3a1;
 
 L_a3a1:
-    i = ((pwUs - rgPlrLosses) >> 0x1);
+    i = (((uint8_t *)(pwUs) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     i = (((i & 0xf0) << 0x1) | (i & 0xf));
     goto L_a3db;
 
@@ -9271,7 +9274,7 @@ L_a3db:
         goto L_a3e4;
 
 L_a3e4:
-    j = ((pwThem - rgPlrLosses) >> 0x1);
+    j = (((uint8_t *)(pwThem) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     j = (((j & 0xf0) << 0x1) | (j & 0xf));
     goto L_a41e;
 
@@ -9494,7 +9497,7 @@ L_a67a:
     goto L_a6b4;
 
 L_a695:
-    j = ((pwThem - rgPlrLosses) >> 0x1);
+    j = (((uint8_t *)(pwThem) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     j = (((j & 0xf0) << 0x1) | (j & 0xf));
 
 L_a6b4:
@@ -9514,7 +9517,7 @@ L_a6c8:
     goto L_a702;
 
 L_a6e3:
-    i = ((pwUs - rgPlrLosses) >> 0x1);
+    i = (((uint8_t *)(pwUs) - (uint8_t *)(rgPlrLosses)) >> 0x1);
     i = (((i & 0xf0) << 0x1) | (i & 0xf));
 
 L_a702:
@@ -10257,7 +10260,7 @@ L_b4a1:
         goto L_b4bd;
 
 L_b4bd:
-    cKillPeopleS = (int32_t)(((uint32_t)((lppl->rgwtMin[3] * dmgPeopleSmart)) / 0x3e8));
+    cKillPeopleS = (int32_t)(((uint32_t)((lppl->rgwtMin[3] * dmgPeopleSmart)) / 1000));
     if ((cKillPeopleS < lppl->rgwtMin[3]))
         goto L_b51f;
     else

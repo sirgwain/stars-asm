@@ -57,6 +57,26 @@ type Bitfield struct {
 	BitWidth    int
 }
 
+// Signed reports whether the bitfield's declared base type is signed.
+func (b *Bitfield) Signed() bool {
+	p, ok := b.BaseType.(*Primitive)
+	return ok && p.Signed
+}
+
+// BitRange returns the field's first bit within its struct and its bit width.
+func (f StructField) BitRange() (start, width int) {
+	if f.Bitfield != nil {
+		return f.Offset*8 + f.Bitfield.BitOffset, f.Bitfield.BitWidth
+	}
+	return f.Offset * 8, f.Type.Bytes() * 8
+}
+
+// FieldBitRange is a declared field and its physical bit range in a struct.
+type FieldBitRange struct {
+	Field        *StructField
+	Start, Width int
+}
+
 // StructFieldChunkKind identifies a normalized layout chunk.
 type StructFieldChunkKind int
 
@@ -385,4 +405,71 @@ func overlapRegionPaths(chunks []StructFieldChunk, region StructOverlapRegion) [
 		paths = append(paths, current)
 	}
 	return paths
+}
+
+// ScalarBitPartition selects an unambiguous, complete partition of a bit range
+// into integer fields. Declared bitfields take precedence over the ordinary
+// union members that alias the same bits. Padding, pointers, arrays and
+// competing bitfield layouts leave the range unpartitioned.
+func (s *Struct) ScalarBitPartition(start, width int) ([]FieldBitRange, bool) {
+	if start < 0 || width <= 0 || start+width > s.Bytes()*8 {
+		return nil, false
+	}
+	var fields []FieldBitRange
+	for i := range s.Fields {
+		f := &s.Fields[i]
+		if f.Type.Kind() != KInt {
+			continue
+		}
+		pos, size := f.BitRange()
+		if size <= 0 || size > 32 || pos >= start+width || pos+size <= start {
+			continue
+		}
+		fields = append(fields, FieldBitRange{f, pos, size})
+	}
+	var selected []FieldBitRange
+	for _, f := range fields {
+		alias := false
+		if f.Field.Bitfield == nil {
+			for _, other := range fields {
+				if other.Field.Bitfield != nil && other.Start < f.Start+f.Width && other.Start+other.Width > f.Start {
+					alias = true
+					break
+				}
+			}
+		}
+		if !alias {
+			selected = append(selected, f)
+		}
+	}
+	sort.Slice(selected, func(i, j int) bool { return selected[i].Start < selected[j].Start })
+	cursor := start
+	for _, f := range selected {
+		lo, hi := max(start, f.Start), min(start+width, f.Start+f.Width)
+		if lo != cursor {
+			return nil, false
+		}
+		cursor = hi
+	}
+	return selected, cursor == start+width
+}
+
+// FlexibleArrayFieldAt returns the flexible array field (T[0] or T[1] for this
+// compiler) spanning offset, and the offset within that field.
+func (s *Struct) FlexibleArrayFieldAt(offset int) (*StructField, int, bool) {
+	for i := range s.Fields {
+		field := &s.Fields[i]
+		if !IsFlexibleArray(field.Type) || offset < field.Offset {
+			continue
+		}
+		return field, offset - field.Offset, true
+	}
+	return nil, 0, false
+}
+
+// IsFlexibleArray reports whether typ is a flexible array marker for this
+// compiler (T[0] or T[1]).
+func IsFlexibleArray(typ Type) bool {
+	array, ok := typ.(*Array)
+	return ok && (array.Count == 0 || array.Count == 1)
 }

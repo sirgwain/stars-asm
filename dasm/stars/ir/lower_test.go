@@ -120,10 +120,15 @@ func TestLowerRecoveredStorage(t *testing.T) {
 	if fn.Locals[0].Name != local.Name || fn.Locals[0].Type != local.Type {
 		t.Fatal("recovered local declaration lost its type")
 	}
-	byteView := fn.Blocks[0].Stmts[1].(*Assign).Dst.(*Macro)
-	if byteView.Name != "HIBYTE" || byteView.Args[0].(*Macro).Name != "HIWORD" {
-		t.Fatal("wrong byte lane")
+	assign := fn.Blocks[0].Stmts[1].(*Assign)
+	if assign.Dst.(*Var).Name != tmp.Name {
+		t.Fatal("partial write did not target containing scalar")
 	}
+	replacement := assign.Src.(*Binary)
+	if replacement.LHS.(*Binary).RHS.(*IntConst).Value != 0x00ffffff {
+		t.Fatal("wrong preserve mask")
+	}
+
 }
 
 // TestAnalyzeReportsUnsupportedNodePath verifies untranslated metrics describe
@@ -165,5 +170,34 @@ func TestLowerTableJumpPreservesDispatch(t *testing.T) {
 	}
 	if jump.Index.(*Var).Name != "index" || len(jump.Labels) != 3 || jump.Labels[0] != "L_1010" || jump.Labels[1] != "L_1020" || jump.Labels[2] != "L_1010" {
 		t.Fatalf("table jump = %#v", jump)
+	}
+}
+
+// TestLowerRejectsUnresolvedWrites keeps aggregate and pointer fragments, invalid
+// nested ranges, and symbolic arithmetic out of emitted assignment destinations.
+func TestLowerRejectsUnresolvedWrites(t *testing.T) {
+	word := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "word", Type: typeinfo.U32}}
+	array := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "buffer", Type: &typeinfo.Array{Elem: typeinfo.U8, Count: 4}}}
+	pointer := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "pointer", Type: &typeinfo.Pointer{Elem: typeinfo.U16, Class: typeinfo.PtrFar}}}
+	tests := []struct {
+		name    string
+		dst     sem.LValue
+		failure string
+	}{
+		{"aggregate", &sem.Part{Base: array, ByteOff: 2, Width: 2, TypeInfo: typeinfo.U16}, "aggregate-slice"},
+		{"pointer", &sem.Part{Base: pointer, ByteOff: 2, Width: 2, TypeInfo: typeinfo.U16}, "pointer-fragment"},
+		{"nested range", &sem.Part{Base: &sem.Part{Base: word, ByteOff: 0, Width: 2, TypeInfo: typeinfo.U16}, ByteOff: 1, Width: 2, TypeInfo: typeinfo.U16}, "part"},
+		{"symbolic offset", &sem.SymbolRef{Path: &symresolve.SymbolOffset{Base: &symresolve.SymbolRoot{Symbol: &word.FunctionVar}, Offset: 1, Result: typeinfo.U8}}, "invalid-destination"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fn := Lower(sem.Func{Blocks: []sem.Block{{ID: 1, Effects: []sem.Effect{&sem.Assign{Dst: tt.dst, Src: &sem.Const{TypeInfo: typeinfo.U16, U64: 0x103}}}}}}, &typeinfo.Function{Name: "InvalidWrite", Ret: typeinfo.U16, Vars: []typeinfo.FunctionVar{word.FunctionVar, array.FunctionVar, pointer.FunctionVar}})
+			if _, ok := fn.Blocks[0].Stmts[0].(*Comment); !ok {
+				t.Fatal("invalid destination emitted as a write")
+			}
+			if fn.Analyze().UntranslatedFailures["assign.dst:"+tt.failure] == 0 {
+				t.Fatalf("missing %s diagnostic", tt.failure)
+			}
+		})
 	}
 }

@@ -466,7 +466,7 @@ type Words struct {
 func (*Words) expr() {}
 
 // ExprType returns the aggregate word expression type.
-func (v *Words) ExprType() typeinfo.Type { return intTypeForWidth(len(v.Words) * 2) }
+func (v *Words) ExprType() typeinfo.Type { return typeinfo.UintForWidth(len(v.Words) * 2) }
 
 // Part is a byte range inside a larger addressable expression.
 type Part struct {

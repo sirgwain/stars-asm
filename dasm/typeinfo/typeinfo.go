@@ -16,6 +16,30 @@ var F80 = &Primitive{TypeKind: KFloat, Name: "long double", Size: 10}
 var Double = &Primitive{TypeKind: KFloat, Name: "double", Size: 8}
 var LpStr = &Pointer{Elem: &Primitive{TypeKind: KInt, Name: "char", Size: 1, Signed: true}, Class: PtrFar}
 
+// UintForWidth returns the unsigned integer type of width bytes.
+func UintForWidth(width int) Type {
+	switch width {
+	case 1:
+		return U8
+	case 2:
+		return U16
+	case 4:
+		return U32
+	}
+	return &Primitive{TypeKind: KInt, Name: fmt.Sprintf("uint%d_t", width*8), Size: width}
+}
+
+// IntForWidth returns the signed integer type of width bytes.
+func IntForWidth(width int) Type {
+	switch width {
+	case 2:
+		return I16
+	case 4:
+		return I32
+	}
+	return &Primitive{TypeKind: KInt, Name: fmt.Sprintf("int%d_t", width*8), Size: width, Signed: true}
+}
+
 type Type interface {
 	Kind() Kind
 	Bytes() int

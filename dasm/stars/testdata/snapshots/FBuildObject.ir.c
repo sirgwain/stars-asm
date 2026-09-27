@@ -279,7 +279,7 @@ L_203c:
     cshDamaged = 1;
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 5)) / (int32_t)(cshDamaged))) * 0x64)) / (uint32_t)(dpShdef))));
+    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)(((uint32_t)(((int32_t)(((uint32_t)((dpOrig * 5)) / (int32_t)(cshDamaged))) * 100)) / (uint32_t)(dpShdef))));
     goto L_20de;
 
 L_20c5:

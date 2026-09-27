@@ -29,7 +29,7 @@ L_56dd:
 
 L_56fe:
     i = (i + 1)
-    lpshdef = (lpshdef + 1)
+    lpshdef = &lpshdef[1]
 
 L_5712:
     branch i >= 16 ? L_5880 : L_571b

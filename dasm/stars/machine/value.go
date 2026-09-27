@@ -409,6 +409,10 @@ type Binary struct {
 	// It is provenance rather than part of value identity, and retains
 	// instruction semantics significant to later normalization.
 	Producer Meta
+	// Type is the result type of an operation not computed as a 16-bit
+	// machine word, such as a lowered 32-bit compiler helper. Nil means the
+	// operation is a 16-bit word operation.
+	Type typeinfo.Type
 }
 
 func (*Binary) value() {}
@@ -584,6 +588,7 @@ func ValueEquals(a, b Value) bool {
 	case *Binary:
 		bv, ok := b.(*Binary)
 		return ok && av.Op == bv.Op &&
+			typeinfo.Equals(av.Type, bv.Type) &&
 			ValueEquals(av.LHS, bv.LHS) &&
 			ValueEquals(av.RHS, bv.RHS)
 	case *Load:

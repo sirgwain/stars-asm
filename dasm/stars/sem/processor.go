@@ -156,7 +156,7 @@ func ProcessorSpecs() []Processor {
 		{
 			Name:    "resolve-late-addresses",
 			Purpose: "Project typed addresses exposed by semantic scratch substitution.",
-			Sem: func(ctx *FuncContext) SemBlockProcessor {
+			Func: func(ctx *FuncContext) SemFuncProcessor {
 				return &resolveLateAddressesProcessor{ctx: ctx}
 			},
 		},
@@ -200,6 +200,20 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Coalesce merge temps that hold low/high parts of the same wide value.",
 			Func: func(ctx *FuncContext) SemFuncProcessor {
 				return &coalesceWideTempsProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "resolve-wide-temp-addresses",
+			Purpose: "Project typed addresses through wide pointer temporaries formed by coalescing.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &resolveLateAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "resolve-wide-temp-fields",
+			Purpose: "Recover aggregate fields and copies exposed through wide pointer temporaries.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &resolveLateBitfieldsProcessor{ctx: ctx}
 			},
 		},
 		{

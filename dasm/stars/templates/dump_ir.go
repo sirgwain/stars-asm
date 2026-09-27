@@ -195,6 +195,9 @@ func normalizeIRBlockRange(blocks []ir.Block, r machine.BlockRange) machine.Bloc
 func formatIRStmt(stmt ir.Stmt) string {
 	switch s := stmt.(type) {
 	case *ir.Assign:
+		if raw, ok := s.Dst.(*ir.Deref); ok && raw.Type != nil && raw.Type.Bytes() > 1 {
+			return fmt.Sprintf("RawStore%d(%s, %s);", raw.Type.Bytes()*8, formatRawAddress(raw), formatIRExpr(s.Src))
+		}
 		return fmt.Sprintf("%s = %s;", formatIRExpr(s.Dst), formatIRExpr(s.Src))
 	case *ir.ExprStmt:
 		return formatIRExpr(s.Expr) + ";"
@@ -268,19 +271,39 @@ func formatIRExpr(expr ir.Expr) string {
 	case *ir.AddressOf:
 		return "&(" + formatIRExpr(e.Target) + ")"
 	case *ir.Deref:
-		p := formatIRExpr(e.Pointer)
-		if e.ByteOff == 0 {
-			return "*(" + p + ")"
+		if e.Type == nil {
+			return "*(" + formatIRExpr(e.Pointer) + ")"
 		}
-		if e.ByteOff < 0 {
-			return fmt.Sprintf("*(%s - 0x%x)", p, -e.ByteOff)
+		width, decl := e.Type.Bytes(), typeinfo.TypeDecl(e.Type, "")
+		if width == 1 {
+			return fmt.Sprintf("*(%s *)(%s)", decl, formatRawAddress(e))
 		}
-		return fmt.Sprintf("*(%s + 0x%x)", p, e.ByteOff)
+		load := fmt.Sprintf("RawLoad%d(%s)", width*8, formatRawAddress(e))
+		if typeinfo.Equals(e.Type, typeinfo.UintForWidth(width)) {
+			return load
+		}
+		return "(" + decl + ")" + load
 	case *ir.PointerOffset:
-		return "((uint8_t *)(" + formatIRExpr(e.Pointer) + ") + " + formatIRExpr(e.Offset) + ")"
+		offset := "((uint8_t *)(" + formatIRExpr(e.Pointer) + ") + " + formatIRExpr(e.Offset) + ")"
+		if e.Type == nil {
+			return offset
+		}
+		return "(" + typeinfo.TypeDecl(e.Type, "") + ")" + offset
 	default:
 		return fmt.Sprintf("/*expr %T*/0", expr)
 	}
+}
+
+// formatRawAddress renders the byte address of a raw storage access.
+func formatRawAddress(e *ir.Deref) string {
+	p := formatIRExpr(e.Pointer)
+	switch {
+	case e.ByteOff == 0:
+		return p
+	case e.ByteOff < 0:
+		return fmt.Sprintf("((uint8_t *)(%s) - 0x%x)", p, -e.ByteOff)
+	}
+	return fmt.Sprintf("((uint8_t *)(%s) + 0x%x)", p, e.ByteOff)
 }
 
 // sanitizeIRComment keeps block comment delimiters from leaking into output.

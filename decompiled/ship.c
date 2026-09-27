@@ -324,7 +324,7 @@ L_0780:
 L_07b7:
     SelectObject(hdc, rghfontArial8[0]);
     lTot = LFuelUseToWaypoint(&(sel.fl), iScanActual, 0);
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdmg), LOWORD(lTot), HIWORD(lTot));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdmg), lTot);
     if ((lTot <= sel.fl.rgwtMin[4]))
         goto L_0833;
     else
@@ -860,7 +860,7 @@ L_1319:
 
 L_1324:
     pszT = PszGetCompressedString(idsFleetCanLayLdMinesPerYear);
-    _wsprintf(szWork, pszT, LOWORD(l), HIWORD(l));
+    _wsprintf(szWork, pszT, l);
     psz = szWork;
     goto LDisplayMsg2;
 
@@ -1413,7 +1413,7 @@ L_1cd4:
 L_1d25:
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crButtonText);
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(pfl->rgwtMin[i]), HIWORD(pfl->rgwtMin[i]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[i]);
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
     i = (i + 1);
@@ -1614,7 +1614,7 @@ L_2218:
     goto L_2256;
 
 L_222e:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdLY), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdLY), l);
 
 L_2256:
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
@@ -2547,7 +2547,7 @@ L_3370:
 
 L_3385:
     sel.fl.lpplord->rgord[sel.iwpAct].grTask = LOWORD(lSel);
-    fmemset((&(sel.fl.lpplord->rgord[sel.iwpAct]) + 0x8), 0, 0xa);
+    fmemset(((uint8_t *)(&(sel.fl.lpplord->rgord[sel.iwpAct])) + 0x8), 0, 0xa);
     if ((LOWORD(lSel) != 0x7))
         goto L_346d;
     else
@@ -3235,7 +3235,7 @@ L_4128:
         goto L_4145;
 
 L_4145:
-    l = (l + (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (int32_t)(WtMaxShdefStat(&(rglpshdef[lpfl->iPlayer][i]), grStat)))));
+    l = (l + (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (int32_t)(WtMaxShdefStat((rglpshdef[lpfl->iPlayer] + i), grStat)))));
 
 L_4195:
     i = (i + 1);
@@ -3556,7 +3556,7 @@ L_4746:
         goto L_4788;
 
 L_475d:
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), l);
     goto L_48b5;
 
 L_4788:
@@ -3584,7 +3584,7 @@ L_47bd:
         goto L_47fa;
 
 L_47cf:
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), l);
     goto L_48b5;
 
 L_47fa:
@@ -3606,7 +3606,7 @@ L_4819:
         goto L_4822;
 
 L_4822:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(l), HIWORD(l));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), l);
     goto L_48b5;
 
 L_484d:
@@ -3616,11 +3616,11 @@ L_484d:
         goto L_4856;
 
 L_4856:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdLdmg), LOWORD(l), HIWORD(l), LOWORD(lMax), HIWORD(lMax));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdLdmg), l, lMax);
     goto L_48b5;
 
 L_4887:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdLdkt), LOWORD(l), HIWORD(l), LOWORD(lMax), HIWORD(lMax));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdLdkt), l, lMax);
 
 L_48b5:
     l = GetTextExtent(hdc, szWork, c);
@@ -5696,7 +5696,7 @@ L_6a29:
         goto L_6a40;
 
 L_6a40:
-    DrawFleetCargoXferSide(hdc, &(rgrc[i]), ((pxfer + i) + 0x4), iSupply);
+    DrawFleetCargoXferSide(hdc, &(rgrc[i]), &(pxfer[i].fl), iSupply);
     goto L_6b1e;
 
 L_6a74:
@@ -5712,7 +5712,7 @@ L_6a8b:
         goto L_6aa2;
 
 L_6aa2:
-    DrawPlanetXferSide(hdc, &(rgrc[i]), ((pxfer + i) + 0x4), iSupply);
+    DrawPlanetXferSide(hdc, &(rgrc[i]), &(pxfer[i].pl), iSupply);
     goto L_6b1e;
 
 L_6ad6:
@@ -5722,7 +5722,7 @@ L_6ad6:
         goto L_6aed;
 
 L_6aed:
-    DrawThingXferSide(hdc, &(rgrc[i]), ((pxfer + i) + 0x4), iSupply);
+    DrawThingXferSide(hdc, &(rgrc[i]), &(pxfer[i].th), iSupply);
 
 L_6b1e:
     i = (i + 1);
@@ -6815,6 +6815,8 @@ uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRigh
     THING     *lpthMac;
     SCAN       scan;
     uint16_t   t_merge_8439_0001;
+    int32_t   *t_assign_1;
+    int32_t   *t_assign_2;
     int16_t    t_merge_8a98_0001;
     int32_t    t_merge_8c47_0001;
     int32_t    t_merge_8c7d_0001;
@@ -6975,7 +6977,7 @@ L_7f8c:
         goto L_7f96;
 
 L_7f96:
-    lptxp = (&(sel.fl.lpplord->rgord[sel.iwpAct]) + 0x8);
+    lptxp = (TASKXPORT *)(&(sel.fl.lpplord->rgord[sel.iwpAct].txp));
     goto L_81cd;
 
 L_7fd0:
@@ -7272,8 +7274,10 @@ L_84ce:
 
 L_84db:
     c = (c + 1);
-    LOWORD(rgid[c]) = (lpth->idFull | 0x0);
-    HIWORD(rgid[c]) = 0x2000;
+    t_assign_1 = &(rgid[c]);
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    t_assign_2 = &(rgid[c]);
+    *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 
 L_8504:
     lpth = (lpth + 1);
@@ -8005,7 +8009,7 @@ L_9247:
     t_merge_924a_0001 = 0x51;
 
 L_924a:
-    _wsprintf(szWork, "%c%c%5d%s", t_merge_924a_0001, t_merge_922e_0001, sel.fl.rgcsh[i], &(rgshdef[i].hul.szClass));
+    _wsprintf(szWork, "%c%c%5d%s", t_merge_924a_0001, t_merge_922e_0001, sel.fl.rgcsh[i], rgshdef[i].hul.szClass);
     SendMessage(hwndFleetCompLB, CB_LIMITTEXT, 0x0, szWork);
 
 L_9279:
@@ -8786,7 +8790,7 @@ L_a181:
         goto L_a1d7;
 
 L_a1d7:
-    rgieff[i] = (rgieff[i] - (int32_t)(((uint32_t)((rgieff[i] * 15)) / 0x64)));
+    rgieff[i] = (rgieff[i] - (int32_t)(((uint32_t)((rgieff[i] * 15)) / 100)));
 
 L_a215:
     if ((lpshdef->hul.rghs[j].iItem != 0xa))
@@ -8857,7 +8861,7 @@ L_a35f:
         goto L_a380;
 
 L_a380:
-    if ((wtCargo < (int32_t)((uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (int32_t)(WtMaxShdefStat(&(rglpshdef[lpfl->iPlayer][i]), 2)))))))
+    if ((wtCargo < (int32_t)((uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (int32_t)(WtMaxShdefStat((rglpshdef[lpfl->iPlayer] + i), 2)))))))
         goto L_a3e0;
     else
         goto L_a3e9;
@@ -8867,7 +8871,7 @@ L_a3e0:
     goto L_a434;
 
 L_a3e9:
-    t_call_a40a = WtMaxShdefStat(&(rglpshdef[lpfl->iPlayer][i]), 2);
+    t_call_a40a = WtMaxShdefStat((rglpshdef[lpfl->iPlayer] + i), 2);
     t_merge_a434_0001 = (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (int32_t)(t_call_a40a)));
 
 L_a434:
@@ -8911,7 +8915,7 @@ L_a530:
         goto L_a571;
 
 L_a548:
-    lFuel = (lFuel + (int32_t)(((uint32_t)((wtMass * lT)) / 0x7d0)));
+    lFuel = (lFuel + (int32_t)(((uint32_t)((wtMass * lT)) / 2000)));
     goto L_a5fb;
 
 L_a571:

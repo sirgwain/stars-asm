@@ -95,11 +95,8 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 					}
 				}
 
-				// Pointer-typed binaries already use element steps. Machine
-				// arithmetic exposed by scratch substitution still uses bytes.
-				if !typeinfo.IsPointer(next.ExprType()) &&
-					(next.Op == OpAdd || next.Op == OpSub) {
-
+				// Pointer arithmetic exposed by scratch substitution uses bytes.
+				if next.Op == OpAdd || next.Op == OpSub {
 					if resolved, ok := p.resolvePointerArithmetic(next); ok {
 						child, _ := w.rewriteExprChildren(resolved)
 						return child, true, true
@@ -109,14 +106,6 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 				if changed {
 					child, childChanged := w.rewriteExprChildren(next)
 					return child, changed || childChanged, true
-				}
-				// Pointer-typed binaries already use element steps. Machine
-				// arithmetic exposed by scratch substitution still uses bytes.
-				if !typeinfo.IsPointer(value.ExprType()) && (value.Op == OpAdd || value.Op == OpSub) {
-					if resolved, ok := p.resolvePointerArithmetic(value); ok {
-						next, _ := w.rewriteExprChildren(resolved)
-						return next, true, true
-					}
 				}
 			}
 			address, ok := expr.(*AddressOf)
@@ -209,24 +198,10 @@ func (p *resolveLateAddressesProcessor) resolveAddressOfPart(address *AddressOf)
 	}
 	converter := machineConverter{ctx: p.ctx}
 	if part.Width == 0 && typeinfo.IsPointer(part.Base.ExprType()) {
-		ptr := part.Base.ExprType().(*typeinfo.Pointer)
-		base := &Deref{Pointer: part.Base, Width: ptr.Elem.Bytes(), TypeInfo: ptr.Elem}
-		if target, ok := converter.typedAddressTarget(base, part.ByteOff, address.TypeInfo); ok {
-			return objectAddress(target, 0, address.TypeInfo), true
+		if typed, ok := p.constPointerAddress(part.Base, part.ByteOff, address.TypeInfo); ok {
+			return typed, true
 		}
-		if projected, ok := projectPointerAddress(part.Base, part.ByteOff, nil); ok {
-			return projected, true
-		}
-		magnitude := part.ByteOff
-		negative := magnitude < 0
-		if negative {
-			magnitude = -magnitude
-		}
-		var offset Expr = &Const{TypeInfo: typeinfo.I16, U64: uint64(magnitude)}
-		if negative {
-			offset = &Unary{TypeInfo: typeinfo.I16, Op: OpNeg, X: offset}
-		}
-		return &PointerOffset{Pointer: part.Base, Offset: offset, TypeInfo: address.TypeInfo}, true
+		return &PointerOffset{Pointer: part.Base, Offset: signedIndexConst(part.ByteOff), TypeInfo: address.TypeInfo}, true
 	}
 	if target, ok := converter.typedAddressTarget(part.Base, part.ByteOff, address.TypeInfo); ok {
 		return objectAddress(target, 0, address.TypeInfo), true
@@ -328,19 +303,9 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 			if value.Op == OpSub {
 				rhsSign = -rhsSign
 			}
+			// Semantic pointer arithmetic always counts bytes; element steps
+			// are represented as &pointer[index].
 			rhs := flattenSemanticAddress(value.RHS, rhsSign)
-			if ptr, ok := value.ExprType().(*typeinfo.Pointer); ok {
-				// Source pointer arithmetic counts elements; only machine
-				// integer arithmetic and PointerOffset count bytes.
-				delta := &rhs
-				if rhs.base != nil {
-					delta = &lhs
-				}
-				delta.offset *= ptr.Elem.Bytes()
-				for i := range delta.terms {
-					delta.terms[i].Scale *= ptr.Elem.Bytes()
-				}
-			}
 			return mergeSemanticAddressParts(lhs, rhs)
 		case OpMul:
 			if constant, other, ok := semanticConstOperand(value.LHS, value.RHS); ok {
@@ -507,4 +472,294 @@ func addSemanticMemoryIndex(addr AddressExpr, memory *Memory) AddressExpr {
 	}
 	addr.Terms = append(addr.Terms, ScaledTerm{Expr: memory.Index, Scale: scale})
 	return addr
+}
+
+// ProcessFunc projects addresses, types the remaining byte displacements,
+// propagates proven array element types through single-definition pointer
+// temporaries, then projects their uses again.
+func (p *resolveLateAddressesProcessor) ProcessFunc(result *Result, f *Func) bool {
+	changed := false
+	for i, b := range f.Blocks {
+		p.ctx.SetCurrentBlock(b.ID)
+		next, didChange := p.ProcessBlock(result, *f, b)
+		if didChange {
+			f.Blocks[i] = next
+			changed = true
+		}
+	}
+	for i, b := range f.Blocks {
+		if effects, didChange := p.byteAddressRewriter().rewriteEffects(b.Effects); didChange {
+			f.Blocks[i].Effects = effects
+			changed = true
+		}
+	}
+	types := make(map[string]*typeinfo.Pointer)
+	definitions := make(map[string]int)
+	for _, b := range f.Blocks {
+		for _, effect := range b.Effects {
+			if a, ok := effect.(*Assign); ok {
+				if temp, ok := a.Dst.(*Temp); ok {
+					definitions[temp.Name]++
+					ptr, pok := temp.ExprType().(*typeinfo.Pointer)
+					array, aok := a.Src.ExprType().(*typeinfo.Array)
+					if pok && aok && ptr.Elem.Bytes() == array.Elem.Bytes() && !typeinfo.Equals(ptr.Elem, array.Elem) {
+						types[temp.Name] = &typeinfo.Pointer{Elem: array.Elem, Class: ptr.Class}
+					}
+				}
+			}
+			if c, ok := effect.(*CallEffect); ok {
+				if temp, ok := c.Result.(*Temp); ok {
+					definitions[temp.Name]++
+				}
+			}
+		}
+	}
+	for name := range types {
+		if definitions[name] != 1 {
+			delete(types, name)
+		}
+	}
+	if len(types) > 0 {
+		w := semRewriter{lvalue: func(w *semRewriter, value LValue) (LValue, bool, bool) {
+			if temp, ok := value.(*Temp); ok {
+				if typ, ok := types[temp.Name]; ok {
+					next := *temp
+					next.TypeInfo = typ
+					return &next, true, true
+				}
+			}
+			value, childChanged := w.rewriteLValueChildren(value)
+			if index, ok := value.(*ArrayIndex); ok && childChanged {
+				next := *index
+				next.TypeInfo = indexElementType(index.Base.ExprType())
+				return &next, true, true
+			}
+			return value, childChanged, true
+		}}
+		for i, b := range f.Blocks {
+			effects, didChange := w.rewriteEffects(b.Effects)
+			if didChange {
+				b.Effects = effects
+				changed = true
+			}
+			p.ctx.SetCurrentBlock(b.ID)
+			next, _ := p.ProcessBlock(result, *f, b)
+			f.Blocks[i] = next
+		}
+	}
+	p.ctx.ClearCurrentBlock()
+	return changed
+}
+
+// byteAddressRewriter types byte-displaced pointer arithmetic that address
+// projection left unresolved. An assignment, parameter or return type selects
+// the addressed subobject; anything else stays an explicit byte offset, so C
+// pointer arithmetic never scales an original Win16 byte displacement.
+func (p *resolveLateAddressesProcessor) byteAddressRewriter() *semRewriter {
+	var w *semRewriter
+	// typed rewrites nested displacements without context, then the top
+	// expression with the declared pointer type trusted for projection and
+	// the (possibly derived) cast type used for an explicit byte offset.
+	typed := func(expr Expr, trusted, cast typeinfo.Type) (Expr, bool) {
+		next, changed := w.rewriteExprChildren(expr)
+		if address, ok := p.typeByteAddress(next, trusted, cast); ok {
+			return address, true
+		}
+		return next, changed
+	}
+	w = &semRewriter{
+		effect: func(w *semRewriter, effect Effect) (Effect, bool, bool) {
+			switch e := effect.(type) {
+			case *Assign:
+				trusted := e.Dst.ExprType()
+				if _, temp := e.Dst.(*Temp); temp {
+					trusted = nil
+				}
+				dst, dstChanged := w.rewriteLValue(e.Dst)
+				src, srcChanged := typed(e.Src, trusted, e.Dst.ExprType())
+				if !dstChanged && !srcChanged {
+					return effect, false, true
+				}
+				next := *e
+				next.Dst, next.Src = dst, src
+				return &next, true, true
+			case *Return:
+				if e.Value == nil {
+					return effect, false, true
+				}
+				value, changed := typed(e.Value, p.ctx.fs.Ret, p.ctx.fs.Ret)
+				if !changed {
+					return effect, false, true
+				}
+				next := *e
+				next.Value = value
+				return &next, true, true
+			}
+			return effect, false, false
+		},
+		call: func(w *semRewriter, call *Call, meta machine.Meta) (*Call, bool, bool) {
+			if call.Function == nil {
+				return call, false, false
+			}
+			next := *call
+			next.Args = append([]Expr(nil), call.Args...)
+			changed := false
+			for i, arg := range call.Args {
+				var param typeinfo.Type
+				if i < len(call.Params) {
+					param = call.Params[i].Type
+				}
+				var argChanged bool
+				next.Args[i], argChanged = typed(arg, param, param)
+				changed = changed || argChanged
+			}
+			return &next, changed, true
+		},
+		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
+			next, changed := w.rewriteExprChildren(expr)
+			if address, ok := p.typeByteAddress(next, nil, nil); ok {
+				return address, true, true
+			}
+			return next, changed, true
+		},
+	}
+	return w
+}
+
+// typeByteAddress rewrites one byte displacement from a typed pointer. A
+// constant offset inside the pointee selects the unique subobject compatible
+// with the trusted type, and an element-aligned offset becomes pointer steps.
+// Any other displacement becomes a byte PointerOffset typed as cast, or as a
+// byte pointer without context.
+func (p *resolveLateAddressesProcessor) typeByteAddress(expr Expr, trusted, cast typeinfo.Type) (Expr, bool) {
+	pointer, offset, ok := byteDisplacement(expr)
+	if !ok {
+		return nil, false
+	}
+	ptr := pointer.ExprType().(*typeinfo.Pointer)
+	var expected typeinfo.Type
+	if want, ok := trusted.(*typeinfo.Pointer); ok {
+		expected = want
+	}
+	if off, ok := byteOffsetConst(offset); ok {
+		if typed, ok := p.constPointerAddress(pointer, off, expected); ok {
+			return typed, true
+		}
+	}
+	if ptr.Elem.Bytes() == 1 && (expected == nil || typeinfo.Equals(expected, ptr)) {
+		if _, raw := expr.(*Binary); raw {
+			// Byte-sized pointees already step by bytes in C.
+			return nil, false
+		}
+	}
+	typ, ok := cast.(*typeinfo.Pointer)
+	if !ok {
+		typ = &typeinfo.Pointer{Elem: typeinfo.U8, Class: ptr.Class}
+	}
+	if current, ok := expr.(*PointerOffset); ok && typeinfo.Equals(current.TypeInfo, typ) {
+		return nil, false
+	}
+	return &PointerOffset{Pointer: pointer, Offset: offset, TypeInfo: typ}, true
+}
+
+// constPointerAddress addresses a constant byte offset from a typed pointer
+// without byte arithmetic: a trailing flexible array, the unique subobject
+// compatible with the expected type, the pointer itself, or whole element
+// steps. Without an expected type only aggregate subobjects are selected. It
+// fails when only an explicit byte offset can express the address.
+func (p *resolveLateAddressesProcessor) constPointerAddress(pointer Expr, off int, expected typeinfo.Type) (Expr, bool) {
+	ptr := pointer.ExprType().(*typeinfo.Pointer)
+	if !addressLayoutKnown(pointer, ptr.Elem) {
+		return nil, false
+	}
+	want, _ := expected.(*typeinfo.Pointer)
+	size := ptr.Elem.Bytes()
+	base := pointeeLValue(pointer, ptr.Elem)
+	if strct, ok := ptr.Elem.(*typeinfo.Struct); ok && off >= size {
+		if field, fieldOff, ok := strct.FlexibleArrayFieldAt(off); ok && fieldOff == 0 {
+			return objectAddress(bitfieldFieldAccess(base, field), 0, expected), true
+		}
+	}
+	if size > 0 && off >= 0 && off < size {
+		converter := machineConverter{ctx: p.ctx}
+		if target, ok := converter.typedAddressTarget(base, off, expected); ok && (expected != nil || isAggregateType(target.ExprType())) {
+			return objectAddress(target, 0, expected), true
+		}
+	}
+	if off == 0 {
+		return castAddress(pointer, want, ptr.Class), true
+	}
+	// Whole steps past the address of one object leave that object.
+	if _, single := pointer.(*AddressOf); !single && size > 1 && off%size == 0 {
+		if stepped, ok := projectPointerAddress(pointer, off, nil); ok {
+			return castAddress(stepped, want, ptr.Class), true
+		}
+	}
+	return nil, false
+}
+
+// addressLayoutKnown reports whether a pointer's element type describes the
+// storage it addresses. An address of a target typed differently, or of an
+// array element typed differently from its array, does not describe the
+// layout, so only explicit byte offsets are safe from it.
+func addressLayoutKnown(pointer Expr, elem typeinfo.Type) bool {
+	address, ok := pointer.(*AddressOf)
+	if !ok {
+		return true
+	}
+	if !typeinfo.Equals(elem, address.Target.ExprType()) {
+		return false
+	}
+	index, ok := address.Target.(*ArrayIndex)
+	return !ok || typeinfo.Equals(index.TypeInfo, indexElementType(index.Base.ExprType()))
+}
+
+// byteDisplacement splits byte pointer arithmetic into its pointer and signed
+// byte offset.
+func byteDisplacement(expr Expr) (Expr, Expr, bool) {
+	switch e := expr.(type) {
+	case *PointerOffset:
+		if typeinfo.IsPointer(e.Pointer.ExprType()) {
+			return e.Pointer, e.Offset, true
+		}
+	case *Binary:
+		if e.Op != OpAdd && e.Op != OpSub {
+			return nil, nil, false
+		}
+		lhsPointer, rhsPointer := typeinfo.IsPointer(e.LHS.ExprType()), typeinfo.IsPointer(e.RHS.ExprType())
+		switch {
+		case lhsPointer && e.RHS.ExprType().Kind() == typeinfo.KInt:
+			if e.Op == OpSub {
+				return e.LHS, &Unary{TypeInfo: e.RHS.ExprType(), Op: OpNeg, X: e.RHS}, true
+			}
+			return e.LHS, e.RHS, true
+		case rhsPointer && e.Op == OpAdd && e.LHS.ExprType().Kind() == typeinfo.KInt:
+			return e.RHS, e.LHS, true
+		}
+	}
+	return nil, nil, false
+}
+
+// pointeeLValue names the object a pointer addresses.
+func pointeeLValue(pointer Expr, elem typeinfo.Type) LValue {
+	if address, ok := pointer.(*AddressOf); ok {
+		return address.Target
+	}
+	return &Deref{Pointer: pointer, Width: elem.Bytes(), TypeInfo: elem}
+}
+
+// castAddress converts an address to a required non-void pointer type. An
+// array address decays to a pointer of the given class before comparison.
+func castAddress(address Expr, want *typeinfo.Pointer, class typeinfo.PtrClass) Expr {
+	if want == nil || want.Elem.Kind() == typeinfo.KVoid {
+		return address
+	}
+	actual := address.ExprType()
+	if array, ok := actual.(*typeinfo.Array); ok {
+		actual = &typeinfo.Pointer{Elem: array.Elem, Class: class}
+	}
+	if typeinfo.Equals(want, actual) {
+		return address
+	}
+	return &Cast{To: want.String(), TypeInfo: want, Value: address}
 }

@@ -142,7 +142,7 @@ L_3dcb:
 
 L_3dd1:
     GlobalPD.grPopup = grPopupShdef
-    GlobalPD.lpshdef = (rglpshdef[lpfl->iPlayer] + rgid[c])
+    GlobalPD.lpshdef = &rglpshdef[lpfl->iPlayer][rgid[c]]
     branch idPlayer == lpfl->iPlayer ? L_3e1d : L_3e17
 
 L_3e17:
@@ -182,7 +182,7 @@ L_3e84:
 L_3e99:
     GlobalPD.grPopup = grPopupShdef
     lppl = LpplFromId(sel.scan.idpl)
-    GlobalPD.lpshdef = (rglpshdefSB[lppl->iPlayer] + lppl->isb)
+    GlobalPD.lpshdef = &rglpshdefSB[lppl->iPlayer][lppl->isb]
     branch idPlayer == lppl->iPlayer ? L_3ef3 : L_3eed
 
 L_3eed:

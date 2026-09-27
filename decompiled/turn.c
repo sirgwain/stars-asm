@@ -35,6 +35,7 @@ int16_t FGenerateTurn() {
     int16_t  iSteal;
     int16_t  pctDetect;
     uint16_t t_merge_06e8_0001;
+    HS      *t_fields_1;
     int16_t  t_call_120d;
     int16_t  t_merge_1670_0001;
 
@@ -195,7 +196,7 @@ L_02e6:
 
 L_02f1:
     j = mpiplr2[i];
-    _wsprintf(szWork, "%s.x%d", &(szBase), (j + 1));
+    _wsprintf(szWork, "%s.x%d", szBase, (j + 1));
     idPlayer = j;
     vrgts[j].lSerialNumber = -1;
     if ((FLoadLogFile(szWork) == 0))
@@ -416,7 +417,8 @@ L_07a4:
         goto L_0838;
 
 L_0838:
-    HIWORD(rglpshdef[i][ish].hul.rghs[0]) = (rglpshdef[i][ish].hul.rghs[0].iItem | 0x100);
+    t_fields_1 = rglpshdef[i][ish].hul.rghs;
+    t_fields_1->cItem = 0x1;
 
 L_0880:
     ish = (ish + 1);
@@ -920,12 +922,12 @@ L_12e3:
         goto L_1310;
 
 L_1310:
-    dRange = GetShdefScannerRange(&(rglpshdef[i][j]), i, &(dPlanRange), &(pctDetect), &(iSteal));
+    dRange = GetShdefScannerRange((rglpshdef[i] + j), i, &(dPlanRange), &(pctDetect), &(iSteal));
     rglpshdef[i][j].dScanRange = dRange;
     rglpshdef[i][j].dScanRange2 = dPlanRange;
     rglpshdef[i][j].pctDetect = LOBYTE(pctDetect);
     rglpshdef[i][j].iSteal = LOBYTE(iSteal);
-    if ((FCanBuildShdef(&(rglpshdef[i][j]), i) != 0))
+    if ((FCanBuildShdef((rglpshdef[i] + j), i) != 0))
         goto L_1463;
     else
         goto L_141b;
@@ -1759,7 +1761,7 @@ L_209f:
     goto L_20f4;
 
 L_20b0:
-    rgwtTerra[i] = LOWORD((int32_t)(((uint32_t)(((int32_t)(lpth->thp.rgwtMin[i]) * (int32_t)(pctMinKeep))) / 1000)));
+    rgwtTerra[i] = LOWORD((int32_t)(((uint32_t)(((int32_t)(lpth->thp.rgwtMin[i]) * (int32_t)(pctMinKeep))) / 0x3e8)));
     i = (i + 1);
 
 L_20f4:
@@ -1785,7 +1787,7 @@ L_213e:
 
 L_2157:
     wtTot = (wtTot + (int32_t)(lpth->thp.rgwtMin[i]));
-    lppl->rgwtMin[i] = (lppl->rgwtMin[i] + (int32_t)(((uint32_t)(((int32_t)(lpth->thp.rgwtMin[i]) * (int32_t)(pctMinKeep))) / 1000)));
+    lppl->rgwtMin[i] = (lppl->rgwtMin[i] + (int32_t)(((uint32_t)(((int32_t)(lpth->thp.rgwtMin[i]) * (int32_t)(pctMinKeep))) / 0x3e8)));
     i = (i + 1);
 
 L_21ca:
@@ -2219,7 +2221,7 @@ L_29b8:
         goto L_2d1a;
 
 L_29db:
-    lColKilled = (int32_t)(((uint32_t)((lColKilled * dmgRaw)) / 0x3e8));
+    lColKilled = (int32_t)(((uint32_t)((lColKilled * dmgRaw)) / 1000));
     if ((lColKilled < dmgRaw))
         goto L_2a1c;
     else
@@ -2356,8 +2358,8 @@ LFreeThePacket:
     FreeLpth(lpth);
 
 LPacketAlreadyFreed:
-    lpth = (lpth + (-1));
-    lpthMac = (lpthMac + (-1));
+    lpth = (lpth - 1);
+    lpthMac = (lpthMac - 1);
     goto L_2ed3;
 
 L_2d93:
@@ -3210,7 +3212,7 @@ L_3e91:
         goto L_3eb5;
 
 L_3eb5:
-    cDie = (int32_t)((((uint32_t)((lpfl->rgwtMin[3] * 3)) + 0x21) / 0x64));
+    cDie = (int32_t)((((uint32_t)((lpfl->rgwtMin[3] * 3)) + 33) / 0x64));
     if ((cDie <= 0))
         goto L_3f5f;
     else
@@ -3828,7 +3830,7 @@ L_4b9b:
 L_4bb6:
     iCtr = ((int32_t)(((int16_t)(rgplr[lpfl->iPlayer].rgEnvVarMin[2]) + (int16_t)(rgplr[lpfl->iPlayer].rgEnvVarMax[2]))) / 2);
     pct = (int32_t)(((0x56 - iCtr) >> 0x1));
-    pct = (int32_t)(((uint32_t)((pct * lpfl->rgwtMin[3])) / 0x64));
+    pct = (int32_t)(((uint32_t)((pct * lpfl->rgwtMin[3])) / 100));
     if ((1 <= pct))
         goto L_4c4b;
     else
@@ -4523,7 +4525,7 @@ L_5989:
     cishInc = (cishInc + 1);
     rgishInc[cishInc] = i;
     cEngines = rglpshdef[lpfl->iPlayer][i].hul.rghs[0].cItem;
-    dpShield = (uint32_t)(((int32_t)(cshT)*DpShieldOfShdef(&(rglpshdef[iPlayer][i]), iPlayer)));
+    dpShield = (uint32_t)(((int32_t)(cshT)*DpShieldOfShdef((rglpshdef[iPlayer] + i), iPlayer)));
     dpsh = (uint32_t)(rglpshdef[iPlayer][i].hul.dp);
     dmgToApply = (uint32_t)((((uint32_t)(((int32_t)(cshT) * (int32_t)(dmgPer))) + (int32_t)(dmgExtra)) * (int32_t)(cEngines)));
     dmgTot = (dmgTot + dmgToApply);

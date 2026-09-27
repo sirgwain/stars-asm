@@ -133,7 +133,7 @@ func TestConsumeAddressConsumesPointerPermission(t *testing.T) {
 		{"address of pointer field", AddressExpr{Base: &AddressOf{Target: lpplord,
 			TypeInfo: &typeinfo.Pointer{Elem: lpplord.ExprType(), Class: typeinfo.PtrFar}}, Offset: 2, Deref: true}, "HIWORD(lpfl->lpplord)"},
 		{"loaded pointer field", AddressExpr{Base: lpplord, Offset: 4, Terms: []ScaledTerm{{Expr: iDel, Scale: 18}}, Deref: true}, "lpfl->lpplord->rgord[iDel].pt.x"},
-		{"element steps", AddressExpr{Base: &Binary{TypeInfo: lpfl.ExprType(), Op: OpAdd, LHS: lpfl, RHS: iDel}, Offset: 0x66, Deref: true}, "HIWORD(lpfl[iDel].lpplord)"},
+		{"element steps", AddressExpr{Base: &AddressOf{Target: &ArrayIndex{Base: lpfl, Index: iDel, TypeInfo: lpfl.ExprType().(*typeinfo.Pointer).Elem}, TypeInfo: lpfl.ExprType()}, Offset: 0x66, Deref: true}, "HIWORD(lpfl[iDel].lpplord)"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, ok := converter.consumeAddress(tc.addr, 2)
@@ -218,4 +218,48 @@ func localNamed(t *testing.T, fn *typeinfo.Function, name string) *Local {
 	}
 	t.Fatalf("local %s not found", name)
 	return nil
+}
+
+// TestByteAddressTyping verifies byte displacements from DrawXferDlg and
+// BtlDataGet: a union member selected by the parameter type, a heap header
+// offset kept in bytes and cast to its destination, and a mistyped address
+// that must not be stepped by its claimed element size.
+func TestByteAddressTyping(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	xferCtx := mustFuncContext(t, fx, res, "DrawXferDlg")
+	pxfer := &Global{GlobalVar: fx.SDB.GetGlobal("pxfer")}
+	i := localNamed(t, xferCtx.fs, "i")
+	element := &AddressOf{Target: &ArrayIndex{Base: pxfer, Index: i, TypeInfo: fx.SDB.GetStruct("XFER")}, TypeInfo: pxfer.ExprType()}
+	call := &Call{Function: fx.SDB.GetFunction("DrawFleetCargoXferSide"), Args: []Expr{
+		&Local{FunctionVar: typeinfo.FunctionVar{Name: "hdc", Type: typeinfo.U16}},
+		&Local{FunctionVar: typeinfo.FunctionVar{Name: "prc", Type: &typeinfo.Pointer{Elem: fx.SDB.GetStruct("RECT")}}},
+		&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: element, RHS: &Const{TypeInfo: typeinfo.U16, U64: 4}},
+		i,
+	}}
+	p := &resolveLateAddressesProcessor{ctx: xferCtx}
+	effects, _ := p.byteAddressRewriter().rewriteEffects([]Effect{&CallEffect{Call: call}})
+	if got := FormatExpr(effects[0].(*CallEffect).Call.Args[2]); got != "&pxfer[i].fl" {
+		t.Fatalf("xfer fleet argument = %q, want &pxfer[i].fl", got)
+	}
+
+	btlCtx := mustFuncContext(t, fx, res, "BtlDataGet")
+	lphb := localNamed(t, btlCtx.fs, "lphb")
+	lpbd := localNamed(t, btlCtx.fs, "lpbd")
+	header := &Assign{Dst: lpbd, Src: &PointerOffset{Pointer: lphb, Offset: &Const{TypeInfo: typeinfo.I16, U64: 0x12}, TypeInfo: lphb.ExprType()}}
+	p = &resolveLateAddressesProcessor{ctx: btlCtx}
+	effects, _ = p.byteAddressRewriter().rewriteEffects([]Effect{header})
+	offset, ok := effects[0].(*Assign).Src.(*PointerOffset)
+	if !ok || !typeinfo.Equals(offset.TypeInfo, lpbd.ExprType()) {
+		t.Fatalf("heap header = %s, want a BTLDATA * byte offset", FormatExpr(effects[0].(*Assign).Src))
+	}
+
+	// rgshdef[raw byte index] claims int16_t elements; eight bytes must stay bytes.
+	rgshdef := &Global{GlobalVar: fx.SDB.GetGlobal("rgshdef")}
+	mistyped := &AddressOf{Target: &ArrayIndex{Base: rgshdef, Index: i, TypeInfo: typeinfo.I16}, TypeInfo: &typeinfo.Pointer{Elem: typeinfo.I16}}
+	raw := &Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: mistyped, RHS: &Const{TypeInfo: typeinfo.U16, U64: 8}}
+	got, ok := p.typeByteAddress(raw, nil, nil)
+	if _, bytes := got.(*PointerOffset); !ok || !bytes {
+		t.Fatalf("mistyped address = %v, want a byte PointerOffset", got)
+	}
 }

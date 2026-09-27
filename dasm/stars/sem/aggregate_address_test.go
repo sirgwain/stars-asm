@@ -17,8 +17,8 @@ func TestAggregateBufferCopyRecovery(t *testing.T) {
 	rtbof := localNamed(t, ctx.fs, "rtbof")
 	buffer := &Global{GlobalVar: fx.SDB.GetGlobal("rgbCur")}
 	for _, width := range []int{16, 14} {
-		t.Run(intTypeForWidth(width).String(), func(t *testing.T) {
-			part := &Part{Base: buffer, Width: width, TypeInfo: intTypeForWidth(width)}
+		t.Run(typeinfo.UintForWidth(width).String(), func(t *testing.T) {
+			part := &Part{Base: buffer, Width: width, TypeInfo: typeinfo.UintForWidth(width)}
 			got := recoverExpectedValue(part, rtbof.ExprType())
 			if width != 16 {
 				if got != part {
@@ -66,14 +66,14 @@ func TestAggregateCopyThroughFarPointer(t *testing.T) {
 	previous := *effect.Dst.(*machine.Address)
 	previous.Addr.Disp = 0xffee
 	loaded, ok := (&machineConverter{ctx: ctx}).convertCopyAddress(&previous, 18)
-	if !ok || FormatExpr(loaded) != "*(lpord + neg(1))" {
+	if !ok || FormatExpr(loaded) != "*&lpord[neg(1)]" {
 		t.Fatalf("previous ORDER = %s, want a one-element backward step", FormatExpr(loaded))
 	}
 	previous.Addr.Seg = machine.LoadVal(machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: lpord.BPOffset + 2, Width: 2})
 	previous.Addr.Base = machine.LoadVal(machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: lpord.BPOffset, Width: 2})
 	effect.Src = &previous
 	got = (&machineConverter{ctx: ctx}).convertEffect(effect).(*Assign)
-	if FormatExpr(got.Src) != "*(lpord + neg(1))" {
+	if FormatExpr(got.Src) != "*&lpord[neg(1)]" {
 		t.Fatalf("split-word previous ORDER = %s, want a one-element backward step", FormatExpr(got.Src))
 	}
 }
@@ -103,8 +103,8 @@ func TestAddressRecoveryUsesExpectedPointee(t *testing.T) {
 	bytePointer := &typeinfo.Pointer{Elem: buffer.ExprType().(*typeinfo.Array).Elem, Class: typeinfo.PtrNear}
 	interior := &AddressOf{Target: &Part{Base: buffer, ByteOff: 3, Width: 0, TypeInfo: typeinfo.U16}, TypeInfo: bytePointer}
 	resolved, ok = (&resolveLateAddressesProcessor{ctx: ctx}).resolveAddressOfPart(interior)
-	if !ok || FormatExpr(resolved) != "(rgbCur + 3)" {
-		t.Fatalf("array address = %s, want rgbCur + 3", FormatExpr(resolved))
+	if !ok || FormatExpr(resolved) != "&rgbCur[3]" {
+		t.Fatalf("array address = %s, want &rgbCur[3]", FormatExpr(resolved))
 	}
 	field := &AddressOf{Target: &Part{Base: ord, ByteOff: 4, Width: 0, TypeInfo: typeinfo.U16}, TypeInfo: &typeinfo.Pointer{Elem: typeinfo.I16, Class: typeinfo.PtrNear}}
 	resolved, ok = (&resolveLateAddressesProcessor{ctx: ctx}).resolveAddressOfPart(field)

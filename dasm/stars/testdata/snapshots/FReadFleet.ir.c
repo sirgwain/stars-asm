@@ -111,7 +111,7 @@ L_3bcb:
         goto L_3bdd;
 
 L_3bdd:
-    us = *(pb);
+    us = RawLoad16(pb);
     pb = (pb + 2);
     i = 0;
     goto L_3c06;
@@ -135,12 +135,12 @@ L_3c18:
     goto L_3bf6;
 
 L_3c47:
-    lpfl->rgwtMin[i] = (uint32_t)(*(pb));
+    lpfl->rgwtMin[i] = (uint32_t)(RawLoad16(pb));
     pb = (pb + 2);
     goto L_3bf6;
 
 L_3c73:
-    lpfl->rgwtMin[i] = *(pb);
+    lpfl->rgwtMin[i] = RawLoad32(pb);
     pb = (pb + 4);
     goto L_3bf6;
 
@@ -172,9 +172,9 @@ L_3cc0:
         goto L_3cd2;
 
 L_3cd2:
-    lpfl->dirLong = *(pb);
+    lpfl->dirLong = RawLoad32(pb);
     pb = (pb + 4);
-    lpfl->wtFleet = *(pb);
+    lpfl->wtFleet = RawLoad32(pb);
     pb = (pb + 4);
     ReadRt();
     return 1;
@@ -190,7 +190,7 @@ Corrupt:
     return 0;
 
 L_3d4b:
-    us = *(pb);
+    us = RawLoad16(pb);
     pb = (pb + 2);
     pus = pb;
     i = 0;
