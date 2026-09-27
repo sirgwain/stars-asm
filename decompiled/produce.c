@@ -92,11 +92,9 @@ void InitProduction(PROD *rgprod) {
     uint16_t t_scratch_m1a;
     uint16_t t_scratch_m1a_2;
     uint16_t t_scratch_m1a_3;
-    uint32_t t_merge_0733_0002_wide;
-    uint32_t t_scratch_m1c_3;
+    uint32_t t_merge_0733_0001_wide;
     uint16_t t_scratch_m1a_4;
-    uint32_t t_merge_083a_0002_wide;
-    uint32_t t_scratch_m1c_4;
+    uint32_t t_merge_083a_0001_wide;
     uint16_t t_scratch_m1a_5;
 
 L_015e:
@@ -287,15 +285,14 @@ L_0719:
         goto L_0724;
 
 L_0724:
-    t_merge_0733_0002_wide = 0x3fc;
+    t_merge_0733_0001_wide = 0x3fc;
     goto L_0733;
 
 L_072d:
-    t_merge_0733_0002_wide = (uint32_t)(u);
+    t_merge_0733_0001_wide = (uint32_t)(u);
 
 L_0733:
-    t_scratch_m1c_3 = t_merge_0733_0002_wide;
-    rgprod[cProdGlob].cItem = LOWORD(t_scratch_m1c_3);
+    rgprod[cProdGlob].cItem = LOWORD(t_merge_0733_0001_wide);
     rgprod[cProdGlob].iItem = mdIdleFactory;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -315,15 +312,14 @@ L_0820:
         goto L_082b;
 
 L_082b:
-    t_merge_083a_0002_wide = 0x3fc;
+    t_merge_083a_0001_wide = 0x3fc;
     goto L_083a;
 
 L_0834:
-    t_merge_083a_0002_wide = (uint32_t)(u);
+    t_merge_083a_0001_wide = (uint32_t)(u);
 
 L_083a:
-    t_scratch_m1c_4 = t_merge_083a_0002_wide;
-    rgprod[cProdGlob].cItem = LOWORD(t_scratch_m1c_4);
+    rgprod[cProdGlob].cItem = LOWORD(t_merge_083a_0001_wide);
     rgprod[cProdGlob].iItem = mdIdleMine;
     rgprod[cProdGlob].grobj = grobjPlanet;
     cProdGlob = (cProdGlob + 1);
@@ -642,7 +638,8 @@ L_1204:
     goto L_1933;
 
 L_1213:
-    /* untranslated: part[0x0:4](rgidProdBtns) = 0x42f042e (aggregate-slice) */
+    rgidProdBtns[0] = 1070;
+    rgidProdBtns[1] = 1071;
     rgidProdBtns[2] = 1;
     rgidProdBtns[4] = 1048;
     rgidProdBtns[6] = 1081;
@@ -1032,17 +1029,11 @@ void ProdCommandHandler(HWND hwnd, uint16_t wParam, int32_t lParam) {
     int16_t  cMax;
     PLPROD  *lpplprodT;
     int32_t  t_1a18;
-    uint32_t t_merge_1abe_0002_wide;
-    uint32_t t_scratch_m2c;
-    uint32_t t_merge_1b2c_0002_wide;
-    uint32_t t_scratch_m2c_2;
-    uint32_t t_merge_1bae_0002_wide;
-    uint32_t t_scratch_m2c_3;
-    uint16_t t_merge_1e76_0001;
-    uint16_t t_merge_1e76_0002;
-    uint16_t scratch_bp_m34;
-    uint16_t scratch_bp_m32;
-    uint32_t t_scratch_m2c_6;
+    uint32_t t_merge_1abe_0001_wide;
+    uint32_t t_merge_1b2c_0001_wide;
+    uint32_t t_merge_1bae_0001_wide;
+    uint32_t t_merge_1e76_0001_wide;
+    uint16_t t_scratch_m34;
     PROD    *t_scratch_m2c_9;
     uint16_t t_merge_2363_0001;
     int16_t  t_merge_2432_0001;
@@ -1055,14 +1046,29 @@ void ProdCommandHandler(HWND hwnd, uint16_t wParam, int32_t lParam) {
     uint32_t t_fields_5;
     uint32_t t_fields_6;
     uint16_t t_scratch_m30_6;
+    uint16_t t_scratch_m32_5;
     int16_t  t_merge_2f8a_0001;
     uint16_t t_merge_2fa6_0001;
     int16_t  t_merge_2fd9_0001;
     PROD    *t_scratch_m2c_19;
     uint32_t t_scratch_m30_10;
+    PROD    *t_scratch_m34_3_wide;
+    uint32_t t_fields_7;
+    uint32_t t_fields_8;
+    uint32_t t_fields_9;
+    uint32_t t_fields_10;
+    uint32_t t_fields_11;
+    uint32_t t_fields_12;
     PROD    *t_scratch_m2c_21;
     PROD    *t_scratch_m2c_22;
     uint32_t t_scratch_m30_11;
+    PROD    *t_scratch_m34_4_wide;
+    uint32_t t_fields_13;
+    uint32_t t_fields_14;
+    uint32_t t_fields_15;
+    uint32_t t_fields_16;
+    uint32_t t_fields_17;
+    uint32_t t_fields_18;
     PROD    *t_scratch_m2c_24;
 
 L_1994:
@@ -1122,15 +1128,14 @@ L_1a88:
         goto L_1ab8;
 
 L_1aa9:
-    t_merge_1abe_0002_wide = (uint32_t)(prod.cItem);
+    t_merge_1abe_0001_wide = (uint32_t)(prod.cItem);
     goto L_1abe;
 
 L_1ab8:
-    t_merge_1abe_0002_wide = 0x3fc;
+    t_merge_1abe_0001_wide = 0x3fc;
 
 L_1abe:
-    t_scratch_m2c = t_merge_1abe_0002_wide;
-    prod.cItem = LOWORD(t_scratch_m2c);
+    prod.cItem = LOWORD(t_merge_1abe_0001_wide);
     goto L_1bfe;
 
 L_1af6:
@@ -1140,15 +1145,14 @@ L_1af6:
         goto L_1b26;
 
 L_1b17:
-    t_merge_1b2c_0002_wide = (uint32_t)(prod.cItem);
+    t_merge_1b2c_0001_wide = (uint32_t)(prod.cItem);
     goto L_1b2c;
 
 L_1b26:
-    t_merge_1b2c_0002_wide = 0x64;
+    t_merge_1b2c_0001_wide = 0x64;
 
 L_1b2c:
-    t_scratch_m2c_2 = t_merge_1b2c_0002_wide;
-    prod.cItem = LOWORD(t_scratch_m2c_2);
+    prod.cItem = LOWORD(t_merge_1b2c_0001_wide);
 
 L_1b61:
     goto L_1bfe;
@@ -1166,15 +1170,14 @@ L_1b78:
         goto L_1ba8;
 
 L_1b99:
-    t_merge_1bae_0002_wide = (uint32_t)(prod.cItem);
+    t_merge_1bae_0001_wide = (uint32_t)(prod.cItem);
     goto L_1bae;
 
 L_1ba8:
-    t_merge_1bae_0002_wide = 0xa;
+    t_merge_1bae_0001_wide = 0xa;
 
 L_1bae:
-    t_scratch_m2c_3 = t_merge_1bae_0002_wide;
-    prod.cItem = LOWORD(t_scratch_m2c_3);
+    prod.cItem = LOWORD(t_merge_1bae_0001_wide);
     goto L_1bfe;
 
 L_1be6:
@@ -1245,19 +1248,15 @@ RingItUp:
         goto L_1e2e;
 
 L_1e25:
-    t_merge_1e76_0001 = 0x0;
-    t_merge_1e76_0002 = 0x3fc;
+    t_merge_1e76_0001_wide = 0x3fc;
     goto L_1e76;
 
 L_1e2e:
-    scratch_bp_m34 = prod.cItem;
-    scratch_bp_m32 = 0x0;
-    t_merge_1e76_0001 = (0x0 + scratch_bp_m32);
-    t_merge_1e76_0002 = (lpplProdGlob->rgprod[iDst].cItem + scratch_bp_m34);
+    t_scratch_m34 = prod.cItem;
+    t_merge_1e76_0001_wide = ((uint32_t)(lpplProdGlob->rgprod[iDst].cItem) + (uint32_t)(t_scratch_m34));
 
 L_1e76:
-    t_scratch_m2c_6 = (((uint32_t)((uint16_t)(t_merge_1e76_0001)) << 0x10) | (uint16_t)(t_merge_1e76_0002));
-    lpplProdGlob->rgprod[iDst].cItem = LOWORD(t_scratch_m2c_6);
+    lpplProdGlob->rgprod[iDst].cItem = LOWORD(t_merge_1e76_0001_wide);
     if ((lpplProdGlob->rgprod[iDst].cItem <= 0x1))
         goto FixedUp;
     else
@@ -1471,9 +1470,8 @@ L_245d:
     pProdGlob[iSrc].cItem = (pProdGlob[iSrc].cItem + c);
 
 L_24b6:
-    scratch_bp_m34 = (LOWORD(lpplProdGlob) + 0x4);
-    scratch_bp_m32 = HIWORD(lpplProdGlob);
-    /* untranslated: t_scratch_m2c_12 = (uint32_t)((scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 0x4)))] - loword((uint32_t)c)) & 0x3ff) */
+    t_scratch_m2c_12 =
+        (uint32_t)((((lpplProdGlob->rgprod[lSel].cItem | (((uint32_t)(lpplProdGlob->rgprod[lSel].iItem) & 0x3f) << 0xa)) - LOWORD((uint32_t)(c))) & 0x3ff));
     t_scratch_m38_wide = lpplProdGlob->rgprod;
     t_scratch_m38_wide[lSel].cItem = 0x0;
     t_fields_1 = (t_scratch_m38_wide[lSel].cItem | ((uint32_t)(LOWORD(t_scratch_m2c_12)) & 0x3ff));
@@ -1682,10 +1680,8 @@ L_2b0c:
 
 L_2b40:
     lpplprodT->rgprod[iDst].grobj = grobjPlanet;
-    scratch_bp_m32 = vrgZipProd[lParam].rgpq[iSrc].mdIdle;
-    lpplprodT->rgprod[iDst].iItem = scratch_bp_m32;
-    scratch_bp_m32 = vrgZipProd[lParam].rgpq[iSrc].cQuan;
-    lpplprodT->rgprod[iDst].cItem = scratch_bp_m32;
+    lpplprodT->rgprod[iDst].iItem = vrgZipProd[lParam].rgpq[iSrc].mdIdle;
+    lpplprodT->rgprod[iDst].cItem = vrgZipProd[lParam].rgpq[iSrc].cQuan;
     iDst = (iDst + 1);
     goto L_2a3b;
 
@@ -1693,8 +1689,8 @@ L_2cb0:
     lpplprodT->iprodMac = LOBYTE(iDst);
     FreePl(lpplProdGlob);
     lpplProdGlob = lpplprodT;
-    scratch_bp_m32 = vrgZipProd[lParam].fNoResearch;
-    sel.pl.fNoResearch = scratch_bp_m32;
+    t_scratch_m32_5 = vrgZipProd[lParam].fNoResearch;
+    sel.pl.fNoResearch = t_scratch_m32_5;
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), CB_LIMITTEXT, sel.pl.fNoResearch, 0);
     goto L_2d71;
 
@@ -1837,10 +1833,19 @@ L_30bd:
                           (lpplProdGlob->rgprod[(lSel + 0x1)].grobj << 0x11)) |
                          (lpplProdGlob->rgprod[(lSel + 0x1)].pct << 0x14)) |
                         (lpplProdGlob->rgprod[(lSel + 0x1)].unused << 0x1b));
-    scratch_bp_m34 = (LOWORD(lpplProdGlob) + 0x4);
-    scratch_bp_m32 = HIWORD(lpplProdGlob);
-    /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 4)))] = LOWORD(t_scratch_m30_10) (invalid-destination) */
-    /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 4)))+0x2] = HIWORD(t_scratch_m30_10) (invalid-destination) */
+    t_scratch_m34_3_wide = lpplProdGlob->rgprod;
+    t_fields_7 = ((uint32_t)(LOWORD(t_scratch_m30_10)) & 0x3ff);
+    t_fields_8 = ((t_scratch_m34_3_wide[lSel].iItem & 0x40) | (((uint32_t)(LOWORD(t_scratch_m30_10)) >> 0xa) & 0x3f));
+    t_scratch_m34_3_wide[lSel].cItem = t_fields_7;
+    t_scratch_m34_3_wide[lSel].iItem = t_fields_8;
+    t_fields_9 = ((t_scratch_m34_3_wide[lSel].iItem & 0x3f) | (((uint32_t)(HIWORD(t_scratch_m30_10)) & 0x1) << 0x6));
+    t_fields_10 = (((uint32_t)(HIWORD(t_scratch_m30_10)) >> 0x1) & 0x7);
+    t_fields_11 = (((uint32_t)(HIWORD(t_scratch_m30_10)) >> 0x4) & 0x7f);
+    t_fields_12 = (((uint32_t)(HIWORD(t_scratch_m30_10)) >> 0xb) & 0x1f);
+    t_scratch_m34_3_wide[lSel].iItem = t_fields_9;
+    t_scratch_m34_3_wide[lSel].grobj = t_fields_10;
+    t_scratch_m34_3_wide[lSel].pct = t_fields_11;
+    t_scratch_m34_3_wide[lSel].unused = t_fields_12;
     t_scratch_m2c_21 = lpplProdGlob->rgprod;
     t_scratch_m2c_21[(lSel + 1)] = prod;
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
@@ -1863,10 +1868,19 @@ L_3243:
                           (lpplProdGlob->rgprod[(lSel + 0x1)].grobj << 0x11)) |
                          (lpplProdGlob->rgprod[(lSel + 0x1)].pct << 0x14)) |
                         (lpplProdGlob->rgprod[(lSel + 0x1)].unused << 0x1b));
-    scratch_bp_m34 = (LOWORD(lpplProdGlob) + 0x4);
-    scratch_bp_m32 = HIWORD(lpplProdGlob);
-    /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 4)))] = LOWORD(t_scratch_m30_11) (invalid-destination) */
-    /* untranslated: scratch_bp_m32:[(scratch_bp_m34 + loword((int32_t)(lSel * 4)))+0x2] = HIWORD(t_scratch_m30_11) (invalid-destination) */
+    t_scratch_m34_4_wide = lpplProdGlob->rgprod;
+    t_fields_13 = ((uint32_t)(LOWORD(t_scratch_m30_11)) & 0x3ff);
+    t_fields_14 = ((t_scratch_m34_4_wide[lSel].iItem & 0x40) | (((uint32_t)(LOWORD(t_scratch_m30_11)) >> 0xa) & 0x3f));
+    t_scratch_m34_4_wide[lSel].cItem = t_fields_13;
+    t_scratch_m34_4_wide[lSel].iItem = t_fields_14;
+    t_fields_15 = ((t_scratch_m34_4_wide[lSel].iItem & 0x3f) | (((uint32_t)(HIWORD(t_scratch_m30_11)) & 0x1) << 0x6));
+    t_fields_16 = (((uint32_t)(HIWORD(t_scratch_m30_11)) >> 0x1) & 0x7);
+    t_fields_17 = (((uint32_t)(HIWORD(t_scratch_m30_11)) >> 0x4) & 0x7f);
+    t_fields_18 = (((uint32_t)(HIWORD(t_scratch_m30_11)) >> 0xb) & 0x1f);
+    t_scratch_m34_4_wide[lSel].iItem = t_fields_15;
+    t_scratch_m34_4_wide[lSel].grobj = t_fields_16;
+    t_scratch_m34_4_wide[lSel].pct = t_fields_17;
+    t_scratch_m34_4_wide[lSel].unused = t_fields_18;
     t_scratch_m2c_24 = lpplProdGlob->rgprod;
     t_scratch_m2c_24[(lSel + 1)] = prod;
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
@@ -2450,7 +2464,6 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     int16_t      rgCostsPartCur[4];
     int16_t      rgCostsPartNew[4];
     uint16_t     t_merge_4424_0001;
-    uint16_t     scratch_bp_m52;
     uint16_t     t_merge_4465_0001;
     uint16_t     t_merge_45d3_0001;
     uint16_t     t_merge_4614_0001;
@@ -2628,8 +2641,7 @@ L_43e1:
     goto L_4424;
 
 L_43f9:
-    scratch_bp_m52 = ((int32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa);
-    t_merge_4424_0001 = (rgCostsPartNew[j] - scratch_bp_m52);
+    t_merge_4424_0001 = (rgCostsPartNew[j] - ((int32_t)(LOWORD((7 * rgCostsPartCur[j]))) / 0xa));
 
 L_4424:
     cost = t_merge_4424_0001;
@@ -2681,8 +2693,7 @@ L_458e:
     goto L_45d3;
 
 L_45a5:
-    scratch_bp_m52 = ((int32_t)((rgCostsPartCur[j] * 8)) / 10);
-    t_merge_45d3_0001 = (rgCostsPartNew[j] - scratch_bp_m52);
+    t_merge_45d3_0001 = (rgCostsPartNew[j] - ((int32_t)((rgCostsPartCur[j] * 8)) / 10));
 
 L_45d3:
     cost = t_merge_45d3_0001;

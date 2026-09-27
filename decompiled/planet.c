@@ -1466,9 +1466,9 @@ L_20dc:
 
 L_20e5:
     CalcPctSurvive(&(sel.pl), &(pct), 0x0);
-    pct = (1 - pct);
-    __ftol();
-    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, LOWORD(__ftol()), LOWORD(__ftol()));
+    pct = (1.0 - pct);
+    c = _wsprintf(szWork, PCTDXPCTDPCTPCT, LOWORD((int32_t)((pct * 100.0))),
+                  LOWORD((int32_t)(((pct - ((double)((int32_t)(LOWORD((int32_t)((pct * 100.0))))) / 100.0)) * 10000.0))));
     goto L_21d4;
 
 L_2195:
@@ -2671,7 +2671,10 @@ L_39f1:
         goto L_3a01;
 
 L_3a01:
-    /* untranslated: branch part[0x6:2](xf) != idPlayer ? L_3a13 : L_3a0d */
+    if ((xf.fl.iPlayer != idPlayer))
+        goto L_3a13;
+    else
+        goto L_3a0d;
 
 L_3a0d:
     t_merge_3a16_0001 = 1;
@@ -2694,7 +2697,10 @@ L_3a1c:
         goto L_3a3d;
 
 L_3a3d:
-    /* untranslated: branch (part[0x8:2](xf) & 0xff) == 0x7 ? L_3a52 : L_3a4c */
+    if ((xf.fl.det == 0x7))
+        goto L_3a52;
+    else
+        goto L_3a4c;
 
 L_3a4c:
     t_merge_3a55_0001 = 0x1;
@@ -3682,7 +3688,6 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
     POINT    ptNew;
     int16_t  t_merge_49b6_0001;
     uint16_t t_merge_4b50_0001;
-    uint16_t t_scratch_m40;
     uint16_t t_merge_4cf6_0001;
     uint16_t t_merge_4d28_0001;
     int16_t  t_merge_4dd8_0001;
@@ -3850,8 +3855,7 @@ L_4b4d:
     t_merge_4b50_0001 = 0x0;
 
 L_4b50:
-    t_scratch_m40 = t_merge_4b50_0001;
-    prgtile[i].fPopped = t_scratch_m40;
+    prgtile[i].fPopped = t_merge_4b50_0001;
     ReflowColumn(prgtile[i].iCol, i, 1);
 
 L_4bb2:
@@ -6162,8 +6166,7 @@ L_701f:
     return (-LOWORD(pctNeg));
 
 L_702a:
-    sqrt(((double)(pctPos) / 3));
-    pctPos = __ftol();
+    pctPos = (int32_t)((sqrt(((double)(pctPos) / 3.0)) + 0.9));
     pctPos = (int32_t)(((uint32_t)((pctPos * pctMod)) / 10000));
     return LOWORD(pctPos);
 }
@@ -6341,7 +6344,7 @@ int16_t CMinesOperating(PLANET *lppl) {
     int16_t iplr;
     int16_t cMinesOp;
     int16_t cMines;
-    int32_t t_call_7461;
+    double  t_call_7452;
 
 L_73fc:
     iplr = lppl->iPlayer;
@@ -6360,9 +6363,8 @@ L_741e:
         goto L_743e;
 
 L_743e:
-    sqrt((double)(lppl->rgwtMin[3]));
-    t_call_7461 = __ftol();
-    return LOWORD(t_call_7461);
+    t_call_7452 = sqrt((double)(lppl->rgwtMin[3]));
+    return LOWORD((int32_t)(t_call_7452));
 
 L_7469:
     cMines = lppl->cMines;
@@ -6687,8 +6689,8 @@ L_79cd:
     pctVal = 25;
 
 L_79d2:
-    sqrt((((double)(lPop) * (double)((int32_t)(iEnergy))) / (double)((int32_t)(iEff))));
-    cRes = LOWORD(__ftol());
+    cRes = LOWORD(
+        (int32_t)((((sqrt((((double)(lPop) * (double)((int32_t)(iEnergy))) / (double)((int32_t)(iEff)))) * (double)((int32_t)(pctVal))) / 10.0) + 0.999)));
     goto LFinishUp;
 
 L_7a48:

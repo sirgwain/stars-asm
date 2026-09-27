@@ -3030,8 +3030,6 @@ L_387e:
 }
 
 SHDEF *LpshdefFromTok(TOK *ptok) {
-    uint16_t t_scratch_m4;
-
 L_388e:
     if ((ptok->ishdef < 0x10))
         goto L_38e3;
@@ -3039,12 +3037,10 @@ L_388e:
         goto L_38a9;
 
 L_38a9:
-    t_scratch_m4 = LOWORD(((ptok->ishdef + 0xfff0) * 0x93));
-    return (SHDEF *)((uint8_t *)(rglpshdefSB[ptok->iplr]) + t_scratch_m4);
+    return (rglpshdefSB[ptok->iplr] + (ptok->ishdef - 16));
 
 L_38e3:
-    t_scratch_m4 = LOWORD((ptok->ishdef * 0x93));
-    return (SHDEF *)((uint8_t *)(rglpshdef[ptok->iplr]) + t_scratch_m4);
+    return (rglpshdef[ptok->iplr] + ptok->ishdef);
 }
 
 int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
@@ -3863,9 +3859,7 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
     int16_t   t_461c;
     uint16_t  t_scratch_m44_2;
     uint16_t  t_merge_4b51_0001;
-    uint16_t  t_scratch_m44_5;
     uint16_t  t_merge_4bc2_0001;
-    uint16_t  t_scratch_m44_6;
 
 L_45b4:
     initMin = -1;
@@ -4078,8 +4072,7 @@ L_4b4e:
     t_merge_4b51_0001 = 0x0;
 
 L_4b51:
-    t_scratch_m44_5 = t_merge_4b51_0001;
-    ptokT->fRegen = t_scratch_m44_5;
+    ptokT->fRegen = t_merge_4b51_0001;
     if ((fDampeningField == 0))
         goto L_4be6;
     else
@@ -4105,8 +4098,7 @@ L_4bbf:
     t_merge_4bc2_0001 = 0x0;
 
 L_4bc2:
-    t_scratch_m44_6 = t_merge_4bc2_0001;
-    ptokT->spd = t_scratch_m44_6;
+    ptokT->spd = t_merge_4bc2_0001;
 
 L_4be6:
     *((TOK *)(lpbBattleCur)) = *(ptokT);
@@ -4983,7 +4975,6 @@ int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint
     uint16_t t_merge_5adb_0001;
     uint16_t t_merge_5b63_0001;
     uint16_t t_merge_5b99_0001;
-    uint16_t t_scratch_m56_2;
     uint16_t t_merge_5bc5_0001;
     uint16_t t_merge_5bfb_0001;
     int16_t  t_merge_5c7a_0001;
@@ -5120,7 +5111,6 @@ L_5b8d:
     t_merge_5b99_0001 = rgx[x];
 
 L_5b99:
-    t_scratch_m56_2 = (t_merge_5b99_0001 & 0xf);
     if ((0 <= rgy[y]))
         goto L_5bb9;
     else
@@ -5157,7 +5147,7 @@ L_5bef:
     t_merge_5bfb_0001 = rgy[y];
 
 L_5bfb:
-    brcEnemy = LOBYTE((((t_merge_5bfb_0001 & 0xf) << 0x4) | t_scratch_m56_2));
+    brcEnemy = LOBYTE((((t_merge_5bfb_0001 & 0xf) << 0x4) | (t_merge_5b99_0001 & 0xf)));
     dzEnemy = DzFromBrcBrc(brc, brcEnemy);
     if ((dzEnemy <= dMax))
         goto L_5c38;
@@ -5369,8 +5359,6 @@ int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack) {
     POINT    rgptDeltas[2];
     uint16_t t_scratch_m5c;
     uint16_t t_scratch_m5c_2;
-    int32_t *t_assign_1;
-    int32_t *t_assign_2;
     int16_t  t_scratch_m5c_3;
     uint16_t t_merge_6353_0001;
     int16_t  t_643a;
@@ -5534,10 +5522,7 @@ L_6176:
         goto L_619c;
 
 L_619c:
-    t_assign_1 = &(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]);
-    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(LOWORD(score)) & 0xffff)));
-    t_assign_2 = &(rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)]);
-    *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(HIWORD(score)) & 0xffff) << 0x10)));
+    rgscoreNear[((x - xCur) + 1)][((y - yCur) + 1)] = score;
 
 L_61c9:
     if ((score < scoreBest))
@@ -6766,7 +6751,7 @@ L_7781:
     goto L_77c5;
 
 L_77a8:
-    lValue = __ftol();
+    lValue = (int32_t)((((double)(dpMain) * (double)(dp)) / (double)(dpT)));
 
 L_77c5:
     if (((dpMain - 1) < lValue))
@@ -10098,7 +10083,7 @@ L_aff9:
 
 L_b02a:
     CalcPctSurvive(lppl, &(pctSuccess), &(pctSmart));
-    if ((pctSuccess >= 1))
+    if ((pctSuccess >= 1.0))
         goto L_b14e;
     else
         goto L_b055;
@@ -10110,7 +10095,7 @@ L_b055:
         goto L_b06c;
 
 L_b06c:
-    dmgBombPeople = __ftol();
+    dmgBombPeople = (int32_t)((((double)(dmgBombPeople)*pctSuccess) + 0.5));
 
 L_b08a:
     if ((dmgBombFloor <= 0))
@@ -10119,7 +10104,7 @@ L_b08a:
         goto L_b0a1;
 
 L_b0a1:
-    dmgBombFloor = __ftol();
+    dmgBombFloor = (int32_t)((((double)(dmgBombFloor)*pctSuccess) + 0.5));
 
 L_b0bf:
     if ((dmgPeopleSmart <= 0))
@@ -10128,7 +10113,7 @@ L_b0bf:
         goto L_b0d6;
 
 L_b0d6:
-    dmgPeopleSmart = __ftol();
+    dmgPeopleSmart = (int32_t)((((double)(dmgPeopleSmart)*pctSmart) + 0.5));
 
 L_b0f4:
     if ((dmgBombBldg <= 0))
@@ -10137,8 +10122,8 @@ L_b0f4:
         goto L_b10b;
 
 L_b10b:
-    pctSuccessHalf = (1 - ((1 - pctSuccess) / 2));
-    dmgBombBldg = __ftol();
+    pctSuccessHalf = (1.0 - ((1.0 - pctSuccess) / 2.0));
+    dmgBombBldg = (int32_t)((((double)(dmgBombBldg)*pctSuccessHalf) + 0.5));
 
 L_b14e:
     cPPE = ((lppl->cMines + lppl->cFactories) + (uint32_t)(lppl->cDefenses));
@@ -10372,7 +10357,7 @@ L_b7d1:
 
 L_b7e8:
     pctTot = 0;
-    pctTerra = (pctTerra - __ftol());
+    pctTerra = (pctTerra - (int32_t)((((1.0 - pctSuccess) * (double)(pctTerra)) / 2.0)));
     if ((pctTerra <= 500))
         goto L_b84b;
     else
@@ -10562,7 +10547,7 @@ L_ba98:
         goto L_baaf;
 
 L_baaf:
-    if ((pctSuccess != 1))
+    if ((pctSuccess != 1.0))
         goto L_bb47;
     else
         goto GenericBombMsg;
@@ -10575,8 +10560,9 @@ GenericBombMsg:
 L_bb47:
     idmSrc = (idmSrc + 5);
     idmDst = (idmDst + 5);
-    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0);
-    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0,
+                0);
+    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0);
 
 L_bc07:
     goto L_be65;
@@ -10584,7 +10570,7 @@ L_bc07:
 L_bc0a:
     idmSrc = (idmSrc - 2);
     idmDst = (idmDst - 2);
-    if ((pctSuccess != 1))
+    if ((pctSuccess != 1.0))
         goto L_bca4;
     else
         goto L_bc27;
@@ -10597,8 +10583,8 @@ L_bc27:
 L_bca4:
     idmSrc = (idmSrc + 5);
     idmDst = (idmDst + 5);
-    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0);
-    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0, 0);
 
 L_bd5e:
     goto L_be65;

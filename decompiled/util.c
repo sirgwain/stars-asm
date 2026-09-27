@@ -190,7 +190,7 @@ L_02f6:
         goto L_0308;
 
 L_0308:
-    *(ppctSmart) = 1;
+    *(ppctSmart) = 1.0;
 
 L_0317:
     if ((lppl->iPlayer == -1))
@@ -224,27 +224,27 @@ L_03b5:
     cDefenses = (int32_t)(cMax);
 
 L_03bf:
-    pct = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 1000)), (double)(cDefenses));
+    pct = pow((1.0 - ((double)((int32_t)(part.pplanetary->grAbility)) / 1000.0)), (double)(cDefenses));
     if ((ppctSmart == 0x0))
         goto L_047e;
     else
         goto L_041a;
 
 L_041a:
-    *(ppctSmart) = pow((1 - ((double)((int32_t)(part.pplanetary->grAbility)) / 2000)), (double)(cDefenses));
+    *(ppctSmart) = pow((1.0 - ((double)((int32_t)(part.pplanetary->grAbility)) / 2000.0)), (double)(cDefenses));
 
 L_0470:
     goto L_047e;
 
 L_0473:
-    pct = 1;
+    pct = 1.0;
 
 L_047e:
     idPlayer = iPlrSav;
     goto L_0492;
 
 L_0487:
-    pct = 1;
+    pct = 1.0;
 
 L_0492:
     *(ppct) = pct;
@@ -1252,7 +1252,7 @@ int16_t FCalcFleetBombDamage(FLEET *lpfl, int32_t *pdmgPeople, int32_t *pdmgPeop
 L_145c:
     iplr = lpfl->iPlayer;
     cfl = 0;
-    dmgSmart = 1;
+    dmgSmart = 1.0;
     lpflHead = lpfl;
     *(ppctTerra) = 0;
     *(pdmgPeopleMin) = 0;
@@ -1319,7 +1319,7 @@ L_1608:
 
 L_1615:
     cIter = (uint32_t)((part.hs.cItem * (int32_t)(lpfl->rgcsh[ishdef])));
-    dmgT = (1 - ((double)((int32_t)(part.pbomb->dDmgCol)) / 1000));
+    dmgT = (1.0 - ((double)((int32_t)(part.pbomb->dDmgCol)) / 1000.0));
 
 L_1675:
     t_1675 = cIter;
@@ -1461,7 +1461,7 @@ L_1ac3:
         goto L_1ad5;
 
 L_1ad5:
-    *(pdmgPeopleSmart) = __ftol();
+    *(pdmgPeopleSmart) = (int32_t)(((1000.0 - (dmgSmart * 1000.0)) + 0.5));
     if ((*(pdmgPeopleSmart) < 1000))
         goto L_1b27;
     else
@@ -2698,13 +2698,12 @@ L_3000:
 }
 
 FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
-    int16_t    i;
-    ORDER     *lpord;
-    FLEET     *lpfl;
-    int16_t    iflPrev;
-    void      *t_call_3123;
-    uint16_t   t_merge_32dc_0001;
-    GrobjClass t_scratch_m10_2;
+    int16_t  i;
+    ORDER   *lpord;
+    FLEET   *lpfl;
+    int16_t  iflPrev;
+    void    *t_call_3123;
+    uint16_t t_merge_32dc_0001;
 
 L_300c:
     iflPrev = -1;
@@ -2801,8 +2800,7 @@ L_32d9:
     t_merge_32dc_0001 = 0x4;
 
 L_32dc:
-    t_scratch_m10_2 = t_merge_32dc_0001;
-    lpord->grobj = t_scratch_m10_2;
+    lpord->grobj = t_merge_32dc_0001;
     lpord->iWarp = 0x0;
     lpord->fValidTask = 0x1;
     lpord->grTask = grTaskNone;
@@ -3340,7 +3338,7 @@ L_3d64:
     return c;
 
 L_3d7e:
-    if ((iSpeed < LOWORD(__ftol())))
+    if ((iSpeed < LOWORD((int32_t)(dbl))))
         goto L_3d99;
     else
         goto L_3d91;
@@ -3350,7 +3348,7 @@ L_3d91:
     goto L_3db1;
 
 L_3d99:
-    iSpeed = ((int32_t)(((LOWORD(__ftol()) + iSpeed) + 0xffff)) / iSpeed);
+    iSpeed = ((int32_t)(((LOWORD((int32_t)(dbl)) + iSpeed) + 0xffff)) / iSpeed);
 
 L_3db1:
     cYears = (cYears + iSpeed);
@@ -3466,8 +3464,7 @@ char *PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 
 L_3f00:
     fStarted = 0;
-    DGetDistance(x1, y1, x2, y2);
-    d = __ftol();
+    d = (int32_t)(((DGetDistance(x1, y1, x2, y2) * 100.0) + 0.5));
     d2 = (int32_t)((d / 100));
     d = (d - (uint32_t)((d2 * 100)));
     if ((dyArial8 > 14))
@@ -4236,8 +4233,7 @@ L_4c2b:
         goto L_4c4f;
 
 L_4c4f:
-    sqrt((double)((uint32_t)((lppl->rgwtMin[3] * 10))));
-    dRange = LOWORD(__ftol());
+    dRange = LOWORD((int32_t)(sqrt((double)((uint32_t)((lppl->rgwtMin[3] * 10))))));
     if ((GetRaceGrbit(&(rgplr[idPlayer]), ibitRaceNoAdvScanner) == 0))
         goto L_4ced;
     else
@@ -4553,8 +4549,8 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     uint16_t t_merge_53ea_0001;
 
 L_50d0:
-    lRange4 = (double)(0x0);
-    lPlanRange4 = (double)(0x0);
+    lRange4 = 0.0;
+    lPlanRange4 = 0.0;
     fHasScanner = 0;
     iSteal = 0;
     cDetectors = 0;
@@ -4578,8 +4574,8 @@ L_513f:
 
 L_5142:
     fBuiltIn = t_merge_5142_0001;
-    lBIR4 = -1;
-    lBIPR4 = -1;
+    lBIR4 = -1.0;
+    lBIPR4 = -1.0;
     if ((ppctDetect == 0x0))
         goto L_516b;
     else
@@ -4613,7 +4609,7 @@ L_518c:
         goto L_5198;
 
 L_5198:
-    if ((lBIR4 >= (double)(0x0)))
+    if ((lBIR4 >= 0.0))
         goto L_525e;
     else
         goto L_51b6;
@@ -4626,12 +4622,12 @@ L_51b6:
 
 L_51ca:
     lBIR4 = 2.56e+06;
-    lBIPR4 = 160000;
+    lBIPR4 = 160000.0;
     goto L_525e;
 
 L_51e3:
     lBIPR4 = (double)((int32_t)(LOWORD(((int16_t)(rgplr[iplr].rgTech[4]) * 10))));
-    lBIR4 = (lBIPR4 * (double)(0x2));
+    lBIR4 = (lBIPR4 * 2.0);
     lBIPR4 = (lBIPR4 * lBIPR4);
     lBIPR4 = (lBIPR4 * lBIPR4);
     lBIR4 = (lBIR4 * lBIR4);
@@ -4837,7 +4833,7 @@ L_558e:
     goto L_5298;
 
 L_5591:
-    if ((lRange4 > (double)(0x0)))
+    if ((lRange4 > 0.0))
         goto L_55b8;
     else
         goto L_55af;
@@ -4849,8 +4845,7 @@ L_55af:
         goto L_55b8;
 
 L_55b8:
-    /* untranslated: call sqrt(sqrt(part[0x4:8](lRange4))) -> callresult(double) */
-    dRange = LOWORD(__ftol());
+    dRange = LOWORD((int32_t)(sqrt(sqrt(lRange4))));
     if ((iplr == -1))
         goto L_562d;
     else
@@ -4878,8 +4873,7 @@ L_562d:
         goto L_5636;
 
 L_5636:
-    /* untranslated: call sqrt(sqrt(part[0x4:8](lPlanRange4))) -> callresult(double) */
-    *(pdPlanRange) = LOWORD(__ftol());
+    *(pdPlanRange) = LOWORD((int32_t)(sqrt(sqrt(lPlanRange4))));
 
 L_5674:
     if ((piSteal == 0x0))
@@ -5026,7 +5020,6 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     int32_t lPower;
     int16_t rgType[16];
     int32_t t_merge_5cb9_0001;
-    int32_t t_scratch_m60_2;
     int32_t t_merge_5cf5_0001;
 
 L_58a6:
@@ -5274,7 +5267,6 @@ L_5cb5:
     t_merge_5cb9_0001 = (int32_t)(score.cPlanet);
 
 L_5cb9:
-    t_scratch_m60_2 = (int32_t)((t_merge_5cb9_0001 * 2));
     if ((rgcsh[0] < (int32_t)(score.cPlanet)))
         goto L_5ce8;
     else
@@ -5288,7 +5280,7 @@ L_5cf1:
     t_merge_5cf5_0001 = (int32_t)(score.cPlanet);
 
 L_5cf5:
-    score.lScore = (score.lScore + ((int32_t)((t_merge_5cf5_0001 / 2)) + t_scratch_m60_2));
+    score.lScore = (score.lScore + ((int32_t)((t_merge_5cf5_0001 / 2)) + (int32_t)((t_merge_5cb9_0001 * 2))));
     if ((rgcsh[2] <= 0))
         goto L_5d57;
     else
@@ -6395,7 +6387,6 @@ int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate) {
     int32_t pctFull;
     int32_t t_merge_7168_0001;
     int32_t t_merge_7397_0001;
-    int32_t scratch_bp_m30;
 
 L_7082:
     fPopDied = 0;
@@ -6518,8 +6509,7 @@ L_7361:
     goto L_7397;
 
 L_736a:
-    scratch_bp_m30 = (int32_t)((pctFull / 10));
-    t_merge_7397_0001 = (99 - scratch_bp_m30);
+    t_merge_7397_0001 = (99 - (int32_t)((pctFull / 10)));
 
 L_7397:
     pctRetard = t_merge_7397_0001;
@@ -6620,7 +6610,6 @@ int16_t FCanFleetUseStargates(FLEET *lpfl, POINT ptSrc, POINT ptDst) {
     SCAN     scan;
     int16_t  t_call_78d1;
     uint16_t t_merge_7938_0001;
-    uint16_t scratch_bp_m30;
     uint16_t t_merge_7950_0001;
 
 L_75e2:
@@ -6813,8 +6802,7 @@ L_784d:
         goto L_7856;
 
 L_7856:
-    DGetDistance(ptSrc.x, ptSrc.y, ptDst.x, ptDst.y);
-    dTravel = LOWORD(__ftol());
+    dTravel = LOWORD((int32_t)(DGetDistance(ptSrc.x, ptSrc.y, ptDst.x, ptDst.y)));
     fDanger = 0;
     ishdef = 0;
     goto L_791d;
@@ -6891,7 +6879,6 @@ L_7935:
     t_merge_7938_0001 = 0x0;
 
 L_7938:
-    scratch_bp_m30 = (t_merge_7938_0001 + 0x1);
     if ((fCargo == 0))
         goto L_794d;
     else
@@ -6905,7 +6892,7 @@ L_794d:
     t_merge_7950_0001 = 0x0;
 
 L_7950:
-    return (scratch_bp_m30 + t_merge_7950_0001);
+    return ((t_merge_7938_0001 + 0x1) + t_merge_7950_0001);
 }
 
 int16_t FFleetCanJumpgate(FLEET *lpfl) {

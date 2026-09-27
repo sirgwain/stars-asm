@@ -197,7 +197,12 @@ func analyzeScratchStorage(f *Func) *scratchAnalysis {
 					case 8:
 						typ = typeinfo.Double
 					case 10:
-						typ = typeinfo.F80
+						// The compiler spills ST(0) to extended-real temporaries
+						// around calls. The spill preserves the value exactly, so a
+						// source-typed float keeps its type instead of widening.
+						if typ == nil || typ.Kind() != typeinfo.KFloat {
+							typ = typeinfo.F80
+						}
 					}
 					priority = 4
 				}
@@ -283,7 +288,13 @@ func analyzeScratchStorage(f *Func) *scratchAnalysis {
 // over inferred source types and neutral access widths. Lane views never narrow
 // a wider object to the type of its first word.
 func (o *scratchObject) observeType(access scratchAccess) {
-	if access.region != o.region || access.typ == nil || access.typ.Bytes() != o.region.Size {
+	if access.region != o.region || access.typ == nil {
+		return
+	}
+	// An extended-real spill slot holds its source float exactly, so the
+	// source type may name the object even though it is narrower.
+	extendedSpill := o.region.Size == typeinfo.F80.Bytes() && access.typ.Kind() == typeinfo.KFloat
+	if access.typ.Bytes() != o.region.Size && !extendedSpill {
 		return
 	}
 	priority := access.priority * 4

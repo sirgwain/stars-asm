@@ -252,6 +252,10 @@ func collectUnsupportedExpr(expr sem.Expr, path string, failures *[]LowerFailure
 		}
 		collectUnsupportedExpr(e.Target, path+".target", failures)
 	case *sem.Part:
+		if slice, ok := scalarArraySlice(e); ok {
+			collectUnsupportedExpr(slice, path, failures)
+			return
+		}
 		if e.Width != 2 || e.ByteOff != 0 && e.ByteOff != 2 {
 			*failures = append(*failures, LowerFailure{Kind: "part", Path: path})
 			return
@@ -499,6 +503,9 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		}
 		return &AddressOf{Target: target}, true
 	case *sem.Part:
+		if slice, ok := scalarArraySlice(e); ok {
+			return l.lowerExpr(slice)
+		}
 		base, ok := l.lowerExpr(e.Base)
 		if !ok {
 			return nil, false

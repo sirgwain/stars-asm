@@ -1362,7 +1362,6 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     uint16_t t_merge_2078_0001;
     COLORREF t_merge_20ca_0001;
     uint16_t t_merge_21b6_0001;
-    uint16_t t_scratch_ma78_2;
     uint16_t t_merge_21cc_0001;
     THING   *t_call_270b;
     uint16_t t_merge_2916_0001;
@@ -2258,7 +2257,6 @@ L_21b3:
     t_merge_21b6_0001 = 0x0;
 
 L_21b6:
-    t_scratch_ma78_2 = t_merge_21b6_0001;
     if ((j != 2))
         goto L_21c9;
     else
@@ -2272,7 +2270,7 @@ L_21c9:
     t_merge_21cc_0001 = 0x0;
 
 L_21cc:
-    if ((t_scratch_ma78_2 == t_merge_21cc_0001))
+    if ((t_merge_21b6_0001 == t_merge_21cc_0001))
         goto L_243c;
     else
         goto L_21da;
@@ -2318,8 +2316,7 @@ L_224b:
 
 L_2262:
     pt = lpth->pt;
-    sqrt((double)(lpth->thm.cMines));
-    dRange = LOWORD(__ftol());
+    dRange = LOWORD((int32_t)(sqrt((double)(lpth->thm.cMines))));
     rc.left = PtToScan(((xOff + pt.x) - dRange));
     rc.top = PtToScan(((yOff - pt.y) - dRange));
     rc.right = PtToScan(((xOff + pt.x) + dRange));
@@ -2432,8 +2429,7 @@ L_24bc:
     SelectObject(hdc, rghbrPat[lpth->thm.iType]);
     SetTextColor(hdc, 0xffff00);
     pt = lpth->pt;
-    sqrt((double)(lpth->thm.cMines));
-    dRange = LOWORD(__ftol());
+    dRange = LOWORD((int32_t)(sqrt((double)(lpth->thm.cMines))));
     rc.left = PtToScan(((xOff + pt.x) - dRange));
     rc.top = PtToScan(((yOff - pt.y) - dRange));
     rc.right = PtToScan(((xOff + pt.x) + dRange));
@@ -4647,23 +4643,23 @@ L_4e6c:
 }
 
 void DrawRadarCircle(DRAWCIR *pdc, RECT *prc) {
-    int16_t     y2;
-    int32_t     r2;
-    COLORREF    crSav;
-    int16_t     dy;
-    int16_t     y;
-    int16_t     iFree;
-    int16_t     i;
-    int16_t     dx;
-    int16_t     x2;
-    int16_t     rad;
-    int32_t     l;
-    int16_t     x;
-    RECT        rc;
-    int16_t     t_merge_4f2b_0001;
-    int16_t     t_merge_4f4b_0001;
-    int32_t     t_scratch_m42;
-    long double t_scratch_m3a_2;
+    int16_t  y2;
+    int32_t  r2;
+    COLORREF crSav;
+    int16_t  dy;
+    int16_t  y;
+    int16_t  iFree;
+    int16_t  i;
+    int16_t  dx;
+    int16_t  x2;
+    int16_t  rad;
+    int32_t  l;
+    int16_t  x;
+    RECT     rc;
+    int16_t  t_merge_4f2b_0001;
+    int16_t  t_merge_4f4b_0001;
+    int32_t  t_scratch_m42;
+    double   t_scratch_m3a_2;
 
 L_4e7c:
     if ((prc == 0x0))
@@ -4824,7 +4820,7 @@ L_50f2:
 
 L_5176:
     t_scratch_m42 = (int32_t)(pdc->rgrad[i]);
-    if (((sqrt((double)(l)) + (double)(t_scratch_m42)) > (long double)((double)((int32_t)(rad)))))
+    if (((sqrt((double)(l)) + (double)(t_scratch_m42)) > (double)((int32_t)(rad))))
         goto L_50c2;
     else
         goto L_51d7;
@@ -5176,8 +5172,7 @@ L_577b:
 L_5782:
     lWarp2 = (uint32_t)((lWarp2 * lWarp2));
     m = ((double)((int32_t)(dy)) / (double)((int32_t)(dx)));
-    sqrt(((double)(lWarp2) / ((m * m) + (double)(0x1))));
-    dx5 = LOWORD(__ftol());
+    dx5 = LOWORD((int32_t)(sqrt(((double)(lWarp2) / ((m * m) + 1.0)))));
     if ((dx >= 0))
         goto L_582b;
     else
@@ -5220,8 +5215,7 @@ L_58d6:
 
 L_58dd:
     m = ((double)((int32_t)((-dx))) / (double)((int32_t)(dy)));
-    sqrt((24 / ((m * m) + (double)(0x1))));
-    ptTick.x = LOWORD(__ftol());
+    ptTick.x = LOWORD((int32_t)(sqrt((24.0 / ((m * m) + 1.0)))));
     if ((ptTick.x != 0))
         goto L_597e;
     else
@@ -5262,10 +5256,8 @@ L_59b7:
     goto L_5ae8;
 
 L_5a1c:
-    /* untranslated: call cos(part[0x4:8](dAngle)) -> callresult(double) */
-    rgptArrow[i].x = LOWORD(__ftol());
-    /* untranslated: call sin(part[0x4:8](dAngle)) -> callresult(double) */
-    rgptArrow[i].y = LOWORD(__ftol());
+    rgptArrow[i].x = LOWORD((int32_t)(((5.0 * cos(dAngle)) + 0.5)));
+    rgptArrow[i].y = LOWORD((int32_t)(((5.0 * sin(dAngle)) + 0.5)));
     dAngle = (dAngle + 1.5707964);
     i = (i + 1);
 
@@ -7420,8 +7412,7 @@ L_7f8c:
         goto L_7fa3;
 
 L_7fa3:
-    DGetDistance(lpord->pt.x, lpord->pt.y, lpord[(-1)].pt.x, lpord[(-1)].pt.y);
-    lDist = LOWORD(__ftol());
+    lDist = LOWORD((int32_t)(DGetDistance(lpord->pt.x, lpord->pt.y, lpord[(-1)].pt.x, lpord[(-1)].pt.y)));
     cSpeed = LOWORD((iWarp * iWarp));
     cTravel = ((int32_t)(((LOWORD((iWarp * iWarp)) + lDist) + 0xffff)) / cSpeed);
 
@@ -8340,8 +8331,7 @@ L_8d6c:
         goto L_8d78;
 
 L_8d78:
-    sqrt((double)(lpThings[sel.scan.ith].thm.cMines));
-    iRad = LOWORD(__ftol());
+    iRad = LOWORD((int32_t)((sqrt((double)(lpThings[sel.scan.ith].thm.cMines)) + 1.0)));
     rcMine.left = lpThings[sel.scan.ith].pt.x;
     rcMine.top = lpThings[sel.scan.ith].pt.y;
     rcMine.right = (rcMine.left + iRad);
@@ -8433,8 +8423,7 @@ L_8f71:
         goto L_8f7d;
 
 L_8f7d:
-    sqrt((double)(lpThings[sel.scan.ith].thm.cMines));
-    iRad = LOWORD(__ftol());
+    iRad = LOWORD((int32_t)((sqrt((double)(lpThings[sel.scan.ith].thm.cMines)) + 1.0)));
     rcMine.left = lpThings[sel.scan.ith].pt.x;
     rcMine.top = lpThings[sel.scan.ith].pt.y;
     rcMine.right = (rcMine.left + iRad);
@@ -9046,7 +9035,6 @@ L_9875:
 void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD) {
     double   dbl;
     int16_t  iBmp;
-    int32_t  t_call_990c;
     uint16_t t_merge_9938_0001;
 
 L_987c:
@@ -9063,10 +9051,9 @@ L_9893:
         goto L_989f;
 
 L_989f:
-    dbl = ((((atan2((double)((int32_t)(dy)), (double)((int32_t)(dx))) + 3.1415927) * 4) / 3.141592654) + 0.5);
-    t_call_990c = __ftol();
-    iBmp = (0x8 - (LOWORD(t_call_990c) & 0x7));
-    iBmp = (((0x8 - (LOWORD(t_call_990c) & 0x7)) + 0x1) & 0x7);
+    dbl = ((((atan2((double)((int32_t)(dy)), (double)((int32_t)(dx))) + 3.1415927) * 4.0) / 3.141592654) + 0.5);
+    iBmp = (0x8 - (LOWORD((int32_t)(dbl)) & 0x7));
+    iBmp = (((0x8 - (LOWORD((int32_t)(dbl)) & 0x7)) + 0x1) & 0x7);
 
 LFinishUp:
     if ((iScanZoom < 0))

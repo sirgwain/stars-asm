@@ -2552,7 +2552,6 @@ void AnimateAttack(HDC hdc) {
     int16_t      t_call_41c9;
     int16_t      t_merge_41df_0001;
     int16_t      t_call_41d7;
-    int16_t      t_scratch_m7e;
     uint16_t     t_merge_41f9_0001;
     uint16_t     t_merge_4438_0001;
     uint16_t     t_merge_44fc_0001;
@@ -2930,7 +2929,6 @@ L_41d4:
     t_merge_41df_0001 = t_call_41d7;
 
 L_41df:
-    t_scratch_m7e = t_merge_41df_0001;
     if (((grfWeapon & 0x4) == 0x0))
         goto L_41f6;
     else
@@ -2944,7 +2942,7 @@ L_41f6:
     t_merge_41f9_0001 = 0x4;
 
 L_41f9:
-    cFrame = LOWORD((t_scratch_m7e * t_merge_41f9_0001));
+    cFrame = LOWORD((t_merge_41df_0001 * t_merge_41f9_0001));
     ptBase = ptTorp;
     dxFrame = (ptTorp.x - ptDest.x);
     dyFrame = (ptTorp.y - ptDest.y);

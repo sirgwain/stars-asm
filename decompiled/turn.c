@@ -1117,7 +1117,6 @@ void DoOrders(int16_t fPostMovement) {
     PLANET  *lppl;
     PLANET  *lpplMac;
     uint16_t t_merge_17e4_0001;
-    uint16_t t_scratch_mc;
     int16_t  t_merge_18ab_0001;
     int16_t  t_merge_18d7_0001;
 
@@ -1140,8 +1139,7 @@ L_17e1:
     t_merge_17e4_0001 = 0x0;
 
 L_17e4:
-    t_scratch_mc = t_merge_17e4_0001;
-    lppl->fWasInhabited = t_scratch_mc;
+    lppl->fWasInhabited = t_merge_17e4_0001;
     lppl = (lppl + 1);
 
 L_180c:
@@ -1573,7 +1571,7 @@ L_1d3d:
 MoveTh:
     ptSrc = lpth->pt;
     d = DGetDistance(ptSrc.x, ptSrc.y, ptDst.x, ptDst.y);
-    dLeft = LOWORD(__ftol());
+    dLeft = LOWORD((int32_t)(d));
     if ((dLeft > dRange))
         goto L_2d93;
     else
@@ -2184,7 +2182,7 @@ L_28db:
 
 L_28eb:
     CalcPctSurvive(lppl, &(pct), 0x0);
-    dmgRaw = __ftol();
+    dmgRaw = (int32_t)((pct * (double)(dmgRaw)));
     if ((dmgRaw != 0))
         goto L_292c;
     else
@@ -2404,8 +2402,8 @@ L_2dec:
 
 L_2e01:
     r = ((double)((int32_t)(dRange)) / d);
-    ptSrc.x = (LOWORD(__ftol()) + ptSrc.x);
-    ptSrc.y = (LOWORD(__ftol()) + ptSrc.y);
+    ptSrc.x = (LOWORD((int32_t)(((r * (double)((int32_t)((ptDst.x - ptSrc.x)))) + dxRound))) + ptSrc.x);
+    ptSrc.y = (LOWORD((int32_t)(((r * (double)((int32_t)((ptDst.y - ptSrc.y)))) + dyRound))) + ptSrc.y);
     if ((ptSrc.x != ptDst.x))
         goto L_2e86;
     else
@@ -2461,19 +2459,18 @@ L_2ef3:
 }
 
 void FuelFleets() {
-    int16_t  j;
-    int32_t  cPods;
-    PLANET  *lppl;
-    int16_t  i;
-    int16_t  ifl;
-    FLEET   *lpfl;
-    SHDEF   *lpshdef;
-    int32_t  csh;
-    HUL     *lphul;
-    int32_t  t_call_321d;
-    int32_t  t_call_3276;
-    int32_t  t_merge_32b9_0001;
-    uint32_t scratch_bp_m28;
+    int16_t j;
+    int32_t cPods;
+    PLANET *lppl;
+    int16_t i;
+    int16_t ifl;
+    FLEET  *lpfl;
+    SHDEF  *lpshdef;
+    int32_t csh;
+    HUL    *lphul;
+    int32_t t_call_321d;
+    int32_t t_call_3276;
+    int32_t t_merge_32b9_0001;
 
 L_2efa:
     ifl = 0;
@@ -2633,8 +2630,7 @@ L_326c:
     goto L_32b9;
 
 L_3281:
-    scratch_bp_m28 = (uint32_t)((cPods * 50));
-    t_merge_32b9_0001 = ((lpfl->rgwtMin[4] + csh) + scratch_bp_m28);
+    t_merge_32b9_0001 = ((lpfl->rgwtMin[4] + csh) + (uint32_t)((cPods * 50)));
 
 L_32b9:
     lpfl->rgwtMin[4] = t_merge_32b9_0001;
@@ -2647,70 +2643,68 @@ L_32c7:
 }
 
 void MoveFleets() {
-    int32_t    dTravel;
-    int16_t    cPass;
-    int32_t    wtFuel2Dest;
-    double     d;
-    int16_t    fGotEnufFuel;
-    int16_t    fRanOutOfFuel;
-    ORDER     *lpord;
-    POINT      ptEnd;
-    int16_t    ifl;
-    FLEET     *lpfl;
-    double     r;
-    int32_t    pct;
-    int16_t    dMineTravel;
-    int32_t    dRange;
-    POINT      ptBeg;
-    int32_t    wtFuelUsed;
-    int32_t    dActTravel;
-    int32_t    lFuelGain;
-    int16_t    fDone;
-    SCAN       scan;
-    PLANET    *lpplDst;
-    int32_t    wtColonists;
-    int16_t    i;
-    PLANET    *lpplSrc;
-    int16_t    fJumpgate;
-    int16_t    isbsDst;
-    int16_t    isbsSrc;
-    POINT      ptMsg;
-    int32_t    wtMinerals;
-    int32_t    cDie;
-    int16_t    cKill;
-    int16_t    ish;
-    FLEET      flSrc;
-    int16_t    cTry;
-    FLEET      flDead;
-    int16_t    cKillTot;
-    int16_t    fDead;
-    int16_t    dy;
-    int16_t    dx;
-    int32_t    lFuelGainAct;
-    double     dyRound;
-    double     dxRound;
-    int16_t    iCtr;
-    THING     *lpthDest;
-    THING     *lpth;
-    int16_t    grbitPlr;
-    uint16_t   t_merge_3de5_0001;
-    int32_t    t_merge_3e66_0001;
-    int16_t    t_40c6;
-    int32_t    t_merge_436d_0001;
-    int32_t    t_merge_4403_0001;
-    int32_t    t_call_43fd;
-    int32_t    t_merge_450b_0001;
-    uint16_t   t_merge_47c3_0001;
-    int32_t    t_merge_48a1_0001;
-    int32_t    t_call_48bc;
-    double     t_merge_4a09_0001;
-    double     t_merge_4a2b_0001;
-    uint16_t   t_merge_4c51_0001;
-    int32_t    t_merge_4ca3_0001;
-    uint16_t   t_merge_4e4b_0001;
-    GrobjClass t_scratch_m5c_2;
-    int32_t    t_call_4e92;
-    int16_t    t_4f1e;
+    int32_t  dTravel;
+    int16_t  cPass;
+    int32_t  wtFuel2Dest;
+    double   d;
+    int16_t  fGotEnufFuel;
+    int16_t  fRanOutOfFuel;
+    ORDER   *lpord;
+    POINT    ptEnd;
+    int16_t  ifl;
+    FLEET   *lpfl;
+    double   r;
+    int32_t  pct;
+    int16_t  dMineTravel;
+    int32_t  dRange;
+    POINT    ptBeg;
+    int32_t  wtFuelUsed;
+    int32_t  dActTravel;
+    int32_t  lFuelGain;
+    int16_t  fDone;
+    SCAN     scan;
+    PLANET  *lpplDst;
+    int32_t  wtColonists;
+    int16_t  i;
+    PLANET  *lpplSrc;
+    int16_t  fJumpgate;
+    int16_t  isbsDst;
+    int16_t  isbsSrc;
+    POINT    ptMsg;
+    int32_t  wtMinerals;
+    int32_t  cDie;
+    int16_t  cKill;
+    int16_t  ish;
+    FLEET    flSrc;
+    int16_t  cTry;
+    FLEET    flDead;
+    int16_t  cKillTot;
+    int16_t  fDead;
+    int16_t  dy;
+    int16_t  dx;
+    int32_t  lFuelGainAct;
+    double   dyRound;
+    double   dxRound;
+    int16_t  iCtr;
+    THING   *lpthDest;
+    THING   *lpth;
+    int16_t  grbitPlr;
+    uint16_t t_merge_3de5_0001;
+    int32_t  t_merge_3e66_0001;
+    int16_t  t_40c6;
+    int32_t  t_merge_436d_0001;
+    int32_t  t_merge_4403_0001;
+    int32_t  t_merge_450b_0001;
+    uint16_t t_merge_47c3_0001;
+    int32_t  t_merge_48a1_0001;
+    int32_t  t_call_48bc;
+    double   t_merge_4a09_0001;
+    double   t_merge_4a2b_0001;
+    uint16_t t_merge_4c51_0001;
+    int32_t  t_merge_4ca3_0001;
+    uint16_t t_merge_4e4b_0001;
+    int32_t  t_call_4e92;
+    int16_t  t_4f1e;
 
 L_32ce:
     cPass = 0;
@@ -3124,8 +3118,7 @@ L_3c52:
     FSendPlrMsg(lpplSrc->iPlayer, 236, lpplSrc->id, lpfl->id, LOWORD(wtMinerals), (LOWORD((uint32_t)((wtMinerals >> 0x10))) & 0xffff), lpplSrc->id, 0, 0, 0);
 
 L_3c9f:
-    DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
-    dTravel = __ftol();
+    dTravel = (int32_t)(DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y));
     if ((FStargateJump(lpfl, isbsSrc, isbsDst, LOWORD(dTravel)) == 0))
         goto L_32f6;
     else
@@ -3419,7 +3412,7 @@ L_4398:
 
 L_43a2:
     d = DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
-    if ((dTravel < (int32_t)(LOWORD(__ftol()))))
+    if ((dTravel < (int32_t)(LOWORD((int32_t)((d + 0.9999))))))
         goto L_43e8;
     else
         goto L_43f1;
@@ -3429,8 +3422,7 @@ L_43e8:
     goto L_4403;
 
 L_43f1:
-    t_call_43fd = __ftol();
-    t_merge_4403_0001 = (int32_t)(LOWORD(t_call_43fd));
+    t_merge_4403_0001 = (int32_t)(LOWORD((int32_t)((d + 0.9999))));
 
 L_4403:
     dTravel = t_merge_4403_0001;
@@ -3592,7 +3584,7 @@ L_46ff:
     lpfl->iwarpFlt = lpfl->lpplord->rgord[1].iWarp;
 
 L_4782:
-    dActTravel = __ftol();
+    dActTravel = (int32_t)((d - 0.99999));
     if ((dTravel < dActTravel))
         goto L_47b4;
     else
@@ -3763,8 +3755,8 @@ L_4a46:
 
 L_4a5b:
     r = ((double)(dTravel) / d);
-    lpfl->pt.x = (LOWORD(__ftol()) + ptBeg.x);
-    lpfl->pt.y = (LOWORD(__ftol()) + ptBeg.y);
+    lpfl->pt.x = (LOWORD((int32_t)(((r * (double)((int32_t)((ptEnd.x - ptBeg.x)))) + dxRound))) + ptBeg.x);
+    lpfl->pt.y = (LOWORD((int32_t)(((r * (double)((int32_t)((ptEnd.y - ptBeg.y)))) + dyRound))) + ptBeg.y);
     lpfl->idPlanet = -1;
 
 L_4ace:
@@ -3943,8 +3935,7 @@ L_4e48:
     t_merge_4e4b_0001 = 0x1;
 
 L_4e4b:
-    t_scratch_m5c_2 = t_merge_4e4b_0001;
-    lpord->grobj = t_scratch_m5c_2;
+    lpord->grobj = t_merge_4e4b_0001;
     if ((fGotEnufFuel == 0))
         goto L_32f6;
     else
@@ -4043,10 +4034,9 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     int32_t  dmgPerShip;
     uint16_t ibit;
     uint16_t t_merge_4fc4_0001;
-    uint16_t t_scratch_m1ee;
     uint16_t t_merge_4fdd_0001;
     int32_t  t_merge_5ae4_0001;
-    int32_t  t_call_5e09;
+    double   t_call_5df4;
     int16_t  t_merge_63a1_0001;
     int16_t  t_merge_63f3_0001;
     int16_t  t_merge_6494_0001;
@@ -4072,7 +4062,6 @@ L_4fc1:
     t_merge_4fc4_0001 = 0x0;
 
 L_4fc4:
-    t_scratch_m1ee = (t_merge_4fc4_0001 * 0x2);
     if ((raMajor != 1))
         goto L_4fda;
     else
@@ -4086,7 +4075,7 @@ L_4fda:
     t_merge_4fdd_0001 = 0x0;
 
 L_4fdd:
-    fMineExpert = (t_scratch_m1ee + t_merge_4fdd_0001);
+    fMineExpert = ((t_merge_4fc4_0001 * 2) + t_merge_4fdd_0001);
     if ((lpthHit != 0x0))
         goto L_4ff9;
     else
@@ -4626,10 +4615,9 @@ LFinishHit:
 L_5d91:
     dx = (ptDst.x - ptSrc.x);
     dy = (ptDst.y - ptSrc.y);
-    sqrt((double)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)((ptDst.y - ptSrc.y)))))));
-    t_call_5e09 = __ftol();
-    dTravel = LOWORD(t_call_5e09);
-    ptAct.x = (MulDiv(dx, dEnd, t_call_5e09) + ptSrc.x);
+    t_call_5df4 = sqrt((double)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)((ptDst.y - ptSrc.y)))))));
+    dTravel = LOWORD((int32_t)((t_call_5df4 + 0.5)));
+    ptAct.x = (MulDiv(dx, dEnd, (int32_t)((t_call_5df4 + 0.5))) + ptSrc.x);
     ptAct.y = (MulDiv(dy, dEnd, dTravel) + ptSrc.y);
     if ((cshDead == 0))
         goto L_5f34;

@@ -630,8 +630,7 @@ L_2df5:
     t_merge_2df8_0001 = 0xffff
 
 L_2df8:
-    t_scratch_m18 = t_merge_2df8_0001
-    cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + t_scratch_m18)
+    cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + t_merge_2df8_0001)
     branch 99 >= cAllowed ? L_2e2c : L_2e26
 
 L_2e26:

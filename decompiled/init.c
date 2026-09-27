@@ -819,7 +819,6 @@ void ReadIniSettings() {
     uint32_t    t_fields_5;
     uint32_t    t_fields_6;
     uint16_t    t_merge_2981_0001;
-    uint16_t    t_scratch_m4c_6;
 
 L_124c:
     ini.fGen = 0x0;
@@ -1951,8 +1950,7 @@ L_297e:
     t_merge_2981_0001 = 0x0;
 
 L_2981:
-    t_scratch_m4c_6 = t_merge_2981_0001;
-    vrgZipProd[i].fNoResearch = LOBYTE(t_scratch_m4c_6);
+    vrgZipProd[i].fNoResearch = LOBYTE(t_merge_2981_0001);
     vrgZipProd[i].fValid = 0x1;
     vrgZipProd[i].cpq = LOBYTE(cpq);
     psz = (psz + 2);

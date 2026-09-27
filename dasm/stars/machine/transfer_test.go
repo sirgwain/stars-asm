@@ -40,6 +40,69 @@ func TestHandleX87FCOMPPopsOnlyForFCOMP(t *testing.T) {
 	}
 }
 
+// TestHandleCALLFFtolConsumesX87 verifies implicit operands, stack isolation,
+// and the helper's full DX:AX return for floating calls and arithmetic.
+func TestHandleCALLFFtolConsumesX87(t *testing.T) {
+	for _, source := range []string{"call", "arithmetic", "missing"} {
+		t.Run(source, func(t *testing.T) {
+			st := newValueState()
+			ctx := &extractor{}
+			helper := &typeinfo.Function{Name: "__ftol", Ret: typeinfo.I32, Conv: typeinfo.CCCdecl}
+			var operand Value
+			switch source {
+			case "call":
+				callee := &typeinfo.Function{Name: "cos", Ret: typeinfo.Double, Conv: typeinfo.CCCdecl,
+					Params: []typeinfo.FunctionVar{{Name: "angle", Type: typeinfo.Double}}}
+				st.outgoingStackBytes = 8
+				st.fpCallSlots = []fpCallSlot{{depth: 8, value: FloatConstVal(0.5)}}
+				calls := ctx.handleCALLF(st, asm.DecodedInst{Op: asm.OpCALLF, Mnemonic: "CALLF"}, &InstCall{Target: callee}, nil, Meta{InstOff: 0x1000})
+				operand = calls[0].(CallEffect).Result
+			case "arithmetic":
+				st.pushFP(FloatConstVal(7))
+				ctx.handleX87(st, x87Inst(asm.OpFLD1, asm.Operand{}, asm.Operand{}), Meta{})
+				ctx.handleX87(st, x87Inst(asm.OpFLD1, asm.Operand{}, asm.Operand{}), Meta{})
+				ctx.handleX87(st, x87Inst(asm.OpFADDP, x87Operand(1), x87Operand(-1)), Meta{})
+				operand = st.peekFP(0)
+			}
+			st.push(stackWord{value: ConstVal(42)})
+			st.outgoingStackBytes = 8
+			st.fpCallSlots = []fpCallSlot{{depth: 8, value: FloatConstVal(3)}}
+			next := &asm.DecodedInst{Op: asm.OpADD, Dst: asm.Operand{Kind: asm.OKReg, Reg: asm.RegSP}, Src: asm.Operand{Kind: asm.OKImm, Imm: 2}}
+			effects := ctx.handleCALLF(st, asm.DecodedInst{Op: asm.OpCALLF, Mnemonic: "CALLF"}, &InstCall{Target: helper}, next, Meta{InstOff: 0x1005, InstOp: asm.OpCALLF, InstLen: 5})
+			if source == "missing" {
+				if len(effects) != 2 {
+					t.Fatalf("missing operand effects = %d, want diagnostic and call", len(effects))
+				}
+				if diagnostic, ok := effects[0].(UnknownEffect); !ok || diagnostic.Why != "__ftol requires an x87 ST(0) operand" {
+					t.Fatalf("missing operand diagnostic = %#v", effects[0])
+				}
+			} else if len(effects) != 1 {
+				t.Fatalf("effects = %d, want one call", len(effects))
+			}
+			call := effects[len(effects)-1].(CallEffect)
+			if operand != nil && (len(call.Args) != 1 || call.Args[0] != operand) {
+				t.Fatalf("helper args = %v, want ST(0) %v", call.Args, operand)
+			}
+			wantDepth := 0
+			if source == "arithmetic" {
+				wantDepth = 1
+				if st.peekFP(0).String() != "7" {
+					t.Fatalf("remaining ST(0) = %v, want 7", st.peekFP(0))
+				}
+			}
+			if st.fpd != wantDepth || len(st.stack) != 1 || len(st.fpCallSlots) != 1 || st.outgoingStackBytes != 8 {
+				t.Fatalf("unexpected stacks: fp=%d stack=%v slots=%v bytes=%d", st.fpd, st.stack, st.fpCallSlots, st.outgoingStackBytes)
+			}
+			for reg, part := range map[asm.Reg]WordPart{asm.RegAX: WordLow, asm.RegDX: WordHigh} {
+				word, ok := st.readReg(reg).(*WordValue)
+				if !ok || word.Parent != call.Result || word.Part != part {
+					t.Fatalf("return register %v = %#v", reg, st.readReg(reg))
+				}
+			}
+		})
+	}
+}
+
 func TestHandleCALLFLowersAFFComppToFlags(t *testing.T) {
 	st := newValueState()
 	ctx := &extractor{}
@@ -49,7 +112,7 @@ func TestHandleCALLFLowersAFFComppToFlags(t *testing.T) {
 	st.pushFP(rhs)
 	st.pushFP(lhs)
 
-	effects := ctx.handleCALLF(st, &InstCall{Target: helper}, nil, Meta{InstOff: 0x525f})
+	effects := ctx.handleCALLF(st, asm.DecodedInst{Op: asm.OpCALLF, Mnemonic: "CALLF"}, &InstCall{Target: helper}, nil, Meta{InstOff: 0x525f})
 
 	if got, want := len(effects), 0; got != want {
 		t.Fatalf("effects = %d, want %d", got, want)

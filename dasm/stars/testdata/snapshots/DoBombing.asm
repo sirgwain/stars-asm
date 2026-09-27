@@ -184,9 +184,9 @@ JBE       L_b08a
 
 L_b06c:                             ; battle.c:4218
 WAIT                          
-FILD      [bp-0x3e]           
+FILD      [bp-dmgBombPeople]        ; [bp-0x3e]
 WAIT                          
-FLD       [bp-0x46]           
+FLD       [bp-pctSuccess]           ; [bp-0x46]
 WAIT                          
 FMULP     st(1), st           
 WAIT                          
@@ -210,9 +210,9 @@ JBE       L_b0bf
 
 L_b0a1:                             ; battle.c:4220
 WAIT                          
-FILD      [bp-0x1e]           
+FILD      [bp-dmgBombFloor]         ; [bp-0x1e]
 WAIT                          
-FLD       [bp-0x46]           
+FLD       [bp-pctSuccess]           ; [bp-0x46]
 WAIT                          
 FMULP     st(1), st           
 WAIT                          
@@ -236,9 +236,9 @@ JBE       L_b0f4
 
 L_b0d6:                             ; battle.c:4222
 WAIT                          
-FILD      [bp-0x4a]           
+FILD      [bp-dmgPeopleSmart]       ; [bp-0x4a]
 WAIT                          
-FLD       [bp-0x42]           
+FLD       [bp-pctSmart]             ; [bp-0x42]
 WAIT                          
 FMULP     st(1), st           
 WAIT                          
@@ -285,9 +285,9 @@ NOP
 WAIT                          
                                     ; battle.c:4228
 WAIT                          
-FILD      [bp-0x12]           
+FILD      [bp-dmgBombBldg]          ; [bp-0x12]
 WAIT                          
-FMUL      [bp-0x52]           
+FMUL      [bp-pctSuccessHalf]       ; [bp-0x52]
 WAIT                          
 FLD       [0x1dba]            
 WAIT                          
@@ -986,7 +986,7 @@ L_b7e8:                             ; battle.c:4299
 MOV       [bp-pctTot], 0x0000       ; [bp-0x4c], 0x0000
                                     ; battle.c:4303
 WAIT                          
-FLD       [bp-0x46]           
+FLD       [bp-pctSuccess]           ; [bp-0x46]
 WAIT                          
 FLD       [0x1dc2]            
 WAIT                          
@@ -994,7 +994,7 @@ FXCH      st(1)
 WAIT                          
 FSUBP     st(1), st           
 WAIT                          
-FILD      [bp-0x2c]           
+FILD      [bp-pctTerra]             ; [bp-0x2c]
 WAIT                          
 FMULP     st(1), st           
 MOV       ax, 0x0002          
@@ -1404,7 +1404,7 @@ PUSH      ax
 WAIT                          
 FLD       [0x1db6]            
 WAIT                          
-FSUB      [bp-0x46]           
+FSUB      [bp-pctSuccess]           ; [bp-0x46]
 MOV       ax, 0x2710          
 CWD       dx, ax              
 MOV       [bp-0x52], ax       
@@ -1442,7 +1442,7 @@ PUSH      ax
 WAIT                          
 FLD       [0x1db6]            
 WAIT                          
-FSUB      [bp-0x46]           
+FSUB      [bp-pctSuccess]           ; [bp-0x46]
 MOV       ax, 0x2710          
 CWD       dx, ax              
 MOV       [bp-0x52], ax       
@@ -1553,7 +1553,7 @@ PUSH      ax
 WAIT                          
 FLD       [0x1db6]            
 WAIT                          
-FSUB      [bp-0x46]           
+FSUB      [bp-pctSuccess]           ; [bp-0x46]
 MOV       ax, 0x2710          
 CWD       dx, ax              
 MOV       [bp-0x52], ax       
@@ -1590,7 +1590,7 @@ PUSH      ax
 WAIT                          
 FLD       [0x1db6]            
 WAIT                          
-FSUB      [bp-0x46]           
+FSUB      [bp-pctSuccess]           ; [bp-0x46]
 MOV       ax, 0x2710          
 CWD       dx, ax              
 MOV       [bp-0x52], ax       

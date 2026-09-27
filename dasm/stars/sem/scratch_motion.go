@@ -66,7 +66,11 @@ func scratchAssignmentMayClobber(assign *Assign, object *scratchObject, dependen
 		return false
 	}
 
-	if memory || register {
+	// Semantic temps have no machine address and cannot clobber a memory or
+	// register dependency. A write to a temp used by the value still blocks
+	// substitution through the dependency comparison below.
+	_, temporary := assign.Dst.(*Temp)
+	if (memory || register) && !temporary {
 		return true
 	}
 	for _, dep := range dependencies {

@@ -462,15 +462,12 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     int16_t       t_merge_01c8_0001;
     uint16_t      t_merge_0201_0001;
     uint16_t      t_merge_0951_0001;
-    uint32_t      t_scratch_m118_2;
     int16_t       t_call_0a1b;
     int16_t       t_scratch_m116_2;
     RaceAttribute t_call_1734;
     uint16_t      t_merge_18ed_0001;
     uint16_t      t_merge_1e0f_0001;
-    uint16_t      t_scratch_m116_9;
     uint16_t      t_merge_1e81_0001;
-    uint16_t      t_scratch_m116_10;
     uint16_t      t_merge_1f75_0001;
     int16_t       t_call_1f6d;
     uint16_t      t_scratch_m116_12;
@@ -852,8 +849,7 @@ L_094d:
     t_merge_0951_0001 = 0x0;
 
 L_0951:
-    t_scratch_m118_2 = (uint32_t)(t_merge_0951_0001);
-    lppl->fArtifact = ((uint32_t)(LOWORD(t_scratch_m118_2)) & 0x1);
+    lppl->fArtifact = ((uint32_t)(t_merge_0951_0001) & 0x1);
 
 L_09a1:
     lppl->rgEnvVar[0] = LOBYTE((Random(90) + 1));
@@ -1680,8 +1676,7 @@ L_1df4:
     t_merge_1e0f_0001 = lpPlanets->rgMinConc[j];
 
 L_1e0f:
-    t_scratch_m116_9 = t_merge_1e0f_0001;
-    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_scratch_m116_9);
+    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_merge_1e0f_0001);
     goto L_1eaa;
 
 L_1e3b:
@@ -1698,8 +1693,7 @@ L_1e66:
     t_merge_1e81_0001 = lpPlanets->rgMinConc[j];
 
 L_1e81:
-    t_scratch_m116_10 = t_merge_1e81_0001;
-    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_scratch_m116_10);
+    lpPlanets[iMin].rgMinConc[j] = LOBYTE(t_merge_1e81_0001);
 
 L_1eaa:
     j = (j + 1);
@@ -8342,12 +8336,11 @@ PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi) {
 L_b570:
 
 L_b5a1:
-    /* untranslated: return (words(cs, (0xa370 + loword((768 * idAi)))) + loword((192 * lvlAi))) */
+    return &(vrgplrComp[idAi][lvlAi]);
 }
 
 void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
     uint16_t t_merge_b5d7_0001;
-    uint16_t t_scratch_m4;
 
 L_b5bc:
     if ((fChecked == 0))
@@ -8363,8 +8356,7 @@ L_b5d4:
     t_merge_b5d7_0001 = 0x0;
 
 L_b5d7:
-    t_scratch_m4 = t_merge_b5d7_0001;
-    pgame->rgvc[vc] = LOBYTE(((pgame->rgvc[vc] & 0x7f) | t_scratch_m4));
+    pgame->rgvc[vc] = LOBYTE(((pgame->rgvc[vc] & 0x7f) | t_merge_b5d7_0001));
     return;
 }
 

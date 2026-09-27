@@ -162,7 +162,7 @@ L_4d0d:
         goto L_4d1e;
 
 L_4d1e:
-    rtbof.turn = LOWORD(rgbCur);
+    rtbof.turn = RawLoad16(rgbCur);
     game.wGen = rtbof.wGen;
 
 L_4d4d:

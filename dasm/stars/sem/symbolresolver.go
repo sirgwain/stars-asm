@@ -39,6 +39,10 @@ func (sr *symbolResolver) symbolFromValueTyped(value machine.Value, expected typ
 		// or a wide arg
 		// words(load(ds:[0x22bc]), load(ds:[0x22ba])) typ=COLORREF -> crButtonFace
 
+		if len(v.Words) > 2 {
+			return sr.symbolFromContiguousWords(v.Words, expected)
+		}
+
 		high, highOk := sr.symbolFromValueTyped(v.Words[0], expected)
 		low, lowOk := sr.symbolFromValueTyped(v.Words[1], expected)
 
@@ -103,6 +107,31 @@ func (sr *symbolResolver) symbolFromValueTyped(value machine.Value, expected typ
 	}
 
 	return nil, false
+}
+
+// symbolFromContiguousWords resolves a wide stack argument pushed as more than
+// two words, high word first, such as the four pushes of a double. Every word
+// must load the same object at descending 2-byte offsets; the result is the
+// lowest word's path, which addresses the start of the whole value.
+func (sr *symbolResolver) symbolFromContiguousWords(words []machine.Value, expected typeinfo.Type) (symresolve.SymbolPath, bool) {
+	var base symresolve.SymbolPath
+	var low symresolve.SymbolPath
+	prevOff := 0
+	for i, word := range words {
+		path, ok := sr.symbolFromValueTyped(word, expected)
+		if !ok {
+			return nil, false
+		}
+		wordBase, wordOff := path, 0
+		if offset, ok := path.(*symresolve.SymbolOffset); ok {
+			wordBase, wordOff = offset.Base, offset.Offset
+		}
+		if i > 0 && (!symresolve.Equals(base, wordBase) || prevOff-wordOff != 2) {
+			return nil, false
+		}
+		base, prevOff, low = wordBase, wordOff, path
+	}
+	return low, true
 }
 
 func (sr *symbolResolver) symbolFromValue(value machine.Value) (symresolve.SymbolPath, bool) {

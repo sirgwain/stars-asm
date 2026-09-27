@@ -35,7 +35,6 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   t_scratch_m16_7;
     int16_t   t_2da8;
     uint16_t  t_merge_2df8_0001;
-    uint16_t  t_scratch_m18;
     uint16_t  t_merge_2e2f_0001;
     uint16_t  t_merge_2e53_0001;
     int16_t   t_merge_2e9b_0001;
@@ -853,8 +852,7 @@ L_2df5:
     t_merge_2df8_0001 = 0xffff;
 
 L_2df8:
-    t_scratch_m18 = t_merge_2df8_0001;
-    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_scratch_m18);
+    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_merge_2df8_0001);
     if ((99 >= cAllowed))
         goto L_2e2c;
     else

@@ -314,7 +314,6 @@ int16_t SlotDlg(HWND hwnd, WMType message, uint16_t wParam, int32_t lParam) {
     int32_t            t_1c39;
     HULDEF            *t_call_1cbd;
     uint16_t           t_merge_1d40_0001;
-    uint16_t           t_scratch_m4e_4;
     int16_t            t_merge_1fe4_0001;
     int16_t            t_merge_23ac_0001;
     int16_t            t_merge_2580_0001;
@@ -1525,8 +1524,7 @@ L_1d3d:
     t_merge_1d40_0001 = 0x0;
 
 L_1d40:
-    t_scratch_m4e_4 = (t_merge_1d40_0001 + i);
-    lpshdef->ishdef = t_scratch_m4e_4;
+    lpshdef->ishdef = (t_merge_1d40_0001 + i);
     UpdateShdefCost(lpshdef);
     if ((fStarbaseMode == 0))
         goto L_1dc3;
@@ -4244,13 +4242,9 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     HS       hsDst;
     RECT     rc;
     uint16_t t_merge_5646_0001;
-    uint16_t scratch_bp_m1c;
-    uint16_t scratch_bp_m1e;
-    uint16_t t_scratch_m1a;
     HULDEF  *t_call_5761;
     uint32_t t_fields_1;
     uint32_t t_fields_2;
-    uint16_t t_scratch_m1a_2;
     uint16_t t_merge_58c1_0001;
 
 L_5476:
@@ -4369,13 +4363,10 @@ L_5603:
     goto L_5646;
 
 L_5609:
-    scratch_bp_m1c = (lpshdefBuild->hul.rghs[iSrc].iItem | (lpshdefBuild->hul.rghs[iSrc].cItem << 0x8));
-    scratch_bp_m1e = hsSrc.cItem;
-    t_merge_5646_0001 = (((scratch_bp_m1c >> 0x8) & 0xff) - scratch_bp_m1e);
+    t_merge_5646_0001 = (lpshdefBuild->hul.rghs[iSrc].cItem - hsSrc.cItem);
 
 L_5646:
-    t_scratch_m1a = t_merge_5646_0001;
-    lpshdefBuild->hul.rghs[iSrc].cItem = t_scratch_m1a;
+    lpshdefBuild->hul.rghs[iSrc].cItem = t_merge_5646_0001;
     UpdateShdefCost(lpshdefBuild);
     GetClientRect(hwndSlotDlg, &(rc));
     DrawSlotDlg(hwndSlotDlg, 0x0, &(rc), iSrc);
@@ -4478,16 +4469,14 @@ L_583e:
 
 L_5847:
     hsDst.grhst = hsSrc.grhst;
-    t_scratch_m1a_2 = hsSrc.iItem;
-    hsDst.iItem = t_scratch_m1a_2;
+    hsDst.iItem = hsSrc.iItem;
     if (((hsDst.cItem + hsSrc.cItem) >= hsHul.cItem))
         goto L_58b6;
     else
         goto L_5895;
 
 L_5895:
-    t_scratch_m1a_2 = hsSrc.cItem;
-    t_merge_58c1_0001 = (hsDst.cItem + t_scratch_m1a_2);
+    t_merge_58c1_0001 = (hsDst.cItem + hsSrc.cItem);
     goto L_58c1;
 
 L_58b6:
@@ -4589,10 +4578,9 @@ L_5b5f:
 }
 
 SHDEF *NthValidShdef(int16_t n) {
-    int16_t  i;
-    int16_t  t_5c4f;
-    uint16_t scratch_bp_m6;
-    int16_t  t_5cb7;
+    int16_t i;
+    int16_t t_5c4f;
+    int16_t t_5cb7;
 
 L_5c06:
     if ((fStarbaseMode == 0))
@@ -4619,8 +4607,7 @@ L_5c4f:
         goto L_5c5e;
 
 L_5c5e:
-    scratch_bp_m6 = LOWORD((147 * i));
-    return (SHDEF *)((uint8_t *)(rglpshdefSB[idPlayer]) + scratch_bp_m6);
+    return (rglpshdefSB[idPlayer] + i);
 
 L_5c81:
     i = (i + 1);
@@ -4669,11 +4656,10 @@ L_5ce5:
 }
 
 SHDEF *NthValidEnemyShdef(int16_t n) {
-    int16_t  i;
-    int16_t  j;
-    int16_t  t_5d79;
-    uint16_t scratch_bp_m8;
-    int16_t  t_5e2f;
+    int16_t i;
+    int16_t j;
+    int16_t t_5d79;
+    int16_t t_5e2f;
 
 L_5cf4:
     if ((fStarbaseMode == 0))
@@ -4725,8 +4711,7 @@ L_5d79:
         goto L_5d88;
 
 L_5d88:
-    scratch_bp_m8 = LOWORD((147 * j));
-    return (SHDEF *)((uint8_t *)(rglpshdefSB[i]) + scratch_bp_m8);
+    return (rglpshdefSB[i] + j);
 
 L_5daa:
     j = (j + 1);
@@ -4784,8 +4769,7 @@ L_5e2f:
         goto L_5e3e;
 
 L_5e3e:
-    scratch_bp_m8 = LOWORD((147 * j));
-    return (SHDEF *)((uint8_t *)(rglpshdef[i]) + scratch_bp_m8);
+    return (rglpshdef[i] + j);
 
 L_5e60:
     j = (j + 1);
@@ -4819,7 +4803,6 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
     uint16_t t_merge_608f_0001;
     SHDEF   *t_merge_611c_0001;
     uint16_t t_merge_638b_0001;
-    uint16_t t_scratch_m22;
     uint16_t t_merge_63ac_0001;
 
 L_5e80:
@@ -5202,7 +5185,6 @@ L_6388:
     t_merge_638b_0001 = 0x0;
 
 L_638b:
-    t_scratch_m22 = t_merge_638b_0001;
     if ((dyArial8 > 14))
         goto L_63a9;
     else
@@ -5216,7 +5198,7 @@ L_63a9:
     t_merge_63ac_0001 = 0x0;
 
 L_63ac:
-    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 8) + t_scratch_m22), 0x6);
+    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 8) + t_merge_638b_0001), 0x6);
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
     return;
 }

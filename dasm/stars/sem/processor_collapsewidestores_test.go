@@ -750,3 +750,31 @@ func TestCollapseWideMaskedStoresAllowDeclaredWideInteger(t *testing.T) {
 		t.Fatalf("collapsed source = %q, want %q", got.Src.String(), want)
 	}
 }
+
+// TestCollapseHugePointerStore folds ReadBigBlock's __AHSHIFT selector update
+// into the lpInBuf offset update, and leaves a plain 0xffff shift alone.
+func TestCollapseHugePointerStore(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "ReadBigBlock")
+	lowAddr := frameMemoryAccess(ctx, 0, -0x8, 2)
+	highAddr := frameMemoryAccess(ctx, 0, -0x6, 2)
+	nBytes := frameLoad(ctx, 0, -0x4, 2)
+	for _, fixup := range []bool{true, false} {
+		var shift machine.Value = machine.ConstVal(0xffff)
+		if fixup {
+			shift = machine.ImportConstVal(0xffff, &asm.Fixup{Target: asm.FixupTargetImportOrdinal, Source: asm.FixupSourceOffset, ModuleName: "KERNEL", FuncName: "__AHSHIFT"})
+		}
+		low := machine.StoreEffect{Addr: lowAddr, Width: 2, Src: machine.BinaryVal(machine.ValueOpAdd, nBytes, machine.LoadVal(lowAddr))}
+		high := machine.StoreEffect{Addr: highAddr, Width: 2, Src: machine.BinaryVal(machine.ValueOpAdd,
+			machine.BinaryVal(machine.ValueOpShl,
+				machine.BinaryVal(machine.ValueOpAdd, machine.WordVal(nBytes, machine.WordSignHigh), machine.ConstVal(0)), shift),
+			machine.LoadVal(highAddr))}
+		got, ok := (&collapseWideStoresProcessor{ctx: ctx}).collapseHugePointerStore(low, high)
+		if ok != fixup {
+			t.Fatalf("fixup=%v collapsed=%v", fixup, ok)
+		}
+		if ok && (got.Width != 4 || got.Addr.Disp != -0x8) {
+			t.Fatalf("huge pointer store = %#v, want 4-byte lpInBuf update", got)
+		}
+	}
+}

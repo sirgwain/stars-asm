@@ -67,16 +67,20 @@ func (p *resolveLateAddressesProcessor) rewriter() *semRewriter {
 					next, _ := w.rewriteExprChildren(resolved)
 					return next, true, true
 				}
+			case *Words:
+				if resolved, ok := p.resolveSegmentWords(value); ok {
+					next, _ := w.rewriteExprChildren(resolved)
+					return next, true, true
+				}
 			case *Binary:
-				next := value
-				changed := false
+				next, changed := p.resolveSegmentWordOperands(value)
 
 				// In pointer difference expressions, a machine address of an array
 				// normally represents the array's ordinary C pointer decay.
-				if value.Op == OpSub {
-					if typeinfo.IsPointer(value.LHS.ExprType()) {
-						if rhs, ok := decayAddressOfArray(value.RHS, value.LHS.ExprType()); ok {
-							copy := *value
+				if next.Op == OpSub {
+					if typeinfo.IsPointer(next.LHS.ExprType()) {
+						if rhs, ok := decayAddressOfArray(next.RHS, next.LHS.ExprType()); ok {
+							copy := *next
 							copy.RHS = rhs
 							next = &copy
 							changed = true
@@ -163,8 +167,18 @@ func (p *resolveLateAddressesProcessor) resolvePointerArithmetic(expr Expr) (Exp
 	if parts.invalid || !parts.addressValue || parts.base == nil || parts.offset == 0 && len(parts.terms) == 0 {
 		return nil, false
 	}
+	class := typeinfo.PtrNear
+	if ptr, ok := parts.base.ExprType().(*typeinfo.Pointer); ok {
+		class = ptr.Class
+	}
+	return p.projectAddress(AddressExpr{Base: parts.base, Offset: parts.offset, Terms: parts.terms, Deref: parts.deref}, class)
+}
+
+// projectAddress converts a byte address into the address of the typed
+// subobject it names, decaying arrays and rejecting untyped byte views.
+func (p *resolveLateAddressesProcessor) projectAddress(addr AddressExpr, class typeinfo.PtrClass) (Expr, bool) {
 	converter := machineConverter{ctx: p.ctx}
-	projected, ok := converter.consumeAddressProjection(AddressExpr{Base: parts.base, Offset: parts.offset, Terms: parts.terms, Deref: parts.deref}, 0)
+	projected, ok := converter.consumeAddressProjection(addr, 0)
 	if !ok {
 		return nil, false
 	}
@@ -179,14 +193,47 @@ func (p *resolveLateAddressesProcessor) resolvePointerArithmetic(expr Expr) (Exp
 	if index, ok := target.(*ArrayIndex); ok && typeinfo.IsPointer(index.Base.ExprType()) {
 		return objectAddress(index, 0, index.Base.ExprType()), true
 	}
-	class := typeinfo.PtrNear
-	if ptr, ok := parts.base.ExprType().(*typeinfo.Pointer); ok {
-		class = ptr.Class
-	}
 	if typeinfo.IsArray(target.ExprType()) {
 		return target, true
 	}
 	return &AddressOf{Target: target, TypeInfo: &typeinfo.Pointer{Elem: target.ExprType(), Class: class}}, true
+}
+
+// resolveSegmentWords resolves a far address built from a segment register
+// and an offset, such as words(cs, 0xa370 + 768*i) for a table in a code
+// segment, to the address of the global subobject it names.
+func (p *resolveLateAddressesProcessor) resolveSegmentWords(expr Expr) (Expr, bool) {
+	words, ok := expr.(*Words)
+	if !ok || len(words.Words) != 2 {
+		return nil, false
+	}
+	seg, ok := words.Words[0].(*Register)
+	if !ok || seg.Val != asm.RegDS && seg.Val != asm.RegCS {
+		return nil, false
+	}
+	addr, ok := p.addressFromMemory(&Memory{Seg: seg, Base: words.Words[1]})
+	if !ok {
+		return nil, false
+	}
+	return p.projectAddress(addr, typeinfo.PtrFar)
+}
+
+// resolveSegmentWordOperands replaces segment-register far addresses used
+// directly as operands of pointer arithmetic with their typed addresses.
+func (p *resolveLateAddressesProcessor) resolveSegmentWordOperands(binary *Binary) (*Binary, bool) {
+	lhs, lhsOK := p.resolveSegmentWords(binary.LHS)
+	rhs, rhsOK := p.resolveSegmentWords(binary.RHS)
+	if !lhsOK && !rhsOK {
+		return binary, false
+	}
+	next := *binary
+	if lhsOK {
+		next.LHS = lhs
+	}
+	if rhsOK {
+		next.RHS = rhs
+	}
+	return &next, true
 }
 
 // resolveAddressOfPart distinguishes pointer byte arithmetic from an address

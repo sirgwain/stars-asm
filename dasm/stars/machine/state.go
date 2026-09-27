@@ -305,6 +305,11 @@ func (st *state) readOperand(off uint32, role OperandRole, op asm.Operand) Value
 		return st.readReg(op.Reg)
 
 	case asm.OKImm:
+		// An immediate relocated to an imported offset is an absolute value
+		// the loader supplies, not the placeholder encoded in the instruction.
+		if fx := op.Fixup; fx != nil && fx.Target == asm.FixupTargetImportOrdinal && fx.Source == asm.FixupSourceOffset {
+			return ImportConstVal(uint(op.Imm), fx).WithOrigin(&Origin{InstOff: off, Role: role})
+		}
 		return ConstVal(uint(op.Imm)).
 			WithFixup(op.Fixup). // for function pointers
 			WithOrigin(&Origin{InstOff: off, Role: role})

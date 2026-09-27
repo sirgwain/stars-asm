@@ -1340,7 +1340,7 @@ L_16d1:
     psz = PszPlayerName(i, 1, 1, 1, 0, 0x0);
     cch = strlen(psz);
     l = GetTextExtent(hdc, psz, cch);
-    dxDig = LOWORD(__ftol());
+    dxDig = LOWORD((int32_t)(((double)((uint32_t)(LOWORD(l))) / 1.4142)));
     if ((rgplr[i].fInclude == 0x0))
         goto L_1780;
     else
@@ -1738,7 +1738,7 @@ L_1e93:
     psz = PszPlayerName(i, 1, 1, 1, 0, 0x0);
     cch = strlen(psz);
     l = GetTextExtent(hdc, psz, cch);
-    dx45 = LOWORD(__ftol());
+    dx45 = LOWORD((int32_t)(((double)((uint32_t)(LOWORD(l))) / 1.4142)));
     if ((rgplr[i].fInclude == 0x0))
         goto L_1f42;
     else
@@ -3023,9 +3023,9 @@ L_3829:
 
 L_385f:
     CalcPctSurvive(lppl, &(pct), 0x0);
-    pct = (1 - pct);
-    __ftol();
-    cch = _wsprintf(szT, PCTDXPCTDPCTPCT, LOWORD(__ftol()), LOWORD(__ftol()));
+    pct = (1.0 - pct);
+    cch = _wsprintf(szT, PCTDXPCTDPCTPCT, LOWORD((int32_t)((pct * 100.0))),
+                    LOWORD((int32_t)(((pct - ((double)((int32_t)(LOWORD((int32_t)((pct * 100.0))))) / 100.0)) * 10000.0))));
     goto DrawPlusDef;
 
 L_3921:
@@ -5213,12 +5213,12 @@ L_5ff4:
         goto L_6015;
 
 L_6015:
-    pct1 = (double)(0x0);
+    pct1 = 0.0;
     goto L_6054;
 
 L_602f:
     CalcPctSurvive(lppl1, &(pct1), 0x0);
-    pct1 = (1 - pct1);
+    pct1 = (1.0 - pct1);
 
 L_6054:
     if ((lppl2->cDefenses != 0x0))
@@ -5227,12 +5227,12 @@ L_6054:
         goto L_6075;
 
 L_6075:
-    pct2 = (double)(0x0);
+    pct2 = 0.0;
     goto L_60b4;
 
 L_608f:
     CalcPctSurvive(lppl2, &(pct2), 0x0);
-    pct2 = (1 - pct2);
+    pct2 = (1.0 - pct2);
 
 L_60b4:
     if ((pct1 >= pct2))
@@ -7716,9 +7716,9 @@ L_8bd1:
 
 L_8c01:
     CalcPctSurvive(lppl, &(pct), 0x0);
-    pct = (1 - pct);
-    __ftol();
-    _wsprintf(&(szForm[1]), "%ld\t%ld\t%d.%d%%", lppl->cMines, 0x0, lppl->cFactories, 0x0, LOWORD(__ftol()), LOWORD(__ftol()));
+    pct = (1.0 - pct);
+    _wsprintf(&(szForm[1]), "%ld\t%ld\t%d.%d%%", lppl->cMines, 0x0, lppl->cFactories, 0x0, LOWORD((int32_t)((pct * 100.0))),
+              LOWORD((int32_t)(((pct - ((double)((int32_t)(LOWORD((int32_t)((pct * 100.0))))) / 100.0)) * 10000.0))));
     goto L_8d78;
 
 L_8cf6:

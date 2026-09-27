@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"strconv"
 	"strings"
 	"text/template"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/ir"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/sem"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -236,7 +236,7 @@ func formatIRExpr(expr ir.Expr) string {
 		}
 		return fmt.Sprintf("0x%x", e.Value)
 	case *ir.FloatConst:
-		return strconv.FormatFloat(e.Value, 'g', -1, 64)
+		return sem.FormatFloat(e.Value)
 	case *ir.StringConst:
 		return e.Value
 	case *ir.Unary:

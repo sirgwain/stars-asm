@@ -1276,7 +1276,6 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   t_scratch_m16_7;
     int16_t   t_2da8;
     uint16_t  t_merge_2df8_0001;
-    uint16_t  t_scratch_m18;
     uint16_t  t_merge_2e2f_0001;
     uint16_t  t_merge_2e53_0001;
     int16_t   t_merge_2e9b_0001;
@@ -2094,8 +2093,7 @@ L_2df5:
     t_merge_2df8_0001 = 0xffff;
 
 L_2df8:
-    t_scratch_m18 = t_merge_2df8_0001;
-    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_scratch_m18);
+    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_merge_2df8_0001);
     if ((99 >= cAllowed))
         goto L_2e2c;
     else
@@ -2549,7 +2547,7 @@ L_3548:
     FLookupPlanet(idPlanet, &(pl));
     iplrOldOwner = pl.iPlayer;
     CalcPctSurvive(&(pl), &(pctSurvive), 0x0);
-    pctSurvive = (pctSurvive + ((1 - pctSurvive) / 4));
+    pctSurvive = (pctSurvive + ((1.0 - pctSurvive) / 4.0));
     lpcdLook = lpcdCur;
     goto L_382c;
 
@@ -2639,7 +2637,7 @@ L_37a1:
     lPower = 110;
 
 L_37ad:
-    lPower = __ftol();
+    lPower = (int32_t)(((double)((int32_t)(((uint32_t)((lpcdLook->cColonist * lPower)) / 100))) * pctSurvive));
     cPowerTot = (cPowerTot + lPower);
     rgcPower[lpcdLook->idPlr] = (rgcPower[lpcdLook->idPlr] + lPower);
 
@@ -2692,7 +2690,7 @@ L_38cb:
         goto L_3a99;
 
 L_38e9:
-    if ((pctSurvive != 1))
+    if ((pctSurvive != 1.0))
         goto L_39bb;
     else
         goto L_3900;
@@ -2703,7 +2701,8 @@ L_3900:
     goto L_3a99;
 
 L_39bb:
-    FSendPlrMsg(i, 1, pl.id, LOWORD(rgcCol[i]), (LOWORD((uint32_t)((rgcCol[i] >> 0x10))) & 0xffff), pl.id, __ftol(), (pl.iPlayer | 0x30), 0, 0);
+    FSendPlrMsg(i, 1, pl.id, LOWORD(rgcCol[i]), (LOWORD((uint32_t)((rgcCol[i] >> 0x10))) & 0xffff), pl.id, (int32_t)(((1.0 - pctSurvive) * 10000.0)),
+                (pl.iPlayer | 0x30), 0, 0);
     FSendPlrMsg(pl.iPlayer, 4, pl.id, pl.id, LOWORD(rgcCol[i]), (LOWORD((uint32_t)((rgcCol[i] >> 0x10))) & 0xffff), (i | 0x30), 0, 0, 0);
 
 L_3a99:
@@ -3022,8 +3021,7 @@ L_4141:
 L_414b:
     pl.lpplprod->iprodMac = LOBYTE(iDst);
     t_call_4159 = LpplFromId(pl.id);
-    /* untranslated: LOWORD(t_call_4159->lpplprod) = LOWORD(pl.lpplprod) (pointer-fragment) */
-    /* untranslated: HIWORD(t_call_4159->lpplprod) = HIWORD(pl.lpplprod) (pointer-fragment) */
+    t_call_4159->lpplprod = pl.lpplprod;
     goto L_418e;
 
 L_4176:
@@ -3637,11 +3635,9 @@ void RemoteTerraforming() {
     uint16_t t_merge_4d92_0001;
     int32_t  t_4dd5;
     uint16_t t_merge_4e42_0001;
-    uint16_t t_scratch_m20_2;
     uint16_t t_merge_4e79_0001;
     uint16_t t_merge_4e9d_0001;
     uint16_t t_merge_4f13_0001;
-    uint16_t t_scratch_m20_3;
     uint16_t t_merge_4f28_0001;
     int16_t  t_merge_4f91_0001;
 
@@ -3763,8 +3759,7 @@ L_4e3f:
     t_merge_4e42_0001 = 0xffff;
 
 L_4e42:
-    t_scratch_m20_2 = t_merge_4e42_0001;
-    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_scratch_m20_2);
+    cAllowed = ((int16_t)(lppl->rgEnvVar[iEnv]) + t_merge_4e42_0001);
     if ((99 >= cAllowed))
         goto L_4e76;
     else
@@ -3821,7 +3816,6 @@ L_4f10:
     t_merge_4f13_0001 = 0x0;
 
 L_4f13:
-    t_scratch_m20_3 = t_merge_4f13_0001;
     if ((fHelp == 0))
         goto L_4f25;
     else
@@ -3835,7 +3829,7 @@ L_4f25:
     t_merge_4f28_0001 = 0x15a;
 
 L_4f28:
-    FSendPlrMsg(lpfl->iPlayer, (t_merge_4f28_0001 + t_scratch_m20_3), (lpfl->id | 0x8000), lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, (t_merge_4f28_0001 + t_merge_4f13_0001), (lpfl->id | 0x8000), lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
     if ((lpfl->iPlayer == lppl->iPlayer))
         goto L_4c67;
     else
@@ -4131,7 +4125,7 @@ L_549c:
 
 L_54b3:
     CalcPctSurvive(lppl, &(pct), 0x0);
-    l = ((100 - __ftol()) + 4);
+    l = ((100 - (int32_t)(((pct * 100.0) + 0.5))) + 4);
     l = (int32_t)((l / 6));
     if ((l < 1))
         goto L_5528;
@@ -5733,7 +5727,6 @@ void ThingDecay() {
     uint16_t t_merge_722c_0001;
     uint16_t t_merge_737c_0001;
     uint16_t t_merge_74cc_0001;
-    uint16_t t_scratch_m20_2;
     int32_t  t_merge_75cf_0001;
 
 L_70c6:
@@ -5951,8 +5944,7 @@ L_74c9:
     t_merge_74cc_0001 = 0x0;
 
 L_74cc:
-    t_scratch_m20_2 = (LOWORD((t_merge_74cc_0001 * 0x3)) + 0x1);
-    pctDecay = (int32_t)((LOWORD((t_scratch_m20_2 * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
+    pctDecay = (int32_t)((LOWORD(((LOWORD((t_merge_74cc_0001 * 0x3)) + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
     if ((pctDecay <= 50))
         goto L_7527;
     else

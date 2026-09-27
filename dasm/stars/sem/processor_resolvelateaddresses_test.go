@@ -263,3 +263,25 @@ func TestByteAddressTyping(t *testing.T) {
 		t.Fatalf("mistyped address = %v, want a byte PointerOffset", got)
 	}
 }
+
+// TestResolveLateCodeSegmentTable verifies LpplrComp's CS-relative far address
+// resolves to an element of the code-segment table vrgplrComp.
+func TestResolveLateCodeSegmentTable(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "LpplrComp")
+	idAi := &Local{FunctionVar: ctx.fs.Params[0]}
+	lvlAi := &Local{FunctionVar: ctx.fs.Params[1]}
+	stride := func(size uint64, index Expr) Expr {
+		return &Word{Part: machine.WordLow, Parent: &Binary{TypeInfo: typeinfo.U32, Op: OpMul,
+			LHS: &Const{TypeInfo: typeinfo.U16, U64: size}, RHS: index}}
+	}
+	table := &Words{Words: []Expr{
+		&Register{Val: asm.RegCS, SegNum: ctx.segFromRegister(asm.RegCS)},
+		&Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: &Const{TypeInfo: typeinfo.U16, U64: 0xa370}, RHS: stride(768, idAi)},
+	}}
+	ret := &Return{Value: &Binary{TypeInfo: typeinfo.U32, Op: OpAdd, LHS: table, RHS: stride(192, lvlAi)}}
+	got, changed := (&resolveLateAddressesProcessor{ctx: ctx}).ProcessBlock(nil, Func{}, Block{ID: 1, Effects: []Effect{ret}})
+	if formatted := FormatExpr(got.Effects[0].(*Return).Value); !changed || formatted != "&vrgplrComp[idAi][lvlAi]" {
+		t.Fatalf("resolved table address = %q, want &vrgplrComp[idAi][lvlAi]", formatted)
+	}
+}

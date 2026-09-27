@@ -173,11 +173,48 @@ func TestLowerTableJumpPreservesDispatch(t *testing.T) {
 	}
 }
 
+// TestLowerScalarArraySlices lowers word and dword ranges of integer arrays as
+// element stores when a constant covers aligned elements, and as raw typed
+// accesses otherwise.
+func TestLowerScalarArraySlices(t *testing.T) {
+	rgb := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "rgb", Type: &typeinfo.Array{Elem: typeinfo.U8, Count: 8}}}
+	rgi := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "rgi", Type: &typeinfo.Array{Elem: typeinfo.I16, Count: 4}}}
+	lSerial := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "lSerial", Type: typeinfo.I32}}
+	fn := Lower(sem.Func{Blocks: []sem.Block{{ID: 1, Effects: []sem.Effect{
+		&sem.Assign{Dst: &sem.Part{Base: rgi, ByteOff: 2, Width: 4, TypeInfo: typeinfo.U32}, Src: &sem.Const{TypeInfo: typeinfo.U32, U64: 0x1f40064}},
+		&sem.Assign{Dst: &sem.Part{Base: rgb, ByteOff: 0, Width: 4, TypeInfo: typeinfo.U32}, Src: lSerial},
+		&sem.Assign{Dst: lSerial, Src: &sem.Part{Base: rgb, ByteOff: 4, Width: 4, TypeInfo: typeinfo.U32}},
+	}}}}, &typeinfo.Function{Name: "Slices", Ret: typeinfo.U16, Vars: []typeinfo.FunctionVar{rgb.FunctionVar, rgi.FunctionVar, lSerial.FunctionVar}})
+	stmts := fn.Blocks[0].Stmts
+	if len(stmts) != 4 {
+		t.Fatalf("statements = %d, want 4", len(stmts))
+	}
+	for i, want := range []struct{ index, value uint64 }{{1, 100}, {2, 500}} {
+		assign := stmts[i].(*Assign)
+		index := assign.Dst.(*Index)
+		if index.Base.(*Var).Name != "rgi" || index.Index.(*IntConst).Value != want.index || assign.Src.(*IntConst).Value != want.value {
+			t.Fatalf("element store %d = %#v", i, assign)
+		}
+	}
+	store := stmts[2].(*Assign).Dst.(*Deref)
+	if store.Pointer.(*Var).Name != "rgb" || store.ByteOff != 0 || !typeinfo.Equals(store.Type, typeinfo.U32) {
+		t.Fatalf("raw store = %#v", store)
+	}
+	load := stmts[3].(*Assign).Src.(*Deref)
+	if load.Pointer.(*Var).Name != "rgb" || load.ByteOff != 4 || !typeinfo.Equals(load.Type, typeinfo.U32) {
+		t.Fatalf("raw load = %#v", load)
+	}
+	if fn.Analyze().Untranslated != 0 {
+		t.Fatal("scalar array slices left untranslated")
+	}
+}
+
 // TestLowerRejectsUnresolvedWrites keeps aggregate and pointer fragments, invalid
 // nested ranges, and symbolic arithmetic out of emitted assignment destinations.
 func TestLowerRejectsUnresolvedWrites(t *testing.T) {
 	word := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "word", Type: typeinfo.U32}}
-	array := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "buffer", Type: &typeinfo.Array{Elem: typeinfo.U8, Count: 4}}}
+	point := &typeinfo.Struct{Name: "POINT", SKind: typeinfo.StructKindStruct, Size: 4}
+	array := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "rgpt", Type: &typeinfo.Array{Elem: point, Count: 2}}}
 	pointer := &sem.Local{FunctionVar: typeinfo.FunctionVar{Name: "pointer", Type: &typeinfo.Pointer{Elem: typeinfo.U16, Class: typeinfo.PtrFar}}}
 	tests := []struct {
 		name    string

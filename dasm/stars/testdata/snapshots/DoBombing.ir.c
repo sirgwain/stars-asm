@@ -108,7 +108,7 @@ L_aff9:
 
 L_b02a:
     CalcPctSurvive(lppl, &(pctSuccess), &(pctSmart));
-    if ((pctSuccess >= 1))
+    if ((pctSuccess >= 1.0))
         goto L_b14e;
     else
         goto L_b055;
@@ -120,7 +120,7 @@ L_b055:
         goto L_b06c;
 
 L_b06c:
-    dmgBombPeople = __ftol();
+    dmgBombPeople = (int32_t)((((double)(dmgBombPeople)*pctSuccess) + 0.5));
 
 L_b08a:
     if ((dmgBombFloor <= 0))
@@ -129,7 +129,7 @@ L_b08a:
         goto L_b0a1;
 
 L_b0a1:
-    dmgBombFloor = __ftol();
+    dmgBombFloor = (int32_t)((((double)(dmgBombFloor)*pctSuccess) + 0.5));
 
 L_b0bf:
     if ((dmgPeopleSmart <= 0))
@@ -138,7 +138,7 @@ L_b0bf:
         goto L_b0d6;
 
 L_b0d6:
-    dmgPeopleSmart = __ftol();
+    dmgPeopleSmart = (int32_t)((((double)(dmgPeopleSmart)*pctSmart) + 0.5));
 
 L_b0f4:
     if ((dmgBombBldg <= 0))
@@ -147,8 +147,8 @@ L_b0f4:
         goto L_b10b;
 
 L_b10b:
-    pctSuccessHalf = (1 - ((1 - pctSuccess) / 2));
-    dmgBombBldg = __ftol();
+    pctSuccessHalf = (1.0 - ((1.0 - pctSuccess) / 2.0));
+    dmgBombBldg = (int32_t)((((double)(dmgBombBldg)*pctSuccessHalf) + 0.5));
 
 L_b14e:
     cPPE = ((lppl->cMines + lppl->cFactories) + (uint32_t)(lppl->cDefenses));
@@ -382,7 +382,7 @@ L_b7d1:
 
 L_b7e8:
     pctTot = 0;
-    pctTerra = (pctTerra - __ftol());
+    pctTerra = (pctTerra - (int32_t)((((1.0 - pctSuccess) * (double)(pctTerra)) / 2.0)));
     if ((pctTerra <= 500))
         goto L_b84b;
     else
@@ -572,7 +572,7 @@ L_ba98:
         goto L_baaf;
 
 L_baaf:
-    if ((pctSuccess != 1))
+    if ((pctSuccess != 1.0))
         goto L_bb47;
     else
         goto GenericBombMsg;
@@ -585,8 +585,9 @@ GenericBombMsg:
 L_bb47:
     idmSrc = (idmSrc + 5);
     idmDst = (idmDst + 5);
-    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0);
-    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), __ftol(), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0,
+                0);
+    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0);
 
 L_bc07:
     goto L_be65;
@@ -594,7 +595,7 @@ L_bc07:
 L_bc0a:
     idmSrc = (idmSrc - 2);
     idmDst = (idmDst - 2);
-    if ((pctSuccess != 1))
+    if ((pctSuccess != 1.0))
         goto L_bca4;
     else
         goto L_bc27;
@@ -607,8 +608,8 @@ L_bc27:
 L_bca4:
     idmSrc = (idmSrc + 5);
     idmDst = (idmDst + 5);
-    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0);
-    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), __ftol(), 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((1.0 - pctSuccess) * 10000.0)), 0, 0, 0);
 
 L_bd5e:
     goto L_be65;

@@ -98,20 +98,20 @@ L_8c28:
         goto L_8c44;
 
 L_8c44:
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0xe0ff) | ((lpshdefNew->ishdef & 0x1f) << 0x8)) (aggregate-slice) */
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0xff0f) | ((idPlayer & 0xf) << 0x4)) (aggregate-slice) */
+    RawStore16(rgb, ((RawLoad16(rgb) & 0xe0ff) | ((lpshdefNew->ishdef & 0x1f) << 0x8)));
+    RawStore16(rgb, ((RawLoad16(rgb) & 0xff0f) | ((idPlayer & 0xf) << 0x4)));
     if ((lpshdefNew->fFree == 0x0))
         goto L_8ccc;
     else
         goto L_8ca6;
 
 L_8ca6:
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0xfff0) | 0x0) (aggregate-slice) */
+    RawStore16(rgb, ((RawLoad16(rgb) & 0xfff0) | 0x0));
     WriteMemRt(27, 2, rgb);
     goto L_8d25;
 
 L_8ccc:
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0xfff0) | 0x1) (aggregate-slice) */
+    RawStore16(rgb, ((RawLoad16(rgb) & 0xfff0) | 0x1));
     lpshdefNew->det = 0x7;
     pb = &(rgb[2]);
     WriteRtShDef(lpshdefNew, &(pb));
@@ -462,7 +462,7 @@ L_9288:
         goto L_929b;
 
 L_929b:
-    if ((LOWORD(rgbCur) != pflNew->id))
+    if ((RawLoad16(rgbCur) != pflNew->id))
         goto L_92bb;
     else
         goto L_92a9;
@@ -717,7 +717,7 @@ L_967e:
         goto L_9691;
 
 L_9691:
-    if ((LOWORD(rgbCur) != ppl->id))
+    if ((RawLoad16(rgbCur) != ppl->id))
         goto L_96a6;
     else
         goto L_96a0;
@@ -726,7 +726,7 @@ L_96a0:
     imemLogCur = imemLogPrev;
 
 L_96a6:
-    /* untranslated: LOWORD(rgbCur) = ppl->id (aggregate-slice) */
+    RawStore16(rgbCur, ppl->id);
     fmemmove(&(rgbCur[2]), pplNew->lpplprod->rgprod, (pplNew->lpplprod->iprodMac * 0x4));
     WriteMemRt(29, ((pplNew->lpplprod->iprodMac * 4) + 2), rgbCur);
 
@@ -755,7 +755,7 @@ L_979a:
         goto L_97b5;
 
 L_97b5:
-    /* untranslated: part[0x0:4](rgbCur) = (uint32_t)pplNew->id (aggregate-slice) */
+    RawStore32(rgbCur, (uint32_t)(pplNew->id));
     rgbCur[4] = 0;
     rgbCur[2] = ((rgbCur[2] & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0)));
     rgbCur[2] = ((rgbCur[2] & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1)));
@@ -1440,7 +1440,6 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     uint16_t  t_merge_b003_0001;
     int32_t   t_merge_b1d8_0001;
     uint16_t  t_merge_b2a1_0001;
-    uint16_t  t_scratch_m548_3;
     uint16_t  t_scratch_m546;
     int32_t   t_merge_b464_0001;
     uint16_t  t_merge_b6c5_0001;
@@ -2186,8 +2185,7 @@ L_b29e:
     t_merge_b2a1_0001 = 0x0;
 
 L_b2a1:
-    t_scratch_m548_3 = t_merge_b2a1_0001;
-    lpcdT->fCanColonize = t_scratch_m548_3;
+    lpcdT->fCanColonize = t_merge_b2a1_0001;
     cColDrop = (cColDrop + 1);
 
 L_b2c8:
@@ -2525,10 +2523,16 @@ L_b8e2:
         goto L_b8fa;
 
 L_b8fa:
-    /* untranslated: branch lpfl->pt.x != LOWORD(part[0xc:256](rgxf)) ? L_b88e : L_b916 */
+    if ((lpfl->pt.x != rgxf[0].fl.pt.x))
+        goto L_b88e;
+    else
+        goto L_b916;
 
 L_b916:
-    /* untranslated: branch lpfl->pt.y != HIWORD(part[0xc:256](rgxf)) ? L_b88e : L_b91f */
+    if ((lpfl->pt.y != rgxf[0].fl.pt.y))
+        goto L_b88e;
+    else
+        goto L_b91f;
 
 L_b91f:
     vcflMerge = (vcflMerge + 1);
@@ -3462,7 +3466,7 @@ L_ca3a:
 
 L_ca7f:
     ReadRt();
-    cbLog = LOWORD(rgbCur);
+    cbLog = RawLoad16(rgbCur);
     if ((gd.fGeneratingTurn == 0x0))
         goto L_cb37;
     else
@@ -3618,7 +3622,7 @@ L_cd61:
 
 L_cd67:
     ReadRt();
-    cbLog = LOWORD(rgbCur);
+    cbLog = RawLoad16(rgbCur);
     iCur = 0;
     goto L_cd8b;
 

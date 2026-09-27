@@ -68,6 +68,7 @@ type FixupSource uint8
 const (
 	FixupSourceLowByte FixupSource = 0x00
 	FixupSourceSegment FixupSource = 0x02
+	FixupSourceOffset  FixupSource = 0x05
 )
 
 // FixupTarget describes the kind of relocation target.

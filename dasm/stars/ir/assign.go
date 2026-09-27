@@ -25,6 +25,9 @@ func (l *lowerer) lowerAssign(e *sem.Assign) []Stmt {
 		comment.Text += " (" + failure + ")"
 		return []Stmt{comment}
 	}
+	if stmts, ok := l.splitArrayConstStore(base, e.Src); ok {
+		return stmts
+	}
 	dst, dstOK := l.lowerExpr(base)
 	src, srcOK := l.lowerExpr(e.Src)
 	if !dstOK || !srcOK {
@@ -67,6 +70,9 @@ func assignmentRange(expr sem.Expr) (base sem.Expr, offset, width int, partial b
 	var off, size int
 	switch e := expr.(type) {
 	case *sem.Part:
+		if slice, ok := scalarArraySlice(e); ok {
+			return slice, 0, slice.Width, false, ""
+		}
 		parent, off, size = e.Base, e.ByteOff, e.Width
 	default:
 		return expr, 0, expr.ExprType().Bytes(), false, ""
@@ -99,6 +105,58 @@ func assignmentRange(expr sem.Expr) (base sem.Expr, offset, width int, partial b
 		}
 	}
 	return base, offset + off, size, true, ""
+}
+
+// scalarArraySlice reinterprets a byte range of an integer array, such as the
+// dword at the start of a uint8_t record buffer, as a dereference of the array.
+// Deref lowering then emits element indexing when the range is one aligned
+// element, and a raw typed access otherwise.
+func scalarArraySlice(e *sem.Part) (*sem.Deref, bool) {
+	array, ok := e.Base.ExprType().(*typeinfo.Array)
+	if !ok || array.Elem.Kind() != typeinfo.KInt {
+		return nil, false
+	}
+	if e.Width != 1 && e.Width != 2 && e.Width != 4 || e.ByteOff < 0 || e.ByteOff+e.Width > array.Bytes() {
+		return nil, false
+	}
+	return &sem.Deref{Pointer: e.Base, ByteOff: e.ByteOff, Width: e.Width, TypeInfo: typeinfo.UintForWidth(e.Width)}, true
+}
+
+// splitArrayConstStore splits a constant stored across several aligned
+// elements of an integer array into one store per element, recovering the
+// source's adjacent element assignments that were merged into one wide store.
+func (l *lowerer) splitArrayConstStore(dst sem.Expr, src sem.Expr) ([]Stmt, bool) {
+	deref, ok := dst.(*sem.Deref)
+	if !ok {
+		return nil, false
+	}
+	value, ok := src.(*sem.Const)
+	if !ok {
+		return nil, false
+	}
+	array, ok := deref.Pointer.ExprType().(*typeinfo.Array)
+	if !ok {
+		return nil, false
+	}
+	size := array.Elem.Bytes()
+	if size <= 0 || deref.Width <= size || deref.ByteOff%size != 0 || deref.Width%size != 0 {
+		return nil, false
+	}
+	base, ok := l.lowerExpr(deref.Pointer)
+	if !ok {
+		return nil, false
+	}
+	mask := ^uint64(0) >> (64 - size*8)
+	var stmts []Stmt
+	for i := 0; i < deref.Width/size; i++ {
+		index := deref.ByteOff/size + i
+		elem, _ := l.lowerExpr(&sem.Const{TypeInfo: array.Elem, U64: (value.U64 >> (i * size * 8)) & mask})
+		stmts = append(stmts, &Assign{
+			Dst: &Index{Base: base, Index: &IntConst{Value: uint64(index), Text: fmt.Sprint(index)}},
+			Src: elem,
+		})
+	}
+	return stmts, true
 }
 
 // writableStorage accepts only semantic objects that can be C lvalues.

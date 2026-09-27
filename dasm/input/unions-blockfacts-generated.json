@@ -1862,6 +1862,14 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_b8fa",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b916",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_ba12",
           "value": "grobjFleet"
         },
@@ -2188,6 +2196,10 @@
       "path": ["grTask"],
       "enum": "TaskType",
       "block_path_facts": [
+        {
+          "block": "L_5dee",
+          "value": "grTaskPatrol"
+        },
         {
           "block": "L_5f01",
           "value": "grTaskPatrol"
@@ -4332,6 +4344,20 @@
       "member": "turn"
     },
     {
+      "func": "DrawPlanetShipList",
+      "root": "xf",
+      "type": "XFER",
+      "block": "L_3a01",
+      "member": "fl"
+    },
+    {
+      "func": "DrawPlanetShipList",
+      "root": "xf",
+      "type": "XFER",
+      "block": "L_3a3d",
+      "member": "fl"
+    },
+    {
       "func": "FCanKillTok",
       "call_result": "LpshdefFromTok",
       "type": "SHDEF",
@@ -4431,6 +4457,36 @@
       "type": "RTSHDEF",
       "block": "L_00e7",
       "member": "wtEmpty"
+    },
+    {
+      "func": "FWriteDataFile",
+      "root": "lpord",
+      "type": "ORDER",
+      "block": "L_5b22",
+      "member": "tptl"
+    },
+    {
+      "func": "FWriteDataFile",
+      "root": "lpord",
+      "all_elements": true,
+      "type": "ORDER",
+      "block": "L_5b22",
+      "member": "tptl"
+    },
+    {
+      "func": "FWriteDataFile",
+      "root": "lpord",
+      "type": "ORDER",
+      "block": "L_5dee",
+      "member": "tptl"
+    },
+    {
+      "func": "FWriteDataFile",
+      "root": "lpord",
+      "all_elements": true,
+      "type": "ORDER",
+      "block": "L_5f01",
+      "member": "tptl"
     },
     {
       "func": "SetVisPFFleets",

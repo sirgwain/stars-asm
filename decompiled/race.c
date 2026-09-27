@@ -1688,7 +1688,6 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd) {
     uint16_t t_merge_255f_0001;
     uint16_t t_merge_2587_0001;
     uint16_t t_merge_264c_0001;
-    uint16_t scratch_bp_m32;
 
 L_2204:
     irc = IrcRaceDlgHitTest(pt);
@@ -1973,8 +1972,7 @@ L_2636:
     goto L_264c;
 
 L_263c:
-    scratch_bp_m32 = (int16_t)(iMin);
-    t_merge_264c_0001 = ((int16_t)(iMax)-scratch_bp_m32);
+    t_merge_264c_0001 = ((int16_t)(iMax) - (int16_t)(iMin));
 
 L_264c:
     iMax = LOBYTE(t_merge_264c_0001);
@@ -2007,8 +2005,7 @@ L_26a2:
 L_26be:
     vplr.rgEnvVarMin[i] = iMin;
     vplr.rgEnvVarMax[i] = iMax;
-    scratch_bp_m32 = ((int32_t)(((int16_t)(vplr.rgEnvVarMax[i]) - (int16_t)(vplr.rgEnvVarMin[i]))) / 0x2);
-    vplr.rgEnvVar[i] = LOBYTE(((int16_t)(vplr.rgEnvVarMin[i]) + scratch_bp_m32));
+    vplr.rgEnvVar[i] = LOBYTE(((int16_t)(vplr.rgEnvVarMin[i]) + ((int32_t)(((int16_t)(vplr.rgEnvVarMax[i]) - (int16_t)(vplr.rgEnvVarMin[i]))) / 0x2)));
     DrawRace2(hwnd, btnt.hdc, (0x1 << i));
 
 L_2734:
@@ -4173,11 +4170,10 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
     int16_t  pctTerra;
     uint16_t t_merge_4d0e_0001;
     uint16_t t_merge_4d28_0001;
-    int32_t  t_call_54c6;
 
 L_4c6e:
     plrT = rgplr[0];
-    lInnate = (double)(0x0);
+    lInnate = 0.0;
     fTotalTerra = GetRaceGrbit(pplr, ibitRaceTT);
     rgplr[0] = *(pplr);
     rgDelta[2] = 0;
@@ -4346,7 +4342,7 @@ L_4f56:
         goto L_4f60;
 
 L_4f60:
-    l3 = (double)(0x0);
+    l3 = 0.0;
     i = 0;
     goto L_4f86;
 
@@ -4420,7 +4416,7 @@ L_502c:
 
 L_5042:
     pl.rgEnvVar[0] = LOBYTE(iTry);
-    l2 = (double)(0x0);
+    l2 = 0.0;
     j = 0;
     goto L_506d;
 
@@ -4637,11 +4633,11 @@ L_538d:
         goto L_539c;
 
 L_539c:
-    l2 = ((l2 * (double)((int32_t)(rgInc[1]))) / (double)(0x64));
+    l2 = ((l2 * (double)((int32_t)(rgInc[1]))) / 100.0);
     goto L_53f6;
 
 L_53d5:
-    l2 = (l2 * (double)(0xb));
+    l2 = (l2 * 11.0);
 
 L_53f6:
     l3 = (l3 + l2);
@@ -4654,11 +4650,11 @@ L_5409:
         goto L_5418;
 
 L_5418:
-    l3 = ((l3 * (double)((int32_t)(rgInc[0]))) / (double)(0x64));
+    l3 = ((l3 * (double)((int32_t)(rgInc[0]))) / 100.0);
     goto L_5476;
 
 L_5453:
-    l3 = (l3 * (double)(0xb));
+    l3 = (l3 * 11.0);
 
 L_5476:
     lInnate = (lInnate + l3);
@@ -4680,10 +4676,9 @@ L_54a0:
     rgplr[0] = plrT;
 
 L_54b1:
-    t_call_54c6 = __ftol();
 
 L_54ce:
-    return t_call_54c6;
+    return (int32_t)(((lInnate / 10.0) + 0.5));
 }
 
 void InvalidateAdvPtsRect(HWND hwnd) {

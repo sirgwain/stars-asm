@@ -3276,7 +3276,6 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
     uint16_t t_merge_37de_0001;
     uint16_t t_merge_381c_0001;
     uint16_t t_merge_3c51_0001;
-    uint32_t t_scratch_mb0_3;
     uint16_t t_merge_3e7a_0001;
     uint16_t t_merge_3f26_0001;
     PLANET  *t_merge_4910_0001;
@@ -3601,8 +3600,7 @@ L_3c4d:
     t_merge_3c51_0001 = 0x0;
 
 L_3c51:
-    t_scratch_mb0_3 = (uint32_t)(t_merge_3c51_0001);
-    sel.pl.fNoResearch = LOWORD(t_scratch_mb0_3);
+    sel.pl.fNoResearch = LOWORD((uint32_t)(t_merge_3c51_0001));
     if (((uint32_t)(sel.pl.fNoResearch) != lppl->fNoResearch))
         goto L_3cea;
     else

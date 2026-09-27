@@ -9,6 +9,42 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestResolveConstTypesDoubleConstants folds numeric casts without confusing
+// unsigned bit patterns, signed values, or pointer conversions.
+func TestResolveConstTypesDoubleConstants(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		source typeinfo.Type
+		bits   uint64
+		want   float64
+	}{
+		{"decimal", typeinfo.U32, 0x3e8, 1000},
+		{"signed word", typeinfo.I16, 0xffff, -1},
+		{"unsigned word", typeinfo.U16, 0xffff, 65535},
+		{"signed dword", typeinfo.I32, 0x80000000, -2147483648},
+		{"unsigned dword", typeinfo.U32, 0xffffffff, 4294967295},
+		{"source width", typeinfo.U16, 0x10001, 1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			constant := &Const{TypeInfo: tc.source, U64: tc.bits}
+			cast := &Cast{Value: constant, To: "double", TypeInfo: typeinfo.Double}
+			got, changed := resolveConstTypesExpr(cast, nil, false)
+			literal, ok := got.(*FloatConst)
+			if !changed || !ok || literal.F64 != tc.want || literal.TypeInfo != typeinfo.Double {
+				t.Fatalf("conversion = %#v, want double %g", got, tc.want)
+			}
+			if cast.Value != constant || constant.U64 != tc.bits || constant.TypeInfo != tc.source {
+				t.Fatal("conversion mutated the source constant")
+			}
+		})
+	}
+	pointer := &typeinfo.Pointer{Elem: typeinfo.I16, Class: typeinfo.PtrNear}
+	cast := &Cast{Value: &Const{TypeInfo: typeinfo.U16, U64: 0x3e8}, To: pointer.String(), TypeInfo: pointer}
+	if got, changed := resolveConstTypesExpr(cast, nil, false); changed || got != cast {
+		t.Fatalf("pointer cast changed to %#v", got)
+	}
+}
+
 // TestResolveConstTypesCallCount recovers signed arithmetic inside a byte
 // count and removes low-word truncation only when the callee supplies it.
 func TestResolveConstTypesCallCount(t *testing.T) {

@@ -2244,37 +2244,36 @@ L_2860:
 }
 
 int16_t IdTargetFreighter(FLEET *lpflFr, PLANET *lpplHome) {
-    int32_t        lWorst2;
-    int32_t        scoreBest;
-    PLANET        *lpplMac;
-    int32_t        score;
-    POINT          pt;
-    int16_t        dy;
-    int32_t        lWorst;
-    int16_t        pctFull;
-    int16_t        idBest;
-    PLANET        *lppl;
-    int32_t        wtPlanCargo;
-    FLEET         *lpfl;
-    int32_t        wtCargoMax;
-    int16_t        ifl;
-    int16_t        i;
-    int16_t        iWorst2;
-    int32_t        wtCargoFree;
-    THING         *lpthBest;
-    int16_t        iWorst;
-    PLANET        *lpplBest;
-    int16_t        ishFreighter;
-    int16_t        pctHere;
-    int16_t        dx;
-    uint8_t       *lpb;
-    int16_t        fNeedy;
-    ORDER          ord;
-    int16_t        fSalvage;
-    int32_t        l;
-    uint16_t       t_merge_29b2_0001;
-    uint16_t       t_merge_33cf_0001;
-    XferActionType t_scratch_m6a;
+    int32_t  lWorst2;
+    int32_t  scoreBest;
+    PLANET  *lpplMac;
+    int32_t  score;
+    POINT    pt;
+    int16_t  dy;
+    int32_t  lWorst;
+    int16_t  pctFull;
+    int16_t  idBest;
+    PLANET  *lppl;
+    int32_t  wtPlanCargo;
+    FLEET   *lpfl;
+    int32_t  wtCargoMax;
+    int16_t  ifl;
+    int16_t  i;
+    int16_t  iWorst2;
+    int32_t  wtCargoFree;
+    THING   *lpthBest;
+    int16_t  iWorst;
+    PLANET  *lpplBest;
+    int16_t  ishFreighter;
+    int16_t  pctHere;
+    int16_t  dx;
+    uint8_t *lpb;
+    int16_t  fNeedy;
+    ORDER    ord;
+    int16_t  fSalvage;
+    int32_t  l;
+    uint16_t t_merge_29b2_0001;
+    uint16_t t_merge_33cf_0001;
 
 L_286c:
     fSalvage = 0;
@@ -2473,8 +2472,7 @@ L_2c0c:
     dx = (pt.x - rgptPlan[lppl->id].x);
     dy = (pt.y - rgptPlan[lppl->id].y);
     l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
-    sqrt((double)(l));
-    l = (int32_t)(((__ftol() + 24) / 0x19));
+    l = (int32_t)((((int32_t)(sqrt((double)(l))) + 0x18) / 0x19));
     if ((l < 1))
         goto L_2cc6;
     else
@@ -2580,8 +2578,7 @@ L_2e71:
     dx = (pt.x - rgptPlan[lppl->id].x);
     dy = (pt.y - rgptPlan[lppl->id].y);
     l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
-    sqrt((double)(l));
-    l = (int32_t)(((__ftol() + 24) / 0x19));
+    l = (int32_t)((((int32_t)(sqrt((double)(l))) + 0x18) / 0x19));
     if ((l != 0))
         goto L_2f29;
     else
@@ -2702,8 +2699,7 @@ ScorePctHere:
     dx = (pt.x - rgptPlan[lppl->id].x);
     dy = (pt.y - rgptPlan[lppl->id].y);
     l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
-    sqrt((double)(l));
-    l = (int32_t)(((__ftol() + 24) / 0x19));
+    l = (int32_t)((((int32_t)(sqrt((double)(l))) + 0x18) / 0x19));
     if ((l < 1))
         goto L_3212;
     else
@@ -2806,8 +2802,7 @@ L_33cc:
     t_merge_33cf_0001 = 0x1;
 
 L_33cf:
-    t_scratch_m6a = t_merge_33cf_0001;
-    ord.txp.rgia[i].iAction = t_scratch_m6a;
+    ord.txp.rgia[i].iAction = t_merge_33cf_0001;
     i = (i + 1);
 
 L_3401:
@@ -3279,8 +3274,7 @@ L_3bf1:
 
 L_3bfa:
     l = ((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))));
-    sqrt((double)(l));
-    l = (int32_t)(((__ftol() + 24) / 0x19));
+    l = (int32_t)((((int32_t)(sqrt((double)(l))) + 0x18) / 0x19));
     if ((l < 1))
         goto L_3c88;
     else
@@ -8886,8 +8880,7 @@ L_9c9a:
         goto L_9cb0;
 
 L_9cb0:
-    sqrt((double)(lpth->thm.cMines));
-    cMines = __ftol();
+    cMines = (int32_t)((sqrt((double)(lpth->thm.cMines)) + 10.5));
     lpth->thm.cMines = (uint32_t)((cMines * cMines));
 
 L_9d00:

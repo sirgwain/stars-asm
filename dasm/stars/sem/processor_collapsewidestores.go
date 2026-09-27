@@ -112,6 +112,10 @@ func pointerOffsetStoreSource(ctx *FuncContext, dst machine.MemoryAddress, src *
 // collapseWideMachineStorePair coalesces adjacent low/high word stores into
 // one 32-bit machine store when their destinations describe the same object.
 func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.StoreEffect, high machine.StoreEffect) (machine.StoreEffect, bool) {
+	if collapsed, ok := p.collapseHugePointerStore(low, high); ok {
+		return collapsed, true
+	}
+
 	if _, adjacent := p.ctx.symbols.adjacentResolvedStorage(low.Addr, high.Addr); adjacent {
 		if src, ok := p.collapseWideMaskedStoreSource(low, high); ok {
 			low.Addr.Width = 4
@@ -150,6 +154,77 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 	low.Src = src
 	low.Width = 4
 	return low, true
+}
+
+// collapseHugePointerStore folds the selector update of Win16 huge-pointer
+// arithmetic into the pointer's offset update. MSC lowers p += n for a huge
+// pointer as
+//
+//	ADD ax, [p]      ; offset += LOWORD(n)
+//	ADC dx, 0        ; dx = HIWORD(n) + carry
+//	MOV cx, __AHSHIFT
+//	SHL dx, cx       ; segments to selector units
+//	ADD dx, [p+2]    ; selector += dx << __AHSHIFT
+//
+// which reaches here as a pointer offset store followed by a high-word store
+// of (hiword(n) << __AHSHIFT) + HIWORD(p). The pair is the single pointer
+// update p + n.
+func (p *collapseWideStoresProcessor) collapseHugePointerStore(low, high machine.StoreEffect) (machine.StoreEffect, bool) {
+	if low.Width != 2 || high.Width != 2 {
+		return low, false
+	}
+	offset, ok := low.Src.(*machine.Binary)
+	if !ok || offset.Op != machine.ValueOpAdd {
+		return low, false
+	}
+	selector, ok := high.Src.(*machine.Binary)
+	if !ok || selector.Op != machine.ValueOpAdd {
+		return low, false
+	}
+	shifted, base := selector.LHS, selector.RHS
+	if _, ok := shifted.(*machine.Binary); !ok {
+		shifted, base = base, shifted
+	}
+	load, ok := base.(*machine.Load)
+	if !ok || !p.ctx.symbols.sameResolvedStorage(high.Addr, load.Addr) {
+		return low, false
+	}
+	shift, ok := shifted.(*machine.Binary)
+	if !ok || shift.Op != machine.ValueOpShl || !hugeShiftConst(shift.RHS) {
+		return low, false
+	}
+	delta := offset.LHS
+	if pointer, ok := delta.(*machine.Load); ok && p.ctx.symbols.sameResolvedStorage(low.Addr, pointer.Addr) {
+		delta = offset.RHS
+	}
+	if !hugeHighDelta(shift.LHS, delta) {
+		return low, false
+	}
+	return p.widenPointerStore(low)
+}
+
+// hugeShiftConst reports whether value is the loader-supplied __AHSHIFT
+// selector shift imported from KERNEL.
+func hugeShiftConst(value machine.Value) bool {
+	c, ok := value.(*machine.ImportConst)
+	return ok && c.Is("KERNEL", "__AHSHIFT")
+}
+
+// hugeHighDelta reports whether value is the high word of the 32-bit
+// increment whose low word is delta, allowing the ADC's carry-in as + 0.
+func hugeHighDelta(value, delta machine.Value) bool {
+	if binary, ok := value.(*machine.Binary); ok && binary.Op == machine.ValueOpAdd {
+		if c, ok := binary.RHS.(*machine.Const); ok && c.Val == 0 {
+			value = binary.LHS
+		}
+	}
+	switch v := value.(type) {
+	case *machine.WordValue:
+		return v.Part == machine.WordSignHigh && machine.ValueEquals(v.Parent, delta)
+	case *machine.Const:
+		return v.Val == 0
+	}
+	return false
 }
 
 // collapseWideNegSource reconstructs a 32-bit negate lowered as

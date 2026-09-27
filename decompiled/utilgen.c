@@ -1560,7 +1560,6 @@ void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen) {
     int16_t  t_merge_2e41_0001;
     uint16_t t_merge_2e6f_0001;
     int16_t  t_merge_2e6a_0001;
-    uint16_t t_scratch_m48;
 
 L_2afa:
     if ((cLen != 0))
@@ -1636,17 +1635,17 @@ L_2bf0:
 
 L_2bf8:
     angle = atan2((double)((int32_t)((dy - dyEstFont))), (double)((int32_t)(dx)));
-    rotate = (((angle / 3.141592654) * 1800) + 0.5);
-    plf->lfEscapement = LOWORD(__ftol());
+    rotate = (((angle / 3.141592654) * 1800.0) + 0.5);
+    plf->lfEscapement = LOWORD((int32_t)(rotate));
     hfont = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, hfont);
     l = GetTextExtent(hdc, psz, cLen);
     dxText = LOWORD(l);
     dyText = (LOWORD((uint32_t)((l >> 0x10))) & 0xffff);
-    /* untranslated: dsin = sin(part[0x4:8](angle)) */
-    /* untranslated: dcos = cos(part[0x4:8](angle)) */
-    dxFlat = LOWORD(__ftol());
-    dyFlat = LOWORD(__ftol());
+    dsin = sin(angle);
+    dcos = cos(angle);
+    dxFlat = LOWORD((int32_t)(((dcos * (double)((int32_t)(dxText))) + (dsin * (double)((int32_t)(dyText))))));
+    dyFlat = LOWORD((int32_t)(((dsin * (double)((int32_t)(dxText))) + (dcos * (double)((int32_t)(dyText))))));
     if (((dxFlat + 8) > dx))
         goto L_2d9a;
     else
@@ -1733,8 +1732,7 @@ L_2e6f:
 
 L_2e7a:
     xStart = (((int32_t)((dx - dxFlat)) / 2) + prc->left);
-    t_scratch_m48 = LOWORD(__ftol());
-    yStart = ((prc->bottom - ((int32_t)((dy - dyFlat)) / 2)) - t_scratch_m48);
+    yStart = ((prc->bottom - ((int32_t)((dy - dyFlat)) / 2)) - LOWORD((int32_t)((dcos * (double)((int32_t)(dyText))))));
     TextOut(hdc, xStart, yStart, psz, cLen);
     SelectObject(hdc, hfontSav);
     DeleteObject(hfont);
@@ -2100,7 +2098,6 @@ L_353a:
 
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText) {
     uint16_t t_merge_356f_0001;
-    uint16_t t_scratch_m4;
 
 L_354c:
     pbtnt->hwnd = hwnd;
@@ -2117,8 +2114,7 @@ L_356c:
     t_merge_356f_0001 = 0x0;
 
 L_356f:
-    t_scratch_m4 = t_merge_356f_0001;
-    pbtnt->fCreatedDC = t_scratch_m4;
+    pbtnt->fCreatedDC = t_merge_356f_0001;
     if ((hdc != 0x0))
         goto L_35a5;
     else
@@ -3879,7 +3875,6 @@ L_536d:
 L_5373:
     dwSize = (dwSize - (int32_t)(nBytes));
     lpInBuf = (lpInBuf + nBytes);
-    /* untranslated: HIWORD(lpInBuf) = (((signhiword(nBytes) + 0x0) << 0xffff) + HIWORD(lpInBuf)) (pointer-fragment) */
 
 L_5396:
     if ((dwSize != 0x0))
@@ -3937,7 +3932,7 @@ L_5464:
     dxI = (((((double)(dxdy) * (double)((int32_t)((ptC.y - ptL1.y)))) + ((double)(dx2) * (double)((int32_t)(ptC.x)))) +
             ((double)(dy2) * (double)((int32_t)(ptL1.x)))) /
            (double)((dx2 + dy2)));
-    xI = __ftol();
+    xI = (int32_t)(dxI);
     goto L_5558;
 
 L_54e5:
@@ -3973,8 +3968,7 @@ L_563a:
     dxT = (xI - (int32_t)(ptL1.x));
     dyT = (yI - (int32_t)(ptL1.y));
     lT = ((uint32_t)((dxT * dxT)) + (uint32_t)((dyT * dyT)));
-    sqrt((double)(lT));
-    dCtr = LOWORD(__ftol());
+    dCtr = LOWORD((int32_t)(sqrt((double)(lT))));
     lT = (r2 - r2I);
     if ((lT <= 0))
         goto L_56ea;
@@ -3985,8 +3979,7 @@ L_56ea:
     return 0;
 
 L_56f0:
-    sqrt((double)(lT));
-    dOff = LOWORD(__ftol());
+    dOff = LOWORD((int32_t)(sqrt((double)(lT))));
     if ((ptL1.x >= ptL2.x))
         goto L_5746;
     else

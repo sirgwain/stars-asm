@@ -480,6 +480,39 @@ func TestScratchRecoveryOrdering(t *testing.T) {
 	}
 }
 
+// TestScratchRecoveryTempWrites distinguishes unrelated semantic temp writes
+// from dependency changes and calls when moving a saved global expression.
+func TestScratchRecoveryTempWrites(t *testing.T) {
+	for _, kind := range []string{"unrelated", "dependency", "call"} {
+		t.Run(kind, func(t *testing.T) {
+			slot := scratchTestSlot(-4, typeinfo.U16)
+			global := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "idPlayer", Type: typeinfo.I16}}
+			index := &Temp{Name: "index", TypeInfo: typeinfo.U16}
+			other := &Temp{Name: "other", TypeInfo: typeinfo.U16}
+			source := &Binary{TypeInfo: typeinfo.U16, Op: OpAdd, LHS: global, RHS: index}
+			write := &Assign{Dst: other, Src: &Const{TypeInfo: typeinfo.U16, U64: 1}}
+			if kind == "dependency" {
+				write.Dst = index
+			} else if kind == "call" {
+				write.Src = &Call{Function: &typeinfo.Function{Name: "Mutate", Ret: typeinfo.U16}}
+			}
+			f := Func{Blocks: []Block{{ID: 1, Effects: []Effect{
+				&Assign{Dst: index, Src: &Const{TypeInfo: typeinfo.U16, U64: 2}},
+				&Assign{Dst: slot, Src: source}, write, &Return{Value: slot},
+			}}}}
+			(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
+			effects := f.Blocks[0].Effects
+			if kind == "unrelated" {
+				if len(effects) != 3 || !sameExpr(effects[2].(*Return).Value, source) {
+					t.Fatalf("unrelated temp prevented substitution: %v", formatEffects(effects))
+				}
+			} else if len(effects) != 4 || !sameExpr(effects[3].(*Return).Value, effects[1].(*Assign).Dst) {
+				t.Fatalf("saved value moved across %s: %v", kind, formatEffects(effects))
+			}
+		})
+	}
+}
+
 // TestScratchRecoveryPartialWrites proves overlapping stores cannot reuse a
 // stale wide definition and that unmodified word projections can inline.
 func TestScratchRecoveryPartialWrites(t *testing.T) {
@@ -550,8 +583,8 @@ func TestScratchRecoveryAdjacentSlotsStaySeparate(t *testing.T) {
 	}
 }
 
-// TestScratchRecoveryF80 preserves the extended-real type on spills that must
-// survive an ordering barrier, and removes simple extended staging.
+// TestScratchRecoveryF80 types extended-real spills that must survive an
+// ordering barrier by the float they hold, and removes simple extended staging.
 func TestScratchRecoveryF80(t *testing.T) {
 	for _, barrier := range []bool{false, true} {
 		source := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "real", Type: typeinfo.Double}}
@@ -565,8 +598,11 @@ func TestScratchRecoveryF80(t *testing.T) {
 		(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
 		if barrier {
 			tmp, ok := f.Blocks[0].Effects[0].(*Assign).Dst.(*Temp)
-			if !ok || tmp.TypeInfo != typeinfo.F80 {
-				t.Fatal("extended spill lost float type")
+			if !ok || tmp.TypeInfo != typeinfo.Double {
+				t.Fatalf("extended spill temp = %#v, want double", f.Blocks[0].Effects[0])
+			}
+			if ret := f.Blocks[0].Effects[2].(*Return).Value.(*Cast); ret.Value != tmp {
+				t.Fatalf("extended spill reload = %#v, want temp", ret.Value)
 			}
 		} else if len(f.Blocks[0].Effects) != 1 {
 			t.Fatal("simple extended staging survived")

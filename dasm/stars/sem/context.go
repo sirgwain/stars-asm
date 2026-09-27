@@ -355,6 +355,8 @@ func valueShapeEquals(a, b machine.Value) bool {
 	case *machine.FrameBase:
 		_, ok := b.(*machine.FrameBase)
 		return ok
+	case *machine.ImportConst:
+		return machine.ValueEquals(av, b)
 	case *machine.Load:
 		bv, ok := b.(*machine.Load)
 		return ok && sameStorage(av.Addr, bv.Addr)

@@ -1562,8 +1562,7 @@ L_1e52:
     lpord->pt = rgptPlan[(lppl->idRoute - 1)];
     lpord->fValidTask = 0x1;
     iWarp = IFindIdealWarp(lpfl, 0);
-    DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y);
-    dTravel = __ftol();
+    dTravel = (int32_t)((DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999));
     if ((lppl->iPlayer != lpplRoute->iPlayer))
         goto L_218b;
     else
@@ -2505,8 +2504,8 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
 L_2d5e:
     wtFleet = 0;
     cPts = 0;
-    dwtFleet = 0;
-    dcPts = 0;
+    dwtFleet = 0.0;
+    dcPts = 0.0;
     fUseFloat = 0;
     i = 0;
     goto L_2fab;
@@ -2690,7 +2689,7 @@ L_307c:
         goto L_3085;
 
 L_3085:
-    cPts = __ftol();
+    cPts = (int32_t)((dcPts / dwtFleet));
     goto L_30b2;
 
 L_309b:

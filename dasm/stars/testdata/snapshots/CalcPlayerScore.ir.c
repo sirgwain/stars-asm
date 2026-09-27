@@ -11,7 +11,6 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     int32_t lPower;
     int16_t rgType[16];
     int32_t t_merge_5cb9_0001;
-    int32_t t_scratch_m60_2;
     int32_t t_merge_5cf5_0001;
 
 L_58a6:
@@ -259,7 +258,6 @@ L_5cb5:
     t_merge_5cb9_0001 = (int32_t)(score.cPlanet);
 
 L_5cb9:
-    t_scratch_m60_2 = (int32_t)((t_merge_5cb9_0001 * 2));
     if ((rgcsh[0] < (int32_t)(score.cPlanet)))
         goto L_5ce8;
     else
@@ -273,7 +271,7 @@ L_5cf1:
     t_merge_5cf5_0001 = (int32_t)(score.cPlanet);
 
 L_5cf5:
-    score.lScore = (score.lScore + ((int32_t)((t_merge_5cf5_0001 / 2)) + t_scratch_m60_2));
+    score.lScore = (score.lScore + ((int32_t)((t_merge_5cf5_0001 / 2)) + (int32_t)((t_merge_5cb9_0001 * 2))));
     if ((rgcsh[2] <= 0))
         goto L_5d57;
     else

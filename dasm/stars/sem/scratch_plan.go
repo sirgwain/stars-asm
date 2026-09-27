@@ -168,13 +168,17 @@ func scratchProjectValue(value Expr, stored, read ScratchRange, storageType, typ
 		return nil, false
 	}
 	if sourceType.Bytes() != stored.Size {
-		// An x87 spill retains extended precision; a narrowing reload is a cast.
-		if sourceType.Kind() == typeinfo.KFloat && storageType.Kind() == typeinfo.KFloat && storageType.Bytes() == stored.Size {
+		sourceFloat := sourceType.Kind() == typeinfo.KFloat
+		switch {
+		case sourceFloat && stored.Size == typeinfo.F80.Bytes() && sourceType.Bytes() < stored.Size:
+			// An x87 extended-real spill holds a narrower float exactly, so the
+			// reloaded value keeps its source type.
+		case sourceFloat && storageType.Kind() == typeinfo.KFloat && storageType.Bytes() == stored.Size:
 			value = &Cast{Value: value, To: storageType.String(), TypeInfo: storageType}
-		} else if stored.Size <= 4 && typeinfo.IsIntLike(sourceType) {
+		case stored.Size <= 4 && typeinfo.IsIntLike(sourceType):
 			t := scratchTypeForWidth(stored.Size)
 			value = &Cast{Value: value, To: t.String(), TypeInfo: t}
-		} else {
+		default:
 			return nil, false
 		}
 	}

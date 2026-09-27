@@ -2611,7 +2611,7 @@ L_2886:
     iPass = 0;
     PushRandom(1114123);
     Randomize(lSerial);
-    /* untranslated: part[0x0:4](rgbRaw) = lSerial (aggregate-slice) */
+    RawStore32(rgbRaw, lSerial);
     memcpy(&(rgbRaw[4]), pbEnv, 0xb);
     iRaw = 15;
     i = 0;
@@ -2892,7 +2892,7 @@ L_2c64:
         goto L_2c6d;
 
 L_2c6d:
-    /* untranslated: lSerial = part[0x0:4](rgbRaw) */
+    lSerial = RawLoad32(rgbRaw);
     if ((FValidSerialLong(lSerial) != 0))
         goto L_2c97;
     else
@@ -3151,7 +3151,6 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
     uint16_t     t_merge_3297_0001;
     uint16_t     t_merge_32d8_0001;
     uint16_t     t_merge_3424_0001;
-    uint16_t     t_scratch_ma0;
     uint16_t     t_merge_343d_0001;
     char        *t_merge_3b11_0001;
     uint16_t     t_merge_3e5a_0001;
@@ -3420,7 +3419,6 @@ L_3421:
     t_merge_3424_0001 = 0x0;
 
 L_3424:
-    t_scratch_ma0 = t_merge_3424_0001;
     if ((dxMax <= dyMax))
         goto L_343a;
     else
@@ -3434,7 +3432,7 @@ L_343a:
     t_merge_343d_0001 = 0x0;
 
 L_343d:
-    if ((t_scratch_ma0 != t_merge_343d_0001))
+    if ((t_merge_3424_0001 != t_merge_343d_0001))
         goto L_345a;
     else
         goto L_3448;
@@ -6185,7 +6183,7 @@ L_5ef2:
         goto L_5f23;
 
 L_5f23:
-    if ((LOWORD(rgbCur) != IRaceChecksum(&(plr))))
+    if ((RawLoad16(rgbCur) != IRaceChecksum(&(plr))))
         goto LBadFile;
     else
         goto L_5f3c;
@@ -6888,7 +6886,6 @@ int16_t HostModeDialog(HWND hwnd, WMType message, uint16_t wParam, int32_t lPara
     uint16_t    t_merge_6f77_0001;
     uint16_t    t_merge_6fbd_0001;
     uint16_t    t_merge_7057_0001;
-    uint16_t    t_scratch_m36;
     int16_t     t_merge_7107_0001;
     int16_t     t_merge_712d_0001;
     HWND        t_call_715f;
@@ -7214,8 +7211,7 @@ L_7054:
     t_merge_7057_0001 = 0x0;
 
 L_7057:
-    t_scratch_m36 = t_merge_7057_0001;
-    rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0xfdff) | ((t_scratch_m36 & 0x1) * 0x200));
+    rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0xfdff) | ((t_merge_7057_0001 & 0x1) * 0x200));
     if ((iRet != 2))
         goto L_70c3;
     else

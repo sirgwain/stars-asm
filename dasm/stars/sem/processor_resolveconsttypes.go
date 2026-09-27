@@ -6,7 +6,8 @@ import (
 )
 
 // resolveConstTypesProcessor assigns semantic types to integer constants once
-// expression recovery has established the source-level types around them.
+// expression recovery has established the source-level types around them, and
+// folds exact integer-to-double conversions into floating-point constants.
 type resolveConstTypesProcessor struct{}
 
 func (p *resolveConstTypesProcessor) ProcessBlock(result *Result, f Func, b Block) (Block, bool) {
@@ -130,6 +131,19 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		return &next, true
 
 	case *Cast:
+		// Win16 integer constants fit exactly in a double. Convert the numeric
+		// value using its source width and signedness, not its raw bit pattern.
+		if c, ok := e.Value.(*Const); ok && e.TypeInfo.Kind() == typeinfo.KFloat && e.TypeInfo.Bytes() == 8 && c.Fixup == nil {
+			if source, ok := c.TypeInfo.(*typeinfo.Primitive); ok && source.TypeKind == typeinfo.KInt &&
+				(source.Size == 1 || source.Size == 2 || source.Size == 4) {
+				bits := uint(source.Size * 8)
+				value := float64(c.U64 & ((uint64(1) << bits) - 1))
+				if source.Signed {
+					value = float64(int64(c.U64<<(64-bits)) >> (64 - bits))
+				}
+				return &FloatConst{TypeInfo: e.TypeInfo, F64: value}, true
+			}
+		}
 		// A widening/promotion cast should not hide the semantic type of the
 		// value beneath it. The cast itself remains unchanged.
 		value, changed := resolveConstTypesExpr(e.Value, nil, bitwise)

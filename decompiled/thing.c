@@ -149,8 +149,7 @@ int16_t CPlanetsInCircle(POINT pt, int32_t r2) {
     int16_t xEnd;
 
 L_02a0:
-    sqrt((double)(r2));
-    r = LOWORD(__ftol());
+    r = LOWORD((int32_t)((sqrt((double)(r2)) + 0.9999)));
     xStart = (pt.x - r);
     xEnd = (pt.x + r);
     yStart = (pt.y - r);

@@ -2,8 +2,11 @@ package sem
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 	"strings"
 
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -41,6 +44,16 @@ func FormatEffect(effect Effect) string {
 	}
 }
 
+// FormatFloat renders a floating-point constant as a C double literal, adding
+// ".0" to integral values so they are not read as integer constants.
+func FormatFloat(value float64) string {
+	text := strconv.FormatFloat(value, 'g', -1, 64)
+	if !strings.ContainsAny(text, ".eE") && !math.IsInf(value, 0) && !math.IsNaN(value) {
+		text += ".0"
+	}
+	return text
+}
+
 // FormatExpr renders a semantic expression for dump output.
 func FormatExpr(expr Expr) string {
 	switch e := expr.(type) {
@@ -60,6 +73,10 @@ func FormatExpr(expr Expr) string {
 		if text, ok := formatEnumConst(e); ok {
 			return text
 		}
+		// A loader-supplied import value has no meaningful immediate.
+		if fx := e.Fixup; fx != nil && fx.Target == asm.FixupTargetImportOrdinal && fx.Source == asm.FixupSourceOffset {
+			return fx.FuncName
+		}
 		// if e.U64 == 0 {
 		// 	return "0"
 		// }
@@ -74,7 +91,7 @@ func FormatExpr(expr Expr) string {
 	case *ResourceID:
 		return fmt.Sprintf("MAKEINTRESOURCE(%s)", FormatExpr(e.Value))
 	case *FloatConst:
-		return fmt.Sprintf("%g", e.F64)
+		return FormatFloat(e.F64)
 	case *Unary:
 		return fmt.Sprintf("%s(%s)", formatOp(e.Op), FormatExpr(e.X))
 	case *Binary:

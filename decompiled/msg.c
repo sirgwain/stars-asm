@@ -3036,12 +3036,10 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     MSGTURN *lpmt;
     uint8_t *lpb;
     uint8_t *lpbBase;
-    uint16_t scratch_bp_m16;
-    uint32_t t_fields_1;
+    uint16_t t_scratch_m16_2;
+    MSGHDR  *t_fields_1;
     uint32_t t_fields_2;
-    MSGHDR  *t_fields_3;
-    uint32_t t_fields_4;
-    uint32_t t_fields_5;
+    uint32_t t_fields_3;
 
 L_802a:
     if ((iPlr != -1))
@@ -3103,11 +3101,7 @@ L_80b7:
 L_80bd:
     lpb = pb;
     lpmt = lpb;
-    scratch_bp_m16 = (iPlr & 0xf);
-    t_fields_1 = ((uint32_t)(scratch_bp_m16) & 0xf);
-    t_fields_2 = (lpmt->cbParams | (((uint32_t)(scratch_bp_m16) >> 0x4) & 0xf));
-    lpmt->iPlr = t_fields_1;
-    lpmt->cbParams = t_fields_2;
+    lpmt->iPlr = ((uint32_t)(iPlr) & 0xf);
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
     lpmt->msghdr.wGoto = iObj;
@@ -3136,13 +3130,13 @@ L_8179:
         goto L_8189;
 
 L_8189:
-    scratch_bp_m16 = (((grbit << 0x9) | (lpmt->msghdr.iMsg | (lpmt->msghdr.grWord << 0x9))) & 0xfe00);
+    t_scratch_m16_2 = (((grbit << 0x9) | (lpmt->msghdr.iMsg | (lpmt->msghdr.grWord << 0x9))) & 0xfe00);
     lpmt->msghdr.grWord = 0x0;
-    t_fields_3 = &(lpmt->msghdr);
-    t_fields_4 = (t_fields_3->iMsg | ((uint32_t)(scratch_bp_m16) & 0x1ff));
-    t_fields_5 = (t_fields_3->grWord | (((uint32_t)(scratch_bp_m16) >> 0x9) & 0x7f));
-    t_fields_3->iMsg = t_fields_4;
-    t_fields_3->grWord = t_fields_5;
+    t_fields_1 = &(lpmt->msghdr);
+    t_fields_2 = (t_fields_1->iMsg | ((uint32_t)(t_scratch_m16_2) & 0x1ff));
+    t_fields_3 = (t_fields_1->grWord | (((uint32_t)(t_scratch_m16_2) >> 0x9) & 0x7f));
+    t_fields_1->iMsg = t_fields_2;
+    t_fields_1->grWord = t_fields_3;
     RawStore16(lpb, *(pi));
     lpb = (lpb + 2);
     goto L_8151;
@@ -3155,10 +3149,8 @@ L_81da:
     goto L_8151;
 
 L_81dd:
-    scratch_bp_m16 = LOBYTE((LOWORD(lpb) - LOWORD(lpbBase)));
-    lpmt->cbParams = ((uint32_t)(scratch_bp_m16) & 0xf);
-    scratch_bp_m16 = pb;
-    return (LOWORD(lpb) - scratch_bp_m16);
+    lpmt->cbParams = ((uint32_t)((LOWORD(lpb) - LOWORD(lpbBase))) & 0xf);
+    return (LOWORD(lpb) - pb);
 }
 
 int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
@@ -3689,7 +3681,7 @@ L_8a21:
     goto FinishString;
 
 L_8a33:
-    if (((double)((int32_t)(((int32_t)(*(pParams)) / 100))) < 10))
+    if (((double)((int32_t)(((int32_t)(*(pParams)) / 100))) < 10.0))
         goto L_8a89;
     else
         goto L_8a5f;
@@ -5154,52 +5146,36 @@ void SetFilteringGroups(MessageId idm, int16_t fSet) {
     uint16_t t_merge_a033_0001;
     uint16_t t_merge_a048_0001;
     uint16_t t_merge_a059_0001;
-    uint16_t t_scratch_m6;
     uint16_t t_merge_a0bb_0001;
     uint16_t t_merge_a0cc_0001;
-    uint16_t t_scratch_m6_2;
     uint16_t t_merge_a149_0001;
     uint16_t t_merge_a15a_0001;
-    uint16_t t_scratch_m6_3;
     uint16_t t_merge_a1d7_0001;
     uint16_t t_merge_a1e8_0001;
-    uint16_t t_scratch_m6_4;
     uint16_t t_merge_a26d_0001;
     uint16_t t_merge_a27e_0001;
-    uint16_t t_scratch_m6_5;
     uint16_t t_merge_a2f0_0001;
     uint16_t t_merge_a301_0001;
-    uint16_t t_scratch_m6_6;
     uint16_t t_merge_a37e_0001;
     uint16_t t_merge_a38f_0001;
-    uint16_t t_scratch_m6_7;
     uint16_t t_merge_a40c_0001;
     uint16_t t_merge_a41d_0001;
-    uint16_t t_scratch_m6_8;
     uint16_t t_merge_a49a_0001;
     uint16_t t_merge_a4ab_0001;
-    uint16_t t_scratch_m6_9;
     uint16_t t_merge_a528_0001;
     uint16_t t_merge_a539_0001;
-    uint16_t t_scratch_m6_10;
     uint16_t t_merge_a5b6_0001;
     uint16_t t_merge_a5c7_0001;
-    uint16_t t_scratch_m6_11;
     uint16_t t_merge_a644_0001;
     uint16_t t_merge_a655_0001;
-    uint16_t t_scratch_m6_12;
     uint16_t t_merge_a6da_0001;
     uint16_t t_merge_a6eb_0001;
-    uint16_t t_scratch_m6_13;
     uint16_t t_merge_a765_0001;
     uint16_t t_merge_a776_0001;
-    uint16_t t_scratch_m6_14;
     uint16_t t_merge_a7e8_0001;
     uint16_t t_merge_a7f9_0001;
-    uint16_t t_scratch_m6_15;
     uint16_t t_merge_a880_0001;
     uint16_t t_merge_a891_0001;
-    uint16_t t_scratch_m6_16;
 
 L_a018:
     if ((fSet != 0))
@@ -5242,8 +5218,7 @@ L_a056:
     t_merge_a059_0001 = 0x0;
 
 L_a059:
-    t_scratch_m6 = (t_merge_a059_0001 << (idm & 0x7));
-    bitfMsgFiltered[(idm >> 0x3)] = LOBYTE(((bitfMsgFiltered[(idm >> 0x3)] & (~(0x1 << (idm & 0x7)))) | t_scratch_m6));
+    bitfMsgFiltered[(idm >> 0x3)] = LOBYTE(((bitfMsgFiltered[(idm >> 0x3)] & (~(0x1 << (idm & 0x7)))) | (t_merge_a059_0001 << (idm & 0x7))));
     if ((idm == idmHaveBuiltFactory))
         goto L_a0a9;
     else
@@ -5282,9 +5257,8 @@ L_a0c9:
     t_merge_a0cc_0001 = 0x0;
 
 L_a0cc:
-    t_scratch_m6_2 = (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & (~(0x1 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) | t_scratch_m6_2));
+    bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x35) ^ 0x36) >> 0x3)] & (~(0x1 << (((idm ^ 0x35) ^ 0x36) & 0x7)))) | (t_merge_a0cc_0001 << (((idm ^ 0x35) ^ 0x36) & 0x7))));
     goto L_a8dd;
 
 L_a125:
@@ -5326,9 +5300,8 @@ L_a157:
     t_merge_a15a_0001 = 0x0;
 
 L_a15a:
-    t_scratch_m6_3 = (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & (~(0x1 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) | t_scratch_m6_3));
+    bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x37) ^ 0x38) >> 0x3)] & (~(0x1 << (((idm ^ 0x37) ^ 0x38) & 0x7)))) | (t_merge_a15a_0001 << (((idm ^ 0x37) ^ 0x38) & 0x7))));
     goto L_a8dd;
 
 L_a1b3:
@@ -5370,9 +5343,8 @@ L_a1e5:
     t_merge_a1e8_0001 = 0x0;
 
 L_a1e8:
-    t_scratch_m6_4 = (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & (~(0x1 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) | t_scratch_m6_4));
+    bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x39) ^ 0x3a) >> 0x3)] & (~(0x1 << (((idm ^ 0x39) ^ 0x3a) & 0x7)))) | (t_merge_a1e8_0001 << (((idm ^ 0x39) ^ 0x3a) & 0x7))));
     goto L_a8dd;
 
 L_a241:
@@ -5418,8 +5390,7 @@ L_a27b:
     t_merge_a27e_0001 = 0x0;
 
 L_a27e:
-    t_scratch_m6_5 = (t_merge_a27e_0001 << (i & 0x7));
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_5));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a27e_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a2c0:
@@ -5470,9 +5441,8 @@ L_a2fe:
     t_merge_a301_0001 = 0x0;
 
 L_a301:
-    t_scratch_m6_6 = (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & (~(0x1 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) | t_scratch_m6_6));
+    bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x2f) ^ 0x30) >> 0x3)] & (~(0x1 << (((idm ^ 0x2f) ^ 0x30) & 0x7)))) | (t_merge_a301_0001 << (((idm ^ 0x2f) ^ 0x30) & 0x7))));
     goto L_a8dd;
 
 L_a35a:
@@ -5514,9 +5484,8 @@ L_a38c:
     t_merge_a38f_0001 = 0x0;
 
 L_a38f:
-    t_scratch_m6_7 = (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & (~(0x1 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) | t_scratch_m6_7));
+    bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x42) ^ 0x43) >> 0x3)] & (~(0x1 << (((idm ^ 0x42) ^ 0x43) & 0x7)))) | (t_merge_a38f_0001 << (((idm ^ 0x42) ^ 0x43) & 0x7))));
     goto L_a8dd;
 
 L_a3e8:
@@ -5558,9 +5527,8 @@ L_a41a:
     t_merge_a41d_0001 = 0x0;
 
 L_a41d:
-    t_scratch_m6_8 = (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & (~(0x1 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) | t_scratch_m6_8));
+    bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x44) ^ 0x45) >> 0x3)] & (~(0x1 << (((idm ^ 0x44) ^ 0x45) & 0x7)))) | (t_merge_a41d_0001 << (((idm ^ 0x44) ^ 0x45) & 0x7))));
     goto L_a8dd;
 
 L_a476:
@@ -5602,9 +5570,8 @@ L_a4a8:
     t_merge_a4ab_0001 = 0x0;
 
 L_a4ab:
-    t_scratch_m6_9 = (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & (~(0x1 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) | t_scratch_m6_9));
+    bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x46) ^ 0x47) >> 0x3)] & (~(0x1 << (((idm ^ 0x46) ^ 0x47) & 0x7)))) | (t_merge_a4ab_0001 << (((idm ^ 0x46) ^ 0x47) & 0x7))));
     goto L_a8dd;
 
 L_a504:
@@ -5646,9 +5613,8 @@ L_a536:
     t_merge_a539_0001 = 0x0;
 
 L_a539:
-    t_scratch_m6_10 = (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & (~(0x1 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) | t_scratch_m6_10));
+    bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x48) ^ 0x49) >> 0x3)] & (~(0x1 << (((idm ^ 0x48) ^ 0x49) & 0x7)))) | (t_merge_a539_0001 << (((idm ^ 0x48) ^ 0x49) & 0x7))));
     goto L_a8dd;
 
 L_a592:
@@ -5690,9 +5656,8 @@ L_a5c4:
     t_merge_a5c7_0001 = 0x0;
 
 L_a5c7:
-    t_scratch_m6_11 = (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & (~(0x1 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) | t_scratch_m6_11));
+    bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x4a) ^ 0x4b) >> 0x3)] & (~(0x1 << (((idm ^ 0x4a) ^ 0x4b) & 0x7)))) | (t_merge_a5c7_0001 << (((idm ^ 0x4a) ^ 0x4b) & 0x7))));
     goto L_a8dd;
 
 L_a620:
@@ -5734,9 +5699,8 @@ L_a652:
     t_merge_a655_0001 = 0x0;
 
 L_a655:
-    t_scratch_m6_12 = (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & (~(0x1 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) | t_scratch_m6_12));
+    bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x4c) ^ 0x4d) >> 0x3)] & (~(0x1 << (((idm ^ 0x4c) ^ 0x4d) & 0x7)))) | (t_merge_a655_0001 << (((idm ^ 0x4c) ^ 0x4d) & 0x7))));
     goto L_a8dd;
 
 L_a6ae:
@@ -5782,8 +5746,7 @@ L_a6e8:
     t_merge_a6eb_0001 = 0x0;
 
 L_a6eb:
-    t_scratch_m6_13 = (t_merge_a6eb_0001 << (i & 0x7));
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_13));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a6eb_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a72d:
@@ -5838,8 +5801,7 @@ L_a773:
     t_merge_a776_0001 = 0x0;
 
 L_a776:
-    t_scratch_m6_14 = (t_merge_a776_0001 << (i & 0x7));
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_14));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a776_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a7b8:
@@ -5890,9 +5852,8 @@ L_a7f6:
     t_merge_a7f9_0001 = 0x0;
 
 L_a7f9:
-    t_scratch_m6_15 = (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7));
-    bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] =
-        LOBYTE(((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & (~(0x1 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) | t_scratch_m6_15));
+    bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] = LOBYTE(
+        ((bitfMsgFiltered[(((idm ^ 0x79) ^ 0x7a) >> 0x3)] & (~(0x1 << (((idm ^ 0x79) ^ 0x7a) & 0x7)))) | (t_merge_a7f9_0001 << (((idm ^ 0x79) ^ 0x7a) & 0x7))));
     goto L_a8dd;
 
 L_a852:
@@ -5938,8 +5899,7 @@ L_a88e:
     t_merge_a891_0001 = 0x0;
 
 L_a891:
-    t_scratch_m6_16 = (t_merge_a891_0001 << (i & 0x7));
-    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | t_scratch_m6_16));
+    bitfMsgFiltered[(i >> 0x3)] = LOBYTE(((bitfMsgFiltered[(i >> 0x3)] & (~(0x1 << (i & 0x7)))) | (t_merge_a891_0001 << (i & 0x7))));
     i = (i + 1);
 
 L_a8d3:

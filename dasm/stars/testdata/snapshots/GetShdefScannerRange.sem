@@ -1,0 +1,285 @@
+/*
+GetShdefScannerRange  (util)
+  addr: 0008:50d0  len=1512
+  sig:  int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+    int16_t *        pdPlanRange    [BP+0xc]
+    int16_t *        ppctDetect     [BP+0xe]
+    int16_t *        piSteal        [BP+0x10]
+  locals:
+    double           lRange4        [BP-0x42]
+    double           lBIPR4         [BP-0x3a]
+    int16_t          j              [BP-0x32]
+    int16_t          iSteal         [BP-0x30]
+    double           lT             [BP-0x2e]
+    int16_t          dRange         [BP-0x26]
+    double           lPlanRange4    [BP-0x24]
+    int16_t          cDetectors     [BP-0x1c]
+    int16_t          fBuiltIn       [BP-0x1a]
+    int16_t          iScanner       [BP-0x18]
+    int16_t          fHasScanner    [BP-0x16]
+    int16_t          dRangeT        [BP-0x14]
+    double           lBIR4          [BP-0x12]
+    int16_t          dRangeT2       [BP-0xa]
+    HS *             lphs           [BP-0x8]
+    int16_t          chs            [BP-0x4]
+
+  stats: blocks=0  labels=2
+    LPlanScan: L_53ed
+    LOddBallScanners: L_5482
+*/
+L_50d0:
+    lRange4 = 0.0
+    lPlanRange4 = 0.0
+    fHasScanner = 0
+    iSteal = 0
+    cDetectors = 0
+    branch iplr == -1 ? L_513f : L_5119
+
+L_5119:
+    branch GetRaceStat(&rgplr[iplr], rsMajorAdv) != raNone ? L_513f : L_5139
+
+L_5139:
+    t_merge_5142_0001 = 0x1
+    goto L_5142
+
+L_513f:
+    t_merge_5142_0001 = 0x0
+
+L_5142:
+    fBuiltIn = t_merge_5142_0001
+    lBIR4 = -1.0
+    lBIPR4 = -1.0
+    branch ppctDetect == 0x0 ? L_516b : L_5164
+
+L_5164:
+    *ppctDetect = 100
+
+L_516b:
+    branch fBuiltIn == 0 ? L_5272 : L_5174
+
+L_5174:
+    branch lpshdef->hul.ihuldef == ihuldefScout ? L_5198 : L_5180
+
+L_5180:
+    branch lpshdef->hul.ihuldef == ihuldefDestroyer ? L_5198 : L_518c
+
+L_518c:
+    branch lpshdef->hul.ihuldef != ihuldefFrigate ? L_5272 : L_5198
+
+L_5198:
+    branch lBIR4 >= 0.0 ? L_525e : L_51b6
+
+L_51b6:
+    branch game.fTutorial == 0x0 ? L_51e3 : L_51ca
+
+L_51ca:
+    lBIR4 = 2.56e+06
+    lBIPR4 = 160000.0
+    goto L_525e
+
+L_51e3:
+    lBIPR4 = (double)sext16to32(loword((sext8to16(rgplr[iplr].rgTech[4]) * 10)))
+    lBIR4 = (lBIPR4 * 2.0)
+    lBIPR4 = (lBIPR4 * lBIPR4)
+    lBIPR4 = (lBIPR4 * lBIPR4)
+    lBIR4 = (lBIR4 * lBIR4)
+    lBIR4 = (lBIR4 * lBIR4)
+
+L_525e:
+    lRange4 = lBIR4
+    lPlanRange4 = lBIPR4
+
+L_5272:
+    lphs = lpshdef->hul.rghs
+    chs = lpshdef->hul.chs
+    j = 0
+    goto L_52ab
+
+L_5298:
+    j = (j + 1)
+    lphs = &lphs[1]
+
+L_52ab:
+    branch j >= chs ? L_5591 : L_52b6
+
+L_52b6:
+    branch lphs->cItem == 0x0 ? L_5298 : L_52cd
+
+L_52cd:
+    branch lphs->grhst != hstScanner ? L_545a : L_52d9
+
+L_52d9:
+    fHasScanner = 1
+    iScanner = lphs->iItem
+    call LpscannerFromId(lphs->iItem) -> t_call_52ec
+    dRangeT = t_call_52ec->dRange
+    lT = (double)sext16to32(t_call_52ec->dRange)
+    lT = (lT * lT)
+    lT = (lT * lT)
+    lT = (lT * (double)(uint32_t)lphs->cItem)
+    lRange4 = (lRange4 + lT)
+    dRangeT = LpscannerFromId(iScanner)->grfAbilities
+    branch iScanner != 6 ? L_5390 : L_5385
+
+L_5385:
+    dRangeT = 45
+    goto L_53ed
+
+L_5390:
+    branch iScanner != 5 ? L_53a8 : L_5399
+
+L_5399:
+    dRangeT = 0
+    iSteal = (iSteal | 0x1)
+    goto L_53ed
+
+L_53a8:
+    branch iScanner != 14 ? L_53c0 : L_53b1
+
+L_53b1:
+    dRangeT = 120
+    iSteal = (iSteal | 0x3)
+    goto L_53ed
+
+L_53c0:
+    branch dRangeT <= 0 ? L_5298 : L_53c9
+
+L_53c9:
+    branch dRangeT != 1 ? L_53d8 : L_53d2
+
+L_53d2:
+    t_merge_53ea_0001 = 0x32
+    goto L_53ea
+
+L_53d8:
+    branch dRangeT != 2 ? L_53e7 : L_53e1
+
+L_53e1:
+    t_merge_53ea_0001 = 0x64
+    goto L_53ea
+
+L_53e7:
+    t_merge_53ea_0001 = 0xc8
+
+L_53ea:
+    dRangeT = t_merge_53ea_0001
+
+LPlanScan:
+    lT = (double)sext16to32(dRangeT)
+    lT = (lT * lT)
+    lT = (lT * lT)
+    lT = (lT * (double)(uint32_t)lphs->cItem)
+    lPlanRange4 = (lPlanRange4 + lT)
+
+L_5457:
+    goto L_5298
+
+L_545a:
+    branch lphs->grhst != hstArmor ? L_54f8 : L_5466
+
+L_5466:
+    branch lphs->iItem != iarmorMegaPolyShell ? L_54f8 : L_5478
+
+L_5478:
+    dRangeT = 80
+    dRangeT2 = 40
+
+LOddBallScanners:
+    lT = (double)sext16to32(dRangeT)
+    lT = (lT * lT)
+    lT = (lT * lT)
+    lT = (lT * (double)(uint32_t)lphs->cItem)
+    lRange4 = (lRange4 + lT)
+    dRangeT = dRangeT2
+    goto L_53ed
+
+L_54f8:
+    branch lphs->grhst != hstBeam ? L_5526 : L_5504
+
+L_5504:
+    branch lphs->iItem != ibeamMultiContainedMunition ? L_5526 : L_5516
+
+L_5516:
+    dRangeT = 150
+    dRangeT2 = 75
+    goto L_5482
+
+L_5526:
+    branch lphs->grhst != hstShield ? L_5554 : L_5532
+
+L_5532:
+    branch lphs->iItem != ishieldLangstonShell ? L_5554 : L_5544
+
+L_5544:
+    dRangeT = 50
+    dRangeT2 = 25
+    goto L_5482
+
+L_5554:
+    branch ppctDetect == 0x0 ? L_5298 : L_555d
+
+L_555d:
+    branch lphs->grhst != hstSpecialE ? L_5298 : L_556a
+
+L_556a:
+    branch lphs->iItem != ispecialETachyonDetector ? L_5298 : L_557c
+
+L_557c:
+    cDetectors = (cDetectors + lphs->cItem)
+
+L_558e:
+    goto L_5298
+
+L_5591:
+    branch lRange4 > 0.0 ? L_55b8 : L_55af
+
+L_55af:
+    branch fHasScanner == 0 ? L_5628 : L_55b8
+
+L_55b8:
+    dRange = loword((int32_t)sqrt(sqrt(lRange4)))
+    branch iplr == -1 ? L_562d : L_55fd
+
+L_55fd:
+    branch GetRaceGrbit(&rgplr[iplr], ibitRaceNoAdvScanner) == 0 ? L_562d : L_561d
+
+L_561d:
+    dRange = (dRange * 2)
+
+L_5625:
+    goto L_562d
+
+L_5628:
+    dRange = -1
+
+L_562d:
+    branch pdPlanRange == 0x0 ? L_5674 : L_5636
+
+L_5636:
+    *pdPlanRange = loword((int32_t)sqrt(sqrt(lPlanRange4)))
+
+L_5674:
+    branch piSteal == 0x0 ? L_5685 : L_567d
+
+L_567d:
+    *piSteal = iSteal
+
+L_5685:
+    branch ppctDetect == 0x0 ? L_56ac : L_568e
+
+L_568e:
+    branch cDetectors < 18 ? L_569c : L_5697
+
+L_5697:
+    cDetectors = 17
+
+L_569c:
+    *ppctDetect = vrgbTachyon[cDetectors]
+
+L_56ac:
+
+L_56b2:
+    return dRange

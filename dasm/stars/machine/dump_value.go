@@ -46,6 +46,8 @@ func (d valueDumper) value(value Value, depth int) string {
 		return "machine.FrameBaseVal()"
 	case *FloatConst:
 		return fmt.Sprintf("machine.FloatConstVal(%g)", v.Val)
+	case *ImportConst:
+		return fmt.Sprintf("machine.ImportConstVal(0x%x, &asm.Fixup{Target: asm.FixupTargetImportOrdinal, Source: asm.FixupSourceOffset, ModuleName: %q, FuncName: %q})", v.Val, v.Fixup.ModuleName, v.Fixup.FuncName)
 	case *CallResult:
 		return d.callResult(v, depth)
 	case *PredicateValue:

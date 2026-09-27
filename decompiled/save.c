@@ -166,7 +166,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
 
 L_574e:
     rgb[2] = LOBYTE(lpshdef->hul.ihuldef);
-    /* untranslated: LOWORD(rgb) = lpshdef->wFlags (aggregate-slice) */
+    RawStore16(rgb, lpshdef->wFlags);
     rgb[6] = lpshdef->hul.chs;
     rgb[3] = LOBYTE(lpshdef->hul.ibmp);
     if ((lpshdef->det != 0x7))
@@ -395,8 +395,8 @@ L_5b10:
 
 L_5b22:
     lpord->grTask = grTaskPatrol;
-    lpord->tsell.iPlrX = lpord[1].tsell.iPlrX;
-    /* untranslated: *(lpord+0xa) = part[0xa:2](lpord[1]) */
+    lpord->tptl.iWarp = lpord[1].tptl.iWarp;
+    lpord->tptl.iDist = lpord[1].tptl.iDist;
 
 L_5b4c:
     if ((lpord->grTask != grTaskPatrol))
@@ -557,7 +557,7 @@ L_5dda:
     lpflBest->fMark = 0x1;
 
 L_5dee:
-    /* untranslated: j = (loword((0x32 * *(lpord+0xa))) + 50) */
+    j = (LOWORD((0x32 * lpord->tptl.iDist)) + 50);
     if ((j != 550))
         goto L_5e0d;
     else
@@ -613,8 +613,8 @@ L_5f01:
     fmemset((lpord + 1), 0, 0x12);
     lpord[1].fValidTask = 0x1;
     lpord[1].grTask = grTaskPatrol;
-    /* untranslated: part[0x8:4](lpord[1]) = (lpord->tptl.iWarp | (lpord->tptl.iDist << 0x10)) (aggregate-slice) */
-    if ((lpord[1].tsell.iPlrX != 0x0))
+    lpord[1].tptl = lpord->tptl;
+    if ((lpord[1].tptl.iWarp != 0x0))
         goto L_5fa5;
     else
         goto L_5f69;
@@ -1934,15 +1934,13 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     int16_t  i;
     uint8_t *pb;
     uint16_t t_merge_7b14_0001;
-    uint16_t t_scratch_m5c_4;
     uint16_t t_merge_7bf1_0001;
-    uint16_t t_scratch_m5c_9;
     uint16_t t_scratch_m5c_11;
 
 L_7a6a:
     memset(rgb, 0, 0x50);
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0xf800) | (lppl->id & 0x7ff)) (aggregate-slice) */
-    /* untranslated: LOWORD(rgb) = ((LOWORD(rgb) & 0x7ff) | ((lppl->iPlayer & 0x1f) << 0xb)) (aggregate-slice) */
+    RawStore16(rgb, ((RawLoad16(rgb) & 0xf800) | (lppl->id & 0x7ff)));
+    RawStore16(rgb, ((RawLoad16(rgb) & 0x7ff) | ((lppl->iPlayer & 0x1f) << 0xb)));
     rgb[2] = ((rgb[2] & 0xff80) | (lppl->det & 0x7f));
     if ((rt != rtPlanetB))
         goto L_7b2a;
@@ -1969,8 +1967,7 @@ L_7b11:
     t_merge_7b14_0001 = 0x4;
 
 L_7b14:
-    t_scratch_m5c_4 = t_merge_7b14_0001;
-    rgb[2] = ((rgb[2] & 0xff80) | (t_scratch_m5c_4 & 0x7f));
+    rgb[2] = ((rgb[2] & 0xff80) | (t_merge_7b14_0001 & 0x7f));
 
 L_7b2a:
     rgb[2] = ((rgb[2] & 0xfeff) | ((lppl->fInclude & 0x1) << 0x8));
@@ -1990,8 +1987,7 @@ L_7bee:
     t_merge_7bf1_0001 = 0x0;
 
 L_7bf1:
-    t_scratch_m5c_9 = t_merge_7bf1_0001;
-    rgb[2] = ((rgb[2] & 0xbfff) | ((t_scratch_m5c_9 & 0x1) << 0xe));
+    rgb[2] = ((rgb[2] & 0xbfff) | ((t_merge_7bf1_0001 & 0x1) << 0xe));
     pbBase = &(rgb[4]);
     pb = pbBase;
     if (((rgb[2] & 0x7f) <= 0x1))
@@ -3449,7 +3445,6 @@ void SetVisPFInit(int16_t iPlr) {
     uint16_t t_merge_968f_0001;
     uint16_t t_merge_9dab_0001;
     uint16_t t_merge_9fb0_0001;
-    uint16_t t_scratch_m24_14;
 
 L_9654:
     raMajor = GetRaceStat(&(rgplr[iPlr]), rsMajorAdv);
@@ -3865,8 +3860,7 @@ L_9fad:
     t_merge_9fb0_0001 = 0x0;
 
 L_9fb0:
-    t_scratch_m24_14 = t_merge_9fb0_0001;
-    lpth->thw.fInclude = t_scratch_m24_14;
+    lpth->thw.fInclude = t_merge_9fb0_0001;
     goto L_a0e7;
 
 L_9fd7:

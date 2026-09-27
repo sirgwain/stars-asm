@@ -40,6 +40,7 @@ var procs = []string{
 	"FReadFleet",
 	"FTrackXfer",
 	"GetFileStatus",
+	"GetShdefScannerRange",
 	"GetTechLevelCost",
 	"HfontPrinterCreate",
 	"InitMDIApp",

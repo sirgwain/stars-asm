@@ -20,6 +20,11 @@ help:
 	@echo "  fmt              Run go fmt in all modules"
 	@echo "  clean            Remove ./dist/"
 
+all: test dasm-all compile-analysis
+
+dasm-all:
+	go run main.go dasm all --all
+
 test:
 	go test ./...
 

@@ -45,6 +45,9 @@ func convergenceValueEqualsDepth(a, b Value, depth int) bool {
 	case *FloatConst:
 		bv, ok := b.(*FloatConst)
 		return ok && av.Val == bv.Val
+	case *ImportConst:
+		bv, ok := b.(*ImportConst)
+		return ok && av.Fixup.ModuleName == bv.Fixup.ModuleName && av.Fixup.FuncName == bv.Fixup.FuncName
 	case *CallResult:
 		bv, ok := b.(*CallResult)
 		return ok && callResultsEqual(av, bv)

@@ -136,6 +136,22 @@ func PreProcessorSpecs() []PreProcessor {
 // ProcessorSpecs returns the semantic processor pass order.
 func ProcessorSpecs() []Processor {
 	return []Processor{
+		// Capture merge operands on their incoming edges before scratch analysis
+		// computes reaching definitions and separates overlapping lifetimes.
+		{
+			Name:    "return-sink",
+			Purpose: "Sink top-level return merge arms into predecessor blocks.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &returnSinkProcessor{}
+			},
+		},
+		{
+			Name:    "lower-merges",
+			Purpose: "Lower semantic merge expressions to typed temporaries on incoming CFG edges.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &lowerMergesProcessor{}
+			},
+		},
 		{
 			Name:    "recover-scratch-storage",
 			Purpose: "Recover scratch values and addressable objects across the function CFG.",
@@ -182,17 +198,10 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
-			Name:    "return-sink",
-			Purpose: "Sink top-level return merge arms into predecessor blocks.",
-			Func: func(*FuncContext) SemFuncProcessor {
-				return &returnSinkProcessor{}
-			},
-		},
-		{
-			Name:    "lower-merges",
-			Purpose: "Lower semantic merge expressions to typed temporaries on incoming CFG edges.",
-			Func: func(*FuncContext) SemFuncProcessor {
-				return &lowerMergesProcessor{}
+			Name:    "coalesce-word-copies",
+			Purpose: "Join adjacent low/high word copies of one 32-bit value into one assignment.",
+			Sem: func(*FuncContext) SemBlockProcessor {
+				return &coalesceWordCopiesProcessor{}
 			},
 		},
 		{

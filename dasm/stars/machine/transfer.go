@@ -38,7 +38,7 @@ func (ctx *extractor) processInst(st *state, cfg *CFG, blk *Block, instrs []asm.
 	}
 
 	if call := cfg.Calls[inst.Off]; call != nil {
-		return ctx.handleCALLF(st, call, nextInst(instrs, instIdx), meta)
+		return ctx.handleCALLF(st, inst, call, nextInst(instrs, instIdx), meta)
 	}
 
 	if jump := cfg.Jumps[inst.Off]; jump != nil {
@@ -140,19 +140,27 @@ func nextInst(instrs []asm.DecodedInst, instIdx int) *asm.DecodedInst {
 	return &instrs[instIdx+1]
 }
 
-func (ctx *extractor) handleCALLF(st *state, call *InstCall, next *asm.DecodedInst, meta Meta) []Effect {
+// handleCALLF extracts call operands and updates the ABI return state.
+func (ctx *extractor) handleCALLF(st *state, inst asm.DecodedInst, call *InstCall, next *asm.DecodedInst, meta Meta) []Effect {
 	target := call.Target
 	if handleCompilerFlagHelper(st, target) {
 		return nil
 	}
 
-	words := numCleanupWordsAfterCall(target, next)
-
+	var effects []Effect
 	var args []Value
-	if target.Conv == typeinfo.CCDxaxCx {
+	if strings.EqualFold(target.Name, "__ftol") {
+		// The helper consumes ST(0), not an argument on the ordinary stack.
+		// Any following ADD SP belongs to the caller's other stack values.
+		if operand := st.popFP(); operand != nil {
+			args = []Value{operand}
+		} else {
+			effects = append(effects, UnknownEffect{MetaInfo: meta, Inst: inst, Why: "__ftol requires an x87 ST(0) operand"})
+		}
+	} else if target.Conv == typeinfo.CCDxaxCx {
 		args = getRegisterCallArgs(st, target)
 	} else {
-		args = getCallFArgs(st, target, words)
+		args = getCallFArgs(st, target, numCleanupWordsAfterCall(target, next))
 	}
 
 	st.flags = nil
@@ -179,7 +187,7 @@ func (ctx *extractor) handleCALLF(st *state, call *InstCall, next *asm.DecodedIn
 		}
 	}
 
-	return []Effect{CallEffect{MetaInfo: meta, Target: target, Args: args, Result: result}}
+	return append(effects, CallEffect{MetaInfo: meta, Target: target, Args: args, Result: result})
 }
 
 // handleCompilerFlagHelper applies compiler helper calls that only update
@@ -620,15 +628,23 @@ func (ctx *extractor) handleFPBinary(st *state, inst asm.DecodedInst, op ValueOp
 	st.setFP(0, fpBinaryResult(op, dst, src, reversed))
 }
 
-// fpBinaryResult returns the symbolic x87 binary operation result.
+// fpBinaryResult returns the symbolic x87 binary operation result, typed as
+// double like the source arithmetic whose operands x87 loads convert to double.
 func fpBinaryResult(op ValueOp, dst, src Value, reversed bool) Value {
 	if dst == nil || src == nil {
 		return UnknownVal("fp")
 	}
+	lhs, rhs := dst, src
 	if reversed {
-		return BinaryResult(op, src, dst)
+		lhs, rhs = src, dst
 	}
-	return BinaryResult(op, dst, src)
+	result := BinaryResult(op, lhs, rhs)
+	if binary, ok := result.(*Binary); ok {
+		typed := *binary
+		typed.Type = typeinfo.Double
+		return &typed
+	}
+	return result
 }
 
 // BinaryResult converts a binary operation into a simplified value.

@@ -551,7 +551,7 @@ L_0b49:
         goto L_0b64;
 
 L_0b64:
-    cPlanetHist = LOWORD(rgbCur);
+    cPlanetHist = RawLoad16(rgbCur);
     cPlanetAlloc = (cPlanetHist + rgbCur[2]);
     if ((cPlanetAlloc <= 1000))
         goto L_0b83;
@@ -820,7 +820,7 @@ L_1042:
         goto L_1055;
 
 L_1055:
-    iplr = (LOWORD(rgbCur) & 0x1f);
+    iplr = (RawLoad16(rgbCur) & 0x1f);
     sx = *((SCOREX *)(rgbCur));
     if ((rgsxPlr[iplr] != 0x0))
         goto L_10b3;
@@ -996,7 +996,7 @@ L_13de:
         goto L_13f1;
 
 L_13f1:
-    cThing = LOWORD(rgbCur);
+    cThing = RawLoad16(rgbCur);
     cThingAlloc = (cThing + 10);
     if ((cThingAlloc <= 4050))
         goto L_1411;
@@ -1169,7 +1169,7 @@ L_1785:
         goto L_1798;
 
 L_1798:
-    /* untranslated: lSaltCur = part[0x0:4](rgbCur) */
+    lSaltCur = RawLoad32(rgbCur);
     ReadRt();
     goto L_17ba;
 
@@ -1248,7 +1248,7 @@ L_18be:
         goto L_18c9;
 
 L_18c9:
-    if ((((LOWORD(rgbCur) << 0x5) >> 0x5) <= lppl->id))
+    if ((((RawLoad16(rgbCur) << 0x5) >> 0x5) <= lppl->id))
         goto L_18f6;
     else
         goto L_18eb;
@@ -1265,7 +1265,7 @@ L_18f6:
         goto L_1901;
 
 L_1901:
-    if ((((LOWORD(rgbCur) << 0x5) >> 0x5) != lppl->id))
+    if ((((RawLoad16(rgbCur) << 0x5) >> 0x5) != lppl->id))
         goto L_192b;
     else
         goto L_1923;
@@ -1779,7 +1779,7 @@ L_220d:
         goto L_2220;
 
 L_2220:
-    iplr = (LOWORD(rgbCur) & 0x1f);
+    iplr = (RawLoad16(rgbCur) & 0x1f);
     vlprgScoreX[iplr] = *((SCOREX *)(rgbCur));
     if ((rgsxPlr[iplr] != 0x0))
         goto L_229c;
@@ -1930,7 +1930,7 @@ L_257d:
 
 L_2580:
     fHist = t_merge_2580_0001;
-    cThingFile = LOWORD(rgbCur);
+    cThingFile = RawLoad16(rgbCur);
     if ((10 <= cThingFile))
         goto L_259a;
     else
@@ -1981,7 +1981,7 @@ L_2631:
         goto L_263c;
 
 L_263c:
-    if ((LOWORD(rgbCur) <= lpth->idFull))
+    if ((RawLoad16(rgbCur) <= lpth->idFull))
         goto L_2656;
     else
         goto L_264b;
@@ -1998,7 +1998,7 @@ L_2656:
         goto L_2661;
 
 L_2661:
-    if ((LOWORD(rgbCur) != lpth->idFull))
+    if ((RawLoad16(rgbCur) != lpth->idFull))
         goto L_2678;
     else
         goto L_2670;
@@ -2072,7 +2072,7 @@ L_279b:
         goto L_27ae;
 
 L_27ae:
-    iP = (LOWORD(rgbCur) & 0xf);
+    iP = (RawLoad16(rgbCur) & 0xf);
     idPlayer = iP;
     if ((rglpbtlplan[iP] != 0x0))
         goto L_27f7;
@@ -2647,8 +2647,8 @@ L_32af:
     lppl->fFirstYear = ((rgbCur[2] >> 0xf) & 0x1);
 
 L_32de:
-    lppl->id = ((LOWORD(rgbCur) << 0x5) >> 0x5);
-    lppl->iPlayer = (LOWORD(rgbCur) >> 0xb);
+    lppl->id = ((RawLoad16(rgbCur) << 0x5) >> 0x5);
+    lppl->iPlayer = (RawLoad16(rgbCur) >> 0xb);
     if ((lppl->det >= (rgbCur[2] & 0x7f)))
         goto L_3347;
     else
@@ -2812,7 +2812,7 @@ L_35c6:
         goto L_35cf;
 
 L_35cf:
-    if (((LOWORD(rgbCur) >> 0xb) == 0xffff))
+    if (((RawLoad16(rgbCur) >> 0xb) == 0xffff))
         goto L_35ef;
     else
         goto L_35df;
@@ -4152,7 +4152,7 @@ L_4d0d:
         goto L_4d1e;
 
 L_4d1e:
-    rtbof.turn = LOWORD(rgbCur);
+    rtbof.turn = RawLoad16(rgbCur);
     game.wGen = rtbof.wGen;
 
 L_4d4d:

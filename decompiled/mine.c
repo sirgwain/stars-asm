@@ -378,7 +378,6 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     uint16_t   t_merge_127e_0001;
     THING     *t_call_19ab;
     uint16_t   t_merge_1d8c_0001;
-    uint16_t   t_scratch_me2;
     int32_t    t_merge_1eae_0001;
     uint16_t   t_merge_2331_0001;
     COLORREF   t_merge_23d4_0001;
@@ -1009,8 +1008,7 @@ L_1bda:
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     CchGetString(idsFieldRadiusDLYLdMines, szT);
-    sqrt((double)(lpth->thm.cMines));
-    c = _wsprintf(szWork, szT, LOWORD(__ftol()), lpth->thm.cMines);
+    c = _wsprintf(szWork, szT, LOWORD((int32_t)(sqrt((double)(lpth->thm.cMines)))), lpth->thm.cMines);
     TextOut(hdc, xLeft, yTop, szWork, c);
     yTop = (yTop + (dyArial8 + 2));
     if ((GetRaceStat(&(rgplr[lpth->iplr]), rsMajorAdv) == raMines))
@@ -1026,8 +1024,7 @@ L_1d89:
     t_merge_1d8c_0001 = 0x0;
 
 L_1d8c:
-    t_scratch_me2 = (LOWORD((t_merge_1d8c_0001 * 0x3)) + 0x1);
-    pctDecay = (int32_t)((LOWORD((t_scratch_me2 * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
+    pctDecay = (int32_t)((LOWORD(((LOWORD((t_merge_1d8c_0001 * 0x3)) + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
     if ((pctDecay <= 50))
         goto L_1df1;
     else
@@ -2857,7 +2854,8 @@ L_4439:
 
 L_443c:
     iChecked = -1;
-    /* untranslated: part[0x0:4](rgi) = 0x1f40064 (aggregate-slice) */
+    rgi[0] = 100;
+    rgi[1] = 500;
     rgi[2] = 1000;
     rgi[4] = 5000;
     rgi[6] = 10000;

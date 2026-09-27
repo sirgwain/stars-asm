@@ -368,6 +368,36 @@ func (v *Const) WithFixup(fixup *asm.Fixup) *Const {
 }
 func (v *Const) String() string { return fmt.Sprintf("0x%x", v.Val) }
 
+// ImportConst is an absolute value exported by another module and written
+// into an immediate operand by the loader, such as KERNEL's __AHSHIFT. Its
+// value is unknown until load time; Val keeps the placeholder immediate.
+type ImportConst struct {
+	Val    uint
+	Fixup  *asm.Fixup
+	Origin *Origin
+}
+
+// ImportConstVal returns the loader-supplied constant named by fixup.
+func ImportConstVal(val uint, fixup *asm.Fixup) *ImportConst {
+	return &ImportConst{Val: val, Fixup: fixup}
+}
+
+func (*ImportConst) value() {}
+
+// WithOrigin records the instruction operand that read the constant.
+func (v *ImportConst) WithOrigin(origin *Origin) *ImportConst {
+	v.Origin = origin
+	return v
+}
+
+// Is reports whether the constant is the named export of module.
+func (v *ImportConst) Is(module, name string) bool {
+	return strings.EqualFold(v.Fixup.ModuleName, module) && v.Fixup.FuncName == name
+}
+
+// String renders the imported symbol name.
+func (v *ImportConst) String() string { return v.Fixup.FuncName }
+
 type Reg struct {
 	Val asm.Reg
 }
@@ -553,6 +583,9 @@ func ValueEquals(a, b Value) bool {
 	case *FloatConst:
 		bv, ok := b.(*FloatConst)
 		return ok && av.Val == bv.Val
+	case *ImportConst:
+		bv, ok := b.(*ImportConst)
+		return ok && av.Fixup.ModuleName == bv.Fixup.ModuleName && av.Fixup.FuncName == bv.Fixup.FuncName
 	case *CallResult:
 		bv, ok := b.(*CallResult)
 		return ok && callResultsEqual(av, bv)

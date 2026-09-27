@@ -128,6 +128,13 @@ func (sr *symbolResolver) addressFromStackAddressMemory(mem machine.MemoryAddres
 	if !ok || !addr.hasBase() {
 		return resolvedAddress{}, false
 	}
+	// An address such as &rgxf+0xc resolves to an offset path typed as the
+	// whole object. Project from the object itself so the access width, not
+	// the object's size, selects the addressed subobject.
+	if offset, ok := addr.base.(*symresolve.SymbolOffset); ok {
+		addr.base = offset.Base
+		addr.offset += offset.Offset
+	}
 	return sr.addMemoryAddressTerms(addr, mem), true
 }
 

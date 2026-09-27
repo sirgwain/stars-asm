@@ -205,7 +205,6 @@ L_5cb5:
     t_merge_5cb9_0001 = sext16to32(score.cPlanet)
 
 L_5cb9:
-    t_scratch_m60_2 = (int32_t)(t_merge_5cb9_0001 * 2)
     branch rgcsh[0] < sext16to32(score.cPlanet) ? L_5ce8 : L_5cf1
 
 
@@ -218,7 +217,7 @@ L_5cf1:
     t_merge_5cf5_0001 = sext16to32(score.cPlanet)
 
 L_5cf5:
-    score.lScore = (score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + t_scratch_m60_2))
+    score.lScore = (score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2)))
     branch rgcsh[2] <= 0 ? L_5d57 : L_5d23
 
 

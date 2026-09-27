@@ -164,7 +164,7 @@ block L_b06c:
   preds: L_b05e, L_b063
   succs: L_b08a
   effects:
-    b07f  call __ftol() -> callresult(int32_t)
+    b07f  call __ftol((((double)load(dword [bp-dmgBombPeople]) * load(dword [bp-pctSuccess])) + 0.5)) -> callresult(int32_t)
     b084  store[2] [bp-dmgBombPeople] = loword(callresult(int32_t))
     b087  store[2] [bp-dmgBombPeople+0x2] = hiword(callresult(int32_t))
 
@@ -194,7 +194,7 @@ block L_b0a1:
   preds: L_b093, L_b098
   succs: L_b0bf
   effects:
-    b0b4  call __ftol() -> callresult(int32_t)
+    b0b4  call __ftol((((double)load(dword [bp-dmgBombFloor]) * load(dword [bp-pctSuccess])) + 0.5)) -> callresult(int32_t)
     b0b9  store[2] [bp-dmgBombFloor] = loword(callresult(int32_t))
     b0bc  store[2] [bp-dmgBombFloor+0x2] = hiword(callresult(int32_t))
 
@@ -224,7 +224,7 @@ block L_b0d6:
   preds: L_b0c8, L_b0cd
   succs: L_b0f4
   effects:
-    b0e9  call __ftol() -> callresult(int32_t)
+    b0e9  call __ftol((((double)load(dword [bp-dmgPeopleSmart]) * load(dword [bp-pctSmart])) + 0.5)) -> callresult(int32_t)
     b0ee  store[2] [bp-dmgPeopleSmart] = loword(callresult(int32_t))
     b0f1  store[2] [bp-dmgPeopleSmart+0x2] = hiword(callresult(int32_t))
 
@@ -255,7 +255,7 @@ block L_b10b:
   succs: L_b14e
   effects:
     b12e  store[8] qword [bp-pctSuccessHalf] = (1 - ((1 - load(dword [bp-pctSuccess])) / 2))
-    b143  call __ftol() -> callresult(int32_t)
+    b143  call __ftol((((double)load(dword [bp-dmgBombBldg]) * load(qword [bp-pctSuccessHalf])) + 0.5)) -> callresult(int32_t)
     b148  store[2] [bp-dmgBombBldg] = loword(callresult(int32_t))
     b14b  store[2] [bp-dmgBombBldg+0x2] = hiword(callresult(int32_t))
 
@@ -1018,7 +1018,7 @@ block L_b7e8:
     b7e8  store[2] [bp-pctTot] = 0x0
     b807  store[2] ss:[bp-0x58] = 0x2
     b80a  store[2] ss:[bp-0x56] = 0x0
-    b814  call __ftol() -> callresult(int32_t)
+    b814  call __ftol((((1 - load(dword [bp-pctSuccess])) * (double)load(dword [bp-pctTerra])) / (double)load(dword ss:[bp-0x58]))) -> callresult(int32_t)
     b823  store[2] [bp-pctTerra] = (load([bp-pctTerra]) - loword(callresult(int32_t)))
     b826  store[2] [bp-pctTerra+0x2] = (load@b81c/src([bp-pctTerra+0x2]) - hiword(callresult(int32_t)))
     b82d  branch load@b829/dst([bp-pctTerra+0x2]) < 0x0 ? L_b84b : L_b832
@@ -1422,11 +1422,11 @@ block L_bb47:
     bb4b  store[2] [bp-idmDst] = (load@bb4b/dst([bp-idmDst]) + 0x5)
     bb64  store[2] ss:[bp-0x52] = 0x2710
     bb67  store[2] ss:[bp-0x50] = 0x0
-    bb71  call __ftol() -> callresult(int32_t)
+    bb71  call __ftol(((1 - load@bb5d/src(dword [bp-pctSuccess])) * (double)load(dword ss:[bp-0x52]))) -> callresult(int32_t)
     bba5  call FSendPlrMsg(load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]), load@bb9b/src([bp-idmSrc]), (load@bb94/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) | 0x8000), load@bb8e/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]), load@bb88/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bb7e/src([bp-cKillPeople]), load@bb77/src([bp-cPPE]), loword(callresult(int32_t)), 0x0, 0x0) -> callresult(int16_t)
     bbc2  store[2] ss:[bp-0x52] = 0x2710
     bbc5  store[2] ss:[bp-0x50] = 0x0
-    bbcf  call __ftol() -> callresult(int32_t)
+    bbcf  call __ftol(((1 - load@bbbb/src(dword [bp-pctSuccess])) * (double)load(dword ss:[bp-0x52]))) -> callresult(int32_t)
     bbff  call FSendPlrMsg(load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]), load@bbf5/src([bp-idmDst]), load@bbf2/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bbec/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]), load@bbe6/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bbdc/src([bp-cKillPeople]), load@bbd5/src([bp-cPPE]), loword(callresult(int32_t)), 0x0, 0x0) -> callresult(int16_t)
 
 block L_bc07:
@@ -1463,11 +1463,11 @@ block L_bca4:
     bca8  store[2] [bp-idmDst] = (load@bca8/dst([bp-idmDst]) + 0x5)
     bcc5  store[2] ss:[bp-0x52] = 0x2710
     bcc8  store[2] ss:[bp-0x50] = 0x0
-    bcd2  call __ftol() -> callresult(int32_t)
+    bcd2  call __ftol(((1 - load@bcbe/src(dword [bp-pctSuccess])) * (double)load(dword ss:[bp-0x52]))) -> callresult(int32_t)
     bcff  call FSendPlrMsg(load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]), load@bcf5/src([bp-idmSrc]), (load@bcee/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) | 0x8000), load@bce8/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]), load@bce2/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bcd8/src([bp-cPPE]), loword(callresult(int32_t)), 0x0, 0x0, 0x0) -> callresult(int16_t)
     bd20  store[2] ss:[bp-0x52] = 0x2710
     bd23  store[2] ss:[bp-0x50] = 0x0
-    bd2d  call __ftol() -> callresult(int32_t)
+    bd2d  call __ftol(((1 - load@bd19/src(dword [bp-pctSuccess])) * (double)load(dword ss:[bp-0x52]))) -> callresult(int32_t)
     bd56  call FSendPlrMsg(load(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))+0x2]), load@bd4c/src([bp-idmDst]), load@bd49/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bd43/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]), load@bd3d/src(farseg(load(dword [bp-lppl])):[faroff(load(dword [bp-lppl]))]), load@bd33/src([bp-cPPE]), loword(callresult(int32_t)), 0x0, 0x0, 0x0) -> callresult(int16_t)
 
 block L_bd5e:

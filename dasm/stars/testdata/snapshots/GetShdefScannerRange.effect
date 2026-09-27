@@ -1,0 +1,577 @@
+/*
+GetShdefScannerRange  (util)
+  addr: 0008:50d0  len=1512
+  sig:  int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    int16_t          iplr           [BP+0xa]
+    int16_t *        pdPlanRange    [BP+0xc]
+    int16_t *        ppctDetect     [BP+0xe]
+    int16_t *        piSteal        [BP+0x10]
+  locals:
+    double           lRange4        [BP-0x42]
+    double           lBIPR4         [BP-0x3a]
+    int16_t          j              [BP-0x32]
+    int16_t          iSteal         [BP-0x30]
+    double           lT             [BP-0x2e]
+    int16_t          dRange         [BP-0x26]
+    double           lPlanRange4    [BP-0x24]
+    int16_t          cDetectors     [BP-0x1c]
+    int16_t          fBuiltIn       [BP-0x1a]
+    int16_t          iScanner       [BP-0x18]
+    int16_t          fHasScanner    [BP-0x16]
+    int16_t          dRangeT        [BP-0x14]
+    double           lBIR4          [BP-0x12]
+    int16_t          dRangeT2       [BP-0xa]
+    HS *             lphs           [BP-0x8]
+    int16_t          chs            [BP-0x4]
+
+  stats: blocks=0  labels=2
+    LPlanScan: L_53ed
+    LOddBallScanners: L_5482
+*/
+block L_50d0:
+  insts 0..29  off 0x50d0..0x5115
+  succs: L_5119, L_513f
+  effects:
+    50dd  store[2] ss:[bp-0x4a] = 0x0
+    50e0  store[2] ss:[bp-0x48] = 0x0
+    50e8  store[8] qword [bp-lRange4] = (double)load(dword ss:[bp-0x4a])
+    50f1  store[2] ss:[bp-0x4a] = 0x0
+    50f4  store[2] ss:[bp-0x48] = 0x0
+    50fc  store[8] qword [bp-lPlanRange4] = (double)load(dword ss:[bp-0x4a])
+    5101  store[2] [bp-fHasScanner] = 0x0
+    5106  store[2] [bp-iSteal] = 0x0
+    510b  store[2] [bp-cDetectors] = 0x0
+    5114  branch load([bp+iplr]) == 0xffff ? L_513f : L_5119
+
+block L_5119:
+  insts 31..41  off 0x5119..0x5135
+  preds: L_50d0
+  succs: L_5139, L_513f
+  effects:
+    5129  call GetRaceStat((0x59a2 + loword((0xc0 * load([bp+iplr])))), 0xe) -> callresult(int16_t)
+    5134  branch callresult(int16_t) != 0x9 ? L_513f : L_5139
+
+block L_5139:
+  insts 43..44  off 0x5139..0x513e
+  preds: L_5119
+  succs: L_5142
+  effects:
+    513c  goto L_5142
+
+block L_513f:
+  insts 45..45  off 0x513f..0x5141
+  preds: L_50d0, L_5119
+  succs: L_5142
+
+block L_5142:
+  insts 46..60  off 0x5142..0x5160
+  preds: L_5139, L_513f
+  succs: L_5164, L_516b
+  effects:
+    5142  store[2] [bp-fBuiltIn] = merge(Join: L_5142, (L_5139:0x1, L_513f:0x0))
+    514b  store[8] qword [bp-lBIR4] = -1
+    5156  store[8] qword [bp-lBIPR4] = -1
+    515f  branch load([bp+ppctDetect]) == 0x0 ? L_516b : L_5164
+
+block L_5164:
+  insts 62..63  off 0x5164..0x516a
+  preds: L_5142
+  succs: L_516b
+  effects:
+    5167  store[2] ds:[load([bp+ppctDetect])] = 0x64
+
+block L_516b:
+  insts 64..65  off 0x516b..0x5170
+  preds: L_5142, L_5164
+  succs: L_5174, L_5272
+  effects:
+    516f  branch load([bp-fBuiltIn]) == 0x0 ? L_5272 : L_5174
+
+block L_5174:
+  insts 67..69  off 0x5174..0x517c
+  preds: L_516b
+  succs: L_5180, L_5198
+  effects:
+    517b  branch load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))]) == 0x4 ? L_5198 : L_5180
+
+block L_5180:
+  insts 71..73  off 0x5180..0x5188
+  preds: L_5174
+  succs: L_518c, L_5198
+  effects:
+    5187  branch load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))]) == 0x6 ? L_5198 : L_518c
+
+block L_518c:
+  insts 75..77  off 0x518c..0x5194
+  preds: L_5180
+  succs: L_5198, L_5272
+  effects:
+    5193  branch load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))]) != 0x5 ? L_5272 : L_5198
+
+block L_5198:
+  insts 79..90  off 0x5198..0x51b2
+  preds: L_5174, L_5180, L_518c
+  succs: L_51b6, L_525e
+  effects:
+    519c  store[2] ss:[bp-0x4a] = 0x0
+    519f  store[2] ss:[bp-0x48] = 0x0
+    51b1  branch load(qword [bp-lBIR4]) >= (double)load(dword ss:[bp-0x4a]) ? L_525e : L_51b6
+
+block L_51b6:
+  insts 92..98  off 0x51b6..0x51c6
+  preds: L_5198
+  succs: L_51ca, L_51e3
+  effects:
+    51c5  branch ((((load([game+0x10]) >> 0x1) >> 0x1) >> 0x1) & 0x1) == 0x0 ? L_51e3 : L_51ca
+
+block L_51ca:
+  insts 100..112  off 0x51ca..0x51e2
+  preds: L_51b6
+  succs: L_525e
+  effects:
+    51d0  store[8] qword [bp-lBIR4] = 2.56e+06
+    51db  store[8] qword [bp-lBIPR4] = 160000
+    51e0  goto L_525e
+
+block L_51e3:
+  insts 113..177  off 0x51e3..0x525d
+  preds: L_51b6
+  succs: L_525e
+  effects:
+    51f8  store[2] ss:[bp-0x4a] = loword((sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([bp+iplr]))))+0x1e])) * 0xa))
+    51fb  store[2] ss:[bp-0x48] = signhiword(loword((sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([bp+iplr]))))+0x1e])) * 0xa)))
+    5203  store[8] qword [bp-lBIPR4] = (double)load(dword ss:[bp-0x4a])
+    520c  store[2] ss:[bp-0x4a] = 0x2
+    520f  store[2] ss:[bp-0x48] = 0x0
+    5221  store[8] qword [bp-lBIR4] = (load@5217/src(qword [bp-lBIPR4]) * (double)load(dword ss:[bp-0x4a]))
+    522f  store[8] qword [bp-lBIPR4] = (load@5227/src(qword [bp-lBIPR4]) * load@522b/src(qword [bp-lBIPR4]))
+    523d  store[8] qword [bp-lBIPR4] = (load@5235/src(qword [bp-lBIPR4]) * load@5239/src(qword [bp-lBIPR4]))
+    524b  store[8] qword [bp-lBIR4] = (load@5243/src(qword [bp-lBIR4]) * load@5247/src(qword [bp-lBIR4]))
+    5259  store[8] qword [bp-lBIR4] = (load@5251/src(qword [bp-lBIR4]) * load@5255/src(qword [bp-lBIR4]))
+
+block L_525e:
+  insts 178..189  off 0x525e..0x5271
+  preds: L_5198, L_51ca, L_51e3
+  succs: L_5272
+  effects:
+    5263  store[8] qword [bp-lRange4] = load(qword [bp-lBIR4])
+    526d  store[8] qword [bp-lPlanRange4] = load(qword [bp-lBIPR4])
+
+block L_5272:
+  insts 190..201  off 0x5272..0x5297
+  preds: L_516b, L_518c, L_525e
+  succs: L_52ab
+  effects:
+    527d  store[2] [bp-lphs] = (load([bp+lpshdef]) + 0x3a)
+    5280  store[2] [bp-lphs+0x2] = load([bp+lpshdef+0x2])
+    528d  store[2] [bp-chs] = load(byte farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7a])
+    5290  store[2] [bp-j] = 0x0
+    5295  goto L_52ab
+
+block L_5298:
+  insts 202..207  off 0x5298..0x52aa
+  preds: L_52b6, L_53c0, L_5457, L_5554, L_555d, L_556a, L_558e
+  succs: L_52ab
+  effects:
+    529b  store[2] [bp-j] = (load([bp-j]) + 0x1)
+    52a5  store[2] [bp-lphs] = (load([bp-lphs]) + 0x4)
+
+block L_52ab:
+  insts 208..210  off 0x52ab..0x52b2
+  preds: L_5272, L_5298
+  succs: L_52b6, L_5591
+  effects:
+    52b1  branch load([bp-j]) >= load([bp-chs]) ? L_5591 : L_52b6
+
+block L_52b6:
+  insts 212..218  off 0x52b6..0x52c9
+  preds: L_52ab
+  succs: L_5298, L_52cd
+  effects:
+    52c8  branch ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff) == 0x0 ? L_5298 : L_52cd
+
+block L_52cd:
+  insts 220..222  off 0x52cd..0x52d5
+  preds: L_52b6
+  succs: L_52d9, L_545a
+  effects:
+    52d4  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x2 ? L_545a : L_52d9
+
+block L_52d9:
+  insts 224..297  off 0x52d9..0x5381
+  preds: L_52cd
+  succs: L_5385, L_5390
+  effects:
+    52d9  store[2] [bp-fHasScanner] = 0x1
+    52e8  store[2] [bp-iScanner] = (load@52e1/src(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff)
+    52ec  call LpscannerFromId((load@52e1/src(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff)) -> callresult(SCANNER *)
+    52fc  store[2] [bp-dRangeT] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34])
+    5300  store[2] ss:[bp-0x4a] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34])
+    5303  store[2] ss:[bp-0x48] = signhiword(load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34]))
+    530b  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
+    5319  store[8] qword [bp-lT] = (load@5311/src(qword [bp-lT]) * load@5315/src(qword [bp-lT]))
+    5327  store[8] qword [bp-lT] = (load@531f/src(qword [bp-lT]) * load@5323/src(qword [bp-lT]))
+    533e  store[2] ss:[bp-0x4a] = ((load@532f/src(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
+    5341  store[2] ss:[bp-0x48] = 0x0
+    5353  store[8] qword [bp-lT] = (load@5349/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
+    5361  store[8] qword [bp-lRange4] = (load(qword [bp-lRange4]) + load@535d/src(qword [bp-lT]))
+    5369  call LpscannerFromId(load@5366/src([bp-iScanner])) -> callresult(SCANNER *)
+    5379  store[2] [bp-dRangeT] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x36])
+    5380  branch load@537c/dst([bp-iScanner]) != 0x6 ? L_5390 : L_5385
+
+block L_5385:
+  insts 299..300  off 0x5385..0x538c
+  preds: L_52d9
+  succs: L_53ed
+  effects:
+    5385  store[2] [bp-dRangeT] = 0x2d
+    538a  goto L_53ed
+
+block L_5390:
+  insts 301..302  off 0x5390..0x5395
+  preds: L_52d9
+  succs: L_5399, L_53a8
+  effects:
+    5394  branch load([bp-iScanner]) != 0x5 ? L_53a8 : L_5399
+
+block L_5399:
+  insts 304..306  off 0x5399..0x53a4
+  preds: L_5390
+  succs: L_53ed
+  effects:
+    5399  store[2] [bp-dRangeT] = 0x0
+    539e  store[2] [bp-iSteal] = (load([bp-iSteal]) | 0x1)
+    53a2  goto L_53ed
+
+block L_53a8:
+  insts 307..308  off 0x53a8..0x53ad
+  preds: L_5390
+  succs: L_53b1, L_53c0
+  effects:
+    53ac  branch load([bp-iScanner]) != 0xe ? L_53c0 : L_53b1
+
+block L_53b1:
+  insts 310..312  off 0x53b1..0x53bc
+  preds: L_53a8
+  succs: L_53ed
+  effects:
+    53b1  store[2] [bp-dRangeT] = 0x78
+    53b6  store[2] [bp-iSteal] = (load([bp-iSteal]) | 0x3)
+    53ba  goto L_53ed
+
+block L_53c0:
+  insts 313..314  off 0x53c0..0x53c5
+  preds: L_53a8
+  succs: L_5298, L_53c9
+  effects:
+    53c4  branch load([bp-dRangeT]) <= 0x0 ? L_5298 : L_53c9
+
+block L_53c9:
+  insts 316..317  off 0x53c9..0x53ce
+  preds: L_53c0
+  succs: L_53d2, L_53d8
+  effects:
+    53cd  branch load([bp-dRangeT]) != 0x1 ? L_53d8 : L_53d2
+
+block L_53d2:
+  insts 319..320  off 0x53d2..0x53d7
+  preds: L_53c9
+  succs: L_53ea
+  effects:
+    53d5  goto L_53ea
+
+block L_53d8:
+  insts 321..322  off 0x53d8..0x53dd
+  preds: L_53c9
+  succs: L_53e1, L_53e7
+  effects:
+    53dc  branch load([bp-dRangeT]) != 0x2 ? L_53e7 : L_53e1
+
+block L_53e1:
+  insts 324..325  off 0x53e1..0x53e6
+  preds: L_53d8
+  succs: L_53ea
+  effects:
+    53e4  goto L_53ea
+
+block L_53e7:
+  insts 326..326  off 0x53e7..0x53e9
+  preds: L_53d8
+  succs: L_53ea
+
+block L_53ea:
+  insts 327..327  off 0x53ea..0x53ec
+  preds: L_53d2, L_53e1, L_53e7
+  succs: L_53ed
+  effects:
+    53ea  store[2] [bp-dRangeT] = merge(Join: L_53ea, (L_53d2:0x32, L_53e1:0x64, L_53e7:0xc8))
+
+block LPlanScan:
+  insts 328..381  off 0x53ed..0x5456
+  preds: L_5385, L_5399, L_53b1, L_53ea, L_5482
+  succs: L_5457
+  effects:
+    53f1  store[2] ss:[bp-0x4a] = load([bp-dRangeT])
+    53f4  store[2] ss:[bp-0x48] = signhiword(load([bp-dRangeT]))
+    53fc  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
+    540a  store[8] qword [bp-lT] = (load@5402/src(qword [bp-lT]) * load@5406/src(qword [bp-lT]))
+    5418  store[8] qword [bp-lT] = (load@5410/src(qword [bp-lT]) * load@5414/src(qword [bp-lT]))
+    542f  store[2] ss:[bp-0x4a] = ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
+    5432  store[2] ss:[bp-0x48] = 0x0
+    5444  store[8] qword [bp-lT] = (load@543a/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
+    5452  store[8] qword [bp-lPlanRange4] = (load(qword [bp-lPlanRange4]) + load@544e/src(qword [bp-lT]))
+
+block L_5457:
+  insts 382..382  off 0x5457..0x5459
+  preds: L_53ed
+  succs: L_5298
+  effects:
+    5457  goto L_5298
+
+block L_545a:
+  insts 383..385  off 0x545a..0x5462
+  preds: L_52cd
+  succs: L_5466, L_54f8
+  effects:
+    5461  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x8 ? L_54f8 : L_5466
+
+block L_5466:
+  insts 387..391  off 0x5466..0x5474
+  preds: L_545a
+  succs: L_5478, L_54f8
+  effects:
+    5473  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0x9 ? L_54f8 : L_5478
+
+block L_5478:
+  insts 393..394  off 0x5478..0x5481
+  preds: L_5466
+  succs: L_5482
+  effects:
+    5478  store[2] [bp-dRangeT] = 0x50
+    547d  store[2] [bp-dRangeT2] = 0x28
+
+block LOddBallScanners:
+  insts 395..451  off 0x5482..0x54f4
+  preds: L_5478, L_5516, L_5544
+  succs: L_53ed
+  effects:
+    5486  store[2] ss:[bp-0x4a] = load([bp-dRangeT])
+    5489  store[2] ss:[bp-0x48] = signhiword(load([bp-dRangeT]))
+    5491  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
+    549f  store[8] qword [bp-lT] = (load@5497/src(qword [bp-lT]) * load@549b/src(qword [bp-lT]))
+    54ad  store[8] qword [bp-lT] = (load@54a5/src(qword [bp-lT]) * load@54a9/src(qword [bp-lT]))
+    54c4  store[2] ss:[bp-0x4a] = ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
+    54c7  store[2] ss:[bp-0x48] = 0x0
+    54d9  store[8] qword [bp-lT] = (load@54cf/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
+    54e7  store[8] qword [bp-lRange4] = (load(qword [bp-lRange4]) + load@54e3/src(qword [bp-lT]))
+    54ef  store[2] [bp-dRangeT] = load([bp-dRangeT2])
+    54f2  goto L_53ed
+
+block L_54f8:
+  insts 452..454  off 0x54f8..0x5500
+  preds: L_545a, L_5466
+  succs: L_5504, L_5526
+  effects:
+    54ff  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x10 ? L_5526 : L_5504
+
+block L_5504:
+  insts 456..460  off 0x5504..0x5512
+  preds: L_54f8
+  succs: L_5516, L_5526
+  effects:
+    5511  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0x12 ? L_5526 : L_5516
+
+block L_5516:
+  insts 462..464  off 0x5516..0x5522
+  preds: L_5504
+  succs: L_5482
+  effects:
+    5516  store[2] [bp-dRangeT] = 0x96
+    551b  store[2] [bp-dRangeT2] = 0x4b
+    5520  goto L_5482
+
+block L_5526:
+  insts 465..467  off 0x5526..0x552e
+  preds: L_54f8, L_5504
+  succs: L_5532, L_5554
+  effects:
+    552d  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x4 ? L_5554 : L_5532
+
+block L_5532:
+  insts 469..473  off 0x5532..0x5540
+  preds: L_5526
+  succs: L_5544, L_5554
+  effects:
+    553f  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0x6 ? L_5554 : L_5544
+
+block L_5544:
+  insts 475..477  off 0x5544..0x5550
+  preds: L_5532
+  succs: L_5482
+  effects:
+    5544  store[2] [bp-dRangeT] = 0x32
+    5549  store[2] [bp-dRangeT2] = 0x19
+    554e  goto L_5482
+
+block L_5554:
+  insts 478..479  off 0x5554..0x5559
+  preds: L_5526, L_5532
+  succs: L_5298, L_555d
+  effects:
+    5558  branch load([bp+ppctDetect]) == 0x0 ? L_5298 : L_555d
+
+block L_555d:
+  insts 481..483  off 0x555d..0x5566
+  preds: L_5554
+  succs: L_5298, L_556a
+  effects:
+    5565  branch load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))]) != 0x800 ? L_5298 : L_556a
+
+block L_556a:
+  insts 485..489  off 0x556a..0x5578
+  preds: L_555d
+  succs: L_5298, L_557c
+  effects:
+    5577  branch (load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) & 0xff) != 0xf ? L_5298 : L_557c
+
+block L_557c:
+  insts 491..496  off 0x557c..0x558d
+  preds: L_556a
+  succs: L_558e
+  effects:
+    558b  store[2] [bp-cDetectors] = (load([bp-cDetectors]) + ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff))
+
+block L_558e:
+  insts 497..497  off 0x558e..0x5590
+  preds: L_557c
+  succs: L_5298
+  effects:
+    558e  goto L_5298
+
+block L_5591:
+  insts 498..509  off 0x5591..0x55ab
+  preds: L_52ab
+  succs: L_55af, L_55b8
+  effects:
+    5595  store[2] ss:[bp-0x4a] = 0x0
+    5598  store[2] ss:[bp-0x48] = 0x0
+    55aa  branch load(qword [bp-lRange4]) > (double)load(dword ss:[bp-0x4a]) ? L_55b8 : L_55af
+
+block L_55af:
+  insts 511..512  off 0x55af..0x55b4
+  preds: L_5591
+  succs: L_55b8, L_5628
+  effects:
+    55b3  branch load([bp-fHasScanner]) == 0x0 ? L_5628 : L_55b8
+
+block L_55b8:
+  insts 514..541  off 0x55b8..0x55f9
+  preds: L_5591, L_55af
+  succs: L_55fd, L_562d
+  effects:
+    55c7  call sqrt(words(load([bp-lRange4+0x6]), load([bp-lRange4+0x4]), load([bp-lRange4+0x2]), load([bp-lRange4]))) -> callresult(double)
+    55dd  call sqrt(callresult(double)) -> callresult(double)
+    55ec  call __ftol(callresult(double)) -> callresult(int32_t)
+    55f1  store[2] [bp-dRange] = loword(callresult(int32_t))
+    55f8  branch load([bp+iplr]) == 0xffff ? L_562d : L_55fd
+
+block L_55fd:
+  insts 543..553  off 0x55fd..0x5619
+  preds: L_55b8
+  succs: L_561d, L_562d
+  effects:
+    560d  call GetRaceGrbit((0x59a2 + loword((0xc0 * load([bp+iplr])))), 0xa) -> callresult(int16_t)
+    5618  branch callresult(int16_t) == 0x0 ? L_562d : L_561d
+
+block L_561d:
+  insts 555..557  off 0x561d..0x5624
+  preds: L_55fd
+  succs: L_5625
+  effects:
+    5622  store[2] [bp-dRange] = (load([bp-dRange]) << 0x1)
+
+block L_5625:
+  insts 558..558  off 0x5625..0x5627
+  preds: L_561d
+  succs: L_562d
+  effects:
+    5625  goto L_562d
+
+block L_5628:
+  insts 559..559  off 0x5628..0x562c
+  preds: L_55af
+  succs: L_562d
+  effects:
+    5628  store[2] [bp-dRange] = 0xffff
+
+block L_562d:
+  insts 560..561  off 0x562d..0x5632
+  preds: L_55b8, L_55fd, L_5625, L_5628
+  succs: L_5636, L_5674
+  effects:
+    5631  branch load([bp+pdPlanRange]) == 0x0 ? L_5674 : L_5636
+
+block L_5636:
+  insts 563..589  off 0x5636..0x5673
+  preds: L_562d
+  succs: L_5674
+  effects:
+    5645  call sqrt(words(load([bp-lPlanRange4+0x6]), load([bp-lPlanRange4+0x4]), load([bp-lPlanRange4+0x2]), load([bp-lPlanRange4]))) -> callresult(double)
+    565b  call sqrt(callresult(double)) -> callresult(double)
+    566a  call __ftol(callresult(double)) -> callresult(int32_t)
+    5672  store[2] ds:[load([bp+pdPlanRange])] = loword(callresult(int32_t))
+
+block L_5674:
+  insts 590..591  off 0x5674..0x5679
+  preds: L_562d, L_5636
+  succs: L_567d, L_5685
+  effects:
+    5678  branch load([bp+piSteal]) == 0x0 ? L_5685 : L_567d
+
+block L_567d:
+  insts 593..595  off 0x567d..0x5684
+  preds: L_5674
+  succs: L_5685
+  effects:
+    5683  store[2] ds:[load([bp+piSteal])] = load([bp-iSteal])
+
+block L_5685:
+  insts 596..597  off 0x5685..0x568a
+  preds: L_5674, L_567d
+  succs: L_568e, L_56ac
+  effects:
+    5689  branch load([bp+ppctDetect]) == 0x0 ? L_56ac : L_568e
+
+block L_568e:
+  insts 599..600  off 0x568e..0x5693
+  preds: L_5685
+  succs: L_5697, L_569c
+  effects:
+    5692  branch load([bp-cDetectors]) < 0x12 ? L_569c : L_5697
+
+block L_5697:
+  insts 602..602  off 0x5697..0x569b
+  preds: L_568e
+  succs: L_569c
+  effects:
+    5697  store[2] [bp-cDetectors] = 0x11
+
+block L_569c:
+  insts 603..607  off 0x569c..0x56ab
+  preds: L_568e, L_5697
+  succs: L_56ac
+  effects:
+    56aa  store[2] ds:[load([bp+ppctDetect])] = load(byte cs:[load([bp-cDetectors])+0x50be])
+
+block L_56ac:
+  insts 608..608  off 0x56ac..0x56b1
+  preds: L_5685, L_569c
+  succs: L_56b2
+
+block L_56b2:
+  insts 610..614  off 0x56b2..0x56b7
+  preds: L_56ac
+  effects:
+    56b7  return load([bp-dRange])

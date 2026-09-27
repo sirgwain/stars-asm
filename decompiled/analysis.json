@@ -1,35 +1,19 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1740,
-    "hiWords": 80,
-    "loWords": 1414,
-    "branchHiWords": 27,
-    "branchLoWords": 568,
+    "temps": 1685,
+    "hiWords": 77,
+    "loWords": 1401,
+    "branchHiWords": 26,
+    "branchLoWords": 567,
     "ir": {
-      "numStatements": 34839,
-      "untranslated": 51,
-      "untranslatedAssign": 42,
-      "untranslatedBranch": 4,
-      "untranslatedPart": 19,
+      "numStatements": 34709,
+      "untranslated": 14,
+      "untranslatedAssign": 14,
       "untranslatedFailures": {
-        "assign.dst:aggregate-slice": 14,
-        "assign.dst:invalid-destination": 12,
-        "assign.dst:memory": 12,
-        "assign.dst:original-layout-offset": 1,
-        "assign.dst:part": 6,
-        "assign.dst:pointer-fragment": 3,
-        "assign.src.arg[0]:part": 2,
-        "assign.src.lhs.parent.rhs:original-layout-offset": 1,
-        "assign.src.value.lhs.lhs:memory": 1,
-        "assign.src:memory": 6,
-        "assign.src:part": 3,
-        "branch.cond.lhs.lhs:part": 1,
-        "branch.cond.lhs:part": 1,
-        "branch.cond.rhs.base:part": 2,
-        "call.arg[0].arg[0]:part": 2,
-        "call.arg[0]:part": 2,
-        "return.value.lhs:words": 1
+        "assign.dst:invalid-destination": 8,
+        "assign.dst:memory": 8,
+        "assign.src:memory": 6
       }
     }
   },
@@ -71,11 +55,11 @@
       }
     },
     "AnimateAttack": {
-      "temps": 26,
+      "temps": 25,
       "loWords": 17,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 155
+        "numStatements": 154
       }
     },
     "AskSaveDialog": {
@@ -92,7 +76,7 @@
     "AutoRouteFleet": {
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 34
+        "numStatements": 33
       }
     },
     "AutoTerraform": {
@@ -268,7 +252,7 @@
       "temps": 1,
       "loWords": 1,
       "ir": {
-        "numStatements": 9
+        "numStatements": 8
       }
     },
     "CParseNumbers": {
@@ -279,7 +263,7 @@
     "CPlanetsInCircle": {
       "loWords": 2,
       "ir": {
-        "numStatements": 19
+        "numStatements": 18
       }
     },
     "CPtsCloakFromLphs": {
@@ -292,7 +276,7 @@
     "CResourcesAtPlanet": {
       "loWords": 3,
       "ir": {
-        "numStatements": 19
+        "numStatements": 18
       }
     },
     "CShipsScanVis": {
@@ -324,11 +308,11 @@
       }
     },
     "CalcPlayerScore": {
-      "temps": 3,
+      "temps": 2,
       "loWords": 2,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 48
+        "numStatements": 47
       }
     },
     "CancelMemRt": {
@@ -375,7 +359,7 @@
       "temps": 3,
       "loWords": 2,
       "ir": {
-        "numStatements": 54
+        "numStatements": 52
       }
     },
     "CheckAiShdefStatus": {
@@ -412,7 +396,7 @@
       "temps": 2,
       "loWords": 4,
       "ir": {
-        "numStatements": 42
+        "numStatements": 41
       }
     },
     "ChopLastWord": {
@@ -458,11 +442,11 @@
       }
     },
     "CommandHandler": {
-      "temps": 13,
+      "temps": 12,
       "loWords": 22,
       "branchLoWords": 5,
       "ir": {
-        "numStatements": 357
+        "numStatements": 356
       }
     },
     "ComputeShdefPowers": {
@@ -591,16 +575,10 @@
       }
     },
     "DiaganolTextOut": {
-      "temps": 6,
+      "temps": 5,
       "loWords": 6,
       "ir": {
-        "numStatements": 48,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "assign.src.arg[0]:part": 2
-        }
+        "numStatements": 47
       }
     },
     "DibBlt": {
@@ -670,11 +648,11 @@
       }
     },
     "DoCyberAiTurn": {
-      "temps": 10,
+      "temps": 9,
       "loWords": 2,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 228
+        "numStatements": 227
       }
     },
     "DoCyberFreighter": {
@@ -687,14 +665,7 @@
       "temps": 8,
       "loWords": 6,
       "ir": {
-        "numStatements": 118,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1,
-          "assign.dst:part": 1
-        }
+        "numStatements": 118
       }
     },
     "DoMacintiAiTurn": {
@@ -712,10 +683,10 @@
       }
     },
     "DoOrders": {
-      "temps": 4,
+      "temps": 3,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 24
+        "numStatements": 23
       }
     },
     "DoRobotoidAiTurn": {
@@ -742,11 +713,11 @@
       }
     },
     "DoTurinDroneAiTurn": {
-      "temps": 8,
+      "temps": 7,
       "loWords": 1,
       "branchLoWords": 5,
       "ir": {
-        "numStatements": 290
+        "numStatements": 289
       }
     },
     "DpFromPtokBrcToBrc": {
@@ -895,10 +866,10 @@
       }
     },
     "DrawMineSurvey": {
-      "temps": 32,
+      "temps": 31,
       "loWords": 33,
       "ir": {
-        "numStatements": 471
+        "numStatements": 469
       }
     },
     "DrawMineralItem": {
@@ -957,14 +928,7 @@
       "loWords": 2,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 89,
-        "untranslated": 2,
-        "untranslatedBranch": 2,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "branch.cond.lhs.lhs:part": 1,
-          "branch.cond.lhs:part": 1
-        }
+        "numStatements": 87
       }
     },
     "DrawPlanetStarbase": {
@@ -976,9 +940,9 @@
     },
     "DrawPlanetStats": {
       "temps": 5,
-      "loWords": 4,
+      "loWords": 5,
       "ir": {
-        "numStatements": 115
+        "numStatements": 114
       }
     },
     "DrawPlanetXferSide": {
@@ -1053,9 +1017,9 @@
     },
     "DrawReportItem": {
       "temps": 11,
-      "loWords": 18,
+      "loWords": 19,
       "ir": {
-        "numStatements": 241
+        "numStatements": 240
       }
     },
     "DrawResearchDlg": {
@@ -1079,11 +1043,11 @@
       }
     },
     "DrawScanner": {
-      "temps": 36,
+      "temps": 35,
       "loWords": 6,
       "branchLoWords": 10,
       "ir": {
-        "numStatements": 553
+        "numStatements": 550
       }
     },
     "DrawScannerSBar": {
@@ -1095,7 +1059,7 @@
     },
     "DrawScoreReport": {
       "temps": 3,
-      "loWords": 16,
+      "loWords": 17,
       "ir": {
         "numStatements": 64
       }
@@ -1133,12 +1097,7 @@
       "temps": 7,
       "loWords": 12,
       "ir": {
-        "numStatements": 147,
-        "untranslated": 2,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "call.arg[0]:part": 2
-        }
+        "numStatements": 143
       }
     },
     "DrawShipWayPtOrders": {
@@ -1190,7 +1149,7 @@
     },
     "DrawVCReport": {
       "temps": 3,
-      "loWords": 22,
+      "loWords": 23,
       "ir": {
         "numStatements": 89
       }
@@ -1202,16 +1161,10 @@
     },
     "DropColonists": {
       "temps": 3,
-      "hiWords": 2,
-      "loWords": 16,
+      "loWords": 14,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 116,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:pointer-fragment": 2
-        }
+        "numStatements": 115
       }
     },
     "DropSalvage": {
@@ -1228,10 +1181,10 @@
     },
     "DumpPlanets": {
       "temps": 1,
-      "loWords": 3,
+      "loWords": 4,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 136
+        "numStatements": 135
       }
     },
     "DumpUniverse": {
@@ -1265,10 +1218,8 @@
     },
     "DxyMoveTokTo": {
       "temps": 11,
-      "hiWords": 2,
-      "loWords": 2,
       "ir": {
-        "numStatements": 114
+        "numStatements": 111
       }
     },
     "DzFromBrcBrc": {
@@ -1463,11 +1414,11 @@
       }
     },
     "FBuildObject": {
-      "temps": 19,
+      "temps": 18,
       "loWords": 5,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 174
+        "numStatements": 173
       }
     },
     "FCalcFleetBombDamage": {
@@ -1485,7 +1436,7 @@
       "temps": 3,
       "loWords": 1,
       "ir": {
-        "numStatements": 36
+        "numStatements": 34
       }
     },
     "FCanKillTok": {
@@ -1811,7 +1762,7 @@
     "FEnumNeedMinerals": {
       "temps": 2,
       "ir": {
-        "numStatements": 22
+        "numStatements": 18
       }
     },
     "FEnumOurStarbase": {
@@ -1825,10 +1776,10 @@
       }
     },
     "FEnumPktAttack": {
-      "temps": 1,
+      "temps": 4,
       "loWords": 3,
       "ir": {
-        "numStatements": 25
+        "numStatements": 27
       }
     },
     "FFillProdMinesAndFactories": {
@@ -1836,7 +1787,7 @@
       "loWords": 13,
       "branchLoWords": 12,
       "ir": {
-        "numStatements": 95
+        "numStatements": 92
       }
     },
     "FFindBuddyAndJoinUp": {
@@ -2014,7 +1965,7 @@
       "temps": 2,
       "loWords": 2,
       "ir": {
-        "numStatements": 35
+        "numStatements": 33
       }
     },
     "FIsAiAttack": {
@@ -2052,13 +2003,7 @@
       "loWords": 7,
       "branchLoWords": 13,
       "ir": {
-        "numStatements": 395,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.src:part": 1
-        }
+        "numStatements": 395
       }
     },
     "FLoadLogFile": {
@@ -2265,19 +2210,13 @@
       }
     },
     "FRunLogRecord": {
-      "temps": 16,
+      "temps": 15,
       "hiWords": 1,
       "loWords": 13,
-      "branchHiWords": 5,
-      "branchLoWords": 13,
+      "branchHiWords": 4,
+      "branchLoWords": 12,
       "ir": {
-        "numStatements": 235,
-        "untranslated": 2,
-        "untranslatedBranch": 2,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "branch.cond.rhs.base:part": 2
-        }
+        "numStatements": 232
       }
     },
     "FSalvageTargetFreighter2": {
@@ -2285,7 +2224,7 @@
       "loWords": 2,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 32
+        "numStatements": 31
       }
     },
     "FSaveRace": {
@@ -2331,13 +2270,7 @@
       "temps": 2,
       "loWords": 1,
       "ir": {
-        "numStatements": 49,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.src:part": 1
-        }
+        "numStatements": 49
       }
     },
     "FSetUpBatchProcessing": {
@@ -2347,10 +2280,10 @@
       }
     },
     "FSetupXferBtns": {
-      "temps": 7,
+      "temps": 5,
       "loWords": 1,
       "ir": {
-        "numStatements": 61
+        "numStatements": 59
       }
     },
     "FShouldPartBeHidden": {
@@ -2400,7 +2333,7 @@
       "temps": 5,
       "loWords": 2,
       "ir": {
-        "numStatements": 71
+        "numStatements": 69
       }
     },
     "FTrackRaceDlg3": {
@@ -2434,11 +2367,11 @@
       }
     },
     "FTravelThroughMineFields": {
-      "temps": 9,
+      "temps": 8,
       "loWords": 10,
       "branchLoWords": 7,
       "ir": {
-        "numStatements": 178
+        "numStatements": 176
       }
     },
     "FTutorTaskDone": {
@@ -2485,17 +2418,7 @@
       "loWords": 1,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 158,
-        "untranslated": 3,
-        "untranslatedAssign": 3,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1,
-          "assign.dst:original-layout-offset": 1,
-          "assign.dst:part": 1,
-          "assign.src.lhs.parent.rhs:original-layout-offset": 1,
-          "assign.src:part": 1
-        }
+        "numStatements": 158
       }
     },
     "FWriteHistFile": {
@@ -2551,11 +2474,11 @@
       }
     },
     "FillBuildDD": {
-      "temps": 9,
+      "temps": 8,
       "hiWords": 1,
       "loWords": 4,
       "ir": {
-        "numStatements": 62
+        "numStatements": 61
       }
     },
     "FillBuildPartsLB": {
@@ -2628,23 +2551,16 @@
       }
     },
     "FleetTransferCargoBalance": {
-      "temps": 37,
+      "temps": 27,
       "loWords": 6,
       "ir": {
-        "numStatements": 148
+        "numStatements": 138
       }
     },
     "FormatSerialAndEnv": {
       "loWords": 1,
       "ir": {
-        "numStatements": 44,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1,
-          "assign.dst:part": 1
-        }
+        "numStatements": 44
       }
     },
     "FrameWndProc": {
@@ -2700,7 +2616,7 @@
     "FuelFleets": {
       "temps": 3,
       "ir": {
-        "numStatements": 22
+        "numStatements": 21
       }
     },
     "GenNewGameFromFile": {
@@ -2712,11 +2628,11 @@
       }
     },
     "GenerateWorld": {
-      "temps": 29,
-      "loWords": 12,
+      "temps": 26,
+      "loWords": 11,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 597
+        "numStatements": 594
       }
     },
     "GetASubMenu": {
@@ -2743,10 +2659,10 @@
       }
     },
     "GetDxDyOrientation": {
-      "temps": 2,
+      "temps": 1,
       "loWords": 3,
       "ir": {
-        "numStatements": 13
+        "numStatements": 12
       }
     },
     "GetFileSeeds": {
@@ -2787,7 +2703,7 @@
     "GetPlanetScannerRange": {
       "loWords": 2,
       "ir": {
-        "numStatements": 16
+        "numStatements": 15
       }
     },
     "GetProdQCost": {
@@ -2800,7 +2716,7 @@
       "loWords": 9,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 153
+        "numStatements": 151
       }
     },
     "GetRaceGrbit": {
@@ -2827,12 +2743,7 @@
       "temps": 3,
       "loWords": 3,
       "ir": {
-        "numStatements": 73,
-        "untranslated": 2,
-        "untranslatedPart": 2,
-        "untranslatedFailures": {
-          "call.arg[0].arg[0]:part": 2
-        }
+        "numStatements": 71
       }
     },
     "GetTechLevelCost": {
@@ -2924,11 +2835,11 @@
       }
     },
     "HostModeDialog": {
-      "temps": 21,
+      "temps": 20,
       "hiWords": 1,
       "loWords": 1,
       "ir": {
-        "numStatements": 123
+        "numStatements": 122
       }
     },
     "HostOptionsDialog": {
@@ -3013,9 +2924,9 @@
       }
     },
     "IDropPart": {
-      "temps": 7,
+      "temps": 5,
       "ir": {
-        "numStatements": 52
+        "numStatements": 47
       }
     },
     "IEmptyBmpFromGrhst": {
@@ -3073,7 +2984,7 @@
       "temps": 1,
       "loWords": 4,
       "ir": {
-        "numStatements": 40
+        "numStatements": 39
       }
     },
     "IWarpMAFromLppl": {
@@ -3127,11 +3038,11 @@
       }
     },
     "IdTargetFreighter": {
-      "temps": 3,
+      "temps": 2,
       "loWords": 7,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 120
+        "numStatements": 116
       }
     },
     "IdTargetMacFreighter": {
@@ -3170,7 +3081,7 @@
     "IncreaseAIMinefieldSizes": {
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 7
+        "numStatements": 6
       }
     },
     "InitBattlePlan": {
@@ -3179,9 +3090,9 @@
       }
     },
     "InitBtnTrack": {
-      "temps": 2,
+      "temps": 1,
       "ir": {
-        "numStatements": 16
+        "numStatements": 15
       }
     },
     "InitFromHuldef": {
@@ -3213,10 +3124,10 @@
       }
     },
     "InitProduction": {
-      "temps": 9,
+      "temps": 7,
       "loWords": 7,
       "ir": {
-        "numStatements": 95
+        "numStatements": 93
       }
     },
     "InitRandomPlanetList": {
@@ -3240,11 +3151,11 @@
       }
     },
     "InitializeBoard": {
-      "temps": 6,
+      "temps": 4,
       "loWords": 2,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 79
+        "numStatements": 77
       }
     },
     "InitializeMenu": {
@@ -3404,10 +3315,10 @@
       }
     },
     "LInnateRaceHabitability": {
-      "temps": 3,
+      "temps": 2,
       "loWords": 3,
       "ir": {
-        "numStatements": 89
+        "numStatements": 88
       }
     },
     "LSaltFromSz": {
@@ -3448,14 +3359,7 @@
       "loWords": 5,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 31,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 2,
-          "assign.dst:part": 1
-        }
+        "numStatements": 31
       }
     },
     "LogChangeRelations": {
@@ -3466,12 +3370,7 @@
     "LogChangeShDef": {
       "loWords": 8,
       "ir": {
-        "numStatements": 12,
-        "untranslated": 4,
-        "untranslatedAssign": 4,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 4
-        }
+        "numStatements": 12
       }
     },
     "LogChangeThing": {
@@ -3545,9 +3444,9 @@
       }
     },
     "LpflNew": {
-      "temps": 3,
+      "temps": 2,
       "ir": {
-        "numStatements": 37
+        "numStatements": 36
       }
     },
     "LpflNewSplit": {
@@ -3615,13 +3514,8 @@
       }
     },
     "LpplrComp": {
-      "loWords": 2,
       "ir": {
-        "numStatements": 1,
-        "untranslated": 1,
-        "untranslatedFailures": {
-          "return.value.lhs:words": 1
-        }
+        "numStatements": 1
       }
     },
     "LpscannerFromId": {
@@ -3630,10 +3524,8 @@
       }
     },
     "LpshdefFromTok": {
-      "temps": 1,
-      "loWords": 2,
       "ir": {
-        "numStatements": 4
+        "numStatements": 2
       }
     },
     "LpshdefSBT": {
@@ -3750,14 +3642,7 @@
     "MineClick": {
       "temps": 8,
       "ir": {
-        "numStatements": 148,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1,
-          "assign.dst:part": 1
-        }
+        "numStatements": 149
       }
     },
     "MineMinerals": {
@@ -3775,11 +3660,11 @@
       }
     },
     "MoveFleets": {
-      "temps": 18,
+      "temps": 16,
       "loWords": 30,
       "branchLoWords": 3,
       "ir": {
-        "numStatements": 210
+        "numStatements": 207
       }
     },
     "MoveThings": {
@@ -3860,16 +3745,14 @@
     },
     "NthValidEnemyShdef": {
       "temps": 2,
-      "loWords": 2,
       "ir": {
-        "numStatements": 17
+        "numStatements": 15
       }
     },
     "NthValidShdef": {
       "temps": 2,
-      "loWords": 1,
       "ir": {
-        "numStatements": 12
+        "numStatements": 11
       }
     },
     "NybbleFromCh": {
@@ -3899,10 +3782,10 @@
       }
     },
     "PackageUpMsg": {
-      "temps": 5,
+      "temps": 4,
       "loWords": 3,
       "ir": {
-        "numStatements": 36
+        "numStatements": 30
       }
     },
     "PaletteSize": {
@@ -3954,7 +3837,7 @@
       "temps": 2,
       "loWords": 3,
       "ir": {
-        "numStatements": 32
+        "numStatements": 31
       }
     },
     "PctPlanetOptValue": {
@@ -3984,10 +3867,10 @@
       }
     },
     "PlanetClick": {
-      "temps": 7,
+      "temps": 6,
       "loWords": 2,
       "ir": {
-        "numStatements": 76
+        "numStatements": 75
       }
     },
     "PlanetWndProc": {
@@ -4061,19 +3944,12 @@
       }
     },
     "ProdCommandHandler": {
-      "temps": 31,
-      "hiWords": 9,
-      "loWords": 26,
+      "temps": 42,
+      "hiWords": 12,
+      "loWords": 20,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 183,
-        "untranslated": 5,
-        "untranslatedAssign": 5,
-        "untranslatedFailures": {
-          "assign.dst:invalid-destination": 4,
-          "assign.dst:memory": 4,
-          "assign.src.value.lhs.lhs:memory": 1
-        }
+        "numStatements": 190
       }
     },
     "Produce": {
@@ -4088,14 +3964,7 @@
       "loWords": 12,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 96,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedPart": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1,
-          "assign.dst:part": 1
-        }
+        "numStatements": 97
       }
     },
     "ProgressGaugeDlg": {
@@ -4193,7 +4062,7 @@
     },
     "PszGetDistance": {
       "ir": {
-        "numStatements": 8
+        "numStatements": 7
       }
     },
     "PszGetETA": {
@@ -4407,22 +4276,16 @@
     },
     "ReadBigBlock": {
       "temps": 1,
-      "hiWords": 2,
       "loWords": 1,
       "ir": {
-        "numStatements": 9,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedFailures": {
-          "assign.dst:pointer-fragment": 1
-        }
+        "numStatements": 8
       }
     },
     "ReadIniSettings": {
-      "temps": 33,
+      "temps": 32,
       "loWords": 3,
       "ir": {
-        "numStatements": 330
+        "numStatements": 329
       }
     },
     "ReadIniTileSettings": {
@@ -4483,9 +4346,9 @@
       }
     },
     "RemoteTerraforming": {
-      "temps": 10,
+      "temps": 8,
       "ir": {
-        "numStatements": 37
+        "numStatements": 35
       }
     },
     "RemoveIshdefFromAllQueues": {
@@ -4617,9 +4480,9 @@
       }
     },
     "ScoreGuessBattleDamage": {
-      "temps": 10,
+      "temps": 9,
       "ir": {
-        "numStatements": 65
+        "numStatements": 64
       }
     },
     "ScoreXDlg": {
@@ -4681,9 +4544,9 @@
       }
     },
     "SetFilteringGroups": {
-      "temps": 49,
+      "temps": 33,
       "ir": {
-        "numStatements": 108
+        "numStatements": 92
       }
     },
     "SetFleetDropDownSel": {
@@ -4761,9 +4624,9 @@
       }
     },
     "SetVCCheck": {
-      "temps": 2,
+      "temps": 1,
       "ir": {
-        "numStatements": 5
+        "numStatements": 4
       }
     },
     "SetVCRBoard": {
@@ -4793,10 +4656,10 @@
       }
     },
     "SetVisPFInit": {
-      "temps": 4,
+      "temps": 3,
       "branchLoWords": 4,
       "ir": {
-        "numStatements": 71
+        "numStatements": 70
       }
     },
     "SetVisPFPlanets": {
@@ -4870,11 +4733,11 @@
       }
     },
     "SlotDlg": {
-      "temps": 26,
+      "temps": 25,
       "loWords": 22,
       "branchLoWords": 9,
       "ir": {
-        "numStatements": 339
+        "numStatements": 338
       }
     },
     "SortReportCache": {
@@ -4968,7 +4831,7 @@
     },
     "TechStatus": {
       "ir": {
-        "numStatements": 15
+        "numStatements": 12
       }
     },
     "TerminateToolbarFocus": {
@@ -4978,11 +4841,11 @@
       }
     },
     "ThingDecay": {
-      "temps": 5,
+      "temps": 4,
       "loWords": 3,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 48
+        "numStatements": 47
       }
     },
     "TitleWndProc": {
@@ -5225,16 +5088,11 @@
       }
     },
     "WritePlanet": {
-      "temps": 5,
+      "temps": 3,
       "hiWords": 1,
       "loWords": 7,
       "ir": {
-        "numStatements": 76,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 2
-        }
+        "numStatements": 74
       }
     },
     "WritePlayerMessages": {
@@ -5257,12 +5115,7 @@
       "hiWords": 1,
       "loWords": 1,
       "ir": {
-        "numStatements": 25,
-        "untranslated": 1,
-        "untranslatedAssign": 1,
-        "untranslatedFailures": {
-          "assign.dst:aggregate-slice": 1
-        }
+        "numStatements": 25
       }
     },
     "WriteRtString": {
@@ -5329,7 +5182,7 @@
       }
     },
     "iAddAttackFleet": {
-      "temps": 8,
+      "temps": 10,
       "ir": {
         "numStatements": 28
       }

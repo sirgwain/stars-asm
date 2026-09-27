@@ -286,6 +286,8 @@ func valueKeyDepth(v Value, depth int) string {
 		return "framebase"
 	case *FloatConst:
 		return fmt.Sprintf("float:%g", x.Val)
+	case *ImportConst:
+		return "import:" + keyString(x.Fixup.ModuleName+"."+x.Fixup.FuncName)
 	case *CallResult:
 		target := ""
 		if x.Target != nil {
