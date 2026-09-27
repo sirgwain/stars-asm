@@ -35,6 +35,16 @@ type Meta struct {
 	InstLen int
 }
 
+// AdjacentWideArithmetic reports whether two effects came from an adjacent
+// low-word operation and its carry-consuming high-word operation, such as
+// SUB ax, [bx] followed by SBB dx, [bx+2].
+func AdjacentWideArithmetic(low, high Meta, lowOp, highOp asm.Op) bool {
+	return low.InstLen > 0 &&
+		low.InstOff+uint32(low.InstLen) == high.InstOff &&
+		low.InstOp == lowOp &&
+		high.InstOp == highOp
+}
+
 // StoreEffect records a memory write to a normalized machine address.
 // Later lowering decides whether this is a local/global/field/index/bitfield.
 type StoreEffect struct {

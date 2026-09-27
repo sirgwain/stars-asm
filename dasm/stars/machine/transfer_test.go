@@ -333,3 +333,26 @@ func movsInst(op asm.Op) asm.DecodedInst {
 	src := asm.Operand{Kind: asm.OKMem, Mem: asm.MemRef{Base: asm.RegSI, SegOverride: asm.RegDS, MemSize: width}}
 	return asm.DecodedInst{Op: op, Mnemonic: mnemonic, Dst: dst, Src: src}
 }
+
+// TestNarrowedWideResultCastsCarryPairs verifies a one-word return keeps the
+// 32-bit SUB/SBB it truncates, and leaves an unpaired low word alone.
+func TestNarrowedWideResultCastsCarryPairs(t *testing.T) {
+	word := func(disp int) Value {
+		return LoadVal(MemoryAddress{Base: RegVal(asm.RegBX), Disp: disp, Width: 2})
+	}
+	ax := &Binary{Op: ValueOpSub, LHS: word(0), RHS: word(4), Producer: Meta{InstOff: 0x10, InstOp: asm.OpSUB, InstLen: 2}}
+	dx := &Binary{Op: ValueOpSub, LHS: word(2), RHS: word(6), Producer: Meta{InstOff: 0x12, InstOp: asm.OpSBB, InstLen: 3}}
+
+	cast, ok := narrowedWideResult(dx, ax, typeinfo.I16).(*Cast)
+	if !ok || cast.To != typeinfo.I16 {
+		t.Fatalf("narrowedWideResult() = %v, want a cast to int16_t", cast)
+	}
+	if words, ok := cast.Value.(*StackWords); !ok || len(words.Words) != 2 || words.Words[0] != Value(dx) || words.Words[1] != Value(ax) {
+		t.Fatalf("cast value = %v, want dx:ax", cast.Value)
+	}
+
+	unrelated := &Binary{Op: ValueOpSub, LHS: word(2), RHS: word(6), Producer: Meta{InstOff: 0x20, InstOp: asm.OpSBB, InstLen: 3}}
+	if got := narrowedWideResult(unrelated, ax, typeinfo.I16); got != Value(ax) {
+		t.Fatalf("narrowedWideResult() with non-adjacent SBB = %v, want ax", got)
+	}
+}

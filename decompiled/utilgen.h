@@ -23,7 +23,7 @@ void    SetFileSeeds(int32_t l1, int32_t l2);
 void    SetFileXorStream(int32_t lid, int16_t lSalt, int16_t turn, int16_t iPlayer, int16_t fCrippled);
 int32_t LGetNextFileXor();
 void    XorFileBuf(char *rgb, int16_t cb);
-int16_t ICompLong(void *arg1, void *arg2);
+int16_t ICompLong(int32_t *pl1, int32_t *pl2);
 char   *PszGetCompressedPlanet(int16_t id);
 void    OutputFileString(char *szFile, char *sz);
 void    StarsCopyFile(char *szSrc, char *szDst);

@@ -359,31 +359,18 @@ func (o *overrideDB) resolveNamedType(name, cType string) (Type, error) {
 	cType = strings.TrimSpace(stripModifers(cType))
 	// check for pointers
 	if strings.Contains(cType, "*") {
-		// pointer type
-		ptrClass := PtrNear
-		if strings.Contains(strings.ToLower(cType), "far *") || strings.Contains(strings.ToLower(cType), "far*") || strings.Contains(strings.ToLower(cType), "huge*") || strings.Contains(strings.ToLower(cType), "huge *") {
-			ptrClass = PtrFar
-		}
+		base, classes := splitPointerSuffix(cType)
 		// A pointer alias such as LPCSTR names the pointer, not its pointee.
-		typ := o.cTypeToType("", strings.TrimSpace(
-			strings.ReplaceAll(
-				strings.ReplaceAll(
-					strings.ReplaceAll(
-						strings.ReplaceAll(
-							strings.ReplaceAll(cType, "far *", ""),
-							"_huge*", ""),
-						"FAR *", ""),
-					"FAR*", ""),
-				"*", "")))
+		typ := o.cTypeToType("", base)
 		if typ == nil {
 			return nil, fmt.Errorf("failed to parse pointer %s %s", cType, name)
 		}
-		ptr := Pointer{
-			Name:  name,
-			Elem:  typ,
-			Class: ptrClass,
+		// classes run outermost first, so wrap from the innermost level out
+		for i := len(classes) - 1; i >= 0; i-- {
+			typ = &Pointer{Elem: typ, Class: classes[i]}
 		}
-		return &ptr, nil
+		typ.(*Pointer).Name = name
+		return typ, nil
 	}
 
 	// check for arrays
@@ -445,6 +432,27 @@ func (o *overrideDB) cTypeToType(name string, cType string) Type {
 		return s
 	}
 	return nil
+}
+
+// splitPointerSuffix peels pointer levels off the right of a C type, such as
+// "FLEET far **", returning the pointee type and each level's class from the
+// outermost in. A far, FAR or _huge qualifier before a * makes that level far.
+func splitPointerSuffix(cType string) (string, []PtrClass) {
+	var classes []PtrClass
+	cur := strings.TrimSpace(cType)
+	for strings.HasSuffix(cur, "*") {
+		cur = strings.TrimSpace(strings.TrimSuffix(cur, "*"))
+		class := PtrNear
+		for _, qualifier := range []string{" far", " FAR", " _huge", " huge"} {
+			if strings.HasSuffix(cur, qualifier) {
+				cur = strings.TrimSpace(strings.TrimSuffix(cur, qualifier))
+				class = PtrFar
+				break
+			}
+		}
+		classes = append(classes, class)
+	}
+	return cur, classes
 }
 
 // stripModifers removes const/volatile modifers. our type system doesn't care about it

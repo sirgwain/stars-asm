@@ -293,6 +293,35 @@ func TestNamedArrayDeclarations(t *testing.T) {
 	}
 }
 
+// TestPointerDeclarations parses one pointer level per * with its own class,
+// and names pointer typedefs on the pointer rather than its pointee.
+func TestPointerDeclarations(t *testing.T) {
+	o := newOverrideDB(&SymbolDB{}, newTypeResolver(nb09.TypeStream{}))
+	ppl, err := o.resolveNamedType("", "int32_t far **")
+	if err != nil {
+		t.Fatal(err)
+	}
+	outer, ok := ppl.(*Pointer)
+	if !ok || outer.Class != PtrNear || outer.Bytes() != 2 {
+		t.Fatalf("outer = %#v, want a near pointer", ppl)
+	}
+	inner, ok := outer.Elem.(*Pointer)
+	if !ok || inner.Class != PtrFar || inner.Elem == nil || inner.Elem.String() != "int32_t" {
+		t.Fatalf("inner = %#v, want a far pointer to int32_t", outer.Elem)
+	}
+
+	lpcstr, err := o.resolveNamedType("LPCSTR", "const char far *")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := TypeDecl(lpcstr, "sz"); got != "LPCSTR sz" {
+		t.Errorf("declaration = %q, want %q", got, "LPCSTR sz")
+	}
+	if got := lpcstr.(*Pointer).Elem.String(); got != "char" {
+		t.Errorf("LPCSTR pointee = %q, want char", got)
+	}
+}
+
 // TestFunctionOverrideRenamesDefinedBody retains body metadata and original parameter locations.
 func TestFunctionOverrideRenamesDefinedBody(t *testing.T) {
 	sdb := &SymbolDB{

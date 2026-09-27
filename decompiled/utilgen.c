@@ -579,11 +579,11 @@ L_1d6e:
     return;
 }
 
-int16_t ICompLong(void *arg1, void *arg2) {
+int16_t ICompLong(int32_t *pl1, int32_t *pl2) {
 L_1d74:
 
 L_1d90:
-    return (RawLoad16(arg1) - RawLoad16(arg2));
+    return (int16_t)((*(pl1) - *(pl2)));
 }
 
 char *PszGetCompressedPlanet(int16_t id) {
@@ -1376,7 +1376,7 @@ L_284b:
         goto L_2858;
 
 L_2858:
-    if (((int16_t)(*(ppEnd)[(-1)]) != 32))
+    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
         goto L_2872;
     else
         goto L_2869;
@@ -1392,7 +1392,7 @@ L_2872:
         goto L_287f;
 
 L_287f:
-    if (((int16_t)(*(ppEnd)[(-1)]) == 32))
+    if (((int16_t)((*(ppEnd))[(-1)]) == 32))
         goto L_2899;
     else
         goto L_2890;
@@ -1408,7 +1408,7 @@ L_2899:
         goto L_28a6;
 
 L_28a6:
-    if (((int16_t)(*(ppEnd)[(-1)]) != 32))
+    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
         goto L_28c0;
     else
         goto L_28b7;
@@ -1431,7 +1431,7 @@ L_28cf:
         goto L_28dc;
 
 L_28dc:
-    if (((int16_t)(*(ppEnd)[(-1)]) != 32))
+    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
         goto L_28f6;
     else
         goto L_28ed;

@@ -256,10 +256,10 @@ func (p *collapseWideStoresProcessor) collapseWideNegSource(low machine.StoreEff
 	//     NEG low
 	//     ADC high, 0
 	//     NEG high
-	if !adjacentWideArithmeticInstructions(lowNeg.Producer, highAdjust.Producer, asm.OpNEG, asm.OpADC) {
+	if !machine.AdjacentWideArithmetic(lowNeg.Producer, highAdjust.Producer, asm.OpNEG, asm.OpADC) {
 		return nil, false
 	}
-	if !adjacentWideArithmeticInstructions(highAdjust.Producer, highNeg.Producer, asm.OpADC, asm.OpNEG) {
+	if !machine.AdjacentWideArithmetic(highAdjust.Producer, highNeg.Producer, asm.OpADC, asm.OpNEG) {
 		return nil, false
 	}
 
@@ -283,13 +283,13 @@ func (p *collapseWideStoresProcessor) collapseWideArithmeticSource(low machine.S
 
 	switch lowBinary.Op {
 	case machine.ValueOpAdd:
-		if !adjacentWideArithmeticInstructions(low.MetaInfo, high.MetaInfo, asm.OpADD, asm.OpADC) &&
-			!adjacentWideArithmeticInstructions(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) {
+		if !machine.AdjacentWideArithmetic(low.MetaInfo, high.MetaInfo, asm.OpADD, asm.OpADC) &&
+			!machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) {
 			return nil, false
 		}
 	case machine.ValueOpSub:
-		if !adjacentWideArithmeticInstructions(low.MetaInfo, high.MetaInfo, asm.OpSUB, asm.OpSBB) &&
-			!adjacentWideArithmeticInstructions(lowBinary.Producer, highBinary.Producer, asm.OpSUB, asm.OpSBB) {
+		if !machine.AdjacentWideArithmetic(low.MetaInfo, high.MetaInfo, asm.OpSUB, asm.OpSBB) &&
+			!machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpSUB, asm.OpSBB) {
 			return nil, false
 		}
 	default:
@@ -448,13 +448,4 @@ func (p *collapseWideStoresProcessor) collapseWideAggregateCopy(low machine.Stor
 	low.Src = &src
 	low.Width = 4
 	return low, true
-}
-
-// adjacentWideArithmeticInstructions reports whether two effects came from an
-// adjacent low-word operation and its carry-consuming high-word operation.
-func adjacentWideArithmeticInstructions(low, high machine.Meta, lowOp, highOp asm.Op) bool {
-	return low.InstLen > 0 &&
-		low.InstOff+uint32(low.InstLen) == high.InstOff &&
-		low.InstOp == lowOp &&
-		high.InstOp == highOp
 }

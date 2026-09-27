@@ -23,7 +23,7 @@ int16_t FDestIsWP0(FLEET *lpfl);
 char   *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears);
 char   *PszGetTaskName(FLEET *lpfl, int16_t *picr);
 void    SortReportCache(int16_t irpt, int16_t icol);
-int16_t ICompReport(void *arg1, void *arg2);
+int16_t ICompReport(uint16_t *pid1, uint16_t *pid2);
 void    ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn);
 void    InvalidateReport(int16_t irpt, int16_t fReload);
 void    ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow);

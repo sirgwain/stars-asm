@@ -1706,15 +1706,13 @@ L_1efa:
     return;
 }
 
-int16_t ICompFleetPoint(void *arg1, void *arg2) {
+int16_t ICompFleetPoint(FLEET **ppfl1, FLEET **ppfl2) {
     int32_t l2;
     int32_t l1;
 
 L_1f0c:
-    /* untranslated: LOWORD(l1) = farseg(*arg1):[faroff(*arg1)+0x8] */
-    /* untranslated: HIWORD(l1) = farseg(*arg1):[faroff(*arg1)+0xa] */
-    /* untranslated: LOWORD(l2) = farseg(*arg2):[faroff(*arg2)+0x8] */
-    /* untranslated: HIWORD(l2) = farseg(*arg2):[faroff(*arg2)+0xa] */
+    l1 = (((uint32_t)((*(ppfl1))->pt.x) & 0xffff) | (((uint32_t)((*(ppfl1))->pt.y) & 0xffff) << 0x10));
+    l2 = (((uint32_t)((*(ppfl2))->pt.x) & 0xffff) | (((uint32_t)((*(ppfl2))->pt.y) & 0xffff) << 0x10));
     l1 = (l1 - l2);
     if ((l1 < 0))
         goto L_1f64;
@@ -1740,14 +1738,13 @@ L_1f9b:
     return LOWORD(l1);
 }
 
-int16_t ICompFleetPoint2(void *arg1, void *arg2) {
+int16_t ICompFleetPoint2(int32_t *pl, FLEET **ppfl) {
     int32_t l2;
     int32_t l1;
 
 L_1fa2:
-    l1 = RawLoad32(arg1);
-    /* untranslated: LOWORD(l2) = farseg(*arg2):[faroff(*arg2)+0x8] */
-    /* untranslated: HIWORD(l2) = farseg(*arg2):[faroff(*arg2)+0xa] */
+    l1 = *(pl);
+    l2 = (((uint32_t)((*(ppfl))->pt.x) & 0xffff) | (((uint32_t)((*(ppfl))->pt.y) & 0xffff) << 0x10));
     l1 = (l1 - l2);
     if ((l1 < 0))
         goto L_1ff5;

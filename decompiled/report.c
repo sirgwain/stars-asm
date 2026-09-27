@@ -4969,7 +4969,7 @@ L_5bb1:
     return;
 }
 
-int16_t ICompReport(void *arg1, void *arg2) {
+int16_t ICompReport(uint16_t *pid1, uint16_t *pid2) {
     char     szT[80];
     int32_t  l2;
     int16_t  fAscending;
@@ -5020,8 +5020,8 @@ TryTier2:
     goto L_7448;
 
 L_5bfc:
-    lppl1 = (lpPlanets + RawLoad16(arg1));
-    lppl2 = (lpPlanets + RawLoad16(arg2));
+    lppl1 = (lpPlanets + *(pid1));
+    lppl2 = (lpPlanets + *(pid2));
     goto L_63a3;
 
 L_5c35:
@@ -5426,8 +5426,8 @@ L_63ab:
     }
 
 L_63d5:
-    lpfl1 = rglpfl[RawLoad16(arg1)];
-    lpfl2 = rglpfl[RawLoad16(arg2)];
+    lpfl1 = rglpfl[*(pid1)];
+    lpfl2 = rglpfl[*(pid2)];
     goto L_69bf;
 
 L_6422:
@@ -5715,8 +5715,8 @@ L_69c7:
     }
 
 L_69eb:
-    ibtl1 = RawLoad16(arg1);
-    ibtl2 = RawLoad16(arg2);
+    ibtl1 = *(pid1);
+    ibtl2 = *(pid2);
     lpbd1 = BtlDataGet(ibtl1);
     lpbd2 = BtlDataGet(ibtl2);
     if ((lpbd1 != 0x0))
@@ -5945,8 +5945,8 @@ L_6d35:
     }
 
 L_6d5f:
-    lpfl1 = rglpfl[RawLoad16(arg1)];
-    lpfl2 = rglpfl[RawLoad16(arg2)];
+    lpfl1 = rglpfl[*(pid1)];
+    lpfl2 = rglpfl[*(pid2)];
     goto L_741c;
 
 L_6dac:

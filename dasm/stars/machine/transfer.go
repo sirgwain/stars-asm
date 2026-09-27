@@ -850,6 +850,27 @@ func (ctx *extractor) handlePOP(st *state, inst asm.DecodedInst, meta Meta) []Ef
 	return nil
 }
 
+// narrowedWideResult returns the one-word result in ax. When dx holds the
+// carry half of 32-bit arithmetic whose low half is ax, as in
+//
+//	SUB ax, [bx]
+//	SBB dx, [bx+2]
+//
+// the source computed a long and truncated it to the return type, so the
+// result is that cast of the dx:ax pair rather than the 16-bit low half.
+func narrowedWideResult(dx, ax Value, ret typeinfo.Type) Value {
+	low, lowOK := ax.(*Binary)
+	high, highOK := dx.(*Binary)
+	if !lowOK || !highOK || low.Op != high.Op {
+		return ax
+	}
+	if !AdjacentWideArithmetic(low.Producer, high.Producer, asm.OpSUB, asm.OpSBB) &&
+		!AdjacentWideArithmetic(low.Producer, high.Producer, asm.OpADD, asm.OpADC) {
+		return ax
+	}
+	return &Cast{Value: stackWordsValue([]Value{dx, ax}), To: ret}
+}
+
 func (ctx *extractor) handleRET(st *state, meta Meta) []Effect {
 	if ctx.fs.Ret.Kind() == typeinfo.KVoid {
 		return []Effect{ReturnEffect{MetaInfo: meta}}
@@ -865,7 +886,7 @@ func (ctx *extractor) handleRET(st *state, meta Meta) []Effect {
 	} else {
 		switch ctx.fs.ReturnWords() {
 		case 1:
-			retVal = st.readReg(asm.RegAX)
+			retVal = narrowedWideResult(st.readReg(asm.RegDX), st.readReg(asm.RegAX), ctx.fs.Ret)
 		case 2:
 			retVal = stackWordsValue([]Value{st.readReg(asm.RegDX), st.readReg(asm.RegAX)})
 		default:

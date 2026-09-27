@@ -28,8 +28,8 @@ char    *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16
 int16_t  FCalcFleetBombDamage(FLEET *lpfl, int32_t *pdmgPeople, int32_t *pdmgPeopleMin, int32_t *pdmgPeopleSmart, int32_t *pdmgBldg, int32_t *ppctTerra,
                               int16_t *pfMulti);
 void     LinkFleets(int16_t fUnused);
-int16_t  ICompFleetPoint(void *arg1, void *arg2);
-int16_t  ICompFleetPoint2(void *arg1, void *arg2);
+int16_t  ICompFleetPoint(FLEET **ppfl1, FLEET **ppfl2);
+int16_t  ICompFleetPoint2(int32_t *pl, FLEET **ppfl);
 int16_t  FLookupSelShip(FLEET *pfl);
 FLEET   *LpflFromId(int16_t idFleet);
 int16_t  FLookupFleet(int16_t idFleet, FLEET *pfl);

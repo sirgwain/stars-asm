@@ -2,17 +2,12 @@
   "OutDir": "./decompiled",
   "analysis": {
     "temps": 1685,
-    "hiWords": 69,
-    "loWords": 1393,
+    "hiWords": 66,
+    "loWords": 1390,
     "branchHiWords": 26,
     "branchLoWords": 567,
     "ir": {
-      "numStatements": 34709,
-      "untranslated": 6,
-      "untranslatedAssign": 6,
-      "untranslatedFailures": {
-        "assign.src:memory": 6
-      }
+      "numStatements": 34706
     }
   },
   "functions": {
@@ -2880,27 +2875,15 @@
       }
     },
     "ICompFleetPoint": {
-      "hiWords": 2,
-      "loWords": 3,
+      "loWords": 1,
       "ir": {
-        "numStatements": 8,
-        "untranslated": 4,
-        "untranslatedAssign": 4,
-        "untranslatedFailures": {
-          "assign.src:memory": 4
-        }
+        "numStatements": 6
       }
     },
     "ICompFleetPoint2": {
-      "hiWords": 1,
-      "loWords": 2,
+      "loWords": 1,
       "ir": {
-        "numStatements": 7,
-        "untranslated": 2,
-        "untranslatedAssign": 2,
-        "untranslatedFailures": {
-          "assign.src:memory": 2
-        }
+        "numStatements": 6
       }
     },
     "ICompLong": {

@@ -2,6 +2,7 @@ package sem
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -50,11 +51,11 @@ func collapseCarryAwareWideArithmetic(words *Words) (Expr, bool) {
 
 	switch low.Op {
 	case OpAdd:
-		if !adjacentWideArithmeticInstructions(low.Producer, high.Producer, asm.OpADD, asm.OpADC) {
+		if !machine.AdjacentWideArithmetic(low.Producer, high.Producer, asm.OpADD, asm.OpADC) {
 			return nil, false
 		}
 	case OpSub:
-		if !adjacentWideArithmeticInstructions(low.Producer, high.Producer, asm.OpSUB, asm.OpSBB) {
+		if !machine.AdjacentWideArithmetic(low.Producer, high.Producer, asm.OpSUB, asm.OpSBB) {
 			return nil, false
 		}
 	default:

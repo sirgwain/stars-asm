@@ -207,11 +207,11 @@ func (c *wideMachineCollapser) pairBinary(low machine.Value, high machine.Value)
 	switch lowBinary.Op {
 	case machine.ValueOpAnd, machine.ValueOpOr, machine.ValueOpXor:
 	case machine.ValueOpAdd:
-		if !adjacentWideArithmeticInstructions(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) {
+		if !machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) {
 			return nil, false
 		}
 	case machine.ValueOpSub:
-		if !adjacentWideArithmeticInstructions(lowBinary.Producer, highBinary.Producer, asm.OpSUB, asm.OpSBB) {
+		if !machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpSUB, asm.OpSBB) {
 			return nil, false
 		}
 	default:

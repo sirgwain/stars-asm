@@ -1,6 +1,42 @@
 {
   "functions": [
     {
+      "name": "ICompFleetPoint",
+      "ret": "int16_t",
+      "params": [
+        { "name": "ppfl1", "ctype": "FLEET far **" },
+        { "name": "ppfl2", "ctype": "FLEET far **" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "ICompFleetPoint2",
+      "ret": "int16_t",
+      "params": [
+        { "name": "pl", "ctype": "int32_t *" },
+        { "name": "ppfl", "ctype": "FLEET far **" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "ICompLong",
+      "ret": "int16_t",
+      "params": [
+        { "name": "pl1", "ctype": "int32_t *" },
+        { "name": "pl2", "ctype": "int32_t *" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "ICompReport",
+      "ret": "int16_t",
+      "params": [
+        { "name": "pid1", "ctype": "uint16_t *" },
+        { "name": "pid2", "ctype": "uint16_t *" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
       "name": "WinMain",
       "native_decl": "int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)",
       "ret": "int16_t",

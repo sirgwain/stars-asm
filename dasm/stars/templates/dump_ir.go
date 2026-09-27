@@ -249,13 +249,13 @@ func formatIRExpr(expr ir.Expr) string {
 	case *ir.Cast:
 		return "(" + e.Type + ")(" + formatIRExpr(e.Value) + ")"
 	case *ir.Index:
-		return formatIRExpr(e.Base) + "[" + formatIRExpr(e.Index) + "]"
+		return formatIRPostfixBase(e.Base) + "[" + formatIRExpr(e.Index) + "]"
 	case *ir.Field:
 		op := "."
 		if e.Pointer {
 			op = "->"
 		}
-		return formatIRExpr(e.Base) + op + e.Name
+		return formatIRPostfixBase(e.Base) + op + e.Name
 	case *ir.Call:
 		args := make([]string, len(e.Args))
 		for i, a := range e.Args {
@@ -292,6 +292,21 @@ func formatIRExpr(expr ir.Expr) string {
 	default:
 		return fmt.Sprintf("/*expr %T*/0", expr)
 	}
+}
+
+// formatIRPostfixBase renders the operand of a postfix [] or ./-> operator.
+// Postfix operators bind tighter than unary * and casts, so a dereference or
+// cast base is parenthesized: (*ppfl)->pt, not *(ppfl)->pt.
+func formatIRPostfixBase(base ir.Expr) string {
+	switch b := base.(type) {
+	case *ir.Deref, *ir.Cast:
+		return "(" + formatIRExpr(base) + ")"
+	case *ir.PointerOffset:
+		if b.Type != nil {
+			return "(" + formatIRExpr(base) + ")"
+		}
+	}
+	return formatIRExpr(base)
 }
 
 // formatRawAddress renders the byte address of a raw storage access.

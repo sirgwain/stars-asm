@@ -7,8 +7,8 @@
   "summary": {
     "translationUnits": 39,
     "failedTranslationUnits": 34,
-    "errors": 1589,
-    "uniqueErrors": 1589
+    "errors": 1587,
+    "uniqueErrors": 1587
   },
   "files": {
     "decompiled/ai.c": {
@@ -24,7 +24,7 @@
       "errors": 22
     },
     "decompiled/aiutil.c": {
-      "errors": 13
+      "errors": 11
     },
     "decompiled/battle.c": {
       "errors": 41
@@ -1005,58 +1005,6 @@
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/aiutil.c"
-      ],
-      "kind": "error",
-      "message": "'plpthWorm' is a pointer to pointer; did you mean to dereference it before applying '-\u003e' to it?",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/aiutil.c",
-            "line": 5712,
-            "column": 26,
-            "byteColumn": 26,
-            "displayColumn": 26
-          },
-          "finish": {
-            "file": "decompiled/aiutil.c",
-            "line": 5712,
-            "column": 27,
-            "byteColumn": 27,
-            "displayColumn": 27
-          }
-        }
-      ],
-      "occurrences": 1
-    },
-    {
-      "translationUnits": [
-        "decompiled/aiutil.c"
-      ],
-      "kind": "error",
-      "message": "'plpthWorm' is a pointer to pointer; did you mean to dereference it before applying '-\u003e' to it?",
-      "locations": [
-        {
-          "caret": {
-            "file": "decompiled/aiutil.c",
-            "line": 5714,
-            "column": 26,
-            "byteColumn": 26,
-            "displayColumn": 26
-          },
-          "finish": {
-            "file": "decompiled/aiutil.c",
-            "line": 5714,
-            "column": 27,
-            "byteColumn": 27,
-            "displayColumn": 27
           }
         }
       ],
@@ -7170,7 +7118,7 @@
       "children": [
         {
           "kind": "note",
-          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(void *, void *)' {aka 'short int (*)(void *, void *)'}",
+          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(int32_t *, int32_t *)' {aka 'short int (*)(int *, int *)'}",
           "locations": [
             {
               "caret": {
@@ -7250,7 +7198,7 @@
       "children": [
         {
           "kind": "note",
-          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(void *, void *)' {aka 'short int (*)(void *, void *)'}",
+          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(int32_t *, int32_t *)' {aka 'short int (*)(int *, int *)'}",
           "locations": [
             {
               "caret": {
@@ -47633,7 +47581,7 @@
       "children": [
         {
           "kind": "note",
-          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(void *, void *)' {aka 'short int (*)(void *, void *)'}",
+          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(uint16_t *, uint16_t *)' {aka 'short int (*)(short unsigned int *, short unsigned int *)'}",
           "locations": [
             {
               "caret": {
@@ -70993,7 +70941,7 @@
       "children": [
         {
           "kind": "note",
-          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(void *, void *)' {aka 'short int (*)(void *, void *)'}",
+          "message": "expected 'int (*)(const void *, const void *)' but argument is of type 'int16_t (*)(int32_t *, FLEET **)' {aka 'short int (*)(int *, struct _fleet **)'}",
           "locations": [
             {
               "caret": {
@@ -71056,21 +71004,21 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 1915,
+            "line": 1912,
             "column": 37,
             "byteColumn": 37,
             "displayColumn": 37
           },
           "start": {
             "file": "decompiled/util.c",
-            "line": 1915,
+            "line": 1912,
             "column": 33,
             "byteColumn": 33,
             "displayColumn": 33
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 1915,
+            "line": 1912,
             "column": 45,
             "byteColumn": 45,
             "displayColumn": 45
@@ -71121,7 +71069,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 1915,
+            "line": 1912,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -71141,14 +71089,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 1985,
+            "line": 1982,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 1985,
+            "line": 1982,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -71199,7 +71147,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 1998,
+            "line": 1995,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
@@ -71219,21 +71167,21 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2009,
+            "line": 2006,
             "column": 35,
             "byteColumn": 35,
             "displayColumn": 35
           },
           "start": {
             "file": "decompiled/util.c",
-            "line": 2009,
+            "line": 2006,
             "column": 32,
             "byteColumn": 32,
             "displayColumn": 32
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2009,
+            "line": 2006,
             "column": 43,
             "byteColumn": 43,
             "displayColumn": 43
@@ -71284,7 +71232,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2009,
+            "line": 2006,
             "column": 18,
             "byteColumn": 18,
             "displayColumn": 18
@@ -71304,14 +71252,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2353,
+            "line": 2350,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2353,
+            "line": 2350,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -71331,21 +71279,21 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2580,
+            "line": 2577,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
           },
           "start": {
             "file": "decompiled/util.c",
-            "line": 2580,
+            "line": 2577,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2580,
+            "line": 2577,
             "column": 24,
             "byteColumn": 24,
             "displayColumn": 24
@@ -71396,14 +71344,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2629,
+            "line": 2626,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2629,
+            "line": 2626,
             "column": 12,
             "byteColumn": 12,
             "displayColumn": 12
@@ -71423,14 +71371,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2767,
+            "line": 2764,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2767,
+            "line": 2764,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -71450,7 +71398,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2784,
+            "line": 2781,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
@@ -71470,21 +71418,21 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2853,
+            "line": 2850,
             "column": 43,
             "byteColumn": 43,
             "displayColumn": 43
           },
           "start": {
             "file": "decompiled/util.c",
-            "line": 2853,
+            "line": 2850,
             "column": 36,
             "byteColumn": 36,
             "displayColumn": 36
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 2853,
+            "line": 2850,
             "column": 51,
             "byteColumn": 51,
             "displayColumn": 51
@@ -71535,7 +71483,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 2853,
+            "line": 2850,
             "column": 22,
             "byteColumn": 22,
             "displayColumn": 22
@@ -71555,14 +71503,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 3498,
+            "line": 3495,
             "column": 19,
             "byteColumn": 19,
             "displayColumn": 19
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 3498,
+            "line": 3495,
             "column": 22,
             "byteColumn": 22,
             "displayColumn": 22
@@ -71577,14 +71525,14 @@
             {
               "caret": {
                 "file": "decompiled/util.c",
-                "line": 3498,
+                "line": 3495,
                 "column": 19,
                 "byteColumn": 19,
                 "displayColumn": 19
               },
               "finish": {
                 "file": "decompiled/util.c",
-                "line": 3498,
+                "line": 3495,
                 "column": 22,
                 "byteColumn": 22,
                 "displayColumn": 22
@@ -71606,7 +71554,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 4042,
+            "line": 4039,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -71626,7 +71574,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 4044,
+            "line": 4041,
             "column": 15,
             "byteColumn": 15,
             "displayColumn": 15
@@ -71646,7 +71594,7 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 4063,
+            "line": 4060,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -71666,14 +71614,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 5387,
+            "line": 5384,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 5387,
+            "line": 5384,
             "column": 16,
             "byteColumn": 16,
             "displayColumn": 16
@@ -71692,14 +71640,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 5441,
+            "line": 5438,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 5441,
+            "line": 5438,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
@@ -71742,14 +71690,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 5596,
+            "line": 5593,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 5596,
+            "line": 5593,
             "column": 14,
             "byteColumn": 14,
             "displayColumn": 14
@@ -71793,14 +71741,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 7223,
+            "line": 7220,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 7223,
+            "line": 7220,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
@@ -71820,14 +71768,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 7235,
+            "line": 7232,
             "column": 10,
             "byteColumn": 10,
             "displayColumn": 10
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 7235,
+            "line": 7232,
             "column": 15,
             "byteColumn": 15,
             "displayColumn": 15
@@ -71847,14 +71795,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 7245,
+            "line": 7242,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 7245,
+            "line": 7242,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11
@@ -71874,14 +71822,14 @@
         {
           "caret": {
             "file": "decompiled/util.c",
-            "line": 7246,
+            "line": 7243,
             "column": 5,
             "byteColumn": 5,
             "displayColumn": 5
           },
           "finish": {
             "file": "decompiled/util.c",
-            "line": 7246,
+            "line": 7243,
             "column": 11,
             "byteColumn": 11,
             "displayColumn": 11

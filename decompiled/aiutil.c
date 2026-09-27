@@ -5709,9 +5709,9 @@ L_66b6:
         goto L_66f7;
 
 L_66ca:
-    ord.pt = *(plpthWorm)->pt;
+    ord.pt = (*(plpthWorm))->pt;
     ord.grobj = grobjThing;
-    ord.id = *(plpthWorm)->idFull;
+    ord.id = (*(plpthWorm))->idFull;
     goto ThwakSumthin;
 
 L_66f7:
