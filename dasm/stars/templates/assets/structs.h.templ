@@ -10,6 +10,9 @@
 typedef {{.Kind}} {{.TagName}} {{.TypedefName}};
 {{- end}}
 
+// Tile drawing callbacks use the native device-context handle type.
+typedef void (*TILEDRAWPROC)(HDC hdc, TILE *ptile, OBJ obj);
+
 // Win16 structs are byte-packed; keep the original field offsets.
 #pragma pack(push, 1)
 {{range $i, $s := .Structs}}

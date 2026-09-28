@@ -1121,7 +1121,7 @@ L_12ae:
         goto L_12bc;
 
 L_12bc:
-    if ((pchEnd < &(szName)))
+    if ((pchEnd < szName))
         goto L_12d4;
     else
         goto L_12c7;
@@ -1132,7 +1132,7 @@ L_12c7:
     goto L_12ae;
 
 L_12d4:
-    if ((pchEnd >= &(szName)))
+    if ((pchEnd >= szName))
         goto L_12ef;
     else
         goto L_12df;
@@ -3774,7 +3774,7 @@ L_44c2:
         goto L_44d0;
 
 L_44d0:
-    scan.ith = ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 18);
+    scan.ith = ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 18);
     scan.grobjFull = (scan.grobjFull | 0x8);
     if ((scan.grobj == grobjNone))
         goto SelectThing;
@@ -3795,7 +3795,7 @@ L_4517:
 
 SelectThing:
     scan.pt = lpth->pt;
-    scan.ith = ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 18);
+    scan.ith = ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 18);
     scan.idpl = -1;
     scan.ifl = -1;
     scan.grobjFull = grobjThing;
@@ -5435,7 +5435,7 @@ void DrawABunchOfStars(HDC hdc, RECT *prc) {
 
 L_5fe2:
     rc = *(prc);
-    PushRandom(720913);
+    PushRandom(17, 11);
     InflateRect(&(rc), -3, -3);
     dx = (rc.right - rc.left);
     dy = (rc.bottom - rc.top);
@@ -5590,7 +5590,7 @@ L_6422:
     *(plSerial) = lSerial;
 
 L_6430:
-    PushRandom(1114123);
+    PushRandom(11, 17);
     lCur = lSerial;
     Randomize2(lCur);
     lCur = (int32_t)((lCur >> 0xe));

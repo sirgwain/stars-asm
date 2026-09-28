@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1674,
-    "hiWords": 64,
-    "loWords": 1369,
+    "temps": 1697,
+    "hiWords": 59,
+    "loWords": 1338,
     "branchHiWords": 26,
-    "branchLoWords": 567,
+    "branchLoWords": 443,
     "ir": {
-      "numStatements": 34685
+      "numStatements": 34709
     }
   },
   "functions": {
@@ -80,11 +80,11 @@
       }
     },
     "BattlePlansDlg": {
-      "temps": 13,
+      "temps": 14,
       "loWords": 6,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 161
+        "numStatements": 162
       }
     },
     "BattleVCR": {
@@ -116,11 +116,11 @@
       }
     },
     "BrowserDlg": {
-      "temps": 22,
+      "temps": 23,
       "loWords": 13,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 116
+        "numStatements": 117
       }
     },
     "BrowserWndProc": {
@@ -753,11 +753,11 @@
       }
     },
     "DrawBuildSelComp": {
-      "temps": 6,
+      "temps": 7,
       "hiWords": 3,
       "loWords": 5,
       "ir": {
-        "numStatements": 94
+        "numStatements": 96
       }
     },
     "DrawBuildSelHull": {
@@ -1664,7 +1664,7 @@
     },
     "FDoCoolBattle": {
       "temps": 3,
-      "loWords": 4,
+      "loWords": 2,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 136
@@ -1787,7 +1787,6 @@
       }
     },
     "FFindNearestObject": {
-      "loWords": 4,
       "branchLoWords": 2,
       "ir": {
         "numStatements": 83
@@ -2201,13 +2200,13 @@
       }
     },
     "FRunLogRecord": {
-      "temps": 15,
+      "temps": 13,
       "hiWords": 1,
       "loWords": 13,
       "branchHiWords": 4,
       "branchLoWords": 12,
       "ir": {
-        "numStatements": 232
+        "numStatements": 230
       }
     },
     "FSalvageTargetFreighter2": {
@@ -2575,13 +2574,11 @@
       }
     },
     "FreeLp": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 7
       }
     },
     "FreeLpth": {
-      "loWords": 2,
       "branchLoWords": 3,
       "ir": {
         "numStatements": 3
@@ -2606,7 +2603,7 @@
     "GenNewGameFromFile": {
       "temps": 2,
       "loWords": 24,
-      "branchLoWords": 28,
+      "branchLoWords": 26,
       "ir": {
         "numStatements": 163
       }
@@ -3124,8 +3121,7 @@
     },
     "InitializeBoard": {
       "temps": 4,
-      "loWords": 2,
-      "branchLoWords": 4,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 77
       }
@@ -3389,8 +3385,7 @@
       }
     },
     "LpAlloc": {
-      "loWords": 2,
-      "branchLoWords": 6,
+      "branchLoWords": 4,
       "ir": {
         "numStatements": 22
       }
@@ -3583,16 +3578,15 @@
       }
     },
     "MergeFleetsDlg": {
-      "temps": 5,
-      "branchLoWords": 1,
+      "temps": 6,
       "ir": {
-        "numStatements": 37
+        "numStatements": 38
       }
     },
     "MessageWndProc": {
       "temps": 15,
       "loWords": 8,
-      "branchLoWords": 11,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 216
       }
@@ -3619,7 +3613,7 @@
     "MineWndProc": {
       "temps": 1,
       "loWords": 3,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 43
       }
@@ -3661,25 +3655,26 @@
       }
     },
     "NewGameDlg": {
-      "branchLoWords": 3,
+      "temps": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 104
+        "numStatements": 106
       }
     },
     "NewGameDlg2": {
-      "temps": 10,
+      "temps": 11,
       "loWords": 2,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 156
+        "numStatements": 157
       }
     },
     "NewGameDlg3": {
-      "temps": 3,
+      "temps": 4,
       "loWords": 3,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 41
+        "numStatements": 42
       }
     },
     "NewGameWizard": {
@@ -3748,7 +3743,6 @@
     },
     "PackageUpMsg": {
       "temps": 4,
-      "loWords": 3,
       "ir": {
         "numStatements": 30
       }
@@ -3841,7 +3835,7 @@
     "PlanetWndProc": {
       "temps": 4,
       "loWords": 2,
-      "branchLoWords": 23,
+      "branchLoWords": 4,
       "ir": {
         "numStatements": 103
       }
@@ -3874,9 +3868,9 @@
     "PopupMineralScanChoices": {
       "temps": 3,
       "hiWords": 1,
-      "loWords": 4,
+      "loWords": 2,
       "branchHiWords": 2,
-      "branchLoWords": 7,
+      "branchLoWords": 5,
       "ir": {
         "numStatements": 58
       }
@@ -3894,8 +3888,7 @@
     },
     "PrintMapDlg": {
       "temps": 1,
-      "loWords": 2,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 33
       }
@@ -3904,7 +3897,6 @@
       "temps": 42,
       "hiWords": 12,
       "loWords": 20,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 190
       }
@@ -3917,11 +3909,11 @@
       }
     },
     "ProductionDlg": {
-      "temps": 1,
+      "temps": 2,
       "loWords": 12,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 97
+        "numStatements": 98
       }
     },
     "ProgressGaugeDlg": {
@@ -4146,48 +4138,51 @@
       }
     },
     "RaceWizardDlg1": {
-      "temps": 3,
+      "temps": 4,
       "loWords": 3,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 150
+        "numStatements": 151
       }
     },
     "RaceWizardDlg2": {
-      "temps": 2,
+      "temps": 3,
       "loWords": 15,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 80
+        "numStatements": 81
       }
     },
     "RaceWizardDlg3": {
+      "temps": 1,
       "loWords": 3,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 32
+        "numStatements": 33
       }
     },
     "RaceWizardDlg4": {
+      "temps": 1,
       "loWords": 1,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 71
+        "numStatements": 72
       }
     },
     "RaceWizardDlg5": {
+      "temps": 1,
       "loWords": 1,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 55
+        "numStatements": 56
       }
     },
     "RaceWizardDlg6": {
-      "temps": 2,
+      "temps": 4,
       "loWords": 6,
-      "branchLoWords": 4,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 57
+        "numStatements": 59
       }
     },
     "Random": {
@@ -4295,11 +4290,10 @@
       }
     },
     "RelationsDlg": {
-      "temps": 1,
+      "temps": 3,
       "loWords": 3,
-      "branchLoWords": 1,
       "ir": {
-        "numStatements": 48
+        "numStatements": 50
       }
     },
     "RemoteTerraforming": {
@@ -4316,8 +4310,7 @@
     },
     "RenameDlg": {
       "temps": 1,
-      "loWords": 4,
-      "branchLoWords": 2,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 27
       }
@@ -4337,17 +4330,17 @@
     },
     "ReportDlg": {
       "temps": 3,
-      "hiWords": 5,
-      "loWords": 6,
+      "loWords": 4,
       "ir": {
         "numStatements": 122
       }
     },
     "ResearchDlg": {
+      "temps": 1,
       "loWords": 14,
-      "branchLoWords": 6,
+      "branchLoWords": 5,
       "ir": {
-        "numStatements": 101
+        "numStatements": 102
       }
     },
     "ResetHb": {
@@ -4416,7 +4409,7 @@
     "ScannerWndProc": {
       "temps": 6,
       "hiWords": 1,
-      "loWords": 7,
+      "loWords": 5,
       "branchHiWords": 2,
       "branchLoWords": 5,
       "ir": {
@@ -4647,7 +4640,7 @@
     "ShipCommandProc": {
       "temps": 4,
       "loWords": 10,
-      "branchLoWords": 49,
+      "branchLoWords": 8,
       "ir": {
         "numStatements": 160
       }
@@ -4677,18 +4670,18 @@
       }
     },
     "SimpleNewGameDlg": {
+      "temps": 2,
       "loWords": 3,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
-        "numStatements": 96
+        "numStatements": 98
       }
     },
     "SlotDlg": {
-      "temps": 25,
-      "loWords": 22,
-      "branchLoWords": 9,
+      "temps": 27,
+      "loWords": 18,
       "ir": {
-        "numStatements": 338
+        "numStatements": 340
       }
     },
     "SortReportCache": {
@@ -4775,7 +4768,6 @@
     "TbWndProc": {
       "temps": 2,
       "loWords": 6,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 87
       }
@@ -5113,18 +5105,16 @@
       }
     },
     "ZipOrderDlg": {
-      "temps": 1,
+      "temps": 2,
       "loWords": 1,
-      "branchLoWords": 2,
       "ir": {
-        "numStatements": 101
+        "numStatements": 102
       }
     },
     "ZipProdDlg": {
-      "temps": 4,
-      "branchLoWords": 2,
+      "temps": 5,
       "ir": {
-        "numStatements": 108
+        "numStatements": 109
       }
     },
     "_Draw3dFrame": {

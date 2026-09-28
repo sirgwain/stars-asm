@@ -13,7 +13,8 @@ import (
 // TestConvertSignExtendUsesSignedType verifies CWD-style widening remains
 // signed when it crosses from machine values into semantic expressions.
 func TestConvertSignExtendUsesSignedType(t *testing.T) {
-	converter := machineConverter{}
+	fx := testfixture.Stars(t)
+	converter := machineConverter{ctx: mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "NthValidShdef")}
 	expr := converter.convertValue(machine.SignExtendVal(machine.ConstVal(1), 16, 32))
 	extended, ok := expr.(*SignExtend)
 	if !ok {
@@ -152,7 +153,8 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 // TestConvertUnaryMachineValues verifies NEG and NOT lose their synthetic
 // zero operand when converted to semantic expressions.
 func TestConvertUnaryMachineValues(t *testing.T) {
-	converter := &machineConverter{}
+	fx := testfixture.Stars(t)
+	converter := &machineConverter{ctx: mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "NthValidShdef")}
 	value := machine.ConstVal(7)
 
 	for _, tt := range []struct {

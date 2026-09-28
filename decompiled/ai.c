@@ -591,7 +591,7 @@ L_08f3:
     goto L_07a2;
 
 L_0902:
-    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 8) <= (vlpbAiData[2] * 0x4)))
+    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 8) <= (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x4)))
         goto L_0942;
     else
         goto L_092a;
@@ -601,7 +601,7 @@ L_092a:
     goto L_094e;
 
 L_0942:
-    t_merge_094e_0001 = (vlpbAiData[2] * 0x4);
+    t_merge_094e_0001 = (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x4);
 
 L_094e:
     cFr = t_merge_094e_0001;
@@ -645,7 +645,7 @@ L_09b7:
         goto L_09c0;
 
 L_09c0:
-    if ((Random((vlpbAiData[2] * 8)) != 0))
+    if ((Random((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 8)) != 0))
         goto TryShip2;
     else
         goto L_09e2;
@@ -1632,7 +1632,7 @@ L_1ad9:
     i = (i + 1);
 
 L_1add:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_1b84;
     else
         goto L_1aed;
@@ -1663,7 +1663,7 @@ L_1b5b:
         goto L_1b84;
 
 L_1b84:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_1bbc;
     else
         goto L_1b94;
@@ -3731,7 +3731,7 @@ L_3ec0:
     fWrite = 1;
 
 L_3ede:
-    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 10) <= (vlpbAiData[2] * 0x2)))
+    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 10) <= (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x2)))
         goto L_3f1c;
     else
         goto L_3f04;
@@ -3741,7 +3741,7 @@ L_3f04:
     goto L_3f26;
 
 L_3f1c:
-    t_merge_3f26_0001 = (vlpbAiData[2] * 0x2);
+    t_merge_3f26_0001 = (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x2);
 
 L_3f26:
     cFr = t_merge_3f26_0001;
@@ -4864,7 +4864,7 @@ L_53db:
     i = (i + 1);
 
 L_53df:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5486;
     else
         goto L_53ef;
@@ -4895,7 +4895,7 @@ L_545d:
         goto L_5486;
 
 L_5486:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_54be;
     else
         goto L_5496;

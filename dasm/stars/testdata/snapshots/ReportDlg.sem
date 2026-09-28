@@ -224,7 +224,7 @@ L_04f9:
     goto L_09c8
 
 L_04fc:
-    iCur = GetScrollPos((HWND)hiword(lParam), 2)
+    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2)
     iNew = iCur
     goto L_0576
 
@@ -249,7 +249,7 @@ L_054f:
     goto L_0597
 
 L_055f:
-    iNew = LOWORD(lParam)
+    iNew = GET_WM_VSCROLL_POS(wParam, lParam)
     goto L_0597
 
 L_056b:
@@ -257,10 +257,10 @@ L_056b:
     goto L_0597
 
 L_0576:
-    branch wParam > 0x7 ? L_0597 : L_057e
+    branch GET_WM_VSCROLL_CODE(wParam, lParam) > SB_BOTTOM ? L_0597 : L_057e
 
 L_057e:
-    tablejump (wParam * 0x2) [0x0: L_0538, 0x2: L_0531, 0x4: L_054f, 0x6: L_053f, 0x8: L_055f, 0xa: L_055f, 0xc: L_056b, 0xe: L_0529]
+    tablejump (GET_WM_VSCROLL_CODE(wParam, lParam) * 0x2) [0x0: L_0538, 0x2: L_0531, 0x4: L_054f, 0x6: L_053f, 0x8: L_055f, 0xa: L_055f, 0xc: L_056b, 0xe: L_0529]
 
 L_0597:
     branch iNew <= (vprptCur->cRows - vprptCur->cRowsVis) ? L_05be : L_05ad
@@ -285,14 +285,14 @@ L_05d7:
     rc.top = (dyArial8 + 6)
     rc.bottom = (loword(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top)
     call ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &rc, &rc) -> callresult(void)
-    call SetScrollPos((HWND)hiword(lParam), 2, iNew, 1) -> callresult(int16_t)
+    call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1) -> callresult(int16_t)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_0673:
     return 0
 
 L_067c:
-    iCur = GetScrollPos((HWND)hiword(lParam), 2)
+    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2)
     iNew = iCur
     goto L_06e4
 
@@ -317,7 +317,7 @@ L_06c6:
     goto L_0705
 
 L_06cd:
-    iNew = LOWORD(lParam)
+    iNew = GET_WM_HSCROLL_POS(wParam, lParam)
     goto L_0705
 
 L_06d9:
@@ -325,10 +325,10 @@ L_06d9:
     goto L_0705
 
 L_06e4:
-    branch wParam > 0x7 ? L_0705 : L_06ec
+    branch GET_WM_HSCROLL_CODE(wParam, lParam) > SB_BOTTOM ? L_0705 : L_06ec
 
 L_06ec:
-    tablejump (wParam * 0x2) [0x0: L_06b8, 0x2: L_06b1, 0x4: L_06c6, 0x6: L_06bf, 0x8: L_06cd, 0xa: L_06cd, 0xc: L_06d9, 0xe: L_06a9]
+    tablejump (GET_WM_HSCROLL_CODE(wParam, lParam) * 0x2) [0x0: L_06b8, 0x2: L_06b1, 0x4: L_06c6, 0x6: L_06bf, 0x8: L_06cd, 0xa: L_06cd, 0xc: L_06d9, 0xe: L_06a9]
 
 L_0705:
     branch iNew <= vprptCur->cColScroll ? L_071e : L_0714
@@ -346,8 +346,8 @@ L_072c:
     branch iNew == iCur ? L_080f : L_0737
 
 L_0737:
-    call SetScrollPos((HWND)hiword(lParam), 2, iNew, 1) -> callresult(int16_t)
-    iNew = GetScrollPos((HWND)hiword(lParam), 2)
+    call SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1) -> callresult(int16_t)
+    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2)
     branch iNew == iCur ? L_080f : L_0788
 
 L_0788:
@@ -436,7 +436,7 @@ L_0942:
     goto L_09c8
 
 L_0945:
-    branch wParam != 0x2 ? L_09c8 : L_094e
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL ? L_09c8 : L_094e
 
 L_094e:
     call DestroyWindow(hwnd) -> callresult(int16_t)

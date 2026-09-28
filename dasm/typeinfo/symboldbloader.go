@@ -854,7 +854,7 @@ func (l *symboldbLoader) loadMessages(inputDir string) error {
 		return err
 	}
 	l.sdb.Messages = messages
-	return nil
+	return enumLoader.loadMessageHandlers(filepath.Join(inputDir, "enums.json"), l.sdb, l.typeResolver)
 }
 
 func (l *symboldbLoader) applyOverrides(inputDir string) error {

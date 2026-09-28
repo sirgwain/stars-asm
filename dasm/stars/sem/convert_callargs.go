@@ -24,12 +24,9 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 			param = &fn.Params[i]
 			expected = param.Type
 			if messageType := c.ctx.messageCallArgumentType(fn, values, i); messageType != nil {
-				// The message payload type recovers the value, but the
-				// callee's parameter is still the generic WPARAM or LPARAM.
+				// The message payload type recovers the value; the
+				// native-casts pass converts it to WPARAM or LPARAM.
 				out[i] = c.convertValueTyped(value, messageType)
-				if !typeinfo.Equals(messageType, param.Type) {
-					out[i] = &Cast{Value: out[i], To: param.Type.String(), TypeInfo: param.Type}
-				}
 				continue
 			}
 			if expr, ok := c.convertResourceIDArg(value, param); ok {
@@ -41,7 +38,7 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 				// resource's string name.
 				expected = typeinfo.LpStr
 			}
-			if expr, ok := c.messagePayloadCast(value, expected); ok {
+			if expr, ok := c.messagePayloadRead(value, expected); ok {
 				out[i] = expr
 				continue
 			}
@@ -57,6 +54,9 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 
 // convertValueTyped converts one machine value with an optional expected call type.
 func (c *machineConverter) convertValueTyped(value machine.Value, expected typeinfo.Type) Expr {
+	if read, ok := c.messagePayloadRead(value, expected); ok {
+		return read
+	}
 	if expected != nil {
 		if phi, ok := value.(*machine.PhiValue); ok {
 			return c.convertPhiTyped(phi, expected)

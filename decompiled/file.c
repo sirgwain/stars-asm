@@ -3503,25 +3503,25 @@ L_4339:
     return 1;
 
 L_433f:
-    if ((wParam == 0x429))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_SAVE))
         goto L_435d;
     else
         goto L_4349;
 
 L_4349:
-    if ((wParam == 0x42b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_NO_DON_T_SAVE))
         goto L_435d;
     else
         goto L_4353;
 
 L_4353:
-    if ((wParam != 0x42a))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_SAVESUBMIT))
         goto L_4392;
     else
         goto L_435d;
 
 L_435d:
-    if ((wParam != 0x42b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_NO_DON_T_SAVE))
         goto L_4370;
     else
         goto L_436a;
@@ -3531,7 +3531,7 @@ L_436a:
     goto L_4383;
 
 L_4370:
-    if ((wParam != 0x42a))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_SAVESUBMIT))
         goto L_4380;
     else
         goto L_437a;
@@ -3548,7 +3548,7 @@ L_4383:
     return 1;
 
 L_4392:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_43e0;
     else
         goto L_439b;

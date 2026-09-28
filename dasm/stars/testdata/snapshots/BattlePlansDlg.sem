@@ -172,7 +172,8 @@ L_0a62:
     goto L_0a8f
 
 L_0a6a:
-    branch LOWORD(lParam) == GetDlgItem(hwnd, idc) ? L_0a99 : L_0a8b
+    t_scratch_m16 = GET_WM_CTLCOLOR_HWND(wParam, lParam)
+    branch t_scratch_m16 == GetDlgItem(hwnd, idc) ? L_0a99 : L_0a8b
 
 L_0a8b:
     idc = (idc + 1)
@@ -196,10 +197,10 @@ L_0ad8:
     return 1
 
 L_0b00:
-    branch wParam == 0x1 ? L_0b12 : L_0b09
+    branch GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? L_0b12 : L_0b09
 
 L_0b09:
-    branch wParam != 0x2 ? L_0bb8 : L_0b12
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL ? L_0bb8 : L_0b12
 
 L_0b12:
     branch fDirtyPlan == 0 ? L_0b6e : L_0b1c
@@ -221,7 +222,7 @@ L_0ba9:
     return 1
 
 L_0bb8:
-    branch wParam != 0x41d ? L_0c05 : L_0bc2
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041D ? L_0c05 : L_0bc2
 
 L_0bc2:
     btlplan.fDumpCargo = loword(SendDlgItemMessage(hwnd, 1053, BM_GETCHECK, 0x0, 0))
@@ -229,7 +230,7 @@ L_0bc2:
     goto L_16f8
 
 L_0c05:
-    branch wParam != 0x817 ? L_0e25 : L_0c0f
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE ? L_0e25 : L_0c0f
 
 L_0c0f:
     branch fDirtyPlan == 0 ? L_0c71 : L_0c19
@@ -272,28 +273,28 @@ L_0dd0:
     goto L_16f8
 
 L_0e25:
-    branch wParam != 0x41f ? L_0e70 : L_0e2f
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041F ? L_0e70 : L_0e2f
 
 L_0e2f:
-    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0))
     btlplan.mdTarget1 = i
     fDirtyPlan = 1
     goto L_16f8
 
 L_0e70:
-    branch wParam != 0x420 ? L_0ec4 : L_0e7a
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0420 ? L_0ec4 : L_0e7a
 
 L_0e7a:
-    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0))
     btlplan.mdTarget2 = i
     fDirtyPlan = 1
     goto L_16f8
 
 L_0ec4:
-    branch wParam != 0x422 ? L_0f41 : L_0ece
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0422 ? L_0f41 : L_0ece
 
 L_0ece:
-    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0))
     branch game.fSinglePlr == 0x0 ? L_0f0d : L_0f05
 
 L_0f05:
@@ -312,16 +313,16 @@ L_0f1f:
     goto L_16f8
 
 L_0f41:
-    branch wParam != 0x421 ? L_0f92 : L_0f4b
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0421 ? L_0f92 : L_0f4b
 
 L_0f4b:
-    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0))
     btlplan.mdTactic = i
     fDirtyPlan = 1
     goto L_16f8
 
 L_0f92:
-    branch wParam != 0x41b ? L_1134 : L_0f9c
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME ? L_1134 : L_0f9c
 
 LRename:
     call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0) -> callresult(void)
@@ -378,7 +379,7 @@ L_112b:
     goto L_16f8
 
 L_1134:
-    branch wParam != 0x41c ? L_149b : L_113e
+    branch GET_WM_COMMAND_ID(wParam, lParam) != 0x41c ? L_149b : L_113e
 
 L_113e:
     branch rgcbtlplan[idPlayer] != 0xf ? L_1157 : L_1151
@@ -461,7 +462,7 @@ L_1452:
     goto L_0f9c
 
 L_149b:
-    branch wParam != 0x41e ? L_16a5 : L_14a5
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041E ? L_16a5 : L_14a5
 
 LSelectName:
     i = loword(SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_GETCURSEL, 0x0, 0))
@@ -520,7 +521,7 @@ L_16a2:
     goto L_16f8
 
 L_16a5:
-    branch wParam != 0x76 ? L_16f8 : L_16ae
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP ? L_16f8 : L_16ae
 
 L_16ae:
     call WinHelp(hwnd, szHelpFile, 0x1, 0x439) -> callresult(int16_t)
@@ -530,7 +531,7 @@ L_16d5:
     branch message == WM_ERASEBKGND ? L_0ad8 : L_16dd
 
 L_16dd:
-    branch message == WM_CTLCOLOR ? L_0a62 : L_16e5
+    branch IS_WM_CTLCOLOR(message) != 0 ? L_0a62 : L_16e5
 
 L_16e5:
     branch message == WM_INITDIALOG ? L_0661 : L_16ed

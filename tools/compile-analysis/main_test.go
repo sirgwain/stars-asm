@@ -28,7 +28,7 @@ case "$1" in
   -dumpfullversion) echo 13.3.0; exit 0 ;;
   -dumpmachine) echo x86_64-w64-mingw32; exit 0 ;;
 esac
-printf '%s\n' '[{"kind":"error","message":"unknown type name HB","locations":[{"caret":{"file":"decompiled/structs.h","line":258,"column":5}}],"children":[]}]' >&2
+printf '%s\n' '[{"kind":"error","message":"unknown type name HB","locations":[{"caret":{"file":"decompiled/structs.h","line":258,"column":5}}],"children":[]},{"kind":"warning","message":"comparison between pointer and integer","locations":[{"caret":{"file":"decompiled/structs.h","line":300,"column":9}}],"children":[]}]' >&2
 exit 1
 `
 	if err := os.WriteFile(compiler, []byte(script), 0o755); err != nil {
@@ -39,10 +39,14 @@ exit 1
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.Summary.TranslationUnits != 2 || got.Summary.FailedTranslationUnits != 2 || got.Summary.Errors != 2 || got.Summary.UniqueErrors != 1 {
+	if got.Summary.TranslationUnits != 2 || got.Summary.FailedTranslationUnits != 2 || got.Summary.Errors != 2 || got.Summary.UniqueErrors != 1 ||
+		got.Summary.Warnings != 2 || got.Summary.UniqueWarnings != 1 {
 		t.Fatalf("unexpected summary: %+v", got.Summary)
 	}
-	if len(got.Diagnostics) != 1 || got.Diagnostics[0].Occurrences != 2 || len(got.Diagnostics[0].TranslationUnits) != 2 {
+	if got.Files[filepath.ToSlash(filepath.Join(sourceDir, "a.c"))] != (fileSummary{Errors: 1, Warnings: 1}) {
+		t.Fatalf("unexpected file summary: %+v", got.Files)
+	}
+	if len(got.Diagnostics) != 2 || got.Diagnostics[0].Occurrences != 2 || len(got.Diagnostics[0].TranslationUnits) != 2 || got.Diagnostics[1].Kind != "warning" {
 		t.Fatalf("unexpected diagnostics: %+v", got.Diagnostics)
 	}
 }

@@ -94,7 +94,7 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 			// address recovery paths.
 			src = c.convertValueTyped(e.Src, dst.ExprType())
 		}
-		if cast, ok := c.messagePayloadCast(e.Src, dst.ExprType()); ok {
+		if cast, ok := c.messagePayloadRead(e.Src, dst.ExprType()); ok {
 			src = cast
 		}
 		if c.ctx.maskedStorageWrite(e.Addr, e.Src) {
@@ -256,6 +256,9 @@ func (c *machineConverter) convertValues(values []machine.Value) []Expr {
 
 // convertValue converts one machine value into a semantic expression.
 func (c *machineConverter) convertValue(value machine.Value) Expr {
+	if read, ok := c.messagePayloadRead(value, nil); ok {
+		return read
+	}
 	if _, address := value.(*machine.Address); address {
 		if resolved, ok := c.resolveAddressValue(value, 0); ok {
 			return resolved
@@ -590,12 +593,22 @@ func (c machineConverter) convertPredicate(v *machine.PredicateValue) Expr {
 	if v.Kind != machine.PredicateCompare {
 		return &RawValue{Value: v}
 	}
+	if match, ok := c.ctx.messageMatch(v); ok {
+		return match
+	}
 	lhs := c.convertValue(v.LHS)
 	rhs := c.convertValue(v.RHS)
 	if address, ok := c.convertPointerConstOperand(v.RHS, lhs.ExprType()); ok {
 		rhs = address
 	} else if address, ok := c.convertPointerConstOperand(v.LHS, rhs.ExprType()); ok {
 		lhs = address
+	}
+	// A window procedure compares a message parameter with a value of the
+	// type its message carries there, such as WM_PALETTECHANGED's HWND.
+	if read, ok := c.messagePayloadRead(v.LHS, rhs.ExprType()); ok {
+		lhs = read
+	} else if read, ok := c.messagePayloadRead(v.RHS, lhs.ExprType()); ok {
+		rhs = read
 	}
 	return &Compare{Op: compareOp(v.Op), LHS: lhs, RHS: rhs}
 }

@@ -27,6 +27,10 @@ type Function struct {
 	Conv       CallConv
 	Ret        Type
 	Params     []FunctionVar
+	// CallParams are the arguments callers pass when they differ from
+	// Params: the original declared the function without a prototype, so
+	// callers passed their own argument types.
+	CallParams []FunctionVar
 	Vars       []FunctionVar
 	Scopes     []Scope
 	Labels     []Label
@@ -243,6 +247,18 @@ func (f *Function) CDecl() string {
 		ret = "void"
 	}
 	return fmt.Sprintf("%s %s(%s)", ret, name, strings.Join(params, ", "))
+}
+
+// CallSignature returns the function as its callers call it: with
+// CallParams in place of Params when the original callers passed other
+// argument types, and the function itself otherwise.
+func (f *Function) CallSignature() *Function {
+	if len(f.CallParams) == 0 {
+		return f
+	}
+	call := *f
+	call.Params = f.CallParams
+	return &call
 }
 
 func (f *Function) RootLocals() []FunctionVar {

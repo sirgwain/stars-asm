@@ -270,6 +270,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     RECT        rcGBox;
     int16_t     k;
     char        szBuf[32];
+    HWND        t_scratch_me;
     uint16_t    t_merge_0b8c_0001;
     HWND        t_call_0f64;
     int16_t     t_merge_0f7d_0001;
@@ -489,7 +490,8 @@ L_0879:
     goto L_08a6;
 
 L_0881:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_08b0;
     else
         goto L_08a2;
@@ -625,7 +627,7 @@ L_0bb7:
     return 1;
 
 L_0bcc:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_0bf6;
     else
         goto L_0bd5;
@@ -639,7 +641,7 @@ L_0bf6:
     goto L_0c16;
 
 L_0bfe:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_0c1f;
     else
         goto L_0c12;
@@ -660,7 +662,7 @@ L_0c1f:
         goto L_0c28;
 
 L_0c28:
-    if ((wParam == 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL))
         goto L_0d53;
     else
         goto L_0c31;
@@ -711,19 +713,19 @@ L_0d53:
     return 1;
 
 L_0d7a:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_1051;
     else
         goto L_0d96;
 
 L_0d96:
-    if ((wParam < 0x10f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_RADRACE1))
         goto L_1051;
     else
         goto L_0da0;
 
 L_0da0:
-    if ((wParam > 0x116))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0116))
         goto L_1051;
     else
         goto L_0daa;
@@ -733,7 +735,7 @@ L_0daa:
     GetDlgItemText(hwnd, IDC_EDIT1, vplr.szName, 32);
     memset(vplr.szNames, 0, 0x20);
     GetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames, 32);
-    GetDlgItemText(hwnd, (ControlId)(wParam), szBuf, 32);
+    GetDlgItemText(hwnd, GET_WM_COMMAND_ID(wParam, lParam), szBuf, 32);
     i = 0;
     goto L_0e4a;
 
@@ -759,14 +761,14 @@ L_0e53:
         goto L_0e5c;
 
 L_0e5c:
-    if ((wParam >= 0x116))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) >= IDC_U16_0x0116))
         goto L_0ef9;
     else
         goto L_0e66;
 
 L_0e66:
     memset(vplr.szName, 0, 0x20);
-    CchGetString((wParam + 0x458), vplr.szName);
+    CchGetString((GET_WM_COMMAND_ID(wParam, lParam) + 1112), vplr.szName);
     SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
     memset(vplr.szNames, 0, 0x20);
     psz = PszPlayerName(0, 1, 1, 0, 0, &(vplr));
@@ -774,13 +776,13 @@ L_0e66:
     SetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames);
 
 L_0ef9:
-    if ((wParam > 0x115))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > 0x115))
         goto L_0f19;
     else
         goto L_0f03;
 
 L_0f03:
-    pplr = &(vrgplrDef[(wParam - 271)]);
+    pplr = &(vrgplrDef[(GET_WM_COMMAND_ID(wParam, lParam) - 271)]);
     goto L_0f1e;
 
 L_0f19:
@@ -791,7 +793,7 @@ L_0f1e:
     i = GetRaceStat(pplr, rsUseLeftover);
     SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_SETCURSEL, i, 0);
     t_call_0f64 = GetDlgItem(hwnd, IDC_NEXT);
-    if ((wParam == 0x115))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == 0x115))
         goto L_0f7a;
     else
         goto L_0f74;
@@ -830,7 +832,7 @@ L_101e:
         goto L_1026;
 
 L_1026:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0879;
     else
         goto L_102e;
@@ -879,6 +881,7 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     iVar;
     uint16_t    t_merge_136b_0001;
     uint16_t    t_scratch_m30;
+    HWND        t_scratch_me;
 
 L_1060:
     goto L_1749;
@@ -990,7 +993,8 @@ L_14e8:
     goto L_1515;
 
 L_14f0:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_151f;
     else
         goto L_1511;
@@ -1045,7 +1049,7 @@ L_15e0:
     return FTrackRaceDlg2(hwnd, pt, wParam);
 
 L_1618:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_1642;
     else
         goto L_1621;
@@ -1059,7 +1063,7 @@ L_1642:
     goto L_1662;
 
 L_164a:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_166b;
     else
         goto L_165e;
@@ -1085,20 +1089,20 @@ L_1674:
     return 1;
 
 L_1698:
-    if ((wParam < 0x123))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_U16_0x0123))
         goto L_178c;
     else
         goto L_16a2;
 
 L_16a2:
-    if ((wParam > 0x125))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_IMMUNE_TO_RADIATION))
         goto L_178c;
     else
         goto L_16ac;
 
 L_16ac:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
-    iVar = (wParam - 291);
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    iVar = (GET_WM_COMMAND_ID(wParam, lParam) - 291);
     if ((i != 1))
         goto L_1707;
     else
@@ -1134,7 +1138,7 @@ L_1751:
         goto L_1759;
 
 L_1759:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_14e8;
     else
         goto L_1761;
@@ -2030,6 +2034,7 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     POINT       pt;
     HDC         hdc;
     PAINTSTRUCT ps;
+    HWND        t_scratch_me;
 
 L_2792:
     goto L_2a3b;
@@ -2061,7 +2066,8 @@ L_2830:
     return 1;
 
 L_2858:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x0123)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, IDC_U16_0x0123)))
         goto L_2893;
     else
         goto L_2877;
@@ -2100,7 +2106,7 @@ L_2927:
     return 1;
 
 L_2960:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_298a;
     else
         goto L_2969;
@@ -2114,7 +2120,7 @@ L_298a:
     goto L_29aa;
 
 L_2992:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_29b3;
     else
         goto L_29a6;
@@ -2140,7 +2146,7 @@ L_29bc:
     return 1;
 
 L_29e0:
-    if ((wParam != 0x123))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0123))
         goto L_2a7e;
     else
         goto L_29ea;
@@ -2166,7 +2172,7 @@ L_2a43:
         goto L_2a4b;
 
 L_2a4b:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_2858;
     else
         goto L_2a53;
@@ -2630,6 +2636,7 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     PAINTSTRUCT ps;
     int16_t     cch;
     RECT        rcGBox;
+    HWND        t_scratch_me;
 
 L_320a:
     goto L_3755;
@@ -2670,7 +2677,8 @@ L_32c2:
     goto L_32ef;
 
 L_32ca:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_32f9;
     else
         goto L_32eb;
@@ -2755,7 +2763,7 @@ L_3559:
     return 1;
 
 L_35be:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_35e8;
     else
         goto L_35c7;
@@ -2769,7 +2777,7 @@ L_35e8:
     goto L_3608;
 
 L_35f0:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_3611;
     else
         goto L_3604;
@@ -2795,25 +2803,25 @@ L_361a:
     return 1;
 
 L_3641:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_3780;
     else
         goto L_365d;
 
 L_365d:
-    if ((wParam < 0x10f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_RADRACE1))
         goto L_3780;
     else
         goto L_3667;
 
 L_3667:
-    if ((wParam > 0x118))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0118))
         goto L_3780;
     else
         goto L_3671;
 
 L_3671:
-    i = (wParam - 271);
+    i = (GET_WM_COMMAND_ID(wParam, lParam) - 271);
     SetRaceStat(&(vplr), rsMajorAdv, i);
     if ((GetRaceStat(&(vplr), rsMajorAdv) != raMacintosh))
         goto L_3731;
@@ -2849,7 +2857,7 @@ L_375d:
         goto L_3765;
 
 L_3765:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_32c2;
     else
         goto L_376d;
@@ -2878,6 +2886,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     PAINTSTRUCT ps;
     int16_t     cch;
     RECT        rcGBox;
+    HWND        t_scratch_me;
 
 L_378e:
     goto L_3b75;
@@ -2923,7 +2932,8 @@ L_386f:
     goto L_389c;
 
 L_3877:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_38a6;
     else
         goto L_3898;
@@ -2981,7 +2991,7 @@ L_38e5:
     return 1;
 
 L_3a7c:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_3aa6;
     else
         goto L_3a85;
@@ -2995,7 +3005,7 @@ L_3aa6:
     goto L_3ac6;
 
 L_3aae:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_3acf;
     else
         goto L_3ac2;
@@ -3021,20 +3031,20 @@ L_3ad8:
     return 1;
 
 L_3afc:
-    if ((wParam < 0x123))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_U16_0x0123))
         goto L_3ba0;
     else
         goto L_3b06;
 
 L_3b06:
-    if ((wParam > 0x130))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0130))
         goto L_3ba0;
     else
         goto L_3b10;
 
 L_3b10:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
-    cColDrop = (wParam - 291);
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    cColDrop = (GET_WM_COMMAND_ID(wParam, lParam) - 291);
     SetRaceGrbit(&(vplr), cColDrop, i);
     InvalidateAdvPtsRect(hwnd);
     InvalidateRect(hwnd, &(rcCargo), 0);
@@ -3055,7 +3065,7 @@ L_3b7d:
         goto L_3b85;
 
 L_3b85:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_386f;
     else
         goto L_3b8d;
@@ -3085,6 +3095,8 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     RECT        rcGBox;
     int16_t     t_scratch_me;
     uint16_t    t_merge_3c78_0001;
+    HWND        t_scratch_me_2;
+    HWND        t_scratch_me_3;
 
 L_3bae:
     goto L_4074;
@@ -3164,7 +3176,8 @@ L_3d44:
     goto L_3d71;
 
 L_3d4c:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me_2 == GetDlgItem(hwnd, i)))
         goto L_3d7b;
     else
         goto L_3d6d;
@@ -3185,7 +3198,8 @@ L_3d7b:
         goto L_3d85;
 
 L_3d85:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x0123)))
+    t_scratch_me_3 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me_3 == GetDlgItem(hwnd, IDC_U16_0x0123)))
         goto L_3dc0;
     else
         goto L_3da4;
@@ -3234,7 +3248,7 @@ L_3f1f:
     return 1;
 
 L_3f34:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_3f5e;
     else
         goto L_3f3d;
@@ -3248,7 +3262,7 @@ L_3f5e:
     goto L_3f7e;
 
 L_3f66:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_3f87;
     else
         goto L_3f7a;
@@ -3274,37 +3288,37 @@ L_3f90:
     return 1;
 
 L_3fb7:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_4021;
     else
         goto L_3fd3;
 
 L_3fd3:
-    if ((wParam < 0x10f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_RADRACE1))
         goto L_4021;
     else
         goto L_3fdd;
 
 L_3fdd:
-    if ((wParam > 0x120))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > 0x120))
         goto L_4021;
     else
         goto L_3fe7;
 
 L_3fe7:
-    i = (wParam - 271);
+    i = (GET_WM_COMMAND_ID(wParam, lParam) - 271);
     SetRaceStat(&(vplr), (((int32_t)(i) / 3) + 0x8), ((int32_t)(i) % 3));
     InvalidateAdvPtsRect(hwnd);
     goto L_409f;
 
 L_4021:
-    if ((wParam != 0x123))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0123))
         goto L_409f;
     else
         goto L_402b;
 
 L_402b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
     SetRaceGrbit(&(vplr), ibitRaceTech3, i);
     InvalidateAdvPtsRect(hwnd);
 
@@ -3324,7 +3338,7 @@ L_407c:
         goto L_4084;
 
 L_4084:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_3d44;
     else
         goto L_408c;
@@ -4667,7 +4681,7 @@ L_548c:
         goto L_5496;
 
 L_5496:
-    if ((pplr == &(rgplr)))
+    if ((pplr == rgplr))
         goto L_54b1;
     else
         goto L_54a0;

@@ -4326,7 +4326,7 @@ L_4d3a:
         goto L_4d47;
 
 L_4d47:
-    vlpbAiData[2] = 0x0;
+    RawStore16(((uint8_t *)(vlpbAiData) + 0x2), 0x0);
 
 L_4d51:
     if ((game.turn < 0x14))
@@ -4336,19 +4336,19 @@ L_4d51:
 
 L_4d5e:
     iWrite = 0;
-    if ((vlpbAiData[2] < 0x0))
+    if ((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) < 0x0))
         goto L_4d7f;
     else
         goto L_4d71;
 
 L_4d71:
-    if ((vlpbAiData[2] <= 0x40))
+    if ((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) <= 0x40))
         goto L_4d89;
     else
         goto L_4d7f;
 
 L_4d7f:
-    vlpbAiData[2] = 0x0;
+    RawStore16(((uint8_t *)(vlpbAiData) + 0x2), 0x0);
 
 L_4d89:
     i = 0;
@@ -4358,7 +4358,7 @@ L_4d91:
     i = (i + 1);
 
 L_4d95:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_4ec0;
     else
         goto L_4da5;
@@ -4407,7 +4407,7 @@ L_4ebd:
     goto L_4d91;
 
 L_4ec0:
-    vlpbAiData[2] = iWrite;
+    RawStore16(((uint8_t *)(vlpbAiData) + 0x2), iWrite);
     ipl = 0;
     goto L_4ed7;
 
@@ -4441,7 +4441,7 @@ L_4f34:
     i = (i + 1);
 
 L_4f38:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_4f79;
     else
         goto L_4f48;
@@ -4453,7 +4453,7 @@ L_4f48:
         goto L_4f79;
 
 L_4f79:
-    if ((i != vlpbAiData[2]))
+    if ((i != RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_4ed3;
     else
         goto L_4f89;
@@ -4467,7 +4467,7 @@ L_4f89:
 L_4f92:
     vlpbAiData[((i * 20) + 4)] = lppl->id;
     vlpbAiData[((i * 20) + 6)] = 0x0;
-    vlpbAiData[2] = (vlpbAiData[2] + 0x1);
+    RawStore16(((uint8_t *)(vlpbAiData) + 0x2), (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) + 0x1));
 
 L_4fde:
     goto L_4ed3;
@@ -4478,7 +4478,7 @@ L_4fe1:
     goto L_52ea;
 
 L_500c:
-    if ((vlpbAiData[2] >= 0x40))
+    if ((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) >= 0x40))
         goto L_52f8;
     else
         goto L_501d;
@@ -4542,7 +4542,7 @@ L_516d:
     i = (i + 1);
 
 L_5171:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5265;
     else
         goto L_5181;
@@ -4571,15 +4571,15 @@ L_51ce:
         goto L_516d;
 
 L_5265:
-    if ((i < vlpbAiData[2]))
+    if ((i < RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_52e6;
     else
         goto L_5278;
 
 L_5278:
-    vlpbAiData[((vlpbAiData[2] * 20) + 4)] = lppl->id;
-    vlpbAiData[((vlpbAiData[2] * 20) + 6)] = 0x0;
-    vlpbAiData[2] = (vlpbAiData[2] + 0x1);
+    vlpbAiData[((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 20) + 4)] = lppl->id;
+    vlpbAiData[((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 20) + 6)] = 0x0;
+    RawStore16(((uint8_t *)(vlpbAiData) + 0x2), (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) + 0x1));
 
 L_52e6:
     lppl = (lppl + 1);
@@ -4630,7 +4630,7 @@ L_536f:
     i = (i + 1);
 
 L_5373:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5418;
     else
         goto L_5383;
@@ -4661,7 +4661,7 @@ L_53ef:
         goto L_5418;
 
 L_5418:
-    if ((i != vlpbAiData[2]))
+    if ((i != RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5300;
     else
         goto L_5428;
@@ -4676,7 +4676,7 @@ L_543f:
     i = (i + 1);
 
 L_5443:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5525;
     else
         goto L_5453;
@@ -4726,7 +4726,7 @@ L_5588:
     i = (i + 1);
 
 L_558c:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_56b3;
     else
         goto L_559c;
@@ -4746,7 +4746,7 @@ L_55ce:
     j = (j + 1);
 
 L_55d2:
-    if ((j >= vlpbAiData[2]))
+    if ((j >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5614;
     else
         goto L_55e2;
@@ -4759,7 +4759,7 @@ L_55e2:
         goto L_5614;
 
 L_5614:
-    if ((j >= vlpbAiData[2]))
+    if ((j >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_5588;
     else
         goto L_5624;
@@ -4774,7 +4774,7 @@ L_56b0:
     goto L_5588;
 
 L_56b3:
-    RawStore16(vlpbAiData, (LOWORD((vlpbAiData[2] * 0x14)) + 0x4));
+    RawStore16(vlpbAiData, (LOWORD((RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x14)) + 0x4));
 
 L_56ca:
     return;
@@ -7592,7 +7592,7 @@ L_86b6:
     i = (i + 1);
 
 L_86ba:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_86fb;
     else
         goto L_86ca;
@@ -7604,7 +7604,7 @@ L_86ca:
         goto L_86fb;
 
 L_86fb:
-    if ((i == vlpbAiData[2]))
+    if ((i == RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_8812;
     else
         goto L_870e;

@@ -402,7 +402,7 @@ L_07d2:
     return 0;
 
 L_07de:
-    if ((wParam != hwnd))
+    if (((HWND)(wParam) != hwnd))
         goto MapIt;
     else
         goto L_07e2;
@@ -671,7 +671,7 @@ L_0c07:
         goto L_0c1a;
 
 L_0c1a:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x55), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x55, 0);
 
 L_0c33:
     if ((ini.fDumpPlanets == 0x0))
@@ -680,7 +680,7 @@ L_0c33:
         goto L_0c46;
 
 L_0c46:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x54), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x54, 0);
 
 L_0c5f:
     if ((ini.fDumpFleets == 0x0))
@@ -689,7 +689,7 @@ L_0c5f:
         goto L_0c72;
 
 L_0c72:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x53), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x53, 0);
 
 L_0c8b:
     goto LExit;
@@ -697,7 +697,7 @@ L_0c8b:
 L_0c8e:
     ShowWindow(hwndFrame, SW_SHOW);
     InitializeMenu(0x0);
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((ini.fWait == 0x0))
         goto LNop;
     else
@@ -908,7 +908,7 @@ L_103e:
 
 L_104a:
     CreateChildWindows();
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((wParam != 0x9ca))
         goto L_108a;
     else
@@ -1025,7 +1025,7 @@ L_1208:
         goto L_1211;
 
 L_1211:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x6a), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x6a, 0);
     goto L_1246;
 
 L_122d:
@@ -1035,7 +1035,7 @@ L_1246:
     return 1;
 
 L_124f:
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     goto Default;
 
 L_126b:
@@ -1099,11 +1099,11 @@ L_1378:
         goto L_1381;
 
 L_1381:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x6a), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x6a, 0);
     return 1;
 
 L_13a3:
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((sel.pt.x <= 1000))
         goto Default;
     else
@@ -1322,7 +1322,7 @@ L_1554:
         goto L_155e;
 
 L_155e:
-    ShipCommandProc(hwndPlanet, 0x0, (uint32_t)(rghwndBtn[6]));
+    ShipCommandProc(hwndPlanet, 0x0, (LPARAM)(rghwndBtn[6]));
 
 L_157c:
     if ((iOffset != 0))
@@ -1359,7 +1359,7 @@ L_15ba:
         goto L_15c4;
 
 L_15c4:
-    return (uint32_t)(hiconHost);
+    return (LRESULT)(hiconHost);
 
 L_15cd:
     if ((uTimerId != 0x0))
@@ -1368,12 +1368,12 @@ L_15cd:
         goto L_15d7;
 
 L_15d7:
-    return (uint32_t)(hiconStars);
+    return (LRESULT)(hiconStars);
 
 L_15e0:
 
 L_15e6:
-    return (uint32_t)(hiconWait);
+    return (LRESULT)(hiconWait);
 
 L_15e9:
     if ((IsIconic(hwnd) == 0))
@@ -2606,7 +2606,7 @@ void FormatSerialAndEnv(int32_t lSerial, uint8_t *pbEnv, char *pszOut) {
 
 L_2886:
     iPass = 0;
-    PushRandom(1114123);
+    PushRandom(11, 17);
     Randomize(lSerial);
     RawStore32(rgbRaw, lSerial);
     memcpy(&(rgbRaw[4]), pbEnv, 0xb);
@@ -2900,7 +2900,7 @@ L_2c91:
 
 L_2c97:
     fSuccess = 1;
-    PushRandom(1114123);
+    PushRandom(11, 17);
     Randomize(lSerial);
     iRaw = 15;
     i = 0;
@@ -3093,7 +3093,7 @@ L_2f6d:
     return 0;
 }
 
-void CommandHandler(HWND hwnd, uint16_t wParam) {
+void CommandHandler(HWND hwnd, WPARAM wParam) {
     POINT        pt;
     HMENU        hmenu;
     FARPROC      lpProc;
@@ -3158,19 +3158,19 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
     int16_t      t_merge_50ab_0001;
 
 L_2f7a:
-    if ((wParam < 0x3a98))
+    if ((GET_WM_COMMAND_ID(wParam, 0) < 0x3a98))
         goto L_2fa3;
     else
         goto L_2f8d;
 
 L_2f8d:
-    if ((wParam >= 0x3afc))
+    if ((GET_WM_COMMAND_ID(wParam, 0) >= 0x3afc))
         goto L_2fa3;
     else
         goto L_2f97;
 
 L_2f97:
-    iPopMenuSel = (wParam - 15000);
+    iPopMenuSel = (GET_WM_COMMAND_ID(wParam, 0) - 15000);
     goto L_536f;
 
 L_2fa3:
@@ -3193,7 +3193,7 @@ L_3003:
         goto L_3010;
 
 L_3010:
-    iWindowLayout = (wParam - 130);
+    iWindowLayout = (GET_WM_COMMAND_ID(wParam, 0) - 130);
     InvalidateRect(hwndFrame, 0x0, 1);
     if ((iWindowLayout != 2))
         goto L_303e;
@@ -3263,14 +3263,14 @@ L_30db:
         goto L_536f;
 
 L_30ef:
-    if (((int16_t)(vrgszMRU[((wParam - 4300) * 256)]) == 0))
+    if (((int16_t)(vrgszMRU[((GET_WM_COMMAND_ID(wParam, 0) - 4300) * 256)]) == 0))
         goto L_536f;
     else
         goto L_3112;
 
 L_3112:
     iplrOld = idPlayer;
-    fstrcpy(szT, (vrgszMRU + (256 * (wParam - 4300))));
+    fstrcpy(szT, (vrgszMRU + (256 * (GET_WM_COMMAND_ID(wParam, 0) - 4300))));
     psz = strrchr(szT, 46);
     if ((psz == 0x0))
         goto L_320e;
@@ -3301,7 +3301,7 @@ L_31ae:
         goto L_31c9;
 
 L_31c9:
-    PostMessage(hwnd, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    PostMessage(hwnd, WM_COMMAND, 0xfa1, 0);
 
 L_31e1:
     if ((game.fTutorial == 0x0))
@@ -3844,7 +3844,7 @@ L_3f42:
 
 L_3f6e:
     idCur = idPlayer;
-    if ((wParam != 0x5209))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x5209))
         goto L_3f87;
     else
         goto L_3f7e;
@@ -3854,7 +3854,7 @@ L_3f7e:
     goto L_3fb3;
 
 L_3f87:
-    if ((wParam != 0x520a))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x520a))
         goto L_3f9a;
     else
         goto L_3f91;
@@ -3864,7 +3864,7 @@ L_3f91:
     goto L_3fb3;
 
 L_3f9a:
-    if ((wParam != 0x5208))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x5208))
         goto L_3fad;
     else
         goto L_3fa4;
@@ -3960,12 +3960,12 @@ L_412b:
     DirtyGame(0);
     ShowProgressGauge();
     ti.dwSize = 0xc;
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickBase = ti.dwmsSinceStart;
 
 L_418a:
     UpdateProgressGauge(((LOWORD(dwTickCur) - LOWORD(dwTickBase)) * 2));
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickCur = ti.dwmsSinceStart;
     if ((dwTickCur < dwTickBase))
         goto LTutorialFinishUp;
@@ -4022,19 +4022,19 @@ RepGen:
     ShowProgressGauge();
     EnsureAis();
     FGenerateTurn();
-    if ((wParam == 0x5208))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x5208))
         goto L_42fd;
     else
         goto L_42e9;
 
 L_42e9:
-    if ((wParam == 0x5209))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x5209))
         goto L_42fd;
     else
         goto L_42f3;
 
 L_42f3:
-    if ((wParam != 0x520a))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x520a))
         goto L_4337;
     else
         goto L_42fd;
@@ -4080,7 +4080,7 @@ L_43a8:
     HideProgressGauge();
     idPlayer = idCur;
     CreateChildWindows();
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     SetCursor(hcurSav);
     if ((gd.fTutorial == 0x0))
         goto L_536f;
@@ -4184,7 +4184,7 @@ LRetryReport:
 
 L_450e:
     mf = 8;
-    if ((wParam != 0x8ff))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x8ff))
         goto L_4588;
     else
         goto L_451d;
@@ -4224,7 +4224,7 @@ L_4582:
     goto L_4530;
 
 L_4588:
-    if ((wParam != 0x900))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x900))
         goto L_45fd;
     else
         goto L_4592;
@@ -4264,7 +4264,7 @@ L_45f7:
     goto L_45a5;
 
 L_45fd:
-    if ((wParam != 0x901))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x901))
         goto L_461d;
     else
         goto L_4607;
@@ -4319,11 +4319,11 @@ L_4698:
     hwndReportDlg = CreateWindow(szReport, szWork, WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0, 0, 100, 100,
                                  hwndFrame, 0x0, hInst, 0x0);
     SetWindowPos(hwndReportDlg, 0x0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW);
-    CheckMenuItem(hmenu, wParam, mf);
+    CheckMenuItem(hmenu, GET_WM_COMMAND_ID(wParam, 0), mf);
     goto L_536f;
 
 L_4727:
-    if ((wParam != 0x901))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x901))
         goto L_473c;
     else
         goto L_4731;
@@ -4344,7 +4344,7 @@ L_4744:
 L_4749:
     mf = 0;
     DestroyWindow(hwndReportDlg);
-    if ((wParam != 0x8ff))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x8ff))
         goto L_476a;
     else
         goto L_4764;
@@ -4367,7 +4367,7 @@ L_477d:
     goto L_536f;
 
 L_4786:
-    if ((wParam != 0x9c2))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x9c2))
         goto L_47a5;
     else
         goto L_479e;
@@ -4446,7 +4446,7 @@ L_48c2:
 
 L_48e6:
     CreateChildWindows();
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     goto L_536f;
 
 L_4907:
@@ -4490,7 +4490,7 @@ L_49e7:
         goto L_4a01;
 
 L_4a01:
-    if ((wParam != 0xedb))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0xedb))
         goto L_4a11;
     else
         goto L_4a0b;
@@ -4536,7 +4536,7 @@ L_4a8d:
         goto L_4aa3;
 
 L_4aa3:
-    PostMessage(hwnd, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    PostMessage(hwnd, WM_COMMAND, 0xfa1, 0);
 
 L_4abb:
     if ((game.fTutorial == 0x0))
@@ -4563,7 +4563,7 @@ L_4ae8:
         goto L_4af5;
 
 L_4af5:
-    PostMessage(hwndTitle, WM_COMMAND, (WPARAM)((wParam + 0xff06)), 0);
+    PostMessage(hwndTitle, WM_COMMAND, (GET_WM_COMMAND_ID(wParam, 0) - 250), 0);
     goto L_536f;
 
 L_4b14:
@@ -4804,7 +4804,7 @@ L_4f37:
     rc.bottom = (ScanToPt(rc.bottom) >> 0x1);
     dx = xScanTop;
     dy = (dGalInv - yScanTop);
-    iScanZoom = (wParam - 3905);
+    iScanZoom = (GET_WM_COMMAND_ID(wParam, 0) - 3905);
     CheckMenuItem(hmenu, (iScanZoom + 4), 0x408);
     DrawMenuBar(hwnd);
     SetScanScrollBars(hwndScanner);
@@ -4854,7 +4854,7 @@ L_508b:
         goto L_5099;
 
 L_5099:
-    if ((wParam != 0x67))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x67))
         goto L_50a8;
     else
         goto L_50a2;
@@ -4874,499 +4874,499 @@ Default:
     goto L_536f;
 
 L_50d4:
-    if ((wParam == 0x53))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x53))
         goto L_4e62;
     else
         goto L_50dc;
 
 L_50dc:
-    if ((wParam == 0x54))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x54))
         goto L_4e5a;
     else
         goto L_50e4;
 
 L_50e4:
-    if ((wParam == 0x55))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x55))
         goto L_4e52;
     else
         goto L_50ec;
 
 L_50ec:
-    if ((wParam == 0x5f))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x5f))
         goto L_3ee1;
     else
         goto L_50f4;
 
 L_50f4:
-    if ((wParam == 0x60))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x60))
         goto L_3ee1;
     else
         goto L_50fc;
 
 L_50fc:
-    if ((wParam == 0x63))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x63))
         goto L_2fa9;
     else
         goto L_5104;
 
 L_5104:
-    if ((wParam == 0x67))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x67))
         goto L_5081;
     else
         goto L_510c;
 
 L_510c:
-    if ((wParam == 0x68))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x68))
         goto L_5081;
     else
         goto L_5114;
 
 L_5114:
-    if ((wParam == 0x69))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x69))
         goto L_3f30;
     else
         goto L_511c;
 
 L_511c:
-    if ((wParam == 0x6a))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x6a))
         goto LWaitForTurn;
     else
         goto L_5124;
 
 L_5124:
-    if ((wParam == 0x6c))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x6c))
         goto L_3f6e;
     else
         goto L_512c;
 
 L_512c:
-    if ((wParam == 0x6d))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x6d))
         goto L_4a53;
     else
         goto L_5134;
 
 L_5134:
-    if ((wParam == 0x6e))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x6e))
         goto L_3083;
     else
         goto L_513c;
 
 L_513c:
-    if ((wParam == 0x6f))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x6f))
         goto L_4998;
     else
         goto L_5144;
 
 L_5144:
-    if ((wParam == 0x71))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x71))
         goto L_4b14;
     else
         goto L_514c;
 
 L_514c:
-    if ((wParam == 0x7d))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7d))
         goto L_4df3;
     else
         goto L_5154;
 
 L_5154:
-    if ((wParam == 0x7e))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7e))
         goto L_4be3;
     else
         goto L_515c;
 
 L_515c:
-    if ((wParam == 0x81))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x81))
         goto L_3243;
     else
         goto L_5164;
 
 L_5164:
-    if ((wParam == 0x82))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x82))
         goto L_3003;
     else
         goto L_516c;
 
 L_516c:
-    if ((wParam == 0x83))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x83))
         goto L_3003;
     else
         goto L_5174;
 
 L_5174:
-    if ((wParam == 0x84))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x84))
         goto L_3003;
     else
         goto L_517c;
 
 L_517c:
-    if ((wParam == 0x87))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x87))
         goto L_4be3;
     else
         goto L_5184;
 
 L_5184:
-    if ((wParam == 0x88))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x88))
         goto L_440c;
     else
         goto L_518c;
 
 L_518c:
-    if ((wParam == 0x89))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x89))
         goto L_4df3;
     else
         goto L_5194;
 
 L_5194:
-    if ((wParam == 0x8a))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x8a))
         goto L_47b3;
     else
         goto L_519c;
 
 L_519c:
-    if ((wParam == 0x9c))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9c))
         goto L_4d6e;
     else
         goto L_51a4;
 
 L_51a4:
-    if ((wParam == 0x9d))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9d))
         goto L_4d6e;
     else
         goto L_51ac;
 
 L_51ac:
-    if ((wParam == 0x9e))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9e))
         goto L_4dc0;
     else
         goto L_51b4;
 
 L_51b4:
-    if ((wParam == 0x9f))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9f))
         goto L_4dc0;
     else
         goto L_51bc;
 
 L_51bc:
-    if ((wParam == 0xb3))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xb3))
         goto L_3269;
     else
         goto L_51c4;
 
 L_51c4:
-    if ((wParam == 0xd5))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xd5))
         goto L_32e6;
     else
         goto L_51cc;
 
 L_51cc:
-    if ((wParam == 0xfa))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xfa))
         goto L_4ae8;
     else
         goto L_51d4;
 
 L_51d4:
-    if ((wParam == 0xfb))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xfb))
         goto L_4ae8;
     else
         goto L_51dc;
 
 L_51dc:
-    if ((wParam == 0xfc))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xfc))
         goto L_4ae8;
     else
         goto L_51e4;
 
 L_51e4:
-    if ((wParam == 0xfd))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xfd))
         goto L_4ae8;
     else
         goto L_51ec;
 
 L_51ec:
-    if ((wParam == 0x100))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x100))
         goto L_440c;
     else
         goto L_51f4;
 
 L_51f4:
-    if ((wParam == 0x101))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x101))
         goto L_47b3;
     else
         goto L_51fc;
 
 L_51fc:
-    if ((wParam == 0x10e))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10e))
         goto L_4e6a;
     else
         goto L_5204;
 
 L_5204:
-    if ((wParam == 0x428))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x428))
         goto L_4993;
     else
         goto L_520c;
 
 L_520c:
-    if ((wParam == 0x7d9))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7d9))
         goto L_4cfb;
     else
         goto L_5214;
 
 L_5214:
-    if ((wParam == 0x7da))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7da))
         goto LWaitForTurn;
     else
         goto L_521c;
 
 L_521c:
-    if ((wParam == 0x7db))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7db))
         goto L_4c9a;
     else
         goto L_5224;
 
 L_5224:
-    if ((wParam == 0x7dc))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7dc))
         goto L_4c9a;
     else
         goto L_522c;
 
 L_522c:
-    if ((wParam == 0x7de))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x7de))
         goto L_4cfb;
     else
         goto L_5234;
 
 L_5234:
-    if ((wParam == 0x8fd))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x8fd))
         goto L_44cc;
     else
         goto L_523c;
 
 L_523c:
-    if ((wParam == 0x8fe))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x8fe))
         goto L_448f;
     else
         goto L_5244;
 
 L_5244:
-    if ((wParam == 0x8ff))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x8ff))
         goto L_44cc;
     else
         goto L_524c;
 
 L_524c:
-    if ((wParam == 0x900))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x900))
         goto L_44cc;
     else
         goto L_5254;
 
 L_5254:
-    if ((wParam == 0x901))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x901))
         goto L_44cc;
     else
         goto L_525c;
 
 L_525c:
-    if ((wParam == 0x98d))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x98d))
         goto L_3e24;
     else
         goto L_5264;
 
 L_5264:
-    if ((wParam == 0x9c1))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9c1))
         goto L_4786;
     else
         goto L_526c;
 
 L_526c:
-    if ((wParam == 0x9c2))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9c2))
         goto L_4786;
     else
         goto L_5274;
 
 L_5274:
-    if ((wParam == 0x9c4))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9c4))
         goto L_3052;
     else
         goto L_527c;
 
 L_527c:
-    if ((wParam == 0x9c5))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x9c5))
         goto L_3052;
     else
         goto L_5284;
 
 L_5284:
-    if ((wParam == 0xed8))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xed8))
         goto L_3083;
     else
         goto L_528c;
 
 L_528c:
-    if ((wParam == 0xed9))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xed9))
         goto L_4a53;
     else
         goto L_5294;
 
 L_5294:
-    if ((wParam == 0xeda))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xeda))
         goto L_4998;
     else
         goto L_529c;
 
 L_529c:
-    if ((wParam == 0xedb))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xedb))
         goto L_4998;
     else
         goto L_52a4;
 
 L_52a4:
-    if ((wParam == 0xee2))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xee2))
         goto L_2fe8;
     else
         goto L_52ac;
 
 L_52ac:
-    if ((wParam == 0xf3d))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf3d))
         goto L_4f09;
     else
         goto L_52b4;
 
 L_52b4:
-    if ((wParam == 0xf3e))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf3e))
         goto L_4f09;
     else
         goto L_52bc;
 
 L_52bc:
-    if ((wParam == 0xf3f))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf3f))
         goto L_4f09;
     else
         goto L_52c4;
 
 L_52c4:
-    if ((wParam == 0xf40))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf40))
         goto L_4f09;
     else
         goto L_52cc;
 
 L_52cc:
-    if ((wParam == 0xf41))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf41))
         goto L_4f09;
     else
         goto L_52d4;
 
 L_52d4:
-    if ((wParam == 0xf42))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf42))
         goto L_4f09;
     else
         goto L_52dc;
 
 L_52dc:
-    if ((wParam == 0xf43))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf43))
         goto L_4f09;
     else
         goto L_52e4;
 
 L_52e4:
-    if ((wParam == 0xf44))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf44))
         goto L_4f09;
     else
         goto L_52ec;
 
 L_52ec:
-    if ((wParam == 0xf45))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xf45))
         goto L_4f09;
     else
         goto L_52f4;
 
 L_52f4:
-    if ((wParam == 0xfa1))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0xfa1))
         goto L_5031;
     else
         goto L_52fc;
 
 L_52fc:
-    if ((wParam == 0x1068))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x1068))
         goto L_3e92;
     else
         goto L_5304;
 
 L_5304:
-    if ((wParam == 0x1069))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x1069))
         goto L_3e92;
     else
         goto L_530c;
 
 L_530c:
-    if ((wParam == 0x10cc))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10cc))
         goto L_30b8;
     else
         goto L_5314;
 
 L_5314:
-    if ((wParam == 0x10cd))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10cd))
         goto L_30b8;
     else
         goto L_531c;
 
 L_531c:
-    if ((wParam == 0x10ce))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10ce))
         goto L_30b8;
     else
         goto L_5324;
 
 L_5324:
-    if ((wParam == 0x10cf))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10cf))
         goto L_30b8;
     else
         goto L_532c;
 
 L_532c:
-    if ((wParam == 0x10d0))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10d0))
         goto L_30b8;
     else
         goto L_5334;
 
 L_5334:
-    if ((wParam == 0x10d1))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10d1))
         goto L_30b8;
     else
         goto L_533c;
 
 L_533c:
-    if ((wParam == 0x10d2))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10d2))
         goto L_30b8;
     else
         goto L_5344;
 
 L_5344:
-    if ((wParam == 0x10d3))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10d3))
         goto L_30b8;
     else
         goto L_534c;
 
 L_534c:
-    if ((wParam == 0x10d4))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x10d4))
         goto L_30b8;
     else
         goto L_5354;
 
 L_5354:
-    if ((wParam == 0x5208))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x5208))
         goto L_3f6e;
     else
         goto L_535c;
 
 L_535c:
-    if ((wParam == 0x5209))
+    if ((GET_WM_COMMAND_ID(wParam, 0) == 0x5209))
         goto L_3f6e;
     else
         goto L_5364;
 
 L_5364:
-    if ((wParam != 0x520a))
+    if ((GET_WM_COMMAND_ID(wParam, 0) != 0x520a))
         goto Default;
     else
         goto L_5369;
@@ -6007,7 +6007,7 @@ L_5c8b:
 
 L_5cd3:
     grobjIni = ini.grobjSel;
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((grobjIni == grobjNone))
         goto L_5d28;
     else
@@ -7324,25 +7324,25 @@ L_7242:
     return 1;
 
 L_7265:
-    if ((wParam == 0x407))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_HOST_GENERATE_NOW))
         goto L_7282;
     else
         goto L_726f;
 
 L_726f:
-    if ((wParam == 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL))
         goto L_7282;
     else
         goto L_7278;
 
 L_7278:
-    if ((wParam != 0x408))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HOST_AUTO_GENERATE))
         goto L_73fd;
     else
         goto L_7282;
 
 L_7282:
-    if ((wParam != 0x407))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HOST_GENERATE_NOW))
         goto L_7380;
     else
         goto L_728c;
@@ -7416,7 +7416,7 @@ L_737a:
 
 L_7380:
     StickyDlgPos(hwnd, &(ptStickyHostModeDlg), 0);
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_73a5;
     else
         goto L_739f;
@@ -7426,7 +7426,7 @@ L_739f:
     goto L_73b8;
 
 L_73a5:
-    if ((wParam != 0x408))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HOST_AUTO_GENERATE))
         goto L_73b5;
     else
         goto L_73af;
@@ -7440,7 +7440,7 @@ L_73b5:
 
 L_73b8:
     EndDialog(hwnd, t_merge_73b8_0001);
-    if ((wParam != 0x408))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HOST_AUTO_GENERATE))
         goto L_73d0;
     else
         goto L_73c8;
@@ -7450,7 +7450,7 @@ L_73c8:
     goto L_73f4;
 
 L_73d0:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_73f4;
     else
         goto L_73d9;
@@ -7468,7 +7468,7 @@ L_73f4:
     return 1;
 
 L_73fd:
-    if ((wParam != 0x7df))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HOST_PASSWORD))
         goto L_7467;
     else
         goto L_7407;
@@ -7487,7 +7487,7 @@ L_7417:
     return fRet;
 
 L_7467:
-    if ((wParam != 0x405))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x405))
         goto L_7528;
     else
         goto L_7471;
@@ -7541,7 +7541,7 @@ L_751f:
     return fRet;
 
 L_7528:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_75c0;
     else
         goto L_7531;
@@ -7574,7 +7574,7 @@ L_757d:
         goto L_7585;
 
 L_7585:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_6da0;
     else
         goto L_758d;
@@ -7644,19 +7644,19 @@ L_761b:
     return 1;
 
 L_7657:
-    if ((wParam == 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL))
         goto L_7669;
     else
         goto L_7660;
 
 L_7660:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_768d;
     else
         goto L_7669;
 
 L_7669:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_767b;
     else
         goto L_7675;
@@ -7673,7 +7673,7 @@ L_767e:
     return 1;
 
 L_768d:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_76f3;
     else
         goto L_7696;
@@ -7701,7 +7701,7 @@ L_76d0:
         goto L_76d8;
 
 L_76d8:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_7605;
     else
         goto L_76e0;
@@ -8814,7 +8814,7 @@ L_91f5:
 L_9200:
     psz = PszGetCompressedString((i + 479));
     rghwndBtnSplash[i] = CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE, xCur, ((rc.bottom - dy) - ((int32_t)(LOWORD((5 * dyArial8))) / 2)), dx, dy, hwnd,
-                                      (HMENU)(i), hInst, 0x0);
+                                      (HMENU)((uintptr_t)(i)), hInst, 0x0);
     if ((i != 2))
         goto L_92a2;
     else
@@ -8882,7 +8882,7 @@ L_935c:
     return 0;
 
 L_9368:
-    if ((wParam != hwnd))
+    if (((HWND)(wParam) != hwnd))
         goto MapIt;
     else
         goto L_9370;
@@ -8925,7 +8925,7 @@ L_93d8:
     goto Default;
 
 L_93db:
-    if ((wParam != 0x0))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x0))
         goto L_9455;
     else
         goto L_93e4;
@@ -8965,7 +8965,7 @@ L_9452:
     goto L_982f;
 
 L_9455:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_9514;
     else
         goto LOpenGame;
@@ -8998,7 +8998,7 @@ L_949e:
 
 L_94ab:
     InitializeMenu(0x0);
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((game.fTutorial == 0x0))
         goto L_9505;
     else
@@ -9024,7 +9024,7 @@ L_9505:
     goto L_982f;
 
 L_9514:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_952f;
     else
         goto L_951d;
@@ -9034,7 +9034,7 @@ L_951d:
     goto LOpenGame;
 
 L_952f:
-    if ((wParam != 0x3))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x3))
         goto L_982f;
     else
         goto L_9538;

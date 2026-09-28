@@ -16,7 +16,7 @@ void             RestoreSelection();
 void             FormatSerialAndEnv(int32_t lSerial, uint8_t *pbEnv, char *pszOut);
 int16_t          FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn);
 int16_t          FFindSomethingAndSelectIt();
-void             CommandHandler(HWND hwnd, uint16_t wParam);
+void             CommandHandler(HWND hwnd, WPARAM wParam);
 void             InitializeMenu(HMENU hmenu);
 void             EnsureAis();
 HMENU            GetASubMenu(HWND hwnd, int16_t iMenu);

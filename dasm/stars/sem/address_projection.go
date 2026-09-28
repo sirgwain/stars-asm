@@ -572,7 +572,9 @@ func consumePointerConstIndex(base Expr, ptr *typeinfo.Pointer, offset int, widt
 	if index == 0 {
 		return nil, 0, false
 	}
-	if remainder != 0 && (width == 0 || remainder+width > elemSize) {
+	// The access must fit in the element: a word read at a byte pointer's
+	// element 1 reads two elements, not lpb[1].
+	if remainder != 0 && width == 0 || width > 0 && remainder+width > elemSize {
 		return nil, 0, false
 	}
 	return &ArrayIndex{Base: base, Index: signedIndexConst(index), TypeInfo: ptr.Elem}, remainder, true

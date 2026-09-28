@@ -142,7 +142,7 @@ func nextInst(instrs []asm.DecodedInst, instIdx int) *asm.DecodedInst {
 
 // handleCALLF extracts call operands and updates the ABI return state.
 func (ctx *extractor) handleCALLF(st *state, inst asm.DecodedInst, call *InstCall, next *asm.DecodedInst, meta Meta) []Effect {
-	target := call.Target
+	target := call.Target.CallSignature()
 	if handleCompilerFlagHelper(st, target) {
 		return nil
 	}

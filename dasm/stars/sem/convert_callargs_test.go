@@ -67,7 +67,7 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "call ptile[i].pfn(0x3333, 0x2222, 0x1111)"
+	want := "call ptile[i].pfn((HDC)13107, 0x2222, 0x1111)"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}

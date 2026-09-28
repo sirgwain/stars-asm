@@ -265,7 +265,7 @@ L_04eb:
         goto L_04fc;
 
 L_04fc:
-    if (((LOWORD(lpb) - LOWORD(lpbPrev)) >= cb))
+    if (((lpb - lpbPrev) >= cb))
         goto L_0524;
     else
         goto L_0512;
@@ -275,7 +275,7 @@ L_0512:
     goto L_04dd;
 
 L_0524:
-    cbItem = ((LOWORD(lpb) - LOWORD(lpbPrev)) + 0xfffe);
+    cbItem = ((lpb - lpbPrev) + 0xfffe);
     RawStore16(lpbPrev, (cbItem | 0x1));
     if (((cbItem + 0x2) < cb))
         goto L_0575;
@@ -321,13 +321,13 @@ L_05b0:
     goto L_0623;
 
 L_05c8:
-    if ((lp <= lphb))
+    if (((HB *)(lp) <= lphb))
         goto L_0612;
     else
         goto L_05e7;
 
 L_05e7:
-    if ((lp < ((uint8_t *)(lphb) + lphb->cbBlock)))
+    if (((uint8_t *)(lp) < ((uint8_t *)(lphb) + lphb->cbBlock)))
         goto L_0635;
     else
         goto L_0612;
@@ -436,7 +436,7 @@ L_07c6:
     cbFree = (RawLoad16(((uint8_t *)(lp)-0x2)) + 0x2);
     RawStore16(((uint8_t *)(lp)-0x2), (RawLoad16(((uint8_t *)(lp)-0x2)) | 0x1));
     lphb->cbFree = (lphb->cbFree + cbFree);
-    if (((((LOWORD(lp) - LOWORD(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
+    if ((((((uint8_t *)(lp) - (uint8_t *)(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
         goto L_082f;
     else
         goto L_081b;

@@ -1287,14 +1287,14 @@ L_63e0:
     goto Default;
 
 L_640f:
-    if ((LOWORD(lParam) != hwndMsgScroll))
+    if ((GET_WM_CTLCOLOR_HWND(wParam, lParam) != hwndMsgScroll))
         goto Default;
     else
         goto L_641e;
 
 L_641e:
     SetBkColor((HDC)(wParam), crButtonFace);
-    return (uint32_t)(hbrButtonFace);
+    return (LRESULT)(hbrButtonFace);
 
 L_643a:
     hdc = BeginPaint(hwnd, &(ps));
@@ -1625,7 +1625,7 @@ L_6b47:
     goto L_7207;
 
 L_6b50:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_6b75;
     else
         goto L_6b6c;
@@ -1634,13 +1634,13 @@ L_6b6c:
     SetFocus(hwndFrame);
 
 L_6b75:
-    if ((LOWORD(lParam) != rghwndMsgBtn[0]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[0]))
         goto L_6c7e;
     else
         goto L_6b84;
 
 L_6b84:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_6c7e;
     else
         goto PrevMsg;
@@ -1705,13 +1705,13 @@ L_6c78:
     goto L_7207;
 
 L_6c7e:
-    if ((LOWORD(lParam) != rghwndMsgBtn[2]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[2]))
         goto L_6d25;
     else
         goto L_6c8d;
 
 L_6c8d:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_6d25;
     else
         goto NextMsg;
@@ -1751,13 +1751,13 @@ L_6d13:
     goto SetupNewMsg;
 
 L_6d25:
-    if ((LOWORD(lParam) != rghwndMsgBtn[3]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[3]))
         goto L_6d62;
     else
         goto L_6d34;
 
 L_6d34:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_6d62;
     else
         goto L_6d50;
@@ -1767,13 +1767,13 @@ L_6d50:
     goto SetupNewMsg;
 
 L_6d62:
-    if ((LOWORD(lParam) != rghwndMsgBtn[1]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[1]))
         goto Default;
     else
         goto L_6d71;
 
 L_6d71:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto Default;
     else
         goto GotoMsg;
@@ -1891,19 +1891,19 @@ L_6f4a:
     goto L_7163;
 
 L_6f4d:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7e), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
     goto L_7163;
 
 L_6f69:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x5f), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
     goto L_7163;
 
 L_6f85:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7d), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
     goto L_7163;
 
 L_6fa1:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7de), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
     goto L_7163;
 
 L_6fbd:
@@ -1919,7 +1919,7 @@ L_6fc7:
         goto L_6fd2;
 
 L_6fd2:
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x901), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x901, 0);
 
 L_6feb:
     goto L_7163;
@@ -1985,7 +1985,7 @@ L_70fd:
 
 L_7115:
     fBrowserValid = 1;
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x100), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
 
 L_7134:
     goto L_7163;
@@ -2065,7 +2065,7 @@ L_71bc:
         goto L_71c4;
 
 L_71c4:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_640f;
     else
         goto L_71cc;
@@ -3150,8 +3150,8 @@ L_81da:
     goto L_8151;
 
 L_81dd:
-    lpmt->cbParams = ((uint32_t)((LOWORD(lpb) - LOWORD(lpbBase))) & 0xf);
-    return (LOWORD(lpb) - pb);
+    lpmt->cbParams = ((uint32_t)((lpb - lpbBase)) & 0xf);
+    return (lpb - pb);
 }
 
 int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
@@ -4048,19 +4048,19 @@ L_9031:
     return 1;
 
 L_9113:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_9125;
     else
         goto L_911c;
 
 L_911c:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_91b7;
     else
         goto L_9125;
 
 L_9125:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_9193;
     else
         goto L_912e;
@@ -4078,7 +4078,7 @@ L_915d:
     goto L_9212;
 
 L_9193:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_91a5;
     else
         goto L_919f;
@@ -4095,7 +4095,7 @@ L_91a8:
     return 1;
 
 L_91b7:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_9212;
     else
         goto L_91c0;
@@ -4117,7 +4117,7 @@ L_91ef:
         goto L_91f7;
 
 L_91f7:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_8ffc;
     else
         goto L_91ff;
@@ -4176,20 +4176,20 @@ L_92a7:
         goto L_92bb;
 
 L_92bb:
-    if (((lpb[1] & 0x1ff) != iMsg))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) != iMsg))
         goto L_92f6;
     else
         goto L_92cf;
 
 L_92cf:
-    if ((lpb[3] != iObj))
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x3)) != iObj))
         goto L_92f6;
     else
         goto L_92de;
 
 L_92de:
     cDel = (cDel + 1);
-    lpb[1] = ((lpb[1] & 0xfe00) | 0x1ff);
+    RawStore16(((uint8_t *)(lpb) + 0x1), ((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0xfe00) | 0x1ff));
 
 L_92f6:
     lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
@@ -4222,13 +4222,13 @@ L_9354:
         goto L_9368;
 
 L_9368:
-    if (((lpb[1] & 0x1ff) != iMsg))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) != iMsg))
         goto L_9391;
     else
         goto L_937c;
 
 L_937c:
-    if ((lpb[3] != iObj))
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x3)) != iObj))
         goto L_9391;
     else
         goto L_938b;
@@ -4273,7 +4273,7 @@ L_9404:
     goto L_94d2;
 
 L_9411:
-    w = ((lpb[1] >> 0x9) & 0x7f);
+    w = ((RawLoad16(((uint8_t *)(lpb) + 0x1)) >> 0x9) & 0x7f);
     if (((w & 0x1) != 0x1))
         goto L_9448;
     else
@@ -4305,7 +4305,7 @@ L_9479:
     goto LLookupPlanet;
 
 L_947f:
-    w = lpb[3];
+    w = RawLoad16(((uint8_t *)(lpb) + 0x3));
 
 LLookupPlanet:
     lppl = LpplFromId(w);
@@ -4321,197 +4321,197 @@ L_94c2:
     goto L_95d5;
 
 L_94c5:
-    w = lpb[3];
+    w = RawLoad16(((uint8_t *)(lpb) + 0x3));
     goto L_95d5;
 
 L_94d2:
-    if (((lpb[1] & 0x1ff) == 0x7))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x7))
         goto L_947f;
     else
         goto L_94da;
 
 L_94da:
-    if (((lpb[1] & 0x1ff) == 0x23))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x23))
         goto L_947f;
     else
         goto L_94e2;
 
 L_94e2:
-    if (((lpb[1] & 0x1ff) == 0x40))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x40))
         goto L_947f;
     else
         goto L_94ea;
 
 L_94ea:
-    if (((lpb[1] & 0x1ff) == 0x8f))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x8f))
         goto L_9411;
     else
         goto L_94f2;
 
 L_94f2:
-    if (((lpb[1] & 0x1ff) == 0x91))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x91))
         goto L_94c5;
     else
         goto L_94fa;
 
 L_94fa:
-    if (((lpb[1] & 0x1ff) == 0x92))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x92))
         goto L_94c5;
     else
         goto L_9502;
 
 L_9502:
-    if (((lpb[1] & 0x1ff) == 0x93))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x93))
         goto L_94c5;
     else
         goto L_950a;
 
 L_950a:
-    if (((lpb[1] & 0x1ff) == 0x94))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x94))
         goto L_94c5;
     else
         goto L_9512;
 
 L_9512:
-    if (((lpb[1] & 0x1ff) == 0x95))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x95))
         goto L_94c5;
     else
         goto L_951a;
 
 L_951a:
-    if (((lpb[1] & 0x1ff) == 0x96))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x96))
         goto L_94c5;
     else
         goto L_9522;
 
 L_9522:
-    if (((lpb[1] & 0x1ff) == 0x97))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x97))
         goto L_94c5;
     else
         goto L_952a;
 
 L_952a:
-    if (((lpb[1] & 0x1ff) == 0x98))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x98))
         goto L_94c5;
     else
         goto L_9532;
 
 L_9532:
-    if (((lpb[1] & 0x1ff) == 0x99))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x99))
         goto L_94c5;
     else
         goto L_953a;
 
 L_953a:
-    if (((lpb[1] & 0x1ff) == 0x9a))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9a))
         goto L_94c5;
     else
         goto L_9542;
 
 L_9542:
-    if (((lpb[1] & 0x1ff) == 0x9b))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9b))
         goto L_94c5;
     else
         goto L_954a;
 
 L_954a:
-    if (((lpb[1] & 0x1ff) == 0x9c))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9c))
         goto L_94c5;
     else
         goto L_9552;
 
 L_9552:
-    if (((lpb[1] & 0x1ff) == 0x9d))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9d))
         goto L_94c5;
     else
         goto L_955a;
 
 L_955a:
-    if (((lpb[1] & 0x1ff) == 0x9e))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9e))
         goto L_94c5;
     else
         goto L_9562;
 
 L_9562:
-    if (((lpb[1] & 0x1ff) == 0x9f))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x9f))
         goto L_94c5;
     else
         goto L_956a;
 
 L_956a:
-    if (((lpb[1] & 0x1ff) == 0xa0))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa0))
         goto L_94c5;
     else
         goto L_9572;
 
 L_9572:
-    if (((lpb[1] & 0x1ff) == 0xa1))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa1))
         goto L_94c5;
     else
         goto L_957a;
 
 L_957a:
-    if (((lpb[1] & 0x1ff) == 0xa2))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa2))
         goto L_94c5;
     else
         goto L_9582;
 
 L_9582:
-    if (((lpb[1] & 0x1ff) == 0xa3))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa3))
         goto L_94c5;
     else
         goto L_958a;
 
 L_958a:
-    if (((lpb[1] & 0x1ff) == 0xa4))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa4))
         goto L_94c5;
     else
         goto L_9592;
 
 L_9592:
-    if (((lpb[1] & 0x1ff) == 0xa5))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa5))
         goto L_94c5;
     else
         goto L_959a;
 
 L_959a:
-    if (((lpb[1] & 0x1ff) == 0xa6))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa6))
         goto L_94c5;
     else
         goto L_95a2;
 
 L_95a2:
-    if (((lpb[1] & 0x1ff) == 0xa7))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa7))
         goto L_94c5;
     else
         goto L_95aa;
 
 L_95aa:
-    if (((lpb[1] & 0x1ff) == 0xa8))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0xa8))
         goto L_94c5;
     else
         goto L_95b2;
 
 L_95b2:
-    if (((lpb[1] & 0x1ff) == 0x113))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x113))
         goto L_94c5;
     else
         goto L_95ba;
 
 L_95ba:
-    if (((lpb[1] & 0x1ff) == 0x114))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x114))
         goto L_94c5;
     else
         goto L_95c2;
 
 L_95c2:
-    if (((lpb[1] & 0x1ff) == 0x115))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x115))
         goto L_94c5;
     else
         goto L_95ca;
 
 L_95ca:
-    if (((lpb[1] & 0x1ff) == 0x116))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x116))
         goto L_94c5;
     else
         goto L_95d5;
@@ -4619,7 +4619,7 @@ L_976f:
         goto L_9784;
 
 L_9784:
-    if (((lpb[1] & 0x1ff) == 0x1ff))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x1)) & 0x1ff) == 0x1ff))
         goto L_97f1;
     else
         goto L_9797;

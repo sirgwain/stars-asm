@@ -268,7 +268,7 @@ L_04f9:
     goto L_09c8;
 
 L_04fc:
-    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2);
     iNew = iCur;
     goto L_0576;
 
@@ -293,7 +293,7 @@ L_054f:
     goto L_0597;
 
 L_055f:
-    iNew = LOWORD(lParam);
+    iNew = GET_WM_VSCROLL_POS(wParam, lParam);
     goto L_0597;
 
 L_056b:
@@ -301,13 +301,13 @@ L_056b:
     goto L_0597;
 
 L_0576:
-    if ((wParam > 0x7))
+    if ((GET_WM_VSCROLL_CODE(wParam, lParam) > SB_BOTTOM))
         goto L_0597;
     else
         goto L_057e;
 
 L_057e:
-    switch ((wParam * 0x2)) {
+    switch ((GET_WM_VSCROLL_CODE(wParam, lParam) * 0x2)) {
     case 0x0:
         goto L_0538;
     case 0x2:
@@ -358,14 +358,14 @@ L_05d7:
     rc.top = (dyArial8 + 6);
     rc.bottom = (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top);
     ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &(rc), &(rc));
-    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
+    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
     UpdateWindow(hwnd);
 
 L_0673:
     return 0;
 
 L_067c:
-    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
     iNew = iCur;
     goto L_06e4;
 
@@ -390,7 +390,7 @@ L_06c6:
     goto L_0705;
 
 L_06cd:
-    iNew = LOWORD(lParam);
+    iNew = GET_WM_HSCROLL_POS(wParam, lParam);
     goto L_0705;
 
 L_06d9:
@@ -398,13 +398,13 @@ L_06d9:
     goto L_0705;
 
 L_06e4:
-    if ((wParam > 0x7))
+    if ((GET_WM_HSCROLL_CODE(wParam, lParam) > SB_BOTTOM))
         goto L_0705;
     else
         goto L_06ec;
 
 L_06ec:
-    switch ((wParam * 0x2)) {
+    switch ((GET_WM_HSCROLL_CODE(wParam, lParam) * 0x2)) {
     case 0x0:
         goto L_06b8;
     case 0x2:
@@ -448,8 +448,8 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
-    iNew = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1);
+    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
     if ((iNew == iCur))
         goto L_080f;
     else
@@ -564,7 +564,7 @@ L_0942:
     goto L_09c8;
 
 L_0945:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_09c8;
     else
         goto L_094e;
@@ -1104,7 +1104,7 @@ L_122f:
     goto L_13a8;
 
 L_1266:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_12ba;
     else
         goto L_126f;
@@ -1126,7 +1126,7 @@ L_12b1:
     return 1;
 
 L_12ba:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_12e7;
     else
         goto L_12c3;
@@ -1136,7 +1136,7 @@ L_12c3:
     return 1;
 
 L_12e7:
-    if ((wParam != 0xc6))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x00C6))
         goto L_13a8;
     else
         goto L_12f1;
@@ -8556,19 +8556,19 @@ L_a2a8:
     return (INT_PTR)(hbrButtonFace);
 
 L_a2c1:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_a2d3;
     else
         goto L_a2ca;
 
 L_a2ca:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_a3b9;
     else
         goto L_a2d3;
 
 L_a2d3:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_a382;
     else
         goto L_a2dc;
@@ -8620,7 +8620,7 @@ L_a379:
 
 L_a382:
     StickyDlgPos(hwnd, &(ptStickyPrintMapDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_a3a7;
     else
         goto L_a3a1;
@@ -8637,7 +8637,7 @@ L_a3aa:
     return 1;
 
 L_a3b9:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_a3e6;
     else
         goto L_a3c2;
@@ -8647,25 +8647,25 @@ L_a3c2:
     return 1;
 
 L_a3e6:
-    if ((wParam == 0x10c))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_EDIT1))
         goto L_a3fa;
     else
         goto L_a3f0;
 
 L_a3f0:
-    if ((wParam != 0x10d))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x010D))
         goto L_a496;
     else
         goto L_a3fa;
 
 L_a3fa:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x400))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x400))
         goto L_a496;
     else
         goto L_a416;
 
 L_a416:
-    GetWindowText((HWND)(LOWORD(lParam)), szWork, 10);
+    GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 10);
     if (((int16_t)(szWork[0]) == 0))
         goto L_a496;
     else
@@ -8685,7 +8685,7 @@ L_a445:
 
 L_a451:
     MessageBeep(0x0);
-    SetWindowText((HWND)(LOWORD(lParam)), &(szWork[1]));
+    SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), &(szWork[1]));
 
 L_a46d:
     goto L_a496;
@@ -8697,7 +8697,7 @@ L_a473:
         goto L_a47b;
 
 L_a47b:
-    if ((msg == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(msg) != 0))
         goto L_a28c;
     else
         goto L_a483;

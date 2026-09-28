@@ -9,6 +9,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t t_merge_0756_0001;
     HWND    t_call_0763;
     int16_t t_merge_077c_0001;
+    HWND    t_scratch_m16;
     HWND    t_call_10ec;
     int16_t t_merge_1105_0001;
     HWND    t_call_1112;
@@ -210,7 +211,8 @@ L_0a62:
     goto L_0a8f;
 
 L_0a6a:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, idc)))
+    t_scratch_m16 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m16 == GetDlgItem(hwnd, idc)))
         goto L_0a99;
     else
         goto L_0a8b;
@@ -246,13 +248,13 @@ L_0ad8:
     return 1;
 
 L_0b00:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_0b12;
     else
         goto L_0b09;
 
 L_0b09:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_0bb8;
     else
         goto L_0b12;
@@ -283,7 +285,7 @@ L_0ba9:
     return 1;
 
 L_0bb8:
-    if ((wParam != 0x41d))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041D))
         goto L_0c05;
     else
         goto L_0bc2;
@@ -294,7 +296,7 @@ L_0bc2:
     goto L_16f8;
 
 L_0c05:
-    if ((wParam != 0x817))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE))
         goto L_0e25;
     else
         goto L_0c0f;
@@ -349,37 +351,37 @@ L_0dd0:
     goto L_16f8;
 
 L_0e25:
-    if ((wParam != 0x41f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041F))
         goto L_0e70;
     else
         goto L_0e2f;
 
 L_0e2f:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTarget1 = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0e70:
-    if ((wParam != 0x420))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0420))
         goto L_0ec4;
     else
         goto L_0e7a;
 
 L_0e7a:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTarget2 = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0ec4:
-    if ((wParam != 0x422))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0422))
         goto L_0f41;
     else
         goto L_0ece;
 
 L_0ece:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     if ((game.fSinglePlr == 0x0))
         goto L_0f0d;
     else
@@ -404,19 +406,19 @@ L_0f1f:
     goto L_16f8;
 
 L_0f41:
-    if ((wParam != 0x421))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0421))
         goto L_0f92;
     else
         goto L_0f4b;
 
 L_0f4b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTactic = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0f92:
-    if ((wParam != 0x41b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME))
         goto L_1134;
     else
         goto LRename;
@@ -488,7 +490,7 @@ L_112b:
     goto L_16f8;
 
 L_1134:
-    if ((wParam != 0x41c))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x41c))
         goto L_149b;
     else
         goto L_113e;
@@ -601,7 +603,7 @@ L_1452:
     goto LRename;
 
 L_149b:
-    if ((wParam != 0x41e))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041E))
         goto L_16a5;
     else
         goto LSelectName;
@@ -678,7 +680,7 @@ L_16a2:
     goto L_16f8;
 
 L_16a5:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_16f8;
     else
         goto L_16ae;
@@ -694,7 +696,7 @@ L_16d5:
         goto L_16dd;
 
 L_16dd:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0a62;
     else
         goto L_16e5;

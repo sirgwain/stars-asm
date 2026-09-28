@@ -145,12 +145,30 @@ type MessageRule struct {
 	// Result is the type a window procedure returns for this message, such
 	// as the brush handle answering WM_CTLCOLOR.
 	Result Type
+
+	// Match is a predicate of the message parameter recognizing this
+	// message natively, for a Win16 message Win32 replaced with others:
+	// IS_WM_CTLCOLOR for the WM_CTLCOLOR* range. It is nil for messages
+	// Win32 still sends.
+	Match *Function
 }
 
 // MessagePayloadRule describes interpretations of a whole message parameter
 // and its low and high words.
 type MessagePayloadRule struct {
-	Whole  Type
-	Loword Type
-	Hiword Type
+	Whole  MessagePart
+	Loword MessagePart
+	Hiword MessagePart
+}
+
+// MessagePart is one interpretation of a message parameter or word of it:
+// its value type, and for a part Win32 moved elsewhere, the cracker that
+// reads it with the Win32 packing.
+type MessagePart struct {
+	Type Type
+
+	// Get is a GET_WM_* message cracker: a function of (wParam, lParam)
+	// returning Type, defined in the generated headers. It is nil where the
+	// Win32 packing matches Win16.
+	Get *Function
 }

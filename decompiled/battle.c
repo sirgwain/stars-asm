@@ -15,6 +15,8 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
     RECT        rcGBox;
     int16_t     mdSBase;
     uint16_t    t_merge_00dc_0001;
+    HWND        t_scratch_me_2;
+    uint16_t    t_scratch_me_3;
 
 L_0088:
     goto L_048d;
@@ -87,7 +89,8 @@ L_019f:
     return 1;
 
 L_02aa:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x07D3)))
+    t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me_2 == GetDlgItem(hwnd, IDC_U16_0x07D3)))
         goto L_04c0;
     else
         goto L_02c9;
@@ -97,7 +100,7 @@ L_02c9:
     return (INT_PTR)(hbrButtonFace);
 
 L_02e2:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_034a;
     else
         goto L_02eb;
@@ -118,13 +121,13 @@ L_0332:
     return 1;
 
 L_034a:
-    if ((wParam < 0x7d4))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < 0x7d4))
         goto L_03bf;
     else
         goto L_0354;
 
 L_0354:
-    if ((wParam > 0x7d6))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x07D6))
         goto L_03bf;
     else
         goto L_035e;
@@ -140,12 +143,13 @@ L_038e:
     i = (i + 1);
 
 L_0392:
-    rgplr[idPlayer].rgmdRelation[i] = LOBYTE((wParam + 0xf82c));
+    t_scratch_me_3 = (GET_WM_COMMAND_ID(wParam, lParam) - 2004);
+    rgplr[idPlayer].rgmdRelation[i] = LOBYTE(t_scratch_me_3);
     fDirtyPlan = 1;
     goto L_04c0;
 
 L_03bf:
-    if ((wParam != 0x7d3))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x07D3))
         goto L_042d;
     else
         goto L_03c9;
@@ -165,7 +169,7 @@ L_03fd:
     goto L_04c0;
 
 L_042d:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_04c0;
     else
         goto L_0436;
@@ -207,7 +211,7 @@ L_049d:
         goto L_04a5;
 
 L_04a5:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_02aa;
     else
         goto L_04ad;
@@ -257,19 +261,19 @@ L_057c:
     return (INT_PTR)(hbrButtonFace);
 
 L_0595:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_05a7;
     else
         goto L_059e;
 
 L_059e:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_05f1;
     else
         goto L_05a7;
 
 L_05a7:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_05cd;
     else
         goto L_05b0;
@@ -279,7 +283,7 @@ L_05b0:
     fDirtyPlan = 1;
 
 L_05cd:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_05df;
     else
         goto L_05d9;
@@ -296,7 +300,7 @@ L_05e2:
     return 1;
 
 L_05f1:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_0644;
     else
         goto L_05fa;
@@ -312,7 +316,7 @@ L_0621:
         goto L_0629;
 
 L_0629:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0560;
     else
         goto L_0631;
@@ -344,6 +348,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t t_merge_0756_0001;
     HWND    t_call_0763;
     int16_t t_merge_077c_0001;
+    HWND    t_scratch_m16;
     HWND    t_call_10ec;
     int16_t t_merge_1105_0001;
     HWND    t_call_1112;
@@ -545,7 +550,8 @@ L_0a62:
     goto L_0a8f;
 
 L_0a6a:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, idc)))
+    t_scratch_m16 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m16 == GetDlgItem(hwnd, idc)))
         goto L_0a99;
     else
         goto L_0a8b;
@@ -581,13 +587,13 @@ L_0ad8:
     return 1;
 
 L_0b00:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_0b12;
     else
         goto L_0b09;
 
 L_0b09:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_0bb8;
     else
         goto L_0b12;
@@ -618,7 +624,7 @@ L_0ba9:
     return 1;
 
 L_0bb8:
-    if ((wParam != 0x41d))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041D))
         goto L_0c05;
     else
         goto L_0bc2;
@@ -629,7 +635,7 @@ L_0bc2:
     goto L_16f8;
 
 L_0c05:
-    if ((wParam != 0x817))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE))
         goto L_0e25;
     else
         goto L_0c0f;
@@ -684,37 +690,37 @@ L_0dd0:
     goto L_16f8;
 
 L_0e25:
-    if ((wParam != 0x41f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041F))
         goto L_0e70;
     else
         goto L_0e2f;
 
 L_0e2f:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTarget1 = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0e70:
-    if ((wParam != 0x420))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0420))
         goto L_0ec4;
     else
         goto L_0e7a;
 
 L_0e7a:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTarget2 = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0ec4:
-    if ((wParam != 0x422))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0422))
         goto L_0f41;
     else
         goto L_0ece;
 
 L_0ece:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     if ((game.fSinglePlr == 0x0))
         goto L_0f0d;
     else
@@ -739,19 +745,19 @@ L_0f1f:
     goto L_16f8;
 
 L_0f41:
-    if ((wParam != 0x421))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x0421))
         goto L_0f92;
     else
         goto L_0f4b;
 
 L_0f4b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
     btlplan.mdTactic = i;
     fDirtyPlan = 1;
     goto L_16f8;
 
 L_0f92:
-    if ((wParam != 0x41b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME))
         goto L_1134;
     else
         goto LRename;
@@ -823,7 +829,7 @@ L_112b:
     goto L_16f8;
 
 L_1134:
-    if ((wParam != 0x41c))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x41c))
         goto L_149b;
     else
         goto L_113e;
@@ -936,7 +942,7 @@ L_1452:
     goto LRename;
 
 L_149b:
-    if ((wParam != 0x41e))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x041E))
         goto L_16a5;
     else
         goto LSelectName;
@@ -1013,7 +1019,7 @@ L_16a2:
     goto L_16f8;
 
 L_16a5:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_16f8;
     else
         goto L_16ae;
@@ -1029,7 +1035,7 @@ L_16d5:
         goto L_16dd;
 
 L_16dd:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0a62;
     else
         goto L_16e5;
@@ -4014,7 +4020,7 @@ L_490a:
     t_scratch_m44_2 = SpdOfShip(lpflCur, ishdef, ptok, fDumpCargo, 0x0);
     ptok->spd = t_scratch_m44_2;
     ptok = (ptok + 1);
-    if ((((int32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 0x1d) > 0xff))
+    if ((((int32_t)(((uint8_t *)(ptok) - (uint8_t *)(vrgtok))) / 0x1d) > 0xff))
         goto LTooManyTokens;
     else
         goto L_4a5b;
@@ -4036,7 +4042,7 @@ L_4a68:
         goto LTooManyTokens;
 
 LTooManyTokens:
-    vctok = ((int32_t)((LOWORD(ptok) - LOWORD(vrgtok))) / 29);
+    vctok = ((int32_t)(((uint8_t *)(ptok) - (uint8_t *)(vrgtok))) / 29);
     RandomizeTokOrder();
     ptokT = vrgtok;
     goto L_4c7e;
@@ -7254,14 +7260,14 @@ L_8225:
 
 L_8283:
     dpOrig = (dpOrig - dp);
-    lpbBattleCur[4] = WPackLong(dp);
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x4), WPackLong(dp));
     ptok->dpShield = (LOWORD((int32_t)((dpOrig / (uint32_t)(ptok->csh)))) + LOWORD(dpT));
     dp = 0;
     goto L_8313;
 
 L_82d6:
     dp = (dp - dpOrig);
-    lpbBattleCur[4] = WPackLong(dpOrig);
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x4), WPackLong(dpOrig));
     ptok->dpShield = 0x0;
 
 L_8301:
@@ -7295,7 +7301,7 @@ L_832e:
         goto L_8340;
 
 L_8340:
-    lpbBattleCur[6] = ptok->dv.dp;
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x6), ptok->dv.dp);
     *(pdpBeam) = dp;
     if (((lpbBattleCur[1] & 0x4) == 0x0))
         goto L_837c;
@@ -7350,8 +7356,8 @@ L_845f:
         goto L_847a;
 
 L_847a:
-    lpbBattleCur[6] = ((lpbBattleCur[6] & 0x7f) | 0xfa00);
-    lpbBattleCur[2] = 0x1;
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x6), ((RawLoad16(((uint8_t *)(lpbBattleCur) + 0x6)) & 0x7f) | 0xfa00));
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x2), 0x1);
     ptok->fActive = 0x0;
     ptok->csh = 0x0;
     fStarbaseDied = 1;
@@ -7383,18 +7389,18 @@ L_859a:
     lppl->pctDp = (lppl->pctDp + 0x1);
 
 L_85c4:
-    lpbBattleCur[6] = ((lpbBattleCur[6] & 0x7f) | ((lppl->pctDp & 0x1ff) << 0x7));
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x6), ((RawLoad16(((uint8_t *)(lpbBattleCur) + 0x6)) & 0x7f) | ((lppl->pctDp & 0x1ff) << 0x7)));
     fStarbaseDamaged = 1;
 
 L_8601:
-    if ((((lpbBattleCur[6] >> 0x7) & 0x1ff) == 0x0))
+    if ((((RawLoad16(((uint8_t *)(lpbBattleCur) + 0x6)) >> 0x7) & 0x1ff) == 0x0))
         goto L_863e;
     else
         goto L_8619;
 
 L_8619:
-    lpbBattleCur[6] = ((lpbBattleCur[6] & 0xff80) | 0x64);
-    ptok->dv.dp = lpbBattleCur[6];
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x6), ((RawLoad16(((uint8_t *)(lpbBattleCur) + 0x6)) & 0xff80) | 0x64));
+    ptok->dv.dp = RawLoad16(((uint8_t *)(lpbBattleCur) + 0x6));
 
 L_863e:
     *(pdpBeam) = 0;
@@ -7602,14 +7608,14 @@ L_89e6:
     pctDp = 0;
 
 L_89f1:
-    lpbBattleCur[2] = (ptok->csh - csh);
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x2), (ptok->csh - csh));
     if ((csh == ptok->csh))
         goto L_8a38;
     else
         goto L_8a14;
 
 L_8a14:
-    KillShips(ptok, lpbBattleCur[2], ishdef, lpfl, 1);
+    KillShips(ptok, RawLoad16(((uint8_t *)(lpbBattleCur) + 0x2)), ishdef, lpfl, 1);
 
 L_8a38:
     if ((csh == 0))
@@ -7648,7 +7654,7 @@ L_8ad7:
 
 L_8ae3:
     dpOrig = (dpOrig - *(pdpBeam));
-    lpbBattleCur[6] = ptok->dv.dp;
+    RawStore16(((uint8_t *)(lpbBattleCur) + 0x6), ptok->dv.dp);
     lpbBattleCur = (lpbBattleCur + 8);
     if ((pcTorp == 0x0))
         goto L_8b1c;
@@ -8369,7 +8375,7 @@ L_982b:
         goto L_9834;
 
 L_9834:
-    lpbtldata->cbData = (LOWORD(lpbBattleCur) - LOWORD(lpbtldata));
+    lpbtldata->cbData = (lpbBattleCur - (uint8_t *)(lpbtldata));
     SendBattleMessages(lpfl, cplr, lpbtldata->id, rgPlrLosses, grfPlayer, cShipsInvolved, cShdefsInvolved, grfSpectator);
     lpbtldata->grfPlr = grfPlayer;
     if (((0xffc8 - (uint32_t)((LOWORD(lpbSav) & 0xffff))) < (uint32_t)(lpbtldata->cbData)))

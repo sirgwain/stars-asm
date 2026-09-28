@@ -49,7 +49,7 @@ L_0087:
     return 0;
 
 L_00a3:
-    if ((wParam != 0x9c7))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x9c7))
         goto L_0142;
     else
         goto L_00ad;
@@ -84,7 +84,7 @@ L_013f:
     goto L_025b;
 
 L_0142:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_01a0;
     else
         goto L_014b;
@@ -104,7 +104,7 @@ L_0197:
     return 1;
 
 L_01a0:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_025b;
     else
         goto L_01a9;
@@ -184,7 +184,7 @@ L_02bd:
     return (INT_PTR)(hbrButtonFace);
 
 L_02d6:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_02f4;
     else
         goto L_02df;
@@ -194,7 +194,7 @@ L_02df:
     return 1;
 
 L_02f4:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_031f;
     else
         goto L_02fd;
@@ -204,19 +204,19 @@ L_02fd:
     return 1;
 
 L_031f:
-    if ((wParam == 0x9c9))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == 0x9c9))
         goto L_0333;
     else
         goto L_0329;
 
 L_0329:
-    if ((wParam != 0x9ca))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x9ca))
         goto L_0366;
     else
         goto L_0333;
 
 L_0333:
-    EndDialog(hwnd, wParam);
+    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
     return 1;
 
 L_034b:
@@ -226,7 +226,7 @@ L_034b:
         goto L_0353;
 
 L_0353:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_02a1;
     else
         goto L_035b;
@@ -523,7 +523,7 @@ L_08c0:
 
 L_08ea:
     InitializeMenu(0x0);
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     if ((fFreeingTitle != 0))
         goto L_092e;
     else

@@ -1181,19 +1181,19 @@ L_1671:
     goto KillTime;
 
 L_167f:
-    if ((wParam < 0xa1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_VCR_REW_ALL))
         goto L_1829;
     else
         goto L_1689;
 
 L_1689:
-    if ((wParam > 0xa5))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_VCR_FWD_ALL))
         goto L_1829;
     else
         goto L_1693;
 
 L_1693:
-    i = (wParam - 161);
+    i = (GET_WM_COMMAND_ID(wParam, lParam) - 161);
     if ((gd.fVCRTimer == 0x0))
         goto L_16d3;
     else
@@ -1346,13 +1346,13 @@ L_1807:
     goto L_1930;
 
 L_1829:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_183b;
     else
         goto L_1832;
 
 L_1832:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_18ac;
     else
         goto L_183b;
@@ -1382,7 +1382,7 @@ L_1885:
     return 1;
 
 L_18ac:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_1930;
     else
         goto L_18b5;
@@ -2473,11 +2473,11 @@ void Delay(int16_t ctick) {
 
 L_3a3e:
     ti.dwSize = 0xc;
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickLast = ti.dwmsSinceStart;
 
 L_3a69:
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickCur = ti.dwmsSinceStart;
     if ((dwTickCur < dwTickLast))
         goto L_3abb;
@@ -2947,7 +2947,7 @@ L_41f9:
     dxFrame = (ptTorp.x - ptDest.x);
     dyFrame = (ptTorp.y - ptDest.y);
     ti.dwSize = 0xc;
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickLast = ti.dwmsSinceStart;
     iFrame = 0;
     goto L_438e;
@@ -2957,7 +2957,7 @@ L_424b:
     DrawIcon(hdc, (ptTorp.x - 16), (ptTorp.y - 16), rghiconVCR[((iFrame & 0x3) + 0x3)]);
 
 L_42a1:
-    TimerCount(ti);
+    TimerCount(&(ti));
     dwTickCur = ti.dwmsSinceStart;
     if ((dwTickCur < dwTickLast))
         goto L_4301;

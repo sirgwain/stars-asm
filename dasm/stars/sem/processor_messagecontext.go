@@ -28,8 +28,17 @@ type messageFact struct {
 // ProcessMachineFunc computes block-entry message facts from comparisons of
 // the message parameter against constants.
 func (p *messageContextProcessor) ProcessMachineFunc(result *Result, f *machine.FuncEffects) bool {
+	if handler := p.ctx.sdb.GetMessageHandler(p.ctx.fs.Name); handler != nil {
+		// A message handler helper handles its one message throughout.
+		messages := make(map[machine.BlockID]*typeinfo.MessageRule, len(f.Blocks))
+		for _, block := range f.Blocks {
+			messages[block.Block] = handler.Message
+		}
+		p.ctx.messageByBlock = messages
+		return false
+	}
 	params, ok := p.ctx.windowProcParams()
-	if !ok || len(f.Blocks) == 0 {
+	if !ok || params.msg == nil || len(f.Blocks) == 0 {
 		return false
 	}
 
@@ -100,7 +109,7 @@ func (p *messageContextProcessor) processBlock(fact messageFact, block machine.B
 			}
 		case machine.BranchEffect:
 			trueFact, falseFact := fact, fact
-			if value, op, ok := p.messageCompare(e.Predicate, msg); ok {
+			if value, op, ok := p.ctx.messageCompare(e.Predicate, msg); ok {
 				switch op {
 				case "==":
 					trueFact, falseFact = messageFact{values: []int{value}, known: true}, fact.without(value)
@@ -131,7 +140,7 @@ func (p *messageContextProcessor) processBlock(fact messageFact, block machine.B
 
 // messageCompare matches an equality predicate between the message parameter
 // and a constant message value.
-func (p *messageContextProcessor) messageCompare(pred *machine.PredicateValue, msg *typeinfo.FunctionVar) (int, string, bool) {
+func (ctx *FuncContext) messageCompare(pred *machine.PredicateValue, msg *typeinfo.FunctionVar) (int, string, bool) {
 	if pred.Kind != machine.PredicateCompare {
 		return 0, "", false
 	}
@@ -147,7 +156,7 @@ func (p *messageContextProcessor) messageCompare(pred *machine.PredicateValue, m
 	if !ok {
 		return 0, "", false
 	}
-	if offset, ok := p.ctx.paramStorageOffset(load.Addr, msg); !ok || offset != 0 {
+	if offset, ok := ctx.paramStorageOffset(load.Addr, msg); !ok || offset != 0 {
 		return 0, "", false
 	}
 	value, ok := rhs.(*machine.Const)
@@ -155,6 +164,30 @@ func (p *messageContextProcessor) messageCompare(pred *machine.PredicateValue, m
 		return 0, "", false
 	}
 	return int(value.Val), op, true
+}
+
+// messageMatch converts a comparison of a window procedure's message with a
+// message Win32 replaced into that message's native predicate:
+// message == WM_CTLCOLOR becomes IS_WM_CTLCOLOR(message) != 0.
+func (ctx *FuncContext) messageMatch(pred *machine.PredicateValue) (Expr, bool) {
+	params, ok := ctx.windowProcParams()
+	if !ok || params.msg == nil {
+		return nil, false
+	}
+	value, op, ok := ctx.messageCompare(pred, params.msg)
+	if !ok {
+		return nil, false
+	}
+	rule := ctx.sdb.GetMessage(params.msg.Type.(*typeinfo.Enum), value)
+	if rule == nil || rule.Match == nil {
+		return nil, false
+	}
+	matchOp := CompareNE
+	if op == "!=" {
+		matchOp = CompareEQ
+	}
+	call := &Call{Function: rule.Match, Args: []Expr{&Local{FunctionVar: *params.msg}}}
+	return &Compare{Op: matchOp, LHS: call, RHS: &Const{TypeInfo: typeinfo.I16}}, true
 }
 
 // paramStorageOffset returns the byte offset within param's storage that
@@ -242,9 +275,9 @@ func (p *messageContextProcessor) factMessageRule(messageEnum *typeinfo.Enum, fa
 }
 
 // agreedMessagePayload combines one parameter's payload rules from several
-// messages, keeping each part's type only where the rules agree.
+// messages, keeping each part only where the rules agree.
 func agreedMessagePayload(payloads []*typeinfo.MessagePayloadRule) *typeinfo.MessagePayloadRule {
-	var wholes, lowords, hiwords []typeinfo.Type
+	var wholes, lowords, hiwords []typeinfo.MessagePart
 	for _, payload := range payloads {
 		if payload != nil {
 			wholes = append(wholes, payload.Whole)
@@ -256,10 +289,34 @@ func agreedMessagePayload(payloads []*typeinfo.MessagePayloadRule) *typeinfo.Mes
 		return nil
 	}
 	return &typeinfo.MessagePayloadRule{
-		Whole:  agreedMessageType(wholes),
-		Loword: agreedMessageType(lowords),
-		Hiword: agreedMessageType(hiwords),
+		Whole:  agreedMessagePart(wholes),
+		Loword: agreedMessagePart(lowords),
+		Hiword: agreedMessagePart(hiwords),
 	}
+}
+
+// agreedMessagePart returns the part every specified entry agrees on, in
+// both type and cracker, or an empty part when they conflict.
+func agreedMessagePart(parts []typeinfo.MessagePart) typeinfo.MessagePart {
+	var agreed typeinfo.MessagePart
+	for _, part := range parts {
+		switch {
+		case part.Type == nil:
+		case agreed.Type == nil:
+			agreed = part
+		case !typeinfo.Equals(agreed.Type, part.Type) || crackerName(agreed.Get) != crackerName(part.Get):
+			return typeinfo.MessagePart{}
+		}
+	}
+	return agreed
+}
+
+// crackerName returns a cracker's name, or "" for a part without one.
+func crackerName(get *typeinfo.Function) string {
+	if get == nil {
+		return ""
+	}
+	return get.Name
 }
 
 // agreedMessageType returns the type every specified entry agrees on, or nil
@@ -287,8 +344,21 @@ type windowProcMessageParams struct {
 }
 
 // windowProcParams finds the message parameter, typed with the window message
-// enum, and the wParam and lParam parameters that follow it.
+// enum, and the wParam and lParam parameters that follow it. A message
+// handler helper has no message parameter, and may have no lParam.
 func (ctx *FuncContext) windowProcParams() (windowProcMessageParams, bool) {
+	if handler := ctx.sdb.GetMessageHandler(ctx.fs.Name); handler != nil {
+		var params windowProcMessageParams
+		for i := range ctx.fs.Params {
+			switch ctx.fs.Params[i].Name {
+			case handler.WParam:
+				params.wParam = &ctx.fs.Params[i]
+			case handler.LParam:
+				params.lParam = &ctx.fs.Params[i]
+			}
+		}
+		return params, true
+	}
 	for i := range ctx.fs.Params {
 		enum, ok := ctx.fs.Params[i].Type.(*typeinfo.Enum)
 		if !ok || enum.Name != typeinfo.MessageEnumName || i+2 >= len(ctx.fs.Params) {
@@ -325,24 +395,27 @@ func (sr *symbolResolver) messagePointerView(path symresolve.SymbolPath) symreso
 		return path
 	}
 	var payload *typeinfo.MessagePayloadRule
-	switch param.Name {
-	case params.wParam.Name:
+	switch {
+	case params.wParam != nil && param.Name == params.wParam.Name:
 		payload = message.WParam
-	case params.lParam.Name:
+	case params.lParam != nil && param.Name == params.lParam.Name:
 		payload = message.LParam
 	}
-	if payload == nil || !typeinfo.IsPointer(payload.Whole) || payload.Whole.Bytes() != param.Type.Bytes() {
+	if payload == nil || !typeinfo.IsPointer(payload.Whole.Type) || payload.Whole.Type.Bytes() != param.Type.Bytes() {
 		return path
 	}
-	return &symresolve.SymbolCast{Base: root, To: payload.Whole}
+	return &symresolve.SymbolCast{Base: root, To: payload.Whole.Type}
 }
 
-// messagePayloadCast views a window procedure's wParam or lParam, loaded
-// whole or by word, as the type the current block's message carries there,
-// such as the HDC in WM_ERASEBKGND's wParam or the control HWND in the low
-// word of WM_COMMAND's lParam. The cast is only produced when the consumer
-// expects exactly that type.
-func (c *machineConverter) messagePayloadCast(value machine.Value, expected typeinfo.Type) (Expr, bool) {
+// messagePayloadRead converts a read of a window procedure's wParam or
+// lParam, whole or by word, through the current block's message rule:
+//
+//   - a part Win32 repacked becomes its cracker call, such as
+//     GET_WM_COMMAND_HWND(wParam, lParam) for WM_COMMAND's LOWORD(lParam),
+//     except the whole parameter forwarded as a WPARAM or LPARAM.
+//   - a part Win32 kept is cast to its type, such as WM_ERASEBKGND's HDC,
+//     when the consumer expects exactly that type.
+func (c *machineConverter) messagePayloadRead(value machine.Value, expected typeinfo.Type) (Expr, bool) {
 	message := c.ctx.currentMessage
 	if message == nil {
 		return nil, false
@@ -355,12 +428,19 @@ func (c *machineConverter) messagePayloadCast(value machine.Value, expected type
 	if !ok {
 		return nil, false
 	}
-	param, payload := params.wParam, message.WParam
-	offset, ok := c.ctx.paramStorageOffset(load.Addr, param)
-	if !ok {
-		param, payload = params.lParam, message.LParam
-		if offset, ok = c.ctx.paramStorageOffset(load.Addr, param); !ok {
-			return nil, false
+	var param *typeinfo.FunctionVar
+	var payload *typeinfo.MessagePayloadRule
+	var offset int
+	for _, candidate := range []struct {
+		param   *typeinfo.FunctionVar
+		payload *typeinfo.MessagePayloadRule
+	}{{params.wParam, message.WParam}, {params.lParam, message.LParam}} {
+		if candidate.param == nil {
+			continue
+		}
+		if off, ok := c.ctx.paramStorageOffset(load.Addr, candidate.param); ok {
+			param, payload, offset = candidate.param, candidate.payload, off
+			break
 		}
 	}
 	if payload == nil {
@@ -370,20 +450,36 @@ func (c *machineConverter) messagePayloadCast(value machine.Value, expected type
 	if width == 0 {
 		width = load.Addr.Width
 	}
-	var typ typeinfo.Type
-	var part Expr
+	var part typeinfo.MessagePart
+	var read Expr
+	whole := offset == 0 && width == param.Type.Bytes()
 	switch {
-	case offset == 0 && width == param.Type.Bytes():
-		typ, part = payload.Whole, &Local{FunctionVar: *param}
+	case whole:
+		part, read = payload.Whole, &Local{FunctionVar: *param}
 	case offset == 0 && width == 2:
-		typ, part = payload.Loword, &Word{Parent: &Local{FunctionVar: *param}, Part: machine.WordLow}
+		part, read = payload.Loword, &Word{Parent: &Local{FunctionVar: *param}, Part: machine.WordLow}
 	case offset == 2 && width == 2:
-		typ, part = payload.Hiword, &Word{Parent: &Local{FunctionVar: *param}, Part: machine.WordHigh}
+		part, read = payload.Hiword, &Word{Parent: &Local{FunctionVar: *param}, Part: machine.WordHigh}
 	}
-	if typ == nil || !typeinfo.Equals(typ, expected) || typeinfo.Equals(typ, param.Type) {
+	if part.Get != nil {
+		if whole && typeinfo.IsNative(expected, typeinfo.NativeIntPtr) {
+			return nil, false
+		}
+		return &Call{Function: part.Get, Args: []Expr{messageParamArg(params.wParam), messageParamArg(params.lParam)}}, true
+	}
+	if part.Type == nil || expected == nil || !typeinfo.Equals(part.Type, expected) || typeinfo.Equals(part.Type, param.Type) {
 		return nil, false
 	}
-	return &Cast{Value: part, To: expected.String(), TypeInfo: expected}, true
+	return castTo(read, expected), true
+}
+
+// messageParamArg passes a message parameter to a cracker, or 0 for a
+// message handler helper that does not take it.
+func messageParamArg(param *typeinfo.FunctionVar) Expr {
+	if param == nil {
+		return &Const{TypeInfo: typeinfo.U16}
+	}
+	return &Local{FunctionVar: *param}
 }
 
 // paramWordRead matches a read of a parameter's storage, whole or one word

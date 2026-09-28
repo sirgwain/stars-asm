@@ -374,15 +374,20 @@
     { "global": "rghwndBtn", "class": "button" },
     { "global": "rghwndOrderDD", "class": "combobox" }
   ],
+  "message_handlers": [
+    { "func": "CommandHandler", "message": "WM_COMMAND", "wparam": "wParam" },
+    { "func": "ProdCommandHandler", "message": "WM_COMMAND", "wparam": "wParam", "lparam": "lParam" },
+    { "func": "ShipCommandProc", "message": "WM_COMMAND", "wparam": "wParam", "lparam": "lParam" }
+  ],
   "messages": [
     {
       "msg": "WM_COMMAND",
       "wparam": {
-        "whole": { "enum": "ControlId" },
-        "loword": { "enum": "ControlId" }
+        "whole": { "enum": "ControlId", "get": "GET_WM_COMMAND_ID" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_COMMAND_HWND" },
+        "hiword": { "cast_type": "UINT", "get": "GET_WM_COMMAND_CMD" }
       }
     },
     {
@@ -490,17 +495,27 @@
     {
       "msg": "WM_PARENTNOTIFY",
       "wparam": {
-        "loword": { "enum": "WMType" },
-        "hiword": { "enum": "ControlId" }
+        "whole": { "enum": "WMType", "get": "GET_WM_PARENTNOTIFY_MSG" }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND", "get": "GET_WM_PARENTNOTIFY_HWNDCHILD" },
+        "hiword": { "enum": "ControlId", "get": "GET_WM_PARENTNOTIFY_ID" }
+      }
+    },
+    {
+      "msg": "WM_PALETTECHANGED",
+      "wparam": {
+        "whole": { "cast_type": "HWND" }
       }
     },
     {
       "msg": "WM_CTLCOLOR",
+      "match": "IS_WM_CTLCOLOR",
       "wparam": {
         "whole": { "cast_type": "HDC" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND" },
+        "loword": { "cast_type": "HWND", "get": "GET_WM_CTLCOLOR_HWND" },
         "hiword": { "enum": "CtlColorType" }
       },
       "result": { "cast_type": "HBRUSH" }
@@ -514,19 +529,21 @@
     {
       "msg": "WM_VSCROLL",
       "wparam": {
-        "loword": { "enum": "ScrollCode" }
+        "whole": { "enum": "ScrollCode", "get": "GET_WM_VSCROLL_CODE" }
       },
       "lparam": {
-        "hiword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "int16_t", "get": "GET_WM_VSCROLL_POS" },
+        "hiword": { "cast_type": "HWND", "get": "GET_WM_VSCROLL_HWND" }
       }
     },
     {
       "msg": "WM_HSCROLL",
       "wparam": {
-        "loword": { "enum": "ScrollCode" }
+        "whole": { "enum": "ScrollCode", "get": "GET_WM_HSCROLL_CODE" }
       },
       "lparam": {
-        "hiword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "int16_t", "get": "GET_WM_HSCROLL_POS" },
+        "hiword": { "cast_type": "HWND", "get": "GET_WM_HSCROLL_HWND" }
       }
     },
     {
@@ -597,20 +614,28 @@
     },
     {
       "msg": "WM_MENUSELECT",
+      "wparam": {
+        "whole": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_CMD" }
+      },
       "lparam": {
-        "loword": { "cast_type": "HMENU" }
+        "loword": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_FLAGS" },
+        "hiword": { "cast_type": "HMENU", "get": "GET_WM_MENUSELECT_HMENU" }
       }
     },
     {
       "msg": "WM_ENTERIDLE",
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_ENTERIDLE_HWND" }
       }
     },
     {
       "msg": "WM_ACTIVATE",
+      "wparam": {
+        "whole": { "cast_type": "UINT", "get": "GET_WM_ACTIVATE_STATE" }
+      },
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_ACTIVATE_HWND" },
+        "hiword": { "cast_type": "BOOL", "get": "GET_WM_ACTIVATE_FMINIMIZED" }
       }
     },
     {
@@ -634,13 +659,13 @@
     {
       "msg": "WM_VKEYTOITEM",
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_VKEYTOITEM_HWND" }
       }
     },
     {
       "msg": "WM_CHARTOITEM",
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_CHARTOITEM_HWND" }
       }
     },
     {

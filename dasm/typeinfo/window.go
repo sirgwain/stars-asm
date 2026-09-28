@@ -133,3 +133,68 @@ func (sdb *SymbolDB) messageEnums() []*Enum {
 	}
 	return enums
 }
+
+// MessageHandler is a helper a window procedure calls with the parameters of
+// one message, such as CommandHandler for WM_COMMAND. Its reads of the
+// message's parameters use the message's crackers like the window
+// procedure's own.
+type MessageHandler struct {
+	Func    string
+	Message *MessageRule
+	WParam  string
+	LParam  string
+}
+
+type messageHandlerJSON struct {
+	Func    string `json:"func"`
+	Message string `json:"message"`
+	WParam  string `json:"wparam"`
+	LParam  string `json:"lparam"`
+}
+
+// loadMessageHandlers resolves message handler records against the loaded
+// message rules, and types the handlers' message parameters WPARAM and
+// LPARAM so callers pass the window procedure's values through unchanged.
+func (l *enumLoader) loadMessageHandlers(path string, sdb *SymbolDB, resolver *typeResolver) error {
+	cfg, err := l.loadEnumConfig(path)
+	if err != nil {
+		return err
+	}
+	wm := sdb.GetEnum(MessageEnumName)
+	for _, h := range cfg.MessageHandlers {
+		value, ok := enumValueByName(wm, h.Message)
+		if !ok {
+			return fmt.Errorf("message handler %s: message %s not found", h.Func, h.Message)
+		}
+		message := sdb.GetMessage(wm, value.Value)
+		if message == nil {
+			return fmt.Errorf("message handler %s: message %s has no payload rule", h.Func, h.Message)
+		}
+		fn := sdb.GetFunction(h.Func)
+		if fn == nil {
+			return fmt.Errorf("message handler %s: function not found", h.Func)
+		}
+		for _, p := range []struct{ name, typ string }{{h.WParam, "WPARAM"}, {h.LParam, "LPARAM"}} {
+			if p.name == "" {
+				continue
+			}
+			i := functionParamIndexByName(fn, p.name)
+			if i < 0 {
+				return fmt.Errorf("message handler %s: parameter %s not found", h.Func, p.name)
+			}
+			fn.Params[i].Type = resolver.getNamedType(p.typ)
+		}
+		sdb.MessageHandlers = append(sdb.MessageHandlers, &MessageHandler{Func: h.Func, Message: message, WParam: h.WParam, LParam: h.LParam})
+	}
+	return nil
+}
+
+// GetMessageHandler returns the message handler declaration for a function.
+func (sdb *SymbolDB) GetMessageHandler(funcName string) *MessageHandler {
+	for _, h := range sdb.MessageHandlers {
+		if h.Func == funcName {
+			return h
+		}
+	}
+	return nil
+}

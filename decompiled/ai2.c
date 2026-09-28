@@ -407,7 +407,7 @@ L_06d6:
     goto L_0d2d;
 
 L_06e5:
-    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 10) <= (vlpbAiData[2] * 0x2)))
+    if ((((int32_t)(rgplr[idPlayer].cPlanet) / 10) <= (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x2)))
         goto L_0723;
     else
         goto L_070b;
@@ -417,7 +417,7 @@ L_070b:
     goto L_072d;
 
 L_0723:
-    t_merge_072d_0001 = (vlpbAiData[2] * 0x2);
+    t_merge_072d_0001 = (RawLoad16(((uint8_t *)(vlpbAiData) + 0x2)) * 0x2);
 
 L_072d:
     cFr = t_merge_072d_0001;
@@ -1230,7 +1230,7 @@ L_1503:
     i = (i + 1);
 
 L_1507:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_15b3;
     else
         goto L_1517;
@@ -1261,7 +1261,7 @@ L_1589:
         goto L_15b3;
 
 L_15b3:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_15eb;
     else
         goto L_15c3;
@@ -2554,7 +2554,7 @@ L_2c02:
     i = (i + 1);
 
 L_2c06:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_2cab;
     else
         goto L_2c16;
@@ -2585,7 +2585,7 @@ L_2c82:
         goto L_2cab;
 
 L_2cab:
-    if ((i >= vlpbAiData[2]))
+    if ((i >= RawLoad16(((uint8_t *)(vlpbAiData) + 0x2))))
         goto L_2ce3;
     else
         goto L_2cbb;

@@ -8,7 +8,7 @@ int16_t          ChangeProduction(int16_t fClear);
 void             InitProduction(PROD *rgprod);
 void             FinishProduction(int16_t fWrite);
 INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-void             ProdCommandHandler(HWND hwnd, uint16_t wParam, int32_t lParam);
+void             ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam);
 void             InitializeProductionDlg(HWND hwnd);
 void             DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw);
 void             FillProdSrcLB(HWND hwndLB, int16_t mdFill);

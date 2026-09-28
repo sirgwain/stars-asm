@@ -1449,8 +1449,6 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     FLEET    *t_call_c15b;
     FLEET    *t_call_c3bb;
     FLEET    *t_call_c3f6;
-    uint16_t  t_scratch_m542_2;
-    uint16_t  t_scratch_m542_3;
 
 L_a38c:
     lpxfCur = 0x0;
@@ -1701,7 +1699,7 @@ L_a9fe:
     return 0;
 
 L_aa04:
-    lpth->thm.fDetonate = LOBYTE(lpb[2]);
+    lpth->thm.fDetonate = LOBYTE(RawLoad16(((uint8_t *)(lpb) + 0x2)));
     goto L_c796;
 
 L_aa16:
@@ -1868,7 +1866,7 @@ L_ad4d:
         goto L_ad70;
 
 L_ad70:
-    if ((FLookupObject(((lpb[4] >> 0x4) & 0xf), lpb[2], &(rgxf[1].fl)) != 0))
+    if ((FLookupObject(((lpb[4] >> 0x4) & 0xf), RawLoad16(((uint8_t *)(lpb) + 0x2)), &(rgxf[1].fl)) != 0))
         goto L_ade3;
     else
         goto L_ada3;
@@ -1880,7 +1878,7 @@ L_ada3:
         goto L_adc0;
 
 L_adc0:
-    if ((((lpb[2] >> 0x9) & 0xf) != idPlayer))
+    if ((((RawLoad16(((uint8_t *)(lpb) + 0x2)) >> 0x9) & 0xf) != idPlayer))
         goto L_c796;
     else
         goto L_addd;
@@ -2246,7 +2244,7 @@ L_b38d:
         goto L_b3c8;
 
 L_b3c8:
-    if ((lpxfCur->id2 != lpb[2]))
+    if ((lpxfCur->id2 != RawLoad16(((uint8_t *)(lpb) + 0x2))))
         goto L_b4a0;
     else
         goto L_b3db;
@@ -2336,15 +2334,15 @@ L_b54c:
     cXferFull = (cXferFull + 1);
     fmemset(lpxfCur, 0, 0x19);
     lpxfCur->id1 = RawLoad16(lpb);
-    lpxfCur->id2 = lpb[2];
+    lpxfCur->id2 = RawLoad16(((uint8_t *)(lpb) + 0x2));
 
 L_b57b:
     lpxfCur->rgcQuan[i] = (lpxfCur->rgcQuan[i] - cXfer);
     goto L_af00;
 
 StealCargo:
-    l = ChgCargo(((lpb[4] >> 0x4) & 0xf), lpb[2], i, (((uint32_t)((uint16_t)((-(HIWORD(cXfer) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(cXfer)))),
-                 &(rgxf[1].fl));
+    l = ChgCargo(((lpb[4] >> 0x4) & 0xf), RawLoad16(((uint8_t *)(lpb) + 0x2)), i,
+                 (((uint32_t)((uint16_t)((-(HIWORD(cXfer) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(cXfer)))), &(rgxf[1].fl));
     if ((LOWORD(l) != (-LOWORD(cXfer))))
         goto L_b607;
     else
@@ -2609,7 +2607,7 @@ L_ba50:
     return 0;
 
 L_ba56:
-    if ((FLookupObject(grobjFleet, lpb[2], &(rgxf[1].fl)) != 0))
+    if ((FLookupObject(grobjFleet, RawLoad16(((uint8_t *)(lpb) + 0x2)), &(rgxf[1].fl)) != 0))
         goto L_ba7d;
     else
         goto L_ba77;
@@ -2631,7 +2629,7 @@ L_ba90:
     goto L_bcd2;
 
 L_ba99:
-    grbit = lpb[5];
+    grbit = RawLoad16(((uint8_t *)(lpb) + 0x5));
     i = 0;
     iLook = 0;
     goto L_baca;
@@ -2843,8 +2841,8 @@ L_be07:
         goto L_be15;
 
 L_be15:
-    iLook = (lpb[2] & 0x7fff);
-    if (((lpb[2] & 0x7fff) < lpfl->cord))
+    iLook = (RawLoad16(((uint8_t *)(lpb) + 0x2)) & 0x7fff);
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x2)) & 0x7fff) < lpfl->cord))
         goto L_be36;
     else
         goto L_be30;
@@ -2853,7 +2851,7 @@ L_be30:
     return 0;
 
 L_be36:
-    if (((lpb[2] & 0x8000) == 0x0))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x2)) & 0x8000) == 0x0))
         goto L_be4e;
     else
         goto L_be48;
@@ -2896,13 +2894,13 @@ L_bf1c:
         goto L_bf63;
 
 L_bf42:
-    if ((lpb[2] < 0x0))
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x2)) < 0x0))
         goto L_bf63;
     else
         goto L_bf4f;
 
 L_bf4f:
-    if ((lpb[2] <= lpfl->cord))
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x2)) <= lpfl->cord))
         goto L_bf69;
     else
         goto L_bf63;
@@ -2920,18 +2918,19 @@ L_bf85:
     lpfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpfl->lpplord), (lpfl->cord + 3)));
 
 L_bfb1:
-    fmemmove(&(lpfl->lpplord->rgord[(lpb[2] + 1)]), &(lpfl->lpplord->rgord[lpb[2]]), ((lpfl->cord - lpb[2]) * 0x12));
+    fmemmove(&(lpfl->lpplord->rgord[(RawLoad16(((uint8_t *)(lpb) + 0x2)) + 1)]), &(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]),
+             ((lpfl->cord - RawLoad16(((uint8_t *)(lpb) + 0x2))) * 0x12));
     if ((cb >= 22))
         goto L_c07d;
     else
         goto L_c03e;
 
 L_c03e:
-    fmemset(&(lpfl->lpplord->rgord[lpb[2]]), 0, 0x12);
+    fmemset(&(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]), 0, 0x12);
 
 L_c07d:
-    fmemmove(&(lpfl->lpplord->rgord[lpb[2]]), (lpb + 4), (cb - 4));
-    lpfl->lpplord->rgord[lpb[2]].fNoAutoTrack = 0x0;
+    fmemmove(&(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]), (lpb + 4), (cb - 4));
+    lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))].fNoAutoTrack = 0x0;
     lpfl->cord = (lpfl->cord + 1);
     lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac + 0x1);
     goto L_c796;
@@ -2951,8 +2950,8 @@ L_c17b:
         goto L_c189;
 
 L_c189:
-    iLook = lpb[2];
-    if ((lpb[2] < lpfl->cord))
+    iLook = RawLoad16(((uint8_t *)(lpb) + 0x2));
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x2)) < lpfl->cord))
         goto L_c1a7;
     else
         goto L_c1a1;
@@ -3019,13 +3018,13 @@ L_c316:
         goto L_c32c;
 
 L_c32c:
-    if (((lpb[2] & 0xf) > 0x8))
+    if (((RawLoad16(((uint8_t *)(lpb) + 0x2)) & 0xf) > 0x8))
         goto BombOut;
     else
         goto L_c33e;
 
 L_c33e:
-    if ((((lpb[2] >> 0x4) & 0xf) > 0x8))
+    if ((((RawLoad16(((uint8_t *)(lpb) + 0x2)) >> 0x4) & 0xf) > 0x8))
         goto BombOut;
     else
         goto L_c35b;
@@ -3058,7 +3057,7 @@ L_c3b5:
         goto BombOut;
 
 L_c3de:
-    lpfl->iplan = LOBYTE(lpb[2]);
+    lpfl->iplan = LOBYTE(RawLoad16(((uint8_t *)(lpb) + 0x2)));
     goto L_c796;
 
 L_c3f0:
@@ -3079,25 +3078,23 @@ L_c41c:
         goto L_c425;
 
 L_c425:
-    t_scratch_m542_2 = lpb[2];
-    lpfl->fRepOrders = t_scratch_m542_2;
+    lpfl->fRepOrders = RawLoad16(((uint8_t *)(lpb) + 0x2));
     goto L_c796;
 
 L_c457:
-    if ((lpfl->cord <= lpb[2]))
+    if ((lpfl->cord <= RawLoad16(((uint8_t *)(lpb) + 0x2))))
         goto BombOut;
     else
         goto L_c46b;
 
 L_c46b:
-    if ((lpb[4] >= 0xa))
+    if ((RawLoad16(((uint8_t *)(lpb) + 0x4)) >= 0xa))
         goto BombOut;
     else
         goto L_c47b;
 
 L_c47b:
-    t_scratch_m542_3 = lpb[4];
-    lpfl->lpplord->rgord[lpb[2]].grTask = t_scratch_m542_3;
+    lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))].grTask = RawLoad16(((uint8_t *)(lpb) + 0x4));
 
 L_c508:
     goto L_c796;
@@ -3116,10 +3113,10 @@ L_c531:
         goto L_c543;
 
 L_c543:
-    lppl->fNoResearch = ((uint32_t)(lpb[2]) & 0x1);
-    lppl->idFling = (LOWORD((uint32_t)((lpb[2] >> 0x1))) & 0x3ff);
-    lppl->iWarpFling = (LOWORD((uint32_t)((lpb[2] >> 0xb))) & 0xf);
-    lppl->idRoute = (LOWORD((uint32_t)((lpb[2] >> 0xf))) & 0x3ff);
+    lppl->fNoResearch = ((uint32_t)(RawLoad16(((uint8_t *)(lpb) + 0x2))) & 0x1);
+    lppl->idFling = (LOWORD((uint32_t)((RawLoad32(((uint8_t *)(lpb) + 0x2)) >> 0x1))) & 0x3ff);
+    lppl->iWarpFling = (LOWORD((uint32_t)((RawLoad32(((uint8_t *)(lpb) + 0x2)) >> 0xb))) & 0xf);
+    lppl->idRoute = (LOWORD((uint32_t)((RawLoad32(((uint8_t *)(lpb) + 0x2)) >> 0xf))) & 0x3ff);
     goto L_c796;
 
 L_c65c:
@@ -3129,7 +3126,7 @@ L_c65c:
         goto L_c66c;
 
 L_c66c:
-    rgplr[idPlayer].lSalt = (((uint32_t)((uint16_t)(lpb[2])) << 0x10) | (uint16_t)(RawLoad16(lpb)));
+    rgplr[idPlayer].lSalt = RawLoad32(lpb);
 
 L_c698:
     goto L_c796;

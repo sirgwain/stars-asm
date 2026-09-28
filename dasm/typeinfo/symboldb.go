@@ -16,8 +16,9 @@ type SymbolDB struct {
 	Sources     []SourceRange
 	Messages    []*MessageRule
 
-	WindowClasses []*WindowClass
-	WindowRules   []*WindowRule
+	WindowClasses   []*WindowClass
+	WindowRules     []*WindowRule
+	MessageHandlers []*MessageHandler
 
 	EnumRules          []*EnumUseRule
 	DependentEnumRules []*DependentEnumRule
@@ -173,6 +174,7 @@ func (sdb *SymbolDB) AddFunction(f *Function) {
 		existing.Conv = f.Conv
 		existing.Ret = f.Ret
 		existing.Params = f.Params
+		existing.CallParams = f.CallParams
 		existing.VarArgs = f.VarArgs
 		preserveFunctionParamLocations(existing, oldParams)
 		return

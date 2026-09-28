@@ -141,7 +141,7 @@ L_0490:
     return 1;
 
 L_04bd:
-    if ((LOWORD(lParam) != hwndRepCB))
+    if ((GET_WM_CTLCOLOR_HWND(wParam, lParam) != hwndRepCB))
         goto Default;
     else
         goto L_04cc;
@@ -149,7 +149,7 @@ L_04bd:
 L_04cc:
     SetBkColor((HDC)(wParam), crButtonFace);
     SetTextColor((HDC)(wParam), crButtonText);
-    return (uint32_t)(hbrButtonFace);
+    return (LRESULT)(hbrButtonFace);
 
 L_04f8:
     ((MINMAXINFO *)lParam)->ptMinTrackSize.x = ((dxWinFrame * 2) + 198);
@@ -363,7 +363,7 @@ L_0874:
     goto L_0d04;
 
 L_088b:
-    if ((LOWORD(lParam) != hwndShipDD))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndShipDD))
         goto L_08d5;
     else
         goto L_089a;
@@ -376,7 +376,7 @@ L_08b1:
     goto Default;
 
 L_08c7:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto Default;
     else
         goto L_08cc;
@@ -385,13 +385,13 @@ L_08cc:
     goto L_08b1;
 
 L_08d5:
-    if ((LOWORD(lParam) != rghwndBtn[4]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[4]))
         goto L_0950;
     else
         goto L_08e4;
 
 L_08e4:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0950;
     else
         goto L_0900;
@@ -414,13 +414,13 @@ LRefocus:
     goto L_0d04;
 
 L_0950:
-    if ((LOWORD(lParam) != rghwndBtn[5]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[5]))
         goto L_09c2;
     else
         goto L_095f;
 
 L_095f:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_09c2;
     else
         goto L_097b;
@@ -442,13 +442,13 @@ L_09bc:
     goto LRefocus;
 
 L_09c2:
-    if ((LOWORD(lParam) != rghwndBtn[0]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[0]))
         goto L_0a70;
     else
         goto L_09d1;
 
 L_09d1:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0a70;
     else
         goto L_09ed;
@@ -471,13 +471,13 @@ L_0a4e:
     goto LRefocus;
 
 L_0a70:
-    if ((LOWORD(lParam) != rghwndBtn[1]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[1]))
         goto L_0b19;
     else
         goto L_0a7f;
 
 L_0a7f:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0b19;
     else
         goto L_0a9b;
@@ -508,13 +508,13 @@ L_0b13:
     goto LRefocus;
 
 L_0b19:
-    if ((LOWORD(lParam) != rghwndBtn[2]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[2]))
         goto L_0b66;
     else
         goto L_0b28;
 
 L_0b28:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0b66;
     else
         goto L_0b44;
@@ -526,13 +526,13 @@ L_0b44:
     goto LRefocus;
 
 L_0b66:
-    if ((LOWORD(lParam) != rghwndBtn[11]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[11]))
         goto L_0ba3;
     else
         goto L_0b75;
 
 L_0b75:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0ba3;
     else
         goto L_0b91;
@@ -542,13 +542,13 @@ L_0b91:
     goto LRefocus;
 
 L_0ba3:
-    if ((LOWORD(lParam) != rghwndBtn[12]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[12]))
         goto L_0c0c;
     else
         goto L_0bb2;
 
 L_0bb2:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0c0c;
     else
         goto L_0bce;
@@ -564,7 +564,7 @@ L_0bfa:
     goto LRefocus;
 
 L_0c0c:
-    if ((LOWORD(lParam) != hwndPlanetProdLB))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndPlanetProdLB))
         goto Default;
     else
         goto L_0c1b;
@@ -587,7 +587,7 @@ L_0c66:
     goto Default;
 
 L_0c6c:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) == 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) == 0x1))
         goto L_0c32;
     else
         goto Default;
@@ -614,7 +614,7 @@ L_0ca1:
         goto L_0ca9;
 
 L_0ca9:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_04bd;
     else
         goto L_0cb1;
@@ -867,7 +867,7 @@ L_1007:
     t_merge_100a_0001 = obj;
 
 L_100a:
-    ptile[i].pfn((uint16_t)(hdc), (ptile + i), t_merge_100a_0001);
+    ptile[i].pfn(hdc, (ptile + i), t_merge_100a_0001);
 
 L_1035:
     i = (i + 1);
@@ -5164,7 +5164,7 @@ L_61b5:
     t_merge_61b8_0001 = 0x408;
 
 L_61b8:
-    SendMessage(lpdis->hwndItem, t_merge_61b8_0001, lpdis->itemID, szWork);
+    SendMessage(lpdis->hwndItem, t_merge_61b8_0001, lpdis->itemID, (LPARAM)(szWork));
     DrawProductionItem(lpdis->hDC, &(rc), szWork, inflate, fSelected, fListbox);
     HandleFocusState(lpdis, (inflate + 2));
     return;
@@ -5650,7 +5650,7 @@ L_6775:
     goto NoMsg;
 
 L_678f:
-    if ((psz == &(szWork)))
+    if ((psz == szWork))
         goto NoMsg;
     else
         goto L_6799;

@@ -2154,7 +2154,7 @@ L_7e85:
 L_7eb3:
     *(pbBase) = (*(pbBase) | LOBYTE((bMask & 0xff)));
     RawStore16(pb, LOWORD(lppl->rgwtMin[i]));
-    pb[2] = HIWORD(lppl->rgwtMin[i]);
+    RawStore16(((uint8_t *)(pb) + 0x2), HIWORD(lppl->rgwtMin[i]));
     pb = (pb + 4);
     goto L_7ded;
 
@@ -2280,7 +2280,7 @@ L_8153:
 
 L_816a:
     RawStore16(pb, (lppl->isb | (lppl->pctDp << 0x4)));
-    pb[2] = (((lppl->idFling | (lppl->iWarpFling << 0xa)) | (lppl->fNoHeal << 0xe)) | (lppl->unused3 << 0xf));
+    RawStore16(((uint8_t *)(pb) + 0x2), (((lppl->idFling | (lppl->iWarpFling << 0xa)) | (lppl->fNoHeal << 0xe)) | (lppl->unused3 << 0xf)));
     pb = (pb + 4);
 
 L_8181:
@@ -2473,7 +2473,7 @@ L_8446:
 L_8475:
     us = (us | (grMask & 0x3ff));
     RawStore16(pb, LOWORD(lpfl->rgwtMin[i]));
-    pb[2] = HIWORD(lpfl->rgwtMin[i]);
+    RawStore16(((uint8_t *)(pb) + 0x2), HIWORD(lpfl->rgwtMin[i]));
     pb = (pb + 4);
     goto L_83a3;
 
@@ -2505,8 +2505,9 @@ L_8526:
 L_8538:
     wt = 0;
     RawStore16(pb, (lpfl->dirFltX | (lpfl->dirFltY << 0x8)));
-    pb[2] = (((((lpfl->iwarpFlt | (lpfl->fdirValid << 0x4)) | (lpfl->fCompChg << 0x5)) | (lpfl->fTargeted << 0x6)) | (lpfl->fSkipped << 0x7)) |
-             (lpfl->fUnused << 0x8));
+    RawStore16(((uint8_t *)(pb) + 0x2),
+               (((((lpfl->iwarpFlt | (lpfl->fdirValid << 0x4)) | (lpfl->fCompChg << 0x5)) | (lpfl->fTargeted << 0x6)) | (lpfl->fSkipped << 0x7)) |
+                (lpfl->fUnused << 0x8)));
     pb = (pb + 4);
     i = 0;
     goto L_85de;
@@ -2545,7 +2546,7 @@ L_861c:
 
 L_8626:
     RawStore16(pb, LOWORD(wt));
-    pb[2] = HIWORD(wt);
+    RawStore16(((uint8_t *)(pb) + 0x2), HIWORD(wt));
     pb = (pb + 4);
     WriteRt(0x11, (pb - rgb), rgb);
     goto L_87ae;

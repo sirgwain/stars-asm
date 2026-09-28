@@ -1005,7 +1005,7 @@ MOV       ax, [bp-iSel]             ; ax, [bp-0x44]
 ADD       ax, 0x0f3d          
 PUSH      ax                  
 PUSH      [hwndFrame]               ; [0x258c]
-CALLF     CommandHandler            ; void CommandHandler(HWND hwnd, uint16_t wParam)
+CALLF     CommandHandler            ; void CommandHandler(HWND hwnd, WPARAM wParam)
 ADD       sp, 0x0004          
                                     ; tb.c:777
 JMP       L_167a              

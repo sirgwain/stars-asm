@@ -749,6 +749,19 @@
       "callconv": "cdecl"
     },
     {
+      "name": "PushRandom",
+      "ret": "void",
+      "params": [
+        { "name": "lNew1", "ctype": "int32_t" },
+        { "name": "lNew2", "ctype": "int32_t" }
+      ],
+      "call_params": [
+        { "name": "lNew1", "ctype": "int16_t" },
+        { "name": "lNew2", "ctype": "int16_t" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
       "name": "CopyFile",
       "rename": "StarsCopyFile",
       "ret": "void",

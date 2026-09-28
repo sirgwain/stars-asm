@@ -264,7 +264,7 @@ L_04f9:
     goto L_09c8;
 
 L_04fc:
-    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2);
     iNew = iCur;
     goto L_0576;
 
@@ -289,7 +289,7 @@ L_054f:
     goto L_0597;
 
 L_055f:
-    iNew = LOWORD(lParam);
+    iNew = GET_WM_VSCROLL_POS(wParam, lParam);
     goto L_0597;
 
 L_056b:
@@ -297,13 +297,13 @@ L_056b:
     goto L_0597;
 
 L_0576:
-    if ((wParam > 0x7))
+    if ((GET_WM_VSCROLL_CODE(wParam, lParam) > SB_BOTTOM))
         goto L_0597;
     else
         goto L_057e;
 
 L_057e:
-    switch ((wParam * 0x2)) {
+    switch ((GET_WM_VSCROLL_CODE(wParam, lParam) * 0x2)) {
     case 0x0:
         goto L_0538;
     case 0x2:
@@ -354,14 +354,14 @@ L_05d7:
     rc.top = (dyArial8 + 6);
     rc.bottom = (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top);
     ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &(rc), &(rc));
-    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
+    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
     UpdateWindow(hwnd);
 
 L_0673:
     return 0;
 
 L_067c:
-    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
     iNew = iCur;
     goto L_06e4;
 
@@ -386,7 +386,7 @@ L_06c6:
     goto L_0705;
 
 L_06cd:
-    iNew = LOWORD(lParam);
+    iNew = GET_WM_HSCROLL_POS(wParam, lParam);
     goto L_0705;
 
 L_06d9:
@@ -394,13 +394,13 @@ L_06d9:
     goto L_0705;
 
 L_06e4:
-    if ((wParam > 0x7))
+    if ((GET_WM_HSCROLL_CODE(wParam, lParam) > SB_BOTTOM))
         goto L_0705;
     else
         goto L_06ec;
 
 L_06ec:
-    switch ((wParam * 0x2)) {
+    switch ((GET_WM_HSCROLL_CODE(wParam, lParam) * 0x2)) {
     case 0x0:
         goto L_06b8;
     case 0x2:
@@ -444,8 +444,8 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
-    iNew = GetScrollPos((HWND)(HIWORD(lParam)), 2);
+    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1);
+    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
     if ((iNew == iCur))
         goto L_080f;
     else
@@ -560,7 +560,7 @@ L_0942:
     goto L_09c8;
 
 L_0945:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_09c8;
     else
         goto L_094e;

@@ -105,13 +105,13 @@ L_1448:
     return (INT_PTR)(hbrButtonFace);
 
 L_1461:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_1473;
     else
         goto L_146a;
 
 L_146a:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_149a;
     else
         goto L_1473;
@@ -123,7 +123,7 @@ L_1473:
     return 1;
 
 L_149a:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_1510;
     else
         goto L_14a3;
@@ -143,7 +143,7 @@ L_14e5:
         goto L_14ed;
 
 L_14ed:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_142c;
     else
         goto L_14f5;

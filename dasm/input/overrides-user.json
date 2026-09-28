@@ -256,7 +256,7 @@
       "params": [
         {
           "name": "arg1",
-          "ctype": "FARPROC"
+          "ctype": "WNDPROC"
         },
         {
           "name": "arg2",

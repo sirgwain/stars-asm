@@ -112,6 +112,10 @@ type functionsJSON struct {
 	CallConv   string           `json:"callconv"`
 	Ret        string           `json:"ret"`
 	Params     []funcParamsJSON `json:"params"`
+	// CallParams are the argument types callers pass, when the original
+	// declared the function without a prototype and callers disagree with
+	// its definition.
+	CallParams []funcParamsJSON `json:"call_params"`
 }
 
 type globalsJSON struct {
@@ -137,10 +141,10 @@ type paramSemanticsJSON struct {
 type typesJSON struct {
 	Name      string `json:"name"`
 	Canonical string `json:"canonical"`
-	// Pointer marks a type that is a pointer in the native Win32 headers,
-	// such as a handle, although the Win16 analysis stores it as its
-	// canonical integer.
-	Pointer bool             `json:"pointer"`
+	// Native is how the native Win32 headers declare an integer type the
+	// Win16 analysis stores as its canonical integer: "pointer" for a
+	// handle, "intptr" for a pointer-sized integer such as LPARAM.
+	Native  string           `json:"native"`
 	FuncPtr *funcPtrTypeJSON `json:"funcptr,omitempty"`
 }
 
@@ -216,12 +220,19 @@ func (o *overrideDB) loadTypes(path string) error {
 		if err != nil {
 			return err
 		}
-		if t.Pointer {
+		if t.Native != "" {
 			prim, ok := typ.(*Primitive)
 			if !ok || prim.TypeKind != KInt {
-				return fmt.Errorf("type %s: only integer types can be native pointers", name)
+				return fmt.Errorf("type %s: only integer types have a native kind", name)
 			}
-			prim.NativePointer = true
+			switch t.Native {
+			case "pointer":
+				prim.Native = NativePointer
+			case "intptr":
+				prim.Native = NativeIntPtr
+			default:
+				return fmt.Errorf("type %s: unknown native kind %q", name, t.Native)
+			}
 		}
 		o.typeResolver.registerNamedType(name, typ)
 	}
@@ -314,6 +325,15 @@ func (o *overrideDB) loadFunctions(path string) error {
 			})
 		}
 
+		var callParams []FunctionVar
+		for _, param := range f.CallParams {
+			typ, err := o.resolveNamedType("", param.CType)
+			if err != nil {
+				return fmt.Errorf("function %s call param %s: %w", f.Name, param.Name, err)
+			}
+			callParams = append(callParams, FunctionVar{Name: param.Name, Type: typ})
+		}
+
 		function := Function{
 			Name:       f.Name,
 			NativeDecl: f.NativeDecl,
@@ -321,6 +341,7 @@ func (o *overrideDB) loadFunctions(path string) error {
 			Module:     OverrideModule,
 			Ret:        ret,
 			Params:     params,
+			CallParams: callParams,
 			VarArgs:    varargs,
 		}
 

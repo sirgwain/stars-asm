@@ -4,35 +4,135 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-// nativeArgCast adds the cast a native Win32 compile needs for an argument
-// whose Win16 value is valid but whose native types no longer convert
-// implicitly: a handle passed as an integer (AppendMenu's popup HMENU), a
-// control ID passed as a menu_or_id handle, or any conversion
-// nativeAssignCast adds.
+// nativeArgCast adds the casts nativeCast adds, and casts a control ID
+// passed as a menu_or_id handle, as CreateWindow's hMenu takes for a child
+// window, through uintptr_t to the handle's pointer width.
 func nativeArgCast(expr Expr, param *typeinfo.FunctionVar) Expr {
-	have, want := expr.ExprType(), param.Type
-	switch {
-	case typeinfo.IsNativePointer(have) && isPlainInteger(want):
-		return &Cast{Value: expr, To: typeinfo.TypeDecl(want, ""), TypeInfo: want}
-	case typeinfo.IsNativePointer(want) && param.Semantic == typeinfo.ParamSemanticMenuOrID && isPlainInteger(have):
-		return &Cast{Value: expr, To: typeinfo.TypeDecl(want, ""), TypeInfo: want}
+	if param.Semantic == typeinfo.ParamSemanticMenuOrID && typeinfo.IsNative(cExprType(expr), typeinfo.NativeInt) {
+		return castTo(castTo(expr, typeinfo.UintPtr), param.Type)
 	}
-	return nativeAssignCast(expr, want)
+	return nativeCast(expr, param.Type)
 }
 
-// nativeAssignCast adds the cast a native Win32 compile needs to pass, store
-// or return a value as want: a nonzero constant as a handle (see
-// nativeConstCast), or a pointer as a pointer to an incompatible type. The
-// original compiler only warned on the pointer conversions, which the code
-// uses to walk byte buffers as records (a uint8_t * as a CYBERINFO *), view
-// records as bytes, and pass list and bitmap header types as their generic
-// or containing forms (a PLPROD * as the PL * LpplReAlloc takes, a
-// BITMAPINFOHEADER * as a BITMAPINFO *); C requires a cast for each.
-func nativeAssignCast(expr Expr, want typeinfo.Type) Expr {
-	if needsPointerCast(cExprType(expr), want) {
-		return &Cast{Value: expr, To: typeinfo.TypeDecl(want, ""), TypeInfo: want}
+// nativeCast adds the cast a native Win32 compile needs to pass, store or
+// return expr as want, where the original compiler converted implicitly:
+//
+//   - a pointer to an incompatible pointer type. The code walks byte
+//     buffers as records (a uint8_t * as a CYBERINFO *), views records as
+//     bytes, and passes list and bitmap header types as their generic or
+//     containing forms (a PLPROD * as the PL * LpplReAlloc takes, a
+//     BITMAPINFOHEADER * as a BITMAPINFO *).
+//   - a pointer, array or handle to a pointer-sized integer, such as a
+//     string in LPARAM or a popup HMENU as AppendMenu's UINT_PTR item,
+//     including a handle already cast to a narrower integer.
+//   - a nonzero constant to a handle (see nativeConstCast).
+func nativeCast(expr Expr, want typeinfo.Type) Expr {
+	// A handle rebuilt as MAKELONG(h, 0) arrives cast to a 32-bit integer,
+	// which would truncate a native pointer; cast the handle itself.
+	if cast, ok := expr.(*Cast); ok && typeinfo.IsNative(want, typeinfo.NativeIntPtr) && holdsAddress(cExprType(cast.Value)) {
+		return castTo(cast.Value, want)
+	}
+	have := cExprType(expr)
+	switch {
+	case needsPointerCast(have, want),
+		typeinfo.IsNative(want, typeinfo.NativeIntPtr) && holdsAddress(have):
+		return castTo(expr, want)
 	}
 	return nativeConstCast(expr, want)
+}
+
+// nativeCompareOperands gives two compared pointers a common type: the
+// address of an array compared with a pointer to its elements decays to the
+// array, as the source wrote psz == szWork, and a pointer to another type is
+// cast to the left operand's type, such as a byte pointer compared with a
+// heap block pointer. Only equality may mix void * with another pointer, so
+// a relational comparison casts the void * side to the other's type.
+func nativeCompareOperands(op CompareOp, lhs, rhs Expr) (Expr, Expr, bool) {
+	changed := false
+	if decayed, ok := decayedArrayAddress(lhs, cExprType(rhs)); ok {
+		lhs, changed = decayed, true
+	}
+	if decayed, ok := decayedArrayAddress(rhs, cExprType(lhs)); ok {
+		rhs, changed = decayed, true
+	}
+	lhsType, rhsType := cExprType(lhs), cExprType(rhs)
+	relational := op != CompareEQ && op != CompareNE
+	switch {
+	case needsPointerCast(rhsType, lhsType):
+		rhs, changed = castTo(rhs, lhsType), true
+	case relational && isVoidPointer(lhsType) && typeinfo.IsPointer(rhsType) && !isVoidPointer(rhsType):
+		lhs, changed = castTo(lhs, rhsType), true
+	case relational && isVoidPointer(rhsType) && typeinfo.IsPointer(lhsType) && !isVoidPointer(lhsType):
+		rhs, changed = castTo(rhs, lhsType), true
+	}
+	return lhs, rhs, changed
+}
+
+// isVoidPointer reports whether typ is void *.
+func isVoidPointer(typ typeinfo.Type) bool {
+	ptr, ok := typ.(*typeinfo.Pointer)
+	return ok && isVoid(ptr.Elem)
+}
+
+// nativePointerDifference rewrites a Win16 pointer difference, which the
+// compiler computes on offset words, as a native one: LOWORD(lpb) - pb and
+// LOWORD(lpb) - LOWORD(lpbBase) become lpb - pb and lpb - lpbBase, with the
+// right pointer cast to the left's type when their pointees differ.
+func nativePointerDifference(sub *Binary) (Expr, Expr, bool) {
+	if sub.Op != OpSub {
+		return nil, nil, false
+	}
+	lhs, lhsWord := farPointerOffset(sub.LHS)
+	rhs, rhsWord := farPointerOffset(sub.RHS)
+	lhsType, rhsType := cExprType(lhs), cExprType(rhs)
+	if !lhsWord && !rhsWord || !typeinfo.IsPointer(lhsType) || !typeinfo.IsPointer(rhsType) {
+		return nil, nil, false
+	}
+	if needsPointerCast(rhsType, lhsType) {
+		rhs = castTo(rhs, lhsType)
+	}
+	return lhs, rhs, true
+}
+
+// farPointerOffset returns the pointer whose offset word expr reads, or expr
+// itself when it is not such a read.
+func farPointerOffset(expr Expr) (Expr, bool) {
+	part, ok := expr.(*Part)
+	if !ok || part.ByteOff != 0 || part.Width != 2 || !typeinfo.IsFarPointer(part.Base.ExprType()) {
+		return expr, false
+	}
+	return part.Base, true
+}
+
+// decayedArrayAddress returns the address of an array typed as a pointer to
+// its first element when the other side of a comparison points to that
+// element type, which the C output writes as the bare array name.
+func decayedArrayAddress(expr Expr, other typeinfo.Type) (Expr, bool) {
+	addr, ok := expr.(*AddressOf)
+	if !ok {
+		return nil, false
+	}
+	array, ok := addr.Target.ExprType().(*typeinfo.Array)
+	if !ok || addressOfPrintsArray(addr, array) {
+		return nil, false
+	}
+	otherPtr, ok := other.(*typeinfo.Pointer)
+	if !ok || needsPointerCast(&typeinfo.Pointer{Elem: array.Elem}, otherPtr) {
+		return nil, false
+	}
+	return &AddressOf{Target: addr.Target, TypeInfo: &typeinfo.Pointer{Elem: array.Elem, Class: otherPtr.Class}}, true
+}
+
+// nativeReturnCast adds the casts nativeCast adds to a returned value, and
+// converts an integer call result returned as a handle through uintptr_t.
+// That return is where the original fell off the end of a handle-returning
+// function, leaving the last call's result in AX, as ClickInShipOrders
+// does after ReleaseDC.
+func nativeReturnCast(expr Expr, ret typeinfo.Type) Expr {
+	if _, call := expr.(*Call); call && typeinfo.IsNative(ret, typeinfo.NativePointer) && typeinfo.IsNative(cExprType(expr), typeinfo.NativeInt) {
+		return castTo(castTo(expr, typeinfo.UintPtr), ret)
+	}
+	return nativeCast(expr, ret)
 }
 
 // nativeConstCast casts a nonzero integer constant stored as a handle, such
@@ -41,11 +141,21 @@ func nativeAssignCast(expr Expr, want typeinfo.Type) Expr {
 // (HWND)-1 as the native headers define HWND_TOPMOST.
 func nativeConstCast(expr Expr, want typeinfo.Type) Expr {
 	c, ok := expr.(*Const)
-	if !ok || c.U64 == 0 || !typeinfo.IsNativePointer(want) {
+	if !ok || c.U64 == 0 || !typeinfo.IsNative(want, typeinfo.NativePointer) {
 		return expr
 	}
-	value := &Const{TypeInfo: typeinfo.I16, U64: c.U64 & 0xffff}
-	return &Cast{Value: value, To: typeinfo.TypeDecl(want, ""), TypeInfo: want}
+	return castTo(&Const{TypeInfo: typeinfo.I16, U64: c.U64 & 0xffff}, want)
+}
+
+// holdsAddress reports whether a value of type typ holds an address
+// natively: a pointer, an array decaying to one, or a handle.
+func holdsAddress(typ typeinfo.Type) bool {
+	return typeinfo.IsPointer(typ) || typeinfo.IsArray(typ) || typeinfo.IsNative(typ, typeinfo.NativePointer)
+}
+
+// castTo casts expr to typ, written as a C type name.
+func castTo(expr Expr, typ typeinfo.Type) *Cast {
+	return &Cast{Value: expr, To: typeinfo.TypeDecl(typ, ""), TypeInfo: typ}
 }
 
 // cExprType returns the type C gives expr. Address-of expressions and
@@ -75,13 +185,6 @@ func addressOfPrintsArray(addr *AddressOf, array *typeinfo.Array) bool {
 		return false
 	}
 	return ptr.IsCStringPointer() && array.IsCStringArray() || typeinfo.IsCallCompatible(ptr.Elem, array.Elem)
-}
-
-// isPlainInteger reports whether typ is an integer that is also an integer
-// in the native headers.
-func isPlainInteger(typ typeinfo.Type) bool {
-	p, ok := typ.(*typeinfo.Primitive)
-	return ok && p.TypeKind == typeinfo.KInt && !p.NativePointer
 }
 
 // needsPointerCast reports whether a pointer, or an array decaying to one,

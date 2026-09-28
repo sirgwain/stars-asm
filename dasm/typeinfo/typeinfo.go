@@ -9,6 +9,10 @@ var U8 = &Primitive{TypeKind: KInt, Name: "uint8_t", Size: 1, Signed: false}
 var U16 = &Primitive{TypeKind: KInt, Name: "uint16_t", Size: 2, Signed: false}
 var U32 = &Primitive{TypeKind: KInt, Name: "uint32_t", Size: 4, Signed: false}
 var I16 = &Primitive{TypeKind: KInt, Name: "int16_t", Size: 2, Signed: true}
+
+// UintPtr is C's uintptr_t, the integer a Win16 16-bit ID passes through on
+// its way to a native pointer type.
+var UintPtr = &Primitive{TypeKind: KInt, Name: "uintptr_t", Size: 2, Native: NativeIntPtr}
 var I32 = &Primitive{TypeKind: KInt, Name: "int32_t", Size: 4, Signed: true}
 
 // F80 represents the 10-byte x87 extended-real storage format.
@@ -53,10 +57,18 @@ type Primitive struct {
 	Size     int
 	Signed   bool
 
-	// NativePointer marks an integer that is a pointer in the native
-	// Win32 headers, such as a window handle.
-	NativePointer bool
+	// Native is how the native Win32 headers declare this integer type.
+	Native NativeKind
 }
+
+// NativeKind is how the native Win32 headers declare a Win16 integer type.
+type NativeKind uint8
+
+const (
+	NativeInt     NativeKind = iota // an integer, as in Win16
+	NativePointer                   // a pointer, such as a window handle
+	NativeIntPtr                    // an integer wide enough for a pointer, such as LPARAM
+)
 
 func (p *Primitive) Kind() Kind { return p.TypeKind }
 func (p *Primitive) Bytes() int { return p.Size }

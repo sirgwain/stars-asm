@@ -43,7 +43,7 @@ L_00b9:
 
 L_00e4:
     SetBkColor((HDC)(wParam), crButtonFace);
-    return (uint32_t)(hbrButtonFace);
+    return (LRESULT)(hbrButtonFace);
 
 L_00fd:
     GetCursorPos(&(pt));
@@ -118,13 +118,13 @@ L_024b:
     goto L_03f8;
 
 L_02f6:
-    if ((LOWORD(lParam) != hwndMineCB))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndMineCB))
         goto L_03f8;
     else
         goto L_0305;
 
 L_0305:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_03f8;
     else
         goto L_0321;
@@ -161,7 +161,7 @@ L_03bd:
         goto L_03c5;
 
 L_03c5:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_00e4;
     else
         goto L_03cd;
@@ -3680,7 +3680,7 @@ L_5094:
         goto L_509e;
 
 L_509e:
-    if ((((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12) != sel.scan.ith))
+    if ((((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 0x12) != sel.scan.ith))
         goto L_50cd;
     else
         goto L_50c6;
@@ -3793,7 +3793,7 @@ L_5295:
         goto L_52a3;
 
 L_52a3:
-    scan.ith = ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 18);
+    scan.ith = ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 18);
     idNew = lpth->idFull;
     fOurs = 0;
     goto L_5312;

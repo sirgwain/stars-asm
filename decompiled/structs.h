@@ -117,6 +117,9 @@ typedef struct _player          PLAYER;
 typedef struct _tutor           TUTOR;
 typedef struct _zipprodq        ZIPPRODQ;
 
+// Tile drawing callbacks use the native device-context handle type.
+typedef void (*TILEDRAWPROC)(HDC hdc, TILE *ptile, OBJ obj);
+
 // Win16 structs are byte-packed; keep the original field offsets.
 #pragma pack(push, 1)
 
@@ -1264,20 +1267,20 @@ struct _sel {
 }; /* size=0xe2 */
 
 struct _tile {
-    int16_t yTop;                       /* +0x0000 (2) */
-    int16_t dyFull;                     /* +0x0002 (2) */
-    int16_t grbit;                      /* +0x0004 (2) */
-    void (*pfn)(uint16_t, TILE *, OBJ); /* +0x0006 (4) */
-    uint16_t iCol : 3,                  /* +0x000A (2) @bit0 */
-        id : 4,                         /* @bit3 */
-        fPopped : 1,                    /* @bit7 */
-        fNullPtr : 1,                   /* @bit8 */
-        fMinTitle : 1,                  /* @bit9 */
-        fErase : 1,                     /* @bit10 */
-        fFixCtls : 1,                   /* @bit11 */
-        fMinDraw : 1;                   /* @bit12 */
-    uint16_t fUnused : 4;               /* +0x000C (2) @bit0 */
-    uint16_t idh;                       /* +0x000E (2) */
+    int16_t      yTop;     /* +0x0000 (2) */
+    int16_t      dyFull;   /* +0x0002 (2) */
+    int16_t      grbit;    /* +0x0004 (2) */
+    TILEDRAWPROC pfn;      /* +0x0006 (4) */
+    uint16_t     iCol : 3, /* +0x000A (2) @bit0 */
+        id : 4,            /* @bit3 */
+        fPopped : 1,       /* @bit7 */
+        fNullPtr : 1,      /* @bit8 */
+        fMinTitle : 1,     /* @bit9 */
+        fErase : 1,        /* @bit10 */
+        fFixCtls : 1,      /* @bit11 */
+        fMinDraw : 1;      /* @bit12 */
+    uint16_t fUnused : 4;  /* +0x000C (2) @bit0 */
+    uint16_t idh;          /* +0x000E (2) */
 }; /* size=0x10 */
 
 struct _timer {

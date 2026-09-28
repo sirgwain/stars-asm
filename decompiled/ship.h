@@ -12,7 +12,7 @@ void    DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj);
 int16_t FCanSplit(int32_t cBoat);
 int16_t FCanSplitAll(int32_t cBoat);
 int16_t FCanMerge(FLEET *pfl);
-void    ShipCommandProc(HWND hwnd, uint16_t wParam, int32_t lParam);
+void    ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam);
 void    SelectAdjFleet(int16_t dInc, int16_t idFleet);
 void    SetFleetDropDownSel(int16_t id);
 int32_t LGetFleetStat(FLEET *lpfl, int16_t grStat);

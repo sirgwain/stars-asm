@@ -128,7 +128,7 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 0x12)) + 0xffff) * 0x12));
+    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 0x12)) + 0xffff) * 0x12));
 
 L_0294:
     cThing = (cThing - 1);

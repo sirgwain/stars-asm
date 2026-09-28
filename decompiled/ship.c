@@ -1829,7 +1829,7 @@ L_2633:
     return 1;
 }
 
-void ShipCommandProc(HWND hwnd, uint16_t wParam, int32_t lParam) {
+void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     int16_t  fPercent;
     FARPROC  lpProc;
     int32_t  lSel;
@@ -1854,7 +1854,7 @@ void ShipCommandProc(HWND hwnd, uint16_t wParam, int32_t lParam) {
 
 L_2640:
     fPercent = 0;
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2673;
     else
         goto L_266a;
@@ -1863,13 +1863,13 @@ L_266a:
     SetFocus(hwndFrame);
 
 L_2673:
-    if ((LOWORD(lParam) != rghwndBtn[4]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[4]))
         goto L_26b1;
     else
         goto L_2682;
 
 L_2682:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_26b1;
     else
         goto L_269e;
@@ -1879,13 +1879,13 @@ L_269e:
     goto L_3d2c;
 
 L_26b1:
-    if ((LOWORD(lParam) != rghwndBtn[5]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[5]))
         goto L_26ef;
     else
         goto L_26c0;
 
 L_26c0:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_26ef;
     else
         goto L_26dc;
@@ -1895,13 +1895,13 @@ L_26dc:
     goto L_3d2c;
 
 L_26ef:
-    if ((LOWORD(lParam) != rghwndBtn[6]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[6]))
         goto L_2845;
     else
         goto L_26fe;
 
 L_26fe:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2845;
     else
         goto L_271a;
@@ -1941,13 +1941,13 @@ L_27d2:
     goto L_3d2c;
 
 L_2845:
-    if ((LOWORD(lParam) != rghwndBtn[3]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[3]))
         goto L_288f;
     else
         goto L_2854;
 
 L_2854:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_288f;
     else
         goto L_2870;
@@ -1958,13 +1958,13 @@ L_2870:
     goto L_3d2c;
 
 L_288f:
-    if ((LOWORD(lParam) != rghwndBtn[7]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[7]))
         goto L_2905;
     else
         goto L_289e;
 
 L_289e:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2905;
     else
         goto L_28ba;
@@ -1986,7 +1986,7 @@ L_28ff:
     goto L_3d2c;
 
 L_2905:
-    if ((LOWORD(lParam) != hwndShipDD))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndShipDD))
         goto L_294f;
     else
         goto L_2914;
@@ -1999,7 +1999,7 @@ L_292b:
     goto L_3d2c;
 
 L_2941:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_2946;
@@ -2008,7 +2008,7 @@ L_2946:
     goto L_292b;
 
 L_294f:
-    if ((LOWORD(lParam) != hwndShipLB))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndShipLB))
         goto L_29b7;
     else
         goto L_295e;
@@ -2022,7 +2022,7 @@ L_2975:
     goto L_3d2c;
 
 L_29a9:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_29ae;
@@ -2031,7 +2031,7 @@ L_29ae:
     goto L_2975;
 
 L_29b7:
-    if ((LOWORD(lParam) != hwndFleetCompLB))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndFleetCompLB))
         goto L_2ac0;
     else
         goto L_29c6;
@@ -2086,7 +2086,7 @@ L_2aac:
     goto L_3d2c;
 
 L_2ab2:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_2ab7;
@@ -2095,7 +2095,7 @@ L_2ab7:
     goto L_29dd;
 
 L_2ac0:
-    if ((LOWORD(lParam) != hwndBattleDD))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndBattleDD))
         goto L_2baf;
     else
         goto L_2acf;
@@ -2131,7 +2131,7 @@ L_2b88:
     goto L_3d2c;
 
 L_2b9e:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_2ba3;
@@ -2140,13 +2140,13 @@ L_2ba3:
     goto L_2ae6;
 
 L_2baf:
-    if ((LOWORD(lParam) != rghwndBtn[0]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[0]))
         goto L_2c54;
     else
         goto L_2bbe;
 
 L_2bbe:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2c54;
     else
         goto L_2bda;
@@ -2171,13 +2171,13 @@ L_2c4e:
     goto L_3d2c;
 
 L_2c54:
-    if ((LOWORD(lParam) != rghwndBtn[1]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[1]))
         goto L_2cf7;
     else
         goto L_2c63;
 
 L_2c63:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2cf7;
     else
         goto L_2c7f;
@@ -2208,13 +2208,13 @@ L_2cf1:
     goto L_3d2c;
 
 L_2cf7:
-    if ((LOWORD(lParam) != rghwndBtn[2]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[2]))
         goto L_2ddc;
     else
         goto L_2d06;
 
 L_2d06:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2ddc;
     else
         goto L_2d22;
@@ -2253,13 +2253,13 @@ L_2dc6:
     goto L_3d2c;
 
 L_2ddc:
-    if ((LOWORD(lParam) != rghwndBtn[8]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[8]))
         goto L_2e51;
     else
         goto L_2deb;
 
 L_2deb:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2e51;
     else
         goto L_2e07;
@@ -2279,13 +2279,13 @@ L_2e4b:
     goto L_3d2c;
 
 L_2e51:
-    if ((LOWORD(lParam) != rghwndBtn[9]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[9]))
         goto L_2eda;
     else
         goto L_2e60;
 
 L_2e60:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2eda;
     else
         goto L_2e7c;
@@ -2301,13 +2301,13 @@ L_2e7c:
     goto L_3d2c;
 
 L_2eda:
-    if ((LOWORD(lParam) != rghwndBtn[10]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndBtn[10]))
         goto L_3247;
     else
         goto L_2ee9;
 
 L_2ee9:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_3247;
     else
         goto L_2f05;
@@ -2498,13 +2498,13 @@ L_3241:
     goto L_3d2c;
 
 L_3247:
-    if ((LOWORD(lParam) != hwndRepCB))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndRepCB))
         goto L_32be;
     else
         goto L_3256;
 
 L_3256:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_32be;
     else
         goto L_3272;
@@ -2515,7 +2515,7 @@ L_3272:
     goto L_3d2c;
 
 L_32be:
-    if ((LOWORD(lParam) != rghwndOrderDD[0]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndOrderDD[0]))
         goto L_3770;
     else
         goto L_32cd;
@@ -2725,7 +2725,7 @@ L_375c:
     goto L_3d2c;
 
 L_3762:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_3767;
@@ -2734,7 +2734,7 @@ L_3767:
     goto L_32e4;
 
 L_3770:
-    if ((LOWORD(lParam) != rghwndOrderDD[1]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndOrderDD[1]))
         goto L_3953;
     else
         goto L_377f;
@@ -2787,7 +2787,7 @@ L_393f:
     goto L_3d2c;
 
 L_3945:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_394a;
@@ -2796,7 +2796,7 @@ L_394a:
     goto L_3796;
 
 L_3953:
-    if ((LOWORD(lParam) != rghwndOrderDD[2]))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != rghwndOrderDD[2]))
         goto L_3ad5;
     else
         goto L_3962;
@@ -2827,7 +2827,7 @@ L_39e6:
     goto L_3d2c;
 
 L_3ac7:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_3d2c;
     else
         goto L_3acc;
@@ -2836,13 +2836,13 @@ L_3acc:
     goto L_3979;
 
 L_3ad5:
-    if ((LOWORD(lParam) != hwndOrderED))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndOrderED))
         goto L_3d2c;
     else
         goto L_3ae4;
 
 L_3ae4:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x300))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x300))
         goto L_3d2c;
     else
         goto L_3b00;
@@ -4484,20 +4484,20 @@ L_5907:
     return FTrackXfer(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam);
 
 L_5935:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_5947;
     else
         goto L_593e;
 
 L_593e:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_5996;
     else
         goto L_5947;
 
 L_5947:
     StickyDlgPos(hwnd, &(ptStickyTransferDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_596c;
     else
         goto L_5966;
@@ -4523,7 +4523,7 @@ L_598d:
     return 1;
 
 L_5996:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_5a08;
     else
         goto L_599f;
@@ -7957,7 +7957,7 @@ L_9118:
 
 L_914e:
     ReleaseCapture();
-    return ReleaseDC(hwndPlanet, hdc);
+    return (HCURSOR)((uintptr_t)(ReleaseDC(hwndPlanet, hdc)));
 }
 
 void FillFleetCompLB() {

@@ -157,7 +157,7 @@ L_01ca:
         goto L_01d5;
 
 L_01d5:
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)((iScanNew + 3905)), 0);
+    SendMessage(hwndFrame, WM_COMMAND, (iScanNew + 3905), 0);
 
 L_01f1:
     goto L_0eea;
@@ -716,7 +716,7 @@ L_0a61:
         goto L_0a72;
 
 L_0a72:
-    scan.ith = ((int32_t)((LOWORD(lpth) - LOWORD(lpThings))) / 18);
+    scan.ith = ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 18);
     goto L_0a9d;
 
 L_0a98:
@@ -948,7 +948,7 @@ L_0d1a:
 
 L_0d1d:
     SetScanScrollBars(hwnd);
-    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)((iScanZoom + 3905)), 0);
+    PostMessage(hwndFrame, WM_COMMAND, (iScanZoom + 3905), 0);
     goto Default;
 
 L_0d47:
@@ -8689,19 +8689,19 @@ L_930e:
     return (INT_PTR)(hbrButtonFace);
 
 L_9327:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_9339;
     else
         goto L_9330;
 
 L_9330:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_93f9;
     else
         goto L_9339;
 
 L_9339:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_93c2;
     else
         goto L_9342;
@@ -8721,7 +8721,7 @@ L_936d:
 
 L_93c2:
     StickyDlgPos(hwnd, &(ptStickyFindDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_93e7;
     else
         goto L_93e1;
@@ -8738,7 +8738,7 @@ L_93ea:
     return 1;
 
 L_93f9:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_944c;
     else
         goto L_9402;
@@ -8754,7 +8754,7 @@ L_9429:
         goto L_9431;
 
 L_9431:
-    if ((msg == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(msg) != 0))
         goto L_92f2;
     else
         goto L_9439;

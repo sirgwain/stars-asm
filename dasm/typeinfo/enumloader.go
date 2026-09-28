@@ -213,12 +213,13 @@ func stripCComments(s string) string {
 }
 
 type symbolicConfigJSON struct {
-	FlagEnums      []string                `json:"flag_enums"`
-	Uses           []useRuleJSON           `json:"uses"`
-	Messages       []messageRuleJSON       `json:"messages"`
-	DependentEnums []dependentEnumRuleJSON `json:"dependent_enums"`
-	WindowClasses  []windowClassJSON       `json:"window_classes"`
-	Windows        []windowRuleJSON        `json:"windows"`
+	FlagEnums       []string                `json:"flag_enums"`
+	Uses            []useRuleJSON           `json:"uses"`
+	Messages        []messageRuleJSON       `json:"messages"`
+	DependentEnums  []dependentEnumRuleJSON `json:"dependent_enums"`
+	WindowClasses   []windowClassJSON       `json:"window_classes"`
+	Windows         []windowRuleJSON        `json:"windows"`
+	MessageHandlers []messageHandlerJSON    `json:"message_handlers"`
 }
 
 type useRuleJSON struct {
@@ -246,6 +247,7 @@ type messageRuleJSON struct {
 	WParam  *messagePayloadJSON `json:"wparam"`
 	LParam  *messagePayloadJSON `json:"lparam"`
 	Result  *messageValueJSON   `json:"result"`
+	Match   string              `json:"match"`
 }
 
 type messagePayloadJSON struct {
@@ -257,6 +259,7 @@ type messagePayloadJSON struct {
 type messageValueJSON struct {
 	Enum     string `json:"enum"`
 	CastType string `json:"cast_type"`
+	Get      string `json:"get"`
 }
 
 type dependentEnumRuleJSON struct {
@@ -326,14 +329,27 @@ func parseMessageRuleJSON(cfg messageRuleJSON, sdb *SymbolDB, resolver *typeReso
 	if err != nil {
 		return nil, err
 	}
-	return &MessageRule{
+	rule := &MessageRule{
 		Enum:   messageEnum,
 		Name:   messageValue.Name,
 		Value:  messageValue.Value,
 		WParam: wparam,
 		LParam: lparam,
 		Result: result,
-	}, nil
+	}
+	if cfg.Match != "" {
+		uint := resolver.getNamedType("UINT")
+		if uint == nil {
+			return nil, fmt.Errorf("message %s match %s: UINT type not registered", cfg.Message, cfg.Match)
+		}
+		rule.Match = &Function{
+			Name:   cfg.Match,
+			Module: OverrideModule,
+			Ret:    I16,
+			Params: []FunctionVar{{Name: "msg", Type: uint}},
+		}
+	}
+	return rule, nil
 }
 
 // parseMessagePayloadJSON resolves the whole and word-part types for one
@@ -342,19 +358,40 @@ func parseMessagePayloadJSON(message, parameter string, cfg *messagePayloadJSON,
 	if cfg == nil {
 		return nil, nil
 	}
-	whole, err := parseMessageValueJSON(message, parameter+".whole", cfg.Whole, sdb, resolver)
+	whole, err := parseMessagePartJSON(message, parameter+".whole", cfg.Whole, sdb, resolver)
 	if err != nil {
 		return nil, err
 	}
-	loword, err := parseMessageValueJSON(message, parameter+".loword", cfg.Loword, sdb, resolver)
+	loword, err := parseMessagePartJSON(message, parameter+".loword", cfg.Loword, sdb, resolver)
 	if err != nil {
 		return nil, err
 	}
-	hiword, err := parseMessageValueJSON(message, parameter+".hiword", cfg.Hiword, sdb, resolver)
+	hiword, err := parseMessagePartJSON(message, parameter+".hiword", cfg.Hiword, sdb, resolver)
 	if err != nil {
 		return nil, err
 	}
 	return &MessagePayloadRule{Whole: whole, Loword: loword, Hiword: hiword}, nil
+}
+
+// parseMessagePartJSON resolves one message parameter part's type and, when
+// Win32 repacked it, the cracker function reading it.
+func parseMessagePartJSON(message, path string, cfg *messageValueJSON, sdb *SymbolDB, resolver *typeResolver) (MessagePart, error) {
+	typ, err := parseMessageValueJSON(message, path, cfg, sdb, resolver)
+	if err != nil || cfg == nil || cfg.Get == "" {
+		return MessagePart{Type: typ}, err
+	}
+	wparam := resolver.getNamedType("WPARAM")
+	lparam := resolver.getNamedType("LPARAM")
+	if wparam == nil || lparam == nil {
+		return MessagePart{}, fmt.Errorf("message %s %s cracker %s: WPARAM and LPARAM types not registered", message, path, cfg.Get)
+	}
+	get := &Function{
+		Name:   cfg.Get,
+		Module: OverrideModule,
+		Ret:    typ,
+		Params: []FunctionVar{{Name: "wParam", Type: wparam}, {Name: "lParam", Type: lparam}},
+	}
+	return MessagePart{Type: typ, Get: get}, nil
 }
 
 // parseMessageValueJSON resolves an enum or cast type for one message value.

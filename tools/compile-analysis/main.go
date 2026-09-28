@@ -36,10 +36,13 @@ type summary struct {
 	FailedTranslationUnits int `json:"failedTranslationUnits"`
 	Errors                 int `json:"errors"`
 	UniqueErrors           int `json:"uniqueErrors"`
+	Warnings               int `json:"warnings"`
+	UniqueWarnings         int `json:"uniqueWarnings"`
 }
 
 type fileSummary struct {
-	Errors int `json:"errors"`
+	Errors   int `json:"errors"`
+	Warnings int `json:"warnings"`
 }
 
 type position struct {
@@ -118,11 +121,13 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Printf("MinGW analysis: %d errors (%d unique) in %d/%d translation units\n",
+	fmt.Printf("MinGW analysis: %d errors (%d unique) in %d/%d translation units, %d warnings (%d unique)\n",
 		report.Summary.Errors,
 		report.Summary.UniqueErrors,
 		report.Summary.FailedTranslationUnits,
 		report.Summary.TranslationUnits,
+		report.Summary.Warnings,
+		report.Summary.UniqueWarnings,
 	)
 	if cfg.failOnErrors && report.Summary.Errors != 0 {
 		os.Exit(1)
@@ -163,10 +168,18 @@ func generateReport(cfg config) (report, error) {
 		if err != nil {
 			return report{}, err
 		}
-		errorCount := len(diagnostics)
-		result.Files[file] = fileSummary{Errors: errorCount}
+		var counts fileSummary
+		for _, item := range diagnostics {
+			if item.Kind == "warning" {
+				counts.Warnings++
+			} else {
+				counts.Errors++
+			}
+		}
+		result.Files[file] = counts
 		result.Summary.TranslationUnits++
-		result.Summary.Errors += errorCount
+		result.Summary.Errors += counts.Errors
+		result.Summary.Warnings += counts.Warnings
 		if failed {
 			result.Summary.FailedTranslationUnits++
 		}
@@ -181,9 +194,13 @@ func generateReport(cfg config) (report, error) {
 			item.Occurrences = 1
 			unique[key] = len(result.Diagnostics)
 			result.Diagnostics = append(result.Diagnostics, item)
+			if item.Kind == "warning" {
+				result.Summary.UniqueWarnings++
+			} else {
+				result.Summary.UniqueErrors++
+			}
 		}
 	}
-	result.Summary.UniqueErrors = len(result.Diagnostics)
 	return result, nil
 }
 
@@ -245,7 +262,11 @@ func commandOutput(name string, args ...string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-// compileFile returns the error diagnostics and compiler failure status for one C file.
+// compileFile returns the error and warning diagnostics and compiler failure
+// status for one C file. GCC's default warnings stay on, since some
+// extraction bugs, such as comparing a pointer with a constant address, only
+// warn; -Wpointer-sign is off because integer pointees differing only in sign
+// intentionally keep plain decay.
 func compileFile(cc, sourceDir, file string) ([]diagnostic, bool, error) {
 	cmd := exec.Command(cc,
 		"-std=gnu11",
@@ -253,7 +274,8 @@ func compileFile(cc, sourceDir, file string) ([]diagnostic, bool, error) {
 		"-fdiagnostics-format=json",
 		"-fdiagnostics-color=never",
 		"-fmax-errors=0",
-		"-w",
+		"-fdiagnostics-show-option",
+		"-Wno-pointer-sign",
 		"-I"+filepath.ToSlash(filepath.Clean(sourceDir)),
 		file,
 	)
@@ -279,15 +301,25 @@ func compileFile(cc, sourceDir, file string) ([]diagnostic, bool, error) {
 	}
 	result := make([]diagnostic, 0, len(raw))
 	for _, item := range raw {
-		if item.Kind != "error" && item.Kind != "fatal error" {
+		if item.Kind != "error" && item.Kind != "fatal error" && item.Kind != "warning" {
 			continue
 		}
 		result = append(result, convertDiagnostic(item))
 	}
-	if failed && len(result) == 0 {
+	if failed && !hasError(result) {
 		return nil, false, fmt.Errorf("compiler failed for %s without an error diagnostic", file)
 	}
 	return result, failed, nil
+}
+
+// hasError reports whether diagnostics hold an error or fatal error.
+func hasError(diagnostics []diagnostic) bool {
+	for _, item := range diagnostics {
+		if item.Kind != "warning" {
+			return true
+		}
+	}
+	return false
 }
 
 // reWindresDiagnostic matches a windres or preprocessor diagnostic:
@@ -329,11 +361,8 @@ func compileResourceScript(windres, file string) ([]diagnostic, bool, error) {
 			}
 			continue
 		}
-		if m[4] == "warning" {
-			continue
-		}
 		kind := "error"
-		if m[4] == "fatal error" {
+		if m[4] != "" {
 			kind = m[4]
 		}
 		lineNo, _ := strconv.Atoi(m[2])
@@ -345,8 +374,8 @@ func compileResourceScript(windres, file string) ([]diagnostic, bool, error) {
 		where := &position{File: filepath.ToSlash(path), Line: lineNo, Column: column}
 		result = append(result, diagnostic{Kind: kind, Message: m[5], Locations: []location{{Caret: where}}})
 	}
-	if failed && len(result) == 0 {
-		return nil, false, fmt.Errorf("resource compiler failed for %s without a diagnostic", file)
+	if failed && !hasError(result) {
+		return nil, false, fmt.Errorf("resource compiler failed for %s without an error diagnostic", file)
 	}
 	return result, failed, nil
 }

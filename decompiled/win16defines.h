@@ -1,6 +1,9 @@
 #ifndef STARS_DECOMPILED_WIN16DEFINES_H
 #define STARS_DECOMPILED_WIN16DEFINES_H
 
+#include <direct.h>
+#include <io.h>
+
 // Old CRT names
 #define fmemcmp  memcmp
 #define fmemcpy  memcpy
@@ -12,7 +15,19 @@
 #define fstricmp stricmp
 #define fstrlen  strlen
 
-#define strtime _strtime
+#define strtime         _strtime
+#define access          _access
+#define filelength      _filelength
+#define lseek           _lseek
+#define mkdir           _mkdir
+#define tell            _tell
+#define dos_getdiskfree _getdiskfree
+
+typedef struct _diskfree_t _diskfree_t;
+
+// SIGNHIWORD is the high word from signed 16-to-32 extension (the x86 CWD
+// instruction), not the upper half of an already-wide value.
+#define SIGNHIWORD(value) ((int16_t)(((uint16_t)(value) & 0x8000) ? -1 : 0))
 
 // Old Windows names
 #define _wsprintf wsprintfA
@@ -94,9 +109,11 @@ static inline DWORD SetBrushOrg16(HDC hdc, int x, int y) {
  * full native width because Win64 has no 32-bit GWL_WNDPROC.
  */
 
-static inline FARPROC GetWindowLong16(HWND hwnd, short index) { return (FARPROC)GetWindowLongPtrA(hwnd, index); }
+// GetWindowLong16 retrieves the window procedure using the Win16 index.
+static inline WNDPROC GetWindowLong16(HWND hwnd, short index) { return (WNDPROC)GetWindowLongPtrA(hwnd, index); }
 
-static inline FARPROC SetWindowLong16(HWND hwnd, short index, FARPROC lpfn) { return (FARPROC)SetWindowLongPtrA(hwnd, index, (LONG_PTR)lpfn); }
+// SetWindowLong16 replaces the window procedure and returns its predecessor.
+static inline WNDPROC SetWindowLong16(HWND hwnd, short index, WNDPROC lpfn) { return (WNDPROC)SetWindowLongPtrA(hwnd, index, (LONG_PTR)lpfn); }
 
 /*
  * Win16 drive and resource APIs
@@ -115,6 +132,144 @@ static inline UINT GetDriveType16(int drive) {
 }
 
 static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb) { return GlobalAlloc(GMEM_MOVEABLE, cb ? cb : SizeofResource(hinst, hrsrc)); }
+
+// tagTIMERINFO retains the 12-byte ToolHelp layout from utils/TOOLHELP.H.
+typedef struct tagTIMERINFO {
+    DWORD dwSize;
+    DWORD dwmsSinceStart;
+    DWORD dwmsThisVM;
+} tagTIMERINFO, TIMERINFO;
+
+// TimerCount reports elapsed system milliseconds. Win32 has no separate
+// Win16 VM clock, so both counters use the same tick count.
+static inline BOOL TimerCount(TIMERINFO *timer) {
+    if (timer->dwSize != sizeof(*timer)) {
+        SetLastError(ERROR_BAD_LENGTH);
+        return FALSE;
+    }
+    timer->dwmsSinceStart = GetTickCount();
+    timer->dwmsThisVM = timer->dwmsSinceStart;
+    return TRUE;
+}
+
+// _find_t provides the DOS search fields consumed by GetDiskSerialNumber.
+typedef struct _find_t {
+    unsigned char reserved[21];
+    unsigned char attrib;
+    uint16_t      wr_time;
+    uint16_t      wr_date;
+    uint32_t      size;
+    char          name[13];
+} _find_t;
+
+// dos_findfirst supports Stars' volume-label search (attribute 0x08).
+// Win32 exposes the label but not its DOS directory-entry timestamp; those
+// fields are zero, so the legacy disk fingerprint will differ from Win16.
+static inline unsigned dos_findfirst(const char *path, unsigned attrib, _find_t *info) {
+    char root[] = "A:\\";
+    char label[MAX_PATH + 1];
+
+    if (attrib != 0x08)
+        return ERROR_NOT_SUPPORTED;
+    if (path[0] == '\0' || path[1] != ':')
+        return ERROR_INVALID_DRIVE;
+    root[0] = path[0];
+    if (!GetVolumeInformationA(root, label, sizeof(label), NULL, NULL, NULL, NULL, 0))
+        return GetLastError();
+    if (label[0] == '\0')
+        return ERROR_NO_MORE_FILES;
+
+    memset(info, 0, sizeof(*info));
+    info->attrib = 0x08;
+    // DOS returns a volume label as an 8.3 name, with a dot after byte eight.
+    size_t len = strlen(label);
+    if (len > 11)
+        len = 11;
+    if (len > 8) {
+        memcpy(info->name, label, 8);
+        info->name[8] = '.';
+        memcpy(info->name + 9, label + 8, len - 8);
+    } else {
+        memcpy(info->name, label, len);
+    }
+    return 0;
+}
+
+// AccessResource opens the module's PE file at the resource's raw data offset
+// for the existing _lread/_lclose callers. The module must be a loaded PE image.
+static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
+    HMODULE module = instance ? instance : GetModuleHandleA(NULL);
+    HGLOBAL loaded = LoadResource(module, resource);
+    if (!loaded)
+        return HFILE_ERROR;
+    const BYTE *data = (const BYTE *)LockResource(loaded);
+    if (!data)
+        return HFILE_ERROR;
+
+    const BYTE                 *base = (const BYTE *)module;
+    const IMAGE_DOS_HEADER     *dos = (const IMAGE_DOS_HEADER *)base;
+    const IMAGE_NT_HEADERS     *nt = (const IMAGE_NT_HEADERS *)(base + dos->e_lfanew);
+    const IMAGE_SECTION_HEADER *section = IMAGE_FIRST_SECTION(nt);
+    ULONG_PTR                   rva = (ULONG_PTR)data - (ULONG_PTR)base;
+    DWORD                       size = SizeofResource(module, resource);
+
+    for (WORD i = 0; i < nt->FileHeader.NumberOfSections; ++i, ++section) {
+        if (rva < section->VirtualAddress)
+            continue;
+        ULONG_PTR offset = rva - section->VirtualAddress;
+        if (offset >= section->SizeOfRawData || size > section->SizeOfRawData - offset)
+            continue;
+
+        char  path[MAX_PATH];
+        DWORD len = GetModuleFileNameA(module, path, sizeof(path));
+        if (len == 0 || len >= sizeof(path))
+            return HFILE_ERROR;
+        HFILE file = _lopen(path, OF_READ | OF_SHARE_DENY_NONE);
+        if (file == HFILE_ERROR)
+            return HFILE_ERROR;
+        if (_llseek(file, (LONG)(section->PointerToRawData + offset), FILE_BEGIN) == HFILE_ERROR) {
+            _lclose(file);
+            return HFILE_ERROR;
+        }
+        return file;
+    }
+    SetLastError(ERROR_RESOURCE_DATA_NOT_FOUND);
+    return HFILE_ERROR;
+}
+
+/*
+ * Win16 message crackers
+ *
+ * Win32 repacked the parameters of these messages: a handle Win16 carried
+ * in a word of lParam fills lParam, and the word it displaced moved to the
+ * high word of wParam. The decompiled code reads each repacked parameter
+ * through the cracker named in its message rule, defined here with the
+ * Win32 packing. Win32 replaced WM_CTLCOLOR with one message per control
+ * type, which IS_WM_CTLCOLOR recognizes.
+ */
+#define GET_WM_ACTIVATE_STATE(wp, lp)         LOWORD(wp)
+#define GET_WM_ACTIVATE_FMINIMIZED(wp, lp)    ((BOOL)HIWORD(wp))
+#define GET_WM_ACTIVATE_HWND(wp, lp)          ((HWND)(lp))
+#define GET_WM_CHARTOITEM_HWND(wp, lp)        ((HWND)(lp))
+#define GET_WM_COMMAND_ID(wp, lp)             LOWORD(wp)
+#define GET_WM_COMMAND_CMD(wp, lp)            HIWORD(wp)
+#define GET_WM_COMMAND_HWND(wp, lp)           ((HWND)(lp))
+#define GET_WM_CTLCOLOR_HWND(wp, lp)          ((HWND)(lp))
+#define GET_WM_ENTERIDLE_HWND(wp, lp)         ((HWND)(lp))
+#define GET_WM_HSCROLL_CODE(wp, lp)           LOWORD(wp)
+#define GET_WM_HSCROLL_POS(wp, lp)            ((short)HIWORD(wp))
+#define GET_WM_HSCROLL_HWND(wp, lp)           ((HWND)(lp))
+#define GET_WM_MENUSELECT_CMD(wp, lp)         LOWORD(wp)
+#define GET_WM_MENUSELECT_FLAGS(wp, lp)       HIWORD(wp)
+#define GET_WM_MENUSELECT_HMENU(wp, lp)       ((HMENU)(lp))
+#define GET_WM_PARENTNOTIFY_MSG(wp, lp)       LOWORD(wp)
+#define GET_WM_PARENTNOTIFY_ID(wp, lp)        HIWORD(wp)
+#define GET_WM_PARENTNOTIFY_HWNDCHILD(wp, lp) ((HWND)(lp))
+#define GET_WM_VKEYTOITEM_HWND(wp, lp)        ((HWND)(lp))
+#define GET_WM_VSCROLL_CODE(wp, lp)           LOWORD(wp)
+#define GET_WM_VSCROLL_POS(wp, lp)            ((short)HIWORD(wp))
+#define GET_WM_VSCROLL_HWND(wp, lp)           ((HWND)(lp))
+#define IS_WM_CTLCOLOR(msg)                   ((msg) >= WM_CTLCOLORMSGBOX && (msg) <= WM_CTLCOLORSTATIC)
 
 // Win16 constants. windows.h provides most of them; the rest, such as
 // Win16-only messages and application WM_USER messages, are defined here.

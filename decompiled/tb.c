@@ -308,20 +308,20 @@ L_050c:
 
 L_0537:
     SetBkColor((HDC)(wParam), crButtonFace);
-    return (uint32_t)(hbrButtonFace);
+    return (LRESULT)(hbrButtonFace);
 
 L_0550:
     SetCursor(LoadCursor(0x0, MAKEINTRESOURCE(0x7f00)));
     return 1;
 
 L_0570:
-    if ((LOWORD(lParam) != hwndTBRadar))
+    if ((GET_WM_COMMAND_HWND(wParam, lParam) != hwndTBRadar))
         goto L_06de;
     else
         goto L_057f;
 
 L_057f:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x8))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x8))
         goto L_06de;
     else
         goto L_059b;
@@ -376,7 +376,7 @@ L_069b:
         goto L_06a3;
 
 L_06a3:
-    if ((msg == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(msg) != 0))
         goto L_0537;
     else
         goto L_06ab;

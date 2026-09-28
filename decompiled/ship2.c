@@ -13,6 +13,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     int16_t        xCtr;
     XferActionType iAction;
     FARPROC        lpProc;
+    HWND           t_scratch_m30;
     int16_t        t_merge_0524_0001;
 
 L_0000:
@@ -104,7 +105,8 @@ L_01a8:
     goto L_01d5;
 
 L_01b0:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_m30 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m30 == GetDlgItem(hwnd, i)))
         goto L_01df;
     else
         goto L_01d1;
@@ -191,37 +193,37 @@ L_0470:
     return 1;
 
 L_0485:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_04e4;
     else
         goto L_04a1;
 
 L_04a1:
-    if ((wParam < 0x431))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < 0x431))
         goto L_04e4;
     else
         goto L_04ab;
 
 L_04ab:
-    if ((wParam > 0x434))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0434))
         goto L_04e4;
     else
         goto L_04b5;
 
 L_04b5:
-    iResTechNow = (wParam - 1073);
+    iResTechNow = (GET_WM_COMMAND_ID(wParam, lParam) - 1073);
     EnableZipBtns(hwnd, iResTechNow);
     InvalidateRect(hwnd, 0x0, 1);
     goto L_0823;
 
 L_04e4:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_04f6;
     else
         goto L_04ed;
 
 L_04ed:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_054b;
     else
         goto L_04f6;
@@ -229,7 +231,7 @@ L_04ed:
 L_04f6:
     hwndZipOrderDlg = 0x0;
     StickyDlgPos(hwnd, &(ptStickyZipOrderDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_0521;
     else
         goto L_051b;
@@ -255,13 +257,13 @@ L_0542:
     return 1;
 
 L_054b:
-    if ((wParam == 0x816))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT))
         goto L_055f;
     else
         goto L_0555;
 
 L_0555:
-    if ((wParam != 0x41b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME))
         goto L_0749;
     else
         goto L_055f;
@@ -325,7 +327,7 @@ L_0681:
 L_0684:
     *(pszT) = 0;
     SetWindowText(GetDlgItem(hwnd, (iResTechNow + 1073)), &(szWork[64]));
-    if ((wParam != 0x816))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_IMPORT))
         goto L_0718;
     else
         goto L_06b0;
@@ -345,7 +347,7 @@ L_0727:
     goto L_0823;
 
 L_0749:
-    if ((wParam != 0x817))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE))
         goto L_07c8;
     else
         goto L_0753;
@@ -359,7 +361,7 @@ L_0753:
     goto L_0823;
 
 L_07c8:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_0823;
     else
         goto L_07d1;
@@ -381,7 +383,7 @@ L_0800:
         goto L_0808;
 
 L_0808:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_01a8;
     else
         goto L_0810;
@@ -458,19 +460,19 @@ L_0975:
     return (INT_PTR)(hbrButtonFace);
 
 L_098e:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_09a0;
     else
         goto L_0997;
 
 L_0997:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_09f7;
     else
         goto L_09a0;
 
 L_09a0:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_09c0;
     else
         goto L_09a9;
@@ -480,7 +482,7 @@ L_09a9:
 
 L_09c0:
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_09e5;
     else
         goto L_09df;
@@ -497,7 +499,7 @@ L_09e8:
     return 1;
 
 L_09f7:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_0a59;
     else
         goto L_0a00;
@@ -526,7 +528,7 @@ L_0a36:
         goto L_0a3e;
 
 L_0a3e:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0959;
     else
         goto L_0a46;
@@ -579,19 +581,19 @@ L_0b47:
     return (INT_PTR)(hbrButtonFace);
 
 L_0b60:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_0b72;
     else
         goto L_0b69;
 
 L_0b69:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_0bdc;
     else
         goto L_0b72;
 
 L_0b72:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_0ba5;
     else
         goto L_0b7b;
@@ -602,7 +604,7 @@ L_0b7b:
 
 L_0ba5:
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_0bca;
     else
         goto L_0bc4;
@@ -619,13 +621,13 @@ L_0bcd:
     return 1;
 
 L_0bdc:
-    if ((wParam != 0x10c))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_EDIT1))
         goto L_0c9c;
     else
         goto L_0be6;
 
 L_0be6:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x400))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x400))
         goto L_0c9c;
     else
         goto L_0c02;
@@ -638,23 +640,23 @@ L_0c02:
 
 L_0c0c:
     fInEditUpdate = 1;
-    GetWindowText((HWND)(LOWORD(lParam)), szWork, 250);
-    lSel = SendMessage((HWND)(LOWORD(lParam)), WM_USER, 0x0, 0);
+    GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
+    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), WM_USER, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0c93;
     else
         goto L_0c66;
 
 L_0c66:
-    SetWindowText((HWND)(LOWORD(lParam)), szWork);
-    SendMessage((HWND)(LOWORD(lParam)), 0x401, 0x0, lSel);
+    SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork);
+    SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), 0x401, 0x0, lSel);
 
 L_0c93:
     fInEditUpdate = 0;
     goto L_0cef;
 
 L_0c9c:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_0cef;
     else
         goto L_0ca5;
@@ -670,7 +672,7 @@ L_0ccc:
         goto L_0cd4;
 
 L_0cd4:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0b2b;
     else
         goto L_0cdc;
@@ -2997,6 +2999,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     char   *psz;
     HWND    t_call_343f;
     WPARAM  t_merge_3487_0001;
+    HWND    t_scratch_me;
     int16_t t_merge_35e1_0001;
     HWND    t_call_3640;
     WPARAM  t_merge_365d_0001;
@@ -3069,7 +3072,8 @@ L_34c0:
     return 1;
 
 L_34e8:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, IDC_U16_0x0051)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, IDC_U16_0x0051)))
         goto L_36a7;
     else
         goto L_3507;
@@ -3079,13 +3083,13 @@ L_3507:
     return (INT_PTR)(hbrButtonFace);
 
 L_3520:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_3532;
     else
         goto L_3529;
 
 L_3529:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_35f0;
     else
         goto L_3532;
@@ -3113,7 +3117,7 @@ L_357f:
         goto L_358a;
 
 L_358a:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_35b9;
     else
         goto L_3593;
@@ -3135,7 +3139,7 @@ L_35b3:
 
 L_35b9:
     StickyDlgPos(hwnd, &(ptStickyMergeFleetsDlg), 0);
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_35de;
     else
         goto L_35d8;
@@ -3152,7 +3156,7 @@ L_35e1:
     return 1;
 
 L_35f0:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_361d;
     else
         goto L_35f9;
@@ -3162,13 +3166,13 @@ L_35f9:
     return 1;
 
 L_361d:
-    if ((wParam == 0x7f8))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == 0x7f8))
         goto L_3631;
     else
         goto L_3627;
 
 L_3627:
-    if ((wParam != 0x7f9))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x7f9))
         goto L_36a7;
     else
         goto L_3631;
@@ -3179,7 +3183,7 @@ L_3631:
 
 L_3639:
     t_call_3640 = GetDlgItem(hwnd, IDC_U16_0x0051);
-    if ((wParam != 0x7f8))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x7f8))
         goto L_365a;
     else
         goto L_3654;
@@ -3211,7 +3215,7 @@ L_3684:
         goto L_368c;
 
 L_368c:
-    if ((msg == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(msg) != 0))
         goto L_34e8;
     else
         goto L_3694;

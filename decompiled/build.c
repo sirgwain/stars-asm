@@ -293,6 +293,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     PART               part;
     int16_t            cshQueued;
     int16_t            j;
+    HWND               t_scratch_m4e;
+    HWND               t_scratch_m4e_2;
     int16_t            t_merge_0bdb_0001;
     uint16_t           t_merge_0c80_0001;
     int32_t            t_merge_0cc3_0001;
@@ -418,7 +420,8 @@ L_0880:
     goto L_08ad;
 
 L_0888:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_m4e = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m4e == GetDlgItem(hwnd, i)))
         goto L_08b7;
     else
         goto L_08a9;
@@ -439,7 +442,8 @@ L_08b7:
         goto L_08c1;
 
 L_08c1:
-    if ((LOWORD(lParam) != GetDlgItem(hwnd, IDC_SHIPLIST)))
+    t_scratch_m4e_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m4e_2 != GetDlgItem(hwnd, IDC_SHIPLIST)))
         goto L_2641;
     else
         goto L_08e0;
@@ -531,25 +535,25 @@ L_0bdb:
     return FTrackSlot(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, 0, t_merge_0bdb_0001);
 
 L_0c0e:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0d21;
     else
         goto L_0c2a;
 
 L_0c2a:
-    if ((wParam < 0x810))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_PREV))
         goto L_0d21;
     else
         goto L_0c34;
 
 L_0c34:
-    if ((wParam > 0x811))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_NEXT2))
         goto L_0d21;
     else
         goto L_0c3e;
 
 L_0c3e:
-    fStarbaseMode = (wParam - 2064);
+    fStarbaseMode = (GET_WM_COMMAND_ID(wParam, lParam) - 2064);
     wParam = (mdBuild + 2066);
     GetClientRect(hwnd, &(rc));
     if (((rc.right >> 0x1) >= (rc.right - 352)))
@@ -590,19 +594,19 @@ L_0cc3:
     goto FixupShip;
 
 L_0d21:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_0eb2;
     else
         goto L_0d3d;
 
 L_0d3d:
-    if ((wParam < 0x812))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_FIRST))
         goto L_0eb2;
     else
         goto L_0d47;
 
 L_0d47:
-    if ((wParam > 0x815))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_DOWN))
         goto L_0eb2;
     else
         goto L_0d51;
@@ -613,12 +617,12 @@ L_0d51:
 LRestart:
     lpshdefBuild = 0x0;
     fHullCopy = 0;
-    mdBuild = (wParam + 0xf7ee);
+    mdBuild = (GET_WM_COMMAND_ID(wParam, lParam) - 2066);
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     UpdateSlotGlobals();
     FillBuildDD(hwndItem, mdBuild);
     SendMessage(hwndItem, CB_SETCURSEL, LOWORD(lSel), 0);
-    if ((wParam != 0x815))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DOWN))
         goto L_0dcb;
     else
         goto L_0dc5;
@@ -668,7 +672,7 @@ L_0e81:
 
 L_0e84:
     ShowWindow(hwndItem, t_merge_0e84_0001);
-    if ((wParam != 0x815))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DOWN))
         goto FixupShip;
     else
         goto L_0e97;
@@ -686,13 +690,13 @@ L_0eaf:
     goto L_2641;
 
 L_0eb2:
-    if ((wParam != 0x81b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_EDITNAME))
         goto L_0fbc;
     else
         goto L_0ebc;
 
 L_0ebc:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x400))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x400))
         goto L_0fbc;
     else
         goto L_0ed8;
@@ -705,16 +709,16 @@ L_0ed8:
 
 L_0ee2:
     fInEditUpdate = 1;
-    GetWindowText((HWND)(LOWORD(lParam)), szWork, 250);
-    lSel = SendMessage((HWND)(LOWORD(lParam)), WM_USER, 0x0, 0);
+    GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
+    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), WM_USER, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0f69;
     else
         goto L_0f3c;
 
 L_0f3c:
-    SetWindowText((HWND)(LOWORD(lParam)), szWork);
-    SendMessage((HWND)(LOWORD(lParam)), 0x401, 0x0, lSel);
+    SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork);
+    SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), 0x401, 0x0, lSel);
 
 L_0f69:
     lstrcpy(lpshdefBuild->hul.szClass, szWork);
@@ -732,7 +736,7 @@ L_0fb9:
     goto L_2641;
 
 L_0fbc:
-    if ((wParam != 0x81a))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_COMBOBOX))
         goto L_14a0;
     else
         goto L_0fc6;
@@ -1055,7 +1059,7 @@ L_148f:
     goto L_2641;
 
 L_1492:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_2641;
     else
         goto L_1497;
@@ -1064,13 +1068,13 @@ L_1497:
     goto FixupShip;
 
 L_14a0:
-    if ((wParam != 0x80c))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x080C))
         goto L_14d5;
     else
         goto L_14aa;
 
 L_14aa:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_2641;
     else
         goto L_14c6;
@@ -1082,13 +1086,13 @@ L_14d2:
     goto L_2641;
 
 L_14d5:
-    if ((wParam != 0x817))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE))
         goto L_17b3;
     else
         goto L_14df;
 
 L_14df:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_2641;
     else
         goto L_14fb;
@@ -1221,13 +1225,13 @@ L_17aa:
     goto L_2641;
 
 L_17b3:
-    if ((wParam != 0x816))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_IMPORT))
         goto L_1e55;
     else
         goto L_17bd;
 
 L_17bd:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
         goto L_1e3a;
     else
         goto L_17d9;
@@ -1561,7 +1565,7 @@ L_1e52:
     goto L_2641;
 
 L_1e55:
-    if ((wParam != 0x818))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_EDIT))
         goto L_20ff;
     else
         goto L_1e5f;
@@ -1668,13 +1672,13 @@ L_20fc:
     goto L_2641;
 
 L_20ff:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_2111;
     else
         goto L_2108;
 
 L_2108:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_25a7;
     else
         goto L_2111;
@@ -1687,7 +1691,7 @@ L_2111:
 
 L_211b:
     lSel = 0;
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_2325;
     else
         goto L_212e;
@@ -1826,7 +1830,7 @@ L_23ac:
         goto L_23fb;
 
 L_23fb:
-    if ((wParam == 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL))
         goto L_242b;
     else
         goto L_2404;
@@ -1847,7 +1851,7 @@ L_2426:
     wParam = 0x2;
 
 L_242b:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_253e;
     else
         goto L_2434;
@@ -1878,7 +1882,7 @@ L_2546:
     SetBuildSelection(-2);
     StickyDlgPos(hwnd, &(ptStickySlotDlg), 0);
     hwndSlotDlg = 0x0;
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_257d;
     else
         goto L_2577;
@@ -1904,7 +1908,7 @@ L_259e:
     return 1;
 
 L_25a7:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_2641;
     else
         goto L_25b0;
@@ -1939,7 +1943,7 @@ L_25ee:
         goto L_25f6;
 
 L_25f6:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_0880;
     else
         goto L_25fe;
@@ -2944,6 +2948,7 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     uint32_t t_fields_2;
     StringId t_merge_3caf_0001;
     uint16_t t_merge_3cd7_0001;
+    int16_t  t_top_3f19;
     uint16_t t_merge_3f7f_0001;
 
 L_3ab2:
@@ -3137,7 +3142,7 @@ L_3e1c:
     pch = (pch - 1);
 
 L_3e21:
-    if ((pch > &(szWord)))
+    if ((pch > szWord))
         goto L_3e0a;
     else
         goto L_3e2d;
@@ -3199,7 +3204,9 @@ L_3eda:
 
 L_3ee3:
     x = rc.left;
-    WrapTextOut(hdc, &(x), &(rc.top), szWork, 0, rc.left, (rc.right - rc.left), 0x0, 0, 1);
+    t_top_3f19 = rc.top;
+    WrapTextOut(hdc, &(x), &(t_top_3f19), szWork, 0, rc.left, (rc.right - rc.left), 0x0, 0, 1);
+    rc.top = t_top_3f19;
     rc.top = (rc.top + dyArial8);
     goto Restore;
 
@@ -4538,7 +4545,7 @@ L_5a3e:
 L_5a41:
     FillRect(lpdis->hDC, &(lpdis->rcItem), GetStockObject(t_merge_5a41_0001));
     InflateRect(&(rc), -2, -1);
-    SendMessage(lpdis->hwndItem, 0x40a, lpdis->itemID, szWork);
+    SendMessage(lpdis->hwndItem, 0x40a, lpdis->itemID, (LPARAM)(szWork));
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
     ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));

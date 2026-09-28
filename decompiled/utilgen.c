@@ -345,19 +345,19 @@ L_191f:
     return (INT_PTR)(hbrButtonFace);
 
 L_1938:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_194a;
     else
         goto L_1941;
 
 L_1941:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_1a3f;
     else
         goto L_194a;
 
 L_194a:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_19f5;
     else
         goto L_1953;
@@ -391,7 +391,7 @@ L_19e7:
     Randomize(dw);
 
 L_19f5:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_1a07;
     else
         goto L_1a01;
@@ -414,7 +414,7 @@ L_1a1c:
         goto L_1a24;
 
 L_1a24:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_1903;
     else
         goto L_1a2c;
@@ -4317,19 +4317,19 @@ L_5b09:
     return (INT_PTR)(hbrButtonFace);
 
 L_5b22:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_5b34;
     else
         goto L_5b2b;
 
 L_5b2b:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_5c58;
     else
         goto L_5b34;
 
 L_5b34:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_5c34;
     else
         goto L_5b3d;
@@ -4384,7 +4384,7 @@ L_5c16:
     strcpy(szPassLast, szPass);
 
 L_5c34:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_5c46;
     else
         goto L_5c40;
@@ -4401,7 +4401,7 @@ L_5c49:
     return 1;
 
 L_5c58:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_5cab;
     else
         goto L_5c61;
@@ -4417,7 +4417,7 @@ L_5c88:
         goto L_5c90;
 
 L_5c90:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_5aed;
     else
         goto L_5c98;
@@ -4483,19 +4483,19 @@ L_5db4:
     return (INT_PTR)(hbrButtonFace);
 
 L_5dcd:
-    if ((wParam == 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
         goto L_5ddf;
     else
         goto L_5dd6;
 
 L_5dd6:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_5f5e;
     else
         goto L_5ddf;
 
 L_5ddf:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_5f3a;
     else
         goto L_5de8;
@@ -4542,7 +4542,7 @@ L_5f0b:
     lSaltCur = lSaltLast;
 
 L_5f3a:
-    if ((wParam != 0x1))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
         goto L_5f4c;
     else
         goto L_5f46;
@@ -4559,7 +4559,7 @@ L_5f4f:
     return 1;
 
 L_5f5e:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_5fb1;
     else
         goto L_5f67;
@@ -4575,7 +4575,7 @@ L_5f8e:
         goto L_5f96;
 
 L_5f96:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_5d98;
     else
         goto L_5f9e;
@@ -4928,7 +4928,7 @@ L_65cc:
         goto L_65d4;
 
 L_65d4:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_6571;
     else
         goto L_65dc;

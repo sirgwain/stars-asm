@@ -63,11 +63,11 @@ func (ctx *FuncContext) messageCallArgumentType(fn *typeinfo.Function, args []ma
 	switch argIndex {
 	case call.index + 1:
 		if message.WParam != nil {
-			return message.WParam.Whole
+			return message.WParam.Whole.Type
 		}
 	case call.index + 2:
 		if message.LParam != nil {
-			return message.LParam.Whole
+			return message.LParam.Whole.Type
 		}
 	}
 	return nil

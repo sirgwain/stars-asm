@@ -22,6 +22,7 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     POINT       pt;
     int16_t     iResTechNext;
     int16_t     fChg;
+    HWND        t_scratch_m34;
 
 L_0000:
     goto L_08b8;
@@ -204,7 +205,8 @@ L_04b3:
     goto L_04e0;
 
 L_04bb:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_m34 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m34 == GetDlgItem(hwnd, i)))
         goto L_04ea;
     else
         goto L_04dc;
@@ -439,7 +441,7 @@ L_08c0:
         goto L_08c8;
 
 L_08c8:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_04b3;
     else
         goto L_08d0;
@@ -1398,6 +1400,7 @@ INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     HWND        t_call_2125;
     uint16_t    t_merge_2172_0001;
     uint16_t    t_merge_220d_0001;
+    HWND        t_scratch_m38;
     uint16_t    t_merge_2470_0001;
     int32_t     t_merge_24db_0001;
     uint16_t    t_merge_25d7_0001;
@@ -1566,7 +1569,8 @@ L_22d3:
     goto L_2300;
 
 L_22db:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_m38 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_m38 == GetDlgItem(hwnd, i)))
         goto L_230a;
     else
         goto L_22fc;
@@ -1610,7 +1614,7 @@ L_2370:
     goto L_2868;
 
 L_23b5:
-    if ((wParam != 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
         goto L_242d;
     else
         goto L_23be;
@@ -1634,13 +1638,13 @@ L_2424:
     return 1;
 
 L_242d:
-    if ((wParam != 0x10b))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x010B))
         goto L_2572;
     else
         goto L_2437;
 
 L_2437:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x1))
+    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x1))
         goto L_2868;
     else
         goto L_2453;
@@ -1717,13 +1721,13 @@ L_256c:
     goto L_2868;
 
 L_2572:
-    if ((wParam == 0x42f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT))
         goto L_2586;
     else
         goto L_257c;
 
 L_257c:
-    if ((wParam != 0x42e))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x042E))
         goto L_2868;
     else
         goto L_2586;
@@ -1780,7 +1784,7 @@ L_2625:
 
 L_2628:
     fShowAll = t_merge_2628_0001;
-    if ((wParam != 0x42f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_NEXT))
         goto L_263b;
     else
         goto L_2635;
@@ -1830,7 +1834,7 @@ L_2687:
         goto L_269f;
 
 L_269f:
-    if ((wParam != 0x42f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_NEXT))
         goto L_26e2;
     else
         goto L_26a9;
@@ -1873,7 +1877,7 @@ L_26f9:
     goto L_27b3;
 
 L_2708:
-    if ((wParam != 0x42e))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x042E))
         goto L_275c;
     else
         goto L_2712;
@@ -1906,7 +1910,7 @@ L_273d:
     goto Top;
 
 L_275c:
-    if ((wParam != 0x42f))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_NEXT))
         goto L_2775;
     else
         goto L_2766;
@@ -2015,7 +2019,7 @@ L_2845:
         goto L_284d;
 
 L_284d:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_22d3;
     else
         goto L_2855;

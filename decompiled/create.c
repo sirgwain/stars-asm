@@ -3248,7 +3248,7 @@ L_4623:
 L_464a:
     idPlayer = iplrSingle;
     CreateChildWindows();
-    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
+    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
     goto L_4683;
 
 L_4672:
@@ -4191,7 +4191,7 @@ L_5881:
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
     lpb = (lpbStart + ((-1) + fstrlen(lpbStart)));
-    if (((LOWORD(lpb) - LOWORD(lpbStart)) < 0x3))
+    if (((lpb - lpbStart) < 0x3))
         goto L_593b;
     else
         goto L_5904;
@@ -6041,6 +6041,8 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
     int16_t     c;
     PAINTSTRUCT ps;
     RECT       *prcSav;
+    HWND        t_scratch_me;
+    HWND        t_scratch_me_2;
 
 L_76aa:
     goto L_7e58;
@@ -6078,7 +6080,8 @@ L_7799:
     goto L_77cb;
 
 L_77a1:
-    if ((LOWORD(lParam) != GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me != GetDlgItem(hwnd, i)))
         goto L_77c7;
     else
         goto L_77bf;
@@ -6107,7 +6110,8 @@ L_77de:
     goto L_7810;
 
 L_77e6:
-    if ((LOWORD(lParam) != GetDlgItem(hwnd, i)))
+    t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me_2 != GetDlgItem(hwnd, i)))
         goto L_780c;
     else
         goto L_7804;
@@ -6190,19 +6194,19 @@ L_7858:
     return 1;
 
 L_7bce:
-    if ((wParam == 0x430))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_FINISH))
         goto L_7beb;
     else
         goto L_7bd8;
 
 L_7bd8:
-    if ((wParam == 0x2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL))
         goto L_7beb;
     else
         goto L_7be1;
 
 L_7be1:
-    if ((wParam != 0xd3))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_U16_0x00D3))
         goto L_7ca2;
     else
         goto L_7beb;
@@ -6250,22 +6254,22 @@ L_7c4c:
     game.mdSize = (i - 1000);
     game.turn = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0x0, 0));
     StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
-    EndDialog(hwnd, wParam);
+    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
     return 1;
 
 L_7ca2:
-    if ((wParam != 0xd4))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0xd4))
         goto L_7cd4;
     else
         goto L_7cac;
 
 L_7cac:
     StickyDlgPos(hwnd, &(ptStickyNewDlg), 0);
-    EndDialog(hwnd, wParam);
+    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
     return 1;
 
 L_7cd4:
-    if ((wParam != 0xd2))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0xd2))
         goto L_7e28;
     else
         goto L_7cde;
@@ -6314,7 +6318,7 @@ L_7e17:
     goto L_7e83;
 
 L_7e28:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_7e83;
     else
         goto L_7e31;
@@ -6336,7 +6340,7 @@ L_7e60:
         goto L_7e68;
 
 L_7e68:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_7799;
     else
         goto L_7e70;
@@ -6365,6 +6369,8 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     int16_t     c;
     PAINTSTRUCT ps;
     int16_t     iRet;
+    HWND        t_scratch_me;
+    HWND        t_scratch_me_2;
 
 L_7e92:
     goto L_8798;
@@ -6449,7 +6455,8 @@ L_81a4:
     goto L_81d1;
 
 L_81ac:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_81db;
     else
         goto L_81cd;
@@ -6476,7 +6483,8 @@ L_81e5:
         goto L_8201;
 
 L_8201:
-    if ((LOWORD(lParam) != GetDlgItem(hwnd, IDC_U16_0x041A)))
+    t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me_2 != GetDlgItem(hwnd, IDC_U16_0x041A)))
         goto L_87c3;
     else
         goto L_8220;
@@ -6532,7 +6540,7 @@ L_8261:
     return 1;
 
 L_8510:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_853a;
     else
         goto L_8519;
@@ -6546,7 +6554,7 @@ L_853a:
     goto L_855a;
 
 L_8542:
-    if ((wParam == rgidRaceBtn[iRet]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[iRet]))
         goto L_8563;
     else
         goto L_8556;
@@ -6667,7 +6675,7 @@ L_87a0:
         goto L_87a8;
 
 L_87a8:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_81a4;
     else
         goto L_87b0;
@@ -6710,6 +6718,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT       *prcSav;
     HDC         hdc;
     PAINTSTRUCT ps;
+    HWND        t_scratch_me;
     uint16_t    t_merge_8b4f_0001;
     uint16_t    t_merge_8c45_0001;
     uint16_t    t_merge_8cf6_0001;
@@ -6779,7 +6788,8 @@ L_8964:
     goto L_8991;
 
 L_896c:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_899b;
     else
         goto L_898d;
@@ -7442,7 +7452,7 @@ L_9401:
     return 1;
 
 L_943a:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_9464;
     else
         goto L_9443;
@@ -7456,7 +7466,7 @@ L_9464:
     goto L_9484;
 
 L_946c:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_948d;
     else
         goto L_9480;
@@ -7516,7 +7526,7 @@ L_950d:
         goto L_9515;
 
 L_9515:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_8964;
     else
         goto L_951d;
@@ -7805,6 +7815,7 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     PAINTSTRUCT ps;
     HWND        t_call_9a24;
     uint16_t    t_merge_9a40_0001;
+    HWND        t_scratch_me;
     uint16_t    t_merge_9ccc_0001;
 
 L_99f4:
@@ -7862,7 +7873,8 @@ L_9acf:
     goto L_9afc;
 
 L_9ad7:
-    if ((LOWORD(lParam) == GetDlgItem(hwnd, i)))
+    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+    if ((t_scratch_me == GetDlgItem(hwnd, i)))
         goto L_9b06;
     else
         goto L_9af8;
@@ -7916,7 +7928,7 @@ L_9bc0:
     return 1;
 
 L_9bf9:
-    if ((wParam != 0x76))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
         goto L_9c23;
     else
         goto L_9c02;
@@ -7930,7 +7942,7 @@ L_9c23:
     goto L_9c43;
 
 L_9c2b:
-    if ((wParam == rgidRaceBtn[i]))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) == rgidRaceBtn[i]))
         goto L_9c4c;
     else
         goto L_9c3f;
@@ -7956,20 +7968,20 @@ L_9c55:
     return 1;
 
 L_9c79:
-    if ((wParam < 0x123))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) < IDC_U16_0x0123))
         goto L_9d3e;
     else
         goto L_9c83;
 
 L_9c83:
-    if ((wParam > 0x129))
+    if ((GET_WM_COMMAND_ID(wParam, lParam) > 0x129))
         goto L_9d3e;
     else
         goto L_9c8d;
 
 L_9c8d:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
-    if (((wParam + 0xfedd) < 0x2))
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    if (((GET_WM_COMMAND_ID(wParam, lParam) - 291) < 0x2))
         goto L_9cc9;
     else
         goto L_9cc3;
@@ -7982,7 +7994,7 @@ L_9cc9:
     t_merge_9ccc_0001 = 0x0;
 
 L_9ccc:
-    SetVCCheck(&(game), ((wParam - 291) + t_merge_9ccc_0001), i);
+    SetVCCheck(&(game), ((GET_WM_COMMAND_ID(wParam, lParam) - 291) + t_merge_9ccc_0001), i);
     DrawNewGame3(hwnd, 0x0, 8);
 
 L_9cf5:
@@ -8001,7 +8013,7 @@ L_9d03:
         goto L_9d0b;
 
 L_9d0b:
-    if ((message == WM_CTLCOLOR))
+    if ((IS_WM_CTLCOLOR(message) != 0))
         goto L_9acf;
     else
         goto L_9d13;
