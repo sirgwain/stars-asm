@@ -835,7 +835,7 @@ L_098b:
         goto L_0ab7;
 
 L_0ab7:
-    lpbi = GlobalLock(hdibPlaque);
+    lpbi = (BITMAPINFO *)(GlobalLock(hdibPlaque));
     lpbi->bmiColors[249].rgbRed = LOBYTE(LOWORD(crButtonFace));
     lpbi->bmiColors[249].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
     lpbi->bmiColors[249].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
@@ -848,7 +848,7 @@ L_0b09:
         goto L_0b13;
 
 L_0b13:
-    lpbi = GlobalLock(hdibToolbar);
+    lpbi = (BITMAPINFO *)(GlobalLock(hdibToolbar));
     lpbi->bmiColors[253].rgbRed = LOBYTE(LOWORD(crButtonFace));
     lpbi->bmiColors[253].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
     lpbi->bmiColors[253].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
@@ -1272,12 +1272,12 @@ L_124c:
     return szWork;
 }
 
-int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT    rc;
     HDC     hdc;
     int16_t i;
     HWND    hwndCtl;
-    int16_t (*lpProc)();
+    FARPROC lpProc;
 
 L_1252:
     goto L_14e5;
@@ -1291,7 +1291,7 @@ L_1261:
 
 L_12a9:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_12d1:
@@ -1375,8 +1375,8 @@ L_142c:
         goto L_1448;
 
 L_1448:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_1461:
     if ((wParam == 0x1))
@@ -1444,7 +1444,7 @@ L_1510:
     return 0;
 }
 
-int16_t OrderInfoDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT rc;
 
 L_151e:
@@ -1452,7 +1452,7 @@ L_151e:
 
 L_152d:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_1555:
@@ -1462,8 +1462,8 @@ L_1555:
         goto L_1571;
 
 L_1571:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_158a:
     if ((wParam == 0x2))
@@ -1705,7 +1705,7 @@ L_1772:
         goto L_1797;
 
 L_1797:
-    SendMessage(hwndOver, WM_SETCURSOR, hwndOver, 0);
+    SendMessage(hwndOver, WM_SETCURSOR, (WPARAM)(hwndOver), 0);
 
 L_17ae:
     if ((iMsg == 256))

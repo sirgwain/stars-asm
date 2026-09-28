@@ -106,7 +106,7 @@ L_8c44:
         goto L_8ca6;
 
 L_8ca6:
-    RawStore16(rgb, ((RawLoad16(rgb) & 0xfff0) | 0x0));
+    RawStore16(rgb, (RawLoad16(rgb) & 0xfff0));
     WriteMemRt(27, 2, rgb);
     goto L_8d25;
 
@@ -427,7 +427,7 @@ L_91e7:
     rtwp.id = pflNew->id;
     rtwp.iWaypt = iordNew;
     rtwp.order = pflNew->lpplord->rgord[iordNew];
-    pbWp = &(rtwp);
+    pbWp = (char *)(&(rtwp));
 
 L_9229:
     t_9229 = cbWp;
@@ -480,7 +480,7 @@ L_92bb:
     rtwp.id = pflNew->id;
     rtwp.iWaypt = iordNew;
     rtwp.order = pflNew->lpplord->rgord[iordNew];
-    pbWp = &(rtwp);
+    pbWp = (char *)(&(rtwp));
 
 L_92f8:
     t_92f8 = cbWp;
@@ -860,7 +860,7 @@ L_99f6:
     goto L_9a7e;
 
 L_9a53:
-    prt = (lpLog + (imemLogCur + (-hdrPrev.cb)));
+    prt = (RTXFER *)((lpLog + (imemLogCur + (-hdrPrev.cb))));
     goto L_9a99;
 
 L_9a71:
@@ -952,7 +952,7 @@ L_9b8f:
     goto L_9b46;
 
 L_9b95:
-    prtx = prt;
+    prtx = (RTXFERX *)(prt);
     i = 0;
     goto L_9bed;
 
@@ -979,7 +979,7 @@ L_9bf3:
     goto L_9ba9;
 
 L_9bf9:
-    prtl = prt;
+    prtl = (RTXFERL *)(prt);
     i = 0;
     goto L_9c56;
 
@@ -1229,7 +1229,7 @@ L_9ffa:
         goto L_a006;
 
 L_a006:
-    prt = &(rgbuf);
+    prt = (RTXFERF *)(&(rgbuf));
     prt->grobj1 = ((uint32_t)(plxf1->grobj) & 0xf);
     prt->grobj2 = ((uint32_t)(plxf2->grobj) & 0xf);
     prt->id1 = plxf1->id;
@@ -1300,7 +1300,7 @@ L_a178:
     hdr.rt = rt;
     lpv = lpLog;
     lpv = (lpv + imemLogCur);
-    RawStore16(lpv, (hdr.cb | (hdr.rt << 0xa)));
+    RawStore16(lpv, *((uint16_t *)(&(hdr))));
     if ((cb <= 0))
         goto L_a208;
     else
@@ -1394,7 +1394,7 @@ L_a2ff:
     goto L_a362;
 
 L_a308:
-    lprts = (lpLog + iCur);
+    lprts = (HDR *)((lpLog + iCur));
     fRet = (fRet & FRunLogRecord(lprts->rt, lprts->cb, (lpLog + (2 + iCur))));
     iCur = (iCur + (lprts->cb + 2));
 
@@ -1502,7 +1502,7 @@ L_a443:
         goto L_a45a;
 
 L_a45a:
-    lppl->lpplprod = LpplAlloc(0x4, (i + 2), htOrd);
+    lppl->lpplprod = (PLPROD *)(LpplAlloc(0x4, (i + 2), htOrd));
     goto L_a4bd;
 
 L_a480:
@@ -1512,7 +1512,7 @@ L_a480:
         goto L_a497;
 
 L_a497:
-    lppl->lpplprod = LpplReAlloc(lppl->lpplprod, (i + 2));
+    lppl->lpplprod = (PLPROD *)(LpplReAlloc((PL *)(lppl->lpplprod), (i + 2)));
 
 L_a4bd:
     iPass = 0;
@@ -1567,8 +1567,8 @@ L_a6d7:
         goto L_a6ee;
 
 L_a6ee:
-    lpb[((iPass * 4) + 2)] = ((lpb[((iPass * 4) + 0x2)] & 0xffff) | 0x0);
-    lpb[((iPass * 4) + 4)] = ((lpb[((iPass * 4) + 0x4)] & 0xf80f) | 0x0);
+    lpb[((iPass * 4) + 2)] = (lpb[((iPass * 4) + 0x2)] & 0xffff);
+    lpb[((iPass * 4) + 4)] = (lpb[((iPass * 4) + 0x4)] & 0xf80f);
 
 L_a737:
     iPass = (iPass + 1);
@@ -2917,7 +2917,7 @@ L_bf69:
         goto L_bf85;
 
 L_bf85:
-    lpfl->lpplord = LpplReAlloc(lpfl->lpplord, (lpfl->cord + 3));
+    lpfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpfl->lpplord), (lpfl->cord + 3)));
 
 L_bfb1:
     fmemmove(&(lpfl->lpplord->rgord[(lpb[2] + 1)]), &(lpfl->lpplord->rgord[lpb[2]]), ((lpfl->cord - lpb[2]) * 0x12));
@@ -3274,14 +3274,14 @@ L_c796:
 }
 
 int16_t FLoadLogFile(char *pszLog) {
-    uint16_t hres;
+    HGLOBAL  hres;
     jmp_buf *penvMemSav;
     jmp_buf  env;
     int16_t  fRet;
     int16_t  cbLog;
     int16_t  iCur;
     MSGPLR  *lpmp;
-    uint16_t hrsrc;
+    HRSRC    hrsrc;
     int16_t  cSkip;
     int16_t  t_c8f8;
 
@@ -3740,7 +3740,7 @@ L_cf13:
     goto L_cfab;
 
 L_cf54:
-    lprts = (lpLog + iCur);
+    lprts = (HDR *)((lpLog + iCur));
     WriteRt(lprts->rt, lprts->cb, (lpLog + (2 + iCur)));
     iCur = (iCur + (lprts->cb + 2));
 
@@ -3777,9 +3777,9 @@ L_d010:
 }
 
 int16_t FWriteTutorialMFile(int16_t iTurn) {
-    uint16_t hrsrc;
+    HRSRC    hrsrc;
     char     szT[30];
-    uint16_t hres;
+    HGLOBAL  hres;
     jmp_buf *penvMemSav;
     jmp_buf  env;
     int16_t  cch;
@@ -4238,7 +4238,7 @@ L_d700:
     goto L_d772;
 
 L_d709:
-    lprts = (lpLog + iCur);
+    lprts = (HDR *)((lpLog + iCur));
     if ((pfn((lpLog + (2 + iCur)), lprts->rt, lprts->cb, lpPass, iPass) == 0))
         goto L_d77d;
     else

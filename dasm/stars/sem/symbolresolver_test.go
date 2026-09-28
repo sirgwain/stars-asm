@@ -389,8 +389,13 @@ func Test_symbolResolver_symbolFromValueTyped(t *testing.T) {
 		),
 		machine.ConstVal(4),
 	)
-	addStringType := messageCallArgumentType(fx.SDB, fx.SDB.GetFunction("SendMessage"), []machine.Value{
-		machine.ConstVal(0),
+	hwndBattleDD := machine.LoadVal(machine.MemoryAddress{
+		Seg:   machine.RegVal(asm.RegDS),
+		Disp:  int(fx.SDB.GetGlobal("hwndBattleDD").Addr.Off),
+		Width: 2,
+	})
+	addStringType := battlePlansCtx.messageCallArgumentType(fx.SDB.GetFunction("SendMessage"), []machine.Value{
+		hwndBattleDD,
 		machine.ConstVal(0x0403),
 		machine.ConstVal(0),
 		planNameOffset,

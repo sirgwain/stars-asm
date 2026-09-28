@@ -249,7 +249,7 @@ block L_1592:
   preds: L_1589, L_158f
   succs: L_15aa
   effects:
-    15a5  call AppendMenu(load([bp-hmenuPopup]), (merge(Join: L_1592, (L_1589:0x8, L_158f:0x0)) | 0x0), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
+    15a5  call AppendMenu(load([bp-hmenuPopup]), merge(Join: L_1592, (L_1589:0x8, L_158f:0x0)), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
 
 block L_15aa:
   insts 204..204  off 0x15aa..0x15ac
@@ -432,7 +432,7 @@ block L_171c:
   preds: L_1713, L_1719
   succs: L_1734
   effects:
-    172f  call AppendMenu(load([bp-hmenuSub]), (merge(Join: L_171c, (L_1713:0x8, L_1719:0x0)) | 0x0), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
+    172f  call AppendMenu(load([bp-hmenuSub]), merge(Join: L_171c, (L_1713:0x8, L_1719:0x0)), (load([bp-i]) + 0x3a98), words(ss, addr([bp-szTemp]))) -> callresult(int16_t)
 
 block L_1734:
   insts 345..345  off 0x1734..0x1737
@@ -576,14 +576,14 @@ block L_184f:
   preds: L_1825, L_1844, L_184b
   succs: L_185d, L_1865
   effects:
-    1858  branch (merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))]), L_1844:0x1, L_184b:0x0)) | 0x0) != 0x0 ? L_1865 : L_185d
+    1858  branch merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))]), L_1844:0x1, L_184b:0x0)) != 0x0 ? L_1865 : L_185d
 
 block L_185d:
   insts 453..454  off 0x185d..0x1861
   preds: L_184f
   succs: L_1865, L_186b
   effects:
-    1860  branch (merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))+0x2]), L_1844:0x0, L_184b:0x0)) | 0x0) == 0x0 ? L_186b : L_1865
+    1860  branch merge(Join: L_184f, (L_1825:load(ds:[(load([bp+0xe]) + ((load([bp-0xc]) << 0x1) << 0x1))+0x2]), L_1844:0x0, L_184b:0x0)) == 0x0 ? L_186b : L_1865
 
 block L_1865:
   insts 456..457  off 0x1865..0x186a

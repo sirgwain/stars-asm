@@ -38,6 +38,13 @@ type FuncContext struct {
 	// handling on entry to each block.
 	messageByBlock map[machine.BlockID]*typeinfo.MessageRule
 	currentMessage *typeinfo.MessageRule
+
+	// callWindowClasses is the window class of each GetDlgItem result, keyed
+	// by call instruction offset, and loadWindowClasses the class of the
+	// control a local holds where it is passed as a call's first argument,
+	// keyed by load identity.
+	callWindowClasses map[uint32]*typeinfo.WindowClass
+	loadWindowClasses map[machine.ValueID]*typeinfo.WindowClass
 }
 
 // RecordedUnionBlockPathFacts returns configured and discovered union selections grouped by block.

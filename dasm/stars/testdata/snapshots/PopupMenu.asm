@@ -93,7 +93,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
                                     ; popup.c:513
 JMP       L_1883              
 
@@ -285,7 +285,7 @@ LEA       ax, [bp-szTemp]           ; ax, [bp-0x8c]
 MOV       dx, ss              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
 
 L_15aa:                             ; popup.c:539
 JMP       L_1883              
@@ -408,7 +408,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
                                     ; popup.c:567
 JMP       L_1734              
 
@@ -474,7 +474,7 @@ LEA       ax, [bp-szTemp]           ; ax, [bp-0x8c]
 MOV       dx, ss              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
 
 L_1734:                             ; popup.c:583
 ADD       [bp-i], 0x0001            ; [bp-0xc], 0x0001
@@ -504,7 +504,7 @@ MOV       ax, [bp-pszTitle]         ; ax, [bp-0x4]
 MOV       dx, ds              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
                                     ; popup.c:588
 JMP       L_1883              
 
@@ -540,7 +540,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
                                     ; popup.c:590
 JMP       L_1883              
 
@@ -639,7 +639,7 @@ LEA       ax, [bp-szTemp]           ; ax, [bp-0x8c]
 MOV       dx, ss              
 PUSH      dx                  
 PUSH      ax                  
-CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, uint16_t arg3, LPCSTR arg4)
+CALLF     AppendMenu                ; int16_t AppendMenu(HMENU arg1, uint16_t arg2, UINT_PTR arg3, LPCSTR arg4)
 
 L_1883:                             ; popup.c:608
 ADD       [bp-i], 0x0001            ; [bp-0xc], 0x0001

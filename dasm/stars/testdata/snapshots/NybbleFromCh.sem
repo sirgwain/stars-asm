@@ -1,0 +1,72 @@
+/*
+NybbleFromCh  (utilgen)
+  addr: 0009:4880  len=361
+  sig:  int16_t NybbleFromCh(uint8_t ch)
+  params:
+    uint8_t          ch             [BP+0x6]
+  locals:
+    char *           pch            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_4880:
+    branch ch < 0x61 ? L_48b9 : L_4897
+
+L_4897:
+    branch ch > 0x7a ? L_48b9 : L_48a5
+
+L_48a5:
+    return rgcompstrlower[(ch - 97)]
+
+L_48b9:
+    branch ch != 0x20 ? L_48cd : L_48c7
+
+L_48c7:
+    return 0
+
+L_48cd:
+    branch ch < 0x41 ? L_4900 : L_48db
+
+L_48db:
+    branch ch > 0x50 ? L_4900 : L_48e9
+
+L_48e9:
+    return (((ch + 0xffbf) << 0x4) | 0xb)
+
+L_4900:
+    branch ch < 0x51 ? L_4933 : L_490e
+
+L_490e:
+    branch ch > 0x5a ? L_4933 : L_491c
+
+L_491c:
+    return (((ch + 0xffaf) << 0x4) | 0xc)
+
+L_4933:
+    branch ch < 0x30 ? L_4966 : L_4941
+
+L_4941:
+    branch ch > 0x35 ? L_4966 : L_494f
+
+L_494f:
+    return (((ch + 0xffda) << 0x4) | 0xc)
+
+L_4966:
+    branch ch < 0x36 ? L_4999 : L_4974
+
+L_4974:
+    branch ch > 0x39 ? L_4999 : L_4982
+
+L_4982:
+    return (((ch + 0xffca) << 0x4) | 0xd)
+
+L_4999:
+    pch = strchr(rgchcomp, ch)
+    branch pch == 0x0 ? L_49cf : L_49b8
+
+L_49b8:
+    return ((((pch - rgchcomp) + 0x4) << 0x4) | 0xe)
+
+L_49cf:
+    return ((ch << 0x4) | 0xf)
+

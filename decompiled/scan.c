@@ -3,7 +3,7 @@
 uint32_t rgcrScanMine[3] = {16711680, 65535, 255};
 int16_t  vrgPopRad[19] = {25, 50, 100, 200, 400, 800, 1000, 1500, 2250, 3000, 4000, 5000, 6000, 7500, 9000, 11000, 14000, 18000, 25000};
 
-int32_t ScannerWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     POINT       pt;
     PAINTSTRUCT ps;
@@ -157,7 +157,7 @@ L_01ca:
         goto L_01d5;
 
 L_01d5:
-    SendMessage(hwndFrame, WM_COMMAND, (iScanNew + 3905), 0);
+    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)((iScanNew + 3905)), 0);
 
 L_01f1:
     goto L_0eea;
@@ -625,7 +625,7 @@ L_0883:
 L_08a3:
     c = (c + 1);
     t_assign_1 = &(rgid[c]);
-    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
     t_assign_2 = &(rgid[c]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
     if ((c >= 100))
@@ -948,7 +948,7 @@ L_0d1a:
 
 L_0d1d:
     SetScanScrollBars(hwnd);
-    PostMessage(hwndFrame, WM_COMMAND, (iScanZoom + 3905), 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)((iScanZoom + 3905)), 0);
     goto Default;
 
 L_0d47:
@@ -6947,7 +6947,7 @@ L_7708:
         goto L_7737;
 
 L_7737:
-    sel.fl.lpplord = LpplReAlloc(sel.fl.lpplord, (sel.fl.cord + 3));
+    sel.fl.lpplord = (PLORD *)(LpplReAlloc((PL *)(sel.fl.lpplord), (sel.fl.cord + 3)));
     lpord = &(sel.fl.lpplord->rgord[(sel.iwpAct + 1)]);
     goto L_7788;
 
@@ -8660,7 +8660,7 @@ L_9279:
     return 1;
 }
 
-int16_t FindDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     char    szName[40];
     RECT    rc;
     int16_t t_merge_93ea_0001;
@@ -8670,12 +8670,12 @@ L_9286:
 
 L_9295:
     StickyDlgPos(hwnd, &(ptStickyFindDlg), 1);
-    SendDlgItemMessage(hwnd, 268, 0x415, 0x27, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x27, 0);
     return 1;
 
 L_92ca:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_92f2:
@@ -8685,8 +8685,8 @@ L_92f2:
         goto L_930e;
 
 L_930e:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_9327:
     if ((wParam == 0x1))
@@ -8716,7 +8716,7 @@ L_9342:
 L_936d:
     AlertSz(PszFormatIds(idsSorryCantFindPlanetFleetName, 0x0), MB_ICONHAND);
     SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-    SendDlgItemMessage(hwnd, 268, 0x401, 0x0, -65536);
+    SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -65536);
     return 0;
 
 L_93c2:

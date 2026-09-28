@@ -1,0 +1,168 @@
+/*
+EnsureAis  (mdi)
+  addr: 0005:56bc  len=477
+  sig:  void EnsureAis()
+  locals:
+    MDPLR[16]        rgmdplr        [BP-0x2e]
+    int16_t          iPlayer        [BP-0xe]
+    int16_t          fSubmitSav     [BP-0xc]
+    int16_t          fWorkDone      [BP-0xa]
+    int16_t          fOpened        [BP-0x8]
+    int16_t          fErrSav        [BP-0x6]
+    int16_t          fHostSav       [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_56bc:
+  insts 0..18  off 0x56bc..0x56ea
+  succs: L_56f1, L_5893
+  effects:
+    56d3  store[2] [bp-fSubmitSav] = (((((load@56c5/src([gd]) >> 0x1) >> 0x1) >> 0x1) >> 0x1) & 0x1)
+    56d6  store[2] [bp-fWorkDone] = 0x0
+    56e9  branch ((load@56de/src([gd]) >> 0xa) & 0x1) != 0x0 ? L_5893 : L_56f1
+
+block L_56f1:
+  insts 21..33  off 0x56f1..0x5710
+  preds: L_56bc
+  succs: L_5714, L_5729
+  effects:
+    56fd  store[2] [bp-fHostSav] = ((((load@56f1/src([gd]) >> 0x1) >> 0x1) >> 0x1) & 0x1)
+    570f  branch ((((load@5700/src([gd]) >> 0x1) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_5729 : L_5714
+
+block L_5714:
+  insts 35..41  off 0x5714..0x5728
+  preds: L_56f1
+  succs: L_5729
+  effects:
+    5714  call DestroyCurGame() -> callresult(void)
+    5721  call FLoadGame(0x56a2, 0x3f0) -> callresult(int16_t)
+
+block L_5729:
+  insts 42..43  off 0x5729..0x5730
+  preds: L_56f1, L_5714
+  succs: L_5735
+  effects:
+    5729  store[2] [bp-iPlayer] = 0x0
+    572e  goto L_5735
+
+block L_5731:
+  insts 44..44  off 0x5731..0x5734
+  preds: L_5740
+  succs: L_5735
+  effects:
+    5731  store[2] [bp-iPlayer] = (load([bp-iPlayer]) + 0x1)
+
+block L_5735:
+  insts 45..47  off 0x5735..0x573c
+  preds: L_5729, L_5731
+  succs: L_5740, L_575d
+  effects:
+    573b  branch load([bp-iPlayer]) >= load([game+0x8]) ? L_575d : L_5740
+
+block L_5740:
+  insts 49..59  off 0x5740..0x575c
+  preds: L_5735
+  succs: L_5731
+  effects:
+    5758  store[2] ss:[bp+(load([bp-iPlayer]) << 0x1)-0x2e] = load(ds:[(0x59a2 + loword((0xc0 * load([bp-iPlayer]))))+0x6])
+    575a  goto L_5731
+
+block L_575d:
+  insts 60..68  off 0x575d..0x577c
+  preds: L_5735
+  succs: L_5781
+  effects:
+    5766  store[2] [gd] = ((load([gd]) & 0xffef) | 0x10)
+    576c  store[2] [bp-fErrSav] = load([fFileErrSilent])
+    576f  store[2] [fFileErrSilent] = 0x1
+    5775  store[2] [bp-iPlayer] = 0x0
+    577a  goto L_5781
+
+block L_577d:
+  insts 69..69  off 0x577d..0x5780
+  preds: L_578c, L_5826, L_5845
+  succs: L_5781
+  effects:
+    577d  store[2] [bp-iPlayer] = (load([bp-iPlayer]) + 0x1)
+
+block L_5781:
+  insts 70..72  off 0x5781..0x5788
+  preds: L_575d, L_577d
+  succs: L_578c, L_5848
+  effects:
+    5787  branch load([bp-iPlayer]) >= load([game+0x8]) ? L_5848 : L_578c
+
+block L_578c:
+  insts 74..93  off 0x578c..0x57c1
+  preds: L_5781
+  succs: L_577d, L_57c5
+  effects:
+    579b  call MulDiv(0x154, (load([bp-iPlayer]) + 0x1), load([game+0x8])) -> callresult(int16_t)
+    57a1  call UpdateProgressGauge(callresult(int16_t)) -> callresult(void)
+    57c0  branch ((load(ss:[bp+(load([bp-iPlayer]) << 0x1)-0x2e]) >> 0x9) & 0x1) == 0x0 ? L_577d : L_57c5
+
+block L_57c5:
+  insts 95..126  off 0x57c5..0x5822
+  preds: L_578c
+  succs: L_5826, L_582e
+  effects:
+    57c5  store[2] [bp-fWorkDone] = 0x1
+    57d3  store[2] [gd] = ((load@57ca/src([gd]) & 0xfffd) | 0x2)
+    57df  store[2] [gd] = ((load@57d6/src([gd]) & 0xfff7) | 0x8)
+    57ed  call FOpenFile(0x1, load([bp-iPlayer]), 0x20) -> callresult(int16_t)
+    57f5  store[2] [bp-fOpened] = callresult(int16_t)
+    5801  store[2] [gd] = (load@57f8/src([gd]) & 0xfffd)
+    5819  store[2] [gd] = ((load@5810/src([gd]) & 0xfff7) | ((((load([bp-fHostSav]) & 0x1) << 0x1) << 0x1) << 0x1))
+    5821  branch load([bp-fOpened]) == 0x0 ? L_582e : L_5826
+
+block L_5826:
+  insts 128..129  off 0x5826..0x582d
+  preds: L_57c5
+  succs: L_577d
+  effects:
+    5826  call StreamClose() -> callresult(void)
+    582b  goto L_577d
+
+block L_582e:
+  insts 130..137  off 0x582e..0x5844
+  preds: L_57c5
+  succs: L_5845
+  effects:
+    583d  call DoAiTurn(load([bp-iPlayer]), load(ss:[bp+(load([bp-iPlayer]) << 0x1)-0x2e])) -> callresult(void)
+
+block L_5845:
+  insts 138..138  off 0x5845..0x5847
+  preds: L_582e
+  succs: L_577d
+  effects:
+    5845  goto L_577d
+
+block L_5848:
+  insts 139..150  off 0x5848..0x5868
+  preds: L_5781
+  succs: L_586c, L_5881
+  effects:
+    585f  store[2] [gd] = ((load([gd]) & 0xffef) | (((((load([bp-fSubmitSav]) & 0x1) << 0x1) << 0x1) << 0x1) << 0x1))
+    5867  branch load([bp-fWorkDone]) == 0x0 ? L_5881 : L_586c
+
+block L_586c:
+  insts 152..158  off 0x586c..0x5880
+  preds: L_5848
+  succs: L_5881
+  effects:
+    586c  call DestroyCurGame() -> callresult(void)
+    5879  call FLoadGame(0x56a2, 0x3f4) -> callresult(int16_t)
+
+block L_5881:
+  insts 159..164  off 0x5881..0x5892
+  preds: L_5848, L_586c
+  succs: L_5893
+  effects:
+    5884  store[2] [fFileErrSilent] = load([bp-fErrSav])
+    5890  store[2] [gd] = ((load([gd]) & 0xfbff) | 0x400)
+
+block L_5893:
+  insts 165..169  off 0x5893..0x5898
+  preds: L_56bc, L_5881
+  effects:
+    5898  return

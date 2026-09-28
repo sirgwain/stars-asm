@@ -1,6 +1,140 @@
 #ifndef STARS_DECOMPILED_WIN16DEFINES_H
 #define STARS_DECOMPILED_WIN16DEFINES_H
 
+// Old CRT names
+#define fmemcmp    memcmp
+#define fmemcpy    memcpy
+#define fmemmove   memmove
+#define fmemset    memset
+#define fstrcat    strcat
+#define fstrcmp    strcmp
+#define fstrcpy    strcpy
+#define fstricmp   stricmp
+#define fstrlen    strlen
+
+#define strtime    _strtime
+
+// Old Windows names
+#define _wsprintf  wsprintfA
+
+// Win16 APIs whose Win32 equivalents changed signature
+#define GetTextExtent GetTextExtent16
+#define MoveTo        MoveTo16
+#define SetWindowOrg  SetWindowOrg16
+#define SetBrushOrg   SetBrushOrg16
+#undef GetWindowLong
+#undef SetWindowLong
+#define GetWindowLong GetWindowLong16
+#define SetWindowLong SetWindowLong16
+#undef GetDriveType
+#define GetDriveType  GetDriveType16
+#define AllocResource AllocResource16
+
+// shims
+
+static inline char *strdate(char *buf)
+{
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+
+    sprintf(buf, "%02d/%02d/%02d",
+            tm->tm_mon + 1,
+            tm->tm_mday,
+            (tm->tm_year + 1900) % 100);
+
+    return buf;
+}
+
+static inline DWORD GetTextExtent16(HDC hdc, LPCSTR str, int len)
+{
+    SIZE size;
+
+    if (!GetTextExtentPoint32A(hdc, str, len, &size))
+        return 0;
+
+    return MAKELONG((WORD)size.cx, (WORD)size.cy);
+}
+
+
+/*
+ * Win16 GDI compatibility
+ *
+ * The Win32 Ex versions added an optional output parameter containing
+ * the previous position/origin. The Win16 functions returned the
+ * previous value packed into a DWORD.
+ */
+
+static inline DWORD MoveTo16(HDC hdc, int x, int y)
+{
+    POINT old;
+
+    if (!MoveToEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+static inline DWORD SetWindowOrg16(HDC hdc, int x, int y)
+{
+    POINT old;
+
+    if (!SetWindowOrgEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+static inline DWORD SetBrushOrg16(HDC hdc, int x, int y)
+{
+    POINT old;
+
+    if (!SetBrushOrgEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+/*
+ * Win16 window longs
+ *
+ * Stars only uses the window long to subclass controls through
+ * GWL_WNDPROC. Win16 indexes are 16-bit, so the negative GWL_ indexes arrive
+ * as 0xfffc and are narrowed back here; the procedure pointer is stored at
+ * full native width because Win64 has no 32-bit GWL_WNDPROC.
+ */
+
+static inline FARPROC GetWindowLong16(HWND hwnd, short index)
+{
+    return (FARPROC)GetWindowLongPtrA(hwnd, index);
+}
+
+static inline FARPROC SetWindowLong16(HWND hwnd, short index, FARPROC lpfn)
+{
+    return (FARPROC)SetWindowLongPtrA(hwnd, index, (LONG_PTR)lpfn);
+}
+
+/*
+ * Win16 drive and resource APIs
+ *
+ * Win16 GetDriveType took a 0-based drive number; Win32 takes a root path.
+ * Win16 AllocResource allocated a moveable block for a resource's data
+ * (cb 0 meaning the resource's size); Win32 has no equivalent, so allocate
+ * the same block with GlobalAlloc.
+ */
+
+static inline UINT GetDriveType16(int drive)
+{
+    char root[] = "A:\\";
+
+    root[0] = (char)('A' + drive);
+    return GetDriveTypeA(root);
+}
+
+static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb)
+{
+    return GlobalAlloc(GMEM_MOVEABLE, cb ? cb : SizeofResource(hinst, hrsrc));
+}
+
 // Win16 constants. windows.h provides most of them; the rest, such as
 // Win16-only messages and application WM_USER messages, are defined here.
 {{- range .Defines}}

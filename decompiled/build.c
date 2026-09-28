@@ -10,7 +10,7 @@ StringId     rgidsCat[14] = {idsWeapons2,     idsDevices,  idsArmor3,   idsBeamW
                              idsMiningRobots, idsScanners, idsShields3, idsElectrical,  idsMechanical, idsTorpedoes, idsOrbital};
 
 int16_t ShipBuilder(POINT ptDlgSize) {
-    int16_t (*lpProcSlot)();
+    FARPROC lpProcSlot;
     int16_t fSuccess;
 
 L_008c:
@@ -273,7 +273,7 @@ L_0543:
     return 1;
 }
 
-int16_t SlotDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT               rcWindow;
     HDC                hdc;
     RECT               rcGBox;
@@ -362,7 +362,7 @@ L_07c4:
     return 1;
 
 L_07ca:
-    lpdis = lParam;
+    lpdis = (DRAWITEMSTRUCT *)(lParam);
     if ((lpdis->itemID != 0xffff))
         goto L_07f8;
     else
@@ -409,7 +409,7 @@ L_085f:
     return 1;
 
 L_0865:
-    lpmis = lParam;
+    lpmis = (MEASUREITEMSTRUCT *)(lParam);
     lpmis->itemHeight = 0x42;
     return 1;
 
@@ -445,8 +445,8 @@ L_08c1:
         goto L_08e0;
 
 L_08e0:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_08f9:
     GetCursorPos(&(pt));
@@ -468,7 +468,7 @@ L_0948:
 
 L_095a:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0982:
@@ -705,16 +705,16 @@ L_0ed8:
 
 L_0ee2:
     fInEditUpdate = 1;
-    GetWindowText(LOWORD(lParam), szWork, 250);
-    lSel = SendMessage(LOWORD(lParam), WM_USER, 0x0, 0);
+    GetWindowText((HWND)(LOWORD(lParam)), szWork, 250);
+    lSel = SendMessage((HWND)(LOWORD(lParam)), WM_USER, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0f69;
     else
         goto L_0f3c;
 
 L_0f3c:
-    SetWindowText(LOWORD(lParam), szWork);
-    SendMessage(LOWORD(lParam), CB_LIMITTEXT, 0x0, lSel);
+    SetWindowText((HWND)(LOWORD(lParam)), szWork);
+    SendMessage((HWND)(LOWORD(lParam)), 0x401, 0x0, lSel);
 
 L_0f69:
     lstrcpy(lpshdefBuild->hul.szClass, szWork);
@@ -1655,7 +1655,7 @@ L_1fe4:
     SetWindowPos(GetDlgItem(hwnd, IDC_COMBOBOX), 0x0, 16, 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), 0x0, (ptslotGlob.x - 264), 8, 240, (LOWORD((3 * dyArial8)) >> 0x1), SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass);
-    SendMessage(GetDlgItem(hwnd, IDC_EDITNAME), CB_SETEXTENDEDUI, 0x1f, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_EDITNAME), EM_LIMITTEXT, 0x1f, 0);
     if ((gd.fTutorial == 0x0))
         goto L_2641;
     else
@@ -2587,7 +2587,7 @@ L_32ad:
     goto L_3559;
 
 L_32ee:
-    iSel = LOWORD(SendMessage(hwnd, CB_GETLBTEXTLEN, 0x0, 0));
+    iSel = LOWORD(SendMessage(hwnd, LB_GETCURSEL, 0x0, 0));
     if ((iSel != -1))
         goto L_3318;
     else
@@ -2597,7 +2597,7 @@ L_3312:
     return 0;
 
 L_3318:
-    SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
+    SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)(szWork));
     ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
     iSrc = -1;
     hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
@@ -2988,14 +2988,14 @@ L_3b71:
         goto L_3b7b;
 
 L_3b7b:
-    iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_GETLBTEXTLEN, 0x0, 0));
+    iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), LB_GETCURSEL, 0x0, 0));
     if ((iSel == -1))
         goto Restore;
     else
         goto L_3baf;
 
 L_3baf:
-    SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), CB_INSERTSTRING, iSel, szWork);
+    SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), LB_GETTEXT, iSel, (LPARAM)(szWork));
     hsShip.cItem = 0x1;
     hsShip.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
     hsShip.iItem = ((int16_t)(szWork[1]) - 65);
@@ -4538,7 +4538,7 @@ L_5a3e:
 L_5a41:
     FillRect(lpdis->hDC, &(lpdis->rcItem), GetStockObject(t_merge_5a41_0001));
     InflateRect(&(rc), -2, -1);
-    SendMessage(lpdis->hwndItem, CB_INSERTSTRING, lpdis->itemID, szWork);
+    SendMessage(lpdis->hwndItem, 0x40a, lpdis->itemID, szWork);
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
     ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
@@ -4956,7 +4956,7 @@ L_608f:
     fAdded = (t_merge_608f_0001 + 1);
 
 L_6095:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, lpshdef[i].hul.szClass);
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(lpshdef[i].hul.szClass));
 
 L_60ba:
     i = (i + 1);
@@ -5032,7 +5032,7 @@ L_618d:
 
 L_6190:
     _wsprintf(&(szWork[strlen(szWork)]), " %s", ((LOWORD(lpshdef) + LOWORD((147 * j))) + 0x8), HIWORD(lpshdef));
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
 
 L_61e0:
     j = (j + 1);
@@ -5073,7 +5073,7 @@ L_621e:
         goto L_6247;
 
 L_6247:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, part.pcom->szName);
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(part.pcom->szName));
 
 L_6264:
     i = (i + 1);
@@ -5098,7 +5098,7 @@ L_6280:
     goto L_62b2;
 
 L_6288:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, PszGetCompressedString(rgidsPartsSB[i]));
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(rgidsPartsSB[i])));
     i = (i + 1);
 
 L_62b2:
@@ -5115,7 +5115,7 @@ L_62be:
     goto L_62f0;
 
 L_62c6:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, PszGetCompressedString(rgidsParts[i]));
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(rgidsParts[i])));
     i = (i + 1);
 
 L_62f0:
@@ -5215,7 +5215,7 @@ void FillBuildPartsLB(HWND hwndLB, int16_t grbit) {
 L_63e8:
     grbitCur = 1;
     sz[0] = 65;
-    SendMessage(hwndLB, CB_DIR, 0x0, 0);
+    SendMessage(hwndLB, LB_RESETCONTENT, 0x0, 0);
     goto L_6518;
 
 L_6417:
@@ -5275,7 +5275,7 @@ L_649a:
     sz[2] = LOBYTE((((int32_t)(part.pcom->ibmp) % 26) + 0x41));
     sz[3] = LOBYTE((((int32_t)(part.pcom->ibmp) / 26) + 0x41));
     fstrcpy(&(sz[4]), part.pcom->szName);
-    SendMessage(hwndLB, CB_LIMITTEXT, 0x0, sz);
+    SendMessage(hwndLB, LB_ADDSTRING, 0x0, (LPARAM)(sz));
 
 L_6505:
     i = (i + 1);
@@ -5399,7 +5399,7 @@ L_674b:
     return 0;
 }
 
-int32_t FakeListProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     POINT   pt;
     int16_t iSel;
 
@@ -5451,7 +5451,7 @@ L_6809:
         goto L_6813;
 
 L_6813:
-    iSel = LOWORD(SendMessage(hwnd, CB_GETLBTEXTLEN, 0x0, 0));
+    iSel = LOWORD(SendMessage(hwnd, LB_GETCURSEL, 0x0, 0));
     if ((iSel != -1))
         goto L_6840;
     else
@@ -5461,7 +5461,7 @@ L_6837:
     return 0;
 
 L_6840:
-    SendMessage(hwnd, CB_INSERTSTRING, iSel, szWork);
+    SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)(szWork));
     GlobalPD.part.hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
     GlobalPD.part.hs.iItem = ((int16_t)(szWork[1]) - 65);
     FLookupPart(&(GlobalPD.part));
@@ -5618,7 +5618,7 @@ L_6b97:
         goto L_6ba0;
 
 L_6ba0:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
     goto L_6bde;
 
@@ -5727,7 +5727,7 @@ L_6d8b:
         goto L_6d94;
 
 L_6d94:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
     goto L_6dd2;
 

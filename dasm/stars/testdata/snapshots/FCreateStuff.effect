@@ -34,7 +34,7 @@ block L_004e:
   preds: L_0014, L_0044
   succs: L_00af
   effects:
-    0057  store[2] [gd] = ((load([gd]) & 0x3fff) | 0x0)
+    0057  store[2] [gd] = (load([gd]) & 0x3fff)
     005a  goto L_00af
 
 block L_005d:
@@ -93,8 +93,8 @@ block L_00af:
   preds: L_004e, L_0071, L_0094, L_00a3
   succs: L_04f1
   effects:
-    00b8  store[2] [gd] = ((load@00af/src([gd]) & 0xff7f) | 0x0)
-    00c4  store[2] [gd] = ((load@00bb/src([gd]) & 0xfbff) | 0x0)
+    00b8  store[2] [gd] = (load@00af/src([gd]) & 0xff7f)
+    00c4  store[2] [gd] = (load@00bb/src([gd]) & 0xfbff)
     00d2  copy[0xc0] *addr([vplr]) = *addr([vrgplrDef])
     00e7  call CreateRectRgn(0xfff6, 0xfff6, 0x7d0, 0x7d0) -> callresult(HRGN)
     00ec  store[2] [hrgnHuge] = callresult(HRGN)
@@ -203,7 +203,7 @@ block L_04b7:
   preds: L_04f1
   succs: L_04f1
   effects:
-    04cc  call LoadBitmap(load([hInst]), words(0x0, ((load([bp-i]) + 0x1cc) | 0x0))) -> callresult(HBITMAP)
+    04cc  call LoadBitmap(load([hInst]), words(0x0, (load([bp-i]) + 0x1cc))) -> callresult(HBITMAP)
     04d1  store[2] [bp-hbmp] = callresult(HBITMAP)
     04d7  call CreatePatternBrush(load@04d4/src([bp-hbmp])) -> callresult(HBRUSH)
     04e1  store[2] ds:[(load([bp-i]) << 0x1)+0x591e] = callresult(HBRUSH)
@@ -430,30 +430,30 @@ block L_076a:
     08ce  call LpAlloc(0xffc8, 0x2) -> callresult(void *)
     08d6  store[2] [lpMsg] = faroff(callresult(void *))
     08d9  store[2] [lpMsg+0x2] = farseg(callresult(void *))
-    08e9  call MakeProcInstance(words(0xffff, 0x1d72), load@08e5/src([hInst])) -> callresult(int32_t() *)
-    08ee  store[2] [lpfnFakeComboProc] = faroff(callresult(int32_t() *))
-    08f1  store[2] [lpfnFakeComboProc+0x2] = farseg(callresult(int32_t() *))
-    0901  call MakeProcInstance(words(0x8e1, 0x1df0), load@08fd/src([hInst])) -> callresult(int32_t() *)
-    0906  store[2] [lpfnFakeCEProc] = faroff(callresult(int32_t() *))
-    0909  store[2] [lpfnFakeCEProc+0x2] = farseg(callresult(int32_t() *))
-    0919  call MakeProcInstance(words(0xffff, 0xa700), load@0915/src([hInst])) -> callresult(int32_t() *)
-    091e  store[2] [lpfnFakeEditProc] = faroff(callresult(int32_t() *))
-    0921  store[2] [lpfnFakeEditProc+0x2] = farseg(callresult(int32_t() *))
-    0931  call MakeProcInstance(words(0xffff, 0x6758), load@092d/src([hInst])) -> callresult(int32_t() *)
-    0936  store[2] [lpfnFakeListProc] = faroff(callresult(int32_t() *))
-    0939  store[2] [lpfnFakeListProc+0x2] = farseg(callresult(int32_t() *))
-    0949  call MakeProcInstance(words(0xffff, 0x7716), load@0945/src([hInst])) -> callresult(int32_t() *)
-    094e  store[2] [lpfnHostTimerProc] = faroff(callresult(int32_t() *))
-    0951  store[2] [lpfnHostTimerProc+0x2] = farseg(callresult(int32_t() *))
-    0961  call MakeProcInstance(words(0xffff, 0x1ed8), load@095d/src([hInst])) -> callresult(int32_t() *)
-    0966  store[2] [lpfnBrowserDlgProc] = faroff(callresult(int32_t() *))
-    0969  store[2] [lpfnBrowserDlgProc+0x2] = farseg(callresult(int32_t() *))
-    0979  call MakeProcInstance(words(0xffff, 0x18), load@0975/src([hInst])) -> callresult(int32_t() *)
-    097e  store[2] [lpfnReportDlgProc] = faroff(callresult(int32_t() *))
-    0981  store[2] [lpfnReportDlgProc+0x2] = farseg(callresult(int32_t() *))
-    0991  call MakeProcInstance(words(0x7e9, 0x647e), load@098d/src([hInst])) -> callresult(int32_t() *)
-    0996  store[2] [lpfnGaugeDlgProc] = faroff(callresult(int32_t() *))
-    0999  store[2] [lpfnGaugeDlgProc+0x2] = farseg(callresult(int32_t() *))
+    08e9  call MakeProcInstance(words(0xffff, 0x1d72), load@08e5/src([hInst])) -> callresult(FARPROC)
+    08ee  store[2] [lpfnFakeComboProc] = faroff(callresult(FARPROC))
+    08f1  store[2] [lpfnFakeComboProc+0x2] = farseg(callresult(FARPROC))
+    0901  call MakeProcInstance(words(0x8e1, 0x1df0), load@08fd/src([hInst])) -> callresult(FARPROC)
+    0906  store[2] [lpfnFakeCEProc] = faroff(callresult(FARPROC))
+    0909  store[2] [lpfnFakeCEProc+0x2] = farseg(callresult(FARPROC))
+    0919  call MakeProcInstance(words(0xffff, 0xa700), load@0915/src([hInst])) -> callresult(FARPROC)
+    091e  store[2] [lpfnFakeEditProc] = faroff(callresult(FARPROC))
+    0921  store[2] [lpfnFakeEditProc+0x2] = farseg(callresult(FARPROC))
+    0931  call MakeProcInstance(words(0xffff, 0x6758), load@092d/src([hInst])) -> callresult(FARPROC)
+    0936  store[2] [lpfnFakeListProc] = faroff(callresult(FARPROC))
+    0939  store[2] [lpfnFakeListProc+0x2] = farseg(callresult(FARPROC))
+    0949  call MakeProcInstance(words(0xffff, 0x7716), load@0945/src([hInst])) -> callresult(FARPROC)
+    094e  store[2] [lpfnHostTimerProc] = faroff(callresult(FARPROC))
+    0951  store[2] [lpfnHostTimerProc+0x2] = farseg(callresult(FARPROC))
+    0961  call MakeProcInstance(words(0xffff, 0x1ed8), load@095d/src([hInst])) -> callresult(FARPROC)
+    0966  store[2] [lpfnBrowserDlgProc] = faroff(callresult(FARPROC))
+    0969  store[2] [lpfnBrowserDlgProc+0x2] = farseg(callresult(FARPROC))
+    0979  call MakeProcInstance(words(0xffff, 0x18), load@0975/src([hInst])) -> callresult(FARPROC)
+    097e  store[2] [lpfnReportDlgProc] = faroff(callresult(FARPROC))
+    0981  store[2] [lpfnReportDlgProc+0x2] = farseg(callresult(FARPROC))
+    0991  call MakeProcInstance(words(0x7e9, 0x647e), load@098d/src([hInst])) -> callresult(FARPROC)
+    0996  store[2] [lpfnGaugeDlgProc] = faroff(callresult(FARPROC))
+    0999  store[2] [lpfnGaugeDlgProc+0x2] = farseg(callresult(FARPROC))
     099d  call GetDiskSerialNumber() -> callresult(uint32_t)
     09aa  call LpAlloc(0x800, 0x9) -> callresult(void *)
     09b2  store[2] [lpb2k] = faroff(callresult(void *))

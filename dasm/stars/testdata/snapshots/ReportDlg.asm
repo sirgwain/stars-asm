@@ -1,11 +1,11 @@
 ; ReportDlg  (report)
 ;   addr: 0022:0018  len=2511
-;   sig:  int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+;   sig:  LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 ;   params:
 ;     HWND             hwnd           [BP+0xe]
-;     uint16_t         msg            [BP+0xc]
-;     uint16_t         wParam         [BP+0xa]
-;     int32_t          lParam         [BP+0x6]
+;     UINT             msg            [BP+0xc]
+;     WPARAM           wParam         [BP+0xa]
+;     LPARAM           lParam         [BP+0x6]
 ;   locals:
 ;     RECT             rc             [BP-0xe]
 ;     HMENU            hmenu          [BP-0x6]
@@ -991,7 +991,7 @@ MOV       [fBrowserValid], 0x0000   ; [0x0d22], 0x0000
 MOV       ax, 0x0004          
 PUSH      ax                  
 PUSH      [hwndFrame]               ; [0x258c]
-CALLF     GetASubMenu               ; uint16_t GetASubMenu(HWND hwnd, int16_t iMenu)
+CALLF     GetASubMenu               ; HMENU GetASubMenu(HWND hwnd, int16_t iMenu)
 ADD       sp, 0x0004          
 MOV       [bp-hmenu], ax            ; [bp-0x6], ax
                                     ; report.c:404

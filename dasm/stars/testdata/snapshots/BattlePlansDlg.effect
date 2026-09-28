@@ -1,18 +1,18 @@
 /*
 BattlePlansDlg  (battle)
   addr: 001f:0652  len=4276
-  sig:  int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+  sig:  INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         message        [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0x14]
     int16_t          fRet           [BP-0xc]
     int16_t          i              [BP-0xa]
     int16_t          idc            [BP-0x8]
-    int16_t() *      lpProc         [BP-0x6]
+    FARPROC          lpProc         [BP-0x6]
     block 001F:113E  len=0x35A
       int16_t          cLen           [BP-0x16]
 
@@ -558,7 +558,7 @@ block L_0dd0:
   preds: L_0c71
   succs: L_16f8
   effects:
-    0dd9  store[2] [btlplan] = ((load([btlplan]) & 0xbfff) | 0x0)
+    0dd9  store[2] [btlplan] = (load([btlplan]) & 0xbfff)
     0dfe  copy[0x24] *addr(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x593a]):[(load(ds:[((load([idPlayer]) << 0x1) << 0x1)+0x5938]) + loword((0x24 * load([iPlanSelDlg]))))]) = *addr([btlplan])
     0e18  store[2] ss:[bp-0x16] = loword((0x24 * load([iPlanSelDlg])))
     0e22  goto L_16f8
@@ -681,9 +681,9 @@ block LRename:
   succs: L_1000, L_10e5
   effects:
     0fa7  call StickyDlgPos(load@0fa4/src([bp+hwnd]), 0xd96, 0x0) -> callresult(void)
-    0fbb  call MakeProcInstance(words(0xcea, 0x4ce), load@0fb7/src([hInst])) -> callresult(int32_t() *)
-    0fc0  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
-    0fc3  store[2] [bp-lpProc+0x2] = farseg(callresult(int32_t() *))
+    0fbb  call MakeProcInstance(words(0xcea, 0x4ce), load@0fb7/src([hInst])) -> callresult(FARPROC)
+    0fc0  store[2] [bp-lpProc] = faroff(callresult(FARPROC))
+    0fc3  store[2] [bp-lpProc+0x2] = farseg(callresult(FARPROC))
     0fdc  call DialogBox(load@0fc6/src([hInst]), words(0x0, 0x7e3), load([hwndFrame]), words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
     0fe1  store[2] [bp-fRet] = callresult(int16_t)
     0fea  call FreeProcInstance(words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)

@@ -1,11 +1,11 @@
 ; About  (stars)
 ;   addr: 0004:1252  len=716
-;   sig:  int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+;   sig:  INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 ;   params:
 ;     HWND             hwnd           [BP+0xe]
-;     uint16_t         message        [BP+0xc]
-;     uint16_t         wParam         [BP+0xa]
-;     int32_t          lParam         [BP+0x6]
+;     UINT             message        [BP+0xc]
+;     WPARAM           wParam         [BP+0xa]
+;     LPARAM           lParam         [BP+0x6]
 ;   locals:
 ;     RECT             rc             [BP-0xa]
 ;     block 0004:12D1  len=0x15B
@@ -13,7 +13,7 @@
 ;       int16_t          i              [BP-0xe]
 ;       HDC              hdc            [BP-0xc]
 ;     block 0004:14A3  len=0x3C
-;       int16_t() *      lpProc         [BP-0xe]
+;       FARPROC          lpProc         [BP-0xe]
 ;
 ;   stats: blocks=2  labels=0
 
@@ -52,7 +52,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SetTimer                  ; uint16_t SetTimer(HWND arg1, uint16_t arg2, uint16_t arg3, int32_t (*arg4)())
+CALLF     SetTimer                  ; uint16_t SetTimer(HWND arg1, uint16_t arg2, uint16_t arg3, TIMERPROC arg4)
 MOV       [uTimerId], ax            ; [0x01a2], ax
                                     ; stars.c:760
 MOV       ax, 0x0001          
@@ -276,7 +276,7 @@ MOV       dx, 0x127d
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [bp-lpProc], ax           ; [bp-0xe], ax
 MOV       [bp-lpProc+0x2], dx       ; [bp-0xc], dx
                                     ; stars.c:840
@@ -288,11 +288,11 @@ PUSH      ax
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]
-CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, DLGPROC arg4)
                                     ; stars.c:841
 PUSH      [bp-lpProc+0x2]           ; [bp-0xc]
 PUSH      [bp-lpProc]               ; [bp-0xe]
-CALLF     FreeProcInstance          ; void FreeProcInstance(int32_t (*arg1)())
+CALLF     FreeProcInstance          ; void FreeProcInstance(FARPROC arg1)
 
 L_14df:                             ; stars.c:843
 JMP       L_1510              

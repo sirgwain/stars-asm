@@ -94,6 +94,9 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 			// address recovery paths.
 			src = c.convertValueTyped(e.Src, dst.ExprType())
 		}
+		if cast, ok := c.messagePayloadCast(e.Src, dst.ExprType()); ok {
+			src = cast
+		}
 		if c.ctx.maskedStorageWrite(e.Addr, e.Src) {
 			src = c.convertValueWithoutBitfields(e.Src)
 		}
@@ -160,7 +163,11 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		if c.ctx != nil && c.ctx.fs != nil {
 			expected = c.ctx.fs.Ret
 		}
-		return &Return{MetaInfo: e.MetaInfo, Value: c.convertValueTyped(e.Value, expected)}
+		value := c.convertValueTyped(e.Value, expected)
+		if value != nil && expected != nil {
+			value = c.ctx.messageResultCasts(value, expected)
+		}
+		return &Return{MetaInfo: e.MetaInfo, Value: value}
 	default:
 		return &RawEffect{Effect: effect, MetaInfo: effect.EffectMeta()}
 	}
@@ -297,7 +304,14 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 		if v.Type != nil {
 			typ = v.Type
 		}
-		return &Binary{TypeInfo: typ, Op: op, LHS: c.convertValue(v.LHS), RHS: c.convertValue(v.RHS), Producer: v.Producer}
+		lhs := c.convertValue(v.LHS)
+		rhs := c.convertValue(v.RHS)
+		if op == OpSub {
+			if address, ok := c.convertPointerConstOperand(v.RHS, lhs.ExprType()); ok {
+				rhs = address
+			}
+		}
+		return &Binary{TypeInfo: typ, Op: op, LHS: lhs, RHS: rhs, Producer: v.Producer}
 	case *machine.ByteValue:
 		return c.convertByte(v)
 	case *machine.Cast:
@@ -578,18 +592,19 @@ func (c machineConverter) convertPredicate(v *machine.PredicateValue) Expr {
 	}
 	lhs := c.convertValue(v.LHS)
 	rhs := c.convertValue(v.RHS)
-	if address, ok := c.convertComparedAddress(v.RHS, lhs.ExprType()); ok {
+	if address, ok := c.convertPointerConstOperand(v.RHS, lhs.ExprType()); ok {
 		rhs = address
-	} else if address, ok := c.convertComparedAddress(v.LHS, rhs.ExprType()); ok {
+	} else if address, ok := c.convertPointerConstOperand(v.LHS, rhs.ExprType()); ok {
 		lhs = address
 	}
 	return &Compare{Op: compareOp(v.Op), LHS: lhs, RHS: rhs}
 }
 
-// convertComparedAddress resolves a non-null constant compared against a
-// near pointer as the DS-relative global address it denotes, for example
-// psz <= szBase rather than psz <= 0x56a2.
-func (c machineConverter) convertComparedAddress(value machine.Value, other typeinfo.Type) (Expr, bool) {
+// convertPointerConstOperand resolves a non-null constant compared with or
+// subtracted from a near pointer as the DS-relative global address it
+// denotes, for example psz <= szBase rather than psz <= 0x56a2, and
+// pch - rgchcomp rather than pch - 0x1400.
+func (c machineConverter) convertPointerConstOperand(value machine.Value, other typeinfo.Type) (Expr, bool) {
 	constant, ok := value.(*machine.Const)
 	if !ok || constant.Val == 0 || !typeinfo.IsNearPointer(other) {
 		return nil, false

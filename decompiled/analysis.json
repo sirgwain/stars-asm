@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 1678,
-    "hiWords": 59,
-    "loWords": 1374,
+    "temps": 1674,
+    "hiWords": 64,
+    "loWords": 1369,
     "branchHiWords": 26,
     "branchLoWords": 567,
     "ir": {
-      "numStatements": 34692
+      "numStatements": 34685
     }
   },
   "functions": {
@@ -1255,9 +1255,8 @@
       }
     },
     "EnsureAis": {
-      "temps": 4,
       "ir": {
-        "numStatements": 35
+        "numStatements": 28
       }
     },
     "EnsureCAShdefs": {
@@ -4338,7 +4337,8 @@
     },
     "ReportDlg": {
       "temps": 3,
-      "loWords": 11,
+      "hiWords": 5,
+      "loWords": 6,
       "ir": {
         "numStatements": 122
       }

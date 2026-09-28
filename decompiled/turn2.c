@@ -433,7 +433,7 @@ RemoveFromQueue:
         goto L_09eb;
 
 L_09eb:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
     goto L_0b9a;
 
@@ -472,7 +472,7 @@ L_0ad0:
         goto L_0afb;
 
 L_0afb:
-    lppl->lpplprod = LpplReAlloc(lppl->lpplprod, (lppl->lpplprod->iprodMac + 0x1));
+    lppl->lpplprod = (PLPROD *)(LpplReAlloc((PL *)(lppl->lpplprod), (lppl->lpplprod->iprodMac + 0x1)));
 
 L_0b2b:
     fmemmove(&(lppl->lpplprod->rgprod[1]), lppl->lpplprod->rgprod, (lppl->lpplprod->iprodMac * 0x4));
@@ -2960,7 +2960,7 @@ L_3ebb:
         goto L_3f27;
 
 L_3f27:
-    pl.lpplprod = LpplAlloc(0x4, rgplr[iMax].zpq1.cpq, htOrd);
+    pl.lpplprod = (PLPROD *)(LpplAlloc(0x4, rgplr[iMax].zpq1.cpq, htOrd));
     memset(&(prod), 0, 0x4);
     prod.grobj = grobjPlanet;
     iDst = 0;
@@ -3025,7 +3025,7 @@ L_414b:
     goto L_418e;
 
 L_4176:
-    FreePl(pl.lpplprod);
+    FreePl((PL *)(pl.lpplprod));
     pl.lpplprod = 0x0;
 
 L_418e:
@@ -4559,7 +4559,7 @@ L_5c1b:
     goto L_5c4e;
 
 L_5c2c:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
 
 L_5c4e:
@@ -5059,7 +5059,7 @@ L_62bb:
     vlprgScoreX[i].score = score;
     vlprgScoreX[i].wWord = ((vlprgScoreX[i].wWord & 0xffe0) | (i & 0x1f));
     vlprgScoreX[i].wWord = ((vlprgScoreX[i].wWord & 0xffdf) | 0x20);
-    vlprgScoreX[i].wWord = ((vlprgScoreX[i].wWord & 0xc03f) | 0x0);
+    vlprgScoreX[i].wWord = (vlprgScoreX[i].wWord & 0xc03f);
     lScoreTot = (lScoreTot + rglScore[i]);
     if ((score.cPlanet != 0))
         goto L_6498;

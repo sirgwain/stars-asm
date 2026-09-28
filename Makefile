@@ -1,4 +1,4 @@
-.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile
+.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile resources
 
 DIST_DIR    := dist
 CLI_BIN     := $(DIST_DIR)/stars-asm
@@ -7,6 +7,7 @@ COVER_BIN   := $(COVER_DIR)/stars-cov
 COVER_OUT   := $(COVER_DIR)/cover.out
 COVER_HTML  := $(COVER_DIR)/coverage.html
 MINGW_CC    ?= x86_64-w64-mingw32-gcc
+MINGW_RC    ?= x86_64-w64-mingw32-windres
 SRC_DIR     := decompiled
 FILES       ?= $(wildcard $(SRC_DIR)/*.c)
 
@@ -16,9 +17,10 @@ help:
 	@echo "  test             Run all tests"
 	@echo "  build            Build the CLI binary into ./dist/"
 	@echo "  coverage-report  Run 'dasm all' and open HTML coverage report"
-	@echo "  compile-analysis Generate non-failing MinGW syntax diagnostics"
-	@echo "  compile-check    Generate MinGW diagnostics and fail on C errors"
+	@echo "  compile-analysis Generate non-failing MinGW C and resource diagnostics"
+	@echo "  compile-check    Generate MinGW diagnostics and fail on C or resource errors"
 	@echo "  compile          Print MinGW diagnostics to the terminal (FILES=decompiled/ai.c to limit)"
+	@echo "  resources        Compile decompiled/res/stars.rc into ./dist/stars_res.o"
 	@echo "  tidy             Run go mod tidy in both modules"
 	@echo "  fmt              Run go fmt in all modules"
 	@echo "  clean            Remove ./dist/"
@@ -42,16 +44,23 @@ fmt:
 	go fmt ./...
 
 compile-analysis:
-	go run ./tools/compile-analysis -cc "$(MINGW_CC)" -out decompiled/compile-analysis.json decompiled
+	go run ./tools/compile-analysis -cc "$(MINGW_CC)" -windres "$(MINGW_RC)" -out decompiled/compile-analysis.json decompiled
 
 compile-check:
-	go run ./tools/compile-analysis -fail-on-errors -cc "$(MINGW_CC)" -out decompiled/compile-analysis.json decompiled
+	go run ./tools/compile-analysis -fail-on-errors -cc "$(MINGW_CC)" -windres "$(MINGW_RC)" -out decompiled/compile-analysis.json decompiled
 
 # print MinGW syntax diagnostics to the terminal, using the same flags as compile-analysis
 compile:
 	@for f in $(FILES); do \
 		$(MINGW_CC) -std=gnu11 -fsyntax-only -fdiagnostics-color=always -fmax-errors=0 -w -I$(SRC_DIR) $$f; \
 	done; true
+	@cd $(SRC_DIR)/res && $(MINGW_RC) stars.rc -O res -o /dev/null; true
+
+# compile the resource script into an object to link with the decompiled C;
+# the script names the files it includes relative to its own directory
+resources:
+	@mkdir -p $(DIST_DIR)
+	cd $(SRC_DIR)/res && $(MINGW_RC) stars.rc -O coff -o $(CURDIR)/$(DIST_DIR)/stars_res.o
 
 # dump a coverage report to identify ai generated slop that is not actually being used
 coverage-report:

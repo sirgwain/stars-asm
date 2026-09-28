@@ -1,0 +1,92 @@
+/*
+EnsureAis  (mdi)
+  addr: 0005:56bc  len=477
+  sig:  void EnsureAis()
+  locals:
+    MDPLR[16]        rgmdplr        [BP-0x2e]
+    int16_t          iPlayer        [BP-0xe]
+    int16_t          fSubmitSav     [BP-0xc]
+    int16_t          fWorkDone      [BP-0xa]
+    int16_t          fOpened        [BP-0x8]
+    int16_t          fErrSav        [BP-0x6]
+    int16_t          fHostSav       [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_56bc:
+    fSubmitSav = gd.fSubmit
+    fWorkDone = 0
+    branch gd.fAisDone != 0x0 ? L_5893 : L_56f1
+
+L_56f1:
+    fHostSav = gd.fHostMode
+    branch gd.fHostMode != 0x0 ? L_5729 : L_5714
+
+L_5714:
+    call DestroyCurGame() -> callresult(void)
+    call FLoadGame(szBase, "hst") -> callresult(int16_t)
+
+L_5729:
+    iPlayer = 0
+    goto L_5735
+
+L_5731:
+    iPlayer = (iPlayer + 1)
+
+L_5735:
+    branch iPlayer >= game.cPlayer ? L_575d : L_5740
+
+L_5740:
+    *(uint16_t *)&rgmdplr[iPlayer] = rgplr[iPlayer].wMdPlr
+    goto L_5731
+
+L_575d:
+    gd.fSubmit = 0x1
+    fErrSav = fFileErrSilent
+    fFileErrSilent = 1
+    iPlayer = 0
+    goto L_5781
+
+L_577d:
+    iPlayer = (iPlayer + 1)
+
+L_5781:
+    branch iPlayer >= game.cPlayer ? L_5848 : L_578c
+
+L_578c:
+    call UpdateProgressGauge(MulDiv(340, (iPlayer + 1), game.cPlayer)) -> callresult(void)
+    branch rgmdplr[iPlayer].fAi == 0x0 ? L_577d : L_57c5
+
+L_57c5:
+    fWorkDone = 1
+    gd.fGeneratingTurn = 0x1
+    gd.fHostMode = 0x1
+    fOpened = FOpenFile(dtLog, iPlayer, 32)
+    gd.fGeneratingTurn = 0x0
+    gd.fHostMode = fHostSav
+    branch fOpened == 0 ? L_582e : L_5826
+
+L_5826:
+    call StreamClose() -> callresult(void)
+    goto L_577d
+
+L_582e:
+    call DoAiTurn(iPlayer, *(uint16_t *)&rgmdplr[iPlayer]) -> callresult(void)
+
+L_5845:
+    goto L_577d
+
+L_5848:
+    gd.fSubmit = fSubmitSav
+    branch fWorkDone == 0 ? L_5881 : L_586c
+
+L_586c:
+    call DestroyCurGame() -> callresult(void)
+    call FLoadGame(szBase, "hst") -> callresult(int16_t)
+
+L_5881:
+    fFileErrSilent = fErrSav
+    gd.fAisDone = 0x1
+
+L_5893:
+    return

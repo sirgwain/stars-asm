@@ -198,6 +198,10 @@
     { "kind": "param", "func": "DialogBoxParam", "param": "arg2", "enum": "DialogId" },
     { "kind": "param", "func": "CreateDialog", "param": "arg2", "enum": "DialogId" },
     { "kind": "param", "func": "CreateDialogParam", "param": "arg2", "enum": "DialogId" },
+    { "kind": "param", "func": "LoadCursor", "param": "arg2", "enum": "CursorId" },
+    { "kind": "param", "func": "LoadBitmap", "param": "arg2", "enum": "BitmapId" },
+    { "kind": "param", "func": "LoadAccelerators", "param": "arg2", "enum": "AcceleratorId" },
+    { "kind": "param", "func": "HdibLoadBigResource", "param": "idb", "enum": "BitmapId" },
 
     { "kind": "param", "func": "About", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "AskSaveDialog", "param": "message", "enum": "WMType" },
@@ -207,6 +211,7 @@
     { "kind": "param", "func": "HostModeDialog", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "HostOptionsDialog", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "MessageWndProc", "param": "message", "enum": "WMType" },
+    { "kind": "param", "func": "MsgDlg", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "MineWndProc", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "NewGameDlg", "param": "message", "enum": "WMType" },
     { "kind": "param", "func": "NewGameDlg2", "param": "message", "enum": "WMType" },
@@ -263,6 +268,7 @@
     { "kind": "param", "func": "SetDlgItemText", "param": "arg2", "enum": "ControlId" },
     { "kind": "param", "func": "SendMessage", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "PostMessage", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "SendDlgItemMessage", "param": "arg3", "enum": "WMType" },
     { "kind": "param", "func": "PatBlt", "param": "arg6", "enum": "PatBltRop" },
     { "kind": "param", "func": "GetSystemMetrics", "param": "arg1", "enum": "SystemMetric" },
 
@@ -293,6 +299,81 @@
     { "kind": "param", "func": "ShowMainControls", "name": "sw", "enum": "ShowWindowCmd" }
   ],
 
+  "window_classes": [
+    { "class": "button", "messages": "ButtonMessage" },
+    { "class": "listbox", "messages": "ListBoxMessage" },
+    { "class": "combobox", "messages": "ComboBoxMessage" },
+    { "class": "edit", "messages": "EditMessage" }
+  ],
+  "windows": [
+    { "func": "About", "param": "hwnd", "dialog": "IDD_ABOUT" },
+    { "func": "BattlePlansDlg", "param": "hwnd", "dialog": "IDD_BATTLE_PLANS" },
+    { "func": "BrowserDlg", "param": "hwnd", "dialog": "IDD_BROWSER" },
+    { "func": "FindDlg", "param": "hwnd", "dialog": "IDD_FIND" },
+    { "func": "HostModeDialog", "param": "hwnd", "dialog": "IDD_HOST_MODE" },
+    { "func": "HostOptionsDialog", "param": "hwnd", "dialog": "IDD_HOST_OPTIONS" },
+    { "func": "MergeFleetsDlg", "param": "hwnd", "dialog": "IDD_MERGE_FLEETS" },
+    { "func": "MsgDlg", "param": "hwnd", "dialog": "IDD_SERIAL_NUMBER" },
+    { "func": "NewGameDlg", "param": "hwnd", "dialog": "IDD_NEW_GAME_1" },
+    { "func": "NewGameDlg2", "param": "hwnd", "dialog": "IDD_NEW_GAME_2" },
+    { "func": "NewGameDlg3", "param": "hwnd", "dialog": "IDD_NEW_GAME_3" },
+    { "func": "NewPasswordDlg", "param": "hwnd", "dialog": "IDD_NEW_PASSWORD" },
+    { "func": "NewPlanNameDlg", "param": "hwnd", "dialog": "IDD_RENAME" },
+    { "func": "OrderInfoDlg", "param": "hwnd", "dialog": "IDD_ORDER_INFO" },
+    { "func": "PanicDlg", "param": "hwnd", "dialog": "IDD_PANIC" },
+    { "func": "PasswordDlg", "param": "hwnd", "dialog": "IDD_PASSWORD" },
+    { "func": "PrintMapDlg", "param": "hwnd", "dialog": "IDD_PRINT_MAP" },
+    { "func": "ProductionDlg", "param": "hwnd", "dialog": "IDD_PRODUCTION" },
+    { "func": "ProgressGaugeDlg", "param": "hwnd", "dialog": "IDD_Gauge" },
+    { "func": "RaceWizardDlg1", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_1" },
+    { "func": "RaceWizardDlg2", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_2" },
+    { "func": "RaceWizardDlg3", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_3" },
+    { "func": "RaceWizardDlg4", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_4" },
+    { "func": "RaceWizardDlg5", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_5" },
+    { "func": "RaceWizardDlg6", "param": "hwnd", "dialog": "IDD_RACE_WIZARD_6" },
+    { "func": "RelationsDlg", "param": "hwnd", "dialog": "IDD_RELATIONS" },
+    { "func": "RenameDlg", "param": "hwnd", "dialog": "IDD_RENAME" },
+    { "func": "RenameZipDlg", "param": "hwnd", "dialog": "IDD_RENAME" },
+    { "func": "ResearchDlg", "param": "hwnd", "dialog": "IDD_RESEARCH" },
+    { "func": "ScoreXDlg", "param": "hwnd", "dialog": "IDD_SCORE" },
+    { "func": "SimpleNewGameDlg", "param": "hwnd", "dialog": "IDD_SIMPLE_NEW_GAME" },
+    { "func": "SlotDlg", "param": "hwnd", "dialog": "IDD_SLOT" },
+    { "func": "TransferDlg", "param": "hwnd", "dialog": "IDD_TRANSFER" },
+    { "func": "TutorDlg", "param": "hwnd", "dialog": "IDD_TUTOR" },
+    { "func": "VCRDlg", "param": "hwnd", "dialog": "IDD_VCR" },
+    { "func": "ZipOrderDlg", "param": "hwnd", "dialog": "IDD_ZIP_PROD" },
+    { "func": "ZipProdDlg", "param": "hwnd", "dialog": "IDD_ZIP_PROD" },
+    { "global": "hwndSlotDlg", "dialog": "IDD_SLOT" },
+    { "func": "DrawProductionDlg", "param": "hwnd", "dialog": "IDD_PRODUCTION" },
+    { "func": "InitializeProductionDlg", "param": "hwnd", "dialog": "IDD_PRODUCTION" },
+    { "func": "ProdCommandHandler", "param": "hwnd", "dialog": "IDD_PRODUCTION" },
+    { "func": "FillZipProdLB", "param": "hwndDlg", "dialog": "IDD_ZIP_PROD" },
+    { "func": "FillBuildDD", "param": "hwndDD", "class": "combobox" },
+    { "func": "FillBuildPartsLB", "param": "hwndLB", "class": "listbox" },
+    { "func": "FillPlanetProdLB", "param": "hwnd", "class": "listbox" },
+    { "func": "FillProdSrcLB", "param": "hwndLB", "class": "listbox" },
+    { "func": "FTrackSlot", "param": "hwnd", "class": "listbox" },
+    { "func": "FakeComboProc", "param": "hwnd", "class": "combobox" },
+    { "func": "FakeCEProc", "param": "hwnd", "class": "edit" },
+    { "func": "FakeEditProc", "param": "hwnd", "class": "edit" },
+    { "func": "FakeListProc", "param": "hwnd", "class": "listbox" },
+    { "func": "PrintMapDlg", "local": "hwndEdit", "class": "edit" },
+    { "func": "RaceWizardDlg5", "local": "hwndCtl", "class": "button" },
+    { "global": "hwndBattleDD", "class": "combobox" },
+    { "global": "hwndFleetCompLB", "class": "listbox" },
+    { "global": "hwndMineCB", "class": "button" },
+    { "global": "hwndMsgDrop", "class": "combobox" },
+    { "global": "hwndMsgEdit", "class": "edit" },
+    { "global": "hwndMsgScroll", "class": "edit" },
+    { "global": "hwndOrderED", "class": "edit" },
+    { "global": "hwndPlanetProdLB", "class": "listbox" },
+    { "global": "hwndRepCB", "class": "button" },
+    { "global": "hwndShipDD", "class": "combobox" },
+    { "global": "hwndShipLB", "class": "listbox" },
+    { "global": "hwndTBRadar", "class": "combobox" },
+    { "global": "rghwndBtn", "class": "button" },
+    { "global": "rghwndOrderDD", "class": "combobox" }
+  ],
   "messages": [
     {
       "msg": "WM_COMMAND",
@@ -311,6 +392,102 @@
       }
     },
     {
+      "msg": "LB_ADDSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "LB_INSERTSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "LB_GETTEXT",
+      "lparam": {
+        "whole": { "cast_type": "LPSTR" }
+      }
+    },
+    {
+      "msg": "LB_FINDSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "LB_FINDSTRINGEXACT",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "LB_SELECTSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "LB_DIR",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "CB_GETLBTEXT",
+      "lparam": {
+        "whole": { "cast_type": "LPSTR" }
+      }
+    },
+    {
+      "msg": "CB_FINDSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "CB_FINDSTRINGEXACT",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "CB_SELECTSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "CB_DIR",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "CB_INSERTSTRING",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "WM_SETTEXT",
+      "lparam": {
+        "whole": { "cast_type": "LPCSTR" }
+      }
+    },
+    {
+      "msg": "WM_GETTEXT",
+      "lparam": {
+        "whole": { "cast_type": "LPSTR" }
+      }
+    },
+    {
+      "msg": "WM_SETFONT",
+      "wparam": {
+        "whole": { "cast_type": "HFONT" }
+      }
+    },
+    {
       "msg": "WM_PARENTNOTIFY",
       "wparam": {
         "loword": { "enum": "WMType" },
@@ -325,6 +502,13 @@
       "lparam": {
         "loword": { "cast_type": "HWND" },
         "hiword": { "enum": "CtlColorType" }
+      },
+      "result": { "cast_type": "HBRUSH" }
+    },
+    {
+      "msg": "WM_ERASEBKGND",
+      "wparam": {
+        "whole": { "cast_type": "HDC" }
       }
     },
     {
@@ -333,7 +517,7 @@
         "loword": { "enum": "ScrollCode" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "hiword": { "cast_type": "HWND" }
       }
     },
     {
@@ -342,7 +526,7 @@
         "loword": { "enum": "ScrollCode" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND" }
+        "hiword": { "cast_type": "HWND" }
       }
     },
     {

@@ -1,18 +1,18 @@
 /*
 BattlePlansDlg  (battle)
   addr: 001f:0652  len=4276
-  sig:  int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+  sig:  INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         message        [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0x14]
     int16_t          fRet           [BP-0xc]
     int16_t          i              [BP-0xa]
     int16_t          idc            [BP-0x8]
-    int16_t() *      lpProc         [BP-0x6]
+    FARPROC          lpProc         [BP-0x6]
     block 001F:113E  len=0x35A
       int16_t          cLen           [BP-0x16]
 
@@ -43,7 +43,7 @@ L_06c5:
     branch i >= rgcbtlplan[idPlayer] ? L_0714 : L_06d8
 
 L_06d8:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
     goto L_06c1
 
 L_0714:
@@ -76,7 +76,7 @@ L_077c:
     goto L_07b7
 
 L_078a:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0x0, PszGetCompressedString(i)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i)) -> callresult(LRESULT)
     i = (i + 1)
 
 L_07b7:
@@ -88,7 +88,7 @@ L_07c1:
     goto L_0820
 
 L_07f3:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_ADDSTRING, 0x0, PszGetCompressedString(i)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i)) -> callresult(LRESULT)
     i = (i + 1)
 
 L_0820:
@@ -103,7 +103,7 @@ L_0861:
     goto L_0896
 
 L_0869:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, PszGetCompressedString(i)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i)) -> callresult(LRESULT)
     i = (i + 1)
 
 L_0896:
@@ -123,7 +123,7 @@ L_08b6:
     branch i == idPlayer ? L_08a7 : L_08c1
 
 L_08c1:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, PszPlayerName(i, 0, 1, 0, 0, 0x0)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, 0x0)) -> callresult(LRESULT)
 
 L_08fe:
     goto L_08a7
@@ -140,7 +140,7 @@ L_0921:
     goto L_09a8
 
 L_0946:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, PszGetCompressedString(idsEveryone)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(idsEveryone)) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, 0x0, 0) -> callresult(LRESULT)
     call EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0422), 0) -> callresult(int16_t)
 
@@ -149,7 +149,7 @@ L_09a8:
     goto L_09dd
 
 L_09b0:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_ADDSTRING, 0x0, PszGetCompressedString(i)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i)) -> callresult(LRESULT)
     i = (i + 1)
 
 L_09dd:
@@ -157,7 +157,7 @@ L_09dd:
 
 L_09e7:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), CB_LIMITTEXT, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     fDirtyPlan = 0
     branch gd.fTutorial == 0x0 ? L_0a5c : L_0a57
 
@@ -187,12 +187,12 @@ L_0aa3:
     branch (loword((uint32_t)(lParam >> 0x10)) & 0xffff) != 0x6 ? L_16f8 : L_0abf
 
 L_0abf:
-    call SetBkColor(wParam, crButtonFace) -> callresult(COLORREF)
-    return hbrButtonFace
+    call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)
+    return (INT_PTR)hbrButtonFace
 
 L_0ad8:
     call GetClientRect(hwnd, &rc) -> callresult(void)
-    call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
+    call FillRect((HDC)wParam, &rc, hbrButtonFace) -> callresult(int16_t)
     return 1
 
 L_0b00:
@@ -224,7 +224,7 @@ L_0bb8:
     branch wParam != 0x41d ? L_0c05 : L_0bc2
 
 L_0bc2:
-    btlplan.fDumpCargo = loword(SendDlgItemMessage(hwnd, 1053, 0x400, 0x0, 0))
+    btlplan.fDumpCargo = loword(SendDlgItemMessage(hwnd, 1053, BM_GETCHECK, 0x0, 0))
     fDirtyPlan = 1
     goto L_16f8
 
@@ -259,7 +259,7 @@ L_0d56:
     branch i >= rgcbtlplan[idPlayer] ? L_0da5 : L_0d69
 
 L_0d69:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
     goto L_0d52
 
 L_0da5:
@@ -275,7 +275,7 @@ L_0e25:
     branch wParam != 0x41f ? L_0e70 : L_0e2f
 
 L_0e2f:
-    i = loword(SendMessage(GetDlgItem(hwnd, wParam), CB_GETCURSEL, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
     btlplan.mdTarget1 = i
     fDirtyPlan = 1
     goto L_16f8
@@ -284,7 +284,7 @@ L_0e70:
     branch wParam != 0x420 ? L_0ec4 : L_0e7a
 
 L_0e7a:
-    i = loword(SendMessage(GetDlgItem(hwnd, wParam), CB_GETCURSEL, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
     btlplan.mdTarget2 = i
     fDirtyPlan = 1
     goto L_16f8
@@ -293,7 +293,7 @@ L_0ec4:
     branch wParam != 0x422 ? L_0f41 : L_0ece
 
 L_0ece:
-    i = loword(SendMessage(GetDlgItem(hwnd, wParam), CB_GETCURSEL, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
     branch game.fSinglePlr == 0x0 ? L_0f0d : L_0f05
 
 L_0f05:
@@ -315,7 +315,7 @@ L_0f41:
     branch wParam != 0x421 ? L_0f92 : L_0f4b
 
 L_0f4b:
-    i = loword(SendMessage(GetDlgItem(hwnd, wParam), CB_GETCURSEL, 0x0, 0))
+    i = loword(SendMessage(GetDlgItem(hwnd, (ControlId)wParam), 0x407, 0x0, 0))
     btlplan.mdTactic = i
     fDirtyPlan = 1
     goto L_16f8
@@ -344,7 +344,7 @@ L_1074:
     branch i >= rgcbtlplan[idPlayer] ? L_10c3 : L_1087
 
 L_1087:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
     goto L_1070
 
 L_10c3:
@@ -439,14 +439,14 @@ L_1345:
     branch i >= rgcbtlplan[idPlayer] ? L_1394 : L_1358
 
 L_1358:
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName) -> callresult(LRESULT)
     goto L_1341
 
 L_1394:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), CB_LIMITTEXT, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     i = btlplan.iplrAttack
     branch i < (idPlayer + 4) ? L_1452 : L_144e
 
@@ -480,7 +480,7 @@ L_1537:
     btlplan = rglpbtlplan[idPlayer][iPlanSelDlg]
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
-    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), CB_LIMITTEXT, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     wParam = 0x41f
     call GetDlgItem(hwnd, IDC_RENAME) -> t_call_15f1
     branch iPlanSelDlg <= 0 ? L_1607 : L_1601

@@ -908,7 +908,7 @@ char    rgMSGLookupTable[72] = {32,  101, 111, 116, 97, 115, 110, 105, 114, 108,
                                 69,  78,  33,  71,  72, 113, 42,  87,  40,  41,  50,  53,  58, 81,  82, 49,  66,  47,  52, 54,  90, 55,  56,  63};
 int16_t aiMSGChunkOffset[7] = {0, 2854, 6582, 10933, 14692, 18914, 22612};
 
-int32_t MessageWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     i;
     char       *psz;
@@ -917,7 +917,7 @@ int32_t MessageWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lPa
     int16_t     dx;
     RECT        rc;
     POINT       pt;
-    uint16_t    hcs;
+    HCURSOR     hcs;
     HtMsgType   ht;
     int16_t     fSet;
     MessageId   idm;
@@ -935,24 +935,24 @@ int32_t MessageWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lPa
     MSGPLR     *lpmsgplr;
     THING      *lpth;
     SCAN        scan;
-    int16_t (*lpProc)();
-    int16_t  fRet;
-    int32_t  lSerial;
-    char    *t_call_5cbd;
-    int16_t  t_merge_5ceb_0001;
-    uint16_t t_merge_615b_0001;
-    int16_t  t_merge_6170_0001;
-    uint16_t t_merge_61df_0001;
-    uint16_t t_scratch_m30;
-    uint16_t t_merge_6236_0001;
-    int16_t  t_62dd;
-    uint16_t t_merge_6396_0001;
-    char    *t_call_66c5;
-    char    *t_merge_66fb_0001;
-    char    *t_call_66f1;
-    uint16_t t_scratch_m74_2;
-    uint16_t t_scratch_m2c;
-    HWND     t_merge_7029_0001;
+    FARPROC     lpProc;
+    int16_t     fRet;
+    int32_t     lSerial;
+    char       *t_call_5cbd;
+    int16_t     t_merge_5ceb_0001;
+    uint16_t    t_merge_615b_0001;
+    int16_t     t_merge_6170_0001;
+    uint16_t    t_merge_61df_0001;
+    uint16_t    t_scratch_m30;
+    uint16_t    t_merge_6236_0001;
+    int16_t     t_62dd;
+    uint16_t    t_merge_6396_0001;
+    char       *t_call_66c5;
+    char       *t_merge_66fb_0001;
+    char       *t_call_66f1;
+    uint16_t    t_scratch_m74_2;
+    uint16_t    t_scratch_m2c;
+    HWND        t_merge_7029_0001;
 
 L_5c92:
     goto L_71a4;
@@ -979,7 +979,7 @@ L_5ce8:
 L_5ceb:
     rghwndMsgBtn[i] =
         CreateWindow("BUTTON", t_call_5cbd, WS_CHILD, 100, 100, t_merge_5ceb_0001, ((LOWORD((0x3 * dyArial8)) >> 0x1) + 0xffff), hwnd, 0x0, hInst, 0x0);
-    SendMessage(rghwndMsgBtn[i], WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(rghwndMsgBtn[i], WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
 L_5d3c:
@@ -990,13 +990,13 @@ L_5d3c:
 
 L_5d45:
     hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", 0x40200003, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndMsgDrop, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndMsgDrop, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     hwndMsgEdit = CreateWindow("EDIT", 0x0, 0x40800044, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndMsgEdit, CB_SETEXTENDEDUI, 0x3c8, 0);
-    SendMessage(hwndMsgEdit, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndMsgEdit, EM_LIMITTEXT, 0x3c8, 0);
+    SendMessage(hwndMsgEdit, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     hwndMsgScroll = CreateWindow("EDIT", 0x0, 0x40a00844, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
     SetMsgTitle(hwnd);
-    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, PszGetCompressedString(idsEverybody));
+    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(idsEverybody)));
     i = 0;
     goto L_5e8d;
 
@@ -1011,7 +1011,7 @@ L_5e8d:
 
 L_5e98:
     psz = PszPlayerName(i, 1, 1, 1, 0, 0x0);
-    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, psz);
+    SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, (LPARAM)(psz));
     goto L_5e89;
 
 L_5ed5:
@@ -1048,7 +1048,7 @@ L_5f6b:
 
 L_6059:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_6084:
@@ -1293,7 +1293,7 @@ L_640f:
         goto L_641e;
 
 L_641e:
-    SetBkColor(wParam, crButtonFace);
+    SetBkColor((HDC)(wParam), crButtonFace);
     return (uint32_t)(hbrButtonFace);
 
 L_643a:
@@ -1891,19 +1891,19 @@ L_6f4a:
     goto L_7163;
 
 L_6f4d:
-    PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7e), 0);
     goto L_7163;
 
 L_6f69:
-    PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x5f), 0);
     goto L_7163;
 
 L_6f85:
-    PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7d), 0);
     goto L_7163;
 
 L_6fa1:
-    PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x7de), 0);
     goto L_7163;
 
 L_6fbd:
@@ -1919,7 +1919,7 @@ L_6fc7:
         goto L_6fd2;
 
 L_6fd2:
-    PostMessage(hwndFrame, WM_COMMAND, 0x901, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x901), 0);
 
 L_6feb:
     goto L_7163;
@@ -1940,7 +1940,7 @@ L_7026:
     t_merge_7029_0001 = hwndFrame;
 
 L_7029:
-    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_GENERIC_SMALL), t_merge_7029_0001, lpProc);
+    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_SERIAL_NUMBER), t_merge_7029_0001, lpProc);
     FreeProcInstance(lpProc);
     if ((fRet == 0))
         goto L_7163;
@@ -1985,7 +1985,7 @@ L_70fd:
 
 L_7115:
     fBrowserValid = 1;
-    PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0x100), 0);
 
 L_7134:
     goto L_7163;
@@ -3101,7 +3101,7 @@ L_80b7:
 
 L_80bd:
     lpb = pb;
-    lpmt = lpb;
+    lpmt = (MSGTURN *)(lpb);
     lpmt->iPlr = ((uint32_t)(iPlr) & 0xf);
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0x0;
@@ -3177,7 +3177,7 @@ L_8251:
 
 L_8257:
     pb = rgb;
-    pmsghdr = pb;
+    pmsghdr = (MSGHDR *)(pb);
     pmsghdr->iMsg = iMsg;
     bitfMsgSent[(iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(iMsg >> 0x3)] & (~(0x1 << (iMsg & 0x7)))) | (0x1 << (iMsg & 0x7))));
     pmsghdr->grWord = 0x0;
@@ -3289,12 +3289,12 @@ L_8461:
     return 0;
 
 L_8467:
-    lpb = lpMsg;
+    lpb = (uint8_t *)(lpMsg);
     lpbMax = (lpb + imemMsgCur);
     goto L_8566;
 
 L_8488:
-    lpmh = lpb;
+    lpmh = (MSGHDR *)(lpb);
     u = lpmh->grWord;
     lpb = (lpb + 4);
     if ((iMsg != 0))
@@ -3993,7 +3993,7 @@ L_8f61:
     return szMsgBuf;
 }
 
-int16_t MsgDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT        rc;
     POINT       pt;
     HDC         hdc;
@@ -4010,14 +4010,14 @@ L_8f77:
     pt.x = -1;
     pt.y = -1;
     szWork[0] = 0;
-    SendDlgItemMessage(hwnd, 268, 0x415, 0x8, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x8, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(pt), 1);
     return 1;
 
 L_8fd4:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_8ffc:
@@ -4027,8 +4027,8 @@ L_8ffc:
         goto L_9018;
 
 L_9018:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_9031:
     hdc = BeginPaint(hwnd, &(ps));
@@ -4105,31 +4105,31 @@ L_91c0:
     return 1;
 
 L_91e7:
-    if ((message == 0xf))
+    if ((message == WM_PAINT))
         goto L_9031;
     else
         goto L_91ef;
 
 L_91ef:
-    if ((message == 0x14))
+    if ((message == WM_ERASEBKGND))
         goto L_8fd4;
     else
         goto L_91f7;
 
 L_91f7:
-    if ((message == 0x19))
+    if ((message == WM_CTLCOLOR))
         goto L_8ffc;
     else
         goto L_91ff;
 
 L_91ff:
-    if ((message == 0x110))
+    if ((message == WM_INITDIALOG))
         goto L_8f77;
     else
         goto L_9207;
 
 L_9207:
-    if ((message == 0x111))
+    if ((message == WM_COMMAND))
         goto L_9113;
     else
         goto L_9212;
@@ -4165,7 +4165,7 @@ int16_t FRemovePlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
 
 L_9278:
     cDel = 0;
-    lpb = lpMsg;
+    lpb = (uint8_t *)(lpMsg);
     lpbMax = (lpb + imemMsgCur);
     goto L_9310;
 
@@ -4211,7 +4211,7 @@ int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
     uint8_t *lpb;
 
 L_932a:
-    lpb = lpMsg;
+    lpb = (uint8_t *)(lpMsg);
     lpbMax = (lpb + imemMsgCur);
     goto L_93ab;
 
@@ -4259,7 +4259,7 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
     uint16_t t_merge_9479_0001;
 
 L_93c6:
-    lpb = lpMsg;
+    lpb = (uint8_t *)(lpMsg);
     lpbMax = (lpb + imemMsgCur);
     goto L_95ef;
 
@@ -4598,7 +4598,7 @@ L_9702:
         goto L_971d;
 
 L_971d:
-    lpb = lpMsg;
+    lpb = (uint8_t *)(lpMsg);
     lpbMax = (lpb + imemMsgCur);
     goto L_980d;
 
@@ -4750,7 +4750,7 @@ L_99df:
     goto L_9aca;
 
 L_99fa:
-    lpmh = lpb;
+    lpmh = (MSGHDR *)(lpb);
     bitfMsgSent[(lpmh->iMsg >> 0x3)] = LOBYTE(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & (~(0x1 << (lpmh->iMsg & 0x7)))) | (0x1 << (lpmh->iMsg & 0x7))));
     cMsg = (cMsg + 1);
     u = lpmh->grWord;

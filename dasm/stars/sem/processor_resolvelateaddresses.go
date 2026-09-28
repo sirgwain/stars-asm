@@ -369,11 +369,17 @@ func flattenSemanticAddress(expr Expr, sign int) semanticAddressParts {
 		if sign == 1 {
 			return semanticAddressParts{base: value.Target, addressValue: true}
 		}
+		// A subtracted address makes this a pointer difference, such as
+		// (pch - szFile) + 1, not an address with a negative index.
+		return semanticAddressParts{invalid: true}
 	default:
-		if expr != nil && sign == 1 && typeinfo.IsArray(expr.ExprType()) {
+		if expr != nil && (typeinfo.IsArray(expr.ExprType()) || typeinfo.IsPointer(expr.ExprType())) && sign != 1 {
+			return semanticAddressParts{invalid: true}
+		}
+		if expr != nil && typeinfo.IsArray(expr.ExprType()) {
 			return semanticAddressParts{base: expr, addressValue: true}
 		}
-		if expr != nil && sign == 1 && typeinfo.IsPointer(expr.ExprType()) {
+		if expr != nil && typeinfo.IsPointer(expr.ExprType()) {
 			return semanticAddressParts{base: expr, deref: true, addressValue: true}
 		}
 	}

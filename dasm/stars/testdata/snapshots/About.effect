@@ -1,12 +1,12 @@
 /*
 About  (stars)
   addr: 0004:1252  len=716
-  sig:  int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+  sig:  INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         message        [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0xa]
     block 0004:12D1  len=0x15B
@@ -14,7 +14,7 @@ About  (stars)
       int16_t          i              [BP-0xe]
       HDC              hdc            [BP-0xc]
     block 0004:14A3  len=0x3C
-      int16_t() *      lpProc         [BP-0xe]
+      FARPROC          lpProc         [BP-0xe]
 
   stats: blocks=2  labels=0
 */
@@ -206,9 +206,9 @@ block L_14a3:
   preds: L_149a
   succs: L_14df
   effects:
-    14af  call MakeProcInstance(words(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(int32_t() *)
-    14b4  store[2] [bp-lpProc] = faroff(callresult(int32_t() *))
-    14b7  store[2] [bp-lpProc+0x2] = farseg(callresult(int32_t() *))
+    14af  call MakeProcInstance(words(0x127d, 0x151e), load@14ab/src([hInst])) -> callresult(FARPROC)
+    14b4  store[2] [bp-lpProc] = faroff(callresult(FARPROC))
+    14b7  store[2] [bp-lpProc+0x2] = farseg(callresult(FARPROC))
     14cf  call DialogBox(load@14ba/src([hInst]), words(0x0, 0x61), load([bp+hwnd]), words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
     14da  call FreeProcInstance(words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
 

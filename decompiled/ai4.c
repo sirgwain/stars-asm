@@ -79,7 +79,7 @@ L_002a:
     cMineLayers = 0;
     cFlArmadas = 0;
     cFlDestroyers = 0;
-    lpiHistSize = vlpbAiData;
+    lpiHistSize = (int16_t *)(vlpbAiData);
     if ((*(lpiHistSize) != 2))
         goto L_0097;
     else
@@ -333,15 +333,15 @@ L_047e:
     SplitOutShdefs(rgRecycleSBShdef);
 
 L_0505:
-    lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
     fmemset(lpciPlanTemp, 0, (game.cPlanMax * 2));
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
     goto L_0821;
 
 L_0564:
-    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
-    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
+    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
     if ((lpciPlan->iPktTarget <= 0x0))
         goto L_05e3;
     else
@@ -1221,8 +1221,8 @@ L_13a2:
         goto L_1a27;
 
 L_13d2:
-    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
-    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
+    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -1705,8 +1705,8 @@ L_1ad4:
         goto L_1aee;
 
 L_1aee:
-    lpciPlan = (vlpbAiData + ((lppl->id * 2) + 2));
-    lpciPlanTemp = (vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2)));
+    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
     fWrite = 0;
@@ -1781,8 +1781,8 @@ L_1c81:
         goto L_1fa3;
 
 L_1c93:
-    lpciPlanDst = (vlpbAiData + ((lpplDst->id * 2) + 2));
-    lpciPlanT = (vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2)));
+    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((lpplDst->id * 2) + 2)));
+    lpciPlanT = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2))));
     iPacketAdd = 0;
     if ((lpplDst->isb == 0x1))
         goto L_1d20;
@@ -1982,7 +1982,7 @@ L_1ff7:
         goto L_200b;
 
 L_200b:
-    plMinMax = (vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2)));
+    plMinMax = (int32_t *)((vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2))));
     rgResAvail[0] = (rgResAvail[0] - rgResCost[0]);
     rgResAvail[1] = (rgResAvail[1] - rgResCost[1]);
     rgResAvail[2] = (rgResAvail[2] - rgResCost[2]);
@@ -2025,8 +2025,8 @@ L_2159:
     cPacket[0] = 0;
     cPacket[1] = 0;
     cPacket[2] = 0;
-    lpciPlanDst = (vlpbAiData + ((lpplDst->id * 2) + 2));
-    lpciPlanT = (vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2)));
+    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((lpplDst->id * 2) + 2)));
+    lpciPlanT = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2))));
     iPacketAdd = 0;
     if ((lpplDst->fStarbase == 0x0))
         goto L_21ec;
@@ -2220,7 +2220,7 @@ L_26b1:
         goto L_26bb;
 
 L_26bb:
-    lpciPlanDst = (vlpbAiData + ((idPlanDst * 2) + 2));
+    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((idPlanDst * 2) + 2)));
     if ((lpciPlanDst->iPktTarget != 0x0))
         goto L_276c;
     else
@@ -3506,7 +3506,7 @@ int16_t FEnumDropOffStage1(PLANET *lpplSrc, PLANET *lpplTest) {
 
 L_3d00:
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
     if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3))
         goto L_3d53;
     else
@@ -3557,7 +3557,7 @@ int16_t FEnumDropOffStage2(PLANET *lpplSrc, PLANET *lpplTest) {
 
 L_3dfe:
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
     if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3))
         goto L_3e51;
     else
@@ -3636,8 +3636,8 @@ int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
 
 L_3f5e:
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (vlpbAiData + 2);
-    lpciPlanTemp = (vlpbAiData + dOffsetPlanTemp);
+    lpciPlan = (CYBERINFO *)((vlpbAiData + 2));
+    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
     if ((lpplTest->isb == 0x1))
         goto L_3fe0;
     else
@@ -3800,8 +3800,8 @@ L_4204:
     lMineral = 0;
     iWarpDst = 0;
     dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (vlpbAiData + 2);
-    plMinMax = (vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2)));
+    lpciPlan = (CYBERINFO *)((vlpbAiData + 2));
+    plMinMax = (int32_t *)((vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2))));
     if ((lpplTest->iPlayer == idPlayer))
         goto L_42be;
     else

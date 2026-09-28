@@ -372,7 +372,7 @@ struct _hb {
     uint16_t cbSlop;   /* +0x0004 (2) */
     uint16_t ibTop;    /* +0x0006 (2) */
     HB      *lphbNext; /* +0x0008 (4) */
-    uint16_t hmem;     /* +0x000C (2) */
+    HGLOBAL  hmem;     /* +0x000C (2) */
     uint8_t  ht;       /* +0x000E (1) */
     uint8_t  unused1;  /* +0x000F (1) */
 }; /* size=0x10 */

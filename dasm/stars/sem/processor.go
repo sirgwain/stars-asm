@@ -54,6 +54,13 @@ type PassSnapshot struct {
 func PreProcessorSpecs() []PreProcessor {
 	return []PreProcessor{
 		{
+			Name:    "window-context",
+			Purpose: "Record the window class of dialog control handles.",
+			Func: func(ctx *FuncContext) MachineFuncProcessor {
+				return &windowContextProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "message-context",
 			Purpose: "Record the window message a window procedure handles in each block.",
 			Func: func(ctx *FuncContext) MachineFuncProcessor {
@@ -244,6 +251,13 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Resolve consts to their semantic types.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &resolveConstTypesProcessor{}
+			},
+		},
+		{
+			Name:    "native-casts",
+			Purpose: "Cast values the original compiler converted implicitly for the native compile.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &nativeCastsProcessor{ctx: ctx}
 			},
 		},
 		{

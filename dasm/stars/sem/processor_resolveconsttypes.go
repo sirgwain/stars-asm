@@ -122,7 +122,7 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		next.Target = target
 		return &next, true
 	case *Const:
-		if bitwise || expected == nil || sameConstType(e.TypeInfo, expected) {
+		if bitwise || expected == nil || sameConstType(e.TypeInfo, expected) || keepsConstantFamily(e.TypeInfo, expected) {
 			return expr, false
 		}
 
@@ -444,6 +444,20 @@ func containsBitwiseExpr(expr Expr) bool {
 	default:
 		return false
 	}
+}
+
+// keepsConstantFamily reports whether a constant already named by a Win16
+// constant family keeps it where another family is expected. Families have
+// no C type of their own, so the choice only affects the name; a control
+// message is named by its target's class family rather than the parameter's
+// window message family.
+func keepsConstantFamily(have, want typeinfo.Type) bool {
+	haveEnum, ok := have.(*typeinfo.Enum)
+	if !ok || haveEnum.Typedef != nil {
+		return false
+	}
+	wantEnum, ok := want.(*typeinfo.Enum)
+	return ok && wantEnum.Typedef == nil
 }
 
 func sameConstType(a, b typeinfo.Type) bool {

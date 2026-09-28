@@ -1,6 +1,6 @@
 #include "common.h"
 
-int32_t MineWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
@@ -20,7 +20,7 @@ L_0000:
 
 L_000f:
     hwndMineCB = CreateWindow(szButton, PszGetCompressedString(idsDetonateMineFieldYear), 0x40000003, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndMineCB, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndMineCB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     SetMineralTitleBar(hwnd);
     goto L_03f8;
 
@@ -38,11 +38,11 @@ L_00b6:
 
 L_00b9:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_00e4:
-    SetBkColor(wParam, crButtonFace);
+    SetBkColor((HDC)(wParam), crButtonFace);
     return (uint32_t)(hbrButtonFace);
 
 L_00fd:
@@ -130,7 +130,7 @@ L_0305:
         goto L_0321;
 
 L_0321:
-    fDetonate = LOWORD(SendMessage(hwndMineCB, WM_USER, 0x0, 0));
+    fDetonate = LOWORD(SendMessage(hwndMineCB, BM_GETCHECK, 0x0, 0));
     rtlt.idFull = lpThings[sel.scan.ith].idFull;
     rtlt.fDetonate = fDetonate;
     WriteMemRt(43, 4, &(rtlt));
@@ -3218,7 +3218,7 @@ L_4a01:
     t_merge_4a04_0001 = 0x0;
 
 L_4a04:
-    SendMessage(hwndMineCB, CB_LIMITTEXT, t_merge_4a04_0001, 0);
+    SendMessage(hwndMineCB, BM_SETCHECK, t_merge_4a04_0001, 0);
 
 L_4a12:
     GetClientRect(hwnd, &(rc));
@@ -3691,7 +3691,7 @@ L_50c6:
 L_50cd:
     c = (c + 1);
     t_assign_1 = &(rgid[c]);
-    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
     t_assign_2 = &(rgid[c]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 

@@ -1,0 +1,211 @@
+/*
+WrapTextOut  (utilgen)
+  addr: 0009:25fe  len=525
+  sig:  void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)
+  params:
+    HDC              hdc            [BP+0x6]
+    int16_t *        px             [BP+0x8]
+    int16_t *        py             [BP+0xa]
+    char *           psz            [BP+0xc]
+    int16_t          cLen           [BP+0xe]
+    int16_t          xLeft          [BP+0x10]
+    int16_t          dxWidth        [BP+0x12]
+    int16_t *        pxMax          [BP+0x14]
+    int16_t          fNewLine       [BP+0x16]
+    int16_t          fPrint         [BP+0x18]
+  locals:
+    char *           pch            [BP-0x10]
+    char *           pchStart       [BP-0xe]
+    int16_t          dx             [BP-0xc]
+    int16_t          xRight         [BP-0xa]
+    int16_t          fItFit         [BP-0x8]
+    char *           pchEnd         [BP-0x6]
+    int16_t          dxRemain       [BP-0x4]
+
+  stats: blocks=0  labels=3
+    WrapIt: L_27c5
+    Done: L_2802
+    Top: L_2656
+*/
+block L_25fe:
+  insts 0..15  off 0x25fe..0x2625
+  succs: L_2629, L_2637
+  effects:
+    260d  store[2] [bp-xRight] = (load@2607/src([bp+xLeft]) + load@260a/src([bp+dxWidth]))
+    261d  store[2] [bp-dxRemain] = (load@2618/src([bp+dxWidth]) - (load(ds:[load([bp+px])]) - load@2615/src([bp+xLeft])))
+    2624  branch load([bp+cLen]) != 0x0 ? L_2637 : L_2629
+
+block L_2629:
+  insts 17..20  off 0x2629..0x2636
+  preds: L_25fe
+  succs: L_2637
+  effects:
+    262c  call strlen(load([bp+psz])) -> callresult(uint16_t)
+    2634  store[2] [bp+cLen] = callresult(uint16_t)
+
+block L_2637:
+  insts 21..22  off 0x2637..0x263c
+  preds: L_25fe, L_2629
+  succs: L_2640, L_2650
+  effects:
+    263b  branch load([bp+fNewLine]) == 0x0 ? L_2650 : L_2640
+
+block L_2640:
+  insts 24..29  off 0x2640..0x264f
+  preds: L_2637
+  succs: L_2650
+  effects:
+    2646  store[2] ds:[load([bp+py])] = (load(ds:[load([bp+py])]) + load([dyArial8]))
+    264e  store[2] ds:[load([bp+px])] = load([bp+xLeft])
+
+block L_2650:
+  insts 30..31  off 0x2650..0x2655
+  preds: L_2637, L_2640
+  succs: L_2656
+  effects:
+    2653  store[2] [bp-pchStart] = load([bp+psz])
+
+block Top:
+  insts 32..53  off 0x2656..0x2693
+  preds: L_2650, L_27c5
+  succs: L_2694
+  effects:
+    2659  store[2] [bp-pch] = load@2656/src([bp-pchStart])
+    2664  store[2] [bp-pchEnd] = (load@265f/src([bp-pchStart]) + load([bp+cLen]))
+    266e  call ChopTrailingSpaces(load@266b/src([bp-pch]), addr([bp-pchEnd])) -> callresult(void)
+    2687  call GetTextExtent(load([bp+hdc]), words(ds, load([bp-pch])), (load([bp-pchEnd]) - load@2683/src([bp-pch]))) -> callresult(uint32_t)
+    268c  store[2] [bp-dx] = loword(callresult(uint32_t))
+    268f  store[2] [bp-fItFit] = 0x1
+
+block L_2694:
+  insts 54..56  off 0x2694..0x269b
+  preds: L_2656, L_26b3
+  succs: L_269f, L_26e3
+  effects:
+    269a  branch load([bp-dx]) <= load([bp-dxRemain]) ? L_26e3 : L_269f
+
+block L_269f:
+  insts 58..60  off 0x269f..0x26a6
+  preds: L_2694
+  succs: L_26aa, L_26e3
+  effects:
+    26a5  branch load([bp-pch]) >= load([bp-pchEnd]) ? L_26e3 : L_26aa
+
+block L_26aa:
+  insts 62..63  off 0x26aa..0x26af
+  preds: L_269f
+  succs: L_26b3, L_26e3
+  effects:
+    26ae  branch load([bp-dx]) <= 0x0 ? L_26e3 : L_26b3
+
+block L_26b3:
+  insts 65..81  off 0x26b3..0x26e2
+  preds: L_26aa
+  succs: L_2694
+  effects:
+    26b3  store[2] [bp-fItFit] = 0x0
+    26bf  call ChopLastWord(load@26bc/src([bp-pch]), addr([bp-pchEnd])) -> callresult(void)
+    26d8  call GetTextExtent(load([bp+hdc]), words(ds, load([bp-pch])), (load([bp-pchEnd]) - load@26d4/src([bp-pch]))) -> callresult(uint32_t)
+    26dd  store[2] [bp-dx] = loword(callresult(uint32_t))
+    26e0  goto L_2694
+
+block L_26e3:
+  insts 82..83  off 0x26e3..0x26e8
+  preds: L_2694, L_269f, L_26aa
+  succs: L_26ec, L_271a
+  effects:
+    26e7  branch load([bp-fItFit]) == 0x0 ? L_271a : L_26ec
+
+block L_26ec:
+  insts 85..102  off 0x26ec..0x2719
+  preds: L_26e3
+  succs: L_271a
+  effects:
+    26f9  call AddBackTrailingSpaces(addr([bp-pchEnd]), (load@26ef/src([bp-pchStart]) + load([bp+cLen]))) -> callresult(void)
+    2712  call GetTextExtent(load([bp+hdc]), words(ds, load([bp-pchStart])), (load([bp-pchEnd]) - load@270e/src([bp-pchStart]))) -> callresult(uint32_t)
+    2717  store[2] [bp-dx] = loword(callresult(uint32_t))
+
+block L_271a:
+  insts 103..105  off 0x271a..0x2721
+  preds: L_26e3, L_26ec
+  succs: L_2728, L_275f
+  effects:
+    2720  branch load([bp-pchStart]) != load([bp-pchEnd]) ? L_275f : L_2728
+
+block L_2728:
+  insts 108..111  off 0x2728..0x2731
+  preds: L_271a
+  succs: L_2735, L_27c5
+  effects:
+    2730  branch load(ds:[load([bp+px])]) != load([bp+xLeft]) ? L_27c5 : L_2735
+
+block L_2735:
+  insts 113..126  off 0x2735..0x275b
+  preds: L_2728
+  succs: L_275f
+  effects:
+    273d  store[2] [bp-pchEnd] = (load@2738/src([bp-pchStart]) + load([bp+cLen]))
+    2751  call GetTextExtent(load([bp+hdc]), words(ds, load([bp-pchStart])), (load([bp-pchEnd]) - load@274d/src([bp-pchStart]))) -> callresult(uint32_t)
+    2756  store[2] [bp-dx] = loword(callresult(uint32_t))
+
+block L_275f:
+  insts 129..130  off 0x275f..0x2764
+  preds: L_271a, L_2735
+  succs: L_2768, L_2788
+  effects:
+    2763  branch load([bp+fPrint]) == 0x0 ? L_2788 : L_2768
+
+block L_2768:
+  insts 132..144  off 0x2768..0x2787
+  preds: L_275f
+  succs: L_2788
+  effects:
+    2783  call TextOut(load([bp+hdc]), load(ds:[load([bp+px])]), load(ds:[load([bp+py])]), words(ds, load([bp-pchStart])), (load([bp-pchEnd]) - load@277f/src([bp-pchStart]))) -> callresult(int16_t)
+
+block L_2788:
+  insts 145..149  off 0x2788..0x2795
+  preds: L_275f, L_2768
+  succs: L_2799, L_27b2
+  effects:
+    278e  store[2] ds:[load([bp+px])] = (load(ds:[load([bp+px])]) + load([bp-dx]))
+    2794  branch load([bp+pxMax]) == 0x0 ? L_27b2 : L_2799
+
+block L_2799:
+  insts 151..155  off 0x2799..0x27a4
+  preds: L_2788
+  succs: L_27a8, L_27b2
+  effects:
+    27a3  branch load(ds:[load([bp+px])]) <= load(ds:[load([bp+pxMax])]) ? L_27b2 : L_27a8
+
+block L_27a8:
+  insts 157..160  off 0x27a8..0x27b1
+  preds: L_2799
+  succs: L_27b2
+  effects:
+    27b0  store[2] ds:[load([bp+pxMax])] = load(ds:[load([bp+px])])
+
+block L_27b2:
+  insts 161..165  off 0x27b2..0x27be
+  preds: L_2788, L_2799, L_27a8
+  succs: L_27c5, L_2805
+  effects:
+    27bd  branch load([bp-pchEnd]) == (load([bp-pchStart]) + load([bp+cLen])) ? L_2805 : L_27c5
+
+block WrapIt:
+  insts 168..189  off 0x27c5..0x2801
+  preds: L_2728, L_27b2
+  succs: L_2656
+  effects:
+    27d2  call AddBackTrailingSpaces(addr([bp-pchEnd]), (load@27c8/src([bp-pchStart]) + load@27c5/src([bp+cLen]))) -> callresult(void)
+    27e0  store[2] [bp+cLen] = (load@27e0/dst([bp+cLen]) - (load@27da/src([bp-pchEnd]) - load@27dd/src([bp-pchStart])))
+    27e6  store[2] [bp-pchStart] = load@27e3/src([bp-pchEnd])
+    27ef  store[2] ds:[load([bp+py])] = (load(ds:[load([bp+py])]) + load([dyArial8]))
+    27f7  store[2] ds:[load([bp+px])] = load([bp+xLeft])
+    27fc  store[2] [bp-dxRemain] = load([bp+dxWidth])
+    27ff  goto L_2656
+
+block L_2805:
+  insts 191..195  off 0x2805..0x280a
+  preds: L_27b2
+  effects:
+    280a  return

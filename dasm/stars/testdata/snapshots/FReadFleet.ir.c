@@ -58,7 +58,7 @@ L_3b29:
     goto L_3abe;
 
 L_3b2f:
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_3b4d;
 
@@ -93,7 +93,7 @@ L_3ba5:
     goto L_3b3d;
 
 L_3ba8:
-    pb = pus;
+    pb = (uint8_t *)(pus);
 
 L_3bae:
     if ((cish != 0))
@@ -192,7 +192,7 @@ Corrupt:
 L_3d4b:
     us = RawLoad16(pb);
     pb = (pb + 2);
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_3d7a;
 
@@ -227,12 +227,12 @@ L_3e0c:
     goto L_3d6a;
 
 L_3e0f:
-    pb = pus;
+    pb = (uint8_t *)(pus);
     pb = (pb + 1);
     lpfl->iplan = *(pb);
     pb = (pb + 1);
     lpfl->cord = *(pb);
-    lpfl->lpplord = LpplAlloc(0x12, (lpfl->cord + 1), htOrd);
+    lpfl->lpplord = (PLORD *)(LpplAlloc(0x12, (lpfl->cord + 1), htOrd));
     fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18));
     cord = lpfl->cord;
     lpord = lpfl->lpplord->rgord;

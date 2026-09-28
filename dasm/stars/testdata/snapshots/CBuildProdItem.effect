@@ -919,12 +919,12 @@ block L_1501:
   succs: L_15d6, L_15ec
   effects:
     150c  call memset(load([bp+pprodPartial]), 0x0, 0x4) -> callresult(void *)
-    152b  store[2] ds:[load([bp+pprodPartial])] = ((load@1517/src(ds:[load([bp+pprodPartial])]) & 0xffff) | 0x0)
+    152b  store[2] ds:[load([bp+pprodPartial])] = (load@1517/src(ds:[load([bp+pprodPartial])]) & 0xffff)
     152d  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@1519/src(ds:[load([bp+pprodPartial])+0x2]) & 0xfff1) | 0x2)
     1547  store[2] ds:[load([bp+pprodPartial])] = ((load@1533/src(ds:[load([bp+pprodPartial])]) & 0x3ff) | 0x2c00)
-    1549  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@1535/src(ds:[load([bp+pprodPartial])+0x2]) & 0xfffe) | 0x0)
+    1549  store[2] ds:[load([bp+pprodPartial])+0x2] = (load@1535/src(ds:[load([bp+pprodPartial])+0x2]) & 0xfffe)
     1563  store[2] ds:[load([bp+pprodPartial])] = ((load@154f/src(ds:[load([bp+pprodPartial])]) & 0xfc00) | 0x1)
-    1565  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@1551/src(ds:[load([bp+pprodPartial])+0x2]) & 0xffff) | 0x0)
+    1565  store[2] ds:[load([bp+pprodPartial])+0x2] = (load@1551/src(ds:[load([bp+pprodPartial])+0x2]) & 0xffff)
     157f  call __aFulmul(words(load(ds:[load([bp+rgRes])+0xe]), load(ds:[load([bp+rgRes])+0xc])), words(0x0, 0x64)) -> callresult(uint32_t)
     1586  call __aFldiv(words(hiword(callresult(uint32_t)), loword(callresult(uint32_t))), words(load([bp-lAlchCost+0x2]), load([bp-lAlchCost]))) -> callresult(int32_t)
     158b  store[2] [bp-pctT] = loword(callresult(int32_t))
@@ -995,8 +995,8 @@ block L_165c:
     167d  store[2] [bp-prod+0x2] = (load@167d/dst([bp-prod+0x2]) & 0xffff)
     168d  store[2] [bp-prod] = (load@168d/dst([bp-prod]) | load(ss:[bp-0x58]))
     1690  store[2] [bp-prod+0x2] = (load@1690/dst([bp-prod+0x2]) | load(ss:[bp-0x56]))
-    16ac  store[2] [bp-prod] = ((load@1699/src([bp-prod]) & 0xffff) | 0x0)
-    16af  store[2] [bp-prod+0x2] = ((load@169c/src([bp-prod+0x2]) & 0xf80f) | 0x0)
+    16ac  store[2] [bp-prod] = (load@1699/src([bp-prod]) & 0xffff)
+    16af  store[2] [bp-prod+0x2] = (load@169c/src([bp-prod+0x2]) & 0xf80f)
     16b2  store[2] [bp-i] = 0x0
     16b7  goto L_1706
 
@@ -1370,7 +1370,7 @@ block L_194c:
     1955  store[2] ds:[load([bp+pprodPartial])] = load([bp-prod])
     1957  store[2] ds:[load([bp+pprodPartial])+0x2] = load([bp-prod+0x2])
     1971  store[2] ds:[load([bp+pprodPartial])] = ((load@195d/src(ds:[load([bp+pprodPartial])]) & 0xfc00) | 0x1)
-    1973  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@195f/src(ds:[load([bp+pprodPartial])+0x2]) & 0xffff) | 0x0)
+    1973  store[2] ds:[load([bp+pprodPartial])+0x2] = (load@195f/src(ds:[load([bp+pprodPartial])+0x2]) & 0xffff)
     1985  call __aFlshl(words(0x0, (load([bp-iobjOther]) & 0x7f)), 0xa) -> callresult(int32_t)
     19a0  store[2] ds:[load([bp+pprodPartial])] = ((load@198d/src(ds:[load([bp+pprodPartial])]) & 0x3ff) | loword(callresult(int32_t)))
     19a2  store[2] ds:[load([bp+pprodPartial])+0x2] = ((load@198f/src(ds:[load([bp+pprodPartial])+0x2]) & 0xfffe) | hiword(callresult(int32_t)))

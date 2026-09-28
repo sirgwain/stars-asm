@@ -11,12 +11,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 )
 
 type config struct {
 	cc           string
+	windres      string
 	out          string
 	sourceDir    string
 	failOnErrors bool
@@ -96,6 +99,7 @@ type report struct {
 func main() {
 	var cfg config
 	flag.StringVar(&cfg.cc, "cc", "x86_64-w64-mingw32-gcc", "MinGW C compiler")
+	flag.StringVar(&cfg.windres, "windres", "", "MinGW resource compiler; when set, resource scripts under SOURCE_DIR/res are compiled too")
 	flag.StringVar(&cfg.out, "out", "decompiled/compile-analysis.json", "JSON report path")
 	flag.BoolVar(&cfg.failOnErrors, "fail-on-errors", false, "return failure when C errors are found")
 	flag.Parse()
@@ -114,7 +118,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Printf("MinGW syntax analysis: %d errors (%d unique) in %d/%d translation units\n",
+	fmt.Printf("MinGW analysis: %d errors (%d unique) in %d/%d translation units\n",
 		report.Summary.Errors,
 		report.Summary.UniqueErrors,
 		report.Summary.FailedTranslationUnits,
@@ -125,11 +129,18 @@ func main() {
 	}
 }
 
-// generateReport invokes MinGW once per translation unit and aggregates its diagnostics.
+// generateReport invokes MinGW once per translation unit, C files and, with
+// a resource compiler, resource scripts, and aggregates their diagnostics.
 func generateReport(cfg config) (report, error) {
 	files, err := sourceFiles(cfg.sourceDir)
 	if err != nil {
 		return report{}, err
+	}
+	var scripts []string
+	if cfg.windres != "" {
+		if scripts, err = resourceScripts(cfg.sourceDir); err != nil {
+			return report{}, err
+		}
 	}
 	info, err := inspectCompiler(cfg.cc)
 	if err != nil {
@@ -138,11 +149,17 @@ func generateReport(cfg config) (report, error) {
 
 	result := report{
 		Compiler: info,
-		Files:    make(map[string]fileSummary, len(files)),
+		Files:    make(map[string]fileSummary, len(files)+len(scripts)),
 	}
 	unique := make(map[string]int)
-	for _, file := range files {
-		diagnostics, failed, err := compileFile(cfg.cc, cfg.sourceDir, file)
+	for _, file := range append(files, scripts...) {
+		var diagnostics []diagnostic
+		var failed bool
+		if strings.HasSuffix(file, ".rc") {
+			diagnostics, failed, err = compileResourceScript(cfg.windres, file)
+		} else {
+			diagnostics, failed, err = compileFile(cfg.cc, cfg.sourceDir, file)
+		}
 		if err != nil {
 			return report{}, err
 		}
@@ -184,6 +201,23 @@ func sourceFiles(sourceDir string) ([]string, error) {
 	}
 	sort.Strings(files)
 	return files, nil
+}
+
+// resourceScripts returns the repository-relative resource scripts in
+// SOURCE_DIR/res.
+func resourceScripts(sourceDir string) ([]string, error) {
+	scripts, err := filepath.Glob(filepath.Join(sourceDir, "res", "*.rc"))
+	if err != nil {
+		return nil, fmt.Errorf("find resource scripts: %w", err)
+	}
+	if len(scripts) == 0 {
+		return nil, fmt.Errorf("no resource scripts found in %s", filepath.Join(sourceDir, "res"))
+	}
+	for i := range scripts {
+		scripts[i] = filepath.ToSlash(filepath.Clean(scripts[i]))
+	}
+	sort.Strings(scripts)
+	return scripts, nil
 }
 
 // inspectCompiler records the compiler version and target used by the report.
@@ -252,6 +286,67 @@ func compileFile(cc, sourceDir, file string) ([]diagnostic, bool, error) {
 	}
 	if failed && len(result) == 0 {
 		return nil, false, fmt.Errorf("compiler failed for %s without an error diagnostic", file)
+	}
+	return result, failed, nil
+}
+
+// reWindresDiagnostic matches a windres or preprocessor diagnostic:
+// an optional tool prefix, file:line[:column], an optional severity and the
+// message.
+var reWindresDiagnostic = regexp.MustCompile(`^(?:\S*windres: )?([^:\s]+):(\d+):(?:(\d+):)?\s*(?:(fatal error|error|warning): )?(.*)$`)
+
+// compileResourceScript returns the error diagnostics and failure status for
+// one resource script. The script is compiled in its own directory, since it
+// names the files it includes relative to itself.
+func compileResourceScript(windres, file string) ([]diagnostic, bool, error) {
+	out, err := os.CreateTemp("", "compile-analysis-*.res")
+	if err != nil {
+		return nil, false, err
+	}
+	out.Close()
+	defer os.Remove(out.Name())
+
+	cmd := exec.Command(windres, filepath.Base(file), "-O", "res", "-o", out.Name())
+	cmd.Dir = filepath.Dir(file)
+	output, err := cmd.CombinedOutput()
+	failed := err != nil
+	if err != nil {
+		var exitErr *exec.ExitError
+		if !errors.As(err, &exitErr) {
+			return nil, false, fmt.Errorf("start resource compiler for %s: %w", file, err)
+		}
+	}
+	var result []diagnostic
+	for _, line := range strings.Split(strings.TrimSpace(string(output)), "\n") {
+		if line == "" {
+			continue
+		}
+		m := reWindresDiagnostic.FindStringSubmatch(line)
+		if m == nil {
+			// Messages such as a missing icon file carry no location.
+			if failed {
+				result = append(result, diagnostic{Kind: "error", Message: line})
+			}
+			continue
+		}
+		if m[4] == "warning" {
+			continue
+		}
+		kind := "error"
+		if m[4] == "fatal error" {
+			kind = m[4]
+		}
+		lineNo, _ := strconv.Atoi(m[2])
+		column, _ := strconv.Atoi(m[3])
+		path := m[1]
+		if !filepath.IsAbs(path) {
+			path = filepath.Join(filepath.Dir(file), path)
+		}
+		where := &position{File: filepath.ToSlash(path), Line: lineNo, Column: column}
+		result = append(result, diagnostic{Kind: kind, Message: m[5], Locations: []location{{Caret: where}}})
+	}
+	if failed && len(result) == 0 {
+		return nil, false, fmt.Errorf("resource compiler failed for %s without a diagnostic", file)
 	}
 	return result, failed, nil
 }

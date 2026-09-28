@@ -188,8 +188,8 @@ block L_1c1f:
   preds: L_1bd1
   succs: L_1c55
   effects:
-    1c2f  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e] = ((load@1c22/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0xc3ff) | 0x0)
-    1c43  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e] = ((load@1c36/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0xfc00) | 0x0)
+    1c2f  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e] = (load@1c22/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0xc3ff)
+    1c43  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e] = (load@1c36/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x2e]) & 0xfc00)
     1c4d  call KillQueuedMassPackets(words(load([bp+lppl+0x2]), load([bp+lppl]))) -> callresult(void)
 
 block L_1c55:
@@ -1122,7 +1122,7 @@ block L_297e:
   preds: L_2968, L_2976
   succs: L_2a3f
   effects:
-    298e  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = ((load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0xc000) | 0x0)
+    298e  store[2] farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe] = (load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0xe]) & 0xc000)
     2992  store[2] [bp-i] = 0x0
     2997  goto L_2a3f
 
@@ -1276,12 +1276,12 @@ block L_2c62:
   preds: L_2c3e
   succs: L_2cea
   effects:
-    2c7c  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14] = ((load@2c65/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]) & 0xffff) | 0x0)
-    2c80  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16] = ((load@2c69/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]) & 0xf) | 0x0)
-    2c9e  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14] = ((load@2c87/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]) & 0xff) | 0x0)
-    2ca2  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16] = ((load@2c8b/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]) & 0xfff0) | 0x0)
-    2cc0  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18] = ((load@2ca9/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xf000) | 0x0)
-    2cc4  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a] = ((load@2cad/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0xffff) | 0x0)
+    2c7c  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14] = (load@2c65/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]) & 0xffff)
+    2c80  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16] = (load@2c69/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]) & 0xf)
+    2c9e  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14] = (load@2c87/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x14]) & 0xff)
+    2ca2  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16] = (load@2c8b/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x16]) & 0xfff0)
+    2cc0  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18] = (load@2ca9/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xf000)
+    2cc4  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a] = (load@2cad/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0xffff)
     2ce2  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18] = ((load@2ccb/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x18]) & 0xfff) | 0xf000)
     2ce6  store[2] farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a] = ((load@2ccf/src(farseg(load(dword [bp+lppl])):[faroff(load(dword [bp+lppl]))+0x1a]) & 0xfffe) | 0x1)
 

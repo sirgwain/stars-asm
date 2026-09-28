@@ -34,7 +34,7 @@ func (p *symbolDebugPostMachineProcessor) rewriter(result *Result) *machineRewri
 					_ = arg
 					if isSymResolvable(arg) {
 						typ := e.Target.Params[i].Type
-						if messageType := messageCallArgumentType(p.ctx.sdb, e.Target, e.Args, i); messageType != nil {
+						if messageType := p.ctx.messageCallArgumentType(e.Target, e.Args, i); messageType != nil {
 							typ = messageType
 						}
 						if expr, ok := p.resolvedExpr(arg, typ, result); ok {

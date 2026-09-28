@@ -314,7 +314,7 @@ L_186d:
     return LOWORD((uint32_t)((z % (int32_t)(c))));
 }
 
-int16_t RandomSeedDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     char     szValue[33];
     char    *pch;
     uint32_t dw;
@@ -331,7 +331,7 @@ L_1899:
 
 L_18db:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_1903:
@@ -341,8 +341,8 @@ L_1903:
         goto L_191f;
 
 L_191f:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_1938:
     if ((wParam == 0x1))
@@ -536,7 +536,7 @@ void XorFileBuf(char *rgb, int16_t cb) {
 
 L_1cc4:
     lPrev = 0;
-    pl = rgb;
+    pl = (int32_t *)(rgb);
     plMac = (pl + (cb >> 0x2));
     goto L_1d04;
 
@@ -558,7 +558,7 @@ L_1d0f:
         goto L_1d21;
 
 L_1d21:
-    pch = pl;
+    pch = (char *)(pl);
     lPrev = LGetNextFileXor();
 
 L_1d32:
@@ -1332,7 +1332,7 @@ L_27b2:
 
 WrapIt:
     AddBackTrailingSpaces(&(pchEnd), (pchStart + cLen));
-    cLen = (pchStart + (cLen + (-pchEnd)));
+    cLen = (cLen - (pchEnd - pchStart));
     pchStart = pchEnd;
     *(py) = (*(py) + dyArial8);
     *(px) = xLeft;
@@ -1933,7 +1933,7 @@ L_319c:
     return;
 }
 
-int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, uint16_t *rghbr, int32_t cTot) {
+int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot) {
     int16_t  fHuge;
     int16_t  i;
     int32_t  lSum;
@@ -3377,7 +3377,7 @@ L_4999:
         goto L_49b8;
 
 L_49b8:
-    return (((pch - 5116) << 0x4) | 0xe);
+    return ((((pch - rgchcomp) + 0x4) << 0x4) | 0xe);
 
 L_49cf:
     return ((ch << 0x4) | 0xf);
@@ -3524,7 +3524,7 @@ L_4b79:
     return 0x0;
 
 L_4b7f:
-    lpbi = lpb;
+    lpbi = (BITMAPINFOHEADER *)(lpb);
     cColors = DibNumColors(lpbi);
     if ((cColors <= 256))
         goto L_4bb4;
@@ -3631,7 +3631,7 @@ L_4dca:
     return PatBlt(hdc, x0, y0, dx, dy, rop);
 
 L_4de9:
-    lpbi = GlobalLock(hdib);
+    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
     if ((lpbi != 0x0))
         goto L_4e0f;
     else
@@ -3643,14 +3643,14 @@ L_4e09:
 L_4e0f:
     t_scratch_me = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
     pBuf = (char *)((uint8_t *)(t_scratch_me) + PaletteSize(lpbi));
-    StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, lpbi, 0x0, rop);
+    StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, (LPBITMAPINFO)(lpbi), 0x0, rop);
     GlobalUnlock(hdib);
     return 1;
 }
 
-HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal) {
+HGLOBAL DibFromBitmap(HBITMAP hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal) {
     HDC               hdc;
-    uint16_t          h;
+    HGLOBAL           h;
     uint32_t          dwLen;
     BITMAP            bm;
     BITMAPINFOHEADER  bi;
@@ -3717,9 +3717,9 @@ L_4fb8:
     return 0x0;
 
 L_4fd9:
-    lpbi = GlobalLock(hdib);
+    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
     *(lpbi) = bi;
-    GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, lpbi, 0x0);
+    GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, (BITMAPINFO *)(lpbi), 0x0);
     bi = *(lpbi);
     GlobalUnlock(hdib);
     if ((bi.biSizeImage != 0x0))
@@ -3759,9 +3759,9 @@ L_5118:
     return hdib;
 
 L_5146:
-    lpbi = GlobalLock(hdib);
+    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
     t_scratch_m4a = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
-    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((uint8_t *)(t_scratch_m4a) + PaletteSize(lpbi)), lpbi, 0x0) != 0))
+    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((uint8_t *)(t_scratch_m4a) + PaletteSize(lpbi)), (BITMAPINFO *)(lpbi), 0x0) != 0))
         goto L_51da;
     else
         goto L_51ac;
@@ -3781,14 +3781,14 @@ L_51da:
     return hdib;
 }
 
-HGLOBAL HdibLoadBigResource(int16_t idb) {
-    uint16_t hrsrc;
-    char    *lpstr;
-    int16_t  hfile;
-    HGLOBAL  hdib;
+HGLOBAL HdibLoadBigResource(BitmapId idb) {
+    HRSRC   hrsrc;
+    char   *lpstr;
+    int16_t hfile;
+    HGLOBAL hdib;
 
 L_5220:
-    hrsrc = FindResource(hInst, MAKEINTRESOURCE((idb | 0x0)), MAKEINTRESOURCE(0x2));
+    hrsrc = FindResource(hInst, MAKEINTRESOURCE(idb), MAKEINTRESOURCE(0x2));
     if ((hrsrc != 0x0))
         goto L_525a;
     else
@@ -4168,7 +4168,7 @@ L_58d1:
 }
 
 int16_t FCheckPassword() {
-    int16_t (*lpProc)();
+    FARPROC lpProc;
     int16_t fRet;
     int32_t lSaltDef;
     HWND    t_merge_59a8_0001;
@@ -4286,7 +4286,7 @@ L_5a62:
     return lSalt;
 }
 
-int16_t PasswordDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     char    szPass[60];
     RECT    rc;
     int32_t lSalt;
@@ -4297,13 +4297,13 @@ L_5a72:
     goto L_5c88;
 
 L_5a81:
-    SendDlgItemMessage(hwnd, 268, 0x415, 0xf, 0);
-    SetWindowText(GetDlgItem(hwnd, IDC_U16_0x07E2), PszGetCompressedString(idsEnterPassword));
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
+    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsEnterPassword));
     return 1;
 
 L_5ac5:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_5aed:
@@ -4313,8 +4313,8 @@ L_5aed:
         goto L_5b09;
 
 L_5b09:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_5b22:
     if ((wParam == 0x1))
@@ -4370,7 +4370,7 @@ L_5ba5:
     Delay(t_merge_5ba5_0001);
     AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
     SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-    SendDlgItemMessage(hwnd, 268, 0x401, 0x0, -65536);
+    SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -65536);
     goto L_5cab;
 
 L_5c03:
@@ -4438,7 +4438,7 @@ L_5cab:
     return 0;
 }
 
-int16_t NewPasswordDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     char    szPass[20];
     RECT    rc;
     int32_t lSalt2;
@@ -4449,27 +4449,27 @@ L_5cba:
     goto L_5f8e;
 
 L_5cc9:
-    SendDlgItemMessage(hwnd, 268, 0x415, 0x10, 0);
-    SendDlgItemMessage(hwnd, 269, 0x415, 0x10, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x10, 0);
+    SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
     if ((idPlayer != -1))
         goto L_5d48;
     else
         goto L_5d0b;
 
 L_5d0b:
-    SetWindowText(GetDlgItem(hwnd, IDC_U16_0x07E2), PszGetCompressedString(idsNotePasswordEffectiveImmediately));
+    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNotePasswordEffectiveImmediately));
     SetWindowText(hwnd, PszGetCompressedString(idsChangeHostPassword));
     goto L_5d6a;
 
 L_5d48:
-    SetWindowText(GetDlgItem(hwnd, IDC_U16_0x07E2), PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil));
+    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil));
 
 L_5d6a:
     return 1;
 
 L_5d70:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_5d98:
@@ -4479,8 +4479,8 @@ L_5d98:
         goto L_5db4;
 
 L_5db4:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_5dcd:
     if ((wParam == 0x1))
@@ -4513,7 +4513,7 @@ L_5de8:
 L_5e5c:
     AlertSz(PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, 0x0), MB_ICONHAND);
     SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-    SendDlgItemMessage(hwnd, 268, 0x401, 0x0, -65536);
+    SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -65536);
     goto L_5fb1;
 
 L_5eb1:
@@ -4875,7 +4875,7 @@ L_6477:
     return;
 }
 
-int16_t ProgressGaugeDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
@@ -4902,12 +4902,12 @@ L_648d:
 
 L_6549:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_6571:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_6587:
     hdc = BeginPaint(hwnd, &(ps));

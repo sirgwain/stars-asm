@@ -1,7 +1,7 @@
 #include "common.h"
 
 void BattleVCR(int16_t iBattle) {
-    int16_t (*lpProc)();
+    FARPROC  lpProc;
     jmp_buf *penvMemSav;
     jmp_buf  env;
     HB      *lphb;
@@ -421,7 +421,7 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead) {
     int16_t  cKill;
 
 L_062e:
-    lpbr = &(lpbd->rgtok[lpbd->ctok]);
+    lpbr = (BTLREC *)(&(lpbd->rgtok[lpbd->ctok]));
     lpbdNext = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
     cKilled = 0;
 
@@ -479,7 +479,7 @@ L_076b:
         goto L_0776;
 
 L_0776:
-    lpbr = &(lpbr->rgkill[lpbr->ctok]);
+    lpbr = (BTLREC *)(&(lpbr->rgkill[lpbr->ctok]));
     goto L_0684;
 
 L_0799:
@@ -589,7 +589,7 @@ L_09b9:
     viRound = 0;
     viVCRFocus = 0;
     vbrcVCRFocus = vrgtok->brc;
-    vlpbrVCR = &(vlpbdVCR->rgtok[vlpbdVCR->ctok]);
+    vlpbrVCR = (BTLREC *)(&(vlpbdVCR->rgtok[vlpbdVCR->ctok]));
 
 L_0a09:
     goto L_0a11;
@@ -665,7 +665,7 @@ L_0c51:
     goto L_0a3f;
 
 L_0c54:
-    vlpbrVCR = &(vlpbrVCR->rgkill[vlpbrVCR->ctok]);
+    vlpbrVCR = (BTLREC *)(&(vlpbrVCR->rgkill[vlpbrVCR->ctok]));
     if ((vlpbrVCR->iRound <= viRound))
         goto L_0d15;
     else
@@ -727,7 +727,7 @@ L_0e7f:
     return viStepVCRCur;
 }
 
-int16_t VCRDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     i;
     int16_t     ibtn;
@@ -763,7 +763,7 @@ L_0e9f:
     GetWindowRect(hwnd, &(rcWindow));
     GetClientRect(hwnd, &(rc));
     dyFrame = ((rcWindow.bottom - rcWindow.top) - rc.bottom);
-    GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x00A1), &(rc));
+    GetWindowRect(GetDlgItem(hwnd, IDC_VCR_REW_ALL), &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, (dxyVCRBoard + 250), (((dyFrame + 24) + dxyVCRBoard) + (rc.bottom - rc.top)), SWP_NOMOVE | SWP_NOZORDER);
     i = 0;
     goto L_1021;
@@ -833,7 +833,7 @@ L_102a:
 
 L_104e:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_1076:
@@ -3322,7 +3322,7 @@ L_4979:
         goto L_4983;
 
 L_4983:
-    SetFocus(GetDlgItem(hwndVCRDlg, IDC_U16_0x00A3));
+    SetFocus(GetDlgItem(hwndVCRDlg, IDC_VCR_PLAY_PAUSE));
     goto L_49b8;
 
 L_4999:

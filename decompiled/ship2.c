@@ -1,6 +1,6 @@
 #include "common.h"
 
-int16_t ZipOrderDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC            hdc;
     int16_t        i;
     PAINTSTRUCT    ps;
@@ -12,8 +12,8 @@ int16_t ZipOrderDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam
     int16_t        cch;
     int16_t        xCtr;
     XferActionType iAction;
-    int16_t (*lpProc)();
-    int16_t t_merge_0524_0001;
+    FARPROC        lpProc;
+    int16_t        t_merge_0524_0001;
 
 L_0000:
     goto L_07f8;
@@ -96,7 +96,7 @@ L_017a:
 
 L_0180:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_01a8:
@@ -125,8 +125,8 @@ L_01df:
         goto L_01e9;
 
 L_01e9:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_0202:
     hdc = BeginPaint(hwnd, &(ps));
@@ -412,7 +412,7 @@ L_0832:
     return;
 }
 
-int16_t RenameZipDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     StringId ids;
     RECT     rc;
     int16_t  t_merge_09e8_0001;
@@ -437,14 +437,14 @@ L_08a1:
 L_08a6:
     SetWindowText(hwnd, PszGetCompressedString(ids));
     SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-    SendDlgItemMessage(hwnd, 268, 0x415, 0xc, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xc, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
     return 1;
 
 L_0931:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0959:
@@ -454,8 +454,8 @@ L_0959:
         goto L_0975;
 
 L_0975:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_098e:
     if ((wParam == 0x1))
@@ -547,7 +547,7 @@ L_0a59:
     return 0;
 }
 
-int16_t RenameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT    rc;
     int32_t lSel;
     int16_t t_merge_0bcd_0001;
@@ -558,14 +558,14 @@ L_0a68:
 L_0a77:
     SetWindowText(hwnd, PszGetCompressedString(idsRenameFleet));
     SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-    SendDlgItemMessage(hwnd, 268, 0x415, 0x1f, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
     StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
     return 1;
 
 L_0b03:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0b2b:
@@ -575,8 +575,8 @@ L_0b2b:
         goto L_0b47;
 
 L_0b47:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_0b60:
     if ((wParam == 0x1))
@@ -638,16 +638,16 @@ L_0c02:
 
 L_0c0c:
     fInEditUpdate = 1;
-    GetWindowText(LOWORD(lParam), szWork, 250);
-    lSel = SendMessage(LOWORD(lParam), WM_USER, 0x0, 0);
+    GetWindowText((HWND)(LOWORD(lParam)), szWork, 250);
+    lSel = SendMessage((HWND)(LOWORD(lParam)), WM_USER, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0c93;
     else
         goto L_0c66;
 
 L_0c66:
-    SetWindowText(LOWORD(lParam), szWork);
-    SendMessage(LOWORD(lParam), CB_LIMITTEXT, 0x0, lSel);
+    SetWindowText((HWND)(LOWORD(lParam)), szWork);
+    SendMessage((HWND)(LOWORD(lParam)), 0x401, 0x0, lSel);
 
 L_0c93:
     fInEditUpdate = 0;
@@ -2990,7 +2990,7 @@ L_336a:
     return cPts;
 }
 
-int16_t MergeFleetsDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t i;
     RECT    rc;
     char    szT[80];
@@ -3021,7 +3021,7 @@ L_3407:
     strcat(szT, " *");
 
 L_3417:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), CB_LIMITTEXT, 0x0, szT);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_ADDSTRING, 0x0, (LPARAM)(szT));
     t_call_343f = GetDlgItem(hwnd, IDC_U16_0x0051);
     if ((vcflMerge == 2))
         goto L_347e;
@@ -3042,7 +3042,7 @@ L_3484:
     t_merge_3487_0001 = 0x0;
 
 L_3487:
-    SendMessage(t_call_343f, CB_GETCOUNT, t_merge_3487_0001, (int32_t)(i));
+    SendMessage(t_call_343f, LB_SETSEL, t_merge_3487_0001, (int32_t)(i));
     i = (i + 1);
 
 L_3497:
@@ -3065,7 +3065,7 @@ L_34ba:
 
 L_34c0:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_34e8:
@@ -3075,8 +3075,8 @@ L_34e8:
         goto L_3507;
 
 L_3507:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_3520:
     if ((wParam == 0x1))
@@ -3095,7 +3095,7 @@ L_3532:
     goto L_357f;
 
 L_353a:
-    if ((SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), CB_GETLBTEXT, i, 0) != 0))
+    if ((SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_GETSEL, i, 0) != 0))
         goto L_357b;
     else
         goto L_356c;
@@ -3192,7 +3192,7 @@ L_365a:
     t_merge_365d_0001 = 0x0;
 
 L_365d:
-    SendMessage(t_call_3640, CB_GETCOUNT, t_merge_365d_0001, (int32_t)(i));
+    SendMessage(t_call_3640, LB_SETSEL, t_merge_365d_0001, (int32_t)(i));
     i = (i + 1);
 
 L_366d:

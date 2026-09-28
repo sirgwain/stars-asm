@@ -53,6 +53,14 @@ type ImageNE struct {
 	// importExports maps module name (uppercase) → ordinal → export entry.
 	// Populated by LoadExports.
 	importExports map[string]map[uint16]exportEntry
+
+	// resources lists the NE resource table entries with their data;
+	// dialogs holds the parsed dialog templates by numeric resource id, and
+	// menus and accelerators the parsed menu and accelerator templates.
+	resources    []Resource
+	dialogs      map[uint16]*Dialog
+	menus        []*Menu
+	accelerators []*AcceleratorTable
 }
 
 // ---- NE relocation (fixup) records ----
@@ -229,6 +237,12 @@ func OpenNE(exePath string) (*ImageNE, error) {
 		return nil, err
 	}
 	img.buildSegToSelector()
+
+	resTabOff := int64(binary.LittleEndian.Uint16(neh[0x24:0x26]))
+	resNameTabOff := int64(binary.LittleEndian.Uint16(neh[0x26:0x28]))
+	if err := img.loadResources(f, neOff, resTabOff, resNameTabOff); err != nil {
+		return nil, err
+	}
 
 	return img, nil
 }

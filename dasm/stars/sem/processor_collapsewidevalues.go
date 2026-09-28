@@ -95,7 +95,7 @@ func (p *collapseWideValues) collapseCallArgs(fn *typeinfo.Function, args []mach
 				continue
 			}
 		}
-		if messageType := messageCallArgumentType(p.ctx.sdb, fn, args, i); messageType != nil {
+		if messageType := p.ctx.messageCallArgumentType(fn, args, i); messageType != nil {
 			expected = messageType
 		}
 		next, argChanged := collapseWideMachineValueTyped(p.ctx, arg, expected)

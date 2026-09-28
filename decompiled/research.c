@@ -4,7 +4,7 @@ uint16_t rggrbitBrParts[17] = {6655, 8, 16, 64, 2048, 1, 4096, 256, 128, 512, 32
 int32_t  rglTechCost[27] = {0,     50,    80,    130,   210,   340,   550,   890,   1440,  2330,  3770,  6100,  9870, 13850,
                             18040, 22440, 27050, 31870, 36900, 42140, 47590, 53250, 59120, 65200, 71490, 77990, 84700};
 
-int16_t ResearchDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     y;
     int16_t     i;
@@ -52,7 +52,7 @@ L_00d5:
 L_00db:
     hwndRad = GetDlgItem(hwnd, i);
     SetWindowText(hwndRad, szWork);
-    SendMessage(hwndRad, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndRad, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
 L_0114:
@@ -86,7 +86,7 @@ L_0195:
 
 L_01ac:
     psz = PszGetCompressedString((i + 83));
-    SendMessage(hwndRad, CB_ADDSTRING, 0x0, psz);
+    SendMessage(hwndRad, CB_ADDSTRING, 0x0, (LPARAM)(psz));
     i = (i + 1);
 
 L_01d9:
@@ -196,7 +196,7 @@ L_0485:
 
 L_048b:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_04b3:
@@ -231,8 +231,8 @@ L_04f4:
         goto L_0510;
 
 L_0510:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_0529:
     return FTrackResearchDlg(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam);
@@ -1368,7 +1368,7 @@ L_1eb0:
     return lCost;
 }
 
-int16_t BrowserDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     HMENU       hmenu;
     int16_t     i;
@@ -1534,7 +1534,7 @@ L_220d:
     goto L_226b;
 
 L_2248:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, PszGetCompressedString(i));
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(i)));
     i = (i + 1);
 
 L_226b:
@@ -1558,7 +1558,7 @@ L_22a5:
 
 L_22ab:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_22d3:
@@ -1593,8 +1593,8 @@ L_2314:
         goto L_2330;
 
 L_2330:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_2349:
     hdc = BeginPaint(hwnd, &(ps));
@@ -2036,7 +2036,7 @@ L_2868:
     return 0;
 }
 
-int32_t BrowserWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK BrowserWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     POINT       pt;
     int16_t     i;
@@ -2062,7 +2062,7 @@ L_28d0:
 
 L_28ee:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_2919:

@@ -46,3 +46,53 @@ exit 1
 		t.Fatalf("unexpected diagnostics: %+v", got.Diagnostics)
 	}
 }
+
+// TestGenerateReportResourceScripts verifies resource compiler errors are
+// reported against the script, relative to the source directory.
+func TestGenerateReportResourceScripts(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("test compilers are shell scripts")
+	}
+	dir := t.TempDir()
+	sourceDir := filepath.Join(dir, "decompiled")
+	if err := os.MkdirAll(filepath.Join(sourceDir, "res"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for name, body := range map[string]string{"a.c": "int a;", "res/stars.rc": "BAD RC"} {
+		if err := os.WriteFile(filepath.Join(sourceDir, name), []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	compiler := filepath.Join(dir, "fake-cc")
+	ccScript := `#!/bin/sh
+case "$1" in
+  -dumpfullversion) echo 13.3.0; exit 0 ;;
+  -dumpmachine) echo x86_64-w64-mingw32; exit 0 ;;
+esac
+printf '[]' >&2
+exit 0
+`
+	windres := filepath.Join(dir, "fake-windres")
+	windresScript := `#!/bin/sh
+echo "fake-windres: stars.rc:7: syntax error" >&2
+exit 1
+`
+	for path, script := range map[string]string{compiler: ccScript, windres: windresScript} {
+		if err := os.WriteFile(path, []byte(script), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	got, err := generateReport(config{cc: compiler, windres: windres, sourceDir: sourceDir})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Summary.TranslationUnits != 2 || got.Summary.FailedTranslationUnits != 1 || got.Summary.Errors != 1 {
+		t.Fatalf("unexpected summary: %+v", got.Summary)
+	}
+	d := got.Diagnostics[0]
+	wantFile := filepath.ToSlash(filepath.Join(sourceDir, "res", "stars.rc"))
+	if d.Message != "syntax error" || d.Locations[0].Caret.File != wantFile || d.Locations[0].Caret.Line != 7 {
+		t.Fatalf("unexpected diagnostic: %+v %+v", d, d.Locations[0].Caret)
+	}
+}

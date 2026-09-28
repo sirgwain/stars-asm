@@ -842,9 +842,13 @@ func (l *symboldbLoader) loadDependentEnums(inputDir string) error {
 	return nil
 }
 
-// loadMessages loads typed message payload rules after type aliases are registered.
+// loadMessages loads window classes, HWND rules and typed message payload
+// rules after type aliases are registered.
 func (l *symboldbLoader) loadMessages(inputDir string) error {
 	enumLoader := enumLoader{}
+	if err := enumLoader.loadWindows(filepath.Join(inputDir, "enums.json"), l.sdb); err != nil {
+		return err
+	}
 	messages, err := enumLoader.loadMessageRules(filepath.Join(inputDir, "enums.json"), l.sdb, l.typeResolver)
 	if err != nil {
 		return err
@@ -864,15 +868,8 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 	for _, rule := range o.typeOverrideRules {
 		// update global types
 		for _, g := range l.sdb.Globals {
-			// apply name
-			if rule.name != "" && g.Name == rule.name {
+			if rule.matches(overrideVarGlobal, "", g.Name, g.Type) {
 				g.Type = rule.typ
-				continue
-			}
-			// apply prefix
-			if rule.prefix != "" && strings.HasPrefix(g.Name, rule.prefix) && g.Type.Bytes() == rule.typ.Bytes() {
-				g.Type = rule.typ
-				continue
 			}
 		}
 
@@ -880,29 +877,14 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 		for _, f := range l.sdb.Functions {
 			for i := range f.Params {
 				p := &f.Params[i]
-				// apply name
-				if rule.name != "" && p.Name == rule.name {
+				if rule.matches(overrideVarParam, f.Name, p.Name, p.Type) {
 					p.Type = rule.typ
-					continue
-				}
-				// apply prefix
-				if rule.prefix != "" && strings.HasPrefix(p.Name, rule.prefix) && p.Type.Bytes() == rule.typ.Bytes() {
-					p.Type = rule.typ
-					continue
 				}
 			}
 			for i := range f.Vars {
 				v := &f.Vars[i]
-
-				// apply name
-				if rule.name != "" && v.Name == rule.name {
+				if rule.matches(overrideVarLocal, f.Name, v.Name, v.Type) {
 					v.Type = rule.typ
-					continue
-				}
-				// apply prefix
-				if rule.prefix != "" && strings.HasPrefix(v.Name, rule.prefix) && v.Type.Bytes() == rule.typ.Bytes() {
-					v.Type = rule.typ
-					continue
 				}
 			}
 		}
@@ -910,7 +892,8 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 
 	for _, rule := range o.structFieldOverrideRules {
 		for _, s := range l.sdb.Structs {
-			if !strings.EqualFold(s.Name, rule.structName) && !strings.EqualFold(s.Typedef, rule.structName) {
+			anyStruct := rule.structName == ""
+			if !anyStruct && !strings.EqualFold(s.Name, rule.structName) && !strings.EqualFold(s.Typedef, rule.structName) {
 				continue
 			}
 			changed := false
@@ -929,8 +912,12 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 				if field.Bitfield != nil {
 					return fmt.Errorf("can't override struct field %s.%s with %s, it's a bitfield", s.Name, field.Name, rule.typ)
 				}
-				// don't allow size changes to structs
+				// don't allow size changes to structs; a rule for any struct
+				// names a convention, so it skips fields of another size
 				if field.Type.Bytes() != rule.typ.Bytes() {
+					if anyStruct {
+						continue
+					}
 					return fmt.Errorf("can't override struct field %s.%s with %s, size doesn't match", s.Name, field.Name, rule.typ)
 				}
 

@@ -548,7 +548,7 @@ L_025f:
         goto L_026c;
 
 L_026c:
-    qsort(rgptPlan, iMax, 0x4, ICompLong);
+    qsort(rgptPlan, iMax, 0x4, (QSORTCOMPARE)(ICompLong));
     pptMax = &(rgptPlan[iMax]);
     ppt = rgptPlan;
     goto L_0364;
@@ -755,7 +755,7 @@ L_073e:
         goto L_074b;
 
 L_074b:
-    qsort(rgptPlan, cPlanMax, 0x4, ICompLong);
+    qsort(rgptPlan, cPlanMax, 0x4, (QSORTCOMPARE)(ICompLong));
 
 L_0768:
     memset(grUsed, 0, 0x80);
@@ -1424,8 +1424,8 @@ L_164f:
     CreateRandomRace(&(rgplr[i]));
 
 L_1664:
-    rgplr[i].wFlags = ((rgplr[i].wFlags & 0xfffe) | 0x0);
-    rgplr[i].wFlags = ((rgplr[i].wFlags & 0xfff7) | 0x0);
+    rgplr[i].wFlags = (rgplr[i].wFlags & 0xfffe);
+    rgplr[i].wFlags = (rgplr[i].wFlags & 0xfff7);
     rgplr[i].grbitTrader = 0x0;
     j = 0;
     goto L_1719;
@@ -1997,7 +1997,7 @@ L_2982:
     rgplr[i].pctResearch = 15;
 
 L_2992:
-    rgplr[i].iTechCur = LOBYTE((((int16_t)(rgplr[i].iTechCur) & 0xfff0) | 0x0));
+    rgplr[i].iTechCur = LOBYTE(((int16_t)(rgplr[i].iTechCur) & 0xfff0));
     rgplr[i].iTechCur = LOBYTE((((int16_t)(rgplr[i].iTechCur) & 0xff0f) | 0x60));
     rgplr[i].lResLastYear = 0;
     rgplr[i].wScore = 0x0;
@@ -3248,7 +3248,7 @@ L_4623:
 L_464a:
     idPlayer = iplrSingle;
     CreateChildWindows();
-    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+    SendMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
     goto L_4683;
 
 L_4672:
@@ -4598,9 +4598,9 @@ L_6010:
 }
 
 void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
-    int16_t iStepMaxSoFar;
-    int16_t mdRet;
-    int16_t (*lpProc)();
+    int16_t  iStepMaxSoFar;
+    int16_t  mdRet;
+    FARPROC  lpProc;
     int16_t  fIdleSav;
     int16_t  rgplrbmp[16];
     int16_t  i;
@@ -4921,7 +4921,7 @@ L_65c1:
     c = Random(7);
     rgplr[i] = vrgplrDef[c];
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfdff) | 0x200);
-    rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xe3ff) | 0x0);
+    rgplr[i].wMdPlr = (rgplr[i].wMdPlr & 0xe3ff);
     rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0x1fff) | 0xe000);
     rgplr[i].lSalt = -1;
     goto L_66d3;
@@ -6031,7 +6031,7 @@ L_769e:
     return 0;
 }
 
-int16_t SimpleNewGameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HWND        hwndDD;
@@ -6054,7 +6054,7 @@ L_76b9:
     goto L_7737;
 
 L_7710:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, PszGetCompressedString((i + 1383)));
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString((i + 1383))));
     i = (i + 1);
 
 L_7737:
@@ -6070,7 +6070,7 @@ L_7740:
 
 L_7771:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_7799:
@@ -6138,8 +6138,8 @@ L_7823:
         goto L_783f;
 
 L_783f:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_7858:
     hdc = BeginPaint(hwnd, &(ps));
@@ -6304,7 +6304,7 @@ L_7dbf:
     SendMessage(hwndDD, CB_DELETESTRING, 0x7, 0);
 
 L_7dd7:
-    SendMessage(hwndDD, CB_ADDSTRING, 0x0, vplr.szName);
+    SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(vplr.szName));
     SendMessage(hwndDD, CB_SETCURSEL, 0x7, 0);
     *(vrgplrNew) = vplr;
 
@@ -6357,7 +6357,7 @@ L_7e83:
     return 0;
 }
 
-int16_t NewGameDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -6375,14 +6375,14 @@ L_7ea1:
     CheckRadioButton(hwnd, 1005, 1008, (game.mdDensity + 1005));
     CheckRadioButton(hwnd, 1009, 1012, (game.mdStartDist + 1009));
     SetWindowText(GetDlgItem(hwnd, IDC_U16_0x0406), game.szName);
-    SendDlgItemMessage(hwnd, 1030, 0x415, 0x1f, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3f8), CB_LIMITTEXT, game.fExtraFuel, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3f9), CB_LIMITTEXT, game.fSlowTech, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3fa), CB_LIMITTEXT, game.fBBSPlay, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3fb), CB_LIMITTEXT, game.fNoRandom, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3fc), CB_LIMITTEXT, game.fAisBand, 0);
-    SendMessage(GetDlgItem(hwnd, 0x3fd), CB_LIMITTEXT, game.fVisScores, 0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041A), CB_LIMITTEXT, game.fClumping, 0);
+    SendDlgItemMessage(hwnd, 1030, EM_LIMITTEXT, 0x1f, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3f8), BM_SETCHECK, game.fExtraFuel, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3f9), BM_SETCHECK, game.fSlowTech, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3fa), BM_SETCHECK, game.fBBSPlay, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3fb), BM_SETCHECK, game.fNoRandom, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3fc), BM_SETCHECK, game.fAisBand, 0);
+    SendMessage(GetDlgItem(hwnd, 0x3fd), BM_SETCHECK, game.fVisScores, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041A), BM_SETCHECK, game.fClumping, 0);
     if ((fRCWReadOnly == 0))
         goto L_818b;
     else
@@ -6482,12 +6482,12 @@ L_8201:
         goto L_8220;
 
 L_8220:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_8239:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_8261:
@@ -6688,7 +6688,7 @@ L_87c3:
     return 0;
 }
 
-int16_t NewGameDlg2(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     RECT        rcT;
@@ -6703,7 +6703,7 @@ int16_t NewGameDlg2(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam
     char       *psz;
     int16_t     tpm;
     int16_t     iChecked;
-    uint16_t    rghmenuSubPopup[14];
+    HMENU       rghmenuSubPopup[14];
     HMENU       hmenuPopup;
     MSG         msg;
     int16_t     iCurVal;
@@ -6771,7 +6771,7 @@ L_8923:
 
 L_893c:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_8964:
@@ -6806,8 +6806,8 @@ L_89a5:
         goto L_89c1;
 
 L_89c1:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_89da:
     if ((fRCWReadOnly != 0))
@@ -6914,7 +6914,7 @@ L_8b4c:
 L_8b4f:
     iChecked = t_merge_8b4f_0001;
     psz = PszGetCompressedString((i + 1383));
-    AppendMenu(rghmenuSubPopup[0], (0x0 | iChecked), (i + 15016), psz);
+    AppendMenu(rghmenuSubPopup[0], iChecked, (i + 15016), psz);
     i = (i + 1);
 
 L_8b85:
@@ -6924,8 +6924,8 @@ L_8b85:
         goto L_8b8e;
 
 L_8b8e:
-    AppendMenu(rghmenuSubPopup[0], (0x0 | iChecked), (i + 15016), PszGetCompressedString(idsRandom));
-    AppendMenu(rghmenuSubPopup[0], (0x0 | iChecked), (i + 15017), PszGetCompressedString(idsExpansionPlayer));
+    AppendMenu(rghmenuSubPopup[0], iChecked, (i + 15016), PszGetCompressedString(idsRandom));
+    AppendMenu(rghmenuSubPopup[0], iChecked, (i + 15017), PszGetCompressedString(idsExpansionPlayer));
     rghmenuSubPopup[1] = CreatePopupMenu();
     AppendMenu(rghmenuSubPopup[1], 0x0, 0x3a98, PszGetCompressedString(idsNew));
     AppendMenu(rghmenuSubPopup[1], 0x0, 0x3a99, PszGetCompressedString(idsOpen));
@@ -6948,7 +6948,7 @@ L_8c42:
 L_8c45:
     iChecked = t_merge_8c45_0001;
     psz = PszPlayerName(0, 1, 1, 1, 0, (vrgplrNew + i));
-    AppendMenu(rghmenuSubPopup[1], (0x0 | iChecked), (i + 15032), psz);
+    AppendMenu(rghmenuSubPopup[1], iChecked, (i + 15032), psz);
     i = (i + 1);
 
 L_8c95:
@@ -6982,7 +6982,7 @@ L_8cf3:
 
 L_8cf6:
     iChecked = t_merge_8cf6_0001;
-    AppendMenu(rghmenuSubPopup[(i + 5)], (0x0 | iChecked), ((i + 15048) + (j * 8)), vrgszComputerLevel[j]);
+    AppendMenu(rghmenuSubPopup[(i + 5)], iChecked, ((i + 15048) + (j * 8)), vrgszComputerLevel[j]);
     j = (j + 1);
 
 L_8d38:
@@ -7006,7 +7006,7 @@ L_8d5e:
 
 L_8d61:
     iChecked = t_merge_8d61_0001;
-    AppendMenu(rghmenuSubPopup[2], (0x10 | iChecked), rghmenuSubPopup[(i + 5)], vrgszComputerPlayers[i]);
+    AppendMenu(rghmenuSubPopup[2], (0x10 | iChecked), (UINT_PTR)(rghmenuSubPopup[(i + 5)]), vrgszComputerPlayers[i]);
     i = (i + 1);
 
 L_8d93:
@@ -7032,7 +7032,7 @@ L_8dbe:
 
 L_8dc1:
     iChecked = t_merge_8dc1_0001;
-    AppendMenu(hmenuPopup, (0x10 | iChecked), rghmenuSubPopup[0], PszGetCompressedString(idsPredefinedRace));
+    AppendMenu(hmenuPopup, (0x10 | iChecked), (UINT_PTR)(rghmenuSubPopup[0]), PszGetCompressedString(idsPredefinedRace));
     if (((iCurVal & 0x3) != 0x2))
         goto L_8dfa;
     else
@@ -7047,7 +7047,7 @@ L_8dfa:
 
 L_8dfd:
     iChecked = t_merge_8dfd_0001;
-    AppendMenu(hmenuPopup, (0x10 | iChecked), rghmenuSubPopup[1], PszGetCompressedString(idsCustomRace));
+    AppendMenu(hmenuPopup, (0x10 | iChecked), (UINT_PTR)(rghmenuSubPopup[1]), PszGetCompressedString(idsCustomRace));
     if (((iCurVal & 0x3) == 0x1))
         goto L_8e3e;
     else
@@ -7078,7 +7078,7 @@ L_8e8a:
 
 L_8e8d:
     iChecked = t_merge_8e8d_0001;
-    AppendMenu(hmenuPopup, (0x10 | iChecked), rghmenuSubPopup[2], PszGetCompressedString(idsComputerPlayer));
+    AppendMenu(hmenuPopup, (0x10 | iChecked), (UINT_PTR)(rghmenuSubPopup[2]), PszGetCompressedString(idsComputerPlayer));
     AppendMenu(hmenuPopup, 0x800, 0x0, 0x0);
     if (((iCurVal & 0x3) != 0x0))
         goto L_8ede;
@@ -7094,7 +7094,7 @@ L_8ede:
 
 L_8ee1:
     iChecked = t_merge_8ee1_0001;
-    AppendMenu(hmenuPopup, (0x0 | iChecked), 0x3a9b, PszGetCompressedString(idsPlayer));
+    AppendMenu(hmenuPopup, iChecked, 0x3a9b, PszGetCompressedString(idsPlayer));
     if ((message != WM_LBUTTONDOWN))
         goto L_8f17;
     else
@@ -7797,7 +7797,7 @@ L_99ed:
     return;
 }
 
-int16_t NewGameDlg3(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     POINT       pt;
@@ -7830,7 +7830,7 @@ L_9a3d:
     t_merge_9a40_0001 = 0x0;
 
 L_9a40:
-    SendMessage(t_call_9a24, CB_LIMITTEXT, GetVCCheck(&(game), (t_merge_9a40_0001 + i)), 0);
+    SendMessage(t_call_9a24, 0x401, GetVCCheck(&(game), (t_merge_9a40_0001 + i)), 0);
     if ((fRCWReadOnly == 0))
         goto L_9a81;
     else
@@ -7854,7 +7854,7 @@ L_9a8e:
 
 L_9aa7:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_9acf:
@@ -7889,8 +7889,8 @@ L_9b10:
         goto L_9b2c;
 
 L_9b2c:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_9b45:
     GetCursorPos(&(pt));
@@ -7968,7 +7968,7 @@ L_9c83:
         goto L_9c8d;
 
 L_9c8d:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
     if (((wParam + 0xfedd) < 0x2))
         goto L_9cc9;
     else

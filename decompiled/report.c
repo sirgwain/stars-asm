@@ -2,7 +2,7 @@
 
 uint16_t mpicolgrbitBU[12] = {255, 255, 255, 255, 255, 255, 255, 8, 16, 32, 64, 128};
 
-int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     HMENU       hmenu;
     RECT        rc;
@@ -141,7 +141,7 @@ L_0312:
 
 L_0337:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0362:
@@ -268,7 +268,7 @@ L_04f9:
     goto L_09c8;
 
 L_04fc:
-    iCur = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     iNew = iCur;
     goto L_0576;
 
@@ -358,14 +358,14 @@ L_05d7:
     rc.top = (dyArial8 + 6);
     rc.bottom = (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top);
     ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &(rc), &(rc));
-    SetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2, iNew, 1);
+    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
     UpdateWindow(hwnd);
 
 L_0673:
     return 0;
 
 L_067c:
-    iCur = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     iNew = iCur;
     goto L_06e4;
 
@@ -448,8 +448,8 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2, iNew, 1);
-    iNew = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
+    iNew = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     if ((iNew == iCur))
         goto L_080f;
     else
@@ -945,7 +945,7 @@ L_0f5f:
     return;
 }
 
-int16_t ScoreXDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -982,7 +982,7 @@ L_0fc3:
 
 L_0fc9:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0ff1:
@@ -4961,7 +4961,7 @@ L_5b57:
 
 L_5b5d:
     vprptCur->cRows = cRows;
-    qsort(rgidRep, cRows, 0x2, ICompReport);
+    qsort(rgidRep, cRows, 0x2, (QSORTCOMPARE)(ICompReport));
     fmemcpy(vlprgidRep, rgidRep, (cRows * 2));
     vprptCur->fCached = 1;
 
@@ -7182,7 +7182,7 @@ L_8235:
         goto L_824b;
 
 L_824b:
-    SendMessage(hwndShipLB, CB_GETCURSEL, 0x1, 0);
+    SendMessage(hwndShipLB, LB_SETCURSEL, 0x1, 0);
     SetScanWp(1);
 
 L_8270:
@@ -8508,7 +8508,7 @@ L_a1ad:
     return;
 }
 
-int16_t PrintMapDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t i;
     RECT    rc;
     HWND    hwndEdit;
@@ -8523,8 +8523,8 @@ L_a1d1:
 
 L_a1d9:
     hwndEdit = GetDlgItem(hwnd, (i + 268));
-    SendMessage(hwndEdit, CB_SETEXTENDEDUI, 0x1, 0);
-    SendMessage(hwndEdit, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndEdit, EM_LIMITTEXT, 0x1, 0);
+    SendMessage(hwndEdit, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     szWork[0] = LOBYTE((vrgcPrintMapPage[i] + 48));
     szWork[1] = 0;
     SetWindowText(hwndEdit, szWork);
@@ -8542,7 +8542,7 @@ L_a24b:
 
 L_a264:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_a28c:
@@ -8552,8 +8552,8 @@ L_a28c:
         goto L_a2a8;
 
 L_a2a8:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_a2c1:
     if ((wParam == 0x1))
@@ -8665,7 +8665,7 @@ L_a3fa:
         goto L_a416;
 
 L_a416:
-    GetWindowText(LOWORD(lParam), szWork, 10);
+    GetWindowText((HWND)(LOWORD(lParam)), szWork, 10);
     if (((int16_t)(szWork[0]) == 0))
         goto L_a496;
     else
@@ -8685,7 +8685,7 @@ L_a445:
 
 L_a451:
     MessageBeep(0x0);
-    SetWindowText(LOWORD(lParam), &(szWork[1]));
+    SetWindowText((HWND)(LOWORD(lParam)), &(szWork[1]));
 
 L_a46d:
     goto L_a496;

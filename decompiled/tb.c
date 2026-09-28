@@ -3,7 +3,7 @@
 char    vrgTBBtn[29] = "";
 int16_t vrgpctZoom[9] = {25, 38, 50, 75, 100, 125, 150, 200, 400};
 
-int32_t TbWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     fInside;
     POINT       pt;
@@ -49,7 +49,7 @@ L_005d:
 L_0066:
     hwndTBRadar =
         CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((int32_t)(((28 - dyArial8) - 8)) / 2) + 4), dx, (LOWORD((11 * dyArial8)) + 28), hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndTBRadar, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndTBRadar, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     iSel = -1;
     j = 0;
     goto L_0137;
@@ -66,7 +66,7 @@ L_00fc:
 
 L_0102:
     _wsprintf(szWork, PCTDPCTPCT, pct);
-    SendMessage(hwndTBRadar, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndTBRadar, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     j = (j + 1);
 
 L_0137:
@@ -303,11 +303,11 @@ L_0501:
 
 L_050c:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0537:
-    SetBkColor(wParam, crButtonFace);
+    SetBkColor((HDC)(wParam), crButtonFace);
     return (uint32_t)(hbrButtonFace);
 
 L_0550:
@@ -1735,7 +1735,7 @@ L_1942:
     InvalidateRect(hwndTooltip, 0x0, 1);
 
 L_1957:
-    SetWindowPos(hwndTooltip, 0xffff, 0, 0, (dxTip + 6), (dyArial8 + 6), SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    SetWindowPos(hwndTooltip, (HWND)(-1), 0, 0, (dxTip + 6), (dyArial8 + 6), SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
     t_scratch_m10 = (vtickTooltipLast + 0x190);
     if ((t_scratch_m10 < GetTickCount()))
         goto L_19af;
@@ -1763,7 +1763,7 @@ L_19dd:
     return;
 }
 
-int32_t TooltipWndProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     POINT       pt;
     PAINTSTRUCT ps;
@@ -1869,7 +1869,8 @@ L_1b10:
 
 L_1b1d:
     ClientToScreen(hwndFrame, &(pt));
-    SetWindowPos(hwnd, 0xffff, pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
+    SetWindowPos(hwnd, (HWND)(-1), pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0,
+                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
     UpdateWindow(hwnd);
     if ((vidTimerTooltip == -1))
         goto L_1b77;
@@ -1917,7 +1918,7 @@ L_1c0d:
 
 L_1c16:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrTooltip);
+    FillRect((HDC)(wParam), &(rc), hbrTooltip);
     return 1;
 
 L_1c41:
@@ -1991,7 +1992,7 @@ L_1d53:
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-int32_t FakeComboProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK FakeComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     LRESULT t_call_1de0;
 
 L_1d72:
@@ -2030,7 +2031,7 @@ L_1de8:
     return t_call_1de0;
 }
 
-int32_t FakeCEProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK FakeCEProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     LRESULT t_call_1e5e;
 
 L_1df0:

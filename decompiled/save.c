@@ -591,7 +591,7 @@ L_5e57:
         goto L_5e76;
 
 L_5e76:
-    lpfl->lpplord = LpplReAlloc(lpfl->lpplord, (lpfl->cord + 2));
+    lpfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpfl->lpplord), (lpfl->cord + 2)));
     lpord = lpfl->lpplord->rgord;
 
 L_5eb5:
@@ -1570,7 +1570,7 @@ L_70cf:
     goto L_7a52;
 
 L_70fb:
-    lpbtldata = lpbBattle;
+    lpbtldata = (BTLDATA *)(lpbBattle);
 
 L_7107:
     if ((lphb->ibTop <= 0x10))
@@ -1593,7 +1593,7 @@ L_7120:
 
 L_7146:
     lpbBattle = ((uint8_t *)(lphb) + 0x12);
-    lpbtldata = lpbBattle;
+    lpbtldata = (BTLDATA *)(lpbBattle);
     goto L_7107;
 
 L_7166:
@@ -1761,7 +1761,7 @@ L_7791:
 
 L_77b8:
     cb = (LOWORD((lpbtldata->ctok * 0x1d)) + 14);
-    lpbtlrec = (lpbBattle + cb);
+    lpbtlrec = (BTLREC *)((lpbBattle + cb));
     if ((cb >= 1024))
         goto L_7806;
     else
@@ -1903,7 +1903,7 @@ L_7a1b:
     WriteRt(rtContinue, cbT, lpbBattle);
 
 L_7a30:
-    lpbBattle = lpbtlrec;
+    lpbBattle = (uint8_t *)(lpbtlrec);
 
 L_7a3c:
     if ((cb == 0))
@@ -2383,7 +2383,7 @@ L_82ff:
     goto L_82b2;
 
 L_8305:
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_8359;
 
@@ -2407,7 +2407,7 @@ L_8359:
         goto L_8363;
 
 L_8363:
-    pb = pus;
+    pb = (uint8_t *)(pus);
 
 L_836a:
     if ((lpfl->det < 0x4))
@@ -2418,7 +2418,7 @@ L_836a:
 L_837c:
     fByte = 0;
     grMask = 0x3;
-    pus = pb;
+    pus = (uint16_t *)(pb);
     pb = (pb + 2);
     us = 0x0;
     i = 0;
@@ -2581,7 +2581,7 @@ L_86b7:
 L_86ba:
     RawStore16(pb, us);
     pb = (pb + 2);
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_8722;
 
@@ -2605,7 +2605,7 @@ L_8722:
         goto L_872c;
 
 L_872c:
-    pb = pus;
+    pb = (uint8_t *)(pus);
     pb = (pb + 1);
     *(pb) = lpfl->iplan;
     pb = (pb + 1);
@@ -3235,7 +3235,7 @@ L_930d:
         goto L_9323;
 
 L_9323:
-    rgbCur[6] = ((rgbCur[6] & 0xfdff) | 0x0);
+    rgbCur[6] = (rgbCur[6] & 0xfdff);
     goto L_934a;
 
 L_9332:
@@ -3515,7 +3515,7 @@ L_9700:
     goto L_977b;
 
 L_9753:
-    rgplr[i].wMdPlr = ((rgplr[i].wMdPlr & 0xfeff) | 0x0);
+    rgplr[i].wMdPlr = (rgplr[i].wMdPlr & 0xfeff);
 
 L_977b:
     rgplr[i].cFleet = 0x0;
@@ -3550,7 +3550,7 @@ L_9823:
     goto L_992e;
 
 L_98e8:
-    rglpshdef[i][j].wFlags = ((rglpshdef[i][j].wFlags & 0xfeff) | 0x0);
+    rglpshdef[i][j].wFlags = (rglpshdef[i][j].wFlags & 0xfeff);
 
 L_992e:
     j = (j + 1);
@@ -3591,7 +3591,7 @@ L_9984:
     goto L_9abe;
 
 L_9a78:
-    rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xfeff) | 0x0);
+    rglpshdefSB[i][j].wFlags = (rglpshdefSB[i][j].wFlags & 0xfeff);
 
 L_9abe:
     j = (j + 1);

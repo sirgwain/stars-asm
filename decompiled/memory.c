@@ -1,8 +1,8 @@
 #include "common.h"
 
 HB *LphbAlloc(uint16_t cb, HeapType ht) {
-    uint16_t hmem;
-    HB      *lphb;
+    HGLOBAL hmem;
+    HB     *lphb;
 
 L_0000:
     lphb = 0x0;
@@ -27,7 +27,7 @@ L_0051:
     StarsLongJump(penvMem, -1);
 
 L_0082:
-    lphb = GlobalLock(hmem);
+    lphb = (HB *)(GlobalLock(hmem));
     lphb->hmem = hmem;
     lphb->cbBlock = cb;
     lphb->cbSlop = (cb + 0xfff0);
@@ -42,7 +42,7 @@ L_0102:
 }
 
 HB *LphbReAlloc(HB *lphb) {
-    uint16_t hmem;
+    HGLOBAL  hmem;
     HB      *lphbT;
     HB      *lphbNew;
     uint16_t cbCur;
@@ -88,7 +88,7 @@ LReAllocOOM:
     StarsLongJump(penvMem, -1);
 
 L_01db:
-    lphbNew = GlobalLock(hmem);
+    lphbNew = (HB *)(GlobalLock(hmem));
     lphbNew->hmem = hmem;
     if ((rglphb[lphbNew->ht] != lphb))
         goto L_023c;
@@ -129,8 +129,8 @@ L_02ac:
 }
 
 void FreeHb(HB *lphb) {
-    uint16_t hmem;
-    HB      *lphbNext;
+    HGLOBAL hmem;
+    HB     *lphbNext;
 
 L_02d8:
     if ((LOWORD(lphb) != 0x0))
@@ -239,7 +239,7 @@ L_045a:
     return (lpbTop + 2);
 
 L_0493:
-    lpb = (lphb + 1);
+    lpb = (uint8_t *)((lphb + 1));
     goto L_0575;
 
 L_04a7:

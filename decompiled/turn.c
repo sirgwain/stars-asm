@@ -257,7 +257,7 @@ L_041e:
         goto L_0427;
 
 L_0427:
-    rgplr[i].wFlags = ((rgplr[i].wFlags & 0xfffb) | 0x0);
+    rgplr[i].wFlags = (rgplr[i].wFlags & 0xfffb);
     goto L_03c3;
 
 L_0454:
@@ -283,7 +283,7 @@ L_04db:
         goto L_03c3;
 
 L_0505:
-    rgplr[i].wFlags = ((rgplr[i].wFlags & 0xfffb) | 0x0);
+    rgplr[i].wFlags = (rgplr[i].wFlags & 0xfffb);
     j = 0;
     goto L_067b;
 
@@ -600,7 +600,7 @@ L_0b46:
         goto L_0b62;
 
 L_0b62:
-    lpfl->lpplord = LpplReAlloc(lpfl->lpplord, 0x2);
+    lpfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpfl->lpplord), 0x2));
 
 L_0b84:
     lpfl->lpplord->rgord[1] = lpflTarget->lpplord->rgord[1];

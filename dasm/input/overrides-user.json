@@ -140,7 +140,7 @@
         },
         {
           "name": "arg3",
-          "ctype": "uint16_t"
+          "ctype": "UINT_PTR"
         },
         {
           "name": "arg4",

@@ -140,7 +140,7 @@ L_158f:
     t_merge_1592_0001 = 0x0;
 
 L_1592:
-    AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 15000), szTemp);
+    AppendMenu(hmenuPopup, t_merge_1592_0001, (i + 15000), szTemp);
 
 L_15aa:
     goto L_1883;
@@ -261,7 +261,7 @@ L_1719:
     t_merge_171c_0001 = 0x0;
 
 L_171c:
-    AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 15000), szTemp);
+    AppendMenu(hmenuSub, t_merge_171c_0001, (i + 15000), szTemp);
 
 L_1734:
     i = (i + 1);
@@ -286,7 +286,7 @@ L_1757:
     t_merge_175a_0001 = 0x0;
 
 L_175a:
-    AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), hmenuSub, pszTitle);
+    AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), (UINT_PTR)(hmenuSub), pszTitle);
     goto L_1883;
 
 L_1771:
@@ -356,7 +356,7 @@ L_184b:
     t_merge_184f_0001 = 0;
 
 L_184f:
-    if (((t_merge_184f_0001 | 0x0) != 0x0))
+    if ((t_merge_184f_0001 != 0))
         goto L_1865;
     else
         goto L_186b;

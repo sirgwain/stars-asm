@@ -146,6 +146,9 @@ func (p *resolveEnumsProcessor) resolveExpectedEnum(expr Expr, enumType *typeinf
 		if e.TypeInfo == enumType {
 			return expr, false
 		}
+		if keepsConstantFamily(e.TypeInfo, enumType) {
+			return expr, false
+		}
 		next := *e
 		next.TypeInfo = enumType
 		return &next, true

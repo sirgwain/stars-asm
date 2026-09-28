@@ -1,9 +1,9 @@
-int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT    rc;
     HDC     hdc;
     int16_t i;
     HWND    hwndCtl;
-    int16_t (*lpProc)();
+    FARPROC lpProc;
 
 L_1252:
     goto L_14e5;
@@ -17,7 +17,7 @@ L_1261:
 
 L_12a9:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_12d1:
@@ -101,8 +101,8 @@ L_142c:
         goto L_1448;
 
 L_1448:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_1461:
     if ((wParam == 0x1))

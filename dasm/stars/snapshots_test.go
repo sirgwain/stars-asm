@@ -29,6 +29,7 @@ var procs = []string{
 	"DpShieldOfShdef",
 	"DoBombing",
 	"DropSalvage",
+	"EnsureAis",
 	"ExecuteButton",
 	"FCreateStuff",
 	"FFleetMightHaveTeeth",
@@ -54,6 +55,7 @@ var procs = []string{
 	"LpscannerFromId",
 	"LogChangeThing",
 	"MineClick",
+	"NybbleFromCh",
 	"PopRandom",
 	"Popup",
 	"PopupMenu",
@@ -61,6 +63,7 @@ var procs = []string{
 	"ReportDlg",
 	"PushRandom",
 	"SzVersion",
+	"WrapTextOut",
 }
 
 // TestDASM_BitfieldUpdateSnapshots verifies the reported compiler patterns and

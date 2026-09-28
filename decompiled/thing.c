@@ -246,15 +246,15 @@ L_0448:
 }
 
 void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, int16_t md) {
-    int16_t  iMode;
-    int16_t  cSections;
-    int16_t  fDisabled;
-    uint16_t rghbr[5];
-    int16_t  c;
-    int16_t  i;
-    int32_t  rgSize[5];
-    int32_t  lMax;
-    int32_t  l;
+    int16_t iMode;
+    int16_t cSections;
+    int16_t fDisabled;
+    HBRUSH  rghbr[5];
+    int16_t c;
+    int16_t i;
+    int32_t rgSize[5];
+    int32_t lMax;
+    int32_t l;
 
 L_044e:
     fDisabled = 0;

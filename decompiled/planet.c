@@ -1,6 +1,6 @@
 #include "common.h"
 
-int32_t PlanetWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC                hdc;
     PAINTSTRUCT        ps;
     XFER               xf;
@@ -9,7 +9,7 @@ int32_t PlanetWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lPar
     int32_t            lSel;
     RECT               rc;
     POINT              pt;
-    uint16_t           hcs;
+    HCURSOR            hcs;
     DRAWITEMSTRUCT    *lpdis;
     MEASUREITEMSTRUCT *lpmis;
     PLANET            *lpplMac;
@@ -73,7 +73,7 @@ L_0087:
 
 L_008a:
     rghwndOrderDD[i] = CreateWindow(szCombobox, "OrdDD", (t_merge_0062_0001 | 0x40200003), 100, 100, 200, t_merge_008a_0001, hwnd, 0x0, hInst, 0x0);
-    SendMessage(rghwndOrderDD[i], WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(rghwndOrderDD[i], WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
 L_00d1:
@@ -88,7 +88,7 @@ L_00db:
 
 L_00e4:
     psz = PszGetCompressedString(i);
-    SendMessage(rghwndOrderDD[0], CB_ADDSTRING, 0x0, psz);
+    SendMessage(rghwndOrderDD[0], CB_ADDSTRING, 0x0, (LPARAM)(psz));
     i = (i + 1);
 
 L_0112:
@@ -99,29 +99,29 @@ L_0112:
 
 L_011c:
     hwndOrderED = CreateWindow(szEdit, 0x0, 0x40800002, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndOrderED, CB_SETEXTENDEDUI, 0x4, 0);
-    SendMessage(hwndOrderED, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndOrderED, EM_LIMITTEXT, 0x4, 0);
+    SendMessage(hwndOrderED, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     lpfnRealEditProc = GetWindowLong(hwndOrderED, 0xfffc);
     SetWindowLong(hwndOrderED, 0xfffc, lpfnFakeEditProc);
     hwndBattleDD = CreateWindow(szCombobox, "BattleDD", 0x40200003, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndBattleDD, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndBattleDD, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     hwndShipDD = CreateWindow(szCombobox, "ShipDD", 0x40200213, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndShipDD, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndShipDD, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     GetClientRect(hwndShipDD, &(rc));
     dyShipDD = rc.bottom;
     hwndShipLB = CreateWindow(szListbox, "ShipLB", 0x40a01001, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndShipLB, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndShipLB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     hwndFleetCompLB = CreateWindow(szListbox, "FleetCompLB", 0x40a00051, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndFleetCompLB, WM_SETFONT, rghfontArial8[0], 0);
+    SendMessage(hwndFleetCompLB, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
     hwndPlanetProdLB = CreateWindow(szListbox, "PlanetProdLB", 0x40a00051, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndPlanetProdLB, WM_SETFONT, rghfontArial8[0], 0);
+    SendMessage(hwndPlanetProdLB, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
     i = 0;
     goto L_0420;
 
 L_039d:
     psz = PszGetCompressedString((i + 415));
     rghwndBtn[i] = CreateWindow(szButton, psz, WS_CHILD, 100, 100, 100, (dyArial8 * 2), hwnd, 0x0, hInst, 0x0);
-    SendMessage(rghwndBtn[i], WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(rghwndBtn[i], WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
 L_0420:
@@ -132,12 +132,12 @@ L_0420:
 
 L_042a:
     hwndRepCB = CreateWindow(szButton, PszGetCompressedString(idsRepeatOrders), 0x40000003, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndRepCB, WM_SETFONT, rghfontArial8[1], 0);
+    SendMessage(hwndRepCB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     goto L_0d04;
 
 L_0490:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_04bd:
@@ -147,8 +147,8 @@ L_04bd:
         goto L_04cc;
 
 L_04cc:
-    SetBkColor(wParam, crButtonFace);
-    SetTextColor(wParam, crButtonText);
+    SetBkColor((HDC)(wParam), crButtonFace);
+    SetTextColor((HDC)(wParam), crButtonText);
     return (uint32_t)(hbrButtonFace);
 
 L_04f8:
@@ -211,7 +211,7 @@ L_0646:
     return 1;
 
 L_065b:
-    lpdis = lParam;
+    lpdis = (DRAWITEMSTRUCT *)(lParam);
     if ((lpdis->itemID != 0xffff))
         goto L_068e;
     else
@@ -258,7 +258,7 @@ L_06fc:
     return 1;
 
 L_0705:
-    lpmis = lParam;
+    lpmis = (MEASUREITEMSTRUCT *)(lParam);
     lpmis->itemHeight = (dyArial8 + 2);
     return 1;
 
@@ -867,7 +867,7 @@ L_1007:
     t_merge_100a_0001 = obj;
 
 L_100a:
-    ptile[i].pfn(hdc, (ptile + i), t_merge_100a_0001);
+    ptile[i].pfn((uint16_t)(hdc), (ptile + i), t_merge_100a_0001);
 
 L_1035:
     i = (i + 1);
@@ -962,7 +962,7 @@ L_11d0:
         goto L_1229;
 
 L_1229:
-    bt = (bt | 0x0);
+    bt = bt;
     goto L_1234;
 
 L_1230:
@@ -2010,7 +2010,7 @@ L_2d96:
     GetClientRect(hwndPlanetProdLB, &(rcT));
     dyPlanetProdLB = (rcT.bottom - rcT.top);
     yTop = (yTop + (dyPlanetProdLB + 4));
-    iSel = LOWORD(SendMessage(hwndPlanetProdLB, CB_GETLBTEXTLEN, 0x0, 0));
+    iSel = LOWORD(SendMessage(hwndPlanetProdLB, LB_GETCURSEL, 0x0, 0));
     if ((iSel >= 0))
         goto L_2e11;
     else
@@ -3075,7 +3075,7 @@ L_3fd2:
 
 L_3fdc:
     FillPlanetProdLB(0x0, 0x0, 0x0);
-    SendMessage(hwndPlanetProdLB, CB_GETCURSEL, 0x0, 0);
+    SendMessage(hwndPlanetProdLB, LB_SETCURSEL, 0x0, 0);
 
 L_4011:
     goto L_40ec;
@@ -3341,7 +3341,7 @@ L_43c3:
 
 L_43c6:
     szWork[0] = LOBYTE(t_merge_43c6_0001);
-    SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
 
 L_43e1:
     goto L_42fa;
@@ -3386,7 +3386,7 @@ L_448a:
 
 L_448d:
     szWork[0] = LOBYTE(t_merge_448d_0001);
-    SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndShipDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
 
 L_44a8:
     lpth = (lpth + 1);
@@ -3820,7 +3820,7 @@ L_4a90:
         goto L_4ac7;
 
 L_4ac7:
-    bt = (bt | 0x0);
+    bt = bt;
     goto L_4ad2;
 
 L_4ace:
@@ -4165,7 +4165,7 @@ L_5155:
     return;
 }
 
-uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
+HCURSOR ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
     int16_t  i;
     int32_t  rglQuan[3];
     int16_t  iWarp;
@@ -5157,11 +5157,11 @@ L_619f:
         goto L_61af;
 
 L_61af:
-    t_merge_61b8_0001 = CB_INSERTSTRING;
+    t_merge_61b8_0001 = 0x40a;
     goto L_61b8;
 
 L_61b5:
-    t_merge_61b8_0001 = CB_GETLBTEXT;
+    t_merge_61b8_0001 = 0x408;
 
 L_61b8:
     SendMessage(lpdis->hwndItem, t_merge_61b8_0001, lpdis->itemID, szWork);
@@ -5171,7 +5171,7 @@ L_61b8:
 }
 
 void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox) {
-    uint16_t hfntSav;
+    HFONT    hfntSav;
     char    *pch;
     int16_t  ichT;
     COLORREF cr;
@@ -5603,7 +5603,7 @@ L_66d6:
     hwnd = hwndPlanetProdLB;
 
 L_66dc:
-    SendMessage(hwnd, CB_DIR, 0x0, 0);
+    SendMessage(hwnd, LB_RESETCONTENT, 0x0, 0);
 
 L_66f4:
     if ((lpplprod != 0x0))
@@ -5646,7 +5646,7 @@ L_676c:
         goto L_6775;
 
 L_6775:
-    SendMessage(hwnd, CB_LIMITTEXT, 0x0, psz);
+    SendMessage(hwnd, LB_ADDSTRING, 0x0, (LPARAM)(psz));
     goto NoMsg;
 
 L_678f:
@@ -5849,7 +5849,7 @@ L_6a7e:
     goto L_6ac4;
 
 L_6a91:
-    SendMessage(hwnd, CB_LIMITTEXT, 0x0, szTemp);
+    SendMessage(hwnd, LB_ADDSTRING, 0x0, (LPARAM)(szTemp));
     goto L_680c;
 
 L_6aab:
@@ -7523,7 +7523,7 @@ L_87ab:
         goto L_882f;
 
 L_87da:
-    FreePl(lpPlanets[lppl->id].lpplprod);
+    FreePl((PL *)(lpPlanets[lppl->id].lpplprod));
     lpPlanets[lppl->id].lpplprod = 0x0;
     lppl->lpplprod = 0x0;
 

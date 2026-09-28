@@ -347,7 +347,7 @@ L_087e:
     yTop = (yTop + dyArial8);
 
 DoCheckBox:
-    SendMessage(hwndRepCB, CB_LIMITTEXT, sel.fl.fRepOrders, 0);
+    SendMessage(hwndRepCB, BM_SETCHECK, sel.fl.fRepOrders, 0);
     SetWindowPos(hwndRepCB, 0x0, xLeft, yTop, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     ShowWindow(hwndRepCB, SW_SHOW);
     SetRect(&(rgrcRef[12]), (xRight - (dyArial8 | 0x1)), yTop, xRight, ((dyArial8 | 0x1) + yTop));
@@ -1830,8 +1830,8 @@ L_2633:
 }
 
 void ShipCommandProc(HWND hwnd, uint16_t wParam, int32_t lParam) {
-    int16_t fPercent;
-    int16_t (*lpProc)();
+    int16_t  fPercent;
+    FARPROC  lpProc;
     int32_t  lSel;
     XFER     xf;
     char     szT[34];
@@ -2017,7 +2017,7 @@ L_295e:
     goto L_29a9;
 
 L_2975:
-    lSel = SendMessage(hwndShipLB, CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(hwndShipLB, LB_GETCURSEL, 0x0, 0);
     SetScanWp(LOWORD(lSel));
     goto L_3d2c;
 
@@ -2040,7 +2040,7 @@ L_29c6:
     goto L_2ab2;
 
 L_29dd:
-    lSel = SendMessage(hwndFleetCompLB, CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(hwndFleetCompLB, LB_GETCURSEL, 0x0, 0);
     if ((lSel < 0))
         goto L_3d2c;
     else
@@ -2510,7 +2510,7 @@ L_3256:
         goto L_3272;
 
 L_3272:
-    sel.fl.fRepOrders = LOWORD(SendMessage(hwndRepCB, WM_USER, 0x0, 0));
+    sel.fl.fRepOrders = LOWORD(SendMessage(hwndRepCB, BM_GETCHECK, 0x0, 0));
     FLookupFleet(-1, &(sel.fl));
     goto L_3d2c;
 
@@ -3394,14 +3394,14 @@ L_44a9:
 }
 
 void DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit) {
-    uint16_t rghbr[5];
-    int32_t  lMax;
-    int16_t  c;
-    int16_t  i;
-    int32_t  rgSize[5];
-    int16_t  iMode;
-    int16_t  cSections;
-    int32_t  l;
+    HBRUSH  rghbr[5];
+    int32_t lMax;
+    int16_t c;
+    int16_t i;
+    int32_t rgSize[5];
+    int16_t iMode;
+    int16_t cSections;
+    int32_t l;
 
 L_44b6:
     if ((lpfl != 0x0))
@@ -3952,8 +3952,8 @@ L_4f9e:
 }
 
 int16_t TransferStuff(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass grobj2, MdXfer mdXfer) {
-    XFER xfer[2];
-    int16_t (*lpProcXfer)();
+    XFER     xfer[2];
+    FARPROC  lpProcXfer;
     int16_t  rgValidHull[16];
     int32_t  lPopPrev;
     int16_t  iDelFleet;
@@ -4034,7 +4034,7 @@ L_5121:
         goto L_512b;
 
 L_512b:
-    EnumLogRts(FEnumCalcJettison, &(xfer[i].pl), id1);
+    EnumLogRts((int16_t (*)(void *, int16_t, int16_t, void *, int16_t))(FEnumCalcJettison), &(xfer[i].pl), id1);
 
 L_5156:
     i = (i + 1);
@@ -4393,7 +4393,7 @@ L_5673:
     return 0;
 }
 
-int16_t TransferDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     dyMore;
     PAINTSTRUCT ps;
@@ -4470,7 +4470,7 @@ L_588d:
 
 L_5893:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_58bb:
@@ -6773,32 +6773,32 @@ L_7cd4:
     return;
 }
 
-uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
-    int32_t  lCur;
-    HDC      hdc;
-    PLANET   pl;
-    int16_t  iWarp;
-    POINT    ptOld;
-    int16_t  idPlan;
-    int32_t  lMax;
-    int32_t  lSel;
-    int16_t  iSkip;
-    int32_t  xRnd;
-    int16_t  grbit;
-    XFER     xf;
-    int32_t  lNew;
-    int16_t  irc;
-    int32_t  dx;
-    int32_t  lTempMin;
-    int16_t  fFirst;
-    int16_t  fTwoMAs;
-    int32_t  lTempMax;
-    int16_t  cMax;
-    char     sz255[2];
-    int16_t  i;
-    char    *rgszZip[11];
-    ZIPORDER rgzo[4];
-    int16_t (*lpProc)();
+HCURSOR ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
+    int32_t    lCur;
+    HDC        hdc;
+    PLANET     pl;
+    int16_t    iWarp;
+    POINT      ptOld;
+    int16_t    idPlan;
+    int32_t    lMax;
+    int32_t    lSel;
+    int16_t    iSkip;
+    int32_t    xRnd;
+    int16_t    grbit;
+    XFER       xf;
+    int32_t    lNew;
+    int16_t    irc;
+    int32_t    dx;
+    int32_t    lTempMin;
+    int16_t    fFirst;
+    int16_t    fTwoMAs;
+    int32_t    lTempMax;
+    int16_t    cMax;
+    char       sz255[2];
+    int16_t    i;
+    char      *rgszZip[11];
+    ZIPORDER   rgzo[4];
+    FARPROC    lpProc;
     int16_t    fRet;
     TASKXPORT *lptxp;
     int16_t    fSep;
@@ -7271,7 +7271,7 @@ L_84ce:
 L_84db:
     c = (c + 1);
     t_assign_1 = &(rgid[c]);
-    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((lpth->idFull | 0x0)) & 0xffff)));
+    *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
     t_assign_2 = &(rgid[c]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 
@@ -7967,7 +7967,7 @@ void FillFleetCompLB() {
     uint16_t t_merge_924a_0001;
 
 L_9166:
-    SendMessage(hwndFleetCompLB, CB_DIR, 0x0, 0);
+    SendMessage(hwndFleetCompLB, LB_RESETCONTENT, 0x0, 0);
     i = 0;
     goto L_927d;
 
@@ -8006,7 +8006,7 @@ L_9247:
 
 L_924a:
     _wsprintf(szWork, "%c%c%5d%s", t_merge_924a_0001, t_merge_922e_0001, sel.fl.rgcsh[i], rgshdef[i].hul.szClass);
-    SendMessage(hwndFleetCompLB, CB_LIMITTEXT, 0x0, szWork);
+    SendMessage(hwndFleetCompLB, LB_ADDSTRING, 0x0, (LPARAM)(szWork));
 
 L_9279:
     i = (i + 1);
@@ -8027,7 +8027,7 @@ void FillOrdersLB() {
     ORDER   ord;
 
 L_928c:
-    SendMessage(hwndShipLB, CB_DIR, 0x0, 0);
+    SendMessage(hwndShipLB, LB_RESETCONTENT, 0x0, 0);
     i = 0;
     goto L_92ba;
 
@@ -8043,7 +8043,7 @@ L_92ba:
 L_92c5:
     ord = sel.fl.lpplord->rgord[i];
     psz = PszGetLocName(ord.grobj, ord.id, ord.pt.x, ord.pt.y);
-    SendMessage(hwndShipLB, CB_LIMITTEXT, 0x0, psz);
+    SendMessage(hwndShipLB, LB_ADDSTRING, 0x0, (LPARAM)(psz));
     goto L_92b6;
 
 L_9328:
@@ -8065,7 +8065,7 @@ void SetOrdersLbSel(int16_t iSel) {
     uint16_t t_merge_93c0_0001;
 
 L_9354:
-    SendMessage(hwndShipLB, CB_GETCURSEL, iSel, 0);
+    SendMessage(hwndShipLB, LB_SETCURSEL, iSel, 0);
     if ((gd.fSmallTileMode == 0x0))
         goto L_9390;
     else
@@ -8098,7 +8098,7 @@ L_93bd:
     t_merge_93c0_0001 = 0x2;
 
 L_93c0:
-    SendMessage(hwndShipLB, CB_FINDSTRINGEXACT, (iSel - t_merge_93c0_0001), 0);
+    SendMessage(hwndShipLB, LB_SETTOPINDEX, (iSel - t_merge_93c0_0001), 0);
 
 L_93d3:
     UpdateWindow(hwndShipLB);
@@ -8199,7 +8199,7 @@ L_954a:
     szWork[0] = 32;
 
 L_954f:
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, szWork);
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     i = (i + 1);
 
 L_956b:
@@ -8244,7 +8244,7 @@ L_95c8:
 
 L_95df:
     _wsprintf(szWork, psz, (LOWORD((50 * i)) + 0x32));
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, szWork);
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     i = (i + 1);
 
 L_961b:
@@ -8255,7 +8255,7 @@ L_961b:
 
 L_9624:
     psz = PszGetCompressedString(idsAnyEnemy);
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, psz);
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(psz));
     iSel = sel.fl.lpplord->rgord[sel.iwpAct].tptl.iDist;
     rglSel[1] = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, iSel, 0);
     goto L_987f;
@@ -8289,7 +8289,7 @@ L_96b9:
 L_96c4:
     psz = PszPlayerName(i, 1, 1, 1, 0, 0x0);
     strcpy(&(szT[1]), psz);
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, szT);
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(szT));
 
 L_970d:
     goto L_96aa;
@@ -8324,7 +8324,7 @@ L_977a:
 
 L_977d:
     _wsprintf(szWork, PszGetCompressedString(idsDYearC), (i + 1), t_merge_977d_0001);
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, szWork);
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     i = (i + 1);
 
 L_97c0:
@@ -8334,7 +8334,7 @@ L_97c0:
         goto L_97c9;
 
 L_97c9:
-    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, PszGetCompressedString(idsIindefinitely));
+    SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(idsIindefinitely)));
     rglSel[1] = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, sel.fl.lpplord->rgord[sel.iwpAct].tsell.iPlrX, 0);
 
 L_9821:
@@ -8407,7 +8407,7 @@ L_98e8:
     psz = PszGetCompressedString(i);
 
 L_98f6:
-    SendMessage(rghwndOrderDD[2], CB_ADDSTRING, 0x0, psz);
+    SendMessage(rghwndOrderDD[2], CB_ADDSTRING, 0x0, (LPARAM)(psz));
     i = (i + 1);
 
 L_9912:
@@ -8479,7 +8479,7 @@ void FillBattleDD(int16_t iSel) {
 L_9a36:
     SendMessage(hwndBattleDD, CB_RESETCONTENT, 0x0, 0);
     CchGetString(idsBattlePlans, szWork);
-    SendMessage(hwndBattleDD, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndBattleDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     i = 0;
     goto L_9a8c;
 
@@ -8494,7 +8494,7 @@ L_9a8c:
 
 L_9a9f:
     fstrcpy(szWork, rglpbtlplan[idPlayer][i].szName);
-    SendMessage(hwndBattleDD, CB_ADDSTRING, 0x0, szWork);
+    SendMessage(hwndBattleDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     goto L_9a88;
 
 L_9ae8:
@@ -9003,7 +9003,7 @@ L_a6f9:
     return lFuel;
 }
 
-int32_t FakeEditProc(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 L_a700:
     goto L_a73c;
 
@@ -10061,7 +10061,7 @@ L_bcd6:
     t_merge_bcd9_0001 = 0x0;
 
 L_bcd9:
-    rgpflNew[t_merge_bcd9_0001]->rgdv[ishdef].dp = ((rgpflNew[t_merge_bca3_0001]->rgdv[ishdef].dp & 0xff80) | 0x0);
+    rgpflNew[t_merge_bcd9_0001]->rgdv[ishdef].dp = (rgpflNew[t_merge_bca3_0001]->rgdv[ishdef].dp & 0xff80);
 
 L_bcf6:
     ishdef = (ishdef + 1);
@@ -10568,7 +10568,7 @@ L_c783:
         goto L_c78c;
 
 L_c78c:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
     goto L_c7ca;
 

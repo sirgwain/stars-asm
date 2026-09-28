@@ -93,6 +93,15 @@
       ]
     },
     {
+      "name": "CreateWindow",
+      "params": [
+        {
+          "name": "arg9",
+          "semantic": "menu_or_id"
+        }
+      ]
+    },
+    {
       "name": "MakeProcInstance",
       "params": [
         {

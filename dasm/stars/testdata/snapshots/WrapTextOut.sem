@@ -1,0 +1,116 @@
+/*
+WrapTextOut  (utilgen)
+  addr: 0009:25fe  len=525
+  sig:  void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)
+  params:
+    HDC              hdc            [BP+0x6]
+    int16_t *        px             [BP+0x8]
+    int16_t *        py             [BP+0xa]
+    char *           psz            [BP+0xc]
+    int16_t          cLen           [BP+0xe]
+    int16_t          xLeft          [BP+0x10]
+    int16_t          dxWidth        [BP+0x12]
+    int16_t *        pxMax          [BP+0x14]
+    int16_t          fNewLine       [BP+0x16]
+    int16_t          fPrint         [BP+0x18]
+  locals:
+    char *           pch            [BP-0x10]
+    char *           pchStart       [BP-0xe]
+    int16_t          dx             [BP-0xc]
+    int16_t          xRight         [BP-0xa]
+    int16_t          fItFit         [BP-0x8]
+    char *           pchEnd         [BP-0x6]
+    int16_t          dxRemain       [BP-0x4]
+
+  stats: blocks=0  labels=3
+    WrapIt: L_27c5
+    Done: L_2802
+    Top: L_2656
+*/
+L_25fe:
+    xRight = (xLeft + dxWidth)
+    dxRemain = (dxWidth - (*px - xLeft))
+    branch cLen != 0 ? L_2637 : L_2629
+
+L_2629:
+    cLen = strlen(psz)
+
+L_2637:
+    branch fNewLine == 0 ? L_2650 : L_2640
+
+L_2640:
+    *py = (*py + dyArial8)
+    *px = xLeft
+
+L_2650:
+    pchStart = psz
+
+Top:
+    pch = pchStart
+    pchEnd = &pchStart[cLen]
+    call ChopTrailingSpaces(pch, &pchEnd) -> callresult(void)
+    dx = loword(GetTextExtent(hdc, pch, (pchEnd - pch)))
+    fItFit = 1
+
+L_2694:
+    branch dx <= dxRemain ? L_26e3 : L_269f
+
+L_269f:
+    branch pch >= pchEnd ? L_26e3 : L_26aa
+
+L_26aa:
+    branch dx <= 0 ? L_26e3 : L_26b3
+
+L_26b3:
+    fItFit = 0
+    call ChopLastWord(pch, &pchEnd) -> callresult(void)
+    dx = loword(GetTextExtent(hdc, pch, (pchEnd - pch)))
+    goto L_2694
+
+L_26e3:
+    branch fItFit == 0 ? L_271a : L_26ec
+
+L_26ec:
+    call AddBackTrailingSpaces(&pchEnd, &pchStart[cLen]) -> callresult(void)
+    dx = loword(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)))
+
+L_271a:
+    branch pchStart != pchEnd ? L_275f : L_2728
+
+L_2728:
+    branch *px != xLeft ? L_27c5 : L_2735
+
+L_2735:
+    pchEnd = &pchStart[cLen]
+    dx = loword(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)))
+
+L_275f:
+    branch fPrint == 0 ? L_2788 : L_2768
+
+L_2768:
+    call TextOut(hdc, *px, *py, pchStart, (pchEnd - pchStart)) -> callresult(int16_t)
+
+L_2788:
+    *px = (*px + dx)
+    branch pxMax == 0x0 ? L_27b2 : L_2799
+
+L_2799:
+    branch *px <= *pxMax ? L_27b2 : L_27a8
+
+L_27a8:
+    *pxMax = *px
+
+L_27b2:
+    branch pchEnd == &pchStart[cLen] ? L_2805 : L_27c5
+
+WrapIt:
+    call AddBackTrailingSpaces(&pchEnd, &pchStart[cLen]) -> callresult(void)
+    cLen = (cLen - (pchEnd - pchStart))
+    pchStart = pchEnd
+    *py = (*py + dyArial8)
+    *px = xLeft
+    dxRemain = dxWidth
+    goto L_2656
+
+L_2805:
+    return

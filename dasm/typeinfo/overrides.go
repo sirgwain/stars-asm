@@ -22,9 +22,36 @@ type overrideDB struct {
 }
 
 type typeOverrideRule struct {
-	name   string // the variable name to override
-	prefix string // the prefix to override (mutually exlusive with name)
-	typ    Type   // the type to use
+	name     string          // the variable name to override
+	prefix   string          // the prefix to override (mutually exlusive with name)
+	varKind  overrideVarKind // limit the rule to globals, params or locals; empty = all
+	funcName string          // limit the rule to params/locals of this function; empty = all
+	typ      Type            // the type to use
+}
+
+// overrideVarKind scopes a type override rule to one kind of variable
+type overrideVarKind string
+
+const (
+	overrideVarAny    overrideVarKind = ""
+	overrideVarGlobal overrideVarKind = "global"
+	overrideVarParam  overrideVarKind = "param"
+	overrideVarLocal  overrideVarKind = "local"
+)
+
+// matches returns true if this rule applies to a variable of the given kind, owning
+// function (empty for globals), name and current type
+func (r typeOverrideRule) matches(kind overrideVarKind, funcName, name string, typ Type) bool {
+	if r.varKind != overrideVarAny && r.varKind != kind {
+		return false
+	}
+	if r.funcName != "" && r.funcName != funcName {
+		return false
+	}
+	if r.name != "" {
+		return name == r.name
+	}
+	return r.prefix != "" && strings.HasPrefix(name, r.prefix) && typ.Bytes() == r.typ.Bytes()
 }
 
 type structFieldOverrideRule struct {
@@ -108,11 +135,13 @@ type paramSemanticsJSON struct {
 }
 
 type typesJSON struct {
-	Name      string           `json:"name"`
-	Canonical string           `json:"canonical"`
-	Size      int              `json:"size"`
-	Pointer   bool             `json:"pointer"`
-	FuncPtr   *funcPtrTypeJSON `json:"funcptr,omitempty"`
+	Name      string `json:"name"`
+	Canonical string `json:"canonical"`
+	// Pointer marks a type that is a pointer in the native Win32 headers,
+	// such as a handle, although the Win16 analysis stores it as its
+	// canonical integer.
+	Pointer bool             `json:"pointer"`
+	FuncPtr *funcPtrTypeJSON `json:"funcptr,omitempty"`
 }
 
 type funcPtrTypeJSON struct {
@@ -123,9 +152,11 @@ type funcPtrTypeJSON struct {
 }
 
 type typeOverrideRulesJSON struct {
-	Name   string `json:"name"`
-	Prefix string `json:"prefix"`
-	CType  string `json:"ctype"`
+	Name    string `json:"name"`
+	Prefix  string `json:"prefix"`
+	VarType string `json:"vartype"`
+	Func    string `json:"func"`
+	CType   string `json:"ctype"`
 }
 
 type structFieldOverrideJSON struct {
@@ -169,6 +200,7 @@ func (o *overrideDB) loadTypes(path string) error {
 				ptrClass = PtrFar
 			}
 			o.typeResolver.registerNamedType(t.Name, &Pointer{
+				Name:  t.Name,
 				Class: ptrClass,
 				Elem: &Function{
 					Name:   t.Name,
@@ -184,6 +216,13 @@ func (o *overrideDB) loadTypes(path string) error {
 		if err != nil {
 			return err
 		}
+		if t.Pointer {
+			prim, ok := typ.(*Primitive)
+			if !ok || prim.TypeKind != KInt {
+				return fmt.Errorf("type %s: only integer types can be native pointers", name)
+			}
+			prim.NativePointer = true
+		}
 		o.typeResolver.registerNamedType(name, typ)
 	}
 
@@ -194,10 +233,21 @@ func (o *overrideDB) loadTypes(path string) error {
 		if err != nil {
 			return fmt.Errorf("unable to resolve type for rule prefix: %s, name: %s, cType: %s %w", rule.Prefix, rule.Name, rule.CType, err)
 		}
+		varKind := overrideVarKind(rule.VarType)
+		switch varKind {
+		case overrideVarAny, overrideVarGlobal, overrideVarParam, overrideVarLocal:
+		default:
+			return fmt.Errorf("invalid vartype %q for rule prefix: %s, name: %s (want global, param or local)", rule.VarType, rule.Prefix, rule.Name)
+		}
+		if rule.Func != "" && varKind == overrideVarGlobal {
+			return fmt.Errorf("rule prefix: %s, name: %s can't scope a global to func %s", rule.Prefix, rule.Name, rule.Func)
+		}
 		o.typeOverrideRules = append(o.typeOverrideRules, typeOverrideRule{
-			name:   rule.Name,
-			prefix: rule.Prefix,
-			typ:    typ,
+			name:     rule.Name,
+			prefix:   rule.Prefix,
+			varKind:  varKind,
+			funcName: rule.Func,
+			typ:      typ,
 		})
 	}
 

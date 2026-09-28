@@ -24,7 +24,7 @@ block L_4ac2:
   effects:
     4ace  store[2] [bp-fSilentSav] = load([fFileErrSilent])
     4ad1  store[2] [bp-ids] = 0x4
-    4adf  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xff7f) | 0x0)
+    4adf  store[2] [gd+0x2] = (load([gd+0x2]) & 0xff7f)
     4ae8  store[2] [bp-fCheckMulti] = (load@4ae2/src([bp+dt]) & 0x2000)
     4af1  store[2] [bp-fRewind] = (load@4aeb/src([bp+dt]) & 0x1000)
     4af4  store[2] [bp+dt] = (load@4af4/dst([bp+dt]) & 0xff)

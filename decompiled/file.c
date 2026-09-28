@@ -39,7 +39,7 @@ L_0061:
     shdef.turn = lprt->turn;
     shdef.cBuilt = lprt->cBuilt;
     shdef.cExist = lprt->cExist;
-    lpb = lprt->rghs;
+    lpb = (uint8_t *)(lprt->rghs);
     fmemmove(shdef.hul.rghs, lpb, (lprt->chs * 0x4));
     lpb = (lpb + (4 * lprt->chs));
     goto L_0105;
@@ -263,7 +263,7 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
     char   *psz;
 
 L_05e2:
-    pplrRaw = pbIn;
+    pplrRaw = (PLAYER *)(pbIn);
     memset(pplr, 0, 0xc0);
     if ((pplrRaw->det != 0x7))
         goto L_066d;
@@ -1333,7 +1333,7 @@ L_1a1c:
         goto L_1a48;
 
 L_1a48:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
 
 L_1a6a:
@@ -1343,7 +1343,7 @@ L_1a6a:
         goto L_1a81;
 
 L_1a81:
-    lppl->lpplprod = LpplAlloc(0x4, ((hdrCur.cb / 0x4) + 0x2), htOrd);
+    lppl->lpplprod = (PLPROD *)(LpplAlloc(0x4, ((hdrCur.cb / 0x4) + 0x2), htOrd));
 
 L_1aad:
     fmemmove(lppl->lpplprod->rgprod, rgbCur, hdrCur.cb);
@@ -2156,7 +2156,7 @@ L_29c4:
         goto L_2a1a;
 
 L_29f8:
-    FreePl(lppl->lpplprod);
+    FreePl((PL *)(lppl->lpplprod));
     lppl->lpplprod = 0x0;
 
 L_2a1a:
@@ -3103,7 +3103,7 @@ L_3b29:
     goto L_3abe;
 
 L_3b2f:
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_3b4d;
 
@@ -3138,7 +3138,7 @@ L_3ba5:
     goto L_3b3d;
 
 L_3ba8:
-    pb = pus;
+    pb = (uint8_t *)(pus);
 
 L_3bae:
     if ((cish != 0))
@@ -3237,7 +3237,7 @@ Corrupt:
 L_3d4b:
     us = RawLoad16(pb);
     pb = (pb + 2);
-    pus = pb;
+    pus = (uint16_t *)(pb);
     i = 0;
     goto L_3d7a;
 
@@ -3272,12 +3272,12 @@ L_3e0c:
     goto L_3d6a;
 
 L_3e0f:
-    pb = pus;
+    pb = (uint8_t *)(pus);
     pb = (pb + 1);
     lpfl->iplan = *(pb);
     pb = (pb + 1);
     lpfl->cord = *(pb);
-    lpfl->lpplord = LpplAlloc(0x12, (lpfl->cord + 1), htOrd);
+    lpfl->lpplord = (PLORD *)(LpplAlloc(0x12, (lpfl->cord + 1), htOrd));
     fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18));
     cord = lpfl->cord;
     lpord = lpfl->lpplord->rgord;
@@ -3470,8 +3470,8 @@ L_4241:
         goto L_4251;
 
 L_4251:
-    lpbr = &(lpbd->rgtok[lpbd->ctok]);
-    lpbr26 = lpbr;
+    lpbr = (BTLREC *)(&(lpbd->rgtok[lpbd->ctok]));
+    lpbr26 = (BTLREC26 *)(lpbr);
     lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
 
 L_42a0:
@@ -3485,15 +3485,15 @@ L_42ae:
     itok = lpbr26->itokAttack;
     lpbr->ctok = cKill;
     lpbr->itokAttack = itok;
-    lpbr = &(lpbr->rgkill[lpbr->ctok]);
-    lpbr26 = lpbr;
+    lpbr = (BTLREC *)(&(lpbr->rgkill[lpbr->ctok]));
+    lpbr26 = (BTLREC26 *)(lpbr);
     goto L_42a0;
 
 L_4323:
     return;
 }
 
-int16_t AskSaveDialog(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t t_merge_4383_0001;
 
 L_432a:
@@ -3580,7 +3580,7 @@ L_43e0:
 }
 
 void PromptSaveGame() {
-    int16_t (*lpProc)();
+    FARPROC  lpProc;
     int16_t  fRet;
     LPCSTR   t_merge_4433_0001;
     uint16_t t_merge_446d_0001;

@@ -3265,7 +3265,7 @@ typedef enum DialogId {
     IDD_ORDER_INFO = 97,   /* OrderInfoDlg */
 
     /* common / utility */
-    IDD_GENERIC_SMALL = 86, /* reused generic dialog (PrintMap, msg, browser host) */
+    IDD_SERIAL_NUMBER = 86, /* MsgDlg; template captioned "Stars! Serial Number" */
     IDD_ZIP_PROD = 89,      /* ZipProdDlg / ZipOrderDlg */
     IDD_ABOUT = 90,         /* About */
     IDD_HOST_MODE = 115,    /* HostOptionsDialog */
@@ -3315,6 +3315,7 @@ typedef enum DialogId {
 
     /* find */
     IDD_FIND = 4202, /* FindDlg */
+    IDD_PRINT_MAP = 214, /* PrintMapDlg */
 } DialogId;
 
 #undef IDOK
@@ -3357,8 +3358,8 @@ typedef enum ControlId {
 
     IDC_U16_0x0051 = 0x0051, /* 81 */
     IDC_U16_0x008B = 0x008B, /* 139 */
-    IDC_U16_0x00A1 = 0x00A1, /* 161 */
-    IDC_U16_0x00A3 = 0x00A3, /* 163 */
+    IDC_VCR_REW_ALL = 0x00A1, /* 161 */
+    IDC_VCR_PLAY_PAUSE = 0x00A3, /* 163 */
     IDC_U16_0x00C6 = 0x00C6, /* 198 */
     IDC_U16_0x00CB = 0x00CB, /* 203 */
     IDC_U16_0x00D3 = 0x00D3, /* 211 */
@@ -3388,16 +3389,97 @@ typedef enum ControlId {
     IDC_U16_0x07D5 = 0x07D5, /* 2005 */
     IDC_U16_0x07D6 = 0x07D6, /* 2006 */
 
-    IDC_U16_0x07DF = 0x07DF, /* 2015 */
-    IDC_U16_0x07E0 = 0x07E0, /* 2016 */
-    IDC_U16_0x07E1 = 0x07E1, /* 2017 */
-    IDC_U16_0x07E2 = 0x07E2, /* 2018 */
+    IDC_HOST_PASSWORD = 0x07DF, /* 2015 */
+    IDC_HOST_NEXT_YEAR_TEXT = 0x07E0, /* 2016 */
+    IDC_HOST_TIME_SINCE_TEXT = 0x07E1, /* 2017 */
+    IDC_PASSWORD_STATUS_TEXT = 0x07E2, /* 2018 */
 
     IDC_U16_0x080C = 0x080C, /* 2060 */
 
     IDC_COMBOBOX = 0x081A,
 
+    // battle VCR
+    IDC_VCR_REW = 162,
+    IDC_VCR_FWD = 164,
+    IDC_VCR_FWD_ALL = 165,
+
+    // save turn
+    IDC_SAVESUBMIT = 1066,
+
+    // host mode / auto generate options
+    IDC_AUTOGEN_WHEN_ALL_IN = 1027,
+    IDC_HOST_GENERATE_NOW = 1031,
+    IDC_HOST_AUTO_GENERATE = 1032,
+    IDC_HOST_GAME_NAME_TEXT = 1033,
+    IDC_HOST_FILE_TEXT = 1034,
+
 } ControlId;
+
+/* Numeric cursor resources, named after the hcur globals they load into;
+ * the others are named (SCANNERCUR, ...). */
+#undef IDC_HAND
+typedef enum CursorId {
+    IDC_NO_WAY = 121,
+    IDC_TRASH_CAN = 122,
+    IDC_RESIZE_WE = 258,
+    IDC_RESIZE_NS = 260,
+    IDC_RESIZE_4WAY = 263,
+    IDC_ARROW_HELP = 264,
+    IDC_HAND = 265,
+} CursorId;
+
+/* Numeric bitmap resources; the others are named (CARGOBMP, ...). IDB_ ones
+ * are loaded with LoadBitmap, IDDIB_ ones as DIBs through FindResource. */
+typedef enum BitmapId {
+    IDDIB_PLAYER_ICONS_TINY = 79,
+    IDDIB_PLAYER_ICONS_SMALL = 80,
+    IDDIB_THING_ICONS = 87,
+    IDDIB_SCANNER_TOOLBAR = 88,
+    IDDIB_PLANET_ICONS = 112,
+    IDB_EMPTY_HULL_SLOT = 119,
+    IDDIB_PLAYER_ICONS = 133,
+    IDB_MSGFILTER_CHECKBOX = 134,
+    IDB_TOOLBAR = 178,
+    IDB_FILTER_CHECKBOX_MONO = 199,
+    IDB_FONT_DIGITS = 249,
+    IDDIB_SPLASH = 449,
+    IDB_MINESPAT_1 = 460,
+    IDB_MINESPAT_2 = 461,
+    IDB_MINESPAT_3 = 462,
+    IDDIB_TECH_ICONS_1 = 500,
+    IDDIB_TECH_ICONS_2 = 501,
+    IDDIB_TECH_ICONS_3 = 502,
+    IDDIB_TECH_ICONS_4 = 503,
+    IDDIB_TECH_ICONS_5 = 504,
+    IDDIB_TECH_ICONS_6 = 505,
+    IDDIB_TECH_ICONS_7 = 506,
+    IDDIB_HULL_ICONS_1 = 552,
+    IDDIB_HULL_ICONS_2 = 553,
+    IDDIB_HULL_ICONS_3 = 554,
+    IDDIB_HULL_ICONS_4 = 555,
+    IDDIB_HULL_ICONS_5 = 556,
+    IDDIB_HULL_ICONS_SMALL_1 = 557,
+    IDDIB_HULL_ICONS_SMALL_2 = 558,
+    IDDIB_HULL_ICONS_SMALL_3 = 559,
+    IDDIB_HULL_ICONS_SMALL_4 = 560,
+    IDDIB_HULL_ICONS_SMALL_5 = 561,
+    IDDIB_NUM_DESIGNS_PLATE = 1079,
+} BitmapId;
+
+typedef enum AcceleratorId {
+    IDA_MAIN = 116,
+    IDA_TITLE = 1080,
+} AcceleratorId;
+
+/* Tutorial game files, each stored as its own custom resource type. */
+typedef enum TutorialResourceId {
+    RT_TUTORIAL_HST = 10000,
+    IDR_TUTORIAL_HST = 10001,
+    RT_TUTORIAL_M1 = 10002,
+    IDR_TUTORIAL_M1 = 10003,
+    RT_TUTORIAL_M2 = 10004,
+    IDR_TUTORIAL_M2 = 10005,
+} TutorialResourceId;
 
 typedef enum WParamMessageId {
     IDM_DEBUG_DUMP_FLEETS = 0x0053,   // DumpFleets()
@@ -3415,6 +3497,7 @@ typedef enum WParamMessageId {
 
     // ---- File / game lifecycle -------------------------------------------
     IDM_FILE_HOST_GAME = 0x0069,       // Host game ?
+    IDM_TURN_WAIT_NEW = 0x006A,        // Turn > Wait for New
     IDM_FILE_OPEN_GAME = 0x006D,       // Open game
     IDM_FILE_NEW_GAME = 0x006E,        // New game wizard
     IDM_FILE_RETURN_TO_TITLE = 0x0071, // Close game, return to title screen
@@ -3492,27 +3575,27 @@ typedef enum WParamMessageId {
     IDM_DEBUG_GEN_10_TURNS = 21000,  // generate 10 turns (inferred)
     IDM_DEBUG_GEN_100_TURNS = 21001, // generate 100 turns (0x5209)
     IDM_DEBUG_GEN_1000_TURNS = 21002,
-    IDM_UNKNOWN_098D = 0x098D,
+    IDM_VIEW_PLAYER_COLORS = 0x098D,
     IDM_UNKNOWN_09C1 = 0x09C1,
-    IDM_UNKNOWN_09C2 = 0x09C2,
+    IDM_HELP_INTRO = 0x09C2,
     IDM_UNKNOWN_09C4 = 0x09C4,
-    IDM_UNKNOWN_09C5 = 0x09C5,
-    IDM_UNKNOWN_0EE2 = 0x0EE2,
+    IDM_HELP_TUTORIAL = 0x09C5,
+    IDM_FILE_EXIT = 0x0EE2,
     IDM_FRAME_POST_OPEN = 0x0FA1,
-    IDM_UNKNOWN_1068 = 0x1068,
+    IDM_VIEW_FIND = 0x1068,
     IDM_UNKNOWN_1069 = 0x1069,
 
     IDC_UNKNOWN_0087 = 0x0087,
     IDC_UNKNOWN_0089 = 0x0089,
-    IDC_UNKNOWN_009E = 0x009E,
+    IDM_VIEW_GAME_PARAMS = 0x009E,
     IDC_UNKNOWN_009F = 0x009F,
-    IDC_UNKNOWN_00B3 = 0x00B3,
-    IDC_UNKNOWN_00D5 = 0x00D5,
-    IDC_UNKNOWN_00FA = 0x00FA,
-    IDC_UNKNOWN_00FB = 0x00FB,
-    IDC_UNKNOWN_00FC = 0x00FC,
-    IDC_UNKNOWN_00FD = 0x00FD,
-    IDC_UNKNOWN_010E = 0x010E,
+    IDM_VIEW_TOOLBAR = 0x00B3,
+    IDM_FILE_PRINT_MAP = 0x00D5,
+    IDM_TITLE_NEW_GAME = 0x00FA,
+    IDM_TITLE_OPEN_GAME = 0x00FB,
+    IDM_TITLE_CONTINUE = 0x00FC,
+    IDM_TITLE_EXIT = 0x00FD,
+    IDM_CMD_CHANGE_PASSWORD = 0x010E,
     IDC_UNKNOWN_0428 = 0x0428,
 
     WMX_UNKNOWN_0069 = 0x0069,

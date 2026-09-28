@@ -2,7 +2,7 @@
 
 uint16_t mpimdgrbitBU[8] = {8, 8, 16, 32, 128, 64, 8, 8};
 
-int32_t PopupWndProc(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
@@ -15,7 +15,7 @@ L_0012:
 
 L_0018:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0046:
@@ -929,7 +929,7 @@ L_12f6:
 L_1302:
     pt.y = t_merge_1302_0001;
     hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP | WS_VISIBLE | WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndPopup, WM_SETFONT, rghfontArial8[0], 0);
+    SendMessage(hwndPopup, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
     SetCapture(hwndPopup);
     return;
 }
@@ -1076,7 +1076,7 @@ L_158f:
     t_merge_1592_0001 = 0x0;
 
 L_1592:
-    AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 15000), szTemp);
+    AppendMenu(hmenuPopup, t_merge_1592_0001, (i + 15000), szTemp);
 
 L_15aa:
     goto L_1883;
@@ -1197,7 +1197,7 @@ L_1719:
     t_merge_171c_0001 = 0x0;
 
 L_171c:
-    AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 15000), szTemp);
+    AppendMenu(hmenuSub, t_merge_171c_0001, (i + 15000), szTemp);
 
 L_1734:
     i = (i + 1);
@@ -1222,7 +1222,7 @@ L_1757:
     t_merge_175a_0001 = 0x0;
 
 L_175a:
-    AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), hmenuSub, pszTitle);
+    AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), (UINT_PTR)(hmenuSub), pszTitle);
     goto L_1883;
 
 L_1771:
@@ -1292,7 +1292,7 @@ L_184b:
     t_merge_184f_0001 = 0;
 
 L_184f:
-    if (((t_merge_184f_0001 | 0x0) != 0x0))
+    if ((t_merge_184f_0001 != 0))
         goto L_1865;
     else
         goto L_186b;

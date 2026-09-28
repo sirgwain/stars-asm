@@ -11,7 +11,7 @@ char    rgRaceStatMin[16] = {7, 5, 5, 5, 5, 2, 5};
 
 int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrite) {
     int16_t mdRet;
-    int16_t (*lpProc)();
+    FARPROC lpProc;
     RECT    rgrcStack[17];
     int16_t cpts;
     char   *t_merge_038c_0001;
@@ -249,7 +249,7 @@ L_03a0:
     return 1;
 }
 
-int16_t RaceWizardDlg1(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     int16_t     iPlrBmp;
@@ -339,16 +339,16 @@ L_04f0:
 
 L_050a:
     CheckRadioButton(hwnd, 271, 278, (i + 271));
-    SendDlgItemMessage(hwnd, 268, 0x415, 0xf, 0);
-    SendDlgItemMessage(hwnd, 2075, 0x415, 0xf, 0);
-    SendDlgItemMessage(hwnd, 269, 0x415, 0x10, 0);
+    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
+    SendDlgItemMessage(hwnd, 2075, EM_LIMITTEXT, 0xf, 0);
+    SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
     hwndCB = GetDlgItem(hwnd, IDC_COMBOBOX);
     i = 262;
     goto L_05b5;
 
 L_058c:
     psz = PszGetCompressedString(i);
-    SendMessage(hwndCB, CB_ADDSTRING, 0x0, psz);
+    SendMessage(hwndCB, CB_ADDSTRING, 0x0, (LPARAM)(psz));
     i = (i + 1);
 
 L_05b5:
@@ -481,7 +481,7 @@ L_0823:
 
 L_0851:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0879:
@@ -516,8 +516,8 @@ L_08ba:
         goto L_08d6;
 
 L_08d6:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_08ef:
     hdc = BeginPaint(hwnd, &(ps));
@@ -733,7 +733,7 @@ L_0daa:
     GetDlgItemText(hwnd, IDC_EDIT1, vplr.szName, 32);
     memset(vplr.szNames, 0, 0x20);
     GetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames, 32);
-    GetDlgItemText(hwnd, wParam, szBuf, 32);
+    GetDlgItemText(hwnd, (ControlId)(wParam), szBuf, 32);
     i = 0;
     goto L_0e4a;
 
@@ -863,7 +863,7 @@ L_1051:
     return 0;
 }
 
-int16_t RaceWizardDlg2(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -982,7 +982,7 @@ L_14a7:
 
 L_14c0:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_14e8:
@@ -1017,8 +1017,8 @@ L_1529:
         goto L_1545;
 
 L_1545:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_155e:
     hdc = BeginPaint(hwnd, &(ps));
@@ -1097,7 +1097,7 @@ L_16a2:
         goto L_16ac;
 
 L_16ac:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
     iVar = (wParam - 291);
     if ((i != 1))
         goto L_1707;
@@ -2024,7 +2024,7 @@ L_2785:
     return 1;
 }
 
-int16_t RaceWizardDlg3(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     POINT       pt;
@@ -2036,7 +2036,7 @@ L_2792:
 
 L_27a1:
     SetRCWTitle(hwnd, iPanelActive);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(&(vplr), ibitRaceCheapFact), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_SETCHECK, GetRaceGrbit(&(vplr), ibitRaceCheapFact), 0);
     if ((fRCWReadOnly != 0))
         goto L_2801;
     else
@@ -2057,7 +2057,7 @@ L_2817:
 
 L_2830:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_2858:
@@ -2073,8 +2073,8 @@ L_2877:
         goto L_2893;
 
 L_2893:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_28ac:
     GetCursorPos(&(pt));
@@ -2146,7 +2146,7 @@ L_29e0:
         goto L_29ea;
 
 L_29ea:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_GETCHECK, 0x0, 0));
     SetRaceGrbit(&(vplr), ibitRaceCheapFact, i);
     DrawRace3(hwnd, 0x0, 99);
 
@@ -2621,7 +2621,7 @@ L_3203:
     return;
 }
 
-int16_t RaceWizardDlg4(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -2662,7 +2662,7 @@ L_3281:
 
 L_329a:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_32c2:
@@ -2697,8 +2697,8 @@ L_3303:
         goto L_331f;
 
 L_331f:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_3338:
     hdc = BeginPaint(hwnd, &(ps));
@@ -2870,7 +2870,7 @@ L_3780:
     return 0;
 }
 
-int16_t RaceWizardDlg5(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HWND        hwndCtl;
@@ -2891,7 +2891,7 @@ L_379d:
 L_37ba:
     hwndCtl = GetDlgItem(hwnd, (i + 291));
     SetWindowText(hwndCtl, PszGetCompressedString((i + 306)));
-    SendMessage(hwndCtl, CB_LIMITTEXT, GetRaceGrbit(&(vplr), i), 0);
+    SendMessage(hwndCtl, BM_SETCHECK, GetRaceGrbit(&(vplr), i), 0);
     if ((fRCWReadOnly == 0))
         goto L_3821;
     else
@@ -2915,7 +2915,7 @@ L_382e:
 
 L_3847:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_386f:
@@ -2950,8 +2950,8 @@ L_38b0:
         goto L_38cc;
 
 L_38cc:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_38e5:
     hdc = BeginPaint(hwnd, &(ps));
@@ -3033,7 +3033,7 @@ L_3b06:
         goto L_3b10;
 
 L_3b10:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
     cColDrop = (wParam - 291);
     SetRaceGrbit(&(vplr), cColDrop, i);
     InvalidateAdvPtsRect(hwnd);
@@ -3076,7 +3076,7 @@ L_3ba0:
     return 0;
 }
 
-int16_t RaceWizardDlg6(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
     HDC         hdc;
@@ -3141,7 +3141,7 @@ L_3c75:
 L_3c78:
     _wsprintf(szWork, PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech), (t_merge_3c78_0001 + 0x3));
     SetWindowText(GetDlgItem(hwnd, IDC_U16_0x0123), szWork);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), CB_LIMITTEXT, GetRaceGrbit(&(vplr), ibitRaceTech3), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_SETCHECK, GetRaceGrbit(&(vplr), ibitRaceTech3), 0);
     if ((fRCWReadOnly == 0))
         goto L_3d03;
     else
@@ -3156,7 +3156,7 @@ L_3d03:
 
 L_3d1c:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_3d44:
@@ -3197,8 +3197,8 @@ L_3da4:
         goto L_3dc0;
 
 L_3dc0:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_3dd9:
     hdc = BeginPaint(hwnd, &(ps));
@@ -3304,7 +3304,7 @@ L_4021:
         goto L_402b;
 
 L_402b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, wParam), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, (ControlId)(wParam)), WM_USER, 0x0, 0));
     SetRaceGrbit(&(vplr), ibitRaceTech3, i);
     InvalidateAdvPtsRect(hwnd);
 
@@ -4797,7 +4797,7 @@ uint16_t IRaceChecksum(PLAYER *pplr) {
     int16_t   cs;
 
 L_5888:
-    p = pplr;
+    p = (uint16_t *)(pplr);
     cs = 96;
     ick = 0x0;
     i = 0;

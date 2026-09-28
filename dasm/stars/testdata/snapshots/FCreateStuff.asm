@@ -707,19 +707,19 @@ MOV       [hbmpNumbers], ax         ; [0x597a], ax
                                     ; init.c:145
 MOV       ax, 0x0070          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibPlanets], ax         ; [0x4952], ax
                                     ; init.c:146
 MOV       ax, 0x0057          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibThings], ax          ; [0x242e], ax
                                     ; init.c:147
 MOV       ax, 0x00b2          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibToolbar], ax         ; [0x598c], ax
                                     ; init.c:149
@@ -745,7 +745,7 @@ L_06c4:                             ; init.c:154
 MOV       ax, [bp-i]                ; ax, [bp-0x8]
 ADD       ax, 0x0228          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       bx, [bp-i]                ; bx, [bp-0x8]
 SHL       bx, 0x0001          
@@ -763,7 +763,7 @@ L_06f0:                             ; init.c:158
 MOV       ax, [bp-i]                ; ax, [bp-0x8]
 ADD       ax, 0x022d          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       bx, [bp-i]                ; bx, [bp-0x8]
 SHL       bx, 0x0001          
@@ -792,7 +792,7 @@ L_0731:                             ; init.c:164
 MOV       ax, [bp-i]                ; ax, [bp-0x8]
 ADD       ax, 0x01f4          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       bx, [bp-i]                ; bx, [bp-0x8]
 SHL       bx, 0x0001          
@@ -821,19 +821,19 @@ MOV       [vhpal], ax               ; [0x5314], ax
                                     ; init.c:170
 MOV       ax, 0x0085          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibRaces], ax           ; [0x5476], ax
                                     ; init.c:171
 MOV       ax, 0x0050          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibRacesT], ax          ; [0x2606], ax
                                     ; init.c:172
 MOV       ax, 0x004f          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibRacesX], ax          ; [0x2604], ax
                                     ; init.c:174
@@ -863,7 +863,7 @@ MOV       [hbmpMono], ax            ; [0x5992], ax
                                     ; init.c:178
 MOV       ax, 0x0437          
 PUSH      ax                  
-CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(int16_t idb)
+CALLF     HdibLoadBigResource       ; HGLOBAL HdibLoadBigResource(BitmapId idb)
 ADD       sp, 0x0002          
 MOV       [hdibPlaque], ax          ; [0x0c82], ax
                                     ; init.c:180
@@ -970,7 +970,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnFakeComboProc], ax   ; [0x2544], ax
 MOV       [lpfnFakeComboProc+0x2], dx ; [0x2546], dx
                                     ; init.c:195
@@ -979,7 +979,7 @@ MOV       dx, 0x08e1
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnFakeCEProc], ax      ; [0x2748], ax
 MOV       [lpfnFakeCEProc+0x2], dx  ; [0x274a], dx
                                     ; init.c:196
@@ -988,7 +988,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnFakeEditProc], ax    ; [0x2538], ax
 MOV       [lpfnFakeEditProc+0x2], dx; [0x253a], dx
                                     ; init.c:197
@@ -997,7 +997,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnFakeListProc], ax    ; [0x2402], ax
 MOV       [lpfnFakeListProc+0x2], dx; [0x2404], dx
                                     ; init.c:198
@@ -1006,7 +1006,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnHostTimerProc], ax   ; [0x51fe], ax
 MOV       [lpfnHostTimerProc+0x2], dx ; [0x5200], dx
                                     ; init.c:199
@@ -1015,7 +1015,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnBrowserDlgProc], ax  ; [0x51d0], ax
 MOV       [lpfnBrowserDlgProc+0x2], dx ; [0x51d2], dx
                                     ; init.c:200
@@ -1024,7 +1024,7 @@ MOV       dx, 0xffff
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnReportDlgProc], ax   ; [0x3efc], ax
 MOV       [lpfnReportDlgProc+0x2], dx ; [0x3efe], dx
                                     ; init.c:201
@@ -1033,7 +1033,7 @@ MOV       dx, 0x07e9
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [lpfnGaugeDlgProc], ax    ; [0x2408], ax
 MOV       [lpfnGaugeDlgProc+0x2], dx; [0x240a], dx
                                     ; init.c:203

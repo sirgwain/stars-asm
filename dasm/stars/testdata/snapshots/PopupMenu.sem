@@ -122,7 +122,7 @@ L_158f:
     t_merge_1592_0001 = 0x0
 
 L_1592:
-    call AppendMenu(hmenuPopup, (t_merge_1592_0001 | 0x0), (i + 15000), szTemp) -> callresult(int16_t)
+    call AppendMenu(hmenuPopup, t_merge_1592_0001, (i + 15000), szTemp) -> callresult(int16_t)
 
 L_15aa:
     goto L_1883
@@ -213,7 +213,7 @@ L_1719:
     t_merge_171c_0001 = 0x0
 
 L_171c:
-    call AppendMenu(hmenuSub, (t_merge_171c_0001 | 0x0), (i + 15000), szTemp) -> callresult(int16_t)
+    call AppendMenu(hmenuSub, t_merge_171c_0001, (i + 15000), szTemp) -> callresult(int16_t)
 
 L_1734:
     i = (i + 1)
@@ -232,7 +232,7 @@ L_1757:
     t_merge_175a_0001 = 0x0
 
 L_175a:
-    call AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), hmenuSub, pszTitle) -> callresult(int16_t)
+    call AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), (UINT_PTR)hmenuSub, pszTitle) -> callresult(int16_t)
     goto L_1883
 
 L_1771:
@@ -284,7 +284,7 @@ L_184b:
     t_merge_184f_0001 = 0
 
 L_184f:
-    branch (t_merge_184f_0001 | 0x0) != 0x0 ? L_1865 : L_186b
+    branch t_merge_184f_0001 != 0 ? L_1865 : L_186b
 
 
 L_1865:

@@ -19,10 +19,10 @@ ZIPPRODQ1  rgzpqTut[2] = {{
                               .rgpq = {{.w = 132, .mdIdle = 4, .cQuan = 2}, {.w = 193, .mdIdle = 1, .cQuan = 3}, {.w = 192, .cQuan = 3}},
                          }};
 
-int16_t TutorDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
-    HMENU hmenu;
-    RECT  rc;
-    int16_t (*lpProc)();
+INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    HMENU    hmenu;
+    RECT     rc;
+    FARPROC  lpProc;
     int16_t  fRet;
     uint16_t t_merge_0108_0001;
 
@@ -31,13 +31,13 @@ L_0000:
 
 L_000f:
     tutor.hwnd = hwnd;
-    SetWindowPos(hwnd, 0xffff, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+    SetWindowPos(hwnd, (HWND)(-1), 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
     StickyDlgPos(hwnd, &(ptStickyTutorDlg), 1);
     return 1;
 
 L_004e:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0076:
@@ -162,7 +162,7 @@ L_025b:
     return 0;
 }
 
-int16_t PanicDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT rc;
 
 L_026a:
@@ -170,7 +170,7 @@ L_026a:
 
 L_0279:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_02a1:
@@ -180,8 +180,8 @@ L_02a1:
         goto L_02bd;
 
 L_02bd:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_02d6:
     if ((wParam != 0x2))
@@ -523,7 +523,7 @@ L_08c0:
 
 L_08ea:
     InitializeMenu(0x0);
-    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)(0xfa1), 0);
     if ((fFreeingTitle != 0))
         goto L_092e;
     else

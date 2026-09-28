@@ -16,6 +16,9 @@ type SymbolDB struct {
 	Sources     []SourceRange
 	Messages    []*MessageRule
 
+	WindowClasses []*WindowClass
+	WindowRules   []*WindowRule
+
 	EnumRules          []*EnumUseRule
 	DependentEnumRules []*DependentEnumRule
 	UnionRules         *UnionRules
@@ -142,10 +145,12 @@ func (sdb *SymbolDB) GetEnum(name string) *Enum {
 	return sdb.enumsByName[strings.ToLower(name)]
 }
 
-// GetMessage returns the payload rule for a numeric window message.
-func (sdb *SymbolDB) GetMessage(value int) *MessageRule {
+// GetMessage returns the payload rule for a numeric message named by enum:
+// the window message enum, or a window class's control message enum. Enums
+// match by name, since each annotated use may carry its own copy.
+func (sdb *SymbolDB) GetMessage(enum *Enum, value int) *MessageRule {
 	for _, message := range sdb.Messages {
-		if message.Value == value {
+		if message.Enum.Name == enum.Name && message.Value == value {
 			return message
 		}
 	}

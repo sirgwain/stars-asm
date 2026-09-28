@@ -12,6 +12,7 @@ import (
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/ir"
+	"github.com/sirgwain/stars-asm/dasm/stars/resources"
 	"github.com/sirgwain/stars-asm/dasm/stars/sem"
 	"github.com/sirgwain/stars-asm/dasm/stars/templates"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -136,6 +137,13 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		}
 		if err := f.Close(); err != nil {
 			return result, fmt.Errorf("close %s: %w", enumsPath, err)
+		}
+
+		// res/: resource script, resource.h and the files the script includes
+		resDir := filepath.Join(opt.OutDir, "res")
+		slog.Debug("Dumping resources", "path", resDir)
+		if err := resources.Write(resDir, img, sdb); err != nil {
+			return DumpAllResult{}, fmt.Errorf("write resources: %w", err)
 		}
 
 		for _, module := range sdb.Modules {

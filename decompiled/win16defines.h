@@ -1,6 +1,121 @@
 #ifndef STARS_DECOMPILED_WIN16DEFINES_H
 #define STARS_DECOMPILED_WIN16DEFINES_H
 
+// Old CRT names
+#define fmemcmp  memcmp
+#define fmemcpy  memcpy
+#define fmemmove memmove
+#define fmemset  memset
+#define fstrcat  strcat
+#define fstrcmp  strcmp
+#define fstrcpy  strcpy
+#define fstricmp stricmp
+#define fstrlen  strlen
+
+#define strtime _strtime
+
+// Old Windows names
+#define _wsprintf wsprintfA
+
+// Win16 APIs whose Win32 equivalents changed signature
+#define GetTextExtent GetTextExtent16
+#define MoveTo        MoveTo16
+#define SetWindowOrg  SetWindowOrg16
+#define SetBrushOrg   SetBrushOrg16
+#undef GetWindowLong
+#undef SetWindowLong
+#define GetWindowLong GetWindowLong16
+#define SetWindowLong SetWindowLong16
+#undef GetDriveType
+#define GetDriveType  GetDriveType16
+#define AllocResource AllocResource16
+
+// shims
+
+static inline char *strdate(char *buf) {
+    time_t     t = time(NULL);
+    struct tm *tm = localtime(&t);
+
+    sprintf(buf, "%02d/%02d/%02d", tm->tm_mon + 1, tm->tm_mday, (tm->tm_year + 1900) % 100);
+
+    return buf;
+}
+
+static inline DWORD GetTextExtent16(HDC hdc, LPCSTR str, int len) {
+    SIZE size;
+
+    if (!GetTextExtentPoint32A(hdc, str, len, &size))
+        return 0;
+
+    return MAKELONG((WORD)size.cx, (WORD)size.cy);
+}
+
+/*
+ * Win16 GDI compatibility
+ *
+ * The Win32 Ex versions added an optional output parameter containing
+ * the previous position/origin. The Win16 functions returned the
+ * previous value packed into a DWORD.
+ */
+
+static inline DWORD MoveTo16(HDC hdc, int x, int y) {
+    POINT old;
+
+    if (!MoveToEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+static inline DWORD SetWindowOrg16(HDC hdc, int x, int y) {
+    POINT old;
+
+    if (!SetWindowOrgEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+static inline DWORD SetBrushOrg16(HDC hdc, int x, int y) {
+    POINT old;
+
+    if (!SetBrushOrgEx(hdc, x, y, &old))
+        return 0;
+
+    return MAKELONG((WORD)old.x, (WORD)old.y);
+}
+
+/*
+ * Win16 window longs
+ *
+ * Stars only uses the window long to subclass controls through
+ * GWL_WNDPROC. Win16 indexes are 16-bit, so the negative GWL_ indexes arrive
+ * as 0xfffc and are narrowed back here; the procedure pointer is stored at
+ * full native width because Win64 has no 32-bit GWL_WNDPROC.
+ */
+
+static inline FARPROC GetWindowLong16(HWND hwnd, short index) { return (FARPROC)GetWindowLongPtrA(hwnd, index); }
+
+static inline FARPROC SetWindowLong16(HWND hwnd, short index, FARPROC lpfn) { return (FARPROC)SetWindowLongPtrA(hwnd, index, (LONG_PTR)lpfn); }
+
+/*
+ * Win16 drive and resource APIs
+ *
+ * Win16 GetDriveType took a 0-based drive number; Win32 takes a root path.
+ * Win16 AllocResource allocated a moveable block for a resource's data
+ * (cb 0 meaning the resource's size); Win32 has no equivalent, so allocate
+ * the same block with GlobalAlloc.
+ */
+
+static inline UINT GetDriveType16(int drive) {
+    char root[] = "A:\\";
+
+    root[0] = (char)('A' + drive);
+    return GetDriveTypeA(root);
+}
+
+static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb) { return GlobalAlloc(GMEM_MOVEABLE, cb ? cb : SizeofResource(hinst, hrsrc)); }
+
 // Win16 constants. windows.h provides most of them; the rest, such as
 // Win16-only messages and application WM_USER messages, are defined here.
 #ifndef BN_CLICKED
@@ -522,8 +637,131 @@
 #ifndef WM_USER
 #define WM_USER 0x0400
 #endif
+#ifndef WM_STARS_STARTUP
+#define WM_STARS_STARTUP 0x0464
+#endif
+#ifndef WM_STARS_HOST
+#define WM_STARS_HOST 0x0465
+#endif
+#ifndef WM_STARS_CONTINUE
+#define WM_STARS_CONTINUE 0x0466
+#endif
+#ifndef BM_GETCHECK
+#define BM_GETCHECK 0x0400
+#endif
+#ifndef BM_SETCHECK
+#define BM_SETCHECK 0x0401
+#endif
+#ifndef BM_GETSTATE
+#define BM_GETSTATE 0x0402
+#endif
+#ifndef BM_SETSTATE
+#define BM_SETSTATE 0x0403
+#endif
+#ifndef BM_SETSTYLE
+#define BM_SETSTYLE 0x0404
+#endif
+#ifndef LB_ADDSTRING
+#define LB_ADDSTRING 0x0401
+#endif
+#ifndef LB_INSERTSTRING
+#define LB_INSERTSTRING 0x0402
+#endif
+#ifndef LB_DELETESTRING
+#define LB_DELETESTRING 0x0403
+#endif
+#ifndef LB_RESETCONTENT
+#define LB_RESETCONTENT 0x0405
+#endif
+#ifndef LB_SETSEL
+#define LB_SETSEL 0x0406
+#endif
+#ifndef LB_SETCURSEL
+#define LB_SETCURSEL 0x0407
+#endif
+#ifndef LB_GETSEL
+#define LB_GETSEL 0x0408
+#endif
+#ifndef LB_GETCURSEL
+#define LB_GETCURSEL 0x0409
+#endif
+#ifndef LB_GETTEXT
+#define LB_GETTEXT 0x040A
+#endif
+#ifndef LB_GETTEXTLEN
+#define LB_GETTEXTLEN 0x040B
+#endif
+#ifndef LB_GETCOUNT
+#define LB_GETCOUNT 0x040C
+#endif
+#ifndef LB_SELECTSTRING
+#define LB_SELECTSTRING 0x040D
+#endif
+#ifndef LB_DIR
+#define LB_DIR 0x040E
+#endif
+#ifndef LB_GETTOPINDEX
+#define LB_GETTOPINDEX 0x040F
+#endif
+#ifndef LB_FINDSTRING
+#define LB_FINDSTRING 0x0410
+#endif
+#ifndef LB_GETSELCOUNT
+#define LB_GETSELCOUNT 0x0411
+#endif
+#ifndef LB_GETSELITEMS
+#define LB_GETSELITEMS 0x0412
+#endif
+#ifndef LB_SETTABSTOPS
+#define LB_SETTABSTOPS 0x0413
+#endif
+#ifndef LB_GETHORIZONTALEXTENT
+#define LB_GETHORIZONTALEXTENT 0x0414
+#endif
+#ifndef LB_SETHORIZONTALEXTENT
+#define LB_SETHORIZONTALEXTENT 0x0415
+#endif
+#ifndef LB_SETCOLUMNWIDTH
+#define LB_SETCOLUMNWIDTH 0x0416
+#endif
+#ifndef LB_SETTOPINDEX
+#define LB_SETTOPINDEX 0x0418
+#endif
+#ifndef LB_GETITEMRECT
+#define LB_GETITEMRECT 0x0419
+#endif
+#ifndef LB_GETITEMDATA
+#define LB_GETITEMDATA 0x041A
+#endif
+#ifndef LB_SETITEMDATA
+#define LB_SETITEMDATA 0x041B
+#endif
+#ifndef LB_SELITEMRANGE
+#define LB_SELITEMRANGE 0x041C
+#endif
+#ifndef LB_SETCARETINDEX
+#define LB_SETCARETINDEX 0x041F
+#endif
+#ifndef LB_GETCARETINDEX
+#define LB_GETCARETINDEX 0x0420
+#endif
+#ifndef LB_SETITEMHEIGHT
+#define LB_SETITEMHEIGHT 0x0421
+#endif
+#ifndef LB_GETITEMHEIGHT
+#define LB_GETITEMHEIGHT 0x0422
+#endif
+#ifndef LB_FINDSTRINGEXACT
+#define LB_FINDSTRINGEXACT 0x0423
+#endif
+#ifndef CB_GETEDITSEL
+#define CB_GETEDITSEL 0x0400
+#endif
 #ifndef CB_LIMITTEXT
 #define CB_LIMITTEXT 0x0401
+#endif
+#ifndef CB_SETEDITSEL
+#define CB_SETEDITSEL 0x0402
 #endif
 #ifndef CB_ADDSTRING
 #define CB_ADDSTRING 0x0403
@@ -552,23 +790,215 @@
 #ifndef CB_RESETCONTENT
 #define CB_RESETCONTENT 0x040B
 #endif
+#ifndef CB_FINDSTRING
+#define CB_FINDSTRING 0x040C
+#endif
+#ifndef CB_SELECTSTRING
+#define CB_SELECTSTRING 0x040D
+#endif
 #ifndef CB_SETCURSEL
 #define CB_SETCURSEL 0x040E
+#endif
+#ifndef CB_SHOWDROPDOWN
+#define CB_SHOWDROPDOWN 0x040F
+#endif
+#ifndef CB_GETITEMDATA
+#define CB_GETITEMDATA 0x0410
+#endif
+#ifndef CB_SETITEMDATA
+#define CB_SETITEMDATA 0x0411
+#endif
+#ifndef CB_GETDROPPEDCONTROLRECT
+#define CB_GETDROPPEDCONTROLRECT 0x0412
+#endif
+#ifndef CB_SETITEMHEIGHT
+#define CB_SETITEMHEIGHT 0x0413
+#endif
+#ifndef CB_GETITEMHEIGHT
+#define CB_GETITEMHEIGHT 0x0414
 #endif
 #ifndef CB_SETEXTENDEDUI
 #define CB_SETEXTENDEDUI 0x0415
 #endif
+#ifndef CB_GETEXTENDEDUI
+#define CB_GETEXTENDEDUI 0x0416
+#endif
+#ifndef CB_GETDROPPEDSTATE
+#define CB_GETDROPPEDSTATE 0x0417
+#endif
 #ifndef CB_FINDSTRINGEXACT
 #define CB_FINDSTRINGEXACT 0x0418
 #endif
-#ifndef WM_STARS_STARTUP
-#define WM_STARS_STARTUP 0x0464
+#ifndef EM_GETSEL
+#define EM_GETSEL 0x0400
 #endif
-#ifndef WM_STARS_HOST
-#define WM_STARS_HOST 0x0465
+#ifndef EM_SETSEL
+#define EM_SETSEL 0x0401
 #endif
-#ifndef WM_STARS_CONTINUE
-#define WM_STARS_CONTINUE 0x0466
+#ifndef EM_GETRECT
+#define EM_GETRECT 0x0402
+#endif
+#ifndef EM_SETRECT
+#define EM_SETRECT 0x0403
+#endif
+#ifndef EM_SETRECTNP
+#define EM_SETRECTNP 0x0404
+#endif
+#ifndef EM_LINESCROLL
+#define EM_LINESCROLL 0x0406
+#endif
+#ifndef EM_GETMODIFY
+#define EM_GETMODIFY 0x0408
+#endif
+#ifndef EM_SETMODIFY
+#define EM_SETMODIFY 0x0409
+#endif
+#ifndef EM_GETLINECOUNT
+#define EM_GETLINECOUNT 0x040A
+#endif
+#ifndef EM_LINEINDEX
+#define EM_LINEINDEX 0x040B
+#endif
+#ifndef EM_SETHANDLE
+#define EM_SETHANDLE 0x040C
+#endif
+#ifndef EM_GETHANDLE
+#define EM_GETHANDLE 0x040D
+#endif
+#ifndef EM_LINELENGTH
+#define EM_LINELENGTH 0x0411
+#endif
+#ifndef EM_REPLACESEL
+#define EM_REPLACESEL 0x0412
+#endif
+#ifndef EM_SETFONT
+#define EM_SETFONT 0x0413
+#endif
+#ifndef EM_GETLINE
+#define EM_GETLINE 0x0414
+#endif
+#ifndef EM_LIMITTEXT
+#define EM_LIMITTEXT 0x0415
+#endif
+#ifndef EM_CANUNDO
+#define EM_CANUNDO 0x0416
+#endif
+#ifndef EM_UNDO
+#define EM_UNDO 0x0417
+#endif
+#ifndef EM_FMTLINES
+#define EM_FMTLINES 0x0418
+#endif
+#ifndef EM_LINEFROMCHAR
+#define EM_LINEFROMCHAR 0x0419
+#endif
+#ifndef EM_SETWORDBREAK
+#define EM_SETWORDBREAK 0x041A
+#endif
+#ifndef EM_SETTABSTOPS
+#define EM_SETTABSTOPS 0x041B
+#endif
+#ifndef EM_SETPASSWORDCHAR
+#define EM_SETPASSWORDCHAR 0x041C
+#endif
+#ifndef EM_EMPTYUNDOBUFFER
+#define EM_EMPTYUNDOBUFFER 0x041D
+#endif
+#ifndef EM_GETFIRSTVISIBLELINE
+#define EM_GETFIRSTVISIBLELINE 0x041E
+#endif
+#ifndef EM_SETREADONLY
+#define EM_SETREADONLY 0x041F
+#endif
+#ifndef EM_SETWORDBREAKPROC
+#define EM_SETWORDBREAKPROC 0x0420
+#endif
+#ifndef EM_GETWORDBREAKPROC
+#define EM_GETWORDBREAKPROC 0x0421
+#endif
+#ifndef EM_GETPASSWORDCHAR
+#define EM_GETPASSWORDCHAR 0x0422
+#endif
+#ifndef VK_BACK
+#define VK_BACK 0x0008
+#endif
+#ifndef VK_TAB
+#define VK_TAB 0x0009
+#endif
+#ifndef VK_RETURN
+#define VK_RETURN 0x000D
+#endif
+#ifndef VK_ESCAPE
+#define VK_ESCAPE 0x001B
+#endif
+#ifndef VK_SPACE
+#define VK_SPACE 0x0020
+#endif
+#ifndef VK_PRIOR
+#define VK_PRIOR 0x0021
+#endif
+#ifndef VK_NEXT
+#define VK_NEXT 0x0022
+#endif
+#ifndef VK_END
+#define VK_END 0x0023
+#endif
+#ifndef VK_HOME
+#define VK_HOME 0x0024
+#endif
+#ifndef VK_LEFT
+#define VK_LEFT 0x0025
+#endif
+#ifndef VK_UP
+#define VK_UP 0x0026
+#endif
+#ifndef VK_RIGHT
+#define VK_RIGHT 0x0027
+#endif
+#ifndef VK_DOWN
+#define VK_DOWN 0x0028
+#endif
+#ifndef VK_INSERT
+#define VK_INSERT 0x002D
+#endif
+#ifndef VK_DELETE
+#define VK_DELETE 0x002E
+#endif
+#ifndef VK_F1
+#define VK_F1 0x0070
+#endif
+#ifndef VK_F2
+#define VK_F2 0x0071
+#endif
+#ifndef VK_F3
+#define VK_F3 0x0072
+#endif
+#ifndef VK_F4
+#define VK_F4 0x0073
+#endif
+#ifndef VK_F5
+#define VK_F5 0x0074
+#endif
+#ifndef VK_F6
+#define VK_F6 0x0075
+#endif
+#ifndef VK_F7
+#define VK_F7 0x0076
+#endif
+#ifndef VK_F8
+#define VK_F8 0x0077
+#endif
+#ifndef VK_F9
+#define VK_F9 0x0078
+#endif
+#ifndef VK_F10
+#define VK_F10 0x0079
+#endif
+#ifndef VK_F11
+#define VK_F11 0x007A
+#endif
+#ifndef VK_F12
+#define VK_F12 0x007B
 #endif
 #ifndef CTLCOLOR_MSGBOX
 #define CTLCOLOR_MSGBOX 0x0000

@@ -3,9 +3,9 @@
 int16_t ChangeProduction(int16_t fClear) {
     jmp_buf  env;
     jmp_buf *penvMemSav;
-    int16_t (*lpProcProd)();
-    PROD    rgprod[64];
-    int16_t fSuccess;
+    FARPROC  lpProcProd;
+    PROD     rgprod[64];
+    int16_t  fSuccess;
 
 L_0000:
     penvMemSav = penvMem;
@@ -22,7 +22,7 @@ L_0029:
         goto L_004d;
 
 L_003d:
-    FreePl(lpplProdGlob);
+    FreePl((PL *)(lpplProdGlob));
 
 L_004d:
     lpplProdGlob = 0x0;
@@ -122,7 +122,7 @@ L_01d2:
     i = 2;
 
 L_01d7:
-    lpplProdGlob = LpplAlloc(0x4, i, htOrd);
+    lpplProdGlob = (PLPROD *)(LpplAlloc(0x4, i, htOrd));
     if ((sel.pl.lpplprod != 0x0))
         goto L_0206;
     else
@@ -552,7 +552,7 @@ L_1090:
         goto L_10a2;
 
 L_10a2:
-    FreePl(sel.pl.lpplprod);
+    FreePl((PL *)(sel.pl.lpplprod));
     if ((lpplProdGlob != 0x0))
         goto L_10c6;
     else
@@ -565,7 +565,7 @@ L_10c6:
         goto L_10d9;
 
 L_10d9:
-    FreePl(lpplProdGlob);
+    FreePl((PL *)(lpplProdGlob));
     lpplProdGlob = 0x0;
 
 L_10f5:
@@ -587,7 +587,7 @@ L_1165:
 
 L_1168:
     sel.pl.fNoResearch = gd.fNoResearchSav;
-    FreePl(lpplProdGlob);
+    FreePl((PL *)(lpplProdGlob));
 
 L_11c4:
     lpplProdGlob = 0x0;
@@ -610,7 +610,7 @@ L_11fe:
     return;
 }
 
-int16_t ProductionDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC                hdc;
     PAINTSTRUCT        ps;
     RECT               rc;
@@ -629,10 +629,10 @@ int16_t ProductionDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lPar
     char               sz255[2];
     char              *rgszZip[6];
     ZIPPRODQ           rgzp[4];
-    int16_t (*lpProc)();
-    int16_t  fRet;
-    uint16_t hcs;
-    int16_t  t_184a;
+    FARPROC            lpProc;
+    int16_t            fRet;
+    HCURSOR            hcs;
+    int16_t            t_184a;
 
 L_1204:
     goto L_1933;
@@ -747,7 +747,7 @@ L_154a:
     return 1;
 
 L_1563:
-    lpdis = lParam;
+    lpdis = (DRAWITEMSTRUCT *)(lParam);
     if ((lpdis->itemID != 0xffff))
         goto L_1591;
     else
@@ -786,7 +786,7 @@ L_15ce:
     return 1;
 
 L_15d4:
-    lpmis = lParam;
+    lpmis = (MEASUREITEMSTRUCT *)(lParam);
     lpmis->itemHeight = (dyArial8 + 2);
     return 1;
 
@@ -803,12 +803,12 @@ L_1612:
         goto L_162e;
 
 L_162e:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_1647:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_166f:
@@ -1075,7 +1075,7 @@ L_1994:
     goto L_33b6;
 
 AddItem:
-    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), LB_GETCURSEL, 0x0, 0);
     if ((lSel < 0))
         goto L_3429;
     else
@@ -1194,7 +1194,7 @@ L_1c26:
 
 L_1c94:
     iMac = lpplProdGlob->iprodMac;
-    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_GETCURSEL, 0x0, 0);
     if ((lSel < 0))
         goto L_1ce1;
     else
@@ -1317,7 +1317,7 @@ L_20ae:
         goto L_20c1;
 
 L_20c1:
-    lpplProdGlob = LpplReAlloc(lpplProdGlob, (iMac + 4));
+    lpplProdGlob = (PLPROD *)(LpplReAlloc((PL *)(lpplProdGlob), (iMac + 4)));
 
 L_20df:
     if ((iDst == iMac))
@@ -1334,7 +1334,7 @@ L_2130:
 
 FixedUp:
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (iDst + 1), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, (iDst + 1), 0);
     if ((pProdGlob[iSrc].cItem != 0x0))
         goto RedrawText;
     else
@@ -1347,7 +1347,7 @@ L_21e9:
     goto RedrawText;
 
 RemoveItem:
-    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_GETCURSEL, 0x0, 0);
     if ((lSel <= 0))
         goto L_3429;
     else
@@ -1517,7 +1517,7 @@ L_2689:
         goto L_26c5;
 
 L_26c5:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (LOWORD(lSel) + 0x1), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, (LOWORD(lSel) + 0x1), 0);
 
 L_26ed:
     if ((fRefillSrc == 0))
@@ -1601,7 +1601,7 @@ L_290c:
     cMax = 1;
 
 L_2911:
-    lpplprodT = LpplAlloc(0x4, cMax, htOrd);
+    lpplprodT = (PLPROD *)(LpplAlloc(0x4, cMax, htOrd));
     fmemset(lpplprodT->rgprod, 0, (cMax * 4));
     iDst = 0;
     iSrc = 0;
@@ -1687,11 +1687,11 @@ L_2b40:
 
 L_2cb0:
     lpplprodT->iprodMac = LOBYTE(iDst);
-    FreePl(lpplProdGlob);
+    FreePl((PL *)(lpplProdGlob));
     lpplProdGlob = lpplprodT;
     t_scratch_m32_5 = vrgZipProd[lParam].fNoResearch;
     sel.pl.fNoResearch = t_scratch_m32_5;
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), CB_LIMITTEXT, sel.pl.fNoResearch, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), BM_SETCHECK, sel.pl.fNoResearch, 0);
     goto L_2d71;
 
 L_2d68:
@@ -1699,9 +1699,9 @@ L_2d68:
 
 L_2d71:
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, 0x0, 0);
     FillProdSrcLB(GetDlgItem(hwnd, IDC_U16_0x0416), -1);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), CB_GETCURSEL, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), LB_SETCURSEL, 0x0, 0);
     goto RedrawText;
 
 L_2df6:
@@ -1736,10 +1736,10 @@ L_2e89:
 
 L_2e98:
     hwndLB = GetDlgItem(hwnd, IDC_U16_0x0417);
-    sel.pl.fNoResearch = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), WM_USER, 0x0, 0));
-    lSel = SendMessage(hwndLB, CB_GETLBTEXTLEN, 0x0, 0);
+    sel.pl.fNoResearch = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), BM_GETCHECK, 0x0, 0));
+    lSel = SendMessage(hwndLB, LB_GETCURSEL, 0x0, 0);
     FillPlanetProdLB(hwndLB, lpplProdGlob, 0x0);
-    SendMessage(hwndLB, CB_GETCURSEL, LOWORD(lSel), 0);
+    SendMessage(hwndLB, LB_SETCURSEL, LOWORD(lSel), 0);
     goto RedrawText;
 
 L_2f5c:
@@ -1812,7 +1812,7 @@ L_3005:
     goto L_3429;
 
 L_3054:
-    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_GETCURSEL, 0x0, 0);
     iMac = lpplProdGlob->iprodMac;
     if ((lSel <= 0))
         goto L_3429;
@@ -1829,10 +1829,7 @@ L_30bd:
     lSel = (lSel - 1);
     t_scratch_m2c_19 = lpplProdGlob->rgprod;
     prod = t_scratch_m2c_19[lSel];
-    t_scratch_m30_10 = ((((lpplProdGlob->rgprod[(lSel + 0x1)].cItem | (lpplProdGlob->rgprod[(lSel + 0x1)].iItem << 0xa)) |
-                          (lpplProdGlob->rgprod[(lSel + 0x1)].grobj << 0x11)) |
-                         (lpplProdGlob->rgprod[(lSel + 0x1)].pct << 0x14)) |
-                        (lpplProdGlob->rgprod[(lSel + 0x1)].unused << 0x1b));
+    t_scratch_m30_10 = *((uint32_t *)(&(lpplProdGlob->rgprod[(lSel + 1)])));
     t_scratch_m34_3_wide = lpplProdGlob->rgprod;
     t_fields_7 = ((uint32_t)(LOWORD(t_scratch_m30_10)) & 0x3ff);
     t_fields_8 = ((t_scratch_m34_3_wide[lSel].iItem & 0x40) | (((uint32_t)(LOWORD(t_scratch_m30_10)) >> 0xa) & 0x3f));
@@ -1849,11 +1846,11 @@ L_30bd:
     t_scratch_m2c_21 = lpplProdGlob->rgprod;
     t_scratch_m2c_21[(lSel + 1)] = prod;
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (LOWORD(lSel) + 0x2), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, (LOWORD(lSel) + 0x2), 0);
     goto RedrawText;
 
 L_3201:
-    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_GETCURSEL, 0x0, 0);
     if ((lSel <= 1))
         goto L_3429;
     else
@@ -1864,10 +1861,7 @@ L_3243:
     lSel = (lSel - 2);
     t_scratch_m2c_22 = lpplProdGlob->rgprod;
     prod = t_scratch_m2c_22[lSel];
-    t_scratch_m30_11 = ((((lpplProdGlob->rgprod[(lSel + 0x1)].cItem | (lpplProdGlob->rgprod[(lSel + 0x1)].iItem << 0xa)) |
-                          (lpplProdGlob->rgprod[(lSel + 0x1)].grobj << 0x11)) |
-                         (lpplProdGlob->rgprod[(lSel + 0x1)].pct << 0x14)) |
-                        (lpplProdGlob->rgprod[(lSel + 0x1)].unused << 0x1b));
+    t_scratch_m30_11 = *((uint32_t *)(&(lpplProdGlob->rgprod[(lSel + 1)])));
     t_scratch_m34_4_wide = lpplProdGlob->rgprod;
     t_fields_13 = ((uint32_t)(LOWORD(t_scratch_m30_11)) & 0x3ff);
     t_fields_14 = ((t_scratch_m34_4_wide[lSel].iItem & 0x40) | (((uint32_t)(LOWORD(t_scratch_m30_11)) >> 0xa) & 0x3f));
@@ -1884,7 +1878,7 @@ L_3243:
     t_scratch_m2c_24 = lpplProdGlob->rgprod;
     t_scratch_m2c_24[(lSel + 1)] = prod;
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (LOWORD(lSel) + 0x1), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, (LOWORD(lSel) + 0x1), 0);
     goto RedrawText;
 
 L_3395:
@@ -1990,7 +1984,7 @@ L_3430:
     _wsprintf(rgch, PszGetCompressedString(idsProductionQueueS), PszGetPlanetName(sel.pl.id));
     SetWindowText(hwnd, rgch);
     FillProdSrcLB(GetDlgItem(hwnd, IDC_U16_0x0416), -1);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), CB_GETCURSEL, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0416), LB_SETCURSEL, 0x0, 0);
     i = 0;
     lpprod = lpplProdGlob->rgprod;
     goto L_34e7;
@@ -2025,8 +2019,8 @@ L_3555:
 
 L_3558:
     FillPlanetProdLB(GetDlgItem(hwnd, IDC_U16_0x0417), lpplProdGlob, 0x0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), CB_GETCURSEL, (iSel + 1), 0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), CB_LIMITTEXT, sel.pl.fNoResearch, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0417), LB_SETCURSEL, (iSel + 1), 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x008B), BM_SETCHECK, sel.pl.fNoResearch, 0);
     return;
 }
 
@@ -2085,7 +2079,7 @@ L_3664:
     GetWindowRect(GetDlgItem(hwnd, idc), &(rc));
     ScreenToClient(hwnd, (POINT *)(&(rc)));
     ScreenToClient(hwnd, (POINT *)(&(rc.right)));
-    lSel = SendMessage(GetDlgItem(hwnd, idc), CB_GETLBTEXTLEN, 0x0, 0);
+    lSel = SendMessage(GetDlgItem(hwnd, idc), 0x409, 0x0, 0);
     if ((lSel < 0))
         goto L_3a39;
     else
@@ -2275,7 +2269,7 @@ L_3b20:
         goto L_3b29;
 
 L_3b29:
-    SendMessage(hwndLB, CB_DIR, 0x0, 0);
+    SendMessage(hwndLB, LB_RESETCONTENT, 0x0, 0);
     i = 0;
     goto L_3c80;
 
@@ -2325,7 +2319,7 @@ L_3c61:
     szT[0] = 32;
 
 L_3c65:
-    SendMessage(hwndLB, CB_LIMITTEXT, 0x0, szT);
+    SendMessage(hwndLB, LB_ADDSTRING, 0x0, (LPARAM)(szT));
 
 L_3c7c:
     i = (i + 1);
@@ -3381,7 +3375,7 @@ L_4f5b:
 
 L_4f6c:
     pl = *(lppl);
-    pl.lpplprod = LpplAlloc(0x4, lpplprod->iprodMax, htOrd);
+    pl.lpplprod = (PLPROD *)(LpplAlloc(0x4, lpplprod->iprodMax, htOrd));
     fmemcpy(pl.lpplprod->rgprod, lpplprod->rgprod, (lpplprod->iprodMac * 0x4));
     pl.lpplprod->iprodMac = lpplprod->iprodMac;
     iMac = lpplprod->iprodMac;
@@ -3669,13 +3663,13 @@ LCleanUp:
         goto L_5489;
 
 L_547b:
-    FreePl(pl.lpplprod);
+    FreePl((PL *)(pl.lpplprod));
 
 L_5489:
     return;
 }
 
-int16_t ZipProdDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam) {
+INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     PAINTSTRUCT ps;
     int16_t     i;
@@ -3688,12 +3682,12 @@ int16_t ZipProdDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
     char       *pszT;
     RECT        rcGBox;
     int16_t     cch;
-    int16_t (*lpProc)();
-    int16_t  cpq;
-    int16_t  t_merge_5926_0001;
-    uint16_t t_scratch_m3c;
-    uint16_t t_scratch_m3c_2;
-    uint16_t t_scratch_m3c_4;
+    FARPROC     lpProc;
+    int16_t     cpq;
+    int16_t     t_merge_5926_0001;
+    uint16_t    t_scratch_m3c;
+    uint16_t    t_scratch_m3c_2;
+    uint16_t    t_scratch_m3c_4;
 
 L_5490:
     goto L_5db7;
@@ -3784,7 +3778,7 @@ L_5692:
 
 L_5698:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_56c0:
@@ -3813,8 +3807,8 @@ L_56f7:
         goto L_5701;
 
 L_5701:
-    SetBkColor(wParam, crButtonFace);
-    return hbrButtonFace;
+    SetBkColor((HDC)(wParam), crButtonFace);
+    return (INT_PTR)(hbrButtonFace);
 
 L_571a:
     hdc = BeginPaint(hwnd, &(ps));
@@ -4147,7 +4141,7 @@ L_5e58:
     rc.top = vyZPDStatic;
     rc.bottom = (vyZPDStatic + dyArial8);
     InvalidateRect(hwndDlg, &(rc), 1);
-    SendMessage(hwndLB, CB_DIR, 0x0, 0);
+    SendMessage(hwndLB, LB_RESETCONTENT, 0x0, 0);
     if ((pzpq->fValid == 0x0))
         goto L_5ed9;
     else
@@ -4160,7 +4154,7 @@ L_5ec8:
         goto L_5ed9;
 
 L_5ed9:
-    SendMessage(hwndLB, CB_LIMITTEXT, 0x0, PszGetCompressedString(idsAutoBuildOrders));
+    SendMessage(hwndLB, LB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(idsAutoBuildOrders)));
     goto L_5fee;
 
 L_5efc:
@@ -4198,7 +4192,7 @@ L_5f9d:
     _wsprintf(szWork, szFormat, szAuto, pzpq->rgpq[i].cQuan);
 
 L_5fd4:
-    SendMessage(hwndLB, CB_LIMITTEXT, 0x0, szWork);
+    SendMessage(hwndLB, LB_ADDSTRING, 0x0, (LPARAM)(szWork));
     goto L_5f14;
 
 L_5fee:

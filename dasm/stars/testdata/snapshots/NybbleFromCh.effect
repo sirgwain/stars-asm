@@ -1,0 +1,155 @@
+/*
+NybbleFromCh  (utilgen)
+  addr: 0009:4880  len=361
+  sig:  int16_t NybbleFromCh(uint8_t ch)
+  params:
+    uint8_t          ch             [BP+0x6]
+  locals:
+    char *           pch            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_4880:
+  insts 0..8  off 0x4880..0x4893
+  succs: L_4897, L_48b9
+  effects:
+    4892  branch load(byte [bp+ch]) < 0x61 ? L_48b9 : L_4897
+
+block L_4897:
+  insts 10..13  off 0x4897..0x48a1
+  preds: L_4880
+  succs: L_48a5, L_48b9
+  effects:
+    48a0  branch load(byte [bp+ch]) > 0x7a ? L_48b9 : L_48a5
+
+block L_48a5:
+  insts 15..21  off 0x48a5..0x48b8
+  preds: L_4897
+  succs: L_49e3
+  effects:
+    48b6  goto L_49e3
+
+block L_48b9:
+  insts 22..25  off 0x48b9..0x48c3
+  preds: L_4880, L_4897
+  succs: L_48c7, L_48cd
+  effects:
+    48c2  branch load(byte [bp+ch]) != 0x20 ? L_48cd : L_48c7
+
+block L_48c7:
+  insts 27..28  off 0x48c7..0x48cc
+  preds: L_48b9
+  succs: L_49e3
+  effects:
+    48ca  goto L_49e3
+
+block L_48cd:
+  insts 29..32  off 0x48cd..0x48d7
+  preds: L_48b9
+  succs: L_48db, L_4900
+  effects:
+    48d6  branch load(byte [bp+ch]) < 0x41 ? L_4900 : L_48db
+
+block L_48db:
+  insts 34..37  off 0x48db..0x48e5
+  preds: L_48cd
+  succs: L_48e9, L_4900
+  effects:
+    48e4  branch load(byte [bp+ch]) > 0x50 ? L_4900 : L_48e9
+
+block L_48e9:
+  insts 39..47  off 0x48e9..0x48ff
+  preds: L_48db
+  succs: L_49e3
+  effects:
+    48fd  goto L_49e3
+
+block L_4900:
+  insts 48..51  off 0x4900..0x490a
+  preds: L_48cd, L_48db
+  succs: L_490e, L_4933
+  effects:
+    4909  branch load(byte [bp+ch]) < 0x51 ? L_4933 : L_490e
+
+block L_490e:
+  insts 53..56  off 0x490e..0x4918
+  preds: L_4900
+  succs: L_491c, L_4933
+  effects:
+    4917  branch load(byte [bp+ch]) > 0x5a ? L_4933 : L_491c
+
+block L_491c:
+  insts 58..66  off 0x491c..0x4932
+  preds: L_490e
+  succs: L_49e3
+  effects:
+    4930  goto L_49e3
+
+block L_4933:
+  insts 67..70  off 0x4933..0x493d
+  preds: L_4900, L_490e
+  succs: L_4941, L_4966
+  effects:
+    493c  branch load(byte [bp+ch]) < 0x30 ? L_4966 : L_4941
+
+block L_4941:
+  insts 72..75  off 0x4941..0x494b
+  preds: L_4933
+  succs: L_494f, L_4966
+  effects:
+    494a  branch load(byte [bp+ch]) > 0x35 ? L_4966 : L_494f
+
+block L_494f:
+  insts 77..85  off 0x494f..0x4965
+  preds: L_4941
+  succs: L_49e3
+  effects:
+    4963  goto L_49e3
+
+block L_4966:
+  insts 86..89  off 0x4966..0x4970
+  preds: L_4933, L_4941
+  succs: L_4974, L_4999
+  effects:
+    496f  branch load(byte [bp+ch]) < 0x36 ? L_4999 : L_4974
+
+block L_4974:
+  insts 91..94  off 0x4974..0x497e
+  preds: L_4966
+  succs: L_4982, L_4999
+  effects:
+    497d  branch load(byte [bp+ch]) > 0x39 ? L_4999 : L_4982
+
+block L_4982:
+  insts 96..104  off 0x4982..0x4998
+  preds: L_4974
+  succs: L_49e3
+  effects:
+    4996  goto L_49e3
+
+block L_4999:
+  insts 105..114  off 0x4999..0x49b4
+  preds: L_4966, L_4974
+  succs: L_49b8, L_49cf
+  effects:
+    49a4  call strchr(0x1400, load(byte [bp+ch])) -> callresult(char *)
+    49ac  store[2] [bp-pch] = callresult(char *)
+    49b3  branch load([bp-pch]) == 0x0 ? L_49cf : L_49b8
+
+block L_49b8:
+  insts 116..124  off 0x49b8..0x49ce
+  preds: L_4999
+  succs: L_49e3
+  effects:
+    49cc  goto L_49e3
+
+block L_49cf:
+  insts 125..131  off 0x49cf..0x49e2
+  preds: L_4999
+  succs: L_49e3
+
+block L_49e3:
+  insts 133..137  off 0x49e3..0x49e8
+  preds: L_48a5, L_48c7, L_48e9, L_491c, L_494f, L_4982, L_49b8, L_49cf
+  effects:
+    49e8  return merge(Join: L_49e3, (L_48a5:load(ds:[((load(byte [bp+0x6]) + 0xff9f) << 0x1)+0x13ae]), L_48c7:0x0, L_48e9:((((((load(byte [bp+0x6]) + 0xffbf) << 0x1) << 0x1) << 0x1) << 0x1) | 0xb), L_491c:((((((load(byte [bp+0x6]) + 0xffaf) << 0x1) << 0x1) << 0x1) << 0x1) | 0xc), L_494f:((((((load(byte [bp+0x6]) + 0xffda) << 0x1) << 0x1) << 0x1) << 0x1) | 0xc), L_4982:((((((load(byte [bp+0x6]) + 0xffca) << 0x1) << 0x1) << 0x1) << 0x1) | 0xd), L_49b8:(((((((load([bp-0x4]) - 0x1400) + 0x4) << 0x1) << 0x1) << 0x1) << 0x1) | 0xe), L_49cf:(((((load(byte [bp+0x6]) << 0x1) << 0x1) << 0x1) << 0x1) | 0xf)))

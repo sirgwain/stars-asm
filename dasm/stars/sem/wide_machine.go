@@ -115,6 +115,12 @@ func (c *wideMachineCollapser) pairDirect(low machine.Value, high machine.Value)
 
 	if lowConst, ok := low.(*machine.Const); ok {
 		if highConst, ok := high.(*machine.Const); ok {
+			if lowConst.Fixup != nil || highConst.Fixup != nil {
+				// A relocated segment:offset pair names a far symbol such as
+				// a window procedure; folding it into one number would drop
+				// the fixups that identify it.
+				return &machine.StackWords{Words: []machine.Value{highConst, lowConst}}, true
+			}
 			return &machine.Const{
 				Val:    ((highConst.Val & 0xffff) << 16) | (lowConst.Val & 0xffff),
 				Origin: lowConst.Origin,
@@ -201,6 +207,14 @@ func (c *wideMachineCollapser) pairPhi(low machine.Value, high machine.Value) (m
 func (c *wideMachineCollapser) pairBinary(low machine.Value, high machine.Value) (machine.Value, bool) {
 	lowBinary, lowOK := low.(*machine.Binary)
 	highBinary, highOK := high.(*machine.Binary)
+	// An OR or XOR with zero folds away on its own word, as in
+	// (int32_t)x | 0x80000000 lowered to OR ax, 0 / OR dx, 0x8000; restore
+	// the zero so both words carry the same operation.
+	if highOK && !lowOK && identityZeroOperand(highBinary) {
+		lowBinary, lowOK = &machine.Binary{Op: highBinary.Op, LHS: low, RHS: machine.ConstVal(0)}, true
+	} else if lowOK && !highOK && identityZeroOperand(lowBinary) {
+		highBinary, highOK = &machine.Binary{Op: lowBinary.Op, LHS: high, RHS: machine.ConstVal(0)}, true
+	}
 	if !lowOK || !highOK || lowBinary.Op != highBinary.Op {
 		return nil, false
 	}
@@ -227,4 +241,14 @@ func (c *wideMachineCollapser) pairBinary(low machine.Value, high machine.Value)
 		return nil, false
 	}
 	return machine.BinaryVal(lowBinary.Op, lhs, rhs), true
+}
+
+// identityZeroOperand reports whether binary is an OR or XOR with a constant
+// right operand, whose other word may have folded an identity zero away.
+func identityZeroOperand(binary *machine.Binary) bool {
+	if binary.Op != machine.ValueOpOr && binary.Op != machine.ValueOpXor {
+		return false
+	}
+	_, ok := binary.RHS.(*machine.Const)
+	return ok
 }

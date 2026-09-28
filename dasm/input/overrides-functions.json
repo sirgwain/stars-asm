@@ -49,6 +49,706 @@
       "callconv": "pascal"
     },
     {
+      "name": "About",
+      "native_decl": "INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "AskSaveDialog",
+      "native_decl": "INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BattlePlansDlg",
+      "native_decl": "INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BrowserDlg",
+      "native_decl": "INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "BrowserWndProc",
+      "native_decl": "LRESULT CALLBACK BrowserWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "HostModeDialog",
+      "native_decl": "INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "HostOptionsDialog",
+      "native_decl": "INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MessageWndProc",
+      "native_decl": "LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MineWndProc",
+      "native_decl": "LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NewGameDlg",
+      "native_decl": "INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NewGameDlg2",
+      "native_decl": "INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NewGameDlg3",
+      "native_decl": "INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NewPasswordDlg",
+      "native_decl": "INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "NewPlanNameDlg",
+      "native_decl": "INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "OrderInfoDlg",
+      "native_decl": "INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PanicDlg",
+      "native_decl": "INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PasswordDlg",
+      "native_decl": "INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PlanetWndProc",
+      "native_decl": "LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PopupWndProc",
+      "native_decl": "LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ProductionDlg",
+      "native_decl": "INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ProgressGaugeDlg",
+      "native_decl": "INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg1",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg2",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg3",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg4",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg5",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RaceWizardDlg6",
+      "native_decl": "INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RandomSeedDlg",
+      "native_decl": "INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RelationsDlg",
+      "native_decl": "INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RenameDlg",
+      "native_decl": "INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "RenameZipDlg",
+      "native_decl": "INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ResearchDlg",
+      "native_decl": "INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScoreXDlg",
+      "native_decl": "INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SimpleNewGameDlg",
+      "native_decl": "INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SlotDlg",
+      "native_decl": "INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TransferDlg",
+      "native_decl": "INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TutorDlg",
+      "native_decl": "INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "VCRDlg",
+      "native_decl": "INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ZipOrderDlg",
+      "native_decl": "INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ZipProdDlg",
+      "native_decl": "INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FakeCEProc",
+      "native_decl": "LRESULT CALLBACK FakeCEProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FakeComboProc",
+      "native_decl": "LRESULT CALLBACK FakeComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FakeEditProc",
+      "native_decl": "LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FakeListProc",
+      "native_decl": "LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FindDlg",
+      "native_decl": "INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "FrameWndProc",
+      "native_decl": "LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ReportDlg",
+      "native_decl": "LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MergeFleetsDlg",
+      "native_decl": "INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "PrintMapDlg",
+      "native_decl": "INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "ScannerWndProc",
+      "native_decl": "LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TbWndProc",
+      "native_decl": "LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TitleWndProc",
+      "native_decl": "LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "TooltipWndProc",
+      "native_decl": "LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "ret": "LRESULT",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "MsgDlg",
+      "native_decl": "INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
+      "ret": "INT_PTR",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "message", "ctype": "UINT" },
+        { "name": "wParam", "ctype": "WPARAM" },
+        { "name": "lParam", "ctype": "LPARAM" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "HostTimerProc",
+      "native_decl": "VOID CALLBACK HostTimerProc(HWND hwnd, UINT msg, UINT_PTR idTimer, DWORD dwTime)",
+      "ret": "void",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "msg", "ctype": "UINT" },
+        { "name": "idTimer", "ctype": "UINT" },
+        { "name": "dwTime", "ctype": "DWORD" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "GetASubMenu",
+      "ret": "HMENU",
+      "params": [
+        { "name": "hwnd", "ctype": "HWND" },
+        { "name": "iMenu", "ctype": "int16_t" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "HcrsFromFrameWindowPt",
+      "ret": "HCURSOR",
+      "params": [
+        { "name": "pt", "ctype": "POINT" },
+        { "name": "pgrSel", "ctype": "int16_t *" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "ClickInPlanetOrders",
+      "ret": "HCURSOR",
+      "params": [
+        { "name": "pt", "ctype": "POINT" },
+        { "name": "sks", "ctype": "int16_t" },
+        { "name": "fCursor", "ctype": "int16_t" },
+        { "name": "fRightBtn", "ctype": "int16_t" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "ClickInShipOrders",
+      "ret": "HCURSOR",
+      "params": [
+        { "name": "pt", "ctype": "POINT" },
+        { "name": "sks", "ctype": "int16_t" },
+        { "name": "fCursor", "ctype": "int16_t" },
+        { "name": "fRightBtn", "ctype": "int16_t" }
+      ],
+      "callconv": "cdecl"
+    },
+    {
       "name": "CopyFile",
       "rename": "StarsCopyFile",
       "ret": "void",
@@ -65,7 +765,7 @@
       "name": "DibFromBitmap",
       "ret": "HGLOBAL",
       "params": [
-        { "name": "hbm", "ctype": "uint16_t" },
+        { "name": "hbm", "ctype": "HBITMAP" },
         { "name": "biStyle", "ctype": "uint32_t" },
         { "name": "biBits", "ctype": "uint16_t" },
         { "name": "hpal", "ctype": "HPALETTE" }
@@ -89,6 +789,16 @@
       "params": [
         { "name": "arg1", "ctype": "HWND" },
         { "name": "arg2", "ctype": "int16_t" }
+      ],
+      "callconv": "pascal"
+    },
+    {
+      "name": "SetWindowLong",
+      "ret": "FARPROC",
+      "params": [
+        { "name": "arg1", "ctype": "HWND" },
+        { "name": "arg2", "ctype": "int16_t" },
+        { "name": "arg3", "ctype": "FARPROC" }
       ],
       "callconv": "pascal"
     },

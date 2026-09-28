@@ -12,6 +12,10 @@ const GlobalsModule = "globals"
 const ParamSemanticResourceNameOrID = "resource_name_or_id"
 const ParamSemanticCallbackProc = "callback_proc"
 
+// ParamSemanticMenuOrID marks an HMENU parameter that carries a child
+// window's integer control ID instead of a menu, as CreateWindow's does.
+const ParamSemanticMenuOrID = "menu_or_id"
+
 // Function describes a function from nb09 data
 type Function struct {
 	// NativeDecl overrides emitted C without changing the Win16 analysis signature.

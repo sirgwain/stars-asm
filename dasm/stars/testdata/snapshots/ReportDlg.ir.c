@@ -1,4 +1,4 @@
-int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam) {
+LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     HMENU       hmenu;
     RECT        rc;
@@ -137,7 +137,7 @@ L_0312:
 
 L_0337:
     GetClientRect(hwnd, &(rc));
-    FillRect(wParam, &(rc), hbrButtonFace);
+    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
     return 1;
 
 L_0362:
@@ -264,7 +264,7 @@ L_04f9:
     goto L_09c8;
 
 L_04fc:
-    iCur = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     iNew = iCur;
     goto L_0576;
 
@@ -354,14 +354,14 @@ L_05d7:
     rc.top = (dyArial8 + 6);
     rc.bottom = (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top);
     ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &(rc), &(rc));
-    SetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2, iNew, 1);
+    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
     UpdateWindow(hwnd);
 
 L_0673:
     return 0;
 
 L_067c:
-    iCur = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    iCur = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     iNew = iCur;
     goto L_06e4;
 
@@ -444,8 +444,8 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2, iNew, 1);
-    iNew = GetScrollPos((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), 2);
+    SetScrollPos((HWND)(HIWORD(lParam)), 2, iNew, 1);
+    iNew = GetScrollPos((HWND)(HIWORD(lParam)), 2);
     if ((iNew == iCur))
         goto L_080f;
     else

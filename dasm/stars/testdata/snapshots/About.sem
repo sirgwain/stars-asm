@@ -1,12 +1,12 @@
 /*
 About  (stars)
   addr: 0004:1252  len=716
-  sig:  int16_t About(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+  sig:  INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         message        [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0xa]
     block 0004:12D1  len=0x15B
@@ -14,7 +14,7 @@ About  (stars)
       int16_t          i              [BP-0xe]
       HDC              hdc            [BP-0xc]
     block 0004:14A3  len=0x3C
-      int16_t() *      lpProc         [BP-0xe]
+      FARPROC          lpProc         [BP-0xe]
 
   stats: blocks=2  labels=0
 */
@@ -30,7 +30,7 @@ L_1261:
 
 L_12a9:
     call GetClientRect(hwnd, &rc) -> callresult(void)
-    call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
+    call FillRect((HDC)wParam, &rc, hbrButtonFace) -> callresult(int16_t)
     return 1
 
 L_12d1:
@@ -93,8 +93,8 @@ L_142c:
     branch (loword((uint32_t)(lParam >> 0x10)) & 0xffff) != 0x6 ? L_1510 : L_1448
 
 L_1448:
-    call SetBkColor(wParam, crButtonFace) -> callresult(COLORREF)
-    return hbrButtonFace
+    call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)
+    return (INT_PTR)hbrButtonFace
 
 L_1461:
     branch wParam == 0x1 ? L_1473 : L_146a

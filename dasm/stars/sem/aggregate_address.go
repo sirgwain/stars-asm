@@ -8,6 +8,9 @@ func (c *machineConverter) recoverExpectedValue(expr Expr, expected typeinfo.Typ
 	if projected, ok := c.leadingMemberAddress(expr, expected); ok {
 		return projected
 	}
+	if raw, ok := packedStorageValue(expr, expected); ok {
+		return raw
+	}
 	if address, ok := expr.(*AddressOf); ok && typeinfo.IsPointer(expected) && !typeinfo.Equals(address.TypeInfo, expected) {
 		next := *address
 		next.TypeInfo = expected
@@ -48,6 +51,35 @@ func (c *machineConverter) recoverExpectedValue(expr Expr, expected typeinfo.Typ
 		return expr
 	}
 	return &Deref{Pointer: pointer, Width: aggregate.Bytes(), TypeInfo: aggregate}
+}
+
+// packedStorageValue reinterprets a bitfield-only struct used as an integer
+// of the same width as its raw storage word, for example
+// *(uint16_t *)&rgmdplr[iPlayer] passed as DoAiTurn's uint16_t wMdPlr or
+// assigned from rgplr[iPlayer].wMdPlr.
+func packedStorageValue(expr Expr, expected typeinfo.Type) (LValue, bool) {
+	want, ok := expected.(*typeinfo.Primitive)
+	if !ok || want.TypeKind != typeinfo.KInt {
+		return nil, false
+	}
+	target, ok := expr.(LValue)
+	if !ok {
+		return nil, false
+	}
+	strct, ok := target.ExprType().(*typeinfo.Struct)
+	if !ok || strct.SKind != typeinfo.StructKindStruct || len(strct.OverlapRegions) != 0 || strct.Bytes() != want.Bytes() {
+		return nil, false
+	}
+	for _, field := range strct.Fields {
+		if field.Bitfield == nil {
+			return nil, false
+		}
+	}
+	if _, ok := strct.ScalarBitPartition(0, strct.Bytes()*8); !ok {
+		return nil, false
+	}
+	pointer := objectAddress(target, 0, &typeinfo.Pointer{Elem: want, Class: typeinfo.PtrNear})
+	return &Deref{Pointer: pointer, Width: want.Bytes(), TypeInfo: want}, true
 }
 
 // leadingMemberAddress projects the address of a struct onto its unique

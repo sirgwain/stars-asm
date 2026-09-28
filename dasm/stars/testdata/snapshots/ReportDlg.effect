@@ -1,12 +1,12 @@
 /*
 ReportDlg  (report)
   addr: 0022:0018  len=2511
-  sig:  int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+  sig:  LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         msg            [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             msg            [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0xe]
     HMENU            hmenu          [BP-0x6]
@@ -755,7 +755,7 @@ block L_0818:
     0827  store[2] [bp-hdc] = callresult(HDC)
     0834  call DrawReport(load@0831/src([bp+hwnd]), load([bp-hdc]), addr([bp-ps+0x4])) -> callresult(void)
     0846  call EndPaint(load@083c/src([bp+hwnd]), words(ss, addr([bp-ps]))) -> callresult(void)
-    0854  store[2] [gd+0x2] = ((load([gd+0x2]) & 0xfdff) | 0x0)
+    0854  store[2] [gd+0x2] = (load([gd+0x2]) & 0xfdff)
     085d  goto L_09df
 
 block L_0860:
@@ -769,8 +769,8 @@ block L_0860:
     089f  store[2] ds:[load([vprptCur])+0x16] = (load([bp-rc+0x6]) - load([bp-rc+0x2]))
     08a2  store[2] [hwndReportDlg] = 0x0
     08a8  store[2] [fBrowserValid] = 0x0
-    08b6  call GetASubMenu(load([hwndFrame]), 0x4) -> callresult(uint16_t)
-    08be  store[2] [bp-hmenu] = callresult(uint16_t)
+    08b6  call GetASubMenu(load([hwndFrame]), 0x4) -> callresult(HMENU)
+    08be  store[2] [bp-hmenu] = callresult(HMENU)
     08c8  goto L_08f1
 
 block L_08ce:

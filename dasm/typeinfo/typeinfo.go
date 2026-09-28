@@ -52,6 +52,10 @@ type Primitive struct {
 	Name     string
 	Size     int
 	Signed   bool
+
+	// NativePointer marks an integer that is a pointer in the native
+	// Win32 headers, such as a window handle.
+	NativePointer bool
 }
 
 func (p *Primitive) Kind() Kind { return p.TypeKind }
@@ -247,6 +251,13 @@ func TypeDecl(typ Type, name string) string {
 		return name
 	}
 	if name == "" {
+		// A function pointer needs the abstract declarator ret (*)(params)
+		// to be a C type name, as in a cast.
+		if p, ok := typ.(*Pointer); ok && p.Name == "" {
+			if _, ok := p.Elem.(*Function); ok {
+				return pointerDecl(*p, "")
+			}
+		}
 		return typeString(typ)
 	}
 	switch t := typ.(type) {

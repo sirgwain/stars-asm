@@ -407,7 +407,7 @@ block L_3f0b:
   succs: L_3eaf
   effects:
     3f14  copy[0x12] *addr(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))]) = *addr([rgbCur])
-    3f2c  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = ((load(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xdfff) | 0x0)
+    3f2c  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = (load(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xdfff)
     3f30  goto L_3eaf
 
 block L_3f33:

@@ -41,7 +41,7 @@ L_0087:
         goto L_00ba;
 
 L_009c:
-    FreePl(ppl->lpplprod);
+    FreePl((PL *)(ppl->lpplprod));
     ppl->lpplprod = 0x0;
 
 L_00ba:
@@ -54,7 +54,7 @@ L_00c0:
         goto L_00d5;
 
 L_00d5:
-    ppl->lpplprod = LpplAlloc(0x4, lppl->lpplprod->iprodMax, htOrd);
+    ppl->lpplprod = (PLPROD *)(LpplAlloc(0x4, lppl->lpplprod->iprodMax, htOrd));
     goto L_0153;
 
 L_0100:
@@ -65,7 +65,7 @@ L_0100:
         goto L_012a;
 
 L_012a:
-    ppl->lpplprod = LpplReAlloc(ppl->lpplprod, lppl->lpplprod->iprodMax);
+    ppl->lpplprod = (PLPROD *)(LpplReAlloc((PL *)(ppl->lpplprod), lppl->lpplprod->iprodMax));
 
 L_0153:
     fmemcpy(ppl->lpplprod->rgprod, lppl->lpplprod->rgprod, (lppl->lpplprod->iprodMac * 0x4));
@@ -326,7 +326,7 @@ L_0587:
         goto L_0605;
 
 L_059c:
-    lpPl->lpplprod = LpplAlloc(0x4, ppl->lpplprod->iprodMac, htOrd);
+    lpPl->lpplprod = (PLPROD *)(LpplAlloc(0x4, ppl->lpplprod->iprodMac, htOrd));
 
 L_05c5:
     goto L_0605;
@@ -338,7 +338,7 @@ L_05c8:
         goto L_05dd;
 
 L_05dd:
-    FreePl(lpPl->lpplprod);
+    FreePl((PL *)(lpPl->lpplprod));
     lpPl->lpplprod = 0x0;
     goto FinishCopy;
 
@@ -350,7 +350,7 @@ L_0605:
         goto L_062f;
 
 L_062f:
-    lpPl->lpplprod = LpplReAlloc(lpPl->lpplprod, (ppl->lpplprod->iprodMac + 0x2));
+    lpPl->lpplprod = (PLPROD *)(LpplReAlloc((PL *)(lpPl->lpplprod), (ppl->lpplprod->iprodMac + 0x2)));
 
 L_065e:
     fmemcpy(lpPl->lpplprod->rgprod, ppl->lpplprod->rgprod, (ppl->lpplprod->iprodMac * 0x4));
@@ -1669,7 +1669,7 @@ L_1e3b:
 
 L_1e56:
     pt = lpflTail->pt;
-    pSearch = bsearch(&(pt), rglpflSrc, cSrc, 0x4, ICompFleetPoint2);
+    pSearch = bsearch(&(pt), rglpflSrc, cSrc, 0x4, (QSORTCOMPARE)(ICompFleetPoint2));
     if ((pSearch == 0x0))
         goto L_1ed2;
     else
@@ -1797,7 +1797,7 @@ FLEET *LpflFromId(int16_t idFleet) {
 L_2078:
     i = 0;
     iplr = ((idFleet >> 0x9) & 0xf);
-    idFleet = ((idFleet & 0x1fff) | 0x0);
+    idFleet = (idFleet & 0x1fff);
     iplrCur = 0;
     goto L_20c0;
 
@@ -1909,7 +1909,7 @@ L_2208:
         goto L_2221;
 
 L_2221:
-    lpfl->lpplord = LpplReAlloc(lpfl->lpplord, (pfl->cord + 3));
+    lpfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpfl->lpplord), (pfl->cord + 3)));
 
 L_2249:
     fmemcpy(lpfl->lpplord->rgord, pfl->lpplord->rgord, (pfl->lpplord->iordMac * 0x12));
@@ -1979,7 +1979,7 @@ L_2378:
         goto L_2398;
 
 L_238a:
-    FreePl(lpplordT);
+    FreePl((PL *)(lpplordT));
 
 L_2398:
     return 1;
@@ -1992,7 +1992,7 @@ L_239e:
         goto L_23c2;
 
 L_23c2:
-    pfl->lpplord = LpplAlloc(0x12, lpfl->lpplord->iordMax, htOrd);
+    pfl->lpplord = (PLORD *)(LpplAlloc(0x12, lpfl->lpplord->iordMax, htOrd));
     goto L_2440;
 
 L_23ed:
@@ -2003,7 +2003,7 @@ L_23ed:
         goto L_2417;
 
 L_2417:
-    pfl->lpplord = LpplReAlloc(pfl->lpplord, lpfl->lpplord->iordMax);
+    pfl->lpplord = (PLORD *)(LpplReAlloc((PL *)(pfl->lpplord), lpfl->lpplord->iordMax));
 
 L_2440:
     fmemcpy(pfl->lpplord->rgord, lpfl->lpplord->rgord, (lpfl->lpplord->iordMac * 0x12));
@@ -2574,7 +2574,7 @@ L_2dd8:
 L_2de8:
     lpfl->fDead = 0x1;
     FleetOrdersChangeTarget(lpfl);
-    FreePl(lpfl->lpplord);
+    FreePl((PL *)(lpfl->lpplord));
     if ((lpfl->lpszName != 0x0))
         goto L_2e34;
     else
@@ -2778,7 +2778,7 @@ L_3217:
 L_3231:
     lpfl->cord = 1;
     lpfl->fRepOrders = 0x0;
-    lpfl->lpplord = LpplAlloc(0x12, 0x3, htOrd);
+    lpfl->lpplord = (PLORD *)(LpplAlloc(0x12, 0x3, htOrd));
     lpfl->lpplord->iordMac = 0x1;
     lpfl->fdirValid = 0x0;
     lpord = lpfl->lpplord->rgord;
@@ -2847,7 +2847,7 @@ L_33b5:
         goto L_3442;
 
 L_3442:
-    lpflNew->lpplord = LpplReAlloc(lpflNew->lpplord, pfl->lpplord->iordMax);
+    lpflNew->lpplord = (PLORD *)(LpplReAlloc((PL *)(lpflNew->lpplord), pfl->lpplord->iordMax));
 
 L_346e:
     fmemcpy(lpflNew->lpplord->rgord, pfl->lpplord->rgord, (iordMac * 18));

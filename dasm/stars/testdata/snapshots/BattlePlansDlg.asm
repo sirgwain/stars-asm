@@ -1,17 +1,17 @@
 ; BattlePlansDlg  (battle)
 ;   addr: 001f:0652  len=4276
-;   sig:  int16_t BattlePlansDlg(HWND hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+;   sig:  INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 ;   params:
 ;     HWND             hwnd           [BP+0xe]
-;     uint16_t         message        [BP+0xc]
-;     uint16_t         wParam         [BP+0xa]
-;     int32_t          lParam         [BP+0x6]
+;     UINT             message        [BP+0xc]
+;     WPARAM           wParam         [BP+0xa]
+;     LPARAM           lParam         [BP+0x6]
 ;   locals:
 ;     RECT             rc             [BP-0x14]
 ;     int16_t          fRet           [BP-0xc]
 ;     int16_t          i              [BP-0xa]
 ;     int16_t          idc            [BP-0x8]
-;     int16_t() *      lpProc         [BP-0x6]
+;     FARPROC          lpProc         [BP-0x6]
 ;     block 001F:113E  len=0x35A
 ;       int16_t          cLen           [BP-0x16]
 ;
@@ -1056,7 +1056,7 @@ MOV       dx, 0x0cea
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [hInst]                   ; [0x5310]
-CALLF     MakeProcInstance          ; int32_t() * MakeProcInstance(int32_t (*arg1)(), HINSTANCE arg2)
+CALLF     MakeProcInstance          ; FARPROC MakeProcInstance(FARPROC arg1, HINSTANCE arg2)
 MOV       [bp-lpProc], ax           ; [bp-0x6], ax
 MOV       [bp-lpProc+0x2], dx       ; [bp-0x4], dx
                                     ; battle.c:382
@@ -1068,12 +1068,12 @@ PUSH      ax
 PUSH      [hwndFrame]               ; [0x258c]
 PUSH      [bp-lpProc+0x2]           ; [bp-0x4]
 PUSH      [bp-lpProc]               ; [bp-0x6]
-CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, BOOL (*arg4)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+CALLF     DialogBox                 ; int16_t DialogBox(HINSTANCE arg1, LPCSTR arg2, HWND arg3, DLGPROC arg4)
 MOV       [bp-fRet], ax             ; [bp-0xc], ax
                                     ; battle.c:383
 PUSH      [bp-lpProc+0x2]           ; [bp-0x4]
 PUSH      [bp-lpProc]               ; [bp-0x6]
-CALLF     FreeProcInstance          ; void FreeProcInstance(int32_t (*arg1)())
+CALLF     FreeProcInstance          ; void FreeProcInstance(FARPROC arg1)
                                     ; battle.c:384
 PUSH      [bp+hwnd]                 ; [bp+0xe]
 CALLF     SetFocus                  ; HWND SetFocus(HWND arg1)

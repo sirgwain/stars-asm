@@ -413,7 +413,7 @@ L_12f6:
 L_1302:
     pt.y = t_merge_1302_0001;
     hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP | WS_VISIBLE | WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
-    SendMessage(hwndPopup, WM_SETFONT, rghfontArial8[0], 0);
+    SendMessage(hwndPopup, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
     SetCapture(hwndPopup);
     return;
 }

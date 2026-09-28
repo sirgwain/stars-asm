@@ -10,16 +10,38 @@ import (
 // convertCallArgs converts call arguments using the callee parameter types when known.
 func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machine.Value) []Expr {
 	out := make([]Expr, len(values))
+	messageCall, isMessageCall := c.ctx.messageCallInfo(fn, values)
 	for i, value := range values {
+		if isMessageCall && i == messageCall.index {
+			// Name the message by its target's window class; control
+			// messages share numbers across classes.
+			out[i] = &Const{TypeInfo: messageCall.enum, U64: uint64(messageCall.value)}
+			continue
+		}
 		var expected typeinfo.Type
 		var param *typeinfo.FunctionVar
 		if fn != nil && i < len(fn.Params) {
 			param = &fn.Params[i]
 			expected = param.Type
-			if messageType := messageCallArgumentType(c.ctx.sdb, fn, values, i); messageType != nil {
-				expected = messageType
+			if messageType := c.ctx.messageCallArgumentType(fn, values, i); messageType != nil {
+				// The message payload type recovers the value, but the
+				// callee's parameter is still the generic WPARAM or LPARAM.
+				out[i] = c.convertValueTyped(value, messageType)
+				if !typeinfo.Equals(messageType, param.Type) {
+					out[i] = &Cast{Value: out[i], To: param.Type.String(), TypeInfo: param.Type}
+				}
+				continue
 			}
 			if expr, ok := c.convertResourceIDArg(value, param); ok {
+				out[i] = expr
+				continue
+			}
+			if _, ok := expected.(*typeinfo.Enum); ok && param.Semantic == typeinfo.ParamSemanticResourceNameOrID {
+				// An enum names the numeric IDs; any other value is the
+				// resource's string name.
+				expected = typeinfo.LpStr
+			}
+			if expr, ok := c.messagePayloadCast(value, expected); ok {
 				out[i] = expr
 				continue
 			}

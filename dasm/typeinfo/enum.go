@@ -135,10 +135,16 @@ const MessageEnumName = "WMType"
 
 // MessageRule describes the typed payload carried by one window message.
 type MessageRule struct {
+	// Enum is the message enum naming the message: window messages, or a
+	// window class's control messages.
+	Enum   *Enum
 	Name   string
 	Value  int
 	WParam *MessagePayloadRule
 	LParam *MessagePayloadRule
+	// Result is the type a window procedure returns for this message, such
+	// as the brush handle answering WM_CTLCOLOR.
+	Result Type
 }
 
 // MessagePayloadRule describes interpretations of a whole message parameter

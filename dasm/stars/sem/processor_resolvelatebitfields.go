@@ -69,6 +69,18 @@ func (p *resolveLateBitfieldsProcessor) ProcessBlock(result *Result, f Func, b B
 				effect, a = packed, packed
 				changed = true
 			}
+			// A word copied whole from other storage into a bitfield-only struct
+			// stays one raw storage write. Constants and values composed from
+			// fields still expand to named field writes.
+			if copiedStorageWord(a.Src) {
+				if raw, ok := packedStorageValue(a.Dst, a.Src.ExprType()); ok {
+					next := *a
+					next.Dst = raw
+					expanded = append(expanded, &next)
+					changed = true
+					continue
+				}
+			}
 			if writes, ok := p.expandAggregateWrite(a); ok {
 				expanded = append(expanded, writes...)
 				changed = true
@@ -730,5 +742,17 @@ func unwrapSemanticBitfieldValue(expr Expr) Expr {
 		default:
 			return expr
 		}
+	}
+}
+
+// copiedStorageWord reports whether a value is read whole from other storage
+// or returned by a call, as in rgmdplr[i] = rgplr[i].wMdPlr, rather than
+// computed from separate field values.
+func copiedStorageWord(value Expr) bool {
+	switch value.(type) {
+	case LValue, *Call:
+		return true
+	default:
+		return false
 	}
 }

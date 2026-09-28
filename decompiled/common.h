@@ -2,10 +2,13 @@
 #define STARS_DECOMPILED_COMMON_H
 
 #include <stdint.h>
+#include <stdio.h>
 #include <windows.h>
 
+#include <math.h>
 #include <setjmp.h>
 #include <string.h>
+#include <time.h>
 
 // Raw Win16 storage is byte-addressed and may be unaligned, so scalar
 // accesses through it copy bytes instead of dereferencing a cast pointer.
@@ -27,6 +30,10 @@ static inline void RawStore32(void *p, uint32_t v) { memcpy(p, &v, sizeof v); }
 
 // Native storage; the analysis model retains the original 18-byte layout.
 typedef jmp_buf ENV;
+
+// Comparator for qsort and bsearch, which call it through the native int
+// return type.
+typedef int (*QSORTCOMPARE)(const void *, const void *);
 
 // Dereference the saved pointer to the native jump-buffer array.
 #define StarsLongJump(env, value) longjmp(*(env), (value))

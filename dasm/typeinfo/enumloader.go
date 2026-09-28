@@ -217,6 +217,8 @@ type symbolicConfigJSON struct {
 	Uses           []useRuleJSON           `json:"uses"`
 	Messages       []messageRuleJSON       `json:"messages"`
 	DependentEnums []dependentEnumRuleJSON `json:"dependent_enums"`
+	WindowClasses  []windowClassJSON       `json:"window_classes"`
+	Windows        []windowRuleJSON        `json:"windows"`
 }
 
 type useRuleJSON struct {
@@ -243,6 +245,7 @@ type messageRuleJSON struct {
 	Message string              `json:"msg"`
 	WParam  *messagePayloadJSON `json:"wparam"`
 	LParam  *messagePayloadJSON `json:"lparam"`
+	Result  *messageValueJSON   `json:"result"`
 }
 
 type messagePayloadJSON struct {
@@ -300,13 +303,16 @@ func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
 
 // parseMessageRuleJSON resolves one message payload record to type metadata.
 func parseMessageRuleJSON(cfg messageRuleJSON, sdb *SymbolDB, resolver *typeResolver) (*MessageRule, error) {
-	messageEnum := sdb.GetEnum(MessageEnumName)
-	if messageEnum == nil {
-		return nil, fmt.Errorf("message enum %s not found", MessageEnumName)
+	var messageEnum *Enum
+	var messageValue EnumValue
+	for _, enum := range sdb.messageEnums() {
+		if value, ok := enumValueByName(enum, cfg.Message); ok {
+			messageEnum, messageValue = enum, value
+			break
+		}
 	}
-	messageValue, ok := enumValueByName(messageEnum, cfg.Message)
-	if !ok {
-		return nil, fmt.Errorf("message %s not found in %s", cfg.Message, MessageEnumName)
+	if messageEnum == nil {
+		return nil, fmt.Errorf("message %s not found in %s or a window class message enum", cfg.Message, MessageEnumName)
 	}
 	wparam, err := parseMessagePayloadJSON(cfg.Message, "wparam", cfg.WParam, sdb, resolver)
 	if err != nil {
@@ -316,11 +322,17 @@ func parseMessageRuleJSON(cfg messageRuleJSON, sdb *SymbolDB, resolver *typeReso
 	if err != nil {
 		return nil, err
 	}
+	result, err := parseMessageValueJSON(cfg.Message, "result", cfg.Result, sdb, resolver)
+	if err != nil {
+		return nil, err
+	}
 	return &MessageRule{
+		Enum:   messageEnum,
 		Name:   messageValue.Name,
 		Value:  messageValue.Value,
 		WParam: wparam,
 		LParam: lparam,
+		Result: result,
 	}, nil
 }
 

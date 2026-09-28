@@ -1,12 +1,12 @@
 /*
 ReportDlg  (report)
   addr: 0022:0018  len=2511
-  sig:  int32_t ReportDlg(HWND hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+  sig:  LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
   params:
     HWND             hwnd           [BP+0xe]
-    uint16_t         msg            [BP+0xc]
-    uint16_t         wParam         [BP+0xa]
-    int32_t          lParam         [BP+0x6]
+    UINT             msg            [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
   locals:
     RECT             rc             [BP-0xe]
     HMENU            hmenu          [BP-0x6]
@@ -135,7 +135,7 @@ L_0312:
 
 L_0337:
     call GetClientRect(hwnd, &rc) -> callresult(void)
-    call FillRect(wParam, &rc, hbrButtonFace) -> callresult(int16_t)
+    call FillRect((HDC)wParam, &rc, hbrButtonFace) -> callresult(int16_t)
     return 1
 
 L_0362:
@@ -224,7 +224,7 @@ L_04f9:
     goto L_09c8
 
 L_04fc:
-    iCur = GetScrollPos((loword((uint32_t)(lParam >> 0x10)) & 0xffff), 2)
+    iCur = GetScrollPos((HWND)hiword(lParam), 2)
     iNew = iCur
     goto L_0576
 
@@ -285,14 +285,14 @@ L_05d7:
     rc.top = (dyArial8 + 6)
     rc.bottom = (loword(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top)
     call ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &rc, &rc) -> callresult(void)
-    call SetScrollPos((loword((uint32_t)(lParam >> 0x10)) & 0xffff), 2, iNew, 1) -> callresult(int16_t)
+    call SetScrollPos((HWND)hiword(lParam), 2, iNew, 1) -> callresult(int16_t)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_0673:
     return 0
 
 L_067c:
-    iCur = GetScrollPos((loword((uint32_t)(lParam >> 0x10)) & 0xffff), 2)
+    iCur = GetScrollPos((HWND)hiword(lParam), 2)
     iNew = iCur
     goto L_06e4
 
@@ -346,8 +346,8 @@ L_072c:
     branch iNew == iCur ? L_080f : L_0737
 
 L_0737:
-    call SetScrollPos((loword((uint32_t)(lParam >> 0x10)) & 0xffff), 2, iNew, 1) -> callresult(int16_t)
-    iNew = GetScrollPos((loword((uint32_t)(lParam >> 0x10)) & 0xffff), 2)
+    call SetScrollPos((HWND)hiword(lParam), 2, iNew, 1) -> callresult(int16_t)
+    iNew = GetScrollPos((HWND)hiword(lParam), 2)
     branch iNew == iCur ? L_080f : L_0788
 
 L_0788:

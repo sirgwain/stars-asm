@@ -687,6 +687,17 @@ func BinaryResult(op ValueOp, lhs, rhs Value) Value {
 			}
 		}
 	}
+	if op == ValueOpOr {
+		// MAKELONG(x, 0) lowers to OR reg, 0 on each word; the identity keeps
+		// the operand's own type, such as a window handle in a WM_COMMAND
+		// lParam.
+		if rok && rc.Val == 0 && rc.Fixup == nil {
+			return lhs
+		}
+		if lok && lc.Val == 0 && lc.Fixup == nil {
+			return rhs
+		}
+	}
 	if op == ValueOpAnd {
 		if rok && rc.Val == 0 {
 			return ConstVal(0)

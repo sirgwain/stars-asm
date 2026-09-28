@@ -3323,7 +3323,7 @@ L_3d0a:
         goto L_3d39;
 
 L_3d39:
-    sel.fl.lpplord = LpplReAlloc(sel.fl.lpplord, (sel.fl.cord + 1));
+    sel.fl.lpplord = (PLORD *)(LpplReAlloc((PL *)(sel.fl.lpplord), (sel.fl.cord + 1)));
 
 L_3d57:
     if ((fAppend == 0))
@@ -3476,7 +3476,7 @@ L_3f96:
         goto L_3fbd;
 
 L_3fbd:
-    lpplProdGlob = LpplReAlloc(lpplProdGlob, (lpplProdGlob->iprodMac + 0x3));
+    lpplProdGlob = (PLPROD *)(LpplReAlloc((PL *)(lpplProdGlob), (lpplProdGlob->iprodMac + 0x3)));
 
 L_3fe3:
     goto L_4060;

@@ -25,6 +25,13 @@ func IsPointer(typ Type) bool {
 	return ok
 }
 
+// IsNativePointer reports whether typ is a Win16 integer type, such as a
+// handle, that the native Win32 headers declare as a pointer.
+func IsNativePointer(typ Type) bool {
+	p, ok := typ.(*Primitive)
+	return ok && p.NativePointer
+}
+
 // IsNearPointer reports whether a type is represented as a near machine pointer.
 func IsNearPointer(typ Type) bool {
 	ptr, ok := typ.(*Pointer)

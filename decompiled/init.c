@@ -122,7 +122,7 @@ L_00af:
     goto L_04f1;
 
 L_04b7:
-    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE(((i + 0x1cc) | 0x0)));
+    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE((i + 460)));
     rghbrPat[i] = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
     i = (i + 1);
@@ -144,20 +144,20 @@ L_04fa:
     hcurScanAdd = LoadCursor(hInst, "ScannerAdd");
     hcurOpenGrab = LoadCursor(hInst, "OpenGrabCur");
     hcurCloseGrab = LoadCursor(hInst, "CloseGrabCur");
-    hcurTrashCan = LoadCursor(hInst, MAKEINTRESOURCE(0x7a));
-    hcurNoWay = LoadCursor(hInst, MAKEINTRESOURCE(0x79));
-    hcurResizeWE = LoadCursor(hInst, MAKEINTRESOURCE(0x102));
-    hcurResizeNS = LoadCursor(hInst, MAKEINTRESOURCE(0x104));
-    hcurResize4Way = LoadCursor(hInst, MAKEINTRESOURCE(0x107));
-    hcurArrowHelp = LoadCursor(hInst, MAKEINTRESOURCE(0x108));
-    hcurHand = LoadCursor(hInst, MAKEINTRESOURCE(0x109));
+    hcurTrashCan = LoadCursor(hInst, MAKEINTRESOURCE(IDC_TRASH_CAN));
+    hcurNoWay = LoadCursor(hInst, MAKEINTRESOURCE(IDC_NO_WAY));
+    hcurResizeWE = LoadCursor(hInst, MAKEINTRESOURCE(IDC_RESIZE_WE));
+    hcurResizeNS = LoadCursor(hInst, MAKEINTRESOURCE(IDC_RESIZE_NS));
+    hcurResize4Way = LoadCursor(hInst, MAKEINTRESOURCE(IDC_RESIZE_4WAY));
+    hcurArrowHelp = LoadCursor(hInst, MAKEINTRESOURCE(IDC_ARROW_HELP));
+    hcurHand = LoadCursor(hInst, MAKEINTRESOURCE(IDC_HAND));
     hbmpScanner = LoadBitmap(hInst, "ScannerBmp");
-    hbmpScanShip = LoadBitmap(hInst, MAKEINTRESOURCE(0x58));
+    hbmpScanShip = LoadBitmap(hInst, MAKEINTRESOURCE(IDDIB_SCANNER_TOOLBAR));
     hbmpUnknownPlanet = LoadBitmap(hInst, "UnknownPlanetBmp");
-    hbmpNumbers = LoadBitmap(hInst, MAKEINTRESOURCE(0xf9));
-    hdibPlanets = HdibLoadBigResource(112);
-    hdibThings = HdibLoadBigResource(87);
-    hdibToolbar = HdibLoadBigResource(178);
+    hbmpNumbers = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_FONT_DIGITS));
+    hdibPlanets = HdibLoadBigResource(IDDIB_PLANET_ICONS);
+    hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
+    hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
     if ((hdibPlanets == 0x0))
         goto L_06b7;
     else
@@ -236,13 +236,13 @@ L_0761:
 
 L_076a:
     vhpal = HpalFromDib(rghdibShips[3]);
-    hdibRaces = HdibLoadBigResource(133);
-    hdibRacesT = HdibLoadBigResource(80);
-    hdibRacesX = HdibLoadBigResource(79);
-    hbmpBackBld = LoadBitmap(hInst, MAKEINTRESOURCE(0x77));
-    hbmpMsg = LoadBitmap(hInst, MAKEINTRESOURCE(0x86));
-    hbmpMono = LoadBitmap(hInst, MAKEINTRESOURCE(0xc7));
-    hdibPlaque = HdibLoadBigResource(1079);
+    hdibRaces = HdibLoadBigResource(IDDIB_PLAYER_ICONS);
+    hdibRacesT = HdibLoadBigResource(IDDIB_PLAYER_ICONS_SMALL);
+    hdibRacesX = HdibLoadBigResource(IDDIB_PLAYER_ICONS_TINY);
+    hbmpBackBld = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_EMPTY_HULL_SLOT));
+    hbmpMsg = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MSGFILTER_CHECKBOX));
+    hbmpMono = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_FILTER_CHECKBOX_MONO));
+    hdibPlaque = HdibLoadBigResource(IDDIB_NUM_DESIGNS_PLATE);
     hiconStars = LoadIcon(hInst, "StarsIco");
     hiconHost = LoadIcon(hInst, "HostIco");
     hiconWait = LoadIcon(hInst, "WaitIco");
@@ -469,7 +469,7 @@ L_0dff:
     return 0;
 
 L_0e05:
-    t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(0x74));
+    t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_MAIN));
     hAccel = t_call_0e11;
     if ((t_call_0e11 != 0x0))
         goto L_0e27;
@@ -480,7 +480,7 @@ L_0e21:
     return 0;
 
 L_0e27:
-    t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(0x438));
+    t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_TITLE));
     hAccelTitle = t_call_0e33;
     if ((t_call_0e33 != 0x0))
         goto L_0e49;
@@ -1981,7 +1981,7 @@ L_2af0:
         goto L_2b14;
 
 L_2b14:
-    vrgZipProd[i].rgpq[iPass].w = ((vrgZipProd[i].rgpq[iPass].w & 0xffc0) | 0x0);
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w & 0xffc0);
 
 L_2b52:
     iPass = (iPass + 1);
