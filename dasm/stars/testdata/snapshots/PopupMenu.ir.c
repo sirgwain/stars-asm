@@ -58,7 +58,7 @@ L_13e5:
     goto L_1883;
 
 L_1401:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x1000)) != 0x0))
+    if (((rgids[i] & 0x10000000) != 0x0))
         goto L_1429;
     else
         goto L_1432;
@@ -68,7 +68,7 @@ L_1429:
     goto L_152e;
 
 L_1432:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x4000)) != 0x0))
+    if (((rgids[i] & 0x40000000) != 0x0))
         goto L_145a;
     else
         goto L_147b;
@@ -78,7 +78,7 @@ L_145a:
     goto L_152e;
 
 L_147b:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x2000)) != 0x0))
+    if (((rgids[i] & 0x20000000) != 0x0))
         goto L_14a3;
     else
         goto L_14c4;
@@ -88,7 +88,7 @@ L_14a3:
     goto L_152e;
 
 L_14c4:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x8000)) != 0x0))
+    if (((rgids[i] & 0x80000000) != 0x0))
         goto L_14ec;
     else
         goto L_1510;

@@ -2602,9 +2602,7 @@ L_31ac:
 }
 
 void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet) {
-    uint32_t  grMask;
-    uint32_t *t_assign_1;
-    uint32_t *t_assign_2;
+    uint32_t grMask;
 
 L_31b8:
     grMask = (int32_t)((0x1 << ibit));
@@ -2618,10 +2616,7 @@ L_31de:
     goto L_3203;
 
 L_31f0:
-    t_assign_1 = &(pplr->grbitAttr);
-    *(t_assign_1) = (((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)((LOWORD(pplr->grbitAttr) & (~LOWORD(grMask)))) & 0xffff));
-    t_assign_2 = &(pplr->grbitAttr);
-    *(t_assign_2) = (((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)((HIWORD(pplr->grbitAttr) & (~HIWORD(grMask)))) & 0xffff) << 0x10));
+    pplr->grbitAttr = (pplr->grbitAttr & (~grMask));
 
 L_3203:
     return;

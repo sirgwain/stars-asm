@@ -177,7 +177,7 @@ L_0446:
     lppl = (lppl + 1);
 
 L_044a:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_0419;
     else
         goto L_0458;
@@ -969,7 +969,7 @@ DrawTotalSpent:
 
 L_162c:
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsTotalResourcesSpentResearchLastYear), 0, 0);
-    c = _wsprintf(szWork, PCTLD, LOWORD(rgplr[idPlayer].lResLastYear), HIWORD(rgplr[idPlayer].lResLastYear));
+    c = _wsprintf(szWork, PCTLD, rgplr[idPlayer].lResLastYear);
     RightTextOut(hdc, xNum, rc.top, szWork, c, 0);
 
 DrawBudget:
@@ -2420,7 +2420,7 @@ L_2f93:
         goto L_2fab;
 
 L_2fab:
-    c = _wsprintf(szWork, PszGetCompressedString(idsCostLdk), LOWORD((int32_t)(((l + 500) / 0x3e8))), HIWORD((int32_t)(((l + 500) / 0x3e8))));
+    c = _wsprintf(szWork, PszGetCompressedString(idsCostLdk), (int32_t)(((l + 500) / 0x3e8)));
     TextOut(hdc, 5, ((yCur + dyArial8) + 4), szWork, c);
     goto L_30fc;
 
@@ -5011,7 +5011,7 @@ L_66ac:
     lppl = (lppl + 1);
 
 L_66b0:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_6619;
     else
         goto L_66be;

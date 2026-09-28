@@ -3372,7 +3372,7 @@ L_4975:
 
 L_4999:
     fstrcpy(game.szName, lpbStart);
-    if ((LOWORD(lpb) < LOWORD(lpbDefMac)))
+    if ((lpb < lpbDefMac))
         goto L_49e1;
     else
         goto LUniDefShort;
@@ -3473,7 +3473,7 @@ L_4b05:
     Randomize(rgl[3]);
 
 L_4b15:
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_4b27;
@@ -3603,7 +3603,7 @@ L_4d75:
     goto LError;
 
 L_4d99:
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_4dab;
@@ -3616,7 +3616,7 @@ L_4dab:
 
 L_4dc2:
     lpbStart = PszGetLine(&(lpb));
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_4de6;
@@ -3731,7 +3731,7 @@ L_501b:
 L_5026:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_5063;
@@ -3792,7 +3792,7 @@ L_5129:
 L_5160:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 3);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_519d;
@@ -3861,7 +3861,7 @@ L_5256:
 L_52b2:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_52ef;
@@ -3916,7 +3916,7 @@ L_537c:
 L_53b3:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_53f0;
@@ -3971,7 +3971,7 @@ L_547c:
 L_54b3:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_54f0;
@@ -4026,7 +4026,7 @@ L_557c:
 L_55b3:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_55f0;
@@ -4081,7 +4081,7 @@ L_567c:
 L_56b3:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_56f0;
@@ -4136,7 +4136,7 @@ L_577c:
 L_57b3:
     lpbStart = PszGetLine(&(lpb));
     cNum = CParseNumbers(lpbStart, rgl, 2);
-    if ((LOWORD(lpb) >= LOWORD(lpbDefMac)))
+    if ((lpb >= lpbDefMac))
         goto LUniDefShort;
     else
         goto L_57f0;
@@ -4219,7 +4219,7 @@ L_5933:
 
 L_593b:
     fstrcpy(szBase, lpbStart);
-    if (((LOWORD(lpb) + 0x4) >= LOWORD(lpbDefMac)))
+    if (((lpb + 4) >= lpbDefMac))
         goto L_5971;
     else
         goto L_5964;

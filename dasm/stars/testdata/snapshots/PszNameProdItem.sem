@@ -35,7 +35,7 @@ L_3d46:
     branch sel.pl.fStarbase == 0x0 ? L_3f13 : L_3d94
 
 L_3d94:
-    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)(iItem * 0x93) - 2)])
+    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - *&rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)(iItem * 0x93) - 2)])
     branch iDelta <= 0 ? L_3e05 : L_3df2
 
 L_3df2:

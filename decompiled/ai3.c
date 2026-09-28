@@ -714,7 +714,7 @@ L_094a:
     lppl = (lppl + 1);
 
 L_094e:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_08a7;
     else
         goto L_095c;

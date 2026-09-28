@@ -24,7 +24,37 @@ func (c *wideMachineCollapser) pair(low machine.Value, high machine.Value) (mach
 	if value, ok := c.pairPhi(low, high); ok {
 		return value, true
 	}
+	if value, ok := c.pairNeg(low, high); ok {
+		return value, true
+	}
 	return c.pairBinary(low, high)
+}
+
+// pairNeg reconstructs a 32-bit negate lowered as NEG low; ADC high, 0;
+// NEG high. Unary NEG is represented as Binary(NEG, value, 0), and the ADC
+// carries the low-word NEG borrow into the high word.
+func (c *wideMachineCollapser) pairNeg(low machine.Value, high machine.Value) (machine.Value, bool) {
+	lowNeg, lowOK := low.(*machine.Binary)
+	highNeg, highOK := high.(*machine.Binary)
+	if !lowOK || !highOK || lowNeg.Op != machine.ValueOpNeg || highNeg.Op != machine.ValueOpNeg {
+		return nil, false
+	}
+	if !machineConstIsZero(lowNeg.RHS) || !machineConstIsZero(highNeg.RHS) {
+		return nil, false
+	}
+	highAdjust, ok := highNeg.LHS.(*machine.Binary)
+	if !ok || highAdjust.Op != machine.ValueOpAdd || !machineConstIsZero(highAdjust.RHS) {
+		return nil, false
+	}
+	if !machine.AdjacentWideArithmetic(lowNeg.Producer, highAdjust.Producer, asm.OpNEG, asm.OpADC) ||
+		!machine.AdjacentWideArithmetic(highAdjust.Producer, highNeg.Producer, asm.OpADC, asm.OpNEG) {
+		return nil, false
+	}
+	source, ok := c.pair(lowNeg.LHS, highAdjust.LHS)
+	if !ok {
+		return nil, false
+	}
+	return machine.BinaryVal(machine.ValueOpNeg, source, machine.ConstVal(0)), true
 }
 
 // pairPointerOffset reconstructs a wide pointer whose low word carries
@@ -219,7 +249,7 @@ func (c *wideMachineCollapser) pairBinary(low machine.Value, high machine.Value)
 		return nil, false
 	}
 	switch lowBinary.Op {
-	case machine.ValueOpAnd, machine.ValueOpOr, machine.ValueOpXor:
+	case machine.ValueOpAnd, machine.ValueOpOr, machine.ValueOpXor, machine.ValueOpNot:
 	case machine.ValueOpAdd:
 		if !machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) {
 			return nil, false
@@ -251,4 +281,72 @@ func identityZeroOperand(binary *machine.Binary) bool {
 	}
 	_, ok := binary.RHS.(*machine.Const)
 	return ok
+}
+
+// scalarTypeAtOffset resolves a fixed storage offset through
+// nested structs and arrays and returns only the exact leaf type it selects.
+func (ctx *FuncContext) scalarTypeAtOffset(base symresolve.SymbolPath, offset int) (typeinfo.Type, bool) {
+	if offset < 0 {
+		return nil, false
+	}
+	path := base
+	for {
+		typ := path.Type()
+		if offset == 0 && typ.Bytes() == 4 && (typ.Kind() == typeinfo.KInt || typ.Kind() == typeinfo.KPointer) {
+			return typ, true
+		}
+		switch aggregate := typ.(type) {
+		case *typeinfo.Pointer:
+			if aggregate.Elem == nil {
+				return nil, false
+			}
+			path = &symresolve.SymbolDeref{Base: path}
+		case *typeinfo.Array:
+			if aggregate.Elem == nil || aggregate.Elem.Bytes() <= 0 ||
+				offset+4 > aggregate.Bytes() {
+				return nil, false
+			}
+			elemSize := aggregate.Elem.Bytes()
+			index := offset / elemSize
+			offset %= elemSize
+			path = &symresolve.SymbolTerm{
+				Base:     path,
+				IndexVal: machine.ConstVal(uint(index)),
+				Scale:    elemSize,
+				Result:   aggregate.Elem,
+			}
+		case *typeinfo.Struct:
+			field, remainder, ok := ctx.res.ResolveContainingFieldPathInContext(path, offset, ctx.unionContext())
+			if !ok {
+				return nil, false
+			}
+			path = field
+			offset = remainder
+		default:
+			if _, ok := path.(*symresolve.SymbolDeref); ok && typ.Bytes() > 0 && offset%typ.Bytes() == 0 {
+				return typ, true
+			}
+			return typ, offset == 0
+		}
+	}
+}
+
+// wideStorageScalarType returns the exact four-byte integer or pointer type
+// stored at mem, resolving fixed offsets through structs and arrays, e.g.
+// pfl->rgwtMin[3] at [bx+0x58]. Narrower fields and aggregates report false.
+func (ctx *FuncContext) wideStorageScalarType(mem machine.MemoryAddress) (typeinfo.Type, bool) {
+	mem.Width = 4
+	addr, ok := ctx.symbols.addressFromMemory(mem, nil)
+	if !ok {
+		return nil, false
+	}
+	lane, ok := ctx.symbols.storageLaneFromMemory(mem, addr)
+	if !ok {
+		return nil, false
+	}
+	typ, ok := ctx.scalarTypeAtOffset(lane.object, lane.offset)
+	if !ok || typ.Bytes() != 4 || (typ.Kind() != typeinfo.KInt && typ.Kind() != typeinfo.KPointer) {
+		return nil, false
+	}
+	return typ, true
 }

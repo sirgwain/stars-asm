@@ -481,6 +481,16 @@ func (c *machineConverter) consumeAddressExpr(addr AddressExpr, width int) (Expr
 			return &Part{Base: base, ByteOff: 0, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
 		}
 
+		// An access wider than one array element, such as the dword NOT of
+		// rgbCur+0xc in a char buffer, spans the following elements; name the
+		// raw memory at the element address instead of the element itself.
+		// Only scalar word and dword accesses qualify; block copies keep
+		// their aggregate lowering.
+		if index, ok := current.(*ArrayIndex); ok && (width == 2 || width == 4) && index.TypeInfo != nil && index.TypeInfo.Bytes() < width {
+			address := &AddressOf{Target: index, TypeInfo: &typeinfo.Pointer{Elem: index.TypeInfo}}
+			return &Deref{Pointer: address, Width: width, TypeInfo: typeinfo.UintForWidth(width)}, true
+		}
+
 		return current, true
 	}
 

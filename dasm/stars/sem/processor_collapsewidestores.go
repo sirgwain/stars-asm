@@ -112,6 +112,11 @@ func pointerOffsetStoreSource(ctx *FuncContext, dst machine.MemoryAddress, src *
 // collapseWideMachineStorePair coalesces adjacent low/high word stores into
 // one 32-bit machine store when their destinations describe the same object.
 func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.StoreEffect, high machine.StoreEffect) (machine.StoreEffect, bool) {
+	// Only word lanes form a dword; byte stores two apart, as in
+	// szForm[1] = 9; szForm[3] = 0, are unrelated.
+	if low.Width != 2 || high.Width != 2 {
+		return low, false
+	}
 	if collapsed, ok := p.collapseHugePointerStore(low, high); ok {
 		return collapsed, true
 	}
@@ -139,10 +144,7 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 		return low, false
 	}
 
-	src, ok := p.collapseWideNegSource(low, high)
-	if !ok {
-		src, ok = p.collapseWideArithmeticSource(low, high)
-	}
+	src, ok := p.collapseWideArithmeticSource(low, high)
 	if !ok {
 		src, ok = p.collapseWidePointerOffsetStoreSource(low, high)
 	}
@@ -173,9 +175,6 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 // of (hiword(n) << __AHSHIFT) + HIWORD(p). The pair is the single pointer
 // update p + n.
 func (p *collapseWideStoresProcessor) collapseHugePointerStore(low, high machine.StoreEffect) (machine.StoreEffect, bool) {
-	if low.Width != 2 || high.Width != 2 {
-		return low, false
-	}
 	offset, ok := low.Src.(*machine.Binary)
 	if !ok || offset.Op != machine.ValueOpAdd {
 		return low, false
@@ -228,51 +227,6 @@ func hugeHighDelta(value, delta machine.Value) bool {
 		return v.Val == 0
 	}
 	return false
-}
-
-// collapseWideNegSource reconstructs a 32-bit negate lowered as
-// NEG low; ADC high, 0; NEG high.
-func (p *collapseWideStoresProcessor) collapseWideNegSource(low machine.StoreEffect, high machine.StoreEffect) (machine.Value, bool) {
-	lowNeg, lowOK := low.Src.(*machine.Binary)
-	highNeg, highOK := high.Src.(*machine.Binary)
-	if !lowOK || !highOK || lowNeg.Op != machine.ValueOpNeg || highNeg.Op != machine.ValueOpNeg {
-		return nil, false
-	}
-
-	// Unary NEG is represented as Binary(NEG, value, 0).
-	if !machineConstIsZero(lowNeg.RHS) || !machineConstIsZero(highNeg.RHS) {
-		return nil, false
-	}
-
-	// The high lane must be:
-	//
-	//     NEG(ADC(highSource, 0))
-	//
-	// ADC carries the low-word NEG borrow/carry into the high word.
-	highAdjust, ok := highNeg.LHS.(*machine.Binary)
-	if !ok || highAdjust.Op != machine.ValueOpAdd || !machineConstIsZero(highAdjust.RHS) {
-		return nil, false
-	}
-
-	// Prove the compiler lowering:
-	//
-	//     NEG low
-	//     ADC high, 0
-	//     NEG high
-	if !machine.AdjacentWideArithmetic(lowNeg.Producer, highAdjust.Producer, asm.OpNEG, asm.OpADC) {
-		return nil, false
-	}
-	if !machine.AdjacentWideArithmetic(highAdjust.Producer, highNeg.Producer, asm.OpADC, asm.OpNEG) {
-		return nil, false
-	}
-
-	// Reconstruct the original 32-bit operand from the pre-NEG lanes.
-	source, ok := (&wideMachineCollapser{ctx: p.ctx}).pair(lowNeg.LHS, highAdjust.LHS)
-	if !ok {
-		return nil, false
-	}
-
-	return machine.BinaryVal(machine.ValueOpNeg, source, machine.ConstVal(0)), true
 }
 
 // collapseWideArithmeticSource reconstructs carry-aware 32-bit addition or

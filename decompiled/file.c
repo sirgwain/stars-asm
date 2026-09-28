@@ -552,7 +552,7 @@ L_0b49:
 
 L_0b64:
     cPlanetHist = RawLoad16(rgbCur);
-    cPlanetAlloc = (cPlanetHist + rgbCur[2]);
+    cPlanetAlloc = (cPlanetHist + RawLoad16(&(rgbCur[2])));
     if ((cPlanetAlloc <= 1000))
         goto L_0b83;
     else
@@ -1068,7 +1068,7 @@ L_155b:
         goto L_1564;
 
 L_1564:
-    gd.fGameOverMan = ((rgbCur[14] >> 0xb) & 0x1);
+    gd.fGameOverMan = ((RawLoad16(&(rgbCur[14])) >> 0xb) & 0x1);
 
 LNextTurn:
     cturn = (cturn + 1);
@@ -1105,7 +1105,7 @@ L_15e9:
     lpbBattleCur = lpbBattleLog;
 
 L_160e:
-    if (((0xffc8 - (uint32_t)((LOWORD(lpbBattleCur) & 0xffff))) < (uint32_t)(rgbCur[6])))
+    if (((0xffc8 - (uint32_t)((LOWORD(lpbBattleCur) & 0xffff))) < (uint32_t)(RawLoad16(&(rgbCur[6])))))
         goto L_163e;
     else
         goto L_165e;
@@ -2114,8 +2114,8 @@ L_28b2:
         goto L_28ca;
 
 L_28ca:
-    game.turn = rgbCur[10];
-    game.wGen = ((rgbCur[14] >> 0xd) & 0x7);
+    game.turn = RawLoad16(&(rgbCur[10]));
+    game.wGen = ((RawLoad16(&(rgbCur[14])) >> 0xd) & 0x7);
     i = 0;
     goto L_2905;
 
@@ -2163,7 +2163,7 @@ L_2a1a:
     lppl = (lppl + 1);
 
 L_2a1e:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_29b5;
     else
         goto L_2a2c;
@@ -2266,7 +2266,7 @@ L_2c13:
     lpth = (lpth + 1);
 
 L_2c17:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_2b54;
     else
         goto L_2c25;
@@ -2370,7 +2370,7 @@ L_2de3:
     lppl = (lppl + 1);
 
 L_2de7:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_2c64;
     else
         goto L_2df5;
@@ -2461,7 +2461,7 @@ L_2f65:
     lppl = (lppl + 1);
 
 L_2f69:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_2f2e;
     else
         goto L_2f77;
@@ -2644,24 +2644,24 @@ L_32ac:
     goto L_32de;
 
 L_32af:
-    lppl->fFirstYear = ((rgbCur[2] >> 0xf) & 0x1);
+    lppl->fFirstYear = ((RawLoad16(&(rgbCur[2])) >> 0xf) & 0x1);
 
 L_32de:
     lppl->id = ((RawLoad16(rgbCur) << 0x5) >> 0x5);
     lppl->iPlayer = (RawLoad16(rgbCur) >> 0xb);
-    if ((lppl->det >= (rgbCur[2] & 0x7f)))
+    if ((lppl->det >= (RawLoad16(&(rgbCur[2])) & 0x7f)))
         goto L_3347;
     else
         goto L_3322;
 
 L_3322:
-    lppl->det = (rgbCur[2] & 0x7f);
+    lppl->det = (RawLoad16(&(rgbCur[2])) & 0x7f);
 
 L_3347:
-    lppl->fInclude = ((rgbCur[2] >> 0x8) & 0x1);
-    lppl->fStarbase = ((rgbCur[2] >> 0x9) & 0x1);
-    lppl->fHomeworld = ((rgbCur[2] >> 0x7) & 0x1);
-    fRouting = ((rgbCur[2] >> 0xe) & 0x1);
+    lppl->fInclude = ((RawLoad16(&(rgbCur[2])) >> 0x8) & 0x1);
+    lppl->fStarbase = ((RawLoad16(&(rgbCur[2])) >> 0x9) & 0x1);
+    lppl->fHomeworld = ((RawLoad16(&(rgbCur[2])) >> 0x7) & 0x1);
+    fRouting = ((RawLoad16(&(rgbCur[2])) >> 0xe) & 0x1);
     if ((lppl->fStarbase == 0x0))
         goto L_341a;
     else
@@ -2687,7 +2687,7 @@ L_3423:
 
 L_342d:
     pb = &(rgbCur[4]);
-    if (((rgbCur[2] & 0x7f) < 0x3))
+    if (((RawLoad16(&(rgbCur[2])) & 0x7f) < 0x3))
         goto LFinishBRecord;
     else
         goto L_3443;
@@ -2782,7 +2782,7 @@ L_356a:
         goto L_3573;
 
 L_3573:
-    if ((((rgbCur[2] >> 0xa) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[2])) >> 0xa) & 0x1) == 0x0))
         goto L_35cf;
     else
         goto L_3586;
@@ -2828,7 +2828,7 @@ L_35ef:
         goto L_3604;
 
 L_3604:
-    if ((((rgbCur[2] >> 0xd) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[2])) >> 0xd) & 0x1) == 0x0))
         goto L_3728;
     else
         goto L_3617;
@@ -2998,7 +2998,7 @@ L_3904:
     return 1;
 
 L_390a:
-    if ((((rgbCur[2] >> 0xb) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[2])) >> 0xb) & 0x1) == 0x0))
         goto L_3944;
     else
         goto L_391d;
@@ -3009,7 +3009,7 @@ L_391d:
     goto L_39dc;
 
 L_3944:
-    lppl->fArtifact = ((rgbCur[2] >> 0xc) & 0x1);
+    lppl->fArtifact = ((RawLoad16(&(rgbCur[2])) >> 0xc) & 0x1);
     lppl->iScanner = 0x1f;
     lppl->cDefenses = 0x0;
 
@@ -3061,7 +3061,7 @@ L_3a4c:
     fmemset(lpfl, 0, 0x7c);
     fmemmove(lpfl, rgbCur, 0xc);
     fByte = lpfl->fDone;
-    us = rgbCur[12];
+    us = RawLoad16(&(rgbCur[12]));
     pb = &(rgbCur[14]);
     if ((fByte == 0))
         goto L_3b2f;
@@ -3475,7 +3475,7 @@ L_4251:
     lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
 
 L_42a0:
-    if ((LOWORD(lpbr) >= LOWORD(lpbd)))
+    if ((lpbr >= (BTLREC *)(lpbd)))
         goto L_41eb;
     else
         goto L_42ae;
@@ -4032,19 +4032,19 @@ L_4b49:
         goto L_4b81;
 
 L_4b81:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_4bc4;
     else
         goto L_4b94;
 
 L_4b94:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x31))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x31))
         goto L_4bc4;
     else
         goto L_4bac;
 
 L_4bac:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x54))
         goto L_4c47;
     else
         goto L_4bc4;
@@ -4056,19 +4056,19 @@ L_4bc4:
         goto L_4bd7;
 
 L_4bd7:
-    if ((((rgbCur[8] >> 0xc) & 0xf) > 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) > 0x2))
         goto L_4c15;
     else
         goto L_4bea;
 
 L_4bea:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_4c1b;
     else
         goto L_4bfd;
 
 L_4bfd:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) <= 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) <= 0x54))
         goto L_4c1b;
     else
         goto L_4c15;
@@ -4356,7 +4356,7 @@ L_5022:
         goto L_502b;
 
 L_502b:
-    if ((((rgbCur[14] >> 0x9) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[14])) >> 0x9) & 0x1) == 0x0))
         goto L_5044;
     else
         goto L_503e;
@@ -4379,7 +4379,7 @@ L_504d:
         goto L_5056;
 
 L_5056:
-    if ((((rgbCur[14] >> 0x8) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[14])) >> 0x8) & 0x1) == 0x0))
         goto L_506f;
     else
         goto L_5069;
@@ -4402,7 +4402,7 @@ L_5078:
         goto L_5081;
 
 L_5081:
-    if ((((rgbCur[14] >> 0xa) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[14])) >> 0xa) & 0x1) == 0x0))
         goto L_509a;
     else
         goto L_5094;
@@ -4442,7 +4442,7 @@ L_50cc:
         goto L_50d8;
 
 L_50d8:
-    fReturn = ((rgbCur[6] >> 0x9) & 0x1);
+    fReturn = ((RawLoad16(&(rgbCur[6])) >> 0x9) & 0x1);
 
 L_50e6:
     goto L_510c;
@@ -4515,7 +4515,8 @@ L_51a8:
         goto L_51bb;
 
 L_51bb:
-    SetFileXorStream(rgbCur[4], (rgbCur[12] >> 0x5), rgbCur[10], ((rgbCur[12] << 0xb) >> 0xb), ((rgbCur[14] >> 0xc) & 0x1));
+    SetFileXorStream(RawLoad32(&(rgbCur[4])), (RawLoad16(&(rgbCur[12])) >> 0x5), RawLoad16(&(rgbCur[10])), ((RawLoad16(&(rgbCur[12])) << 0xb) >> 0xb),
+                     ((RawLoad16(&(rgbCur[14])) >> 0xc) & 0x1));
     goto L_5247;
 
 L_5221:

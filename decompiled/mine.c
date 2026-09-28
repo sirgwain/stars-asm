@@ -288,7 +288,7 @@ L_0631:
     lpth = (lpth + 1);
 
 L_0635:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_05ea;
     else
         goto L_0643;
@@ -2857,8 +2857,11 @@ L_443c:
     rgi[0] = 100;
     rgi[1] = 500;
     rgi[2] = 1000;
+    rgi[3] = 2500;
     rgi[4] = 5000;
+    rgi[5] = 7500;
     rgi[6] = 10000;
+    rgi[7] = 20000;
     rgi[8] = 30000;
     i = 0;
     goto L_44d6;
@@ -3507,7 +3510,7 @@ L_4eae:
     lpth = (lpth + 1);
 
 L_4eb2:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_4e76;
     else
         goto L_4ec0;
@@ -3699,7 +3702,7 @@ L_50f3:
     lpth = (lpth + 1);
 
 L_50f7:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_5049;
     else
         goto L_5105;
@@ -3713,7 +3716,7 @@ L_5105:
 
 L_5136:
     scan = sel.scan;
-    if (((uint32_t)((HIWORD(rgid[i]) & 0x8000)) != 0x0))
+    if (((rgid[i] & 0x80000000) != 0x0))
         goto L_5171;
     else
         goto L_5213;
@@ -3766,7 +3769,7 @@ L_520d:
     goto L_5312;
 
 L_5213:
-    if (((uint32_t)((HIWORD(rgid[i]) & 0x2000)) != 0x0))
+    if (((rgid[i] & 0x20000000) != 0x0))
         goto L_523c;
     else
         goto L_52d8;
@@ -3787,7 +3790,7 @@ L_5291:
     lpth = (lpth + 1);
 
 L_5295:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_5271;
     else
         goto L_52a3;

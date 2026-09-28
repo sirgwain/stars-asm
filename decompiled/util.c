@@ -95,7 +95,7 @@ L_01fd:
     lpth = (lpth + 1);
 
 L_0201:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_01e6;
     else
         goto L_020f;
@@ -974,7 +974,7 @@ L_109e:
     dpShdef = (dpShdef + (int32_t)(((int32_t)((dpShdef * 2)) / 5)));
 
 L_10c1:
-    if (((uint32_t)((HIWORD(dpShdef) & 0xffff)) != 0x0))
+    if (((dpShdef & 0xffff0000) != 0x0))
         goto L_10dd;
     else
         goto L_10e7;
@@ -2178,7 +2178,7 @@ L_26c0:
     lpth = (lpth + 1);
 
 L_26c4:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_2631;
     else
         goto L_26d2;
@@ -3805,7 +3805,7 @@ L_4563:
     lpth = (lpth + 1);
 
 L_4567:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_4400;
     else
         goto L_4575;
@@ -5065,7 +5065,7 @@ L_59c5:
     lppl = (lppl + 1);
 
 L_59c9:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_58ee;
     else
         goto L_59d7;

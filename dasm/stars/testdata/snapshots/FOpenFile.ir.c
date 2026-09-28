@@ -42,19 +42,19 @@ L_4b49:
         goto L_4b81;
 
 L_4b81:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_4bc4;
     else
         goto L_4b94;
 
 L_4b94:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x31))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x31))
         goto L_4bc4;
     else
         goto L_4bac;
 
 L_4bac:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x54))
         goto L_4c47;
     else
         goto L_4bc4;
@@ -66,19 +66,19 @@ L_4bc4:
         goto L_4bd7;
 
 L_4bd7:
-    if ((((rgbCur[8] >> 0xc) & 0xf) > 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) > 0x2))
         goto L_4c15;
     else
         goto L_4bea;
 
 L_4bea:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_4c1b;
     else
         goto L_4bfd;
 
 L_4bfd:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) <= 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) <= 0x54))
         goto L_4c1b;
     else
         goto L_4c15;

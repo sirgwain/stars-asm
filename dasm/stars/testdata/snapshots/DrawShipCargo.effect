@@ -1,0 +1,245 @@
+/*
+DrawShipCargo  (ship)
+  addr: 000b:1a54  len=1054
+  sig:  void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj)
+  params:
+    HDC              hdc            [BP+0x6]
+    TILE *           ptile          [BP+0x8]
+    OBJ              obj            [BP+0xa]
+  locals:
+    RECT             rc             [BP-0x28]
+    int32_t          l              [BP-0x20]
+    int16_t          xLeft          [BP-0x1c]
+    RECT             rcGauge        [BP-0x1a]
+    int16_t          xRight         [BP-0x12]
+    FLEET *          pfl            [BP-0x10]
+    int16_t          c              [BP-0xe]
+    int16_t          i              [BP-0xc]
+    int16_t          yTop           [BP-0xa]
+    int32_t          l2             [BP-0x8]
+    int16_t          dxRight        [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_1a54:
+  insts 0..13  off 0x1a54..0x1a75
+  succs: L_1a79, L_1a91
+  effects:
+    1a60  store[2] [bp-pfl] = load([bp+obj])
+    1a74  branch ((load(ds:[load([bp+ptile])+0xa]) >> 0xb) & 0x1) == 0x0 ? L_1a91 : L_1a79
+
+block L_1a79:
+  insts 15..18  off 0x1a79..0x1a90
+  preds: L_1a54
+  succs: L_1a91
+  effects:
+    1a79  store[2] [rgrcRef+0x12] = 0xfffb
+    1a7f  store[2] [rgrcRef+0x16] = 0xfffa
+    1a85  store[2] [rgrcRef+0x1a] = 0xfffb
+    1a8b  store[2] [rgrcRef+0x1e] = 0xfffa
+
+block L_1a91:
+  insts 19..31  off 0x1a91..0x1ab4
+  preds: L_1a54, L_1a79
+  succs: L_1abb, L_1e6c
+  effects:
+    1a95  call PszGetCompressedString(0x374) -> callresult(char *)
+    1aa8  call FDrawTileNC(load([bp+hdc]), load([bp+ptile]), addr([bp-rc]), callresult(char *)) -> callresult(int16_t)
+    1ab3  branch callresult(int16_t) == 0x0 ? L_1e6c : L_1abb
+
+block L_1abb:
+  insts 34..83  off 0x1abb..0x1b48
+  preds: L_1a91
+  succs: L_1b4c, L_1b65
+  effects:
+    1ac1  store[2] [bp-xLeft] = (load([bp-rc]) + 0x4)
+    1aca  store[2] [bp-xRight] = (load([bp-rc+0x4]) + 0xfffc)
+    1ad3  store[2] [bp-yTop] = (load([bp-rc+0x2]) + 0x1)
+    1ad9  store[2] [bp-dxRight] = load([dxMaxMineralQuan])
+    1ae3  call SelectObject(load@1adc/src([bp+hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    1af0  call CchGetString(0x2e9, 0x57a4) -> callresult(int16_t)
+    1af8  store[2] [bp-c] = callresult(int16_t)
+    1b08  call GetTextExtent(load@1afb/src([bp+hdc]), words(ds, 0x57a4), load@1b05/src([bp-c])) -> callresult(uint32_t)
+    1b0d  store[2] [bp-l] = loword(callresult(uint32_t))
+    1b10  store[2] [bp-l+0x2] = hiword(callresult(uint32_t))
+    1b1b  call CchGetString(0x2ea, 0x57a4) -> callresult(int16_t)
+    1b23  store[2] [bp-c] = callresult(int16_t)
+    1b33  call GetTextExtent(load@1b26/src([bp+hdc]), words(ds, 0x57a4), load@1b30/src([bp-c])) -> callresult(uint32_t)
+    1b38  store[2] [bp-l2] = loword(callresult(uint32_t))
+    1b3b  store[2] [bp-l2+0x2] = hiword(callresult(uint32_t))
+    1b47  branch load([bp-l2+0x2]) < load([bp-l+0x2]) ? L_1b65 : L_1b4c
+
+block L_1b4c:
+  insts 85..85  off 0x1b4c..0x1b4d
+  preds: L_1abb
+  succs: L_1b51, L_1b59
+  effects:
+    1b4c  branch load([bp-l2+0x2]) > load([bp-l+0x2]) ? L_1b59 : L_1b51
+
+block L_1b51:
+  insts 87..88  off 0x1b51..0x1b55
+  preds: L_1b4c
+  succs: L_1b59, L_1b65
+  effects:
+    1b54  branch load([bp-l2]) <= load([bp-l]) ? L_1b65 : L_1b59
+
+block L_1b59:
+  insts 90..93  off 0x1b59..0x1b64
+  preds: L_1b4c, L_1b51
+  succs: L_1b65
+  effects:
+    1b5f  store[2] [bp-l] = load([bp-l2])
+    1b62  store[2] [bp-l+0x2] = load([bp-l2+0x2])
+
+block L_1b65:
+  insts 94..100  off 0x1b65..0x1b77
+  preds: L_1abb, L_1b51, L_1b59
+  succs: L_1b7b, L_1b93
+  effects:
+    1b76  branch ((load(ds:[load([bp+ptile])+0xa]) >> 0xc) & 0x1) != 0x0 ? L_1b93 : L_1b7b
+
+block L_1b7b:
+  insts 102..110  off 0x1b7b..0x1b92
+  preds: L_1b65
+  succs: L_1b93
+  effects:
+    1b8e  call TextOut(load([bp+hdc]), load([bp-xLeft]), load([bp-yTop]), words(ds, 0x57a4), load([bp-c])) -> callresult(int16_t)
+
+block L_1b93:
+  insts 111..152  off 0x1b93..0x1bf2
+  preds: L_1b65, L_1b7b
+  succs: L_1bf6, L_1bfc
+  effects:
+    1bb4  call SetRect(words(ss, addr([bp-rcGauge])), (load([bp-xLeft]) + load([bp-l])), load@1ba6/src([bp-yTop]), load([bp-xRight]), (load@1bac/src([bp-yTop]) + load([dyArial8]))) -> callresult(void)
+    1bc1  copy[0x2] *addr([rgrcRef+0x10]) = *addr(ds:[addr([bp-rcGauge])])
+    1bc2  copy[0x2] *addr([rgrcRef+0x12]) = *addr(ds:[(addr([bp-rcGauge]) + 0x2)])
+    1bc3  copy[0x2] *addr([rgrcRef+0x14]) = *addr(ds:[(addr([bp-rcGauge]) + 0x4)])
+    1bc4  copy[0x2] *addr([rgrcRef+0x16]) = *addr(ds:[(addr([bp-rcGauge]) + 0x6)])
+    1bda  call DrawFleetGauge(load([bp+hdc]), addr([bp-rcGauge]), words(ds, load([bp-pfl])), 0x4) -> callresult(void)
+    1bf1  branch ((((load([gd+0x2]) >> 0x1) >> 0x1) >> 0x1) & 0x1) == 0x0 ? L_1bfc : L_1bf6
+
+block L_1bf6:
+  insts 154..155  off 0x1bf6..0x1bfb
+  preds: L_1b93
+  succs: L_1bff
+  effects:
+    1bf9  goto L_1bff
+
+block L_1bfc:
+  insts 156..156  off 0x1bfc..0x1bfe
+  preds: L_1b93
+  succs: L_1bff
+
+block L_1bff:
+  insts 157..165  off 0x1bff..0x1c18
+  preds: L_1bf6, L_1bfc
+  succs: L_1c1c, L_1c47
+  effects:
+    1c03  store[2] [bp-yTop] = (load([bp-yTop]) + (merge(Join: L_1bff, (L_1bf6:0x2, L_1bfc:0x4)) + load([dyArial8])))
+    1c17  branch ((load(ds:[load([bp+ptile])+0xa]) >> 0xc) & 0x1) != 0x0 ? L_1c47 : L_1c1c
+
+block L_1c1c:
+  insts 167..182  off 0x1c1c..0x1c46
+  preds: L_1bff
+  succs: L_1c47
+  effects:
+    1c24  call CchGetString(0x2e9, 0x57a4) -> callresult(int16_t)
+    1c2c  store[2] [bp-c] = callresult(int16_t)
+    1c42  call TextOut(load([bp+hdc]), load([bp-xLeft]), load([bp-yTop]), words(ds, 0x57a4), load([bp-c])) -> callresult(int16_t)
+
+block L_1c47:
+  insts 183..227  off 0x1c47..0x1caf
+  preds: L_1bff, L_1c1c
+  succs: L_1cb6, L_1e6c
+  effects:
+    1c68  call SetRect(words(ss, addr([bp-rcGauge])), (load([bp-xLeft]) + load([bp-l])), load@1c5a/src([bp-yTop]), load([bp-xRight]), (load@1c60/src([bp-yTop]) + load@1c63/src([dyArial8]))) -> callresult(void)
+    1c75  copy[0x2] *addr([rgrcRef+0x18]) = *addr(ds:[addr([bp-rcGauge])])
+    1c76  copy[0x2] *addr([rgrcRef+0x1a]) = *addr(ds:[(addr([bp-rcGauge]) + 0x2)])
+    1c77  copy[0x2] *addr([rgrcRef+0x1c]) = *addr(ds:[(addr([bp-rcGauge]) + 0x4)])
+    1c78  copy[0x2] *addr([rgrcRef+0x1e]) = *addr(ds:[(addr([bp-rcGauge]) + 0x6)])
+    1c8e  call DrawFleetGauge(load([bp+hdc]), addr([bp-rcGauge]), words(ds, load([bp-pfl])), 0x5) -> callresult(void)
+    1c9c  store[2] [bp-yTop] = (load@1c9c/dst([bp-yTop]) + (load@1c96/src([dyArial8]) + 0x4))
+    1cae  branch ((((load([gd+0x2]) >> 0x1) >> 0x1) >> 0x1) & 0x1) != 0x0 ? L_1e6c : L_1cb6
+
+block L_1cb6:
+  insts 230..231  off 0x1cb6..0x1cbd
+  preds: L_1c47
+  succs: L_1d9e
+  effects:
+    1cb6  store[2] [bp-i] = 0x0
+    1cbb  goto L_1d9e
+
+block L_1cbe:
+  insts 232..238  off 0x1cbe..0x1cd0
+  preds: L_1d9e
+  succs: L_1cd4, L_1d25
+  effects:
+    1ccf  branch ((load(ds:[load([bp+ptile])+0xa]) >> 0xc) & 0x1) != 0x0 ? L_1d25 : L_1cd4
+
+block L_1cd4:
+  insts 240..267  off 0x1cd4..0x1d24
+  preds: L_1cbe
+  succs: L_1d25
+  effects:
+    1cdb  call SelectObject(load@1cd4/src([bp+hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    1cf2  call SetTextColor(load@1ce0/src([bp+hdc]), words(load(ds:[((load([bp-i]) << 0x1) << 0x1)+0x44a]), load(ds:[((load([bp-i]) << 0x1) << 0x1)+0x448]))) -> callresult(COLORREF)
+    1d1a  call lstrlen(words(ds, load(ds:[(load([bp-i]) << 0x1)+0x4cc]))) -> callresult(int16_t)
+    1d20  call TextOut(load@1cf7/src([bp+hdc]), load([bp-xLeft]), load([bp-yTop]), words(ds, load(ds:[(load([bp-i]) << 0x1)+0x4cc])), callresult(int16_t)) -> callresult(int16_t)
+
+block L_1d25:
+  insts 268..309  off 0x1d25..0x1d9d
+  preds: L_1cbe, L_1cd4
+  succs: L_1d9e
+  effects:
+    1d2c  call SelectObject(load@1d25/src([bp+hdc]), load([rghfontArial8])) -> callresult(HGDIOBJ)
+    1d3c  call SetTextColor(load@1d31/src([bp+hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+    1d5b  call PszGetCompressedString(0x37c) -> callresult(char *)
+    1d6e  call _wsprintf(words(ds, 0x57a4), words(ds, callresult(char *)), load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))]), load(ds:[((load([bp-pfl]) + 0x4c) + ((load([bp-i]) << 0x1) << 0x1))+0x2])) -> callresult(int16_t)
+    1d76  store[2] [bp-c] = callresult(int16_t)
+    1d8c  call RightTextOut(load@1d89/src([bp+hdc]), load([bp-xRight]), load@1d83/src([bp-yTop]), 0x57a4, load([bp-c]), load([bp-dxRight])) -> callresult(void)
+    1d97  store[2] [bp-yTop] = (load@1d97/dst([bp-yTop]) + load([dyArial8]))
+    1d9a  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_1d9e:
+  insts 310..311  off 0x1d9e..0x1da3
+  preds: L_1cb6, L_1d25
+  succs: L_1cbe, L_1da7
+  effects:
+    1da2  branch load([bp-i]) <= 0x2 ? L_1cbe : L_1da7
+
+block L_1da7:
+  insts 313..319  off 0x1da7..0x1db9
+  preds: L_1d9e
+  succs: L_1dbd, L_1e20
+  effects:
+    1db8  branch ((load(ds:[load([bp+ptile])+0xa]) >> 0xc) & 0x1) != 0x0 ? L_1e20 : L_1dbd
+
+block L_1dbd:
+  insts 321..352  off 0x1dbd..0x1e1f
+  preds: L_1da7
+  succs: L_1e20
+  effects:
+    1dc4  call SelectObject(load@1dbd/src([bp+hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    1dd4  call SetTextColor(load@1dc9/src([bp+hdc]), words(0xff, 0xffff)) -> callresult(COLORREF)
+    1de1  call CchGetString(0x1b1, 0x57a4) -> callresult(int16_t)
+    1de9  store[2] [bp-c] = callresult(int16_t)
+    1dff  call TextOut(load@1dec/src([bp+hdc]), load([bp-xLeft]), load([bp-yTop]), words(ds, 0x57a4), load([bp-c])) -> callresult(int16_t)
+    1e0b  call SelectObject(load@1e04/src([bp+hdc]), load([rghfontArial8])) -> callresult(HGDIOBJ)
+    1e1b  call SetTextColor(load@1e10/src([bp+hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+
+block L_1e20:
+  insts 353..380  off 0x1e20..0x1e6b
+  preds: L_1da7, L_1dbd
+  succs: L_1e6c
+  effects:
+    1e2d  call PszGetCompressedString(0x37c) -> callresult(char *)
+    1e40  call _wsprintf(words(ds, 0x57a4), words(ds, callresult(char *)), load(ds:[load([bp-pfl])+0x58]), load(ds:[load([bp-pfl])+0x5a])) -> callresult(int16_t)
+    1e48  store[2] [bp-c] = callresult(int16_t)
+    1e5e  call RightTextOut(load([bp+hdc]), load([bp-xRight]), load@1e55/src([bp-yTop]), 0x57a4, load([bp-c]), load([bp-dxRight])) -> callresult(void)
+    1e69  store[2] [bp-yTop] = (load@1e69/dst([bp-yTop]) + load([dyArial8]))
+
+block L_1e6c:
+  insts 381..385  off 0x1e6c..0x1e71
+  preds: L_1a91, L_1c47, L_1e20
+  effects:
+    1e71  return

@@ -193,7 +193,7 @@ func scratchProjectValue(value Expr, stored, read ScratchRange, storageType, typ
 		if read.Offset != stored.Offset {
 			part = machine.WordHigh
 		}
-		return &Word{Parent: value, Part: part}, true
+		return projectWord(value, part), true
 	}
 	if read.Size == 1 && (stored.Size == 2 || stored.Size == 4) {
 		offset := read.Offset - stored.Offset
@@ -202,7 +202,7 @@ func scratchProjectValue(value Expr, stored, read ScratchRange, storageType, typ
 			if offset >= 2 {
 				part = machine.WordHigh
 			}
-			value = &Word{Parent: value, Part: part}
+			value = projectWord(value, part)
 		}
 		part := machine.ByteLow
 		if offset%2 != 0 {
@@ -211,6 +211,18 @@ func scratchProjectValue(value Expr, stored, read ScratchRange, storageType, typ
 		return &Byte{Parent: value, Part: part, TypeInfo: typ}, true
 	}
 	return nil, false
+}
+
+// projectWord selects one word of a dword scratch value, reading a stored
+// high/low word pair directly, e.g. the low word of words(pt.y, pt.x) is pt.x.
+func projectWord(value Expr, part machine.WordPart) Expr {
+	if words, ok := value.(*Words); ok && len(words.Words) == 2 {
+		if part == machine.WordHigh {
+			return words.Words[0]
+		}
+		return words.Words[1]
+	}
+	return &Word{Parent: value, Part: part}
 }
 
 // applyScratchRecoveryPlan rewrites uses and definitions only after all object

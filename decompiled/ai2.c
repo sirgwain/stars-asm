@@ -299,7 +299,7 @@ L_0473:
     lppl = (lppl + 1);
 
 L_0477:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_0435;
     else
         goto L_0485;
@@ -770,7 +770,7 @@ L_0d2d:
     lppl = (lppl + 1);
 
 L_0d31:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_04b4;
     else
         goto L_0d3f;
@@ -1196,7 +1196,7 @@ L_14a1:
     lppl = (lppl + 1);
 
 L_14a5:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_1478;
     else
         goto L_14b3;
@@ -1243,19 +1243,19 @@ L_1520:
     j = (j + 1);
 
 L_1525:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_1589;
     else
         goto L_1549;
 
 L_1549:
-    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] != lpfl->id))
+    if ((RawLoad16((vlpbAiData + (((i * 20) + (j * 2)) + 8))) != lpfl->id))
         goto L_1520;
     else
         goto L_1589;
 
 L_1589:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_1503;
     else
         goto L_15b3;
@@ -1267,7 +1267,7 @@ L_15b3:
         goto L_15c3;
 
 L_15c3:
-    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
+    lppl = LpplFromId(RawLoad16((vlpbAiData + ((i * 20) + 4))));
 
 L_15eb:
     if ((lppl != 0x0))
@@ -1826,7 +1826,7 @@ L_1ef8:
     lppl = (lppl + 1);
 
 L_1efc:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_1ebb;
     else
         goto L_1f0a;
@@ -2026,7 +2026,7 @@ L_22cb:
     lppl = (lppl + 1);
 
 L_22cf:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_1f35;
     else
         goto L_22dd;
@@ -2520,7 +2520,7 @@ L_2ba0:
     lppl = (lppl + 1);
 
 L_2ba4:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_2b77;
     else
         goto L_2bb2;
@@ -2567,19 +2567,19 @@ L_2c1e:
     j = (j + 1);
 
 L_2c22:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_2c82;
     else
         goto L_2c45;
 
 L_2c45:
-    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] != lpfl->id))
+    if ((RawLoad16((vlpbAiData + (((i * 20) + (j * 2)) + 8))) != lpfl->id))
         goto L_2c1e;
     else
         goto L_2c82;
 
 L_2c82:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_2c02;
     else
         goto L_2cab;
@@ -2591,7 +2591,7 @@ L_2cab:
         goto L_2cbb;
 
 L_2cbb:
-    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
+    lppl = LpplFromId(RawLoad16((vlpbAiData + ((i * 20) + 4))));
 
 L_2ce3:
     if ((lppl != 0x0))

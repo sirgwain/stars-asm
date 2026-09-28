@@ -1,0 +1,32 @@
+/*
+FreeHb  (memory)
+  addr: 000d:02d8  len=112
+  sig:  void FreeHb(HB *lphb)
+  params:
+    HB *             lphb           [BP+0x6]
+  locals:
+    HB *             lphbNext       [BP-0x8]
+    HGLOBAL          hmem           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_02d8:
+    branch lphb != 0x0 ? L_0330 : L_0342
+
+
+L_02f0:
+    goto L_0330
+
+L_02f9:
+    lphbNext = lphb->lphbNext
+    hmem = lphb->hmem
+    call GlobalUnlock(hmem) -> callresult(int16_t)
+    call GlobalFree(hmem) -> callresult(HGLOBAL)
+    lphb = lphbNext
+
+L_0330:
+    branch lphb != 0x0 ? L_02f9 : L_0342
+
+
+L_0342:
+    return

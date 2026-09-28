@@ -175,17 +175,17 @@ L_574e:
         goto L_5794;
 
 L_5794:
-    rgb[4] = lpshdef->hul.dp;
-    rgb[7] = (lpshdef->turn | (((uint32_t)(lpshdef->cBuilt) & 0xffff) << 0x10));
-    rgb[11] = ((((uint32_t)(lpshdef->cBuilt) >> 0x10) & 0xffff) | (((uint32_t)(lpshdef->cExist) & 0xffff) << 0x10));
-    rgb[15] = HIWORD(lpshdef->cExist);
+    RawStore16(&(rgb[4]), lpshdef->hul.dp);
+    RawStore32(&(rgb[7]), (lpshdef->turn | (((uint32_t)(lpshdef->cBuilt) & 0xffff) << 0x10)));
+    RawStore32(&(rgb[11]), ((((uint32_t)(lpshdef->cBuilt) >> 0x10) & 0xffff) | (((uint32_t)(lpshdef->cExist) & 0xffff) << 0x10)));
+    RawStore16(&(rgb[15]), HIWORD(lpshdef->cExist));
     pb = &(rgb[17]);
     fmemmove(pb, lpshdef->hul.rghs, (rgb[6] * 0x4));
     pb = (pb + (rgb[6] * 4));
     goto L_5829;
 
 L_5816:
-    rgb[4] = lpshdef->hul.wtEmpty;
+    RawStore16(&(rgb[4]), lpshdef->hul.wtEmpty);
     pb = &(rgb[6]);
 
 L_5829:
@@ -1355,7 +1355,7 @@ L_6deb:
     lpth = (lpth + 1);
 
 L_6def:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_6ccd;
     else
         goto L_6dfd;
@@ -1457,7 +1457,7 @@ L_6f78:
     lpth = (lpth + 1);
 
 L_6f7c:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_6e48;
     else
         goto L_6f8a;
@@ -1941,7 +1941,7 @@ L_7a6a:
     memset(rgb, 0, 0x50);
     RawStore16(rgb, ((RawLoad16(rgb) & 0xf800) | (lppl->id & 0x7ff)));
     RawStore16(rgb, ((RawLoad16(rgb) & 0x7ff) | ((lppl->iPlayer & 0x1f) << 0xb)));
-    rgb[2] = ((rgb[2] & 0xff80) | (lppl->det & 0x7f));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xff80) | (lppl->det & 0x7f)));
     if ((rt != rtPlanetB))
         goto L_7b2a;
     else
@@ -1967,13 +1967,13 @@ L_7b11:
     t_merge_7b14_0001 = 0x4;
 
 L_7b14:
-    rgb[2] = ((rgb[2] & 0xff80) | (t_merge_7b14_0001 & 0x7f));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xff80) | (t_merge_7b14_0001 & 0x7f)));
 
 L_7b2a:
-    rgb[2] = ((rgb[2] & 0xfeff) | ((lppl->fInclude & 0x1) << 0x8));
-    rgb[2] = ((rgb[2] & 0xfdff) | ((lppl->fStarbase & 0x1) << 0x9));
-    rgb[2] = ((rgb[2] & 0xff7f) | ((lppl->fHomeworld & 0x1) << 0x7));
-    rgb[2] = ((rgb[2] & 0x7fff) | ((lppl->fFirstYear & 0x1) << 0xf));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xfeff) | ((lppl->fInclude & 0x1) << 0x8)));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xfdff) | ((lppl->fStarbase & 0x1) << 0x9)));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xff7f) | ((lppl->fHomeworld & 0x1) << 0x7)));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0x7fff) | ((lppl->fFirstYear & 0x1) << 0xf)));
     if ((lppl->idRoute == 0x0))
         goto L_7bee;
     else
@@ -1987,10 +1987,10 @@ L_7bee:
     t_merge_7bf1_0001 = 0x0;
 
 L_7bf1:
-    rgb[2] = ((rgb[2] & 0xbfff) | ((t_merge_7bf1_0001 & 0x1) << 0xe));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xbfff) | ((t_merge_7bf1_0001 & 0x1) << 0xe)));
     pbBase = &(rgb[4]);
     pb = pbBase;
-    if (((rgb[2] & 0x7f) <= 0x1))
+    if (((RawLoad16(&(rgb[2])) & 0x7f) <= 0x1))
         goto LFinishBRecord;
     else
         goto L_7c2a;
@@ -2056,7 +2056,7 @@ L_7cf1:
         goto L_7d4a;
 
 L_7d4a:
-    rgb[2] = ((rgb[2] & 0xfbff) | 0x400);
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xfbff) | 0x400));
 
 L_7d56:
     i = (i + 1);
@@ -2068,7 +2068,7 @@ L_7d5a:
         goto L_7d63;
 
 L_7d63:
-    if ((((rgb[2] >> 0xa) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgb[2])) >> 0xa) & 0x1) == 0x0))
         goto L_7da9;
     else
         goto L_7d76;
@@ -2099,7 +2099,7 @@ L_7db6:
     pb = (pb + 2);
 
 L_7dc6:
-    if (((rgb[2] & 0x7f) <= 0x3))
+    if (((RawLoad16(&(rgb[2])) & 0x7f) <= 0x3))
         goto LFinishBRecord;
     else
         goto L_7dd7;
@@ -2185,7 +2185,7 @@ L_7f6b:
     goto L_7f80;
 
 L_7f74:
-    rgb[2] = ((rgb[2] & 0xdfff) | 0x2000);
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xdfff) | 0x2000));
 
 L_7f80:
     if ((rt != rtPlanetB))
@@ -2219,7 +2219,7 @@ L_7fcc:
 
 L_7feb:
     t_scratch_m5c_11 = lppl->fArtifact;
-    rgb[2] = ((rgb[2] & 0xefff) | ((t_scratch_m5c_11 & 0x1) << 0xc));
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xefff) | ((t_scratch_m5c_11 & 0x1) << 0xc)));
     if ((lppl->iPlayer == -1))
         goto L_8077;
     else
@@ -2262,7 +2262,7 @@ L_80ea:
         goto L_8146;
 
 L_8116:
-    rgb[2] = ((rgb[2] & 0xf7ff) | 0x800);
+    RawStore16(&(rgb[2]), ((RawLoad16(&(rgb[2])) & 0xf7ff) | 0x800));
     fmemmove(pb, lppl->rgbImp, 0x8);
     pb = (pb + 8);
 
@@ -2348,8 +2348,8 @@ L_826d:
     goto L_8204;
 
 L_8270:
-    rgb[4] = ((rgb[4] & 0xf7ff) | ((fByte & 0x1) << 0xb));
-    rgb[12] = us;
+    RawStore16(&(rgb[4]), ((RawLoad16(&(rgb[4])) & 0xf7ff) | ((fByte & 0x1) << 0xb)));
+    RawStore16(&(rgb[12]), us);
     pb = &(rgb[14]);
     if ((fByte == 0))
         goto L_8305;
@@ -3100,19 +3100,19 @@ L_90f9:
     goto LBadFile;
 
 L_910b:
-    if ((((rgbCur[8] >> 0xc) & 0xf) < 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) < 0x2))
         goto L_9149;
     else
         goto L_911e;
 
 L_911e:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_915b;
     else
         goto L_9131;
 
 L_9131:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) >= 0x31))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) >= 0x31))
         goto L_915b;
     else
         goto L_9149;
@@ -3122,19 +3122,19 @@ L_9149:
     goto LBadFile;
 
 L_915b:
-    if ((((rgbCur[8] >> 0xc) & 0xf) > 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) > 0x2))
         goto L_9199;
     else
         goto L_916e;
 
 L_916e:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_91a8;
     else
         goto L_9181;
 
 L_9181:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x54))
         goto L_91a8;
     else
         goto L_9199;
@@ -3218,34 +3218,33 @@ L_92d9:
         goto L_92e5;
 
 L_92e5:
-    if ((((rgbCur[6] >> 0x9) & 0x1) == f))
+    if ((((RawLoad16(&(rgbCur[6])) >> 0x9) & 0x1) == f))
         goto L_93f5;
     else
         goto L_92fa;
 
 L_92fa:
-    if ((((rgbCur[6] >> 0x9) & 0x1) == 0x0))
+    if ((((RawLoad16(&(rgbCur[6])) >> 0x9) & 0x1) == 0x0))
         goto L_9332;
     else
         goto L_930d;
 
 L_930d:
-    if ((((rgbCur[6] >> 0xd) & 0x7) != 0x7))
+    if ((((RawLoad16(&(rgbCur[6])) >> 0xd) & 0x7) != 0x7))
         goto LBadFile;
     else
         goto L_9323;
 
 L_9323:
-    rgbCur[6] = (rgbCur[6] & 0xfdff);
+    RawStore16(&(rgbCur[6]), (RawLoad16(&(rgbCur[6])) & 0xfdff));
     goto L_934a;
 
 L_9332:
-    rgbCur[6] = ((rgbCur[6] & 0xfdff) | 0x200);
-    rgbCur[6] = ((rgbCur[6] & 0x1fff) | 0xe000);
+    RawStore16(&(rgbCur[6]), ((RawLoad16(&(rgbCur[6])) & 0xfdff) | 0x200));
+    RawStore16(&(rgbCur[6]), ((RawLoad16(&(rgbCur[6])) & 0x1fff) | 0xe000));
 
 L_934a:
-    rgbCur[12] = (~rgbCur[12]);
-    rgbCur[14] = (~rgbCur[14]);
+    RawStore32(&(rgbCur[12]), (~RawLoad32(&(rgbCur[12]))));
     lseek(hf, (int32_t)((-(hdrCur.cb + 0x2))), 1);
     SetFileSeeds(lSeedSav1, lSeedSav2);
     WriteRt(rtPlr, hdrCur.cb, rgbCur);
@@ -3340,7 +3339,8 @@ L_947c:
         goto L_94a7;
 
 L_94a7:
-    SetFileXorStream(rgbCur[4], (rgbCur[12] >> 0x5), rgbCur[10], ((rgbCur[12] << 0xb) >> 0xb), ((rgbCur[14] >> 0xc) & 0x1));
+    SetFileXorStream(RawLoad32(&(rgbCur[4])), (RawLoad16(&(rgbCur[12])) >> 0x5), RawLoad16(&(rgbCur[10])), ((RawLoad16(&(rgbCur[12])) << 0xb) >> 0xb),
+                     ((RawLoad16(&(rgbCur[14])) >> 0xc) & 0x1));
     goto L_94fe;
 
 L_94e6:
@@ -3653,7 +3653,7 @@ L_9bb1:
     lppl = (lppl + 1);
 
 L_9bb5:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_9af9;
     else
         goto L_9bc3;
@@ -3900,7 +3900,7 @@ L_a0e7:
     lpth = (lpth + 1);
 
 L_a0eb:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_9e77;
     else
         goto L_a0f9;
@@ -4386,7 +4386,7 @@ L_a96d:
     lpth = (lpth + 1);
 
 L_a971:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_a584;
     else
         goto L_a97f;
@@ -4491,7 +4491,7 @@ L_abc2:
     lppl = (lppl + 1);
 
 L_abc6:
-    if ((LOWORD(lppl) >= LOWORD(lpplMac)))
+    if ((lppl >= lpplMac))
         goto L_a12b;
     else
         goto L_abd1;
@@ -4720,7 +4720,7 @@ L_af7d:
     lppl = (lppl + 1);
 
 L_af81:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_ace8;
     else
         goto L_af8f;
@@ -4945,7 +4945,7 @@ L_b409:
     lpth = (lpth + 1);
 
 L_b40d:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_b067;
     else
         goto L_b41b;
@@ -4954,7 +4954,7 @@ L_b41b:
     lppl = (lppl + 1);
 
 L_b41f:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_afcf;
     else
         goto L_b42d;
@@ -5081,7 +5081,7 @@ L_b70c:
     lppl2 = (lppl2 + 1);
 
 L_b710:
-    if ((LOWORD(lppl2) < LOWORD(lpplMac2)))
+    if ((lppl2 < lpplMac2))
         goto L_b56b;
     else
         goto L_b71e;
@@ -5090,7 +5090,7 @@ L_b71e:
     lppl = (lppl + 1);
 
 L_b722:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_b46d;
     else
         goto L_b730;
@@ -5203,7 +5203,7 @@ L_b9c4:
     lppl2 = (lppl2 + 1);
 
 L_b9c8:
-    if ((LOWORD(lppl2) < LOWORD(lpplMac2)))
+    if ((lppl2 < lpplMac2))
         goto L_b823;
     else
         goto L_b9d6;
@@ -5212,7 +5212,7 @@ L_b9d6:
     lppl = (lppl + 1);
 
 L_b9da:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_b770;
     else
         goto L_b9e8;
@@ -5548,7 +5548,7 @@ L_bff4:
     lpth2 = (lpth2 + 1);
 
 L_bff8:
-    if ((LOWORD(lpth2) < LOWORD(lpthMac2)))
+    if ((lpth2 < lpthMac2))
         goto L_bcc5;
     else
         goto L_c006;
@@ -5629,7 +5629,7 @@ L_c1d2:
     lppl2 = (lppl2 + 1);
 
 L_c1d6:
-    if ((LOWORD(lppl2) < LOWORD(lpplMac2)))
+    if ((lppl2 < lpplMac2))
         goto L_c031;
     else
         goto L_c1e4;
@@ -5638,7 +5638,7 @@ L_c1e4:
     lpth = (lpth + 1);
 
 L_c1e8:
-    if ((LOWORD(lpth) >= LOWORD(lpthMac)))
+    if ((lpth >= lpthMac))
         goto L_c416;
     else
         goto L_c1f3;
@@ -5755,7 +5755,7 @@ L_c404:
     lpth = (lpth + 1);
 
 L_c408:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_c244;
     else
         goto L_c416;

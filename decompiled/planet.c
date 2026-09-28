@@ -305,7 +305,7 @@ L_07b8:
     lppl = (lppl + 1);
 
 L_07bd:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_076f;
     else
         goto L_07ce;
@@ -1904,7 +1904,7 @@ L_2b87:
     lCur = (int32_t)((iCur - 4));
     l = LDrawGauge(hdc, prc, 1, &(lCur), &(hbr), lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), (LOWORD(l) + 0x4), (HIWORD(l) + 0x0));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), (l + 4));
     l = GetTextExtent(hdc, szWork, c);
     RcCtrTextOut(hdc, prc, szWork, c);
     SetBkMode(hdc, iMode);
@@ -3392,7 +3392,7 @@ L_44a8:
     lpth = (lpth + 1);
 
 L_44ac:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_440f;
     else
         goto L_44ba;
@@ -3632,7 +3632,7 @@ L_4850:
     lppl = (lppl + 1);
 
 L_4854:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_4793;
     else
         goto L_4862;

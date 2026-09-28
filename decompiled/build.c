@@ -3267,7 +3267,7 @@ L_406c:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[k], lstrlen(rgszMinerals[k]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[k])))), HIWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[k])))));
+    cch = _wsprintf(szWork, PCTLD, (uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[k]))));
     RightTextOut(hdc, ((rc.right - dxkT) - 64), rc.top, szWork, cch, dxMaxMineralQuan);
     TextOut(hdc, ((rc.right - dxkT) - 64), rc.top, PszGetCompressedString(idsKt), 2);
     k = (k + 1);
@@ -3285,7 +3285,7 @@ L_4178:
     TextOut(hdc, rc.left, rc.top, rgszMinerals[5], lstrlen(rgszMinerals[5]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    cch = _wsprintf(szWork, PCTLD, LOWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[3])))), HIWORD((uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[3])))));
+    cch = _wsprintf(szWork, PCTLD, (uint32_t)(((int32_t)(c) * (uint32_t)(rgCosts[3]))));
     RightTextOut(hdc, ((rc.right - dxkT) - 64), rc.top, szWork, cch, dxMaxMineralQuan);
     if ((fStarbaseMode != 0))
         goto Restore;
@@ -3296,8 +3296,7 @@ L_4239:
     rc.left = (rc.left - 8);
     rc.top = (rc.top + dyArial8);
     SelectObject(hdc, rghfontArial8[1]);
-    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), LOWORD((uint32_t)(((int32_t)(c) * (int32_t)(part.pcom->cMass)))),
-                    HIWORD((uint32_t)(((int32_t)(c) * (int32_t)(part.pcom->cMass)))));
+    cch = _wsprintf(szWork, PszGetCompressedString(idsMassLdkt), (uint32_t)(((int32_t)(c) * (int32_t)(part.pcom->cMass))));
     TextOut(hdc, rc.left, rc.top, szWork, cch);
 
 Restore:
@@ -4158,7 +4157,7 @@ L_52d6:
     goto L_5320;
 
 L_52f5:
-    cch = _wsprintf(szWork, PszGetCompressedString(idsLdD), csh, SIGNHIWORD(csh), pct);
+    cch = _wsprintf(szWork, PszGetCompressedString(idsLdD), (int32_t)(csh), pct);
 
 L_5320:
     dp = 1;
@@ -5038,7 +5037,7 @@ L_6187:
 L_618d:
 
 L_6190:
-    _wsprintf(&(szWork[strlen(szWork)]), " %s", ((LOWORD(lpshdef) + LOWORD((147 * j))) + 0x8), HIWORD(lpshdef));
+    _wsprintf(&(szWork[strlen(szWork)]), " %s", lpshdef[j].hul.szClass);
     SendMessage(hwndDD, CB_ADDSTRING, 0x0, (LPARAM)(szWork));
 
 L_61e0:

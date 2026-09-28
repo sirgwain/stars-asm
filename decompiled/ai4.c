@@ -483,7 +483,7 @@ L_081d:
     lppl = (lppl + 1);
 
 L_0821:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_0564;
     else
         goto L_082f;

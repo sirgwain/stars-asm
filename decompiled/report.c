@@ -4904,7 +4904,7 @@ L_5acc:
     lppl = (lppl + 1);
 
 L_5ad6:
-    if ((LOWORD(lppl) >= LOWORD(lpplMac)))
+    if ((lppl >= lpplMac))
         goto L_5b5d;
     else
         goto L_5ae4;
@@ -7723,6 +7723,7 @@ L_8c01:
 L_8cf6:
     szForm[2] = 9;
     szForm[1] = 9;
+    szForm[3] = 0;
     if ((gd.fPerPlayerDumps == 0x0))
         goto L_8d78;
     else
@@ -7992,7 +7993,7 @@ L_9488:
     lppl = (lppl + 1);
 
 L_949f:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_88d2;
     else
         goto L_94ad;

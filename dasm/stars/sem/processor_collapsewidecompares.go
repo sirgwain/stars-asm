@@ -54,9 +54,7 @@ type collapseWideComparesProcessor struct {
 func (p *collapseWideComparesProcessor) ProcessMachineFunc(_ *Result, f *machine.FuncEffects) bool {
 	changed := false
 	for i := range f.Blocks {
-		if p.ctx != nil {
-			p.ctx.SetCurrentBlock(f.Blocks[i].Block)
-		}
+		p.ctx.SetCurrentBlock(f.Blocks[i].Block)
 		match, ok := p.matchAt(f, i)
 		if !ok {
 			continue
@@ -87,10 +85,131 @@ func (p *collapseWideComparesProcessor) ProcessMachineFunc(_ *Result, f *machine
 		}
 		changed = true
 	}
-	if p.ctx != nil {
-		p.ctx.ClearCurrentBlock()
+	for i := range f.Blocks {
+		node, ok := compareNode(f, i)
+		if !ok {
+			continue
+		}
+		p.ctx.SetCurrentBlock(node.block)
+		if branch, ok := p.widenFarPointerCompare(node.branch); ok {
+			f.Blocks[i].Effects[len(f.Blocks[i].Effects)-1] = branch
+			changed = true
+		} else if branch, ok := p.widenWordMaskTest(node.branch); ok {
+			f.Blocks[i].Effects[len(f.Blocks[i].Effects)-1] = branch
+			changed = true
+		}
 	}
+	p.ctx.ClearCurrentBlock()
 	return changed
+}
+
+// widenFarPointerCompare rewrites an unsigned relational compare of two far
+// pointer offset words to compare the pointers themselves. MSC orders far
+// pointers by offset only, so CMP [bp-lppl], ax; JC with ax = [bp-lpplMac] is
+// the source comparison lppl < lpplMac. Equality compares both words and is
+// left alone.
+func (p *collapseWideComparesProcessor) widenFarPointerCompare(branch machine.BranchEffect) (machine.BranchEffect, bool) {
+	relation, domain, ok := classifyCompare(branch.Predicate.Op)
+	if !ok || domain != compareUnsigned || relation == compareEQ || relation == compareNE {
+		return branch, false
+	}
+	lhs, ok := p.widenFarPointerOffset(branch.Predicate.LHS)
+	if !ok {
+		return branch, false
+	}
+	rhs, ok := p.widenFarPointerOffset(branch.Predicate.RHS)
+	if !ok {
+		return branch, false
+	}
+	predicate := *branch.Predicate
+	predicate.LHS = lhs
+	predicate.RHS = rhs
+	branch.Predicate = &predicate
+	return branch, true
+}
+
+// widenWordMaskTest rewrites a zero test of a mask applied to one word of a
+// 32-bit integer as a test of the whole value, e.g. TEST [bp-ul+2], 0x8000
+// becomes (ul & 0x80000000) != 0. The load must resolve as a word projection
+// of the integer, not as a 16-bit field sharing its storage. The other word's
+// test has either folded to a constant or is its own branch, so each word's
+// mask is widened in place.
+func (p *collapseWideComparesProcessor) widenWordMaskTest(branch machine.BranchEffect) (machine.BranchEffect, bool) {
+	_, domain, ok := classifyCompare(branch.Predicate.Op)
+	if !ok || domain != compareEquality || !machineConstIsZero(branch.Predicate.RHS) {
+		return branch, false
+	}
+	lhs := branch.Predicate.LHS
+	if cast, ok := lhs.(*machine.Cast); ok {
+		lhs = cast.Value
+	}
+	and, ok := lhs.(*machine.Binary)
+	if !ok || and.Op != machine.ValueOpAnd {
+		return branch, false
+	}
+	mask, ok := and.RHS.(*machine.Const)
+	if !ok || mask.Fixup != nil {
+		return branch, false
+	}
+	load, ok := and.LHS.(*machine.Load)
+	if !ok || load.Addr.Width != 2 {
+		return branch, false
+	}
+	path, ok := p.ctx.symbols.symbolFromValue(load)
+	if !ok {
+		return branch, false
+	}
+	word, ok := path.(*symresolve.SymbolOffset)
+	if !ok || (word.Offset != 0 && word.Offset != 2) {
+		return branch, false
+	}
+	if typ := word.Base.Type(); typ.Bytes() != 4 || typ.Kind() != typeinfo.KInt {
+		return branch, false
+	}
+	wide := *load
+	wide.Addr.Width = 4
+	wide.Addr.Disp -= word.Offset
+	shift := uint(word.Offset * 8)
+	predicate := *branch.Predicate
+	predicate.LHS = &machine.Binary{Op: machine.ValueOpAnd, LHS: &wide, RHS: machine.ConstVal((mask.Val & 0xffff) << shift), Producer: and.Producer}
+	branch.Predicate = &predicate
+	return branch, true
+}
+
+// widenFarPointerOffset replaces the offset-word load of a four-byte pointer,
+// including one under added or subtracted offset arithmetic, with the full
+// pointer load, e.g. load[2]([bp-lpb]) + 4 becomes load[4]([bp-lpb]) + 4.
+func (p *collapseWideComparesProcessor) widenFarPointerOffset(value machine.Value) (machine.Value, bool) {
+	switch v := value.(type) {
+	case *machine.Load:
+		if v.Addr.Width != 2 {
+			return nil, false
+		}
+		typ, ok := p.ctx.wideStorageScalarType(v.Addr)
+		if !ok || !typeinfo.IsPointer(typ) {
+			return nil, false
+		}
+		wide := *v
+		wide.Addr.Width = 4
+		return &wide, true
+	case *machine.Binary:
+		if v.Op != machine.ValueOpAdd && v.Op != machine.ValueOpSub {
+			return nil, false
+		}
+		if lhs, ok := p.widenFarPointerOffset(v.LHS); ok {
+			next := *v
+			next.LHS = lhs
+			return &next, true
+		}
+		if v.Op == machine.ValueOpAdd {
+			if rhs, ok := p.widenFarPointerOffset(v.RHS); ok {
+				next := *v
+				next.RHS = rhs
+				return &next, true
+			}
+		}
+	}
+	return nil, false
 }
 
 // matchAt recognizes either a two-node equality ladder or a three-node
@@ -114,7 +233,12 @@ func (p *collapseWideComparesProcessor) matchEquality(f *machine.FuncEffects, ro
 			continue
 		}
 		nodes := []wideCompareNode{root, child}
-		if !allCompareDomain(nodes, compareEquality) || len(finalTargets(nodes)) != 2 {
+		if !allCompareDomain(nodes, compareEquality) {
+			continue
+		}
+		targets := finalTargets(nodes)
+		canonicalTargets := len(targets) != 2
+		if canonicalTargets && len(canonicalTargetsFor(f, targets)) != 2 {
 			continue
 		}
 
@@ -129,6 +253,12 @@ func (p *collapseWideComparesProcessor) matchEquality(f *machine.FuncEffects, ro
 				evaluateCompareTree(root.block, nodes, lowIndex, [2]int{-1, 0}),
 				evaluateCompareTree(root.block, nodes, lowIndex, [2]int{0, -1}),
 				evaluateCompareTree(root.block, nodes, lowIndex, [2]int{-1, -1}),
+			}
+			if canonicalTargets {
+				equalTarget = comparisonOutcomeTarget(f, equalTarget)
+				for i := range unequalTargets {
+					unequalTargets[i] = comparisonOutcomeTarget(f, unequalTargets[i])
+				}
 			}
 			if equalTarget == 0 || !allSameTarget(unequalTargets) || equalTarget == unequalTargets[0] {
 				continue
@@ -239,7 +369,7 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 		} else if addr, resolved := p.ctx.symbols.addressFromMemory(v.Addr, nil); resolved {
 			lane, resolved := p.ctx.symbols.storageLaneFromMemory(v.Addr, addr)
 			if resolved {
-				typ, _ = p.wideCompareScalarTypeAtOffset(lane.object, lane.offset)
+				typ, _ = p.ctx.scalarTypeAtOffset(lane.object, lane.offset)
 			}
 		}
 		if typ == nil {
@@ -251,7 +381,7 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 				return false
 			}
 			var resolved bool
-			typ, resolved = p.wideCompareScalarTypeAtOffset(offset.Base, offset.Offset)
+			typ, resolved = p.ctx.scalarTypeAtOffset(offset.Base, offset.Offset)
 			if !resolved {
 				return false
 			}
@@ -279,54 +409,6 @@ func (p *collapseWideComparesProcessor) validWideCompareOperand(value machine.Va
 		}
 	}
 	return true
-}
-
-// wideCompareScalarTypeAtOffset resolves a fixed storage offset through
-// nested structs and arrays and returns only the exact leaf type it selects.
-func (p *collapseWideComparesProcessor) wideCompareScalarTypeAtOffset(base symresolve.SymbolPath, offset int) (typeinfo.Type, bool) {
-	if offset < 0 {
-		return nil, false
-	}
-	path := base
-	for {
-		typ := path.Type()
-		if offset == 0 && typ.Bytes() == 4 && (typ.Kind() == typeinfo.KInt || typ.Kind() == typeinfo.KPointer) {
-			return typ, true
-		}
-		switch aggregate := typ.(type) {
-		case *typeinfo.Pointer:
-			if aggregate.Elem == nil {
-				return nil, false
-			}
-			path = &symresolve.SymbolDeref{Base: path}
-		case *typeinfo.Array:
-			if aggregate.Elem == nil || aggregate.Elem.Bytes() <= 0 ||
-				offset+4 > aggregate.Bytes() {
-				return nil, false
-			}
-			elemSize := aggregate.Elem.Bytes()
-			index := offset / elemSize
-			offset %= elemSize
-			path = &symresolve.SymbolTerm{
-				Base:     path,
-				IndexVal: machine.ConstVal(uint(index)),
-				Scale:    elemSize,
-				Result:   aggregate.Elem,
-			}
-		case *typeinfo.Struct:
-			field, remainder, ok := p.ctx.res.ResolveContainingFieldPathInContext(path, offset, p.ctx.unionContext())
-			if !ok {
-				return nil, false
-			}
-			path = field
-			offset = remainder
-		default:
-			if _, ok := path.(*symresolve.SymbolDeref); ok && typ.Bytes() > 0 && offset%typ.Bytes() == 0 {
-				return typ, true
-			}
-			return typ, offset == 0
-		}
-	}
 }
 
 // preserveCompareDomain adds a machine-domain cast only when a known recovered

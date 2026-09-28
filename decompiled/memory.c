@@ -133,16 +133,10 @@ void FreeHb(HB *lphb) {
     HB     *lphbNext;
 
 L_02d8:
-    if ((LOWORD(lphb) != 0x0))
+    if ((lphb != 0x0))
         goto L_0330;
     else
-        goto L_02ea;
-
-L_02ea:
-    if ((HIWORD(lphb) == 0x0))
         goto L_0342;
-    else
-        goto L_02f0;
 
 L_02f0:
     goto L_0330;
@@ -253,7 +247,7 @@ L_04a7:
         goto L_04dd;
 
 L_04dd:
-    if ((LOWORD(lpb) >= LOWORD(lpbTop)))
+    if ((lpb >= lpbTop))
         goto L_0524;
     else
         goto L_04eb;
@@ -289,7 +283,7 @@ L_0555:
     return lpbPrev;
 
 L_0575:
-    if ((LOWORD(lpb) >= LOWORD(lpbTop)))
+    if ((lpb >= lpbTop))
         goto LTryNextBlock;
     else
         goto L_0580;

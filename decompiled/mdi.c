@@ -541,7 +541,7 @@ L_0a49:
         goto L_0a66;
 
 L_0a66:
-    if ((LOWORD(lpchBatch) >= LOWORD(lpchBatchMac)))
+    if ((lpchBatch >= lpchBatchMac))
         goto L_0adf;
     else
         goto LTryNextBatch;
@@ -613,7 +613,7 @@ L_0b3b:
         goto L_0b4e;
 
 L_0b4e:
-    if ((LOWORD(lpchBatch) < LOWORD(lpchBatchMac)))
+    if ((lpchBatch < lpchBatchMac))
         goto LTryNextBatch;
     else
         goto L_0b5b;
@@ -3035,7 +3035,7 @@ L_2ea0:
     lppl = (lppl + 1);
 
 L_2ea4:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_2e8e;
     else
         goto L_2eb2;
@@ -3658,7 +3658,7 @@ L_3bb3:
     lppl = (lppl + 1);
 
 L_3bb7:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_39c0;
     else
         goto L_3bc5;
@@ -4295,7 +4295,7 @@ L_4666:
     lppl = (lppl + 1);
 
 L_466a:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_4653;
     else
         goto L_4678;
@@ -6124,19 +6124,19 @@ L_5e48:
         goto L_5e6f;
 
 L_5e6f:
-    if ((((rgbCur[8] >> 0xc) & 0xf) != 0x2))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
         goto L_5eb2;
     else
         goto L_5e82;
 
 L_5e82:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x31))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x31))
         goto L_5eb2;
     else
         goto L_5e9a;
 
 L_5e9a:
-    if ((((rgbCur[8] >> 0x5) & 0x7f) < 0x54))
+    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x54))
         goto L_5ec0;
     else
         goto L_5eb2;
@@ -6147,8 +6147,8 @@ L_5eb2:
     goto LBadFile;
 
 L_5ec0:
-    wVersFile = rgbCur[8];
-    if (((rgbCur[14] & 0xff) != 0x5))
+    wVersFile = RawLoad16(&(rgbCur[8]));
+    if (((RawLoad16(&(rgbCur[14])) & 0xff) != 0x5))
         goto LBadFile;
     else
         goto L_5ed7;
@@ -7208,7 +7208,7 @@ L_709b:
     rgplr[iDiamond].wMdPlr = ((rgplr[iDiamond].wMdPlr & 0x1fff) | 0xe000);
 
 L_70c3:
-    rgplr[iDiamond].lSalt = (((uint32_t)((uint16_t)((~HIWORD(rgplr[iDiamond].lSalt)))) << 0x10) | (uint16_t)((~LOWORD(rgplr[iDiamond].lSalt))));
+    rgplr[iDiamond].lSalt = (~rgplr[iDiamond].lSalt);
     if ((iRet == 0))
         goto L_7104;
     else

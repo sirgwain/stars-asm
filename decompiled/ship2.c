@@ -1059,7 +1059,7 @@ L_13a7:
         goto L_150f;
 
 L_13bb:
-    if (((uint32_t)((HIWORD(cshKill) & 0xffff)) != 0x0))
+    if (((cshKill & 0xffff0000) != 0x0))
         goto L_13d9;
     else
         goto L_1431;
@@ -1773,7 +1773,7 @@ L_228d:
 
 L_22aa:
     l = (int32_t)((0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef));
-    if (((uint32_t)((LOWORD(l) & 0xc000)) != 0x0))
+    if (((l & 0xc000) != 0x0))
         goto L_2303;
     else
         goto L_2309;
@@ -1810,7 +1810,7 @@ L_2333:
 
 L_2350:
     l = (int32_t)((0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef));
-    if (((uint32_t)((LOWORD(l) & 0x70)) != 0x0))
+    if (((l & 0x70) != 0x0))
         goto L_23a9;
     else
         goto L_23af;

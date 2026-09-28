@@ -170,7 +170,7 @@ L_022b:
         goto L_02d8;
 
 L_02d8:
-    c = _wsprintf(szWork, "%ldkT", LOWORD(GlobalPD.rgi[2]), HIWORD(GlobalPD.rgi[2]));
+    c = _wsprintf(szWork, "%ldkT", GlobalPD.rgi[2]);
     goto L_0324;
 
 L_02fc:
@@ -180,44 +180,20 @@ L_02fc:
 L_0324:
     TextOut(hdc, dx, (dyArial8 + 4), szWork, c);
     RightTextOut(hdc, dx, ((dyArial8 * 2) + 4), PszGetCompressedString(idsMineralConcentration), 0, 0);
-    if ((GlobalPD.iPlrMax < 0))
-        goto L_0401;
-    else
-        goto L_0376;
-
-L_0376:
-    if ((GlobalPD.iPlrMax > 0))
-        goto L_0385;
-    else
-        goto L_037b;
-
-L_037b:
-    if ((LOWORD(GlobalPD.rgi[3]) <= 0x0))
+    if ((GlobalPD.rgi[3] <= 0))
         goto L_0401;
     else
         goto L_0385;
 
 L_0385:
-    c = _wsprintf(szWork, PCTLD, LOWORD(GlobalPD.rgi[3]), HIWORD(GlobalPD.rgi[3]));
+    c = _wsprintf(szWork, PCTLD, GlobalPD.rgi[3]);
     if ((GlobalPD.rgi[1] != 0))
         goto L_03ba;
     else
         goto L_0423;
 
 L_03ba:
-    if ((GlobalPD.iPlrMax < 0))
-        goto L_03d9;
-    else
-        goto L_03c4;
-
-L_03c4:
-    if ((GlobalPD.iPlrMax > 0))
-        goto L_03d3;
-    else
-        goto L_03c9;
-
-L_03c9:
-    if ((LOWORD(GlobalPD.rgi[3]) < 0x1e))
+    if ((GlobalPD.rgi[3] < 30))
         goto L_03d9;
     else
         goto L_03d3;
@@ -248,7 +224,7 @@ L_0423:
 L_045a:
     RightTextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), PszGetCompressedString(idsMiningRate), 0, 0);
     CchGetString(idsLdktYr, szT);
-    c = _wsprintf(szWork, szT, LOWORD(GlobalPD.rgi[4]), HIWORD(GlobalPD.rgi[4]));
+    c = _wsprintf(szWork, szT, GlobalPD.rgi[4]);
     TextOut(hdc, dx, (LOWORD((3 * dyArial8)) + 4), szWork, c);
 
 L_04d9:
@@ -994,7 +970,7 @@ L_13e5:
     goto L_1883;
 
 L_1401:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x1000)) != 0x0))
+    if (((rgids[i] & 0x10000000) != 0x0))
         goto L_1429;
     else
         goto L_1432;
@@ -1004,7 +980,7 @@ L_1429:
     goto L_152e;
 
 L_1432:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x4000)) != 0x0))
+    if (((rgids[i] & 0x40000000) != 0x0))
         goto L_145a;
     else
         goto L_147b;
@@ -1014,7 +990,7 @@ L_145a:
     goto L_152e;
 
 L_147b:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x2000)) != 0x0))
+    if (((rgids[i] & 0x20000000) != 0x0))
         goto L_14a3;
     else
         goto L_14c4;
@@ -1024,7 +1000,7 @@ L_14a3:
     goto L_152e;
 
 L_14c4:
-    if (((uint32_t)((HIWORD(rgids[i]) & 0x8000)) != 0x0))
+    if (((rgids[i] & 0x80000000) != 0x0))
         goto L_14ec;
     else
         goto L_1510;
@@ -1749,7 +1725,7 @@ L_22cf:
     SelectObject(hdc, rghfontArial8[0]);
     DxStreamTextOut(hdc, &(x), y, PszGetCompressedString(idsIs), 0, fPrint);
     SelectObject(hdc, rghfontArial8[1]);
-    _wsprintf(szWork, PCTLD00, LOWORD(pl.rgwtMin[3]), HIWORD(pl.rgwtMin[3]));
+    _wsprintf(szWork, PCTLD00, pl.rgwtMin[3]);
     if ((pl.rgwtMin[3] != 0))
         goto L_239e;
     else
@@ -1995,7 +1971,7 @@ L_2b87:
 
 L_2b9f:
     psz = PszGetCompressedString(idsWillGrowLd00Ld00Year);
-    c = _wsprintf(szT, psz, lPopChg, (LOWORD(pl.rgwtMin[3]) + LOWORD(lPopChg)), (HIWORD(pl.rgwtMin[3]) + HIWORD(lPopChg)));
+    c = _wsprintf(szT, psz, lPopChg, (pl.rgwtMin[3] + lPopChg));
 
 L_2be3:
     WrapTextOut(hdc, &(x), &(y), szT, c, 4, xMax, 0x0, 0, fPrint);

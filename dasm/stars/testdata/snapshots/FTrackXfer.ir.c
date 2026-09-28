@@ -172,7 +172,7 @@ L_5cda:
     goto L_5cf0;
 
 L_5ce3:
-    t_merge_5cf0_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
+    t_merge_5cf0_0001 = (-dChg);
 
 L_5cf0:
     if ((XferSupply(iVal, t_merge_5cf0_0001) != 0))
@@ -338,7 +338,7 @@ L_5f25:
     goto L_5f3b;
 
 L_5f2e:
-    t_merge_5f3b_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
+    t_merge_5f3b_0001 = (-dChg);
 
 L_5f3b:
     if ((XferSupply(iVal, t_merge_5f3b_0001) != 0))

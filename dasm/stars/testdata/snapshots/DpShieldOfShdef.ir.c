@@ -100,7 +100,7 @@ L_109e:
     dpShdef = (dpShdef + (int32_t)(((int32_t)((dpShdef * 2)) / 5)));
 
 L_10c1:
-    if (((uint32_t)((HIWORD(dpShdef) & 0xffff)) != 0x0))
+    if (((dpShdef & 0xffff0000) != 0x0))
         goto L_10dd;
     else
         goto L_10e7;

@@ -26,7 +26,7 @@ L_3a4c:
     call fmemset(lpfl, 0, 0x7c) -> callresult(void *)
     call fmemmove(lpfl, rgbCur, 0xc) -> callresult(void *)
     fByte = lpfl->fDone
-    us = rgbCur[12]
+    us = *&rgbCur[12]
     pb = &rgbCur[14]
     branch fByte == 0 ? L_3b2f : L_3ab6
 

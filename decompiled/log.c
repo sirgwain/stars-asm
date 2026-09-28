@@ -468,7 +468,7 @@ L_929b:
         goto L_92a9;
 
 L_92a9:
-    if ((rgbCur[2] != iordNew))
+    if ((RawLoad16(&(rgbCur[2])) != iordNew))
         goto L_92bb;
     else
         goto L_92b5;
@@ -756,11 +756,11 @@ L_979a:
 
 L_97b5:
     RawStore32(rgbCur, (uint32_t)(pplNew->id));
-    rgbCur[4] = 0;
-    rgbCur[2] = ((rgbCur[2] & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0)));
-    rgbCur[2] = ((rgbCur[2] & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1)));
-    rgbCur[2] = ((rgbCur[2] & 0xffff87ff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->iWarpFling)) & 0xf)) << 0xb)));
-    rgbCur[2] = ((rgbCur[2] & 0xfe007fff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idRoute)) & 0x3ff)) << 0xf)));
+    RawStore16(&(rgbCur[4]), 0x0);
+    RawStore32(&(rgbCur[2]), ((RawLoad32(&(rgbCur[2])) & 0xfffffffe) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->fNoResearch)) & 0x1)) << 0x0))));
+    RawStore32(&(rgbCur[2]), ((RawLoad32(&(rgbCur[2])) & 0xfffff801) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idFling)) & 0x3ff)) << 0x1))));
+    RawStore32(&(rgbCur[2]), ((RawLoad32(&(rgbCur[2])) & 0xffff87ff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->iWarpFling)) & 0xf)) << 0xb))));
+    RawStore32(&(rgbCur[2]), ((RawLoad32(&(rgbCur[2])) & 0xfe007fff) | (int32_t)(((uint32_t)((LOWORD((uint32_t)(pplNew->idRoute)) & 0x3ff)) << 0xf))));
     WriteMemRt(35, 6, rgbCur);
 
 L_9901:
@@ -1469,7 +1469,7 @@ L_a3ed:
     lppl = (lppl + 1);
 
 L_a3f1:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_a3d9;
     else
         goto L_a401;
@@ -1517,7 +1517,7 @@ L_a4bd:
     goto L_a73c;
 
 L_a4c6:
-    if (((uint32_t)((LOWORD((uint32_t)((lpb[((iPass * 4) + 2)] >> 0x14))) & 0x7f)) != 0x0))
+    if (((uint32_t)((LOWORD((uint32_t)((RawLoad32((lpb + ((iPass * 4) + 2))) >> 0x14))) & 0x7f)) != 0x0))
         goto L_a502;
     else
         goto L_a737;
@@ -1543,14 +1543,18 @@ L_a527:
 
 L_a568:
     if ((lppl->lpplprod->rgprod[iLook].iItem !=
-         (uint32_t)((LOWORD((uint32_t)(((((uint32_t)((uint16_t)(lpb[((iPass * 4) + 4)])) << 0x10) | (uint16_t)(lpb[((iPass * 4) + 2)])) >> 0xa))) & 0x7f))))
+         (uint32_t)((LOWORD((uint32_t)((
+                         (((uint32_t)((uint16_t)(RawLoad16((lpb + ((iPass * 4) + 4))))) << 0x10) | (uint16_t)(RawLoad16((lpb + ((iPass * 4) + 2))))) >> 0xa))) &
+                     0x7f))))
         goto L_a50b;
     else
         goto L_a5f3;
 
 L_a5f3:
-    if ((lppl->lpplprod->rgprod[iLook].grobj !=
-         (uint32_t)((LOWORD((uint32_t)(((((uint32_t)((uint16_t)(lpb[((iPass * 4) + 4)])) << 0x10) | (uint16_t)(lpb[((iPass * 4) + 2)])) >> 0x11))) & 0x7))))
+    if ((lppl->lpplprod->rgprod[iLook].grobj != (uint32_t)((LOWORD((uint32_t)(((((uint32_t)((uint16_t)(RawLoad16((lpb + ((iPass * 4) + 4))))) << 0x10) |
+                                                                                (uint16_t)(RawLoad16((lpb + ((iPass * 4) + 2))))) >>
+                                                                               0x11))) &
+                                                            0x7))))
         goto L_a50b;
     else
         goto L_a67e;
@@ -1565,8 +1569,8 @@ L_a6d7:
         goto L_a6ee;
 
 L_a6ee:
-    lpb[((iPass * 4) + 2)] = (lpb[((iPass * 4) + 0x2)] & 0xffff);
-    lpb[((iPass * 4) + 4)] = (lpb[((iPass * 4) + 0x4)] & 0xf80f);
+    RawStore16((lpb + ((iPass * 4) + 2)), (RawLoad16((lpb + ((iPass * 4) + 0x2))) & 0xffff));
+    RawStore16((lpb + ((iPass * 4) + 4)), (RawLoad16((lpb + ((iPass * 4) + 0x4))) & 0xf80f));
 
 L_a737:
     iPass = (iPass + 1);
@@ -1925,11 +1929,11 @@ L_ae66:
         goto L_ae6f;
 
 L_ae6f:
-    rgcXfer[i] = (int32_t)(lpb[((iLook * 2) + 6)]);
+    rgcXfer[i] = (int32_t)(RawLoad16((lpb + ((iLook * 2) + 6))));
     goto L_aecd;
 
 L_ae9d:
-    rgcXfer[i] = lpb[((iLook * 4) + 6)];
+    rgcXfer[i] = RawLoad32((lpb + ((iLook * 4) + 6)));
 
 L_aecd:
     iLook = (iLook + 1);
@@ -2225,7 +2229,7 @@ L_b359:
     lpxfCur = lpxf;
 
 L_b366:
-    if ((LOWORD(lpxfCur) >= LOWORD(lpxfMax)))
+    if ((lpxfCur >= lpxfMax))
         goto L_b4a7;
     else
         goto L_b376;
@@ -2319,7 +2323,7 @@ L_b520:
     lpxfCur = (lpxfCur + 1);
 
 L_b524:
-    if ((LOWORD(lpxfCur) < LOWORD(lpxfMax)))
+    if ((lpxfCur < lpxfMax))
         goto L_b4fd;
     else
         goto L_b534;
@@ -2341,18 +2345,11 @@ L_b57b:
     goto L_af00;
 
 StealCargo:
-    l = ChgCargo(((lpb[4] >> 0x4) & 0xf), RawLoad16(((uint8_t *)(lpb) + 0x2)), i,
-                 (((uint32_t)((uint16_t)((-(HIWORD(cXfer) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(cXfer)))), &(rgxf[1].fl));
-    if ((LOWORD(l) != (-LOWORD(cXfer))))
+    l = ChgCargo(((lpb[4] >> 0x4) & 0xf), RawLoad16(((uint8_t *)(lpb) + 0x2)), i, (-cXfer), &(rgxf[1].fl));
+    if ((l != (-cXfer)))
         goto L_b607;
     else
-        goto L_b5fe;
-
-L_b5fe:
-    if ((HIWORD(l) == (-(HIWORD(cXfer) + 0x0))))
         goto L_af00;
-    else
-        goto L_b607;
 
 L_b607:
     rgcXfer[i] = (-l);
@@ -2651,7 +2648,7 @@ L_bad4:
         goto L_bae3;
 
 L_bae3:
-    cXfer = (int32_t)(lpb[((iLook * 2) + 7)]);
+    cXfer = (int32_t)(RawLoad16((lpb + ((iLook * 2) + 7))));
     if ((iPass != 0))
         goto L_bb23;
     else
@@ -2732,22 +2729,10 @@ L_bc4a:
     goto L_bcb1;
 
 L_bc62:
-    if ((SIGNHIWORD((32766 - rgxf[1].fl.rgcsh[i])) > (-(HIWORD(cXfer) + 0x0))))
-        goto L_bcb1;
-    else
-        goto L_bc88;
-
-L_bc88:
-    if ((SIGNHIWORD((32766 - rgxf[1].fl.rgcsh[i])) < (-(HIWORD(cXfer) + 0x0))))
+    if (((int32_t)((32766 - rgxf[1].fl.rgcsh[i])) <= (-cXfer)))
         goto L_bc94;
     else
-        goto L_bc8d;
-
-L_bc8d:
-    if (((32766 - rgxf[1].fl.rgcsh[i]) > (-LOWORD(cXfer))))
         goto L_bcb1;
-    else
-        goto L_bc94;
 
 L_bc94:
     cXfer = (int32_t)((-((32766 - rgxf[1].fl.rgcsh[i]) - 1)));
@@ -3394,19 +3379,19 @@ StrOpen:
 
 L_c944:
     ReadRt();
-    if ((LOWORD(game.lid) != rgbCur[4]))
+    if ((LOWORD(game.lid) != RawLoad16(&(rgbCur[4]))))
         goto FailSuccess;
     else
         goto L_c959;
 
 L_c959:
-    if ((HIWORD(game.lid) != rgbCur[6]))
+    if ((HIWORD(game.lid) != RawLoad16(&(rgbCur[6]))))
         goto FailSuccess;
     else
         goto L_c962;
 
 L_c962:
-    if ((game.turn <= rgbCur[10]))
+    if ((game.turn <= RawLoad16(&(rgbCur[10]))))
         goto L_c9b2;
     else
         goto FailSuccess;
@@ -3431,7 +3416,7 @@ L_c9a6:
     return 1;
 
 L_c9b2:
-    if ((rgbCur[10] == game.turn))
+    if ((RawLoad16(&(rgbCur[10])) == game.turn))
         goto L_c9d0;
     else
         goto L_c9be;
@@ -3441,7 +3426,7 @@ L_c9be:
     goto FailSuccess;
 
 L_c9d0:
-    if ((((rgbCur[14] >> 0xd) & 0x7) == game.wGen))
+    if ((((RawLoad16(&(rgbCur[14])) >> 0xd) & 0x7) == game.wGen))
         goto L_c9fd;
     else
         goto L_c9ee;
@@ -3451,15 +3436,15 @@ L_c9ee:
     goto FailSuccess;
 
 L_c9fd:
-    wVersFile = rgbCur[8];
-    gd.fFileCrippled = ((rgbCur[14] >> 0xc) & 0x1);
+    wVersFile = RawLoad16(&(rgbCur[8]));
+    gd.fFileCrippled = ((RawLoad16(&(rgbCur[14])) >> 0xc) & 0x1);
     if ((gd.fGeneratingTurn == 0x0))
         goto L_ca7f;
     else
         goto L_ca3a;
 
 L_ca3a:
-    rgplr[idPlayer].wFlags = ((rgplr[idPlayer].wFlags & 0xfffd) | ((((rgbCur[14] >> 0xc) & 0x1) & 0x1) * 0x2));
+    rgplr[idPlayer].wFlags = ((rgplr[idPlayer].wFlags & 0xfffd) | ((((RawLoad16(&(rgbCur[14])) >> 0xc) & 0x1) & 0x1) * 0x2));
 
 L_ca7f:
     ReadRt();
@@ -3483,7 +3468,7 @@ L_caae:
         goto L_cae3;
 
 L_cae3:
-    vrgts[idPlayer].lSerialNumber = rgbCur[2];
+    vrgts[idPlayer].lSerialNumber = RawLoad32(&(rgbCur[2]));
     fmemcpy(vrgts[idPlayer].rgbConfig, &(rgbCur[6]), 0xb);
 
 L_cb37:

@@ -16,7 +16,7 @@ L_3a4c:
     fmemset(lpfl, 0, 0x7c);
     fmemmove(lpfl, rgbCur, 0xc);
     fByte = lpfl->fDone;
-    us = rgbCur[12];
+    us = RawLoad16(&(rgbCur[12]));
     pb = &(rgbCur[14]);
     if ((fByte == 0))
         goto L_3b2f;

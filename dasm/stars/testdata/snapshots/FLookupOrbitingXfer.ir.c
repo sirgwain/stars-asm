@@ -142,7 +142,7 @@ L_26c0:
     lpth = (lpth + 1);
 
 L_26c4:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_2631;
     else
         goto L_26d2;

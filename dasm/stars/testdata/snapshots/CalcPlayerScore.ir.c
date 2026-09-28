@@ -59,7 +59,7 @@ L_59c5:
     lppl = (lppl + 1);
 
 L_59c9:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_58ee;
     else
         goto L_59d7;

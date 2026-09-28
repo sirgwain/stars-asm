@@ -642,9 +642,13 @@ L_1213:
     rgidProdBtns[0] = 1070;
     rgidProdBtns[1] = 1071;
     rgidProdBtns[2] = 1;
+    rgidProdBtns[3] = 2;
     rgidProdBtns[4] = 1048;
+    rgidProdBtns[5] = 1049;
     rgidProdBtns[6] = 1081;
+    rgidProdBtns[7] = 1082;
     rgidProdBtns[8] = 1069;
+    rgidProdBtns[9] = 118;
     hwndProdDlg = hwnd;
     if ((rgplr[idPlayer].cPlanet > 1))
         goto L_128c;
@@ -2174,7 +2178,7 @@ L_385c:
     TextOut(hdc, rc.left, rc.bottom, rgszMinerals[c], lstrlen(rgszMinerals[c]));
     SelectObject(hdc, rghfontArial8[0]);
     SetTextColor(hdc, crWindowText);
-    c = _wsprintf(szWork, PCTLD, LOWORD(rgCost[k]), HIWORD(rgCost[k]));
+    c = _wsprintf(szWork, PCTLD, rgCost[k]);
     RightTextOut(hdc, ((rc.right - dxkT) - 2), rc.bottom, szWork, c, dxMaxMineralQuan);
     if ((k > 2))
         goto L_394e;
@@ -2372,7 +2376,7 @@ L_3d46:
         goto L_3d94;
 
 L_3d94:
-    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)((iItem * 0x93)) - 2)]);
+    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - RawLoad16(&(rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)((iItem * 0x93)) - 2)])));
     if ((iDelta <= 0))
         goto L_3e05;
     else

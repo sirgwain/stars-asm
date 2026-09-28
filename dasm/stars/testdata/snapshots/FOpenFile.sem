@@ -46,25 +46,25 @@ L_4b49:
     branch hdrCur.rt != rtBOF ? L_4bc4 : L_4b81
 
 L_4b81:
-    branch ((rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4bc4 : L_4b94
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4bc4 : L_4b94
 
 L_4b94:
-    branch ((rgbCur[8] >> 0x5) & 0x7f) < 0x31 ? L_4bc4 : L_4bac
+    branch ((*&rgbCur[8] >> 0x5) & 0x7f) < 0x31 ? L_4bc4 : L_4bac
 
 L_4bac:
-    branch ((rgbCur[8] >> 0x5) & 0x7f) < 0x54 ? L_4c47 : L_4bc4
+    branch ((*&rgbCur[8] >> 0x5) & 0x7f) < 0x54 ? L_4c47 : L_4bc4
 
 L_4bc4:
     branch hdrCur.rt != rtBOF ? L_4c2a : L_4bd7
 
 L_4bd7:
-    branch ((rgbCur[8] >> 0xc) & 0xf) > 0x2 ? L_4c15 : L_4bea
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) > 0x2 ? L_4c15 : L_4bea
 
 L_4bea:
-    branch ((rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4c1b : L_4bfd
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4c1b : L_4bfd
 
 L_4bfd:
-    branch ((rgbCur[8] >> 0x5) & 0x7f) <= 0x54 ? L_4c1b : L_4c15
+    branch ((*&rgbCur[8] >> 0x5) & 0x7f) <= 0x54 ? L_4c1b : L_4c15
 
 L_4c15:
     t_merge_4c1e_0001 = 0x2ca

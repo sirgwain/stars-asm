@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -23,7 +24,7 @@ func (p *normalizeCallArgsProcessor) ProcessMachineBlock(result *Result, f machi
 			call.Args = args
 			next, indirectChanged := p.normalizeMachineIndirectCallArgs(call)
 			call = next
-			next, normalizedChanged := p.normalizeMachineVarArgDataFarPointers(call)
+			next, normalizedChanged := p.normalizeMachineVarArgWordPairs(call)
 			call = next
 			next, phiChanged := distributeMachineFarPointerPhis(call)
 			return next, accessChanged || argsChanged || indirectChanged || normalizedChanged || phiChanged, true
@@ -142,8 +143,10 @@ func indirectMachineStackWordsValue(words []machine.Value) machine.Value {
 	return &machine.StackWords{Words: append([]machine.Value(nil), words...)}
 }
 
-// normalizeMachineVarArgDataFarPointers rebuilds DS:offset far pointers split across varargs.
-func (p *normalizeCallArgsProcessor) normalizeMachineVarArgDataFarPointers(call machine.CallEffect) (machine.CallEffect, bool) {
+// normalizeMachineVarArgWordPairs regroups varargs pushed as two words:
+// DS:offset far pointers, 32-bit storage loads, carry-linked ADD/ADC or
+// SUB/SBB results, and low/high word projections of one long value.
+func (p *normalizeCallArgsProcessor) normalizeMachineVarArgWordPairs(call machine.CallEffect) (machine.CallEffect, bool) {
 	start, ok := callVarArgStart(call.Target)
 	if !ok {
 		return call, false
@@ -156,7 +159,10 @@ func (p *normalizeCallArgsProcessor) normalizeMachineVarArgDataFarPointers(call 
 	args := make([]machine.Value, 0, len(call.Args))
 	args = append(args, call.Args[:start]...)
 	for i := start; i < len(call.Args); i++ {
-		if i+1 < len(call.Args) && (machineSegmentWord(call.Args[i+1]) || p.splitFarPointerWords(call.Args[i+1], call.Args[i])) {
+		if i+1 < len(call.Args) && (machineSegmentWord(call.Args[i+1]) ||
+			p.splitFarPointerWords(call.Args[i+1], call.Args[i]) ||
+			carryLinkedWords(call.Args[i+1], call.Args[i]) ||
+			p.wordProjectionWords(call.Args[i+1], call.Args[i])) {
 			args = append(args, machineFarPointerWords(call.Args[i+1], call.Args[i]))
 			i++
 			changed = true
@@ -215,17 +221,23 @@ func machineSegmentWord(value machine.Value) bool {
 }
 
 // splitFarPointerWords reports whether segment and offset are the high and
-// low words of one 32-bit scalar or pointer in storage, with an optional
-// constant offset added to the low word, e.g. load([bp+0xa]),
-// load([bp+0x8])+0x8. Adjacent 16-bit objects such as x, y do not pair.
+// low words of one 32-bit scalar or pointer in storage, e.g. load([bp+0xa]),
+// load([bp+0x8]) or pfl->rgwtMin[3] at [bx+0x5a], [bx+0x58]. A pointer's low
+// word may carry offset arithmetic, e.g. lpshdef + 147*j + 8. Adjacent 16-bit
+// objects such as x, y do not pair.
 func (p *normalizeCallArgsProcessor) splitFarPointerWords(segment, offset machine.Value) bool {
 	high, ok := segment.(*machine.Load)
 	if !ok || high.Addr.Width != 2 {
 		return false
 	}
-	if binary, ok := offset.(*machine.Binary); ok && binary.Op == machine.ValueOpAdd {
+	constOffset := true
+	for {
+		binary, ok := offset.(*machine.Binary)
+		if !ok || binary.Op != machine.ValueOpAdd {
+			break
+		}
 		if _, ok := binary.RHS.(*machine.Const); !ok {
-			return false
+			constOffset = false
 		}
 		offset = binary.LHS
 	}
@@ -239,18 +251,35 @@ func (p *normalizeCallArgsProcessor) splitFarPointerWords(segment, offset machin
 		!machine.ValueEquals(low.Addr.Index, high.Addr.Index) {
 		return false
 	}
-	access := low.Addr
-	access.Width = 4
-	resolved, ok := p.ctx.symbols.addressFromMemory(access, nil)
+	typ, ok := p.ctx.wideStorageScalarType(low.Addr)
+	return ok && (constOffset || typeinfo.IsPointer(typ))
+}
+
+// wordProjectionWords reports whether high projects the high or sign word of
+// the value whose low word is low, e.g. loword(callresult), hiword(callresult)
+// or load([bp-csh]), signhiword(load([bp-csh])) pushed as one long.
+func (p *normalizeCallArgsProcessor) wordProjectionWords(high, low machine.Value) bool {
+	if _, ok := high.(*machine.WordValue); !ok {
+		return false
+	}
+	_, ok := (&wideMachineCollapser{ctx: p.ctx}).pairDirect(low, high)
+	return ok
+}
+
+// carryLinkedWords reports whether high and low are the two halves of one
+// 32-bit ADD/ADC or SUB/SBB, e.g. ADD ax, 4; ADC dx, 0; PUSH dx; PUSH ax.
+// Leaving them split drops the carry between the words.
+func carryLinkedWords(high, low machine.Value) bool {
+	lowBinary, ok := low.(*machine.Binary)
 	if !ok {
 		return false
 	}
-	path, ok := resolved.path()
+	highBinary, ok := high.(*machine.Binary)
 	if !ok {
 		return false
 	}
-	typ := path.Type()
-	return typ.Bytes() == 4 && (typ.Kind() == typeinfo.KInt || typ.Kind() == typeinfo.KPointer)
+	return machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpADD, asm.OpADC) ||
+		machine.AdjacentWideArithmetic(lowBinary.Producer, highBinary.Producer, asm.OpSUB, asm.OpSBB)
 }
 
 // machineSegmentReg reports whether value is a segment register.

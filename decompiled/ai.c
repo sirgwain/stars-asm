@@ -513,7 +513,7 @@ L_0788:
     lppl = (lppl + 1);
 
 L_078c:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_06e5;
     else
         goto L_079a;
@@ -1645,19 +1645,19 @@ L_1af5:
     j = (j + 1);
 
 L_1af9:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_1b5b;
     else
         goto L_1b1c;
 
 L_1b1c:
-    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] != lpfl->id))
+    if ((RawLoad16((vlpbAiData + (((i * 20) + (j * 2)) + 8))) != lpfl->id))
         goto L_1af5;
     else
         goto L_1b5b;
 
 L_1b5b:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_1ad9;
     else
         goto L_1b84;
@@ -1669,7 +1669,7 @@ L_1b84:
         goto L_1b94;
 
 L_1b94:
-    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
+    lppl = LpplFromId(RawLoad16((vlpbAiData + ((i * 20) + 4))));
 
 L_1bbc:
     if ((lppl != 0x0))
@@ -3465,7 +3465,7 @@ L_39b9:
     lppl = (lppl + 1);
 
 L_39bd:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_397b;
     else
         goto L_39cd;
@@ -4243,7 +4243,7 @@ L_486f:
     lppl = (lppl + 1);
 
 L_4873:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_39fe;
     else
         goto L_4883;
@@ -4877,19 +4877,19 @@ L_53f7:
     j = (j + 1);
 
 L_53fb:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_545d;
     else
         goto L_541e;
 
 L_541e:
-    if ((vlpbAiData[(((i * 20) + (j * 2)) + 8)] != lpfl->id))
+    if ((RawLoad16((vlpbAiData + (((i * 20) + (j * 2)) + 8))) != lpfl->id))
         goto L_53f7;
     else
         goto L_545d;
 
 L_545d:
-    if ((j >= vlpbAiData[((i * 20) + 6)]))
+    if ((j >= RawLoad16((vlpbAiData + ((i * 20) + 6)))))
         goto L_53db;
     else
         goto L_5486;
@@ -4901,7 +4901,7 @@ L_5486:
         goto L_5496;
 
 L_5496:
-    lppl = LpplFromId(vlpbAiData[((i * 20) + 4)]);
+    lppl = LpplFromId(RawLoad16((vlpbAiData + ((i * 20) + 4))));
 
 L_54be:
     if ((lppl != 0x0))

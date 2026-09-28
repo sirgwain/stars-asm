@@ -1047,7 +1047,7 @@ L_1602:
 
 L_165d:
     SetTextColor(hdc, rgcrMinerals[i]);
-    c = _wsprintf(szWork, PCTLD, LOWORD(rgl[i]), HIWORD(rgl[i]));
+    c = _wsprintf(szWork, PCTLD, rgl[i]);
     DxStreamTextOut(hdc, &(dxRight), yTopMsg, szWork, c, 1);
     SetTextColor(hdc, crButtonText);
     DxStreamTextOut(hdc, &(dxRight), yTopMsg, "kT  ", 4, 1);
@@ -1244,7 +1244,7 @@ L_198f:
     lpth = (lpth + 1);
 
 L_1993:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_194e;
     else
         goto L_19a1;
@@ -1439,7 +1439,7 @@ L_1dbd:
     SetTextColor(hdc, crButtonText);
 
 L_1e20:
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(pfl->rgwtMin[3]), HIWORD(pfl->rgwtMin[3]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[3]);
     RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
     yTop = (yTop + dyArial8);
 
@@ -4759,7 +4759,7 @@ L_5cda:
     goto L_5cf0;
 
 L_5ce3:
-    t_merge_5cf0_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
+    t_merge_5cf0_0001 = (-dChg);
 
 L_5cf0:
     if ((XferSupply(iVal, t_merge_5cf0_0001) != 0))
@@ -4925,7 +4925,7 @@ L_5f25:
     goto L_5f3b;
 
 L_5f2e:
-    t_merge_5f3b_0001 = (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg))));
+    t_merge_5f3b_0001 = (-dChg);
 
 L_5f3b:
     if ((XferSupply(iVal, t_merge_5f3b_0001) != 0))
@@ -5414,8 +5414,7 @@ L_661c:
         goto L_6699;
 
 L_664a:
-    ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, (((uint32_t)((uint16_t)((-(HIWORD(dChg) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dChg)))),
-             ((uint8_t *)((pxfer + iSrc)) + 4));
+    ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, (-dChg), ((uint8_t *)((pxfer + iSrc)) + 4));
 
 L_6699:
     return dChg;
@@ -6387,7 +6386,7 @@ L_75a1:
     t_merge_75a4_0001 = 0x0;
 
 L_75a4:
-    c = _wsprintf(szWork, PszGetCompressedString((t_merge_75a4_0001 + 0x37c)), LOWORD(fl.rgwtMin[iMap]), HIWORD(fl.rgwtMin[iMap]));
+    c = _wsprintf(szWork, PszGetCompressedString((t_merge_75a4_0001 + 0x37c)), fl.rgwtMin[iMap]);
     RightTextOut(hdc, xRight, yTop, szWork, c, 0);
     if ((iSupply == i))
         goto L_7720;
@@ -6758,7 +6757,7 @@ L_7c4a:
 
 L_7c4d:
     _Draw3dFrame(hdc, &(rc), t_merge_7c4d_0001);
-    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), LOWORD(pl.rgwtMin[i]), HIWORD(pl.rgwtMin[i]));
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pl.rgwtMin[i]);
     RightTextOut(hdc, xRight, yTop, szWork, c, 0);
     if ((iSupply == i))
         goto L_7cd4;
@@ -7279,7 +7278,7 @@ L_8504:
     lpth = (lpth + 1);
 
 L_8509:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_8470;
     else
         goto L_851a;
@@ -7309,7 +7308,7 @@ L_856e:
     goto L_8673;
 
 L_8591:
-    if (((uint32_t)((HIWORD(rgid[i]) & 0x2000)) != 0x0))
+    if (((rgid[i] & 0x20000000) != 0x0))
         goto L_85bb;
     else
         goto L_85ef;
@@ -7320,7 +7319,7 @@ L_85bb:
     goto L_8673;
 
 L_85ef:
-    if (((uint32_t)((HIWORD(rgid[i]) & 0x8000)) != 0x0))
+    if (((rgid[i] & 0x80000000) != 0x0))
         goto L_8619;
     else
         goto L_864d;
@@ -7516,7 +7515,7 @@ L_89c0:
     lpth = (lpth + 1);
 
 L_89c5:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_8982;
     else
         goto L_89d6;
@@ -8647,15 +8646,13 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x !=
-         LOWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x))
         goto L_9ec7;
     else
         goto L_9eb6;
 
 L_9eb6:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y !=
-         HIWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y != lpfl->lpplord->rgord[iDel].pt.y))
         goto L_9ec7;
     else
         goto L_9ebf;
@@ -10333,7 +10330,7 @@ L_c31e:
     lppl = (lppl + 1);
 
 L_c322:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_c2b4;
     else
         goto L_c330;
@@ -10585,7 +10582,7 @@ L_c7ca:
     lppl = (lppl + 1);
 
 L_c7ce:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_c61a;
     else
         goto L_c7dc;
@@ -10704,7 +10701,7 @@ L_c9d7:
     lppl = (lppl + 1);
 
 L_c9db:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_c86c;
     else
         goto L_c9e9;

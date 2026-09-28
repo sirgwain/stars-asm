@@ -931,6 +931,10 @@
           "value": "grPopupMineral"
         },
         {
+          "block": "L_0324",
+          "value": "grPopupMineral"
+        },
+        {
           "block": "L_037b",
           "value": "grPopupMineral"
         },
@@ -940,6 +944,10 @@
         },
         {
           "block": "L_03b0",
+          "value": "grPopupMineral"
+        },
+        {
+          "block": "L_03ba",
           "value": "grPopupMineral"
         },
         {
@@ -4363,6 +4371,34 @@
       "type": "XFER",
       "block": "L_3a3d",
       "member": "fl"
+    },
+    {
+      "func": "DrawPopup",
+      "root": "GlobalPD",
+      "type": "POPUPDATA",
+      "block": "L_0324",
+      "member": "rgi"
+    },
+    {
+      "func": "DrawPopup",
+      "root": "GlobalPD",
+      "type": "POPUPDATA",
+      "block": "L_0376",
+      "member": "rgi"
+    },
+    {
+      "func": "DrawPopup",
+      "root": "GlobalPD",
+      "type": "POPUPDATA",
+      "block": "L_03ba",
+      "member": "rgi"
+    },
+    {
+      "func": "DrawPopup",
+      "root": "GlobalPD",
+      "type": "POPUPDATA",
+      "block": "L_03c4",
+      "member": "rgi"
     },
     {
       "func": "FCanKillTok",

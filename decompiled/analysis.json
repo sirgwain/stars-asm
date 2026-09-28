@@ -2,12 +2,12 @@
   "OutDir": "./decompiled",
   "analysis": {
     "temps": 1697,
-    "hiWords": 59,
-    "loWords": 1338,
-    "branchHiWords": 26,
-    "branchLoWords": 443,
+    "hiWords": 19,
+    "loWords": 1297,
+    "branchHiWords": 2,
+    "branchLoWords": 141,
     "ir": {
-      "numStatements": 34709
+      "numStatements": 34712
     }
   },
   "functions": {
@@ -74,7 +74,7 @@
     },
     "AutoTerraform": {
       "temps": 2,
-      "branchLoWords": 3,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 23
       }
@@ -144,7 +144,6 @@
       }
     },
     "CBattleKills": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 10
       }
@@ -303,7 +302,6 @@
     "CalcPlayerScore": {
       "temps": 2,
       "loWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 47
       }
@@ -373,7 +371,6 @@
     },
     "CheckWeapons": {
       "loWords": 4,
-      "branchHiWords": 1,
       "ir": {
         "numStatements": 71
       }
@@ -422,8 +419,7 @@
       "temps": 8,
       "hiWords": 1,
       "loWords": 9,
-      "branchHiWords": 2,
-      "branchLoWords": 6,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 206
       }
@@ -437,7 +433,7 @@
     "CommandHandler": {
       "temps": 12,
       "loWords": 22,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 356
       }
@@ -499,7 +495,6 @@
       }
     },
     "CshQueued": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 12
       }
@@ -545,8 +540,6 @@
       }
     },
     "DeleteWpFar": {
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 7
       }
@@ -557,7 +550,6 @@
       }
     },
     "DestroyAllIshdefSB": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 7
       }
@@ -607,8 +599,7 @@
     },
     "DisplayComponentInfo": {
       "temps": 14,
-      "hiWords": 1,
-      "loWords": 34,
+      "loWords": 33,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 691
@@ -621,7 +612,7 @@
     },
     "DoAutomitronAiTurn": {
       "temps": 6,
-      "branchLoWords": 7,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 199
       }
@@ -643,7 +634,6 @@
     "DoCyberAiTurn": {
       "temps": 9,
       "loWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 227
       }
@@ -664,7 +654,6 @@
     "DoMacintiAiTurn": {
       "temps": 12,
       "loWords": 3,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 357
       }
@@ -677,7 +666,6 @@
     },
     "DoOrders": {
       "temps": 3,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 23
       }
@@ -685,14 +673,12 @@
     "DoRobotoidAiTurn": {
       "temps": 13,
       "loWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 257
       }
     },
     "DoRototillAiTurn": {
       "temps": 4,
-      "branchLoWords": 6,
       "ir": {
         "numStatements": 152
       }
@@ -700,7 +686,7 @@
     "DoThingInteractions": {
       "temps": 10,
       "loWords": 1,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 148
       }
@@ -708,7 +694,7 @@
     "DoTurinDroneAiTurn": {
       "temps": 7,
       "loWords": 1,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 289
       }
@@ -728,7 +714,6 @@
     "DpShieldOfShdef": {
       "temps": 3,
       "loWords": 4,
-      "branchHiWords": 1,
       "ir": {
         "numStatements": 20
       }
@@ -754,8 +739,7 @@
     },
     "DrawBuildSelComp": {
       "temps": 7,
-      "hiWords": 3,
-      "loWords": 5,
+      "loWords": 2,
       "ir": {
         "numStatements": 96
       }
@@ -795,8 +779,6 @@
     },
     "DrawFleetCargoXferSide": {
       "temps": 3,
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 53
       }
@@ -852,8 +834,6 @@
     },
     "DrawMassWarpGauge": {
       "temps": 1,
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 18
       }
@@ -940,25 +920,21 @@
     },
     "DrawPlanetXferSide": {
       "temps": 1,
-      "hiWords": 1,
-      "loWords": 2,
+      "loWords": 1,
       "ir": {
         "numStatements": 39
       }
     },
     "DrawPopup": {
       "temps": 2,
-      "hiWords": 3,
-      "loWords": 10,
-      "branchLoWords": 2,
+      "loWords": 7,
       "ir": {
         "numStatements": 97
       }
     },
     "DrawProductionDlg": {
       "temps": 4,
-      "hiWords": 1,
-      "loWords": 4,
+      "loWords": 3,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 64
@@ -1017,8 +993,7 @@
     },
     "DrawResearchDlg": {
       "temps": 3,
-      "hiWords": 1,
-      "loWords": 18,
+      "loWords": 17,
       "ir": {
         "numStatements": 162
       }
@@ -1038,7 +1013,6 @@
     "DrawScanner": {
       "temps": 35,
       "loWords": 6,
-      "branchLoWords": 10,
       "ir": {
         "numStatements": 550
       }
@@ -1065,8 +1039,7 @@
     },
     "DrawShipCargo": {
       "temps": 1,
-      "hiWords": 1,
-      "loWords": 3,
+      "loWords": 2,
       "ir": {
         "numStatements": 48
       }
@@ -1081,7 +1054,6 @@
     "DrawShipPlanet": {
       "temps": 4,
       "loWords": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 33
       }
@@ -1095,8 +1067,7 @@
     },
     "DrawShipWayPtOrders": {
       "temps": 4,
-      "hiWords": 1,
-      "loWords": 8,
+      "loWords": 7,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 177
@@ -1134,8 +1105,7 @@
     },
     "DrawVCR": {
       "temps": 10,
-      "hiWords": 2,
-      "loWords": 38,
+      "loWords": 36,
       "ir": {
         "numStatements": 237
       }
@@ -1155,7 +1125,6 @@
     "DropColonists": {
       "temps": 3,
       "loWords": 14,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 115
       }
@@ -1175,9 +1144,8 @@
     "DumpPlanets": {
       "temps": 1,
       "loWords": 4,
-      "branchLoWords": 2,
       "ir": {
-        "numStatements": 135
+        "numStatements": 136
       }
     },
     "DumpUniverse": {
@@ -1356,7 +1324,6 @@
     "FAIFling": {
       "temps": 3,
       "loWords": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 43
       }
@@ -1407,7 +1374,6 @@
     "FBuildObject": {
       "temps": 18,
       "loWords": 5,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 173
       }
@@ -1595,7 +1561,6 @@
       }
     },
     "FColonizer": {
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 5
       }
@@ -1608,8 +1573,6 @@
     },
     "FCreateAiShdef": {
       "temps": 1,
-      "branchHiWords": 2,
-      "branchLoWords": 6,
       "ir": {
         "numStatements": 39
       }
@@ -1787,19 +1750,16 @@
       }
     },
     "FFindNearestObject": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 83
       }
     },
     "FFindPlayerMessage": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 5
       }
     },
     "FFindSomethingAndSelectIt": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -1855,7 +1815,6 @@
     },
     "FGenerateTurn": {
       "temps": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 236
       }
@@ -1879,7 +1838,6 @@
     },
     "FGetNMsgbig": {
       "temps": 3,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 21
       }
@@ -1991,7 +1949,7 @@
     "FLoadGame": {
       "temps": 9,
       "loWords": 7,
-      "branchLoWords": 13,
+      "branchLoWords": 5,
       "ir": {
         "numStatements": 395
       }
@@ -2017,7 +1975,6 @@
     },
     "FLookupOrbitingXfer": {
       "temps": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 20
       }
@@ -2057,7 +2014,7 @@
     "FMarkFile": {
       "temps": 1,
       "ir": {
-        "numStatements": 49
+        "numStatements": 48
       }
     },
     "FMatchTarget": {
@@ -2107,7 +2064,6 @@
     },
     "FOtherStuffAtScanSel": {
       "temps": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 17
       }
@@ -2182,7 +2138,6 @@
       }
     },
     "FRemovePlayerMessage": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 7
       }
@@ -2201,10 +2156,8 @@
     },
     "FRunLogRecord": {
       "temps": 13,
-      "hiWords": 1,
-      "loWords": 13,
-      "branchHiWords": 4,
-      "branchLoWords": 12,
+      "loWords": 12,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 230
       }
@@ -2212,7 +2165,6 @@
     "FSalvageTargetFreighter2": {
       "temps": 1,
       "loWords": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 31
       }
@@ -2223,7 +2175,6 @@
       }
     },
     "FScout": {
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 5
       }
@@ -2295,7 +2246,6 @@
     "FStargateJump": {
       "temps": 2,
       "loWords": 7,
-      "branchHiWords": 1,
       "ir": {
         "numStatements": 70
       }
@@ -2349,8 +2299,7 @@
     },
     "FTrackXfer": {
       "temps": 10,
-      "hiWords": 2,
-      "loWords": 3,
+      "loWords": 1,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 51
@@ -2359,7 +2308,7 @@
     "FTravelThroughMineFields": {
       "temps": 8,
       "loWords": 10,
-      "branchLoWords": 7,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 176
       }
@@ -2406,7 +2355,6 @@
     "FWriteDataFile": {
       "temps": 6,
       "loWords": 1,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 158
       }
@@ -2465,8 +2413,7 @@
     },
     "FillBuildDD": {
       "temps": 8,
-      "hiWords": 1,
-      "loWords": 4,
+      "loWords": 2,
       "ir": {
         "numStatements": 61
       }
@@ -2508,7 +2455,6 @@
     },
     "FillShipDD": {
       "temps": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 23
       }
@@ -2556,14 +2502,11 @@
     "FrameWndProc": {
       "temps": 8,
       "loWords": 4,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 254
       }
     },
     "FreeHb": {
-      "branchHiWords": 1,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 6
       }
@@ -2579,7 +2522,6 @@
       }
     },
     "FreeLpth": {
-      "branchLoWords": 3,
       "ir": {
         "numStatements": 3
       }
@@ -2603,7 +2545,6 @@
     "GenNewGameFromFile": {
       "temps": 2,
       "loWords": 24,
-      "branchLoWords": 26,
       "ir": {
         "numStatements": 163
       }
@@ -2676,7 +2617,6 @@
       }
     },
     "GetMineFieldCounts": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 10
       }
@@ -2800,7 +2740,6 @@
       }
     },
     "HealShips": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 35
       }
@@ -2817,8 +2756,6 @@
     },
     "HostModeDialog": {
       "temps": 20,
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 122
       }
@@ -2944,7 +2881,6 @@
     },
     "IValidateWormholePos": {
       "loWords": 1,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 41
       }
@@ -2962,7 +2898,6 @@
       }
     },
     "IdFindAdjStarbase": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 15
       }
@@ -2976,7 +2911,6 @@
       }
     },
     "IdNearestColonizablePlanet": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 38
       }
@@ -3001,7 +2935,7 @@
       }
     },
     "IdTargetAttack": {
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 80
       }
@@ -3009,7 +2943,6 @@
     "IdTargetFreighter": {
       "temps": 2,
       "loWords": 7,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 116
       }
@@ -3021,7 +2954,6 @@
       }
     },
     "IdTargetScout": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 52
       }
@@ -3037,7 +2969,6 @@
       }
     },
     "IdplFindClosestStarbase": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -3048,7 +2979,6 @@
       }
     },
     "IncreaseAIMinefieldSizes": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 6
       }
@@ -3100,7 +3030,6 @@
       }
     },
     "InitRandomPlanetList": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -3121,7 +3050,6 @@
     },
     "InitializeBoard": {
       "temps": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 77
       }
@@ -3210,7 +3138,6 @@
       }
     },
     "KeepFleetsMoving": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 15
       }
@@ -3385,7 +3312,6 @@
       }
     },
     "LpAlloc": {
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 22
       }
@@ -3453,13 +3379,11 @@
       }
     },
     "LpplFindBestEnum": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 15
       }
     },
     "LpplFindClosestEnum": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 12
       }
@@ -3506,7 +3430,6 @@
       }
     },
     "LpthFromId": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 5
       }
@@ -3518,7 +3441,6 @@
     },
     "LpthWormFind": {
       "loWords": 3,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 19
       }
@@ -3540,7 +3462,6 @@
     },
     "MarkPlanetsPlayerLost": {
       "temps": 2,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 15
       }
@@ -3601,11 +3522,10 @@
     "MineClick": {
       "temps": 8,
       "ir": {
-        "numStatements": 149
+        "numStatements": 152
       }
     },
     "MineMinerals": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 5
       }
@@ -3629,13 +3549,11 @@
     "MoveThings": {
       "temps": 22,
       "loWords": 23,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 186
       }
     },
     "MoveToNearestPlanetOrEnemy": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 21
       }
@@ -3835,7 +3753,7 @@
     "PlanetWndProc": {
       "temps": 4,
       "loWords": 2,
-      "branchLoWords": 4,
+      "branchLoWords": 2,
       "ir": {
         "numStatements": 103
       }
@@ -3860,7 +3778,6 @@
     "PopupMenu": {
       "temps": 7,
       "loWords": 6,
-      "branchHiWords": 4,
       "ir": {
         "numStatements": 73
       }
@@ -3869,8 +3786,7 @@
       "temps": 3,
       "hiWords": 1,
       "loWords": 2,
-      "branchHiWords": 2,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 58
       }
@@ -3903,7 +3819,6 @@
     },
     "Produce": {
       "temps": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 73
       }
@@ -3913,7 +3828,7 @@
       "loWords": 12,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 98
+        "numStatements": 102
       }
     },
     "ProgressGaugeDlg": {
@@ -3923,7 +3838,6 @@
     },
     "ProjectedResearchSpending": {
       "loWords": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 12
       }
@@ -4080,8 +3994,7 @@
       }
     },
     "PtDisplayPlanetPopInfo": {
-      "hiWords": 3,
-      "loWords": 4,
+      "loWords": 1,
       "ir": {
         "numStatements": 109
       }
@@ -4119,7 +4032,6 @@
       }
     },
     "QueueAiStarbases": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 16
       }
@@ -4248,7 +4160,6 @@
     },
     "ReadPlayerMessages": {
       "temps": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 35
       }
@@ -4303,7 +4214,6 @@
       }
     },
     "RemoveIshdefFromAllQueues": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 16
       }
@@ -4338,7 +4248,7 @@
     "ResearchDlg": {
       "temps": 1,
       "loWords": 14,
-      "branchLoWords": 5,
+      "branchLoWords": 3,
       "ir": {
         "numStatements": 102
       }
@@ -4382,10 +4292,7 @@
     },
     "SatisfyOrders": {
       "temps": 18,
-      "hiWords": 7,
-      "loWords": 48,
-      "branchHiWords": 2,
-      "branchLoWords": 4,
+      "loWords": 41,
       "ir": {
         "numStatements": 368
       }
@@ -4410,15 +4317,12 @@
       "temps": 6,
       "hiWords": 1,
       "loWords": 5,
-      "branchHiWords": 2,
-      "branchLoWords": 5,
+      "branchLoWords": 1,
       "ir": {
         "numStatements": 148
       }
     },
     "ScoreFromGiveAndTakeAndTactic": {
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 8
       }
@@ -4465,7 +4369,6 @@
     },
     "SetAiFleetIdealSpeed": {
       "temps": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 23
       }
@@ -4539,10 +4442,8 @@
       }
     },
     "SetRaceGrbit": {
-      "hiWords": 3,
-      "loWords": 3,
       "ir": {
-        "numStatements": 7
+        "numStatements": 4
       }
     },
     "SetRaceStat": {
@@ -4575,7 +4476,6 @@
     },
     "SetVCRBoard": {
       "loWords": 2,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 35
       }
@@ -4594,21 +4494,18 @@
     "SetVisPFFleets": {
       "temps": 6,
       "loWords": 1,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 58
       }
     },
     "SetVisPFInit": {
       "temps": 3,
-      "branchLoWords": 4,
       "ir": {
         "numStatements": 70
       }
     },
     "SetVisPFPlanets": {
       "temps": 10,
-      "branchLoWords": 14,
       "ir": {
         "numStatements": 95
       }
@@ -4616,7 +4513,6 @@
     "SetVisPFThings": {
       "temps": 9,
       "loWords": 1,
-      "branchLoWords": 8,
       "ir": {
         "numStatements": 65
       }
@@ -4685,14 +4581,12 @@
       }
     },
     "SortReportCache": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 38
       }
     },
     "SpankTheCheaters": {
       "loWords": 4,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 34
       }
@@ -4743,7 +4637,6 @@
     },
     "SweepForMines": {
       "loWords": 8,
-      "branchLoWords": 6,
       "ir": {
         "numStatements": 51
       }
@@ -4786,7 +4679,6 @@
     "ThingDecay": {
       "temps": 4,
       "loWords": 3,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 47
       }
@@ -4825,7 +4717,6 @@
     "TransferToOthers": {
       "temps": 8,
       "loWords": 14,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 40
       }
@@ -4848,7 +4739,6 @@
       }
     },
     "UlFleetPower": {
-      "branchHiWords": 1,
       "ir": {
         "numStatements": 6
       }
@@ -4859,7 +4749,6 @@
       }
     },
     "UnmarkMineFields": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 5
       }
@@ -4870,18 +4759,15 @@
       }
     },
     "UpdateBattleRecords": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 14
       }
     },
     "UpdateGuesses": {
       "temps": 1,
-      "hiWords": 3,
-      "loWords": 5,
-      "branchLoWords": 2,
+      "loWords": 2,
       "ir": {
-        "numStatements": 21
+        "numStatements": 20
       }
     },
     "UpdateOrdersDDs": {
@@ -4899,9 +4785,7 @@
     },
     "UpdatePopulations": {
       "temps": 2,
-      "hiWords": 1,
-      "loWords": 7,
-      "branchLoWords": 2,
+      "loWords": 6,
       "ir": {
         "numStatements": 16
       }
@@ -4947,7 +4831,6 @@
     "ValidateStarbaseHistory": {
       "temps": 2,
       "loWords": 1,
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 67
       }
@@ -5039,7 +4922,6 @@
       }
     },
     "WritePlayerMessages": {
-      "branchLoWords": 2,
       "ir": {
         "numStatements": 13
       }
@@ -5091,8 +4973,6 @@
     },
     "XferSupply": {
       "temps": 4,
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 17
       }

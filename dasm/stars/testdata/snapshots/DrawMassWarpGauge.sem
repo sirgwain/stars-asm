@@ -1,0 +1,71 @@
+/*
+DrawMassWarpGauge  (planet)
+  addr: 000a:2afa  len=317
+  sig:  void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur)
+  params:
+    HDC              hdc            [BP+0x6]
+    RECT *           prc            [BP+0x8]
+    int16_t          iBest          [BP+0xa]
+    int16_t          iCur           [BP+0xc]
+  locals:
+    int32_t          l              [BP-0x16]
+    int32_t          lCur           [BP-0x12]
+    HBRUSH           hbr            [BP-0xe]
+    int16_t          iMode          [BP-0xc]
+    int16_t          fTwoMAs        [BP-0xa]
+    int16_t          c              [BP-0x8]
+    int32_t          lMax           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_2afa:
+    branch iBest >= 0 ? L_2b12 : L_2b0c
+
+L_2b0c:
+    t_merge_2b15_0001 = 0x1
+    goto L_2b15
+
+L_2b12:
+    t_merge_2b15_0001 = 0x0
+
+L_2b15:
+    fTwoMAs = t_merge_2b15_0001
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    branch iCur >= 5 ? L_2b32 : L_2b2d
+
+L_2b2d:
+    iCur = 5
+
+L_2b32:
+    branch iBest >= 0 ? L_2b43 : L_2b3b
+
+L_2b3b:
+    iBest = neg(iBest)
+
+L_2b43:
+    lMax = sext16to32((iBest - 1))
+    branch iCur > (iBest + fTwoMAs) ? L_2b67 : L_2b5e
+
+L_2b5e:
+    hbr = hbrPurple
+    goto L_2b87
+
+L_2b67:
+    branch iCur >= ((iBest + fTwoMAs) + 3) ? L_2b81 : L_2b78
+
+L_2b78:
+    hbr = hbrYellow
+    goto L_2b87
+
+L_2b81:
+    hbr = hbrRed
+
+L_2b87:
+    lCur = sext16to32((iCur - 4))
+    l = LDrawGauge(hdc, prc, 1, &lCur, &hbr, lMax)
+    iMode = SetBkMode(hdc, TRANSPARENT)
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), (l + 4))
+    l = GetTextExtent(hdc, szWork, c)
+    call RcCtrTextOut(hdc, prc, szWork, c) -> callresult(void)
+    call SetBkMode(hdc, iMode) -> callresult(int16_t)
+    return

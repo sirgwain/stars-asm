@@ -811,7 +811,7 @@ L_0fbf:
     lppl = (lppl + 1);
 
 L_0fda:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_0fbf;
     else
         goto L_0feb;
@@ -1143,7 +1143,7 @@ L_17e4:
     lppl = (lppl + 1);
 
 L_180c:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_17ce;
     else
         goto L_181a;
@@ -1175,7 +1175,7 @@ L_187e:
     lppl = (lppl + 1);
 
 L_188b:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_187e;
     else
         goto L_1899;
@@ -1604,7 +1604,7 @@ L_1e13:
     lpth2 = (lpth2 + 1);
 
 L_1e17:
-    if ((LOWORD(lpth2) < LOWORD(lpth2Mac)))
+    if ((lpth2 < lpth2Mac))
         goto L_1de4;
     else
         goto L_1e25;
@@ -2440,7 +2440,7 @@ L_2ed3:
     lpth = (lpth + 1);
 
 L_2ed7:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_192d;
     else
         goto L_2ee5;
@@ -4315,7 +4315,7 @@ L_555b:
     lpth = (lpth + 1);
 
 L_5560:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_50d9;
     else
         goto L_5571;
@@ -4657,7 +4657,7 @@ L_5ecd:
     lpthSalvage = (lpthSalvage + 1);
 
 L_5ed2:
-    if ((LOWORD(lpthSalvage) < LOWORD(lpthMac)))
+    if ((lpthSalvage < lpthMac))
         goto L_5e77;
     else
         goto L_5ee3;
@@ -4721,7 +4721,7 @@ L_6084:
     lpth = (lpth + 1);
 
 L_6089:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_5f71;
     else
         goto L_609a;

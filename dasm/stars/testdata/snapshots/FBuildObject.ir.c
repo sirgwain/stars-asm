@@ -696,7 +696,7 @@ L_2956:
     lpth = (lpth + 1);
 
 L_295a:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_288f;
     else
         goto L_2968;

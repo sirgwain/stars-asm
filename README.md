@@ -190,6 +190,62 @@ go run main.go dasm all --asm
 Semantic analysis is available through `dasm sem --analyze`; bulk output also
 includes analysis reports and generated union block facts.
 
+## Build and Run `stars.exe`
+
+The CMake build compiles the generated C sources in `decompiled/` and embeds
+the resources from `decompiled/res/`. It produces an x86-64 Windows GUI
+executable with debug information, using MinGW-w64 and Wine to run it.
+
+### Prerequisites
+
+Make these tools available on `PATH`:
+
+- CMake 3.23 or newer.
+- Ninja.
+- MinGW-w64's `x86_64-w64-mingw32-gcc`, `x86_64-w64-mingw32-windres`, and
+  associated binutils.
+- Wine, available as `wine`. CMake requires it during configuration.
+
+### Build
+
+Run from the repository root:
+
+```sh
+cmake --preset mingw-debug
+cmake --build --preset mingw-debug
+```
+
+The executable is written to `dist/mingw-debug/bin/stars.exe`. Build files and
+`compile_commands.json` are stored in `dist/mingw-debug/`.
+
+CMake uses the existing generated sources. After changing the decompiler,
+regenerate them with Go before rebuilding:
+
+```sh
+go run main.go dasm all --all
+cmake --build --preset mingw-debug
+```
+
+### Run with Wine
+
+From the repository root:
+
+```sh
+cmake --build --preset run-wine
+```
+
+This builds any pending changes and launches `stars.exe` with
+`dist/mingw-debug/bin/` as its working directory. To launch the existing
+executable directly, including any command-line arguments, use:
+
+```sh
+cd dist/mingw-debug/bin
+wine stars.exe
+```
+
+The generated program is still under reconstruction. A successful build does
+not establish that all game behavior works correctly under Wine.
+
 ## Direction
 
 The project now produces C-like output through explicit-block IR and is moving

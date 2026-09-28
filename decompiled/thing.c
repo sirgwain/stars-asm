@@ -122,7 +122,7 @@ L_01f6:
 
 void FreeLpth(THING *lpth) {
 L_0224:
-    if ((LOWORD(lpth) >= ((LOWORD(lpThings) + LOWORD((18 * cThing))) + 0xffee)))
+    if ((lpth >= (lpThings + (cThing - 1))))
         goto L_0294;
     else
         goto L_024b;
@@ -436,7 +436,7 @@ L_0718:
     lpth = (lpth + 1);
 
 L_071c:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_06d9;
     else
         goto L_072a;
@@ -642,7 +642,7 @@ L_09c7:
     lpth = (lpth + 1);
 
 L_09cb:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_083b;
     else
         goto L_09d9;
@@ -1580,7 +1580,7 @@ L_1a6b:
     lppl = (lppl + 1);
 
 L_1a6f:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_165c;
     else
         goto L_1a7d;
@@ -1589,7 +1589,7 @@ L_1a7d:
     lpth = (lpth + 1);
 
 L_1a81:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_0b7a;
     else
         goto L_1a8f;

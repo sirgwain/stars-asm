@@ -22,6 +22,14 @@ func collapseWideExprPair(high, low Expr, expected typeinfo.Type) (Expr, bool) {
 	if value, ok := collapseWidePointerOffset(high, low, expected); ok {
 		return value, true
 	}
+	// Complement is lane-wise, as in NOT ax; NOT dx for lSalt = ~lSalt.
+	if hiUnary, ok := high.(*Unary); ok && hiUnary.Op == OpNot {
+		if loUnary, ok := low.(*Unary); ok && loUnary.Op == OpNot {
+			if x, ok := collapseWideExprPair(hiUnary.X, loUnary.X, expected); ok {
+				return &Unary{TypeInfo: x.ExprType(), Op: OpNot, X: x}, true
+			}
+		}
+	}
 	hiBinary, hiOK := high.(*Binary)
 	loBinary, loOK := low.(*Binary)
 	if hiOK && loOK && hiBinary.Op == loBinary.Op {

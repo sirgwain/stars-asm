@@ -3366,7 +3366,7 @@ L_8554:
         goto L_8566;
 
 L_8566:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_8488;
     else
         goto L_8574;
@@ -4195,7 +4195,7 @@ L_92f6:
     lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_9310:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_92a7;
     else
         goto L_931e;
@@ -4240,7 +4240,7 @@ L_9391:
     lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_93ab:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_9354;
     else
         goto L_93b9;
@@ -4520,7 +4520,7 @@ L_95d5:
     lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_95ef:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_93f0;
     else
         goto L_95fd;
@@ -4632,7 +4632,7 @@ L_97f1:
     lpb = (lpb + (5 + ((*(lpb) >> 0x4) & 0xf)));
 
 L_980d:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_9742;
     else
         goto L_981c;
@@ -4784,7 +4784,7 @@ L_9abf:
         goto L_9aca;
 
 L_9aca:
-    if ((LOWORD(lpb) < LOWORD(lpbMax)))
+    if ((lpb < lpbMax))
         goto L_99fa;
     else
         goto L_9ad8;

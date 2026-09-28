@@ -56,7 +56,7 @@ L_59c5:
     lppl = &lppl[1]
 
 L_59c9:
-    branch LOWORD(lppl) < LOWORD(lpplMac) ? L_58ee : L_59d7
+    branch lppl < lpplMac ? L_58ee : L_59d7
 
 L_59d7:
     score.lScore = (score.lScore + (int32_t)(score.cResources / 30))

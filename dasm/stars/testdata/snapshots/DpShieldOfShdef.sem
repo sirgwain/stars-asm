@@ -79,7 +79,7 @@ L_109e:
     dpShdef = (dpShdef + (int32_t)((int32_t)(dpShdef * 2) / 5))
 
 L_10c1:
-    branch (uint32_t)(HIWORD(dpShdef) & 0xffff) != 0x0 ? L_10dd : L_10e7
+    branch (dpShdef & 0xffff0000) != 0x0 ? L_10dd : L_10e7
 
 
 L_10dd:

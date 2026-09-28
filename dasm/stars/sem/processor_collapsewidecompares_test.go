@@ -31,7 +31,7 @@ func TestCollapseWideCompareOrdering(t *testing.T) {
 		{Block: 0x1100},
 	}}
 
-	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+	if changed := (&collapseWideComparesProcessor{ctx: ctxForWideCompareTest()}).ProcessMachineFunc(nil, &fn); !changed {
 		t.Fatal("ProcessMachineFunc changed = false, want true")
 	}
 	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
@@ -77,7 +77,7 @@ func TestCollapseWideCompareOrderingThroughJumpOutcome(t *testing.T) {
 		{Block: 0x1100},
 	}}
 
-	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+	if changed := (&collapseWideComparesProcessor{ctx: ctxForWideCompareTest()}).ProcessMachineFunc(nil, &fn); !changed {
 		t.Fatal("ProcessMachineFunc changed = false, want jump outcome collapse")
 	}
 	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
@@ -108,7 +108,7 @@ func TestCollapseWideCompareOrderingWithRootRetry(t *testing.T) {
 		{Block: 0x1100},
 	}}
 
-	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+	if changed := (&collapseWideComparesProcessor{ctx: ctxForWideCompareTest()}).ProcessMachineFunc(nil, &fn); !changed {
 		t.Fatal("ProcessMachineFunc changed = false, want root-retry collapse")
 	}
 	if got, want := len(fn.Blocks[0].Effects), 2; got != want {
@@ -147,7 +147,7 @@ func TestCollapseWideCompareEquality(t *testing.T) {
 		{Block: 0x1100},
 	}}
 
-	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); !changed {
+	if changed := (&collapseWideComparesProcessor{ctx: ctxForWideCompareTest()}).ProcessMachineFunc(nil, &fn); !changed {
 		t.Fatal("ProcessMachineFunc changed = false, want true")
 	}
 	branch := fn.Blocks[0].Effects[0].(machine.BranchEffect)
@@ -371,7 +371,7 @@ func TestCollapseWideCompareRejectsSideEffectingScaffold(t *testing.T) {
 		{Block: 0x1100},
 	}}
 
-	if changed := (&collapseWideComparesProcessor{}).ProcessMachineFunc(nil, &fn); changed {
+	if changed := (&collapseWideComparesProcessor{ctx: ctxForWideCompareTest()}).ProcessMachineFunc(nil, &fn); changed {
 		t.Fatal("ProcessMachineFunc changed = true, want conservative rejection")
 	}
 }
@@ -413,4 +413,18 @@ func jccForWideCompareTest(off uint32, mnemonic string, target uint32) asm.Decod
 // retForWideCompareTest builds a return instruction.
 func retForWideCompareTest(off uint32) asm.DecodedInst {
 	return asm.DecodedInst{Off: off, Len: 1, Op: asm.OpRET, Mnemonic: "RET"}
+}
+
+// ctxForWideCompareTest returns a function context for ladders whose operands
+// need no symbol storage, such as call results and constants.
+func ctxForWideCompareTest() *FuncContext {
+	img := &asm.ImageNE{}
+	sdb := &typeinfo.SymbolDB{}
+	fs := &typeinfo.Function{
+		Name: "CompareResults",
+		Addr: typeinfo.Addr{Seg: 1, Off: 0x1000},
+		Len:  0x200,
+		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
+	}
+	return NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
 }

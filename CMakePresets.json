@@ -1,0 +1,33 @@
+{
+  "version": 4,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "mingw-debug",
+      "displayName": "MinGW / Wine (Debug)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/dist/mingw-debug",
+      "toolchainFile": "${sourceDir}/toolchains/mingw-w64.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "mingw-debug",
+      "displayName": "Build stars.exe (MinGW Debug)",
+      "configurePreset": "mingw-debug"
+    },
+    {
+      "name": "run-wine",
+      "displayName": "Run stars.exe in Wine",
+      "configurePreset": "mingw-debug",
+      "targets": ["run_in_wine"]
+    }
+  ]
+}

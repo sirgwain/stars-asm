@@ -637,7 +637,7 @@ L_08d6:
     lpth = (lpth + 1);
 
 L_08db:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_0855;
     else
         goto L_08ec;
@@ -651,7 +651,7 @@ L_08ec:
         goto L_092b;
 
 L_092b:
-    if (((uint32_t)((HIWORD(rgid[iSel]) & 0x8000)) != 0x0))
+    if (((rgid[iSel] & 0x80000000) != 0x0))
         goto L_0955;
     else
         goto L_09d9;
@@ -689,7 +689,7 @@ L_09d0:
     goto L_0a9d;
 
 L_09d9:
-    if (((uint32_t)((HIWORD(rgid[iSel]) & 0x2000)) != 0x0))
+    if (((rgid[iSel] & 0x20000000) != 0x0))
         goto L_0a03;
     else
         goto L_0a98;
@@ -710,7 +710,7 @@ L_0a5c:
     lpth = (lpth + 1);
 
 L_0a61:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_0a3a;
     else
         goto L_0a72;
@@ -1650,7 +1650,7 @@ L_1673:
     lppl = (lppl + 1);
 
 L_1677:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_157a;
     else
         goto L_1685;
@@ -1807,7 +1807,7 @@ L_1991:
     lppl = (lppl + 1);
 
 L_1995:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_1894;
     else
         goto L_19a3;
@@ -1919,7 +1919,7 @@ L_1c4c:
     lpth = (lpth + 1);
 
 L_1c51:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_1b3a;
     else
         goto L_1c62;
@@ -2384,7 +2384,7 @@ L_243c:
     lpth = (lpth + 1);
 
 L_2441:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_2104;
     else
         goto L_2452;
@@ -2612,7 +2612,7 @@ L_2ab4:
     lpth = (lpth + 1);
 
 L_2ab9:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_2658;
     else
         goto L_2aca;

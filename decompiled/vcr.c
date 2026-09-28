@@ -317,7 +317,7 @@ L_0506:
         goto L_0518;
 
 L_0518:
-    imd = LphuldefFromId(rglpshdef[lptok->iplr]->hul.rgTech[(LOWORD((lptok->ishdef * 0x93)) - 2)])->imdCategory;
+    imd = LphuldefFromId(RawLoad16(&(rglpshdef[lptok->iplr]->hul.rgTech[(LOWORD((lptok->ishdef * 0x93)) - 2)])))->imdCategory;
     if ((imd <= 1))
         goto L_057b;
     else
@@ -426,7 +426,7 @@ L_062e:
     cKilled = 0;
 
 L_0684:
-    if ((LOWORD(lpbr) >= LOWORD(lpbdNext)))
+    if ((lpbr >= (BTLREC *)(lpbdNext)))
         goto L_0799;
     else
         goto L_0692;
@@ -604,7 +604,7 @@ L_0a11:
         goto L_0a1d;
 
 L_0a1d:
-    if ((LOWORD(vlpbrVCR) >= LOWORD(vlpbdVCRNext)))
+    if ((vlpbrVCR >= (BTLREC *)(vlpbdVCRNext)))
         goto L_0e7f;
     else
         goto L_0a2d;
@@ -701,7 +701,7 @@ L_0cfe:
     goto L_0cb2;
 
 L_0d15:
-    if ((LOWORD(vlpbrVCR) >= LOWORD(vlpbdVCRNext)))
+    if ((vlpbrVCR >= (BTLREC *)(vlpbdVCRNext)))
         goto L_0a0c;
     else
         goto L_0d25;
@@ -2172,7 +2172,7 @@ L_2efe:
     goto L_2f60;
 
 L_2f2d:
-    c = _wsprintf(szWork, PszGetCompressedString(idsDamageLdD), csh, SIGNHIWORD(csh), LOWORD(dpT));
+    c = _wsprintf(szWork, PszGetCompressedString(idsDamageLdD), (int32_t)(csh), LOWORD(dpT));
 
 L_2f60:
     TextOut(hdc, xT, y, szWork, c);
@@ -2188,9 +2188,7 @@ L_2fd3:
     goto L_303d;
 
 L_2fea:
-    c = _wsprintf(szWork, PszGetCompressedString(idsShieldsLd),
-                  (LOWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew)))) - LOWORD(dpShields)),
-                  (HIWORD((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew)))) - HIWORD(dpShields)));
+    c = _wsprintf(szWork, PszGetCompressedString(idsShieldsLd), ((uint32_t)(((uint32_t)(vrgtok[viVCRFocus].dpShield) * (int32_t)(cshNew))) - dpShields));
 
 L_303d:
     TextOut(hdc, x, y, szWork, c);

@@ -1,0 +1,64 @@
+/*
+FreeHb  (memory)
+  addr: 000d:02d8  len=112
+  sig:  void FreeHb(HB *lphb)
+  params:
+    HB *             lphb           [BP+0x6]
+  locals:
+    HB *             lphbNext       [BP-0x8]
+    HGLOBAL          hmem           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_02d8:
+  insts 0..6  off 0x02d8..0x02e6
+  succs: L_02ea, L_0330
+  effects:
+    02e5  branch load([bp+lphb]) != 0x0 ? L_0330 : L_02ea
+
+block L_02ea:
+  insts 8..9  off 0x02ea..0x02ef
+  preds: L_02d8
+  succs: L_02f0, L_0342
+  effects:
+    02ee  branch load([bp+lphb+0x2]) == 0x0 ? L_0342 : L_02f0
+
+block L_02f0:
+  insts 10..10  off 0x02f0..0x02f2
+  preds: L_02ea
+  succs: L_0330
+  effects:
+    02f0  goto L_0330
+
+block L_02f9:
+  insts 13..28  off 0x02f9..0x032f
+  preds: L_0330, L_0339
+  succs: L_0330
+  effects:
+    0304  store[2] [bp-lphbNext] = load(farseg(load(dword [bp+lphb])):[faroff(load(dword [bp+lphb]))+0x8])
+    0307  store[2] [bp-lphbNext+0x2] = load(farseg(load(dword [bp+lphb])):[faroff(load(dword [bp+lphb]))+0xa])
+    0311  store[2] [bp-hmem] = load(farseg(load(dword [bp+lphb])):[faroff(load(dword [bp+lphb]))+0xc])
+    0317  call GlobalUnlock(load@0314/src([bp-hmem])) -> callresult(int16_t)
+    031f  call GlobalFree(load@031c/src([bp-hmem])) -> callresult(HGLOBAL)
+    032a  store[2] [bp+lphb] = load([bp-lphbNext])
+    032d  store[2] [bp+lphb+0x2] = load([bp-lphbNext+0x2])
+
+block L_0330:
+  insts 29..30  off 0x0330..0x0335
+  preds: L_02d8, L_02f0, L_02f9
+  succs: L_02f9, L_0339
+  effects:
+    0334  branch load([bp+lphb]) != 0x0 ? L_02f9 : L_0339
+
+block L_0339:
+  insts 32..33  off 0x0339..0x033e
+  preds: L_0330
+  succs: L_02f9, L_0342
+  effects:
+    033d  branch load([bp+lphb+0x2]) != 0x0 ? L_02f9 : L_0342
+
+block L_0342:
+  insts 35..39  off 0x0342..0x0347
+  preds: L_02ea, L_0339
+  effects:
+    0347  return

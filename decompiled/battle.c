@@ -1415,7 +1415,7 @@ L_1dfe:
     lppl = (lppl + 1);
 
 L_1e02:
-    if ((LOWORD(lppl) < LOWORD(lpplMac)))
+    if ((lppl < lpplMac))
         goto L_1b99;
     else
         goto L_1e10;
@@ -3797,7 +3797,7 @@ L_441f:
     ptok->dxyLim = dxyLim;
     ptok->initMin = LOBYTE(initMin);
     ptok->initMac = LOBYTE(initMac);
-    if (((uint32_t)((HIWORD(ldp) & 0xffff)) != 0x0))
+    if (((ldp & 0xffff0000) != 0x0))
         goto L_44b4;
     else
         goto L_44c0;
@@ -4154,7 +4154,7 @@ L_4c7a:
     ptokT = (ptokT + 1);
 
 L_4c7e:
-    if ((LOWORD(ptokT) < LOWORD(ptok)))
+    if ((ptokT < ptok))
         goto L_4ac4;
     else
         goto L_4c8c;
@@ -5283,7 +5283,7 @@ L_5e4c:
     return dpTake;
 
 L_5e55:
-    return (((uint32_t)((uint16_t)((-(HIWORD(dpGive) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(dpGive))));
+    return (-dpGive);
 
 L_5e65:
     score = (-dpGive);

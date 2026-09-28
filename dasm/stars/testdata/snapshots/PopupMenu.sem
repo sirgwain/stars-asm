@@ -57,7 +57,7 @@ L_13e5:
     goto L_1883
 
 L_1401:
-    branch (uint32_t)(HIWORD(rgids[i]) & 0x1000) != 0x0 ? L_1429 : L_1432
+    branch (rgids[i] & 0x10000000) != 0x0 ? L_1429 : L_1432
 
 
 L_1429:
@@ -65,7 +65,7 @@ L_1429:
     goto L_152e
 
 L_1432:
-    branch (uint32_t)(HIWORD(rgids[i]) & 0x4000) != 0x0 ? L_145a : L_147b
+    branch (rgids[i] & 0x40000000) != 0x0 ? L_145a : L_147b
 
 
 L_145a:
@@ -73,7 +73,7 @@ L_145a:
     goto L_152e
 
 L_147b:
-    branch (uint32_t)(HIWORD(rgids[i]) & 0x2000) != 0x0 ? L_14a3 : L_14c4
+    branch (rgids[i] & 0x20000000) != 0x0 ? L_14a3 : L_14c4
 
 
 L_14a3:
@@ -81,7 +81,7 @@ L_14a3:
     goto L_152e
 
 L_14c4:
-    branch (uint32_t)(HIWORD(rgids[i]) & 0x8000) != 0x0 ? L_14ec : L_1510
+    branch (rgids[i] & 0x80000000) != 0x0 ? L_14ec : L_1510
 
 
 L_14ec:

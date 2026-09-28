@@ -1,0 +1,127 @@
+/*
+DrawMassWarpGauge  (planet)
+  addr: 000a:2afa  len=317
+  sig:  void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur)
+  params:
+    HDC              hdc            [BP+0x6]
+    RECT *           prc            [BP+0x8]
+    int16_t          iBest          [BP+0xa]
+    int16_t          iCur           [BP+0xc]
+  locals:
+    int32_t          l              [BP-0x16]
+    int32_t          lCur           [BP-0x12]
+    HBRUSH           hbr            [BP-0xe]
+    int16_t          iMode          [BP-0xc]
+    int16_t          fTwoMAs        [BP-0xa]
+    int16_t          c              [BP-0x8]
+    int32_t          lMax           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_2afa:
+  insts 0..6  off 0x2afa..0x2b08
+  succs: L_2b0c, L_2b12
+  effects:
+    2b07  branch load([bp+iBest]) >= 0x0 ? L_2b12 : L_2b0c
+
+block L_2b0c:
+  insts 8..9  off 0x2b0c..0x2b11
+  preds: L_2afa
+  succs: L_2b15
+  effects:
+    2b0f  goto L_2b15
+
+block L_2b12:
+  insts 10..10  off 0x2b12..0x2b14
+  preds: L_2afa
+  succs: L_2b15
+
+block L_2b15:
+  insts 11..16  off 0x2b15..0x2b29
+  preds: L_2b0c, L_2b12
+  succs: L_2b2d, L_2b32
+  effects:
+    2b15  store[2] [bp-fTwoMAs] = merge(Join: L_2b15, (L_2b0c:0x1, L_2b12:0x0))
+    2b1f  call SelectObject(load([bp+hdc]), load([rghfontArial8+0x2])) -> callresult(HGDIOBJ)
+    2b28  branch load([bp+iCur]) >= 0x5 ? L_2b32 : L_2b2d
+
+block L_2b2d:
+  insts 18..18  off 0x2b2d..0x2b31
+  preds: L_2b15
+  succs: L_2b32
+  effects:
+    2b2d  store[2] [bp+iCur] = 0x5
+
+block L_2b32:
+  insts 19..20  off 0x2b32..0x2b37
+  preds: L_2b15, L_2b2d
+  succs: L_2b3b, L_2b43
+  effects:
+    2b36  branch load([bp+iBest]) >= 0x0 ? L_2b43 : L_2b3b
+
+block L_2b3b:
+  insts 22..24  off 0x2b3b..0x2b42
+  preds: L_2b32
+  succs: L_2b43
+  effects:
+    2b40  store[2] [bp+iBest] = (load([bp+iBest]) neg 0x0)
+
+block L_2b43:
+  insts 25..33  off 0x2b43..0x2b5a
+  preds: L_2b32, L_2b3b
+  succs: L_2b5e, L_2b67
+  effects:
+    2b4a  store[2] [bp-lMax] = (load@2b43/src([bp+iBest]) + 0xffff)
+    2b4d  store[2] [bp-lMax+0x2] = signhiword((load([bp+iBest]) + 0xffff))
+    2b59  branch load([bp+iCur]) > (load@2b50/src([bp+iBest]) + load([bp-fTwoMAs])) ? L_2b67 : L_2b5e
+
+block L_2b5e:
+  insts 35..37  off 0x2b5e..0x2b66
+  preds: L_2b43
+  succs: L_2b87
+  effects:
+    2b61  store[2] [bp-hbr] = load([hbrPurple])
+    2b64  goto L_2b87
+
+block L_2b67:
+  insts 38..42  off 0x2b67..0x2b74
+  preds: L_2b43
+  succs: L_2b78, L_2b81
+  effects:
+    2b73  branch load([bp+iCur]) >= ((load([bp+iBest]) + load([bp-fTwoMAs])) + 0x3) ? L_2b81 : L_2b78
+
+block L_2b78:
+  insts 44..46  off 0x2b78..0x2b80
+  preds: L_2b67
+  succs: L_2b87
+  effects:
+    2b7b  store[2] [bp-hbr] = load([hbrYellow])
+    2b7e  goto L_2b87
+
+block L_2b81:
+  insts 47..48  off 0x2b81..0x2b86
+  preds: L_2b67
+  succs: L_2b87
+  effects:
+    2b84  store[2] [bp-hbr] = load([hbrRed])
+
+block L_2b87:
+  insts 49..116  off 0x2b87..0x2c36
+  preds: L_2b5e, L_2b78, L_2b81
+  effects:
+    2b8e  store[2] [bp-lCur] = (load([bp+iCur]) + 0xfffc)
+    2b91  store[2] [bp-lCur+0x2] = signhiword((load([bp+iCur]) + 0xfffc))
+    2bac  call LDrawGauge(load@2ba9/src([bp+hdc]), load@2ba6/src([bp+prc]), 0x1, addr([bp-lCur]), addr([bp-hbr]), words(load([bp-lMax+0x2]), load([bp-lMax]))) -> callresult(int32_t)
+    2bb4  store[2] [bp-l] = loword(callresult(int32_t))
+    2bb7  store[2] [bp-l+0x2] = hiword(callresult(int32_t))
+    2bc1  call SetBkMode(load@2bba/src([bp+hdc]), 0x1) -> callresult(int16_t)
+    2bc6  store[2] [bp-iMode] = callresult(int16_t)
+    2bdb  call PszGetCompressedString(0x369) -> callresult(char *)
+    2bee  call _wsprintf(words(ds, 0x57a4), words(ds, callresult(char *)), (load([bp-l]) + 0x4), (load([bp-l+0x2]) + 0x0)) -> callresult(int16_t)
+    2bf6  store[2] [bp-c] = callresult(int16_t)
+    2c06  call GetTextExtent(load@2bf9/src([bp+hdc]), words(ds, 0x57a4), load@2c03/src([bp-c])) -> callresult(uint32_t)
+    2c0b  store[2] [bp-l] = loword(callresult(uint32_t))
+    2c0e  store[2] [bp-l+0x2] = hiword(callresult(uint32_t))
+    2c1e  call RcCtrTextOut(load@2c1b/src([bp+hdc]), load@2c18/src([bp+prc]), 0x57a4, load@2c11/src([bp-c])) -> callresult(void)
+    2c2c  call SetBkMode(load@2c26/src([bp+hdc]), load([bp-iMode])) -> callresult(int16_t)
+    2c36  return

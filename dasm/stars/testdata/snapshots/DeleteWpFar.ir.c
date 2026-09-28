@@ -20,15 +20,13 @@ L_9e43:
         goto L_9e50;
 
 L_9e50:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x !=
-         LOWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.x != lpfl->lpplord->rgord[iDel].pt.x))
         goto L_9ec7;
     else
         goto L_9eb6;
 
 L_9eb6:
-    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y !=
-         HIWORD((((uint32_t)((uint16_t)(lpfl->lpplord->rgord[iDel].pt.y)) << 0x10) | (uint16_t)(lpfl->lpplord->rgord[iDel].pt.x)))))
+    if ((lpfl->lpplord->rgord[(lpfl->cord - 1)].pt.y != lpfl->lpplord->rgord[iDel].pt.y))
         goto L_9ec7;
     else
         goto L_9ebf;

@@ -320,6 +320,13 @@ func (sr *symbolResolver) wideStorageDestination(low machine.MemoryAddress, high
 	loLane, ok := sr.storageLaneFromMemory(low, lo)
 	typedObject := ok
 	hiLane, ok := sr.storageLaneFromMemory(high, hi)
+	if typedObject {
+		// Adjacent words of an array of 16-bit elements are separate element
+		// stores, as with rgi[2] = 1000; rgi[3] = 2500, not one dword.
+		if array, isArray := loLane.object.Type().(*typeinfo.Array); isArray && array.Elem != nil && array.Elem.Bytes() == 2 {
+			return machine.MemoryAddress{}, false
+		}
+	}
 	directLow := low
 	directLow.Index = nil
 	_, directStorage := sr.varAccessFromMemory(directLow)

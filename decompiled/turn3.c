@@ -998,14 +998,14 @@ L_73dd:
 
 L_73e3:
     l = t_merge_73e3_0001;
-    l2 = ChgCargo(ord.grobj, ord.id, j, (((uint32_t)((uint16_t)((-(HIWORD(l) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l)))), 0x0);
+    l2 = ChgCargo(ord.grobj, ord.id, j, (-l), 0x0);
     if ((l2 != 0))
         goto L_7432;
     else
         goto L_7557;
 
 L_7432:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (((uint32_t)((uint16_t)((-(HIWORD(l2) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l2)))), 0x0);
+    l = ChgCargo(grobjFleet, lpfl->id, j, (-l2), 0x0);
     if ((l != 0))
         goto L_7476;
     else
@@ -1056,27 +1056,21 @@ L_7560:
         goto L_7569;
 
 L_7569:
-    if ((LOWORD(amount) != (-LOWORD(l2))))
+    if ((amount != (-l2)))
         goto L_7586;
     else
-        goto L_757e;
-
-L_757e:
-    if ((HIWORD(amount) == (-(HIWORD(l2) + 0x0))))
         goto L_76d7;
-    else
-        goto L_7586;
 
 L_7586:
     l = (amount + l2);
-    l2 = ChgCargo(grobjPlanet, pl.id, j, (((uint32_t)((uint16_t)((-(HIWORD(l) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l)))), 0x0);
+    l2 = ChgCargo(grobjPlanet, pl.id, j, (-l), 0x0);
     if ((l2 != 0))
         goto L_75d9;
     else
         goto L_76cb;
 
 L_75d9:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (((uint32_t)((uint16_t)((-(HIWORD(l2) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l2)))), 0x0);
+    l = ChgCargo(grobjFleet, lpfl->id, j, (-l2), 0x0);
     if ((fMining == 0))
         goto L_7668;
     else
@@ -1373,7 +1367,7 @@ L_7ae8:
         goto L_7b2a;
 
 L_7afa:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (((uint32_t)((uint16_t)((-(HIWORD(amount) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(amount)))), 0x0);
+    l = ChgCargo(grobjFleet, lpfl->id, j, (-amount), 0x0);
 
 L_7b2a:
     ord.txp.rgia[j].iAction = iActionNone;
@@ -1548,7 +1542,7 @@ L_7ec4:
         goto L_7f43;
 
 L_7f03:
-    l = ChgCargo(grobjFleet, lpfl->id, 4, (((uint32_t)((uint16_t)((-(HIWORD(l2) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l2)))), 0x0);
+    l = ChgCargo(grobjFleet, lpfl->id, 4, (-l2), 0x0);
 
 L_7f34:
     goto L_7f43;
@@ -1580,8 +1574,7 @@ L_7fd4:
         goto L_804f;
 
 L_7fed:
-    FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (-LOWORD(l)),
-                (LOWORD((uint32_t)(((((uint32_t)((uint16_t)((-(HIWORD(l) + 0x0)))) << 0x10) | (uint16_t)((-LOWORD(l)))) >> 0x10))) & 0xffff), 4, xWP, idWP, 0);
+    FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (-LOWORD(l)), (LOWORD((uint32_t)(((-l) >> 0x10))) & 0xffff), 4, xWP, idWP, 0);
 
 L_804f:
     if ((fDone == 0))
@@ -2796,7 +2789,7 @@ L_9c81:
     lpth = (lpth + 1);
 
 L_9c86:
-    if ((LOWORD(lpth) < LOWORD(lpthMac)))
+    if ((lpth < lpthMac))
         goto L_9b5c;
     else
         goto L_9c97;

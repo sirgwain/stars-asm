@@ -1,0 +1,128 @@
+/*
+DrawShipCargo  (ship)
+  addr: 000b:1a54  len=1054
+  sig:  void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj)
+  params:
+    HDC              hdc            [BP+0x6]
+    TILE *           ptile          [BP+0x8]
+    OBJ              obj            [BP+0xa]
+  locals:
+    RECT             rc             [BP-0x28]
+    int32_t          l              [BP-0x20]
+    int16_t          xLeft          [BP-0x1c]
+    RECT             rcGauge        [BP-0x1a]
+    int16_t          xRight         [BP-0x12]
+    FLEET *          pfl            [BP-0x10]
+    int16_t          c              [BP-0xe]
+    int16_t          i              [BP-0xc]
+    int16_t          yTop           [BP-0xa]
+    int32_t          l2             [BP-0x8]
+    int16_t          dxRight        [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_1a54:
+    pfl = obj.pfl
+    branch ptile->fFixCtls == 0x0 ? L_1a91 : L_1a79
+
+L_1a79:
+    rgrcRef[2].top = -5
+    rgrcRef[2].bottom = -6
+    rgrcRef[3].top = -5
+    rgrcRef[3].bottom = -6
+
+L_1a91:
+    branch FDrawTileNC(hdc, ptile, &rc, PszGetCompressedString(idsFuelCargo)) == 0 ? L_1e6c : L_1abb
+
+L_1abb:
+    xLeft = (rc.left + 4)
+    xRight = (rc.right - 4)
+    yTop = (rc.top + 1)
+    dxRight = dxMaxMineralQuan
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    c = CchGetString(idsCargo3, szWork)
+    l = GetTextExtent(hdc, szWork, c)
+    c = CchGetString(idsFuel3, szWork)
+    l2 = GetTextExtent(hdc, szWork, c)
+    branch l2 <= l ? L_1b65 : L_1b59
+
+
+
+L_1b59:
+    l = l2
+
+L_1b65:
+    branch ptile->fMinDraw != 0x0 ? L_1b93 : L_1b7b
+
+L_1b7b:
+    call TextOut(hdc, xLeft, yTop, szWork, c) -> callresult(int16_t)
+
+L_1b93:
+    call SetRect(&rcGauge, (xLeft + LOWORD(l)), yTop, xRight, (yTop + dyArial8)) -> callresult(void)
+    rgrcRef[2] = rcGauge
+    call DrawFleetGauge(hdc, &rcGauge, pfl, 4) -> callresult(void)
+    branch gd.fSmallTileMode == 0x0 ? L_1bfc : L_1bf6
+
+L_1bf6:
+    t_merge_1bff_0001 = 0x2
+    goto L_1bff
+
+L_1bfc:
+    t_merge_1bff_0001 = 0x4
+
+L_1bff:
+    yTop = (yTop + (t_merge_1bff_0001 + dyArial8))
+    branch ptile->fMinDraw != 0x0 ? L_1c47 : L_1c1c
+
+L_1c1c:
+    c = CchGetString(idsCargo3, szWork)
+    call TextOut(hdc, xLeft, yTop, szWork, c) -> callresult(int16_t)
+
+L_1c47:
+    call SetRect(&rcGauge, (xLeft + LOWORD(l)), yTop, xRight, (yTop + dyArial8)) -> callresult(void)
+    rgrcRef[3] = rcGauge
+    call DrawFleetGauge(hdc, &rcGauge, pfl, 5) -> callresult(void)
+    yTop = (yTop + (dyArial8 + 4))
+    branch gd.fSmallTileMode != 0x0 ? L_1e6c : L_1cb6
+
+L_1cb6:
+    i = 0
+    goto L_1d9e
+
+L_1cbe:
+    branch ptile->fMinDraw != 0x0 ? L_1d25 : L_1cd4
+
+L_1cd4:
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    call SetTextColor(hdc, rgcrMinerals[i]) -> callresult(COLORREF)
+    call TextOut(hdc, xLeft, yTop, rgszMinerals[i], lstrlen(rgszMinerals[i])) -> callresult(int16_t)
+
+L_1d25:
+    call SelectObject(hdc, rghfontArial8[0]) -> callresult(HGDIOBJ)
+    call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[i])
+    call RightTextOut(hdc, xRight, yTop, szWork, c, dxRight) -> callresult(void)
+    yTop = (yTop + dyArial8)
+    i = (i + 1)
+
+L_1d9e:
+    branch i <= 2 ? L_1cbe : L_1da7
+
+L_1da7:
+    branch ptile->fMinDraw != 0x0 ? L_1e20 : L_1dbd
+
+L_1dbd:
+    call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
+    call SetTextColor(hdc, 0xffffff) -> callresult(COLORREF)
+    c = CchGetString(idsColonists2, szWork)
+    call TextOut(hdc, xLeft, yTop, szWork, c) -> callresult(int16_t)
+    call SelectObject(hdc, rghfontArial8[0]) -> callresult(HGDIOBJ)
+    call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
+
+L_1e20:
+    c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[3])
+    call RightTextOut(hdc, xRight, yTop, szWork, c, dxRight) -> callresult(void)
+    yTop = (yTop + dyArial8)
+
+L_1e6c:
+    return

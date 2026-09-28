@@ -34,7 +34,7 @@ L_3d46:
         goto L_3d94;
 
 L_3d94:
-    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)((iItem * 0x93)) - 2)]);
+    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - RawLoad16(&(rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)((iItem * 0x93)) - 2)])));
     if ((iDelta <= 0))
         goto L_3e05;
     else

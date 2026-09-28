@@ -104,7 +104,7 @@ L_26c0:
     lpth = &lpth[1]
 
 L_26c4:
-    branch LOWORD(lpth) < LOWORD(lpthMac) ? L_2631 : L_26d2
+    branch lpth < lpthMac ? L_2631 : L_26d2
 
 L_26d2:
     return 0
