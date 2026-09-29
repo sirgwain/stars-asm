@@ -6,132 +6,56 @@ THING *LpthNew(int16_t iplr, ThingType ith) {
     THING  *lpth;
     THING   thNew;
 
-L_0000:
-    if ((cThing < 4050))
-        goto L_001d;
-    else
-        goto L_0014;
-
-L_0014:
+    if (cThing < 4050) {
+        memset(&thNew, 0, sizeof(THING));
+        thNew.iplr = iplr;
+        thNew.ith = ith;
+        lpth = lpThings;
+        i = 0;
+        for (; i < cThing && thNew.idFull > lpth->idFull; lpth++) {
+            i = i + 1;
+        }
+        if (i < cThing && thNew.idFull == lpth->idFull) {
+            iItem = lpth->id;
+            while (1) {
+                if (i >= cThing)
+                    goto L_0146;
+                if (iItem >= 511)
+                    break;
+                if (lpth->idFull != thNew.idFull)
+                    goto L_0146;
+                i = i + 1;
+                thNew.id = thNew.id + 0x1;
+                lpth = lpth + 1;
+                iItem = iItem + 1;
+            }
+            return 0x0;
+        }
+    L_0146:
+        if (cThing >= cThingAlloc) {
+            cThingAlloc = cThingAlloc + 10;
+            if (lpThings != 0x0) {
+                lpThings = LpReAlloc(lpThings, cThingAlloc * sizeof(THING), htThings);
+            } else {
+                lpThings = LpAlloc(cThingAlloc * sizeof(THING), htThings);
+            }
+            lpth = lpThings + i;
+        }
+        if (i < cThing) {
+            fmemmove(lpth + 1, lpth, (cThing - i) * sizeof(THING));
+        }
+        cThing = cThing + 1;
+        fmemcpy(lpth, &thNew, sizeof(THING));
+        return lpth;
+    }
     return 0x0;
-
-L_001d:
-    memset(&(thNew), 0, sizeof(THING));
-    thNew.iplr = iplr;
-    thNew.ith = ith;
-    lpth = lpThings;
-    i = 0;
-    goto L_0087;
-
-L_0074:
-    i = (i + 1);
-    lpth = (lpth + 1);
-
-L_0087:
-    if ((i >= cThing))
-        goto L_00a6;
-    else
-        goto L_0092;
-
-L_0092:
-    if ((thNew.idFull > lpth->idFull))
-        goto L_0074;
-    else
-        goto L_00a6;
-
-L_00a6:
-    if ((i >= cThing))
-        goto L_0146;
-    else
-        goto L_00b1;
-
-L_00b1:
-    if ((thNew.idFull != lpth->idFull))
-        goto L_0146;
-    else
-        goto L_00bf;
-
-L_00bf:
-    iItem = lpth->id;
-    goto L_0114;
-
-L_00ce:
-    i = (i + 1);
-    thNew.id = (thNew.id + 0x1);
-    lpth = (lpth + 1);
-    iItem = (iItem + 1);
-
-L_0114:
-    if ((i >= cThing))
-        goto L_0146;
-    else
-        goto L_011f;
-
-L_011f:
-    if ((iItem < 511))
-        goto L_0132;
-    else
-        goto L_0129;
-
-L_0129:
-    return 0x0;
-
-L_0132:
-    if ((lpth->idFull == thNew.idFull))
-        goto L_00ce;
-    else
-        goto L_0146;
-
-L_0146:
-    if ((cThing < cThingAlloc))
-        goto L_01c4;
-    else
-        goto L_0152;
-
-L_0152:
-    cThingAlloc = (cThingAlloc + 10);
-    if ((lpThings != 0x0))
-        goto L_018a;
-    else
-        goto L_016b;
-
-L_016b:
-    lpThings = LpAlloc((cThingAlloc * sizeof(THING)), htThings);
-    goto L_01ae;
-
-L_018a:
-    lpThings = LpReAlloc(lpThings, (cThingAlloc * sizeof(THING)), htThings);
-
-L_01ae:
-    lpth = (lpThings + i);
-
-L_01c4:
-    if ((i >= cThing))
-        goto L_01f6;
-    else
-        goto L_01cf;
-
-L_01cf:
-    fmemmove((lpth + 1), lpth, ((cThing - i) * sizeof(THING)));
-
-L_01f6:
-    cThing = (cThing + 1);
-    fmemcpy(lpth, &(thNew), sizeof(THING));
-    return lpth;
 }
 
 void FreeLpth(THING *lpth) {
-L_0224:
-    if ((lpth >= (lpThings + (cThing - 1))))
-        goto L_0294;
-    else
-        goto L_024b;
-
-L_024b:
-    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 0x12)) - 0x1) * sizeof(THING)));
-
-L_0294:
-    cThing = (cThing - 1);
+    if (lpth < lpThings + (cThing - 1)) {
+        fmemmove(lpth, lpth + 1, (cThing - (int32_t)((uint8_t *)lpth - (uint8_t *)lpThings) / 0x12 - 0x1) * sizeof(THING));
+    }
+    cThing = cThing - 1;
     return;
 }
 
@@ -148,100 +72,32 @@ int16_t CPlanetsInCircle(POINT16 pt, int32_t r2) {
     int16_t  dx;
     int16_t  xEnd;
 
-L_02a0:
-    r = LOWORD((int32_t)((sqrt((double)(r2)) + 0.9999)));
-    xStart = (pt.x - r);
-    xEnd = (pt.x + r);
-    yStart = (pt.y - r);
-    yEnd = (pt.y + r);
+    r = LOWORD((int32_t)(sqrt((double)r2) + 0.9999));
+    xStart = pt.x - r;
+    xEnd = pt.x + r;
+    yStart = pt.y - r;
+    yEnd = pt.y + r;
     cPl = 0;
-    pptEnd = &(rgptPlan[game.cPlanMax]);
-    dx = (rgptPlan[(game.cPlanMax - 1)].x - rgptPlan[0].x);
-    i = LOWORD((int32_t)(((uint32_t)(((int32_t)((pt.x - rgptPlan[0].x)) * (int32_t)(game.cPlanMax))) / (int32_t)(dx))));
-    if ((i < game.cPlanMax))
-        goto L_035d;
-    else
-        goto L_0354;
-
-L_0354:
-    i = (game.cPlanMax - 1);
-
-L_035d:
-    if ((i >= 0))
-        goto L_036b;
-    else
-        goto L_0366;
-
-L_0366:
-    i = 0;
-
-L_036b:
-    ppt = &(rgptPlan[i]);
-
-L_037a:
-    if ((ppt->x < xStart))
-        goto L_0398;
-    else
-        goto L_0387;
-
-L_0387:
-    if ((ppt <= rgptPlan))
-        goto L_0398;
-    else
-        goto L_0391;
-
-L_0391:
-    ppt = (ppt - 1);
-    goto L_037a;
-
-L_0398:
-    if ((ppt->x > xEnd))
-        goto L_0442;
-    else
-        goto L_03a5;
-
-L_03a5:
-    if ((ppt >= pptEnd))
-        goto L_0442;
-    else
-        goto L_03b0;
-
-L_03b0:
-    if ((ppt->x < xStart))
-        goto L_043b;
-    else
-        goto L_03bd;
-
-L_03bd:
-    if ((ppt->y < yStart))
-        goto L_043b;
-    else
-        goto L_03cb;
-
-L_03cb:
-    if ((ppt->y > yEnd))
-        goto L_043b;
-    else
-        goto L_03d9;
-
-L_03d9:
-    dx = (ppt->x - pt.x);
-    dy = (ppt->y - pt.y);
-    if ((((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy)))) <= r2))
-        goto L_0437;
-    else
-        goto L_043b;
-
-L_0437:
-    cPl = (cPl + 1);
-
-L_043b:
-    ppt = (ppt + 1);
-    goto L_0398;
-
-L_0442:
-
-L_0448:
+    pptEnd = &rgptPlan[game.cPlanMax];
+    dx = rgptPlan[game.cPlanMax - 1].x - rgptPlan[0].x;
+    i = LOWORD((int32_t)((int32_t)((int32_t)(pt.x - rgptPlan[0].x) * (int32_t)game.cPlanMax) / (int32_t)dx));
+    if (i >= game.cPlanMax) {
+        i = game.cPlanMax - 1;
+    }
+    if (i < 0) {
+        i = 0;
+    }
+    for (ppt = &rgptPlan[i]; ppt->x >= xStart && ppt > rgptPlan; ppt--) {
+    }
+    for (; ppt->x <= xEnd && ppt < pptEnd; ppt++) {
+        if (ppt->x >= xStart && ppt->y >= yStart && ppt->y <= yEnd) {
+            dx = ppt->x - pt.x;
+            dy = ppt->y - pt.y;
+            if ((uint32_t)((int32_t)dx * (int32_t)dx) + (uint32_t)((int32_t)dy * (int32_t)dy) <= r2) {
+                cPl = cPl + 1;
+            }
+        }
+    }
     return cPl;
 }
 
@@ -256,106 +112,40 @@ void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, int16_t md) {
     int32_t lMax;
     int32_t l;
 
-L_044e:
     fDisabled = 0;
     SelectObject(hdc, rghfontArial8[1]);
     cSections = 1;
-    lMax = (uint32_t)((lpth->thp.wtMax * 0xa));
-    if ((md < 0))
-        goto L_04fa;
-    else
-        goto L_0498;
-
-L_0498:
-    if ((md > 4))
-        goto L_04fa;
-    else
-        goto L_04a1;
-
-L_04a1:
-    if ((md == 4))
-        goto L_04b3;
-    else
-        goto L_04aa;
-
-L_04aa:
-    if ((md != 3))
-        goto L_04cd;
-    else
-        goto L_04b3;
-
-L_04b3:
-    rghbr[0] = hbrButtonShadow;
-    rgSize[0] = lMax;
-    fDisabled = 1;
-    goto L_055b;
-
-L_04cd:
-    rghbr[0] = rghbrMineral[md];
-    rgSize[0] = (int32_t)(lpth->thp.rgwtMin[md]);
-
-L_04f7:
-    goto L_055b;
-
-L_04fa:
-    if ((md != 5))
-        goto L_055b;
-    else
-        goto L_0503;
-
-L_0503:
-    i = 0;
-    goto L_054d;
-
-L_050b:
-    rghbr[i] = rghbrMineral[i];
-    rgSize[i] = (int32_t)(lpth->thp.rgwtMin[i]);
-    i = (i + 1);
-
-L_054d:
-    if ((i < 3))
-        goto L_050b;
-    else
-        goto L_0556;
-
-L_0556:
-    cSections = 3;
-
-L_055b:
+    lMax = (uint32_t)(lpth->thp.wtMax * 0xa);
+    if (md < 0 || md > 4) {
+        if (md == 5) {
+            for (i = 0; i < 3; i++) {
+                rghbr[i] = rghbrMineral[i];
+                rgSize[i] = (int32_t)lpth->thp.rgwtMin[i];
+            }
+            cSections = 3;
+        }
+    } else if (md != 4 && md != 3) {
+        rghbr[0] = rghbrMineral[md];
+        rgSize[0] = (int32_t)lpth->thp.rgwtMin[md];
+    } else {
+        rghbr[0] = hbrButtonShadow;
+        rgSize[0] = lMax;
+        fDisabled = 1;
+    }
     l = LDrawGauge(hdc, prc, cSections, rgSize, rghbr, lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
-    if ((fDisabled == 0))
-        goto L_05a2;
-    else
-        goto L_0598;
-
-L_0598:
-    l = 0;
-
-L_05a2:
-    if ((cSections != 1))
-        goto L_05cd;
-    else
-        goto L_05ab;
-
-L_05ab:
-    c = _wsprintf(szWork, "%ldkT", l);
-    goto L_05f2;
-
-L_05cd:
-    c = _wsprintf(szWork, "%ld of %ldkT", l, lMax);
-
-L_05f2:
+    if (fDisabled != 0) {
+        l = 0;
+    }
+    if (cSections != 1) {
+        c = _wsprintf(szWork, "%ld of %ldkT", l, lMax);
+    } else {
+        c = _wsprintf(szWork, "%ldkT", l);
+    }
     l = GetTextExtent(hdc, szWork, c);
-    if ((LOWORD(l) >= ((prc->right - prc->left) - 3)))
-        goto L_063a;
-    else
-        goto L_0625;
-
-L_0625:
-    RcCtrTextOut(hdc, prc, szWork, c);
-
-L_063a:
+    if (LOWORD(l) < prc->right - prc->left - 3) {
+        RcCtrTextOut(hdc, prc, szWork, c);
+    }
     SetBkMode(hdc, iMode);
     return;
 }
@@ -373,369 +163,111 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
     int32_t dx;
     int32_t l;
 
-L_064c:
     iRet = 0;
-    dUni = ((400 * game.mdSize) + 1400);
+    dUni = 400 * game.mdSize + 1400;
     pt = lpthWorm->pt;
-    if ((pt.x < 1000))
-        goto L_068c;
-    else
-        goto L_0682;
-
-L_0682:
-    if ((pt.y >= 1000))
-        goto L_0692;
-    else
-        goto L_068c;
-
-L_068c:
+    if (pt.x >= 1000 && pt.y >= 1000) {
+        if (pt.x <= dUni && pt.y <= dUni) {
+            lpth = lpThings;
+            lpthMac = lpThings + cThing;
+            for (; lpth < lpthMac; lpth++) {
+                if (pt.x == lpth->pt.x && pt.y == lpth->pt.y && lpth != lpthWorm) {
+                    return 15;
+                }
+            }
+            i = 0;
+            while (1) {
+                if (i >= game.cPlanMax)
+                    goto L_0769;
+                if (pt.x == rgptPlan[i].x && pt.y == rgptPlan[i].y)
+                    break;
+                i = i + 1;
+            }
+            return 15;
+        L_0769:
+            ifl = 0;
+            while (1) {
+                if (ifl >= cFleet)
+                    goto L_07dc;
+                lpfl = rglpfl[ifl];
+                if (rglpfl[ifl] == 0x0)
+                    goto L_07dc;
+                if (pt.x == lpfl->pt.x && pt.y == lpfl->pt.y)
+                    break;
+                ifl = ifl + 1;
+            }
+            return 15;
+        L_07dc:
+            if (pt.x < 1010 || pt.y < 1010 || pt.x > dUni - 10 || pt.y > dUni - 10) {
+                iRet = iRet | 0x4;
+            }
+            lpth = lpThings;
+            lpthMac = lpThings + cThing;
+            for (; lpth < lpthMac; lpth++) {
+                if (lpth->ith == ithWormhole && lpth != lpthWorm) {
+                    dx = (int32_t)(pt.x - lpth->pt.x);
+                    dy = (int32_t)(pt.y - lpth->pt.y);
+                    l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
+                    if (lpth->idFull != lpthWorm->thw.idPartner) {
+                        if (l < 900) {
+                            if (l < 16) {
+                                iRet = iRet | 0x8;
+                            } else if (l < 64) {
+                                iRet = iRet | 0x4;
+                            } else if (l < 225) {
+                                iRet = iRet | 0x2;
+                            } else {
+                                iRet = iRet | 0x1;
+                            }
+                        }
+                    } else if (l < 4900) {
+                        if (l < 25) {
+                            iRet = iRet | 0x8;
+                        } else if (l < 100) {
+                            iRet = iRet | 0x4;
+                        } else if (l < 900) {
+                            iRet = iRet | 0x2;
+                        } else {
+                            iRet = iRet | 0x1;
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < game.cPlanMax; i++) {
+                dx = (int32_t)(pt.x - rgptPlan[i].x);
+                dy = (int32_t)(pt.y - rgptPlan[i].y);
+                l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
+                if (l < 784) {
+                    if (l < 25) {
+                        iRet = iRet | 0x8;
+                    } else if (l < 100) {
+                        iRet = iRet | 0x4;
+                    } else if (l < 400) {
+                        iRet = iRet | 0x2;
+                    } else {
+                        iRet = iRet | 0x1;
+                    }
+                }
+            }
+            return iRet;
+        }
+        return 15;
+    }
     return 15;
-
-L_0692:
-    if ((pt.x > dUni))
-        goto L_06a8;
-    else
-        goto L_069d;
-
-L_069d:
-    if ((pt.y <= dUni))
-        goto L_06ae;
-    else
-        goto L_06a8;
-
-L_06a8:
-    return 15;
-
-L_06ae:
-    lpth = lpThings;
-    lpthMac = (lpThings + cThing);
-    goto L_071c;
-
-L_06d9:
-    if ((pt.x != lpth->pt.x))
-        goto L_0718;
-    else
-        goto L_06f3;
-
-L_06f3:
-    if ((pt.y != lpth->pt.y))
-        goto L_0718;
-    else
-        goto L_06fc;
-
-L_06fc:
-    if ((lpth != lpthWorm))
-        goto L_0712;
-    else
-        goto L_0718;
-
-L_0712:
-    return 15;
-
-L_0718:
-    lpth = (lpth + 1);
-
-L_071c:
-    if ((lpth < lpthMac))
-        goto L_06d9;
-    else
-        goto L_072a;
-
-L_072a:
-    i = 0;
-    goto L_0736;
-
-L_0732:
-    i = (i + 1);
-
-L_0736:
-    if ((i >= game.cPlanMax))
-        goto L_0769;
-    else
-        goto L_0741;
-
-L_0741:
-    if ((pt.x != rgptPlan[i].x))
-        goto L_0732;
-    else
-        goto L_0758;
-
-L_0758:
-    if ((pt.y != rgptPlan[i].y))
-        goto L_0732;
-    else
-        goto L_0760;
-
-L_0760:
-    return 15;
-
-L_0769:
-    ifl = 0;
-    goto L_0775;
-
-L_0771:
-    ifl = (ifl + 1);
-
-L_0775:
-    if ((ifl >= cFleet))
-        goto L_07dc;
-    else
-        goto L_0780;
-
-L_0780:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_07b0;
-    else
-        goto L_07dc;
-
-L_07b0:
-    if ((pt.x != lpfl->pt.x))
-        goto L_0771;
-    else
-        goto L_07ca;
-
-L_07ca:
-    if ((pt.y != lpfl->pt.y))
-        goto L_0771;
-    else
-        goto L_07d3;
-
-L_07d3:
-    return 15;
-
-L_07dc:
-    if ((pt.x < 1010))
-        goto L_080c;
-    else
-        goto L_07e6;
-
-L_07e6:
-    if ((pt.y < 1010))
-        goto L_080c;
-    else
-        goto L_07f0;
-
-L_07f0:
-    if ((pt.x > (dUni - 10)))
-        goto L_080c;
-    else
-        goto L_07fe;
-
-L_07fe:
-    if ((pt.y <= (dUni - 10)))
-        goto L_0810;
-    else
-        goto L_080c;
-
-L_080c:
-    iRet = (iRet | 0x4);
-
-L_0810:
-    lpth = lpThings;
-    lpthMac = (lpThings + cThing);
-    goto L_09cb;
-
-L_083b:
-    if ((lpth->ith != ithWormhole))
-        goto L_09c7;
-    else
-        goto L_0851;
-
-L_0851:
-    if ((lpth != lpthWorm))
-        goto L_086a;
-    else
-        goto L_09c7;
-
-L_086a:
-    dx = (int32_t)((pt.x - lpth->pt.x));
-    dy = (int32_t)((pt.y - lpth->pt.y));
-    l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    if ((lpth->idFull != lpthWorm->thw.idPartner))
-        goto L_0950;
-    else
-        goto L_08d6;
-
-L_08d6:
-    if ((l < 4900))
-        goto L_08ee;
-    else
-        goto L_09c7;
-
-L_08ee:
-    if ((l < 25))
-        goto L_0905;
-    else
-        goto L_090c;
-
-L_0905:
-    iRet = (iRet | 0x8);
-    goto L_09c7;
-
-L_090c:
-    if ((l < 100))
-        goto L_0923;
-    else
-        goto L_092a;
-
-L_0923:
-    iRet = (iRet | 0x4);
-    goto L_09c7;
-
-L_092a:
-    if ((l < 900))
-        goto L_0942;
-    else
-        goto L_0949;
-
-L_0942:
-    iRet = (iRet | 0x2);
-    goto L_09c7;
-
-L_0949:
-    iRet = (iRet | 0x1);
-
-L_094d:
-    goto L_09c7;
-
-L_0950:
-    if ((l < 900))
-        goto L_0968;
-    else
-        goto L_09c7;
-
-L_0968:
-    if ((l < 16))
-        goto L_097f;
-    else
-        goto L_0986;
-
-L_097f:
-    iRet = (iRet | 0x8);
-    goto L_09c7;
-
-L_0986:
-    if ((l < 64))
-        goto L_099d;
-    else
-        goto L_09a4;
-
-L_099d:
-    iRet = (iRet | 0x4);
-    goto L_09c7;
-
-L_09a4:
-    if ((l < 225))
-        goto L_09bc;
-    else
-        goto L_09c3;
-
-L_09bc:
-    iRet = (iRet | 0x2);
-    goto L_09c7;
-
-L_09c3:
-    iRet = (iRet | 0x1);
-
-L_09c7:
-    lpth = (lpth + 1);
-
-L_09cb:
-    if ((lpth < lpthMac))
-        goto L_083b;
-    else
-        goto L_09d9;
-
-L_09d9:
-    i = 0;
-    goto L_09e5;
-
-L_09e1:
-    i = (i + 1);
-
-L_09e5:
-    if ((i >= game.cPlanMax))
-        goto L_0ad0;
-    else
-        goto L_09f0;
-
-L_09f0:
-    dx = (int32_t)((pt.x - rgptPlan[i].x));
-    dy = (int32_t)((pt.y - rgptPlan[i].y));
-    l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    if ((l < 784))
-        goto L_0a6e;
-    else
-        goto L_09e1;
-
-L_0a6e:
-    if ((l < 25))
-        goto L_0a85;
-    else
-        goto L_0a8c;
-
-L_0a85:
-    iRet = (iRet | 0x8);
-    goto L_09e1;
-
-L_0a8c:
-    if ((l < 100))
-        goto L_0aa3;
-    else
-        goto L_0aaa;
-
-L_0aa3:
-    iRet = (iRet | 0x4);
-    goto L_09e1;
-
-L_0aaa:
-    if ((l < 400))
-        goto L_0ac2;
-    else
-        goto L_0ac9;
-
-L_0ac2:
-    iRet = (iRet | 0x2);
-    goto L_09e1;
-
-L_0ac9:
-    iRet = (iRet | 0x1);
-
-L_0acd:
-    goto L_09e1;
-
-L_0ad0:
-    return iRet;
 }
 
 int16_t PctWormholeMoves(THING *lpth) {
     int16_t pct;
 
-L_0adc:
-    pct = ((int32_t)(lpth->thw.cLastMove) / 5);
-    pct = (pct - (2 - lpth->thw.iStable));
-    if ((pct >= 0))
-        goto L_0b1f;
-    else
-        goto L_0b17;
-
-L_0b17:
-    pct = 0;
-    goto L_0b2d;
-
-L_0b1f:
-    if ((pct <= 6))
-        goto L_0b2d;
-    else
-        goto L_0b28;
-
-L_0b28:
-    pct = 6;
-
-L_0b2d:
-
-L_0b33:
+    pct = (int32_t)lpth->thw.cLastMove / 5;
+    pct = pct - (2 - lpth->thw.iStable);
+    if (pct >= 0) {
+        if (pct > 6) {
+            pct = 6;
+        }
+    } else {
+        pct = 0;
+    }
     return pct;
 }
 
@@ -776,825 +308,263 @@ void DoThingInteractions(int16_t fPostMove) {
     int16_t   cGive;
     int16_t   iLvl;
     int16_t   iPass;
-    uint16_t  t_merge_0cf3_0001;
-    uint16_t  t_merge_0d44_0001;
     int32_t   t_0fac;
     int16_t   t_11bc;
-    uint16_t  t_merge_123c_0001;
     SHDEF    *t_call_1268;
-    uint16_t  t_merge_17f8_0001;
     int16_t   t_1851;
     int32_t   t_merge_1922_0001;
-    uint16_t  t_merge_19be_0001;
 
-L_0b3a:
-    if ((fPostMove == 0))
-        goto L_1a8f;
-    else
-        goto L_0b4f;
-
-L_0b4f:
-    lpth = lpThings;
-    lpthMac = (lpThings + cThing);
-    goto L_1a81;
-
-L_0b7a:
-    if ((lpth->ith != ithMysteryTrader))
-        goto L_1a7d;
-    else
-        goto L_0b93;
-
-L_0b93:
-    pt = lpth->pt;
-    ifl = 0;
-    goto L_0bb0;
-
-L_0bac:
-    ifl = (ifl + 1);
-
-L_0bb0:
-    if ((ifl >= cFleet))
-        goto L_1631;
-    else
-        goto L_0bbb;
-
-L_0bbb:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_0beb;
-    else
-        goto L_1631;
-
-L_0beb:
-    if ((lpfl->fDead != 0x0))
-        goto L_0bac;
-    else
-        goto L_0c02;
-
-L_0c02:
-    if ((lpfl->pt.x != pt.x))
-        goto L_0bac;
-    else
-        goto L_0c1c;
-
-L_0c1c:
-    if ((lpfl->pt.y != pt.y))
-        goto L_0bac;
-    else
-        goto L_0c28;
-
-L_0c28:
-    wtMin = 0;
-    i = 0;
-    goto L_0c61;
-
-L_0c3a:
-    wtMin = (wtMin + lpfl->rgwtMin[i]);
-    i = (i + 1);
-
-L_0c61:
-    if ((i <= 2))
-        goto L_0c3a;
-    else
-        goto L_0c6a;
-
-L_0c6a:
-    if ((wtMin < 5000))
-        goto L_0c82;
-    else
-        goto L_0ccb;
-
-L_0c82:
-    if ((lpfl->fHereAllTurn != 0x0))
-        goto L_0bac;
-    else
-        goto L_0c99;
-
-L_0c99:
-    FSendPlrMsg2(lpfl->iplr, 264, (lpfl->id | 0x8000), lpfl->id, 0);
-
-L_0cc8:
-    goto L_0bac;
-
-L_0ccb:
-    if ((rgplr[lpfl->iPlayer].fCrippled == 0x0))
-        goto L_0cf0;
-    else
-        goto L_0cea;
-
-L_0cea:
-    t_merge_0cf3_0001 = 0xa;
-    goto L_0cf3;
-
-L_0cf0:
-    t_merge_0cf3_0001 = 0x1a;
-
-L_0cf3:
-    cPlrTrueMaxTech = t_merge_0cf3_0001;
-    i = 0;
-    goto L_0d29;
-
-L_0cfe:
-    if (((int16_t)(rgplr[lpfl->iPlayer].rgTech[i]) < cPlrTrueMaxTech))
-        goto L_0d32;
-    else
-        goto L_0d25;
-
-L_0d25:
-    i = (i + 1);
-
-L_0d29:
-    if ((i < 6))
-        goto L_0cfe;
-    else
-        goto L_0d32;
-
-L_0d32:
-    if ((i != 6))
-        goto L_0d41;
-    else
-        goto L_0d3b;
-
-L_0d3b:
-    t_merge_0d44_0001 = 0x1;
-    goto L_0d44;
-
-L_0d41:
-    t_merge_0d44_0001 = 0x0;
-
-L_0d44:
-    fMaxTech = t_merge_0d44_0001;
-    grbitPlrTrader = rgplr[lpfl->iPlayer].grbitTrader;
-    iplr = lpfl->iPlayer;
-    if ((((0x1 << iplr) & lpth->tht.grbitPlr) == 0x0))
-        goto L_0daf;
-    else
-        goto L_0d7d;
-
-L_0d7d:
-    FSendPlrMsg2(lpfl->iplr, 280, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto L_0bac;
-
-L_0daf:
-    lpth->tht.grbitPlr = (lpth->tht.grbitPlr | (0x1 << iplr));
-    FRemovePlayerMessage(iplr, 78, (lpfl->id | 0x8000));
-    lpfl->fDead = 0x1;
-    if ((lpth->tht.grbitTrader == 0x0))
-        goto L_0e0a;
-    else
-        goto L_0df8;
-
-L_0df8:
-    if (((lpth->tht.grbitTrader & grbitPlrTrader) == 0x0))
-        goto LGivePart;
-    else
-        goto L_0e0a;
-
-L_0e0a:
-    if ((fMaxTech == 0))
-        goto L_0e63;
-    else
-        goto L_0e13;
-
-L_0e13:
-    if ((Random(5) != 0))
-        goto LGivePart;
-    else
-        goto L_0e2a;
-
-L_0e2a:
-    idm = idmHasAbsorbedMysteryTraderHoweverTraderUnable2;
-    FSendPlrMsg2(lpfl->iplr, idm, -1, WFromLpfl(lpfl), 0);
-    goto L_0bac;
-
-L_0e63:
-    cTechCur = 0;
-    cTech = ((int32_t)(((wtMin - 5000) / 0x4b0)) + 6);
-    i = 0;
-    goto L_0eba;
-
-L_0e97:
-    cTechCur = (cTechCur + (int16_t)(rgplr[lpfl->iPlayer].rgTech[i]));
-    i = (i + 1);
-
-L_0eba:
-    if ((i < 6))
-        goto L_0e97;
-    else
-        goto L_0ec3;
-
-L_0ec3:
-    if ((cTech <= 10))
-        goto L_0ee4;
-    else
-        goto L_0eda;
-
-L_0eda:
-    cTech = 10;
-
-L_0ee4:
-    if ((cTechCur < 108))
-        goto L_0efa;
-    else
-        goto L_0eed;
-
-L_0eed:
-    cTech = 1;
-    goto L_0f49;
-
-L_0efa:
-    if ((cTechCur < 96))
-        goto L_0f10;
-    else
-        goto L_0f03;
-
-L_0f03:
-    cTech = 2;
-    goto L_0f49;
-
-L_0f10:
-    if ((cTechCur < 84))
-        goto L_0f24;
-    else
-        goto L_0f19;
-
-L_0f19:
-    cTech = (cTech - 3);
-    goto L_0f49;
-
-L_0f24:
-    if ((cTechCur < 72))
-        goto L_0f38;
-    else
-        goto L_0f2d;
-
-L_0f2d:
-    cTech = (cTech - 2);
-    goto L_0f49;
-
-L_0f38:
-    if ((cTechCur < 60))
-        goto L_0f49;
-    else
-        goto L_0f41;
-
-L_0f41:
-    cTech = (cTech - 1);
-
-L_0f49:
-    if (((grbitPlrTrader & 0x1fff) == 0x1fff))
-        goto L_0f5f;
-    else
-        goto L_0f57;
-
-L_0f57:
-    idm = idmHasAbsorbedMysteryTraderTraderHasGiven;
-    goto L_0f64;
-
-L_0f5f:
-    idm = idmHasAbsorbedMysteryTraderReturnTraderHas;
-
-L_0f64:
-    FSendPlrMsg(lpfl->iplr, idm, -1, WFromLpfl(lpfl), LOWORD(cTech), 0, 0, 0, 0, 0);
-
-L_0fac:
-    t_0fac = cTech;
-    cTech = (cTech - 1);
-    if ((t_0fac != 0))
-        goto L_0fca;
-    else
-        goto L_0bac;
-
-L_0fca:
-    if ((Random(4) >= 3))
-        goto L_1010;
-    else
-        goto L_0fde;
-
-L_0fde:
-    iLowest = Random(6);
-    if (((int16_t)(rgplr[iplr].rgTech[iLowest]) < cPlrTrueMaxTech))
-        goto LGiveITech;
-    else
-        goto L_1010;
-
-L_1010:
-    iLowest = 0;
-    i = 1;
-    goto L_1064;
-
-L_101d:
-    if (((int16_t)(rgplr[iplr].rgTech[i]) >= (int16_t)(rgplr[iplr].rgTech[iLowest])))
-        goto L_1060;
-    else
-        goto L_105a;
-
-L_105a:
-    iLowest = i;
-
-L_1060:
-    i = (i + 1);
-
-L_1064:
-    if ((i < 6))
-        goto L_101d;
-    else
-        goto L_106d;
-
-L_106d:
-    if (((int16_t)(rgplr[iplr].rgTech[iLowest]) >= cPlrTrueMaxTech))
-        goto L_0bac;
-    else
-        goto LGiveITech;
-
-LGiveITech:
-    memcpy(rgTech, rgplr[iplr].rgTech, 0x6);
-    rgTech[iLowest] = (rgTech[iLowest] + 0x1);
-    iplrSav = idPlayer;
-    idPlayer = iplr;
-    wtNext = CostOfDevelopingItem(rgTech);
-    idPlayer = iplrSav;
-    lSpent = rgplr[iplr].rgResSpent[iLowest];
-    lSpent = (int32_t)((lSpent * 2));
-    if ((wtNext <= 0))
-        goto L_113e;
-    else
-        goto L_1132;
-
-L_1132:
-    lSpent = (lSpent + wtNext);
-
-L_113e:
-    rgplr[iplr].rgResSpent[iLowest] = lSpent;
-    UpdateResearchStatus(0);
-    goto L_0fac;
-
-LGivePart:
-    cTry = 25;
-    grbitTrader = lpth->tht.grbitTrader;
-    if ((grbitTrader != 0x0))
-        goto L_11ae;
-    else
-        goto L_1198;
-
-L_1198:
-    grbitTrader = (0x1 << Random(13));
-
-L_11ae:
-    if (((grbitTrader & grbitPlrTrader) == 0x0))
-        goto L_11e4;
-    else
-        goto L_11bc;
-
-L_11bc:
-    t_11bc = cTry;
-    cTry = (cTry - 1);
-    if ((t_11bc <= 0))
-        goto L_11e4;
-    else
-        goto L_11cb;
-
-L_11cb:
-    grbitTrader = (0x1 << Random(13));
-    goto L_11ae;
-
-L_11e4:
-    if ((cTry > 0))
-        goto L_11f2;
-    else
-        goto L_11ed;
-
-L_11ed:
-    grbitTrader = 0x1000;
-
-L_11f2:
-    lpth->tht.grbitPlr = (lpth->tht.grbitPlr | (0x1 << iplr));
-    if ((grbitTrader != 0x1000))
-        goto L_15e9;
-    else
-        goto L_120b;
-
-L_120b:
-    if ((rgplr[iplr].fAi != 0x0))
-        goto L_0bac;
-    else
-        goto L_1229;
-
-L_1229:
-    if ((game.turn <= 0x64))
-        goto L_1239;
-    else
-        goto L_1233;
-
-L_1233:
-    t_merge_123c_0001 = 0x1;
-    goto L_123c;
-
-L_1239:
-    t_merge_123c_0001 = 0x0;
-
-L_123c:
-    iOffset = Random((4 - t_merge_123c_0001));
-    if ((iOffset < 1))
-        goto L_1268;
-    else
-        goto L_1256;
-
-L_1256:
-    iOffset = (Random(2) + 1);
-
-L_1268:
-    t_call_1268 = LpshdefT();
-    shdef = t_call_1268[(iOffset + 19)];
-    ish = IshFindSimilarDesign(&(shdef.hul), iplr);
-    if ((ish >= 0))
-        goto L_12f5;
-    else
-        goto L_12b3;
-
-L_12b3:
-    ish = (ish + 1);
-    if ((ish >= 16))
-        goto L_12f5;
-    else
-        goto L_12c2;
-
-L_12c2:
-    if ((rglpshdef[iplr][ish].fFree == 0x0))
-        goto L_12b3;
-    else
-        goto L_12f5;
-
-L_12f5:
-    if ((ish >= 16))
-        goto LNoLifeboat;
-    else
-        goto L_12fe;
-
-L_12fe:
-    if ((rgplr[lpfl->iplr].cFleet < 0x200))
-        goto L_1359;
-    else
-        goto LNoLifeboat;
-
-LNoLifeboat:
-    FSendPlrMsg2(lpfl->iplr, 336, -1, WFromLpfl(lpfl), 0);
-    goto L_0bac;
-
-L_1359:
-    if ((Random(3) != 0))
-        goto L_1376;
-    else
-        goto L_136d;
-
-L_136d:
-    cGive = 2;
-    goto L_137c;
-
-L_1376:
-    cGive = 1;
-
-L_137c:
-    if ((game.turn <= 0x64))
-        goto L_13b2;
-    else
-        goto L_1386;
-
-L_1386:
-    if ((game.fSinglePlr != 0x0))
-        goto L_13b2;
-    else
-        goto L_1398;
-
-L_1398:
-    cGive = (cGive + Random((((uint32_t)(game.turn) / 100) + 1)));
-
-L_13b2:
-    if ((cGive <= 5))
-        goto L_13c2;
-    else
-        goto L_13bc;
-
-L_13bc:
-    cGive = 5;
-
-L_13c2:
-    if ((iOffset <= 0))
-        goto L_13df;
-    else
-        goto L_13cb;
-
-L_13cb:
-    cGive = (cGive + Random((cGive + 1)));
-
-L_13df:
-    lpflNew = LpflNew(iplr, lpfl->idPlanet);
-    if ((lpflNew != 0x0))
-        goto L_1410;
-    else
-        goto LNoLifeboat;
-
-L_1410:
-    FSendPlrMsg2(lpfl->iplr, 335, (lpflNew->id | 0x8000), WFromLpfl(lpfl), cGive);
-    if ((lpflNew->id >= lpfl->id))
-        goto L_145f;
-    else
-        goto L_145b;
-
-L_145b:
-    ifl = (ifl + 1);
-
-L_145f:
-    lpflNew->pt = lpfl->pt;
-    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
-    lpflNew->fHereAllTurn = 0x1;
-    lpshdefDest = (rglpshdef[iplr] + ish);
-    if ((lpshdefDest->fFree == 0x0))
-        goto L_1584;
-    else
-        goto L_14de;
-
-L_14de:
-    *(lpshdefDest) = shdef;
-    lpshdefDest->ishdef = ish;
-    lpshdefDest->fGift = 0x1;
-    lpshdefDest->cBuilt = 0x0;
-    lpshdefDest->cExist = 0x0;
-    rgplr[iplr].cShDef = (rgplr[iplr].cShDef + 1);
-    idPlayer = lpfl->iplr;
-    UpdateShdefCost(lpshdefDest);
-    idPlayer = -1;
-
-L_1584:
-    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (int32_t)(cGive));
-    lpshdefDest->cExist = (lpshdefDest->cExist + (int32_t)(cGive));
-    lpflNew->rgcsh[ish] = cGive;
-    lpflNew->rgwtMin[4] = LGetFleetStat(lpflNew, 1);
-
-L_15e6:
-    goto L_0bac;
-
-L_15e9:
-    idm = IdmGiveTraderPart(grbitTrader, iplr, &(iGoto));
-    FSendPlrMsg2(lpfl->iplr, idm, iGoto, WFromLpfl(lpfl), 0);
-
-L_162e:
-    goto L_0bac;
-
-L_1631:
-    lppl = lpPlanets;
-    lpplMac = (lpPlanets + cPlanet);
-    goto L_1a6f;
-
-L_165c:
-    if ((lppl->iPlayer == -1))
-        goto L_1a6b;
-    else
-        goto L_1669;
-
-L_1669:
-    if ((lppl->fStarbase == 0x0))
-        goto L_1a6b;
-    else
-        goto L_1680;
-
-L_1680:
-    if ((rgplr[lppl->iPlayer].fAi == 0x0))
-        goto L_1a6b;
-    else
-        goto L_16a2;
-
-L_16a2:
-    if ((rgplr[lppl->iPlayer].lvlAi < 0x2))
-        goto L_1a6b;
-    else
-        goto L_16c4;
-
-L_16c4:
-    if ((((0x1 << lppl->iPlayer) & lpth->tht.grbitPlr) != 0x0))
-        goto L_1a6b;
-    else
-        goto L_16e2;
-
-L_16e2:
-    dx = (int32_t)((rgptPlan[lppl->id].x - pt.x));
-    if ((dx <= 100))
-        goto L_1714;
-    else
-        goto L_1a7d;
-
-L_1714:
-    dy = (int32_t)((rgptPlan[lppl->id].y - pt.y));
-    l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    if ((l <= 10000))
-        goto L_1783;
-    else
-        goto L_1a6b;
-
-L_1783:
-    wtNext = 0;
-    i = 0;
-    goto L_17bc;
-
-L_1795:
-    wtNext = (wtNext + lppl->rgwtMin[i]);
-    i = (i + 1);
-
-L_17bc:
-    if ((i < 3))
-        goto L_1795;
-    else
-        goto L_17c5;
-
-L_17c5:
-    iplr = lppl->iPlayer;
-    if ((rgplr[iplr].lvlAi != 0x2))
-        goto L_17f4;
-    else
-        goto L_17ed;
-
-L_17ed:
-    t_merge_17f8_0001 = 0xdac;
-    goto L_17f8;
-
-L_17f4:
-    t_merge_17f8_0001 = 0x1388;
-
-L_17f8:
-    wtThreshhold = (uint32_t)(t_merge_17f8_0001);
-    if ((wtNext < wtThreshhold))
-        goto L_1a6b;
-    else
-        goto L_181c;
-
-L_181c:
-    if ((lpth->tht.grbitTrader == 0x0))
-        goto LAutoTech;
-    else
-        goto L_1829;
-
-L_1829:
-    cTry = 50;
-    grbitTrader = lpth->tht.grbitTrader;
-
-L_1838:
-    if (((grbitTrader & rgplr[iplr].grbitTrader) == 0x0))
-        goto L_1879;
-    else
-        goto L_1851;
-
-L_1851:
-    t_1851 = cTry;
-    cTry = (cTry - 1);
-    if ((t_1851 <= 0))
-        goto L_1879;
-    else
-        goto L_1860;
-
-L_1860:
-    grbitTrader = (0x1 << Random(13));
-    goto L_1838;
-
-L_1879:
-    if ((cTry <= 0))
-        goto LAutoTech;
-    else
-        goto L_1885;
-
-L_1885:
-    rgplr[iplr].grbitTrader = (rgplr[iplr].grbitTrader | grbitTrader);
-
-LChgMin:
-    lpth->tht.grbitPlr = (lpth->tht.grbitPlr | (0x1 << iplr));
-    i = 2;
-
-L_18aa:
-    if ((wtNext <= 0))
-        goto L_1a6b;
-    else
-        goto L_18c1;
-
-L_18c1:
-    if ((i < 0))
-        goto L_1a6b;
-    else
-        goto L_18ca;
-
-L_18ca:
-    if ((wtNext < lppl->rgwtMin[i]))
-        goto L_18fc;
-    else
-        goto L_1905;
-
-L_18fc:
-    t_merge_1922_0001 = wtNext;
-    goto L_1922;
-
-L_1905:
-    t_merge_1922_0001 = lppl->rgwtMin[i];
-
-L_1922:
-    wtMin = t_merge_1922_0001;
-    lppl->rgwtMin[i] = (lppl->rgwtMin[i] - wtMin);
-    wtNext = (wtNext - wtMin);
-    i = (i - 1);
-    goto L_18aa;
-
-LAutoTech:
-    iLvl = 0;
-    i = 0;
-    goto L_198d;
-
-L_196e:
-    iLvl = (iLvl + (int16_t)(rgplr[iplr].rgTech[i]));
-    i = (i + 1);
-
-L_198d:
-    if ((i < 6))
-        goto L_196e;
-    else
-        goto L_1996;
-
-L_1996:
-    if ((rgplr[lpfl->iPlayer].fCrippled == 0x0))
-        goto L_19bb;
-    else
-        goto L_19b5;
-
-L_19b5:
-    t_merge_19be_0001 = 0xa;
-    goto L_19be;
-
-L_19bb:
-    t_merge_19be_0001 = 0x1a;
-
-L_19be:
-    cPlrTrueMaxTech = t_merge_19be_0001;
-    if ((iLvl >= ((6 * cPlrTrueMaxTech) - 0x6)))
-        goto L_1a6b;
-    else
-        goto L_19d2;
-
-L_19d2:
-    iPass = 0;
-    goto L_1a53;
-
-L_19da:
-    iLvl = 0;
-    i = 1;
-    goto L_1a2e;
-
-L_19e7:
-    if (((int16_t)(rgplr[iplr].rgTech[i]) >= (int16_t)(rgplr[iplr].rgTech[iLvl])))
-        goto L_1a2a;
-    else
-        goto L_1a24;
-
-L_1a24:
-    iLvl = i;
-
-L_1a2a:
-    i = (i + 1);
-
-L_1a2e:
-    if ((i < 6))
-        goto L_19e7;
-    else
-        goto L_1a37;
-
-L_1a37:
-    rgplr[iplr].rgTech[iLvl] = (rgplr[iplr].rgTech[iLvl] + 1);
-    iPass = (iPass + 1);
-
-L_1a53:
-    if ((iPass < 6))
-        goto L_19da;
-    else
-        goto L_1a5c;
-
-L_1a5c:
-    wtNext = wtThreshhold;
-    goto LChgMin;
-
-L_1a6b:
-    lppl = (lppl + 1);
-
-L_1a6f:
-    if ((lppl < lpplMac))
-        goto L_165c;
-    else
-        goto L_1a7d;
-
-L_1a7d:
-    lpth = (lpth + 1);
-
-L_1a81:
-    if ((lpth < lpthMac))
-        goto L_0b7a;
-    else
-        goto L_1a8f;
-
-L_1a8f:
+    if (fPostMove != 0) {
+        lpth = lpThings;
+        lpthMac = lpThings + cThing;
+        for (; lpth < lpthMac; lpth++) {
+            if (lpth->ith == ithMysteryTrader) {
+                pt = lpth->pt;
+                for (ifl = 0; ifl < cFleet; ifl++) {
+                    lpfl = rglpfl[ifl];
+                    if (rglpfl[ifl] == 0x0)
+                        break;
+                    if (lpfl->fDead == 0x0 && lpfl->pt.x == pt.x && lpfl->pt.y == pt.y) {
+                        wtMin = 0;
+                        for (i = 0; i <= 2; i++) {
+                            wtMin = wtMin + lpfl->rgwtMin[i];
+                        }
+                        if (wtMin < 5000) {
+                            if (lpfl->fHereAllTurn == 0x0) {
+                                FSendPlrMsg2(lpfl->iplr, 264, lpfl->id | 0x8000, lpfl->id, 0);
+                            }
+                        } else {
+                            cPlrTrueMaxTech = rgplr[lpfl->iPlayer].fCrippled == 0x0 ? 26 : 10;
+                            for (i = 0; i < 6 && (int16_t)rgplr[lpfl->iPlayer].rgTech[i] >= cPlrTrueMaxTech; i++) {
+                            }
+                            fMaxTech = i == 6 ? 1 : 0;
+                            grbitPlrTrader = rgplr[lpfl->iPlayer].grbitTrader;
+                            iplr = lpfl->iPlayer;
+                            if ((0x1 << iplr & lpth->tht.grbitPlr) == 0x0) {
+                                lpth->tht.grbitPlr = lpth->tht.grbitPlr | 0x1 << iplr;
+                                FRemovePlayerMessage(iplr, 78, lpfl->id | 0x8000);
+                                lpfl->fDead = 0x1;
+                                if (lpth->tht.grbitTrader == 0x0 || (lpth->tht.grbitTrader & grbitPlrTrader) != 0x0) {
+                                    if (fMaxTech == 0) {
+                                        cTechCur = 0;
+                                        cTech = (int32_t)((wtMin - 5000) / 0x4b0) + 6;
+                                        for (i = 0; i < 6; i++) {
+                                            cTechCur = cTechCur + (int16_t)rgplr[lpfl->iPlayer].rgTech[i];
+                                        }
+                                        if (cTech > 10) {
+                                            cTech = 10;
+                                        }
+                                        if (cTechCur < 108) {
+                                            if (cTechCur < 96) {
+                                                if (cTechCur < 84) {
+                                                    if (cTechCur < 72) {
+                                                        if (cTechCur >= 60) {
+                                                            cTech = cTech - 1;
+                                                        }
+                                                    } else {
+                                                        cTech = cTech - 2;
+                                                    }
+                                                } else {
+                                                    cTech = cTech - 3;
+                                                }
+                                            } else {
+                                                cTech = 2;
+                                            }
+                                        } else {
+                                            cTech = 1;
+                                        }
+                                        if ((grbitPlrTrader & 0x1fff) == 0x1fff) {
+                                            idm = idmHasAbsorbedMysteryTraderReturnTraderHas;
+                                        } else {
+                                            idm = idmHasAbsorbedMysteryTraderTraderHasGiven;
+                                        }
+                                        FSendPlrMsg(lpfl->iplr, idm, -1, WFromLpfl(lpfl), LOWORD(cTech), 0, 0, 0, 0, 0);
+                                        while (1) {
+                                            t_0fac = cTech;
+                                            cTech = cTech - 1;
+                                            if (t_0fac == 0)
+                                                break;
+                                            if (Random(4) < 3) {
+                                                iLowest = Random(6);
+                                                if ((int16_t)rgplr[iplr].rgTech[iLowest] < cPlrTrueMaxTech)
+                                                    goto LGiveITech;
+                                            }
+                                            iLowest = 0;
+                                            for (i = 1; i < 6; i++) {
+                                                if ((int16_t)rgplr[iplr].rgTech[i] < (int16_t)rgplr[iplr].rgTech[iLowest]) {
+                                                    iLowest = i;
+                                                }
+                                            }
+                                            if ((int16_t)rgplr[iplr].rgTech[iLowest] >= cPlrTrueMaxTech)
+                                                break;
+                                        LGiveITech:
+                                            memcpy(rgTech, rgplr[iplr].rgTech, 0x6);
+                                            rgTech[iLowest] = rgTech[iLowest] + 0x1;
+                                            iplrSav = idPlayer;
+                                            idPlayer = iplr;
+                                            wtNext = CostOfDevelopingItem(rgTech);
+                                            idPlayer = iplrSav;
+                                            lSpent = rgplr[iplr].rgResSpent[iLowest];
+                                            lSpent = (int32_t)(lSpent * 2);
+                                            if (wtNext > 0) {
+                                                lSpent = lSpent + wtNext;
+                                            }
+                                            rgplr[iplr].rgResSpent[iLowest] = lSpent;
+                                            UpdateResearchStatus(0);
+                                        }
+                                        continue;
+                                    }
+                                    if (Random(5) == 0) {
+                                        idm = idmHasAbsorbedMysteryTraderHoweverTraderUnable2;
+                                        FSendPlrMsg2(lpfl->iplr, idm, -1, WFromLpfl(lpfl), 0);
+                                        continue;
+                                    }
+                                }
+                                cTry = 25;
+                                grbitTrader = lpth->tht.grbitTrader;
+                                if (grbitTrader == 0x0) {
+                                    grbitTrader = 0x1 << Random(13);
+                                }
+                                for (; (grbitTrader & grbitPlrTrader) != 0x0; grbitTrader = 0x1 << Random(13)) {
+                                    t_11bc = cTry;
+                                    cTry = cTry - 1;
+                                    if (t_11bc <= 0)
+                                        break;
+                                }
+                                if (cTry <= 0) {
+                                    grbitTrader = 0x1000;
+                                }
+                                lpth->tht.grbitPlr = lpth->tht.grbitPlr | 0x1 << iplr;
+                                if (grbitTrader != 0x1000) {
+                                    idm = IdmGiveTraderPart(grbitTrader, iplr, &iGoto);
+                                    FSendPlrMsg2(lpfl->iplr, idm, iGoto, WFromLpfl(lpfl), 0);
+                                } else if (rgplr[iplr].fAi == 0x0) {
+                                    iOffset = Random(4 - (game.turn <= 0x64 ? 0 : 1));
+                                    if (iOffset >= 1) {
+                                        iOffset = Random(2) + 1;
+                                    }
+                                    t_call_1268 = LpshdefT();
+                                    shdef = t_call_1268[iOffset + 19];
+                                    ish = IshFindSimilarDesign(&shdef.hul, iplr);
+                                    if (ish < 0) {
+                                        do {
+                                            ish = ish + 1;
+                                        } while (ish < 16 && rglpshdef[iplr][ish].fFree == 0x0);
+                                    }
+                                    if (ish < 16 && rgplr[lpfl->iplr].cFleet < 0x200) {
+                                        if (Random(3) != 0) {
+                                            cGive = 1;
+                                        } else {
+                                            cGive = 2;
+                                        }
+                                        if (game.turn > 0x64 && game.fSinglePlr == 0x0) {
+                                            cGive = cGive + Random((uint32_t)game.turn / 100 + 1);
+                                        }
+                                        if (cGive > 5) {
+                                            cGive = 5;
+                                        }
+                                        if (iOffset > 0) {
+                                            cGive = cGive + Random(cGive + 1);
+                                        }
+                                        lpflNew = LpflNew(iplr, lpfl->idPlanet);
+                                        if (lpflNew != 0x0) {
+                                            FSendPlrMsg2(lpfl->iplr, 335, lpflNew->id | 0x8000, WFromLpfl(lpfl), cGive);
+                                            if (lpflNew->id < lpfl->id) {
+                                                ifl = ifl + 1;
+                                            }
+                                            lpflNew->pt = lpfl->pt;
+                                            lpflNew->lpplord->rgord[0].pt = lpfl->pt;
+                                            lpflNew->fHereAllTurn = 0x1;
+                                            lpshdefDest = rglpshdef[iplr] + ish;
+                                            if (lpshdefDest->fFree != 0x0) {
+                                                *lpshdefDest = shdef;
+                                                lpshdefDest->ishdef = ish;
+                                                lpshdefDest->fGift = 0x1;
+                                                lpshdefDest->cBuilt = 0x0;
+                                                lpshdefDest->cExist = 0x0;
+                                                rgplr[iplr].cShDef = rgplr[iplr].cShDef + 1;
+                                                idPlayer = lpfl->iplr;
+                                                UpdateShdefCost(lpshdefDest);
+                                                idPlayer = -1;
+                                            }
+                                            lpshdefDest->cBuilt = lpshdefDest->cBuilt + (int32_t)cGive;
+                                            lpshdefDest->cExist = lpshdefDest->cExist + (int32_t)cGive;
+                                            lpflNew->rgcsh[ish] = cGive;
+                                            lpflNew->rgwtMin[4] = LGetFleetStat(lpflNew, 1);
+                                            continue;
+                                        }
+                                    }
+                                    FSendPlrMsg2(lpfl->iplr, 336, -1, WFromLpfl(lpfl), 0);
+                                }
+                            } else {
+                                FSendPlrMsg2(lpfl->iplr, 280, lpfl->id | 0x8000, lpfl->id, 0);
+                            }
+                        }
+                    }
+                }
+                lppl = lpPlanets;
+                lpplMac = lpPlanets + cPlanet;
+                for (; lppl < lpplMac; lppl++) {
+                    if (lppl->iPlayer != -1 && lppl->fStarbase != 0x0 && rgplr[lppl->iPlayer].fAi != 0x0 && rgplr[lppl->iPlayer].lvlAi >= 0x2 &&
+                        (0x1 << lppl->iPlayer & lpth->tht.grbitPlr) == 0x0) {
+                        dx = (int32_t)(rgptPlan[lppl->id].x - pt.x);
+                        if (dx > 100)
+                            break;
+                        dy = (int32_t)(rgptPlan[lppl->id].y - pt.y);
+                        l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
+                        if (l <= 10000) {
+                            wtNext = 0;
+                            for (i = 0; i < 3; i++) {
+                                wtNext = wtNext + lppl->rgwtMin[i];
+                            }
+                            iplr = lppl->iPlayer;
+                            wtThreshhold = (uint32_t)(rgplr[iplr].lvlAi == 0x2 ? 0xdac : 0x1388);
+                            if (wtNext >= wtThreshhold) {
+                                if (lpth->tht.grbitTrader != 0x0) {
+                                    cTry = 50;
+                                    for (grbitTrader = lpth->tht.grbitTrader; (grbitTrader & rgplr[iplr].grbitTrader) != 0x0; grbitTrader = 0x1 << Random(13)) {
+                                        t_1851 = cTry;
+                                        cTry = cTry - 1;
+                                        if (t_1851 <= 0)
+                                            break;
+                                    }
+                                    if (cTry > 0) {
+                                        rgplr[iplr].grbitTrader = rgplr[iplr].grbitTrader | grbitTrader;
+                                        goto LChgMin;
+                                    }
+                                }
+                                iLvl = 0;
+                                for (i = 0; i < 6; i++) {
+                                    iLvl = iLvl + (int16_t)rgplr[iplr].rgTech[i];
+                                }
+                                cPlrTrueMaxTech = rgplr[lpfl->iPlayer].fCrippled == 0x0 ? 26 : 10;
+                                if (iLvl >= 6 * cPlrTrueMaxTech - 0x6)
+                                    continue;
+                                for (iPass = 0; iPass < 6; iPass++) {
+                                    iLvl = 0;
+                                    for (i = 1; i < 6; i++) {
+                                        if ((int16_t)rgplr[iplr].rgTech[i] < (int16_t)rgplr[iplr].rgTech[iLvl]) {
+                                            iLvl = i;
+                                        }
+                                    }
+                                    rgplr[iplr].rgTech[iLvl] = rgplr[iplr].rgTech[iLvl] + 1;
+                                }
+                                wtNext = wtThreshhold;
+                            LChgMin:
+                                lpth->tht.grbitPlr = lpth->tht.grbitPlr | 0x1 << iplr;
+                                for (i = 2; wtNext > 0 && i >= 0; i--) {
+                                    t_merge_1922_0001 = wtNext < lppl->rgwtMin[i] ? wtNext : lppl->rgwtMin[i];
+                                    wtMin = t_merge_1922_0001;
+                                    lppl->rgwtMin[i] = lppl->rgwtMin[i] - wtMin;
+                                    wtNext = wtNext - wtMin;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     return;
 }
 
@@ -1602,139 +572,48 @@ int16_t IdmGiveTraderPart(GrbitTrader grbitTrader, int16_t iplr, uint16_t *piGot
     uint16_t  iGoto;
     MessageId idm;
 
-L_1a96:
-    rgplr[iplr].grbitTrader = (rgplr[iplr].grbitTrader | grbitTrader);
+    rgplr[iplr].grbitTrader = rgplr[iplr].grbitTrader | grbitTrader;
     idm = idmHasAbsorbedMysteryTraderHaveGivenPlans;
-    goto L_1b28;
-
-L_1abb:
-    iGoto = 0xcc04;
-    goto L_1b8b;
-
-L_1ac3:
-    iGoto = 0xcb04;
-    goto L_1b8b;
-
-L_1acb:
-    iGoto = 0xc206;
-    goto L_1b8b;
-
-L_1ad3:
-    iGoto = 0xc309;
-    goto L_1b8b;
-
-L_1adb:
-    iGoto = 0xc706;
-    goto L_1b8b;
-
-L_1ae3:
-    iGoto = 0xc608;
-    goto L_1b8b;
-
-L_1aeb:
-    iGoto = 0xc412;
-    goto L_1b8b;
-
-L_1af3:
-    iGoto = 0xc507;
-    goto L_1b8b;
-
-L_1afb:
-    idm = idmHasAbsorbedMysteryTraderReturnHaveGiven;
-    iGoto = 0xce1e;
-    goto L_1b8b;
-
-L_1b08:
-    iGoto = 0xc008;
-    goto L_1b8b;
-
-L_1b10:
-    idm = idmHasAbsorbedMysteryTraderReturnHaveGiven2;
-    iGoto = 0xcf0e;
-    goto L_1b8b;
-
-L_1b1d:
-    iGoto = 0xcc09;
-    goto L_1b8b;
-
-L_1b28:
-    if ((grbitTrader == grbitTraderCargo))
-        goto L_1abb;
-    else
-        goto L_1b30;
-
-L_1b30:
-    if ((grbitTrader == grbitTraderSpecial))
-        goto L_1ac3;
-    else
-        goto L_1b38;
-
-L_1b38:
-    if ((grbitTrader == grbitTraderShield))
-        goto L_1acb;
-    else
-        goto L_1b40;
-
-L_1b40:
-    if ((grbitTrader == grbitTraderArmor))
-        goto L_1ad3;
-    else
-        goto L_1b48;
-
-L_1b48:
-    if ((grbitTrader == grbitTraderMiner))
-        goto L_1adb;
-    else
-        goto L_1b50;
-
-L_1b50:
-    if ((grbitTrader == grbitTraderBomb))
-        goto L_1ae3;
-    else
-        goto L_1b58;
-
-L_1b58:
-    if ((grbitTrader == grbitTraderTorp))
-        goto L_1af3;
-    else
-        goto L_1b60;
-
-L_1b60:
-    if ((grbitTrader == grbitTraderBeam))
-        goto L_1aeb;
-    else
-        goto L_1b68;
-
-L_1b68:
-    if ((grbitTrader == grbitTraderHull))
-        goto L_1afb;
-    else
-        goto L_1b70;
-
-L_1b70:
-    if ((grbitTrader == grbitTraderEngine))
-        goto L_1b08;
-    else
-        goto L_1b78;
-
-L_1b78:
-    if ((grbitTrader == grbitTraderGenesis))
-        goto L_1b10;
-    else
-        goto L_1b80;
-
-L_1b80:
-    if ((grbitTrader != grbitTraderJumpgate))
-        goto L_1abb;
-    else
-        goto L_1b85;
-
-L_1b85:
-    goto L_1b1d;
-
-L_1b8b:
-    *(piGoto) = iGoto;
-
-L_1b99:
+    switch (grbitTrader) {
+    case grbitTraderCargo:
+    default:
+        iGoto = 0xcc04;
+        break;
+    case grbitTraderSpecial:
+        iGoto = 0xcb04;
+        break;
+    case grbitTraderShield:
+        iGoto = 0xc206;
+        break;
+    case grbitTraderArmor:
+        iGoto = 0xc309;
+        break;
+    case grbitTraderMiner:
+        iGoto = 0xc706;
+        break;
+    case grbitTraderBomb:
+        iGoto = 0xc608;
+        break;
+    case grbitTraderBeam:
+        iGoto = 0xc412;
+        break;
+    case grbitTraderTorp:
+        iGoto = 0xc507;
+        break;
+    case grbitTraderHull:
+        idm = idmHasAbsorbedMysteryTraderReturnHaveGiven;
+        iGoto = 0xce1e;
+        break;
+    case grbitTraderEngine:
+        iGoto = 0xc008;
+        break;
+    case grbitTraderGenesis:
+        idm = idmHasAbsorbedMysteryTraderReturnHaveGiven2;
+        iGoto = 0xcf0e;
+        break;
+    case grbitTraderJumpgate:
+        iGoto = 0xcc09;
+    }
+    *piGoto = iGoto;
     return idm;
 }

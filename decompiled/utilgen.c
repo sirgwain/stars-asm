@@ -198,18 +198,16 @@ int32_t lFileSeed1 = 0;
 int32_t lFileSeed2 = 0;
 
 void PushRandom(int32_t lNew1, int32_t lNew2) {
-L_1440:
     rglRandStack[cRandStack][0] = lRandSeed1;
     rglRandStack[cRandStack][1] = lRandSeed2;
-    cRandStack = (cRandStack + 1);
+    cRandStack = cRandStack + 1;
     lRandSeed1 = lNew1;
     lRandSeed2 = lNew2;
     return;
 }
 
 void PopRandom() {
-L_14a2:
-    cRandStack = (cRandStack - 1);
+    cRandStack = cRandStack - 1;
     lRandSeed1 = rglRandStack[cRandStack][0];
     lRandSeed2 = rglRandStack[cRandStack][1];
     return;
@@ -219,20 +217,13 @@ void Randomize(uint32_t dw) {
     int16_t a;
     int16_t b;
 
-L_15ea:
-    a = (LOWORD(dw) & 0x3f);
-    b = (LOWORD((uint32_t)((dw >> 0x6))) & 0x3f);
-    if ((a != b))
-        goto L_1630;
-    else
-        goto L_1624;
-
-L_1624:
-    b = ((b + 0x1) & 0x3f);
-
-L_1630:
-    lRandSeed1 = (int32_t)(rgPrimes[a]);
-    lRandSeed2 = (int32_t)(rgPrimes[b]);
+    a = LOWORD(dw) & 0x3f;
+    b = LOWORD((uint32_t)(dw >> 0x6)) & 0x3f;
+    if (a == b) {
+        b = b + 0x1 & 0x3f;
+    }
+    lRandSeed1 = (int32_t)rgPrimes[a];
+    lRandSeed2 = (int32_t)rgPrimes[b];
     return;
 }
 
@@ -240,22 +231,15 @@ void Randomize2(uint32_t dw) {
     int16_t a;
     int16_t b;
 
-L_165a:
-    a = (LOWORD(dw) & 0x7f);
-    b = (LOWORD((uint32_t)((dw >> 0x7))) & 0x7f);
-    a = (a ^ 0x35);
-    b = (b ^ 0x5c);
-    if ((a != b))
-        goto L_16a8;
-    else
-        goto L_169c;
-
-L_169c:
-    b = ((b + 0x1) & 0x7f);
-
-L_16a8:
-    lRandSeed1 = (int32_t)(rgPrimes[a]);
-    lRandSeed2 = (int32_t)(rgPrimes[b]);
+    a = LOWORD(dw) & 0x7f;
+    b = LOWORD((uint32_t)(dw >> 0x7)) & 0x7f;
+    a = a ^ 0x35;
+    b = b ^ 0x5c;
+    if (a == b) {
+        b = b + 0x1 & 0x7f;
+    }
+    lRandSeed1 = (int32_t)rgPrimes[a];
+    lRandSeed2 = (int32_t)rgPrimes[b];
     return;
 }
 
@@ -265,53 +249,28 @@ int16_t Random(int16_t c) {
     int32_t k;
     int32_t s2;
 
-L_16d2:
     s1 = lRandSeed1;
     s2 = lRandSeed2;
-    k = (int32_t)((s1 / 53668));
-    s1 = ((uint32_t)(((s1 - (uint32_t)((k * 53668))) * 0x9c4e)) - (uint32_t)((k * 12211)));
-    if ((s1 < 0))
-        goto L_177a;
-    else
-        goto L_1783;
-
-L_177a:
-    s1 = (s1 + 2147483563);
-
-L_1783:
-    k = (int32_t)((s2 / 52774));
-    s2 = ((uint32_t)(((s2 - (uint32_t)((k * 52774))) * 0x9ef4)) - (uint32_t)((k * 3791)));
-    if ((s2 < 0))
-        goto L_1808;
-    else
-        goto L_1812;
-
-L_1808:
-    s2 = (s2 + 2147483399);
-
-L_1812:
-    z = (s1 - s2);
-    if ((z < 1))
-        goto L_183b;
-    else
-        goto L_1844;
-
-L_183b:
-    z = (z + 2147483562);
-
-L_1844:
+    k = (int32_t)(s1 / 53668);
+    s1 = (uint32_t)((s1 - (uint32_t)(k * 53668)) * 0x9c4e) - (uint32_t)(k * 12211);
+    if (s1 < 0) {
+        s1 = s1 + 2147483563;
+    }
+    k = (int32_t)(s2 / 52774);
+    s2 = (uint32_t)((s2 - (uint32_t)(k * 52774)) * 0x9ef4) - (uint32_t)(k * 3791);
+    if (s2 < 0) {
+        s2 = s2 + 2147483399;
+    }
+    z = s1 - s2;
+    if (z < 1) {
+        z = z + 2147483562;
+    }
     lRandSeed1 = s1;
     lRandSeed2 = s2;
-    if ((c > 0))
-        goto L_186d;
-    else
-        goto L_1867;
-
-L_1867:
+    if (c > 0) {
+        return LOWORD((uint32_t)((uint32_t)z % (int32_t)c));
+    }
     return 0;
-
-L_186d:
-    return LOWORD((uint32_t)((z % (int32_t)(c))));
 }
 
 INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -319,131 +278,50 @@ INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
     char    *pch;
     uint32_t dw;
     RECT     rc;
-    int16_t  t_merge_1a0a_0001;
 
-L_188a:
-    goto L_1a1c;
-
-L_1899:
-    SetWindowPos(hwnd, 0x0, 256, 256, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
-    return 1;
-
-L_18db:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_1903:
-    if ((HIWORD(lParam) != 0x6))
-        goto L_1a3f;
-    else
-        goto L_191f;
-
-L_191f:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_1938:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_194a;
-    else
-        goto L_1941;
-
-L_1941:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_1a3f;
-    else
-        goto L_194a;
-
-L_194a:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_19f5;
-    else
-        goto L_1953;
-
-L_1953:
-    GetDlgItemText(hwnd, IDC_EDIT1, szValue, 32);
-    pch = szValue;
-    dw = 0x0;
-
-L_197a:
-    if ((isdigit((int16_t)(*(pch))) == 0x0))
-        goto L_19cf;
-    else
-        goto L_1995;
-
-L_1995:
-    dw = ((uint32_t)((dw * 0xa)) + (int32_t)(((int16_t)(*(pch)) - 48)));
-    pch = (pch + 1);
-    goto L_197a;
-
-L_19cf:
-    if ((dw != 0x0))
-        goto L_19e7;
-    else
-        goto L_19e1;
-
-L_19e1:
-    return 1;
-
-L_19e7:
-    Randomize(dw);
-
-L_19f5:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_1a07;
-    else
-        goto L_1a01;
-
-L_1a01:
-    t_merge_1a0a_0001 = 1;
-    goto L_1a0a;
-
-L_1a07:
-    t_merge_1a0a_0001 = 0;
-
-L_1a0a:
-    EndDialog(hwnd, t_merge_1a0a_0001);
-    return 1;
-
-L_1a1c:
-    if ((message == WM_ERASEBKGND))
-        goto L_18db;
-    else
-        goto L_1a24;
-
-L_1a24:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_1903;
-    else
-        goto L_1a2c;
-
-L_1a2c:
-    if ((message == WM_INITDIALOG))
-        goto L_1899;
-    else
-        goto L_1a34;
-
-L_1a34:
-    if ((message == WM_COMMAND))
-        goto L_1938;
-    else
-        goto L_1a3f;
-
-L_1a3f:
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        if (HIWORD(lParam) == 0x6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            SetWindowPos(hwnd, 0x0, 256, 256, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
+            return 1;
+        }
+        if (message == WM_COMMAND && (GET_WM_COMMAND_ID(wParam, lParam) == IDOK || GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL)) {
+            if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
+                GetDlgItemText(hwnd, IDC_EDIT1, szValue, 32);
+                pch = szValue;
+                dw = 0x0;
+                for (; isdigit((int16_t)*pch) != 0x0; pch++) {
+                    dw = (uint32_t)(dw * 0xa) + (int32_t)((int16_t)*pch - 48);
+                }
+                if (dw == 0x0) {
+                    return 1;
+                }
+                Randomize(dw);
+            }
+            EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+            return 1;
+        }
+    }
     return 0;
 }
 
 void GetFileSeeds(int32_t *pl1, int32_t *pl2) {
-L_1a4e:
-    *(pl1) = lFileSeed1;
-    *(pl2) = lFileSeed2;
+    *pl1 = lFileSeed1;
+    *pl2 = lFileSeed2;
     return;
 }
 
 void SetFileSeeds(int32_t l1, int32_t l2) {
-L_1a7c:
     lFileSeed1 = l1;
     lFileSeed2 = l2;
     return;
@@ -454,39 +332,23 @@ void SetFileXorStream(int32_t lid, int16_t lSalt, int16_t turn, int16_t iPlayer,
     int16_t b;
     int16_t t_1b36;
 
-L_1aa6:
-    a = (lSalt & 0x1f);
-    b = ((lSalt >> 0x5) & 0x1f);
-    if (((lSalt & 0x400) == 0x0))
-        goto L_1ae0;
-    else
-        goto L_1ad9;
-
-L_1ad9:
-    a = (a + 32);
-    goto L_1ae4;
-
-L_1ae0:
-    b = (b + 32);
-
-L_1ae4:
-    lFileSeed1 = (int32_t)(rgPrimes[a]);
-    lFileSeed2 = (int32_t)(rgPrimes[b]);
-    a = (((((LOWORD(lid) & 0x3) + 0x1) * ((turn & 0x3) + 0x1)) * ((iPlayer & 0x3) + 0x1)) + fCrippled);
-
-L_1b36:
-    t_1b36 = a;
-    a = (a - 1);
-    if ((t_1b36 <= 0))
-        goto L_1b4d;
-    else
-        goto L_1b45;
-
-L_1b45:
-    LGetNextFileXor();
-    goto L_1b36;
-
-L_1b4d:
+    a = lSalt & 0x1f;
+    b = lSalt >> 0x5 & 0x1f;
+    if ((lSalt & 0x400) == 0x0) {
+        b = b + 32;
+    } else {
+        a = a + 32;
+    }
+    lFileSeed1 = (int32_t)rgPrimes[a];
+    lFileSeed2 = (int32_t)rgPrimes[b];
+    a = ((LOWORD(lid) & 0x3) + 0x1) * ((turn & 0x3) + 0x1) * ((iPlayer & 0x3) + 0x1) + fCrippled;
+    while (1) {
+        t_1b36 = a;
+        a = a - 1;
+        if (t_1b36 <= 0)
+            break;
+        LGetNextFileXor();
+    }
     return;
 }
 
@@ -495,36 +357,21 @@ int32_t LGetNextFileXor() {
     int32_t k;
     int32_t s2;
 
-L_1b54:
     s1 = lFileSeed1;
     s2 = lFileSeed2;
-    k = (int32_t)((s1 / 53668));
-    s1 = ((uint32_t)(((s1 - (uint32_t)((k * 53668))) * 0x9c4e)) - (uint32_t)((k * 12211)));
-    if ((s1 < 0))
-        goto L_1bfc;
-    else
-        goto L_1c05;
-
-L_1bfc:
-    s1 = (s1 + 2147483563);
-
-L_1c05:
-    k = (int32_t)((s2 / 52774));
-    s2 = ((uint32_t)(((s2 - (uint32_t)((k * 52774))) * 0x9ef4)) - (uint32_t)((k * 3791)));
-    if ((s2 < 0))
-        goto L_1c8a;
-    else
-        goto L_1c94;
-
-L_1c8a:
-    s2 = (s2 + 2147483399);
-
-L_1c94:
+    k = (int32_t)(s1 / 53668);
+    s1 = (uint32_t)((s1 - (uint32_t)(k * 53668)) * 0x9c4e) - (uint32_t)(k * 12211);
+    if (s1 < 0) {
+        s1 = s1 + 2147483563;
+    }
+    k = (int32_t)(s2 / 52774);
+    s2 = (uint32_t)((s2 - (uint32_t)(k * 52774)) * 0x9ef4) - (uint32_t)(k * 3791);
+    if (s2 < 0) {
+        s2 = s2 + 2147483399;
+    }
     lFileSeed1 = s1;
     lFileSeed2 = s2;
-
-L_1cbd:
-    return (s1 - s2);
+    return s1 - s2;
 }
 
 void XorFileBuf(char *rgb, int16_t cb) {
@@ -534,57 +381,30 @@ void XorFileBuf(char *rgb, int16_t cb) {
     char    *pch;
     int16_t  t_1d32;
 
-L_1cc4:
     lPrev = 0;
-    pl = (int32_t *)(rgb);
-    plMac = (pl + (cb >> 0x2));
-    goto L_1d04;
-
-L_1cf3:
-    *(pl) = (*(pl) ^ LGetNextFileXor());
-    pl = (pl + 1);
-
-L_1d04:
-    if ((pl < plMac))
-        goto L_1cf3;
-    else
-        goto L_1d0f;
-
-L_1d0f:
-    cb = (cb & 0x3);
-    if ((cb <= 0))
-        goto L_1d6e;
-    else
-        goto L_1d21;
-
-L_1d21:
-    pch = (char *)(pl);
-    lPrev = LGetNextFileXor();
-
-L_1d32:
-    t_1d32 = cb;
-    cb = (cb - 1);
-    if ((t_1d32 == 0))
-        goto L_1d6e;
-    else
-        goto L_1d41;
-
-L_1d41:
-    *(pch) = (*(pch) ^ LOBYTE((int16_t)(LOBYTE((LOWORD(lPrev) & 0xff)))));
-    lPrev = (int32_t)((lPrev >> 0x8));
-    pch = (pch + 1);
-    goto L_1d32;
-
-L_1d6e:
+    pl = (int32_t *)rgb;
+    plMac = pl + (cb >> 0x2);
+    for (; pl < plMac; pl++) {
+        *pl = *pl ^ LGetNextFileXor();
+    }
+    cb = cb & 0x3;
+    if (cb > 0) {
+        pch = (char *)pl;
+        lPrev = LGetNextFileXor();
+        while (1) {
+            t_1d32 = cb;
+            cb = cb - 1;
+            if (t_1d32 == 0)
+                break;
+            *pch = *pch ^ LOBYTE((int16_t)LOBYTE(LOWORD(lPrev) & 0xff));
+            lPrev = (int32_t)(lPrev >> 0x8);
+            pch = pch + 1;
+        }
+    }
     return;
 }
 
-int ICompLong(int32_t *pl1, int32_t *pl2) {
-L_1d74:
-
-L_1d90:
-    return (int16_t)((*(pl1) - *(pl2)));
-}
+int ICompLong(int32_t *pl1, int32_t *pl2) { return (int16_t)(*pl1 - *pl2); }
 
 char *PszGetCompressedPlanet(int16_t id) {
     int16_t  fCap;
@@ -598,167 +418,61 @@ char *PszGetCompressedPlanet(int16_t id) {
     char    *pszOut;
     uint8_t *pch;
     int16_t  iLen;
-    uint16_t t_merge_1e6a_0001;
     int16_t  t_1e7c;
     uint8_t *t_1eae;
-    uint16_t t_merge_1ed3_0001;
 
-L_1d96:
     iNibble = 0;
-    if ((id < 999))
-        goto L_1dba;
-    else
-        goto L_1dae;
-
-L_1dae:
-    id = ((int32_t)(id) % 999);
-
-L_1dba:
-    if ((id != (int16_t)(iLastGet)))
-        goto L_1dcc;
-    else
-        goto L_1dc6;
-
-L_1dc6:
-    return szLastGet;
-
-L_1dcc:
-    iChunk = (id >> 0x6);
-    iOffset = (id & 0x3f);
-    pch = &(aPNCmpr[aiPNChunkOffset[iChunk]]);
-    pchLen = &(acPN[(iChunk * 64)]);
-    i = 0;
-    goto L_1e25;
-
-L_1e12:
-    i = (i + 1);
-    pchLen = (pchLen + 1);
-
-L_1e25:
-    if ((i >= iOffset))
-        goto L_1e3f;
-    else
-        goto L_1e30;
-
-L_1e30:
-    iNibble = (iNibble + *(pchLen));
-    goto L_1e12;
-
-L_1e3f:
-    pch = (pch + (iNibble >> 0x1));
-    iLen = *(pchLen);
-    if (((iNibble & 0x1) != 0x0))
-        goto L_1e67;
-    else
-        goto L_1e61;
-
-L_1e61:
-    t_merge_1e6a_0001 = 0x1;
-    goto L_1e6a;
-
-L_1e67:
-    t_merge_1e6a_0001 = 0x0;
-
-L_1e6a:
-    fHigh = t_merge_1e6a_0001;
-    pszOut = szLastGet;
-    iBuild = 0;
-    fCap = 1;
-
-L_1e7c:
-    t_1e7c = iLen;
-    iLen = (iLen - 1);
-    if ((t_1e7c == 0))
-        goto L_1f52;
-    else
-        goto L_1e8b;
-
-L_1e8b:
-    if ((fHigh == 0))
-        goto L_1eab;
-    else
-        goto L_1e94;
-
-L_1e94:
-    i = (*(pch) >> 0x4);
-    goto L_1ec1;
-
-L_1eab:
-    t_1eae = pch;
-    pch = (pch + 1);
-    i = (*(t_1eae) & 0xf);
-
-L_1ec1:
-    if ((fHigh != 0))
-        goto L_1ed0;
-    else
-        goto L_1eca;
-
-L_1eca:
-    t_merge_1ed3_0001 = 0x1;
-    goto L_1ed3;
-
-L_1ed0:
-    t_merge_1ed3_0001 = 0x0;
-
-L_1ed3:
-    fHigh = t_merge_1ed3_0001;
-    iBuild = (iBuild + i);
-    if ((i == 15))
-        goto L_1e7c;
-    else
-        goto L_1ee5;
-
-L_1ee5:
-    *(pszOut) = rgPNLookupTable[iBuild];
-    if ((fCap == 0))
-        goto L_1f1d;
-    else
-        goto L_1efb;
-
-L_1efb:
-    if (((int16_t)(*(pszOut)) < 97))
-        goto L_1f1d;
-    else
-        goto L_1f09;
-
-L_1f09:
-    if (((int16_t)(*(pszOut)) > 122))
-        goto L_1f1d;
-    else
-        goto L_1f17;
-
-L_1f17:
-    *(pszOut) = (*(pszOut)-32);
-
-L_1f1d:
-    if (((int16_t)(*(pszOut)) == 32))
-        goto L_1f39;
-    else
-        goto L_1f2b;
-
-L_1f2b:
-    if (((int16_t)(*(pszOut)) != 45))
-        goto L_1f41;
-    else
-        goto L_1f39;
-
-L_1f39:
-    fCap = 1;
-    goto L_1f46;
-
-L_1f41:
-    fCap = 0;
-
-L_1f46:
-    pszOut = (pszOut + 1);
-    iBuild = 0;
-
-L_1f4f:
-    goto L_1e7c;
-
-L_1f52:
-    *(pszOut) = 0;
+    if (id >= 999) {
+        id = (int32_t)id % 999;
+    }
+    if (id != (int16_t)iLastGet) {
+        iChunk = id >> 0x6;
+        iOffset = id & 0x3f;
+        pch = &aPNCmpr[aiPNChunkOffset[iChunk]];
+        pchLen = &acPN[iChunk * 64];
+        i = 0;
+        while (i < iOffset) {
+            iNibble = iNibble + *pchLen;
+            i = i + 1;
+            pchLen = pchLen + 1;
+        }
+        pch = pch + (iNibble >> 0x1);
+        iLen = *pchLen;
+        fHigh = (iNibble & 0x1) == 0x0 ? 1 : 0;
+        pszOut = szLastGet;
+        iBuild = 0;
+        fCap = 1;
+        while (1) {
+            t_1e7c = iLen;
+            iLen = iLen - 1;
+            if (t_1e7c == 0)
+                break;
+            if (fHigh == 0) {
+                t_1eae = pch;
+                pch = pch + 1;
+                i = *t_1eae & 0xf;
+            } else {
+                i = *pch >> 0x4;
+            }
+            fHigh = fHigh == 0 ? 1 : 0;
+            iBuild = iBuild + i;
+            if (i != 15) {
+                *pszOut = rgPNLookupTable[iBuild];
+                if (fCap != 0 && (int16_t)*pszOut >= 'a' && (int16_t)*pszOut <= 'z') {
+                    *pszOut = *pszOut - ' ';
+                }
+                if ((int16_t)*pszOut != ' ' && (int16_t)*pszOut != '-') {
+                    fCap = 0;
+                } else {
+                    fCap = 1;
+                }
+                pszOut = pszOut + 1;
+                iBuild = 0;
+            }
+        }
+        *pszOut = 0;
+        return szLastGet;
+    }
     return szLastGet;
 }
 
@@ -767,29 +481,16 @@ void OutputFileString(char *szFile, char *sz) {
     uint16_t w;
     int16_t  hf;
 
-L_1f64:
     w = 0x2;
-    if ((access(szFile, 0) != -1))
-        goto L_1f90;
-    else
-        goto L_1f8a;
-
-L_1f8a:
-    w = (w | 0x1000);
-
-L_1f90:
-    hf = OpenFile(szFile, &(of), w);
-    if ((hf == -1))
-        goto L_1ff3;
-    else
-        goto L_1fb6;
-
-L_1fb6:
-    lseek(hf, 0, 2);
-    _lwrite(hf, sz, strlen(sz));
-    _lclose(hf);
-
-L_1ff3:
+    if (access(szFile, 0) == -1) {
+        w = w | 0x1000;
+    }
+    hf = OpenFile(szFile, &of, w);
+    if (hf != -1) {
+        lseek(hf, 0, 2);
+        _lwrite(hf, sz, strlen(sz));
+        _lclose(hf);
+    }
     return;
 }
 
@@ -802,119 +503,47 @@ void StarsCopyFile(char *szSrc, char *szDst) {
     int32_t  cb;
     jmp_buf *penvSav;
 
-L_1ffa:
     fFileErrSav = fFileErrSilent;
     hfDst = -1;
     fFileErrSilent = 1;
     penvSav = penvMem;
-    penvMem = &(env);
-    if ((setjmp(env) != 0))
-        goto LStreamError;
-    else
-        goto L_203c;
-
-L_203c:
-    StreamOpen(szSrc, 32);
-    hfDst = OpenFile(szDst, &(of), 0x1012);
-    if ((hfDst != -1))
-        goto L_2079;
-    else
-        goto L_2071;
-
-L_2071:
-    StreamClose();
-    goto L_2159;
-
-L_2079:
-    cb = filelength(hf);
-    goto L_20cf;
-
-L_2090:
-    RgFromStream(rgb, 0x800);
-    if ((_lwrite(hfDst, rgb, 0x800) != 0x800))
-        goto LStreamError;
-    else
-        goto L_20c4;
-
-L_20c4:
-    cb = (cb - 2048);
-
-L_20cf:
-    if ((cb <= 2048))
-        goto L_20e9;
-    else
-        goto L_2090;
-
-L_20e9:
-    if ((cb != 0))
-        goto L_20fd;
-    else
-        goto LStreamError;
-
-L_20fd:
-    RgFromStream(rgb, LOWORD(cb));
-    _lwrite(hfDst, rgb, LOWORD(cb));
-
+    penvMem = &env;
+    if (setjmp(env) == 0) {
+        StreamOpen(szSrc, 32);
+        hfDst = OpenFile(szDst, &of, 0x1012);
+        if (hfDst == -1) {
+            StreamClose();
+            return;
+        }
+        for (cb = filelength(hf); cb > 2048; cb = cb - 2048) {
+            RgFromStream(rgb, 0x800);
+            if (_lwrite(hfDst, rgb, 0x800) != 0x800)
+                goto LStreamError;
+        }
+        if (cb != 0) {
+            RgFromStream(rgb, LOWORD(cb));
+            _lwrite(hfDst, rgb, LOWORD(cb));
+        }
+    }
 LStreamError:
     StreamClose();
-    if ((hfDst == -1))
-        goto L_2148;
-    else
-        goto L_213f;
-
-L_213f:
-    _lclose(hf);
-
-L_2148:
+    if (hfDst != -1) {
+        _lclose(hf);
+    }
     penvMem = penvSav;
     fFileErrSilent = fFileErrSav;
-
-L_2159:
     return;
 }
 
 int16_t AlertSz(char *sz, int16_t mbType) {
-    char    szT[256];
-    int16_t t_merge_21e5_0001;
+    char szT[256];
 
-L_2160:
-    if ((ini.fValidate != 0x0))
-        goto L_21a3;
-    else
-        goto L_217c;
-
-L_217c:
-    if ((ini.fLogging == 0x0))
-        goto L_21f7;
-    else
-        goto L_218f;
-
-L_218f:
-    if ((ini.fGen == 0x0))
-        goto L_21f7;
-    else
-        goto L_21a3;
-
-L_21a3:
+    if (ini.fValidate == 0x0 && (ini.fLogging == 0x0 || ini.fGen == 0x0)) {
+        return MessageBox(GetFocus(), sz, "Stars!", mbType);
+    }
     _wsprintf(szT, "Error: %s", sz);
-    if ((ini.fValidate == 0x0))
-        goto L_21e2;
-    else
-        goto L_21dc;
-
-L_21dc:
-    t_merge_21e5_0001 = 7;
-    goto L_21e5;
-
-L_21e2:
-    t_merge_21e5_0001 = 6;
-
-L_21e5:
-    OutputSz(t_merge_21e5_0001, szT);
+    OutputSz(ini.fValidate == 0x0 ? 6 : 7, szT);
     return IDYES;
-
-L_21f7:
-    return MessageBox(GetFocus(), sz, "Stars!", mbType);
 }
 
 int16_t CchGetString(StringId ids, char *psz) {
@@ -923,168 +552,77 @@ int16_t CchGetString(StringId ids, char *psz) {
     char *t_2249;
     char *t_2252;
 
-L_221e:
     pszTT = psz;
     pszT = PszGetCompressedString(ids);
-
-L_223b:
-    if (((int16_t)(*(pszT)) == 0))
-        goto L_225e;
-    else
-        goto L_2249;
-
-L_2249:
-    t_2249 = pszT;
-    pszT = (pszT + 1);
-    t_2252 = psz;
-    psz = (psz + 1);
-    *(t_2252) = *(t_2249);
-    goto L_223b;
-
-L_225e:
-    *(psz) = 0;
-
-L_226d:
-    return (psz - pszTT);
+    while ((int16_t)*pszT != 0) {
+        t_2249 = pszT;
+        pszT = pszT + 1;
+        t_2252 = psz;
+        psz = psz + 1;
+        *t_2252 = *t_2249;
+    }
+    *psz = 0;
+    return psz - pszTT;
 }
 
 char *PszFromInt(int16_t i, int16_t *pcch) {
     int16_t cch;
 
-L_2274:
     cch = _wsprintf(szFormatNumber, PCTD, i);
-    if ((pcch == 0x0))
-        goto L_22aa;
-    else
-        goto L_22a2;
-
-L_22a2:
-    *(pcch) = cch;
-
-L_22aa:
-
-L_22b0:
+    if (pcch != 0x0) {
+        *pcch = cch;
+    }
     return szFormatNumber;
 }
 
 char *PszFromLong(int32_t l, int16_t *pcch) {
     int16_t cch;
 
-L_22b6:
     cch = _wsprintf(szFormatNumber, PCTLD, l);
-    if ((*(pcch) == 0))
-        goto L_22f1;
-    else
-        goto L_22e9;
-
-L_22e9:
-    *(pcch) = cch;
-
-L_22f1:
-
-L_22f7:
+    if (*pcch != 0) {
+        *pcch = cch;
+    }
     return szFormatNumber;
 }
 
 char *PszFromLongK(int32_t l, int16_t *pcch) {
-    int16_t  fExtraLarge;
-    int16_t  fLarge;
-    char    *psz;
-    uint16_t t_merge_2328_0001;
-    uint16_t t_merge_234c_0001;
-    int16_t  t_240b;
-    int16_t  t_2427;
+    int16_t fExtraLarge;
+    int16_t fLarge;
+    char   *psz;
+    int16_t t_merge_2328_0001;
+    int16_t t_merge_234c_0001;
+    int16_t t_240b;
+    int16_t t_2427;
 
-L_22fe:
-    if ((l < 10000))
-        goto L_2325;
-    else
-        goto L_231f;
-
-L_231f:
-    t_merge_2328_0001 = 0x1;
-    goto L_2328;
-
-L_2325:
-    t_merge_2328_0001 = 0x0;
-
-L_2328:
+    t_merge_2328_0001 = l < 10000 ? 0 : 1;
     fLarge = t_merge_2328_0001;
-    if ((l < 1000000))
-        goto L_2349;
-    else
-        goto L_2343;
-
-L_2343:
-    t_merge_234c_0001 = 0x1;
-    goto L_234c;
-
-L_2349:
-    t_merge_234c_0001 = 0x0;
-
-L_234c:
+    t_merge_234c_0001 = l < 1000000 ? 0 : 1;
     fExtraLarge = t_merge_234c_0001;
-    if ((fExtraLarge == 0))
-        goto L_239e;
-    else
-        goto L_2358;
-
-L_2358:
-    l = (int32_t)(((l + 500000) / 0xf4240));
-    if ((l <= 999))
-        goto L_23ea;
-    else
-        goto L_2391;
-
-L_2391:
-    l = 999;
-
-L_239b:
-    goto L_23ea;
-
-L_239e:
-    if ((fLarge == 0))
-        goto L_23ea;
-    else
-        goto L_23a7;
-
-L_23a7:
-    l = (int32_t)(((l + 500) / 0x3e8));
-    if ((l <= 999))
-        goto L_23ea;
-    else
-        goto L_23e0;
-
-L_23e0:
-    l = 999;
-
-L_23ea:
+    if (fExtraLarge == 0) {
+        if (fLarge != 0) {
+            l = (int32_t)((l + 500) / 0x3e8);
+            if (l > 999) {
+                l = 999;
+            }
+        }
+    } else {
+        l = (int32_t)((l + 500000) / 0xf4240);
+        if (l > 999) {
+            l = 999;
+        }
+    }
     psz = PszFromInt(LOWORD(l), pcch);
-    if ((fExtraLarge == 0))
-        goto L_241b;
-    else
-        goto L_2408;
-
-L_2408:
-    t_240b = *(pcch);
-    *(pcch) = (*(pcch) + 1);
-    psz[t_240b] = 77;
-    goto L_2434;
-
-L_241b:
-    if ((fLarge == 0))
-        goto L_2434;
-    else
-        goto L_2424;
-
-L_2424:
-    t_2427 = *(pcch);
-    *(pcch) = (*(pcch) + 1);
-    psz[t_2427] = 107;
-
-L_2434:
-
-L_243a:
+    if (fExtraLarge == 0) {
+        if (fLarge != 0) {
+            t_2427 = *pcch;
+            *pcch = *pcch + 1;
+            psz[t_2427] = 'k';
+        }
+    } else {
+        t_240b = *pcch;
+        *pcch = *pcch + 1;
+        psz[t_240b] = 'M';
+    }
     return psz;
 }
 
@@ -1102,130 +640,71 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
     char   *t_2506;
     char   *t_250f;
 
-L_2440:
     c = _wsprintf(rgch, PCTLD, l);
     pch = rgch;
     pchOut = psz;
-    cSkip = ((int32_t)(c) % 3);
-    if ((cSkip != 0))
-        goto L_2491;
-    else
-        goto L_2489;
-
-L_2489:
-    cSkip = 3;
-    goto L_24b6;
-
-L_2491:
-    if ((cSkip != 1))
-        goto L_24b6;
-    else
-        goto L_249a;
-
-L_249a:
-    if ((l < 0))
-        goto L_24b1;
-    else
-        goto L_24b6;
-
-L_24b1:
-    cSkip = 4;
-
-L_24b6:
-    t_24b6 = cSkip;
-    cSkip = (cSkip - 1);
-    if ((t_24b6 <= 0))
-        goto L_24da;
-    else
-        goto L_24c5;
-
-L_24c5:
-    t_24c5 = pch;
-    pch = (pch + 1);
-    t_24ce = pchOut;
-    pchOut = (pchOut + 1);
-    *(t_24ce) = *(t_24c5);
-    goto L_24b6;
-
-L_24da:
-    if (((int16_t)(*(pch)) == 0))
-        goto L_251e;
-    else
-        goto L_24e8;
-
-L_24e8:
-    cSkip = 3;
-    t_24ed = pchOut;
-    pchOut = (pchOut + 1);
-    *(t_24ed) = 44;
-
-L_24f7:
-    t_24f7 = cSkip;
-    cSkip = (cSkip - 1);
-    if ((t_24f7 <= 0))
-        goto L_24da;
-    else
-        goto L_2506;
-
-L_2506:
-    t_2506 = pch;
-    pch = (pch + 1);
-    t_250f = pchOut;
-    pchOut = (pchOut + 1);
-    *(t_250f) = *(t_2506);
-    goto L_24f7;
-
-L_251e:
-    *(pchOut) = 0;
-
-L_252d:
-    return (pchOut - psz);
+    cSkip = (int32_t)c % 3;
+    if (cSkip != 0) {
+        if (cSkip == 1 && l < 0) {
+            cSkip = 4;
+        }
+    } else {
+        cSkip = 3;
+    }
+    while (1) {
+        t_24b6 = cSkip;
+        cSkip = cSkip - 1;
+        if (t_24b6 <= 0)
+            break;
+        t_24c5 = pch;
+        pch = pch + 1;
+        t_24ce = pchOut;
+        pchOut = pchOut + 1;
+        *t_24ce = *t_24c5;
+    }
+    while ((int16_t)*pch != 0) {
+        cSkip = 3;
+        t_24ed = pchOut;
+        pchOut = pchOut + 1;
+        *t_24ed = ',';
+        while (1) {
+            t_24f7 = cSkip;
+            cSkip = cSkip - 1;
+            if (t_24f7 <= 0)
+                break;
+            t_2506 = pch;
+            pch = pch + 1;
+            t_250f = pchOut;
+            pchOut = pchOut + 1;
+            *t_250f = *t_2506;
+        }
+    }
+    *pchOut = 0;
+    return pchOut - psz;
 }
 
 void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen) {
     int16_t dx;
 
-L_2534:
-    if ((cLen != 0))
-        goto L_2555;
-    else
-        goto L_2546;
-
-L_2546:
-    cLen = lstrlen(psz);
-
-L_2555:
+    if (cLen == 0) {
+        cLen = lstrlen(psz);
+    }
     dx = LOWORD(GetTextExtent(hdc, psz, cLen));
-    TextOut(hdc, (x - (dx >> 0x1)), y, psz, cLen);
+    TextOut(hdc, x - (dx >> 0x1), y, psz, cLen);
     return;
 }
 
 int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint) {
     int16_t dx;
 
-L_2590:
-    if ((cLen != 0))
-        goto L_25b1;
-    else
-        goto L_25a2;
-
-L_25a2:
-    cLen = lstrlen(psz);
-
-L_25b1:
+    if (cLen == 0) {
+        cLen = lstrlen(psz);
+    }
     dx = LOWORD(GetTextExtent(hdc, psz, cLen));
-    if ((fPrint == 0))
-        goto L_25e9;
-    else
-        goto L_25cf;
-
-L_25cf:
-    TextOut(hdc, *(px), y, psz, cLen);
-
-L_25e9:
-    *(px) = (*(px) + dx);
-
-L_25f7:
+    if (fPrint != 0) {
+        TextOut(hdc, *px, y, psz, cLen);
+    }
+    *px = *px + dx;
     return dx;
 }
 
@@ -1238,229 +717,80 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
     char   *pchStart;
     char   *pch;
 
-L_25fe:
-    xRight = (xLeft + dxWidth);
-    dxRemain = (dxWidth - (*(px)-xLeft));
-    if ((cLen != 0))
-        goto L_2637;
-    else
-        goto L_2629;
-
-L_2629:
-    cLen = strlen(psz);
-
-L_2637:
-    if ((fNewLine == 0))
-        goto L_2650;
-    else
-        goto L_2640;
-
-L_2640:
-    *(py) = (*(py) + dyArial8);
-    *(px) = xLeft;
-
-L_2650:
+    xRight = xLeft + dxWidth;
+    dxRemain = dxWidth - (*px - xLeft);
+    if (cLen == 0) {
+        cLen = strlen(psz);
+    }
+    if (fNewLine != 0) {
+        *py = *py + dyArial8;
+        *px = xLeft;
+    }
     pchStart = psz;
-
-Top:
-    pch = pchStart;
-    pchEnd = (pchStart + cLen);
-    ChopTrailingSpaces(pch, &(pchEnd));
-    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd - pch)));
-    fItFit = 1;
-
-L_2694:
-    if ((dx <= dxRemain))
-        goto L_26e3;
-    else
-        goto L_269f;
-
-L_269f:
-    if ((pch >= pchEnd))
-        goto L_26e3;
-    else
-        goto L_26aa;
-
-L_26aa:
-    if ((dx <= 0))
-        goto L_26e3;
-    else
-        goto L_26b3;
-
-L_26b3:
-    fItFit = 0;
-    ChopLastWord(pch, &(pchEnd));
-    dx = LOWORD(GetTextExtent(hdc, pch, (pchEnd - pch)));
-    goto L_2694;
-
-L_26e3:
-    if ((fItFit == 0))
-        goto L_271a;
-    else
-        goto L_26ec;
-
-L_26ec:
-    AddBackTrailingSpaces(&(pchEnd), (pchStart + cLen));
-    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
-
-L_271a:
-    if ((pchStart != pchEnd))
-        goto L_275f;
-    else
-        goto L_2728;
-
-L_2728:
-    if ((*(px) != xLeft))
-        goto WrapIt;
-    else
-        goto L_2735;
-
-L_2735:
-    pchEnd = (pchStart + cLen);
-    dx = LOWORD(GetTextExtent(hdc, pchStart, (pchEnd - pchStart)));
-
-L_275f:
-    if ((fPrint == 0))
-        goto L_2788;
-    else
-        goto L_2768;
-
-L_2768:
-    TextOut(hdc, *(px), *(py), pchStart, (pchEnd - pchStart));
-
-L_2788:
-    *(px) = (*(px) + dx);
-    if ((pxMax == 0x0))
-        goto L_27b2;
-    else
-        goto L_2799;
-
-L_2799:
-    if ((*(px) <= *(pxMax)))
-        goto L_27b2;
-    else
-        goto L_27a8;
-
-L_27a8:
-    *(pxMax) = *(px);
-
-L_27b2:
-    if ((pchEnd == (pchStart + cLen)))
-        goto L_2805;
-    else
-        goto WrapIt;
-
-WrapIt:
-    AddBackTrailingSpaces(&(pchEnd), (pchStart + cLen));
-    cLen = (cLen - (pchEnd - pchStart));
-    pchStart = pchEnd;
-    *(py) = (*(py) + dyArial8);
-    *(px) = xLeft;
-    dxRemain = dxWidth;
-    goto Top;
-
-L_2805:
+    while (1) {
+        pch = pchStart;
+        pchEnd = pchStart + cLen;
+        ChopTrailingSpaces(pch, &pchEnd);
+        dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch));
+        fItFit = 1;
+        for (; dx > dxRemain && pch < pchEnd && dx > 0; dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch))) {
+            fItFit = 0;
+            ChopLastWord(pch, &pchEnd);
+        }
+        if (fItFit != 0) {
+            AddBackTrailingSpaces(&pchEnd, pchStart + cLen);
+            dx = LOWORD(GetTextExtent(hdc, pchStart, pchEnd - pchStart));
+        }
+        if (pchStart == pchEnd) {
+            if (*px != xLeft)
+                goto WrapIt;
+            pchEnd = pchStart + cLen;
+            dx = LOWORD(GetTextExtent(hdc, pchStart, pchEnd - pchStart));
+        }
+        if (fPrint != 0) {
+            TextOut(hdc, *px, *py, pchStart, pchEnd - pchStart);
+        }
+        *px = *px + dx;
+        if (pxMax != 0x0 && *px > *pxMax) {
+            *pxMax = *px;
+        }
+        if (pchEnd == pchStart + cLen)
+            break;
+    WrapIt:
+        AddBackTrailingSpaces(&pchEnd, pchStart + cLen);
+        cLen = cLen - (pchEnd - pchStart);
+        pchStart = pchEnd;
+        *py = *py + dyArial8;
+        *px = xLeft;
+        dxRemain = dxWidth;
+    }
     return;
 }
 
 void AddBackTrailingSpaces(char **ppch, char *pchEnd) {
-L_280c:
-
-L_2815:
-    if ((*(ppch) >= pchEnd))
-        goto L_283b;
-    else
-        goto L_2822;
-
-L_2822:
-    if (((int16_t)(*(*(ppch))) != 32))
-        goto L_283b;
-    else
-        goto L_2832;
-
-L_2832:
-    *(ppch) = (*(ppch) + 1);
-    goto L_2815;
-
-L_283b:
+    while (*ppch < pchEnd && (int16_t)**ppch == ' ') {
+        *ppch = *ppch + 1;
+    }
     return;
 }
 
 void ChopLastWord(char *pBeg, char **ppEnd) {
-L_2842:
-
-L_284b:
-    if ((*(ppEnd) <= pBeg))
-        goto L_2872;
-    else
-        goto L_2858;
-
-L_2858:
-    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
-        goto L_2872;
-    else
-        goto L_2869;
-
-L_2869:
-    *(ppEnd) = (*(ppEnd)-1);
-    goto L_284b;
-
-L_2872:
-    if ((*(ppEnd) <= pBeg))
-        goto L_2899;
-    else
-        goto L_287f;
-
-L_287f:
-    if (((int16_t)((*(ppEnd))[(-1)]) == 32))
-        goto L_2899;
-    else
-        goto L_2890;
-
-L_2890:
-    *(ppEnd) = (*(ppEnd)-1);
-    goto L_2872;
-
-L_2899:
-    if ((*(ppEnd) <= pBeg))
-        goto L_28c0;
-    else
-        goto L_28a6;
-
-L_28a6:
-    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
-        goto L_28c0;
-    else
-        goto L_28b7;
-
-L_28b7:
-    *(ppEnd) = (*(ppEnd)-1);
-    goto L_2899;
-
-L_28c0:
+    while (*ppEnd > pBeg && (int16_t)(*ppEnd)[-1] == ' ') {
+        *ppEnd = *ppEnd - 1;
+    }
+    while (*ppEnd > pBeg && (int16_t)(*ppEnd)[-1] != ' ') {
+        *ppEnd = *ppEnd - 1;
+    }
+    while (*ppEnd > pBeg && (int16_t)(*ppEnd)[-1] == ' ') {
+        *ppEnd = *ppEnd - 1;
+    }
     return;
 }
 
 void ChopTrailingSpaces(char *pBeg, char **ppEnd) {
-L_28c6:
-
-L_28cf:
-    if ((*(ppEnd) <= pBeg))
-        goto L_28f6;
-    else
-        goto L_28dc;
-
-L_28dc:
-    if (((int16_t)((*(ppEnd))[(-1)]) != 32))
-        goto L_28f6;
-    else
-        goto L_28ed;
-
-L_28ed:
-    *(ppEnd) = (*(ppEnd)-1);
-    goto L_28cf;
-
-L_28f6:
+    while (*ppEnd > pBeg && (int16_t)(*ppEnd)[-1] == ' ') {
+        *ppEnd = *ppEnd - 1;
+    }
     return;
 }
 
@@ -1469,29 +799,16 @@ void RcCtrTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen) {
     int16_t x;
     int32_t l;
 
-L_28fc:
-    if ((cLen != -1))
-        goto L_2926;
-    else
-        goto L_290e;
-
-L_290e:
-    FillRect(hdc, prc, hbrButtonFace);
-    cLen = 0;
-
-L_2926:
-    if ((cLen != 0))
-        goto L_293e;
-    else
-        goto L_292f;
-
-L_292f:
-    cLen = lstrlen(psz);
-
-L_293e:
+    if (cLen == -1) {
+        FillRect(hdc, prc, hbrButtonFace);
+        cLen = 0;
+    }
+    if (cLen == 0) {
+        cLen = lstrlen(psz);
+    }
     l = GetTextExtent(hdc, psz, cLen);
-    x = (((int32_t)(((prc->right - prc->left) - LOWORD(l))) / 2) + prc->left);
-    y = (((int32_t)(((prc->bottom - prc->top) - HIWORD(l))) / 2) + prc->top);
+    x = (int32_t)(prc->right - prc->left - LOWORD(l)) / 2 + prc->left;
+    y = (int32_t)(prc->bottom - prc->top - HIWORD(l)) / 2 + prc->top;
     TextOut(hdc, x, y, psz, cLen);
     return;
 }
@@ -1500,58 +817,25 @@ void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_
     int16_t dx;
     RECT    rc;
 
-L_29d6:
-    if ((cLen != -1))
-        goto L_29fd;
-    else
-        goto L_29e8;
-
-L_29e8:
-    cLen = CchGetString(idsNone2, psz);
-    goto L_2a15;
-
-L_29fd:
-    if ((cLen != 0))
-        goto L_2a15;
-    else
-        goto L_2a06;
-
-L_2a06:
-    cLen = lstrlen(psz);
-
-L_2a15:
+    if (cLen != -1) {
+        if (cLen == 0) {
+            cLen = lstrlen(psz);
+        }
+    } else {
+        cLen = CchGetString(idsNone2, psz);
+    }
     dx = LOWORD(GetTextExtent(hdc, psz, cLen));
-    if ((dxErase <= dx))
-        goto L_2a70;
-    else
-        goto L_2a35;
-
-L_2a35:
-    SetRect(&(rc), (x - dxErase), y, (x - dx), (y + dyArial8));
-    FillRect(hdc, &(rc), hbrButtonFace);
-    goto L_2ad8;
-
-L_2a70:
-    if ((dxErase <= 0))
-        goto L_2ad8;
-    else
-        goto L_2a79;
-
-L_2a79:
-    if ((dx <= dxErase))
-        goto L_2ad8;
-    else
-        goto L_2a84;
-
-L_2a84:
-    SetRect(&(rc), (x - dxErase), y, x, (y + dyArial8));
-    ExtTextOut(hdc, (x - dx), y, 0x6, &(rc), psz, cLen, 0x0);
-    goto L_2af4;
-
-L_2ad8:
-    TextOut(hdc, (x - dx), y, psz, cLen);
-
-L_2af4:
+    if (dxErase <= dx) {
+        if (dxErase > 0 && dx > dxErase) {
+            SetRect(&rc, x - dxErase, y, x, y + dyArial8);
+            ExtTextOut(hdc, x - dx, y, 0x6, &rc, psz, cLen, 0x0);
+            return;
+        }
+    } else {
+        SetRect(&rc, x - dxErase, y, x - dx, y + dyArial8);
+        FillRect(hdc, &rc, hbrButtonFace);
+    }
+    TextOut(hdc, x - dx, y, psz, cLen);
     return;
 }
 
@@ -1575,210 +859,85 @@ void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen) {
     int32_t  l;
     int16_t  dHtX;
     int16_t  dHtY;
-    int16_t  t_merge_2b8d_0001;
-    uint16_t t_merge_2bf0_0001;
-    int16_t  t_merge_2e41_0001;
     uint16_t t_merge_2e6f_0001;
-    int16_t  t_merge_2e6a_0001;
 
-L_2afa:
-    if ((cLen != 0))
-        goto L_2b1a;
-    else
-        goto L_2b0c;
-
-L_2b0c:
-    cLen = strlen(psz);
-
-L_2b1a:
-    dx = (prc->right - prc->left);
-    dy = (prc->bottom - prc->top);
-    if ((dx < 10))
-        goto L_2f06;
-    else
-        goto L_2b40;
-
-L_2b40:
-    if ((dy < 10))
-        goto L_2f06;
-    else
-        goto L_2b4c;
-
-L_2b4c:
-    plf = LocalAlloc(0x40, sizeof(LOGFONT));
-    plf->lfWeight = 900;
-    strcpy(plf->lfFaceName, rgszArial[1]);
-    if ((dx <= dy))
-        goto L_2b8a;
-    else
-        goto L_2b84;
-
-L_2b84:
-    t_merge_2b8d_0001 = dx;
-    goto L_2b8d;
-
-L_2b8a:
-    t_merge_2b8d_0001 = dy;
-
-L_2b8d:
-    plf->lfHeight = (-t_merge_2b8d_0001);
-
-TryAgain:
-    if ((plf->lfHeight > -5))
-        goto FreeLF;
-    else
-        goto L_2ba5;
-
-L_2ba5:
-    dyEstFont = MulDiv(111, (-plf->lfHeight), 100);
-    if ((dy >= dyEstFont))
-        goto L_2bf8;
-    else
-        goto L_2bc8;
-
-L_2bc8:
-    if ((0x2 <= ((int32_t)((dyEstFont - dy)) / 2)))
-        goto L_2be4;
-    else
-        goto L_2bde;
-
-L_2bde:
-    t_merge_2bf0_0001 = 0x2;
-    goto L_2bf0;
-
-L_2be4:
-    t_merge_2bf0_0001 = ((int32_t)((dyEstFont - dy)) / 2);
-
-L_2bf0:
-    plf->lfHeight = (plf->lfHeight + t_merge_2bf0_0001);
-    goto TryAgain;
-
-L_2bf8:
-    angle = atan2((double)((int32_t)((dy - dyEstFont))), (double)((int32_t)(dx)));
-    rotate = (((angle / 3.141592654) * 1800.0) + 0.5);
-    plf->lfEscapement = LOWORD((int32_t)(rotate));
-    hfont = CreateFontIndirect(plf);
-    hfontSav = SelectObject(hdc, hfont);
-    l = GetTextExtent(hdc, psz, cLen);
-    dxText = LOWORD(l);
-    dyText = HIWORD(l);
-    dsin = sin(angle);
-    dcos = cos(angle);
-    dxFlat = LOWORD((int32_t)(((dcos * (double)((int32_t)(dxText))) + (dsin * (double)((int32_t)(dyText))))));
-    dyFlat = LOWORD((int32_t)(((dsin * (double)((int32_t)(dxText))) + (dcos * (double)((int32_t)(dyText))))));
-    if (((dxFlat + 8) > dx))
-        goto L_2d9a;
-    else
-        goto L_2d8c;
-
-L_2d8c:
-    if (((dyFlat + 8) <= dy))
-        goto L_2e7a;
-    else
-        goto L_2d9a;
-
-L_2d9a:
-    SelectObject(hdc, hfontSav);
-    DeleteObject(hfont);
-    if (((dxFlat + 8) <= dx))
-        goto L_2de8;
-    else
-        goto L_2dbb;
-
-L_2dbb:
-    dHtX = MulDiv(plf->lfHeight, dx, (dxFlat + 8));
-    dHtX = MulDiv(dHtX, 100, 111);
-    goto L_2ded;
-
-L_2de8:
-    dHtX = -1000;
-
-L_2ded:
-    if (((dyFlat + 8) <= dy))
-        goto L_2e28;
-    else
-        goto L_2dfb;
-
-L_2dfb:
-    dHtY = MulDiv(plf->lfHeight, dy, (dyFlat + 8));
-    dHtY = MulDiv(dHtY, 100, 111);
-    goto L_2e2d;
-
-L_2e28:
-    dHtY = -1000;
-
-L_2e2d:
-    if ((dHtX <= dHtY))
-        goto L_2e3e;
-    else
-        goto L_2e38;
-
-L_2e38:
-    t_merge_2e41_0001 = dHtX;
-    goto L_2e41;
-
-L_2e3e:
-    t_merge_2e41_0001 = dHtY;
-
-L_2e41:
-    if ((2 <= (t_merge_2e41_0001 - plf->lfHeight)))
-        goto L_2e56;
-    else
-        goto L_2e50;
-
-L_2e50:
-    t_merge_2e6f_0001 = 0x2;
-    goto L_2e6f;
-
-L_2e56:
-    if ((dHtX <= dHtY))
-        goto L_2e67;
-    else
-        goto L_2e61;
-
-L_2e61:
-    t_merge_2e6a_0001 = dHtX;
-    goto L_2e6a;
-
-L_2e67:
-    t_merge_2e6a_0001 = dHtY;
-
-L_2e6a:
-    t_merge_2e6f_0001 = (t_merge_2e6a_0001 - plf->lfHeight);
-
-L_2e6f:
-    plf->lfHeight = (plf->lfHeight + (t_merge_2e6f_0001 + 1));
-    goto TryAgain;
-
-L_2e7a:
-    xStart = (((int32_t)((dx - dxFlat)) / 2) + prc->left);
-    yStart = ((prc->bottom - ((int32_t)((dy - dyFlat)) / 2)) - LOWORD((int32_t)((dcos * (double)((int32_t)(dyText))))));
-    TextOut(hdc, xStart, yStart, psz, cLen);
-    SelectObject(hdc, hfontSav);
-    DeleteObject(hfont);
-
-FreeLF:
-    LocalFree(plf);
-
-L_2f06:
+    if (cLen == 0) {
+        cLen = strlen(psz);
+    }
+    dx = prc->right - prc->left;
+    dy = prc->bottom - prc->top;
+    if (dx >= 10 && dy >= 10) {
+        plf = LocalAlloc(0x40, sizeof(LOGFONT));
+        plf->lfWeight = 900;
+        strcpy(plf->lfFaceName, rgszArial[1]);
+        plf->lfHeight = -(dx <= dy ? dy : dx);
+        while (1) {
+            if (plf->lfHeight > -5)
+                goto FreeLF;
+            dyEstFont = MulDiv(111, -plf->lfHeight, 100);
+            if (dy >= dyEstFont) {
+                angle = atan2((double)(int32_t)(dy - dyEstFont), (double)(int32_t)dx);
+                rotate = angle / 3.141592654 * 1800.0 + 0.5;
+                plf->lfEscapement = LOWORD((int32_t)rotate);
+                hfont = CreateFontIndirect(plf);
+                hfontSav = SelectObject(hdc, hfont);
+                l = GetTextExtent(hdc, psz, cLen);
+                dxText = LOWORD(l);
+                dyText = HIWORD(l);
+                dsin = sin(angle);
+                dcos = cos(angle);
+                dxFlat = LOWORD((int32_t)(dcos * (double)(int32_t)dxText + dsin * (double)(int32_t)dyText));
+                dyFlat = LOWORD((int32_t)(dsin * (double)(int32_t)dxText + dcos * (double)(int32_t)dyText));
+                if (dxFlat + 8 <= dx && dyFlat + 8 <= dy)
+                    break;
+                SelectObject(hdc, hfontSav);
+                DeleteObject(hfont);
+                if (dxFlat + 8 <= dx) {
+                    dHtX = -1000;
+                } else {
+                    dHtX = MulDiv(plf->lfHeight, dx, dxFlat + 8);
+                    dHtX = MulDiv(dHtX, 100, 111);
+                }
+                if (dyFlat + 8 <= dy) {
+                    dHtY = -1000;
+                } else {
+                    dHtY = MulDiv(plf->lfHeight, dy, dyFlat + 8);
+                    dHtY = MulDiv(dHtY, 100, 111);
+                }
+                if (2 <= (dHtX <= dHtY ? dHtY : dHtX) - plf->lfHeight) {
+                    t_merge_2e6f_0001 = (dHtX <= dHtY ? dHtY : dHtX) - plf->lfHeight;
+                } else {
+                    t_merge_2e6f_0001 = 0x2;
+                }
+                plf->lfHeight = plf->lfHeight + (t_merge_2e6f_0001 + 1);
+            } else {
+                plf->lfHeight = plf->lfHeight + (0x2 <= (int32_t)(dyEstFont - dy) / 2 ? (int32_t)(dyEstFont - dy) / 2 : 2);
+            }
+        }
+        xStart = (int32_t)(dx - dxFlat) / 2 + prc->left;
+        yStart = prc->bottom - (int32_t)(dy - dyFlat) / 2 - LOWORD((int32_t)(dcos * (double)(int32_t)dyText));
+        TextOut(hdc, xStart, yStart, psz, cLen);
+        SelectObject(hdc, hfontSav);
+        DeleteObject(hfont);
+    FreeLF:
+        LocalFree(plf);
+    }
     return;
 }
 
 void ExpandRc(RECT *prc, int16_t dx, int16_t dy) {
-L_2f0c:
-    prc->left = (prc->left - dx);
-    prc->right = (prc->right + dx);
-    prc->top = (prc->top - dy);
-    prc->bottom = (prc->bottom + dy);
+    prc->left = prc->left - dx;
+    prc->right = prc->right + dx;
+    prc->top = prc->top - dy;
+    prc->bottom = prc->bottom + dy;
     return;
 }
 
 void OffsetRc(RECT *prc, int16_t dx, int16_t dy) {
-L_2f3e:
-    prc->left = (prc->left + dx);
-    prc->right = (prc->right + dx);
-    prc->top = (prc->top + dy);
-    prc->bottom = (prc->bottom + dy);
+    prc->left = prc->left + dx;
+    prc->right = prc->right + dx;
+    prc->top = prc->top + dy;
+    prc->bottom = prc->bottom + dy;
     return;
 }
 
@@ -1788,89 +947,21 @@ void BoundPoints(RECT *prc, POINT16 *rgpt, int16_t cpt) {
     int16_t yMax;
     int16_t xMin;
     int16_t yMin;
-    int16_t t_merge_2fc2_0001;
-    int16_t t_merge_2fef_0001;
-    int16_t t_merge_301e_0001;
-    int16_t t_merge_304d_0001;
 
-L_2f70:
     xMax = rgpt->x;
     xMin = rgpt->x;
     yMax = rgpt->y;
     yMin = rgpt->y;
-    ipt = 1;
-    goto L_3054;
-
-L_2f98:
-    if ((xMin >= rgpt[ipt].x))
-        goto L_2fb4;
-    else
-        goto L_2fae;
-
-L_2fae:
-    t_merge_2fc2_0001 = xMin;
-    goto L_2fc2;
-
-L_2fb4:
-    t_merge_2fc2_0001 = rgpt[ipt].x;
-
-L_2fc2:
-    xMin = t_merge_2fc2_0001;
-    if ((xMax <= rgpt[ipt].x))
-        goto L_2fe1;
-    else
-        goto L_2fdb;
-
-L_2fdb:
-    t_merge_2fef_0001 = xMax;
-    goto L_2fef;
-
-L_2fe1:
-    t_merge_2fef_0001 = rgpt[ipt].x;
-
-L_2fef:
-    xMax = t_merge_2fef_0001;
-    if ((yMin >= rgpt[ipt].y))
-        goto L_300f;
-    else
-        goto L_3009;
-
-L_3009:
-    t_merge_301e_0001 = yMin;
-    goto L_301e;
-
-L_300f:
-    t_merge_301e_0001 = rgpt[ipt].y;
-
-L_301e:
-    yMin = t_merge_301e_0001;
-    if ((yMax <= rgpt[ipt].y))
-        goto L_303e;
-    else
-        goto L_3038;
-
-L_3038:
-    t_merge_304d_0001 = yMax;
-    goto L_304d;
-
-L_303e:
-    t_merge_304d_0001 = rgpt[ipt].y;
-
-L_304d:
-    yMax = t_merge_304d_0001;
-    ipt = (ipt + 1);
-
-L_3054:
-    if ((ipt < cpt))
-        goto L_2f98;
-    else
-        goto L_305f;
-
-L_305f:
-    prc->top = (yMin - 1);
-    prc->bottom = (yMax + 1);
-    prc->left = (xMin - 1);
-    prc->right = (xMax + 1);
+    for (ipt = 1; ipt < cpt; ipt++) {
+        xMin = xMin >= rgpt[ipt].x ? rgpt[ipt].x : xMin;
+        xMax = xMax <= rgpt[ipt].x ? rgpt[ipt].x : xMax;
+        yMin = yMin >= rgpt[ipt].y ? rgpt[ipt].y : yMin;
+        yMax = yMax <= rgpt[ipt].y ? rgpt[ipt].y : yMax;
+    }
+    prc->top = yMin - 1;
+    prc->bottom = yMax + 1;
+    prc->left = xMin - 1;
+    prc->right = xMax + 1;
     return;
 }
 
@@ -1878,182 +969,75 @@ void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit) {
     POINT16 ptScreenMax;
     RECT    rc;
 
-L_3094:
-    GetWindowRect(hwnd, &(rc));
-    if ((fInit != 0))
-        goto L_30c9;
-    else
-        goto L_30b5;
-
-L_30b5:
-    ppt->x = rc.left;
-    ppt->y = rc.top;
-    goto L_319c;
-
-L_30c9:
-    ptScreenMax.x = GetSystemMetrics(SM_CXSCREEN);
-    ptScreenMax.y = GetSystemMetrics(SM_CYSCREEN);
-    if ((ppt->x != -1))
-        goto L_311b;
-    else
-        goto L_30ec;
-
-L_30ec:
-    if ((ppt->y != -1))
-        goto L_311b;
-    else
-        goto L_30f8;
-
-L_30f8:
-    rc.left = ((ptScreenMax.x - (rc.right - rc.left)) >> 0x1);
-    rc.top = ((ptScreenMax.y - (rc.bottom - rc.top)) >> 0x1);
-    goto L_317e;
-
-L_311b:
-    OffsetRect(&(rc), (ppt->x - rc.left), (ppt->y - rc.top));
-    if ((rc.right <= ptScreenMax.x))
-        goto L_314e;
-    else
-        goto L_3145;
-
-L_3145:
-    rc.left = (rc.left + (ptScreenMax.x - rc.right));
-
-L_314e:
-    if ((rc.bottom <= ptScreenMax.y))
-        goto L_3162;
-    else
-        goto L_3159;
-
-L_3159:
-    rc.top = (rc.top + (ptScreenMax.y - rc.bottom));
-
-L_3162:
-    if ((rc.left >= 0))
-        goto L_3170;
-    else
-        goto L_316b;
-
-L_316b:
-    rc.left = 0;
-
-L_3170:
-    if ((rc.top >= 0))
-        goto L_317e;
-    else
-        goto L_3179;
-
-L_3179:
-    rc.top = 0;
-
-L_317e:
-    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-
-L_319c:
+    GetWindowRect(hwnd, &rc);
+    if (fInit != 0) {
+        ptScreenMax.x = GetSystemMetrics(SM_CXSCREEN);
+        ptScreenMax.y = GetSystemMetrics(SM_CYSCREEN);
+        if (ppt->x != -1 || ppt->y != -1) {
+            OffsetRect(&rc, ppt->x - rc.left, ppt->y - rc.top);
+            if (rc.right > ptScreenMax.x) {
+                rc.left = rc.left + (ptScreenMax.x - rc.right);
+            }
+            if (rc.bottom > ptScreenMax.y) {
+                rc.top = rc.top + (ptScreenMax.y - rc.bottom);
+            }
+            if (rc.left < 0) {
+                rc.left = 0;
+            }
+            if (rc.top < 0) {
+                rc.top = 0;
+            }
+        } else {
+            rc.left = (ptScreenMax.x - (rc.right - rc.left)) >> 0x1;
+            rc.top = (ptScreenMax.y - (rc.bottom - rc.top)) >> 0x1;
+        }
+        SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    } else {
+        ppt->x = rc.left;
+        ppt->y = rc.top;
+    }
     return;
 }
 
 int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot) {
-    int16_t  fHuge;
-    int16_t  i;
-    int32_t  lSum;
-    int32_t  dx;
-    RECT     rc;
-    uint16_t t_merge_3227_0001;
+    int16_t fHuge;
+    int16_t i;
+    int32_t lSum;
+    int32_t dx;
+    RECT    rc;
+    int16_t t_merge_3227_0001;
 
-L_31a2:
     lSum = 0;
-    rc = *(prc);
-    FrameRect(hdc, &(rc), hbrWindowText);
-    ExpandRc(&(rc), -1, -1);
-    if ((cTot <= 0))
-        goto FinRet;
-    else
-        goto L_3205;
-
-L_3205:
-    if ((cTot < 10000000))
-        goto L_3224;
-    else
-        goto L_321e;
-
-L_321e:
-    t_merge_3227_0001 = 0x1;
-    goto L_3227;
-
-L_3224:
-    t_merge_3227_0001 = 0x0;
-
-L_3227:
-    fHuge = t_merge_3227_0001;
-    if ((fHuge == 0))
-        goto L_324c;
-    else
-        goto L_3233;
-
-L_3233:
-    cTot = (int32_t)((cTot / 1000));
-
-L_324c:
-    dx = (int32_t)((rc.right - rc.left));
-    i = 0;
-    goto L_3303;
-
-L_3261:
-    if ((fHuge != 0))
-        goto L_3284;
-    else
-        goto L_326a;
-
-L_326a:
-    lSum = (lSum + rgSize[i]);
-    goto L_32a8;
-
-L_3284:
-    lSum = (lSum + (int32_t)((rgSize[i] / 1000)));
-
-L_32a8:
-    rc.right = ((prc->left + 1) + LOWORD((int32_t)(((uint32_t)((dx * lSum)) / cTot))));
-    if ((rc.right <= rc.left))
-        goto L_32f9;
-    else
-        goto L_32de;
-
-L_32de:
-    FillRect(hdc, &(rc), rghbr[i]);
-
-L_32f9:
-    rc.left = rc.right;
-    i = (i + 1);
-
-L_3303:
-    if ((i < cSegs))
-        goto L_3261;
-    else
-        goto FinRet;
-
-FinRet:
-    rc.right = (prc->right - 1);
-    if ((rc.right <= rc.left))
-        goto L_3338;
-    else
-        goto L_3325;
-
-L_3325:
-    FillRect(hdc, &(rc), hbrButtonFace);
-
-L_3338:
-    if ((fHuge == 0))
-        goto L_335a;
-    else
-        goto L_3341;
-
-L_3341:
-    lSum = (uint32_t)((lSum * 1000));
-
-L_335a:
-
-L_3363:
+    rc = *prc;
+    FrameRect(hdc, &rc, hbrWindowText);
+    ExpandRc(&rc, -1, -1);
+    if (cTot > 0) {
+        t_merge_3227_0001 = cTot < 10000000 ? 0 : 1;
+        fHuge = t_merge_3227_0001;
+        if (fHuge != 0) {
+            cTot = (int32_t)(cTot / 1000);
+        }
+        dx = (int32_t)(rc.right - rc.left);
+        for (i = 0; i < cSegs; i++) {
+            if (fHuge != 0) {
+                lSum = lSum + (int32_t)(rgSize[i] / 1000);
+            } else {
+                lSum = lSum + rgSize[i];
+            }
+            rc.right = prc->left + 1 + LOWORD((int32_t)((int32_t)(dx * lSum) / cTot));
+            if (rc.right > rc.left) {
+                FillRect(hdc, &rc, rghbr[i]);
+            }
+            rc.left = rc.right;
+        }
+    }
+    rc.right = prc->right - 1;
+    if (rc.right > rc.left) {
+        FillRect(hdc, &rc, hbrButtonFace);
+    }
+    if (fHuge != 0) {
+        lSum = (uint32_t)(lSum * 1000);
+    }
     return lSum;
 }
 
@@ -2063,89 +1047,42 @@ void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase) {
     HBRUSH  hbrSav;
     RECT    rc;
 
-L_336a:
-    rc = *(prc);
-    dx = (prc->right - prc->left);
-    dy = (prc->bottom - prc->top);
+    rc = *prc;
+    dx = prc->right - prc->left;
+    dy = prc->bottom - prc->top;
     hbrSav = SelectObject(hdc, hbrButtonHilite);
-    if ((fErase == -1))
-        goto L_33c0;
-    else
-        goto L_33b7;
-
-L_33b7:
-    if ((fErase != -2))
-        goto L_346c;
-    else
-        goto L_33c0;
-
-L_33c0:
-    PatBlt(hdc, rc.left, rc.bottom, (dx + 1), 1, PATCOPY);
-    PatBlt(hdc, rc.right, rc.top, 1, dy, PATCOPY);
-    SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY);
-    PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY);
-    ExpandRc(&(rc), -1, -1);
-    SelectObject(hdc, hbrButtonHilite);
-    dx = (dx - 2);
-    dy = (dy - 2);
-
-L_346c:
+    if (fErase == -1 || fErase == -2) {
+        PatBlt(hdc, rc.left, rc.bottom, dx + 1, 1, PATCOPY);
+        PatBlt(hdc, rc.right, rc.top, 1, dy, PATCOPY);
+        SelectObject(hdc, hbrButtonShadow);
+        PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY);
+        PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY);
+        ExpandRc(&rc, -1, -1);
+        SelectObject(hdc, hbrButtonHilite);
+        dx = dx - 2;
+        dy = dy - 2;
+    }
     PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY);
     PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY);
     SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, rc.left, rc.bottom, (dx + 1), 1, PATCOPY);
+    PatBlt(hdc, rc.left, rc.bottom, dx + 1, 1, PATCOPY);
     PatBlt(hdc, rc.right, rc.top, 1, dy, PATCOPY);
-    if ((fErase == 0))
-        goto L_353a;
-    else
-        goto L_34f9;
-
-L_34f9:
-    if ((fErase == -2))
-        goto L_353a;
-    else
-        goto L_3502;
-
-L_3502:
-    SelectObject(hdc, hbrButtonFace);
-    PatBlt(hdc, (rc.left + 1), (rc.top + 1), (dx - 1), (dy - 1), PATCOPY);
-
-L_353a:
+    if (fErase != 0 && fErase != -2) {
+        SelectObject(hdc, hbrButtonFace);
+        PatBlt(hdc, rc.left + 1, rc.top + 1, dx - 1, dy - 1, PATCOPY);
+    }
     SelectObject(hdc, hbrSav);
     return;
 }
 
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText) {
-    uint16_t t_merge_356f_0001;
-
-L_354c:
     pbtnt->hwnd = hwnd;
-    if ((hdc != 0x0))
-        goto L_356c;
-    else
-        goto L_3566;
-
-L_3566:
-    t_merge_356f_0001 = 0x1;
-    goto L_356f;
-
-L_356c:
-    t_merge_356f_0001 = 0x0;
-
-L_356f:
-    pbtnt->fCreatedDC = t_merge_356f_0001;
-    if ((hdc != 0x0))
-        goto L_35a5;
-    else
-        goto L_359a;
-
-L_359a:
-    hdc = GetDC(hwnd);
-
-L_35a5:
+    pbtnt->fCreatedDC = hdc == 0x0 ? 0x1 : 0x0;
+    if (hdc == 0x0) {
+        hdc = GetDC(hwnd);
+    }
     pbtnt->hdc = hdc;
-    pbtnt->rc = *(prc);
+    pbtnt->rc = *prc;
     pbtnt->btf = btf;
     pbtnt->dTimer = dTimer;
     pbtnt->fFirst = 0x1;
@@ -2162,87 +1099,39 @@ int16_t FTrackBtn(BTNT *pbtnt) {
     int32_t ticksNew;
     int32_t t_scratch_m10;
 
-L_364a:
-    if ((pbtnt->fFirst == 0x0))
-        goto L_36ec;
-    else
-        goto L_3664;
-
-L_3664:
+    if (pbtnt->fFirst == 0x0) {
+        pt.x = pbtnt->rc.left;
+        pt.y = pbtnt->rc.top;
+        do {
+            if (FGetMouseMove(&pt) == 0)
+                goto L_37f1;
+            fInBtn = PtInRect(&pbtnt->rc, PointFrom16(pt));
+            if (fInBtn != pbtnt->fDown) {
+                pbtnt->fDown = fInBtn;
+                DrawBtn(pbtnt->hdc, &pbtnt->rc, pbtnt->btf, pbtnt->fDown ^ pbtnt->fInitDown, pbtnt->szText);
+            }
+            ticksNew = GetCurrentTime();
+        } while (ticksNew < pbtnt->lTicks || pbtnt->fDown == 0x0);
+        pbtnt->lTicks = (int32_t)pbtnt->dTimer + ticksNew;
+        return 1;
+    L_37f1:
+        if (pbtnt->fDown != 0x0 && pbtnt->fNoEndRedraw == 0x0) {
+            pbtnt->fDown = 0x0;
+            DrawBtn(pbtnt->hdc, &pbtnt->rc, pbtnt->btf, pbtnt->fDown ^ pbtnt->fInitDown, pbtnt->szText);
+            pbtnt->fDown = 0x1;
+        }
+        ReleaseCapture();
+        if (pbtnt->fCreatedDC != 0x0) {
+            ReleaseDC(pbtnt->hwnd, pbtnt->hdc);
+        }
+        return 0;
+    }
     SetCapture(pbtnt->hwnd);
-    DrawBtn(pbtnt->hdc, &(pbtnt->rc), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
-    t_scratch_m10 = (int32_t)((3 * pbtnt->dTimer));
-    pbtnt->lTicks = (GetCurrentTime() + t_scratch_m10);
+    DrawBtn(pbtnt->hdc, &pbtnt->rc, pbtnt->btf, pbtnt->fDown ^ pbtnt->fInitDown, pbtnt->szText);
+    t_scratch_m10 = (int32_t)(3 * pbtnt->dTimer);
+    pbtnt->lTicks = GetCurrentTime() + t_scratch_m10;
     pbtnt->fFirst = 0x0;
     return 1;
-
-L_36ec:
-    pt.x = pbtnt->rc.left;
-    pt.y = pbtnt->rc.top;
-
-L_36fe:
-    if ((FGetMouseMove(&(pt)) == 0))
-        goto L_37f1;
-    else
-        goto L_3712;
-
-L_3712:
-    fInBtn = PtInRect(&(pbtnt->rc), PointFrom16(pt));
-    if ((fInBtn == pbtnt->fDown))
-        goto L_3796;
-    else
-        goto L_373f;
-
-L_373f:
-    pbtnt->fDown = fInBtn;
-    DrawBtn(pbtnt->hdc, &(pbtnt->rc), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
-
-L_3796:
-    ticksNew = GetCurrentTime();
-    if ((ticksNew < pbtnt->lTicks))
-        goto L_36fe;
-    else
-        goto L_37bf;
-
-L_37bf:
-    if ((pbtnt->fDown == 0x0))
-        goto L_36fe;
-    else
-        goto L_37d2;
-
-L_37d2:
-    pbtnt->lTicks = ((int32_t)(pbtnt->dTimer) + ticksNew);
-    return 1;
-
-L_37f1:
-    if ((pbtnt->fDown == 0x0))
-        goto L_387f;
-    else
-        goto L_3804;
-
-L_3804:
-    if ((pbtnt->fNoEndRedraw != 0x0))
-        goto L_387f;
-    else
-        goto L_381d;
-
-L_381d:
-    pbtnt->fDown = 0x0;
-    DrawBtn(pbtnt->hdc, &(pbtnt->rc), pbtnt->btf, (pbtnt->fDown ^ pbtnt->fInitDown), pbtnt->szText);
-    pbtnt->fDown = 0x1;
-
-L_387f:
-    ReleaseCapture();
-    if ((pbtnt->fCreatedDC == 0x0))
-        goto L_38ab;
-    else
-        goto L_389b;
-
-L_389b:
-    ReleaseDC(pbtnt->hwnd, pbtnt->hdc);
-
-L_38ab:
-    return 0;
 }
 
 void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
@@ -2267,597 +1156,195 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
     int16_t  dxyT;
     int16_t  bkMode;
     HFONT    hfontSav;
-    HGDIOBJ  t_merge_3962_0001;
-    HGDIOBJ  t_merge_39b7_0001;
-    HBRUSH   t_merge_3e10_0001;
-    uint16_t t_merge_3e42_0001;
-    uint16_t t_merge_3ede_0001;
     int16_t  t_merge_3f88_0001;
     int16_t  t_merge_3f9d_0001;
     int16_t  t_merge_3fb2_0001;
-    int16_t  t_merge_3fca_0001;
-    COLORREF t_merge_408a_0001;
 
-L_38b8:
-    fDisabled = (bt & 0x4);
-    rc = *(prc);
+    fDisabled = bt & 0x4;
+    rc = *prc;
     hbrSav = SelectObject(hdc, hbrWindowFrame);
-    if (((bt & 0x40) != 0x0))
-        goto L_391d;
-    else
-        goto L_38f6;
-
-L_38f6:
-    FrameRect(hdc, &(rc), hbrWindowFrame);
-    ExpandRc(&(rc), -1, -1);
-
-L_391d:
-    dx = ((rc.right - rc.left) - 1);
-    dy = ((rc.bottom - rc.top) - 1);
-    dxFace = ((int32_t)((prc->right - prc->left)) - 5);
-    if ((fDown == 0))
-        goto L_395f;
-    else
-        goto L_3959;
-
-L_3959:
-    t_merge_3962_0001 = hbrButtonShadow;
-    goto L_3962;
-
-L_395f:
-    t_merge_3962_0001 = hbrButtonHilite;
-
-L_3962:
-    SelectObject(hdc, t_merge_3962_0001);
+    if ((bt & 0x40) == 0x0) {
+        FrameRect(hdc, &rc, hbrWindowFrame);
+        ExpandRc(&rc, -1, -1);
+    }
+    dx = rc.right - rc.left - 1;
+    dy = rc.bottom - rc.top - 1;
+    dxFace = (int32_t)(prc->right - prc->left) - 5;
+    SelectObject(hdc, fDown == 0 ? hbrButtonHilite : hbrButtonShadow);
     PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY);
     PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY);
-    if ((fDown == 0))
-        goto L_39b4;
-    else
-        goto L_39ae;
-
-L_39ae:
-    t_merge_39b7_0001 = hbrButtonFace;
-    goto L_39b7;
-
-L_39b4:
-    t_merge_39b7_0001 = hbrButtonShadow;
-
-L_39b7:
-    SelectObject(hdc, t_merge_39b7_0001);
-    PatBlt(hdc, rc.left, (rc.bottom - 1), (dx + 1), 1, PATCOPY);
-    PatBlt(hdc, (rc.right - 1), rc.top, 1, dy, PATCOPY);
-    if ((dx < 14))
-        goto L_3a23;
-    else
-        goto L_3a0c;
-
-L_3a0c:
-    if ((dy < 14))
-        goto L_3a23;
-    else
-        goto L_3a15;
-
-L_3a15:
-    if (((bt & 0xc0) == 0x0))
-        goto L_3a3a;
-    else
-        goto L_3a23;
-
-L_3a23:
-    ExpandRc(&(rc), -1, -1);
-    goto L_3ab4;
-
-L_3a3a:
-    PatBlt(hdc, (rc.left + 1), (rc.bottom - 2), (dx - 1), 1, PATCOPY);
-    PatBlt(hdc, (rc.right - 2), (rc.top + 1), 1, (dy - 2), PATCOPY);
-    SetRect(&(rc), (rc.left + 1), (rc.top + 1), (rc.right - 2), (rc.bottom - 2));
-
-L_3ab4:
+    SelectObject(hdc, fDown == 0 ? hbrButtonShadow : hbrButtonFace);
+    PatBlt(hdc, rc.left, rc.bottom - 1, dx + 1, 1, PATCOPY);
+    PatBlt(hdc, rc.right - 1, rc.top, 1, dy, PATCOPY);
+    if (dx >= 14 && dy >= 14 && (bt & 0xc0) == 0x0) {
+        PatBlt(hdc, rc.left + 1, rc.bottom - 2, dx - 1, 1, PATCOPY);
+        PatBlt(hdc, rc.right - 2, rc.top + 1, 1, dy - 2, PATCOPY);
+        SetRect(&rc, rc.left + 1, rc.top + 1, rc.right - 2, rc.bottom - 2);
+    } else {
+        ExpandRc(&rc, -1, -1);
+    }
     SelectObject(hdc, hbrButtonFace);
-    FillRect(hdc, &(rc), hbrButtonFace);
-    if (((bt & 0x8) != 0x0))
-        goto L_403b;
-    else
-        goto L_3ae1;
-
-L_3ae1:
-    fBar = (bt & 0x10);
-    fNoShaft = (bt & 0x20);
-    bt = (bt & 0x3);
-    if ((fNoShaft == 0))
-        goto L_3b2a;
-    else
-        goto L_3b00;
-
-L_3b00:
-    cpt = 3;
-    memcpy(rgptDraw, rgptTriangle, (cpt * 4));
-    dx = 8;
-    dy = 4;
-    goto L_3b51;
-
-L_3b2a:
-    cpt = 5;
-    memcpy(rgptDraw, rgptArrow, (cpt * 4));
-    dx = 6;
-    dy = 6;
-
-L_3b51:
-    if ((fBar == 0))
-        goto L_3bab;
-    else
-        goto L_3b5a;
-
-L_3b5a:
-    ipt = 0;
-    goto L_3b76;
-
-L_3b62:
-    rgptDraw[ipt].y = (rgptDraw[ipt].y + 1);
-    ipt = (ipt + 1);
-
-L_3b76:
-    if ((ipt < cpt))
-        goto L_3b62;
-    else
-        goto L_3b81;
-
-L_3b81:
-    dy = (dy + 2);
-    rgptDraw[cpt].y = 0;
-    rgptDraw[cpt].x = 0;
-    cpt = (cpt + 1);
-
-L_3bab:
-    ipt = 0;
-    goto L_3c70;
-
-L_3bb3:
-    if ((rgptDraw[ipt].x < 0))
-        goto L_3c03;
-    else
-        goto L_3bc7;
-
-L_3bc7:
-    rgptDraw[ipt].x = LOWORD((int32_t)(((uint32_t)(((int32_t)(rgptDraw[ipt].x) * dxFace)) / 0xb)));
-    goto L_3c31;
-
-L_3c03:
-    rgptDraw[ipt].x = ((rgptDraw[0].x * 2) - rgptDraw[(-rgptDraw[ipt].x)].x);
-
-L_3c31:
-    rgptDraw[ipt].y = LOWORD((int32_t)(((uint32_t)(((int32_t)(rgptDraw[ipt].y) * dxFace)) / 0xb)));
-    ipt = (ipt + 1);
-
-L_3c70:
-    if ((ipt < cpt))
-        goto L_3bb3;
-    else
-        goto L_3c7b;
-
-L_3c7b:
-    dx = LOWORD((int32_t)(((uint32_t)(((int32_t)(dx)*dxFace)) / 0xb)));
-    dy = LOWORD((int32_t)(((uint32_t)(((int32_t)(dy)*dxFace)) / 0xb)));
-    dxOffset = ((((prc->right - prc->left) - dx) >> 0x1) + fDown);
-    dyOffset = ((((prc->bottom - prc->top) - dy) >> 0x1) + fDown);
-    if ((bt == 2))
-        goto L_3d00;
-    else
-        goto L_3cf7;
-
-L_3cf7:
-    if ((bt != 3))
-        goto L_3d12;
-    else
-        goto L_3d00;
-
-L_3d00:
-    dxyT = dxOffset;
-    dxOffset = dyOffset;
-    dyOffset = dxyT;
-
-L_3d12:
-    ipt = 0;
-    goto L_3df3;
-
-L_3d1a:
-    if ((bt != 1))
-        goto L_3d44;
-    else
-        goto L_3d23;
-
-L_3d23:
-    rgptDraw[ipt].y = (dy - rgptDraw[ipt].y);
-
-L_3d44:
-    if ((bt == 2))
-        goto L_3d56;
-    else
-        goto L_3d4d;
-
-L_3d4d:
-    if ((bt != 3))
-        goto L_3dc1;
-    else
-        goto L_3d56;
-
-L_3d56:
-    d = (dx - rgptDraw[ipt].x);
-    rgptDraw[ipt].x = rgptDraw[ipt].y;
-    rgptDraw[ipt].y = d;
-    if ((bt != 3))
-        goto L_3dc1;
-    else
-        goto L_3da2;
-
-L_3da2:
-    rgptDraw[ipt].x = (dy - rgptDraw[ipt].x);
-
-L_3dc1:
-    rgptDraw[ipt].x = (rgptDraw[ipt].x + (prc->left + dxOffset));
-    rgptDraw[ipt].y = (rgptDraw[ipt].y + (prc->top + dyOffset));
-    ipt = (ipt + 1);
-
-L_3df3:
-    if ((ipt < cpt))
-        goto L_3d1a;
-    else
-        goto L_3dfe;
-
-L_3dfe:
-    if ((fDisabled == 0))
-        goto L_3e0d;
-    else
-        goto L_3e07;
-
-L_3e07:
-    t_merge_3e10_0001 = hbrButtonHilite;
-    goto L_3e10;
-
-L_3e0d:
-    t_merge_3e10_0001 = hbrButtonText;
-
-L_3e10:
-    hbrCur = t_merge_3e10_0001;
-    SelectObject(hdc, hbrCur);
-
-DrawAgain:
-    if ((bt == 0))
-        goto L_3e30;
-    else
-        goto L_3e27;
-
-L_3e27:
-    if ((bt != 1))
-        goto L_3ecc;
-    else
-        goto L_3e30;
-
-L_3e30:
-    if ((bt != 0))
-        goto L_3e3f;
-    else
-        goto L_3e39;
-
-L_3e39:
-    t_merge_3e42_0001 = 0xffff;
-    goto L_3e42;
-
-L_3e3f:
-    t_merge_3e42_0001 = 0x1;
-
-L_3e42:
-    dy = t_merge_3e42_0001;
-    x = rgptDraw[1].x;
-    dx = ((rgptDraw[2].x - x) + 1);
-    y = rgptDraw[1].y;
-    if ((fBar == 0))
-        goto L_3ec0;
-    else
-        goto L_3e66;
-
-L_3e66:
-    PatBlt(hdc, x, rgptDraw[(cpt - 1)].y, dx, 1, PATCOPY);
-
-L_3e92:
-    goto L_3ec0;
-
-L_3e95:
-    PatBlt(hdc, x, y, dx, 1, PATCOPY);
-    x = (x + 1);
-    dx = (dx - 2);
-    y = (y + dy);
-
-L_3ec0:
-    if ((dx <= 0))
-        goto L_3f64;
-    else
-        goto L_3ec6;
-
-L_3ec6:
-    goto L_3e95;
-
-L_3ecc:
-    if ((bt != 2))
-        goto L_3edb;
-    else
-        goto L_3ed5;
-
-L_3ed5:
-    t_merge_3ede_0001 = 0xffff;
-    goto L_3ede;
-
-L_3edb:
-    t_merge_3ede_0001 = 0x1;
-
-L_3ede:
-    dx = t_merge_3ede_0001;
-    y = rgptDraw[2].y;
-    dy = ((rgptDraw[1].y - y) + 1);
-    x = rgptDraw[1].x;
-    if ((fBar == 0))
-        goto L_3f5b;
-    else
-        goto L_3f02;
-
-L_3f02:
-    PatBlt(hdc, rgptDraw[(cpt - 1)].x, y, 1, dy, PATCOPY);
-
-L_3f2d:
-    goto L_3f5b;
-
-L_3f30:
-    PatBlt(hdc, x, y, 1, dy, PATCOPY);
-    y = (y + 1);
-    dy = (dy - 2);
-    x = (x + dx);
-
-L_3f5b:
-    if ((dy > 0))
-        goto L_3f30;
-    else
-        goto L_3f64;
-
-L_3f64:
-    if ((fNoShaft != 0))
-        goto L_3fe5;
-    else
-        goto L_3f6d;
-
-L_3f6d:
-    if ((rgptDraw[3].x >= rgptDraw[4].x))
-        goto L_3f85;
-    else
-        goto L_3f7f;
-
-L_3f7f:
-    t_merge_3f88_0001 = rgptDraw[3].x;
-    goto L_3f88;
-
-L_3f85:
-    t_merge_3f88_0001 = rgptDraw[4].x;
-
-L_3f88:
-    if ((rgptDraw[3].y >= rgptDraw[4].y))
-        goto L_3f9a;
-    else
-        goto L_3f94;
-
-L_3f94:
-    t_merge_3f9d_0001 = rgptDraw[3].y;
-    goto L_3f9d;
-
-L_3f9a:
-    t_merge_3f9d_0001 = rgptDraw[4].y;
-
-L_3f9d:
-    if ((rgptDraw[3].x <= rgptDraw[4].x))
-        goto L_3faf;
-    else
-        goto L_3fa9;
-
-L_3fa9:
-    t_merge_3fb2_0001 = rgptDraw[3].x;
-    goto L_3fb2;
-
-L_3faf:
-    t_merge_3fb2_0001 = rgptDraw[4].x;
-
-L_3fb2:
-    if ((rgptDraw[3].y <= rgptDraw[4].y))
-        goto L_3fc7;
-    else
-        goto L_3fc1;
-
-L_3fc1:
-    t_merge_3fca_0001 = rgptDraw[3].y;
-    goto L_3fca;
-
-L_3fc7:
-    t_merge_3fca_0001 = rgptDraw[4].y;
-
-L_3fca:
-    SetRect(&(rc), t_merge_3f88_0001, t_merge_3f9d_0001, (t_merge_3fb2_0001 + 1), (t_merge_3fca_0001 + 1));
-    FillRect(hdc, &(rc), hbrCur);
-
-L_3fe5:
-    if ((fDisabled == 0))
-        goto L_403b;
-    else
-        goto L_3fee;
-
-L_3fee:
-    ipt = 0;
-    goto L_4019;
-
-L_3ff6:
-    rgptDraw[ipt].x = (rgptDraw[ipt].x - 1);
-    rgptDraw[ipt].y = (rgptDraw[ipt].y - 1);
-    ipt = (ipt + 1);
-
-L_4019:
-    if ((ipt < cpt))
-        goto L_3ff6;
-    else
-        goto L_4024;
-
-L_4024:
-    fDisabled = 0;
-    hbrCur = hbrButtonShadow;
-    SelectObject(hdc, hbrButtonShadow);
-    goto DrawAgain;
-
-L_403b:
+    FillRect(hdc, &rc, hbrButtonFace);
+    if ((bt & 0x8) == 0x0) {
+        fBar = bt & 0x10;
+        fNoShaft = bt & 0x20;
+        bt = bt & 0x3;
+        if (fNoShaft == 0) {
+            cpt = 5;
+            memcpy(rgptDraw, rgptArrow, cpt * 4);
+            dx = 6;
+            dy = 6;
+        } else {
+            cpt = 3;
+            memcpy(rgptDraw, rgptTriangle, cpt * 4);
+            dx = 8;
+            dy = 4;
+        }
+        if (fBar != 0) {
+            for (ipt = 0; ipt < cpt; ipt++) {
+                rgptDraw[ipt].y = rgptDraw[ipt].y + 1;
+            }
+            dy = dy + 2;
+            rgptDraw[cpt].y = 0;
+            rgptDraw[cpt].x = 0;
+            cpt = cpt + 1;
+        }
+        for (ipt = 0; ipt < cpt; ipt++) {
+            if (rgptDraw[ipt].x < 0) {
+                rgptDraw[ipt].x = rgptDraw[0].x * 2 - rgptDraw[-rgptDraw[ipt].x].x;
+            } else {
+                rgptDraw[ipt].x = LOWORD((int32_t)((int32_t)((int32_t)rgptDraw[ipt].x * dxFace) / 0xb));
+            }
+            rgptDraw[ipt].y = LOWORD((int32_t)((int32_t)((int32_t)rgptDraw[ipt].y * dxFace) / 0xb));
+        }
+        dx = LOWORD((int32_t)((int32_t)((int32_t)dx * dxFace) / 0xb));
+        dy = LOWORD((int32_t)((int32_t)((int32_t)dy * dxFace) / 0xb));
+        dxOffset = ((prc->right - prc->left - dx) >> 0x1) + fDown;
+        dyOffset = ((prc->bottom - prc->top - dy) >> 0x1) + fDown;
+        if (bt == 2 || bt == 3) {
+            dxyT = dxOffset;
+            dxOffset = dyOffset;
+            dyOffset = dxyT;
+        }
+        for (ipt = 0; ipt < cpt; ipt++) {
+            if (bt == 1) {
+                rgptDraw[ipt].y = dy - rgptDraw[ipt].y;
+            }
+            if (bt == 2 || bt == 3) {
+                d = dx - rgptDraw[ipt].x;
+                rgptDraw[ipt].x = rgptDraw[ipt].y;
+                rgptDraw[ipt].y = d;
+                if (bt == 3) {
+                    rgptDraw[ipt].x = dy - rgptDraw[ipt].x;
+                }
+            }
+            rgptDraw[ipt].x = rgptDraw[ipt].x + (prc->left + dxOffset);
+            rgptDraw[ipt].y = rgptDraw[ipt].y + (prc->top + dyOffset);
+        }
+        hbrCur = fDisabled == 0 ? hbrButtonText : hbrButtonHilite;
+        SelectObject(hdc, hbrCur);
+        while (1) {
+            if (bt != 0 && bt != 1) {
+                dx = bt == 2 ? -1 : 1;
+                y = rgptDraw[2].y;
+                dy = rgptDraw[1].y - y + 1;
+                x = rgptDraw[1].x;
+                if (fBar != 0) {
+                    PatBlt(hdc, rgptDraw[cpt - 1].x, y, 1, dy, PATCOPY);
+                }
+                while (dy > 0) {
+                    PatBlt(hdc, x, y, 1, dy, PATCOPY);
+                    y = y + 1;
+                    dy = dy - 2;
+                    x = x + dx;
+                }
+            } else {
+                dy = bt == 0 ? -1 : 1;
+                x = rgptDraw[1].x;
+                dx = rgptDraw[2].x - x + 1;
+                y = rgptDraw[1].y;
+                if (fBar != 0) {
+                    PatBlt(hdc, x, rgptDraw[cpt - 1].y, dx, 1, PATCOPY);
+                }
+                while (dx > 0) {
+                    PatBlt(hdc, x, y, dx, 1, PATCOPY);
+                    x = x + 1;
+                    dx = dx - 2;
+                    y = y + dy;
+                }
+            }
+            if (fNoShaft == 0) {
+                t_merge_3f88_0001 = rgptDraw[3].x >= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x;
+                t_merge_3f9d_0001 = rgptDraw[3].y >= rgptDraw[4].y ? rgptDraw[4].y : rgptDraw[3].y;
+                t_merge_3fb2_0001 = rgptDraw[3].x <= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x;
+                SetRect(&rc, t_merge_3f88_0001, t_merge_3f9d_0001, t_merge_3fb2_0001 + 1, (rgptDraw[3].y <= rgptDraw[4].y ? rgptDraw[4].y : rgptDraw[3].y) + 1);
+                FillRect(hdc, &rc, hbrCur);
+            }
+            if (fDisabled == 0)
+                break;
+            for (ipt = 0; ipt < cpt; ipt++) {
+                rgptDraw[ipt].x = rgptDraw[ipt].x - 1;
+                rgptDraw[ipt].y = rgptDraw[ipt].y - 1;
+            }
+            fDisabled = 0;
+            hbrCur = hbrButtonShadow;
+            SelectObject(hdc, hbrButtonShadow);
+        }
+    }
     SelectObject(hdc, hbrSav);
-    if ((szText == 0x0))
-        goto L_4140;
-    else
-        goto L_404f;
-
-L_404f:
-    hfontSav = SelectObject(hdc, rghfontArial8[1]);
-    bkMode = SetBkMode(hdc, TRANSPARENT);
-    if ((fDisabled == 0))
-        goto L_4083;
-    else
-        goto L_4079;
-
-L_4079:
-    t_merge_408a_0001 = crButtonHilite;
-    goto L_408a;
-
-L_4083:
-    t_merge_408a_0001 = crButtonText;
-
-L_408a:
-    crSav = SetTextColor(hdc, t_merge_408a_0001);
-    rc = *(prc);
-    if ((fDown == 0))
-        goto L_40c3;
-    else
-        goto L_40af;
-
-L_40af:
-    OffsetRc(&(rc), 1, 1);
-
-L_40c3:
-    RcCtrTextOut(hdc, &(rc), szText, 0);
-    if ((fDisabled == 0))
-        goto L_411c;
-    else
-        goto L_40e2;
-
-L_40e2:
-    OffsetRc(&(rc), -1, -1);
-    SetTextColor(hdc, crButtonShadow);
-    RcCtrTextOut(hdc, &(rc), szText, 0);
-
-L_411c:
-    SetTextColor(hdc, crSav);
-    SetBkMode(hdc, bkMode);
-    SelectObject(hdc, hfontSav);
-
-L_4140:
+    if (szText != 0x0) {
+        hfontSav = SelectObject(hdc, rghfontArial8[1]);
+        bkMode = SetBkMode(hdc, TRANSPARENT);
+        crSav = SetTextColor(hdc, fDisabled == 0 ? crButtonText : crButtonHilite);
+        rc = *prc;
+        if (fDown != 0) {
+            OffsetRc(&rc, 1, 1);
+        }
+        RcCtrTextOut(hdc, &rc, szText, 0);
+        if (fDisabled != 0) {
+            OffsetRc(&rc, -1, -1);
+            SetTextColor(hdc, crButtonShadow);
+            RcCtrTextOut(hdc, &rc, szText, 0);
+        }
+        SetTextColor(hdc, crSav);
+        SetBkMode(hdc, bkMode);
+        SelectObject(hdc, hfontSav);
+    }
     return;
 }
 
 int16_t FGetMouseMove(POINT16 *ppt) {
     MSG msg;
 
-L_4146:
-
-L_4152:
-    if ((PeekMessage(&(msg), 0x0, 0x0, 0x0, 0x1) != 0))
-        goto L_417c;
-    else
-        goto L_4176;
-
-L_4176:
+    while (PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0) {
+        if (msg.message == 0x200 || msg.message == 0x202)
+            goto L_4185;
+    }
     return 1;
-
-L_417c:
-    goto L_41c3;
-
 L_4185:
     ppt->x = LOWORD(msg.lParam);
     ppt->y = HIWORD(msg.lParam);
-    if ((msg.message == 0x202))
-        goto L_41ba;
-    else
-        goto L_41b4;
-
-L_41b4:
+    if (msg.message == 0x202) {
+        return 0;
+    }
     return 1;
-
-L_41ba:
-
-L_41bd:
-    return 0;
-
-L_41c3:
-    if ((msg.message == 0x200))
-        goto L_4185;
-    else
-        goto L_41cb;
-
-L_41cb:
-    if ((msg.message != 0x202))
-        goto L_4152;
-    else
-        goto L_41d0;
-
-L_41d0:
-    goto L_4185;
 }
 
 int16_t FGetRMouseMove(POINT16 *ppt) {
     MSG msg;
 
-L_41e0:
-
-L_41ec:
-    if ((PeekMessage(&(msg), 0x0, 0x0, 0x0, 0x1) != 0))
-        goto L_4216;
-    else
-        goto L_4210;
-
-L_4210:
+    while (PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0) {
+        if (msg.message == 0x200 || msg.message == 0x205)
+            goto L_421f;
+    }
     return 1;
-
-L_4216:
-    goto L_425d;
-
 L_421f:
     ppt->x = LOWORD(msg.lParam);
     ppt->y = HIWORD(msg.lParam);
-    if ((msg.message == 0x205))
-        goto L_4254;
-    else
-        goto L_424e;
-
-L_424e:
+    if (msg.message == 0x205) {
+        return 0;
+    }
     return 1;
-
-L_4254:
-
-L_4257:
-    return 0;
-
-L_425d:
-    if ((msg.message == 0x200))
-        goto L_421f;
-    else
-        goto L_4265;
-
-L_4265:
-    if ((msg.message != 0x205))
-        goto L_41ec;
-    else
-        goto L_426a;
-
-L_426a:
-    goto L_421f;
 }
 
 void DrawFuzzyBorder(HDC hdc, RECT *prc) {
@@ -2867,16 +1354,15 @@ void DrawFuzzyBorder(HDC hdc, RECT *prc) {
     HBRUSH   hbrSav;
     COLORREF crFore;
 
-L_427a:
     crBack = SetBkColor(hdc, crButtonFace);
     crFore = SetTextColor(hdc, crWindowText);
     hbrSav = SelectObject(hdc, hbr50Screen);
-    dx = (prc->right - prc->left);
-    dy = (prc->bottom - prc->top);
+    dx = prc->right - prc->left;
+    dy = prc->bottom - prc->top;
     PatBlt(hdc, prc->left, prc->top, dx, 2, PATINVERT);
-    PatBlt(hdc, prc->left, (prc->bottom - 2), dx, 2, PATINVERT);
-    PatBlt(hdc, prc->left, (prc->top + 2), 2, (dy - 4), PATINVERT);
-    PatBlt(hdc, (prc->right - 2), (prc->top + 2), 2, (dy - 4), PATINVERT);
+    PatBlt(hdc, prc->left, prc->bottom - 2, dx, 2, PATINVERT);
+    PatBlt(hdc, prc->left, prc->top + 2, 2, dy - 4, PATINVERT);
+    PatBlt(hdc, prc->right - 2, prc->top + 2, 2, dy - 4, PATINVERT);
     SelectObject(hdc, hbrSav);
     SetTextColor(hdc, crFore);
     SetBkColor(hdc, crBack);
@@ -2889,35 +1375,17 @@ int16_t FStringFitsScreen(char *lpsz, int16_t dxMax) {
     int16_t fFit;
     HFONT   hfontSav;
 
-L_43aa:
     fFit = 1;
     hdc = GetDC(hwndFrame);
     c = fstrlen(lpsz);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
-
-L_43e4:
-    if ((c <= 0))
-        goto L_4425;
-    else
-        goto L_43ed;
-
-L_43ed:
-    if ((LOWORD(GetTextExtent(hdc, lpsz, c)) <= (uint16_t)(dxMax)))
-        goto L_4425;
-    else
-        goto L_4408;
-
-L_4408:
-    fFit = 0;
-    c = (c - 1);
-    lpsz[c] = 0;
-    goto L_43e4;
-
-L_4425:
+    while (c > 0 && LOWORD(GetTextExtent(hdc, lpsz, c)) > (uint16_t)dxMax) {
+        fFit = 0;
+        c = c - 1;
+        lpsz[c] = 0;
+    }
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwndFrame, hdc);
-
-L_4442:
     return fFit;
 }
 
@@ -2927,122 +1395,53 @@ HBRUSH HbrGet(COLORREF cr) {
     HBRUSH  hbr;
     int16_t t_44f1;
 
-L_4448:
     iFree = -1;
-    i = 0;
-    goto L_44b0;
-
-L_445e:
-    if ((rghbrCacheUse[i] != 0x0))
-        goto L_4479;
-    else
-        goto L_4470;
-
-L_4470:
-    iFree = i;
-    goto L_44ac;
-
-L_4479:
-    if ((rgcrCache[i] != cr))
-        goto L_44ac;
-    else
-        goto L_4498;
-
-L_4498:
-    rghbrCacheUse[i] = (rghbrCacheUse[i] + 0x1);
-    return rghbrCache[i];
-
-L_44ac:
-    i = (i + 1);
-
-L_44b0:
-    if ((i < chbrCache))
-        goto L_445e;
-    else
-        goto L_44bb;
-
-L_44bb:
+    for (i = 0; i < chbrCache; i++) {
+        if (rghbrCacheUse[i] != 0x0) {
+            if (rgcrCache[i] == cr)
+                goto L_4498;
+        } else {
+            iFree = i;
+        }
+    }
     hbr = CreateSolidBrush(cr);
-    if ((hbr != 0x0))
-        goto L_44d8;
-    else
-        goto L_44d2;
-
-L_44d2:
+    if (hbr != 0x0) {
+        if (iFree == -1) {
+            if (chbrCache >= 32) {
+                return hbr;
+            }
+            t_44f1 = chbrCache;
+            chbrCache = chbrCache + 1;
+            iFree = t_44f1;
+        }
+        rghbrCacheUse[iFree] = 0x1;
+        rghbrCache[iFree] = hbr;
+        rgcrCache[iFree] = cr;
+        return hbr;
+    }
     return 0x0;
-
-L_44d8:
-    if ((iFree != -1))
-        goto L_44fc;
-    else
-        goto L_44e1;
-
-L_44e1:
-    if ((chbrCache < 32))
-        goto L_44f1;
-    else
-        goto L_44eb;
-
-L_44eb:
-    return hbr;
-
-L_44f1:
-    t_44f1 = chbrCache;
-    chbrCache = (chbrCache + 1);
-    iFree = t_44f1;
-
-L_44fc:
-    rghbrCacheUse[iFree] = 0x1;
-    rghbrCache[iFree] = hbr;
-    rgcrCache[iFree] = cr;
-    return hbr;
+L_4498:
+    rghbrCacheUse[i] = rghbrCacheUse[i] + 0x1;
+    return rghbrCache[i];
 }
 
 void FreeHbr(HBRUSH hbr) {
     int16_t i;
 
-L_4532:
     i = 0;
-    goto L_458c;
-
-L_4543:
-    if ((rghbrCacheUse[i] <= 0x0))
-        goto L_4588;
-    else
-        goto L_4555;
-
-L_4555:
-    if ((hbr != rghbrCache[i]))
-        goto L_4588;
-    else
-        goto L_4566;
-
-L_4566:
-    rghbrCacheUse[i] = (rghbrCacheUse[i] - 0x1);
-    if ((rghbrCacheUse[i] != 0x0))
-        goto L_459a;
-    else
-        goto DeleteBrush;
-
+    while (1) {
+        if (i >= chbrCache)
+            goto DeleteBrush;
+        if (rghbrCacheUse[i] > 0x0 && hbr == rghbrCache[i])
+            break;
+        i = i + 1;
+    }
+    rghbrCacheUse[i] = rghbrCacheUse[i] - 0x1;
+    if (rghbrCacheUse[i] != 0x0) {
+        return;
+    }
 DeleteBrush:
     DeleteObject(hbr);
-
-L_4585:
-    goto L_459a;
-
-L_4588:
-    i = (i + 1);
-
-L_458c:
-    if ((i >= chbrCache))
-        goto DeleteBrush;
-    else
-        goto L_4594;
-
-L_4594:
-    goto L_4543;
-
-L_459a:
     return;
 }
 
@@ -3054,250 +1453,101 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
     int16_t cNyb;
     int16_t t_460a;
 
-L_45a0:
     fHalf = 0;
     pchOut = szWork;
-
-L_45b6:
-    if (((int16_t)(*(szIn)) == 0))
-        goto L_4682;
-    else
-        goto L_45c5;
-
-L_45c5:
-    iNyb = NybbleFromCh((int16_t)(*(szIn)));
-    if ((iNyb >= 11))
-        goto L_45ec;
-    else
-        goto L_45e3;
-
-L_45e3:
-    cNyb = 1;
-    goto L_460a;
-
-L_45ec:
-    if (((iNyb & 0xf) == 0xf))
-        goto L_4604;
-    else
-        goto L_45fb;
-
-L_45fb:
-    cNyb = 2;
-    goto L_460a;
-
-L_4604:
-    cNyb = 3;
-
-L_460a:
-    t_460a = cNyb;
-    cNyb = (cNyb - 1);
-    if ((t_460a == 0))
-        goto L_467b;
-    else
-        goto L_461b;
-
-L_461b:
-    if ((fHalf != 0))
-        goto L_4641;
-    else
-        goto L_4624;
-
-L_4624:
-    *(pchOut) = LOBYTE(((iNyb & 0xf) * 0x10));
-    fHalf = 1;
-    goto L_4671;
-
-L_4641:
-    *(pchOut) = (*(pchOut) | LOBYTE((iNyb & 0xf)));
-    pchOut = (pchOut + 1);
-    fHalf = 0;
-    if (((pchOut - szWork) < 0x400))
-        goto L_4671;
-    else
-        goto L_466b;
-
-L_466b:
+    while (1) {
+        if ((int16_t)*szIn == 0)
+            goto L_4682;
+        iNyb = NybbleFromCh((int16_t)*szIn);
+        if (iNyb >= 11) {
+            if ((iNyb & 0xf) == 0xf) {
+                cNyb = 3;
+            } else {
+                cNyb = 2;
+            }
+        } else {
+            cNyb = 1;
+        }
+        while (1) {
+            t_460a = cNyb;
+            cNyb = cNyb - 1;
+            if (t_460a == 0)
+                break;
+            if (fHalf != 0) {
+                *pchOut = *pchOut | LOBYTE(iNyb & 0xf);
+                pchOut = pchOut + 1;
+                fHalf = 0;
+                if (pchOut - szWork >= 0x400) {
+                    return 0;
+                }
+            } else {
+                *pchOut = LOBYTE((iNyb & 0xf) * 0x10);
+                fHalf = 1;
+            }
+            iNyb = iNyb >> 0x4;
+        }
+        szIn = szIn + 1;
+    }
     return 0;
-
-L_4671:
-    iNyb = (iNyb >> 0x4);
-    goto L_460a;
-
-L_467b:
-    szIn = (szIn + 1);
-    goto L_45b6;
-
 L_4682:
-    if ((fHalf == 0))
-        goto L_4697;
-    else
-        goto L_468b;
-
-L_468b:
-    *(pchOut) = (*(pchOut) | 0xf);
-    pchOut = (pchOut + 1);
-
-L_4697:
-    if (((pchOut - szWork) <= *(pcOut)))
-        goto L_46b1;
-    else
-        goto L_46ab;
-
-L_46ab:
+    if (fHalf != 0) {
+        *pchOut = *pchOut | 0xf;
+        pchOut = pchOut + 1;
+    }
+    if (pchOut - szWork <= *pcOut) {
+        *pcOut = pchOut - szWork;
+        fmemcpy(szOut, szWork, *pcOut);
+        return 1;
+    }
     return 0;
-
-L_46b1:
-    *(pcOut) = (pchOut - szWork);
-    fmemcpy(szOut, szWork, *(pcOut));
-    return 1;
 }
 
 int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut) {
-    int16_t  fHalf;
-    char     szWork[1024];
-    int16_t  iNyb;
-    char    *pchOut;
-    uint16_t t_merge_4761_0001;
-    uint16_t t_merge_47b8_0001;
-    uint16_t t_merge_4819_0001;
+    int16_t fHalf;
+    char    szWork[1024];
+    int16_t iNyb;
+    char   *pchOut;
 
-L_46e8:
     fHalf = 0;
     pchOut = szWork;
-    goto L_484d;
-
-L_4701:
-    if ((fHalf == 0))
-        goto L_4739;
-    else
-        goto L_470a;
-
-L_470a:
-    iNyb = ((int16_t)(*(szIn)) & 0xf);
-    cIn = (cIn - 1);
-    szIn = (szIn + 1);
-    if ((iNyb != 15))
-        goto L_474f;
-    else
-        goto L_472a;
-
-L_472a:
-    if ((cIn == 0))
-        goto L_4856;
-    else
-        goto L_4730;
-
-L_4730:
-    goto L_474f;
-
-L_4739:
-    iNyb = (((int16_t)(*(szIn)) >> 0x4) & 0xf);
-
-L_474f:
-    if ((fHalf != 0))
-        goto L_475e;
-    else
-        goto L_4758;
-
-L_4758:
-    t_merge_4761_0001 = 0x1;
-    goto L_4761;
-
-L_475e:
-    t_merge_4761_0001 = 0x0;
-
-L_4761:
-    fHalf = t_merge_4761_0001;
-    if ((iNyb < 11))
-        goto L_481c;
-    else
-        goto L_476e;
-
-L_476e:
-    if ((fHalf == 0))
-        goto L_4798;
-    else
-        goto L_4777;
-
-L_4777:
-    iNyb = (iNyb | (((int16_t)(*(szIn)) & 0xf) << 0x4));
-    cIn = (cIn - 1);
-    szIn = (szIn + 1);
-    goto L_47a6;
-
-L_4798:
-    iNyb = (iNyb | ((int16_t)(*(szIn)) & 0xf0));
-
-L_47a6:
-    if ((fHalf != 0))
-        goto L_47b5;
-    else
-        goto L_47af;
-
-L_47af:
-    t_merge_47b8_0001 = 0x1;
-    goto L_47b8;
-
-L_47b5:
-    t_merge_47b8_0001 = 0x0;
-
-L_47b8:
-    fHalf = t_merge_47b8_0001;
-    if (((iNyb & 0xf) != 0xf))
-        goto L_481c;
-    else
-        goto L_47ca;
-
-L_47ca:
-    if ((fHalf == 0))
-        goto L_47f1;
-    else
-        goto L_47d3;
-
-L_47d3:
-    iNyb = (iNyb | (((int16_t)(*(szIn)) & 0xf) << 0x8));
-    cIn = (cIn - 1);
-    szIn = (szIn + 1);
-    goto L_4807;
-
-L_47f1:
-    iNyb = (iNyb | (((int16_t)(*(szIn)) & 0xf0) << 0x4));
-
-L_4807:
-    if ((fHalf != 0))
-        goto L_4816;
-    else
-        goto L_4810;
-
-L_4810:
-    t_merge_4819_0001 = 0x1;
-    goto L_4819;
-
-L_4816:
-    t_merge_4819_0001 = 0x0;
-
-L_4819:
-    fHalf = t_merge_4819_0001;
-
-L_481c:
-    *(pchOut) = LOBYTE(ChFromNybble(iNyb));
-    pchOut = (pchOut + 1);
-    if (((pchOut - szWork) <= *(pcOut)))
-        goto L_484d;
-    else
-        goto L_4847;
-
-L_4847:
-    return 0;
-
-L_484d:
-    if ((cIn > 0))
-        goto L_4701;
-    else
-        goto L_4856;
-
-L_4856:
-    *(pchOut) = 0;
+    while (cIn > 0) {
+        if (fHalf == 0) {
+            iNyb = (int16_t)*szIn >> 0x4 & 0xf;
+        } else {
+            iNyb = (int16_t)*szIn & 0xf;
+            cIn = cIn - 1;
+            szIn = szIn + 1;
+            if (iNyb == 15 && cIn == 0)
+                break;
+        }
+        fHalf = fHalf == 0 ? 1 : 0;
+        if (iNyb >= 11) {
+            if (fHalf == 0) {
+                iNyb = iNyb | ((int16_t)*szIn & 0xf0);
+            } else {
+                iNyb = iNyb | ((int16_t)*szIn & 0xf) << 0x4;
+                cIn = cIn - 1;
+                szIn = szIn + 1;
+            }
+            fHalf = fHalf == 0 ? 1 : 0;
+            if ((iNyb & 0xf) == 0xf) {
+                if (fHalf == 0) {
+                    iNyb = iNyb | ((int16_t)*szIn & 0xf0) << 0x4;
+                } else {
+                    iNyb = iNyb | ((int16_t)*szIn & 0xf) << 0x8;
+                    cIn = cIn - 1;
+                    szIn = szIn + 1;
+                }
+                fHalf = fHalf == 0 ? 1 : 0;
+            }
+        }
+        *pchOut = LOBYTE(ChFromNybble(iNyb));
+        pchOut = pchOut + 1;
+        if (pchOut - szWork > *pcOut) {
+            return 0;
+        }
+    }
+    *pchOut = 0;
     fstrcpy(szOut, szWork);
     return 1;
 }
@@ -3305,157 +1555,53 @@ L_4856:
 int16_t NybbleFromCh(uint8_t ch) {
     char *pch;
 
-L_4880:
-    if ((ch < 0x61))
-        goto L_48b9;
-    else
-        goto L_4897;
-
-L_4897:
-    if ((ch > 0x7a))
-        goto L_48b9;
-    else
-        goto L_48a5;
-
-L_48a5:
-    return rgcompstrlower[(ch - 97)];
-
-L_48b9:
-    if ((ch != 0x20))
-        goto L_48cd;
-    else
-        goto L_48c7;
-
-L_48c7:
-    return 0;
-
-L_48cd:
-    if ((ch < 0x41))
-        goto L_4900;
-    else
-        goto L_48db;
-
-L_48db:
-    if ((ch > 0x50))
-        goto L_4900;
-    else
-        goto L_48e9;
-
-L_48e9:
-    return (((ch - 0x41) << 0x4) | 0xb);
-
-L_4900:
-    if ((ch < 0x51))
-        goto L_4933;
-    else
-        goto L_490e;
-
-L_490e:
-    if ((ch > 0x5a))
-        goto L_4933;
-    else
-        goto L_491c;
-
-L_491c:
-    return (((ch - 0x51) << 0x4) | 0xc);
-
-L_4933:
-    if ((ch < 0x30))
-        goto L_4966;
-    else
-        goto L_4941;
-
-L_4941:
-    if ((ch > 0x35))
-        goto L_4966;
-    else
-        goto L_494f;
-
-L_494f:
-    return (((ch - 0x26) << 0x4) | 0xc);
-
-L_4966:
-    if ((ch < 0x36))
-        goto L_4999;
-    else
-        goto L_4974;
-
-L_4974:
-    if ((ch > 0x39))
-        goto L_4999;
-    else
-        goto L_4982;
-
-L_4982:
-    return (((ch - 0x36) << 0x4) | 0xd);
-
-L_4999:
-    pch = strchr(rgchcomp, ch);
-    if ((pch == 0x0))
-        goto L_49cf;
-    else
-        goto L_49b8;
-
-L_49b8:
-    return ((((pch - rgchcomp) + 0x4) << 0x4) | 0xe);
-
-L_49cf:
-    return ((ch << 0x4) | 0xf);
+    if (ch < 0x61 || ch > 0x7a) {
+        if (ch != 0x20) {
+            if (ch < 0x41 || ch > 0x50) {
+                if (ch < 0x51 || ch > 0x5a) {
+                    if (ch < 0x30 || ch > 0x35) {
+                        if (ch < 0x36 || ch > 0x39) {
+                            pch = strchr(rgchcomp, ch);
+                            if (pch == 0x0) {
+                                return ch << 0x4 | 0xf;
+                            }
+                            return (pch - rgchcomp + 0x4) << 0x4 | 0xe;
+                        }
+                        return (ch - 0x36) << 0x4 | 0xd;
+                    }
+                    return (ch - 0x26) << 0x4 | 0xc;
+                }
+                return (ch - 0x51) << 0x4 | 0xc;
+            }
+            return (ch - 0x41) << 0x4 | 0xb;
+        }
+        return 0;
+    }
+    return rgcompstrlower[ch - 97];
 }
 
 char ChFromNybble(int16_t nyb) {
     int16_t iPage;
     int16_t iVal;
 
-L_49ea:
-    if ((nyb >= 11))
-        goto L_4a0a;
-    else
-        goto L_49fc;
-
-L_49fc:
+    if (nyb >= 11) {
+        iPage = nyb & 0xf;
+        if (iPage != 15) {
+            iVal = (iPage - 0xb) * 0x10 + (nyb >> 0x4);
+            if (iVal >= 26) {
+                if (iVal >= 36) {
+                    if (iVal < 52) {
+                        return rgchcompstrlower[iVal - 25];
+                    }
+                    return rgchcomp[iVal - 52];
+                }
+                return iVal + 22;
+            }
+            return iVal + 65;
+        }
+        return nyb >> 0x4;
+    }
     return rgchcompstrlower[nyb];
-
-L_4a0a:
-    iPage = (nyb & 0xf);
-    if ((iPage != 15))
-        goto L_4a2a;
-    else
-        goto L_4a1c;
-
-L_4a1c:
-    return (nyb >> 0x4);
-
-L_4a2a:
-    iVal = (((iPage - 0xb) * 0x10) + (nyb >> 0x4));
-    if ((iVal >= 26))
-        goto L_4a5a;
-    else
-        goto L_4a51;
-
-L_4a51:
-    return (iVal + 65);
-
-L_4a5a:
-    if ((iVal >= 36))
-        goto L_4a6c;
-    else
-        goto L_4a63;
-
-L_4a63:
-    return (iVal + 22);
-
-L_4a6c:
-    if ((iVal < 52))
-        goto L_4a82;
-    else
-        goto L_4a75;
-
-L_4a75:
-    return rgchcomp[(iVal - 52)];
-
-L_4a82:
-    return rgchcompstrlower[(iVal - 25)];
 }
 
 uint16_t DibNumColors(void *pv) {
@@ -3463,65 +1609,26 @@ uint16_t DibNumColors(void *pv) {
     BITMAPCOREHEADER *lpbc;
     BITMAPINFOHEADER *lpbi;
 
-L_4a9a:
     lpbi = pv;
     lpbc = pv;
-    if ((lpbi->biSize != 0xc))
-        goto L_4ad1;
-    else
-        goto L_4b03;
-
-L_4ad1:
-    if ((lpbi->biClrUsed != 0x0))
-        goto L_4ae8;
-    else
-        goto L_4af6;
-
-L_4ae8:
-    return LOWORD(lpbi->biClrUsed);
-
-L_4af6:
-    bits = lpbi->biBitCount;
-    goto L_4b0d;
-
-L_4b03:
-    bits = lpbc->bcBitCount;
-
-L_4b0d:
-    goto L_4b2e;
-
-L_4b13:
-    return 0x2;
-
-L_4b19:
-    return 0x10;
-
-L_4b1f:
-    return 0x100;
-
-L_4b25:
-    return 0x0;
-
-L_4b2e:
-    if ((bits == 1))
-        goto L_4b13;
-    else
-        goto L_4b36;
-
-L_4b36:
-    if ((bits == 4))
-        goto L_4b19;
-    else
-        goto L_4b3e;
-
-L_4b3e:
-    if ((bits != 8))
-        goto L_4b25;
-    else
-        goto L_4b43;
-
-L_4b43:
-    goto L_4b1f;
+    if (lpbi->biSize != 0xc) {
+        if (lpbi->biClrUsed != 0x0) {
+            return LOWORD(lpbi->biClrUsed);
+        }
+        bits = lpbi->biBitCount;
+    } else {
+        bits = lpbc->bcBitCount;
+    }
+    switch (bits) {
+    case 1:
+        return 0x2;
+    case 4:
+        return 0x10;
+    case 8:
+        return 0x100;
+    default:
+        return 0x0;
+    }
 }
 
 HPALETTE HpalFromDib(HGLOBAL hdib) {
@@ -3533,53 +1640,29 @@ HPALETTE HpalFromDib(HGLOBAL hdib) {
     BITMAPINFOHEADER *lpbi;
     LOGPALETTE       *ppal;
 
-L_4b50:
     lpb = LockResource(hdib);
-    if ((lpb != 0x0))
-        goto L_4b7f;
-    else
-        goto L_4b79;
-
-L_4b79:
+    if (lpb != 0x0) {
+        lpbi = (BITMAPINFOHEADER *)lpb;
+        cColors = DibNumColors(lpbi);
+        if (cColors <= 256) {
+            ppal = LocalAlloc(0x40, cColors * 4 + 8);
+            ppal->palNumEntries = cColors;
+            ppal->palVersion = 0x300;
+            fmemcpy(ppal->palPalEntry, lpb + 40, cColors * 4);
+            for (i = 0; i < cColors; i++) {
+                bT = ppal->palPalEntry[i].peRed;
+                ppal->palPalEntry[i].peRed = ppal->palPalEntry[i].peBlue;
+                ppal->palPalEntry[i].peBlue = bT;
+            }
+            hpal = CreatePalette(ppal);
+            LocalFree(ppal);
+            GlobalUnlock(hdib);
+            return hpal;
+        }
+        GlobalUnlock(hdib);
+        return 0x0;
+    }
     return 0x0;
-
-L_4b7f:
-    lpbi = (BITMAPINFOHEADER *)(lpb);
-    cColors = DibNumColors(lpbi);
-    if ((cColors <= 256))
-        goto L_4bb4;
-    else
-        goto L_4ba6;
-
-L_4ba6:
-    GlobalUnlock(hdib);
-    return 0x0;
-
-L_4bb4:
-    ppal = LocalAlloc(0x40, ((cColors * 4) + 8));
-    ppal->palNumEntries = cColors;
-    ppal->palVersion = 0x300;
-    fmemcpy(ppal->palPalEntry, (lpb + 40), (cColors * 4));
-    i = 0;
-    goto L_4c64;
-
-L_4c0c:
-    bT = ppal->palPalEntry[i].peRed;
-    ppal->palPalEntry[i].peRed = ppal->palPalEntry[i].peBlue;
-    ppal->palPalEntry[i].peBlue = bT;
-    i = (i + 1);
-
-L_4c64:
-    if ((i < cColors))
-        goto L_4c0c;
-    else
-        goto L_4c6f;
-
-L_4c6f:
-    hpal = CreatePalette(ppal);
-    LocalFree(ppal);
-    GlobalUnlock(hdib);
-    return hpal;
 }
 
 HPALETTE HpalBlackReserved() {
@@ -3588,32 +1671,18 @@ HPALETTE HpalBlackReserved() {
     int16_t     i;
     LOGPALETTE *ppal;
 
-L_4c9c:
     cColors = 256;
-    ppal = LocalAlloc(0x40, ((cColors * 4) + 8));
+    ppal = LocalAlloc(0x40, cColors * 4 + 8);
     ppal->palNumEntries = cColors;
     ppal->palVersion = 0x300;
-    i = 0;
-    goto L_4d30;
-
-L_4cd9:
-    ppal->palPalEntry[i].peBlue = 0x0;
-    ppal->palPalEntry[i].peGreen = 0x0;
-    ppal->palPalEntry[i].peRed = 0x0;
-    ppal->palPalEntry[i].peFlags = 0x1;
-    i = (i + 1);
-
-L_4d30:
-    if ((i < cColors))
-        goto L_4cd9;
-    else
-        goto L_4d3b;
-
-L_4d3b:
+    for (i = 0; i < cColors; i++) {
+        ppal->palPalEntry[i].peBlue = 0x0;
+        ppal->palPalEntry[i].peGreen = 0x0;
+        ppal->palPalEntry[i].peRed = 0x0;
+        ppal->palPalEntry[i].peFlags = 0x1;
+    }
     hpal = CreatePalette(ppal);
     LocalFree(ppal);
-
-L_4d59:
     return hpal;
 }
 
@@ -3621,19 +1690,12 @@ uint16_t PaletteSize(void *pv) {
     uint16_t          NumColors;
     BITMAPINFOHEADER *lpbi;
 
-L_4d60:
     lpbi = pv;
     NumColors = DibNumColors(lpbi);
-    if ((lpbi->biSize != 0xc))
-        goto L_4da8;
-    else
-        goto L_4d9c;
-
-L_4d9c:
-    return (0x3 * NumColors);
-
-L_4da8:
-    return (NumColors * 0x4);
+    if (lpbi->biSize != 0xc) {
+        return NumColors * 0x4;
+    }
+    return 0x3 * NumColors;
 }
 
 int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop) {
@@ -3641,31 +1703,18 @@ int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL 
     BITMAPINFOHEADER *lpbi;
     BITMAPINFOHEADER *t_scratch_me;
 
-L_4db8:
-    if ((hdib != 0x0))
-        goto L_4de9;
-    else
-        goto L_4dca;
-
-L_4dca:
+    if (hdib != 0x0) {
+        lpbi = (BITMAPINFOHEADER *)GlobalLock(hdib);
+        if (lpbi != 0x0) {
+            t_scratch_me = (BITMAPINFOHEADER *)((uint8_t *)lpbi + LOWORD(lpbi->biSize));
+            pBuf = (char *)((uint8_t *)t_scratch_me + PaletteSize(lpbi));
+            StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, (LPBITMAPINFO)lpbi, 0x0, rop);
+            GlobalUnlock(hdib);
+            return 1;
+        }
+        return 0;
+    }
     return PatBlt(hdc, x0, y0, dx, dy, rop);
-
-L_4de9:
-    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
-    if ((lpbi != 0x0))
-        goto L_4e0f;
-    else
-        goto L_4e09;
-
-L_4e09:
-    return 0;
-
-L_4e0f:
-    t_scratch_me = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
-    pBuf = (char *)((uint8_t *)(t_scratch_me) + PaletteSize(lpbi));
-    StretchDIBits(hdc, x0, y0, dx, dy, x1, y1, dxSrc, dySrc, pBuf, (LPBITMAPINFO)(lpbi), 0x0, rop);
-    GlobalUnlock(hdib);
-    return 1;
 }
 
 HGLOBAL DibFromBitmap(HBITMAP hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal) {
@@ -3680,125 +1729,75 @@ HGLOBAL DibFromBitmap(HBITMAP hbm, uint32_t biStyle, uint16_t biBits, HPALETTE h
     HGLOBAL           t_call_50ff;
     BITMAPINFOHEADER *t_scratch_m4a;
 
-L_4e90:
-    if ((hbm != 0x0))
-        goto L_4ea8;
-    else
-        goto L_4ea2;
-
-L_4ea2:
+    if (hbm != 0x0) {
+        if (hpal == 0x0) {
+            hpal = GetStockObject(DEFAULT_PALETTE);
+        }
+        GetObject(hbm, 14, &bm);
+        if (biBits == 0x0) {
+            t_scratch_m48 = bm.bmPlanes;
+            biBits = t_scratch_m48 * bm.bmBitsPixel;
+        }
+        bi.biSize = 0x28;
+        bi.biWidth = (int32_t)bm.bmWidth;
+        bi.biHeight = (int32_t)bm.bmHeight;
+        bi.biPlanes = 0x1;
+        bi.biBitCount = biBits;
+        bi.biCompression = biStyle;
+        bi.biSizeImage = 0x0;
+        bi.biXPelsPerMeter = 0;
+        bi.biYPelsPerMeter = 0;
+        bi.biClrUsed = 0x0;
+        bi.biClrImportant = 0x0;
+        dwLen = (uint32_t)PaletteSize(&bi) + bi.biSize;
+        hdc = GetDC(0x0);
+        hpal = SelectPalette(hdc, hpal, 0);
+        RealizePalette(hdc);
+        hdib = GlobalAlloc(0x42, dwLen);
+        if (hdib != 0x0) {
+            lpbi = (BITMAPINFOHEADER *)GlobalLock(hdib);
+            *lpbi = bi;
+            GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, (BITMAPINFO *)lpbi, 0x0);
+            bi = *lpbi;
+            GlobalUnlock(hdib);
+            if (bi.biSizeImage == 0x0) {
+                bi.biSizeImage =
+                    (uint32_t)((int32_t)((uint32_t)(((uint32_t)((int32_t)bm.bmWidth * (uint32_t)biBits) + 0x1f) / 0x20) * 0x4) * (int32_t)bm.bmHeight);
+                if (biStyle != 0x0) {
+                    bi.biSizeImage = (uint32_t)((uint32_t)(bi.biSizeImage * 0x3) / 0x2);
+                }
+            }
+            dwLen = (uint32_t)PaletteSize(&bi) + bi.biSize + bi.biSizeImage;
+            t_call_50ff = GlobalReAlloc(hdib, dwLen, 0x0);
+            h = t_call_50ff;
+            if (t_call_50ff == 0x0) {
+                GlobalFree(hdib);
+                hdib = 0x0;
+                SelectPalette(hdc, hpal, 0);
+                ReleaseDC(0x0, hdc);
+                return hdib;
+            }
+            hdib = h;
+            lpbi = (BITMAPINFOHEADER *)GlobalLock(hdib);
+            t_scratch_m4a = (BITMAPINFOHEADER *)((uint8_t *)lpbi + LOWORD(lpbi->biSize));
+            if (GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), (uint8_t *)t_scratch_m4a + PaletteSize(lpbi), (BITMAPINFO *)lpbi, 0x0) != 0) {
+                bi = *lpbi;
+                GlobalUnlock(hdib);
+                SelectPalette(hdc, hpal, 0);
+                ReleaseDC(0x0, hdc);
+                return hdib;
+            }
+            GlobalUnlock(hdib);
+            hdib = 0x0;
+            SelectPalette(hdc, hpal, 0);
+            ReleaseDC(0x0, hdc);
+            return 0x0;
+        }
+        SelectPalette(hdc, hpal, 0);
+        ReleaseDC(0x0, hdc);
+        return 0x0;
+    }
     return 0x0;
-
-L_4ea8:
-    if ((hpal != 0x0))
-        goto L_4ebd;
-    else
-        goto L_4eb1;
-
-L_4eb1:
-    hpal = GetStockObject(DEFAULT_PALETTE);
-
-L_4ebd:
-    GetObject(hbm, 14, &(bm));
-    if ((biBits != 0x0))
-        goto L_4ef2;
-    else
-        goto L_4ed9;
-
-L_4ed9:
-    t_scratch_m48 = bm.bmPlanes;
-    biBits = (t_scratch_m48 * bm.bmBitsPixel);
-
-L_4ef2:
-    bi.biSize = 0x28;
-    bi.biWidth = (int32_t)(bm.bmWidth);
-    bi.biHeight = (int32_t)(bm.bmHeight);
-    bi.biPlanes = 0x1;
-    bi.biBitCount = biBits;
-    bi.biCompression = biStyle;
-    bi.biSizeImage = 0x0;
-    bi.biXPelsPerMeter = 0;
-    bi.biYPelsPerMeter = 0;
-    bi.biClrUsed = 0x0;
-    bi.biClrImportant = 0x0;
-    dwLen = ((uint32_t)(PaletteSize(&(bi))) + bi.biSize);
-    hdc = GetDC(0x0);
-    hpal = SelectPalette(hdc, hpal, 0);
-    RealizePalette(hdc);
-    hdib = GlobalAlloc(0x42, dwLen);
-    if ((hdib != 0x0))
-        goto L_4fd9;
-    else
-        goto L_4fb8;
-
-L_4fb8:
-    SelectPalette(hdc, hpal, 0);
-    ReleaseDC(0x0, hdc);
-    return 0x0;
-
-L_4fd9:
-    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
-    *(lpbi) = bi;
-    GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), 0x0, (BITMAPINFO *)(lpbi), 0x0);
-    bi = *(lpbi);
-    GlobalUnlock(hdib);
-    if ((bi.biSizeImage != 0x0))
-        goto L_50ce;
-    else
-        goto L_5051;
-
-L_5051:
-    bi.biSizeImage =
-        (uint32_t)(((int32_t)(((uint32_t)((((uint32_t)(((int32_t)(bm.bmWidth) * (uint32_t)(biBits))) + 0x1f) / 0x20)) * 0x4)) * (int32_t)(bm.bmHeight)));
-    if ((biStyle != 0x0))
-        goto L_50a6;
-    else
-        goto L_50ce;
-
-L_50a6:
-    bi.biSizeImage = (uint32_t)(((uint32_t)((bi.biSizeImage * 0x3)) / 0x2));
-
-L_50ce:
-    dwLen = (((uint32_t)(PaletteSize(&(bi))) + bi.biSize) + bi.biSizeImage);
-    t_call_50ff = GlobalReAlloc(hdib, dwLen, 0x0);
-    h = t_call_50ff;
-    if ((t_call_50ff == 0x0))
-        goto L_5118;
-    else
-        goto L_510f;
-
-L_510f:
-    hdib = h;
-    goto L_5146;
-
-L_5118:
-    GlobalFree(hdib);
-    hdib = 0x0;
-    SelectPalette(hdc, hpal, 0);
-    ReleaseDC(0x0, hdc);
-    return hdib;
-
-L_5146:
-    lpbi = (BITMAPINFOHEADER *)(GlobalLock(hdib));
-    t_scratch_m4a = (BITMAPINFOHEADER *)((uint8_t *)(lpbi) + LOWORD(lpbi->biSize));
-    if ((GetDIBits(hdc, hbm, 0x0, LOWORD(bi.biHeight), ((uint8_t *)(t_scratch_m4a) + PaletteSize(lpbi)), (BITMAPINFO *)(lpbi), 0x0) != 0))
-        goto L_51da;
-    else
-        goto L_51ac;
-
-L_51ac:
-    GlobalUnlock(hdib);
-    hdib = 0x0;
-    SelectPalette(hdc, hpal, 0);
-    ReleaseDC(0x0, hdc);
-    return 0x0;
-
-L_51da:
-    bi = *(lpbi);
-    GlobalUnlock(hdib);
-    SelectPalette(hdc, hpal, 0);
-    ReleaseDC(0x0, hdc);
-    return hdib;
 }
 
 HGLOBAL HdibLoadBigResource(BitmapId idb) {
@@ -3807,306 +1806,116 @@ HGLOBAL HdibLoadBigResource(BitmapId idb) {
     int16_t hfile;
     HGLOBAL hdib;
 
-L_5220:
     hrsrc = FindResource(hInst, MAKEINTRESOURCE(idb), MAKEINTRESOURCE(0x2));
-    if ((hrsrc != 0x0))
-        goto L_525a;
-    else
-        goto L_5254;
-
-L_5254:
+    if (hrsrc != 0x0) {
+        hdib = AllocResource(hInst, hrsrc, 0x0);
+        if (hdib != 0x0) {
+            hfile = AccessResource(hInst, hrsrc);
+            if (hfile != -1) {
+                lpstr = LockResource(hdib);
+                if (lpstr != 0x0 && ReadBigBlock(hfile, lpstr, SizeofResource(hInst, hrsrc)) != 0) {
+                    _lclose(hfile);
+                    return hdib;
+                }
+                _lclose(hfile);
+            }
+            FreeResource(hdib);
+            return 0x0;
+        }
+        return 0x0;
+    }
     return 0x0;
-
-L_525a:
-    hdib = AllocResource(hInst, hrsrc, 0x0);
-    if ((hdib != 0x0))
-        goto L_5280;
-    else
-        goto L_527a;
-
-L_527a:
-    return 0x0;
-
-L_5280:
-    hfile = AccessResource(hInst, hrsrc);
-    if ((hfile != -1))
-        goto L_52a6;
-    else
-        goto FreeAndFail;
-
-FreeAndFail:
-    FreeResource(hdib);
-    return 0x0;
-
-L_52a6:
-    lpstr = LockResource(hdib);
-    if ((lpstr != 0x0))
-        goto L_52d1;
-    else
-        goto CloseAndFail;
-
-CloseAndFail:
-    _lclose(hfile);
-    goto FreeAndFail;
-
-L_52d1:
-    if ((ReadBigBlock(hfile, lpstr, SizeofResource(hInst, hrsrc)) == 0))
-        goto CloseAndFail;
-    else
-        goto L_52fb;
-
-L_52fb:
-    _lclose(hfile);
-    return hdib;
 }
 
 int16_t ReadBigBlock(int16_t hFile, char *lpBuffer, uint32_t dwSize) {
-    int16_t  nBytes;
-    char    *lpInBuf;
-    uint16_t t_merge_534c_0001;
+    int16_t nBytes;
+    char   *lpInBuf;
+    int16_t t_merge_534c_0001;
 
-L_5310:
     lpInBuf = lpBuffer;
-    goto L_5396;
-
-L_5328:
-    if ((dwSize <= 0x7530))
-        goto L_5346;
-    else
-        goto L_5340;
-
-L_5340:
-    t_merge_534c_0001 = 0x7530;
-    goto L_534c;
-
-L_5346:
-    t_merge_534c_0001 = LOWORD(dwSize);
-
-L_534c:
-    nBytes = t_merge_534c_0001;
-    if ((_lread(hFile, lpInBuf, nBytes) == nBytes))
-        goto L_5373;
-    else
-        goto L_536d;
-
-L_536d:
-    return 0;
-
-L_5373:
-    dwSize = (dwSize - (int32_t)(nBytes));
-    lpInBuf = (lpInBuf + nBytes);
-
-L_5396:
-    if ((dwSize != 0x0))
-        goto L_5328;
-    else
-        goto L_53a8;
-
-L_53a8:
+    while (dwSize != 0x0) {
+        t_merge_534c_0001 = dwSize <= 0x7530 ? LOWORD(dwSize) : 30000;
+        nBytes = t_merge_534c_0001;
+        if (_lread(hFile, lpInBuf, nBytes) != nBytes) {
+            return 0;
+        }
+        dwSize = dwSize - (int32_t)nBytes;
+        lpInBuf = lpInBuf + nBytes;
+    }
     return 1;
 }
 
 int16_t FIntersectCircleLine(POINT16 ptL1, POINT16 ptL2, POINT16 ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd) {
-    int32_t  dyT;
-    int32_t  dxdy;
-    int16_t  dCtr;
-    int32_t  dy2;
-    int32_t  dy;
-    int32_t  yI;
-    int32_t  dyI;
-    int32_t  dxT;
-    int32_t  lT;
-    int32_t  dx2;
-    int16_t  dOff;
-    int32_t  dx;
-    int32_t  dxI;
-    int32_t  xI;
-    int32_t  r2I;
-    uint16_t t_merge_57e1_0001;
-    int16_t  t_merge_5800_0001;
+    int32_t dyT;
+    int32_t dxdy;
+    int16_t dCtr;
+    int32_t dy2;
+    int32_t dy;
+    int32_t yI;
+    int32_t dyI;
+    int32_t dxT;
+    int32_t lT;
+    int32_t dx2;
+    int16_t dOff;
+    int32_t dx;
+    int32_t dxI;
+    int32_t xI;
+    int32_t r2I;
 
-L_53b4:
-    dx = (int32_t)((ptL2.x - ptL1.x));
-    dy = (int32_t)((ptL2.y - ptL1.y));
-    dxdy = (uint32_t)((dx * dy));
-    dx2 = (uint32_t)((dx * dx));
-    dy2 = (uint32_t)((dy * dy));
-    if ((dxdy <= 500000))
-        goto L_5434;
-    else
-        goto L_5464;
-
-L_5434:
-    if ((dx2 <= 500000))
-        goto L_544c;
-    else
-        goto L_5464;
-
-L_544c:
-    if ((dy2 <= 500000))
-        goto L_54e5;
-    else
-        goto L_5464;
-
-L_5464:
-    dxI = (((((double)(dxdy) * (double)((int32_t)((ptC.y - ptL1.y)))) + ((double)(dx2) * (double)((int32_t)(ptC.x)))) +
-            ((double)(dy2) * (double)((int32_t)(ptL1.x)))) /
-           (double)((dx2 + dy2)));
-    xI = (int32_t)(dxI);
-    goto L_5558;
-
-L_54e5:
-    xI = (int32_t)(((((uint32_t)((dxdy * (int32_t)((ptC.y - ptL1.y)))) + (uint32_t)((dx2 * (int32_t)(ptC.x)))) + (uint32_t)((dy2 * (int32_t)(ptL1.x)))) /
-                    (dx2 + dy2)));
-
-L_5558:
-    if ((dx != 0))
-        goto L_556a;
-    else
-        goto L_55af;
-
-L_556a:
-    yI = ((int32_t)(ptL1.y) + (int32_t)(((uint32_t)(((xI - (int32_t)(ptL1.x)) * dy)) / dx)));
-    goto L_55b9;
-
-L_55af:
-    yI = (int32_t)(ptL1.y);
-
-L_55b9:
-    dxI = (xI - (int32_t)(ptC.x));
-    dyI = (yI - (int32_t)(ptC.y));
-    r2I = ((uint32_t)((dxI * dxI)) + (uint32_t)((dyI * dyI)));
-    if ((r2 <= r2I))
-        goto L_5634;
-    else
-        goto L_563a;
-
-L_5634:
+    dx = (int32_t)(ptL2.x - ptL1.x);
+    dy = (int32_t)(ptL2.y - ptL1.y);
+    dxdy = (uint32_t)(dx * dy);
+    dx2 = (uint32_t)(dx * dx);
+    dy2 = (uint32_t)(dy * dy);
+    if (dxdy <= 500000 && dx2 <= 500000 && dy2 <= 500000) {
+        xI = (int32_t)((int32_t)((uint32_t)(dxdy * (int32_t)(ptC.y - ptL1.y)) + (uint32_t)(dx2 * (int32_t)ptC.x) + (uint32_t)(dy2 * (int32_t)ptL1.x)) /
+                       (dx2 + dy2));
+    } else {
+        dxI = ((double)dxdy * (double)(int32_t)(ptC.y - ptL1.y) + (double)dx2 * (double)(int32_t)ptC.x + (double)dy2 * (double)(int32_t)ptL1.x) /
+              (double)(dx2 + dy2);
+        xI = (int32_t)dxI;
+    }
+    if (dx != 0) {
+        yI = (int32_t)ptL1.y + (int32_t)((int32_t)((xI - (int32_t)ptL1.x) * dy) / dx);
+    } else {
+        yI = (int32_t)ptL1.y;
+    }
+    dxI = xI - (int32_t)ptC.x;
+    dyI = yI - (int32_t)ptC.y;
+    r2I = (uint32_t)(dxI * dxI) + (uint32_t)(dyI * dyI);
+    if (r2 <= r2I) {
+        return 0;
+    }
+    dxT = xI - (int32_t)ptL1.x;
+    dyT = yI - (int32_t)ptL1.y;
+    lT = (uint32_t)(dxT * dxT) + (uint32_t)(dyT * dyT);
+    dCtr = LOWORD((int32_t)sqrt((double)lT));
+    lT = r2 - r2I;
+    if (lT <= 0) {
+        return 0;
+    }
+    dOff = LOWORD((int32_t)sqrt((double)lT));
+    if (ptL1.x >= ptL2.x) {
+        if (ptL1.x <= ptL2.x) {
+            if (ptL1.y >= ptL2.y) {
+                if (yI > (int32_t)ptL1.y) {
+                    dCtr = -dCtr;
+                }
+            } else if (yI < (int32_t)ptL1.y) {
+                dCtr = -dCtr;
+            }
+        } else if (xI > (int32_t)ptL1.x) {
+            dCtr = -dCtr;
+        }
+    } else if (xI < (int32_t)ptL1.x) {
+        dCtr = -dCtr;
+    }
+    *pdStart = 0 <= dCtr - dOff ? dCtr - dOff : 0;
+    *pdEnd = dMax >= dCtr + dOff ? dCtr + dOff : dMax;
+    if (*pdEnd > 0 && *pdStart < dMax) {
+        return 1;
+    }
     return 0;
-
-L_563a:
-    dxT = (xI - (int32_t)(ptL1.x));
-    dyT = (yI - (int32_t)(ptL1.y));
-    lT = ((uint32_t)((dxT * dxT)) + (uint32_t)((dyT * dyT)));
-    dCtr = LOWORD((int32_t)(sqrt((double)(lT))));
-    lT = (r2 - r2I);
-    if ((lT <= 0))
-        goto L_56ea;
-    else
-        goto L_56f0;
-
-L_56ea:
-    return 0;
-
-L_56f0:
-    dOff = LOWORD((int32_t)(sqrt((double)(lT))));
-    if ((ptL1.x >= ptL2.x))
-        goto L_5746;
-    else
-        goto L_5722;
-
-L_5722:
-    if ((xI < (int32_t)(ptL1.x)))
-        goto L_573b;
-    else
-        goto L_57c5;
-
-L_573b:
-    dCtr = (-dCtr);
-
-L_5743:
-    goto L_57c5;
-
-L_5746:
-    if ((ptL1.x <= ptL2.x))
-        goto L_5775;
-    else
-        goto L_5751;
-
-L_5751:
-    if ((xI <= (int32_t)(ptL1.x)))
-        goto L_57c5;
-    else
-        goto L_576a;
-
-L_576a:
-    dCtr = (-dCtr);
-
-L_5772:
-    goto L_57c5;
-
-L_5775:
-    if ((ptL1.y >= ptL2.y))
-        goto L_57a4;
-    else
-        goto L_5780;
-
-L_5780:
-    if ((yI < (int32_t)(ptL1.y)))
-        goto L_5799;
-    else
-        goto L_57c5;
-
-L_5799:
-    dCtr = (-dCtr);
-
-L_57a1:
-    goto L_57c5;
-
-L_57a4:
-    if ((yI <= (int32_t)(ptL1.y)))
-        goto L_57c5;
-    else
-        goto L_57bd;
-
-L_57bd:
-    dCtr = (-dCtr);
-
-L_57c5:
-    if ((0 <= (dCtr - dOff)))
-        goto L_57db;
-    else
-        goto L_57d5;
-
-L_57d5:
-    t_merge_57e1_0001 = 0x0;
-    goto L_57e1;
-
-L_57db:
-    t_merge_57e1_0001 = (dCtr - dOff);
-
-L_57e1:
-    *(pdStart) = t_merge_57e1_0001;
-    if ((dMax >= (dCtr + dOff)))
-        goto L_57fa;
-    else
-        goto L_57f4;
-
-L_57f4:
-    t_merge_5800_0001 = dMax;
-    goto L_5800;
-
-L_57fa:
-    t_merge_5800_0001 = (dCtr + dOff);
-
-L_5800:
-    *(pdEnd) = t_merge_5800_0001;
-    if ((*(pdEnd) <= 0))
-        goto L_581d;
-    else
-        goto L_5810;
-
-L_5810:
-    if ((*(pdStart) < dMax))
-        goto L_5823;
-    else
-        goto L_581d;
-
-L_581d:
-    return 0;
-
-L_5823:
-    return 1;
 }
 
 void IntToRoman(int16_t i, char *pszOut) {
@@ -4118,84 +1927,45 @@ void IntToRoman(int16_t i, char *pszOut) {
     int16_t t_58af;
     char   *t_58be;
 
-L_5830:
-    if ((i > 0))
-        goto L_585c;
-    else
-        goto L_5842;
-
-L_5842:
-    *(pszOut) = 0;
-    goto L_58d1;
-
-L_584e:
-    t_584e = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_584e) = 88;
-    i = (i - 10);
-
-L_585c:
-    if ((i >= 10))
-        goto L_584e;
-    else
-        goto L_5865;
-
-L_5865:
-    if ((i != 9))
-        goto L_5885;
-    else
-        goto L_586e;
-
-L_586e:
-    t_586e = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_586e) = 73;
-    t_5878 = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_5878) = 88;
-    goto L_58cb;
-
-L_5885:
-    if ((i < 4))
-        goto L_58af;
-    else
-        goto L_588e;
-
-L_588e:
-    if ((i != 4))
-        goto L_58a1;
-    else
-        goto L_5897;
-
-L_5897:
-    t_5897 = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_5897) = 73;
-
-L_58a1:
-    t_58a1 = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_58a1) = 86;
-    i = (i - 5);
-
-L_58af:
-    t_58af = i;
-    i = (i - 1);
-    if ((t_58af <= 0))
-        goto L_58cb;
-    else
-        goto L_58be;
-
-L_58be:
-    t_58be = pszOut;
-    pszOut = (pszOut + 1);
-    *(t_58be) = 73;
-    goto L_58af;
-
-L_58cb:
-    *(pszOut) = 0;
-
-L_58d1:
+    if (i > 0) {
+        for (; i >= 10; i = i - 10) {
+            t_584e = pszOut;
+            pszOut = pszOut + 1;
+            *t_584e = 'X';
+        }
+        if (i != 9) {
+            if (i >= 4) {
+                if (i == 4) {
+                    t_5897 = pszOut;
+                    pszOut = pszOut + 1;
+                    *t_5897 = 'I';
+                }
+                t_58a1 = pszOut;
+                pszOut = pszOut + 1;
+                *t_58a1 = 'V';
+                i = i - 5;
+            }
+            while (1) {
+                t_58af = i;
+                i = i - 1;
+                if (t_58af <= 0)
+                    break;
+                t_58be = pszOut;
+                pszOut = pszOut + 1;
+                *t_58be = 'I';
+            }
+        } else {
+            t_586e = pszOut;
+            pszOut = pszOut + 1;
+            *t_586e = 'I';
+            t_5878 = pszOut;
+            pszOut = pszOut + 1;
+            *t_5878 = 'X';
+        }
+        *pszOut = 0;
+    } else {
+        *pszOut = 0;
+    }
     return;
 }
 
@@ -4203,119 +1973,44 @@ int16_t FCheckPassword() {
     FARPROC lpProc;
     int16_t fRet;
     int32_t lSaltDef;
-    HWND    t_merge_59a8_0001;
 
-L_58d8:
-    if ((lSaltCur != 0))
-        goto L_58f5;
-    else
-        goto L_5918;
-
-L_58f5:
-    if ((lSaltLast != lSaltCur))
-        goto L_590e;
-    else
-        goto L_5918;
-
-L_590e:
-    if ((fAi == 0))
-        goto L_591e;
-    else
-        goto L_5918;
-
-L_5918:
+    if (lSaltCur != 0 && lSaltLast != lSaltCur && fAi == 0) {
+        if ((int16_t)vszDefPass[0] != 0) {
+            lSaltDef = LSaltFromSz(vszDefPass);
+            if (lSaltDef == lSaltCur) {
+                return 1;
+            }
+        }
+        if (ini.fValidate == 0x0) {
+            lpProc = MakeProcInstance(PasswordDlg, hInst);
+            fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_PASSWORD), hwndTitle == 0x0 ? hwndFrame : hwndTitle, lpProc);
+            FreeProcInstance(lpProc);
+            return fRet;
+        }
+        return 0;
+    }
     return 1;
-
-L_591e:
-    if (((int16_t)(vszDefPass[0]) == 0))
-        goto L_5959;
-    else
-        goto L_592a;
-
-L_592a:
-    lSaltDef = LSaltFromSz(vszDefPass);
-    if ((lSaltDef != lSaltCur))
-        goto L_5959;
-    else
-        goto L_5953;
-
-L_5953:
-    return 1;
-
-L_5959:
-    if ((ini.fValidate == 0x0))
-        goto L_5972;
-    else
-        goto L_596c;
-
-L_596c:
-    return 0;
-
-L_5972:
-    lpProc = MakeProcInstance(PasswordDlg, hInst);
-    if ((hwndTitle == 0x0))
-        goto L_59a5;
-    else
-        goto L_599f;
-
-L_599f:
-    t_merge_59a8_0001 = hwndTitle;
-    goto L_59a8;
-
-L_59a5:
-    t_merge_59a8_0001 = hwndFrame;
-
-L_59a8:
-    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_PASSWORD), t_merge_59a8_0001, lpProc);
-    FreeProcInstance(lpProc);
-    return fRet;
 }
 
 int32_t LSaltFromSz(char *psz) {
     int32_t lSalt;
 
-L_59ce:
     lSalt = 0;
-    if (((int16_t)(*(psz)) != 0))
-        goto L_59f8;
-    else
-        goto L_59ef;
-
-L_59ef:
+    if ((int16_t)*psz != 0) {
+        while ((int16_t)*psz != 0) {
+            lSalt = lSalt + (int32_t)(int16_t)*psz;
+            psz = psz + 1;
+            if ((int16_t)*psz != 0) {
+                lSalt = (uint32_t)(lSalt * (int32_t)(int16_t)*psz);
+                psz = psz + 1;
+            }
+        }
+        if (lSalt == 0) {
+            lSalt = 1;
+        }
+        return lSalt;
+    }
     return 0;
-
-L_59f8:
-    if (((int16_t)(*(psz)) == 0))
-        goto L_5a46;
-    else
-        goto L_5a06;
-
-L_5a06:
-    lSalt = (lSalt + (int32_t)((int16_t)(*(psz))));
-    psz = (psz + 1);
-    if (((int16_t)(*(psz)) == 0))
-        goto L_59f8;
-    else
-        goto L_5a25;
-
-L_5a25:
-    lSalt = (uint32_t)((lSalt * (int32_t)((int16_t)(*(psz)))));
-    psz = (psz + 1);
-
-L_5a43:
-    goto L_59f8;
-
-L_5a46:
-    if ((lSalt != 0))
-        goto L_5a62;
-    else
-        goto L_5a58;
-
-L_5a58:
-    lSalt = 1;
-
-L_5a62:
-    return lSalt;
 }
 
 INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -4323,150 +2018,61 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT    rc;
     int32_t lSalt;
     int16_t t_merge_5ba5_0001;
-    int16_t t_merge_5c49_0001;
 
-L_5a72:
-    goto L_5c88;
-
-L_5a81:
-    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
-    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsEnterPassword));
-    return 1;
-
-L_5ac5:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_5aed:
-    if ((HIWORD(lParam) != 0x6))
-        goto L_5cab;
-    else
-        goto L_5b09;
-
-L_5b09:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_5b22:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_5b34;
-    else
-        goto L_5b2b;
-
-L_5b2b:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_5c58;
-    else
-        goto L_5b34;
-
-L_5b34:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_5c34;
-    else
-        goto L_5b3d;
-
-L_5b3d:
-    GetDlgItemText(hwnd, IDC_EDIT1, szPass, 60);
-    lSalt = LSaltFromSz(szPass);
-    if ((lSalt != lSaltCur))
-        goto L_5b7d;
-    else
-        goto L_5c03;
-
-L_5b7d:
-    vcPasswordFailures = (vcPasswordFailures + 0x1);
-    if ((vcPasswordFailures >= 0xa))
-        goto L_5b92;
-    else
-        goto L_5b8c;
-
-L_5b8c:
-    t_merge_5ba5_0001 = 1000;
-    goto L_5ba5;
-
-L_5b92:
-    if ((vcPasswordFailures >= 0x64))
-        goto L_5ba2;
-    else
-        goto L_5b9c;
-
-L_5b9c:
-    t_merge_5ba5_0001 = 5000;
-    goto L_5ba5;
-
-L_5ba2:
-    t_merge_5ba5_0001 = 10000;
-
-L_5ba5:
-    Delay(t_merge_5ba5_0001);
-    AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
-    SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-    SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -65536);
-    goto L_5cab;
-
-L_5c03:
-    if ((gd.fHotSeat != 0x0))
-        goto L_5c34;
-    else
-        goto L_5c16;
-
-L_5c16:
-    lSaltLast = lSaltCur;
-    strcpy(szPassLast, szPass);
-
-L_5c34:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_5c46;
-    else
-        goto L_5c40;
-
-L_5c40:
-    t_merge_5c49_0001 = 1;
-    goto L_5c49;
-
-L_5c46:
-    t_merge_5c49_0001 = 0;
-
-L_5c49:
-    EndDialog(hwnd, t_merge_5c49_0001);
-    return 1;
-
-L_5c58:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_5cab;
-    else
-        goto L_5c61;
-
-L_5c61:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x441);
-    return 1;
-
-L_5c88:
-    if ((message == WM_ERASEBKGND))
-        goto L_5ac5;
-    else
-        goto L_5c90;
-
-L_5c90:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_5aed;
-    else
-        goto L_5c98;
-
-L_5c98:
-    if ((message == WM_INITDIALOG))
-        goto L_5a81;
-    else
-        goto L_5ca0;
-
-L_5ca0:
-    if ((message == WM_COMMAND))
-        goto L_5b22;
-    else
-        goto L_5cab;
-
-L_5cab:
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        if (HIWORD(lParam) == 0x6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
+            SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsEnterPassword));
+            return 1;
+        }
+        if (message == WM_COMMAND) {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
+                    GetDlgItemText(hwnd, IDC_EDIT1, szPass, 60);
+                    lSalt = LSaltFromSz(szPass);
+                    if (lSalt != lSaltCur) {
+                        vcPasswordFailures = vcPasswordFailures + 0x1;
+                        if (vcPasswordFailures >= 0xa) {
+                            if (vcPasswordFailures >= 0x64) {
+                                t_merge_5ba5_0001 = 10000;
+                            } else {
+                                t_merge_5ba5_0001 = 5000;
+                            }
+                        } else {
+                            t_merge_5ba5_0001 = 1000;
+                        }
+                        Delay(t_merge_5ba5_0001);
+                        AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
+                        SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
+                        SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -1);
+                        break;
+                    }
+                    if (gd.fHotSeat == 0x0) {
+                        lSaltLast = lSaltCur;
+                        strcpy(szPassLast, szPass);
+                    }
+                }
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                return 1;
+            case IDC_HELP:
+                WinHelp(hwnd, szHelpFile, 0x1, 0x441);
+                return 1;
+            default:
+            }
+        }
+    }
     return 0;
 }
 
@@ -4475,156 +2081,65 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     RECT    rc;
     int32_t lSalt2;
     int32_t lSalt;
-    int16_t t_merge_5f4f_0001;
 
-L_5cba:
-    goto L_5f8e;
-
-L_5cc9:
-    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x10, 0);
-    SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
-    if ((idPlayer != -1))
-        goto L_5d48;
-    else
-        goto L_5d0b;
-
-L_5d0b:
-    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNotePasswordEffectiveImmediately));
-    SetWindowText(hwnd, PszGetCompressedString(idsChangeHostPassword));
-    goto L_5d6a;
-
-L_5d48:
-    SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil));
-
-L_5d6a:
-    return 1;
-
-L_5d70:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_5d98:
-    if ((HIWORD(lParam) != 0x6))
-        goto L_5fb1;
-    else
-        goto L_5db4;
-
-L_5db4:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_5dcd:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_5ddf;
-    else
-        goto L_5dd6;
-
-L_5dd6:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_5f5e;
-    else
-        goto L_5ddf;
-
-L_5ddf:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_5f3a;
-    else
-        goto L_5de8;
-
-L_5de8:
-    GetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szPass, 18);
-    lSalt = LSaltFromSz(szPass);
-    GetWindowText(GetDlgItem(hwnd, IDC_U16_0x010D), szPass, 18);
-    lSalt2 = LSaltFromSz(szPass);
-    if ((lSalt != lSalt2))
-        goto L_5e5c;
-    else
-        goto L_5eb1;
-
-L_5e5c:
-    AlertSz(PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, 0x0), MB_ICONHAND);
-    SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-    SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -65536);
-    goto L_5fb1;
-
-L_5eb1:
-    if ((idPlayer == -1))
-        goto L_5ed2;
-    else
-        goto L_5ebb;
-
-L_5ebb:
-    WriteMemRt(36, 4, &(lSalt));
-    goto L_5f3a;
-
-L_5ed2:
-    lSaltCur = lSalt;
-    if ((FWriteDataFile(szBase, idPlayer, 0) == 0))
-        goto L_5f0b;
-    else
-        goto L_5efb;
-
-L_5efb:
-    lSaltLast = lSalt;
-    goto L_5f3a;
-
-L_5f0b:
-    AlertSz(PszFormatIds(idsUnableCreateHostFile, 0x0), MB_ICONHAND);
-    lSaltCur = lSaltLast;
-
-L_5f3a:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_5f4c;
-    else
-        goto L_5f46;
-
-L_5f46:
-    t_merge_5f4f_0001 = 1;
-    goto L_5f4f;
-
-L_5f4c:
-    t_merge_5f4f_0001 = 0;
-
-L_5f4f:
-    EndDialog(hwnd, t_merge_5f4f_0001);
-    return 1;
-
-L_5f5e:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_5fb1;
-    else
-        goto L_5f67;
-
-L_5f67:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x43c);
-    return 1;
-
-L_5f8e:
-    if ((message == WM_ERASEBKGND))
-        goto L_5d70;
-    else
-        goto L_5f96;
-
-L_5f96:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_5d98;
-    else
-        goto L_5f9e;
-
-L_5f9e:
-    if ((message == WM_INITDIALOG))
-        goto L_5cc9;
-    else
-        goto L_5fa6;
-
-L_5fa6:
-    if ((message == WM_COMMAND))
-        goto L_5dcd;
-    else
-        goto L_5fb1;
-
-L_5fb1:
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        if (HIWORD(lParam) == 0x6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x10, 0);
+            SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
+            if (idPlayer != -1) {
+                SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil));
+            } else {
+                SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNotePasswordEffectiveImmediately));
+                SetWindowText(hwnd, PszGetCompressedString(idsChangeHostPassword));
+            }
+            return 1;
+        }
+        if (message == WM_COMMAND) {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
+                    GetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szPass, 18);
+                    lSalt = LSaltFromSz(szPass);
+                    GetWindowText(GetDlgItem(hwnd, IDC_U16_0x010D), szPass, 18);
+                    lSalt2 = LSaltFromSz(szPass);
+                    if (lSalt != lSalt2) {
+                        AlertSz(PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, 0x0), MB_ICONHAND);
+                        SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
+                        SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0x0, -1);
+                        break;
+                    }
+                    if (idPlayer == -1) {
+                        lSaltCur = lSalt;
+                        if (FWriteDataFile(szBase, idPlayer, 0) == 0) {
+                            AlertSz(PszFormatIds(idsUnableCreateHostFile, 0x0), MB_ICONHAND);
+                            lSaltCur = lSaltLast;
+                        } else {
+                            lSaltLast = lSalt;
+                        }
+                    } else {
+                        WriteMemRt(36, 4, &lSalt);
+                    }
+                }
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                return 1;
+            case IDC_HELP:
+                WinHelp(hwnd, szHelpFile, 0x1, 0x43c);
+                return 1;
+            default:
+            }
+        }
+    }
     return 0;
 }
 
@@ -4647,277 +2162,123 @@ uint32_t GetDiskSerialNumber() {
     int16_t     t_6231;
     int16_t     t_6351;
 
-L_5fc0:
     iWork = 0;
     memset(vrgbEnvCur, 0, 0xb);
     CchGetString(idsC, fn);
-    i = 0;
-    goto L_6240;
-
-L_5ffa:
-    drive = (i + 2);
-    fn[0] = LOBYTE((drive + 65));
-    l = 0;
-    uDate = 0x0;
-    if ((GetDriveType((i + 2)) != 0x3))
-        goto NoDrive;
-    else
-        goto L_6032;
-
-L_6032:
-    if ((dos_findfirst(fn, 0x8, &(fi)) != 0))
-        goto NoDrive;
-    else
-        goto L_604e;
-
-L_604e:
-    j = 0;
-    goto L_60e2;
-
-L_6056:
-    if (((int16_t)(fi.name[j]) == 0))
-        goto L_60eb;
-    else
-        goto L_606c;
-
-L_606c:
-    if ((i != 0))
-        goto L_60ab;
-    else
-        goto L_6075;
-
-L_6075:
-    l = ((int32_t)((l << 0x4)) | (int32_t)(((int16_t)(fi.name[j]) & 0xf)));
-    goto L_60de;
-
-L_60ab:
-    l = ((int32_t)((l << 0x3)) | (int32_t)(((int16_t)(fi.name[j]) & 0x7)));
-
-L_60de:
-    j = (j + 1);
-
-L_60e2:
-    if ((j < 8))
-        goto L_6056;
-    else
-        goto L_60eb;
-
-L_60eb:
-    if ((i != 0))
-        goto L_614f;
-    else
-        goto L_60f4;
-
-L_60f4:
-    uDate = ((((((fi.wr_date & 0xf) << 0xc) | (((fi.wr_date >> 0x5) & 0x7) << 0x9)) | ((fi.wr_time & 0xf) << 0x5)) | (((fi.wr_time >> 0x5) & 0xf) << 0x1)) |
-             ((fi.wr_time >> 0xb) & 0x1));
-    goto L_618f;
-
-L_614f:
-    uDate = ((((fi.wr_date & 0x3) << 0x6) | ((fi.wr_time & 0x7) << 0x3)) | ((fi.wr_time >> 0x5) & 0x7));
-
-L_617d:
-    goto L_618f;
-
-NoDrive:
-    uDate = 0xc57a;
-    l = 1504107685;
-
-L_618f:
-    t_619b = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_619b] = LOBYTE((LOWORD(l) & 0xff));
-    t_61ba = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_61ba] = LOBYTE((LOWORD((int32_t)((l >> 0x8))) & 0xff));
-    t_61d9 = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_61d9] = LOBYTE((HIWORD(l) & 0xff));
-    if ((i != 0))
-        goto L_620c;
-    else
-        goto L_61ed;
-
-L_61ed:
-    t_6201 = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_6201] = LOBYTE((LOWORD((int32_t)((l >> 0x18))) & 0xff));
-
-L_620c:
-    t_6212 = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_6212] = LOBYTE((uDate & 0xff));
-    if ((i != 0))
-        goto L_623c;
-    else
-        goto L_6226;
-
-L_6226:
-    t_6231 = iWork;
-    iWork = (iWork + 1);
-    vrgbEnvCur[t_6231] = LOBYTE(((uDate >> 0x8) & 0xff));
-
-L_623c:
-    i = (i + 1);
-
-L_6240:
-    if ((i < 2))
-        goto L_5ffa;
-    else
-        goto L_6249;
-
-L_6249:
+    for (i = 0; i < 2; i++) {
+        drive = i + 2;
+        fn[0] = LOBYTE(drive + 65);
+        l = 0;
+        uDate = 0x0;
+        if (GetDriveType(i + 2) != 0x3 || dos_findfirst(fn, 0x8, &fi) != 0) {
+            uDate = 0xc57a;
+            l = 1504107685;
+        } else {
+            for (j = 0; j < 8 && (int16_t)fi.name[j] != 0; j++) {
+                if (i != 0) {
+                    l = (int32_t)(l << 0x3) | (int32_t)((int16_t)fi.name[j] & 0x7);
+                } else {
+                    l = (int32_t)(l << 0x4) | (int32_t)((int16_t)fi.name[j] & 0xf);
+                }
+            }
+            if (i != 0) {
+                uDate = (fi.wr_date & 0x3) << 0x6 | (fi.wr_time & 0x7) << 0x3 | (fi.wr_time >> 0x5 & 0x7);
+            } else {
+                uDate = (fi.wr_date & 0xf) << 0xc | (fi.wr_date >> 0x5 & 0x7) << 0x9 | (fi.wr_time & 0xf) << 0x5 | (fi.wr_time >> 0x5 & 0xf) << 0x1 |
+                        (fi.wr_time >> 0xb & 0x1);
+            }
+        }
+        t_619b = iWork;
+        iWork = iWork + 1;
+        vrgbEnvCur[t_619b] = LOBYTE(LOWORD(l) & 0xff);
+        t_61ba = iWork;
+        iWork = iWork + 1;
+        vrgbEnvCur[t_61ba] = LOBYTE(LOWORD((int32_t)(l >> 0x8)) & 0xff);
+        t_61d9 = iWork;
+        iWork = iWork + 1;
+        vrgbEnvCur[t_61d9] = LOBYTE(HIWORD(l) & 0xff);
+        if (i == 0) {
+            t_6201 = iWork;
+            iWork = iWork + 1;
+            vrgbEnvCur[t_6201] = LOBYTE(LOWORD((int32_t)(l >> 0x18)) & 0xff);
+        }
+        t_6212 = iWork;
+        iWork = iWork + 1;
+        vrgbEnvCur[t_6212] = LOBYTE(uDate & 0xff);
+        if (i == 0) {
+            t_6231 = iWork;
+            iWork = iWork + 1;
+            vrgbEnvCur[t_6231] = LOBYTE(uDate >> 0x8 & 0xff);
+        }
+    }
     uDefault = 0x0;
-    i = 0;
-    goto L_6348;
-
-L_6255:
-    uDefault = LOBYTE((uDefault * 0x10));
-    if ((GetDriveType((i + 2)) == 0x3))
-        goto L_6287;
-    else
-        goto L_627a;
-
-L_627a:
-    l = 1;
-    goto L_62a3;
-
-L_6287:
-    l = (uint32_t)(dos_getdiskfree((i + 3), &(df)));
-
-L_62a3:
-    if ((l != 0))
-        goto L_6344;
-    else
-        goto L_62b5;
-
-L_62b5:
-    l = (int32_t)(((uint32_t)(((uint32_t)(df.total_clusters) * (uint32_t)(df.bytes_per_sector))) / 0x200));
-    l = (uint32_t)((l * (uint32_t)(df.sectors_per_cluster)));
-    l = (int32_t)((l / 195312));
-    if ((l <= 15))
-        goto L_6332;
-    else
-        goto L_6328;
-
-L_6328:
-    l = 15;
-
-L_6332:
-    uDefault = (uDefault + LOBYTE(((LOWORD(l) & 0xf) & 0xff)));
-
-L_6344:
-    i = (i + 1);
-
-L_6348:
-    if ((i < 2))
-        goto L_6255;
-    else
-        goto L_6351;
-
-L_6351:
+    for (i = 0; i < 2; i++) {
+        uDefault = LOBYTE(uDefault * 0x10);
+        if (GetDriveType(i + 2) == 0x3) {
+            l = (uint32_t)dos_getdiskfree(i + 3, &df);
+        } else {
+            l = 1;
+        }
+        if (l == 0) {
+            l = (int32_t)((int32_t)((uint32_t)df.total_clusters * (uint32_t)df.bytes_per_sector) / 0x200);
+            l = (uint32_t)(l * (uint32_t)df.sectors_per_cluster);
+            l = (int32_t)(l / 195312);
+            if (l > 15) {
+                l = 15;
+            }
+            uDefault = uDefault + LOBYTE(LOWORD(l) & 0xf & 0xff);
+        }
+    }
     t_6351 = iWork;
-    iWork = (iWork + 1);
+    iWork = iWork + 1;
     vrgbEnvCur[t_6351] = uDefault;
-
-L_6366:
-    return (int32_t)(iWork);
+    return (int32_t)iWork;
 }
 
 void ShowProgressGauge() {
-L_636c:
-    if ((hwndProgressGauge != 0x0))
-        goto L_639f;
-    else
-        goto L_637f;
-
-L_637f:
-    CreateDialog(hInst, MAKEINTRESOURCE(IDD_Gauge), hwndFrame, lpfnGaugeDlgProc);
-    goto L_63ab;
-
-L_639f:
-    UpdateProgressGauge(0);
-
-L_63ab:
+    if (hwndProgressGauge != 0x0) {
+        UpdateProgressGauge(0);
+    } else {
+        CreateDialog(hInst, MAKEINTRESOURCE(IDD_Gauge), hwndFrame, lpfnGaugeDlgProc);
+    }
     return;
 }
 
 void HideProgressGauge() {
-L_63b2:
-    if ((hwndProgressGauge == 0x0))
-        goto L_63d4;
-    else
-        goto L_63c5;
-
-L_63c5:
-    DestroyWindow(hwndProgressGauge);
-    hwndProgressGauge = 0x0;
-
-L_63d4:
+    if (hwndProgressGauge != 0x0) {
+        DestroyWindow(hwndProgressGauge);
+        hwndProgressGauge = 0x0;
+    }
     return;
 }
 
 void UpdateProgressGauge(int16_t pctX10) {
     int16_t iNum;
 
-L_63da:
-    if ((hwndProgressGauge == 0x0))
-        goto L_6477;
-    else
-        goto L_63ed;
-
-L_63ed:
-    iNum = 0;
-    if ((pctX10 != -926))
-        goto L_6408;
-    else
-        goto L_63fc;
-
-L_63fc:
-    pctX10 = (vpctProgressGauge + 4);
-    goto L_645e;
-
-L_6408:
-    if ((pctX10 != -927))
-        goto L_641e;
-    else
-        goto L_6412;
-
-L_6412:
-    pctX10 = (vpctProgressGauge + 1);
-    goto L_645e;
-
-L_641e:
-    if ((pctX10 >= 0))
-        goto L_642f;
-    else
-        goto L_6427;
-
-L_6427:
-    pctX10 = 0;
-    goto L_645e;
-
-L_642f:
-    if ((pctX10 <= 1000))
-        goto L_645e;
-    else
-        goto L_6439;
-
-L_6439:
-    if ((gd.fProgressTxt == 0x0))
-        goto L_6477;
-    else
-        goto L_644c;
-
-L_644c:
-    iNum = pctX10;
-    pctX10 = vpctProgressGauge;
-
-L_645e:
-    vpctProgressGauge = pctX10;
-    DrawProgressGauge(0x0, 0, iNum);
-
-L_6477:
+    if (hwndProgressGauge != 0x0) {
+        iNum = 0;
+        if (pctX10 != -926) {
+            if (pctX10 != -927) {
+                if (pctX10 >= 0) {
+                    if (pctX10 > 1000) {
+                        if (gd.fProgressTxt == 0x0) {
+                            return;
+                        }
+                        iNum = pctX10;
+                        pctX10 = vpctProgressGauge;
+                    }
+                } else {
+                    pctX10 = 0;
+                }
+            } else {
+                pctX10 = vpctProgressGauge + 1;
+            }
+        } else {
+            pctX10 = vpctProgressGauge + 4;
+        }
+        vpctProgressGauge = pctX10;
+        DrawProgressGauge(0x0, 0, iNum);
+    }
     return;
 }
 
@@ -4929,198 +2290,96 @@ INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
     char       *psz;
     int16_t     dx;
 
-L_647e:
-    goto L_65c4;
-
-L_648d:
-    vpctProgressGauge = 0;
-    hwndProgressGauge = hwnd;
-    dx = GetSystemMetrics(SM_CXSCREEN);
-    dy = GetSystemMetrics(SM_CYSCREEN);
-    psz = PszGetCompressedString(idsGeneratingDataYearD);
-    _wsprintf(szWork, psz, (game.turn + 0x961));
-    SetWindowText(GetDlgItem(hwnd, IDC_NEXT), szWork);
-    GetWindowRect(hwnd, &(rc));
-    rc.left = ((dx - (rc.right - rc.left)) >> 0x1);
-    rc.top = ((dy - (rc.bottom - rc.top)) >> 0x1);
-    SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-    return 1;
-
-L_6549:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_6571:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_6587:
-    hdc = BeginPaint(hwnd, &(ps));
-    DrawProgressGauge(hdc, 1, 0);
-    EndPaint(hwnd, &(ps));
-    return 1;
-
-L_65c4:
-    if ((message == WM_PAINT))
-        goto L_6587;
-    else
-        goto L_65cc;
-
-L_65cc:
-    if ((message == WM_ERASEBKGND))
-        goto L_6549;
-    else
-        goto L_65d4;
-
-L_65d4:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_6571;
-    else
-        goto L_65dc;
-
-L_65dc:
-    if ((message == WM_INITDIALOG))
-        goto L_648d;
-    else
-        goto L_65e7;
-
-L_65e7:
+    if (message == WM_PAINT) {
+        hdc = BeginPaint(hwnd, &ps);
+        DrawProgressGauge(hdc, 1, 0);
+        EndPaint(hwnd, &ps);
+        return 1;
+    }
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        SetBkColor((HDC)wParam, crButtonFace);
+        return (INT_PTR)hbrButtonFace;
+    }
+    if (message == WM_INITDIALOG) {
+        vpctProgressGauge = 0;
+        hwndProgressGauge = hwnd;
+        dx = GetSystemMetrics(SM_CXSCREEN);
+        dy = GetSystemMetrics(SM_CYSCREEN);
+        psz = PszGetCompressedString(idsGeneratingDataYearD);
+        _wsprintf(szWork, psz, game.turn + 0x961);
+        SetWindowText(GetDlgItem(hwnd, IDC_NEXT), szWork);
+        GetWindowRect(hwnd, &rc);
+        rc.left = (dx - (rc.right - rc.left)) >> 0x1;
+        rc.top = (dy - (rc.bottom - rc.top)) >> 0x1;
+        SetWindowPos(hwnd, 0x0, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        return 1;
+    }
     return 0;
 }
 
 void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly) {
-    HDC      hdc;
-    int16_t  dy;
-    int16_t  fNumOnly;
-    int16_t  dx2;
-    int16_t  dx;
-    RECT     rc;
-    int16_t  c;
-    char     szT[8];
-    uint16_t t_merge_6611_0001;
+    HDC     hdc;
+    int16_t dy;
+    int16_t fNumOnly;
+    int16_t dx2;
+    int16_t dx;
+    RECT    rc;
+    int16_t c;
+    char    szT[8];
 
-L_65f6:
-    if ((iNumOnly <= 0))
-        goto L_660e;
-    else
-        goto L_6608;
-
-L_6608:
-    t_merge_6611_0001 = 0x1;
-    goto L_6611;
-
-L_660e:
-    t_merge_6611_0001 = 0x0;
-
-L_6611:
-    fNumOnly = t_merge_6611_0001;
-    if ((hwndProgressGauge == 0x0))
-        goto L_6856;
-    else
-        goto L_6621;
-
-L_6621:
-    if ((hdcOrig != 0x0))
-        goto L_6639;
-    else
-        goto L_662a;
-
-L_662a:
-    hdc = GetDC(hwndProgressGauge);
-    goto L_663f;
-
-L_6639:
-    hdc = hdcOrig;
-
-L_663f:
-    GetClientRect(hwndProgressGauge, &(rc));
-    rc.top = (rc.bottom >> 0x1);
-    InflateRect(&(rc), -8, -8);
-    dx = (rc.right - rc.left);
-    dy = (rc.bottom - rc.top);
-    if ((fFull == 0))
-        goto L_672e;
-    else
-        goto L_6686;
-
-L_6686:
-    SelectObject(hdc, hbrButtonShadow);
-    PatBlt(hdc, (rc.left - 1), (rc.top - 1), (dx + 2), 1, PATCOPY);
-    PatBlt(hdc, (rc.left - 1), (rc.top - 1), 1, (dy + 2), PATCOPY);
-    SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, rc.left, rc.bottom, (dx + 1), 1, PATCOPY);
-    PatBlt(hdc, rc.right, rc.top, 1, dy, PATCOPY);
-
-L_672e:
-    InflateRect(&(rc), -2, -2);
-    dx = (dx - 4);
-    dy = (dy - 4);
-    if ((gd.fProgressTxt == 0x0))
-        goto L_67c5;
-    else
-        goto L_675d;
-
-L_675d:
-    SetBkColor(hdc, crButtonFace);
-    SelectObject(hdc, rghfontArial7[0]);
-    if ((iNumOnly > 0))
-        goto L_6788;
-    else
-        goto L_6782;
-
-L_6782:
-    iNumOnly = vpctProgressGauge;
-
-L_6788:
-    c = _wsprintf(szT, PCTD, iNumOnly);
-    RightTextOut(hdc, (rc.right - 2), 1, szT, c, 80);
-
-L_67c5:
-    if ((fNumOnly != 0))
-        goto LRelease;
-    else
-        goto L_67d1;
-
-L_67d1:
-    SelectObject(hdc, hbrBlue);
-    dx = MulDiv(dx, vpctProgressGauge, 1000);
-    goto L_6838;
-
-L_67f3:
-    if ((dx < dy))
-        goto L_680a;
-    else
-        goto L_67fe;
-
-L_67fe:
-    dx2 = (dy - 1);
-    goto L_6810;
-
-L_680a:
-    dx2 = dx;
-
-L_6810:
-    PatBlt(hdc, rc.left, rc.top, dx2, dy, PATCOPY);
-    rc.left = (rc.left + dy);
-    dx = (dx - dy);
-
-L_6838:
-    if ((dx > 0))
-        goto L_67f3;
-    else
-        goto LRelease;
-
-LRelease:
-    if ((hdcOrig != 0x0))
-        goto L_6856;
-    else
-        goto L_684a;
-
-L_684a:
-    ReleaseDC(hwndProgressGauge, hdc);
-
-L_6856:
+    fNumOnly = iNumOnly <= 0 ? 0 : 1;
+    if (hwndProgressGauge != 0x0) {
+        if (hdcOrig != 0x0) {
+            hdc = hdcOrig;
+        } else {
+            hdc = GetDC(hwndProgressGauge);
+        }
+        GetClientRect(hwndProgressGauge, &rc);
+        rc.top = rc.bottom >> 0x1;
+        InflateRect(&rc, -8, -8);
+        dx = rc.right - rc.left;
+        dy = rc.bottom - rc.top;
+        if (fFull != 0) {
+            SelectObject(hdc, hbrButtonShadow);
+            PatBlt(hdc, rc.left - 1, rc.top - 1, dx + 2, 1, PATCOPY);
+            PatBlt(hdc, rc.left - 1, rc.top - 1, 1, dy + 2, PATCOPY);
+            SelectObject(hdc, hbrButtonHilite);
+            PatBlt(hdc, rc.left, rc.bottom, dx + 1, 1, PATCOPY);
+            PatBlt(hdc, rc.right, rc.top, 1, dy, PATCOPY);
+        }
+        InflateRect(&rc, -2, -2);
+        dx = dx - 4;
+        dy = dy - 4;
+        if (gd.fProgressTxt != 0x0) {
+            SetBkColor(hdc, crButtonFace);
+            SelectObject(hdc, rghfontArial7[0]);
+            if (iNumOnly <= 0) {
+                iNumOnly = vpctProgressGauge;
+            }
+            c = _wsprintf(szT, PCTD, iNumOnly);
+            RightTextOut(hdc, rc.right - 2, 1, szT, c, 80);
+        }
+        if (fNumOnly == 0) {
+            SelectObject(hdc, hbrBlue);
+            for (dx = MulDiv(dx, vpctProgressGauge, 1000); dx > 0; dx = dx - dy) {
+                if (dx < dy) {
+                    dx2 = dx;
+                } else {
+                    dx2 = dy - 1;
+                }
+                PatBlt(hdc, rc.left, rc.top, dx2, dy, PATCOPY);
+                rc.left = rc.left + dy;
+            }
+        }
+        if (hdcOrig == 0x0) {
+            ReleaseDC(hwndProgressGauge, hdc);
+        }
+    }
     return;
 }
 
@@ -5128,79 +2387,35 @@ int32_t LDistance2(POINT16 pt1, POINT16 pt2) {
     int32_t dy;
     int32_t dx;
 
-L_685c:
-    dx = (int32_t)((pt1.x - pt2.x));
-    dy = (int32_t)((pt1.y - pt2.y));
-
-L_68b4:
-    return ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
+    dx = (int32_t)(pt1.x - pt2.x);
+    dy = (int32_t)(pt1.y - pt2.y);
+    return (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
 }
 
 char *PszGetLine(char **ppszBeg) {
     char *pszStart;
     char *psz;
 
-L_68ba:
-    psz = *(ppszBeg);
-
-L_68d1:
-    if (((int16_t)(*(psz)) != 32))
-        goto L_68e7;
-    else
-        goto L_68e0;
-
-L_68e0:
-    psz = (psz + 1);
-    goto L_68d1;
-
-L_68e7:
+    for (psz = *ppszBeg; (int16_t)*psz == ' '; psz++) {
+    }
     pszStart = psz;
-
-L_68f3:
-    if (((int16_t)(*(psz)) == 0))
-        goto L_6927;
-    else
-        goto L_6902;
-
-L_6902:
-    if (((int16_t)(*(psz)) == 10))
-        goto L_6927;
-    else
-        goto L_6911;
-
-L_6911:
-    if (((int16_t)(*(psz)) == 13))
-        goto L_6927;
-    else
-        goto L_6920;
-
-L_6920:
-    psz = (psz + 1);
-    goto L_68f3;
-
-L_6927:
-    if (((int16_t)(*(psz)) != 13))
-        goto L_695c;
-    else
-        goto L_6936;
-
-L_6936:
-    if (((int16_t)(psz[1]) != 10))
-        goto L_695c;
-    else
-        goto L_6946;
-
-L_6946:
-    *(ppszBeg) = (psz + 2);
-    goto L_696f;
-
-L_695c:
-    *(ppszBeg) = (psz + 1);
-
-L_696f:
-    *(psz) = 0;
-
-L_697f:
+    while (1) {
+        switch ((int16_t)*psz) {
+        default:
+            psz = psz + 1;
+            continue;
+        case 0:
+        case 10:
+        case 13:
+        }
+        break;
+    }
+    if ((int16_t)*psz != 13 || (int16_t)psz[1] != 10) {
+        *ppszBeg = psz + 1;
+    } else {
+        *ppszBeg = psz + 2;
+    }
+    *psz = 0;
     return pszStart;
 }
 
@@ -5211,84 +2426,35 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
     int16_t t_6a44;
     int16_t t_6a7e;
 
-L_6986:
     iRead = 0;
     lNum = 0;
     fValid = 0;
-
-L_69a3:
-    if ((iRead >= cMax))
-        goto L_6a75;
-    else
-        goto L_69ae;
-
-L_69ae:
-    if (((int16_t)(*(psz)) == 0))
-        goto L_6a75;
-    else
-        goto L_69bd;
-
-L_69bd:
-    if (((int16_t)(*(psz)) == 32))
-        goto L_69f0;
-    else
-        goto L_69cc;
-
-L_69cc:
-    if (((int16_t)(*(psz)) < 48))
-        goto L_69ea;
-    else
-        goto L_69db;
-
-L_69db:
-    if (((int16_t)(*(psz)) <= 57))
-        goto L_69f0;
-    else
-        goto L_69ea;
-
-L_69ea:
+    while (1) {
+        if (iRead >= cMax || (int16_t)*psz == 0)
+            goto L_6a75;
+        if ((int16_t)*psz != ' ' && ((int16_t)*psz < '0' || (int16_t)*psz > '9'))
+            break;
+        if ((int16_t)*psz == ' ') {
+            if (fValid != 0) {
+                t_6a44 = iRead;
+                iRead = iRead + 1;
+                pl[t_6a44] = lNum;
+                lNum = 0;
+                fValid = 0;
+            }
+        } else {
+            fValid = 1;
+            lNum = (uint32_t)(lNum * 10) + (int32_t)((int16_t)*psz - 48);
+        }
+        psz = psz + 1;
+    }
     return -1;
-
-L_69f0:
-    if (((int16_t)(*(psz)) == 32))
-        goto L_6a3b;
-    else
-        goto L_69ff;
-
-L_69ff:
-    fValid = 1;
-    lNum = ((uint32_t)((lNum * 10)) + (int32_t)(((int16_t)(*(psz)) - 48)));
-    goto L_6a6e;
-
-L_6a3b:
-    if ((fValid == 0))
-        goto L_6a6e;
-    else
-        goto L_6a44;
-
-L_6a44:
-    t_6a44 = iRead;
-    iRead = (iRead + 1);
-    pl[t_6a44] = lNum;
-    lNum = 0;
-    fValid = 0;
-
-L_6a6e:
-    psz = (psz + 1);
-    goto L_69a3;
-
 L_6a75:
-    if ((fValid == 0))
-        goto L_6a99;
-    else
-        goto L_6a7e;
-
-L_6a7e:
-    t_6a7e = iRead;
-    iRead = (iRead + 1);
-    pl[t_6a7e] = lNum;
-
-L_6a99:
+    if (fValid != 0) {
+        t_6a7e = iRead;
+        iRead = iRead + 1;
+        pl[t_6a7e] = lNum;
+    }
     return iRead;
 }
 
@@ -5298,32 +2464,17 @@ HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont) {
     TEXTMETRIC tm;
     HFONT      hfontSav;
 
-L_6aa6:
     plf = LocalAlloc(0x40, sizeof(LOGFONT));
     memset(plf, 0, sizeof(LOGFONT));
-    plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
+    plf->lfHeight = -MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
     strcpy(plf->lfFaceName, rgszArial[1]);
     hfontNew = CreateFontIndirect(plf);
-    if ((pdyFont == 0x0))
-        goto L_6b5b;
-    else
-        goto L_6b1f;
-
-L_6b1f:
-    if ((hfontNew == 0x0))
-        goto L_6b5b;
-    else
-        goto L_6b28;
-
-L_6b28:
-    hfontSav = SelectObject(hdc, hfontNew);
-    GetTextMetrics(hdc, &(tm));
-    *(pdyFont) = (tm.tmHeight + tm.tmExternalLeading);
-    SelectObject(hdc, hfontSav);
-
-L_6b5b:
+    if (pdyFont != 0x0 && hfontNew != 0x0) {
+        hfontSav = SelectObject(hdc, hfontNew);
+        GetTextMetrics(hdc, &tm);
+        *pdyFont = tm.tmHeight + tm.tmExternalLeading;
+        SelectObject(hdc, hfontSav);
+    }
     LocalFree(plf);
-
-L_6b6a:
     return hfontNew;
 }

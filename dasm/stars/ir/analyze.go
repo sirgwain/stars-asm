@@ -19,7 +19,7 @@ func (fn *Func) Analyze() AnalyzeResult {
 	for _, block := range fn.Blocks {
 		for _, stmt := range block.Stmts {
 			switch stmt.(type) {
-			case *Goto, *IfGoto, *TableJump:
+			case *Goto, *IfGoto, *TableJump, *SwitchGoto:
 			default:
 				result.NumStatements++
 			}

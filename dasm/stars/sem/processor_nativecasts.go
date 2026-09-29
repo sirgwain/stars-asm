@@ -127,6 +127,11 @@ func (p *nativeCastsProcessor) rewriter() *semRewriter {
 					diff.LHS, diff.RHS = lhs, rhs
 					return &diff, true, true
 				}
+				if lhs, rhs, ok := nativeWideOperands(e); ok {
+					wide := *e
+					wide.LHS, wide.RHS = lhs, rhs
+					return &wide, true, true
+				}
 			}
 			return next, changed, true
 		},

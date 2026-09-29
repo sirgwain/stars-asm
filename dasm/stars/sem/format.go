@@ -77,6 +77,9 @@ func FormatExpr(expr Expr) string {
 		if fx := e.Fixup; fx != nil && fx.Target == asm.FixupTargetImportOrdinal && fx.Source == asm.FixupSourceOffset {
 			return fx.FuncName
 		}
+		if e.Char {
+			return formatCharLiteral(byte(e.U64))
+		}
 		// if e.U64 == 0 {
 		// 	return "0"
 		// }
@@ -128,6 +131,8 @@ func FormatExpr(expr Expr) string {
 		return formatPart(e)
 	case *AddressOf:
 		return formatAddressOf(e)
+	case *Cond:
+		return fmt.Sprintf("(%s ? %s : %s)", FormatExpr(e.Cond), FormatExpr(e.Then), FormatExpr(e.Else))
 	case *Merge:
 		return formatMerge(e)
 	case *RawValue:
@@ -373,4 +378,14 @@ func formatCompareOp(op CompareOp) string {
 	default:
 		return machine.PredicateVal(machine.PredicateUnknown, "cmp?").String()
 	}
+}
+
+// formatCharLiteral returns ch as a C character literal, escaping the quote
+// and backslash characters.
+func formatCharLiteral(ch byte) string {
+	switch ch {
+	case '\'', '\\':
+		return "'\\" + string(ch) + "'"
+	}
+	return "'" + string(ch) + "'"
 }

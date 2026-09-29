@@ -17,6 +17,8 @@ After making changes to the repo, review the changes against the above rules to 
 
 Run unit tests to automatically update snapshot files in [dasm/stars/testdata/snapshots]
 
+Don't commit on my behalf
+
 ## References
 
 All struct definitions for this project live in [structs](decompiled/structs.h). When interpreting offsets and bitfields on globals or locals or function params, reference the structs.

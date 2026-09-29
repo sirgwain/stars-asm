@@ -1,0 +1,289 @@
+void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
+    PLANET    *lppl;
+    HtMineType ht;
+    PART       part;
+    char       rgsz[16][32];
+    char      *rgpsz[16];
+    int16_t    c;
+    FLEET     *lpfl;
+    int16_t    rgid[16];
+    int16_t    ishdef;
+    int16_t    rgMin[3];
+    PLANET     pl;
+    int16_t    rgCost[3];
+    int16_t    rgMax[3];
+    int16_t    fOurs;
+    int16_t    i;
+    int16_t    idNew;
+    SCAN       scan;
+    int16_t    rgi[9];
+    int16_t    iChecked;
+    char      *psz[9];
+    int32_t    rglQuan[3];
+    int32_t    rglT[3];
+    int16_t    ifl;
+    int32_t    cMines;
+    int32_t    lVal;
+    uint16_t   t_scratch_m12;
+
+    ht = HtMineWindow(hwndMine, x, y);
+    if ((msg != 516 || ht == htMineScanSel || ht == htMineShipOrFleet) && ht <= htMineMinefieldType) {
+        switch (ht) {
+        case 10:
+            if (sel.scan.grobj != grobjPlanet) {
+                if (sel.scan.grobj != grobjThing) {
+                    GlobalPD.iPlayer = rglpfl[sel.scan.ifl]->iplr;
+                } else {
+                    GlobalPD.iPlayer = lpThings[sel.scan.ith].iplr;
+                }
+            } else {
+                lppl = LpplFromId(sel.scan.idpl);
+                GlobalPD.iPlayer = lppl->iPlayer;
+            }
+            GlobalPD.grPopup = grPopupPlayer;
+            Popup(hwndMine, x, y);
+            break;
+        case 14:
+            t_scratch_m12 = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType];
+            part.hs.iItem = t_scratch_m12;
+            part.hs.grhst = hstMines;
+            FLookupPart(&part);
+            GlobalPD.grPopup = grPopupComponent;
+            GlobalPD.part = part;
+            Popup(hwndMine, x, y);
+            break;
+        case 11:
+            if (msg != 516) {
+                GlobalPD.grPopup = grPopupFleet;
+                GlobalPD.lpfl = rglpfl[sel.scan.ifl];
+                GlobalPD.fRedDamage = GlobalPD.lpfl->det == 0x7 ? 1 : 0;
+                GlobalPD.grbit = 0xff;
+            } else {
+                lpfl = rglpfl[sel.scan.ifl];
+                c = 0;
+                for (ishdef = 0; ishdef < 16; ishdef++) {
+                    if (lpfl->rgcsh[ishdef] > 0) {
+                        rgid[c] = ishdef;
+                        fstrcpy(rgsz[c], rglpshdef[lpfl->iPlayer][ishdef].hul.szClass);
+                        rgpsz[c] = rgsz[c];
+                        c = c + 1;
+                    }
+                }
+                if (c <= 1) {
+                    c = 0;
+                } else {
+                    c = PopupMenu(hwndMine, x, y, c, 0x0, rgpsz, -1, 1);
+                    if (c == -1)
+                        break;
+                }
+                GlobalPD.grPopup = grPopupShdef;
+                GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
+                GlobalPD.fHideCounts = idPlayer == lpfl->iPlayer ? 0 : 1;
+                GlobalPD.fShowDamage = 0;
+                GlobalPD.fToken = 0;
+                GlobalPD.fSummary = 1;
+            }
+            Popup(hwndMine, x, y);
+            break;
+        case 13:
+            GlobalPD.grPopup = grPopupShdef;
+            lppl = LpplFromId(sel.scan.idpl);
+            GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
+            GlobalPD.fHideCounts = idPlayer == lppl->iPlayer ? 0 : 1;
+            GlobalPD.fShowDamage = 1;
+            GlobalPD.fToken = 0;
+            GlobalPD.fSummary = 1;
+            Popup(hwndMine, x, y);
+            break;
+        case 12:
+            GlobalPD.grPopup = grPopupPlanet;
+            GlobalPD.idPlanet = sel.scan.idpl;
+            Popup(hwndMine, x, y);
+            break;
+        case 6:
+        case 7:
+        case 8:
+            FLookupPlanet(sel.scan.idpl, &pl);
+            GlobalPD.grPopup = grPopupPlanetEnv;
+            GlobalPD.idPlanet = pl.id;
+            GlobalPD.iPlanetVar = ht - 6;
+            if (pl.det < 0x3) {
+                GlobalPD.iPlanVal = -1;
+            } else {
+                GlobalPD.iPlanVal = (int16_t)pl.rgEnvVar[GlobalPD.iPlanetVar];
+            }
+            if (pl.det >= 0x3 && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
+                GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar];
+                GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar];
+                if (GlobalPD.iPlanMin == -1) {
+                    GlobalPD.iPlanMin = GlobalPD.iPlanVal;
+                }
+                if (GlobalPD.iPlanMax == -1) {
+                    GlobalPD.iPlanMax = GlobalPD.iPlanVal;
+                }
+                if (GlobalPD.iPlanMin != GlobalPD.iPlanMax)
+                    goto L_401c;
+            }
+            GlobalPD.iPlanMin = -1;
+            GlobalPD.iPlanMax = -1;
+        L_401c:
+            GlobalPD.iPlrVal = (int16_t)rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar];
+            GlobalPD.iPlrMin = (int16_t)rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar];
+            GlobalPD.iPlrMax = (int16_t)rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar];
+            Popup(hwndMine, x, y);
+            break;
+        case 9:
+            if (msg != 516) {
+                scan = sel.scan;
+                scan.iwp = 0;
+                if (scan.grobj == grobjThing) {
+                    i = scan.ith + 1;
+                    goto L_4113;
+                }
+            L_4192:
+                for (i = scan.grobj == grobjFleet ? scan.ifl + 1 : 0; i < cFleet; i++) {
+                    lpfl = rglpfl[i];
+                    if (rglpfl[i] == 0x0 || (scan.pt.x == lpfl->pt.x && scan.pt.y == lpfl->pt.y))
+                        break;
+                }
+                if (i < cFleet) {
+                    scan.ifl = i;
+                    scan.grobj = grobjFleet;
+                    idNew = rglpfl[i]->id;
+                    fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                    goto ChangeIt;
+                }
+                if ((scan.grobjFull & 0x8) != 0x0) {
+                    i = 0;
+                    goto L_4113;
+                }
+                if ((scan.grobjFull & 0x1) != 0x0)
+                    goto CheckPlanet;
+            CheckFleet:
+                for (i = 0; i < cFleet; i++) {
+                    lpfl = rglpfl[i];
+                    if (rglpfl[i] == 0x0 || (scan.pt.x == lpfl->pt.x && scan.pt.y == lpfl->pt.y))
+                        break;
+                }
+                if (i != cFleet || (scan.grobjFull & 0x8) == 0x0) {
+                    scan.grobj = grobjFleet;
+                    scan.ifl = i;
+                    idNew = rglpfl[i]->id;
+                    fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                    goto ChangeIt;
+                }
+                i = 0;
+            L_4113:
+                while (1) {
+                    if (i >= cThing || (lpThings[i].pt.x == scan.pt.x && lpThings[i].pt.y == scan.pt.y)) {
+                        if (i < cThing)
+                            break;
+                        if ((scan.grobjFull & 0x1) != 0x0)
+                            goto CheckPlanet;
+                        if ((scan.grobjFull & 0x2) != 0x0)
+                            goto CheckFleet;
+                        if ((scan.grobjFull & 0x8) == 0x0)
+                            goto L_4192;
+                        i = 0;
+                    } else {
+                        i = i + 1;
+                    }
+                }
+                scan.ith = i;
+                scan.grobj = grobjThing;
+                idNew = lpThings[i].idFull;
+                fOurs = 0;
+                goto ChangeIt;
+            CheckPlanet:
+                scan.grobj = grobjPlanet;
+                idNew = scan.idpl;
+                lppl = LpplFromId(idNew);
+                if (lppl != 0x0) {
+                    fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+                } else {
+                    fOurs = 0;
+                }
+            ChangeIt:
+                if (fOurs == 0 || sel.grobj != grobjFleet) {
+                    scan.iwp = sel.scan.iwp;
+                }
+                ChangeScanSel(&scan, 2);
+                if (fOurs == 0)
+                    break;
+                RedrawScanSel(0x0, 0);
+                ChangeMainObjSel(scan.grobj, idNew);
+                RedrawScanSel(0x0, 1);
+                break;
+            }
+            PopupMineralScanChoices(hwndMine, x, y);
+            break;
+        case 5:
+            iChecked = -1;
+            rgi[0] = 100;
+            rgi[1] = 500;
+            rgi[2] = 1000;
+            rgi[3] = 2500;
+            rgi[4] = 5000;
+            rgi[5] = 7500;
+            rgi[6] = 10000;
+            rgi[7] = 20000;
+            rgi[8] = 30000;
+            for (i = 0; i < 9; i++) {
+                _wsprintf(rgsz[i], PCTDKT, rgi[i]);
+                psz[i] = rgsz[i];
+                if (rgi[i] == cMinGrafMax) {
+                    iChecked = i;
+                }
+            }
+            i = PopupMenu(hwndMine, x, y, 9, 0x0, psz, iChecked, 1);
+            if (i == -1 || rgi[i] == cMinGrafMax)
+                break;
+            cMinGrafMax = rgi[i];
+            InvalidateRect(hwndMine, 0x0, 1);
+            if ((grbitScan & 0xf) != 0x1)
+                break;
+            InvalidateRect(hwndScanner, 0x0, 1);
+            break;
+        case 1:
+        case 2:
+        case 3:
+            FLookupPlanet(sel.scan.idpl, &pl);
+            GlobalPD.grPopup = grPopupMineral;
+            GlobalPD.rgi[0] = (int32_t)(ht - 1);
+            for (i = 1; i <= 4; i++) {
+                GlobalPD.rgi[i] = -1;
+            }
+            if (pl.det >= 0x3) {
+                GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[ht + 2];
+                GlobalPD.rgi[1] = pl.fHomeworld;
+                if (pl.det > 0x3) {
+                    lVal = 0;
+                    GlobalPD.rgi[2] = pl.rgwtMin[ht - 1];
+                    EstMineralsMined(&pl, rglQuan, -1, 0);
+                    GlobalPD.rgi[4] = rglQuan[ht - 1];
+                    if (pl.iPlayer == -1) {
+                        for (ifl = 0; ifl < cFleet; ifl++) {
+                            lpfl = rglpfl[ifl];
+                            if (rglpfl[ifl] == 0x0)
+                                break;
+                            if (lpfl->idPlanet == pl.id && lpfl->iPlayer == idPlayer && lpfl->fDead == 0x0 && lpfl->lpplord->rgord[0].grTask == grTaskMine) {
+                                cMines = CMineFromLpfl(lpfl);
+                                if (cMines > 0) {
+                                    EstMineralsMined(&pl, rglT, cMines, 0);
+                                    lVal = lVal + rglT[ht - 1];
+                                }
+                            }
+                        }
+                        if (lVal > 0) {
+                            GlobalPD.rgi[4] = lVal;
+                        }
+                    }
+                }
+            }
+            Popup(hwndMine, x, y);
+        case 0:
+        case 4:
+        }
+    }
+    return;
+}

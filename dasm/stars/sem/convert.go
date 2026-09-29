@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
@@ -101,6 +102,17 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 			// operands and union-backed pointer fields already have more specific
 			// address recovery paths.
 			src = c.convertValueTyped(e.Src, dst.ExprType())
+		}
+		if phi, ok := e.Src.(*machine.PhiValue); ok {
+			// A merge stored to typed storage takes its type: the arms'
+			// arithmetic is typed unsigned by default, and a signed
+			// destination such as min(rc.right >> 1, rc.right - 352) stored
+			// to rc.left must keep its sign when the native field is wider.
+			// Unresolved memory and compiler scratch slots have no type of
+			// their own to give.
+			if !untypedStorage(dst) {
+				src = c.convertPhiTyped(phi, dst.ExprType())
+			}
 		}
 		if cast, ok := c.messagePayloadRead(e.Src, dst.ExprType()); ok {
 			src = cast
@@ -627,6 +639,20 @@ func derefType(pointer Expr, width int) typeinfo.Type {
 		return ptr.Elem
 	}
 	return typeinfo.UintForWidth(width)
+}
+
+// untypedStorage reports whether dst is storage without a declared type:
+// unresolved memory or a compiler scratch slot, whose types only describe
+// the access width.
+func untypedStorage(dst LValue) bool {
+	switch d := dst.(type) {
+	case *Memory:
+		return true
+	case *SymbolRef:
+		_, scratch := d.Path.(*symresolve.SymbolScratch)
+		return scratch
+	}
+	return false
 }
 
 // unresolvedMemory converts a raw machine memory address to an unresolved semantic lvalue.

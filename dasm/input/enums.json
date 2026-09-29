@@ -391,8 +391,8 @@
     { "func": "RaceWizardDlg5", "messages": ["BM_GETCHECK"] },
     { "func": "RaceWizardDlg6", "messages": ["BM_GETCHECK"] },
     { "func": "RandomSeedDlg", "messages": ["EM_LIMITTEXT"] },
-    { "func": "RenameDlg", "messages": ["EM_GETSEL"] },
-    { "func": "SlotDlg", "messages": ["EM_GETSEL"] }
+    { "func": "RenameDlg", "messages": ["EM_GETSEL", "EM_SETSEL"] },
+    { "func": "SlotDlg", "messages": ["EM_GETSEL", "EM_SETSEL"] }
   ],
   "message_handlers": [
     { "func": "CommandHandler", "message": "WM_COMMAND", "wparam": "wParam" },

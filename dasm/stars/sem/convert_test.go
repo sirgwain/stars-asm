@@ -379,7 +379,7 @@ func TestLowerMachineResolvesFoldedNegativeGlobalByteArrayIndex(t *testing.T) {
 		t.Fatalf("LowerMachine: %v", err)
 	}
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch btlplan.szName[(cLen - 1)] != 41 ? L_123c : L_11ff"
+	want := "branch btlplan.szName[(cLen - 1)] != ')' ? L_123c : L_11ff"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}

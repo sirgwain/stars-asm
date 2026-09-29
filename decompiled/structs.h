@@ -144,7 +144,7 @@ struct _aihist {
 
 struct _armor {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -155,7 +155,7 @@ struct _armor {
 
 struct _beam {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -169,7 +169,7 @@ struct _beam {
 
 struct _bomb {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -205,7 +205,7 @@ struct _coldrop {
 
 struct _compart {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -257,7 +257,7 @@ struct _dv {
 
 struct _engine {
     int16_t  id;              /* +0x0000 (2) */
-    char     rgTech[6];       /* +0x0002 (6) */
+    int8_t   rgTech[6];       /* +0x0002 (6) */
     char     szName[32];      /* +0x0008 (32) */
     int16_t  cMass;           /* +0x0028 (2) */
     uint16_t resCost;         /* +0x002A (2) */
@@ -401,7 +401,7 @@ struct _hs {
 
 struct _hul {
     HulDef   ihuldef;        /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szClass[32];    /* +0x0008 (32) */
     uint16_t wtEmpty;        /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -487,7 +487,7 @@ struct _mdplr {
 
 struct _mines {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -498,7 +498,7 @@ struct _mines {
 
 struct _mining {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -586,8 +586,8 @@ struct _planet {
         unusedD : 2;          /* @bit14 */
     uint8_t rgpctMinLevel[3]; /* +0x0006 (3) */
     uint8_t rgMinConc[3];     /* +0x0009 (3) */
-    char    rgEnvVar[3];      /* +0x000C (3) */
-    char    rgEnvVarOrig[3];  /* +0x000F (3) */
+    int8_t  rgEnvVar[3];      /* +0x000C (3) */
+    int8_t  rgEnvVarOrig[3];  /* +0x000F (3) */
     union {
         struct {
             uint16_t uPopGuess : 12, /* +0x0012 (2) @bit0 */
@@ -634,7 +634,7 @@ struct _planet {
 
 struct _planetary {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -664,9 +664,9 @@ struct _planetsome {
         fFirstYear : 1,        /* @bit11 */
         unusedB : 4;           /* @bit12 */
     uint16_t rgpctMinLevel[3]; /* +0x0006 (6) */
-    char     rgMinConc[3];     /* +0x000C (3) */
-    char     rgEnvVar[3];      /* +0x000F (3) */
-    char     rgEnvVarOrig[3];  /* +0x0012 (3) */
+    int8_t   rgMinConc[3];     /* +0x000C (3) */
+    int8_t   rgEnvVar[3];      /* +0x000F (3) */
+    int8_t   rgEnvVarOrig[3];  /* +0x0012 (3) */
     union {
         struct {
             uint16_t uPopGuess : 12, /* +0x0015 (2) @bit0 */
@@ -1003,7 +1003,7 @@ struct _rtxfer {
     uint8_t  grobj1 : 4, /* +0x0004 (1) @bit0 */
         grobj2 : 4;      /* @bit4 */
     uint8_t grbitItems;  /* +0x0005 (1) */
-    char    rgcQuan[1];  /* +0x0006 (1) */
+    int8_t  rgcQuan[1];  /* +0x0006 (1) */
 }; /* size=0x7 */
 
 struct _rtxferf {
@@ -1053,7 +1053,7 @@ struct _scan {
 
 struct _scanner {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1127,7 +1127,7 @@ struct _shdef {
 
 struct _shield {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1138,7 +1138,7 @@ struct _shield {
 
 struct _special {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1149,7 +1149,7 @@ struct _special {
 
 struct _specialsb {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1218,7 +1218,7 @@ struct _rtwaypt {
 
 struct _terra {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1381,7 +1381,7 @@ struct _btldata {
 
 struct _torp {
     int16_t  id;             /* +0x0000 (2) */
-    char     rgTech[6];      /* +0x0002 (6) */
+    int8_t   rgTech[6];      /* +0x0002 (6) */
     char     szName[32];     /* +0x0008 (32) */
     int16_t  cMass;          /* +0x0028 (2) */
     uint16_t resCost;        /* +0x002A (2) */
@@ -1472,8 +1472,8 @@ struct _zipprodq1 {
 }; /* size=0x1a */
 
 struct _player {
-    char     iPlayer;     /* +0x0000 (1) */
-    char     cShDef;      /* +0x0001 (1) */
+    int8_t   iPlayer;     /* +0x0000 (1) */
+    int8_t   cShDef;      /* +0x0001 (1) */
     int16_t  cPlanet;     /* +0x0002 (2) */
     uint16_t cFleet : 12, /* +0x0004 (2) @bit0 */
         cshdefSB : 4;     /* @bit12 */
@@ -1495,16 +1495,16 @@ struct _player {
     int16_t  idPlanetHome;   /* +0x0008 (2) */
     uint16_t wScore;         /* +0x000A (2) */
     int32_t  lSalt;          /* +0x000C (4) */
-    char     rgEnvVar[3];    /* +0x0010 (3) */
-    char     rgEnvVarMin[3]; /* +0x0013 (3) */
-    char     rgEnvVarMax[3]; /* +0x0016 (3) */
-    char     pctIdealGrowth; /* +0x0019 (1) */
+    int8_t   rgEnvVar[3];    /* +0x0010 (3) */
+    int8_t   rgEnvVarMin[3]; /* +0x0013 (3) */
+    int8_t   rgEnvVarMax[3]; /* +0x0016 (3) */
+    int8_t   pctIdealGrowth; /* +0x0019 (1) */
     int8_t   rgTech[6];      /* +0x001A (6) */
     uint32_t rgResSpent[6];  /* +0x0020 (24) */
-    char     pctResearch;    /* +0x0038 (1) */
-    char     iTechCur;       /* +0x0039 (1) */
+    int8_t   pctResearch;    /* +0x0038 (1) */
+    int8_t   iTechCur;       /* +0x0039 (1) */
     int32_t  lResLastYear;   /* +0x003A (4) */
-    char     rgAttr[16];     /* +0x003E (16) */
+    int8_t   rgAttr[16];     /* +0x003E (16) */
     uint32_t grbitAttr;      /* +0x004E (4) */
     uint16_t grbitTrader;    /* +0x0052 (2) */
     union {

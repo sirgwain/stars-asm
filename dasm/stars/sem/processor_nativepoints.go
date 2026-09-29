@@ -15,13 +15,21 @@ const (
 	nativePointTypedef = "POINT"
 )
 
+// outputPointFuncs are the Win32 functions whose POINT * parameter only
+// receives a point, so the caller's point is not read before the call.
+var outputPointFuncs = map[string]bool{
+	"GetCaretPos":  true,
+	"GetCursorPos": true,
+}
+
 // nativePointsProcessor converts points where they cross between Stars and
 // the Win32 API, which C does not do implicitly between the two structs:
 //
 //   - a POINT16 passed as a POINT argument becomes PointFrom16(pt).
 //   - the address of a POINT16 passed as a POINT * argument, such as
-//     GetCursorPos(&pt), goes through a POINT temp that is filled before the
-//     call and copied back after it.
+//     ScreenToClient(hwnd, &pt), goes through a POINT temp that is filled
+//     before the call and copied back after it. A function that only writes
+//     the point, such as GetCursorPos, leaves the temp unfilled.
 //   - a RECT corner passed as a Stars POINT16 *, as in
 //     LogicalToScan((POINT *)&rc.right), goes through a POINT16 temp
 //     holding copies of the corner's fields.
@@ -86,6 +94,8 @@ func (p *nativePointsProcessor) ProcessBlock(result *Result, f Func, b Block) (B
 // copyPointArgs passes the address of each POINT16 given to a POINT *
 // parameter through a POINT temp, converting the point into the temp before
 // the call and back out of it after, since the callee may read and write it.
+// A callee in outputPointFuncs only writes it, so the point is not converted
+// in: it may not be initialized yet.
 func copyPointArgs(call *CallEffect) ([]Effect, bool) {
 	if call.Call == nil || call.Call.Function == nil {
 		return nil, false
@@ -115,7 +125,9 @@ func copyPointArgs(call *CallEffect) ([]Effect, bool) {
 		temp := &Temp{Name: name, TypeInfo: param.Elem}
 		switch {
 		case isPointStruct(param.Elem, nativePointTypedef) && isPointStruct(addr.Target.ExprType(), win16PointTypedef):
-			before = append(before, &Assign{MetaInfo: call.MetaInfo, Dst: temp, Src: pointConversion("PointFrom16", addr.Target, param.Elem)})
+			if !outputPointFuncs[call.Call.Function.Name] {
+				before = append(before, &Assign{MetaInfo: call.MetaInfo, Dst: temp, Src: pointConversion("PointFrom16", addr.Target, param.Elem)})
+			}
 			after = append(after, &Assign{MetaInfo: call.MetaInfo, Dst: addr.Target, Src: pointConversion("PointTo16", temp, addr.Target.ExprType())})
 		case isPointStruct(param.Elem, win16PointTypedef):
 			// Win16 code treats a RECT as its top-left and bottom-right

@@ -3,7 +3,7 @@ void FreeHb(HB *lphb) {
     HB     *lphbNext;
 
 L_02d8:
-    if ((lphb != 0x0))
+    if (lphb != 0x0)
         goto L_0330;
     else
         goto L_0342;
@@ -19,7 +19,7 @@ L_02f9:
     lphb = lphbNext;
 
 L_0330:
-    if ((lphb != 0x0))
+    if (lphb != 0x0)
         goto L_02f9;
     else
         goto L_0342;

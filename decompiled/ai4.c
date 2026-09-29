@@ -62,36 +62,23 @@ void DoCyberAiTurn(PROD *rgprod) {
     int16_t        cFr;
     int16_t        iSBDef;
     PLANET        *lpplEnemy;
-    uint16_t       t_merge_01f2_0001;
     uint16_t       t_merge_0240_0001;
     PLANET        *t_call_0bfd;
-    uint16_t       t_merge_0d8d_0001;
     int16_t        t_call_126f;
-    int16_t        t_merge_18b8_0001;
-    int16_t        t_merge_1977_0001;
-    int16_t        t_merge_199b_0001;
-    uint16_t       t_merge_19ed_0001;
 
-L_002a:
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
     cSBDefenderFleets = 0;
     cFlMineLayers = 0;
     cMineLayers = 0;
     cFlArmadas = 0;
     cFlDestroyers = 0;
-    lpiHistSize = (int16_t *)(vlpbAiData);
-    if ((*(lpiHistSize) != 2))
-        goto L_0097;
-    else
-        goto L_0071;
-
-L_0071:
-    fmemset(vlpbAiData, 0, 0x2000);
-    *(lpiHistSize) = ((game.cPlanMax * 2) + 2);
-
-L_0097:
+    lpiHistSize = (int16_t *)vlpbAiData;
+    if (*lpiHistSize == 2) {
+        fmemset(vlpbAiData, 0, 0x2000);
+        *lpiHistSize = game.cPlanMax * 2 + 2;
+    }
     fMarkedPlanets = 0;
-    iroCur = IroEnsureAi(vrgAiCybertronResOrder, 42, &(ishdefLatestSB), 17);
+    iroCur = IroEnsureAi(vrgAiCybertronResOrder, 42, &ishdefLatestSB, 17);
     EnsureCyberAiShdefs(iroCur);
     MergeAllShdefs(1);
     MergeAllShdefs(48);
@@ -99,1534 +86,418 @@ L_0097:
     MergeAllShdefs(960);
     MergeAllShdefs(15360);
     iAttackStr = 1;
-    if ((game.turn <= 0x32))
-        goto L_0123;
-    else
-        goto L_0112;
-
-L_0112:
-    iAttackStr = (iAttackStr + ((uint32_t)((game.turn - 0x32)) / 10));
-
-L_0123:
-    if ((game.turn <= 0x64))
-        goto L_0154;
-    else
-        goto L_012d;
-
-L_012d:
-    iAttackStr = (iAttackStr + (((uint32_t)((game.turn - 0x64)) / 0xa) * ((uint32_t)(game.turn) / 0x64)));
-
-L_0154:
+    if (game.turn > 0x32) {
+        iAttackStr = iAttackStr + (uint32_t)(game.turn - 0x32) / 10;
+    }
+    if (game.turn > 0x64) {
+        iAttackStr = iAttackStr + (uint32_t)(game.turn - 0x64) / 0xa * ((uint32_t)game.turn / 0x64);
+    }
     j = 3;
-    if ((game.turn <= 0x82))
-        goto L_0174;
-    else
-        goto L_0164;
-
-L_0164:
-    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
-
-L_0174:
-    if ((j <= 50))
-        goto L_0182;
-    else
-        goto L_017d;
-
-L_017d:
-    j = 50;
-
-L_0182:
+    if (game.turn > 0x82) {
+        j = j + (uint32_t)(game.turn - 0x78) / 20;
+    }
+    if (j > 50) {
+        j = 50;
+    }
     vrgAiCyberArmadaPotency[0] = LOBYTE(j);
-    vrgAiCyberArmadaPotency[1] = LOBYTE(((int32_t)((j & 0xff)) / 0x2));
+    vrgAiCyberArmadaPotency[1] = LOBYTE((int32_t)(j & 0xff) / 0x2);
     j = 6;
-    if ((game.turn <= 0x73))
-        goto L_01b6;
-    else
-        goto L_01a6;
-
-L_01a6:
-    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
-
-L_01b6:
-    if ((j <= 12))
-        goto L_01c4;
-    else
-        goto L_01bf;
-
-L_01bf:
-    j = 12;
-
-L_01c4:
+    if (game.turn > 0x73) {
+        j = j + (uint32_t)(game.turn - 0x64) / 22;
+    }
+    if (j > 12) {
+        j = 12;
+    }
     vrgAiCyberArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
-        goto L_01e6;
-    else
-        goto L_01e0;
-
-L_01e0:
-    t_merge_01f2_0001 = 0x3;
-    goto L_01f2;
-
-L_01e6:
-    t_merge_01f2_0001 = (((int32_t)(j) / 2) - 0x1);
-
-L_01f2:
-    vrgAiCyberArmadaPotency[3] = LOBYTE(t_merge_01f2_0001);
+    vrgAiCyberArmadaPotency[3] = LOBYTE(0x3 >= (int32_t)j / 2 - 0x1 ? (int32_t)j / 2 - 0x1 : 0x3);
     memset(rgRecycleShdef, 0, 0x10);
-    if ((game.turn >= 0x78))
-        goto L_021b;
-    else
-        goto L_0213;
-
-L_0213:
-    cRecyclePeriod = 0x32;
-    goto L_0243;
-
-L_021b:
-    if ((game.turn >= 0xc8))
-        goto L_022c;
-    else
-        goto L_0226;
-
-L_0226:
-    t_merge_0240_0001 = 0x46;
-    goto L_0240;
-
-L_022c:
-    if ((game.turn >= 0x190))
-        goto L_023d;
-    else
-        goto L_0237;
-
-L_0237:
-    t_merge_0240_0001 = 0x64;
-    goto L_0240;
-
-L_023d:
-    t_merge_0240_0001 = 0x12c;
-
-L_0240:
-    cRecyclePeriod = t_merge_0240_0001;
-
-L_0243:
-    CheckAiShdefStatus(4, 5, cRecyclePeriod, &(iLatestDestroyer), rgRecycleShdef);
+    if (game.turn >= 0x78) {
+        if (game.turn >= 0xc8) {
+            if (game.turn >= 0x190) {
+                t_merge_0240_0001 = 0x12c;
+            } else {
+                t_merge_0240_0001 = 0x64;
+            }
+        } else {
+            t_merge_0240_0001 = 0x46;
+        }
+        cRecyclePeriod = t_merge_0240_0001;
+    } else {
+        cRecyclePeriod = 0x32;
+    }
+    CheckAiShdefStatus(4, 5, cRecyclePeriod, &iLatestDestroyer, rgRecycleShdef);
     rgRecycleShdef[iLatestDestroyer] = 0x0;
-    CheckAiShdefStatus(14, 15, cRecyclePeriod, &(iLatestSBDefender), rgRecycleShdef);
+    CheckAiShdefStatus(14, 15, cRecyclePeriod, &iLatestSBDefender, rgRecycleShdef);
     rgRecycleShdef[iLatestDestroyer] = 0x0;
-    cExistCargo = (int32_t)(CheckAiShdefStatus(2, 3, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef));
+    cExistCargo = (int32_t)CheckAiShdefStatus(2, 3, cRecyclePeriod, &iLatestCargo, rgRecycleShdef);
     rgRecycleShdef[iLatestCargo] = 0x0;
     iLatestBattle = -1;
-    i = 0;
-    goto L_045e;
-
-L_02c9:
-    if ((rgshdef[((i * 4) + 6)].fFree != 0x0))
-        goto L_03e9;
-    else
-        goto L_02f0;
-
-L_02f0:
-    if (((game.turn - rgshdef[((i * 4) + 6)].turn) <= cRecyclePeriod))
-        goto L_03e9;
-    else
-        goto L_0312;
-
-L_0312:
-    fScrap = 1;
-    j = ((i * 4) + 9);
-    goto L_032c;
-
-L_0328:
-    j = (j - 1);
-
-L_032c:
-    if ((j < ((i * 4) + 6)))
-        goto L_03e9;
-    else
-        goto L_033e;
-
-L_033e:
-    if ((rgshdef[j].fFree != 0x0))
-        goto L_0328;
-    else
-        goto L_035c;
-
-L_035c:
-    if ((rgshdef[j].cExist != 0x0))
-        goto L_03d5;
-    else
-        goto L_037b;
-
-L_037b:
-    if ((fScrap != 0))
-        goto L_0397;
-    else
-        goto L_0385;
-
-L_0385:
-    if ((j == ((i * 4) + 6)))
-        goto L_03d5;
-    else
-        goto L_0397;
-
-L_0397:
-    shdef = rgshdef[j];
-    shdef.fFree = 0x1;
-    FChangeAiShdef(&(shdef), j);
-    goto L_0328;
-
-L_03d5:
-    rgRecycleShdef[j] = 0x1;
-    fScrap = 0;
-
-L_03e6:
-    goto L_0328;
-
-L_03e9:
-    if ((rgshdef[((i * 4) + 6)].fFree != 0x0))
-        goto L_045a;
-    else
-        goto L_0410;
-
-L_0410:
-    if ((iLatestBattle == -1))
-        goto L_0454;
-    else
-        goto L_0419;
-
-L_0419:
-    if ((rgshdef[((iLatestBattle * 4) + 6)].turn >= rgshdef[((i * 4) + 6)].turn))
-        goto L_045a;
-    else
-        goto L_0454;
-
-L_0454:
-    iLatestBattle = i;
-
-L_045a:
-    i = (i + 1);
-
-L_045e:
-    if ((i <= 1))
-        goto L_02c9;
-    else
-        goto L_0467;
-
-L_0467:
+    for (i = 0; i <= 1; i++) {
+        if (rgshdef[i * 4 + 6].fFree == 0x0 && game.turn - rgshdef[i * 4 + 6].turn > cRecyclePeriod) {
+            fScrap = 1;
+            for (j = i * 4 + 9; j >= i * 4 + 6; j--) {
+                if (rgshdef[j].fFree == 0x0) {
+                    if (rgshdef[j].cExist != 0x0 || (fScrap == 0 && j == i * 4 + 6)) {
+                        rgRecycleShdef[j] = 0x1;
+                        fScrap = 0;
+                    } else {
+                        shdef = rgshdef[j];
+                        shdef.fFree = 0x1;
+                        FChangeAiShdef(&shdef, j);
+                    }
+                }
+            }
+        }
+        if (rgshdef[i * 4 + 6].fFree == 0x0 && (iLatestBattle == -1 || rgshdef[iLatestBattle * 4 + 6].turn < rgshdef[i * 4 + 6].turn)) {
+            iLatestBattle = i;
+        }
+    }
     cExistColony = rgshdef[1].cExist;
-    if ((game.turn <= 0x50))
-        goto L_0505;
-    else
-        goto L_047e;
-
-L_047e:
-    SplitOutShdefs(rgRecycleShdef);
-    memset(rgRecycleSBShdef, 0, 0x10);
-    rgRecycleSBShdef[0] = 0x2;
-    SplitOutShdefs(rgRecycleSBShdef);
-    memset(rgRecycleSBShdef, 0, 0x10);
-    rgRecycleSBShdef[1] = 0x2;
-    SplitOutShdefs(rgRecycleSBShdef);
-    memset(rgRecycleSBShdef, 0, 0x10);
-    rgRecycleSBShdef[3] = 0x2;
-    rgRecycleSBShdef[2] = 0x2;
-    SplitOutShdefs(rgRecycleSBShdef);
-
-L_0505:
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
-    fmemset(lpciPlanTemp, 0, (game.cPlanMax * sizeof(CYBERINFOTEMP)));
+    if (game.turn > 0x50) {
+        SplitOutShdefs(rgRecycleShdef);
+        memset(rgRecycleSBShdef, 0, 0x10);
+        rgRecycleSBShdef[0] = 0x2;
+        SplitOutShdefs(rgRecycleSBShdef);
+        memset(rgRecycleSBShdef, 0, 0x10);
+        rgRecycleSBShdef[1] = 0x2;
+        SplitOutShdefs(rgRecycleSBShdef);
+        memset(rgRecycleSBShdef, 0, 0x10);
+        rgRecycleSBShdef[3] = 0x2;
+        rgRecycleSBShdef[2] = 0x2;
+        SplitOutShdefs(rgRecycleSBShdef);
+    }
+    lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + dOffsetPlanTemp);
+    fmemset(lpciPlanTemp, 0, game.cPlanMax * sizeof(CYBERINFOTEMP));
     lppl = lpPlanets;
-    lpplMac = (lpPlanets + cPlanet);
-    goto L_0821;
-
-L_0564:
-    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
-    if ((lpciPlan->iPktTarget <= 0x0))
-        goto L_05e3;
-    else
-        goto L_05bc;
-
-L_05bc:
-    lpciPlan->iPktTarget = (lpciPlan->iPktTarget + 0x7ff);
-
-L_05e3:
-    if ((lppl->iPlayer == idPlayer))
-        goto L_0686;
-    else
-        goto L_05f2;
-
-L_05f2:
-    if ((lppl->iPlayer == -1))
-        goto L_0686;
-    else
-        goto L_05ff;
-
-L_05ff:
-    i = ((lppl->uPopGuess / 250) + 1);
-    if ((i <= 6))
-        goto L_0624;
-    else
-        goto L_061f;
-
-L_061f:
-    i = 6;
-
-L_0624:
-    if ((lppl->fStarbase == 0x0))
-        goto L_063f;
-    else
-        goto L_063b;
-
-L_063b:
-    i = (i + 1);
-
-L_063f:
-    vlpbAiPlanet[((lppl->id * 16) + 10)] = LOBYTE(i);
-    vlpbAiPlanet[((lppl->id * 16) + 9)] = 0x1;
-    goto L_081d;
-
-L_0686:
-    if ((lppl->iPlayer != idPlayer))
-        goto L_081d;
-    else
-        goto L_0695;
-
-L_0695:
-    if ((lppl->fStarbase == 0x0))
-        goto L_081d;
-    else
-        goto L_06af;
-
-L_06af:
-    if ((lppl->isb == 0x1))
-        goto L_06f7;
-    else
-        goto L_06c1;
-
-L_06c1:
-    if ((lppl->isb == 0x3))
-        goto L_06f7;
-    else
-        goto L_06d3;
-
-L_06d3:
-    if ((lppl->isb == 0x6))
-        goto L_06f7;
-    else
-        goto L_06e5;
-
-L_06e5:
-    if ((lppl->isb != 0x8))
-        goto L_078a;
-    else
-        goto L_06f7;
-
-L_06f7:
-    if ((lppl->rgwtMin[0] < 10))
-        goto L_0713;
-    else
-        goto L_0727;
-
-L_0713:
-    lpciPlanTemp->fNeedsMin1 = 0x1;
-
-L_0727:
-    if ((lppl->rgwtMin[1] < 10))
-        goto L_0743;
-    else
-        goto L_0757;
-
-L_0743:
-    lpciPlanTemp->fNeedsMin2 = 0x1;
-
-L_0757:
-    if ((lppl->rgwtMin[2] < 10))
-        goto L_0773;
-    else
-        goto L_081d;
-
-L_0773:
-    lpciPlanTemp->fNeedsMin3 = 0x1;
-
-L_0787:
-    goto L_081d;
-
-L_078a:
-    if ((lppl->rgwtMin[0] < 1000))
-        goto L_07a7;
-    else
-        goto L_07bb;
-
-L_07a7:
-    lpciPlanTemp->fNeedsMin1 = 0x1;
-
-L_07bb:
-    if ((lppl->rgwtMin[1] < 1000))
-        goto L_07d8;
-    else
-        goto L_07ec;
-
-L_07d8:
-    lpciPlanTemp->fNeedsMin2 = 0x1;
-
-L_07ec:
-    if ((lppl->rgwtMin[2] < 1000))
-        goto L_0809;
-    else
-        goto L_081d;
-
-L_0809:
-    lpciPlanTemp->fNeedsMin3 = 0x1;
-
-L_081d:
-    lppl = (lppl + 1);
-
-L_0821:
-    if ((lppl < lpplMac))
-        goto L_0564;
-    else
-        goto L_082f;
-
-L_082f:
+    lpplMac = lpPlanets + cPlanet;
+    for (; lppl < lpplMac; lppl++) {
+        lpciPlan = (CYBERINFO *)(vlpbAiData + (lppl->id * 2 + 2));
+        lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + (dOffsetPlanTemp + lppl->id * 2));
+        if (lpciPlan->iPktTarget > 0x0) {
+            lpciPlan->iPktTarget = lpciPlan->iPktTarget + 0x7ff;
+        }
+        if (lppl->iPlayer == idPlayer || lppl->iPlayer == -1) {
+            if (lppl->iPlayer == idPlayer && lppl->fStarbase != 0x0) {
+                switch (lppl->isb) {
+                case 0x1:
+                case 0x3:
+                case 0x6:
+                case 0x8:
+                    if (lppl->rgwtMin[0] < 10) {
+                        lpciPlanTemp->fNeedsMin1 = 0x1;
+                    }
+                    if (lppl->rgwtMin[1] < 10) {
+                        lpciPlanTemp->fNeedsMin2 = 0x1;
+                    }
+                    if (lppl->rgwtMin[2] < 10) {
+                        lpciPlanTemp->fNeedsMin3 = 0x1;
+                        break;
+                    }
+                    break;
+                default:
+                    if (lppl->rgwtMin[0] < 1000) {
+                        lpciPlanTemp->fNeedsMin1 = 0x1;
+                    }
+                    if (lppl->rgwtMin[1] < 1000) {
+                        lpciPlanTemp->fNeedsMin2 = 0x1;
+                    }
+                    if (lppl->rgwtMin[2] < 1000) {
+                        lpciPlanTemp->fNeedsMin3 = 0x1;
+                    }
+                }
+            }
+        } else {
+            i = lppl->uPopGuess / 250 + 1;
+            if (i > 6) {
+                i = 6;
+            }
+            if (lppl->fStarbase != 0x0) {
+                i = i + 1;
+            }
+            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE(i);
+            vlpbAiPlanet[lppl->id * 16 + 9] = 0x1;
+        }
+    }
     lpflAttack = 0x0;
     lpflEnemy = 0x0;
-    ifl = 0;
-    goto L_084f;
-
-L_084b:
-    ifl = (ifl + 1);
-
-L_084f:
-    if ((ifl >= cFleet))
-        goto L_0b31;
-    else
-        goto L_085a;
-
-L_085a:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_088a;
-    else
-        goto L_0b31;
-
-L_088a:
-    if ((fMarkedPlanets != 0))
-        goto L_08a6;
-    else
-        goto L_0894;
-
-L_0894:
-    IdNearestColonizablePlanet(lpfl, 0x0);
-
-L_08a6:
-    if ((lpfl->iPlayer == idPlayer))
-        goto L_08d5;
-    else
-        goto L_08b5;
-
-L_08b5:
-    lpfl->lpflNext = lpflEnemy;
-    lpflEnemy = lpfl;
-    goto L_084b;
-
-L_08d5:
-    if ((lpfl->rgcsh[14] > 0))
-        goto L_08ef;
-    else
-        goto L_08e2;
-
-L_08e2:
-    if ((lpfl->rgcsh[15] <= 0))
-        goto L_08f6;
-    else
-        goto L_08ef;
-
-L_08ef:
-    cSBDefenderFleets = (cSBDefenderFleets + 1);
-    goto L_084b;
-
-L_08f6:
-    if ((lpfl->rgcsh[0] <= 0))
-        goto L_0911;
-    else
-        goto L_0903;
-
-L_0903:
-    cFlMineLayers = (cFlMineLayers + 1);
-    cMineLayers = (cMineLayers + lpfl->rgcsh[0]);
-
-L_0911:
-    i = 4;
-    goto L_093d;
-
-L_0919:
-    if ((lpfl->rgcsh[i] > 0))
-        goto L_0946;
-    else
-        goto L_0939;
-
-L_0939:
-    i = (i + 1);
-
-L_093d:
-    if ((i <= 13))
-        goto L_0919;
-    else
-        goto L_0946;
-
-L_0946:
-    if ((i > 13))
-        goto L_0a3a;
-    else
-        goto L_094f;
-
-L_094f:
-    lpfl->lpflNext = lpflAttack;
-    lpflAttack = lpfl;
-    if ((j <= 5))
-        goto L_0a33;
-    else
-        goto L_0975;
-
-L_0975:
-    if ((lpfl->cord <= 1))
-        goto L_099d;
-    else
-        goto L_0982;
-
-L_0982:
-    if ((lpfl->lpplord->rgord[1].grobj == grobjPlanet))
-        goto L_09aa;
-    else
-        goto L_099d;
-
-L_099d:
-    if ((lpfl->idPlanet == -1))
-        goto L_0a33;
-    else
-        goto L_09aa;
-
-L_09aa:
-    if ((lpfl->cord <= 1))
-        goto L_09e4;
-    else
-        goto L_09b7;
-
-L_09b7:
-    if ((lpfl->lpplord->rgord[1].grobj != grobjPlanet))
-        goto L_09e4;
-    else
-        goto L_09d2;
-
-L_09d2:
-    id = lpfl->lpplord->rgord[1].id;
-    goto L_09ef;
-
-L_09e4:
-    id = lpfl->idPlanet;
-
-L_09ef:
-    lpb = (vlpbAiPlanet + (10 + (16 * id)));
-    if ((*(lpb) == 0x0))
-        goto L_0a2c;
-    else
-        goto L_0a24;
-
-L_0a24:
-    *(lpb) = (*(lpb) | 0x80);
-
-L_0a2c:
-    cFlArmadas = (cFlArmadas + 1);
-    goto L_084b;
-
-L_0a33:
-    cFlDestroyers = (cFlDestroyers + 1);
-
-L_0a37:
-    goto L_084b;
-
-L_0a3a:
-    if ((lpfl->rgcsh[2] > 0))
-        goto L_0a54;
-    else
-        goto L_0a47;
-
-L_0a47:
-    if ((lpfl->rgcsh[3] <= 0))
-        goto L_084b;
-    else
-        goto L_0a54;
-
-L_0a54:
-    if ((lpfl->cord <= 1))
-        goto L_084b;
-    else
-        goto L_0a61;
-
-L_0a61:
-    if ((lpfl->rgwtMin[3] <= 0))
-        goto L_084b;
-    else
-        goto L_0a7d;
-
-L_0a7d:
-    if ((lpfl->lpplord->rgord[1].grobj != grobjPlanet))
-        goto L_084b;
-    else
-        goto L_0a98;
-
-L_0a98:
-    if ((lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst >= 0x3))
-        goto L_084b;
-    else
-        goto L_0ac5;
-
-L_0ac5:
-    lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst = (lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst + 0x1);
-
-L_0b2e:
-    goto L_084b;
-
-L_0b31:
+    for (ifl = 0; ifl < cFleet; ifl++) {
+        lpfl = rglpfl[ifl];
+        if (rglpfl[ifl] == 0x0)
+            break;
+        if (fMarkedPlanets == 0) {
+            IdNearestColonizablePlanet(lpfl, 0x0);
+        }
+        if (lpfl->iPlayer == idPlayer) {
+            if (lpfl->rgcsh[14] <= 0 && lpfl->rgcsh[15] <= 0) {
+                if (lpfl->rgcsh[0] > 0) {
+                    cFlMineLayers = cFlMineLayers + 1;
+                    cMineLayers = cMineLayers + lpfl->rgcsh[0];
+                }
+                for (i = 4; i <= 13 && lpfl->rgcsh[i] <= 0; i++) {
+                }
+                if (i > 13) {
+                    if ((lpfl->rgcsh[2] > 0 || lpfl->rgcsh[3] > 0) && lpfl->cord > 1 && lpfl->rgwtMin[3] > 0 && lpfl->lpplord->rgord[1].grobj == grobjPlanet &&
+                        lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst < 0x3) {
+                        lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst = lpciPlanTemp[lpfl->lpplord->rgord[1].id].cFreightersDst + 0x1;
+                    }
+                } else {
+                    lpfl->lpflNext = lpflAttack;
+                    lpflAttack = lpfl;
+                    if (j <= 5 || ((lpfl->cord <= 1 || lpfl->lpplord->rgord[1].grobj != grobjPlanet) && lpfl->idPlanet == -1)) {
+                        cFlDestroyers = cFlDestroyers + 1;
+                    } else {
+                        if (lpfl->cord <= 1 || lpfl->lpplord->rgord[1].grobj != grobjPlanet) {
+                            id = lpfl->idPlanet;
+                        } else {
+                            id = lpfl->lpplord->rgord[1].id;
+                        }
+                        lpb = vlpbAiPlanet + (10 + 16 * id);
+                        if (*lpb != 0x0) {
+                            *lpb = *lpb | 0x80;
+                        }
+                        cFlArmadas = cFlArmadas + 1;
+                    }
+                }
+            } else {
+                cSBDefenderFleets = cSBDefenderFleets + 1;
+            }
+        } else {
+            lpfl->lpflNext = lpflEnemy;
+            lpflEnemy = lpfl;
+        }
+    }
     UpdateProgressGauge(-926);
-    ifl = 0;
-    goto L_0b49;
-
-L_0b45:
-    ifl = (ifl + 1);
-
-L_0b49:
-    if ((ifl >= cFleet))
-        goto L_137f;
-    else
-        goto L_0b54;
-
-L_0b54:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_0b84;
-    else
-        goto L_137f;
-
-L_0b84:
-    if ((lpfl->iPlayer != idPlayer))
-        goto L_0b45;
-    else
-        goto L_0b96;
-
-L_0b96:
-    i = 0;
-    goto L_0bd7;
-
-L_0b9e:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_0bd3;
-    else
-        goto L_0bbb;
-
-L_0bbb:
-    if ((rgRecycleShdef[i] == 0x0))
-        goto L_0be0;
-    else
-        goto L_0bd3;
-
-L_0bd3:
-    i = (i + 1);
-
-L_0bd7:
-    if ((i < 16))
-        goto L_0b9e;
-    else
-        goto L_0be0;
-
-L_0be0:
-    if ((i != 16))
-        goto L_0cca;
-    else
-        goto L_0be9;
-
-L_0be9:
-    if ((lpfl->idPlanet == -1))
-        goto L_0c93;
-    else
-        goto L_0bf6;
-
-L_0bf6:
-    t_call_0bfd = LpplFromId(lpfl->idPlanet);
-    lppl = t_call_0bfd;
-    if ((t_call_0bfd != 0x0))
-        goto L_0c1b;
-    else
-        goto L_0c93;
-
-L_0c1b:
-    if ((lppl->iPlayer != idPlayer))
-        goto L_0c93;
-    else
-        goto L_0c2a;
-
-L_0c2a:
-    if ((lppl->fStarbase != 0x0))
-        goto L_0c55;
-    else
-        goto L_0c41;
-
-L_0c41:
-    if ((Random(5) != 0))
-        goto L_0c93;
-    else
-        goto L_0c55;
-
-L_0c55:
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, &(sel.fl));
-    goto L_0b45;
-
-L_0c93:
-    if ((lpfl->cord <= 1))
-        goto L_0cad;
-    else
-        goto L_0ca0;
-
-L_0ca0:
-    if ((lpfl->idPlanet == -1))
-        goto L_0b45;
-    else
-        goto L_0cad;
-
-L_0cad:
-    if ((FMoveToNearestStarbase(lpfl, 0) != 0))
-        goto L_0b45;
-    else
-        goto L_0cca;
-
-L_0cca:
-    if ((lpfl->rgcsh[14] > 0))
-        goto L_0ce4;
-    else
-        goto L_0cd7;
-
-L_0cd7:
-    if ((lpfl->rgcsh[15] <= 0))
-        goto L_0ddc;
-    else
-        goto L_0ce4;
-
-L_0ce4:
-    if ((lpfl->idPlanet == -1))
-        goto L_0ddc;
-    else
-        goto L_0cf1;
-
-L_0cf1:
-    iStrDef = 0;
-    if (((game.turn - rgshdef[14].turn) >= (cRecyclePeriod - 0xa)))
-        goto L_0d16;
-    else
-        goto L_0d0b;
-
-L_0d0b:
-    iStrDef = (iStrDef + lpfl->rgcsh[14]);
-
-L_0d16:
-    if (((game.turn - rgshdef[15].turn) >= (cRecyclePeriod - 0xa)))
-        goto L_0d35;
-    else
-        goto L_0d2a;
-
-L_0d2a:
-    iStrDef = (iStrDef + lpfl->rgcsh[15]);
-
-L_0d35:
-    if ((iStrDef <= 0))
-        goto L_0b45;
-    else
-        goto L_0d3f;
-
-L_0d3f:
-    lpciPlanTemp[lpfl->idPlanet].fDefended = 0x1;
-    if ((iStrDef >= (iAttackStr * 2)))
-        goto L_0d8a;
-    else
-        goto L_0d84;
-
-L_0d84:
-    t_merge_0d8d_0001 = 0x1;
-    goto L_0d8d;
-
-L_0d8a:
-    t_merge_0d8d_0001 = 0x0;
-
-L_0d8d:
-    lpciPlanTemp[lpfl->idPlanet].fNeedDefenders = t_merge_0d8d_0001;
-
-L_0dd9:
-    goto L_0b45;
-
-L_0ddc:
-    i = 4;
-    goto L_0e08;
-
-L_0de4:
-    if ((lpfl->rgcsh[i] > 0))
-        goto L_0e11;
-    else
-        goto L_0e04;
-
-L_0e04:
-    i = (i + 1);
-
-L_0e08:
-    if ((i <= 13))
-        goto L_0de4;
-    else
-        goto L_0e11;
-
-L_0e11:
-    if ((i > 13))
-        goto L_0f55;
-    else
-        goto L_0e1a;
-
-L_0e1a:
-    if ((lpfl->rgcsh[4] > 0))
-        goto L_0e34;
-    else
-        goto L_0e27;
-
-L_0e27:
-    if ((lpfl->rgcsh[4] <= 0))
-        goto L_0ecb;
-    else
-        goto L_0e34;
-
-L_0e34:
-    if (((lpfl->rgcsh[4] + lpfl->rgcsh[4]) >= iAttackStr))
-        goto L_0e58;
-    else
-        goto L_0e4b;
-
-L_0e4b:
-    if ((lpfl->cord <= 1))
-        goto L_0e81;
-    else
-        goto L_0e58;
-
-L_0e58:
-    IdTargetAttack(lpfl, lpflAttack, lpflEnemy, game.fAisBand);
-
-L_0e81:
-    if ((lpfl->cord != 1))
-        goto L_0b45;
-    else
-        goto L_0e8e;
-
-L_0e8e:
-    if ((Random(100) >= 75))
-        goto L_0b45;
-    else
-        goto L_0ea2;
-
-L_0ea2:
-    FFindBuddyAndJoinUp(lpfl, 4, 5, 100, 200);
-
-L_0ec8:
-    goto L_0b45;
-
-L_0ecb:
-    TargetCyberArmada(lpfl);
-    if ((lpfl->cord != 1))
-        goto L_0b45;
-    else
-        goto L_0ee6;
-
-L_0ee6:
-    if ((Random(100) >= 75))
-        goto L_0b45;
-    else
-        goto L_0efa;
-
-L_0efa:
-    if ((i > 9))
-        goto L_0f2c;
-    else
-        goto L_0f03;
-
-L_0f03:
-    FFindBuddyAndJoinUp(lpfl, 6, 9, 100, 200);
-    goto L_0b45;
-
-L_0f2c:
-    FFindBuddyAndJoinUp(lpfl, 10, 13, 100, 200);
-
-L_0f52:
-    goto L_0b45;
-
-L_0f55:
-    if ((lpfl->cord > 1))
-        goto L_0b45;
-    else
-        goto L_0f65;
-
-L_0f65:
-    if ((game.turn > 0x5))
-        goto L_0fc4;
-    else
-        goto L_0f6f;
-
-L_0f6f:
-    if ((lpfl->rgcsh[0] <= 0))
-        goto L_0fc4;
-    else
-        goto L_0f7c;
-
-L_0f7c:
-    if ((lpfl->cord != 1))
-        goto L_0fc4;
-    else
-        goto L_0f89;
-
-L_0f89:
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
-    FLookupFleet(-1, &(sel.fl));
-    goto L_0b45;
-
-L_0fc4:
-    if ((lpfl->rgcsh[1] <= 0))
-        goto L_111c;
-    else
-        goto L_0fd1;
-
-L_0fd1:
-    idPlanDst = IdNearestColonizablePlanet(lpfl, 0x0);
-    if ((idPlanDst != -1))
-        goto L_104d;
-    else
-        goto L_0ff1;
-
-L_0ff1:
-    if ((lpfl->lpplord->rgord[0].grobj != grobjPlanet))
-        goto L_0b45;
-    else
-        goto L_100c;
-
-L_100c:
-    lpciPlanTemp[lpfl->lpplord->rgord[0].id].fIdleColonizers = 0x1;
-
-L_104a:
-    goto L_0b45;
-
-L_104d:
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    if ((lpfl->idPlanet == -1))
-        goto L_10c2;
-    else
-        goto L_106c;
-
-L_106c:
-    FLookupPlanet(lpfl->idPlanet, &(sel.pl));
-    if ((sel.pl.iPlayer != idPlayer))
-        goto L_10c2;
-    else
-        goto L_108b;
-
-L_108b:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 250);
-    FLookupFleet(lpfl->id, &(sel.fl));
-
-L_10c2:
-    if ((idPlanDst == -1))
-        goto L_111c;
-    else
-        goto L_10cc;
-
-L_10cc:
-    if ((FColonizeAiFleet(lpfl, idPlanDst) == 0))
-        goto L_0b45;
-    else
-        goto L_10e6;
-
-L_10e6:
-    if ((lpfl->cord <= 1))
-        goto L_0b45;
-    else
-        goto L_10f3;
-
-L_10f3:
-    vlpbAiPlanet[((lpfl->lpplord->rgord[1].id * 16) + 15)] = 0x4;
-
-L_1119:
-    goto L_0b45;
-
-L_111c:
-    if ((lpfl->rgcsh[2] > 0))
-        goto L_1136;
-    else
-        goto L_1129;
-
-L_1129:
-    if ((lpfl->rgcsh[3] <= 0))
-        goto L_1188;
-    else
-        goto L_1136;
-
-L_1136:
-    if ((lpfl->iplan == 0x4))
-        goto L_116f;
-    else
-        goto L_1148;
-
-L_1148:
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    sel.fl.iplan = 0x4;
-    FLookupFleet(-1, &(sel.fl));
-
-L_116f:
-    DoCyberFreighter(lpfl, lpciPlanTemp);
-    goto L_0b45;
-
-L_1188:
-    if ((lpfl->rgcsh[0] <= 0))
-        goto L_0b45;
-    else
-        goto L_1195;
-
-L_1195:
-    if ((game.turn <= 0x28))
-        goto L_0b45;
-    else
-        goto L_119f;
-
-L_119f:
-    if ((lpfl->cord != 1))
-        goto L_0b45;
-    else
-        goto L_11ac;
-
-L_11ac:
-    if ((lpfl->cord <= 1))
-        goto L_11e4;
-    else
-        goto L_11b9;
-
-L_11b9:
-    if ((lpfl->lpplord->rgord[0].grTask == grTaskNone))
-        goto L_0b45;
-    else
-        goto L_11cf;
-
-L_11cf:
-    ClearAiCurrentTask(lpfl, 1);
-
-L_11e1:
-    goto L_0b45;
-
-L_11e4:
-    if ((cFlMineLayers > 55))
-        goto L_120a;
-    else
-        goto L_11ed;
-
-L_11ed:
-    if ((cFlMineLayers <= 40))
-        goto L_123b;
-    else
-        goto L_11f6;
-
-L_11f6:
-    if ((Random(3) == 0))
-        goto L_123b;
-    else
-        goto L_120a;
-
-L_120a:
-    if ((FFindBuddyAndJoinUp(lpfl, 0, 0, 72, 108) != 0))
-        goto L_0b45;
-    else
-        goto L_123b;
-
-L_123b:
-    if ((lpfl->rgcsh[0] < 7))
-        goto L_1317;
-    else
-        goto L_1248;
-
-L_1248:
-    if ((Random(5) != 0))
-        goto L_1317;
-    else
-        goto L_125c;
-
-L_125c:
-    t_call_126f = IdRandomPlanetNearby(lpfl->pt, 105, 1);
-    idPlanDst = t_call_126f;
-    if ((t_call_126f == -1))
-        goto L_1317;
-    else
-        goto L_1283;
-
-L_1283:
-    if ((idPlanDst == lpfl->idPlanet))
-        goto L_1317;
-    else
-        goto L_1293;
-
-L_1293:
-    ClearAiCurrentTask(lpfl, 1);
-    ord.id = idPlanDst;
-    ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[idPlanDst];
-    ord.grTask = grTaskLayMines;
-    ord.fValidTask = 0x1;
-    ord.iWarp = 0x4;
-    FMoveAiFleet(lpfl, &(ord), 0);
-    goto L_0b45;
-
-L_1317:
-    if ((lpfl->lpplord->rgord[0].grTask == grTaskLayMines))
-        goto L_0b45;
-    else
-        goto L_132d;
-
-L_132d:
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
-    sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
-    sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
-    FLookupFleet(-1, &(sel.fl));
-    goto L_0b45;
-
-L_137f:
+    for (ifl = 0; ifl < cFleet; ifl++) {
+        lpfl = rglpfl[ifl];
+        if (rglpfl[ifl] == 0x0)
+            break;
+        if (lpfl->iPlayer == idPlayer) {
+            for (i = 0; i < 16 && (lpfl->rgcsh[i] <= 0 || rgRecycleShdef[i] != 0x0); i++) {
+            }
+            if (i == 16) {
+                if (lpfl->idPlanet != -1) {
+                    t_call_0bfd = LpplFromId(lpfl->idPlanet);
+                    lppl = t_call_0bfd;
+                    if (t_call_0bfd != 0x0 && lppl->iPlayer == idPlayer && (lppl->fStarbase != 0x0 || Random(5) == 0)) {
+                        ChangeMainObjSel(grobjFleet, lpfl->id);
+                        sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
+                        FLookupFleet(-1, &sel.fl);
+                        continue;
+                    }
+                }
+                if ((lpfl->cord > 1 && lpfl->idPlanet == -1) || FMoveToNearestStarbase(lpfl, 0) != 0)
+                    continue;
+            }
+            if ((lpfl->rgcsh[14] <= 0 && lpfl->rgcsh[15] <= 0) || lpfl->idPlanet == -1) {
+                for (i = 4; i <= 13 && lpfl->rgcsh[i] <= 0; i++) {
+                }
+                if (i > 13) {
+                    if (lpfl->cord <= 1) {
+                        if (game.turn > 0x5 || lpfl->rgcsh[0] <= 0 || lpfl->cord != 1) {
+                            if (lpfl->rgcsh[1] > 0) {
+                                idPlanDst = IdNearestColonizablePlanet(lpfl, 0x0);
+                                if (idPlanDst == -1) {
+                                    if (lpfl->lpplord->rgord[0].grobj != grobjPlanet)
+                                        continue;
+                                    lpciPlanTemp[lpfl->lpplord->rgord[0].id].fIdleColonizers = 0x1;
+                                    continue;
+                                }
+                                ChangeMainObjSel(grobjFleet, lpfl->id);
+                                if (lpfl->idPlanet != -1) {
+                                    FLookupPlanet(lpfl->idPlanet, &sel.pl);
+                                    if (sel.pl.iPlayer == idPlayer) {
+                                        XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 250);
+                                        FLookupFleet(lpfl->id, &sel.fl);
+                                    }
+                                }
+                                if (idPlanDst != -1) {
+                                    if (FColonizeAiFleet(lpfl, idPlanDst) == 0 || lpfl->cord <= 1)
+                                        continue;
+                                    vlpbAiPlanet[lpfl->lpplord->rgord[1].id * 16 + 15] = 0x4;
+                                    continue;
+                                }
+                            }
+                            if (lpfl->rgcsh[2] <= 0 && lpfl->rgcsh[3] <= 0) {
+                                if (lpfl->rgcsh[0] > 0 && game.turn > 0x28 && lpfl->cord == 1) {
+                                    if (lpfl->cord <= 1) {
+                                        if ((cFlMineLayers <= 55 && (cFlMineLayers <= 40 || Random(3) == 0)) || FFindBuddyAndJoinUp(lpfl, 0, 0, 72, 108) == 0) {
+                                            if (lpfl->rgcsh[0] >= 7 && Random(5) == 0) {
+                                                t_call_126f = IdRandomPlanetNearby(lpfl->pt, 105, 1);
+                                                idPlanDst = t_call_126f;
+                                                if (t_call_126f != -1 && idPlanDst != lpfl->idPlanet) {
+                                                    ClearAiCurrentTask(lpfl, 1);
+                                                    ord.id = idPlanDst;
+                                                    ord.grobj = grobjPlanet;
+                                                    ord.pt = rgptPlan[idPlanDst];
+                                                    ord.grTask = grTaskLayMines;
+                                                    ord.fValidTask = 0x1;
+                                                    ord.iWarp = 0x4;
+                                                    FMoveAiFleet(lpfl, &ord, 0);
+                                                    continue;
+                                                }
+                                            }
+                                            if (lpfl->lpplord->rgord[0].grTask != grTaskLayMines) {
+                                                ChangeMainObjSel(grobjFleet, lpfl->id);
+                                                sel.fl.lpplord->rgord[0].grTask = grTaskLayMines;
+                                                sel.fl.lpplord->rgord[0].tlm.cTime = 0x5;
+                                                sel.fl.lpplord->rgord[0].tlm.cTimeOld = 0x5;
+                                                FLookupFleet(-1, &sel.fl);
+                                            }
+                                        }
+                                    } else if (lpfl->lpplord->rgord[0].grTask != grTaskNone) {
+                                        ClearAiCurrentTask(lpfl, 1);
+                                    }
+                                }
+                            } else {
+                                if (lpfl->iplan != 0x4) {
+                                    ChangeMainObjSel(grobjFleet, lpfl->id);
+                                    sel.fl.iplan = 0x4;
+                                    FLookupFleet(-1, &sel.fl);
+                                }
+                                DoCyberFreighter(lpfl, lpciPlanTemp);
+                            }
+                        } else {
+                            ChangeMainObjSel(grobjFleet, lpfl->id);
+                            sel.fl.lpplord->rgord[0].grTask = grTaskScrap;
+                            FLookupFleet(-1, &sel.fl);
+                        }
+                    }
+                } else if (lpfl->rgcsh[4] <= 0 && lpfl->rgcsh[4] <= 0) {
+                    TargetCyberArmada(lpfl);
+                    if (lpfl->cord == 1 && Random(100) < 75) {
+                        if (i > 9) {
+                            FFindBuddyAndJoinUp(lpfl, 10, 13, 100, 200);
+                        } else {
+                            FFindBuddyAndJoinUp(lpfl, 6, 9, 100, 200);
+                        }
+                    }
+                } else {
+                    if (lpfl->rgcsh[4] + lpfl->rgcsh[4] >= iAttackStr || lpfl->cord > 1) {
+                        IdTargetAttack(lpfl, lpflAttack, lpflEnemy, game.fAisBand);
+                    }
+                    if (lpfl->cord == 1 && Random(100) < 75) {
+                        FFindBuddyAndJoinUp(lpfl, 4, 5, 100, 200);
+                    }
+                }
+            } else {
+                iStrDef = 0;
+                if (game.turn - rgshdef[14].turn < cRecyclePeriod - 0xa) {
+                    iStrDef = iStrDef + lpfl->rgcsh[14];
+                }
+                if (game.turn - rgshdef[15].turn < cRecyclePeriod - 0xa) {
+                    iStrDef = iStrDef + lpfl->rgcsh[15];
+                }
+                if (iStrDef > 0) {
+                    lpciPlanTemp[lpfl->idPlanet].fDefended = 0x1;
+                    lpciPlanTemp[lpfl->idPlanet].fNeedDefenders = iStrDef >= iAttackStr * 2 ? 0x0 : 0x1;
+                }
+            }
+        }
+    }
     UpdateProgressGauge(-926);
-    ipl = 0;
-    goto L_1397;
-
-L_1393:
-    ipl = (ipl + 1);
-
-L_1397:
-    if ((ipl >= vclpplAi))
-        goto L_1a27;
-    else
-        goto L_13a2;
-
-L_13a2:
-    lppl = vrglpplAi[ipl];
-    if ((vrglpplAi[ipl] != 0x0))
-        goto L_13d2;
-    else
-        goto L_1a27;
-
-L_13d2:
-    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
-    ChangeMainObjSel(grobjPlanet, lppl->id);
-    InitProduction(rgprod);
-    fWrite = 0;
-    lNewPop = (uint32_t)((lppl->rgwtMin[3] * (int32_t)(PctTrueMaxGrowth(idPlayer))));
-    GetResourcesAvailable(lppl, rgResAvail);
-    GetProdQCost(lppl, rgResCost);
-    i = 0;
-    goto L_14bb;
-
-L_1483:
-    if ((rgResCost[i] <= rgResAvail[i]))
-        goto L_14b7;
-    else
-        goto LFinishProduction;
-
-L_14b7:
-    i = (i + 1);
-
-L_14bb:
-    if ((i < 4))
-        goto L_1483;
-    else
-        goto L_14c4;
-
-L_14c4:
-    pctValue = PctPlanetDesirability(lppl, idPlayer);
-    pctValueIdeal = PctPlanetOptValue(lppl, idPlayer);
-    if ((pctValue >= 10))
-        goto L_153c;
-    else
-        goto L_14f7;
-
-L_14f7:
-    i = (LOWORD((int32_t)(((rgResAvail[3] - rgResCost[3]) / 0x46))) + 1);
-    AddItemToQueue(0xc, i, grobjPlanet, 1);
-    fWrite = 1;
-    goto LFinishProduction;
-
-L_153c:
-    if ((pctValue >= pctValueIdeal))
-        goto L_1586;
-    else
-        goto L_1547;
-
-L_1547:
-    if (((rgResAvail[3] - rgResCost[3]) <= 0x46))
-        goto L_1586;
-    else
-        goto L_1568;
-
-L_1568:
-    AddItemToQueue(0xc, 0x1, grobjPlanet, 1);
-    fWrite = 1;
-
-L_1586:
-    if ((lppl->fStarbase == 0x0))
-        goto LFinishProduction;
-    else
-        goto L_15a0;
-
-L_15a0:
-    if ((lppl->isb == 0x1))
-        goto LFinishProduction;
-    else
-        goto L_15b2;
-
-L_15b2:
-    if ((lppl->isb == 0x3))
-        goto LFinishProduction;
-    else
-        goto L_15c4;
-
-L_15c4:
-    if ((lppl->isb == 0x6))
-        goto LFinishProduction;
-    else
-        goto L_15d6;
-
-L_15d6:
-    if ((lppl->isb == 0x8))
-        goto LFinishProduction;
-    else
-        goto L_15eb;
-
-L_15eb:
-    if ((lpciPlan->fBltColony == 0x0))
-        goto L_161a;
-    else
-        goto L_1602;
-
-L_1602:
-    if ((lNewPop <= 5500))
-        goto L_16c6;
-    else
-        goto L_161a;
-
-L_161a:
-    if ((lpciPlanTemp->fIdleColonizers != 0x0))
-        goto L_16c6;
-    else
-        goto L_162c;
-
-L_162c:
-    if ((cExistColony < 40))
-        goto L_1643;
-    else
-        goto L_16c6;
-
-L_1643:
-    if ((FShouldPlanetBuildColonizer(lppl) == 0))
-        goto L_16c6;
-    else
-        goto L_1659;
-
-L_1659:
-    AddItemToQueue(0x1, 0x1, grobjFleet, 1);
-    lpciPlan->fBltColony = 0x1;
-    fWrite = 1;
-    if ((lNewPop <= 15000))
-        goto L_16d8;
-    else
-        goto L_16a1;
-
-L_16a1:
-    if ((game.turn >= 0x64))
-        goto L_16d8;
-    else
-        goto L_16ab;
-
-L_16ab:
-    AddItemToQueue(0x1, 0x1, grobjFleet, 1);
-
-L_16c3:
-    goto L_16d8;
-
-L_16c6:
-    lpciPlan->fBltColony = 0x0;
-
-L_16d8:
-    if ((lppl->rgwtMin[3] <= 2000))
-        goto L_1777;
-    else
-        goto L_16f5;
-
-L_16f5:
-    if ((rgshdef[2].fFree != 0x0))
-        goto L_1777;
-    else
-        goto L_1708;
-
-L_1708:
-    if ((cExistCargo < 50))
-        goto L_171f;
-    else
-        goto L_1777;
-
-L_171f:
-    if ((lpciPlanTemp->cIdleFreighters >= 0x1))
-        goto L_1777;
-    else
-        goto L_1733;
-
-L_1733:
-    if ((LpplFindClosestEnum(lppl, FEnumDropOffStage2) != 0x0))
-        goto L_1759;
-    else
-        goto L_1777;
-
-L_1759:
-    AddItemToQueue(iLatestCargo, 0x1, grobjFleet, 1);
-    fWrite = 1;
-
-L_1777:
-    if ((rgshdef[0].hul.ihuldef != ihuldefFrigate))
-        goto L_1893;
-    else
-        goto L_1781;
-
-L_1781:
-    if ((Random(4) != 0))
-        goto L_1893;
-    else
-        goto L_1795;
-
-L_1795:
-    if ((cMineLayers >= 10000))
-        goto L_1893;
-    else
-        goto L_179f;
-
-L_179f:
-    id = lppl->id;
-    cFr = 0;
-    ifl = 0;
-    goto L_17bb;
-
-L_17b7:
-    ifl = (ifl + 1);
-
-L_17bb:
-    if ((ifl >= cFleet))
-        goto L_1833;
-    else
-        goto L_17c6;
-
-L_17c6:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_17f6;
-    else
-        goto L_1833;
-
-L_17f6:
-    if ((lpfl->idPlanet != id))
-        goto L_17b7;
-    else
-        goto L_1806;
-
-L_1806:
-    if ((lpfl->rgcsh[0] <= 0))
-        goto L_17b7;
-    else
-        goto L_1813;
-
-L_1813:
-    if ((lpfl->iPlayer != idPlayer))
-        goto L_17b7;
-    else
-        goto L_1822;
-
-L_1822:
-    cFr = lpfl->rgcsh[0];
-
-L_1833:
-    if ((cFr < 10))
-        goto L_185b;
-    else
-        goto L_183d;
-
-L_183d:
-    if ((cFr >= 17))
-        goto L_1893;
-    else
-        goto L_1847;
-
-L_1847:
-    if ((Random(10) != 0))
-        goto L_1893;
-    else
-        goto L_185b;
-
-L_185b:
-    if ((Random(((cFr * 2) + 1)) != 0))
-        goto L_1893;
-    else
-        goto L_1875;
-
-L_1875:
-    AddItemToQueue(0x0, 0x4, grobjFleet, 1);
-    fWrite = 1;
-
-L_1893:
-    if ((lpciPlanTemp->fNeedDefenders == 0x0))
-        goto L_18b5;
-    else
-        goto L_18af;
-
-L_18af:
-    t_merge_18b8_0001 = iLatestSBDefender;
-    goto L_18b8;
-
-L_18b5:
-    t_merge_18b8_0001 = -1;
-
-L_18b8:
-    iSBDef = t_merge_18b8_0001;
-    if ((iSBDef != -1))
-        goto L_199f;
-    else
-        goto L_18c6;
-
-L_18c6:
-    if ((lpciPlanTemp->fDefended != 0x0))
-        goto L_199f;
-    else
-        goto L_18dd;
-
-L_18dd:
-    if ((cSBDefenderFleets >= 40))
-        goto L_199f;
-    else
-        goto L_18e6;
-
-L_18e6:
-    lpplEnemy = LpplFindClosestEnum(lppl, FEnumCalcEnemyPlanets);
-    if ((lpplEnemy != 0x0))
-        goto L_1918;
-    else
-        goto L_195a;
-
-L_1918:
-    if ((LDistance2(rgptPlan[lppl->id], rgptPlan[lpplEnemy->id]) <= 90000))
-        goto L_197e;
-    else
-        goto L_195a;
-
-L_195a:
-    if ((Random(100) >= 10))
-        goto L_1974;
-    else
-        goto L_196e;
-
-L_196e:
-    t_merge_1977_0001 = iLatestSBDefender;
-    goto L_1977;
-
-L_1974:
-    t_merge_1977_0001 = -1;
-
-L_1977:
-    iSBDef = t_merge_1977_0001;
-    goto L_199f;
-
-L_197e:
-    if ((Random(100) >= 50))
-        goto L_1998;
-    else
-        goto L_1992;
-
-L_1992:
-    t_merge_199b_0001 = iLatestSBDefender;
-    goto L_199b;
-
-L_1998:
-    t_merge_199b_0001 = -1;
-
-L_199b:
-    iSBDef = t_merge_199b_0001;
-
-L_199f:
-    if ((cFlDestroyers <= 120))
-        goto L_19ad;
-    else
-        goto L_19a8;
-
-L_19a8:
-    iLatestDestroyer = -1;
-
-L_19ad:
-    if ((cFlArmadas <= 250))
-        goto L_19bc;
-    else
-        goto L_19b7;
-
-L_19b7:
-    iLatestBattle = -1;
-
-L_19bc:
-    iBuilt = iAddAttackFleet(lppl, iAttackStr, iLatestDestroyer, iLatestBattle, iSBDef);
-    if ((iBuilt == 0))
-        goto L_19ea;
-    else
-        goto L_19e4;
-
-L_19e4:
-    t_merge_19ed_0001 = 0x1;
-    goto L_19ed;
-
-L_19ea:
-    t_merge_19ed_0001 = 0x0;
-
-L_19ed:
-    fWrite = (fWrite | t_merge_19ed_0001);
-    if ((iBuilt != 1))
-        goto L_19fe;
-    else
-        goto L_19fa;
-
-L_19fa:
-    cFlArmadas = (cFlArmadas + 1);
-
-L_19fe:
-    if ((iBuilt != 2))
-        goto L_1a0b;
-    else
-        goto L_1a07;
-
-L_1a07:
-    cSBDefenderFleets = (cSBDefenderFleets + 1);
-
-L_1a0b:
-    if ((iBuilt != 3))
-        goto LFinishProduction;
-    else
-        goto L_1a14;
-
-L_1a14:
-    cFlDestroyers = (cFlDestroyers + 1);
-
-LFinishProduction:
-    FinishProduction(fWrite);
-    goto L_1393;
-
-L_1a27:
+    for (ipl = 0; ipl < vclpplAi; ipl++) {
+        lppl = vrglpplAi[ipl];
+        if (vrglpplAi[ipl] == 0x0)
+            break;
+        lpciPlan = (CYBERINFO *)(vlpbAiData + (lppl->id * 2 + 2));
+        lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + (dOffsetPlanTemp + lppl->id * 2));
+        ChangeMainObjSel(grobjPlanet, lppl->id);
+        InitProduction(rgprod);
+        fWrite = 0;
+        lNewPop = (uint32_t)(lppl->rgwtMin[3] * (int32_t)PctTrueMaxGrowth(idPlayer));
+        GetResourcesAvailable(lppl, rgResAvail);
+        GetProdQCost(lppl, rgResCost);
+        for (i = 0; i < 4; i++) {
+            if (rgResCost[i] > rgResAvail[i])
+                goto LFinishProduction;
+        }
+        pctValue = PctPlanetDesirability(lppl, idPlayer);
+        pctValueIdeal = PctPlanetOptValue(lppl, idPlayer);
+        if (pctValue >= 10) {
+            if (pctValue < pctValueIdeal && rgResAvail[3] - rgResCost[3] > 0x46) {
+                AddItemToQueue(0xc, 0x1, grobjPlanet, 1);
+                fWrite = 1;
+            }
+            if (lppl->fStarbase != 0x0) {
+                switch (lppl->isb) {
+                default:
+                    if ((lpciPlan->fBltColony != 0x0 && lNewPop <= 5500) || lpciPlanTemp->fIdleColonizers != 0x0 || cExistColony >= 40 ||
+                        FShouldPlanetBuildColonizer(lppl) == 0) {
+                        lpciPlan->fBltColony = 0x0;
+                    } else {
+                        AddItemToQueue(0x1, 0x1, grobjFleet, 1);
+                        lpciPlan->fBltColony = 0x1;
+                        fWrite = 1;
+                        if (lNewPop > 15000 && game.turn < 0x64) {
+                            AddItemToQueue(0x1, 0x1, grobjFleet, 1);
+                        }
+                    }
+                    if (lppl->rgwtMin[3] > 2000 && rgshdef[2].fFree == 0x0 && cExistCargo < 50 && lpciPlanTemp->cIdleFreighters < 0x1 &&
+                        LpplFindClosestEnum(lppl, FEnumDropOffStage2) != 0x0) {
+                        AddItemToQueue(iLatestCargo, 0x1, grobjFleet, 1);
+                        fWrite = 1;
+                    }
+                    if (rgshdef[0].hul.ihuldef == ihuldefFrigate && Random(4) == 0 && cMineLayers < 10000) {
+                        id = lppl->id;
+                        cFr = 0;
+                        ifl = 0;
+                        while (1) {
+                            if (ifl >= cFleet)
+                                goto L_1833;
+                            lpfl = rglpfl[ifl];
+                            if (rglpfl[ifl] == 0x0)
+                                goto L_1833;
+                            if (lpfl->idPlanet == id && lpfl->rgcsh[0] > 0 && lpfl->iPlayer == idPlayer)
+                                break;
+                            ifl = ifl + 1;
+                        }
+                        cFr = lpfl->rgcsh[0];
+                    L_1833:
+                        if ((cFr < 10 || (cFr < 17 && Random(10) == 0)) && Random(cFr * 2 + 1) == 0) {
+                            AddItemToQueue(0x0, 0x4, grobjFleet, 1);
+                            fWrite = 1;
+                        }
+                    }
+                    iSBDef = lpciPlanTemp->fNeedDefenders == 0x0 ? -1 : iLatestSBDefender;
+                    if (iSBDef == -1 && lpciPlanTemp->fDefended == 0x0 && cSBDefenderFleets < 40) {
+                        lpplEnemy = LpplFindClosestEnum(lppl, FEnumCalcEnemyPlanets);
+                        if (lpplEnemy != 0x0 && LDistance2(rgptPlan[lppl->id], rgptPlan[lpplEnemy->id]) <= 90000) {
+                            iSBDef = Random(100) >= 50 ? -1 : iLatestSBDefender;
+                        } else {
+                            iSBDef = Random(100) >= 10 ? -1 : iLatestSBDefender;
+                        }
+                    }
+                    if (cFlDestroyers > 120) {
+                        iLatestDestroyer = -1;
+                    }
+                    if (cFlArmadas > 250) {
+                        iLatestBattle = -1;
+                    }
+                    iBuilt = iAddAttackFleet(lppl, iAttackStr, iLatestDestroyer, iLatestBattle, iSBDef);
+                    fWrite = fWrite | (iBuilt == 0 ? 0x0 : 0x1);
+                    if (iBuilt == 1) {
+                        cFlArmadas = cFlArmadas + 1;
+                    }
+                    if (iBuilt == 2) {
+                        cSBDefenderFleets = cSBDefenderFleets + 1;
+                    }
+                    if (iBuilt == 3) {
+                        cFlDestroyers = cFlDestroyers + 1;
+                    }
+                case 0x1:
+                case 0x3:
+                case 0x6:
+                case 0x8:
+                }
+            }
+        } else {
+            i = LOWORD((int32_t)((rgResAvail[3] - rgResCost[3]) / 0x46)) + 1;
+            AddItemToQueue(0xc, i, grobjPlanet, 1);
+            fWrite = 1;
+        }
+    LFinishProduction:
+        FinishProduction(fWrite);
+    }
     UpdateProgressGauge(-926);
     HandleBasicAiTasks(iroCur, rgprod, IshdefAiSBLatest(), rgResAvail, rgResCost);
     UpdateProgressGauge(-926);
@@ -1668,621 +539,203 @@ void DoCyberPackets() {
     int32_t        lMinNeeded;
     double         dDistanceTgt;
     int16_t        iMin;
-    int16_t        t_merge_1d7f_0001;
-    int16_t        t_merge_1e0e_0001;
-    int16_t        t_merge_1e9d_0001;
-    int16_t        t_merge_1f4c_0001;
     int32_t        t_merge_20f9_0001;
-    double         t_merge_231d_0001;
     int32_t        t_merge_2361_0001;
-    uint16_t       t_merge_273d_0001;
 
-L_1a78:
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    ipl = 0;
-    goto L_1a99;
-
-L_1a95:
-    ipl = (ipl + 1);
-
-L_1a99:
-    if ((ipl >= vclpplAi))
-        goto L_2823;
-    else
-        goto L_1aa4;
-
-L_1aa4:
-    lppl = vrglpplAi[ipl];
-    if ((vrglpplAi[ipl] != 0x0))
-        goto L_1ad4;
-    else
-        goto L_2823;
-
-L_1ad4:
-    if ((lppl->fStarbase == 0x0))
-        goto L_1a95;
-    else
-        goto L_1aee;
-
-L_1aee:
-    lpciPlan = (CYBERINFO *)((vlpbAiData + ((lppl->id * 2) + 2)));
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lppl->id * 2))));
-    ChangeMainObjSel(grobjPlanet, lppl->id);
-    InitProduction(rgprod);
-    fWrite = 0;
-    GetResourcesAvailable(lppl, rgResAvail);
-    GetProdQCost(lppl, rgResCost);
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_1fa3;
-    else
-        goto L_1b8a;
-
-L_1b8a:
-    if ((lppl->isb == 0x1))
-        goto L_1bd2;
-    else
-        goto L_1b9c;
-
-L_1b9c:
-    if ((lppl->isb == 0x3))
-        goto L_1bd2;
-    else
-        goto L_1bae;
-
-L_1bae:
-    if ((lppl->isb == 0x6))
-        goto L_1bd2;
-    else
-        goto L_1bc0;
-
-L_1bc0:
-    if ((lppl->isb != 0x8))
-        goto L_1fa3;
-    else
-        goto L_1bd2;
-
-L_1bd2:
-    if ((lppl->rgwtMin[0] <= 700))
-        goto L_1bef;
-    else
-        goto L_1c29;
-
-L_1bef:
-    if ((lppl->rgwtMin[1] <= 700))
-        goto L_1c0c;
-    else
-        goto L_1c29;
-
-L_1c0c:
-    if ((lppl->rgwtMin[2] <= 700))
-        goto L_1fa3;
-    else
-        goto L_1c29;
-
-L_1c29:
-    iPacketMax = LOWORD((int32_t)((rgResAvail[3] / 2)));
-    iPacketMax = ((int32_t)(iPacketMax) / 5);
-    if ((iPacketMax >= 7))
-        goto L_1c65;
-    else
-        goto L_1c58;
-
-L_1c58:
-    lpplDst = 0x0;
-    goto L_1c81;
-
-L_1c65:
-    lpplDst = LpplFindClosestEnum(lppl, FEnumNeedMinerals);
-
-L_1c81:
-    if ((lpplDst != 0x0))
-        goto L_1c93;
-    else
-        goto L_1fa3;
-
-L_1c93:
-    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((lpplDst->id * 2) + 2)));
-    lpciPlanT = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2))));
-    iPacketAdd = 0;
-    if ((lpplDst->isb == 0x1))
-        goto L_1d20;
-    else
-        goto L_1cea;
-
-L_1cea:
-    if ((lpplDst->isb == 0x3))
-        goto L_1d20;
-    else
-        goto L_1cfc;
-
-L_1cfc:
-    if ((lpplDst->isb == 0x6))
-        goto L_1d20;
-    else
-        goto L_1d0e;
-
-L_1d0e:
-    if ((lpplDst->isb != 0x8))
-        goto L_1d29;
-    else
-        goto L_1d20;
-
-L_1d20:
-    iMinLimit = 10;
-    goto L_1d2f;
-
-L_1d29:
-    iMinLimit = 1000;
-
-L_1d2f:
-    if ((lpplDst->rgwtMin[0] < (int32_t)(iMinLimit)))
-        goto L_1d4e;
-    else
-        goto L_1dbe;
-
-L_1d4e:
-    if ((lppl->rgwtMin[0] <= 700))
-        goto L_1dbe;
-    else
-        goto L_1d6b;
-
-L_1d6b:
-    if ((iPacketMax >= 7))
-        goto L_1d7c;
-    else
-        goto L_1d75;
-
-L_1d75:
-    t_merge_1d7f_0001 = iPacketMax;
-    goto L_1d7f;
-
-L_1d7c:
-    t_merge_1d7f_0001 = 7;
-
-L_1d7f:
-    iPacketAdd = t_merge_1d7f_0001;
-    AddItemToQueue(0xe, iPacketAdd, grobjPlanet, 0);
-    iPacketMax = (iPacketMax - iPacketAdd);
-    lpciPlanT->fNeedsMin1 = 0x0;
-    fWrite = 1;
-
-L_1dbe:
-    if ((lpplDst->rgwtMin[1] < (int32_t)(iMinLimit)))
-        goto L_1ddd;
-    else
-        goto L_1e4d;
-
-L_1ddd:
-    if ((lppl->rgwtMin[1] <= 700))
-        goto L_1e4d;
-    else
-        goto L_1dfa;
-
-L_1dfa:
-    if ((iPacketMax >= 7))
-        goto L_1e0b;
-    else
-        goto L_1e04;
-
-L_1e04:
-    t_merge_1e0e_0001 = iPacketMax;
-    goto L_1e0e;
-
-L_1e0b:
-    t_merge_1e0e_0001 = 7;
-
-L_1e0e:
-    iPacketAdd = t_merge_1e0e_0001;
-    AddItemToQueue(0xf, iPacketAdd, grobjPlanet, 0);
-    iPacketMax = (iPacketMax - iPacketAdd);
-    lpciPlanT->fNeedsMin2 = 0x0;
-    fWrite = 1;
-
-L_1e4d:
-    if ((lpplDst->rgwtMin[2] < (int32_t)(iMinLimit)))
-        goto L_1e6c;
-    else
-        goto L_1edc;
-
-L_1e6c:
-    if ((lppl->rgwtMin[2] <= 700))
-        goto L_1edc;
-    else
-        goto L_1e89;
-
-L_1e89:
-    if ((iPacketMax >= 7))
-        goto L_1e9a;
-    else
-        goto L_1e93;
-
-L_1e93:
-    t_merge_1e9d_0001 = iPacketMax;
-    goto L_1e9d;
-
-L_1e9a:
-    t_merge_1e9d_0001 = 7;
-
-L_1e9d:
-    iPacketAdd = t_merge_1e9d_0001;
-    AddItemToQueue(0x10, iPacketAdd, grobjPlanet, 0);
-    iPacketMax = (iPacketMax - iPacketAdd);
-    lpciPlanT->fNeedsMin3 = 0x0;
-    fWrite = 1;
-
-L_1edc:
-    if ((fWrite == 0))
-        goto LFinish;
-    else
-        goto L_1ee6;
-
-L_1ee6:
-    iWarpSrc = (IWarpMAFromLppl(lppl, &(fTwoMA)) - 4);
-    if ((fTwoMA == 0))
-        goto L_1f0d;
-    else
-        goto L_1f08;
-
-L_1f08:
-    iWarpSrc = (iWarpSrc + 1);
-
-L_1f0d:
-    iWarpDst = (IWarpMAFromLppl(lpplDst, &(fTwoMA)) - 4);
-    if ((fTwoMA == 0))
-        goto L_1f34;
-    else
-        goto L_1f2f;
-
-L_1f2f:
-    iWarpDst = (iWarpDst + 1);
-
-L_1f34:
-    if ((iWarpSrc >= iWarpDst))
-        goto L_1f48;
-    else
-        goto L_1f41;
-
-L_1f41:
-    t_merge_1f4c_0001 = iWarpSrc;
-    goto L_1f4c;
-
-L_1f48:
-    t_merge_1f4c_0001 = iWarpDst;
-
-L_1f4c:
-    sel.pl.iWarpFling = t_merge_1f4c_0001;
-    sel.pl.idFling = (lpplDst->id + 1);
-    FLookupPlanet(-1, &(sel.pl));
-
-L_1fa0:
-    goto LFinish;
-
-L_1fa3:
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_25dc;
-    else
-        goto L_1fb9;
-
-L_1fb9:
-    if ((rgplr[idPlayer].lvlAi > 0x1))
-        goto L_200b;
-    else
-        goto L_1fd8;
-
-L_1fd8:
-    if ((rgplr[idPlayer].lvlAi != 0x1))
-        goto L_25dc;
-    else
-        goto L_1ff7;
-
-L_1ff7:
-    if ((Random(3) != 0))
-        goto L_25dc;
-    else
-        goto L_200b;
-
-L_200b:
-    plMinMax = (int32_t *)((vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2))));
-    rgResAvail[0] = (rgResAvail[0] - rgResCost[0]);
-    rgResAvail[1] = (rgResAvail[1] - rgResCost[1]);
-    rgResAvail[2] = (rgResAvail[2] - rgResCost[2]);
-    lMineral = (((rgResAvail[0] - 70) + (rgResAvail[1] - 70)) + (rgResAvail[2] - 70));
-    cResLeft = LOWORD((int32_t)((rgResAvail[3] / 2)));
-    lPackets = (int32_t)(((int32_t)((cResLeft - 5)) / 5));
-    if ((lMineral < (int32_t)((uint32_t)((lPackets * 70)))))
-        goto L_20d9;
-    else
-        goto L_20e4;
-
-L_20d9:
-    t_merge_20f9_0001 = lMineral;
-    goto L_20f9;
-
-L_20e4:
-    t_merge_20f9_0001 = (uint32_t)((lPackets * 70));
-
-L_20f9:
-    *(plMinMax) = t_merge_20f9_0001;
-    if ((lMineral <= 150))
-        goto L_213d;
-    else
-        goto L_211e;
-
-L_211e:
-    lpplDst = LpplFindClosestEnum(lppl, FEnumPktAttack);
-    goto L_2147;
-
-L_213d:
-    lpplDst = 0x0;
-
-L_2147:
-    if ((lpplDst != 0x0))
-        goto L_2159;
-    else
-        goto L_25dc;
-
-L_2159:
-    cPacket[0] = 0;
-    cPacket[1] = 0;
-    cPacket[2] = 0;
-    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((lpplDst->id * 2) + 2)));
-    lpciPlanT = (CYBERINFOTEMP *)((vlpbAiData + (dOffsetPlanTemp + (lpplDst->id * 2))));
-    iPacketAdd = 0;
-    if ((lpplDst->fStarbase == 0x0))
-        goto L_21ec;
-    else
-        goto L_21c7;
-
-L_21c7:
-    iWarpDst = IWarpMAFromLppl(lpplDst, &(fTwoMA));
-    if ((fTwoMA == 0))
-        goto L_21f1;
-    else
-        goto L_21e5;
-
-L_21e5:
-    iWarpDst = (iWarpDst + 1);
-
-L_21e9:
-    goto L_21f1;
-
-L_21ec:
-    iWarpDst = 0;
-
-L_21f1:
-    iWarp = (IWarpMAFromLppl(lppl, &(fTwoMA)) + 3);
-    dDistance = (double)((int32_t)((iWarp * iWarp)));
-    dDistanceTgt = DGetDistance(rgptPlan[lppl->id].x, rgptPlan[lppl->id].y, rgptPlan[lpplDst->id].x, rgptPlan[lpplDst->id].y);
-    dMod = ((double)((uint32_t)((((iWarp * iWarp) - (iWarpDst * iWarpDst)) * (0x64 - (lpplDst->uDefGuess + 0x5))))) / 16000.0);
-    if ((0x3e8 >= ((lpplDst->uPopGuess + 0x19) * 0x4)))
-        goto L_22fa;
-    else
-        goto L_22e2;
-
-L_22e2:
-    t_merge_231d_0001 = 1000.0;
-    goto L_231d;
-
-L_22fa:
-    t_merge_231d_0001 = (double)((uint32_t)(((lpplDst->uPopGuess + 0x19) * 0x4)));
-
-L_231d:
-    lMinNeeded = (int32_t)((t_merge_231d_0001 / dMod));
-    if ((lMinNeeded < lMineral))
-        goto L_234e;
-    else
-        goto L_2359;
-
-L_234e:
-    t_merge_2361_0001 = lMinNeeded;
-    goto L_2361;
-
-L_2359:
-    t_merge_2361_0001 = lMineral;
-
-L_2361:
-    lMineral = t_merge_2361_0001;
-    if ((fTwoMA == 0))
-        goto L_23c7;
-    else
-        goto L_2372;
-
-L_2372:
-    lMineral = (int32_t)(((double)(lMineral) / pow(0.875, (dDistanceTgt / dDistance))));
-    goto L_24a9;
-
-L_23c7:
-    lMineral = (int32_t)(((double)(lMineral) / pow(0.75, (dDistanceTgt / dDistance))));
-
-L_2419:
-    goto L_24a9;
-
-L_241c:
-    iMin = 0;
-    if ((rgResAvail[iMin] < rgResAvail[1]))
-        goto L_2449;
-    else
-        goto L_244f;
-
-L_2449:
-    iMin = 1;
-
-L_244f:
-    if ((rgResAvail[iMin] < rgResAvail[2]))
-        goto L_2476;
-    else
-        goto L_247c;
-
-L_2476:
-    iMin = 2;
-
-L_247c:
-    cPacket[iMin] = (cPacket[iMin] + 1);
-    rgResAvail[iMin] = (rgResAvail[iMin] - 70);
-    lMineral = (lMineral - 70);
-
-L_24a9:
-    if ((lMineral <= 0))
-        goto L_24c2;
-    else
-        goto L_241c;
-
-L_24c2:
-    if ((cPacket[0] <= 0))
-        goto L_24e5;
-    else
-        goto L_24cc;
-
-L_24cc:
-    AddItemToQueue(0xe, cPacket[0], grobjPlanet, 0);
-
-L_24e5:
-    if ((cPacket[1] <= 0))
-        goto L_2508;
-    else
-        goto L_24ef;
-
-L_24ef:
-    AddItemToQueue(0xf, cPacket[1], grobjPlanet, 0);
-
-L_2508:
-    if ((cPacket[2] <= 0))
-        goto L_252b;
-    else
-        goto L_2512;
-
-L_2512:
-    AddItemToQueue(0x10, cPacket[2], grobjPlanet, 0);
-
-L_252b:
-    sel.pl.iWarpFling = (iWarp - 4);
-    sel.pl.idFling = (lpplDst->id + 1);
-    FLookupPlanet(-1, &(sel.pl));
-    lpciPlanDst->iPktTarget = 0x3;
-    if ((dDistance >= dDistanceTgt))
-        goto L_25c1;
-    else
-        goto L_25af;
-
-L_25af:
-    lpciPlan->fNeedScanPkt = 0x1;
-
-L_25c1:
-    lpciPlan->fLaunchedPkt = 0x0;
-    fWrite = 1;
-    goto LFinish;
-
-L_25dc:
-    if ((lpciPlan->fLaunchedPkt == 0x0))
-        goto L_260b;
-    else
-        goto L_25f5;
-
-L_25f5:
-    if ((lpciPlan->fNeedScanPkt == 0x0))
-        goto L_2802;
-    else
-        goto L_260b;
-
-L_260b:
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_269b;
-    else
-        goto L_2621;
-
-L_2621:
-    i = Random(7);
-    if ((i != lpciPlan->iLstPktDir))
-        goto L_2668;
-    else
-        goto L_2641;
-
-L_2641:
-    lpciPlan->iLstPktDir = (i + 1);
-    goto L_267f;
-
-L_2668:
-    lpciPlan->iLstPktDir = i;
-
-L_267f:
-    idPlanDst = IdGetBestScannerDest(lppl, lpciPlan->iLstPktDir);
-
-L_269b:
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_26bb;
-    else
-        goto L_26b1;
-
-L_26b1:
-    if ((idPlanDst == -1))
-        goto LFinish;
-    else
-        goto L_26bb;
-
-L_26bb:
-    lpciPlanDst = (CYBERINFO *)((vlpbAiData + ((idPlanDst * 2) + 2)));
-    if ((lpciPlanDst->iPktTarget != 0x0))
-        goto L_276c;
-    else
-        goto L_26f4;
-
-L_26f4:
-    if ((FAddPacketToQueue(lppl) == 0))
-        goto L_276c;
-    else
-        goto L_270a;
-
-L_270a:
-    lpciPlanDst->iPktTarget = 0x3;
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_273a;
-    else
-        goto L_2734;
-
-L_2734:
-    t_merge_273d_0001 = 0x1;
-    goto L_273d;
-
-L_273a:
-    t_merge_273d_0001 = 0x0;
-
-L_273d:
-    lpciPlan->fLaunchedPkt = t_merge_273d_0001;
-    fWrite = 1;
-    goto L_277e;
-
-L_276c:
-    lpciPlan->fLaunchedPkt = 0x0;
-
-L_277e:
-    iWarp = (IWarpMAFromLppl(lppl, &(fTwoMA)) - 1);
-    sel.pl.iWarpFling = iWarp;
-    if ((lpciPlan->fNeedScanPkt != 0x0))
-        goto L_27dd;
-    else
-        goto L_27c5;
-
-L_27c5:
-    sel.pl.idFling = idPlanDst;
-    goto L_27ef;
-
-L_27dd:
-    lpciPlan->fNeedScanPkt = 0x0;
-
-L_27ef:
-    FLookupPlanet(-1, &(sel.pl));
-
-L_27ff:
-    goto LFinish;
-
-L_2802:
-    lpciPlan->fLaunchedPkt = 0x0;
-
-LFinish:
-    FinishProduction(fWrite);
-    goto L_1a95;
-
-L_2823:
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
+    for (ipl = 0; ipl < vclpplAi; ipl++) {
+        lppl = vrglpplAi[ipl];
+        if (vrglpplAi[ipl] == 0x0)
+            break;
+        if (lppl->fStarbase != 0x0) {
+            lpciPlan = (CYBERINFO *)(vlpbAiData + (lppl->id * 2 + 2));
+            lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + (dOffsetPlanTemp + lppl->id * 2));
+            ChangeMainObjSel(grobjPlanet, lppl->id);
+            InitProduction(rgprod);
+            fWrite = 0;
+            GetResourcesAvailable(lppl, rgResAvail);
+            GetProdQCost(lppl, rgResCost);
+            if (lpciPlan->fNeedScanPkt == 0x0) {
+                switch (lppl->isb) {
+                case 0x1:
+                case 0x3:
+                case 0x6:
+                case 0x8:
+                    if (lppl->rgwtMin[0] > 700 || lppl->rgwtMin[1] > 700 || lppl->rgwtMin[2] > 700) {
+                        iPacketMax = LOWORD((int32_t)(rgResAvail[3] / 2));
+                        iPacketMax = (int32_t)iPacketMax / 5;
+                        if (iPacketMax >= 7) {
+                            lpplDst = LpplFindClosestEnum(lppl, FEnumNeedMinerals);
+                        } else {
+                            lpplDst = 0x0;
+                        }
+                        if (lpplDst != 0x0) {
+                            lpciPlanDst = (CYBERINFO *)(vlpbAiData + (lpplDst->id * 2 + 2));
+                            lpciPlanT = (CYBERINFOTEMP *)(vlpbAiData + (dOffsetPlanTemp + lpplDst->id * 2));
+                            iPacketAdd = 0;
+                            switch (lpplDst->isb) {
+                            case 0x1:
+                            case 0x3:
+                            case 0x6:
+                            case 0x8:
+                                iMinLimit = 10;
+                                break;
+                            default:
+                                iMinLimit = 1000;
+                            }
+                            if (lpplDst->rgwtMin[0] < (int32_t)iMinLimit && lppl->rgwtMin[0] > 700) {
+                                iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
+                                AddItemToQueue(0xe, iPacketAdd, grobjPlanet, 0);
+                                iPacketMax = iPacketMax - iPacketAdd;
+                                lpciPlanT->fNeedsMin1 = 0x0;
+                                fWrite = 1;
+                            }
+                            if (lpplDst->rgwtMin[1] < (int32_t)iMinLimit && lppl->rgwtMin[1] > 700) {
+                                iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
+                                AddItemToQueue(0xf, iPacketAdd, grobjPlanet, 0);
+                                iPacketMax = iPacketMax - iPacketAdd;
+                                lpciPlanT->fNeedsMin2 = 0x0;
+                                fWrite = 1;
+                            }
+                            if (lpplDst->rgwtMin[2] < (int32_t)iMinLimit && lppl->rgwtMin[2] > 700) {
+                                iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
+                                AddItemToQueue(0x10, iPacketAdd, grobjPlanet, 0);
+                                iPacketMax = iPacketMax - iPacketAdd;
+                                lpciPlanT->fNeedsMin3 = 0x0;
+                                fWrite = 1;
+                            }
+                            if (fWrite == 0)
+                                break;
+                            iWarpSrc = IWarpMAFromLppl(lppl, &fTwoMA) - 4;
+                            if (fTwoMA != 0) {
+                                iWarpSrc = iWarpSrc + 1;
+                            }
+                            iWarpDst = IWarpMAFromLppl(lpplDst, &fTwoMA) - 4;
+                            if (fTwoMA != 0) {
+                                iWarpDst = iWarpDst + 1;
+                            }
+                            sel.pl.iWarpFling = iWarpSrc >= iWarpDst ? iWarpDst : iWarpSrc;
+                            sel.pl.idFling = lpplDst->id + 1;
+                            FLookupPlanet(-1, &sel.pl);
+                            break;
+                        }
+                    }
+                default:
+                    goto L_1fa3;
+                }
+                goto LFinish;
+            }
+        L_1fa3:
+            if (lpciPlan->fNeedScanPkt == 0x0 && (rgplr[idPlayer].lvlAi > 0x1 || (rgplr[idPlayer].lvlAi == 0x1 && Random(3) == 0))) {
+                plMinMax = (int32_t *)(vlpbAiData + (dOffsetPlanTemp + game.cPlanMax * 2));
+                rgResAvail[0] = rgResAvail[0] - rgResCost[0];
+                rgResAvail[1] = rgResAvail[1] - rgResCost[1];
+                rgResAvail[2] = rgResAvail[2] - rgResCost[2];
+                lMineral = rgResAvail[0] - 70 + (rgResAvail[1] - 70) + (rgResAvail[2] - 70);
+                cResLeft = LOWORD((int32_t)(rgResAvail[3] / 2));
+                lPackets = (int32_t)((int32_t)(cResLeft - 5) / 5);
+                t_merge_20f9_0001 = lMineral < (int32_t)(uint32_t)(lPackets * 70) ? lMineral : (uint32_t)(lPackets * 70);
+                *plMinMax = t_merge_20f9_0001;
+                if (lMineral <= 150) {
+                    lpplDst = 0x0;
+                } else {
+                    lpplDst = LpplFindClosestEnum(lppl, FEnumPktAttack);
+                }
+                if (lpplDst != 0x0) {
+                    cPacket[0] = 0;
+                    cPacket[1] = 0;
+                    cPacket[2] = 0;
+                    lpciPlanDst = (CYBERINFO *)(vlpbAiData + (lpplDst->id * 2 + 2));
+                    lpciPlanT = (CYBERINFOTEMP *)(vlpbAiData + (dOffsetPlanTemp + lpplDst->id * 2));
+                    iPacketAdd = 0;
+                    if (lpplDst->fStarbase == 0x0) {
+                        iWarpDst = 0;
+                    } else {
+                        iWarpDst = IWarpMAFromLppl(lpplDst, &fTwoMA);
+                        if (fTwoMA != 0) {
+                            iWarpDst = iWarpDst + 1;
+                        }
+                    }
+                    iWarp = IWarpMAFromLppl(lppl, &fTwoMA) + 3;
+                    dDistance = (double)(int32_t)(iWarp * iWarp);
+                    dDistanceTgt = DGetDistance(rgptPlan[lppl->id].x, rgptPlan[lppl->id].y, rgptPlan[lpplDst->id].x, rgptPlan[lpplDst->id].y);
+                    dMod = (double)(uint32_t)((iWarp * iWarp - iWarpDst * iWarpDst) * (0x64 - (lpplDst->uDefGuess + 0x5))) / 16000.0;
+                    lMinNeeded =
+                        (int32_t)((0x3e8 >= (lpplDst->uPopGuess + 0x19) * 0x4 ? (double)(uint32_t)((lpplDst->uPopGuess + 0x19) * 0x4) : 1000.0) / dMod);
+                    t_merge_2361_0001 = lMinNeeded < lMineral ? lMinNeeded : lMineral;
+                    lMineral = t_merge_2361_0001;
+                    if (fTwoMA == 0) {
+                        lMineral = (int32_t)((double)lMineral / pow(0.75, dDistanceTgt / dDistance));
+                    } else {
+                        lMineral = (int32_t)((double)lMineral / pow(0.875, dDistanceTgt / dDistance));
+                    }
+                    for (; lMineral > 0; lMineral = lMineral - 70) {
+                        iMin = 0;
+                        if (rgResAvail[iMin] < rgResAvail[1]) {
+                            iMin = 1;
+                        }
+                        if (rgResAvail[iMin] < rgResAvail[2]) {
+                            iMin = 2;
+                        }
+                        cPacket[iMin] = cPacket[iMin] + 1;
+                        rgResAvail[iMin] = rgResAvail[iMin] - 70;
+                    }
+                    if (cPacket[0] > 0) {
+                        AddItemToQueue(0xe, cPacket[0], grobjPlanet, 0);
+                    }
+                    if (cPacket[1] > 0) {
+                        AddItemToQueue(0xf, cPacket[1], grobjPlanet, 0);
+                    }
+                    if (cPacket[2] > 0) {
+                        AddItemToQueue(0x10, cPacket[2], grobjPlanet, 0);
+                    }
+                    sel.pl.iWarpFling = iWarp - 4;
+                    sel.pl.idFling = lpplDst->id + 1;
+                    FLookupPlanet(-1, &sel.pl);
+                    lpciPlanDst->iPktTarget = 0x3;
+                    if (dDistance < dDistanceTgt) {
+                        lpciPlan->fNeedScanPkt = 0x1;
+                    }
+                    lpciPlan->fLaunchedPkt = 0x0;
+                    fWrite = 1;
+                    goto LFinish;
+                }
+            }
+            if (lpciPlan->fLaunchedPkt != 0x0 && lpciPlan->fNeedScanPkt == 0x0) {
+                lpciPlan->fLaunchedPkt = 0x0;
+            } else {
+                if (lpciPlan->fNeedScanPkt == 0x0) {
+                    i = Random(7);
+                    if (i != lpciPlan->iLstPktDir) {
+                        lpciPlan->iLstPktDir = i;
+                    } else {
+                        lpciPlan->iLstPktDir = i + 1;
+                    }
+                    idPlanDst = IdGetBestScannerDest(lppl, lpciPlan->iLstPktDir);
+                }
+                if (lpciPlan->fNeedScanPkt != 0x0 || idPlanDst != -1) {
+                    lpciPlanDst = (CYBERINFO *)(vlpbAiData + (idPlanDst * 2 + 2));
+                    if (lpciPlanDst->iPktTarget != 0x0 || FAddPacketToQueue(lppl) == 0) {
+                        lpciPlan->fLaunchedPkt = 0x0;
+                    } else {
+                        lpciPlanDst->iPktTarget = 0x3;
+                        lpciPlan->fLaunchedPkt = lpciPlan->fNeedScanPkt == 0x0 ? 0x1 : 0x0;
+                        fWrite = 1;
+                    }
+                    iWarp = IWarpMAFromLppl(lppl, &fTwoMA) - 1;
+                    sel.pl.iWarpFling = iWarp;
+                    if (lpciPlan->fNeedScanPkt != 0x0) {
+                        lpciPlan->fNeedScanPkt = 0x0;
+                    } else {
+                        sel.pl.idFling = idPlanDst;
+                    }
+                    FLookupPlanet(-1, &sel.pl);
+                }
+            }
+        LFinish:
+            FinishProduction(fWrite);
+        }
+    }
     return;
 }
 
@@ -2296,302 +749,131 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
     SCAN    scan;
     int32_t t_call_2b71;
 
-L_282a:
     ptEdge = rgptPlan[lppl->id];
-    iSize = ((400 * game.mdSize) + 400);
-    iWarp = (IWarpMAFromLppl(lppl, 0x0) + 3);
-    iDistance = (iWarp * iWarp);
-    ptEdge.x = (ptEdge.x - 1000);
-    ptEdge.y = (ptEdge.y - 1000);
-    goto L_2969;
-
-L_2889:
-    ptEdge.x = iSize;
-    goto L_298a;
-
-L_2892:
-    if (((iSize - ptEdge.x) <= ptEdge.y))
-        goto L_28ae;
-    else
-        goto L_28a0;
-
-L_28a0:
-    ptEdge.x = (ptEdge.x + ptEdge.y);
-    ptEdge.y = 0;
-    goto L_298a;
-
-L_28ae:
-    ptEdge.y = (ptEdge.y - (iSize - ptEdge.x));
-    ptEdge.x = iSize;
-
-L_28bd:
-    goto L_298a;
-
-L_28c0:
-    ptEdge.y = 0;
-    goto L_298a;
-
-L_28c8:
-    if ((ptEdge.x <= ptEdge.y))
-        goto L_28e1;
-    else
-        goto L_28d3;
-
-L_28d3:
-    ptEdge.x = (ptEdge.x - ptEdge.y);
-    ptEdge.y = 0;
-    goto L_298a;
-
-L_28e1:
-    ptEdge.y = (ptEdge.y - ptEdge.x);
-    ptEdge.x = 0;
-
-L_28ec:
-    goto L_298a;
-
-L_28ef:
-    ptEdge.x = 0;
-    goto L_298a;
-
-L_28f7:
-    if (((iSize - ptEdge.x) <= ptEdge.y))
-        goto L_2913;
-    else
-        goto L_2905;
-
-L_2905:
-    ptEdge.y = (ptEdge.y + ptEdge.x);
-    ptEdge.x = 0;
-    goto L_298a;
-
-L_2913:
-    ptEdge.x = (ptEdge.x - (iSize - ptEdge.y));
-    ptEdge.y = iSize;
-
-L_2922:
-    goto L_298a;
-
-L_2925:
-    ptEdge.y = iSize;
-    goto L_298a;
-
-L_292e:
-    if ((ptEdge.x <= ptEdge.y))
-        goto L_294b;
-    else
-        goto L_2939;
-
-L_2939:
-    ptEdge.y = (ptEdge.y + (iSize - ptEdge.x));
-    ptEdge.x = iSize;
-    goto L_298a;
-
-L_294b:
-    ptEdge.x = (ptEdge.x + (iSize - ptEdge.y));
-    ptEdge.y = iSize;
-
-L_295a:
-    goto L_298a;
-
-L_295d:
-    return -1;
-
-L_2969:
-    if (((uint16_t)(iDir) > 7))
-        goto L_295d;
-    else
-        goto L_2971;
-
-L_2971:
-    switch ((iDir * 2)) {
-    case 0x0:
-        goto L_2889;
-    case 0x2:
-        goto L_2892;
-    case 0x4:
-        goto L_28c0;
-    case 0x6:
-        goto L_28c8;
-    case 0x8:
-        goto L_28ef;
-    case 0xa:
-        goto L_28f7;
-    case 0xc:
-        goto L_2925;
-    case 0xe:
-        goto L_292e;
+    iSize = 400 * game.mdSize + 400;
+    iWarp = IWarpMAFromLppl(lppl, 0x0) + 3;
+    iDistance = iWarp * iWarp;
+    ptEdge.x = ptEdge.x - 1000;
+    ptEdge.y = ptEdge.y - 1000;
+    if ((uint16_t)iDir > 7) {
+        return -1;
     }
-
-L_298a:
-    dAdjust = Random((int32_t)(((double)((int32_t)(iSize)) * 0.3)));
-    dAdjust = (dAdjust - LOWORD((int32_t)(((double)((int32_t)(iSize)) * 0.15))));
-    if ((ptEdge.x == 0))
-        goto L_29e8;
-    else
-        goto L_29dd;
-
-L_29dd:
-    if ((ptEdge.x != iSize))
-        goto L_2a45;
-    else
-        goto L_29e8;
-
-L_29e8:
-    ptEdge.y = (ptEdge.y + dAdjust);
-    if ((ptEdge.y <= iSize))
-        goto L_2a0b;
-    else
-        goto L_29f9;
-
-L_29f9:
-    dAdjust = (ptEdge.y - iSize);
-    ptEdge.y = iSize;
-    goto L_2a2a;
-
-L_2a0b:
-    if ((ptEdge.y >= 0))
-        goto L_2a25;
-    else
-        goto L_2a14;
-
-L_2a14:
-    dAdjust = (0 - ptEdge.y);
-    ptEdge.y = 0;
-    goto L_2a2a;
-
-L_2a25:
-    dAdjust = 0;
-
-L_2a2a:
-    if ((ptEdge.x != 0))
-        goto L_2a3c;
-    else
-        goto L_2a33;
-
-L_2a33:
-    ptEdge.x = (ptEdge.x + dAdjust);
-    goto L_2a9f;
-
-L_2a3c:
-    ptEdge.x = (ptEdge.x - dAdjust);
-
-L_2a42:
-    goto L_2a9f;
-
-L_2a45:
-    ptEdge.x = (ptEdge.x + dAdjust);
-    if ((ptEdge.x <= iSize))
-        goto L_2a68;
-    else
-        goto L_2a56;
-
-L_2a56:
-    dAdjust = (ptEdge.x - iSize);
-    ptEdge.x = iSize;
-    goto L_2a87;
-
-L_2a68:
-    if ((ptEdge.x >= 0))
-        goto L_2a82;
-    else
-        goto L_2a71;
-
-L_2a71:
-    dAdjust = (0 - ptEdge.x);
-    ptEdge.x = 0;
-    goto L_2a87;
-
-L_2a82:
-    dAdjust = 0;
-
-L_2a87:
-    if ((ptEdge.y != 0))
-        goto L_2a99;
-    else
-        goto L_2a90;
-
-L_2a90:
-    ptEdge.y = (ptEdge.y + dAdjust);
-    goto L_2a9f;
-
-L_2a99:
-    ptEdge.y = (ptEdge.y - dAdjust);
-
-L_2a9f:
+    switch (iDir) {
+    case 0:
+        ptEdge.x = iSize;
+        break;
+    case 1:
+        if (iSize - ptEdge.x <= ptEdge.y) {
+            ptEdge.y = ptEdge.y - (iSize - ptEdge.x);
+            ptEdge.x = iSize;
+            break;
+        }
+        ptEdge.x = ptEdge.x + ptEdge.y;
+        ptEdge.y = 0;
+        break;
+    case 2:
+        ptEdge.y = 0;
+        break;
+    case 3:
+        if (ptEdge.x <= ptEdge.y) {
+            ptEdge.y = ptEdge.y - ptEdge.x;
+            ptEdge.x = 0;
+            break;
+        }
+        ptEdge.x = ptEdge.x - ptEdge.y;
+        ptEdge.y = 0;
+        break;
+    case 4:
+        ptEdge.x = 0;
+        break;
+    case 5:
+        if (iSize - ptEdge.x <= ptEdge.y) {
+            ptEdge.x = ptEdge.x - (iSize - ptEdge.y);
+            ptEdge.y = iSize;
+            break;
+        }
+        ptEdge.y = ptEdge.y + ptEdge.x;
+        ptEdge.x = 0;
+        break;
+    case 6:
+        ptEdge.y = iSize;
+        break;
+    case 7:
+        if (ptEdge.x <= ptEdge.y) {
+            ptEdge.x = ptEdge.x + (iSize - ptEdge.y);
+            ptEdge.y = iSize;
+        } else {
+            ptEdge.y = ptEdge.y + (iSize - ptEdge.x);
+            ptEdge.x = iSize;
+        }
+    }
+    dAdjust = Random((int32_t)((double)(int32_t)iSize * 0.3));
+    dAdjust = dAdjust - LOWORD((int32_t)((double)(int32_t)iSize * 0.15));
+    if (ptEdge.x != 0 && ptEdge.x != iSize) {
+        ptEdge.x = ptEdge.x + dAdjust;
+        if (ptEdge.x <= iSize) {
+            if (ptEdge.x >= 0) {
+                dAdjust = 0;
+            } else {
+                dAdjust = 0 - ptEdge.x;
+                ptEdge.x = 0;
+            }
+        } else {
+            dAdjust = ptEdge.x - iSize;
+            ptEdge.x = iSize;
+        }
+        if (ptEdge.y != 0) {
+            ptEdge.y = ptEdge.y - dAdjust;
+        } else {
+            ptEdge.y = ptEdge.y + dAdjust;
+        }
+    } else {
+        ptEdge.y = ptEdge.y + dAdjust;
+        if (ptEdge.y <= iSize) {
+            if (ptEdge.y >= 0) {
+                dAdjust = 0;
+            } else {
+                dAdjust = 0 - ptEdge.y;
+                ptEdge.y = 0;
+            }
+        } else {
+            dAdjust = ptEdge.y - iSize;
+            ptEdge.y = iSize;
+        }
+        if (ptEdge.x != 0) {
+            ptEdge.x = ptEdge.x - dAdjust;
+        } else {
+            ptEdge.x = ptEdge.x + dAdjust;
+        }
+    }
     dAdjust = Random(iDistance);
-    if ((ptEdge.y != 0))
-        goto L_2abf;
-    else
-        goto L_2ab6;
-
-L_2ab6:
-    ptEdge.y = (ptEdge.y + dAdjust);
-    goto L_2af6;
-
-L_2abf:
-    if ((ptEdge.y != iSize))
-        goto L_2ad3;
-    else
-        goto L_2aca;
-
-L_2aca:
-    ptEdge.y = (ptEdge.y - dAdjust);
-    goto L_2af6;
-
-L_2ad3:
-    if ((ptEdge.x != 0))
-        goto L_2ae5;
-    else
-        goto L_2adc;
-
-L_2adc:
-    ptEdge.x = (ptEdge.x + dAdjust);
-    goto L_2af6;
-
-L_2ae5:
-    if ((ptEdge.x != iSize))
-        goto L_2af6;
-    else
-        goto L_2af0;
-
-L_2af0:
-    ptEdge.x = (ptEdge.x - dAdjust);
-
-L_2af6:
-    ptEdge.y = (ptEdge.y + 1000);
-    ptEdge.x = (ptEdge.x + 1000);
-    if ((FFindNearestObject(ptEdge, 0x21, &(scan)) == 0))
-        goto L_2bb4;
-    else
-        goto L_2b1e;
-
-L_2b1e:
+    if (ptEdge.y != 0) {
+        if (ptEdge.y != iSize) {
+            if (ptEdge.x != 0) {
+                if (ptEdge.x == iSize) {
+                    ptEdge.x = ptEdge.x - dAdjust;
+                }
+            } else {
+                ptEdge.x = ptEdge.x + dAdjust;
+            }
+        } else {
+            ptEdge.y = ptEdge.y - dAdjust;
+        }
+    } else {
+        ptEdge.y = ptEdge.y + dAdjust;
+    }
+    ptEdge.y = ptEdge.y + 1000;
+    ptEdge.x = ptEdge.x + 1000;
+    if (FFindNearestObject(ptEdge, 0x21, &scan) == 0) {
+        return -1;
+    }
     lpplDst = LpplFromId(scan.idpl);
-    if ((lpplDst != 0x0))
-        goto L_2b41;
-    else
-        goto L_2b50;
-
-L_2b41:
-    if ((lpplDst->iPlayer == idPlayer))
-        goto L_2b9f;
-    else
-        goto L_2b50;
-
-L_2b50:
-    t_call_2b71 = LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
-    if (((int32_t)(t_call_2b71) < (int32_t)((iDistance * iDistance))))
-        goto L_2b9f;
-    else
-        goto L_2ba8;
-
-L_2b9f:
-    return -1;
-
-L_2ba8:
-    return (scan.idpl + 1);
-
-L_2bb4:
+    if (lpplDst == 0x0 || lpplDst->iPlayer != idPlayer) {
+        t_call_2b71 = LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
+        if ((int32_t)t_call_2b71 >= (int32_t)(iDistance * iDistance)) {
+            return scan.idpl + 1;
+        }
+    }
     return -1;
 }
 
@@ -2600,39 +882,20 @@ int16_t FAddPacketToQueue(PLANET *lppl) {
     int16_t iMineral;
     int32_t rgResAvail[4];
 
-L_2bc0:
     iMineral = 0;
     GetResourcesAvailable(lppl, rgResAvail);
     GetProdQCost(lppl, rgResCost);
-    if (((rgResAvail[iMineral] - rgResCost[iMineral]) < (rgResAvail[1] - rgResCost[1])))
-        goto L_2c33;
-    else
-        goto L_2c38;
-
-L_2c33:
-    iMineral = 1;
-
-L_2c38:
-    if (((rgResAvail[iMineral] - rgResCost[iMineral]) < (rgResAvail[2] - rgResCost[2])))
-        goto L_2c79;
-    else
-        goto L_2c7e;
-
-L_2c79:
-    iMineral = 2;
-
-L_2c7e:
-    if (((rgResAvail[iMineral] - rgResCost[iMineral]) < 0xaa))
-        goto L_2cd6;
-    else
-        goto L_2cb5;
-
-L_2cb5:
-    AddItemToQueue((iMineral + 14), 0x1, grobjPlanet, 0);
+    if (rgResAvail[iMineral] - rgResCost[iMineral] < rgResAvail[1] - rgResCost[1]) {
+        iMineral = 1;
+    }
+    if (rgResAvail[iMineral] - rgResCost[iMineral] < rgResAvail[2] - rgResCost[2]) {
+        iMineral = 2;
+    }
+    if (rgResAvail[iMineral] - rgResCost[iMineral] < 0xaa) {
+        return 0;
+    }
+    AddItemToQueue(iMineral + 14, 0x1, grobjPlanet, 0);
     return 1;
-
-L_2cd6:
-    return 0;
 }
 
 void FillProductionQueue() {
@@ -2640,101 +903,56 @@ void FillProductionQueue() {
     int16_t ipl;
     PROD    rgprod[64];
 
-L_2ce2:
-    ipl = 0;
-    goto L_2cf7;
-
-L_2cf3:
-    ipl = (ipl + 1);
-
-L_2cf7:
-    if ((ipl >= vclpplAi))
-        goto L_2d6b;
-    else
-        goto L_2d02;
-
-L_2d02:
-    lppl = vrglpplAi[ipl];
-    if ((vrglpplAi[ipl] != 0x0))
-        goto L_2d32;
-    else
-        goto L_2d6b;
-
-L_2d32:
-    ChangeMainObjSel(grobjPlanet, lppl->id);
-    InitProduction(rgprod);
-    FinishProduction(FFillProdMinesAndFactories(lppl));
-    goto L_2cf3;
-
-L_2d6b:
+    for (ipl = 0; ipl < vclpplAi; ipl++) {
+        lppl = vrglpplAi[ipl];
+        if (vrglpplAi[ipl] == 0x0)
+            break;
+        ChangeMainObjSel(grobjPlanet, lppl->id);
+        InitProduction(rgprod);
+        FinishProduction(FFillProdMinesAndFactories(lppl));
+    }
     return;
 }
 
 int16_t FFillProdMinesAndFactories(PLANET *lppl) {
-    int32_t  rgResCost[4];
-    int32_t  rgResAvail[4];
-    int16_t  iAddFactories;
-    int16_t  iAddMines;
-    PROD     prod;
-    int32_t  rgAlchCost[4];
-    int32_t  rgMineCost[4];
-    int32_t  rgFactCost[4];
-    int32_t  rgResLeft[4];
-    int16_t  iAddAlchemy;
-    int16_t  iMaxTerra;
-    int16_t  i;
-    int16_t  iMaxFactories;
-    int16_t  iMaxFactBuildable;
-    int16_t  iMaxMines;
-    int16_t  fInsert;
-    PROD    *lpprod;
-    int16_t  cAdd;
-    int16_t  t_scratch_m7e;
-    uint16_t t_merge_302d_0001;
-    int16_t  t_scratch_m80;
-    int16_t  t_call_301b;
-    int16_t  t_scratch_m7e_2;
-    uint16_t t_merge_30fb_0001;
-    int16_t  t_scratch_m80_2;
-    int16_t  t_call_30e9;
-    int16_t  t_merge_3375_0001;
-    int16_t  t_merge_33fb_0001;
-    int16_t  t_merge_3431_0001;
-    int16_t  t_merge_3493_0001;
-    int16_t  t_merge_34e1_0001;
-    int16_t  t_merge_3559_0001;
-    int16_t  t_merge_3595_0001;
-    int16_t  t_merge_35f0_0001;
-    uint16_t t_merge_36f1_0001;
-    int16_t  t_merge_3778_0001;
+    int32_t rgResCost[4];
+    int32_t rgResAvail[4];
+    int16_t iAddFactories;
+    int16_t iAddMines;
+    PROD    prod;
+    int32_t rgAlchCost[4];
+    int32_t rgMineCost[4];
+    int32_t rgFactCost[4];
+    int32_t rgResLeft[4];
+    int16_t iAddAlchemy;
+    int16_t iMaxTerra;
+    int16_t i;
+    int16_t iMaxFactories;
+    int16_t iMaxFactBuildable;
+    int16_t iMaxMines;
+    int16_t fInsert;
+    PROD   *lpprod;
+    int16_t cAdd;
+    int16_t t_scratch_m7e;
+    int16_t t_merge_302d_0001;
+    int16_t t_scratch_m80;
+    int16_t t_call_301b;
+    int16_t t_scratch_m7e_2;
+    int16_t t_merge_30fb_0001;
+    int16_t t_scratch_m80_2;
+    int16_t t_call_30e9;
+    int16_t t_merge_3493_0001;
+    int16_t t_merge_3559_0001;
 
-L_2d72:
     fInsert = 0;
     GetResourcesAvailable(lppl, rgResAvail);
     GetProdQCost(lppl, rgResCost);
-    i = 0;
-    goto L_2de3;
-
-L_2dac:
-    rgResLeft[i] = (rgResAvail[i] - rgResCost[i]);
-    i = (i + 1);
-
-L_2de3:
-    if ((i < 4))
-        goto L_2dac;
-    else
-        goto L_2dec;
-
-L_2dec:
-    if ((rgResLeft[3] < 0))
-        goto L_2e03;
-    else
-        goto L_2e09;
-
-L_2e03:
-    return 0;
-
-L_2e09:
+    for (i = 0; i < 4; i++) {
+        rgResLeft[i] = rgResAvail[i] - rgResCost[i];
+    }
+    if (rgResLeft[3] < 0) {
+        return 0;
+    }
     iMaxTerra = 0;
     iMaxMines = 0;
     iAddMines = 0;
@@ -2746,757 +964,221 @@ L_2e09:
     rgAlchCost[3] = 0;
     i = 0;
     lpprod = lpplProdGlob->rgprod;
-    goto L_2e75;
-
-L_2e62:
-    i = (i + 1);
-    lpprod = (lpprod + 1);
-
-L_2e75:
-    if ((i >= lpplProdGlob->iprodMac))
-        goto L_2f51;
-    else
-        goto L_2e88;
-
-L_2e88:
-    if ((lpprod->grobj != grobjPlanet))
-        goto L_2eeb;
-    else
-        goto L_2eb0;
-
-L_2eb0:
-    if ((lpprod->iItem != mdIdleMine))
-        goto L_2eeb;
-    else
-        goto L_2ed8;
-
-L_2ed8:
-    iAddMines = (iAddMines + lpprod->cItem);
-
-L_2eeb:
-    if ((lpprod->grobj != grobjPlanet))
-        goto L_2e62;
-    else
-        goto L_2f13;
-
-L_2f13:
-    if ((lpprod->iItem != mdIdleFactory))
-        goto L_2e62;
-    else
-        goto L_2f3b;
-
-L_2f3b:
-    iAddFactories = (iAddFactories + lpprod->cItem);
-
-L_2f4e:
-    goto L_2e62;
-
-L_2f51:
-    i = (cProdGlob - 1);
-    goto L_31d3;
-
-L_2f5d:
-    if ((pProdGlob[i].grobj != grobjPlanet))
-        goto L_31cf;
-    else
-        goto L_2f8d;
-
-L_2f8d:
-    if ((pProdGlob[i].iItem != mdIdleMine))
-        goto L_305b;
-    else
-        goto L_2fbd;
-
-L_2fbd:
-    t_scratch_m7e = CMaxOperableMines(lppl, idPlayer, 0);
-    if ((0 <= ((t_scratch_m7e - CMinesOperating(lppl)) - iAddMines)))
-        goto L_2ffc;
-    else
-        goto L_2ff6;
-
-L_2ff6:
-    t_merge_302d_0001 = 0x0;
-    goto L_302d;
-
-L_2ffc:
-    t_scratch_m80 = CMaxOperableMines(lppl, idPlayer, 0);
-    t_call_301b = CMinesOperating(lppl);
-    t_merge_302d_0001 = ((t_scratch_m80 - t_call_301b) - iAddMines);
-
-L_302d:
-    iMaxMines = t_merge_302d_0001;
-    GetProductionCosts(lppl, (pProdGlob + i), rgMineCost, idPlayer, 1);
-
-L_305b:
-    if ((pProdGlob[i].iItem != mdIdleFactory))
-        goto L_3129;
-    else
-        goto L_308b;
-
-L_308b:
-    t_scratch_m7e_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    if ((0 <= ((t_scratch_m7e_2 - CFactoriesOperating(lppl)) - iAddFactories)))
-        goto L_30ca;
-    else
-        goto L_30c4;
-
-L_30c4:
-    t_merge_30fb_0001 = 0x0;
-    goto L_30fb;
-
-L_30ca:
-    t_scratch_m80_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    t_call_30e9 = CFactoriesOperating(lppl);
-    t_merge_30fb_0001 = ((t_scratch_m80_2 - t_call_30e9) - iAddFactories);
-
-L_30fb:
-    iMaxFactories = t_merge_30fb_0001;
-    GetProductionCosts(lppl, (pProdGlob + i), rgFactCost, idPlayer, 1);
-
-L_3129:
-    if ((pProdGlob[i].iItem != mdIdleAlchemy))
-        goto L_3184;
-    else
-        goto L_3159;
-
-L_3159:
-    GetProductionCosts(lppl, (pProdGlob + i), rgAlchCost, idPlayer, 1);
-
-L_3184:
-    if ((pProdGlob[i].iItem != mdIdleTerraform))
-        goto L_31cf;
-    else
-        goto L_31b4;
-
-L_31b4:
-    iMaxTerra = pProdGlob[i].cItem;
-
-L_31cf:
-    i = (i - 1);
-
-L_31d3:
-    if ((i >= 0))
-        goto L_2f5d;
-    else
-        goto L_31dc;
-
-L_31dc:
-    if ((iMaxTerra <= 0))
-        goto L_3259;
-    else
-        goto L_31e5;
-
-L_31e5:
-    if ((rgplr[idPlayer].idAi != 0x5))
-        goto L_3259;
-    else
-        goto L_3204;
-
-L_3204:
-    cAdd = LOWORD((int32_t)(((rgResLeft[3] + 69) / 0x46)));
-    if ((cAdd <= iMaxTerra))
-        goto L_3233;
-    else
-        goto L_322d;
-
-L_322d:
-    cAdd = iMaxTerra;
-
-L_3233:
-    if ((cAdd <= 0))
-        goto L_3259;
-    else
-        goto L_323c;
-
-L_323c:
-    AddItemToQueue(0xc, cAdd, grobjPlanet, 0);
+    while (i < lpplProdGlob->iprodMac) {
+        if (lpprod->grobj == grobjPlanet && lpprod->iItem == mdIdleMine) {
+            iAddMines = iAddMines + lpprod->cItem;
+        }
+        if (lpprod->grobj == grobjPlanet && lpprod->iItem == mdIdleFactory) {
+            iAddFactories = iAddFactories + lpprod->cItem;
+        }
+        i = i + 1;
+        lpprod = lpprod + 1;
+    }
+    for (i = cProdGlob - 1; i >= 0; i--) {
+        if (pProdGlob[i].grobj == grobjPlanet) {
+            if (pProdGlob[i].iItem == mdIdleMine) {
+                t_scratch_m7e = CMaxOperableMines(lppl, idPlayer, 0);
+                if (0 <= t_scratch_m7e - CMinesOperating(lppl) - iAddMines) {
+                    t_scratch_m80 = CMaxOperableMines(lppl, idPlayer, 0);
+                    t_call_301b = CMinesOperating(lppl);
+                    t_merge_302d_0001 = t_scratch_m80 - t_call_301b - iAddMines;
+                } else {
+                    t_merge_302d_0001 = 0;
+                }
+                iMaxMines = t_merge_302d_0001;
+                GetProductionCosts(lppl, pProdGlob + i, rgMineCost, idPlayer, 1);
+            }
+            if (pProdGlob[i].iItem == mdIdleFactory) {
+                t_scratch_m7e_2 = CMaxOperableFactories(lppl, idPlayer, 0);
+                if (0 <= t_scratch_m7e_2 - CFactoriesOperating(lppl) - iAddFactories) {
+                    t_scratch_m80_2 = CMaxOperableFactories(lppl, idPlayer, 0);
+                    t_call_30e9 = CFactoriesOperating(lppl);
+                    t_merge_30fb_0001 = t_scratch_m80_2 - t_call_30e9 - iAddFactories;
+                } else {
+                    t_merge_30fb_0001 = 0;
+                }
+                iMaxFactories = t_merge_30fb_0001;
+                GetProductionCosts(lppl, pProdGlob + i, rgFactCost, idPlayer, 1);
+            }
+            if (pProdGlob[i].iItem == mdIdleAlchemy) {
+                GetProductionCosts(lppl, pProdGlob + i, rgAlchCost, idPlayer, 1);
+            }
+            if (pProdGlob[i].iItem == mdIdleTerraform) {
+                iMaxTerra = pProdGlob[i].cItem;
+            }
+        }
+    }
+    if (iMaxTerra > 0 && rgplr[idPlayer].idAi == 0x5) {
+        cAdd = LOWORD((int32_t)((rgResLeft[3] + 69) / 0x46));
+        if (cAdd > iMaxTerra) {
+            cAdd = iMaxTerra;
+        }
+        if (cAdd > 0) {
+            AddItemToQueue(0xc, cAdd, grobjPlanet, 0);
+            return 1;
+        }
+    }
+    if (rgResLeft[0] <= 0 || rgResLeft[1] <= 0 || rgResLeft[2] <= 0) {
+        if (lppl->lpplprod != 0x0) {
+            prod = lppl->lpplprod->rgprod[0];
+            if (prod.grobj == grobjPlanet && (prod.iItem == iobjAlchemy || prod.iItem == mdIdleAlchemy)) {
+                return 0;
+            }
+        }
+        if (iMaxMines <= 0) {
+            iAddMines = 0;
+        } else {
+            iAddMines = iMaxMines >= LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
+        }
+        rgResLeft[3] = rgResLeft[3] - (uint32_t)((int32_t)iAddMines * rgMineCost[3]);
+        iAddFactories = 0;
+        iAddAlchemy = 0;
+        fInsert = 1;
+    } else {
+        iMaxFactBuildable = iMaxFactories;
+        if (iMaxFactories > 0) {
+            if (gd.fTutorial != 0x0) {
+                if ((iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0])) ? LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0])) : iMaxFactories) >=
+                    LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))) {
+                    t_merge_3493_0001 = LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]));
+                } else if (iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))) {
+                    t_merge_3493_0001 = LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]));
+                } else {
+                    t_merge_3493_0001 = iMaxFactories;
+                }
+                if (t_merge_3493_0001 >= LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2]))) {
+                    t_merge_3559_0001 = LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2]));
+                } else if ((iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                                ? LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                                : iMaxFactories) >= LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))) {
+                    t_merge_3559_0001 = LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]));
+                } else if (iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))) {
+                    t_merge_3559_0001 = LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]));
+                } else {
+                    t_merge_3559_0001 = iMaxFactories;
+                }
+                iMaxFactories = t_merge_3559_0001;
+            } else {
+                iMaxFactories =
+                    iMaxFactories >= LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) ? LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) : iMaxFactories;
+            }
+        }
+        if (iMaxFactories <= 0) {
+            iAddFactories = 0;
+        } else {
+            iAddFactories = iMaxFactories >= LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) : iMaxFactories;
+        }
+        rgResLeft[3] = rgResLeft[3] - (uint32_t)((int32_t)iAddFactories * rgFactCost[3]);
+        if (iMaxMines <= 0) {
+            iAddMines = 0;
+        } else {
+            iAddMines = iMaxMines >= LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
+        }
+        rgResLeft[3] = rgResLeft[3] - (uint32_t)((int32_t)iAddMines * rgMineCost[3]);
+    }
+    if (rgAlchCost[3] <= 0 || (int16_t)rgplr[idPlayer].rgTech[3] != 26 || (int16_t)rgplr[idPlayer].rgTech[5] != 26 ||
+        (int16_t)rgplr[idPlayer].rgTech[0] != 26 || (int16_t)rgplr[idPlayer].rgTech[1] != 26 || (int16_t)rgplr[idPlayer].rgTech[4] != 26 ||
+        (int16_t)rgplr[idPlayer].rgTech[2] != 26) {
+        iAddAlchemy = 0;
+    } else {
+        iAddAlchemy = 0x0 <= LOWORD((int32_t)(rgResLeft[3] / rgAlchCost[3])) + 0x1 ? LOWORD((int32_t)(rgResLeft[3] / rgAlchCost[3])) + 1 : 0;
+    }
+    rgResLeft[3] = rgResLeft[3] - (uint32_t)((int32_t)iAddAlchemy * rgAlchCost[3]);
+    if (iAddFactories > 0) {
+        AddItemToQueue(0x7, iAddFactories, grobjPlanet, 1);
+    }
+    if (iAddMines > 0) {
+        AddItemToQueue(0x8, iAddMines, grobjPlanet, 0);
+    }
+    if (iAddAlchemy > 0 && game.turn > 0x64) {
+        AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, fInsert == 0 ? 1 : 0);
+    }
+    if (iAddMines + iAddFactories + iAddAlchemy <= 0) {
+        return 0;
+    }
     return 1;
-
-L_3259:
-    if ((rgResLeft[0] <= 0))
-        goto L_329e;
-    else
-        goto L_3270;
-
-L_3270:
-    if ((rgResLeft[1] <= 0))
-        goto L_329e;
-    else
-        goto L_3287;
-
-L_3287:
-    if ((rgResLeft[2] <= 0))
-        goto L_329e;
-    else
-        goto L_33a9;
-
-L_329e:
-    if ((lppl->lpplprod != 0x0))
-        goto L_32b5;
-    else
-        goto L_333c;
-
-L_32b5:
-    prod = lppl->lpplprod->rgprod[0];
-    if ((prod.grobj != grobjPlanet))
-        goto L_333c;
-    else
-        goto L_32ee;
-
-L_32ee:
-    if ((prod.iItem != iobjAlchemy))
-        goto L_3312;
-    else
-        goto L_3336;
-
-L_3312:
-    if ((prod.iItem != mdIdleAlchemy))
-        goto L_333c;
-    else
-        goto L_3336;
-
-L_3336:
-    return 0;
-
-L_333c:
-    if ((iMaxMines <= 0))
-        goto L_337b;
-    else
-        goto L_3345;
-
-L_3345:
-    if ((iMaxMines >= LOWORD((int32_t)((rgResLeft[3] / rgMineCost[3])))))
-        goto L_3364;
-    else
-        goto L_335e;
-
-L_335e:
-    t_merge_3375_0001 = iMaxMines;
-    goto L_3375;
-
-L_3364:
-    t_merge_3375_0001 = LOWORD((int32_t)((rgResLeft[3] / rgMineCost[3])));
-
-L_3375:
-    iAddMines = t_merge_3375_0001;
-    goto L_3380;
-
-L_337b:
-    iAddMines = 0;
-
-L_3380:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddMines)*rgMineCost[3])));
-    iAddFactories = 0;
-    iAddAlchemy = 0;
-    fInsert = 1;
-    goto LAdd;
-
-L_33a9:
-    iMaxFactBuildable = iMaxFactories;
-    if ((iMaxFactories <= 0))
-        goto L_355c;
-    else
-        goto L_33b8;
-
-L_33b8:
-    if ((gd.fTutorial != 0x0))
-        goto L_3401;
-    else
-        goto L_33cb;
-
-L_33cb:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[2] / rgFactCost[2])))))
-        goto L_33ea;
-    else
-        goto L_33e4;
-
-L_33e4:
-    t_merge_33fb_0001 = iMaxFactories;
-    goto L_33fb;
-
-L_33ea:
-    t_merge_33fb_0001 = LOWORD((int32_t)((rgResLeft[2] / rgFactCost[2])));
-
-L_33fb:
-    iMaxFactories = t_merge_33fb_0001;
-    goto L_355c;
-
-L_3401:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])))))
-        goto L_3420;
-    else
-        goto L_341a;
-
-L_341a:
-    t_merge_3431_0001 = iMaxFactories;
-    goto L_3431;
-
-L_3420:
-    t_merge_3431_0001 = LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])));
-
-L_3431:
-    if ((t_merge_3431_0001 >= LOWORD((int32_t)((rgResLeft[1] / rgFactCost[1])))))
-        goto L_3482;
-    else
-        goto L_344f;
-
-L_344f:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])))))
-        goto L_346e;
-    else
-        goto L_3468;
-
-L_3468:
-    t_merge_3493_0001 = iMaxFactories;
-    goto L_3493;
-
-L_346e:
-
-L_347f:
-    t_merge_3493_0001 = LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])));
-    goto L_3493;
-
-L_3482:
-    t_merge_3493_0001 = LOWORD((int32_t)((rgResLeft[1] / rgFactCost[1])));
-
-L_3493:
-    if ((t_merge_3493_0001 >= LOWORD((int32_t)((rgResLeft[2] / rgFactCost[2])))))
-        goto L_3548;
-    else
-        goto L_34b1;
-
-L_34b1:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])))))
-        goto L_34d0;
-    else
-        goto L_34ca;
-
-L_34ca:
-    t_merge_34e1_0001 = iMaxFactories;
-    goto L_34e1;
-
-L_34d0:
-    t_merge_34e1_0001 = LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])));
-
-L_34e1:
-    if ((t_merge_34e1_0001 >= LOWORD((int32_t)((rgResLeft[1] / rgFactCost[1])))))
-        goto L_3534;
-    else
-        goto L_3501;
-
-L_3501:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])))))
-        goto L_3520;
-    else
-        goto L_351a;
-
-L_351a:
-    t_merge_3559_0001 = iMaxFactories;
-    goto L_3559;
-
-L_3520:
-
-L_3531:
-    t_merge_3559_0001 = LOWORD((int32_t)((rgResLeft[0] / rgFactCost[0])));
-    goto L_3559;
-
-L_3534:
-
-L_3545:
-    t_merge_3559_0001 = LOWORD((int32_t)((rgResLeft[1] / rgFactCost[1])));
-    goto L_3559;
-
-L_3548:
-    t_merge_3559_0001 = LOWORD((int32_t)((rgResLeft[2] / rgFactCost[2])));
-
-L_3559:
-    iMaxFactories = t_merge_3559_0001;
-
-L_355c:
-    if ((iMaxFactories <= 0))
-        goto L_359b;
-    else
-        goto L_3565;
-
-L_3565:
-    if ((iMaxFactories >= LOWORD((int32_t)((rgResLeft[3] / rgFactCost[3])))))
-        goto L_3584;
-    else
-        goto L_357e;
-
-L_357e:
-    t_merge_3595_0001 = iMaxFactories;
-    goto L_3595;
-
-L_3584:
-    t_merge_3595_0001 = LOWORD((int32_t)((rgResLeft[3] / rgFactCost[3])));
-
-L_3595:
-    iAddFactories = t_merge_3595_0001;
-    goto L_35a0;
-
-L_359b:
-    iAddFactories = 0;
-
-L_35a0:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddFactories)*rgFactCost[3])));
-    if ((iMaxMines <= 0))
-        goto L_35f6;
-    else
-        goto L_35c0;
-
-L_35c0:
-    if ((iMaxMines >= LOWORD((int32_t)((rgResLeft[3] / rgMineCost[3])))))
-        goto L_35df;
-    else
-        goto L_35d9;
-
-L_35d9:
-    t_merge_35f0_0001 = iMaxMines;
-    goto L_35f0;
-
-L_35df:
-    t_merge_35f0_0001 = LOWORD((int32_t)((rgResLeft[3] / rgMineCost[3])));
-
-L_35f0:
-    iAddMines = t_merge_35f0_0001;
-    goto L_35fb;
-
-L_35f6:
-    iAddMines = 0;
-
-L_35fb:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddMines)*rgMineCost[3])));
-
-LAdd:
-    if ((rgAlchCost[3] <= 0))
-        goto L_36f7;
-    else
-        goto L_3629;
-
-L_3629:
-    if (((int16_t)(rgplr[idPlayer].rgTech[3]) != 26))
-        goto L_36f7;
-    else
-        goto L_3641;
-
-L_3641:
-    if (((int16_t)(rgplr[idPlayer].rgTech[5]) != 26))
-        goto L_36f7;
-    else
-        goto L_3659;
-
-L_3659:
-    if (((int16_t)(rgplr[idPlayer].rgTech[0]) != 26))
-        goto L_36f7;
-    else
-        goto L_3671;
-
-L_3671:
-    if (((int16_t)(rgplr[idPlayer].rgTech[1]) != 26))
-        goto L_36f7;
-    else
-        goto L_3689;
-
-L_3689:
-    if (((int16_t)(rgplr[idPlayer].rgTech[4]) != 26))
-        goto L_36f7;
-    else
-        goto L_36a1;
-
-L_36a1:
-    if (((int16_t)(rgplr[idPlayer].rgTech[2]) != 26))
-        goto L_36f7;
-    else
-        goto L_36b9;
-
-L_36b9:
-    if ((0x0 <= (LOWORD((int32_t)((rgResLeft[3] / rgAlchCost[3]))) + 0x1)))
-        goto L_36dd;
-    else
-        goto L_36d7;
-
-L_36d7:
-    t_merge_36f1_0001 = 0x0;
-    goto L_36f1;
-
-L_36dd:
-    t_merge_36f1_0001 = (LOWORD((int32_t)((rgResLeft[3] / rgAlchCost[3]))) + 0x1);
-
-L_36f1:
-    iAddAlchemy = t_merge_36f1_0001;
-    goto L_36fc;
-
-L_36f7:
-    iAddAlchemy = 0;
-
-L_36fc:
-    rgResLeft[3] = (rgResLeft[3] - (uint32_t)(((int32_t)(iAddAlchemy)*rgAlchCost[3])));
-    if ((iAddFactories <= 0))
-        goto L_3733;
-    else
-        goto L_371c;
-
-L_371c:
-    AddItemToQueue(0x7, iAddFactories, grobjPlanet, 1);
-
-L_3733:
-    if ((iAddMines <= 0))
-        goto L_3753;
-    else
-        goto L_373c;
-
-L_373c:
-    AddItemToQueue(0x8, iAddMines, grobjPlanet, 0);
-
-L_3753:
-    if ((iAddAlchemy <= 0))
-        goto L_378c;
-    else
-        goto L_375c;
-
-L_375c:
-    if ((game.turn <= 0x64))
-        goto L_378c;
-    else
-        goto L_3766;
-
-L_3766:
-    if ((fInsert == 0))
-        goto L_3775;
-    else
-        goto L_376f;
-
-L_376f:
-    t_merge_3778_0001 = 0;
-    goto L_3778;
-
-L_3775:
-    t_merge_3778_0001 = 1;
-
-L_3778:
-    AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, t_merge_3778_0001);
-
-L_378c:
-    if ((((iAddMines + iAddFactories) + iAddAlchemy) <= 0))
-        goto L_37a3;
-    else
-        goto L_379d;
-
-L_379d:
-    return 1;
-
-L_37a3:
-    return 0;
 }
 
 void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
-    ORDER    ord;
-    PLANET  *lpplDst;
-    PLANET  *lpplCur;
-    int16_t  fDropOff;
-    int16_t  idPlanDst;
-    SCAN     scan;
-    uint16_t t_merge_3a76_0001;
+    ORDER   ord;
+    PLANET *lpplDst;
+    PLANET *lpplCur;
+    int16_t fDropOff;
+    int16_t idPlanDst;
+    SCAN    scan;
+    int16_t t_merge_3a76_0001;
 
-L_37b0:
     fDropOff = 0;
     lpplCur = LpplFromId(lpfl->idPlanet);
-    if ((lpplCur != 0x0))
-        goto L_3829;
-    else
-        goto L_37e5;
-
-L_37e5:
-    if ((FFindNearestObject(lpfl->pt, 0x21, &(scan)) == 0))
-        goto L_381c;
-    else
-        goto L_3808;
-
-L_3808:
-    lpplDst = LpplFromId(scan.idpl);
-    goto LTarget;
-
-L_381c:
-    lpplDst = 0x0;
-
-L_3826:
-    goto LTarget;
-
-L_3829:
-    if ((lpplCur->iPlayer != idPlayer))
-        goto L_38ce;
-    else
-        goto L_3838;
-
-L_3838:
-    if ((lpplCur->rgwtMin[3] <= 2000))
-        goto L_3894;
-    else
-        goto L_3855;
-
-L_3855:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 1000);
-    FLookupFleet(lpfl->id, &(sel.fl));
-    fDropOff = 1;
-    goto L_3a79;
-
-L_3894:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
-    FLookupFleet(lpfl->id, &(sel.fl));
-
-L_38cb:
-    goto L_3a79;
-
-L_38ce:
-    if ((lpplCur->iPlayer == -1))
-        goto L_3a51;
-    else
-        goto L_38db;
-
-L_38db:
-    if ((GetRaceStat(&(rgplr[lpplCur->iPlayer]), rsMajorAdv) == raMacintosh))
-        goto L_3a51;
-    else
-        goto L_38ff;
-
-L_38ff:
-    if ((lpplCur->fStarbase != 0x0))
-        goto L_3a51;
-    else
-        goto L_3916;
-
-L_3916:
-    FLookupFleet(lpfl->id, &(sel.fl));
-    idPlanDst = lpplCur->id;
-    memset(&(ord), 0, sizeof(ORDER));
-    ord.pt = rgptPlan[idPlanDst];
-    ord.grobj = grobjPlanet;
-    ord.id = idPlanDst;
-    ord.grTask = grTaskXfer;
-    ord.fValidTask = 0x1;
-    ord.txp.rgia[3].iAction = iActionUnloadAll;
-    ChangeMainObjSel(grobjFleet, lpfl->id);
-    if ((sel.fl.lpplord->rgord[0].id != idPlanDst))
-        goto L_39f2;
-    else
-        goto L_39af;
-
-L_39af:
-    if ((sel.fl.lpplord->rgord[0].grobj != grobjPlanet))
-        goto L_39f2;
-    else
-        goto L_39c7;
-
-L_39c7:
-    sel.fl.lpplord->rgord[0] = ord;
-    goto L_3a1a;
-
-L_39f2:
-    sel.fl.lpplord->rgord[1] = ord;
-
-L_3a1a:
-    FLookupFleet(-1, &(sel.fl));
-    FMoveToNearestStarbase(lpfl, 0);
-    FLookupFleet(lpfl->id, &(sel.fl));
-    goto L_3a79;
-
-L_3a51:
-    if ((lpfl->rgwtMin[3] <= 0))
-        goto L_3a73;
-    else
-        goto L_3a6d;
-
-L_3a6d:
-    t_merge_3a76_0001 = 0x1;
-    goto L_3a76;
-
-L_3a73:
-    t_merge_3a76_0001 = 0x0;
-
-L_3a76:
-    fDropOff = t_merge_3a76_0001;
-
-L_3a79:
-    if ((fDropOff == 0))
-        goto L_3c16;
-    else
-        goto L_3a82;
-
-L_3a82:
-    lpplDst = LpplFindClosestEnum(lpplCur, FEnumDropOffStage1);
-    if ((lpplDst != 0x0))
-        goto L_3acc;
-    else
-        goto L_3ab0;
-
-L_3ab0:
-    lpplDst = LpplFindClosestEnum(lpplCur, FEnumDropOffStage2);
-
-L_3acc:
-    if ((lpplDst != 0x0))
-        goto L_3b9b;
-    else
-        goto L_3ade;
-
-L_3ade:
-    if ((lpplCur->iPlayer != idPlayer))
-        goto LTarget;
-    else
-        goto L_3aed;
-
-L_3aed:
-    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
-    FLookupFleet(lpfl->id, &(sel.fl));
-    if ((lpciPlanTemp[lpplCur->id].cIdleFreighters >= 0x3))
-        goto LTarget;
-    else
-        goto L_3b46;
-
-L_3b46:
-    lpciPlanTemp[lpplCur->id].cIdleFreighters = (lpciPlanTemp[lpplCur->id].cIdleFreighters + 0x1);
-
-L_3b98:
-    goto LTarget;
-
-L_3b9b:
-    if ((lpciPlanTemp[lpplDst->id].cFreightersDst >= 0x3))
-        goto LTarget;
-    else
-        goto L_3bc1;
-
-L_3bc1:
-    lpciPlanTemp[lpplDst->id].cFreightersDst = (lpciPlanTemp[lpplDst->id].cFreightersDst + 0x1);
-
-L_3c13:
-    goto LTarget;
-
-L_3c16:
-    lpplDst = LpplFindClosestEnum(lpplCur, FEnumPickUp);
-
-LTarget:
-    if ((lpplDst != 0x0))
-        goto L_3c44;
-    else
-        goto L_3cfa;
-
-L_3c44:
-    memset(&(ord), 0, sizeof(ORDER));
-    ord.pt = rgptPlan[lpplDst->id];
-    ord.grobj = grobjPlanet;
-    ord.id = lpplDst->id;
-    ord.grTask = grTaskNone;
-    ord.fValidTask = 0x1;
-    ord.iWarp = (uint16_t)(IFindIdealWarp(lpfl, 1));
-    if ((FMoveAiFleet(lpfl, &(ord), 0) == 0))
-        goto L_3cfa;
-    else
-        goto L_3ce6;
-
-L_3ce6:
-    lpfl->fMark = 0x1;
-
-L_3cfa:
+    if (lpplCur != 0x0) {
+        if (lpplCur->iPlayer != idPlayer) {
+            if (lpplCur->iPlayer == -1 || GetRaceStat(&rgplr[lpplCur->iPlayer], rsMajorAdv) == raMacintosh || lpplCur->fStarbase != 0x0) {
+                t_merge_3a76_0001 = lpfl->rgwtMin[3] <= 0 ? 0 : 1;
+                fDropOff = t_merge_3a76_0001;
+            } else {
+                FLookupFleet(lpfl->id, &sel.fl);
+                idPlanDst = lpplCur->id;
+                memset(&ord, 0, sizeof(ORDER));
+                ord.pt = rgptPlan[idPlanDst];
+                ord.grobj = grobjPlanet;
+                ord.id = idPlanDst;
+                ord.grTask = grTaskXfer;
+                ord.fValidTask = 0x1;
+                ord.txp.rgia[3].iAction = iActionUnloadAll;
+                ChangeMainObjSel(grobjFleet, lpfl->id);
+                if (sel.fl.lpplord->rgord[0].id != idPlanDst || sel.fl.lpplord->rgord[0].grobj != grobjPlanet) {
+                    sel.fl.lpplord->rgord[1] = ord;
+                } else {
+                    sel.fl.lpplord->rgord[0] = ord;
+                }
+                FLookupFleet(-1, &sel.fl);
+                FMoveToNearestStarbase(lpfl, 0);
+                FLookupFleet(lpfl->id, &sel.fl);
+            }
+        } else if (lpplCur->rgwtMin[3] <= 2000) {
+            XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
+            FLookupFleet(lpfl->id, &sel.fl);
+        } else {
+            XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 1000);
+            FLookupFleet(lpfl->id, &sel.fl);
+            fDropOff = 1;
+        }
+        if (fDropOff == 0) {
+            lpplDst = LpplFindClosestEnum(lpplCur, FEnumPickUp);
+        } else {
+            lpplDst = LpplFindClosestEnum(lpplCur, FEnumDropOffStage1);
+            if (lpplDst == 0x0) {
+                lpplDst = LpplFindClosestEnum(lpplCur, FEnumDropOffStage2);
+            }
+            if (lpplDst != 0x0) {
+                if (lpciPlanTemp[lpplDst->id].cFreightersDst < 0x3) {
+                    lpciPlanTemp[lpplDst->id].cFreightersDst = lpciPlanTemp[lpplDst->id].cFreightersDst + 0x1;
+                }
+            } else if (lpplCur->iPlayer == idPlayer) {
+                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
+                FLookupFleet(lpfl->id, &sel.fl);
+                if (lpciPlanTemp[lpplCur->id].cIdleFreighters < 0x3) {
+                    lpciPlanTemp[lpplCur->id].cIdleFreighters = lpciPlanTemp[lpplCur->id].cIdleFreighters + 0x1;
+                }
+            }
+        }
+    } else if (FFindNearestObject(lpfl->pt, 0x21, &scan) == 0) {
+        lpplDst = 0x0;
+    } else {
+        lpplDst = LpplFromId(scan.idpl);
+    }
+    if (lpplDst != 0x0) {
+        memset(&ord, 0, sizeof(ORDER));
+        ord.pt = rgptPlan[lpplDst->id];
+        ord.grobj = grobjPlanet;
+        ord.id = lpplDst->id;
+        ord.grTask = grTaskNone;
+        ord.fValidTask = 0x1;
+        ord.iWarp = (uint16_t)IFindIdealWarp(lpfl, 1);
+        if (FMoveAiFleet(lpfl, &ord, 0) != 0) {
+            lpfl->fMark = 0x1;
+        }
+    }
     return;
 }
 
@@ -3504,50 +1186,17 @@ int16_t FEnumDropOffStage1(PLANET *lpplSrc, PLANET *lpplTest) {
     CYBERINFOTEMP *lpciPlanTemp;
     int16_t        dOffsetPlanTemp;
 
-L_3d00:
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
-    if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3))
-        goto L_3d53;
-    else
-        goto L_3d4d;
-
-L_3d4d:
-    return 0;
-
-L_3d53:
-    if ((lpplTest->iPlayer != idPlayer))
-        goto L_3df2;
-    else
-        goto L_3d62;
-
-L_3d62:
-    if ((lpplTest->rgwtMin[3] < 200))
-        goto L_3d7f;
-    else
-        goto L_3df2;
-
-L_3d7f:
-    if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x0))
-        goto L_3df2;
-    else
-        goto L_3da5;
-
-L_3da5:
-    if ((LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) <= 160000))
-        goto L_3de6;
-    else
-        goto L_3dec;
-
-L_3de6:
-    return 1;
-
-L_3dec:
-
-L_3def:
-    return 0;
-
-L_3df2:
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
+    lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + dOffsetPlanTemp);
+    if (lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3) {
+        if (lpplTest->iPlayer != idPlayer || lpplTest->rgwtMin[3] >= 200 || lpciPlanTemp[lpplTest->id].cFreightersDst != 0x0) {
+            return 0;
+        }
+        if (LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) <= 160000) {
+            return 1;
+        }
+        return 0;
+    }
     return 0;
 }
 
@@ -3555,71 +1204,25 @@ int16_t FEnumDropOffStage2(PLANET *lpplSrc, PLANET *lpplTest) {
     CYBERINFOTEMP *lpciPlanTemp;
     int16_t        dOffsetPlanTemp;
 
-L_3dfe:
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
-    if ((lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3))
-        goto L_3e51;
-    else
-        goto L_3e4b;
-
-L_3e4b:
-    return 0;
-
-L_3e51:
-    if ((lpplTest->iPlayer != idPlayer))
-        goto L_3ef3;
-    else
-        goto L_3e60;
-
-L_3e60:
-    if ((((uint32_t)((lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2)) + lpplTest->rgwtMin[3]) < 0x3e8))
-        goto L_3ea6;
-    else
-        goto L_3ef3;
-
-L_3ea6:
-    if ((LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) <= 160000))
-        goto L_3ee7;
-    else
-        goto L_3eed;
-
-L_3ee7:
-    return 1;
-
-L_3eed:
-
-L_3ef0:
-    return 0;
-
-L_3ef3:
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
+    lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + dOffsetPlanTemp);
+    if (lpciPlanTemp[lpplTest->id].cFreightersDst != 0x3) {
+        if (lpplTest->iPlayer == idPlayer && (uint32_t)(lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2) + lpplTest->rgwtMin[3] < 0x3e8) {
+            if (LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) <= 160000) {
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
     return 0;
 }
 
 int16_t FEnumPickUp(PLANET *lpplSrc, PLANET *lpplTest) {
-L_3f00:
-    if ((lpplTest->iPlayer != idPlayer))
-        goto L_3f52;
-    else
-        goto L_3f18;
-
-L_3f18:
-    if ((lpplTest->rgwtMin[3] <= 2200))
-        goto L_3f52;
-    else
-        goto L_3f35;
-
-L_3f35:
-    if ((lpplTest->fStarbase == 0x0))
-        goto L_3f52;
-    else
-        goto L_3f4c;
-
-L_3f4c:
+    if (lpplTest->iPlayer != idPlayer || lpplTest->rgwtMin[3] <= 2200 || lpplTest->fStarbase == 0x0) {
+        return 0;
+    }
     return 1;
-
-L_3f52:
-    return 0;
 }
 
 int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
@@ -3631,151 +1234,41 @@ int16_t FEnumNeedMinerals(PLANET *lpplSrc, PLANET *lpplTest) {
     int16_t        iWarpDst;
     CYBERINFOTEMP *lpciPlanTemp;
     int16_t        dOffsetPlanTemp;
-    double         t_merge_417b_0001;
-    int32_t        t_call_41c9;
 
-L_3f5e:
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (CYBERINFO *)((vlpbAiData + 2));
-    lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
-    if ((lpplTest->isb == 0x1))
-        goto L_3fe0;
-    else
-        goto L_3faa;
-
-L_3faa:
-    if ((lpplTest->isb == 0x3))
-        goto L_3fe0;
-    else
-        goto L_3fbc;
-
-L_3fbc:
-    if ((lpplTest->isb == 0x6))
-        goto L_3fe0;
-    else
-        goto L_3fce;
-
-L_3fce:
-    if ((lpplTest->isb != 0x8))
-        goto L_3fe8;
-    else
-        goto L_3fe0;
-
-L_3fe0:
-    iMinLimit = 10;
-    goto L_3fed;
-
-L_3fe8:
-    iMinLimit = 1000;
-
-L_3fed:
-    if ((lpplTest->iPlayer != idPlayer))
-        goto L_403d;
-    else
-        goto L_3ffc;
-
-L_3ffc:
-    if ((lpplTest->fStarbase == 0x0))
-        goto L_403d;
-    else
-        goto L_4013;
-
-L_4013:
-    if ((lpciPlan[lpplTest->id].iPktTarget <= 0x0))
-        goto L_4043;
-    else
-        goto L_403d;
-
-L_403d:
-    return 0;
-
-L_4043:
-    if ((lpplSrc->rgwtMin[0] <= 700))
-        goto L_4085;
-    else
-        goto L_4060;
-
-L_4060:
-    if ((lpciPlanTemp[lpplTest->id].fNeedsMin1 != 0x0))
-        goto L_4109;
-    else
-        goto L_4085;
-
-L_4085:
-    if ((lpplSrc->rgwtMin[1] <= 700))
-        goto L_40c7;
-    else
-        goto L_40a2;
-
-L_40a2:
-    if ((lpciPlanTemp[lpplTest->id].fNeedsMin2 != 0x0))
-        goto L_4109;
-    else
-        goto L_40c7;
-
-L_40c7:
-    if ((lpplSrc->rgwtMin[2] <= 700))
-        goto L_41f8;
-    else
-        goto L_40e4;
-
-L_40e4:
-    if ((lpciPlanTemp[lpplTest->id].fNeedsMin3 == 0x0))
-        goto L_41f8;
-    else
-        goto L_4109;
-
-L_4109:
-    iWarpSrc = IWarpMAFromLppl(lpplSrc, &(fTwoMA));
-    if ((fTwoMA == 0))
-        goto L_412b;
-    else
-        goto L_4127;
-
-L_4127:
-    iWarpSrc = (iWarpSrc + 1);
-
-L_412b:
-    iWarpDst = IWarpMAFromLppl(lpplTest, &(fTwoMA));
-    if ((fTwoMA == 0))
-        goto L_414d;
-    else
-        goto L_4149;
-
-L_4149:
-    iWarpDst = (iWarpDst + 1);
-
-L_414d:
-    if ((iWarpSrc >= iWarpDst))
-        goto L_416b;
-    else
-        goto L_4158;
-
-L_4158:
-    t_merge_417b_0001 = (double)((int32_t)(iWarpSrc));
-    goto L_417b;
-
-L_416b:
-    t_merge_417b_0001 = (double)((int32_t)(iWarpDst));
-
-L_417b:
-    dDistance = t_merge_417b_0001;
-    dDistance = ((dDistance * dDistance) * 3.5);
-    t_call_41c9 = LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]);
-    if (((double)(t_call_41c9) > (dDistance * dDistance)))
-        goto L_41f2;
-    else
-        goto L_41ec;
-
-L_41ec:
-    return 1;
-
-L_41f2:
-
-L_41f5:
-    return 0;
-
-L_41f8:
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
+    lpciPlan = (CYBERINFO *)(vlpbAiData + 2);
+    lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + dOffsetPlanTemp);
+    switch (lpplTest->isb) {
+    case 0x1:
+    case 0x3:
+    case 0x6:
+    case 0x8:
+        iMinLimit = 10;
+        break;
+    default:
+        iMinLimit = 1000;
+    }
+    if (lpplTest->iPlayer == idPlayer && lpplTest->fStarbase != 0x0 && lpciPlan[lpplTest->id].iPktTarget <= 0x0) {
+        if ((lpplSrc->rgwtMin[0] <= 700 || lpciPlanTemp[lpplTest->id].fNeedsMin1 == 0x0) &&
+            (lpplSrc->rgwtMin[1] <= 700 || lpciPlanTemp[lpplTest->id].fNeedsMin2 == 0x0) &&
+            (lpplSrc->rgwtMin[2] <= 700 || lpciPlanTemp[lpplTest->id].fNeedsMin3 == 0x0)) {
+            return 0;
+        }
+        iWarpSrc = IWarpMAFromLppl(lpplSrc, &fTwoMA);
+        if (fTwoMA != 0) {
+            iWarpSrc = iWarpSrc + 1;
+        }
+        iWarpDst = IWarpMAFromLppl(lpplTest, &fTwoMA);
+        if (fTwoMA != 0) {
+            iWarpDst = iWarpDst + 1;
+        }
+        dDistance = iWarpSrc >= iWarpDst ? (double)(int32_t)iWarpDst : (double)(int32_t)iWarpSrc;
+        dDistance = dDistance * dDistance * 3.5;
+        if ((double)LDistance2(rgptPlan[lpplSrc->id], rgptPlan[lpplTest->id]) > dDistance * dDistance) {
+            return 0;
+        }
+        return 1;
+    }
     return 0;
 }
 
@@ -3794,706 +1287,175 @@ int16_t FEnumPktAttack(PLANET *lpplSrc, PLANET *lpplTest) {
     int16_t    t_call_4345;
     double     t_scratch_m3c;
     double     t_scratch_m3c_2;
-    double     t_merge_4564_0001;
 
-L_4204:
     lMineral = 0;
     iWarpDst = 0;
-    dOffsetPlanTemp = ((game.cPlanMax * 2) + 2);
-    lpciPlan = (CYBERINFO *)((vlpbAiData + 2));
-    plMinMax = (int32_t *)((vlpbAiData + (dOffsetPlanTemp + (game.cPlanMax * 2))));
-    if ((lpplTest->iPlayer == idPlayer))
-        goto L_42be;
-    else
-        goto L_4263;
-
-L_4263:
-    if ((lpplTest->iPlayer == -1))
-        goto L_42be;
-    else
-        goto L_4270;
-
-L_4270:
-    if ((lpciPlan[lpplTest->id].iPktTarget > 0x0))
-        goto L_42be;
-    else
-        goto L_429a;
-
-L_429a:
-    if ((GetRaceStat(&(rgplr[lpplTest->iPlayer]), rsMajorAdv) != raMacintosh))
-        goto L_42c4;
-    else
-        goto L_42be;
-
-L_42be:
-    return 0;
-
-L_42c4:
-    if ((lpplTest->fStarbase == 0x0))
-        goto L_433b;
-    else
-        goto L_42db;
-
-L_42db:
-    if ((rglpshdefSB[lpplTest->iPlayer][lpplTest->isb].det == 0x7))
-        goto L_4319;
-    else
-        goto L_4310;
-
-L_4310:
-    return 0;
-
-L_4319:
-    iWarpDst = IWarpMAFromLppl(lpplTest, &(fTwoMA));
-    if ((fTwoMA == 0))
-        goto L_433b;
-    else
-        goto L_4337;
-
-L_4337:
-    iWarpDst = (iWarpDst + 1);
-
-L_433b:
-    t_call_4345 = IWarpMAFromLppl(lpplSrc, &(fTwoMA));
-    iWarp = (t_call_4345 + 3);
-    dDistance = (double)((int32_t)((t_call_4345 + 3)));
-    if ((iWarp != iWarpDst))
-        goto L_4375;
-    else
-        goto L_436f;
-
-L_436f:
-    return 0;
-
-L_4375:
-    dDistance = (dDistance * dDistance);
-    dDistanceTgt = DGetDistance(rgptPlan[lpplSrc->id].x, rgptPlan[lpplSrc->id].y, rgptPlan[lpplTest->id].x, rgptPlan[lpplTest->id].y);
-    if ((dDistanceTgt > (dDistance * 2.5)))
-        goto L_459a;
-    else
-        goto L_43f2;
-
-L_43f2:
-    if ((fTwoMA == 0))
-        goto L_444c;
-    else
-        goto L_43fb;
-
-L_43fb:
-    t_scratch_m3c = (double)(*(plMinMax));
-    lMineral = (int32_t)((t_scratch_m3c * pow(0.875, (dDistanceTgt / dDistance))));
-    goto L_449a;
-
-L_444c:
-    t_scratch_m3c_2 = (double)(*(plMinMax));
-    lMineral = (int32_t)((t_scratch_m3c_2 * pow(0.75, (dDistanceTgt / dDistance))));
-
-L_449a:
-    if ((lpplTest->uDefGuess > 0x63))
-        goto L_44c3;
-    else
-        goto L_44b1;
-
-L_44b1:
-    if ((lpplTest->uPopGuess != 0x0))
-        goto L_44c9;
-    else
-        goto L_44c3;
-
-L_44c3:
-    return 0;
-
-L_44c9:
-    dMod = ((double)((uint32_t)((((iWarp * iWarp) - (iWarpDst * iWarpDst)) * (0x64 - (lpplTest->uDefGuess + 0x5))))) / 16000.0);
-    if ((0x3e8 >= ((lpplTest->uPopGuess + 0x19) * 0x4)))
-        goto L_4544;
-    else
-        goto L_452f;
-
-L_452f:
-    t_merge_4564_0001 = 1000.0;
-    goto L_4564;
-
-L_4544:
-    t_merge_4564_0001 = (double)((uint32_t)(((lpplTest->uPopGuess + 0x19) * 0x4)));
-
-L_4564:
-    lMinNeeded = (int32_t)((t_merge_4564_0001 / dMod));
-    if ((lMinNeeded <= lMineral))
-        goto L_458e;
-    else
-        goto L_4594;
-
-L_458e:
-    return 1;
-
-L_4594:
-
-L_4597:
-    return 0;
-
-L_459a:
+    dOffsetPlanTemp = game.cPlanMax * 2 + 2;
+    lpciPlan = (CYBERINFO *)(vlpbAiData + 2);
+    plMinMax = (int32_t *)(vlpbAiData + (dOffsetPlanTemp + game.cPlanMax * 2));
+    if (lpplTest->iPlayer != idPlayer && lpplTest->iPlayer != -1 && lpciPlan[lpplTest->id].iPktTarget <= 0x0 &&
+        GetRaceStat(&rgplr[lpplTest->iPlayer], rsMajorAdv) != raMacintosh) {
+        if (lpplTest->fStarbase != 0x0) {
+            if (rglpshdefSB[lpplTest->iPlayer][lpplTest->isb].det != 0x7) {
+                return 0;
+            }
+            iWarpDst = IWarpMAFromLppl(lpplTest, &fTwoMA);
+            if (fTwoMA != 0) {
+                iWarpDst = iWarpDst + 1;
+            }
+        }
+        t_call_4345 = IWarpMAFromLppl(lpplSrc, &fTwoMA);
+        iWarp = t_call_4345 + 3;
+        dDistance = (double)(int32_t)(t_call_4345 + 3);
+        if (iWarp != iWarpDst) {
+            dDistance = dDistance * dDistance;
+            dDistanceTgt = DGetDistance(rgptPlan[lpplSrc->id].x, rgptPlan[lpplSrc->id].y, rgptPlan[lpplTest->id].x, rgptPlan[lpplTest->id].y);
+            if (dDistanceTgt > dDistance * 2.5) {
+                return 0;
+            }
+            if (fTwoMA == 0) {
+                t_scratch_m3c_2 = (double)*plMinMax;
+                lMineral = (int32_t)(t_scratch_m3c_2 * pow(0.75, dDistanceTgt / dDistance));
+            } else {
+                t_scratch_m3c = (double)*plMinMax;
+                lMineral = (int32_t)(t_scratch_m3c * pow(0.875, dDistanceTgt / dDistance));
+            }
+            if (lpplTest->uDefGuess <= 0x63 && lpplTest->uPopGuess != 0x0) {
+                dMod = (double)(uint32_t)((iWarp * iWarp - iWarpDst * iWarpDst) * (0x64 - (lpplTest->uDefGuess + 0x5))) / 16000.0;
+                lMinNeeded = (int32_t)((0x3e8 >= (lpplTest->uPopGuess + 0x19) * 0x4 ? (double)(uint32_t)((lpplTest->uPopGuess + 0x19) * 0x4) : 1000.0) / dMod);
+                if (lMinNeeded <= lMineral) {
+                    return 1;
+                }
+                return 0;
+            }
+            return 0;
+        }
+        return 0;
+    }
     return 0;
 }
 
 int16_t FEnumCalcEnemyPlanets(PLANET *lpplSrc, PLANET *lpplTest) {
-L_45a6:
-    if ((lpplTest->iPlayer == idPlayer))
-        goto L_45d1;
-    else
-        goto L_45be;
-
-L_45be:
-    if ((lpplTest->iPlayer == -1))
-        goto L_45d1;
-    else
-        goto L_45cb;
-
-L_45cb:
+    if (lpplTest->iPlayer == idPlayer || lpplTest->iPlayer == -1) {
+        return 0;
+    }
     return 1;
-
-L_45d1:
-    return 0;
 }
 
 int16_t iBuildCyberStarbase(PLANET *lppl) {
     int16_t ishdefSB;
     PROD    rgprod[64];
 
-L_45de:
-    if ((lppl->fStarbase != 0x0))
-        goto L_4635;
-    else
-        goto L_45fe;
-
-L_45fe:
-    if ((PctPlanetDesirability(lppl, idPlayer) < 15))
-        goto L_4635;
-    else
-        goto L_4618;
-
-L_4618:
-    if ((lppl->rgwtMin[3] < 500))
-        goto L_4635;
-    else
-        goto L_463b;
-
-L_4635:
-    return -1;
-
-L_463b:
+    if (lppl->fStarbase != 0x0 || PctPlanetDesirability(lppl, idPlayer) < 15 || lppl->rgwtMin[3] < 500) {
+        return -1;
+    }
     ChangeMainObjSel(grobjPlanet, lppl->id);
     InitProduction(rgprod);
-    if ((lppl->rgMinConc[0] <= 0xf))
-        goto L_469b;
-    else
-        goto L_466c;
-
-L_466c:
-    if ((lppl->rgMinConc[1] <= 0xf))
-        goto L_469b;
-    else
-        goto L_467e;
-
-L_467e:
-    if ((lppl->rgMinConc[2] <= 0xf))
-        goto L_469b;
-    else
-        goto L_4690;
-
-L_4690:
-    ishdefSB = IshdefAiSBLatest();
-    goto L_46a3;
-
-L_469b:
-    ishdefSB = IshdefAiSBLatestOF();
-
-L_46a3:
+    if (lppl->rgMinConc[0] <= 0xf || lppl->rgMinConc[1] <= 0xf || lppl->rgMinConc[2] <= 0xf) {
+        ishdefSB = IshdefAiSBLatestOF();
+    } else {
+        ishdefSB = IshdefAiSBLatest();
+    }
     return ishdefSB;
 }
 
 void EnsureCyberAiShdefs(int16_t iroCur) {
-    int16_t  low;
-    int16_t  ish;
-    int16_t  ishCur;
-    int16_t  i;
-    int16_t  high;
-    SHDEF    shdef;
-    uint16_t t_merge_4caf_0001;
-
-L_4826:
-    if ((rgshdef[0].fFree != 0x0))
-        goto L_48b9;
-    else
-        goto L_4842;
-
-L_4842:
-    if ((rgshdef[0].hul.ihuldef == ihuldefFrigate))
-        goto L_48b9;
-    else
-        goto L_484c;
-
-L_484c:
-    if ((rgplr[idPlayer].lvlAi <= 0x1))
-        goto L_48b9;
-    else
-        goto L_486b;
-
-L_486b:
-    if ((rgshdef[0].cExist != 0x0))
-        goto L_48b9;
-    else
-        goto L_487f;
-
-L_487f:
-    if ((game.turn <= 0x5))
-        goto L_48b9;
-    else
-        goto L_4889;
-
-L_4889:
-    shdef = rgshdef[0];
-    shdef.fFree = 0x1;
-    FChangeAiShdef(&(shdef), 0);
-
-L_48b9:
-    if ((rgshdef[0].fFree == 0x0))
-        goto L_48e8;
-    else
-        goto L_48cc;
-
-L_48cc:
-    FCreateAiShdef(0, 5, &(vrgCyberAip[vrgCyberIshAip[12]]));
-
-L_48e8:
-    if ((rgshdef[4].fFree == 0x0))
-        goto L_497e;
-    else
-        goto L_48fb;
-
-L_48fb:
-    if ((game.turn <= 0x1e))
-        goto L_497e;
-    else
-        goto L_4905;
-
-L_4905:
-    if ((game.turn > 0x4b))
-        goto L_4933;
-    else
-        goto L_490f;
-
-L_490f:
-    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[vrgCyberIshAip[0]])) != 0))
-        goto L_497e;
-    else
-        goto L_4933;
-
-L_4933:
-    i = 5;
-    goto L_4975;
-
-L_493b:
-    if ((FCreateAiShdef(4, 6, &(vrgCyberAip[vrgCyberIshAip[Random(i)]])) != 0))
-        goto L_497e;
-    else
-        goto L_4971;
-
-L_4971:
-    i = (i - 1);
-
-L_4975:
-    if ((i > 0))
-        goto L_493b;
-    else
-        goto L_497e;
-
-L_497e:
-    if ((rgshdef[5].fFree == 0x0))
-        goto L_4a2f;
-    else
-        goto L_4991;
-
-L_4991:
-    if ((rgshdef[4].fFree != 0x0))
-        goto L_4a2f;
-    else
-        goto L_49a4;
-
-L_49a4:
-    if ((game.turn <= (rgshdef[4].turn + 0x14)))
-        goto L_4a2f;
-    else
-        goto L_49b3;
-
-L_49b3:
-    if ((game.turn > 0x4b))
-        goto L_49e1;
-    else
-        goto L_49bd;
-
-L_49bd:
-    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[vrgCyberIshAip[5]])) != 0))
-        goto L_4a2f;
-    else
-        goto L_49e1;
-
-L_49e1:
-    i = 5;
-    goto L_4a26;
-
-L_49e9:
-    if ((FCreateAiShdef(5, 6, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 5)]])) != 0))
-        goto L_4a2f;
-    else
-        goto L_4a22;
-
-L_4a22:
-    i = (i - 1);
-
-L_4a26:
-    if ((i > 0))
-        goto L_49e9;
-    else
-        goto L_4a2f;
-
-L_4a2f:
-    if ((rgshdef[2].fFree == 0x0))
-        goto L_4a68;
-    else
-        goto L_4a42;
-
-L_4a42:
-    if ((game.turn <= 0x14))
-        goto L_4a68;
-    else
-        goto L_4a4c;
-
-L_4a4c:
-    FCreateAiShdef(2, 11, &(vrgCyberAip[vrgCyberIshAip[10]]));
-
-L_4a68:
-    if ((rgshdef[3].fFree == 0x0))
-        goto L_4ab9;
-    else
-        goto L_4a7b;
-
-L_4a7b:
-    if ((rgshdef[2].fFree != 0x0))
-        goto L_4ab9;
-    else
-        goto L_4a8e;
-
-L_4a8e:
-    if ((game.turn <= (rgshdef[2].turn + 0x14)))
-        goto L_4ab9;
-    else
-        goto L_4a9d;
-
-L_4a9d:
-    FCreateAiShdef(3, 11, &(vrgCyberAip[vrgCyberIshAip[11]]));
-
-L_4ab9:
-    ish = 6;
-    goto L_4d4d;
-
-L_4ac1:
-    if ((rgshdef[ish].fFree == 0x0))
-        goto L_4d49;
-    else
-        goto L_4adf;
-
-L_4adf:
-    if ((ish != 6))
-        goto L_4af2;
-    else
-        goto L_4ae8;
-
-L_4ae8:
-    if ((game.turn > 0x28))
-        goto L_4b14;
-    else
-        goto L_4af2;
-
-L_4af2:
-    if ((rgshdef[6].fFree != 0x0))
-        goto L_4d49;
-    else
-        goto L_4b05;
-
-L_4b05:
-    if ((game.turn <= (rgshdef[6].turn + 0x1e)))
-        goto L_4d49;
-    else
-        goto L_4b14;
-
-L_4b14:
-    ishCur = (ish + 2);
-    i = 3;
-    goto L_4b65;
-
-L_4b25:
-    if ((FCreateAiShdef(ishCur, 29, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 33)]])) == 0))
-        goto L_4b61;
-    else
-        goto L_4b5a;
-
-L_4b5a:
-    ishCur = (ishCur - 1);
-    goto L_4b6e;
-
-L_4b61:
-    i = (i - 1);
-
-L_4b65:
-    if ((i > 0))
-        goto L_4b25;
-    else
-        goto L_4b6e;
-
-L_4b6e:
-    i = 4;
-    goto L_4bb6;
-
-L_4b76:
-    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 29)]])) == 0))
-        goto L_4bb2;
-    else
-        goto L_4bab;
-
-L_4bab:
-    ishCur = (ishCur - 1);
-    goto L_4bbf;
-
-L_4bb2:
-    i = (i - 1);
-
-L_4bb6:
-    if ((i > 0))
-        goto L_4b76;
-    else
-        goto L_4bbf;
-
-L_4bbf:
-    i = 3;
-    goto L_4c07;
-
-L_4bc7:
-    if ((FCreateAiShdef(ishCur, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 26)]])) == 0))
-        goto L_4c03;
-    else
-        goto L_4bfc;
-
-L_4bfc:
-    ishCur = (ishCur - 1);
-    goto L_4c10;
-
-L_4c03:
-    i = (i - 1);
-
-L_4c07:
-    if ((i > 0))
-        goto L_4bc7;
-    else
-        goto L_4c10;
-
-L_4c10:
-    if ((ishCur < ish))
-        goto LBomber;
-    else
-        goto L_4c1e;
-
-L_4c1e:
-    high = (9 - ((ishCur - ish) * 3));
-    low = (26 - (9 - ((ishCur - ish) * 3)));
-
-LCruiser:
-    i = high;
-    goto L_4c7e;
-
-L_4c42:
-    if ((FCreateAiShdef(ishCur, 7, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + low)]])) != 0))
-        goto L_4c87;
-    else
-        goto L_4c7a;
-
-L_4c7a:
-    i = (i - 1);
-
-L_4c7e:
-    if ((i > 0))
-        goto L_4c42;
-    else
-        goto L_4c87;
-
-L_4c87:
-    ishCur = (ishCur - 1);
-    if ((ishCur < ish))
-        goto LBomber;
-    else
-        goto L_4c96;
-
-L_4c96:
-    high = 3;
-    if ((ishCur != ish))
-        goto L_4cac;
-    else
-        goto L_4ca6;
-
-L_4ca6:
-    t_merge_4caf_0001 = 0x11;
-    goto L_4caf;
-
-L_4cac:
-    t_merge_4caf_0001 = 0x14;
-
-L_4caf:
-    low = t_merge_4caf_0001;
-    goto LCruiser;
-
-LBomber:
-    if ((FCreateAiShdef((ish + 3), 29, &(vrgCyberAip[vrgCyberIshAip[16]])) != 0))
-        goto L_4d49;
-    else
-        goto L_4cdc;
-
-L_4cdc:
-    if ((FCreateAiShdef((ish + 3), 9, &(vrgCyberAip[vrgCyberIshAip[15]])) != 0))
-        goto L_4d49;
-    else
-        goto L_4d03;
-
-L_4d03:
-    if ((FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[vrgCyberIshAip[14]])) != 0))
-        goto L_4d49;
-    else
-        goto L_4d2a;
-
-L_4d2a:
-    FCreateAiShdef((ish + 3), 19, &(vrgCyberAip[vrgCyberIshAip[13]]));
-
-L_4d49:
-    ish = (ish + 4);
-
-L_4d4d:
-    if ((ish <= 10))
-        goto L_4ac1;
-    else
-        goto L_4d56;
-
-L_4d56:
-    ish = 14;
-    goto L_4eab;
-
-L_4d5e:
-    if ((rgshdef[ish].fFree == 0x0))
-        goto L_4ea7;
-    else
-        goto L_4d7c;
-
-L_4d7c:
-    if ((ish != 14))
-        goto L_4d8f;
-    else
-        goto L_4d85;
-
-L_4d85:
-    if ((game.turn > 0x1e))
-        goto L_4db1;
-    else
-        goto L_4d8f;
-
-L_4d8f:
-    if ((rgshdef[14].fFree != 0x0))
-        goto L_4ea7;
-    else
-        goto L_4da2;
-
-L_4da2:
-    if ((game.turn <= (rgshdef[14].turn + 0x14)))
-        goto L_4ea7;
-    else
-        goto L_4db1;
-
-L_4db1:
-    i = 7;
-    goto L_4df5;
-
-L_4db9:
-    if ((FCreateAiShdef(ish, 9, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 26)]])) != 0))
-        goto L_4dfe;
-    else
-        goto L_4df1;
-
-L_4df1:
-    i = (i - 1);
-
-L_4df5:
-    if ((i > 0))
-        goto L_4db9;
-    else
-        goto L_4dfe;
-
-L_4dfe:
-    if ((i != 0))
-        goto L_4e54;
-    else
-        goto L_4e07;
-
-L_4e07:
-    i = 9;
-    goto L_4e4b;
-
-L_4e0f:
-    if ((FCreateAiShdef(ish, 7, &(vrgCyberAip[vrgCyberIshAip[(Random(i) + 17)]])) != 0))
-        goto L_4e54;
-    else
-        goto L_4e47;
-
-L_4e47:
-    i = (i - 1);
-
-L_4e4b:
-    if ((i > 0))
-        goto L_4e0f;
-    else
-        goto L_4e54;
-
-L_4e54:
-    if ((i != 0))
-        goto L_4ea7;
-    else
-        goto L_4e5d;
-
-L_4e5d:
-    i = 10;
-    goto L_4e9e;
-
-L_4e65:
-    if ((FCreateAiShdef(ish, 6, &(vrgCyberAip[vrgCyberIshAip[Random(i)]])) != 0))
-        goto L_4ea7;
-    else
-        goto L_4e9a;
-
-L_4e9a:
-    i = (i - 1);
-
-L_4e9e:
-    if ((i > 0))
-        goto L_4e65;
-    else
-        goto L_4ea7;
-
-L_4ea7:
-    ish = (ish + 1);
-
-L_4eab:
-    if ((ish <= 15))
-        goto L_4d5e;
-    else
-        goto L_4eb4;
-
-L_4eb4:
+    int16_t low;
+    int16_t ish;
+    int16_t ishCur;
+    int16_t i;
+    int16_t high;
+    SHDEF   shdef;
+
+    if (rgshdef[0].fFree == 0x0 && rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > 0x1 && rgshdef[0].cExist == 0x0 && game.turn > 0x5) {
+        shdef = rgshdef[0];
+        shdef.fFree = 0x1;
+        FChangeAiShdef(&shdef, 0);
+    }
+    if (rgshdef[0].fFree != 0x0) {
+        FCreateAiShdef(0, 5, &vrgCyberAip[vrgCyberIshAip[12]]);
+    }
+    if (rgshdef[4].fFree != 0x0 && game.turn > 0x1e && (game.turn > 0x4b || FCreateAiShdef(4, 6, &vrgCyberAip[vrgCyberIshAip[0]]) == 0)) {
+        for (i = 5; i > 0 && FCreateAiShdef(4, 6, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
+        }
+    }
+    if (rgshdef[5].fFree != 0x0 && rgshdef[4].fFree == 0x0 && game.turn > rgshdef[4].turn + 0x14 &&
+        (game.turn > 0x4b || FCreateAiShdef(5, 6, &vrgCyberAip[vrgCyberIshAip[5]]) == 0)) {
+        for (i = 5; i > 0 && FCreateAiShdef(5, 6, &vrgCyberAip[vrgCyberIshAip[Random(i) + 5]]) == 0; i--) {
+        }
+    }
+    if (rgshdef[2].fFree != 0x0 && game.turn > 0x14) {
+        FCreateAiShdef(2, 11, &vrgCyberAip[vrgCyberIshAip[10]]);
+    }
+    if (rgshdef[3].fFree != 0x0 && rgshdef[2].fFree == 0x0 && game.turn > rgshdef[2].turn + 0x14) {
+        FCreateAiShdef(3, 11, &vrgCyberAip[vrgCyberIshAip[11]]);
+    }
+    for (ish = 6; ish <= 10; ish = ish + 4) {
+        if (rgshdef[ish].fFree != 0x0 && ((ish == 6 && game.turn > 0x28) || (rgshdef[6].fFree == 0x0 && game.turn > rgshdef[6].turn + 0x1e))) {
+            ishCur = ish + 2;
+            i = 3;
+            while (1) {
+                if (i <= 0)
+                    goto L_4b6e;
+                if (FCreateAiShdef(ishCur, 29, &vrgCyberAip[vrgCyberIshAip[Random(i) + 33]]) != 0)
+                    break;
+                i = i - 1;
+            }
+            ishCur = ishCur - 1;
+        L_4b6e:
+            i = 4;
+            while (1) {
+                if (i <= 0)
+                    goto L_4bbf;
+                if (FCreateAiShdef(ishCur, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 29]]) != 0)
+                    break;
+                i = i - 1;
+            }
+            ishCur = ishCur - 1;
+        L_4bbf:
+            i = 3;
+            while (1) {
+                if (i <= 0)
+                    goto L_4c10;
+                if (FCreateAiShdef(ishCur, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) != 0)
+                    break;
+                i = i - 1;
+            }
+            ishCur = ishCur - 1;
+        L_4c10:
+            if (ishCur >= ish) {
+                high = 9 - (ishCur - ish) * 3;
+                low = 26 - (9 - (ishCur - ish) * 3);
+                while (1) {
+                    for (i = high; i > 0 && FCreateAiShdef(ishCur, 7, &vrgCyberAip[vrgCyberIshAip[Random(i) + low]]) == 0; i--) {
+                    }
+                    ishCur = ishCur - 1;
+                    if (ishCur < ish)
+                        break;
+                    high = 3;
+                    low = ishCur == ish ? 17 : 20;
+                }
+            }
+            if (FCreateAiShdef(ish + 3, 29, &vrgCyberAip[vrgCyberIshAip[16]]) == 0 && FCreateAiShdef(ish + 3, 9, &vrgCyberAip[vrgCyberIshAip[15]]) == 0 &&
+                FCreateAiShdef(ish + 3, 19, &vrgCyberAip[vrgCyberIshAip[14]]) == 0) {
+                FCreateAiShdef(ish + 3, 19, &vrgCyberAip[vrgCyberIshAip[13]]);
+            }
+        }
+    }
+    for (ish = 14; ish <= 15; ish++) {
+        if (rgshdef[ish].fFree != 0x0 && ((ish == 14 && game.turn > 0x1e) || (rgshdef[14].fFree == 0x0 && game.turn > rgshdef[14].turn + 0x14))) {
+            for (i = 7; i > 0 && FCreateAiShdef(ish, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) == 0; i--) {
+            }
+            if (i == 0) {
+                for (i = 9; i > 0 && FCreateAiShdef(ish, 7, &vrgCyberAip[vrgCyberIshAip[Random(i) + 17]]) == 0; i--) {
+                }
+            }
+            if (i == 0) {
+                for (i = 10; i > 0 && FCreateAiShdef(ish, 6, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
+                }
+            }
+        }
+    }
     return;
 }
 
@@ -4503,171 +1465,68 @@ int16_t iAddAttackFleet(PLANET *lppl, int16_t iAttackStr, int16_t iBestDestroyer
     int16_t  iMaxMines;
     int16_t  iRand;
     int16_t  t_scratch_mc;
-    uint16_t t_merge_4f41_0001;
+    int16_t  t_merge_4f41_0001;
     int16_t  t_scratch_me;
     int16_t  t_call_4f32;
     int16_t  t_scratch_mc_2;
-    uint16_t t_merge_4fae_0001;
+    int16_t  t_merge_4fae_0001;
     int16_t  t_scratch_me_2;
     int16_t  t_call_4f9f;
     int16_t  t_scratch_mc_3;
     uint16_t t_merge_4fdb_0001;
 
-L_4eba:
     fRet = 0;
     iRand = Random(100);
     t_scratch_mc = CMaxOperableMines(lppl, idPlayer, 0);
-    if ((0 <= (t_scratch_mc - CMinesOperating(lppl))))
-        goto L_4f13;
-    else
-        goto L_4f0d;
-
-L_4f0d:
-    t_merge_4f41_0001 = 0x0;
-    goto L_4f41;
-
-L_4f13:
-    t_scratch_me = CMaxOperableMines(lppl, idPlayer, 0);
-    t_call_4f32 = CMinesOperating(lppl);
-    t_merge_4f41_0001 = (t_scratch_me - t_call_4f32);
-
-L_4f41:
+    if (0 <= t_scratch_mc - CMinesOperating(lppl)) {
+        t_scratch_me = CMaxOperableMines(lppl, idPlayer, 0);
+        t_call_4f32 = CMinesOperating(lppl);
+        t_merge_4f41_0001 = t_scratch_me - t_call_4f32;
+    } else {
+        t_merge_4f41_0001 = 0;
+    }
     iMaxMines = t_merge_4f41_0001;
     t_scratch_mc_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    if ((0 <= (t_scratch_mc_2 - CFactoriesOperating(lppl))))
-        goto L_4f80;
-    else
-        goto L_4f7a;
-
-L_4f7a:
-    t_merge_4fae_0001 = 0x0;
-    goto L_4fae;
-
-L_4f80:
-    t_scratch_me_2 = CMaxOperableFactories(lppl, idPlayer, 0);
-    t_call_4f9f = CFactoriesOperating(lppl);
-    t_merge_4fae_0001 = (t_scratch_me_2 - t_call_4f9f);
-
-L_4fae:
+    if (0 <= t_scratch_mc_2 - CFactoriesOperating(lppl)) {
+        t_scratch_me_2 = CMaxOperableFactories(lppl, idPlayer, 0);
+        t_call_4f9f = CFactoriesOperating(lppl);
+        t_merge_4fae_0001 = t_scratch_me_2 - t_call_4f9f;
+    } else {
+        t_merge_4fae_0001 = 0;
+    }
     iMaxFactories = t_merge_4fae_0001;
     t_scratch_mc_3 = Random(100);
-    if ((iMaxMines < 100))
-        goto L_4fd2;
-    else
-        goto L_4fc9;
-
-L_4fc9:
-    if ((iMaxFactories >= 100))
-        goto L_4fd8;
-    else
-        goto L_4fd2;
-
-L_4fd2:
-    t_merge_4fdb_0001 = 0x5a;
-    goto L_4fdb;
-
-L_4fd8:
-    t_merge_4fdb_0001 = 0x3c;
-
-L_4fdb:
-    if ((t_scratch_mc_3 >= t_merge_4fdb_0001))
-        goto L_4feb;
-    else
-        goto L_4fe5;
-
-L_4fe5:
-    return 0;
-
-L_4feb:
-    if ((iBestBattle == -1))
-        goto L_5143;
-    else
-        goto L_4ff4;
-
-L_4ff4:
-    if ((iRand <= 50))
-        goto L_5143;
-    else
-        goto L_4ffd;
-
-L_4ffd:
-    if ((rgshdef[((iBestBattle * 4) + 6)].fFree != 0x0))
-        goto L_5043;
-    else
-        goto L_5024;
-
-L_5024:
-    AddItemToQueue(((iBestBattle * 4) + 6), 0x2, grobjFleet, 1);
-
-L_5043:
-    if ((rgshdef[((iBestBattle * 4) + 7)].fFree != 0x0))
-        goto L_5089;
-    else
-        goto L_506a;
-
-L_506a:
-    AddItemToQueue(((iBestBattle * 4) + 7), 0x2, grobjFleet, 1);
-
-L_5089:
-    if ((rgshdef[((iBestBattle * 4) + 8)].fFree != 0x0))
-        goto L_50e3;
-    else
-        goto L_50b0;
-
-L_50b0:
-    if ((Random(100) >= 75))
-        goto L_50e3;
-    else
-        goto L_50c4;
-
-L_50c4:
-    AddItemToQueue(((iBestBattle * 4) + 8), 0x1, grobjFleet, 1);
-
-L_50e3:
-    if ((rgshdef[((iBestBattle * 4) + 9)].fFree != 0x0))
-        goto L_513d;
-    else
-        goto L_510a;
-
-L_510a:
-    if ((Random(100) >= 50))
-        goto L_513d;
-    else
-        goto L_511e;
-
-L_511e:
-    AddItemToQueue(((iBestBattle * 4) + 9), 0x1, grobjFleet, 1);
-
-L_513d:
-    return 1;
-
-L_5143:
-    if ((iBestSBDefender == -1))
-        goto L_5172;
-    else
-        goto L_514c;
-
-L_514c:
-    if ((iRand <= 25))
-        goto L_5172;
-    else
-        goto L_5155;
-
-L_5155:
-    AddItemToQueue(iBestSBDefender, 0x1, grobjFleet, 1);
-    return 2;
-
-L_5172:
-    if ((iBestDestroyer == -1))
-        goto L_5198;
-    else
-        goto L_517b;
-
-L_517b:
-    AddItemToQueue(iBestDestroyer, 0x1, grobjFleet, 1);
-    return 3;
-
-L_5198:
+    if (iMaxMines >= 100 && iMaxFactories >= 100) {
+        t_merge_4fdb_0001 = 0x3c;
+    } else {
+        t_merge_4fdb_0001 = 0x5a;
+    }
+    if (t_scratch_mc_3 >= t_merge_4fdb_0001) {
+        if (iBestBattle == -1 || iRand <= 50) {
+            if (iBestSBDefender == -1 || iRand <= 25) {
+                if (iBestDestroyer == -1) {
+                    return 0;
+                }
+                AddItemToQueue(iBestDestroyer, 0x1, grobjFleet, 1);
+                return 3;
+            }
+            AddItemToQueue(iBestSBDefender, 0x1, grobjFleet, 1);
+            return 2;
+        }
+        if (rgshdef[iBestBattle * 4 + 6].fFree == 0x0) {
+            AddItemToQueue(iBestBattle * 4 + 6, 0x2, grobjFleet, 1);
+        }
+        if (rgshdef[iBestBattle * 4 + 7].fFree == 0x0) {
+            AddItemToQueue(iBestBattle * 4 + 7, 0x2, grobjFleet, 1);
+        }
+        if (rgshdef[iBestBattle * 4 + 8].fFree == 0x0 && Random(100) < 75) {
+            AddItemToQueue(iBestBattle * 4 + 8, 0x1, grobjFleet, 1);
+        }
+        if (rgshdef[iBestBattle * 4 + 9].fFree == 0x0 && Random(100) < 50) {
+            AddItemToQueue(iBestBattle * 4 + 9, 0x1, grobjFleet, 1);
+        }
+        return 1;
+    }
     return 0;
 }
 
@@ -4679,282 +1538,80 @@ void TargetCyberArmada(FLEET *lpfl) {
     int16_t cshWar;
     PLANET *lpplTarget;
 
-L_51a4:
-    if ((lpfl->cord <= 1))
-        goto LTryNewTarget;
-    else
-        goto L_51ba;
-
-L_51ba:
-    ord = lpfl->lpplord->rgord[1];
-    if ((LDistance2(lpfl->pt, ord.pt) <= 62500))
-        goto L_5221;
-    else
-        goto L_520b;
-
-L_520b:
-    if ((ord.grobj == grobjFleet))
-        goto LTryNewTarget;
-    else
-        goto L_5221;
-
-L_5221:
-    if ((ord.grobj == grobjFleet))
-        goto L_567b;
-    else
-        goto L_5237;
-
-L_5237:
-    if ((ord.grobj != grobjPlanet))
-        goto LTryNewTarget;
-    else
-        goto L_524a;
-
-L_524a:
-    lppl = LpplFromId(ord.id);
-    if ((lppl != 0x0))
-        goto L_526d;
-    else
-        goto L_567b;
-
-L_526d:
-    if ((lppl->iPlayer == -1))
-        goto L_52a0;
-    else
-        goto L_527a;
-
-L_527a:
-    if ((lppl->iPlayer != idPlayer))
-        goto L_567b;
-    else
-        goto L_5289;
-
-L_5289:
-    if ((lppl->fStarbase != 0x0))
-        goto L_567b;
-    else
-        goto L_52a0;
-
-L_52a0:
-    if ((lppl->turn != game.turn))
-        goto L_567b;
-    else
-        goto LTryNewTarget;
-
-LTryNewTarget:
+    if (lpfl->cord > 1) {
+        ord = lpfl->lpplord->rgord[1];
+        if (LDistance2(lpfl->pt, ord.pt) <= 62500 || ord.grobj != grobjFleet) {
+            if (ord.grobj == grobjFleet) {
+                return;
+            }
+            if (ord.grobj == grobjPlanet) {
+                lppl = LpplFromId(ord.id);
+                if (lppl == 0x0 || ((lppl->iPlayer != -1 && (lppl->iPlayer != idPlayer || lppl->fStarbase != 0x0)) || lppl->turn != game.turn)) {
+                    return;
+                }
+            }
+        }
+    }
     cshWar = 0;
-    cshWar = (cshWar + lpfl->rgcsh[6]);
-    cshWar = (cshWar + lpfl->rgcsh[7]);
-    cshWar = (cshWar + (lpfl->rgcsh[8] * 2));
-    cshWar = (cshWar + lpfl->rgcsh[10]);
-    cshWar = (cshWar + lpfl->rgcsh[11]);
-    cshWar = (cshWar + (lpfl->rgcsh[12] * 2));
-    cshBomb = (lpfl->rgcsh[9] + lpfl->rgcsh[13]);
+    cshWar = cshWar + lpfl->rgcsh[6];
+    cshWar = cshWar + lpfl->rgcsh[7];
+    cshWar = cshWar + lpfl->rgcsh[8] * 2;
+    cshWar = cshWar + lpfl->rgcsh[10];
+    cshWar = cshWar + lpfl->rgcsh[11];
+    cshWar = cshWar + lpfl->rgcsh[12] * 2;
+    cshBomb = lpfl->rgcsh[9] + lpfl->rgcsh[13];
     lpfl->fMark = 0x1;
     ChangeMainObjSel(grobjFleet, lpfl->id);
-    if ((lpfl->idPlanet != -1))
-        goto L_5350;
-    else
-        goto L_533b;
-
-L_533b:
-    MoveToNearestPlanetOrEnemy(lpfl, 450);
-    goto L_567b;
-
-L_5350:
-    lppl = LpplFromId(lpfl->idPlanet);
-    if ((lppl->iPlayer != idPlayer))
-        goto L_558f;
-    else
-        goto L_5374;
-
-L_5374:
-    if ((cshWar < vrgAiArmadaPotency[0]))
-        goto L_54f9;
-    else
-        goto L_5382;
-
-L_5382:
-    if ((cshBomb < vrgAiArmadaPotency[2]))
-        goto L_54f9;
-    else
-        goto TargetPotentArmada;
-
-TargetPotentArmada:
-    if ((game.fAisBand == 0x0))
-        goto L_53c5;
-    else
-        goto L_53a6;
-
-L_53a6:
-    lpplTarget = LpplFindBestEnum(lppl, FEnumCalcArmadaHumanDest);
-    goto L_53cf;
-
-L_53c5:
-    lpplTarget = 0x0;
-
-L_53cf:
-    if ((lpplTarget != 0x0))
-        goto TargetEveryArmada;
-    else
-        goto L_53e1;
-
-L_53e1:
-    lpplTarget = LpplFindBestEnum(lppl, FEnumCalcArmadaDest);
-
-TargetEveryArmada:
-    if ((lpplTarget != 0x0))
-        goto L_540f;
-    else
-        goto L_549f;
-
-L_540f:
-    vlpbAiPlanet[((lpplTarget->id * 16) + 10)] = (vlpbAiPlanet[((lpplTarget->id * 16) + 0xa)] | 0x80);
-    ord.id = lpplTarget->id;
-    ord.grobj = grobjPlanet;
-    ord.pt = rgptPlan[lpplTarget->id];
-
-FinishTargeting:
-    ord.grTask = grTaskNone;
-    ord.fValidTask = 0x1;
-    ord.iWarp = 0x4;
-    if ((FMoveAiFleet(lpfl, &(ord), 0) == 0))
-        goto L_567b;
-    else
-        goto L_5496;
-
-L_5496:
-    goto L_567b;
-
-L_549f:
-    lpflTarget = LpflFindClosestEnum(lpfl, FEnumCalcEnemyFleets);
-    if ((lpflTarget != 0x0))
-        goto L_54cd;
-    else
-        goto L_567b;
-
-L_54cd:
-    ord.id = lpflTarget->id;
-    ord.grobj = grobjFleet;
-    ord.pt = lpflTarget->pt;
-    goto FinishTargeting;
-
-L_54f9:
-    if ((rgplr[idPlayer].lvlAi <= 0x1))
-        goto L_567b;
-    else
-        goto L_5518;
-
-L_5518:
-    if ((cshWar > (vrgAiArmadaPotency[0] * 0x2)))
-        goto L_5531;
-    else
-        goto L_5528;
-
-L_5528:
-    if ((cshWar < 60))
-        goto L_567b;
-    else
-        goto L_5531;
-
-L_5531:
-    if ((Random(10) < 5))
-        goto TargetPotentArmada;
-    else
-        goto L_5545;
-
-L_5545:
-    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x3)))
-        goto L_556c;
-    else
-        goto L_5558;
-
-L_5558:
-    if ((Random(10) < 7))
-        goto TargetPotentArmada;
-    else
-        goto L_556c;
-
-L_556c:
-    if ((cshWar <= 120))
-        goto L_567b;
-    else
-        goto L_5575;
-
-L_5575:
-    if ((Random(10) < 7))
-        goto TargetPotentArmada;
-    else
-        goto L_5586;
-
-L_5586:
-    goto L_567b;
-
-L_558f:
-    if ((cshWar < vrgAiArmadaPotency[1]))
-        goto L_55ab;
-    else
-        goto L_559d;
-
-L_559d:
-    if ((cshBomb >= vrgAiArmadaPotency[3]))
-        goto L_5668;
-    else
-        goto L_55ab;
-
-L_55ab:
-    ClearAiCurrentTask(lpfl, 0);
-    if ((rgplr[idPlayer].lvlAi <= 0x1))
-        goto L_5646;
-    else
-        goto L_55dc;
-
-L_55dc:
-    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x2)))
-        goto L_5600;
-    else
-        goto L_55ec;
-
-L_55ec:
-    if ((Random(10) < 5))
-        goto TargetPotentArmada;
-    else
-        goto L_5600;
-
-L_5600:
-    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x4)))
-        goto L_5626;
-    else
-        goto L_5612;
-
-L_5612:
-    if ((Random(10) < 7))
-        goto TargetPotentArmada;
-    else
-        goto L_5626;
-
-L_5626:
-    if ((cshWar <= 120))
-        goto L_5646;
-    else
-        goto L_562f;
-
-L_562f:
-    if ((Random(10) < 7))
-        goto TargetPotentArmada;
-    else
-        goto L_5646;
-
-L_5646:
-    lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
-    goto TargetEveryArmada;
-
-L_5668:
-    if ((lppl->iPlayer == -1))
-        goto TargetPotentArmada;
-    else
-        goto L_567b;
-
-L_567b:
+    if (lpfl->idPlanet != -1) {
+        lppl = LpplFromId(lpfl->idPlanet);
+        if (lppl->iPlayer != idPlayer) {
+            if (cshWar >= vrgAiArmadaPotency[1] && cshBomb >= vrgAiArmadaPotency[3]) {
+                if (lppl->iPlayer != -1) {
+                    return;
+                }
+            } else {
+                ClearAiCurrentTask(lpfl, 0);
+                if (rgplr[idPlayer].lvlAi <= 0x1 || ((cshWar <= vrgAiArmadaPotency[0] * 0x2 || Random(10) >= 5) &&
+                                                     (cshWar <= vrgAiArmadaPotency[0] * 0x4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
+                    lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
+                    goto TargetEveryArmada;
+                }
+            }
+        } else if ((cshWar < vrgAiArmadaPotency[0] || cshBomb < vrgAiArmadaPotency[2]) &&
+                   (rgplr[idPlayer].lvlAi <= 0x1 || (cshWar <= vrgAiArmadaPotency[0] * 0x2 && cshWar < 60) ||
+                    (Random(10) >= 5 && (cshWar <= vrgAiArmadaPotency[0] * 0x3 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7)))) {
+            return;
+        }
+        if (game.fAisBand == 0x0) {
+            lpplTarget = 0x0;
+        } else {
+            lpplTarget = LpplFindBestEnum(lppl, FEnumCalcArmadaHumanDest);
+        }
+        if (lpplTarget == 0x0) {
+            lpplTarget = LpplFindBestEnum(lppl, FEnumCalcArmadaDest);
+        }
+    TargetEveryArmada:
+        if (lpplTarget != 0x0) {
+            vlpbAiPlanet[lpplTarget->id * 16 + 10] = vlpbAiPlanet[lpplTarget->id * 16 + 0xa] | 0x80;
+            ord.id = lpplTarget->id;
+            ord.grobj = grobjPlanet;
+            ord.pt = rgptPlan[lpplTarget->id];
+        } else {
+            lpflTarget = LpflFindClosestEnum(lpfl, FEnumCalcEnemyFleets);
+            if (lpflTarget == 0x0) {
+                return;
+            }
+            ord.id = lpflTarget->id;
+            ord.grobj = grobjFleet;
+            ord.pt = lpflTarget->pt;
+        }
+        ord.grTask = grTaskNone;
+        ord.fValidTask = 0x1;
+        ord.iWarp = 0x4;
+        if (FMoveAiFleet(lpfl, &ord, 0) == 0) {
+        }
+    } else {
+        MoveToNearestPlanetOrEnemy(lpfl, 450);
+    }
     return;
 }

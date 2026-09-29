@@ -83,6 +83,80 @@ func nativeCompareOperands(op CompareOp, lhs, rhs Expr) (Expr, Expr, bool) {
 	return lhs, rhs, changed
 }
 
+// nativeWideOperands casts the operands of a 32-bit division, remainder or
+// right shift lowered from a compiler helper whose signedness C would not
+// choose from the operand types. __aFldiv(__aFulmul(a, b), c) is a signed
+// division, but (uint32_t)(a * b) / c divides unsigned; it is written
+// (int32_t)(a * b) / c. An unsigned division needs one uint32_t operand, and
+// a right shift takes its signedness from the shifted operand alone.
+func nativeWideOperands(e *Binary) (Expr, Expr, bool) {
+	want, ok := e.TypeInfo.(*typeinfo.Primitive)
+	if !ok || want.TypeKind != typeinfo.KInt || want.Size != 4 {
+		return nil, nil, false
+	}
+	lhsUnsigned, lhsKnown := cArithUnsigned(e.LHS)
+	rhsUnsigned, rhsKnown := cArithUnsigned(e.RHS)
+	lhs, rhs := e.LHS, e.RHS
+	switch e.Op {
+	case OpDiv, OpMod:
+		if want.Signed {
+			if lhsUnsigned || !lhsKnown {
+				lhs = signednessCast(lhs, want)
+			}
+			if rhsUnsigned || !rhsKnown {
+				rhs = signednessCast(rhs, want)
+			}
+		} else if !(lhsUnsigned && lhsKnown) && !(rhsUnsigned && rhsKnown) {
+			lhs = signednessCast(lhs, want)
+		}
+	case OpShr, OpSar:
+		if !lhsKnown || lhsUnsigned == want.Signed {
+			lhs = signednessCast(lhs, want)
+		}
+	default:
+		return nil, nil, false
+	}
+	return lhs, rhs, lhs != e.LHS || rhs != e.RHS
+}
+
+// cArithUnsigned reports whether C evaluates the 32-bit integer operand expr
+// as unsigned after the usual arithmetic conversions, and whether its C type
+// is known. Integers narrower than int promote to int, Win16 native integers
+// such as UINT are 32 bits in a native compile, and literals are int or take
+// their peer's type.
+func cArithUnsigned(expr Expr) (unsigned bool, known bool) {
+	switch e := expr.(type) {
+	case *Const:
+		return false, e.U64 <= 0x7fffffff
+	case *Binary:
+		lhsUnsigned, lhsKnown := cArithUnsigned(e.LHS)
+		if e.Op == OpShl || e.Op == OpShr || e.Op == OpSar {
+			return lhsUnsigned, lhsKnown
+		}
+		rhsUnsigned, rhsKnown := cArithUnsigned(e.RHS)
+		return lhsUnsigned || rhsUnsigned, lhsKnown && rhsKnown
+	case *Unary:
+		return cArithUnsigned(e.X)
+	}
+	prim, ok := expr.ExprType().(*typeinfo.Primitive)
+	if !ok || prim.TypeKind != typeinfo.KInt || prim.Native == typeinfo.NativeIntPtr {
+		return false, false
+	}
+	if prim.Native == typeinfo.NativeInt {
+		return !prim.Signed, true
+	}
+	return !prim.Signed && prim.Size >= 4, prim.Size <= 4
+}
+
+// signednessCast casts expr to want, retyping a cast to the other signedness
+// of the same width rather than nesting casts.
+func signednessCast(expr Expr, want typeinfo.Type) Expr {
+	if cast, ok := expr.(*Cast); ok && typeinfo.IsSignednessVariant(cast.TypeInfo, want) {
+		return castTo(cast.Value, want)
+	}
+	return castTo(expr, want)
+}
+
 // compareDomainOperand casts a compared integer whose type has the other
 // signedness than the branch that compared it to the branch's type of the same
 // width. Win16 C made a comparison unsigned when either side was unsigned

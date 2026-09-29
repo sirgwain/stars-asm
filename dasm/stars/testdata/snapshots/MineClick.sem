@@ -143,37 +143,23 @@ L_3dcb:
 L_3dd1:
     GlobalPD.grPopup = grPopupShdef
     GlobalPD.lpshdef = &rglpshdef[lpfl->iPlayer][rgid[c]]
-    branch idPlayer == lpfl->iPlayer ? L_3e1d : L_3e17
-
-L_3e17:
-    t_merge_3e20_0001 = 0x1
-    goto L_3e20
-
-L_3e1d:
-    t_merge_3e20_0001 = 0x0
-
-L_3e20:
-    GlobalPD.fHideCounts = t_merge_3e20_0001
+    GlobalPD.fHideCounts = (idPlayer == lpfl->iPlayer ? 0 : 1)
     GlobalPD.fShowDamage = 0
     GlobalPD.fToken = 0
     GlobalPD.fSummary = 1
     goto L_3e84
 
+
+
+
 L_3e38:
     GlobalPD.grPopup = grPopupFleet
     GlobalPD.lpfl = rglpfl[sel.scan.ifl]
-    branch GlobalPD.lpfl->det != 0x7 ? L_3e78 : L_3e72
-
-L_3e72:
-    t_merge_3e7b_0001 = 0x1
-    goto L_3e7b
-
-L_3e78:
-    t_merge_3e7b_0001 = 0x0
-
-L_3e7b:
-    GlobalPD.fRedDamage = t_merge_3e7b_0001
+    GlobalPD.fRedDamage = (GlobalPD.lpfl->det == 0x7 ? 1 : 0)
     GlobalPD.grbit = 0xff
+
+
+
 
 L_3e84:
     call Popup(hwndMine, x, y) -> callresult(void)
@@ -183,22 +169,15 @@ L_3e99:
     GlobalPD.grPopup = grPopupShdef
     lppl = LpplFromId(sel.scan.idpl)
     GlobalPD.lpshdef = &rglpshdefSB[lppl->iPlayer][lppl->isb]
-    branch idPlayer == lppl->iPlayer ? L_3ef3 : L_3eed
-
-L_3eed:
-    t_merge_3ef6_0001 = 0x1
-    goto L_3ef6
-
-L_3ef3:
-    t_merge_3ef6_0001 = 0x0
-
-L_3ef6:
-    GlobalPD.fHideCounts = t_merge_3ef6_0001
+    GlobalPD.fHideCounts = (idPlayer == lppl->iPlayer ? 0 : 1)
     GlobalPD.fShowDamage = 1
     GlobalPD.fToken = 0
     GlobalPD.fSummary = 1
     call Popup(hwndMine, x, y) -> callresult(void)
     goto L_47d5
+
+
+
 
 L_3f20:
     GlobalPD.grPopup = grPopupPlanet
@@ -308,18 +287,11 @@ L_418a:
     goto L_4113
 
 L_4192:
-    branch scan.grobj != grobjFleet ? L_41a4 : L_419b
-
-L_419b:
-    t_merge_41a7_0001 = (scan.ifl + 1)
-    goto L_41a7
-
-L_41a4:
-    t_merge_41a7_0001 = 0x0
-
-L_41a7:
-    i = t_merge_41a7_0001
+    i = (scan.grobj == grobjFleet ? (scan.ifl + 1) : 0)
     goto L_41b1
+
+
+
 
 L_41ad:
     i = (i + 1)
@@ -345,18 +317,11 @@ L_4220:
     scan.ifl = i
     scan.grobj = grobjFleet
     idNew = rglpfl[i]->id
-    branch rglpfl[i]->iPlayer != idPlayer ? L_426f : L_4269
-
-L_4269:
-    t_merge_4272_0001 = 0x1
-    goto L_4272
-
-L_426f:
-    t_merge_4272_0001 = 0x0
-
-L_4272:
-    fOurs = t_merge_4272_0001
+    fOurs = (rglpfl[i]->iPlayer == idPlayer ? 1 : 0)
     goto L_43d9
+
+
+
 
 L_4278:
     branch (scan.grobjFull & 0x8) == 0x0 ? L_4291 : L_4286
@@ -380,17 +345,10 @@ L_42cd:
     goto L_43d9
 
 L_42d5:
-    branch lppl->iPlayer != idPlayer ? L_42ea : L_42e4
+    fOurs = (lppl->iPlayer == idPlayer ? 1 : 0)
 
-L_42e4:
-    t_merge_42ed_0001 = 0x1
-    goto L_42ed
 
-L_42ea:
-    t_merge_42ed_0001 = 0x0
 
-L_42ed:
-    fOurs = t_merge_42ed_0001
 
 L_42f0:
     goto L_43d9
@@ -430,17 +388,10 @@ L_4384:
     scan.grobj = grobjFleet
     scan.ifl = i
     idNew = rglpfl[i]->id
-    branch rglpfl[i]->iPlayer != idPlayer ? L_43d3 : L_43cd
+    fOurs = (rglpfl[i]->iPlayer == idPlayer ? 1 : 0)
 
-L_43cd:
-    t_merge_43d6_0001 = 0x1
-    goto L_43d6
 
-L_43d3:
-    t_merge_43d6_0001 = 0x0
 
-L_43d6:
-    fOurs = t_merge_43d6_0001
 
 ChangeIt:
     branch fOurs == 0 ? L_43ec : L_43e2

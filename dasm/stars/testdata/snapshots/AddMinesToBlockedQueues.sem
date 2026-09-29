@@ -76,7 +76,7 @@ L_1917:
 
 
 L_1977:
-    cRes = (cRes - (int32_t)((uint32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
+    cRes = (cRes - (int32_t)((int32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
 
 L_19aa:
     branch rgCost[3] <= (int32_t)(uint32_t)(cRes * sext16to32((etaFirst - 1))) ? L_19d6 : L_17a3

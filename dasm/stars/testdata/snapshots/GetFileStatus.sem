@@ -10,15 +10,8 @@ GetFileStatus  (file)
 */
 L_4a60:
     call SetSzWorkFromDt(dt, iPlayer) -> callresult(void)
-    branch access(szWork, 2) == 0 ? L_4a96 : L_4a90
-
-L_4a90:
-    t_merge_4a99_0001 = 0x1
-    goto L_4a99
-
-L_4a96:
-    t_merge_4a99_0001 = 0x0
-
-L_4a99:
-    gd.fReadOnly = t_merge_4a99_0001
+    gd.fReadOnly = (access(szWork, 2) == 0 ? 0x0 : 0x1)
     return
+
+
+

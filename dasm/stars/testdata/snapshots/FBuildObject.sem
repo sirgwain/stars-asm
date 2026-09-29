@@ -174,29 +174,29 @@ L_1e2c:
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp
     cshOrig = lpfl->rgcsh[iItem]
-    cshDamaged = loword((int32_t)((uint32_t)(lpfl->rgdv[iItem].pctSh * sext16to32(cshOrig)) / 0x64))
+    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32(cshOrig)) / 0x64))
     branch cshDamaged != 0 ? L_1edb : L_1ed6
 
 L_1ed6:
     cshDamaged = 1
 
 L_1edb:
-    dpOrig = (int32_t)((uint32_t)((int32_t)((uint32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * sext16to32(cshDamaged)) / 0x32)
-    lpfl->rgdv[iItem].pctSh = loword((int32_t)((uint32_t)(sext16to32(cshDamaged) * 100) / sext16to32((cshOrig + cBuilt))))
+    dpOrig = (int32_t)((int32_t)((int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * sext16to32(cshDamaged)) / 0x32)
+    lpfl->rgdv[iItem].pctSh = loword((int32_t)((int32_t)(sext16to32(cshDamaged) * 100) / sext16to32((cshOrig + cBuilt))))
     branch lpfl->rgdv[iItem].pctSh != 0x0 ? L_1ff4 : L_1fc0
 
 L_1fc0:
     lpfl->rgdv[iItem].pctSh = 0x1
 
 L_1ff4:
-    cshDamaged = loword((int32_t)((uint32_t)(lpfl->rgdv[iItem].pctSh * sext16to32((cshOrig + cBuilt))) / 0x64))
+    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32((cshOrig + cBuilt))) / 0x64))
     branch cshDamaged != 0 ? L_2041 : L_203c
 
 L_203c:
     cshDamaged = 1
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = loword((int32_t)((uint32_t)((int32_t)((uint32_t)(dpOrig * 5) / sext16to32(cshDamaged)) * 100) / (uint32_t)dpShdef))
+    lpfl->rgdv[iItem].pctDp = loword((int32_t)((int32_t)((int32_t)((int32_t)(dpOrig * 5) / sext16to32(cshDamaged)) * 100) / (int32_t)dpShdef))
     goto L_20de
 
 L_20c5:
@@ -222,33 +222,19 @@ L_2201:
     branch cBuilt != 1 ? L_22a0 : L_221e
 
 L_221e:
-    branch lpfl->lpplord->rgord[1].iWarp != 0x0 ? L_2242 : L_223c
-
-L_223c:
-    t_merge_2245_0001 = 0x33
-    goto L_2245
-
-L_2242:
-    t_merge_2245_0001 = 0x31
-
-L_2245:
-    idm = t_merge_2245_0001
+    idm = (lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted)
     call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0, 0) -> callresult(int16_t)
     goto L_2fc9
 
+
+
+
 L_22a0:
-    branch lpfl->lpplord->rgord[1].iWarp != 0x0 ? L_22c4 : L_22be
-
-L_22be:
-    t_merge_22c7_0001 = 0x34
-    goto L_22c7
-
-L_22c4:
-    t_merge_22c7_0001 = 0x32
-
-L_22c7:
-    idm = t_merge_22c7_0001
+    idm = (lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted)
     call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0) -> callresult(int16_t)
+
+
+
 
 L_231e:
     goto L_2fc9
@@ -279,18 +265,11 @@ L_23d6:
 L_23dc:
     t_scratch_m16_3 = lppl->cFactories
     cAllowed = (CMaxFactories(lppl, lppl->iPlayer) - t_scratch_m16_3)
-    branch cBuilt >= cAllowed ? L_2426 : L_2420
-
-L_2420:
-    t_merge_2429_0001 = cBuilt
-    goto L_2429
-
-L_2426:
-    t_merge_2429_0001 = cAllowed
-
-L_2429:
-    cBuilt = t_merge_2429_0001
+    cBuilt = (cBuilt >= cAllowed ? cAllowed : cBuilt)
     branch cBuilt <= 0 ? L_24fc : L_2435
+
+
+
 
 L_2435:
     lppl->cFactories = (lppl->cFactories + cBuilt)
@@ -316,18 +295,11 @@ L_24fc:
 L_2505:
     t_scratch_m16_4 = lppl->cMines
     cAllowed = (CMaxMines(lppl, lppl->iPlayer) - t_scratch_m16_4)
-    branch cBuilt >= cAllowed ? L_254f : L_2549
-
-L_2549:
-    t_merge_2552_0001 = cBuilt
-    goto L_2552
-
-L_254f:
-    t_merge_2552_0001 = cAllowed
-
-L_2552:
-    cBuilt = t_merge_2552_0001
+    cBuilt = (cBuilt >= cAllowed ? cAllowed : cBuilt)
     branch cBuilt <= 0 ? L_25bb : L_255e
+
+
+
 
 L_255e:
     lppl->cMines = (lppl->cMines + cBuilt)
@@ -340,18 +312,11 @@ L_25bb:
 L_25c4:
     t_scratch_m16_5 = lppl->cDefenses
     cAllowed = (CMaxDefenses(lppl, lppl->iPlayer) - t_scratch_m16_5)
-    branch cBuilt >= cAllowed ? L_2606 : L_2600
-
-L_2600:
-    t_merge_2609_0001 = cBuilt
-    goto L_2609
-
-L_2606:
-    t_merge_2609_0001 = cAllowed
-
-L_2609:
-    cBuilt = t_merge_2609_0001
+    cBuilt = (cBuilt >= cAllowed ? cAllowed : cBuilt)
     branch cBuilt <= 0 ? L_2672 : L_2615
+
+
+
 
 L_2615:
     lppl->cDefenses = (lppl->cDefenses + cBuilt)
@@ -387,31 +352,17 @@ L_2730:
     branch iItem != 17 ? L_2751 : L_2739
 
 L_2739:
-    branch raMajor != 6 ? L_2748 : L_2742
-
-L_2742:
-    t_merge_274b_0001 = 0x19
-    goto L_274b
-
-L_2748:
-    t_merge_274b_0001 = 0x28
-
-L_274b:
-    cSize = t_merge_274b_0001
+    cSize = (raMajor == 6 ? 25 : 40)
     goto L_2766
 
+
+
+
 L_2751:
-    branch raMajor != 6 ? L_2760 : L_275a
+    cSize = (raMajor == 6 ? 70 : 100)
 
-L_275a:
-    t_merge_2763_0001 = 0x46
-    goto L_2763
 
-L_2760:
-    t_merge_2763_0001 = 0x64
 
-L_2763:
-    cSize = t_merge_2763_0001
 
 L_2766:
     i = 0
@@ -620,38 +571,24 @@ L_2db7:
 
 L_2dd5:
     iEnv = (abs(i) - 1)
-    branch i <= 0 ? L_2df5 : L_2def
+    cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + (i <= 0 ? -1 : 1))
+    branch 0x1 <= (99 >= cAllowed ? cAllowed : 0x63) ? L_2e3f : L_2e39
 
-L_2def:
-    t_merge_2df8_0001 = 0x1
-    goto L_2df8
 
-L_2df5:
-    t_merge_2df8_0001 = 0xffff
 
-L_2df8:
-    cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + t_merge_2df8_0001)
-    branch 99 >= cAllowed ? L_2e2c : L_2e26
 
-L_2e26:
-    t_merge_2e2f_0001 = 0x63
-    goto L_2e2f
 
-L_2e2c:
-    t_merge_2e2f_0001 = cAllowed
 
-L_2e2f:
-    branch 0x1 <= t_merge_2e2f_0001 ? L_2e3f : L_2e39
 
 L_2e39:
-    t_merge_2e53_0001 = 0x1
+    t_merge_2e53_0001 = 1
     goto L_2e53
 
 L_2e3f:
     branch 99 >= cAllowed ? L_2e50 : L_2e4a
 
 L_2e4a:
-    t_merge_2e53_0001 = 0x63
+    t_merge_2e53_0001 = 99
     goto L_2e53
 
 L_2e50:
@@ -660,17 +597,10 @@ L_2e50:
 L_2e53:
     cAllowed = t_merge_2e53_0001
     lppl->rgEnvVar[iEnv] = lobyte(cAllowed)
-    branch i <= 0 ? L_2e98 : L_2e92
+    call FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, (i <= 0 ? 0 : 1), iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 
-L_2e92:
-    t_merge_2e9b_0001 = 1
-    goto L_2e9b
 
-L_2e98:
-    t_merge_2e9b_0001 = 0
 
-L_2e9b:
-    call FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, t_merge_2e9b_0001, iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 
 L_2ebb:
     goto L_2da8

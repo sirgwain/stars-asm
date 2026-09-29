@@ -247,6 +247,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "fold-ternaries",
+			Purpose: "Fold two-arm merge diamonds into conditional expressions.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &foldTernariesProcessor{}
+			},
+		},
+		{
 			Name:    "materialize-call-results",
 			Purpose: "Materialize non-inline call results that remain in later semantic expressions.",
 			Func: func(*FuncContext) SemFuncProcessor {
@@ -298,6 +305,13 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Convert points between Stars' POINT16 and Win32 POINT where they cross the Win32 API.",
 			Sem: func(*FuncContext) SemBlockProcessor {
 				return &nativePointsProcessor{}
+			},
+		},
+		{
+			Name:    "native-edit-sel",
+			Purpose: "Repack sent EM_SETSEL selections from Win16's MAKELONG(start, end) lParam into Win32's wParam and lParam.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &nativeEditSelProcessor{ctx: ctx}
 			},
 		},
 		{

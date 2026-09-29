@@ -10,14 +10,14 @@ void EnsureAis() {
 L_56bc:
     fSubmitSav = gd.fSubmit;
     fWorkDone = 0;
-    if ((gd.fAisDone != 0x0))
+    if (gd.fAisDone != 0x0)
         goto L_5893;
     else
         goto L_56f1;
 
 L_56f1:
     fHostSav = gd.fHostMode;
-    if ((gd.fHostMode != 0x0))
+    if (gd.fHostMode != 0x0)
         goto L_5729;
     else
         goto L_5714;
@@ -31,16 +31,16 @@ L_5729:
     goto L_5735;
 
 L_5731:
-    iPlayer = (iPlayer + 1);
+    iPlayer = iPlayer + 1;
 
 L_5735:
-    if ((iPlayer >= game.cPlayer))
+    if (iPlayer >= game.cPlayer)
         goto L_575d;
     else
         goto L_5740;
 
 L_5740:
-    *((uint16_t *)(&(rgmdplr[iPlayer]))) = rgplr[iPlayer].wMdPlr;
+    *(uint16_t *)&rgmdplr[iPlayer] = rgplr[iPlayer].wMdPlr;
     goto L_5731;
 
 L_575d:
@@ -51,17 +51,17 @@ L_575d:
     goto L_5781;
 
 L_577d:
-    iPlayer = (iPlayer + 1);
+    iPlayer = iPlayer + 1;
 
 L_5781:
-    if ((iPlayer >= game.cPlayer))
+    if (iPlayer >= game.cPlayer)
         goto L_5848;
     else
         goto L_578c;
 
 L_578c:
-    UpdateProgressGauge(MulDiv(340, (iPlayer + 1), game.cPlayer));
-    if ((rgmdplr[iPlayer].fAi == 0x0))
+    UpdateProgressGauge(MulDiv(340, iPlayer + 1, game.cPlayer));
+    if (rgmdplr[iPlayer].fAi == 0x0)
         goto L_577d;
     else
         goto L_57c5;
@@ -73,7 +73,7 @@ L_57c5:
     fOpened = FOpenFile(dtLog, iPlayer, 32);
     gd.fGeneratingTurn = 0x0;
     gd.fHostMode = fHostSav;
-    if ((fOpened == 0))
+    if (fOpened == 0)
         goto L_582e;
     else
         goto L_5826;
@@ -83,14 +83,14 @@ L_5826:
     goto L_577d;
 
 L_582e:
-    DoAiTurn(iPlayer, *((uint16_t *)(&(rgmdplr[iPlayer]))));
+    DoAiTurn(iPlayer, *(uint16_t *)&rgmdplr[iPlayer]);
 
 L_5845:
     goto L_577d;
 
 L_5848:
     gd.fSubmit = fSubmitSav;
-    if ((fWorkDone == 0))
+    if (fWorkDone == 0)
         goto L_5881;
     else
         goto L_586c;

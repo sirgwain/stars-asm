@@ -254,6 +254,8 @@ func expressionCalls(expr Expr) bool {
 		return expressionCalls(e.LHS) || expressionCalls(e.RHS)
 	case *Unary:
 		return expressionCalls(e.X)
+	case *Cond:
+		return expressionCalls(e.Cond) || expressionCalls(e.Then) || expressionCalls(e.Else)
 	case *Cast:
 		return expressionCalls(e.Value)
 	case *Index:

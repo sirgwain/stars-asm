@@ -1,30 +1,16 @@
 void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur) {
-    int32_t  lMax;
-    int16_t  c;
-    int16_t  fTwoMAs;
-    int16_t  iMode;
-    HBRUSH   hbr;
-    int32_t  lCur;
-    int32_t  l;
-    uint16_t t_merge_2b15_0001;
+    int32_t lMax;
+    int16_t c;
+    int16_t fTwoMAs;
+    int16_t iMode;
+    HBRUSH  hbr;
+    int32_t lCur;
+    int32_t l;
 
 L_2afa:
-    if ((iBest >= 0))
-        goto L_2b12;
-    else
-        goto L_2b0c;
-
-L_2b0c:
-    t_merge_2b15_0001 = 0x1;
-    goto L_2b15;
-
-L_2b12:
-    t_merge_2b15_0001 = 0x0;
-
-L_2b15:
-    fTwoMAs = t_merge_2b15_0001;
+    fTwoMAs = iBest >= 0 ? 0 : 1;
     SelectObject(hdc, rghfontArial8[1]);
-    if ((iCur >= 5))
+    if (iCur >= 5)
         goto L_2b32;
     else
         goto L_2b2d;
@@ -33,17 +19,17 @@ L_2b2d:
     iCur = 5;
 
 L_2b32:
-    if ((iBest >= 0))
+    if (iBest >= 0)
         goto L_2b43;
     else
         goto L_2b3b;
 
 L_2b3b:
-    iBest = (-iBest);
+    iBest = -iBest;
 
 L_2b43:
-    lMax = (int32_t)((iBest - 1));
-    if ((iCur > (iBest + fTwoMAs)))
+    lMax = (int32_t)(iBest - 1);
+    if (iCur > iBest + fTwoMAs)
         goto L_2b67;
     else
         goto L_2b5e;
@@ -53,7 +39,7 @@ L_2b5e:
     goto L_2b87;
 
 L_2b67:
-    if ((iCur >= ((iBest + fTwoMAs) + 3)))
+    if (iCur >= iBest + fTwoMAs + 3)
         goto L_2b81;
     else
         goto L_2b78;
@@ -66,10 +52,10 @@ L_2b81:
     hbr = hbrRed;
 
 L_2b87:
-    lCur = (int32_t)((iCur - 4));
-    l = LDrawGauge(hdc, prc, 1, &(lCur), &(hbr), lMax);
+    lCur = (int32_t)(iCur - 4);
+    l = LDrawGauge(hdc, prc, 1, &lCur, &hbr, lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), (l + 4));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), l + 4);
     l = GetTextExtent(hdc, szWork, c);
     RcCtrTextOut(hdc, prc, szWork, c);
     SetBkMode(hdc, iMode);

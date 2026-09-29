@@ -77,18 +77,11 @@ L_0196:
 L_019b:
     call GetClientRect(hwnd, &rc) -> callresult(void)
     cRow = (sext16to32((rc.bottom - 36)) / (dyArial8 + 4))
-    branch cRow >= vprptCur->cRows ? L_01d2 : L_01cc
-
-L_01cc:
-    t_merge_01d9_0001 = cRow
-    goto L_01d9
-
-L_01d2:
-    t_merge_01d9_0001 = vprptCur->cRows
-
-L_01d9:
-    vprptCur->cRowsVis = t_merge_01d9_0001
+    vprptCur->cRowsVis = (cRow >= vprptCur->cRows ? vprptCur->cRows : cRow)
     branch vprptCur->cRowsVis < vprptCur->cRows ? L_021c : L_01f3
+
+
+
 
 L_01f3:
     swp = 0x84
@@ -198,18 +191,11 @@ L_0495:
     branch iRow != -1 ? L_04c6 : L_049e
 
 L_049e:
-    branch msg != WM_RBUTTONDOWN ? L_04ae : L_04a8
-
-L_04a8:
-    t_merge_04b1_0001 = 1
-    goto L_04b1
-
-L_04ae:
-    t_merge_04b1_0001 = 0
-
-L_04b1:
-    call ReportColumnPopup(pt, iCol, t_merge_04b1_0001) -> callresult(void)
+    call ReportColumnPopup(pt, iCol, (msg == WM_RBUTTONDOWN ? 1 : 0)) -> callresult(void)
     goto L_04e1
+
+
+
 
 L_04c6:
     call ExecuteReportClick(pt, vprptCur->irpt, iCol, iRow) -> callresult(void)

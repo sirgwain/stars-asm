@@ -50,11 +50,11 @@ L_0d1a:
 
 
 L_0d43:
-    t_merge_0d4c_0001 = 0x1
+    t_merge_0d4c_0001 = 1
     goto L_0d4c
 
 L_0d49:
-    t_merge_0d4c_0001 = 0x0
+    t_merge_0d4c_0001 = 0
 
 L_0d4c:
     fAutoBuild = t_merge_0d4c_0001
@@ -224,18 +224,14 @@ L_1183:
     goto L_1270
 
 L_1190:
-    pctT = (int32_t)((uint32_t)((rgRes[i] + rgCostPaid[i]) * 0x64) / rgCost[i])
-    pctTooBig = (int32_t)((uint32_t)(((rgRes[i] + rgCostPaid[i]) + 0x1) * 0x64) / rgCost[i])
-    branch pctT <= (pctTooBig - 1) ? L_125e : L_1255
-
-
-
-L_1255:
-    t_merge_126a_0001 = pctT
+    pctT = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i]) * 0x64) / rgCost[i])
+    pctTooBig = (int32_t)((int32_t)(((rgRes[i] + rgCostPaid[i]) + 0x1) * 0x64) / rgCost[i])
+    t_merge_126a_0001 = (pctT <= (pctTooBig - 1) ? (pctTooBig - 1) : pctT)
     goto L_126a
 
-L_125e:
-    t_merge_126a_0001 = (pctTooBig - 1)
+
+
+
 
 L_126a:
     pctT = t_merge_126a_0001
@@ -281,7 +277,7 @@ L_131c:
     goto L_1398
 
 L_1324:
-    AddCost = ((int32_t)((uint32_t)(rgCost[i] * pct) / 100) - rgCostPaid[i])
+    AddCost = ((int32_t)((int32_t)(rgCost[i] * pct) / 100) - rgCostPaid[i])
     rgRes[i] = (rgRes[i] - AddCost)
     rgCostPaid[i] = (rgCostPaid[i] + AddCost)
     i = (i + 1)
@@ -297,19 +293,12 @@ L_13d5:
     branch fResourceBlocked != 0 ? L_1712 : L_13e1
 
 LAlchemize:
-    branch GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? L_140c : L_1405
-
-L_1405:
-    t_merge_1410_0001 = 0x19
-    goto L_1410
-
-L_140c:
-    t_merge_1410_0001 = 0x64
-
-L_1410:
-    lAlchCost = (uint32_t)t_merge_1410_0001
+    lAlchCost = (uint32_t)(GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? 0x64 : 0x19)
     cCanBuild = (int32_t)(rgRes[3] / lAlchCost)
     branch cCanBuild <= lMinNeeded ? L_1457 : L_144b
+
+
+
 
 
 
@@ -353,23 +342,19 @@ L_1501:
     pprodPartial->grobj = grobjPlanet
     pprodPartial->iItem = mdIdleAlchemy
     pprodPartial->cItem = 0x1
-    pctT = (int32_t)((uint32_t)(rgRes[3] * 100) / lAlchCost)
-    pctTooBig = (int32_t)((uint32_t)((rgRes[3] + 1) * 0x64) / lAlchCost)
-    branch pctT <= (pctTooBig - 1) ? L_15ec : L_15e3
-
-
-
-L_15e3:
-    t_merge_15f8_0001 = pctT
+    pctT = (int32_t)((int32_t)(rgRes[3] * 100) / lAlchCost)
+    pctTooBig = (int32_t)((int32_t)((rgRes[3] + 1) * 0x64) / lAlchCost)
+    t_merge_15f8_0001 = (pctT <= (pctTooBig - 1) ? (pctTooBig - 1) : pctT)
     goto L_15f8
 
-L_15ec:
-    t_merge_15f8_0001 = (pctTooBig - 1)
+
+
+
 
 L_15f8:
     pctT = t_merge_15f8_0001
     pprodPartial->pct = LOWORD(pctT)
-    rgRes[3] = (rgRes[3] - (int32_t)((uint32_t)(pctT * lAlchCost) / 100))
+    rgRes[3] = (rgRes[3] - (int32_t)((int32_t)(pctT * lAlchCost) / 100))
 
 L_1656:
     goto L_1712
@@ -438,18 +423,11 @@ L_1804:
     branch fAutoBuild != 2 ? L_1827 : L_180d
 
 L_180d:
-    branch cBuilt <= 0 ? L_181c : L_1816
-
-L_1816:
-    t_merge_181f_0001 = 0x3
-    goto L_181f
-
-L_181c:
-    t_merge_181f_0001 = 0x4
-
-L_181f:
-    *pmdStatus = t_merge_181f_0001
+    *pmdStatus = (cBuilt <= 0 ? 4 : 3)
     goto L_18d1
+
+
+
 
 L_1827:
     branch fAutoBuild == 0 ? L_1866 : L_1830
@@ -459,32 +437,21 @@ L_1830:
 
 
 L_184c:
-    branch cBuilt <= 0 ? L_185b : L_1855
-
-L_1855:
-    t_merge_185e_0001 = 0x1
-    goto L_185e
-
-L_185b:
-    t_merge_185e_0001 = 0x2
-
-L_185e:
-    *pmdStatus = t_merge_185e_0001
+    *pmdStatus = (cBuilt <= 0 ? 2 : 1)
     goto L_18d1
+
+
+
 
 L_1866:
     branch cBuilt != 0 ? L_18a4 : L_186f
 
 L_186f:
-    branch pctInitial != prod.pct ? L_1899 : L_1893
-
-
-L_1893:
-    t_merge_189c_0001 = 0x7
+    t_merge_189c_0001 = (pctInitial == prod.pct ? 7 : 6)
     goto L_189c
 
-L_1899:
-    t_merge_189c_0001 = 0x6
+
+
 
 L_189c:
     *pmdStatus = t_merge_189c_0001

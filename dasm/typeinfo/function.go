@@ -48,6 +48,9 @@ type Function struct {
 	Labels     []Label
 	SourceFile SourceFile
 	VarArgs    bool
+	// Macro marks a C preprocessor macro used like a function, such as a
+	// GET_WM_* message cracker. It has no side effects.
+	Macro bool
 
 	labelsByOff map[uint32]Label
 

@@ -1151,116 +1151,48 @@ char *PszGetCompressedString(StringId ids) {
     char    *pszOut;
     int16_t  iOffset;
     int16_t  fHigh;
-    uint16_t t_merge_74f8_0001;
     int16_t  t_7505;
     uint8_t *t_7537;
-    uint16_t t_merge_755c_0001;
 
-L_743a:
     iNibble = 0;
-    if ((ids != (int16_t)(iLastStrGet)))
-        goto L_745a;
-    else
-        goto L_7454;
-
-L_7454:
-    return szLastStrGet;
-
-L_745a:
-    iChunk = (ids >> 0x6);
-    iOffset = (ids & 0x3f);
-    pch = &(aSTRCmpr[aiSTRChunkOffset[iChunk]]);
-    pchLen = &(acSTR[(iChunk * 64)]);
-    i = 0;
-    goto L_74b3;
-
-L_74a0:
-    i = (i + 1);
-    pchLen = (pchLen + 1);
-
-L_74b3:
-    if ((i >= iOffset))
-        goto L_74cd;
-    else
-        goto L_74be;
-
-L_74be:
-    iNibble = (iNibble + *(pchLen));
-    goto L_74a0;
-
-L_74cd:
-    pch = (pch + (iNibble >> 0x1));
-    iLen = *(pchLen);
-    if (((iNibble & 0x1) != 0x0))
-        goto L_74f5;
-    else
-        goto L_74ef;
-
-L_74ef:
-    t_merge_74f8_0001 = 0x1;
-    goto L_74f8;
-
-L_74f5:
-    t_merge_74f8_0001 = 0x0;
-
-L_74f8:
-    fHigh = t_merge_74f8_0001;
-    pszOut = szLastStrGet;
-    iBuild = 0;
-
-L_7505:
-    t_7505 = iLen;
-    iLen = (iLen - 1);
-    if ((t_7505 == 0))
-        goto L_7587;
-    else
-        goto L_7514;
-
-L_7514:
-    if ((fHigh == 0))
-        goto L_7534;
-    else
-        goto L_751d;
-
-L_751d:
-    i = (*(pch) >> 0x4);
-    goto L_754a;
-
-L_7534:
-    t_7537 = pch;
-    pch = (pch + 1);
-    i = (*(t_7537) & 0xf);
-
-L_754a:
-    if ((fHigh != 0))
-        goto L_7559;
-    else
-        goto L_7553;
-
-L_7553:
-    t_merge_755c_0001 = 0x1;
-    goto L_755c;
-
-L_7559:
-    t_merge_755c_0001 = 0x0;
-
-L_755c:
-    fHigh = t_merge_755c_0001;
-    iBuild = (iBuild + i);
-    if ((i == 15))
-        goto L_7505;
-    else
-        goto L_756e;
-
-L_756e:
-    *(pszOut) = rgSTRLookupTable[iBuild];
-    pszOut = (pszOut + 1);
-    iBuild = 0;
-
-L_7584:
-    goto L_7505;
-
-L_7587:
-    *(pszOut) = 0;
+    if (ids != (int16_t)iLastStrGet) {
+        iChunk = ids >> 0x6;
+        iOffset = ids & 0x3f;
+        pch = &aSTRCmpr[aiSTRChunkOffset[iChunk]];
+        pchLen = &acSTR[iChunk * 64];
+        i = 0;
+        while (i < iOffset) {
+            iNibble = iNibble + *pchLen;
+            i = i + 1;
+            pchLen = pchLen + 1;
+        }
+        pch = pch + (iNibble >> 0x1);
+        iLen = *pchLen;
+        fHigh = (iNibble & 0x1) == 0x0 ? 1 : 0;
+        pszOut = szLastStrGet;
+        iBuild = 0;
+        while (1) {
+            t_7505 = iLen;
+            iLen = iLen - 1;
+            if (t_7505 == 0)
+                break;
+            if (fHigh == 0) {
+                t_7537 = pch;
+                pch = pch + 1;
+                i = *t_7537 & 0xf;
+            } else {
+                i = *pch >> 0x4;
+            }
+            fHigh = fHigh == 0 ? 1 : 0;
+            iBuild = iBuild + i;
+            if (i != 15) {
+                *pszOut = rgSTRLookupTable[iBuild];
+                pszOut = pszOut + 1;
+                iBuild = 0;
+            }
+        }
+        *pszOut = 0;
+        return szLastStrGet;
+    }
     return szLastStrGet;
 }

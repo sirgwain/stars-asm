@@ -114,13 +114,13 @@ func showIRSections(view DumpIRView) bool {
 }
 
 // renderIRLocals renders tab-indented local declarations.
-func renderIRLocals(view DumpIRView) string {
-	if len(view.Locals) == 0 {
+func renderIRLocals(locals []ir.Local) string {
+	if len(locals) == 0 {
 		return ""
 	}
 
 	var out strings.Builder
-	for _, local := range view.Locals {
+	for _, local := range locals {
 		fmt.Fprintf(&out, "\t%s;\n", typeinfo.TypeDecl(local.Type, local.Name))
 	}
 	out.WriteString("\n")
@@ -196,16 +196,16 @@ func formatIRStmt(stmt ir.Stmt) string {
 	switch s := stmt.(type) {
 	case *ir.Assign:
 		if raw, ok := s.Dst.(*ir.Deref); ok && raw.Type != nil && raw.Type.Bytes() > 1 {
-			return fmt.Sprintf("RawStore%d(%s, %s);", raw.Type.Bytes()*8, formatRawAddress(raw), formatIRExpr(s.Src))
+			return fmt.Sprintf("RawStore%d(%s, %s);", raw.Type.Bytes()*8, formatRawAddress(raw, precLowest), formatIRExpr(s.Src, precLowest))
 		}
-		return fmt.Sprintf("%s = %s;", formatIRExpr(s.Dst), formatIRExpr(s.Src))
+		return fmt.Sprintf("%s = %s;", formatIRExpr(s.Dst, precLowest), formatIRExpr(s.Src, precLowest))
 	case *ir.ExprStmt:
-		return formatIRExpr(s.Expr) + ";"
+		return formatIRExpr(s.Expr, precLowest) + ";"
 	case *ir.IfGoto:
-		return fmt.Sprintf("if (%s) goto %s; else goto %s;", formatIRExpr(s.Cond), s.TrueLabel, s.FalseLabel)
+		return fmt.Sprintf("if (%s) goto %s; else goto %s;", formatIRExpr(s.Cond, precLowest), s.TrueLabel, s.FalseLabel)
 	case *ir.TableJump:
 		var text strings.Builder
-		fmt.Fprintf(&text, "switch (%s) {", formatIRExpr(s.Index))
+		fmt.Fprintf(&text, "switch (%s) {", formatIRExpr(s.Index, precLowest))
 		for i, label := range s.Labels {
 			fmt.Fprintf(&text, " case %#x: goto %s;", i*2, label)
 		}
@@ -217,7 +217,7 @@ func formatIRStmt(stmt ir.Stmt) string {
 		if s.Value == nil {
 			return "return;"
 		}
-		return "return " + formatIRExpr(s.Value) + ";"
+		return "return " + formatIRExpr(s.Value, precLowest) + ";"
 	case *ir.Comment:
 		return "/* " + sanitizeIRComment(s.Text) + " */"
 	default:
@@ -225,106 +225,212 @@ func formatIRStmt(stmt ir.Stmt) string {
 	}
 }
 
-// formatIRExpr renders a single low-level IR expression as C-like text.
-func formatIRExpr(expr ir.Expr) string {
+// C operator precedence levels for formatIRExpr; a higher level binds
+// tighter. Calls, subscripts, member access, and primary expressions share
+// precPostfix; prefix operators and casts share precUnary.
+const (
+	precLowest = iota
+	precCond
+	precOr
+	precAnd
+	precBitOr
+	precBitXor
+	precBitAnd
+	precEquality
+	precRelational
+	precShift
+	precAdditive
+	precMultiplicative
+	precUnary
+	precPostfix
+)
+
+// binaryPrec maps each IR binary operator to its C precedence level.
+var binaryPrec = map[string]int{
+	"||": precOr,
+	"&&": precAnd,
+	"|":  precBitOr,
+	"^":  precBitXor,
+	"&":  precBitAnd,
+	"==": precEquality, "!=": precEquality,
+	"<": precRelational, "<=": precRelational, ">": precRelational, ">=": precRelational,
+	"<<": precShift, ">>": precShift,
+	"+": precAdditive, "-": precAdditive,
+	"*": precMultiplicative, "/": precMultiplicative, "%": precMultiplicative,
+}
+
+// formatIRExpr renders expr as C, wrapped in parentheses when it binds more
+// loosely than prec, the precedence its position requires.
+func formatIRExpr(expr ir.Expr, prec int) string {
+	text, own := formatIRExprText(expr)
+	if own < prec {
+		return "(" + text + ")"
+	}
+	return text
+}
+
+// formatIRExprText renders expr as C without outer parentheses and returns
+// the precedence of its outermost operator.
+func formatIRExprText(expr ir.Expr) (string, int) {
 	switch e := expr.(type) {
 	case *ir.Var:
-		return e.Name
+		return e.Name, precPostfix
 	case *ir.IntConst:
-		if e.Text != "" {
-			return e.Text
+		text := e.Text
+		if text == "" {
+			text = fmt.Sprintf("0x%x", e.Value)
 		}
-		return fmt.Sprintf("0x%x", e.Value)
+		return text, signedLiteralPrec(text)
 	case *ir.FloatConst:
-		return sem.FormatFloat(e.Value)
+		text := sem.FormatFloat(e.Value)
+		return text, signedLiteralPrec(text)
 	case *ir.StringConst:
-		return e.Value
+		return e.Value, precPostfix
 	case *ir.SizeOf:
-		return "sizeof(" + e.Type + ")"
+		return "sizeof(" + e.Type + ")", precPostfix
 	case *ir.Unary:
 		if e.Functional {
-			return e.Op + "(" + formatIRExpr(e.X) + ")"
+			return e.Op + "(" + formatIRExpr(e.X, precLowest) + ")", precPostfix
 		}
-		return "(" + e.Op + formatIRExpr(e.X) + ")"
+		return e.Op + formatUnaryOperand(e.Op, e.X), precUnary
 	case *ir.Binary:
-		return "(" + formatIRExpr(e.LHS) + " " + e.Op + " " + formatIRExpr(e.RHS) + ")"
+		return formatIRBinary(e)
+	case *ir.Cond:
+		// ?: is right-associative: a nested conditional in the else arm needs no
+		// parentheses, one in the condition does.
+		return formatIRExpr(e.Cond, precOr) + " ? " + formatIRExpr(e.Then, precLowest) + " : " + formatIRExpr(e.Else, precCond), precCond
 	case *ir.Cast:
-		return "(" + e.Type + ")(" + formatIRExpr(e.Value) + ")"
+		return "(" + e.Type + ")" + formatUnaryOperand("", e.Value), precUnary
 	case *ir.Index:
-		return formatIRPostfixBase(e.Base) + "[" + formatIRExpr(e.Index) + "]"
+		return formatIRExpr(e.Base, precPostfix) + "[" + formatIRExpr(e.Index, precLowest) + "]", precPostfix
 	case *ir.Field:
 		op := "."
 		if e.Pointer {
 			op = "->"
 		}
-		return formatIRPostfixBase(e.Base) + op + e.Name
+		return formatIRExpr(e.Base, precPostfix) + op + e.Name, precPostfix
 	case *ir.Call:
-		args := make([]string, len(e.Args))
-		for i, a := range e.Args {
-			args[i] = formatIRExpr(a)
-		}
-		return formatIRExpr(e.Target) + "(" + strings.Join(args, ", ") + ")"
+		return formatIRExpr(e.Target, precPostfix) + "(" + formatIRArgs(e.Args) + ")", precPostfix
 	case *ir.Macro:
-		args := make([]string, len(e.Args))
-		for i, a := range e.Args {
-			args[i] = formatIRExpr(a)
-		}
-		return e.Name + "(" + strings.Join(args, ", ") + ")"
+		return e.Name + "(" + formatIRArgs(e.Args) + ")", precPostfix
 	case *ir.AddressOf:
-		return "&(" + formatIRExpr(e.Target) + ")"
+		return "&" + formatUnaryOperand("&", e.Target), precUnary
 	case *ir.Deref:
 		if e.Type == nil {
-			return "*(" + formatIRExpr(e.Pointer) + ")"
+			return "*" + formatUnaryOperand("*", e.Pointer), precUnary
 		}
 		width, decl := e.Type.Bytes(), typeinfo.TypeDecl(e.Type, "")
 		if width == 1 {
-			return fmt.Sprintf("*(%s *)(%s)", decl, formatRawAddress(e))
+			return fmt.Sprintf("*(%s *)%s", decl, formatRawAddress(e, precUnary)), precUnary
 		}
-		load := fmt.Sprintf("RawLoad%d(%s)", width*8, formatRawAddress(e))
+		load := fmt.Sprintf("RawLoad%d(%s)", width*8, formatRawAddress(e, precLowest))
 		if typeinfo.Equals(e.Type, typeinfo.UintForWidth(width)) {
-			return load
+			return load, precPostfix
 		}
-		return "(" + decl + ")" + load
+		return "(" + decl + ")" + load, precUnary
 	case *ir.PointerOffset:
-		op, off := "+", formatIRExpr(e.Offset)
+		op, off := "+", formatIRExpr(e.Offset, precAdditive+1)
 		if c, ok := e.Offset.(*ir.IntConst); ok && strings.HasPrefix(off, "-") && c.Text != "" {
 			op, off = "-", off[1:]
 		}
-		offset := "((uint8_t *)(" + formatIRExpr(e.Pointer) + ") " + op + " " + off + ")"
+		offset := "(uint8_t *)" + formatUnaryOperand("", e.Pointer) + " " + op + " " + off
 		if e.Type == nil {
-			return offset
+			return offset, precAdditive
 		}
-		return "(" + typeinfo.TypeDecl(e.Type, "") + ")" + offset
+		return "(" + typeinfo.TypeDecl(e.Type, "") + ")(" + offset + ")", precUnary
 	default:
-		return fmt.Sprintf("/*expr %T*/0", expr)
+		return fmt.Sprintf("/*expr %T*/0", expr), precPostfix
 	}
 }
 
-// formatIRPostfixBase renders the operand of a postfix [] or ./-> operator.
-// Postfix operators bind tighter than unary * and casts, so a dereference or
-// cast base is parenthesized: (*ppfl)->pt, not *(ppfl)->pt.
-func formatIRPostfixBase(base ir.Expr) string {
-	switch b := base.(type) {
-	case *ir.Deref, *ir.Cast:
-		return "(" + formatIRExpr(base) + ")"
-	case *ir.PointerOffset:
-		if b.Type != nil {
-			return "(" + formatIRExpr(base) + ")"
-		}
+// signedLiteralPrec returns the precedence of a numeric literal's text: a
+// leading sign makes it a unary expression.
+func signedLiteralPrec(text string) int {
+	if strings.HasPrefix(text, "-") || strings.HasPrefix(text, "+") {
+		return precUnary
 	}
-	return formatIRExpr(base)
+	return precPostfix
 }
 
-// formatRawAddress renders the byte address of a raw storage access.
-func formatRawAddress(e *ir.Deref) string {
-	p := formatIRExpr(e.Pointer)
+// formatUnaryOperand renders the operand of the prefix operator op, or of a
+// cast when op is empty. An operand starting with the same sign as op is
+// parenthesized so the two cannot fuse into -- or ++ or &&.
+func formatUnaryOperand(op string, x ir.Expr) string {
+	text := formatIRExpr(x, precUnary)
+	if op != "" && strings.ContainsAny(op, "-+&") && strings.HasPrefix(text, op) {
+		return "(" + text + ")"
+	}
+	return text
+}
+
+// formatIRBinary renders a binary expression with its operands parenthesized
+// by precedence; the right operand of a left-associative operator also
+// needs them at equal precedence. Operands are also parenthesized where
+// gcc's -Wparentheses would ask for clarity.
+func formatIRBinary(e *ir.Binary) (string, int) {
+	prec, ok := binaryPrec[e.Op]
+	if !ok {
+		return "(" + formatIRExpr(e.LHS, precPostfix) + " " + e.Op + " " + formatIRExpr(e.RHS, precPostfix) + ")", precPostfix
+	}
+	lhs, rhs := prec, prec+1
+	if clarityParens(e.Op, e.LHS) {
+		lhs = precPostfix
+	}
+	if clarityParens(e.Op, e.RHS) {
+		rhs = precPostfix
+	}
+	return formatIRExpr(e.LHS, lhs) + " " + e.Op + " " + formatIRExpr(e.RHS, rhs), prec
+}
+
+// clarityParens reports whether operand of the binary operator op keeps its
+// parentheses although precedence makes them unnecessary: && inside ||,
+// mixed bitwise operators, a comparison inside a bitwise operator or another
+// comparison, and + or - inside a shift.
+func clarityParens(op string, operand ir.Expr) bool {
+	b, ok := operand.(*ir.Binary)
+	if !ok {
+		return false
+	}
+	inner, outer := binaryPrec[b.Op], binaryPrec[op]
+	bitwise := func(p int) bool { return p == precBitOr || p == precBitXor || p == precBitAnd }
+	compare := func(p int) bool { return p == precEquality || p == precRelational }
 	switch {
-	case e.ByteOff == 0:
-		return p
-	case e.ByteOff < 0:
-		return fmt.Sprintf("((uint8_t *)(%s) - 0x%x)", p, -e.ByteOff)
+	case outer == precOr && inner == precAnd:
+		return true
+	case bitwise(outer) && (bitwise(inner) || compare(inner)) && b.Op != op:
+		return true
+	case compare(outer) && compare(inner):
+		return true
+	case outer == precShift && inner == precAdditive:
+		return true
 	}
-	return fmt.Sprintf("((uint8_t *)(%s) + 0x%x)", p, e.ByteOff)
+	return false
+}
+
+// formatIRArgs renders call or macro arguments separated by commas.
+func formatIRArgs(args []ir.Expr) string {
+	parts := make([]string, len(args))
+	for i, a := range args {
+		parts[i] = formatIRExpr(a, precLowest)
+	}
+	return strings.Join(parts, ", ")
+}
+
+// formatRawAddress renders the byte address of a raw storage access,
+// parenthesized when it binds more loosely than prec.
+func formatRawAddress(e *ir.Deref, prec int) string {
+	if e.ByteOff == 0 {
+		return formatIRExpr(e.Pointer, prec)
+	}
+	op, off := "+", e.ByteOff
+	if off < 0 {
+		op, off = "-", -off
+	}
+	text := fmt.Sprintf("(uint8_t *)%s %s 0x%x", formatUnaryOperand("", e.Pointer), op, off)
+	if prec > precAdditive {
+		return "(" + text + ")"
+	}
+	return text
 }
 
 // sanitizeIRComment keeps block comment delimiters from leaking into output.

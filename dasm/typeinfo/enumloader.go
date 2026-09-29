@@ -395,6 +395,7 @@ func parseMessagePartJSON(message, path string, cfg *messageValueJSON, sdb *Symb
 		Module: OverrideModule,
 		Ret:    typ,
 		Params: []FunctionVar{{Name: "wParam", Type: wparam}, {Name: "lParam", Type: lparam}},
+		Macro:  true,
 	}
 	return MessagePart{Type: typ, Get: get}, nil
 }

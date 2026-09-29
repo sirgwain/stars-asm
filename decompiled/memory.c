@@ -4,40 +4,25 @@ HB *LphbAlloc(uint16_t cb, HeapType ht) {
     HGLOBAL hmem;
     HB     *lphb;
 
-L_0000:
     lphb = 0x0;
-    cb = (cb + sizeof(HB));
-    if ((cb >= mphtcbAlloc[ht]))
-        goto L_0034;
-    else
-        goto L_0028;
-
-L_0028:
-    cb = mphtcbAlloc[ht];
-
-L_0034:
-    hmem = GlobalAlloc(0x22, (uint32_t)(cb));
-    if ((hmem != 0x0))
-        goto L_0082;
-    else
-        goto L_0051;
-
-L_0051:
-    AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    StarsLongJump(penvMem, -1);
-
-L_0082:
-    lphb = (HB *)(GlobalLock(hmem));
+    cb = cb + sizeof(HB);
+    if (cb < mphtcbAlloc[ht]) {
+        cb = mphtcbAlloc[ht];
+    }
+    hmem = GlobalAlloc(0x22, (uint32_t)cb);
+    if (hmem == 0x0) {
+        AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
+        StarsLongJump(penvMem, -1);
+    }
+    lphb = (HB *)GlobalLock(hmem);
     lphb->hmem = hmem;
     lphb->cbBlock = cb;
-    lphb->cbSlop = (cb - sizeof(HB));
-    lphb->cbFree = (cb - sizeof(HB));
+    lphb->cbSlop = cb - sizeof(HB);
+    lphb->cbFree = cb - sizeof(HB);
     lphb->ibTop = sizeof(HB);
     lphb->ht = LOBYTE(ht);
     lphb->lphbNext = rglphb[ht];
     rglphb[ht] = lphb;
-
-L_0102:
     return lphb;
 }
 
@@ -48,136 +33,62 @@ HB *LphbReAlloc(HB *lphb) {
     uint16_t cbCur;
     uint16_t cbGrow;
 
-L_0108:
-    if ((lphb != 0x0))
-        goto L_012c;
-    else
-        goto L_0123;
-
-L_0123:
+    if (lphb != 0x0) {
+        hmem = lphb->hmem;
+        cbCur = lphb->cbBlock;
+        cbGrow = mphtcbAlloc[lphb->ht];
+        if (cbCur < 0xffdc) {
+            if (cbCur > 0xffdc - cbGrow) {
+                cbGrow = 0xffdc - cbCur;
+            }
+            GlobalUnlock(hmem);
+            hmem = GlobalReAlloc(hmem, (uint32_t)(lphb->cbBlock + cbGrow), 0x22);
+            if (hmem != 0x0)
+                goto L_01db;
+        }
+        AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
+        StarsLongJump(penvMem, -1);
+    L_01db:
+        lphbNew = (HB *)GlobalLock(hmem);
+        lphbNew->hmem = hmem;
+        if (rglphb[lphbNew->ht] != lphb) {
+            for (lphbT = rglphb[lphbNew->ht]; lphbT != 0x0 && lphbT->lphbNext != lphb; lphbT = lphbT->lphbNext) {
+            }
+            lphbT->lphbNext = lphbNew;
+        } else {
+            rglphb[lphbNew->ht] = lphbNew;
+        }
+        lphbNew->cbBlock = lphbNew->cbBlock + cbGrow;
+        lphbNew->cbFree = lphbNew->cbFree + cbGrow;
+        lphbNew->cbSlop = lphbNew->cbSlop + cbGrow;
+        return lphbNew;
+    }
     return 0x0;
-
-L_012c:
-    hmem = lphb->hmem;
-    cbCur = lphb->cbBlock;
-    cbGrow = mphtcbAlloc[lphb->ht];
-    if ((cbCur >= 0xffdc))
-        goto LReAllocOOM;
-    else
-        goto L_0164;
-
-L_0164:
-    if ((cbCur <= (0xffdc - cbGrow)))
-        goto L_017b;
-    else
-        goto L_0172;
-
-L_0172:
-    cbGrow = (0xffdc - cbCur);
-
-L_017b:
-    GlobalUnlock(hmem);
-    hmem = GlobalReAlloc(hmem, (uint32_t)((lphb->cbBlock + cbGrow)), 0x22);
-    if ((hmem != 0x0))
-        goto L_01db;
-    else
-        goto LReAllocOOM;
-
-LReAllocOOM:
-    AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
-    StarsLongJump(penvMem, -1);
-
-L_01db:
-    lphbNew = (HB *)(GlobalLock(hmem));
-    lphbNew->hmem = hmem;
-    if ((rglphb[lphbNew->ht] != lphb))
-        goto L_023c;
-    else
-        goto L_021b;
-
-L_021b:
-    rglphb[lphbNew->ht] = lphbNew;
-    goto L_02ac;
-
-L_023c:
-    lphbT = rglphb[lphbNew->ht];
-
-L_025a:
-    if ((lphbT != 0x0))
-        goto L_026c;
-    else
-        goto L_029b;
-
-L_026c:
-    if ((lphbT->lphbNext != lphb))
-        goto L_0287;
-    else
-        goto L_029b;
-
-L_0287:
-    lphbT = lphbT->lphbNext;
-    goto L_025a;
-
-L_029b:
-    lphbT->lphbNext = lphbNew;
-
-L_02ac:
-    lphbNew->cbBlock = (lphbNew->cbBlock + cbGrow);
-    lphbNew->cbFree = (lphbNew->cbFree + cbGrow);
-    lphbNew->cbSlop = (lphbNew->cbSlop + cbGrow);
-    return lphbNew;
 }
 
 void FreeHb(HB *lphb) {
     HGLOBAL hmem;
     HB     *lphbNext;
 
-L_02d8:
-    if ((lphb != 0x0))
-        goto L_0330;
-    else
-        goto L_0342;
-
-L_02f0:
-    goto L_0330;
-
-L_02f9:
-    lphbNext = lphb->lphbNext;
-    hmem = lphb->hmem;
-    GlobalUnlock(hmem);
-    GlobalFree(hmem);
-    lphb = lphbNext;
-
-L_0330:
-    if ((lphb != 0x0))
-        goto L_02f9;
-    else
-        goto L_0342;
-
-L_0342:
+    if (lphb != 0x0) {
+        for (; lphb != 0x0; lphb = lphbNext) {
+            lphbNext = lphb->lphbNext;
+            hmem = lphb->hmem;
+            GlobalUnlock(hmem);
+            GlobalFree(hmem);
+        }
+    }
     return;
 }
 
 void ResetHb(HeapType ht) {
     HB *lphb;
 
-L_0348:
-    lphb = rglphb[ht];
-    goto L_039a;
-
-L_0369:
-    lphb->ibTop = sizeof(HB);
-    lphb->cbSlop = (lphb->cbBlock - sizeof(HB));
-    lphb->cbFree = (lphb->cbBlock - sizeof(HB));
-    lphb = lphb->lphbNext;
-
-L_039a:
-    if ((lphb != 0x0))
-        goto L_0369;
-    else
-        goto L_03ac;
-
-L_03ac:
+    for (lphb = rglphb[ht]; lphb != 0x0; lphb = lphb->lphbNext) {
+        lphb->ibTop = sizeof(HB);
+        lphb->cbSlop = lphb->cbBlock - sizeof(HB);
+        lphb->cbFree = lphb->cbBlock - sizeof(HB);
+    }
     return;
 }
 
@@ -189,163 +100,58 @@ void *LpAlloc(uint16_t cb, HeapType ht) {
     HB      *lphb;
     uint8_t *lpb;
 
-L_03b2:
     lphb = rglphb[ht];
-    cb = ((cb + 0x3) & 0xfffe);
-
-L_03dc:
-    if ((lphb != 0x0))
-        goto L_03ee;
-    else
-        goto L_0410;
-
-L_03ee:
-    if ((lphb->cbFree >= cb))
-        goto L_0410;
-    else
-        goto LTryNextBlock;
-
-LTryNextBlock:
-    lphb = lphb->lphbNext;
-    goto L_03dc;
-
-L_0410:
-    if ((lphb != 0x0))
-        goto L_0436;
-    else
-        goto L_0422;
-
-L_0422:
-    lphb = LphbAlloc(cb, ht);
-
-L_0436:
-    lpbTop = ((uint8_t *)(lphb) + lphb->ibTop);
-    if ((lphb->cbSlop < cb))
-        goto L_0493;
-    else
-        goto L_045a;
-
-L_045a:
-    RawStore16(lpbTop, (cb - 0x2));
-    lphb->ibTop = (lphb->ibTop + cb);
-    lphb->cbFree = (lphb->cbFree - cb);
-    lphb->cbSlop = (lphb->cbSlop - cb);
-    return (lpbTop + 2);
-
-L_0493:
-    lpb = (uint8_t *)((lphb + 1));
-    goto L_0575;
-
-L_04a7:
-    lpbPrev = lpb;
-    fFree = (RawLoad16(lpb) & 0x1);
-    cbItem = (RawLoad16(lpb) & 0xfffe);
-    lpb = (lpb + (2 + cbItem));
-    if ((fFree == 0))
-        goto L_0575;
-    else
-        goto L_04dd;
-
-L_04dd:
-    if ((lpb >= lpbTop))
-        goto L_0524;
-    else
-        goto L_04eb;
-
-L_04eb:
-    if (((RawLoad16(lpb) & 0x1) == 0x0))
-        goto L_0524;
-    else
-        goto L_04fc;
-
-L_04fc:
-    if (((lpb - lpbPrev) >= cb))
-        goto L_0524;
-    else
-        goto L_0512;
-
-L_0512:
-    lpb = (lpb + (2 + (RawLoad16(lpb) & 0xfffe)));
-    goto L_04dd;
-
-L_0524:
-    cbItem = ((lpb - lpbPrev) - 0x2);
-    RawStore16(lpbPrev, (cbItem | 0x1));
-    if (((cbItem + 0x2) < cb))
-        goto L_0575;
-    else
-        goto L_0555;
-
+    cb = cb + 0x3 & 0xfffe;
+    while (1) {
+        if (lphb == 0x0 || lphb->cbFree >= cb) {
+            if (lphb == 0x0) {
+                lphb = LphbAlloc(cb, ht);
+            }
+            lpbTop = (uint8_t *)lphb + lphb->ibTop;
+            if (lphb->cbSlop >= cb)
+                break;
+            lpb = (uint8_t *)(lphb + 1);
+            while (lpb < lpbTop) {
+                lpbPrev = lpb;
+                fFree = RawLoad16(lpb) & 0x1;
+                cbItem = RawLoad16(lpb) & 0xfffe;
+                lpb = lpb + (2 + cbItem);
+                if (fFree != 0) {
+                    for (; lpb < lpbTop && (RawLoad16(lpb) & 0x1) != 0x0 && lpb - lpbPrev < cb; lpb = lpb + (2 + (RawLoad16(lpb) & 0xfffe))) {
+                    }
+                    cbItem = lpb - lpbPrev - 0x2;
+                    RawStore16(lpbPrev, cbItem | 0x1);
+                    if (cbItem + 0x2 >= cb)
+                        goto L_0555;
+                }
+            }
+        }
+        lphb = lphb->lphbNext;
+    }
+    RawStore16(lpbTop, cb - 0x2);
+    lphb->ibTop = lphb->ibTop + cb;
+    lphb->cbFree = lphb->cbFree - cb;
+    lphb->cbSlop = lphb->cbSlop - cb;
+    return lpbTop + 2;
 L_0555:
-    RawStore16(lpbPrev, (RawLoad16(lpbPrev) & 0xfffe));
-    lpbPrev = (lpbPrev + 2);
-    lphb->cbFree = (lphb->cbFree - (cbItem + 0x2));
+    RawStore16(lpbPrev, RawLoad16(lpbPrev) & 0xfffe);
+    lpbPrev = lpbPrev + 2;
+    lphb->cbFree = lphb->cbFree - (cbItem + 0x2);
     return lpbPrev;
-
-L_0575:
-    if ((lpb >= lpbTop))
-        goto LTryNextBlock;
-    else
-        goto L_0580;
-
-L_0580:
-    goto L_04a7;
 }
 
 HB *LphbFromLpHt(void *lp, HeapType ht) {
     HB *lphb;
 
-L_058c:
-    if ((ht < htOrd))
-        goto L_05a7;
-    else
-        goto L_059e;
-
-L_059e:
-    if ((ht < htCount))
-        goto L_05b0;
-    else
-        goto L_05a7;
-
-L_05a7:
+    if (ht >= htOrd && ht < htCount) {
+        for (lphb = rglphb[ht]; lphb != 0x0 && ((HB *)lp <= lphb || (uint8_t *)lp >= (uint8_t *)lphb + lphb->cbBlock); lphb = lphb->lphbNext) {
+        }
+        if (lphb != 0x0) {
+            return lphb;
+        }
+        return 0x0;
+    }
     return 0x0;
-
-L_05b0:
-    lphb = rglphb[ht];
-    goto L_0623;
-
-L_05c8:
-    if (((HB *)(lp) <= lphb))
-        goto L_0612;
-    else
-        goto L_05e7;
-
-L_05e7:
-    if (((uint8_t *)(lp) < ((uint8_t *)(lphb) + lphb->cbBlock)))
-        goto L_0635;
-    else
-        goto L_0612;
-
-L_0612:
-    lphb = lphb->lphbNext;
-
-L_0623:
-    if ((lphb != 0x0))
-        goto L_05c8;
-    else
-        goto L_0635;
-
-L_0635:
-    if ((lphb != 0x0))
-        goto L_0650;
-    else
-        goto L_0647;
-
-L_0647:
-    return 0x0;
-
-L_0650:
-    return lphb;
 }
 
 void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
@@ -354,64 +160,28 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
     uint16_t cbCur;
     uint16_t cbGrow;
 
-L_0660:
-    cbCur = RawLoad16(((uint8_t *)(lp)-0x2));
-    cb = ((cb + 0x1) & 0xfffe);
-    cbGrow = (cb - cbCur);
-    if ((cb > cbCur))
-        goto L_069c;
-    else
-        goto L_0693;
-
-L_0693:
-    return lp;
-
-L_069c:
-    lphb = LphbFromLpHt(lp, ht);
-
-LGrewHeap:
-    if ((((uint8_t *)(lphb) + lphb->ibTop) != ((uint8_t *)(lp) + cbCur)))
-        goto L_0714;
-    else
-        goto L_06db;
-
-L_06db:
-    if ((lphb->cbSlop < cbGrow))
-        goto L_0714;
-    else
-        goto L_06ea;
-
-L_06ea:
-    lphb->cbSlop = (lphb->cbSlop - cbGrow);
-    lphb->cbFree = (lphb->cbFree - cbGrow);
-    lphb->ibTop = (lphb->ibTop + cbGrow);
-    RawStore16(((uint8_t *)(lp)-0x2), cb);
-    goto L_0799;
-
-L_0714:
-    if ((ht == htPlanets))
-        goto L_0726;
-    else
-        goto L_071d;
-
-L_071d:
-    if ((ht != htThings))
-        goto L_0751;
-    else
-        goto L_0726;
-
-L_0726:
-    lphb = LphbReAlloc(lphb);
-    lp = ((uint8_t *)(lphb) + (sizeof(HB) + 2));
-    goto LGrewHeap;
-
-L_0751:
-    lpNew = LpAlloc(cb, ht);
-    fmemcpy(lpNew, lp, cbCur);
-    FreeLp(lp, ht);
-    lp = lpNew;
-
-L_0799:
+    cbCur = RawLoad16((uint8_t *)lp - 0x2);
+    cb = cb + 0x1 & 0xfffe;
+    cbGrow = cb - cbCur;
+    if (cb > cbCur) {
+        lphb = LphbFromLpHt(lp, ht);
+        for (; (uint8_t *)lphb + lphb->ibTop != (uint8_t *)lp + cbCur || lphb->cbSlop < cbGrow; lp = (uint8_t *)lphb + (sizeof(HB) + 2)) {
+            if (ht != htPlanets && ht != htThings)
+                goto L_0751;
+            lphb = LphbReAlloc(lphb);
+        }
+        lphb->cbSlop = lphb->cbSlop - cbGrow;
+        lphb->cbFree = lphb->cbFree - cbGrow;
+        lphb->ibTop = lphb->ibTop + cbGrow;
+        RawStore16((uint8_t *)lp - 0x2, cb);
+        return lp;
+    L_0751:
+        lpNew = LpAlloc(cb, ht);
+        fmemcpy(lpNew, lp, cbCur);
+        FreeLp(lp, ht);
+        lp = lpNew;
+        return lp;
+    }
     return lp;
 }
 
@@ -419,64 +189,40 @@ void FreeLp(void *lp, HeapType ht) {
     uint16_t cbFree;
     HB      *lphb;
 
-L_07a8:
-    if ((lp != 0x0))
-        goto L_07c6;
-    else
-        goto L_082f;
-
-L_07c6:
-    lphb = LphbFromLpHt(lp, ht);
-    cbFree = (RawLoad16(((uint8_t *)(lp)-0x2)) + 0x2);
-    RawStore16(((uint8_t *)(lp)-0x2), (RawLoad16(((uint8_t *)(lp)-0x2)) | 0x1));
-    lphb->cbFree = (lphb->cbFree + cbFree);
-    if ((((((uint8_t *)(lp) - (uint8_t *)(lphb)) + cbFree) - 0x2) != lphb->ibTop))
-        goto L_082f;
-    else
-        goto L_081b;
-
-L_081b:
-    lphb->ibTop = (lphb->ibTop - cbFree);
-    lphb->cbSlop = (lphb->cbSlop + cbFree);
-
-L_082f:
+    if (lp != 0x0) {
+        lphb = LphbFromLpHt(lp, ht);
+        cbFree = RawLoad16((uint8_t *)lp - 0x2) + 0x2;
+        RawStore16((uint8_t *)lp - 0x2, RawLoad16((uint8_t *)lp - 0x2) | 0x1);
+        lphb->cbFree = lphb->cbFree + cbFree;
+        if ((uint8_t *)lp - (uint8_t *)lphb + cbFree - 0x2 == lphb->ibTop) {
+            lphb->ibTop = lphb->ibTop - cbFree;
+            lphb->cbSlop = lphb->cbSlop + cbFree;
+        }
+    }
     return;
 }
 
 PL *LpplReAlloc(PL *lppl, uint16_t cAlloc) {
-L_0836:
-    lppl = LpReAlloc(lppl, ((lppl->cbItem * cAlloc) + 0x4), lppl->ht);
+    lppl = LpReAlloc(lppl, lppl->cbItem * cAlloc + 0x4, lppl->ht);
     lppl->iMax = LOBYTE(cAlloc);
-
-L_0885:
     return lppl;
 }
 
 PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht) {
     PL *lppl;
 
-L_088c:
-    lppl = LpAlloc(((cbItem * cAlloc) + 0x4), ht);
+    lppl = LpAlloc(cbItem * cAlloc + 0x4, ht);
     lppl->iMax = LOBYTE(cAlloc);
     lppl->iMac = 0x0;
     lppl->fMark = 0x0;
     lppl->cbItem = cbItem;
     lppl->ht = ht;
-
-L_0912:
     return lppl;
 }
 
 void FreePl(PL *lppl) {
-L_0918:
-    if ((lppl != 0x0))
-        goto L_0936;
-    else
-        goto L_0953;
-
-L_0936:
-    FreeLp(lppl, lppl->ht);
-
-L_0953:
+    if (lppl != 0x0) {
+        FreeLp(lppl, lppl->ht);
+    }
     return;
 }

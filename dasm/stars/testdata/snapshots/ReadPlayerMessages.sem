@@ -56,19 +56,12 @@ L_99fa:
     goto L_9abf
 
 L_9a98:
-    branch (u & 0x1) != 0x1 ? L_9aac : L_9aa6
-
-L_9aa6:
-    t_merge_9aaf_0001 = 0x1
-    goto L_9aaf
-
-L_9aac:
-    t_merge_9aaf_0001 = 0x0
-
-L_9aaf:
-    lpb = &lpb[(1 + t_merge_9aaf_0001)]
+    lpb = &lpb[(1 + ((u & 0x1) == 0x1 ? 1 : 0))]
     u = (u >> 0x1)
     i = (i + 1)
+
+
+
 
 L_9abf:
     branch i < iMax ? L_9a98 : L_9aca

@@ -122,12 +122,17 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		next.Target = target
 		return &next, true
 	case *Const:
-		if bitwise || expected == nil || sameConstType(e.TypeInfo, expected) || keepsConstantFamily(e.TypeInfo, expected) {
+		if bitwise || expected == nil || keepsConstantFamily(e.TypeInfo, expected) {
+			return expr, false
+		}
+		char := isCharLiteralConst(e, expected)
+		if sameConstType(e.TypeInfo, expected) && e.Char == char {
 			return expr, false
 		}
 
 		next := *e
 		next.TypeInfo = expected
+		next.Char = char
 		return &next, true
 
 	case *Cast:
@@ -159,6 +164,19 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		return resolveConstTypesBinary(e, expected, bitwise)
 	case *Compare:
 		return resolveConstTypesCompare(e, expected)
+	case *Cond:
+		cond, condChanged := resolveConstTypesExpr(e.Cond, nil, bitwise)
+		then, thenChanged := resolveConstTypesExpr(e.Then, expected, bitwise)
+		els, elseChanged := resolveConstTypesExpr(e.Else, expected, bitwise)
+		if !condChanged && !thenChanged && !elseChanged {
+			return expr, false
+		}
+
+		next := *e
+		next.Cond = cond
+		next.Then = then
+		next.Else = els
+		return &next, true
 	case *Call:
 		next := *e
 		next.Args = append([]Expr(nil), e.Args...)
@@ -217,6 +235,14 @@ func constTypeExpected(expected typeinfo.Type) typeinfo.Type {
 		return nil
 	}
 	return expected
+}
+
+// isCharLiteralConst reports whether c, typed as expected, reads as a
+// printable character, as in *lpT == 'F'.
+func isCharLiteralConst(c *Const, expected typeinfo.Type) bool {
+	prim, ok := expected.(*typeinfo.Primitive)
+	return ok && prim.TypeKind == typeinfo.KInt && prim.Name == "char" && c.Fixup == nil &&
+		c.U64 >= ' ' && c.U64 <= '~'
 }
 
 // arrayIndexConstType returns the source integer type for literal indexes.

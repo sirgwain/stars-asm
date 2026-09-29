@@ -9,61 +9,22 @@ int16_t FCreateStuff() {
     HBITMAP hbmp;
     int16_t dx;
 
-L_0014:
     fFailed = 0;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
-    if ((dx < 800))
-        goto L_004e;
-    else
-        goto L_0044;
-
-L_0044:
-    if ((dy >= 600))
-        goto L_005d;
-    else
-        goto L_004e;
-
-L_004e:
-    gd.mdScreenSize = 0x0;
-    goto L_00af;
-
-L_005d:
-    if ((dx < 1024))
-        goto L_0071;
-    else
-        goto L_0067;
-
-L_0067:
-    if ((dy >= 768))
-        goto L_0080;
-    else
-        goto L_0071;
-
-L_0071:
-    gd.mdScreenSize = 0x1;
-    goto L_00af;
-
-L_0080:
-    if ((dx < 1111))
-        goto L_0094;
-    else
-        goto L_008a;
-
-L_008a:
-    if ((dy >= 888))
-        goto L_00a3;
-    else
-        goto L_0094;
-
-L_0094:
-    gd.mdScreenSize = 0x2;
-    goto L_00af;
-
-L_00a3:
-    gd.mdScreenSize = 0x3;
-
-L_00af:
+    if (dx >= 800 && dy >= 600) {
+        if (dx >= 1024 && dy >= 768) {
+            if (dx >= 1111 && dy >= 888) {
+                gd.mdScreenSize = 0x3;
+            } else {
+                gd.mdScreenSize = 0x2;
+            }
+        } else {
+            gd.mdScreenSize = 0x1;
+        }
+    } else {
+        gd.mdScreenSize = 0x0;
+    }
     gd.fNoIdleChecks = 0x0;
     gd.fAisDone = 0x0;
     vplr = vrgplrDef[0];
@@ -118,22 +79,11 @@ L_00af:
     hbmp = LoadBitmap(hInst, "Screen50Bmp");
     hbr50Screen = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
-    i = 0;
-    goto L_04f1;
-
-L_04b7:
-    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE((i + 460)));
-    rghbrPat[i] = CreatePatternBrush(hbmp);
-    DeleteObject(hbmp);
-    i = (i + 1);
-
-L_04f1:
-    if ((i < 3))
-        goto L_04b7;
-    else
-        goto L_04fa;
-
-L_04fa:
+    for (i = 0; i < 3; i++) {
+        hbmp = LoadBitmap(hInst, MAKEINTRESOURCE(i + 460));
+        rghbrPat[i] = CreatePatternBrush(hbmp);
+        DeleteObject(hbmp);
+    }
     hbmp = LoadBitmap(hInst, "CargoBmp");
     hbrCargo = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
@@ -158,83 +108,25 @@ L_04fa:
     hdibPlanets = HdibLoadBigResource(IDDIB_PLANET_ICONS);
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
-    if ((hdibPlanets == 0x0))
-        goto L_06b7;
-    else
-        goto L_06a3;
-
-L_06a3:
-    if ((hdibThings == 0x0))
-        goto L_06b7;
-    else
-        goto L_06ad;
-
-L_06ad:
-    if ((hdibToolbar != 0x0))
-        goto L_06bc;
-    else
-        goto L_06b7;
-
-L_06b7:
-    fFailed = 1;
-
-L_06bc:
-    i = 0;
-    goto L_0720;
-
-L_06c4:
-    rghdibShips[i] = HdibLoadBigResource((i + 552));
-    if ((rghdibShips[i] != 0x0))
-        goto L_06f0;
-    else
-        goto L_06eb;
-
-L_06eb:
-    fFailed = 1;
-
-L_06f0:
-    rghdibShipsT[i] = HdibLoadBigResource((i + 557));
-    if ((rghdibShipsT[i] != 0x0))
-        goto L_071c;
-    else
-        goto L_0717;
-
-L_0717:
-    fFailed = 1;
-
-L_071c:
-    i = (i + 1);
-
-L_0720:
-    if ((i < 5))
-        goto L_06c4;
-    else
-        goto L_0729;
-
-L_0729:
-    i = 0;
-    goto L_0761;
-
-L_0731:
-    rghdibInventory[i] = HdibLoadBigResource((i + 500));
-    if ((rghdibInventory[i] != 0x0))
-        goto L_075d;
-    else
-        goto L_0758;
-
-L_0758:
-    fFailed = 1;
-
-L_075d:
-    i = (i + 1);
-
-L_0761:
-    if ((i < 7))
-        goto L_0731;
-    else
-        goto L_076a;
-
-L_076a:
+    if (hdibPlanets == 0x0 || hdibThings == 0x0 || hdibToolbar == 0x0) {
+        fFailed = 1;
+    }
+    for (i = 0; i < 5; i++) {
+        rghdibShips[i] = HdibLoadBigResource(i + 552);
+        if (rghdibShips[i] == 0x0) {
+            fFailed = 1;
+        }
+        rghdibShipsT[i] = HdibLoadBigResource(i + 557);
+        if (rghdibShipsT[i] == 0x0) {
+            fFailed = 1;
+        }
+    }
+    for (i = 0; i < 7; i++) {
+        rghdibInventory[i] = HdibLoadBigResource(i + 500);
+        if (rghdibInventory[i] == 0x0) {
+            fFailed = 1;
+        }
+    }
     vhpal = HpalFromDib(rghdibShips[3]);
     hdibRaces = HdibLoadBigResource(IDDIB_PLAYER_ICONS);
     hdibRacesT = HdibLoadBigResource(IDDIB_PLAYER_ICONS_SMALL);
@@ -268,89 +160,12 @@ L_076a:
     vlprgidMisc = LpAlloc(0x800, htPerm);
     vlprgidPlanet = LpAlloc(0x800, htPerm);
     vlprgidFleet = LpAlloc(0x800, htPerm);
-    if ((fFailed != 0))
-        goto L_0a7f;
-    else
-        goto L_0a07;
-
-L_0a07:
-    if ((hbmpScanner == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a11;
-
-L_0a11:
-    if ((hbmpUnknownPlanet == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a1b;
-
-L_0a1b:
-    if ((hbmpBackBld == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a25;
-
-L_0a25:
-    if ((hdibRaces == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a2f;
-
-L_0a2f:
-    if ((hdibRacesT == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a39;
-
-L_0a39:
-    if ((hdibRacesX == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a43;
-
-L_0a43:
-    if ((hbmpMono == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a4d;
-
-L_0a4d:
-    if ((hbmpScanShip == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a57;
-
-L_0a57:
-    if ((hbmpMsg == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a61;
-
-L_0a61:
-    if ((hiconHost == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a6b;
-
-L_0a6b:
-    if ((hiconStars == 0x0))
-        goto L_0a7f;
-    else
-        goto L_0a75;
-
-L_0a75:
-    if ((hiconWait != 0x0))
-        goto L_0aa6;
-    else
-        goto L_0a7f;
-
-L_0a7f:
+    if (fFailed == 0 && hbmpScanner != 0x0 && hbmpUnknownPlanet != 0x0 && hbmpBackBld != 0x0 && hdibRaces != 0x0 && hdibRacesT != 0x0 && hdibRacesX != 0x0 &&
+        hbmpMono != 0x0 && hbmpScanShip != 0x0 && hbmpMsg != 0x0 && hiconHost != 0x0 && hiconStars != 0x0 && hiconWait != 0x0) {
+        return 1;
+    }
     AlertSz(PszFormatIds(idsUnableLoadBitmaps, 0x0), MB_ICONHAND);
     return 0;
-
-L_0aa6:
-    return 1;
 }
 
 int16_t FCreateFonts(HDC hdc) {
@@ -360,99 +175,56 @@ int16_t FCreateFonts(HDC hdc) {
     TEXTMETRIC tm;
     int32_t    l;
 
-L_0ab2:
     plf = LocalAlloc(0x40, sizeof(LOGFONT));
-    i = 0;
-    goto L_0b13;
-
-L_0ad3:
-    if (((int16_t)(rgszArial[i][0]) != 0))
-        goto L_0b0f;
-    else
-        goto L_0aed;
-
-L_0aed:
-    CchGetString((i + 1335), rgszArial[i]);
-
-L_0b0f:
-    i = (i + 1);
-
-L_0b13:
-    if ((i < 4))
-        goto L_0ad3;
-    else
-        goto L_0b1c;
-
-L_0b1c:
-    plf->lfHeight = (-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    i = 0;
-    goto L_0b82;
-
-L_0b45:
-    strcpy(plf->lfFaceName, rgszArial[i]);
-    rghfontArial10[i] = CreateFontIndirect(plf);
-    i = (i + 1);
-
-L_0b82:
-    if ((i < 2))
-        goto L_0b45;
-    else
-        goto L_0b8b;
-
-L_0b8b:
+    for (i = 0; i < 4; i++) {
+        if ((int16_t)rgszArial[i][0] == 0) {
+            CchGetString(i + 1335, rgszArial[i]);
+        }
+    }
+    plf->lfHeight = -MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    for (i = 0; i < 2; i++) {
+        strcpy(plf->lfFaceName, rgszArial[i]);
+        rghfontArial10[i] = CreateFontIndirect(plf);
+    }
     strcpy(plf->lfFaceName, rgszArial[0]);
-    plf->lfHeight = (-MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72));
+    plf->lfHeight = -MulDiv(6, GetDeviceCaps(hdc, LOGPIXELSY), 72);
     rghfontArial6[0] = CreateFontIndirect(plf);
-    plf->lfHeight = (-MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72));
+    plf->lfHeight = -MulDiv(7, GetDeviceCaps(hdc, LOGPIXELSY), 72);
     rghfontArial7[0] = CreateFontIndirect(plf);
-    plf->lfHeight = (-MulDiv(8, GetDeviceCaps(hdc, LOGPIXELSY), 72));
-    i = 0;
-    goto L_0c66;
-
-L_0c29:
-    strcpy(plf->lfFaceName, rgszArial[i]);
-    rghfontArial8[i] = CreateFontIndirect(plf);
-    i = (i + 1);
-
-L_0c66:
-    if ((i < 4))
-        goto L_0c29;
-    else
-        goto L_0c6f;
-
-L_0c6f:
+    plf->lfHeight = -MulDiv(8, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    for (i = 0; i < 4; i++) {
+        strcpy(plf->lfFaceName, rgszArial[i]);
+        rghfontArial8[i] = CreateFontIndirect(plf);
+    }
     strcpy(plf->lfFaceName, rgszArial[1]);
     plf->lfEscapement = 3150;
     rghfontArial8[4] = CreateFontIndirect(plf);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
-    GetTextMetrics(hdc, &(tm));
-    dyArial8 = (tm.tmHeight + tm.tmExternalLeading);
+    GetTextMetrics(hdc, &tm);
+    dyArial8 = tm.tmHeight + tm.tmExternalLeading;
     l = GetTextExtent(hdc, "88888888kT", 10);
     dxMaxMineralQuan = LOWORD(l);
     SelectObject(hdc, rghfontArial7[0]);
-    GetTextMetrics(hdc, &(tm));
-    dyArial7 = (tm.tmHeight + tm.tmExternalLeading);
+    GetTextMetrics(hdc, &tm);
+    dyArial7 = tm.tmHeight + tm.tmExternalLeading;
     SelectObject(hdc, rghfontArial6[0]);
-    GetTextMetrics(hdc, &(tm));
-    dyArial6 = (tm.tmHeight + tm.tmExternalLeading);
+    GetTextMetrics(hdc, &tm);
+    dyArial6 = tm.tmHeight + tm.tmExternalLeading;
     SelectObject(hdc, rghfontArial10[0]);
-    GetTextMetrics(hdc, &(tm));
-    dyArial10 = (tm.tmHeight + tm.tmExternalLeading);
+    GetTextMetrics(hdc, &tm);
+    dyArial10 = tm.tmHeight + tm.tmExternalLeading;
     SelectObject(hdc, hfontSav);
     LocalFree(plf);
-
-L_0d6a:
     return 1;
 }
 
 int16_t InitInstance(int16_t nCmdShow) {
-    int16_t  sw;
-    RECT     rc;
-    HACCEL   t_call_0e11;
-    HACCEL   t_call_0e33;
-    uint16_t t_merge_0e82_0001;
+    int16_t sw;
+    RECT    rc;
+    HACCEL  t_call_0e11;
+    HACCEL  t_call_0e33;
+    int16_t t_merge_0e82_0001;
 
-L_0d70:
     ini.fWait = 0x0;
     ini.fStartupFile = 0x0;
     ini.grobjSel = 0x0;
@@ -460,72 +232,32 @@ L_0d70:
     ReadIniSettings();
     rc = ini.wnFrame.rc;
     hwndFrame = CreateWindow(szFrame, "Stars!", WS_OVERLAPPEDWINDOW, rc.left, rc.top, rc.right, rc.bottom, 0x0, 0x0, hInst, 0x0);
-    if ((hwndFrame != 0x0))
-        goto L_0e05;
-    else
-        goto L_0dff;
-
-L_0dff:
+    if (hwndFrame != 0x0) {
+        t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_MAIN));
+        hAccel = t_call_0e11;
+        if (t_call_0e11 != 0x0) {
+            t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_TITLE));
+            hAccelTitle = t_call_0e33;
+            if (t_call_0e33 != 0x0) {
+                if (nCmdShow == 1) {
+                    if (ini.wnFrame.fMaximized == 0x0 && ini.wnFrame.fMinimized == 0x0) {
+                        t_merge_0e82_0001 = 1;
+                    } else {
+                        t_merge_0e82_0001 = 3;
+                    }
+                    sw = t_merge_0e82_0001;
+                } else {
+                    sw = nCmdShow;
+                }
+                ShowWindow(hwndFrame, sw);
+                ShowWindow(hwndFrame, SW_HIDE);
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
     return 0;
-
-L_0e05:
-    t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_MAIN));
-    hAccel = t_call_0e11;
-    if ((t_call_0e11 != 0x0))
-        goto L_0e27;
-    else
-        goto L_0e21;
-
-L_0e21:
-    return 0;
-
-L_0e27:
-    t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_TITLE));
-    hAccelTitle = t_call_0e33;
-    if ((t_call_0e33 != 0x0))
-        goto L_0e49;
-    else
-        goto L_0e43;
-
-L_0e43:
-    return 0;
-
-L_0e49:
-    if ((nCmdShow == 1))
-        goto L_0e5b;
-    else
-        goto L_0e52;
-
-L_0e52:
-    sw = nCmdShow;
-    goto L_0e85;
-
-L_0e5b:
-    if ((ini.wnFrame.fMaximized != 0x0))
-        goto L_0e79;
-    else
-        goto L_0e69;
-
-L_0e69:
-    if ((ini.wnFrame.fMinimized == 0x0))
-        goto L_0e7f;
-    else
-        goto L_0e79;
-
-L_0e79:
-    t_merge_0e82_0001 = 0x3;
-    goto L_0e82;
-
-L_0e7f:
-    t_merge_0e82_0001 = 0x1;
-
-L_0e82:
-    sw = t_merge_0e82_0001;
-
-L_0e85:
-    ShowWindow(hwndFrame, sw);
-    ShowWindow(hwndFrame, SW_HIDE);
-    return 1;
 }
 
 void InitTiles() {
@@ -537,235 +269,97 @@ void InitTiles() {
     uint16_t iCol;
     int16_t  t_0ec2;
 
-L_0eaa:
     iPass = 2;
     rgtile = rgtilePlanet;
     ctile = 6;
-
-L_0ec2:
-    t_0ec2 = iPass;
-    iPass = (iPass - 1);
-    if ((t_0ec2 == 0))
-        goto L_1019;
-    else
-        goto L_0ed1;
-
-L_0ed1:
-    iCol = 0x0;
-    yTop = 4;
-    i = 0;
-    goto L_1001;
-
-L_0ee3:
-    if ((rgtile[i].iCol == iCol))
-        goto L_0f1f;
-    else
-        goto L_0f01;
-
-L_0f01:
-    yTop = 4;
-    iCol = rgtile[i].iCol;
-
-L_0f1f:
-    rgtile[i].dyFull = (rgtile[i].dyFull + (rgtile[i].yTop * dyArial8));
-    rgtile[i].yTop = yTop;
-    rgtile[i].fFixCtls = 0x0;
-    rgtile[i].fMinDraw = 0x0;
-    if ((rgtile[i].fPopped == 0x0))
-        goto L_0ff4;
-    else
-        goto L_0fd8;
-
-L_0fd8:
-    yTop = (yTop + (rgtile[i].dyFull + 4));
-    goto L_0ffd;
-
-L_0ff4:
-    yTop = (yTop + (dyArial8 + 7));
-
-L_0ffd:
-    i = (i + 1);
-
-L_1001:
-    if ((i < ctile))
-        goto L_0ee3;
-    else
-        goto L_100c;
-
-L_100c:
-    rgtile = rgtileShip;
-    ctile = 7;
-    goto L_0ec2;
-
-L_1019:
+    while (1) {
+        t_0ec2 = iPass;
+        iPass = iPass - 1;
+        if (t_0ec2 == 0)
+            break;
+        iCol = 0x0;
+        yTop = 4;
+        for (i = 0; i < ctile; i++) {
+            if (rgtile[i].iCol != iCol) {
+                yTop = 4;
+                iCol = rgtile[i].iCol;
+            }
+            rgtile[i].dyFull = rgtile[i].dyFull + rgtile[i].yTop * dyArial8;
+            rgtile[i].yTop = yTop;
+            rgtile[i].fFixCtls = 0x0;
+            rgtile[i].fMinDraw = 0x0;
+            if (rgtile[i].fPopped == 0x0) {
+                yTop = yTop + (dyArial8 + 7);
+            } else {
+                yTop = yTop + (rgtile[i].dyFull + 4);
+            }
+        }
+        rgtile = rgtileShip;
+        ctile = 7;
+    }
     return;
 }
 
 void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
-    int16_t  fInitalized;
-    int16_t  fMinimized;
-    int16_t  fMaximized;
-    char     szEntry[16];
-    int16_t  cch;
-    RECT     rc;
-    int16_t  j;
-    char    *pch;
-    int16_t  i;
-    int16_t  fNeg;
-    int16_t  rg[4];
-    uint16_t t_merge_10bc_0001;
-    uint16_t t_merge_11cc_0001;
-    uint16_t t_merge_11e4_0001;
+    int16_t fInitalized;
+    int16_t fMinimized;
+    int16_t fMaximized;
+    char    szEntry[16];
+    int16_t cch;
+    RECT    rc;
+    int16_t j;
+    char   *pch;
+    int16_t i;
+    int16_t fNeg;
+    int16_t rg[4];
 
-L_1020:
     CchGetString(ids, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, "X", szWork, 20, szIniFile);
-    if ((cch != 17))
-        goto NoRc;
-    else
-        goto L_1070;
-
-L_1070:
-    if (((int16_t)(szWork[0]) == 77))
-        goto L_10cc;
-    else
-        goto L_107c;
-
-L_107c:
-    if (((int16_t)(szWork[0]) == 82))
-        goto L_10cc;
-    else
-        goto L_1088;
-
-L_1088:
-    if (((int16_t)(szWork[0]) == 73))
-        goto L_10cc;
-    else
-        goto NoRc;
-
+    if (cch == 17) {
+        switch ((int16_t)szWork[0]) {
+        default:
+            goto NoRc;
+        case 'M':
+        case 'R':
+        case 'I':
+            pch = &szWork[1];
+            for (i = 0; i < 4; i++) {
+                rg[i] = 0;
+                fNeg = 0;
+                j = 0;
+                while (j < 4) {
+                    if ((int16_t)*pch != '-') {
+                        if ((int16_t)*pch < '0' || (int16_t)*pch > '9')
+                            goto NoRc;
+                        rg[i] = 10 * rg[i] + ((int16_t)*pch - 48);
+                    } else {
+                        fNeg = 1;
+                    }
+                    j = j + 1;
+                    pch = pch + 1;
+                }
+                if (fNeg != 0) {
+                    rg[i] = -rg[i];
+                }
+            }
+            rc.left = rg[0];
+            rc.top = rg[1];
+            rc.right = rg[2];
+            rc.bottom = rg[3];
+            fMaximized = (int16_t)szWork[0] == 'M' ? 1 : 0;
+            fMinimized = (int16_t)szWork[0] == 'I' ? 1 : 0;
+            fInitalized = 1;
+        }
+        goto L_11ec;
+    }
 NoRc:
     rc.left = -32768;
     rc.right = -32768;
     rc.bottom = 0;
     rc.top = 0;
-    if ((ids != idsMain))
-        goto L_10b9;
-    else
-        goto L_10b3;
-
-L_10b3:
-    t_merge_10bc_0001 = 0x1;
-    goto L_10bc;
-
-L_10b9:
-    t_merge_10bc_0001 = 0x0;
-
-L_10bc:
-    fMaximized = t_merge_10bc_0001;
+    fMaximized = ids == idsMain ? 1 : 0;
     fMinimized = 0;
     fInitalized = 0;
-    goto L_11ec;
-
-L_10cc:
-    pch = &(szWork[1]);
-    i = 0;
-    goto L_1196;
-
-L_10d9:
-    rg[i] = 0;
-    fNeg = 0;
-    j = 0;
-    goto L_1102;
-
-L_10f4:
-    j = (j + 1);
-    pch = (pch + 1);
-
-L_1102:
-    if ((j >= 4))
-        goto L_116f;
-    else
-        goto L_110b;
-
-L_110b:
-    if (((int16_t)(*(pch)) != 45))
-        goto L_1121;
-    else
-        goto L_1119;
-
-L_1119:
-    fNeg = 1;
-    goto L_10f4;
-
-L_1121:
-    if (((int16_t)(*(pch)) < 48))
-        goto NoRc;
-    else
-        goto L_112f;
-
-L_112f:
-    if (((int16_t)(*(pch)) > 57))
-        goto NoRc;
-    else
-        goto L_1140;
-
-L_1140:
-    rg[i] = ((10 * rg[i]) + ((int16_t)(*(pch)) - 48));
-    goto L_10f4;
-
-L_116f:
-    if ((fNeg == 0))
-        goto L_1192;
-    else
-        goto L_1178;
-
-L_1178:
-    rg[i] = (-rg[i]);
-
-L_1192:
-    i = (i + 1);
-
-L_1196:
-    if ((i < 4))
-        goto L_10d9;
-    else
-        goto L_119f;
-
-L_119f:
-    rc.left = rg[0];
-    rc.top = rg[1];
-    rc.right = rg[2];
-    rc.bottom = rg[3];
-    if (((int16_t)(szWork[0]) != 77))
-        goto L_11c9;
-    else
-        goto L_11c3;
-
-L_11c3:
-    t_merge_11cc_0001 = 0x1;
-    goto L_11cc;
-
-L_11c9:
-    t_merge_11cc_0001 = 0x0;
-
-L_11cc:
-    fMaximized = t_merge_11cc_0001;
-    if (((int16_t)(szWork[0]) != 73))
-        goto L_11e1;
-    else
-        goto L_11db;
-
-L_11db:
-    t_merge_11e4_0001 = 0x1;
-    goto L_11e4;
-
-L_11e1:
-    t_merge_11e4_0001 = 0x0;
-
-L_11e4:
-    fMinimized = t_merge_11e4_0001;
-    fInitalized = 1;
-
 L_11ec:
     pwn->rc = rc;
     pwn->fMaximized = fMaximized;
@@ -786,432 +380,138 @@ void ReadIniSettings() {
     char     szSection[16];
     int16_t  cch;
     int16_t  cpq;
-    uint16_t t_merge_1473_0001;
-    uint16_t t_merge_1498_0001;
-    int16_t  t_merge_14df_0001;
+    int16_t  t_merge_1498_0001;
     int16_t  t_merge_1500_0001;
-    int16_t  t_merge_1547_0001;
     int16_t  t_merge_1568_0001;
-    int16_t  t_merge_15af_0001;
     int16_t  t_merge_15d0_0001;
-    int16_t  t_merge_1617_0001;
     int16_t  t_merge_1638_0001;
-    int16_t  t_merge_167f_0001;
     int16_t  t_merge_16a0_0001;
-    int16_t  t_merge_16e7_0001;
     int16_t  t_merge_1708_0001;
-    uint16_t t_merge_174e_0001;
-    uint16_t t_merge_1fc6_0001;
-    uint16_t t_merge_2027_0001;
-    uint16_t t_merge_208c_0001;
-    uint16_t t_merge_2175_0001;
-    uint16_t t_merge_2203_0001;
-    uint16_t t_merge_2291_0001;
-    uint16_t t_merge_231f_0001;
     uint16_t t_scratch_m4a_8;
     uint16_t t_scratch_m4c;
-    uint16_t t_merge_2483_0001;
     char    *t_2846;
-    uint16_t t_merge_2981_0001;
 
-L_124c:
     ini.fGen = 0x0;
     ini.fTry = 0x0;
     ini.fWait = 0x0;
     CchGetString(idsWindows, szSection);
     CchGetString(idsStarsIni, szIniFile);
-    GetIniWinRc(szSection, szIniFile, idsMain, &(ini.wnFrame));
-    GetIniWinRc(szSection, szIniFile, idsReportfleetwin, &(wnT));
-    if ((wnT.rc.left == -32768))
-        goto L_12f2;
-    else
-        goto L_12d3;
-
-L_12d3:
-    vrptFleet.ptDlg.x = wnT.rc.left;
-    vrptFleet.ptDlg.y = wnT.rc.top;
-    vrptFleet.ptSize.x = (wnT.rc.right - wnT.rc.left);
-    vrptFleet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
-
-L_12f2:
-    GetIniWinRc(szSection, szIniFile, idsReportefleetwin, &(wnT));
-    if ((wnT.rc.left == -32768))
-        goto L_1333;
-    else
-        goto L_1314;
-
-L_1314:
-    vrptEFleet.ptDlg.x = wnT.rc.left;
-    vrptEFleet.ptDlg.y = wnT.rc.top;
-    vrptEFleet.ptSize.x = (wnT.rc.right - wnT.rc.left);
-    vrptEFleet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
-
-L_1333:
-    GetIniWinRc(szSection, szIniFile, idsReportbtlwin, &(wnT));
-    if ((wnT.rc.left == -32768))
-        goto L_1374;
-    else
-        goto L_1355;
-
-L_1355:
-    vrptBattle.ptDlg.x = wnT.rc.left;
-    vrptBattle.ptDlg.y = wnT.rc.top;
-    vrptBattle.ptSize.x = (wnT.rc.right - wnT.rc.left);
-    vrptBattle.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
-
-L_1374:
-    GetIniWinRc(szSection, szIniFile, idsReportplanwin, &(wnT));
-    if ((wnT.rc.left == -32768))
-        goto L_13b5;
-    else
-        goto L_1396;
-
-L_1396:
-    vrptPlanet.ptDlg.x = wnT.rc.left;
-    vrptPlanet.ptDlg.y = wnT.rc.top;
-    vrptPlanet.ptSize.x = (wnT.rc.right - wnT.rc.left);
-    vrptPlanet.ptSize.y = (wnT.rc.bottom - wnT.rc.top);
-
-L_13b5:
+    GetIniWinRc(szSection, szIniFile, idsMain, &ini.wnFrame);
+    GetIniWinRc(szSection, szIniFile, idsReportfleetwin, &wnT);
+    if (wnT.rc.left != -32768) {
+        vrptFleet.ptDlg.x = wnT.rc.left;
+        vrptFleet.ptDlg.y = wnT.rc.top;
+        vrptFleet.ptSize.x = wnT.rc.right - wnT.rc.left;
+        vrptFleet.ptSize.y = wnT.rc.bottom - wnT.rc.top;
+    }
+    GetIniWinRc(szSection, szIniFile, idsReportefleetwin, &wnT);
+    if (wnT.rc.left != -32768) {
+        vrptEFleet.ptDlg.x = wnT.rc.left;
+        vrptEFleet.ptDlg.y = wnT.rc.top;
+        vrptEFleet.ptSize.x = wnT.rc.right - wnT.rc.left;
+        vrptEFleet.ptSize.y = wnT.rc.bottom - wnT.rc.top;
+    }
+    GetIniWinRc(szSection, szIniFile, idsReportbtlwin, &wnT);
+    if (wnT.rc.left != -32768) {
+        vrptBattle.ptDlg.x = wnT.rc.left;
+        vrptBattle.ptDlg.y = wnT.rc.top;
+        vrptBattle.ptSize.x = wnT.rc.right - wnT.rc.left;
+        vrptBattle.ptSize.y = wnT.rc.bottom - wnT.rc.top;
+    }
+    GetIniWinRc(szSection, szIniFile, idsReportplanwin, &wnT);
+    if (wnT.rc.left != -32768) {
+        vrptPlanet.ptDlg.x = wnT.rc.left;
+        vrptPlanet.ptDlg.y = wnT.rc.top;
+        vrptPlanet.ptSize.x = wnT.rc.right - wnT.rc.left;
+        vrptPlanet.ptSize.y = wnT.rc.bottom - wnT.rc.top;
+    }
     CchGetString(idsResolution, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if ((i != 0))
-        goto L_142d;
-    else
-        goto L_13ef;
-
-L_13ef:
-    if ((vcScreenColors <= 4))
-        goto L_140c;
-    else
-        goto L_13f9;
-
-L_13f9:
-    if ((gd.mdScreenSize != 0x0))
-        goto L_142d;
-    else
-        goto L_140c;
-
-L_140c:
-    AlertSz(PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, 0x0), MB_ICONHAND);
-
-L_142d:
+    if (i == 0 && (vcScreenColors <= 4 || gd.mdScreenSize == 0x0)) {
+        AlertSz(PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, 0x0), MB_ICONHAND);
+    }
     CchGetString(idsLayout, szEntry);
     iWindowLayout = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    if ((0 <= iWindowLayout))
-        goto L_1470;
-    else
-        goto L_146a;
-
-L_146a:
-    t_merge_1473_0001 = 0x0;
-    goto L_1473;
-
-L_1470:
-    t_merge_1473_0001 = iWindowLayout;
-
-L_1473:
-    if ((0x2 >= t_merge_1473_0001))
-        goto L_1483;
-    else
-        goto L_147d;
-
-L_147d:
-    t_merge_1498_0001 = 0x2;
-    goto L_1498;
-
-L_1483:
-    if ((0 <= iWindowLayout))
-        goto L_1495;
-    else
-        goto L_148f;
-
-L_148f:
-    t_merge_1498_0001 = 0x0;
-    goto L_1498;
-
-L_1495:
-    t_merge_1498_0001 = iWindowLayout;
-
-L_1498:
+    if (0x2 >= (0 <= iWindowLayout ? iWindowLayout : 0x0)) {
+        if (0 <= iWindowLayout) {
+            t_merge_1498_0001 = iWindowLayout;
+        } else {
+            t_merge_1498_0001 = 0;
+        }
+    } else {
+        t_merge_1498_0001 = 2;
+    }
     iWindowLayout = t_merge_1498_0001;
     CchGetString(idsStyle1width, szEntry);
     vfs.dxPlanWant = GetPrivateProfileInt(szSection, szEntry, 396, szIniFile);
-    if ((vfs.dxPlanWant <= 10))
-        goto L_14dc;
-    else
-        goto L_14d6;
-
-L_14d6:
-    t_merge_14df_0001 = vfs.dxPlanWant;
-    goto L_14df;
-
-L_14dc:
-    t_merge_14df_0001 = 10;
-
-L_14df:
-    if ((t_merge_14df_0001 >= 2000))
-        goto L_14fd;
-    else
-        goto L_14e7;
-
-L_14e7:
-    if ((vfs.dxPlanWant <= 10))
-        goto L_14f7;
-    else
-        goto L_14f1;
-
-L_14f1:
-    t_merge_1500_0001 = vfs.dxPlanWant;
-    goto L_1500;
-
-L_14f7:
-
-L_14fa:
-    t_merge_1500_0001 = 10;
-    goto L_1500;
-
-L_14fd:
-    t_merge_1500_0001 = 2000;
-
-L_1500:
+    if ((vfs.dxPlanWant <= 10 ? 0xa : vfs.dxPlanWant) >= 2000) {
+        t_merge_1500_0001 = 2000;
+    } else if (vfs.dxPlanWant <= 10) {
+        t_merge_1500_0001 = 10;
+    } else {
+        t_merge_1500_0001 = vfs.dxPlanWant;
+    }
     vfs.dxPlanWant = t_merge_1500_0001;
     CchGetString(idsStyle1height, szEntry);
     vfs.dyMsgWant = GetPrivateProfileInt(szSection, szEntry, 110, szIniFile);
-    if ((vfs.dyMsgWant <= 10))
-        goto L_1544;
-    else
-        goto L_153e;
-
-L_153e:
-    t_merge_1547_0001 = vfs.dyMsgWant;
-    goto L_1547;
-
-L_1544:
-    t_merge_1547_0001 = 10;
-
-L_1547:
-    if ((t_merge_1547_0001 >= 2000))
-        goto L_1565;
-    else
-        goto L_154f;
-
-L_154f:
-    if ((vfs.dyMsgWant <= 10))
-        goto L_155f;
-    else
-        goto L_1559;
-
-L_1559:
-    t_merge_1568_0001 = vfs.dyMsgWant;
-    goto L_1568;
-
-L_155f:
-
-L_1562:
-    t_merge_1568_0001 = 10;
-    goto L_1568;
-
-L_1565:
-    t_merge_1568_0001 = 2000;
-
-L_1568:
+    if ((vfs.dyMsgWant <= 10 ? 0xa : vfs.dyMsgWant) >= 2000) {
+        t_merge_1568_0001 = 2000;
+    } else if (vfs.dyMsgWant <= 10) {
+        t_merge_1568_0001 = 10;
+    } else {
+        t_merge_1568_0001 = vfs.dyMsgWant;
+    }
     vfs.dyMsgWant = t_merge_1568_0001;
     CchGetString(idsStyle1height2, szEntry);
     vfs.dyMinWant = GetPrivateProfileInt(szSection, szEntry, 192, szIniFile);
-    if ((vfs.dyMinWant <= 10))
-        goto L_15ac;
-    else
-        goto L_15a6;
-
-L_15a6:
-    t_merge_15af_0001 = vfs.dyMinWant;
-    goto L_15af;
-
-L_15ac:
-    t_merge_15af_0001 = 10;
-
-L_15af:
-    if ((t_merge_15af_0001 >= 2000))
-        goto L_15cd;
-    else
-        goto L_15b7;
-
-L_15b7:
-    if ((vfs.dyMinWant <= 10))
-        goto L_15c7;
-    else
-        goto L_15c1;
-
-L_15c1:
-    t_merge_15d0_0001 = vfs.dyMinWant;
-    goto L_15d0;
-
-L_15c7:
-
-L_15ca:
-    t_merge_15d0_0001 = 10;
-    goto L_15d0;
-
-L_15cd:
-    t_merge_15d0_0001 = 2000;
-
-L_15d0:
+    if ((vfs.dyMinWant <= 10 ? 0xa : vfs.dyMinWant) >= 2000) {
+        t_merge_15d0_0001 = 2000;
+    } else if (vfs.dyMinWant <= 10) {
+        t_merge_15d0_0001 = 10;
+    } else {
+        t_merge_15d0_0001 = vfs.dyMinWant;
+    }
     vfs.dyMinWant = t_merge_15d0_0001;
     CchGetString(idsStyle2width, szEntry);
     vfs.dx2PlanWant = GetPrivateProfileInt(szSection, szEntry, 396, szIniFile);
-    if ((vfs.dx2PlanWant <= 10))
-        goto L_1614;
-    else
-        goto L_160e;
-
-L_160e:
-    t_merge_1617_0001 = vfs.dx2PlanWant;
-    goto L_1617;
-
-L_1614:
-    t_merge_1617_0001 = 10;
-
-L_1617:
-    if ((t_merge_1617_0001 >= 2000))
-        goto L_1635;
-    else
-        goto L_161f;
-
-L_161f:
-    if ((vfs.dx2PlanWant <= 10))
-        goto L_162f;
-    else
-        goto L_1629;
-
-L_1629:
-    t_merge_1638_0001 = vfs.dx2PlanWant;
-    goto L_1638;
-
-L_162f:
-
-L_1632:
-    t_merge_1638_0001 = 10;
-    goto L_1638;
-
-L_1635:
-    t_merge_1638_0001 = 2000;
-
-L_1638:
+    if ((vfs.dx2PlanWant <= 10 ? 0xa : vfs.dx2PlanWant) >= 2000) {
+        t_merge_1638_0001 = 2000;
+    } else if (vfs.dx2PlanWant <= 10) {
+        t_merge_1638_0001 = 10;
+    } else {
+        t_merge_1638_0001 = vfs.dx2PlanWant;
+    }
     vfs.dx2PlanWant = t_merge_1638_0001;
     CchGetString(idsStyle2height, szEntry);
     vfs.dy2MsgWant = GetPrivateProfileInt(szSection, szEntry, 110, szIniFile);
-    if ((vfs.dy2MsgWant <= 10))
-        goto L_167c;
-    else
-        goto L_1676;
-
-L_1676:
-    t_merge_167f_0001 = vfs.dy2MsgWant;
-    goto L_167f;
-
-L_167c:
-    t_merge_167f_0001 = 10;
-
-L_167f:
-    if ((t_merge_167f_0001 >= 2000))
-        goto L_169d;
-    else
-        goto L_1687;
-
-L_1687:
-    if ((vfs.dy2MsgWant <= 10))
-        goto L_1697;
-    else
-        goto L_1691;
-
-L_1691:
-    t_merge_16a0_0001 = vfs.dy2MsgWant;
-    goto L_16a0;
-
-L_1697:
-
-L_169a:
-    t_merge_16a0_0001 = 10;
-    goto L_16a0;
-
-L_169d:
-    t_merge_16a0_0001 = 2000;
-
-L_16a0:
+    if ((vfs.dy2MsgWant <= 10 ? 0xa : vfs.dy2MsgWant) >= 2000) {
+        t_merge_16a0_0001 = 2000;
+    } else if (vfs.dy2MsgWant <= 10) {
+        t_merge_16a0_0001 = 10;
+    } else {
+        t_merge_16a0_0001 = vfs.dy2MsgWant;
+    }
     vfs.dy2MsgWant = t_merge_16a0_0001;
     CchGetString(idsStyle2height2, szEntry);
     vfs.dy2MinWant = GetPrivateProfileInt(szSection, szEntry, 192, szIniFile);
-    if ((vfs.dy2MinWant <= 10))
-        goto L_16e4;
-    else
-        goto L_16de;
-
-L_16de:
-    t_merge_16e7_0001 = vfs.dy2MinWant;
-    goto L_16e7;
-
-L_16e4:
-    t_merge_16e7_0001 = 10;
-
-L_16e7:
-    if ((t_merge_16e7_0001 >= 2000))
-        goto L_1705;
-    else
-        goto L_16ef;
-
-L_16ef:
-    if ((vfs.dy2MinWant <= 10))
-        goto L_16ff;
-    else
-        goto L_16f9;
-
-L_16f9:
-    t_merge_1708_0001 = vfs.dy2MinWant;
-    goto L_1708;
-
-L_16ff:
-
-L_1702:
-    t_merge_1708_0001 = 10;
-    goto L_1708;
-
-L_1705:
-    t_merge_1708_0001 = 2000;
-
-L_1708:
+    if ((vfs.dy2MinWant <= 10 ? 0xa : vfs.dy2MinWant) >= 2000) {
+        t_merge_1708_0001 = 2000;
+    } else if (vfs.dy2MinWant <= 10) {
+        t_merge_1708_0001 = 10;
+    } else {
+        t_merge_1708_0001 = vfs.dy2MinWant;
+    }
     vfs.dy2MinWant = t_merge_1708_0001;
     CchGetString(idsToolbar, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    if ((i == 0))
-        goto L_174b;
-    else
-        goto L_1745;
-
-L_1745:
-    t_merge_174e_0001 = 0x1;
-    goto L_174e;
-
-L_174b:
-    t_merge_174e_0001 = 0x0;
-
-L_174e:
-    gd.fToolbar = t_merge_174e_0001;
+    gd.fToolbar = i == 0 ? 0x0 : 0x1;
     CchGetString(idsGlobalsettings, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, " ", szWork, 40, szIniFile);
-    if ((cch == 28))
-        goto L_17c3;
-    else
-        goto L_17b4;
-
-L_17b4:
-    vSerialNumber = 0;
-    goto L_17d7;
-
-L_17c3:
-    FSerialAndEnvFromSz(&(vSerialNumber), vrgbMachineConfig, szWork);
-
-L_17d7:
+    if (cch == 28) {
+        FSerialAndEnvFromSz(&vSerialNumber, vrgbMachineConfig, szWork);
+    } else {
+        vSerialNumber = 0;
+    }
     CchGetString(idsPlanettiles, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, "X", szWork, 20, szIniFile);
     ReadIniTileSettings(szWork, rgtilePlanet, 6);
@@ -1220,158 +520,53 @@ L_17d7:
     ReadIniTileSettings(szWork, rgtileShip, 7);
     CchGetString(idsSelection, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, "N", szWork, 20, szIniFile);
-    if ((cch >= 3))
-        goto L_18d4;
-    else
-        goto L_18c5;
-
-L_18c5:
-    ini.grobjSel = 0x0;
-    goto L_1995;
-
-L_18d4:
-    goto L_191a;
-
-L_18db:
-    ini.grobjSel = 0x0;
-    goto L_193d;
-
-L_18ea:
-    ini.grobjSel = 0x1;
-    goto L_193d;
-
-L_18f9:
-    ini.grobjSel = 0x2;
-    goto L_193d;
-
-L_1908:
-    ini.grobjSel = 0x4;
-    goto L_193d;
-
-L_191a:
-    if (((int16_t)(szWork[0]) == 69))
-        goto L_1908;
-    else
-        goto L_1922;
-
-L_1922:
-    if (((int16_t)(szWork[0]) == 78))
-        goto L_18db;
-    else
-        goto L_192a;
-
-L_192a:
-    if (((int16_t)(szWork[0]) == 80))
-        goto L_18ea;
-    else
-        goto L_1932;
-
-L_1932:
-    if (((int16_t)(szWork[0]) != 83))
-        goto L_18db;
-    else
-        goto L_1937;
-
-L_1937:
-    goto L_18f9;
-
-L_193d:
-    if (((int16_t)(szWork[1]) < 66))
-        goto L_1962;
-    else
-        goto L_1949;
-
-L_1949:
-    if (((int16_t)(szWork[1]) > 81))
-        goto L_1962;
-    else
-        goto L_1955;
-
-L_1955:
-    ini.idPlayer = ((int16_t)(szWork[1]) - 66);
-    goto L_196e;
-
-L_1962:
-    ini.grobjSel = 0x0;
-
-L_196e:
-    if ((ini.grobjSel == 0x0))
-        goto L_1995;
-    else
-        goto L_1986;
-
-L_1986:
-    ini.iObjSel = atoi(&(szWork[2]));
-
-L_1995:
+    if (cch >= 3) {
+        switch ((int16_t)szWork[0]) {
+        case 'N':
+        default:
+            ini.grobjSel = 0x0;
+            break;
+        case 'P':
+            ini.grobjSel = 0x1;
+            break;
+        case 'S':
+            ini.grobjSel = 0x2;
+            break;
+        case 'E':
+            ini.grobjSel = 0x4;
+        }
+        if ((int16_t)szWork[1] < 'B' || (int16_t)szWork[1] > 'Q') {
+            ini.grobjSel = 0x0;
+        } else {
+            ini.idPlayer = (int16_t)szWork[1] - 66;
+        }
+        if (ini.grobjSel != 0x0) {
+            ini.iObjSel = atoi(&szWork[2]);
+        }
+    } else {
+        ini.grobjSel = 0x0;
+    }
     CchGetString(idsMessage, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
     ini.iMsg = i;
     CchGetString(idsGameid, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, "0", szWork, 10, szIniFile);
     ini.lid = 0;
-    i = 0;
-    goto L_1aa4;
-
-L_1a1f:
-    ini.lid = (int32_t)((ini.lid * 16));
-    if (((int16_t)(szWork[i]) < 48))
-        goto L_1a6c;
-    else
-        goto L_1a45;
-
-L_1a45:
-    if (((int16_t)(szWork[i]) > 57))
-        goto L_1a6c;
-    else
-        goto L_1a55;
-
-L_1a55:
-    ini.lid = (ini.lid + (int32_t)(((int16_t)(szWork[i]) - 48)));
-    goto L_1aa0;
-
-L_1a6c:
-    if (((int16_t)(szWork[i]) < 97))
-        goto L_1aa0;
-    else
-        goto L_1a7c;
-
-L_1a7c:
-    if (((int16_t)(szWork[i]) > 102))
-        goto L_1aa0;
-    else
-        goto L_1a8c;
-
-L_1a8c:
-    ini.lid = (ini.lid + (int32_t)(((int16_t)(szWork[i]) - 87)));
-
-L_1aa0:
-    i = (i + 1);
-
-L_1aa4:
-    if ((i < cch))
-        goto L_1a1f;
-    else
-        goto L_1aaf;
-
-L_1aaf:
+    for (i = 0; i < cch; i++) {
+        ini.lid = (int32_t)(ini.lid * 16);
+        if ((int16_t)szWork[i] < '0' || (int16_t)szWork[i] > '9') {
+            if ((int16_t)szWork[i] >= 'a' && (int16_t)szWork[i] <= 'f') {
+                ini.lid = ini.lid + (int32_t)((int16_t)szWork[i] - 87);
+            }
+        } else {
+            ini.lid = ini.lid + (int32_t)((int16_t)szWork[i] - 48);
+        }
+    }
     CchGetString(idsScanzoom, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 4, szIniFile);
-    if ((w < 0x1))
-        goto L_1afb;
-    else
-        goto L_1ae9;
-
-L_1ae9:
-    if ((w > 0x9))
-        goto L_1afb;
-    else
-        goto L_1af2;
-
-L_1af2:
-    iScanZoom = (w - 5);
-
-L_1afb:
+    if (w >= 0x1 && w <= 0x9) {
+        iScanZoom = w - 5;
+    }
     CchGetString(idsScanfilterv25, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
     grbitScanShip = w;
@@ -1380,59 +575,27 @@ L_1afb:
     grbitScanEShip = w;
     CchGetString(idsScanmines, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 15, szIniFile);
-    grbitScanMines = (w & 0xf);
+    grbitScanMines = w & 0xf;
     CchGetString(idsScanradar, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 100, szIniFile);
-    if ((w < 0x0))
-        goto L_1be6;
-    else
-        goto L_1bdd;
-
-L_1bdd:
-    if ((w <= 0x64))
-        goto L_1beb;
-    else
-        goto L_1be6;
-
-L_1be6:
-    w = 0x64;
-
-L_1beb:
+    if (w < 0x0 || w > 0x64) {
+        w = 0x64;
+    }
     vpctRadarView = w;
     CchGetString(idsScanmodev25, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 224, szIniFile);
-    grbitScan = (w & 0xc00f);
-    if ((grbitScan < 0x6))
-        goto L_1c44;
-    else
-        goto L_1c35;
-
-L_1c35:
-    grbitScan = 0x0;
-    grbitScanShip = 0x0;
-    goto L_1c4e;
-
-L_1c44:
-    grbitScan = (grbitScan | (w & 0x3ff0));
-
-L_1c4e:
+    grbitScan = w & 0xc00f;
+    if (grbitScan < 0x6) {
+        grbitScan = grbitScan | (w & 0x3ff0);
+    } else {
+        grbitScan = 0x0;
+        grbitScanShip = 0x0;
+    }
     CchGetString(idsMineralscale, szEntry);
     cMinGrafMax = GetPrivateProfileInt(szSection, szEntry, cMinGrafMax, szIniFile);
-    if ((cMinGrafMax < 100))
-        goto L_1c94;
-    else
-        goto L_1c89;
-
-L_1c89:
-    if ((cMinGrafMax <= 30000))
-        goto L_1c9a;
-    else
-        goto L_1c94;
-
-L_1c94:
-    cMinGrafMax = 5000;
-
-L_1c9a:
+    if (cMinGrafMax < 100 || cMinGrafMax > 30000) {
+        cMinGrafMax = 5000;
+    }
     CchGetString(idsFiles, szSection);
     CchGetString(idsLogging, szEntry);
     ini.fLogging = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
@@ -1440,87 +603,33 @@ L_1c9a:
     ini.fWait = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
     CchGetString(idsFile1, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, ".", szWork, 256, szIniFile);
-    if ((cch <= 3))
-        goto L_1da7;
-    else
-        goto L_1d88;
-
-L_1d88:
-    ini.fStartupFile = 0x1;
-    strcpy(szBase, szWork);
-    goto L_1db3;
-
-L_1da7:
-    ini.fStartupFile = 0x0;
-
-L_1db3:
-    if ((vrgszMRU != 0x0))
-        goto L_1dde;
-    else
-        goto L_1dc7;
-
-L_1dc7:
-    vrgszMRU = LpAlloc(0x900, htPerm);
-
-L_1dde:
-    psz = &(szEntry[(strlen(szEntry) - 1)]);
-    i = 0;
-    goto L_1e6b;
-
-L_1dff:
-    *(psz) = LOBYTE((i + 49));
-    cch = GetPrivateProfileString(szSection, szEntry, ".", (vrgszMRU + (256 * i)), 256, szIniFile);
-    if ((cch >= 4))
-        goto L_1e67;
-    else
-        goto L_1e4f;
-
-L_1e4f:
-    vrgszMRU[(i * 256)] = 0;
-
-L_1e67:
-    i = (i + 1);
-
-L_1e6b:
-    if ((i < 9))
-        goto L_1dff;
-    else
-        goto L_1e74;
-
-L_1e74:
+    if (cch <= 3) {
+        ini.fStartupFile = 0x0;
+    } else {
+        ini.fStartupFile = 0x1;
+        strcpy(szBase, szWork);
+    }
+    if (vrgszMRU == 0x0) {
+        vrgszMRU = LpAlloc(0x900, htPerm);
+    }
+    psz = &szEntry[strlen(szEntry) - 1];
+    for (i = 0; i < 9; i++) {
+        *psz = LOBYTE(i + 49);
+        cch = GetPrivateProfileString(szSection, szEntry, ".", vrgszMRU + 256 * i, 256, szIniFile);
+        if (cch < 4) {
+            vrgszMRU[i * 256] = 0;
+        }
+    }
     iPass = 0;
-    i = 0;
-    goto L_1efd;
-
-L_1e82:
-    if (((int16_t)(vrgszMRU[(i * 256)]) == 0))
-        goto L_1ef9;
-    else
-        goto L_1ea2;
-
-L_1ea2:
-    if ((i == iPass))
-        goto L_1ef5;
-    else
-        goto L_1ead;
-
-L_1ead:
-    fstrcpy((vrgszMRU + (256 * iPass)), (vrgszMRU + (256 * i)));
-    vrgszMRU[(i * 256)] = 0;
-
-L_1ef5:
-    iPass = (iPass + 1);
-
-L_1ef9:
-    i = (i + 1);
-
-L_1efd:
-    if ((i < 9))
-        goto L_1e82;
-    else
-        goto L_1f06;
-
-L_1f06:
+    for (i = 0; i < 9; i++) {
+        if ((int16_t)vrgszMRU[i * 256] != 0) {
+            if (i != iPass) {
+                fstrcpy(vrgszMRU + 256 * iPass, vrgszMRU + 256 * i);
+                vrgszMRU[i * 256] = 0;
+            }
+            iPass = iPass + 1;
+        }
+    }
     CchGetString(idsTurn, szEntry);
     ini.turn = GetPrivateProfileInt(szSection, szEntry, game.turn, szIniFile);
     CchGetString(idsMisc, szSection);
@@ -1528,465 +637,155 @@ L_1f06:
     GetPrivateProfileString(szSection, szEntry, "", vszDefPass, 16, szIniFile);
     CchGetString(idsProgress, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if ((w == 0x0))
-        goto L_1fc3;
-    else
-        goto L_1fbd;
-
-L_1fbd:
-    t_merge_1fc6_0001 = 0x1;
-    goto L_1fc6;
-
-L_1fc3:
-    t_merge_1fc6_0001 = 0x0;
-
-L_1fc6:
-    gd.fProgressTxt = t_merge_1fc6_0001;
+    gd.fProgressTxt = w == 0x0 ? 0x0 : 0x1;
     CchGetString(idsNewreports, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if ((w == 0x0))
-        goto L_2024;
-    else
-        goto L_201e;
-
-L_201e:
-    t_merge_2027_0001 = 0x1;
-    goto L_2027;
-
-L_2024:
-    t_merge_2027_0001 = 0x0;
-
-L_2027:
-    gd.fPerPlayerDumps = t_merge_2027_0001;
+    gd.fPerPlayerDumps = w == 0x0 ? 0x0 : 0x1;
     CchGetString(idsNohostnames, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if ((w == 0x0))
-        goto L_2089;
-    else
-        goto L_2083;
-
-L_2083:
-    t_merge_208c_0001 = 0x1;
-    goto L_208c;
-
-L_2089:
-    t_merge_208c_0001 = 0x0;
-
-L_208c:
-    gd.fNoHostNames = t_merge_208c_0001;
+    gd.fNoHostNames = w == 0x0 ? 0x0 : 0x1;
     CchGetString(idsBackups, szEntry);
     vcBackupDirs = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    if ((vcBackupDirs < 1))
-        goto L_20ef;
-    else
-        goto L_20e4;
-
-L_20e4:
-    if ((vcBackupDirs <= 999))
-        goto L_20f5;
-    else
-        goto L_20ef;
-
-L_20ef:
-    vcBackupDirs = 1;
-
-L_20f5:
+    if (vcBackupDirs < 1 || vcBackupDirs > 999) {
+        vcBackupDirs = 1;
+    }
     CchGetString(idsReportplanfld, szEntry);
-    vrptPlanet.grbitVisible = (uint32_t)(GetPrivateProfileInt(szSection, szEntry, -1, szIniFile));
+    vrptPlanet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportplansort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if (((i & 0x100) == 0x0))
-        goto L_2172;
-    else
-        goto L_216c;
-
-L_216c:
-    t_merge_2175_0001 = 0x1;
-    goto L_2175;
-
-L_2172:
-    t_merge_2175_0001 = 0x0;
-
-L_2175:
-    vrptPlanet.fAscending = t_merge_2175_0001;
-    i = (i & 0xff);
+    vrptPlanet.fAscending = (i & 0x100) == 0x0 ? 0 : 1;
+    i = i & 0xff;
     vrptPlanet.icolSort = i;
     CchGetString(idsReportfleetfld, szEntry);
-    vrptFleet.grbitVisible = (uint32_t)(GetPrivateProfileInt(szSection, szEntry, -1, szIniFile));
+    vrptFleet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportfleetsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if (((i & 0x100) == 0x0))
-        goto L_2200;
-    else
-        goto L_21fa;
-
-L_21fa:
-    t_merge_2203_0001 = 0x1;
-    goto L_2203;
-
-L_2200:
-    t_merge_2203_0001 = 0x0;
-
-L_2203:
-    vrptFleet.fAscending = t_merge_2203_0001;
-    i = (i & 0xff);
+    vrptFleet.fAscending = (i & 0x100) == 0x0 ? 0 : 1;
+    i = i & 0xff;
     vrptFleet.icolSort = i;
     CchGetString(idsReportefleetfld, szEntry);
-    vrptEFleet.grbitVisible = (uint32_t)(GetPrivateProfileInt(szSection, szEntry, -1, szIniFile));
+    vrptEFleet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportefltsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if (((i & 0x100) == 0x0))
-        goto L_228e;
-    else
-        goto L_2288;
-
-L_2288:
-    t_merge_2291_0001 = 0x1;
-    goto L_2291;
-
-L_228e:
-    t_merge_2291_0001 = 0x0;
-
-L_2291:
-    vrptEFleet.fAscending = t_merge_2291_0001;
-    i = (i & 0xff);
+    vrptEFleet.fAscending = (i & 0x100) == 0x0 ? 0 : 1;
+    i = i & 0xff;
     vrptEFleet.icolSort = i;
     CchGetString(idsReportbtlfld, szEntry);
-    vrptBattle.grbitVisible = (uint32_t)(GetPrivateProfileInt(szSection, szEntry, -1, szIniFile));
+    vrptBattle.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportbtlsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    if (((i & 0x100) == 0x0))
-        goto L_231c;
-    else
-        goto L_2316;
-
-L_2316:
-    t_merge_231f_0001 = 0x1;
-    goto L_231f;
-
-L_231c:
-    t_merge_231f_0001 = 0x0;
-
-L_231f:
-    vrptBattle.fAscending = t_merge_231f_0001;
-    i = (i & 0xff);
+    vrptBattle.fAscending = (i & 0x100) == 0x0 ? 0 : 1;
+    i = i & 0xff;
     vrptBattle.icolSort = i;
     CchGetString(idsReportdefgraph, szEntry);
     gd.iCurGraph = GetPrivateProfileInt(szSection, szEntry, 7, szIniFile);
     CchGetString(idsReportefltsort, szEntry);
-    if ((gd.iCurGraph <= 0x7))
-        goto L_239d;
-    else
-        goto L_2391;
-
-L_2391:
-    gd.iCurGraph = 0x7;
-
-L_239d:
+    if (gd.iCurGraph > 0x7) {
+        gd.iCurGraph = 0x7;
+    }
     CchGetString(idsVcrspeed, szEntry);
     viSpeedVCR = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
     strdate(szWork);
     szWork[5] = 0;
     szWork[2] = 0;
-    t_scratch_m4a_8 = ((atoi(&(szWork[6])) * 31) * 0xc);
-    t_scratch_m4c = (atoi(szWork) * 31);
-    uDateCur = ((atoi(&(szWork[3])) + t_scratch_m4c) + t_scratch_m4a_8);
+    t_scratch_m4a_8 = atoi(&szWork[6]) * 31 * 0xc;
+    t_scratch_m4c = atoi(szWork) * 31;
+    uDateCur = atoi(&szWork[3]) + t_scratch_m4c + t_scratch_m4a_8;
     CchGetString(idsHistoryinfo, szEntry);
     uDateInstalled = GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
-    if ((uDateCur >= uDateInstalled))
-        goto L_246c;
-    else
-        goto L_2466;
-
-L_2466:
-    uDateInstalled = uDateCur;
-
-L_246c:
-    if ((uDateCur < (uDateInstalled + 0x15)))
-        goto L_2480;
-    else
-        goto L_247a;
-
-L_247a:
-    t_merge_2483_0001 = 0x1;
-    goto L_2483;
-
-L_2480:
-    t_merge_2483_0001 = 0x0;
-
-L_2483:
-    gd.fTrialPeriodOver = t_merge_2483_0001;
+    if (uDateCur < uDateInstalled) {
+        uDateInstalled = uDateCur;
+    }
+    gd.fTrialPeriodOver = uDateCur < uDateInstalled + 0x15 ? 0x0 : 0x1;
     CchGetString(idsFonts, szSection);
-    i = 0;
-    goto L_253b;
-
-L_24b5:
-    CchGetString((i + 197), szEntry);
-    GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
-    cch = strlen(szWork);
-    if ((cch < 5))
-        goto L_2537;
-    else
-        goto L_250c;
-
-L_250c:
-    if ((cch > 31))
-        goto L_2537;
-    else
-        goto L_2518;
-
-L_2518:
-    strcpy(rgszArial[i], szWork);
-
-L_2537:
-    i = (i + 1);
-
-L_253b:
-    if ((i < 4))
-        goto L_24b5;
-    else
-        goto L_2544;
-
-L_2544:
+    for (i = 0; i < 4; i++) {
+        CchGetString(i + 197, szEntry);
+        GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
+        cch = strlen(szWork);
+        if (cch >= 5 && cch <= 31) {
+            strcpy(rgszArial[i], szWork);
+        }
+    }
     CchGetString(idsZiporders, szSection);
     memset(vrgZip, 0, 0x60);
-    i = 0;
-    goto L_27fd;
-
-L_2570:
-    strcpy(szEntry, szSection);
-    psz = &(szEntry[strlen(szEntry)]);
-    *(psz) = LOBYTE((i + 49));
-    psz[1] = 0;
-    GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
-    cch = strlen(szWork);
-    if ((cch < 20))
-        goto L_27f9;
-    else
-        goto L_25ea;
-
-L_25ea:
-    if ((cch > 32))
-        goto L_27f9;
-    else
-        goto L_25f6;
-
-L_25f6:
-    psz = szWork;
-    iPass = 0;
-    goto L_2611;
-
-L_2603:
-    iPass = (iPass + 1);
-    psz = (psz + 1);
-
-L_2611:
-    if ((iPass >= 20))
-        goto L_263c;
-    else
-        goto L_261a;
-
-L_261a:
-    if (((int16_t)(*(psz)) < 97))
-        goto L_263c;
-    else
-        goto L_2628;
-
-L_2628:
-    if (((int16_t)(*(psz)) <= 112))
-        goto L_2603;
-    else
-        goto L_263c;
-
-L_263c:
-    if ((iPass < 20))
-        goto L_27f9;
-    else
-        goto L_2648;
-
-L_2648:
-    psz = szWork;
-    iPass = 0;
-    goto L_27c5;
-
-L_2655:
-    vrgZip[i].txp.rgia[iPass].iAction = ((int16_t)(*(psz)) - 97);
-    psz = (psz + 1);
-    vrgZip[i].txp.rgia[iPass].cQuan = ((int16_t)(*(psz)) - 97);
-    psz = (psz + 1);
-    vrgZip[i].txp.rgia[iPass].cQuan =
-        ((((uint32_t)(((int16_t)(*(psz)) - 0x61)) & 0xfff) << 0x4) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
-    psz = (psz + 1);
-    vrgZip[i].txp.rgia[iPass].cQuan =
-        ((((uint32_t)(((int16_t)(*(psz)) - 0x61)) & 0xff) << 0x8) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
-    psz = (psz + 1);
-    iPass = (iPass + 1);
-
-L_27c5:
-    if ((iPass < 5))
-        goto L_2655;
-    else
-        goto L_27ce;
-
-L_27ce:
-    strcpy(vrgZip[i].szName, psz);
-    vrgZip[i].fValid = 0x1;
-
-L_27f9:
-    i = (i + 1);
-
-L_27fd:
-    if ((i < 4))
-        goto L_2570;
-    else
-        goto L_2806;
-
-L_2806:
+    for (i = 0; i < 4; i++) {
+        strcpy(szEntry, szSection);
+        psz = &szEntry[strlen(szEntry)];
+        *psz = LOBYTE(i + 49);
+        psz[1] = 0;
+        GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
+        cch = strlen(szWork);
+        if (cch >= 20 && cch <= 32) {
+            psz = szWork;
+            iPass = 0;
+            for (; iPass < 20 && (int16_t)*psz >= 'a' && (int16_t)*psz <= 'p'; psz++) {
+                iPass = iPass + 1;
+            }
+            if (iPass >= 20) {
+                psz = szWork;
+                for (iPass = 0; iPass < 5; iPass++) {
+                    vrgZip[i].txp.rgia[iPass].iAction = (int16_t)*psz - 97;
+                    psz = psz + 1;
+                    vrgZip[i].txp.rgia[iPass].cQuan = (int16_t)*psz - 97;
+                    psz = psz + 1;
+                    vrgZip[i].txp.rgia[iPass].cQuan =
+                        ((uint32_t)((int16_t)*psz - 0x61) & 0xfff) << 0x4 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
+                    psz = psz + 1;
+                    vrgZip[i].txp.rgia[iPass].cQuan =
+                        ((uint32_t)((int16_t)*psz - 0x61) & 0xff) << 0x8 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
+                    psz = psz + 1;
+                }
+                strcpy(vrgZip[i].szName, psz);
+                vrgZip[i].fValid = 0x1;
+            }
+        }
+    }
     memset(vrgZipProd, 0, 0xc8);
-    i = 0;
-    goto L_2b65;
-
-L_2822:
-    strcpy(szEntry, szSection);
-    psz = &(szEntry[strlen(szEntry)]);
-    t_2846 = psz;
-    psz = (psz + 1);
-    *(t_2846) = 80;
-    *(psz) = LOBYTE((i + 49));
-    psz[1] = 0;
-    GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
-    cch = strlen(szWork);
-    if ((cch < 3))
-        goto L_2b61;
-    else
-        goto L_28a6;
-
-L_28a6:
-    if ((cch > 64))
-        goto L_2b61;
-    else
-        goto L_28b2;
-
-L_28b2:
-    psz = szWork;
-    cpq = ((int16_t)(psz[1]) - 97);
-    if ((cpq < 0))
-        goto L_2b61;
-    else
-        goto L_28cd;
-
-L_28cd:
-    if ((cpq > 12))
-        goto L_2b61;
-    else
-        goto L_28d9;
-
-L_28d9:
-    iPass = 0;
-    goto L_28ef;
-
-L_28e1:
-    iPass = (iPass + 1);
-    psz = (psz + 1);
-
-L_28ef:
-    if ((iPass >= ((cpq * 4) + 2)))
-        goto L_2923;
-    else
-        goto L_2901;
-
-L_2901:
-    if (((int16_t)(*(psz)) < 97))
-        goto L_2923;
-    else
-        goto L_290f;
-
-L_290f:
-    if (((int16_t)(*(psz)) <= 112))
-        goto L_28e1;
-    else
-        goto L_2923;
-
-L_2923:
-    if ((iPass < ((cpq * 4) + 2)))
-        goto L_2b61;
-    else
-        goto L_2938;
-
-L_2938:
-    if ((strlen(psz) > 0xc))
-        goto L_2b61;
-    else
-        goto L_294e;
-
-L_294e:
-    strcpy(vrgZipProd[i].szName, psz);
-    psz = szWork;
-    if (((int16_t)(*(psz)) == 97))
-        goto L_297e;
-    else
-        goto L_2978;
-
-L_2978:
-    t_merge_2981_0001 = 0x1;
-    goto L_2981;
-
-L_297e:
-    t_merge_2981_0001 = 0x0;
-
-L_2981:
-    vrgZipProd[i].fNoResearch = LOBYTE(t_merge_2981_0001);
-    vrgZipProd[i].fValid = 0x1;
-    vrgZipProd[i].cpq = LOBYTE(cpq);
-    psz = (psz + 2);
-    iPass = 0;
-    goto L_2b56;
-
-L_29c7:
-    vrgZipProd[i].rgpq[iPass].w = ((int16_t)(*(psz)) - 97);
-    psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x10));
-    psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x100));
-    psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x1000));
-    psz = (psz + 1);
-    if ((vrgZipProd[i].rgpq[iPass].cQuan <= 0x3fc))
-        goto L_2af0;
-    else
-        goto L_2ab2;
-
-L_2ab2:
-    vrgZipProd[i].rgpq[iPass].cQuan = 0x1;
-
-L_2af0:
-    if ((vrgZipProd[i].rgpq[iPass].mdIdle < 0x7))
-        goto L_2b52;
-    else
-        goto L_2b14;
-
-L_2b14:
-    vrgZipProd[i].rgpq[iPass].mdIdle = 0x0;
-
-L_2b52:
-    iPass = (iPass + 1);
-
-L_2b56:
-    if ((iPass < cpq))
-        goto L_29c7;
-    else
-        goto L_2b61;
-
-L_2b61:
-    i = (i + 1);
-
-L_2b65:
-    if ((i < 5))
-        goto L_2822;
-    else
-        goto L_2b6e;
-
-L_2b6e:
+    for (i = 0; i < 5; i++) {
+        strcpy(szEntry, szSection);
+        psz = &szEntry[strlen(szEntry)];
+        t_2846 = psz;
+        psz = psz + 1;
+        *t_2846 = 'P';
+        *psz = LOBYTE(i + 49);
+        psz[1] = 0;
+        GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
+        cch = strlen(szWork);
+        if (cch >= 3 && cch <= 64) {
+            psz = szWork;
+            cpq = (int16_t)psz[1] - 97;
+            if (cpq >= 0 && cpq <= 12) {
+                iPass = 0;
+                for (; iPass < cpq * 4 + 2 && (int16_t)*psz >= 'a' && (int16_t)*psz <= 'p'; psz++) {
+                    iPass = iPass + 1;
+                }
+                if (iPass >= cpq * 4 + 2 && strlen(psz) <= 0xc) {
+                    strcpy(vrgZipProd[i].szName, psz);
+                    psz = szWork;
+                    vrgZipProd[i].fNoResearch = LOBYTE((int16_t)*psz == 'a' ? 0x0 : 0x1);
+                    vrgZipProd[i].fValid = 0x1;
+                    vrgZipProd[i].cpq = LOBYTE(cpq);
+                    psz = psz + 2;
+                    for (iPass = 0; iPass < cpq; iPass++) {
+                        vrgZipProd[i].rgpq[iPass].w = (int16_t)*psz - 97;
+                        psz = psz + 1;
+                        vrgZipProd[i].rgpq[iPass].w = vrgZipProd[i].rgpq[iPass].w | ((int16_t)*psz - 0x61) * 0x10;
+                        psz = psz + 1;
+                        vrgZipProd[i].rgpq[iPass].w = vrgZipProd[i].rgpq[iPass].w | ((int16_t)*psz - 0x61) * 0x100;
+                        psz = psz + 1;
+                        vrgZipProd[i].rgpq[iPass].w = vrgZipProd[i].rgpq[iPass].w | ((int16_t)*psz - 0x61) * 0x1000;
+                        psz = psz + 1;
+                        if (vrgZipProd[i].rgpq[iPass].cQuan > 0x3fc) {
+                            vrgZipProd[i].rgpq[iPass].cQuan = 0x1;
+                        }
+                        if (vrgZipProd[i].rgpq[iPass].mdIdle >= 0x7) {
+                            vrgZipProd[i].rgpq[iPass].mdIdle = 0x0;
+                        }
+                    }
+                }
+            }
+        }
+    }
     CchGetString(idsDefault, vrgZipProd[0].szName);
     vrgZipProd[0].fValid = 0x1;
     return;
@@ -1999,130 +798,37 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
     int16_t  iTile;
     uint16_t iCol;
     uint16_t iBit;
-    uint16_t t_merge_2c1b_0001;
 
-L_2b8a:
     iCol = 0x0;
     iTile = 0;
-
-L_2b9d:
-    if (((int16_t)(*(pszFormat)) == 0))
-        goto L_2d81;
-    else
-        goto L_2bab;
-
-L_2bab:
-    if (((int16_t)(*(pszFormat)) != 42))
-        goto L_2bc9;
-    else
-        goto L_2bb9;
-
-L_2bb9:
-    if ((iCol >= 0x1))
-        goto DoNext;
-    else
-        goto L_2bc2;
-
-L_2bc2:
-    iCol = (iCol + 0x1);
-
-L_2bc6:
-    goto DoNext;
-
-L_2bc9:
-    if ((isalpha((int16_t)(*(pszFormat))) == 0x0))
-        goto DoNext;
-    else
-        goto L_2be7;
-
-L_2be7:
-    fPopped = isupper((int16_t)(*(pszFormat)));
-    if ((fPopped == 0))
-        goto L_2c12;
-    else
-        goto L_2c06;
-
-L_2c06:
-    t_merge_2c1b_0001 = ((int16_t)(*(pszFormat)) - 65);
-    goto L_2c1b;
-
-L_2c12:
-    t_merge_2c1b_0001 = ((int16_t)(*(pszFormat)) - 97);
-
-L_2c1b:
-    iBit = t_merge_2c1b_0001;
-    if ((iBit < 0x0))
-        goto DoNext;
-    else
-        goto L_2c2c;
-
-L_2c2c:
-    i = iTile;
-    goto L_2c60;
-
-L_2c35:
-    if ((rgtile[i].id == iBit))
-        goto L_2c6b;
-    else
-        goto L_2c5c;
-
-L_2c5c:
-    i = (i + 1);
-
-L_2c60:
-    if ((i < ctile))
-        goto L_2c35;
-    else
-        goto L_2c6b;
-
-L_2c6b:
-    if ((i == ctile))
-        goto DoNext;
-    else
-        goto L_2c79;
-
-L_2c79:
-    rgtile[i].iCol = iCol;
-    rgtile[i].fPopped = fPopped;
-    if ((i == iTile))
-        goto L_2d76;
-    else
-        goto L_2cec;
-
-L_2cec:
-    tile = rgtile[i];
-    rgtile[i] = rgtile[iTile];
-    rgtile[iTile] = tile;
-
-L_2d76:
-    iTile = (iTile + 1);
-
-DoNext:
-    pszFormat = (pszFormat + 1);
-    goto L_2b9d;
-
-L_2d81:
-    i = iTile;
-    goto L_2ddd;
-
-L_2d8a:
-    if ((rgtile[i].iCol >= iCol))
-        goto L_2dd9;
-    else
-        goto L_2da8;
-
-L_2da8:
-    rgtile[i].iCol = iCol;
-
-L_2dd9:
-    i = (i + 1);
-
-L_2ddd:
-    if ((i < ctile))
-        goto L_2d8a;
-    else
-        goto L_2de8;
-
-L_2de8:
+    for (; (int16_t)*pszFormat != 0; pszFormat++) {
+        if ((int16_t)*pszFormat != '*') {
+            if (isalpha((int16_t)*pszFormat) != 0x0) {
+                fPopped = isupper((int16_t)*pszFormat);
+                iBit = fPopped == 0 ? (int16_t)*pszFormat - 97 : (int16_t)*pszFormat - 65;
+                if (iBit >= 0x0) {
+                    for (i = iTile; i < ctile && rgtile[i].id != iBit; i++) {
+                    }
+                    if (i != ctile) {
+                        rgtile[i].iCol = iCol;
+                        rgtile[i].fPopped = fPopped;
+                        if (i != iTile) {
+                            tile = rgtile[i];
+                            rgtile[i] = rgtile[iTile];
+                            rgtile[iTile] = tile;
+                        }
+                        iTile = iTile + 1;
+                    }
+                }
+            }
+        } else if (iCol < 0x1) {
+            iCol = iCol + 0x1;
+        }
+    }
+    for (i = iTile; i < ctile; i++) {
+        if (rgtile[i].iCol < iCol) {
+            rgtile[i].iCol = iCol;
+        }
+    }
     return;
 }

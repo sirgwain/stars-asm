@@ -897,116 +897,48 @@ int16_t CchTutorString(char *pchOut, int16_t idt) {
     char    *pszOut;
     int16_t  iLen;
     uint8_t *pch;
-    uint16_t t_merge_5ad9_0001;
     int16_t  t_5ae7;
     uint8_t *t_5b19;
-    uint16_t t_merge_5b3e_0001;
 
-L_5a14:
     iNibble = 0;
-    if ((idt != iLastTutGet))
-        goto L_5a3b;
-    else
-        goto L_5a2d;
-
-L_5a2d:
+    if (idt != iLastTutGet) {
+        iChunk = idt >> 0x6;
+        iOffset = idt & 0x3f;
+        pch = &aTUTCmpr[aiTUTChunkOffset[iChunk]];
+        pchLen = &acTUT[iChunk * 64];
+        i = 0;
+        while (i < iOffset) {
+            iNibble = iNibble + *pchLen;
+            i = i + 1;
+            pchLen = pchLen + 1;
+        }
+        pch = pch + (iNibble >> 0x1);
+        iLen = *pchLen;
+        fHigh = (iNibble & 0x1) == 0x0 ? 1 : 0;
+        pszOut = pchOut;
+        iBuild = 0;
+        while (1) {
+            t_5ae7 = iLen;
+            iLen = iLen - 1;
+            if (t_5ae7 == 0)
+                break;
+            if (fHigh == 0) {
+                t_5b19 = pch;
+                pch = pch + 1;
+                i = *t_5b19 & 0xf;
+            } else {
+                i = *pch >> 0x4;
+            }
+            fHigh = fHigh == 0 ? 1 : 0;
+            iBuild = iBuild + i;
+            if (i != 15) {
+                *pszOut = rgTUTLookupTable[iBuild];
+                pszOut = pszOut + 1;
+                iBuild = 0;
+            }
+        }
+        *pszOut = 0;
+        return pszOut - pchOut;
+    }
     return strlen(pchOut);
-
-L_5a3b:
-    iChunk = (idt >> 0x6);
-    iOffset = (idt & 0x3f);
-    pch = &(aTUTCmpr[aiTUTChunkOffset[iChunk]]);
-    pchLen = &(acTUT[(iChunk * 64)]);
-    i = 0;
-    goto L_5a94;
-
-L_5a81:
-    i = (i + 1);
-    pchLen = (pchLen + 1);
-
-L_5a94:
-    if ((i >= iOffset))
-        goto L_5aae;
-    else
-        goto L_5a9f;
-
-L_5a9f:
-    iNibble = (iNibble + *(pchLen));
-    goto L_5a81;
-
-L_5aae:
-    pch = (pch + (iNibble >> 0x1));
-    iLen = *(pchLen);
-    if (((iNibble & 0x1) != 0x0))
-        goto L_5ad6;
-    else
-        goto L_5ad0;
-
-L_5ad0:
-    t_merge_5ad9_0001 = 0x1;
-    goto L_5ad9;
-
-L_5ad6:
-    t_merge_5ad9_0001 = 0x0;
-
-L_5ad9:
-    fHigh = t_merge_5ad9_0001;
-    pszOut = pchOut;
-    iBuild = 0;
-
-L_5ae7:
-    t_5ae7 = iLen;
-    iLen = (iLen - 1);
-    if ((t_5ae7 == 0))
-        goto L_5b69;
-    else
-        goto L_5af6;
-
-L_5af6:
-    if ((fHigh == 0))
-        goto L_5b16;
-    else
-        goto L_5aff;
-
-L_5aff:
-    i = (*(pch) >> 0x4);
-    goto L_5b2c;
-
-L_5b16:
-    t_5b19 = pch;
-    pch = (pch + 1);
-    i = (*(t_5b19) & 0xf);
-
-L_5b2c:
-    if ((fHigh != 0))
-        goto L_5b3b;
-    else
-        goto L_5b35;
-
-L_5b35:
-    t_merge_5b3e_0001 = 0x1;
-    goto L_5b3e;
-
-L_5b3b:
-    t_merge_5b3e_0001 = 0x0;
-
-L_5b3e:
-    fHigh = t_merge_5b3e_0001;
-    iBuild = (iBuild + i);
-    if ((i == 15))
-        goto L_5ae7;
-    else
-        goto L_5b50;
-
-L_5b50:
-    *(pszOut) = rgTUTLookupTable[iBuild];
-    pszOut = (pszOut + 1);
-    iBuild = 0;
-
-L_5b66:
-    goto L_5ae7;
-
-L_5b69:
-    *(pszOut) = 0;
-    return (pszOut - pchOut);
 }

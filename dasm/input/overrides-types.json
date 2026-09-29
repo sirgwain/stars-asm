@@ -190,7 +190,10 @@
     { "name": "h", "vartype": "local", "func": "DibFromBitmap", "ctype": "HGLOBAL" },
     { "name": "rghbr", "vartype": "local", "func": "DrawFleetGauge", "ctype": "HBRUSH[5]" },
     { "name": "rghbr", "vartype": "param", "func": "LDrawGauge", "ctype": "HBRUSH *" },
-    { "name": "rghbr", "vartype": "local", "func": "DrawThingGauge", "ctype": "HBRUSH[5]" }
+    { "name": "rghbr", "vartype": "local", "func": "DrawThingGauge", "ctype": "HBRUSH[5]" },
+    { "name": "iMin", "vartype": "local", "func": "FTrackRaceDlg2", "ctype": "int8_t" },
+    { "name": "iMax", "vartype": "local", "func": "FTrackRaceDlg2", "ctype": "int8_t" },
+    { "name": "ch", "vartype": "local", "func": "FRunLogRecord", "ctype": "int8_t" }
   ],
 
   "struct_overrides": [
@@ -205,7 +208,19 @@
     { "field": "hCursor", "ctype": "HCURSOR" },
     { "field": "hMenu", "ctype": "HMENU" },
     { "struct": "_btlplan", "field": "szName", "ctype": "char[32]" },
-    { "struct": "_player", "field": "rgTech", "ctype": "int8_t[6]" },
+    { "field": "rgTech", "ctype": "int8_t[6]" },
+    { "field": "rgEnvVar", "ctype": "int8_t[3]" },
+    { "field": "rgEnvVarOrig", "ctype": "int8_t[3]" },
+    { "struct": "_planetsome", "field": "rgMinConc", "ctype": "int8_t[3]" },
+    { "struct": "_rtxfer", "field": "rgcQuan", "ctype": "int8_t[1]" },
+    { "struct": "_player", "field": "iPlayer", "ctype": "int8_t" },
+    { "struct": "_player", "field": "cShDef", "ctype": "int8_t" },
+    { "struct": "_player", "field": "rgEnvVarMin", "ctype": "int8_t[3]" },
+    { "struct": "_player", "field": "rgEnvVarMax", "ctype": "int8_t[3]" },
+    { "struct": "_player", "field": "pctIdealGrowth", "ctype": "int8_t" },
+    { "struct": "_player", "field": "pctResearch", "ctype": "int8_t" },
+    { "struct": "_player", "field": "iTechCur", "ctype": "int8_t" },
+    { "struct": "_player", "field": "rgAttr", "ctype": "int8_t[16]" },
     { "struct": "_player", "field": "rgmdRelation", "ctype": "int8_t[16]" },
     { "struct": "_hb", "field": "hmem", "ctype": "HGLOBAL" },
     { "struct": "_rpt", "prefix": "hwnd", "ctype": "HWND" },

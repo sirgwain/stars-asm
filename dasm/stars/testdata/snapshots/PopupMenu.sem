@@ -105,29 +105,22 @@ L_1545:
     t_1550 = pszT
     pszT = &pszT[1]
     *t_1550 = *t_1545
-    branch sext8to16(*t_1545) != 38 ? L_1536 : L_1564
+    branch sext8to16(*t_1545) != '&' ? L_1536 : L_1564
 
 L_1564:
     t_1564 = pszT
     pszT = &pszT[1]
-    *t_1564 = 38
+    *t_1564 = '&'
 
 L_1570:
     goto L_1536
 
 L_1573:
     *pszT = 0
-    branch i != iChecked ? L_158f : L_1589
+    call AppendMenu(hmenuPopup, (i == iChecked ? 0x8 : 0x0), (i + 15000), szTemp) -> callresult(int16_t)
 
-L_1589:
-    t_merge_1592_0001 = 0x8
-    goto L_1592
 
-L_158f:
-    t_merge_1592_0001 = 0x0
 
-L_1592:
-    call AppendMenu(hmenuPopup, t_merge_1592_0001, (i + 15000), szTemp) -> callresult(int16_t)
 
 L_15aa:
     goto L_1883
@@ -137,20 +130,13 @@ L_15ad:
 
 L_15bf:
     pszTitle = rgsz[(i + 1)]
-    branch rgids == 0x0 ? L_15f1 : L_15da
-
-L_15da:
-    t_merge_15f4_0001 = LOWORD(rgids[(i + 1)])
-    goto L_15f4
-
-L_15f1:
-    t_merge_15f4_0001 = 0x0
-
-L_15f4:
-    fChecked = t_merge_15f4_0001
+    fChecked = (rgids == 0x0 ? 0 : LOWORD(rgids[(i + 1)]))
     hmenuSub = CreatePopupMenu()
     i = (i + 2)
     goto L_1738
+
+
+
 
 L_1608:
     branch rgsz[i] == 0x0 ? L_1743 : L_161d
@@ -159,19 +145,12 @@ L_161d:
     branch rgids != 0x0 ? L_1649 : L_1626
 
 L_1626:
-    branch i != iChecked ? L_1637 : L_1631
-
-L_1631:
-    t_merge_163a_0001 = 0x1
-    goto L_163a
-
-L_1637:
-    t_merge_163a_0001 = 0x0
-
-L_163a:
-    fCheckedCur = t_merge_163a_0001
+    fCheckedCur = (i == iChecked ? 1 : 0)
     fChecked = (fChecked | fCheckedCur)
     goto L_165e
+
+
+
 
 L_1649:
     fCheckedCur = LOWORD(rgids[i])
@@ -199,29 +178,22 @@ L_16d0:
     t_16db = pszT
     pszT = &pszT[1]
     *t_16db = *t_16d0
-    branch sext8to16(*t_16d0) != 38 ? L_16c1 : L_16ef
+    branch sext8to16(*t_16d0) != '&' ? L_16c1 : L_16ef
 
 L_16ef:
     t_16ef = pszT
     pszT = &pszT[1]
-    *t_16ef = 38
+    *t_16ef = '&'
 
 L_16fb:
     goto L_16c1
 
 L_16fe:
     *pszT = 0
-    branch fCheckedCur == 0 ? L_1719 : L_1713
+    call AppendMenu(hmenuSub, (fCheckedCur == 0 ? 0x0 : 0x8), (i + 15000), szTemp) -> callresult(int16_t)
 
-L_1713:
-    t_merge_171c_0001 = 0x8
-    goto L_171c
 
-L_1719:
-    t_merge_171c_0001 = 0x0
 
-L_171c:
-    call AppendMenu(hmenuSub, t_merge_171c_0001, (i + 15000), szTemp) -> callresult(int16_t)
 
 L_1734:
     i = (i + 1)
@@ -230,18 +202,11 @@ L_1738:
     branch i < cString ? L_1608 : L_1743
 
 L_1743:
-    branch fChecked == 0 ? L_1757 : L_1751
-
-L_1751:
-    t_merge_175a_0001 = 0x8
-    goto L_175a
-
-L_1757:
-    t_merge_175a_0001 = 0x0
-
-L_175a:
-    call AppendMenu(hmenuPopup, (t_merge_175a_0001 | 0x10), (UINT_PTR)hmenuSub, pszTitle) -> callresult(int16_t)
+    call AppendMenu(hmenuPopup, ((fChecked == 0 ? 0x0 : 0x8) | 0x10), (UINT_PTR)hmenuSub, pszTitle) -> callresult(int16_t)
     goto L_1883
+
+
+
 
 L_1771:
     branch sext8to16(*rgsz[i]) != -1 ? L_17bc : L_1788
@@ -266,12 +231,12 @@ L_17e3:
     t_17ee = pszT
     pszT = &pszT[1]
     *t_17ee = *t_17e3
-    branch sext8to16(*t_17e3) != 38 ? L_17d4 : L_1802
+    branch sext8to16(*t_17e3) != '&' ? L_17d4 : L_1802
 
 L_1802:
     t_1802 = pszT
     pszT = &pszT[1]
-    *t_1802 = 38
+    *t_1802 = '&'
 
 L_180e:
     goto L_17d4
@@ -295,15 +260,11 @@ L_184b:
     t_merge_184f_0001 = 0
 
 L_184f:
-    branch t_merge_184f_0001 != 0 ? L_1865 : L_186b
-
-
-L_1865:
-    t_merge_186e_0001 = 0x8
+    t_merge_186e_0001 = (t_merge_184f_0001 == 0 ? 0x0 : 0x8)
     goto L_186e
 
-L_186b:
-    t_merge_186e_0001 = 0x0
+
+
 
 L_186e:
     call AppendMenu(hmenuPopup, t_merge_186e_0001, (i + 15000), szTemp) -> callresult(int16_t)

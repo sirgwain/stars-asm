@@ -98,31 +98,17 @@ L_0e46:
     call DecorateHullName(GlobalPD.lpfl->iplr, i, szTB) -> callresult(void)
     lpsz = &szTB[0]
     dx = loword(GetTextExtent(hdc, lpsz, fstrlen(lpsz)))
-    branch dxL <= dx ? L_0ea7 : L_0ea1
-
-L_0ea1:
-    t_merge_0eaa_0001 = dxL
-    goto L_0eaa
-
-L_0ea7:
-    t_merge_0eaa_0001 = dx
-
-L_0eaa:
-    dxL = t_merge_0eaa_0001
+    dxL = (dxL <= dx ? dx : dxL)
     c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i])
     dx = loword(GetTextExtent(hdc, szWork, c))
-    branch dxR <= dx ? L_0f05 : L_0eff
-
-L_0eff:
-    t_merge_0f08_0001 = dxR
-    goto L_0f08
-
-L_0f05:
-    t_merge_0f08_0001 = dx
-
-L_0f08:
-    dxR = t_merge_0f08_0001
+    dxR = (dxR <= dx ? dx : dxR)
     branch GlobalPD.fRedDamage == 0 ? L_0f77 : L_0f15
+
+
+
+
+
+
 
 L_0f15:
     branch ((GlobalPD.lpfl->rgdv[i].dp >> 0x7) & 0x1ff) == 0x0 ? L_0f77 : L_0f3e
@@ -161,18 +147,11 @@ L_0fd7:
     call SelectObject(hdc, rghfontArial8[0]) -> callresult(HGDIOBJ)
     dxName = loword(GetTextExtent(hdc, psz, strlen(psz)))
     dxCoord = loword(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4))
-    branch dxName <= dxCoord ? L_1089 : L_1083
-
-L_1083:
-    t_merge_108c_0001 = dxName
-    goto L_108c
-
-L_1089:
-    t_merge_108c_0001 = dxCoord
-
-L_108c:
-    dx = (dx + t_merge_108c_0001)
+    dx = (dx + (dxName <= dxCoord ? dxCoord : dxName))
     goto L_1225
+
+
+
 
 L_1092:
     ptT = PtDisplayPlanetStateInfo(hdc, 0)
@@ -199,41 +178,27 @@ SetDxDy:
     goto L_1225
 
 L_1128:
-    branch dyArial8 <= 14 ? L_1138 : L_1132
-
-L_1132:
-    t_merge_113b_0001 = 0x28
-    goto L_113b
-
-L_1138:
-    t_merge_113b_0001 = 0x0
-
-L_113b:
-    dx = (t_merge_113b_0001 + 344)
+    dx = ((dyArial8 <= 14 ? 0 : 40) + 344)
     dy = (((dyArial10 + 72) + (12 * dyArial8)) + 6)
     goto L_1225
+
+
+
 
 L_115a:
     ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0)
     goto L_1113
 
 L_1176:
-    branch GlobalPD.grPopup != grPopupShdef ? L_1186 : L_1180
-
-L_1180:
-    t_merge_1189_0001 = 0x0
-    goto L_1189
-
-L_1186:
-    t_merge_1189_0001 = 0x1
-
-L_1189:
-    mdBuild = t_merge_1189_0001
+    mdBuild = (GlobalPD.grPopup == grPopupShdef ? mdBuildShdef : mdBuildHuldef)
     lpshdefBuild = GlobalPD.lpshdef
     call UpdateSlotGlobals() -> callresult(void)
     dx = 340
     dy = (((dyArial8 + 306) + (6 * dyArial8)) + 8)
     branch gd.mdScreenSize <= 0x0 ? L_1225 : L_11ce
+
+
+
 
 L_11ce:
     branch GlobalPD.grPopup != grPopupShdef ? L_1225 : L_11d8
@@ -274,7 +239,7 @@ L_126d:
     branch 0 <= t_merge_126d_0001 ? L_127d : L_1277
 
 L_1277:
-    t_merge_12a3_0001 = 0x0
+    t_merge_12a3_0001 = 0
     goto L_12a3
 
 L_127d:
@@ -304,7 +269,7 @@ L_12cc:
     branch 0 <= t_merge_12cc_0001 ? L_12dc : L_12d6
 
 L_12d6:
-    t_merge_1302_0001 = 0x0
+    t_merge_1302_0001 = 0
     goto L_1302
 
 L_12dc:

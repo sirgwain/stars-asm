@@ -134,16 +134,12 @@ L_b21f:
 
 
 L_b292:
-    branch sext16to32(Random(LOWORD(cPPE))) < modKill ? L_b2b7 : L_b2be
-
-
-
-L_b2b7:
-    t_merge_b2c2_0001 = 0x1
+    t_merge_b2c2_0001 = (sext16to32(Random(LOWORD(cPPE))) < modKill ? 0x1 : 0x0)
     goto L_b2c2
 
-L_b2be:
-    t_merge_b2c2_0001 = 0x0
+
+
+
 
 L_b2c2:
     cKillFact = (cKillFact + (uint32_t)t_merge_b2c2_0001)
@@ -165,16 +161,12 @@ L_b315:
 
 
 L_b380:
-    branch sext16to32(Random(LOWORD(cPPE))) < modKill ? L_b3a5 : L_b3ac
-
-
-
-L_b3a5:
-    t_merge_b3b0_0001 = 0x1
+    t_merge_b3b0_0001 = (sext16to32(Random(LOWORD(cPPE))) < modKill ? 0x1 : 0x0)
     goto L_b3b0
 
-L_b3ac:
-    t_merge_b3b0_0001 = 0x0
+
+
+
 
 L_b3b0:
     cKillDefenses = (cKillDefenses + (uint32_t)t_merge_b3b0_0001)
@@ -217,7 +209,7 @@ L_b4a1:
 
 
 L_b4bd:
-    cKillPeopleS = (int32_t)((uint32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 1000)
+    cKillPeopleS = (int32_t)((int32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 1000)
     branch cKillPeopleS < lppl->rgwtMin[3] ? L_b51f : L_b508
 
 
@@ -234,16 +226,12 @@ L_b51f:
 
 
 L_b58c:
-    branch sext16to32(Random(1000)) <= modKill ? L_b5ae : L_b5b5
-
-
-
-L_b5ae:
-    t_merge_b5b9_0001 = 0x1
+    t_merge_b5b9_0001 = (sext16to32(Random(1000)) <= modKill ? 0x1 : 0x0)
     goto L_b5b9
 
-L_b5b5:
-    t_merge_b5b9_0001 = 0x0
+
+
+
 
 L_b5b9:
     cKillPeople = (cKillPeople + (uint32_t)t_merge_b5b9_0001)
@@ -371,28 +359,14 @@ L_b939:
     branch pctTot <= 0 ? L_b9d4 : L_b942
 
 L_b942:
-    branch fMulti == 0 ? L_b97a : L_b974
+    call FSendPlrMsg(lpfl->iPlayer, (fMulti == 0 ? 302 : 378), (lpfl->id | 0x8000), lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, (fMulti == 0 ? 302 : 379), lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
 
-L_b974:
-    t_merge_b97d_0001 = 378
-    goto L_b97d
 
-L_b97a:
-    t_merge_b97d_0001 = 302
 
-L_b97d:
-    call FSendPlrMsg(lpfl->iPlayer, t_merge_b97d_0001, (lpfl->id | 0x8000), lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
-    branch fMulti == 0 ? L_b9c1 : L_b9bb
 
-L_b9bb:
-    t_merge_b9c4_0001 = 379
-    goto L_b9c4
 
-L_b9c1:
-    t_merge_b9c4_0001 = 302
 
-L_b9c4:
-    call FSendPlrMsg(lppl->iPlayer, t_merge_b9c4_0001, lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
 
 L_b9d4:
     cPPE = ((cKillMine + cKillFact) + cKillDefenses)
@@ -406,29 +380,15 @@ L_ba03:
 
 
 L_ba1f:
-    branch fMulti == 0 ? L_ba2e : L_ba28
-
-L_ba28:
-    t_merge_ba31_0001 = 0x169
-    goto L_ba31
-
-L_ba2e:
-    t_merge_ba31_0001 = 0x63
-
-L_ba31:
-    idmSrc = t_merge_ba31_0001
-    branch fMulti == 0 ? L_ba43 : L_ba3d
-
-L_ba3d:
-    t_merge_ba46_0001 = 0x173
-    goto L_ba46
-
-L_ba43:
-    t_merge_ba46_0001 = 0x6d
-
-L_ba46:
-    idmDst = t_merge_ba46_0001
+    idmSrc = (fMulti == 0 ? idmHasBombedKillingColonistsDestroyingOneInstallati : idmFleetsHaveBombedKillingColonistsDestroyingOne)
+    idmDst = (fMulti == 0 ? idmHasBombedKillingColonistsDestroyingOneInstallati3 : idmFleetsHaveBombedKillingColonistsDestroyingOne3)
     branch cPPE <= 1 ? L_ba98 : L_ba60
+
+
+
+
+
+
 
 
 
@@ -440,29 +400,15 @@ L_ba68:
     goto L_ba98
 
 L_ba6b:
-    branch fMulti == 0 ? L_ba7a : L_ba74
-
-L_ba74:
-    t_merge_ba7d_0001 = 0x17c
-    goto L_ba7d
-
-L_ba7a:
-    t_merge_ba7d_0001 = 0x8f
-
-L_ba7d:
-    idmSrc = t_merge_ba7d_0001
-    branch fMulti == 0 ? L_ba8f : L_ba89
-
-L_ba89:
-    t_merge_ba92_0001 = 0x17d
-    goto L_ba92
-
-L_ba8f:
-    t_merge_ba92_0001 = 0x90
-
-L_ba92:
-    idmDst = t_merge_ba92_0001
+    idmSrc = (fMulti == 0 ? idmHasBombedKillingOffEnemyColonists : idmFleetsHaveBombedKillingOffEnemyColonists)
+    idmDst = (fMulti == 0 ? idmHasBombedKillingColonists3 : idmFleetsHaveBombedKillingColonists3)
     goto L_bac4
+
+
+
+
+
+
 
 L_ba98:
     branch cKillPeople <= 0 ? L_bc0a : L_baaf
@@ -516,53 +462,25 @@ L_bd78:
 
 
 L_bd94:
-    branch fMulti == 0 ? L_bda3 : L_bd9d
-
-L_bd9d:
-    t_merge_bda6_0001 = 0x166
-    goto L_bda6
-
-L_bda3:
-    t_merge_bda6_0001 = 0x60
-
-L_bda6:
-    idmSrc = t_merge_bda6_0001
-    branch fMulti == 0 ? L_bdb8 : L_bdb2
-
-L_bdb2:
-    t_merge_bdbb_0001 = 0x170
-    goto L_bdbb
-
-L_bdb8:
-    t_merge_bdbb_0001 = 0x6a
-
-L_bdbb:
-    idmDst = t_merge_bdbb_0001
+    idmSrc = (fMulti == 0 ? idmHasBombedKillingColonists : idmFleetsHaveBombedKillingColonists)
+    idmDst = (fMulti == 0 ? idmHasBombedKillingColonists2 : idmFleetsHaveBombedKillingColonists2)
     goto L_bdeb
 
+
+
+
+
+
+
 L_bdc1:
-    branch fMulti == 0 ? L_bdd0 : L_bdca
+    idmSrc = (fMulti == 0 ? idmHasBombedKillingOffEnemyColonists : idmFleetsHaveBombedKillingOffEnemyColonists)
+    idmDst = (fMulti == 0 ? idmHasBombedKillingColonists3 : idmFleetsHaveBombedKillingColonists3)
 
-L_bdca:
-    t_merge_bdd3_0001 = 0x17c
-    goto L_bdd3
 
-L_bdd0:
-    t_merge_bdd3_0001 = 0x8f
 
-L_bdd3:
-    idmSrc = t_merge_bdd3_0001
-    branch fMulti == 0 ? L_bde5 : L_bddf
 
-L_bddf:
-    t_merge_bde8_0001 = 0x17d
-    goto L_bde8
 
-L_bde5:
-    t_merge_bde8_0001 = 0x90
 
-L_bde8:
-    idmDst = t_merge_bde8_0001
 
 L_bdeb:
     call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), 0, 0, 0, 0) -> callresult(int16_t)

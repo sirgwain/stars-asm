@@ -54,6 +54,24 @@ type TableJump struct {
 // stmt marks TableJump as an IR statement.
 func (*TableJump) stmt() {}
 
+// SwitchGoto jumps to the label of the case whose Value equals Index, or to
+// Default when none does. Lowering never produces it; region structuring
+// builds it from chains of equality tests.
+type SwitchGoto struct {
+	Index   Expr
+	Cases   []SwitchCase
+	Default string
+}
+
+// stmt marks SwitchGoto as an IR statement.
+func (*SwitchGoto) stmt() {}
+
+// SwitchCase is one SwitchGoto destination.
+type SwitchCase struct {
+	Value Expr
+	Label string
+}
+
 type Goto struct{ Label string }
 
 func (*Goto) stmt() {}
@@ -115,6 +133,12 @@ type Binary struct {
 }
 
 func (*Binary) expr() {}
+
+// Cond is a C conditional expression: Cond ? Then : Else.
+type Cond struct{ Cond, Then, Else Expr }
+
+// expr marks Cond as an expression.
+func (*Cond) expr() {}
 
 type Cast struct {
 	Type  string

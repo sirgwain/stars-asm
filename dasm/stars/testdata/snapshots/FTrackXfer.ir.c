@@ -13,44 +13,39 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     int32_t  t_call_5beb;
     int32_t  t_merge_5c20_0001;
     int32_t  t_call_5c18;
-    int32_t  t_merge_5cf0_0001;
-    uint16_t t_merge_5d7f_0001;
-    uint16_t t_merge_5def_0001;
-    uint16_t t_merge_5e4d_0001;
-    uint16_t t_merge_5e34_0001;
+    int16_t  t_merge_5e4d_0001;
     uint16_t t_merge_5ecd_0001;
-    int32_t  t_merge_5f3b_0001;
 
 L_5a16:
-    GetClientRect(hwnd, &(rc));
+    GetClientRect(hwnd, &rc);
     pt.x = x;
     pt.y = y;
     i = 0;
     goto L_5a86;
 
 L_5a42:
-    if (((rgbtnXfer[i].bt & 0x4) != 0x0))
+    if ((rgbtnXfer[i].bt & 0x4) != 0x0)
         goto L_5a82;
     else
         goto L_5a5c;
 
 L_5a5c:
-    if ((PtInRect(&(rgbtnXfer[i].rc), PointFrom16(pt)) != 0))
+    if (PtInRect(&rgbtnXfer[i].rc, PointFrom16(pt)) != 0)
         goto L_5a91;
     else
         goto L_5a82;
 
 L_5a82:
-    i = (i + 1);
+    i = i + 1;
 
 L_5a86:
-    if ((i < crgbtnXfer))
+    if (i < crgbtnXfer)
         goto L_5a42;
     else
         goto L_5a91;
 
 L_5a91:
-    if ((i != crgbtnXfer))
+    if (i != crgbtnXfer)
         goto L_5aa2;
     else
         goto L_5a9c;
@@ -59,34 +54,34 @@ L_5a9c:
     return 0;
 
 L_5aa2:
-    iBtn = (i >> 0x1);
+    iBtn = i >> 0x1;
     btn = rgbtnXfer[i];
-    iVal = (btn.iVal & 0x7f);
-    if ((btn.fVisible != 0x0))
+    iVal = btn.iVal & 0x7f;
+    if (btn.fVisible != 0x0)
         goto L_5d2e;
     else
         goto L_5adc;
 
 L_5adc:
-    if ((iVal > 4))
+    if (iVal > 4)
         goto FinishUp;
     else
         goto L_5ae8;
 
 L_5ae8:
-    if ((pxfer[1].grobj != grobjThing))
+    if (pxfer[1].grobj != grobjThing)
         goto L_5b0e;
     else
         goto L_5af6;
 
 L_5af6:
-    if ((iVal == 4))
+    if (iVal == 4)
         goto FinishUp;
     else
         goto L_5aff;
 
 L_5aff:
-    if ((iVal == 3))
+    if (iVal == 3)
         goto FinishUp;
     else
         goto L_5b05;
@@ -95,7 +90,7 @@ L_5b05:
     goto L_5b31;
 
 L_5b0e:
-    if ((pxfer[btn.iSide].fl.iPlayer != idPlayer))
+    if (pxfer[btn.iSide].fl.iPlayer != idPlayer)
         goto FinishUp;
     else
         goto L_5b31;
@@ -106,82 +101,69 @@ L_5b31:
     ptOld.x = -1;
 
 L_5b44:
-    if ((FGetMouseMove(&(pt)) == 0))
+    if (FGetMouseMove(&pt) == 0)
         goto L_5d26;
     else
         goto L_5b58;
 
 L_5b58:
-    if ((pt.x != ptOld.x))
+    if (pt.x != ptOld.x)
         goto L_5b6e;
     else
         goto L_5b63;
 
 L_5b63:
-    if ((pt.y == ptOld.y))
+    if (pt.y == ptOld.y)
         goto L_5b44;
     else
         goto L_5b6e;
 
 L_5b6e:
     ptOld = pt;
-    if ((btn.iSide != 0x1))
+    if (btn.iSide != 0x1)
         goto L_5bc0;
     else
         goto L_5b8c;
 
 L_5b8c:
-    if ((pxfer[1].grobj != grobjThing))
+    if (pxfer[1].grobj != grobjThing)
         goto L_5bc0;
     else
         goto L_5b9a;
 
 L_5b9a:
-    cNew = (uint32_t)((pxfer[1].th.thp.wtMax * 0xa));
+    cNew = (uint32_t)(pxfer[1].th.thp.wtMax * 0xa);
     goto L_5c26;
 
 L_5bc0:
-    if ((iVal != 4))
+    if (iVal != 4)
         goto L_5bf6;
     else
         goto L_5bc9;
 
 L_5bc9:
-    t_call_5beb = LGetFleetStat(&(pxfer[btn.iSide].fl), 1);
+    t_call_5beb = LGetFleetStat(&pxfer[btn.iSide].fl, 1);
     t_merge_5c20_0001 = t_call_5beb;
     goto L_5c20;
 
 L_5bf6:
-    t_call_5c18 = LGetFleetStat(&(pxfer[btn.iSide].fl), 2);
+    t_call_5c18 = LGetFleetStat(&pxfer[btn.iSide].fl, 2);
     t_merge_5c20_0001 = t_call_5c18;
 
 L_5c20:
     cNew = t_merge_5c20_0001;
 
 L_5c26:
-    cNew = (int32_t)(((uint32_t)(((int32_t)((pt.x - btn.rc.left)) * cNew)) / (int32_t)(((btn.rc.right - btn.rc.left) - 2))));
-    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ((uint8_t *)((pxfer + btn.iSide)) + 4));
-    dChg = (cNew - cCur);
-    if ((btn.iSide != 0x0))
-        goto L_5ce3;
-    else
-        goto L_5cda;
-
-L_5cda:
-    t_merge_5cf0_0001 = dChg;
-    goto L_5cf0;
-
-L_5ce3:
-    t_merge_5cf0_0001 = (-dChg);
-
-L_5cf0:
-    if ((XferSupply(iVal, t_merge_5cf0_0001) != 0))
+    cNew = (int32_t)((int32_t)((int32_t)(pt.x - btn.rc.left) * cNew) / (int32_t)(btn.rc.right - btn.rc.left - 2));
+    cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, (uint8_t *)(pxfer + btn.iSide) + 4);
+    dChg = cNew - cCur;
+    if (XferSupply(iVal, btn.iSide == 0x0 ? dChg : -dChg) != 0)
         goto L_5d0d;
     else
         goto L_5b44;
 
 L_5d0d:
-    DrawXferDlg(hwnd, 0x0, &(rc), iVal);
+    DrawXferDlg(hwnd, 0x0, &rc, iVal);
 
 L_5d23:
     goto L_5b44;
@@ -191,31 +173,18 @@ L_5d26:
     goto FinishUp;
 
 L_5d2e:
-    InitBtnTrack(&(btnt), hwnd, 0x0, &(btn.rc), btn.bt, 80, 0, 0, 0x0);
-    if (((fkb & 0x8) == 0x0))
+    InitBtnTrack(&btnt, hwnd, 0x0, &btn.rc, btn.bt, 80, 0, 0, 0x0);
+    if ((fkb & 0x8) == 0x0)
         goto L_5d88;
     else
         goto L_5d66;
 
 L_5d66:
-    if (((fkb & 0x4) == 0x0))
-        goto L_5d7b;
-    else
-        goto L_5d74;
-
-L_5d74:
-    t_merge_5d7f_0001 = 0x3e8;
-    goto L_5d7f;
-
-L_5d7b:
-    t_merge_5d7f_0001 = 0x64;
-
-L_5d7f:
-    dChg = (uint32_t)(t_merge_5d7f_0001);
+    dChg = (uint32_t)((fkb & 0x4) == 0x0 ? 0x64 : 0x3e8);
     goto L_5dad;
 
 L_5d88:
-    if (((fkb & 0x4) == 0x0))
+    if ((fkb & 0x4) == 0x0)
         goto L_5da3;
     else
         goto L_5d96;
@@ -228,32 +197,19 @@ L_5da3:
     dChg = 1;
 
 L_5dad:
-    if ((FTrackBtn(&(btnt)) == 0))
+    if (FTrackBtn(&btnt) == 0)
         goto FinishUp;
     else
         goto L_5dc1;
 
 L_5dc1:
-    if ((mdXferDlg != mdXferShips))
+    if (mdXferDlg != mdXferShips)
         goto L_5f01;
     else
         goto L_5dcb;
 
 L_5dcb:
-    if ((btn.iSide != 0x0))
-        goto L_5dec;
-    else
-        goto L_5de6;
-
-L_5de6:
-    t_merge_5def_0001 = 0x1;
-    goto L_5def;
-
-L_5dec:
-    t_merge_5def_0001 = 0x0;
-
-L_5def:
-    if ((LOWORD(dChg) >= pxfer[t_merge_5def_0001].fl.rgcsh[iVal]))
+    if (LOWORD(dChg) >= pxfer[btn.iSide == 0x0 ? 1 : 0].fl.rgcsh[iVal])
         goto L_5e19;
     else
         goto L_5e10;
@@ -263,30 +219,17 @@ L_5e10:
     goto L_5e4d;
 
 L_5e19:
-    if ((btn.iSide != 0x0))
-        goto L_5e31;
-    else
-        goto L_5e2b;
-
-L_5e2b:
-    t_merge_5e34_0001 = 0x1;
-    goto L_5e34;
-
-L_5e31:
-    t_merge_5e34_0001 = 0x0;
-
-L_5e34:
-    t_merge_5e4d_0001 = pxfer[t_merge_5e34_0001].fl.rgcsh[iVal];
+    t_merge_5e4d_0001 = pxfer[btn.iSide == 0x0 ? 1 : 0].fl.rgcsh[iVal];
 
 L_5e4d:
     i = t_merge_5e4d_0001;
-    if ((i == 0))
+    if (i == 0)
         goto L_5dad;
     else
         goto L_5e59;
 
 L_5e59:
-    if ((pxfer[btn.iSide].fl.rgcsh[iVal] < (32766 - i)))
+    if (pxfer[btn.iSide].fl.rgcsh[iVal] < 32766 - i)
         goto L_5e8c;
     else
         goto L_5e87;
@@ -295,65 +238,40 @@ L_5e87:
     i = 1;
 
 L_5e8c:
-    pxfer[btn.iSide].fl.rgcsh[iVal] = (pxfer[btn.iSide].fl.rgcsh[iVal] + i);
-    if ((btn.iSide != 0x0))
-        goto L_5eca;
-    else
-        goto L_5ec4;
-
-L_5ec4:
-    t_merge_5ecd_0001 = 0x1;
-    goto L_5ecd;
-
-L_5eca:
-    t_merge_5ecd_0001 = 0x0;
-
-L_5ecd:
-    pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i);
-    DrawXferDlg(hwnd, btnt.hdc, &(rc), iBtn);
+    pxfer[btn.iSide].fl.rgcsh[iVal] = pxfer[btn.iSide].fl.rgcsh[iVal] + i;
+    t_merge_5ecd_0001 = btn.iSide == 0x0 ? 0x1 : 0x0;
+    pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i;
+    DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn);
 
 L_5efe:
     goto L_5dad;
 
 L_5f01:
-    if ((iVal < 0))
+    if (iVal < 0)
         goto L_5dad;
     else
         goto L_5f0a;
 
 L_5f0a:
-    if ((iVal > 4))
+    if (iVal > 4)
         goto L_5dad;
     else
         goto L_5f13;
 
 L_5f13:
-    if ((btn.iSide != 0x0))
-        goto L_5f2e;
-    else
-        goto L_5f25;
-
-L_5f25:
-    t_merge_5f3b_0001 = dChg;
-    goto L_5f3b;
-
-L_5f2e:
-    t_merge_5f3b_0001 = (-dChg);
-
-L_5f3b:
-    if ((XferSupply(iVal, t_merge_5f3b_0001) != 0))
+    if (XferSupply(iVal, btn.iSide == 0x0 ? dChg : -dChg) != 0)
         goto L_5f58;
     else
         goto L_5dad;
 
 L_5f58:
-    DrawXferDlg(hwnd, btnt.hdc, &(rc), iVal);
+    DrawXferDlg(hwnd, btnt.hdc, &rc, iVal);
 
 L_5f6d:
     goto L_5dad;
 
 FinishUp:
     UpdateXferBtns();
-    DrawXferDlg(hwnd, 0x0, &(rc), -2);
+    DrawXferDlg(hwnd, 0x0, &rc, -2);
     return 1;
 }

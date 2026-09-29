@@ -61,18 +61,11 @@ L_1b93:
     call SetRect(&rcGauge, (xLeft + LOWORD(l)), yTop, xRight, (yTop + dyArial8)) -> callresult(void)
     rgrcRef[2] = rcGauge
     call DrawFleetGauge(hdc, &rcGauge, pfl, 4) -> callresult(void)
-    branch gd.fSmallTileMode == 0x0 ? L_1bfc : L_1bf6
-
-L_1bf6:
-    t_merge_1bff_0001 = 0x2
-    goto L_1bff
-
-L_1bfc:
-    t_merge_1bff_0001 = 0x4
-
-L_1bff:
-    yTop = (yTop + (t_merge_1bff_0001 + dyArial8))
+    yTop = (yTop + ((gd.fSmallTileMode == 0x0 ? 4 : 2) + dyArial8))
     branch ptile->fMinDraw != 0x0 ? L_1c47 : L_1c1c
+
+
+
 
 L_1c1c:
     c = CchGetString(idsCargo3, szWork)

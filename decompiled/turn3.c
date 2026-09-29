@@ -64,2784 +64,896 @@ void SatisfyOrders(int16_t iPass) {
     THING         *lpth;
     int32_t        lBest;
     int32_t        dx;
-    uint16_t       t_merge_68fa_0001;
-    uint16_t       t_merge_694a_0001;
-    uint16_t       t_merge_6a79_0001;
+    int16_t        t_merge_68fa_0001;
     int32_t        t_call_6e24;
     int32_t        t_merge_6e41_0001;
     int32_t        t_call_6e39;
     int32_t        t_merge_6e71_0001;
     int32_t        t_merge_70c3_0001;
-    uint16_t       t_merge_7165_0001;
     int32_t        t_merge_72c7_0001;
     int32_t        t_merge_73e3_0001;
-    int16_t        t_merge_7547_0001;
-    int16_t        t_merge_76b8_0001;
     int32_t        t_merge_77be_0001;
-    int16_t        t_merge_7a20_0001;
-    int16_t        t_merge_7aca_0001;
-    uint16_t       t_merge_8513_0001;
-    int16_t        t_merge_915a_0001;
-
-L_6798:
-    if ((cFleet <= 0))
-        goto L_9eb2;
-    else
-        goto L_67ae;
-
-L_67ae:
-    ifltcur = 0;
-    goto L_67ba;
-
-L_67b6:
-    ifltcur = (ifltcur + 1);
-
-L_67ba:
-    if ((ifltcur >= cFleet))
-        goto L_9eb2;
-    else
-        goto L_67c5;
-
-L_67c5:
-    lpfl = rglpfl[ifltcur];
-    if ((rglpfl[ifltcur] != 0x0))
-        goto L_67f5;
-    else
-        goto L_9eb2;
-
-L_67f5:
-    if ((iPass != 1))
-        goto L_6826;
-    else
-        goto L_67fe;
-
-L_67fe:
-    lpfl->fCompChg = 0x0;
-    lpfl->fTargeted = 0x0;
-
-L_6826:
-    if ((lpfl->fDead != 0x0))
-        goto L_67b6;
-    else
-        goto L_683d;
-
-L_683d:
-    if ((lpfl->fSkipped != 0x0))
-        goto L_67b6;
-    else
-        goto L_6857;
-
-L_6857:
-    ord = lpfl->lpplord->rgord[0];
-    if ((ord.grTask != grTaskXfer))
-        goto L_8155;
-    else
-        goto L_6888;
-
-L_6888:
-    fFulfilled = 1;
-    fDone = 1;
-    fSentBadFleetXfer = 0;
-    fHasPermission = 1;
-    fMining = 0;
-    fFueling = 0;
-    fStealing = 0;
-    fDunnage = 0;
-    lpflWP = 0x0;
-    lpthWP = 0x0;
-    if ((lpfl->idPlanet == -1))
-        goto L_68f7;
-    else
-        goto L_68d6;
-
-L_68d6:
-    if ((FLookupPlanet(lpfl->idPlanet, &(pl)) == 0))
-        goto L_68f7;
-    else
-        goto L_68f1;
-
-L_68f1:
-    t_merge_68fa_0001 = 0x1;
-    goto L_68fa;
-
-L_68f7:
-    t_merge_68fa_0001 = 0x0;
-
-L_68fa:
-    fAtPlanet = t_merge_68fa_0001;
-    idWP = ord.id;
-    goto L_6bf1;
-
-L_6912:
-    lpflWP = LpflFromId(ord.id);
-    idWP = (idWP | 0x8000);
-    xWP = 0xffff;
-    if ((lpfl->iPlayer != lpflWP->iPlayer))
-        goto L_6947;
-    else
-        goto L_6941;
-
-L_6941:
-    t_merge_694a_0001 = 0x1;
-    goto L_694a;
-
-L_6947:
-    t_merge_694a_0001 = 0x0;
-
-L_694a:
-    fHasPermission = t_merge_694a_0001;
-    if ((fHasPermission != 0))
-        goto L_6981;
-    else
-        goto L_6956;
-
-L_6956:
-    GetFleetScannerRange(lpfl, 0x0, 0x0, &(fHasPermission));
-    if ((fHasPermission == 0))
-        goto L_6c14;
-    else
-        goto L_6979;
-
-L_6979:
-    fStealing = 1;
-
-L_697e:
-    goto L_6c14;
-
-L_6981:
-    if ((lpflWP->fHereAllTurn == 0x0))
-        goto L_6c14;
-    else
-        goto L_6998;
-
-L_6998:
-    if ((fAtPlanet == 0))
-        goto L_6c14;
-    else
-        goto L_69a1;
-
-L_69a1:
-    if ((CMineFromLpfl(lpflWP) <= 0))
-        goto L_69f6;
-    else
-        goto L_69c4;
-
-L_69c4:
-    if ((pl.iPlayer == -1))
-        goto L_69dc;
-    else
-        goto L_69cd;
-
-L_69cd:
-    if ((pl.iPlayer != lpfl->iPlayer))
-        goto L_69f6;
-    else
-        goto L_69dc;
-
-L_69dc:
-    fMining = 1;
-    xWP = 0xffff;
-    idWP = (lpflWP->id | 0x8000);
-    goto L_6c14;
-
-L_69f6:
-    if ((LGetFleetStat(lpflWP, 2) != 0))
-        goto L_6c14;
-    else
-        goto L_6a18;
-
-L_6a18:
-    if ((pl.iPlayer != lpfl->iPlayer))
-        goto L_6c14;
-    else
-        goto L_6a27;
-
-L_6a27:
-    fFueling = 1;
-    xWP = 0xffff;
-    idWP = (lpflWP->id | 0x8000);
-
-L_6a3e:
-    goto L_6c14;
-
-L_6a41:
-    lpthWP = LpthFromId(ord.id);
-    xWP = 0xfffe;
-    goto L_6c14;
-
-L_6a5c:
-    xWP = 0xffff;
-    if ((lpfl->iPlayer != pl.iPlayer))
-        goto L_6a76;
-    else
-        goto L_6a70;
-
-L_6a70:
-    t_merge_6a79_0001 = 0x3;
-    goto L_6a79;
-
-L_6a76:
-    t_merge_6a79_0001 = 0x0;
-
-L_6a79:
-    fHasPermission = t_merge_6a79_0001;
-    if ((fHasPermission != 0))
-        goto L_6c14;
-    else
-        goto L_6a85;
-
-L_6a85:
-    GetFleetScannerRange(lpfl, 0x0, 0x0, &(fHasPermission));
-    if ((fHasPermission != 1))
-        goto L_6aad;
-    else
-        goto L_6aa8;
-
-L_6aa8:
-    fHasPermission = 0;
-
-L_6aad:
-    if ((fHasPermission == 0))
-        goto L_6abb;
-    else
-        goto L_6ab6;
-
-L_6ab6:
-    fStealing = 1;
-
-L_6abb:
-    if ((fHasPermission != 0))
-        goto L_6c14;
-    else
-        goto L_6ac4;
-
-L_6ac4:
-    if ((pl.iPlayer != -1))
-        goto L_6c14;
-    else
-        goto L_6acd;
-
-L_6acd:
-    iflWP = 0;
-    goto L_6ad9;
-
-L_6ad5:
-    iflWP = (iflWP + 1);
-
-L_6ad9:
-    if ((iflWP >= cFleet))
-        goto L_6c14;
-    else
-        goto L_6ae4;
-
-L_6ae4:
-    lpflWP = rglpfl[iflWP];
-    if ((rglpfl[iflWP] != 0x0))
-        goto L_6b14;
-    else
-        goto L_6c14;
-
-L_6b14:
-    if ((lpflWP->fDead != 0x0))
-        goto L_6ad5;
-    else
-        goto L_6b2b;
-
-L_6b2b:
-    if ((lpflWP->iPlayer != lpfl->iPlayer))
-        goto L_6ad5;
-    else
-        goto L_6b3e;
-
-L_6b3e:
-    if ((lpfl->idPlanet != lpflWP->idPlanet))
-        goto L_6ad5;
-    else
-        goto L_6b51;
-
-L_6b51:
-    if ((lpflWP != lpfl))
-        goto L_6b6a;
-    else
-        goto L_6ad5;
-
-L_6b6a:
-    if ((lpflWP->fHereAllTurn == 0x0))
-        goto L_6ad5;
-    else
-        goto L_6b81;
-
-L_6b81:
-    if ((CMineFromLpfl(lpflWP) <= 0))
-        goto L_6ad5;
-    else
-        goto L_6ba4;
-
-L_6ba4:
-    fMining = 2;
-    fHasPermission = 1;
-    ord.grobj = grobjFleet;
-    ord.id = lpflWP->id;
-    xWP = 0xffff;
-    idWP = (lpflWP->id | 0x8000);
-    goto L_6c14;
-
-L_6bde:
-    xWP = ord.pt.x;
-    idWP = ord.pt.y;
-    goto L_6c14;
-
-L_6bf1:
-    if ((ord.grobj == grobjPlanet))
-        goto L_6a5c;
-    else
-        goto L_6bf9;
-
-L_6bf9:
-    if ((ord.grobj == grobjFleet))
-        goto L_6912;
-    else
-        goto L_6c01;
-
-L_6c01:
-    if ((ord.grobj == grobjOther))
-        goto L_6bde;
-    else
-        goto L_6c09;
-
-L_6c09:
-    if ((ord.grobj == grobjThing))
-        goto L_6a41;
-    else
-        goto L_6c14;
-
-L_6c14:
-    iLoad = ((iPass - 0x1) & 0x1);
-    fOptFuel = 0;
-    if ((ord.grobj != grobjThing))
-        goto LTryDunnage;
-    else
-        goto L_6c38;
-
-L_6c38:
-    if ((lpthWP != 0x0))
-        goto L_6c4c;
-    else
-        goto L_6c63;
-
-L_6c4c:
-    if ((lpthWP->ith == ithMineralPacket))
-        goto LTryDunnage;
-    else
-        goto L_6c63;
-
-L_6c63:
-    if ((lpthWP != 0x0))
-        goto L_6c77;
-    else
-        goto CancelOrder;
-
-L_6c77:
-    FSendPlrMsg2(lpfl->iPlayer, 286, (lpfl->id | 0x8000), lpfl->id, lpthWP->ith);
-
-L_6caa:
-    goto CancelOrder;
-
-LTryDunnage:
-    j = 0;
-    goto L_7b78;
-
-L_6cb5:
-    action = ord.txp.rgia[j].iAction;
-    if ((action == iActionNone))
-        goto L_7b74;
-    else
-        goto L_6cd5;
-
-L_6cd5:
-    if ((fDunnage != 2))
-        goto L_6ceb;
-    else
-        goto L_6cdf;
-
-L_6cdf:
-    if ((action != iActionLoadDunnage))
-        goto L_7b74;
-    else
-        goto L_6ceb;
-
-L_6ceb:
-    if ((j != 4))
-        goto L_6d1a;
-    else
-        goto L_6cf4;
-
-L_6cf4:
-    if ((ord.grobj == grobjFleet))
-        goto L_6d1a;
-    else
-        goto L_6d07;
-
-L_6d07:
-    if ((ord.grobj != grobjOther))
-        goto L_7b74;
-    else
-        goto L_6d1a;
-
-L_6d1a:
-    if ((j < 3))
-        goto L_6d39;
-    else
-        goto L_6d23;
-
-L_6d23:
-    if ((ord.grobj == grobjThing))
-        goto L_7b74;
-    else
-        goto L_6d39;
-
-L_6d39:
-    amountWP = 0;
-    goto L_6de4;
-
-L_6d51:
-    if ((fMining != 0))
-        goto L_6d63;
-    else
-        goto L_6d5a;
-
-L_6d5a:
-    if ((fFueling == 0))
-        goto L_6d6c;
-    else
-        goto L_6d63;
-
-L_6d63:
-    if ((j != 4))
-        goto L_6d92;
-    else
-        goto L_6d6c;
-
-L_6d6c:
-    amountWP = lpflWP->rgwtMin[j];
-    goto L_6dff;
-
-L_6d92:
-    if ((j >= 4))
-        goto L_6dff;
-    else
-        goto L_6d9b;
-
-L_6d9b:
-    amountWP = pl.rgwtMin[j];
-
-L_6db2:
-    goto L_6dff;
-
-L_6db5:
-    if ((j >= 3))
-        goto L_6dff;
-    else
-        goto L_6dbe;
-
-L_6dbe:
-    amountWP = (int32_t)(lpthWP->thp.rgwtMin[j]);
-
-L_6dde:
-    goto L_6dff;
-
-L_6de4:
-    if ((ord.grobj == grobjPlanet))
-        goto L_6d92;
-    else
-        goto L_6dec;
-
-L_6dec:
-    if ((ord.grobj == grobjFleet))
-        goto L_6d51;
-    else
-        goto L_6df4;
-
-L_6df4:
-    if ((ord.grobj == grobjThing))
-        goto L_6db5;
-    else
-        goto L_6dff;
-
-L_6dff:
-    goto L_6ff2;
-
-L_6e05:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_6e11;
-
-L_6e11:
-    if ((j != 4))
-        goto L_6e2f;
-    else
-        goto L_6e1a;
-
-L_6e1a:
-    t_call_6e24 = LGetFleetStat(lpfl, 1);
-    t_merge_6e41_0001 = t_call_6e24;
-    goto L_6e41;
-
-L_6e2f:
-    t_call_6e39 = LGetFleetStat(lpfl, 2);
-    t_merge_6e41_0001 = t_call_6e39;
-
-L_6e41:
-    amount = t_merge_6e41_0001;
-    if ((2000000 < amount))
-        goto L_6e62;
-    else
-        goto L_6e6b;
-
-L_6e62:
-    t_merge_6e71_0001 = 2000000;
-    goto L_6e71;
-
-L_6e6b:
-    t_merge_6e71_0001 = amount;
-
-L_6e71:
-    amount = t_merge_6e71_0001;
-    if ((amount < 65536))
-        goto L_6e8e;
-    else
-        goto L_6ec9;
-
-L_6e8e:
-    amountEdit = (uint32_t)(((uint32_t)((amount * ord.txp.rgia[j].cQuan)) / 0x64));
-    goto L_6eff;
-
-L_6ec9:
-    amountEdit = (uint32_t)(((int32_t)((amount / 100)) * ord.txp.rgia[j].cQuan));
-
-L_6eff:
-    amountEdit = (amountEdit - lpfl->rgwtMin[j]);
-    if ((amountEdit < 0))
-        goto L_6f3d;
-    else
-        goto L_7018;
-
-L_6f3d:
-    amountEdit = 0;
-
-L_6f49:
-    goto L_7018;
-
-L_6f4c:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_6f58;
-
-L_6f58:
-    amountEdit = ord.txp.rgia[j].cQuan;
-    goto L_7018;
-
-L_6f75:
-    if ((iLoad != 0))
-        goto L_7b74;
-    else
-        goto L_6f81;
-
-L_6f81:
-    amountEdit = ord.txp.rgia[j].cQuan;
-    goto L_7018;
-
-L_6f9e:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_6faa;
-
-L_6faa:
-    amountEdit = amountWP;
-    goto L_7018;
-
-L_6fbb:
-    if ((iLoad != 0))
-        goto L_7b74;
-    else
-        goto L_6fc7;
-
-L_6fc7:
-    amountEdit = lpfl->rgwtMin[j];
-    goto L_7018;
-
-L_6ff2:
-    if (((action - 1) > 0x8))
-        goto L_7018;
-    else
-        goto L_6ffd;
-
-L_6ffd:
-    switch (((action - 1) * 0x2)) {
-    case 0x0:
-        goto L_6f9e;
-    case 0x2:
-        goto L_6fbb;
-    case 0x4:
-        goto L_6f4c;
-    case 0x6:
-        goto L_6f75;
-    case 0x8:
-        goto L_6e05;
-    case 0xa:
-        goto L_6e05;
-    case 0xc:
-        goto L_6faa;
-    case 0xe:
-        goto L_6f81;
-    case 0x10:
-        goto L_6f81;
+    int16_t        t_merge_8513_0001;
+
+    if (cFleet > 0) {
+        for (ifltcur = 0; ifltcur < cFleet; ifltcur++) {
+            lpfl = rglpfl[ifltcur];
+            if (rglpfl[ifltcur] == 0x0)
+                break;
+            if (iPass == 1) {
+                lpfl->fCompChg = 0x0;
+                lpfl->fTargeted = 0x0;
+            }
+            if (lpfl->fDead == 0x0 && lpfl->fSkipped == 0x0) {
+                ord = lpfl->lpplord->rgord[0];
+                if (ord.grTask != grTaskXfer) {
+                    if (ord.grTask != grTaskScrap || iPass != 1) {
+                        switch (ord.grTask) {
+                        default:
+                            break;
+                        case grTaskColonize:
+                            goto L_817a;
+                        case grTaskMine:
+                            cMine = 0;
+                            if (iPass != 3 || lpfl->fHereAllTurn == 0x0)
+                                break;
+                            if (lpfl->idPlanet != -1) {
+                                lppl = LpplFromId(lpfl->idPlanet);
+                                if (lppl != 0x0) {
+                                    cMine = CMineFromLpfl(lpfl);
+                                    if (cMine != 0) {
+                                        if (lppl->iPlayer == -1) {
+                                            EstMineralsMined(lppl, rglQuan, cMine, 1);
+                                            break;
+                                        }
+                                        if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh)
+                                            break;
+                                        FSendPlrMsg2(lpfl->iPlayer, 118, lpfl->id | 0x8000, lpfl->id, lppl->id);
+                                        goto CancelOrder;
+                                    }
+                                    FSendPlrMsg2(lpfl->iPlayer, 117, lpfl->id | 0x8000, lpfl->id, lppl->id);
+                                    goto CancelOrder;
+                                }
+                                goto CancelOrder;
+                            }
+                            FSendPlrMsg2(lpfl->iPlayer, 119, lpfl->id | 0x8000, lpfl->id, 0);
+                            goto CancelOrder;
+                        case grTaskAutoRoute:
+                            if (lpfl->cord != 1 || lpfl->idPlanet == -1)
+                                break;
+                            lppl = LpplFromId(lpfl->idPlanet);
+                            if (lppl->iPlayer != lpfl->iPlayer || lppl->idRoute == 0x0) {
+                                if (iPass != 4)
+                                    break;
+                                AutoFleetOrder(lpfl, lppl);
+                                ord = lpfl->lpplord->rgord[0];
+                                if (ord.grTask == grTaskMerge)
+                                    goto LDoMerge;
+                                break;
+                            }
+                            AutoRouteFleet(lpfl, lppl);
+                            FSendPlrMsg(lpfl->iPlayer, lpfl->lpplord->rgord[1].iWarp == 0x0 ? 296 : 295, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet,
+                                        lppl->idRoute - 1, 0, 0, 0, 0);
+                            break;
+                        case grTaskMerge:
+                            if ((iPass & 0x1) != 0x0)
+                                break;
+                            goto LDoMerge;
+                        case grTaskGive:
+                            if (iPass != 4)
+                                break;
+                            iplrDest = ord.tsell.iPlrX;
+                            if (iplrDest >= lpfl->iPlayer) {
+                                iplrDest = iplrDest + 1;
+                            }
+                            if (iplrDest >= 0 && iplrDest < game.cPlayer && rgplr[iplrDest].fDead == 0x0) {
+                                if (rgplr[iplrDest].fAi == 0x0 && (int16_t)rgplr[iplrDest].rgmdRelation[lpfl->iPlayer] != 2) {
+                                    if (lpfl->rgwtMin[3] <= 0) {
+                                        ishLastFree = -1;
+                                        for (ish = 0; ish < 16; ish++) {
+                                            if (lpfl->rgcsh[ish] != 0) {
+                                                ishMatch = IshFindSimilarDesign(&rglpshdef[lpfl->iPlayer][ish].hul, iplrDest);
+                                                if (ishMatch == -1) {
+                                                    do {
+                                                        ishLastFree = ishLastFree + 1;
+                                                    } while (ishLastFree < 16 && rglpshdef[iplrDest][ishLastFree].fFree == 0x0);
+                                                    if (ishLastFree >= 16)
+                                                        goto SellNoCap;
+                                                    rgishMap[ish] = ishLastFree;
+                                                } else {
+                                                    rgishMap[ish] = ishMatch;
+                                                }
+                                            } else {
+                                                rgishMap[ish] = -1;
+                                            }
+                                        }
+                                        if (rgplr[iplrDest].cFleet < 0x200) {
+                                            lpflNew = LpflNew(iplrDest, lpfl->idPlanet);
+                                            if (lpflNew != 0x0) {
+                                                if (iplrDest < lpfl->iPlayer) {
+                                                    ifltcur = ifltcur + 1;
+                                                }
+                                                lpflNew->pt = lpfl->pt;
+                                                lpflNew->lpplord->rgord[0].pt = lpfl->pt;
+                                                for (ish = 0; ish <= 4; ish++) {
+                                                    lpflNew->rgwtMin[ish] = lpfl->rgwtMin[ish];
+                                                }
+                                                for (ish = 0; ish < 16; ish++) {
+                                                    if (lpfl->rgcsh[ish] > 0) {
+                                                        lpshdefDest = rglpshdef[iplrDest] + rgishMap[ish];
+                                                        if (lpshdefDest->fFree != 0x0) {
+                                                            *lpshdefDest = rglpshdef[lpfl->iPlayer][ish];
+                                                            lpshdefDest->ishdef = rgishMap[ish];
+                                                            lpshdefDest->fGift = 0x1;
+                                                            lpshdefDest->cBuilt = 0x0;
+                                                            lpshdefDest->cExist = 0x0;
+                                                            rgplr[iplrDest].cShDef = rgplr[iplrDest].cShDef + 1;
+                                                        }
+                                                        lpflNew->rgcsh[rgishMap[ish]] = lpflNew->rgcsh[rgishMap[ish]] + lpfl->rgcsh[ish];
+                                                        lpflNew->rgdv[rgishMap[ish]].dp = lpfl->rgdv[ish].dp;
+                                                        lpshdefDest->cBuilt = lpshdefDest->cBuilt + (int32_t)lpfl->rgcsh[ish];
+                                                        lpshdefDest->cExist = lpshdefDest->cExist + (int32_t)lpfl->rgcsh[ish];
+                                                    }
+                                                }
+                                                lpfl->fDead = 0x1;
+                                                FSendPlrMsg2(lpfl->iPlayer, 333, lpflNew->id | 0x8000, WFromLpfl(lpfl), 0x30 | iplrDest);
+                                                FSendPlrMsg2(iplrDest, 334, lpflNew->id | 0x8000, 0x30 | lpfl->iPlayer, WFromLpfl(lpflNew));
+                                                lpfl->fDead = 0x1;
+                                                break;
+                                            }
+                                        }
+                                    SellNoCap:
+                                        FSendPlrMsg2(lpfl->iPlayer, 330, lpfl->id | 0x8000, lpfl->id, 0x30 | iplrDest);
+                                        FSendPlrMsg2(iplrDest, 331, -1, 0x30 | lpfl->iPlayer, 0);
+                                        goto CancelOrder;
+                                    }
+                                    FSendPlrMsg2(lpfl->iPlayer, 329, lpfl->id | 0x8000, lpfl->id, 0);
+                                    goto CancelOrder;
+                                }
+                                FSendPlrMsg2(lpfl->iPlayer, 332, lpfl->id | 0x8000, 0x30 | iplrDest, 0);
+                                goto CancelOrder;
+                            }
+                            FSendPlrMsg2(lpfl->iPlayer, 328, lpfl->id | 0x8000, lpfl->id, 0);
+                            goto CancelOrder;
+                        case grTaskNone:
+                            if (lpfl->cord <= 1 || GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) != raMines ||
+                                lpfl->lpplord->rgord[1].grTask != grTaskLayMines)
+                                break;
+                        case grTaskLayMines:
+                            idm = idmHasDispersedMines;
+                            if (iPass == 3 && (lpfl->fHereAllTurn != 0x0 || GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMines)) {
+                                cMine = CLayMinesFromLpfl(lpfl, -1, -1);
+                                if (cMine == 0) {
+                                    FSendPlrMsg2(lpfl->iPlayer, 191, lpfl->id | 0x8000, lpfl->id, 0);
+                                    goto CancelOrder;
+                                }
+                                if (ord.grTask == grTaskLayMines) {
+                                    if (lpfl->lpplord->rgord[0].tsell.iPlrX != 0x0) {
+                                        if (lpfl->lpplord->rgord[0].tsell.iPlrX != 0x5) {
+                                            lpfl->lpplord->rgord[0].tsell.iPlrX = lpfl->lpplord->rgord[0].tsell.iPlrX - 0x1;
+                                        }
+                                    } else {
+                                        lpfl->lpplord->rgord[0].grTask = grTaskNone;
+                                    }
+                                }
+                                for (j = 0; j < 3; j++) {
+                                    cMine = CLayMinesFromLpfl(lpfl, j, -1);
+                                    if (cMine != 0) {
+                                        if (lpfl->fHereAllTurn == 0x0) {
+                                            cMine = (int32_t)(cMine / 2);
+                                        }
+                                        lpthBest = 0x0;
+                                        lBest = 10000000;
+                                        lpth = lpThings;
+                                        lpthMac = lpThings + cThing;
+                                        for (; lpth < lpthMac; lpth++) {
+                                            if (lpth->iplr == lpfl->iPlayer && lpth->ith == ithMinefield && lpth->thm.iType == j) {
+                                                dx = (int32_t)(lpfl->pt.x - lpth->pt.x);
+                                                dy = (int32_t)(lpfl->pt.y - lpth->pt.y);
+                                                l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
+                                                if (lpth->thm.cMines >= l && l < lBest) {
+                                                    lBest = l;
+                                                    lpthBest = lpth;
+                                                }
+                                            }
+                                        }
+                                        if (lpthBest != 0x0 && lpthBest->thm.cMines < 1000000) {
+                                            lpthBest->pt.x = LOWORD((int32_t)((int32_t)((uint32_t)((int32_t)lpthBest->pt.x * lpthBest->thm.cMines) +
+                                                                                        (uint32_t)((int32_t)lpfl->pt.x * cMine)) /
+                                                                              (cMine + lpthBest->thm.cMines)));
+                                            lpthBest->pt.y = LOWORD((int32_t)((int32_t)((uint32_t)((int32_t)lpthBest->pt.y * lpthBest->thm.cMines) +
+                                                                                        (uint32_t)((int32_t)lpfl->pt.y * cMine)) /
+                                                                              (cMine + lpthBest->thm.cMines)));
+                                            lpthBest->thm.cMines = lpthBest->thm.cMines + cMine;
+                                            idm = idmHasIncreasedMinefieldMines;
+                                        } else {
+                                            lpth = LpthNew(lpfl->iPlayer, ithMinefield);
+                                            if (lpth == 0x0) {
+                                                FSendPlrMsg2(lpfl->iPlayer, 382, lpfl->id | 0x8000, lpfl->id, 0);
+                                                continue;
+                                            }
+                                            lpth->pt = lpfl->pt;
+                                            lpth->thm.cMines = cMine;
+                                            lpth->thm.iType = LOBYTE(j);
+                                        }
+                                        FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, LOWORD(cMine), HIWORD(cMine), 0, 0, 0, 0);
+                                    }
+                                }
+                            }
+                        }
+                        goto L_67b6;
+                    LDoMerge:
+                        if (ord.grobj == grobjFleet) {
+                            lpflDest = LpflFromId(ord.id);
+                            if (lpflDest != 0x0 && lpflDest->fDead == 0x0) {
+                                if (lpfl != lpflDest) {
+                                    if (lpflDest->iPlayer == lpfl->iPlayer) {
+                                        FSendPlrMsg2(lpfl->iPlayer, 247, lpflDest->id | 0x8000, WFromLpfl(lpfl), lpflDest->id);
+                                        FRemovePlayerMessage(lpfl->iPlayer, 78, lpfl->id | 0x8000);
+                                        Merge2Fleets(lpflDest, lpfl, 1);
+                                        goto CancelOrder;
+                                    }
+                                    FSendPlrMsg2(lpfl->iPlayer, 246, lpfl->id | 0x8000, lpfl->id, 0);
+                                    goto CancelOrder;
+                                }
+                                goto CancelOrder;
+                            }
+                        }
+                        FSendPlrMsg2(lpfl->iPlayer, 245, lpfl->id | 0x8000, lpfl->id, 0);
+                        goto CancelOrder;
+                    }
+                L_817a:
+                    if (lpfl->idPlanet != -1) {
+                        if (FLookupPlanet(lpfl->idPlanet, &pl) == 0 && ord.grTask == grTaskColonize)
+                            goto CancelOrder;
+                    } else {
+                        if (ord.grTask == grTaskColonize) {
+                            FSendPlrMsg2(lpfl->iPlayer, 81, lpfl->id | 0x8000, lpfl->id, 0);
+                            goto CancelOrder;
+                        }
+                        pl.id = -1;
+                        pl.iPlayer = -1;
+                        pl.fStarbase = 0x0;
+                    }
+                    if (ord.grTask == grTaskColonize) {
+                        if (pl.iPlayer != -1) {
+                            FSendPlrMsg(lpfl->iPlayer, 82, lpfl->id | 0x8000, lpfl->id, pl.id, pl.id, 0, 0, 0, 0);
+                            goto CancelOrder;
+                        }
+                        if (lpfl->rgwtMin[3] == 0) {
+                            FSendPlrMsg2(lpfl->iPlayer, 83, lpfl->id | 0x8000, lpfl->id, pl.id);
+                            goto CancelOrder;
+                        }
+                    }
+                    for (i = 0; i < 3; i++) {
+                        rgwt[i] = 0;
+                    }
+                    fColonize = 0;
+                    csh = 0;
+                    memset(rgTechBattle, 0, 0x6);
+                    memset(rgTechTrader, 0, 0xd);
+                    for (i = 0; i < 16; i++) {
+                        if (lpfl->rgcsh[i] > 0) {
+                            csh = csh + lpfl->rgcsh[i];
+                            MarkTechsSeen(&rglpshdef[lpfl->iPlayer][i].hul, lpfl->iPlayer);
+                            for (j = 0; j < rglpshdef[lpfl->iPlayer][i].hul.chs; j++) {
+                                if (rglpshdef[lpfl->iPlayer][i].hul.rghs[j].grhst == hstSpecialM &&
+                                    (rglpshdef[lpfl->iPlayer][i].hul.rghs[j].iItem == 0x0 || rglpshdef[lpfl->iPlayer][i].hul.rghs[j].iItem == 0x1)) {
+                                    fColonize = 1;
+                                }
+                            }
+                        }
+                    }
+                    if (ord.grTask != grTaskColonize || fColonize != 0) {
+                        lXferMinerals = 0;
+                        if (ord.grTask != grTaskScrap || pl.iPlayer == -1 || GetRaceGrbit(&rgplr[pl.iPlayer], 0x5) == 0) {
+                            t_merge_8513_0001 = 0;
+                        } else {
+                            t_merge_8513_0001 = 1;
+                        }
+                        fUltimate = t_merge_8513_0001;
+                        fBleeding = GetRaceGrbit(&rgplr[lpfl->iPlayer], ibitRaceBleedingEdgeTech);
+                        gd.fDontCalcBleed = 0x1;
+                        idPlayer = lpfl->iPlayer;
+                        for (i = 0; i <= 2; i++) {
+                            lAmt = 0;
+                            for (j = 0; j < 16; j++) {
+                                if (lpfl->rgcsh[j] > 0) {
+                                    if (fBleeding == 0) {
+                                        lpshdefT = rglpshdef[lpfl->iPlayer] + j;
+                                    } else {
+                                        shdefT = rglpshdef[lpfl->iPlayer][j];
+                                        UpdateShdefCost(&shdefT);
+                                        lpshdefT = &shdefT;
+                                    }
+                                    lT = (uint32_t)((int32_t)lpfl->rgcsh[j] * (uint32_t)lpshdefT->hul.rgwtOreCost[i]);
+                                    if (lpshdefT->fGift != 0x0) {
+                                        lT = (int32_t)(lT / 4);
+                                    }
+                                    lAmt = lAmt + lT;
+                                }
+                            }
+                            if (ord.grTask != grTaskColonize) {
+                                if (pl.id != -1) {
+                                    if (pl.fStarbase == 0x0) {
+                                        if (fUltimate == 0) {
+                                            lAmt = (int32_t)(lAmt / 3);
+                                        } else {
+                                            lAmt = (int32_t)((int32_t)(lAmt * 9) / 20);
+                                        }
+                                    } else if (fUltimate == 0) {
+                                        lAmt = (int32_t)((int32_t)(lAmt * 4) / 5);
+                                    } else {
+                                        lAmt = (int32_t)((int32_t)(lAmt * 9) / 10);
+                                    }
+                                } else {
+                                    lAmt = (int32_t)(lAmt / 3);
+                                }
+                            } else {
+                                lAmt = (int32_t)((int32_t)(lAmt * 3) / 4);
+                            }
+                            lAmt = lAmt + lpfl->rgwtMin[i];
+                            lXferMinerals = lXferMinerals + lAmt;
+                            if (pl.id != -1) {
+                                lpPlanets[pl.id].rgwtMin[i] = lpPlanets[pl.id].rgwtMin[i] + lAmt;
+                            } else {
+                                pl.rgwtMin[i] = lAmt;
+                            }
+                        }
+                        iGoto = pl.id;
+                        if (fUltimate == 0) {
+                            if (pl.id != -1) {
+                                idm = pl.fStarbase + 0x59;
+                                FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, 0, 0, 0);
+                                idm = pl.fStarbase + 0x140;
+                                if (pl.fStarbase != 0x0) {
+                                    i = ITechLearnATech(pl.iPlayer, 0, 0, 0xffff, &iGoto);
+                                    if (i == 0) {
+                                        iGoto = pl.id;
+                                    } else {
+                                        idm = idmHasDismantledKtMineralsStarbaseOrbitingProcess;
+                                        if (i >= 0) {
+                                            i = i - 1;
+                                            idm = idm + 1;
+                                        } else {
+                                            i = -(i + 1);
+                                        }
+                                    }
+                                }
+                                FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, i, 0, 0);
+                            } else {
+                                lpthWP = 0x0;
+                                DropSalvage(&lpthWP, pl.rgwtMin, lpfl->iplr, &ord.pt);
+                                FSendPlrMsg2(lpfl->iPlayer, 91, -6, lpthWP->idFull, WFromLpfl(lpfl));
+                            }
+                        } else {
+                            lResUltimate = 0;
+                            for (j = 0; j < 16; j++) {
+                                if (lpfl->rgcsh[j] > 0) {
+                                    if (fBleeding == 0) {
+                                        lpshdefT = rglpshdef[lpfl->iPlayer] + j;
+                                    } else {
+                                        shdefT = rglpshdef[lpfl->iPlayer][j];
+                                        UpdateShdefCost(&shdefT);
+                                        lpshdefT = &shdefT;
+                                    }
+                                    lT = (uint32_t)((int32_t)lpfl->rgcsh[j] * (uint32_t)lpshdefT->hul.resCost);
+                                    if (lpshdefT->fGift != 0x0) {
+                                        lT = (int32_t)(lT / 4);
+                                    }
+                                    lResUltimate = lResUltimate + lT;
+                                }
+                            }
+                            if (lResUltimate > 65535) {
+                                lResUltimate = 65535;
+                            }
+                            vrgPlanResExtra[pl.id] = vrgPlanResExtra[pl.id] + LOWORD(lResUltimate);
+                            if (lResUltimate > 0 && pl.iPlayer != -1) {
+                                lAmt = (int32_t)CResourcesAtPlanet(&pl, pl.iPlayer);
+                                lResUltimate = (int32_t)((int32_t)(lResUltimate * lAmt) / (lResUltimate + lAmt));
+                            }
+                            idm = pl.fStarbase + 0x5c;
+                            FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate),
+                                        HIWORD(lResUltimate), 0);
+                            idm = pl.fStarbase + 0x142;
+                            if (pl.fStarbase == 0x0) {
+                                iGoto = pl.id;
+                            } else {
+                                i = ITechLearnATech(pl.iPlayer, 0, 0, 0xffff, &iGoto);
+                                if (i == 0) {
+                                    iGoto = pl.id;
+                                } else {
+                                    idm = idmHasDismantledKtMineralsWhichHaveDeposited3;
+                                    if (i >= 0) {
+                                        i = i - 1;
+                                        idm = idm + 1;
+                                    } else {
+                                        i = -(i + 1);
+                                    }
+                                }
+                            }
+                            FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate),
+                                        HIWORD(lResUltimate), i);
+                        }
+                        idPlayer = -1;
+                        gd.fDontCalcBleed = 0x0;
+                        FRemovePlayerMessage(lpfl->iPlayer, 78, lpfl->id | 0x8000);
+                        lpfl->fDead = 0x1;
+                        if (ord.grTask != grTaskColonize) {
+                            if (lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].iPlayer == lpfl->iPlayer) {
+                                lpPlanets[lpfl->idPlanet].rgwtMin[3] = lpPlanets[lpfl->idPlanet].rgwtMin[3] + lpfl->rgwtMin[3];
+                            }
+                        } else {
+                            FQueueColonistDrop(lpfl, &pl, lpfl->rgwtMin[3]);
+                        }
+                    } else {
+                        FSendPlrMsg(lpfl->iPlayer, 84, lpfl->id | 0x8000, lpfl->id, pl.id, lpfl->id, 0, 0, 0, 0);
+                    }
+                } else {
+                    fFulfilled = 1;
+                    fDone = 1;
+                    fSentBadFleetXfer = 0;
+                    fHasPermission = 1;
+                    fMining = 0;
+                    fFueling = 0;
+                    fStealing = 0;
+                    fDunnage = 0;
+                    lpflWP = 0x0;
+                    lpthWP = 0x0;
+                    if (lpfl->idPlanet == -1 || FLookupPlanet(lpfl->idPlanet, &pl) == 0) {
+                        t_merge_68fa_0001 = 0;
+                    } else {
+                        t_merge_68fa_0001 = 1;
+                    }
+                    fAtPlanet = t_merge_68fa_0001;
+                    idWP = ord.id;
+                    switch (ord.grobj) {
+                    case grobjFleet:
+                        lpflWP = LpflFromId(ord.id);
+                        idWP = idWP | 0x8000;
+                        xWP = 0xffff;
+                        fHasPermission = lpfl->iPlayer == lpflWP->iPlayer ? 1 : 0;
+                        if (fHasPermission != 0) {
+                            if (lpflWP->fHereAllTurn == 0x0 || fAtPlanet == 0)
+                                break;
+                            if (CMineFromLpfl(lpflWP) <= 0 || (pl.iPlayer != -1 && pl.iPlayer != lpfl->iPlayer)) {
+                                if (LGetFleetStat(lpflWP, 2) != 0 || pl.iPlayer != lpfl->iPlayer)
+                                    break;
+                                fFueling = 1;
+                                xWP = 0xffff;
+                                idWP = lpflWP->id | 0x8000;
+                                break;
+                            }
+                            fMining = 1;
+                            xWP = 0xffff;
+                            idWP = lpflWP->id | 0x8000;
+                            break;
+                        }
+                        GetFleetScannerRange(lpfl, 0x0, 0x0, &fHasPermission);
+                        if (fHasPermission == 0)
+                            break;
+                        fStealing = 1;
+                        break;
+                    case grobjThing:
+                        lpthWP = LpthFromId(ord.id);
+                        xWP = 0xfffe;
+                        break;
+                    case grobjPlanet:
+                        xWP = 0xffff;
+                        fHasPermission = lpfl->iPlayer == pl.iPlayer ? 3 : 0;
+                        if (fHasPermission != 0)
+                            break;
+                        GetFleetScannerRange(lpfl, 0x0, 0x0, &fHasPermission);
+                        if (fHasPermission == 1) {
+                            fHasPermission = 0;
+                        }
+                        if (fHasPermission != 0) {
+                            fStealing = 1;
+                        }
+                        if (fHasPermission != 0 || pl.iPlayer != -1)
+                            break;
+                        iflWP = 0;
+                        while (1) {
+                            if (iflWP >= cFleet)
+                                goto L_6c14;
+                            lpflWP = rglpfl[iflWP];
+                            if (rglpfl[iflWP] == 0x0)
+                                goto L_6c14;
+                            if (lpflWP->fDead == 0x0 && lpflWP->iPlayer == lpfl->iPlayer && lpfl->idPlanet == lpflWP->idPlanet && lpflWP != lpfl &&
+                                lpflWP->fHereAllTurn != 0x0 && CMineFromLpfl(lpflWP) > 0)
+                                break;
+                            iflWP = iflWP + 1;
+                        }
+                        fMining = 2;
+                        fHasPermission = 1;
+                        ord.grobj = grobjFleet;
+                        ord.id = lpflWP->id;
+                        xWP = 0xffff;
+                        idWP = lpflWP->id | 0x8000;
+                        break;
+                    case grobjOther:
+                        xWP = ord.pt.x;
+                        idWP = ord.pt.y;
+                    default:
+                    }
+                L_6c14:
+                    iLoad = iPass - 0x1 & 0x1;
+                    fOptFuel = 0;
+                    if (ord.grobj != grobjThing || (lpthWP != 0x0 && lpthWP->ith == ithMineralPacket)) {
+                        while (1) {
+                            for (j = 0; j < 5; j++) {
+                                action = ord.txp.rgia[j].iAction;
+                                if (action != iActionNone && (fDunnage != 2 || action == iActionLoadDunnage) &&
+                                    (j != 4 || ord.grobj == grobjFleet || ord.grobj == grobjOther) && (j < 3 || ord.grobj != grobjThing)) {
+                                    amountWP = 0;
+                                    switch (ord.grobj) {
+                                    case grobjFleet:
+                                        if ((fMining == 0 && fFueling == 0) || j == 4) {
+                                            amountWP = lpflWP->rgwtMin[j];
+                                            break;
+                                        }
+                                    case grobjPlanet:
+                                        if (j >= 4)
+                                            break;
+                                        amountWP = pl.rgwtMin[j];
+                                        break;
+                                    case grobjThing:
+                                        if (j < 3) {
+                                            amountWP = (int32_t)lpthWP->thp.rgwtMin[j];
+                                        }
+                                    default:
+                                    }
+                                    if (action - 1 <= 0x8) {
+                                        switch (action) {
+                                        case 5:
+                                        case 6:
+                                            if (iLoad == 0)
+                                                continue;
+                                            if (j != 4) {
+                                                t_call_6e39 = LGetFleetStat(lpfl, 2);
+                                                t_merge_6e41_0001 = t_call_6e39;
+                                            } else {
+                                                t_call_6e24 = LGetFleetStat(lpfl, 1);
+                                                t_merge_6e41_0001 = t_call_6e24;
+                                            }
+                                            amount = t_merge_6e41_0001;
+                                            t_merge_6e71_0001 = 2000000 < amount ? 2000000 : amount;
+                                            amount = t_merge_6e71_0001;
+                                            if (amount < 65536) {
+                                                amountEdit = (uint32_t)((uint32_t)(amount * ord.txp.rgia[j].cQuan) / 0x64);
+                                            } else {
+                                                amountEdit = (uint32_t)((int32_t)(amount / 100) * ord.txp.rgia[j].cQuan);
+                                            }
+                                            amountEdit = amountEdit - lpfl->rgwtMin[j];
+                                            if (amountEdit < 0) {
+                                                amountEdit = 0;
+                                                goto L_7b4e;
+                                            }
+                                            goto L_7b4e;
+                                        case 3:
+                                            if (iLoad == 0)
+                                                continue;
+                                            amountEdit = ord.txp.rgia[j].cQuan;
+                                            goto L_7b4e;
+                                        case 4:
+                                            if (iLoad != 0)
+                                                continue;
+                                        case 8:
+                                        case 9:
+                                            amountEdit = ord.txp.rgia[j].cQuan;
+                                            goto L_7b4e;
+                                        case 1:
+                                            if (iLoad == 0)
+                                                continue;
+                                        case 7:
+                                            amountEdit = amountWP;
+                                            goto L_7b4e;
+                                        case 2:
+                                            if (iLoad != 0)
+                                                continue;
+                                            amountEdit = lpfl->rgwtMin[j];
+                                            goto L_7b4e;
+                                        }
+                                        goto L_67b6;
+                                    }
+                                L_7b4e:
+                                    if (action - 1 <= 0x8) {
+                                        switch (action) {
+                                        case 9:
+                                            amount = amountWP - amountEdit;
+                                            if (amount < 0) {
+                                                if (iLoad != 0)
+                                                    continue;
+                                                amount = -amount;
+                                                t_merge_70c3_0001 = amount < lpfl->rgwtMin[j] ? amount : lpfl->rgwtMin[j];
+                                                amount = t_merge_70c3_0001;
+                                                goto Unload;
+                                            }
+                                            if (iLoad == 0)
+                                                continue;
+                                            goto Load;
+                                        case 8:
+                                            amount = amountEdit - lpfl->rgwtMin[j];
+                                            if (amount < 0) {
+                                                if (iLoad != 0)
+                                                    continue;
+                                                amount = -amount;
+                                                goto Unload;
+                                            }
+                                            if (iLoad == 0)
+                                                continue;
+                                            if (amount <= amountWP)
+                                                goto Load;
+                                            fDone = 0;
+                                            if (iPass != 4)
+                                                goto Load;
+                                            idm = j == 3 ? idmAttemptedSetNumberBoardUnfortunatelyCouldntProvi
+                                                         : idmAttemptedSetAmountBoardUnfortunatelyCouldntProvi;
+                                            FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, j, ord.txp.rgia[j].cQuan, 0, xWP, idWP, 0);
+                                            goto Load;
+                                        case 7:
+                                            if (j != 4) {
+                                                if (iLoad == 0)
+                                                    continue;
+                                                if (fDunnage >= 2) {
+                                                    amount = amountWP;
+                                                    if (amount != 0)
+                                                        goto Load;
+                                                    continue;
+                                                }
+                                                fDunnage = 1;
+                                                continue;
+                                            }
+                                            wtOptimalFuel = 0;
+                                            fOptFuel = 1;
+                                            continue;
+                                        case 1:
+                                        case 3:
+                                        case 5:
+                                        case 6:
+                                            amount = amountEdit;
+                                            goto Load;
+                                        case 2:
+                                        case 4:
+                                            t_merge_77be_0001 = (uint32_t)lpfl->rgwtMin[j] < (uint32_t)amountEdit ? lpfl->rgwtMin[j] : amountEdit;
+                                            amount = t_merge_77be_0001;
+                                            goto Unload;
+                                        }
+                                        goto L_67b6;
+                                    Unload:
+                                        if (iLoad != 0)
+                                            continue;
+                                        if (j != 3 || ord.grobj != grobjPlanet || pl.iPlayer == lpfl->iPlayer) {
+                                            if (j == 3 && ord.grobj == grobjFleet && lpfl->iPlayer != ((uint16_t)ord.id >> 0x9 & 0xf))
+                                                goto L_78e4;
+                                            if (ord.grobj != grobjFleet || (int16_t)rgplr[lpflWP->iPlayer].rgmdRelation[lpfl->iPlayer] != 2) {
+                                                if (j == 3 && ord.grobj == grobjOther)
+                                                    goto L_795b;
+                                                if (amount != 0) {
+                                                    if (fFueling == 0 || j == 4) {
+                                                        l = ChgCargo(ord.grobj, ord.id, j, amount, 0x0);
+                                                        if (l > 0) {
+                                                            FSendPlrMsg(lpfl->iPlayer, j == 3 ? 46 : 45, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j,
+                                                                        xWP, idWP, 0);
+                                                        }
+                                                        amount = l;
+                                                    } else {
+                                                        l = ChgCargo(grobjPlanet, pl.id, j, amount, 0x0);
+                                                        FSendPlrMsg(lpfl->iPlayer, j == 3 ? 46 : 45, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j, xWP,
+                                                                    pl.id, 0);
+                                                    }
+                                                }
+                                            } else {
+                                                amount = 0;
+                                            }
+                                        } else {
+                                            if (pl.iPlayer == -1 && pl.fWasInhabited == 0x0)
+                                                goto L_7817;
+                                            if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh)
+                                                goto L_786b;
+                                            if (pl.fStarbase != 0x0)
+                                                goto L_7889;
+                                            FQueueColonistDrop(lpfl, &pl, amount);
+                                        }
+                                        if (amount != 0) {
+                                            l = ChgCargo(grobjFleet, lpfl->id, j, -amount, 0x0);
+                                        }
+                                        ord.txp.rgia[j].iAction = iActionNone;
+                                        continue;
+                                    Load:
+                                        if (iLoad != 0 && amount != 0) {
+                                            if (j != 4) {
+                                                l = GetCargoFree(lpfl);
+                                            } else {
+                                                l = GetFuelFree(lpfl);
+                                            }
+                                            t_merge_72c7_0001 = l < amount ? l : amount;
+                                            amount = t_merge_72c7_0001;
+                                            if (fHasPermission != 0 && ord.grobj != grobjOther) {
+                                                if (fStealing != 0 && (j == 3 || j == 4)) {
+                                                    fDone = 1;
+                                                }
+                                                if (amount != 0) {
+                                                    t_merge_73e3_0001 = amount < amountWP ? amount : amountWP;
+                                                    l = t_merge_73e3_0001;
+                                                    l2 = ChgCargo(ord.grobj, ord.id, j, -l, 0x0);
+                                                    if (l2 != 0) {
+                                                        l = ChgCargo(grobjFleet, lpfl->id, j, -l2, 0x0);
+                                                        if (l != 0) {
+                                                            if (ord.grobj != grobjFleet || lpfl->iPlayer == lpflWP->iPlayer) {
+                                                                FSendPlrMsg(lpfl->iPlayer, j == 3 ? 44 : 43, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l),
+                                                                            j, xWP, idWP, 0);
+                                                            } else {
+                                                                FSendPlrMsg(lpfl->iPlayer, 281, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j,
+                                                                            idWP & 0x7fff, 0, 0);
+                                                            }
+                                                        }
+                                                    }
+                                                    if ((fFueling != 0 || fMining != 0) && amount != -l2) {
+                                                        l = amount + l2;
+                                                        l2 = ChgCargo(grobjPlanet, pl.id, j, -l, 0x0);
+                                                        if (l2 != 0) {
+                                                            l = ChgCargo(grobjFleet, lpfl->id, j, -l2, 0x0);
+                                                            if (fMining == 0) {
+                                                                FSendPlrMsg(lpfl->iPlayer, j == 3 ? 44 : 43, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l),
+                                                                            j, xWP, pl.id, 0);
+                                                            } else {
+                                                                FSendPlrMsg(lpfl->iPlayer, 125, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j,
+                                                                            lpflWP->id, pl.id, 0);
+                                                            }
+                                                        } else {
+                                                            l = 0;
+                                                        }
+                                                    }
+                                                    if (amount != l && action == iActionWaitPercent) {
+                                                        fFulfilled = 0;
+                                                    }
+                                                    if (l != 0 && action == iActionLoadDunnage && j == 4) {
+                                                        wtOptimalFuel = l;
+                                                    }
+                                                } else if (action == iActionWaitPercent) {
+                                                    if (j != 4) {
+                                                        fFulfilled = 0;
+                                                    } else {
+                                                        fDone = 0;
+                                                    }
+                                                }
+                                            } else if (j != 4 || fOptFuel == 0) {
+                                                if (iPass == 4)
+                                                    goto L_733a;
+                                                fDone = 0;
+                                            } else {
+                                                amount = 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (fOptFuel != 0 && iLoad != 0 && fDunnage != 1) {
+                                if (lpfl->cord > 1) {
+                                    amount = EstFuelUse(lpfl, 0, -1, -1, 0);
+                                    if (amount > lpfl->rgwtMin[4]) {
+                                        fDone = 0;
+                                        if (wtOptimalFuel != 0) {
+                                            FSendPlrMsg(lpfl->iPlayer, 43, lpfl->id | 0x8000, lpfl->id, LOWORD(wtOptimalFuel), HIWORD(wtOptimalFuel), 4, xWP,
+                                                        idWP, 0);
+                                        }
+                                        if (iPass != 4 || fHasPermission != 0) {
+                                            if (iPass != 2)
+                                                goto FinishFleet;
+                                            lMaxFuel = LGetFleetStat(lpfl, 1);
+                                            if (lMaxFuel < amount) {
+                                                FSendPlrMsg(lpfl->iPlayer, 61, lpfl->id | 0x8000, lpfl->id, LOWORD(lMaxFuel), HIWORD(lMaxFuel), LOWORD(amount),
+                                                            HIWORD(amount), 0, 0);
+                                                goto FinishFleet;
+                                            }
+                                            cFuel2 = amount - lpfl->rgwtMin[4];
+                                            if (fMining == 2) {
+                                                idWP = pl.id;
+                                            }
+                                            FSendPlrMsg(lpfl->iPlayer, 60, lpfl->id | 0x8000, xWP, idWP, lpfl->id, LOWORD(cFuel2), HIWORD(cFuel2), 0, 0);
+                                            goto FinishFleet;
+                                        }
+                                        FSendPlrMsg(lpfl->iPlayer, 294, lpfl->id | 0x8000, lpfl->id, xWP, idWP, 0, 0, 0, 0);
+                                        goto FinishFleet;
+                                    }
+                                    if (amount >= lpfl->rgwtMin[4])
+                                        goto L_804f;
+                                    wtFuelOrig = lpfl->rgwtMin[4];
+                                    do {
+                                        lpfl->rgwtMin[4] = amount;
+                                        amount = EstFuelUse(lpfl, 0, -1, -1, 0);
+                                    } while (amount < lpfl->rgwtMin[4]);
+                                    iExcess = wtFuelOrig - amount;
+                                    lpfl->rgwtMin[4] = wtFuelOrig;
+                                } else {
+                                    amount = 0;
+                                    iExcess = lpfl->rgwtMin[4];
+                                }
+                                if (iExcess != 0) {
+                                    l2 = ChgCargo(ord.grobj, ord.id, 4, iExcess, 0x0);
+                                    if (l2 != 0) {
+                                        l = ChgCargo(grobjFleet, lpfl->id, 4, -l2, 0x0);
+                                    }
+                                } else {
+                                    l = 0;
+                                }
+                                if (l2 != 0) {
+                                    l = l + wtOptimalFuel;
+                                    if (l <= 0) {
+                                        if (l < 0) {
+                                            FSendPlrMsg(lpfl->iPlayer, 45, lpfl->id | 0x8000, lpfl->id, -LOWORD(l), LOWORD((uint32_t)((uint32_t)-l >> 0x10)), 4,
+                                                        xWP, idWP, 0);
+                                        }
+                                    } else {
+                                        FSendPlrMsg(lpfl->iPlayer, 43, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), 4, xWP, idWP, 0);
+                                    }
+                                }
+                            L_804f:
+                                if (fDone != 0 && fFulfilled != 0) {
+                                    ord.txp.rgia[4].iAction = iActionNone;
+                                    ord.txp.rgia[4].cQuan = 0x0;
+                                }
+                            }
+                        FinishFleet:
+                            if (fFulfilled == 0 && GetCargoFree(lpfl) > 0) {
+                                fDone = 0;
+                            }
+                            if (fDone == 0 || fDunnage != 1 || (GetCargoFree(lpfl) <= 0 && fOptFuel == 0))
+                                break;
+                            fDunnage = 2;
+                        }
+                        if (fDone != 0 && iLoad != 0)
+                            goto CancelOrder;
+                        if (fMining == 2) {
+                            ord.id = pl.id;
+                            ord.grobj = grobjPlanet;
+                        }
+                        lpfl->lpplord->rgord[0] = ord;
+                        goto L_67b6;
+                    L_7817:
+                        idm = idmHasTriedBeamColonistsPlanetUninhabitedMust;
+                        goto LCantDrop;
+                    L_786b:
+                        idm = idmCaptainHasAttemptedBeamColonistsOverruledBridge;
+                        goto LCantDrop;
+                    L_7889:
+                        idm = idmHasTriedBeamColonistsPlanetsStarbaseWould;
+                        goto LCantDrop;
+                    L_78e4:
+                        idm = idmAllowedTransferColonistsAnotherPlayer;
+                    LCantDrop:
+                        FSendPlrMsg2(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, pl.id);
+                        goto CancelOrder;
+                    L_795b:
+                        FSendPlrMsg2(lpfl->iPlayer, 357, lpfl->id | 0x8000, lpfl->id, 0);
+                        goto CancelOrder;
+                    L_733a:
+                        switch (ord.grobj) {
+                        case grobjPlanet:
+                            idm = idmAttemptedLoadPlanetDontControlOrderHas;
+                            break;
+                        case grobjFleet:
+                            idm = idmAttemptedLoadFleetDontControlOrderHas;
+                            break;
+                        case grobjOther:
+                            idm = idmAttemptedLoadDeepSpaceAttemptUnsuccessful;
+                        default:
+                        }
+                        FSendPlrMsg2(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, j);
+                    } else if (lpthWP != 0x0) {
+                        FSendPlrMsg2(lpfl->iPlayer, 286, lpfl->id | 0x8000, lpfl->id, lpthWP->ith);
+                    }
+                }
+            CancelOrder:
+                if (lpfl->cord == 1 && lpfl->fDead == 0x0 && lpfl->lpplord->rgord[0].grTask != grTaskNone) {
+                    FRemovePlayerMessage(lpfl->iPlayer, 78, lpfl->id | 0x8000);
+                    FSendPlrMsg2(lpfl->iPlayer, 78, lpfl->id | 0x8000, lpfl->id, 0);
+                }
+                lpfl->lpplord->rgord[0].grTask = grTaskNone;
+            }
+        L_67b6:;
+        }
     }
-
-L_7018:
-    goto L_7b4e;
-
-L_7021:
-    amount = (amountWP - amountEdit);
-    if ((amount < 0))
-        goto L_704c;
-    else
-        goto L_70cc;
-
-L_704c:
-    if ((iLoad != 0))
-        goto L_7b74;
-    else
-        goto L_7058;
-
-L_7058:
-    amount = (-amount);
-    if ((amount < lpfl->rgwtMin[j]))
-        goto L_709d;
-    else
-        goto L_70a6;
-
-L_709d:
-    t_merge_70c3_0001 = amount;
-    goto L_70c3;
-
-L_70a6:
-    t_merge_70c3_0001 = lpfl->rgwtMin[j];
-
-L_70c3:
-    amount = t_merge_70c3_0001;
-    goto Unload;
-
-L_70cc:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_70d2;
-
-L_70d2:
-    goto Load;
-
-L_70db:
-    amount = (amountEdit - lpfl->rgwtMin[j]);
-    if ((amount < 0))
-        goto L_71b1;
-    else
-        goto L_711d;
-
-L_711d:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_7129;
-
-L_7129:
-    if ((amount <= amountWP))
-        goto Load;
-    else
-        goto L_7144;
-
-L_7144:
-    fDone = 0;
-    if ((iPass != 4))
-        goto Load;
-    else
-        goto L_7153;
-
-L_7153:
-    if ((j != 3))
-        goto L_7162;
-    else
-        goto L_715c;
-
-L_715c:
-    t_merge_7165_0001 = 0x122;
-    goto L_7165;
-
-L_7162:
-    t_merge_7165_0001 = 0x121;
-
-L_7165:
-    idm = t_merge_7165_0001;
-    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j, ord.txp.rgia[j].cQuan, 0, xWP, idWP, 0);
-
-L_71ae:
-    goto Load;
-
-L_71b1:
-    if ((iLoad != 0))
-        goto L_7b74;
-    else
-        goto L_71bd;
-
-L_71bd:
-    amount = (-amount);
-    goto Unload;
-
-L_71d3:
-    if ((j != 4))
-        goto L_71ef;
-    else
-        goto L_71dc;
-
-L_71dc:
-    wtOptimalFuel = 0;
-    fOptFuel = 1;
-    goto L_7b74;
-
-L_71ef:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_71fb;
-
-L_71fb:
-    if ((fDunnage >= 2))
-        goto L_720e;
-    else
-        goto L_7205;
-
-L_7205:
-    fDunnage = 1;
-    goto L_7b74;
-
-L_720e:
-    amount = amountWP;
-    if ((amount != 0))
-        goto Load;
-    else
-        goto L_7229;
-
-L_7229:
-    goto L_7b74;
-
-L_7232:
-    amount = amountEdit;
-
-Load:
-    if ((iLoad == 0))
-        goto L_7b74;
-    else
-        goto L_724c;
-
-L_724c:
-    if ((amount != 0))
-        goto L_7261;
-    else
-        goto L_7b74;
-
-L_7261:
-    if ((j != 4))
-        goto L_7283;
-    else
-        goto L_726a;
-
-L_726a:
-    l = GetFuelFree(lpfl);
-    goto L_7299;
-
-L_7283:
-    l = GetCargoFree(lpfl);
-
-L_7299:
-    if ((l < amount))
-        goto L_72b6;
-    else
-        goto L_72c1;
-
-L_72b6:
-    t_merge_72c7_0001 = l;
-    goto L_72c7;
-
-L_72c1:
-    t_merge_72c7_0001 = amount;
-
-L_72c7:
-    amount = t_merge_72c7_0001;
-    if ((fHasPermission == 0))
-        goto L_72e9;
-    else
-        goto L_72d6;
-
-L_72d6:
-    if ((ord.grobj != grobjOther))
-        goto L_7386;
-    else
-        goto L_72e9;
-
-L_72e9:
-    if ((j != 4))
-        goto L_7308;
-    else
-        goto L_72f2;
-
-L_72f2:
-    if ((fOptFuel == 0))
-        goto L_7308;
-    else
-        goto L_72fb;
-
-L_72fb:
-    amount = 0;
-    goto L_7b74;
-
-L_7308:
-    if ((iPass != 4))
-        goto L_737d;
-    else
-        goto L_7311;
-
-L_7311:
-    goto L_733a;
-
-L_731f:
-    idm = idmAttemptedLoadPlanetDontControlOrderHas;
-    goto L_7355;
-
-L_7327:
-    idm = idmAttemptedLoadFleetDontControlOrderHas;
-    goto L_7355;
-
-L_732f:
-    idm = idmAttemptedLoadDeepSpaceAttemptUnsuccessful;
-    goto L_7355;
-
-L_733a:
-    if ((ord.grobj == grobjPlanet))
-        goto L_731f;
-    else
-        goto L_7342;
-
-L_7342:
-    if ((ord.grobj == grobjFleet))
-        goto L_7327;
-    else
-        goto L_734a;
-
-L_734a:
-    if ((ord.grobj == grobjOther))
-        goto L_732f;
-    else
-        goto L_7355;
-
-L_7355:
-    FSendPlrMsg2(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, j);
-    goto CancelOrder;
-
-L_737d:
-    fDone = 0;
-
-L_7383:
-    goto L_7b74;
-
-L_7386:
-    if ((fStealing == 0))
-        goto L_73a7;
-    else
-        goto L_738f;
-
-L_738f:
-    if ((j == 3))
-        goto L_73a1;
-    else
-        goto L_7398;
-
-L_7398:
-    if ((j != 4))
-        goto L_73a7;
-    else
-        goto L_73a1;
-
-L_73a1:
-    fDone = 1;
-
-L_73a7:
-    if ((amount != 0))
-        goto L_73b9;
-    else
-        goto L_7738;
-
-L_73b9:
-    if ((amount < amountWP))
-        goto L_73d4;
-    else
-        goto L_73dd;
-
-L_73d4:
-    t_merge_73e3_0001 = amount;
-    goto L_73e3;
-
-L_73dd:
-    t_merge_73e3_0001 = amountWP;
-
-L_73e3:
-    l = t_merge_73e3_0001;
-    l2 = ChgCargo(ord.grobj, ord.id, j, (-l), 0x0);
-    if ((l2 != 0))
-        goto L_7432;
-    else
-        goto L_7557;
-
-L_7432:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (-l2), 0x0);
-    if ((l != 0))
-        goto L_7476;
-    else
-        goto L_7557;
-
-L_7476:
-    if ((ord.grobj != grobjFleet))
-        goto L_74f5;
-    else
-        goto L_7489;
-
-L_7489:
-    if ((lpfl->iPlayer == lpflWP->iPlayer))
-        goto L_74f5;
-    else
-        goto L_749c;
-
-L_749c:
-    FSendPlrMsg(lpfl->iPlayer, 281, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, (idWP & 0x7fff), 0, 0);
-    goto L_7557;
-
-L_74f5:
-    if ((j == 3))
-        goto L_7544;
-    else
-        goto L_753e;
-
-L_753e:
-    t_merge_7547_0001 = 43;
-    goto L_7547;
-
-L_7544:
-    t_merge_7547_0001 = 44;
-
-L_7547:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, idWP, 0);
-
-L_7557:
-    if ((fFueling != 0))
-        goto L_7569;
-    else
-        goto L_7560;
-
-L_7560:
-    if ((fMining == 0))
-        goto L_76d7;
-    else
-        goto L_7569;
-
-L_7569:
-    if ((amount != (-l2)))
-        goto L_7586;
-    else
-        goto L_76d7;
-
-L_7586:
-    l = (amount + l2);
-    l2 = ChgCargo(grobjPlanet, pl.id, j, (-l), 0x0);
-    if ((l2 != 0))
-        goto L_75d9;
-    else
-        goto L_76cb;
-
-L_75d9:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (-l2), 0x0);
-    if ((fMining == 0))
-        goto L_7668;
-    else
-        goto L_7612;
-
-L_7612:
-    FSendPlrMsg(lpfl->iPlayer, 125, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, lpflWP->id, pl.id, 0);
-    goto L_76d7;
-
-L_7668:
-    if ((j == 3))
-        goto L_76b5;
-    else
-        goto L_76af;
-
-L_76af:
-    t_merge_76b8_0001 = 43;
-    goto L_76b8;
-
-L_76b5:
-    t_merge_76b8_0001 = 44;
-
-L_76b8:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, pl.id, 0);
-
-L_76c8:
-    goto L_76d7;
-
-L_76cb:
-    l = 0;
-
-L_76d7:
-    if ((amount != l))
-        goto L_76ef;
-    else
-        goto L_76fd;
-
-L_76ef:
-    if ((action != iActionWaitPercent))
-        goto L_76fd;
-    else
-        goto L_76f8;
-
-L_76f8:
-    fFulfilled = 0;
-
-L_76fd:
-    if ((l != 0))
-        goto L_7711;
-    else
-        goto L_7b74;
-
-L_7711:
-    if ((action != iActionLoadDunnage))
-        goto L_7b74;
-    else
-        goto L_771a;
-
-L_771a:
-    if ((j != 4))
-        goto L_7b74;
-    else
-        goto L_7723;
-
-L_7723:
-    wtOptimalFuel = l;
-    goto L_7b74;
-
-L_7738:
-    if ((action != iActionWaitPercent))
-        goto L_7b74;
-    else
-        goto L_7741;
-
-L_7741:
-    if ((j != 4))
-        goto L_7753;
-    else
-        goto L_774a;
-
-L_774a:
-    fDone = 0;
-    goto L_7b74;
-
-L_7753:
-    fFulfilled = 0;
-
-L_7758:
-    goto L_7b74;
-
-L_775e:
-    if (((uint32_t)(lpfl->rgwtMin[j]) < (uint32_t)(amountEdit)))
-        goto L_7796;
-    else
-        goto L_77b6;
-
-L_7796:
-    t_merge_77be_0001 = lpfl->rgwtMin[j];
-    goto L_77be;
-
-L_77b6:
-    t_merge_77be_0001 = amountEdit;
-
-L_77be:
-    amount = t_merge_77be_0001;
-
-Unload:
-    if ((iLoad != 0))
-        goto L_7b74;
-    else
-        goto L_77d0;
-
-L_77d0:
-    if ((j != 3))
-        goto L_78af;
-    else
-        goto L_77d9;
-
-L_77d9:
-    if ((ord.grobj != grobjPlanet))
-        goto L_78af;
-    else
-        goto L_77ec;
-
-L_77ec:
-    if ((pl.iPlayer == lpfl->iPlayer))
-        goto L_78af;
-    else
-        goto L_77fb;
-
-L_77fb:
-    if ((pl.iPlayer != -1))
-        goto L_7847;
-    else
-        goto L_7804;
-
-L_7804:
-    if ((pl.fWasInhabited != 0x0))
-        goto L_7847;
-    else
-        goto L_7817;
-
-L_7817:
-    idm = idmHasTriedBeamColonistsPlanetUninhabitedMust;
-
-LCantDrop:
-    FSendPlrMsg2(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, pl.id);
-    goto CancelOrder;
-
-L_7847:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMacintosh))
-        goto L_7876;
-    else
-        goto L_786b;
-
-L_786b:
-    idm = idmCaptainHasAttemptedBeamColonistsOverruledBridge;
-    goto LCantDrop;
-
-L_7876:
-    if ((pl.fStarbase == 0x0))
-        goto L_7891;
-    else
-        goto L_7889;
-
-L_7889:
-    idm = idmHasTriedBeamColonistsPlanetsStarbaseWould;
-    goto LCantDrop;
-
-L_7891:
-    FQueueColonistDrop(lpfl, &(pl), amount);
-    goto L_7ae8;
-
-L_78af:
-    if ((j != 3))
-        goto L_78ef;
-    else
-        goto L_78b8;
-
-L_78b8:
-    if ((ord.grobj != grobjFleet))
-        goto L_78ef;
-    else
-        goto L_78cb;
-
-L_78cb:
-    if ((lpfl->iPlayer == (((uint16_t)(ord.id) >> 0x9) & 0xf)))
-        goto L_78ef;
-    else
-        goto L_78e4;
-
-L_78e4:
-    idm = idmAllowedTransferColonistsAnotherPlayer;
-    goto LCantDrop;
-
-L_78ef:
-    if ((ord.grobj != grobjFleet))
-        goto L_793f;
-    else
-        goto L_7902;
-
-L_7902:
-    if (((int16_t)(rgplr[lpflWP->iPlayer].rgmdRelation[lpfl->iPlayer]) != 2))
-        goto L_793f;
-    else
-        goto L_7932;
-
-L_7932:
-    amount = 0;
-    goto L_7ae8;
-
-L_793f:
-    if ((j != 3))
-        goto L_7988;
-    else
-        goto L_7948;
-
-L_7948:
-    if ((ord.grobj != grobjOther))
-        goto L_7988;
-    else
-        goto L_795b;
-
-L_795b:
-    FSendPlrMsg2(lpfl->iPlayer, 357, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_7988:
-    if ((amount != 0))
-        goto L_799a;
-    else
-        goto L_7ae8;
-
-L_799a:
-    if ((fFueling == 0))
-        goto L_7a33;
-    else
-        goto L_79a3;
-
-L_79a3:
-    if ((j == 4))
-        goto L_7a33;
-    else
-        goto L_79ac;
-
-L_79ac:
-    l = ChgCargo(grobjPlanet, pl.id, j, amount, 0x0);
-    if ((j == 3))
-        goto L_7a1d;
-    else
-        goto L_7a17;
-
-L_7a17:
-    t_merge_7a20_0001 = 45;
-    goto L_7a20;
-
-L_7a1d:
-    t_merge_7a20_0001 = 46;
-
-L_7a20:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, pl.id, 0);
-    goto L_7ae8;
-
-L_7a33:
-    l = ChgCargo(ord.grobj, ord.id, j, amount, 0x0);
-    if ((l <= 0))
-        goto L_7ada;
-    else
-        goto L_7a78;
-
-L_7a78:
-    if ((j == 3))
-        goto L_7ac7;
-    else
-        goto L_7ac1;
-
-L_7ac1:
-    t_merge_7aca_0001 = 45;
-    goto L_7aca;
-
-L_7ac7:
-    t_merge_7aca_0001 = 46;
-
-L_7aca:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, idWP, 0);
-
-L_7ada:
-    amount = l;
-
-L_7ae8:
-    if ((amount != 0))
-        goto L_7afa;
-    else
-        goto L_7b2a;
-
-L_7afa:
-    l = ChgCargo(grobjFleet, lpfl->id, j, (-amount), 0x0);
-
-L_7b2a:
-    ord.txp.rgia[j].iAction = iActionNone;
-    goto L_7b74;
-
-L_7b4e:
-    if (((action - 1) > 0x8))
-        goto L_7b74;
-    else
-        goto L_7b59;
-
-L_7b59:
-    switch (((action - 1) * 0x2)) {
-    case 0x0:
-        goto L_7232;
-    case 0x2:
-        goto L_775e;
-    case 0x4:
-        goto L_7232;
-    case 0x6:
-        goto L_775e;
-    case 0x8:
-        goto L_7232;
-    case 0xa:
-        goto L_7232;
-    case 0xc:
-        goto L_71d3;
-    case 0xe:
-        goto L_70db;
-    case 0x10:
-        goto L_7021;
-    }
-
-L_7b74:
-    j = (j + 1);
-
-L_7b78:
-    if ((j < 5))
-        goto L_6cb5;
-    else
-        goto L_7b81;
-
-L_7b81:
-    if ((fOptFuel == 0))
-        goto FinishFleet;
-    else
-        goto L_7b8a;
-
-L_7b8a:
-    if ((iLoad == 0))
-        goto FinishFleet;
-    else
-        goto L_7b93;
-
-L_7b93:
-    if ((fDunnage == 1))
-        goto FinishFleet;
-    else
-        goto L_7b9d;
-
-L_7b9d:
-    if ((lpfl->cord > 1))
-        goto L_7bca;
-    else
-        goto L_7baa;
-
-L_7baa:
-    amount = 0;
-    iExcess = lpfl->rgwtMin[4];
-    goto SetOptAmount;
-
-L_7bca:
-    amount = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((amount <= lpfl->rgwtMin[4]))
-        goto L_7dfb;
-    else
-        goto L_7c12;
-
-L_7c12:
-    fDone = 0;
-    if ((wtOptimalFuel != 0))
-        goto L_7c2b;
-    else
-        goto L_7c7d;
-
-L_7c2b:
-    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtOptimalFuel), HIWORD(wtOptimalFuel), 4, xWP, idWP, 0);
-
-L_7c7d:
-    if ((iPass != 4))
-        goto L_7cce;
-    else
-        goto L_7c86;
-
-L_7c86:
-    if ((fHasPermission != 0))
-        goto L_7cce;
-    else
-        goto L_7c8f;
-
-L_7c8f:
-    FSendPlrMsg(lpfl->iPlayer, 294, (lpfl->id | 0x8000), lpfl->id, xWP, idWP, 0, 0, 0, 0);
-    goto FinishFleet;
-
-L_7cce:
-    if ((iPass != 2))
-        goto FinishFleet;
-    else
-        goto L_7cd7;
-
-L_7cd7:
-    lMaxFuel = LGetFleetStat(lpfl, 1);
-    if ((lMaxFuel < amount))
-        goto L_7d0e;
-    else
-        goto L_7d78;
-
-L_7d0e:
-    FSendPlrMsg(lpfl->iPlayer, 61, (lpfl->id | 0x8000), lpfl->id, LOWORD(lMaxFuel), HIWORD(lMaxFuel), LOWORD(amount), HIWORD(amount), 0, 0);
-    goto FinishFleet;
-
-L_7d78:
-    cFuel2 = (amount - lpfl->rgwtMin[4]);
-    if ((fMining != 2))
-        goto L_7da1;
-    else
-        goto L_7d9a;
-
-L_7d9a:
-    idWP = pl.id;
-
-L_7da1:
-    FSendPlrMsg(lpfl->iPlayer, 60, (lpfl->id | 0x8000), xWP, idWP, lpfl->id, LOWORD(cFuel2), HIWORD(cFuel2), 0, 0);
-
-L_7df5:
-    goto FinishFleet;
-
-L_7dfb:
-    if ((amount < lpfl->rgwtMin[4]))
-        goto L_7e1b;
-    else
-        goto L_804f;
-
-L_7e1b:
-    wtFuelOrig = lpfl->rgwtMin[4];
-
-L_7e2e:
-    lpfl->rgwtMin[4] = amount;
-    amount = EstFuelUse(lpfl, 0, -1, -1, 0);
-    if ((amount < lpfl->rgwtMin[4]))
-        goto L_7e2e;
-    else
-        goto L_7e87;
-
-L_7e87:
-    iExcess = (wtFuelOrig - amount);
-    lpfl->rgwtMin[4] = wtFuelOrig;
-
-SetOptAmount:
-    if ((iExcess != 0))
-        goto L_7ec4;
-    else
-        goto L_7f37;
-
-L_7ec4:
-    l2 = ChgCargo(ord.grobj, ord.id, 4, iExcess, 0x0);
-    if ((l2 != 0))
-        goto L_7f03;
-    else
-        goto L_7f43;
-
-L_7f03:
-    l = ChgCargo(grobjFleet, lpfl->id, 4, (-l2), 0x0);
-
-L_7f34:
-    goto L_7f43;
-
-L_7f37:
-    l = 0;
-
-L_7f43:
-    if ((l2 != 0))
-        goto L_7f55;
-    else
-        goto L_804f;
-
-L_7f55:
-    l = (l + wtOptimalFuel);
-    if ((l <= 0))
-        goto L_7fd4;
-    else
-        goto L_7f7d;
-
-L_7f7d:
-    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), 4, xWP, idWP, 0);
-    goto L_804f;
-
-L_7fd4:
-    if ((l < 0))
-        goto L_7fed;
-    else
-        goto L_804f;
-
-L_7fed:
-    FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (-LOWORD(l)), LOWORD((uint32_t)(((-l) >> 0x10))), 4, xWP, idWP, 0);
-
-L_804f:
-    if ((fDone == 0))
-        goto FinishFleet;
-    else
-        goto L_8059;
-
-L_8059:
-    if ((fFulfilled == 0))
-        goto FinishFleet;
-    else
-        goto L_8062;
-
-L_8062:
-    ord.txp.rgia[4].iAction = iActionNone;
-    ord.txp.rgia[4].cQuan = 0x0;
-
-FinishFleet:
-    if ((fFulfilled != 0))
-        goto L_80ac;
-    else
-        goto L_8083;
-
-L_8083:
-    if ((GetCargoFree(lpfl) <= 0))
-        goto L_80ac;
-    else
-        goto L_80a6;
-
-L_80a6:
-    fDone = 0;
-
-L_80ac:
-    if ((fDone == 0))
-        goto L_80f5;
-    else
-        goto L_80b6;
-
-L_80b6:
-    if ((fDunnage != 1))
-        goto L_80f5;
-    else
-        goto L_80c0;
-
-L_80c0:
-    if ((GetCargoFree(lpfl) <= 0))
-        goto L_80e3;
-    else
-        goto L_80ec;
-
-L_80e3:
-    if ((fOptFuel == 0))
-        goto L_80f5;
-    else
-        goto L_80ec;
-
-L_80ec:
-    fDunnage = 2;
-    goto LTryDunnage;
-
-L_80f5:
-    if ((fDone == 0))
-        goto L_810b;
-    else
-        goto L_80ff;
-
-L_80ff:
-    if ((iLoad != 0))
-        goto CancelOrder;
-    else
-        goto L_810b;
-
-L_810b:
-    if ((fMining != 2))
-        goto L_8126;
-    else
-        goto L_8114;
-
-L_8114:
-    ord.id = pl.id;
-    ord.grobj = grobjPlanet;
-
-L_8126:
-    lpfl->lpplord->rgord[0] = ord;
-    goto L_67b6;
-
-L_8155:
-    if ((ord.grTask != grTaskScrap))
-        goto L_816c;
-    else
-        goto L_8163;
-
-L_8163:
-    if ((iPass == 1))
-        goto L_817a;
-    else
-        goto L_816c;
-
-L_816c:
-    if ((ord.grTask != grTaskColonize))
-        goto L_8f02;
-    else
-        goto L_817a;
-
-L_817a:
-    if ((lpfl->idPlanet != -1))
-        goto L_81db;
-    else
-        goto L_8187;
-
-L_8187:
-    if ((ord.grTask != grTaskColonize))
-        goto L_81c2;
-    else
-        goto L_8195;
-
-L_8195:
-    FSendPlrMsg2(lpfl->iPlayer, 81, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_81c2:
-    pl.id = -1;
-    pl.iPlayer = -1;
-    pl.fStarbase = 0x0;
-    goto LScrap;
-
-L_81db:
-    if ((FLookupPlanet(lpfl->idPlanet, &(pl)) != 0))
-        goto LScrap;
-    else
-        goto L_81f6;
-
-L_81f6:
-    if ((ord.grTask == grTaskColonize))
-        goto CancelOrder;
-    else
-        goto LScrap;
-
-LScrap:
-    if ((ord.grTask != grTaskColonize))
-        goto L_829a;
-    else
-        goto L_8215;
-
-L_8215:
-    if ((pl.iPlayer == -1))
-        goto L_825a;
-    else
-        goto L_821e;
-
-L_821e:
-    FSendPlrMsg(lpfl->iPlayer, 82, (lpfl->id | 0x8000), lpfl->id, pl.id, pl.id, 0, 0, 0, 0);
-    goto CancelOrder;
-
-L_825a:
-    if ((lpfl->rgwtMin[3] != 0))
-        goto L_829a;
-    else
-        goto L_8271;
-
-L_8271:
-    FSendPlrMsg2(lpfl->iPlayer, 83, (lpfl->id | 0x8000), lpfl->id, pl.id);
-    goto CancelOrder;
-
-L_829a:
-    i = 0;
-    goto L_82bf;
-
-L_82a3:
-    rgwt[i] = 0;
-    i = (i + 1);
-
-L_82bf:
-    if ((i < 3))
-        goto L_82a3;
-    else
-        goto L_82c9;
-
-L_82c9:
-    fColonize = 0;
-    csh = 0;
-    memset(rgTechBattle, 0, 0x6);
-    memset(rgTechTrader, 0, 0xd);
-    i = 0;
-    goto L_8466;
-
-L_8306:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_8461;
-    else
-        goto L_8324;
-
-L_8324:
-    csh = (csh + lpfl->rgcsh[i]);
-    MarkTechsSeen(&(rglpshdef[lpfl->iPlayer][i].hul), lpfl->iPlayer);
-    j = 0;
-    goto L_837b;
-
-L_8376:
-    j = (j + 1);
-
-L_837b:
-    if ((j >= rglpshdef[lpfl->iPlayer][i].hul.chs))
-        goto L_8461;
-    else
-        goto L_83a9;
-
-L_83a9:
-    if ((rglpshdef[lpfl->iPlayer][i].hul.rghs[j].grhst != hstSpecialM))
-        goto L_8376;
-    else
-        goto L_83e0;
-
-L_83e0:
-    if ((rglpshdef[lpfl->iPlayer][i].hul.rghs[j].iItem == 0x0))
-        goto L_8458;
-    else
-        goto L_841c;
-
-L_841c:
-    if ((rglpshdef[lpfl->iPlayer][i].hul.rghs[j].iItem != 0x1))
-        goto L_8376;
-    else
-        goto L_8458;
-
-L_8458:
-    fColonize = 1;
-
-L_845e:
-    goto L_8376;
-
-L_8461:
-    i = (i + 1);
-
-L_8466:
-    if ((i < 16))
-        goto L_8306;
-    else
-        goto L_8470;
-
-L_8470:
-    if ((ord.grTask != grTaskColonize))
-        goto L_84c7;
-    else
-        goto L_847e;
-
-L_847e:
-    if ((fColonize != 0))
-        goto L_84c7;
-    else
-        goto L_8488;
-
-L_8488:
-    FSendPlrMsg(lpfl->iPlayer, 84, (lpfl->id | 0x8000), lpfl->id, pl.id, lpfl->id, 0, 0, 0, 0);
-    goto CancelOrder;
-
-L_84c7:
-    lXferMinerals = 0;
-    if ((ord.grTask != grTaskScrap))
-        goto L_8510;
-    else
-        goto L_84e1;
-
-L_84e1:
-    if ((pl.iPlayer == -1))
-        goto L_8510;
-    else
-        goto L_84ea;
-
-L_84ea:
-    if ((GetRaceGrbit(&(rgplr[pl.iPlayer]), 0x5) == 0))
-        goto L_8510;
-    else
-        goto L_850a;
-
-L_850a:
-    t_merge_8513_0001 = 0x1;
-    goto L_8513;
-
-L_8510:
-    t_merge_8513_0001 = 0x0;
-
-L_8513:
-    fUltimate = t_merge_8513_0001;
-    fBleeding = GetRaceGrbit(&(rgplr[lpfl->iPlayer]), ibitRaceBleedingEdgeTech);
-    gd.fDontCalcBleed = 0x1;
-    idPlayer = lpfl->iPlayer;
-    i = 0;
-    goto L_886b;
-
-L_8556:
-    lAmt = 0;
-    j = 0;
-    goto L_869e;
-
-L_856b:
-    if ((lpfl->rgcsh[j] <= 0))
-        goto L_8699;
-    else
-        goto L_858c;
-
-L_858c:
-    if ((fBleeding == 0))
-        goto L_85e9;
-    else
-        goto L_8596;
-
-L_8596:
-    shdefT = rglpshdef[lpfl->iPlayer][j];
-    UpdateShdefCost(&(shdefT));
-    lpshdefT = &(shdefT);
-    goto L_860d;
-
-L_85e9:
-    lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
-
-L_860d:
-    lT = (uint32_t)(((int32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.rgwtOreCost[i])));
-    if ((lpshdefT->fGift == 0x0))
-        goto L_8689;
-    else
-        goto L_866c;
-
-L_866c:
-    lT = (int32_t)((lT / 4));
-
-L_8689:
-    lAmt = (lAmt + lT);
-
-L_8699:
-    j = (j + 1);
-
-L_869e:
-    if ((j < 16))
-        goto L_856b;
-    else
-        goto L_86a8;
-
-L_86a8:
-    if ((ord.grTask != grTaskColonize))
-        goto L_86e5;
-    else
-        goto L_86b6;
-
-L_86b6:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 3)) / 4));
-    goto L_87da;
-
-L_86e5:
-    if ((pl.id != -1))
-        goto L_870e;
-    else
-        goto L_86ee;
-
-L_86ee:
-    lAmt = (int32_t)((lAmt / 3));
-    goto L_87da;
-
-L_870e:
-    if ((pl.fStarbase == 0x0))
-        goto L_8784;
-    else
-        goto L_8721;
-
-L_8721:
-    if ((fUltimate == 0))
-        goto L_875a;
-    else
-        goto L_872b;
-
-L_872b:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 10));
-    goto L_87da;
-
-L_875a:
-    lAmt = (int32_t)(((int32_t)((lAmt * 4)) / 5));
-
-L_8781:
-    goto L_87da;
-
-L_8784:
-    if ((fUltimate == 0))
-        goto L_87bd;
-    else
-        goto L_878e;
-
-L_878e:
-    lAmt = (int32_t)(((uint32_t)((lAmt * 9)) / 20));
-    goto L_87da;
-
-L_87bd:
-    lAmt = (int32_t)((lAmt / 3));
-
-L_87da:
-    lAmt = (lAmt + lpfl->rgwtMin[i]);
-    lXferMinerals = (lXferMinerals + lAmt);
-    if ((pl.id != -1))
-        goto L_8836;
-    else
-        goto L_8819;
-
-L_8819:
-    pl.rgwtMin[i] = lAmt;
-    goto L_8866;
-
-L_8836:
-    lpPlanets[pl.id].rgwtMin[i] = (lpPlanets[pl.id].rgwtMin[i] + lAmt);
-
-L_8866:
-    i = (i + 1);
-
-L_886b:
-    if ((i <= 2))
-        goto L_8556;
-    else
-        goto L_8875;
-
-L_8875:
-    iGoto = pl.id;
-    if ((fUltimate == 0))
-        goto L_8be2;
-    else
-        goto L_8886;
-
-L_8886:
-    lResUltimate = 0;
-    j = 0;
-    goto L_89b9;
-
-L_889b:
-    if ((lpfl->rgcsh[j] <= 0))
-        goto L_89b4;
-    else
-        goto L_88b9;
-
-L_88b9:
-    if ((fBleeding == 0))
-        goto L_8916;
-    else
-        goto L_88c3;
-
-L_88c3:
-    shdefT = rglpshdef[lpfl->iPlayer][j];
-    UpdateShdefCost(&(shdefT));
-    lpshdefT = &(shdefT);
-    goto L_893a;
-
-L_8916:
-    lpshdefT = (rglpshdef[lpfl->iPlayer] + j);
-
-L_893a:
-    lT = (uint32_t)(((int32_t)(lpfl->rgcsh[j]) * (uint32_t)(lpshdefT->hul.resCost)));
-    if ((lpshdefT->fGift == 0x0))
-        goto L_89a4;
-    else
-        goto L_8987;
-
-L_8987:
-    lT = (int32_t)((lT / 4));
-
-L_89a4:
-    lResUltimate = (lResUltimate + lT);
-
-L_89b4:
-    j = (j + 1);
-
-L_89b9:
-    if ((j < 16))
-        goto L_889b;
-    else
-        goto L_89c3;
-
-L_89c3:
-    if ((lResUltimate <= 65535))
-        goto L_89e8;
-    else
-        goto L_89dc;
-
-L_89dc:
-    lResUltimate = 65535;
-
-L_89e8:
-    vrgPlanResExtra[pl.id] = (vrgPlanResExtra[pl.id] + LOWORD(lResUltimate));
-    if ((lResUltimate <= 0))
-        goto L_8a77;
-    else
-        goto L_8a1d;
-
-L_8a1d:
-    if ((pl.iPlayer == -1))
-        goto L_8a77;
-    else
-        goto L_8a26;
-
-L_8a26:
-    lAmt = (int32_t)(CResourcesAtPlanet(&(pl), pl.iPlayer));
-    lResUltimate = (int32_t)(((uint32_t)((lResUltimate * lAmt)) / (lResUltimate + lAmt)));
-
-L_8a77:
-    idm = (pl.fStarbase + 0x5c);
-    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate), HIWORD(lResUltimate), 0);
-    idm = (pl.fStarbase + 0x142);
-    if ((pl.fStarbase == 0x0))
-        goto L_8b78;
-    else
-        goto L_8b19;
-
-L_8b19:
-    i = ITechLearnATech(pl.iPlayer, 0, 0, 0xffff, &(iGoto));
-    if ((i == 0))
-        goto L_8b6e;
-    else
-        goto L_8b43;
-
-L_8b43:
-    idm = idmHasDismantledKtMineralsWhichHaveDeposited3;
-    if ((i >= 0))
-        goto L_8b62;
-    else
-        goto L_8b52;
-
-L_8b52:
-    i = (-(i + 1));
-    goto L_8b7f;
-
-L_8b62:
-    i = (i - 1);
-    idm = (idm + 1);
-
-L_8b6b:
-    goto L_8b7f;
-
-L_8b6e:
-    iGoto = pl.id;
-
-L_8b75:
-    goto L_8b7f;
-
-L_8b78:
-    iGoto = pl.id;
-
-L_8b7f:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate), HIWORD(lResUltimate), i);
-    goto L_8d7d;
-
-L_8be2:
-    if ((pl.id != -1))
-        goto L_8c4f;
-    else
-        goto L_8beb;
-
-L_8beb:
-    lpthWP = 0x0;
-    DropSalvage(&(lpthWP), pl.rgwtMin, lpfl->iplr, &(ord.pt));
-    FSendPlrMsg2(lpfl->iPlayer, 91, -6, lpthWP->idFull, WFromLpfl(lpfl));
-    goto L_8d7d;
-
-L_8c4f:
-    idm = (pl.fStarbase + 0x59);
-    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, 0, 0, 0);
-    idm = (pl.fStarbase + 0x140);
-    if ((pl.fStarbase == 0x0))
-        goto L_8d35;
-    else
-        goto L_8cd9;
-
-L_8cd9:
-    i = ITechLearnATech(pl.iPlayer, 0, 0, 0xffff, &(iGoto));
-    if ((i == 0))
-        goto L_8d2e;
-    else
-        goto L_8d03;
-
-L_8d03:
-    idm = idmHasDismantledKtMineralsStarbaseOrbitingProcess;
-    if ((i >= 0))
-        goto L_8d22;
-    else
-        goto L_8d12;
-
-L_8d12:
-    i = (-(i + 1));
-    goto L_8d35;
-
-L_8d22:
-    i = (i - 1);
-    idm = (idm + 1);
-
-L_8d2b:
-    goto L_8d35;
-
-L_8d2e:
-    iGoto = pl.id;
-
-L_8d35:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, i, 0, 0);
-
-L_8d7d:
-    idPlayer = -1;
-    gd.fDontCalcBleed = 0x0;
-    FRemovePlayerMessage(lpfl->iPlayer, 78, (lpfl->id | 0x8000));
-    lpfl->fDead = 0x1;
-    if ((ord.grTask != grTaskColonize))
-        goto L_8df1;
-    else
-        goto L_8dce;
-
-L_8dce:
-    FQueueColonistDrop(lpfl, &(pl), lpfl->rgwtMin[3]);
-    goto CancelOrder;
-
-L_8df1:
-    if ((lpfl->idPlanet == -1))
-        goto CancelOrder;
-    else
-        goto L_8dfe;
-
-L_8dfe:
-    if ((lpPlanets[lpfl->idPlanet].iPlayer != lpfl->iPlayer))
-        goto CancelOrder;
-    else
-        goto L_8e2c;
-
-L_8e2c:
-    lpPlanets[lpfl->idPlanet].rgwtMin[3] = (lpPlanets[lpfl->idPlanet].rgwtMin[3] + lpfl->rgwtMin[3]);
-
-CancelOrder:
-    if ((lpfl->cord != 1))
-        goto L_8ee3;
-    else
-        goto L_8e72;
-
-L_8e72:
-    if ((lpfl->fDead != 0x0))
-        goto L_8ee3;
-    else
-        goto L_8e89;
-
-L_8e89:
-    if ((lpfl->lpplord->rgord[0].grTask == grTaskNone))
-        goto L_8ee3;
-    else
-        goto L_8e9f;
-
-L_8e9f:
-    FRemovePlayerMessage(lpfl->iPlayer, 78, (lpfl->id | 0x8000));
-    FSendPlrMsg2(lpfl->iPlayer, 78, (lpfl->id | 0x8000), lpfl->id, 0);
-
-L_8ee3:
-    lpfl->lpplord->rgord[0].grTask = grTaskNone;
-    goto L_67b6;
-
-L_8f02:
-    if ((ord.grTask != grTaskMine))
-        goto L_9081;
-    else
-        goto L_8f10;
-
-L_8f10:
-    cMine = 0;
-    if ((iPass != 3))
-        goto L_67b6;
-    else
-        goto L_8f25;
-
-L_8f25:
-    if ((lpfl->fHereAllTurn == 0x0))
-        goto L_67b6;
-    else
-        goto L_8f3f;
-
-L_8f3f:
-    if ((lpfl->idPlanet != -1))
-        goto L_8f76;
-    else
-        goto L_8f4c;
-
-L_8f4c:
-    FSendPlrMsg2(lpfl->iPlayer, 119, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_8f76:
-    lppl = LpplFromId(lpfl->idPlanet);
-    if ((lppl != 0x0))
-        goto L_8fa4;
-    else
-        goto CancelOrder;
-
-L_8fa4:
-    cMine = CMineFromLpfl(lpfl);
-    if ((cMine != 0))
-        goto L_8ffb;
-    else
-        goto L_8fce;
-
-L_8fce:
-    FSendPlrMsg2(lpfl->iPlayer, 117, (lpfl->id | 0x8000), lpfl->id, lppl->id);
-    goto CancelOrder;
-
-L_8ffb:
-    if ((lppl->iPlayer == -1))
-        goto L_905d;
-    else
-        goto L_9009;
-
-L_9009:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raMacintosh))
-        goto L_67b6;
-    else
-        goto L_902d;
-
-L_902d:
-    FSendPlrMsg2(lpfl->iPlayer, 118, (lpfl->id | 0x8000), lpfl->id, lppl->id);
-    goto CancelOrder;
-
-L_905d:
-    EstMineralsMined(lppl, rglQuan, cMine, 1);
-    goto L_67b6;
-
-L_9081:
-    if ((ord.grTask != grTaskAutoRoute))
-        goto L_91c3;
-    else
-        goto L_908f;
-
-L_908f:
-    if ((lpfl->cord != 1))
-        goto L_67b6;
-    else
-        goto L_909c;
-
-L_909c:
-    if ((lpfl->idPlanet == -1))
-        goto L_67b6;
-    else
-        goto L_90a9;
-
-L_90a9:
-    lppl = LpplFromId(lpfl->idPlanet);
-    if ((lppl->iPlayer != lpfl->iPlayer))
-        goto L_916d;
-    else
-        goto L_90d4;
-
-L_90d4:
-    if ((lppl->idRoute == 0x0))
-        goto L_916d;
-    else
-        goto L_90e7;
-
-L_90e7:
-    AutoRouteFleet(lpfl, lppl);
-    if ((lpfl->lpplord->rgord[1].iWarp != 0x0))
-        goto L_9157;
-    else
-        goto L_9151;
-
-L_9151:
-    t_merge_915a_0001 = 296;
-    goto L_915a;
-
-L_9157:
-    t_merge_915a_0001 = 295;
-
-L_915a:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_915a_0001, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, (lppl->idRoute - 1), 0, 0, 0, 0);
-    goto L_67b6;
-
-L_916d:
-    if ((iPass != 4))
-        goto L_67b6;
-    else
-        goto L_9176;
-
-L_9176:
-    AutoFleetOrder(lpfl, lppl);
-    ord = lpfl->lpplord->rgord[0];
-    if ((ord.grTask == grTaskMerge))
-        goto LDoMerge;
-    else
-        goto L_91ba;
-
-L_91ba:
-    goto L_67b6;
-
-L_91c3:
-    if ((ord.grTask != grTaskMerge))
-        goto L_932b;
-    else
-        goto L_91d1;
-
-L_91d1:
-    if (((iPass & 0x1) != 0x0))
-        goto L_67b6;
-    else
-        goto LDoMerge;
-
-LDoMerge:
-    if ((ord.grobj == grobjFleet))
-        goto L_921f;
-    else
-        goto NMNF;
-
-NMNF:
-    FSendPlrMsg2(lpfl->iPlayer, 245, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_921f:
-    lpflDest = LpflFromId(ord.id);
-    if ((lpflDest != 0x0))
-        goto L_9246;
-    else
-        goto NMNF;
-
-L_9246:
-    if ((lpflDest->fDead != 0x0))
-        goto NMNF;
-    else
-        goto L_9261;
-
-L_9261:
-    if ((lpfl != lpflDest))
-        goto L_927c;
-    else
-        goto CancelOrder;
-
-L_927c:
-    if ((lpflDest->iPlayer == lpfl->iPlayer))
-        goto L_92ba;
-    else
-        goto L_9290;
-
-L_9290:
-    FSendPlrMsg2(lpfl->iPlayer, 246, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_92ba:
-    FSendPlrMsg2(lpfl->iPlayer, 247, (lpflDest->id | 0x8000), WFromLpfl(lpfl), lpflDest->id);
-    FRemovePlayerMessage(lpfl->iPlayer, 78, (lpfl->id | 0x8000));
-    Merge2Fleets(lpflDest, lpfl, 1);
-    goto CancelOrder;
-
-L_932b:
-    if ((ord.grTask != grTaskGive))
-        goto L_993b;
-    else
-        goto L_9339;
-
-L_9339:
-    if ((iPass != 4))
-        goto L_67b6;
-    else
-        goto L_9345;
-
-L_9345:
-    iplrDest = ord.tsell.iPlrX;
-    if ((iplrDest < lpfl->iPlayer))
-        goto L_9361;
-    else
-        goto L_935c;
-
-L_935c:
-    iplrDest = (iplrDest + 1);
-
-L_9361:
-    if ((iplrDest < 0))
-        goto L_9391;
-    else
-        goto L_936b;
-
-L_936b:
-    if ((iplrDest >= game.cPlayer))
-        goto L_9391;
-    else
-        goto L_9377;
-
-L_9377:
-    if ((rgplr[iplrDest].fDead == 0x0))
-        goto L_93bb;
-    else
-        goto L_9391;
-
-L_9391:
-    FSendPlrMsg2(lpfl->iPlayer, 328, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_93bb:
-    if ((rgplr[iplrDest].fAi != 0x0))
-        goto L_9407;
-    else
-        goto L_93da;
-
-L_93da:
-    if (((int16_t)(rgplr[iplrDest].rgmdRelation[lpfl->iPlayer]) != 2))
-        goto L_9433;
-    else
-        goto L_9407;
-
-L_9407:
-    FSendPlrMsg2(lpfl->iPlayer, 332, (lpfl->id | 0x8000), (0x30 | iplrDest), 0);
-    goto CancelOrder;
-
-L_9433:
-    if ((lpfl->rgwtMin[3] <= 0))
-        goto L_9479;
-    else
-        goto L_944f;
-
-L_944f:
-    FSendPlrMsg2(lpfl->iPlayer, 329, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_9479:
-    ishLastFree = -1;
-    ish = 0;
-    goto L_95be;
-
-L_9488:
-    if ((lpfl->rgcsh[ish] != 0))
-        goto L_94b9;
-    else
-        goto L_94a6;
-
-L_94a6:
-    rgishMap[ish] = -1;
-    goto L_95b9;
-
-L_94b9:
-    ishMatch = IshFindSimilarDesign(&(rglpshdef[lpfl->iPlayer][ish].hul), iplrDest);
-    if ((ishMatch == -1))
-        goto L_9506;
-    else
-        goto L_94f1;
-
-L_94f1:
-    rgishMap[ish] = ishMatch;
-    goto L_95b9;
-
-L_9506:
-    ishLastFree = (ishLastFree + 1);
-    if ((ishLastFree >= 16))
-        goto L_954c;
-    else
-        goto L_9517;
-
-L_9517:
-    if ((rglpshdef[iplrDest][ishLastFree].fFree == 0x0))
-        goto L_9506;
-    else
-        goto L_954c;
-
-L_954c:
-    if ((ishLastFree < 16))
-        goto L_95a7;
-    else
-        goto SellNoCap;
-
-SellNoCap:
-    FSendPlrMsg2(lpfl->iPlayer, 330, (lpfl->id | 0x8000), lpfl->id, (0x30 | iplrDest));
-    FSendPlrMsg2(iplrDest, 331, -1, (0x30 | lpfl->iPlayer), 0);
-    goto CancelOrder;
-
-L_95a7:
-    rgishMap[ish] = ishLastFree;
-
-L_95b9:
-    ish = (ish + 1);
-
-L_95be:
-    if ((ish < 16))
-        goto L_9488;
-    else
-        goto L_95c8;
-
-L_95c8:
-    if ((rgplr[iplrDest].cFleet >= 0x200))
-        goto SellNoCap;
-    else
-        goto L_95e5;
-
-L_95e5:
-    lpflNew = LpflNew(iplrDest, lpfl->idPlanet);
-    if ((lpflNew != 0x0))
-        goto L_9617;
-    else
-        goto SellNoCap;
-
-L_9617:
-    if ((iplrDest >= lpfl->iPlayer))
-        goto L_962b;
-    else
-        goto L_9627;
-
-L_9627:
-    ifltcur = (ifltcur + 1);
-
-L_962b:
-    lpflNew->pt = lpfl->pt;
-    lpflNew->lpplord->rgord[0].pt = lpfl->pt;
-    ish = 0;
-    goto L_96a9;
-
-L_9666:
-    lpflNew->rgwtMin[ish] = lpfl->rgwtMin[ish];
-    ish = (ish + 1);
-
-L_96a9:
-    if ((ish <= 4))
-        goto L_9666;
-    else
-        goto L_96b3;
-
-L_96b3:
-    ish = 0;
-    goto L_989a;
-
-L_96bc:
-    if ((lpfl->rgcsh[ish] <= 0))
-        goto L_9895;
-    else
-        goto L_96da;
-
-L_96da:
-    lpshdefDest = (rglpshdef[iplrDest] + rgishMap[ish]);
-    if ((lpshdefDest->fFree == 0x0))
-        goto L_97d0;
-    else
-        goto L_971d;
-
-L_971d:
-    *(lpshdefDest) = rglpshdef[lpfl->iPlayer][ish];
-    lpshdefDest->ishdef = rgishMap[ish];
-    lpshdefDest->fGift = 0x1;
-    lpshdefDest->cBuilt = 0x0;
-    lpshdefDest->cExist = 0x0;
-    rgplr[iplrDest].cShDef = (rgplr[iplrDest].cShDef + 1);
-
-L_97d0:
-    lpflNew->rgcsh[rgishMap[ish]] = (lpflNew->rgcsh[rgishMap[ish]] + lpfl->rgcsh[ish]);
-    lpflNew->rgdv[rgishMap[ish]].dp = lpfl->rgdv[ish].dp;
-    lpshdefDest->cBuilt = (lpshdefDest->cBuilt + (int32_t)(lpfl->rgcsh[ish]));
-    lpshdefDest->cExist = (lpshdefDest->cExist + (int32_t)(lpfl->rgcsh[ish]));
-
-L_9895:
-    ish = (ish + 1);
-
-L_989a:
-    if ((ish < 16))
-        goto L_96bc;
-    else
-        goto L_98a4;
-
-L_98a4:
-    lpfl->fDead = 0x1;
-    FSendPlrMsg2(lpfl->iPlayer, 333, (lpflNew->id | 0x8000), WFromLpfl(lpfl), (0x30 | iplrDest));
-    FSendPlrMsg2(iplrDest, 334, (lpflNew->id | 0x8000), (0x30 | lpfl->iPlayer), WFromLpfl(lpflNew));
-    lpfl->fDead = 0x1;
-    goto L_67b6;
-
-L_993b:
-    if ((ord.grTask == grTaskLayMines))
-        goto L_999e;
-    else
-        goto L_9949;
-
-L_9949:
-    if ((ord.grTask != grTaskNone))
-        goto L_67b6;
-    else
-        goto L_9957;
-
-L_9957:
-    if ((lpfl->cord <= 1))
-        goto L_67b6;
-    else
-        goto L_9964;
-
-L_9964:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMines))
-        goto L_67b6;
-    else
-        goto L_9988;
-
-L_9988:
-    if ((lpfl->lpplord->rgord[1].grTask != grTaskLayMines))
-        goto L_67b6;
-    else
-        goto L_999e;
-
-L_999e:
-    idm = idmHasDispersedMines;
-    if ((iPass != 3))
-        goto L_67b6;
-    else
-        goto L_99ac;
-
-L_99ac:
-    if ((lpfl->fHereAllTurn != 0x0))
-        goto L_99ea;
-    else
-        goto L_99c3;
-
-L_99c3:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMines))
-        goto L_67b6;
-    else
-        goto L_99ea;
-
-L_99ea:
-    cMine = CLayMinesFromLpfl(lpfl, -1, -1);
-    if ((cMine != 0))
-        goto L_9a46;
-    else
-        goto L_9a1c;
-
-L_9a1c:
-    FSendPlrMsg2(lpfl->iPlayer, 191, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto CancelOrder;
-
-L_9a46:
-    if ((ord.grTask != grTaskLayMines))
-        goto L_9aa1;
-    else
-        goto L_9a54;
-
-L_9a54:
-    if ((lpfl->lpplord->rgord[0].tsell.iPlrX != 0x0))
-        goto L_9a84;
-    else
-        goto L_9a65;
-
-L_9a65:
-    lpfl->lpplord->rgord[0].grTask = grTaskNone;
-    goto L_9aa1;
-
-L_9a84:
-    if ((lpfl->lpplord->rgord[0].tsell.iPlrX == 0x5))
-        goto L_9aa1;
-    else
-        goto L_9a95;
-
-L_9a95:
-    lpfl->lpplord->rgord[0].tsell.iPlrX = (lpfl->lpplord->rgord[0].tsell.iPlrX - 0x1);
-
-L_9aa1:
-    j = 0;
-    goto L_9ea6;
-
-L_9aa9:
-    cMine = CLayMinesFromLpfl(lpfl, j, -1);
-    if ((cMine != 0))
-        goto L_9add;
-    else
-        goto L_9ea2;
-
-L_9add:
-    if ((lpfl->fHereAllTurn != 0x0))
-        goto L_9b11;
-    else
-        goto L_9af4;
-
-L_9af4:
-    cMine = (int32_t)((cMine / 2));
-
-L_9b11:
-    lpthBest = 0x0;
-    lBest = 10000000;
-    lpth = lpThings;
-    lpthMac = (lpThings + cThing);
-    goto L_9c86;
-
-L_9b5c:
-    if ((lpth->iplr != lpfl->iPlayer))
-        goto L_9c81;
-    else
-        goto L_9b79;
-
-L_9b79:
-    if ((lpth->ith != ithMinefield))
-        goto L_9c81;
-    else
-        goto L_9b93;
-
-L_9b93:
-    if ((lpth->thm.iType != j))
-        goto L_9c81;
-    else
-        goto L_9ba9;
-
-L_9ba9:
-    dx = (int32_t)((lpfl->pt.x - lpth->pt.x));
-    dy = (int32_t)((lpfl->pt.y - lpth->pt.y));
-    l = ((uint32_t)((dx * dx)) + (uint32_t)((dy * dy)));
-    if ((lpth->thm.cMines < l))
-        goto L_9c81;
-    else
-        goto L_9c42;
-
-L_9c42:
-    if ((l < lBest))
-        goto L_9c61;
-    else
-        goto L_9c81;
-
-L_9c61:
-    lBest = l;
-    lpthBest = lpth;
-
-L_9c81:
-    lpth = (lpth + 1);
-
-L_9c86:
-    if ((lpth < lpthMac))
-        goto L_9b5c;
-    else
-        goto L_9c97;
-
-L_9c97:
-    if ((lpthBest != 0x0))
-        goto L_9cab;
-    else
-        goto L_9dc1;
-
-L_9cab:
-    if ((lpthBest->thm.cMines < 1000000))
-        goto L_9cc9;
-    else
-        goto L_9dc1;
-
-L_9cc9:
-    lpthBest->pt.x = LOWORD((int32_t)((((uint32_t)(((int32_t)(lpthBest->pt.x) * lpthBest->thm.cMines)) + (uint32_t)(((int32_t)(lpfl->pt.x) * cMine))) /
-                                       (cMine + lpthBest->thm.cMines))));
-    lpthBest->pt.y = LOWORD((int32_t)((((uint32_t)(((int32_t)(lpthBest->pt.y) * lpthBest->thm.cMines)) + (uint32_t)(((int32_t)(lpfl->pt.y) * cMine))) /
-                                       (cMine + lpthBest->thm.cMines))));
-    lpthBest->thm.cMines = (lpthBest->thm.cMines + cMine);
-    idm = idmHasIncreasedMinefieldMines;
-    goto L_9e50;
-
-L_9dc1:
-    lpth = LpthNew(lpfl->iPlayer, ithMinefield);
-    if ((lpth != 0x0))
-        goto L_9e1a;
-    else
-        goto L_9df0;
-
-L_9df0:
-    FSendPlrMsg2(lpfl->iPlayer, 382, (lpfl->id | 0x8000), lpfl->id, 0);
-    goto L_9ea2;
-
-L_9e1a:
-    lpth->pt = lpfl->pt;
-    lpth->thm.cMines = cMine;
-    lpth->thm.iType = LOBYTE(j);
-
-L_9e50:
-    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, LOWORD(cMine), HIWORD(cMine), 0, 0, 0, 0);
-
-L_9ea2:
-    j = (j + 1);
-
-L_9ea6:
-    if ((j >= 3))
-        goto L_67b6;
-    else
-        goto L_9eac;
-
-L_9eac:
-    goto L_9aa9;
-
-L_9eb2:
     return;
 }

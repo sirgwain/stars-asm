@@ -116,31 +116,17 @@ L_0e74:
     branch i != 1278 ? L_0ea7 : L_0e7e
 
 L_0e7e:
-    branch grbitScanMines != 0xf ? L_0e8f : L_0e88
-
-L_0e88:
-    t_merge_0e93_0001 = 0x1
-    goto L_0e93
-
-L_0e8f:
-    t_merge_0e93_0001 = 0x0
-
-L_0e93:
-    rgid[c] = (uint32_t)t_merge_0e93_0001
+    rgid[c] = (uint32_t)(grbitScanMines == 0xf ? 0x1 : 0x0)
     goto L_0ecd
 
+
+
+
 L_0ea7:
-    branch grbitScanMines != 0x0 ? L_0eb8 : L_0eb1
+    rgid[c] = (uint32_t)(grbitScanMines == 0x0 ? 0x1 : 0x0)
 
-L_0eb1:
-    t_merge_0ebc_0001 = 0x1
-    goto L_0ebc
 
-L_0eb8:
-    t_merge_0ebc_0001 = 0x0
 
-L_0ebc:
-    rgid[c] = (uint32_t)t_merge_0ebc_0001
 
 L_0ecd:
     call CchGetString(i, &szWork[(((i - 1278) * 30) + 160)]) -> callresult(int16_t)
@@ -163,28 +149,20 @@ L_0f17:
     goto L_0fba
 
 L_0f50:
-    branch ((0x1 << i) & grbitScanMines) == 0x0 ? L_0f6b : L_0f64
-
-L_0f64:
-    t_merge_0f6f_0001 = 0x1
-    goto L_0f6f
-
-L_0f6b:
-    t_merge_0f6f_0001 = 0x0
-
-L_0f6f:
-    rgid[c] = (uint32_t)t_merge_0f6f_0001
+    rgid[c] = (uint32_t)(((0x1 << i) & grbitScanMines) == 0x0 ? 0x0 : 0x1)
     call CchGetString((i + 1280), &szWork[(i * 30)]) -> callresult(int16_t)
     t_0fa6 = c
     c = (c + 1)
     rgszScan[t_0fa6] = &szWork[(i * 30)]
     i = (i + 1)
 
+
+
+
 L_0fba:
     branch i < 4 ? L_0f50 : L_0fc3
 
 L_0fc3:
-    t_pt_0fca = PointFrom16(pt)
     call GetCursorPos(&t_pt_0fca) -> callresult(void)
     pt = PointTo16(t_pt_0fca)
     t_pt_0fda_1 = PointFrom16(pt)
@@ -265,26 +243,18 @@ L_113e:
     branch rgshdef[ish].fFree != 0x0 ? L_1125 : L_115c
 
 L_115c:
-    branch (grbitSh & grbitScanShip) == 0x0 ? L_1172 : L_116b
-
-L_116b:
-    t_merge_1176_0001 = 0x1
-    goto L_1176
-
-L_1172:
-    t_merge_1176_0001 = 0x0
-
-L_1176:
-    rgid[c] = (uint32_t)t_merge_1176_0001
+    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0x0 ? 0x0 : 0x1)
     t_1198 = c
     c = (c + 1)
     rgszScan[t_1198] = rgshdef[ish].hul.szClass
+
+
+
 
 L_11a8:
     goto L_1125
 
 L_11ab:
-    t_pt_11b2 = PointFrom16(pt)
     call GetCursorPos(&t_pt_11b2) -> callresult(void)
     pt = PointTo16(t_pt_11b2)
     t_pt_11c2_1 = PointFrom16(pt)
@@ -385,28 +355,20 @@ L_136b:
     goto L_140e
 
 L_13a4:
-    branch ((0x1 << i) & grbitScanEShip) == 0x0 ? L_13bf : L_13b8
-
-L_13b8:
-    t_merge_13c3_0001 = 0x1
-    goto L_13c3
-
-L_13bf:
-    t_merge_13c3_0001 = 0x0
-
-L_13c3:
-    rgid[c] = (uint32_t)t_merge_13c3_0001
+    rgid[c] = (uint32_t)(((0x1 << i) & grbitScanEShip) == 0x0 ? 0x0 : 0x1)
     call CchGetString((i + 381), &szWork[(i * 25)]) -> callresult(int16_t)
     t_13fa = c
     c = (c + 1)
     rgszScan[t_13fa] = &szWork[(i * 25)]
     i = (i + 1)
 
+
+
+
 L_140e:
     branch i < 8 ? L_13a4 : L_1417
 
 L_1417:
-    t_pt_141e = PointFrom16(pt)
     call GetCursorPos(&t_pt_141e) -> callresult(void)
     pt = PointTo16(t_pt_141e)
     t_pt_142e_1 = PointFrom16(pt)
@@ -468,28 +430,20 @@ L_1519:
     goto L_159d
 
 L_1526:
-    branch (iScanZoom + 4) != i ? L_153b : L_1534
-
-L_1534:
-    t_merge_153f_0001 = 0x1
-    goto L_153f
-
-L_153b:
-    t_merge_153f_0001 = 0x0
-
-L_153f:
-    rgid[c] = (uint32_t)t_merge_153f_0001
+    rgid[c] = (uint32_t)((iScanZoom + 4) == i ? 0x1 : 0x0)
     call _wsprintf(&szWork[(i * 8)], PCTDPCTPCT, vrgpctZoom[i]) -> callresult(int16_t)
     t_1589 = c
     c = (c + 1)
     rgszScan[t_1589] = &szWork[(i * 8)]
     i = (i + 1)
 
+
+
+
 L_159d:
     branch i < 9 ? L_1526 : L_15a6
 
 L_15a6:
-    t_pt_15ad = PointFrom16(pt)
     call GetCursorPos(&t_pt_15ad) -> callresult(void)
     pt = PointTo16(t_pt_15ad)
     t_pt_15bd_1 = PointFrom16(pt)

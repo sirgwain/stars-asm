@@ -645,6 +645,10 @@
       "enum": "ThingType",
       "block_path_facts": [
         {
+          "block": "L_0d32",
+          "value": "ithMysteryTrader"
+        },
+        {
           "block": "L_0d44",
           "value": "ithMysteryTrader"
         },
@@ -1260,6 +1264,10 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_186e",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_189d",
           "value": "grobjFleet"
         },
@@ -1542,6 +1550,10 @@
       "block_path_facts": [
         {
           "block": "L_6ab3",
+          "value": "hstBeam"
+        },
+        {
+          "block": "L_6b0e",
           "value": "hstBeam"
         },
         {
@@ -1950,6 +1962,10 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_afe5",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_b003",
           "value": "grobjFleet"
         },
@@ -1987,6 +2003,10 @@
         },
         {
           "block": "L_b664",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_b6a7",
           "value": "grobjFleet"
         },
         {
@@ -2243,6 +2263,10 @@
         },
         {
           "block": "L_5def",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_5e19",
           "value": "grobjFleet"
         },
         {
@@ -3109,6 +3133,10 @@
           "value": "ithMysteryTrader"
         },
         {
+          "block": "L_6051",
+          "value": "ithMysteryTrader"
+        },
+        {
           "block": "L_6082",
           "value": "ithMysteryTrader"
         },
@@ -3357,6 +3385,10 @@
         },
         {
           "block": "L_571d",
+          "value": "grTaskXfer"
+        },
+        {
+          "block": "L_574d",
           "value": "grTaskXfer"
         },
         {
@@ -3753,6 +3785,10 @@
           "value": "grTaskXfer"
         },
         {
+          "block": "L_7153",
+          "value": "grTaskXfer"
+        },
+        {
           "block": "L_7165",
           "value": "grTaskXfer"
         },
@@ -3912,6 +3948,10 @@
         {
           "block": "L_9f71",
           "value": "ithMineralPacket"
+        },
+        {
+          "block": "L_9f9e",
+          "value": "ithWormhole"
         },
         {
           "block": "L_9fb0",
@@ -4307,11 +4347,19 @@
           "value": "ithMineralPacket"
         },
         {
+          "block": "L_7346",
+          "value": "ithMinefield"
+        },
+        {
           "block": "L_737c",
           "value": "ithMinefield"
         },
         {
           "block": "L_7391",
+          "value": "ithMinefield"
+        },
+        {
+          "block": "L_74ba",
           "value": "ithMinefield"
         },
         {
@@ -4424,6 +4472,10 @@
           "value": "grobjFleet"
         },
         {
+          "block": "L_5443",
+          "value": "grobjFleet"
+        },
+        {
           "block": "L_5456",
           "value": "grobjFleet"
         },
@@ -4466,6 +4518,10 @@
         },
         {
           "block": "L_333f",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_339c",
           "value": "grobjFleet"
         },
         {
@@ -4551,6 +4607,10 @@
       "block_path_facts": [
         {
           "block": "L_6738",
+          "value": "grobjFleet"
+        },
+        {
+          "block": "L_6768",
           "value": "grobjFleet"
         },
         {

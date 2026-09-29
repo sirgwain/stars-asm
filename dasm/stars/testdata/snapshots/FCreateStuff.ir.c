@@ -9,13 +9,13 @@ L_0014:
     fFailed = 0;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
-    if ((dx < 800))
+    if (dx < 800)
         goto L_004e;
     else
         goto L_0044;
 
 L_0044:
-    if ((dy >= 600))
+    if (dy >= 600)
         goto L_005d;
     else
         goto L_004e;
@@ -25,13 +25,13 @@ L_004e:
     goto L_00af;
 
 L_005d:
-    if ((dx < 1024))
+    if (dx < 1024)
         goto L_0071;
     else
         goto L_0067;
 
 L_0067:
-    if ((dy >= 768))
+    if (dy >= 768)
         goto L_0080;
     else
         goto L_0071;
@@ -41,13 +41,13 @@ L_0071:
     goto L_00af;
 
 L_0080:
-    if ((dx < 1111))
+    if (dx < 1111)
         goto L_0094;
     else
         goto L_008a;
 
 L_008a:
-    if ((dy >= 888))
+    if (dy >= 888)
         goto L_00a3;
     else
         goto L_0094;
@@ -118,13 +118,13 @@ L_00af:
     goto L_04f1;
 
 L_04b7:
-    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE((i + 460)));
+    hbmp = LoadBitmap(hInst, MAKEINTRESOURCE(i + 460));
     rghbrPat[i] = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
-    i = (i + 1);
+    i = i + 1;
 
 L_04f1:
-    if ((i < 3))
+    if (i < 3)
         goto L_04b7;
     else
         goto L_04fa;
@@ -154,19 +154,19 @@ L_04fa:
     hdibPlanets = HdibLoadBigResource(IDDIB_PLANET_ICONS);
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
-    if ((hdibPlanets == 0x0))
+    if (hdibPlanets == 0x0)
         goto L_06b7;
     else
         goto L_06a3;
 
 L_06a3:
-    if ((hdibThings == 0x0))
+    if (hdibThings == 0x0)
         goto L_06b7;
     else
         goto L_06ad;
 
 L_06ad:
-    if ((hdibToolbar != 0x0))
+    if (hdibToolbar != 0x0)
         goto L_06bc;
     else
         goto L_06b7;
@@ -179,8 +179,8 @@ L_06bc:
     goto L_0720;
 
 L_06c4:
-    rghdibShips[i] = HdibLoadBigResource((i + 552));
-    if ((rghdibShips[i] != 0x0))
+    rghdibShips[i] = HdibLoadBigResource(i + 552);
+    if (rghdibShips[i] != 0x0)
         goto L_06f0;
     else
         goto L_06eb;
@@ -189,8 +189,8 @@ L_06eb:
     fFailed = 1;
 
 L_06f0:
-    rghdibShipsT[i] = HdibLoadBigResource((i + 557));
-    if ((rghdibShipsT[i] != 0x0))
+    rghdibShipsT[i] = HdibLoadBigResource(i + 557);
+    if (rghdibShipsT[i] != 0x0)
         goto L_071c;
     else
         goto L_0717;
@@ -199,10 +199,10 @@ L_0717:
     fFailed = 1;
 
 L_071c:
-    i = (i + 1);
+    i = i + 1;
 
 L_0720:
-    if ((i < 5))
+    if (i < 5)
         goto L_06c4;
     else
         goto L_0729;
@@ -212,8 +212,8 @@ L_0729:
     goto L_0761;
 
 L_0731:
-    rghdibInventory[i] = HdibLoadBigResource((i + 500));
-    if ((rghdibInventory[i] != 0x0))
+    rghdibInventory[i] = HdibLoadBigResource(i + 500);
+    if (rghdibInventory[i] != 0x0)
         goto L_075d;
     else
         goto L_0758;
@@ -222,10 +222,10 @@ L_0758:
     fFailed = 1;
 
 L_075d:
-    i = (i + 1);
+    i = i + 1;
 
 L_0761:
-    if ((i < 7))
+    if (i < 7)
         goto L_0731;
     else
         goto L_076a;
@@ -264,79 +264,79 @@ L_076a:
     vlprgidMisc = LpAlloc(0x800, htPerm);
     vlprgidPlanet = LpAlloc(0x800, htPerm);
     vlprgidFleet = LpAlloc(0x800, htPerm);
-    if ((fFailed != 0))
+    if (fFailed != 0)
         goto L_0a7f;
     else
         goto L_0a07;
 
 L_0a07:
-    if ((hbmpScanner == 0x0))
+    if (hbmpScanner == 0x0)
         goto L_0a7f;
     else
         goto L_0a11;
 
 L_0a11:
-    if ((hbmpUnknownPlanet == 0x0))
+    if (hbmpUnknownPlanet == 0x0)
         goto L_0a7f;
     else
         goto L_0a1b;
 
 L_0a1b:
-    if ((hbmpBackBld == 0x0))
+    if (hbmpBackBld == 0x0)
         goto L_0a7f;
     else
         goto L_0a25;
 
 L_0a25:
-    if ((hdibRaces == 0x0))
+    if (hdibRaces == 0x0)
         goto L_0a7f;
     else
         goto L_0a2f;
 
 L_0a2f:
-    if ((hdibRacesT == 0x0))
+    if (hdibRacesT == 0x0)
         goto L_0a7f;
     else
         goto L_0a39;
 
 L_0a39:
-    if ((hdibRacesX == 0x0))
+    if (hdibRacesX == 0x0)
         goto L_0a7f;
     else
         goto L_0a43;
 
 L_0a43:
-    if ((hbmpMono == 0x0))
+    if (hbmpMono == 0x0)
         goto L_0a7f;
     else
         goto L_0a4d;
 
 L_0a4d:
-    if ((hbmpScanShip == 0x0))
+    if (hbmpScanShip == 0x0)
         goto L_0a7f;
     else
         goto L_0a57;
 
 L_0a57:
-    if ((hbmpMsg == 0x0))
+    if (hbmpMsg == 0x0)
         goto L_0a7f;
     else
         goto L_0a61;
 
 L_0a61:
-    if ((hiconHost == 0x0))
+    if (hiconHost == 0x0)
         goto L_0a7f;
     else
         goto L_0a6b;
 
 L_0a6b:
-    if ((hiconStars == 0x0))
+    if (hiconStars == 0x0)
         goto L_0a7f;
     else
         goto L_0a75;
 
 L_0a75:
-    if ((hiconWait != 0x0))
+    if (hiconWait != 0x0)
         goto L_0aa6;
     else
         goto L_0a7f;

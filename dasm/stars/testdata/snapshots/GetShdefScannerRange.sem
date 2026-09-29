@@ -42,11 +42,11 @@ L_5119:
     branch GetRaceStat(&rgplr[iplr], rsMajorAdv) != raNone ? L_513f : L_5139
 
 L_5139:
-    t_merge_5142_0001 = 0x1
+    t_merge_5142_0001 = 1
     goto L_5142
 
 L_513f:
-    t_merge_5142_0001 = 0x0
+    t_merge_5142_0001 = 0
 
 L_5142:
     fBuiltIn = t_merge_5142_0001
@@ -151,18 +151,18 @@ L_53c9:
     branch dRangeT != 1 ? L_53d8 : L_53d2
 
 L_53d2:
-    t_merge_53ea_0001 = 0x32
+    t_merge_53ea_0001 = 50
     goto L_53ea
 
 L_53d8:
     branch dRangeT != 2 ? L_53e7 : L_53e1
 
 L_53e1:
-    t_merge_53ea_0001 = 0x64
+    t_merge_53ea_0001 = 100
     goto L_53ea
 
 L_53e7:
-    t_merge_53ea_0001 = 0xc8
+    t_merge_53ea_0001 = 200
 
 L_53ea:
     dRangeT = t_merge_53ea_0001

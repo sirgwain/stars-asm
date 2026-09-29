@@ -48,32 +48,16 @@ L_06d8:
 
 L_0714:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
-    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_073d
-    branch iPlanSelDlg <= 0 ? L_0753 : L_074d
-
-L_074d:
-    t_merge_0756_0001 = 1
-    goto L_0756
-
-L_0753:
-    t_merge_0756_0001 = 0
-
-L_0756:
-    call EnableWindow(t_call_073d, t_merge_0756_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_0763
-    branch iPlanSelDlg <= 0 ? L_0779 : L_0773
-
-L_0773:
-    t_merge_077c_0001 = 1
-    goto L_077c
-
-L_0779:
-    t_merge_077c_0001 = 0
-
-L_077c:
-    call EnableWindow(t_call_0763, t_merge_077c_0001) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
     i = 408
     goto L_07b7
+
+
+
+
+
+
 
 L_078a:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i)) -> callresult(LRESULT)
@@ -352,31 +336,15 @@ L_10c3:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
 
 L_10e5:
-    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_10ec
-    branch iPlanSelDlg <= 0 ? L_1102 : L_10fc
-
-L_10fc:
-    t_merge_1105_0001 = 1
-    goto L_1105
-
-L_1102:
-    t_merge_1105_0001 = 0
-
-L_1105:
-    call EnableWindow(t_call_10ec, t_merge_1105_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_1112
-    branch iPlanSelDlg <= 0 ? L_1128 : L_1122
-
-L_1122:
-    t_merge_112b_0001 = 1
-    goto L_112b
-
-L_1128:
-    t_merge_112b_0001 = 0
-
-L_112b:
-    call EnableWindow(t_call_1112, t_merge_112b_0001) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
     goto L_16f8
+
+
+
+
+
+
 
 L_1134:
     branch GET_WM_COMMAND_ID(wParam, lParam) != 0x41c ? L_149b : L_113e
@@ -403,23 +371,23 @@ L_11b9:
     branch cLen > 27 ? L_128b : L_11e7
 
 L_11e7:
-    branch btlplan.szName[(cLen - 1)] != 41 ? L_123c : L_11ff
+    branch btlplan.szName[(cLen - 1)] != ')' ? L_123c : L_11ff
 
 L_11ff:
     branch isdigit(btlplan.szName[(cLen - 2)]) == 0x0 ? L_123c : L_1224
 
 L_1224:
-    branch btlplan.szName[(cLen - 3)] == 40 ? L_1254 : L_123c
+    branch btlplan.szName[(cLen - 3)] == '(' ? L_1254 : L_123c
 
 L_123c:
     call strcpy(&btlplan.szName[cLen], " (2)") -> callresult(char *)
     goto L_128b
 
 L_1254:
-    branch btlplan.szName[(cLen - 2)] != 57 ? L_127d : L_126c
+    branch btlplan.szName[(cLen - 2)] != '9' ? L_127d : L_126c
 
 L_126c:
-    btlplan.szName[(cLen - 2)] = 48
+    btlplan.szName[(cLen - 2)] = '0'
     goto L_128b
 
 L_127d:
@@ -483,33 +451,17 @@ L_1537:
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     wParam = 0x41f
-    call GetDlgItem(hwnd, IDC_RENAME) -> t_call_15f1
-    branch iPlanSelDlg <= 0 ? L_1607 : L_1601
-
-L_1601:
-    t_merge_160a_0001 = 1
-    goto L_160a
-
-L_1607:
-    t_merge_160a_0001 = 0
-
-L_160a:
-    call EnableWindow(t_call_15f1, t_merge_160a_0001) -> callresult(int16_t)
-    call GetDlgItem(hwnd, IDC_DELETE) -> t_call_1617
-    branch iPlanSelDlg <= 0 ? L_162d : L_1627
-
-L_1627:
-    t_merge_1630_0001 = 1
-    goto L_1630
-
-L_162d:
-    t_merge_1630_0001 = 0
-
-L_1630:
-    call EnableWindow(t_call_1617, t_merge_1630_0001) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
     call SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0) -> callresult(LRESULT)
     i = btlplan.iplrAttack
     branch i < (idPlayer + 4) ? L_1680 : L_167c
+
+
+
+
+
+
 
 L_167c:
     i = (i - 1)

@@ -22,13 +22,19 @@ var funcName string
 var fromAddr uint32
 var toAddr uint32
 
-func addDasmFuncFlags(cmd *cobra.Command, fromHex, toHex *string) {
+// addDasmNameFlags adds the required flags that select one function by name.
+func addDasmNameFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&funcName, "name", "n", "", "the function to disassemble")
 	cmd.Flags().StringVarP(&funcName, "func", "f", "", "the function to disassemble")
 	cmd.Flags().StringVarP(&funcName, "proc", "p", "", "the function to disassemble")
 	cmd.MarkFlagsMutuallyExclusive("func", "proc", "name")
-
 	cmd.MarkFlagsOneRequired("func", "proc", "name")
+}
+
+// addDasmFuncFlags adds the function name flags and the --from/--to address
+// range flags.
+func addDasmFuncFlags(cmd *cobra.Command, fromHex, toHex *string) {
+	addDasmNameFlags(cmd)
 	cmd.Flags().StringVar(fromHex, "from", "", "start address in hex (e.g. b0a2); with --asm/--sem, restricts output to this block")
 	cmd.Flags().StringVar(toHex, "to", "", "end label/address in hex; labels include the final block, non-label addresses are exclusive")
 }
@@ -94,6 +100,9 @@ func newDasmCmd() *cobra.Command {
 	cmd.AddCommand(semCmd)
 	cmd.AddCommand(irCmd)
 	cmd.AddCommand(graphCmd)
+	regionCmd := newDasmRegionCmd()
+	addDasmNameFlags(regionCmd)
+	cmd.AddCommand(regionCmd)
 	cmd.AddCommand(newDasmAllCmd())
 	cmd.AddCommand(newDasmStructCmd())
 	return cmd

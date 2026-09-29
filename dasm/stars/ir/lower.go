@@ -218,6 +218,10 @@ func collectUnsupportedExpr(expr sem.Expr, path string, failures *[]LowerFailure
 		}
 		collectUnsupportedExpr(e.LHS, path+".lhs", failures)
 		collectUnsupportedExpr(e.RHS, path+".rhs", failures)
+	case *sem.Cond:
+		collectUnsupportedExpr(e.Cond, path+".cond", failures)
+		collectUnsupportedExpr(e.Then, path+".then", failures)
+		collectUnsupportedExpr(e.Else, path+".else", failures)
 	case *sem.SignExtend:
 		collectUnsupportedExpr(e.Parent, path+".parent", failures)
 	case *sem.Call:
@@ -386,6 +390,14 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 			l.addScratch(scratch)
 		}
 		return &Var{Name: e.Path.String()}, true
+	case *sem.Cond:
+		cond, ok1 := l.lowerExpr(e.Cond)
+		then, ok2 := l.lowerExpr(e.Then)
+		els, ok3 := l.lowerExpr(e.Else)
+		if !ok1 || !ok2 || !ok3 {
+			return nil, false
+		}
+		return &Cond{Cond: cond, Then: then, Else: els}, true
 	case *sem.Compare:
 		lhs, ok1 := l.lowerExpr(e.LHS)
 		rhs, ok2 := l.lowerExpr(e.RHS)
@@ -418,6 +430,9 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 				return nil, false
 			}
 			args = append(args, arg)
+		}
+		if e.Function != nil && e.Function.Macro {
+			return &Macro{Name: e.Function.Name, Args: args}, true
 		}
 		return &Call{Target: target, Args: args}, true
 	case *sem.Word:

@@ -16,22 +16,22 @@ L_1261:
     return 1;
 
 L_12a9:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
+    GetClientRect(hwnd, &rc);
+    FillRect((HDC)wParam, &rc, hbrButtonFace);
     return 1;
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
-    iAboutPartial = (iAboutPartial + 2);
-    if ((iAboutPartial < dyArial8))
+    iAboutPartial = iAboutPartial + 2;
+    if (iAboutPartial < dyArial8)
         goto L_130c;
     else
         goto L_12f1;
 
 L_12f1:
     iAboutPartial = 0;
-    iAbout1st = (iAbout1st + 1);
-    if ((iAbout1st <= 78))
+    iAbout1st = iAbout1st + 1;
+    if (iAbout1st <= 78)
         goto L_130c;
     else
         goto L_1306;
@@ -40,78 +40,78 @@ L_1306:
     iAbout1st = -11;
 
 L_130c:
-    GetClientRect(hwndCtl, &(rc));
+    GetClientRect(hwndCtl, &rc);
     hdc = GetDC(hwndCtl);
     SelectObject(hdc, rghfontArial8[1]);
     SetBkMode(hdc, OPAQUE);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
     IntersectClipRect(hdc, 0, 0, rc.right, rc.bottom);
-    rc.top = (rc.top - iAboutPartial);
-    rc.bottom = (rc.top + dyArial8);
+    rc.top = rc.top - iAboutPartial;
+    rc.bottom = rc.top + dyArial8;
     i = iAbout1st;
     goto L_1391;
 
 L_138d:
-    i = (i + 1);
+    i = i + 1;
 
 L_1391:
-    if ((i >= (iAbout1st + 10)))
+    if (i >= iAbout1st + 10)
         goto L_13fa;
     else
         goto L_139f;
 
 L_139f:
-    if ((i < 0))
+    if (i < 0)
         goto L_13d7;
     else
         goto L_13a8;
 
 L_13a8:
-    if ((i >= 77))
+    if (i >= 77)
         goto L_13d7;
     else
         goto L_13b1;
 
 L_13b1:
-    RcCtrTextOut(hdc, &(rc), PszGetCompressedString((i + 631)), -1);
+    RcCtrTextOut(hdc, &rc, PszGetCompressedString(i + 631), -1);
     goto L_13e3;
 
 L_13d7:
-    if ((i >= 77))
+    if (i >= 77)
         goto L_13fa;
     else
         goto L_13e3;
 
 L_13e3:
-    OffsetRect(&(rc), 0, dyArial8);
+    OffsetRect(&rc, 0, dyArial8);
     goto L_138d;
 
 L_13fa:
     rc.bottom = 1000;
-    FillRect(hdc, &(rc), hbrButtonFace);
+    FillRect(hdc, &rc, hbrButtonFace);
     SelectClipRgn(hdc, 0x0);
     ReleaseDC(hwnd, hdc);
     goto L_1510;
 
 L_142c:
-    if ((HIWORD(lParam) != 0x6))
+    if (HIWORD(lParam) != 0x6)
         goto L_1510;
     else
         goto L_1448;
 
 L_1448:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
+    SetBkColor((HDC)wParam, crButtonFace);
+    return (INT_PTR)hbrButtonFace;
 
 L_1461:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
+    if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK)
         goto L_1473;
     else
         goto L_146a;
 
 L_146a:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
+    if (GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL)
         goto L_149a;
     else
         goto L_1473;
@@ -123,7 +123,7 @@ L_1473:
     return 1;
 
 L_149a:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
+    if (GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP)
         goto L_1510;
     else
         goto L_14a3;
@@ -137,31 +137,31 @@ L_14df:
     goto L_1510;
 
 L_14e5:
-    if ((message == WM_ERASEBKGND))
+    if (message == WM_ERASEBKGND)
         goto L_12a9;
     else
         goto L_14ed;
 
 L_14ed:
-    if ((IS_WM_CTLCOLOR(message) != 0))
+    if (IS_WM_CTLCOLOR(message) != 0)
         goto L_142c;
     else
         goto L_14f5;
 
 L_14f5:
-    if ((message == WM_INITDIALOG))
+    if (message == WM_INITDIALOG)
         goto L_1261;
     else
         goto L_14fd;
 
 L_14fd:
-    if ((message == WM_COMMAND))
+    if (message == WM_COMMAND)
         goto L_1461;
     else
         goto L_1505;
 
 L_1505:
-    if ((message == WM_TIMER))
+    if (message == WM_TIMER)
         goto L_12d1;
     else
         goto L_1510;

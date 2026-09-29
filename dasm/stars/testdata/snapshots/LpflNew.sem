@@ -75,21 +75,14 @@ L_3231:
     lpord = lpfl->lpplord->rgord
     lpord->pt = lpfl->pt
     lpord->id = lpfl->idPlanet
-    branch lpfl->idPlanet == -1 ? L_32d9 : L_32d3
-
-L_32d3:
-    t_merge_32dc_0001 = 0x1
-    goto L_32dc
-
-L_32d9:
-    t_merge_32dc_0001 = 0x4
-
-L_32dc:
-    lpord->grobj = t_merge_32dc_0001
+    lpord->grobj = (lpfl->idPlanet == -1 ? 0x4 : 0x1)
     lpord->iWarp = 0x0
     lpord->fValidTask = 0x1
     lpord->grTask = grTaskNone
     branch sel.scan.ifl == -1 ? L_3356 : L_3346
+
+
+
 
 L_3346:
     branch i > sel.scan.ifl ? L_3356 : L_3351

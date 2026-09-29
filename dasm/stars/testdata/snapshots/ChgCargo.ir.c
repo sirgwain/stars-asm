@@ -13,19 +13,19 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     int32_t t_call_6467;
 
 L_6034:
-    if ((grobj == grobjPlanet))
+    if (grobj == grobjPlanet)
         goto L_604f;
     else
         goto L_6046;
 
 L_6046:
-    if ((grobj != grobjOther))
+    if (grobj != grobjOther)
         goto L_6190;
     else
         goto L_604f;
 
 L_604f:
-    if ((pobj == 0x0))
+    if (pobj == 0x0)
         goto L_6062;
     else
         goto L_6058;
@@ -35,28 +35,28 @@ L_6058:
     goto L_609f;
 
 L_6062:
-    if ((grobj != grobjPlanet))
+    if (grobj != grobjPlanet)
         goto L_6084;
     else
         goto L_606b;
 
 L_606b:
-    FLookupPlanet(id, &(xfer.pl));
-    ppl = &(xfer.pl);
+    FLookupPlanet(id, &xfer.pl);
+    ppl = &xfer.pl;
     goto L_609f;
 
 L_6084:
-    memset(&(xfer.pl), 0, sizeof(PLANET));
-    ppl = &(xfer.pl);
+    memset(&xfer.pl, 0, sizeof(PLANET));
+    ppl = &xfer.pl;
 
 L_609f:
-    if ((iSupply > 4))
+    if (iSupply > 4)
         goto L_6159;
     else
         goto L_60a8;
 
 L_60a8:
-    if ((iSupply != 4))
+    if (iSupply != 4)
         goto L_60ba;
     else
         goto L_60b1;
@@ -65,7 +65,7 @@ L_60b1:
     return 0;
 
 L_60ba:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_60e6;
     else
         goto L_60cc;
@@ -74,49 +74,49 @@ L_60cc:
     return ppl->rgwtMin[iSupply];
 
 L_60e6:
-    if (((ppl->rgwtMin[iSupply] + dChg) < 0x0))
+    if (ppl->rgwtMin[iSupply] + dChg < 0x0)
         goto L_6118;
     else
         goto L_613c;
 
 L_6118:
-    dChg = (-ppl->rgwtMin[iSupply]);
+    dChg = -ppl->rgwtMin[iSupply];
 
 L_613c:
-    ppl->rgwtMin[iSupply] = (ppl->rgwtMin[iSupply] + dChg);
+    ppl->rgwtMin[iSupply] = ppl->rgwtMin[iSupply] + dChg;
 
 L_6159:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_616b;
     else
         goto L_64bd;
 
 L_616b:
-    if ((pobj != 0x0))
+    if (pobj != 0x0)
         goto L_64bd;
     else
         goto L_6174;
 
 L_6174:
-    if ((grobj == grobjOther))
+    if (grobj == grobjOther)
         goto L_64bd;
     else
         goto L_617d;
 
 L_617d:
-    FLookupPlanet(-1, &(xfer.pl));
+    FLookupPlanet(-1, &xfer.pl);
 
 L_618d:
     goto L_64bd;
 
 L_6190:
-    if ((grobj != grobjThing))
+    if (grobj != grobjThing)
         goto L_6320;
     else
         goto L_6199;
 
 L_6199:
-    if ((pobj == 0x0))
+    if (pobj == 0x0)
         goto L_61ab;
     else
         goto L_61a2;
@@ -126,11 +126,11 @@ L_61a2:
     goto L_61c0;
 
 L_61ab:
-    FLookupThing(id, &(xfer.th));
-    pth = &(xfer.th);
+    FLookupThing(id, &xfer.th);
+    pth = &xfer.th;
 
 L_61c0:
-    if ((iSupply < 3))
+    if (iSupply < 3)
         goto L_61d2;
     else
         goto L_61c9;
@@ -139,46 +139,46 @@ L_61c9:
     return 0;
 
 L_61d2:
-    if ((iSupply > 4))
+    if (iSupply > 4)
         goto L_62f3;
     else
         goto L_61db;
 
 L_61db:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_6202;
     else
         goto L_61ed;
 
 L_61ed:
-    return (int32_t)(pth->thp.rgwtMin[iSupply]);
+    return (int32_t)pth->thp.rgwtMin[iSupply];
 
 L_6202:
-    if ((((int32_t)(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0))
+    if ((int32_t)pth->thp.rgwtMin[iSupply] + dChg < 0x0)
         goto L_622f;
     else
         goto L_6249;
 
 L_622f:
-    dChg = (int32_t)((-pth->thp.rgwtMin[iSupply]));
+    dChg = (int32_t)-pth->thp.rgwtMin[iSupply];
 
 L_6249:
-    wtFree = (uint32_t)((pth->thp.wtMax * 0xa));
+    wtFree = (uint32_t)(pth->thp.wtMax * 0xa);
     i = 0;
     goto L_6295;
 
 L_6275:
-    wtFree = (wtFree - (int32_t)(pth->thp.rgwtMin[i]));
-    i = (i + 1);
+    wtFree = wtFree - (int32_t)pth->thp.rgwtMin[i];
+    i = i + 1;
 
 L_6295:
-    if ((i < 3))
+    if (i < 3)
         goto L_6275;
     else
         goto L_629f;
 
 L_629f:
-    if ((dChg <= wtFree))
+    if (dChg <= wtFree)
         goto L_62ca;
     else
         goto L_62bc;
@@ -187,16 +187,16 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    pth->thp.rgwtMin[iSupply] = (pth->thp.rgwtMin[iSupply] + LOWORD(dChg));
+    pth->thp.rgwtMin[iSupply] = pth->thp.rgwtMin[iSupply] + LOWORD(dChg);
 
 L_62f3:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_6305;
     else
         goto L_64bd;
 
 L_6305:
-    if ((pobj != 0x0))
+    if (pobj != 0x0)
         goto L_64bd;
     else
         goto L_630e;
@@ -208,7 +208,7 @@ L_631d:
     goto L_64bd;
 
 L_6320:
-    if ((pobj == 0x0))
+    if (pobj == 0x0)
         goto L_6333;
     else
         goto L_6329;
@@ -218,17 +218,17 @@ L_6329:
     goto L_6349;
 
 L_6333:
-    FLookupFleet(id, &(xfer.fl));
-    pfl = &(xfer.fl);
+    FLookupFleet(id, &xfer.fl);
+    pfl = &xfer.fl;
 
 L_6349:
-    if ((iSupply > 4))
+    if (iSupply > 4)
         goto L_6492;
     else
         goto L_6352;
 
 L_6352:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_637e;
     else
         goto L_6364;
@@ -237,22 +237,22 @@ L_6364:
     return pfl->rgwtMin[iSupply];
 
 L_637e:
-    if (((pfl->rgwtMin[iSupply] + dChg) < 0x0))
+    if (pfl->rgwtMin[iSupply] + dChg < 0x0)
         goto L_63b0;
     else
         goto L_63d4;
 
 L_63b0:
-    dChg = (-pfl->rgwtMin[iSupply]);
+    dChg = -pfl->rgwtMin[iSupply];
 
 L_63d4:
-    if ((iSupply != 3))
+    if (iSupply != 3)
         goto L_63f9;
     else
         goto L_63dd;
 
 L_63dd:
-    if ((pfl->det == 0x7))
+    if (pfl->det == 0x7)
         goto L_63f9;
     else
         goto L_63ef;
@@ -261,7 +261,7 @@ L_63ef:
     dChg = 0;
 
 L_63f9:
-    if ((iSupply != 4))
+    if (iSupply != 4)
         goto L_6415;
     else
         goto L_6402;
@@ -276,7 +276,7 @@ L_6415:
     t_merge_6425_0001 = t_call_641d;
 
 L_6425:
-    if ((dChg < t_merge_6425_0001))
+    if (dChg < t_merge_6425_0001)
         goto L_643a;
     else
         goto L_6443;
@@ -286,7 +286,7 @@ L_643a:
     goto L_646f;
 
 L_6443:
-    if ((iSupply != 4))
+    if (iSupply != 4)
         goto L_645f;
     else
         goto L_644c;
@@ -302,16 +302,16 @@ L_645f:
 
 L_646f:
     dChg = t_merge_646f_0001;
-    pfl->rgwtMin[iSupply] = (pfl->rgwtMin[iSupply] + dChg);
+    pfl->rgwtMin[iSupply] = pfl->rgwtMin[iSupply] + dChg;
 
 L_6492:
-    if ((dChg != 0))
+    if (dChg != 0)
         goto L_64a4;
     else
         goto L_64bd;
 
 L_64a4:
-    if ((pobj != 0x0))
+    if (pobj != 0x0)
         goto L_64bd;
     else
         goto L_64ad;

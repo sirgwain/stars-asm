@@ -23,236 +23,85 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-L_0006:
-    memset(&(shdef), 0, sizeof(SHDEF));
+    memset(&shdef, 0, sizeof(SHDEF));
     shdef.hul.ihuldef = lprt->ihuldef;
     shdef.wFlags = lprt->wFlags;
     shdef.hul.chs = lprt->chs;
     shdef.hul.ibmp = lprt->ibmp;
-    if ((shdef.det != 0x7))
-        goto L_00e7;
-    else
-        goto L_0061;
-
-L_0061:
-    shdef.hul.dp = lprt->dp;
-    shdef.turn = lprt->turn;
-    shdef.cBuilt = lprt->cBuilt;
-    shdef.cExist = lprt->cExist;
-    lpb = (uint8_t *)(lprt->rghs);
-    fmemmove(shdef.hul.rghs, lpb, (lprt->chs * 0x4));
-    lpb = (lpb + (4 * lprt->chs));
-    goto L_0105;
-
-L_00e7:
-    shdef.hul.wtEmpty = lprt->wtEmpty;
-    lpb = &(lprt->chs);
-
-L_0105:
+    if (shdef.det != 0x7) {
+        shdef.hul.wtEmpty = lprt->wtEmpty;
+        lpb = &lprt->chs;
+    } else {
+        shdef.hul.dp = lprt->dp;
+        shdef.turn = lprt->turn;
+        shdef.cBuilt = lprt->cBuilt;
+        shdef.cExist = lprt->cExist;
+        lpb = (uint8_t *)lprt->rghs;
+        fmemmove(shdef.hul.rghs, lpb, lprt->chs * 0x4);
+        lpb = lpb + 4 * lprt->chs;
+    }
     iFirst = LphuldefFromId(shdef.hul.ihuldef)->hul.ibmp;
-    if ((shdef.hul.ibmp < iFirst))
-        goto L_013a;
-    else
-        goto L_012a;
-
-L_012a:
-    if ((shdef.hul.ibmp < (iFirst + 4)))
-        goto L_0149;
-    else
-        goto L_013a;
-
-L_013a:
-    shdef.hul.ibmp = ((shdef.hul.ibmp & 0x3) | iFirst);
-
-L_0149:
-    cch = *(lpb);
-    lpb = (lpb + 1);
-    if ((cch != 0))
-        goto L_0181;
-    else
-        goto L_0166;
-
-L_0166:
-    fstrcpy(shdef.hul.szClass, lpb);
-    goto L_01d3;
-
-L_0181:
-    cOut = 32;
-    if ((cch <= 32))
-        goto L_0197;
-    else
-        goto L_0191;
-
-L_0191:
-    return 0;
-
-L_0197:
-    fmemmove(szTemp, lpb, cch);
-    FDecompressUserString(szTemp, cch, shdef.hul.szClass, &(cOut));
-
-L_01d3:
+    if (shdef.hul.ibmp < iFirst || shdef.hul.ibmp >= iFirst + 4) {
+        shdef.hul.ibmp = (shdef.hul.ibmp & 0x3) | iFirst;
+    }
+    cch = *lpb;
+    lpb = lpb + 1;
+    if (cch != 0) {
+        cOut = 32;
+        if (cch > 32) {
+            return 0;
+        }
+        fmemmove(szTemp, lpb, cch);
+        FDecompressUserString(szTemp, cch, shdef.hul.szClass, &cOut);
+    } else {
+        fstrcpy(shdef.hul.szClass, lpb);
+    }
     ishdef = shdef.ishdef;
-    if ((ishdef < 16))
-        goto L_01f1;
-    else
-        goto L_01ec;
-
-L_01ec:
-    ishdef = (ishdef - 16);
-
-L_01f1:
-    if ((shdef.det == 0x7))
-        goto L_0244;
-    else
-        goto L_01ff;
-
-L_01ff:
-    if ((lpshdef[ishdef].fFree != 0x0))
-        goto L_0244;
-    else
-        goto L_0224;
-
-L_0224:
-    if ((lpshdef[ishdef].det >= 0x7))
-        goto L_0275;
-    else
-        goto L_0244;
-
-L_0244:
-    lpshdef[ishdef] = shdef;
-    goto L_02de;
-
-L_0275:
-    if ((shdef.hul.ihuldef != lpshdef[ishdef].hul.ihuldef))
-        goto L_02b0;
-    else
-        goto L_0292;
-
-L_0292:
-    if ((shdef.hul.ibmp == lpshdef[ishdef].hul.ibmp))
-        goto L_02de;
-    else
-        goto L_02b0;
-
-L_02b0:
-    lpshdef[ishdef] = shdef;
-
-L_02de:
-    if ((idPlayer == -1))
-        goto L_0301;
-    else
-        goto L_02e8;
-
-L_02e8:
-    UpdateShdefCost((lpshdef + ishdef));
-
-L_0301:
-    if ((lpshdef[ishdef].det != 0x7))
-        goto L_05d5;
-    else
-        goto L_0321;
-
-L_0321:
-    lphul = &(lpshdef[ishdef].hul);
-    lphulBase = &(LphuldefFromId(lphul->ihuldef)->hul);
-    wt = (uint32_t)(lphulBase->wtEmpty);
-    c = 0;
-    goto L_0370;
-
-L_036b:
-    c = (c + 1);
-
-L_0370:
-    if ((c >= lphul->chs))
-        goto L_05c5;
-    else
-        goto L_0384;
-
-L_0384:
-    if ((lphul->rghs[c].cItem <= 0x0))
-        goto L_04f3;
-    else
-        goto L_03b1;
-
-L_03b1:
-    part.hs = lphul->rghs[c];
-    fOkay = FLookupPart(&(part));
-    if ((idPlayer != -1))
-        goto L_03fa;
-    else
-        goto L_03f4;
-
-L_03f4:
-    fOkay = 0;
-
-L_03fa:
-    if (((part.hs.grhst & lphulBase->rghs[c].grhst) == 0x0))
-        goto L_0478;
-    else
-        goto L_0422;
-
-L_0422:
-    if ((fOkay <= 1))
-        goto L_043f;
-    else
-        goto L_042c;
-
-L_042c:
-    if ((shdef.fGift == 0x0))
-        goto L_0478;
-    else
-        goto L_043f;
-
-L_043f:
-    if ((part.hs.cItem <= lphulBase->rghs[c].cItem))
-        goto L_04b8;
-    else
-        goto L_0478;
-
-L_0478:
-    lphul->rghs[c].cItem = 0x0;
-
-L_04b8:
-    wt = (wt + (uint32_t)((part.pcom->cMass * lphul->rghs[c].cItem)));
-
-L_04f3:
-    if ((c != 0))
-        goto L_036b;
-    else
-        goto L_04fd;
-
-L_04fd:
-    if ((lphul->rghs[0].cItem != 0x0))
-        goto L_036b;
-    else
-        goto L_0515;
-
-L_0515:
-    if ((lphulBase->rghs[0].grhst != hstEngine))
-        goto L_036b;
-    else
-        goto L_0523;
-
-L_0523:
-    lphul->rghs[0].grhst = hstEngine;
-    lphul->rghs[0].iItem = 0x1;
-    lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
-    part.hs.grhst = lphul->rghs[0].grhst;
-    t_fields_1 = &(part.hs);
-    t_fields_2 = lphul->rghs[0].iItem;
-    t_fields_3 = lphul->rghs[0].cItem;
-    t_fields_1->iItem = t_fields_2;
-    t_fields_1->cItem = t_fields_3;
-    FLookupPart(&(part));
-    wt = (wt + (uint32_t)((part.pcom->cMass * lphul->rghs[0].cItem)));
-
-L_05c2:
-    goto L_036b;
-
-L_05c5:
-    lphul->wtEmpty = LOWORD(wt);
-
-L_05d5:
+    if (ishdef >= 16) {
+        ishdef = ishdef - 16;
+    }
+    if (shdef.det != 0x7 && lpshdef[ishdef].fFree == 0x0 && lpshdef[ishdef].det >= 0x7) {
+        if (shdef.hul.ihuldef != lpshdef[ishdef].hul.ihuldef || shdef.hul.ibmp != lpshdef[ishdef].hul.ibmp) {
+            lpshdef[ishdef] = shdef;
+        }
+    } else {
+        lpshdef[ishdef] = shdef;
+    }
+    if (idPlayer != -1) {
+        UpdateShdefCost(lpshdef + ishdef);
+    }
+    if (lpshdef[ishdef].det == 0x7) {
+        lphul = &lpshdef[ishdef].hul;
+        lphulBase = &LphuldefFromId(lphul->ihuldef)->hul;
+        wt = (uint32_t)lphulBase->wtEmpty;
+        for (c = 0; c < lphul->chs; c++) {
+            if (lphul->rghs[c].cItem > 0x0) {
+                part.hs = lphul->rghs[c];
+                fOkay = FLookupPart(&part);
+                if (idPlayer == -1) {
+                    fOkay = 0;
+                }
+                if ((part.hs.grhst & lphulBase->rghs[c].grhst) == 0x0 || ((fOkay > 1 && shdef.fGift == 0x0) || part.hs.cItem > lphulBase->rghs[c].cItem)) {
+                    lphul->rghs[c].cItem = 0x0;
+                }
+                wt = wt + (uint32_t)(part.pcom->cMass * lphul->rghs[c].cItem);
+            }
+            if (c == 0 && lphul->rghs[0].cItem == 0x0 && lphulBase->rghs[0].grhst == hstEngine) {
+                lphul->rghs[0].grhst = hstEngine;
+                lphul->rghs[0].iItem = 0x1;
+                lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
+                part.hs.grhst = lphul->rghs[0].grhst;
+                t_fields_1 = &part.hs;
+                t_fields_2 = lphul->rghs[0].iItem;
+                t_fields_3 = lphul->rghs[0].cItem;
+                t_fields_1->iItem = t_fields_2;
+                t_fields_1->cItem = t_fields_3;
+                FLookupPart(&part);
+                wt = wt + (uint32_t)(part.pcom->cMass * lphul->rghs[0].cItem);
+            }
+        }
+        lphul->wtEmpty = LOWORD(wt);
+    }
     return 1;
 }
 
@@ -262,66 +111,35 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
     int16_t cOut;
     char   *psz;
 
-L_05e2:
-    pplrRaw = (PLAYER *)(pbIn);
+    pplrRaw = (PLAYER *)pbIn;
     memset(pplr, 0, sizeof(PLAYER));
-    if ((pplrRaw->det != 0x7))
-        goto L_066d;
-    else
-        goto L_0615;
-
-L_0615:
-    memmove(pplr, pbIn, 0x70);
-    memmove(pplr->rgmdRelation, (pbIn + 113), pbIn[112]);
-    iOff = ((112 + pbIn[112]) + 1);
-    goto L_0684;
-
-L_066d:
-    memmove(pplr, pbIn, 0x8);
-    iOff = 8;
-
-L_0684:
-    if ((pbIn[iOff] != 0x0))
-        goto L_06d2;
-    else
-        goto L_0699;
-
-L_0699:
-    strcpy(pplr->szName, (char *)((pbIn + (iOff + 1))));
-    iOff = (iOff + (strlen(pplr->szName) + 2));
-    goto L_0721;
-
-L_06d2:
-    cOut = 32;
-    FDecompressUserString((char *)((pbIn + (iOff + 1))), pbIn[iOff], pplr->szName, &(cOut));
-    iOff = (iOff + (pbIn[iOff] + 1));
-
-L_0721:
-    if ((((wVersFile >> 0x5) & 0x7f) >= 0x37))
-        goto L_0784;
-    else
-        goto L_0739;
-
-L_0739:
-    psz = PszPlayerName(0, isupper((int16_t)(pplr->szName[0])), 1, 0, 0, pplr);
-    strcpy(pplr->szNames, psz);
-    goto L_07f7;
-
-L_0784:
-    if ((pbIn[iOff] != 0x0))
-        goto L_07bb;
-    else
-        goto L_0799;
-
-L_0799:
-    strcpy(pplr->szNames, (char *)((pbIn + (iOff + 1))));
-    goto L_07f7;
-
-L_07bb:
-    cOut = 32;
-    FDecompressUserString((char *)((pbIn + (iOff + 1))), pbIn[iOff], pplr->szNames, &(cOut));
-
-L_07f7:
+    if (pplrRaw->det != 0x7) {
+        memmove(pplr, pbIn, 0x8);
+        iOff = 8;
+    } else {
+        memmove(pplr, pbIn, 0x70);
+        memmove(pplr->rgmdRelation, pbIn + 113, pbIn[112]);
+        iOff = 112 + pbIn[112] + 1;
+    }
+    if (pbIn[iOff] != 0x0) {
+        cOut = 32;
+        FDecompressUserString((char *)(pbIn + (iOff + 1)), pbIn[iOff], pplr->szName, &cOut);
+        iOff = iOff + (pbIn[iOff] + 1);
+    } else {
+        strcpy(pplr->szName, (char *)(pbIn + (iOff + 1)));
+        iOff = iOff + (strlen(pplr->szName) + 2);
+    }
+    if ((wVersFile >> 0x5 & 0x7f) >= 0x37) {
+        if (pbIn[iOff] != 0x0) {
+            cOut = 32;
+            FDecompressUserString((char *)(pbIn + (iOff + 1)), pbIn[iOff], pplr->szNames, &cOut);
+        } else {
+            strcpy(pplr->szNames, (char *)(pbIn + (iOff + 1)));
+        }
+    } else {
+        psz = PszPlayerName(0, isupper((int16_t)pplr->szName[0]), 1, 0, 0, pplr);
+        strcpy(pplr->szNames, psz);
+    }
     pplr->fLearned = 0x0;
     return;
 }
@@ -368,2213 +186,710 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
     char     szSection[16];
     char    *psz;
     char     szEntry[16];
-    uint16_t t_merge_0b9b_0001;
-    uint16_t t_merge_1877_0001;
     uint16_t t_scratch_m48_6;
-    uint16_t t_merge_1e06_0001;
     void    *t_call_1e2a;
-    uint16_t t_merge_2580_0001;
-    uint16_t t_merge_259d_0001;
     int32_t  t_call_2884;
-    uint16_t t_merge_2e23_0001;
 
-L_0810:
     grf = 0;
     cturn = 0;
     strcpy(szBase, pszFileName);
     gd.fFleetLinkValid = 0x0;
     penvMemSav = penvMem;
-    penvMem = &(env);
-    if ((setjmp(env) == 0))
-        goto L_090f;
-    else
-        goto LError;
-
+    penvMem = &env;
+    if (setjmp(env) == 0 && FOpenFile(dtXY, -1, 32) != 0) {
+        ReadRt();
+        if (hdrCur.rt == rtGame) {
+            game = *(GAME *)rgbCur;
+            game.fDirty = 0;
+            dGal = 400 * game.mdSize + 400;
+            dGalInv = dGal + 2000;
+            x = 1000;
+            for (i = 0; i < game.cPlanMax; i++) {
+                RgFromStream(&sp, 0x4);
+                x = x + sp.dx;
+                rgptPlan[i].x = x;
+                rgptPlan[i].y = sp.y;
+                rgidPlan[i] = sp.id;
+                if (x >= dGal + 1000 || rgptPlan[i].y >= dGal + 1000 || rgidPlan[i] > 999)
+                    goto XYCorrupt;
+            }
+            ReadRt();
+            if (hdrCur.rt == rtEOF) {
+                StreamClose();
+                if (((int16_t)*pszExt != 'h' && (int16_t)*pszExt != 'H') || ((int16_t)pszExt[1] != 's' && (int16_t)pszExt[1] != 'S')) {
+                    dt = 3;
+                    grf = grf | 0x3000;
+                    iPlayer = atoi(pszExt + 1);
+                    iPlayer = iPlayer - 1;
+                } else {
+                    dt = 2;
+                    iPlayer = -1;
+                }
+                ResetMessages();
+                memset(rgplr, 0, game.cPlayer * 192);
+                ResetHb(htShips);
+                idPlayer = iPlayer;
+                fSilentSav = fFileErrSilent;
+                fFileErrSilent = 1;
+                if (iPlayer != -1 && FOpenFile(dtHist, iPlayer, 32) != 0) {
+                    ReadRt();
+                    if (hdrCur.rt == rtHistHdr) {
+                        cPlanetHist = RawLoad16(rgbCur);
+                        cPlanetAlloc = cPlanetHist + RawLoad16(&rgbCur[2]);
+                        if (cPlanetAlloc > 1000) {
+                            cPlanetAlloc = 1000;
+                        }
+                        lpPlanets = LpAlloc((1 <= cPlanetAlloc ? cPlanetAlloc : 0x1) * sizeof(PLANET), htPlanets);
+                        ReadRt();
+                        i = 0;
+                        lppl = lpPlanets;
+                        while (i < cPlanetHist) {
+                            if (hdrCur.rt != rtPlanetB || FReadPlanet(iPlayer, lppl, 1, 0) == 0)
+                                goto CorruptHist;
+                            if (lppl->iPlayer == iPlayer) {
+                                lppl->iPlayer = -1;
+                                lppl->det = 0x3;
+                            }
+                            ReadRt();
+                            i = i + 1;
+                            lppl = lppl + 1;
+                        }
+                        if (hdrCur.rt == rtMsgFilt) {
+                            if (hdrCur.cb > (uint16_t)cbbitfMsg)
+                                goto CorruptHist;
+                            memcpy(bitfMsgFiltered, rgbCur, hdrCur.cb);
+                            ReadRt();
+                        }
+                        while (hdrCur.rt == rtPlr) {
+                            i = (int16_t)rgbCur[0];
+                            ReadRtPlr(&rgplr[i], rgbCur);
+                            rgplr[i].cPlanet = 0;
+                            rgplr[i].cFleet = 0x0;
+                            ReadRt();
+                        }
+                        i = 0;
+                        while (hdrCur.rt == rtShDef) {
+                            for (; (int16_t)rgplr[i].cShDef == 0 && i < game.cPlayer; i++) {
+                            }
+                            if (i == game.cPlayer)
+                                break;
+                            if (rglpshdef[i] == 0x0) {
+                                rglpshdef[i] = LpAlloc(16 * sizeof(SHDEF), htShips);
+                                for (j = 0; j < 16; j++) {
+                                    rglpshdef[i][j].wFlags = (rglpshdef[i][j].wFlags & 0xfdff) | 0x200;
+                                    rglpshdef[i][j].grbitPlr = 0x0;
+                                }
+                            }
+                            iplrSav = idPlayer;
+                            if (idPlayer != -1) {
+                                idPlayer = -1;
+                            } else {
+                                idPlayer = i;
+                            }
+                            if (FReadShDef((RTSHDEF *)rgbCur, rglpshdef[i], iplrSav) == 0)
+                                goto CorruptHist;
+                            idPlayer = iplrSav;
+                            rgplr[i].cShDef = rgplr[i].cShDef - 1;
+                            ReadRt();
+                        }
+                        i = 0;
+                        while (hdrCur.rt == rtShDef) {
+                            for (; rgplr[i].cshdefSB == 0x0 && i < game.cPlayer; i++) {
+                            }
+                            if (i == game.cPlayer)
+                                break;
+                            if (rglpshdefSB[i] == 0x0) {
+                                rglpshdefSB[i] = LpAlloc(10 * sizeof(SHDEF), htShips);
+                                for (j = 0; j < 10; j++) {
+                                    rglpshdefSB[i][j].wFlags = (rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200;
+                                    rglpshdefSB[i][j].grbitPlr = 0x0;
+                                }
+                            }
+                            iplrSav = idPlayer;
+                            if (idPlayer != -1) {
+                                idPlayer = -1;
+                            } else {
+                                idPlayer = i;
+                            }
+                            if (FReadShDef((RTSHDEF *)rgbCur, rglpshdefSB[i], iplrSav) == 0)
+                                goto CorruptHist;
+                            idPlayer = iplrSav;
+                            rgplr[i].cshdefSB = rgplr[i].cshdefSB + 0xf;
+                            ReadRt();
+                        }
+                        while (hdrCur.rt == rtScore) {
+                            iplr = RawLoad16(rgbCur) & 0x1f;
+                            sx = *(SCOREX *)rgbCur;
+                            if (rgsxPlr[iplr] == 0x0) {
+                                rgsxPlr[iplr] = LpAlloc(101 * sizeof(SCOREX), htMisc);
+                                rgcsxPlr[iplr] = 0;
+                            }
+                            if (rgsxPlr[iplr] != 0x0) {
+                                if (sx.fHistory == 0x0) {
+                                    turnCur = game.turn;
+                                } else {
+                                    turnCur = sx.turn;
+                                }
+                                for (isx = 0; isx < rgcsxPlr[iplr] && turnCur > rgsxPlr[iplr][isx].turn; isx++) {
+                                }
+                                if ((isx >= rgcsxPlr[iplr] || turnCur == rgsxPlr[iplr][isx].turn) && isx < 101) {
+                                    if (isx == rgcsxPlr[iplr]) {
+                                        rgcsxPlr[iplr] = rgcsxPlr[iplr] + 1;
+                                    }
+                                } else if (rgcsxPlr[iplr] < 101) {
+                                    fmemmove(rgsxPlr[iplr] + (isx + 1), rgsxPlr[iplr] + isx, (rgcsxPlr[iplr] - isx) * sizeof(SCOREX));
+                                    rgcsxPlr[iplr] = rgcsxPlr[iplr] + 1;
+                                } else if (isx > 0) {
+                                    if (isx > 1) {
+                                        fmemmove(rgsxPlr[iplr], rgsxPlr[iplr] + 1, (isx - 1) * sizeof(SCOREX));
+                                    }
+                                    isx = isx - 1;
+                                }
+                                rgsxPlr[iplr][isx] = sx;
+                                rgsxPlr[iplr][isx].turn = turnCur;
+                                rgsxPlr[iplr][isx].wWord = (rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000;
+                            }
+                            ReadRt();
+                        }
+                        if (hdrCur.rt == rtAiData) {
+                            if (rgplr[idPlayer].fAi == 0x0) {
+                                while (hdrCur.rt == rtAiData) {
+                                    ReadRt();
+                                }
+                            } else {
+                                if (vlpbAiData == 0x0) {
+                                    vlpbAiData = LpAlloc(0x1fa0, htMisc);
+                                    if (vlpbAiData == 0x0)
+                                        goto CorruptHist;
+                                }
+                                lpb = vlpbAiData;
+                                while (hdrCur.rt == rtAiData) {
+                                    fmemmove(lpb, rgbCur, hdrCur.cb);
+                                    lpb = lpb + hdrCur.cb;
+                                    ReadRt();
+                                }
+                            }
+                        }
+                        if (hdrCur.rt == rtThing) {
+                            cThing = RawLoad16(rgbCur);
+                            cThingAlloc = cThing + 10;
+                            if (cThingAlloc > 4050) {
+                                cThingAlloc = 4050;
+                            }
+                            lpThings = LpAlloc(cThingAlloc * sizeof(THING), htThings);
+                            if (lpThings == 0x0)
+                                goto CorruptHist;
+                            fmemset(lpThings, 0, cThingAlloc * sizeof(THING));
+                            ReadRt();
+                            i = 0;
+                            lpth = lpThings;
+                            while (i < cThing) {
+                                if (hdrCur.rt != rtThing)
+                                    goto CorruptHist;
+                                fmemcpy(lpth, rgbCur, hdrCur.cb);
+                                ReadRt();
+                                i = i + 1;
+                                lpth = lpth + 1;
+                            }
+                        }
+                        StreamClose();
+                        goto L_1526;
+                    }
+                CorruptHist:
+                    StreamClose();
+                    AlertSz(PszFormatIds(idsHistoryFileAppearsCorruptHistoricalDataWill, 0x0), MB_ICONHAND);
+                }
+                cPlanetHist = 0;
+                FreeLp(lpPlanets, htPlanets);
+                lpPlanets = 0x0;
+                cThing = 0;
+                FreeLp(lpThings, htThings);
+                lpThings = 0x0;
+            L_1526:
+                fFileErrSilent = fSilentSav;
+                GetFileStatus(dt, iPlayer);
+                if (FOpenFile(dt | grf, iPlayer, 32) == 0)
+                    goto LError;
+                if (iPlayer == -1) {
+                    gd.fGameOverMan = RawLoad16(&rgbCur[14]) >> 0xb & 0x1;
+                }
+                while (1) {
+                    cturn = cturn + 1;
+                    cPlanet = 0;
+                    cFleet = 0;
+                    ReadRt();
+                    while (hdrCur.rt == rtBtlData || hdrCur.rt == rtContinue) {
+                        if (hdrCur.rt != rtContinue) {
+                            if (lpbBattleLog == 0x0) {
+                                lpbBattleLog = LpAlloc(0xffc8, htBattle);
+                                lpbBattleCur = lpbBattleLog;
+                            }
+                            if (0xffc8 - (uint32_t)(LOWORD(lpbBattleCur) & 0xffff) < (uint32_t)RawLoad16(&rgbCur[6])) {
+                                RawStore16(lpbBattleCur, 0xffff);
+                                lpbBattleCur = LpAlloc(0xffc8, htBattle);
+                            }
+                        }
+                        fmemmove(lpbBattleCur, rgbCur, hdrCur.cb);
+                        lpbBattleCur = lpbBattleCur + hdrCur.cb;
+                        ReadRt();
+                    }
+                    if (lpbBattleCur != 0x0) {
+                        RawStore16(lpbBattleCur, 0xffff);
+                        if ((wVersFile >> 0x5 & 0x7f) < 0x50) {
+                            UpdateBattleRecords();
+                        }
+                    }
+                    while (hdrCur.rt == rtPlr) {
+                        i = (int16_t)rgbCur[0];
+                        ReadRtPlr(&rgplr[i], rgbCur);
+                        cPlanet = cPlanet + rgplr[i].cPlanet;
+                        rgplr[i].cPlanet = 0;
+                        cFleet = cFleet + rgplr[i].cFleet;
+                        rgplr[i].cFleet = 0x0;
+                        ReadRt();
+                    }
+                    if (dt == 2) {
+                        if (hdrCur.rt != rtChgPassword) {
+                            lSaltCur = 0;
+                        } else {
+                            lSaltCur = RawLoad32(rgbCur);
+                            ReadRt();
+                        }
+                    } else {
+                        lSaltCur = rgplr[iPlayer].lSalt;
+                    }
+                    if (FCheckPassword() == 0)
+                        break;
+                    ReadPlayerMessages();
+                    ResetHb(htFleets);
+                    ResetHb(htOrd);
+                    FreeLp(rglpfl, htMisc);
+                    rglpfl = 0x0;
+                    if (lpPlanets == 0x0) {
+                        cPlanetAlloc = 1 <= cPlanet ? cPlanet : 1;
+                        lpPlanets = LpAlloc(cPlanetAlloc * sizeof(PLANET), htPlanets);
+                    }
+                    lppl = lpPlanets;
+                    j = 0;
+                    for (i = 0; i < cPlanet; i++) {
+                        fHaveHistoryData = 0;
+                        if (cPlanetHist != 0) {
+                            for (; j < cPlanetHist && (int16_t)(RawLoad16(rgbCur) << 0x5) >> 0x5 > lppl->id; lppl++) {
+                                j = j + 1;
+                            }
+                            if (j >= cPlanetHist || (int16_t)(RawLoad16(rgbCur) << 0x5) >> 0x5 != lppl->id) {
+                                if (cPlanetAlloc == cPlanetHist) {
+                                    cPlanetAlloc = cPlanetAlloc + 8;
+                                    lpPlanets = LpReAlloc(lpPlanets, cPlanetAlloc * sizeof(PLANET), htPlanets);
+                                    lppl = lpPlanets + j;
+                                }
+                                if (j < cPlanetHist) {
+                                    fmemmove(lppl + 1, lppl, (cPlanetHist - j) * sizeof(PLANET));
+                                }
+                                cPlanetHist = cPlanetHist + 1;
+                            } else {
+                                fHaveHistoryData = 1;
+                            }
+                        }
+                        if (FReadPlanet(iPlayer, lppl, 0, fHaveHistoryData) == 0)
+                            goto Corrupt;
+                        if (lppl->iPlayer != -1) {
+                            rgplr[lppl->iPlayer].cPlanet = rgplr[lppl->iPlayer].cPlanet + 1;
+                        }
+                        ReadRt();
+                        if (hdrCur.rt == rtProdQ) {
+                            if (lppl->lpplprod != 0x0) {
+                                t_scratch_m48_6 = lppl->lpplprod->iprodMax;
+                                if (t_scratch_m48_6 <= hdrCur.cb / 0x4) {
+                                    FreePl((PL *)lppl->lpplprod);
+                                    lppl->lpplprod = 0x0;
+                                }
+                            }
+                            if (lppl->lpplprod == 0x0) {
+                                lppl->lpplprod = (PLPROD *)LpplAlloc(0x4, hdrCur.cb / 0x4 + 0x2, htOrd);
+                            }
+                            fmemmove(lppl->lpplprod->rgprod, rgbCur, hdrCur.cb);
+                            lppl->lpplprod->iprodMac = LOBYTE(hdrCur.cb / 0x4);
+                            ReadRt();
+                        }
+                        if (cPlanetHist == 0) {
+                            lppl = lppl + 1;
+                        }
+                    }
+                    if (cPlanetHist != 0) {
+                        cPlanet = cPlanetHist;
+                    }
+                    for (i = 0; i < game.cPlayer; i++) {
+                        if (i != iPlayer) {
+                            if (rgplr[i].fInclude == 0x0)
+                                continue;
+                            if (rglpshdef[i] != 0x0)
+                                goto L_1c32;
+                            rglpshdef[i] = LpAlloc(16 * sizeof(SHDEF), htShips);
+                        } else {
+                            rglpshdef[i] = rgshdef;
+                        }
+                        for (j = 0; j < 16; j++) {
+                            rglpshdef[i][j].wFlags = (rglpshdef[i][j].wFlags & 0xfdff) | 0x200;
+                            rglpshdef[i][j].grbitPlr = 0x0;
+                        }
+                    L_1c32:
+                        iplrSav = idPlayer;
+                        if (idPlayer != -1) {
+                            if (i != idPlayer) {
+                                idPlayer = -1;
+                            }
+                        } else {
+                            idPlayer = i;
+                        }
+                        for (j = 0; j < (int16_t)rgplr[i].cShDef; j++) {
+                            if (hdrCur.rt != rtShDef)
+                                goto L_1cc1;
+                            if (FReadShDef((RTSHDEF *)rgbCur, rglpshdef[i], iplrSav) == 0)
+                                goto Corrupt;
+                            ReadRt();
+                        }
+                        idPlayer = iplrSav;
+                    }
+                    for (i = 0; i < game.cPlayer; i++) {
+                        rgplr[i].cShDef = 0;
+                        if (rglpshdef[i] != 0x0) {
+                            for (j = 0; j < 16; j++) {
+                                if (rglpshdef[i][j].fFree == 0x0) {
+                                    if (i == idPlayer || gd.fGeneratingTurn != 0x0 || rgplr[i].fDead == 0x0) {
+                                        rgplr[i].cShDef = rgplr[i].cShDef + 1;
+                                    } else {
+                                        rglpshdef[i][j].wFlags = (rglpshdef[i][j].wFlags & 0xfdff) | 0x200;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    rglpfl = LpAlloc((1 <= cFleet ? cFleet : 0x1) * sizeof(FLEET *), htMisc);
+                    for (i = 0; i < cFleet; i++) {
+                        t_call_1e2a = LpAlloc(sizeof(FLEET), htFleets);
+                        rglpfl[i] = t_call_1e2a;
+                        lpfl = t_call_1e2a;
+                        if (FReadFleet(lpfl) == 0)
+                            goto LError;
+                        rgplr[lpfl->iPlayer].cFleet = rgplr[lpfl->iPlayer].cFleet + 0x1;
+                    }
+                    for (i = 0; i < game.cPlayer; i++) {
+                        if (rgplr[i].fInclude != 0x0) {
+                            if (rglpshdefSB[i] == 0x0) {
+                                rglpshdefSB[i] = LpAlloc(10 * sizeof(SHDEF), htShips);
+                                for (j = 0; j < 10; j++) {
+                                    rglpshdefSB[i][j].wFlags = (rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200;
+                                    rglpshdefSB[i][j].grbitPlr = 0x0;
+                                }
+                            }
+                            iplrSav = idPlayer;
+                            if (idPlayer != -1) {
+                                if (i != idPlayer) {
+                                    idPlayer = -1;
+                                }
+                            } else {
+                                idPlayer = i;
+                            }
+                            for (j = 0; j < rgplr[i].cshdefSB; j++) {
+                                if (hdrCur.rt != rtShDef)
+                                    goto L_204c;
+                                if (FReadShDef((RTSHDEF *)rgbCur, rglpshdefSB[i], iplrSav) == 0)
+                                    goto Corrupt;
+                                ReadRt();
+                            }
+                            idPlayer = iplrSav;
+                        }
+                    }
+                    for (i = 0; i < game.cPlayer; i++) {
+                        rgplr[i].cshdefSB = 0x0;
+                        if (rglpshdefSB[i] != 0x0) {
+                            for (j = 0; j < 10; j++) {
+                                if (rglpshdefSB[i][j].fFree == 0x0) {
+                                    if (i == idPlayer || gd.fGeneratingTurn != 0x0 || rgplr[i].fDead == 0x0) {
+                                        rgplr[i].cshdefSB = rgplr[i].cshdefSB + 0x1;
+                                    } else {
+                                        rglpshdefSB[i][j].wFlags = (rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (vlprgScoreX == 0x0) {
+                        vlprgScoreX = LpAlloc(game.cPlayer * sizeof(SCOREX), htMisc);
+                        fmemset(vlprgScoreX, 0, game.cPlayer * sizeof(SCOREX));
+                    }
+                    while (hdrCur.rt == rtScore) {
+                        iplr = RawLoad16(rgbCur) & 0x1f;
+                        vlprgScoreX[iplr] = *(SCOREX *)rgbCur;
+                        if (rgsxPlr[iplr] == 0x0) {
+                            rgsxPlr[iplr] = LpAlloc(101 * sizeof(SCOREX), htMisc);
+                            rgcsxPlr[iplr] = 0;
+                        }
+                        if (rgsxPlr[iplr] != 0x0) {
+                            if (vlprgScoreX[iplr].fHistory == 0x0) {
+                                turnCur = game.turn;
+                            } else {
+                                turnCur = vlprgScoreX[iplr].turn;
+                            }
+                            for (isx = 0; isx < rgcsxPlr[iplr] && turnCur > rgsxPlr[iplr][isx].turn; isx++) {
+                            }
+                            if ((isx >= rgcsxPlr[iplr] || turnCur == rgsxPlr[iplr][isx].turn) && isx < 101) {
+                                if (isx == rgcsxPlr[iplr]) {
+                                    rgcsxPlr[iplr] = rgcsxPlr[iplr] + 1;
+                                }
+                            } else if (rgcsxPlr[iplr] < 101) {
+                                fmemmove(rgsxPlr[iplr] + (isx + 1), rgsxPlr[iplr] + isx, (rgcsxPlr[iplr] - isx) * sizeof(SCOREX));
+                                rgcsxPlr[iplr] = rgcsxPlr[iplr] + 1;
+                            } else if (isx > 0) {
+                                if (isx > 1) {
+                                    fmemmove(rgsxPlr[iplr], rgsxPlr[iplr] + 1, (isx - 1) * sizeof(SCOREX));
+                                }
+                                isx = isx - 1;
+                            }
+                            rgsxPlr[iplr][isx] = vlprgScoreX[iplr];
+                            rgsxPlr[iplr][isx].turn = turnCur;
+                            rgsxPlr[iplr][isx].wWord = (rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000;
+                        }
+                        ReadRt();
+                    }
+                    if (lpThings != 0x0) {
+                        FreeLp(lpThings, htThings);
+                        lpThings = 0x0;
+                        cThing = 0;
+                    }
+                    if (hdrCur.rt != rtThing) {
+                        cThing = 0;
+                        cThingAlloc = 10;
+                        lpThings = LpAlloc(cThingAlloc * sizeof(THING), htThings);
+                    } else {
+                        fHist = cThing <= 0 ? 0 : 1;
+                        cThingFile = RawLoad16(rgbCur);
+                        cThingAlloc = 10 <= cThingFile ? cThingFile : 10;
+                        if (lpThings == 0x0) {
+                            lpThings = LpAlloc(cThingAlloc * sizeof(THING), htThings);
+                            if (lpThings == 0x0)
+                                goto LError;
+                            fmemset(lpThings, 0, cThingAlloc * sizeof(THING));
+                        }
+                        ReadRt();
+                        lpth = lpThings;
+                        j = 0;
+                        for (i = 0; i < cThingFile; i++) {
+                            fHaveHistoryData = 0;
+                            if (fHist != 0) {
+                                for (; j < cThing && RawLoad16(rgbCur) > lpth->idFull; lpth++) {
+                                    j = j + 1;
+                                }
+                                if (j < cThing && RawLoad16(rgbCur) == lpth->idFull) {
+                                    fHaveHistoryData = 1;
+                                    goto LFoundThing;
+                                }
+                                if (cThingAlloc == cThing) {
+                                    cThingAlloc = cThingAlloc + 8;
+                                    lpThings = LpReAlloc(lpThings, cThingAlloc * sizeof(THING), htThings);
+                                    lpth = lpThings + j;
+                                }
+                                if (j < cThing) {
+                                    fmemmove(lpth + 1, lpth, (cThing - j) * sizeof(THING));
+                                    fmemset(lpth, 0, sizeof(THING));
+                                }
+                            }
+                            cThing = cThing + 1;
+                        LFoundThing:
+                            fmemcpy(lpth, rgbCur, hdrCur.cb);
+                            lpth->turn = game.turn;
+                            lpth = lpth + 1;
+                            j = j + 1;
+                            ReadRt();
+                        }
+                    }
+                    if (hdrCur.rt == rtSel) {
+                        ReadRt();
+                    }
+                    iplrSav = idPlayer;
+                    while (hdrCur.rt == rtBtlPlan) {
+                        iP = RawLoad16(rgbCur) & 0xf;
+                        idPlayer = iP;
+                        if (rglpbtlplan[iP] == 0x0) {
+                            rglpbtlplan[iP] = LpAlloc(16 * sizeof(BTLPLAN), htShips);
+                        }
+                        UnpackBattlePlan(rgbCur, rglpbtlplan[iP] + rgcbtlplan[iP], rgcbtlplan[iP]);
+                        rgcbtlplan[iP] = rgcbtlplan[iP] + 0x1;
+                        ReadRt();
+                    }
+                    idPlayer = iplrSav;
+                    if (hdrCur.rt != rtEOF)
+                        goto Corrupt;
+                    t_call_2884 = filelength(hf);
+                    if (t_call_2884 == tell(hf))
+                        goto L_2a56;
+                    ReadRt();
+                    if (hdrCur.rt != rtBOF)
+                        goto L_2a35;
+                    game.turn = RawLoad16(&rgbCur[10]);
+                    game.wGen = RawLoad16(&rgbCur[14]) >> 0xd & 0x7;
+                    for (i = 0; i < game.cPlayer; i++) {
+                        rgplr[i].cShDef = 0;
+                        rgplr[i].cFleet = 0x0;
+                        rgplr[i].cPlanet = 0;
+                        rgplr[i].cshdefSB = 0x0;
+                        rgcbtlplan[i] = 0x0;
+                    }
+                    lppl = lpPlanets;
+                    lpplMac = lpPlanets + cPlanet;
+                    for (; lppl < lpplMac; lppl++) {
+                        if (lppl->iPlayer == iPlayer) {
+                            lppl->iPlayer = -1;
+                            lppl->det = 0x3;
+                            if (lppl->lpplprod != 0x0) {
+                                FreePl((PL *)lppl->lpplprod);
+                                lppl->lpplprod = 0x0;
+                            }
+                        }
+                    }
+                    cPlanetHist = cPlanet;
+                }
+                if (ini.fValidate == 0x0 && ini.fLogging == 0x0)
+                    goto LError;
+                AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
+                goto LError;
+            L_1cc1:
+                idPlayer = iplrSav;
+                goto Corrupt;
+            L_204c:
+                idPlayer = iplrSav;
+                goto Corrupt;
+            L_2a35:
+                AlertSz(PszFormatIds(idsWarningIgnoringUnexpectedDataAfterEof, 0x0), MB_ICONHAND);
+            L_2a56:
+                StreamClose();
+                if (cturn > 1 && rgplr[iPlayer].fAi == 0x0 && ini.fDumpPlanets == 0x0 && ini.fDumpFleets == 0x0 && ini.fDumpMap == 0x0) {
+                    _wsprintf(szWork, PszGetCompressedString(idsNoteDYearsDataRead), cturn);
+                    AlertSz(szWork, MB_ICONASTERISK);
+                }
+                if (strnicmp(pszExt, "hst", 0x3) != 0) {
+                    if (rgplr[iPlayer].fAi == 0x0) {
+                        lpth = lpThings;
+                        lpthMac = lpThings + cThing;
+                        for (; lpth < lpthMac; lpth++) {
+                            if (lpth->ith == ithMineralPacket && lpth->thp.iWarp != 0x0) {
+                                lppl = LpplFromId(lpth->thp.idPlanet);
+                                if (lppl != 0x0 && lppl->iPlayer == iPlayer) {
+                                    iWarp = IWarpMAFromLppl(lppl, &fTwo);
+                                    if (iWarp + fTwo < lpth->thp.iWarp + 0x4) {
+                                        FSendPlrMsg2XGen(0, 337, -6, lpth->idFull, lppl->id);
+                                    }
+                                }
+                            }
+                        }
+                        if (game.fTutorial == 0x0) {
+                            lppl = lpPlanets;
+                            lpplMac = lpPlanets + cPlanet;
+                            for (; lppl < lpplMac; lppl++) {
+                                if (lppl->iPlayer == iPlayer && lppl->fStarbase != 0x0 && lppl->lpplprod != 0x0 &&
+                                    rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef != ihuldefOrbitalFort) {
+                                    fWorking = 0;
+                                    iprod = 0;
+                                    lpprod = lppl->lpplprod->rgprod;
+                                    while (1) {
+                                        if (iprod >= lppl->lpplprod->iprodMac)
+                                            goto L_2dba;
+                                        EstimateItemProdSched(lppl, 0x0, iprod, &iFirst, &iLast);
+                                        if (iLast > 1)
+                                            break;
+                                        if (iLast == 1 && (lpprod->grobj != grobjPlanet || lpprod->iItem >= mdIdleFactory)) {
+                                            fWorking = 1;
+                                        }
+                                        iprod = iprod + 1;
+                                        lpprod = lpprod + 1;
+                                    }
+                                    fWorking = 0;
+                                L_2dba:
+                                    if (fWorking != 0) {
+                                        FSendPlrMsg2XGen(0, 338, lppl->id, lppl->id, 0);
+                                    }
+                                }
+                            }
+                            i = CBattles();
+                            if (i > 0) {
+                                FSendPlrMsg2XGen(1, (i <= 1 ? 0 : 1) + 339, -7, i, 0);
+                            }
+                        }
+                    }
+                    if (gd.fDontDoLogFiles == 0x0) {
+                        _wsprintf(szWork, "%s.x%s", pszFileName, pszExt + 1);
+                        if (FLoadLogFile(szWork) == 0 || FRunLogFile() == 0) {
+                            AlertSz(PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, 0x0), MB_ICONHAND);
+                            goto LError;
+                        }
+                    }
+                    for (i = 0; i < game.cPlayer; i++) {
+                        rgplr[i].cFleet = 0x0;
+                        rgplr[i].cPlanet = 0;
+                    }
+                    lppl = lpPlanets;
+                    lpplMac = lpPlanets + cPlanet;
+                    for (; lppl < lpplMac; lppl++) {
+                        if (lppl->iPlayer == -1) {
+                            lppl->fStarbase = 0x0;
+                        } else {
+                            rgplr[lppl->iPlayer].cPlanet = rgplr[lppl->iPlayer].cPlanet + 1;
+                        }
+                    }
+                    j = 0;
+                    for (i = 0; i < cFleet; i++) {
+                        lpfl = rglpfl[i];
+                        if (rglpfl[i] == 0x0)
+                            break;
+                        j = lpfl->iPlayer;
+                        rgplr[j].cFleet = rgplr[j].cFleet + 0x1;
+                    }
+                }
+                idPlayer = iPlayer;
+                if (idPlayer != -1 && rgplr[idPlayer].fAi == 0x0 && vrgszMRU != 0x0) {
+                    strcpy(szT, pszFileName);
+                    strcat(szT, ".");
+                    strcat(szT, pszExt);
+                    if (fstricmp(szT, vrgszMRU) != 0) {
+                        for (i = 1; i < 8 && fstricmp(szT, vrgszMRU + 256 * i) != 0; i++) {
+                        }
+                        for (; i >= 1; i--) {
+                            fstrcpy(vrgszMRU + 256 * i, vrgszMRU + 256 * (i - 1));
+                        }
+                        fstrcpy(vrgszMRU, szT);
+                        CchGetString(idsStarsIni, szIniFile);
+                        CchGetString(idsFiles, szSection);
+                        CchGetString(idsFile1, szEntry);
+                        psz = &szEntry[strlen(szEntry) - 1];
+                        for (i = 0; i < 9; i++) {
+                            *psz = LOBYTE(i + 49);
+                            fstrcpy(szT, vrgszMRU + 256 * i);
+                            WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
+                        }
+                    }
+                }
+                return 1;
+            Corrupt:
+                AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
+                goto LError;
+            }
+        }
+    XYCorrupt:
+        AlertSz(PszFormatIds(idsUniverseDefinitionFileSeemsMissingCorrupt, 0x0), MB_ICONHAND);
+    }
 LError:
     game.fDirty = 0;
     DestroyCurGame();
     StreamClose();
-    if ((ini.fValidate != 0x0))
-        goto L_0909;
-    else
-        goto L_0881;
-
-L_0881:
-    if ((ini.fLogging != 0x0))
-        goto L_0909;
-    else
-        goto L_0894;
-
-L_0894:
-    if ((hwndTitle != 0x0))
-        goto L_0909;
-    else
-        goto L_089e;
-
-L_089e:
-    pt.x = GetSystemMetrics(SM_CXSCREEN);
-    pt.y = GetSystemMetrics(SM_CYSCREEN);
-    hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
-    fFreeingTitle = 0;
-    ShowWindow(hwndFrame, SW_HIDE);
-
-L_0909:
+    if (ini.fValidate == 0x0 && ini.fLogging == 0x0 && hwndTitle == 0x0) {
+        pt.x = GetSystemMetrics(SM_CXSCREEN);
+        pt.y = GetSystemMetrics(SM_CYSCREEN);
+        hwndTitle = CreateWindow(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0);
+        fFreeingTitle = 0;
+        ShowWindow(hwndFrame, SW_HIDE);
+    }
     return 0;
-
-L_090f:
-    if ((FOpenFile(dtXY, -1, 32) == 0))
-        goto LError;
-    else
-        goto L_092e;
-
-L_092e:
-    ReadRt();
-    if ((hdrCur.rt == rtGame))
-        goto L_096a;
-    else
-        goto XYCorrupt;
-
-XYCorrupt:
-    AlertSz(PszFormatIds(idsUniverseDefinitionFileSeemsMissingCorrupt, 0x0), MB_ICONHAND);
-    goto LError;
-
-L_096a:
-    game = *((GAME *)(rgbCur));
-    game.fDirty = 0;
-    dGal = ((400 * game.mdSize) + 400);
-    dGalInv = (dGal + 2000);
-    x = 1000;
-    i = 0;
-    goto L_09a7;
-
-L_09a3:
-    i = (i + 1);
-
-L_09a7:
-    if ((i >= game.cPlanMax))
-        goto L_0a60;
-    else
-        goto L_09b2;
-
-L_09b2:
-    RgFromStream(&(sp), 0x4);
-    x = (x + sp.dx);
-    rgptPlan[i].x = x;
-    rgptPlan[i].y = sp.y;
-    rgidPlan[i] = sp.id;
-    if ((x >= (dGal + 1000)))
-        goto XYCorrupt;
-    else
-        goto L_0a30;
-
-L_0a30:
-    if ((rgptPlan[i].y >= (dGal + 1000)))
-        goto XYCorrupt;
-    else
-        goto L_0a4a;
-
-L_0a4a:
-    if ((rgidPlan[i] > 999))
-        goto XYCorrupt;
-    else
-        goto L_0a57;
-
-L_0a57:
-    goto L_09a3;
-
-L_0a60:
-    ReadRt();
-    if ((hdrCur.rt != rtEOF))
-        goto XYCorrupt;
-    else
-        goto L_0a7b;
-
-L_0a7b:
-    StreamClose();
-    if (((int16_t)(*(pszExt)) == 104))
-        goto L_0a9c;
-    else
-        goto L_0a8e;
-
-L_0a8e:
-    if (((int16_t)(*(pszExt)) != 72))
-        goto L_0ac7;
-    else
-        goto L_0a9c;
-
-L_0a9c:
-    if (((int16_t)(pszExt[1]) == 115))
-        goto L_0aba;
-    else
-        goto L_0aab;
-
-L_0aab:
-    if (((int16_t)(pszExt[1]) != 83))
-        goto L_0ac7;
-    else
-        goto L_0aba;
-
-L_0aba:
-    dt = 2;
-    iPlayer = -1;
-    goto L_0ae9;
-
-L_0ac7:
-    dt = 3;
-    grf = (grf | 0x3000);
-    iPlayer = atoi((pszExt + 1));
-    iPlayer = (iPlayer - 1);
-
-L_0ae9:
-    ResetMessages();
-    memset(rgplr, 0, (game.cPlayer * 192));
-    ResetHb(htShips);
-    idPlayer = iPlayer;
-    fSilentSav = fFileErrSilent;
-    fFileErrSilent = 1;
-    if ((iPlayer == -1))
-        goto LNoHistFile;
-    else
-        goto L_0b2e;
-
-L_0b2e:
-    if ((FOpenFile(dtHist, iPlayer, 32) == 0))
-        goto LNoHistFile;
-    else
-        goto L_0b49;
-
-L_0b49:
-    ReadRt();
-    if ((hdrCur.rt != rtHistHdr))
-        goto CorruptHist;
-    else
-        goto L_0b64;
-
-L_0b64:
-    cPlanetHist = RawLoad16(rgbCur);
-    cPlanetAlloc = (cPlanetHist + RawLoad16(&(rgbCur[2])));
-    if ((cPlanetAlloc <= 1000))
-        goto L_0b83;
-    else
-        goto L_0b7e;
-
-L_0b7e:
-    cPlanetAlloc = 1000;
-
-L_0b83:
-    if ((1 <= cPlanetAlloc))
-        goto L_0b98;
-    else
-        goto L_0b92;
-
-L_0b92:
-    t_merge_0b9b_0001 = 0x1;
-    goto L_0b9b;
-
-L_0b98:
-    t_merge_0b9b_0001 = cPlanetAlloc;
-
-L_0b9b:
-    lpPlanets = LpAlloc((t_merge_0b9b_0001 * sizeof(PLANET)), htPlanets);
-    ReadRt();
-    i = 0;
-    lppl = lpPlanets;
-    goto L_0bdd;
-
-L_0bca:
-    i = (i + 1);
-    lppl = (lppl + 1);
-
-L_0bdd:
-    if ((i >= cPlanetHist))
-        goto L_0c7f;
-    else
-        goto L_0be8;
-
-L_0be8:
-    if ((hdrCur.rt != rtPlanetB))
-        goto CorruptHist;
-    else
-        goto L_0bfb;
-
-L_0bfb:
-    if ((FReadPlanet(iPlayer, lppl, 1, 0) == 0))
-        goto CorruptHist;
-    else
-        goto L_0c1f;
-
-L_0c1f:
-    if ((lppl->iPlayer != iPlayer))
-        goto L_0c77;
-    else
-        goto L_0c2e;
-
-L_0c2e:
-    lppl->iPlayer = -1;
-    lppl->det = 0x3;
-
-L_0c4b:
-    goto L_0c77;
-
-CorruptHist:
-    StreamClose();
-    AlertSz(PszFormatIds(idsHistoryFileAppearsCorruptHistoricalDataWill, 0x0), MB_ICONHAND);
-    goto LNoHistFile;
-
-L_0c77:
-    ReadRt();
-    goto L_0bca;
-
-L_0c7f:
-    if ((hdrCur.rt != rtMsgFilt))
-        goto L_0cc2;
-    else
-        goto L_0c92;
-
-L_0c92:
-    if ((hdrCur.cb > (uint16_t)(cbbitfMsg)))
-        goto CorruptHist;
-    else
-        goto L_0ca6;
-
-L_0ca6:
-    memcpy(bitfMsgFiltered, rgbCur, hdrCur.cb);
-    ReadRt();
-
-L_0cc2:
-    if ((hdrCur.rt != rtPlr))
-        goto L_0d34;
-    else
-        goto L_0cd5;
-
-L_0cd5:
-    i = (int16_t)(rgbCur[0]);
-    ReadRtPlr(&(rgplr[i]), rgbCur);
-    rgplr[i].cPlanet = 0;
-    rgplr[i].cFleet = 0x0;
-    ReadRt();
-    goto L_0cc2;
-
-L_0d34:
-    i = 0;
-
-L_0d39:
-    if ((hdrCur.rt != rtShDef))
-        goto L_0ea0;
-    else
-        goto L_0d4c;
-
-L_0d4c:
-    if (((int16_t)(rgplr[i].cShDef) != 0))
-        goto L_0d75;
-    else
-        goto L_0d63;
-
-L_0d63:
-    if ((i >= game.cPlayer))
-        goto L_0d75;
-    else
-        goto L_0d6e;
-
-L_0d6e:
-    i = (i + 1);
-    goto L_0d4c;
-
-L_0d75:
-    if ((i == game.cPlayer))
-        goto L_0ea0;
-    else
-        goto L_0d83;
-
-L_0d83:
-    if ((rglpshdef[i] != 0x0))
-        goto L_0e38;
-    else
-        goto L_0d9e;
-
-L_0d9e:
-    rglpshdef[i] = LpAlloc((16 * sizeof(SHDEF)), htShips);
-    j = 0;
-    goto L_0e2f;
-
-L_0dc5:
-    rglpshdef[i][j].wFlags = ((rglpshdef[i][j].wFlags & 0xfdff) | 0x200);
-    rglpshdef[i][j].grbitPlr = 0x0;
-    j = (j + 1);
-
-L_0e2f:
-    if ((j < 16))
-        goto L_0dc5;
-    else
-        goto L_0e38;
-
-L_0e38:
-    iplrSav = idPlayer;
-    if ((idPlayer != -1))
-        goto L_0e51;
-    else
-        goto L_0e48;
-
-L_0e48:
-    idPlayer = i;
-    goto L_0e57;
-
-L_0e51:
-    idPlayer = -1;
-
-L_0e57:
-    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdef[i], iplrSav) == 0))
-        goto CorruptHist;
-    else
-        goto L_0e83;
-
-L_0e83:
-    idPlayer = iplrSav;
-    rgplr[i].cShDef = (rgplr[i].cShDef - 1);
-    ReadRt();
-    goto L_0d39;
-
-L_0ea0:
-    i = 0;
-
-L_0ea5:
-    if ((hdrCur.rt != rtShDef))
-        goto L_1042;
-    else
-        goto L_0eb8;
-
-L_0eb8:
-    if ((rgplr[i].cshdefSB != 0x0))
-        goto L_0ee8;
-    else
-        goto L_0ed6;
-
-L_0ed6:
-    if ((i >= game.cPlayer))
-        goto L_0ee8;
-    else
-        goto L_0ee1;
-
-L_0ee1:
-    i = (i + 1);
-    goto L_0eb8;
-
-L_0ee8:
-    if ((i == game.cPlayer))
-        goto L_1042;
-    else
-        goto L_0ef6;
-
-L_0ef6:
-    if ((rglpshdefSB[i] != 0x0))
-        goto L_0fab;
-    else
-        goto L_0f11;
-
-L_0f11:
-    rglpshdefSB[i] = LpAlloc((10 * sizeof(SHDEF)), htShips);
-    j = 0;
-    goto L_0fa2;
-
-L_0f38:
-    rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200);
-    rglpshdefSB[i][j].grbitPlr = 0x0;
-    j = (j + 1);
-
-L_0fa2:
-    if ((j < 10))
-        goto L_0f38;
-    else
-        goto L_0fab;
-
-L_0fab:
-    iplrSav = idPlayer;
-    if ((idPlayer != -1))
-        goto L_0fc4;
-    else
-        goto L_0fbb;
-
-L_0fbb:
-    idPlayer = i;
-    goto L_0fca;
-
-L_0fc4:
-    idPlayer = -1;
-
-L_0fca:
-    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdefSB[i], iplrSav) == 0))
-        goto CorruptHist;
-    else
-        goto L_0ff6;
-
-L_0ff6:
-    idPlayer = iplrSav;
-    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0xf);
-    ReadRt();
-    goto L_0ea5;
-
-L_1042:
-    if ((hdrCur.rt != rtScore))
-        goto L_12ff;
-    else
-        goto L_1055;
-
-L_1055:
-    iplr = (RawLoad16(rgbCur) & 0x1f);
-    sx = *((SCOREX *)(rgbCur));
-    if ((rgsxPlr[iplr] != 0x0))
-        goto L_10b3;
-    else
-        goto L_1089;
-
-L_1089:
-    rgsxPlr[iplr] = LpAlloc((101 * sizeof(SCOREX)), htMisc);
-    rgcsxPlr[iplr] = 0;
-
-L_10b3:
-    if ((rgsxPlr[iplr] != 0x0))
-        goto L_10ce;
-    else
-        goto L_12f7;
-
-L_10ce:
-    if ((sx.fHistory == 0x0))
-        goto L_10ea;
-    else
-        goto L_10e1;
-
-L_10e1:
-    turnCur = sx.turn;
-    goto L_10f0;
-
-L_10ea:
-    turnCur = game.turn;
-
-L_10f0:
-    isx = 0;
-    goto L_10fc;
-
-L_10f8:
-    isx = (isx + 1);
-
-L_10fc:
-    if ((isx >= rgcsxPlr[iplr]))
-        goto L_1138;
-    else
-        goto L_110d;
-
-L_110d:
-    if ((turnCur > rgsxPlr[iplr][isx].turn))
-        goto L_10f8;
-    else
-        goto L_1138;
-
-L_1138:
-    if ((isx >= rgcsxPlr[iplr]))
-        goto L_116e;
-    else
-        goto L_1149;
-
-L_1149:
-    if ((turnCur != rgsxPlr[iplr][isx].turn))
-        goto L_1177;
-    else
-        goto L_116e;
-
-L_116e:
-    if ((isx < 101))
-        goto L_1236;
-    else
-        goto L_1177;
-
-L_1177:
-    if ((rgcsxPlr[iplr] < 101))
-        goto L_11d8;
-    else
-        goto L_1186;
-
-L_1186:
-    if ((isx <= 0))
-        goto L_1251;
-    else
-        goto L_118f;
-
-L_118f:
-    if ((isx <= 1))
-        goto L_11d1;
-    else
-        goto L_1198;
-
-L_1198:
-    fmemmove(rgsxPlr[iplr], (rgsxPlr[iplr] + 1), ((isx - 1) * sizeof(SCOREX)));
-
-L_11d1:
-    isx = (isx - 1);
-
-L_11d5:
-    goto L_1251;
-
-L_11d8:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), (rgsxPlr[iplr] + isx), ((rgcsxPlr[iplr] - isx) * sizeof(SCOREX)));
-    rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
-
-L_1233:
-    goto L_1251;
-
-L_1236:
-    if ((isx != rgcsxPlr[iplr]))
-        goto L_1251;
-    else
-        goto L_1247;
-
-L_1247:
-    rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
-
-L_1251:
-    rgsxPlr[iplr][isx] = sx;
-    rgsxPlr[iplr][isx].turn = turnCur;
-    rgsxPlr[iplr][isx].wWord = ((rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000);
-
-L_12f7:
-    ReadRt();
-    goto L_1042;
-
-L_12ff:
-    if ((hdrCur.rt != rtAiData))
-        goto L_13de;
-    else
-        goto L_1312;
-
-L_1312:
-    if ((rgplr[idPlayer].fAi == 0x0))
-        goto L_13c3;
-    else
-        goto L_1331;
-
-L_1331:
-    if ((vlpbAiData != 0x0))
-        goto L_1373;
-    else
-        goto L_1345;
-
-L_1345:
-    vlpbAiData = LpAlloc(0x1fa0, htMisc);
-    if ((vlpbAiData != 0x0))
-        goto L_1373;
-    else
-        goto CorruptHist;
-
-L_1373:
-    lpb = vlpbAiData;
-
-L_1380:
-    if ((hdrCur.rt != rtAiData))
-        goto L_13de;
-    else
-        goto L_1393;
-
-L_1393:
-    fmemmove(lpb, rgbCur, hdrCur.cb);
-    lpb = (lpb + hdrCur.cb);
-    ReadRt();
-    goto L_1380;
-
-L_13c3:
-    if ((hdrCur.rt != rtAiData))
-        goto L_13de;
-    else
-        goto L_13d6;
-
-L_13d6:
-    ReadRt();
-    goto L_13c3;
-
-L_13de:
-    if ((hdrCur.rt != rtThing))
-        goto L_14d3;
-    else
-        goto L_13f1;
-
-L_13f1:
-    cThing = RawLoad16(rgbCur);
-    cThingAlloc = (cThing + 10);
-    if ((cThingAlloc <= 4050))
-        goto L_1411;
-    else
-        goto L_140b;
-
-L_140b:
-    cThingAlloc = 4050;
-
-L_1411:
-    lpThings = LpAlloc((cThingAlloc * sizeof(THING)), htThings);
-    if ((lpThings != 0x0))
-        goto L_1444;
-    else
-        goto CorruptHist;
-
-L_1444:
-    fmemset(lpThings, 0, (cThingAlloc * sizeof(THING)));
-    ReadRt();
-    i = 0;
-    lpth = lpThings;
-    goto L_148e;
-
-L_147b:
-    i = (i + 1);
-    lpth = (lpth + 1);
-
-L_148e:
-    if ((i >= cThing))
-        goto L_14d3;
-    else
-        goto L_1499;
-
-L_1499:
-    if ((hdrCur.rt != rtThing))
-        goto CorruptHist;
-    else
-        goto L_14af;
-
-L_14af:
-    fmemcpy(lpth, rgbCur, hdrCur.cb);
-    ReadRt();
-    goto L_147b;
-
-L_14d3:
-    StreamClose();
-    goto L_1526;
-
-LNoHistFile:
-    cPlanetHist = 0;
-    FreeLp(lpPlanets, htPlanets);
-    lpPlanets = 0x0;
-    cThing = 0;
-    FreeLp(lpThings, htThings);
-    lpThings = 0x0;
-
-L_1526:
-    fFileErrSilent = fSilentSav;
-    GetFileStatus(dt, iPlayer);
-    if ((FOpenFile((dt | grf), iPlayer, 32) == 0))
-        goto LError;
-    else
-        goto L_155b;
-
-L_155b:
-    if ((iPlayer != -1))
-        goto LNextTurn;
-    else
-        goto L_1564;
-
-L_1564:
-    gd.fGameOverMan = ((RawLoad16(&(rgbCur[14])) >> 0xb) & 0x1);
-
-LNextTurn:
-    cturn = (cturn + 1);
-    cPlanet = 0;
-    cFleet = 0;
-    ReadRt();
-
-L_159c:
-    if ((hdrCur.rt == rtBtlData))
-        goto L_15c2;
-    else
-        goto L_15af;
-
-L_15af:
-    if ((hdrCur.rt != rtContinue))
-        goto L_168e;
-    else
-        goto L_15c2;
-
-L_15c2:
-    if ((hdrCur.rt == rtContinue))
-        goto L_165e;
-    else
-        goto L_15d5;
-
-L_15d5:
-    if ((lpbBattleLog != 0x0))
-        goto L_160e;
-    else
-        goto L_15e9;
-
-L_15e9:
-    lpbBattleLog = LpAlloc(0xffc8, htBattle);
-    lpbBattleCur = lpbBattleLog;
-
-L_160e:
-    if (((0xffc8 - (uint32_t)((LOWORD(lpbBattleCur) & 0xffff))) < (uint32_t)(RawLoad16(&(rgbCur[6])))))
-        goto L_163e;
-    else
-        goto L_165e;
-
-L_163e:
-    RawStore16(lpbBattleCur, 0xffff);
-    lpbBattleCur = LpAlloc(0xffc8, htBattle);
-
-L_165e:
-    fmemmove(lpbBattleCur, rgbCur, hdrCur.cb);
-    lpbBattleCur = (lpbBattleCur + hdrCur.cb);
-    ReadRt();
-    goto L_159c;
-
-L_168e:
-    if ((lpbBattleCur != 0x0))
-        goto L_16a2;
-    else
-        goto L_16c8;
-
-L_16a2:
-    RawStore16(lpbBattleCur, 0xffff);
-    if ((((wVersFile >> 0x5) & 0x7f) >= 0x50))
-        goto L_16c8;
-    else
-        goto L_16c3;
-
-L_16c3:
-    UpdateBattleRecords();
-
-L_16c8:
-    if ((hdrCur.rt != rtPlr))
-        goto L_1761;
-    else
-        goto L_16db;
-
-L_16db:
-    i = (int16_t)(rgbCur[0]);
-    ReadRtPlr(&(rgplr[i]), rgbCur);
-    cPlanet = (cPlanet + rgplr[i].cPlanet);
-    rgplr[i].cPlanet = 0;
-    cFleet = (cFleet + rgplr[i].cFleet);
-    rgplr[i].cFleet = 0x0;
-    ReadRt();
-    goto L_16c8;
-
-L_1761:
-    if ((dt == 2))
-        goto L_1785;
-    else
-        goto L_176a;
-
-L_176a:
-    lSaltCur = rgplr[iPlayer].lSalt;
-    goto L_17ba;
-
-L_1785:
-    if ((hdrCur.rt != rtChgPassword))
-        goto L_17ae;
-    else
-        goto L_1798;
-
-L_1798:
-    lSaltCur = RawLoad32(rgbCur);
-    ReadRt();
-    goto L_17ba;
-
-L_17ae:
-    lSaltCur = 0;
-
-L_17ba:
-    if ((FCheckPassword() != 0))
-        goto L_1811;
-    else
-        goto L_17c7;
-
-L_17c7:
-    if ((ini.fValidate != 0x0))
-        goto L_17ed;
-    else
-        goto L_17da;
-
-L_17da:
-    if ((ini.fLogging == 0x0))
-        goto LError;
-    else
-        goto L_17ed;
-
-L_17ed:
-    AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0x0), MB_ICONHAND);
-
-L_180e:
-    goto LError;
-
-L_1811:
-    ReadPlayerMessages();
-    ResetHb(htFleets);
-    ResetHb(htOrd);
-    FreeLp(rglpfl, htMisc);
-    rglpfl = 0x0;
-    if ((lpPlanets != 0x0))
-        goto L_1896;
-    else
-        goto L_1862;
-
-L_1862:
-    if ((1 <= cPlanet))
-        goto L_1874;
-    else
-        goto L_186e;
-
-L_186e:
-    t_merge_1877_0001 = 0x1;
-    goto L_1877;
-
-L_1874:
-    t_merge_1877_0001 = cPlanet;
-
-L_1877:
-    cPlanetAlloc = t_merge_1877_0001;
-    lpPlanets = LpAlloc((cPlanetAlloc * sizeof(PLANET)), htPlanets);
-
-L_1896:
-    lppl = lpPlanets;
-    j = 0;
-    i = 0;
-    goto L_1b03;
-
-L_18b0:
-    fHaveHistoryData = 0;
-    if ((cPlanetHist == 0))
-        goto LFoundPlanet;
-    else
-        goto L_18be;
-
-L_18be:
-    if ((j >= cPlanetHist))
-        goto L_18f6;
-    else
-        goto L_18c9;
-
-L_18c9:
-    if ((((int16_t)((RawLoad16(rgbCur) << 0x5)) >> 0x5) <= lppl->id))
-        goto L_18f6;
-    else
-        goto L_18eb;
-
-L_18eb:
-    j = (j + 1);
-    lppl = (lppl + 1);
-    goto L_18be;
-
-L_18f6:
-    if ((j >= cPlanetHist))
-        goto L_192b;
-    else
-        goto L_1901;
-
-L_1901:
-    if ((((int16_t)((RawLoad16(rgbCur) << 0x5)) >> 0x5) != lppl->id))
-        goto L_192b;
-    else
-        goto L_1923;
-
-L_1923:
-    fHaveHistoryData = 1;
-    goto LFoundPlanet;
-
-L_192b:
-    if ((cPlanetAlloc != cPlanetHist))
-        goto L_1974;
-    else
-        goto L_1936;
-
-L_1936:
-    cPlanetAlloc = (cPlanetAlloc + 8);
-    lpPlanets = LpReAlloc(lpPlanets, (cPlanetAlloc * sizeof(PLANET)), htPlanets);
-    lppl = (lpPlanets + j);
-
-L_1974:
-    if ((j >= cPlanetHist))
-        goto L_19a6;
-    else
-        goto L_197f;
-
-L_197f:
-    fmemmove((lppl + 1), lppl, ((cPlanetHist - j) * sizeof(PLANET)));
-
-L_19a6:
-    cPlanetHist = (cPlanetHist + 1);
-
-LFoundPlanet:
-    if ((FReadPlanet(iPlayer, lppl, 0, fHaveHistoryData) == 0))
-        goto Corrupt;
-    else
-        goto L_19cd;
-
-L_19cd:
-    if ((lppl->iPlayer == -1))
-        goto L_19ed;
-    else
-        goto L_19da;
-
-L_19da:
-    rgplr[lppl->iPlayer].cPlanet = (rgplr[lppl->iPlayer].cPlanet + 1);
-
-L_19ed:
-    ReadRt();
-    if ((hdrCur.rt != rtProdQ))
-        goto L_1af2;
-    else
-        goto L_1a05;
-
-L_1a05:
-    if ((lppl->lpplprod != 0x0))
-        goto L_1a1c;
-    else
-        goto L_1a6a;
-
-L_1a1c:
-    t_scratch_m48_6 = lppl->lpplprod->iprodMax;
-    if ((t_scratch_m48_6 > (hdrCur.cb / 0x4)))
-        goto L_1a6a;
-    else
-        goto L_1a48;
-
-L_1a48:
-    FreePl((PL *)(lppl->lpplprod));
-    lppl->lpplprod = 0x0;
-
-L_1a6a:
-    if ((lppl->lpplprod != 0x0))
-        goto L_1aad;
-    else
-        goto L_1a81;
-
-L_1a81:
-    lppl->lpplprod = (PLPROD *)(LpplAlloc(0x4, ((hdrCur.cb / 0x4) + 0x2), htOrd));
-
-L_1aad:
-    fmemmove(lppl->lpplprod->rgprod, rgbCur, hdrCur.cb);
-    lppl->lpplprod->iprodMac = LOBYTE((hdrCur.cb / 0x4));
-    ReadRt();
-
-L_1af2:
-    if ((cPlanetHist != 0))
-        goto L_1aff;
-    else
-        goto L_1afb;
-
-L_1afb:
-    lppl = (lppl + 1);
-
-L_1aff:
-    i = (i + 1);
-
-L_1b03:
-    if ((i < cPlanet))
-        goto L_18b0;
-    else
-        goto L_1b0e;
-
-L_1b0e:
-    if ((cPlanetHist == 0))
-        goto L_1b1d;
-    else
-        goto L_1b17;
-
-L_1b17:
-    cPlanet = cPlanetHist;
-
-L_1b1d:
-    i = 0;
-    goto L_1b29;
-
-L_1b25:
-    i = (i + 1);
-
-L_1b29:
-    if ((i >= game.cPlayer))
-        goto L_1cdb;
-    else
-        goto L_1b34;
-
-L_1b34:
-    if ((i != iPlayer))
-        goto L_1b59;
-    else
-        goto L_1b3f;
-
-L_1b3f:
-    rglpshdef[i] = rgshdef;
-    goto FreeShdef;
-
-L_1b59:
-    if ((rgplr[i].fInclude == 0x0))
-        goto L_1b25;
-    else
-        goto L_1b77;
-
-L_1b77:
-    if ((rglpshdef[i] != 0x0))
-        goto L_1c32;
-    else
-        goto L_1b92;
-
-L_1b92:
-    rglpshdef[i] = LpAlloc((16 * sizeof(SHDEF)), htShips);
-
-FreeShdef:
-    j = 0;
-    goto L_1c23;
-
-L_1bb9:
-    rglpshdef[i][j].wFlags = ((rglpshdef[i][j].wFlags & 0xfdff) | 0x200);
-    rglpshdef[i][j].grbitPlr = 0x0;
-    j = (j + 1);
-
-L_1c23:
-    if ((j < 16))
-        goto L_1bb9;
-    else
-        goto L_1c32;
-
-L_1c32:
-    iplrSav = idPlayer;
-    if ((idPlayer != -1))
-        goto L_1c4b;
-    else
-        goto L_1c42;
-
-L_1c42:
-    idPlayer = i;
-    goto L_1c5c;
-
-L_1c4b:
-    if ((i == idPlayer))
-        goto L_1c5c;
-    else
-        goto L_1c56;
-
-L_1c56:
-    idPlayer = -1;
-
-L_1c5c:
-    j = 0;
-    goto L_1c68;
-
-L_1c64:
-    j = (j + 1);
-
-L_1c68:
-    if ((j >= (int16_t)(rgplr[i].cShDef)))
-        goto L_1cd2;
-    else
-        goto L_1c7f;
-
-L_1c7f:
-    if ((hdrCur.rt != rtShDef))
-        goto L_1cc1;
-    else
-        goto L_1c92;
-
-L_1c92:
-    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdef[i], iplrSav) == 0))
-        goto Corrupt;
-    else
-        goto L_1cb8;
-
-L_1cb8:
-    goto L_1cca;
-
-L_1cc1:
-    idPlayer = iplrSav;
-    goto Corrupt;
-
-L_1cca:
-    ReadRt();
-    goto L_1c64;
-
-L_1cd2:
-    idPlayer = iplrSav;
-    goto L_1b25;
-
-L_1cdb:
-    i = 0;
-    goto L_1ce7;
-
-L_1ce3:
-    i = (i + 1);
-
-L_1ce7:
-    if ((i >= game.cPlayer))
-        goto L_1ded;
-    else
-        goto L_1cf2;
-
-L_1cf2:
-    rgplr[i].cShDef = 0;
-    if ((rglpshdef[i] != 0x0))
-        goto L_1d1c;
-    else
-        goto L_1ce3;
-
-L_1d1c:
-    j = 0;
-    goto L_1de1;
-
-L_1d24:
-    if ((rglpshdef[i][j].fFree != 0x0))
-        goto L_1ddd;
-    else
-        goto L_1d51;
-
-L_1d51:
-    if ((i == idPlayer))
-        goto L_1dce;
-    else
-        goto L_1d5c;
-
-L_1d5c:
-    if ((gd.fGeneratingTurn != 0x0))
-        goto L_1dce;
-    else
-        goto L_1d6c;
-
-L_1d6c:
-    if ((rgplr[i].fDead == 0x0))
-        goto L_1dce;
-    else
-        goto L_1d85;
-
-L_1d85:
-    rglpshdef[i][j].wFlags = ((rglpshdef[i][j].wFlags & 0xfdff) | 0x200);
-    goto L_1ddd;
-
-L_1dce:
-    rgplr[i].cShDef = (rgplr[i].cShDef + 1);
-
-L_1ddd:
-    j = (j + 1);
-
-L_1de1:
-    if ((j >= 16))
-        goto L_1ce3;
-    else
-        goto L_1de7;
-
-L_1de7:
-    goto L_1d24;
-
-L_1ded:
-    if ((1 <= cFleet))
-        goto L_1e03;
-    else
-        goto L_1dfd;
-
-L_1dfd:
-    t_merge_1e06_0001 = 0x1;
-    goto L_1e06;
-
-L_1e03:
-    t_merge_1e06_0001 = cFleet;
-
-L_1e06:
-    rglpfl = LpAlloc((t_merge_1e06_0001 * sizeof(FLEET *)), htMisc);
-    i = 0;
-    goto L_1ebb;
-
-L_1e22:
-    t_call_1e2a = LpAlloc(sizeof(FLEET), htFleets);
-    rglpfl[i] = t_call_1e2a;
-    lpfl = t_call_1e2a;
-    if ((FReadFleet(lpfl) == 0))
-        goto LError;
-    else
-        goto L_1e6d;
-
-L_1e6d:
-    rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 0x1);
-    i = (i + 1);
-
-L_1ebb:
-    if ((i < cFleet))
-        goto L_1e22;
-    else
-        goto L_1ec6;
-
-L_1ec6:
-    i = 0;
-    goto L_1ed2;
-
-L_1ece:
-    i = (i + 1);
-
-L_1ed2:
-    if ((i >= game.cPlayer))
-        goto L_2066;
-    else
-        goto L_1edd;
-
-L_1edd:
-    if ((rgplr[i].fInclude == 0x0))
-        goto L_1ece;
-    else
-        goto L_1efb;
-
-L_1efb:
-    if ((rglpshdefSB[i] != 0x0))
-        goto L_1fb6;
-    else
-        goto L_1f16;
-
-L_1f16:
-    rglpshdefSB[i] = LpAlloc((10 * sizeof(SHDEF)), htShips);
-    j = 0;
-    goto L_1fa7;
-
-L_1f3d:
-    rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200);
-    rglpshdefSB[i][j].grbitPlr = 0x0;
-    j = (j + 1);
-
-L_1fa7:
-    if ((j < 10))
-        goto L_1f3d;
-    else
-        goto L_1fb6;
-
-L_1fb6:
-    iplrSav = idPlayer;
-    if ((idPlayer != -1))
-        goto L_1fcf;
-    else
-        goto L_1fc6;
-
-L_1fc6:
-    idPlayer = i;
-    goto L_1fe0;
-
-L_1fcf:
-    if ((i == idPlayer))
-        goto L_1fe0;
-    else
-        goto L_1fda;
-
-L_1fda:
-    idPlayer = -1;
-
-L_1fe0:
-    j = 0;
-    goto L_1fec;
-
-L_1fe8:
-    j = (j + 1);
-
-L_1fec:
-    if ((j >= rgplr[i].cshdefSB))
-        goto L_205d;
-    else
-        goto L_200a;
-
-L_200a:
-    if ((hdrCur.rt != rtShDef))
-        goto L_204c;
-    else
-        goto L_201d;
-
-L_201d:
-    if ((FReadShDef((RTSHDEF *)(rgbCur), rglpshdefSB[i], iplrSav) == 0))
-        goto Corrupt;
-    else
-        goto L_2043;
-
-L_2043:
-    goto L_2055;
-
-L_204c:
-    idPlayer = iplrSav;
-    goto Corrupt;
-
-L_2055:
-    ReadRt();
-    goto L_1fe8;
-
-L_205d:
-    idPlayer = iplrSav;
-    goto L_1ece;
-
-L_2066:
-    i = 0;
-    goto L_2072;
-
-L_206e:
-    i = (i + 1);
-
-L_2072:
-    if ((i >= game.cPlayer))
-        goto L_21c0;
-    else
-        goto L_207d;
-
-L_207d:
-    rgplr[i].cshdefSB = 0x0;
-    if ((rglpshdefSB[i] != 0x0))
-        goto L_20c0;
-    else
-        goto L_206e;
-
-L_20c0:
-    j = 0;
-    goto L_21b4;
-
-L_20c8:
-    if ((rglpshdefSB[i][j].fFree != 0x0))
-        goto L_21b0;
-    else
-        goto L_20f5;
-
-L_20f5:
-    if ((i == idPlayer))
-        goto L_2172;
-    else
-        goto L_2100;
-
-L_2100:
-    if ((gd.fGeneratingTurn != 0x0))
-        goto L_2172;
-    else
-        goto L_2110;
-
-L_2110:
-    if ((rgplr[i].fDead == 0x0))
-        goto L_2172;
-    else
-        goto L_2129;
-
-L_2129:
-    rglpshdefSB[i][j].wFlags = ((rglpshdefSB[i][j].wFlags & 0xfdff) | 0x200);
-    goto L_21b0;
-
-L_2172:
-    rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1);
-
-L_21b0:
-    j = (j + 1);
-
-L_21b4:
-    if ((j >= 10))
-        goto L_206e;
-    else
-        goto L_21ba;
-
-L_21ba:
-    goto L_20c8;
-
-L_21c0:
-    if ((vlprgScoreX != 0x0))
-        goto L_220d;
-    else
-        goto L_21d4;
-
-L_21d4:
-    vlprgScoreX = LpAlloc((game.cPlayer * sizeof(SCOREX)), htMisc);
-    fmemset(vlprgScoreX, 0, (game.cPlayer * sizeof(SCOREX)));
-
-L_220d:
-    if ((hdrCur.rt != rtScore))
-        goto L_2520;
-    else
-        goto L_2220;
-
-L_2220:
-    iplr = (RawLoad16(rgbCur) & 0x1f);
-    vlprgScoreX[iplr] = *((SCOREX *)(rgbCur));
-    if ((rgsxPlr[iplr] != 0x0))
-        goto L_229c;
-    else
-        goto L_2272;
-
-L_2272:
-    rgsxPlr[iplr] = LpAlloc((101 * sizeof(SCOREX)), htMisc);
-    rgcsxPlr[iplr] = 0;
-
-L_229c:
-    if ((rgsxPlr[iplr] != 0x0))
-        goto L_22b7;
-    else
-        goto L_2518;
-
-L_22b7:
-    if ((vlprgScoreX[iplr].fHistory == 0x0))
-        goto L_22f8;
-    else
-        goto L_22dc;
-
-L_22dc:
-    turnCur = vlprgScoreX[iplr].turn;
-    goto L_22fe;
-
-L_22f8:
-    turnCur = game.turn;
-
-L_22fe:
-    isx = 0;
-    goto L_230a;
-
-L_2306:
-    isx = (isx + 1);
-
-L_230a:
-    if ((isx >= rgcsxPlr[iplr]))
-        goto L_2346;
-    else
-        goto L_231b;
-
-L_231b:
-    if ((turnCur > rgsxPlr[iplr][isx].turn))
-        goto L_2306;
-    else
-        goto L_2346;
-
-L_2346:
-    if ((isx >= rgcsxPlr[iplr]))
-        goto L_237c;
-    else
-        goto L_2357;
-
-L_2357:
-    if ((turnCur != rgsxPlr[iplr][isx].turn))
-        goto L_2385;
-    else
-        goto L_237c;
-
-L_237c:
-    if ((isx < 101))
-        goto L_2444;
-    else
-        goto L_2385;
-
-L_2385:
-    if ((rgcsxPlr[iplr] < 101))
-        goto L_23e6;
-    else
-        goto L_2394;
-
-L_2394:
-    if ((isx <= 0))
-        goto L_245f;
-    else
-        goto L_239d;
-
-L_239d:
-    if ((isx <= 1))
-        goto L_23df;
-    else
-        goto L_23a6;
-
-L_23a6:
-    fmemmove(rgsxPlr[iplr], (rgsxPlr[iplr] + 1), ((isx - 1) * sizeof(SCOREX)));
-
-L_23df:
-    isx = (isx - 1);
-
-L_23e3:
-    goto L_245f;
-
-L_23e6:
-    fmemmove((rgsxPlr[iplr] + (isx + 1)), (rgsxPlr[iplr] + isx), ((rgcsxPlr[iplr] - isx) * sizeof(SCOREX)));
-    rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
-
-L_2441:
-    goto L_245f;
-
-L_2444:
-    if ((isx != rgcsxPlr[iplr]))
-        goto L_245f;
-    else
-        goto L_2455;
-
-L_2455:
-    rgcsxPlr[iplr] = (rgcsxPlr[iplr] + 1);
-
-L_245f:
-    rgsxPlr[iplr][isx] = vlprgScoreX[iplr];
-    rgsxPlr[iplr][isx].turn = turnCur;
-    rgsxPlr[iplr][isx].wWord = ((rgsxPlr[iplr][isx].wWord & 0x7fff) | 0x8000);
-
-L_2518:
-    ReadRt();
-    goto L_220d;
-
-L_2520:
-    if ((lpThings != 0x0))
-        goto L_2534;
-    else
-        goto L_255a;
-
-L_2534:
-    FreeLp(lpThings, htThings);
-    lpThings = 0x0;
-    cThing = 0;
-
-L_255a:
-    if ((hdrCur.rt != rtThing))
-        goto L_2755;
-    else
-        goto L_256d;
-
-L_256d:
-    if ((cThing <= 0))
-        goto L_257d;
-    else
-        goto L_2577;
-
-L_2577:
-    t_merge_2580_0001 = 0x1;
-    goto L_2580;
-
-L_257d:
-    t_merge_2580_0001 = 0x0;
-
-L_2580:
-    fHist = t_merge_2580_0001;
-    cThingFile = RawLoad16(rgbCur);
-    if ((10 <= cThingFile))
-        goto L_259a;
-    else
-        goto L_2594;
-
-L_2594:
-    t_merge_259d_0001 = 0xa;
-    goto L_259d;
-
-L_259a:
-    t_merge_259d_0001 = cThingFile;
-
-L_259d:
-    cThingAlloc = t_merge_259d_0001;
-    if ((lpThings != 0x0))
-        goto L_2604;
-    else
-        goto L_25b4;
-
-L_25b4:
-    lpThings = LpAlloc((cThingAlloc * sizeof(THING)), htThings);
-    if ((lpThings != 0x0))
-        goto L_25e7;
-    else
-        goto LError;
-
-L_25e7:
-    fmemset(lpThings, 0, (cThingAlloc * sizeof(THING)));
-
-L_2604:
-    ReadRt();
-    lpth = lpThings;
-    j = 0;
-    i = 0;
-    goto L_2747;
-
-L_2623:
-    fHaveHistoryData = 0;
-    if ((fHist == 0))
-        goto L_270b;
-    else
-        goto L_2631;
-
-L_2631:
-    if ((j >= cThing))
-        goto L_2656;
-    else
-        goto L_263c;
-
-L_263c:
-    if ((RawLoad16(rgbCur) <= lpth->idFull))
-        goto L_2656;
-    else
-        goto L_264b;
-
-L_264b:
-    j = (j + 1);
-    lpth = (lpth + 1);
-    goto L_2631;
-
-L_2656:
-    if ((j >= cThing))
-        goto L_2678;
-    else
-        goto L_2661;
-
-L_2661:
-    if ((RawLoad16(rgbCur) != lpth->idFull))
-        goto L_2678;
-    else
-        goto L_2670;
-
-L_2670:
-    fHaveHistoryData = 1;
-    goto LFoundThing;
-
-L_2678:
-    if ((cThingAlloc != cThing))
-        goto L_26c3;
-    else
-        goto L_2684;
-
-L_2684:
-    cThingAlloc = (cThingAlloc + 8);
-    lpThings = LpReAlloc(lpThings, (cThingAlloc * sizeof(THING)), htThings);
-    lpth = (lpThings + j);
-
-L_26c3:
-    if ((j >= cThing))
-        goto L_270b;
-    else
-        goto L_26ce;
-
-L_26ce:
-    fmemmove((lpth + 1), lpth, ((cThing - j) * sizeof(THING)));
-    fmemset(lpth, 0, sizeof(THING));
-
-L_270b:
-    cThing = (cThing + 1);
-
-LFoundThing:
-    fmemcpy(lpth, rgbCur, hdrCur.cb);
-    lpth->turn = game.turn;
-    lpth = (lpth + 1);
-    j = (j + 1);
-    ReadRt();
-    i = (i + 1);
-
-L_2747:
-    if ((i >= cThingFile))
-        goto L_277d;
-    else
-        goto L_274f;
-
-L_274f:
-    goto L_2623;
-
-L_2755:
-    cThing = 0;
-    cThingAlloc = 10;
-    lpThings = LpAlloc((cThingAlloc * sizeof(THING)), htThings);
-
-L_277d:
-    if ((hdrCur.rt != rtSel))
-        goto L_2795;
-    else
-        goto L_2790;
-
-L_2790:
-    ReadRt();
-
-L_2795:
-    iplrSav = idPlayer;
-
-L_279b:
-    if ((hdrCur.rt != rtBtlPlan))
-        goto L_2843;
-    else
-        goto L_27ae;
-
-L_27ae:
-    iP = (RawLoad16(rgbCur) & 0xf);
-    idPlayer = iP;
-    if ((rglpbtlplan[iP] != 0x0))
-        goto L_27f7;
-    else
-        goto L_27d8;
-
-L_27d8:
-    rglpbtlplan[iP] = LpAlloc((16 * sizeof(BTLPLAN)), htShips);
-
-L_27f7:
-    UnpackBattlePlan(rgbCur, (rglpbtlplan[iP] + rgcbtlplan[iP]), rgcbtlplan[iP]);
-    rgcbtlplan[iP] = (rgcbtlplan[iP] + 0x1);
-    ReadRt();
-    goto L_279b;
-
-L_2843:
-    idPlayer = iplrSav;
-    if ((hdrCur.rt == rtEOF))
-        goto L_2880;
-    else
-        goto Corrupt;
-
-Corrupt:
-    AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
-    goto LError;
-
-L_2880:
-    t_call_2884 = filelength(hf);
-    if ((t_call_2884 != tell(hf)))
-        goto L_28b2;
-    else
-        goto L_2a56;
-
-L_28b2:
-    ReadRt();
-    if ((hdrCur.rt != rtBOF))
-        goto L_2a35;
-    else
-        goto L_28ca;
-
-L_28ca:
-    game.turn = RawLoad16(&(rgbCur[10]));
-    game.wGen = ((RawLoad16(&(rgbCur[14])) >> 0xd) & 0x7);
-    i = 0;
-    goto L_2905;
-
-L_2901:
-    i = (i + 1);
-
-L_2905:
-    if ((i >= game.cPlayer))
-        goto L_298a;
-    else
-        goto L_2910;
-
-L_2910:
-    rgplr[i].cShDef = 0;
-    rgplr[i].cFleet = 0x0;
-    rgplr[i].cPlanet = 0;
-    rgplr[i].cshdefSB = 0x0;
-    rgcbtlplan[i] = 0x0;
-    goto L_2901;
-
-L_298a:
-    lppl = lpPlanets;
-    lpplMac = (lpPlanets + cPlanet);
-    goto L_2a1e;
-
-L_29b5:
-    if ((lppl->iPlayer != iPlayer))
-        goto L_2a1a;
-    else
-        goto L_29c4;
-
-L_29c4:
-    lppl->iPlayer = -1;
-    lppl->det = 0x3;
-    if ((lppl->lpplprod != 0x0))
-        goto L_29f8;
-    else
-        goto L_2a1a;
-
-L_29f8:
-    FreePl((PL *)(lppl->lpplprod));
-    lppl->lpplprod = 0x0;
-
-L_2a1a:
-    lppl = (lppl + 1);
-
-L_2a1e:
-    if ((lppl < lpplMac))
-        goto L_29b5;
-    else
-        goto L_2a2c;
-
-L_2a2c:
-    cPlanetHist = cPlanet;
-    goto LNextTurn;
-
-L_2a35:
-    AlertSz(PszFormatIds(idsWarningIgnoringUnexpectedDataAfterEof, 0x0), MB_ICONHAND);
-
-L_2a56:
-    StreamClose();
-    if ((cturn <= 1))
-        goto L_2aed;
-    else
-        goto L_2a64;
-
-L_2a64:
-    if ((rgplr[iPlayer].fAi != 0x0))
-        goto L_2aed;
-    else
-        goto L_2a82;
-
-L_2a82:
-    if ((ini.fDumpPlanets != 0x0))
-        goto L_2aed;
-    else
-        goto L_2a95;
-
-L_2a95:
-    if ((ini.fDumpFleets != 0x0))
-        goto L_2aed;
-    else
-        goto L_2aa8;
-
-L_2aa8:
-    if ((ini.fDumpMap != 0x0))
-        goto L_2aed;
-    else
-        goto L_2abb;
-
-L_2abb:
-    _wsprintf(szWork, PszGetCompressedString(idsNoteDYearsDataRead), cturn);
-    AlertSz(szWork, MB_ICONASTERISK);
-
-L_2aed:
-    if ((strnicmp(pszExt, "hst", 0x3) == 0))
-        goto DoneNow;
-    else
-        goto L_2b0b;
-
-L_2b0b:
-    if ((rgplr[iPlayer].fAi != 0x0))
-        goto L_2e33;
-    else
-        goto L_2b29;
-
-L_2b29:
-    lpth = lpThings;
-    lpthMac = (lpThings + cThing);
-    goto L_2c17;
-
-L_2b54:
-    if ((lpth->ith != ithMineralPacket))
-        goto L_2c13;
-    else
-        goto L_2b6a;
-
-L_2b6a:
-    if ((lpth->thp.iWarp == 0x0))
-        goto L_2c13;
-    else
-        goto L_2b81;
-
-L_2b81:
-    lppl = LpplFromId(lpth->thp.idPlanet);
-    if ((lppl != 0x0))
-        goto L_2bac;
-    else
-        goto L_2c13;
-
-L_2bac:
-    if ((lppl->iPlayer != iPlayer))
-        goto L_2c13;
-    else
-        goto L_2bbe;
-
-L_2bbe:
-    iWarp = IWarpMAFromLppl(lppl, &(fTwo));
-    if (((iWarp + fTwo) >= (lpth->thp.iWarp + 0x4)))
-        goto L_2c13;
-    else
-        goto L_2bf2;
-
-L_2bf2:
-    FSendPlrMsg2XGen(0, 337, -6, lpth->idFull, lppl->id);
-
-L_2c13:
-    lpth = (lpth + 1);
-
-L_2c17:
-    if ((lpth < lpthMac))
-        goto L_2b54;
-    else
-        goto L_2c25;
-
-L_2c25:
-    if ((game.fTutorial != 0x0))
-        goto L_2e33;
-    else
-        goto L_2c39;
-
-L_2c39:
-    lppl = lpPlanets;
-    lpplMac = (lpPlanets + cPlanet);
-    goto L_2de7;
-
-L_2c64:
-    if ((lppl->iPlayer != iPlayer))
-        goto L_2de3;
-    else
-        goto L_2c73;
-
-L_2c73:
-    if ((lppl->fStarbase == 0x0))
-        goto L_2de3;
-    else
-        goto L_2c8a;
-
-L_2c8a:
-    if ((lppl->lpplprod != 0x0))
-        goto L_2ca4;
-    else
-        goto L_2de3;
-
-L_2ca4:
-    if ((rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef == ihuldefOrbitalFort))
-        goto L_2de3;
-    else
-        goto L_2cd6;
-
-L_2cd6:
-    fWorking = 0;
-    iprod = 0;
-    lpprod = lppl->lpplprod->rgprod;
-    goto L_2d0c;
-
-L_2cf9:
-    iprod = (iprod + 1);
-    lpprod = (lpprod + 1);
-
-L_2d0c:
-    if ((iprod >= lppl->lpplprod->iprodMac))
-        goto L_2dba;
-    else
-        goto L_2d22;
-
-L_2d22:
-    EstimateItemProdSched(lppl, 0x0, iprod, &(iFirst), &(iLast));
-    if ((iLast <= 1))
-        goto L_2d54;
-    else
-        goto L_2d4c;
-
-L_2d4c:
-    fWorking = 0;
-    goto L_2dba;
-
-L_2d54:
-    if ((iLast != 1))
-        goto L_2cf9;
-    else
-        goto L_2d5d;
-
-L_2d5d:
-    if ((lpprod->grobj != grobjPlanet))
-        goto L_2db2;
-    else
-        goto L_2d85;
-
-L_2d85:
-    if ((lpprod->iItem < mdIdleFactory))
-        goto L_2cf9;
-    else
-        goto L_2db2;
-
-L_2db2:
-    fWorking = 1;
-
-L_2db7:
-    goto L_2cf9;
-
-L_2dba:
-    if ((fWorking == 0))
-        goto L_2de3;
-    else
-        goto L_2dc3;
-
-L_2dc3:
-    FSendPlrMsg2XGen(0, 338, lppl->id, lppl->id, 0);
-
-L_2de3:
-    lppl = (lppl + 1);
-
-L_2de7:
-    if ((lppl < lpplMac))
-        goto L_2c64;
-    else
-        goto L_2df5;
-
-L_2df5:
-    i = CBattles();
-    if ((i <= 0))
-        goto L_2e33;
-    else
-        goto L_2e06;
-
-L_2e06:
-    if ((i <= 1))
-        goto L_2e20;
-    else
-        goto L_2e1a;
-
-L_2e1a:
-    t_merge_2e23_0001 = 0x1;
-    goto L_2e23;
-
-L_2e20:
-    t_merge_2e23_0001 = 0x0;
-
-L_2e23:
-    FSendPlrMsg2XGen(1, (t_merge_2e23_0001 + 339), -7, i, 0);
-
-L_2e33:
-    if ((gd.fDontDoLogFiles != 0x0))
-        goto L_2eb1;
-    else
-        goto L_2e43;
-
-L_2e43:
-    _wsprintf(szWork, "%s.x%s", pszFileName, (pszExt + 1));
-    if ((FLoadLogFile(szWork) == 0))
-        goto L_2e8d;
-    else
-        goto L_2e80;
-
-L_2e80:
-    if ((FRunLogFile() != 0))
-        goto L_2eb1;
-    else
-        goto L_2e8d;
-
-L_2e8d:
-    AlertSz(PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, 0x0), MB_ICONHAND);
-    goto LError;
-
-L_2eb1:
-    i = 0;
-    goto L_2ebd;
-
-L_2eb9:
-    i = (i + 1);
-
-L_2ebd:
-    if ((i >= game.cPlayer))
-        goto L_2f03;
-    else
-        goto L_2ec8;
-
-L_2ec8:
-    rgplr[i].cFleet = 0x0;
-    rgplr[i].cPlanet = 0;
-    goto L_2eb9;
-
-L_2f03:
-    lppl = lpPlanets;
-    lpplMac = (lpPlanets + cPlanet);
-    goto L_2f69;
-
-L_2f2e:
-    if ((lppl->iPlayer == -1))
-        goto L_2f51;
-    else
-        goto L_2f3b;
-
-L_2f3b:
-    rgplr[lppl->iPlayer].cPlanet = (rgplr[lppl->iPlayer].cPlanet + 1);
-    goto L_2f65;
-
-L_2f51:
-    lppl->fStarbase = 0x0;
-
-L_2f65:
-    lppl = (lppl + 1);
-
-L_2f69:
-    if ((lppl < lpplMac))
-        goto L_2f2e;
-    else
-        goto L_2f77;
-
-L_2f77:
-    j = 0;
-    i = 0;
-    goto L_2f88;
-
-L_2f84:
-    i = (i + 1);
-
-L_2f88:
-    if ((i >= cFleet))
-        goto DoneNow;
-    else
-        goto L_2f93;
-
-L_2f93:
-    lpfl = rglpfl[i];
-    if ((rglpfl[i] != 0x0))
-        goto L_2fc3;
-    else
-        goto DoneNow;
-
-L_2fc3:
-    j = lpfl->iPlayer;
-    rgplr[j].cFleet = (rgplr[j].cFleet + 0x1);
-    goto L_2f84;
-
-DoneNow:
-    idPlayer = iPlayer;
-    if ((idPlayer == -1))
-        goto L_31fa;
-    else
-        goto L_301e;
-
-L_301e:
-    if ((rgplr[idPlayer].fAi != 0x0))
-        goto L_31fa;
-    else
-        goto L_303d;
-
-L_303d:
-    if ((vrgszMRU != 0x0))
-        goto L_3051;
-    else
-        goto L_31fa;
-
-L_3051:
-    strcpy(szT, pszFileName);
-    strcat(szT, ".");
-    strcat(szT, pszExt);
-    if ((fstricmp(szT, vrgszMRU) == 0))
-        goto L_31fa;
-    else
-        goto L_30a2;
-
-L_30a2:
-    i = 1;
-    goto L_30dd;
-
-L_30aa:
-    if ((fstricmp(szT, (vrgszMRU + (256 * i))) == 0))
-        goto L_3120;
-    else
-        goto L_30d9;
-
-L_30d9:
-    i = (i + 1);
-
-L_30dd:
-    if ((i >= 8))
-        goto L_3120;
-    else
-        goto L_30e3;
-
-L_30e3:
-    goto L_30aa;
-
-L_30e9:
-    fstrcpy((vrgszMRU + (256 * i)), (vrgszMRU + (256 * (i - 1))));
-    i = (i - 1);
-
-L_3120:
-    if ((i >= 1))
-        goto L_30e9;
-    else
-        goto L_3129;
-
-L_3129:
-    fstrcpy(vrgszMRU, szT);
-    CchGetString(idsStarsIni, szIniFile);
-    CchGetString(idsFiles, szSection);
-    CchGetString(idsFile1, szEntry);
-    psz = &(szEntry[(strlen(szEntry) - 1)]);
-    i = 0;
-    goto L_31f1;
-
-L_3198:
-    *(psz) = LOBYTE((i + 49));
-    fstrcpy(szT, (vrgszMRU + (256 * i)));
-    WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
-    i = (i + 1);
-
-L_31f1:
-    if ((i < 9))
-        goto L_3198;
-    else
-        goto L_31fa;
-
-L_31fa:
-    return 1;
 }
 
 int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPreInited) {
@@ -2592,462 +907,189 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
     uint8_t  *t_3678;
     uint16_t  t_scratch_me_6;
 
-L_3206:
     fFirstYear = 0;
-    if ((fPreInited != 0))
-        goto L_3233;
-    else
-        goto L_321d;
-
-L_321d:
-    fmemset(lppl, 0, sizeof(PLANET));
-
-L_3233:
-    if ((fHistory != 0))
-        goto L_32af;
-    else
-        goto L_323c;
-
-L_323c:
-    if ((iPlayer == -1))
-        goto L_32af;
-    else
-        goto L_3245;
-
-L_3245:
-    if ((fPreInited != 0))
-        goto L_326a;
-    else
-        goto L_324e;
-
-L_324e:
-    fFirstYear = 1;
-    lppl->fFirstYear = 0x1;
-    goto L_32de;
-
-L_326a:
-    if ((lppl->fFirstYear == 0x0))
-        goto L_32de;
-    else
-        goto L_3281;
-
-L_3281:
-    if ((lppl->turn == game.turn))
-        goto L_32a7;
-    else
-        goto L_3290;
-
-L_3290:
-    lppl->fFirstYear = 0x0;
-    goto L_32de;
-
-L_32a7:
-    fFirstYear = 1;
-
-L_32ac:
-    goto L_32de;
-
-L_32af:
-    lppl->fFirstYear = ((RawLoad16(&(rgbCur[2])) >> 0xf) & 0x1);
-
-L_32de:
-    lppl->id = ((int16_t)((RawLoad16(rgbCur) << 0x5)) >> 0x5);
-    lppl->iPlayer = ((int16_t)(RawLoad16(rgbCur)) >> 0xb);
-    if ((lppl->det >= (RawLoad16(&(rgbCur[2])) & 0x7f)))
-        goto L_3347;
-    else
-        goto L_3322;
-
-L_3322:
-    lppl->det = (RawLoad16(&(rgbCur[2])) & 0x7f);
-
-L_3347:
-    lppl->fInclude = ((RawLoad16(&(rgbCur[2])) >> 0x8) & 0x1);
-    lppl->fStarbase = ((RawLoad16(&(rgbCur[2])) >> 0x9) & 0x1);
-    lppl->fHomeworld = ((RawLoad16(&(rgbCur[2])) >> 0x7) & 0x1);
-    fRouting = ((RawLoad16(&(rgbCur[2])) >> 0xe) & 0x1);
-    if ((lppl->fStarbase == 0x0))
-        goto L_341a;
-    else
-        goto L_33f9;
-
-L_33f9:
-    if ((lppl->iPlayer != -1))
-        goto L_341a;
-    else
-        goto L_3406;
-
-L_3406:
-    lppl->fStarbase = 0x0;
-
-L_341a:
-    if ((fHistory != 0))
-        goto L_342d;
-    else
-        goto L_3423;
-
-L_3423:
-    lppl->turn = game.turn;
-
-L_342d:
-    pb = &(rgbCur[4]);
-    if (((RawLoad16(&(rgbCur[2])) & 0x7f) < 0x3))
+    if (fPreInited == 0) {
+        fmemset(lppl, 0, sizeof(PLANET));
+    }
+    if (fHistory != 0 || iPlayer == -1) {
+        lppl->fFirstYear = RawLoad16(&rgbCur[2]) >> 0xf & 0x1;
+    } else if (fPreInited != 0) {
+        if (lppl->fFirstYear != 0x0) {
+            if (lppl->turn == game.turn) {
+                fFirstYear = 1;
+            } else {
+                lppl->fFirstYear = 0x0;
+            }
+        }
+    } else {
+        fFirstYear = 1;
+        lppl->fFirstYear = 0x1;
+    }
+    lppl->id = (int16_t)(RawLoad16(rgbCur) << 0x5) >> 0x5;
+    lppl->iPlayer = (int16_t)RawLoad16(rgbCur) >> 0xb;
+    if (lppl->det < (RawLoad16(&rgbCur[2]) & 0x7f)) {
+        lppl->det = RawLoad16(&rgbCur[2]) & 0x7f;
+    }
+    lppl->fInclude = RawLoad16(&rgbCur[2]) >> 0x8 & 0x1;
+    lppl->fStarbase = RawLoad16(&rgbCur[2]) >> 0x9 & 0x1;
+    lppl->fHomeworld = RawLoad16(&rgbCur[2]) >> 0x7 & 0x1;
+    fRouting = RawLoad16(&rgbCur[2]) >> 0xe & 0x1;
+    if (lppl->fStarbase != 0x0 && lppl->iPlayer == -1) {
+        lppl->fStarbase = 0x0;
+    }
+    if (fHistory == 0) {
+        lppl->turn = game.turn;
+    }
+    pb = &rgbCur[4];
+    if ((RawLoad16(&rgbCur[2]) & 0x7f) >= 0x3) {
+        bMask = *pb;
+        pb = pb + 1;
+        i = 0;
+        while (1) {
+            if (i >= 3)
+                goto L_34d9;
+            if ((bMask & 0x3) == 0x0) {
+                lppl->rgpctMinLevel[i] = 0x0;
+            } else {
+                if ((bMask & 0x3) != 0x1)
+                    break;
+                t_3499 = pb;
+                pb = pb + 1;
+                lppl->rgpctMinLevel[i] = *t_3499;
+            }
+            i = i + 1;
+            bMask = LOBYTE(bMask >> 0x2);
+        }
+        return 0;
+    L_34d9:
+        i = 0;
+        while (i < 3) {
+            lppl->rgMinConc[i] = *pb;
+            i = i + 1;
+            pb = pb + 1;
+        }
+        for (i = 0; i < 3; i++) {
+            if (*pb > 0x64) {
+                return 0;
+            }
+            t_3533 = pb;
+            pb = pb + 1;
+            lppl->rgEnvVarOrig[i] = *t_3533;
+            lppl->rgEnvVar[i] = *t_3533;
+        }
+        if ((RawLoad16(&rgbCur[2]) >> 0xa & 0x1) != 0x0) {
+            i = 0;
+            while (1) {
+                if (i >= 3)
+                    goto L_35cf;
+                if (*pb > 0x64)
+                    break;
+                t_35a4 = pb;
+                pb = pb + 1;
+                lppl->rgEnvVarOrig[i] = *t_35a4;
+                i = i + 1;
+            }
+            return 0;
+        }
+    L_35cf:
+        if ((int16_t)RawLoad16(rgbCur) >> 0xb != -1) {
+            lppl->uGuesses = RawLoad16(pb);
+            pb = pb + 2;
+        }
+        if (lppl->det <= 0x3)
+            goto LFinishBRecord;
+        if ((RawLoad16(&rgbCur[2]) >> 0xd & 0x1) != 0x0) {
+            bMask = *pb;
+            pb = pb + 1;
+            i = 0;
+            while (i < 4) {
+                switch (bMask & 0x3) {
+                default:
+                    break;
+                case 0x0:
+                    lppl->rgwtMin[i] = 0;
+                    break;
+                case 0x1:
+                    t_3678 = pb;
+                    pb = pb + 1;
+                    lppl->rgwtMin[i] = (uint32_t)*t_3678;
+                    break;
+                case 0x2:
+                    lppl->rgwtMin[i] = (uint32_t)RawLoad16(pb);
+                    pb = pb + 2;
+                    break;
+                case 0x3:
+                    lppl->rgwtMin[i] = RawLoad32(pb);
+                    pb = pb + 4;
+                }
+                i = i + 1;
+                bMask = LOBYTE(bMask >> 0x2);
+            }
+        }
+        if (hdrCur.rt != rtPlanetB) {
+            if ((RawLoad16(&rgbCur[2]) >> 0xb & 0x1) == 0x0) {
+                lppl->fArtifact = RawLoad16(&rgbCur[2]) >> 0xc & 0x1;
+                lppl->iScanner = 0x1f;
+                lppl->cDefenses = 0x0;
+            } else {
+                fmemmove(lppl->rgbImp, pb, 0x8);
+                pb = pb + 8;
+            }
+            if (lppl->iPlayer != -1) {
+                if (lppl->fStarbase != 0x0) {
+                    lppl->lStarbase = RawLoad32(pb);
+                    lppl->fNoHeal = 0x0;
+                    pb = pb + 4;
+                }
+                if (fRouting != 0) {
+                    lppl->wRouting = RawLoad16(pb);
+                }
+            }
+            return 1;
+        }
         goto LFinishBRecord;
-    else
-        goto L_3443;
-
-L_3443:
-    bMask = *(pb);
-    pb = (pb + 1);
-    i = 0;
-    goto L_346b;
-
-L_3457:
-    i = (i + 1);
-    bMask = LOBYTE((bMask >> 0x2));
-
-L_346b:
-    if ((i >= 3))
-        goto L_34d9;
-    else
-        goto L_3474;
-
-L_3474:
-    goto L_34c3;
-
-L_3480:
-    lppl->rgpctMinLevel[i] = 0x0;
-    goto L_3457;
-
-L_3499:
-    t_3499 = pb;
-    pb = (pb + 1);
-    lppl->rgpctMinLevel[i] = *(t_3499);
-    goto L_3457;
-
-L_34ba:
-    return 0;
-
-L_34c3:
-    if (((bMask & 0x3) == 0x0))
-        goto L_3480;
-    else
-        goto L_34cb;
-
-L_34cb:
-    if (((bMask & 0x3) != 0x1))
-        goto L_34ba;
-    else
-        goto L_34d0;
-
-L_34d0:
-    goto L_3499;
-
-L_34d9:
-    i = 0;
-    goto L_34ef;
-
-L_34e1:
-    i = (i + 1);
-    pb = (pb + 1);
-
-L_34ef:
-    if ((i >= 3))
-        goto L_3515;
-    else
-        goto L_34f8;
-
-L_34f8:
-    lppl->rgMinConc[i] = *(pb);
-    goto L_34e1;
-
-L_3515:
-    i = 0;
-    goto L_356a;
-
-L_351d:
-    if ((*(pb) <= 0x64))
-        goto L_3533;
-    else
-        goto L_352d;
-
-L_352d:
-    return 0;
-
-L_3533:
-    t_3533 = pb;
-    pb = (pb + 1);
-    lppl->rgEnvVarOrig[i] = *(t_3533);
-    lppl->rgEnvVar[i] = *(t_3533);
-    i = (i + 1);
-
-L_356a:
-    if ((i < 3))
-        goto L_351d;
-    else
-        goto L_3573;
-
-L_3573:
-    if ((((RawLoad16(&(rgbCur[2])) >> 0xa) & 0x1) == 0x0))
-        goto L_35cf;
-    else
-        goto L_3586;
-
-L_3586:
-    i = 0;
-    goto L_35c6;
-
-L_358e:
-    if ((*(pb) <= 0x64))
-        goto L_35a4;
-    else
-        goto L_359e;
-
-L_359e:
-    return 0;
-
-L_35a4:
-    t_35a4 = pb;
-    pb = (pb + 1);
-    lppl->rgEnvVarOrig[i] = *(t_35a4);
-    i = (i + 1);
-
-L_35c6:
-    if ((i < 3))
-        goto L_358e;
-    else
-        goto L_35cf;
-
-L_35cf:
-    if ((((int16_t)(RawLoad16(rgbCur)) >> 0xb) == -1))
-        goto L_35ef;
-    else
-        goto L_35df;
-
-L_35df:
-    lppl->uGuesses = RawLoad16(pb);
-    pb = (pb + 2);
-
-L_35ef:
-    if ((lppl->det <= 0x3))
-        goto LFinishBRecord;
-    else
-        goto L_3604;
-
-L_3604:
-    if ((((RawLoad16(&(rgbCur[2])) >> 0xd) & 0x1) == 0x0))
-        goto L_3728;
-    else
-        goto L_3617;
-
-L_3617:
-    bMask = *(pb);
-    pb = (pb + 1);
-    i = 0;
-    goto L_363f;
-
-L_362b:
-    i = (i + 1);
-    bMask = LOBYTE((bMask >> 0x2));
-
-L_363f:
-    if ((i >= 4))
-        goto L_3728;
-    else
-        goto L_3648;
-
-L_3648:
-    goto L_3702;
-
-L_3654:
-    lppl->rgwtMin[i] = 0;
-    goto L_362b;
-
-L_3678:
-    t_3678 = pb;
-    pb = (pb + 1);
-    lppl->rgwtMin[i] = (uint32_t)(*(t_3678));
-    goto L_362b;
-
-L_36a7:
-    lppl->rgwtMin[i] = (uint32_t)(RawLoad16(pb));
-    pb = (pb + 2);
-    goto L_362b;
-
-L_36d3:
-    lppl->rgwtMin[i] = RawLoad32(pb);
-    pb = (pb + 4);
-    goto L_362b;
-
-L_3702:
-    if (((bMask & 0x3) == 0x0))
-        goto L_3654;
-    else
-        goto L_370a;
-
-L_370a:
-    if (((bMask & 0x3) == 0x1))
-        goto L_3678;
-    else
-        goto L_3712;
-
-L_3712:
-    if (((bMask & 0x3) == 0x2))
-        goto L_36a7;
-    else
-        goto L_371a;
-
-L_371a:
-    if (((bMask & 0x3) != 0x3))
-        goto L_362b;
-    else
-        goto L_371f;
-
-L_371f:
-    goto L_36d3;
-
-L_3728:
-    if ((hdrCur.rt != rtPlanetB))
-        goto L_390a;
-    else
-        goto LFinishBRecord;
-
+    }
 LFinishBRecord:
-    if ((lppl->fStarbase == 0x0))
-        goto L_377c;
-    else
-        goto L_3752;
-
-L_3752:
-    t_scratch_me_6 = *(pb);
-    lppl->isb = t_scratch_me_6;
-    pb = (pb + 1);
-
-L_377c:
-    if ((fHistory == 0))
-        goto L_3798;
-    else
-        goto L_3785;
-
-L_3785:
-    lppl->turn = RawLoad16(pb);
-    pb = (pb + 2);
-    goto L_3904;
-
-L_3798:
-    if ((fFirstYear == 0))
-        goto L_3904;
-    else
-        goto L_37a1;
-
-L_37a1:
-    if ((lppl->iPlayer == -1))
-        goto L_37d8;
-    else
-        goto L_37ae;
-
-L_37ae:
-    FSendPlrMsg2XGen(0, 170, lppl->id, lppl->id, (lppl->iPlayer | 0x30));
-    goto L_3904;
-
-L_37d8:
-    if ((lppl->det > 0x1))
-        goto L_380d;
-    else
-        goto L_37ea;
-
-L_37ea:
-    FSendPlrMsg2XGen(0, 173, lppl->id, lppl->id, 0);
-    goto L_3904;
-
-L_380d:
-    if ((GetRaceStat(&(rgplr[iPlayer]), rsMajorAdv) != raTerra))
-        goto L_3863;
-    else
-        goto L_382d;
-
-L_382d:
-    pctOpt = PctPlanetOptValue(lppl, iPlayer);
-    FSendPlrMsg2XGen(0, 349, lppl->id, lppl->id, pctOpt);
-    goto L_3904;
-
-L_3863:
-    pct = PctPlanetDesirability(lppl, iPlayer);
-    if ((pct <= 0))
-        goto L_3899;
-    else
-        goto L_3880;
-
-L_3880:
-    pct = (PctTrueMaxGrowth(iPlayer) * pct);
-    idm = idmHaveFoundNewHabitablePlanetColonistsWill;
-    goto L_38dd;
-
-L_3899:
-    pctOpt = PctPlanetOptValue(lppl, iPlayer);
-    if ((pctOpt <= 0))
-        goto L_38cf;
-    else
-        goto L_38b6;
-
-L_38b6:
-    pct = (PctTrueMaxGrowth(iPlayer) * pctOpt);
-    idm = idmHaveFoundNewPlanetWhichHaveAbility;
-    goto L_38dd;
-
-L_38cf:
-    pct = (10 * pct);
-    idm = idmHaveFoundNewPlanetWhichUnfortunatelyHabitable;
-
-L_38dd:
-    FSendPlrMsg2XGen(0, idm, lppl->id, abs(pct), lppl->id);
-
-L_3904:
-    return 1;
-
-L_390a:
-    if ((((RawLoad16(&(rgbCur[2])) >> 0xb) & 0x1) == 0x0))
-        goto L_3944;
-    else
-        goto L_391d;
-
-L_391d:
-    fmemmove(lppl->rgbImp, pb, 0x8);
-    pb = (pb + 8);
-    goto L_39dc;
-
-L_3944:
-    lppl->fArtifact = ((RawLoad16(&(rgbCur[2])) >> 0xc) & 0x1);
-    lppl->iScanner = 0x1f;
-    lppl->cDefenses = 0x0;
-
-L_39dc:
-    if ((lppl->iPlayer == -1))
-        goto L_3a40;
-    else
-        goto L_39e9;
-
-L_39e9:
-    if ((lppl->fStarbase == 0x0))
-        goto L_3a2b;
-    else
-        goto L_3a00;
-
-L_3a00:
-    lppl->lStarbase = RawLoad32(pb);
-    lppl->fNoHeal = 0x0;
-    pb = (pb + 4);
-
-L_3a2b:
-    if ((fRouting == 0))
-        goto L_3a40;
-    else
-        goto L_3a34;
-
-L_3a34:
-    lppl->wRouting = RawLoad16(pb);
-
-L_3a40:
+    if (lppl->fStarbase != 0x0) {
+        t_scratch_me_6 = *pb;
+        lppl->isb = t_scratch_me_6;
+        pb = pb + 1;
+    }
+    if (fHistory == 0) {
+        if (fFirstYear != 0) {
+            if (lppl->iPlayer == -1) {
+                if (lppl->det > 0x1) {
+                    if (GetRaceStat(&rgplr[iPlayer], rsMajorAdv) != raTerra) {
+                        pct = PctPlanetDesirability(lppl, iPlayer);
+                        if (pct <= 0) {
+                            pctOpt = PctPlanetOptValue(lppl, iPlayer);
+                            if (pctOpt <= 0) {
+                                pct = 10 * pct;
+                                idm = idmHaveFoundNewPlanetWhichUnfortunatelyHabitable;
+                            } else {
+                                pct = PctTrueMaxGrowth(iPlayer) * pctOpt;
+                                idm = idmHaveFoundNewPlanetWhichHaveAbility;
+                            }
+                        } else {
+                            pct = PctTrueMaxGrowth(iPlayer) * pct;
+                            idm = idmHaveFoundNewHabitablePlanetColonistsWill;
+                        }
+                        FSendPlrMsg2XGen(0, idm, lppl->id, abs(pct), lppl->id);
+                    } else {
+                        pctOpt = PctPlanetOptValue(lppl, iPlayer);
+                        FSendPlrMsg2XGen(0, 349, lppl->id, lppl->id, pctOpt);
+                    }
+                } else {
+                    FSendPlrMsg2XGen(0, 173, lppl->id, lppl->id, 0);
+                }
+            } else {
+                FSendPlrMsg2XGen(0, 170, lppl->id, lppl->id, lppl->iPlayer | 0x30);
+            }
+        }
+    } else {
+        lppl->turn = RawLoad16(pb);
+        pb = pb + 2;
+    }
     return 1;
 }
 
@@ -3069,343 +1111,143 @@ int16_t FReadFleet(FLEET *lpfl) {
     uint8_t  *t_3e15;
     uint8_t  *t_3e25;
 
-L_3a4c:
     cish = 0;
     fmemset(lpfl, 0, sizeof(FLEET));
     fmemmove(lpfl, rgbCur, 0xc);
     fByte = lpfl->fDone;
-    us = RawLoad16(&(rgbCur[12]));
-    pb = &(rgbCur[14]);
-    if ((fByte == 0))
-        goto L_3b2f;
-    else
-        goto L_3ab6;
-
-L_3ab6:
-    i = 0;
-    goto L_3ace;
-
-L_3abe:
-    i = (i + 1);
-    us = (us >> 0x1);
-
-L_3ace:
-    if ((us == 0x0))
-        goto L_3bae;
-    else
-        goto L_3ad7;
-
-L_3ad7:
-    if (((us & 0x1) == 0x0))
-        goto L_3abe;
-    else
-        goto L_3ae5;
-
-L_3ae5:
-    t_3ae5 = pb;
-    pb = (pb + 1);
-    lpfl->rgcsh[i] = *(t_3ae5);
-    if ((lpfl->rgcsh[i] == 0))
-        goto L_3abe;
-    else
-        goto L_3b25;
-
-L_3b25:
-    cish = (cish + 1);
-
-L_3b29:
-    goto L_3abe;
-
-L_3b2f:
-    pus = (uint16_t *)(pb);
-    i = 0;
-    goto L_3b4d;
-
-L_3b3d:
-    i = (i + 1);
-    us = (us >> 0x1);
-
-L_3b4d:
-    if ((us == 0x0))
-        goto L_3ba8;
-    else
-        goto L_3b56;
-
-L_3b56:
-    if (((us & 0x1) == 0x0))
-        goto L_3b3d;
-    else
-        goto L_3b64;
-
-L_3b64:
-    t_3b64 = pus;
-    pus = (pus + 1);
-    lpfl->rgcsh[i] = *(t_3b64);
-    if ((lpfl->rgcsh[i] == 0))
-        goto L_3b3d;
-    else
-        goto L_3ba1;
-
-L_3ba1:
-    cish = (cish + 1);
-
-L_3ba5:
-    goto L_3b3d;
-
-L_3ba8:
-    pb = (uint8_t *)(pus);
-
-L_3bae:
-    if ((cish != 0))
-        goto L_3bcb;
-    else
-        goto L_3bb7;
-
-L_3bb7:
-    lpfl->fDead = 0x1;
-
-L_3bcb:
-    if ((lpfl->det < 0x4))
-        goto L_3cc0;
-    else
-        goto L_3bdd;
-
-L_3bdd:
-    us = RawLoad16(pb);
-    pb = (pb + 2);
-    i = 0;
-    goto L_3c06;
-
-L_3bf6:
-    i = (i + 1);
-    us = (us >> 0x2);
-
-L_3c06:
-    if ((i >= 5))
-        goto L_3cc0;
-    else
-        goto L_3c0f;
-
-L_3c0f:
-    goto L_3ca2;
-
-L_3c18:
-    lpfl->rgwtMin[i] = (uint32_t)(*(pb));
-    pb = (pb + 1);
-    goto L_3bf6;
-
-L_3c47:
-    lpfl->rgwtMin[i] = (uint32_t)(RawLoad16(pb));
-    pb = (pb + 2);
-    goto L_3bf6;
-
-L_3c73:
-    lpfl->rgwtMin[i] = RawLoad32(pb);
-    pb = (pb + 4);
-    goto L_3bf6;
-
-L_3ca2:
-    if (((us & 0x3) == 0x1))
-        goto L_3c18;
-    else
-        goto L_3caa;
-
-L_3caa:
-    if (((us & 0x3) == 0x2))
-        goto L_3c47;
-    else
-        goto L_3cb2;
-
-L_3cb2:
-    if (((us & 0x3) != 0x3))
-        goto L_3bf6;
-    else
-        goto L_3cb7;
-
-L_3cb7:
-    goto L_3c73;
-
-L_3cc0:
-    if ((lpfl->det >= 0x7))
-        goto L_3d11;
-    else
-        goto L_3cd2;
-
-L_3cd2:
+    us = RawLoad16(&rgbCur[12]);
+    pb = &rgbCur[14];
+    if (fByte == 0) {
+        pus = (uint16_t *)pb;
+        i = 0;
+        for (; us != 0x0; us = us >> 0x1) {
+            if ((us & 0x1) != 0x0) {
+                t_3b64 = pus;
+                pus = pus + 1;
+                lpfl->rgcsh[i] = *t_3b64;
+                if (lpfl->rgcsh[i] != 0) {
+                    cish = cish + 1;
+                }
+            }
+            i = i + 1;
+        }
+        pb = (uint8_t *)pus;
+    } else {
+        i = 0;
+        for (; us != 0x0; us = us >> 0x1) {
+            if ((us & 0x1) != 0x0) {
+                t_3ae5 = pb;
+                pb = pb + 1;
+                lpfl->rgcsh[i] = *t_3ae5;
+                if (lpfl->rgcsh[i] != 0) {
+                    cish = cish + 1;
+                }
+            }
+            i = i + 1;
+        }
+    }
+    if (cish == 0) {
+        lpfl->fDead = 0x1;
+    }
+    if (lpfl->det >= 0x4) {
+        us = RawLoad16(pb);
+        pb = pb + 2;
+        i = 0;
+        while (i < 5) {
+            switch (us & 0x3) {
+            default:
+                break;
+            case 0x1:
+                lpfl->rgwtMin[i] = (uint32_t)*pb;
+                pb = pb + 1;
+                break;
+            case 0x2:
+                lpfl->rgwtMin[i] = (uint32_t)RawLoad16(pb);
+                pb = pb + 2;
+                break;
+            case 0x3:
+                lpfl->rgwtMin[i] = RawLoad32(pb);
+                pb = pb + 4;
+            }
+            i = i + 1;
+            us = us >> 0x2;
+        }
+    }
+    if (lpfl->det >= 0x7) {
+        if (hdrCur.rt == rtFleetA) {
+            us = RawLoad16(pb);
+            pb = pb + 2;
+            pus = (uint16_t *)pb;
+            i = 0;
+            for (; us != 0x0; us = us >> 0x1) {
+                if ((us & 0x1) != 0x0) {
+                    t_3d91 = pus;
+                    pus = pus + 1;
+                    lpfl->rgdv[i].dp = *t_3d91;
+                    if (lpfl->rgdv[i].pctDp >= 0x1f4) {
+                        lpfl->rgdv[i].pctDp = 0x1f3;
+                    }
+                }
+                i = i + 1;
+            }
+            pb = (uint8_t *)pus;
+            t_3e15 = pb;
+            pb = pb + 1;
+            lpfl->iplan = *t_3e15;
+            t_3e25 = pb;
+            pb = pb + 1;
+            lpfl->cord = *t_3e25;
+            lpfl->lpplord = (PLORD *)LpplAlloc(0x12, lpfl->cord + 1, htOrd);
+            fmemset(lpfl->lpplord->rgord, 0, (lpfl->cord + 1) * 18);
+            cord = lpfl->cord;
+            lpord = lpfl->lpplord->rgord;
+            for (; cord != 0; cord--) {
+                memset(rgbCur, 0, 0x12);
+                ReadRt();
+                if (hdrCur.rt != rtOrderA && hdrCur.rt != rtOrderB)
+                    goto Corrupt;
+                *lpord = *(ORDER *)rgbCur;
+                lpord->fNoAutoTrack = 0x0;
+                lpord = lpord + 1;
+            }
+            lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
+            if (lpfl->idPlanet != -1) {
+                if (lpfl->idPlanet > game.cPlanMax) {
+                    lpfl->idPlanet = -1;
+                }
+                if (lpfl->pt.x != rgptPlan[lpfl->idPlanet].x || lpfl->pt.y != rgptPlan[lpfl->idPlanet].y) {
+                    if (i != 0 || game.turn != 0x0)
+                        goto Corrupt;
+                    lpfl->pt = rgptPlan[lpfl->idPlanet];
+                }
+            }
+            ReadRt();
+            if (hdrCur.rt != rtString) {
+                lpfl->lpszName = 0x0;
+            } else {
+                cch = (int16_t)rgbCur[0];
+                if (cch != 0) {
+                    cOut = 32;
+                    FDecompressUserString(&rgbCur[1], cch, szT, &cOut);
+                    lpfl->lpszName = LpAlloc(strlen(szT) + 0x1, htString);
+                    fstrcpy(lpfl->lpszName, szT);
+                } else {
+                    lpfl->lpszName = LpAlloc(strlen(&rgbCur[1]) + 0x1, htString);
+                    fstrcpy(lpfl->lpszName, &rgbCur[1]);
+                }
+                ReadRt();
+            }
+            return 1;
+        }
+    Corrupt:
+        AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
+        return 0;
+    }
     lpfl->dirLong = RawLoad32(pb);
-    pb = (pb + 4);
+    pb = pb + 4;
     lpfl->wtFleet = RawLoad32(pb);
-    pb = (pb + 4);
+    pb = pb + 4;
     ReadRt();
-    return 1;
-
-L_3d11:
-    if ((hdrCur.rt == rtFleetA))
-        goto L_3d4b;
-    else
-        goto Corrupt;
-
-Corrupt:
-    AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
-    return 0;
-
-L_3d4b:
-    us = RawLoad16(pb);
-    pb = (pb + 2);
-    pus = (uint16_t *)(pb);
-    i = 0;
-    goto L_3d7a;
-
-L_3d6a:
-    i = (i + 1);
-    us = (us >> 0x1);
-
-L_3d7a:
-    if ((us == 0x0))
-        goto L_3e0f;
-    else
-        goto L_3d83;
-
-L_3d83:
-    if (((us & 0x1) == 0x0))
-        goto L_3d6a;
-    else
-        goto L_3d91;
-
-L_3d91:
-    t_3d91 = pus;
-    pus = (pus + 1);
-    lpfl->rgdv[i].dp = *(t_3d91);
-    if ((lpfl->rgdv[i].pctDp < 0x1f4))
-        goto L_3d6a;
-    else
-        goto L_3dd8;
-
-L_3dd8:
-    lpfl->rgdv[i].pctDp = 0x1f3;
-
-L_3e0c:
-    goto L_3d6a;
-
-L_3e0f:
-    pb = (uint8_t *)(pus);
-    t_3e15 = pb;
-    pb = (pb + 1);
-    lpfl->iplan = *(t_3e15);
-    t_3e25 = pb;
-    pb = (pb + 1);
-    lpfl->cord = *(t_3e25);
-    lpfl->lpplord = (PLORD *)(LpplAlloc(0x12, (lpfl->cord + 1), htOrd));
-    fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18));
-    cord = lpfl->cord;
-    lpord = lpfl->lpplord->rgord;
-    goto L_3ec0;
-
-L_3eaf:
-    lpord = (lpord + 1);
-    cord = (cord - 1);
-
-L_3ec0:
-    if ((cord == 0))
-        goto L_3f33;
-    else
-        goto L_3ec9;
-
-L_3ec9:
-    memset(rgbCur, 0, 0x12);
-    ReadRt();
-    if ((hdrCur.rt == rtOrderA))
-        goto L_3f0b;
-    else
-        goto L_3ef5;
-
-L_3ef5:
-    if ((hdrCur.rt != rtOrderB))
-        goto Corrupt;
-    else
-        goto L_3f0b;
-
-L_3f0b:
-    *(lpord) = *((ORDER *)(rgbCur));
-    lpord->fNoAutoTrack = 0x0;
-    goto L_3eaf;
-
-L_3f33:
-    lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
-    if ((lpfl->idPlanet == -1))
-        goto L_3fdb;
-    else
-        goto L_3f52;
-
-L_3f52:
-    if ((lpfl->idPlanet <= game.cPlanMax))
-        goto L_3f6a;
-    else
-        goto L_3f61;
-
-L_3f61:
-    lpfl->idPlanet = -1;
-
-L_3f6a:
-    if ((lpfl->pt.x != rgptPlan[lpfl->idPlanet].x))
-        goto L_3fa4;
-    else
-        goto L_3f85;
-
-L_3f85:
-    if ((lpfl->pt.y == rgptPlan[lpfl->idPlanet].y))
-        goto L_3fdb;
-    else
-        goto L_3fa4;
-
-L_3fa4:
-    if ((i != 0))
-        goto Corrupt;
-    else
-        goto L_3fad;
-
-L_3fad:
-    if ((game.turn != 0x0))
-        goto Corrupt;
-    else
-        goto L_3fb7;
-
-L_3fb7:
-    lpfl->pt = rgptPlan[lpfl->idPlanet];
-
-L_3fdb:
-    ReadRt();
-    if ((hdrCur.rt != rtString))
-        goto L_40b2;
-    else
-        goto L_3ff3;
-
-L_3ff3:
-    cch = (int16_t)(rgbCur[0]);
-    if ((cch != 0))
-        goto L_4047;
-    else
-        goto L_4003;
-
-L_4003:
-    lpfl->lpszName = LpAlloc((strlen(&(rgbCur[1])) + 0x1), htString);
-    fstrcpy(lpfl->lpszName, &(rgbCur[1]));
-    goto L_40aa;
-
-L_4047:
-    cOut = 32;
-    FDecompressUserString(&(rgbCur[1]), cch, szT, &(cOut));
-    lpfl->lpszName = LpAlloc((strlen(szT) + 0x1), htString);
-    fstrcpy(lpfl->lpszName, szT);
-
-L_40aa:
-    ReadRt();
-    goto L_40c1;
-
-L_40b2:
-    lpfl->lpszName = 0x0;
-
-L_40c1:
     return 1;
 }
 
@@ -3415,27 +1257,18 @@ void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan) {
     int16_t cch;
     int16_t cOut;
 
-L_40ce:
     fmemmove(lpbtlplan, lpb, 0x4);
-    lpb = (lpb + 4);
-    cch = *(lpb);
-    lpb = (lpb + 1);
-    if ((cch != 0))
-        goto L_412a;
-    else
-        goto L_410c;
-
-L_410c:
-    fstrcpy(lpbtlplan->szName, lpb);
-    goto L_4185;
-
-L_412a:
-    cOut = 32;
-    fmemmove(szTemp, lpb, cOut);
-    FDecompressUserString(szTemp, cch, szName, &(cOut));
-    fmemmove(lpbtlplan->szName, szName, cOut);
-
-L_4185:
+    lpb = lpb + 4;
+    cch = *lpb;
+    lpb = lpb + 1;
+    if (cch != 0) {
+        cOut = 32;
+        fmemmove(szTemp, lpb, cOut);
+        FDecompressUserString(szTemp, cch, szName, &cOut);
+        fmemmove(lpbtlplan->szName, szName, cOut);
+    } else {
+        fstrcpy(lpbtlplan->szName, lpb);
+    }
     lpbtlplan->iplan = iplan;
     return;
 }
@@ -3448,233 +1281,92 @@ void UpdateBattleRecords() {
     BTLREC26 *lpbr26;
     int16_t   itok;
 
-L_41ac:
     lphb = rglphb[11];
-    if ((lphb != 0x0))
-        goto L_41d7;
-    else
-        goto L_4323;
-
-L_41d7:
-    lpbd = (BTLDATA *)((uint8_t *)(lphb) + (sizeof(HB) + 2));
-
-L_41eb:
-    if ((lpbd->id != 0xffff))
-        goto L_4241;
-    else
-        goto L_41f7;
-
-L_41f7:
-    lphb = lphb->lphbNext;
-    if ((lphb != 0x0))
-        goto L_421a;
-    else
-        goto L_4323;
-
-L_421a:
-    if ((lphb->ibTop <= sizeof(HB)))
-        goto L_4323;
-    else
-        goto L_422a;
-
-L_422a:
-    lpbd = (BTLDATA *)((uint8_t *)(lphb) + (sizeof(HB) + 2));
-    goto L_41eb;
-
-L_4241:
-    if ((lpbd->cbData == 0x0))
-        goto L_4323;
-    else
-        goto L_4251;
-
-L_4251:
-    lpbr = (BTLREC *)(&(lpbd->rgtok[lpbd->ctok]));
-    lpbr26 = (BTLREC26 *)(lpbr);
-    lpbd = (BTLDATA *)((uint8_t *)(lpbd) + lpbd->cbData);
-
-L_42a0:
-    if ((lpbr >= (BTLREC *)(lpbd)))
-        goto L_41eb;
-    else
-        goto L_42ae;
-
-L_42ae:
-    cKill = lpbr26->ctok;
-    itok = lpbr26->itokAttack;
-    lpbr->ctok = cKill;
-    lpbr->itokAttack = itok;
-    lpbr = (BTLREC *)(&(lpbr->rgkill[lpbr->ctok]));
-    lpbr26 = (BTLREC26 *)(lpbr);
-    goto L_42a0;
-
-L_4323:
+    if (lphb != 0x0) {
+        lpbd = (BTLDATA *)((uint8_t *)lphb + (sizeof(HB) + 2));
+        while (1) {
+            if (lpbd->id != 0xffff) {
+                if (lpbd->cbData == 0x0)
+                    break;
+                lpbr = (BTLREC *)&lpbd->rgtok[lpbd->ctok];
+                lpbr26 = (BTLREC26 *)lpbr;
+                lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
+                while (lpbr < (BTLREC *)lpbd) {
+                    cKill = lpbr26->ctok;
+                    itok = lpbr26->itokAttack;
+                    lpbr->ctok = cKill;
+                    lpbr->itokAttack = itok;
+                    lpbr = (BTLREC *)&lpbr->rgkill[lpbr->ctok];
+                    lpbr26 = (BTLREC26 *)lpbr;
+                }
+            } else {
+                lphb = lphb->lphbNext;
+                if (lphb == 0x0 || lphb->ibTop <= sizeof(HB))
+                    break;
+                lpbd = (BTLDATA *)((uint8_t *)lphb + (sizeof(HB) + 2));
+            }
+        }
+    }
     return;
 }
 
 INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t t_merge_4383_0001;
 
-L_432a:
-    goto L_43c5;
-
-L_4339:
-    return 1;
-
-L_433f:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_SAVE))
-        goto L_435d;
-    else
-        goto L_4349;
-
-L_4349:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_NO_DON_T_SAVE))
-        goto L_435d;
-    else
-        goto L_4353;
-
-L_4353:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_SAVESUBMIT))
-        goto L_4392;
-    else
-        goto L_435d;
-
-L_435d:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_NO_DON_T_SAVE))
-        goto L_4370;
-    else
-        goto L_436a;
-
-L_436a:
-    t_merge_4383_0001 = 0;
-    goto L_4383;
-
-L_4370:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_SAVESUBMIT))
-        goto L_4380;
-    else
-        goto L_437a;
-
-L_437a:
-    t_merge_4383_0001 = -1;
-    goto L_4383;
-
-L_4380:
-    t_merge_4383_0001 = 1;
-
-L_4383:
-    EndDialog(hwnd, t_merge_4383_0001);
-    return 1;
-
-L_4392:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_43e0;
-    else
-        goto L_439b;
-
-L_439b:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x442);
-    return 1;
-
-L_43c5:
-    if ((message == WM_DESTROY))
-        goto L_43e0;
-    else
-        goto L_43cd;
-
-L_43cd:
-    if ((message == WM_INITDIALOG))
-        goto L_4339;
-    else
-        goto L_43d5;
-
-L_43d5:
-    if ((message == WM_COMMAND))
-        goto L_433f;
-    else
-        goto L_43e0;
-
-L_43e0:
-    return 0;
+    switch (message) {
+    case WM_INITDIALOG:
+        return 1;
+    case WM_COMMAND:
+        switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+        case IDC_SAVE:
+        case IDC_NO_DON_T_SAVE:
+        case IDC_SAVESUBMIT:
+            if (GET_WM_COMMAND_ID(wParam, lParam) != IDC_NO_DON_T_SAVE) {
+                if (GET_WM_COMMAND_ID(wParam, lParam) != IDC_SAVESUBMIT) {
+                    t_merge_4383_0001 = 1;
+                } else {
+                    t_merge_4383_0001 = -1;
+                }
+            } else {
+                t_merge_4383_0001 = 0;
+            }
+            EndDialog(hwnd, t_merge_4383_0001);
+            return 1;
+        case IDC_HELP:
+            WinHelp(hwnd, szHelpFile, 0x1, 0x442);
+            return 1;
+        default:
+        }
+    case WM_DESTROY:
+    default:
+        return 0;
+    }
 }
 
 void PromptSaveGame() {
-    FARPROC  lpProc;
-    int16_t  fRet;
-    LPCSTR   t_merge_4433_0001;
-    uint16_t t_merge_446d_0001;
+    FARPROC lpProc;
+    int16_t fRet;
 
-L_43ee:
     lpProc = MakeProcInstance(AskSaveDialog, hInst);
-    if ((game.fSinglePlr == 0x0))
-        goto L_442d;
-    else
-        goto L_4424;
-
-L_4424:
-    t_merge_4433_0001 = MAKEINTRESOURCE(IDD_SAVE_TURN2);
-    goto L_4433;
-
-L_442d:
-    t_merge_4433_0001 = MAKEINTRESOURCE(IDD_SAVE_TURN1);
-
-L_4433:
-    fRet = DialogBox(hInst, t_merge_4433_0001, hwndFrame, lpProc);
+    fRet = DialogBox(hInst, game.fSinglePlr == 0x0 ? MAKEINTRESOURCE(IDD_SAVE_TURN1) : MAKEINTRESOURCE(IDD_SAVE_TURN2), hwndFrame, lpProc);
     FreeProcInstance(lpProc);
-    if ((fRet == 0))
-        goto L_44a9;
-    else
-        goto L_445b;
-
-L_445b:
-    if ((fRet != -1))
-        goto L_446a;
-    else
-        goto L_4464;
-
-L_4464:
-    t_merge_446d_0001 = 0x1;
-    goto L_446d;
-
-L_446a:
-    t_merge_446d_0001 = 0x0;
-
-L_446d:
-    gd.fSubmit = t_merge_446d_0001;
-    FWriteLogFile(szBase, idPlayer);
-    FWriteHistFile(idPlayer);
-
-L_44a9:
+    if (fRet != 0) {
+        gd.fSubmit = fRet == -1 ? 0x1 : 0x0;
+        FWriteLogFile(szBase, idPlayer);
+        FWriteHistFile(idPlayer);
+    }
     return;
 }
 
 void DestroyCurGame() {
     int16_t i;
 
-L_44b0:
-    if ((gd.fSendMsgMode == 0x0))
-        goto L_44d8;
-    else
-        goto L_44cc;
-
-L_44cc:
-    FFinishPlrMsgEntry(0);
-
-L_44d8:
-    if ((idPlayer == -1))
-        goto L_44f1;
-    else
-        goto L_44e2;
-
-L_44e2:
-    if ((game.fDirty == 0))
-        goto L_44f1;
-    else
-        goto L_44ec;
-
-L_44ec:
-    PromptSaveGame();
-
-L_44f1:
+    if (gd.fSendMsgMode != 0x0) {
+        FFinishPlrMsgEntry(0);
+    }
+    if (idPlayer != -1 && game.fDirty != 0) {
+        PromptSaveGame();
+    }
     ResetHb(htPlanets);
     lpPlanets = 0x0;
     cPlanet = 0;
@@ -3690,20 +1382,9 @@ L_44f1:
     vrptPlanet.fCached = 0;
     vrptBattle.fCached = 0;
     vrptEFleet.fCached = 0;
-    i = 0;
-    goto L_4594;
-
-L_457d:
-    rgsxPlr[i] = 0x0;
-    i = (i + 1);
-
-L_4594:
-    if ((i < 16))
-        goto L_457d;
-    else
-        goto L_459d;
-
-L_459d:
+    for (i = 0; i < 16; i++) {
+        rgsxPlr[i] = 0x0;
+    }
     lpbBattleT = 0x0;
     lpbBattleLog = 0x0;
     lpbBattleCur = 0x0;
@@ -3711,49 +1392,26 @@ L_459d:
     gd.fGotoVCR = 0x0;
     gd.fFleetLinkValid = 0x0;
     ResetHb(htBattle);
-    if ((rglphb[11] != 0x0))
-        goto L_4601;
-    else
-        goto L_460b;
-
-L_4601:
-    rglphb[11][1].cbBlock = 0xffff;
-
-L_460b:
+    if (rglphb[11] != 0x0) {
+        rglphb[11][1].cbBlock = 0xffff;
+    }
     ResetHb(htMisc);
     ResetHb(htString);
     ResetHb(htShips);
     ResetHb(htOrd);
     ResetHb(htPlrMsg);
-    i = 0;
-    goto L_4694;
-
-L_464f:
-    rglpshdef[i] = 0x0;
-    rglpshdefSB[i] = 0x0;
-    rglpbtlplan[i] = 0x0;
-    rgcbtlplan[i] = 0x0;
-    i = (i + 1);
-
-L_4694:
-    if ((i < 16))
-        goto L_464f;
-    else
-        goto L_469d;
-
-L_469d:
-    if ((sel.grobj == grobjNone))
-        goto L_46e7;
-    else
-        goto L_46a7;
-
-L_46a7:
-    ini.grobjSel = sel.grobj;
-    ini.iObjSel = sel.id;
-    ini.idPlayer = idPlayer;
-    ini.lid = game.lid;
-
-L_46e7:
+    for (i = 0; i < 16; i++) {
+        rglpshdef[i] = 0x0;
+        rglpshdefSB[i] = 0x0;
+        rglpbtlplan[i] = 0x0;
+        rgcbtlplan[i] = 0x0;
+    }
+    if (sel.grobj != grobjNone) {
+        ini.grobjSel = sel.grobj;
+        ini.iObjSel = sel.id;
+        ini.idPlayer = idPlayer;
+        ini.lid = game.lid;
+    }
     idPlayer = -1;
     imemLogCur = 0;
     imemLogPrev = -1;
@@ -3770,34 +1428,16 @@ L_46e7:
     game.szName[0] = 0;
     gd.fGameOverMan = 0x0;
     gd.fSendMsgMode = 0x0;
-    if ((hwndBrowser == 0x0))
-        goto L_477c;
-    else
-        goto L_4773;
-
-L_4773:
-    DestroyWindow(hwndBrowser);
-
-L_477c:
-    if ((hwndReportDlg == 0x0))
-        goto L_478f;
-    else
-        goto L_4786;
-
-L_4786:
-    DestroyWindow(hwndReportDlg);
-
-L_478f:
-    if ((hwndPopup == 0x0))
-        goto L_47a8;
-    else
-        goto L_4799;
-
-L_4799:
-    DestroyWindow(hwndPopup);
-    hwndPopup = 0x0;
-
-L_47a8:
+    if (hwndBrowser != 0x0) {
+        DestroyWindow(hwndBrowser);
+    }
+    if (hwndReportDlg != 0x0) {
+        DestroyWindow(hwndReportDlg);
+    }
+    if (hwndPopup != 0x0) {
+        DestroyWindow(hwndPopup);
+        hwndPopup = 0x0;
+    }
     hwndActive = 0x0;
     sel.scan.grobjFull = grobjNone;
     sel.scan.grobj = grobjNone;
@@ -3819,51 +1459,22 @@ L_47a8:
     dxFleetCompLB = 0;
     dxShipLB = 0;
     dxShipDD = 0;
-    i = 0;
-    goto L_483d;
-
-L_482e:
-    rgdxOrderDD[i] = 0;
-    i = (i + 1);
-
-L_483d:
-    if ((i < 3))
-        goto L_482e;
-    else
-        goto L_4846;
-
-L_4846:
+    for (i = 0; i < 3; i++) {
+        rgdxOrderDD[i] = 0;
+    }
     return;
 }
 
 int16_t FBogusLong(uint32_t lSerial) {
     int16_t i;
 
-L_484c:
-    lSerial = (lSerial ^ 0xa5a5a5a5);
-    i = 0;
-    goto L_486b;
-
-L_4867:
-    i = (i + 1);
-
-L_486b:
-    if ((lSerial <= bogi[i]))
-        goto L_4892;
-    else
-        goto L_4867;
-
-L_4892:
-    if ((lSerial != bogi[i]))
-        goto L_48b7;
-    else
-        goto L_48b1;
-
-L_48b1:
+    lSerial = lSerial ^ 0xa5a5a5a5;
+    for (i = 0; lSerial > bogi[i]; i++) {
+    }
+    if (lSerial != bogi[i]) {
+        return 0;
+    }
     return 1;
-
-L_48b7:
-    return 0;
 }
 
 int16_t FValidSerialLong(uint32_t lSerial) {
@@ -3871,138 +1482,44 @@ int16_t FValidSerialLong(uint32_t lSerial) {
     int16_t  i;
     uint32_t lSeries;
 
-L_48c4:
-    if ((FBogusLong(lSerial) == 0))
-        goto L_48e9;
-    else
-        goto L_48e3;
-
-L_48e3:
-    return 0;
-
-L_48e9:
+    if (FBogusLong(lSerial) != 0) {
+        return 0;
+    }
     lSeries = lSerial;
-    i = 0;
-    goto L_491a;
-
-L_48fd:
-    lSeries = (uint32_t)((lSeries / 0x24));
-    i = (i + 1);
-
-L_491a:
-    if ((i < 4))
-        goto L_48fd;
-    else
-        goto L_4923;
-
-L_4923:
+    for (i = 0; i < 4; i++) {
+        lSeries = (uint32_t)(lSeries / 0x24);
+    }
     lNumber = lSeries;
-    i = 0;
-    goto L_4954;
-
-L_4937:
-    lNumber = (uint32_t)((lNumber * 0x24));
-    i = (i + 1);
-
-L_4954:
-    if ((i < 4))
-        goto L_4937;
-    else
-        goto L_495d;
-
-L_495d:
-    lNumber = (lSerial - lNumber);
-    if ((lNumber < 0x64))
-        goto L_499e;
-    else
-        goto L_4986;
-
-L_4986:
-    if ((lNumber <= 0x16e360))
-        goto L_49a4;
-    else
-        goto L_499e;
-
-L_499e:
-    return 0;
-
-L_49a4:
-    if ((lSeries != 0x12))
-        goto L_49b6;
-    else
-        goto L_4a04;
-
-L_49b6:
-    if ((lSeries != 0x16))
-        goto L_49c8;
-    else
-        goto L_4a04;
-
-L_49c8:
-    if ((lSeries != 0x2))
-        goto L_49da;
-    else
-        goto L_4a04;
-
-L_49da:
-    if ((lSeries != 0x4))
-        goto L_49ec;
-    else
-        goto L_4a04;
-
-L_49ec:
-    if ((lSeries != 0x6))
-        goto L_49fe;
-    else
-        goto L_4a04;
-
-L_49fe:
-    return 0;
-
-L_4a04:
-    return 1;
+    for (i = 0; i < 4; i++) {
+        lNumber = (uint32_t)(lNumber * 0x24);
+    }
+    lNumber = lSerial - lNumber;
+    if (lNumber < 0x64 || lNumber > 0x16e360) {
+        return 0;
+    }
+    switch (lSeries) {
+    default:
+        return 0;
+    case 0x12:
+    case 0x16:
+    case 0x2:
+    case 0x4:
+    case 0x6:
+        return 1;
+    }
 }
 
 void FileError(MessageId ids) {
-L_4a10:
     idsFileError = ids;
-    if ((fFileErrSilent != 0))
-        goto L_4a59;
-    else
-        goto L_4a29;
-
-L_4a29:
-    if ((gd.fGeneratingTurn != 0x0))
-        goto L_4a59;
-    else
-        goto L_4a39;
-
-L_4a39:
-    AlertSz(PszFormatIds(ids, 0x0), MB_ICONHAND);
-
-L_4a59:
+    if (fFileErrSilent == 0 && gd.fGeneratingTurn == 0x0) {
+        AlertSz(PszFormatIds(ids, 0x0), MB_ICONHAND);
+    }
     return;
 }
 
 void GetFileStatus(int16_t dt, int16_t iPlayer) {
-    uint16_t t_merge_4a99_0001;
-
-L_4a60:
     SetSzWorkFromDt(dt, iPlayer);
-    if ((access(szWork, 2) == 0))
-        goto L_4a96;
-    else
-        goto L_4a90;
-
-L_4a90:
-    t_merge_4a99_0001 = 0x1;
-    goto L_4a99;
-
-L_4a96:
-    t_merge_4a99_0001 = 0x0;
-
-L_4a99:
-    gd.fReadOnly = t_merge_4a99_0001;
+    gd.fReadOnly = access(szWork, 2) == 0 ? 0x0 : 0x1;
     return;
 }
 
@@ -4016,323 +1533,114 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     jmp_buf   env;
     MessageId t_merge_4c1e_0001;
 
-L_4ac2:
     fSilentSav = fFileErrSilent;
     ids = idsCantOpenFile;
     gd.fPartialTurn = 0x0;
-    fCheckMulti = (dt & 0x2000);
-    fRewind = (dt & 0x1000);
-    dt = (dt & 0xff);
+    fCheckMulti = dt & 0x2000;
+    fRewind = dt & 0x1000;
+    dt = dt & 0xff;
     SetSzWorkFromDt(dt, iPlayer);
     penvMemSav = penvMem;
-    penvMem = &(env);
-    if ((setjmp(env) == 0))
-        goto L_4b49;
-    else
-        goto L_4b27;
-
-L_4b27:
+    penvMem = &env;
+    if (setjmp(env) == 0) {
+        fFileErrSilent = 1;
+        StreamOpen(szWork, md);
+        fFileErrSilent = fSilentSav;
+        ids = idsGameFileAppearsCorruptUnableLoadFile;
+        ReadRt();
+        if (hdrCur.rt == rtBOF && (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 0x2 && (RawLoad16(&rgbCur[8]) >> 0x5 & 0x7f) >= 0x31 &&
+            (RawLoad16(&rgbCur[8]) >> 0x5 & 0x7f) < 0x54) {
+            rtbof = *(RTBOF *)rgbCur;
+            if (rtbof.iPlayer == iPlayer) {
+                if (game.lid != 0) {
+                    if (rtbof.lidGame != game.lid) {
+                        FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);
+                        goto LBadFile;
+                    }
+                    if (dt == dtHist) {
+                        if (rtbof.iPlayer != iPlayer)
+                            goto LBadFile;
+                    } else {
+                        if (fCheckMulti != 0 && rtbof.fMulti != 0x0) {
+                            lseek(hf, -4, 2);
+                            ReadRt();
+                            if (hdrCur.rt != rtEOF && hdrCur.cb != 0x2)
+                                goto LBadFile;
+                            rtbof.turn = RawLoad16(rgbCur);
+                            game.wGen = rtbof.wGen;
+                        }
+                        if (game.turn != 0x0 || game.turn == rtbof.turn) {
+                            if (rtbof.turn != game.turn) {
+                                FileError(idmVigilantFleetsManagedDefeatSavageVerminWithout);
+                                goto LBadFile;
+                            }
+                            if (dt != dtHost || gd.fHostMode != 0x0 || rtbof.fInUse == 0x0) {
+                                if (rtbof.fDone == 0x0 && gd.fGeneratingTurn != 0x0 && gd.fForceTurn == 0x0) {
+                                    gd.fPartialTurn = 0x1;
+                                    goto LBadFile;
+                                }
+                                if (dt == dtLog && game.fTutorial == 0x0 && rtbof.wGen != game.wGen) {
+                                    FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);
+                                    goto LBadFile;
+                                }
+                            } else if (AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) !=
+                                       IDYES) {
+                                goto LBadFile;
+                            }
+                        } else {
+                            game.turn = rtbof.turn;
+                            game.wGen = rtbof.wGen;
+                        }
+                    }
+                }
+                if (fRewind != 0) {
+                    lseek(hf, 0, 0);
+                    ReadRt();
+                }
+                penvMem = penvMemSav;
+                wVersFile = rtbof.wVersion;
+                gd.fFileCrippled = rtbof.fCrippled;
+                return 1;
+            }
+            FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
+        } else if (hdrCur.rt != rtBOF) {
+            FileError(idmColonistsDroppedDestroyedSpiritedFighting);
+        } else {
+            if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) <= 0x2 && ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 0x2 || (RawLoad16(&rgbCur[8]) >> 0x5 & 0x7f) <= 0x54)) {
+                t_merge_4c1e_0001 = 0x4d3;
+            } else {
+                t_merge_4c1e_0001 = 0x2ca;
+            }
+            FileError(t_merge_4c1e_0001);
+        }
+    LBadFile:
+        StreamClose();
+        penvMem = penvMemSav;
+        return 0;
+    }
     fFileErrSilent = fSilentSav;
     FileError(ids);
     StreamClose();
     penvMem = penvMemSav;
     return 0;
-
-L_4b49:
-    fFileErrSilent = 1;
-    StreamOpen(szWork, md);
-    fFileErrSilent = fSilentSav;
-    ids = idsGameFileAppearsCorruptUnableLoadFile;
-    ReadRt();
-    if ((hdrCur.rt != rtBOF))
-        goto L_4bc4;
-    else
-        goto L_4b81;
-
-L_4b81:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
-        goto L_4bc4;
-    else
-        goto L_4b94;
-
-L_4b94:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x31))
-        goto L_4bc4;
-    else
-        goto L_4bac;
-
-L_4bac:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) < 0x54))
-        goto L_4c47;
-    else
-        goto L_4bc4;
-
-L_4bc4:
-    if ((hdrCur.rt != rtBOF))
-        goto L_4c2a;
-    else
-        goto L_4bd7;
-
-L_4bd7:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) > 0x2))
-        goto L_4c15;
-    else
-        goto L_4bea;
-
-L_4bea:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0xc) & 0xf) != 0x2))
-        goto L_4c1b;
-    else
-        goto L_4bfd;
-
-L_4bfd:
-    if ((((RawLoad16(&(rgbCur[8])) >> 0x5) & 0x7f) <= 0x54))
-        goto L_4c1b;
-    else
-        goto L_4c15;
-
-L_4c15:
-    t_merge_4c1e_0001 = 0x2ca;
-    goto L_4c1e;
-
-L_4c1b:
-    t_merge_4c1e_0001 = 0x4d3;
-
-L_4c1e:
-    FileError(t_merge_4c1e_0001);
-    goto LBadFile;
-
-L_4c2a:
-    FileError(idmColonistsDroppedDestroyedSpiritedFighting);
-
-LBadFile:
-    StreamClose();
-    penvMem = penvMemSav;
-    return 0;
-
-L_4c47:
-    rtbof = *((RTBOF *)(rgbCur));
-    if ((rtbof.iPlayer == iPlayer))
-        goto L_4c7b;
-    else
-        goto L_4c6c;
-
-L_4c6c:
-    FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
-    goto LBadFile;
-
-L_4c7b:
-    if ((game.lid != 0))
-        goto L_4c8f;
-    else
-        goto L_4ebd;
-
-L_4c8f:
-    if ((rtbof.lidGame != game.lid))
-        goto L_4ca6;
-    else
-        goto L_4cb8;
-
-L_4ca6:
-    FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);
-    goto LBadFile;
-
-L_4cb8:
-    if ((dt == dtHist))
-        goto L_4ea5;
-    else
-        goto L_4cc1;
-
-L_4cc1:
-    if ((fCheckMulti == 0))
-        goto L_4d4d;
-    else
-        goto L_4cca;
-
-L_4cca:
-    if ((rtbof.fMulti == 0x0))
-        goto L_4d4d;
-    else
-        goto L_4cdd;
-
-L_4cdd:
-    lseek(hf, -4, 2);
-    ReadRt();
-    if ((hdrCur.rt == rtEOF))
-        goto L_4d1e;
-    else
-        goto L_4d0d;
-
-L_4d0d:
-    if ((hdrCur.cb != 0x2))
-        goto LBadFile;
-    else
-        goto L_4d1e;
-
-L_4d1e:
-    rtbof.turn = RawLoad16(rgbCur);
-    game.wGen = rtbof.wGen;
-
-L_4d4d:
-    if ((game.turn != 0x0))
-        goto L_4d95;
-    else
-        goto L_4d57;
-
-L_4d57:
-    if ((game.turn == rtbof.turn))
-        goto L_4d95;
-    else
-        goto L_4d63;
-
-L_4d63:
-    game.turn = rtbof.turn;
-    game.wGen = rtbof.wGen;
-    goto L_4ebd;
-
-L_4d95:
-    if ((rtbof.turn == game.turn))
-        goto L_4db2;
-    else
-        goto L_4da0;
-
-L_4da0:
-    FileError(idmVigilantFleetsManagedDefeatSavageVerminWithout);
-    goto LBadFile;
-
-L_4db2:
-    if ((dt != dtHost))
-        goto L_4e11;
-    else
-        goto L_4dbb;
-
-L_4dbb:
-    if ((gd.fHostMode != 0x0))
-        goto L_4e11;
-    else
-        goto L_4dcf;
-
-L_4dcf:
-    if ((rtbof.fInUse == 0x0))
-        goto L_4e11;
-    else
-        goto L_4de2;
-
-L_4de2:
-    if ((AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) != IDYES))
-        goto LBadFile;
-    else
-        goto L_4e08;
-
-L_4e08:
-    goto L_4ebd;
-
-L_4e11:
-    if ((rtbof.fDone != 0x0))
-        goto L_4e58;
-    else
-        goto L_4e24;
-
-L_4e24:
-    if ((gd.fGeneratingTurn == 0x0))
-        goto L_4e58;
-    else
-        goto L_4e34;
-
-L_4e34:
-    if ((gd.fForceTurn != 0x0))
-        goto L_4e58;
-    else
-        goto L_4e46;
-
-L_4e46:
-    gd.fPartialTurn = 0x1;
-    goto LBadFile;
-
-L_4e58:
-    if ((dt != dtLog))
-        goto L_4ebd;
-    else
-        goto L_4e61;
-
-L_4e61:
-    if ((game.fTutorial != 0x0))
-        goto L_4ebd;
-    else
-        goto L_4e75;
-
-L_4e75:
-    if ((rtbof.wGen == game.wGen))
-        goto L_4ebd;
-    else
-        goto L_4e93;
-
-L_4e93:
-    FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);
-    goto LBadFile;
-
-L_4ea5:
-    if ((rtbof.iPlayer != iPlayer))
-        goto LBadFile;
-    else
-        goto L_4ebd;
-
-L_4ebd:
-    if ((fRewind == 0))
-        goto L_4ee3;
-    else
-        goto L_4ec6;
-
-L_4ec6:
-    lseek(hf, 0, 0);
-    ReadRt();
-
-L_4ee3:
-    penvMem = penvMemSav;
-    wVersFile = rtbof.wVersion;
-    gd.fFileCrippled = rtbof.fCrippled;
-    return 1;
 }
 
 int16_t FNewTurnAvail(int16_t idPlayer) {
     uint16_t wGenOld;
     uint16_t turnOld;
     int16_t  fNew;
-    uint16_t t_merge_4f84_0001;
 
-L_4f22:
     turnOld = game.turn;
     wGenOld = game.wGen;
     fFileErrSilent = 1;
     game.turn = 0x0;
     fNew = FOpenFile(0x2003, idPlayer, 32);
-    if ((fNew == 0))
-        goto L_4f87;
-    else
-        goto L_4f6a;
-
-L_4f6a:
-    StreamClose();
-    if ((game.turn <= turnOld))
-        goto L_4f81;
-    else
-        goto L_4f7b;
-
-L_4f7b:
-    t_merge_4f84_0001 = 0x1;
-    goto L_4f84;
-
-L_4f81:
-    t_merge_4f84_0001 = 0x0;
-
-L_4f84:
-    fNew = t_merge_4f84_0001;
-
-L_4f87:
+    if (fNew != 0) {
+        StreamClose();
+        fNew = game.turn <= turnOld ? 0 : 1;
+    }
     game.turn = turnOld;
     game.wGen = wGenOld;
-
-L_4fac:
     return fNew;
 }
 
@@ -4342,265 +1650,94 @@ int16_t FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md) {
     uint16_t wGenOld;
     int16_t  f;
     int16_t  fErrSav;
-    uint16_t t_merge_5047_0001;
-    uint16_t t_merge_5072_0001;
-    uint16_t t_merge_509d_0001;
+    int16_t  t_merge_5047_0001;
+    int16_t  t_merge_5072_0001;
+    int16_t  t_merge_509d_0001;
 
-L_4fb2:
     fErrSav = fFileErrSilent;
     wGenOld = game.wGen;
-    goto L_4ff6;
-
-L_4fd5:
-    f = gd.fHostMode;
-    gd.fHostMode = 0x1;
-    goto L_5001;
-
-L_4ff6:
-    if ((dt == dtHost))
-        goto L_4fd5;
-    else
-        goto L_5001;
-
-L_5001:
+    if (dt == dtHost) {
+        f = gd.fHostMode;
+        gd.fHostMode = 0x1;
+    }
     fFileErrSilent = 1;
     fOpened = FOpenFile(dt, iPlayer, 32);
-    goto L_50e9;
-
-L_5022:
-    if ((fOpened == 0))
-        goto L_503e;
-    else
-        goto L_502b;
-
-L_502b:
-    if ((((RawLoad16(&(rgbCur[14])) >> 0x9) & 0x1) == 0x0))
-        goto L_5044;
-    else
-        goto L_503e;
-
-L_503e:
-    t_merge_5047_0001 = 0x1;
-    goto L_5047;
-
-L_5044:
-    t_merge_5047_0001 = 0x0;
-
-L_5047:
-    fReturn = t_merge_5047_0001;
-    goto L_510c;
-
-L_504d:
-    if ((fOpened == 0))
-        goto L_506f;
-    else
-        goto L_5056;
-
-L_5056:
-    if ((((RawLoad16(&(rgbCur[14])) >> 0x8) & 0x1) == 0x0))
-        goto L_506f;
-    else
-        goto L_5069;
-
-L_5069:
-    t_merge_5072_0001 = 0x1;
-    goto L_5072;
-
-L_506f:
-    t_merge_5072_0001 = 0x0;
-
-L_5072:
-    fReturn = t_merge_5072_0001;
-    goto L_510c;
-
-L_5078:
-    if ((fOpened == 0))
-        goto L_509a;
-    else
-        goto L_5081;
-
-L_5081:
-    if ((((RawLoad16(&(rgbCur[14])) >> 0xa) & 0x1) == 0x0))
-        goto L_509a;
-    else
-        goto L_5094;
-
-L_5094:
-    t_merge_509d_0001 = 0x1;
-    goto L_509d;
-
-L_509a:
-    t_merge_509d_0001 = 0x0;
-
-L_509d:
-    fReturn = t_merge_509d_0001;
-    goto L_510c;
-
-L_50a3:
-    if ((fOpened != 0))
-        goto L_50b4;
-    else
-        goto L_50ac;
-
-L_50ac:
-    fReturn = 0;
-    goto L_510c;
-
-L_50b4:
-    ReadRt();
-    if ((hdrCur.rt == rtPlr))
-        goto L_50d8;
-    else
-        goto L_50cc;
-
-L_50cc:
-    if (((int16_t)(rgbCur[0]) != iPlayer))
-        goto L_50b4;
-    else
-        goto L_50d8;
-
-L_50d8:
-    fReturn = ((RawLoad16(&(rgbCur[6])) >> 0x9) & 0x1);
-
-L_50e6:
-    goto L_510c;
-
-L_50e9:
-    if ((md == 0x1))
-        goto L_5022;
-    else
-        goto L_50f1;
-
-L_50f1:
-    if ((md == 0x2))
-        goto L_504d;
-    else
-        goto L_50f9;
-
-L_50f9:
-    if ((md == 0x4))
-        goto L_5078;
-    else
-        goto L_5101;
-
-L_5101:
-    if ((md == 0x8))
-        goto L_50a3;
-    else
-        goto L_510c;
-
-L_510c:
-    if ((fOpened == 0))
-        goto L_511a;
-    else
-        goto L_5115;
-
-L_5115:
-    StreamClose();
-
-L_511a:
-    if ((dt != dtHost))
-        goto L_513c;
-    else
-        goto L_5123;
-
-L_5123:
-    gd.fHostMode = f;
-
-L_513c:
+    switch (md) {
+    case 0x1:
+        if (fOpened != 0 && (RawLoad16(&rgbCur[14]) >> 0x9 & 0x1) == 0x0) {
+            t_merge_5047_0001 = 0;
+        } else {
+            t_merge_5047_0001 = 1;
+        }
+        fReturn = t_merge_5047_0001;
+        break;
+    case 0x2:
+        if (fOpened == 0 || (RawLoad16(&rgbCur[14]) >> 0x8 & 0x1) == 0x0) {
+            t_merge_5072_0001 = 0;
+        } else {
+            t_merge_5072_0001 = 1;
+        }
+        fReturn = t_merge_5072_0001;
+        break;
+    case 0x4:
+        if (fOpened == 0 || (RawLoad16(&rgbCur[14]) >> 0xa & 0x1) == 0x0) {
+            t_merge_509d_0001 = 0;
+        } else {
+            t_merge_509d_0001 = 1;
+        }
+        fReturn = t_merge_509d_0001;
+        break;
+    case 0x8:
+        if (fOpened != 0) {
+            do {
+                ReadRt();
+            } while (hdrCur.rt != rtPlr && (int16_t)rgbCur[0] != iPlayer);
+            fReturn = RawLoad16(&rgbCur[6]) >> 0x9 & 0x1;
+        } else {
+            fReturn = 0;
+        }
+    default:
+    }
+    if (fOpened != 0) {
+        StreamClose();
+    }
+    if (dt == dtHost) {
+        gd.fHostMode = f;
+    }
     fFileErrSilent = fErrSav;
     game.wGen = wGenOld;
-
-L_5161:
     return fReturn;
 }
 
 void ReadRt() {
-L_5168:
-    RgFromStream(&(hdrCur), 0x2);
-    if ((hdrCur.cb == 0x0))
-        goto L_51a8;
-    else
-        goto L_5192;
-
-L_5192:
-    RgFromStream(rgbCur, hdrCur.cb);
-
-L_51a8:
-    if ((hdrCur.rt != rtBOF))
-        goto L_5221;
-    else
-        goto L_51bb;
-
-L_51bb:
-    SetFileXorStream(RawLoad32(&(rgbCur[4])), ((int16_t)(RawLoad16(&(rgbCur[12]))) >> 0x5), RawLoad16(&(rgbCur[10])),
-                     ((int16_t)((RawLoad16(&(rgbCur[12])) << 0xb)) >> 0xb), ((RawLoad16(&(rgbCur[14])) >> 0xc) & 0x1));
-    goto L_5247;
-
-L_5221:
-    if ((hdrCur.rt == rtEOF))
-        goto L_5247;
-    else
-        goto L_5234;
-
-L_5234:
-    XorFileBuf(rgbCur, hdrCur.cb);
-
-L_5247:
+    RgFromStream(&hdrCur, 0x2);
+    if (hdrCur.cb != 0x0) {
+        RgFromStream(rgbCur, hdrCur.cb);
+    }
+    if (hdrCur.rt != rtBOF) {
+        if (hdrCur.rt != rtEOF) {
+            XorFileBuf(rgbCur, hdrCur.cb);
+        }
+    } else {
+        SetFileXorStream(RawLoad32(&rgbCur[4]), (int16_t)RawLoad16(&rgbCur[12]) >> 0x5, RawLoad16(&rgbCur[10]), (int16_t)(RawLoad16(&rgbCur[12]) << 0xb) >> 0xb,
+                         RawLoad16(&rgbCur[14]) >> 0xc & 0x1);
+    }
     return;
 }
 
 int16_t FBadFileError(StringId ids) {
-L_524e:
-    goto L_5266;
-
-L_525d:
-    return 1;
-
-L_5266:
-    if ((ids == idsUniverseDefinitionFileSeemsMissingCorrupt))
-        goto L_525d;
-    else
-        goto L_526e;
-
-L_526e:
-    if ((ids == idsPlayerLogFileAppearsCorruptUnableLoad))
-        goto L_525d;
-    else
-        goto L_5276;
-
-L_5276:
-    if ((ids == idsHistoryFileAppearsCorruptHistoricalDataWill))
-        goto L_525d;
-    else
-        goto L_527e;
-
-L_527e:
-    if ((ids == idsGameFileAppearsCorruptUnableLoadFile))
-        goto L_525d;
-    else
-        goto L_5286;
-
-L_5286:
-    if ((ids == idsErrorWritingFile))
-        goto L_525d;
-    else
-        goto L_528e;
-
-L_528e:
-    if ((ids == idsFileDate))
-        goto L_525d;
-    else
-        goto L_5296;
-
-L_5296:
-    if ((ids == idsFileGame))
-        goto L_525d;
-    else
-        goto L_52a1;
-
-L_52a1:
-    return 0;
+    switch (ids) {
+    case idsUniverseDefinitionFileSeemsMissingCorrupt:
+    case idsPlayerLogFileAppearsCorruptUnableLoad:
+    case idsHistoryFileAppearsCorruptHistoricalDataWill:
+    case idsGameFileAppearsCorruptUnableLoadFile:
+    case idsErrorWritingFile:
+    case idsFileDate:
+    case idsFileGame:
+        return 1;
+    default:
+        return 0;
+    }
 }
 
 void StreamOpen(char *szFile, int16_t mdOpen) {
@@ -4608,132 +1745,51 @@ void StreamOpen(char *szFile, int16_t mdOpen) {
     OFSTRUCT of;
     int16_t  fNoErr;
     uint32_t dwTickCur;
-    uint16_t t_merge_52d8_0001;
 
-L_52ae:
     dwTick = 0x0;
-    if (((mdOpen & 0x4000) == 0x0))
-        goto L_52d5;
-    else
-        goto L_52cf;
-
-L_52cf:
-    t_merge_52d8_0001 = 0x1;
-    goto L_52d8;
-
-L_52d5:
-    t_merge_52d8_0001 = 0x0;
-
-L_52d8:
-    fNoErr = t_merge_52d8_0001;
-    mdOpen = (mdOpen & 0xbfff);
-
-Retry:
-    hf = OpenFile(szFile, &(of), mdOpen);
-    if ((hf != -1))
-        goto L_53c6;
-    else
-        goto L_5306;
-
-L_5306:
-    if ((gd.fRetryOpens == 0x0))
-        goto L_53a0;
-    else
-        goto L_5319;
-
-L_5319:
-    if ((of.nErrCode == 0x2))
-        goto L_53a0;
-    else
-        goto L_5323;
-
-L_5323:
-    dwTickCur = GetTickCount();
-    if ((dwTick != 0x0))
-        goto L_5356;
-    else
-        goto L_5342;
-
-L_5342:
-    dwTick = (dwTickCur + 0xfa0);
-
-L_5356:
-    if ((dwTickCur < dwTick))
-        goto L_5373;
-    else
-        goto L_53a0;
-
-L_5373:
-    dwTickCur = (dwTickCur + 0x1f4);
-
-L_537e:
-    if ((GetTickCount() < dwTickCur))
-        goto L_537e;
-    else
-        goto Retry;
-
-L_5397:
-    goto Retry;
-
-L_53a0:
-    if ((fNoErr != 0))
-        goto L_53b6;
-    else
-        goto L_53aa;
-
-L_53aa:
-    FileError(idmPlanetaryDefensesGroundTroopsDestroyedInvadingTr);
-
-L_53b6:
+    fNoErr = (mdOpen & 0x4000) == 0x0 ? 0 : 1;
+    mdOpen = mdOpen & 0xbfff;
+    while (1) {
+        hf = OpenFile(szFile, &of, mdOpen);
+        if (hf != -1) {
+            return;
+        }
+        if (gd.fRetryOpens == 0x0 || of.nErrCode == 0x2)
+            break;
+        dwTickCur = GetTickCount();
+        if (dwTick == 0x0) {
+            dwTick = dwTickCur + 0xfa0;
+        }
+        if (dwTickCur >= dwTick)
+            break;
+        dwTickCur = dwTickCur + 0x1f4;
+        while (GetTickCount() < dwTickCur) {
+        }
+    }
+    if (fNoErr == 0) {
+        FileError(idmPlanetaryDefensesGroundTroopsDestroyedInvadingTr);
+    }
     StarsLongJump(penvMem, -1);
-
-L_53c6:
     return;
 }
 
 void StreamClose() {
-L_53cc:
-    if ((hf == -1))
-        goto L_53ee;
-    else
-        goto L_53df;
-
-L_53df:
-    _lclose(hf);
-    hf = -1;
-
-L_53ee:
+    if (hf != -1) {
+        _lclose(hf);
+        hf = -1;
+    }
     return;
 }
 
 void RgFromStream(void *rg, uint16_t cb) {
-L_53f4:
-    if ((cb == 0x0))
-        goto L_5478;
-    else
-        goto L_5409;
-
-L_5409:
-    if ((vlpMemStream != 0x0))
-        goto L_541d;
-    else
-        goto L_5440;
-
-L_541d:
-    fmemcpy(rg, vlpMemStream, cb);
-    vlpMemStream = (vlpMemStream + cb);
-    goto L_5478;
-
-L_5440:
-    if ((_lread(hf, rg, cb) == cb))
-        goto L_5478;
-    else
-        goto L_545c;
-
-L_545c:
-    FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
-    StarsLongJump(penvMem, -1);
-
-L_5478:
+    if (cb != 0x0) {
+        if (vlpMemStream != 0x0) {
+            fmemcpy(rg, vlpMemStream, cb);
+            vlpMemStream = vlpMemStream + cb;
+        } else if (_lread(hf, rg, cb) != cb) {
+            FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
+            StarsLongJump(penvMem, -1);
+        }
+    }
     return;
 }

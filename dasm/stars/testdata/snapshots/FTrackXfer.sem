@@ -113,20 +113,13 @@ L_5c20:
     cNew = t_merge_5c20_0001
 
 L_5c26:
-    cNew = (int32_t)((uint32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) - 2)))
+    cNew = (int32_t)((int32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) - 2)))
     cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ptroff(&pxfer[btn.iSide], 4))
     dChg = (cNew - cCur)
-    branch btn.iSide != 0x0 ? L_5ce3 : L_5cda
+    branch XferSupply(iVal, (btn.iSide == 0x0 ? dChg : neg(dChg))) != 0 ? L_5d0d : L_5b44
 
-L_5cda:
-    t_merge_5cf0_0001 = dChg
-    goto L_5cf0
 
-L_5ce3:
-    t_merge_5cf0_0001 = neg(dChg)
 
-L_5cf0:
-    branch XferSupply(iVal, t_merge_5cf0_0001) != 0 ? L_5d0d : L_5b44
 
 
 L_5d0d:
@@ -144,18 +137,11 @@ L_5d2e:
     branch (fkb & 0x8) == 0x0 ? L_5d88 : L_5d66
 
 L_5d66:
-    branch (fkb & 0x4) == 0x0 ? L_5d7b : L_5d74
-
-L_5d74:
-    t_merge_5d7f_0001 = 0x3e8
-    goto L_5d7f
-
-L_5d7b:
-    t_merge_5d7f_0001 = 0x64
-
-L_5d7f:
-    dChg = (uint32_t)t_merge_5d7f_0001
+    dChg = (uint32_t)((fkb & 0x4) == 0x0 ? 0x64 : 0x3e8)
     goto L_5dad
+
+
+
 
 L_5d88:
     branch (fkb & 0x4) == 0x0 ? L_5da3 : L_5d96
@@ -174,34 +160,20 @@ L_5dc1:
     branch mdXferDlg != mdXferShips ? L_5f01 : L_5dcb
 
 L_5dcb:
-    branch btn.iSide != 0x0 ? L_5dec : L_5de6
+    branch LOWORD(dChg) >= pxfer[(btn.iSide == 0x0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
 
-L_5de6:
-    t_merge_5def_0001 = 0x1
-    goto L_5def
 
-L_5dec:
-    t_merge_5def_0001 = 0x0
 
-L_5def:
-    branch LOWORD(dChg) >= pxfer[t_merge_5def_0001].fl.rgcsh[iVal] ? L_5e19 : L_5e10
 
 L_5e10:
     t_merge_5e4d_0001 = LOWORD(dChg)
     goto L_5e4d
 
 L_5e19:
-    branch btn.iSide != 0x0 ? L_5e31 : L_5e2b
+    t_merge_5e4d_0001 = pxfer[(btn.iSide == 0x0 ? 1 : 0)].fl.rgcsh[iVal]
 
-L_5e2b:
-    t_merge_5e34_0001 = 0x1
-    goto L_5e34
 
-L_5e31:
-    t_merge_5e34_0001 = 0x0
 
-L_5e34:
-    t_merge_5e4d_0001 = pxfer[t_merge_5e34_0001].fl.rgcsh[iVal]
 
 L_5e4d:
     i = t_merge_5e4d_0001
@@ -215,18 +187,12 @@ L_5e87:
 
 L_5e8c:
     pxfer[btn.iSide].fl.rgcsh[iVal] = (pxfer[btn.iSide].fl.rgcsh[iVal] + i)
-    branch btn.iSide != 0x0 ? L_5eca : L_5ec4
-
-L_5ec4:
-    t_merge_5ecd_0001 = 0x1
-    goto L_5ecd
-
-L_5eca:
-    t_merge_5ecd_0001 = 0x0
-
-L_5ecd:
+    t_merge_5ecd_0001 = (btn.iSide == 0x0 ? 0x1 : 0x0)
     pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i)
     call DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn) -> callresult(void)
+
+
+
 
 L_5efe:
     goto L_5dad
@@ -238,17 +204,10 @@ L_5f0a:
     branch iVal > 4 ? L_5dad : L_5f13
 
 L_5f13:
-    branch btn.iSide != 0x0 ? L_5f2e : L_5f25
+    branch XferSupply(iVal, (btn.iSide == 0x0 ? dChg : neg(dChg))) != 0 ? L_5f58 : L_5dad
 
-L_5f25:
-    t_merge_5f3b_0001 = dChg
-    goto L_5f3b
 
-L_5f2e:
-    t_merge_5f3b_0001 = neg(dChg)
 
-L_5f3b:
-    branch XferSupply(iVal, t_merge_5f3b_0001) != 0 ? L_5f58 : L_5dad
 
 
 L_5f58:

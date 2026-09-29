@@ -17,409 +17,179 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     char          *t_00c6;
     char          *t_00d8;
     HWND           t_scratch_m30;
-    int16_t        t_merge_0524_0001;
     char          *t_065c;
     char          *t_0665;
     char          *t_0677;
 
-L_0000:
-    goto L_07f8;
-
-L_000f:
-    SetWindowText(hwnd, PszGetCompressedString(idsCustomizeZipOrders));
-    ShowWindow(GetDlgItem(hwnd, IDC_U16_0x0417), SW_HIDE);
-    hwndZipOrderDlg = hwnd;
-    CheckRadioButton(hwnd, 1073, 1076, 1073);
-    EnableZipBtns(hwnd, 0);
-    iResTechNow = 0;
-    i = 1073;
-    goto L_0145;
-
-L_0074:
-    if ((vrgZip[(i - 1073)].fValid == 0x0))
-        goto L_00f3;
-    else
-        goto L_0092;
-
-L_0092:
-    pszT = szWork;
-    psz = vrgZip[(i - 1073)].szName;
-
-L_00af:
-    if (((int16_t)(*(psz)) == 0))
-        goto L_00e5;
-    else
-        goto L_00bd;
-
-L_00bd:
-    t_00bd = psz;
-    psz = (psz + 1);
-    t_00c6 = pszT;
-    pszT = (pszT + 1);
-    *(t_00c6) = *(t_00bd);
-    if (((int16_t)(*(t_00bd)) != 38))
-        goto L_00af;
-    else
-        goto L_00d8;
-
-L_00d8:
-    t_00d8 = pszT;
-    pszT = (pszT + 1);
-    *(t_00d8) = 38;
-
-L_00e2:
-    goto L_00af;
-
-L_00e5:
-    *(pszT) = 0;
-    psz = szWork;
-    goto L_0124;
-
-L_00f3:
-    psz = PszGetCompressedString(idsUnusedD);
-    _wsprintf(szWork, psz, (i - 1072));
-    psz = szWork;
-
-L_0124:
-    hwndRad = GetDlgItem(hwnd, i);
-    SetWindowText(hwndRad, psz);
-    i = (i + 1);
-
-L_0145:
-    if ((i <= 1076))
-        goto L_0074;
-    else
-        goto L_014f;
-
-L_014f:
-    StickyDlgPos(hwnd, &(ptStickyZipOrderDlg), 1);
-    if ((gd.fTutorial == 0x0))
-        goto L_017a;
-    else
-        goto L_0175;
-
-L_0175:
-    AdvanceTutor();
-
-L_017a:
-    return 1;
-
-L_0180:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_01a8:
-    i = 1073;
-    goto L_01d5;
-
-L_01b0:
-    t_scratch_m30 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-    if ((t_scratch_m30 == GetDlgItem(hwnd, i)))
-        goto L_01df;
-    else
-        goto L_01d1;
-
-L_01d1:
-    i = (i + 1);
-
-L_01d5:
-    if ((i <= 1076))
-        goto L_01b0;
-    else
-        goto L_01df;
-
-L_01df:
-    if ((i > 1076))
-        goto L_0823;
-    else
-        goto L_01e9;
-
-L_01e9:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_0202:
-    hdc = BeginPaint(hwnd, &(ps));
-    GetClientRect(hwnd, &(rc));
-    GetWindowRect(GetDlgItem(hwnd, 0x431), &(rcGBox));
-    ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
-    GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0434), &(rc));
-    ScreenToClient(hwnd, (POINT *)(&(rc.right)));
-    rcGBox.right = rc.right;
-    rcGBox.bottom = rc.bottom;
-    ExpandRc(&(rcGBox), dyArial8, (dyArial8 >> 0x1));
-    _Draw3dFrame(hdc, &(rcGBox), -1);
-    SelectObject(hdc, rghfontArial8[1]);
-    SetBkColor(hdc, crButtonFace);
-    cch = CchGetString(idsCustomOrders, szWork);
-    TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, cch);
-    rcGBox.top = (rcGBox.bottom + 8);
-    if ((vrgZip[iResTechNow].fValid == 0x0))
-        goto L_0444;
-    else
-        goto L_031e;
-
-L_031e:
-    xCtr = (LOWORD(GetTextExtent(hdc, rgszMinerals[2], 9)) + 8);
-    i = 0;
-    goto L_0438;
-
-L_033f:
-    SetTextColor(hdc, rgcrMinerals[i]);
-    RightTextOut(hdc, xCtr, rcGBox.top, rgszMinerals[i], 0, 0);
-    SetTextColor(hdc, 0x0);
-    iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
-    cch = CchGetString((iAction + 109), szWork);
-    if (((int16_t)(szWork[(cch - 1)]) != 46))
-        goto L_0408;
-    else
-        goto L_03d1;
-
-L_03d1:
-    _wsprintf(&(szWork[(cch - 3)]), " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
-
-L_0408:
-    TextOut(hdc, (xCtr + 6), rcGBox.top, szWork, strlen(szWork));
-    rcGBox.top = (rcGBox.top + dyArial8);
-    i = (i + 1);
-
-L_0438:
-    if ((i >= 5))
-        goto L_0470;
-    else
-        goto L_043e;
-
-L_043e:
-    goto L_033f;
-
-L_0444:
-    cch = CchGetString(idsEmptyCustomSlot, szWork);
-    TextOut(hdc, 12, rcGBox.top, szWork, cch);
-
-L_0470:
-    EndPaint(hwnd, &(ps));
-    return 1;
-
-L_0485:
-    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
-        goto L_04e4;
-    else
-        goto L_04a1;
-
-L_04a1:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) < 0x431))
-        goto L_04e4;
-    else
-        goto L_04ab;
-
-L_04ab:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0434))
-        goto L_04e4;
-    else
-        goto L_04b5;
-
-L_04b5:
-    iResTechNow = (GET_WM_COMMAND_ID(wParam, lParam) - 1073);
-    EnableZipBtns(hwnd, iResTechNow);
-    InvalidateRect(hwnd, 0x0, 1);
-    goto L_0823;
-
-L_04e4:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_04f6;
-    else
-        goto L_04ed;
-
-L_04ed:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_054b;
-    else
-        goto L_04f6;
-
-L_04f6:
-    hwndZipOrderDlg = 0x0;
-    StickyDlgPos(hwnd, &(ptStickyZipOrderDlg), 0);
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_0521;
-    else
-        goto L_051b;
-
-L_051b:
-    t_merge_0524_0001 = 1;
-    goto L_0524;
-
-L_0521:
-    t_merge_0524_0001 = 0;
-
-L_0524:
-    EndDialog(hwnd, t_merge_0524_0001);
-    if ((gd.fTutorial == 0x0))
-        goto L_0542;
-    else
-        goto L_053d;
-
-L_053d:
-    AdvanceTutor();
-
-L_0542:
-    return 1;
-
-L_054b:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT))
-        goto L_055f;
-    else
-        goto L_0555;
-
-L_0555:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME))
-        goto L_0749;
-    else
-        goto L_055f;
-
-L_055f:
-    if ((vrgZip[iResTechNow].fValid == 0x0))
-        goto L_059a;
-    else
-        goto L_0579;
-
-L_0579:
-    strcpy(szWork, vrgZip[iResTechNow].szName);
-    goto L_05bd;
-
-L_059a:
-    _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
-
-L_05bd:
-    lpProc = MakeProcInstance(RenameZipDlg, hInst);
-    if ((DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) == 0))
-        goto L_0727;
-    else
-        goto L_05f7;
-
-L_05f7:
-    if (((int16_t)(szWork[0]) != 0))
-        goto L_0626;
-    else
-        goto L_0603;
-
-L_0603:
-    _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
-
-L_0626:
-    strcpy(vrgZip[iResTechNow].szName, szWork);
-    pszT = &(szWork[64]);
-    psz = szWork;
-
-L_064e:
-    if (((int16_t)(*(psz)) == 0))
-        goto L_0684;
-    else
-        goto L_065c;
-
-L_065c:
-    t_065c = psz;
-    psz = (psz + 1);
-    t_0665 = pszT;
-    pszT = (pszT + 1);
-    *(t_0665) = *(t_065c);
-    if (((int16_t)(*(t_065c)) != 38))
-        goto L_064e;
-    else
-        goto L_0677;
-
-L_0677:
-    t_0677 = pszT;
-    pszT = (pszT + 1);
-    *(t_0677) = 38;
-
-L_0681:
-    goto L_064e;
-
-L_0684:
-    *(pszT) = 0;
-    SetWindowText(GetDlgItem(hwnd, (iResTechNow + 1073)), &(szWork[64]));
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_IMPORT))
-        goto L_0718;
-    else
-        goto L_06b0;
-
-L_06b0:
-    vrgZip[iResTechNow].fValid = 0x1;
-    vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
-    InvalidateRect(hwnd, 0x0, 1);
-
-L_0718:
-    EnableZipBtns(hwnd, iResTechNow);
-
-L_0727:
-    FreeProcInstance(lpProc);
-    SetFocus(hwnd);
-    gd.fChgZipOrd = 0x1;
-    goto L_0823;
-
-L_0749:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_DELETE))
-        goto L_07c8;
-    else
-        goto L_0753;
-
-L_0753:
-    vrgZip[iResTechNow].fValid = 0x0;
-    _wsprintf(szWork, PszGetCompressedString(idsUnusedD), (iResTechNow + 1));
-    SetWindowText(GetDlgItem(hwnd, (iResTechNow + 1073)), szWork);
-    InvalidateRect(hwnd, 0x0, 1);
-    gd.fChgZipOrd = 0x1;
-    goto L_0823;
-
-L_07c8:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_0823;
-    else
-        goto L_07d1;
-
-L_07d1:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x44a);
-    return 1;
-
-L_07f8:
-    if ((message == WM_PAINT))
-        goto L_0202;
-    else
-        goto L_0800;
-
-L_0800:
-    if ((message == WM_ERASEBKGND))
-        goto L_0180;
-    else
-        goto L_0808;
-
-L_0808:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_01a8;
-    else
-        goto L_0810;
-
-L_0810:
-    if ((message == WM_INITDIALOG))
-        goto L_000f;
-    else
-        goto L_0818;
-
-L_0818:
-    if ((message == WM_COMMAND))
-        goto L_0485;
-    else
-        goto L_0823;
-
-L_0823:
+    if (message == WM_PAINT) {
+        hdc = BeginPaint(hwnd, &ps);
+        GetClientRect(hwnd, &rc);
+        GetWindowRect(GetDlgItem(hwnd, 0x431), &rcGBox);
+        ScreenToClient(hwnd, (POINT *)&rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0434), &rc);
+        ScreenToClient(hwnd, (POINT *)&rc.right);
+        rcGBox.right = rc.right;
+        rcGBox.bottom = rc.bottom;
+        ExpandRc(&rcGBox, dyArial8, dyArial8 >> 0x1);
+        _Draw3dFrame(hdc, &rcGBox, -1);
+        SelectObject(hdc, rghfontArial8[1]);
+        SetBkColor(hdc, crButtonFace);
+        cch = CchGetString(idsCustomOrders, szWork);
+        TextOut(hdc, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 0x1), szWork, cch);
+        rcGBox.top = rcGBox.bottom + 8;
+        if (vrgZip[iResTechNow].fValid == 0x0) {
+            cch = CchGetString(idsEmptyCustomSlot, szWork);
+            TextOut(hdc, 12, rcGBox.top, szWork, cch);
+        } else {
+            xCtr = LOWORD(GetTextExtent(hdc, rgszMinerals[2], 9)) + 8;
+            for (i = 0; i < 5; i++) {
+                SetTextColor(hdc, rgcrMinerals[i]);
+                RightTextOut(hdc, xCtr, rcGBox.top, rgszMinerals[i], 0, 0);
+                SetTextColor(hdc, 0x0);
+                iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
+                cch = CchGetString(iAction + 109, szWork);
+                if ((int16_t)szWork[cch - 1] == '.') {
+                    _wsprintf(&szWork[cch - 3], " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
+                }
+                TextOut(hdc, xCtr + 6, rcGBox.top, szWork, strlen(szWork));
+                rcGBox.top = rcGBox.top + dyArial8;
+            }
+        }
+        EndPaint(hwnd, &ps);
+        return 1;
+    }
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 1073; i <= 1076; i++) {
+            t_scratch_m30 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+            if (t_scratch_m30 == GetDlgItem(hwnd, i))
+                break;
+        }
+        if (i <= 1076) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            SetWindowText(hwnd, PszGetCompressedString(idsCustomizeZipOrders));
+            ShowWindow(GetDlgItem(hwnd, IDC_U16_0x0417), SW_HIDE);
+            hwndZipOrderDlg = hwnd;
+            CheckRadioButton(hwnd, 1073, 1076, 1073);
+            EnableZipBtns(hwnd, 0);
+            iResTechNow = 0;
+            for (i = 1073; i <= 1076; i++) {
+                if (vrgZip[i - 1073].fValid == 0x0) {
+                    psz = PszGetCompressedString(idsUnusedD);
+                    _wsprintf(szWork, psz, i - 1072);
+                    psz = szWork;
+                } else {
+                    pszT = szWork;
+                    psz = vrgZip[i - 1073].szName;
+                    while ((int16_t)*psz != 0) {
+                        t_00bd = psz;
+                        psz = psz + 1;
+                        t_00c6 = pszT;
+                        pszT = pszT + 1;
+                        *t_00c6 = *t_00bd;
+                        if ((int16_t)*t_00bd == '&') {
+                            t_00d8 = pszT;
+                            pszT = pszT + 1;
+                            *t_00d8 = '&';
+                        }
+                    }
+                    *pszT = 0;
+                    psz = szWork;
+                }
+                hwndRad = GetDlgItem(hwnd, i);
+                SetWindowText(hwndRad, psz);
+            }
+            StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 1);
+            if (gd.fTutorial != 0x0) {
+                AdvanceTutor();
+            }
+            return 1;
+        }
+        if (message == WM_COMMAND) {
+            if (GET_WM_COMMAND_CMD(wParam, lParam) != 0x0 || GET_WM_COMMAND_ID(wParam, lParam) < 0x431 || GET_WM_COMMAND_ID(wParam, lParam) > IDC_U16_0x0434) {
+                switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+                case IDOK:
+                case IDCANCEL:
+                    hwndZipOrderDlg = 0x0;
+                    StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 0);
+                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                    if (gd.fTutorial != 0x0) {
+                        AdvanceTutor();
+                    }
+                    return 1;
+                case IDC_IMPORT:
+                case IDC_RENAME:
+                    if (vrgZip[iResTechNow].fValid == 0x0) {
+                        _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
+                    } else {
+                        strcpy(szWork, vrgZip[iResTechNow].szName);
+                    }
+                    lpProc = MakeProcInstance(RenameZipDlg, hInst);
+                    if (DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) != 0) {
+                        if ((int16_t)szWork[0] == 0) {
+                            _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
+                        }
+                        strcpy(vrgZip[iResTechNow].szName, szWork);
+                        pszT = &szWork[64];
+                        psz = szWork;
+                        while ((int16_t)*psz != 0) {
+                            t_065c = psz;
+                            psz = psz + 1;
+                            t_0665 = pszT;
+                            pszT = pszT + 1;
+                            *t_0665 = *t_065c;
+                            if ((int16_t)*t_065c == '&') {
+                                t_0677 = pszT;
+                                pszT = pszT + 1;
+                                *t_0677 = '&';
+                            }
+                        }
+                        *pszT = 0;
+                        SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), &szWork[64]);
+                        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT) {
+                            vrgZip[iResTechNow].fValid = 0x1;
+                            vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
+                            InvalidateRect(hwnd, 0x0, 1);
+                        }
+                        EnableZipBtns(hwnd, iResTechNow);
+                    }
+                    FreeProcInstance(lpProc);
+                    SetFocus(hwnd);
+                    gd.fChgZipOrd = 0x1;
+                    break;
+                case IDC_DELETE:
+                    vrgZip[iResTechNow].fValid = 0x0;
+                    _wsprintf(szWork, PszGetCompressedString(idsUnusedD), iResTechNow + 1);
+                    SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), szWork);
+                    InvalidateRect(hwnd, 0x0, 1);
+                    gd.fChgZipOrd = 0x1;
+                    break;
+                case IDC_HELP:
+                    WinHelp(hwnd, szHelpFile, 0x1, 0x44a);
+                    return 1;
+                default:
+                }
+            } else {
+                iResTechNow = GET_WM_COMMAND_ID(wParam, lParam) - 1073;
+                EnableZipBtns(hwnd, iResTechNow);
+                InvalidateRect(hwnd, 0x0, 1);
+            }
+        }
+    }
     return 0;
 }
 
 void EnableZipBtns(HWND hwnd, int16_t iSel) {
     int16_t fEnabled;
 
-L_0832:
     fEnabled = vrgZip[iSel].fValid;
     EnableWindow(GetDlgItem(hwnd, IDC_DELETE), fEnabled);
     EnableWindow(GetDlgItem(hwnd, IDC_RENAME), fEnabled);
@@ -429,279 +199,105 @@ L_0832:
 INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     StringId ids;
     RECT     rc;
-    int16_t  t_merge_09e8_0001;
-    uint16_t t_merge_0a23_0001;
 
-L_0880:
-    goto L_0a36;
-
-L_088f:
-    if ((hwndZipOrderDlg == 0x0))
-        goto L_08a1;
-    else
-        goto L_0899;
-
-L_0899:
-    ids = idsRenameZipOrder;
-    goto L_08a6;
-
-L_08a1:
-    ids = idsRenameProductionTemplate;
-
-L_08a6:
-    SetWindowText(hwnd, PszGetCompressedString(ids));
-    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xc, 0);
-    SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
-    return 1;
-
-L_0931:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_0959:
-    if ((HIWORD(lParam) != 0x6))
-        goto L_0a59;
-    else
-        goto L_0975;
-
-L_0975:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_098e:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_09a0;
-    else
-        goto L_0997;
-
-L_0997:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_09f7;
-    else
-        goto L_09a0;
-
-L_09a0:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_09c0;
-    else
-        goto L_09a9;
-
-L_09a9:
-    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 14);
-
-L_09c0:
-    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_09e5;
-    else
-        goto L_09df;
-
-L_09df:
-    t_merge_09e8_0001 = 1;
-    goto L_09e8;
-
-L_09e5:
-    t_merge_09e8_0001 = 0;
-
-L_09e8:
-    EndDialog(hwnd, t_merge_09e8_0001);
-    return 1;
-
-L_09f7:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_0a59;
-    else
-        goto L_0a00;
-
-L_0a00:
-    if ((hwndZipOrderDlg != 0x0))
-        goto L_0a1f;
-    else
-        goto L_0a18;
-
-L_0a18:
-    t_merge_0a23_0001 = 0x452;
-    goto L_0a23;
-
-L_0a1f:
-    t_merge_0a23_0001 = 0xc1f;
-
-L_0a23:
-    WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(t_merge_0a23_0001));
-    return 1;
-
-L_0a36:
-    if ((message == WM_ERASEBKGND))
-        goto L_0931;
-    else
-        goto L_0a3e;
-
-L_0a3e:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_0959;
-    else
-        goto L_0a46;
-
-L_0a46:
-    if ((message == WM_INITDIALOG))
-        goto L_088f;
-    else
-        goto L_0a4e;
-
-L_0a4e:
-    if ((message == WM_COMMAND))
-        goto L_098e;
-    else
-        goto L_0a59;
-
-L_0a59:
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        if (HIWORD(lParam) == 0x6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            if (hwndZipOrderDlg == 0x0) {
+                ids = idsRenameProductionTemplate;
+            } else {
+                ids = idsRenameZipOrder;
+            }
+            SetWindowText(hwnd, PszGetCompressedString(ids));
+            SetWindowPos(hwnd, 0x0, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xc, 0);
+            SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
+            StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
+            return 1;
+        }
+        if (message == WM_COMMAND) {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
+                    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 14);
+                }
+                StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                return 1;
+            case IDC_HELP:
+                WinHelp(hwnd, szHelpFile, 0x1, (uint32_t)(hwndZipOrderDlg == 0x0 ? 0x452 : 0xc1f));
+                return 1;
+            default:
+            }
+        }
+    }
     return 0;
 }
 
 INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT    rc;
     int32_t lSel;
-    int16_t t_merge_0bcd_0001;
 
-L_0a68:
-    goto L_0ccc;
-
-L_0a77:
-    SetWindowText(hwnd, PszGetCompressedString(idsRenameFleet));
-    SetWindowPos(hwnd, 0x0, (ptStickyRenameDlg.x + 70), (ptStickyRenameDlg.y + 70), 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
-    SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 1);
-    return 1;
-
-L_0b03:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_0b2b:
-    if ((HIWORD(lParam) != 0x6))
-        goto L_0cef;
-    else
-        goto L_0b47;
-
-L_0b47:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_0b60:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_0b72;
-    else
-        goto L_0b69;
-
-L_0b69:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_0bdc;
-    else
-        goto L_0b72;
-
-L_0b72:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_0ba5;
-    else
-        goto L_0b7b;
-
-L_0b7b:
-    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 32);
-    FStringFitsScreen(szWork, 160);
-
-L_0ba5:
-    StickyDlgPos(hwnd, &(ptStickyRenameDlg), 0);
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_0bca;
-    else
-        goto L_0bc4;
-
-L_0bc4:
-    t_merge_0bcd_0001 = 1;
-    goto L_0bcd;
-
-L_0bca:
-    t_merge_0bcd_0001 = 0;
-
-L_0bcd:
-    EndDialog(hwnd, t_merge_0bcd_0001);
-    return 1;
-
-L_0bdc:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_EDIT1))
-        goto L_0c9c;
-    else
-        goto L_0be6;
-
-L_0be6:
-    if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x400))
-        goto L_0c9c;
-    else
-        goto L_0c02;
-
-L_0c02:
-    if ((fInEditUpdate != 0))
-        goto L_0c9c;
-    else
-        goto L_0c0c;
-
-L_0c0c:
-    fInEditUpdate = 1;
-    GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
-    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0x0, 0);
-    if ((FStringFitsScreen(szWork, 160) != 0))
-        goto L_0c93;
-    else
-        goto L_0c66;
-
-L_0c66:
-    SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork);
-    SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), 0x401, 0x0, lSel);
-
-L_0c93:
-    fInEditUpdate = 0;
-    goto L_0cef;
-
-L_0c9c:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_0cef;
-    else
-        goto L_0ca5;
-
-L_0ca5:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x447);
-    return 1;
-
-L_0ccc:
-    if ((message == WM_ERASEBKGND))
-        goto L_0b03;
-    else
-        goto L_0cd4;
-
-L_0cd4:
-    if ((IS_WM_CTLCOLOR(message) != 0))
-        goto L_0b2b;
-    else
-        goto L_0cdc;
-
-L_0cdc:
-    if ((message == WM_INITDIALOG))
-        goto L_0a77;
-    else
-        goto L_0ce4;
-
-L_0ce4:
-    if ((message == WM_COMMAND))
-        goto L_0b60;
-    else
-        goto L_0cef;
-
-L_0cef:
+    if (message == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        if (HIWORD(lParam) == 0x6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (message == WM_INITDIALOG) {
+            SetWindowText(hwnd, PszGetCompressedString(idsRenameFleet));
+            SetWindowPos(hwnd, 0x0, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
+            SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
+            StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
+            return 1;
+        }
+        if (message == WM_COMMAND) {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
+                    GetDlgItemText(hwnd, IDC_EDIT1, szWork, 32);
+                    FStringFitsScreen(szWork, 160);
+                }
+                StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                return 1;
+            case IDC_EDIT1:
+                if (GET_WM_COMMAND_CMD(wParam, lParam) == 0x400 && fInEditUpdate == 0) {
+                    fInEditUpdate = 1;
+                    GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
+                    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0x0, 0);
+                    if (FStringFitsScreen(szWork, 160) == 0) {
+                        SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork);
+                        SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_SETSEL, LOWORD(lSel), (int16_t)HIWORD(lSel));
+                    }
+                    fInEditUpdate = 0;
+                    break;
+                }
+            default:
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+                    WinHelp(hwnd, szHelpFile, 0x1, 0x447);
+                    return 1;
+                }
+            }
+        }
+    }
     return 0;
 }
 
@@ -728,393 +324,142 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
     int16_t   t_call_0e31;
     int16_t   t_scratch_m144;
 
-L_0cfe:
     cshdef = 0;
     cshKill = 0;
     cshOrig = 0;
     memset(rgpct, 0, 0x20);
-    flSrc = *(lpfl);
-    if ((flSrc.lpplord->rgord[1].grobj != grobjPlanet))
-        goto L_0d77;
-    else
-        goto L_0d6a;
-
-L_0d6a:
-    id = flSrc.lpplord->rgord[1].id;
-    goto L_0dc4;
-
-L_0d77:
-    pt = flSrc.lpplord->rgord[1].pt;
-    id = 0;
-    goto L_0d94;
-
-L_0d90:
-    id = (id + 1);
-
-L_0d94:
-    if ((id >= game.cPlanMax))
-        goto L_0dc4;
-    else
-        goto L_0d9f;
-
-L_0d9f:
-    if ((pt.x != rgptPlan[id].x))
-        goto L_0d90;
-    else
-        goto L_0db6;
-
-L_0db6:
-    if ((pt.y != rgptPlan[id].y))
-        goto L_0d90;
-    else
-        goto L_0dc4;
-
-L_0dc4:
-    ishdef = 0;
-    goto L_0ef2;
-
-L_0dcd:
-    if ((flSrc.rgcsh[ishdef] == 0))
-        goto L_0eed;
-    else
-        goto L_0de0;
-
-L_0de0:
-    cshdef = (cshdef + 1);
-    cshOrig = (cshOrig + (int32_t)(flSrc.rgcsh[ishdef]));
-    t_call_0e31 = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &(rgpct[ishdef]));
-    goto L_0eca;
-
-L_0e3c:
-    FSendPlrMsg(flSrc.iPlayer, 227, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
-    return 0;
-
-L_0e75:
-    FSendPlrMsg(flSrc.iPlayer, 228, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
-    return 0;
-
-L_0eae:
-    cshdef = (cshdef - 1);
-    goto L_0eed;
-
-L_0eb6:
-    flSrc.fNoHeal = 0x1;
-    goto L_0eed;
-
-L_0eca:
-    if ((t_call_0e31 == -2))
-        goto L_0e75;
-    else
-        goto L_0ed2;
-
-L_0ed2:
-    if ((t_call_0e31 == -1))
-        goto L_0e3c;
-    else
-        goto L_0eda;
-
-L_0eda:
-    if ((t_call_0e31 == 0))
-        goto L_0eae;
-    else
-        goto L_0ee2;
-
-L_0ee2:
-    if ((t_call_0e31 == 1))
-        goto L_0eb6;
-    else
-        goto L_0eed;
-
-L_0eed:
-    ishdef = (ishdef + 1);
-
-L_0ef2:
-    if ((ishdef < 16))
-        goto L_0dcd;
-    else
-        goto L_0efc;
-
-L_0efc:
-    if ((cshdef != 0))
-        goto L_0f53;
-    else
-        goto LKilledEmAll;
-
-LKilledEmAll:
+    flSrc = *lpfl;
+    if (flSrc.lpplord->rgord[1].grobj != grobjPlanet) {
+        pt = flSrc.lpplord->rgord[1].pt;
+        for (id = 0; id < game.cPlanMax && (pt.x != rgptPlan[id].x || pt.y != rgptPlan[id].y); id++) {
+        }
+    } else {
+        id = flSrc.lpplord->rgord[1].id;
+    }
+    for (ishdef = 0; ishdef < 16; ishdef++) {
+        if (flSrc.rgcsh[ishdef] != 0) {
+            cshdef = cshdef + 1;
+            cshOrig = cshOrig + (int32_t)flSrc.rgcsh[ishdef];
+            t_call_0e31 = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &rgpct[ishdef]);
+            switch (t_call_0e31) {
+            case -1:
+                goto L_0e3c;
+            case -2:
+                goto L_0e75;
+            case 0:
+                cshdef = cshdef - 1;
+                break;
+            case 1:
+                flSrc.fNoHeal = 0x1;
+            default:
+            }
+        }
+    }
+    if (cshdef != 0) {
+        memset(&flDead, 0, sizeof(FLEET));
+        for (ishdef = 0; ishdef < 16; ishdef++) {
+            if (flSrc.rgcsh[ishdef] != 0 && rgpct[ishdef] != 0) {
+                if (rgpct[ishdef] != 100) {
+                    cshT = flSrc.rgcsh[ishdef];
+                    if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) != raStargate) {
+                        pctKill = LOBYTE((int32_t)rgpct[ishdef] / 3);
+                    } else {
+                        pctKill = 0x0;
+                    }
+                    dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
+                    if (flSrc.rgdv[ishdef].dp == 0x0) {
+                        cshDamagedOld = 0;
+                    } else {
+                        cshDamagedOld = LOWORD((int32_t)((int32_t)((int32_t)cshT * (int32_t)flSrc.rgdv[ishdef].pctSh) / 0x64));
+                        if (cshDamagedOld == 0) {
+                            cshDamagedOld = 1;
+                        }
+                    }
+                    if (pctKill > 0x0) {
+                        for (i = 0; i < flSrc.rgcsh[ishdef]; i++) {
+                            t_scratch_m144 = Random(100);
+                            if (t_scratch_m144 < pctKill) {
+                                cshT = cshT - 1;
+                                if (cshDamagedOld != 0 && (uint16_t)Random(500) < flSrc.rgdv[ishdef].pctDp) {
+                                    cshDamagedOld = cshDamagedOld - 1;
+                                }
+                            }
+                        }
+                        cshKill = cshKill + (int32_t)(flSrc.rgcsh[ishdef] - cshT);
+                    }
+                    if (cshT != 0) {
+                        if (flSrc.rgdv[ishdef].dp == 0x0) {
+                            dpPerShdefOld = 0;
+                        } else {
+                            dpPerShdefOld = LOWORD((int32_t)((int32_t)((int32_t)dpShdef * (int32_t)flSrc.rgdv[ishdef].pctDp) / 0x1f4));
+                            if (dpPerShdefOld == 0) {
+                                dpPerShdefOld = 1;
+                            }
+                        }
+                        dpPerShdefNew = LOWORD((int32_t)((int32_t)((int32_t)dpShdef * (int32_t)rgpct[ishdef]) / 0x64));
+                        if (dpPerShdefNew == 0) {
+                            dpPerShdefNew = 1;
+                        }
+                        if (cshDamagedOld != 0 && dpPerShdefNew + dpPerShdefOld >= dpShdef) {
+                            cshKill = cshKill + (int32_t)cshDamagedOld;
+                            cshT = cshT - cshDamagedOld;
+                        }
+                        if (cshT != 0) {
+                            dp = (uint32_t)((int32_t)dpPerShdefNew * (int32_t)cshT) + (uint32_t)((int32_t)dpPerShdefOld * (int32_t)cshDamagedOld);
+                            pct = LOWORD((int32_t)((int32_t)((int32_t)(dp / (int32_t)cshT) * 500) / (int32_t)dpShdef));
+                            if (pct == 0) {
+                                pct = 1;
+                            }
+                            flSrc.rgdv[ishdef].pctDp = pct;
+                            flSrc.rgdv[ishdef].pctSh = 0x64;
+                        }
+                    }
+                    flSrc.rgcsh[ishdef] = cshT;
+                    if (cshT == 0) {
+                        flSrc.rgdv[ishdef].dp = 0x0;
+                        cshdef = cshdef - 1;
+                    }
+                } else {
+                    cshKill = cshKill + (int32_t)flSrc.rgcsh[ishdef];
+                    flSrc.rgcsh[ishdef] = 0;
+                    flSrc.rgdv[ishdef].dp = 0x0;
+                    cshdef = cshdef - 1;
+                }
+                flDead.rgcsh[ishdef] = lpfl->rgcsh[ishdef] - flSrc.rgcsh[ishdef];
+            }
+        }
+        if (cshdef != 0) {
+            if (cshKill != 0) {
+                if ((cshKill & 0xffff0000) != 0x0) {
+                    FSendPlrMsg(lpfl->iPlayer, 235, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), HIWORD(cshKill), 0, 0);
+                } else {
+                    if (cshKill < (int32_t)(cshOrig >> 0x2)) {
+                        idm = idmUsedStargateReachLosingShipsTreacherousVoid;
+                    } else if (cshKill <= (int32_t)(cshOrig >> 0x1)) {
+                        idm = idmUsedStargateReachLosingShipsUnforgivingVoid;
+                    } else {
+                        idm = idmUsedStargateReachUnfortunatelyLosingShipsGreat;
+                    }
+                    FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), 0, 0, 0);
+                }
+                flDead.iPlayer = flSrc.iPlayer;
+                flDead.fDead = 0x1;
+                flDead.det = 0x7;
+                FleetTransferCargoBalance(&flSrc, &flDead);
+            }
+            *lpfl = flSrc;
+            return 1;
+        }
+    }
     lpfl->fDead = 0x1;
-    FSendPlrMsg(flSrc.iPlayer, 231, (flSrc.id | 0x8000), flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
+    FSendPlrMsg(flSrc.iPlayer, 231, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
     return 0;
-
-L_0f53:
-    memset(&(flDead), 0, sizeof(FLEET));
-    ishdef = 0;
-    goto L_1390;
-
-L_0f71:
-    if ((flSrc.rgcsh[ishdef] == 0))
-        goto L_138b;
-    else
-        goto L_0f84;
-
-L_0f84:
-    if ((rgpct[ishdef] == 0))
-        goto L_138b;
-    else
-        goto L_0f98;
-
-L_0f98:
-    if ((rgpct[ishdef] != 100))
-        goto L_0fe8;
-    else
-        goto L_0fac;
-
-L_0fac:
-    cshKill = (cshKill + (int32_t)(flSrc.rgcsh[ishdef]));
-    flSrc.rgcsh[ishdef] = 0;
-    flSrc.rgdv[ishdef].dp = 0x0;
-    cshdef = (cshdef - 1);
-    goto L_1358;
-
-L_0fe8:
-    cshT = flSrc.rgcsh[ishdef];
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raStargate))
-        goto L_1025;
-    else
-        goto L_101d;
-
-L_101d:
-    pctKill = 0x0;
-    goto L_103d;
-
-L_1025:
-    pctKill = LOBYTE(((int32_t)(rgpct[ishdef]) / 3));
-
-L_103d:
-    dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
-    if ((flSrc.rgdv[ishdef].dp == 0x0))
-        goto L_10ba;
-    else
-        goto L_1075;
-
-L_1075:
-    cshDamagedOld = LOWORD((int32_t)(((uint32_t)(((int32_t)(cshT) * (int32_t)(flSrc.rgdv[ishdef].pctSh))) / 0x64)));
-    if ((cshDamagedOld != 0))
-        goto L_10c0;
-    else
-        goto L_10b1;
-
-L_10b1:
-    cshDamagedOld = 1;
-
-L_10b7:
-    goto L_10c0;
-
-L_10ba:
-    cshDamagedOld = 0;
-
-L_10c0:
-    if ((pctKill <= 0x0))
-        goto L_116f;
-    else
-        goto L_10cf;
-
-L_10cf:
-    i = 0;
-    goto L_10dd;
-
-L_10d8:
-    i = (i + 1);
-
-L_10dd:
-    if ((i >= flSrc.rgcsh[ishdef]))
-        goto L_1155;
-    else
-        goto L_10f3;
-
-L_10f3:
-    t_scratch_m144 = Random(100);
-    if ((t_scratch_m144 >= pctKill))
-        goto L_10d8;
-    else
-        goto L_1115;
-
-L_1115:
-    cshT = (cshT - 1);
-    if ((cshDamagedOld == 0))
-        goto L_10d8;
-    else
-        goto L_1124;
-
-L_1124:
-    if (((uint16_t)(Random(500)) >= flSrc.rgdv[ishdef].pctDp))
-        goto L_10d8;
-    else
-        goto L_114d;
-
-L_114d:
-    cshDamagedOld = (cshDamagedOld - 1);
-
-L_1152:
-    goto L_10d8;
-
-L_1155:
-    cshKill = (cshKill + (int32_t)((flSrc.rgcsh[ishdef] - cshT)));
-
-L_116f:
-    if ((cshT == 0))
-        goto L_1329;
-    else
-        goto L_1179;
-
-L_1179:
-    if ((flSrc.rgdv[ishdef].dp == 0x0))
-        goto L_11d5;
-    else
-        goto L_118c;
-
-L_118c:
-    dpPerShdefOld = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(flSrc.rgdv[ishdef].pctDp))) / 0x1f4)));
-    if ((dpPerShdefOld != 0))
-        goto L_11db;
-    else
-        goto L_11cc;
-
-L_11cc:
-    dpPerShdefOld = 1;
-
-L_11d2:
-    goto L_11db;
-
-L_11d5:
-    dpPerShdefOld = 0;
-
-L_11db:
-    dpPerShdefNew = LOWORD((int32_t)(((uint32_t)(((int32_t)(dpShdef) * (int32_t)(rgpct[ishdef]))) / 0x64)));
-    if ((dpPerShdefNew != 0))
-        goto L_1217;
-    else
-        goto L_1212;
-
-L_1212:
-    dpPerShdefNew = 1;
-
-L_1217:
-    if ((cshDamagedOld == 0))
-        goto L_1245;
-    else
-        goto L_1221;
-
-L_1221:
-    if (((dpPerShdefNew + dpPerShdefOld) < dpShdef))
-        goto L_1245;
-    else
-        goto L_1230;
-
-L_1230:
-    cshKill = (cshKill + (int32_t)(cshDamagedOld));
-    cshT = (cshT - cshDamagedOld);
-
-L_1245:
-    if ((cshT == 0))
-        goto L_1329;
-    else
-        goto L_124f;
-
-L_124f:
-    dp = ((uint32_t)(((int32_t)(dpPerShdefNew) * (int32_t)(cshT))) + (uint32_t)(((int32_t)(dpPerShdefOld) * (int32_t)(cshDamagedOld))));
-    pct = LOWORD((int32_t)(((uint32_t)(((int32_t)((dp / (int32_t)(cshT))) * 500)) / (int32_t)(dpShdef))));
-    if ((pct != 0))
-        goto L_12d4;
-    else
-        goto L_12ce;
-
-L_12ce:
-    pct = 1;
-
-L_12d4:
-    flSrc.rgdv[ishdef].pctDp = pct;
-    flSrc.rgdv[ishdef].pctSh = 0x64;
-
-L_1329:
-    flSrc.rgcsh[ishdef] = cshT;
-    if ((cshT != 0))
-        goto L_1358;
-    else
-        goto L_1344;
-
-L_1344:
-    flSrc.rgdv[ishdef].dp = 0x0;
-    cshdef = (cshdef - 1);
-
-L_1358:
-    flDead.rgcsh[ishdef] = (lpfl->rgcsh[ishdef] - flSrc.rgcsh[ishdef]);
-
-L_138b:
-    ishdef = (ishdef + 1);
-
-L_1390:
-    if ((ishdef < 16))
-        goto L_0f71;
-    else
-        goto L_139a;
-
-L_139a:
-    if ((cshdef == 0))
-        goto LKilledEmAll;
-    else
-        goto L_13a7;
-
-L_13a7:
-    if ((cshKill != 0))
-        goto L_13bb;
-    else
-        goto L_150f;
-
-L_13bb:
-    if (((cshKill & 0xffff0000) != 0x0))
-        goto L_13d9;
-    else
-        goto L_1431;
-
-L_13d9:
-    FSendPlrMsg(lpfl->iPlayer, 235, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), HIWORD(cshKill), 0, 0);
-    goto L_14d9;
-
-L_1431:
-    if ((cshKill < (int32_t)((cshOrig >> 0x2))))
-        goto L_1458;
-    else
-        goto L_1461;
-
-L_1458:
-    idm = idmUsedStargateReachLosingShipsTreacherousVoid;
-    goto L_1497;
-
-L_1461:
-    if ((cshKill <= (int32_t)((cshOrig >> 0x1))))
-        goto L_1491;
-    else
-        goto L_1488;
-
-L_1488:
-    idm = idmUsedStargateReachUnfortunatelyLosingShipsGreat;
-    goto L_1497;
-
-L_1491:
-    idm = idmUsedStargateReachLosingShipsUnforgivingVoid;
-
-L_1497:
-    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), 0, 0, 0);
-
-L_14d9:
-    flDead.iPlayer = flSrc.iPlayer;
-    flDead.fDead = 0x1;
-    flDead.det = 0x7;
-    FleetTransferCargoBalance(&(flSrc), &(flDead));
-
-L_150f:
-    *(lpfl) = flSrc;
-    return 1;
+L_0e3c:
+    FSendPlrMsg(flSrc.iPlayer, 227, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
+    return 0;
+L_0e75:
+    FSendPlrMsg(flSrc.iPlayer, 228, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
+    return 0;
 }
 
 int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg) {
@@ -1124,125 +469,48 @@ int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, in
     int32_t pctSurviveT;
     int32_t pctSurvive;
 
-L_152e:
     pctSurvive = 10000;
     partDst.hs.grhst = hstSpecialSB;
     partSrc.hs.grhst = hstSpecialSB;
     partSrc.hs.iItem = isbsSrc;
     partDst.hs.iItem = isbsDst;
-    FLookupPart(&(partSrc));
-    FLookupPart(&(partDst));
-    dBaseDistance = (int32_t)(partSrc.pspecialsb->grAbility2);
-    if ((dBaseDistance != -1))
-        goto L_15b2;
-    else
-        goto L_15a8;
-
-L_15a8:
-    dBaseDistance = 8000;
-
-L_15b2:
-    if (((int32_t)((int32_t)(dDist)) <= (int32_t)((uint32_t)((dBaseDistance * 5)))))
-        goto L_15f1;
-    else
-        goto L_15e8;
-
-L_15e8:
+    FLookupPart(&partSrc);
+    FLookupPart(&partDst);
+    dBaseDistance = (int32_t)partSrc.pspecialsb->grAbility2;
+    if (dBaseDistance == -1) {
+        dBaseDistance = 8000;
+    }
+    if ((int32_t)(int32_t)dDist <= (int32_t)(uint32_t)(dBaseDistance * 5)) {
+        if ((partSrc.pspecialsb->grAbility <= 0 || (int32_t)(int32_t)wt <= (int32_t)(uint32_t)((int32_t)partSrc.pspecialsb->grAbility * 5)) &&
+            (partDst.pspecialsb->grAbility <= 0 || (int32_t)(int32_t)wt <= (int32_t)(uint32_t)((int32_t)partDst.pspecialsb->grAbility * 5))) {
+            if ((int32_t)dDist > dBaseDistance) {
+                pctSurvive = (int32_t)((int32_t)(((uint32_t)(dBaseDistance * 5) - (int32_t)dDist) * 0x9c4) / dBaseDistance);
+                if (pctSurvive <= 0)
+                    goto TotalDeath;
+            }
+            if (wt > partSrc.pspecialsb->grAbility && partSrc.pspecialsb->grAbility > 0) {
+                pctSurviveT = (int32_t)((int32_t)(((uint32_t)((int32_t)partSrc.pspecialsb->grAbility * 5) - (int32_t)wt) * 0x9c4) /
+                                        (int32_t)partSrc.pspecialsb->grAbility);
+                if (pctSurviveT <= 0)
+                    goto TotalDeath;
+                pctSurvive = (int32_t)((int32_t)(pctSurvive * pctSurviveT) / 10000);
+            }
+            if (wt > partDst.pspecialsb->grAbility && partDst.pspecialsb->grAbility > 0) {
+                pctSurviveT = (int32_t)((int32_t)(((uint32_t)((int32_t)partDst.pspecialsb->grAbility * 5) - (int32_t)wt) * 0x9c4) /
+                                        (int32_t)partDst.pspecialsb->grAbility);
+                if (pctSurviveT <= 0)
+                    goto TotalDeath;
+                pctSurvive = (int32_t)((int32_t)(pctSurvive * pctSurviveT) / 10000);
+            }
+            *ppctDmg = LOWORD((int32_t)((10000 - pctSurvive) / 0x64));
+            return 1;
+        TotalDeath:
+            *ppctDmg = 100;
+            return 0;
+        }
+        return -2;
+    }
     return -1;
-
-L_15f1:
-    if ((partSrc.pspecialsb->grAbility <= 0))
-        goto L_163a;
-    else
-        goto L_15fe;
-
-L_15fe:
-    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)))))
-        goto L_163a;
-    else
-        goto L_1683;
-
-L_163a:
-    if ((partDst.pspecialsb->grAbility <= 0))
-        goto L_1689;
-    else
-        goto L_1647;
-
-L_1647:
-    if (((int32_t)((int32_t)(wt)) <= (int32_t)((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)))))
-        goto L_1689;
-    else
-        goto L_1683;
-
-L_1683:
-    return -2;
-
-L_1689:
-    if (((int32_t)(dDist) <= dBaseDistance))
-        goto L_170f;
-    else
-        goto L_16a2;
-
-L_16a2:
-    pctSurvive = (int32_t)(((uint32_t)((((uint32_t)((dBaseDistance * 5)) - (int32_t)(dDist)) * 0x9c4)) / dBaseDistance));
-    if ((pctSurvive <= 0))
-        goto TotalDeath;
-    else
-        goto L_170f;
-
-TotalDeath:
-    *(ppctDmg) = 100;
-    return 0;
-
-L_170f:
-    if ((wt <= partSrc.pspecialsb->grAbility))
-        goto L_17be;
-    else
-        goto L_171e;
-
-L_171e:
-    if ((partSrc.pspecialsb->grAbility <= 0))
-        goto L_17be;
-    else
-        goto L_172b;
-
-L_172b:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partSrc.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 0x9c4)) /
-                             (int32_t)(partSrc.pspecialsb->grAbility)));
-    if ((pctSurviveT <= 0))
-        goto TotalDeath;
-    else
-        goto L_1798;
-
-L_1798:
-    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 10000));
-
-L_17be:
-    if ((wt <= partDst.pspecialsb->grAbility))
-        goto L_186d;
-    else
-        goto L_17cd;
-
-L_17cd:
-    if ((partDst.pspecialsb->grAbility <= 0))
-        goto L_186d;
-    else
-        goto L_17da;
-
-L_17da:
-    pctSurviveT = (int32_t)(((uint32_t)((((uint32_t)(((int32_t)(partDst.pspecialsb->grAbility) * 5)) - (int32_t)(wt)) * 0x9c4)) /
-                             (int32_t)(partDst.pspecialsb->grAbility)));
-    if ((pctSurviveT <= 0))
-        goto TotalDeath;
-    else
-        goto L_1847;
-
-L_1847:
-    pctSurvive = (int32_t)(((uint32_t)((pctSurvive * pctSurviveT)) / 10000));
-
-L_186d:
-    *(ppctDmg) = LOWORD((int32_t)(((10000 - pctSurvive) / 0x64)));
-    return 1;
 }
 
 void KillUsedWaypoints() {
@@ -1253,222 +521,79 @@ void KillUsedWaypoints() {
     PLANET *lppl;
     int16_t t_scratch_me;
 
-L_189a:
-    if ((cFleet <= 0))
-        goto L_1d2b;
-    else
-        goto L_18b0;
-
-L_18b0:
-    i = 0;
-    goto L_18bc;
-
-L_18b8:
-    i = (i + 1);
-
-L_18bc:
-    if ((i >= cFleet))
-        goto L_1d2b;
-    else
-        goto L_18c7;
-
-L_18c7:
-    lpfl = rglpfl[i];
-    if ((rglpfl[i] != 0x0))
-        goto L_18f7;
-    else
-        goto L_1d2b;
-
-L_18f7:
-    if ((lpfl->cord <= 1))
-        goto L_18b8;
-    else
-        goto L_1904;
-
-L_1904:
-    if ((lpfl->fMark == 0x0))
-        goto L_196f;
-    else
-        goto L_191b;
-
-L_191b:
-    DeleteWpFar(lpfl, 1, 0);
-    FSendPlrMsg(lpfl->iPlayer, 311, (lpfl->id | 0x8000), lpfl->id, 0, 0, 0, 0, 0, 0);
-    goto L_18b8;
-
-L_196f:
-    j = 1;
-    goto L_197b;
-
-L_1977:
-    j = (j + 1);
-
-L_197b:
-    if ((j >= lpfl->cord))
-        goto L_1ae7;
-    else
-        goto L_198a;
-
-L_198a:
-    if ((lpfl->lpplord->rgord[j].grobj != grobjFleet))
-        goto L_1977;
-    else
-        goto L_19b8;
-
-L_19b8:
-    lpfl->lpflNext = LpflFromId(lpfl->lpplord->rgord[j].id);
-    if ((lpfl->lpflNext != 0x0))
-        goto L_1a00;
-    else
-        goto L_1a7c;
-
-L_1a00:
-    if ((lpfl->lpplord->rgord[j].fNoAutoTrack != 0x0))
-        goto L_1a6a;
-    else
-        goto L_1a2e;
-
-L_1a2e:
-    t_scratch_me = lpfl->lpflNext->pt.y;
-    lpfl->lpplord->rgord[j].pt.x = lpfl->lpflNext->pt.x;
-    lpfl->lpplord->rgord[j].pt.y = t_scratch_me;
-
-L_1a6a:
-    lpfl->lpflNext = 0x0;
-    goto L_1977;
-
-L_1a7c:
-    lpfl->lpplord->rgord[j].grobj = grobjOther;
-    lpfl->lpplord->rgord[j].id = 0;
-
-L_1ae4:
-    goto L_1977;
-
-L_1ae7:
-    if ((lpfl->pt.x != lpfl->lpplord->rgord[1].pt.x))
-        goto L_18b8;
-    else
-        goto L_1b02;
-
-L_1b02:
-    if ((lpfl->pt.y != lpfl->lpplord->rgord[1].pt.y))
-        goto L_18b8;
-    else
-        goto L_1b0b;
-
-L_1b0b:
-    lpfl->lpplord->rgord[0] = lpfl->lpplord->rgord[1];
-    if ((lpfl->lpplord->rgord[0].grobj != grobjFleet))
-        goto NoOrdFixupYet;
-    else
-        goto L_1b65;
-
-L_1b65:
-    if ((lpfl->lpplord->rgord[0].grTask == grTaskXfer))
-        goto NoOrdFixupYet;
-    else
-        goto L_1b7e;
-
-L_1b7e:
-    if ((lpfl->lpplord->rgord[0].grTask == grTaskMerge))
-        goto NoOrdFixupYet;
-    else
-        goto L_1b94;
-
-L_1b94:
-    if ((lpfl->idPlanet != -1))
-        goto L_1bcd;
-    else
-        goto L_1ba1;
-
-L_1ba1:
-    lpfl->lpplord->rgord[0].grobj = grobjOther;
-    lpfl->lpplord->rgord[0].id = 0;
-    goto NoOrdFixupYet;
-
-L_1bcd:
-    lpfl->lpplord->rgord[0].grobj = grobjPlanet;
-    lpfl->lpplord->rgord[0].id = lpfl->idPlanet;
-
-NoOrdFixupYet:
-    if ((lpfl->lpplord->rgord[1].grTask != grTaskPatrol))
-        goto L_1c2c;
-    else
-        goto L_1c11;
-
-L_1c11:
-    if ((lpfl->lpplord->rgord[1].grobj == grobjFleet))
-        goto L_1c41;
-    else
-        goto L_1c2c;
-
-L_1c2c:
-    fRep = lpfl->fRepOrders;
-    goto L_1c46;
-
-L_1c41:
-    fRep = 0;
-
-L_1c46:
-    DeleteWpFar(lpfl, 1, fRep);
-    if ((lpfl->cord != 1))
-        goto L_18b8;
-    else
-        goto L_1c68;
-
-L_1c68:
-    goto L_1d04;
-
-L_1c7c:
-    if ((lpfl->idPlanet == -1))
-        goto L_1cc6;
-    else
-        goto L_1c89;
-
-L_1c89:
-    lppl = LpplFromId(lpfl->idPlanet);
-    if ((lppl->iPlayer != lpfl->iPlayer))
-        goto L_1cc6;
-    else
-        goto L_1cb1;
-
-L_1cb1:
-    if ((lppl->idRoute != 0x0))
-        goto L_18b8;
-    else
-        goto L_1cc6;
-
-L_1cc6:
-    FSendPlrMsg(lpfl->iPlayer, 78, (lpfl->id | 0x8000), lpfl->id, 0, 0, 0, 0, 0, 0);
-    goto L_18b8;
-
-L_1d04:
-    if (((lpfl->lpplord->rgord[0].grTask - 1) > 0x7))
-        goto L_1cc6;
-    else
-        goto L_1d0f;
-
-L_1d0f:
-    switch (((lpfl->lpplord->rgord[0].grTask - 1) * 0x2)) {
-    case 0x0:
-        goto L_18b8;
-    case 0x2:
-        goto L_18b8;
-    case 0x4:
-        goto L_18b8;
-    case 0x6:
-        goto L_1cc6;
-    case 0x8:
-        goto L_18b8;
-    case 0xa:
-        goto L_18b8;
-    case 0xc:
-        goto L_18b8;
-    case 0xe:
-        goto L_1c7c;
+    if (cFleet > 0) {
+        for (i = 0; i < cFleet; i++) {
+            lpfl = rglpfl[i];
+            if (rglpfl[i] == 0x0)
+                break;
+            if (lpfl->cord > 1) {
+                if (lpfl->fMark == 0x0) {
+                    for (j = 1; j < lpfl->cord; j++) {
+                        if (lpfl->lpplord->rgord[j].grobj == grobjFleet) {
+                            lpfl->lpflNext = LpflFromId(lpfl->lpplord->rgord[j].id);
+                            if (lpfl->lpflNext != 0x0) {
+                                if (lpfl->lpplord->rgord[j].fNoAutoTrack == 0x0) {
+                                    t_scratch_me = lpfl->lpflNext->pt.y;
+                                    lpfl->lpplord->rgord[j].pt.x = lpfl->lpflNext->pt.x;
+                                    lpfl->lpplord->rgord[j].pt.y = t_scratch_me;
+                                }
+                                lpfl->lpflNext = 0x0;
+                            } else {
+                                lpfl->lpplord->rgord[j].grobj = grobjOther;
+                                lpfl->lpplord->rgord[j].id = 0;
+                            }
+                        }
+                    }
+                    if (lpfl->pt.x == lpfl->lpplord->rgord[1].pt.x && lpfl->pt.y == lpfl->lpplord->rgord[1].pt.y) {
+                        lpfl->lpplord->rgord[0] = lpfl->lpplord->rgord[1];
+                        if (lpfl->lpplord->rgord[0].grobj == grobjFleet && lpfl->lpplord->rgord[0].grTask != grTaskXfer &&
+                            lpfl->lpplord->rgord[0].grTask != grTaskMerge) {
+                            if (lpfl->idPlanet != -1) {
+                                lpfl->lpplord->rgord[0].grobj = grobjPlanet;
+                                lpfl->lpplord->rgord[0].id = lpfl->idPlanet;
+                            } else {
+                                lpfl->lpplord->rgord[0].grobj = grobjOther;
+                                lpfl->lpplord->rgord[0].id = 0;
+                            }
+                        }
+                        if (lpfl->lpplord->rgord[1].grTask == grTaskPatrol && lpfl->lpplord->rgord[1].grobj == grobjFleet) {
+                            fRep = 0;
+                        } else {
+                            fRep = lpfl->fRepOrders;
+                        }
+                        DeleteWpFar(lpfl, 1, fRep);
+                        if (lpfl->cord == 1) {
+                            if (lpfl->lpplord->rgord[0].grTask - 1 <= 0x7) {
+                                switch (lpfl->lpplord->rgord[0].grTask) {
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 5:
+                                case 6:
+                                case 7:
+                                    break;
+                                case 8:
+                                    if (lpfl->idPlanet != -1) {
+                                        lppl = LpplFromId(lpfl->idPlanet);
+                                        if (lppl->iPlayer == lpfl->iPlayer && lppl->idRoute != 0x0)
+                                            break;
+                                    }
+                                case 4:
+                                    goto L_1cc6;
+                                }
+                                continue;
+                            }
+                        L_1cc6:
+                            FSendPlrMsg(lpfl->iPlayer, 78, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
+                        }
+                    }
+                } else {
+                    DeleteWpFar(lpfl, 1, 0);
+                    FSendPlrMsg(lpfl->iPlayer, 311, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
+                }
+            }
+        }
     }
-
-L_1d2b:
     return;
 }
 
@@ -1480,73 +605,25 @@ void NoAutoTrackFleet(FLEET *lpflTarget) {
     int16_t ifl;
     FLEET  *lpfl;
 
-L_1d32:
     iplr = lpflTarget->iPlayer;
     idTarget = lpflTarget->id;
-    ifl = 0;
-    goto L_1d5a;
-
-L_1d56:
-    ifl = (ifl + 1);
-
-L_1d5a:
-    if ((ifl >= cFleet))
-        goto L_1e4c;
-    else
-        goto L_1d65;
-
-L_1d65:
-    lpfl = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_1d95;
-    else
-        goto L_1e4c;
-
-L_1d95:
-    if ((lpfl->iPlayer == iplr))
-        goto L_1d56;
-    else
-        goto L_1da4;
-
-L_1da4:
-    if ((lpfl->cord <= 1))
-        goto L_1d56;
-    else
-        goto L_1db4;
-
-L_1db4:
-    lpord = &(lpfl->lpplord->rgord[1]);
-    i = 1;
-    goto L_1de5;
-
-L_1dd2:
-    i = (i + 1);
-    lpord = (lpord + 1);
-
-L_1de5:
-    if ((i >= lpfl->cord))
-        goto L_1d56;
-    else
-        goto L_1df4;
-
-L_1df4:
-    if ((lpord->grobj != grobjFleet))
-        goto L_1dd2;
-    else
-        goto L_1e0b;
-
-L_1e0b:
-    if ((lpord->id != idTarget))
-        goto L_1dd2;
-    else
-        goto L_1e1d;
-
-L_1e1d:
-    lpord->fNoAutoTrack = 0x1;
-    lpord->pt = lpflTarget->pt;
-    goto L_1dd2;
-
-L_1e4c:
+    for (ifl = 0; ifl < cFleet; ifl++) {
+        lpfl = rglpfl[ifl];
+        if (rglpfl[ifl] == 0x0)
+            break;
+        if (lpfl->iPlayer != iplr && lpfl->cord > 1) {
+            lpord = &lpfl->lpplord->rgord[1];
+            i = 1;
+            while (i < lpfl->cord) {
+                if (lpord->grobj == grobjFleet && lpord->id == idTarget) {
+                    lpord->fNoAutoTrack = 0x1;
+                    lpord->pt = lpflTarget->pt;
+                }
+                i = i + 1;
+                lpord = lpord + 1;
+            }
+        }
+    }
     return;
 }
 
@@ -1565,206 +642,57 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     int16_t ishdefBig;
     int16_t isbsSrc;
 
-L_1e52:
     lpfl->cord = 2;
     lpfl->lpplord->iordMac = 0x2;
-    lpord = &(lpfl->lpplord->rgord[1]);
+    lpord = &lpfl->lpplord->rgord[1];
     lpord->grTask = grTaskAutoRoute;
     lpord->grobj = grobjPlanet;
-    lpord->id = (lppl->idRoute - 1);
-    lpplRoute = LpplFromId((lppl->idRoute - 1));
-    lpord->pt = rgptPlan[(lppl->idRoute - 1)];
+    lpord->id = lppl->idRoute - 1;
+    lpplRoute = LpplFromId(lppl->idRoute - 1);
+    lpord->pt = rgptPlan[lppl->idRoute - 1];
     lpord->fValidTask = 0x1;
     iWarp = IFindIdealWarp(lpfl, 0);
-    dTravel = (int32_t)((DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999));
-    if ((lppl->iPlayer != lpplRoute->iPlayer))
-        goto L_218b;
-    else
-        goto L_1f79;
-
-L_1f79:
-    if ((lppl->fStarbase == 0x0))
-        goto L_218b;
-    else
-        goto L_1f90;
-
-L_1f90:
-    if ((lpplRoute->fStarbase == 0x0))
-        goto L_218b;
-    else
-        goto L_1fa7;
-
-L_1fa7:
-    isbsDst = IStargateFromLppl(lpplRoute);
-    isbsSrc = IStargateFromLppl(lppl);
-    i = 0;
-    goto L_2001;
-
-L_1fd1:
-    if ((lpfl->rgwtMin[i] != 0))
-        goto L_200a;
-    else
-        goto L_1ffd;
-
-L_1ffd:
-    i = (i + 1);
-
-L_2001:
-    if ((i < 4))
-        goto L_1fd1;
-    else
-        goto L_200a;
-
-L_200a:
-    if ((i != 4))
-        goto L_20d3;
-    else
-        goto L_2013;
-
-L_2013:
-    if ((isbsDst == -1))
-        goto L_20d3;
-    else
-        goto L_201c;
-
-L_201c:
-    if ((isbsSrc == -1))
-        goto L_20d3;
-    else
-        goto L_2025;
-
-L_2025:
-    wt = 0;
-    wtBig = 0;
-    ishdefBig = -1;
-    ishdef = 0;
-    goto L_2098;
-
-L_203c:
-    if ((lpfl->rgcsh[ishdef] == 0))
-        goto L_2094;
-    else
-        goto L_2059;
-
-L_2059:
-    wt = rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty;
-    if ((wt <= wtBig))
-        goto L_2094;
-    else
-        goto L_2088;
-
-L_2088:
-    wtBig = wt;
-    ishdefBig = ishdef;
-
-L_2094:
-    ishdef = (ishdef + 1);
-
-L_2098:
-    if ((ishdef < 16))
-        goto L_203c;
-    else
-        goto L_20a1;
-
-L_20a1:
-    if ((MdCalcStargateDamage(isbsSrc, isbsDst, LOWORD(dTravel), wtBig, &(pctDmg)) != 1))
-        goto L_20d3;
-    else
-        goto L_20c5;
-
-L_20c5:
-    if ((pctDmg != 0))
-        goto L_20d3;
-    else
-        goto L_20ce;
-
-L_20ce:
-    iWarp = 11;
-
-L_20d3:
-    if ((iWarp >= 9))
-        goto L_218b;
-    else
-        goto L_20dc;
-
-L_20dc:
-    if ((LphuldefFromId(rglpshdefSB[lpfl->iPlayer][lpplRoute->isb].hul.ihuldef)->hul.wtCargoMax == 0x0))
-        goto L_218b;
-    else
-        goto L_211b;
-
-L_211b:
-    iWarp = 9;
-    goto L_2160;
-
-L_2123:
-    if ((EstFuelUse(lpfl, 0, iWarp, -1, 1) < dTravel))
-        goto L_215c;
-    else
-        goto L_2169;
-
-L_215c:
-    iWarp = (iWarp - 1);
-
-L_2160:
-    if ((iWarp > 0))
-        goto L_2123;
-    else
-        goto L_2169;
-
-L_2169:
-    lpord->iWarp = iWarp;
-
-L_218b:
-    if ((iWarp >= 11))
-        goto L_2254;
-    else
-        goto L_2194;
-
-L_2194:
-    if ((iWarp == 0))
-        goto L_2254;
-    else
-        goto L_219d;
-
-L_219d:
-    cTurns = (int32_t)(((int32_t)((dTravel / (int32_t)(iWarp))) / (int32_t)(iWarp)));
-    goto L_2202;
-
-L_21c4:
-    iWarp = (iWarp - 1);
-    if (((int32_t)(((int32_t)((dTravel / (int32_t)(iWarp))) / (int32_t)(iWarp))) <= cTurns))
-        goto L_2202;
-    else
-        goto L_21fb;
-
-L_21fb:
-    iWarp = (iWarp + 1);
-    goto L_220b;
-
-L_2202:
-    if ((iWarp > 2))
-        goto L_21c4;
-    else
-        goto L_220b;
-
-L_220b:
-    if ((iWarp == 0))
-        goto L_2254;
-    else
-        goto L_2214;
-
-L_2214:
-    if ((EstFuelUse(lpfl, 0, iWarp, dTravel, 0) <= lpfl->rgwtMin[4]))
-        goto L_2254;
-    else
-        goto L_224d;
-
-L_224d:
-    iWarp = (iWarp - 1);
-    goto L_220b;
-
-L_2254:
+    dTravel = (int32_t)(DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999);
+    if (lppl->iPlayer == lpplRoute->iPlayer && lppl->fStarbase != 0x0 && lpplRoute->fStarbase != 0x0) {
+        isbsDst = IStargateFromLppl(lpplRoute);
+        isbsSrc = IStargateFromLppl(lppl);
+        for (i = 0; i < 4 && lpfl->rgwtMin[i] == 0; i++) {
+        }
+        if (i == 4 && isbsDst != -1 && isbsSrc != -1) {
+            wt = 0;
+            wtBig = 0;
+            ishdefBig = -1;
+            for (ishdef = 0; ishdef < 16; ishdef++) {
+                if (lpfl->rgcsh[ishdef] != 0) {
+                    wt = rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty;
+                    if (wt > wtBig) {
+                        wtBig = wt;
+                        ishdefBig = ishdef;
+                    }
+                }
+            }
+            if (MdCalcStargateDamage(isbsSrc, isbsDst, LOWORD(dTravel), wtBig, &pctDmg) == 1 && pctDmg == 0) {
+                iWarp = 11;
+            }
+        }
+        if (iWarp < 9 && LphuldefFromId(rglpshdefSB[lpfl->iPlayer][lpplRoute->isb].hul.ihuldef)->hul.wtCargoMax != 0x0) {
+            for (iWarp = 9; iWarp > 0 && EstFuelUse(lpfl, 0, iWarp, -1, 1) < dTravel; iWarp--) {
+            }
+            lpord->iWarp = iWarp;
+        }
+    }
+    if (iWarp < 11 && iWarp != 0) {
+        cTurns = (int32_t)((int32_t)(dTravel / (int32_t)iWarp) / (int32_t)iWarp);
+        do {
+            if (iWarp <= 2)
+                goto L_220b;
+            iWarp = iWarp - 1;
+        } while ((int32_t)((int32_t)(dTravel / (int32_t)iWarp) / (int32_t)iWarp) <= cTurns);
+        iWarp = iWarp + 1;
+    L_220b:
+        for (; iWarp != 0 && EstFuelUse(lpfl, 0, iWarp, dTravel, 0) > lpfl->rgwtMin[4]; iWarp--) {
+        }
+    }
     lpord->iWarp = iWarp;
     return;
 }
@@ -1773,36 +701,14 @@ int16_t FColonizer(FLEET *lpfl) {
     int16_t i;
     int32_t l;
 
-L_227c:
-    i = 0;
-    goto L_230d;
-
-L_228d:
-    if ((lpfl->rgcsh[i] == 0))
-        goto L_2309;
-    else
-        goto L_22aa;
-
-L_22aa:
-    l = (int32_t)((0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef));
-    if (((l & 0xc000) != 0x0))
-        goto L_2303;
-    else
-        goto L_2309;
-
-L_2303:
-    return 1;
-
-L_2309:
-    i = (i + 1);
-
-L_230d:
-    if ((i < 16))
-        goto L_228d;
-    else
-        goto L_2316;
-
-L_2316:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] != 0) {
+            l = (int32_t)(0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef);
+            if ((l & 0xc000) != 0x0) {
+                return 1;
+            }
+        }
+    }
     return 0;
 }
 
@@ -1810,36 +716,14 @@ int16_t FScout(FLEET *lpfl) {
     int16_t i;
     int32_t l;
 
-L_2322:
-    i = 0;
-    goto L_23b3;
-
-L_2333:
-    if ((lpfl->rgcsh[i] == 0))
-        goto L_23af;
-    else
-        goto L_2350;
-
-L_2350:
-    l = (int32_t)((0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef));
-    if (((l & 0x70) != 0x0))
-        goto L_23a9;
-    else
-        goto L_23af;
-
-L_23a9:
-    return 1;
-
-L_23af:
-    i = (i + 1);
-
-L_23b3:
-    if ((i < 16))
-        goto L_2333;
-    else
-        goto L_23bc;
-
-L_23bc:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] != 0) {
+            l = (int32_t)(0x1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef);
+            if ((l & 0x70) != 0x0) {
+                return 1;
+            }
+        }
+    }
     return 0;
 }
 
@@ -1850,126 +734,40 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
     FLEET  *lpflT;
     int16_t fFoundFleet;
 
-L_23c8:
     fFoundFleet = 0;
     lpord = lpfl->lpplord->rgord;
-    if ((lppl->iPlayer == -1))
-        goto L_2430;
-    else
-        goto L_23f9;
-
-L_23f9:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raMacintosh))
-        goto L_25c4;
-    else
-        goto L_241d;
-
-L_241d:
-    if ((lppl->iPlayer != lpfl->iPlayer))
-        goto L_25c4;
-    else
-        goto L_2430;
-
-L_2430:
-    if ((CMineFromLpfl(lpfl) != 0))
-        goto L_244e;
-    else
-        goto L_25c4;
-
-L_244e:
-    if ((lppl->iPlayer != -1))
-        goto L_256f;
-    else
-        goto L_245b;
-
-L_245b:
-    ifl = 0;
-    goto L_2467;
-
-L_2463:
-    ifl = (ifl + 1);
-
-L_2467:
-    if ((ifl >= cFleet))
-        goto L_256f;
-    else
-        goto L_2472;
-
-L_2472:
-    lpflT = rglpfl[ifl];
-    if ((rglpfl[ifl] != 0x0))
-        goto L_24a2;
-    else
-        goto L_256f;
-
-L_24a2:
-    if ((lpflT->iPlayer < lpfl->iPlayer))
-        goto L_2463;
-    else
-        goto L_24b5;
-
-L_24b5:
-    if ((lpflT->fDead != 0x0))
-        goto L_2463;
-    else
-        goto L_24cc;
-
-L_24cc:
-    if ((lpfl != lpflT))
-        goto L_24e5;
-    else
-        goto L_2463;
-
-L_24e5:
-    if ((lpflT->iPlayer > lpfl->iPlayer))
-        goto L_256f;
-    else
-        goto L_24fb;
-
-L_24fb:
-    if ((lpflT->pt.x != lpfl->pt.x))
-        goto L_2463;
-    else
-        goto L_250e;
-
-L_250e:
-    if ((lpflT->pt.y != lpfl->pt.y))
-        goto L_2463;
-    else
-        goto L_2521;
-
-L_2521:
-    cMine = CMineFromLpfl(lpflT);
-    if ((cMine <= 0))
-        goto L_2463;
-    else
-        goto L_254c;
-
-L_254c:
-    if ((cMine < 4000))
-        goto L_2564;
-    else
-        goto L_2463;
-
-L_2564:
-    fFoundFleet = 1;
-
-L_256f:
-    if ((fFoundFleet == 0))
-        goto L_25b0;
-    else
-        goto L_2578;
-
-L_2578:
-    lpord->grTask = grTaskMerge;
-    lpord->grobj = grobjFleet;
-    lpord->id = lpflT->id;
-    goto L_25c4;
-
-L_25b0:
-    lpord->grTask = grTaskMine;
-
-L_25c4:
+    if ((lppl->iPlayer == -1 || (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh && lppl->iPlayer == lpfl->iPlayer)) &&
+        CMineFromLpfl(lpfl) != 0) {
+        if (lppl->iPlayer == -1) {
+            ifl = 0;
+            while (1) {
+                if (ifl >= cFleet)
+                    goto L_256f;
+                lpflT = rglpfl[ifl];
+                if (rglpfl[ifl] == 0x0)
+                    goto L_256f;
+                if (lpflT->iPlayer >= lpfl->iPlayer && lpflT->fDead == 0x0 && lpfl != lpflT) {
+                    if (lpflT->iPlayer > lpfl->iPlayer)
+                        goto L_256f;
+                    if (lpflT->pt.x == lpfl->pt.x && lpflT->pt.y == lpfl->pt.y) {
+                        cMine = CMineFromLpfl(lpflT);
+                        if (cMine > 0 && cMine < 4000)
+                            break;
+                    }
+                }
+                ifl = ifl + 1;
+            }
+            fFoundFleet = 1;
+        }
+    L_256f:
+        if (fFoundFleet == 0) {
+            lpord->grTask = grTaskMine;
+        } else {
+            lpord->grTask = grTaskMerge;
+            lpord->grobj = grobjFleet;
+            lpord->id = lpflT->id;
+        }
+    }
     lpfl->iplan = 0x0;
     return;
 }
@@ -1987,88 +785,34 @@ int32_t CMineFromLpfl(FLEET *lpfl) {
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-L_25d2:
     cMineTot = 0;
-    i = 0;
-    goto L_2723;
-
-L_25ed:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_271f;
-    else
-        goto L_260a;
-
-L_260a:
-    lphuldef = &(rglpshdef[lpfl->iPlayer][i].hul);
-    chs = lphuldef->chs;
-    cMine = 0;
-    j = 0;
-    lphs = lphuldef->rghs;
-    goto L_2670;
-
-L_265d:
-    j = (j + 1);
-    lphs = (lphs + 1);
-
-L_2670:
-    if ((j >= chs))
-        goto L_26f4;
-    else
-        goto L_267b;
-
-L_267b:
-    if ((lphs->grhst != hstMining))
-        goto L_265d;
-    else
-        goto L_2688;
-
-L_2688:
-    if ((lphs->iItem < iminingRoboMidgetMiner))
-        goto L_265d;
-    else
-        goto L_269a;
-
-L_269a:
-    if ((lphs->iItem > iminingAlienMiner))
-        goto L_265d;
-    else
-        goto L_26ac;
-
-L_26ac:
-    part.hs.grhst = lphs->grhst;
-    t_fields_1 = &(part.hs);
-    t_fields_2 = lphs->iItem;
-    t_fields_3 = lphs->cItem;
-    t_fields_1->iItem = t_fields_2;
-    t_fields_1->cItem = t_fields_3;
-    FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmining->grAbility))));
-
-L_26f1:
-    goto L_265d;
-
-L_26f4:
-    cMineTot = (cMineTot + (uint32_t)((cMine * (int32_t)(lpfl->rgcsh[i]))));
-
-L_271f:
-    i = (i + 1);
-
-L_2723:
-    if ((i < 16))
-        goto L_25ed;
-    else
-        goto L_272c;
-
-L_272c:
-    if ((cMineTot < 4000))
-        goto L_2744;
-    else
-        goto L_274d;
-
-L_2744:
-    return cMineTot;
-
-L_274d:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphuldef = &rglpshdef[lpfl->iPlayer][i].hul;
+            chs = lphuldef->chs;
+            cMine = 0;
+            j = 0;
+            lphs = lphuldef->rghs;
+            while (j < chs) {
+                if (lphs->grhst == hstMining && lphs->iItem >= iminingRoboMidgetMiner && lphs->iItem <= iminingAlienMiner) {
+                    part.hs.grhst = lphs->grhst;
+                    t_fields_1 = &part.hs;
+                    t_fields_2 = lphs->iItem;
+                    t_fields_3 = lphs->cItem;
+                    t_fields_1->iItem = t_fields_2;
+                    t_fields_1->cItem = t_fields_3;
+                    FLookupPart(&part);
+                    cMine = cMine + (uint32_t)(lphs->cItem * (int32_t)part.pmining->grAbility);
+                }
+                j = j + 1;
+                lphs = lphs + 1;
+            }
+            cMineTot = cMineTot + (uint32_t)(cMine * (int32_t)lpfl->rgcsh[i]);
+        }
+    }
+    if (cMineTot < 4000) {
+        return cMineTot;
+    }
     return 4000;
 }
 
@@ -2081,68 +825,24 @@ int32_t PctTerraFromLpfl(FLEET *lpfl) {
     int16_t chs;
     HS     *lphs;
 
-L_275c:
     pctTot = 0;
-    i = 0;
-    goto L_286e;
-
-L_2777:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_286a;
-    else
-        goto L_2794;
-
-L_2794:
-    lphuldef = &(rglpshdef[lpfl->iPlayer][i].hul);
-    chs = lphuldef->chs;
-    pct = 0;
-    j = 0;
-    lphs = lphuldef->rghs;
-    goto L_27fa;
-
-L_27e7:
-    j = (j + 1);
-    lphs = (lphs + 1);
-
-L_27fa:
-    if ((j >= chs))
-        goto L_283f;
-    else
-        goto L_2805;
-
-L_2805:
-    if ((lphs->grhst != hstMining))
-        goto L_27e7;
-    else
-        goto L_2812;
-
-L_2812:
-    if ((lphs->iItem != iminingOrbitalAdjuster))
-        goto L_27e7;
-    else
-        goto L_2824;
-
-L_2824:
-    pct = (pct + lphs->cItem);
-
-L_283c:
-    goto L_27e7;
-
-L_283f:
-    pctTot = (pctTot + (uint32_t)((pct * (int32_t)(lpfl->rgcsh[i]))));
-
-L_286a:
-    i = (i + 1);
-
-L_286e:
-    if ((i < 16))
-        goto L_2777;
-    else
-        goto L_2877;
-
-L_2877:
-
-L_2880:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphuldef = &rglpshdef[lpfl->iPlayer][i].hul;
+            chs = lphuldef->chs;
+            pct = 0;
+            j = 0;
+            lphs = lphuldef->rghs;
+            while (j < chs) {
+                if (lphs->grhst == hstMining && lphs->iItem == iminingOrbitalAdjuster) {
+                    pct = pct + lphs->cItem;
+                }
+                j = j + 1;
+                lphs = lphs + 1;
+            }
+            pctTot = pctTot + (uint32_t)(pct * (int32_t)lpfl->rgcsh[i]);
+        }
+    }
     return pctTot;
 }
 
@@ -2161,194 +861,60 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-L_2886:
     cMineTot = 0;
-    goto L_28d6;
-
-L_289f:
-    iMin = 0x0;
-    iMax = 0x9;
-    goto L_28f9;
-
-L_28ac:
-    iMin = 0x0;
-    iMax = 0x3;
-    goto L_28f9;
-
-L_28b9:
-    iMin = 0x4;
-    iMax = 0x6;
-    goto L_28f9;
-
-L_28c6:
-    iMin = 0x7;
-    iMax = 0x9;
-    goto L_28f9;
-
-L_28d6:
-    if ((iType == -1))
-        goto L_289f;
-    else
-        goto L_28de;
-
-L_28de:
-    if ((iType == 0))
-        goto L_28ac;
-    else
-        goto L_28e6;
-
-L_28e6:
-    if ((iType == 1))
-        goto L_28b9;
-    else
-        goto L_28ee;
-
-L_28ee:
-    if ((iType != 2))
-        goto L_289f;
-    else
-        goto L_28f3;
-
-L_28f3:
-    goto L_28c6;
-
-L_28f9:
-    i = 0;
-    goto L_2ac4;
-
-L_2901:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_2ac0;
-    else
-        goto L_291e;
-
-L_291e:
-    if ((ishdef == -1))
-        goto L_2935;
-    else
-        goto L_2927;
-
-L_2927:
-    if ((i != ishdef))
-        goto L_2ac0;
-    else
-        goto L_2935;
-
-L_2935:
-    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
-    chs = lphul->chs;
-    cMine = 0;
-    j = 0;
-    lphs = lphul->rghs;
-    goto L_299b;
-
-L_2988:
-    j = (j + 1);
-    lphs = (lphs + 1);
-
-L_299b:
-    if ((j >= chs))
-        goto L_2a69;
-    else
-        goto L_29a6;
-
-L_29a6:
-    if ((lphs->grhst != hstMines))
-        goto L_2a1f;
-    else
-        goto L_29b3;
-
-L_29b3:
-    if ((lphs->iItem < iMin))
-        goto L_2a1f;
-    else
-        goto L_29c5;
-
-L_29c5:
-    if ((lphs->iItem > iMax))
-        goto L_2a1f;
-    else
-        goto L_29d7;
-
-L_29d7:
-    part.hs.grhst = lphs->grhst;
-    t_fields_1 = &(part.hs);
-    t_fields_2 = lphs->iItem;
-    t_fields_3 = lphs->cItem;
-    t_fields_1->iItem = t_fields_2;
-    t_fields_1->cItem = t_fields_3;
-    FLookupPart(&(part));
-    cMine = (cMine + (uint32_t)((lphs->cItem * (int32_t)(part.pmines->grAbility))));
-    goto L_2988;
-
-L_2a1f:
-    if ((iType > 0))
-        goto L_2988;
-    else
-        goto L_2a28;
-
-L_2a28:
-    if ((lphs->grhst != hstBeam))
-        goto L_2988;
-    else
-        goto L_2a34;
-
-L_2a34:
-    if ((lphs->iItem != ibeamMultiContainedMunition))
-        goto L_2988;
-    else
-        goto L_2a46;
-
-L_2a46:
-    cMine = (cMine + (int32_t)((lphs->cItem * 0x4)));
-
-L_2a66:
-    goto L_2988;
-
-L_2a69:
-    if ((lphul->ihuldef == ihuldefMiniMineLayer))
-        goto L_2a81;
-    else
-        goto L_2a75;
-
-L_2a75:
-    if ((lphul->ihuldef != ihuldefSuperMineLayer))
-        goto L_2a95;
-    else
-        goto L_2a81;
-
-L_2a81:
-    cMine = (int32_t)((cMine * 2));
-
-L_2a95:
-    cMineTot = (cMineTot + (uint32_t)((cMine * (int32_t)(lpfl->rgcsh[i]))));
-
-L_2ac0:
-    i = (i + 1);
-
-L_2ac4:
-    if ((i < 16))
-        goto L_2901;
-    else
-        goto L_2acd;
-
-L_2acd:
-    if ((cMineTot <= 10000000))
-        goto L_2ae6;
-    else
-        goto L_2afd;
-
-L_2ae6:
-    if ((cMineTot < 0))
-        goto L_2afd;
-    else
-        goto L_2b09;
-
-L_2afd:
-    return 100000000;
-
-L_2b09:
-    return (uint32_t)((cMineTot * 10));
+    switch (iType) {
+    case -1:
+    default:
+        iMin = 0x0;
+        iMax = 0x9;
+        break;
+    case 0:
+        iMin = 0x0;
+        iMax = 0x3;
+        break;
+    case 1:
+        iMin = 0x4;
+        iMax = 0x6;
+        break;
+    case 2:
+        iMin = 0x7;
+        iMax = 0x9;
+    }
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] > 0 && (ishdef == -1 || i == ishdef)) {
+            lphul = &rglpshdef[lpfl->iPlayer][i].hul;
+            chs = lphul->chs;
+            cMine = 0;
+            j = 0;
+            lphs = lphul->rghs;
+            while (j < chs) {
+                if (lphs->grhst != hstMines || lphs->iItem < iMin || lphs->iItem > iMax) {
+                    if (iType <= 0 && lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition) {
+                        cMine = cMine + (int32_t)(lphs->cItem * 0x4);
+                    }
+                } else {
+                    part.hs.grhst = lphs->grhst;
+                    t_fields_1 = &part.hs;
+                    t_fields_2 = lphs->iItem;
+                    t_fields_3 = lphs->cItem;
+                    t_fields_1->iItem = t_fields_2;
+                    t_fields_1->cItem = t_fields_3;
+                    FLookupPart(&part);
+                    cMine = cMine + (uint32_t)(lphs->cItem * (int32_t)part.pmines->grAbility);
+                }
+                j = j + 1;
+                lphs = lphs + 1;
+            }
+            if (lphul->ihuldef == ihuldefMiniMineLayer || lphul->ihuldef == ihuldefSuperMineLayer) {
+                cMine = (int32_t)(cMine * 2);
+            }
+            cMineTot = cMineTot + (uint32_t)(cMine * (int32_t)lpfl->rgcsh[i]);
+        }
+    }
+    if (cMineTot > 10000000 || cMineTot < 0) {
+        return 100000000;
+    }
+    return (uint32_t)(cMineTot * 10);
 }
 
 int32_t CMineSweepFromLpfl(FLEET *lpfl) {
@@ -2357,41 +923,17 @@ int32_t CMineSweepFromLpfl(FLEET *lpfl) {
     HUL    *lphul;
     int32_t lPow;
 
-L_2b26:
     lPowTot = 0;
-    i = 0;
-    goto L_2bc2;
-
-L_2b41:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_2bbe;
-    else
-        goto L_2b5e;
-
-L_2b5e:
-    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
-    lPow = CMineSweepFromLphul(lphul);
-    lPowTot = (lPowTot + (uint32_t)((lPow * (int32_t)(lpfl->rgcsh[i]))));
-
-L_2bbe:
-    i = (i + 1);
-
-L_2bc2:
-    if ((i < 16))
-        goto L_2b41;
-    else
-        goto L_2bcb;
-
-L_2bcb:
-    if ((lPowTot <= 0))
-        goto L_2be2;
-    else
-        goto L_2beb;
-
-L_2be2:
-    return 0;
-
-L_2beb:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphul = &rglpshdef[lpfl->iPlayer][i].hul;
+            lPow = CMineSweepFromLphul(lphul);
+            lPowTot = lPowTot + (uint32_t)(lPow * (int32_t)lpfl->rgcsh[i]);
+        }
+    }
+    if (lPowTot <= 0) {
+        return 0;
+    }
     return lPowTot;
 }
 
@@ -2403,385 +945,143 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     int16_t  fStarbase;
     int32_t  lPow;
     PART     part;
-    uint16_t t_merge_2c18_0001;
     HS      *t_fields_1;
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-L_2bfa:
-    if ((lphul->ihuldef < ihuldefOrbitalFort))
-        goto L_2c15;
-    else
-        goto L_2c0f;
-
-L_2c0f:
-    t_merge_2c18_0001 = 0x1;
-    goto L_2c18;
-
-L_2c15:
-    t_merge_2c18_0001 = 0x0;
-
-L_2c18:
-    fStarbase = t_merge_2c18_0001;
+    fStarbase = lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
     chs = lphul->chs;
     lPow = 0;
     j = 0;
     lphs = lphul->rghs;
-    goto L_2c60;
-
-L_2c4d:
-    j = (j + 1);
-    lphs = (lphs + 1);
-
-L_2c60:
-    if ((j >= chs))
-        goto L_2d2f;
-    else
-        goto L_2c6b;
-
-L_2c6b:
-    if ((lphs->grhst != hstBeam))
-        goto L_2c4d;
-    else
-        goto L_2c77;
-
-L_2c77:
-    part.hs.grhst = lphs->grhst;
-    t_fields_1 = &(part.hs);
-    t_fields_2 = lphs->iItem;
-    t_fields_3 = lphs->cItem;
-    t_fields_1->iItem = t_fields_2;
-    t_fields_1->cItem = t_fields_3;
-    FLookupPart(&(part));
-    if (((part.pbeam->grfAbilities & 0x2) == 0x0))
-        goto L_2cb2;
-    else
-        goto L_2ca5;
-
-L_2ca5:
-    lRange = 4;
-    goto L_2cd8;
-
-L_2cb2:
-    if (((part.pbeam->grfAbilities & 0x1) != 0x0))
-        goto L_2c4d;
-    else
-        goto L_2cca;
-
-L_2cca:
-    lRange = (int32_t)(part.pbeam->dRangeMax);
-
-L_2cd8:
-    if ((fStarbase == 0))
-        goto L_2ce9;
-    else
-        goto L_2ce1;
-
-L_2ce1:
-    lRange = (lRange + 1);
-
-L_2ce9:
-    lPow = (lPow + (uint32_t)(((uint32_t)(((uint32_t)((lRange * lRange)) * lphs->cItem)) * (int32_t)(part.pbeam->dp))));
-
-L_2d2c:
-    goto L_2c4d;
-
-L_2d2f:
-    if ((lPow <= 0))
-        goto L_2d46;
-    else
-        goto L_2d4f;
-
-L_2d46:
-    return 0;
-
-L_2d4f:
+    while (j < chs) {
+        if (lphs->grhst == hstBeam) {
+            part.hs.grhst = lphs->grhst;
+            t_fields_1 = &part.hs;
+            t_fields_2 = lphs->iItem;
+            t_fields_3 = lphs->cItem;
+            t_fields_1->iItem = t_fields_2;
+            t_fields_1->cItem = t_fields_3;
+            FLookupPart(&part);
+            if ((part.pbeam->grfAbilities & 0x2) == 0x0) {
+                if ((part.pbeam->grfAbilities & 0x1) != 0x0)
+                    goto L_2c4d;
+                lRange = (int32_t)part.pbeam->dRangeMax;
+            } else {
+                lRange = 4;
+            }
+            if (fStarbase != 0) {
+                lRange = lRange + 1;
+            }
+            lPow = lPow + (uint32_t)((uint32_t)((uint32_t)(lRange * lRange) * lphs->cItem) * (int32_t)part.pbeam->dp);
+        }
+    L_2c4d:
+        j = j + 1;
+        lphs = lphs + 1;
+    }
+    if (lPow <= 0) {
+        return 0;
+    }
     return lPow;
 }
 
 int16_t PctCloakFromLpfl(FLEET *lpfl) {
-    int16_t  j;
-    double   dcPts;
-    double   dwtFleet;
-    int16_t  i;
-    int32_t  cPtsCur;
-    int16_t  fUseFloat;
-    HUL     *lphul;
-    int32_t  wtFleet;
-    int16_t  cScore;
-    int32_t  cPts;
-    int32_t  wtFleetCur;
-    int16_t  chs;
-    HS      *lphs;
-    uint16_t t_merge_315e_0001;
+    int16_t j;
+    double  dcPts;
+    double  dwtFleet;
+    int16_t i;
+    int32_t cPtsCur;
+    int16_t fUseFloat;
+    HUL    *lphul;
+    int32_t wtFleet;
+    int16_t cScore;
+    int32_t cPts;
+    int32_t wtFleetCur;
+    int16_t chs;
+    HS     *lphs;
 
-L_2d5e:
     wtFleet = 0;
     cPts = 0;
     dwtFleet = 0.0;
     dcPts = 0.0;
     fUseFloat = 0;
-    i = 0;
-    goto L_2fab;
-
-L_2d9e:
-    if ((lpfl->rgcsh[i] <= 0))
-        goto L_2fa7;
-    else
-        goto L_2dbb;
-
-L_2dbb:
-    lphul = &(rglpshdef[lpfl->iPlayer][i].hul);
-    chs = lphul->chs;
-    wtFleetCur = (uint32_t)(((int32_t)(lpfl->rgcsh[i]) * (uint32_t)(lphul->wtEmpty)));
-    cPtsCur = 0;
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) != raStealth))
-        goto L_2e51;
-    else
-        goto L_2e48;
-
-L_2e48:
-    cPtsCur = (cPtsCur + 300);
-
-L_2e51:
-    j = 0;
-    lphs = lphul->rghs;
-    goto L_2e7f;
-
-L_2e6c:
-    j = (j + 1);
-    lphs = (lphs + 1);
-
-L_2e7f:
-    if ((j >= chs))
-        goto L_2ea2;
-    else
-        goto L_2e8a;
-
-L_2e8a:
-    cPtsCur = (cPtsCur + (int32_t)(CPtsCloakFromLphs(lphs)));
-    goto L_2e6c;
-
-L_2ea2:
-    if ((cPtsCur <= 0))
-        goto L_2f7b;
-    else
-        goto L_2eb9;
-
-L_2eb9:
-    if ((fUseFloat != 0))
-        goto L_2f3d;
-    else
-        goto L_2ec2;
-
-L_2ec2:
-    if ((cPtsCur <= 4000))
-        goto L_2eda;
-    else
-        goto L_2f24;
-
-L_2eda:
-    if ((wtFleetCur <= 500000))
-        goto L_2ef2;
-    else
-        goto L_2f24;
-
-L_2ef2:
-    if ((cPts <= 100000000))
-        goto L_2f0b;
-    else
-        goto L_2f24;
-
-L_2f0b:
-    if ((wtFleet <= 50000000))
-        goto L_2f3d;
-    else
-        goto L_2f24;
-
-L_2f24:
-    dcPts = (double)(cPts);
-    dwtFleet = (double)(wtFleet);
-    fUseFloat = 1;
-
-L_2f3d:
-    if ((fUseFloat == 0))
-        goto L_2f64;
-    else
-        goto L_2f46;
-
-L_2f46:
-    dcPts = (dcPts + ((double)(cPtsCur) * (double)(wtFleetCur)));
-    goto L_2f7b;
-
-L_2f64:
-    cPts = (cPts + (uint32_t)((cPtsCur * wtFleetCur)));
-
-L_2f7b:
-    if ((fUseFloat == 0))
-        goto L_2f9b;
-    else
-        goto L_2f84;
-
-L_2f84:
-    dwtFleet = (dwtFleet + (double)(wtFleetCur));
-    goto L_2fa7;
-
-L_2f9b:
-    wtFleet = (wtFleet + wtFleetCur);
-
-L_2fa7:
-    i = (i + 1);
-
-L_2fab:
-    if ((i < 16))
-        goto L_2d9e;
-    else
-        goto L_2fb4;
-
-L_2fb4:
-    if ((fUseFloat != 0))
-        goto L_2fd5;
-    else
-        goto L_2fbd;
-
-L_2fbd:
-    if ((cPts != 0))
-        goto L_2fd5;
-    else
-        goto L_2fcf;
-
-L_2fcf:
+    for (i = 0; i < 16; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphul = &rglpshdef[lpfl->iPlayer][i].hul;
+            chs = lphul->chs;
+            wtFleetCur = (uint32_t)((int32_t)lpfl->rgcsh[i] * (uint32_t)lphul->wtEmpty);
+            cPtsCur = 0;
+            if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raStealth) {
+                cPtsCur = cPtsCur + 300;
+            }
+            j = 0;
+            lphs = lphul->rghs;
+            while (j < chs) {
+                cPtsCur = cPtsCur + (int32_t)CPtsCloakFromLphs(lphs);
+                j = j + 1;
+                lphs = lphs + 1;
+            }
+            if (cPtsCur > 0) {
+                if (fUseFloat == 0 && (cPtsCur > 4000 || wtFleetCur > 500000 || cPts > 100000000 || wtFleet > 50000000)) {
+                    dcPts = (double)cPts;
+                    dwtFleet = (double)wtFleet;
+                    fUseFloat = 1;
+                }
+                if (fUseFloat == 0) {
+                    cPts = cPts + (uint32_t)(cPtsCur * wtFleetCur);
+                } else {
+                    dcPts = dcPts + (double)cPtsCur * (double)wtFleetCur;
+                }
+            }
+            if (fUseFloat == 0) {
+                wtFleet = wtFleet + wtFleetCur;
+            } else {
+                dwtFleet = dwtFleet + (double)wtFleetCur;
+            }
+        }
+    }
+    if (fUseFloat != 0 || cPts != 0) {
+        if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) != raStealth) {
+            if (fUseFloat == 0) {
+                for (i = 0; i <= 3; i++) {
+                    wtFleet = wtFleet + lpfl->rgwtMin[i];
+                }
+            } else {
+                for (i = 0; i <= 3; i++) {
+                    dwtFleet = dwtFleet + (double)lpfl->rgwtMin[i];
+                }
+            }
+        }
+        if (fUseFloat == 0) {
+            cPts = (int32_t)(cPts / wtFleet);
+        } else {
+            cPts = (int32_t)(dcPts / dwtFleet);
+        }
+        if (cPts < 0) {
+            return 0;
+        }
+        cScore = LOWORD(cPts);
+        if (cScore > 100) {
+            cScore = cScore - 100;
+            if (cScore > 200) {
+                cScore = cScore - 200;
+                if (cScore > 312) {
+                    cScore = cScore - 312;
+                    if (cScore > 512) {
+                        if (cScore >= 1000) {
+                            return 98;
+                        }
+                        return (cScore < 768 ? 0x0 : 0x1) + 0x60;
+                    }
+                    return (cScore >> 0x6) + 0x58;
+                }
+                return (int32_t)cScore / 24 + 0x4b;
+            }
+            return (cScore >> 0x3) + 0x32;
+        }
+        return cScore >> 0x1;
+    }
     return 0;
-
-L_2fd5:
-    if ((GetRaceStat(&(rgplr[lpfl->iPlayer]), rsMajorAdv) == raStealth))
-        goto L_307c;
-    else
-        goto L_2ff9;
-
-L_2ff9:
-    if ((fUseFloat == 0))
-        goto L_3044;
-    else
-        goto L_3002;
-
-L_3002:
-    i = 0;
-    goto L_3038;
-
-L_300a:
-    dwtFleet = (dwtFleet + (double)(lpfl->rgwtMin[i]));
-    i = (i + 1);
-
-L_3038:
-    if ((i > 3))
-        goto L_307c;
-    else
-        goto L_303e;
-
-L_303e:
-    goto L_300a;
-
-L_3044:
-    i = 0;
-    goto L_3073;
-
-L_304c:
-    wtFleet = (wtFleet + lpfl->rgwtMin[i]);
-    i = (i + 1);
-
-L_3073:
-    if ((i <= 3))
-        goto L_304c;
-    else
-        goto L_307c;
-
-L_307c:
-    if ((fUseFloat == 0))
-        goto L_309b;
-    else
-        goto L_3085;
-
-L_3085:
-    cPts = (int32_t)((dcPts / dwtFleet));
-    goto L_30b2;
-
-L_309b:
-    cPts = (int32_t)((cPts / wtFleet));
-
-L_30b2:
-    if ((cPts < 0))
-        goto L_30c9;
-    else
-        goto L_30cf;
-
-L_30c9:
-    return 0;
-
-L_30cf:
-    cScore = LOWORD(cPts);
-    if ((cScore > 100))
-        goto L_30e9;
-    else
-        goto L_30e1;
-
-L_30e1:
-    return (cScore >> 0x1);
-
-L_30e9:
-    cScore = (cScore - 100);
-    if ((cScore > 200))
-        goto L_3106;
-    else
-        goto L_30f7;
-
-L_30f7:
-    return ((cScore >> 0x3) + 0x32);
-
-L_3106:
-    cScore = (cScore - 200);
-    if ((cScore > 312))
-        goto L_3124;
-    else
-        goto L_3115;
-
-L_3115:
-    return (((int32_t)(cScore) / 24) + 0x4b);
-
-L_3124:
-    cScore = (cScore - 312);
-    if ((cScore > 512))
-        goto L_3141;
-    else
-        goto L_3133;
-
-L_3133:
-    return ((cScore >> 0x6) + 0x58);
-
-L_3141:
-    if ((cScore >= 1000))
-        goto L_3164;
-    else
-        goto L_314b;
-
-L_314b:
-    if ((cScore < 768))
-        goto L_315b;
-    else
-        goto L_3155;
-
-L_3155:
-    t_merge_315e_0001 = 0x1;
-    goto L_315e;
-
-L_315b:
-    t_merge_315e_0001 = 0x0;
-
-L_315e:
-    return (t_merge_315e_0001 + 0x60);
-
-L_3164:
-    return 98;
 }
 
 int16_t CPtsCloakFromLphs(HS *lphs) {
@@ -2791,217 +1091,75 @@ int16_t CPtsCloakFromLphs(HS *lphs) {
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-L_3170:
     cPts = 0;
-    if ((lphs->cItem > 0x0))
-        goto L_319b;
-    else
-        goto L_3195;
-
-L_3195:
+    if (lphs->cItem > 0x0) {
+        switch (lphs->grhst) {
+        case hstSpecialE:
+            if (lphs->iItem < ispecialETransportCloaking || lphs->iItem > ispecialEMultiFunctionPod)
+                break;
+            part.hs.grhst = lphs->grhst;
+            t_fields_1 = &part.hs;
+            t_fields_2 = lphs->iItem;
+            t_fields_3 = lphs->cItem;
+            t_fields_1->iItem = t_fields_2;
+            t_fields_1->cItem = t_fields_3;
+            FLookupPart(&part);
+            cPts = part.pspecial->grAbility;
+            break;
+        case hstSpecialM:
+            if (lphs->iItem != ispecialMMultiCargoPod)
+                break;
+            cPts = 20;
+            break;
+        case hstScanner:
+            if (lphs->iItem != iscannerChameleonScanner)
+                break;
+            cPts = 40;
+            break;
+        case hstArmor:
+            if (lphs->iItem != iarmorDepletedNeutronium) {
+                if (lphs->iItem != iarmorMegaPolyShell)
+                    break;
+                cPts = 40;
+                break;
+            }
+            cPts = 50;
+            break;
+        case hstShield:
+            if (lphs->iItem != ishieldShadowShield) {
+                if (lphs->iItem != ishieldLangstonShell)
+                    break;
+                cPts = 20;
+                break;
+            }
+            cPts = 70;
+            break;
+        case hstBeam:
+            if (lphs->iItem != ibeamMultiContainedMunition)
+                break;
+            cPts = 20;
+            break;
+        case hstEngine:
+            if (lphs->iItem != iengineEnigmaPulsar)
+                break;
+            cPts = 20;
+            break;
+        case hstMining:
+            if (lphs->iItem != iminingAlienMiner) {
+                if (lphs->iItem == iminingOrbitalAdjuster) {
+                    cPts = 50;
+                }
+            } else {
+                cPts = 60;
+            }
+        default:
+        }
+        if (lphs->cItem > 0x1) {
+            cPts = cPts * lphs->cItem;
+        }
+        return cPts;
+    }
     return 0;
-
-L_319b:
-    goto L_32f8;
-
-L_31a4:
-    if ((lphs->iItem < ispecialETransportCloaking))
-        goto L_333b;
-    else
-        goto L_31b6;
-
-L_31b6:
-    if ((lphs->iItem > ispecialEMultiFunctionPod))
-        goto L_333b;
-    else
-        goto L_31c8;
-
-L_31c8:
-    part.hs.grhst = lphs->grhst;
-    t_fields_1 = &(part.hs);
-    t_fields_2 = lphs->iItem;
-    t_fields_3 = lphs->cItem;
-    t_fields_1->iItem = t_fields_2;
-    t_fields_1->cItem = t_fields_3;
-    FLookupPart(&(part));
-    cPts = part.pspecial->grAbility;
-
-L_31ee:
-    goto L_333b;
-
-L_31f1:
-    if ((lphs->iItem != ispecialMMultiCargoPod))
-        goto L_333b;
-    else
-        goto L_3203;
-
-L_3203:
-    cPts = 20;
-
-L_3208:
-    goto L_333b;
-
-L_320b:
-    if ((lphs->iItem != iscannerChameleonScanner))
-        goto L_333b;
-    else
-        goto L_321d;
-
-L_321d:
-    cPts = 40;
-
-L_3222:
-    goto L_333b;
-
-L_3225:
-    if ((lphs->iItem != iarmorDepletedNeutronium))
-        goto L_323f;
-    else
-        goto L_3237;
-
-L_3237:
-    cPts = 50;
-    goto L_333b;
-
-L_323f:
-    if ((lphs->iItem != iarmorMegaPolyShell))
-        goto L_333b;
-    else
-        goto L_3251;
-
-L_3251:
-    cPts = 40;
-
-L_3256:
-    goto L_333b;
-
-L_3259:
-    if ((lphs->iItem != ishieldShadowShield))
-        goto L_3273;
-    else
-        goto L_326b;
-
-L_326b:
-    cPts = 70;
-    goto L_333b;
-
-L_3273:
-    if ((lphs->iItem != ishieldLangstonShell))
-        goto L_333b;
-    else
-        goto L_3285;
-
-L_3285:
-    cPts = 20;
-
-L_328a:
-    goto L_333b;
-
-L_328d:
-    if ((lphs->iItem != ibeamMultiContainedMunition))
-        goto L_333b;
-    else
-        goto L_329f;
-
-L_329f:
-    cPts = 20;
-
-L_32a4:
-    goto L_333b;
-
-L_32a7:
-    if ((lphs->iItem != iengineEnigmaPulsar))
-        goto L_333b;
-    else
-        goto L_32b9;
-
-L_32b9:
-    cPts = 20;
-
-L_32be:
-    goto L_333b;
-
-L_32c1:
-    if ((lphs->iItem != iminingAlienMiner))
-        goto L_32db;
-    else
-        goto L_32d3;
-
-L_32d3:
-    cPts = 60;
-    goto L_333b;
-
-L_32db:
-    if ((lphs->iItem != iminingOrbitalAdjuster))
-        goto L_333b;
-    else
-        goto L_32ed;
-
-L_32ed:
-    cPts = 50;
-
-L_32f2:
-    goto L_333b;
-
-L_32f8:
-    if ((lphs->grhst == hstEngine))
-        goto L_32a7;
-    else
-        goto L_3300;
-
-L_3300:
-    if ((lphs->grhst == hstScanner))
-        goto L_320b;
-    else
-        goto L_3308;
-
-L_3308:
-    if ((lphs->grhst == hstShield))
-        goto L_3259;
-    else
-        goto L_3310;
-
-L_3310:
-    if ((lphs->grhst == hstArmor))
-        goto L_3225;
-    else
-        goto L_3318;
-
-L_3318:
-    if ((lphs->grhst == hstBeam))
-        goto L_328d;
-    else
-        goto L_3320;
-
-L_3320:
-    if ((lphs->grhst == hstMining))
-        goto L_32c1;
-    else
-        goto L_3328;
-
-L_3328:
-    if ((lphs->grhst == hstSpecialE))
-        goto L_31a4;
-    else
-        goto L_3330;
-
-L_3330:
-    if ((lphs->grhst == hstSpecialM))
-        goto L_31f1;
-    else
-        goto L_333b;
-
-L_333b:
-    if ((lphs->cItem <= 0x1))
-        goto L_336a;
-    else
-        goto L_3352;
-
-L_3352:
-    cPts = (cPts * lphs->cItem);
-
-L_336a:
-    return cPts;
 }
 
 INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -3012,239 +1170,71 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     HWND    t_call_343f;
     WPARAM  t_merge_3487_0001;
     HWND    t_scratch_me;
-    int16_t t_merge_35e1_0001;
     HWND    t_call_3640;
-    WPARAM  t_merge_365d_0001;
 
-L_3376:
-    goto L_3684;
-
-L_3385:
-    StickyDlgPos(hwnd, &(ptStickyMergeFleetsDlg), 1);
-    i = 0;
-    goto L_3497;
-
-L_33a0:
-    psz = PszGetFleetName(rglpfl[vrgiflMerge[i]]->id);
-    strcpy(szT, psz);
-    if ((rglpfl[vrgiflMerge[i]]->cord <= 1))
-        goto L_3417;
-    else
-        goto L_3407;
-
-L_3407:
-    strcat(szT, " *");
-
-L_3417:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_ADDSTRING, 0x0, (LPARAM)(szT));
-    t_call_343f = GetDlgItem(hwnd, IDC_U16_0x0051);
-    if ((vcflMerge == 2))
-        goto L_347e;
-    else
-        goto L_3453;
-
-L_3453:
-    if ((rglpfl[vrgiflMerge[i]]->id != sel.fl.id))
-        goto L_3484;
-    else
-        goto L_347e;
-
-L_347e:
-    t_merge_3487_0001 = 0x1;
-    goto L_3487;
-
-L_3484:
-    t_merge_3487_0001 = 0x0;
-
-L_3487:
-    SendMessage(t_call_343f, LB_SETSEL, t_merge_3487_0001, (int32_t)(i));
-    i = (i + 1);
-
-L_3497:
-    if ((i < vcflMerge))
-        goto L_33a0;
-    else
-        goto L_34a2;
-
-L_34a2:
-    if ((gd.fTutorial == 0x0))
-        goto L_34ba;
-    else
-        goto L_34b5;
-
-L_34b5:
-    AdvanceTutor();
-
-L_34ba:
-    return 1;
-
-L_34c0:
-    GetClientRect(hwnd, &(rc));
-    FillRect((HDC)(wParam), &(rc), hbrButtonFace);
-    return 1;
-
-L_34e8:
-    t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-    if ((t_scratch_me == GetDlgItem(hwnd, IDC_U16_0x0051)))
-        goto L_36a7;
-    else
-        goto L_3507;
-
-L_3507:
-    SetBkColor((HDC)(wParam), crButtonFace);
-    return (INT_PTR)(hbrButtonFace);
-
-L_3520:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
-        goto L_3532;
-    else
-        goto L_3529;
-
-L_3529:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL))
-        goto L_35f0;
-    else
-        goto L_3532;
-
-L_3532:
-    i = 0;
-    goto L_357f;
-
-L_353a:
-    if ((SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_GETSEL, i, 0) != 0))
-        goto L_357b;
-    else
-        goto L_356c;
-
-L_356c:
-    vrgiflMerge[i] = -1;
-
-L_357b:
-    i = (i + 1);
-
-L_357f:
-    if ((i < vcflMerge))
-        goto L_353a;
-    else
-        goto L_358a;
-
-L_358a:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_35b9;
-    else
-        goto L_3593;
-
-L_3593:
-    if ((gd.fTutorial == 0x0))
-        goto L_35b9;
-    else
-        goto L_35a6;
-
-L_35a6:
-    if ((FOKMergeDialog() != 0))
-        goto L_35b9;
-    else
-        goto L_35b3;
-
-L_35b3:
-    return 1;
-
-L_35b9:
-    StickyDlgPos(hwnd, &(ptStickyMergeFleetsDlg), 0);
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDOK))
-        goto L_35de;
-    else
-        goto L_35d8;
-
-L_35d8:
-    t_merge_35e1_0001 = 1;
-    goto L_35e1;
-
-L_35de:
-    t_merge_35e1_0001 = 0;
-
-L_35e1:
-    EndDialog(hwnd, t_merge_35e1_0001);
-    return 1;
-
-L_35f0:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP))
-        goto L_361d;
-    else
-        goto L_35f9;
-
-L_35f9:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x453);
-    return 1;
-
-L_361d:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) == 0x7f8))
-        goto L_3631;
-    else
-        goto L_3627;
-
-L_3627:
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x7f9))
-        goto L_36a7;
-    else
-        goto L_3631;
-
-L_3631:
-    i = 0;
-    goto L_366d;
-
-L_3639:
-    t_call_3640 = GetDlgItem(hwnd, IDC_U16_0x0051);
-    if ((GET_WM_COMMAND_ID(wParam, lParam) != 0x7f8))
-        goto L_365a;
-    else
-        goto L_3654;
-
-L_3654:
-    t_merge_365d_0001 = 0x1;
-    goto L_365d;
-
-L_365a:
-    t_merge_365d_0001 = 0x0;
-
-L_365d:
-    SendMessage(t_call_3640, LB_SETSEL, t_merge_365d_0001, (int32_t)(i));
-    i = (i + 1);
-
-L_366d:
-    if ((i < vcflMerge))
-        goto L_3639;
-    else
-        goto L_3678;
-
-L_3678:
-    return 1;
-
-L_3684:
-    if ((msg == WM_ERASEBKGND))
-        goto L_34c0;
-    else
-        goto L_368c;
-
-L_368c:
-    if ((IS_WM_CTLCOLOR(msg) != 0))
-        goto L_34e8;
-    else
-        goto L_3694;
-
-L_3694:
-    if ((msg == WM_INITDIALOG))
-        goto L_3385;
-    else
-        goto L_369c;
-
-L_369c:
-    if ((msg == WM_COMMAND))
-        goto L_3520;
-    else
-        goto L_36a7;
-
-L_36a7:
+    if (msg == WM_ERASEBKGND) {
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, hbrButtonFace);
+        return 1;
+    }
+    if (IS_WM_CTLCOLOR(msg) != 0) {
+        t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
+        if (t_scratch_me != GetDlgItem(hwnd, IDC_U16_0x0051)) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else {
+        if (msg == WM_INITDIALOG) {
+            StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, 1);
+            for (i = 0; i < vcflMerge; i++) {
+                psz = PszGetFleetName(rglpfl[vrgiflMerge[i]]->id);
+                strcpy(szT, psz);
+                if (rglpfl[vrgiflMerge[i]]->cord > 1) {
+                    strcat(szT, " *");
+                }
+                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_ADDSTRING, 0x0, (LPARAM)szT);
+                t_call_343f = GetDlgItem(hwnd, IDC_U16_0x0051);
+                if (vcflMerge != 2 && rglpfl[vrgiflMerge[i]]->id != sel.fl.id) {
+                    t_merge_3487_0001 = 0x0;
+                } else {
+                    t_merge_3487_0001 = 0x1;
+                }
+                SendMessage(t_call_343f, LB_SETSEL, t_merge_3487_0001, (int32_t)i);
+            }
+            if (gd.fTutorial != 0x0) {
+                AdvanceTutor();
+            }
+            return 1;
+        }
+        if (msg == WM_COMMAND) {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                for (i = 0; i < vcflMerge; i++) {
+                    if (SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_GETSEL, i, 0) == 0) {
+                        vrgiflMerge[i] = -1;
+                    }
+                }
+                if (GET_WM_COMMAND_ID(wParam, lParam) != IDOK || gd.fTutorial == 0x0 || FOKMergeDialog() != 0) {
+                    StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, 0);
+                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                    return 1;
+                }
+                return 1;
+            case IDC_HELP:
+                WinHelp(hwnd, szHelpFile, 0x1, 0x453);
+                return 1;
+            case 0x7f8:
+            case 0x7f9:
+                for (i = 0; i < vcflMerge; i++) {
+                    t_call_3640 = GetDlgItem(hwnd, IDC_U16_0x0051);
+                    SendMessage(t_call_3640, LB_SETSEL, GET_WM_COMMAND_ID(wParam, lParam) == 0x7f8 ? 0x1 : 0x0, (int32_t)i);
+                }
+                return 1;
+            default:
+            }
+        }
+    }
     return 0;
 }
 
@@ -3254,294 +1244,85 @@ void MarkTechsSeen(HUL *lphul, int16_t iplr) {
     int16_t  ihs;
     PART     part;
     uint16_t t_scratch_m12_2;
-    uint8_t  t_merge_3753_0001;
     uint16_t t_scratch_m12_3;
-    uint8_t  t_merge_3838_0001;
 
-L_36b6:
     iplrSav = idPlayer;
     idPlayer = iplr;
     part.hs.grhst = hstHull;
     part.hs.iItem = lphul->ihuldef;
-    FLookupPart(&(part));
-    iTech = 0;
-    goto L_375e;
-
-L_3701:
-    t_scratch_m12_2 = rgTechBattle[iTech];
-    if ((t_scratch_m12_2 <= (int16_t)(part.phul->rgTech[iTech])))
-        goto L_373d;
-    else
-        goto L_3730;
-
-L_3730:
-    t_merge_3753_0001 = rgTechBattle[iTech];
-    goto L_3753;
-
-L_373d:
-    t_merge_3753_0001 = (int16_t)(part.phul->rgTech[iTech]);
-
-L_3753:
-    rgTechBattle[iTech] = LOBYTE(t_merge_3753_0001);
-    iTech = (iTech + 1);
-
-L_375e:
-    if ((iTech < 6))
-        goto L_3701;
-    else
-        goto L_3767;
-
-L_3767:
-    ihs = 0;
-    goto L_3773;
-
-L_376f:
-    ihs = (ihs + 1);
-
-L_3773:
-    if ((ihs >= lphul->chs))
-        goto L_39cb;
-    else
-        goto L_3785;
-
-L_3785:
-    if ((lphul->rghs[ihs].cItem == 0x0))
-        goto L_376f;
-    else
-        goto L_37af;
-
-L_37af:
-    part.hs = lphul->rghs[ihs];
-    FLookupPart(&(part));
-    iTech = 0;
-    goto L_3843;
-
-L_37e6:
-    t_scratch_m12_3 = rgTechBattle[iTech];
-    if ((t_scratch_m12_3 <= (int16_t)(part.pcom->rgTech[iTech])))
-        goto L_3822;
-    else
-        goto L_3815;
-
-L_3815:
-    t_merge_3838_0001 = rgTechBattle[iTech];
-    goto L_3838;
-
-L_3822:
-    t_merge_3838_0001 = (int16_t)(part.pcom->rgTech[iTech]);
-
-L_3838:
-    rgTechBattle[iTech] = LOBYTE(t_merge_3838_0001);
-    iTech = (iTech + 1);
-
-L_3843:
-    if ((iTech < 6))
-        goto L_37e6;
-    else
-        goto L_384c;
-
-L_384c:
-    iTech = -1;
-    goto L_3936;
-
-L_3857:
-    if ((part.hs.iItem != ispecialMMultiCargoPod))
-        goto L_386d;
-    else
-        goto L_3865;
-
-L_3865:
-    iTech = 0;
-    goto L_3981;
-
-L_386d:
-    if ((part.hs.iItem != ispecialMJumpGate))
-        goto L_3981;
-    else
-        goto L_387b;
-
-L_387b:
-    iTech = 11;
-
-L_3880:
-    goto L_3981;
-
-L_3883:
-    if ((part.hs.iItem != ispecialEMultiFunctionPod))
-        goto L_3981;
-    else
-        goto L_3891;
-
-L_3891:
-    iTech = 1;
-
-L_3896:
-    goto L_3981;
-
-L_3899:
-    if ((part.hs.iItem != ishieldLangstonShell))
-        goto L_3981;
-    else
-        goto L_38a7;
-
-L_38a7:
-    iTech = 2;
-
-L_38ac:
-    goto L_3981;
-
-L_38af:
-    if ((part.hs.iItem != iarmorMegaPolyShell))
-        goto L_3981;
-    else
-        goto L_38bd;
-
-L_38bd:
-    iTech = 3;
-
-L_38c2:
-    goto L_3981;
-
-L_38c5:
-    if ((part.hs.iItem != iminingAlienMiner))
-        goto L_3981;
-    else
-        goto L_38d3;
-
-L_38d3:
-    iTech = 4;
-
-L_38d8:
-    goto L_3981;
-
-L_38db:
-    if ((part.hs.iItem != ibombHushABoom))
-        goto L_3981;
-    else
-        goto L_38e9;
-
-L_38e9:
-    iTech = 5;
-
-L_38ee:
-    goto L_3981;
-
-L_38f1:
-    if ((part.hs.iItem != ibeamMultiContainedMunition))
-        goto L_3981;
-    else
-        goto L_38ff;
-
-L_38ff:
-    iTech = 7;
-
-L_3904:
-    goto L_3981;
-
-L_3907:
-    if ((part.hs.iItem != itorpAntiMatterTorpedo))
-        goto L_3981;
-    else
-        goto L_3915;
-
-L_3915:
-    iTech = 6;
-
-L_391a:
-    goto L_3981;
-
-L_391d:
-    if ((part.hs.iItem != iengineEnigmaPulsar))
-        goto L_3981;
-    else
-        goto L_392b;
-
-L_392b:
-    iTech = 9;
-
-L_3930:
-    goto L_3981;
-
-L_3936:
-    if ((part.hs.grhst == hstEngine))
-        goto L_391d;
-    else
-        goto L_393e;
-
-L_393e:
-    if ((part.hs.grhst == hstShield))
-        goto L_3899;
-    else
-        goto L_3946;
-
-L_3946:
-    if ((part.hs.grhst == hstArmor))
-        goto L_38af;
-    else
-        goto L_394e;
-
-L_394e:
-    if ((part.hs.grhst == hstBeam))
-        goto L_38f1;
-    else
-        goto L_3956;
-
-L_3956:
-    if ((part.hs.grhst == hstTorp))
-        goto L_3907;
-    else
-        goto L_395e;
-
-L_395e:
-    if ((part.hs.grhst == hstBomb))
-        goto L_38db;
-    else
-        goto L_3966;
-
-L_3966:
-    if ((part.hs.grhst == hstMining))
-        goto L_38c5;
-    else
-        goto L_396e;
-
-L_396e:
-    if ((part.hs.grhst == hstSpecialE))
-        goto L_3883;
-    else
-        goto L_3976;
-
-L_3976:
-    if ((part.hs.grhst == hstSpecialM))
-        goto L_3857;
-    else
-        goto L_3981;
-
-L_3981:
-    if ((iTech == -1))
-        goto L_376f;
-    else
-        goto L_398a;
-
-L_398a:
-    if ((rgTechTrader[iTech] >= 0x19))
-        goto L_376f;
-    else
-        goto L_399c;
-
-L_399c:
-    rgTechTrader[iTech] = (rgTechTrader[iTech] + LOBYTE(part.hs.cItem));
-    if ((rgTechTrader[iTech] <= 0x19))
-        goto L_376f;
-    else
-        goto L_39c0;
-
-L_39c0:
-    rgTechTrader[iTech] = 0x19;
-
-L_39c8:
-    goto L_376f;
-
-L_39cb:
+    FLookupPart(&part);
+    for (iTech = 0; iTech < 6; iTech++) {
+        t_scratch_m12_2 = rgTechBattle[iTech];
+        rgTechBattle[iTech] = LOBYTE(t_scratch_m12_2 <= (int16_t)part.phul->rgTech[iTech] ? (int16_t)part.phul->rgTech[iTech] : rgTechBattle[iTech]);
+    }
+    for (ihs = 0; ihs < lphul->chs; ihs++) {
+        if (lphul->rghs[ihs].cItem != 0x0) {
+            part.hs = lphul->rghs[ihs];
+            FLookupPart(&part);
+            for (iTech = 0; iTech < 6; iTech++) {
+                t_scratch_m12_3 = rgTechBattle[iTech];
+                rgTechBattle[iTech] = LOBYTE(t_scratch_m12_3 <= (int16_t)part.pcom->rgTech[iTech] ? (int16_t)part.pcom->rgTech[iTech] : rgTechBattle[iTech]);
+            }
+            iTech = -1;
+            switch (part.hs.grhst) {
+            case hstSpecialM:
+                if (part.hs.iItem != ispecialMMultiCargoPod) {
+                    if (part.hs.iItem != ispecialMJumpGate)
+                        break;
+                    iTech = 11;
+                    break;
+                }
+                iTech = 0;
+                break;
+            case hstSpecialE:
+                if (part.hs.iItem != ispecialEMultiFunctionPod)
+                    break;
+                iTech = 1;
+                break;
+            case hstShield:
+                if (part.hs.iItem != ishieldLangstonShell)
+                    break;
+                iTech = 2;
+                break;
+            case hstArmor:
+                if (part.hs.iItem != iarmorMegaPolyShell)
+                    break;
+                iTech = 3;
+                break;
+            case hstMining:
+                if (part.hs.iItem != iminingAlienMiner)
+                    break;
+                iTech = 4;
+                break;
+            case hstBomb:
+                if (part.hs.iItem != ibombHushABoom)
+                    break;
+                iTech = 5;
+                break;
+            case hstBeam:
+                if (part.hs.iItem != ibeamMultiContainedMunition)
+                    break;
+                iTech = 7;
+                break;
+            case hstTorp:
+                if (part.hs.iItem != itorpAntiMatterTorpedo)
+                    break;
+                iTech = 6;
+                break;
+            case hstEngine:
+                if (part.hs.iItem == iengineEnigmaPulsar) {
+                    iTech = 9;
+                }
+            default:
+            }
+            if (iTech != -1 && rgTechTrader[iTech] < 0x19) {
+                rgTechTrader[iTech] = rgTechTrader[iTech] + LOBYTE(part.hs.cItem);
+                if (rgTechTrader[iTech] > 0x19) {
+                    rgTechTrader[iTech] = 0x19;
+                }
+            }
+        }
+    }
     idPlayer = iplrSav;
     return;
 }

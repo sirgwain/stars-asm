@@ -7,24 +7,24 @@ HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont) {
 L_6aa6:
     plf = LocalAlloc(0x40, sizeof(LOGFONT));
     memset(plf, 0, sizeof(LOGFONT));
-    plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
+    plf->lfHeight = -MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
     strcpy(plf->lfFaceName, rgszArial[1]);
     hfontNew = CreateFontIndirect(plf);
-    if ((pdyFont == 0x0))
+    if (pdyFont == 0x0)
         goto L_6b5b;
     else
         goto L_6b1f;
 
 L_6b1f:
-    if ((hfontNew == 0x0))
+    if (hfontNew == 0x0)
         goto L_6b5b;
     else
         goto L_6b28;
 
 L_6b28:
     hfontSav = SelectObject(hdc, hfontNew);
-    GetTextMetrics(hdc, &(tm));
-    *(pdyFont) = (tm.tmHeight + tm.tmExternalLeading);
+    GetTextMetrics(hdc, &tm);
+    *pdyFont = tm.tmHeight + tm.tmExternalLeading;
     SelectObject(hdc, hfontSav);
 
 L_6b5b:

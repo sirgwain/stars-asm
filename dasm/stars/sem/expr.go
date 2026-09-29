@@ -171,6 +171,8 @@ type Const struct {
 	U64      uint64
 	Origin   *machine.Origin
 	Fixup    *asm.Fixup
+	// Char prints the constant as a C character literal, such as 'a'.
+	Char bool
 }
 
 // expr marks Const as an expression.
@@ -561,6 +563,21 @@ func (*Merge) expr() {}
 
 // ExprType returns the merge result type.
 func (v *Merge) ExprType() typeinfo.Type { return v.TypeInfo }
+
+// Cond is a C conditional expression that yields Then when Cond is nonzero
+// and Else otherwise. Only the selected arm is evaluated.
+type Cond struct {
+	TypeInfo typeinfo.Type
+	Cond     Expr
+	Then     Expr
+	Else     Expr
+}
+
+// expr marks Cond as an expression.
+func (*Cond) expr() {}
+
+// ExprType returns the conditional result type.
+func (v *Cond) ExprType() typeinfo.Type { return v.TypeInfo }
 
 // RawValue keeps an unlowered machine value inside semantic IR.
 type RawValue struct {

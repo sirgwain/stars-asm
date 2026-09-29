@@ -227,6 +227,24 @@ func TestDASM_SemSnapshots(t *testing.T) {
 	}
 }
 
+func TestDASM_RegionSnapshots(t *testing.T) {
+	t.Helper()
+	fx := testfixture.Stars(t)
+
+	for _, name := range procs {
+		t.Run(name, func(t *testing.T) {
+
+			if err := dumpFunction(fx.SDB, name, "region.c", func(w io.Writer, f *typeinfo.Function) {
+				if err := DumpFuncRegion(w, fx.Image, fx.SDB, f, DumpOptions{}); err != nil {
+					t.Fatal(err)
+				}
+			}); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
 func TestDASM_IRSnapshots(t *testing.T) {
 	t.Helper()
 	fx := testfixture.Stars(t)

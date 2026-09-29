@@ -113,6 +113,9 @@ func sameExpr(a, b Expr) bool {
 	case *Words:
 		bv, ok := b.(*Words)
 		return ok && sameExprs(av.Words, bv.Words)
+	case *Cond:
+		bv, ok := b.(*Cond)
+		return ok && sameExpr(av.Cond, bv.Cond) && sameExpr(av.Then, bv.Then) && sameExpr(av.Else, bv.Else)
 	case *Merge:
 		bv, ok := b.(*Merge)
 		if !ok || av.Join != bv.Join || !typeinfo.Equals(av.TypeInfo, bv.TypeInfo) || len(av.Arms) != len(bv.Arms) {

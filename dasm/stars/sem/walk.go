@@ -273,6 +273,18 @@ func (w *semRewriter) rewriteExprChildren(expr Expr) (Expr, bool) {
 		next := *e
 		next.Target = target
 		return &next, true
+	case *Cond:
+		cond, condChanged := w.rewriteExpr(e.Cond)
+		then, thenChanged := w.rewriteExpr(e.Then)
+		els, elseChanged := w.rewriteExpr(e.Else)
+		if !condChanged && !thenChanged && !elseChanged {
+			return expr, false
+		}
+		next := *e
+		next.Cond = cond
+		next.Then = then
+		next.Else = els
+		return &next, true
 	case *Merge:
 		arms, changed := w.rewriteMergeArms(e.Arms)
 		if !changed {
@@ -478,6 +490,11 @@ func walkExpr(expr Expr, visit exprVisitor) {
 
 	case *AddressOf:
 		walkExpr(e.Target, visit)
+
+	case *Cond:
+		walkExpr(e.Cond, visit)
+		walkExpr(e.Then, visit)
+		walkExpr(e.Else, visit)
 
 	case *Merge:
 		for _, arm := range e.Arms {

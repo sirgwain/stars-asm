@@ -59,7 +59,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 
 	result.Functions = make(map[string]DumpAllAnalysis, len(funcs))
 	funcAnalyses := make(map[string]FuncAnalysis, len(funcs))
-	funcIRBodies := make(map[string]string, len(funcs))
+	funcCBodies := make(map[string]string, len(funcs))
 	funcPathFacts := UnionFacts{
 		FunctionPathFacts: make([]typeinfo.FunctionPathFactJSON, 0, len(funcs)),
 	}
@@ -342,18 +342,19 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 			}
 		}
 
-		if opt.EmitIR || opt.EmitC {
-			// record the IR body for later
+		if opt.EmitC {
+			// record the structured C body for the module files
+			var buf bytes.Buffer
+			if err := renderFuncRegion(&buf, analysis, DumpOptions{}); err != nil {
+				return result, fmt.Errorf("dump c %s: %w", function.Name, err)
+			}
+			funcCBodies[function.Name] = buf.String()
+		}
+
+		if opt.EmitIR {
 			var buf bytes.Buffer
 			if err := renderFuncIR(&buf, analysis, templates.DumpIROptions{ShowIR: true}); err != nil {
 				return result, fmt.Errorf("dump ir %s: %w", function.Name, err)
-			}
-			funcIRBodies[function.Name] = buf.String()
-
-			// don't dump individual IR files
-			if !opt.EmitIR {
-				slog.Debug("Rendering IR", "fs", function.Name)
-				continue
 			}
 			path := filepath.Join(irOutDir, function.Name+".ir.c")
 			f, err := os.Create(path)
@@ -416,7 +417,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 			path := filepath.Join(opt.OutDir, module+".c")
 			globals := sdb.GetGlobalsForModule(module)
 			functions := sdb.GetFunctionsForModule(module)
-			bodies, err := moduleIRBodies(functions, funcIRBodies)
+			bodies, err := moduleCBodies(functions, funcCBodies)
 			if err != nil {
 				return DumpAllResult{}, err
 			}
@@ -440,13 +441,13 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 	return result, nil
 }
 
-// moduleIRBodies returns rendered IR functions for a module source file.
-func moduleIRBodies(functions []*typeinfo.Function, rendered map[string]string) (map[string]string, error) {
+// moduleCBodies returns the rendered C functions for a module source file.
+func moduleCBodies(functions []*typeinfo.Function, rendered map[string]string) (map[string]string, error) {
 	bodies := make(map[string]string, len(functions))
 	for _, function := range functions {
 		body, ok := rendered[function.Name]
 		if !ok {
-			return nil, fmt.Errorf("missing rendered ir for %s", function.Name)
+			return nil, fmt.Errorf("missing rendered c for %s", function.Name)
 		}
 		bodies[function.Name] = body
 	}
