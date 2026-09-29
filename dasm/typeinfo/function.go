@@ -16,6 +16,18 @@ const ParamSemanticCallbackProc = "callback_proc"
 // window's integer control ID instead of a menu, as CreateWindow's does.
 const ParamSemanticMenuOrID = "menu_or_id"
 
+// ParamSemanticByteCount marks a byte count sized by the elements the
+// call's pointer arguments point to, such as memset's count.
+const ParamSemanticByteCount = "byte_count"
+
+// ParamSemanticAllocSize marks an allocator's byte count, sized by the
+// elements its result is stored as, such as LpAlloc's cb.
+const ParamSemanticAllocSize = "alloc_size"
+
+// ParamSemanticRecord marks a pointer to the bytes of a record in its Win16
+// file layout, such as WriteRt's rg.
+const ParamSemanticRecord = "record"
+
 // Function describes a function from nb09 data
 type Function struct {
 	// NativeDecl overrides emitted C without changing the Win16 analysis signature.

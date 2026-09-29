@@ -1,0 +1,54 @@
+/*
+CBattles  (vcr)
+  addr: 001e:028c  len=213
+  sig:  int16_t CBattles()
+  locals:
+    int16_t          cBattles       [BP-0xc]
+    HB *             lphb           [BP-0xa]
+    BTLDATA *        lpbd           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_028c:
+    cBattles = 0
+    lphb = rglphb[11]
+    branch lphb != 0x0 ? L_02bf : L_02b9
+
+
+L_02b9:
+    return 0
+
+L_02bf:
+    lpbd = ptroff(lphb, (sizeof(HB) + 2))
+
+L_02d3:
+    branch lpbd->id != 0xffff ? L_0329 : L_02df
+
+L_02df:
+    lphb = lphb->lphbNext
+    branch lphb != 0x0 ? L_0302 : L_030f
+
+
+L_0302:
+    branch lphb->ibTop > sizeof(HB) ? L_0315 : L_030f
+
+L_030f:
+    return cBattles
+
+L_0315:
+    lpbd = ptroff(lphb, (sizeof(HB) + 2))
+    goto L_02d3
+
+L_0329:
+    branch lpbd->cbData != 0x0 ? L_033f : L_0336
+
+L_0336:
+    return cBattles
+
+L_033f:
+    lpbd = ptroff(lpbd, lpbd->cbData)
+    cBattles = (cBattles + 1)
+
+L_0358:
+    goto L_02d3
+

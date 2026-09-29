@@ -46,7 +46,7 @@ L_606b:
     goto L_609f;
 
 L_6084:
-    memset(&(xfer.pl), 0, 0x38);
+    memset(&(xfer.pl), 0, sizeof(PLANET));
     ppl = &(xfer.pl);
 
 L_609f:

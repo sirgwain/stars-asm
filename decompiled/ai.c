@@ -50,7 +50,7 @@ L_0060:
 
 L_007d:
     vlpbAiPlanet = LpAlloc((game.cPlanMax * 16), htMisc);
-    vrglpplAi = LpAlloc((game.cPlanMax * 4), htMisc);
+    vrglpplAi = LpAlloc((game.cPlanMax * sizeof(PLANET *)), htMisc);
     if ((vlpbAiData != 0x0))
         goto L_00ff;
     else
@@ -282,7 +282,7 @@ L_03a3:
         goto L_03b3;
 
 L_03b3:
-    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
+    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
 
 L_03c3:
     if ((j <= 50))
@@ -303,7 +303,7 @@ L_03d1:
         goto L_03f5;
 
 L_03f5:
-    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
+    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
 
 L_0405:
     if ((j <= 12))
@@ -316,7 +316,7 @@ L_040e:
 
 L_0413:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
         goto L_0435;
     else
         goto L_042f;
@@ -326,7 +326,7 @@ L_042f:
     goto L_0441;
 
 L_0435:
-    t_merge_0441_0001 = (((int32_t)(j) / 2) + 0xffff);
+    t_merge_0441_0001 = (((int32_t)(j) / 2) - 0x1);
 
 L_0441:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_0441_0001);
@@ -395,7 +395,7 @@ L_0501:
     cExistCargo = CheckAiShdefStatus(11, 13, cRecyclePeriod, &(iLatestCargo), rgRecycleShdef);
     CheckAiShdefStatus(9, 10, cRecyclePeriod, &(iLatestBomber), rgRecycleShdef);
     CheckAiShdefStatus(2, 5, cRecyclePeriod, &(iLatestMeta), rgRecycleShdef);
-    CheckAiShdefStatus(6, 7, ((uint32_t)(LOWORD((0x3 * cRecyclePeriod))) / 0x2), &(iLatestBattle), rgRecycleShdef);
+    CheckAiShdefStatus(6, 7, ((uint32_t)((0x3 * cRecyclePeriod)) / 0x2), &(iLatestBattle), rgRecycleShdef);
     if ((game.turn <= 0x50))
         goto L_0611;
     else
@@ -965,7 +965,7 @@ L_0e60:
     goto L_0edb;
 
 L_0e88:
-    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(((uint32_t)(LOWORD((0x3 * rgCosts[j]))) / 0x5)));
+    rgResAvail[j] = (rgResAvail[j] - (uint32_t)(((uint32_t)((0x3 * rgCosts[j])) / 0x5)));
     if ((rgResAvail[j] < 0))
         goto TryShip3;
     else
@@ -1445,7 +1445,7 @@ L_16d2:
         goto L_16f7;
 
 L_16f7:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[lpplDrop->id];
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
@@ -1462,7 +1462,7 @@ L_16f7:
         goto L_10bf;
 
 L_17e9:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.id = lpplDrop->id;
     ord.grobj = grobjPlanet;
     ord.pt = rgptPlan[lpplDrop->id];
@@ -1956,7 +1956,7 @@ L_20dd:
         goto L_20f5;
 
 L_20f5:
-    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < (LOWORD(((ish - 11) * 3)) + 0x4)))
+    if (((int16_t)(rgplr[idPlayer].rgTech[3]) < (((ish - 11) * 3) + 0x4)))
         goto L_21e7;
     else
         goto L_2122;
@@ -2741,7 +2741,7 @@ L_2d68:
         goto L_2d7c;
 
 L_2d7c:
-    if ((cshWar <= LOWORD((vrgAiArmadaPotency[0] * 0x3))))
+    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x3)))
         goto L_2da3;
     else
         goto L_2d8f;
@@ -3331,7 +3331,7 @@ L_3740:
         goto L_3750;
 
 L_3750:
-    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
+    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
 
 L_3760:
     if ((j <= 50))
@@ -3352,7 +3352,7 @@ L_376e:
         goto L_3792;
 
 L_3792:
-    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
+    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
 
 L_37a2:
     if ((j <= 12))
@@ -3365,7 +3365,7 @@ L_37ab:
 
 L_37b0:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
         goto L_37d2;
     else
         goto L_37cc;
@@ -3375,7 +3375,7 @@ L_37cc:
     goto L_37de;
 
 L_37d2:
-    t_merge_37de_0001 = (((int32_t)(j) / 2) + 0xffff);
+    t_merge_37de_0001 = (((int32_t)(j) / 2) - 0x1);
 
 L_37de:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_37de_0001);
@@ -3763,7 +3763,7 @@ L_3f4c:
         goto L_3f58;
 
 L_3f58:
-    if ((cExistCargo >= ((int32_t)(LOWORD((10 * cFr))) / 0x7)))
+    if ((cExistCargo >= ((int32_t)((10 * cFr)) / 0x7)))
         goto L_3fa0;
     else
         goto L_3f6d;
@@ -4483,7 +4483,7 @@ L_4c57:
         goto L_4c6e;
 
 L_4c6e:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
@@ -4659,7 +4659,7 @@ L_4f79:
         goto L_4eb0;
 
 L_4fa8:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.id = lppl->id;
     ord.grobj = grobjPlanet;
     ord.pt = rgptPlan[lppl->id];
@@ -4798,7 +4798,7 @@ L_5262:
 
 L_5290:
     vlpbAiPlanet[((lpplDest->id * 16) + 10)] = (vlpbAiPlanet[((lpplDest->id * 16) + 0xa)] | 0x80);
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.id = lpplDest->id;
     ord.grobj = grobjPlanet;
     ord.pt = rgptPlan[lpplDest->id];

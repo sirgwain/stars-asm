@@ -1,12 +1,12 @@
 /*
 DropSalvage  (battle)
   addr: 001f:24dc  len=1142
-  sig:  void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt)
+  sig:  void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT16 *ppt)
   params:
     THING * *        plpth          [BP+0x6]
     int32_t *        rgwtMinerals   [BP+0x8]
     int16_t          iplr           [BP+0xc]
-    POINT *          ppt            [BP+0xe]
+    POINT16 *        ppt            [BP+0xe]
   locals:
     THING *          lpth           [BP-0x10]
     int16_t          i              [BP-0xc]

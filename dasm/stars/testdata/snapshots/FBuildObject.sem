@@ -496,7 +496,7 @@ L_28f0:
     branch lpth->thp.iWarp != iWarp ? L_2956 : L_2909
 
 L_2909:
-    branch lpth->thp.idPlanet != (lppl->idFling + 0xffff) ? L_2956 : L_2928
+    branch lpth->thp.idPlanet != (lppl->idFling - 0x1) ? L_2956 : L_2928
 
 L_2928:
     branch lpth->thp.iDecayRate != iDecayRate ? L_2956 : L_2941
@@ -561,7 +561,7 @@ L_2b35:
 L_2b3e:
     lpth->thp.iWarp = iWarp
     lpth->thp.iDecayRate = iDecayRate
-    lpth->thp.idPlanet = (lppl->idFling + 0xffff)
+    lpth->thp.idPlanet = (lppl->idFling - 0x1)
     lpth->pt = rgptPlan[lppl->id]
     call FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
     goto L_2fc9
@@ -687,7 +687,7 @@ L_2ee9:
     goto L_2fc9
 
 L_2f77:
-    branch iItem > 27 ? L_23d6 : L_2f7f
+    branch (uint16_t)iItem > 27 ? L_23d6 : L_2f7f
 
 L_2f7f:
     tablejump (iItem * 2) [0x0: L_2505, 0x2: L_23dc, 0x4: L_25c4, 0x6: L_2fc9, 0x8: L_2da8, 0xa: L_2da8, 0xc: L_2681, 0xe: L_23dc, 0x10: L_2505, 0x12: L_25c4, 0x14: L_2fc9, 0x16: L_2fc9, 0x18: L_2da8, 0x1a: L_2c05, 0x1c: L_2681, 0x1e: L_2681, 0x20: L_2681, 0x22: L_2681, 0x24: L_2ee9, 0x26: L_2ee9, 0x28: L_2ee9, 0x2a: L_2ee9, 0x2c: L_2ee9, 0x2e: L_2ee9, 0x30: L_2ee9, 0x32: L_2ee9, 0x34: L_2ee9, 0x36: L_2ec1]

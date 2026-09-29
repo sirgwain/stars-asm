@@ -95,7 +95,7 @@ L_13fa:
     goto L_1510;
 
 L_142c:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_1510;
     else
         goto L_1448;

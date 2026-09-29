@@ -1,4 +1,4 @@
-int16_t FGetMouseMove(POINT *ppt) {
+int16_t FGetMouseMove(POINT16 *ppt) {
     MSG msg;
 
 L_4146:
@@ -17,7 +17,7 @@ L_417c:
 
 L_4185:
     ppt->x = LOWORD(msg.lParam);
-    ppt->y = (LOWORD((uint32_t)((msg.lParam >> 0x10))) & 0xffff);
+    ppt->y = HIWORD(msg.lParam);
     if ((msg.message == 0x202))
         goto L_41ba;
     else

@@ -147,10 +147,10 @@ L_7980:
     goto L_7a08
 
 L_7988:
-    branch rglpshdefSB[idPlayer][((loword((3 * i)) + 4) + j)].fFree != 0x0 ? L_7a04 : L_79c1
+    branch rglpshdefSB[idPlayer][(((3 * i) + 4) + j)].fFree != 0x0 ? L_7a04 : L_79c1
 
 L_79c1:
-    branch rglpshdefSB[idPlayer][((loword((3 * i)) + 4) + j)].cExist <= 0x0 ? L_7a04 : L_7a11
+    branch rglpshdefSB[idPlayer][(((3 * i) + 4) + j)].cExist <= 0x0 ? L_7a04 : L_7a11
 
 
 
@@ -172,7 +172,7 @@ L_7a22:
     goto L_7a68
 
 L_7a2a:
-    branch FCreateAiStarbase(((loword((3 * i)) + 4) + j), (j + 1), vrgSBMacAisb[k], (k - 1)) != 0 ? L_7a71 : L_7a64
+    branch FCreateAiStarbase((((3 * i) + 4) + j), (j + 1), vrgSBMacAisb[k], (k - 1)) != 0 ? L_7a71 : L_7a64
 
 L_7a64:
     k = (k - 1)

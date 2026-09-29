@@ -5,7 +5,7 @@ int16_t  vrgPopRad[19] = {25, 50, 100, 200, 400, 800, 1000, 1500, 2250, 3000, 40
 
 LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
-    POINT       pt;
+    POINT16     pt;
     PAINTSTRUCT ps;
     RECT        rc;
     int16_t     iScanNew;
@@ -29,8 +29,13 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     int16_t     dy;
     int16_t     dx;
     HWND        t_merge_0053_0001;
+    POINT       t_pt_027c;
+    POINT       t_pt_028c_1;
     GrobjClass  t_merge_04e7_0001;
+    int16_t     t_07cc;
     uint16_t    t_merge_081f_0001;
+    int16_t     t_0883;
+    int16_t     t_08b4;
     int32_t    *t_assign_1;
     int32_t    *t_assign_2;
     uint16_t    t_merge_0b3c_0001;
@@ -186,17 +191,21 @@ L_0263:
     goto L_0eea;
 
 L_0275:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndScanner, &(pt));
+    t_pt_027c = PointFrom16(pt);
+    GetCursorPos(&(t_pt_027c));
+    pt = PointTo16(t_pt_027c);
+    t_pt_028c_1 = PointFrom16(pt);
+    ScreenToClient(hwndScanner, &(t_pt_028c_1));
+    pt = PointTo16(t_pt_028c_1);
     GetClientRect(hwnd, &(rc));
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto Default;
     else
         goto L_02ba;
 
 L_02ba:
     rc.bottom = (rc.bottom - dySBar);
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto L_03c3;
     else
         goto L_02da;
@@ -288,7 +297,7 @@ L_03da:
 L_03e6:
     SetFocus(hwndFrame);
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     GetClientRect(hwnd, &(rc));
     if ((pt.y < (rc.bottom - dySBar)))
         goto L_04a8;
@@ -558,8 +567,9 @@ L_07b6:
     iChecked = c;
 
 L_07bd:
+    t_07cc = c;
     c = (c + 1);
-    rgid[c] = ((int32_t)(lpfl->id) | 0x80000000);
+    rgid[t_07cc] = ((int32_t)(lpfl->id) | 0x80000000);
     if ((c < 98))
         goto L_0738;
     else
@@ -618,15 +628,17 @@ L_0879:
         goto L_0883;
 
 L_0883:
+    t_0883 = c;
     c = (c + 1);
-    rgid[c] = -1;
+    rgid[t_0883] = -1;
     fSep = 1;
 
 L_08a3:
+    t_08b4 = c;
     c = (c + 1);
-    t_assign_1 = &(rgid[c]);
+    t_assign_1 = &(rgid[t_08b4]);
     *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
-    t_assign_2 = &(rgid[c]);
+    t_assign_2 = &(rgid[t_08b4]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
     if ((c >= 100))
         goto L_08ec;
@@ -1170,7 +1182,7 @@ L_0f7c:
     goto L_0fb5;
 
 L_0f8f:
-    if (((iScanZoom + 4) > 8))
+    if (((uint16_t)((iScanZoom + 4)) > 8))
         goto L_0fb5;
     else
         goto L_0f9a;
@@ -1247,7 +1259,7 @@ L_1043:
     goto L_107d;
 
 L_1057:
-    if (((iScanZoom + 4) > 8))
+    if (((uint16_t)((iScanZoom + 4)) > 8))
         goto L_107d;
     else
         goto L_1062;
@@ -1286,11 +1298,11 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     int16_t  j;
     int16_t  yTop;
     int16_t  xMax;
-    POINT    pt;
+    POINT16  pt;
     int16_t  id;
     COLORREF crFore;
     int16_t  iBkPrev;
-    POINT    ptD;
+    POINT16  ptD;
     PLANET  *lpplMac;
     int16_t  yBmp;
     int16_t  dy;
@@ -1313,11 +1325,11 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     RECT     rcDraw;
     int16_t  dRange;
     int16_t  idP;
-    POINT    ptO;
+    POINT16  ptO;
     int16_t  fSelected;
     int16_t  fMA;
     int16_t  fStarbase;
-    POINT    ptSelMain;
+    POINT16  ptSelMain;
     THING   *lpthMac;
     int16_t  fStargate;
     uint16_t mdScanBase;
@@ -1326,7 +1338,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     HBRUSH   hbrSav;
     int16_t  xLeft;
     int16_t  fDoDraw;
-    POINT    ptOrigin;
+    POINT16  ptOrigin;
     RECT     rc;
     int32_t  l;
     COLORREF crBack;
@@ -1339,7 +1351,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     int16_t  dThingRange;
     int16_t  ropSav;
     int16_t  fDetonating;
-    POINT    pt2;
+    POINT16  pt2;
     THING   *lpthDest;
     HBITMAP  hbmpTrSav;
     int16_t  fTerra;
@@ -1353,6 +1365,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     int16_t  iRel;
     int32_t  lPop;
     COLORREF cr;
+    POINT    t_pt_1245_1;
     uint16_t t_merge_12ec_0001;
     COLORREF t_merge_17fc_0001;
     COLORREF t_merge_1834_0001;
@@ -1457,7 +1470,9 @@ L_11f9:
     SetWindowOrg(hdc, (prc->left & 0xfff8), (prc->top & 0xfff8));
     pt.y = 0;
     pt.x = 0;
-    ClientToScreen(hwndScanner, &(pt));
+    t_pt_1245_1 = PointFrom16(pt);
+    ClientToScreen(hwndScanner, &(t_pt_1245_1));
+    pt = PointTo16(t_pt_1245_1);
     ptOrigin.x = (((ptOrigin.x + 0x8) - (pt.x & 0x7)) & 0x7);
     ptOrigin.y = (((ptOrigin.y + 0x8) - (pt.y & 0x7)) & 0x7);
     rcDraw = *(prc);
@@ -1899,7 +1914,7 @@ L_1b6b:
 
 L_1b86:
     dThingRange = (lpth->thp.iWarp + 4);
-    dThingRange = LOWORD((dThingRange * dThingRange));
+    dThingRange = (dThingRange * dThingRange);
     if ((vpctRadarView >= 100))
         goto L_1bc8;
     else
@@ -2777,7 +2792,7 @@ L_2d42:
     goto L_2d74;
 
 L_2d54:
-    if (((iScanZoom + 1) > 5))
+    if (((uint16_t)((iScanZoom + 1)) > 5))
         goto L_2d74;
     else
         goto L_2d5f;
@@ -4111,7 +4126,7 @@ L_447c:
         goto L_4486;
 
 L_4486:
-    BitBlt(hdc, (pt.x - 5), (pt.y - 5), 11, 11, hdcMem, 11, (LOWORD((11 * yBmp)) + 36), SRCPAINT);
+    BitBlt(hdc, (pt.x - 5), (pt.y - 5), 11, 11, hdcMem, 11, ((11 * yBmp) + 36), SRCPAINT);
     if (((grbitScan & 0x1000) == 0x0))
         goto L_4178;
     else
@@ -4948,12 +4963,12 @@ void DrawShipScanPath(HDC hdc, int16_t fShow) {
     int16_t  rgDup[87];
     int16_t  j;
     HPEN     hpenSav;
-    POINT    pt2;
-    POINT    pt;
+    POINT16  pt2;
+    POINT16  pt;
     int16_t  iRopSav;
     int16_t  dy;
     ORDER   *lpord1;
-    POINT    ptCur;
+    POINT16  ptCur;
     FLEET   *lpfl;
     int16_t  i;
     int16_t  fHdc;
@@ -4963,9 +4978,9 @@ void DrawShipScanPath(HDC hdc, int16_t fShow) {
     RECT     rc;
     THING   *lpth;
     double   dAngle;
-    POINT    rgptArrow[2];
+    POINT16  rgptArrow[2];
     int16_t  dx5;
-    POINT    ptTick;
+    POINT16  ptTick;
     int16_t  dy5;
     double   m;
     int16_t  id;
@@ -5139,7 +5154,7 @@ L_56c4:
         goto L_56d1;
 
 L_56d1:
-    lWarp2 = (uint32_t)(LOWORD((LOWORD((lpfl->iwarpFlt * lpfl->iwarpFlt)) * 0x5)));
+    lWarp2 = (uint32_t)(((lpfl->iwarpFlt * lpfl->iwarpFlt) * 0x5));
 
 LCommonLineCode:
     GetClientRect(hwndScanner, &(rc));
@@ -5661,9 +5676,9 @@ L_62d2:
 void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw) {
     int16_t    fhdc;
     COLORREF   crText;
-    POINT      pt2;
+    POINT16    pt2;
     int16_t    id;
-    POINT      pt;
+    POINT16    pt;
     int16_t    grReal;
     int16_t    iBkPrev;
     int16_t    c;
@@ -6424,7 +6439,7 @@ void RedrawScanSel(HDC hdc, int16_t fVis) {
     int16_t  sel_grobj;
     int16_t  fhdc;
     int16_t  dOff;
-    POINT    pt;
+    POINT16  pt;
     int16_t  sel_id;
     int16_t  fNoSelRedraw;
     SCAN     sel_scan;
@@ -6587,11 +6602,11 @@ L_7155:
     return;
 }
 
-int16_t FEnsurePointOnScreen(POINT pt, int16_t fScroll) {
+int16_t FEnsurePointOnScreen(POINT16 pt, int16_t fScroll) {
     int16_t cy;
     int16_t fFix;
     int16_t cx;
-    POINT   ptCtr;
+    POINT16 ptCtr;
     RECT    rc;
 
 L_715c:
@@ -6604,7 +6619,7 @@ L_715c:
     rc.right = ((xScanTop + cx) - 20);
     rc.bottom = ((dGalInv - yScanTop) - 10);
     rc.top = ((((dGalInv - yScanTop) - 10) - cy) + 20);
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto L_71e7;
     else
         goto L_71e1;
@@ -6657,7 +6672,7 @@ L_725a:
     return 0;
 }
 
-void CtrPointScan(POINT pt, int16_t fScroll) {
+void CtrPointScan(POINT16 pt, int16_t fScroll) {
     int16_t  dxCur;
     int16_t  cy;
     int16_t  y;
@@ -6685,7 +6700,7 @@ L_729a:
     rc.bottom = (rc.bottom - dySBar);
     cx = ScanToPt(rc.right);
     cy = ScanToPt(rc.bottom);
-    if (((x - (cx >> 0x1)) <= 0x3e8))
+    if (((x - (cx >> 0x1)) <= 1000))
         goto L_72ee;
     else
         goto L_72df;
@@ -6805,14 +6820,14 @@ L_7447:
     return;
 }
 
-void LogicalToScan(POINT *ppt) {
+void LogicalToScan(POINT16 *ppt) {
 L_744e:
     ppt->x = PtToScan((ppt->x - xScanTop));
     ppt->y = PtToScan(((dGalInv - ppt->y) - yScanTop));
     return;
 }
 
-void ScanToLogical(POINT *ppt) {
+void ScanToLogical(POINT16 *ppt) {
 L_7490:
     ppt->x = (ScanToPt(ppt->x) + xScanTop);
     ppt->y = (dGalInv - (ScanToPt(ppt->y) + yScanTop));
@@ -6837,13 +6852,13 @@ L_74fd:
     return;
 }
 
-int16_t FAddWayPoint(POINT ptIn, SCAN *pscan) {
+int16_t FAddWayPoint(POINT16 ptIn, SCAN *pscan) {
     HDC      hdc;
     int16_t  id;
     int16_t  dy;
     ORDER   *lpord;
     int16_t  lDist;
-    POINT    rgpt[3];
+    POINT16  rgpt[3];
     int16_t  dx;
     int16_t  cpt;
     int16_t  ipt;
@@ -6888,7 +6903,7 @@ L_75c6:
     dx = (ptIn.x - pscan->pt.x);
     dy = (ptIn.y - pscan->pt.y);
     lDist = ScanToPt(20);
-    if (((int32_t)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))))) <= (int32_t)(LOWORD((lDist * lDist)))))
+    if (((int32_t)(((uint32_t)(((int32_t)(dx) * (int32_t)(dx))) + (uint32_t)(((int32_t)(dy) * (int32_t)(dy))))) <= (int32_t)((lDist * lDist))))
         goto L_7680;
     else
         goto L_7644;
@@ -6961,7 +6976,7 @@ L_7788:
         goto L_7797;
 
 L_7797:
-    fmemmove((lpord + 1), lpord, (((sel.fl.cord - sel.iwpAct) - 1) * 18));
+    fmemmove((lpord + 1), lpord, (((sel.fl.cord - sel.iwpAct) - 1) * sizeof(ORDER)));
 
 L_77c2:
     *(lpord) = *((lpord - 1));
@@ -7032,7 +7047,7 @@ L_7942:
         goto L_794f;
 
 L_794f:
-    fmemset(((uint8_t *)(lpord) + -10), 0, 0xa);
+    fmemset(((uint8_t *)(lpord)-10), 0, 0xa);
     lpord[(-1)].grTask = grTaskNone;
     FLookupFleet(-1, &(sel.fl));
 
@@ -7264,7 +7279,7 @@ L_7ccc:
         goto L_7cd5;
 
 L_7cd5:
-    if ((lpord[(-1)].iWarp <= iWarp))
+    if ((lpord[(-1)].iWarp <= (uint16_t)(iWarp)))
         goto L_7d1e;
     else
         goto L_7cef;
@@ -7413,8 +7428,8 @@ L_7f8c:
 
 L_7fa3:
     lDist = LOWORD((int32_t)(DGetDistance(lpord->pt.x, lpord->pt.y, lpord[(-1)].pt.x, lpord[(-1)].pt.y)));
-    cSpeed = LOWORD((iWarp * iWarp));
-    cTravel = ((int32_t)(((LOWORD((iWarp * iWarp)) + lDist) + 0xffff)) / cSpeed);
+    cSpeed = (iWarp * iWarp);
+    cTravel = ((int32_t)((((iWarp * iWarp) + lDist) - 0x1)) / cSpeed);
 
 L_7feb:
     iWarp = (iWarp - 1);
@@ -7424,7 +7439,7 @@ L_7feb:
         goto L_7ffa;
 
 L_7ffa:
-    cSpeed = LOWORD((iWarp * iWarp));
+    cSpeed = (iWarp * iWarp);
     if ((cTravel == ((int32_t)(((lDist + cSpeed) - 1)) / cSpeed)))
         goto L_7feb;
     else
@@ -7459,7 +7474,7 @@ L_8068:
     return iWarp;
 }
 
-int16_t FNearAWayPoint(POINT pt, int16_t fLogical) {
+int16_t FNearAWayPoint(POINT16 pt, int16_t fLogical) {
     ORDER  *lpord;
     int16_t i;
     SCAN    scan;
@@ -7557,7 +7572,7 @@ L_8169:
     return 0;
 }
 
-int16_t FHandleWayPointDrag(POINT pt) {
+int16_t FHandleWayPointDrag(POINT16 pt) {
     int16_t  fChg;
     HDC      hdc;
     HPEN     hpenSav;
@@ -7569,13 +7584,13 @@ int16_t FHandleWayPointDrag(POINT pt) {
     HCURSOR  hcurSav;
     ORDER   *lpord;
     int16_t  i;
-    POINT    ptLogical;
-    POINT    ptNext;
+    POINT16  ptLogical;
+    POINT16  ptNext;
     int16_t  fDel;
-    POINT    rgpt[4];
-    POINT    ptNew;
+    POINT16  rgpt[4];
+    POINT16  ptNew;
     int16_t  cpt;
-    POINT    ptPrev;
+    POINT16  ptPrev;
     SCAN     scan;
     int16_t  fFirst;
     RECT     rc;
@@ -8172,7 +8187,7 @@ L_8af0:
     return fChg;
 }
 
-void DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt) {
+void DrawScanXorLines(HDC hdc, POINT16 *rgpt, int16_t cpt) {
     HPEN    hpenSav;
     int16_t iRopSav;
     int16_t i;
@@ -8267,7 +8282,11 @@ void ChangeScanSel(SCAN *pscan, int16_t fValidScan) {
     HDC      hdc;
     uint16_t t_merge_8d30_0001;
     uint16_t t_merge_8d6c_0001;
+    POINT16  t_pt_8dfc;
+    POINT16  t_pt_8e08;
     uint16_t t_merge_8f71_0001;
+    POINT16  t_pt_9001;
+    POINT16  t_pt_900d;
 
 L_8cc4:
     if ((fValidScan != 0))
@@ -8279,7 +8298,7 @@ L_8cd6:
     FFindNearestObject(pscan->pt, pscan->grobj, pscan);
 
 L_8cef:
-    if ((memcmp(pscan, &(sel.scan), 0x10) == 0))
+    if ((memcmp(pscan, &(sel.scan), sizeof(SCAN)) == 0))
         goto L_9095;
     else
         goto L_8d0d;
@@ -8338,8 +8357,16 @@ L_8d78:
     rcMine.bottom = (rcMine.top - iRad);
     rcMine.left = (rcMine.left - iRad);
     rcMine.top = (rcMine.top + iRad);
-    LogicalToScan((POINT *)(&(rcMine)));
-    LogicalToScan((POINT *)(&(rcMine.right)));
+    t_pt_8dfc.x = rcMine.left;
+    t_pt_8dfc.y = rcMine.top;
+    LogicalToScan(&(t_pt_8dfc));
+    rcMine.left = t_pt_8dfc.x;
+    rcMine.top = t_pt_8dfc.y;
+    t_pt_8e08.x = rcMine.right;
+    t_pt_8e08.y = rcMine.bottom;
+    LogicalToScan(&(t_pt_8e08));
+    rcMine.right = t_pt_8e08.x;
+    rcMine.bottom = t_pt_8e08.y;
     InflateRect(&(rcMine), 1, 1);
 
 L_8e24:
@@ -8430,8 +8457,16 @@ L_8f7d:
     rcMine.bottom = (rcMine.top - iRad);
     rcMine.left = (rcMine.left - iRad);
     rcMine.top = (rcMine.top + iRad);
-    LogicalToScan((POINT *)(&(rcMine)));
-    LogicalToScan((POINT *)(&(rcMine.right)));
+    t_pt_9001.x = rcMine.left;
+    t_pt_9001.y = rcMine.top;
+    LogicalToScan(&(t_pt_9001));
+    rcMine.left = t_pt_9001.x;
+    rcMine.top = t_pt_9001.y;
+    t_pt_900d.x = rcMine.right;
+    t_pt_900d.y = rcMine.bottom;
+    LogicalToScan(&(t_pt_900d));
+    rcMine.right = t_pt_900d.x;
+    rcMine.bottom = t_pt_900d.y;
     InflateRect(&(rcMine), 1, 1);
 
 L_9029:
@@ -8679,7 +8714,7 @@ L_92ca:
     return 1;
 
 L_92f2:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_944c;
     else
         goto L_930e;
@@ -8898,13 +8933,13 @@ L_95fc:
     pch = (pch + 1);
 
 L_960c:
-    if (((_ctype[((int16_t)(*(pch)) + 1)] & 0x4) == 0x0))
+    if ((isdigit((int16_t)(*(pch))) == 0x0))
         goto L_9657;
     else
         goto L_9627;
 
 L_9627:
-    ifl = ((LOWORD((10 * ifl)) + (int16_t)(*(pch))) - 48);
+    ifl = (((10 * ifl) + (int16_t)(*(pch))) - 48);
     pch = (pch + 1);
     if ((ifl > 512))
         goto LNotAFleetId;
@@ -8975,7 +9010,7 @@ L_9780:
     return 0;
 }
 
-void GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD) {
+void GetScanFleetOrientation(FLEET *lpfl, POINT16 *ppt, POINT16 *pptD) {
     int16_t dy;
     int16_t dx;
 
@@ -9032,7 +9067,7 @@ L_9875:
     return;
 }
 
-void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD) {
+void GetDxDyOrientation(int16_t dx, int16_t dy, POINT16 *ppt, POINT16 *pptD) {
     double   dbl;
     int16_t  iBmp;
     uint16_t t_merge_9938_0001;
@@ -9084,20 +9119,20 @@ L_9957:
     ppt->x = 0;
 
 L_995e:
-    ppt->y = LOWORD((iBmp * pptD->y));
+    ppt->y = (iBmp * pptD->y);
     return;
 }
 
-int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt) {
+int16_t FHandleMeasuringTape(SCAN *pscan, POINT16 pt) {
     HDC      hdc;
     HPEN     hpenSav;
     SBAR     sbar;
-    POINT    ptLogLast;
+    POINT16  ptLogLast;
     int16_t  grTypeIn;
-    POINT    ptLogical;
-    POINT    ptBase;
+    POINT16  ptLogical;
+    POINT16  ptBase;
     int16_t  iropSav;
-    POINT    ptNew;
+    POINT16  ptNew;
     char     szT[20];
     int16_t  fVirgin;
     SCAN     scan;

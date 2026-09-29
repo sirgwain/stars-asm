@@ -1,0 +1,199 @@
+/*
+LpflNew  (util)
+  addr: 0008:300c  len=869
+  sig:  FLEET * LpflNew(int16_t iPlr, int16_t idPl)
+  params:
+    int16_t          iPlr           [BP+0x6]
+    int16_t          idPl           [BP+0x8]
+  locals:
+    int16_t          iflPrev        [BP-0xe]
+    FLEET *          lpfl           [BP-0xc]
+    ORDER *          lpord          [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_300c:
+  insts 0..7  off 0x300c..0x3021
+  succs: L_3026
+  effects:
+    3015  store[2] [bp-iflPrev] = 0xffff
+    301a  store[2] [bp-i] = 0x0
+    301f  goto L_3026
+
+block L_3022:
+  insts 8..8  off 0x3022..0x3025
+  preds: L_3061, L_309e
+  succs: L_3026
+  effects:
+    3022  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_3026:
+  insts 9..11  off 0x3026..0x302d
+  preds: L_300c, L_3022
+  succs: L_3031, L_30ad
+  effects:
+    302c  branch load([bp-i]) >= load([cFleet]) ? L_30ad : L_3031
+
+block L_3031:
+  insts 13..25  off 0x3031..0x3055
+  preds: L_3026
+  succs: L_3059, L_3061
+  effects:
+    304b  store[2] [bp-lpfl] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))])
+    304e  store[2] [bp-lpfl+0x2] = load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2])
+    3054  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))]) != 0x0 ? L_3061 : L_3059
+
+block L_3059:
+  insts 27..28  off 0x3059..0x305d
+  preds: L_3031
+  succs: L_3061, L_30ad
+  effects:
+    305c  branch load(load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2]) == 0x0 ? L_30ad : L_3061
+
+block L_3061:
+  insts 30..33  off 0x3061..0x306c
+  preds: L_3031, L_3059
+  succs: L_3022, L_3073
+  effects:
+    306b  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) < load([bp+iPlr]) ? L_3022 : L_3073
+
+block L_3073:
+  insts 36..39  off 0x3073..0x307e
+  preds: L_3061
+  succs: L_3085, L_30ad
+  effects:
+    307d  branch load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2]) > load([bp+iPlr]) ? L_30ad : L_3085
+
+block L_3085:
+  insts 42..48  off 0x3085..0x3097
+  preds: L_3073
+  succs: L_309e, L_30ad
+  effects:
+    3096  branch (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) & 0x1ff) != (load([bp-iflPrev]) + 0x1) ? L_30ad : L_309e
+
+block L_309e:
+  insts 51..55  off 0x309e..0x30ac
+  preds: L_3085
+  succs: L_3022
+  effects:
+    30a7  store[2] [bp-iflPrev] = (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) & 0x1ff)
+    30aa  goto L_3022
+
+block L_30ad:
+  insts 56..71  off 0x30ad..0x30db
+  preds: L_3026, L_3059, L_3073, L_3085
+  succs: L_30df, L_311b
+  effects:
+    30c4  call LpReAlloc(words(load([rglpfl+0x2]), load([rglpfl])), (((load@30b1/src([cFleet]) + 0x1) << 0x1) << 0x1), 0x6) -> callresult(void *)
+    30cc  store[2] [rglpfl] = faroff(callresult(void *))
+    30cf  store[2] [rglpfl+0x2] = farseg(callresult(void *))
+    30da  branch load@30d6/dst([cFleet]) == load([bp-i]) ? L_311b : L_30df
+
+block L_30df:
+  insts 73..96  off 0x30df..0x311a
+  preds: L_30ad
+  succs: L_311b
+  effects:
+    3113  call fmemmove(words(load([rglpfl+0x2]), (load([rglpfl]) + (((load([bp-i]) + 0x1) << 0x1) << 0x1))), words(load([rglpfl+0x2]), (load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))), (((load([cFleet]) - load@30e2/src([bp-i])) << 0x1) << 0x1)) -> callresult(void *)
+
+block L_311b:
+  insts 97..180  off 0x311b..0x3213
+  preds: L_30ad, L_30df
+  succs: L_3217, L_3231
+  effects:
+    3123  call LpAlloc(0x7c, 0x5) -> callresult(void *)
+    312b  store[2] [bp-lpfl] = faroff(callresult(void *))
+    312e  store[2] [bp-lpfl+0x2] = farseg(callresult(void *))
+    3146  store[2] load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))] = faroff(callresult(void *))
+    3149  store[2] load([rglpfl+0x2]):[(load([rglpfl]) + ((load([bp-i]) << 0x1) << 0x1))+0x2] = farseg(callresult(void *))
+    314d  store[2] [cFleet] = (load([cFleet]) + 0x1)
+    3166  store[2] ss:[bp-0x10] = ((load@315d/src(ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x4]) + 0x1) & 0xfff)
+    3174  store[2] ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x4] = (load@3174/dst(ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x4]) & 0xf000)
+    318a  store[2] ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x4] = (load@318a/dst(ds:[(0x59a2 + loword((0xc0 * load([bp+iPlr]))))+0x4]) | load@3187/src(ss:[bp-0x10]))
+    319e  call fmemset(words(load([bp-lpfl+0x2]), load([bp-lpfl])), 0x0, 0x7c) -> callresult(void *)
+    31ac  store[2] ss:[bp-0x10] = (load([bp-iflPrev]) + 0x1)
+    31c4  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))] = ((load@31b8/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) & 0xfe00) | (load@31af/src(ss:[bp-0x10]) & 0x1ff))
+    31cf  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x2] = load@31cc/src([bp+iPlr])
+    31ed  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))] = ((load@31e1/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))]) & 0xe1ff) | ((load@31d3/src([bp+iPlr]) & 0xf) << 0x9))
+    3200  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4] = ((load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) & 0xff00) | 0x7)
+    320a  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x6] = load@3207/src([bp+idPl])
+    3212  branch load@320e/dst([bp+idPl]) == 0xffff ? L_3231 : L_3217
+
+block L_3217:
+  insts 182..189  off 0x3217..0x3230
+  preds: L_311b
+  succs: L_3231
+  effects:
+    3229  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x8] = load(ds:[((load([bp+idPl]) << 0x1) << 0x1)+0x2f40])
+    322d  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0xa] = load(ds:[((load([bp+idPl]) << 0x1) << 0x1)+0x2f42])
+
+block L_3231:
+  insts 190..237  off 0x3231..0x32cf
+  preds: L_311b, L_3217
+  succs: L_32d3, L_32d9
+  effects:
+    3234  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x62] = 0x1
+    324a  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4] = (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x4]) & 0xfdff)
+    325a  call LpplAlloc(0x12, 0x3, 0x0) -> callresult(PL *)
+    3265  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64] = faroff(callresult(PL *))
+    3269  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x66] = farseg(callresult(PL *))
+    3274  store[1] byte farseg(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64])):[faroff(load(dword farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64]))+0x3] = 0x1
+    3289  store[2] farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x76] = (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x76]) & 0xffef)
+    329d  store[2] [bp-lpord] = (load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x64]) + 0x4)
+    32a0  store[2] [bp-lpord+0x2] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x66])
+    32b1  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x8])
+    32b4  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x2] = load(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0xa])
+    32c2  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x4] = load@32bb/src(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x6])
+    32ce  branch load@32c9/dst(farseg(load(dword [bp-lpfl])):[faroff(load(dword [bp-lpfl]))+0x6]) == 0xffff ? L_32d9 : L_32d3
+
+block L_32d3:
+  insts 239..240  off 0x32d3..0x32d8
+  preds: L_3231
+  succs: L_32dc
+  effects:
+    32d6  goto L_32dc
+
+block L_32d9:
+  insts 241..241  off 0x32d9..0x32db
+  preds: L_3231
+  succs: L_32dc
+
+block L_32dc:
+  insts 242..273  off 0x32dc..0x3342
+  preds: L_32d3, L_32d9
+  succs: L_3346, L_3356
+  effects:
+    32dc  store[2] ss:[bp-0x10] = merge(Join: L_32dc, (L_32d3:0x1, L_32d9:0x4))
+    32fa  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = ((load@32ed/src(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xf0ff) | ((load(ss:[bp-0x10]) & 0xf) << 0x8))
+    3310  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = (load@3303/src(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xff0f)
+    3324  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = ((load@3317/src(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xefff) | 0x1000)
+    3338  store[2] farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6] = (load@332b/src(farseg(load(dword [bp-lpord])):[faroff(load(dword [bp-lpord]))+0x6]) & 0xfff0)
+    3341  branch load([sel+0x16]) == 0xffff ? L_3356 : L_3346
+
+block L_3346:
+  insts 275..277  off 0x3346..0x334d
+  preds: L_32dc
+  succs: L_3351, L_3356
+  effects:
+    334c  branch load([bp-i]) > load([sel+0x16]) ? L_3356 : L_3351
+
+block L_3351:
+  insts 279..279  off 0x3351..0x3355
+  preds: L_3346
+  succs: L_3356
+  effects:
+    3351  store[2] [sel+0x16] = (load([sel+0x16]) + 0x1)
+
+block L_3356:
+  insts 280..285  off 0x3356..0x336a
+  preds: L_32dc, L_3346, L_3351
+  succs: L_336b
+  effects:
+    335f  store[2] [gd+0x4] = (load([gd+0x4]) & 0xfbff)
+
+block L_336b:
+  insts 287..291  off 0x336b..0x3370
+  preds: L_3356
+  effects:
+    3370  return words(load([bp-lpfl+0x2]), load([bp-lpfl]))

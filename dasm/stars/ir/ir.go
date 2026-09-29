@@ -92,6 +92,11 @@ type FloatConst struct{ Value float64 }
 
 func (*FloatConst) expr() {}
 
+// SizeOf is the C sizeof of the named type.
+type SizeOf struct{ Type string }
+
+func (*SizeOf) expr() {}
+
 type StringConst struct{ Value string }
 
 func (*StringConst) expr() {}

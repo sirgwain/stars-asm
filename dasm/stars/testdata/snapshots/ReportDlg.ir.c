@@ -6,7 +6,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t     dx;
     uint16_t    swp;
     int16_t     cRow;
-    POINT       pt;
+    POINT16     pt;
     int16_t     ibit;
     int16_t     iCol;
     int16_t     iRow;
@@ -48,7 +48,7 @@ L_0097:
     SortReportCache(vprptCur->irpt, vprptCur->icolSort);
     SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
     StickyDlgPos(hwnd, &(vprptCur->ptDlg), 1);
-    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, 0x40000001, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
+    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
     if ((gd.fTutorial == 0x0))
         goto L_019b;
@@ -115,7 +115,7 @@ L_0273:
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL);
-    SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + 1), swp);
+    SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (((dyArial8 + 4) * vprptCur->cRowsVis) + 1), swp);
     SetHScrollBar();
     if ((msg != WM_CREATE))
         goto L_030b;
@@ -143,7 +143,7 @@ L_0337:
 L_0362:
     xCur = 2;
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     if ((pt.y < 2))
         goto L_09c8;
     else
@@ -352,7 +352,7 @@ L_05d7:
     rc.left = 2;
     rc.right = (rc.right - GetSystemMetrics(SM_CXVSCROLL));
     rc.top = (dyArial8 + 6);
-    rc.bottom = (LOWORD(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top);
+    rc.bottom = (((dyArial8 + 4) * vprptCur->cRowsVis) + rc.top);
     ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &(rc), &(rc));
     SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
     UpdateWindow(hwnd);

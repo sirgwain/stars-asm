@@ -109,6 +109,123 @@
           "semantic": "callback_proc"
         }
       ]
+    },
+    {
+      "name": "memset",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "fmemset",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "memcpy",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "fmemcpy",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "memmove",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "fmemmove",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "memcmp",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "fmemcmp",
+      "params": [
+        {
+          "name": "count",
+          "semantic": "byte_count"
+        }
+      ]
+    },
+    {
+      "name": "LpAlloc",
+      "params": [
+        {
+          "name": "cb",
+          "semantic": "alloc_size"
+        }
+      ]
+    },
+    {
+      "name": "LpReAlloc",
+      "params": [
+        {
+          "name": "cb",
+          "semantic": "alloc_size"
+        }
+      ]
+    },
+    {
+      "name": "LocalAlloc",
+      "params": [
+        {
+          "name": "arg2",
+          "semantic": "alloc_size"
+        }
+      ]
+    },
+    {
+      "name": "WriteRt",
+      "params": [
+        {
+          "name": "rg",
+          "semantic": "record"
+        }
+      ]
+    },
+    {
+      "name": "WriteMemRt",
+      "params": [
+        {
+          "name": "rg",
+          "semantic": "record"
+        }
+      ]
     }
   ]
 }

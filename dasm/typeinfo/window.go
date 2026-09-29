@@ -32,6 +32,21 @@ type WindowRule struct {
 	Class *WindowClass
 }
 
+// SentMessage is a control message a function sends to a window whose class
+// the function does not show, such as the item window of a DRAWITEMSTRUCT
+// that may be a listbox or a combo box. It names the message by its class's
+// enum where the number alone is ambiguous.
+type SentMessage struct {
+	Func  string
+	Enum  *Enum
+	Value int
+}
+
+type sentMessagesJSON struct {
+	Func     string   `json:"func"`
+	Messages []string `json:"messages"`
+}
+
 type windowClassJSON struct {
 	Class    string `json:"class"`
 	Messages string `json:"messages"`
@@ -81,6 +96,40 @@ func (l *enumLoader) loadWindows(path string, sdb *SymbolDB) error {
 			return fmt.Errorf("window rule %+v: window class %s not configured", w, w.Class)
 		}
 		sdb.WindowRules = append(sdb.WindowRules, rule)
+	}
+	for _, sent := range cfg.SentMessages {
+		if sent.Func == "" || len(sent.Messages) == 0 {
+			return fmt.Errorf("sent messages rule %+v must name a func and its messages", sent)
+		}
+		for _, name := range sent.Messages {
+			message, ok := sdb.controlMessageByName(name)
+			if !ok {
+				return fmt.Errorf("sent messages rule for %s: %s is not a window class message", sent.Func, name)
+			}
+			message.Func = sent.Func
+			sdb.SentMessages = append(sdb.SentMessages, message)
+		}
+	}
+	return nil
+}
+
+// controlMessageByName returns the window class message with the name.
+func (sdb *SymbolDB) controlMessageByName(name string) (*SentMessage, bool) {
+	for _, c := range sdb.WindowClasses {
+		if value, ok := enumValueByName(c.Messages, name); ok {
+			return &SentMessage{Enum: c.Messages, Value: value.Value}, true
+		}
+	}
+	return nil, false
+}
+
+// SentMessageEnum returns the enum naming a control message value a function
+// sends to a window of unknown class, or nil if no rule names it.
+func (sdb *SymbolDB) SentMessageEnum(funcName string, value int) *Enum {
+	for _, m := range sdb.SentMessages {
+		if m.Func == funcName && m.Value == value {
+			return m.Enum
+		}
 	}
 	return nil
 }

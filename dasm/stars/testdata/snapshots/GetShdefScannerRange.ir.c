@@ -97,7 +97,7 @@ L_51ca:
     goto L_525e;
 
 L_51e3:
-    lBIPR4 = (double)((int32_t)(LOWORD(((int16_t)(rgplr[iplr].rgTech[4]) * 10))));
+    lBIPR4 = (double)((int32_t)(((int16_t)(rgplr[iplr].rgTech[4]) * 10)));
     lBIR4 = (lBIPR4 * 2.0);
     lBIPR4 = (lBIPR4 * lBIPR4);
     lBIPR4 = (lBIPR4 * lBIPR4);

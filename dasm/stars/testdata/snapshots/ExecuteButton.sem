@@ -14,7 +14,7 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x24]
       int16_t          c              [BP-0x22]
       char *[12]       rgszScan       [BP-0x20]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
     block 000E:1076  len=0x284
       int16_t          iSel           [BP-0x8a]
       int32_t[20]      rgid           [BP-0x88]
@@ -22,7 +22,7 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x36]
       int16_t          ish            [BP-0x34]
       char *[20]       rgszScan       [BP-0x32]
-      POINT            pt             [BP-0xa]
+      POINT16          pt             [BP-0xa]
       uint16_t         grbitSh        [BP-0x6]
     block 000E:12FA  len=0x21F
       int16_t          iSel           [BP-0x58]
@@ -31,14 +31,14 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x24]
       int16_t          c              [BP-0x22]
       char *[12]       rgszScan       [BP-0x20]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
     block 000E:1519  len=0xF3
       int16_t          iSel           [BP-0x44]
       int32_t[9]       rgid           [BP-0x42]
       int16_t          i              [BP-0x1e]
       int16_t          c              [BP-0x1c]
       char *[9]        rgszScan       [BP-0x1a]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
 
   stats: blocks=4  labels=3
     LInvalS: L_12cb
@@ -144,8 +144,9 @@ L_0ebc:
 
 L_0ecd:
     call CchGetString(i, &szWork[(((i - 1278) * 30) + 160)]) -> callresult(int16_t)
+    t_0ef9 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[(((i - 1278) * 30) + 160)]
+    rgszScan[t_0ef9] = &szWork[(((i - 1278) * 30) + 160)]
     i = (i + 1)
 
 L_0f0d:
@@ -155,8 +156,9 @@ L_0f17:
     rgid[c] = 0
     szWork[250] = -1
     szWork[251] = 0
+    t_0f36 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[250]
+    rgszScan[t_0f36] = &szWork[250]
     i = 0
     goto L_0fba
 
@@ -173,16 +175,21 @@ L_0f6b:
 L_0f6f:
     rgid[c] = (uint32_t)t_merge_0f6f_0001
     call CchGetString((i + 1280), &szWork[(i * 30)]) -> callresult(int16_t)
+    t_0fa6 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[(i * 30)]
+    rgszScan[t_0fa6] = &szWork[(i * 30)]
     i = (i + 1)
 
 L_0fba:
     branch i < 4 ? L_0f50 : L_0fc3
 
 L_0fc3:
-    call GetCursorPos(&pt) -> callresult(void)
-    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    t_pt_0fca = PointFrom16(pt)
+    call GetCursorPos(&t_pt_0fca) -> callresult(void)
+    pt = PointTo16(t_pt_0fca)
+    t_pt_0fda_1 = PointFrom16(pt)
+    call ScreenToClient(hwndTb, &t_pt_0fda_1) -> callresult(void)
+    pt = PointTo16(t_pt_0fda_1)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_1013
 
@@ -228,8 +235,9 @@ L_1076:
 L_1083:
     rgid[c] = 0
     call CchGetString(i, &szWork[((i - 1275) * 20)]) -> callresult(int16_t)
+    t_10c5 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[((i - 1275) * 20)]
+    rgszScan[t_10c5] = &szWork[((i - 1275) * 20)]
     i = (i + 1)
 
 L_10d9:
@@ -239,8 +247,9 @@ L_10e3:
     rgid[c] = 0
     szWork[200] = -1
     szWork[201] = 0
+    t_1103 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[200]
+    rgszScan[t_1103] = &szWork[200]
     ish = 0
     grbitSh = 0x1
     goto L_1135
@@ -267,15 +276,20 @@ L_1172:
 
 L_1176:
     rgid[c] = (uint32_t)t_merge_1176_0001
+    t_1198 = c
     c = (c + 1)
-    rgszScan[c] = rgshdef[ish].hul.szClass
+    rgszScan[t_1198] = rgshdef[ish].hul.szClass
 
 L_11a8:
     goto L_1125
 
 L_11ab:
-    call GetCursorPos(&pt) -> callresult(void)
-    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    t_pt_11b2 = PointFrom16(pt)
+    call GetCursorPos(&t_pt_11b2) -> callresult(void)
+    pt = PointTo16(t_pt_11b2)
+    t_pt_11c2_1 = PointFrom16(pt)
+    call ScreenToClient(hwndTb, &t_pt_11c2_1) -> callresult(void)
+    pt = PointTo16(t_pt_11c2_1)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_11fe
 
@@ -352,8 +366,9 @@ L_12fa:
 L_130c:
     rgid[c] = 0
     call CchGetString(i, &szWork[(((i - 1275) * 25) + 200)]) -> callresult(int16_t)
+    t_134d = c
     c = (c + 1)
-    rgszScan[c] = &szWork[(((i - 1275) * 25) + 200)]
+    rgszScan[t_134d] = &szWork[(((i - 1275) * 25) + 200)]
     i = (i + 1)
 
 L_1361:
@@ -363,8 +378,9 @@ L_136b:
     rgid[c] = 0
     szWork[300] = -1
     szWork[301] = 0
+    t_138a = c
     c = (c + 1)
-    rgszScan[c] = &szWork[300]
+    rgszScan[t_138a] = &szWork[300]
     i = 0
     goto L_140e
 
@@ -381,16 +397,21 @@ L_13bf:
 L_13c3:
     rgid[c] = (uint32_t)t_merge_13c3_0001
     call CchGetString((i + 381), &szWork[(i * 25)]) -> callresult(int16_t)
+    t_13fa = c
     c = (c + 1)
-    rgszScan[c] = &szWork[(i * 25)]
+    rgszScan[t_13fa] = &szWork[(i * 25)]
     i = (i + 1)
 
 L_140e:
     branch i < 8 ? L_13a4 : L_1417
 
 L_1417:
-    call GetCursorPos(&pt) -> callresult(void)
-    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    t_pt_141e = PointFrom16(pt)
+    call GetCursorPos(&t_pt_141e) -> callresult(void)
+    pt = PointTo16(t_pt_141e)
+    t_pt_142e_1 = PointFrom16(pt)
+    call ScreenToClient(hwndTb, &t_pt_142e_1) -> callresult(void)
+    pt = PointTo16(t_pt_142e_1)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_1467
 
@@ -459,16 +480,21 @@ L_153b:
 L_153f:
     rgid[c] = (uint32_t)t_merge_153f_0001
     call _wsprintf(&szWork[(i * 8)], PCTDPCTPCT, vrgpctZoom[i]) -> callresult(int16_t)
+    t_1589 = c
     c = (c + 1)
-    rgszScan[c] = &szWork[(i * 8)]
+    rgszScan[t_1589] = &szWork[(i * 8)]
     i = (i + 1)
 
 L_159d:
     branch i < 9 ? L_1526 : L_15a6
 
 L_15a6:
-    call GetCursorPos(&pt) -> callresult(void)
-    call ScreenToClient(hwndTb, &pt) -> callresult(void)
+    t_pt_15ad = PointFrom16(pt)
+    call GetCursorPos(&t_pt_15ad) -> callresult(void)
+    pt = PointTo16(t_pt_15ad)
+    t_pt_15bd_1 = PointFrom16(pt)
+    call ScreenToClient(hwndTb, &t_pt_15bd_1) -> callresult(void)
+    pt = PointTo16(t_pt_15bd_1)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_15f6
 
@@ -477,7 +503,7 @@ L_15f6:
     goto L_167a
 
 L_160f:
-    branch itb > 17 ? L_167a : L_1617
+    branch (uint16_t)itb > 17 ? L_167a : L_1617
 
 L_1617:
     tablejump (itb * 2) [0x0: L_0dd4, 0x2: L_0dd4, 0x4: L_0dd4, 0x6: L_0dd4, 0x8: L_0dd4, 0xa: L_0dd4, 0xc: L_0df2, 0xe: L_0e16, 0x10: L_0e4e, 0x12: L_0e1e, 0x14: L_0e26, 0x16: L_0e2e, 0x18: L_0e3e, 0x1a: L_1076, 0x1c: L_0e46, 0x1e: L_12fa, 0x20: L_1519, 0x22: L_0e36]

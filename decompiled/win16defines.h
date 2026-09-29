@@ -17,10 +17,10 @@
 
 #define strtime         _strtime
 #define access          _access
-#define filelength      _filelength
-#define lseek           _lseek
+#define filelength      filelength16
+#define lseek           lseek16
 #define mkdir           _mkdir
-#define tell            _tell
+#define tell            tell16
 #define dos_getdiskfree _getdiskfree
 
 typedef struct _diskfree_t _diskfree_t;
@@ -44,6 +44,8 @@ typedef struct _diskfree_t _diskfree_t;
 #undef GetDriveType
 #define GetDriveType  GetDriveType16
 #define AllocResource AllocResource16
+#undef CreateWindow
+#define CreateWindow CreateWindow16
 
 // shims
 
@@ -63,6 +65,25 @@ static inline DWORD GetTextExtent16(HDC hdc, LPCSTR str, int len) {
         return 0;
 
     return MAKELONG((WORD)size.cx, (WORD)size.cy);
+}
+
+/*
+ * Win16 window creation
+ *
+ * Win16 CW_USEDEFAULT is the 16-bit 0x8000, which Stars stores in its window
+ * rectangles as -32768 when Stars.ini holds no position. Win32 reads that as
+ * a real coordinate and places the window far off screen, so it is mapped to
+ * the native CW_USEDEFAULT.
+ */
+
+// CreateWindow16 creates a window, mapping Win16 CW_USEDEFAULT positions and
+// sizes to the native value.
+static inline HWND CreateWindow16(LPCSTR cls, LPCSTR name, DWORD style, int x, int y, int cx, int cy, HWND parent, HMENU menu, HINSTANCE inst, LPVOID param) {
+    if (x == -32768 || x == 0x8000)
+        x = CW_USEDEFAULT;
+    if (cx == -32768 || cx == 0x8000)
+        cx = CW_USEDEFAULT;
+    return CreateWindowExA(0, cls, name, style, x, y, cx, cy, parent, menu, inst, param);
 }
 
 /*
@@ -101,6 +122,53 @@ static inline DWORD SetBrushOrg16(HDC hdc, int x, int y) {
 }
 
 /*
+ * Win16 file handles
+ *
+ * Stars opens its files with OpenFile and then measures and seeks them with
+ * the C runtime's filelength, lseek and tell. Win16 HFILEs were DOS handles
+ * the C runtime accepted; Win32 HFILEs are kernel handles, which the C
+ * runtime's descriptor functions reject, so these work on the HFILE.
+ */
+
+// filelength16 returns the size of an open HFILE, or -1 on error.
+static inline long filelength16(HFILE hf) {
+    DWORD size = GetFileSize((HANDLE)(INT_PTR)hf, NULL);
+    return size == INVALID_FILE_SIZE ? -1L : (long)size;
+}
+
+// lseek16 moves an HFILE's position, origin being 0 (start), 1 (current) or
+// 2 (end) as in lseek, and returns the new position or -1 on error.
+static inline long lseek16(HFILE hf, long offset, int origin) { return _llseek(hf, offset, origin); }
+
+// tell16 returns an HFILE's position.
+static inline long tell16(HFILE hf) { return _llseek(hf, 0, FILE_CURRENT); }
+
+/*
+ * Win16 points
+ *
+ * Win16 POINT held 16-bit ints, and Stars writes records holding points to
+ * its files. Stars' points are POINT16 to keep that layout; Win32 POINT holds
+ * LONGs, so points convert where they pass into or out of the Win32 API.
+ */
+
+typedef struct tagPOINT16 {
+    int16_t x;
+    int16_t y;
+} POINT16;
+
+// PointFrom16 widens a Stars point to a Win32 point.
+static inline POINT PointFrom16(POINT16 pt) {
+    POINT out = {pt.x, pt.y};
+    return out;
+}
+
+// PointTo16 narrows a Win32 point to a Stars point.
+static inline POINT16 PointTo16(POINT pt) {
+    POINT16 out = {(int16_t)pt.x, (int16_t)pt.y};
+    return out;
+}
+
+/*
  * Win16 window longs
  *
  * Stars only uses the window long to subclass controls through
@@ -120,8 +188,10 @@ static inline WNDPROC SetWindowLong16(HWND hwnd, short index, WNDPROC lpfn) { re
  *
  * Win16 GetDriveType took a 0-based drive number; Win32 takes a root path.
  * Win16 AllocResource allocated a moveable block for a resource's data
- * (cb 0 meaning the resource's size); Win32 has no equivalent, so allocate
- * the same block with GlobalAlloc.
+ * (cb 0 meaning the resource's size) and callers locked it with
+ * LockResource. Win32 LockResource returns its handle unchanged, so the block
+ * is allocated GMEM_FIXED, whose handle is the data pointer; LockResource,
+ * GlobalLock and GlobalUnlock then all behave as they did on Win16.
  */
 
 static inline UINT GetDriveType16(int drive) {
@@ -131,7 +201,7 @@ static inline UINT GetDriveType16(int drive) {
     return GetDriveTypeA(root);
 }
 
-static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb) { return GlobalAlloc(GMEM_MOVEABLE, cb ? cb : SizeofResource(hinst, hrsrc)); }
+static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb) { return GlobalAlloc(GMEM_FIXED, cb ? cb : SizeofResource(hinst, hrsrc)); }
 
 // tagTIMERINFO retains the 12-byte ToolHelp layout from utils/TOOLHELP.H.
 typedef struct tagTIMERINFO {
@@ -1412,6 +1482,159 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #endif
 #ifndef WS_TILEDWINDOW
 #define WS_TILEDWINDOW 0xCF0000
+#endif
+#ifndef LBS_NOTIFY
+#define LBS_NOTIFY 0x0001
+#endif
+#ifndef LBS_SORT
+#define LBS_SORT 0x0002
+#endif
+#ifndef LBS_NOREDRAW
+#define LBS_NOREDRAW 0x0004
+#endif
+#ifndef LBS_MULTIPLESEL
+#define LBS_MULTIPLESEL 0x0008
+#endif
+#ifndef LBS_OWNERDRAWFIXED
+#define LBS_OWNERDRAWFIXED 0x0010
+#endif
+#ifndef LBS_OWNERDRAWVARIABLE
+#define LBS_OWNERDRAWVARIABLE 0x0020
+#endif
+#ifndef LBS_HASSTRINGS
+#define LBS_HASSTRINGS 0x0040
+#endif
+#ifndef LBS_USETABSTOPS
+#define LBS_USETABSTOPS 0x0080
+#endif
+#ifndef LBS_NOINTEGRALHEIGHT
+#define LBS_NOINTEGRALHEIGHT 0x0100
+#endif
+#ifndef LBS_MULTICOLUMN
+#define LBS_MULTICOLUMN 0x0200
+#endif
+#ifndef LBS_WANTKEYBOARDINPUT
+#define LBS_WANTKEYBOARDINPUT 0x0400
+#endif
+#ifndef LBS_EXTENDEDSEL
+#define LBS_EXTENDEDSEL 0x0800
+#endif
+#ifndef LBS_DISABLENOSCROLL
+#define LBS_DISABLENOSCROLL 0x1000
+#endif
+#ifndef CBS_DROPDOWNLIST
+#define CBS_DROPDOWNLIST 0x0003
+#endif
+#ifndef CBS_DROPDOWN
+#define CBS_DROPDOWN 0x0002
+#endif
+#ifndef CBS_SIMPLE
+#define CBS_SIMPLE 0x0001
+#endif
+#ifndef CBS_OWNERDRAWFIXED
+#define CBS_OWNERDRAWFIXED 0x0010
+#endif
+#ifndef CBS_OWNERDRAWVARIABLE
+#define CBS_OWNERDRAWVARIABLE 0x0020
+#endif
+#ifndef CBS_AUTOHSCROLL
+#define CBS_AUTOHSCROLL 0x0040
+#endif
+#ifndef CBS_OEMCONVERT
+#define CBS_OEMCONVERT 0x0080
+#endif
+#ifndef CBS_SORT
+#define CBS_SORT 0x0100
+#endif
+#ifndef CBS_HASSTRINGS
+#define CBS_HASSTRINGS 0x0200
+#endif
+#ifndef CBS_NOINTEGRALHEIGHT
+#define CBS_NOINTEGRALHEIGHT 0x0400
+#endif
+#ifndef CBS_DISABLENOSCROLL
+#define CBS_DISABLENOSCROLL 0x0800
+#endif
+#ifndef ES_CENTER
+#define ES_CENTER 0x0001
+#endif
+#ifndef ES_RIGHT
+#define ES_RIGHT 0x0002
+#endif
+#ifndef ES_MULTILINE
+#define ES_MULTILINE 0x0004
+#endif
+#ifndef ES_UPPERCASE
+#define ES_UPPERCASE 0x0008
+#endif
+#ifndef ES_LOWERCASE
+#define ES_LOWERCASE 0x0010
+#endif
+#ifndef ES_PASSWORD
+#define ES_PASSWORD 0x0020
+#endif
+#ifndef ES_AUTOVSCROLL
+#define ES_AUTOVSCROLL 0x0040
+#endif
+#ifndef ES_AUTOHSCROLL
+#define ES_AUTOHSCROLL 0x0080
+#endif
+#ifndef ES_NOHIDESEL
+#define ES_NOHIDESEL 0x0100
+#endif
+#ifndef ES_OEMCONVERT
+#define ES_OEMCONVERT 0x0400
+#endif
+#ifndef ES_READONLY
+#define ES_READONLY 0x0800
+#endif
+#ifndef ES_WANTRETURN
+#define ES_WANTRETURN 0x1000
+#endif
+#ifndef BS_OWNERDRAW
+#define BS_OWNERDRAW 0x000B
+#endif
+#ifndef BS_AUTORADIOBUTTON
+#define BS_AUTORADIOBUTTON 0x0009
+#endif
+#ifndef BS_USERBUTTON
+#define BS_USERBUTTON 0x0008
+#endif
+#ifndef BS_GROUPBOX
+#define BS_GROUPBOX 0x0007
+#endif
+#ifndef BS_AUTO3STATE
+#define BS_AUTO3STATE 0x0006
+#endif
+#ifndef BS_3STATE
+#define BS_3STATE 0x0005
+#endif
+#ifndef BS_RADIOBUTTON
+#define BS_RADIOBUTTON 0x0004
+#endif
+#ifndef BS_AUTOCHECKBOX
+#define BS_AUTOCHECKBOX 0x0003
+#endif
+#ifndef BS_CHECKBOX
+#define BS_CHECKBOX 0x0002
+#endif
+#ifndef BS_DEFPUSHBUTTON
+#define BS_DEFPUSHBUTTON 0x0001
+#endif
+#ifndef BS_LEFTTEXT
+#define BS_LEFTTEXT 0x0020
+#endif
+#ifndef SBS_SIZEBOX
+#define SBS_SIZEBOX 0x0008
+#endif
+#ifndef SBS_VERT
+#define SBS_VERT 0x0001
+#endif
+#ifndef SBS_TOPALIGN
+#define SBS_TOPALIGN 0x0002
+#endif
+#ifndef SBS_BOTTOMALIGN
+#define SBS_BOTTOMALIGN 0x0004
 #endif
 #ifndef WS_EX_DLGMODALFRAME
 #define WS_EX_DLGMODALFRAME 0x0001

@@ -38,7 +38,7 @@ L_48db:
         goto L_48e9;
 
 L_48e9:
-    return (((ch + 0xffbf) << 0x4) | 0xb);
+    return (((ch - 0x41) << 0x4) | 0xb);
 
 L_4900:
     if ((ch < 0x51))
@@ -53,7 +53,7 @@ L_490e:
         goto L_491c;
 
 L_491c:
-    return (((ch + 0xffaf) << 0x4) | 0xc);
+    return (((ch - 0x51) << 0x4) | 0xc);
 
 L_4933:
     if ((ch < 0x30))
@@ -68,7 +68,7 @@ L_4941:
         goto L_494f;
 
 L_494f:
-    return (((ch + 0xffda) << 0x4) | 0xc);
+    return (((ch - 0x26) << 0x4) | 0xc);
 
 L_4966:
     if ((ch < 0x36))
@@ -83,7 +83,7 @@ L_4974:
         goto L_4982;
 
 L_4982:
-    return (((ch + 0xffca) << 0x4) | 0xd);
+    return (((ch - 0x36) << 0x4) | 0xd);
 
 L_4999:
     pch = strchr(rgchcomp, ch);

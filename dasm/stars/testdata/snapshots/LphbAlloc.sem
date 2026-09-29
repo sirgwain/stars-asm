@@ -1,0 +1,42 @@
+/*
+LphbAlloc  (memory)
+  addr: 000d:0000  len=264
+  sig:  HB * LphbAlloc(uint16_t cb, HeapType ht)
+  params:
+    uint16_t         cb             [BP+0x6]
+    HeapType         ht             [BP+0x8]
+  locals:
+    HB *             lphb           [BP-0x8]
+    HGLOBAL          hmem           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_0000:
+    lphb = 0x0
+    cb = (cb + sizeof(HB))
+    branch cb >= mphtcbAlloc[ht] ? L_0034 : L_0028
+
+L_0028:
+    cb = mphtcbAlloc[ht]
+
+L_0034:
+    hmem = GlobalAlloc(0x22, (uint32_t)cb)
+    branch hmem != 0x0 ? L_0082 : L_0051
+
+L_0051:
+    call AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND) -> callresult(int16_t)
+    call StarsLongJump(penvMem, -1) -> callresult(void)
+
+L_0082:
+    lphb = (HB *)GlobalLock(hmem)
+    lphb->hmem = hmem
+    lphb->cbBlock = cb
+    lphb->cbSlop = (cb - sizeof(HB))
+    lphb->cbFree = (cb - sizeof(HB))
+    lphb->ibTop = sizeof(HB)
+    lphb->ht = lobyte(ht)
+    lphb->lphbNext = rglphb[ht]
+    rglphb[ht] = lphb
+
+L_0102:
+    return lphb

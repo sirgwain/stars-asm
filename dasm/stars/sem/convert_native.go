@@ -46,9 +46,24 @@ func nativeCast(expr Expr, want typeinfo.Type) Expr {
 // array, as the source wrote psz == szWork, and a pointer to another type is
 // cast to the left operand's type, such as a byte pointer compared with a
 // heap block pointer. Only equality may mix void * with another pointer, so
-// a relational comparison casts the void * side to the other's type.
+// a relational comparison casts the void * side to the other's type. A
+// Windows struct field compared with 0xffff compares with -1 instead (see
+// widenedFieldAllOnes). An integer of the other signedness than a relational
+// branch is cast to the branch's type (see compareDomainOperand).
 func nativeCompareOperands(op CompareOp, lhs, rhs Expr) (Expr, Expr, bool) {
 	changed := false
+	if cast, ok := compareDomainOperand(op, lhs); ok {
+		lhs, changed = cast, true
+	}
+	if cast, ok := compareDomainOperand(op, rhs); ok {
+		rhs, changed = cast, true
+	}
+	if allOnes, ok := widenedFieldAllOnes(rhs, lhs); ok {
+		rhs, changed = allOnes, true
+	}
+	if allOnes, ok := widenedFieldAllOnes(lhs, rhs); ok {
+		lhs, changed = allOnes, true
+	}
 	if decayed, ok := decayedArrayAddress(lhs, cExprType(rhs)); ok {
 		lhs, changed = decayed, true
 	}
@@ -66,6 +81,57 @@ func nativeCompareOperands(op CompareOp, lhs, rhs Expr) (Expr, Expr, bool) {
 		rhs, changed = castTo(rhs, lhsType), true
 	}
 	return lhs, rhs, changed
+}
+
+// compareDomainOperand casts a compared integer whose type has the other
+// signedness than the branch that compared it to the branch's type of the same
+// width. Win16 C made a comparison unsigned when either side was unsigned
+// int, including a constant such as 0xffc8 that does not fit in int, and the
+// compiler emitted JB/JBE/JA/JAE; in native C, 16-bit operands promote to
+// int and 0xffc8 is an int, so imemMsgCur + 20 <= 0xffc8 would compare
+// signed. Constants are left to resolve-const-types, which types them for
+// the branch.
+func compareDomainOperand(op CompareOp, expr Expr) (Expr, bool) {
+	if _, ok := expr.(*Const); ok {
+		return nil, false
+	}
+	typ := semanticPeerType(expr)
+	switch e := expr.(type) {
+	case *Cast:
+		typ = e.TypeInfo
+	case *SignExtend:
+		typ = e.ExprType()
+	}
+	want := compareDomainType(op, typ)
+	if want == typ {
+		return nil, false
+	}
+	return castTo(expr, want), true
+}
+
+// widenedFieldAllOnes returns -1 for a 16-bit 0xffff constant compared with
+// an integer field of a Windows struct. Win16 declared those fields 16 bits
+// wide, so 0xffff was the -1 sentinel, such as DRAWITEMSTRUCT.itemID for an
+// empty listbox or combo box; the native headers widen them to 32 bits, where
+// the sentinel is 0xffffffff and 0xffff never matches.
+func widenedFieldAllOnes(value, field Expr) (*Const, bool) {
+	c, ok := value.(*Const)
+	if !ok || c.U64 != 0xffff || c.TypeInfo == nil || c.TypeInfo.Bytes() != 2 {
+		return nil, false
+	}
+	access, ok := field.(*FieldAccess)
+	if !ok || !typeinfo.IsNative(access.Field.Type, typeinfo.NativeInt) {
+		return nil, false
+	}
+	base := access.Base.ExprType()
+	if ptr, ok := base.(*typeinfo.Pointer); ok {
+		base = ptr.Elem
+	}
+	strct, ok := base.(*typeinfo.Struct)
+	if !ok || !strct.IsExternalWindowsStruct() {
+		return nil, false
+	}
+	return &Const{TypeInfo: typeinfo.I16, U64: 0xffff, Origin: c.Origin}, true
 }
 
 // isVoidPointer reports whether typ is void *.
@@ -128,9 +194,19 @@ func decayedArrayAddress(expr Expr, other typeinfo.Type) (Expr, bool) {
 // That return is where the original fell off the end of a handle-returning
 // function, leaving the last call's result in AX, as ClickInShipOrders
 // does after ReleaseDC.
-func nativeReturnCast(expr Expr, ret typeinfo.Type) Expr {
+//
+// A function whose native declaration widens a signed 16-bit return, such
+// as a qsort comparator declared to return int, returns its value cast to
+// the 16-bit type. The original caller read only AX, so ICompLong's 32-bit
+// difference and ICompFleetPoint's LOWORD(-1) are compared by their low
+// word's sign; the cast sign-extends that word into the native int.
+func nativeReturnCast(expr Expr, fs *typeinfo.Function) Expr {
+	ret := fs.Ret
 	if _, call := expr.(*Call); call && typeinfo.IsNative(ret, typeinfo.NativePointer) && typeinfo.IsNative(cExprType(expr), typeinfo.NativeInt) {
 		return castTo(castTo(expr, typeinfo.UintPtr), ret)
+	}
+	if fs.NativeDecl != "" && typeinfo.IsIntLike(ret) && ret.Bytes() == 2 && !typeinfo.IsNative(ret, typeinfo.NativeIntPtr) && typeinfo.TypeDecl(cExprType(expr), "") != typeinfo.TypeDecl(ret, "") {
+		return castTo(expr, ret)
 	}
 	return nativeCast(expr, ret)
 }

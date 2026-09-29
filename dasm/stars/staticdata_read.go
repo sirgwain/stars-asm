@@ -5,9 +5,8 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-// readGlobalBytes reads all bytes for a GlobalVAr from the NE image.
-// Returns (buf, frame, off, ok).
-func readGlobalBytes(img *asm.ImageNE, g *typeinfo.GlobalVar) (buf []byte, ok bool) {
+// ReadGlobalBytes reads all bytes for a GlobalVar from the NE image.
+func ReadGlobalBytes(img *asm.ImageNE, g *typeinfo.GlobalVar) (buf []byte, ok bool) {
 	sz := g.Type.Bytes()
 	if sz <= 0 {
 		return nil, false

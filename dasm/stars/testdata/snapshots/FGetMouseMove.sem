@@ -1,9 +1,9 @@
 /*
 FGetMouseMove  (utilgen)
   addr: 0009:4146  len=153
-  sig:  int16_t FGetMouseMove(POINT *ppt)
+  sig:  int16_t FGetMouseMove(POINT16 *ppt)
   params:
-    POINT *          ppt            [BP+0x6]
+    POINT16 *        ppt            [BP+0x6]
   locals:
     MSG              msg            [BP-0x14]
 
@@ -22,7 +22,7 @@ L_417c:
 
 L_4185:
     ppt->x = LOWORD(msg.lParam)
-    ppt->y = (loword((uint32_t)(msg.lParam >> 0x10)) & 0xffff)
+    ppt->y = hiword(msg.lParam)
     branch msg.message == 0x202 ? L_41ba : L_41b4
 
 L_41b4:

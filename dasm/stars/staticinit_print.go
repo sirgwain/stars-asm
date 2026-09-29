@@ -173,7 +173,10 @@ func isInitZeroValue(init *Initializer) bool {
 		}
 		return true
 	case InitAddress:
-		return init.Addr == nil || (init.Addr.Symbol == nil && init.Addr.RawOff == 0)
+		// A function or unresolved far pointer can sit at offset 0 of its
+		// segment, as DrawShipOrders does, so only an empty target is null.
+		a := init.Addr
+		return a == nil || (a.Symbol == nil && a.Function == nil && a.RawSeg == 0 && a.RawOff == 0)
 	}
 	return false
 }

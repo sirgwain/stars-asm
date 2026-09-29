@@ -12,7 +12,7 @@ L_0000:
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
-    wc.hIcon = 0x0;
+    wc.hIcon = LoadIcon(hInst, "StarsIco");
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00));
     wc.hbrBackground = (HBRUSH)(13);
     wc.lpszMenuName = "StarsMenu";
@@ -178,10 +178,10 @@ L_037f:
 }
 
 void CreateChildWindows() {
-    char  szData[100];
-    POINT pt;
-    char *psz;
-    char  szGame[15];
+    char    szData[100];
+    POINT16 pt;
+    char   *psz;
+    char    szGame[15];
 
 L_038c:
     if ((idPlayer == -1))
@@ -311,7 +311,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     HPALETTE    hpalSav;
     TEXTMETRIC  tm;
     int16_t     ich;
-    POINT       pt;
+    POINT16     pt;
     char       *pch;
     char        szTemp[80];
     FARPROC     lpProc;
@@ -330,12 +330,12 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     int16_t     yOffset;
     HBRUSH      hbrSav;
     HCURSOR     hcs;
-    POINT       ptOld;
+    POINT16     ptOld;
     int16_t     grSel;
-    POINT       ptAct;
-    POINT       ptD;
-    POINT       ptStart;
-    POINT       ptChg;
+    POINT16     ptAct;
+    POINT16     ptD;
+    POINT16     ptStart;
+    POINT16     ptChg;
     int16_t     t_merge_0740_0001;
     uint16_t    t_merge_0db4_0001;
     HWND        t_merge_0ded_0001;
@@ -344,6 +344,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     uint16_t    t_merge_152e_0001;
     HICON       t_merge_16e3_0001;
     uint16_t    t_merge_1887_0001;
+    POINT       t_pt_1a3c;
+    POINT       t_pt_1a4c_1;
 
 L_06d6:
     goto L_1d70;
@@ -850,7 +852,7 @@ L_0f1f:
 
 L_0f27:
     vfs.dx = LOWORD(lParam);
-    vfs.dy = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    vfs.dy = HIWORD(lParam);
     RefitFrameChildren();
     return 0;
 
@@ -1520,10 +1522,14 @@ L_1a1f:
         goto L_1a35;
 
 L_1a35:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndFrame, &(pt));
+    t_pt_1a3c = PointFrom16(pt);
+    GetCursorPos(&(t_pt_1a3c));
+    pt = PointTo16(t_pt_1a3c);
+    t_pt_1a4c_1 = PointFrom16(pt);
+    ScreenToClient(hwndFrame, &(t_pt_1a4c_1));
+    pt = PointTo16(t_pt_1a4c_1);
     GetClientRect(hwnd, &(rc));
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto Default;
     else
         goto L_1a78;
@@ -1541,7 +1547,7 @@ L_1a96:
 
 L_1aaa:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     if ((HcrsFromFrameWindowPt(pt, &(grSel)) == 0x0))
         goto L_1e2b;
     else
@@ -1854,19 +1860,19 @@ L_1e2b:
     return 0;
 }
 
-POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev) {
+POINT16 InvertPaneBorder(HDC hdc, int16_t grSel, POINT16 dpt, POINT16 *pdptPrev) {
     int16_t notMin;
     int16_t dChg;
-    POINT   dptT;
-    POINT   dptPrev;
+    POINT16 dptT;
+    POINT16 dptPrev;
     int16_t dyAboveMinCur;
-    POINT   dptOld;
+    POINT16 dptOld;
     int16_t dyMsgCur;
     int16_t dyMinAboveH2;
     int16_t dyPlanMin;
     int16_t dxScanMin;
     int16_t x;
-    POINT   pt;
+    POINT16 pt;
     int16_t dyMin;
 
 L_1e3c:
@@ -1896,7 +1902,7 @@ L_1e98:
     dyMsgCur = ((vfs.y2 - vfs.y1) - 8);
     dyAboveMinCur = ((vfs.y2 - vfs.y1) - 8);
     notMin = 1;
-    dyMinAboveH2 = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
+    dyMinAboveH2 = (((0xd * dyArial8) >> 0x1) + 0xa);
     goto L_1f1b;
 
 L_1ed3:
@@ -1973,7 +1979,7 @@ L_1f86:
     goto L_1fb9;
 
 L_1f93:
-    dyMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
+    dyMin = (((0xd * dyArial8) >> 0x1) + 0xa);
     if (((dyMsgCur - dpt.y) >= dyMin))
         goto L_1fb9;
     else
@@ -1995,11 +2001,11 @@ L_1fc7:
         goto L_1fd5;
 
 L_1fd5:
-    dpt.y = LOWORD(((dyMinAboveH2 - dyAboveMinCur) * notMin));
+    dpt.y = ((dyMinAboveH2 - dyAboveMinCur) * notMin);
     goto L_2016;
 
 L_1fe4:
-    dyMin = (LOWORD((13 * dyArial8)) - 36);
+    dyMin = ((13 * dyArial8) - 36);
     if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2016;
     else
@@ -2061,7 +2067,7 @@ L_20ad:
     goto L_2140;
 
 L_20ba:
-    dyMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
+    dyMin = (((0xd * dyArial8) >> 0x1) + 0xa);
     if (((dyMsgCur - dpt.y) >= dyMin))
         goto L_2140;
     else
@@ -2086,11 +2092,11 @@ L_20f1:
         goto L_20ff;
 
 L_20ff:
-    dpt.y = LOWORD(((dyMinAboveH2 - dyAboveMinCur) * notMin));
+    dpt.y = ((dyMinAboveH2 - dyAboveMinCur) * notMin);
     goto L_2140;
 
 L_210e:
-    dyMin = (LOWORD((13 * dyArial8)) - 36);
+    dyMin = ((13 * dyArial8) - 36);
     if (((((vfs.dy - vfs.y2) - 8) - dpt.y) >= dyMin))
         goto L_2140;
     else
@@ -2212,7 +2218,7 @@ L_23f0:
     goto L_24a0;
 
 L_247e:
-    if (((grSel - 1) > 6))
+    if (((uint16_t)((grSel - 1)) > 6))
         goto L_2164;
     else
         goto L_2489;
@@ -2241,7 +2247,7 @@ L_24a9:
     return dpt;
 }
 
-HCURSOR HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel) {
+HCURSOR HcrsFromFrameWindowPt(POINT16 pt, int16_t *pgrSel) {
     HCURSOR  hcs;
     int16_t  fInHBar2;
     int16_t  fInHBar1;
@@ -2603,6 +2609,9 @@ void FormatSerialAndEnv(int32_t lSerial, uint8_t *pbEnv, char *pszOut) {
     int32_t lTank;
     uint8_t rgbRaw2[21];
     uint8_t b64;
+    int16_t t_2945;
+    int16_t t_29a3;
+    int16_t t_2a0c;
 
 L_2886:
     iPass = 0;
@@ -2639,8 +2648,9 @@ L_2915:
     goto L_2953;
 
 L_292e:
+    t_2945 = iRaw;
     iRaw = (iRaw + 1);
-    rgbRaw[iRaw] = (rgbRaw[iRaw] | LOBYTE(((Random(16) << 0x4) & 0xff)));
+    rgbRaw[t_2945] = (rgbRaw[t_2945] | LOBYTE(((Random(16) << 0x4) & 0xff)));
 
 L_2953:
     iPass = ((iPass + 0x1) & 0x1);
@@ -2668,8 +2678,9 @@ L_298c:
         goto L_2995;
 
 L_2995:
+    t_29a3 = iRaw;
     iRaw = (iRaw + 1);
-    rgbRaw[iRaw] = (rgbRaw[iRaw] | LOBYTE((bXor << 0x4)));
+    rgbRaw[t_29a3] = (rgbRaw[t_29a3] | LOBYTE((bXor << 0x4)));
     PopRandom();
     i = 0;
     goto L_29de;
@@ -2698,8 +2709,9 @@ L_2a03:
         goto L_2a0c;
 
 L_2a0c:
+    t_2a0c = iRaw;
     iRaw = (iRaw + 1);
-    lTank = (lTank | (int32_t)((rgbRaw2[iRaw] << cBits)));
+    lTank = (lTank | (int32_t)((rgbRaw2[t_2a0c] << cBits)));
     cBits = (cBits + 8);
 
 L_2a2d:
@@ -2732,7 +2744,7 @@ L_2a92:
         goto L_2aa0;
 
 L_2aa0:
-    *(pszOut) = LOBYTE((b64 + 0xfffc));
+    *(pszOut) = LOBYTE((b64 - 0x4));
     goto L_2ace;
 
 L_2ab1:
@@ -2776,6 +2788,7 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn) {
     int32_t  lTank;
     uint8_t  rgbRaw2[21];
     uint8_t  b64;
+    int16_t  t_2c01;
     uint16_t t_scratch_m48_2;
     uint16_t t_scratch_m48_3;
 
@@ -2862,8 +2875,9 @@ L_2bec:
         goto L_2bf5;
 
 L_2bf5:
+    t_2c01 = iRaw;
     iRaw = (iRaw + 1);
-    rgbRaw2[iRaw] = LOBYTE((LOWORD(lTank) & 0xff));
+    rgbRaw2[t_2c01] = LOBYTE((LOWORD(lTank) & 0xff));
     cBits = (cBits - 8);
     lTank = (int32_t)((lTank >> 0x8));
     i = (i + 1);
@@ -3094,7 +3108,7 @@ L_2f6d:
 }
 
 void CommandHandler(HWND hwnd, WPARAM wParam) {
-    POINT        pt;
+    POINT16      pt;
     HMENU        hmenu;
     FARPROC      lpProc;
     int16_t      dy;
@@ -3120,8 +3134,8 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
     int32_t      ldx;
     HFONT        hfontPrintTiny;
     HFONT        hfontPrint;
-    POINT        ptLegendB;
-    POINT        ptLegendA;
+    POINT16      ptLegendB;
+    POINT16      ptLegendA;
     int16_t      dyPrint;
     int16_t      dyMax;
     HFONT        hfontSav;
@@ -3384,8 +3398,8 @@ L_32f3:
 L_333f:
     cPageX = vrgcPrintMapPage[0];
     cPageY = vrgcPrintMapPage[1];
-    memset(&(pd), 0, 0x34);
-    pd.lStructSize = 0x34;
+    memset(&(pd), 0, sizeof(PRINTDLG));
+    pd.lStructSize = sizeof(PRINTDLG);
     pd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
     if ((PrintDlg(&(pd)) == 0))
         goto L_3e00;
@@ -3483,13 +3497,13 @@ L_352d:
     goto L_35dc;
 
 L_355e:
-    if (((ldx - (int32_t)(((int32_t)(LOWORD((3 * dxDPI))) / 0x2))) < ldy))
+    if (((ldx - (int32_t)(((int32_t)((3 * dxDPI)) / 0x2))) < ldy))
         goto L_358c;
     else
         goto L_35ab;
 
 L_358c:
-    ldy = (ldx - (int32_t)(((int32_t)(LOWORD((3 * dxDPI))) / 0x2)));
+    ldy = (ldx - (int32_t)(((int32_t)((3 * dxDPI)) / 0x2)));
 
 L_35ab:
     dSize = LOWORD(ldy);
@@ -3510,8 +3524,8 @@ L_35f9:
     goto L_3d76;
 
 L_3602:
-    xOff = LOWORD(((-dxMax) * xPage));
-    yOff = LOWORD(((-dyMax) * yPage));
+    xOff = ((-dxMax) * xPage);
+    yOff = ((-dyMax) * yPage);
     cch = CchGetString(idsStarsUniverseMap, szWork);
     Escape(pd.hDC, 10, cch, szWork, 0x0);
     Rectangle(pd.hDC, xOff, yOff, (xOff + rc.right), (yOff + rc.bottom));
@@ -3572,9 +3586,9 @@ L_381e:
     SelectObject(pd.hDC, hfontPrintTiny);
 
 L_3829:
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)(LOWORD((3 * dyPrint))) / 2) + y) - ((int32_t)(dyPrintTiny) / 2)), "|", 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)(LOWORD((5 * dyPrint))) / 2) + y) - ((int32_t)(dyPrintTiny) / 2)), "+", 1);
-    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((int32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8) - dyPrintTiny), "2", 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)((3 * dyPrint)) / 2) + y) - ((int32_t)(dyPrintTiny) / 2)), "|", 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)((5 * dyPrint)) / 2) + y) - ((int32_t)(dyPrintTiny) / 2)), "+", 1);
+    CtrTextOut(pd.hDC, (ptLegendB.x + xOff), (((((int32_t)((9 * dyPrint)) / 2) + y) + 8) - dyPrintTiny), "2", 1);
     if ((hfontPrint == 0x0))
         goto L_38ed;
     else
@@ -3585,8 +3599,8 @@ L_38e2:
 
 L_38ed:
     DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((int32_t)(dyPrint) / 2)), 1);
-    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((int32_t)(LOWORD((7 * dyPrint))) / 2)), 0);
-    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)(LOWORD((9 * dyPrint))) / 2) + y) + 8), 0);
+    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((y - 4) + ((int32_t)((7 * dyPrint)) / 2)), 0);
+    DrawPlanetPrintDot(pd.hDC, (ptLegendB.x + xOff), ((((int32_t)((9 * dyPrint)) / 2) + y) + 8), 0);
 
 L_396f:
     if (((grbitScan & 0xf) == 0x5))
@@ -5831,8 +5845,8 @@ L_5a07:
     goto L_59cf;
 
 L_5a0a:
-    memset(&(ofn), 0, 0x48);
-    ofn.lStructSize = 0x48;
+    memset(&(ofn), 0, sizeof(OPENFILENAME));
+    ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = hwnd;
     ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;
@@ -6218,7 +6232,7 @@ L_5fbd:
 }
 
 void BringUpHostDlg() {
-    POINT   pt;
+    POINT16 pt;
     FARPROC lpProc;
     int16_t fRet;
 
@@ -6446,7 +6460,7 @@ L_6511:
 
 L_653d:
     dmin = LOWORD((uint32_t)((dsec / 0x3c)));
-    dsec = (dsec - (uint32_t)(LOWORD((0x3c * dmin))));
+    dsec = (dsec - (uint32_t)((0x3c * dmin)));
     if ((dmin >= 0x3c))
         goto L_659b;
     else
@@ -6458,7 +6472,7 @@ L_656b:
 
 L_659b:
     dhour = ((uint32_t)(dmin) / 0x3c);
-    dmin = (dmin - LOWORD((0x3c * dhour)));
+    dmin = (dmin - (0x3c * dhour));
     if ((dhour >= 0x18))
         goto L_65ee;
     else
@@ -6470,7 +6484,7 @@ L_65ba:
 
 L_65ee:
     dday = ((uint32_t)(dhour) / 24);
-    dhour = (dhour - LOWORD((dday * 24)));
+    dhour = (dhour - (dday * 24));
     cch = _wsprintf(szWork, PszGetCompressedString(idsDDaysD02d02d), dday, dhour, dmin, LOWORD(dsec));
 
 L_663a:
@@ -6501,11 +6515,11 @@ L_6686:
     idCur = idPlayer;
     cOut = 0;
     cAi = 0;
-    lpcd = LpAlloc(0x2ee0, htMisc);
-    lpxf = LpAlloc(0x61a8, htMisc);
+    lpcd = LpAlloc((1000 * sizeof(COLDROP)), htMisc);
+    lpxf = LpAlloc((1000 * sizeof(XFERFULL)), htMisc);
     vrgPlanResExtra = LpAlloc((game.cPlanMax * 2), htMisc);
     fmemset(vrgPlanResExtra, 0, (game.cPlanMax * 2));
-    vrgts = LpAlloc((game.cPlayer * 16), htMisc);
+    vrgts = LpAlloc((game.cPlayer * sizeof(TURNSERIAL)), htMisc);
     cColDrop = 0;
     cXferFull = 0;
     imemMsgCur = 0;
@@ -6852,7 +6866,7 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     fRet;
     RECT        rc;
     int16_t     mf;
-    POINT       pt;
+    POINT16     pt;
     int16_t     tpm;
     int16_t     i;
     int16_t     iRet;
@@ -6868,9 +6882,12 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     t_merge_6ce0_0001;
     HWND        t_call_6ced;
     int16_t     t_merge_6d14_0001;
+    POINT       t_pt_6dbd;
+    POINT       t_pt_6dcc_1;
     uint16_t    t_merge_6f12_0001;
     uint16_t    t_merge_6f5d_0001;
     uint16_t    t_merge_6f77_0001;
+    POINT       t_pt_6fa5_1;
     uint16_t    t_merge_6fbd_0001;
     uint16_t    t_merge_7057_0001;
     int16_t     t_merge_7107_0001;
@@ -6985,8 +7002,12 @@ L_6da0:
     return (INT_PTR)(hbrButtonFace);
 
 L_6db6:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_6dbd = PointFrom16(pt);
+    GetCursorPos(&(t_pt_6dbd));
+    pt = PointTo16(t_pt_6dbd);
+    t_pt_6dcc_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_6dcc_1));
+    pt = PointTo16(t_pt_6dcc_1);
     if ((pt.x < 6))
         goto L_75c0;
     else
@@ -7134,7 +7155,9 @@ L_6f92:
         goto L_6f9b;
 
 L_6f9b:
-    ClientToScreen(hwnd, &(pt));
+    t_pt_6fa5_1 = PointFrom16(pt);
+    ClientToScreen(hwnd, &(t_pt_6fa5_1));
+    pt = PointTo16(t_pt_6fa5_1);
     if ((message != WM_LBUTTONDOWN))
         goto L_6fba;
     else
@@ -7925,6 +7948,17 @@ void WriteIniSettings() {
     int16_t  t_7fd8;
     uint16_t t_merge_806e_0001;
     uint16_t t_merge_844b_0001;
+    char    *t_8996;
+    char    *t_89bf;
+    char    *t_89f0;
+    char    *t_8a1e;
+    char    *t_8ada;
+    char    *t_8b28;
+    char    *t_8b45;
+    char    *t_8b95;
+    char    *t_8bc8;
+    char    *t_8bf8;
+    char    *t_8c28;
 
 L_7a76:
     szPd[0] = 37;
@@ -8298,14 +8332,18 @@ L_8967:
     goto L_8a2b;
 
 L_8974:
+    t_8996 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((vrgZip[i].txp.rgia[iPass].iAction & 0xff) + 0x61));
+    *(t_8996) = LOBYTE(((vrgZip[i].txp.rgia[iPass].iAction & 0xff) + 0x61));
+    t_89bf = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE((((vrgZip[i].txp.rgia[iPass].cQuan & 0xf) & 0xff) + 0x61));
+    *(t_89bf) = LOBYTE((((vrgZip[i].txp.rgia[iPass].cQuan & 0xf) & 0xff) + 0x61));
+    t_89f0 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x4) & 0xf) & 0xff) + 0x61));
+    *(t_89f0) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x4) & 0xf) & 0xff) + 0x61));
+    t_8a1e = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x8) & 0xf) & 0xff) + 0x61));
+    *(t_8a1e) = LOBYTE(((((vrgZip[i].txp.rgia[iPass].cQuan >> 0x8) & 0xf) & 0xff) + 0x61));
     iPass = (iPass + 1);
 
 L_8a2b:
@@ -8345,8 +8383,9 @@ L_8aa6:
     CchGetString(idsZiporders, szSection);
     strcpy(szEntry, szSection);
     psz = &(szEntry[strlen(szEntry)]);
+    t_8ada = psz;
     psz = (psz + 1);
-    *(psz) = 80;
+    *(t_8ada) = 80;
     *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     if ((vrgZipProd[i].fValid == 0x0))
@@ -8356,10 +8395,12 @@ L_8aa6:
 
 L_8b0f:
     psz = szWork;
+    t_8b28 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE((vrgZipProd[i].fNoResearch + 0x61));
+    *(t_8b28) = LOBYTE((vrgZipProd[i].fNoResearch + 0x61));
+    t_8b45 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE((vrgZipProd[i].cpq + 0x61));
+    *(t_8b45) = LOBYTE((vrgZipProd[i].cpq + 0x61));
     iPass = 0;
     goto L_8b5a;
 
@@ -8373,14 +8414,18 @@ L_8b5a:
         goto L_8b73;
 
 L_8b73:
+    t_8b95 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE((((vrgZipProd[i].rgpq[iPass].w & 0xf) & 0xff) + 0x61));
+    *(t_8b95) = LOBYTE((((vrgZipProd[i].rgpq[iPass].w & 0xf) & 0xff) + 0x61));
+    t_8bc8 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x4) & 0xf) & 0xff) + 0x61));
+    *(t_8bc8) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x4) & 0xf) & 0xff) + 0x61));
+    t_8bf8 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x8) & 0xf) & 0xff) + 0x61));
+    *(t_8bf8) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0x8) & 0xf) & 0xff) + 0x61));
+    t_8c28 = psz;
     psz = (psz + 1);
-    *(psz) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0xc) & 0xf) & 0xff) + 0x61));
+    *(t_8c28) = LOBYTE(((((vrgZipProd[i].rgpq[iPass].w >> 0xc) & 0xf) & 0xff) + 0x61));
     goto L_8b56;
 
 L_8c34:
@@ -8465,8 +8510,8 @@ L_8ce7:
 
 L_8cea:
     vfs.xTop = t_merge_8cea_0001;
-    dyMsgMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
-    dyMinMin = (LOWORD((13 * dyArial8)) - 36);
+    dyMsgMin = (((0xd * dyArial8) >> 0x1) + 0xa);
+    dyMinMin = ((13 * dyArial8) - 36);
     if ((vfs.dyMsgWant <= dyMsgMin))
         goto L_8d1b;
     else
@@ -8587,8 +8632,8 @@ L_8f03:
 
 L_8f06:
     vfs.xTop = t_merge_8f06_0001;
-    dyMsgMin = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0xa);
-    dyMinMin = (LOWORD((13 * dyArial8)) - 36);
+    dyMsgMin = (((0xd * dyArial8) >> 0x1) + 0xa);
+    dyMinMin = ((13 * dyArial8) - 36);
     if ((vfs.dy2MsgWant <= dyMsgMin))
         goto L_8f37;
     else
@@ -8769,7 +8814,7 @@ L_9162:
 
 L_9171:
     GetClientRect(hwnd, &(rc));
-    if ((0x78 <= (rc.right >> 0x3)))
+    if ((120 <= (rc.right >> 0x3)))
         goto L_9199;
     else
         goto L_9193;
@@ -8800,7 +8845,7 @@ L_91bb:
         goto L_91e0;
 
 L_91e0:
-    t_merge_91f5_0001 = ((int32_t)(LOWORD((5 * dyArial8))) / 0x2);
+    t_merge_91f5_0001 = ((int32_t)((5 * dyArial8)) / 0x2);
     goto L_91f5;
 
 L_91f0:
@@ -8813,7 +8858,7 @@ L_91f5:
 
 L_9200:
     psz = PszGetCompressedString((i + 479));
-    rghwndBtnSplash[i] = CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE, xCur, ((rc.bottom - dy) - ((int32_t)(LOWORD((5 * dyArial8))) / 2)), dx, dy, hwnd,
+    rghwndBtnSplash[i] = CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE, xCur, ((rc.bottom - dy) - ((int32_t)((5 * dyArial8)) / 2)), dx, dy, hwnd,
                                       (HMENU)((uintptr_t)(i)), hInst, 0x0);
     if ((i != 2))
         goto L_92a2;
@@ -9069,7 +9114,7 @@ L_957e:
     goto L_982f;
 
 L_95b9:
-    plf = LocalAlloc(0x40, 0x32);
+    plf = LocalAlloc(0x40, sizeof(LOGFONT));
     hdc = BeginPaint(hwnd, &(ps));
     hbrSav = SelectObject(hdc, hbrButtonFace);
     GetClientRect(hwnd, &(rcWnd));
@@ -9110,7 +9155,7 @@ L_96f0:
     hfontSav = SelectObject(hdc, hfont);
     SetBkMode(hdc, TRANSPARENT);
     rcT = rcWnd;
-    rcT.bottom = ((int32_t)(LOWORD((3 * rcT.bottom))) / 4);
+    rcT.bottom = ((int32_t)((3 * rcT.bottom)) / 4);
     RcCtrTextOut(hdc, &(rcT), "Stars!", 6);
     SelectObject(hdc, hfontSav);
     DeleteObject(hfont);
@@ -9120,8 +9165,8 @@ L_9752:
     SetBkMode(hdc, TRANSPARENT);
     SzVersion();
     GetWindowRect(rghwndBtnSplash[0], &(rcT));
-    rcWnd.top = (rcT.top - ((int32_t)(LOWORD((9 * dyArial8))) / 2));
-    rcWnd.bottom = (((int32_t)(LOWORD((3 * dyArial8))) / 2) + rcWnd.top);
+    rcWnd.top = (rcT.top - ((int32_t)((9 * dyArial8)) / 2));
+    rcWnd.bottom = (((int32_t)((3 * dyArial8)) / 2) + rcWnd.top);
     RcCtrTextOut(hdc, &(rcWnd), szWork, strlen(szWork));
     EndPaint(hwnd, &(ps));
     LocalFree(plf);

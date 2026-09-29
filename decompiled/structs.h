@@ -215,37 +215,43 @@ struct _compart {
 
 struct _cyberinfo {
     union {
-        uint16_t iLstPktDir : 3, /* +0x0000 (2) @bit0 */
-            fBltColony : 1,      /* @bit3 */
-            fLaunchedPkt : 1,    /* @bit4 */
-            iPktTarget : 2,      /* @bit5 */
-            fNeedScanPkt : 1,    /* @bit7 */
-            unused : 8;          /* @bit8 */
-        uint16_t wInfo;          /* +0x0000 (2) */
+        struct {
+            uint16_t iLstPktDir : 3, /* +0x0000 (2) @bit0 */
+                fBltColony : 1,      /* @bit3 */
+                fLaunchedPkt : 1,    /* @bit4 */
+                iPktTarget : 2,      /* @bit5 */
+                fNeedScanPkt : 1,    /* @bit7 */
+                unused : 8;          /* @bit8 */
+        };
+        uint16_t wInfo; /* +0x0000 (2) */
     };
 }; /* size=0x2 */
 
 struct _cyberinfotemp {
     union {
-        uint16_t fIdleColonizers : 1, /* +0x0000 (2) @bit0 */
-            cIdleFreighters : 2,      /* @bit1 */
-            cFreightersDst : 2,       /* @bit3 */
-            fNeedDefenders : 1,       /* @bit5 */
-            fDefended : 1,            /* @bit6 */
-            fUnderAttack : 1,         /* @bit7 */
-            fNeedsMin1 : 1,           /* @bit8 */
-            fNeedsMin2 : 1,           /* @bit9 */
-            fNeedsMin3 : 1,           /* @bit10 */
-            unused : 5;               /* @bit11 */
-        uint16_t wInfo1;              /* +0x0000 (2) */
+        struct {
+            uint16_t fIdleColonizers : 1, /* +0x0000 (2) @bit0 */
+                cIdleFreighters : 2,      /* @bit1 */
+                cFreightersDst : 2,       /* @bit3 */
+                fNeedDefenders : 1,       /* @bit5 */
+                fDefended : 1,            /* @bit6 */
+                fUnderAttack : 1,         /* @bit7 */
+                fNeedsMin1 : 1,           /* @bit8 */
+                fNeedsMin2 : 1,           /* @bit9 */
+                fNeedsMin3 : 1,           /* @bit10 */
+                unused : 5;               /* @bit11 */
+        };
+        uint16_t wInfo1; /* +0x0000 (2) */
     };
 }; /* size=0x2 */
 
 struct _dv {
     union {
-        uint16_t dp;        /* +0x0000 (2) */
-        uint16_t pctSh : 7, /* +0x0000 (2) @bit0 */
-            pctDp : 9;      /* @bit7 */
+        uint16_t dp; /* +0x0000 (2) */
+        struct {
+            uint16_t pctSh : 7, /* +0x0000 (2) @bit0 */
+                pctDp : 9;      /* @bit7 */
+        };
     };
 }; /* size=0x2 */
 
@@ -290,18 +296,20 @@ struct _game {
     int16_t mdStartDist; /* +0x000C (2) */
     int16_t fDirty;      /* +0x000E (2) */
     union {
-        uint16_t fExtraFuel : 1, /* +0x0010 (2) @bit0 */
-            fSlowTech : 1,       /* @bit1 */
-            fSinglePlr : 1,      /* @bit2 */
-            fTutorial : 1,       /* @bit3 */
-            fAisBand : 1,        /* @bit4 */
-            fBBSPlay : 1,        /* @bit5 */
-            fVisScores : 1,      /* @bit6 */
-            fNoRandom : 1,       /* @bit7 */
-            fClumping : 1,       /* @bit8 */
-            wGen : 3,            /* @bit9 */
-            unused : 4;          /* @bit12 */
-        uint16_t wCrap;          /* +0x0010 (2) */
+        struct {
+            uint16_t fExtraFuel : 1, /* +0x0010 (2) @bit0 */
+                fSlowTech : 1,       /* @bit1 */
+                fSinglePlr : 1,      /* @bit2 */
+                fTutorial : 1,       /* @bit3 */
+                fAisBand : 1,        /* @bit4 */
+                fBBSPlay : 1,        /* @bit5 */
+                fVisScores : 1,      /* @bit6 */
+                fNoRandom : 1,       /* @bit7 */
+                fClumping : 1,       /* @bit8 */
+                wGen : 3,            /* @bit9 */
+                unused : 4;          /* @bit12 */
+        };
+        uint16_t wCrap; /* +0x0010 (2) */
     };
     uint16_t turn;       /* +0x0012 (2) */
     uint8_t  rgvc[12];   /* +0x0014 (12) */
@@ -581,9 +589,11 @@ struct _planet {
     char    rgEnvVar[3];      /* +0x000C (3) */
     char    rgEnvVarOrig[3];  /* +0x000F (3) */
     union {
-        uint16_t uPopGuess : 12, /* +0x0012 (2) @bit0 */
-            uDefGuess : 4;       /* @bit12 */
-        uint16_t uGuesses;       /* +0x0012 (2) */
+        struct {
+            uint16_t uPopGuess : 12, /* +0x0012 (2) @bit0 */
+                uDefGuess : 4;       /* @bit12 */
+        };
+        uint16_t uGuesses; /* +0x0012 (2) */
     };
     union {
         struct {
@@ -612,9 +622,11 @@ struct _planet {
         int32_t lStarbase; /* +0x002C (4) */
     };
     union {
-        uint16_t idRoute : 10, /* +0x0030 (2) @bit0 */
-            unused4 : 6;       /* @bit10 */
-        uint16_t wRouting;     /* +0x0030 (2) */
+        struct {
+            uint16_t idRoute : 10, /* +0x0030 (2) @bit0 */
+                unused4 : 6;       /* @bit10 */
+        };
+        uint16_t wRouting; /* +0x0030 (2) */
     };
     int16_t turn;     /* +0x0032 (2) */
     PLPROD *lpplprod; /* +0x0034 (4) */
@@ -656,18 +668,22 @@ struct _planetsome {
     char     rgEnvVar[3];      /* +0x000F (3) */
     char     rgEnvVarOrig[3];  /* +0x0012 (3) */
     union {
-        uint16_t uPopGuess : 12, /* +0x0015 (2) @bit0 */
-            uDefGuess : 4;       /* @bit12 */
-        uint16_t uGuesses;       /* +0x0015 (2) */
+        struct {
+            uint16_t uPopGuess : 12, /* +0x0015 (2) @bit0 */
+                uDefGuess : 4;       /* @bit12 */
+        };
+        uint16_t uGuesses; /* +0x0015 (2) */
     };
 }; /* size=0x17 */
 
 struct _fleet {
     union {
-        int16_t  id;      /* +0x0000 (2) */
-        uint16_t ifl : 9, /* +0x0000 (2) @bit0 */
-            iplr : 4,     /* @bit9 */
-            junk : 3;     /* @bit13 */
+        int16_t id; /* +0x0000 (2) */
+        struct {
+            uint16_t ifl : 9, /* +0x0000 (2) @bit0 */
+                iplr : 4,     /* @bit9 */
+                junk : 3;     /* @bit13 */
+        };
     };
     int16_t  iPlayer;     /* +0x0002 (2) */
     uint16_t det : 8,     /* +0x0004 (2) @bit0 */
@@ -680,7 +696,7 @@ struct _fleet {
         fNoHeal : 1,      /* @bit14 */
         fMark : 1;        /* @bit15 */
     int16_t idPlanet;     /* +0x0006 (2) */
-    POINT   pt;           /* +0x0008 (4) */
+    POINT16 pt;           /* +0x0008 (4) */
     int16_t rgcsh[16];    /* +0x000C (32) */
     union {
         DV      rgdv[16]; /* +0x002C (32) */
@@ -726,7 +742,7 @@ struct _fleetsome {
         fByteCsh : 1,   /* @bit11 */
         unused : 4;     /* @bit12 */
     int16_t idPlanet;   /* +0x0006 (2) */
-    POINT   pt;         /* +0x0008 (4) */
+    POINT16 pt;         /* +0x0008 (4) */
 }; /* size=0xc */
 
 struct _popupdata {
@@ -793,9 +809,11 @@ struct PLPROD {
 
 struct _prodq1 {
     union {
-        uint16_t w;          /* +0x0000 (2) */
-        uint16_t mdIdle : 6, /* +0x0000 (2) @bit0 */
-            cQuan : 10;      /* @bit6 */
+        uint16_t w; /* +0x0000 (2) */
+        struct {
+            uint16_t mdIdle : 6, /* +0x0000 (2) @bit0 */
+                cQuan : 10;      /* @bit6 */
+        };
     };
 }; /* size=0x2 */
 
@@ -845,8 +863,8 @@ struct _rpt {
     int16_t icolSort;     /* +0x000A (2) */
     int16_t fAscending;   /* +0x000C (2) */
     int16_t irowFirst;    /* +0x000E (2) */
-    POINT   ptDlg;        /* +0x0010 (4) */
-    POINT   ptSize;       /* +0x0014 (4) */
+    POINT16 ptDlg;        /* +0x0010 (4) */
+    POINT16 ptSize;       /* +0x0014 (4) */
     int16_t fCached;      /* +0x0018 (2) */
     uint8_t rgbdx[16];    /* +0x001A (16) */
     int16_t cRows;        /* +0x002A (2) */
@@ -861,10 +879,12 @@ struct _rtbof {
     char    rgid[4]; /* +0x0000 (4) */
     int32_t lidGame; /* +0x0004 (4) */
     union {
-        uint16_t verInc : 5, /* +0x0008 (2) @bit0 */
-            verMinor : 7,    /* @bit5 */
-            verMajor : 4;    /* @bit12 */
-        uint16_t wVersion;   /* +0x0008 (2) */
+        struct {
+            uint16_t verInc : 5, /* +0x0008 (2) @bit0 */
+                verMinor : 7,    /* @bit5 */
+                verMajor : 4;    /* @bit12 */
+        };
+        uint16_t wVersion; /* +0x0008 (2) */
     };
     uint16_t turn;        /* +0x000A (2) */
     int16_t  iPlayer : 5, /* +0x000C (2) @bit0 */
@@ -887,12 +907,14 @@ struct _rtchgname {
 struct _rtChgPlanetLong {
     int16_t id; /* +0x0000 (2) */
     union {
-        uint32_t ul;              /* +0x0002 (4) */
-        uint32_t fNoResearch : 1, /* +0x0002 (4) @bit0 */
-            idFling : 10,         /* @bit1 */
-            iWarpFling : 4,       /* @bit11 */
-            idRoute : 10,         /* @bit15 */
-            unused : 7;           /* @bit25 */
+        uint32_t ul; /* +0x0002 (4) */
+        struct {
+            uint32_t fNoResearch : 1, /* +0x0002 (4) @bit0 */
+                idFling : 10,         /* @bit1 */
+                iWarpFling : 4,       /* @bit11 */
+                idRoute : 10,         /* @bit15 */
+                unused : 7;           /* @bit25 */
+        };
     };
 }; /* size=0x6 */
 
@@ -934,12 +956,14 @@ struct _rtplanet {
 
 struct _rtshdef {
     union {
-        uint16_t det : 8, /* +0x0000 (2) @bit0 */
-            fInclude : 1, /* @bit8 */
-            fFree : 1,    /* @bit9 */
-            ishdef : 5,   /* @bit10 */
-            fGift : 1;    /* @bit15 */
-        uint16_t wFlags;  /* +0x0000 (2) */
+        struct {
+            uint16_t det : 8, /* +0x0000 (2) @bit0 */
+                fInclude : 1, /* @bit8 */
+                fFree : 1,    /* @bit9 */
+                ishdef : 5,   /* @bit10 */
+                fGift : 1;    /* @bit15 */
+        };
+        uint16_t wFlags; /* +0x0000 (2) */
     };
     uint8_t ihuldef; /* +0x0002 (1) */
     uint8_t ibmp;    /* +0x0003 (1) */
@@ -1012,13 +1036,13 @@ struct _rtxferx {
 struct _sbar {
     int16_t grbit; /* +0x0000 (2) */
     int16_t id;    /* +0x0002 (2) */
-    POINT   pt;    /* +0x0004 (4) */
+    POINT16 pt;    /* +0x0004 (4) */
     char   *psz;   /* +0x0008 (2) */
     SCAN   *pscan; /* +0x000A (2) */
 }; /* size=0xc */
 
 struct _scan {
-    POINT      pt;        /* +0x0000 (4) */
+    POINT16    pt;        /* +0x0000 (4) */
     GrobjClass grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
     int16_t    idpl;      /* +0x0008 (2) */
@@ -1050,12 +1074,14 @@ struct _score {
 
 struct _scorex {
     union {
-        uint16_t wWord;       /* +0x0000 (2) */
-        uint16_t iPlayer : 5, /* +0x0000 (2) @bit0 */
-            fValid : 1,       /* @bit5 */
-            grbitVC : 8,      /* @bit6 */
-            fWinner : 1,      /* @bit14 */
-            fHistory : 1;     /* @bit15 */
+        uint16_t wWord; /* +0x0000 (2) */
+        struct {
+            uint16_t iPlayer : 5, /* +0x0000 (2) @bit0 */
+                fValid : 1,       /* @bit5 */
+                grbitVC : 8,      /* @bit6 */
+                fWinner : 1,      /* @bit14 */
+                fHistory : 1;     /* @bit15 */
+        };
     };
     union {
         int16_t  iRank; /* +0x0002 (2) */
@@ -1065,7 +1091,7 @@ struct _scorex {
 }; /* size=0x18 */
 
 struct _selSome {
-    POINT      pt;        /* +0x0000 (4) */
+    POINT16    pt;        /* +0x0000 (4) */
     int16_t    grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
     int16_t    id;        /* +0x0008 (2) */
@@ -1076,12 +1102,14 @@ struct _selSome {
 struct _shdef {
     HUL hul; /* +0x0000 (123) */
     union {
-        uint16_t det : 8, /* +0x007B (2) @bit0 */
-            fInclude : 1, /* @bit8 */
-            fFree : 1,    /* @bit9 */
-            ishdef : 5,   /* @bit10 */
-            fGift : 1;    /* @bit15 */
-        uint16_t wFlags;  /* +0x007B (2) */
+        struct {
+            uint16_t det : 8, /* +0x007B (2) @bit0 */
+                fInclude : 1, /* @bit8 */
+                fFree : 1,    /* @bit9 */
+                ishdef : 5,   /* @bit10 */
+                fGift : 1;    /* @bit15 */
+        };
+        uint16_t wFlags; /* +0x007B (2) */
     };
     uint16_t turn;   /* +0x007D (2) */
     uint32_t cBuilt; /* +0x007F (4) */
@@ -1156,7 +1184,7 @@ struct _taskxport {
 }; /* size=0xa */
 
 struct _order {
-    POINT    pt;          /* +0x0000 (4) */
+    POINT16  pt;          /* +0x0000 (4) */
     int16_t  id;          /* +0x0004 (2) */
     uint16_t grTask : 4,  /* +0x0006 (2) @bit0 */
         iWarp : 4,        /* @bit4 */
@@ -1218,7 +1246,7 @@ struct _thpack {
 }; /* size=0xa */
 
 struct _thtrader {
-    POINT    ptDest;      /* +0x0000 (4) */
+    POINT16  ptDest;      /* +0x0000 (4) */
     uint16_t iWarp : 4,   /* +0x0004 (2) @bit0 */
         fInclude : 1,     /* @bit4 */
         unused : 11;      /* @bit5 */
@@ -1239,11 +1267,13 @@ struct _thworm {
 struct _thing {
     union {
         uint16_t idFull; /* +0x0000 (2) */
-        uint16_t id : 9, /* +0x0000 (2) @bit0 */
-            iplr : 4,    /* @bit9 */
-            ith : 3;     /* @bit13 */
+        struct {
+            uint16_t id : 9, /* +0x0000 (2) @bit0 */
+                iplr : 4,    /* @bit9 */
+                ith : 3;     /* @bit13 */
+        };
     };
-    POINT pt; /* +0x0002 (4) */
+    POINT16 pt; /* +0x0002 (4) */
     union {
         uint8_t  rgb[10]; /* +0x0006 (10) */
         THMINE   thm;     /* +0x0006 (10) */
@@ -1255,7 +1285,7 @@ struct _thing {
 }; /* size=0x12 */
 
 struct _sel {
-    POINT      pt;        /* +0x0000 (4) */
+    POINT16    pt;        /* +0x0000 (4) */
     GrobjClass grobj;     /* +0x0004 (2) */
     GrobjClass grobjFull; /* +0x0006 (2) */
     int16_t    id;        /* +0x0008 (2) */
@@ -1287,9 +1317,11 @@ struct _timer {
     int16_t mdForce;        /* +0x0000 (2) */
     int16_t fAutoGenWhenIn; /* +0x0002 (2) */
     union {
-        int16_t  hrsForce;      /* +0x0004 (2) */
-        uint16_t minForce : 12, /* +0x0004 (2) @bit0 */
-            cPlr : 4;           /* @bit12 */
+        int16_t hrsForce; /* +0x0004 (2) */
+        struct {
+            uint16_t minForce : 12, /* +0x0004 (2) @bit0 */
+                cPlr : 4;           /* @bit12 */
+        };
     };
     int32_t tickcount; /* +0x0006 (4) */
 }; /* size=0xa */
@@ -1322,15 +1354,17 @@ struct _tok {
         spd : 4,            /* @bit8 */
         cTarget : 4;        /* @bit12 */
     union {
-        uint16_t fActive : 1, /* +0x001B (2) @bit0 */
-            fDetector : 1,    /* @bit1 */
-            fTorp : 1,        /* @bit2 */
-            fRegen : 1,       /* @bit3 */
-            fMoved : 1,       /* @bit4 */
-            dzDis : 5,        /* @bit5 */
-            dwt : 4,          /* @bit10 */
-            dMovesLeft : 2;   /* @bit14 */
-        uint16_t wFlags;      /* +0x001B (2) */
+        struct {
+            uint16_t fActive : 1, /* +0x001B (2) @bit0 */
+                fDetector : 1,    /* @bit1 */
+                fTorp : 1,        /* @bit2 */
+                fRegen : 1,       /* @bit3 */
+                fMoved : 1,       /* @bit4 */
+                dzDis : 5,        /* @bit5 */
+                dwt : 4,          /* @bit10 */
+                dMovesLeft : 2;   /* @bit14 */
+        };
+        uint16_t wFlags; /* +0x001B (2) */
     };
 }; /* size=0x1d */
 
@@ -1341,7 +1375,7 @@ struct _btldata {
     uint16_t grfPlr;   /* +0x0004 (2) */
     uint16_t cbData;   /* +0x0006 (2) */
     uint16_t idPlanet; /* +0x0008 (2) */
-    POINT    pt;       /* +0x000A (4) */
+    POINT16  pt;       /* +0x000A (4) */
     TOK      rgtok[0]; /* +0x000E (0) */
 }; /* size=0xe */
 
@@ -1382,20 +1416,22 @@ struct _wn {
 struct _ini {
     WN wnFrame; /* +0x0000 (10) */
     union {
-        uint16_t fStartupFile : 1, /* +0x000A (2) @bit0 */
-            fCmdLine : 1,          /* @bit1 */
-            fWait : 1,             /* @bit2 */
-            fGen : 1,              /* @bit3 */
-            fTry : 1,              /* @bit4 */
-            grobjSel : 4,          /* @bit5 */
-            fBatch : 1,            /* @bit9 */
-            fNewGame : 1,          /* @bit10 */
-            fDumpFleets : 1,       /* @bit11 */
-            fDumpPlanets : 1,      /* @bit12 */
-            fDumpMap : 1,          /* @bit13 */
-            fValidate : 1,         /* @bit14 */
-            fLogging : 1;          /* @bit15 */
-        uint16_t wFlags;           /* +0x000A (2) */
+        struct {
+            uint16_t fStartupFile : 1, /* +0x000A (2) @bit0 */
+                fCmdLine : 1,          /* @bit1 */
+                fWait : 1,             /* @bit2 */
+                fGen : 1,              /* @bit3 */
+                fTry : 1,              /* @bit4 */
+                grobjSel : 4,          /* @bit5 */
+                fBatch : 1,            /* @bit9 */
+                fNewGame : 1,          /* @bit10 */
+                fDumpFleets : 1,       /* @bit11 */
+                fDumpPlanets : 1,      /* @bit12 */
+                fDumpMap : 1,          /* @bit13 */
+                fValidate : 1,         /* @bit14 */
+                fLogging : 1;          /* @bit15 */
+        };
+        uint16_t wFlags; /* +0x000A (2) */
     };
     uint16_t turn;     /* +0x000C (2) */
     int16_t  iObjSel;  /* +0x000E (2) */
@@ -1442,15 +1478,19 @@ struct _player {
     uint16_t cFleet : 12, /* +0x0004 (2) @bit0 */
         cshdefSB : 4;     /* @bit12 */
     union {
-        uint16_t det : 3, /* +0x0006 (2) @bit0 */
-            reserved : 9, /* @bit0 */
-            iPlrBmp : 5,  /* @bit3 */
-            fInclude : 1, /* @bit8 */
-            mdPlayer : 7, /* @bit9 */
-            fAi : 1,      /* @bit9 */
-            lvlAi : 3,    /* @bit10 */
-            idAi : 3;     /* @bit13 */
-        uint16_t wMdPlr;  /* +0x0006 (2) */
+        struct {
+            uint16_t det : 3, /* +0x0006 (2) @bit0 */
+                iPlrBmp : 5,  /* @bit3 */
+                fInclude : 1, /* @bit8 */
+                mdPlayer : 7; /* @bit9 */
+        };
+        struct {
+            uint16_t reserved : 9, /* +0x0006 (2) @bit0 */
+                fAi : 1,           /* @bit9 */
+                lvlAi : 3,         /* @bit10 */
+                idAi : 3;          /* @bit13 */
+        };
+        uint16_t wMdPlr; /* +0x0006 (2) */
     };
     int16_t  idPlanetHome;   /* +0x0008 (2) */
     uint16_t wScore;         /* +0x000A (2) */
@@ -1468,13 +1508,15 @@ struct _player {
     uint32_t grbitAttr;      /* +0x004E (4) */
     uint16_t grbitTrader;    /* +0x0052 (2) */
     union {
-        uint16_t fDead : 1, /* +0x0054 (2) @bit0 */
-            fCrippled : 1,  /* @bit1 */
-            fCheater : 1,   /* @bit2 */
-            fLearned : 1,   /* @bit3 */
-            fHacker : 1,    /* @bit4 */
-            unused : 11;    /* @bit5 */
-        uint16_t wFlags;    /* +0x0054 (2) */
+        struct {
+            uint16_t fDead : 1, /* +0x0054 (2) @bit0 */
+                fCrippled : 1,  /* @bit1 */
+                fCheater : 1,   /* @bit2 */
+                fLearned : 1,   /* @bit3 */
+                fHacker : 1,    /* @bit4 */
+                unused : 11;    /* @bit5 */
+        };
+        uint16_t wFlags; /* +0x0054 (2) */
     };
     ZIPPRODQ1 zpq1;             /* +0x0056 (26) */
     int8_t    rgmdRelation[16]; /* +0x0070 (16) */
@@ -1484,21 +1526,23 @@ struct _player {
 
 struct _tutor {
     union {
-        int16_t  wFlags;       /* +0x0000 (2) */
-        uint16_t fVisible : 1, /* +0x0000 (2) @bit0 */
-            fGameSaved : 1,    /* @bit1 */
-            fChange : 1,       /* @bit2 */
-            fTurnDone : 1,     /* @bit3 */
-            fTutorDone : 1,    /* @bit4 */
-            fNoErrors : 1,     /* @bit5 */
-            cError : 3,        /* @bit6 */
-            fAutoComplete : 1, /* @bit9 */
-            fProgress : 1,     /* @bit10 */
-            fTBVis : 1,        /* @bit11 */
-            fValidQ : 1,       /* @bit12 */
-            fFreeing : 1,      /* @bit13 */
-            fShowHidMsg : 1,   /* @bit14 */
-            unused : 1;        /* @bit15 */
+        int16_t wFlags; /* +0x0000 (2) */
+        struct {
+            uint16_t fVisible : 1, /* +0x0000 (2) @bit0 */
+                fGameSaved : 1,    /* @bit1 */
+                fChange : 1,       /* @bit2 */
+                fTurnDone : 1,     /* @bit3 */
+                fTutorDone : 1,    /* @bit4 */
+                fNoErrors : 1,     /* @bit5 */
+                cError : 3,        /* @bit6 */
+                fAutoComplete : 1, /* @bit9 */
+                fProgress : 1,     /* @bit10 */
+                fTBVis : 1,        /* @bit11 */
+                fValidQ : 1,       /* @bit12 */
+                fFreeing : 1,      /* @bit13 */
+                fShowHidMsg : 1,   /* @bit14 */
+                unused : 1;        /* @bit15 */
+        };
     };
     int16_t   idt;       /* +0x0002 (2) */
     int16_t   idtBold;   /* +0x0004 (2) */

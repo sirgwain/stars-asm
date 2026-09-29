@@ -1,0 +1,71 @@
+/*
+LphbAlloc  (memory)
+  addr: 000d:0000  len=264
+  sig:  HB * LphbAlloc(uint16_t cb, HeapType ht)
+  params:
+    uint16_t         cb             [BP+0x6]
+    HeapType         ht             [BP+0x8]
+  locals:
+    HB *             lphb           [BP-0x8]
+    HGLOBAL          hmem           [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_0000:
+  insts 0..12  off 0x0000..0x0024
+  succs: L_0028, L_0034
+  effects:
+    0009  store[2] [bp-lphb] = 0x0
+    000e  store[2] [bp-lphb+0x2] = 0x0
+    0013  store[2] [bp+cb] = (load@0013/dst([bp+cb]) + 0x10)
+    0023  branch load@0020/dst([bp+cb]) >= load(ds:[(load([bp+ht]) << 0x1)+0xd64]) ? L_0034 : L_0028
+
+block L_0028:
+  insts 14..17  off 0x0028..0x0033
+  preds: L_0000
+  succs: L_0034
+  effects:
+    0031  store[2] [bp+cb] = load(ds:[(load([bp+ht]) << 0x1)+0xd64])
+
+block L_0034:
+  insts 18..27  off 0x0034..0x004d
+  preds: L_0000, L_0028
+  succs: L_0051, L_0082
+  effects:
+    0040  call GlobalAlloc(0x22, words(0x0, load([bp+cb]))) -> callresult(HGLOBAL)
+    0045  store[2] [bp-hmem] = callresult(HGLOBAL)
+    004c  branch load([bp-hmem]) != 0x0 ? L_0082 : L_0051
+
+block L_0051:
+  insts 29..46  off 0x0051..0x0081
+  preds: L_0034
+  succs: L_0082
+  effects:
+    0061  call PszFormatIds(0x1a, words(0x0, 0x0)) -> callresult(char *)
+    006a  call AlertSz(callresult(char *), 0x10) -> callresult(int16_t)
+    007a  call StarsLongJump(load([penvMem]), 0xffff) -> callresult(void)
+
+block L_0082:
+  insts 47..84  off 0x0082..0x0101
+  preds: L_0034, L_0051
+  succs: L_0102
+  effects:
+    0085  call GlobalLock(load@0082/src([bp-hmem])) -> callresult(LPSTR)
+    008a  store[2] [bp-lphb] = faroff(callresult(LPSTR))
+    008d  store[2] [bp-lphb+0x2] = farseg(callresult(LPSTR))
+    0096  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0xc] = load@0093/src([bp-hmem])
+    00a0  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x2] = load@009d/src([bp+cb])
+    00ad  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x4] = (load@00a4/src([bp+cb]) + 0xfff0)
+    00b4  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))] = (load@00a4/src([bp+cb]) + 0xfff0)
+    00ba  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x6] = 0x10
+    00c6  store[1] byte farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0xe] = lobyte(load([bp+ht]))
+    00dc  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x8] = load(ds:[((load([bp+ht]) << 0x1) << 0x1)+0xd34])
+    00e0  store[2] farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0xa] = load(ds:[((load([bp+ht]) << 0x1) << 0x1)+0xd36])
+    00f1  store[2] ds:[((load([bp+ht]) << 0x1) << 0x1)+0xd34] = load([bp-lphb])
+    00f5  store[2] ds:[((load([bp+ht]) << 0x1) << 0x1)+0xd36] = load([bp-lphb+0x2])
+
+block L_0102:
+  insts 86..90  off 0x0102..0x0107
+  preds: L_0082
+  effects:
+    0107  return words(load([bp-lphb+0x2]), load([bp-lphb]))

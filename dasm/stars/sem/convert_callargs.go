@@ -29,6 +29,10 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 				out[i] = c.convertValueTyped(value, messageType)
 				continue
 			}
+			if expr, ok := c.messageMerge(fn, values, i, expected); ok {
+				out[i] = expr
+				continue
+			}
 			if expr, ok := c.convertResourceIDArg(value, param); ok {
 				out[i] = expr
 				continue
@@ -129,6 +133,16 @@ func (c *machineConverter) convertSymbolValueTyped(value machine.Value, expected
 		}
 		if typeinfo.IsCallCompatible(ptr.Elem, path.Type()) {
 			return convertAddressArgTargetTyped(&SymbolRef{Path: path}, expected, ptr)
+		}
+	}
+	// A formed address such as rglpfl + i*4 resolves to the element it
+	// addresses, rglpfl[i]. That element's own pointer type does not make it
+	// the argument's value: the argument is its address.
+	if _, term := path.(*symresolve.SymbolTerm); term && pointerExpected && addressValue && typeinfo.IsPointer(path.Type()) && !addressWordIsLoad(value) {
+		if target, ok := c.convertSymbolPath(path, path.Type()); ok {
+			if lvalue, ok := target.(LValue); ok {
+				return convertAddressArgTargetTyped(lvalue, expected, ptr)
+			}
 		}
 	}
 	if pointerExpected && binary && !typeinfo.IsPointer(path.Type()) {

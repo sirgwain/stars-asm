@@ -26,6 +26,7 @@ void LogMergeFleet(int16_t id) {
     int16_t  i;
     uint16_t rgid[512];
     int16_t  j;
+    int16_t  t_8be1;
 
 L_8b6c:
     if ((gd.fGeneratingTurn != 0x0))
@@ -67,8 +68,9 @@ L_8bc6:
         goto L_8be1;
 
 L_8be1:
+    t_8be1 = j;
     j = (j + 1);
-    rgid[j] = idCur;
+    rgid[t_8be1] = idCur;
 
 L_8bf7:
     i = (i + 1);
@@ -377,7 +379,7 @@ L_910f:
         goto L_911d;
 
 L_911d:
-    if ((fmemcmp(&(pfl->lpplord->rgord[iordOld]), &(pflNew->lpplord->rgord[iordOld]), 0x12) == 0))
+    if ((fmemcmp(&(pfl->lpplord->rgord[iordOld]), &(pflNew->lpplord->rgord[iordOld]), sizeof(ORDER)) == 0))
         goto L_90fc;
     else
         goto L_9181;
@@ -780,7 +782,7 @@ L_9908:
         goto L_9929;
 
 L_9929:
-    memset(&(lxNew), 0, 0x18);
+    memset(&(lxNew), 0, sizeof(LOGXFER));
     lxNew.id = pthNew->idFull;
     lxNew.grobj = grobjThing;
     i = 0;
@@ -847,6 +849,9 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
     uint16_t t_scratch_m50_2;
     int32_t  t_merge_9d34_0001;
     int32_t  t_call_9d2c;
+    int16_t  t_9e67;
+    int16_t  t_9ef2;
+    int16_t  t_9f67;
 
 L_99f6:
     iBiggest = 0;
@@ -1101,8 +1106,9 @@ L_9e2e:
         goto L_9e79;
 
 L_9e4b:
+    t_9e67 = iOff;
     iOff = (iOff + 1);
-    prt->rgcQuan[iOff] = LOBYTE(LOWORD(rgQuan[i]));
+    prt->rgcQuan[t_9e67] = LOBYTE(LOWORD(rgQuan[i]));
     cb = (cb + 1);
 
 L_9e79:
@@ -1136,8 +1142,9 @@ L_9eb9:
         goto L_9f06;
 
 L_9ed6:
+    t_9ef2 = iOff;
     iOff = (iOff + 1);
-    prtx->rgcQuan[iOff] = LOWORD(rgQuan[i]);
+    prtx->rgcQuan[t_9ef2] = LOWORD(rgQuan[i]);
     cb = (cb + 2);
 
 L_9f06:
@@ -1165,8 +1172,9 @@ L_9f2e:
         goto L_9f81;
 
 L_9f4b:
+    t_9f67 = iOff;
     iOff = (iOff + 1);
-    prtl->rgcQuan[iOff] = rgQuan[i];
+    prtl->rgcQuan[t_9f67] = rgQuan[i];
     cb = (cb + 4);
 
 L_9f81:
@@ -1193,6 +1201,7 @@ void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2) {
     uint16_t grbit;
     int16_t  grFlag;
     int16_t  cb;
+    int16_t  t_a0d0;
 
 L_9fa6:
     grbit = 0x0;
@@ -1247,8 +1256,9 @@ L_a0a0:
         goto L_a0b7;
 
 L_a0b7:
+    t_a0d0 = iOff;
     iOff = (iOff + 1);
-    prt->rgcQuan[iOff] = plxf1->rgdItem[i];
+    prt->rgcQuan[t_a0d0] = plxf1->rgdItem[i];
     cb = (cb + 2);
 
 L_a0e1:
@@ -1443,6 +1453,8 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     uint16_t  t_scratch_m546;
     int32_t   t_merge_b464_0001;
     uint16_t  t_merge_b6c5_0001;
+    int16_t   t_b926;
+    int16_t   t_b9dc;
     FLEET    *t_call_bde7;
     uint16_t  t_merge_be51_0001;
     FLEET    *t_call_bf22;
@@ -1616,7 +1628,7 @@ L_a807:
         goto L_a817;
 
 L_a817:
-    if ((cb <= 26))
+    if (((uint16_t)(cb) <= 26))
         goto L_a828;
     else
         goto L_a822;
@@ -2336,7 +2348,7 @@ L_b534:
 
 L_b54c:
     cXferFull = (cXferFull + 1);
-    fmemset(lpxfCur, 0, 0x19);
+    fmemset(lpxfCur, 0, sizeof(XFERFULL));
     lpxfCur->id1 = RawLoad16(lpb);
     lpxfCur->id2 = RawLoad16(((uint8_t *)(lpb) + 0x2));
 
@@ -2530,8 +2542,9 @@ L_b916:
         goto L_b91f;
 
 L_b91f:
+    t_b926 = vcflMerge;
     vcflMerge = (vcflMerge + 1);
-    rgifl[vcflMerge] = lpfl->id;
+    rgifl[t_b926] = lpfl->id;
     lpfl->fCompChg = 0x1;
 
 L_b94f:
@@ -2577,8 +2590,9 @@ L_b9c3:
         goto L_b9d5;
 
 L_b9d5:
+    t_b9dc = vcflMerge;
     vcflMerge = (vcflMerge + 1);
-    rgifl[vcflMerge] = lpfl->id;
+    rgifl[t_b9dc] = lpfl->id;
     lpfl->fCompChg = 0x1;
 
 L_ba0b:
@@ -2865,7 +2879,7 @@ L_be71:
     return 0;
 
 L_be77:
-    fmemmove(&(lpfl->lpplord->rgord[iLook]), &(lpfl->lpplord->rgord[((iLook + fExtra) + 1)]), ((((lpfl->cord - iLook) - fExtra) - 1) * 18));
+    fmemmove(&(lpfl->lpplord->rgord[iLook]), &(lpfl->lpplord->rgord[((iLook + fExtra) + 1)]), ((((lpfl->cord - iLook) - fExtra) - 1) * sizeof(ORDER)));
     lpfl->cord = (lpfl->cord - (fExtra + 1));
     lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - LOBYTE((fExtra + 1)));
     goto L_c796;
@@ -2904,14 +2918,14 @@ L_bf85:
 
 L_bfb1:
     fmemmove(&(lpfl->lpplord->rgord[(RawLoad16(((uint8_t *)(lpb) + 0x2)) + 1)]), &(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]),
-             ((lpfl->cord - RawLoad16(((uint8_t *)(lpb) + 0x2))) * 0x12));
-    if ((cb >= 22))
+             ((lpfl->cord - RawLoad16(((uint8_t *)(lpb) + 0x2))) * sizeof(ORDER)));
+    if (((uint16_t)(cb) >= 22))
         goto L_c07d;
     else
         goto L_c03e;
 
 L_c03e:
-    fmemset(&(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]), 0, 0x12);
+    fmemset(&(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]), 0, sizeof(ORDER));
 
 L_c07d:
     fmemmove(&(lpfl->lpplord->rgord[RawLoad16(((uint8_t *)(lpb) + 0x2))]), (lpb + 4), (cb - 4));
@@ -2945,13 +2959,13 @@ L_c1a1:
     return 0;
 
 L_c1a7:
-    if ((cb >= 22))
+    if (((uint16_t)(cb) >= 22))
         goto L_c1ee;
     else
         goto L_c1b2;
 
 L_c1b2:
-    fmemset(&(lpfl->lpplord->rgord[iLook]), 0, 0x12);
+    fmemset(&(lpfl->lpplord->rgord[iLook]), 0, sizeof(ORDER));
 
 L_c1ee:
     fmemmove(&(lpfl->lpplord->rgord[iLook]), (lpb + 4), (cb - 4));
@@ -3461,7 +3475,7 @@ L_ca9a:
         goto L_cb37;
 
 L_caae:
-    fmemset((vrgts + idPlayer), 0, 0x10);
+    fmemset((vrgts + idPlayer), 0, sizeof(TURNSERIAL));
     if ((hdrCur.cb != 0x11))
         goto L_cb37;
     else
@@ -3477,7 +3491,7 @@ L_cb37:
 
 L_cb3f:
     ReadRt();
-    fmemmove((lpLog + iCur), &(hdrCur), 0x2);
+    fmemmove((lpLog + iCur), &(hdrCur), sizeof(HDR));
     fmemmove((lpLog + (2 + iCur)), rgbCur, hdrCur.cb);
     iCur = (iCur + (hdrCur.cb + 2));
 
@@ -3508,9 +3522,9 @@ L_cbde:
         goto L_cbf1;
 
 L_cbf1:
-    lpmp->lpmsgplrNext = LpAlloc(hdrCur.cb, htPlrMsg);
+    lpmp->lpmsgplrNext = LpAlloc((hdrCur.cb + (sizeof(MSGPLR) - 12)), htPlrMsg);
     lpmp = lpmp->lpmsgplrNext;
-    fmemcpy(lpmp, rgbCur, hdrCur.cb);
+    fmemcpy(((uint8_t *)(&(lpmp->iPlrFrom)) - 4), rgbCur, hdrCur.cb);
     lpmp->lpmsgplrNext = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     ReadRt();
@@ -3745,7 +3759,7 @@ L_cfc9:
         goto L_cfd8;
 
 L_cfd8:
-    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), lpmp);
+    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), ((uint8_t *)(&(lpmp->iPlrFrom)) - 4));
     lpmp = lpmp->lpmsgplrNext;
     goto L_cfc9;
 
@@ -4117,7 +4131,7 @@ L_d583:
     goto L_d594;
 
 L_d58b:
-    cTurnBase = (game.turn + 0xff9c);
+    cTurnBase = (game.turn - 0x64);
 
 L_d594:
     i = 0;

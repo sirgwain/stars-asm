@@ -18,7 +18,7 @@ int16_t          FHullHasTeeth(HUL *lphul);
 int16_t          FFuelTanker(SHDEF *lpshdef);
 void             CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef);
 int16_t          FDumpCargo(FLEET *lpfl);
-void             DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt);
+void             DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT16 *ppt);
 int16_t          CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator);
 int16_t          SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef);
 SHDEF           *LpshdefFromTok(TOK *ptok);

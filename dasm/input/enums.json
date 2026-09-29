@@ -277,6 +277,15 @@
     { "kind": "param", "func": "ShowWindow", "param": "arg2", "enum": "ShowWindowCmd" },
 
     { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "WindowStyle" },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ListBoxStyle", "when": [{ "param": "arg1", "global": "szListbox" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ListBoxStyle", "when": [{ "param": "arg1", "string": "LISTBOX" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ComboBoxStyle", "when": [{ "param": "arg1", "global": "szCombobox" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ComboBoxStyle", "when": [{ "param": "arg1", "string": "COMBOBOX" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "EditStyle", "when": [{ "param": "arg1", "global": "szEdit" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "EditStyle", "when": [{ "param": "arg1", "string": "EDIT" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ButtonStyle", "when": [{ "param": "arg1", "global": "szButton" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ButtonStyle", "when": [{ "param": "arg1", "string": "BUTTON" }] },
+    { "kind": "param", "func": "CreateWindow", "param": "arg3", "enum": "ScrollBarStyle", "when": [{ "param": "arg1", "string": "SCROLLBAR" }] },
     { "kind": "param", "func": "CreateWindowEx", "param": "arg1", "enum": "WindowExStyle" },
     { "kind": "param", "func": "CreateWindowEx", "param": "arg4", "enum": "WindowStyle" },
 
@@ -373,6 +382,17 @@
     { "global": "hwndTBRadar", "class": "combobox" },
     { "global": "rghwndBtn", "class": "button" },
     { "global": "rghwndOrderDD", "class": "combobox" }
+  ],
+  "sent_messages": [
+    { "func": "DrawCBEntireItem", "messages": ["LB_GETTEXT", "CB_GETLBTEXT"] },
+    { "func": "DrawDlgLBEntireItem", "messages": ["LB_GETTEXT"] },
+    { "func": "NewGameDlg3", "messages": ["BM_GETCHECK", "BM_SETCHECK"] },
+    { "func": "RaceWizardDlg2", "messages": ["BM_GETCHECK"] },
+    { "func": "RaceWizardDlg5", "messages": ["BM_GETCHECK"] },
+    { "func": "RaceWizardDlg6", "messages": ["BM_GETCHECK"] },
+    { "func": "RandomSeedDlg", "messages": ["EM_LIMITTEXT"] },
+    { "func": "RenameDlg", "messages": ["EM_GETSEL"] },
+    { "func": "SlotDlg", "messages": ["EM_GETSEL"] }
   ],
   "message_handlers": [
     { "func": "CommandHandler", "message": "WM_COMMAND", "wparam": "wParam" },

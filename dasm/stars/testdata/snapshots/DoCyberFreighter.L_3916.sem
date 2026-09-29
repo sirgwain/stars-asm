@@ -1,7 +1,7 @@
 L_3916:
     call FLookupFleet(lpfl->id, &sel.fl) -> callresult(int16_t)
     idPlanDst = lpplCur->id
-    call memset(&ord, 0, 0x12) -> callresult(void *)
+    call memset(&ord, 0, sizeof(ORDER)) -> callresult(void *)
     ord.pt = rgptPlan[idPlanDst]
     ord.grobj = grobjPlanet
     ord.id = idPlanDst

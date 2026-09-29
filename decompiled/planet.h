@@ -22,7 +22,7 @@ void             FillShipDD(int16_t idSkip);
 void             SelectAdjPlanet(int16_t dInc, int16_t idPlanet);
 int16_t          IdFindAdjStarbase(int16_t idPlanet, int16_t fNext);
 void             PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn);
-HCURSOR          ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn);
+HCURSOR          ClickInPlanetOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRightBtn);
 void             EnsureTileSize(int16_t fSmallTiles);
 void             ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw);
 int16_t          IBestTerraform(PLANET *lppl, int16_t fHelp);

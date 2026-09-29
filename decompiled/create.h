@@ -26,7 +26,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 void             DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw);
 INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 void             DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw);
-int16_t          FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd);
+int16_t          FTrackNewGameDlg3(HWND hwnd, POINT16 pt, int16_t kbd);
 void             SetNGWTitle(HWND hwnd, int16_t iStep);
 PLAYER          *LpplrComp(int16_t idAi, int16_t lvlAi);
 void             SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked);

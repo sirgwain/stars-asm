@@ -185,7 +185,7 @@ L_0a99:
     branch idc >= 1053 ? L_0abf : L_0aa3
 
 L_0aa3:
-    branch (loword((uint32_t)(lParam >> 0x10)) & 0xffff) != 0x6 ? L_16f8 : L_0abf
+    branch hiword(lParam) != 0x6 ? L_16f8 : L_0abf
 
 L_0abf:
     call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)
@@ -406,7 +406,7 @@ L_11e7:
     branch btlplan.szName[(cLen - 1)] != 41 ? L_123c : L_11ff
 
 L_11ff:
-    branch (_ctype[(btlplan.szName[(cLen - 2)] + 1)] & 0x4) == 0x0 ? L_123c : L_1224
+    branch isdigit(btlplan.szName[(cLen - 2)]) == 0x0 ? L_123c : L_1224
 
 L_1224:
     branch btlplan.szName[(cLen - 3)] == 40 ? L_1254 : L_123c

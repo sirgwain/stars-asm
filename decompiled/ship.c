@@ -5,7 +5,7 @@ void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t  dxRight;
     int16_t  iWarp;
     int16_t  yTop;
-    POINT    pt;
+    POINT16  pt;
     RECT     rcT;
     int16_t  dWrong;
     int32_t  lTot;
@@ -85,7 +85,7 @@ L_0126:
     t_merge_0129_0001 = 0x4;
 
 L_0129:
-    dyShipLB = LOWORD(((dyArial8 + 2) * t_merge_0129_0001));
+    dyShipLB = ((dyArial8 + 2) * t_merge_0129_0001);
     dWrong = (dyShipLB - (rcT.bottom - rcT.top));
     if ((dxShipLB != (xRight - xLeft)))
         goto L_016c;
@@ -481,7 +481,7 @@ L_0a5e:
     rgdxOrderDD[0] = dxRight;
 
 L_0a64:
-    SetWindowPos(rghwndOrderDD[0], 0x0, xLeft, yTop, dxRight, (LOWORD((10 * dyArial8)) + dyShipDD), swp);
+    SetWindowPos(rghwndOrderDD[0], 0x0, xLeft, yTop, dxRight, ((10 * dyArial8) + dyShipDD), swp);
     ShowWindow(rghwndOrderDD[0], SW_SHOW);
     yTop = (yTop + (dyShipDD + 3));
     yTopMsg = yTop;
@@ -607,7 +607,7 @@ L_0d5b:
         goto L_0d93;
 
 L_0d93:
-    SetRect(&(rcT), (((xLeft + dxRight) - (dyShipDD | 0x1)) + 0x8), (yTop + 3), (xLeft + dxRight), (((dyShipDD | 0x1) + yTop) + 0xfffb));
+    SetRect(&(rcT), (((xLeft + dxRight) - (dyShipDD | 0x1)) + 0x8), (yTop + 3), (xLeft + dxRight), (((dyShipDD | 0x1) + yTop) - 0x5));
     rgrcRef[5] = rcT;
     DrawDiamond(hdc, &(rcT), hbrBBlue);
     goto L_0efc;
@@ -1177,7 +1177,7 @@ L_189a:
 L_189d:
     yTop = (t_merge_189d_0001 + rc.top);
     dx = ((int32_t)(((xRight - xLeft) - 16)) / 3);
-    dy = (LOWORD((0x3 * dyArial8)) >> 0x1);
+    dy = ((0x3 * dyArial8) >> 0x1);
     if ((obj.pfl->idPlanet == -1))
         goto L_18e3;
     else
@@ -1514,7 +1514,7 @@ L_1fa8:
     t_merge_1fab_0001 = 0x5;
 
 L_1fab:
-    dyFleetCompLB = LOWORD(((dyArial8 + 2) * t_merge_1fab_0001));
+    dyFleetCompLB = ((dyArial8 + 2) * t_merge_1fab_0001);
     dyWrong = (dyFleetCompLB - (rcT.bottom - rcT.top));
     if ((dxFleetCompLB != (xRight - xLeft)))
         goto L_1fee;
@@ -1817,7 +1817,7 @@ L_25f0:
         goto L_25f9;
 
 L_25f9:
-    if ((csh <= (int32_t)((uint32_t)((0x7ffe - (rgplr[pfl->iPlayer].cFleet + 0xffff))))))
+    if ((csh <= (int32_t)((uint32_t)((0x7ffe - (rgplr[pfl->iPlayer].cFleet - 0x1))))))
         goto L_2633;
     else
         goto L_262d;
@@ -1848,6 +1848,7 @@ void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     int16_t  i;
     int16_t  iInit;
     int32_t  t_2a2f;
+    int16_t  t_2fab;
     uint16_t t_merge_3b92_0001;
     uint16_t t_merge_3bb5_0001;
     uint16_t t_merge_3bd2_0001;
@@ -2124,7 +2125,7 @@ L_2b2c:
     goto L_2b88;
 
 L_2b7c:
-    sel.fl.iplan = LOBYTE((LOWORD(lSel) + 0xffff));
+    sel.fl.iplan = LOBYTE((LOWORD(lSel) - 0x1));
 
 L_2b88:
     FLookupFleet(-1, &(sel.fl));
@@ -2359,8 +2360,9 @@ L_2fa2:
         goto L_2fab;
 
 L_2fab:
+    t_2fab = vcflMerge;
     vcflMerge = (vcflMerge + 1);
-    rgifl[vcflMerge] = ifl;
+    rgifl[t_2fab] = ifl;
 
 L_2fc1:
     goto L_2f1b;
@@ -2956,7 +2958,7 @@ L_3d2c:
 }
 
 void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
-    POINT   pt;
+    POINT16 pt;
     int16_t idOld;
     int16_t i;
     FLEET  *lpfl;
@@ -3286,7 +3288,7 @@ L_4224:
         goto L_4249;
 
 L_4249:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0xfa)));
+    wt = (wt + (lphul->rghs[j].cItem * 0xfa));
     goto L_41ee;
 
 L_4276:
@@ -3296,7 +3298,7 @@ L_4276:
         goto L_429b;
 
 L_429b:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0x1f4)));
+    wt = (wt + (lphul->rghs[j].cItem * 0x1f4));
 
 L_42c5:
     goto L_41ee;
@@ -3314,7 +3316,7 @@ L_42e8:
         goto L_430d;
 
 L_430d:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0xc8)));
+    wt = (wt + (lphul->rghs[j].cItem * 0xc8));
 
 L_4337:
     goto L_41ee;
@@ -3346,7 +3348,7 @@ L_4394:
         goto L_43b9;
 
 L_43b9:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0x32)));
+    wt = (wt + (lphul->rghs[j].cItem * 0x32));
     goto L_435e;
 
 L_43e6:
@@ -3356,7 +3358,7 @@ L_43e6:
         goto L_440b;
 
 L_440b:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0x64)));
+    wt = (wt + (lphul->rghs[j].cItem * 0x64));
     goto L_435e;
 
 L_4438:
@@ -3366,7 +3368,7 @@ L_4438:
         goto L_445d;
 
 L_445d:
-    wt = (wt + LOWORD((lphul->rghs[j].cItem * 0xfa)));
+    wt = (wt + (lphul->rghs[j].cItem * 0xfa));
 
 L_4487:
     goto L_435e;
@@ -3827,7 +3829,7 @@ L_4dee:
 }
 
 int16_t FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet) {
-    POINT    pt;
+    POINT16  pt;
     int16_t  i;
     int16_t  grbit;
     FLEET    fl;
@@ -3963,8 +3965,9 @@ int16_t TransferStuff(int16_t id1, GrobjClass grobj1, int16_t id2, GrobjClass gr
     int16_t  grbit;
     int16_t  j;
     BTN      rgbtn[32];
-    POINT    pt;
+    POINT16  pt;
     RECT     rc;
+    int16_t  t_51ad;
     uint16_t t_merge_5456_0001;
 
 L_4faa:
@@ -4075,8 +4078,9 @@ L_519a:
         goto L_51ad;
 
 L_51ad:
+    t_51ad = cXferValidHulls;
     cXferValidHulls = (cXferValidHulls + 1);
-    rgValidHull[cXferValidHulls] = i;
+    rgValidHull[t_51ad] = i;
 
 L_51c3:
     i = (i + 1);
@@ -4397,11 +4401,14 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HDC         hdc;
     int16_t     dyMore;
     PAINTSTRUCT ps;
-    POINT       pt;
+    POINT16     pt;
     HWND        hwndBtn;
     RECT        rcBtn;
     int16_t     dx;
     RECT        rc;
+    POINT       t_pt_5774_1;
+    POINT       t_pt_57d7_1;
+    POINT       t_pt_583a_1;
     int16_t     t_merge_596f_0001;
     uint16_t    t_merge_59c2_0001;
 
@@ -4434,7 +4441,9 @@ L_56e3:
     GetWindowRect(hwndBtn, &(rcBtn));
     pt.x = rcBtn.left;
     pt.y = rcBtn.top;
-    ScreenToClient(hwnd, &(pt));
+    t_pt_5774_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_5774_1));
+    pt = PointTo16(t_pt_5774_1);
     pt.y = (pt.y + dyMore);
     pt.x = (pt.x - dx);
     SetWindowPos(hwndBtn, 0x0, pt.x, pt.y, 0, 0, SWP_NOSIZE);
@@ -4442,7 +4451,9 @@ L_56e3:
     GetWindowRect(hwndBtn, &(rcBtn));
     pt.x = rcBtn.left;
     pt.y = rcBtn.top;
-    ScreenToClient(hwnd, &(pt));
+    t_pt_57d7_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_57d7_1));
+    pt = PointTo16(t_pt_57d7_1);
     pt.y = (pt.y + dyMore);
     pt.x = (pt.x - dx);
     SetWindowPos(hwndBtn, 0x0, pt.x, pt.y, 0, 0, SWP_NOSIZE);
@@ -4450,7 +4461,9 @@ L_56e3:
     GetWindowRect(hwndBtn, &(rcBtn));
     pt.x = rcBtn.left;
     pt.y = rcBtn.top;
-    ScreenToClient(hwnd, &(pt));
+    t_pt_583a_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_583a_1));
+    pt = PointTo16(t_pt_583a_1);
     pt.y = (pt.y + dyMore);
     pt.x = (pt.x - dx);
     SetWindowPos(hwndBtn, 0x0, pt.x, pt.y, 0, 0, SWP_NOSIZE);
@@ -4481,7 +4494,7 @@ L_58bb:
     return 1;
 
 L_5907:
-    return FTrackXfer(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam);
+    return FTrackXfer(hwnd, LOWORD(lParam), HIWORD(lParam), wParam);
 
 L_5935:
     if ((GET_WM_COMMAND_ID(wParam, lParam) == IDOK))
@@ -4586,8 +4599,8 @@ L_5a08:
 }
 
 int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
-    POINT    ptOld;
-    POINT    pt;
+    POINT16  ptOld;
+    POINT16  pt;
     int32_t  dChg;
     BTNT     btnt;
     int32_t  cCur;
@@ -4622,7 +4635,7 @@ L_5a42:
         goto L_5a5c;
 
 L_5a5c:
-    if ((PtInRect(&(rgbtnXfer[i].rc), pt) != 0))
+    if ((PtInRect(&(rgbtnXfer[i].rc), PointFrom16(pt)) != 0))
         goto L_5a91;
     else
         goto L_5a82;
@@ -5030,7 +5043,7 @@ L_606b:
     goto L_609f;
 
 L_6084:
-    memset(&(xfer.pl), 0, 0x38);
+    memset(&(xfer.pl), 0, sizeof(PLANET));
     ppl = &(xfer.pl);
 
 L_609f:
@@ -5857,7 +5870,7 @@ L_6c96:
         goto L_6ca0;
 
 L_6ca0:
-    dy = (dy - LOWORD(((dyArial8 + 6) * 6)));
+    dy = (dy - ((dyArial8 + 6) * 6));
 
 L_6cae:
     SetRect(&(rcBtn), ((dxCtr - (dyArial8 + 3)) + 1), dy, (dxCtr + 1), ((dyArial8 + 3) + dy));
@@ -6721,7 +6734,7 @@ L_7be9:
         goto L_7bf2;
 
 L_7bf2:
-    yTop = (yTop - LOWORD(((dyArial8 + 6) * 6)));
+    yTop = (yTop - ((dyArial8 + 6) * 6));
     OffsetRc(&(rc), 0, ((dyArial8 + 6) * 6));
 
 L_7c1c:
@@ -6772,12 +6785,12 @@ L_7cd4:
     return;
 }
 
-HCURSOR ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
+HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
     int32_t    lCur;
     HDC        hdc;
     PLANET     pl;
     int16_t    iWarp;
-    POINT      ptOld;
+    POINT16    ptOld;
     int16_t    idPlan;
     int32_t    lMax;
     int32_t    lSel;
@@ -6809,7 +6822,13 @@ HCURSOR ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRight
     int16_t    iChecked;
     THING     *lpthMac;
     SCAN       scan;
+    int16_t    t_7db3;
+    int16_t    t_7ddf;
+    int16_t    t_7e02;
+    int16_t    t_83ee;
     uint16_t   t_merge_8439_0001;
+    int16_t    t_84ac;
+    int16_t    t_84ec;
     int32_t   *t_assign_1;
     int32_t   *t_assign_2;
     int16_t    t_merge_8a98_0001;
@@ -6832,7 +6851,7 @@ L_7cff:
     return 0x0;
 
 L_7d05:
-    if ((PtInRect(&(rgrcRef[5]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[5]), PointFrom16(pt)) == 0))
         goto L_823a;
     else
         goto L_7d1f;
@@ -6881,8 +6900,9 @@ L_7d88:
         goto L_7da2;
 
 L_7da2:
+    t_7db3 = cMax;
     cMax = (cMax + 1);
-    rgszZip[cMax] = vrgZip[i].szName;
+    rgszZip[t_7db3] = vrgZip[i].szName;
 
 L_7dc6:
     i = (i + 1);
@@ -6900,12 +6920,14 @@ L_7dd5:
         goto L_7ddf;
 
 L_7ddf:
+    t_7ddf = cMax;
     cMax = (cMax + 1);
-    rgszZip[cMax] = sz255;
+    rgszZip[t_7ddf] = sz255;
 
 L_7df6:
+    t_7e02 = cMax;
     cMax = (cMax + 1);
-    rgszZip[cMax] = PszGetCompressedString(idsCustomize);
+    rgszZip[t_7e02] = PszGetCompressedString(idsCustomize);
     i = PopupMenu(hwndPlanet, pt.x, pt.y, cMax, 0x0, rgszZip, -1, 1);
     if ((i != (cMax - 1)))
         goto L_7ece;
@@ -7090,7 +7112,7 @@ L_8237:
     goto L_8b82;
 
 L_823a:
-    if ((PtInRect(&(rgrcRef[12]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[12]), PointFrom16(pt)) == 0))
         goto L_86ce;
     else
         goto L_8254;
@@ -7197,8 +7219,9 @@ L_83d7:
     iChecked = c;
 
 L_83df:
+    t_83ee = c;
     c = (c + 1);
-    rgid[c] = ((int32_t)(lpfl->id) | 0x80000000);
+    rgid[t_83ee] = ((int32_t)(lpfl->id) | 0x80000000);
     if ((c < 100))
         goto L_8333;
     else
@@ -7257,8 +7280,9 @@ L_849f:
         goto L_84ac;
 
 L_84ac:
+    t_84ac = c;
     c = (c + 1);
-    rgid[c] = -1;
+    rgid[t_84ac] = -1;
     fSep = 1;
 
 L_84ce:
@@ -7268,10 +7292,11 @@ L_84ce:
         goto L_84db;
 
 L_84db:
+    t_84ec = c;
     c = (c + 1);
-    t_assign_1 = &(rgid[c]);
+    t_assign_1 = &(rgid[t_84ec]);
     *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
-    t_assign_2 = &(rgid[c]);
+    t_assign_2 = &(rgid[t_84ec]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 
 L_8504:
@@ -7361,7 +7386,7 @@ L_86d7:
     return 0x0;
 
 L_86e0:
-    if ((PtInRect(rgrcRef, pt) == 0))
+    if ((PtInRect(rgrcRef, PointFrom16(pt)) == 0))
         goto L_8769;
     else
         goto L_86fa;
@@ -7390,7 +7415,7 @@ L_8713:
     goto L_8b82;
 
 L_8769:
-    if ((PtInRect(&(rgrcRef[15]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[15]), PointFrom16(pt)) == 0))
         goto L_87d8;
     else
         goto L_8783;
@@ -7405,7 +7430,7 @@ L_8783:
     goto L_8b82;
 
 L_87d8:
-    if ((PtInRect(&(rgrcRef[1]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[1]), PointFrom16(pt)) == 0))
         goto L_88fd;
     else
         goto L_87f2;
@@ -7464,7 +7489,7 @@ L_88fa:
     goto L_8b82;
 
 L_88fd:
-    if ((PtInRect(&(rgrcRef[3]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[3]), PointFrom16(pt)) == 0))
         goto L_8a21;
     else
         goto L_8917;
@@ -7537,7 +7562,7 @@ L_8a18:
     return 0x0;
 
 L_8a21:
-    if ((PtInRect(&(rgrcRef[4]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[4]), PointFrom16(pt)) == 0))
         goto L_8ae0;
     else
         goto L_8a3b;
@@ -7587,7 +7612,7 @@ L_8ad7:
     return 0x0;
 
 L_8ae0:
-    if ((PtInRect(&(rgrcRef[18]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[18]), PointFrom16(pt)) == 0))
         goto L_8b82;
     else
         goto L_8afa;
@@ -8242,7 +8267,7 @@ L_95c8:
     goto L_961b;
 
 L_95df:
-    _wsprintf(szWork, psz, (LOWORD((50 * i)) + 0x32));
+    _wsprintf(szWork, psz, ((50 * i) + 0x32));
     SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0x0, (LPARAM)(szWork));
     i = (i + 1);
 
@@ -8502,8 +8527,8 @@ L_9ae8:
 }
 
 void DeleteCurWayPoint(int16_t fBackup) {
-    POINT   pt;
-    POINT   rgpt[3];
+    POINT16 pt;
+    POINT16 rgpt[3];
     int16_t cpt;
     SCAN    scan;
     int16_t ipt;
@@ -8549,7 +8574,7 @@ L_9bcd:
 
 L_9bd2:
     RedrawScanSel(0x0, 0);
-    fmemmove(&(sel.fl.lpplord->rgord[sel.iwpAct]), &(sel.fl.lpplord->rgord[(sel.iwpAct + 1)]), (((sel.fl.cord - sel.iwpAct) - 1) * 18));
+    fmemmove(&(sel.fl.lpplord->rgord[sel.iwpAct]), &(sel.fl.lpplord->rgord[(sel.iwpAct + 1)]), (((sel.fl.cord - sel.iwpAct) - 1) * sizeof(ORDER)));
     sel.fl.cord = (sel.fl.cord - 1);
     sel.fl.lpplord->iordMac = (sel.fl.lpplord->iordMac - 0x1);
     sel.iwpAct = (sel.iwpAct - 1);
@@ -8572,7 +8597,7 @@ L_9cbf:
         goto L_9cc8;
 
 L_9cc8:
-    fmemmove(&(sel.fl.lpplord->rgord[(sel.iwpAct + 1)]), &(sel.fl.lpplord->rgord[(sel.iwpAct + 2)]), (((sel.fl.cord - sel.iwpAct) - 2) * 18));
+    fmemmove(&(sel.fl.lpplord->rgord[(sel.iwpAct + 1)]), &(sel.fl.lpplord->rgord[(sel.iwpAct + 2)]), (((sel.fl.cord - sel.iwpAct) - 2) * sizeof(ORDER)));
     sel.fl.cord = (sel.fl.cord - 1);
     sel.fl.lpplord->iordMac = (sel.fl.lpplord->iordMac - 0x1);
 
@@ -8665,7 +8690,7 @@ L_9ec7:
     ord = lpfl->lpplord->rgord[iDel];
 
 L_9ef2:
-    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), (((lpfl->cord - iDel) - 1) * 18));
+    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), (((lpfl->cord - iDel) - 1) * sizeof(ORDER)));
     if ((fRecycle == 0))
         goto L_9fca;
     else
@@ -9294,9 +9319,9 @@ L_ab64:
         goto L_ab6d;
 
 L_ab6d:
-    lOneYearUse = EstFuelUse(lpfl, i, iWarp, (int32_t)(LOWORD((iWarp * iWarp))), 0);
+    lOneYearUse = EstFuelUse(lpfl, i, iWarp, (int32_t)((iWarp * iWarp)), 0);
     lFuelGain = (uint32_t)((lOneYearUse * (int32_t)((cYears - 1))));
-    lFuelGain = (lFuelGain + EstFuelUse(lpfl, i, iWarp, (int32_t)((dist - LOWORD((LOWORD((iWarp * iWarp)) * (cYears - 1))))), 0));
+    lFuelGain = (lFuelGain + EstFuelUse(lpfl, i, iWarp, (int32_t)((dist - ((iWarp * iWarp) * (cYears - 1)))), 0));
     if ((lFuelGain <= l))
         goto L_ac0b;
     else
@@ -9306,7 +9331,7 @@ L_abff:
     l = lFuelGain;
 
 L_ac0b:
-    lFuelGain = LCalcFuelGainFromRamScoops(lpfl, iWarp, (int32_t)(LOWORD((iWarp * iWarp))));
+    lFuelGain = LCalcFuelGainFromRamScoops(lpfl, iWarp, (int32_t)((iWarp * iWarp)));
     j = 0;
     goto L_acbd;
 
@@ -9497,7 +9522,7 @@ L_aea2:
 
 L_aec3:
     fDeadFleet = 1;
-    memset(&(rgflCur[i]), 0, 0x7c);
+    memset(&(rgflCur[i]), 0, sizeof(FLEET));
     rgflCur[i].iPlayer = iplr;
     goto L_af22;
 
@@ -9746,8 +9771,8 @@ L_b4e2:
 L_b4e5:
     pctNew =
         (int32_t)((((((uint32_t)((cshDmgDst * rgflCur[t_merge_b4e5_0001].rgdv[ishdef].pctDp)) + (uint32_t)((cshDmgMoved * rgflCur[iSrc].rgdv[ishdef].pctDp))) +
-                     (int32_t)(rgpflNew[t_merge_b472_0001]->rgcsh[ishdef])) +
-                    0xffffffff) /
+                     (int32_t)(rgpflNew[t_merge_b472_0001]->rgcsh[ishdef])) -
+                    0x1) /
                    (int32_t)(rgpflNew[t_merge_b443_0001]->rgcsh[ishdef])));
     if ((iSrc != 0))
         goto L_b572;
@@ -9802,7 +9827,7 @@ L_b60a:
     t_merge_b60d_0001 = 0x0;
 
 L_b60d:
-    pctNew = (int32_t)(((((uint32_t)(((cshDmgDst + cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[t_merge_b60d_0001]->rgcsh[ishdef])) + 0xffffffff) /
+    pctNew = (int32_t)(((((uint32_t)(((cshDmgDst + cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[t_merge_b60d_0001]->rgcsh[ishdef])) - 0x1) /
                         (int32_t)(rgpflNew[t_merge_b5de_0001]->rgcsh[ishdef])));
     if ((iSrc != 0))
         goto L_b696;
@@ -9841,7 +9866,7 @@ L_b709:
     goto L_bcf6;
 
 L_b72b:
-    pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])) + 0xffffffff) /
+    pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])) - 0x1) /
                         (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])));
     rgpflNew[iSrc]->rgdv[ishdef].pctSh = LOWORD(pctNew);
 
@@ -9921,7 +9946,7 @@ L_b96b:
     t_merge_b96e_0001 = 0x0;
 
 L_b96e:
-    pctNew = (int32_t)(((((uint32_t)((cshDmgMoved * 100)) + (int32_t)(rgpflNew[t_merge_b96e_0001]->rgcsh[ishdef])) + 0xffffffff) /
+    pctNew = (int32_t)(((((uint32_t)((cshDmgMoved * 100)) + (int32_t)(rgpflNew[t_merge_b96e_0001]->rgcsh[ishdef])) - 0x1) /
                         (int32_t)(rgpflNew[t_merge_b93f_0001]->rgcsh[ishdef])));
     if ((iSrc != 0))
         goto L_b9ed;
@@ -9960,7 +9985,7 @@ L_ba60:
     goto L_bcf6;
 
 L_ba82:
-    pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])) + 0xffffffff) /
+    pctNew = (int32_t)(((((uint32_t)(((cshDmgSrc - cshDmgMoved) * 0x64)) + (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])) - 0x1) /
                         (int32_t)(rgpflNew[iSrc]->rgcsh[ishdef])));
     rgpflNew[iSrc]->rgdv[ishdef].pctSh = LOWORD(pctNew);
 
@@ -10000,7 +10025,7 @@ L_bbb2:
     t_merge_bbb5_0001 = 0x0;
 
 L_bbb5:
-    pctNew = (int32_t)(((((uint32_t)((cshDmgDst * 100)) + (int32_t)(rgpflNew[t_merge_bbb5_0001]->rgcsh[ishdef])) + 0xffffffff) /
+    pctNew = (int32_t)(((((uint32_t)((cshDmgDst * 100)) + (int32_t)(rgpflNew[t_merge_bbb5_0001]->rgcsh[ishdef])) - 0x1) /
                         (int32_t)(rgpflNew[t_merge_bb86_0001]->rgcsh[ishdef])));
     if ((iSrc != 0))
         goto L_bc34;
@@ -10388,7 +10413,7 @@ L_c3d4:
         goto L_c3f3;
 
 L_c3f3:
-    memset(&(flDead), 0, 0x7c);
+    memset(&(flDead), 0, sizeof(FLEET));
     cKill = lpfl->rgcsh[ishdef];
     cDel = (cDel + cKill);
     j = 0;
@@ -10768,7 +10793,7 @@ L_caf7:
 
 void FleetOrdersChangeTarget(FLEET *lpflOld) {
     int16_t    id;
-    POINT      pt;
+    POINT16    pt;
     int16_t    fChg;
     FLEET     *lpfl;
     int16_t    iord;
@@ -11028,7 +11053,7 @@ L_cedb:
         goto L_cefb;
 
 L_cefb:
-    cExcess = LOWORD((5 * cExcess));
+    cExcess = (5 * cExcess);
     if ((cExcess <= 80))
         goto L_cf2d;
     else

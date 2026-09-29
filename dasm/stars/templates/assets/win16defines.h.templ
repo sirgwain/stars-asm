@@ -17,10 +17,10 @@
 
 #define strtime    _strtime
 #define access     _access
-#define filelength _filelength
-#define lseek      _lseek
+#define filelength filelength16
+#define lseek      lseek16
 #define mkdir      _mkdir
-#define tell       _tell
+#define tell       tell16
 #define dos_getdiskfree _getdiskfree
 
 typedef struct _diskfree_t _diskfree_t;
@@ -44,6 +44,8 @@ typedef struct _diskfree_t _diskfree_t;
 #undef GetDriveType
 #define GetDriveType  GetDriveType16
 #define AllocResource AllocResource16
+#undef CreateWindow
+#define CreateWindow  CreateWindow16
 
 // shims
 
@@ -70,6 +72,27 @@ static inline DWORD GetTextExtent16(HDC hdc, LPCSTR str, int len)
     return MAKELONG((WORD)size.cx, (WORD)size.cy);
 }
 
+
+/*
+ * Win16 window creation
+ *
+ * Win16 CW_USEDEFAULT is the 16-bit 0x8000, which Stars stores in its window
+ * rectangles as -32768 when Stars.ini holds no position. Win32 reads that as
+ * a real coordinate and places the window far off screen, so it is mapped to
+ * the native CW_USEDEFAULT.
+ */
+
+// CreateWindow16 creates a window, mapping Win16 CW_USEDEFAULT positions and
+// sizes to the native value.
+static inline HWND CreateWindow16(LPCSTR cls, LPCSTR name, DWORD style, int x, int y, int cx, int cy,
+                                  HWND parent, HMENU menu, HINSTANCE inst, LPVOID param)
+{
+    if (x == -32768 || x == 0x8000)
+        x = CW_USEDEFAULT;
+    if (cx == -32768 || cx == 0x8000)
+        cx = CW_USEDEFAULT;
+    return CreateWindowExA(0, cls, name, style, x, y, cx, cy, parent, menu, inst, param);
+}
 
 /*
  * Win16 GDI compatibility
@@ -110,6 +133,62 @@ static inline DWORD SetBrushOrg16(HDC hdc, int x, int y)
 }
 
 /*
+ * Win16 file handles
+ *
+ * Stars opens its files with OpenFile and then measures and seeks them with
+ * the C runtime's filelength, lseek and tell. Win16 HFILEs were DOS handles
+ * the C runtime accepted; Win32 HFILEs are kernel handles, which the C
+ * runtime's descriptor functions reject, so these work on the HFILE.
+ */
+
+// filelength16 returns the size of an open HFILE, or -1 on error.
+static inline long filelength16(HFILE hf)
+{
+    DWORD size = GetFileSize((HANDLE)(INT_PTR)hf, NULL);
+    return size == INVALID_FILE_SIZE ? -1L : (long)size;
+}
+
+// lseek16 moves an HFILE's position, origin being 0 (start), 1 (current) or
+// 2 (end) as in lseek, and returns the new position or -1 on error.
+static inline long lseek16(HFILE hf, long offset, int origin)
+{
+    return _llseek(hf, offset, origin);
+}
+
+// tell16 returns an HFILE's position.
+static inline long tell16(HFILE hf)
+{
+    return _llseek(hf, 0, FILE_CURRENT);
+}
+
+/*
+ * Win16 points
+ *
+ * Win16 POINT held 16-bit ints, and Stars writes records holding points to
+ * its files. Stars' points are POINT16 to keep that layout; Win32 POINT holds
+ * LONGs, so points convert where they pass into or out of the Win32 API.
+ */
+
+typedef struct tagPOINT16 {
+    int16_t x;
+    int16_t y;
+} POINT16;
+
+// PointFrom16 widens a Stars point to a Win32 point.
+static inline POINT PointFrom16(POINT16 pt)
+{
+    POINT out = {pt.x, pt.y};
+    return out;
+}
+
+// PointTo16 narrows a Win32 point to a Stars point.
+static inline POINT16 PointTo16(POINT pt)
+{
+    POINT16 out = {(int16_t)pt.x, (int16_t)pt.y};
+    return out;
+}
+
+/*
  * Win16 window longs
  *
  * Stars only uses the window long to subclass controls through
@@ -135,8 +214,10 @@ static inline WNDPROC SetWindowLong16(HWND hwnd, short index, WNDPROC lpfn)
  *
  * Win16 GetDriveType took a 0-based drive number; Win32 takes a root path.
  * Win16 AllocResource allocated a moveable block for a resource's data
- * (cb 0 meaning the resource's size); Win32 has no equivalent, so allocate
- * the same block with GlobalAlloc.
+ * (cb 0 meaning the resource's size) and callers locked it with
+ * LockResource. Win32 LockResource returns its handle unchanged, so the block
+ * is allocated GMEM_FIXED, whose handle is the data pointer; LockResource,
+ * GlobalLock and GlobalUnlock then all behave as they did on Win16.
  */
 
 static inline UINT GetDriveType16(int drive)
@@ -149,7 +230,7 @@ static inline UINT GetDriveType16(int drive)
 
 static inline HGLOBAL AllocResource16(HINSTANCE hinst, HRSRC hrsrc, DWORD cb)
 {
-    return GlobalAlloc(GMEM_MOVEABLE, cb ? cb : SizeofResource(hinst, hrsrc));
+    return GlobalAlloc(GMEM_FIXED, cb ? cb : SizeofResource(hinst, hrsrc));
 }
 
 // tagTIMERINFO retains the 12-byte ToolHelp layout from utils/TOOLHELP.H.

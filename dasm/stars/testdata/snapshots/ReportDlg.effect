@@ -24,7 +24,7 @@ ReportDlg  (report)
       int16_t          iCol           [BP-0x18]
       int16_t          ibit           [BP-0x16]
       int16_t          i              [BP-0x14]
-      POINT            pt             [BP-0x12]
+      POINT16          pt             [BP-0x12]
     block 0022:04FC  len=0x180
       int16_t          iNew           [BP-0x12]
       int16_t          iCur           [BP-0x10]

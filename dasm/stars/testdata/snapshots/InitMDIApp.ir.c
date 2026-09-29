@@ -7,7 +7,7 @@ L_0000:
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
-    wc.hIcon = 0x0;
+    wc.hIcon = LoadIcon(hInst, "StarsIco");
     wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00));
     wc.hbrBackground = (HBRUSH)(13);
     wc.lpszMenuName = "StarsMenu";

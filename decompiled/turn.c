@@ -126,11 +126,11 @@ L_016d:
         goto L_0190;
 
 L_0190:
-    lpcd = LpAlloc(0x2ee0, htMisc);
-    lpxf = LpAlloc(0x61a8, htMisc);
+    lpcd = LpAlloc((1000 * sizeof(COLDROP)), htMisc);
+    lpxf = LpAlloc((1000 * sizeof(XFERFULL)), htMisc);
     vrgPlanResExtra = LpAlloc((game.cPlanMax * 2), htMisc);
     fmemset(vrgPlanResExtra, 0, (game.cPlanMax * 2));
-    vrgts = LpAlloc((game.cPlayer * 16), htMisc);
+    vrgts = LpAlloc((game.cPlayer * sizeof(TURNSERIAL)), htMisc);
     UpdateProgressGauge(370);
     cColDrop = 0;
     cXferFull = 0;
@@ -1227,19 +1227,19 @@ void MoveThings(int16_t fPostProd) {
     int16_t   k;
     int16_t   dUni;
     double    d;
-    POINT     pt;
+    POINT16   pt;
     int16_t   iMax;
-    POINT     ptDst;
+    POINT16   ptDst;
     int16_t   dLeft;
     THING    *lpth;
     int16_t   fAnythingMoved;
     int16_t   fMajorMove;
     MessageId idm;
     int16_t   iLow;
-    POINT     ptSrc;
+    POINT16   ptSrc;
     THING    *lpthMac;
     int16_t   dRange;
-    POINT     ptBase;
+    POINT16   ptBase;
     int16_t   iX;
     int16_t   rgC[2];
     int16_t   rgwtTerra[3];
@@ -1337,7 +1337,7 @@ L_1992:
 
 L_199e:
     lpth->thw.grbitPlr = 0x0;
-    dUni = (LOWORD((400 * game.mdSize)) + 400);
+    dUni = ((400 * game.mdSize) + 400);
     lpth->thw.cLastMove = 0x0;
     goto L_19f6;
 
@@ -1453,14 +1453,14 @@ LRetargetFreighter:
         goto L_1b70;
 
 L_1b70:
-    rgC[0] = (LOWORD((400 * game.mdSize)) + 1380);
+    rgC[0] = ((400 * game.mdSize) + 1380);
     goto L_1b85;
 
 L_1b80:
     rgC[0] = 1020;
 
 L_1b85:
-    rgC[1] = (Random((LOWORD((400 * game.mdSize)) + 361)) + 1020);
+    rgC[1] = (Random(((400 * game.mdSize) + 361)) + 1020);
     iX = Random(2);
     lpth->tht.ptDest.x = rgC[iX];
     if ((iX != 0))
@@ -1499,7 +1499,7 @@ L_1c1e:
 
 L_1c3e:
     dRange = lpth->tht.iWarp;
-    dRange = LOWORD((dRange * dRange));
+    dRange = (dRange * dRange);
     ptDst = lpth->tht.ptDest;
     fAnythingMoved = 1;
     if ((idm == idmMysteryTraderHasDecidedMakeAnotherPass))
@@ -1556,7 +1556,7 @@ L_1cf7:
     lpth->thp.fMoved = 0x1;
     fAnythingMoved = 1;
     dRange = (lpth->thp.iWarp + 4);
-    dRange = LOWORD((dRange * dRange));
+    dRange = (dRange * dRange);
     if ((fPostProd == 0))
         goto L_1d3d;
     else
@@ -1719,8 +1719,8 @@ L_200a:
 
 L_200d:
     fTerra = t_merge_200d_0001;
-    iWarp2 = LOWORD((iWarp * iWarp));
-    iWarpPacket2 = LOWORD((iWarpPacket * iWarpPacket));
+    iWarp2 = (iWarp * iWarp);
+    iWarpPacket2 = (iWarpPacket * iWarpPacket);
     if ((GetRaceStat(&(rgplr[lppl->iPlayer]), rsMajorAdv) != raStargate))
         goto L_2052;
     else
@@ -1801,7 +1801,7 @@ L_21d3:
         goto L_21e0;
 
 L_21e0:
-    dmgRaw = (int32_t)(((uint32_t)(((int32_t)((LOWORD((iWarpPacket * iWarpPacket)) - iWarp)) * wtTot)) / 0xa0));
+    dmgRaw = (int32_t)(((uint32_t)(((int32_t)(((iWarpPacket * iWarpPacket) - iWarp)) * wtTot)) / 0xa0));
     if ((fTerra == 0))
         goto L_28db;
     else
@@ -2208,7 +2208,7 @@ L_29a2:
     t_merge_29a5_0001 = 326;
 
 L_29a5:
-    FSendPlrMsg(lppl->iPlayer, t_merge_29a5_0001, lppl->id, lppl->id, lpth->iplr, LOWORD(wtTot), (LOWORD((uint32_t)((wtTot >> 0x10))) & 0xffff), 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, t_merge_29a5_0001, lppl->id, lppl->id, lpth->iplr, LOWORD(wtTot), HIWORD(wtTot), 0, 0, 0);
     goto LFreeThePacket;
 
 L_29b8:
@@ -2319,7 +2319,7 @@ L_2bf2:
 
 L_2bf5:
     idm = t_merge_2bf5_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, LOWORD(wtTot), (LOWORD((uint32_t)((wtTot >> 0x10))) & 0xffff), lpth->iplr, LOWORD(lColKilled), 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, LOWORD(wtTot), HIWORD(wtTot), lpth->iplr, LOWORD(lColKilled), 0, 0);
     goto L_2d69;
 
 L_2c53:
@@ -2337,8 +2337,7 @@ L_2c62:
 
 L_2c65:
     idm = t_merge_2c65_0001;
-    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, LOWORD(wtTot), (LOWORD((uint32_t)((wtTot >> 0x10))) & 0xffff), lpth->iplr, LOWORD(lColKilled),
-                LOWORD(lDefKilled), 0);
+    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, LOWORD(wtTot), HIWORD(wtTot), lpth->iplr, LOWORD(lColKilled), LOWORD(lDefKilled), 0);
     lppl->cDefenses = (lppl->cDefenses - LOWORD(lDefKilled));
 
 L_2d17:
@@ -2650,14 +2649,14 @@ void MoveFleets() {
     int16_t  fGotEnufFuel;
     int16_t  fRanOutOfFuel;
     ORDER   *lpord;
-    POINT    ptEnd;
+    POINT16  ptEnd;
     int16_t  ifl;
     FLEET   *lpfl;
     double   r;
     int32_t  pct;
     int16_t  dMineTravel;
     int32_t  dRange;
-    POINT    ptBeg;
+    POINT16  ptBeg;
     int32_t  wtFuelUsed;
     int32_t  dActTravel;
     int32_t  lFuelGain;
@@ -2670,7 +2669,7 @@ void MoveFleets() {
     int16_t  fJumpgate;
     int16_t  isbsDst;
     int16_t  isbsSrc;
-    POINT    ptMsg;
+    POINT16  ptMsg;
     int32_t  wtMinerals;
     int32_t  cDie;
     int16_t  cKill;
@@ -3072,30 +3071,28 @@ L_3a3a:
         goto L_3b28;
 
 L_3a4c:
-    FSendPlrMsg(lpfl->iPlayer, 238, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtColonists), (LOWORD((uint32_t)((wtColonists >> 0x10))) & 0xffff),
-                LOWORD(wtMinerals), (LOWORD((uint32_t)((wtMinerals >> 0x10))) & 0xffff), lpplSrc->id, 0);
+    FSendPlrMsg(lpfl->iPlayer, 238, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtColonists), HIWORD(wtColonists), LOWORD(wtMinerals), HIWORD(wtMinerals),
+                lpplSrc->id, 0);
     if ((lpfl->iPlayer == lpplSrc->iPlayer))
         goto L_3c9f;
     else
         goto L_3ac4;
 
 L_3ac4:
-    FSendPlrMsg(lpplSrc->iPlayer, 238, lpplSrc->id, lpfl->id, LOWORD(wtColonists), (LOWORD((uint32_t)((wtColonists >> 0x10))) & 0xffff), LOWORD(wtMinerals),
-                (LOWORD((uint32_t)((wtMinerals >> 0x10))) & 0xffff), lpplSrc->id, 0);
+    FSendPlrMsg(lpplSrc->iPlayer, 238, lpplSrc->id, lpfl->id, LOWORD(wtColonists), HIWORD(wtColonists), LOWORD(wtMinerals), HIWORD(wtMinerals), lpplSrc->id, 0);
 
 L_3b25:
     goto L_3c9f;
 
 L_3b28:
-    FSendPlrMsg(lpfl->iPlayer, 237, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtColonists), (LOWORD((uint32_t)((wtColonists >> 0x10))) & 0xffff), lpplSrc->id, 0, 0,
-                0);
+    FSendPlrMsg(lpfl->iPlayer, 237, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtColonists), HIWORD(wtColonists), lpplSrc->id, 0, 0, 0);
     if ((lpfl->iPlayer == lpplSrc->iPlayer))
         goto L_3c9f;
     else
         goto L_3b8c;
 
 L_3b8c:
-    FSendPlrMsg(lpplSrc->iPlayer, 237, lpplSrc->id, lpfl->id, LOWORD(wtColonists), (LOWORD((uint32_t)((wtColonists >> 0x10))) & 0xffff), lpplSrc->id, 0, 0, 0);
+    FSendPlrMsg(lpplSrc->iPlayer, 237, lpplSrc->id, lpfl->id, LOWORD(wtColonists), HIWORD(wtColonists), lpplSrc->id, 0, 0, 0);
 
 L_3bd9:
     goto L_3c9f;
@@ -3107,15 +3104,14 @@ L_3bdc:
         goto L_3c9f;
 
 L_3bee:
-    FSendPlrMsg(lpfl->iPlayer, 236, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtMinerals), (LOWORD((uint32_t)((wtMinerals >> 0x10))) & 0xffff), lpplSrc->id, 0, 0,
-                0);
+    FSendPlrMsg(lpfl->iPlayer, 236, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtMinerals), HIWORD(wtMinerals), lpplSrc->id, 0, 0, 0);
     if ((lpfl->iPlayer == lpplSrc->iPlayer))
         goto L_3c9f;
     else
         goto L_3c52;
 
 L_3c52:
-    FSendPlrMsg(lpplSrc->iPlayer, 236, lpplSrc->id, lpfl->id, LOWORD(wtMinerals), (LOWORD((uint32_t)((wtMinerals >> 0x10))) & 0xffff), lpplSrc->id, 0, 0, 0);
+    FSendPlrMsg(lpplSrc->iPlayer, 236, lpplSrc->id, lpfl->id, LOWORD(wtMinerals), HIWORD(wtMinerals), lpplSrc->id, 0, 0, 0);
 
 L_3c9f:
     dTravel = (int32_t)(DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y));
@@ -3171,7 +3167,7 @@ L_3de5:
         goto L_3df6;
 
 L_3df6:
-    if ((dRange <= (int32_t)((uint32_t)(LOWORD((lpord[1].iWarp * lpord[1].iWarp))))))
+    if ((dRange <= (int32_t)((uint32_t)((lpord[1].iWarp * lpord[1].iWarp)))))
         goto L_3e3d;
     else
         goto L_3e34;
@@ -3181,7 +3177,7 @@ L_3e34:
     goto L_3e66;
 
 L_3e3d:
-    t_merge_3e66_0001 = (uint32_t)(LOWORD((lpord[1].iWarp * lpord[1].iWarp)));
+    t_merge_3e66_0001 = (uint32_t)((lpord[1].iWarp * lpord[1].iWarp));
 
 L_3e66:
     dRange = t_merge_3e66_0001;
@@ -3213,7 +3209,7 @@ L_3eb5:
 
 L_3eff:
     lpfl->rgwtMin[3] = (lpfl->rgwtMin[3] - cDie);
-    FSendPlrMsg(lpfl->iPlayer, 193, (lpfl->id | 0x8000), LOWORD(cDie), (LOWORD((uint32_t)((cDie >> 0x10))) & 0xffff), lpfl->id, 0, 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, 193, (lpfl->id | 0x8000), LOWORD(cDie), HIWORD(cDie), lpfl->id, 0, 0, 0, 0);
 
 L_3f5f:
     if ((lpord[1].iWarp != 0xa))
@@ -3225,7 +3221,7 @@ L_3f79:
     flSrc = *(lpfl);
     fDead = 1;
     cKillTot = 0;
-    memset(&(flDead), 0, 0x7c);
+    memset(&(flDead), 0, sizeof(FLEET));
     ish = 0;
     goto L_413f;
 
@@ -3354,7 +3350,7 @@ L_4219:
     FSendPlrMsg2(lpfl->iPlayer, 224, (lpfl->id | 0x8000), cKillTot, lpfl->id);
 
 L_4240:
-    dTravel = (uint32_t)(LOWORD((lpord[1].iWarp * lpord[1].iWarp)));
+    dTravel = (uint32_t)((lpord[1].iWarp * lpord[1].iWarp));
     if ((lpord[1].grobj != grobjFleet))
         goto L_43a2;
     else
@@ -3990,9 +3986,9 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     int32_t  d2Closest;
     int16_t  rgishInc[16];
     int16_t  dTravel;
-    POINT    ptAct;
+    POINT16  ptAct;
     int16_t  iWarp;
-    POINT    ptDst;
+    POINT16  ptDst;
     int16_t  dy;
     int32_t  d2;
     int16_t  j;
@@ -4007,7 +4003,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     int16_t  dmgExtra;
     int16_t  cshDamaged;
     int16_t  fMineExpert;
-    POINT    ptSrc;
+    POINT16  ptSrc;
     int16_t  iPlayer;
     int16_t  cFields;
     int16_t  dStart;
@@ -4035,6 +4031,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     uint16_t ibit;
     uint16_t t_merge_4fc4_0001;
     uint16_t t_merge_4fdd_0001;
+    int16_t  t_59a9;
     int32_t  t_merge_5ae4_0001;
     double   t_call_5df4;
     int16_t  t_merge_63a1_0001;
@@ -4097,7 +4094,7 @@ L_502e:
         goto L_5037;
 
 L_5037:
-    if ((LOWORD((iWarp * iWarp)) >= (dTravel - 1)))
+    if (((iWarp * iWarp) >= (dTravel - 1)))
         goto L_5051;
     else
         goto L_504a;
@@ -4417,7 +4414,7 @@ L_571b:
         goto L_5784;
 
 L_5784:
-    pct = LOWORD((((iWarp - rgiWarpSafe[iType]) - fMineExpert) * rgpctMineHit[iType]));
+    pct = (((iWarp - rgiWarpSafe[iType]) - fMineExpert) * rgpctMineHit[iType]);
     i = 0;
     goto L_57cb;
 
@@ -4455,7 +4452,7 @@ LHitSkip2:
 
 L_5828:
     dmgPer = rgrgdmgMine[iType][fHasRamScoop];
-    dmgExtra = (rgrgdmgMinMine[iType][fHasRamScoop] - LOWORD((rgrgdmgMine[iType][fHasRamScoop] * LOWORD(csh))));
+    dmgExtra = (rgrgdmgMinMine[iType][fHasRamScoop] - (rgrgdmgMine[iType][fHasRamScoop] * LOWORD(csh)));
     if ((csh < 5))
         goto L_5887;
     else
@@ -4472,7 +4469,7 @@ L_5891:
 
 L_5897:
     flSrc = *(lpfl);
-    memset(&(flDead), 0, 0x7c);
+    memset(&(flDead), 0, sizeof(FLEET));
     flDead.iPlayer = flSrc.iPlayer;
     flDead.fDead = 0x1;
     flDead.det = 0x7;
@@ -4511,8 +4508,9 @@ L_595f:
 
 L_5989:
     cshT = lpfl->rgcsh[i];
+    t_59a9 = cishInc;
     cishInc = (cishInc + 1);
-    rgishInc[cishInc] = i;
+    rgishInc[t_59a9] = i;
     cEngines = rglpshdef[lpfl->iPlayer][i].hul.rghs[0].cItem;
     dpShield = (uint32_t)(((int32_t)(cshT)*DpShieldOfShdef((rglpshdef[iPlayer] + i), iPlayer)));
     dpsh = (uint32_t)(rglpshdef[iPlayer][i].hul.dp);

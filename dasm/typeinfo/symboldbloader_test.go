@@ -46,7 +46,28 @@ func TestLoadAddsMissingAlignSymData16Global(t *testing.T) {
 				{Frame: 0x45},
 			},
 		},
-		GlobalTypes: nb09.TypeStream{BaseIndex: 0x1000},
+		GlobalTypes: nb09.TypeStream{
+			BaseIndex: 0x1000,
+			Records: []nb09.TypeRecord{
+				{
+					Leaf: nb09.LF_FIELDLIST,
+					Parsed: &nb09.LFFieldList{
+						Fields: []nb09.FieldEntry{
+							{Leaf: nb09.LF_MEMBER, Parsed: &nb09.LFMember{Type: 0x0011, Offset: nb09.NumericLeaf{Value: 0}, Name: "x"}},
+							{Leaf: nb09.LF_MEMBER, Parsed: &nb09.LFMember{Type: 0x0011, Offset: nb09.NumericLeaf{Value: 2}, Name: "y"}},
+						},
+					},
+				},
+				{
+					Leaf: nb09.LF_STRUCTURE,
+					Parsed: &nb09.LFStruct{
+						FieldList: 0x1000,
+						Size:      nb09.NumericLeaf{Value: 4},
+						Name:      "tagPOINT",
+					},
+				},
+			},
+		},
 	}
 
 	sdb, err := Load(inputDir, db)

@@ -21,6 +21,7 @@ var procs = []string{
 	"BattlePlansDlg",
 	"CalcPctSurvive",
 	"CalcPlayerScore",
+	"CBattles",
 	"CBuildProdItem",
 	"ChgCargo",
 	"CMaxMines",
@@ -55,6 +56,8 @@ var procs = []string{
 	"InitMDIApp",
 	"LCalcFuelGainFromRamScoops",
 	"LpengineFromId",
+	"LpflNew",
+	"LphbAlloc",
 	"LphuldefFromId",
 	"LpscannerFromId",
 	"LogChangeThing",
@@ -64,10 +67,12 @@ var procs = []string{
 	"Popup",
 	"PopupMenu",
 	"PszNameProdItem",
+	"ReadPlayerMessages",
 	"ReportDlg",
 	"PushRandom",
 	"SzVersion",
 	"WrapTextOut",
+	"WritePlayerMessages",
 }
 
 // TestDASM_BitfieldUpdateSnapshots verifies the reported compiler patterns and

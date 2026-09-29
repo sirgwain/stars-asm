@@ -1,0 +1,163 @@
+/*
+WritePlayerMessages  (msg)
+  addr: 0007:9702  len=468
+  sig:  void WritePlayerMessages(int16_t iPlayer)
+  params:
+    int16_t          iPlayer        [BP+0x6]
+  locals:
+    uint8_t *        lpb            [BP-0x410]
+    MSGPLR *         lpmp           [BP-0x40c]
+    int16_t          cbMsg          [BP-0x408]
+    uint8_t[1024]    rgb            [BP-0x406]
+    uint8_t *        lpbMax         [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_9702:
+  insts 0..7  off 0x9702..0x9716
+  succs: L_971d, L_98d0
+  effects:
+    970b  store[2] [bp-cbMsg] = 0x0
+    9715  branch load([bp+iPlayer]) == 0xffff ? L_98d0 : L_971d
+
+block L_971d:
+  insts 10..20  off 0x971d..0x9741
+  preds: L_9702
+  succs: L_980d
+  effects:
+    9724  store[2] [bp-lpb] = load([lpMsg])
+    9728  store[2] [bp-lpb+0x2] = load([lpMsg+0x2])
+    9739  store[2] [bp-lpbMax] = (load([bp-lpb]) + load([imemMsgCur]))
+    973c  store[2] [bp-lpbMax+0x2] = load([bp-lpb+0x2])
+    973f  goto L_980d
+
+block L_9742:
+  insts 21..24  off 0x9742..0x974d
+  preds: L_980d
+  succs: L_9751, L_976f
+  effects:
+    974c  branch (load([bp-cbMsg]) + 0x14) < 0x400 ? L_976f : L_9751
+
+block L_9751:
+  insts 26..35  off 0x9751..0x976e
+  preds: L_9742
+  succs: L_976f
+  effects:
+    9761  call WriteRt(0xc, load([bp-cbMsg]), words(ss, addr([bp-rgb]))) -> callresult(void)
+    9769  store[2] [bp-cbMsg] = 0x0
+
+block L_976f:
+  insts 36..41  off 0x976f..0x9780
+  preds: L_9742, L_9751
+  succs: L_9784, L_97f1
+  effects:
+    977f  branch (load(byte farseg(load(dword [bp-lpb])):[faroff(load(dword [bp-lpb]))]) & 0xf) != load([bp+iPlayer]) ? L_97f1 : L_9784
+
+block L_9784:
+  insts 43..47  off 0x9784..0x9793
+  preds: L_976f
+  succs: L_9797, L_97f1
+  effects:
+    9792  branch (load(farseg(load(dword [bp-lpb])):[faroff(load(dword [bp-lpb]))+0x1]) & 0x1ff) == 0x1ff ? L_97f1 : L_9797
+
+block L_9797:
+  insts 49..82  off 0x9797..0x97f0
+  preds: L_9784
+  succs: L_97f1
+  effects:
+    97cd  call fmemmove(words(ss, (addr([bp-rgb]) + load([bp-cbMsg]))), words(load([bp-lpb+0x2]), (load([bp-lpb]) + 0x1)), ((((((load@979b/src(byte farseg(load(dword [bp-lpb])):[faroff(load(dword [bp-lpb]))]) sar 0x1) sar 0x1) sar 0x1) sar 0x1) & 0xf) + 0x4)) -> callresult(void *)
+    97ed  store[2] [bp-cbMsg] = (load@97ed/dst([bp-cbMsg]) + ((((((load@97d9/src(byte farseg(load(dword [bp-lpb])):[faroff(load(dword [bp-lpb]))]) sar 0x1) sar 0x1) sar 0x1) sar 0x1) & 0xf) + 0x4))
+
+block L_97f1:
+  insts 83..92  off 0x97f1..0x980c
+  preds: L_976f, L_9784, L_9797
+  succs: L_980d
+  effects:
+    9809  store[2] [bp-lpb] = (load([bp-lpb]) + ((((((load(byte farseg(load(dword [bp-lpb])):[faroff(load(dword [bp-lpb]))]) sar 0x1) sar 0x1) sar 0x1) sar 0x1) & 0xf) + 0x5))
+
+block L_980d:
+  insts 93..96  off 0x980d..0x9818
+  preds: L_971d, L_97f1
+  succs: L_9742, L_981c
+  effects:
+    9817  branch load([bp-lpb]) < load([bp-lpbMax]) ? L_9742 : L_981c
+
+block L_981c:
+  insts 98..99  off 0x981c..0x9822
+  preds: L_980d
+  succs: L_9826, L_983e
+  effects:
+    9821  branch load([bp-cbMsg]) == 0x0 ? L_983e : L_9826
+
+block L_9826:
+  insts 101..109  off 0x9826..0x983d
+  preds: L_981c
+  succs: L_983e
+  effects:
+    9836  call WriteRt(0xc, load([bp-cbMsg]), words(ss, addr([bp-rgb]))) -> callresult(void)
+
+block L_983e:
+  insts 110..114  off 0x983e..0x984f
+  preds: L_981c, L_9826
+  succs: L_98bc
+  effects:
+    9845  store[2] [bp-lpmp] = load([vlpmsgplrOut])
+    9849  store[2] [bp-lpmp+0x2] = load([vlpmsgplrOut+0x2])
+    984d  goto L_98bc
+
+block L_9850:
+  insts 115..117  off 0x9850..0x985a
+  preds: L_98bc, L_98c6
+  succs: L_985e, L_986e
+  effects:
+    9859  branch load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x6]) != 0x0 ? L_986e : L_985e
+
+block L_985e:
+  insts 119..122  off 0x985e..0x986a
+  preds: L_9850
+  succs: L_986e, L_9881
+  effects:
+    9869  branch load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x4]) != load([bp+iPlayer]) ? L_9881 : L_986e
+
+block L_986e:
+  insts 124..128  off 0x986e..0x987d
+  preds: L_9850, L_985e
+  succs: L_9881, L_98a9
+  effects:
+    987c  branch (load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x6]) + 0xffff) != load([bp+iPlayer]) ? L_98a9 : L_9881
+
+block L_9881:
+  insts 130..141  off 0x9881..0x98a8
+  preds: L_985e, L_986e
+  succs: L_98a9
+  effects:
+    9891  call abs(load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0xa])) -> callresult(int16_t)
+    98a1  call WriteRt(0x28, (callresult(int16_t) + 0xc), words(load([bp-lpmp+0x2]), load([bp-lpmp]))) -> callresult(void)
+
+block L_98a9:
+  insts 142..146  off 0x98a9..0x98bb
+  preds: L_986e, L_9881
+  succs: L_98bc
+  effects:
+    98b4  store[2] [bp-lpmp] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))])
+    98b8  store[2] [bp-lpmp+0x2] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2])
+
+block L_98bc:
+  insts 147..148  off 0x98bc..0x98c2
+  preds: L_983e, L_98a9
+  succs: L_9850, L_98c6
+  effects:
+    98c1  branch load([bp-lpmp]) != 0x0 ? L_9850 : L_98c6
+
+block L_98c6:
+  insts 150..151  off 0x98c6..0x98cc
+  preds: L_98bc
+  succs: L_9850, L_98d0
+  effects:
+    98cb  branch load([bp-lpmp+0x2]) != 0x0 ? L_9850 : L_98d0
+
+block L_98d0:
+  insts 153..157  off 0x98d0..0x98d5
+  preds: L_9702, L_98c6
+  effects:
+    98d5  return

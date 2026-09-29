@@ -184,7 +184,7 @@ func collectUnsupportedExpr(expr sem.Expr, path string, failures *[]LowerFailure
 	}
 	switch e := expr.(type) {
 	case *sem.Local, *sem.Global, *sem.FunctionRef, *sem.Temp, *sem.Const,
-		*sem.StringLiteral, *sem.FloatConst, *sem.SymbolRef:
+		*sem.StringLiteral, *sem.FloatConst, *sem.SymbolRef, *sem.SizeOf:
 		return
 	case *sem.ResourceID:
 		collectUnsupportedExpr(e.Value, path+".value", failures)
@@ -316,6 +316,8 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		return &Macro{Name: "MAKEINTRESOURCE", Args: []Expr{v}}, ok
 	case *sem.FloatConst:
 		return &FloatConst{Value: e.F64}, true
+	case *sem.SizeOf:
+		return &SizeOf{Type: typeinfo.TypeDecl(e.Type, "")}, true
 	case *sem.Unary:
 		x, ok := l.lowerExpr(e.X)
 		if !ok {
@@ -333,7 +335,7 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok1 || !ok2 || !ok3 {
 			return nil, false
 		}
-		return byteBinary(e, op, lhs, rhs), true
+		return byteBinary(e, op, narrowShiftOperand(e, lhs), rhs), true
 	case *sem.Byte:
 		parent, ok := l.lowerExpr(e.Parent)
 		if !ok {
@@ -670,13 +672,13 @@ func lowerCompareOp(op sem.CompareOp) (string, bool) {
 		return "==", true
 	case sem.CompareNE:
 		return "!=", true
-	case sem.CompareLT:
+	case sem.CompareLT, sem.CompareULT:
 		return "<", true
-	case sem.CompareLE:
+	case sem.CompareLE, sem.CompareULE:
 		return "<=", true
-	case sem.CompareGT:
+	case sem.CompareGT, sem.CompareUGT:
 		return ">", true
-	case sem.CompareGE:
+	case sem.CompareGE, sem.CompareUGE:
 		return ">=", true
 	default:
 		return "", false
@@ -702,6 +704,42 @@ func byteBinary(e *sem.Binary, op string, lhs, rhs Expr) Expr {
 		return &PointerOffset{Pointer: lhs, Offset: rhs, Type: nonBytePointer(e.LHS.ExprType())}
 	}
 	return &Binary{Op: op, LHS: lhs, RHS: rhs}
+}
+
+// narrowShiftOperand casts the left operand of a 16-bit right shift to the
+// machine register type. C promotes 16-bit operands to int, so without the cast
+// a left-shifted operand keeps high bits the machine shifted out, SAR of an
+// unsigned operand does not sign extend, and SHR of a negative signed operand
+// shifts in ones.
+func narrowShiftOperand(e *sem.Binary, lhs Expr) Expr {
+	if e.Op != sem.OpShr && e.Op != sem.OpSar {
+		return lhs
+	}
+	signed := e.Op == sem.OpSar
+	operand := e.LHS
+	if shl, ok := operand.(*sem.Binary); ok {
+		if shl.Op != sem.OpShl {
+			return lhs
+		}
+		operand = shl.LHS
+	}
+	typ := operand.ExprType()
+	if typ == nil || typ.Kind() != typeinfo.KInt || typ.Bytes() != 2 {
+		return lhs
+	}
+	if _, ok := operand.(*sem.Unary); ok {
+		return lhs
+	}
+	if operand == e.LHS {
+		prim, ok := typ.(*typeinfo.Primitive)
+		if !ok || prim.Signed == signed {
+			return lhs
+		}
+	}
+	if signed {
+		return &Cast{Type: "int16_t", Value: lhs}
+	}
+	return &Cast{Type: "uint16_t", Value: lhs}
 }
 
 // pointerElemBytes returns the pointee size of a pointer type.

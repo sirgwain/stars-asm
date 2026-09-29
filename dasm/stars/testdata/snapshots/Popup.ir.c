@@ -1,13 +1,13 @@
 void Popup(HWND hwnd, int16_t x, int16_t y) {
     HDC      hdc;
-    POINT    pt;
+    POINT16  pt;
     int16_t  dy;
     int16_t  i;
     int16_t  c;
     HFONT    hfontSav;
     char    *psz;
     int16_t  dx;
-    POINT    ptT;
+    POINT16  ptT;
     int16_t  dx2;
     int16_t  dxDamage;
     int16_t  dxL;
@@ -16,6 +16,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     char     szTB[40];
     int16_t  dxName;
     int16_t  dxCoord;
+    POINT    t_pt_0c9b_1;
     int16_t  t_merge_0eaa_0001;
     int16_t  t_merge_0f08_0001;
     int16_t  t_merge_108c_0001;
@@ -33,7 +34,9 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
 L_0c7c:
     pt.x = x;
     pt.y = y;
-    ClientToScreen(hwnd, &(pt));
+    t_pt_0c9b_1 = PointFrom16(pt);
+    ClientToScreen(hwnd, &(t_pt_0c9b_1));
+    pt = PointTo16(t_pt_0c9b_1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     goto L_11f5;
@@ -41,7 +44,7 @@ L_0c7c:
 L_0cc3:
     psz = PszGetCompressedString(idsMineralConcentration0000000kt);
     dx = (LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8);
-    dy = (LOWORD((3 * dyArial8)) + 8);
+    dy = ((3 * dyArial8) + 8);
     if ((GlobalPD.rgi[4] < 0))
         goto L_1225;
     else
@@ -243,7 +246,7 @@ L_1138:
 
 L_113b:
     dx = (t_merge_113b_0001 + 344);
-    dy = (((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6);
+    dy = (((dyArial10 + 72) + (12 * dyArial8)) + 6);
     goto L_1225;
 
 L_115a:
@@ -268,7 +271,7 @@ L_1189:
     lpshdefBuild = GlobalPD.lpshdef;
     UpdateSlotGlobals();
     dx = 340;
-    dy = (((dyArial8 + 306) + LOWORD((6 * dyArial8))) + 8);
+    dy = (((dyArial8 + 306) + (6 * dyArial8)) + 8);
     if ((gd.mdScreenSize <= 0x0))
         goto L_1225;
     else
@@ -281,7 +284,7 @@ L_11ce:
         goto L_11d8;
 
 L_11d8:
-    dy = (dy + LOWORD((3 * dyArial8)));
+    dy = (dy + (3 * dyArial8));
 
 L_11e2:
     goto L_1225;

@@ -373,10 +373,12 @@ func TestCollapseScratchBitfieldRMWPreservesOldStorageValue(t *testing.T) {
 	}, effects[4:]...)...)
 
 	got, changed := (&collapseStorageRMWProcessor{ctx: ctx}).ProcessMachineBlock(nil, machine.FuncEffects{}, machine.BlockEffects{Block: block, Effects: effects})
-	if !changed || len(got.Effects) != 4 {
-		t.Fatalf("collapsed effects = (%v, %d), want (true, 4)", changed, len(got.Effects))
+	// The deltaHigh spill only fed the removed snapshot, so it is dropped;
+	// deltaLow and the unrelated [bp-0x20] store were never read and stay.
+	if !changed || len(got.Effects) != 3 {
+		t.Fatalf("collapsed effects = (%v, %d), want (true, 3)", changed, len(got.Effects))
 	}
-	store, ok := got.Effects[3].(machine.StoreEffect)
+	store, ok := got.Effects[2].(machine.StoreEffect)
 	if !ok {
 		t.Fatalf("collapsed effect = %T, want machine.StoreEffect", got.Effects[2])
 	}

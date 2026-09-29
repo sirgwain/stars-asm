@@ -1,0 +1,78 @@
+/*
+WritePlayerMessages  (msg)
+  addr: 0007:9702  len=468
+  sig:  void WritePlayerMessages(int16_t iPlayer)
+  params:
+    int16_t          iPlayer        [BP+0x6]
+  locals:
+    uint8_t *        lpb            [BP-0x410]
+    MSGPLR *         lpmp           [BP-0x40c]
+    int16_t          cbMsg          [BP-0x408]
+    uint8_t[1024]    rgb            [BP-0x406]
+    uint8_t *        lpbMax         [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+L_9702:
+    cbMsg = 0
+    branch iPlayer == -1 ? L_98d0 : L_971d
+
+L_971d:
+    lpb = (uint8_t *)lpMsg
+    lpbMax = &lpb[imemMsgCur]
+    goto L_980d
+
+L_9742:
+    branch (cbMsg + 20) < 1024 ? L_976f : L_9751
+
+L_9751:
+    call WriteRt(rtMsg, cbMsg, rgb) -> callresult(void)
+    cbMsg = 0
+
+L_976f:
+    branch (*lpb & 0xf) != iPlayer ? L_97f1 : L_9784
+
+L_9784:
+    branch (*(lpb+0x1) & 0x1ff) == 0x1ff ? L_97f1 : L_9797
+
+L_9797:
+    call fmemmove(&rgb[cbMsg], &lpb[1], (((*lpb sar 0x4) & 0xf) + 0x4)) -> callresult(void *)
+    cbMsg = (cbMsg + (((*lpb sar 0x4) & 0xf) + 0x4))
+
+L_97f1:
+    lpb = &lpb[(5 + ((*lpb sar 0x4) & 0xf))]
+
+L_980d:
+    branch lpb < lpbMax ? L_9742 : L_981c
+
+L_981c:
+    branch cbMsg == 0 ? L_983e : L_9826
+
+L_9826:
+    call WriteRt(rtMsg, cbMsg, rgb) -> callresult(void)
+
+L_983e:
+    lpmp = vlpmsgplrOut
+    goto L_98bc
+
+L_9850:
+    branch lpmp->iPlrTo != 0 ? L_986e : L_985e
+
+L_985e:
+    branch lpmp->iPlrFrom != iPlayer ? L_9881 : L_986e
+
+L_986e:
+    branch (lpmp->iPlrTo - 1) != iPlayer ? L_98a9 : L_9881
+
+L_9881:
+    call WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), ptroff(&lpmp->iPlrFrom, -4)) -> callresult(void)
+
+L_98a9:
+    lpmp = lpmp->lpmsgplrNext
+
+L_98bc:
+    branch lpmp != 0x0 ? L_9850 : L_98d0
+
+
+L_98d0:
+    return

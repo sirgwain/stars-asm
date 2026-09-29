@@ -47,7 +47,7 @@ L_0faa:
     t_fields_1->iItem = t_fields_2;
     t_fields_1->cItem = t_fields_3;
     FLookupPart(&(part));
-    dpShdef = (dpShdef + (uint32_t)(LOWORD((part.pshield->dp * lphs->cItem))));
+    dpShdef = (dpShdef + (uint32_t)((part.pshield->dp * lphs->cItem)));
     goto L_0f69;
 
 L_0feb:
@@ -69,7 +69,7 @@ L_100e:
         goto L_1020;
 
 L_1020:
-    dpShdef = (dpShdef + (uint32_t)(LOWORD((lphs->cItem * 0x32))));
+    dpShdef = (dpShdef + (uint32_t)((lphs->cItem * 0x32)));
     goto L_0f69;
 
 L_1040:
@@ -85,7 +85,7 @@ L_104c:
         goto L_105e;
 
 L_105e:
-    dpShdef = (dpShdef + (uint32_t)(LOWORD((lphs->cItem * 0x64))));
+    dpShdef = (dpShdef + (uint32_t)((lphs->cItem * 0x64)));
 
 L_107b:
     goto L_0f69;

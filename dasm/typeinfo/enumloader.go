@@ -219,6 +219,7 @@ type symbolicConfigJSON struct {
 	DependentEnums  []dependentEnumRuleJSON `json:"dependent_enums"`
 	WindowClasses   []windowClassJSON       `json:"window_classes"`
 	Windows         []windowRuleJSON        `json:"windows"`
+	SentMessages    []sentMessagesJSON      `json:"sent_messages"`
 	MessageHandlers []messageHandlerJSON    `json:"message_handlers"`
 }
 
@@ -238,8 +239,10 @@ type useRuleJSON struct {
 }
 
 type argConstraintJSON struct {
-	Param string `json:"param"`
-	Value int    `json:"value"`
+	Param  string `json:"param"`
+	Value  int    `json:"value"`
+	Global string `json:"global"`
+	String string `json:"string"`
 }
 
 type messageRuleJSON struct {
@@ -298,6 +301,8 @@ func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
 			r.WhenArgs = append(r.WhenArgs, ArgConstraint{
 				ParamName: when.Param,
 				Value:     when.Value,
+				Global:    when.Global,
+				String:    when.String,
 			})
 		}
 	}

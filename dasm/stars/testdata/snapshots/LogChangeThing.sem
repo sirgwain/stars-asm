@@ -17,7 +17,7 @@ L_9908:
     branch gd.fGeneratingTurn != 0x0 ? L_99f0 : L_9929
 
 L_9929:
-    call memset(&lxNew, 0, 0x18) -> callresult(void *)
+    call memset(&lxNew, 0, sizeof(LOGXFER)) -> callresult(void *)
     lxNew.id = pthNew->idFull
     lxNew.grobj = grobjThing
     i = 0

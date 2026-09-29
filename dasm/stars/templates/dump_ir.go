@@ -239,6 +239,8 @@ func formatIRExpr(expr ir.Expr) string {
 		return sem.FormatFloat(e.Value)
 	case *ir.StringConst:
 		return e.Value
+	case *ir.SizeOf:
+		return "sizeof(" + e.Type + ")"
 	case *ir.Unary:
 		if e.Functional {
 			return e.Op + "(" + formatIRExpr(e.X) + ")"
@@ -284,7 +286,11 @@ func formatIRExpr(expr ir.Expr) string {
 		}
 		return "(" + decl + ")" + load
 	case *ir.PointerOffset:
-		offset := "((uint8_t *)(" + formatIRExpr(e.Pointer) + ") + " + formatIRExpr(e.Offset) + ")"
+		op, off := "+", formatIRExpr(e.Offset)
+		if c, ok := e.Offset.(*ir.IntConst); ok && strings.HasPrefix(off, "-") && c.Text != "" {
+			op, off = "-", off[1:]
+		}
+		offset := "((uint8_t *)(" + formatIRExpr(e.Pointer) + ") " + op + " " + off + ")"
 		if e.Type == nil {
 			return offset
 		}

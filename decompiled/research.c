@@ -19,10 +19,12 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HFONT       hfontSav;
     char       *psz;
     RECT        rcWindow;
-    POINT       pt;
+    POINT16     pt;
     int16_t     iResTechNext;
     int16_t     fChg;
     HWND        t_scratch_m34;
+    POINT       t_pt_05aa;
+    POINT       t_pt_05b9_1;
 
 L_0000:
     goto L_08b8;
@@ -70,8 +72,8 @@ L_011e:
 
 L_0140:
     hwndRad = GetDlgItem(hwnd, i);
-    SetWindowPos(hwndRad, 0x0, 16, y, dxResRadio, ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
-    y = (y + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    SetWindowPos(hwndRad, 0x0, 16, y, dxResRadio, ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
+    y = (y + ((int32_t)((3 * dyArial8)) / 2));
     i = (i + 1);
 
 L_018b:
@@ -147,11 +149,11 @@ L_0292:
     dxResStrRight = dxResRight;
     dx = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999992), 7));
     dxResRight = (dxResRight + (dx + 48));
-    y = (y + LOWORD((10 * dyArial8)));
-    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, ((dxResLeft + dxResRight) - 152), ((y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 8), 70,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
-    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, ((dxResLeft + dxResRight) - 76), ((y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 8), 70,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
+    y = (y + (10 * dyArial8));
+    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, ((dxResLeft + dxResRight) - 152), ((y - ((int32_t)((3 * dyArial8)) / 2)) - 8), 70,
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
+    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, ((dxResLeft + dxResRight) - 76), ((y - ((int32_t)((3 * dyArial8)) / 2)) - 8), 70,
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER | SWP_SHOWWINDOW);
     GetWindowRect(hwnd, &(rcWindow));
     GetClientRect(hwnd, &(rc));
     SetWindowPos(hwnd, 0x0, 0, 0, ((((dxResLeft + dxResRight) + rcWindow.right) - rcWindow.left) - rc.right),
@@ -227,7 +229,7 @@ L_04ea:
         goto L_04f4;
 
 L_04f4:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_08fb;
     else
         goto L_0510;
@@ -237,7 +239,7 @@ L_0510:
     return (INT_PTR)(hbrButtonFace);
 
 L_0529:
-    return FTrackResearchDlg(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam);
+    return FTrackResearchDlg(hwnd, LOWORD(lParam), HIWORD(lParam), wParam);
 
 L_0557:
     hdc = BeginPaint(hwnd, &(ps));
@@ -247,8 +249,12 @@ L_0557:
     return 1;
 
 L_05a3:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_05aa = PointFrom16(pt);
+    GetCursorPos(&(t_pt_05aa));
+    pt = PointTo16(t_pt_05aa);
+    t_pt_05b9_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_05b9_1));
+    pt = PointTo16(t_pt_05b9_1);
     if ((pt.x <= 12))
         goto L_0605;
     else
@@ -267,7 +273,7 @@ L_05d5:
         goto L_05e0;
 
 L_05e0:
-    if ((pt.y >= (LOWORD((cFutureTech * dyArial8)) + yTopFutureTech)))
+    if ((pt.y >= ((cFutureTech * dyArial8) + yTopFutureTech)))
         goto L_0605;
     else
         goto L_05f3;
@@ -305,7 +311,7 @@ L_0636:
     return 1;
 
 L_0645:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x0))
+    if ((HIWORD(lParam) != 0x0))
         goto L_06bb;
     else
         goto L_0661;
@@ -508,6 +514,7 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw) {
     int32_t  lRBEffective;
     int16_t  cch;
     int16_t  t_call_0d6c;
+    int16_t  t_0e66;
     int32_t  t_merge_10a5_0001;
     uint16_t t_merge_1406_0001;
 
@@ -534,7 +541,7 @@ L_0931:
 L_097d:
     c = CchGetString(idsCurrent, szWork);
     dxCurrent = LOWORD(GetTextExtent(hdc, szWork, c));
-    SetRect(&(rc), 8, dyArial8, (dxResLeft - 8), (LOWORD((12 * dyArial8)) + dyArial8));
+    SetRect(&(rc), 8, dyArial8, (dxResLeft - 8), ((12 * dyArial8) + dyArial8));
     if (((grbitDraw & 0x3) == 0x0))
         goto DrawComingAttractions;
     else
@@ -550,7 +557,7 @@ L_09de:
     rc.top = (rc.top + dyArial8);
     i = CchGetString(idsFieldStudy, szWork);
     TextOut(hdc, (rc.left + 26), rc.top, szWork, i);
-    xCtr = ((rc.right + 0xfff8) - (dxCurrent >> 0x1));
+    xCtr = ((rc.right - 0x8) - (dxCurrent >> 0x1));
     i = CchGetString(idsLevel, szWork);
     CtrTextOut(hdc, xCtr, rc.top, szWork, i);
     PatBlt(hdc, (rc.left + 8), (rc.top + dyArial8), ((rc.right - rc.left) - 16), 1, BLACKNESS);
@@ -561,7 +568,7 @@ L_09de:
 L_0b28:
     c = _wsprintf(szWork, PCTD, (int16_t)(rgplr[idPlayer].rgTech[i]));
     CtrTextOut(hdc, xCtr, rc.top, szWork, c);
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     i = (i + 1);
 
 L_0b89:
@@ -571,7 +578,7 @@ L_0b89:
         goto DrawComingAttractions;
 
 DrawComingAttractions:
-    SetRect(&(rc), 8, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + rc.bottom), (dxResLeft - 8), (prc->bottom - 8));
+    SetRect(&(rc), 8, (((int32_t)((3 * dyArial8)) / 2) + rc.bottom), (dxResLeft - 8), (prc->bottom - 8));
     if (((grbitDraw & 0x4) == 0x0))
         goto L_0c1b;
     else
@@ -719,8 +726,9 @@ L_0e16:
         goto L_0e66;
 
 L_0e66:
+    t_0e66 = cFutureTech;
     cFutureTech = (cFutureTech + 1);
-    rghsFutureTech[cFutureTech] = part.hs;
+    rghsFutureTech[t_0e66] = part.hs;
 
 L_0e83:
     i = (i + 1);
@@ -751,7 +759,7 @@ TooManyToFinish:
     SetTextColor(hdc, 0x0);
 
 DrawRightSide:
-    SetRect(&(rc), (dxResLeft + 8), dyArial8, ((dxResLeft + dxResRight) - 8), (((int32_t)(LOWORD((14 * dyArial8))) / 2) + dyArial8));
+    SetRect(&(rc), (dxResLeft + 8), dyArial8, ((dxResLeft + dxResRight) - 8), (((int32_t)((14 * dyArial8)) / 2) + dyArial8));
     xCtr = ((rc.left + 8) + dxResStrRight);
     xNum = (LOWORD(GetTextExtent(hdc, "999999", 6)) + xCtr);
     if (((grbitDraw & 0x4) == 0x0))
@@ -827,7 +835,7 @@ L_10bb:
         goto L_10c9;
 
 L_10c9:
-    rc.top = (rc.top + ((((int32_t)(LOWORD((3 * dyArial8))) / 2) * 2) + dyArial8));
+    rc.top = (rc.top + ((((int32_t)((3 * dyArial8)) / 2) * 2) + dyArial8));
     hbrSav = SelectObject(hdc, hbrButtonFace);
     PatBlt(hdc, xCtr, rc.top, (xNum - xCtr), dyArial8, PATCOPY);
     SelectObject(hdc, hbrSav);
@@ -842,7 +850,7 @@ L_1121:
     CchGetString(idsSTechLevelD, szTemp2);
     c = _wsprintf(szWork, szTemp2, szTemp, ((int16_t)(rgplr[idPlayer].rgTech[iResTechNow]) + 1));
     RightTextOut(hdc, xCtr, rc.top, szWork, c, 0);
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsResourcesNeededComplete), 0, 0);
     if ((l != -1))
         goto L_1256;
@@ -858,7 +866,7 @@ L_1256:
 
 L_1277:
     TextOut(hdc, xCtr, rc.top, szWork, c);
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     RightTextOut(hdc, xCtr, rc.top, PszGetCompressedString(idsEstimatedTimeCompletion), 0, 0);
 
 DrawYearComplete:
@@ -904,7 +912,7 @@ L_13a4:
     lRBEffective = (lRBEffective - (int32_t)((lRBEffective >> 0x1)));
 
 L_13bc:
-    l = (int32_t)((((l + lRBEffective) + 0xffffffff) / lRBEffective));
+    l = (int32_t)((((l + lRBEffective) - 0x1) / lRBEffective));
 
 PrintYear:
     if ((l != 1))
@@ -936,7 +944,7 @@ L_14c9:
     SetWindowPos(GetDlgItem(hwnd, 0x43b), 0x0, (xCtr - 60), ((rc.top + dyArial8) + 2), ((rc.right - xCtr) + 50), (9 * dyArial8), SWP_NOZORDER | SWP_NOREDRAW);
 
 DrawResourceAlloc:
-    rc.top = (((int32_t)(LOWORD((3 * dyArial8))) / 2) + rc.bottom);
+    rc.top = (((int32_t)((3 * dyArial8)) / 2) + rc.bottom);
     rc.bottom = ((dyArial8 * 8) + rc.top);
     if (((grbitDraw & 0x400) == 0x0))
         goto DrawAnnualRes;
@@ -961,7 +969,7 @@ L_15a5:
     RightTextOut(hdc, xNum, rc.top, szWork, c, 0);
 
 DrawTotalSpent:
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     if (((grbitDraw & 0x1000) == 0x0))
         goto DrawBudget;
     else
@@ -973,7 +981,7 @@ L_162c:
     RightTextOut(hdc, xNum, rc.top, szWork, c, 0);
 
 DrawBudget:
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     dx = 0;
     if (((grbitDraw & 0x2000) != 0x0))
         goto L_16f4;
@@ -1028,7 +1036,7 @@ L_1773:
     DrawBtn(hdc, &(rcSpinBot), 161, 0, 0x0);
 
 DrawProjBudg:
-    rc.top = (rc.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rc.top = (rc.top + ((int32_t)((3 * dyArial8)) / 2));
     if (((grbitDraw & 0x4000) == 0x0))
         goto L_1861;
     else
@@ -1060,7 +1068,7 @@ L_18ea:
 L_190b:
     cch = CchGetString(idsRaceHas, szTemp);
     SelectObject(hdc, rghfontArial8[1]);
-    rc.top = (rc.top + LOWORD((3 * dyArial8)));
+    rc.top = (rc.top + (3 * dyArial8));
     rc.left = (dxResLeft + 8);
     yTopTechNote = rc.top;
     dx = LOWORD(GetTextExtent(hdc, szTemp, cch));
@@ -1110,7 +1118,7 @@ L_1a85:
 
 int16_t FTrackResearchDlg(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     int16_t  bt;
-    POINT    pt;
+    POINT16  pt;
     int16_t  dChg;
     int16_t  i;
     int16_t  cNew;
@@ -1123,7 +1131,7 @@ int16_t FTrackResearchDlg(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
 L_1a8c:
     pt.x = x;
     pt.y = y;
-    if ((PtInRect(&(rcSpinTop), pt) == 0))
+    if ((PtInRect(&(rcSpinTop), PointFrom16(pt)) == 0))
         goto L_1acd;
     else
         goto L_1abb;
@@ -1135,7 +1143,7 @@ L_1abb:
     goto L_1c54;
 
 L_1acd:
-    if ((PtInRect(&(rcSpinBot), pt) == 0))
+    if ((PtInRect(&(rcSpinBot), PointFrom16(pt)) == 0))
         goto L_1af9;
     else
         goto L_1ae7;
@@ -1153,7 +1161,7 @@ L_1af9:
         goto L_1b04;
 
 L_1b04:
-    if ((y >= (LOWORD((cFutureTech * dyArial8)) + yTopFutureTech)))
+    if ((y >= ((cFutureTech * dyArial8) + yTopFutureTech)))
         goto L_1b7f;
     else
         goto L_1b17;
@@ -1191,7 +1199,7 @@ L_1b89:
         goto L_1b94;
 
 L_1b94:
-    if ((y >= (LOWORD((3 * dyArial8)) + yTopTechNote)))
+    if ((y >= ((3 * dyArial8) + yTopTechNote)))
         goto L_1c4e;
     else
         goto L_1ba7;
@@ -1209,7 +1217,7 @@ L_1bb2:
         goto L_1bd3;
 
 L_1bd3:
-    if ((y < (((int32_t)(LOWORD((3 * dyArial8))) / 0x2) + yTopTechNote)))
+    if ((y < (((int32_t)((3 * dyArial8)) / 0x2) + yTopTechNote)))
         goto L_1c0d;
     else
         goto L_1bec;
@@ -1259,7 +1267,7 @@ L_1ca7:
         goto L_1cbb;
 
 L_1cbb:
-    cNew = (LOWORD((dChg * i)) + pctResGlob);
+    cNew = ((dChg * i) + pctResGlob);
     if ((0 <= cNew))
         goto L_1cd9;
     else
@@ -1335,7 +1343,7 @@ L_1def:
         goto L_1df8;
 
 L_1df8:
-    lCost = ((int32_t)(LOWORD((10 * cTech))) + rglTechCost[iLevel]);
+    lCost = ((int32_t)((10 * cTech)) + rglTechCost[iLevel]);
     i = (GetRaceStat(&(rgplr[iplr]), (iTech + 8)) - 1);
     if ((i == 0))
         goto L_1e83;
@@ -1434,15 +1442,14 @@ L_1f1d:
     t_scratch_m3c = GetSystemMetrics(SM_CYCAPTION);
     t_scratch_m3e = (GetSystemMetrics(SM_CYDLGFRAME) * 2);
     SetWindowPos(hwnd, 0x0, 0, 0, ((t_merge_1f1d_0001 + 358) + t_scratch_m3a),
-                 (((((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + LOWORD((3 * dyArial8))) + 25) + t_scratch_m3e) + t_scratch_m3c),
-                 SWP_NOMOVE | SWP_NOZORDER);
+                 (((((((dyArial10 + 72) + (12 * dyArial8)) + 6) + (3 * dyArial8)) + 25) + t_scratch_m3e) + t_scratch_m3c), SWP_NOMOVE | SWP_NOZORDER);
     StickyDlgPos(hwnd, &(ptStickyBrowserDlg), 1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[1]);
     hwndDD = GetDlgItem(hwnd, IDC_U16_0x010B);
     c = GetDlgItemText(hwnd, IDC_U16_0x042E, szWork, 80);
     dx = (LOWORD(GetTextExtent(hdc, szWork, c)) + 14);
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x042E), 0x0, 6, 6, dx, ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x042E), 0x0, 6, 6, dx, ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
     t_call_2021 = GetDlgItem(hwnd, IDC_NEXT);
     if ((dyArial8 <= 14))
         goto L_203b;
@@ -1457,7 +1464,7 @@ L_203b:
     t_merge_203e_0001 = 0x0;
 
 L_203e:
-    SetWindowPos(t_call_2021, 0x0, ((t_merge_203e_0001 + 350) - dx), 6, dx, ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(t_call_2021, 0x0, ((t_merge_203e_0001 + 350) - dx), 6, dx, ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
     if ((dyArial8 <= 14))
         goto L_208d;
     else
@@ -1486,9 +1493,8 @@ L_20ce:
     t_merge_20d1_0001 = 0x0;
 
 L_20d1:
-    SetWindowPos(t_call_20b4, 0x0, ((t_merge_20d1_0001 + 350) - dx),
-                 (((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + ((int32_t)(LOWORD((3 * dyArial8))) / 2)) + 18), dx,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(t_call_20b4, 0x0, ((t_merge_20d1_0001 + 350) - dx), (((((dyArial10 + 72) + (12 * dyArial8)) + 6) + ((int32_t)((3 * dyArial8)) / 2)) + 18), dx,
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
     t_call_2125 = GetDlgItem(hwnd, 0x10a);
     if ((dyArial8 <= 14))
         goto L_216f;
@@ -1503,8 +1509,8 @@ L_216f:
     t_merge_2172_0001 = 0x0;
 
 L_2172:
-    SetWindowPos(t_call_2125, 0x0, 6, (((((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6) + ((int32_t)(LOWORD((3 * dyArial8))) / 2)) + 18),
-                 ((t_merge_2172_0001 + 344) - dx), ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(t_call_2125, 0x0, 6, (((((dyArial10 + 72) + (12 * dyArial8)) + 6) + ((int32_t)((3 * dyArial8)) / 2)) + 18), ((t_merge_2172_0001 + 344) - dx),
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
     if ((fBrowserValid != 0))
@@ -1531,8 +1537,8 @@ L_220a:
     t_merge_220d_0001 = 0x0;
 
 L_220d:
-    hwndBrowserChild = CreateWindow(szBrowser, 0x0, WS_CHILD | WS_VISIBLE, 6, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + 12), (t_merge_220d_0001 + 344),
-                                    (((dyArial10 + 72) + LOWORD((12 * dyArial8))) + 6), hwnd, 0x0, hInst, 0x0);
+    hwndBrowserChild = CreateWindow(szBrowser, 0x0, WS_CHILD | WS_VISIBLE, 6, (((int32_t)((3 * dyArial8)) / 2) + 12), (t_merge_220d_0001 + 344),
+                                    (((dyArial10 + 72) + (12 * dyArial8)) + 6), hwnd, 0x0, hInst, 0x0);
     i = 1087;
     goto L_226b;
 
@@ -1591,7 +1597,7 @@ L_230a:
         goto L_2314;
 
 L_2314:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_2868;
     else
         goto L_2330;
@@ -2042,10 +2048,12 @@ L_2868:
 
 LRESULT CALLBACK BrowserWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
-    POINT       pt;
+    POINT16     pt;
     int16_t     i;
     PAINTSTRUCT ps;
     RECT        rc;
+    POINT       t_pt_28d7;
+    POINT       t_pt_28e6_1;
     HULDEF     *t_call_29ac;
     HULDEF     *t_call_29d6;
 
@@ -2060,8 +2068,12 @@ L_2888:
     goto L_2ab4;
 
 L_28d0:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_28d7 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_28d7));
+    pt = PointTo16(t_pt_28d7);
+    t_pt_28e6_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_28e6_1));
+    pt = PointTo16(t_pt_28e6_1);
     goto Validate;
 
 L_28ee:
@@ -2071,7 +2083,7 @@ L_28ee:
 
 L_2919:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
 
 Validate:
     if ((vpartBrowser.hs.grhst == hstHull))
@@ -2635,7 +2647,7 @@ L_34c6:
     PatBlt(hdc, ((rcData.left + dxStr) + 6), rcData.top, 1, (((rcData.bottom - rcData.top) - dyArial8) - 4), BLACKNESS);
     PatBlt(hdc, ((rcData.left + dxStr) + 6), ((rcData.bottom - dyArial8) - 4), (((rcData.right - rcData.left) - dxStr) - 6), 1, BLACKNESS);
     x = (rcData.left + dxStr);
-    y = (((rcData.bottom - dyArial8) - 4) - LOWORD((6 * dyPct)));
+    y = (((rcData.bottom - dyArial8) - 4) - (6 * dyPct));
     pct = 800;
     SetTextColor(hdc, 0x7f);
     goto L_36be;
@@ -2781,7 +2793,7 @@ L_38b6:
     SetTextColor(hdc, crButtonText);
 
 L_38c6:
-    TextOut(hdc, (x - LOWORD((dxDigit * cch))), y, rgch, cch);
+    TextOut(hdc, (x - (dxDigit * cch)), y, rgch, cch);
     if ((i <= 0))
         goto L_3912;
     else
@@ -2841,7 +2853,7 @@ L_39b0:
     goto L_3a19;
 
 L_39b7:
-    if ((0x1 <= ((int32_t)(LOWORD(((iEff * 4) * dyPct))) / 0x64)))
+    if ((0x1 <= ((int32_t)(((iEff * 4) * dyPct)) / 0x64)))
         goto L_39d7;
     else
         goto L_39d1;
@@ -2851,7 +2863,7 @@ L_39d1:
     goto L_39e7;
 
 L_39d7:
-    t_merge_39e7_0001 = ((int32_t)(LOWORD(((iEff * 4) * dyPct))) / 0x64);
+    t_merge_39e7_0001 = ((int32_t)(((iEff * 4) * dyPct)) / 0x64);
 
 L_39e7:
     y = (y - t_merge_39e7_0001);
@@ -2861,7 +2873,7 @@ L_39ea:
 
 L_39ed:
     pctT = MulDiv((iEff - (pct >> 0x1)), 100, (pct >> 0x1));
-    y = (y - ((int32_t)(LOWORD((pctT * dyPct))) / 100));
+    y = (y - ((int32_t)((pctT * dyPct)) / 100));
 
 L_3a19:
     if ((i != 0))
@@ -2933,7 +2945,7 @@ L_3abe:
     goto L_64d4;
 
 L_3ac9:
-    if ((ppart->pengine->grfAbilities > 6))
+    if (((uint16_t)(ppart->pengine->grfAbilities) > 6))
         goto L_3a6c;
     else
         goto L_3ad1;
@@ -3205,7 +3217,7 @@ L_3e36:
 L_3e3e:
     i = (i + 1);
     idsT = (idsT + 1);
-    rcData.top = (rcData.top + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    rcData.top = (rcData.top + ((int32_t)((3 * dyArial8)) / 2));
 
 L_3e5f:
     if ((i >= 4))
@@ -3360,7 +3372,7 @@ L_4157:
     c = CchGetString(idsStarbaseHullHasSpaceDockCanBuild, szWork);
     WrapTextOut(hdc, &(xText), &(yText), szWork, c, rcData.left, (rcData.right - rcData.left), 0x0, 0, 1);
     SelectObject(hdc, rghfontArial8[1]);
-    yText = (LOWORD((3 * dyArial8)) + rcData.top);
+    yText = ((3 * dyArial8) + rcData.top);
     xText = (((int32_t)((rcData.right - rcData.left)) / 2) + rcData.left);
     c = CchGetString(idsDockCapacity2, szWork);
     RightTextOut(hdc, xText, yText, szWork, c, 0);
@@ -3384,10 +3396,10 @@ L_4249:
 L_4264:
     c = CchGetString(idsStarbaseHullDoesHaveSpaceDockCan, szWork);
     WrapTextOut(hdc, &(xText), &(yText), szWork, c, rcData.left, (rcData.right - rcData.left), 0x0, 0, 1);
-    yText = (LOWORD((3 * dyArial8)) + rcData.top);
+    yText = ((3 * dyArial8) + rcData.top);
 
 L_42b4:
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
     xText = (((int32_t)((rcData.right - rcData.left)) / 2) + rcData.left);
     i = 0;
     goto L_42ff;
@@ -3395,7 +3407,7 @@ L_42b4:
 L_42de:
     i = (i + 1);
     idsT = (idsT + 1);
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
 
 L_42ff:
     if ((i >= 2))
@@ -3553,7 +3565,7 @@ L_4686:
     SelectObject(hdc, rghfontArial8[0]);
     c = _wsprintf(szWork, PCTD, ppart->pbeam->init);
     TextOut(hdc, xText, yText, szWork, c);
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
     rcData.top = yText;
     if ((ppart->pbeam->grfAbilities == 0))
         goto L_4967;
@@ -3660,7 +3672,7 @@ L_4a2f:
     SelectObject(hdc, rghfontArial8[0]);
     c = _wsprintf(szWork, PCTD, ppart->ptorp->dHitChance);
     TextOut(hdc, xText, yText, szWork, c);
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
     if ((ppart->hs.iItem != itorpAntiMatterTorpedo))
         goto L_4c9e;
     else
@@ -3771,7 +3783,7 @@ L_4e16:
 
 L_4e19:
     CchGetString(t_merge_4e19_0001, szWork);
-    c = (c + _wsprintf(&(szT[c]), szWork, LOWORD((100 * dmgFloor))));
+    c = (c + _wsprintf(&(szT[c]), szWork, (100 * dmgFloor)));
 
 L_4e49:
     strcpy(szWork, szT);
@@ -3930,7 +3942,7 @@ L_50bf:
 
 L_50f2:
     idsT = 929;
-    c = _wsprintf(szWork, PszGetCompressedString(idsT), ppart->pspecial->grAbility, (ppart->hs.iItem + 0xfffc));
+    c = _wsprintf(szWork, PszGetCompressedString(idsT), ppart->pspecial->grAbility, (ppart->hs.iItem - 0x4));
     goto PrintSpecial;
 
 L_5135:
@@ -4198,7 +4210,7 @@ L_53fe:
     c = CchGetString(idsT, szWork);
     WrapTextOut(hdc, &(xText), &(yText), szWork, c, rcData.left, (rcData.right - rcData.left), 0x0, 0, 1);
     xText = rcData.left;
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
     goto L_5757;
 
 L_545c:
@@ -4275,7 +4287,7 @@ L_5695:
     goto L_576a;
 
 L_569d:
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsCanSuccessfullyGatedDL), LOWORD((5 * ppart->pspecialsb->grAbility2)));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsCanSuccessfullyGatedDL), (5 * ppart->pspecialsb->grAbility2));
 
 L_56cd:
     goto L_576a;
@@ -4287,12 +4299,12 @@ L_56d0:
         goto L_56e0;
 
 L_56e0:
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsDktCanSuccessfullyGatedExceeding), LOWORD((5 * ppart->pspecialsb->grAbility)));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsDktCanSuccessfullyGatedExceeding), (5 * ppart->pspecialsb->grAbility));
     goto L_576a;
 
 L_5713:
-    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsDktMightSuccessfullyGatedD), LOWORD((5 * ppart->pspecialsb->grAbility)),
-                  LOWORD((5 * ppart->pspecialsb->grAbility2)));
+    c = _wsprintf(szWork, PszGetCompressedString(idsWarningShipsDktMightSuccessfullyGatedD), (5 * ppart->pspecialsb->grAbility),
+                  (5 * ppart->pspecialsb->grAbility2));
 
 L_5751:
     goto L_576a;
@@ -4346,7 +4358,7 @@ L_57fe:
     SelectObject(hdc, rghfontArial8[1]);
     xText = rcData.left;
     yText = rcData.top;
-    rcData.top = (rcData.top + LOWORD((5 * dyArial8)));
+    rcData.top = (rcData.top + (5 * dyArial8));
     i = 4;
     goto L_589f;
 
@@ -4460,7 +4472,7 @@ L_596f:
     }
 
 L_598c:
-    c = _wsprintf(szWork, PCTD, LOWORD((10 * ppart->pmines->grAbility)));
+    c = _wsprintf(szWork, PCTD, (10 * ppart->pmines->grAbility));
     TextOut(hdc, ((rcData.left + dxLabel) + 4), rcData.top, szWork, c);
     rcData.top = (rcData.top + dyArial8);
     c = _wsprintf(szWork, PszGetCompressedString(idsWarpD2), iWarp);
@@ -4567,7 +4579,7 @@ L_5cbd:
 
 L_5cfe:
     c = CchGetString(idsAllowsModifyPlanetsSDOriginalValue, szT);
-    c = _wsprintf(szWork, szT, rgszPlanetAttr[((int32_t)((ppart->hs.iItem + 0xfff8)) / 4)], ppart->pterra->grAbility);
+    c = _wsprintf(szWork, szT, rgszPlanetAttr[((int32_t)((ppart->hs.iItem - 0x8)) / 4)], ppart->pterra->grAbility);
 
 L_5d55:
     if ((c <= 0))
@@ -4612,10 +4624,10 @@ L_5df4:
     PatBlt(hdc, ((rcData.left + dxStr) + 6), rcData.top, 1, (((rcData.bottom - rcData.top) - dyArial8) - 4), BLACKNESS);
     PatBlt(hdc, ((rcData.left + dxStr) + 6), ((rcData.bottom - dyArial8) - 4), (((rcData.right - rcData.left) - dxStr) - 6), 1, BLACKNESS);
     x = (rcData.left + dxStr);
-    y = (((rcData.bottom - dyArial8) - 4) - LOWORD((5 * dyPct)));
+    y = (((rcData.bottom - dyArial8) - 4) - (5 * dyPct));
     SetTextColor(hdc, 0x7f0000);
     cch = LOBYTE(CchGetString(idsStandard, szWork));
-    RightTextOut(hdc, rcData.right, ((rcData.bottom - 3) - LOWORD((3 * dyArial8))), szWork, (int16_t)(cch), 0);
+    RightTextOut(hdc, rcData.right, ((rcData.bottom - 3) - (3 * dyArial8)), szWork, (int16_t)(cch), 0);
     SetTextColor(hdc, 0x7f);
     cch = LOBYTE(CchGetString(idsSmart, szWork));
     RightTextOut(hdc, rcData.right, ((rcData.bottom - 4) - (dyArial8 * 2)), szWork, (int16_t)(cch), 0);
@@ -4646,7 +4658,7 @@ L_6054:
     goto L_6160;
 
 L_60b2:
-    cch = LOBYTE(_wsprintf(szWork, PCTD, LOWORD((20 * i))));
+    cch = LOBYTE(_wsprintf(szWork, PCTD, (20 * i)));
     if ((i == 0))
         goto L_60ff;
     else
@@ -4659,7 +4671,7 @@ L_60df:
         goto L_60e8;
 
 L_60e8:
-    t_merge_6105_0001 = ((int32_t)(LOWORD((3 * dxDigit))) / 0x2);
+    t_merge_6105_0001 = ((int32_t)((3 * dxDigit)) / 0x2);
     goto L_6105;
 
 L_60f8:
@@ -4784,7 +4796,7 @@ L_6307:
 L_6357:
     WrapTextOut(hdc, &(xText), &(yText), szWork, c, rcData.left, (rcData.right - rcData.left), 0x0, 0, 1);
     xText = rcData.left;
-    yText = (yText + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yText = (yText + ((int32_t)((3 * dyArial8)) / 2));
     c = CchGetString(idsScannerCanDeterminePlanetsBasicStatsDistance, szT);
     c = _wsprintf(szWork, szT, ((-i) >> 0x1));
     ids = idsScannerWillUnavailableIfHaveLesserRacial;

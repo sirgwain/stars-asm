@@ -1,8 +1,8 @@
 void CreateChildWindows() {
-    char  szData[100];
-    POINT pt;
-    char *psz;
-    char  szGame[15];
+    char    szData[100];
+    POINT16 pt;
+    char   *psz;
+    char    szGame[15];
 
 L_038c:
     if ((idPlayer == -1))

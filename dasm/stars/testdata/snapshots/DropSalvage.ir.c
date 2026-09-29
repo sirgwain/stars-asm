@@ -1,4 +1,4 @@
-void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt) {
+void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT16 *ppt) {
     int32_t wtTotal;
     int32_t wt;
     int16_t i;

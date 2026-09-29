@@ -3,7 +3,7 @@
 int16_t rgRacePrimaryTrait[10] = {40, 95, 45, 10, -100, -150, 120, 180, 90, -66};
 char    rgRW3Spacing[7] = {4, 3, 3, 3, 3, 3, 3};
 int16_t rgRaceAdvDisPts[14] = {-235, -25, -159, -201, 40, -240, -155, 160, 240, 255, 325, 180, 70, 30};
-char    rgRW3IStat[7] = "";
+char    rgRW3IStat[7] = {0, 1, 2, 3, 4, 5, 6};
 int16_t rgRaceDisEnvPts[6] = {150, 330, 540, 780, 1050, 1380};
 char    rgRW3Width[7] = {-2, 2, 2, 2, -2, 2, 2};
 char    rgRaceStatMax[16] = {25, 15, 25, 25, 25, 15, 25, 6, 2, 2, 2, 2, 2, 2, 9};
@@ -255,7 +255,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     iPlrBmp;
     HWND        hwndCB;
     char       *psz;
-    POINT       pt;
+    POINT16     pt;
     HDC         hdc;
     BTNT        btnt;
     int16_t     bt;
@@ -412,26 +412,26 @@ L_0693:
 
 L_0699:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     if ((fRCWReadOnly != 0))
         goto L_1051;
     else
         goto L_06c3;
 
 L_06c3:
-    if ((PtInRect(rgrcBuildSpin, pt) != 0))
+    if ((PtInRect(rgrcBuildSpin, PointFrom16(pt)) != 0))
         goto L_06f7;
     else
         goto L_06dd;
 
 L_06dd:
-    if ((PtInRect(&(rgrcBuildSpin[1]), pt) == 0))
+    if ((PtInRect(&(rgrcBuildSpin[1]), PointFrom16(pt)) == 0))
         goto L_1051;
     else
         goto L_06f7;
 
 L_06f7:
-    if ((PtInRect(rgrcBuildSpin, pt) == 0))
+    if ((PtInRect(rgrcBuildSpin, PointFrom16(pt)) == 0))
         goto L_0723;
     else
         goto L_0711;
@@ -512,7 +512,7 @@ L_08b0:
         goto L_08ba;
 
 L_08ba:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_1051;
     else
         goto L_08d6;
@@ -877,11 +877,13 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     char        szTemp[20];
     HFONT       hfontSav;
     PAINTSTRUCT ps;
-    POINT       pt;
+    POINT16     pt;
     int16_t     iVar;
     uint16_t    t_merge_136b_0001;
     uint16_t    t_scratch_m30;
     HWND        t_scratch_me;
+    POINT       t_pt_15a4;
+    POINT       t_pt_15b3_1;
 
 L_1060:
     goto L_1749;
@@ -896,13 +898,13 @@ L_106f:
     dxLabel = (LOWORD(GetTextExtent(hdc, szTemp, cch)) + 10);
     dxMiddle = (LOWORD(GetTextExtent(hdc, "200mR", 5)) + 10);
     dxMiddle = ((rc.right - dxLabel) - dxMiddle);
-    dy = ((int32_t)(LOWORD((3 * dyArial8))) / 2);
-    yTop = LOWORD((3 * dyArial8));
+    dy = ((int32_t)((3 * dyArial8)) / 2);
+    yTop = (3 * dyArial8);
     SetRect(vrgrcRCW, dxLabel, yTop, (dxLabel + dy), (yTop + dy));
     SetRect((vrgrcRCW + 1), ((dxLabel + dy) + 6), yTop, (((dxLabel + dxMiddle) - dy) - 6), (yTop + dy));
     SetRect((vrgrcRCW + 2), ((dxLabel + dxMiddle) - dy), yTop, (dxLabel + dxMiddle), (yTop + dy));
-    SetRect((vrgrcRCW + 3), dxLabel, ((yTop + dy) + 4), (LOWORD((3 * dy)) + dxLabel), (((dy * 2) + yTop) + 4));
-    SetRect((vrgrcRCW + 4), ((dxLabel + dxMiddle) - LOWORD((3 * dy))), ((yTop + dy) + 4), (dxLabel + dxMiddle), (((dy * 2) + yTop) + 4));
+    SetRect((vrgrcRCW + 3), dxLabel, ((yTop + dy) + 4), ((3 * dy) + dxLabel), (((dy * 2) + yTop) + 4));
+    SetRect((vrgrcRCW + 4), ((dxLabel + dxMiddle) - (3 * dy)), ((yTop + dy) + 4), (dxLabel + dxMiddle), (((dy * 2) + yTop) + 4));
     i = 0;
     goto L_12e0;
 
@@ -924,8 +926,7 @@ L_12e9:
     goto L_1375;
 
 L_12f1:
-    SetWindowPos(GetDlgItem(hwnd, (i + 291)), 0x0, ((LOWORD((3 * dy)) + dxLabel) + 6), vrgrcRCW[(LOWORD((5 * i)) + 3)].top,
-                 ((dxMiddle - LOWORD((6 * dy))) - 12), dy, SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, (i + 291)), 0x0, (((3 * dy) + dxLabel) + 6), vrgrcRCW[((5 * i) + 3)].top, ((dxMiddle - (6 * dy)) - 12), dy, SWP_NOZORDER);
     if (((int16_t)(vplr.rgEnvVarMax[i]) >= 0))
         goto L_1368;
     else
@@ -952,7 +953,7 @@ L_137e:
     cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
     t_scratch_m30 = LOWORD(GetTextExtent(hdc, "15%", 3));
     vrgrcRCW[15].left = (((dxLabel + LOWORD(GetTextExtent(hdc, szWork, cch))) + t_scratch_m30) + 4);
-    vrgrcRCW[15].top = ((LOWORD((9 * dy)) + yTop) - 3);
+    vrgrcRCW[15].top = (((9 * dy) + yTop) - 3);
     vrgrcRCW[15].right = (vrgrcRCW[15].left + 15);
     vrgrcRCW[15].bottom = (((dyArial8 >> 0x1) + vrgrcRCW[15].top) + 0x3);
     vrgrcRCW[16] = vrgrcRCW[15];
@@ -1015,7 +1016,7 @@ L_151f:
         goto L_1529;
 
 L_1529:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_178c;
     else
         goto L_1545;
@@ -1032,8 +1033,12 @@ L_155e:
     return 1;
 
 L_159d:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_15a4 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_15a4));
+    pt = PointTo16(t_pt_15a4);
+    t_pt_15b3_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_15b3_1));
+    pt = PointTo16(t_pt_15b3_1);
     if ((IrcRaceDlgHitTest(pt) < 0))
         goto L_178c;
     else
@@ -1045,7 +1050,7 @@ L_15ce:
 
 L_15e0:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     return FTrackRaceDlg2(hwnd, pt, wParam);
 
 L_1618:
@@ -1101,7 +1106,7 @@ L_16a2:
         goto L_16ac;
 
 L_16ac:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0x0, 0));
     iVar = (GET_WM_COMMAND_ID(wParam, lParam) - 291);
     if ((i != 1))
         goto L_1707;
@@ -1251,8 +1256,8 @@ L_184c:
 
 L_1855:
     SelectObject(hdc, hbrButtonFace);
-    PatBlt(hdc, vrgrcRCW[2].right, vrgrcRCW[(LOWORD((5 * i)) + 2)].top, (rc.right - vrgrcRCW[2].right),
-           (vrgrcRCW[(LOWORD((5 * i)) + 4)].bottom - vrgrcRCW[(LOWORD((5 * i)) + 2)].top), PATCOPY);
+    PatBlt(hdc, vrgrcRCW[2].right, vrgrcRCW[((5 * i) + 2)].top, (rc.right - vrgrcRCW[2].right), (vrgrcRCW[((5 * i) + 4)].bottom - vrgrcRCW[((5 * i) + 2)].top),
+           PATCOPY);
 
 L_18d2:
     if (((int16_t)(vplr.rgEnvVarMax[i]) >= 0))
@@ -1262,16 +1267,16 @@ L_18d2:
 
 L_18e5:
     cch = CchGetString(idsN2, szT);
-    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[(LOWORD((5 * i)) + 2)].top + 1) + dyArial8), szT, cch);
+    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[((5 * i) + 2)].top + 1) + dyArial8), szT, cch);
     goto L_1a1b;
 
 L_1930:
     psz = PszCalcEnvVar(i, (int16_t)(vplr.rgEnvVarMin[i]));
-    CtrTextOut(hdc, xRLabel, (vrgrcRCW[(LOWORD((5 * i)) + 2)].top + 1), psz, 0);
+    CtrTextOut(hdc, xRLabel, (vrgrcRCW[((5 * i) + 2)].top + 1), psz, 0);
     cch = CchGetString(idsTo2, szT);
-    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[(LOWORD((5 * i)) + 2)].top + 1) + dyArial8), szT, cch);
+    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[((5 * i) + 2)].top + 1) + dyArial8), szT, cch);
     psz = PszCalcEnvVar(i, (int16_t)(vplr.rgEnvVarMax[i]));
-    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[(LOWORD((5 * i)) + 2)].top + 1) + (dyArial8 * 2)), psz, 0);
+    CtrTextOut(hdc, xRLabel, ((vrgrcRCW[((5 * i) + 2)].top + 1) + (dyArial8 * 2)), psz, 0);
 
 L_1a1b:
     if ((iDraw != -1))
@@ -1280,7 +1285,7 @@ L_1a1b:
         goto L_1a27;
 
 L_1a27:
-    RightTextOut(hdc, (vrgrcRCW[LOWORD((5 * i))].left - 4), (((int32_t)(dyArial8) / 4) + vrgrcRCW[LOWORD((5 * i))].top), rgszPlanetAttr[i], 0, 0);
+    RightTextOut(hdc, (vrgrcRCW[(5 * i)].left - 4), (((int32_t)(dyArial8) / 4) + vrgrcRCW[(5 * i)].top), rgszPlanetAttr[i], 0, 0);
 
 L_1a80:
     i = (i + 1);
@@ -1597,7 +1602,7 @@ L_20bd:
     rc.left = vrgrcRCW->left;
     rc.top = ((vrgrcRCW[15].top + dyArial8) + 8);
     rc.right = (vrgrcRCW[15].right + 20);
-    rc.bottom = (LOWORD((3 * dyArial8)) + rc.top);
+    rc.bottom = ((3 * dyArial8) + rc.top);
     SelectObject(hdc, hbrButtonFace);
     PatBlt(hdc, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), PATCOPY);
     DrawText(hdc, szWork, cch, &(rc), 0x10);
@@ -1616,7 +1621,7 @@ L_215e:
     return;
 }
 
-int16_t IrcRaceDlgHitTest(POINT pt) {
+int16_t IrcRaceDlgHitTest(POINT16 pt) {
     int16_t i;
 
 L_2164:
@@ -1633,7 +1638,7 @@ L_217d:
     goto L_21b2;
 
 L_2185:
-    if ((PtInRect((RECT *)(&(vrgrcRCW[i].left)), pt) != 0))
+    if ((PtInRect((RECT *)(&(vrgrcRCW[i].left)), PointFrom16(pt)) != 0))
         goto L_21bd;
     else
         goto L_21ae;
@@ -1675,7 +1680,7 @@ L_21f7:
     return -1;
 }
 
-int16_t FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd) {
+int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
     BTNT     btnt;
     int16_t  bt;
     int16_t  dShift;
@@ -1875,8 +1880,8 @@ L_24c2:
         goto L_2505;
 
 L_2505:
-    dWidth = LOWORD((10 * dWidth));
-    dShift = LOWORD((10 * dShift));
+    dWidth = (10 * dWidth);
+    dShift = (10 * dShift);
 
 L_2517:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -2031,10 +2036,12 @@ L_2785:
 INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
-    POINT       pt;
+    POINT16     pt;
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_scratch_me;
+    POINT       t_pt_28b3;
+    POINT       t_pt_28c2_1;
 
 L_2792:
     goto L_2a3b;
@@ -2073,7 +2080,7 @@ L_2858:
         goto L_2877;
 
 L_2877:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_2a7e;
     else
         goto L_2893;
@@ -2083,8 +2090,12 @@ L_2893:
     return (INT_PTR)(hbrButtonFace);
 
 L_28ac:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_28b3 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_28b3));
+    pt = PointTo16(t_pt_28b3);
+    t_pt_28c2_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_28c2_1));
+    pt = PointTo16(t_pt_28c2_1);
     if ((IrcRaceDlgHitTest(pt) < 0))
         goto L_2a7e;
     else
@@ -2096,7 +2107,7 @@ L_28dd:
 
 L_28ef:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     return FTrackRaceDlg3(hwnd, pt, wParam);
 
 L_2927:
@@ -2277,7 +2288,7 @@ L_2b05:
     crBkSav = SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crWindowText);
     SelectObject(hdc, rghfontArial8[1]);
-    yTop = (LOWORD((3 * dyArial8)) + 6);
+    yTop = ((3 * dyArial8) + 6);
     dxDig = LOWORD(GetTextExtent(hdc, "9", 1));
     dxkT = LOWORD(GetTextExtent(hdc, "kT", 2));
     ids = idsOneResourceGeneratedEachYearEvery;
@@ -2314,10 +2325,10 @@ L_2be3:
         goto L_2bec;
 
 L_2bec:
-    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0123), 0x0, 6, yTop, (rc.right - 12), ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0123), 0x0, 6, yTop, (rc.right - 12), ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
 
 L_2c22:
-    yTop = (yTop + ((int32_t)(LOWORD((5 * dyArial8))) / 2));
+    yTop = (yTop + ((int32_t)((5 * dyArial8)) / 2));
 
 L_2c32:
     if ((fMacintosh == 0))
@@ -2351,7 +2362,7 @@ L_2c72:
 
 L_2c8b:
     dx = (LOWORD(GetTextExtent(hdc, szWork, cch)) + 6);
-    dxItem = LOWORD((abs((int16_t)(rgRW3Width[i])) * dxDig));
+    dxItem = (abs((int16_t)(rgRW3Width[i])) * dxDig);
     _wsprintf(szWork, PCTD, GetRaceStat(&(vplr), (int16_t)(rgRW3IStat[i])));
     if (((int16_t)(rgRW3Width[i]) >= 0))
         goto L_2d3d;
@@ -2448,7 +2459,7 @@ L_2f04:
 L_2f41:
     ids = (ids + 1);
     irc = (irc + 2);
-    yTop = (yTop + ((int32_t)(LOWORD(((int16_t)(rgRW3Spacing[i]) * dyArial8))) / 2));
+    yTop = (yTop + ((int32_t)(((int16_t)(rgRW3Spacing[i]) * dyArial8)) / 2));
     i = (i + 1);
 
 L_2f63:
@@ -2485,7 +2496,7 @@ L_2fb1:
     return;
 }
 
-int16_t FTrackRaceDlg3(HWND hwnd, POINT pt, int16_t kbd) {
+int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
     BTNT    btnt;
     int16_t bt;
     int16_t dShift;
@@ -2529,7 +2540,7 @@ L_3012:
         goto L_3056;
 
 L_3056:
-    dShift = LOWORD((3 * dShift));
+    dShift = (3 * dShift);
 
 L_305f:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -2694,7 +2705,7 @@ L_32f9:
         goto L_3303;
 
 L_3303:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_3780;
     else
         goto L_331f;
@@ -2730,7 +2741,7 @@ L_3338:
     _Draw3dFrame(hdc, &(rc), -1);
     cch = CchGetString(idsDescriptionTrait, szWork);
     TextOut(hdc, (rc.left + 8), (rc.top - (dyArial8 >> 0x1)), szWork, cch);
-    ids = (LOWORD((GetRaceStat(&(vplr), rsMajorAdv) * 0x3)) + 0x114);
+    ids = ((GetRaceStat(&(vplr), rsMajorAdv) * 0x3) + 0x114);
     cch = 0;
     i = 0;
     goto L_3532;
@@ -2949,7 +2960,7 @@ L_38a6:
         goto L_38b0;
 
 L_38b0:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_3ba0;
     else
         goto L_38cc;
@@ -3038,7 +3049,7 @@ L_3b06:
         goto L_3b10;
 
 L_3b10:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0x0, 0));
     cColDrop = (GET_WM_COMMAND_ID(wParam, lParam) - 291);
     SetRaceGrbit(&(vplr), cColDrop, i);
     InvalidateAdvPtsRect(hwnd);
@@ -3103,7 +3114,7 @@ L_3bbd:
 
 L_3bd4:
     t_scratch_me = GetRaceStat(&(vplr), (i + 8));
-    CheckRadioButton(hwnd, (LOWORD((3 * i)) + 271), (LOWORD((3 * i)) + 273), ((LOWORD((3 * i)) + 271) + t_scratch_me));
+    CheckRadioButton(hwnd, ((3 * i) + 271), ((3 * i) + 273), (((3 * i) + 271) + t_scratch_me));
     i = (i + 1);
 
 L_3c19:
@@ -3200,7 +3211,7 @@ L_3d85:
         goto L_3da4;
 
 L_3da4:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_409f;
     else
         goto L_3dc0;
@@ -3219,9 +3230,9 @@ L_3dd9:
     goto L_3f16;
 
 L_3e31:
-    GetWindowRect(GetDlgItem(hwnd, (LOWORD((3 * i)) + 0x10f)), &(rcGBox));
+    GetWindowRect(GetDlgItem(hwnd, ((3 * i) + 0x10f)), &(rcGBox));
     ScreenToClient(hwnd, (POINT *)(&(rcGBox)));
-    GetWindowRect(GetDlgItem(hwnd, (LOWORD((3 * i)) + 0x111)), &(rc));
+    GetWindowRect(GetDlgItem(hwnd, ((3 * i) + 0x111)), &(rc));
     ScreenToClient(hwnd, (POINT *)(&(rc.right)));
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
@@ -3313,7 +3324,7 @@ L_4021:
         goto L_402b;
 
 L_402b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0x0, 0));
     SetRaceGrbit(&(vplr), ibitRaceTech3, i);
     InvalidateAdvPtsRect(hwnd);
 
@@ -3587,7 +3598,7 @@ L_453c:
         goto L_4545;
 
 L_4545:
-    iSpread = (LOWORD(((iSpread - 13) * 3)) + 21);
+    iSpread = (((iSpread - 13) * 3) + 21);
     goto L_45df;
 
 L_4559:
@@ -3738,7 +3749,7 @@ L_4706:
     t_merge_4709_0001 = 0x2;
 
 L_4709:
-    cProduce = LOWORD((t_merge_4709_0001 * cProduce));
+    cProduce = (t_merge_4709_0001 * cProduce);
     if ((cGood < 2))
         goto L_474e;
     else
@@ -3803,7 +3814,7 @@ L_47e7:
         goto L_47f0;
 
 L_47f0:
-    cPoints = (cPoints + (int32_t)(LOWORD(((i - 10) * 120))));
+    cPoints = (cPoints + (int32_t)(((i - 10) * 120)));
 
 L_4802:
     if ((raMajor == 8))
@@ -3822,11 +3833,11 @@ L_480b:
         goto L_485e;
 
 L_485e:
-    cCur = (cCur + LOWORD((100 * rgi[0])));
+    cCur = (cCur + (100 * rgi[0]));
     goto L_4873;
 
 L_486a:
-    cCur = (cCur + LOWORD((121 * rgi[0])));
+    cCur = (cCur + (121 * rgi[0]));
 
 L_4873:
     if ((rgi[1] >= 0))
@@ -3835,11 +3846,11 @@ L_4873:
         goto L_487c;
 
 L_487c:
-    cCur = (cCur - LOWORD((55 * rgi[1])));
+    cCur = (cCur - (55 * rgi[1]));
     goto L_4896;
 
 L_4888:
-    cCur = (cCur - LOWORD((LOWORD((rgi[1] * rgi[1])) * 0x3c)));
+    cCur = (cCur - ((rgi[1] * rgi[1]) * 0x3c));
 
 L_4896:
     if ((rgi[2] <= 0))
@@ -3848,11 +3859,11 @@ L_4896:
         goto L_489f;
 
 L_489f:
-    cCur = (cCur + LOWORD((40 * rgi[2])));
+    cCur = (cCur + (40 * rgi[2]));
     goto L_48b4;
 
 L_48ab:
-    cCur = (cCur + LOWORD((35 * rgi[2])));
+    cCur = (cCur + (35 * rgi[2]));
 
 L_48b4:
     if ((cCur <= 700))
@@ -3876,7 +3887,7 @@ L_48d9:
         goto L_48e2;
 
 L_48e2:
-    cCur = (cCur - LOWORD(((-6 - rgi[2]) * 30)));
+    cCur = (cCur - ((-6 - rgi[2]) * 30));
     goto L_4915;
 
 L_48f3:
@@ -3886,7 +3897,7 @@ L_48f3:
         goto L_48fc;
 
 L_48fc:
-    cCur = (cCur - (LOWORD(((-12 - rgi[2]) * 45)) + 225));
+    cCur = (cCur - (((-12 - rgi[2]) * 45) + 225));
     goto L_4915;
 
 L_4910:
@@ -3899,7 +3910,7 @@ L_4915:
         goto L_491e;
 
 L_491e:
-    cCur = (cCur - LOWORD((LOWORD(((-2 - rgi[0]) * 20)) * 0x3)));
+    cCur = (cCur - (((-2 - rgi[0]) * 20) * 0x3));
 
 L_4931:
     cPoints = (cPoints + (int32_t)(cCur));
@@ -3922,11 +3933,11 @@ L_495b:
         goto L_49ae;
 
 L_49ae:
-    cCur = (cCur + LOWORD((100 * rgi[0])));
+    cCur = (cCur + (100 * rgi[0]));
     goto L_49c3;
 
 L_49ba:
-    cCur = (cCur + LOWORD((169 * rgi[0])));
+    cCur = (cCur + (169 * rgi[0]));
 
 L_49c3:
     if ((rgi[1] > 0))
@@ -3935,7 +3946,7 @@ L_49c3:
         goto L_49cc;
 
 L_49cc:
-    cCur = (cCur - (LOWORD((65 * rgi[1])) - 80));
+    cCur = (cCur - ((65 * rgi[1]) - 80));
     goto L_49e0;
 
 L_49db:
@@ -3948,11 +3959,11 @@ L_49e0:
         goto L_49e9;
 
 L_49e9:
-    cCur = (cCur + LOWORD((40 * rgi[2])));
+    cCur = (cCur + (40 * rgi[2]));
     goto L_49fe;
 
 L_49f5:
-    cCur = (cCur + LOWORD((35 * rgi[2])));
+    cCur = (cCur + (35 * rgi[2]));
 
 L_49fe:
     cPoints = (cPoints + (int32_t)(cCur));
@@ -4006,7 +4017,7 @@ L_4a87:
         goto L_4a95;
 
 L_4a95:
-    cPoints = (cPoints - (int32_t)(LOWORD((LOWORD(((cBad + cGood) * 10)) * ((cBad + cGood) - 4)))));
+    cPoints = (cPoints - (int32_t)((((cBad + cGood) * 10) * ((cBad + cGood) - 4))));
 
 L_4ab2:
     if (((cGood - cBad) <= 3))
@@ -4015,7 +4026,7 @@ L_4ab2:
         goto L_4ac0;
 
 L_4ac0:
-    cPoints = (cPoints - (int32_t)(LOWORD((((cGood - cBad) - 3) * 60))));
+    cPoints = (cPoints - (int32_t)((((cGood - cBad) - 3) * 60)));
 
 L_4ad5:
     if (((cBad - cGood) <= 3))
@@ -4024,7 +4035,7 @@ L_4ad5:
         goto L_4ae3;
 
 L_4ae3:
-    cPoints = (cPoints - (int32_t)(LOWORD((((cBad - cGood) - 3) * 40))));
+    cPoints = (cPoints - (int32_t)((((cBad - cGood) - 3) * 40)));
 
 L_4af8:
     if ((GetRaceGrbit(pplr, ibitRaceNoAdvScanner) == 0))
@@ -4083,7 +4094,7 @@ L_4b78:
         goto L_4b81;
 
 L_4b81:
-    cPoints = (cPoints - (int32_t)(LOWORD((LOWORD((cCur * cCur)) * 0x82))));
+    cPoints = (cPoints - (int32_t)(((cCur * cCur) * 0x82)));
     if ((cCur != 6))
         goto L_4ba8;
     else
@@ -4381,7 +4392,7 @@ L_4fa5:
     goto L_4fc7;
 
 L_4faf:
-    iTry = (((int32_t)(LOWORD((i * rgInc[0]))) / (rgSteps[0] - 1)) + rgBase[0]);
+    iTry = (((int32_t)((i * rgInc[0])) / (rgSteps[0] - 1)) + rgBase[0]);
 
 L_4fc7:
     if ((iTerra == 0))
@@ -4455,7 +4466,7 @@ L_508c:
     goto L_50ae;
 
 L_5096:
-    iTry = (((int32_t)(LOWORD((j * rgInc[1]))) / (rgSteps[1] - 1)) + rgBase[1]);
+    iTry = (((int32_t)((j * rgInc[1])) / (rgSteps[1] - 1)) + rgBase[1]);
 
 L_50ae:
     if ((iTerra == 0))
@@ -4529,7 +4540,7 @@ L_5168:
     goto L_518a;
 
 L_5172:
-    iTry = (((int32_t)(LOWORD((k * rgInc[2]))) / (rgSteps[2] - 1)) + rgBase[2]);
+    iTry = (((int32_t)((k * rgInc[2])) / (rgSteps[2] - 1)) + rgBase[2]);
 
 L_518a:
     if ((iTerra == 0))
@@ -4701,7 +4712,7 @@ void InvalidateAdvPtsRect(HWND hwnd) {
     HFONT      hfontSav;
 
 L_54d4:
-    plf = LocalAlloc(0x40, 0x32);
+    plf = LocalAlloc(0x40, sizeof(LOGFONT));
     hdc = GetDC(hwnd);
     plf->lfHeight = -24;
     strcpy(plf->lfFaceName, rgszArial[1]);
@@ -4739,7 +4750,7 @@ void DrawRaceAdvantagePoints(HDC hdc, RECT *prc, PLAYER *pplr) {
     COLORREF   t_merge_56b3_0001;
 
 L_55c6:
-    plf = LocalAlloc(0x40, 0x32);
+    plf = LocalAlloc(0x40, sizeof(LOGFONT));
     plf->lfHeight = -24;
     CchGetString(idsArialBold, plf->lfFaceName);
     hfont = CreateFontIndirect(plf);
@@ -4878,8 +4889,8 @@ L_5959:
     goto L_591d;
 
 L_595c:
-    memset(&(ofn), 0, 0x48);
-    ofn.lStructSize = 0x48;
+    memset(&(ofn), 0, sizeof(OPENFILENAME));
+    ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = hwndRaceParent;
     ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;

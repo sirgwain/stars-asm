@@ -17,8 +17,8 @@ FTrackXfer  (ship)
     int32_t          cCur           [BP-0x2a]
     BTNT             btnt           [BP-0x26]
     int32_t          dChg           [BP-0xe]
-    POINT            pt             [BP-0xa]
-    POINT            ptOld          [BP-0x6]
+    POINT16          pt             [BP-0xa]
+    POINT16          ptOld          [BP-0x6]
 
   stats: blocks=0  labels=1
     FinishUp: L_5f70
@@ -34,7 +34,7 @@ L_5a42:
     branch (rgbtnXfer[i].bt & 0x4) != 0x0 ? L_5a82 : L_5a5c
 
 L_5a5c:
-    branch PtInRect(&rgbtnXfer[i].rc, pt) != 0 ? L_5a91 : L_5a82
+    branch PtInRect(&rgbtnXfer[i].rc, PointFrom16(pt)) != 0 ? L_5a91 : L_5a82
 
 L_5a82:
     i = (i + 1)

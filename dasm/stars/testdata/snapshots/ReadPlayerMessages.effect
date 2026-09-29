@@ -1,0 +1,229 @@
+/*
+ReadPlayerMessages  (msg)
+  addr: 0007:994a  len=651
+  sig:  void ReadPlayerMessages()
+  locals:
+    uint16_t         u              [BP-0x30]
+    uint8_t *        lpb            [BP-0x2e]
+    MSGPLR *         lpmp           [BP-0x2a]
+    jmp_buf          env            [BP-0x26]
+    int16_t          i              [BP-0x14]
+    uint16_t         imemMsgT       [BP-0x12]
+    MSGHDR *         lpmh           [BP-0x10]
+    jmp_buf *        penvMemSav     [BP-0xc]
+    int16_t          fOOM           [BP-0xa]
+    int16_t          iMax           [BP-0x8]
+    uint8_t *        lpbMax         [BP-0x6]
+
+  stats: blocks=0  labels=1
+    LOutOfMem: L_9bb2
+*/
+block L_994a:
+  insts 0..12  off 0x994a..0x996f
+  succs: L_9970
+  effects:
+    9953  store[2] [bp-imemMsgT] = 0x0
+    9958  store[2] [bp-fOOM] = 0x0
+    996a  store[2] [bp-lpb] = (load([lpMsg]) + load([imemMsgCur]))
+    996d  store[2] [bp-lpb+0x2] = load([lpMsg+0x2])
+
+block L_9970:
+  insts 13..18  off 0x9970..0x997f
+  preds: L_994a, L_99d7
+  succs: L_9983, L_99df
+  effects:
+    997e  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0xc ? L_99df : L_9983
+
+block L_9983:
+  insts 20..23  off 0x9983..0x998d
+  preds: L_9970
+  succs: L_9991, L_99d7
+  effects:
+    998c  branch (load([hdrCur]) & 0x3ff) == 0x0 ? L_99d7 : L_9991
+
+block L_9991:
+  insts 25..32  off 0x9991..0x99a7
+  preds: L_9983
+  succs: L_99ab, L_99d7
+  effects:
+    99a6  branch (load([imemMsgCur]) + load([bp-imemMsgT])) >= (0xffc8 - (load([hdrCur]) & 0x3ff)) ? L_99d7 : L_99ab
+
+block L_99ab:
+  insts 34..51  off 0x99ab..0x99d6
+  preds: L_9991
+  succs: L_99d7
+  effects:
+    99c6  call fmemmove(words(load([bp-lpb+0x2]), (load([bp-lpb]) + load([bp-imemMsgT]))), words(ds, 0x4b98), (load@99ab/src([hdrCur]) & 0x3ff)) -> callresult(void *)
+    99d4  store[2] [bp-imemMsgT] = (load@99d4/dst([bp-imemMsgT]) + (load@99ce/src([hdrCur]) & 0x3ff))
+
+block L_99d7:
+  insts 52..53  off 0x99d7..0x99de
+  preds: L_9983, L_9991, L_99ab
+  succs: L_9970
+  effects:
+    99d7  call ReadRt() -> callresult(void)
+    99dc  goto L_9970
+
+block L_99df:
+  insts 54..62  off 0x99df..0x99f9
+  preds: L_9970
+  succs: L_9aca
+  effects:
+    99e2  store[2] [imemMsgCur] = (load([imemMsgCur]) + load@99df/src([bp-imemMsgT]))
+    99f1  store[2] [bp-lpbMax] = (load([bp-lpb]) + load@99e6/src([bp-imemMsgT]))
+    99f4  store[2] [bp-lpbMax+0x2] = load([bp-lpb+0x2])
+    99f7  goto L_9aca
+
+block L_99fa:
+  insts 63..115  off 0x99fa..0x9a97
+  preds: L_9aca
+  succs: L_9abf
+  effects:
+    9a00  store[2] [bp-lpmh] = load@99fa/src([bp-lpb])
+    9a03  store[2] [bp-lpmh+0x2] = load([bp-lpb+0x2])
+    9a40  store[2] ss:[bp-0x32] = (0x1 << ((load@9a09/src(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) & 0x1ff) & 0x7))
+    9a5f  store[1] byte ds:[((((load(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) & 0x1ff) >> 0x1) >> 0x1) >> 0x1)+0x516a] = lobyte(((load(byte ds:[((((load(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) & 0x1ff) >> 0x1) >> 0x1) >> 0x1)+0x516a]) & ((0x1 << ((load(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) & 0x1ff) & 0x7)) ~ 0x0)) | load(ss:[bp-0x32])))
+    9a63  store[2] [cMsg] = (load([cMsg]) + 0x1)
+    9a76  store[2] [bp-u] = ((load@9a6b/src(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) >> 0x9) & 0x7f)
+    9a79  store[2] [bp-lpb] = (load@9a79/dst([bp-lpb]) + 0x4)
+    9a8d  store[2] [bp-iMax] = sext8to16(load(byte cs:[(load(farseg(load(dword [bp-lpmh])):[faroff(load(dword [bp-lpmh]))]) & 0x1ff)+0x5b0e]))
+    9a90  store[2] [bp-i] = 0x0
+    9a95  goto L_9abf
+
+block L_9a98:
+  insts 116..119  off 0x9a98..0x9aa2
+  preds: L_9abf
+  succs: L_9aa6, L_9aac
+  effects:
+    9aa1  branch (load([bp-u]) & 0x1) != 0x1 ? L_9aac : L_9aa6
+
+block L_9aa6:
+  insts 121..122  off 0x9aa6..0x9aab
+  preds: L_9a98
+  succs: L_9aaf
+  effects:
+    9aa9  goto L_9aaf
+
+block L_9aac:
+  insts 123..123  off 0x9aac..0x9aae
+  preds: L_9a98
+  succs: L_9aaf
+
+block L_9aaf:
+  insts 124..128  off 0x9aaf..0x9abe
+  preds: L_9aa6, L_9aac
+  succs: L_9abf
+  effects:
+    9ab2  store[2] [bp-lpb] = (load([bp-lpb]) + (merge(Join: L_9aaf, (L_9aa6:0x1, L_9aac:0x0)) + 0x1))
+    9ab8  store[2] [bp-u] = (load([bp-u]) >> 0x1)
+    9abb  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_9abf:
+  insts 129..131  off 0x9abf..0x9ac6
+  preds: L_99fa, L_9aaf
+  succs: L_9a98, L_9aca
+  effects:
+    9ac5  branch load([bp-i]) < load([bp-iMax]) ? L_9a98 : L_9aca
+
+block L_9aca:
+  insts 133..136  off 0x9aca..0x9ad4
+  preds: L_99df, L_9abf
+  succs: L_99fa, L_9ad8
+  effects:
+    9ad3  branch load([bp-lpb]) < load([bp-lpbMax]) ? L_99fa : L_9ad8
+
+block L_9ad8:
+  insts 138..141  off 0x9ad8..0x9ae2
+  preds: L_9aca
+  succs: L_9ae3
+  effects:
+    9add  store[2] [bp-lpmp] = 0xb06
+    9ae0  store[2] [bp-lpmp+0x2] = ds
+
+block L_9ae3:
+  insts 142..144  off 0x9ae3..0x9aeb
+  preds: L_9ad8, L_9af9
+  succs: L_9aef, L_9af9
+  effects:
+    9aea  branch load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))]) != 0x0 ? L_9af9 : L_9aef
+
+block L_9aef:
+  insts 146..147  off 0x9aef..0x9af5
+  preds: L_9ae3
+  succs: L_9af9, L_9b0c
+  effects:
+    9af4  branch load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2]) == 0x0 ? L_9b0c : L_9af9
+
+block L_9af9:
+  insts 149..154  off 0x9af9..0x9b0b
+  preds: L_9ae3, L_9aef
+  succs: L_9ae3
+  effects:
+    9b03  store[2] [bp-lpmp] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))])
+    9b06  store[2] [bp-lpmp+0x2] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2])
+    9b09  goto L_9ae3
+
+block L_9b0c:
+  insts 155..164  off 0x9b0c..0x9b28
+  preds: L_9aef
+  succs: L_9b2c, L_9b3a
+  effects:
+    9b0f  store[2] [bp-penvMemSav] = load([penvMem])
+    9b15  store[2] [penvMem] = addr([bp-env])
+    9b1c  call setjmp(addr([bp-env])) -> callresult(int16_t)
+    9b27  branch callresult(int16_t) == 0x0 ? L_9b3a : L_9b2c
+
+block L_9b2c:
+  insts 166..169  off 0x9b2c..0x9b39
+  preds: L_9b0c
+  succs: L_9bb2
+  effects:
+    9b2f  store[2] [penvMem] = load([bp-penvMemSav])
+    9b32  store[2] [bp-fOOM] = 0x1
+    9b37  goto L_9bb2
+
+block L_9b3a:
+  insts 170..175  off 0x9b3a..0x9b49
+  preds: L_9b0c, L_9bb2
+  succs: L_9b4d, L_9bba
+  effects:
+    9b48  branch ((load([hdrCur]) >> 0xa) & 0x3f) != 0x28 ? L_9bba : L_9b4d
+
+block L_9b4d:
+  insts 177..178  off 0x9b4d..0x9b52
+  preds: L_9b3a
+  succs: L_9b56, L_9bb2
+  effects:
+    9b51  branch load([bp-fOOM]) != 0x0 ? L_9bb2 : L_9b56
+
+block L_9b56:
+  insts 180..209  off 0x9b56..0x9bb1
+  preds: L_9b4d
+  succs: L_9bb2
+  effects:
+    9b61  call LpAlloc((load@9b5a/src([hdrCur]) & 0x3ff), 0x8) -> callresult(void *)
+    9b6c  store[2] farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))] = faroff(callresult(void *))
+    9b6f  store[2] farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2] = farseg(callresult(void *))
+    9b7d  store[2] [bp-lpmp] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))])
+    9b80  store[2] [bp-lpmp+0x2] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2])
+    9b97  call fmemcpy(words(load([bp-lpmp+0x2]), load([bp-lpmp])), words(ds, 0x4b98), (load@9b83/src([hdrCur]) & 0x3ff)) -> callresult(void *)
+    9ba2  store[2] farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))] = 0x0
+    9ba7  store[2] farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2] = 0x0
+    9bad  store[2] [vcmsgplrIn] = (load([vcmsgplrIn]) + 0x1)
+
+block LOutOfMem:
+  insts 210..211  off 0x9bb2..0x9bb9
+  preds: L_9b2c, L_9b4d, L_9b56
+  succs: L_9b3a
+  effects:
+    9bb2  call ReadRt() -> callresult(void)
+    9bb7  goto L_9b3a
+
+block L_9bba:
+  insts 212..222  off 0x9bba..0x9bd4
+  preds: L_9b3a
+  effects:
+    9bba  store[2] [iMsgCur] = 0xffff
+    9bc4  call IMsgNext(0x0) -> callresult(int16_t)
+    9bcc  store[2] [iMsgCur] = callresult(int16_t)
+    9bd4  return

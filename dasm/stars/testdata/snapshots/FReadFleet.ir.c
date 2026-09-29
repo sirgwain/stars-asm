@@ -10,10 +10,15 @@ int16_t FReadFleet(FLEET *lpfl) {
     uint16_t *pus;
     char      szT[33];
     int16_t   cOut;
+    uint8_t  *t_3ae5;
+    uint16_t *t_3b64;
+    uint16_t *t_3d91;
+    uint8_t  *t_3e15;
+    uint8_t  *t_3e25;
 
 L_3a4c:
     cish = 0;
-    fmemset(lpfl, 0, 0x7c);
+    fmemset(lpfl, 0, sizeof(FLEET));
     fmemmove(lpfl, rgbCur, 0xc);
     fByte = lpfl->fDone;
     us = RawLoad16(&(rgbCur[12]));
@@ -44,8 +49,9 @@ L_3ad7:
         goto L_3ae5;
 
 L_3ae5:
+    t_3ae5 = pb;
     pb = (pb + 1);
-    lpfl->rgcsh[i] = *(pb);
+    lpfl->rgcsh[i] = *(t_3ae5);
     if ((lpfl->rgcsh[i] == 0))
         goto L_3abe;
     else
@@ -79,8 +85,9 @@ L_3b56:
         goto L_3b64;
 
 L_3b64:
+    t_3b64 = pus;
     pus = (pus + 1);
-    lpfl->rgcsh[i] = *(pus);
+    lpfl->rgcsh[i] = *(t_3b64);
     if ((lpfl->rgcsh[i] == 0))
         goto L_3b3d;
     else
@@ -213,8 +220,9 @@ L_3d83:
         goto L_3d91;
 
 L_3d91:
+    t_3d91 = pus;
     pus = (pus + 1);
-    lpfl->rgdv[i].dp = *(pus);
+    lpfl->rgdv[i].dp = *(t_3d91);
     if ((lpfl->rgdv[i].pctDp < 0x1f4))
         goto L_3d6a;
     else
@@ -228,10 +236,12 @@ L_3e0c:
 
 L_3e0f:
     pb = (uint8_t *)(pus);
+    t_3e15 = pb;
     pb = (pb + 1);
-    lpfl->iplan = *(pb);
+    lpfl->iplan = *(t_3e15);
+    t_3e25 = pb;
     pb = (pb + 1);
-    lpfl->cord = *(pb);
+    lpfl->cord = *(t_3e25);
     lpfl->lpplord = (PLORD *)(LpplAlloc(0x12, (lpfl->cord + 1), htOrd));
     fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18));
     cord = lpfl->cord;

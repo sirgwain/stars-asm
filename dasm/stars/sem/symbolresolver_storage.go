@@ -101,7 +101,20 @@ func (sr *symbolResolver) storageLaneFromResolvedAddress(addr resolvedAddress) (
 		}
 		if len(addr.terms) == 1 {
 			term := addr.terms[0]
-			result := indexedTermResult(path.Type(), term.scale)
+			// A fixed offset landing on a trailing flexible array indexes
+			// that array, not the pointer, even when the header size equals
+			// the element size, as with PLPROD and its PROD rgprod[].
+			var result typeinfo.Type
+			if field, remainder, ok := flexibleArrayFieldAt(path.Type(), offset); ok && addr.deref {
+				if fieldResult := indexedTermResult(field.Type, term.scale); fieldResult != nil {
+					path = &symresolve.SymbolField{Base: &symresolve.SymbolDeref{Base: path}, Field: field}
+					offset = remainder
+					result = fieldResult
+				}
+			}
+			if result == nil {
+				result = indexedTermResult(path.Type(), term.scale)
+			}
 			if result == nil && addr.deref {
 				deref := &symresolve.SymbolDeref{Base: path}
 				field, remainder, ok := sr.res.ResolveContainingFieldPathInContext(deref, offset, sr.unionContext())
@@ -401,4 +414,19 @@ func (sr *symbolResolver) wideAggregateStorage(low machine.MemoryAddress, high m
 		return machine.MemoryAddress{}, nil, false
 	}
 	return wide, typ, true
+}
+
+// flexibleArrayFieldAt returns the trailing flexible array member of the
+// struct a pointer addresses, and the byte offset into it, when offset
+// reaches that member.
+func flexibleArrayFieldAt(typ typeinfo.Type, offset int) (*typeinfo.StructField, int, bool) {
+	elem, ok := typeinfo.UnwrapPointer(typ)
+	if !ok {
+		return nil, 0, false
+	}
+	strct, ok := elem.(*typeinfo.Struct)
+	if !ok {
+		return nil, 0, false
+	}
+	return strct.FlexibleArrayFieldAt(offset)
 }

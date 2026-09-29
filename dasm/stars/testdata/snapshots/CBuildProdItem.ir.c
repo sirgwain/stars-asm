@@ -437,7 +437,7 @@ L_14f8:
         goto L_1501;
 
 L_1501:
-    memset(pprodPartial, 0, 0x4);
+    memset(pprodPartial, 0, sizeof(PROD));
     pprodPartial->grobj = grobjPlanet;
     pprodPartial->iItem = mdIdleAlchemy;
     pprodPartial->cItem = 0x1;
@@ -465,7 +465,7 @@ L_1656:
 
 L_165c:
     cBuilt = (cBuilt + 1);
-    prod.cItem = (prod.cItem + 0xffff);
+    prod.cItem = (prod.cItem - 0x1);
     prod.pct = 0x0;
     i = 0;
     goto L_1706;

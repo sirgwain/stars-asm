@@ -110,6 +110,13 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
+			Name:    "forward-scratch-addresses",
+			Purpose: "Forward compiler-spilled address words into the addresses that reload them.",
+			Machine: func(ctx *FuncContext) MachineBlockProcessor {
+				return &forwardScratchAddressesProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "collapse-widevalues",
 			Purpose: "Collapse wide values into 32 bit machine types.",
 			Func: func(ctx *FuncContext) MachineFuncProcessor {
@@ -251,6 +258,67 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Resolve consts to their semantic types.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &resolveConstTypesProcessor{}
+			},
+		},
+		{
+			Name:    "simplify-word-projections",
+			Purpose: "Simplify word projections of 16-bit products, 16-bit right shifts and identity masks once wide pairing is done.",
+			Sem:     func(*FuncContext) SemBlockProcessor { return &simplifyWordProjectionsProcessor{} },
+		},
+		{
+			Name:    "ctype",
+			Purpose: "Rewrite MSC ctype.h table lookups to calls of the matching runtime function.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &ctypeProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "native-heap-header",
+			Purpose: "Replace the Win16 heap block header size with sizeof(HB) for the native compile.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &nativeHeapHeaderProcessor{}
+			},
+		},
+		{
+			Name:    "native-struct-sizes",
+			Purpose: "Replace Win16 struct sizes in byte counts and struct size fields with sizeof for the native compile.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &nativeStructSizesProcessor{}
+			},
+		},
+		{
+			Name:    "native-records",
+			Purpose: "Keep file records of structs that start with pointers in their Win16 layout for the native compile.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &nativeRecordsProcessor{}
+			},
+		},
+		{
+			Name:    "native-points",
+			Purpose: "Convert points between Stars' POINT16 and Win32 POINT where they cross the Win32 API.",
+			Sem: func(*FuncContext) SemBlockProcessor {
+				return &nativePointsProcessor{}
+			},
+		},
+		{
+			Name:    "native-frame-icon",
+			Purpose: "Give the frame window class the Stars icon, which Win16 supplied only while minimized.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &nativeFrameIconProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "native-listbox-height",
+			Purpose: "Create runtime listboxes with LBS_NOINTEGRALHEIGHT, since Win32 listboxes trim their height on every resize where Win16 ones only did at creation.",
+			Sem: func(*FuncContext) SemBlockProcessor {
+				return &nativeListboxHeightProcessor{}
+			},
+		},
+		{
+			Name:    "native-param-arrays",
+			Purpose: "Copy parameters that the code walks through a pointer into a local array, since native stack arguments are not adjacent 16-bit words.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &nativeParamArraysProcessor{ctx: ctx}
 			},
 		},
 		{

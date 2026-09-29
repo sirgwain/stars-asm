@@ -361,7 +361,7 @@ int16_t FCreateFonts(HDC hdc) {
     int32_t    l;
 
 L_0ab2:
-    plf = LocalAlloc(0x40, 0x32);
+    plf = LocalAlloc(0x40, sizeof(LOGFONT));
     i = 0;
     goto L_0b13;
 
@@ -567,7 +567,7 @@ L_0f01:
     iCol = rgtile[i].iCol;
 
 L_0f1f:
-    rgtile[i].dyFull = (rgtile[i].dyFull + LOWORD((rgtile[i].yTop * dyArial8)));
+    rgtile[i].dyFull = (rgtile[i].dyFull + (rgtile[i].yTop * dyArial8));
     rgtile[i].yTop = yTop;
     rgtile[i].fFixCtls = 0x0;
     rgtile[i].fMinDraw = 0x0;
@@ -710,7 +710,7 @@ L_112f:
         goto L_1140;
 
 L_1140:
-    rg[i] = (LOWORD((10 * rg[i])) + ((int16_t)(*(pch)) - 48));
+    rg[i] = ((10 * rg[i]) + ((int16_t)(*(pch)) - 48));
     goto L_10f4;
 
 L_116f:
@@ -775,50 +775,44 @@ L_11ec:
 }
 
 void ReadIniSettings() {
-    uint16_t    uDateCur;
-    int16_t     i;
-    int16_t     iPass;
-    char        szEntry[16];
-    WN          wnT;
-    char        szIniFile[16];
-    uint16_t    w;
-    char       *psz;
-    char        szSection[16];
-    int16_t     cch;
-    int16_t     cpq;
-    ITEMACTION  t_scratch_m4e;
-    uint16_t    t_merge_1473_0001;
-    uint16_t    t_merge_1498_0001;
-    int16_t     t_merge_14df_0001;
-    int16_t     t_merge_1500_0001;
-    int16_t     t_merge_1547_0001;
-    int16_t     t_merge_1568_0001;
-    int16_t     t_merge_15af_0001;
-    int16_t     t_merge_15d0_0001;
-    int16_t     t_merge_1617_0001;
-    int16_t     t_merge_1638_0001;
-    int16_t     t_merge_167f_0001;
-    int16_t     t_merge_16a0_0001;
-    int16_t     t_merge_16e7_0001;
-    int16_t     t_merge_1708_0001;
-    uint16_t    t_merge_174e_0001;
-    uint16_t    t_merge_1fc6_0001;
-    uint16_t    t_merge_2027_0001;
-    uint16_t    t_merge_208c_0001;
-    uint16_t    t_merge_2175_0001;
-    uint16_t    t_merge_2203_0001;
-    uint16_t    t_merge_2291_0001;
-    uint16_t    t_merge_231f_0001;
-    uint16_t    t_scratch_m4a_8;
-    uint16_t    t_scratch_m4c;
-    uint16_t    t_merge_2483_0001;
-    ITEMACTION *t_fields_1;
-    uint32_t    t_fields_2;
-    uint32_t    t_fields_3;
-    ITEMACTION *t_fields_4;
-    uint32_t    t_fields_5;
-    uint32_t    t_fields_6;
-    uint16_t    t_merge_2981_0001;
+    uint16_t uDateCur;
+    int16_t  i;
+    int16_t  iPass;
+    char     szEntry[16];
+    WN       wnT;
+    char     szIniFile[16];
+    uint16_t w;
+    char    *psz;
+    char     szSection[16];
+    int16_t  cch;
+    int16_t  cpq;
+    uint16_t t_merge_1473_0001;
+    uint16_t t_merge_1498_0001;
+    int16_t  t_merge_14df_0001;
+    int16_t  t_merge_1500_0001;
+    int16_t  t_merge_1547_0001;
+    int16_t  t_merge_1568_0001;
+    int16_t  t_merge_15af_0001;
+    int16_t  t_merge_15d0_0001;
+    int16_t  t_merge_1617_0001;
+    int16_t  t_merge_1638_0001;
+    int16_t  t_merge_167f_0001;
+    int16_t  t_merge_16a0_0001;
+    int16_t  t_merge_16e7_0001;
+    int16_t  t_merge_1708_0001;
+    uint16_t t_merge_174e_0001;
+    uint16_t t_merge_1fc6_0001;
+    uint16_t t_merge_2027_0001;
+    uint16_t t_merge_208c_0001;
+    uint16_t t_merge_2175_0001;
+    uint16_t t_merge_2203_0001;
+    uint16_t t_merge_2291_0001;
+    uint16_t t_merge_231f_0001;
+    uint16_t t_scratch_m4a_8;
+    uint16_t t_scratch_m4c;
+    uint16_t t_merge_2483_0001;
+    char    *t_2846;
+    uint16_t t_merge_2981_0001;
 
 L_124c:
     ini.fGen = 0x0;
@@ -1694,8 +1688,8 @@ L_239d:
     strdate(szWork);
     szWork[5] = 0;
     szWork[2] = 0;
-    t_scratch_m4a_8 = LOWORD((LOWORD((atoi(&(szWork[6])) * 31)) * 0xc));
-    t_scratch_m4c = LOWORD((atoi(szWork) * 31));
+    t_scratch_m4a_8 = ((atoi(&(szWork[6])) * 31) * 0xc);
+    t_scratch_m4c = (atoi(szWork) * 31);
     uDateCur = ((atoi(&(szWork[3])) + t_scratch_m4c) + t_scratch_m4a_8);
     CchGetString(idsHistoryinfo, szEntry);
     uDateInstalled = GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
@@ -1816,25 +1810,15 @@ L_2648:
     goto L_27c5;
 
 L_2655:
-    t_fields_1 = &(t_scratch_m4e);
-    t_fields_2 = vrgZip[i].txp.rgia[iPass].cQuan;
-    t_fields_3 = ((uint32_t)(((int16_t)(*(psz)) + 0xff9f)) & 0xf);
-    t_fields_1->cQuan = t_fields_2;
-    t_fields_1->iAction = t_fields_3;
-    vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
+    vrgZip[i].txp.rgia[iPass].iAction = ((int16_t)(*(psz)) - 97);
     psz = (psz + 1);
-    t_fields_4 = &(t_scratch_m4e);
-    t_fields_5 = ((uint32_t)(((int16_t)(*(psz)) + 0xff9f)) & 0xfff);
-    t_fields_6 = vrgZip[i].txp.rgia[iPass].iAction;
-    t_fields_4->cQuan = t_fields_5;
-    t_fields_4->iAction = t_fields_6;
-    vrgZip[i].txp.rgia[iPass] = t_scratch_m4e;
+    vrgZip[i].txp.rgia[iPass].cQuan = ((int16_t)(*(psz)) - 97);
     psz = (psz + 1);
     vrgZip[i].txp.rgia[iPass].cQuan =
-        ((((uint32_t)(((int16_t)(*(psz)) + 0xff9f)) & 0xfff) << 0x4) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
+        ((((uint32_t)(((int16_t)(*(psz)) - 0x61)) & 0xfff) << 0x4) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
     psz = (psz + 1);
     vrgZip[i].txp.rgia[iPass].cQuan =
-        ((((uint32_t)(((int16_t)(*(psz)) + 0xff9f)) & 0xff) << 0x8) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
+        ((((uint32_t)(((int16_t)(*(psz)) - 0x61)) & 0xff) << 0x8) | (vrgZip[i].txp.rgia[iPass].cQuan | (vrgZip[i].txp.rgia[iPass].iAction << 0xc)));
     psz = (psz + 1);
     iPass = (iPass + 1);
 
@@ -1865,8 +1849,9 @@ L_2806:
 L_2822:
     strcpy(szEntry, szSection);
     psz = &(szEntry[strlen(szEntry)]);
+    t_2846 = psz;
     psz = (psz + 1);
-    *(psz) = 80;
+    *(t_2846) = 80;
     *(psz) = LOBYTE((i + 49));
     psz[1] = 0;
     GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
@@ -1960,11 +1945,11 @@ L_2981:
 L_29c7:
     vrgZipProd[i].rgpq[iPass].w = ((int16_t)(*(psz)) - 97);
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x10));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x10));
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x100));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x100));
     psz = (psz + 1);
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) + 0xff9f) * 0x1000));
+    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w | (((int16_t)(*(psz)) - 0x61) * 0x1000));
     psz = (psz + 1);
     if ((vrgZipProd[i].rgpq[iPass].cQuan <= 0x3fc))
         goto L_2af0;
@@ -1972,7 +1957,7 @@ L_29c7:
         goto L_2ab2;
 
 L_2ab2:
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].mdIdle | 0x40);
+    vrgZipProd[i].rgpq[iPass].cQuan = 0x1;
 
 L_2af0:
     if ((vrgZipProd[i].rgpq[iPass].mdIdle < 0x7))
@@ -1981,7 +1966,7 @@ L_2af0:
         goto L_2b14;
 
 L_2b14:
-    vrgZipProd[i].rgpq[iPass].w = (vrgZipProd[i].rgpq[iPass].w & 0xffc0);
+    vrgZipProd[i].rgpq[iPass].mdIdle = 0x0;
 
 L_2b52:
     iPass = (iPass + 1);
@@ -2045,13 +2030,13 @@ L_2bc6:
     goto DoNext;
 
 L_2bc9:
-    if (((_ctype[((int16_t)(*(pszFormat)) + 1)] & 0x3) == 0x0))
+    if ((isalpha((int16_t)(*(pszFormat))) == 0x0))
         goto DoNext;
     else
         goto L_2be7;
 
 L_2be7:
-    fPopped = (_ctype[((int16_t)(*(pszFormat)) + 0x1)] & 0x1);
+    fPopped = isupper((int16_t)(*(pszFormat)));
     if ((fPopped == 0))
         goto L_2c12;
     else

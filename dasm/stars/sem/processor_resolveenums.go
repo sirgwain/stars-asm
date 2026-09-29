@@ -1,6 +1,9 @@
 package sem
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
@@ -42,7 +45,11 @@ func (p *resolveEnumsProcessor) resolveCallWithRewriter(w *semRewriter, call *Ca
 		next, ok := w.rewriteExpr(arg)
 		if i < len(call.Function.Params) {
 			paramType := call.Function.Params[i].Type
-			if enumType, isEnum := paramType.(*typeinfo.Enum); isEnum {
+			if enumType, matched := p.callParamEnum(call, i); matched {
+				constNext, constChanged := retypeCallParamConst(next, enumType)
+				next = constNext
+				ok = ok || constChanged
+			} else if enumType, isEnum := paramType.(*typeinfo.Enum); isEnum {
 				enumNext, enumChanged := p.resolveExpectedEnum(next, enumType)
 				next = enumNext
 				ok = ok || enumChanged
@@ -214,6 +221,58 @@ func (p *resolveEnumsProcessor) callResultEnum(call *Call) (*typeinfo.Enum, bool
 	return nil, false
 }
 
+// callParamEnum returns the enum a constrained param rule selects for the
+// call's argument at index, such as the window style family of the class a
+// CreateWindow call names.
+func (p *resolveEnumsProcessor) callParamEnum(call *Call, index int) (*typeinfo.Enum, bool) {
+	param := call.Function.Params[index]
+	for _, rule := range p.ctx.sdb.EnumRules {
+		if rule.Kind != typeinfo.UseParam || len(rule.WhenArgs) == 0 || rule.FuncName != call.Function.Name || rule.ParamName != param.Name {
+			continue
+		}
+		if !p.callMatchesRule(call, rule) {
+			continue
+		}
+		enumType := p.ctx.sdb.GetEnum(rule.EnumName)
+		if enumType == nil {
+			panic(fmt.Sprintf("resolve-enums: %s %s rule names unknown enum %s", rule.FuncName, rule.ParamName, rule.EnumName))
+		}
+		return typeinfo.EnumWithStorageSize(enumType, param.Type), true
+	}
+	return nil, false
+}
+
+// retypeCallParamConst gives a constant argument, or the constants OR-ed into
+// it, the enum a constrained param rule selects. The rule is more specific
+// than the parameter's own enum, so it replaces the family the constant was
+// given from the parameter.
+func retypeCallParamConst(expr Expr, enumType *typeinfo.Enum) (Expr, bool) {
+	switch e := expr.(type) {
+	case *Const:
+		if e.TypeInfo == enumType {
+			return expr, false
+		}
+		next := *e
+		next.TypeInfo = enumType
+		return &next, true
+	case *Binary:
+		if e.Op != OpOr {
+			return expr, false
+		}
+		lhs, lhsChanged := retypeCallParamConst(e.LHS, enumType)
+		rhs, rhsChanged := retypeCallParamConst(e.RHS, enumType)
+		if !lhsChanged && !rhsChanged {
+			return expr, false
+		}
+		next := *e
+		next.LHS = lhs
+		next.RHS = rhs
+		return &next, true
+	default:
+		return expr, false
+	}
+}
+
 // callMatchesRule reports whether a call satisfies an enum use rule.
 func (p *resolveEnumsProcessor) callMatchesRule(call *Call, rule *typeinfo.EnumUseRule) bool {
 	for _, when := range rule.WhenArgs {
@@ -221,12 +280,27 @@ func (p *resolveEnumsProcessor) callMatchesRule(call *Call, rule *typeinfo.EnumU
 		if !ok || index >= len(call.Args) {
 			return false
 		}
-		value, ok := exprConstInt(call.Args[index])
-		if !ok || value != when.Value {
+		if !argMatchesConstraint(call.Args[index], when) {
 			return false
 		}
 	}
 	return true
+}
+
+// argMatchesConstraint reports whether a call argument is the global, C
+// string literal or integer constant a constraint requires.
+func argMatchesConstraint(arg Expr, when typeinfo.ArgConstraint) bool {
+	switch {
+	case when.Global != "":
+		global, ok := globalOf(arg)
+		return ok && global.Name == when.Global
+	case when.String != "":
+		literal, ok := arg.(*StringLiteral)
+		return ok && literal.Text == strconv.Quote(when.String)
+	default:
+		value, ok := exprConstInt(arg)
+		return ok && value == when.Value
+	}
 }
 
 // callResultType returns the previously resolved type for a call result expression.

@@ -35,7 +35,7 @@ void             DrawThingXferSide(HDC hdc, RECT *prc, THING *pth, int16_t iSupp
 void             DrawFleetCargoXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply);
 void             DrawFleetShipsXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply);
 void             DrawPlanetXferSide(HDC hdc, RECT *prc, PLANET *ppl, int16_t iSupply);
-HCURSOR          ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn);
+HCURSOR          ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRightBtn);
 void             FillFleetCompLB();
 void             FillOrdersLB();
 void             SetOrdersLbSel(int16_t iSel);

@@ -1,9 +1,9 @@
 /*
 FGetMouseMove  (utilgen)
   addr: 0009:4146  len=153
-  sig:  int16_t FGetMouseMove(POINT *ppt)
+  sig:  int16_t FGetMouseMove(POINT16 *ppt)
   params:
-    POINT *          ppt            [BP+0x6]
+    POINT16 *        ppt            [BP+0x6]
   locals:
     MSG              msg            [BP-0x14]
 

@@ -81,7 +81,7 @@ L_51ca:
     goto L_525e
 
 L_51e3:
-    lBIPR4 = (double)sext16to32(loword((sext8to16(rgplr[iplr].rgTech[4]) * 10)))
+    lBIPR4 = (double)sext16to32((sext8to16(rgplr[iplr].rgTech[4]) * 10))
     lBIR4 = (lBIPR4 * 2.0)
     lBIPR4 = (lBIPR4 * lBIPR4)
     lBIPR4 = (lBIPR4 * lBIPR4)

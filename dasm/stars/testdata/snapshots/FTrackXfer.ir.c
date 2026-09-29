@@ -1,6 +1,6 @@
 int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
-    POINT    ptOld;
-    POINT    pt;
+    POINT16  ptOld;
+    POINT16  pt;
     int32_t  dChg;
     BTNT     btnt;
     int32_t  cCur;
@@ -35,7 +35,7 @@ L_5a42:
         goto L_5a5c;
 
 L_5a5c:
-    if ((PtInRect(&(rgbtnXfer[i].rc), pt) != 0))
+    if ((PtInRect(&(rgbtnXfer[i].rc), PointFrom16(pt)) != 0))
         goto L_5a91;
     else
         goto L_5a82;

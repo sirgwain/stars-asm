@@ -23,7 +23,7 @@
 ;       int16_t          iCol           [BP-0x18]
 ;       int16_t          ibit           [BP-0x16]
 ;       int16_t          i              [BP-0x14]
-;       POINT            pt             [BP-0x12]
+;       POINT16          pt             [BP-0x12]
 ;     block 0022:04FC  len=0x180
 ;       int16_t          iNew           [BP-0x12]
 ;       int16_t          iCur           [BP-0x10]
@@ -132,7 +132,7 @@ MOV       cx, [vprptCur]            ; cx, [0x15ac]
 ADD       cx, ax              
 PUSH      cx                  
 PUSH      [bp+hwnd]                 ; [bp+0xe]
-CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit)
 ADD       sp, 0x0006          
                                     ; report.c:151
 MOV       ax, 0x15cc          
@@ -547,7 +547,7 @@ PUSH      ax
 PUSH      [bp-iCol]                 ; [bp-0x18]
 PUSH      [bp-pt+0x2]               ; [bp-0x10]
 PUSH      [bp-pt]                   ; [bp-0x12]
-CALLF     ReportColumnPopup         ; void ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn)
+CALLF     ReportColumnPopup         ; void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn)
 ADD       sp, 0x0008          
                                     ; report.c:261
 JMP       L_04e1              
@@ -559,7 +559,7 @@ MOV       bx, [vprptCur]            ; bx, [0x15ac]
 PUSH      [bx+0x4]            
 PUSH      [bp-pt+0x2]               ; [bp-0x10]
 PUSH      [bp-pt]                   ; [bp-0x12]
-CALLF     ExecuteReportClick        ; void ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow)
+CALLF     ExecuteReportClick        ; void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow)
 ADD       sp, 0x000a          
 
 L_04e1:                             ; report.c:264
@@ -964,7 +964,7 @@ MOV       cx, [vprptCur]            ; cx, [0x15ac]
 ADD       cx, ax              
 PUSH      cx                  
 PUSH      [bp+hwnd]                 ; [bp+0xe]
-CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit)
 ADD       sp, 0x0006          
                                     ; report.c:396
 PUSH      [bp+hwnd]                 ; [bp+0xe]

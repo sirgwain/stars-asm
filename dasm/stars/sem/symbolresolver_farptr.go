@@ -154,16 +154,17 @@ func (sr *symbolResolver) addressFromSplitFarPointer(segment machine.Value, offs
 		return resolvedAddress{}, false
 	}
 
-	fixed, terms, ok := sr.splitFarPointerOffset(root, offset, disp)
+	fixed, terms, lowWord, ok := sr.splitFarPointerOffset(root, offset, disp)
 	if !ok {
 		return resolvedAddress{}, false
 	}
 
 	return resolvedAddress{
-		base:   sr.messagePointerView(root),
-		offset: fixed,
-		terms:  terms,
-		deref:  true,
+		base:      sr.messagePointerView(root),
+		baseValue: lowWord,
+		offset:    fixed,
+		terms:     terms,
+		deref:     true,
 	}, true
 }
 
@@ -173,12 +174,12 @@ func (sr *symbolResolver) splitFarPointerOffset(
 	root symresolve.SymbolPath,
 	value machine.Value,
 	disp int,
-) (int, []resolvedAddressTerm, bool) {
+) (int, []resolvedAddressTerm, machine.Value, bool) {
 	fixed := disp
 	addTerms := collectAddTerms(value)
 
 	var remaining []machine.Value
-	foundLowWord := false
+	var lowWord machine.Value
 
 	for _, term := range addTerms {
 		if c, ok := term.(*machine.Const); ok {
@@ -193,7 +194,7 @@ func (sr *symbolResolver) splitFarPointerOffset(
 				termOff == 0 &&
 				symresolve.Equals(root, termRoot) {
 
-				foundLowWord = true
+				lowWord = term
 				continue
 			}
 		}
@@ -201,14 +202,14 @@ func (sr *symbolResolver) splitFarPointerOffset(
 		remaining = append(remaining, term)
 	}
 
-	if !foundLowWord {
-		return 0, nil, false
+	if lowWord == nil {
+		return 0, nil, nil, false
 	}
 
 	terms := make([]resolvedAddressTerm, 0, len(remaining))
 
 	for _, value := range remaining {
-		value = stripLowWord(value)
+		value = unwrapAddressWord(value)
 
 		index, scale := sr.decomposeTerm(value)
 		if index == nil {
@@ -222,7 +223,7 @@ func (sr *symbolResolver) splitFarPointerOffset(
 		})
 	}
 
-	return fixed, terms, true
+	return fixed, terms, lowWord, true
 }
 
 // symbolOffsetRoot returns the root and byte offset for a symbol offset path.

@@ -132,6 +132,33 @@ func TestResolveConstTypesAppliesComparePeerTypeInBranch(t *testing.T) {
 	}
 }
 
+func TestResolveConstTypesKeepsUnsignedCompareConst(t *testing.T) {
+	imemMsgCur := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "imemMsgCur", Type: typeinfo.I16}}
+	block := Block{
+		ID: 0x80a9,
+		Effects: []Effect{
+			&Branch{
+				Cond: &Compare{
+					Op:  CompareULE,
+					LHS: &Binary{Op: OpAdd, LHS: imemMsgCur, RHS: &Const{TypeInfo: typeinfo.U16, U64: 20}, TypeInfo: typeinfo.U16},
+					RHS: &Const{TypeInfo: typeinfo.U16, U64: 0xffc8},
+				},
+				TrueBlock:  machine.BlockID(0x80bd),
+				FalseBlock: machine.BlockID(0x80b7),
+			},
+		},
+	}
+
+	got, _ := (&resolveConstTypesProcessor{}).ProcessBlock(nil, Func{}, block)
+	got, _ = (&nativeCastsProcessor{}).ProcessBlock(nil, Func{}, got)
+
+	gotBranch := FormatEffect(got.Effects[0])
+	wantBranch := "branch (uint16_t)(imemMsgCur + 20) <= 0xffc8 ? L_80bd : L_80b7"
+	if gotBranch != wantBranch {
+		t.Fatalf("branch = %q, want %q", gotBranch, wantBranch)
+	}
+}
+
 func TestResolveConstTypesAppliesIntTypeToArrayIndexConst(t *testing.T) {
 	int16Type := &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "int16_t", Size: 2, Signed: true}
 	rgwt := &Local{

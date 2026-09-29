@@ -105,7 +105,7 @@ L_0097:
         goto L_0112;
 
 L_0112:
-    iAttackStr = (iAttackStr + ((uint32_t)((game.turn + 0xffce)) / 10));
+    iAttackStr = (iAttackStr + ((uint32_t)((game.turn - 0x32)) / 10));
 
 L_0123:
     if ((game.turn <= 0x64))
@@ -114,7 +114,7 @@ L_0123:
         goto L_012d;
 
 L_012d:
-    iAttackStr = (iAttackStr + LOWORD((((uint32_t)((game.turn + 0xff9c)) / 0xa) * ((uint32_t)(game.turn) / 0x64))));
+    iAttackStr = (iAttackStr + (((uint32_t)((game.turn - 0x64)) / 0xa) * ((uint32_t)(game.turn) / 0x64)));
 
 L_0154:
     j = 3;
@@ -124,7 +124,7 @@ L_0154:
         goto L_0164;
 
 L_0164:
-    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
+    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
 
 L_0174:
     if ((j <= 50))
@@ -145,7 +145,7 @@ L_0182:
         goto L_01a6;
 
 L_01a6:
-    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
+    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
 
 L_01b6:
     if ((j <= 12))
@@ -158,7 +158,7 @@ L_01bf:
 
 L_01c4:
     vrgAiCyberArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
         goto L_01e6;
     else
         goto L_01e0;
@@ -168,7 +168,7 @@ L_01e0:
     goto L_01f2;
 
 L_01e6:
-    t_merge_01f2_0001 = (((int32_t)(j) / 2) + 0xffff);
+    t_merge_01f2_0001 = (((int32_t)(j) / 2) - 0x1);
 
 L_01f2:
     vrgAiCyberArmadaPotency[3] = LOBYTE(t_merge_01f2_0001);
@@ -334,7 +334,7 @@ L_047e:
 
 L_0505:
     lpciPlanTemp = (CYBERINFOTEMP *)((vlpbAiData + dOffsetPlanTemp));
-    fmemset(lpciPlanTemp, 0, (game.cPlanMax * 2));
+    fmemset(lpciPlanTemp, 0, (game.cPlanMax * sizeof(CYBERINFOTEMP)));
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
     goto L_0821;
@@ -822,7 +822,7 @@ L_0ce4:
 
 L_0cf1:
     iStrDef = 0;
-    if (((game.turn - rgshdef[14].turn) >= (cRecyclePeriod + 0xfff6)))
+    if (((game.turn - rgshdef[14].turn) >= (cRecyclePeriod - 0xa)))
         goto L_0d16;
     else
         goto L_0d0b;
@@ -831,7 +831,7 @@ L_0d0b:
     iStrDef = (iStrDef + lpfl->rgcsh[14]);
 
 L_0d16:
-    if (((game.turn - rgshdef[15].turn) >= (cRecyclePeriod + 0xfff6)))
+    if (((game.turn - rgshdef[15].turn) >= (cRecyclePeriod - 0xa)))
         goto L_0d35;
     else
         goto L_0d2a;
@@ -2051,9 +2051,9 @@ L_21ec:
 
 L_21f1:
     iWarp = (IWarpMAFromLppl(lppl, &(fTwoMA)) + 3);
-    dDistance = (double)((int32_t)(LOWORD((iWarp * iWarp))));
+    dDistance = (double)((int32_t)((iWarp * iWarp)));
     dDistanceTgt = DGetDistance(rgptPlan[lppl->id].x, rgptPlan[lppl->id].y, rgptPlan[lpplDst->id].x, rgptPlan[lpplDst->id].y);
-    dMod = ((double)((uint32_t)(LOWORD(((LOWORD((iWarp * iWarp)) - LOWORD((iWarpDst * iWarpDst))) * (0x64 - (lpplDst->uDefGuess + 0x5)))))) / 16000.0);
+    dMod = ((double)((uint32_t)((((iWarp * iWarp) - (iWarpDst * iWarpDst)) * (0x64 - (lpplDst->uDefGuess + 0x5))))) / 16000.0);
     if ((0x3e8 >= ((lpplDst->uPopGuess + 0x19) * 0x4)))
         goto L_22fa;
     else
@@ -2292,15 +2292,15 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
     PLANET *lpplDst;
     int16_t dAdjust;
     int16_t iSize;
-    POINT   ptEdge;
+    POINT16 ptEdge;
     SCAN    scan;
     int32_t t_call_2b71;
 
 L_282a:
     ptEdge = rgptPlan[lppl->id];
-    iSize = (LOWORD((400 * game.mdSize)) + 400);
+    iSize = ((400 * game.mdSize) + 400);
     iWarp = (IWarpMAFromLppl(lppl, 0x0) + 3);
-    iDistance = LOWORD((iWarp * iWarp));
+    iDistance = (iWarp * iWarp);
     ptEdge.x = (ptEdge.x - 1000);
     ptEdge.y = (ptEdge.y - 1000);
     goto L_2969;
@@ -2397,7 +2397,7 @@ L_295d:
     return -1;
 
 L_2969:
-    if ((iDir > 7))
+    if (((uint16_t)(iDir) > 7))
         goto L_295d;
     else
         goto L_2971;
@@ -2580,7 +2580,7 @@ L_2b41:
 
 L_2b50:
     t_call_2b71 = LDistance2(rgptPlan[scan.idpl], rgptPlan[lppl->id]);
-    if (((int32_t)(t_call_2b71) < (int32_t)(LOWORD((iDistance * iDistance)))))
+    if (((int32_t)(t_call_2b71) < (int32_t)((iDistance * iDistance))))
         goto L_2b9f;
     else
         goto L_2ba8;
@@ -3369,7 +3369,7 @@ L_38ff:
 L_3916:
     FLookupFleet(lpfl->id, &(sel.fl));
     idPlanDst = lpplCur->id;
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
@@ -3481,7 +3481,7 @@ LTarget:
         goto L_3cfa;
 
 L_3c44:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[lpplDst->id];
     ord.grobj = grobjPlanet;
     ord.id = lpplDst->id;
@@ -3573,7 +3573,7 @@ L_3e51:
         goto L_3e60;
 
 L_3e60:
-    if ((((uint32_t)(LOWORD((lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2))) + lpplTest->rgwtMin[3]) < 0x3e8))
+    if ((((uint32_t)((lpciPlanTemp[lpplTest->id].cFreightersDst * 0xd2)) + lpplTest->rgwtMin[3]) < 0x3e8))
         goto L_3ea6;
     else
         goto L_3ef3;
@@ -3904,7 +3904,7 @@ L_44c3:
     return 0;
 
 L_44c9:
-    dMod = ((double)((uint32_t)(LOWORD(((LOWORD((iWarp * iWarp)) - LOWORD((iWarpDst * iWarpDst))) * (0x64 - (lpplTest->uDefGuess + 0x5)))))) / 16000.0);
+    dMod = ((double)((uint32_t)((((iWarp * iWarp) - (iWarpDst * iWarpDst)) * (0x64 - (lpplTest->uDefGuess + 0x5))))) / 16000.0);
     if ((0x3e8 >= ((lpplTest->uPopGuess + 0x19) * 0x4)))
         goto L_4544;
     else
@@ -4304,8 +4304,8 @@ L_4c10:
         goto L_4c1e;
 
 L_4c1e:
-    high = (9 - LOWORD(((ishCur - ish) * 3)));
-    low = (26 - (9 - LOWORD(((ishCur - ish) * 3))));
+    high = (9 - ((ishCur - ish) * 3));
+    low = (26 - (9 - ((ishCur - ish) * 3)));
 
 LCruiser:
     i = high;
@@ -4864,7 +4864,7 @@ L_5531:
         goto L_5545;
 
 L_5545:
-    if ((cshWar <= LOWORD((vrgAiArmadaPotency[0] * 0x3))))
+    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x3)))
         goto L_556c;
     else
         goto L_5558;

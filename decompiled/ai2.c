@@ -181,7 +181,7 @@ L_0282:
         goto L_0293;
 
 L_0293:
-    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
+    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
 
 L_02a4:
     if ((j <= 50))
@@ -202,7 +202,7 @@ L_02b4:
         goto L_02db;
 
 L_02db:
-    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
+    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
 
 L_02ec:
     if ((j <= 12))
@@ -215,7 +215,7 @@ L_02f6:
 
 L_02fc:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
         goto L_0320;
     else
         goto L_031a;
@@ -225,7 +225,7 @@ L_031a:
     goto L_032d;
 
 L_0320:
-    t_merge_032d_0001 = (((int32_t)(j) / 2) + 0xffff);
+    t_merge_032d_0001 = (((int32_t)(j) / 2) - 0x1);
 
 L_032d:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_032d_0001);
@@ -439,7 +439,7 @@ L_0752:
         goto L_075d;
 
 L_075d:
-    if ((cExistCargo >= ((int32_t)(LOWORD((10 * cFr))) / 0x7)))
+    if ((cExistCargo >= ((int32_t)((10 * cFr)) / 0x7)))
         goto L_07a4;
     else
         goto L_0771;
@@ -891,7 +891,7 @@ L_0f03:
         goto L_0f27;
 
 L_0f27:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;
@@ -2202,7 +2202,7 @@ L_2581:
         goto L_25a5;
 
 L_25a5:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.pt = rgptPlan[idPlanDst];
     ord.grobj = grobjPlanet;
     ord.id = idPlanDst;

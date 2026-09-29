@@ -34,7 +34,7 @@ L_9ec7:
     ord = lpfl->lpplord->rgord[iDel]
 
 L_9ef2:
-    call fmemmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[(iDel + 1)], (((lpfl->cord - iDel) - 1) * 18)) -> callresult(void *)
+    call fmemmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[(iDel + 1)], (((lpfl->cord - iDel) - 1) * sizeof(ORDER))) -> callresult(void *)
     branch fRecycle == 0 ? L_9fca : L_9f69
 
 L_9f69:

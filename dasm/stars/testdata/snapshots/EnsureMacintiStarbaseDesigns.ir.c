@@ -199,13 +199,13 @@ L_7980:
     goto L_7a08;
 
 L_7988:
-    if ((rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].fFree != 0x0))
+    if ((rglpshdefSB[idPlayer][(((3 * i) + 4) + j)].fFree != 0x0))
         goto L_7a04;
     else
         goto L_79c1;
 
 L_79c1:
-    if ((rglpshdefSB[idPlayer][((LOWORD((3 * i)) + 4) + j)].cExist <= 0x0))
+    if ((rglpshdefSB[idPlayer][(((3 * i) + 4) + j)].cExist <= 0x0))
         goto L_7a04;
     else
         goto L_7a11;
@@ -234,7 +234,7 @@ L_7a22:
     goto L_7a68;
 
 L_7a2a:
-    if ((FCreateAiStarbase(((LOWORD((3 * i)) + 4) + j), (j + 1), vrgSBMacAisb[k], (k - 1)) != 0))
+    if ((FCreateAiStarbase((((3 * i) + 4) + j), (j + 1), vrgSBMacAisb[k], (k - 1)) != 0))
         goto L_7a71;
     else
         goto L_7a64;

@@ -13,8 +13,14 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     int16_t        xCtr;
     XferActionType iAction;
     FARPROC        lpProc;
+    char          *t_00bd;
+    char          *t_00c6;
+    char          *t_00d8;
     HWND           t_scratch_m30;
     int16_t        t_merge_0524_0001;
+    char          *t_065c;
+    char          *t_0665;
+    char          *t_0677;
 
 L_0000:
     goto L_07f8;
@@ -46,17 +52,20 @@ L_00af:
         goto L_00bd;
 
 L_00bd:
+    t_00bd = psz;
     psz = (psz + 1);
+    t_00c6 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = *(psz);
-    if (((int16_t)(*(psz)) != 38))
+    *(t_00c6) = *(t_00bd);
+    if (((int16_t)(*(t_00bd)) != 38))
         goto L_00af;
     else
         goto L_00d8;
 
 L_00d8:
+    t_00d8 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = 38;
+    *(t_00d8) = 38;
 
 L_00e2:
     goto L_00af;
@@ -309,17 +318,20 @@ L_064e:
         goto L_065c;
 
 L_065c:
+    t_065c = psz;
     psz = (psz + 1);
+    t_0665 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = *(psz);
-    if (((int16_t)(*(psz)) != 38))
+    *(t_0665) = *(t_065c);
+    if (((int16_t)(*(t_065c)) != 38))
         goto L_064e;
     else
         goto L_0677;
 
 L_0677:
+    t_0677 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = 38;
+    *(t_0677) = 38;
 
 L_0681:
     goto L_064e;
@@ -450,7 +462,7 @@ L_0931:
     return 1;
 
 L_0959:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_0a59;
     else
         goto L_0975;
@@ -571,7 +583,7 @@ L_0b03:
     return 1;
 
 L_0b2b:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_0cef;
     else
         goto L_0b47;
@@ -641,7 +653,7 @@ L_0c02:
 L_0c0c:
     fInEditUpdate = 1;
     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
-    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), WM_USER, 0x0, 0);
+    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0c93;
     else
@@ -696,7 +708,7 @@ L_0cef:
 int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist) {
     int16_t   dpPerShdefNew;
     int16_t   dpShdef;
-    POINT     pt;
+    POINT16   pt;
     int16_t   id;
     FLEET     flSrc;
     int16_t   cshT;
@@ -834,7 +846,7 @@ LKilledEmAll:
     return 0;
 
 L_0f53:
-    memset(&(flDead), 0, 0x7c);
+    memset(&(flDead), 0, sizeof(FLEET));
     ishdef = 0;
     goto L_1390;
 
@@ -934,7 +946,7 @@ L_1115:
         goto L_1124;
 
 L_1124:
-    if ((Random(500) >= flSrc.rgdv[ishdef].pctDp))
+    if (((uint16_t)(Random(500)) >= flSrc.rgdv[ishdef].pctDp))
         goto L_10d8;
     else
         goto L_114d;
@@ -1065,7 +1077,7 @@ L_13bb:
         goto L_1431;
 
 L_13d9:
-    FSendPlrMsg(lpfl->iPlayer, 235, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), (LOWORD((uint32_t)((cshKill >> 0x10))) & 0xffff), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, 235, (lpfl->id | 0x8000), lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), HIWORD(cshKill), 0, 0);
     goto L_14d9;
 
 L_1431:
@@ -2986,7 +2998,7 @@ L_333b:
         goto L_3352;
 
 L_3352:
-    cPts = LOWORD((cPts * lphs->cItem));
+    cPts = (cPts * lphs->cItem);
 
 L_336a:
     return cPts;

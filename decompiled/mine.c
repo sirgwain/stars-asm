@@ -4,7 +4,7 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rc;
-    POINT       pt;
+    POINT16     pt;
     HtMineType  ht;
     COLORREF    crFore;
     uint16_t    dxMax;
@@ -13,13 +13,16 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT        rc2;
     int16_t     fDetonate;
     RTLOGTHING  rtlt;
+    POINT       t_pt_0104;
+    POINT       t_pt_0113_1;
     HCURSOR     t_merge_0170_0001;
 
 L_0000:
     goto L_03ad;
 
 L_000f:
-    hwndMineCB = CreateWindow(szButton, PszGetCompressedString(idsDetonateMineFieldYear), 0x40000003, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
+    hwndMineCB =
+        CreateWindow(szButton, PszGetCompressedString(idsDetonateMineFieldYear), BS_AUTOCHECKBOX | WS_CHILD, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndMineCB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     SetMineralTitleBar(hwnd);
     goto L_03f8;
@@ -31,7 +34,7 @@ L_0080:
         goto L_008a;
 
 L_008a:
-    MineClick(LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), message, wParam);
+    MineClick(LOWORD(lParam), HIWORD(lParam), message, wParam);
 
 L_00b6:
     goto L_03f8;
@@ -46,10 +49,14 @@ L_00e4:
     return (LRESULT)(hbrButtonFace);
 
 L_00fd:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_0104 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_0104));
+    pt = PointTo16(t_pt_0104);
+    t_pt_0113_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_0113_1));
+    pt = PointTo16(t_pt_0113_1);
     GetClientRect(hwnd, &(rc));
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto Default;
     else
         goto L_0141;
@@ -243,8 +250,8 @@ L_04e1:
     InvalidateRect(hwndMine, &(rcPop), 1);
     dyRow = ((int32_t)((((rc.bottom - rc.top) - (dyArial8 * 4)) - 2)) / 6);
     dyRow = ((dyRow + 0x1) & 0xfffe);
-    rc.top = (rc.top + (((LOWORD((0x5 * dyArial8)) >> 0x1) + LOWORD((0x3 * dyRow))) + 0x1));
-    rc.bottom = (LOWORD((3 * dyRow)) + rc.top);
+    rc.top = (rc.top + ((((0x5 * dyArial8) >> 0x1) + (0x3 * dyRow)) + 0x1));
+    rc.bottom = ((3 * dyRow) + rc.top);
     InvalidateRect(hwndMine, &(rc), 0);
     return;
 }
@@ -361,7 +368,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     COLORREF   crBkSav;
     COLORREF   crTextSav;
     int16_t    dBest;
-    POINT      pt;
+    POINT16    pt;
     int16_t    iT;
     int32_t    rglT[3];
     int16_t    ifl;
@@ -891,7 +898,7 @@ L_16a2:
     TextOut(hdc, xLeft, yTop, szT, strlen(szT));
 
 L_1763:
-    yTop = (yTop + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yTop = (yTop + ((int32_t)((3 * dyArial8)) / 2));
     xLeft = (xLeft + LOWORD(GetTextExtent(hdc, rgszMinerals[2], strlen(rgszMinerals[2]))));
     i = 0;
     goto L_1843;
@@ -930,7 +937,7 @@ L_1869:
     cch = CchGetString(idsDD5, szT);
     c = _wsprintf(szWork, szT, lpth->pt.x, lpth->pt.y);
     TextOut(hdc, xLeft, yTop, szWork, c);
-    yTop = (yTop + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yTop = (yTop + ((int32_t)((3 * dyArial8)) / 2));
     c = CchGetString(idsDestination2, szWork);
     RightTextOut(hdc, (xLeft - 4), yTop, szWork, c, 0);
     if ((((0x1 << idPlayer) & lpth->thw.grbitPlrTrav) == 0x0))
@@ -955,7 +962,7 @@ L_19f8:
 
 L_1a0b:
     TextOut(hdc, xLeft, yTop, szWork, c);
-    yTop = (yTop + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yTop = (yTop + ((int32_t)((3 * dyArial8)) / 2));
     c = CchGetString(idsStability, szWork);
     RightTextOut(hdc, (xLeft - 4), yTop, szWork, c, 0);
     c = CchGetString((PctWormholeMoves(lpth) + 967), szWork);
@@ -1024,7 +1031,7 @@ L_1d89:
     t_merge_1d8c_0001 = 0x0;
 
 L_1d8c:
-    pctDecay = (int32_t)((LOWORD(((LOWORD((t_merge_1d8c_0001 * 0x3)) + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines))) + 0x2));
+    pctDecay = (int32_t)(((((t_merge_1d8c_0001 * 0x3) + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines)) + 0x2));
     if ((pctDecay <= 50))
         goto L_1df1;
     else
@@ -1411,13 +1418,13 @@ L_27c7:
     yCur = (yCur + dyArial8);
     hbrSav = SelectObject(hdc, hbrButtonShadow);
     PatBlt(hdc, xL, yCur, (xR - xL), 1, PATCOPY);
-    PatBlt(hdc, (xL + 1), (yCur + 1), ((xR - xL) - 2), (LOWORD((3 * dyRow)) - 1), BLACKNESS);
+    PatBlt(hdc, (xL + 1), (yCur + 1), ((xR - xL) - 2), ((3 * dyRow) - 1), BLACKNESS);
     PatBlt(hdc, xL, yCur, 1, (3 * dyRow), PATCOPY);
     PatBlt(hdc, (xL + 2), (yCur + dyRow), ((xR - xL) - 4), 1, PATCOPY);
     PatBlt(hdc, (xL + 2), ((dyRow * 2) + yCur), ((xR - xL) - 4), 1, PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
     PatBlt(hdc, (xR - 1), (yCur + 1), 1, (3 * dyRow), PATCOPY);
-    PatBlt(hdc, xL, (LOWORD((3 * dyRow)) + yCur), (xR - xL), 1, PATCOPY);
+    PatBlt(hdc, xL, ((3 * dyRow) + yCur), (xR - xL), 1, PATCOPY);
     SetTextColor(hdc, crButtonText);
     SetBkMode(hdc, TRANSPARENT);
     fCanTerraform = FCanTerraformLppl(&(pl), rgMin, rgMax, rgCost, 1);
@@ -1587,11 +1594,11 @@ L_2e1a:
     yCur = (yCur + (dyArial8 >> 0x1));
     SelectObject(hdc, hbrButtonShadow);
     PatBlt(hdc, xL, yCur, (xR - xL), 1, PATCOPY);
-    PatBlt(hdc, (xL + 1), (yCur + 1), ((xR - xL) - 2), (LOWORD((3 * dyRow)) + 1), BLACKNESS);
-    PatBlt(hdc, xL, yCur, 1, (LOWORD((3 * dyRow)) + 2), PATCOPY);
+    PatBlt(hdc, (xL + 1), (yCur + 1), ((xR - xL) - 2), ((3 * dyRow) + 1), BLACKNESS);
+    PatBlt(hdc, xL, yCur, 1, ((3 * dyRow) + 2), PATCOPY);
     SelectObject(hdc, hbrButtonHilite);
-    PatBlt(hdc, (xR - 1), (yCur + 1), 1, (LOWORD((3 * dyRow)) + 2), PATCOPY);
-    PatBlt(hdc, xL, ((LOWORD((3 * dyRow)) + yCur) + 2), (xR - xL), 1, PATCOPY);
+    PatBlt(hdc, (xR - 1), (yCur + 1), 1, ((3 * dyRow) + 2), PATCOPY);
+    PatBlt(hdc, xL, (((3 * dyRow) + yCur) + 2), (xR - xL), 1, PATCOPY);
     SelectObject(hdc, rghfontArial7[0]);
     c = _wsprintf(szWork, PCTD, cMinGrafMax);
     dxNum = LOWORD(GetTextExtent(hdc, szWork, c));
@@ -1604,7 +1611,7 @@ L_2e1a:
         goto L_2f9b;
 
 L_2f9b:
-    dNum = LOWORD((((int32_t)((dNum + 49)) / 50) * 0xa));
+    dNum = (((int32_t)((dNum + 49)) / 50) * 0xa);
     goto L_305a;
 
 L_2fb4:
@@ -1614,7 +1621,7 @@ L_2fb4:
         goto L_2fbf;
 
 L_2fbf:
-    dNum = LOWORD((((int32_t)((dNum + 49)) / 50) * 0x32));
+    dNum = (((int32_t)((dNum + 49)) / 50) * 0x32);
     goto L_305a;
 
 L_2fd8:
@@ -1624,7 +1631,7 @@ L_2fd8:
         goto L_2fe3;
 
 L_2fe3:
-    dNum = LOWORD((((int32_t)((dNum + 99)) / 100) * 0x64));
+    dNum = (((int32_t)((dNum + 99)) / 100) * 0x64);
     goto L_305a;
 
 L_2ffc:
@@ -1634,7 +1641,7 @@ L_2ffc:
         goto L_3007;
 
 L_3007:
-    dNum = LOWORD((((int32_t)((dNum + 249)) / 250) * 0xfa));
+    dNum = (((int32_t)((dNum + 249)) / 250) * 0xfa);
     goto L_305a;
 
 L_3020:
@@ -1644,23 +1651,23 @@ L_3020:
         goto L_302b;
 
 L_302b:
-    dNum = LOWORD((((int32_t)((dNum + 499)) / 500) * 0x1f4));
+    dNum = (((int32_t)((dNum + 499)) / 500) * 0x1f4);
     goto L_305a;
 
 L_3044:
-    dNum = LOWORD((((int32_t)((dNum + 999)) / 1000) * 0x3e8));
+    dNum = (((int32_t)((dNum + 999)) / 1000) * 0x3e8);
 
 L_305a:
     cNum = ((int32_t)(cMinGrafMax) / dNum);
     SetTextColor(hdc, crButtonText);
-    dy = ((LOWORD((3 * dyRow)) + yCur) + 4);
+    dy = (((3 * dyRow) + yCur) + 4);
     i = 0;
     goto L_3131;
 
 L_3090:
     xBeg = (LOWORD((int32_t)(((uint32_t)(((uint32_t)(((int32_t)(i) * (int32_t)(dNum))) * (int32_t)(dxBar))) / (int32_t)(cMinGrafMax)))) + xL);
-    PatBlt(hdc, xBeg, (yCur + 2), 1, (LOWORD((3 * dyRow)) - 1), PATCOPY);
-    c = _wsprintf(szWork, PCTD, LOWORD((i * dNum)));
+    PatBlt(hdc, xBeg, (yCur + 2), 1, ((3 * dyRow) - 1), PATCOPY);
+    c = _wsprintf(szWork, PCTD, (i * dNum));
     CtrTextOut(hdc, xBeg, dy, szWork, c);
     i = (i + 1);
 
@@ -2204,7 +2211,7 @@ L_3a75:
         goto L_3a80;
 
 L_3a80:
-    if ((x <= ((int32_t)(LOWORD((3 * rc.right))) / 0x5)))
+    if ((x <= ((int32_t)((3 * rc.right)) / 0x5)))
         goto L_3ab5;
     else
         goto L_3a94;
@@ -2245,7 +2252,7 @@ L_3ae0:
     return htMineNone;
 
 L_3ae6:
-    if ((y >= (LOWORD((3 * dyRow)) + yCur)))
+    if ((y >= ((3 * dyRow) + yCur)))
         goto L_3b07;
     else
         goto L_3af7;
@@ -2254,8 +2261,8 @@ L_3af7:
     return (((int32_t)((y - yCur)) / dyRow) + 0x6);
 
 L_3b07:
-    yCur = (yCur + ((LOWORD((0x3 * dyRow)) + (dyArial8 >> 0x1)) + 0x1));
-    if ((y >= (LOWORD((3 * dyRow)) + yCur)))
+    yCur = (yCur + (((0x3 * dyRow) + (dyArial8 >> 0x1)) + 0x1));
+    if ((y >= ((3 * dyRow) + yCur)))
         goto L_3b41;
     else
         goto L_3b31;
@@ -3253,7 +3260,7 @@ L_4a68:
     hdcMem = CreateCompatibleDC(hdc);
     hbmpSav = SelectObject(hdcMem, hbmpScanner);
     xCtr = (((int32_t)((prc->right - prc->left)) / 2) + prc->left);
-    BitBlt(hdc, (xCtr - 5), ((((prc->bottom - prc->top) >> 0x1) + prc->top) + 0xfffb), 11, 12, hdcMem, 35, 57, SRCAND);
+    BitBlt(hdc, (xCtr - 5), ((((prc->bottom - prc->top) >> 0x1) + prc->top) - 0x5), 11, 12, hdcMem, 35, 57, SRCAND);
     if ((fEnabled == 0))
         goto L_4b22;
     else
@@ -3280,7 +3287,7 @@ L_4b35:
     t_merge_4b38_0001 = 45;
 
 L_4b38:
-    BitBlt(hdc, (xCtr - 5), ((((prc->bottom - prc->top) >> 0x1) + prc->top) + 0xfffb), 11, 12, hdcMem, t_merge_4b25_0001, t_merge_4b38_0001, SRCPAINT);
+    BitBlt(hdc, (xCtr - 5), ((((prc->bottom - prc->top) >> 0x1) + prc->top) - 0x5), 11, 12, hdcMem, t_merge_4b25_0001, t_merge_4b38_0001, SRCPAINT);
     SelectObject(hdcMem, hbmpSav);
     DeleteDC(hdcMem);
     return;
@@ -3533,7 +3540,10 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
     int16_t  idNew;
     int16_t  iChecked;
     SCAN     scan;
+    int16_t  t_4fc8;
     uint16_t t_merge_5017_0001;
+    int16_t  t_5075;
+    int16_t  t_50dd;
     int32_t *t_assign_1;
     int32_t *t_assign_2;
     uint16_t t_merge_520d_0001;
@@ -3612,8 +3622,9 @@ L_4fb3:
     iChecked = c;
 
 L_4fba:
+    t_4fc8 = c;
     c = (c + 1);
-    rgid[c] = ((int32_t)(lpfl->id) | 0x80000000);
+    rgid[t_4fc8] = ((int32_t)(lpfl->id) | 0x80000000);
     if ((c < 100))
         goto L_4f22;
     else
@@ -3672,8 +3683,9 @@ L_506c:
         goto L_5075;
 
 L_5075:
+    t_5075 = c;
     c = (c + 1);
-    rgid[c] = -1;
+    rgid[t_5075] = -1;
     fSep = 1;
 
 L_5094:
@@ -3692,10 +3704,11 @@ L_50c6:
     iChecked = c;
 
 L_50cd:
+    t_50dd = c;
     c = (c + 1);
-    t_assign_1 = &(rgid[c]);
+    t_assign_1 = &(rgid[t_50dd]);
     *(t_assign_1) = (int32_t)((((uint32_t)(*(t_assign_1)) & 0xffff0000) | ((uint32_t)(lpth->idFull) & 0xffff)));
-    t_assign_2 = &(rgid[c]);
+    t_assign_2 = &(rgid[t_50dd]);
     *(t_assign_2) = (int32_t)((((uint32_t)(*(t_assign_2)) & 0xffff) | (((uint32_t)(0x2000) & 0xffff) << 0x10)));
 
 L_50f3:

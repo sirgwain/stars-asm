@@ -90,7 +90,7 @@ L_13fa:
     goto L_1510
 
 L_142c:
-    branch (loword((uint32_t)(lParam >> 0x10)) & 0xffff) != 0x6 ? L_1510 : L_1448
+    branch hiword(lParam) != 0x6 ? L_1510 : L_1448
 
 L_1448:
     call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)

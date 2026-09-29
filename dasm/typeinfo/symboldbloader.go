@@ -231,6 +231,11 @@ func Load(inputDir string, db *nb09.NB09DB) (*SymbolDB, error) {
 		return nil, err
 	}
 
+	// split POINT before overrides resolve Windows signatures by name
+	if err := loader.splitWin16Point(); err != nil {
+		return nil, err
+	}
+
 	// load overrides.json and apply them to the symboldb
 	if err := loader.applyOverrides(inputDir); err != nil {
 		return nil, err
@@ -269,6 +274,71 @@ func Load(inputDir string, db *nb09.NB09DB) (*SymbolDB, error) {
 	})
 
 	return sdb, nil
+}
+
+// splitWin16Point separates the POINT Stars declares from the POINT Windows
+// declares. Win16 POINT held 16-bit ints and Stars stores points in the
+// records it writes to disk, so its points become POINT16, which keeps that
+// layout natively. Windows signatures and Windows structs such as MSG keep a
+// separate POINT, the native one, so points convert where they cross into
+// Win32. Both have the Win16 layout for analysis.
+func (l *symboldbLoader) splitWin16Point() error {
+	win16 := l.sdb.structsByName["tagpoint"]
+	if win16 == nil {
+		return fmt.Errorf("split POINT: debug info has no tagPOINT")
+	}
+	native := &Struct{
+		Name:    win16.Name,
+		Typedef: "POINT",
+		SKind:   win16.SKind,
+		Size:    win16.Size,
+		Fields:  slices.Clone(win16.Fields),
+	}
+	native.FinalizeLayout()
+	win16.Name = "tagPOINT16"
+	win16.Typedef = "POINT16"
+
+	for _, s := range []*Struct{native, win16} {
+		l.sdb.structsByName[strings.ToLower(s.Name)] = s
+		l.sdb.structsByName[strings.ToLower(s.Typedef)] = s
+		l.typeResolver.registerNamedType(s.Name, s)
+		l.typeResolver.registerNamedType(s.Typedef, s)
+	}
+	for _, s := range l.sdb.Structs {
+		if s == win16 || !s.IsExternalWindowsStruct() {
+			continue
+		}
+		changed := false
+		for i := range s.Fields {
+			if typ, ok := replaceStructType(s.Fields[i].Type, win16, native); ok {
+				s.Fields[i].Type = typ
+				changed = true
+			}
+		}
+		if changed {
+			s.FinalizeLayout()
+		}
+	}
+	l.sdb.Structs = append(l.sdb.Structs, native)
+	return nil
+}
+
+// replaceStructType returns typ with struct from, or an array of it,
+// replaced by to.
+func replaceStructType(typ Type, from, to *Struct) (Type, bool) {
+	switch t := typ.(type) {
+	case *Struct:
+		if t == from {
+			return to, true
+		}
+	case *Array:
+		if elem, ok := replaceStructType(t.Elem, from, to); ok {
+			next := *t
+			next.Elem = elem
+			return &next, true
+		}
+	}
+	return nil, false
 }
 
 // loadUnions loads typed union discriminator rules.
@@ -958,6 +1028,11 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 
 			if rule.Kind == UseCallResult && len(rule.WhenArgs) == 0 {
 				f.Ret = EnumWithStorageSize(typ, f.Ret)
+				continue
+			}
+
+			if rule.Kind == UseParam && len(rule.WhenArgs) != 0 {
+				// resolved per call from the call's arguments
 				continue
 			}
 

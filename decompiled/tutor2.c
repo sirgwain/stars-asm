@@ -899,6 +899,7 @@ int16_t CchTutorString(char *pchOut, int16_t idt) {
     uint8_t *pch;
     uint16_t t_merge_5ad9_0001;
     int16_t  t_5ae7;
+    uint8_t *t_5b19;
     uint16_t t_merge_5b3e_0001;
 
 L_5a14:
@@ -972,8 +973,9 @@ L_5aff:
     goto L_5b2c;
 
 L_5b16:
+    t_5b19 = pch;
     pch = (pch + 1);
-    i = (*(pch) & 0xf);
+    i = (*(t_5b19) & 0xf);
 
 L_5b2c:
     if ((fHigh != 0))

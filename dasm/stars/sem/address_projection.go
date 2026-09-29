@@ -237,6 +237,16 @@ func (c *machineConverter) semanticResolvedAddress(addr resolvedAddress) (Addres
 		if !ok {
 			return AddressExpr{}, false
 		}
+		// Keep the evaluated pointer when its storage has since changed.
+		// Split far-pointer offsets refer to the low word of that capture.
+		if load, ok := unwrapAddressWord(addr.baseValue).(*machine.Load); ok && c.staleLoad(load) {
+			if captured := c.tempByLoad[load.ID]; captured != nil {
+				base = captured
+				if word, ok := base.(*Word); ok && word.Part == machine.WordLow && typeinfo.IsPointer(word.Parent.ExprType()) {
+					base = word.Parent
+				}
+			}
+		}
 	} else if addr.baseValue != nil {
 		base = c.convertValue(addr.baseValue)
 	}

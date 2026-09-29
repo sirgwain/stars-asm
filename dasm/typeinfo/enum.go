@@ -96,7 +96,8 @@ type EnumUseRule struct {
 	// Which enum to use
 	EnumName string
 
-	// Call-result constraints (UseCallResult)
+	// Call-site constraints (UseParam / UseCallResult). A param rule with
+	// constraints types the argument per call instead of the parameter.
 	WhenArgs []ArgConstraint
 }
 
@@ -123,10 +124,14 @@ func (r *DependentEnumRule) AppliesToType(typ Type) bool {
 	return typeLookupName(strct) == typeLookupName(r.Type)
 }
 
-// ArgConstraint requires a named call argument to have a specific constant value.
+// ArgConstraint requires a named call argument to be a specific value: the
+// global named Global, the C string literal String, or otherwise the
+// integer constant Value.
 type ArgConstraint struct {
 	ParamName string
 	Value     int
+	Global    string
+	String    string
 }
 
 // MessageEnumName is the enum naming window message identifiers. Message

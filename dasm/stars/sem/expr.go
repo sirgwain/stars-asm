@@ -81,7 +81,23 @@ const (
 	CompareLE
 	CompareGT
 	CompareGE
+	CompareULT
+	CompareULE
+	CompareUGT
+	CompareUGE
 )
+
+// Unsigned reports whether op is an unsigned relational comparison, from a
+// JB, JBE, JA or JAE branch.
+func (op CompareOp) Unsigned() bool {
+	return op >= CompareULT && op <= CompareUGE
+}
+
+// Signed reports whether op is a signed relational comparison, from a JL,
+// JLE, JG, JGE, JS or JNS branch.
+func (op CompareOp) Signed() bool {
+	return op >= CompareLT && op <= CompareGE
+}
 
 // Func is a semantic function body produced from machine effects.
 type Func struct {
@@ -227,6 +243,19 @@ func (*FloatConst) expr() {}
 
 // ExprType returns the floating-point constant type.
 func (v *FloatConst) ExprType() typeinfo.Type { return v.TypeInfo }
+
+// SizeOf is the native C size of Type. It replaces a constant that encoded
+// the Win16 size of a type whose native layout is larger, so the native
+// compiler supplies the size instead.
+type SizeOf struct {
+	Type typeinfo.Type
+}
+
+// expr marks SizeOf as an expression.
+func (*SizeOf) expr() {}
+
+// ExprType returns the unsigned word type the Win16 constant had.
+func (v *SizeOf) ExprType() typeinfo.Type { return typeinfo.U16 }
 
 // Unary is a semantic unary expression.
 type Unary struct {

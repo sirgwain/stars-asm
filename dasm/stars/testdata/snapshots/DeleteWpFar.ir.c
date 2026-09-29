@@ -39,7 +39,7 @@ L_9ec7:
     ord = lpfl->lpplord->rgord[iDel];
 
 L_9ef2:
-    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), (((lpfl->cord - iDel) - 1) * 18));
+    fmemmove(&(lpfl->lpplord->rgord[iDel]), &(lpfl->lpplord->rgord[(iDel + 1)]), (((lpfl->cord - iDel) - 1) * sizeof(ORDER)));
     if ((fRecycle == 0))
         goto L_9fca;
     else

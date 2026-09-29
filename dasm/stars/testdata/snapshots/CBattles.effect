@@ -1,0 +1,123 @@
+/*
+CBattles  (vcr)
+  addr: 001e:028c  len=213
+  sig:  int16_t CBattles()
+  locals:
+    int16_t          cBattles       [BP-0xc]
+    HB *             lphb           [BP-0xa]
+    BTLDATA *        lpbd           [BP-0x6]
+
+  stats: blocks=0  labels=0
+*/
+block L_028c:
+  insts 0..11  off 0x028c..0x02ac
+  succs: L_02b0, L_02bf
+  effects:
+    0295  store[2] [bp-cBattles] = 0x0
+    02a1  store[2] [bp-lphb] = load([rglphb+0x2c])
+    02a4  store[2] [bp-lphb+0x2] = load([rglphb+0x2e])
+    02ab  branch load([bp-lphb]) != 0x0 ? L_02bf : L_02b0
+
+block L_02b0:
+  insts 13..14  off 0x02b0..0x02b5
+  preds: L_028c
+  succs: L_02b9, L_02bf
+  effects:
+    02b4  branch load([bp-lphb+0x2]) != 0x0 ? L_02bf : L_02b9
+
+block L_02b9:
+  insts 16..17  off 0x02b9..0x02be
+  preds: L_02b0
+  succs: L_035b
+  effects:
+    02bc  goto L_035b
+
+block L_02bf:
+  insts 18..23  off 0x02bf..0x02d2
+  preds: L_028c, L_02b0
+  succs: L_02d3
+  effects:
+    02ca  store[2] [bp-lpbd] = (load([bp-lphb]) + 0x12)
+    02cd  store[2] [bp-lpbd+0x2] = load([bp-lphb+0x2])
+
+block L_02d3:
+  insts 25..27  off 0x02d3..0x02db
+  preds: L_02bf, L_0315, L_0358
+  succs: L_02df, L_0329
+  effects:
+    02da  branch load(farseg(load(dword [bp-lpbd])):[faroff(load(dword [bp-lpbd]))]) != 0xffff ? L_0329 : L_02df
+
+block L_02df:
+  insts 29..35  off 0x02df..0x02f5
+  preds: L_02d3
+  succs: L_02f9, L_0302
+  effects:
+    02ea  store[2] [bp-lphb] = load(farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x8])
+    02ed  store[2] [bp-lphb+0x2] = load(farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0xa])
+    02f4  branch load([bp-lphb]) != 0x0 ? L_0302 : L_02f9
+
+block L_02f9:
+  insts 37..38  off 0x02f9..0x02fe
+  preds: L_02df
+  succs: L_0302, L_030f
+  effects:
+    02fd  branch load([bp-lphb+0x2]) == 0x0 ? L_030f : L_0302
+
+block L_0302:
+  insts 40..42  off 0x0302..0x030b
+  preds: L_02df, L_02f9
+  succs: L_030f, L_0315
+  effects:
+    030a  branch load(farseg(load(dword [bp-lphb])):[faroff(load(dword [bp-lphb]))+0x6]) > 0x10 ? L_0315 : L_030f
+
+block L_030f:
+  insts 44..45  off 0x030f..0x0314
+  preds: L_02f9, L_0302
+  succs: L_035b
+  effects:
+    0312  goto L_035b
+
+block L_0315:
+  insts 46..52  off 0x0315..0x0328
+  preds: L_0302
+  succs: L_02d3
+  effects:
+    0320  store[2] [bp-lpbd] = (load([bp-lphb]) + 0x12)
+    0323  store[2] [bp-lpbd+0x2] = load([bp-lphb+0x2])
+    0326  goto L_02d3
+
+block L_0329:
+  insts 53..55  off 0x0329..0x0332
+  preds: L_02d3
+  succs: L_0336, L_033f
+  effects:
+    0331  branch load(farseg(load(dword [bp-lpbd])):[faroff(load(dword [bp-lpbd]))+0x6]) != 0x0 ? L_033f : L_0336
+
+block L_0336:
+  insts 57..58  off 0x0336..0x033b
+  preds: L_0329
+  succs: L_035b
+  effects:
+    0339  goto L_035b
+
+block L_033f:
+  insts 59..66  off 0x033f..0x0357
+  preds: L_0329
+  succs: L_0358
+  effects:
+    034e  store[2] [bp-lpbd] = (load([bp-lpbd]) + load(farseg(load(dword [bp-lpbd])):[faroff(load(dword [bp-lpbd]))+0x6]))
+    0351  store[2] [bp-lpbd+0x2] = load([bp-lpbd+0x2])
+    0354  store[2] [bp-cBattles] = (load([bp-cBattles]) + 0x1)
+
+block L_0358:
+  insts 67..67  off 0x0358..0x035a
+  preds: L_033f
+  succs: L_02d3
+  effects:
+    0358  goto L_02d3
+
+block L_035b:
+  insts 68..72  off 0x035b..0x0360
+  preds: L_02b9, L_030f, L_0336
+  effects:
+    0360  return merge(Join: L_035b, (L_02b9:0x0, L_030f:load([bp-0xc]), L_0336:load([bp-0xc])))

@@ -18,6 +18,7 @@ type SymbolDB struct {
 
 	WindowClasses   []*WindowClass
 	WindowRules     []*WindowRule
+	SentMessages    []*SentMessage
 	MessageHandlers []*MessageHandler
 
 	EnumRules          []*EnumUseRule

@@ -20,10 +20,12 @@ type win16DefinesJSON struct {
 
 // win16FamilyJSON is one named family of Win16 constants. Kind "flags"
 // renders combined values as A|B, choosing members greedily in listed order.
+// Include appends the members of families listed earlier, after Members.
 type win16FamilyJSON struct {
 	Name    string   `json:"name"`
 	Kind    string   `json:"kind"`
 	Members []string `json:"members"`
+	Include []string `json:"include"`
 }
 
 // reDefine matches an object-like #define; function-like macros have no
@@ -55,6 +57,7 @@ func (l *enumLoader) loadWin16Defines(inputDir string) ([]*Enum, error) {
 	values := win16DefineValues{defines: defines, resolved: make(map[string]int)}
 
 	enums := make([]*Enum, 0, len(cfg.Families))
+	byName := make(map[string]*Enum, len(cfg.Families))
 	for _, family := range cfg.Families {
 		e := &Enum{Name: family.Name, EnumKind: EnumExact}
 		switch family.Kind {
@@ -78,8 +81,16 @@ func (l *enumLoader) loadWin16Defines(inputDir string) ([]*Enum, error) {
 			}
 			e.Values = append(e.Values, EnumValue{Name: name, Value: v})
 		}
+		for _, include := range family.Include {
+			included, ok := byName[include]
+			if !ok {
+				return nil, fmt.Errorf("win16 family %s: include %s is not an earlier family", family.Name, include)
+			}
+			e.Values = append(e.Values, included.Values...)
+		}
 		e.Storage = UintForWidth(e.Bytes())
 		enums = append(enums, e)
+		byName[e.Name] = e
 	}
 	return enums, nil
 }

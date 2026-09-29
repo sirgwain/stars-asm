@@ -16,7 +16,7 @@ L_0014:
     return 0x0;
 
 L_001d:
-    memset(&(thNew), 0, 0x12);
+    memset(&(thNew), 0, sizeof(THING));
     thNew.iplr = iplr;
     thNew.ith = ith;
     lpth = lpThings;
@@ -96,11 +96,11 @@ L_0152:
         goto L_016b;
 
 L_016b:
-    lpThings = LpAlloc((cThingAlloc * 18), htThings);
+    lpThings = LpAlloc((cThingAlloc * sizeof(THING)), htThings);
     goto L_01ae;
 
 L_018a:
-    lpThings = LpReAlloc(lpThings, (cThingAlloc * 18), htThings);
+    lpThings = LpReAlloc(lpThings, (cThingAlloc * sizeof(THING)), htThings);
 
 L_01ae:
     lpth = (lpThings + i);
@@ -112,11 +112,11 @@ L_01c4:
         goto L_01cf;
 
 L_01cf:
-    fmemmove((lpth + 1), lpth, ((cThing - i) * 18));
+    fmemmove((lpth + 1), lpth, ((cThing - i) * sizeof(THING)));
 
 L_01f6:
     cThing = (cThing + 1);
-    fmemcpy(lpth, &(thNew), 0x12);
+    fmemcpy(lpth, &(thNew), sizeof(THING));
     return lpth;
 }
 
@@ -128,25 +128,25 @@ L_0224:
         goto L_024b;
 
 L_024b:
-    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 0x12)) + 0xffff) * 0x12));
+    fmemmove(lpth, (lpth + 1), (((cThing - ((int32_t)(((uint8_t *)(lpth) - (uint8_t *)(lpThings))) / 0x12)) - 0x1) * sizeof(THING)));
 
 L_0294:
     cThing = (cThing - 1);
     return;
 }
 
-int16_t CPlanetsInCircle(POINT pt, int32_t r2) {
-    int16_t xStart;
-    POINT  *ppt;
-    int16_t yEnd;
-    int16_t dy;
-    POINT  *pptEnd;
-    int16_t yStart;
-    int16_t i;
-    int16_t r;
-    int16_t cPl;
-    int16_t dx;
-    int16_t xEnd;
+int16_t CPlanetsInCircle(POINT16 pt, int32_t r2) {
+    int16_t  xStart;
+    POINT16 *ppt;
+    int16_t  yEnd;
+    int16_t  dy;
+    POINT16 *pptEnd;
+    int16_t  yStart;
+    int16_t  i;
+    int16_t  r;
+    int16_t  cPl;
+    int16_t  dx;
+    int16_t  xEnd;
 
 L_02a0:
     r = LOWORD((int32_t)((sqrt((double)(r2)) + 0.9999)));
@@ -362,7 +362,7 @@ L_063a:
 
 int16_t IValidateWormholePos(THING *lpthWorm) {
     int16_t iRet;
-    POINT   pt;
+    POINT16 pt;
     int32_t dy;
     THING  *lpthMac;
     FLEET  *lpfl;
@@ -375,7 +375,7 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
 
 L_064c:
     iRet = 0;
-    dUni = (LOWORD((400 * game.mdSize)) + 1400);
+    dUni = ((400 * game.mdSize) + 1400);
     pt = lpthWorm->pt;
     if ((pt.x < 1000))
         goto L_068c;
@@ -744,7 +744,7 @@ void DoThingInteractions(int16_t fPostMove) {
     uint16_t  grbitPlrTrader;
     int16_t   iplr;
     int32_t   wtMin;
-    POINT     pt;
+    POINT16   pt;
     int16_t   iplrSav;
     uint8_t   rgTech[6];
     int32_t   wtNext;
@@ -1530,7 +1530,7 @@ L_19bb:
 
 L_19be:
     cPlrTrueMaxTech = t_merge_19be_0001;
-    if ((iLvl >= (LOWORD((6 * cPlrTrueMaxTech)) + 0xfffa)))
+    if ((iLvl >= ((6 * cPlrTrueMaxTech) - 0x6)))
         goto L_1a6b;
     else
         goto L_19d2;

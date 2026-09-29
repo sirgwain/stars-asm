@@ -71,6 +71,9 @@ func sameExpr(a, b Expr) bool {
 	case *Const:
 		bv, ok := b.(*Const)
 		return ok && av.U64 == bv.U64
+	case *SizeOf:
+		bv, ok := b.(*SizeOf)
+		return ok && typeinfo.Equals(av.Type, bv.Type)
 	case *Register:
 		bv, ok := b.(*Register)
 		return ok && av.Val == bv.Val

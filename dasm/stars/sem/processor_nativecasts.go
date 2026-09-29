@@ -143,7 +143,7 @@ func (p *nativeCastsProcessor) rewriter() *semRewriter {
 				if e.Value == nil || p.ctx.fs.Ret == nil {
 					break
 				}
-				if value := nativeReturnCast(e.Value, p.ctx.fs.Ret); value != e.Value {
+				if value := nativeReturnCast(e.Value, p.ctx.fs); value != e.Value {
 					cast := *e
 					cast.Value = value
 					return &cast, true, true

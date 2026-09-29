@@ -174,7 +174,7 @@ L_0279:
     return 1;
 
 L_02a1:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_0366;
     else
         goto L_02bd;
@@ -318,7 +318,7 @@ L_058b:
         goto L_05ae;
 
 L_05ae:
-    fPara = (_ctype[((int16_t)(rgch[0]) + 0x1)] & 0x1);
+    fPara = isupper((int16_t)(rgch[0]));
     if ((fPara == 0))
         goto L_05e8;
     else
@@ -399,7 +399,7 @@ L_06b4:
         goto L_06d0;
 
 L_06d0:
-    memset(&(tutor), 0, 0x2c);
+    memset(&(tutor), 0, sizeof(TUTOR));
     if ((lpfnTutorDlgProc != 0x0))
         goto L_0748;
     else
@@ -755,7 +755,7 @@ L_0c5a:
     tutor.fFreeing = 0x1;
 
 L_0c66:
-    memset(&(tutor), 0, 0x2c);
+    memset(&(tutor), 0, sizeof(TUTOR));
     Randomize2(GetTickCount());
 
 L_0c89:

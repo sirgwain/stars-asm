@@ -1153,6 +1153,7 @@ char *PszGetCompressedString(StringId ids) {
     int16_t  fHigh;
     uint16_t t_merge_74f8_0001;
     int16_t  t_7505;
+    uint8_t *t_7537;
     uint16_t t_merge_755c_0001;
 
 L_743a:
@@ -1226,8 +1227,9 @@ L_751d:
     goto L_754a;
 
 L_7534:
+    t_7537 = pch;
     pch = (pch + 1);
-    i = (*(pch) & 0xf);
+    i = (*(t_7537) & 0xf);
 
 L_754a:
     if ((fHigh != 0))

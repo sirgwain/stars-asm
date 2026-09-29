@@ -1,12 +1,12 @@
 #include "common.h"
 
-char    vrgTBBtn[29] = "";
+char    vrgTBBtn[29] = {0, 1, 2, 3, 4, 5, -1, 6, -1, 7, -2, -3, -1, 8, -1, 9, -1, 11, 17, -1, 10, -1, 12, 13, -1, 14, 15, -1, 16};
 int16_t vrgpctZoom[9] = {25, 38, 50, 75, 100, 125, 150, 200, 400};
 
 LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     int16_t     fInside;
-    POINT       pt;
+    POINT16     pt;
     StringId    ids;
     int16_t     itb;
     PAINTSTRUCT ps;
@@ -15,7 +15,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t     fDown;
     int16_t     iSel;
     int16_t     dx;
-    POINT       ptBtn;
+    POINT16     ptBtn;
     int16_t     j;
     int16_t     x;
     RECT        rc;
@@ -23,6 +23,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t     pct;
     int16_t     t_merge_02d6_0001;
     int16_t     t_merge_03b9_0001;
+    POINT       t_pt_045f_2;
 
 L_001e:
     goto L_068b;
@@ -47,15 +48,15 @@ L_005d:
         goto L_0066;
 
 L_0066:
-    hwndTBRadar =
-        CreateWindow("COMBOBOX", 0x0, 0x50200042, x, (((int32_t)(((28 - dyArial8) - 8)) / 2) + 4), dx, (LOWORD((11 * dyArial8)) + 28), hwnd, 0x0, hInst, 0x0);
+    hwndTBRadar = CreateWindow("COMBOBOX", 0x0, CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_CHILD | WS_VISIBLE | WS_VSCROLL, x,
+                               (((int32_t)(((28 - dyArial8) - 8)) / 2) + 4), dx, ((11 * dyArial8) + 28), hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndTBRadar, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     iSel = -1;
     j = 0;
     goto L_0137;
 
 L_00e3:
-    pct = (100 - LOWORD((10 * j)));
+    pct = (100 - (10 * j));
     if ((pct != vpctRadarView))
         goto L_0102;
     else
@@ -108,7 +109,7 @@ L_0217:
 L_021d:
     ShowTooltip(0xffff, 0x0);
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     ptBtn = pt;
     itb = ItbFromPpt(&(ptBtn));
     if ((itb < 0))
@@ -193,7 +194,7 @@ L_0341:
         goto L_0355;
 
 L_0355:
-    fInside = PtInRect(&(rc), pt);
+    fInside = PtInRect(&(rc), PointFrom16(pt));
     if ((fCur == fInside))
         goto L_0341;
     else
@@ -250,14 +251,16 @@ L_0414:
 
 L_0422:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     if ((hwnd == hwndTb))
         goto L_0464;
     else
         goto L_044d;
 
 L_044d:
-    MapWindowPoints(hwnd, hwndTb, &(pt), 0x1);
+    t_pt_045f_2 = PointFrom16(pt);
+    MapWindowPoints(hwnd, hwndTb, &(t_pt_045f_2), 0x1);
+    pt = PointTo16(t_pt_045f_2);
 
 L_0464:
     if ((pt.x != vptTbLast.x))
@@ -425,7 +428,7 @@ L_06de:
 }
 
 void DrawToolbar(HDC hdc, RECT *prc) {
-    POINT   pt;
+    POINT16 pt;
     int16_t i;
     int16_t ibtn;
 
@@ -468,7 +471,7 @@ L_0786:
     return;
 }
 
-void DrawBitmapButton(HDC hdc, POINT pt, int16_t ibtn, int16_t fDown) {
+void DrawBitmapButton(HDC hdc, POINT16 pt, int16_t ibtn, int16_t fDown) {
     int16_t  dx;
     HBRUSH   hbrBotRight;
     HBRUSH   hbrTopLeft;
@@ -558,7 +561,7 @@ L_0b0c:
     return;
 }
 
-int16_t ItbFromPpt(POINT *ppt) {
+int16_t ItbFromPpt(POINT16 *ppt) {
     int16_t i;
     int16_t dx;
     int16_t x;
@@ -839,7 +842,7 @@ L_0d59:
     return 0;
 
 L_0d62:
-    if ((itb > 17))
+    if (((uint16_t)(itb) > 17))
         goto L_0d97;
     else
         goto L_0d6a;
@@ -890,7 +893,7 @@ L_0d97:
 
 void ExecuteButton(int16_t itb, int16_t fDown) {
     uint16_t grbitNew;
-    POINT    pt;
+    POINT16  pt;
     char    *rgszScan[12];
     int16_t  c;
     int16_t  i;
@@ -901,10 +904,28 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
     int16_t  ish;
     uint16_t t_merge_0e93_0001;
     uint16_t t_merge_0ebc_0001;
+    int16_t  t_0ef9;
+    int16_t  t_0f36;
     uint16_t t_merge_0f6f_0001;
+    int16_t  t_0fa6;
+    POINT    t_pt_0fca;
+    POINT    t_pt_0fda_1;
+    int16_t  t_10c5;
+    int16_t  t_1103;
     uint16_t t_merge_1176_0001;
+    int16_t  t_1198;
+    POINT    t_pt_11b2;
+    POINT    t_pt_11c2_1;
+    int16_t  t_134d;
+    int16_t  t_138a;
     uint16_t t_merge_13c3_0001;
+    int16_t  t_13fa;
+    POINT    t_pt_141e;
+    POINT    t_pt_142e_1;
     uint16_t t_merge_153f_0001;
+    int16_t  t_1589;
+    POINT    t_pt_15ad;
+    POINT    t_pt_15bd_1;
 
 L_0db6:
     gd.fChgScanner = 0x1;
@@ -1023,8 +1044,9 @@ L_0ebc:
 
 L_0ecd:
     CchGetString(i, &(szWork[(((i - 1278) * 30) + 160)]));
+    t_0ef9 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(((i - 1278) * 30) + 160)]);
+    rgszScan[t_0ef9] = &(szWork[(((i - 1278) * 30) + 160)]);
     i = (i + 1);
 
 L_0f0d:
@@ -1037,8 +1059,9 @@ L_0f17:
     rgid[c] = 0;
     szWork[250] = -1;
     szWork[251] = 0;
+    t_0f36 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[250]);
+    rgszScan[t_0f36] = &(szWork[250]);
     i = 0;
     goto L_0fba;
 
@@ -1058,8 +1081,9 @@ L_0f6b:
 L_0f6f:
     rgid[c] = (uint32_t)(t_merge_0f6f_0001);
     CchGetString((i + 1280), &(szWork[(i * 30)]));
+    t_0fa6 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 30)]);
+    rgszScan[t_0fa6] = &(szWork[(i * 30)]);
     i = (i + 1);
 
 L_0fba:
@@ -1069,8 +1093,12 @@ L_0fba:
         goto L_0fc3;
 
 L_0fc3:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_0fca = PointFrom16(pt);
+    GetCursorPos(&(t_pt_0fca));
+    pt = PointTo16(t_pt_0fca);
+    t_pt_0fda_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_0fda_1));
+    pt = PointTo16(t_pt_0fda_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -1128,8 +1156,9 @@ L_1076:
 L_1083:
     rgid[c] = 0;
     CchGetString(i, &(szWork[((i - 1275) * 20)]));
+    t_10c5 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[((i - 1275) * 20)]);
+    rgszScan[t_10c5] = &(szWork[((i - 1275) * 20)]);
     i = (i + 1);
 
 L_10d9:
@@ -1142,8 +1171,9 @@ L_10e3:
     rgid[c] = 0;
     szWork[200] = -1;
     szWork[201] = 0;
+    t_1103 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[200]);
+    rgszScan[t_1103] = &(szWork[200]);
     ish = 0;
     grbitSh = 0x1;
     goto L_1135;
@@ -1179,15 +1209,20 @@ L_1172:
 
 L_1176:
     rgid[c] = (uint32_t)(t_merge_1176_0001);
+    t_1198 = c;
     c = (c + 1);
-    rgszScan[c] = rgshdef[ish].hul.szClass;
+    rgszScan[t_1198] = rgshdef[ish].hul.szClass;
 
 L_11a8:
     goto L_1125;
 
 L_11ab:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_11b2 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_11b2));
+    pt = PointTo16(t_pt_11b2);
+    t_pt_11c2_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_11c2_1));
+    pt = PointTo16(t_pt_11c2_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -1300,8 +1335,9 @@ L_12fa:
 L_130c:
     rgid[c] = 0;
     CchGetString(i, &(szWork[(((i - 1275) * 25) + 200)]));
+    t_134d = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(((i - 1275) * 25) + 200)]);
+    rgszScan[t_134d] = &(szWork[(((i - 1275) * 25) + 200)]);
     i = (i + 1);
 
 L_1361:
@@ -1314,8 +1350,9 @@ L_136b:
     rgid[c] = 0;
     szWork[300] = -1;
     szWork[301] = 0;
+    t_138a = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[300]);
+    rgszScan[t_138a] = &(szWork[300]);
     i = 0;
     goto L_140e;
 
@@ -1335,8 +1372,9 @@ L_13bf:
 L_13c3:
     rgid[c] = (uint32_t)(t_merge_13c3_0001);
     CchGetString((i + 381), &(szWork[(i * 25)]));
+    t_13fa = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 25)]);
+    rgszScan[t_13fa] = &(szWork[(i * 25)]);
     i = (i + 1);
 
 L_140e:
@@ -1346,8 +1384,12 @@ L_140e:
         goto L_1417;
 
 L_1417:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_141e = PointFrom16(pt);
+    GetCursorPos(&(t_pt_141e));
+    pt = PointTo16(t_pt_141e);
+    t_pt_142e_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_142e_1));
+    pt = PointTo16(t_pt_142e_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -1446,8 +1488,9 @@ L_153b:
 L_153f:
     rgid[c] = (uint32_t)(t_merge_153f_0001);
     _wsprintf(&(szWork[(i * 8)]), PCTDPCTPCT, vrgpctZoom[i]);
+    t_1589 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 8)]);
+    rgszScan[t_1589] = &(szWork[(i * 8)]);
     i = (i + 1);
 
 L_159d:
@@ -1457,8 +1500,12 @@ L_159d:
         goto L_15a6;
 
 L_15a6:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_15ad = PointFrom16(pt);
+    GetCursorPos(&(t_pt_15ad));
+    pt = PointTo16(t_pt_15ad);
+    t_pt_15bd_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_15bd_1));
+    pt = PointTo16(t_pt_15bd_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -1470,7 +1517,7 @@ L_15f6:
     goto L_167a;
 
 L_160f:
-    if ((itb > 17))
+    if (((uint16_t)(itb) > 17))
         goto L_167a;
     else
         goto L_1617;
@@ -1566,7 +1613,7 @@ L_16ca:
         goto L_16d8;
 
 L_16d8:
-    pct = (LOWORD((10 * pct)) + ((int16_t)(*(psz)) - 48));
+    pct = ((10 * pct) + ((int16_t)(*(psz)) - 48));
     psz = (psz + 1);
     goto L_16bc;
 
@@ -1765,11 +1812,15 @@ L_19dd:
 
 LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
-    POINT       pt;
+    POINT16     pt;
     PAINTSTRUCT ps;
     RECT        rc;
     int16_t     bkSav;
     int16_t     cch;
+    POINT       t_pt_1ace;
+    POINT       t_pt_1afb_1;
+    POINT       t_pt_1b28_1;
+    POINT       t_pt_1bc2;
 
 L_19e4:
     goto L_1d08;
@@ -1851,14 +1902,18 @@ L_1aab:
 
 L_1abb:
     vtickTooltip1stVis = GetTickCount();
-    GetCursorPos(&(pt));
-    if ((PtInRect(&(vrcTooltip), pt) == 0))
+    t_pt_1ace = PointFrom16(pt);
+    GetCursorPos(&(t_pt_1ace));
+    pt = PointTo16(t_pt_1ace);
+    if ((PtInRect(&(vrcTooltip), PointFrom16(pt)) == 0))
         goto LKillTip;
     else
         goto L_1af0;
 
 L_1af0:
-    ScreenToClient(hwndFrame, &(pt));
+    t_pt_1afb_1 = PointFrom16(pt);
+    ScreenToClient(hwndFrame, &(t_pt_1afb_1));
+    pt = PointTo16(t_pt_1afb_1);
     if (((pt.x + dxTip) <= vfs.dx))
         goto L_1b1d;
     else
@@ -1868,9 +1923,10 @@ L_1b10:
     pt.x = ((vfs.dx - dxTip) - 5);
 
 L_1b1d:
-    ClientToScreen(hwndFrame, &(pt));
-    SetWindowPos(hwnd, (HWND)(-1), pt.x, (((int32_t)(LOWORD((3 * dyArial8))) / 2) + pt.y), 0, 0,
-                 SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
+    t_pt_1b28_1 = PointFrom16(pt);
+    ClientToScreen(hwndFrame, &(t_pt_1b28_1));
+    pt = PointTo16(t_pt_1b28_1);
+    SetWindowPos(hwnd, (HWND)(-1), pt.x, (((int32_t)((3 * dyArial8)) / 2) + pt.y), 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
     UpdateWindow(hwnd);
     if ((vidTimerTooltip == -1))
         goto L_1b77;
@@ -1898,8 +1954,10 @@ L_1ba6:
 
 L_1baf:
     vtickTooltipLast = GetTickCount();
-    GetCursorPos(&(pt));
-    if ((PtInRect(&(vrcTooltip), pt) == 0))
+    t_pt_1bc2 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_1bc2));
+    pt = PointTo16(t_pt_1bc2);
+    if ((PtInRect(&(vrcTooltip), PointFrom16(pt)) == 0))
         goto LKillTip;
     else
         goto L_1be1;

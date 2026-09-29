@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <windows.h>
 
+#include <ctype.h>
 #include <math.h>
 #include <setjmp.h>
 #include <string.h>

@@ -246,6 +246,13 @@ wine stars.exe
 The generated program is still under reconstruction. A successful build does
 not establish that all game behavior works correctly under Wine.
 
+### Scaffold smoke tests
+
+Run `make newgame` to generate the tiny test game with the compiled executable
+under Wine. Fixtures and the runner live in [`tests/scaffold/`](tests/scaffold/README.md);
+generated game files and logs go to `dist/scaffold/`. See that directory’s README
+for prerequisites, custom fixtures, and the checks performed.
+
 ## Direction
 
 The project now produces C-like output through explicit-block IR and is moving

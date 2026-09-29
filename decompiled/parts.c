@@ -107,6 +107,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 2,
+                            .rgTech = {0, 3},
                             .szName = "X-Ray Laser",
                             .cMass = 1,
                             .resCost = 6,
@@ -118,6 +119,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 3,
+                            .rgTech = {0, 5},
                             .szName = "Mini Gun",
                             .cMass = 3,
                             .resCost = 10,
@@ -130,6 +132,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 4,
+                            .rgTech = {0, 6},
                             .szName = "Yakimora Light Phaser",
                             .cMass = 1,
                             .resCost = 7,
@@ -141,6 +144,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 5,
+                            .rgTech = {0, 7},
                             .szName = "Blackjack",
                             .cMass = 10,
                             .resCost = 7,
@@ -151,6 +155,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 6,
+                            .rgTech = {0, 8},
                             .szName = "Phaser Bazooka",
                             .cMass = 2,
                             .resCost = 11,
@@ -175,6 +180,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 8,
+                            .rgTech = {0, 10},
                             .szName = "Colloidal Phaser",
                             .cMass = 2,
                             .resCost = 18,
@@ -186,6 +192,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 9,
+                            .rgTech = {0, 11},
                             .szName = "Gatling Gun",
                             .cMass = 3,
                             .resCost = 13,
@@ -198,6 +205,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 10,
+                            .rgTech = {0, 12},
                             .szName = "Mini Blaster",
                             .cMass = 1,
                             .resCost = 9,
@@ -209,6 +217,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 11,
+                            .rgTech = {0, 13},
                             .szName = "Bludgeon",
                             .cMass = 10,
                             .resCost = 9,
@@ -219,6 +228,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 12,
+                            .rgTech = {0, 14},
                             .szName = "Mark IV Blaster",
                             .cMass = 2,
                             .resCost = 15,
@@ -243,6 +253,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 14,
+                            .rgTech = {0, 16},
                             .szName = "Heavy Blaster",
                             .cMass = 2,
                             .resCost = 25,
@@ -254,6 +265,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 15,
+                            .rgTech = {0, 17},
                             .szName = "Gatling Neutrino Cannon",
                             .cMass = 3,
                             .resCost = 17,
@@ -266,6 +278,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 16,
+                            .rgTech = {0, 18},
                             .szName = "Myopic Disruptor",
                             .cMass = 1,
                             .resCost = 12,
@@ -277,6 +290,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 17,
+                            .rgTech = {0, 19},
                             .szName = "Blunderbuss",
                             .cMass = 10,
                             .resCost = 13,
@@ -287,6 +301,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 18,
+                            .rgTech = {0, 20},
                             .szName = "Disruptor",
                             .cMass = 2,
                             .resCost = 20,
@@ -323,6 +338,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 21,
+                            .rgTech = {0, 22},
                             .szName = "Mega Disruptor",
                             .cMass = 2,
                             .resCost = 33,
@@ -334,6 +350,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 22,
+                            .rgTech = {0, 23},
                             .szName = "Big Mutha Cannon",
                             .cMass = 3,
                             .resCost = 23,
@@ -346,6 +363,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 23,
+                            .rgTech = {0, 24},
                             .szName = "Streaming Pulverizer",
                             .cMass = 1,
                             .resCost = 16,
@@ -357,6 +375,7 @@ BEAM      rgbeam[24] = {{
                    },
                         {
                             .id = 24,
+                            .rgTech = {0, 26},
                             .szName = "Anti-Matter Pulverizer",
                             .cMass = 2,
                             .resCost = 27,
@@ -376,6 +395,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 2,
+                               .rgTech = {0, 0, 0, 0, 1},
                                .szName = "Rhino Scanner",
                                .cMass = 5,
                                .resCost = 3,
@@ -385,6 +405,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 3,
+                               .rgTech = {0, 0, 0, 0, 4},
                                .szName = "Mole Scanner",
                                .cMass = 2,
                                .resCost = 9,
@@ -394,6 +415,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 4,
+                               .rgTech = {0, 0, 3, 0, 0, 6},
                                .szName = "DNA Scanner",
                                .cMass = 2,
                                .resCost = 5,
@@ -403,6 +425,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 5,
+                               .rgTech = {0, 0, 0, 0, 5},
                                .szName = "Possum Scanner",
                                .cMass = 3,
                                .resCost = 18,
@@ -466,6 +489,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 11,
+                               .rgTech = {0, 0, 5, 0, 0, 10},
                                .szName = "RNA Scanner",
                                .cMass = 2,
                                .resCost = 20,
@@ -506,7 +530,7 @@ SCANNER   rgscanner[16] = {{
                          },
                            {
                                .id = 15,
-                               .rgTech = "\n",
+                               .rgTech = {10, 0, 0, 0, 15, 10},
                                .szName = "Robber Baron Scanner",
                                .cMass = 20,
                                .resCost = 90,
@@ -550,6 +574,7 @@ HULDEF    rghuldefSB[5] = {{
                                .hul =
                                 {
                                        .ihuldef = ihuldefSpaceDock,
+                                       .rgTech = {0, 0, 0, 4},
                                        .szClass = "Space Dock",
                                        .resCost = 200,
                                        .rgwtOreCost = {40, 10, 50},
@@ -604,6 +629,7 @@ HULDEF    rghuldefSB[5] = {{
                                .hul =
                                 {
                                        .ihuldef = ihuldefUltraStation,
+                                       .rgTech = {0, 0, 0, 12},
                                        .szClass = "Ultra Station",
                                        .resCost = 1200,
                                        .rgwtOreCost = {240, 160, 600},
@@ -637,6 +663,7 @@ HULDEF    rghuldefSB[5] = {{
                                .hul =
                                 {
                                        .ihuldef = ihuldefDeathStart,
+                                       .rgTech = {0, 0, 0, 17},
                                        .szClass = "Death Star",
                                        .resCost = 1500,
                                        .rgwtOreCost = {240, 160, 700},
@@ -1091,6 +1118,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 3,
+                              .rgTech = {0, 0, 2},
                               .szName = "Fuel Mizer",
                               .cMass = 6,
                               .resCost = 11,
@@ -1101,6 +1129,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 4,
+                              .rgTech = {0, 0, 3},
                               .szName = "Long Hump 6",
                               .cMass = 9,
                               .resCost = 6,
@@ -1110,6 +1139,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 5,
+                              .rgTech = {0, 0, 5},
                               .szName = "Daddy Long Legs 7",
                               .cMass = 13,
                               .resCost = 12,
@@ -1119,6 +1149,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 6,
+                              .rgTech = {0, 0, 7},
                               .szName = "Alpha Drive 8",
                               .cMass = 17,
                               .resCost = 28,
@@ -1128,6 +1159,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 7,
+                              .rgTech = {0, 0, 9},
                               .szName = "Trans-Galactic Drive",
                               .cMass = 25,
                               .resCost = 50,
@@ -1137,6 +1169,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 8,
+                              .rgTech = {0, 0, 11},
                               .szName = "Interspace-10",
                               .cMass = 25,
                               .resCost = 60,
@@ -1158,6 +1191,7 @@ ENGINE    rgengine[16] = {{
                        },
                           {
                               .id = 10,
+                              .rgTech = {0, 0, 23},
                               .szName = "Trans-Star 10",
                               .cMass = 5,
                               .resCost = 10,
@@ -1248,6 +1282,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMediumFreighter,
+                                      .rgTech = {0, 0, 0, 3},
                                       .szClass = "Medium Freighter",
                                       .wtEmpty = 60,
                                       .resCost = 40,
@@ -1267,6 +1302,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefLargeFreighter,
+                                      .rgTech = {0, 0, 0, 8},
                                       .szClass = "Large Freighter",
                                       .wtEmpty = 125,
                                       .resCost = 100,
@@ -1286,6 +1322,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefSuperFreighter,
+                                      .rgTech = {0, 0, 0, 13},
                                       .szClass = "Super Freighter",
                                       .wtEmpty = 175,
                                       .resCost = 125,
@@ -1328,6 +1365,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefFrigate,
+                                      .rgTech = {0, 0, 0, 6},
                                       .szClass = "Frigate",
                                       .wtEmpty = 8,
                                       .resCost = 12,
@@ -1351,6 +1389,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefDestroyer,
+                                      .rgTech = {0, 0, 0, 3},
                                       .szClass = "Destroyer",
                                       .wtEmpty = 30,
                                       .resCost = 35,
@@ -1377,6 +1416,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefCruiser,
+                                      .rgTech = {0, 0, 0, 9},
                                       .szClass = "Cruiser",
                                       .wtEmpty = 90,
                                       .resCost = 85,
@@ -1403,6 +1443,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefBattleCruiser,
+                                      .rgTech = {0, 0, 0, 10},
                                       .szClass = "Battle Cruiser",
                                       .wtEmpty = 120,
                                       .resCost = 120,
@@ -1429,6 +1470,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefBattleship,
+                                      .rgTech = {0, 0, 0, 13},
                                       .szClass = "Battleship",
                                       .wtEmpty = 222,
                                       .resCost = 225,
@@ -1459,6 +1501,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefDreadnought,
+                                      .rgTech = {0, 0, 0, 16},
                                       .szClass = "Dreadnought",
                                       .wtEmpty = 250,
                                       .resCost = 275,
@@ -1491,6 +1534,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefPrivateer,
+                                      .rgTech = {0, 0, 0, 4},
                                       .szClass = "Privateer",
                                       .wtEmpty = 65,
                                       .resCost = 50,
@@ -1516,6 +1560,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefRogue,
+                                      .rgTech = {0, 0, 0, 8},
                                       .szClass = "Rogue",
                                       .wtEmpty = 75,
                                       .resCost = 60,
@@ -1545,6 +1590,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefGalleon,
+                                      .rgTech = {0, 0, 0, 11},
                                       .szClass = "Galleon",
                                       .wtEmpty = 125,
                                       .resCost = 105,
@@ -1609,6 +1655,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMiniBomber,
+                                      .rgTech = {0, 0, 0, 1},
                                       .szClass = "Mini Bomber",
                                       .wtEmpty = 28,
                                       .resCost = 35,
@@ -1628,6 +1675,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefB17Bomber,
+                                      .rgTech = {0, 0, 0, 6},
                                       .szClass = "B-17 Bomber",
                                       .wtEmpty = 69,
                                       .resCost = 150,
@@ -1650,6 +1698,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefStealthBomber,
+                                      .rgTech = {0, 0, 0, 8},
                                       .szClass = "Stealth Bomber",
                                       .wtEmpty = 70,
                                       .resCost = 175,
@@ -1673,6 +1722,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefB52Bomber,
+                                      .rgTech = {0, 0, 0, 15},
                                       .szClass = "B-52 Bomber",
                                       .wtEmpty = 110,
                                       .resCost = 280,
@@ -1716,6 +1766,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMiniMiner,
+                                      .rgTech = {0, 0, 0, 2},
                                       .szClass = "Mini-Miner",
                                       .wtEmpty = 80,
                                       .resCost = 50,
@@ -1737,6 +1788,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMiner,
+                                      .rgTech = {0, 0, 0, 6},
                                       .szClass = "Miner",
                                       .wtEmpty = 110,
                                       .resCost = 110,
@@ -1760,6 +1812,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMaxiMiner,
+                                      .rgTech = {0, 0, 0, 11},
                                       .szClass = "Maxi-Miner",
                                       .wtEmpty = 110,
                                       .resCost = 140,
@@ -1783,6 +1836,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefUltraMiner,
+                                      .rgTech = {0, 0, 0, 14},
                                       .szClass = "Ultra-Miner",
                                       .wtEmpty = 100,
                                       .resCost = 130,
@@ -1806,6 +1860,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefFuelTransport,
+                                      .rgTech = {0, 0, 0, 4},
                                       .szClass = "Fuel Transport",
                                       .wtEmpty = 12,
                                       .resCost = 50,
@@ -1824,6 +1879,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefSuperFuelXport,
+                                      .rgTech = {0, 0, 0, 7},
                                       .szClass = "Super-Fuel Xport",
                                       .wtEmpty = 111,
                                       .resCost = 70,
@@ -1863,6 +1919,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefSuperMineLayer,
+                                      .rgTech = {0, 0, 0, 15},
                                       .szClass = "Super Mine Layer",
                                       .wtEmpty = 30,
                                       .resCost = 30,
@@ -1886,6 +1943,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefNubian,
+                                      .rgTech = {0, 0, 0, 26},
                                       .szClass = "Nubian",
                                       .wtEmpty = 100,
                                       .resCost = 150,
@@ -1918,6 +1976,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMiniMorph,
+                                      .rgTech = {0, 0, 0, 8},
                                       .szClass = "Mini Morph",
                                       .wtEmpty = 70,
                                       .resCost = 100,
@@ -1945,6 +2004,7 @@ HULDEF    rghuldef[32] = {{
                               .hul =
                                {
                                       .ihuldef = ihuldefMetaMorph,
+                                      .rgTech = {0, 0, 0, 10},
                                       .szClass = "Meta Morph",
                                       .wtEmpty = 85,
                                       .resCost = 120,
@@ -1979,6 +2039,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 2,
+                             .rgTech = {0, 0, 0, 2, 1},
                              .szName = "Robo-Mini-Miner",
                              .cMass = 240,
                              .resCost = 100,
@@ -1988,6 +2049,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 3,
+                             .rgTech = {0, 0, 0, 4, 2},
                              .szName = "Robo-Miner",
                              .cMass = 240,
                              .resCost = 100,
@@ -1997,6 +2059,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 4,
+                             .rgTech = {0, 0, 0, 7, 4},
                              .szName = "Robo-Maxi-Miner",
                              .cMass = 240,
                              .resCost = 100,
@@ -2006,6 +2069,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 5,
+                             .rgTech = {0, 0, 0, 12, 6},
                              .szName = "Robo-Super-Miner",
                              .cMass = 240,
                              .resCost = 100,
@@ -2015,6 +2079,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 6,
+                             .rgTech = {0, 0, 0, 15, 8},
                              .szName = "Robo-Ultra-Miner",
                              .cMass = 80,
                              .resCost = 50,
@@ -2034,6 +2099,7 @@ MINING    rgmining[8] = {{
                       },
                          {
                              .id = 8,
+                             .rgTech = {0, 0, 0, 0, 0, 6},
                              .szName = "Orbital Adjuster",
                              .cMass = 80,
                              .resCost = 50,
@@ -2152,6 +2218,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 2,
+                            .rgTech = {0, 5, 1},
                             .szName = "Beta Torpedo",
                             .cMass = 25,
                             .resCost = 6,
@@ -2164,6 +2231,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 3,
+                            .rgTech = {0, 10, 2},
                             .szName = "Delta Torpedo",
                             .cMass = 25,
                             .resCost = 8,
@@ -2176,6 +2244,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 4,
+                            .rgTech = {0, 14, 3},
                             .szName = "Epsilon Torpedo",
                             .cMass = 25,
                             .resCost = 10,
@@ -2188,6 +2257,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 5,
+                            .rgTech = {0, 18, 4},
                             .szName = "Rho Torpedo",
                             .cMass = 25,
                             .resCost = 12,
@@ -2200,6 +2270,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 6,
+                            .rgTech = {0, 22, 5},
                             .szName = "Upsilon Torpedo",
                             .cMass = 25,
                             .resCost = 15,
@@ -2212,6 +2283,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 7,
+                            .rgTech = {0, 26, 6},
                             .szName = "Omega Torpedo",
                             .cMass = 25,
                             .resCost = 18,
@@ -2224,6 +2296,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 8,
+                            .rgTech = {0, 11, 12, 0, 0, 21},
                             .szName = "Anti Matter Torpedo",
                             .cMass = 8,
                             .resCost = 50,
@@ -2235,6 +2308,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 9,
+                            .rgTech = {0, 12, 6},
                             .szName = "Jihad Missile",
                             .cMass = 35,
                             .resCost = 13,
@@ -2246,6 +2320,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 10,
+                            .rgTech = {0, 16, 8},
                             .szName = "Juggernaut Missile",
                             .cMass = 35,
                             .resCost = 16,
@@ -2258,6 +2333,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 11,
+                            .rgTech = {0, 20, 10},
                             .szName = "Doomsday Missile",
                             .cMass = 35,
                             .resCost = 20,
@@ -2270,6 +2346,7 @@ TORP      rgtorp[12] = {{
                    },
                         {
                             .id = 12,
+                            .rgTech = {0, 24, 10},
                             .szName = "Armageddon Missile",
                             .cMass = 35,
                             .resCost = 24,
@@ -2289,6 +2366,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 2,
+                             .rgTech = {0, 0, 0, 0, 0, 3},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 53},
                              .resCost = 70,
                              .ibmp = 185,
@@ -2296,6 +2374,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 3,
+                             .rgTech = {0, 0, 0, 0, 0, 6},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 55},
                              .resCost = 70,
                              .ibmp = 186,
@@ -2303,6 +2382,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 4,
+                             .rgTech = {0, 0, 0, 0, 0, 9},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 48},
                              .resCost = 70,
                              .ibmp = 187,
@@ -2310,6 +2390,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 5,
+                             .rgTech = {0, 0, 0, 0, 0, 13},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 53},
                              .resCost = 70,
                              .ibmp = 188,
@@ -2317,6 +2398,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 6,
+                             .rgTech = {0, 0, 0, 0, 0, 17},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 50, 48},
                              .resCost = 70,
                              .ibmp = 180,
@@ -2324,6 +2406,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 7,
+                             .rgTech = {0, 0, 0, 0, 0, 22},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 50, 53},
                              .resCost = 70,
                              .ibmp = 172,
@@ -2331,6 +2414,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 8,
+                             .rgTech = {0, 0, 0, 0, 0, 25},
                              .szName = {84, 111, 116, 97, 108, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 51, 48},
                              .resCost = 70,
                              .ibmp = 164,
@@ -2338,6 +2422,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 9,
+                             .rgTech = {0, 0, 1, 0, 0, 1},
                              .szName = {71, 114, 97, 118, 105, 116, 121, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 51},
                              .resCost = 100,
                              .ibmp = 160,
@@ -2345,6 +2430,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 10,
+                             .rgTech = {0, 0, 5, 0, 0, 2},
                              .szName = {71, 114, 97, 118, 105, 116, 121, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 55},
                              .resCost = 100,
                              .ibmp = 161,
@@ -2352,6 +2438,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 11,
+                             .rgTech = {0, 0, 10, 0, 0, 3},
                              .szName = {71, 114, 97, 118, 105, 116, 121, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 49},
                              .resCost = 100,
                              .ibmp = 162,
@@ -2359,6 +2446,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 12,
+                             .rgTech = {0, 0, 16, 0, 0, 4},
                              .szName = {71, 114, 97, 118, 105, 116, 121, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 53},
                              .resCost = 100,
                              .ibmp = 163,
@@ -2382,7 +2470,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 15,
-                             .rgTech = "\n",
+                             .rgTech = {10, 0, 0, 0, 0, 3},
                              .szName = {84, 101, 109, 112, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 49},
                              .resCost = 100,
                              .ibmp = 170,
@@ -2398,6 +2486,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 17,
+                             .rgTech = {0, 1, 0, 0, 0, 1},
                              .szName = {82, 97, 100, 105, 97, 116, 105, 111, 110, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 51},
                              .resCost = 100,
                              .ibmp = 176,
@@ -2405,6 +2494,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 18,
+                             .rgTech = {0, 5, 0, 0, 0, 2},
                              .szName = {82, 97, 100, 105, 97, 116, 105, 111, 110, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 55},
                              .resCost = 100,
                              .ibmp = 177,
@@ -2412,6 +2502,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 19,
+                             .rgTech = {0, 10, 0, 0, 0, 3},
                              .szName = {82, 97, 100, 105, 97, 116, 105, 111, 110, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 49},
                              .resCost = 100,
                              .ibmp = 178,
@@ -2419,6 +2510,7 @@ TERRA     rgterra[20] = {{
                      },
                          {
                              .id = 20,
+                             .rgTech = {0, 16, 0, 0, 0, 4},
                              .szName = {82, 97, 100, 105, 97, 116, 105, 111, 110, 32, 84, 101, 114, 114, 97, 102, 111, 114, 109, 32, -79, 49, 53},
                              .resCost = 100,
                              .ibmp = 179,
@@ -2434,6 +2526,7 @@ PLANETARY rgplanetary[15] = {{
                              },
                              {
                                  .id = 2,
+                                 .rgTech = {0, 0, 0, 0, 1},
                                  .szName = "Viewer 90",
                                  .resCost = 100,
                                  .rgwtOreCost = {10, 10, 70},
@@ -2442,6 +2535,7 @@ PLANETARY rgplanetary[15] = {{
                              },
                              {
                                  .id = 3,
+                                 .rgTech = {0, 0, 0, 0, 3},
                                  .szName = "Scoper 150",
                                  .resCost = 100,
                                  .rgwtOreCost = {10, 10, 70},
@@ -2450,6 +2544,7 @@ PLANETARY rgplanetary[15] = {{
                              },
                              {
                                  .id = 4,
+                                 .rgTech = {0, 0, 0, 0, 6},
                                  .szName = "Scoper 220",
                                  .resCost = 100,
                                  .rgwtOreCost = {10, 10, 70},
@@ -2458,6 +2553,7 @@ PLANETARY rgplanetary[15] = {{
                              },
                              {
                                  .id = 5,
+                                 .rgTech = {0, 0, 0, 0, 8},
                                  .szName = "Scoper 280",
                                  .resCost = 100,
                                  .rgwtOreCost = {10, 10, 70},
@@ -2553,6 +2649,7 @@ PLANETARY rgplanetary[15] = {{
                              }};
 BOMB      rgbomb[15] = {{
                             .id = 1,
+                            .rgTech = {0, 2},
                             .szName = "Lady Finger Bomb",
                             .cMass = 40,
                             .resCost = 5,
@@ -2564,6 +2661,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 2,
+                            .rgTech = {0, 5},
                             .szName = "Black Cat Bomb",
                             .cMass = 45,
                             .resCost = 7,
@@ -2575,6 +2673,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 3,
+                            .rgTech = {0, 8},
                             .szName = "M-70 Bomb",
                             .cMass = 50,
                             .resCost = 9,
@@ -2586,6 +2685,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 4,
+                            .rgTech = {0, 11},
                             .szName = "M-80 Bomb",
                             .cMass = 55,
                             .resCost = 12,
@@ -2597,6 +2697,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 5,
+                            .rgTech = {0, 14},
                             .szName = "Cherry Bomb",
                             .cMass = 52,
                             .resCost = 11,
@@ -2608,6 +2709,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 6,
+                            .rgTech = {0, 5, 0, 0, 8},
                             .szName = "LBU-17 Bomb",
                             .cMass = 30,
                             .resCost = 7,
@@ -2619,6 +2721,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 7,
+                            .rgTech = {0, 10, 0, 0, 10},
                             .szName = "LBU-32 Bomb",
                             .cMass = 35,
                             .resCost = 10,
@@ -2630,6 +2733,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 8,
+                            .rgTech = {0, 15, 0, 0, 12},
                             .szName = "LBU-74 Bomb",
                             .cMass = 45,
                             .resCost = 14,
@@ -2641,6 +2745,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 9,
+                            .rgTech = {0, 12, 0, 0, 12, 12},
                             .szName = "Hush-a-Boom",
                             .cMass = 5,
                             .resCost = 5,
@@ -2652,6 +2757,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 10,
+                            .rgTech = {0, 10, 0, 0, 0, 12},
                             .szName = "Retro Bomb",
                             .cMass = 45,
                             .resCost = 50,
@@ -2661,6 +2767,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 11,
+                            .rgTech = {0, 5, 0, 0, 0, 7},
                             .szName = "Smart Bomb",
                             .cMass = 50,
                             .resCost = 27,
@@ -2671,6 +2778,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 12,
+                            .rgTech = {0, 10, 0, 0, 0, 10},
                             .szName = "Neutron Bomb",
                             .cMass = 57,
                             .resCost = 30,
@@ -2681,6 +2789,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 13,
+                            .rgTech = {0, 15, 0, 0, 0, 12},
                             .szName = "Enriched Neutron Bomb",
                             .cMass = 64,
                             .resCost = 25,
@@ -2691,6 +2800,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 14,
+                            .rgTech = {0, 22, 0, 0, 0, 15},
                             .szName = "Peerless Bomb",
                             .cMass = 55,
                             .resCost = 32,
@@ -2701,6 +2811,7 @@ BOMB      rgbomb[15] = {{
                    },
                         {
                             .id = 15,
+                            .rgTech = {0, 26, 0, 0, 0, 17},
                             .szName = "Annihilator Bomb",
                             .cMass = 50,
                             .resCost = 28,
@@ -2720,6 +2831,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 2,
+                             .rgTech = {0, 0, 0, 3},
                              .szName = "Crobmnium",
                              .cMass = 56,
                              .resCost = 13,
@@ -2729,6 +2841,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 3,
+                             .rgTech = {0, 0, 0, 0, 0, 4},
                              .szName = "Carbonic Armor",
                              .cMass = 25,
                              .resCost = 15,
@@ -2738,6 +2851,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 4,
+                             .rgTech = {0, 0, 0, 6},
                              .szName = "Strobnium",
                              .cMass = 54,
                              .resCost = 18,
@@ -2747,6 +2861,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 5,
+                             .rgTech = {0, 0, 0, 0, 0, 7},
                              .szName = "Organic Armor",
                              .cMass = 15,
                              .resCost = 20,
@@ -2756,6 +2871,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 6,
+                             .rgTech = {0, 0, 0, 9},
                              .szName = "Kelarium",
                              .cMass = 50,
                              .resCost = 25,
@@ -2775,6 +2891,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 8,
+                             .rgTech = {0, 0, 0, 10, 3},
                              .szName = "Depleted Neutronium",
                              .cMass = 50,
                              .resCost = 28,
@@ -2784,6 +2901,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 9,
+                             .rgTech = {0, 0, 0, 12},
                              .szName = "Neutronium",
                              .cMass = 45,
                              .resCost = 30,
@@ -2803,6 +2921,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 11,
+                             .rgTech = {0, 0, 0, 16},
                              .szName = "Valanium",
                              .cMass = 40,
                              .resCost = 50,
@@ -2812,6 +2931,7 @@ ARMOR     rgarmor[12] = {{
                      },
                          {
                              .id = 12,
+                             .rgTech = {0, 0, 0, 24},
                              .szName = "Superlatanium",
                              .cMass = 30,
                              .resCost = 100,
@@ -2821,6 +2941,7 @@ ARMOR     rgarmor[12] = {{
                      }};
 SPECIALSB rgspecialSB[16] = {{
                                  .id = 1,
+                                 .rgTech = {0, 0, 5, 5},
                                  .szName = "Stargate 100/250",
                                  .resCost = 400,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2830,6 +2951,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 2,
+                                 .rgTech = {0, 0, 6, 10},
                                  .szName = "Stargate any/300",
                                  .resCost = 500,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2839,6 +2961,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 3,
+                                 .rgTech = {0, 0, 11, 7},
                                  .szName = "Stargate 150/600",
                                  .resCost = 1000,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2848,6 +2971,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 4,
+                                 .rgTech = {0, 0, 9, 13},
                                  .szName = "Stargate 300/500",
                                  .resCost = 1200,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2857,6 +2981,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 5,
+                                 .rgTech = {0, 0, 16, 12},
                                  .szName = "Stargate 100/any",
                                  .resCost = 1400,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2866,6 +2991,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 6,
+                                 .rgTech = {0, 0, 12, 18},
                                  .szName = "Stargate any/800",
                                  .resCost = 1400,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2875,6 +3001,7 @@ SPECIALSB rgspecialSB[16] = {{
                              },
                              {
                                  .id = 7,
+                                 .rgTech = {0, 0, 19, 24},
                                  .szName = "Stargate any/any",
                                  .resCost = 1600,
                                  .rgwtOreCost = {100, 40, 40},
@@ -2983,6 +3110,7 @@ SPECIAL   rgspecialM[11] = {{
                           },
                             {
                                 .id = 3,
+                                .rgTech = {0, 0, 0, 3},
                                 .szName = "Cargo Pod",
                                 .cMass = 5,
                                 .resCost = 10,
@@ -3099,7 +3227,7 @@ SPECIAL   rgspecialE[17] = {{
                           },
                             {
                                 .id = 4,
-                                .rgTech = "\n",
+                                .rgTech = {10, 0, 0, 0, 12},
                                 .szName = "Ultra-Stealth Cloak",
                                 .cMass = 5,
                                 .resCost = 25,
@@ -3138,7 +3266,7 @@ SPECIAL   rgspecialE[17] = {{
                           },
                             {
                                 .id = 8,
-                                .rgTech = "\n",
+                                .rgTech = {10, 0, 0, 0, 19},
                                 .szName = "Battle Nexus",
                                 .cMass = 1,
                                 .resCost = 15,
@@ -3228,6 +3356,7 @@ SPECIAL   rgspecialE[17] = {{
                           },
                             {
                                 .id = 17,
+                                .rgTech = {0, 12, 0, 0, 0, 7},
                                 .szName = "Anti-matter Generator",
                                 .cMass = 10,
                                 .resCost = 10,
@@ -3286,7 +3415,7 @@ MINES     rgmines[10] = {{
                      },
                          {
                              .id = 6,
-                             .rgTech = "\t",
+                             .rgTech = {9, 0, 0, 0, 0, 5},
                              .szName = "Heavy Dispenser 110",
                              .cMass = 15,
                              .resCost = 70,
@@ -3306,6 +3435,7 @@ MINES     rgmines[10] = {{
                      },
                          {
                              .id = 8,
+                             .rgTech = {0, 0, 2, 0, 0, 2},
                              .szName = "Speed Trap 20",
                              .cMass = 100,
                              .resCost = 60,
@@ -3315,6 +3445,7 @@ MINES     rgmines[10] = {{
                      },
                          {
                              .id = 9,
+                             .rgTech = {0, 0, 3, 0, 0, 6},
                              .szName = "Speed Trap 30",
                              .cMass = 135,
                              .resCost = 72,
@@ -3324,6 +3455,7 @@ MINES     rgmines[10] = {{
                      },
                          {
                              .id = 10,
+                             .rgTech = {0, 0, 5, 0, 0, 11},
                              .szName = "Speed Trap 50",
                              .cMass = 140,
                              .resCost = 80,
@@ -4827,7 +4959,7 @@ L_6104:
         goto L_6118;
 
 L_6118:
-    ppart->hs.iItem = (ppart->hs.iItem + 0xffff);
+    ppart->hs.iItem = (ppart->hs.iItem - 0x1);
     goto L_60e0;
 
 L_6141:

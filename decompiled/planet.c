@@ -8,7 +8,7 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
     char              *psz;
     int32_t            lSel;
     RECT               rc;
-    POINT              pt;
+    POINT16            pt;
     HCURSOR            hcs;
     DRAWITEMSTRUCT    *lpdis;
     MEASUREITEMSTRUCT *lpmis;
@@ -19,6 +19,8 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
     uint16_t           t_merge_0062_0001;
     int16_t            t_merge_008a_0001;
     int16_t            t_merge_0543_0001;
+    POINT              t_pt_05b0;
+    POINT              t_pt_05c0_1;
 
 L_0000:
     goto L_0c91;
@@ -72,7 +74,8 @@ L_0087:
     t_merge_008a_0001 = 80;
 
 L_008a:
-    rghwndOrderDD[i] = CreateWindow(szCombobox, "OrdDD", (t_merge_0062_0001 | 0x40200003), 100, 100, 200, t_merge_008a_0001, hwnd, 0x0, hInst, 0x0);
+    rghwndOrderDD[i] = CreateWindow(szCombobox, "OrdDD", (t_merge_0062_0001 | CBS_DROPDOWNLIST | WS_CHILD | WS_VSCROLL), 100, 100, 200, t_merge_008a_0001, hwnd,
+                                    0x0, hInst, 0x0);
     SendMessage(rghwndOrderDD[i], WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
@@ -98,22 +101,28 @@ L_0112:
         goto L_011c;
 
 L_011c:
-    hwndOrderED = CreateWindow(szEdit, 0x0, 0x40800002, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
+    hwndOrderED = CreateWindow(szEdit, 0x0, ES_RIGHT | WS_CHILD | WS_BORDER, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndOrderED, EM_LIMITTEXT, 0x4, 0);
     SendMessage(hwndOrderED, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     lpfnRealEditProc = GetWindowLong(hwndOrderED, 0xfffc);
     SetWindowLong(hwndOrderED, 0xfffc, lpfnFakeEditProc);
-    hwndBattleDD = CreateWindow(szCombobox, "BattleDD", 0x40200003, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndBattleDD = CreateWindow(szCombobox, "BattleDD", CBS_DROPDOWNLIST | WS_CHILD | WS_VSCROLL, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndBattleDD, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
-    hwndShipDD = CreateWindow(szCombobox, "ShipDD", 0x40200213, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndShipDD = CreateWindow(szCombobox, "ShipDD", CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_CHILD | WS_VSCROLL, 100, 100, 200, 80, hwnd,
+                              0x0, hInst, 0x0);
     SendMessage(hwndShipDD, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     GetClientRect(hwndShipDD, &(rc));
     dyShipDD = rc.bottom;
-    hwndShipLB = CreateWindow(szListbox, "ShipLB", 0x40a01001, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndShipLB = CreateWindow(szListbox, "ShipLB", LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | WS_CHILD | WS_BORDER | WS_VSCROLL, 100, 100, 200,
+                              80, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndShipLB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
-    hwndFleetCompLB = CreateWindow(szListbox, "FleetCompLB", 0x40a00051, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndFleetCompLB =
+        CreateWindow(szListbox, "FleetCompLB", LBS_NOTIFY | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_BORDER | WS_VSCROLL, 100,
+                     100, 200, 80, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndFleetCompLB, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
-    hwndPlanetProdLB = CreateWindow(szListbox, "PlanetProdLB", 0x40a00051, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndPlanetProdLB =
+        CreateWindow(szListbox, "PlanetProdLB", LBS_NOTIFY | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_BORDER | WS_VSCROLL,
+                     100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndPlanetProdLB, WM_SETFONT, (WPARAM)(rghfontArial8[0]), 0);
     i = 0;
     goto L_0420;
@@ -131,7 +140,7 @@ L_0420:
         goto L_042a;
 
 L_042a:
-    hwndRepCB = CreateWindow(szButton, PszGetCompressedString(idsRepeatOrders), 0x40000003, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
+    hwndRepCB = CreateWindow(szButton, PszGetCompressedString(idsRepeatOrders), BS_AUTOCHECKBOX | WS_CHILD, 100, 100, 150, dyArial8, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndRepCB, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     goto L_0d04;
 
@@ -171,7 +180,7 @@ L_0540:
     t_merge_0543_0001 = 0;
 
 L_0543:
-    PlanetClick(LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, t_merge_0543_0001);
+    PlanetClick(LOWORD(lParam), HIWORD(lParam), wParam, t_merge_0543_0001);
     goto L_0d04;
 
 L_056f:
@@ -182,10 +191,14 @@ L_056f:
 
 L_05a2:
     hcs = 0x0;
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_05b0 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_05b0));
+    pt = PointTo16(t_pt_05b0);
+    t_pt_05c0_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_05c0_1));
+    pt = PointTo16(t_pt_05c0_1);
     GetClientRect(hwnd, &(rc));
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto Default;
     else
         goto L_05f2;
@@ -212,7 +225,7 @@ L_0646:
 
 L_065b:
     lpdis = (DRAWITEMSTRUCT *)(lParam);
-    if ((lpdis->itemID != 0xffff))
+    if ((lpdis->itemID != -1))
         goto L_068e;
     else
         goto L_0677;
@@ -901,7 +914,7 @@ int16_t FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle) {
 
 L_1086:
     bt = 112;
-    prc->left = (LOWORD((ptile->iCol * 0xc6)) + 4);
+    prc->left = ((ptile->iCol * 0xc6) + 4);
     prc->right = (prc->left + 190);
     prc->top = ptile->yTop;
     if ((ptile->fPopped == 0x0))
@@ -1033,7 +1046,7 @@ L_1357:
     xRight = (rc.right - 4);
     yTop = rc.top;
     dxRight = dxMaxMineralQuan;
-    SetRect(&(rgrcRef[6]), xLeft, yTop, xRight, (LOWORD((3 * dyArial8)) + yTop));
+    SetRect(&(rgrcRef[6]), xLeft, yTop, xRight, ((3 * dyArial8) + yTop));
     i = 0;
     goto L_147d;
 
@@ -1388,7 +1401,7 @@ L_1e7c:
 
 L_1eb3:
     SelectObject(hdc, rghfontArial8[0]);
-    SetRect(&(rgrcRef[10]), xLeft, yTop, xRight, (LOWORD((3 * dyArial8)) + yTop));
+    SetRect(&(rgrcRef[10]), xLeft, yTop, xRight, ((3 * dyArial8) + yTop));
     if ((GetRaceStat(&(rgplr[idPlayer]), rsMajorAdv) != raMacintosh))
         goto L_1f16;
     else
@@ -1562,6 +1575,7 @@ void DrawPlanetStarbase(HDC hdc, TILE *ptile, OBJ obj) {
     int32_t  l;
     RECT     rc;
     int16_t  t_280d;
+    int16_t  t_28d9;
     int16_t  t_merge_2ab6_0001;
 
 L_22cc:
@@ -1755,8 +1769,9 @@ L_28ab:
         goto L_28d9;
 
 L_28d9:
+    t_28d9 = c;
     c = (c + 1);
-    szWork[c] = 43;
+    szWork[t_28d9] = 43;
 
 L_28e5:
     goto L_290a;
@@ -1978,7 +1993,7 @@ L_2d47:
     t_merge_2d4a_0001 = 0x5;
 
 L_2d4a:
-    dyPlanetProdLB = LOWORD(((dyArial8 + 2) * t_merge_2d4a_0001));
+    dyPlanetProdLB = ((dyArial8 + 2) * t_merge_2d4a_0001);
     dyWrong = (dyPlanetProdLB - (rcT.bottom - rcT.top));
     if ((dxPlanetProdLB != (xRight - xLeft)))
         goto L_2d8d;
@@ -2388,7 +2403,7 @@ L_348c:
 
 DoBtns:
     dx = ((xRight - xLeft) - 95);
-    dy = (LOWORD((0x3 * dyArial8)) >> 0x1);
+    dy = ((0x3 * dyArial8) >> 0x1);
     xLeft = (xRight - dx);
     if ((ptile->fMinDraw != 0x0))
         goto L_3777;
@@ -3250,7 +3265,7 @@ void FillShipDD(int16_t idSkip) {
     int16_t  i;
     THING   *lpth;
     FLEET   *lpfl;
-    POINT    ptSel;
+    POINT16  ptSel;
     uint16_t t_merge_43c6_0001;
     uint16_t t_merge_448d_0001;
 
@@ -3672,7 +3687,7 @@ L_4892:
 
 void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
     int16_t  bt;
-    POINT    pt;
+    POINT16  pt;
     int16_t  ctile;
     int16_t  dy;
     RECT     rcTitle;
@@ -3685,7 +3700,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
     BTNT     btnt;
     HDC      hdc;
     TILE     tile;
-    POINT    ptNew;
+    POINT16  ptNew;
     int16_t  t_merge_49b6_0001;
     uint16_t t_merge_4b50_0001;
     uint16_t t_merge_4cf6_0001;
@@ -3717,7 +3732,7 @@ L_48cd:
 
 L_48dd:
     iCol = ((uint32_t)(x) / 198);
-    xRel = (x - LOWORD((iCol * 0xc6)));
+    xRel = (x - (iCol * 0xc6));
     if ((xRel < 4))
         goto L_5155;
     else
@@ -3790,9 +3805,9 @@ L_49f0:
     pt.y = y;
     rcTitle.top = prgtile[i].yTop;
     rcTitle.bottom = (((dyArial8 + 3) + rcTitle.top) + 1);
-    rcTitle.left = (LOWORD((iCol * 0xc6)) + 4);
+    rcTitle.left = ((iCol * 0xc6) + 4);
     rcTitle.right = (rcTitle.left + 191);
-    if ((PtInRect(&(rcTitle), pt) == 0))
+    if ((PtInRect(&(rcTitle), PointFrom16(pt)) == 0))
         goto L_502b;
     else
         goto L_4a51;
@@ -3807,7 +3822,7 @@ L_4a5a:
     rc = rcTitle;
     rc.top = (rc.top + 1);
     rc.left = (rc.right - 17);
-    if ((PtInRect(&(rc), pt) == 0))
+    if ((PtInRect(&(rc), PointFrom16(pt)) == 0))
         goto L_4bb8;
     else
         goto L_4a90;
@@ -4048,12 +4063,12 @@ L_4eba:
         goto L_4ee4;
 
 L_4ee4:
-    memmove((prgtile + (i + 1)), (prgtile + i), ((iCur - i) * 16));
+    memmove((prgtile + (i + 1)), (prgtile + i), ((iCur - i) * sizeof(TILE)));
     iCur = (iCur + 1);
     goto L_4f6a;
 
 L_4f27:
-    memmove((prgtile + iCur), (prgtile + (iCur + 1)), (((i - iCur) - 1) * 16));
+    memmove((prgtile + iCur), (prgtile + (iCur + 1)), (((i - iCur) - 1) * sizeof(TILE)));
     i = (i - 1);
 
 L_4f6a:
@@ -4165,7 +4180,7 @@ L_5155:
     return;
 }
 
-HCURSOR ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
+HCURSOR ClickInPlanetOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
     int16_t  i;
     int32_t  rglQuan[3];
     int16_t  iWarp;
@@ -4192,7 +4207,7 @@ L_517e:
     return 0x0;
 
 L_5187:
-    if ((PtInRect(&(rgrcRef[6]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[6]), PointFrom16(pt)) == 0))
         goto L_5260;
     else
         goto L_51a1;
@@ -4219,7 +4234,7 @@ L_51b0:
     goto L_5871;
 
 L_5260:
-    if ((PtInRect(&(rgrcRef[7]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[7]), PointFrom16(pt)) == 0))
         goto L_5362;
     else
         goto L_527a;
@@ -4271,7 +4286,7 @@ L_534d:
     goto L_5871;
 
 L_5362:
-    if ((PtInRect(&(rgrcRef[8]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[8]), PointFrom16(pt)) == 0))
         goto L_540c;
     else
         goto L_537c;
@@ -4304,7 +4319,7 @@ L_53f7:
     goto L_5871;
 
 L_540c:
-    if ((PtInRect(&(rgrcRef[9]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[9]), PointFrom16(pt)) == 0))
         goto L_5456;
     else
         goto L_5426;
@@ -4325,7 +4340,7 @@ L_5435:
     goto L_5871;
 
 L_5456:
-    if ((PtInRect(&(rgrcRef[10]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[10]), PointFrom16(pt)) == 0))
         goto L_54c9;
     else
         goto L_5470;
@@ -4355,7 +4370,7 @@ L_54a2:
     goto L_5871;
 
 L_54c9:
-    if ((PtInRect(&(rgrcRef[11]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[11]), PointFrom16(pt)) == 0))
         goto L_55ab;
     else
         goto L_54e3;
@@ -4406,7 +4421,7 @@ L_5596:
     goto L_5871;
 
 L_55ab:
-    if ((PtInRect(&(rgrcRef[13]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[13]), PointFrom16(pt)) == 0))
         goto L_567a;
     else
         goto L_55c5;
@@ -4444,7 +4459,7 @@ L_564d:
     goto L_5871;
 
 L_567a:
-    if ((PtInRect(&(rgrcRef[14]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[14]), PointFrom16(pt)) == 0))
         goto L_56fb;
     else
         goto L_5694;
@@ -4469,7 +4484,7 @@ L_56a3:
     goto L_5871;
 
 L_56fb:
-    if ((PtInRect(&(rgrcRef[16]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[16]), PointFrom16(pt)) == 0))
         goto L_5795;
     else
         goto L_5715;
@@ -4502,7 +4517,7 @@ L_5749:
     goto L_5871;
 
 L_5795:
-    if ((PtInRect(&(rgrcRef[15]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[15]), PointFrom16(pt)) == 0))
         goto L_57ca;
     else
         goto L_57af;
@@ -4512,7 +4527,7 @@ L_57af:
     goto L_5871;
 
 L_57ca:
-    if ((PtInRect(&(rgrcRef[17]), pt) == 0))
+    if ((PtInRect(&(rgrcRef[17]), PointFrom16(pt)) == 0))
         goto L_5871;
     else
         goto L_57e4;
@@ -4580,7 +4595,7 @@ L_58d4:
         goto L_58ed;
 
 L_58ed:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 2) * 2) * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + (((dyArial8 + 2) * 2) * iMul));
 
 L_590b:
     if ((rgtilePlanet[i].grbit != 4))
@@ -4589,7 +4604,7 @@ L_590b:
         goto L_5924;
 
 L_5924:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((((dyArial8 + 4) * 2) * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + (((dyArial8 + 4) * 2) * iMul));
 
 L_5942:
     if ((rgtilePlanet[i].grbit != 128))
@@ -4598,7 +4613,7 @@ L_5942:
         goto L_595c;
 
 L_595c:
-    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + LOWORD((10 * iMul)));
+    rgtilePlanet[i].dyFull = (rgtilePlanet[i].dyFull + (10 * iMul));
 
 L_5975:
     i = (i + 1);
@@ -4620,7 +4635,7 @@ L_598a:
         goto L_59a3;
 
 L_59a3:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 * 4) + 2) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + (((dyArial8 * 4) + 2) * iMul));
 
 L_59c3:
     if ((rgtileShip[i].grbit != 512))
@@ -4629,7 +4644,7 @@ L_59c3:
         goto L_59dd;
 
 L_59dd:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((((dyArial8 + 2) * 2) + 4) + dyArial8) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + (((((dyArial8 + 2) * 2) + 4) + dyArial8) * iMul));
 
 L_5a02:
     if ((rgtileShip[i].grbit != 32))
@@ -4638,7 +4653,7 @@ L_5a02:
         goto L_5a1b;
 
 L_5a1b:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD(((dyArial8 + 9) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + ((dyArial8 + 9) * iMul));
 
 L_5a37:
     if ((rgtileShip[i].grbit != 4))
@@ -4647,7 +4662,7 @@ L_5a37:
         goto L_5a50;
 
 L_5a50:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((((dyArial8 + 4) * 2) * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + (((dyArial8 + 4) * 2) * iMul));
 
 L_5a6e:
     if ((rgtileShip[i].grbit != 128))
@@ -4656,7 +4671,7 @@ L_5a6e:
         goto L_5a88;
 
 L_5a88:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((10 * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + (10 * iMul));
 
 L_5aa1:
     if ((rgtileShip[i].grbit != 256))
@@ -4674,7 +4689,7 @@ L_5ad3:
         goto L_5aec;
 
 L_5aec:
-    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + LOWORD((6 * iMul)));
+    rgtileShip[i].dyFull = (rgtileShip[i].dyFull + (6 * iMul));
 
 L_5b05:
     i = (i + 1);
@@ -4830,7 +4845,7 @@ L_5c86:
 L_5c8f:
     GetClientRect(hwndPlanet, &(rc));
     rc.top = yTop;
-    rc.left = (LOWORD((198 * iCol)) + 4);
+    rc.left = ((198 * iCol) + 4);
     rc.right = (rc.left + 191);
     hdc = GetDC(hwndPlanet);
     FillRect(hdc, &(rc), hbrButtonFace);
@@ -4965,7 +4980,7 @@ L_5ef7:
     pctT = (-pctT);
 
 L_5eff:
-    rgpctBest[i] = (((int32_t)(LOWORD((100 * pctT))) / abs((iSave - iEnv))) + 1);
+    rgpctBest[i] = (((int32_t)((100 * pctT)) / abs((iSave - iEnv))) + 1);
     lppl->rgEnvVar[i] = LOBYTE(iSave);
 
 L_5f46:
@@ -5074,7 +5089,7 @@ L_607c:
     goto L_609d;
 
 L_608c:
-    iVal = (LOWORD(((d - 25) * 24)) + 200);
+    iVal = (((d - 25) * 24) + 200);
 
 L_609d:
     if ((iGravity >= 50))
@@ -5157,11 +5172,11 @@ L_619f:
         goto L_61af;
 
 L_61af:
-    t_merge_61b8_0001 = 0x40a;
+    t_merge_61b8_0001 = LB_GETTEXT;
     goto L_61b8;
 
 L_61b5:
-    t_merge_61b8_0001 = 0x408;
+    t_merge_61b8_0001 = CB_GETLBTEXT;
 
 L_61b8:
     SendMessage(lpdis->hwndItem, t_merge_61b8_0001, lpdis->itemID, (LPARAM)(szWork));
@@ -5189,6 +5204,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
     int16_t  cch;
     int16_t  bkSav;
     RECT     rc;
+    int16_t  t_6648;
 
 L_6208:
     fItalic = 0;
@@ -5404,7 +5420,7 @@ L_63e8:
 L_6403:
     rcDraw = rcIn;
     dx = (rcIn.right - rcIn.left);
-    dx = ((int32_t)(LOWORD((dx * pctDmg))) / 100);
+    dx = ((int32_t)((dx * pctDmg)) / 100);
     rcDraw.right = (rcDraw.left + dx);
     FillRect(hdc, &(rcDraw), hbrRed);
 
@@ -5546,8 +5562,9 @@ L_662c:
         goto L_6648;
 
 L_6648:
+    t_6648 = ich;
     ich = (ich + 1);
-    szT[ich] = 37;
+    szT[t_6648] = 37;
 
 LRightOut:
     RightTextOut(hdc, rcIn.right, rcIn.top, szT, ich, 0);
@@ -6076,7 +6093,7 @@ L_6ed7:
         goto L_6ee2;
 
 L_6ee2:
-    pctVar = LOWORD((abs((iPlanet - iPref)) * 100));
+    pctVar = (abs((iPlanet - iPref)) * 100);
     if ((iPlanet >= iPref))
         goto L_6f28;
     else

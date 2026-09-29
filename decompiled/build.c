@@ -9,7 +9,7 @@ HullSlotType rghstCat[14] = {hstWeapon, hstSpecialEM, hstArmor,  hstBeam,     hs
 StringId     rgidsCat[14] = {idsWeapons2,     idsDevices,  idsArmor3,   idsBeamWeapons, idsBombs,      idsEngines,   idsMineLayers,
                              idsMiningRobots, idsScanners, idsShields3, idsElectrical,  idsMechanical, idsTorpedoes, idsOrbital};
 
-int16_t ShipBuilder(POINT ptDlgSize) {
+int16_t ShipBuilder(POINT16 ptDlgSize) {
     FARPROC lpProcSlot;
     int16_t fSuccess;
 
@@ -21,7 +21,7 @@ L_008c:
         goto L_00b5;
 
 L_00b5:
-    ptslotGlob.y = (ptslotGlob.y + LOWORD((3 * dyArial8)));
+    ptslotGlob.y = (ptslotGlob.y + (3 * dyArial8));
 
 L_00c0:
     fStarbaseMode = 0;
@@ -287,7 +287,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     DRAWITEMSTRUCT    *lpdis;
     MEASUREITEMSTRUCT *lpmis;
     int16_t            i;
-    POINT              pt;
+    POINT16            pt;
     int16_t            fProtoSB;
     int16_t            fProgress;
     PART               part;
@@ -295,6 +295,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     int16_t            j;
     HWND               t_scratch_m4e;
     HWND               t_scratch_m4e_2;
+    POINT              t_pt_0900;
+    POINT              t_pt_090f_1;
     int16_t            t_merge_0bdb_0001;
     uint16_t           t_merge_0c80_0001;
     int32_t            t_merge_0cc3_0001;
@@ -345,12 +347,12 @@ L_055f:
     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
     SetWindowPos(hwndItem, 0x0, (ptslotGlob.x - 264), 8, 240, 100, SWP_NOZORDER);
     FillBuildDD(hwndItem, mdBuild);
-    SetWindowPos(GetDlgItem(hwnd, IDOK), 0x0, (ptslotGlob.x - 226), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER | SWP_HIDEWINDOW);
-    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, (ptslotGlob.x - 148), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
-    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (ptslotGlob.x - 74), ((ptslotGlob.y - ((int32_t)(LOWORD((3 * dyArial8))) / 2)) - 6), 68,
-                 ((int32_t)(LOWORD((3 * dyArial8))) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDOK), 0x0, (ptslotGlob.x - 226), ((ptslotGlob.y - ((int32_t)((3 * dyArial8)) / 2)) - 6), 68, ((int32_t)((3 * dyArial8)) / 2),
+                 SWP_NOZORDER | SWP_HIDEWINDOW);
+    SetWindowPos(GetDlgItem(hwnd, IDCANCEL), 0x0, (ptslotGlob.x - 148), ((ptslotGlob.y - ((int32_t)((3 * dyArial8)) / 2)) - 6), 68,
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, IDC_HELP), 0x0, (ptslotGlob.x - 74), ((ptslotGlob.y - ((int32_t)((3 * dyArial8)) / 2)) - 6), 68,
+                 ((int32_t)((3 * dyArial8)) / 2), SWP_NOZORDER);
     SetDlgItemText(hwnd, IDCANCEL, PszGetCompressedString(idsDone));
     if ((gd.fTutorial == 0x0))
         goto L_07c4;
@@ -365,7 +367,7 @@ L_07c4:
 
 L_07ca:
     lpdis = (DRAWITEMSTRUCT *)(lParam);
-    if ((lpdis->itemID != 0xffff))
+    if ((lpdis->itemID != -1))
         goto L_07f8;
     else
         goto L_07e3;
@@ -453,15 +455,19 @@ L_08e0:
     return (INT_PTR)(hbrButtonFace);
 
 L_08f9:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
-    if ((PtInRect(rgrcBuildSpin, pt) != 0))
+    t_pt_0900 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_0900));
+    pt = PointTo16(t_pt_0900);
+    t_pt_090f_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_090f_1));
+    pt = PointTo16(t_pt_090f_1);
+    if ((PtInRect(rgrcBuildSpin, PointFrom16(pt)) != 0))
         goto L_0948;
     else
         goto L_092e;
 
 L_092e:
-    if ((PtInRect(&(rgrcBuildSpin[1]), pt) == 0))
+    if ((PtInRect(&(rgrcBuildSpin[1]), PointFrom16(pt)) == 0))
         goto L_2641;
     else
         goto L_0948;
@@ -532,7 +538,7 @@ L_0bd8:
     t_merge_0bdb_0001 = 0;
 
 L_0bdb:
-    return FTrackSlot(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, 0, t_merge_0bdb_0001);
+    return FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 0, t_merge_0bdb_0001);
 
 L_0c0e:
     if ((GET_WM_COMMAND_CMD(wParam, lParam) != 0x0))
@@ -710,7 +716,7 @@ L_0ed8:
 L_0ee2:
     fInEditUpdate = 1;
     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
-    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), WM_USER, 0x0, 0);
+    lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0x0, 0);
     if ((FStringFitsScreen(szWork, 160) != 0))
         goto L_0f69;
     else
@@ -1506,7 +1512,7 @@ L_1c91:
     lpshdef = &(rgshdef[i]);
 
 L_1ca4:
-    fmemset(lpshdef, 0, 0x93);
+    fmemset(lpshdef, 0, sizeof(SHDEF));
     t_call_1cbd = LphuldefFromId(j);
     lpshdef->hul = t_call_1cbd->hul;
     lpshdef->det = 0x7;
@@ -1657,7 +1663,7 @@ L_1fe4:
     ShowMainControls(hwnd, SW_HIDE);
     SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x080C), 0x0, 16, 32, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowPos(GetDlgItem(hwnd, IDC_COMBOBOX), 0x0, 16, 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
-    SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), 0x0, (ptslotGlob.x - 264), 8, 240, (LOWORD((3 * dyArial8)) >> 0x1), SWP_NOZORDER | SWP_SHOWWINDOW);
+    SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), 0x0, (ptslotGlob.x - 264), 8, 240, ((3 * dyArial8) >> 0x1), SWP_NOZORDER | SWP_SHOWWINDOW);
     SetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass);
     SendMessage(GetDlgItem(hwnd, IDC_EDITNAME), EM_LIMITTEXT, 0x1f, 0);
     if ((gd.fTutorial == 0x0))
@@ -2424,13 +2430,13 @@ L_3064:
 
 int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBox, int16_t fRightBtn) {
     HDC      hdc;
-    POINT    ptOld;
-    POINT    ptTileSize;
+    POINT16  ptOld;
+    POINT16  ptTileSize;
     int16_t  ibmpY;
-    POINT    pt;
+    POINT16  pt;
     int16_t  cSlot;
     int16_t  iSrc;
-    POINT    ptDNew;
+    POINT16  ptDNew;
     int16_t  ibmpX;
     HDC      hdcMem;
     int16_t  i;
@@ -2441,7 +2447,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     int16_t  ibmp;
     HBITMAP  hbmpOld;
     HDC      hdcMemFull;
-    POINT    ptD;
+    POINT16  ptD;
     int16_t  iSel;
     HBITMAP  hbmpSav;
     HS       hs;
@@ -2458,6 +2464,8 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     int16_t  xLeft;
     int16_t  dyStart;
     int16_t  dxStart;
+    POINT    t_pt_33dc_1;
+    POINT    t_pt_340f_1;
     uint16_t t_merge_3703_0001;
 
 L_306a:
@@ -2486,19 +2494,19 @@ L_30c4:
         goto L_30ce;
 
 L_30ce:
-    if ((PtInRect(rgrcBuildSpin, pt) != 0))
+    if ((PtInRect(rgrcBuildSpin, PointFrom16(pt)) != 0))
         goto L_3102;
     else
         goto L_30e8;
 
 L_30e8:
-    if ((PtInRect(&(rgrcBuildSpin[1]), pt) == 0))
+    if ((PtInRect(&(rgrcBuildSpin[1]), PointFrom16(pt)) == 0))
         goto L_31fc;
     else
         goto L_3102;
 
 L_3102:
-    if ((PtInRect(rgrcBuildSpin, pt) == 0))
+    if ((PtInRect(rgrcBuildSpin, PointFrom16(pt)) == 0))
         goto L_312e;
     else
         goto L_311c;
@@ -2549,7 +2557,7 @@ L_3205:
     goto L_3248;
 
 L_321c:
-    if ((PtInRect(&(vrgrcSlot[iSrc]), pt) != 0))
+    if ((PtInRect(&(vrgrcSlot[iSrc]), PointFrom16(pt)) != 0))
         goto L_3253;
     else
         goto L_3244;
@@ -2602,22 +2610,26 @@ L_3312:
 
 L_3318:
     SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)(szWork));
-    ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
+    ibmp = (((int16_t)(szWork[2]) - 65) + (((int16_t)(szWork[3]) - 65) * 0x1a));
     iSrc = -1;
-    hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    hs.grhst = (0x1 << ((int16_t)(szWork[0]) - 0x41));
     hs.iItem = ((int16_t)(szWork[1]) - 65);
     hs.cItem = 0x1;
     rcStart.left = 2;
     rcStart.right = 66;
-    rcStart.top = (LOWORD((((int32_t)(y) / 66) * 0x42)) + 1);
+    rcStart.top = ((((int32_t)(y) / 66) * 0x42) + 1);
     rcStart.bottom = (rcStart.top + 64);
     ClientToScreen(hwnd, (POINT *)(&(rcStart)));
     ClientToScreen(hwnd, (POINT *)(&(rcStart.right)));
-    ClientToScreen(hwnd, &(pt));
+    t_pt_33dc_1 = PointFrom16(pt);
+    ClientToScreen(hwnd, &(t_pt_33dc_1));
+    pt = PointTo16(t_pt_33dc_1);
     hwnd = hwndSlotDlg;
     ScreenToClient(hwnd, (POINT *)(&(rcStart)));
     ScreenToClient(hwnd, (POINT *)(&(rcStart.right)));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_340f_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_340f_1));
+    pt = PointTo16(t_pt_340f_1);
     x = pt.x;
     y = pt.y;
     if ((hs.grhst != hstEngine))
@@ -3002,7 +3014,7 @@ L_3b7b:
 L_3baf:
     SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), LB_GETTEXT, iSel, (LPARAM)(szWork));
     hsShip.cItem = 0x1;
-    hsShip.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    hsShip.grhst = (0x1 << ((int16_t)(szWork[0]) - 0x41));
     hsShip.iItem = ((int16_t)(szWork[1]) - 65);
     goto HullPart;
 
@@ -3181,7 +3193,7 @@ L_3e84:
         goto L_3e8d;
 
 L_3e8d:
-    if ((((grhst + 0xffff) & grhst) == 0x0))
+    if ((((grhst - 0x1) & grhst) == 0x0))
         goto L_3eb1;
     else
         goto L_3e9e;
@@ -4240,7 +4252,7 @@ L_546f:
     return;
 }
 
-int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
+int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     int16_t  cSlot;
     int16_t  cNew;
     int16_t  i;
@@ -4311,7 +4323,7 @@ L_550f:
     goto L_5560;
 
 L_5534:
-    if ((PtInRect(&(vrgrcSlot[i]), pt) != 0))
+    if ((PtInRect(&(vrgrcSlot[i]), PointFrom16(pt)) != 0))
         goto L_556b;
     else
         goto L_555c;
@@ -4544,10 +4556,10 @@ L_5a3e:
 L_5a41:
     FillRect(lpdis->hDC, &(lpdis->rcItem), GetStockObject(t_merge_5a41_0001));
     InflateRect(&(rc), -2, -1);
-    SendMessage(lpdis->hwndItem, 0x40a, lpdis->itemID, (LPARAM)(szWork));
+    SendMessage(lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM)(szWork));
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
-    ibmp = (((int16_t)(szWork[2]) - 65) + LOWORD((((int16_t)(szWork[3]) - 65) * 0x1a)));
+    ibmp = (((int16_t)(szWork[2]) - 65) + (((int16_t)(szWork[3]) - 65) * 0x1a));
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[(ibmp >> 0x5)], ((ibmp & 0x7) * 0x40), (((0x3 - (ibmp >> 0x3)) & 0x3) * 0x40), 64, 64,
            13369376);
     if (((lpdis->itemState & 0x10) == 0x0))
@@ -5204,8 +5216,7 @@ L_63a9:
     t_merge_63ac_0001 = 0x0;
 
 L_63ac:
-    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((LOWORD(((i + 1) * (dyArial8 - t_merge_63ac_0001))) + 8) + t_merge_638b_0001),
-                 SWP_NOMOVE | SWP_NOZORDER);
+    SetWindowPos(hwndDD, 0x0, 0, 0, (rc.right - rc.left), ((((i + 1) * (dyArial8 - t_merge_63ac_0001)) + 8) + t_merge_638b_0001), SWP_NOMOVE | SWP_NOZORDER);
     SendMessage(hwndDD, CB_SETCURSEL, 0x0, 0);
     return;
 }
@@ -5406,15 +5417,21 @@ L_674b:
 }
 
 LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    POINT   pt;
+    POINT16 pt;
     int16_t iSel;
+    POINT   t_pt_6771;
+    POINT   t_pt_6780_1;
 
 L_6758:
     goto L_6909;
 
 L_676a:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_6771 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_6771));
+    pt = PointTo16(t_pt_6771);
+    t_pt_6780_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_6780_1));
+    pt = PointTo16(t_pt_6780_1);
     if ((pt.x >= 64))
         goto L_6924;
     else
@@ -5468,15 +5485,15 @@ L_6837:
 
 L_6840:
     SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)(szWork));
-    GlobalPD.part.hs.grhst = (0x1 << ((int16_t)(szWork[0]) + 0xffbf));
+    GlobalPD.part.hs.grhst = (0x1 << ((int16_t)(szWork[0]) - 0x41));
     GlobalPD.part.hs.iItem = ((int16_t)(szWork[1]) - 65);
     FLookupPart(&(GlobalPD.part));
     GlobalPD.grPopup = grPopupComponent;
-    Popup(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff));
+    Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
     return 0;
 
 L_68ca:
-    FTrackSlot(hwnd, LOWORD(lParam), (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff), wParam, 1, 0);
+    FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 1, 0);
     return 0;
 
 L_6909:
@@ -5518,7 +5535,7 @@ L_6972:
         goto L_698e;
 
 L_698e:
-    if (((_ctype[((int16_t)(lpsz[(cLen - 2)]) + 1)] & 0x4) == 0x0))
+    if ((isdigit((int16_t)(lpsz[(cLen - 2)])) == 0x0))
         goto L_69d3;
     else
         goto L_69b7;

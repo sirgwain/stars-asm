@@ -411,6 +411,87 @@
       ]
     },
     {
+      "name": "ListBoxStyle",
+      "kind": "flags",
+      "members": [
+        "LBS_NOTIFY",
+        "LBS_SORT",
+        "LBS_NOREDRAW",
+        "LBS_MULTIPLESEL",
+        "LBS_OWNERDRAWFIXED",
+        "LBS_OWNERDRAWVARIABLE",
+        "LBS_HASSTRINGS",
+        "LBS_USETABSTOPS",
+        "LBS_NOINTEGRALHEIGHT",
+        "LBS_MULTICOLUMN",
+        "LBS_WANTKEYBOARDINPUT",
+        "LBS_EXTENDEDSEL",
+        "LBS_DISABLENOSCROLL"
+      ],
+      "include": ["WindowStyle"]
+    },
+    {
+      "name": "ComboBoxStyle",
+      "kind": "flags",
+      "members": [
+        "CBS_DROPDOWNLIST",
+        "CBS_DROPDOWN",
+        "CBS_SIMPLE",
+        "CBS_OWNERDRAWFIXED",
+        "CBS_OWNERDRAWVARIABLE",
+        "CBS_AUTOHSCROLL",
+        "CBS_OEMCONVERT",
+        "CBS_SORT",
+        "CBS_HASSTRINGS",
+        "CBS_NOINTEGRALHEIGHT",
+        "CBS_DISABLENOSCROLL"
+      ],
+      "include": ["WindowStyle"]
+    },
+    {
+      "name": "EditStyle",
+      "kind": "flags",
+      "members": [
+        "ES_CENTER",
+        "ES_RIGHT",
+        "ES_MULTILINE",
+        "ES_UPPERCASE",
+        "ES_LOWERCASE",
+        "ES_PASSWORD",
+        "ES_AUTOVSCROLL",
+        "ES_AUTOHSCROLL",
+        "ES_NOHIDESEL",
+        "ES_OEMCONVERT",
+        "ES_READONLY",
+        "ES_WANTRETURN"
+      ],
+      "include": ["WindowStyle"]
+    },
+    {
+      "name": "ButtonStyle",
+      "kind": "flags",
+      "members": [
+        "BS_OWNERDRAW",
+        "BS_AUTORADIOBUTTON",
+        "BS_USERBUTTON",
+        "BS_GROUPBOX",
+        "BS_AUTO3STATE",
+        "BS_3STATE",
+        "BS_RADIOBUTTON",
+        "BS_AUTOCHECKBOX",
+        "BS_CHECKBOX",
+        "BS_DEFPUSHBUTTON",
+        "BS_LEFTTEXT"
+      ],
+      "include": ["WindowStyle"]
+    },
+    {
+      "name": "ScrollBarStyle",
+      "kind": "flags",
+      "members": ["SBS_SIZEBOX", "SBS_VERT", "SBS_TOPALIGN", "SBS_BOTTOMALIGN"],
+      "include": ["WindowStyle"]
+    },
+    {
       "name": "WindowExStyle",
       "kind": "flags",
       "members": ["WS_EX_DLGMODALFRAME", "WS_EX_NOPARENTNOTIFY", "WS_EX_TOPMOST", "WS_EX_ACCEPTFILES", "WS_EX_TRANSPARENT"]

@@ -916,7 +916,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     dy;
     int16_t     dx;
     RECT        rc;
-    POINT       pt;
+    POINT16     pt;
     HCURSOR     hcs;
     HtMsgType   ht;
     int16_t     fSet;
@@ -940,6 +940,8 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int32_t     lSerial;
     char       *t_call_5cbd;
     int16_t     t_merge_5ceb_0001;
+    POINT       t_pt_6090;
+    POINT       t_pt_609f_1;
     uint16_t    t_merge_615b_0001;
     int16_t     t_merge_6170_0001;
     uint16_t    t_merge_61df_0001;
@@ -977,8 +979,7 @@ L_5ce8:
     t_merge_5ceb_0001 = 44;
 
 L_5ceb:
-    rghwndMsgBtn[i] =
-        CreateWindow("BUTTON", t_call_5cbd, WS_CHILD, 100, 100, t_merge_5ceb_0001, ((LOWORD((0x3 * dyArial8)) >> 0x1) + 0xffff), hwnd, 0x0, hInst, 0x0);
+    rghwndMsgBtn[i] = CreateWindow("BUTTON", t_call_5cbd, WS_CHILD, 100, 100, t_merge_5ceb_0001, (((0x3 * dyArial8) >> 0x1) - 0x1), hwnd, 0x0, hInst, 0x0);
     SendMessage(rghwndMsgBtn[i], WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
     i = (i + 1);
 
@@ -989,12 +990,13 @@ L_5d3c:
         goto L_5d45;
 
 L_5d45:
-    hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", 0x40200003, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
+    hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", CBS_DROPDOWNLIST | WS_CHILD | WS_VSCROLL, 100, 100, 200, 80, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndMsgDrop, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
-    hwndMsgEdit = CreateWindow("EDIT", 0x0, 0x40800044, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
+    hwndMsgEdit = CreateWindow("EDIT", 0x0, ES_MULTILINE | ES_AUTOVSCROLL | WS_CHILD | WS_BORDER, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
     SendMessage(hwndMsgEdit, EM_LIMITTEXT, 0x3c8, 0);
     SendMessage(hwndMsgEdit, WM_SETFONT, (WPARAM)(rghfontArial8[1]), 0);
-    hwndMsgScroll = CreateWindow("EDIT", 0x0, 0x40a00844, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
+    hwndMsgScroll =
+        CreateWindow("EDIT", 0x0, ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_CHILD | WS_BORDER | WS_VSCROLL, 100, 100, 200, 50, hwnd, 0x0, hInst, 0x0);
     SetMsgTitle(hwnd);
     SendMessage(hwndMsgDrop, CB_ADDSTRING, 0x0, (LPARAM)(PszGetCompressedString(idsEverybody)));
     i = 0;
@@ -1020,12 +1022,12 @@ L_5ed5:
 
 L_5ef1:
     dx = LOWORD(lParam);
-    dy = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    dy = HIWORD(lParam);
     i = 0;
     goto L_5f62;
 
 L_5f19:
-    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((LOWORD((((LOWORD((3 * dyArial8)) >> 0x1) + 0x2) * i)) + 3) + (dyArial8 * 2)), 0, 0,
+    SetWindowPos(rghwndMsgBtn[i], 0x0, (dx - 48), ((((((3 * dyArial8) >> 0x1) + 0x2) * i) + 3) + (dyArial8 * 2)), 0, 0,
                  SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
     i = (i + 1);
 
@@ -1053,8 +1055,12 @@ L_6059:
 
 L_6084:
     hcs = 0x0;
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_6090 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_6090));
+    pt = PointTo16(t_pt_6090);
+    t_pt_609f_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_609f_1));
+    pt = PointTo16(t_pt_609f_1);
     if ((HtMsgBox(pt) == htMsgNone))
         goto Default;
     else
@@ -1066,7 +1072,7 @@ L_60ba:
 
 L_60cf:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     ht = HtMsgBox(pt);
     if ((ht != htMsgCurrent))
         goto L_61c3;
@@ -1283,7 +1289,7 @@ L_63dd:
 
 L_63e0:
     ((MINMAXINFO *)lParam)->ptMinTrackSize.x = ((dxWinFrame * 2) + 198);
-    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = ((LOWORD((0xd * dyArial8)) >> 0x1) + 0x16);
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = (((0xd * dyArial8) >> 0x1) + 0x16);
     goto Default;
 
 L_640f:
@@ -1610,7 +1616,7 @@ L_6b30:
     i = (i + 1);
 
 L_6b34:
-    if ((i < 49))
+    if (((uint16_t)(i) < 49))
         goto L_6b07;
     else
         goto L_6b3f;
@@ -1991,7 +1997,7 @@ L_7134:
     goto L_7163;
 
 L_713a:
-    if ((mdMsgObj > 11))
+    if (((uint16_t)(mdMsgObj) > 11))
         goto L_7163;
     else
         goto L_7142;
@@ -2790,7 +2796,7 @@ L_7b49:
     i = (i + 1);
 
 L_7b4d:
-    if ((i < 49))
+    if (((uint16_t)(i) < 49))
         goto L_7b20;
     else
         goto L_7b58;
@@ -2855,12 +2861,12 @@ L_7d72:
     return;
 }
 
-HtMsgType HtMsgBox(POINT pt) {
+HtMsgType HtMsgBox(POINT16 pt) {
     int16_t  i;
     uint16_t t_scratch_m6;
 
 L_7d8c:
-    if ((PtInRect(&(rcMsgTitle), pt) == 0))
+    if ((PtInRect(&(rcMsgTitle), PointFrom16(pt)) == 0))
         goto L_7e9d;
     else
         goto L_7daf;
@@ -2919,7 +2925,7 @@ L_7e4a:
     i = (i + 1);
 
 L_7e4e:
-    if ((i < 49))
+    if (((uint16_t)(i) < 49))
         goto L_7e21;
     else
         goto L_7e59;
@@ -3037,6 +3043,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     MSGTURN *lpmt;
     uint8_t *lpb;
     uint8_t *lpbBase;
+    int16_t  rgArgs[7];
     uint16_t t_scratch_m16_2;
     MSGHDR  *t_fields_1;
     uint32_t t_fields_2;
@@ -3091,7 +3098,7 @@ L_80a3:
     return 0;
 
 L_80a9:
-    if (((imemMsgCur + 20) <= -56))
+    if (((uint16_t)((imemMsgCur + 20)) <= 0xffc8))
         goto L_80bd;
     else
         goto L_80b7;
@@ -3109,7 +3116,14 @@ L_80bd:
     lpb = (lpb + 5);
     lpbBase = lpb;
     grbit = 0x1;
-    pi = &(p1);
+    rgArgs[0] = p1;
+    rgArgs[1] = p2;
+    rgArgs[2] = p3;
+    rgArgs[3] = p4;
+    rgArgs[4] = p5;
+    rgArgs[5] = p6;
+    rgArgs[6] = p7;
+    pi = rgArgs;
     i = 0;
     goto L_8168;
 
@@ -3162,12 +3176,13 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     uint8_t *pb;
     uint16_t cSize;
     MSGHDR  *pmsghdr;
+    int16_t  rgArgs[2];
     uint16_t t_scratch_m50_2;
     uint32_t t_fields_1;
     uint32_t t_fields_2;
 
 L_823a:
-    if (((imemMsgCur + 20) <= -56))
+    if (((uint16_t)((imemMsgCur + 20)) <= 0xffc8))
         goto L_8257;
     else
         goto L_8251;
@@ -3184,7 +3199,9 @@ L_8257:
     pmsghdr->wGoto = iObj;
     pb = (pb + 4);
     grbit = 0x1;
-    pi = &(p1);
+    rgArgs[0] = p1;
+    rgArgs[1] = p2;
+    pi = rgArgs;
     i = 0;
     goto L_8301;
 
@@ -3407,9 +3424,13 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     PART     part;
     int32_t  l;
     SHDEF   *lpshdef;
+    char    *t_860d;
     int16_t  t_merge_8804_0001;
     int16_t  t_merge_881f_0001;
     int16_t  t_merge_8837_0001;
+    char    *t_8915;
+    char    *t_8921;
+    char    *t_8ebf;
 
 L_85cc:
     iMineral = -1;
@@ -3429,8 +3450,9 @@ L_85fa:
         goto L_8608;
 
 L_8608:
+    t_860d = pch;
     pch = (pch + 1);
-    *(pch) = *(pszFormat);
+    *(t_860d) = *(pszFormat);
     goto L_8f4d;
 
 L_861b:
@@ -3519,7 +3541,7 @@ L_8755:
     goto FinishString;
 
 L_8767:
-    pchT = PszCalcEnvVar((((*(pParams) >> 0x8) & 0xff) & 0xff), (*(pParams) & 0xff));
+    pchT = PszCalcEnvVar(((((uint16_t)(*(pParams)) >> 0x8) & 0xff) & 0xff), (*(pParams) & 0xff));
     goto FinishString;
 
 L_8791:
@@ -3585,7 +3607,7 @@ L_8850:
         goto L_8867;
 
 L_8867:
-    if ((((w + 0xffff) & w) != 0x0))
+    if ((((w - 0x1) & w) != 0x0))
         goto L_88c1;
     else
         goto L_887a;
@@ -3642,10 +3664,12 @@ L_8906:
         goto L_8915;
 
 L_8915:
+    t_8915 = pch;
     pch = (pch + 1);
-    *(pch) = 44;
+    *(t_8915) = 44;
+    t_8921 = pch;
     pch = (pch + 1);
-    *(pch) = 32;
+    *(t_8921) = 32;
     goto L_8944;
 
 L_8930:
@@ -3692,7 +3716,7 @@ L_8a5f:
     goto L_8aca;
 
 L_8a89:
-    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((int32_t)(*(pParams)) / 100), (*(pParams)-LOWORD((((int32_t)(*(pParams)) / 100) * 0x64))));
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, ((int32_t)(*(pParams)) / 100), (*(pParams) - (((int32_t)(*(pParams)) / 100) * 0x64)));
 
 L_8aca:
     pch = (pch + c);
@@ -3788,7 +3812,7 @@ L_8c8a:
     goto DoPlanet;
 
 L_8c96:
-    w = ((*(pParams) >> 0x9) & 0xf);
+    w = (((uint16_t)(*(pParams)) >> 0x9) & 0xf);
     pchT = PszPlayerName(w, 0, 0, 0, 0, 0x0);
     goto FinishString;
 
@@ -3860,8 +3884,9 @@ L_8ea3:
     goto L_8f4d;
 
 L_8eba:
+    t_8ebf = pch;
     pch = (pch + 1);
-    *(pch) = *(pszFormat);
+    *(t_8ebf) = *(pszFormat);
     goto L_8f4d;
 
 L_8ecd:
@@ -3995,7 +4020,7 @@ L_8f61:
 
 INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     RECT        rc;
-    POINT       pt;
+    POINT16     pt;
     HDC         hdc;
     RECT        rcEdit;
     int16_t     cch;
@@ -4021,7 +4046,7 @@ L_8fd4:
     return 1;
 
 L_8ffc:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_9212;
     else
         goto L_9018;
@@ -4669,7 +4694,7 @@ L_986e:
         goto L_9881;
 
 L_9881:
-    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), lpmp);
+    WriteRt(rtPlrMsg, (abs(lpmp->cLen) + 12), ((uint8_t *)(&(lpmp->iPlrFrom)) - 4));
 
 L_98a9:
     lpmp = lpmp->lpmsgplrNext;
@@ -4828,9 +4853,9 @@ L_9b4d:
         goto L_9b56;
 
 L_9b56:
-    lpmp->lpmsgplrNext = LpAlloc(hdrCur.cb, htPlrMsg);
+    lpmp->lpmsgplrNext = LpAlloc((hdrCur.cb + (sizeof(MSGPLR) - 12)), htPlrMsg);
     lpmp = lpmp->lpmsgplrNext;
-    fmemcpy(lpmp, rgbCur, hdrCur.cb);
+    fmemcpy(((uint8_t *)(&(lpmp->iPlrFrom)) - 4), rgbCur, hdrCur.cb);
     lpmp->lpmsgplrNext = 0x0;
     vcmsgplrIn = (vcmsgplrIn + 1);
 
@@ -4990,12 +5015,12 @@ L_9dd6:
     DirtyGame(1);
 
 L_9de2:
-    lpmpCur = LpReAlloc(lpmpCur, cbNew, htPlrMsg);
+    lpmpCur = LpReAlloc(lpmpCur, (cbNew + (sizeof(MSGPLR) - 12)), htPlrMsg);
     goto L_9e40;
 
 L_9e01:
     DirtyGame(1);
-    lpmpCur = LpAlloc(cbNew, htPlrMsg);
+    lpmpCur = LpAlloc((cbNew + (sizeof(MSGPLR) - 12)), htPlrMsg);
     lpmpCur->lpmsgplrNext = 0x0;
     vcmsgplrOut = (vcmsgplrOut + 1);
     lpmpCur->iInRe = iMsgCur;
@@ -5032,6 +5057,7 @@ char *PszGetCompressedMessage(MessageId idm) {
     int16_t  iChunk;
     uint16_t t_merge_9f76_0001;
     int16_t  t_9f83;
+    uint8_t *t_9fb5;
     uint16_t t_merge_9fda_0001;
 
 L_9eb8:
@@ -5105,8 +5131,9 @@ L_9f9b:
     goto L_9fc8;
 
 L_9fb2:
+    t_9fb5 = pch;
     pch = (pch + 1);
-    i = (*(pch) & 0xf);
+    i = (*(t_9fb5) & 0xf);
 
 L_9fc8:
     if ((fHigh != 0))

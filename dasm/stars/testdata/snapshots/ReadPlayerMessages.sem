@@ -1,0 +1,120 @@
+/*
+ReadPlayerMessages  (msg)
+  addr: 0007:994a  len=651
+  sig:  void ReadPlayerMessages()
+  locals:
+    uint16_t         u              [BP-0x30]
+    uint8_t *        lpb            [BP-0x2e]
+    MSGPLR *         lpmp           [BP-0x2a]
+    jmp_buf          env            [BP-0x26]
+    int16_t          i              [BP-0x14]
+    uint16_t         imemMsgT       [BP-0x12]
+    MSGHDR *         lpmh           [BP-0x10]
+    jmp_buf *        penvMemSav     [BP-0xc]
+    int16_t          fOOM           [BP-0xa]
+    int16_t          iMax           [BP-0x8]
+    uint8_t *        lpbMax         [BP-0x6]
+
+  stats: blocks=0  labels=1
+    LOutOfMem: L_9bb2
+*/
+L_994a:
+    imemMsgT = 0x0
+    fOOM = 0
+    lpb = ptroff(lpMsg, imemMsgCur)
+
+L_9970:
+    branch hdrCur.rt != rtMsg ? L_99df : L_9983
+
+L_9983:
+    branch hdrCur.cb == 0x0 ? L_99d7 : L_9991
+
+L_9991:
+    branch (imemMsgCur + imemMsgT) >= (0xffc8 - hdrCur.cb) ? L_99d7 : L_99ab
+
+L_99ab:
+    call fmemmove(&lpb[imemMsgT], rgbCur, hdrCur.cb) -> callresult(void *)
+    imemMsgT = (imemMsgT + hdrCur.cb)
+
+L_99d7:
+    call ReadRt() -> callresult(void)
+    goto L_9970
+
+L_99df:
+    imemMsgCur = (imemMsgCur + imemMsgT)
+    lpbMax = &lpb[imemMsgT]
+    goto L_9aca
+
+L_99fa:
+    lpmh = (MSGHDR *)lpb
+    bitfMsgSent[(lpmh->iMsg >> 0x3)] = lobyte(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & ~((0x1 << (lpmh->iMsg & 0x7)))) | (0x1 << (lpmh->iMsg & 0x7))))
+    cMsg = (cMsg + 1)
+    u = lpmh->grWord
+    lpb = &lpb[4]
+    iMax = sext8to16(rgcMsgArgs[lpmh->iMsg])
+    i = 0
+    goto L_9abf
+
+L_9a98:
+    branch (u & 0x1) != 0x1 ? L_9aac : L_9aa6
+
+L_9aa6:
+    t_merge_9aaf_0001 = 0x1
+    goto L_9aaf
+
+L_9aac:
+    t_merge_9aaf_0001 = 0x0
+
+L_9aaf:
+    lpb = &lpb[(1 + t_merge_9aaf_0001)]
+    u = (u >> 0x1)
+    i = (i + 1)
+
+L_9abf:
+    branch i < iMax ? L_9a98 : L_9aca
+
+L_9aca:
+    branch lpb < lpbMax ? L_99fa : L_9ad8
+
+L_9ad8:
+    lpmp = (MSGPLR *)&vlpmsgplrIn
+
+L_9ae3:
+    branch lpmp->lpmsgplrNext != 0x0 ? L_9af9 : L_9b0c
+
+
+L_9af9:
+    lpmp = lpmp->lpmsgplrNext
+    goto L_9ae3
+
+L_9b0c:
+    penvMemSav = penvMem
+    penvMem = &env
+    branch setjmp(env) == 0 ? L_9b3a : L_9b2c
+
+L_9b2c:
+    penvMem = penvMemSav
+    fOOM = 1
+    goto L_9bb2
+
+L_9b3a:
+    branch hdrCur.rt != rtPlrMsg ? L_9bba : L_9b4d
+
+L_9b4d:
+    branch fOOM != 0 ? L_9bb2 : L_9b56
+
+L_9b56:
+    lpmp->lpmsgplrNext = LpAlloc((hdrCur.cb + (sizeof(MSGPLR) - 12)), htPlrMsg)
+    lpmp = lpmp->lpmsgplrNext
+    call fmemcpy(ptroff(&lpmp->iPlrFrom, -4), rgbCur, hdrCur.cb) -> callresult(void *)
+    lpmp->lpmsgplrNext = 0x0
+    vcmsgplrIn = (vcmsgplrIn + 1)
+
+LOutOfMem:
+    call ReadRt() -> callresult(void)
+    goto L_9b3a
+
+L_9bba:
+    iMsgCur = -1
+    iMsgCur = IMsgNext(0)
+    return

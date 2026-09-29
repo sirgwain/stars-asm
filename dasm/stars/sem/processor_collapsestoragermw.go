@@ -1,9 +1,12 @@
 package sem
 
 import (
+	"slices"
+
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 type collapseStorageRMWProcessor struct {
@@ -37,6 +40,7 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 			changed = true
 		}
 	}
+	liveBefore := p.liveScratchStores(f, b)
 	rewrites := make([]storageRMWRewrite, 0)
 	occupied := make([]bool, len(b.Effects))
 	for i := 0; i+2 < len(b.Effects); i++ {
@@ -55,28 +59,38 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 		}
 	}
 	for i := 0; i+1 < len(b.Effects); i++ {
-		if occupied[i] || occupied[i+1] {
+		if occupied[i] {
 			continue
 		}
 		clear, clearOK := b.Effects[i].(machine.StoreEffect)
-		insert, insertOK := b.Effects[i+1].(machine.StoreEffect)
-		if !clearOK || !insertOK {
+		if !clearOK {
 			continue
 		}
-		collapsed, remove, ok := p.collapseScratchBitfieldRMW(f, b, i, clear, insert)
+		insertIndex, ok := p.bitfieldInsertIndex(b.Effects, i)
+		if !ok || occupied[insertIndex] {
+			continue
+		}
+		insert := b.Effects[insertIndex].(machine.StoreEffect)
+		collapsed, remove, ok := p.collapseScratchBitfieldRMW(f, b, i, insertIndex, clear, insert)
 		if !ok {
-			collapsed, remove, ok = p.collapseScratchWordBitfieldRMW(f, b, i, clear, insert)
+			collapsed, remove, ok = p.collapseScratchWordBitfieldRMW(f, b, i, insertIndex, clear, insert)
 		}
 		if ok {
-			removed := make(map[int]bool, len(remove))
+			removed := make(map[int]bool, len(remove)+1)
 			for _, index := range remove {
 				removed[index] = true
 			}
-			rewrites = append(rewrites, storageRMWRewrite{start: i, end: i + 1, replace: collapsed, remove: removed})
-			occupied[i], occupied[i+1] = true, true
+			removed[insertIndex] = true
+			rewrites = append(rewrites, storageRMWRewrite{start: i, end: i, replace: collapsed, remove: removed})
+			occupied[i], occupied[insertIndex] = true, true
 		}
 	}
 	if len(rewrites) == 0 {
+		if effects, ok := p.forwardScratchAggregateCopies(f, b); ok {
+			b.Effects = effects
+			b.Effects = p.removeDeadScratchStores(f, b, liveBefore)
+			return b, true
+		}
 		return b, changed
 	}
 
@@ -104,7 +118,184 @@ func (p *collapseStorageRMWProcessor) ProcessMachineBlock(result *Result, f mach
 		effects = append(effects, b.Effects[i])
 	}
 	b.Effects = effects
+	if effects, ok := p.forwardScratchAggregateCopies(f, b); ok {
+		b.Effects = effects
+	}
+	b.Effects = p.removeDeadScratchStores(f, b, liveBefore)
 	return b, true
+}
+
+// forwardScratchAggregateCopies replaces a whole copy of a compiler scratch
+// value into struct-typed storage with the value that filled the scratch,
+// when that value is a copy of the same struct type or a bitfield update of
+// the destination itself: scratch = rgprod[lSel+1]; rgprod[lSel] = scratch
+// in a swap becomes rgprod[lSel] = rgprod[lSel+1], and scratch =
+// (rgia[i] & 0xfff) | v; rgia[i] = scratch becomes the field update. Only
+// scratch may be written in between, and the scratch must die with the copy.
+// Otherwise the whole-struct store would type the scratch as the struct and
+// pin it as a local for every lifetime of that slot.
+func (p *collapseStorageRMWProcessor) forwardScratchAggregateCopies(f machine.FuncEffects, b machine.BlockEffects) ([]machine.Effect, bool) {
+	effects := b.Effects
+	var out []machine.Effect
+	for i, effect := range effects {
+		store, ok := effect.(machine.StoreEffect)
+		if !ok {
+			continue
+		}
+		load, ok := store.Src.(*machine.Load)
+		if !ok || load.Addr.Width != store.Width || !p.syntheticScratchAccess(load.Addr) {
+			continue
+		}
+		dstType, ok := p.structStorageType(store.Addr)
+		if !ok {
+			continue
+		}
+		value, definitions, ok := p.scratchValueAtWithIndices(effects, i, load.Addr)
+		if !ok || p.ctx.readsScratch(value) || !p.onlyScratchWrites(effects[slices.Min(definitions)+1:i]) {
+			continue
+		}
+		if !p.copiesStruct(value, dstType) {
+			if _, _, _, ok := bitfieldStoreParts(store.Addr, value, p.ctx.sameResolvedStorage); !ok {
+				continue
+			}
+		}
+		if !p.scratchSnapshotRemovable(f, machine.BlockEffects{Block: b.Block, Effects: effects}, load.Addr, definitions, i) {
+			continue
+		}
+		if out == nil {
+			out = append([]machine.Effect(nil), effects...)
+		}
+		store.Src = value
+		out[i] = store
+	}
+	return out, out != nil
+}
+
+// copiesStruct reports whether value loads a whole struct of type typ.
+func (p *collapseStorageRMWProcessor) copiesStruct(value machine.Value, typ typeinfo.Type) bool {
+	load, ok := value.(*machine.Load)
+	if !ok {
+		return false
+	}
+	srcType, ok := p.structStorageType(load.Addr)
+	return ok && typeinfo.Equals(srcType, typ)
+}
+
+// structStorageType returns the struct type of the single object addr names
+// when that struct is exactly the access width, such as a PROD element or an
+// ITEMACTION entry.
+func (p *collapseStorageRMWProcessor) structStorageType(addr machine.MemoryAddress) (typeinfo.Type, bool) {
+	resolved, ok := p.ctx.symbols.addressFromMemory(addr, nil)
+	if !ok {
+		return nil, false
+	}
+	lane, ok := p.ctx.symbols.storageLaneFromMemory(addr, resolved)
+	if !ok || lane.offset != 0 || !symbolPathHasDeclaredRoot(lane.object) {
+		return nil, false
+	}
+	strct, ok := lane.object.Type().(*typeinfo.Struct)
+	if !ok || strct.Bytes() != addr.Width {
+		return nil, false
+	}
+	return strct, true
+}
+
+// onlyScratchWrites reports whether effects write nothing but compiler scratch.
+func (p *collapseStorageRMWProcessor) onlyScratchWrites(effects []machine.Effect) bool {
+	for _, effect := range effects {
+		switch e := effect.(type) {
+		case machine.StoreEffect:
+			if !p.ctx.syntheticScratchAddress(e.Addr) {
+				return false
+			}
+		case machine.CallEffect, machine.CopyEffect:
+			return false
+		}
+	}
+	return true
+}
+
+// scratchStoreKey identifies a scratch store across effect-list rewrites.
+type scratchStoreKey struct {
+	inst  uint32
+	disp  int
+	width int
+}
+
+// liveScratchStores returns the compiler scratch stores in a block that some
+// later effect reads before their bytes are overwritten.
+func (p *collapseStorageRMWProcessor) liveScratchStores(f machine.FuncEffects, b machine.BlockEffects) map[scratchStoreKey]bool {
+	live := make(map[scratchStoreKey]bool)
+	for i, effect := range b.Effects {
+		store, ok := effect.(machine.StoreEffect)
+		if ok && p.ctx.syntheticScratchAddress(store.Addr) && !p.deadScratchStore(f, b.Block, b.Effects, i) {
+			live[scratchStoreKey{store.MetaInfo.InstOff, store.Addr.Disp, store.Width}] = true
+		}
+	}
+	return live
+}
+
+// removeDeadScratchStores drops compiler scratch stores that this pass's
+// rewrites left unread, e.g. the spill of c that only fed the removed
+// snapshot of rgprod[lSel].cItem -= c, or a scratch copy forwarded into its
+// destination. Stores that were already unread are left alone. Leaving them
+// would keep the scratch lifetime alive through scratch recovery.
+func (p *collapseStorageRMWProcessor) removeDeadScratchStores(f machine.FuncEffects, b machine.BlockEffects, liveBefore map[scratchStoreKey]bool) []machine.Effect {
+	effects := b.Effects
+	for i := len(effects) - 1; i >= 0; i-- {
+		store, ok := effects[i].(machine.StoreEffect)
+		if !ok || !liveBefore[scratchStoreKey{store.MetaInfo.InstOff, store.Addr.Disp, store.Width}] {
+			continue
+		}
+		if !p.ctx.syntheticScratchAddress(store.Addr) || !p.deadScratchStore(f, b.Block, effects, i) {
+			continue
+		}
+		effects = append(effects[:i:i], effects[i+1:]...)
+	}
+	return effects
+}
+
+// deadScratchStore reports whether nothing reads the scratch store at index
+// before its bytes are overwritten, in this block or its successors.
+func (p *collapseStorageRMWProcessor) deadScratchStore(f machine.FuncEffects, block machine.BlockID, effects []machine.Effect, index int) bool {
+	store := effects[index].(machine.StoreEffect)
+	read, written := p.scratchReadBeforeOverwriteState(effects[index+1:], store.Addr, 0)
+	return !read && !p.scratchReadAcrossSuccessorsBeforeOverwrite(f, block, store.Addr, written)
+}
+
+// bitfieldInsertIndex returns the store that may complete the clear at
+// clearIndex, skipping stores that only spill compiler scratch, e.g. the
+// element address MSC recomputes into [bp-0x3c]/[bp-0x3a] between
+// AND es:[bx], 0xfc00 and OR es:[bx], ax. A skipped spill must not touch the
+// cleared storage or the scratch snapshot the insert ORs in.
+func (p *collapseStorageRMWProcessor) bitfieldInsertIndex(effects []machine.Effect, clearIndex int) (int, bool) {
+	clear := effects[clearIndex].(machine.StoreEffect)
+	insertIndex := clearIndex + 1
+	for insertIndex < len(effects) {
+		store, ok := effects[insertIndex].(machine.StoreEffect)
+		if !ok {
+			return 0, false
+		}
+		if !p.ctx.syntheticScratchAddress(store.Addr) || p.ctx.scratchStorageOverlaps(store.Addr, clear.Addr) {
+			break
+		}
+		insertIndex++
+	}
+	if insertIndex >= len(effects) {
+		return 0, false
+	}
+	insert, ok := effects[insertIndex].(machine.StoreEffect)
+	if !ok {
+		return 0, false
+	}
+	if scratch, ok := p.insertedScratchLoad(insert); ok {
+		for _, effect := range effects[clearIndex+1 : insertIndex] {
+			if p.ctx.scratchStorageOverlaps(effect.(machine.StoreEffect).Addr, scratch) {
+				return 0, false
+			}
+		}
+	}
+	return insertIndex, true
 }
 
 // recoverStoredBitfieldRMW replaces a retained expression from the immediately
@@ -146,13 +337,13 @@ func (p *collapseStorageRMWProcessor) recoverStoredBitfieldRMW(previous, store m
 // collapseScratchBitfieldCopy reconstructs a masked update assembled in two
 // scratch words and then copied back to the original wide storage.
 func (p *collapseStorageRMWProcessor) collapseScratchBitfieldCopy(f machine.FuncEffects, b machine.BlockEffects, index int, low, high, store machine.StoreEffect) (machine.StoreEffect, bool) {
-	if low.Width != 2 || high.Width != 2 || store.Width != 4 || !p.scratchWordPair(low.Addr, high.Addr) {
+	if low.Width != 2 || high.Width != 2 || store.Width != 4 || !p.ctx.scratchWordPair(low.Addr, high.Addr) {
 		return store, false
 	}
 	scratch := low.Addr
 	scratch.Width = 4
 	load, ok := store.Src.(*machine.Load)
-	if !ok || !p.sameScratchRange(scratch, load.Addr) {
+	if !ok || !p.ctx.sameScratchRange(scratch, load.Addr) {
 		return store, false
 	}
 	// Only the final copy may read these scratch bytes. This also rejects
@@ -181,7 +372,7 @@ func (p *collapseStorageRMWProcessor) collapseScratchBitfieldCopy(f machine.Func
 
 // collapseScratchWordBitfieldRMW reconstructs a word-sized captured field update
 // from the reaching definition of the scratch value consumed by the insert.
-func (p *collapseStorageRMWProcessor) collapseScratchWordBitfieldRMW(f machine.FuncEffects, b machine.BlockEffects, clearIndex int, clear, insert machine.StoreEffect) (machine.StoreEffect, []int, bool) {
+func (p *collapseStorageRMWProcessor) collapseScratchWordBitfieldRMW(f machine.FuncEffects, b machine.BlockEffects, clearIndex, insertIndex int, clear, insert machine.StoreEffect) (machine.StoreEffect, []int, bool) {
 	if clear.Width != 2 || insert.Width != 2 || !p.ctx.sameResolvedStorage(clear.Addr, insert.Addr) {
 		return clear, nil, false
 	}
@@ -204,7 +395,6 @@ func (p *collapseStorageRMWProcessor) collapseScratchWordBitfieldRMW(f machine.F
 	if !ok {
 		return clear, nil, false
 	}
-	insertIndex := clearIndex + 1
 	if !p.scratchSnapshotRemovable(f, b, scratch, snapshotIndices, insertIndex) {
 		return clear, nil, false
 	}
@@ -212,7 +402,7 @@ func (p *collapseStorageRMWProcessor) collapseScratchWordBitfieldRMW(f machine.F
 }
 
 // collapseScratchBitfieldRMW combines a captured wide scratch value with a subsequent clear-and-OR bitfield update.
-func (p *collapseStorageRMWProcessor) collapseScratchBitfieldRMW(f machine.FuncEffects, b machine.BlockEffects, clearIndex int, clear, insert machine.StoreEffect) (machine.StoreEffect, []int, bool) {
+func (p *collapseStorageRMWProcessor) collapseScratchBitfieldRMW(f machine.FuncEffects, b machine.BlockEffects, clearIndex, insertIndex int, clear, insert machine.StoreEffect) (machine.StoreEffect, []int, bool) {
 	if p.ctx == nil || clear.Width != 4 || insert.Width != 4 || !p.ctx.sameResolvedStorage(clear.Addr, insert.Addr) {
 		return clear, nil, false
 	}
@@ -237,7 +427,6 @@ func (p *collapseStorageRMWProcessor) collapseScratchBitfieldRMW(f machine.FuncE
 	if !ok {
 		return clear, nil, false
 	}
-	insertIndex := clearIndex + 1
 	if !p.scratchSnapshotRemovable(f, b, scratch, snapshotIndices, insertIndex) {
 		return clear, nil, false
 	}
@@ -315,7 +504,7 @@ func (p *collapseStorageRMWProcessor) scratchRMWValueAt(effects []machine.Effect
 	if !p.syntheticScratchAccess(scratch) {
 		return nil, nil, false
 	}
-	if store, index, ok := p.reachingScratchStore(effects, before, scratch); ok {
+	if store, index, ok := p.ctx.reachingScratchStore(effects, before, scratch); ok {
 
 		value := p.resolveScratchValue(effects, index, store.Src)
 
@@ -369,19 +558,19 @@ func (p *collapseStorageRMWProcessor) scratchRMWValueAt(effects []machine.Effect
 
 // scratchValueAtWithIndices returns a reaching scratch value and its defining stores.
 func (p *collapseStorageRMWProcessor) scratchValueAtWithIndices(effects []machine.Effect, before int, addr machine.MemoryAddress) (machine.Value, []int, bool) {
-	if addr.Width != 4 && !p.syntheticScratchAddress(addr) {
+	if addr.Width != 4 && !p.ctx.syntheticScratchAddress(addr) {
 		return nil, nil, false
 	}
-	if addr.Width == 4 && !p.syntheticScratchAddress(addr) {
+	if addr.Width == 4 && !p.ctx.syntheticScratchAddress(addr) {
 		lowAddr := addr
 		lowAddr.Width = 2
 		highAddr := lowAddr
 		highAddr.Disp += 2
-		if !p.scratchWordPair(lowAddr, highAddr) {
+		if !p.ctx.scratchWordPair(lowAddr, highAddr) {
 			return nil, nil, false
 		}
 	}
-	if store, index, ok := p.reachingScratchStore(effects, before, addr); ok {
+	if store, index, ok := p.ctx.reachingScratchStore(effects, before, addr); ok {
 		return p.resolveScratchValue(effects, index, store.Src), []int{index}, true
 	}
 	if addr.Width != 4 {
@@ -406,8 +595,8 @@ func (p *collapseStorageRMWProcessor) scratchValueAtWithIndices(effects []machin
 
 // scratchWordValuesAt returns the reaching values and definition indices for adjacent scratch words.
 func (p *collapseStorageRMWProcessor) scratchWordValuesAt(effects []machine.Effect, before int, lowAddr, highAddr machine.MemoryAddress) (machine.Value, machine.Value, int, int, bool) {
-	low, lowIndex, lowOK := p.reachingScratchStore(effects, before, lowAddr)
-	high, highIndex, highOK := p.reachingScratchStore(effects, before, highAddr)
+	low, lowIndex, lowOK := p.ctx.reachingScratchStore(effects, before, lowAddr)
+	high, highIndex, highOK := p.ctx.reachingScratchStore(effects, before, highAddr)
 	if !lowOK || !highOK {
 		return nil, nil, 0, 0, false
 	}
@@ -427,13 +616,13 @@ func scratchDefinitionAfter(indices []int, clearIndex int) bool {
 
 // reachingScratchStore finds the latest exact definition of a scratch range;
 // an intervening overlapping write kills the lookup.
-func (p *collapseStorageRMWProcessor) reachingScratchStore(effects []machine.Effect, before int, addr machine.MemoryAddress) (machine.StoreEffect, int, bool) {
+func (ctx *FuncContext) reachingScratchStore(effects []machine.Effect, before int, addr machine.MemoryAddress) (machine.StoreEffect, int, bool) {
 	for i := before - 1; i >= 0; i-- {
 		store, ok := effects[i].(machine.StoreEffect)
-		if !ok || !p.scratchStorageOverlaps(addr, store.Addr) {
+		if !ok || !ctx.scratchStorageOverlaps(addr, store.Addr) {
 			continue
 		}
-		if p.sameScratchRange(addr, store.Addr) {
+		if ctx.sameScratchRange(addr, store.Addr) {
 			return store, i, true
 		}
 		return machine.StoreEffect{}, 0, false
@@ -443,8 +632,8 @@ func (p *collapseStorageRMWProcessor) reachingScratchStore(effects []machine.Eff
 
 // syntheticScratchAddress reports whether an address is rooted at compiler
 // scratch storage rather than a declared local.
-func (p *collapseStorageRMWProcessor) syntheticScratchAddress(addr machine.MemoryAddress) bool {
-	resolved, ok := p.ctx.symbols.addressFromMemory(addr, nil)
+func (ctx *FuncContext) syntheticScratchAddress(addr machine.MemoryAddress) bool {
+	resolved, ok := ctx.symbols.addressFromMemory(addr, nil)
 	if !ok {
 		return false
 	}
@@ -453,12 +642,12 @@ func (p *collapseStorageRMWProcessor) syntheticScratchAddress(addr machine.Memor
 }
 
 // sameScratchRange reports whether two scratch accesses cover identical bytes.
-func (p *collapseStorageRMWProcessor) sameScratchRange(a, b machine.MemoryAddress) bool {
-	if a.Width != b.Width || !p.scratchStorageOverlaps(a, b) {
+func (ctx *FuncContext) sameScratchRange(a, b machine.MemoryAddress) bool {
+	if a.Width != b.Width || !ctx.scratchStorageOverlaps(a, b) {
 		return false
 	}
-	aResolved, aOK := p.ctx.symbols.addressFromMemory(a, nil)
-	bResolved, bOK := p.ctx.symbols.addressFromMemory(b, nil)
+	aResolved, aOK := ctx.symbols.addressFromMemory(a, nil)
+	bResolved, bOK := ctx.symbols.addressFromMemory(b, nil)
 	return aOK && bOK && resolvedAddressPhysicalOffset(aResolved) == resolvedAddressPhysicalOffset(bResolved)
 }
 
@@ -560,13 +749,13 @@ func (p *collapseStorageRMWProcessor) scratchLaneArithmeticOperands(storage mach
 }
 
 // scratchWordPair reports whether two adjacent word addresses are synthetic stack scratch storage.
-func (p *collapseStorageRMWProcessor) scratchWordPair(low, high machine.MemoryAddress) bool {
-	lo, ok := p.ctx.symbols.addressFromMemory(low, nil)
+func (ctx *FuncContext) scratchWordPair(low, high machine.MemoryAddress) bool {
+	lo, ok := ctx.symbols.addressFromMemory(low, nil)
 	if !ok {
 		return false
 	}
-	hi, ok := p.ctx.symbols.addressFromMemory(high, nil)
-	if !ok || !p.ctx.symbols.sameResolvedAddressBase(lo, hi) {
+	hi, ok := ctx.symbols.addressFromMemory(high, nil)
+	if !ok || !ctx.symbols.sameResolvedAddressBase(lo, hi) {
 		return false
 	}
 	_, loScratch := lo.base.(*symresolve.SymbolScratch)
@@ -601,7 +790,7 @@ func (p *collapseStorageRMWProcessor) destinationScratchOperand(dst machine.Memo
 
 // syntheticScratchAccess reports whether a word or adjacent-word access is compiler scratch storage.
 func (p *collapseStorageRMWProcessor) syntheticScratchAccess(addr machine.MemoryAddress) bool {
-	if p.syntheticScratchAddress(addr) {
+	if p.ctx.syntheticScratchAddress(addr) {
 		return true
 	}
 	if addr.Width != 4 {
@@ -611,7 +800,7 @@ func (p *collapseStorageRMWProcessor) syntheticScratchAccess(addr machine.Memory
 	low.Width = 2
 	high := low
 	high.Disp += 2
-	return p.scratchWordPair(low, high)
+	return p.ctx.scratchWordPair(low, high)
 }
 
 // scratchSnapshotRemovable proves that deleting the reaching scratch definitions
@@ -793,9 +982,9 @@ func (p *collapseStorageRMWProcessor) scratchReadOutsideWindow(effects []machine
 			value: func(w *machineRewriter, value machine.Value) (machine.Value, bool, bool) {
 				switch value := value.(type) {
 				case *machine.Load:
-					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
+					found = found || p.ctx.scratchStorageOverlaps(scratch, value.Addr)
 				case *machine.Address:
-					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
+					found = found || p.ctx.scratchStorageOverlaps(scratch, value.Addr)
 				}
 				return nil, false, false
 			},
@@ -846,13 +1035,13 @@ func (p *collapseStorageRMWProcessor) scratchByteMask(scratch, access machine.Me
 }
 
 // scratchStorageOverlaps reports whether two accesses overlap the same synthetic scratch bytes.
-func (p *collapseStorageRMWProcessor) scratchStorageOverlaps(a, b machine.MemoryAddress) bool {
+func (ctx *FuncContext) scratchStorageOverlaps(a, b machine.MemoryAddress) bool {
 	if a.Width <= 0 || b.Width <= 0 {
 		return false
 	}
-	aResolved, aOK := p.ctx.symbols.addressFromMemory(a, nil)
-	bResolved, bOK := p.ctx.symbols.addressFromMemory(b, nil)
-	if !aOK || !bOK || !p.ctx.symbols.sameResolvedAddressBase(aResolved, bResolved) {
+	aResolved, aOK := ctx.symbols.addressFromMemory(a, nil)
+	bResolved, bOK := ctx.symbols.addressFromMemory(b, nil)
+	if !aOK || !bOK || !ctx.symbols.sameResolvedAddressBase(aResolved, bResolved) {
 		return false
 	}
 	_, aScratch := aResolved.base.(*symresolve.SymbolScratch)
@@ -885,10 +1074,10 @@ func (p *collapseStorageRMWProcessor) scratchReadBetweenExcept(effects []machine
 			value: func(w *machineRewriter, value machine.Value) (machine.Value, bool, bool) {
 				switch value := value.(type) {
 				case *machine.Load:
-					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
+					found = found || p.ctx.scratchStorageOverlaps(scratch, value.Addr)
 
 				case *machine.Address:
-					found = found || p.scratchStorageOverlaps(scratch, value.Addr)
+					found = found || p.ctx.scratchStorageOverlaps(scratch, value.Addr)
 				}
 
 				return nil, false, false

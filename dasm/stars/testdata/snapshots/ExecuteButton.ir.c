@@ -1,6 +1,6 @@
 void ExecuteButton(int16_t itb, int16_t fDown) {
     uint16_t grbitNew;
-    POINT    pt;
+    POINT16  pt;
     char    *rgszScan[12];
     int16_t  c;
     int16_t  i;
@@ -11,10 +11,28 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
     int16_t  ish;
     uint16_t t_merge_0e93_0001;
     uint16_t t_merge_0ebc_0001;
+    int16_t  t_0ef9;
+    int16_t  t_0f36;
     uint16_t t_merge_0f6f_0001;
+    int16_t  t_0fa6;
+    POINT    t_pt_0fca;
+    POINT    t_pt_0fda_1;
+    int16_t  t_10c5;
+    int16_t  t_1103;
     uint16_t t_merge_1176_0001;
+    int16_t  t_1198;
+    POINT    t_pt_11b2;
+    POINT    t_pt_11c2_1;
+    int16_t  t_134d;
+    int16_t  t_138a;
     uint16_t t_merge_13c3_0001;
+    int16_t  t_13fa;
+    POINT    t_pt_141e;
+    POINT    t_pt_142e_1;
     uint16_t t_merge_153f_0001;
+    int16_t  t_1589;
+    POINT    t_pt_15ad;
+    POINT    t_pt_15bd_1;
 
 L_0db6:
     gd.fChgScanner = 0x1;
@@ -133,8 +151,9 @@ L_0ebc:
 
 L_0ecd:
     CchGetString(i, &(szWork[(((i - 1278) * 30) + 160)]));
+    t_0ef9 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(((i - 1278) * 30) + 160)]);
+    rgszScan[t_0ef9] = &(szWork[(((i - 1278) * 30) + 160)]);
     i = (i + 1);
 
 L_0f0d:
@@ -147,8 +166,9 @@ L_0f17:
     rgid[c] = 0;
     szWork[250] = -1;
     szWork[251] = 0;
+    t_0f36 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[250]);
+    rgszScan[t_0f36] = &(szWork[250]);
     i = 0;
     goto L_0fba;
 
@@ -168,8 +188,9 @@ L_0f6b:
 L_0f6f:
     rgid[c] = (uint32_t)(t_merge_0f6f_0001);
     CchGetString((i + 1280), &(szWork[(i * 30)]));
+    t_0fa6 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 30)]);
+    rgszScan[t_0fa6] = &(szWork[(i * 30)]);
     i = (i + 1);
 
 L_0fba:
@@ -179,8 +200,12 @@ L_0fba:
         goto L_0fc3;
 
 L_0fc3:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_0fca = PointFrom16(pt);
+    GetCursorPos(&(t_pt_0fca));
+    pt = PointTo16(t_pt_0fca);
+    t_pt_0fda_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_0fda_1));
+    pt = PointTo16(t_pt_0fda_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -238,8 +263,9 @@ L_1076:
 L_1083:
     rgid[c] = 0;
     CchGetString(i, &(szWork[((i - 1275) * 20)]));
+    t_10c5 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[((i - 1275) * 20)]);
+    rgszScan[t_10c5] = &(szWork[((i - 1275) * 20)]);
     i = (i + 1);
 
 L_10d9:
@@ -252,8 +278,9 @@ L_10e3:
     rgid[c] = 0;
     szWork[200] = -1;
     szWork[201] = 0;
+    t_1103 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[200]);
+    rgszScan[t_1103] = &(szWork[200]);
     ish = 0;
     grbitSh = 0x1;
     goto L_1135;
@@ -289,15 +316,20 @@ L_1172:
 
 L_1176:
     rgid[c] = (uint32_t)(t_merge_1176_0001);
+    t_1198 = c;
     c = (c + 1);
-    rgszScan[c] = rgshdef[ish].hul.szClass;
+    rgszScan[t_1198] = rgshdef[ish].hul.szClass;
 
 L_11a8:
     goto L_1125;
 
 L_11ab:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_11b2 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_11b2));
+    pt = PointTo16(t_pt_11b2);
+    t_pt_11c2_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_11c2_1));
+    pt = PointTo16(t_pt_11c2_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -410,8 +442,9 @@ L_12fa:
 L_130c:
     rgid[c] = 0;
     CchGetString(i, &(szWork[(((i - 1275) * 25) + 200)]));
+    t_134d = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(((i - 1275) * 25) + 200)]);
+    rgszScan[t_134d] = &(szWork[(((i - 1275) * 25) + 200)]);
     i = (i + 1);
 
 L_1361:
@@ -424,8 +457,9 @@ L_136b:
     rgid[c] = 0;
     szWork[300] = -1;
     szWork[301] = 0;
+    t_138a = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[300]);
+    rgszScan[t_138a] = &(szWork[300]);
     i = 0;
     goto L_140e;
 
@@ -445,8 +479,9 @@ L_13bf:
 L_13c3:
     rgid[c] = (uint32_t)(t_merge_13c3_0001);
     CchGetString((i + 381), &(szWork[(i * 25)]));
+    t_13fa = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 25)]);
+    rgszScan[t_13fa] = &(szWork[(i * 25)]);
     i = (i + 1);
 
 L_140e:
@@ -456,8 +491,12 @@ L_140e:
         goto L_1417;
 
 L_1417:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_141e = PointFrom16(pt);
+    GetCursorPos(&(t_pt_141e));
+    pt = PointTo16(t_pt_141e);
+    t_pt_142e_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_142e_1));
+    pt = PointTo16(t_pt_142e_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -556,8 +595,9 @@ L_153b:
 L_153f:
     rgid[c] = (uint32_t)(t_merge_153f_0001);
     _wsprintf(&(szWork[(i * 8)]), PCTDPCTPCT, vrgpctZoom[i]);
+    t_1589 = c;
     c = (c + 1);
-    rgszScan[c] = &(szWork[(i * 8)]);
+    rgszScan[t_1589] = &(szWork[(i * 8)]);
     i = (i + 1);
 
 L_159d:
@@ -567,8 +607,12 @@ L_159d:
         goto L_15a6;
 
 L_15a6:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwndTb, &(pt));
+    t_pt_15ad = PointFrom16(pt);
+    GetCursorPos(&(t_pt_15ad));
+    pt = PointTo16(t_pt_15ad);
+    t_pt_15bd_1 = PointFrom16(pt);
+    ScreenToClient(hwndTb, &(t_pt_15bd_1));
+    pt = PointTo16(t_pt_15bd_1);
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
     if ((iSel == -1))
         goto L_167a;
@@ -580,7 +624,7 @@ L_15f6:
     goto L_167a;
 
 L_160f:
-    if ((itb > 17))
+    if (((uint16_t)(itb) > 17))
         goto L_167a;
     else
         goto L_1617;

@@ -21,7 +21,7 @@ CalcPlayerScore  (util)
   stats: blocks=0  labels=0
 */
 L_58a6:
-    call memset(&score, 0, 0x14) -> callresult(void *)
+    call memset(&score, 0, sizeof(SCORE)) -> callresult(void *)
     lppl = lpPlanets
     lpplMac = &lpPlanets[cPlanet]
     goto L_59c9
@@ -60,7 +60,7 @@ L_59c9:
 
 L_59d7:
     score.lScore = (score.lScore + (int32_t)(score.cResources / 30))
-    score.lScore = (score.lScore + sext16to32(loword((3 * score.cStarbase))))
+    score.lScore = (score.lScore + sext16to32((3 * score.cStarbase)))
     branch rgplr[iPlr].fDead != 0x0 ? L_5aa7 : L_5a16
 
 L_5a16:
@@ -87,7 +87,7 @@ L_5a6d:
     branch iTech >= 10 ? L_5a89 : L_5a76
 
 L_5a76:
-    score.lScore = (score.lScore + sext16to32((loword((3 * iTech)) + 0xfff7)))
+    score.lScore = (score.lScore + sext16to32(((3 * iTech) - 0x9)))
     goto L_5a9a
 
 L_5a89:

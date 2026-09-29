@@ -57,7 +57,7 @@ func LoadGlobalInitializer(img *asm.ImageNE, sdb *typeinfo.SymbolDB, g *typeinfo
 		return nil, false
 	}
 
-	buf, ok := readGlobalBytes(img, g)
+	buf, ok := ReadGlobalBytes(img, g)
 	if !ok {
 		return nil, false
 	}

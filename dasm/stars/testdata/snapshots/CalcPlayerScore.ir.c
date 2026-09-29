@@ -14,7 +14,7 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     int32_t t_merge_5cf5_0001;
 
 L_58a6:
-    memset(&(score), 0, 0x14);
+    memset(&(score), 0, sizeof(SCORE));
     lppl = lpPlanets;
     lpplMac = (lpPlanets + cPlanet);
     goto L_59c9;
@@ -66,7 +66,7 @@ L_59c9:
 
 L_59d7:
     score.lScore = (score.lScore + (int32_t)((score.cResources / 30)));
-    score.lScore = (score.lScore + (int32_t)(LOWORD((3 * score.cStarbase))));
+    score.lScore = (score.lScore + (int32_t)((3 * score.cStarbase)));
     if ((rgplr[iPlr].fDead != 0x0))
         goto L_5aa7;
     else
@@ -105,7 +105,7 @@ L_5a6d:
         goto L_5a76;
 
 L_5a76:
-    score.lScore = (score.lScore + (int32_t)((LOWORD((3 * iTech)) + 0xfff7)));
+    score.lScore = (score.lScore + (int32_t)(((3 * iTech) - 0x9)));
     goto L_5a9a;
 
 L_5a89:

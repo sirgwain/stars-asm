@@ -233,7 +233,7 @@ L_0a99:
         goto L_0aa3;
 
 L_0aa3:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_16f8;
     else
         goto L_0abf;
@@ -532,7 +532,7 @@ L_11e7:
         goto L_11ff;
 
 L_11ff:
-    if (((_ctype[(btlplan.szName[(cLen - 2)] + 1)] & 0x4) == 0x0))
+    if ((isdigit(btlplan.szName[(cLen - 2)]) == 0x0))
         goto L_123c;
     else
         goto L_1224;

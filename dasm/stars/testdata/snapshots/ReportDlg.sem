@@ -24,7 +24,7 @@ ReportDlg  (report)
       int16_t          iCol           [BP-0x18]
       int16_t          ibit           [BP-0x16]
       int16_t          i              [BP-0x14]
-      POINT            pt             [BP-0x12]
+      POINT16          pt             [BP-0x12]
     block 0022:04FC  len=0x180
       int16_t          iNew           [BP-0x12]
       int16_t          iCur           [BP-0x10]
@@ -67,7 +67,7 @@ L_0097:
     call SortReportCache(vprptCur->irpt, vprptCur->icolSort) -> callresult(void)
     call SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE|SWP_NOZORDER|SWP_NOREDRAW) -> callresult(int16_t)
     call StickyDlgPos(hwnd, &vprptCur->ptDlg, 1) -> callresult(void)
-    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, 0x40000001, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0)
+    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, SBS_VERT|WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0)
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0)
     branch gd.fTutorial == 0x0 ? L_019b : L_0196
 
@@ -116,7 +116,7 @@ L_0273:
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL)
-    call SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (loword(((dyArial8 + 4) * vprptCur->cRowsVis)) + 1), swp) -> callresult(int16_t)
+    call SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (((dyArial8 + 4) * vprptCur->cRowsVis) + 1), swp) -> callresult(int16_t)
     call SetHScrollBar() -> callresult(void)
     branch msg != WM_CREATE ? L_030b : L_0304
 
@@ -141,7 +141,7 @@ L_0337:
 L_0362:
     xCur = 2
     pt.x = LOWORD(lParam)
-    pt.y = (loword((uint32_t)(lParam >> 0x10)) & 0xffff)
+    pt.y = hiword(lParam)
     branch pt.y < 2 ? L_09c8 : L_0390
 
 L_0390:
@@ -283,7 +283,7 @@ L_05d7:
     rc.left = 2
     rc.right = (rc.right - GetSystemMetrics(SM_CXVSCROLL))
     rc.top = (dyArial8 + 6)
-    rc.bottom = (loword(((dyArial8 + 4) * vprptCur->cRowsVis)) + rc.top)
+    rc.bottom = (((dyArial8 + 4) * vprptCur->cRowsVis) + rc.top)
     call ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &rc, &rc) -> callresult(void)
     call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1) -> callresult(int16_t)
     call UpdateWindow(hwnd) -> callresult(void)

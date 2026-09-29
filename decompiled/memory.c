@@ -6,7 +6,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht) {
 
 L_0000:
     lphb = 0x0;
-    cb = (cb + 0x10);
+    cb = (cb + sizeof(HB));
     if ((cb >= mphtcbAlloc[ht]))
         goto L_0034;
     else
@@ -30,9 +30,9 @@ L_0082:
     lphb = (HB *)(GlobalLock(hmem));
     lphb->hmem = hmem;
     lphb->cbBlock = cb;
-    lphb->cbSlop = (cb + 0xfff0);
-    lphb->cbFree = (cb + 0xfff0);
-    lphb->ibTop = 0x10;
+    lphb->cbSlop = (cb - sizeof(HB));
+    lphb->cbFree = (cb - sizeof(HB));
+    lphb->ibTop = sizeof(HB);
     lphb->ht = LOBYTE(ht);
     lphb->lphbNext = rglphb[ht];
     rglphb[ht] = lphb;
@@ -166,9 +166,9 @@ L_0348:
     goto L_039a;
 
 L_0369:
-    lphb->ibTop = 0x10;
-    lphb->cbSlop = (lphb->cbBlock + 0xfff0);
-    lphb->cbFree = (lphb->cbBlock + 0xfff0);
+    lphb->ibTop = sizeof(HB);
+    lphb->cbSlop = (lphb->cbBlock - sizeof(HB));
+    lphb->cbFree = (lphb->cbBlock - sizeof(HB));
     lphb = lphb->lphbNext;
 
 L_039a:
@@ -226,7 +226,7 @@ L_0436:
         goto L_045a;
 
 L_045a:
-    RawStore16(lpbTop, (cb + 0xfffe));
+    RawStore16(lpbTop, (cb - 0x2));
     lphb->ibTop = (lphb->ibTop + cb);
     lphb->cbFree = (lphb->cbFree - cb);
     lphb->cbSlop = (lphb->cbSlop - cb);
@@ -269,7 +269,7 @@ L_0512:
     goto L_04dd;
 
 L_0524:
-    cbItem = ((lpb - lpbPrev) + 0xfffe);
+    cbItem = ((lpb - lpbPrev) - 0x2);
     RawStore16(lpbPrev, (cbItem | 0x1));
     if (((cbItem + 0x2) < cb))
         goto L_0575;
@@ -402,7 +402,7 @@ L_071d:
 
 L_0726:
     lphb = LphbReAlloc(lphb);
-    lp = ((uint8_t *)(lphb) + 18);
+    lp = ((uint8_t *)(lphb) + (sizeof(HB) + 2));
     goto LGrewHeap;
 
 L_0751:
@@ -430,7 +430,7 @@ L_07c6:
     cbFree = (RawLoad16(((uint8_t *)(lp)-0x2)) + 0x2);
     RawStore16(((uint8_t *)(lp)-0x2), (RawLoad16(((uint8_t *)(lp)-0x2)) | 0x1));
     lphb->cbFree = (lphb->cbFree + cbFree);
-    if ((((((uint8_t *)(lp) - (uint8_t *)(lphb)) + cbFree) + 0xfffe) != lphb->ibTop))
+    if ((((((uint8_t *)(lp) - (uint8_t *)(lphb)) + cbFree) - 0x2) != lphb->ibTop))
         goto L_082f;
     else
         goto L_081b;
@@ -445,7 +445,7 @@ L_082f:
 
 PL *LpplReAlloc(PL *lppl, uint16_t cAlloc) {
 L_0836:
-    lppl = LpReAlloc(lppl, (LOWORD((lppl->cbItem * cAlloc)) + 0x4), lppl->ht);
+    lppl = LpReAlloc(lppl, ((lppl->cbItem * cAlloc) + 0x4), lppl->ht);
     lppl->iMax = LOBYTE(cAlloc);
 
 L_0885:
@@ -456,7 +456,7 @@ PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht) {
     PL *lppl;
 
 L_088c:
-    lppl = LpAlloc((LOWORD((cbItem * cAlloc)) + 0x4), ht);
+    lppl = LpAlloc(((cbItem * cAlloc) + 0x4), ht);
     lppl->iMax = LOBYTE(cAlloc);
     lppl->iMac = 0x0;
     lppl->fMark = 0x0;

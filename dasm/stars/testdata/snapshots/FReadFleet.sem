@@ -23,7 +23,7 @@ FReadFleet  (file)
 */
 L_3a4c:
     cish = 0
-    call fmemset(lpfl, 0, 0x7c) -> callresult(void *)
+    call fmemset(lpfl, 0, sizeof(FLEET)) -> callresult(void *)
     call fmemmove(lpfl, rgbCur, 0xc) -> callresult(void *)
     fByte = lpfl->fDone
     us = *&rgbCur[12]
@@ -45,8 +45,9 @@ L_3ad7:
     branch (us & 0x1) == 0x0 ? L_3abe : L_3ae5
 
 L_3ae5:
+    t_3ae5 = pb
     pb = &pb[1]
-    lpfl->rgcsh[i] = *pb
+    lpfl->rgcsh[i] = *t_3ae5
     branch lpfl->rgcsh[i] == 0 ? L_3abe : L_3b25
 
 L_3b25:
@@ -71,8 +72,9 @@ L_3b56:
     branch (us & 0x1) == 0x0 ? L_3b3d : L_3b64
 
 L_3b64:
+    t_3b64 = pus
     pus = &pus[1]
-    lpfl->rgcsh[i] = *pus
+    lpfl->rgcsh[i] = *t_3b64
     branch lpfl->rgcsh[i] == 0 ? L_3b3d : L_3ba1
 
 L_3ba1:
@@ -172,8 +174,9 @@ L_3d83:
     branch (us & 0x1) == 0x0 ? L_3d6a : L_3d91
 
 L_3d91:
+    t_3d91 = pus
     pus = &pus[1]
-    lpfl->rgdv[i].dp = *pus
+    lpfl->rgdv[i].dp = *t_3d91
     branch lpfl->rgdv[i].pctDp < 0x1f4 ? L_3d6a : L_3dd8
 
 L_3dd8:
@@ -184,10 +187,12 @@ L_3e0c:
 
 L_3e0f:
     pb = (uint8_t *)pus
+    t_3e15 = pb
     pb = &pb[1]
-    lpfl->iplan = *pb
+    lpfl->iplan = *t_3e15
+    t_3e25 = pb
     pb = &pb[1]
-    lpfl->cord = *pb
+    lpfl->cord = *t_3e25
     lpfl->lpplord = (PLORD *)LpplAlloc(0x12, (lpfl->cord + 1), htOrd)
     call fmemset(lpfl->lpplord->rgord, 0, ((lpfl->cord + 1) * 18)) -> callresult(void *)
     cord = lpfl->cord

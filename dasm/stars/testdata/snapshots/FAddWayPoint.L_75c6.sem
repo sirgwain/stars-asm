@@ -2,7 +2,7 @@ L_75c6:
     dx = (ptIn.x - pscan->pt.x)
     dy = (ptIn.y - pscan->pt.y)
     lDist = ScanToPt(20)
-    branch (int32_t)((uint32_t)(sext16to32(dx) * sext16to32(dx)) + (uint32_t)(sext16to32(dy) * sext16to32(dy))) <= sext16to32(loword((lDist * lDist))) ? L_7680 : L_7644
+    branch (int32_t)((uint32_t)(sext16to32(dx) * sext16to32(dx)) + (uint32_t)(sext16to32(dy) * sext16to32(dy))) <= sext16to32((lDist * lDist)) ? L_7680 : L_7644
 
 
 

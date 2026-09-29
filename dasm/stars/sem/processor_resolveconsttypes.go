@@ -281,13 +281,14 @@ func resolveConstTypesBinary(binary *Binary, expected typeinfo.Type, bitwise boo
 	// Once constant typing is resolved, normalize addition/subtraction of a
 	// negative RHS:
 	//
-	//     x + -1  -> x - 1
-	//     x - -1  -> x + 1
+	//     x + -1      -> x - 1
+	//     x - -1      -> x + 1
+	//     x + 0xffff  -> x - 1   (16-bit add of an unsigned constant)
 	//
 	// Do not apply this to the other operators supported by Op.Invert().
 	if next.Op == OpAdd || next.Op == OpSub {
 		if c, ok := next.RHS.(*Const); ok {
-			if value, ok := c.Int64(); ok && value < 0 {
+			if value, ok := addendValue(c, next.ExprType()); ok && value < 0 {
 				inverted := next.Op.Invert()
 				if inverted != OpUnknown {
 					positive := *c
@@ -307,6 +308,27 @@ func resolveConstTypesBinary(binary *Binary, expected typeinfo.Type, bitwise boo
 	}
 
 	return &next, true
+}
+
+// addendValue returns the signed amount a constant adds in an add or subtract
+// whose result has type typ. Machine addition wraps at the operation width, so
+// an unsigned constant with the sign bit set subtracts: a 16-bit x + 0xffff is
+// x - 1. C promotes the operands to int instead and would add 65535.
+func addendValue(c *Const, typ typeinfo.Type) (int64, bool) {
+	prim, ok := c.TypeInfo.(*typeinfo.Primitive)
+	if !ok || prim.TypeKind != typeinfo.KInt || prim.Signed || c.Fixup != nil || typ == nil || typ.Bytes() != prim.Size {
+		return c.Int64()
+	}
+	switch prim.Size {
+	case 1:
+		return int64(int8(c.U64)), true
+	case 2:
+		return int64(int16(c.U64)), true
+	case 4:
+		return int64(int32(c.U64)), true
+	default:
+		return 0, false
+	}
 }
 
 // binaryConstPeerType returns the type a constant should take from its binary
@@ -330,15 +352,15 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 
 	// When one side is a constant, the non-constant peer is stronger evidence
 	// than the enclosing expression type.
-	if _, ok := compare.LHS.(*Const); ok {
+	if c, ok := compare.LHS.(*Const); ok {
 		if typ := semanticPeerType(compare.RHS); typ != nil {
-			lhsExpected = typ
+			lhsExpected = compareConstType(compare.Op, typ, c)
 		}
 	}
 
-	if _, ok := compare.RHS.(*Const); ok {
+	if c, ok := compare.RHS.(*Const); ok {
 		if typ := semanticPeerType(compare.LHS); typ != nil {
-			rhsExpected = typ
+			rhsExpected = compareConstType(compare.Op, typ, c)
 		}
 	}
 
@@ -364,6 +386,40 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 	return &next, true
 }
 
+// compareDomainType returns typ with the signedness of a relational
+// comparison op, or typ unchanged when op is an equality or typ is not a plain
+// integer.
+func compareDomainType(op CompareOp, typ typeinfo.Type) typeinfo.Type {
+	prim, ok := typ.(*typeinfo.Primitive)
+	if !ok || prim.TypeKind != typeinfo.KInt || prim.Native != typeinfo.NativeInt {
+		return typ
+	}
+	switch {
+	case op.Unsigned() && prim.Signed:
+		return typeinfo.UintForWidth(prim.Size)
+	case op.Signed() && !prim.Signed:
+		return typeinfo.IntForWidth(prim.Size)
+	}
+	return typ
+}
+
+// compareConstType returns the type for a constant compared with a peer of
+// type peer. A relational branch fixes the constant's signedness when its sign
+// bit is set: CMP ax, 0xffc8; JBE compares with 65480 even when ax holds a
+// signed value. Other constants read the same either way and keep the peer's
+// type.
+func compareConstType(op CompareOp, peer typeinfo.Type, c *Const) typeinfo.Type {
+	want := compareDomainType(op, peer)
+	if want == peer {
+		return peer
+	}
+	bits := uint(peer.Bytes() * 8)
+	if (c.U64>>(bits-1))&1 == 0 {
+		return peer
+	}
+	return want
+}
+
 // semanticPeerType returns the source-level scalar type represented by expr.
 //
 // Casts introduced by integer promotion are deliberately ignored. For:
@@ -385,6 +441,10 @@ func semanticPeerType(expr Expr) typeinfo.Type {
 			// Machine binary nodes retain their unsigned lane type. Recover
 			// the source type through same-width arithmetic so a nested
 			// signed difference still types a following 0xffff as -1.
+			// A 16-bit SAR sign extends, so its result is signed too.
+			if e.Op == OpSar && e.ExprType() != nil && e.ExprType().Bytes() == 2 {
+				return typeinfo.I16
+			}
 			if e.Op == OpAdd || e.Op == OpSub || e.Op == OpMul {
 				lhs := semanticPeerType(e.LHS)
 				rhs := semanticPeerType(e.RHS)

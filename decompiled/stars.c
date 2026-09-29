@@ -11,8 +11,8 @@ L_0000:
     hInst = hInstance;
     szBase[0] = 0;
     ini.wFlags = 0x0;
-    memset(&(tutor), 0, 0x2c);
-    memset(&(vtimer), 0, 0xa);
+    memset(&(tutor), 0, sizeof(TUTOR));
+    memset(&(vtimer), 0, sizeof(TIMER));
     vtimer.fAutoGenWhenIn = 1;
     if ((hPrevInstance != 0x0))
         goto L_0085;
@@ -204,7 +204,7 @@ L_0260:
 
 L_0270:
     lpT = (lpT + 1);
-    i = ((LOWORD((10 * i)) + (int16_t)(*(lpT))) - 48);
+    i = (((10 * i) + (int16_t)(*(lpT))) - 48);
     if ((i <= 1000))
         goto L_0250;
     else
@@ -613,7 +613,7 @@ L_068d:
 
 L_0690:
     FreeStuff();
-    return msg.wParam;
+    return (int16_t)(msg.wParam);
 }
 
 int16_t FSetUpBatchProcessing() {
@@ -838,7 +838,7 @@ L_0ab7:
     lpbi = (BITMAPINFO *)(GlobalLock(hdibPlaque));
     lpbi->bmiColors[249].rgbRed = LOBYTE(LOWORD(crButtonFace));
     lpbi->bmiColors[249].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    lpbi->bmiColors[249].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    lpbi->bmiColors[249].rgbBlue = LOBYTE(HIWORD(crButtonFace));
     GlobalUnlock(hdibPlaque);
 
 L_0b09:
@@ -851,13 +851,13 @@ L_0b13:
     lpbi = (BITMAPINFO *)(GlobalLock(hdibToolbar));
     lpbi->bmiColors[253].rgbRed = LOBYTE(LOWORD(crButtonFace));
     lpbi->bmiColors[253].rgbGreen = LOBYTE((LOWORD(crButtonFace) >> 0x8));
-    lpbi->bmiColors[253].rgbBlue = LOBYTE(LOWORD((uint32_t)((crButtonFace >> 0x10))));
+    lpbi->bmiColors[253].rgbBlue = LOBYTE(HIWORD(crButtonFace));
     GlobalUnlock(hdibToolbar);
 
 L_0b65:
     hdc = GetDC(0x0);
     t_scratch_m6 = GetDeviceCaps(hdc, BITSPIXEL);
-    vcScreenColors = LOWORD((t_scratch_m6 * GetDeviceCaps(hdc, PLANES)));
+    vcScreenColors = (t_scratch_m6 * GetDeviceCaps(hdc, PLANES));
     ReleaseDC(0x0, hdc);
 
 L_0ba8:
@@ -1369,7 +1369,7 @@ L_13fa:
     goto L_1510;
 
 L_142c:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_1510;
     else
         goto L_1448;
@@ -1456,7 +1456,7 @@ L_152d:
     return 1;
 
 L_1555:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_15cf;
     else
         goto L_1571;
@@ -1559,7 +1559,7 @@ L_164e:
 
 int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     HWND     hwndF;
-    POINT    pt;
+    POINT16  pt;
     HWND     hwndOver;
     int16_t  i;
     int16_t  itb;
@@ -1567,6 +1567,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     int16_t  iWarp;
     int16_t  iwp;
     int16_t  t_merge_1756_0001;
+    POINT    t_pt_1779;
     int16_t  t_merge_1a23_0001;
     int16_t  t_merge_1ad2_0001;
     int16_t  t_merge_1bbd_0001;
@@ -1697,8 +1698,10 @@ L_1768:
         goto L_1772;
 
 L_1772:
-    GetCursorPos(&(pt));
-    hwndOver = WindowFromPoint(pt);
+    t_pt_1779 = PointFrom16(pt);
+    GetCursorPos(&(t_pt_1779));
+    pt = PointTo16(t_pt_1779);
+    hwndOver = WindowFromPoint(PointFrom16(pt));
     if ((hwndOver != hwndScanner))
         goto L_17ae;
     else

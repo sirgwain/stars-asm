@@ -1,7 +1,7 @@
 int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn) {
     char    *pszTitle;
     int16_t  tpm;
-    POINT    pt;
+    POINT16  pt;
     int16_t  i;
     char     szTemp[128];
     HMENU    hmenuSub;
@@ -11,11 +11,21 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     MSG      msg;
     int16_t  fChecked;
     int16_t  fCheckedCur;
+    POINT    t_pt_1391_1;
+    char    *t_1545;
+    char    *t_1550;
+    char    *t_1564;
     uint16_t t_merge_1592_0001;
     uint16_t t_merge_15f4_0001;
     uint16_t t_merge_163a_0001;
+    char    *t_16d0;
+    char    *t_16db;
+    char    *t_16ef;
     uint16_t t_merge_171c_0001;
     uint16_t t_merge_175a_0001;
+    char    *t_17e3;
+    char    *t_17ee;
+    char    *t_1802;
     int32_t  t_merge_184f_0001;
     uint16_t t_merge_186e_0001;
 
@@ -23,7 +33,9 @@ L_136c:
     hmenuSub = 0x0;
     pt.x = x;
     pt.y = y;
-    ClientToScreen(hwnd, &(pt));
+    t_pt_1391_1 = PointFrom16(pt);
+    ClientToScreen(hwnd, &(t_pt_1391_1));
+    pt = PointTo16(t_pt_1391_1);
     hmenuPopup = CreatePopupMenu();
     iPopMenuSel = -1;
     i = 0;
@@ -110,17 +122,20 @@ L_1536:
         goto L_1545;
 
 L_1545:
+    t_1545 = psz;
     psz = (psz + 1);
+    t_1550 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = *(psz);
-    if (((int16_t)(*(psz)) != 38))
+    *(t_1550) = *(t_1545);
+    if (((int16_t)(*(t_1545)) != 38))
         goto L_1536;
     else
         goto L_1564;
 
 L_1564:
+    t_1564 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = 38;
+    *(t_1564) = 38;
 
 L_1570:
     goto L_1536;
@@ -231,17 +246,20 @@ L_16c1:
         goto L_16d0;
 
 L_16d0:
+    t_16d0 = psz;
     psz = (psz + 1);
+    t_16db = pszT;
     pszT = (pszT + 1);
-    *(pszT) = *(psz);
-    if (((int16_t)(*(psz)) != 38))
+    *(t_16db) = *(t_16d0);
+    if (((int16_t)(*(t_16d0)) != 38))
         goto L_16c1;
     else
         goto L_16ef;
 
 L_16ef:
+    t_16ef = pszT;
     pszT = (pszT + 1);
-    *(pszT) = 38;
+    *(t_16ef) = 38;
 
 L_16fb:
     goto L_16c1;
@@ -316,17 +334,20 @@ L_17d4:
         goto L_17e3;
 
 L_17e3:
+    t_17e3 = psz;
     psz = (psz + 1);
+    t_17ee = pszT;
     pszT = (pszT + 1);
-    *(pszT) = *(psz);
-    if (((int16_t)(*(psz)) != 38))
+    *(t_17ee) = *(t_17e3);
+    if (((int16_t)(*(t_17e3)) != 38))
         goto L_17d4;
     else
         goto L_1802;
 
 L_1802:
+    t_1802 = pszT;
     pszT = (pszT + 1);
-    *(pszT) = 38;
+    *(t_1802) = 38;
 
 L_180e:
     goto L_17d4;

@@ -6,14 +6,14 @@
 ;     int16_t          x              [BP+0x8]
 ;     int16_t          y              [BP+0xa]
 ;   locals:
-;     POINT            ptT            [BP-0x18]
+;     POINT16          ptT            [BP-0x18]
 ;     int16_t          dx             [BP-0x14]
 ;     char *           psz            [BP-0x12]
 ;     HFONT            hfontSav       [BP-0x10]
 ;     int16_t          c              [BP-0xe]
 ;     int16_t          i              [BP-0xc]
 ;     int16_t          dy             [BP-0xa]
-;     POINT            pt             [BP-0x8]
+;     POINT16          pt             [BP-0x8]
 ;     HDC              hdc            [BP-0x4]
 ;     block 0019:0D22  len=0x88
 ;       char *           psz            [BP-0x1c]
@@ -490,7 +490,7 @@ L_1092:                             ; popup.c:420
 MOV       ax, 0x0000          
 PUSH      ax                  
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayPlanetStateInfo  ; POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint)
+CALLF     PtDisplayPlanetStateInfo  ; POINT16 PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint)
 ADD       sp, 0x0004          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx
@@ -503,7 +503,7 @@ PUSH      ax
 MOV       ax, 0x0000          
 PUSH      ax                  
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayZipOrdInfo       ; POINT PtDisplayZipOrdInfo(HDC hdc, int16_t xCtr, int16_t fPrint)
+CALLF     PtDisplayZipOrdInfo       ; POINT16 PtDisplayZipOrdInfo(HDC hdc, int16_t xCtr, int16_t fPrint)
 ADD       sp, 0x0006          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx
@@ -514,7 +514,7 @@ L_10c6:                             ; popup.c:428
 MOV       ax, 0x0000          
 PUSH      ax                  
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayPlanetPopInfo    ; POINT PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint)
+CALLF     PtDisplayPlanetPopInfo    ; POINT16 PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint)
 ADD       sp, 0x0004          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx
@@ -527,7 +527,7 @@ PUSH      ax
 MOV       ax, 0x00c8          
 PUSH      ax                  
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayResourceInfo     ; POINT PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint)
+CALLF     PtDisplayResourceInfo     ; POINT16 PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint)
 ADD       sp, 0x0006          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx
@@ -540,7 +540,7 @@ PUSH      ax
 MOV       ax, 0x00c8          
 PUSH      ax                  
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayFactoryMineInfo  ; POINT PtDisplayFactoryMineInfo(HDC hdc, int16_t dx, int16_t fPrint)
+CALLF     PtDisplayFactoryMineInfo  ; POINT16 PtDisplayFactoryMineInfo(HDC hdc, int16_t dx, int16_t fPrint)
 ADD       sp, 0x0006          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx
@@ -586,7 +586,7 @@ MOV       ax, 0x0000
 PUSH      ax                  
 PUSH      [GlobalPD+0x2]            ; [0x0b82]
 PUSH      [bp-hdc]                  ; [bp-0x4]
-CALLF     PtDisplayString           ; POINT PtDisplayString(HDC hdc, int16_t dx, int16_t fPrint)
+CALLF     PtDisplayString           ; POINT16 PtDisplayString(HDC hdc, int16_t dx, int16_t fPrint)
 ADD       sp, 0x0006          
 MOV       [bp-ptT], ax              ; [bp-0x18], ax
 MOV       [bp-ptT+0x2], dx          ; [bp-0x16], dx

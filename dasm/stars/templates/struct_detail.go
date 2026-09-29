@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -101,6 +102,10 @@ func renderStructBodyLines(s *typeinfo.Struct, indent string) []string {
 		if _, ok := coveredChunks[i]; ok {
 			continue
 		}
+		if s.SKind == typeinfo.StructKindUnion {
+			lines = append(lines, renderUnionMemberLines(chunk, indent)...)
+			continue
+		}
 		lines = append(lines, renderChunkLines(chunk, indent)...)
 	}
 	return lines
@@ -122,7 +127,7 @@ func renderOverlapRegionLines(s *typeinfo.Struct, region typeinfo.StructOverlapR
 		if len(path) == 1 {
 			idx := path[0]
 			if idx >= 0 && idx < len(s.Chunks) {
-				lines = append(lines, renderChunkLines(s.Chunks[idx], indent+"    ")...)
+				lines = append(lines, renderUnionMemberLines(s.Chunks[idx], indent+"    ")...)
 			}
 			continue
 		}
@@ -138,9 +143,32 @@ func renderOverlapRegionLines(s *typeinfo.Struct, region typeinfo.StructOverlapR
 	return lines
 }
 
+// renderUnionMemberLines renders one chunk as a union member. Every union
+// member starts at offset 0, bitfields included, so a group of bitfields is
+// wrapped in an anonymous struct to keep each at its own bit offset.
+func renderUnionMemberLines(chunk typeinfo.StructFieldChunk, indent string) []string {
+	if chunk.Kind != typeinfo.StructFieldChunkBitfield {
+		return renderChunkLines(chunk, indent)
+	}
+	var lines []string
+	for _, group := range bitfieldGroups(chunk) {
+		lines = append(lines, indent+"struct {")
+		lines = append(lines, renderBitfieldGroupLines(chunk, group, indent+"    ")...)
+		lines = append(lines, indent+"};")
+	}
+	return lines
+}
+
 func renderChunkLines(chunk typeinfo.StructFieldChunk, indent string) []string {
 	if chunk.Kind == typeinfo.StructFieldChunkBitfield {
-		return renderBitfieldChunkLines(chunk, indent)
+		groups := bitfieldGroups(chunk)
+		if len(groups) == 1 {
+			return renderBitfieldGroupLines(chunk, groups[0], indent)
+		}
+		// Overlapping bitfield layouts of one container are alternatives.
+		lines := []string{indent + "union {"}
+		lines = append(lines, renderUnionMemberLines(chunk, indent+"    ")...)
+		return append(lines, indent+"};")
 	}
 	if len(chunk.Fields) == 0 {
 		return nil
@@ -151,43 +179,69 @@ func renderChunkLines(chunk typeinfo.StructFieldChunk, indent string) []string {
 	}
 }
 
-func renderBitfieldChunkLines(chunk typeinfo.StructFieldChunk, indent string) []string {
-	fields := make([]typeinfo.StructField, 0, len(chunk.Fields))
+// bitfieldGroups splits a bitfield chunk's fields into groups whose bits do
+// not overlap, in bit order. The debug info can describe one container with
+// several overlapping layouts, such as a flags word read either as det and
+// iPlrBmp or as reserved and fAi; each layout becomes its own group.
+func bitfieldGroups(chunk typeinfo.StructFieldChunk) [][]typeinfo.StructField {
+	var fields []typeinfo.StructField
 	for _, field := range chunk.Fields {
 		if field.Bitfield != nil {
 			fields = append(fields, field)
 		}
 	}
-	if len(fields) == 0 {
-		return nil
+	sort.SliceStable(fields, func(i, j int) bool { return fields[i].Bitfield.BitOffset < fields[j].Bitfield.BitOffset })
+
+	var groups [][]typeinfo.StructField
+	var ends []int
+	for _, field := range fields {
+		placed := false
+		for i := range groups {
+			if ends[i] <= field.Bitfield.BitOffset {
+				groups[i] = append(groups[i], field)
+				ends[i] = field.Bitfield.BitOffset + field.Bitfield.BitWidth
+				placed = true
+				break
+			}
+		}
+		if !placed {
+			groups = append(groups, []typeinfo.StructField{field})
+			ends = append(ends, field.Bitfield.BitOffset+field.Bitfield.BitWidth)
+		}
+	}
+	return groups
+}
+
+// renderBitfieldGroupLines declares one group of non-overlapping bitfields
+// in a single container declaration, with unnamed padding bitfields holding
+// each field at its bit offset.
+func renderBitfieldGroupLines(chunk typeinfo.StructFieldChunk, fields []typeinfo.StructField, indent string) []string {
+	type member struct {
+		decl   string
+		bitOff int
+	}
+	var members []member
+	next := 0
+	for _, field := range fields {
+		if gap := field.Bitfield.BitOffset - next; gap > 0 {
+			members = append(members, member{decl: fmt.Sprintf(": %d", gap), bitOff: next})
+		}
+		members = append(members, member{decl: fmt.Sprintf("%s : %d", field.Name, field.Bitfield.BitWidth), bitOff: field.Bitfield.BitOffset})
+		next = field.Bitfield.BitOffset + field.Bitfield.BitWidth
 	}
 
-	lines := make([]string, 0, len(fields))
-	for i, field := range fields {
+	lines := make([]string, 0, len(members))
+	for i, m := range members {
 		term := ","
-		if i == len(fields)-1 {
+		if i == len(members)-1 {
 			term = ";"
 		}
 		if i == 0 {
-			lines = append(lines, fmt.Sprintf("%s%s %s : %d%s /* +0x%04X (%d) @bit%d */",
-				indent,
-				chunk.Type.String(),
-				field.Name,
-				field.Bitfield.BitWidth,
-				term,
-				chunk.Start,
-				chunk.Size(),
-				field.Bitfield.BitOffset,
-			))
+			lines = append(lines, fmt.Sprintf("%s%s %s%s /* +0x%04X (%d) @bit%d */",
+				indent, chunk.Type.String(), m.decl, term, chunk.Start, chunk.Size(), m.bitOff))
 			continue
 		}
-		lines = append(lines, fmt.Sprintf("%s        %s : %d%s /* @bit%d */",
-			indent,
-			field.Name,
-			field.Bitfield.BitWidth,
-			term,
-			field.Bitfield.BitOffset,
-		))
+		lines = append(lines, fmt.Sprintf("%s        %s%s /* @bit%d */", indent, m.decl, term, m.bitOff))
 	}
 	return lines
 }

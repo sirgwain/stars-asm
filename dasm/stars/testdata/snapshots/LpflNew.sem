@@ -1,0 +1,104 @@
+/*
+LpflNew  (util)
+  addr: 0008:300c  len=869
+  sig:  FLEET * LpflNew(int16_t iPlr, int16_t idPl)
+  params:
+    int16_t          iPlr           [BP+0x6]
+    int16_t          idPl           [BP+0x8]
+  locals:
+    int16_t          iflPrev        [BP-0xe]
+    FLEET *          lpfl           [BP-0xc]
+    ORDER *          lpord          [BP-0x8]
+    int16_t          i              [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_300c:
+    iflPrev = -1
+    i = 0
+    goto L_3026
+
+L_3022:
+    i = (i + 1)
+
+L_3026:
+    branch i >= cFleet ? L_30ad : L_3031
+
+L_3031:
+    lpfl = rglpfl[i]
+    branch rglpfl[i] != 0x0 ? L_3061 : L_30ad
+
+
+L_3061:
+    branch lpfl->iPlayer < iPlr ? L_3022 : L_3073
+
+L_3073:
+    branch lpfl->iPlayer > iPlr ? L_30ad : L_3085
+
+L_3085:
+    branch lpfl->ifl != (iflPrev + 1) ? L_30ad : L_309e
+
+L_309e:
+    iflPrev = lpfl->ifl
+    goto L_3022
+
+L_30ad:
+    rglpfl = LpReAlloc(rglpfl, ((cFleet + 1) * sizeof(FLEET *)), htMisc)
+    branch cFleet == i ? L_311b : L_30df
+
+L_30df:
+    call fmemmove(&rglpfl[(i + 1)], &rglpfl[i], ((cFleet - i) * sizeof(FLEET *))) -> callresult(void *)
+
+L_311b:
+    call LpAlloc(sizeof(FLEET), htFleets) -> t_call_3123
+    lpfl = t_call_3123
+    rglpfl[i] = t_call_3123
+    cFleet = (cFleet + 1)
+    rgplr[iPlr].cFleet = (rgplr[iPlr].cFleet + 0x1)
+    call fmemset(lpfl, 0, sizeof(FLEET)) -> callresult(void *)
+    lpfl->ifl = (iflPrev + 1)
+    lpfl->iPlayer = iPlr
+    lpfl->iplr = iPlr
+    lpfl->det = 0x7
+    lpfl->idPlanet = idPl
+    branch idPl == -1 ? L_3231 : L_3217
+
+L_3217:
+    lpfl->pt = rgptPlan[idPl]
+
+L_3231:
+    lpfl->cord = 1
+    lpfl->fRepOrders = 0x0
+    lpfl->lpplord = (PLORD *)LpplAlloc(0x12, 0x3, htOrd)
+    lpfl->lpplord->iordMac = 0x1
+    lpfl->fdirValid = 0x0
+    lpord = lpfl->lpplord->rgord
+    lpord->pt = lpfl->pt
+    lpord->id = lpfl->idPlanet
+    branch lpfl->idPlanet == -1 ? L_32d9 : L_32d3
+
+L_32d3:
+    t_merge_32dc_0001 = 0x1
+    goto L_32dc
+
+L_32d9:
+    t_merge_32dc_0001 = 0x4
+
+L_32dc:
+    lpord->grobj = t_merge_32dc_0001
+    lpord->iWarp = 0x0
+    lpord->fValidTask = 0x1
+    lpord->grTask = grTaskNone
+    branch sel.scan.ifl == -1 ? L_3356 : L_3346
+
+L_3346:
+    branch i > sel.scan.ifl ? L_3356 : L_3351
+
+L_3351:
+    sel.scan.ifl = (sel.scan.ifl + 1)
+
+L_3356:
+    gd.fFleetLinkValid = 0x0
+
+L_336b:
+    return lpfl

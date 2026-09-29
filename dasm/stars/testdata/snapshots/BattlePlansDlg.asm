@@ -35,7 +35,7 @@ PUSH      ax
 MOV       ax, 0x0d96          
 PUSH      ax                  
 PUSH      [bp+hwnd]                 ; [bp+0xe]
-CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit)
 ADD       sp, 0x0006          
                                     ; battle.c:225
 MOV       [iPlanSelDlg], 0x0000     ; [0x0d9a], 0x0000
@@ -603,7 +603,7 @@ PUSH      ax
 MOV       ax, 0x0d96          
 PUSH      ax                  
 PUSH      [bp+hwnd]                 ; [bp+0xe]
-CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit)
 ADD       sp, 0x0006          
                                     ; battle.c:308
 PUSH      [bp+hwnd]                 ; [bp+0xe]
@@ -1048,7 +1048,7 @@ PUSH      ax
 MOV       ax, 0x0d96          
 PUSH      ax                  
 PUSH      [bp+hwnd]                 ; [bp+0xe]
-CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+CALLF     StickyDlgPos              ; void StickyDlgPos(HWND hwnd, POINT16 *ppt, int16_t fInit)
 ADD       sp, 0x0006          
                                     ; battle.c:381
 MOV       ax, 0x04ce          

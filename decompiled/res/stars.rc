@@ -69,6 +69,9 @@ IDB_FILTER_CHECKBOX_MONO BITMAP "bitmaps/idb_filter_checkbox_mono.bmp"
 IDDIB_NUM_DESIGNS_PLATE BITMAP "bitmaps/iddib_num_designs_plate.bmp"
 IDDIB_SPLASH BITMAP "bitmaps/iddib_splash.bmp"
 
+/* Program icon, first in the native resource sort */
+APPICON ICON "icons/starsico.ico"
+
 /* Data */
 IDR_TUTORIAL_HST RT_TUTORIAL_HST "data/idr_tutorial_hst.bin"
 IDR_TUTORIAL_M1 RT_TUTORIAL_M1 "data/idr_tutorial_m1.bin"

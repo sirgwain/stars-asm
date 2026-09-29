@@ -16,8 +16,8 @@
 ;     int32_t          cCur           [BP-0x2a]
 ;     BTNT             btnt           [BP-0x26]
 ;     int32_t          dChg           [BP-0xe]
-;     POINT            pt             [BP-0xa]
-;     POINT            ptOld          [BP-0x6]
+;     POINT16          pt             [BP-0xa]
+;     POINT16          ptOld          [BP-0x6]
 ;
 ;   stats: blocks=0  labels=1
 ;     FinishUp: L_5f70
@@ -157,7 +157,7 @@ MOV       [bp-ptOld], ax            ; [bp-0x6], ax
 L_5b44:                             ; ship.c:2259
 LEA       ax, [bp-pt]               ; ax, [bp-0xa]
 PUSH      ax                  
-CALLF     FGetMouseMove             ; int16_t FGetMouseMove(POINT *ppt)
+CALLF     FGetMouseMove             ; int16_t FGetMouseMove(POINT16 *ppt)
 ADD       sp, 0x0002          
 CMP       ax, 0x0000          
 JZ        L_5d26              

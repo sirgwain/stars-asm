@@ -19,7 +19,7 @@ PopupMenu  (popup)
     HMENU            hmenuSub       [BP-0x8e]
     char[128]        szTemp         [BP-0x8c]
     int16_t          i              [BP-0xc]
-    POINT            pt             [BP-0xa]
+    POINT16          pt             [BP-0xa]
     int16_t          tpm            [BP-0x6]
     char *           pszTitle       [BP-0x4]
     block 0019:15BF  len=0x1AF
@@ -33,7 +33,9 @@ L_136c:
     hmenuSub = 0x0
     pt.x = x
     pt.y = y
-    call ClientToScreen(hwnd, &pt) -> callresult(void)
+    t_pt_1391_1 = PointFrom16(pt)
+    call ClientToScreen(hwnd, &t_pt_1391_1) -> callresult(void)
+    pt = PointTo16(t_pt_1391_1)
     hmenuPopup = CreatePopupMenu()
     iPopMenuSel = -1
     i = 0
@@ -98,14 +100,17 @@ L_1536:
     branch sext8to16(*psz) == 0 ? L_1573 : L_1545
 
 L_1545:
+    t_1545 = psz
     psz = &psz[1]
+    t_1550 = pszT
     pszT = &pszT[1]
-    *pszT = *psz
-    branch sext8to16(*psz) != 38 ? L_1536 : L_1564
+    *t_1550 = *t_1545
+    branch sext8to16(*t_1545) != 38 ? L_1536 : L_1564
 
 L_1564:
+    t_1564 = pszT
     pszT = &pszT[1]
-    *pszT = 38
+    *t_1564 = 38
 
 L_1570:
     goto L_1536
@@ -189,14 +194,17 @@ L_16c1:
     branch sext8to16(*psz) == 0 ? L_16fe : L_16d0
 
 L_16d0:
+    t_16d0 = psz
     psz = &psz[1]
+    t_16db = pszT
     pszT = &pszT[1]
-    *pszT = *psz
-    branch sext8to16(*psz) != 38 ? L_16c1 : L_16ef
+    *t_16db = *t_16d0
+    branch sext8to16(*t_16d0) != 38 ? L_16c1 : L_16ef
 
 L_16ef:
+    t_16ef = pszT
     pszT = &pszT[1]
-    *pszT = 38
+    *t_16ef = 38
 
 L_16fb:
     goto L_16c1
@@ -253,14 +261,17 @@ L_17d4:
     branch sext8to16(*psz) == 0 ? L_1811 : L_17e3
 
 L_17e3:
+    t_17e3 = psz
     psz = &psz[1]
+    t_17ee = pszT
     pszT = &pszT[1]
-    *pszT = *psz
-    branch sext8to16(*psz) != 38 ? L_17d4 : L_1802
+    *t_17ee = *t_17e3
+    branch sext8to16(*t_17e3) != 38 ? L_17d4 : L_1802
 
 L_1802:
+    t_1802 = pszT
     pszT = &pszT[1]
-    *pszT = 38
+    *t_1802 = 38
 
 L_180e:
     goto L_17d4

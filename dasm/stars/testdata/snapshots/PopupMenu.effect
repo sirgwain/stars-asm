@@ -19,7 +19,7 @@ PopupMenu  (popup)
     HMENU            hmenuSub       [BP-0x8e]
     char[128]        szTemp         [BP-0x8c]
     int16_t          i              [BP-0xc]
-    POINT            pt             [BP-0xa]
+    POINT16          pt             [BP-0xa]
     int16_t          tpm            [BP-0x6]
     char *           pszTitle       [BP-0x4]
     block 0019:15BF  len=0x1AF

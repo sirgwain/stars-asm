@@ -71,7 +71,7 @@ L_57da:
         goto L_57f5;
 
 L_57f5:
-    pctShip10 = (pctShip10 + (uint32_t)(LOWORD((lpshdef->hul.rghs[0].cItem * 0x3))));
+    pctShip10 = (pctShip10 + (uint32_t)((lpshdef->hul.rghs[0].cItem * 0x3)));
     if ((iWarp >= 8))
         goto L_5852;
     else

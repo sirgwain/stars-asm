@@ -5,8 +5,8 @@ HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont) {
     HFONT      hfontSav;
 
 L_6aa6:
-    plf = LocalAlloc(0x40, 0x32);
-    memset(plf, 0, 0x32);
+    plf = LocalAlloc(0x40, sizeof(LOGFONT));
+    memset(plf, 0, sizeof(LOGFONT));
     plf->lfHeight = (-MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72));
     strcpy(plf->lfFaceName, rgszArial[1]);
     hfontNew = CreateFontIndirect(plf);

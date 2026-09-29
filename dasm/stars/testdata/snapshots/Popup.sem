@@ -7,14 +7,14 @@ Popup  (popup)
     int16_t          x              [BP+0x8]
     int16_t          y              [BP+0xa]
   locals:
-    POINT            ptT            [BP-0x18]
+    POINT16          ptT            [BP-0x18]
     int16_t          dx             [BP-0x14]
     char *           psz            [BP-0x12]
     HFONT            hfontSav       [BP-0x10]
     int16_t          c              [BP-0xe]
     int16_t          i              [BP-0xc]
     int16_t          dy             [BP-0xa]
-    POINT            pt             [BP-0x8]
+    POINT16          pt             [BP-0x8]
     HDC              hdc            [BP-0x4]
     block 0019:0D22  len=0x88
       char *           psz            [BP-0x1c]
@@ -38,7 +38,9 @@ Popup  (popup)
 L_0c7c:
     pt.x = x
     pt.y = y
-    call ClientToScreen(hwnd, &pt) -> callresult(void)
+    t_pt_0c9b_1 = PointFrom16(pt)
+    call ClientToScreen(hwnd, &t_pt_0c9b_1) -> callresult(void)
+    pt = PointTo16(t_pt_0c9b_1)
     hdc = GetDC(hwnd)
     hfontSav = SelectObject(hdc, rghfontArial8[0])
     goto L_11f5
@@ -46,7 +48,7 @@ L_0c7c:
 L_0cc3:
     psz = PszGetCompressedString(idsMineralConcentration0000000kt)
     dx = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 8)
-    dy = (loword((3 * dyArial8)) + 8)
+    dy = ((3 * dyArial8) + 8)
     branch GlobalPD.rgi[4] < 0 ? L_1225 : L_0d19
 
 
@@ -208,7 +210,7 @@ L_1138:
 
 L_113b:
     dx = (t_merge_113b_0001 + 344)
-    dy = (((dyArial10 + 72) + loword((12 * dyArial8))) + 6)
+    dy = (((dyArial10 + 72) + (12 * dyArial8)) + 6)
     goto L_1225
 
 L_115a:
@@ -230,14 +232,14 @@ L_1189:
     lpshdefBuild = GlobalPD.lpshdef
     call UpdateSlotGlobals() -> callresult(void)
     dx = 340
-    dy = (((dyArial8 + 306) + loword((6 * dyArial8))) + 8)
+    dy = (((dyArial8 + 306) + (6 * dyArial8)) + 8)
     branch gd.mdScreenSize <= 0x0 ? L_1225 : L_11ce
 
 L_11ce:
     branch GlobalPD.grPopup != grPopupShdef ? L_1225 : L_11d8
 
 L_11d8:
-    dy = (dy + loword((3 * dyArial8)))
+    dy = (dy + (3 * dyArial8))
 
 L_11e2:
     goto L_1225

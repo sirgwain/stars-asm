@@ -17,7 +17,7 @@ L_3ce1:
 
 L_3cf8:
     iItem = (iItem - 0x10);
-    if ((((rglpshdefSB[idPlayer][iItem].wFlags >> 0x9) & 0x1) == 0x0))
+    if ((rglpshdefSB[idPlayer][iItem].fFree == 0x0))
         goto L_3d46;
     else
         goto LBogus;
@@ -34,7 +34,7 @@ L_3d46:
         goto L_3d94;
 
 L_3d94:
-    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - RawLoad16(&(rglpshdefSB[idPlayer]->hul.rgTech[((uint32_t)((iItem * 0x93)) - 2)])));
+    iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer][iItem].hul.ihuldef);
     if ((iDelta <= 0))
         goto L_3e05;
     else

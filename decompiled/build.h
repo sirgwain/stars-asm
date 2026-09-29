@@ -11,7 +11,7 @@ extern int16_t      rgidsParts[13];
 extern HullSlotType rghstCat[14];
 extern StringId     rgidsCat[14];
 
-int16_t          ShipBuilder(POINT ptDlgSize);
+int16_t          ShipBuilder(POINT16 ptDlgSize);
 void             ShowMainControls(HWND hwnd, int16_t sw);
 int16_t          FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit);
 INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -21,7 +21,7 @@ void             DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw);
 int16_t          PctJammerFromHul(HUL *lphul);
 void             DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc);
 void             SetBuildSelection(int16_t iSrc);
-int16_t          IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify);
+int16_t          IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify);
 void             DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate);
 SHDEF           *NthValidShdef(int16_t n);
 SHDEF           *NthValidEnemyShdef(int16_t n);

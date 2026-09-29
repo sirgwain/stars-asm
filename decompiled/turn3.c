@@ -416,7 +416,7 @@ L_6c09:
         goto L_6c14;
 
 L_6c14:
-    iLoad = ((iPass + 0xffff) & 0x1);
+    iLoad = ((iPass - 0x1) & 0x1);
     fOptFuel = 0;
     if ((ord.grobj != grobjThing))
         goto LTryDunnage;
@@ -1024,7 +1024,7 @@ L_7489:
         goto L_749c;
 
 L_749c:
-    FSendPlrMsg(lpfl->iPlayer, 281, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, (idWP & 0x7fff), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, 281, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, (idWP & 0x7fff), 0, 0);
     goto L_7557;
 
 L_74f5:
@@ -1041,7 +1041,7 @@ L_7544:
     t_merge_7547_0001 = 44;
 
 L_7547:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7547_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, idWP, 0);
 
 L_7557:
     if ((fFueling != 0))
@@ -1077,7 +1077,7 @@ L_75d9:
         goto L_7612;
 
 L_7612:
-    FSendPlrMsg(lpfl->iPlayer, 125, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, lpflWP->id, pl.id, 0);
+    FSendPlrMsg(lpfl->iPlayer, 125, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, lpflWP->id, pl.id, 0);
     goto L_76d7;
 
 L_7668:
@@ -1094,7 +1094,7 @@ L_76b5:
     t_merge_76b8_0001 = 44;
 
 L_76b8:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_76b8_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, pl.id, 0);
 
 L_76c8:
     goto L_76d7;
@@ -1257,7 +1257,7 @@ L_78b8:
         goto L_78cb;
 
 L_78cb:
-    if ((lpfl->iPlayer == ((ord.id >> 0x9) & 0xf)))
+    if ((lpfl->iPlayer == (((uint16_t)(ord.id) >> 0x9) & 0xf)))
         goto L_78ef;
     else
         goto L_78e4;
@@ -1331,7 +1331,7 @@ L_7a1d:
     t_merge_7a20_0001 = 46;
 
 L_7a20:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, pl.id, 0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7a20_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, pl.id, 0);
     goto L_7ae8;
 
 L_7a33:
@@ -1355,7 +1355,7 @@ L_7ac7:
     t_merge_7aca_0001 = 46;
 
 L_7aca:
-    FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), j, xWP, idWP, 0);
+    FSendPlrMsg(lpfl->iPlayer, t_merge_7aca_0001, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), j, xWP, idWP, 0);
 
 L_7ada:
     amount = l;
@@ -1454,8 +1454,7 @@ L_7c12:
         goto L_7c7d;
 
 L_7c2b:
-    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtOptimalFuel), (LOWORD((uint32_t)((wtOptimalFuel >> 0x10))) & 0xffff), 4, xWP, idWP,
-                0);
+    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(wtOptimalFuel), HIWORD(wtOptimalFuel), 4, xWP, idWP, 0);
 
 L_7c7d:
     if ((iPass != 4))
@@ -1487,8 +1486,7 @@ L_7cd7:
         goto L_7d78;
 
 L_7d0e:
-    FSendPlrMsg(lpfl->iPlayer, 61, (lpfl->id | 0x8000), lpfl->id, LOWORD(lMaxFuel), (LOWORD((uint32_t)((lMaxFuel >> 0x10))) & 0xffff), LOWORD(amount),
-                (LOWORD((uint32_t)((amount >> 0x10))) & 0xffff), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, 61, (lpfl->id | 0x8000), lpfl->id, LOWORD(lMaxFuel), HIWORD(lMaxFuel), LOWORD(amount), HIWORD(amount), 0, 0);
     goto FinishFleet;
 
 L_7d78:
@@ -1502,7 +1500,7 @@ L_7d9a:
     idWP = pl.id;
 
 L_7da1:
-    FSendPlrMsg(lpfl->iPlayer, 60, (lpfl->id | 0x8000), xWP, idWP, lpfl->id, LOWORD(cFuel2), (LOWORD((uint32_t)((cFuel2 >> 0x10))) & 0xffff), 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, 60, (lpfl->id | 0x8000), xWP, idWP, lpfl->id, LOWORD(cFuel2), HIWORD(cFuel2), 0, 0);
 
 L_7df5:
     goto FinishFleet;
@@ -1564,7 +1562,7 @@ L_7f55:
         goto L_7f7d;
 
 L_7f7d:
-    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), (LOWORD((uint32_t)((l >> 0x10))) & 0xffff), 4, xWP, idWP, 0);
+    FSendPlrMsg(lpfl->iPlayer, 43, (lpfl->id | 0x8000), lpfl->id, LOWORD(l), HIWORD(l), 4, xWP, idWP, 0);
     goto L_804f;
 
 L_7fd4:
@@ -1574,7 +1572,7 @@ L_7fd4:
         goto L_804f;
 
 L_7fed:
-    FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (-LOWORD(l)), (LOWORD((uint32_t)(((-l) >> 0x10))) & 0xffff), 4, xWP, idWP, 0);
+    FSendPlrMsg(lpfl->iPlayer, 45, (lpfl->id | 0x8000), lpfl->id, (-LOWORD(l)), LOWORD((uint32_t)(((-l) >> 0x10))), 4, xWP, idWP, 0);
 
 L_804f:
     if ((fDone == 0))
@@ -2075,8 +2073,7 @@ L_8a26:
 
 L_8a77:
     idm = (pl.fStarbase + 0x5c);
-    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id,
-                LOWORD(lResUltimate), (LOWORD((uint32_t)((lResUltimate >> 0x10))) & 0xffff), 0);
+    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate), HIWORD(lResUltimate), 0);
     idm = (pl.fStarbase + 0x142);
     if ((pl.fStarbase == 0x0))
         goto L_8b78;
@@ -2118,8 +2115,7 @@ L_8b78:
     iGoto = pl.id;
 
 L_8b7f:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, LOWORD(lResUltimate),
-                (LOWORD((uint32_t)((lResUltimate >> 0x10))) & 0xffff), i);
+    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, LOWORD(lResUltimate), HIWORD(lResUltimate), i);
     goto L_8d7d;
 
 L_8be2:
@@ -2136,7 +2132,7 @@ L_8beb:
 
 L_8c4f:
     idm = (pl.fStarbase + 0x59);
-    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idm, iGoto, WFromLpfl(lpfl), LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, 0, 0, 0);
     idm = (pl.fStarbase + 0x140);
     if ((pl.fStarbase == 0x0))
         goto L_8d35;
@@ -2172,7 +2168,7 @@ L_8d2e:
     iGoto = pl.id;
 
 L_8d35:
-    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), (LOWORD((uint32_t)((lXferMinerals >> 0x10))) & 0xffff), pl.id, i, 0, 0);
+    FSendPlrMsg(pl.iPlayer, idm, iGoto, lpfl->id, LOWORD(lXferMinerals), HIWORD(lXferMinerals), pl.id, i, 0, 0);
 
 L_8d7d:
     idPlayer = -1;
@@ -2832,7 +2828,7 @@ L_9e1a:
     lpth->thm.iType = LOBYTE(j);
 
 L_9e50:
-    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, LOWORD(cMine), (LOWORD((uint32_t)((cMine >> 0x10))) & 0xffff), 0, 0, 0, 0);
+    FSendPlrMsg(lpfl->iPlayer, idm, (lpfl->id | 0x8000), lpfl->id, LOWORD(cMine), HIWORD(cMine), 0, 0, 0, 0);
 
 L_9ea2:
     j = (j + 1);

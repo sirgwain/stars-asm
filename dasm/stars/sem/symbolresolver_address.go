@@ -10,7 +10,7 @@ import (
 // resolvedAddress is a normalized machine address awaiting semantic projection.
 type resolvedAddress struct {
 	base      symresolve.SymbolPath
-	baseValue machine.Value
+	baseValue machine.Value // Evaluated pointer retained alongside its symbol.
 	offset    int
 	terms     []resolvedAddressTerm
 	deref     bool
@@ -214,7 +214,7 @@ func (sr *symbolResolver) addressFromNativePointerMemory(mem machine.MemoryAddre
 		}
 	}
 	if path, ok := sr.symbolFromValue(mem.Base); ok && typeinfo.IsPointer(path.Type()) {
-		addr := sr.addMemoryAddressTerms(resolvedAddress{base: path, deref: true}, mem)
+		addr := sr.addMemoryAddressTerms(resolvedAddress{base: path, baseValue: mem.Base, deref: true}, mem)
 		// The base itself has already been consumed.
 		if len(addr.terms) > 0 && machine.ValueEquals(addr.terms[0].value, mem.Base) {
 			addr.terms = addr.terms[1:]
@@ -252,7 +252,7 @@ func (sr *symbolResolver) addressFromValue(value machine.Value, segNum uint16) (
 		return resolvedAddress{base: path}, true
 	case *machine.Load:
 		if path, ok := sr.symbolFromValue(v); ok && typeinfo.IsPointer(path.Type()) {
-			return resolvedAddress{base: path}, true
+			return resolvedAddress{base: path, baseValue: v}, true
 		}
 		return resolvedAddress{terms: []resolvedAddressTerm{{value: value, scale: 1}}}, true
 	case *machine.CallResult:

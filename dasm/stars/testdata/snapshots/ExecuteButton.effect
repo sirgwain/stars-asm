@@ -14,7 +14,7 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x24]
       int16_t          c              [BP-0x22]
       char *[12]       rgszScan       [BP-0x20]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
     block 000E:1076  len=0x284
       int16_t          iSel           [BP-0x8a]
       int32_t[20]      rgid           [BP-0x88]
@@ -22,7 +22,7 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x36]
       int16_t          ish            [BP-0x34]
       char *[20]       rgszScan       [BP-0x32]
-      POINT            pt             [BP-0xa]
+      POINT16          pt             [BP-0xa]
       uint16_t         grbitSh        [BP-0x6]
     block 000E:12FA  len=0x21F
       int16_t          iSel           [BP-0x58]
@@ -31,14 +31,14 @@ ExecuteButton  (tb)
       int16_t          i              [BP-0x24]
       int16_t          c              [BP-0x22]
       char *[12]       rgszScan       [BP-0x20]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
     block 000E:1519  len=0xF3
       int16_t          iSel           [BP-0x44]
       int32_t[9]       rgid           [BP-0x42]
       int16_t          i              [BP-0x1e]
       int16_t          c              [BP-0x1c]
       char *[9]        rgszScan       [BP-0x1a]
-      POINT            pt             [BP-0x8]
+      POINT16          pt             [BP-0x8]
 
   stats: blocks=4  labels=3
     LInvalS: L_12cb

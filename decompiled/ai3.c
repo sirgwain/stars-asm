@@ -158,7 +158,7 @@ L_0125:
         goto L_0159;
 
 L_0159:
-    j = (j + ((uint32_t)((game.turn + 0xff88)) / 20));
+    j = (j + ((uint32_t)((game.turn - 0x78)) / 20));
 
 L_0169:
     if ((j <= 50))
@@ -179,7 +179,7 @@ L_0177:
         goto L_019b;
 
 L_019b:
-    j = (j + ((uint32_t)((game.turn + 0xff9c)) / 22));
+    j = (j + ((uint32_t)((game.turn - 0x64)) / 22));
 
 L_01ab:
     if ((j <= 12))
@@ -192,7 +192,7 @@ L_01b4:
 
 L_01b9:
     vrgAiArmadaPotency[2] = LOBYTE(j);
-    if ((0x3 >= (((int32_t)(j) / 2) + 0xffff)))
+    if ((0x3 >= (((int32_t)(j) / 2) - 0x1)))
         goto L_01db;
     else
         goto L_01d5;
@@ -202,7 +202,7 @@ L_01d5:
     goto L_01e7;
 
 L_01db:
-    t_merge_01e7_0001 = (((int32_t)(j) / 2) + 0xffff);
+    t_merge_01e7_0001 = (((int32_t)(j) / 2) - 0x1);
 
 L_01e7:
     vrgAiArmadaPotency[3] = LOBYTE(t_merge_01e7_0001);
@@ -1224,7 +1224,7 @@ L_129d:
         goto L_12a6;
 
 L_12a6:
-    cFr = LOWORD((3 * cFr));
+    cFr = (3 * cFr);
     if ((cMine < (int32_t)(cFr)))
         goto L_12ca;
     else
@@ -3431,7 +3431,7 @@ L_33d0:
         goto L_3391;
 
 L_340a:
-    cConc = (((lppl->rgMinConc[0] * 8) + LOWORD((lppl->rgMinConc[1] * 0xa))) + LOWORD((lppl->rgMinConc[2] * 0x7)));
+    cConc = (((lppl->rgMinConc[0] * 8) + (lppl->rgMinConc[1] * 0xa)) + (lppl->rgMinConc[2] * 0x7));
     if ((lppl->id != lpfl->idPlanet))
         goto L_3467;
     else
@@ -3460,7 +3460,7 @@ L_3487:
         goto L_34ad;
 
 L_3499:
-    if ((((int32_t)(LOWORD((6 * cConcCur))) / 0x5) < cConcBest))
+    if ((((int32_t)((6 * cConcCur)) / 0x5) < cConcBest))
         goto L_34b3;
     else
         goto L_34ad;
@@ -3703,7 +3703,7 @@ L_38f0:
     vlpbAiPlanet[((lpplBest->id * 16) + 14)] = (vlpbAiPlanet[((lpplBest->id * 16) + 0xe)] | 0x1);
 
 LMoveToLpplBest:
-    memset(&(ord), 0, 0x12);
+    memset(&(ord), 0, sizeof(ORDER));
     ord.grobj = grobjPlanet;
     ord.pt = rgptPlan[lpplBest->id];
     ord.id = lpplBest->id;
@@ -4140,7 +4140,7 @@ L_419b:
         goto L_41af;
 
 L_41af:
-    if ((cshWar <= LOWORD((vrgAiArmadaPotency[0] * 0x3))))
+    if ((cshWar <= (vrgAiArmadaPotency[0] * 0x3)))
         goto L_41d6;
     else
         goto L_41c2;

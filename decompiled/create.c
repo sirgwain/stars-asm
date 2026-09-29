@@ -405,10 +405,10 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     int16_t       cKill;
     char          grUsed[128];
     jmp_buf      *penvMemSav;
-    POINT        *ppt;
+    POINT16      *ppt;
     int16_t       raMajor;
     int16_t       k;
-    POINT         pt;
+    POINT16       pt;
     int16_t       fFound;
     int16_t       iMax;
     STARPACK      starpack;
@@ -421,7 +421,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     jmp_buf       env;
     int16_t       xOld;
     int16_t       iplrSingle;
-    POINT        *pptMax;
+    POINT16      *pptMax;
     int16_t       dMin;
     int16_t       ktLeft;
     SHDEF        *lpshdef;
@@ -436,7 +436,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     int16_t       cPlanMax;
     int16_t       dx;
     int16_t       cKillMax;
-    POINT        *pptT;
+    POINT16      *pptT;
     int32_t       lBest;
     int32_t       l;
     int16_t       iT;
@@ -448,7 +448,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     PART          part;
     int16_t       cFit;
     PLANET       *lpplClosest;
-    POINT         ptHome;
+    POINT16       ptHome;
     PLANET       *lpplPicked;
     int32_t       lDistCur2;
     HS           *lphs;
@@ -461,6 +461,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     char          szExt[4];
     int16_t       t_merge_01c8_0001;
     uint16_t      t_merge_0201_0001;
+    POINT16      *t_03f1;
     uint16_t      t_merge_0951_0001;
     int16_t       t_call_0a1b;
     int16_t       t_scratch_m116_2;
@@ -481,6 +482,24 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     HS           *t_fields_1;
     uint32_t      t_fields_2;
     uint32_t      t_fields_3;
+    int16_t       t_3b77;
+    int16_t       t_3b8c;
+    int16_t       t_3ba1;
+    int16_t       t_3bb6;
+    int16_t       t_3bcb;
+    int16_t       t_3c01;
+    int16_t       t_3c16;
+    int16_t       t_3c4c;
+    int16_t       t_3c61;
+    int16_t       t_3c97;
+    int16_t       t_3cac;
+    int16_t       t_3cd3;
+    int16_t       t_3cfa;
+    int16_t       t_3d30;
+    int16_t       t_3d45;
+    int16_t       t_3d7b;
+    int16_t       t_3d90;
+    int16_t       t_3da5;
     int16_t       t_scratch_m116_24;
     uint16_t      t_scratch_m120;
     int16_t       t_40ef;
@@ -489,10 +508,10 @@ int16_t GenerateWorld(int16_t fBatchMode) {
 L_0136:
     iMin = 0;
     cKill = 0;
-    dGal = (LOWORD((400 * game.mdSize)) + 400);
+    dGal = ((400 * game.mdSize) + 400);
     dGalInv = (dGal + 2000);
     cPlanMax = LOWORD((int32_t)(((uint32_t)(((int32_t)(dGal) * (int32_t)(dGal))) / 0x1388)));
-    cPlanMax = (cPlanMax + LOWORD((((int32_t)(cPlanMax) / 4) * (game.mdDensity - 1))));
+    cPlanMax = (cPlanMax + (((int32_t)(cPlanMax) / 4) * (game.mdDensity - 1)));
     if ((game.mdDensity < 3))
         goto L_01b3;
     else
@@ -516,7 +535,7 @@ L_01c5:
 
 L_01c8:
     cPlanMax = t_merge_01c8_0001;
-    dGalMinSq = LOWORD((dGalMinDist * dGalMinDist));
+    dGalMinSq = (dGalMinDist * dGalMinDist);
     if (((((int32_t)(cPlanMax) / 7) + cPlanMax) >= 0x3e7))
         goto L_01fe;
     else
@@ -588,7 +607,7 @@ L_02f2:
 
 L_031c:
     dx = (ppt->x - pptT->x);
-    if (((LOWORD((dx * dx)) + LOWORD((dy * dy))) > dGalMinSq))
+    if ((((dx * dx) + (dy * dy)) > dGalMinSq))
         goto L_02d1;
     else
         goto L_034f;
@@ -642,9 +661,10 @@ L_03db:
         goto L_03e8;
 
 L_03e8:
+    t_03f1 = pptT;
     pptT = (pptT + 1);
-    pptT->x = ppt->x;
-    pptT->y = ppt->y;
+    t_03f1->x = ppt->x;
+    t_03f1->y = ppt->y;
 
 L_03ff:
     ppt = (ppt + 1);
@@ -809,8 +829,8 @@ L_084d:
     return 0;
 
 L_0858:
-    lpPlanets = LpAlloc((cPlanMax * 56), htPlanets);
-    fmemset(lpPlanets, 0, (cPlanMax * 56));
+    lpPlanets = LpAlloc((cPlanMax * sizeof(PLANET)), htPlanets);
+    fmemset(lpPlanets, 0, (cPlanMax * sizeof(PLANET)));
     i = 0;
     lppl = lpPlanets;
     goto L_08c3;
@@ -1061,7 +1081,7 @@ L_0f14:
 RetryAll:
     lBest = 100000000;
     dMin = (((int32_t)(dGal) / 4) + 1000);
-    dMax = (((int32_t)(LOWORD((3 * dGal))) / 4) + 1000);
+    dMax = (((int32_t)((3 * dGal)) / 4) + 1000);
     i = 0;
     goto L_110f;
 
@@ -1754,7 +1774,7 @@ L_2143:
     goto L_25bb;
 
 L_2167:
-    ktLeft = LOWORD((10 * iT));
+    ktLeft = (10 * iT);
     pl = lpPlanets[iMin].rgwtMin;
     if ((*(pl) < pl[1]))
         goto L_21b2;
@@ -2019,9 +2039,9 @@ L_2a2d:
 
 L_2a4a:
     rgplr[i].cshdefSB = 0x1;
-    lpshdef = LpAlloc(0x5be, htShips);
-    fmemmove(lpshdef, LpshdefSBT(), 0x24c);
-    fmemset((lpshdef + 4), 0, 0x372);
+    lpshdef = LpAlloc((10 * sizeof(SHDEF)), htShips);
+    fmemmove(lpshdef, LpshdefSBT(), (4 * sizeof(SHDEF)));
+    fmemset((lpshdef + 4), 0, (6 * sizeof(SHDEF)));
     lpshdef->cBuilt = 0x1;
     lpshdef->cExist = 0x1;
     rglpshdefSB[i] = lpshdef;
@@ -2115,7 +2135,7 @@ L_2ee5:
 
 L_2ee8:
     cFleet = 0;
-    rglpfl = LpAlloc(0x4, htMisc);
+    rglpfl = LpAlloc(sizeof(FLEET *), htMisc);
     i = 0;
     goto L_2f13;
 
@@ -2130,8 +2150,8 @@ L_2f13:
 
 L_2f1f:
     idPlayer = i;
-    lpshdef = LpAlloc(0x930, htShips);
-    fmemset(lpshdef, 0, 0x930);
+    lpshdef = LpAlloc((16 * sizeof(SHDEF)), htShips);
+    fmemset(lpshdef, 0, (16 * sizeof(SHDEF)));
     j = 0;
     goto L_2fa0;
 
@@ -2602,18 +2622,23 @@ L_3b5f:
         goto L_3b77;
 
 L_3b77:
+    t_3b77 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 10;
+    rgTry[t_3b77] = 10;
 
 L_3b8c:
+    t_3b8c = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 5;
+    rgTry[t_3b8c] = 5;
+    t_3ba1 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 4;
+    rgTry[t_3ba1] = 4;
+    t_3bb6 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 2;
+    rgTry[t_3bb6] = 2;
+    t_3bcb = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 3;
+    rgTry[t_3bcb] = 3;
 
 L_3be0:
     goto L_3e03;
@@ -2631,10 +2656,12 @@ L_3bf2:
         goto L_3c01;
 
 L_3c01:
+    t_3c01 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 2;
+    rgTry[t_3c01] = 2;
+    t_3c16 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3c16] = 1;
 
 L_3c2b:
     goto L_3e03;
@@ -2652,10 +2679,12 @@ L_3c3d:
         goto L_3c4c;
 
 L_3c4c:
+    t_3c4c = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 2;
+    rgTry[t_3c4c] = 2;
+    t_3c61 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3c61] = 1;
 
 L_3c76:
     goto L_3e03;
@@ -2673,10 +2702,12 @@ L_3c88:
         goto L_3c97;
 
 L_3c97:
+    t_3c97 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 3;
+    rgTry[t_3c97] = 3;
+    t_3cac = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3cac] = 1;
 
 L_3cc1:
     goto L_3e03;
@@ -2688,8 +2719,9 @@ L_3cc4:
         goto L_3cd3;
 
 L_3cd3:
+    t_3cd3 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3cd3] = 1;
 
 L_3ce8:
     goto L_3e03;
@@ -2701,8 +2733,9 @@ L_3ceb:
         goto L_3cfa;
 
 L_3cfa:
+    t_3cfa = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3cfa] = 1;
 
 L_3d0f:
     goto L_3e03;
@@ -2720,10 +2753,12 @@ L_3d21:
         goto L_3d30;
 
 L_3d30:
+    t_3d30 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 2;
+    rgTry[t_3d30] = 2;
+    t_3d45 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 0;
+    rgTry[t_3d45] = 0;
 
 L_3d5a:
     goto L_3e03;
@@ -2741,12 +2776,15 @@ L_3d6c:
         goto L_3d7b;
 
 L_3d7b:
+    t_3d7b = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 4;
+    rgTry[t_3d7b] = 4;
+    t_3d90 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 2;
+    rgTry[t_3d90] = 2;
+    t_3da5 = cTry;
     cTry = (cTry + 1);
-    rgTry[cTry] = 1;
+    rgTry[t_3da5] = 1;
 
 L_3dba:
     goto L_3e03;
@@ -2874,7 +2912,7 @@ L_3f6a:
 
 L_3f76:
     rgcbtlplan[i] = 0x5;
-    rglpbtlplan[i] = LpAlloc(0x240, htShips);
+    rglpbtlplan[i] = LpAlloc((16 * sizeof(BTLPLAN)), htShips);
     j = 0;
     goto L_3fd8;
 
@@ -3335,7 +3373,7 @@ L_485f:
     TurnLog(idsGeneratingYearD);
 
 L_4893:
-    memset(&(game), 0, 0x40);
+    memset(&(game), 0, sizeof(GAME));
     StreamOpen(pszFile, 32);
     cb = LOWORD(filelength(hf));
     if ((cb < 16000))
@@ -3787,7 +3825,7 @@ L_510f:
 
 L_5129:
     SetVCCheck(&(game), 0, 1);
-    SetVCVal(&(game), 0, ((int32_t)((LOWORD(rgl[1]) + 0xffec)) / 5));
+    SetVCVal(&(game), 0, ((int32_t)((LOWORD(rgl[1]) - 0x14)) / 5));
 
 L_5160:
     lpbStart = PszGetLine(&(lpb));
@@ -3911,7 +3949,7 @@ L_5361:
 
 L_537c:
     SetVCCheck(&(game), 3, 1);
-    SetVCVal(&(game), 3, ((int32_t)((LOWORD(rgl[1]) + 0xfc18)) / 1000));
+    SetVCVal(&(game), 3, ((int32_t)((LOWORD(rgl[1]) - 0x3e8)) / 1000));
 
 L_53b3:
     lpbStart = PszGetLine(&(lpb));
@@ -3966,7 +4004,7 @@ L_5461:
 
 L_547c:
     SetVCCheck(&(game), 4, 1);
-    SetVCVal(&(game), 4, ((int32_t)((LOWORD(rgl[1]) + 0xffec)) / 10));
+    SetVCVal(&(game), 4, ((int32_t)((LOWORD(rgl[1]) - 0x14)) / 10));
 
 L_54b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4021,7 +4059,7 @@ L_5561:
 
 L_557c:
     SetVCCheck(&(game), 5, 1);
-    SetVCVal(&(game), 5, ((int32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
+    SetVCVal(&(game), 5, ((int32_t)((LOWORD(rgl[1]) - 0xa)) / 10));
 
 L_55b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4076,7 +4114,7 @@ L_5661:
 
 L_567c:
     SetVCCheck(&(game), 6, 1);
-    SetVCVal(&(game), 6, ((int32_t)((LOWORD(rgl[1]) + 0xfff6)) / 10));
+    SetVCVal(&(game), 6, ((int32_t)((LOWORD(rgl[1]) - 0xa)) / 10));
 
 L_56b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4131,7 +4169,7 @@ L_5761:
 
 L_577c:
     SetVCCheck(&(game), 7, 1);
-    SetVCVal(&(game), 7, ((int32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
+    SetVCVal(&(game), 7, ((int32_t)((LOWORD(rgl[1]) - 0x1e)) / 10));
 
 L_57b3:
     lpbStart = PszGetLine(&(lpb));
@@ -4186,7 +4224,7 @@ L_5866:
 
 L_5881:
     SetVCVal(&(game), 8, LOWORD(rgl[0]));
-    SetVCVal(&(game), 9, ((int32_t)((LOWORD(rgl[1]) + 0xffe2)) / 10));
+    SetVCVal(&(game), 9, ((int32_t)((LOWORD(rgl[1]) - 0x1e)) / 10));
 
 L_58bb:
     lpbStart = PszGetLine(&(lpb));
@@ -4553,7 +4591,7 @@ void CreateTutorWorld() {
     PLAYER *t_call_5f2e;
 
 L_5e5e:
-    memset(&(game), 0, 0x40);
+    memset(&(game), 0, sizeof(GAME));
     game.cPlayer = 2;
     game.fTutorial = 0x1;
     game.mdDensity = 0;
@@ -4669,7 +4707,7 @@ L_6124:
 
 L_612a:
     gameT = game;
-    memset(&(game), 0, 0x40);
+    memset(&(game), 0, sizeof(GAME));
     game.cPlanMax = gameT.cPlanMax;
     game.cPlayer = gameT.cPlayer;
     vrgplrTypeNew[0] = 0x1;
@@ -4770,7 +4808,7 @@ L_62fc:
 L_62ff:
     game.fAisBand = t_merge_62ff_0001;
     game.fVisScores = 0x0;
-    CchGetString(((LOWORD((5 * lvlAi)) + 0x1cb) + game.mdSize), game.szName);
+    CchGetString((((5 * lvlAi) + 0x1cb) + game.mdSize), game.szName);
     if ((mdRet != 1072))
         goto Step1;
     else
@@ -4912,7 +4950,7 @@ L_659b:
     goto L_68b2;
 
 L_65ab:
-    if (((vrgplrTypeNew[i] >> 0x2) <= 0x6))
+    if (((vrgplrTypeNew[i] >> 0x2) <= 6))
         goto L_6694;
     else
         goto L_65c1;
@@ -5349,6 +5387,26 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
     int16_t i;
     int16_t c;
     uint8_t ch;
+    int16_t t_7166;
+    int16_t t_718e;
+    int16_t t_71b9;
+    int16_t t_71c8;
+    int16_t t_71fe;
+    int16_t t_722c;
+    int16_t t_7259;
+    int16_t t_7287;
+    int16_t t_72b5;
+    int16_t t_72c4;
+    int16_t t_72fa;
+    int16_t t_7328;
+    int16_t t_7355;
+    int16_t t_7383;
+    int16_t t_73b1;
+    int16_t t_73c0;
+    int16_t t_73f4;
+    int16_t t_7422;
+    int16_t t_7450;
+    int16_t t_745f;
 
 L_6e44:
     if ((iStepMaxSoFar >= 2))
@@ -5673,8 +5731,9 @@ L_714f:
         goto L_7166;
 
 L_7166:
+    t_7166 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0xb;
+    vrgplrTypeNew[t_7166] = 0xb;
     goto L_7144;
 
 L_7175:
@@ -5684,24 +5743,27 @@ L_7175:
         goto L_718e;
 
 L_718e:
+    t_718e = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0xf;
+    vrgplrTypeNew[t_718e] = 0xf;
     goto L_7144;
 
 L_719d:
-    if ((i >= (((int32_t)(LOWORD(((game.cPlayer + 1) * 5))) / 0x6) + 0x1)))
+    if ((i >= (((int32_t)(((game.cPlayer + 1) * 5)) / 0x6) + 0x1)))
         goto L_71c8;
     else
         goto L_71b9;
 
 L_71b9:
+    t_71b9 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x7;
+    vrgplrTypeNew[t_71b9] = 0x7;
     goto L_7144;
 
 L_71c8:
+    t_71c8 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x1b;
+    vrgplrTypeNew[t_71c8] = 0x1b;
 
 L_71d4:
     goto L_7144;
@@ -5719,19 +5781,21 @@ L_71e5:
         goto L_71fe;
 
 L_71fe:
+    t_71fe = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x27;
+    vrgplrTypeNew[t_71fe] = 0x27;
     goto L_71da;
 
 L_720d:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 3)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 3) + 0x6)) / 0x7) + 0x1)))
         goto L_723b;
     else
         goto L_722c;
 
 L_722c:
+    t_722c = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x23;
+    vrgplrTypeNew[t_722c] = 0x23;
     goto L_71da;
 
 L_723b:
@@ -5741,35 +5805,39 @@ L_723b:
         goto L_7259;
 
 L_7259:
+    t_7259 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x2b;
+    vrgplrTypeNew[t_7259] = 0x2b;
     goto L_71da;
 
 L_7268:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 5) + 0x6)) / 0x7) + 0x1)))
         goto L_7296;
     else
         goto L_7287;
 
 L_7287:
+    t_7287 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x2f;
+    vrgplrTypeNew[t_7287] = 0x2f;
     goto L_71da;
 
 L_7296:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 6) + 0x6)) / 0x7) + 0x1)))
         goto L_72c4;
     else
         goto L_72b5;
 
 L_72b5:
+    t_72b5 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x33;
+    vrgplrTypeNew[t_72b5] = 0x33;
     goto L_71da;
 
 L_72c4:
+    t_72c4 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x9b;
+    vrgplrTypeNew[t_72c4] = 0x9b;
 
 L_72d0:
     goto L_71da;
@@ -5787,19 +5855,21 @@ L_72e1:
         goto L_72fa;
 
 L_72fa:
+    t_72fa = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x53;
+    vrgplrTypeNew[t_72fa] = 0x53;
     goto L_72d6;
 
 L_7309:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 3)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 3) + 0x6)) / 0x7) + 0x1)))
         goto L_7337;
     else
         goto L_7328;
 
 L_7328:
+    t_7328 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x47;
+    vrgplrTypeNew[t_7328] = 0x47;
     goto L_72d6;
 
 L_7337:
@@ -5809,35 +5879,39 @@ L_7337:
         goto L_7355;
 
 L_7355:
+    t_7355 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x43;
+    vrgplrTypeNew[t_7355] = 0x43;
     goto L_72d6;
 
 L_7364:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 5) + 0x6)) / 0x7) + 0x1)))
         goto L_7392;
     else
         goto L_7383;
 
 L_7383:
+    t_7383 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x57;
+    vrgplrTypeNew[t_7383] = 0x57;
     goto L_72d6;
 
 L_7392:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0x6)) / 0x7) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 6) + 0x6)) / 0x7) + 0x1)))
         goto L_73c0;
     else
         goto L_73b1;
 
 L_73b1:
+    t_73b1 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x5b;
+    vrgplrTypeNew[t_73b1] = 0x5b;
     goto L_72d6;
 
 L_73c0:
+    t_73c0 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x9b;
+    vrgplrTypeNew[t_73c0] = 0x9b;
 
 L_73cc:
     goto L_72d6;
@@ -5855,35 +5929,39 @@ L_73dd:
         goto L_73f4;
 
 L_73f4:
+    t_73f4 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x63;
+    vrgplrTypeNew[t_73f4] = 0x63;
     goto L_73d2;
 
 L_7403:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 6)) + 0xb)) / 0xc) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 6) + 0xb)) / 0xc) + 0x1)))
         goto L_7431;
     else
         goto L_7422;
 
 L_7422:
+    t_7422 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x77;
+    vrgplrTypeNew[t_7422] = 0x77;
     goto L_73d2;
 
 L_7431:
-    if ((i >= (((int32_t)((LOWORD(((game.cPlayer - 1) * 5)) + 0x5)) / 0x6) + 0x1)))
+    if ((i >= (((int32_t)((((game.cPlayer - 1) * 5) + 0x5)) / 0x6) + 0x1)))
         goto L_745f;
     else
         goto L_7450;
 
 L_7450:
+    t_7450 = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x73;
+    vrgplrTypeNew[t_7450] = 0x73;
     goto L_73d2;
 
 L_745f:
+    t_745f = i;
     i = (i + 1);
-    vrgplrTypeNew[i] = 0x7b;
+    vrgplrTypeNew[t_745f] = 0x7b;
 
 L_746b:
     goto L_73d2;
@@ -5989,11 +6067,11 @@ L_7583:
     goto L_754b;
 
 L_7586:
-    memset(&(ofn), 0, 0x48);
+    memset(&(ofn), 0, sizeof(OPENFILENAME));
     szXY[0] = 120;
     szXY[1] = 121;
     szXY[2] = 0;
-    ofn.lStructSize = 0x48;
+    ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = hwndFrame;
     ofn.lpstrFilter = szFilter;
     ofn.nFilterIndex = 0x1;
@@ -6136,7 +6214,7 @@ L_781a:
         goto L_7823;
 
 L_7823:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_7e83;
     else
         goto L_783f;
@@ -6179,7 +6257,7 @@ L_7858:
     SelectObject(hdc, rghfontArial8[1]);
     c = CchGetString(idsPlayerRace, szWork);
     TextOut(hdc, (rcGBox.left + 8), (rcGBox.top - (dyArial8 >> 0x1)), szWork, c);
-    rcGBox.top = (LOWORD((3 * dyArial8)) + rcGBox.bottom);
+    rcGBox.top = ((3 * dyArial8) + rcGBox.bottom);
     rcGBox.bottom = 1000;
     ExpandRc(&(rcGBox), (-dyArial8), 0);
     c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
@@ -6477,7 +6555,7 @@ L_81db:
         goto L_81e5;
 
 L_81e5:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) == 0x6))
+    if ((HIWORD(lParam) == 0x6))
         goto L_8220;
     else
         goto L_8201;
@@ -6704,7 +6782,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     int16_t     dy;
     int16_t     dyCur;
     HWND        hwndBtn;
-    POINT       pt;
+    POINT16     pt;
     int16_t     iDiamond;
     int16_t     iNewVal;
     int16_t     j;
@@ -6719,6 +6797,9 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_scratch_me;
+    POINT       t_pt_89ee;
+    POINT       t_pt_89fd_1;
+    POINT       t_pt_8b1f_1;
     uint16_t    t_merge_8b4f_0001;
     uint16_t    t_merge_8c45_0001;
     uint16_t    t_merge_8cf6_0001;
@@ -6810,7 +6891,7 @@ L_899b:
         goto L_89a5;
 
 L_89a5:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_9548;
     else
         goto L_89c1;
@@ -6826,8 +6907,12 @@ L_89da:
         goto L_89e7;
 
 L_89e7:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_89ee = PointFrom16(pt);
+    GetCursorPos(&(t_pt_89ee));
+    pt = PointTo16(t_pt_89ee);
+    t_pt_89fd_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_89fd_1));
+    pt = PointTo16(t_pt_89fd_1);
     if ((pt.x < xNewGameDiamond))
         goto L_9548;
     else
@@ -6870,7 +6955,7 @@ L_8a76:
 
 L_8a83:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     if ((pt.x < xNewGameDiamond))
         goto L_9548;
     else
@@ -6903,7 +6988,9 @@ L_8ae8:
 
 L_8b08:
     iCurVal = vrgplrTypeNew[iDiamond];
-    ClientToScreen(hwnd, &(pt));
+    t_pt_8b1f_1 = PointFrom16(pt);
+    ClientToScreen(hwnd, &(t_pt_8b1f_1));
+    pt = PointTo16(t_pt_8b1f_1);
     rghmenuSubPopup[0] = CreatePopupMenu();
     i = 0;
     goto L_8b85;
@@ -7357,7 +7444,7 @@ L_9309:
         goto L_9313;
 
 L_9313:
-    iNewVal = (((iPopMenuSel + 0xfff0) << 0x2) | 0x1);
+    iNewVal = (((iPopMenuSel - 0x10) << 0x2) | 0x1);
     goto L_9367;
 
 L_9326:
@@ -7373,7 +7460,7 @@ L_9330:
         goto L_933a;
 
 L_933a:
-    iNewVal = (((iPopMenuSel + 0xffe0) << 0x2) | 0x2);
+    iNewVal = (((iPopMenuSel - 0x20) << 0x2) | 0x2);
     goto L_9367;
 
 L_934d:
@@ -7383,7 +7470,7 @@ L_934d:
         goto L_9357;
 
 L_9357:
-    iNewVal = (((iPopMenuSel + 0xffd0) << 0x2) | 0x3);
+    iNewVal = (((iPopMenuSel - 0x30) << 0x2) | 0x3);
 
 L_9367:
     if ((iNewVal == -1))
@@ -7576,6 +7663,7 @@ void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw) {
     RECT     rc;
     StringId ids;
     char     szT[20];
+    int16_t  t_9640;
     uint16_t t_merge_97a0_0001;
     StringId t_merge_989d_0001;
 
@@ -7614,8 +7702,9 @@ L_9609:
 
 L_9617:
     cch = _wsprintf(szWork, PszGetCompressedString(idsPlayerD), (i + 1));
+    t_9640 = cch;
     cch = (cch + 1);
-    szWork[cch] = 58;
+    szWork[t_9640] = 58;
     szWork[cch] = 0;
     RightTextOut(hdc, (xNewGameDiamond - 6), yCur, szWork, cch, 0);
     DrawDiamond(hdc, &(rcDiamond), hbrBBlue);
@@ -7810,12 +7899,14 @@ L_99ed:
 INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int16_t     i;
     RECT        rc;
-    POINT       pt;
+    POINT16     pt;
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_call_9a24;
     uint16_t    t_merge_9a40_0001;
     HWND        t_scratch_me;
+    POINT       t_pt_9b4c;
+    POINT       t_pt_9b5b_1;
     uint16_t    t_merge_9ccc_0001;
 
 L_99f4:
@@ -7841,7 +7932,7 @@ L_9a3d:
     t_merge_9a40_0001 = 0x0;
 
 L_9a40:
-    SendMessage(t_call_9a24, 0x401, GetVCCheck(&(game), (t_merge_9a40_0001 + i)), 0);
+    SendMessage(t_call_9a24, BM_SETCHECK, GetVCCheck(&(game), (t_merge_9a40_0001 + i)), 0);
     if ((fRCWReadOnly == 0))
         goto L_9a81;
     else
@@ -7895,7 +7986,7 @@ L_9b06:
         goto L_9b10;
 
 L_9b10:
-    if (((LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff) != 0x6))
+    if ((HIWORD(lParam) != 0x6))
         goto L_9d3e;
     else
         goto L_9b2c;
@@ -7905,8 +7996,12 @@ L_9b2c:
     return (INT_PTR)(hbrButtonFace);
 
 L_9b45:
-    GetCursorPos(&(pt));
-    ScreenToClient(hwnd, &(pt));
+    t_pt_9b4c = PointFrom16(pt);
+    GetCursorPos(&(t_pt_9b4c));
+    pt = PointTo16(t_pt_9b4c);
+    t_pt_9b5b_1 = PointFrom16(pt);
+    ScreenToClient(hwnd, &(t_pt_9b5b_1));
+    pt = PointTo16(t_pt_9b5b_1);
     if ((IrcRaceDlgHitTest(pt) < 0))
         goto L_9d3e;
     else
@@ -7918,7 +8013,7 @@ L_9b76:
 
 L_9b88:
     pt.x = LOWORD(lParam);
-    pt.y = (LOWORD((uint32_t)((lParam >> 0x10))) & 0xffff);
+    pt.y = HIWORD(lParam);
     return FTrackNewGameDlg3(hwnd, pt, wParam);
 
 L_9bc0:
@@ -7980,7 +8075,7 @@ L_9c83:
         goto L_9c8d;
 
 L_9c8d:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), WM_USER, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0x0, 0));
     if (((GET_WM_COMMAND_ID(wParam, lParam) - 291) < 0x2))
         goto L_9cc9;
     else
@@ -8102,7 +8197,7 @@ L_9d9b:
     bkMode = SetBkMode(hdc, OPAQUE);
     crBkSav = SetBkColor(hdc, crButtonFace);
     SelectObject(hdc, rghfontArial8[1]);
-    yTop = (LOWORD((3 * dyArial8)) + 6);
+    yTop = ((3 * dyArial8) + 6);
     dxDig = LOWORD(GetTextExtent(hdc, "9", 1));
     ids = idsOwns;
     irc = 0;
@@ -8136,7 +8231,7 @@ L_9e87:
 
 L_9e99:
     xLeft = rcCBox.left;
-    yTop = ((rcCBox.bottom + 6) + ((int32_t)(LOWORD((3 * dyArial8))) / 2));
+    yTop = ((rcCBox.bottom + 6) + ((int32_t)((3 * dyArial8)) / 2));
 
 L_9eb7:
     t_9ebb = ids;
@@ -8156,7 +8251,7 @@ L_9eef:
     goto L_a1c0;
 
 L_9f0c:
-    dxItem = LOWORD((abs((int16_t)(rgNG3Width[i][j])) * dxDig));
+    dxItem = (abs((int16_t)(rgNG3Width[i][j])) * dxDig);
     if ((dxItem != 0))
         goto L_9f42;
     else
@@ -8174,7 +8269,7 @@ L_9f42:
         goto L_9f8b;
 
 L_9f8b:
-    dxItem = (dxItem + ((int32_t)(LOWORD((3 * dxDig))) / 2));
+    dxItem = (dxItem + ((int32_t)((3 * dxDig)) / 2));
     strcat(szWork, "%");
 
 L_9faa:
@@ -8264,7 +8359,7 @@ L_a209:
     return;
 }
 
-int16_t FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd) {
+int16_t FTrackNewGameDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
     int16_t bt;
     int16_t irc;
     BTNT    btnt;
@@ -8308,7 +8403,7 @@ L_a26a:
         goto L_a2ae;
 
 L_a2ae:
-    dShift = LOWORD((5 * dShift));
+    dShift = (5 * dShift);
 
 L_a2b7:
     if ((FTrackBtn(&(btnt)) == 0))
@@ -8451,7 +8546,7 @@ L_b740:
     goto L_b80e;
 
 L_b746:
-    val = (LOWORD((5 * val)) + 20);
+    val = ((5 * val) + 20);
     goto L_b833;
 
 L_b755:
@@ -8463,23 +8558,23 @@ L_b761:
     goto L_b833;
 
 L_b76d:
-    val = (LOWORD((1000 * val)) + 1000);
+    val = ((1000 * val) + 1000);
     goto L_b833;
 
 L_b77c:
-    val = (LOWORD((10 * val)) + 20);
+    val = ((10 * val) + 20);
     goto L_b833;
 
 L_b78b:
-    val = (LOWORD((10 * val)) + 10);
+    val = ((10 * val) + 10);
     goto L_b833;
 
 L_b79a:
-    val = (LOWORD((10 * val)) + 30);
+    val = ((10 * val) + 30);
     goto L_b833;
 
 L_b7a9:
-    val = (LOWORD((10 * val)) + 30);
+    val = ((10 * val) + 30);
     goto L_b833;
 
 L_b7b8:
@@ -8524,7 +8619,7 @@ L_b808:
     goto L_b833;
 
 L_b80e:
-    if ((vc > 9))
+    if (((uint16_t)(vc) > 9))
         goto L_b7b8;
     else
         goto L_b816;

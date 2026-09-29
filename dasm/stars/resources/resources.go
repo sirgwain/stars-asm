@@ -135,6 +135,7 @@ func (w *writer) script() (string, error) {
 			}
 		}
 	}
+	w.appIcon(&b)
 	b.WriteString("\n/* Data */\n")
 	for i := range w.img.Resources() {
 		res := &w.img.Resources()[i]
@@ -178,6 +179,26 @@ func (w *writer) icon(b *strings.Builder, res *asm.Resource) error {
 		return err
 	}
 	return w.fileStatement(b, w.name("", res.Name), "ICON", "icons", ".ico", data)
+}
+
+// appIconName names the native copy of the program icon. PE sorts named
+// resources alphabetically and the shell, including Wine's Mac Dock icon,
+// takes the first icon group, so the name must sort before every icon name
+// in the exe.
+const appIconName = "APPICON"
+
+// appIcon writes the program icon a second time as appIconName for the native
+// build. An NE keeps its resource table order and Windows 3.1 took the first
+// icon group, StarsIco, as the program icon; the PE sort would otherwise put
+// Bang1Ico first.
+func (w *writer) appIcon(b *strings.Builder) {
+	for i := range w.img.Resources() {
+		res := &w.img.Resources()[i]
+		if res.Type.Ordinal && res.Type.ID == asm.ResourceGroupIcon {
+			fmt.Fprintf(b, "\n/* Program icon, first in the native resource sort */\n%s ICON \"icons/%s.ico\"\n", appIconName, strings.ToLower(w.name("", res.Name)))
+			return
+		}
+	}
 }
 
 // cursor writes a GROUP_CURSOR resource as a .cur file and its CURSOR

@@ -4,7 +4,7 @@
 ;   locals:
 ;     char[15]         szGame         [BP-0x7c]
 ;     char *           psz            [BP-0x6c]
-;     POINT            pt             [BP-0x6a]
+;     POINT16          pt             [BP-0x6a]
 ;     char[100]        szData         [BP-0x66]
 ;
 ;   stats: blocks=0  labels=0

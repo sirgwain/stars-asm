@@ -1,4 +1,4 @@
-.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile resources
+.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile resources newgame
 
 DIST_DIR    := dist
 CLI_BIN     := $(DIST_DIR)/stars-asm
@@ -21,6 +21,7 @@ help:
 	@echo "  compile-check    Generate MinGW diagnostics and fail on C or resource errors"
 	@echo "  compile          Print MinGW diagnostics to the terminal (FILES=decompiled/ai.c to limit)"
 	@echo "  resources        Compile decompiled/res/stars.rc into ./dist/stars_res.o"
+	@echo "  newgame          Run the scaffold new-game smoke test under Wine (DEF=)"
 	@echo "  tidy             Run go mod tidy in both modules"
 	@echo "  fmt              Run go fmt in all modules"
 	@echo "  clean            Remove ./dist/"
@@ -107,3 +108,9 @@ coverage-report:
 
 clean:
 	rm -rf $(DIST_DIR)
+
+# generate a new game with the decompiled stars.exe under Wine and check the
+# game files were written
+DEF ?= tests/scaffold/fixtures/newgame/tiny/game.def
+newgame:
+	tests/scaffold/newgame.sh "$(DEF)"

@@ -2,6 +2,7 @@ package sem
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
@@ -32,8 +33,8 @@ type machineConverter struct {
 	ctx                *FuncContext
 	result             *Result
 	instOff            uint32
-	memWrites          map[string]uint32
-	tempByLoad         map[machine.ValueID]*Temp
+	memWrites          []memoryWrite
+	tempByLoad         map[machine.ValueID]Expr
 	tempRequests       map[uint32][]*machine.Load
 	noBitfields        bool
 	ignoreUnionContext bool
@@ -46,10 +47,17 @@ type machineCallResultKey struct {
 	instOff uint32
 }
 
+// memoryWrite records the byte range changed by a machine store.
+type memoryWrite struct {
+	addr    machine.MemoryAddress
+	width   int
+	instOff uint32
+}
+
 // convertEffects converts machine effects while preserving unresolved raw storage.
 func (c *machineConverter) convertEffects(effects []machine.Effect) []Effect {
-	c.memWrites = make(map[string]uint32)
-	c.tempByLoad = make(map[machine.ValueID]*Temp)
+	c.memWrites = nil
+	c.tempByLoad = make(map[machine.ValueID]Expr)
 	c.tempRequests = collectTempRequests(effects)
 	out := make([]Effect, 0, len(effects)+len(c.tempRequests))
 	for _, effect := range effects {
@@ -425,22 +433,51 @@ func (c *machineConverter) convertTempAssignments(instOff uint32) []Effect {
 	}
 	assigns := make([]Effect, 0, len(loads))
 	for _, load := range loads {
+		c.ctx.currentInstOff = load.ID.InstOff
 		storage := c.convertMemoryLValue(load.Addr, load.Addr.Width)
-		temp := &Temp{
-			Name:     tempName(load.ID),
-			ID:       load.ID,
-			Source:   storage,
-			TypeInfo: storage.ExprType(),
+		path, fieldOff, resolved := c.ctx.symbols.addressBaseFromMemory(load.Addr)
+		pointerWord := resolved && typeinfo.IsFarPointer(path.Type()) && load.Addr.Width == 2 && (fieldOff == 0 || fieldOff == 2)
+		// Capture the whole typed pointer once so its segment and offset
+		// still describe the same value when projected after the write.
+		if pointerWord {
+			whole := load.Addr
+			whole.Disp -= fieldOff
+			whole.Width = path.Type().Bytes()
+			storage = c.convertMemoryLValue(whole, whole.Width)
 		}
-		if temp.TypeInfo == nil {
-			temp.TypeInfo = typeinfo.UintForWidth(load.Addr.Width)
+		var temp *Temp
+		for _, effect := range assigns {
+			assign := effect.(*Assign)
+			if sameExpr(assign.Src, storage) {
+				temp = assign.Dst.(*Temp)
+				break
+			}
 		}
-		c.tempByLoad[load.ID] = temp
-		assigns = append(assigns, &Assign{
-			MetaInfo: machine.Meta{InstOff: load.ID.InstOff},
-			Dst:      temp,
-			Src:      storage,
-		})
+		if temp == nil {
+			temp = &Temp{
+				Name:     tempName(load.ID),
+				ID:       load.ID,
+				Source:   storage,
+				TypeInfo: storage.ExprType(),
+			}
+			if temp.TypeInfo == nil {
+				temp.TypeInfo = typeinfo.UintForWidth(load.Addr.Width)
+			}
+			assigns = append(assigns, &Assign{
+				MetaInfo: machine.Meta{InstOff: load.ID.InstOff},
+				Dst:      temp,
+				Src:      storage,
+			})
+		}
+		if pointerWord {
+			part := machine.WordLow
+			if fieldOff == 2 {
+				part = machine.WordHigh
+			}
+			c.tempByLoad[load.ID] = &Word{Parent: temp, Part: part}
+		} else {
+			c.tempByLoad[load.ID] = temp
+		}
 	}
 	return assigns
 }
@@ -452,14 +489,17 @@ func tempName(id machine.ValueID) string {
 
 // collectTempRequests finds loads that must be captured before storage mutation.
 func collectTempRequests(effects []machine.Effect) map[uint32][]*machine.Load {
-	writes := make(map[string]uint32)
+	var writes []memoryWrite
 	requests := make(map[uint32][]*machine.Load)
 	seen := make(map[machine.ValueID]bool)
 	for _, effect := range effects {
 		switch e := effect.(type) {
 		case machine.StoreEffect:
+			collectTempLoads(e.Addr.Seg, writes, requests, seen)
+			collectTempLoads(e.Addr.Base, writes, requests, seen)
+			collectTempLoads(e.Addr.Index, writes, requests, seen)
 			collectTempLoads(e.Src, writes, requests, seen)
-			writes[memoryWriteKey(e.Addr, e.Width)] = e.MetaInfo.InstOff
+			writes = append(writes, memoryWrite{addr: e.Addr, width: e.Width, instOff: e.MetaInfo.InstOff})
 		case machine.CopyEffect:
 			collectTempLoads(e.Dst, writes, requests, seen)
 			collectTempLoads(e.Src, writes, requests, seen)
@@ -480,7 +520,7 @@ func collectTempRequests(effects []machine.Effect) map[uint32][]*machine.Load {
 }
 
 // collectTempLoads records stale loads and the write they must be captured before.
-func collectTempLoads(value machine.Value, writes map[string]uint32, requests map[uint32][]*machine.Load, seen map[machine.ValueID]bool) {
+func collectTempLoads(value machine.Value, writes []memoryWrite, requests map[uint32][]*machine.Load, seen map[machine.ValueID]bool) {
 	switch v := value.(type) {
 	case nil:
 		return
@@ -510,15 +550,22 @@ func collectTempLoads(value machine.Value, writes map[string]uint32, requests ma
 		collectTempLoads(v.LHS, writes, requests, seen)
 		collectTempLoads(v.RHS, writes, requests, seen)
 	case *machine.Load:
+		collectTempLoads(v.Addr.Seg, writes, requests, seen)
+		collectTempLoads(v.Addr.Base, writes, requests, seen)
+		collectTempLoads(v.Addr.Index, writes, requests, seen)
 		if v.ID.IsZero() || seen[v.ID] {
 			return
 		}
-		writeOff, ok := writes[memoryWriteKey(v.Addr, v.Addr.Width)]
-		if !ok || v.ID.InstOff >= writeOff {
+		writeOff, ok := loadClobber(v, writes)
+		if !ok {
 			return
 		}
 		seen[v.ID] = true
 		requests[writeOff] = append(requests[writeOff], v)
+	case *machine.Address:
+		collectTempLoads(v.Addr.Seg, writes, requests, seen)
+		collectTempLoads(v.Addr.Base, writes, requests, seen)
+		collectTempLoads(v.Addr.Index, writes, requests, seen)
 	case *machine.PhiValue:
 		for _, arm := range v.Arms {
 			collectTempLoads(arm.Value, writes, requests, seen)
@@ -528,10 +575,7 @@ func collectTempLoads(value machine.Value, writes map[string]uint32, requests ma
 
 // recordMemoryWrite records that storage has been updated by the current effect.
 func (c *machineConverter) recordMemoryWrite(mem machine.MemoryAddress, width int) {
-	if c.memWrites == nil {
-		return
-	}
-	c.memWrites[memoryWriteKey(mem, width)] = c.instOff
+	c.memWrites = append(c.memWrites, memoryWrite{addr: mem, width: width, instOff: c.instOff})
 }
 
 // recordCopyWrite records the storage written by a copy effect.
@@ -548,15 +592,25 @@ func (c *machineConverter) staleLoad(load *machine.Load) bool {
 	if load == nil || load.ID.IsZero() || c.memWrites == nil {
 		return false
 	}
-	writeOff, ok := c.memWrites[memoryWriteKey(load.Addr, load.Addr.Width)]
-	return ok && load.ID.InstOff < writeOff
+	_, ok := loadClobber(load, c.memWrites)
+	return ok
 }
 
-// memoryWriteKey returns a storage key for detecting reads invalidated by writes.
-func memoryWriteKey(mem machine.MemoryAddress, width int) string {
-	mem.Origin = machine.Origin{}
-	mem.Width = width
-	return mem.String()
+// loadClobber finds the first later store that overlaps the loaded bytes.
+func loadClobber(load *machine.Load, writes []memoryWrite) (uint32, bool) {
+	for _, write := range writes {
+		if write.instOff <= load.ID.InstOff ||
+			write.addr.Disp+write.width <= load.Addr.Disp ||
+			load.Addr.Disp+load.Addr.Width <= write.addr.Disp {
+			continue
+		}
+		if machine.ValueEquals(write.addr.Seg, load.Addr.Seg) &&
+			machine.ValueEquals(write.addr.Base, load.Addr.Base) &&
+			machine.ValueEquals(write.addr.Index, load.Addr.Index) {
+			return write.instOff, true
+		}
+	}
+	return 0, false
 }
 
 // convertMemoryLValue converts a machine memory address into a semantic lvalue.
@@ -714,21 +768,30 @@ func convertOp(op machine.ValueOp) Op {
 	}
 }
 
-// compareOp converts a machine branch mnemonic to a semantic comparison.
+// compareOp converts a machine branch mnemonic to a semantic comparison,
+// keeping the signedness of relational branches.
 func compareOp(op string) CompareOp {
-	switch machine.JccCompareOp(op) {
-	case "==":
+	switch strings.ToUpper(op) {
+	case "JZ", "JE":
 		return CompareEQ
-	case "!=":
+	case "JNZ", "JNE":
 		return CompareNE
-	case "<":
+	case "JL", "JNGE", "JS":
 		return CompareLT
-	case "<=":
+	case "JLE", "JNG":
 		return CompareLE
-	case ">":
+	case "JG", "JNLE":
 		return CompareGT
-	case ">=":
+	case "JGE", "JNL", "JNS":
 		return CompareGE
+	case "JB", "JC", "JNAE":
+		return CompareULT
+	case "JBE", "JNA":
+		return CompareULE
+	case "JA", "JNBE":
+		return CompareUGT
+	case "JAE", "JNB", "JNC":
+		return CompareUGE
 	default:
 		return CompareUnknown
 	}

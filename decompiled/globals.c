@@ -246,6 +246,7 @@ PLAYER       vrgplrDef[7] = {{
                                  .iPlrBmp = 18,
                                  .wMdPlr = 151,
                                  .rgEnvVar = {15, 50, 85},
+                                 .rgEnvVarMin = {0, 0, 70},
                                  .rgEnvVarMax = {30, 100, 100},
                                  .pctIdealGrowth = 7,
                                  .pctResearch = 15,
@@ -267,33 +268,33 @@ PLAYER       vrgplrDef[7] = {{
                                  .grbitAttr = 1073741824,
                        }};
 PLPROD      *lpplProdGlob = 0;
-POINT        ptPlaque = {0};
-POINT        ptSpeedVCR = {0};
-POINT        ptStickyBattlePlansDlg = {.x = -1, .y = -1};
-POINT        ptStickyBrowserDlg = {.x = -1, .y = -1};
-POINT        ptStickyFindDlg = {.x = -1, .y = -1};
-POINT        ptStickyHostModeDlg = {.x = -1, .y = -1};
-POINT        ptStickyMergeFleetsDlg = {.x = -1, .y = -1};
-POINT        ptStickyNewDlg = {.x = -1, .y = -1};
-POINT        ptStickyPrintMapDlg = {.x = -1, .y = -1};
-POINT        ptStickyProduceDlg = {.x = -1, .y = -1};
-POINT        ptStickyRaceDlg = {.x = -1, .y = -1};
-POINT        ptStickyRelationsDlg = {.x = -1, .y = -1};
-POINT        ptStickyRenameDlg = {.x = -1, .y = -1};
-POINT        ptStickyResDlg = {.x = -1, .y = -1};
-POINT        ptStickyScoreXDlg = {.x = -1, .y = -1};
-POINT        ptStickySlotDlg = {.x = -1, .y = -1};
-POINT        ptStickyTransferDlg = {.x = -1, .y = -1};
-POINT        ptStickyTutorDlg = {.x = -1, .y = -1};
-POINT        ptStickyVCRDlg = {.x = -1, .y = -1};
-POINT        ptStickyZipOrderDlg = {.x = -1, .y = -1};
-POINT        ptStickyZipProdDlg = {.x = -1, .y = -1};
-POINT        ptslotGlob = {0};
-POINT        rgptArrow[5] = {{.x = 3}, {.y = 3}, {.x = -1, .y = 3}, {.x = 2, .y = 3}, {.x = -3, .y = 6}};
-POINT        rgptPlan[999] = {0};
-POINT        rgptTriangle[3] = {{.x = 4}, {.y = 4}, {.x = -1, .y = 4}};
-POINT        vptMsg = {0};
-POINT        vptTbLast = {.x = -1, .y = -1};
+POINT16      ptPlaque = {0};
+POINT16      ptSpeedVCR = {0};
+POINT16      ptStickyBattlePlansDlg = {.x = -1, .y = -1};
+POINT16      ptStickyBrowserDlg = {.x = -1, .y = -1};
+POINT16      ptStickyFindDlg = {.x = -1, .y = -1};
+POINT16      ptStickyHostModeDlg = {.x = -1, .y = -1};
+POINT16      ptStickyMergeFleetsDlg = {.x = -1, .y = -1};
+POINT16      ptStickyNewDlg = {.x = -1, .y = -1};
+POINT16      ptStickyPrintMapDlg = {.x = -1, .y = -1};
+POINT16      ptStickyProduceDlg = {.x = -1, .y = -1};
+POINT16      ptStickyRaceDlg = {.x = -1, .y = -1};
+POINT16      ptStickyRelationsDlg = {.x = -1, .y = -1};
+POINT16      ptStickyRenameDlg = {.x = -1, .y = -1};
+POINT16      ptStickyResDlg = {.x = -1, .y = -1};
+POINT16      ptStickyScoreXDlg = {.x = -1, .y = -1};
+POINT16      ptStickySlotDlg = {.x = -1, .y = -1};
+POINT16      ptStickyTransferDlg = {.x = -1, .y = -1};
+POINT16      ptStickyTutorDlg = {.x = -1, .y = -1};
+POINT16      ptStickyVCRDlg = {.x = -1, .y = -1};
+POINT16      ptStickyZipOrderDlg = {.x = -1, .y = -1};
+POINT16      ptStickyZipProdDlg = {.x = -1, .y = -1};
+POINT16      ptslotGlob = {0};
+POINT16      rgptArrow[5] = {{.x = 3}, {.y = 3}, {.x = -1, .y = 3}, {.x = 2, .y = 3}, {.x = -3, .y = 6}};
+POINT16      rgptPlan[999] = {0};
+POINT16      rgptTriangle[3] = {{.x = 4}, {.y = 4}, {.x = -1, .y = 4}};
+POINT16      vptMsg = {0};
+POINT16      vptTbLast = {.x = -1, .y = -1};
 POPUPDATA    GlobalPD = {0};
 PROD        *pProdGlob = 0;
 RECT        *vrgrcRCW = 0;
@@ -436,6 +437,7 @@ TILE        rgtileShip[7] = {{
                                  .yTop = 11,
                                  .dyFull = 19,
                                  .grbit = 32,
+                                 .pfn = DrawShipOrders,
                                  .id = 3,
                                  .fPopped = 1,
                                  .idh = 1518,

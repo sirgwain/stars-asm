@@ -1,7 +1,32 @@
 {
   "functions": [
     {
+      "name": "isalpha",
+      "ret": "int16_t",
+      "params": [{ "name": "c", "ctype": "int16_t" }],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "isdigit",
+      "ret": "int16_t",
+      "params": [{ "name": "c", "ctype": "int16_t" }],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "islower",
+      "ret": "int16_t",
+      "params": [{ "name": "c", "ctype": "int16_t" }],
+      "callconv": "cdecl"
+    },
+    {
+      "name": "isupper",
+      "ret": "int16_t",
+      "params": [{ "name": "c", "ctype": "int16_t" }],
+      "callconv": "cdecl"
+    },
+    {
       "name": "ICompFleetPoint",
+      "native_decl": "int ICompFleetPoint(FLEET **ppfl1, FLEET **ppfl2)",
       "ret": "int16_t",
       "params": [
         { "name": "ppfl1", "ctype": "FLEET far **" },
@@ -11,6 +36,7 @@
     },
     {
       "name": "ICompFleetPoint2",
+      "native_decl": "int ICompFleetPoint2(int32_t *pl, FLEET **ppfl)",
       "ret": "int16_t",
       "params": [
         { "name": "pl", "ctype": "int32_t *" },
@@ -20,6 +46,7 @@
     },
     {
       "name": "ICompLong",
+      "native_decl": "int ICompLong(int32_t *pl1, int32_t *pl2)",
       "ret": "int16_t",
       "params": [
         { "name": "pl1", "ctype": "int32_t *" },
@@ -29,6 +56,7 @@
     },
     {
       "name": "ICompReport",
+      "native_decl": "int ICompReport(uint16_t *pid1, uint16_t *pid2)",
       "ret": "int16_t",
       "params": [
         { "name": "pid1", "ctype": "uint16_t *" },
@@ -721,7 +749,7 @@
       "name": "HcrsFromFrameWindowPt",
       "ret": "HCURSOR",
       "params": [
-        { "name": "pt", "ctype": "POINT" },
+        { "name": "pt", "ctype": "POINT16" },
         { "name": "pgrSel", "ctype": "int16_t *" }
       ],
       "callconv": "cdecl"
@@ -730,7 +758,7 @@
       "name": "ClickInPlanetOrders",
       "ret": "HCURSOR",
       "params": [
-        { "name": "pt", "ctype": "POINT" },
+        { "name": "pt", "ctype": "POINT16" },
         { "name": "sks", "ctype": "int16_t" },
         { "name": "fCursor", "ctype": "int16_t" },
         { "name": "fRightBtn", "ctype": "int16_t" }
@@ -741,7 +769,7 @@
       "name": "ClickInShipOrders",
       "ret": "HCURSOR",
       "params": [
-        { "name": "pt", "ctype": "POINT" },
+        { "name": "pt", "ctype": "POINT16" },
         { "name": "sks", "ctype": "int16_t" },
         { "name": "fCursor", "ctype": "int16_t" },
         { "name": "fRightBtn", "ctype": "int16_t" }

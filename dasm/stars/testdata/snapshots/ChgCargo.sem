@@ -41,7 +41,7 @@ L_606b:
     goto L_609f
 
 L_6084:
-    call memset(&xfer.pl, 0, 0x38) -> callresult(void *)
+    call memset(&xfer.pl, 0, sizeof(PLANET)) -> callresult(void *)
     ppl = &xfer.pl
 
 L_609f:

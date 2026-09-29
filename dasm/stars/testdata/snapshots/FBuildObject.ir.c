@@ -675,7 +675,7 @@ L_28f0:
         goto L_2909;
 
 L_2909:
-    if ((lpth->thp.idPlanet != (lppl->idFling + 0xffff)))
+    if ((lpth->thp.idPlanet != (lppl->idFling - 0x1)))
         goto L_2956;
     else
         goto L_2928;
@@ -765,7 +765,7 @@ L_2b35:
 L_2b3e:
     lpth->thp.iWarp = iWarp;
     lpth->thp.iDecayRate = iDecayRate;
-    lpth->thp.idPlanet = (lppl->idFling + 0xffff);
+    lpth->thp.idPlanet = (lppl->idFling - 0x1);
     lpth->pt = rgptPlan[lppl->id];
     FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1));
     goto L_2fc9;
@@ -921,7 +921,7 @@ L_2ee9:
     goto L_2fc9;
 
 L_2f77:
-    if ((iItem > 27))
+    if (((uint16_t)(iItem) > 27))
         goto L_23d6;
     else
         goto L_2f7f;

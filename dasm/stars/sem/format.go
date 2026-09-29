@@ -92,6 +92,8 @@ func FormatExpr(expr Expr) string {
 		return fmt.Sprintf("MAKEINTRESOURCE(%s)", FormatExpr(e.Value))
 	case *FloatConst:
 		return FormatFloat(e.F64)
+	case *SizeOf:
+		return fmt.Sprintf("sizeof(%s)", typeinfo.TypeDecl(e.Type, ""))
 	case *Unary:
 		return fmt.Sprintf("%s(%s)", formatOp(e.Op), FormatExpr(e.X))
 	case *Binary:
@@ -360,13 +362,13 @@ func formatCompareOp(op CompareOp) string {
 		return "=="
 	case CompareNE:
 		return "!="
-	case CompareLT:
+	case CompareLT, CompareULT:
 		return "<"
-	case CompareLE:
+	case CompareLE, CompareULE:
 		return "<="
-	case CompareGT:
+	case CompareGT, CompareUGT:
 		return ">"
-	case CompareGE:
+	case CompareGE, CompareUGE:
 		return ">="
 	default:
 		return machine.PredicateVal(machine.PredicateUnknown, "cmp?").String()

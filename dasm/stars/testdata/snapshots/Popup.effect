@@ -7,14 +7,14 @@ Popup  (popup)
     int16_t          x              [BP+0x8]
     int16_t          y              [BP+0xa]
   locals:
-    POINT            ptT            [BP-0x18]
+    POINT16          ptT            [BP-0x18]
     int16_t          dx             [BP-0x14]
     char *           psz            [BP-0x12]
     HFONT            hfontSav       [BP-0x10]
     int16_t          c              [BP-0xe]
     int16_t          i              [BP-0xc]
     int16_t          dy             [BP-0xa]
-    POINT            pt             [BP-0x8]
+    POINT16          pt             [BP-0x8]
     HDC              hdc            [BP-0x4]
     block 0019:0D22  len=0x88
       char *           psz            [BP-0x1c]
@@ -331,9 +331,9 @@ block L_1092:
   preds: L_1200
   succs: L_1113
   effects:
-    1099  call PtDisplayPlanetStateInfo(load([bp-hdc]), 0x0) -> callresult(POINT)
-    10a1  store[2] [bp-ptT] = loword(callresult(POINT))
-    10a4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    1099  call PtDisplayPlanetStateInfo(load([bp-hdc]), 0x0) -> callresult(POINT16)
+    10a1  store[2] [bp-ptT] = loword(callresult(POINT16))
+    10a4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
     10a7  goto L_1113
 
 block L_10aa:
@@ -341,9 +341,9 @@ block L_10aa:
   preds: L_1200
   succs: L_1113
   effects:
-    10b5  call PtDisplayZipOrdInfo(load([bp-hdc]), 0x0, 0x0) -> callresult(POINT)
-    10bd  store[2] [bp-ptT] = loword(callresult(POINT))
-    10c0  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10b5  call PtDisplayZipOrdInfo(load([bp-hdc]), 0x0, 0x0) -> callresult(POINT16)
+    10bd  store[2] [bp-ptT] = loword(callresult(POINT16))
+    10c0  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
     10c3  goto L_1113
 
 block L_10c6:
@@ -351,9 +351,9 @@ block L_10c6:
   preds: L_1200
   succs: L_1113
   effects:
-    10cd  call PtDisplayPlanetPopInfo(load([bp-hdc]), 0x0) -> callresult(POINT)
-    10d5  store[2] [bp-ptT] = loword(callresult(POINT))
-    10d8  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10cd  call PtDisplayPlanetPopInfo(load([bp-hdc]), 0x0) -> callresult(POINT16)
+    10d5  store[2] [bp-ptT] = loword(callresult(POINT16))
+    10d8  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
     10db  goto L_1113
 
 block L_10de:
@@ -361,9 +361,9 @@ block L_10de:
   preds: L_1200
   succs: L_1113
   effects:
-    10e9  call PtDisplayResourceInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT)
-    10f1  store[2] [bp-ptT] = loword(callresult(POINT))
-    10f4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    10e9  call PtDisplayResourceInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT16)
+    10f1  store[2] [bp-ptT] = loword(callresult(POINT16))
+    10f4  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
     10f7  goto L_1113
 
 block L_10fa:
@@ -371,9 +371,9 @@ block L_10fa:
   preds: L_1200
   succs: L_1113
   effects:
-    1105  call PtDisplayFactoryMineInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT)
-    110d  store[2] [bp-ptT] = loword(callresult(POINT))
-    1110  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    1105  call PtDisplayFactoryMineInfo(load([bp-hdc]), 0xc8, 0x0) -> callresult(POINT16)
+    110d  store[2] [bp-ptT] = loword(callresult(POINT16))
+    1110  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
 
 block SetDxDy:
   insts 407..413  off 0x1113..0x1127
@@ -417,9 +417,9 @@ block L_115a:
   preds: L_1200
   succs: L_1113
   effects:
-    1165  call PtDisplayString(load([bp-hdc]), load([GlobalPD+0x2]), 0x0) -> callresult(POINT)
-    116d  store[2] [bp-ptT] = loword(callresult(POINT))
-    1170  store[2] [bp-ptT+0x2] = hiword(callresult(POINT))
+    1165  call PtDisplayString(load([bp-hdc]), load([GlobalPD+0x2]), 0x0) -> callresult(POINT16)
+    116d  store[2] [bp-ptT] = loword(callresult(POINT16))
+    1170  store[2] [bp-ptT+0x2] = hiword(callresult(POINT16))
     1173  goto L_1113
 
 block L_1176:

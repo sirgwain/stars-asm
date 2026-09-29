@@ -11,7 +11,7 @@ L_9908:
         goto L_9929;
 
 L_9929:
-    memset(&(lxNew), 0, 0x18);
+    memset(&(lxNew), 0, sizeof(LOGXFER));
     lxNew.id = pthNew->idFull;
     lxNew.grobj = grobjThing;
     i = 0;
