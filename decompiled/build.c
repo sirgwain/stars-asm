@@ -1142,16 +1142,16 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                     }
                     cch = CchGetString(rgidsCat[i], szWord);
                     if (fPlural == 0) {
-                        if ((int16_t)(int8_t)szWord[cch - 1] == 's') {
-                            if ((int16_t)(int8_t)szWord[cch - 2] == 'e' && (int16_t)(int8_t)szWord[cch - 3] == 'o') {
+                        if ((int16_t)(int8_t)szWord[cch - 1] == 115) {
+                            if ((int16_t)(int8_t)szWord[cch - 2] == 101 && (int16_t)(int8_t)szWord[cch - 3] == 111) {
                                 szWord[cch - 2] = 0;
                             } else {
                                 szWord[cch - 1] = 0;
                             }
                         } else {
-                            for (pch = &szWord[cch - 1]; pch > szWord && (int16_t)(int8_t)*pch != '('; pch--) {
+                            for (pch = &szWord[cch - 1]; pch > szWord && (int16_t)(int8_t)*pch != 40; pch--) {
                             }
-                            if ((int16_t)(int8_t)*pch == '(' && pch > &szWord[1] && (int16_t)(int8_t)pch[-1] == ' ' && (int16_t)(int8_t)pch[-2] == 's') {
+                            if ((int16_t)(int8_t)*pch == 40 && pch > &szWord[1] && (int16_t)(int8_t)pch[-1] == 32 && (int16_t)(int8_t)pch[-2] == 115) {
                                 strcpy(pch + -2, pch + -1);
                             }
                         }
@@ -1963,9 +1963,9 @@ void MakeNewName(char *lpsz) {
 
     cLen = fstrlen(lpsz);
     if (cLen <= 27) {
-        if ((int16_t)(int8_t)lpsz[cLen - 1] != ')' || isdigit((int16_t)(int8_t)lpsz[cLen - 2]) == 0 || (int16_t)(int8_t)lpsz[cLen - 3] != '(') {
+        if ((int16_t)(int8_t)lpsz[cLen - 1] != 41 || isdigit((int16_t)(int8_t)lpsz[cLen - 2]) == 0 || (int16_t)(int8_t)lpsz[cLen - 3] != 40) {
             fstrcpy(lpsz + cLen, " (2)");
-        } else if ((int16_t)(int8_t)lpsz[cLen - 2] == '9') {
+        } else if ((int16_t)(int8_t)lpsz[cLen - 2] == 57) {
             lpsz[cLen - 2] = '0';
         } else {
             lpsz[cLen - 2] = lpsz[cLen - 2] + 1;

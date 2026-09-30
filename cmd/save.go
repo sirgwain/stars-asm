@@ -155,6 +155,10 @@ func (d *saveDumper) dump(path string, showHex, onlyMsgs, onlyOrders bool) error
 		}
 		fmt.Printf("%06x  %-22s cb=%d\n", r.Offset, enumName(d.rtNames, r.Type), len(r.Data))
 		switch r.Type {
+		case savefile.RtGame:
+			for i, star := range r.Stars {
+				fmt.Printf("        STARPACK[%d] position=(%d,%d) id=%d\n", i, star.X, star.Y, star.ID)
+			}
 		case savefile.RtFleetA: // FReadFleet copies the leading FLEET fields verbatim.
 			if len(r.Data) < 12 {
 				return fmt.Errorf("fleet record at 0x%x is %d bytes, want at least 12", r.Offset, len(r.Data))

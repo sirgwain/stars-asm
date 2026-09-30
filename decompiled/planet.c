@@ -1971,9 +1971,9 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         default:
             cr = 0xff;
             break;
-        case 'I':
+        case 73:
             fItalic = 1;
-        case ' ':
+        case 32:
         LDefCase:
             if (crWindow == 0) {
                 cr = 0xffffff;
@@ -1981,19 +1981,19 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             }
             cr = 0;
             break;
-        case 'P':
+        case 80:
             fDoubleDraw = 1;
             pctDmg = (int16_t)(int8_t)psz[1];
-        case 'Q':
+        case 81:
             fFleet = 1;
             goto LDefCase;
-        case '*':
+        case 42:
             cr = 32512;
             break;
-        case '#':
+        case 35:
             cr = 8323072;
             break;
-        case '&':
+        case 38:
             cr = 8355711;
         }
     } else {
@@ -2002,9 +2002,9 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         default:
             hbr = hbrRed;
             break;
-        case 'I':
+        case 73:
             fItalic = 1;
-        case ' ':
+        case 32:
         LDefCaseSel:
             if (crWindow == 0) {
                 hbr = GetStockObject(WHITE_BRUSH);
@@ -2012,19 +2012,19 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             }
             hbr = GetStockObject(BLACK_BRUSH);
             break;
-        case 'P':
+        case 80:
             fDoubleDraw = 1;
             pctDmg = (int16_t)(int8_t)psz[1];
-        case 'Q':
+        case 81:
             fFleet = 1;
             goto LDefCaseSel;
-        case '*':
+        case 42:
             hbr = hbrGreen;
             break;
-        case '#':
+        case 35:
             hbr = hbrBlue;
             break;
-        case '&':
+        case 38:
             hbr = hbrGray;
         }
     }
@@ -2069,7 +2069,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
     }
     if (ich >= 6) {
         if (((int16_t)(int8_t)psz[ich - 5] - 0x20 & 2) != 0) {
-            if ((int16_t)(int8_t)psz[ich - 1] == '*') {
+            if ((int16_t)(int8_t)psz[ich - 1] == 42) {
                 ich = CchGetString(idsNeeded, szT);
                 goto LRightOut;
             }
@@ -2078,7 +2078,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             szT[0] = 0;
         }
         ich = strlen(szT);
-        for (ichT = 2 - fFleet; ichT < 6 && (int16_t)(int8_t)psz[ichT + fFleet] == ' '; ichT++) {
+        for (ichT = 2 - fFleet; ichT < 6 && (int16_t)(int8_t)psz[ichT + fFleet] == 32; ichT++) {
         }
         strncpy(&szT[ich], psz + (ichT + fFleet), 6 - ichT);
         ich += 6 - ichT;

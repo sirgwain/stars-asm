@@ -304,19 +304,19 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
         switch ((int16_t)(int8_t)szWork[0]) {
         default:
             goto NoRc;
-        case 'M':
-        case 'R':
-        case 'I':
+        case 77:
+        case 82:
+        case 73:
             pch = &szWork[1];
             for (i = 0; i < 4; i++) {
                 rg[i] = 0;
                 fNeg = 0;
                 j = 0;
                 while (j < 4) {
-                    if ((int16_t)(int8_t)*pch == '-') {
+                    if ((int16_t)(int8_t)*pch == 45) {
                         fNeg = 1;
                     } else {
-                        if ((int16_t)(int8_t)*pch < '0' || (int16_t)(int8_t)*pch > '9')
+                        if ((int16_t)(int8_t)*pch < 48 || (int16_t)(int8_t)*pch > 57)
                             goto NoRc;
                         rg[i] = 10 * rg[i] + ((int16_t)(int8_t)*pch - 48);
                     }
@@ -331,8 +331,8 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
             rc.top = rg[1];
             rc.right = rg[2];
             rc.bottom = rg[3];
-            fMaximized = (int16_t)(int8_t)szWork[0] == 'M' ? 1 : 0;
-            fMinimized = (int16_t)(int8_t)szWork[0] == 'I' ? 1 : 0;
+            fMaximized = (int16_t)(int8_t)szWork[0] == 77 ? 1 : 0;
+            fMinimized = (int16_t)(int8_t)szWork[0] == 73 ? 1 : 0;
             fInitalized = 1;
         }
         goto L_11ec;
@@ -464,20 +464,20 @@ void ReadIniSettings() {
         ini.grobjSel = 0;
     } else {
         switch ((int16_t)(int8_t)szWork[0]) {
-        case 'N':
+        case 78:
         default:
             ini.grobjSel = 0;
             break;
-        case 'P':
+        case 80:
             ini.grobjSel = 1;
             break;
-        case 'S':
+        case 83:
             ini.grobjSel = 2;
             break;
-        case 'E':
+        case 69:
             ini.grobjSel = 4;
         }
-        if ((int16_t)(int8_t)szWork[1] >= 'B' && (int16_t)(int8_t)szWork[1] <= 'Q') {
+        if ((int16_t)(int8_t)szWork[1] >= 66 && (int16_t)(int8_t)szWork[1] <= 81) {
             ini.idPlayer = (int16_t)(int8_t)szWork[1] - 66;
         } else {
             ini.grobjSel = 0;
@@ -494,9 +494,9 @@ void ReadIniSettings() {
     ini.lid = 0;
     for (i = 0; i < cch; i++) {
         ini.lid = (int32_t)(ini.lid * 16);
-        if ((int16_t)(int8_t)szWork[i] >= '0' && (int16_t)(int8_t)szWork[i] <= '9') {
+        if ((int16_t)(int8_t)szWork[i] >= 48 && (int16_t)(int8_t)szWork[i] <= 57) {
             ini.lid += (int16_t)((int16_t)(int8_t)szWork[i] - 48);
-        } else if ((int16_t)(int8_t)szWork[i] >= 'a' && (int16_t)(int8_t)szWork[i] <= 'f') {
+        } else if ((int16_t)(int8_t)szWork[i] >= 97 && (int16_t)(int8_t)szWork[i] <= 102) {
             ini.lid += (int16_t)((int16_t)(int8_t)szWork[i] - 87);
         }
     }
@@ -656,7 +656,7 @@ void ReadIniSettings() {
         if (cch >= 20 && cch <= 32) {
             psz = szWork;
             iPass = 0;
-            for (; iPass < 20 && (int16_t)(int8_t)*psz >= 'a' && (int16_t)(int8_t)*psz <= 'p'; psz++) {
+            for (; iPass < 20 && (int16_t)(int8_t)*psz >= 97 && (int16_t)(int8_t)*psz <= 112; psz++) {
                 iPass++;
             }
             if (iPass >= 20) {
@@ -692,13 +692,13 @@ void ReadIniSettings() {
             cpq = (int16_t)(int8_t)psz[1] - 97;
             if (cpq >= 0 && cpq <= 12) {
                 iPass = 0;
-                for (; iPass < cpq * 4 + 2 && (int16_t)(int8_t)*psz >= 'a' && (int16_t)(int8_t)*psz <= 'p'; psz++) {
+                for (; iPass < cpq * 4 + 2 && (int16_t)(int8_t)*psz >= 97 && (int16_t)(int8_t)*psz <= 112; psz++) {
                     iPass++;
                 }
                 if (iPass >= cpq * 4 + 2 && strlen(psz) <= 12) {
                     strcpy(vrgZipProd[i].szName, psz);
                     psz = szWork;
-                    vrgZipProd[i].fNoResearch = LOBYTE((int16_t)(int8_t)*psz == 'a' ? 0 : 1);
+                    vrgZipProd[i].fNoResearch = LOBYTE((int16_t)(int8_t)*psz == 97 ? 0 : 1);
                     vrgZipProd[i].fValid = 1;
                     vrgZipProd[i].cpq = LOBYTE(cpq);
                     psz += 2;
@@ -738,7 +738,7 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
     iCol = 0;
     iTile = 0;
     for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat == '*') {
+        if ((int16_t)(int8_t)*pszFormat == 42) {
             if (iCol < 1) {
                 iCol++;
             }

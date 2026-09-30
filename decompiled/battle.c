@@ -51,7 +51,7 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
         if (IS_WM_CTLCOLOR(message) == 0) {
             if (message == WM_INITDIALOG) {
                 StickyDlgPos(hwnd, &ptStickyRelationsDlg, 1);
-                CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[idPlayer == 0 ? 1 : 0] - 44);
+                CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[idPlayer == 0 ? 1 : 0] + 2004);
                 for (i = 0; i < game.cPlayer; i++) {
                     if (i != idPlayer) {
                         SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 0, 0, 0, NULL));
@@ -84,7 +84,7 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                     if (i >= idPlayer) {
                         i++;
                     }
-                    CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[i] - 44);
+                    CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[i] + 2004);
                 } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
                     WinHelp(hwnd, szHelpFile, 1, 1083);
                     return 1;

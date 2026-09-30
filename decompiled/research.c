@@ -153,7 +153,7 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         rgplr[idPlayer].pctResearch = LOBYTE(pctResGlob);
                         rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | iResTechNow);
                         rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xff0f) | iResTechNext * 0x10);
-                        i = rgplr[idPlayer].iTechCur * 0 + pctResGlob;
+                        i = rgplr[idPlayer].iTechCur * 256 + pctResGlob;
                         WriteMemRt(34, 2, &i);
                         fChg = 1;
                         if (gd.fTutorial != 0 && idPlayer == 0) {

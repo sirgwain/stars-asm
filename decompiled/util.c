@@ -426,7 +426,7 @@ char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t 
             strcat(szName, pplr->szName);
         }
         pchEnd = &szName[strlen(szName) - 1];
-        while ((int16_t)(int8_t)*pchEnd == ' ' && pchEnd >= szName) {
+        while ((int16_t)(int8_t)*pchEnd == 32 && pchEnd >= szName) {
             t_12c7 = pchEnd;
             pchEnd--;
             *t_12c7 = 0;
@@ -436,7 +436,7 @@ char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t 
         }
         if (fPlural != 0 && (int16_t)(int8_t)pplr->szNames[0] == 0) {
             pchEnd = &szName[strlen(szName) - 1];
-            if ((int16_t)(int8_t)*pchEnd != 's' && ((int16_t)(int8_t)*pchEnd != 'e' || (int16_t)(int8_t)pchEnd[-1] != 's')) {
+            if ((int16_t)(int8_t)*pchEnd != 115 && ((int16_t)(int8_t)*pchEnd != 101 || (int16_t)(int8_t)pchEnd[-1] != 115)) {
                 strcat(szName, "s");
             }
         }
@@ -2111,7 +2111,7 @@ void DrawABunchOfStars(HDC hdc, RECT *prc) {
 int32_t LongFromSerialCh(char ch) {
     int32_t l;
 
-    if ((int16_t)(int8_t)ch >= 'A' && (int16_t)(int8_t)ch <= 'Z') {
+    if ((int16_t)(int8_t)ch >= 65 && (int16_t)(int8_t)ch <= 90) {
         l = (int16_t)((int16_t)(int8_t)ch - 65);
     } else {
         l = (int16_t)((int16_t)(int8_t)ch - 22);

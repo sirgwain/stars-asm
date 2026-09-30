@@ -490,8 +490,11 @@ func semanticPeerType(expr Expr) typeinfo.Type {
 			continue
 
 		case *SignExtend:
-			expr = e.Parent
-			continue
+			typ := e.ExprType()
+			if typeinfo.IsIntLike(typ) {
+				return typ
+			}
+			return nil
 		case *Binary:
 			// Machine binary nodes retain their unsigned lane type. Recover
 			// the source type through same-width arithmetic so a nested

@@ -16,6 +16,7 @@ const (
 	RtLogFleetOrderDelete  = 3
 	RtLogFleetOrderInsert  = 4
 	RtLogFleetOrderUpdate  = 5
+	RtGame                 = 7
 	RtBOF                  = 8
 	RtLogFleetFlagBit9     = 10
 	RtLogFleetOrderAttrNib = 11
@@ -41,6 +42,14 @@ type Record struct {
 	Offset int
 	Type   int
 	Data   []byte
+	// Stars contains the unencrypted STARPACK array following an XY rtGame.
+	Stars []Star
+}
+
+// Star is one XY planet location and name ID, decoded from STARPACK.
+type Star struct {
+	X, Y int
+	ID   int
 }
 
 // BOF is the decoded file header record (RTBOF).
@@ -154,9 +163,11 @@ func (x *xorStream) xor(buf []byte) {
 
 // ReadRecords splits a file into records and decrypts each one. Every rtBOF
 // record reseeds the XOR stream; records before the first rtBOF are an error.
+// In XY files, rtGame is followed by a raw STARPACK array, not record headers.
 func ReadRecords(b []byte, t Tables) ([]Record, error) {
 	var recs []Record
 	var x *xorStream
+	isXY := false
 	for off := 0; off < len(b); {
 		if off+2 > len(b) {
 			return recs, fmt.Errorf("truncated record header at 0x%x", off)
@@ -176,6 +187,7 @@ func ReadRecords(b []byte, t Tables) ([]Record, error) {
 			if x, err = newXorStream(t.Primes, bof); err != nil {
 				return recs, fmt.Errorf("at 0x%x: %w", off, err)
 			}
+			isXY = bof.Dt == 0 // dtXY
 		case rt == RtEOF:
 		case x == nil:
 			return recs, fmt.Errorf("record rt=%d at 0x%x precedes the file header", rt, off)
@@ -184,6 +196,28 @@ func ReadRecords(b []byte, t Tables) ([]Record, error) {
 		}
 		recs = append(recs, Record{Offset: off, Type: rt, Data: data})
 		off += 2 + cb
+		if isXY && rt == RtGame {
+			// GAME.cPlanMax and STARPACK layout are defined in decompiled/structs.h.
+			if len(data) != 64 {
+				return recs, fmt.Errorf("XY game record is %d bytes, want 64", len(data))
+			}
+			count := int(int16(binary.LittleEndian.Uint16(data[10:])))
+			if count < 0 || count > 1000 {
+				return recs, fmt.Errorf("XY planet count %d is outside 0..1000", count)
+			}
+			if count*4 > len(b)-off {
+				return recs, fmt.Errorf("XY STARPACK array at 0x%x needs %d bytes, have %d", off, count*4, len(b)-off)
+			}
+			stars := make([]Star, count)
+			xpos := 1000
+			for i := range stars {
+				packed := binary.LittleEndian.Uint32(b[off:])
+				xpos += int(packed & 0x3ff)
+				stars[i] = Star{X: xpos, Y: int((packed >> 10) & 0xfff), ID: int(packed >> 22)}
+				off += 4
+			}
+			recs[len(recs)-1].Stars = stars
+		}
 	}
 	return recs, nil
 }

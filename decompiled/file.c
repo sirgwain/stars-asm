@@ -211,8 +211,8 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
             ReadRt();
             if (hdrCur.rt == rtEOF) {
                 StreamClose();
-                if (((int16_t)(int8_t)*pszExt == 'h' || (int16_t)(int8_t)*pszExt == 'H') &&
-                    ((int16_t)(int8_t)pszExt[1] == 's' || (int16_t)(int8_t)pszExt[1] == 'S')) {
+                if (((int16_t)(int8_t)*pszExt == 104 || (int16_t)(int8_t)*pszExt == 72) &&
+                    ((int16_t)(int8_t)pszExt[1] == 115 || (int16_t)(int8_t)pszExt[1] == 83)) {
                     dt = 2;
                     iPlayer = -1;
                 } else {

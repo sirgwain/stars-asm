@@ -1917,7 +1917,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw) {
         }
         if (pt.x != -1 && pt2.x != -1 && (pt.x != pt2.x || pt.y != pt2.y)) {
             strcpy(szBuf, PszGetDistance(pt.x, pt.y, pt2.x, pt2.y));
-            for (psz = szBuf; (int16_t)(int8_t)*psz != ' '; psz++) {
+            for (psz = szBuf; (int16_t)(int8_t)*psz != 32; psz++) {
             }
             CchGetString((rc.right < 350 ? 0 : 1) + 1366, psz + 1);
             if (psbar == 0 || psbar->pscan == 0) {
@@ -2893,14 +2893,14 @@ int16_t FSelectSz(char *szName) {
         } else {
             pch = szName;
         }
-        for (; (int16_t)(int8_t)*pch == ' '; pch++) {
+        for (; (int16_t)(int8_t)*pch == 32; pch++) {
         }
-        if ((int16_t)(int8_t)*pch == '#') {
+        if ((int16_t)(int8_t)*pch == 35) {
             pch++;
         }
-        for (; (int16_t)(int8_t)*pch == ' '; pch++) {
+        for (; (int16_t)(int8_t)*pch == 32; pch++) {
         }
-        if ((int16_t)(int8_t)*pch >= '1' && (int16_t)(int8_t)*pch <= '9') {
+        if ((int16_t)(int8_t)*pch >= 49 && (int16_t)(int8_t)*pch <= 57) {
             ifl = (int16_t)(int8_t)*pch - 48;
             pch++;
             while (isdigit((int16_t)(int8_t)*pch) != 0) {

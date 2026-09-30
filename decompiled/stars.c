@@ -33,11 +33,11 @@ L_0121:
     while ((int16_t)(int8_t)*lpT != 0) {
         while (1) {
             switch ((int16_t)(int8_t)*lpT) {
-            case ' ':
+            case 32:
                 lpT++;
                 continue;
-            case '-':
-            case '/':
+            case 45:
+            case 47:
                 goto L_0164;
             default:
                 goto L_0517;
@@ -45,8 +45,8 @@ L_0121:
             goto L_0121;
         }
     L_0164:
-        for (lpT++; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
-            if ((int16_t)(int8_t)*lpT - 'A' <= 55) {
+        for (lpT++; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32; lpT++) {
+            if ((uint16_t)((int16_t)(int8_t)*lpT - 65) <= 55) {
                 switch ((int16_t)(int8_t)*lpT) {
                 case 87:
                 case 119:
@@ -57,23 +57,23 @@ L_0121:
                     lpT++;
                     while (1) {
                         switch ((int16_t)(int8_t)*lpT) {
-                        case 'F':
-                        case 'f':
+                        case 70:
+                        case 102:
                             ini.fDumpFleets = 1;
                             goto L_0231;
-                        case 'P':
-                        case 'p':
+                        case 80:
+                        case 112:
                             ini.fDumpPlanets = 1;
                             goto L_0231;
-                        case 'M':
-                        case 'm':
+                        case 77:
+                        case 109:
                             ini.fDumpMap = 1;
                         default:
                         L_0231:
                             lpT++;
                             continue;
                         case 0:
-                        case ' ':
+                        case 32:
                             break;
                         }
                         break;
@@ -84,12 +84,12 @@ L_0121:
                 case 103:
                     ini.fGen = 1;
                     i = 0;
-                    while ((int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9') {
+                    while ((int16_t)(int8_t)lpT[1] >= 48 && (int16_t)(int8_t)lpT[1] <= 57) {
                         lpT++;
                         i = 10 * i + (int16_t)(int8_t)*lpT - 48;
                         if (i > 1000) {
                             i = 1000;
-                            for (; (int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9'; lpT++) {
+                            for (; (int16_t)(int8_t)lpT[1] >= 48 && (int16_t)(int8_t)lpT[1] <= 57; lpT++) {
                             }
                             break;
                         }
@@ -112,10 +112,10 @@ L_0121:
                     break;
                 case 66:
                 case 98:
-                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
+                    for (lpT++; (int16_t)(int8_t)*lpT == 32; lpT++) {
                     }
                     pch = szBase;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
+                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -146,10 +146,10 @@ L_0121:
                     break;
                 case 80:
                 case 112:
-                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
+                    for (lpT++; (int16_t)(int8_t)*lpT == 32; lpT++) {
                     }
                     pch = szPassLast;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ' && pch < &szPassLast[15]; lpT++) {
+                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32 && pch < &szPassLast[15]; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -162,7 +162,7 @@ L_0121:
         continue;
     L_0517:
         pch = szBase;
-        while ((int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ') {
+        while ((int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32) {
             *pch = *lpT;
             lpT++;
             pch++;

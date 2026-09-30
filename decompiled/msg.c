@@ -1896,11 +1896,11 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     pParams = pParamsReal;
     pch = szMsgBuf;
     for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat != '\\') {
+        if ((int16_t)(int8_t)*pszFormat != 92) {
             *pch++ = *pszFormat;
         } else {
             pszFormat++;
-            if ((int16_t)(int8_t)*pszFormat - 'E' <= 53) {
+            if ((uint16_t)((int16_t)(int8_t)*pszFormat - 69) <= 53) {
                 switch ((int16_t)(int8_t)*pszFormat) {
                 case 119:
                     strcpy(pch, szWork);
@@ -1914,24 +1914,24 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     strcpy(pch, szBase);
                     pch += strlen(szBase);
                     switch ((int16_t)(int8_t)*pszFormat) {
-                    case 'f':
+                    case 102:
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".x%d", idPlayer + 1);
                             goto DoInt;
                         }
-                    case 't':
+                    case 116:
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".m%d", idPlayer + 1);
                             goto DoInt;
                         }
-                    case 'h':
+                    case 104:
                         strcat(pch, ".hst");
                         pch += 4;
                         break;
-                    case 'r':
+                    case 114:
                         c = _wsprintf(pch, ".h%d", idPlayer + 1);
                         goto DoInt;
-                    case 'y':
+                    case 121:
                         strcat(pch, ".xy");
                         pch += 3;
                     }
@@ -1950,7 +1950,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     goto DoInt;
                 case 76:
                 case 108:
-                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
+                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 76 ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
                                          (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
                     goto FinishString;
                 case 90:
@@ -2081,9 +2081,9 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pParams += 2;
                     c = _wsprintf(pch, PCTLD, l);
                     pch += c;
-                    if ((int16_t)(int8_t)*pszFormat == 'v')
+                    if ((int16_t)(int8_t)*pszFormat == 118)
                         break;
-                    if ((int16_t)(int8_t)*pszFormat == 'V') {
+                    if ((int16_t)(int8_t)*pszFormat == 86) {
                         iMineral = *pParams;
                     }
                     pchT = vrgszUnits[iMineral];
@@ -2209,7 +2209,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, 0);
-    cch = CchGetString((int16_t)(int8_t)szWork[200] - 54, szT);
+    cch = CchGetString((int16_t)(int8_t)szWork[200] + 1226, szT);
     DrawText(hdc, szT, cch, &rcEdit, 2064);
     EndPaint(hwnd, &ps);
     return 1;

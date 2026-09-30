@@ -20,13 +20,13 @@ L_03b8:
         goto L_03c2;
 
 L_03c2:
-    if ((int16_t)(int8_t)psz[-1] == '\\')
+    if ((int16_t)(int8_t)psz[-1] == 92)
         goto L_03e7;
     else
         goto L_03d1;
 
 L_03d1:
-    if ((int16_t)(int8_t)psz[-1] == ':')
+    if ((int16_t)(int8_t)psz[-1] == 58)
         goto L_03e7;
     else
         goto L_03e0;

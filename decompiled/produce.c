@@ -1286,7 +1286,7 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                         t_55d5 = psz;
                         psz++;
                         *pszT++ = *t_55d5;
-                        if ((int16_t)(int8_t)*t_55d5 == '&') {
+                        if ((int16_t)(int8_t)*t_55d5 == 38) {
                             *pszT++ = '&';
                         }
                     }
@@ -1343,7 +1343,7 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                             t_5a67 = psz;
                             psz++;
                             *pszT++ = *t_5a67;
-                            if ((int16_t)(int8_t)*t_5a67 == '&') {
+                            if ((int16_t)(int8_t)*t_5a67 == 38) {
                                 *pszT++ = '&';
                             }
                         }

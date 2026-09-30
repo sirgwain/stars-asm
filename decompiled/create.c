@@ -1501,7 +1501,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                 lpbStart = PszGetLine(&lpb);
                                 if (lpb >= lpbDefMac)
                                     goto LUniDefShort;
-                                if (i > 0 && (int16_t)(int8_t)*lpbStart == '#') {
+                                if (i > 0 && (int16_t)(int8_t)*lpbStart == 35) {
                                     cNum = CParseNumbers(lpbStart + 1, rgl, 2);
                                     idAi = LOWORD(rgl[0]);
                                     lvlAi = LOWORD(rgl[1]);
@@ -1628,8 +1628,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                             }
                                                             lpbStart = PszGetLine(&lpb);
                                                             lpb = lpbStart + (-1 + fstrlen(lpbStart));
-                                                            if (lpb - lpbStart >= 3 && (int16_t)(int8_t)*lpb == 'y' && (int16_t)(int8_t)lpb[-1] == 'x' &&
-                                                                (int16_t)(int8_t)lpb[-2] == '.') {
+                                                            if (lpb - lpbStart >= 3 && (int16_t)(int8_t)*lpb == 121 && (int16_t)(int8_t)lpb[-1] == 120 &&
+                                                                (int16_t)(int8_t)lpb[-2] == 46) {
                                                                 lpb[-2] = 0;
                                                             }
                                                             fstrcpy(szBase, lpbStart);
@@ -2218,7 +2218,7 @@ int16_t FGetNewGameName(char *szFileSuggest) {
     }
     CchGetString(idsStarsGameFilesXy, szFilter);
     for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == '|') {
+        if ((int16_t)(int8_t)szFilter[i] == 124) {
             szFilter[i] = 0;
         }
     }

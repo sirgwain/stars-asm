@@ -20,10 +20,10 @@ L_03b8:
     branch psz <= szBase ? L_03e7 : L_03c2
 
 L_03c2:
-    branch sext8to16(psz[neg(1)]) == '\\' ? L_03e7 : L_03d1
+    branch sext8to16(psz[neg(1)]) == 92 ? L_03e7 : L_03d1
 
 L_03d1:
-    branch sext8to16(psz[neg(1)]) == ':' ? L_03e7 : L_03e0
+    branch sext8to16(psz[neg(1)]) == 58 ? L_03e7 : L_03e0
 
 L_03e0:
     psz = &psz[neg(1)]

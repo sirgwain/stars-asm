@@ -1719,7 +1719,7 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
         if (pcYears != 0) {
             psz = szWork;
             c = 0;
-            for (; (int16_t)(int8_t)*psz >= '0' && (int16_t)(int8_t)*psz <= '9'; psz++) {
+            for (; (int16_t)(int8_t)*psz >= 48 && (int16_t)(int8_t)*psz <= 57; psz++) {
                 c = 10 * c + ((int16_t)(int8_t)*psz - 48);
             }
             if (c == 0) {
@@ -2992,7 +2992,7 @@ void DumpPlanets() {
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1244, szForm);
                 for (psz = szForm; (int16_t)(int8_t)*psz != 0; psz++) {
-                    if ((int16_t)(int8_t)*psz == '*') {
+                    if ((int16_t)(int8_t)*psz == 42) {
                         *psz = 9;
                     }
                 }
@@ -3218,7 +3218,7 @@ void DumpFleets() {
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1247, szForm);
                 for (psz = szForm; (int16_t)(int8_t)*psz != 0; psz++) {
-                    if ((int16_t)(int8_t)*psz == '*') {
+                    if ((int16_t)(int8_t)*psz == 42) {
                         *psz = 9;
                     }
                 }
@@ -3390,8 +3390,8 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                     for (i = 0; i < 2; i++) {
                         hwndEdit = GetDlgItem(hwnd, i + 268);
                         GetWindowText(hwndEdit, szWork, 10);
-                        if ((int16_t)(int8_t)szWork[0] == 0 || (int16_t)(int8_t)szWork[1] != 0 || (int16_t)(int8_t)szWork[0] <= '0' ||
-                            (int16_t)(int8_t)szWork[0] > '9') {
+                        if ((int16_t)(int8_t)szWork[0] == 0 || (int16_t)(int8_t)szWork[1] != 0 || (int16_t)(int8_t)szWork[0] <= 48 ||
+                            (int16_t)(int8_t)szWork[0] > 57) {
                             AlertSz(PszFormatIds(idsMustSpecifyNumberBetween19, NULL), MB_ICONHAND);
                             SetFocus(hwndEdit);
                             break;
@@ -3409,7 +3409,7 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             case IDC_U16_0x010D:
                 if (GET_WM_COMMAND_CMD(wParam, lParam) == 0x400) {
                     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 10);
-                    if ((int16_t)(int8_t)szWork[0] != 0 && ((int16_t)(int8_t)szWork[0] <= '0' || (int16_t)(int8_t)szWork[0] > '9')) {
+                    if ((int16_t)(int8_t)szWork[0] != 0 && ((int16_t)(int8_t)szWork[0] <= 48 || (int16_t)(int8_t)szWork[0] > 57)) {
                         MessageBeep(0);
                         SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), &szWork[1]);
                     }

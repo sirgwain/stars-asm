@@ -46,7 +46,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                     t_1545 = psz;
                     psz++;
                     *pszT++ = *t_1545;
-                    if ((int16_t)(int8_t)*t_1545 == '&') {
+                    if ((int16_t)(int8_t)*t_1545 == 38) {
                         *pszT++ = '&';
                     }
                 }
@@ -73,7 +73,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                         t_16d0 = psz;
                         psz++;
                         *pszT++ = *t_16d0;
-                        if ((int16_t)(int8_t)*t_16d0 == '&') {
+                        if ((int16_t)(int8_t)*t_16d0 == 38) {
                             *pszT++ = '&';
                         }
                     }
@@ -91,7 +91,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                 t_17e3 = psz;
                 psz++;
                 *pszT++ = *t_17e3;
-                if ((int16_t)(int8_t)*t_17e3 == '&') {
+                if ((int16_t)(int8_t)*t_17e3 == 38) {
                     *pszT++ = '&';
                 }
             }

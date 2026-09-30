@@ -1897,7 +1897,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     szDirName[0] = 0;
     CchGetString(idsStarsRaceFilesR, szFilter);
     for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == '|') {
+        if ((int16_t)(int8_t)szFilter[i] == 124) {
             szFilter[i] = 0;
         }
     }

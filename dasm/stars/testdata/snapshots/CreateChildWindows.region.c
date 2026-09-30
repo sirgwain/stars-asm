@@ -5,7 +5,7 @@ void CreateChildWindows() {
     char    szGame[15];
 
     if (idPlayer != -1) {
-        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && (int16_t)(int8_t)psz[-1] != '\\' && (int16_t)(int8_t)psz[-1] != ':'; psz--) {
+        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && (int16_t)(int8_t)psz[-1] != 92 && (int16_t)(int8_t)psz[-1] != 58; psz--) {
         }
         szGame[8] = 0;
         strncpy(szGame, psz, 8);

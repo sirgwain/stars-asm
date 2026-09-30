@@ -41,7 +41,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 SetTextColor(hdc, 0);
                 iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
                 cch = CchGetString(iAction + 109, szWork);
-                if ((int16_t)(int8_t)szWork[cch - 1] == '.') {
+                if ((int16_t)(int8_t)szWork[cch - 1] == 46) {
                     _wsprintf(&szWork[cch - 3], " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
                 }
                 TextOut(hdc, xCtr + 6, rcGBox.top, szWork, strlen(szWork));
@@ -75,7 +75,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         t_00bd = psz;
                         psz++;
                         *pszT++ = *t_00bd;
-                        if ((int16_t)(int8_t)*t_00bd == '&') {
+                        if ((int16_t)(int8_t)*t_00bd == 38) {
                             *pszT++ = '&';
                         }
                     }
@@ -130,7 +130,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                             t_065c = psz;
                             psz++;
                             *pszT++ = *t_065c;
-                            if ((int16_t)(int8_t)*t_065c == '&') {
+                            if ((int16_t)(int8_t)*t_065c == 38) {
                                 *pszT++ = '&';
                             }
                         }

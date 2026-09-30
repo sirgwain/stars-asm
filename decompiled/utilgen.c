@@ -440,10 +440,10 @@ char *PszGetCompressedPlanet(int16_t id) {
         iBuild += i;
         if (i != 15) {
             *pszOut = rgPNLookupTable[iBuild];
-            if (fCap != 0 && (int16_t)(int8_t)*pszOut >= 'a' && (int16_t)(int8_t)*pszOut <= 'z') {
+            if (fCap != 0 && (int16_t)(int8_t)*pszOut >= 97 && (int16_t)(int8_t)*pszOut <= 122) {
                 *pszOut -= ' ';
             }
-            if ((int16_t)(int8_t)*pszOut == ' ' || (int16_t)(int8_t)*pszOut == '-') {
+            if ((int16_t)(int8_t)*pszOut == 32 || (int16_t)(int8_t)*pszOut == 45) {
                 fCap = 1;
             } else {
                 fCap = 0;
@@ -707,27 +707,27 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
 }
 
 void AddBackTrailingSpaces(char **ppch, char *pchEnd) {
-    while (*ppch < pchEnd && (int16_t)(int8_t)**ppch == ' ') {
+    while (*ppch < pchEnd && (int16_t)(int8_t)**ppch == 32) {
         (*ppch)++;
     }
     return;
 }
 
 void ChopLastWord(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] != ' ') {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] != 32) {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
         (*ppEnd)--;
     }
     return;
 }
 
 void ChopTrailingSpaces(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
         (*ppEnd)--;
     }
     return;
@@ -2226,7 +2226,7 @@ char *PszGetLine(char **ppszBeg) {
     char *pszStart;
     char *psz;
 
-    for (psz = *ppszBeg; (int16_t)(int8_t)*psz == ' '; psz++) {
+    for (psz = *ppszBeg; (int16_t)(int8_t)*psz == 32; psz++) {
     }
     pszStart = psz;
     while (1) {
@@ -2259,10 +2259,10 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
     lNum = 0;
     fValid = 0;
     for (; iRead < cMax && (int16_t)(int8_t)*psz != 0; psz++) {
-        if ((int16_t)(int8_t)*psz != ' ' && ((int16_t)(int8_t)*psz < '0' || (int16_t)(int8_t)*psz > '9')) {
+        if ((int16_t)(int8_t)*psz != 32 && ((int16_t)(int8_t)*psz < 48 || (int16_t)(int8_t)*psz > 57)) {
             return -1;
         }
-        if ((int16_t)(int8_t)*psz != ' ') {
+        if ((int16_t)(int8_t)*psz != 32) {
             fValid = 1;
             lNum = (uint32_t)(lNum * 10) + (int16_t)((int16_t)(int8_t)*psz - 48);
         } else if (fValid != 0) {

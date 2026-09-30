@@ -605,10 +605,10 @@ void TerminateToolbarFocus(int16_t fCancel) {
         GetWindowText(hwndTBRadar, szWork, 20);
         psz = szWork;
         pct = 0;
-        for (; (int16_t)(int8_t)*psz >= '0' && (int16_t)(int8_t)*psz <= '9'; psz++) {
+        for (; (int16_t)(int8_t)*psz >= 48 && (int16_t)(int8_t)*psz <= 57; psz++) {
             pct = 10 * pct + ((int16_t)(int8_t)*psz - 48);
         }
-        if ((int16_t)(int8_t)*psz != 0 && (int16_t)(int8_t)*psz != '%') {
+        if ((int16_t)(int8_t)*psz != 0 && (int16_t)(int8_t)*psz != 37) {
             pct = 0;
         }
     } else {

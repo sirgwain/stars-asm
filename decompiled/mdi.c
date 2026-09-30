@@ -117,7 +117,7 @@ void CreateChildWindows() {
     char    szGame[15];
 
     if (idPlayer != -1) {
-        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && (int16_t)(int8_t)psz[-1] != '\\' && (int16_t)(int8_t)psz[-1] != ':'; psz--) {
+        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && (int16_t)(int8_t)psz[-1] != 92 && (int16_t)(int8_t)psz[-1] != 58; psz--) {
         }
         szGame[8] = 0;
         strncpy(szGame, psz, 8);
@@ -1057,13 +1057,13 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn) {
     lTank = 0;
     for (i = 0; i < 21; i++) {
         while (cBits < 8) {
-            if ((int16_t)(int8_t)*pszIn >= 'A' && (int16_t)(int8_t)*pszIn <= 'Z') {
+            if ((int16_t)(int8_t)*pszIn >= 65 && (int16_t)(int8_t)*pszIn <= 90) {
                 b64 = LOBYTE((int16_t)(int8_t)*pszIn - 65);
-            } else if ((int16_t)(int8_t)*pszIn >= 'a' && (int16_t)(int8_t)*pszIn <= 'z') {
+            } else if ((int16_t)(int8_t)*pszIn >= 97 && (int16_t)(int8_t)*pszIn <= 122) {
                 b64 = LOBYTE((int16_t)(int8_t)*pszIn - 71);
-            } else if ((int16_t)(int8_t)*pszIn >= '0' && (int16_t)(int8_t)*pszIn <= '9') {
+            } else if ((int16_t)(int8_t)*pszIn >= 48 && (int16_t)(int8_t)*pszIn <= 57) {
                 b64 = LOBYTE((int16_t)(int8_t)*pszIn + 4);
-            } else if ((int16_t)(int8_t)*pszIn == '-') {
+            } else if ((int16_t)(int8_t)*pszIn == 45) {
                 b64 = 62;
             } else {
                 b64 = 63;
@@ -2038,7 +2038,7 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
         szFile[0] = 0;
         CchGetString(fRaceOnly == 0 ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles, szFilter);
         for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-            if ((int16_t)(int8_t)szFilter[i] == '|') {
+            if ((int16_t)(int8_t)szFilter[i] == 124) {
                 szFilter[i] = 0;
             }
         }
