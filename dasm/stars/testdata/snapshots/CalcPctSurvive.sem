@@ -17,7 +17,7 @@ CalcPctSurvive  (util)
   stats: blocks=1  labels=0
 */
 L_02f6:
-    branch ppctSmart == 0x0 ? L_0317 : L_0308
+    branch ppctSmart == 0 ? L_0317 : L_0308
 
 L_0308:
     *ppctSmart = 1.0
@@ -26,7 +26,7 @@ L_0317:
     branch lppl->iPlayer == -1 ? L_0487 : L_0324
 
 L_0324:
-    branch lppl->cDefenses != 0x0 ? L_0345 : L_0487
+    branch lppl->cDefenses != 0 ? L_0345 : L_0487
 
 
 L_0345:
@@ -46,7 +46,7 @@ L_03b5:
 
 L_03bf:
     pct = pow((1.0 - ((double)sext16to32(part.pplanetary->grAbility) / 1000.0)), (double)cDefenses)
-    branch ppctSmart == 0x0 ? L_047e : L_041a
+    branch ppctSmart == 0 ? L_047e : L_041a
 
 L_041a:
     *ppctSmart = pow((1.0 - ((double)sext16to32(part.pplanetary->grAbility) / 2000.0)), (double)cDefenses)

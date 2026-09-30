@@ -23,7 +23,7 @@ L_61be:
     return 1;
 
 L_61c4:
-    ishdef = ishdef + 1;
+    ishdef++;
 
 L_61c8:
     if (ishdef < 16)

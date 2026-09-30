@@ -64,7 +64,7 @@ func TestBranchCallResultMaterializesWideMultiUseResult(t *testing.T) {
 	}
 
 	gotBranch := FormatEffect(fn.Blocks[2].Effects[0])
-	wantBranch := "branch loword(t_call_0ea9) < 0x0 ? L_0f9f : L_0ec6"
+	wantBranch := "branch loword(t_call_0ea9) < 0 ? L_0f9f : L_0ec6"
 	if gotBranch != wantBranch {
 		t.Fatalf("branch effect = %q, want %q", gotBranch, wantBranch)
 	}
@@ -97,7 +97,7 @@ func TestBranchCallResultMaterializesSingleSurvivingUse(t *testing.T) {
 	if got, want := FormatEffect(fn.Blocks[0].Effects[0]), "call Calc() -> t_call_1000"; got != want {
 		t.Fatalf("call effect = %q, want %q", got, want)
 	}
-	if got, want := FormatEffect(fn.Blocks[0].Effects[1]), "branch hiword(t_call_1000) < 0x0 ? L_1010 : L_1005"; got != want {
+	if got, want := FormatEffect(fn.Blocks[0].Effects[1]), "branch hiword(t_call_1000) < 0 ? L_1010 : L_1005"; got != want {
 		t.Fatalf("branch effect = %q, want %q", got, want)
 	}
 }

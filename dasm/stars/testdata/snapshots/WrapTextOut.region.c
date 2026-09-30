@@ -13,7 +13,7 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
         cLen = strlen(psz);
     }
     if (fNewLine != 0) {
-        *py = *py + dyArial8;
+        *py += dyArial8;
         *px = xLeft;
     }
     pchStart = psz;
@@ -40,17 +40,17 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
         if (fPrint != 0) {
             TextOut(hdc, *px, *py, pchStart, pchEnd - pchStart);
         }
-        *px = *px + dx;
-        if (pxMax != 0x0 && *px > *pxMax) {
+        *px += dx;
+        if (pxMax != 0 && *px > *pxMax) {
             *pxMax = *px;
         }
         if (pchEnd == pchStart + cLen)
             break;
     WrapIt:
         AddBackTrailingSpaces(&pchEnd, pchStart + cLen);
-        cLen = cLen - (pchEnd - pchStart);
+        cLen -= pchEnd - pchStart;
         pchStart = pchEnd;
-        *py = *py + dyArial8;
+        *py += dyArial8;
         *px = xLeft;
         dxRemain = dxWidth;
     }

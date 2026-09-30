@@ -34,7 +34,7 @@ L_0f87:
     branch lphs->grhst != hstShield ? L_0feb : L_0f93
 
 L_0f93:
-    branch lphs->cItem <= 0x0 ? L_0feb : L_0faa
+    branch lphs->cItem <= 0 ? L_0feb : L_0faa
 
 L_0faa:
     part.hs.grhst = lphs->grhst
@@ -51,13 +51,13 @@ L_0feb:
     branch lphs->grhst != hstArmor ? L_1040 : L_0ff7
 
 L_0ff7:
-    branch lphs->cItem <= 0x0 ? L_1040 : L_100e
+    branch lphs->cItem <= 0 ? L_1040 : L_100e
 
 L_100e:
     branch lphs->iItem != iarmorFieldedKelarium ? L_1040 : L_1020
 
 L_1020:
-    dpShdef = (dpShdef + (uint32_t)(lphs->cItem * 0x32))
+    dpShdef = (dpShdef + (uint32_t)(lphs->cItem * 50))
     goto L_0f69
 
 L_1040:
@@ -67,7 +67,7 @@ L_104c:
     branch lphs->iItem != iarmorMegaPolyShell ? L_0f69 : L_105e
 
 L_105e:
-    dpShdef = (dpShdef + (uint32_t)(lphs->cItem * 0x64))
+    dpShdef = (dpShdef + (uint32_t)(lphs->cItem * 100))
 
 L_107b:
     goto L_0f69
@@ -79,7 +79,7 @@ L_109e:
     dpShdef = (dpShdef + (int32_t)((int32_t)(dpShdef * 2) / 5))
 
 L_10c1:
-    branch (dpShdef & 0xffff0000) != 0x0 ? L_10dd : L_10e7
+    branch (dpShdef & 0xffff0000) != 0 ? L_10dd : L_10e7
 
 
 L_10dd:

@@ -12,7 +12,7 @@ CBattles  (vcr)
 L_028c:
     cBattles = 0
     lphb = rglphb[11]
-    branch lphb != 0x0 ? L_02bf : L_02b9
+    branch lphb != 0 ? L_02bf : L_02b9
 
 
 L_02b9:
@@ -26,7 +26,7 @@ L_02d3:
 
 L_02df:
     lphb = lphb->lphbNext
-    branch lphb != 0x0 ? L_0302 : L_030f
+    branch lphb != 0 ? L_0302 : L_030f
 
 
 L_0302:
@@ -40,7 +40,7 @@ L_0315:
     goto L_02d3
 
 L_0329:
-    branch lpbd->cbData != 0x0 ? L_033f : L_0336
+    branch lpbd->cbData != 0 ? L_033f : L_0336
 
 L_0336:
     return cBattles

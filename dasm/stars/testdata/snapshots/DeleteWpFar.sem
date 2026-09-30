@@ -43,7 +43,7 @@ L_9f69:
 
 L_9fca:
     lpfl->cord = (lpfl->cord - 1)
-    lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - 0x1)
+    lpfl->lpplord->iordMac = (lpfl->lpplord->iordMac - 1)
 
 L_9fde:
     return

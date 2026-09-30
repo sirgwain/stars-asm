@@ -18,41 +18,39 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
         if (lppl->iPlayer == iPlr) {
-            score.cPlanet = score.cPlanet + 1;
-            lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 0x3e8);
+            score.cPlanet++;
+            lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 1000);
             if (lTemp > 6) {
                 lTemp = 6;
             }
-            score.lScore = score.lScore + lTemp;
-            if (lppl->fStarbase != 0x0 && LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax != 0x0) {
-                score.cStarbase = score.cStarbase + 1;
+            score.lScore += lTemp;
+            if (lppl->fStarbase != 0 && LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax != 0) {
+                score.cStarbase++;
             }
-            score.cResources = score.cResources + (int32_t)CResourcesAtPlanet(lppl, iPlr);
+            score.cResources += CResourcesAtPlanet(lppl, iPlr);
         }
     }
-    score.lScore = score.lScore + (int32_t)(score.cResources / 30);
-    score.lScore = score.lScore + (int32_t)(3 * score.cStarbase);
-    if (rgplr[iPlr].fDead == 0x0) {
+    score.lScore += (int32_t)(score.cResources / 30);
+    score.lScore += (int16_t)(3 * score.cStarbase);
+    if (rgplr[iPlr].fDead == 0) {
         for (i = 0; i < 6; i++) {
-            iTech = (int16_t)rgplr[iPlr].rgTech[i];
-            score.cTechLevels = score.cTechLevels + (int16_t)rgplr[iPlr].rgTech[i];
-            if (iTech >= 4) {
-                if (iTech >= 7) {
-                    if (iTech >= 10) {
-                        score.lScore = score.lScore + (int32_t)(iTech * 4 - 18);
-                    } else {
-                        score.lScore = score.lScore + (int32_t)(3 * iTech - 0x9);
-                    }
-                } else {
-                    score.lScore = score.lScore + (int32_t)(iTech * 2 - 3);
-                }
+            iTech = rgplr[iPlr].rgTech[i];
+            score.cTechLevels += rgplr[iPlr].rgTech[i];
+            if (iTech < 4) {
+                score.lScore += iTech;
+            } else if (iTech < 7) {
+                score.lScore += (int16_t)(iTech * 2 - 3);
+            } else if (iTech < 10) {
+                score.lScore += (int16_t)(3 * iTech - 9);
             } else {
-                score.lScore = score.lScore + (int32_t)iTech;
+                score.lScore += (int16_t)(iTech * 4 - 18);
             }
         }
     }
     for (i = 0; i < 16; i++) {
-        if (rglpshdef[iPlr][i].fFree == 0x0) {
+        if (rglpshdef[iPlr][i].fFree != 0) {
+            rgType[i] = -1;
+        } else {
             lPower = LComputePower(rglpshdef[iPlr] + i);
             if (lPower <= 0) {
                 rgType[i] = 0;
@@ -61,8 +59,6 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
             } else {
                 rgType[i] = 2;
             }
-        } else {
-            rgType[i] = -1;
         }
     }
     for (i = 0; i < 3; i++) {
@@ -70,26 +66,26 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     }
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
-        if (rglpfl[ifl] == 0x0)
+        if (rglpfl[ifl] == 0)
             break;
-        if (lpfl->iPlayer == iPlr && lpfl->fDead == 0x0) {
+        if (lpfl->iPlayer == iPlr && lpfl->fDead == 0) {
             for (i = 0; i < 16; i++) {
                 if (lpfl->rgcsh[i] > 0 && rgType[i] != -1) {
-                    rgcsh[rgType[i]] = rgcsh[rgType[i]] + (int32_t)lpfl->rgcsh[i];
+                    rgcsh[rgType[i]] = rgcsh[rgType[i]] + lpfl->rgcsh[i];
                 }
             }
         }
     }
-    t_merge_5cb9_0001 = rgcsh[1] < (int32_t)score.cPlanet ? rgcsh[1] : (int32_t)score.cPlanet;
-    t_merge_5cf5_0001 = rgcsh[0] < (int32_t)score.cPlanet ? rgcsh[0] : (int32_t)score.cPlanet;
-    score.lScore = score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2));
+    t_merge_5cb9_0001 = rgcsh[1] < score.cPlanet ? rgcsh[1] : score.cPlanet;
+    t_merge_5cf5_0001 = rgcsh[0] < score.cPlanet ? rgcsh[0] : score.cPlanet;
+    score.lScore += (int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2);
     if (rgcsh[2] > 0) {
-        score.lScore = score.lScore + (int32_t)((int32_t)((int32_t)(rgcsh[2] * 8) * (int32_t)score.cPlanet) / ((int32_t)score.cPlanet + rgcsh[2]));
+        score.lScore += (int32_t)((int32_t)((int32_t)(rgcsh[2] * 8) * score.cPlanet) / (score.cPlanet + rgcsh[2]));
     }
     for (i = 0; i < 3; i++) {
         score.rgcsh[i] = WPackLong(rgcsh[i]);
     }
-    if (pscore != 0x0) {
+    if (pscore != 0) {
         *pscore = score;
     }
     return score.lScore;

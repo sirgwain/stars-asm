@@ -15,15 +15,7 @@ int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
     chs = lphul->chs;
     ihs = 0;
     while (ihs < chs) {
-        if (lphs->grhst != hstShield || lphs->cItem <= 0x0) {
-            if (lphs->grhst != hstArmor || lphs->cItem <= 0x0 || lphs->iItem != iarmorFieldedKelarium) {
-                if (lphs->grhst == hstArmor && lphs->iItem == iarmorMegaPolyShell) {
-                    dpShdef = dpShdef + (uint32_t)(lphs->cItem * 0x64);
-                }
-            } else {
-                dpShdef = dpShdef + (uint32_t)(lphs->cItem * 0x32);
-            }
-        } else {
+        if (lphs->grhst == hstShield && lphs->cItem > 0) {
             part.hs.grhst = lphs->grhst;
             t_fields_1 = &part.hs;
             t_fields_2 = lphs->iItem;
@@ -31,15 +23,19 @@ int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
             t_fields_1->iItem = t_fields_2;
             t_fields_1->cItem = t_fields_3;
             FLookupPart(&part);
-            dpShdef = dpShdef + (uint32_t)(part.pshield->dp * lphs->cItem);
+            dpShdef += (uint32_t)(part.pshield->dp * lphs->cItem);
+        } else if (lphs->grhst == hstArmor && lphs->cItem > 0 && lphs->iItem == iarmorFieldedKelarium) {
+            dpShdef += (uint32_t)(lphs->cItem * 50);
+        } else if (lphs->grhst == hstArmor && lphs->iItem == iarmorMegaPolyShell) {
+            dpShdef += (uint32_t)(lphs->cItem * 100);
         }
-        ihs = ihs + 1;
-        lphs = lphs + 1;
+        ihs++;
+        lphs++;
     }
     if (GetRaceGrbit(&rgplr[iplr], ibitRaceRegeneratingShields) != 0) {
-        dpShdef = dpShdef + (int32_t)((int32_t)(dpShdef * 2) / 5);
+        dpShdef += (int32_t)(dpShdef * 2) / 5;
     }
-    if ((dpShdef & 0xffff0000) != 0x0) {
+    if ((dpShdef & 0xffff0000) != 0) {
         dpShdef = 65535;
     }
     return (uint32_t)LOWORD(dpShdef);

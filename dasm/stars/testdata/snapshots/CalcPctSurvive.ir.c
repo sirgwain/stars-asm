@@ -6,7 +6,7 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
     int16_t cMax;
 
 L_02f6:
-    if (ppctSmart == 0x0)
+    if (ppctSmart == 0)
         goto L_0317;
     else
         goto L_0308;
@@ -21,7 +21,7 @@ L_0317:
         goto L_0324;
 
 L_0324:
-    if (lppl->cDefenses != 0x0)
+    if (lppl->cDefenses != 0)
         goto L_0345;
     else
         goto L_0487;
@@ -37,23 +37,23 @@ L_0345:
 L_0369:
     cDefenses = lppl->cDefenses;
     cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
-    if ((int32_t)cMax < cDefenses)
+    if (cMax < cDefenses)
         goto L_03b5;
     else
         goto L_03bf;
 
 L_03b5:
-    cDefenses = (int32_t)cMax;
+    cDefenses = cMax;
 
 L_03bf:
-    pct = pow(1.0 - (double)(int32_t)part.pplanetary->grAbility / 1000.0, (double)cDefenses);
-    if (ppctSmart == 0x0)
+    pct = pow(1.0 - (double)part.pplanetary->grAbility / 1000.0, (double)cDefenses);
+    if (ppctSmart == 0)
         goto L_047e;
     else
         goto L_041a;
 
 L_041a:
-    *ppctSmart = pow(1.0 - (double)(int32_t)part.pplanetary->grAbility / 2000.0, (double)cDefenses);
+    *ppctSmart = pow(1.0 - (double)part.pplanetary->grAbility / 2000.0, (double)cDefenses);
 
 L_0470:
     goto L_047e;

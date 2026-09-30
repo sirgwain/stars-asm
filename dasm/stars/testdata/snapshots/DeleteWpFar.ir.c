@@ -50,8 +50,8 @@ L_9f69:
     goto L_9fde;
 
 L_9fca:
-    lpfl->cord = lpfl->cord - 1;
-    lpfl->lpplord->iordMac = lpfl->lpplord->iordMac - 0x1;
+    lpfl->cord--;
+    lpfl->lpplord->iordMac--;
 
 L_9fde:
     return;

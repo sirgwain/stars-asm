@@ -229,8 +229,8 @@ func TestConvertBitfieldStoreThroughUnion(t *testing.T) {
 	)
 	effect := (&machineConverter{ctx: ctx}).convertEffect(machine.StoreEffect{Addr: dst, Src: src, Width: 2})
 
-	if got := FormatEffect(effect); got != "lpth->thp.wtMax = 0x0" {
-		t.Fatalf("converted store = %q, want lpth->thp.wtMax = 0x0", got)
+	if got := FormatEffect(effect); got != "lpth->thp.wtMax = 0" {
+		t.Fatalf("converted store = %q, want lpth->thp.wtMax = 0", got)
 	}
 }
 
@@ -347,7 +347,7 @@ func TestIndexedLocalArrayNegativeResidual(t *testing.T) {
 	mem.Index = index
 
 	got := FormatExpr((&machineConverter{ctx: ctx}).convertMemoryLValue(mem, mem.Width))
-	if got != "rgptDraw[(cpt - 0x1)].y" {
-		t.Fatalf("converted indexed local array = %q, want rgptDraw[(cpt - 0x1)].y", got)
+	if got != "rgptDraw[(cpt - 1)].y" {
+		t.Fatalf("converted indexed local array = %q, want rgptDraw[(cpt - 1)].y", got)
 	}
 }

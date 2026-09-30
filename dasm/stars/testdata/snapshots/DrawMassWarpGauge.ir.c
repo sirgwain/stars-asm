@@ -28,7 +28,7 @@ L_2b3b:
     iBest = -iBest;
 
 L_2b43:
-    lMax = (int32_t)(iBest - 1);
+    lMax = (int16_t)(iBest - 1);
     if (iCur > iBest + fTwoMAs)
         goto L_2b67;
     else
@@ -52,7 +52,7 @@ L_2b81:
     hbr = hbrRed;
 
 L_2b87:
-    lCur = (int32_t)(iCur - 4);
+    lCur = (int16_t)(iCur - 4);
     l = LDrawGauge(hdc, prc, 1, &lCur, &hbr, lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
     c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), l + 4);

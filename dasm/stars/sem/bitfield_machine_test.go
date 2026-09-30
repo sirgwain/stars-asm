@@ -25,9 +25,9 @@ func TestBitfieldArithmeticFoldedConstants(t *testing.T) {
 		delta uint
 		want  string
 	}{
-		{name: "increment", op: machine.ValueOpAdd, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB + 0x1)"},
-		{name: "decrement", op: machine.ValueOpSub, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB - 0x1)"},
-		{name: "toggle", op: machine.ValueOpXor, delta: 0x2000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB ^ 0x2)"},
+		{name: "increment", op: machine.ValueOpAdd, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB + 1)"},
+		{name: "decrement", op: machine.ValueOpSub, delta: 0x1000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB - 1)"},
+		{name: "toggle", op: machine.ValueOpXor, delta: 0x2000, want: "rgplr[0].cshdefSB = (rgplr[0].cshdefSB ^ 2)"},
 		{name: "unaligned constant", op: machine.ValueOpAdd, delta: 0x1001},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

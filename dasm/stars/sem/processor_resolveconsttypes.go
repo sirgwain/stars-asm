@@ -47,22 +47,16 @@ func resolveConstTypesEffect(effect Effect) (Effect, bool) {
 		//
 		// This handles branches, call args, returns, etc. Peer expressions
 		// inside those trees still provide enough information to type their
-		// constants.
+		// constants. Each top-level expression resolves its own children so
+		// constants under bitwise operations keep that context.
 		rewriter := &semRewriter{
 			call: func(w *semRewriter, call *Call, meta machine.Meta) (*Call, bool, bool) {
-				next, childChanged := w.rewriteCallChildren(call)
-				resolved, changed := resolveConstTypesExpr(next, nil, false)
-				return resolved.(*Call), childChanged || changed, true
+				resolved, changed := resolveConstTypesExpr(call, nil, false)
+				return resolved.(*Call), changed, true
 			},
 			expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
-				next, changed := w.rewriteExprChildren(expr)
-
-				resolved, resolvedChanged := resolveConstTypesExpr(
-					next,
-					nil,
-					false,
-				)
-				return resolved, changed || resolvedChanged, true
+				resolved, changed := resolveConstTypesExpr(expr, nil, false)
+				return resolved, changed, true
 			},
 		}
 
@@ -122,6 +116,9 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		next.Target = target
 		return &next, true
 	case *Const:
+		if !bitwise && expected == nil {
+			expected = quantityConstType(e)
+		}
 		if bitwise || expected == nil || keepsConstantFamily(e.TypeInfo, expected) {
 			return expr, false
 		}
@@ -150,8 +147,9 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 			}
 		}
 		// A widening/promotion cast should not hide the semantic type of the
-		// value beneath it. The cast itself remains unchanged.
-		value, changed := resolveConstTypesExpr(e.Value, nil, bitwise)
+		// value beneath it. The cast itself remains unchanged. An integer cast
+		// to a pointer is an address and keeps its machine type.
+		value, changed := resolveConstTypesExpr(e.Value, nil, bitwise || typeinfo.IsPointer(e.TypeInfo))
 		if !changed {
 			return expr, false
 		}
@@ -214,7 +212,7 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		next.Index = index
 		return &next, true
 	case *Unary:
-		x, changed := resolveConstTypesExpr(e.X, expected, bitwise)
+		x, changed := resolveConstTypesExpr(e.X, expected, bitwise || e.Op == OpNot)
 		if !changed {
 			return expr, false
 		}
@@ -235,6 +233,26 @@ func constTypeExpected(expected typeinfo.Type) typeinfo.Type {
 		return nil
 	}
 	return expected
+}
+
+// quantityConstType returns the signed type of the same width for an unsigned
+// integer constant whose sign bit is clear, or nil. Outside bitwise operations
+// such a constant is a quantity, as in (game.turn - 120) / 20 where turn is
+// unsigned only to count past 32767, and reads as a decimal int; the literal
+// has type int in C either way. Constants with the sign bit set keep their
+// unsigned type so they do not print as negative values, and bit patterns
+// (2^n from 0x100, 2^n-1 from 0xff) keep it because they are usually flags,
+// colors or masks, such as DrawText's 0x800 or HbrGet(0xffff).
+func quantityConstType(c *Const) typeinfo.Type {
+	prim, ok := c.TypeInfo.(*typeinfo.Primitive)
+	if !ok || prim.TypeKind != typeinfo.KInt || prim.Signed || prim.Native != typeinfo.NativeInt ||
+		c.Fixup != nil || prim.Size < 1 || prim.Size > 4 || c.U64>>(prim.Size*8-1) != 0 {
+		return nil
+	}
+	if c.U64 >= 0x100 && c.U64&(c.U64-1) == 0 || c.U64 >= 0xff && c.U64&(c.U64+1) == 0 {
+		return nil
+	}
+	return typeinfo.IntForWidth(prim.Size)
 }
 
 // isCharLiteralConst reports whether c, typed as expected, reads as a
@@ -319,6 +337,9 @@ func resolveConstTypesBinary(binary *Binary, expected typeinfo.Type, bitwise boo
 				if inverted != OpUnknown {
 					positive := *c
 					positive.U64 = uint64(-value)
+					if typ := quantityConstType(&positive); typ != nil && !bitwise {
+						positive.TypeInfo = typ
+					}
 
 					next.Op = inverted
 					next.RHS = &positive
@@ -377,28 +398,36 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 	rhsExpected := expected
 
 	// When one side is a constant, the non-constant peer is stronger evidence
-	// than the enclosing expression type.
+	// than the enclosing expression type. Equality against a masked value with
+	// no source type, as in (x & 0x1ff) == 0x1ff, keeps the constant's machine
+	// type; a relational bound on a bitfield is a quantity.
+	equality := compare.Op == CompareEQ || compare.Op == CompareNE
+	lhsBitwise, rhsBitwise := false, false
 	if c, ok := compare.LHS.(*Const); ok {
 		if typ := semanticPeerType(compare.RHS); typ != nil {
 			lhsExpected = compareConstType(compare.Op, typ, c)
+		} else {
+			lhsBitwise = equality && containsBitwiseExpr(compare.RHS)
 		}
 	}
 
 	if c, ok := compare.RHS.(*Const); ok {
 		if typ := semanticPeerType(compare.LHS); typ != nil {
 			rhsExpected = compareConstType(compare.Op, typ, c)
+		} else {
+			rhsBitwise = equality && containsBitwiseExpr(compare.LHS)
 		}
 	}
 
 	lhs, lhsChanged := resolveConstTypesExpr(
 		compare.LHS,
 		lhsExpected,
-		false,
+		lhsBitwise,
 	)
 	rhs, rhsChanged := resolveConstTypesExpr(
 		compare.RHS,
 		rhsExpected,
-		false,
+		rhsBitwise,
 	)
 
 	next := *compare
@@ -525,7 +554,7 @@ func containsBitwiseExpr(expr Expr) bool {
 		return containsBitwiseExpr(e.Value)
 
 	case *Unary:
-		return containsBitwiseExpr(e.X)
+		return e.Op == OpNot || containsBitwiseExpr(e.X)
 
 	default:
 		return false

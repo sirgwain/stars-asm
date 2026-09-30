@@ -34,7 +34,7 @@ func (l *lowerer) lowerAssign(e *sem.Assign) []Stmt {
 		return []Stmt{untranslatedEffect(e)}
 	}
 	if !partial {
-		return []Stmt{&Assign{Dst: dst, Src: src}}
+		return []Stmt{&Assign{Dst: dst, Src: src, Merge: e.Merge}}
 	}
 	typ := base.ExprType()
 	if offset == 0 && width == typ.Bytes() {

@@ -18,6 +18,8 @@ var structSizeFields = []string{"lStructSize", "cbSize"}
 //     memset(&ord, 0, 0x12) or fmemmove(&rglpfl[i + 1], &rglpfl[i], n * 4).
 //   - pointer arguments that point to different structs leave the count
 //     alone.
+//   - bsearch and qsort element sizes come only from their array base;
+//     a search key can have a different type from the array elements.
 //   - an allocator's alloc_size is sized by the struct pointer its result is
 //     stored in, directly or through a call result temp, as in
 //     plf = LocalAlloc(0x40, 0x32) for a LOGFONT *.
@@ -95,7 +97,7 @@ func (p *nativeStructSizesProcessor) ProcessFunc(result *Result, f *Func) bool {
 	return changed
 }
 
-// elementSizedCall rewrites the byte_count or alloc_size argument of call as a multiple of
+// elementSizedCall rewrites array element sizes and the byte_count or alloc_size argument of call as a multiple of
 // sizeof the element its pointer arguments point to, or when none does, of
 // target, the element an allocator's result is stored as.
 func elementSizedCall(call *Call, target typeinfo.Type) (*Call, bool) {
@@ -103,9 +105,17 @@ func elementSizedCall(call *Call, target typeinfo.Type) (*Call, bool) {
 		return nil, false
 	}
 	countIdx := -1
-	for i, param := range call.Params {
-		if param.Semantic == typeinfo.ParamSemanticByteCount || param.Semantic == typeinfo.ParamSemanticAllocSize {
-			countIdx = i
+	baseIdx := -1
+	switch call.Function.Name {
+	case "bsearch":
+		baseIdx, countIdx = 1, 3
+	case "qsort":
+		baseIdx, countIdx = 0, 2
+	default:
+		for i, param := range call.Params {
+			if param.Semantic == typeinfo.ParamSemanticByteCount || param.Semantic == typeinfo.ParamSemanticAllocSize {
+				countIdx = i
+			}
 		}
 	}
 	if countIdx < 0 || countIdx >= len(call.Args) {
@@ -115,15 +125,36 @@ func elementSizedCall(call *Call, target typeinfo.Type) (*Call, bool) {
 	// header advanced to its items, leave the count's element unknown.
 	var pointee typeinfo.Type
 	for i, arg := range call.Args {
+		if baseIdx >= 0 && i != baseIdx {
+			continue
+		}
 		if i == countIdx || i >= len(call.Params) {
 			continue
 		}
 		if _, ok := call.Params[i].Type.(*typeinfo.Pointer); !ok {
 			continue
 		}
-		elem, ok := sizedPointee(cExprType(arg))
-		if !ok {
-			continue
+		var elem typeinfo.Type
+		if baseIdx >= 0 {
+			switch typ := cExprType(arg).(type) {
+			case *typeinfo.Pointer:
+				elem = typ.Elem
+			case *typeinfo.Array:
+				elem = typ.Elem
+			default:
+				return nil, false
+			}
+			// An element stride must match exactly, unlike a total byte count.
+			stride, ok := call.Args[countIdx].(*Const)
+			if !ok || elem.Bytes() == 0 || stride.U64 != uint64(elem.Bytes()) {
+				return nil, false
+			}
+		} else {
+			var ok bool
+			elem, ok = sizedPointee(cExprType(arg))
+			if !ok {
+				continue
+			}
 		}
 		if pointee != nil && !typeinfo.Equals(pointee, elem) {
 			return nil, false

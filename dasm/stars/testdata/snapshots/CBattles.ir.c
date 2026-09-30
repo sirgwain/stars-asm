@@ -6,7 +6,7 @@ int16_t CBattles() {
 L_028c:
     cBattles = 0;
     lphb = rglphb[11];
-    if (lphb != 0x0)
+    if (lphb != 0)
         goto L_02bf;
     else
         goto L_02b9;
@@ -25,7 +25,7 @@ L_02d3:
 
 L_02df:
     lphb = lphb->lphbNext;
-    if (lphb != 0x0)
+    if (lphb != 0)
         goto L_0302;
     else
         goto L_030f;
@@ -44,7 +44,7 @@ L_0315:
     goto L_02d3;
 
 L_0329:
-    if (lpbd->cbData != 0x0)
+    if (lpbd->cbData != 0)
         goto L_033f;
     else
         goto L_0336;
@@ -54,7 +54,7 @@ L_0336:
 
 L_033f:
     lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
-    cBattles = cBattles + 1;
+    cBattles++;
 
 L_0358:
     goto L_02d3;

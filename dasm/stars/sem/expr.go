@@ -43,6 +43,10 @@ const (
 	OpSar
 	OpNeg
 	OpNot
+	// OpPostInc and OpPostDec are C's x++ and x--: the value of x before
+	// it is incremented or decremented by one.
+	OpPostInc
+	OpPostDec
 )
 
 func (op Op) Invert() Op {
@@ -646,6 +650,10 @@ type Assign struct {
 	MetaInfo machine.Meta
 	Dst      LValue
 	Src      Expr
+	// Merge marks a store made on one incoming edge in place of a merge
+	// temp: the compiler computed one value on each path and stored it once,
+	// as the source's conditional expression compiles.
+	Merge bool
 }
 
 // effect marks Assign as a semantic effect.

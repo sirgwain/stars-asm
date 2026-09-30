@@ -10,148 +10,133 @@ int16_t FReadFleet(FLEET *lpfl) {
     uint16_t *pus;
     char      szT[33];
     int16_t   cOut;
-    uint8_t  *t_3ae5;
-    uint16_t *t_3b64;
-    uint16_t *t_3d91;
-    uint8_t  *t_3e15;
-    uint8_t  *t_3e25;
 
     cish = 0;
     fmemset(lpfl, 0, sizeof(FLEET));
-    fmemmove(lpfl, rgbCur, 0xc);
+    fmemmove(lpfl, rgbCur, 12);
     fByte = lpfl->fDone;
     us = RawLoad16(&rgbCur[12]);
     pb = &rgbCur[14];
-    if (fByte == 0) {
+    if (fByte != 0) {
+        i = 0;
+        for (; us != 0; us >>= 1) {
+            if ((us & 1) != 0) {
+                lpfl->rgcsh[i] = *pb++;
+                if (lpfl->rgcsh[i] != 0) {
+                    cish++;
+                }
+            }
+            i++;
+        }
+    } else {
         pus = (uint16_t *)pb;
         i = 0;
-        for (; us != 0x0; us = us >> 0x1) {
-            if ((us & 0x1) != 0x0) {
-                t_3b64 = pus;
-                pus = pus + 1;
-                lpfl->rgcsh[i] = *t_3b64;
+        for (; us != 0; us >>= 1) {
+            if ((us & 1) != 0) {
+                lpfl->rgcsh[i] = *pus++;
                 if (lpfl->rgcsh[i] != 0) {
-                    cish = cish + 1;
+                    cish++;
                 }
             }
-            i = i + 1;
+            i++;
         }
         pb = (uint8_t *)pus;
-    } else {
-        i = 0;
-        for (; us != 0x0; us = us >> 0x1) {
-            if ((us & 0x1) != 0x0) {
-                t_3ae5 = pb;
-                pb = pb + 1;
-                lpfl->rgcsh[i] = *t_3ae5;
-                if (lpfl->rgcsh[i] != 0) {
-                    cish = cish + 1;
-                }
-            }
-            i = i + 1;
-        }
     }
     if (cish == 0) {
-        lpfl->fDead = 0x1;
+        lpfl->fDead = 1;
     }
-    if (lpfl->det >= 0x4) {
+    if (lpfl->det >= 4) {
         us = RawLoad16(pb);
-        pb = pb + 2;
+        pb += 2;
         i = 0;
         while (i < 5) {
-            switch (us & 0x3) {
+            switch (us & 3) {
             default:
                 break;
-            case 0x1:
+            case 1:
                 lpfl->rgwtMin[i] = (uint32_t)*pb;
-                pb = pb + 1;
+                pb++;
                 break;
-            case 0x2:
+            case 2:
                 lpfl->rgwtMin[i] = (uint32_t)RawLoad16(pb);
-                pb = pb + 2;
+                pb += 2;
                 break;
-            case 0x3:
+            case 3:
                 lpfl->rgwtMin[i] = RawLoad32(pb);
-                pb = pb + 4;
+                pb += 4;
             }
-            i = i + 1;
-            us = us >> 0x2;
+            i++;
+            us >>= 2;
         }
     }
-    if (lpfl->det >= 0x7) {
-        if (hdrCur.rt == rtFleetA) {
-            us = RawLoad16(pb);
-            pb = pb + 2;
-            pus = (uint16_t *)pb;
-            i = 0;
-            for (; us != 0x0; us = us >> 0x1) {
-                if ((us & 0x1) != 0x0) {
-                    t_3d91 = pus;
-                    pus = pus + 1;
-                    lpfl->rgdv[i].dp = *t_3d91;
-                    if (lpfl->rgdv[i].pctDp >= 0x1f4) {
-                        lpfl->rgdv[i].pctDp = 0x1f3;
-                    }
+    if (lpfl->det < 7) {
+        lpfl->dirLong = RawLoad32(pb);
+        pb += 4;
+        lpfl->wtFleet = RawLoad32(pb);
+        pb += 4;
+        ReadRt();
+        return 1;
+    }
+    if (hdrCur.rt == rtFleetA) {
+        us = RawLoad16(pb);
+        pb += 2;
+        pus = (uint16_t *)pb;
+        i = 0;
+        for (; us != 0; us >>= 1) {
+            if ((us & 1) != 0) {
+                lpfl->rgdv[i].dp = *pus++;
+                if (lpfl->rgdv[i].pctDp >= 500) {
+                    lpfl->rgdv[i].pctDp = 499;
                 }
-                i = i + 1;
             }
-            pb = (uint8_t *)pus;
-            t_3e15 = pb;
-            pb = pb + 1;
-            lpfl->iplan = *t_3e15;
-            t_3e25 = pb;
-            pb = pb + 1;
-            lpfl->cord = *t_3e25;
-            lpfl->lpplord = (PLORD *)LpplAlloc(0x12, lpfl->cord + 1, htOrd);
-            fmemset(lpfl->lpplord->rgord, 0, (lpfl->cord + 1) * 18);
-            cord = lpfl->cord;
-            lpord = lpfl->lpplord->rgord;
-            for (; cord != 0; cord--) {
-                memset(rgbCur, 0, 0x12);
-                ReadRt();
-                if (hdrCur.rt != rtOrderA && hdrCur.rt != rtOrderB)
+            i++;
+        }
+        pb = (uint8_t *)pus;
+        lpfl->iplan = *pb++;
+        lpfl->cord = *pb++;
+        lpfl->lpplord = (PLORD *)LpplAlloc(18, lpfl->cord + 1, htOrd);
+        fmemset(lpfl->lpplord->rgord, 0, (lpfl->cord + 1) * 18);
+        cord = lpfl->cord;
+        lpord = lpfl->lpplord->rgord;
+        for (; cord != 0; cord--) {
+            memset(rgbCur, 0, 18);
+            ReadRt();
+            if (hdrCur.rt != rtOrderA && hdrCur.rt != rtOrderB)
+                goto Corrupt;
+            *lpord = *(ORDER *)rgbCur;
+            lpord->fNoAutoTrack = 0;
+            lpord++;
+        }
+        lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
+        if (lpfl->idPlanet != -1) {
+            if (lpfl->idPlanet > game.cPlanMax) {
+                lpfl->idPlanet = -1;
+            }
+            if (lpfl->pt.x != rgptPlan[lpfl->idPlanet].x || lpfl->pt.y != rgptPlan[lpfl->idPlanet].y) {
+                if (i != 0 || game.turn != 0)
                     goto Corrupt;
-                *lpord = *(ORDER *)rgbCur;
-                lpord->fNoAutoTrack = 0x0;
-                lpord = lpord + 1;
+                lpfl->pt = rgptPlan[lpfl->idPlanet];
             }
-            lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
-            if (lpfl->idPlanet != -1) {
-                if (lpfl->idPlanet > game.cPlanMax) {
-                    lpfl->idPlanet = -1;
-                }
-                if (lpfl->pt.x != rgptPlan[lpfl->idPlanet].x || lpfl->pt.y != rgptPlan[lpfl->idPlanet].y) {
-                    if (i != 0 || game.turn != 0x0)
-                        goto Corrupt;
-                    lpfl->pt = rgptPlan[lpfl->idPlanet];
-                }
+        }
+        ReadRt();
+        if (hdrCur.rt == rtString) {
+            cch = (int16_t)(int8_t)rgbCur[0];
+            if (cch == 0) {
+                lpfl->lpszName = LpAlloc(strlen(&rgbCur[1]) + 1, htString);
+                fstrcpy(lpfl->lpszName, &rgbCur[1]);
+            } else {
+                cOut = 32;
+                FDecompressUserString(&rgbCur[1], cch, szT, &cOut);
+                lpfl->lpszName = LpAlloc(strlen(szT) + 1, htString);
+                fstrcpy(lpfl->lpszName, szT);
             }
             ReadRt();
-            if (hdrCur.rt != rtString) {
-                lpfl->lpszName = 0x0;
-            } else {
-                cch = (int16_t)rgbCur[0];
-                if (cch != 0) {
-                    cOut = 32;
-                    FDecompressUserString(&rgbCur[1], cch, szT, &cOut);
-                    lpfl->lpszName = LpAlloc(strlen(szT) + 0x1, htString);
-                    fstrcpy(lpfl->lpszName, szT);
-                } else {
-                    lpfl->lpszName = LpAlloc(strlen(&rgbCur[1]) + 0x1, htString);
-                    fstrcpy(lpfl->lpszName, &rgbCur[1]);
-                }
-                ReadRt();
-            }
-            return 1;
+        } else {
+            lpfl->lpszName = NULL;
         }
-    Corrupt:
-        AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0x0), MB_ICONHAND);
-        return 0;
+        return 1;
     }
-    lpfl->dirLong = RawLoad32(pb);
-    pb = pb + 4;
-    lpfl->wtFleet = RawLoad32(pb);
-    pb = pb + 4;
-    ReadRt();
-    return 1;
+Corrupt:
+    AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, NULL), MB_ICONHAND);
+    return 0;
 }

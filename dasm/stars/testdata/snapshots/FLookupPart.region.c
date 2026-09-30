@@ -8,42 +8,42 @@ int16_t FLookupPart(PART *ppart) {
     default:
         return 0;
     case hstEngine:
-        if (hs.iItem < iengineCount) {
-            ppart->pengine = &rgengine[hs.iItem];
-            if (idPlayer == -1)
-                break;
-            if (hs.iItem != iengineSettlersDelight || raMajor == 0) {
-                if (((hs.iItem < iengineSubGalacticFuelScoop || hs.iItem > iengineGalaxyScoop) && hs.iItem != iengineRadiatingHydroRamScoop) ||
-                    GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) == 0) {
-                    if ((hs.iItem != iengineGalaxyScoop && hs.iItem != iengineFuelMizer) || GetRaceGrbit(&rgplr[idPlayer], ibitRaceIFE) != 0) {
-                        if (hs.iItem != iengineInterspace10 || GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) != 0) {
-                            if (FShouldPartBeHidden(ppart) == 0)
-                                break;
-                            return -1;
-                        }
-                        return -1;
-                    }
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= iengineCount) {
+            return 0;
+        }
+        ppart->pengine = &rgengine[hs.iItem];
+        if (idPlayer == -1)
+            break;
+        if (hs.iItem == iengineSettlersDelight && raMajor != 0) {
             return -1;
         }
-        return 0;
+        if (((hs.iItem >= iengineSubGalacticFuelScoop && hs.iItem <= iengineGalaxyScoop) || hs.iItem == iengineRadiatingHydroRamScoop) &&
+            GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) != 0) {
+            return -1;
+        }
+        if ((hs.iItem == iengineGalaxyScoop || hs.iItem == iengineFuelMizer) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceIFE) == 0) {
+            return -1;
+        }
+        if (hs.iItem == iengineInterspace10 && GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoRamscoops) == 0) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstShield:
-        if (hs.iItem < ishieldCount) {
-            ppart->pshield = &rgshield[hs.iItem];
-            if (hs.iItem != ishieldShadowShield || raMajor == 1) {
-                if (hs.iItem != ishieldCrobySharmor || raMajor == 4) {
-                    if (FShouldPartBeHidden(ppart) == 0)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= ishieldCount) {
+            return 0;
+        }
+        ppart->pshield = &rgshield[hs.iItem];
+        if (hs.iItem == ishieldShadowShield && raMajor != 1) {
             return -1;
         }
-        return 0;
+        if (hs.iItem == ishieldCrobySharmor && raMajor != 4) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstHull:
         if (hs.iItem >= ihuldefOrbitalFort) {
             return 0;
@@ -74,50 +74,50 @@ int16_t FLookupPart(PART *ppart) {
                     return -1;
                 }
             default:
-                if ((hs.iItem != ihuldefDreadnought && hs.iItem != ihuldefBattleCruiser) || raMajor == 2) {
-                    if (hs.iItem != ihuldefRogue || raMajor == 1) {
-                        if (hs.iItem != ihuldefStealthBomber || raMajor == 1) {
-                            if ((hs.iItem != ihuldefMiniMineLayer && hs.iItem != ihuldefSuperMineLayer) || raMajor == 5) {
-                                if (FShouldPartBeHidden(ppart) == 0)
-                                    goto L_609c;
-                                return -1;
-                            }
-                            return -1;
-                        }
-                        return -1;
-                    }
+                if ((hs.iItem == ihuldefDreadnought || hs.iItem == ihuldefBattleCruiser) && raMajor != 2) {
                     return -1;
                 }
+                if (hs.iItem == ihuldefRogue && raMajor != 1) {
+                    return -1;
+                }
+                if (hs.iItem == ihuldefStealthBomber && raMajor != 1) {
+                    return -1;
+                }
+                if ((hs.iItem == ihuldefMiniMineLayer || hs.iItem == ihuldefSuperMineLayer) && raMajor != 5) {
+                    return -1;
+                }
+                if (FShouldPartBeHidden(ppart) == 0)
+                    goto L_609c;
                 return -1;
             }
         }
     case hstSBHull:
-        if (hs.iItem < 0x5) {
-            ppart->phul = &rghuldefSB[hs.iItem].hul;
-            if (idPlayer == -1)
-                break;
-            if ((hs.iItem != 0x1 && hs.iItem != 0x3) || GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) != 0) {
-                if (hs.iItem != 0x4 || raMajor == 8)
-                    break;
-                return -1;
-            }
+        if (hs.iItem >= 5) {
+            return 0;
+        }
+        ppart->phul = &rghuldefSB[hs.iItem].hul;
+        if (idPlayer == -1)
+            break;
+        if ((hs.iItem == 1 || hs.iItem == 3) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) == 0) {
             return -1;
         }
-        return 0;
+        if (hs.iItem != 4 || raMajor == 8)
+            break;
+        return -1;
     case hstArmor:
-        if (hs.iItem < iarmorCount) {
-            ppart->parmor = &rgarmor[hs.iItem];
-            if (hs.iItem != iarmorDepletedNeutronium || raMajor == 1) {
-                if (hs.iItem != iarmorFieldedKelarium || raMajor == 4) {
-                    if (FShouldPartBeHidden(ppart) == 0)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= iarmorCount) {
+            return 0;
+        }
+        ppart->parmor = &rgarmor[hs.iItem];
+        if (hs.iItem == iarmorDepletedNeutronium && raMajor != 1) {
             return -1;
         }
-        return 0;
+        if (hs.iItem == iarmorFieldedKelarium && raMajor != 4) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstSpecialE:
         if (hs.iItem >= ispecialECount) {
             return 0;
@@ -166,41 +166,41 @@ int16_t FLookupPart(PART *ppart) {
             goto L_609c;
         }
     case hstSpecialM:
-        if (hs.iItem < ispecialMCount) {
-            ppart->pspecial = &rgspecialM[hs.iItem];
-            if (idPlayer == -1)
-                break;
-            if (FShouldPartBeHidden(ppart) == 0) {
-                if (hs.iItem != ispecialMColonizationModule || raMajor != 8) {
-                    if (hs.iItem != ispecialMOrbitalConstructionModule || raMajor == 8)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= ispecialMCount) {
+            return 0;
+        }
+        ppart->pspecial = &rgspecialM[hs.iItem];
+        if (idPlayer == -1)
+            break;
+        if (FShouldPartBeHidden(ppart) != 0) {
             return -1;
         }
-        return 0;
+        if (hs.iItem == ispecialMColonizationModule && raMajor == 8) {
+            return -1;
+        }
+        if (hs.iItem != ispecialMOrbitalConstructionModule || raMajor == 8)
+            break;
+        return -1;
     case hstSpecialSB:
-        if (hs.iItem < ispecialSBCount) {
-            ppart->pspecialsb = &rgspecialSB[hs.iItem];
-            if (idPlayer == -1)
-                break;
-            if (hs.iItem < ispecialSBMassDriver5 || hs.iItem > ispecialSBUltraDriver13) {
-                if (hs.iItem < ispecialSBStargate100250 || hs.iItem > ispecialSBStargateAnyAny)
-                    break;
-                if (raMajor == 7 || (hs.iItem != ispecialSBStargateAny300 && hs.iItem < ispecialSBStargate100Any)) {
-                    if (raMajor != 0)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= ispecialSBCount) {
+            return 0;
+        }
+        ppart->pspecialsb = &rgspecialSB[hs.iItem];
+        if (idPlayer == -1)
+            break;
+        if (hs.iItem >= ispecialSBMassDriver5 && hs.iItem <= ispecialSBUltraDriver13) {
             if (hs.iItem == ispecialSBMassDriver7 || hs.iItem == ispecialSBUltraDriver10 || raMajor == 6)
                 break;
             return -1;
         }
-        return 0;
+        if (hs.iItem < ispecialSBStargate100250 || hs.iItem > ispecialSBStargateAnyAny)
+            break;
+        if (raMajor != 7 && (hs.iItem == ispecialSBStargateAny300 || hs.iItem >= ispecialSBStargate100Any)) {
+            return -1;
+        }
+        if (raMajor != 0)
+            break;
+        return -1;
     case hstMines:
         if (hs.iItem >= iminesCount) {
             return 0;
@@ -221,11 +221,11 @@ int16_t FLookupPart(PART *ppart) {
                 return -1;
             }
         default:
-            if (hs.iItem != iminesSpeedTrap20 || raMajor == 5 || raMajor == 4) {
-                if (hs.iItem != iminesMineDispenser50 || raMajor != 2)
-                    goto L_609c;
+            if (hs.iItem == iminesSpeedTrap20 && raMajor != 5 && raMajor != 4) {
                 return -1;
             }
+            if (hs.iItem != iminesMineDispenser50 || raMajor != 2)
+                goto L_609c;
             return -1;
         }
     case hstMining:
@@ -245,14 +245,14 @@ int16_t FLookupPart(PART *ppart) {
                 return -1;
             }
         default:
-            if ((hs.iItem != iminingRoboMidgetMiner && hs.iItem != iminingRoboUltraMiner) || GetRaceGrbit(&rgplr[idPlayer], ibitRaceARM) != 0) {
-                if (hs.iItem != iminingOrbitalAdjuster || raMajor == 3) {
-                    if (FShouldPartBeHidden(ppart) == 0)
-                        goto L_609c;
-                    return -1;
-                }
+            if ((hs.iItem == iminingRoboMidgetMiner || hs.iItem == iminingRoboUltraMiner) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceARM) == 0) {
                 return -1;
             }
+            if (hs.iItem == iminingOrbitalAdjuster && raMajor != 3) {
+                return -1;
+            }
+            if (FShouldPartBeHidden(ppart) == 0)
+                goto L_609c;
             return -1;
         }
     case hstScanner:
@@ -282,66 +282,66 @@ int16_t FLookupPart(PART *ppart) {
             }
         }
     case hstBeam:
-        if (hs.iItem < ibeamCount) {
-            ppart->pbeam = &rgbeam[hs.iItem];
-            if (hs.iItem != ibeamMiniGun || raMajor == 4) {
-                if ((hs.iItem != ibeamBlunderbuss && hs.iItem != ibeamGatlingNeutrinoCannon) || raMajor == 2) {
-                    if (FShouldPartBeHidden(ppart) == 0)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= ibeamCount) {
+            return 0;
+        }
+        ppart->pbeam = &rgbeam[hs.iItem];
+        if (hs.iItem == ibeamMiniGun && raMajor != 4) {
             return -1;
         }
-        return 0;
+        if ((hs.iItem == ibeamBlunderbuss || hs.iItem == ibeamGatlingNeutrinoCannon) && raMajor != 2) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstTorp:
-        if (hs.iItem < itorpCount) {
-            ppart->ptorp = &rgtorp[hs.iItem];
-            if (idPlayer == -1 || FShouldPartBeHidden(ppart) == 0)
-                break;
-            return -1;
+        if (hs.iItem >= itorpCount) {
+            return 0;
         }
-        return 0;
+        ppart->ptorp = &rgtorp[hs.iItem];
+        if (idPlayer == -1 || FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstBomb:
-        if (hs.iItem < ibombCount) {
-            ppart->pbomb = &rgbomb[hs.iItem];
-            if (idPlayer == -1)
-                break;
-            if (hs.iItem < ibombSmartBomb || hs.iItem > ibombAnnihilatorBomb || raMajor != 4) {
-                if (hs.iItem != ibombRetroBomb || raMajor == 3) {
-                    if (FShouldPartBeHidden(ppart) == 0)
-                        break;
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= ibombCount) {
+            return 0;
+        }
+        ppart->pbomb = &rgbomb[hs.iItem];
+        if (idPlayer == -1)
+            break;
+        if (hs.iItem >= ibombSmartBomb && hs.iItem <= ibombAnnihilatorBomb && raMajor == 4) {
             return -1;
         }
-        return 0;
+        if (hs.iItem == ibombRetroBomb && raMajor != 3) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstPlanetary:
-        if (hs.iItem < iplanetaryCount) {
-            ppart->pplanetary = &rgplanetary[hs.iItem];
-            if (idPlayer == -1)
-                break;
-            if (hs.iItem < iplanetaryViewer50 || hs.iItem > iplanetarySnooper620X || ppart->pplanetary->grAbility >= 0 ||
-                GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) == 0) {
-                if (hs.iItem < iplanetaryViewer50 || hs.iItem > iplanetarySnooper620X || raMajor != 8) {
-                    if (hs.iItem < iplanetarySDI || hs.iItem > iplanetaryNeutronShield || raMajor != 8) {
-                        if (hs.iItem < iplanetaryLaserBattery || hs.iItem > iplanetaryNeutronShield || raMajor != 2) {
-                            if (FShouldPartBeHidden(ppart) == 0)
-                                break;
-                            return -1;
-                        }
-                        return -1;
-                    }
-                    return -1;
-                }
-                return -1;
-            }
+        if (hs.iItem >= iplanetaryCount) {
+            return 0;
+        }
+        ppart->pplanetary = &rgplanetary[hs.iItem];
+        if (idPlayer == -1)
+            break;
+        if (hs.iItem >= iplanetaryViewer50 && hs.iItem <= iplanetarySnooper620X && ppart->pplanetary->grAbility < 0 &&
+            GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) != 0) {
             return -1;
         }
-        return 0;
+        if (hs.iItem >= iplanetaryViewer50 && hs.iItem <= iplanetarySnooper620X && raMajor == 8) {
+            return -1;
+        }
+        if (hs.iItem >= iplanetarySDI && hs.iItem <= iplanetaryNeutronShield && raMajor == 8) {
+            return -1;
+        }
+        if (hs.iItem >= iplanetaryLaserBattery && hs.iItem <= iplanetaryNeutronShield && raMajor == 2) {
+            return -1;
+        }
+        if (FShouldPartBeHidden(ppart) == 0)
+            break;
+        return -1;
     case hstTerra:
         if (hs.iItem >= iterraCount) {
             return 0;

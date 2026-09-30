@@ -31,10 +31,10 @@ L_03e0:
 
 L_03e7:
     szGame[8] = 0
-    call strncpy(szGame, psz, 0x8) -> callresult(char *)
+    call strncpy(szGame, psz, 8) -> callresult(char *)
     call strlwr(szGame) -> callresult(char *)
     call _wsprintf(&szGame[strlen(szGame)], ".m%d", (idPlayer + 1)) -> callresult(int16_t)
-    call _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, 0x0), szGame) -> callresult(int16_t)
+    call _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, NULL), szGame) -> callresult(int16_t)
     goto L_04ad
 
 L_0480:
@@ -46,56 +46,56 @@ L_04ad:
     branch idPlayer == -1 ? L_06cf : L_04ca
 
 L_04ca:
-    branch hwndScanner != 0x0 ? L_051a : L_04d4
+    branch hwndScanner != 0 ? L_051a : L_04d4
 
 L_04d4:
-    hwndScanner = CreateWindow(szScan, 0x0, WS_CHILD|WS_VISIBLE, -200, -200, 10, 10, hwndFrame, 0x0, hInst, 0x0)
+    hwndScanner = CreateWindow(szScan, NULL, WS_CHILD|WS_VISIBLE, -200, -200, 10, 10, hwndFrame, NULL, hInst, NULL)
     goto L_0547
 
 L_051a:
-    call InvalidateRect(hwndScanner, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)
     yScanTop = 1000
     xScanTop = 1000
     call SetScanScrollBars(hwndScanner) -> callresult(void)
 
 L_0547:
-    branch hwndMine != 0x0 ? L_0595 : L_0551
+    branch hwndMine != 0 ? L_0595 : L_0551
 
 L_0551:
-    hwndMine = CreateWindow(szMine, 0x0, WS_CHILD|WS_VISIBLE, -500, -500, pt.x, pt.y, hwndFrame, 0x0, hInst, 0x0)
+    hwndMine = CreateWindow(szMine, NULL, WS_CHILD|WS_VISIBLE, -500, -500, pt.x, pt.y, hwndFrame, NULL, hInst, NULL)
     goto L_05aa
 
 L_0595:
-    call InvalidateRect(hwndMine, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwndMine, NULL, 1) -> callresult(void)
 
 L_05aa:
-    branch hwndPlanet != 0x0 ? L_05fa : L_05b4
+    branch hwndPlanet != 0 ? L_05fa : L_05b4
 
 L_05b4:
-    hwndPlanet = CreateWindow(szPlanet, 0x0, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0)
+    hwndPlanet = CreateWindow(szPlanet, NULL, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, NULL, hInst, NULL)
     goto L_060f
 
 L_05fa:
-    call InvalidateRect(hwndPlanet, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwndPlanet, NULL, 1) -> callresult(void)
 
 L_060f:
-    branch hwndTb != 0x0 ? L_065f : L_0619
+    branch hwndTb != 0 ? L_065f : L_0619
 
 L_0619:
-    hwndTb = CreateWindow(szTb, 0x0, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0)
+    hwndTb = CreateWindow(szTb, NULL, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, NULL, hInst, NULL)
     goto L_0674
 
 L_065f:
-    call InvalidateRect(hwndTb, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
 
 L_0674:
-    branch hwndMessage == 0x0 ? L_0687 : L_067e
+    branch hwndMessage == 0 ? L_0687 : L_067e
 
 L_067e:
     call DestroyWindow(hwndMessage) -> callresult(int16_t)
 
 L_0687:
-    hwndMessage = CreateWindow(szMessage, 0x0, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, 0x0, hInst, 0x0)
+    hwndMessage = CreateWindow(szMessage, NULL, WS_CHILD|WS_VISIBLE, -500, -500, 10, 10, hwndFrame, NULL, hInst, NULL)
     call RefitFrameChildren() -> callresult(void)
 
 L_06cf:

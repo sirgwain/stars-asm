@@ -61,7 +61,7 @@ L_0d1f:
 
 L_0d22:
     call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
-    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, 0x0)
+    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL)
     dx = (loword(GetTextExtent(hdc, psz, strlen(psz))) + 8)
     dx2 = (loword(GetTextExtent(hdc, "Player #16", 10)) + 8)
     branch dx2 <= dx ? L_0d9c : L_0d96
@@ -88,7 +88,7 @@ L_0e0a:
     branch GlobalPD.lpfl->rgcsh[i] <= 0 ? L_0f77 : L_0e29
 
 L_0e29:
-    branch GlobalPD.grbit == 0x0 ? L_0e46 : L_0e33
+    branch GlobalPD.grbit == 0 ? L_0e46 : L_0e33
 
 L_0e33:
     branch FIsPopupHullType(i) == 0 ? L_0f77 : L_0e46
@@ -111,7 +111,7 @@ L_0e46:
 
 
 L_0f15:
-    branch ((GlobalPD.lpfl->rgdv[i].dp >> 0x7) & 0x1ff) == 0x0 ? L_0f77 : L_0f3e
+    branch ((GlobalPD.lpfl->rgdv[i].dp >> 7) & 0x1ff) == 0 ? L_0f77 : L_0f3e
 
 L_0f3e:
     branch dxDamage != 0 ? L_0f77 : L_0f47
@@ -195,7 +195,7 @@ L_1176:
     call UpdateSlotGlobals() -> callresult(void)
     dx = 340
     dy = (((dyArial8 + 306) + (6 * dyArial8)) + 8)
-    branch gd.mdScreenSize <= 0x0 ? L_1225 : L_11ce
+    branch gd.mdScreenSize <= 0 ? L_1225 : L_11ce
 
 
 
@@ -215,10 +215,10 @@ L_11e5:
     goto L_1225
 
 L_11f5:
-    branch (GlobalPD.grPopup - 1) > 0xd ? L_1225 : L_1200
+    branch (GlobalPD.grPopup - 1) > 13 ? L_1225 : L_1200
 
 L_1200:
-    tablejump ((GlobalPD.grPopup - 1) * 0x2) [0x0: L_0cc3, 0x2: L_0d22, 0x4: L_0daa, 0x6: L_0fd7, 0x8: L_1092, 0xa: L_10aa, 0xc: L_10c6, 0xe: L_10fa, 0x10: L_1128, 0x12: L_115a, 0x14: L_1176, 0x16: L_10de, 0x18: L_11e5, 0x1a: L_1176]
+    tablejump ((GlobalPD.grPopup - 1) * 2) [0x0: L_0cc3, 0x2: L_0d22, 0x4: L_0daa, 0x6: L_0fd7, 0x8: L_1092, 0xa: L_10aa, 0xc: L_10c6, 0xe: L_10fa, 0x10: L_1128, 0x12: L_115a, 0x14: L_1176, 0x16: L_10de, 0x18: L_11e5, 0x1a: L_1176]
 
 L_1225:
     call SelectObject(hdc, hfontSav) -> callresult(HGDIOBJ)
@@ -285,7 +285,7 @@ L_12f6:
 
 L_1302:
     pt.y = t_merge_1302_0001
-    hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP|WS_VISIBLE|WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0)
+    hwndPopup = CreateWindow(szPopup, NULL, WS_POPUP|WS_VISIBLE|WS_BORDER, pt.x, pt.y, dx, dy, hwnd, NULL, hInst, NULL)
     call SendMessage(hwndPopup, WM_SETFONT, (WPARAM)rghfontArial8[0], 0) -> callresult(LRESULT)
     call SetCapture(hwndPopup) -> callresult(HWND)
     return

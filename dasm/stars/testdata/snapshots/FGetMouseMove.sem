@@ -12,7 +12,7 @@ FGetMouseMove  (utilgen)
 L_4146:
 
 L_4152:
-    branch PeekMessage(&msg, 0x0, 0x0, 0x0, 0x1) != 0 ? L_417c : L_4176
+    branch PeekMessage(&msg, NULL, 0, 0, 1) != 0 ? L_417c : L_4176
 
 L_4176:
     return 1
@@ -23,7 +23,7 @@ L_417c:
 L_4185:
     ppt->x = LOWORD(msg.lParam)
     ppt->y = hiword(msg.lParam)
-    branch msg.message == 0x202 ? L_41ba : L_41b4
+    branch msg.message == WM_LBUTTONUP ? L_41ba : L_41b4
 
 L_41b4:
     return 1
@@ -34,10 +34,10 @@ L_41bd:
     return 0
 
 L_41c3:
-    branch msg.message == 0x200 ? L_4185 : L_41cb
+    branch msg.message == WM_MOUSEMOVE ? L_4185 : L_41cb
 
 L_41cb:
-    branch msg.message != 0x202 ? L_4152 : L_41d0
+    branch msg.message != WM_LBUTTONUP ? L_4152 : L_41d0
 
 L_41d0:
     goto L_4185

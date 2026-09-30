@@ -24,7 +24,7 @@ FCheckXferWP  (tutor)
 L_7280:
     fRet = 0
     idhSav = tutor.idh
-    branch (id & 0x8000) == 0x0 ? L_72af : L_72a2
+    branch (id & 0x8000) == 0 ? L_72af : L_72a2
 
 L_72a2:
     id = (id & 0x7fff)
@@ -36,14 +36,14 @@ L_72af:
 
 L_72b4:
     lpfl = LpflFromId(ifl)
-    branch lpfl != 0x0 ? L_72de : L_72d8
+    branch lpfl != 0 ? L_72de : L_72d8
 
 
 L_72d8:
     return 0
 
 L_72de:
-    branch FCheckFleetWP(ifl, iord, grobj, id, 0x1, iWarp) != 0 ? L_7308 : L_7302
+    branch FCheckFleetWP(ifl, iord, grobj, id, 1, iWarp) != 0 ? L_7308 : L_7302
 
 L_7302:
     return 0

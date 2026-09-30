@@ -40,11 +40,11 @@ L_9784:
         goto L_9797;
 
 L_9797:
-    fmemmove(&rgb[cbMsg], lpb + 1, (*lpb >> 0x4 & 0xf) + 0x4);
-    cbMsg = cbMsg + ((*lpb >> 0x4 & 0xf) + 0x4);
+    fmemmove(&rgb[cbMsg], lpb + 1, (*lpb >> 4 & 0xf) + 4);
+    cbMsg += (*lpb >> 4 & 0xf) + 4;
 
 L_97f1:
-    lpb = lpb + (5 + (*lpb >> 0x4 & 0xf));
+    lpb += 5 + (*lpb >> 4 & 0xf);
 
 L_980d:
     if (lpb < lpbMax)
@@ -90,7 +90,7 @@ L_98a9:
     lpmp = lpmp->lpmsgplrNext;
 
 L_98bc:
-    if (lpmp != 0x0)
+    if (lpmp != 0)
         goto L_9850;
     else
         goto L_98d0;

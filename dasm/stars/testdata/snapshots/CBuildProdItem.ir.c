@@ -18,13 +18,9 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     int32_t  rgCost[4];
     int16_t  fMineralBlocked;
     int32_t  AddCost;
-    int16_t  t_merge_0d4c_0001;
     uint16_t t_scratch_m56;
     uint16_t t_scratch_m56_2;
     uint16_t t_scratch_m56_3;
-    int32_t  t_merge_126a_0001;
-    int32_t  t_merge_15f8_0001;
-    int16_t  t_merge_189c_0001;
 
 L_0c92:
     cAlchemy = 0;
@@ -44,14 +40,13 @@ L_0d1a:
         goto L_0d49;
 
 L_0d43:
-    t_merge_0d4c_0001 = 1;
+    fAutoBuild = 1;
     goto L_0d4c;
 
 L_0d49:
-    t_merge_0d4c_0001 = 0;
+    fAutoBuild = 0;
 
 L_0d4c:
-    fAutoBuild = t_merge_0d4c_0001;
     if (fAutoBuild == 0)
         goto L_102c;
     else
@@ -117,13 +112,13 @@ L_0ee8:
 
 L_0eeb:
     iobjOther = iobjPacketMixed;
-    if (IWarpMAFromLppl(lppl, 0x0) == 0)
+    if (IWarpMAFromLppl(lppl, NULL) == 0)
         goto L_0f21;
     else
         goto L_0f0f;
 
 L_0f0f:
-    if (lppl->idFling != 0x0)
+    if (lppl->idFling != 0)
         goto L_0f9f;
     else
         goto L_0f21;
@@ -186,7 +181,7 @@ L_0fa8:
     cMax = 0;
 
 L_0fad:
-    if ((uint32_t)prod.cItem <= (uint32_t)(int32_t)cMax)
+    if ((uint32_t)prod.cItem <= (uint32_t)cMax)
         goto L_0fdc;
     else
         goto L_1000;
@@ -205,8 +200,8 @@ L_102c:
     goto L_1086;
 
 L_1034:
-    rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * prod.pct) / 0x64);
-    i = i + 1;
+    rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * prod.pct) / 100);
+    i++;
 
 L_1086:
     if (i < 4)
@@ -215,7 +210,7 @@ L_1086:
         goto L_108f;
 
 L_108f:
-    if (prod.cItem <= 0x0)
+    if (prod.cItem <= 0)
         goto L_1712;
     else
         goto L_10b0;
@@ -231,7 +226,7 @@ L_10b8:
         goto L_110a;
 
 L_10fd:
-    i = i + 1;
+    i++;
 
 L_1101:
     if (i < 4)
@@ -269,13 +264,12 @@ L_1183:
     goto L_1270;
 
 L_1190:
-    pctT = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i]) * 0x64) / rgCost[i]);
-    pctTooBig = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i] + 0x1) * 0x64) / rgCost[i]);
-    t_merge_126a_0001 = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
+    pctT = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i]) * 100) / rgCost[i]);
+    pctTooBig = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i] + 1) * 100) / rgCost[i]);
+    pctT = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
     goto L_126a;
 
 L_126a:
-    pctT = t_merge_126a_0001;
 
 L_1270:
     if (pctT < pct)
@@ -299,7 +293,7 @@ L_12e1:
     fMineralBlocked = 1;
 
 L_12e6:
-    i = i + 1;
+    i++;
 
 L_12ea:
     if (i < 4)
@@ -334,10 +328,10 @@ L_131c:
     goto L_1398;
 
 L_1324:
-    AddCost = (int32_t)((int32_t)(rgCost[i] * pct) / 100) - rgCostPaid[i];
-    rgRes[i] = rgRes[i] - AddCost;
-    rgCostPaid[i] = rgCostPaid[i] + AddCost;
-    i = i + 1;
+    AddCost = (int32_t)(rgCost[i] * pct) / 100 - rgCostPaid[i];
+    rgRes[i] -= AddCost;
+    rgCostPaid[i] += AddCost;
+    i++;
 
 L_1398:
     if (i < 4)
@@ -359,7 +353,7 @@ L_13d5:
         goto LAlchemize;
 
 LAlchemize:
-    lAlchCost = (uint32_t)(GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? 0x64 : 0x19);
+    lAlchCost = (uint32_t)(GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? 100 : 25);
     cCanBuild = (int32_t)(rgRes[3] / lAlchCost);
     if (cCanBuild <= lMinNeeded)
         goto L_1457;
@@ -380,8 +374,8 @@ L_146e:
     goto L_1491;
 
 L_1476:
-    rgRes[i] = rgRes[i] + cCanBuild;
-    i = i + 1;
+    rgRes[i] += cCanBuild;
+    i++;
 
 L_1491:
     if (i < 3)
@@ -390,8 +384,8 @@ L_1491:
         goto L_149a;
 
 L_149a:
-    rgRes[i] = rgRes[i] - (uint32_t)(lAlchCost * cCanBuild);
-    cAlchemy = cAlchemy + LOWORD(cCanBuild);
+    rgRes[i] -= (uint32_t)(lAlchCost * cCanBuild);
+    cAlchemy += LOWORD(cCanBuild);
 
 L_14c5:
     if (cCanBuild != lMinNeeded)
@@ -406,7 +400,7 @@ L_14de:
         goto L_14f8;
 
 L_14f8:
-    if (pprodPartial == 0x0)
+    if (pprodPartial == 0)
         goto L_1712;
     else
         goto L_1501;
@@ -415,31 +409,30 @@ L_1501:
     memset(pprodPartial, 0, sizeof(PROD));
     pprodPartial->grobj = grobjPlanet;
     pprodPartial->iItem = mdIdleAlchemy;
-    pprodPartial->cItem = 0x1;
+    pprodPartial->cItem = 1;
     pctT = (int32_t)((int32_t)(rgRes[3] * 100) / lAlchCost);
-    pctTooBig = (int32_t)((int32_t)((rgRes[3] + 1) * 0x64) / lAlchCost);
-    t_merge_15f8_0001 = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
+    pctTooBig = (int32_t)((int32_t)((rgRes[3] + 1) * 100) / lAlchCost);
+    pctT = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
     goto L_15f8;
 
 L_15f8:
-    pctT = t_merge_15f8_0001;
     pprodPartial->pct = LOWORD(pctT);
-    rgRes[3] = rgRes[3] - (int32_t)((int32_t)(pctT * lAlchCost) / 100);
+    rgRes[3] -= (int32_t)(pctT * lAlchCost) / 100;
 
 L_1656:
     goto L_1712;
 
 L_165c:
-    cBuilt = cBuilt + 1;
-    prod.cItem = prod.cItem - 0x1;
-    prod.pct = 0x0;
+    cBuilt++;
+    prod.cItem--;
+    prod.pct = 0;
     i = 0;
     goto L_1706;
 
 L_16ba:
-    rgRes[i] = rgRes[i] - (rgCost[i] - rgCostPaid[i]);
+    rgRes[i] -= rgCost[i] - rgCostPaid[i];
     rgCostPaid[i] = 0;
-    i = i + 1;
+    i++;
 
 L_1706:
     if (i >= 4)
@@ -475,13 +468,13 @@ L_1763:
         goto L_1787;
 
 L_1787:
-    cAlchemy = cAlchemy + cBuilt;
+    cAlchemy += cBuilt;
     i = 0;
     goto L_17ae;
 
 L_1795:
-    rgRes[i] = rgRes[i] + (int32_t)cBuilt;
-    i = i + 1;
+    rgRes[i] += cBuilt;
+    i++;
 
 L_17ae:
     if (i < 3)
@@ -502,7 +495,7 @@ L_17c0:
         goto L_17c9;
 
 L_17c9:
-    if (gd.fGeneratingTurn == 0x0)
+    if (gd.fGeneratingTurn == 0)
         goto L_17fb;
     else
         goto L_17d9;
@@ -511,7 +504,7 @@ L_17d9:
     FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy);
 
 L_17fb:
-    if (pmdStatus == 0x0)
+    if (pmdStatus == 0)
         goto L_18d1;
     else
         goto L_1804;
@@ -533,7 +526,7 @@ L_1827:
         goto L_1830;
 
 L_1830:
-    if (prod.cItem != 0x0)
+    if (prod.cItem != 0)
         goto L_1866;
     else
         goto L_184c;
@@ -549,15 +542,14 @@ L_1866:
         goto L_186f;
 
 L_186f:
-    t_merge_189c_0001 = pctInitial == prod.pct ? 7 : 6;
     goto L_189c;
 
 L_189c:
-    *pmdStatus = t_merge_189c_0001;
+    *pmdStatus = pctInitial == prod.pct ? 7 : 6;
     goto L_18d1;
 
 L_18a4:
-    if (prod.cItem != 0x0)
+    if (prod.cItem != 0)
         goto L_18ca;
     else
         goto L_18c0;
@@ -591,26 +583,26 @@ L_18f3:
         goto L_18fc;
 
 L_18fc:
-    if (pprodPartial == 0x0)
+    if (pprodPartial == 0)
         goto L_19a5;
     else
         goto L_1905;
 
 L_1905:
-    if (pprodPartial->cItem != 0x0)
+    if (pprodPartial->cItem != 0)
         goto L_19a5;
     else
         goto L_1923;
 
 L_1923:
-    if (prod.pct <= 0x0)
+    if (prod.pct <= 0)
         goto L_19a5;
     else
         goto L_194c;
 
 L_194c:
     *pprodPartial = prod;
-    pprodPartial->cItem = 0x1;
+    pprodPartial->cItem = 1;
     pprodPartial->iItem = LOWORD(iobjOther);
 
 L_19a5:

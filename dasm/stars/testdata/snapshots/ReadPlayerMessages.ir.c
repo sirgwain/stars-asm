@@ -12,7 +12,7 @@ void ReadPlayerMessages() {
     uint16_t u;
 
 L_994a:
-    imemMsgT = 0x0;
+    imemMsgT = 0;
     fOOM = 0;
     lpb = (uint8_t *)lpMsg + imemMsgCur;
 
@@ -23,7 +23,7 @@ L_9970:
         goto L_9983;
 
 L_9983:
-    if (hdrCur.cb == 0x0)
+    if (hdrCur.cb == 0)
         goto L_99d7;
     else
         goto L_9991;
@@ -36,31 +36,31 @@ L_9991:
 
 L_99ab:
     fmemmove(lpb + imemMsgT, rgbCur, hdrCur.cb);
-    imemMsgT = imemMsgT + hdrCur.cb;
+    imemMsgT += hdrCur.cb;
 
 L_99d7:
     ReadRt();
     goto L_9970;
 
 L_99df:
-    imemMsgCur = imemMsgCur + imemMsgT;
+    imemMsgCur += imemMsgT;
     lpbMax = lpb + imemMsgT;
     goto L_9aca;
 
 L_99fa:
     lpmh = (MSGHDR *)lpb;
-    bitfMsgSent[lpmh->iMsg >> 0x3] = LOBYTE((bitfMsgSent[lpmh->iMsg >> 0x3] & ~(0x1 << (lpmh->iMsg & 0x7))) | 0x1 << (lpmh->iMsg & 0x7));
-    cMsg = cMsg + 1;
+    bitfMsgSent[lpmh->iMsg >> 3] = LOBYTE((bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7));
+    cMsg++;
     u = lpmh->grWord;
-    lpb = lpb + 4;
-    iMax = (int16_t)rgcMsgArgs[lpmh->iMsg];
+    lpb += 4;
+    iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
     i = 0;
     goto L_9abf;
 
 L_9a98:
-    lpb = lpb + (1 + ((u & 0x1) == 0x1 ? 1 : 0));
-    u = u >> 0x1;
-    i = i + 1;
+    lpb += 1 + ((u & 1) == 1 ? 1 : 0);
+    u >>= 1;
+    i++;
 
 L_9abf:
     if (i < iMax)
@@ -78,7 +78,7 @@ L_9ad8:
     lpmp = (MSGPLR *)&vlpmsgplrIn;
 
 L_9ae3:
-    if (lpmp->lpmsgplrNext != 0x0)
+    if (lpmp->lpmsgplrNext != 0)
         goto L_9af9;
     else
         goto L_9b0c;
@@ -116,8 +116,8 @@ L_9b56:
     lpmp->lpmsgplrNext = LpAlloc(hdrCur.cb + (sizeof(MSGPLR) - 12), htPlrMsg);
     lpmp = lpmp->lpmsgplrNext;
     fmemcpy((uint8_t *)&lpmp->iPlrFrom - 4, rgbCur, hdrCur.cb);
-    lpmp->lpmsgplrNext = 0x0;
-    vcmsgplrIn = vcmsgplrIn + 1;
+    lpmp->lpmsgplrNext = NULL;
+    vcmsgplrIn++;
 
 LOutOfMem:
     ReadRt();

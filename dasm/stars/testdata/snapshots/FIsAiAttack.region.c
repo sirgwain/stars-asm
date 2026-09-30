@@ -10,20 +10,17 @@ int16_t FIsAiAttack(FLEET *lpfl) {
             }
             switch (ihul) {
             case 5:
-                goto L_4ad0;
+                if (rglpshdef[idPlayer][i].lPower > 0) {
+                    return 1;
+                }
+                return 0;
             case 31:
             case 29:
                 if (WtMaxShdefStat(&rgshdef[i], 2) < 500 && rglpshdef[idPlayer][i].lPower > 0) {
                     return 1;
                 }
-            default:
             }
         }
     }
     return 0;
-L_4ad0:
-    if (rglpshdef[idPlayer][i].lPower <= 0) {
-        return 0;
-    }
-    return 1;
 }

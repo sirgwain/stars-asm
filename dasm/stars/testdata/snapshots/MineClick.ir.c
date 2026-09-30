@@ -24,7 +24,6 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
     int16_t    ifl;
     int32_t    cMines;
     int32_t    lVal;
-    uint16_t   t_scratch_m12;
 
 L_3b4e:
     ht = HtMineWindow(hwndMine, x, y);
@@ -78,8 +77,7 @@ L_3c0f:
     goto L_47d5;
 
 L_3c2a:
-    t_scratch_m12 = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType];
-    part.hs.iItem = t_scratch_m12;
+    part.hs.iItem = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType];
     part.hs.grhst = hstMines;
     FLookupPart(&part);
     GlobalPD.grPopup = grPopupComponent;
@@ -109,10 +107,10 @@ L_3cfa:
     rgid[c] = ishdef;
     fstrcpy(rgsz[c], rglpshdef[lpfl->iPlayer][ishdef].hul.szClass);
     rgpsz[c] = rgsz[c];
-    c = c + 1;
+    c++;
 
 L_3d77:
-    ishdef = ishdef + 1;
+    ishdef++;
 
 L_3d7c:
     if (ishdef < 16)
@@ -127,7 +125,7 @@ L_3d86:
         goto L_3d90;
 
 L_3d90:
-    c = PopupMenu(hwndMine, x, y, c, 0x0, rgpsz, -1, 1);
+    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, 1);
     if (c == -1)
         goto L_47d5;
     else
@@ -151,7 +149,7 @@ L_3dd1:
 L_3e38:
     GlobalPD.grPopup = grPopupFleet;
     GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-    GlobalPD.fRedDamage = GlobalPD.lpfl->det == 0x7 ? 1 : 0;
+    GlobalPD.fRedDamage = GlobalPD.lpfl->det == 7 ? 1 : 0;
     GlobalPD.grbit = 0xff;
 
 L_3e84:
@@ -180,20 +178,20 @@ L_3f41:
     GlobalPD.grPopup = grPopupPlanetEnv;
     GlobalPD.idPlanet = pl.id;
     GlobalPD.iPlanetVar = ht - 6;
-    if (pl.det < 0x3)
+    if (pl.det < 3)
         goto L_3f85;
     else
         goto L_3f74;
 
 L_3f74:
-    GlobalPD.iPlanVal = (int16_t)pl.rgEnvVar[GlobalPD.iPlanetVar];
+    GlobalPD.iPlanVal = pl.rgEnvVar[GlobalPD.iPlanetVar];
     goto L_3f8b;
 
 L_3f85:
     GlobalPD.iPlanVal = -1;
 
 L_3f8b:
-    if (pl.det < 0x3)
+    if (pl.det < 3)
         goto NoTerra;
     else
         goto L_3f99;
@@ -235,9 +233,9 @@ NoTerra:
     GlobalPD.iPlanMax = -1;
 
 L_401c:
-    GlobalPD.iPlrVal = (int16_t)rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar];
-    GlobalPD.iPlrMin = (int16_t)rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar];
-    GlobalPD.iPlrMax = (int16_t)rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar];
+    GlobalPD.iPlrVal = rgplr[idPlayer].rgEnvVar[GlobalPD.iPlanetVar];
+    GlobalPD.iPlrMin = rgplr[idPlayer].rgEnvVarMin[GlobalPD.iPlanetVar];
+    GlobalPD.iPlrMax = rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar];
     Popup(hwndMine, x, y);
     goto L_47d5;
 
@@ -278,7 +276,7 @@ L_4103:
         goto L_410f;
 
 L_410f:
-    i = i + 1;
+    i++;
 
 L_4113:
     if (i < cThing)
@@ -300,19 +298,19 @@ L_4129:
     goto ChangeIt;
 
 L_4154:
-    if ((scan.grobjFull & 0x1) != 0x0)
+    if ((scan.grobjFull & 1) != 0)
         goto CheckPlanet;
     else
         goto L_4168;
 
 L_4168:
-    if ((scan.grobjFull & 0x2) != 0x0)
+    if ((scan.grobjFull & 2) != 0)
         goto CheckFleet;
     else
         goto L_417c;
 
 L_417c:
-    if ((scan.grobjFull & 0x8) == 0x0)
+    if ((scan.grobjFull & 8) == 0)
         goto L_4192;
     else
         goto L_418a;
@@ -326,7 +324,7 @@ L_4192:
     goto L_41b1;
 
 L_41ad:
-    i = i + 1;
+    i++;
 
 L_41b1:
     if (i >= cFleet)
@@ -336,7 +334,7 @@ L_41b1:
 
 L_41bc:
     lpfl = rglpfl[i];
-    if (rglpfl[i] != 0x0)
+    if (rglpfl[i] != 0)
         goto L_41ec;
     else
         goto L_4215;
@@ -367,7 +365,7 @@ L_4220:
     goto ChangeIt;
 
 L_4278:
-    if ((scan.grobjFull & 0x8) == 0x0)
+    if ((scan.grobjFull & 8) == 0)
         goto L_4291;
     else
         goto L_4286;
@@ -377,7 +375,7 @@ L_4286:
     goto L_4113;
 
 L_4291:
-    if ((scan.grobjFull & 0x1) == 0x0)
+    if ((scan.grobjFull & 1) == 0)
         goto CheckFleet;
     else
         goto CheckPlanet;
@@ -386,7 +384,7 @@ CheckPlanet:
     scan.grobj = grobjPlanet;
     idNew = scan.idpl;
     lppl = LpplFromId(idNew);
-    if (lppl != 0x0)
+    if (lppl != 0)
         goto L_42d5;
     else
         goto L_42cd;
@@ -406,7 +404,7 @@ CheckFleet:
     goto L_42ff;
 
 L_42fb:
-    i = i + 1;
+    i++;
 
 L_42ff:
     if (i >= cFleet)
@@ -416,7 +414,7 @@ L_42ff:
 
 L_430a:
     lpfl = rglpfl[i];
-    if (rglpfl[i] != 0x0)
+    if (rglpfl[i] != 0)
         goto L_433a;
     else
         goto L_4363;
@@ -440,7 +438,7 @@ L_4363:
         goto L_436e;
 
 L_436e:
-    if ((scan.grobjFull & 0x8) == 0x0)
+    if ((scan.grobjFull & 8) == 0)
         goto L_4384;
     else
         goto L_437c;
@@ -478,9 +476,9 @@ L_43f2:
         goto L_440b;
 
 L_440b:
-    RedrawScanSel(0x0, 0);
+    RedrawScanSel(NULL, 0);
     ChangeMainObjSel(scan.grobj, idNew);
-    RedrawScanSel(0x0, 1);
+    RedrawScanSel(NULL, 1);
 
 L_4439:
     goto L_47d5;
@@ -511,7 +509,7 @@ L_44cc:
     iChecked = i;
 
 L_44d2:
-    i = i + 1;
+    i++;
 
 L_44d6:
     if (i < 9)
@@ -520,7 +518,7 @@ L_44d6:
         goto L_44df;
 
 L_44df:
-    i = PopupMenu(hwndMine, x, y, 9, 0x0, psz, iChecked, 1);
+    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, 1);
     if (i == -1)
         goto L_47d5;
     else
@@ -534,14 +532,14 @@ L_4511:
 
 L_4525:
     cMinGrafMax = rgi[i];
-    InvalidateRect(hwndMine, 0x0, 1);
-    if ((grbitScan & 0xf) != 0x1)
+    InvalidateRect(hwndMine, NULL, 1);
+    if ((grbitScan & 0xf) != 1)
         goto L_47d5;
     else
         goto L_4557;
 
 L_4557:
-    InvalidateRect(hwndScanner, 0x0, 1);
+    InvalidateRect(hwndScanner, NULL, 1);
 
 L_456c:
     goto L_47d5;
@@ -549,13 +547,13 @@ L_456c:
 L_456f:
     FLookupPlanet(sel.scan.idpl, &pl);
     GlobalPD.grPopup = grPopupMineral;
-    GlobalPD.rgi[0] = (int32_t)(ht - 1);
+    GlobalPD.rgi[0] = (int16_t)(ht - 1);
     i = 1;
     goto L_45b4;
 
 L_459b:
     GlobalPD.rgi[i] = -1;
-    i = i + 1;
+    i++;
 
 L_45b4:
     if (i <= 4)
@@ -564,7 +562,7 @@ L_45b4:
         goto L_45bd;
 
 L_45bd:
-    if (pl.det < 0x3)
+    if (pl.det < 3)
         goto L_478e;
     else
         goto L_45cb;
@@ -572,7 +570,7 @@ L_45bd:
 L_45cb:
     GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[ht + 2];
     GlobalPD.rgi[1] = pl.fHomeworld;
-    if (pl.det <= 0x3)
+    if (pl.det <= 3)
         goto L_478e;
     else
         goto L_4608;
@@ -592,7 +590,7 @@ L_4670:
     goto L_467c;
 
 L_4678:
-    ifl = ifl + 1;
+    ifl++;
 
 L_467c:
     if (ifl >= cFleet)
@@ -602,7 +600,7 @@ L_467c:
 
 L_4687:
     lpfl = rglpfl[ifl];
-    if (rglpfl[ifl] != 0x0)
+    if (rglpfl[ifl] != 0)
         goto L_46b7;
     else
         goto L_476a;
@@ -620,7 +618,7 @@ L_46c6:
         goto L_46d5;
 
 L_46d5:
-    if (lpfl->fDead != 0x0)
+    if (lpfl->fDead != 0)
         goto L_4678;
     else
         goto L_46ec;
@@ -640,7 +638,7 @@ L_4705:
 
 L_4730:
     EstMineralsMined(&pl, rglT, cMines, 0);
-    lVal = lVal + rglT[ht - 1];
+    lVal += rglT[ht - 1];
 
 L_4767:
     goto L_4678;
@@ -665,7 +663,7 @@ L_47a6:
         goto L_47ae;
 
 L_47ae:
-    switch (ht * 0x2) {
+    switch (ht * 2) {
     case 0x0:
         goto L_47d5;
     case 0x2:

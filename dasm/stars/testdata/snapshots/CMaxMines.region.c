@@ -5,7 +5,7 @@ int16_t CMaxMines(PLANET *lppl, int16_t iplr) {
 
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
     iEff = GetRaceStat(&rgplr[iplr], rsMineOperate);
-    cMax = (int32_t)((int32_t)(lPopMax * (int32_t)iEff) / 0x64);
+    cMax = (int32_t)(lPopMax * iEff) / 100;
     if (cMax < 10) {
         cMax = 10;
     }

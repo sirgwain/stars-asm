@@ -49,7 +49,7 @@ L_19c4:
 L_19cd:
     iItem = (iItem - 16)
     lpshdef = &rglpshdefSB[lppl->iPlayer][iItem]
-    branch lpshdef->fFree != 0x0 ? L_1a26 : L_1a09
+    branch lpshdef->fFree != 0 ? L_1a26 : L_1a09
 
 L_1a09:
     branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0 ? L_1a2c : L_1a26
@@ -59,7 +59,7 @@ L_1a26:
 
 L_1a2c:
     idm = idmHasBuiltNew
-    branch lpshdef->hul.wtCargoMax == 0x0 ? L_1a60 : L_1a3e
+    branch lpshdef->hul.wtCargoMax == 0 ? L_1a60 : L_1a3e
 
 L_1a3e:
     idm = (idm + 1)
@@ -70,8 +70,8 @@ L_1a5c:
     idm = (idm + 1)
 
 L_1a60:
-    call FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, ((lppl->iPlayer << 0x5) | (iItem + 16)), LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0, 0, 0) -> callresult(int16_t)
-    branch lppl->fStarbase == 0x0 ? L_1b3a : L_1ad6
+    call FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, ((lppl->iPlayer << 5) | (iItem + 0x10)), LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0, 0, 0) -> callresult(int16_t)
+    branch lppl->fStarbase == 0 ? L_1b3a : L_1ad6
 
 L_1ad6:
     branch rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef ? L_1b3a : L_1b2c
@@ -81,14 +81,14 @@ L_1b2c:
 
 L_1b3a:
     iWarp = IWarpMAFromLppl(lppl, &fTwoMAs)
-    branch lppl->fStarbase == 0x0 ? L_1b9b : L_1b66
+    branch lppl->fStarbase == 0 ? L_1b9b : L_1b66
 
 L_1b66:
-    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = (rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 0x1)
+    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = (rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 1)
     goto L_1baf
 
 L_1b9b:
-    lppl->fStarbase = 0x1
+    lppl->fStarbase = 1
 
 L_1baf:
     lppl->isb = iItem
@@ -103,17 +103,17 @@ L_1bef:
     goto L_1c55
 
 L_1c1f:
-    lppl->iWarpFling = 0x0
-    lppl->idFling = 0x0
+    lppl->iWarpFling = 0
+    lppl->idFling = 0
     call KillQueuedMassPackets(lppl) -> callresult(void)
 
 L_1c55:
-    lpshdef->cBuilt = (lpshdef->cBuilt + 0x1)
-    lpshdef->cExist = (lpshdef->cExist + 0x1)
+    lpshdef->cBuilt = (lpshdef->cBuilt + 1)
+    lpshdef->cExist = (lpshdef->cExist + 1)
     return 1
 
 L_1c78:
-    branch lppl->fStarbase == 0x0 ? L_1c98 : L_1c8f
+    branch lppl->fStarbase == 0 ? L_1c98 : L_1c8f
 
 L_1c8f:
     branch iItem < 16 ? L_1c9e : L_1c98
@@ -123,7 +123,7 @@ L_1c98:
 
 L_1c9e:
     lpshdef = &rglpshdef[lppl->iPlayer][iItem]
-    branch lpshdef->fFree != 0x0 ? L_1cf3 : L_1cd6
+    branch lpshdef->fFree != 0 ? L_1cf3 : L_1cd6
 
 L_1cd6:
     branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0 ? L_1d1d : L_1cf3
@@ -147,7 +147,7 @@ L_1d46:
 
 L_1d51:
     lpfl = rglpfl[i]
-    branch rglpfl[i] != 0x0 ? L_1d81 : L_214f
+    branch rglpfl[i] != 0 ? L_1d81 : L_214f
 
 
 L_1d81:
@@ -169,27 +169,27 @@ L_1e0f:
     branch lpfl->rgcsh[iItem] == 0 ? L_20c5 : L_1e2c
 
 L_1e2c:
-    branch lpfl->rgdv[iItem].pctDp == 0x0 ? L_20c5 : L_1e53
+    branch lpfl->rgdv[iItem].pctDp == 0 ? L_20c5 : L_1e53
 
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp
     cshOrig = lpfl->rgcsh[iItem]
-    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32(cshOrig)) / 0x64))
+    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32(cshOrig)) / 100))
     branch cshDamaged != 0 ? L_1edb : L_1ed6
 
 L_1ed6:
     cshDamaged = 1
 
 L_1edb:
-    dpOrig = (int32_t)((int32_t)((int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * sext16to32(cshDamaged)) / 0x32)
+    dpOrig = (int32_t)((int32_t)((int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 10) * sext16to32(cshDamaged)) / 50)
     lpfl->rgdv[iItem].pctSh = loword((int32_t)((int32_t)(sext16to32(cshDamaged) * 100) / sext16to32((cshOrig + cBuilt))))
-    branch lpfl->rgdv[iItem].pctSh != 0x0 ? L_1ff4 : L_1fc0
+    branch lpfl->rgdv[iItem].pctSh != 0 ? L_1ff4 : L_1fc0
 
 L_1fc0:
-    lpfl->rgdv[iItem].pctSh = 0x1
+    lpfl->rgdv[iItem].pctSh = 1
 
 L_1ff4:
-    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32((cshOrig + cBuilt))) / 0x64))
+    cshDamaged = loword((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * sext16to32((cshOrig + cBuilt))) / 100))
     branch cshDamaged != 0 ? L_2041 : L_203c
 
 L_203c:
@@ -200,38 +200,38 @@ L_2041:
     goto L_20de
 
 L_20c5:
-    lpfl->rgdv[iItem].dp = 0x0
+    lpfl->rgdv[iItem].dp = 0
 
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
-    call FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
     return 1
 
 L_214f:
-    call FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
     return 0
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id)
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
     lpfl->rgwtMin[4] = LGetFleetStat(lpfl, 1)
-    branch lppl->idRoute == 0x0 ? L_2321 : L_2201
+    branch lppl->idRoute == 0 ? L_2321 : L_2201
 
 L_2201:
     call AutoRouteFleet(lpfl, lppl) -> callresult(void)
     branch cBuilt != 1 ? L_22a0 : L_221e
 
 L_221e:
-    idm = (lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted)
-    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0, 0) -> callresult(int16_t)
+    idm = (lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted)
+    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 5) | iItem), (lppl->idRoute - 1), 0, 0, 0, 0) -> callresult(int16_t)
     goto L_2fc9
 
 
 
 
 L_22a0:
-    idm = (lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted)
-    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), (lppl->idRoute - 1), 0, 0, 0) -> callresult(int16_t)
+    idm = (lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted)
+    call FSendPlrMsg(lppl->iPlayer, idm, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), (lppl->idRoute - 1), 0, 0, 0) -> callresult(int16_t)
 
 
 
@@ -244,11 +244,11 @@ L_2321:
     branch cBuilt != 1 ? L_2379 : L_233e
 
 L_233e:
-    call FSendPlrMsg2(lppl->iPlayer, 47, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 0x5) | iItem)) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, 47, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 5) | iItem)) -> callresult(int16_t)
     goto L_2fc9
 
 L_2379:
-    call FSendPlrMsg(lppl->iPlayer, 48, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 0x5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, 48, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
 
 L_23c4:
     goto L_2fc9
@@ -336,7 +336,7 @@ L_26be:
     return 0
 
 L_26e7:
-    branch lppl->idFling != 0x0 ? L_2722 : L_26f9
+    branch lppl->idFling != 0 ? L_2722 : L_26f9
 
 L_26f9:
     call FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0) -> callresult(int16_t)
@@ -447,13 +447,13 @@ L_28f0:
     branch lpth->thp.iWarp != iWarp ? L_2956 : L_2909
 
 L_2909:
-    branch lpth->thp.idPlanet != (lppl->idFling - 0x1) ? L_2956 : L_2928
+    branch lpth->thp.idPlanet != (lppl->idFling - 1) ? L_2956 : L_2928
 
 L_2928:
     branch lpth->thp.iDecayRate != iDecayRate ? L_2956 : L_2941
 
 L_2941:
-    branch lpth->thp.wtMax < 0x65e ? L_2968 : L_2956
+    branch lpth->thp.wtMax < 1630 ? L_2968 : L_2956
 
 L_2956:
     lpth = &lpth[1]
@@ -466,7 +466,7 @@ L_2968:
 
 
 L_297e:
-    lpth->thp.wtMax = 0x0
+    lpth->thp.wtMax = 0
     i = 0
     goto L_2a3f
 
@@ -490,7 +490,7 @@ L_2a48:
 
 L_2a78:
     lpth = LpthNew(lppl->iPlayer, ithMineralPacket)
-    branch lpth != 0x0 ? L_2ac9 : L_2aa3
+    branch lpth != 0 ? L_2ac9 : L_2aa3
 
 
 L_2aa3:
@@ -512,7 +512,7 @@ L_2b35:
 L_2b3e:
     lpth->thp.iWarp = iWarp
     lpth->thp.iDecayRate = iDecayRate
-    lpth->thp.idPlanet = (lppl->idFling - 0x1)
+    lpth->thp.idPlanet = (lppl->idFling - 1)
     lpth->pt = rgptPlan[lppl->id]
     call FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
     goto L_2fc9
@@ -535,10 +535,10 @@ L_2c3e:
     branch GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh ? L_2cea : L_2c62
 
 L_2c62:
-    lppl->cFactories = 0x0
-    lppl->cMines = 0x0
-    lppl->cDefenses = 0x0
-    lppl->iScanner = 0x1f
+    lppl->cFactories = 0
+    lppl->cMines = 0
+    lppl->cDefenses = 0
+    lppl->iScanner = 31
 
 L_2cea:
     i = 0
@@ -561,9 +561,7 @@ L_2da2:
     goto L_2cf2
 
 L_2da8:
-    t_2da8 = cBuilt
-    cBuilt = (cBuilt - 1)
-    branch t_2da8 == 0 ? L_2fc9 : L_2db7
+    branch cBuilt-- == 0 ? L_2fc9 : L_2db7
 
 L_2db7:
     i = IBestTerraform(lppl, 1)
@@ -572,7 +570,7 @@ L_2db7:
 L_2dd5:
     iEnv = (abs(i) - 1)
     cAllowed = (sext8to16(lppl->rgEnvVar[iEnv]) + (i <= 0 ? -1 : 1))
-    branch 0x1 <= (99 >= cAllowed ? cAllowed : 0x63) ? L_2e3f : L_2e39
+    branch 1 <= (99 >= cAllowed ? cAllowed : 99) ? L_2e3f : L_2e39
 
 
 
@@ -581,21 +579,19 @@ L_2dd5:
 
 
 L_2e39:
-    t_merge_2e53_0001 = 1
+    cAllowed = 1
     goto L_2e53
 
 L_2e3f:
     branch 99 >= cAllowed ? L_2e50 : L_2e4a
 
 L_2e4a:
-    t_merge_2e53_0001 = 99
+    cAllowed = 99
     goto L_2e53
 
 L_2e50:
-    t_merge_2e53_0001 = cAllowed
 
 L_2e53:
-    cAllowed = t_merge_2e53_0001
     lppl->rgEnvVar[iEnv] = lobyte(cAllowed)
     call FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, (i <= 0 ? 0 : 1), iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 

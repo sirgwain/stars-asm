@@ -36,7 +36,7 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i]
-    branch rglpfl[i] != 0x0 ? L_2564 : L_2606
+    branch rglpfl[i] != 0 ? L_2564 : L_2606
 
 
 L_2564:
@@ -55,12 +55,10 @@ L_25a4:
     branch lpfl->pt.y != sel.pt.y ? L_2525 : L_25ad
 
 L_25ad:
-    t_25ad = iNth
-    iNth = (iNth - 1)
-    branch t_25ad != 0 ? L_2525 : L_25bc
+    branch iNth-- != 0 ? L_2525 : L_25bc
 
 L_25bc:
-    branch pxf == 0x0 ? L_25fd : L_25c5
+    branch pxf == 0 ? L_25fd : L_25c5
 
 L_25c5:
     pxf->fl = *lpfl
@@ -85,12 +83,10 @@ L_2661:
     branch lpth->pt.y != sel.pt.y ? L_26c0 : L_266a
 
 L_266a:
-    t_266a = iNth
-    iNth = (iNth - 1)
-    branch t_266a != 0 ? L_26c0 : L_2679
+    branch iNth-- != 0 ? L_26c0 : L_2679
 
 L_2679:
-    branch pxf == 0x0 ? L_26ba : L_2682
+    branch pxf == 0 ? L_26ba : L_2682
 
 L_2682:
     pxf->th = *lpth

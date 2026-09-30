@@ -46,14 +46,14 @@ L_0cc3:
         goto L_0d19;
 
 L_0d19:
-    dy = dy + dyArial8;
+    dy += dyArial8;
 
 L_0d1f:
     goto L_1225;
 
 L_0d22:
     SelectObject(hdc, rghfontArial8[1]);
-    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, 0x0);
+    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
     dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
     dx2 = LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8;
     if (dx2 <= dx)
@@ -86,7 +86,7 @@ L_0e0a:
         goto L_0e29;
 
 L_0e29:
-    if (GlobalPD.grbit == 0x0)
+    if (GlobalPD.grbit == 0)
         goto L_0e46;
     else
         goto L_0e33;
@@ -98,7 +98,7 @@ L_0e33:
         goto L_0e46;
 
 L_0e46:
-    dy = dy + dyArial8;
+    dy += dyArial8;
     DecorateHullName(GlobalPD.lpfl->iplr, i, szTB);
     lpsz = szTB;
     dx = LOWORD(GetTextExtent(hdc, lpsz, fstrlen(lpsz)));
@@ -112,7 +112,7 @@ L_0e46:
         goto L_0f15;
 
 L_0f15:
-    if ((GlobalPD.lpfl->rgdv[i].dp >> 0x7 & 0x1ff) == 0x0)
+    if ((GlobalPD.lpfl->rgdv[i].dp >> 7 & 0x1ff) == 0)
         goto L_0f77;
     else
         goto L_0f3e;
@@ -128,7 +128,7 @@ L_0f47:
     dxDamage = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4;
 
 L_0f77:
-    i = i + 1;
+    i++;
 
 L_0f7b:
     if (i < 16)
@@ -160,7 +160,7 @@ L_0fd7:
     SelectObject(hdc, rghfontArial8[0]);
     dxName = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
     dxCoord = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4));
-    dx = dx + (dxName <= dxCoord ? dxCoord : dxName);
+    dx += dxName <= dxCoord ? dxCoord : dxName;
     goto L_1225;
 
 L_1092:
@@ -202,7 +202,7 @@ L_1176:
     UpdateSlotGlobals();
     dx = 340;
     dy = dyArial8 + 306 + 6 * dyArial8 + 8;
-    if (gd.mdScreenSize <= 0x0)
+    if (gd.mdScreenSize <= 0)
         goto L_1225;
     else
         goto L_11ce;
@@ -214,7 +214,7 @@ L_11ce:
         goto L_11d8;
 
 L_11d8:
-    dy = dy + 3 * dyArial8;
+    dy += 3 * dyArial8;
 
 L_11e2:
     goto L_1225;
@@ -225,13 +225,13 @@ L_11e5:
     goto L_1225;
 
 L_11f5:
-    if (GlobalPD.grPopup - 1 > 0xd)
+    if (GlobalPD.grPopup - 1 > 13)
         goto L_1225;
     else
         goto L_1200;
 
 L_1200:
-    switch ((GlobalPD.grPopup - 1) * 0x2) {
+    switch ((GlobalPD.grPopup - 1) * 2) {
     case 0x0:
         goto L_0cc3;
     case 0x2:
@@ -265,8 +265,8 @@ L_1200:
 L_1225:
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);
-    pt.x = pt.x - dx;
-    pt.y = pt.y - dy;
+    pt.x -= dx;
+    pt.y -= dy;
     if (pt.x >= GetSystemMetrics(SM_CXSCREEN) - dx)
         goto L_1261;
     else
@@ -345,7 +345,7 @@ L_12f6:
 
 L_1302:
     pt.y = t_merge_1302_0001;
-    hwndPopup = CreateWindow(szPopup, 0x0, WS_POPUP | WS_VISIBLE | WS_BORDER, pt.x, pt.y, dx, dy, hwnd, 0x0, hInst, 0x0);
+    hwndPopup = CreateWindow(szPopup, NULL, WS_POPUP | WS_VISIBLE | WS_BORDER, pt.x, pt.y, dx, dy, hwnd, NULL, hInst, NULL);
     SendMessage(hwndPopup, WM_SETFONT, (WPARAM)rghfontArial8[0], 0);
     SetCapture(hwndPopup);
     return;

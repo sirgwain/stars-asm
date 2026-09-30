@@ -84,7 +84,7 @@ func TestBlockMemberSelectionsResolveIndexedWords(t *testing.T) {
 	if !ok {
 		t.Fatal("arithmetic-index projection did not resolve")
 	}
-	if got := FormatExpr(value); got != "HIWORD(rglpshdef[idPlayer][(i + 0x1)].lPower)" {
+	if got := FormatExpr(value); got != "HIWORD(rglpshdef[idPlayer][(i + 1)].lPower)" {
 		t.Fatalf("arithmetic-index projection = %s", got)
 	}
 	facts := fn.Analyze(ctx).BlockMemberFacts

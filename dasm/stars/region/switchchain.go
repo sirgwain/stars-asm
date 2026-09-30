@@ -82,7 +82,7 @@ func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds 
 			break
 		}
 		e2, k2, eq2, next2, ok := equalityTest(test)
-		if !ok || !exprEqual(e, e2) || seen[k2.Value] {
+		if !ok || !ir.ExprEqual(e, e2) || seen[k2.Value] {
 			break
 		}
 		seen[k2.Value] = true
@@ -102,7 +102,7 @@ func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds 
 // they are equal, and the label taken when they are not.
 func equalityTest(t *ir.IfGoto) (e ir.Expr, k *ir.IntConst, eq, ne string, ok bool) {
 	b, ok := t.Cond.(*ir.Binary)
-	if !ok || (b.Op != "==" && b.Op != "!=") || hasCall(b.LHS) {
+	if !ok || (b.Op != "==" && b.Op != "!=") || hasSideEffects(b.LHS) {
 		return nil, nil, "", "", false
 	}
 	k, ok = b.RHS.(*ir.IntConst)

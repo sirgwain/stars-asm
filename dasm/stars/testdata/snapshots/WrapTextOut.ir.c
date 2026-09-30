@@ -25,7 +25,7 @@ L_2637:
         goto L_2640;
 
 L_2640:
-    *py = *py + dyArial8;
+    *py += dyArial8;
     *px = xLeft;
 
 L_2650:
@@ -98,8 +98,8 @@ L_2768:
     TextOut(hdc, *px, *py, pchStart, pchEnd - pchStart);
 
 L_2788:
-    *px = *px + dx;
-    if (pxMax == 0x0)
+    *px += dx;
+    if (pxMax == 0)
         goto L_27b2;
     else
         goto L_2799;
@@ -121,9 +121,9 @@ L_27b2:
 
 WrapIt:
     AddBackTrailingSpaces(&pchEnd, pchStart + cLen);
-    cLen = cLen - (pchEnd - pchStart);
+    cLen -= pchEnd - pchStart;
     pchStart = pchEnd;
-    *py = *py + dyArial8;
+    *py += dyArial8;
     *px = xLeft;
     dxRemain = dxWidth;
     goto Top;

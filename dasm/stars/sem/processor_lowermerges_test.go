@@ -43,10 +43,10 @@ func TestLowerMergesProcessorInsertsAssignmentsOnIncomingEdges(t *testing.T) {
 	if changed := (&lowerMergesProcessor{}).ProcessFunc(nil, fn); !changed {
 		t.Fatal("ProcessFunc changed = false, want true")
 	}
-	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 0x1", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 1", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1002 effects = %#v, want %#v", got, want)
 	}
-	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 0x2", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 2", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1004 effects = %#v, want %#v", got, want)
 	}
 	if got, want := FormatEffect(fn.Blocks[3].Effects[0]), "dst = t_merge_1006_0001"; got != want {
@@ -102,10 +102,10 @@ func TestLowerMergesProcessorHandlesMultipleMergesInBlock(t *testing.T) {
 	if changed := (&lowerMergesProcessor{}).ProcessFunc(nil, fn); !changed {
 		t.Fatal("ProcessFunc changed = false, want true")
 	}
-	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 0x1", "t_merge_1006_0002 = 0x10", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 1", "t_merge_1006_0002 = 0x10", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1002 effects = %#v, want %#v", got, want)
 	}
-	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 0x2", "t_merge_1006_0002 = 0x20", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 2", "t_merge_1006_0002 = 0x20", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1004 effects = %#v, want %#v", got, want)
 	}
 	if got, want := FormatEffect(fn.Blocks[3].Effects[0]), "dst = (t_merge_1006_0001 + t_merge_1006_0002)"; got != want {
@@ -149,7 +149,7 @@ func TestLowerMergesProcessorSplitsBranchEdge(t *testing.T) {
 	if got, want := FormatEffect(fn.Blocks[0].Effects[0]), "branch <nil> ? L_f0000000 : L_1002"; got != want {
 		t.Fatalf("branch = %q, want %q", got, want)
 	}
-	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1004_0001 = 0x1", "goto L_1004"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1004_0001 = 1", "goto L_1004"}; !equalStrings(got, want) {
 		t.Fatalf("split effects = %#v, want %#v", got, want)
 	}
 	if got, want := fn.CFG.Successors(0x1000), []machine.BlockID{0x1002, 0xf0000000}; !equalBlockIDs(got, want) {
@@ -202,10 +202,10 @@ func TestLowerMergesProcessorPlacesAssignmentsAtJoinForLaterUse(t *testing.T) {
 	if changed := (&lowerMergesProcessor{}).ProcessFunc(nil, fn); !changed {
 		t.Fatal("ProcessFunc changed = false, want true")
 	}
-	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 0x1", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[1].Effects), []string{"t_merge_1006_0001 = 1", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1002 effects = %#v, want %#v", got, want)
 	}
-	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 0x2", "goto L_1006"}; !equalStrings(got, want) {
+	if got, want := formatEffects(fn.Blocks[2].Effects), []string{"t_merge_1006_0001 = 2", "goto L_1006"}; !equalStrings(got, want) {
 		t.Fatalf("block 1004 effects = %#v, want %#v", got, want)
 	}
 	if got, want := FormatEffect(fn.Blocks[4].Effects[0]), "return t_merge_1006_0001"; got != want {

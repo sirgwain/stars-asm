@@ -3,8 +3,6 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
     THING  *lpth;
     FLEET  *lpfl;
     THING  *lpthMac;
-    int16_t t_25ad;
-    int16_t t_266a;
 
 L_24fa:
     if (cFleet > 0)
@@ -26,7 +24,7 @@ L_251d:
     goto L_2529;
 
 L_2525:
-    i = i + 1;
+    i++;
 
 L_2529:
     if (i >= cFleet)
@@ -36,7 +34,7 @@ L_2529:
 
 L_2534:
     lpfl = rglpfl[i];
-    if (rglpfl[i] != 0x0)
+    if (rglpfl[i] != 0)
         goto L_2564;
     else
         goto L_2606;
@@ -72,15 +70,13 @@ L_25a4:
         goto L_25ad;
 
 L_25ad:
-    t_25ad = iNth;
-    iNth = iNth - 1;
-    if (t_25ad != 0)
+    if (iNth-- != 0)
         goto L_2525;
     else
         goto L_25bc;
 
 L_25bc:
-    if (pxf == 0x0)
+    if (pxf == 0)
         goto L_25fd;
     else
         goto L_25c5;
@@ -117,15 +113,13 @@ L_2661:
         goto L_266a;
 
 L_266a:
-    t_266a = iNth;
-    iNth = iNth - 1;
-    if (t_266a != 0)
+    if (iNth-- != 0)
         goto L_26c0;
     else
         goto L_2679;
 
 L_2679:
-    if (pxf == 0x0)
+    if (pxf == 0)
         goto L_26ba;
     else
         goto L_2682;
@@ -139,7 +133,7 @@ L_26ba:
     return 1;
 
 L_26c0:
-    lpth = lpth + 1;
+    lpth++;
 
 L_26c4:
     if (lpth < lpthMac)

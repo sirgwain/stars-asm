@@ -23,16 +23,13 @@ void DoBombing() {
     int16_t   pctTot;
     int16_t   dChg;
     int16_t   i;
-    uint16_t  t_merge_b2c2_0001;
-    uint16_t  t_merge_b3b0_0001;
-    uint16_t  t_merge_b5b9_0001;
 
 L_aefa:
     ifl = 0;
     goto L_af0f;
 
 L_af0b:
-    ifl = ifl + 1;
+    ifl++;
 
 L_af0f:
     if (ifl >= cFleet)
@@ -42,13 +39,13 @@ L_af0f:
 
 L_af1a:
     lpfl = rglpfl[ifl];
-    if (rglpfl[ifl] != 0x0)
+    if (rglpfl[ifl] != 0)
         goto L_af4a;
     else
         goto L_be8d;
 
 L_af4a:
-    if (lpfl->fDead != 0x0)
+    if (lpfl->fDead != 0)
         goto L_af0b;
     else
         goto L_af61;
@@ -60,7 +57,7 @@ L_af61:
         goto L_af6e;
 
 L_af6e:
-    if (lpfl->fBombed != 0x0)
+    if (lpfl->fBombed != 0)
         goto L_af0b;
     else
         goto L_af88;
@@ -85,7 +82,7 @@ L_afc2:
         goto L_afdf;
 
 L_afdf:
-    if (lppl->fStarbase != 0x0)
+    if (lppl->fStarbase != 0)
         goto L_af0b;
     else
         goto L_aff9;
@@ -167,11 +164,10 @@ L_b21f:
         goto L_b292;
 
 L_b292:
-    t_merge_b2c2_0001 = (int32_t)Random(LOWORD(cPPE)) < modKill ? 0x1 : 0x0;
     goto L_b2c2;
 
 L_b2c2:
-    cKillFact = cKillFact + (uint32_t)t_merge_b2c2_0001;
+    cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
 
 L_b2c8:
     if (cKillFact <= lppl->cFactories)
@@ -192,11 +188,10 @@ L_b315:
         goto L_b380;
 
 L_b380:
-    t_merge_b3b0_0001 = (int32_t)Random(LOWORD(cPPE)) < modKill ? 0x1 : 0x0;
     goto L_b3b0;
 
 L_b3b0:
-    cKillDefenses = cKillDefenses + (uint32_t)t_merge_b3b0_0001;
+    cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
 
 L_b3b6:
     if (cKillDefenses <= lppl->cDefenses)
@@ -242,7 +237,7 @@ L_b4a1:
         goto L_b4bd;
 
 L_b4bd:
-    cKillPeopleS = (int32_t)((int32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 1000);
+    cKillPeopleS = (int32_t)(lppl->rgwtMin[3] * dmgPeopleSmart) / 1000;
     if (cKillPeopleS < lppl->rgwtMin[3])
         goto L_b51f;
     else
@@ -261,14 +256,13 @@ L_b51f:
         goto L_b58c;
 
 L_b58c:
-    t_merge_b5b9_0001 = (int32_t)Random(1000) <= modKill ? 0x1 : 0x0;
     goto L_b5b9;
 
 L_b5b9:
-    cKillPeople = cKillPeople + (uint32_t)t_merge_b5b9_0001;
+    cKillPeople += (uint32_t)(Random(1000) <= modKill ? 1 : 0);
 
 L_b5bf:
-    cKillPeople = cKillPeople + cKillPeopleS;
+    cKillPeople += cKillPeopleS;
     if (dmgBombPeople <= 0)
         goto L_b603;
     else
@@ -308,7 +302,7 @@ L_b65b:
         goto L_b672;
 
 L_b672:
-    lppl->rgwtMin[3] = lppl->rgwtMin[3] - cKillPeople;
+    lppl->rgwtMin[3] -= cKillPeople;
 
 L_b683:
     if (cKillFact <= 0)
@@ -317,7 +311,7 @@ L_b683:
         goto L_b69a;
 
 L_b69a:
-    lppl->cFactories = lppl->cFactories - cKillFact;
+    lppl->cFactories -= cKillFact;
 
 L_b6f1:
     if (cKillMine <= 0)
@@ -326,7 +320,7 @@ L_b6f1:
         goto L_b708;
 
 L_b708:
-    lppl->cMines = lppl->cMines - cKillMine;
+    lppl->cMines -= cKillMine;
 
 L_b761:
     if (cKillDefenses <= 0)
@@ -335,7 +329,7 @@ L_b761:
         goto L_b778;
 
 L_b778:
-    lppl->cDefenses = lppl->cDefenses - cKillDefenses;
+    lppl->cDefenses -= cKillDefenses;
 
 L_b7d1:
     if (pctTerra <= 0)
@@ -345,7 +339,7 @@ L_b7d1:
 
 L_b7e8:
     pctTot = 0;
-    pctTerra = pctTerra - (int32_t)((1.0 - pctSuccess) * (double)pctTerra / 2.0);
+    pctTerra -= (int32_t)((1.0 - pctSuccess) * (double)pctTerra / 2.0);
     if (pctTerra <= 500)
         goto L_b84b;
     else
@@ -359,14 +353,14 @@ L_b84b:
     goto L_b930;
 
 L_b853:
-    dChg = (int16_t)lppl->rgEnvVar[i] - (int16_t)lppl->rgEnvVarOrig[i];
+    dChg = lppl->rgEnvVar[i] - lppl->rgEnvVarOrig[i];
     if (dChg <= 0)
         goto L_b8d8;
     else
         goto L_b895;
 
 L_b895:
-    if ((int32_t)dChg < pctTerra)
+    if (dChg < pctTerra)
         goto L_b8b7;
     else
         goto L_b8ae;
@@ -375,8 +369,8 @@ L_b8ae:
     dChg = LOWORD(pctTerra);
 
 L_b8b7:
-    lppl->rgEnvVar[i] = lppl->rgEnvVar[i] - LOBYTE(dChg);
-    pctTot = pctTot + dChg;
+    lppl->rgEnvVar[i] -= LOBYTE(dChg);
+    pctTot += dChg;
     goto L_b92c;
 
 L_b8d8:
@@ -386,7 +380,7 @@ L_b8d8:
         goto L_b8e1;
 
 L_b8e1:
-    if ((int32_t)-dChg < pctTerra)
+    if ((int16_t)-dChg < pctTerra)
         goto L_b90c;
     else
         goto L_b8fc;
@@ -395,11 +389,11 @@ L_b8fc:
     dChg = -LOWORD(pctTerra);
 
 L_b90c:
-    lppl->rgEnvVar[i] = lppl->rgEnvVar[i] - LOBYTE(dChg);
-    pctTot = pctTot + -dChg;
+    lppl->rgEnvVar[i] -= LOBYTE(dChg);
+    pctTot += -dChg;
 
 L_b92c:
-    i = i + 1;
+    i++;
 
 L_b930:
     if (i < 3)
@@ -439,8 +433,8 @@ L_ba1f:
         goto L_ba60;
 
 L_ba60:
-    idmSrc = idmSrc + 1;
-    idmDst = idmDst + 1;
+    idmSrc++;
+    idmDst++;
 
 L_ba68:
     goto L_ba98;
@@ -468,8 +462,8 @@ GenericBombMsg:
     goto L_be65;
 
 L_bb47:
-    idmSrc = idmSrc + 5;
-    idmDst = idmDst + 5;
+    idmSrc += 5;
+    idmDst += 5;
     FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
     FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
 
@@ -477,8 +471,8 @@ L_bc07:
     goto L_be65;
 
 L_bc0a:
-    idmSrc = idmSrc - 2;
-    idmDst = idmDst - 2;
+    idmSrc -= 2;
+    idmDst -= 2;
     if (pctSuccess != 1.0)
         goto L_bca4;
     else
@@ -490,8 +484,8 @@ L_bc27:
     goto L_be65;
 
 L_bca4:
-    idmSrc = idmSrc + 5;
-    idmDst = idmDst + 5;
+    idmSrc += 5;
+    idmDst += 5;
     FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0);
     FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0);
 

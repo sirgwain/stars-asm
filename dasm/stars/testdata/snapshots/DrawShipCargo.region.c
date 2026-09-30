@@ -12,7 +12,7 @@ void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj) {
     RECT    rc;
 
     pfl = obj.pfl;
-    if (ptile->fFixCtls != 0x0) {
+    if (ptile->fFixCtls != 0) {
         rgrcRef[2].top = -5;
         rgrcRef[2].bottom = -6;
         rgrcRef[3].top = -5;
@@ -31,24 +31,24 @@ void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj) {
         if (l2 > l) {
             l = l2;
         }
-        if (ptile->fMinDraw == 0x0) {
+        if (ptile->fMinDraw == 0) {
             TextOut(hdc, xLeft, yTop, szWork, c);
         }
         SetRect(&rcGauge, xLeft + LOWORD(l), yTop, xRight, yTop + dyArial8);
         rgrcRef[2] = rcGauge;
         DrawFleetGauge(hdc, &rcGauge, pfl, 4);
-        yTop = yTop + ((gd.fSmallTileMode == 0x0 ? 4 : 2) + dyArial8);
-        if (ptile->fMinDraw == 0x0) {
+        yTop += (gd.fSmallTileMode == 0 ? 4 : 2) + dyArial8;
+        if (ptile->fMinDraw == 0) {
             c = CchGetString(idsCargo3, szWork);
             TextOut(hdc, xLeft, yTop, szWork, c);
         }
         SetRect(&rcGauge, xLeft + LOWORD(l), yTop, xRight, yTop + dyArial8);
         rgrcRef[3] = rcGauge;
         DrawFleetGauge(hdc, &rcGauge, pfl, 5);
-        yTop = yTop + (dyArial8 + 4);
-        if (gd.fSmallTileMode == 0x0) {
+        yTop += dyArial8 + 4;
+        if (gd.fSmallTileMode == 0) {
             for (i = 0; i <= 2; i++) {
-                if (ptile->fMinDraw == 0x0) {
+                if (ptile->fMinDraw == 0) {
                     SelectObject(hdc, rghfontArial8[1]);
                     SetTextColor(hdc, rgcrMinerals[i]);
                     TextOut(hdc, xLeft, yTop, rgszMinerals[i], lstrlen(rgszMinerals[i]));
@@ -57,9 +57,9 @@ void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj) {
                 SetTextColor(hdc, crButtonText);
                 c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[i]);
                 RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
-                yTop = yTop + dyArial8;
+                yTop += dyArial8;
             }
-            if (ptile->fMinDraw == 0x0) {
+            if (ptile->fMinDraw == 0) {
                 SelectObject(hdc, rghfontArial8[1]);
                 SetTextColor(hdc, 0xffffff);
                 c = CchGetString(idsColonists2, szWork);
@@ -69,7 +69,7 @@ void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj) {
             }
             c = _wsprintf(szWork, PszGetCompressedString(idsLdkt), pfl->rgwtMin[3]);
             RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
-            yTop = yTop + dyArial8;
+            yTop += dyArial8;
         }
     }
     return;

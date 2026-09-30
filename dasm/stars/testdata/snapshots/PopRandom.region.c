@@ -1,5 +1,5 @@
 void PopRandom() {
-    cRandStack = cRandStack - 1;
+    cRandStack--;
     lRandSeed1 = rglRandStack[cRandStack][0];
     lRandSeed2 = rglRandStack[cRandStack][1];
     return;

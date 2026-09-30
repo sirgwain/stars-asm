@@ -80,11 +80,15 @@ func FormatExpr(expr Expr) string {
 		if e.Char {
 			return formatCharLiteral(byte(e.U64))
 		}
-		// if e.U64 == 0 {
-		// 	return "0"
-		// }
+		if e.U64 == 0 && (typeinfo.IsPointer(e.TypeInfo) || typeinfo.IsNative(e.TypeInfo, typeinfo.NativePointer)) {
+			return "NULL"
+		}
 		if i64, ok := e.Int64(); ok {
 			return fmt.Sprintf("%d", i64)
+		}
+		// Single digits read the same in either base and have the same C type.
+		if e.U64 <= 9 {
+			return fmt.Sprintf("%d", e.U64)
 		}
 		return fmt.Sprintf("0x%x", e.U64)
 	case *Register:
@@ -98,6 +102,9 @@ func FormatExpr(expr Expr) string {
 	case *SizeOf:
 		return fmt.Sprintf("sizeof(%s)", typeinfo.TypeDecl(e.Type, ""))
 	case *Unary:
+		if e.Op == OpPostInc || e.Op == OpPostDec {
+			return FormatExpr(e.X) + formatOp(e.Op)
+		}
 		return fmt.Sprintf("%s(%s)", formatOp(e.Op), FormatExpr(e.X))
 	case *Binary:
 		return fmt.Sprintf("(%s %s %s)", FormatExpr(e.LHS), formatOp(e.Op), FormatExpr(e.RHS))
@@ -355,6 +362,10 @@ func formatOp(op Op) string {
 		return "neg"
 	case OpNot:
 		return "~"
+	case OpPostInc:
+		return "++"
+	case OpPostDec:
+		return "--"
 	default:
 		return "op?"
 	}

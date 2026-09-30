@@ -3,6 +3,7 @@ package templates
 import (
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/ir"
@@ -89,7 +90,19 @@ func writeRegionNodes(w *strings.Builder, nodes []region.Node, depth int) {
 			}
 		case *region.Switch:
 			fmt.Fprintf(w, "%sswitch (%s) {\n", indent, formatIRExpr(n.Index, precLowest))
-			for _, c := range n.Cases {
+			// Empty trailing cases, typically a bare default, go to the end of
+			// the switch, and a label may not end a block. They can be left out
+			// only when no default remains to catch their values instead;
+			// otherwise the last one ends with a break.
+			cases := n.Cases
+			trailing := len(cases)
+			for trailing > 0 && len(cases[trailing-1].Body) == 0 {
+				trailing--
+			}
+			if !slices.ContainsFunc(cases[:trailing], func(c region.Case) bool { return c.Default }) {
+				cases = cases[:trailing]
+			}
+			for i, c := range cases {
 				for _, v := range c.Values {
 					fmt.Fprintf(w, "%scase %s:\n", indent, formatIRExpr(v, precLowest))
 				}
@@ -97,6 +110,9 @@ func writeRegionNodes(w *strings.Builder, nodes []region.Node, depth int) {
 					fmt.Fprintf(w, "%sdefault:\n", indent)
 				}
 				writeRegionNodes(w, c.Body, depth+1)
+				if i == len(cases)-1 && len(c.Body) == 0 {
+					fmt.Fprintf(w, "%s\tbreak;\n", indent)
+				}
 			}
 			fmt.Fprintf(w, "%s}\n", indent)
 		default:
@@ -120,20 +136,10 @@ func formatRegionJump(n region.Node) string {
 }
 
 // formatForClause renders a for loop's init or post assignment without its
-// semicolon, writing v = v + 1 and v = v - 1 as v++ and v--. A nil
-// assignment renders empty.
+// semicolon. A nil assignment renders empty.
 func formatForClause(a *ir.Assign) string {
 	if a == nil {
 		return ""
-	}
-	if v, ok := a.Dst.(*ir.Var); ok {
-		if b, ok := a.Src.(*ir.Binary); ok && (b.Op == "+" || b.Op == "-") {
-			lhs, lok := b.LHS.(*ir.Var)
-			one, cok := b.RHS.(*ir.IntConst)
-			if lok && cok && lhs.Name == v.Name && one.Value == 1 {
-				return v.Name + b.Op + b.Op
-			}
-		}
 	}
 	return strings.TrimSuffix(formatIRStmt(a), ";")
 }

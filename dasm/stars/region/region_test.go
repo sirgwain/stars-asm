@@ -26,7 +26,7 @@ func TestBuildIfElseThenLoop(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "if x { y=2; } else { y=1; } while more { i=i+1; } return;"
+	want := "if !x { y=1; } else { y=2; } while more { i=i+1; } return;"
 	if s := sketchNodes(got.Body); s != want {
 		t.Errorf("Build body =\n  %s\nwant\n  %s", s, want)
 	}
@@ -96,6 +96,8 @@ func sketchStmt(s ir.Stmt) string {
 		return sketchExpr(s.Dst) + "=" + sketchExpr(s.Src) + ";"
 	case *ir.Return:
 		return "return;"
+	case *ir.ExprStmt:
+		return sketchExpr(s.Expr) + ";"
 	}
 	return fmt.Sprintf("%T;", s)
 }
@@ -111,6 +113,14 @@ func sketchExpr(e ir.Expr) string {
 		return e.Op + sketchExpr(e.X)
 	case *ir.Binary:
 		return sketchExpr(e.LHS) + e.Op + sketchExpr(e.RHS)
+	case *ir.Cond:
+		return "(" + sketchExpr(e.Cond) + " ? " + sketchExpr(e.Then) + " : " + sketchExpr(e.Else) + ")"
+	case *ir.Call:
+		args := make([]string, len(e.Args))
+		for i, a := range e.Args {
+			args[i] = sketchExpr(a)
+		}
+		return sketchExpr(e.Target) + "(" + strings.Join(args, ", ") + ")"
 	}
 	return fmt.Sprintf("%T", e)
 }
@@ -119,6 +129,7 @@ func sketchExpr(e ir.Expr) string {
 // jumps to the latch turned into continue, and do-while loops.
 func TestBuildLoopForms(t *testing.T) {
 	const entry, latch, head, body, c, d, join, done machine.BlockID = 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80
+	const head2, body2, latch2 machine.BlockID = 0x90, 0xa0, 0xb0
 	lessThan := &ir.Binary{Op: "<", LHS: &ir.Var{Name: "i"}, RHS: &ir.Var{Name: "n"}}
 
 	tests := []struct {
@@ -139,7 +150,64 @@ func TestBuildLoopForms(t *testing.T) {
 				testBlock(join, testIncrement("j"), &ir.Goto{Label: latch.String()}),
 				testBlock(done, &ir.Return{}),
 			},
-			want: "for (i=0; i<n; i=i+1;) { if a { if x { continue; } } else { d=d+1; } j=j+1; } return;",
+			want: "for (i=0; i<n; i=i+1;) { if !a { d=d+1; } else { if x { continue; } } j=j+1; } return;",
+		},
+		{
+			// The code after the loop only the found test reaches moves into
+			// the loop, leaving the bound as the loop condition.
+			name: "search loop returning what it found",
+			blocks: []ir.Block{
+				testBlock(entry, &ir.Assign{Dst: &ir.Var{Name: "i"}, Src: &ir.IntConst{Value: 0}}),
+				testBlock(head, &ir.IfGoto{Cond: lessThan, TrueLabel: body.String(), FalseLabel: done.String()}),
+				testBlock(body, testIfGoto("found", c, latch)),
+				testBlock(latch, testIncrement("i"), &ir.Goto{Label: head.String()}),
+				testBlock(c, &ir.Return{Value: &ir.Var{Name: "i"}}),
+				testBlock(done, &ir.Return{Value: &ir.IntConst{Value: 0}}),
+			},
+			want: "for (i=0; i<n; i=i+1;) { if found { return; } } return;",
+		},
+		{
+			name: "search loop falling into its exit",
+			blocks: []ir.Block{
+				testBlock(entry, &ir.Assign{Dst: &ir.Var{Name: "i"}, Src: &ir.IntConst{Value: 0}}),
+				testBlock(head, &ir.IfGoto{Cond: lessThan, TrueLabel: body.String(), FalseLabel: done.String()}),
+				testBlock(body, testIfGoto("found", c, latch)),
+				testBlock(latch, testIncrement("i"), &ir.Goto{Label: head.String()}),
+				testBlock(c, testIncrement("x")),
+				testBlock(done, &ir.Return{}),
+			},
+			want: "for (i=0; i<n; i=i+1;) { if found { x=x+1; break; } } return;",
+		},
+		{
+			// The found code after the loop's own return is reached only by
+			// a goto from inside the loop, so it moves to that goto.
+			name: "found code moved to its only goto",
+			blocks: []ir.Block{
+				testBlock(head, testIfGoto("more", body, done)),
+				testBlock(body, testIfGoto("found", c, head)),
+				testBlock(done, &ir.Return{}),
+				testBlock(c, testIncrement("x"), &ir.Return{}),
+			},
+			want: "while more { if found { x=x+1; return; } } return;",
+		},
+		{
+			// Loops with no break of their own, one per arm, sharing the
+			// return after them: each leading test becomes the loop's break,
+			// and the arms join into an if-else before the shared return.
+			name: "search loops in both arms",
+			blocks: []ir.Block{
+				testBlock(entry, testIfGoto("sb", head, head2)),
+				testBlock(head, &ir.IfGoto{Cond: lessThan, TrueLabel: body.String(), FalseLabel: done.String()}),
+				testBlock(body, testIfGoto("f1", c, latch)),
+				testBlock(latch, testIncrement("i"), &ir.Goto{Label: head.String()}),
+				testBlock(head2, &ir.IfGoto{Cond: lessThan, TrueLabel: body2.String(), FalseLabel: done.String()}),
+				testBlock(body2, testIfGoto("f2", d, latch2)),
+				testBlock(latch2, testIncrement("i"), &ir.Goto{Label: head2.String()}),
+				testBlock(c, &ir.Return{}),
+				testBlock(d, &ir.Return{}),
+				testBlock(done, &ir.Return{}),
+			},
+			want: "if sb { for ( i<n; i=i+1;) { if f1 { return; } } } else { for ( i<n; i=i+1;) { if f2 { return; } } } return;",
 		},
 		{
 			name: "do while",

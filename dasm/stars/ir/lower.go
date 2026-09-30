@@ -327,11 +327,11 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok {
 			return nil, false
 		}
-		op, functional, ok := lowerUnaryOp(e.Op)
+		op, postfix, ok := lowerUnaryOp(e.Op)
 		if !ok {
 			return nil, false
 		}
-		return &Unary{Op: op, X: x, Functional: functional}, true
+		return &Unary{Op: op, X: x, Postfix: postfix}, true
 	case *sem.Binary:
 		lhs, ok1 := l.lowerExpr(e.LHS)
 		rhs, ok2 := l.lowerExpr(e.RHS)
@@ -411,6 +411,17 @@ func (l *lowerer) lowerExpr(expr sem.Expr) (Expr, bool) {
 		if !ok {
 			return nil, false
 		}
+		// A declared signed value of the source width needs no casts when
+		// the destination is a signed C int, because integer promotion
+		// already sign-extends it.
+		if signExtendsImplicitly(e, v) {
+			return v, true
+		}
+		// Interpret the source bits as signed before widening. A cast only
+		// to the destination type turns an unsigned byte 0xe7 into +231,
+		// whereas CBW followed by CWD produces -25. RawLoad16 also returns
+		// unsigned bits, regardless of the semantic parent type.
+		v = &Cast{Type: typeinfo.TypeDecl(typeinfo.IntForWidth(e.FromBits/8), ""), Value: v}
 		return &Cast{Type: typeinfo.TypeDecl(e.ExprType(), ""), Value: v}, true
 	case *sem.Call:
 		var target Expr
@@ -645,12 +656,18 @@ func scratchSymbolRoot(path symresolve.SymbolPath) *symresolve.SymbolScratch {
 	}
 }
 
+// lowerUnaryOp returns the C operator for op and whether it is written
+// after its operand.
 func lowerUnaryOp(op sem.Op) (string, bool, bool) {
 	switch op {
 	case sem.OpNeg:
 		return "-", false, true
 	case sem.OpNot:
 		return "~", false, true
+	case sem.OpPostInc:
+		return "++", true, true
+	case sem.OpPostDec:
+		return "--", true, true
 	default:
 		return "", false, false
 	}
@@ -681,6 +698,33 @@ func lowerBinaryOp(op sem.Op) (string, bool) {
 		return "", false
 	}
 }
+
+// signExtendsImplicitly reports whether C integer promotion of the lowered
+// value v reproduces the sign extension e. The value must be a declared
+// variable, field, element, or call result, or a typed raw load, whose type is
+// a signed integer exactly FromBits wide, and the destination must be a signed
+// integer no wider than int. Arithmetic parents are excluded because their
+// casts preserve 16-bit wraparound, and char because its signedness is
+// implementation-defined.
+func signExtendsImplicitly(e *sem.SignExtend, v Expr) bool {
+	var from typeinfo.Type
+	switch p := v.(type) {
+	case *Deref:
+		from = p.Type
+	case *Var, *Field, *Index, *Call:
+		switch e.Parent.(type) {
+		case *sem.Local, *sem.Global, *sem.FieldAccess, *sem.ArrayIndex, *sem.Call, *sem.CallResult:
+			from = e.Parent.ExprType()
+		}
+	}
+	src, ok := from.(*typeinfo.Primitive)
+	if !ok || src.TypeKind != typeinfo.KInt || !src.Signed || src.Name == "char" || src.Size*8 != e.FromBits {
+		return false
+	}
+	dst, ok := e.ExprType().(*typeinfo.Primitive)
+	return ok && dst.TypeKind == typeinfo.KInt && dst.Signed && dst.Name != "char" && dst.Size <= 4
+}
+
 func lowerCompareOp(op sem.CompareOp) (string, bool) {
 	switch op {
 	case sem.CompareEQ:

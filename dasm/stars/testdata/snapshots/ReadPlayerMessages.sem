@@ -19,7 +19,7 @@ ReadPlayerMessages  (msg)
     LOutOfMem: L_9bb2
 */
 L_994a:
-    imemMsgT = 0x0
+    imemMsgT = 0
     fOOM = 0
     lpb = ptroff(lpMsg, imemMsgCur)
 
@@ -27,7 +27,7 @@ L_9970:
     branch hdrCur.rt != rtMsg ? L_99df : L_9983
 
 L_9983:
-    branch hdrCur.cb == 0x0 ? L_99d7 : L_9991
+    branch hdrCur.cb == 0 ? L_99d7 : L_9991
 
 L_9991:
     branch (imemMsgCur + imemMsgT) >= (0xffc8 - hdrCur.cb) ? L_99d7 : L_99ab
@@ -47,7 +47,7 @@ L_99df:
 
 L_99fa:
     lpmh = (MSGHDR *)lpb
-    bitfMsgSent[(lpmh->iMsg >> 0x3)] = lobyte(((bitfMsgSent[(lpmh->iMsg >> 0x3)] & ~((0x1 << (lpmh->iMsg & 0x7)))) | (0x1 << (lpmh->iMsg & 0x7))))
+    bitfMsgSent[(lpmh->iMsg >> 3)] = lobyte(((bitfMsgSent[(lpmh->iMsg >> 3)] & ~((1 << (lpmh->iMsg & 7)))) | (1 << (lpmh->iMsg & 7))))
     cMsg = (cMsg + 1)
     u = lpmh->grWord
     lpb = &lpb[4]
@@ -56,8 +56,8 @@ L_99fa:
     goto L_9abf
 
 L_9a98:
-    lpb = &lpb[(1 + ((u & 0x1) == 0x1 ? 1 : 0))]
-    u = (u >> 0x1)
+    lpb = &lpb[(1 + ((u & 1) == 1 ? 1 : 0))]
+    u = (u >> 1)
     i = (i + 1)
 
 
@@ -73,7 +73,7 @@ L_9ad8:
     lpmp = (MSGPLR *)&vlpmsgplrIn
 
 L_9ae3:
-    branch lpmp->lpmsgplrNext != 0x0 ? L_9af9 : L_9b0c
+    branch lpmp->lpmsgplrNext != 0 ? L_9af9 : L_9b0c
 
 
 L_9af9:
@@ -100,7 +100,7 @@ L_9b56:
     lpmp->lpmsgplrNext = LpAlloc((hdrCur.cb + (sizeof(MSGPLR) - 12)), htPlrMsg)
     lpmp = lpmp->lpmsgplrNext
     call fmemcpy(ptroff(&lpmp->iPlrFrom, -4), rgbCur, hdrCur.cb) -> callresult(void *)
-    lpmp->lpmsgplrNext = 0x0
+    lpmp->lpmsgplrNext = NULL
     vcmsgplrIn = (vcmsgplrIn + 1)
 
 LOutOfMem:

@@ -8,13 +8,13 @@ int16_t FGetBestDefensePart(PART *ppart) {
     part.hs.iItem = iplanetarySDI;
     i = 0;
     while (i < 5 && FLookupPart(&part) == 1) {
-        i = i + 1;
-        part.hs.iItem = part.hs.iItem + 0x1;
+        i++;
+        part.hs.iItem++;
     }
-    if (i <= 0) {
-        fRet = 0;
+    if (i > 0) {
+        i--;
     } else {
-        i = i - 1;
+        fRet = 0;
     }
     part.hs.iItem = i + 9;
     FLookupPart(&part);

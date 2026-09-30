@@ -5,12 +5,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     FLEET  *pfl;
     PLANET *ppl;
     int32_t wtFree;
-    int32_t t_call_640a;
     int32_t t_merge_6425_0001;
-    int32_t t_call_641d;
-    int32_t t_merge_646f_0001;
-    int32_t t_call_6454;
-    int32_t t_call_6467;
 
 L_6034:
     if (grobj == grobjPlanet)
@@ -25,7 +20,7 @@ L_6046:
         goto L_604f;
 
 L_604f:
-    if (pobj == 0x0)
+    if (pobj == 0)
         goto L_6062;
     else
         goto L_6058;
@@ -74,7 +69,7 @@ L_60cc:
     return ppl->rgwtMin[iSupply];
 
 L_60e6:
-    if (ppl->rgwtMin[iSupply] + dChg < 0x0)
+    if (ppl->rgwtMin[iSupply] + dChg < 0)
         goto L_6118;
     else
         goto L_613c;
@@ -83,7 +78,7 @@ L_6118:
     dChg = -ppl->rgwtMin[iSupply];
 
 L_613c:
-    ppl->rgwtMin[iSupply] = ppl->rgwtMin[iSupply] + dChg;
+    ppl->rgwtMin[iSupply] += dChg;
 
 L_6159:
     if (dChg != 0)
@@ -92,7 +87,7 @@ L_6159:
         goto L_64bd;
 
 L_616b:
-    if (pobj != 0x0)
+    if (pobj != 0)
         goto L_64bd;
     else
         goto L_6174;
@@ -116,7 +111,7 @@ L_6190:
         goto L_6199;
 
 L_6199:
-    if (pobj == 0x0)
+    if (pobj == 0)
         goto L_61ab;
     else
         goto L_61a2;
@@ -151,25 +146,25 @@ L_61db:
         goto L_61ed;
 
 L_61ed:
-    return (int32_t)pth->thp.rgwtMin[iSupply];
+    return pth->thp.rgwtMin[iSupply];
 
 L_6202:
-    if ((int32_t)pth->thp.rgwtMin[iSupply] + dChg < 0x0)
+    if (pth->thp.rgwtMin[iSupply] + dChg < 0)
         goto L_622f;
     else
         goto L_6249;
 
 L_622f:
-    dChg = (int32_t)-pth->thp.rgwtMin[iSupply];
+    dChg = (int16_t)-pth->thp.rgwtMin[iSupply];
 
 L_6249:
-    wtFree = (uint32_t)(pth->thp.wtMax * 0xa);
+    wtFree = (uint32_t)(pth->thp.wtMax * 10);
     i = 0;
     goto L_6295;
 
 L_6275:
-    wtFree = wtFree - (int32_t)pth->thp.rgwtMin[i];
-    i = i + 1;
+    wtFree -= pth->thp.rgwtMin[i];
+    i++;
 
 L_6295:
     if (i < 3)
@@ -187,7 +182,7 @@ L_62bc:
     dChg = wtFree;
 
 L_62ca:
-    pth->thp.rgwtMin[iSupply] = pth->thp.rgwtMin[iSupply] + LOWORD(dChg);
+    pth->thp.rgwtMin[iSupply] += LOWORD(dChg);
 
 L_62f3:
     if (dChg != 0)
@@ -196,7 +191,7 @@ L_62f3:
         goto L_64bd;
 
 L_6305:
-    if (pobj != 0x0)
+    if (pobj != 0)
         goto L_64bd;
     else
         goto L_630e;
@@ -208,7 +203,7 @@ L_631d:
     goto L_64bd;
 
 L_6320:
-    if (pobj == 0x0)
+    if (pobj == 0)
         goto L_6333;
     else
         goto L_6329;
@@ -237,7 +232,7 @@ L_6364:
     return pfl->rgwtMin[iSupply];
 
 L_637e:
-    if (pfl->rgwtMin[iSupply] + dChg < 0x0)
+    if (pfl->rgwtMin[iSupply] + dChg < 0)
         goto L_63b0;
     else
         goto L_63d4;
@@ -252,7 +247,7 @@ L_63d4:
         goto L_63dd;
 
 L_63dd:
-    if (pfl->det == 0x7)
+    if (pfl->det == 7)
         goto L_63f9;
     else
         goto L_63ef;
@@ -267,13 +262,11 @@ L_63f9:
         goto L_6402;
 
 L_6402:
-    t_call_640a = GetFuelFree(pfl);
-    t_merge_6425_0001 = t_call_640a;
+    t_merge_6425_0001 = GetFuelFree(pfl);
     goto L_6425;
 
 L_6415:
-    t_call_641d = GetCargoFree(pfl);
-    t_merge_6425_0001 = t_call_641d;
+    t_merge_6425_0001 = GetCargoFree(pfl);
 
 L_6425:
     if (dChg < t_merge_6425_0001)
@@ -282,7 +275,6 @@ L_6425:
         goto L_6443;
 
 L_643a:
-    t_merge_646f_0001 = dChg;
     goto L_646f;
 
 L_6443:
@@ -292,17 +284,14 @@ L_6443:
         goto L_644c;
 
 L_644c:
-    t_call_6454 = GetFuelFree(pfl);
-    t_merge_646f_0001 = t_call_6454;
+    dChg = GetFuelFree(pfl);
     goto L_646f;
 
 L_645f:
-    t_call_6467 = GetCargoFree(pfl);
-    t_merge_646f_0001 = t_call_6467;
+    dChg = GetCargoFree(pfl);
 
 L_646f:
-    dChg = t_merge_646f_0001;
-    pfl->rgwtMin[iSupply] = pfl->rgwtMin[iSupply] + dChg;
+    pfl->rgwtMin[iSupply] += dChg;
 
 L_6492:
     if (dChg != 0)
@@ -311,7 +300,7 @@ L_6492:
         goto L_64bd;
 
 L_64a4:
-    if (pobj != 0x0)
+    if (pobj != 0)
         goto L_64bd;
     else
         goto L_64ad;

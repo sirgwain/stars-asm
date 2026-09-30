@@ -64,7 +64,7 @@ func TestRecoverStoredBitfieldRMW(t *testing.T) {
 				if len(converted) != 2 {
 					t.Fatalf("got %d effects, want two field assignments without stale-load capture", len(converted))
 				}
-				for i, want := range []string{"ord.grTask = grTaskXfer", "ord.fValidTask = 0x1"} {
+				for i, want := range []string{"ord.grTask = grTaskXfer", "ord.fValidTask = 1"} {
 					if text := FormatEffect(converted[i]); text != want {
 						t.Fatalf("effect %d = %s, want %s", i, text, want)
 					}
@@ -226,7 +226,7 @@ func TestCollapseScratchWordBitfieldRMW(t *testing.T) {
 					t.Fatalf("got %d effects, want %d", len(got.Effects), tc.wantEffects)
 				}
 				converted := (&machineConverter{ctx: ctx, result: newResult(ctx.fs)}).convertEffect(got.Effects[len(got.Effects)-1])
-				if text := FormatEffect(converted); text != "part.hs.iItem = (part.hs.iItem + 0x1)" {
+				if text := FormatEffect(converted); text != "part.hs.iItem = (part.hs.iItem + 1)" {
 					t.Fatalf("field update = %s", text)
 				}
 			} else if len(got.Effects) != len(effects) {

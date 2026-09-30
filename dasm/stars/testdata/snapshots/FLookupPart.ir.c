@@ -362,7 +362,7 @@ L_5659:
     return -1;
 
 L_5662:
-    if (hs.iItem < 0x5)
+    if (hs.iItem < 5)
         goto L_5676;
     else
         goto L_5670;
@@ -378,13 +378,13 @@ L_5676:
         goto L_569b;
 
 L_569b:
-    if (hs.iItem == 0x1)
+    if (hs.iItem == 1)
         goto L_56b7;
     else
         goto L_56a9;
 
 L_56a9:
-    if (hs.iItem != 0x3)
+    if (hs.iItem != 3)
         goto L_56de;
     else
         goto L_56b7;
@@ -399,7 +399,7 @@ L_56d8:
     return -1;
 
 L_56de:
-    if (hs.iItem != 0x4)
+    if (hs.iItem != 4)
         goto L_609c;
     else
         goto L_56ec;
@@ -542,7 +542,7 @@ L_5841:
         goto L_5849;
 
 L_5849:
-    switch (hs.iItem * 0x2) {
+    switch (hs.iItem * 2) {
     case 0x0:
         goto L_57e4;
     case 0x2:

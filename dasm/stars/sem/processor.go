@@ -315,10 +315,10 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
-			Name:    "native-frame-icon",
-			Purpose: "Give the frame window class the Stars icon, which Win16 supplied only while minimized.",
+			Name:    "native-frame-class",
+			Purpose: "Give the frame window class the Stars icon, which Win16 supplied only while minimized, and the FrameWndProc16 shim that defers restore commands to the message loop.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
-				return &nativeFrameIconProcessor{ctx: ctx}
+				return &nativeFrameClassProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -340,6 +340,22 @@ func ProcessorSpecs() []Processor {
 			Purpose: "Cast values the original compiler converted implicitly for the native compile.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &nativeCastsProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "forward-temps",
+			Purpose: "Forward temps that only relay a value to the next effect, and assign copied temps' values to their copy directly.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &forwardTempsProcessor{}
+			},
+		},
+		{
+			// Last before lowering, so no earlier pass sees an expression
+			// with a side effect other than a call.
+			Name:    "post-increments",
+			Purpose: "Fold a temp that saves a local before it steps by one into the temp's use as x++ or x--.",
+			Func: func(*FuncContext) SemFuncProcessor {
+				return &postIncrementsProcessor{}
 			},
 		},
 		{

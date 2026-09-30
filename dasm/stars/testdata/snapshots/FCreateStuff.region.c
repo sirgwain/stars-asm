@@ -8,70 +8,66 @@ int16_t FCreateStuff() {
     fFailed = 0;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
-    if (dx >= 800 && dy >= 600) {
-        if (dx >= 1024 && dy >= 768) {
-            if (dx >= 1111 && dy >= 888) {
-                gd.mdScreenSize = 0x3;
-            } else {
-                gd.mdScreenSize = 0x2;
-            }
-        } else {
-            gd.mdScreenSize = 0x1;
-        }
+    if (dx < 800 || dy < 600) {
+        gd.mdScreenSize = 0;
+    } else if (dx < 1024 || dy < 768) {
+        gd.mdScreenSize = 1;
+    } else if (dx < 1111 || dy < 888) {
+        gd.mdScreenSize = 2;
     } else {
-        gd.mdScreenSize = 0x0;
+        gd.mdScreenSize = 3;
     }
-    gd.fNoIdleChecks = 0x0;
-    gd.fAisDone = 0x0;
+    gd.fNoIdleChecks = 0;
+    gd.fAisDone = 0;
     vplr = vrgplrDef[0];
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);
-    hbrShip = HbrGet(0xff00);
+    hbrShip = HbrGet(65280);
     hbrStarbase = HbrGet(0xffff);
-    hbrBBlue = HbrGet(0xff0000);
+    hbrBBlue = HbrGet(16711680);
     hbrEnemy = HbrGet(0xff);
     hbrSelect = HbrGet(0xffff);
     hbrRed = HbrGet(0xff);
-    hbrBlue = HbrGet(0x7f0000);
-    hbrGreen = HbrGet(0x7f00);
-    hbrRadar = HbrGet(0x7f);
-    hbrPurple = HbrGet(0x7f007f);
-    hbrTooltip = HbrGet(0x9fffff);
-    hbrRadarNear = 0x0;
-    rghbrMineral[0] = HbrGet(0xff0000);
-    rghbrMineral[1] = HbrGet(0x7f00);
+    hbrBlue = HbrGet(8323072);
+    hbrGreen = HbrGet(32512);
+    hbrRadar = HbrGet(127);
+    hbrPurple = HbrGet(8323199);
+    hbrTooltip = HbrGet(10485759);
+    hbrRadarNear = 0;
+    rghbrMineral[0] = HbrGet(16711680);
+    rghbrMineral[1] = HbrGet(32512);
     rghbrMineral[2] = HbrGet(0xffff);
     rghbrMineral[3] = HbrGet(0xffffff);
     rghbrMineral[4] = HbrGet(0xff);
-    rghbrPlanetAttr[0][0] = HbrGet(0x7f0000);
-    rghbrPlanetAttr[0][1] = HbrGet(0xff0000);
-    rghbrPlanetAttr[1][0] = HbrGet(0x7f);
+    rghbrPlanetAttr[0][0] = HbrGet(8323072);
+    rghbrPlanetAttr[0][1] = HbrGet(16711680);
+    rghbrPlanetAttr[1][0] = HbrGet(127);
     rghbrPlanetAttr[1][1] = HbrGet(0xff);
-    rghbrPlanetAttr[2][0] = HbrGet(0x7f00);
-    rghbrPlanetAttr[2][1] = HbrGet(0xff00);
-    rghbrMinSum[0][0] = HbrGet(0xff0000);
-    rghbrMinSum[0][1] = HbrGet(0x7f0000);
-    rghbrMinSum[1][0] = HbrGet(0xff00);
-    rghbrMinSum[1][1] = HbrGet(0x7f00);
+    rghbrPlanetAttr[2][0] = HbrGet(32512);
+    rghbrPlanetAttr[2][1] = HbrGet(65280);
+    rghbrMinSum[0][0] = HbrGet(16711680);
+    rghbrMinSum[0][1] = HbrGet(8323072);
+    rghbrMinSum[1][0] = HbrGet(65280);
+    rghbrMinSum[1][1] = HbrGet(32512);
     rghbrMinSum[2][0] = HbrGet(0xffff);
-    rghbrMinSum[2][1] = HbrGet(0x7f7f);
+    rghbrMinSum[2][1] = HbrGet(32639);
     rghbrMinSum[3][0] = HbrGet(0xff);
-    rghbrMinSum[3][1] = HbrGet(0x7f);
+    rghbrMinSum[3][1] = HbrGet(127);
     hbrYellow = HbrGet(0xffff);
-    hbrDkYellow = HbrGet(0x7f7f);
-    hbrLightGray = HbrGet(0xc0c0c0);
-    hbrGray = HbrGet(0x808080);
-    hpenShip = CreatePen(0, 1, 0xff00);
-    hpenDkGreen = CreatePen(0, 1, 0x7f00);
-    hpenStarbase = CreatePen(0, 1, 0xff0000);
+    hbrDkYellow = HbrGet(32639);
+    hbrLightGray = HbrGet(12632256);
+    hbrGray = HbrGet(8421504);
+    hpenShip = CreatePen(0, 1, 65280);
+    hpenDkGreen = CreatePen(0, 1, 32512);
+    hpenStarbase = CreatePen(0, 1, 16711680);
     hpenEnemy = CreatePen(0, 1, 0xff);
-    hpenMassPath = CreatePen(2, 1, 0x7f7f7f);
-    hpenRadar = CreatePen(0, 1, 0x7f);
-    hpenRadarNear = 0x0;
-    hpenDkBlue = CreatePen(0, 1, 0x7f0000);
+    hpenMassPath = CreatePen(2, 1, 8355711);
+    hpenRadar = CreatePen(0, 1, 127);
+    hpenRadarNear = 0;
+    hpenDkBlue = CreatePen(0, 1, 8323072);
     hpenYellow = CreatePen(0, 1, 0xffff);
-    hpenDkYellow = CreatePen(0, 1, 0x7f7f);
-    hpenDkPurple = CreatePen(0, 1, 0x7f007f);
+    hpenDkYellow = CreatePen(0, 1, 32639);
+    hpenDkPurple = CreatePen(0, 1, 8323199);
     hbmp = LoadBitmap(hInst, "Screen50Bmp");
     hbr50Screen = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
@@ -104,22 +100,22 @@ int16_t FCreateStuff() {
     hdibPlanets = HdibLoadBigResource(IDDIB_PLANET_ICONS);
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
-    if (hdibPlanets == 0x0 || hdibThings == 0x0 || hdibToolbar == 0x0) {
+    if (hdibPlanets == 0 || hdibThings == 0 || hdibToolbar == 0) {
         fFailed = 1;
     }
     for (i = 0; i < 5; i++) {
         rghdibShips[i] = HdibLoadBigResource(i + 552);
-        if (rghdibShips[i] == 0x0) {
+        if (rghdibShips[i] == 0) {
             fFailed = 1;
         }
         rghdibShipsT[i] = HdibLoadBigResource(i + 557);
-        if (rghdibShipsT[i] == 0x0) {
+        if (rghdibShipsT[i] == 0) {
             fFailed = 1;
         }
     }
     for (i = 0; i < 7; i++) {
         rghdibInventory[i] = HdibLoadBigResource(i + 500);
-        if (rghdibInventory[i] == 0x0) {
+        if (rghdibInventory[i] == 0) {
             fFailed = 1;
         }
     }
@@ -141,7 +137,7 @@ int16_t FCreateStuff() {
     rghiconVCR[4] = LoadIcon(hInst, "Torp2Ico");
     rghiconVCR[5] = LoadIcon(hInst, "Torp3Ico");
     rghiconVCR[6] = LoadIcon(hInst, "Torp4Ico");
-    lpLog = LpAlloc(0x7d00, htLog);
+    lpLog = LpAlloc(32000, htLog);
     lpMsg = LpAlloc(0xffc8, htMsg);
     lpfnFakeComboProc = MakeProcInstance(FakeComboProc, hInst);
     lpfnFakeCEProc = MakeProcInstance(FakeCEProc, hInst);
@@ -156,10 +152,10 @@ int16_t FCreateStuff() {
     vlprgidMisc = LpAlloc(0x800, htPerm);
     vlprgidPlanet = LpAlloc(0x800, htPerm);
     vlprgidFleet = LpAlloc(0x800, htPerm);
-    if (fFailed == 0 && hbmpScanner != 0x0 && hbmpUnknownPlanet != 0x0 && hbmpBackBld != 0x0 && hdibRaces != 0x0 && hdibRacesT != 0x0 && hdibRacesX != 0x0 &&
-        hbmpMono != 0x0 && hbmpScanShip != 0x0 && hbmpMsg != 0x0 && hiconHost != 0x0 && hiconStars != 0x0 && hiconWait != 0x0) {
-        return 1;
+    if (fFailed != 0 || hbmpScanner == 0 || hbmpUnknownPlanet == 0 || hbmpBackBld == 0 || hdibRaces == 0 || hdibRacesT == 0 || hdibRacesX == 0 ||
+        hbmpMono == 0 || hbmpScanShip == 0 || hbmpMsg == 0 || hiconHost == 0 || hiconStars == 0 || hiconWait == 0) {
+        AlertSz(PszFormatIds(idsUnableLoadBitmaps, NULL), MB_ICONHAND);
+        return 0;
     }
-    AlertSz(PszFormatIds(idsUnableLoadBitmaps, 0x0), MB_ICONHAND);
-    return 0;
+    return 1;
 }

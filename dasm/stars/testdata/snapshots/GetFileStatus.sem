@@ -10,7 +10,7 @@ GetFileStatus  (file)
 */
 L_4a60:
     call SetSzWorkFromDt(dt, iPlayer) -> callresult(void)
-    gd.fReadOnly = (access(szWork, 2) == 0 ? 0x0 : 0x1)
+    gd.fReadOnly = (access(szWork, 2) == 0 ? 0 : 1)
     return
 
 

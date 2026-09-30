@@ -26,8 +26,6 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   t_scratch_m16_6;
     int16_t   t_call_2d26;
     int16_t   t_scratch_m16_7;
-    int16_t   t_2da8;
-    int16_t   t_merge_2e53_0001;
 
 L_19b2:
     if (grobj != grobjFleet)
@@ -42,9 +40,9 @@ L_19c4:
         goto L_19cd;
 
 L_19cd:
-    iItem = iItem - 16;
+    iItem -= 16;
     lpshdef = rglpshdefSB[lppl->iPlayer] + iItem;
-    if (lpshdef->fFree != 0x0)
+    if (lpshdef->fFree != 0)
         goto L_1a26;
     else
         goto L_1a09;
@@ -60,24 +58,24 @@ L_1a26:
 
 L_1a2c:
     idm = idmHasBuiltNew;
-    if (lpshdef->hul.wtCargoMax == 0x0)
+    if (lpshdef->hul.wtCargoMax == 0)
         goto L_1a60;
     else
         goto L_1a3e;
 
 L_1a3e:
-    idm = idm + 1;
+    idm++;
     if ((uint32_t)lpshdef->hul.wtCargoMax != 0xffff)
         goto L_1a60;
     else
         goto L_1a5c;
 
 L_1a5c:
-    idm = idm + 1;
+    idm++;
 
 L_1a60:
-    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 0x5 | iItem + 16, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0, 0, 0);
-    if (lppl->fStarbase == 0x0)
+    FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 5 | iItem + 0x10, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0, 0, 0);
+    if (lppl->fStarbase == 0)
         goto L_1b3a;
     else
         goto L_1ad6;
@@ -93,17 +91,17 @@ L_1b2c:
 
 L_1b3a:
     iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
-    if (lppl->fStarbase == 0x0)
+    if (lppl->fStarbase == 0)
         goto L_1b9b;
     else
         goto L_1b66;
 
 L_1b66:
-    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 0x1;
+    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 1;
     goto L_1baf;
 
 L_1b9b:
-    lppl->fStarbase = 0x1;
+    lppl->fStarbase = 1;
 
 L_1baf:
     lppl->isb = iItem;
@@ -124,17 +122,17 @@ L_1bef:
     goto L_1c55;
 
 L_1c1f:
-    lppl->iWarpFling = 0x0;
-    lppl->idFling = 0x0;
+    lppl->iWarpFling = 0;
+    lppl->idFling = 0;
     KillQueuedMassPackets(lppl);
 
 L_1c55:
-    lpshdef->cBuilt = lpshdef->cBuilt + 0x1;
-    lpshdef->cExist = lpshdef->cExist + 0x1;
+    lpshdef->cBuilt++;
+    lpshdef->cExist++;
     return 1;
 
 L_1c78:
-    if (lppl->fStarbase == 0x0)
+    if (lppl->fStarbase == 0)
         goto L_1c98;
     else
         goto L_1c8f;
@@ -150,7 +148,7 @@ L_1c98:
 
 L_1c9e:
     lpshdef = rglpshdef[lppl->iPlayer] + iItem;
-    if (lpshdef->fFree != 0x0)
+    if (lpshdef->fFree != 0)
         goto L_1cf3;
     else
         goto L_1cd6;
@@ -176,7 +174,7 @@ L_1d3a:
     goto L_1d46;
 
 L_1d42:
-    i = i + 1;
+    i++;
 
 L_1d46:
     if (i >= cFleet)
@@ -186,7 +184,7 @@ L_1d46:
 
 L_1d51:
     lpfl = rglpfl[i];
-    if (rglpfl[i] != 0x0)
+    if (rglpfl[i] != 0)
         goto L_1d81;
     else
         goto L_214f;
@@ -228,7 +226,7 @@ L_1e0f:
         goto L_1e2c;
 
 L_1e2c:
-    if (lpfl->rgdv[iItem].pctDp == 0x0)
+    if (lpfl->rgdv[iItem].pctDp == 0)
         goto L_20c5;
     else
         goto L_1e53;
@@ -236,7 +234,7 @@ L_1e2c:
 L_1e53:
     dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
     cshOrig = lpfl->rgcsh[iItem];
-    cshDamaged = LOWORD((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * (int32_t)cshOrig) / 0x64));
+    cshDamaged = LOWORD((int32_t)(lpfl->rgdv[iItem].pctSh * cshOrig) / 100);
     if (cshDamaged != 0)
         goto L_1edb;
     else
@@ -246,18 +244,18 @@ L_1ed6:
     cshDamaged = 1;
 
 L_1edb:
-    dpOrig = (int32_t)((int32_t)((int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * (int32_t)cshDamaged) / 0x32);
-    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)((int32_t)((int32_t)cshDamaged * 100) / (int32_t)(cshOrig + cBuilt)));
-    if (lpfl->rgdv[iItem].pctSh != 0x0)
+    dpOrig = (int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 10 * cshDamaged) / 50;
+    lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(cshDamaged * 100) / (int16_t)(cshOrig + cBuilt));
+    if (lpfl->rgdv[iItem].pctSh != 0)
         goto L_1ff4;
     else
         goto L_1fc0;
 
 L_1fc0:
-    lpfl->rgdv[iItem].pctSh = 0x1;
+    lpfl->rgdv[iItem].pctSh = 1;
 
 L_1ff4:
-    cshDamaged = LOWORD((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * (int32_t)(cshOrig + cBuilt)) / 0x64));
+    cshDamaged = LOWORD((int32_t)(lpfl->rgdv[iItem].pctSh * (int16_t)(cshOrig + cBuilt)) / 100);
     if (cshDamaged != 0)
         goto L_2041;
     else
@@ -267,26 +265,26 @@ L_203c:
     cshDamaged = 1;
 
 L_2041:
-    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)((int32_t)((int32_t)((int32_t)(dpOrig * 5) / (int32_t)cshDamaged) * 100) / (int32_t)dpShdef));
+    lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)((int32_t)(dpOrig * 5) / cshDamaged) * 100 / (int32_t)dpShdef);
     goto L_20de;
 
 L_20c5:
-    lpfl->rgdv[iItem].dp = 0x0;
+    lpfl->rgdv[iItem].dp = 0;
 
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
-    FSendPlrMsg(lppl->iPlayer, 313, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, lpfl->id, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, 313, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lpfl->id, 0, 0, 0);
     return 1;
 
 L_214f:
-    FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
     return 0;
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id);
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
     lpfl->rgwtMin[4] = LGetFleetStat(lpfl, 1);
-    if (lppl->idRoute == 0x0)
+    if (lppl->idRoute == 0)
         goto L_2321;
     else
         goto L_2201;
@@ -299,13 +297,13 @@ L_2201:
         goto L_221e;
 
 L_221e:
-    idm = lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted;
-    FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 0x5 | iItem, lppl->idRoute - 1, 0, 0, 0, 0);
+    idm = lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted;
+    FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem, lppl->idRoute - 1, 0, 0, 0, 0);
     goto L_2fc9;
 
 L_22a0:
-    idm = lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted;
-    FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, lppl->idRoute - 1, 0, 0, 0);
+    idm = lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted;
+    FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lppl->idRoute - 1, 0, 0, 0);
 
 L_231e:
     goto L_2fc9;
@@ -318,11 +316,11 @@ L_2321:
         goto L_233e;
 
 L_233e:
-    FSendPlrMsg2(lppl->iPlayer, 47, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 0x5 | iItem);
+    FSendPlrMsg2(lppl->iPlayer, 47, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem);
     goto L_2fc9;
 
 L_2379:
-    FSendPlrMsg(lppl->iPlayer, 48, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, 48, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
 
 L_23c4:
     goto L_2fc9;
@@ -349,11 +347,11 @@ L_23dc:
         goto L_2435;
 
 L_2435:
-    lppl->cFactories = lppl->cFactories + cBuilt;
+    lppl->cFactories += cBuilt;
     idm = idmHaveBuiltFactory;
 
 SendMsgFactMine:
-    cBuilt = cBuilt + FRemovePlayerMessage(lppl->iPlayer, idm, lppl->id);
+    cBuilt += FRemovePlayerMessage(lppl->iPlayer, idm, lppl->id);
     if (cBuilt <= 1)
         goto L_24d7;
     else
@@ -382,7 +380,7 @@ L_2505:
         goto L_255e;
 
 L_255e:
-    lppl->cMines = lppl->cMines + cBuilt;
+    lppl->cMines += cBuilt;
     idm = idmHaveBuiltMine;
     goto SendMsgFactMine;
 
@@ -399,7 +397,7 @@ L_25c4:
         goto L_2615;
 
 L_2615:
-    lppl->cDefenses = lppl->cDefenses + cBuilt;
+    lppl->cDefenses += cBuilt;
     idm = idmHaveBuiltDefenseOutpost;
     goto SendMsgFactMine;
 
@@ -419,7 +417,7 @@ L_26be:
     return 0;
 
 L_26e7:
-    if (lppl->idFling != 0x0)
+    if (lppl->idFling != 0)
         goto L_2722;
     else
         goto L_26f9;
@@ -467,7 +465,7 @@ L_277c:
         goto L_2785;
 
 L_2785:
-    l = (uint32_t)((int32_t)cSize * (int32_t)cBuilt);
+    l = (uint32_t)(cSize * cBuilt);
     if (l <= 32760)
         goto L_27be;
     else
@@ -484,7 +482,7 @@ L_27d3:
     rgwt[i] = 0;
 
 L_27e1:
-    i = i + 1;
+    i++;
 
 L_27e5:
     if (i < 3)
@@ -534,7 +532,7 @@ L_284e:
         goto L_2857;
 
 L_2857:
-    iDecayRate = iDecayRate + 1;
+    iDecayRate++;
 
 L_285b:
     iWarp = iWarpAsked - 4;
@@ -573,7 +571,7 @@ L_28f0:
         goto L_2909;
 
 L_2909:
-    if (lpth->thp.idPlanet != lppl->idFling - 0x1)
+    if (lpth->thp.idPlanet != lppl->idFling - 1)
         goto L_2956;
     else
         goto L_2928;
@@ -585,13 +583,13 @@ L_2928:
         goto L_2941;
 
 L_2941:
-    if (lpth->thp.wtMax < 0x65e)
+    if (lpth->thp.wtMax < 1630)
         goto L_2968;
     else
         goto L_2956;
 
 L_2956:
-    lpth = lpth + 1;
+    lpth++;
 
 L_295a:
     if (lpth < lpthMac)
@@ -606,12 +604,12 @@ L_2968:
         goto L_2a78;
 
 L_297e:
-    lpth->thp.wtMax = 0x0;
+    lpth->thp.wtMax = 0;
     i = 0;
     goto L_2a3f;
 
 L_299a:
-    lpth->thp.rgwtMin[i] = lpth->thp.rgwtMin[i] + rgwt[i];
+    lpth->thp.rgwtMin[i] += rgwt[i];
     if (lpth->thp.rgwtMin[i] >= 0)
         goto L_29f3;
     else
@@ -621,8 +619,8 @@ L_29da:
     lpth->thp.rgwtMin[i] = 32760;
 
 L_29f3:
-    lpth->thp.wtMax = lpth->thp.wtMax + (int32_t)(lpth->thp.rgwtMin[i] + 9) / 10;
-    i = i + 1;
+    lpth->thp.wtMax += (int16_t)(lpth->thp.rgwtMin[i] + 9) / 10;
+    i++;
 
 L_2a3f:
     if (i < 3)
@@ -636,7 +634,7 @@ L_2a48:
 
 L_2a78:
     lpth = LpthNew(lppl->iPlayer, ithMineralPacket);
-    if (lpth != 0x0)
+    if (lpth != 0)
         goto L_2ac9;
     else
         goto L_2aa3;
@@ -651,8 +649,8 @@ L_2ac9:
 
 L_2ad1:
     lpth->thp.rgwtMin[i] = rgwt[i];
-    lpth->thp.wtMax = lpth->thp.wtMax + (int32_t)(rgwt[i] + 9) / 10;
-    i = i + 1;
+    lpth->thp.wtMax += (int16_t)(rgwt[i] + 9) / 10;
+    i++;
 
 L_2b35:
     if (i < 3)
@@ -663,7 +661,7 @@ L_2b35:
 L_2b3e:
     lpth->thp.iWarp = iWarp;
     lpth->thp.iDecayRate = iDecayRate;
-    lpth->thp.idPlanet = lppl->idFling - 0x1;
+    lpth->thp.idPlanet = lppl->idFling - 1;
     lpth->pt = rgptPlan[lppl->id];
     FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, lppl->idFling - 1);
     goto L_2fc9;
@@ -673,7 +671,7 @@ L_2c05:
     goto L_2c11;
 
 L_2c0d:
-    i = i + 1;
+    i++;
 
 L_2c11:
     if (i >= game.cPlayer)
@@ -692,10 +690,10 @@ L_2c3e:
         goto L_2c62;
 
 L_2c62:
-    lppl->cFactories = 0x0;
-    lppl->cMines = 0x0;
-    lppl->cDefenses = 0x0;
-    lppl->iScanner = 0x1f;
+    lppl->cFactories = 0;
+    lppl->cMines = 0;
+    lppl->cDefenses = 0;
+    lppl->iScanner = 31;
 
 L_2cea:
     i = 0;
@@ -709,7 +707,7 @@ L_2cf2:
     lppl->rgEnvVar[i] = LOBYTE(t_call_2d26 + 1 + t_scratch_m16_6);
     t_scratch_m16_7 = Random(40);
     lppl->rgMinConc[i] = LOBYTE(Random(40) + 25 + t_scratch_m16_7);
-    i = i + 1;
+    i++;
 
 L_2d9c:
     if (i >= 3)
@@ -721,9 +719,7 @@ L_2da2:
     goto L_2cf2;
 
 L_2da8:
-    t_2da8 = cBuilt;
-    cBuilt = cBuilt - 1;
-    if (t_2da8 == 0)
+    if (cBuilt-- == 0)
         goto L_2fc9;
     else
         goto L_2db7;
@@ -737,14 +733,14 @@ L_2db7:
 
 L_2dd5:
     iEnv = abs(i) - 1;
-    cAllowed = (int16_t)lppl->rgEnvVar[iEnv] + (i <= 0 ? -1 : 1);
-    if (0x1 <= (99 >= cAllowed ? cAllowed : 0x63))
+    cAllowed = lppl->rgEnvVar[iEnv] + (i <= 0 ? -1 : 1);
+    if (1 <= (99 >= cAllowed ? cAllowed : 99))
         goto L_2e3f;
     else
         goto L_2e39;
 
 L_2e39:
-    t_merge_2e53_0001 = 1;
+    cAllowed = 1;
     goto L_2e53;
 
 L_2e3f:
@@ -754,14 +750,12 @@ L_2e3f:
         goto L_2e4a;
 
 L_2e4a:
-    t_merge_2e53_0001 = 99;
+    cAllowed = 99;
     goto L_2e53;
 
 L_2e50:
-    t_merge_2e53_0001 = cAllowed;
 
 L_2e53:
-    cAllowed = t_merge_2e53_0001;
     lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
     FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
 

@@ -141,6 +141,7 @@ func shapeIf(n *If) []Node {
 	if len(n.Else) > 0 && (len(n.Then) == 0 || (!endsInJump(n.Then) && endsInJump(n.Else))) {
 		n.Cond = Negate(n.Cond)
 		n.Then, n.Else = n.Else, n.Then
+		n.Laid = false
 	}
 	if len(n.Else) > 0 && endsInJump(n.Then) {
 		rest := n.Else

@@ -26,8 +26,8 @@ L_58ee:
         goto L_5900;
 
 L_5900:
-    score.cPlanet = score.cPlanet + 1;
-    lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 0x3e8);
+    score.cPlanet++;
+    lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 1000);
     if (lTemp <= 6)
         goto L_594b;
     else
@@ -37,26 +37,26 @@ L_5941:
     lTemp = 6;
 
 L_594b:
-    score.lScore = score.lScore + lTemp;
-    if (lppl->fStarbase == 0x0)
+    score.lScore += lTemp;
+    if (lppl->fStarbase == 0)
         goto L_59ad;
     else
         goto L_596e;
 
 L_596e:
-    if (LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax == 0x0)
+    if (LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax == 0)
         goto L_59ad;
     else
         goto L_59a9;
 
 L_59a9:
-    score.cStarbase = score.cStarbase + 1;
+    score.cStarbase++;
 
 L_59ad:
-    score.cResources = score.cResources + (int32_t)CResourcesAtPlanet(lppl, iPlr);
+    score.cResources += CResourcesAtPlanet(lppl, iPlr);
 
 L_59c5:
-    lppl = lppl + 1;
+    lppl++;
 
 L_59c9:
     if (lppl < lpplMac)
@@ -65,9 +65,9 @@ L_59c9:
         goto L_59d7;
 
 L_59d7:
-    score.lScore = score.lScore + (int32_t)(score.cResources / 30);
-    score.lScore = score.lScore + (int32_t)(3 * score.cStarbase);
-    if (rgplr[iPlr].fDead != 0x0)
+    score.lScore += (int32_t)(score.cResources / 30);
+    score.lScore += (int16_t)(3 * score.cStarbase);
+    if (rgplr[iPlr].fDead != 0)
         goto L_5aa7;
     else
         goto L_5a16;
@@ -77,15 +77,15 @@ L_5a16:
     goto L_5a9e;
 
 L_5a1e:
-    iTech = (int16_t)rgplr[iPlr].rgTech[i];
-    score.cTechLevels = score.cTechLevels + (int16_t)rgplr[iPlr].rgTech[i];
+    iTech = rgplr[iPlr].rgTech[i];
+    score.cTechLevels += rgplr[iPlr].rgTech[i];
     if (iTech >= 4)
         goto L_5a52;
     else
         goto L_5a45;
 
 L_5a45:
-    score.lScore = score.lScore + (int32_t)iTech;
+    score.lScore += iTech;
     goto L_5a9a;
 
 L_5a52:
@@ -95,7 +95,7 @@ L_5a52:
         goto L_5a5b;
 
 L_5a5b:
-    score.lScore = score.lScore + (int32_t)(iTech * 2 - 3);
+    score.lScore += (int16_t)(iTech * 2 - 3);
     goto L_5a9a;
 
 L_5a6d:
@@ -105,14 +105,14 @@ L_5a6d:
         goto L_5a76;
 
 L_5a76:
-    score.lScore = score.lScore + (int32_t)(3 * iTech - 0x9);
+    score.lScore += (int16_t)(3 * iTech - 9);
     goto L_5a9a;
 
 L_5a89:
-    score.lScore = score.lScore + (int32_t)(iTech * 4 - 18);
+    score.lScore += (int16_t)(iTech * 4 - 18);
 
 L_5a9a:
-    i = i + 1;
+    i++;
 
 L_5a9e:
     if (i < 6)
@@ -125,7 +125,7 @@ L_5aa7:
     goto L_5b77;
 
 L_5aaf:
-    if (rglpshdef[iPlr][i].fFree == 0x0)
+    if (rglpshdef[iPlr][i].fFree == 0)
         goto L_5aed;
     else
         goto L_5adc;
@@ -159,7 +159,7 @@ L_5b65:
     rgType[i] = 2;
 
 L_5b73:
-    i = i + 1;
+    i++;
 
 L_5b77:
     if (i < 16)
@@ -173,7 +173,7 @@ L_5b80:
 
 L_5b88:
     rgcsh[i] = 0;
-    i = i + 1;
+    i++;
 
 L_5ba1:
     if (i < 3)
@@ -186,7 +186,7 @@ L_5baa:
     goto L_5bb6;
 
 L_5bb2:
-    ifl = ifl + 1;
+    ifl++;
 
 L_5bb6:
     if (ifl >= cFleet)
@@ -196,7 +196,7 @@ L_5bb6:
 
 L_5bc1:
     lpfl = rglpfl[ifl];
-    if (rglpfl[ifl] != 0x0)
+    if (rglpfl[ifl] != 0)
         goto L_5bf1;
     else
         goto L_5c93;
@@ -208,7 +208,7 @@ L_5bf1:
         goto L_5c00;
 
 L_5c00:
-    if (lpfl->fDead != 0x0)
+    if (lpfl->fDead != 0)
         goto L_5bb2;
     else
         goto L_5c1a;
@@ -230,10 +230,10 @@ L_5c3f:
         goto L_5c51;
 
 L_5c51:
-    rgcsh[rgType[i]] = rgcsh[rgType[i]] + (int32_t)lpfl->rgcsh[i];
+    rgcsh[rgType[i]] = rgcsh[rgType[i]] + lpfl->rgcsh[i];
 
 L_5c83:
-    i = i + 1;
+    i++;
 
 L_5c87:
     if (i >= 16)
@@ -245,22 +245,22 @@ L_5c8d:
     goto L_5c22;
 
 L_5c93:
-    t_merge_5cb9_0001 = rgcsh[1] < (int32_t)score.cPlanet ? rgcsh[1] : (int32_t)score.cPlanet;
+    t_merge_5cb9_0001 = rgcsh[1] < score.cPlanet ? rgcsh[1] : score.cPlanet;
     goto L_5cb9;
 
 L_5cb9:
-    t_merge_5cf5_0001 = rgcsh[0] < (int32_t)score.cPlanet ? rgcsh[0] : (int32_t)score.cPlanet;
+    t_merge_5cf5_0001 = rgcsh[0] < score.cPlanet ? rgcsh[0] : score.cPlanet;
     goto L_5cf5;
 
 L_5cf5:
-    score.lScore = score.lScore + ((int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2));
+    score.lScore += (int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2);
     if (rgcsh[2] <= 0)
         goto L_5d57;
     else
         goto L_5d23;
 
 L_5d23:
-    score.lScore = score.lScore + (int32_t)((int32_t)((int32_t)(rgcsh[2] * 8) * (int32_t)score.cPlanet) / ((int32_t)score.cPlanet + rgcsh[2]));
+    score.lScore += (int32_t)((int32_t)((int32_t)(rgcsh[2] * 8) * score.cPlanet) / (score.cPlanet + rgcsh[2]));
 
 L_5d57:
     i = 0;
@@ -268,7 +268,7 @@ L_5d57:
 
 L_5d5f:
     score.rgcsh[i] = WPackLong(rgcsh[i]);
-    i = i + 1;
+    i++;
 
 L_5d88:
     if (i < 3)
@@ -277,7 +277,7 @@ L_5d88:
         goto L_5d91;
 
 L_5d91:
-    if (pscore == 0x0)
+    if (pscore == 0)
         goto L_5daa;
     else
         goto L_5d9a;

@@ -18,7 +18,6 @@ void Produce() {
     PROD     *lpprod;
     PLANET   *lpplMac;
     int16_t   cMax2;
-    uint16_t  t_scratch_m3e;
 
     MineMinerals();
     for (i = 0; i < game.cPlayer; i++) {
@@ -27,169 +26,164 @@ void Produce() {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->lpplprod != 0x0) {
-            if (lppl->iPlayer != -1 && lppl->lpplprod->iprodMac != 0x0) {
-                fNoResearch = lppl->fNoResearch;
-                for (i = 0; i < 3; i++) {
-                    rgResAvail[i] = lppl->rgwtMin[i];
+        if (lppl->lpplprod == 0) {
+            if (lppl->iPlayer != -1) {
+                FSendPlrMsg2(lppl->iPlayer, 63, lppl->id, lppl->id, 0);
+                lResCur = CResourcesAtPlanet(lppl, lppl->iPlayer);
+                if (lResCur != 0 && vrgPlanResExtra[lppl->id] != 0) {
+                    lResCur += (int32_t)(lResCur * (uint32_t)vrgPlanResExtra[lppl->id]) / (int32_t)((uint32_t)vrgPlanResExtra[lppl->id] + lResCur);
                 }
-                lResCur = (int32_t)CResourcesAtPlanet(lppl, lppl->iPlayer);
-                if (lResCur != 0 && vrgPlanResExtra[lppl->id] != 0x0) {
-                    lResCur = lResCur +
-                              (int32_t)((int32_t)(lResCur * (uint32_t)vrgPlanResExtra[lppl->id]) / (int32_t)((uint32_t)vrgPlanResExtra[lppl->id] + lResCur));
+                rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + lResCur;
+            }
+        } else if (lppl->iPlayer != -1 && lppl->lpplprod->iprodMac != 0) {
+            fNoResearch = lppl->fNoResearch;
+            for (i = 0; i < 3; i++) {
+                rgResAvail[i] = lppl->rgwtMin[i];
+            }
+            lResCur = CResourcesAtPlanet(lppl, lppl->iPlayer);
+            if (lResCur != 0 && vrgPlanResExtra[lppl->id] != 0) {
+                lResCur += (int32_t)(lResCur * (uint32_t)vrgPlanResExtra[lppl->id]) / (int32_t)((uint32_t)vrgPlanResExtra[lppl->id] + lResCur);
+            }
+            rgResAvail[3] = lResCur;
+            if (rgplr[lppl->iPlayer].fCheater != 0) {
+                rgResAvail[3] = (int32_t)(rgResAvail[3] * 4) / 5;
+            }
+            if (rgResAvail[3] != 0) {
+                if (fNoResearch != 0) {
+                    lResearchTake = 0;
+                } else {
+                    lResearchTake = (int32_t)(rgResAvail[3] * (int16_t)rgplr[lppl->iPlayer].pctResearch) / 100;
+                    rgResAvail[3] -= lResearchTake;
+                    rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + lResearchTake;
                 }
-                rgResAvail[3] = lResCur;
-                if (rgplr[lppl->iPlayer].fCheater != 0x0) {
-                    rgResAvail[3] = (int32_t)((int32_t)(rgResAvail[3] * 4) / 5);
-                }
-                if (rgResAvail[3] != 0) {
-                    if (fNoResearch == 0) {
-                        lResearchTake = (int32_t)((int32_t)(rgResAvail[3] * (int32_t)(int16_t)rgplr[lppl->iPlayer].pctResearch) / 0x64);
-                        rgResAvail[3] = rgResAvail[3] - lResearchTake;
-                        rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + lResearchTake;
-                    } else {
-                        lResearchTake = 0;
-                    }
-                    fAutoBuildDone = 1;
+                fAutoBuildDone = 1;
+                while (1) {
+                    fPrevProdIsAlch = 0;
+                    iprodCur = 0;
                     while (1) {
-                        fPrevProdIsAlch = 0;
-                        iprodCur = 0;
-                        while (1) {
-                            if (lppl->lpplprod == 0x0 || iprodCur >= lppl->lpplprod->iprodMac)
-                                goto L_0b9a;
-                            lpprod = &lppl->lpplprod->rgprod[iprodCur];
-                            if (lpprod->cItem > 0x0) {
-                                if (lpprod->grobj == grobjPlanet) {
-                                    if ((lpprod->iItem < iobjPlanetaryScannerFirst || lpprod->iItem > iobjPlanetaryScannerSnooper620X) &&
-                                        lpprod->iItem != iobjPlanetaryScanner) {
-                                        if (lpprod->iItem >= iobjPacketIron && lpprod->iItem <= iobjPacketMixed) {
-                                            if (IWarpMAFromLppl(lppl, 0x0) == 0 || lppl->idFling == 0x0) {
-                                                FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0);
-                                                goto RemoveFromQueue;
-                                            }
-                                        } else {
-                                            switch (lpprod->iItem) {
-                                            case mdIdleFactory:
-                                                cMax = CMaxFactories(lppl, lppl->iPlayer);
-                                                cMax2 = CMaxOperableFactories(lppl, lppl->iPlayer, 1);
-                                                if (cMax2 > cMax) {
-                                                    cMax = cMax2;
-                                                }
-                                                cMax = cMax - lppl->cFactories;
-                                                goto LCantBuildP;
-                                            case mdIdleMine:
-                                                cMax = CMaxMines(lppl, lppl->iPlayer);
-                                                cMax2 = CMaxOperableMines(lppl, lppl->iPlayer, 1);
-                                                if (cMax2 > cMax) {
-                                                    cMax = cMax2;
-                                                }
-                                                cMax = cMax - lppl->cMines;
-                                                goto LCantBuildP;
-                                            case mdIdleDefense:
-                                                cMax = CMaxDefenses(lppl, lppl->iPlayer);
-                                                cMax2 = CMaxOperableDefenses(lppl, lppl->iPlayer, 1);
-                                                if (cMax2 > cMax) {
-                                                    cMax = cMax2;
-                                                }
-                                                cMax = cMax - lppl->cDefenses;
-                                                goto LCantBuildP;
-                                            case mdIdleTerraform:
-                                                cMax = IpctCanTerraformLppl(lppl);
-                                                idm = idmHasOrdersTerraformBeyondMaximumAllowedOrders;
-                                                goto LCantBuildP2;
-                                            default:
-                                                goto L_07fc;
-                                            }
-                                            goto L_0b9a;
-                                        LCantBuildP:
-                                            idm = idmHasOrdersBuildPlanetaryInstallationsBeyondMaximu;
-                                        LCantBuildP2:
-                                            if (cMax < lpprod->cItem) {
-                                                FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
-                                                if (cMax <= 0)
-                                                    goto RemoveFromQueue;
-                                                lpprod->cItem = cMax;
-                                            }
-                                        }
-                                    } else if (lppl->iScanner != 0x1f) {
+                        if (lppl->lpplprod == 0 || iprodCur >= lppl->lpplprod->iprodMac)
+                            goto L_0b9a;
+                        lpprod = &lppl->lpplprod->rgprod[iprodCur];
+                        if (lpprod->cItem > 0) {
+                            if (lpprod->grobj == grobjPlanet) {
+                                if ((lpprod->iItem >= iobjPlanetaryScannerFirst && lpprod->iItem <= iobjPlanetaryScannerSnooper620X) ||
+                                    lpprod->iItem == iobjPlanetaryScanner) {
+                                    if (lppl->iScanner != 31) {
                                         FSendPlrMsg2(lppl->iPlayer, 185, lppl->id, lppl->id, 0);
                                         goto RemoveFromQueue;
                                     }
-                                }
-                            L_07fc:
-                                if (lpprod->iItem == iobjAlchemy && lpprod->grobj == grobjPlanet && iprodCur < lppl->lpplprod->iprodMac - 0x1) {
-                                    fPrevProdIsAlch = 1;
-                                    iprodCur = iprodCur + 1;
-                                    continue;
-                                }
-                                prodPartial.cItem = 0x0;
-                                cBuilt = CBuildProdItem(lppl, lpprod, &prodPartial, rgResAvail, fPrevProdIsAlch, &mdStatus, 0);
-                                if (fAutoBuildDone != 0 && (mdStatus == 3 || mdStatus == 4)) {
-                                    fAutoBuildDone = 0;
-                                }
-                                if (cBuilt > 0 && FBuildObject(lppl, lpprod->grobj, lpprod->iItem, cBuilt, rgResAvail) == 0 &&
-                                    (lpprod->grobj != grobjPlanet || lpprod->iItem >= mdIdleFactory)) {
-                                    lpprod->cItem = 0x0;
-                                }
-                                if (lppl->iPlayer == -1 && lppl->lpplprod == 0x0)
-                                    break;
-                                if (mdStatus != 0) {
-                                    if (mdStatus < 5)
-                                        goto L_0b8e;
-                                    goto L_0aaf;
+                                } else if (lpprod->iItem >= iobjPacketIron && lpprod->iItem <= iobjPacketMixed) {
+                                    if (IWarpMAFromLppl(lppl, NULL) == 0 || lppl->idFling == 0) {
+                                        FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0);
+                                        goto RemoveFromQueue;
+                                    }
+                                } else {
+                                    switch (lpprod->iItem) {
+                                    case mdIdleFactory:
+                                        cMax = CMaxFactories(lppl, lppl->iPlayer);
+                                        cMax2 = CMaxOperableFactories(lppl, lppl->iPlayer, 1);
+                                        if (cMax2 > cMax) {
+                                            cMax = cMax2;
+                                        }
+                                        cMax -= lppl->cFactories;
+                                        goto LCantBuildP;
+                                    case mdIdleMine:
+                                        cMax = CMaxMines(lppl, lppl->iPlayer);
+                                        cMax2 = CMaxOperableMines(lppl, lppl->iPlayer, 1);
+                                        if (cMax2 > cMax) {
+                                            cMax = cMax2;
+                                        }
+                                        cMax -= lppl->cMines;
+                                        goto LCantBuildP;
+                                    case mdIdleDefense:
+                                        cMax = CMaxDefenses(lppl, lppl->iPlayer);
+                                        cMax2 = CMaxOperableDefenses(lppl, lppl->iPlayer, 1);
+                                        if (cMax2 > cMax) {
+                                            cMax = cMax2;
+                                        }
+                                        cMax -= lppl->cDefenses;
+                                        goto LCantBuildP;
+                                    case mdIdleTerraform:
+                                        cMax = IpctCanTerraformLppl(lppl);
+                                        idm = idmHasOrdersTerraformBeyondMaximumAllowedOrders;
+                                        goto LCantBuildP2;
+                                    default:
+                                        goto L_07fc;
+                                    }
+                                    goto L_0b9a;
+                                LCantBuildP:
+                                    idm = idmHasOrdersBuildPlanetaryInstallationsBeyondMaximu;
+                                LCantBuildP2:
+                                    if (cMax < lpprod->cItem) {
+                                        FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
+                                        if (cMax <= 0)
+                                            goto RemoveFromQueue;
+                                        lpprod->cItem = cMax;
+                                    }
                                 }
                             }
-                        RemoveFromQueue:
-                            if (lppl->lpplprod->iprodMac == fPrevProdIsAlch + 1)
-                                goto L_09eb;
-                            if (iprodCur < lppl->lpplprod->iprodMac - 0x1) {
-                                fmemmove(lppl->lpplprod + (1 + (iprodCur - fPrevProdIsAlch)), lppl->lpplprod + (1 + (iprodCur + 1)),
-                                         (lppl->lpplprod->iprodMac - iprodCur - 0x1) * 0x4);
+                        L_07fc:
+                            if (lpprod->iItem == iobjAlchemy && lpprod->grobj == grobjPlanet && iprodCur < lppl->lpplprod->iprodMac - 1) {
+                                fPrevProdIsAlch = 1;
+                                iprodCur++;
+                                continue;
                             }
-                            lppl->lpplprod->iprodMac = lppl->lpplprod->iprodMac - LOBYTE(fPrevProdIsAlch + 1);
-                            iprodCur = iprodCur - (fPrevProdIsAlch + 1);
-                        L_0b8e:
-                            iprodCur = iprodCur + 1;
-                            fPrevProdIsAlch = 0;
+                            prodPartial.cItem = 0;
+                            cBuilt = CBuildProdItem(lppl, lpprod, &prodPartial, rgResAvail, fPrevProdIsAlch, &mdStatus, 0);
+                            if (fAutoBuildDone != 0 && (mdStatus == 3 || mdStatus == 4)) {
+                                fAutoBuildDone = 0;
+                            }
+                            if (cBuilt > 0 && FBuildObject(lppl, lpprod->grobj, lpprod->iItem, cBuilt, rgResAvail) == 0 &&
+                                (lpprod->grobj != grobjPlanet || lpprod->iItem >= mdIdleFactory)) {
+                                lpprod->cItem = 0;
+                            }
+                            if (lppl->iPlayer == -1 && lppl->lpplprod == 0)
+                                break;
+                            if (mdStatus != 0) {
+                                if (mdStatus < 5)
+                                    goto L_0b8e;
+                                if (prodPartial.cItem <= 0)
+                                    goto L_0b9a;
+                                if (lppl->lpplprod->iprodMac == lppl->lpplprod->iprodMax) {
+                                    lppl->lpplprod = (PLPROD *)LpplReAlloc((PL *)lppl->lpplprod, lppl->lpplprod->iprodMac + 1);
+                                }
+                                fmemmove(&lppl->lpplprod->rgprod[1], lppl->lpplprod->rgprod, lppl->lpplprod->iprodMac * sizeof(PROD));
+                                lppl->lpplprod->rgprod[0] = prodPartial;
+                                lppl->lpplprod->iprodMac++;
+                                goto L_0b9a;
+                            }
                         }
+                    RemoveFromQueue:
+                        if (lppl->lpplprod->iprodMac == fPrevProdIsAlch + 1)
+                            goto L_09eb;
+                        if (iprodCur < lppl->lpplprod->iprodMac - 1) {
+                            fmemmove(lppl->lpplprod + (1 + (iprodCur - fPrevProdIsAlch)), lppl->lpplprod + (1 + (iprodCur + 1)),
+                                     (lppl->lpplprod->iprodMac - iprodCur - 1) * 4);
+                        }
+                        lppl->lpplprod->iprodMac -= LOBYTE(fPrevProdIsAlch + 1);
+                        iprodCur -= fPrevProdIsAlch + 1;
+                    L_0b8e:
+                        iprodCur++;
+                        fPrevProdIsAlch = 0;
                     }
-                L_0aaf:
-                    if (prodPartial.cItem <= 0x0)
-                        goto L_0b9a;
-                    t_scratch_m3e = lppl->lpplprod->iprodMac;
-                    if (t_scratch_m3e == lppl->lpplprod->iprodMax) {
-                        lppl->lpplprod = (PLPROD *)LpplReAlloc((PL *)lppl->lpplprod, lppl->lpplprod->iprodMac + 0x1);
-                    }
-                    fmemmove(&lppl->lpplprod->rgprod[1], lppl->lpplprod->rgprod, lppl->lpplprod->iprodMac * sizeof(PROD));
-                    lppl->lpplprod->rgprod[0] = prodPartial;
-                    lppl->lpplprod->iprodMac = lppl->lpplprod->iprodMac + 0x1;
-                    goto L_0b9a;
-                L_09eb:
-                    FreePl((PL *)lppl->lpplprod);
-                    lppl->lpplprod = 0x0;
-                L_0b9a:
-                    if (lppl->lpplprod == 0x0 || (iprodCur >= lppl->lpplprod->iprodMac && fAutoBuildDone != 0)) {
-                        FSendPlrMsg2(lppl->iPlayer, 62, lppl->id, lppl->id, 0);
-                    }
-                    for (i = 0; i < 3; i++) {
-                        lppl->rgwtMin[i] = rgResAvail[i];
-                    }
-                    rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + rgResAvail[3];
                 }
+            L_09eb:
+                FreePl((PL *)lppl->lpplprod);
+                lppl->lpplprod = NULL;
+            L_0b9a:
+                if (lppl->lpplprod == 0 || (iprodCur >= lppl->lpplprod->iprodMac && fAutoBuildDone != 0)) {
+                    FSendPlrMsg2(lppl->iPlayer, 62, lppl->id, lppl->id, 0);
+                }
+                for (i = 0; i < 3; i++) {
+                    lppl->rgwtMin[i] = rgResAvail[i];
+                }
+                rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + rgResAvail[3];
             }
-        } else if (lppl->iPlayer != -1) {
-            FSendPlrMsg2(lppl->iPlayer, 63, lppl->id, lppl->id, 0);
-            lResCur = (int32_t)CResourcesAtPlanet(lppl, lppl->iPlayer);
-            if (lResCur != 0 && vrgPlanResExtra[lppl->id] != 0x0) {
-                lResCur =
-                    lResCur + (int32_t)((int32_t)(lResCur * (uint32_t)vrgPlanResExtra[lppl->id]) / (int32_t)((uint32_t)vrgPlanResExtra[lppl->id] + lResCur));
-            }
-            rgplr[lppl->iPlayer].lResLastYear = rgplr[lppl->iPlayer].lResLastYear + lResCur;
         }
     }
     UpdatePopulations();
     UpdateResearchStatus(1);
-    if (game.fNoRandom == 0x0) {
+    if (game.fNoRandom == 0) {
         RandomEvents();
     }
     return;
@@ -215,25 +209,16 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     int32_t  rgCost[4];
     int16_t  fMineralBlocked;
     int32_t  AddCost;
-    int16_t  t_merge_0d4c_0001;
     uint16_t t_scratch_m56;
     uint16_t t_scratch_m56_2;
     uint16_t t_scratch_m56_3;
-    int32_t  t_merge_126a_0001;
-    int32_t  t_merge_15f8_0001;
-    int16_t  t_merge_189c_0001;
 
     cAlchemy = 0;
     pctInitial = lpprod->pct;
     prod = *lpprod;
     GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 1);
     cBuilt = 0;
-    if (prod.grobj == grobjPlanet && prod.iItem < mdIdleFactory) {
-        t_merge_0d4c_0001 = 1;
-    } else {
-        t_merge_0d4c_0001 = 0;
-    }
-    fAutoBuild = t_merge_0d4c_0001;
+    fAutoBuild = prod.grobj == grobjPlanet && prod.iItem < mdIdleFactory;
     if (fAutoBuild != 0) {
         cMax = 1000;
         switch (prod.iItem) {
@@ -265,138 +250,128 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
             break;
         case iobjPacket:
             iobjOther = iobjPacketMixed;
-            if (IWarpMAFromLppl(lppl, 0x0) == 0 || lppl->idFling == 0x0) {
+            if (IWarpMAFromLppl(lppl, NULL) == 0 || lppl->idFling == 0) {
                 cMax = 0;
             }
-        default:
         }
         if (cMax < 0) {
             cMax = 0;
         }
-        if ((uint32_t)prod.cItem > (uint32_t)(int32_t)cMax || prod.iItem == iobjAlchemy) {
+        if ((uint32_t)prod.cItem > (uint32_t)cMax || prod.iItem == iobjAlchemy) {
             prod.cItem = cMax;
         }
     }
     for (i = 0; i < 4; i++) {
-        rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * prod.pct) / 0x64);
+        rgCostPaid[i] = (uint32_t)((uint32_t)(rgCost[i] * prod.pct) / 100);
     }
-    while (1) {
-        if (prod.cItem <= 0x0)
-            goto L_1712;
+    while (prod.cItem > 0) {
         for (i = 0; i < 4 && rgCost[i] - rgCostPaid[i] <= rgRes[i]; i++) {
         }
-        if (i >= 4) {
-            cBuilt = cBuilt + 1;
-            prod.cItem = prod.cItem - 0x1;
-            prod.pct = 0x0;
-            for (i = 0; i < 4; i++) {
-                rgRes[i] = rgRes[i] - (rgCost[i] - rgCostPaid[i]);
-                rgCostPaid[i] = 0;
-            }
-        } else {
+        if (i < 4) {
             fMineralBlocked = 0;
             fResourceBlocked = 0;
             pct = 100;
             for (i = 0; i < 4; i++) {
                 if (rgCost[i] > 0) {
-                    if (rgRes[i] < rgCost[i]) {
-                        pctT = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i]) * 0x64) / rgCost[i]);
-                        pctTooBig = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i] + 0x1) * 0x64) / rgCost[i]);
-                        t_merge_126a_0001 = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
-                        pctT = t_merge_126a_0001;
-                    } else {
+                    if (rgRes[i] >= rgCost[i]) {
                         pctT = 100;
+                    } else {
+                        pctT = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i]) * 100) / rgCost[i]);
+                        pctTooBig = (int32_t)((int32_t)((rgRes[i] + rgCostPaid[i] + 1) * 100) / rgCost[i]);
+                        pctT = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
                     }
                     if (pctT < pct) {
                         lMinNeeded = rgCost[i] - rgCostPaid[i] - rgRes[i];
                         pct = pctT;
-                        if (i != 3) {
-                            fMineralBlocked = 1;
-                        } else {
+                        if (i == 3) {
                             fResourceBlocked = 1;
+                        } else {
+                            fMineralBlocked = 1;
                         }
                     }
                 }
             }
-            if (fMineralBlocked == 0 || fAutoBuild == 0) {
+            if (fMineralBlocked != 0 && fAutoBuild != 0) {
+                if (fAlchemy == 0) {
+                    fAutoBuild = 2;
+                    break;
+                }
+            } else {
                 for (i = 0; i < 4; i++) {
-                    AddCost = (int32_t)((int32_t)(rgCost[i] * pct) / 100) - rgCostPaid[i];
-                    rgRes[i] = rgRes[i] - AddCost;
-                    rgCostPaid[i] = rgCostPaid[i] + AddCost;
+                    AddCost = (int32_t)(rgCost[i] * pct) / 100 - rgCostPaid[i];
+                    rgRes[i] -= AddCost;
+                    rgCostPaid[i] += AddCost;
                 }
                 prod.pct = LOWORD(pct);
                 if (fAlchemy == 0 || fResourceBlocked != 0)
-                    goto L_1712;
-            } else if (fAlchemy == 0) {
-                break;
+                    break;
             }
-            lAlchCost = (uint32_t)(GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? 0x64 : 0x19);
+            lAlchCost = (uint32_t)(GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) == 0 ? 100 : 25);
             cCanBuild = (int32_t)(rgRes[3] / lAlchCost);
             if (cCanBuild > lMinNeeded) {
                 cCanBuild = lMinNeeded;
             }
             if (cCanBuild > 0) {
                 for (i = 0; i < 3; i++) {
-                    rgRes[i] = rgRes[i] + cCanBuild;
+                    rgRes[i] += cCanBuild;
                 }
-                rgRes[i] = rgRes[i] - (uint32_t)(lAlchCost * cCanBuild);
-                cAlchemy = cAlchemy + LOWORD(cCanBuild);
+                rgRes[i] -= (uint32_t)(lAlchCost * cCanBuild);
+                cAlchemy += LOWORD(cCanBuild);
             }
             if (cCanBuild != lMinNeeded)
                 goto L_14de;
+        } else {
+            cBuilt++;
+            prod.cItem--;
+            prod.pct = 0;
+            for (i = 0; i < 4; i++) {
+                rgRes[i] -= rgCost[i] - rgCostPaid[i];
+                rgCostPaid[i] = 0;
+            }
         }
     }
-    fAutoBuild = 2;
     goto L_1712;
 L_14de:
-    if (rgRes[3] > 0 && pprodPartial != 0x0) {
+    if (rgRes[3] > 0 && pprodPartial != 0) {
         memset(pprodPartial, 0, sizeof(PROD));
         pprodPartial->grobj = grobjPlanet;
         pprodPartial->iItem = mdIdleAlchemy;
-        pprodPartial->cItem = 0x1;
+        pprodPartial->cItem = 1;
         pctT = (int32_t)((int32_t)(rgRes[3] * 100) / lAlchCost);
-        pctTooBig = (int32_t)((int32_t)((rgRes[3] + 1) * 0x64) / lAlchCost);
-        t_merge_15f8_0001 = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
-        pctT = t_merge_15f8_0001;
+        pctTooBig = (int32_t)((int32_t)((rgRes[3] + 1) * 100) / lAlchCost);
+        pctT = pctT <= pctTooBig - 1 ? pctTooBig - 1 : pctT;
         pprodPartial->pct = LOWORD(pctT);
-        rgRes[3] = rgRes[3] - (int32_t)((int32_t)(pctT * lAlchCost) / 100);
+        rgRes[3] -= (int32_t)(pctT * lAlchCost) / 100;
     }
 L_1712:
     if (cBuilt > 0 && prod.grobj == grobjPlanet && (prod.iItem == mdIdleAlchemy || prod.iItem == iobjAlchemy)) {
-        cAlchemy = cAlchemy + cBuilt;
+        cAlchemy += cBuilt;
         for (i = 0; i < 3; i++) {
-            rgRes[i] = rgRes[i] + (int32_t)cBuilt;
+            rgRes[i] += cBuilt;
         }
     }
-    if (cAlchemy != 0 && fCalcOnly == 0 && gd.fGeneratingTurn != 0x0) {
+    if (cAlchemy != 0 && fCalcOnly == 0 && gd.fGeneratingTurn != 0) {
         FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy);
     }
-    if (pmdStatus != 0x0) {
-        if (fAutoBuild != 2) {
-            if (fAutoBuild == 0 || prod.cItem != 0x0) {
-                if (cBuilt != 0) {
-                    if (prod.cItem != 0x0) {
-                        *pmdStatus = 5;
-                    } else {
-                        *pmdStatus = 0;
-                    }
-                } else {
-                    t_merge_189c_0001 = pctInitial == prod.pct ? 7 : 6;
-                    *pmdStatus = t_merge_189c_0001;
-                }
-            } else {
-                *pmdStatus = cBuilt <= 0 ? 2 : 1;
-            }
-        } else {
+    if (pmdStatus != 0) {
+        if (fAutoBuild == 2) {
             *pmdStatus = cBuilt <= 0 ? 4 : 3;
+        } else if (fAutoBuild != 0 && prod.cItem == 0) {
+            *pmdStatus = cBuilt <= 0 ? 2 : 1;
+        } else if (cBuilt == 0) {
+            *pmdStatus = pctInitial == prod.pct ? 7 : 6;
+        } else if (prod.cItem == 0) {
+            *pmdStatus = 0;
+        } else {
+            *pmdStatus = 5;
         }
     }
     if (fCalcOnly == 0 && fAutoBuild == 0) {
         *lpprod = prod;
     }
-    if (fAutoBuild != 0 && pprodPartial != 0x0 && pprodPartial->cItem == 0x0 && prod.pct > 0x0) {
+    if (fAutoBuild != 0 && pprodPartial != 0 && pprodPartial->cItem == 0 && prod.pct > 0) {
         *pprodPartial = prod;
-        pprodPartial->cItem = 0x1;
+        pprodPartial->cItem = 1;
         pprodPartial->iItem = LOWORD(iobjOther);
     }
     return cBuilt;
@@ -430,10 +405,111 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   t_scratch_m16_6;
     int16_t   t_call_2d26;
     int16_t   t_scratch_m16_7;
-    int16_t   t_2da8;
-    int16_t   t_merge_2e53_0001;
 
-    if (grobj != grobjFleet) {
+    if (grobj == grobjFleet) {
+        if (iItem >= 16) {
+            iItem -= 16;
+            lpshdef = rglpshdefSB[lppl->iPlayer] + iItem;
+            if (lpshdef->fFree != 0 || FCanBuildShdef(lpshdef, lppl->iPlayer) == 0) {
+                return 0;
+            }
+            idm = idmHasBuiltNew;
+            if (lpshdef->hul.wtCargoMax != 0) {
+                idm++;
+                if ((uint32_t)lpshdef->hul.wtCargoMax == 0xffff) {
+                    idm++;
+                }
+            }
+            FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 5 | iItem + 0x10, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0,
+                        0, 0);
+            if (lppl->fStarbase != 0 && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
+                KillQueuedShips(lppl);
+            }
+            iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
+            if (lppl->fStarbase != 0) {
+                rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 1;
+            } else {
+                lppl->fStarbase = 1;
+            }
+            lppl->isb = iItem;
+            if (iWarp <= 0) {
+                iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
+                if (iWarp > 0) {
+                    lppl->iWarpFling = iWarp + fTwoMAs - 4;
+                } else {
+                    lppl->iWarpFling = 0;
+                    lppl->idFling = 0;
+                    KillQueuedMassPackets(lppl);
+                }
+            }
+            lpshdef->cBuilt++;
+            lpshdef->cExist++;
+            return 1;
+        }
+        if (lppl->fStarbase == 0 || iItem >= 16) {
+            return 0;
+        }
+        lpshdef = rglpshdef[lppl->iPlayer] + iItem;
+        if (lpshdef->fFree != 0 || FCanBuildShdef(lpshdef, lppl->iPlayer) == 0) {
+            FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, iItem + 1, 0);
+            return 0;
+        }
+        if (rgplr[lppl->iPlayer].cFleet == 0x200) {
+            for (i = 0; i < cFleet; i++) {
+                lpfl = rglpfl[i];
+                if (rglpfl[i] == 0 || lpfl->iPlayer > lppl->iPlayer)
+                    break;
+                if (lpfl->iPlayer >= lppl->iPlayer && lpfl->lpplord->rgord[0].pt.x == rgptPlan[lppl->id].x &&
+                    lpfl->lpplord->rgord[0].pt.y == rgptPlan[lppl->id].y && 32766 - cBuilt > lpfl->rgcsh[iItem]) {
+                    if (lpfl->rgcsh[iItem] != 0 && lpfl->rgdv[iItem].pctDp != 0) {
+                        dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
+                        cshOrig = lpfl->rgcsh[iItem];
+                        cshDamaged = LOWORD((int32_t)(lpfl->rgdv[iItem].pctSh * cshOrig) / 100);
+                        if (cshDamaged == 0) {
+                            cshDamaged = 1;
+                        }
+                        dpOrig = (int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 10 * cshDamaged) / 50;
+                        lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)(cshDamaged * 100) / (int16_t)(cshOrig + cBuilt));
+                        if (lpfl->rgdv[iItem].pctSh == 0) {
+                            lpfl->rgdv[iItem].pctSh = 1;
+                        }
+                        cshDamaged = LOWORD((int32_t)(lpfl->rgdv[iItem].pctSh * (int16_t)(cshOrig + cBuilt)) / 100);
+                        if (cshDamaged == 0) {
+                            cshDamaged = 1;
+                        }
+                        lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)((int32_t)(dpOrig * 5) / cshDamaged) * 100 / (int32_t)dpShdef);
+                    } else {
+                        lpfl->rgdv[iItem].dp = 0;
+                    }
+                    CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
+                    FSendPlrMsg(lppl->iPlayer, 313, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lpfl->id, 0, 0, 0);
+                    return 1;
+                }
+            }
+            FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
+            return 0;
+        }
+        lpfl = LpflNew(lppl->iPlayer, lppl->id);
+        CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
+        lpfl->rgwtMin[4] = LGetFleetStat(lpfl, 1);
+        if (lppl->idRoute != 0) {
+            AutoRouteFleet(lpfl, lppl);
+            if (cBuilt == 1) {
+                idm = lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted;
+                FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem, lppl->idRoute - 1, 0, 0, 0, 0);
+            } else {
+                idm = lpfl->lpplord->rgord[1].iWarp == 0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted;
+                FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lppl->idRoute - 1, 0, 0, 0);
+            }
+        } else {
+            AutoFleetOrder(lpfl, lppl);
+            if (cBuilt == 1) {
+                FSendPlrMsg2(lppl->iPlayer, 47, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem);
+            } else {
+                FSendPlrMsg(lppl->iPlayer, 48, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
+            }
+        }
+    } else {
         if (grobj != grobjPlanet) {
             return 0;
         }
@@ -446,34 +522,34 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
             t_scratch_m16_3 = lppl->cFactories;
             cAllowed = CMaxFactories(lppl, lppl->iPlayer) - t_scratch_m16_3;
             cBuilt = cBuilt >= cAllowed ? cAllowed : cBuilt;
-            if (cBuilt <= 0) {
-                return 0;
+            if (cBuilt > 0) {
+                lppl->cFactories += cBuilt;
+                idm = idmHaveBuiltFactory;
+                break;
             }
-            lppl->cFactories = lppl->cFactories + cBuilt;
-            idm = idmHaveBuiltFactory;
-            break;
+            return 0;
         case 0:
         case 8:
             t_scratch_m16_4 = lppl->cMines;
             cAllowed = CMaxMines(lppl, lppl->iPlayer) - t_scratch_m16_4;
             cBuilt = cBuilt >= cAllowed ? cAllowed : cBuilt;
-            if (cBuilt <= 0) {
-                return 0;
+            if (cBuilt > 0) {
+                lppl->cMines += cBuilt;
+                idm = idmHaveBuiltMine;
+                break;
             }
-            lppl->cMines = lppl->cMines + cBuilt;
-            idm = idmHaveBuiltMine;
-            break;
+            return 0;
         case 2:
         case 9:
             t_scratch_m16_5 = lppl->cDefenses;
             cAllowed = CMaxDefenses(lppl, lppl->iPlayer) - t_scratch_m16_5;
             cBuilt = cBuilt >= cAllowed ? cAllowed : cBuilt;
-            if (cBuilt <= 0) {
-                return 0;
+            if (cBuilt > 0) {
+                lppl->cDefenses += cBuilt;
+                idm = idmHaveBuiltDefenseOutpost;
+                break;
             }
-            lppl->cDefenses = lppl->cDefenses + cBuilt;
-            idm = idmHaveBuiltDefenseOutpost;
-            break;
+            return 0;
         case 6:
         case 14:
         case 15:
@@ -481,89 +557,89 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
         case 17:
             raMajor = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv);
             iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
-            if (iWarp != 0) {
-                if (lppl->idFling != 0x0) {
-                    if (iItem == 6) {
-                        iItem = 17;
-                    }
-                    if (iItem != 17) {
-                        cSize = raMajor == 6 ? 70 : 100;
-                    } else {
-                        cSize = raMajor == 6 ? 25 : 40;
-                    }
-                    for (i = 0; i < 3; i++) {
-                        if (i != iItem - 14 && iItem != 17) {
-                            rgwt[i] = 0;
-                        } else {
-                            l = (uint32_t)((int32_t)cSize * (int32_t)cBuilt);
-                            if (l > 32760) {
-                                l = 32760;
-                            }
-                            rgwt[i] = LOWORD(l);
-                        }
-                    }
-                    iWarpAsked = lppl->iWarpFling + 4;
-                    if (iWarpAsked < 5 || iWarpAsked > iWarp + 3) {
-                        iWarpAsked = iWarp + fTwoMAs;
-                    }
-                    if (iWarpAsked > iWarp + fTwoMAs) {
-                        iDecayRate = iWarpAsked - iWarp - fTwoMAs;
-                    } else {
-                        iDecayRate = 0;
-                    }
-                    if (raMajor == 7 && iDecayRate < 3) {
-                        iDecayRate = iDecayRate + 1;
-                    }
-                    iWarp = iWarpAsked - 4;
-                    lpth = lpThings;
-                    lpthMac = lpThings + cThing;
-                    for (; lpth < lpthMac && (lpth->iplr != lppl->iPlayer || lpth->ith != ithMineralPacket || lpth->pt.x != rgptPlan[lppl->id].x ||
-                                              lpth->pt.y != rgptPlan[lppl->id].y || lpth->thp.iWarp != iWarp || lpth->thp.idPlanet != lppl->idFling - 0x1 ||
-                                              lpth->thp.iDecayRate != iDecayRate || lpth->thp.wtMax >= 0x65e);
-                         lpth++) {
-                    }
-                    if (lpth != lpthMac) {
-                        lpth->thp.wtMax = 0x0;
-                        for (i = 0; i < 3; i++) {
-                            lpth->thp.rgwtMin[i] = lpth->thp.rgwtMin[i] + rgwt[i];
-                            if (lpth->thp.rgwtMin[i] < 0) {
-                                lpth->thp.rgwtMin[i] = 32760;
-                            }
-                            lpth->thp.wtMax = lpth->thp.wtMax + (int32_t)(lpth->thp.rgwtMin[i] + 9) / 10;
-                        }
-                        FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, lppl->idFling - 1);
-                        return 1;
-                    }
-                    lpth = LpthNew(lppl->iPlayer, ithMineralPacket);
-                    if (lpth != 0x0) {
-                        for (i = 0; i < 3; i++) {
-                            lpth->thp.rgwtMin[i] = rgwt[i];
-                            lpth->thp.wtMax = lpth->thp.wtMax + (int32_t)(rgwt[i] + 9) / 10;
-                        }
-                        lpth->thp.iWarp = iWarp;
-                        lpth->thp.iDecayRate = iDecayRate;
-                        lpth->thp.idPlanet = lppl->idFling - 0x1;
-                        lpth->pt = rgptPlan[lppl->id];
-                        FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, lppl->idFling - 1);
-                        return 1;
-                    }
-                    FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0);
-                    return 1;
-                }
+            if (iWarp == 0) {
+                FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0);
+                return 0;
+            }
+            if (lppl->idFling == 0) {
                 FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0);
                 return 0;
             }
-            FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0);
-            return 0;
+            if (iItem == 6) {
+                iItem = 17;
+            }
+            if (iItem == 17) {
+                cSize = raMajor == 6 ? 25 : 40;
+            } else {
+                cSize = raMajor == 6 ? 70 : 100;
+            }
+            for (i = 0; i < 3; i++) {
+                if (i == iItem - 14 || iItem == 17) {
+                    l = (uint32_t)(cSize * cBuilt);
+                    if (l > 32760) {
+                        l = 32760;
+                    }
+                    rgwt[i] = LOWORD(l);
+                } else {
+                    rgwt[i] = 0;
+                }
+            }
+            iWarpAsked = lppl->iWarpFling + 4;
+            if (iWarpAsked < 5 || iWarpAsked > iWarp + 3) {
+                iWarpAsked = iWarp + fTwoMAs;
+            }
+            if (iWarpAsked <= iWarp + fTwoMAs) {
+                iDecayRate = 0;
+            } else {
+                iDecayRate = iWarpAsked - iWarp - fTwoMAs;
+            }
+            if (raMajor == 7 && iDecayRate < 3) {
+                iDecayRate++;
+            }
+            iWarp = iWarpAsked - 4;
+            lpth = lpThings;
+            lpthMac = lpThings + cThing;
+            for (; lpth < lpthMac &&
+                   (lpth->iplr != lppl->iPlayer || lpth->ith != ithMineralPacket || lpth->pt.x != rgptPlan[lppl->id].x || lpth->pt.y != rgptPlan[lppl->id].y ||
+                    lpth->thp.iWarp != iWarp || lpth->thp.idPlanet != lppl->idFling - 1 || lpth->thp.iDecayRate != iDecayRate || lpth->thp.wtMax >= 1630);
+                 lpth++) {
+            }
+            if (lpth != lpthMac) {
+                lpth->thp.wtMax = 0;
+                for (i = 0; i < 3; i++) {
+                    lpth->thp.rgwtMin[i] += rgwt[i];
+                    if (lpth->thp.rgwtMin[i] < 0) {
+                        lpth->thp.rgwtMin[i] = 32760;
+                    }
+                    lpth->thp.wtMax += (int16_t)(lpth->thp.rgwtMin[i] + 9) / 10;
+                }
+                FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, lppl->idFling - 1);
+                return 1;
+            }
+            lpth = LpthNew(lppl->iPlayer, ithMineralPacket);
+            if (lpth == 0) {
+                FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0);
+                return 1;
+            }
+            for (i = 0; i < 3; i++) {
+                lpth->thp.rgwtMin[i] = rgwt[i];
+                lpth->thp.wtMax += (int16_t)(rgwt[i] + 9) / 10;
+            }
+            lpth->thp.iWarp = iWarp;
+            lpth->thp.iDecayRate = iDecayRate;
+            lpth->thp.idPlanet = lppl->idFling - 1;
+            lpth->pt = rgptPlan[lppl->id];
+            FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, lppl->idFling - 1);
+            return 1;
         case 13:
             for (i = 0; i < game.cPlayer; i++) {
                 FSendPlrMsg2(i, 283, lppl->id, lppl->id, 0);
             }
             if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
-                lppl->cFactories = 0x0;
-                lppl->cMines = 0x0;
-                lppl->cDefenses = 0x0;
-                lppl->iScanner = 0x1f;
+                lppl->cFactories = 0;
+                lppl->cMines = 0;
+                lppl->cDefenses = 0;
+                lppl->iScanner = 31;
             }
             for (i = 0; i < 3; i++) {
                 lppl->rgwtMin[i] = 0;
@@ -578,25 +654,16 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
         case 4:
         case 5:
         case 12:
-            while (1) {
-                t_2da8 = cBuilt;
-                cBuilt = cBuilt - 1;
-                if (t_2da8 == 0)
-                    break;
+            while (cBuilt-- != 0) {
                 i = IBestTerraform(lppl, 1);
                 if (i != 0) {
                     iEnv = abs(i) - 1;
-                    cAllowed = (int16_t)lppl->rgEnvVar[iEnv] + (i <= 0 ? -1 : 1);
-                    if (0x1 <= (99 >= cAllowed ? cAllowed : 0x63)) {
-                        if (99 >= cAllowed) {
-                            t_merge_2e53_0001 = cAllowed;
-                        } else {
-                            t_merge_2e53_0001 = 99;
-                        }
-                    } else {
-                        t_merge_2e53_0001 = 1;
+                    cAllowed = lppl->rgEnvVar[iEnv] + (i <= 0 ? -1 : 1);
+                    if (1 > (99 >= cAllowed ? cAllowed : 99)) {
+                        cAllowed = 1;
+                    } else if (99 < cAllowed) {
+                        cAllowed = 99;
                     }
-                    cAllowed = t_merge_2e53_0001;
                     lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
                     FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
                 }
@@ -623,128 +690,20 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
         case 11:
             return 1;
         }
-        cBuilt = cBuilt + FRemovePlayerMessage(lppl->iPlayer, idm, lppl->id);
-        if (cBuilt <= 1) {
-            FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
-        } else {
+        cBuilt += FRemovePlayerMessage(lppl->iPlayer, idm, lppl->id);
+        if (cBuilt > 1) {
             FSendPlrMsg2(lppl->iPlayer, idm + 1, lppl->id, cBuilt, lppl->id);
-        }
-    } else {
-        if (iItem >= 16) {
-            iItem = iItem - 16;
-            lpshdef = rglpshdefSB[lppl->iPlayer] + iItem;
-            if (lpshdef->fFree == 0x0 && FCanBuildShdef(lpshdef, lppl->iPlayer) != 0) {
-                idm = idmHasBuiltNew;
-                if (lpshdef->hul.wtCargoMax != 0x0) {
-                    idm = idm + 1;
-                    if ((uint32_t)lpshdef->hul.wtCargoMax == 0xffff) {
-                        idm = idm + 1;
-                    }
-                }
-                FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 0x5 | iItem + 16, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0,
-                            0, 0, 0);
-                if (lppl->fStarbase != 0x0 && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
-                    KillQueuedShips(lppl);
-                }
-                iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
-                if (lppl->fStarbase == 0x0) {
-                    lppl->fStarbase = 0x1;
-                } else {
-                    rglpshdefSB[lppl->iPlayer][lppl->isb].cExist = rglpshdefSB[lppl->iPlayer][lppl->isb].cExist - 0x1;
-                }
-                lppl->isb = iItem;
-                if (iWarp <= 0) {
-                    iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
-                    if (iWarp <= 0) {
-                        lppl->iWarpFling = 0x0;
-                        lppl->idFling = 0x0;
-                        KillQueuedMassPackets(lppl);
-                    } else {
-                        lppl->iWarpFling = iWarp + fTwoMAs - 4;
-                    }
-                }
-                lpshdef->cBuilt = lpshdef->cBuilt + 0x1;
-                lpshdef->cExist = lpshdef->cExist + 0x1;
-                return 1;
-            }
-            return 0;
-        }
-        if (lppl->fStarbase == 0x0 || iItem >= 16) {
-            return 0;
-        }
-        lpshdef = rglpshdef[lppl->iPlayer] + iItem;
-        if (lpshdef->fFree != 0x0 || FCanBuildShdef(lpshdef, lppl->iPlayer) == 0) {
-            FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, iItem + 1, 0);
-            return 0;
-        }
-        if (rgplr[lppl->iPlayer].cFleet == 0x200) {
-            i = 0;
-            while (1) {
-                if (i >= cFleet)
-                    goto L_214f;
-                lpfl = rglpfl[i];
-                if (rglpfl[i] == 0x0 || lpfl->iPlayer > lppl->iPlayer)
-                    goto L_214f;
-                if (lpfl->iPlayer >= lppl->iPlayer && lpfl->lpplord->rgord[0].pt.x == rgptPlan[lppl->id].x &&
-                    lpfl->lpplord->rgord[0].pt.y == rgptPlan[lppl->id].y && 32766 - cBuilt > lpfl->rgcsh[iItem])
-                    break;
-                i = i + 1;
-            }
-            if (lpfl->rgcsh[iItem] == 0 || lpfl->rgdv[iItem].pctDp == 0x0) {
-                lpfl->rgdv[iItem].dp = 0x0;
-            } else {
-                dpShdef = rglpshdef[lpfl->iPlayer][iItem].hul.dp;
-                cshOrig = lpfl->rgcsh[iItem];
-                cshDamaged = LOWORD((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * (int32_t)cshOrig) / 0x64));
-                if (cshDamaged == 0) {
-                    cshDamaged = 1;
-                }
-                dpOrig = (int32_t)((int32_t)((int32_t)((int32_t)((uint32_t)dpShdef * lpfl->rgdv[iItem].pctDp) / 0xa) * (int32_t)cshDamaged) / 0x32);
-                lpfl->rgdv[iItem].pctSh = LOWORD((int32_t)((int32_t)((int32_t)cshDamaged * 100) / (int32_t)(cshOrig + cBuilt)));
-                if (lpfl->rgdv[iItem].pctSh == 0x0) {
-                    lpfl->rgdv[iItem].pctSh = 0x1;
-                }
-                cshDamaged = LOWORD((int32_t)((int32_t)(lpfl->rgdv[iItem].pctSh * (int32_t)(cshOrig + cBuilt)) / 0x64));
-                if (cshDamaged == 0) {
-                    cshDamaged = 1;
-                }
-                lpfl->rgdv[iItem].pctDp = LOWORD((int32_t)((int32_t)((int32_t)((int32_t)(dpOrig * 5) / (int32_t)cshDamaged) * 100) / (int32_t)dpShdef));
-            }
-            CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
-            FSendPlrMsg(lppl->iPlayer, 313, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, lpfl->id, 0, 0, 0);
-            return 1;
-        L_214f:
-            FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, 0, 0, 0, 0);
-            return 0;
-        }
-        lpfl = LpflNew(lppl->iPlayer, lppl->id);
-        CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
-        lpfl->rgwtMin[4] = LGetFleetStat(lpfl, 1);
-        if (lppl->idRoute == 0x0) {
-            AutoFleetOrder(lpfl, lppl);
-            if (cBuilt != 1) {
-                FSendPlrMsg(lppl->iPlayer, 48, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, 0, 0, 0, 0);
-            } else {
-                FSendPlrMsg2(lppl->iPlayer, 47, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 0x5 | iItem);
-            }
         } else {
-            AutoRouteFleet(lpfl, lppl);
-            if (cBuilt != 1) {
-                idm = lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewShipsWhichWill : idmStarbaseHasBuiltNewShipsWhichRouted;
-                FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 0x5 | iItem, lppl->idRoute - 1, 0, 0, 0);
-            } else {
-                idm = lpfl->lpplord->rgord[1].iWarp == 0x0 ? idmStarbaseHasBuiltNewWhichWillRouted : idmStarbaseHasBuiltNewWhichRouted;
-                FSendPlrMsg(lppl->iPlayer, idm, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 0x5 | iItem, lppl->idRoute - 1, 0, 0, 0, 0);
-            }
+            FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
         }
     }
     return 1;
 }
 
 void CreateShip(int16_t iPlr, FLEET *lpfl, int16_t ishdef, int16_t cShip) {
-    lpfl->rgcsh[ishdef] = lpfl->rgcsh[ishdef] + cShip;
-    rglpshdef[iPlr][ishdef].cExist = rglpshdef[iPlr][ishdef].cExist + (int32_t)cShip;
-    rglpshdef[iPlr][ishdef].cBuilt = rglpshdef[iPlr][ishdef].cBuilt + (int32_t)cShip;
+    lpfl->rgcsh[ishdef] += cShip;
+    rglpshdef[iPlr][ishdef].cExist += cShip;
+    rglpshdef[iPlr][ishdef].cBuilt += cShip;
     return;
 }
 
@@ -772,33 +731,33 @@ void TransferToOthers() {
         lpxfMax = lpxf + cXferFull;
         for (; lpxfCur < lpxfMax; lpxfCur++) {
             if (FLookupObject(lpxfCur->grobj2, lpxfCur->id2, &rgxf[1].fl) != 0) {
-                if (lpxfCur->grobj1 != 0x1) {
-                    rgxf[0].fl.iPlayer = lpxfCur->id1 >> 0x9 & 0xf;
-                } else {
+                if (lpxfCur->grobj1 == 1) {
                     rgxf[0].fl.iPlayer = LpplFromId(lpxfCur->id1)->iPlayer;
+                } else {
+                    rgxf[0].fl.iPlayer = lpxfCur->id1 >> 9 & 0xf;
                 }
                 for (i = 0; i < 5; i++) {
                     l2 = lpxfCur->rgcQuan[i];
                     if (l2 != 0) {
-                        l = ChgCargo(lpxfCur->grobj2, lpxfCur->id2, i, l2, 0x0);
+                        l = ChgCargo(lpxfCur->grobj2, lpxfCur->id2, i, l2, NULL);
                         if (l != l2) {
                             idm = i == 4 ? idmAttemptedTransferColonistsSuccessfullyReceivedRe : idmAttemptedTransferSuccessfullyReceived;
-                            idSrc = lpxfCur->id1 | (lpxfCur->grobj1 == 0x2 ? 0x8000 : 0x0);
-                            idDst = lpxfCur->id2 | (lpxfCur->grobj2 == 0x2 ? 0x8000 : 0x0);
+                            idSrc = lpxfCur->id1 | (lpxfCur->grobj1 == 2 ? 0x8000 : 0);
+                            idDst = lpxfCur->id2 | (lpxfCur->grobj2 == 2 ? 0x8000 : 0);
                             if (l == 0) {
-                                idm = idm + 4;
+                                idm += 4;
                             }
                             FSendPlrMsg(rgxf[0].fl.iPlayer, idm, idSrc, idSrc, LOWORD(l2), HIWORD(l2), i, idDst, LOWORD(l), HIWORD(l));
                             idm = i == 4 ? idmReceivedHoweverColonistsSentRemainsOtherColonist : idmReceivedHoweverSentRemainderLostSpace;
-                            if (l != 0) {
-                                FSendPlrMsg(rgxf[1].fl.iPlayer, idm, idDst, idDst, LOWORD(l), HIWORD(l), i, idSrc, LOWORD(l2), HIWORD(l2));
-                            } else {
+                            if (l == 0) {
                                 FSendPlrMsg(rgxf[1].fl.iPlayer, idm + 4, idDst, idDst, LOWORD(l2), HIWORD(l2), i, idSrc, 0, 0);
+                            } else {
+                                FSendPlrMsg(rgxf[1].fl.iPlayer, idm, idDst, idDst, LOWORD(l), HIWORD(l), i, idSrc, LOWORD(l2), HIWORD(l2));
                             }
                         } else {
                             idm = i == 4 ? idmSuccessfullyTransferred2 : idmSuccessfullyTransferred;
-                            idSrc = lpxfCur->id1 | (lpxfCur->grobj1 == 0x2 ? 0x8000 : 0x0);
-                            idDst = lpxfCur->id2 | (lpxfCur->grobj2 == 0x2 ? 0x8000 : 0x0);
+                            idSrc = lpxfCur->id1 | (lpxfCur->grobj1 == 2 ? 0x8000 : 0);
+                            idDst = lpxfCur->id2 | (lpxfCur->grobj2 == 2 ? 0x8000 : 0);
                             FSendPlrMsg(rgxf[0].fl.iPlayer, idm, idSrc, idSrc, LOWORD(l), HIWORD(l), i, idDst, 0, 0);
                             idm = i == 4 ? idmSuccessfullyReceived2 : idmSuccessfullyReceived;
                             FSendPlrMsg(rgxf[1].fl.iPlayer, idm, idDst, idDst, LOWORD(l), HIWORD(l), i, idSrc, 0, 0);
@@ -838,7 +797,6 @@ void DropColonists() {
     int16_t  ipq;
     int16_t  iTech;
     int16_t  iBonus;
-    uint16_t t_scratch_mf8;
     PLANET  *t_call_4159;
 
     if (cColDrop != 0) {
@@ -846,74 +804,68 @@ void DropColonists() {
         lpcdMax = lpcd + cColDrop;
         for (; lpcdCur < lpcdMax; lpcdCur++) {
             if (lpcdCur->idPlanetDst != -1 && lpcdCur->cColonist != 0) {
-                memset(rgcCol, 0, 0x40);
-                memset(rgcPower, 0, 0x40);
+                memset(rgcCol, 0, 64);
+                memset(rgcPower, 0, 64);
                 cPowerTot = 0;
                 cColTot = 0;
                 idPlanet = lpcdCur->idPlanetDst;
                 FLookupPlanet(idPlanet, &pl);
                 iplrOldOwner = pl.iPlayer;
-                CalcPctSurvive(&pl, &pctSurvive, 0x0);
-                pctSurvive = pctSurvive + (1.0 - pctSurvive) / 4.0;
+                CalcPctSurvive(&pl, &pctSurvive, NULL);
+                pctSurvive += (1.0 - pctSurvive) / 4.0;
                 for (lpcdLook = lpcdCur; lpcdLook < lpcdMax; lpcdLook++) {
                     if (idPlanet == lpcdLook->idPlanetDst) {
-                        if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) != raMacintosh || (lpcdLook->fCanColonize != 0x0 && pl.iPlayer == -1)) {
-                            if (pl.iPlayer != -1 || lpcdLook->fCanColonize != 0x0) {
-                                if (pl.fStarbase == 0x0 || pl.iPlayer == -1) {
-                                    rgcCol[lpcdLook->idPlr] = rgcCol[lpcdLook->idPlr] + lpcdLook->cColonist;
-                                    cColTot = cColTot + lpcdLook->cColonist;
-                                    if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) != raAttack) {
-                                        if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) != raMacintosh) {
-                                            lPower = 110;
-                                        } else {
-                                            lPower = 0;
-                                        }
-                                    } else {
-                                        lPower = 165;
-                                    }
-                                    lPower = (int32_t)((double)(int32_t)((int32_t)(lpcdLook->cColonist * lPower) / 100) * pctSurvive);
-                                    cPowerTot = cPowerTot + lPower;
-                                    rgcPower[lpcdLook->idPlr] = rgcPower[lpcdLook->idPlr] + lPower;
-                                } else {
-                                    FSendPlrMsg2(lpcdLook->idPlr, 88, pl.id, pl.id, 0);
-                                }
-                            } else {
-                                FSendPlrMsg(lpcdLook->idPlr, 2, pl.id, LOWORD(lpcdLook->cColonist), HIWORD(lpcdLook->cColonist), pl.id, 0, 0, 0, 0);
-                            }
-                        } else {
+                        if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) == raMacintosh && (lpcdLook->fCanColonize == 0 || pl.iPlayer != -1)) {
                             FSendPlrMsg2(lpcdLook->idPlr, 87, pl.id, pl.id, 0);
+                        } else if (pl.iPlayer == -1 && lpcdLook->fCanColonize == 0) {
+                            FSendPlrMsg(lpcdLook->idPlr, 2, pl.id, LOWORD(lpcdLook->cColonist), HIWORD(lpcdLook->cColonist), pl.id, 0, 0, 0, 0);
+                        } else if (pl.fStarbase != 0 && pl.iPlayer != -1) {
+                            FSendPlrMsg2(lpcdLook->idPlr, 88, pl.id, pl.id, 0);
+                        } else {
+                            rgcCol[lpcdLook->idPlr] = rgcCol[lpcdLook->idPlr] + lpcdLook->cColonist;
+                            cColTot += lpcdLook->cColonist;
+                            if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) == raAttack) {
+                                lPower = 165;
+                            } else if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) == raMacintosh) {
+                                lPower = 0;
+                            } else {
+                                lPower = 110;
+                            }
+                            lPower = (int32_t)((double)((int32_t)(lpcdLook->cColonist * lPower) / 100) * pctSurvive);
+                            cPowerTot += lPower;
+                            rgcPower[lpcdLook->idPlr] = rgcPower[lpcdLook->idPlr] + lPower;
                         }
                         lpcdLook->idPlanetDst = -1;
                     }
                 }
-                if (pl.iPlayer == -1) {
-                    lDefensePower = 0;
-                    lOldPop = 0;
-                } else {
-                    if (GetRaceStat(&rgplr[pl.iPlayer], rsMajorAdv) != raDefend) {
-                        lPower = 100;
-                    } else {
+                if (pl.iPlayer != -1) {
+                    if (GetRaceStat(&rgplr[pl.iPlayer], rsMajorAdv) == raDefend) {
                         lPower = 200;
+                    } else {
+                        lPower = 100;
                     }
-                    lDefensePower = (int32_t)((int32_t)(pl.rgwtMin[3] * lPower) / 100);
+                    lDefensePower = (int32_t)(pl.rgwtMin[3] * lPower) / 100;
                     if (lDefensePower > cPowerTot) {
                         for (i = 0; i < 16; i++) {
                             if (rgcCol[i] != 0) {
-                                if (pctSurvive != 1.0) {
+                                if (pctSurvive == 1.0) {
+                                    FSendPlrMsg(i, 0, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, pl.iPlayer | 0x30, 0, 0, 0);
+                                    FSendPlrMsg(pl.iPlayer, 3, pl.id, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), i | 0x30, 0, 0, 0);
+                                } else {
                                     FSendPlrMsg(i, 1, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, (int32_t)((1.0 - pctSurvive) * 10000.0),
                                                 pl.iPlayer | 0x30, 0, 0);
                                     FSendPlrMsg(pl.iPlayer, 4, pl.id, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), i | 0x30, 0, 0, 0);
-                                } else {
-                                    FSendPlrMsg(i, 0, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, pl.iPlayer | 0x30, 0, 0, 0);
-                                    FSendPlrMsg(pl.iPlayer, 3, pl.id, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), i | 0x30, 0, 0, 0);
                                 }
                             }
                         }
-                        pl.rgwtMin[3] = pl.rgwtMin[3] - (int32_t)((int32_t)(pl.rgwtMin[3] * cPowerTot) / lDefensePower);
+                        pl.rgwtMin[3] -= (int32_t)((int32_t)(pl.rgwtMin[3] * cPowerTot) / lDefensePower);
                         goto WritePlanet;
                     }
                     lOldPop = pl.rgwtMin[3];
                     UninhabitPlanet(&pl);
+                } else {
+                    lDefensePower = 0;
+                    lOldPop = 0;
                 }
                 cMax = -1;
                 c2nd = 0;
@@ -922,104 +874,22 @@ void DropColonists() {
                 iMax = 0;
                 for (i = 0; i < game.cPlayer; i++) {
                     if (rgcCol[i] != 0) {
-                        cSides = cSides + 1;
+                        cSides++;
                         if (rgcPower[i] >= cMax) {
-                            if (rgcPower[i] != cMax) {
+                            if (rgcPower[i] == cMax) {
+                                fTie = 1;
+                            } else {
                                 fTie = 0;
                                 c2nd = cMax;
                                 cMax = rgcPower[i];
                                 iMax = i;
-                            } else {
-                                fTie = 1;
                             }
                         }
                     }
                 }
                 if (cMax < 0)
                     continue;
-                if (fTie == 0) {
-                    if (iplrOldOwner == -1) {
-                        if (cSides <= 1) {
-                            FSendPlrMsg2(iMax, (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh ? 1 : 0) + 10, pl.id, pl.id, 0);
-                        } else {
-                            for (i = 0; i < 16; i++) {
-                                if (rgcCol[i] != 0) {
-                                    if (i != iMax) {
-                                        FSendPlrMsg(i, 9, pl.id, cSides, pl.id, iMax | 0xb0, 0, 0, 0, 0);
-                                    } else {
-                                        FSendPlrMsg2(i, 8, pl.id, cSides, pl.id);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        for (i = 0; i < 16; i++) {
-                            if (rgcCol[i] != 0) {
-                                if (i != iMax) {
-                                    FSendPlrMsg2(i, 13, pl.id, pl.id, 0);
-                                } else {
-                                    FSendPlrMsg2(i, 12, pl.id, iplrOldOwner | 0x20, pl.id);
-                                }
-                            }
-                        }
-                        FSendPlrMsg(iplrOldOwner, 7, pl.id, iMax | 0x30, pl.id, LOWORD(rgcCol[iMax]), HIWORD(rgcCol[iMax]), 0, 0, 0);
-                        memset(rgTechBattle, 0, 0x6);
-                        memset(rgTechTrader, 0, 0xd);
-                        for (i = 0; i < 6; i++) {
-                            rgTechBattle[i] = rgplr[iplrOldOwner].rgTech[i];
-                        }
-                        i = ITechLearnATech(iMax, -1, pl.id, idmWreckageDiscoveredBattleHasBoostedResearchResour, 0x0);
-                        pl.iPlayer = -1;
-                    }
-                    if (iMax != -1) {
-                        cpq = rgplr[iMax].zpq1.cpq;
-                        t_scratch_mf8 = rgplr[iMax].zpq1.fNoResearch;
-                        pl.fNoResearch = t_scratch_mf8;
-                        if (cpq > 0) {
-                            pl.lpplprod = (PLPROD *)LpplAlloc(0x4, rgplr[iMax].zpq1.cpq, htOrd);
-                            memset(&prod, 0, sizeof(PROD));
-                            prod.grobj = grobjPlanet;
-                            iDst = 0;
-                            for (ipq = 0; ipq < cpq; ipq++) {
-                                if ((GetRaceStat(&rgplr[iMax], rsMajorAdv) != raMacintosh || rgplr[iMax].zpq1.rgpq[ipq].mdIdle > 0x2) &&
-                                    (GetRaceStat(&rgplr[iMax], rsMajorAdv) != raTerra ||
-                                     (rgplr[iMax].zpq1.rgpq[ipq].mdIdle != 0x4 && rgplr[iMax].zpq1.rgpq[ipq].mdIdle != 0x5))) {
-                                    prod.iItem = rgplr[iMax].zpq1.rgpq[ipq].mdIdle;
-                                    prod.cItem = rgplr[iMax].zpq1.rgpq[ipq].cQuan;
-                                    pl.lpplprod->rgprod[iDst] = prod;
-                                    iDst = iDst + 1;
-                                }
-                            }
-                            if (iDst <= 0) {
-                                FreePl((PL *)pl.lpplprod);
-                                pl.lpplprod = 0x0;
-                            } else {
-                                pl.lpplprod->iprodMac = LOBYTE(iDst);
-                                t_call_4159 = LpplFromId(pl.id);
-                                t_call_4159->lpplprod = pl.lpplprod;
-                            }
-                        }
-                    }
-                    pl.iPlayer = iMax;
-                    if (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh) {
-                        pl.fStarbase = 0x1;
-                        pl.isb = 0x0;
-                        rglpshdefSB[iMax]->cExist = rglpshdefSB[iMax]->cExist + 0x1;
-                        rglpshdefSB[iMax]->cBuilt = rglpshdefSB[iMax]->cBuilt + 0x1;
-                    }
-                    if (cPowerTot != 0 && cMax != 0) {
-                        lPower = (int32_t)((int32_t)(cMax * (cPowerTot - lDefensePower)) / cPowerTot);
-                        pl.rgwtMin[3] = (int32_t)((int32_t)(rgcCol[iMax] * lPower) / cMax);
-                    } else {
-                        pl.rgwtMin[3] = rgcCol[iMax];
-                    }
-                    if (c2nd > 0) {
-                        pl.rgwtMin[3] = (int32_t)((int32_t)(pl.rgwtMin[3] * (cMax - c2nd)) / cMax);
-                    }
-                    if (pl.rgwtMin[3] < 1) {
-                        pl.rgwtMin[3] = 1;
-                    }
-                } else {
+                if (fTie != 0) {
                     for (i = 0; i < game.cPlayer; i++) {
                         if (rgcCol[i] != 0) {
                             FSendPlrMsg2(i, 6, pl.id, cSides, pl.id);
@@ -1029,20 +899,99 @@ void DropColonists() {
                         FSendPlrMsg2(iplrOldOwner, 5, pl.id, cSides, pl.id);
                         pl.iPlayer = -1;
                     }
+                } else {
+                    if (iplrOldOwner != -1) {
+                        for (i = 0; i < 16; i++) {
+                            if (rgcCol[i] != 0) {
+                                if (i == iMax) {
+                                    FSendPlrMsg2(i, 12, pl.id, iplrOldOwner | 0x20, pl.id);
+                                } else {
+                                    FSendPlrMsg2(i, 13, pl.id, pl.id, 0);
+                                }
+                            }
+                        }
+                        FSendPlrMsg(iplrOldOwner, 7, pl.id, iMax | 0x30, pl.id, LOWORD(rgcCol[iMax]), HIWORD(rgcCol[iMax]), 0, 0, 0);
+                        memset(rgTechBattle, 0, 6);
+                        memset(rgTechTrader, 0, 13);
+                        for (i = 0; i < 6; i++) {
+                            rgTechBattle[i] = rgplr[iplrOldOwner].rgTech[i];
+                        }
+                        i = ITechLearnATech(iMax, -1, pl.id, idmWreckageDiscoveredBattleHasBoostedResearchResour, NULL);
+                        pl.iPlayer = -1;
+                    } else if (cSides > 1) {
+                        for (i = 0; i < 16; i++) {
+                            if (rgcCol[i] != 0) {
+                                if (i == iMax) {
+                                    FSendPlrMsg2(i, 8, pl.id, cSides, pl.id);
+                                } else {
+                                    FSendPlrMsg(i, 9, pl.id, cSides, pl.id, iMax | 0xb0, 0, 0, 0, 0);
+                                }
+                            }
+                        }
+                    } else {
+                        FSendPlrMsg2(iMax, (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh ? 1 : 0) + 10, pl.id, pl.id, 0);
+                    }
+                    if (iMax != -1) {
+                        cpq = rgplr[iMax].zpq1.cpq;
+                        pl.fNoResearch = rgplr[iMax].zpq1.fNoResearch;
+                        if (cpq > 0) {
+                            pl.lpplprod = (PLPROD *)LpplAlloc(4, rgplr[iMax].zpq1.cpq, htOrd);
+                            memset(&prod, 0, sizeof(PROD));
+                            prod.grobj = grobjPlanet;
+                            iDst = 0;
+                            for (ipq = 0; ipq < cpq; ipq++) {
+                                if ((GetRaceStat(&rgplr[iMax], rsMajorAdv) != raMacintosh || rgplr[iMax].zpq1.rgpq[ipq].mdIdle > 2) &&
+                                    (GetRaceStat(&rgplr[iMax], rsMajorAdv) != raTerra ||
+                                     (rgplr[iMax].zpq1.rgpq[ipq].mdIdle != 4 && rgplr[iMax].zpq1.rgpq[ipq].mdIdle != 5))) {
+                                    prod.iItem = rgplr[iMax].zpq1.rgpq[ipq].mdIdle;
+                                    prod.cItem = rgplr[iMax].zpq1.rgpq[ipq].cQuan;
+                                    pl.lpplprod->rgprod[iDst] = prod;
+                                    iDst++;
+                                }
+                            }
+                            if (iDst > 0) {
+                                pl.lpplprod->iprodMac = LOBYTE(iDst);
+                                t_call_4159 = LpplFromId(pl.id);
+                                t_call_4159->lpplprod = pl.lpplprod;
+                            } else {
+                                FreePl((PL *)pl.lpplprod);
+                                pl.lpplprod = NULL;
+                            }
+                        }
+                    }
+                    pl.iPlayer = iMax;
+                    if (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh) {
+                        pl.fStarbase = 1;
+                        pl.isb = 0;
+                        rglpshdefSB[iMax]->cExist++;
+                        rglpshdefSB[iMax]->cBuilt++;
+                    }
+                    if (cPowerTot == 0 || cMax == 0) {
+                        pl.rgwtMin[3] = rgcCol[iMax];
+                    } else {
+                        lPower = (int32_t)((int32_t)(cMax * (cPowerTot - lDefensePower)) / cPowerTot);
+                        pl.rgwtMin[3] = (int32_t)((int32_t)(rgcCol[iMax] * lPower) / cMax);
+                    }
+                    if (c2nd > 0) {
+                        pl.rgwtMin[3] = (int32_t)((int32_t)(pl.rgwtMin[3] * (cMax - c2nd)) / cMax);
+                    }
+                    if (pl.rgwtMin[3] < 1) {
+                        pl.rgwtMin[3] = 1;
+                    }
                 }
             WritePlanet:
-                if (pl.iPlayer != -1 && pl.fArtifact != 0x0) {
-                    pl.fArtifact = 0x0;
-                    if (game.fNoRandom == 0x0) {
+                if (pl.iPlayer != -1 && pl.fArtifact != 0) {
+                    pl.fArtifact = 0;
+                    if (game.fNoRandom == 0) {
                         iTech = Random(6);
                         iBonus = Random(301) + 100;
                         if (pl.rgwtMin[3] < 10) {
-                            iBonus = (int32_t)(LOWORD(pl.rgwtMin[3]) * iBonus) / 10;
+                            iBonus = (int16_t)(LOWORD(pl.rgwtMin[3]) * iBonus) / 10;
                         }
                         FSendPlrMsg(pl.iPlayer, 94, -2, pl.id, iTech, iBonus, 0, 0, 0, 0);
-                        rgplr[pl.iPlayer].rgResSpent[iTech] = rgplr[pl.iPlayer].rgResSpent[iTech] + (int32_t)iBonus;
-                        if (game.fSlowTech != 0x0) {
-                            iBonus = iBonus >> 0x1;
+                        rgplr[pl.iPlayer].rgResSpent[iTech] = rgplr[pl.iPlayer].rgResSpent[iTech] + iBonus;
+                        if (game.fSlowTech != 0) {
+                            iBonus >>= 1;
                         }
                     }
                 }
@@ -1068,61 +1017,57 @@ void HealShips() {
     pctShipHeal = 0;
     for (i = 0; i < cFleet; i++) {
         lpfl = rglpfl[i];
-        if (rglpfl[i] == 0x0)
+        if (rglpfl[i] == 0)
             break;
-        if (lpfl->fDead == 0x0 && lpfl->fNoHeal == 0x0) {
+        if (lpfl->fDead == 0 && lpfl->fNoHeal == 0) {
             dpHeal = 0;
             pctShipHeal = 0;
             for (ishdef = 0; ishdef < 16; ishdef++) {
-                if (lpfl->rgdv[ishdef].dp != 0x0) {
+                if (lpfl->rgdv[ishdef].dp != 0) {
                     dpHeal = 1;
                 }
                 if (lpfl->rgcsh[ishdef] != 0) {
-                    if (rglpshdef[lpfl->iPlayer][ishdef].hul.ihuldef != ihuldefSuperFuelXport) {
-                        if (pctShipHeal < 5 && rglpshdef[lpfl->iPlayer][ishdef].hul.ihuldef == ihuldefFuelTransport) {
-                            pctShipHeal = 25;
-                        }
-                    } else {
+                    if (rglpshdef[lpfl->iPlayer][ishdef].hul.ihuldef == ihuldefSuperFuelXport) {
                         pctShipHeal = 50;
+                    } else if (pctShipHeal < 5 && rglpshdef[lpfl->iPlayer][ishdef].hul.ihuldef == ihuldefFuelTransport) {
+                        pctShipHeal = 25;
                     }
                 }
             }
             if (dpHeal != 0) {
-                if (lpfl->fHereAllTurn != 0x0) {
-                    if (lpfl->idPlanet != -1) {
-                        lppl = LpplFromId(lpfl->idPlanet);
-                        if (lppl->iPlayer != lpfl->iPlayer) {
-                            if (lppl->iPlayer != -1) {
-                                pct = 15;
-                            } else {
-                                pct = 15;
-                            }
-                        } else if (lppl->fStarbase == 0x0 || lppl->fNoHeal != 0x0) {
-                            pct = 25;
+                if (lpfl->fHereAllTurn == 0) {
+                    pct = 5;
+                } else if (lpfl->idPlanet == -1) {
+                    pct = 10;
+                } else {
+                    lppl = LpplFromId(lpfl->idPlanet);
+                    if (lppl->iPlayer != lpfl->iPlayer) {
+                        if (lppl->iPlayer == -1) {
+                            pct = 15;
                         } else {
-                            lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
-                            if (LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax == 0x0) {
-                                pct = 40;
-                            } else {
-                                pct = 100;
-                            }
+                            pct = 15;
+                        }
+                    } else if (lppl->fStarbase != 0 && lppl->fNoHeal == 0) {
+                        lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
+                        if (LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax != 0) {
+                            pct = 100;
+                        } else {
+                            pct = 40;
                         }
                     } else {
-                        pct = 10;
+                        pct = 25;
                     }
-                } else {
-                    pct = 5;
                 }
                 if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raDefend) {
-                    pct = pct * 2;
+                    pct *= 2;
                 }
-                pct = pct + pctShipHeal;
+                pct += pctShipHeal;
                 for (ishdef = 0; ishdef < 16; ishdef++) {
-                    if (lpfl->rgdv[ishdef].dp != 0x0) {
-                        if (lpfl->rgdv[ishdef].pctDp <= (uint16_t)pct) {
-                            lpfl->rgdv[ishdef].dp = 0x0;
+                    if (lpfl->rgdv[ishdef].dp != 0) {
+                        if (lpfl->rgdv[ishdef].pctDp > (uint16_t)pct) {
+                            lpfl->rgdv[ishdef].pctDp -= pct;
                         } else {
-                            lpfl->rgdv[ishdef].pctDp = lpfl->rgdv[ishdef].pctDp - pct;
+                            lpfl->rgdv[ishdef].dp = 0;
                         }
                     }
                 }
@@ -1132,18 +1077,18 @@ void HealShips() {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->fStarbase != 0x0 && lppl->fNoHeal == 0x0) {
-            if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raDefend) {
-                pct = 50;
-            } else {
+        if (lppl->fStarbase != 0 && lppl->fNoHeal == 0) {
+            if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raDefend) {
                 pct = 75;
+            } else {
+                pct = 50;
             }
-            if (lppl->pctDp != 0x0) {
+            if (lppl->pctDp != 0) {
                 lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
-                if ((uint16_t)pct <= lppl->pctDp) {
-                    lppl->pctDp = lppl->pctDp - pct;
+                if ((uint16_t)pct > lppl->pctDp) {
+                    lppl->pctDp = 0;
                 } else {
-                    lppl->pctDp = 0x0;
+                    lppl->pctDp -= pct;
                 }
             }
         }
@@ -1174,33 +1119,30 @@ void AutoTerraform() {
         lpplMac = lpPlanets + cPlanet;
         for (; lppl < lpplMac; lppl++) {
             if (lppl->iPlayer != -1 && rgp[lppl->iPlayer] != 0) {
-                if (lppl->fStarbase != 0x0 && lppl->iPlayer == -1) {
-                    lppl->fStarbase = 0x0;
+                if (lppl->fStarbase != 0 && lppl->iPlayer == -1) {
+                    lppl->fStarbase = 0;
                 }
                 i = Random(3);
-                if ((int16_t)rgplr[lppl->iPlayer].rgEnvVar[i] != -1 && (int16_t)rgplr[lppl->iPlayer].rgEnvVar[i] != (int16_t)lppl->rgEnvVarOrig[i] &&
-                    Random(10) == 0) {
+                if (rgplr[lppl->iPlayer].rgEnvVar[i] != -1 && rgplr[lppl->iPlayer].rgEnvVar[i] != lppl->rgEnvVarOrig[i] && Random(10) == 0) {
                     if (lppl->rgwtMin[3] < 1000) {
                         t_scratch_m42_2 = Random(1000);
                         if (t_scratch_m42_2 >= LOWORD(lppl->rgwtMin[3]))
                             goto L_4b5c;
                     }
-                    if ((int16_t)rgplr[lppl->iPlayer].rgEnvVar[i] >= (int16_t)lppl->rgEnvVarOrig[i]) {
-                        lppl->rgEnvVarOrig[i] = lppl->rgEnvVarOrig[i] + 1;
+                    if (rgplr[lppl->iPlayer].rgEnvVar[i] < lppl->rgEnvVarOrig[i]) {
+                        lppl->rgEnvVarOrig[i]--;
                     } else {
-                        lppl->rgEnvVarOrig[i] = lppl->rgEnvVarOrig[i] - 1;
+                        lppl->rgEnvVarOrig[i]++;
                     }
                     FSendPlrMsg2(lppl->iPlayer, 348, lppl->id, lppl->id, i);
                 }
             L_4b5c:
                 if (FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, 1) != 0) {
                     for (i = 0; i < 3; i++) {
-                        if (rgMin[i] == -1) {
-                            if (rgMax[i] != -1) {
-                                lppl->rgEnvVar[i] = LOBYTE(rgMax[i]);
-                            }
-                        } else {
+                        if (rgMin[i] != -1) {
                             lppl->rgEnvVar[i] = LOBYTE(rgMin[i]);
+                        } else if (rgMax[i] != -1) {
+                            lppl->rgEnvVar[i] = LOBYTE(rgMax[i]);
                         }
                     }
                     i = PctPlanetDesirability(lppl, lppl->iPlayer);
@@ -1213,65 +1155,47 @@ void AutoTerraform() {
 }
 
 void RemoteTerraforming() {
-    int16_t  fHelp;
-    int16_t  iBest;
-    int16_t  pctCur;
-    PLANET  *lppl;
-    int16_t  ifl;
-    FLEET   *lpfl;
-    int16_t  cDone;
-    int16_t  iEnv;
-    int16_t  cAllowed;
-    int32_t  ipct;
-    int16_t  pctNew;
-    int16_t  t_merge_4d92_0001;
-    int32_t  t_4dd5;
-    int16_t  t_merge_4e9d_0001;
-    uint16_t t_merge_4f13_0001;
+    int16_t fHelp;
+    int16_t iBest;
+    int16_t pctCur;
+    PLANET *lppl;
+    int16_t ifl;
+    FLEET  *lpfl;
+    int16_t cDone;
+    int16_t iEnv;
+    int16_t cAllowed;
+    int32_t ipct;
+    int16_t pctNew;
 
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
-        if (rglpfl[ifl] == 0x0)
+        if (rglpfl[ifl] == 0)
             break;
-        if (lpfl->fDead == 0x0 && lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].iPlayer != -1) {
+        if (lpfl->fDead == 0 && lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].iPlayer != -1) {
             ipct = PctTerraFromLpfl(lpfl);
             if (ipct > 0) {
                 lppl = lpPlanets + lpfl->idPlanet;
-                if (lpfl->iPlayer != lppl->iPlayer && (int16_t)rgplr[lpfl->iPlayer].rgmdRelation[lppl->iPlayer] != 1 && lpfl->iPlayer != lppl->iPlayer) {
-                    t_merge_4d92_0001 = 0;
-                } else {
-                    t_merge_4d92_0001 = 1;
-                }
-                fHelp = t_merge_4d92_0001;
-                if (fHelp != 0 || lppl->fStarbase == 0x0) {
+                fHelp = lpfl->iPlayer == lppl->iPlayer || rgplr[lpfl->iPlayer].rgmdRelation[lppl->iPlayer] == 1 || lpfl->iPlayer == lppl->iPlayer;
+                if (fHelp != 0 || lppl->fStarbase == 0) {
                     pctCur = PctPlanetDesirability(lppl, lppl->iPlayer);
                     cDone = 0;
-                    while (1) {
-                        t_4dd5 = ipct;
-                        ipct = ipct - 1;
-                        if (t_4dd5 <= 0)
-                            break;
+                    while (ipct-- > 0) {
                         iBest = IBestRemoteTerra(lppl, lpfl->iPlayer, fHelp);
                         if (iBest == 0)
                             break;
                         iEnv = abs(iBest) - 1;
-                        cAllowed = (int16_t)lppl->rgEnvVar[iEnv] + (iBest <= 0 ? -1 : 1);
-                        if (0x1 <= (99 >= cAllowed ? cAllowed : 0x63)) {
-                            if (99 >= cAllowed) {
-                                t_merge_4e9d_0001 = cAllowed;
-                            } else {
-                                t_merge_4e9d_0001 = 99;
-                            }
-                        } else {
-                            t_merge_4e9d_0001 = 1;
+                        cAllowed = lppl->rgEnvVar[iEnv] + (iBest <= 0 ? -1 : 1);
+                        if (1 > (99 >= cAllowed ? cAllowed : 99)) {
+                            cAllowed = 1;
+                        } else if (99 < cAllowed) {
+                            cAllowed = 99;
                         }
-                        cAllowed = t_merge_4e9d_0001;
                         lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
-                        cDone = cDone + 1;
+                        cDone++;
                     }
                     pctNew = PctPlanetDesirability(lppl, lppl->iPlayer);
-                    t_merge_4f13_0001 = pctCur == pctNew ? 0x1 : 0x0;
-                    FSendPlrMsg(lpfl->iPlayer, (fHelp == 0 ? 346 : 300) + t_merge_4f13_0001, lpfl->id | 0x8000, lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
+                    FSendPlrMsg(lpfl->iPlayer, (fHelp == 0 ? 346 : 300) + (pctCur == pctNew ? 1 : 0), lpfl->id | 0x8000, lpfl->id, lppl->id, pctCur, pctNew, 0,
+                                0, 0);
                     if (lpfl->iPlayer != lppl->iPlayer && pctNew != pctCur) {
                         FSendPlrMsg(lppl->iPlayer, fHelp == 0 ? 346 : 300, lppl->id, lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
                     }
@@ -1292,7 +1216,7 @@ int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists) {
     iColDrop = 0;
     lpcdT = lpcd;
     for (; iColDrop < cColDrop && (lpcdT->idFleetSrc != lpfl->id || lpcdT->idPlanetDst != lppl->id); iColDrop++) {
-        lpcdT = lpcdT + 1;
+        lpcdT++;
     }
     if (iColDrop == cColDrop) {
         if (cColDrop >= 1000) {
@@ -1302,20 +1226,19 @@ int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists) {
         lpcdT->idPlr = lpfl->iPlayer;
         lpcdT->idPlanetDst = lppl->id;
         lpcdT->cColonist = 0;
-        lpcdT->fCanColonize = 0x1;
-        cColDrop = cColDrop + 1;
+        lpcdT->fCanColonize = 1;
+        cColDrop++;
     }
-    lpcdT->cColonist = lpcdT->cColonist + cColonists;
+    lpcdT->cColonist += cColonists;
     return LOWORD(cColonists);
 }
 
 void UpdatePopulations() {
-    int32_t  lPopChg;
-    PLANET  *lppl;
-    PLANET  *lpplMac;
-    int32_t  lPopOld;
-    int16_t  fMac;
-    uint16_t t_merge_52d8_0001;
+    int32_t lPopChg;
+    PLANET *lppl;
+    PLANET *lpplMac;
+    int32_t lPopOld;
+    int16_t fMac;
 
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
@@ -1324,18 +1247,17 @@ void UpdatePopulations() {
             lPopChg = ChgPopFromPlanet(lppl, 1);
             if (lPopChg != 0 && lPopChg < 0 && lppl->rgwtMin[3] > 0) {
                 lPopOld = lppl->rgwtMin[3] - lPopChg;
-                if (PctPlanetDesirability(lppl, lppl->iPlayer) >= 0) {
-                    FSendPlrMsg(lppl->iPlayer, 38, lppl->id, lppl->id, -LOWORD(lPopChg), LOWORD((uint32_t)((uint32_t)-lPopChg >> 0x10)), 0, 0, 0, 0);
-                } else {
+                if (PctPlanetDesirability(lppl, lppl->iPlayer) < 0) {
                     FSendPlrMsg(lppl->iPlayer, 37, lppl->id, lppl->id, LOWORD(lPopOld), HIWORD(lPopOld), LOWORD(lppl->rgwtMin[3]), HIWORD(lppl->rgwtMin[3]), 0,
                                 0);
+                } else {
+                    FSendPlrMsg(lppl->iPlayer, 38, lppl->id, lppl->id, -LOWORD(lPopChg), LOWORD((uint32_t)((uint32_t)-lPopChg >> 0x10)), 0, 0, 0, 0);
                 }
             }
         }
         if (lppl->iPlayer != -1 && lppl->rgwtMin[3] == 0) {
             fMac = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh ? 1 : 0;
-            t_merge_52d8_0001 = lPopChg < 0 ? 0x23 : 0x40;
-            FSendPlrMsg2(lppl->iPlayer, t_merge_52d8_0001 + fMac, lppl->id, lppl->id, 0);
+            FSendPlrMsg2(lppl->iPlayer, (lPopChg < 0 ? 35 : 64) + fMac, lppl->id, lppl->id, 0);
             UninhabitPlanet(lppl);
         }
         if (lppl->iPlayer == -1) {
@@ -1350,30 +1272,28 @@ void UpdateGuesses() {
     float   pct;
     PLANET *lpplMac;
     int32_t l;
-    int16_t t_call_53c8;
 
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
         if (lppl->rgwtMin[3] != 0) {
             l = lppl->rgwtMin[3];
-            if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
-                t_call_53c8 = Random((int32_t)(l >> 0x2));
-                l = l + (-(int32_t)(l >> 0x3) + (int32_t)t_call_53c8);
-                l = (int32_t)(l >> 0x2);
-                if (l <= 4090) {
-                    if (l < 1) {
-                        l = 1;
-                    }
-                } else {
-                    l = 4090;
-                }
-            } else {
+            if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh) {
                 l = 0;
+            } else {
+                l += -(int32_t)(l >> 3) + Random((int32_t)(l >> 2));
+                l = (int32_t)(l >> 2);
+                if (l > 4090) {
+                    l = 4090;
+                } else if (l < 1) {
+                    l = 1;
+                }
             }
             lppl->uPopGuess = LOWORD(l);
-            if (lppl->cDefenses != 0x0) {
-                CalcPctSurvive(lppl, &pct, 0x0);
+            if (lppl->cDefenses == 0) {
+                lppl->uDefGuess = 0;
+            } else {
+                CalcPctSurvive(lppl, &pct, NULL);
                 l = 100 - (int32_t)(pct * 100.0 + 0.5) + 4;
                 l = (int32_t)(l / 6);
                 if (l < 1) {
@@ -1382,11 +1302,9 @@ void UpdateGuesses() {
                     l = 15;
                 }
                 lppl->uDefGuess = LOWORD(l);
-            } else {
-                lppl->uDefGuess = 0x0;
             }
         } else {
-            lppl->uGuesses = 0x0;
+            lppl->uGuesses = 0;
         }
     }
     return;
@@ -1419,7 +1337,7 @@ void MeteorStrike() {
 
     if (Random(20) == 0) {
         lppl = lpPlanets + Random(cPlanet);
-        if ((lppl->iPlayer == -1 || lppl->rgwtMin[3] <= 50 || game.turn >= 0x14) && game.turn >= 0xa) {
+        if ((lppl->iPlayer == -1 || lppl->rgwtMin[3] <= 50 || game.turn >= 20) && game.turn >= 10) {
             iSize = Random(4);
             for (i = 0; i < 3; i++) {
                 rgEnv[i] = i;
@@ -1432,7 +1350,7 @@ void MeteorStrike() {
             }
             for (i = 0; i < 3; i++) {
                 rgAffect[i] = i;
-                rgQuan[i] = (int32_t)(Random(250) + 50);
+                rgQuan[i] = (int16_t)(Random(250) + 50);
             }
             for (i = 0; i < 2; i++) {
                 j = Random(3 - i) + i;
@@ -1441,22 +1359,18 @@ void MeteorStrike() {
                 rgAffect[j] = iT;
             }
             for (i = 0; i < game.cPlayer; i++) {
-                if (i != lppl->iPlayer || GetRaceStat(&rgplr[i], rsMajorAdv) == raMacintosh) {
-                    t_merge_5834_0001 = 0x83;
-                } else {
-                    t_merge_5834_0001 = 0x87;
-                }
+                t_merge_5834_0001 = i == lppl->iPlayer && GetRaceStat(&rgplr[i], rsMajorAdv) != raMacintosh ? 135 : 131;
                 FSendPlrMsg(i, t_merge_5834_0001 + iSize, lppl->id, lppl->id, rgEnv[0], rgEnv[1], rgEnv[2], 0, 0, 0);
             }
             if (lppl->iPlayer != -1 && GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
-                lppl->rgwtMin[3] = lppl->rgwtMin[3] - (int32_t)((int32_t)(lppl->rgwtMin[3] * (int32_t)(20 * iSize + 0x19)) / 0x64);
+                lppl->rgwtMin[3] -= (int32_t)(lppl->rgwtMin[3] * (int16_t)(20 * iSize + 25)) / 100;
             }
             for (i = 0; i <= iSize && i < 3; i++) {
-                rgQuan[rgAffect[i]] = rgQuan[rgAffect[i]] + (int32_t)(Random(17000) + 3000);
+                rgQuan[rgAffect[i]] = rgQuan[rgAffect[i]] + (int16_t)(Random(17000) + 3000);
                 iConc = lppl->rgMinConc[rgAffect[i]];
-                iConc = iConc + (Random(50) + 50);
+                iConc += Random(50) + 50;
                 if (iSize == 3) {
-                    iConc = iConc + (Random(15) + 15);
+                    iConc += Random(15) + 15;
                 }
                 if (iConc > 200) {
                     iConc = 200;
@@ -1464,32 +1378,28 @@ void MeteorStrike() {
                 lppl->rgMinConc[rgAffect[i]] = LOBYTE(iConc);
             }
             for (i = 0; i < 3; i++) {
-                lppl->rgwtMin[i] = lppl->rgwtMin[i] + (int32_t)(rgQuan[i] >> 0x4);
+                lppl->rgwtMin[i] += (int32_t)(rgQuan[i] >> 4);
             }
             for (i = 0; i < 3 && i <= iSize; i++) {
                 iT = Random(3) + 3;
                 if (iSize == 3) {
-                    iT = iT + (Random(3) + 3);
+                    iT += Random(3) + 3;
                 }
                 if (Random(2) != 0) {
                     iT = -iT;
                 }
-                j = (int16_t)lppl->rgEnvVar[i] + iT;
-                if (j >= 1) {
-                    if (j > 99) {
-                        j = 99;
-                    }
-                } else {
+                j = lppl->rgEnvVar[i] + iT;
+                if (j < 1) {
                     j = 1;
+                } else if (j > 99) {
+                    j = 99;
                 }
                 lppl->rgEnvVar[i] = LOBYTE(j);
-                j = (int16_t)lppl->rgEnvVarOrig[i] + iT;
-                if (j >= 1) {
-                    if (j > 99) {
-                        j = 99;
-                    }
-                } else {
+                j = lppl->rgEnvVarOrig[i] + iT;
+                if (j < 1) {
                     j = 1;
+                } else if (j > 99) {
+                    j = 99;
                 }
                 lppl->rgEnvVarOrig[i] = LOBYTE(j);
             }
@@ -1503,21 +1413,21 @@ void TossNonAutoBuildItems(PLANET *lppl) {
     int16_t iDst;
     int16_t iSrc;
 
-    if (lppl->lpplprod != 0x0) {
+    if (lppl->lpplprod != 0) {
         iDst = 0;
         for (iSrc = 0; iSrc < lppl->lpplprod->iprodMac; iSrc++) {
             if (lppl->lpplprod->rgprod[iSrc].grobj == grobjPlanet && lppl->lpplprod->rgprod[iSrc].iItem < mdIdleFactory) {
                 if (iSrc > iDst) {
                     lppl->lpplprod->rgprod[iDst] = lppl->lpplprod->rgprod[iSrc];
                 }
-                iDst = iDst + 1;
+                iDst++;
             }
         }
-        if (iDst <= 0) {
-            FreePl((PL *)lppl->lpplprod);
-            lppl->lpplprod = 0x0;
-        } else {
+        if (iDst > 0) {
             lppl->lpplprod->iprodMac = LOBYTE(iDst);
+        } else {
+            FreePl((PL *)lppl->lpplprod);
+            lppl->lpplprod = NULL;
         }
     }
     return;
@@ -1531,34 +1441,30 @@ void PlanetaryClimateChange() {
 
     if (Random(20) == 0) {
         lppl = lpPlanets + Random(cPlanet);
-        if (lppl->iPlayer == -1 || lppl->rgwtMin[3] <= 50 || game.turn >= 0x14) {
+        if (lppl->iPlayer == -1 || lppl->rgwtMin[3] <= 50 || game.turn >= 20) {
             i = Random(3);
             if (lppl->iPlayer != -1) {
                 FSendPlrMsg2(lppl->iPlayer, 253, lppl->id, lppl->id, i);
             }
             iT = Random(3) + 3;
             if (iT == 3) {
-                iT = iT + (Random(3) + 3);
+                iT += Random(3) + 3;
             }
             if (Random(2) != 0) {
                 iT = -iT;
             }
-            j = (int16_t)lppl->rgEnvVar[i] + iT;
-            if (j >= 1) {
-                if (j > 99) {
-                    j = 99;
-                }
-            } else {
+            j = lppl->rgEnvVar[i] + iT;
+            if (j < 1) {
                 j = 1;
+            } else if (j > 99) {
+                j = 99;
             }
             lppl->rgEnvVar[i] = LOBYTE(j);
-            j = (int16_t)lppl->rgEnvVarOrig[i] + iT;
-            if (j >= 1) {
-                if (j > 99) {
-                    j = 99;
-                }
-            } else {
+            j = lppl->rgEnvVarOrig[i] + iT;
+            if (j < 1) {
                 j = 1;
+            } else if (j > 99) {
+                j = 99;
             }
             lppl->rgEnvVarOrig[i] = LOBYTE(j);
             TossNonAutoBuildItems(lppl);
@@ -1573,13 +1479,13 @@ void DiscoverNewMinerals() {
 
     if (Random(15 - game.mdSize) == 0) {
         lppl = lpPlanets + Random(cPlanet);
-        if (game.turn >= 0xa) {
+        if (game.turn >= 10) {
             i = Random(3);
             if (lppl->iPlayer != -1) {
                 FSendPlrMsg(lppl->iPlayer, 254, lppl->id, lppl->id, i, 0, 0, 0, 0, 0);
             }
-            if (lppl->rgMinConc[i] < 0xb4) {
-                lppl->rgMinConc[i] = lppl->rgMinConc[i] + LOBYTE(Random(15) + 5);
+            if (lppl->rgMinConc[i] < 180) {
+                lppl->rgMinConc[i] += LOBYTE(Random(15) + 5);
             }
         }
     }
@@ -1594,82 +1500,72 @@ void MysteryTrader() {
     int16_t  grbitTrader;
     int16_t  rgC[4];
     uint16_t t_scratch_m18;
-    int16_t  t_call_6055;
 
-    if (game.turn >= 0x28) {
-        if ((uint32_t)game.turn % 0x64 != 0x47) {
-            if ((uint32_t)game.turn % 0x64 != 0x21) {
-                if ((game.turn & 0x7f) != 0x31) {
-                    if ((game.turn & 0x1) != 0x0) {
-                        return;
-                    }
-                    cRand = 7;
-                } else {
-                    cRand = 4;
-                }
-            } else {
-                cRand = 3;
-            }
-        } else {
+    if (game.turn >= 40) {
+        if ((uint32_t)game.turn % 100 == 71) {
             cRand = 2;
+        } else if ((uint32_t)game.turn % 100 == 33) {
+            cRand = 3;
+        } else if ((game.turn & 0x7f) == 0x31) {
+            cRand = 4;
+        } else {
+            if ((game.turn & 1) != 0) {
+                return;
+            }
+            cRand = 7;
         }
         if (Random(cRand) == 0) {
             lpth = LpthNew(0, ithMysteryTrader);
-            if (lpth != 0x0) {
+            if (lpth != 0) {
                 t_scratch_m18 = Random(5) + 8;
                 lpth->tht.iWarp = t_scratch_m18;
-                for (i = 0; i < 4; i = i + 2) {
+                for (i = 0; i < 4; i += 2) {
                     rgC[i] = Random(400 * game.mdSize + 361) + 1020;
                 }
-                if (Random(2) != 0) {
-                    rgC[1] = 400 * game.mdSize + 1380;
-                    rgC[3] = 1020;
-                } else {
+                if (Random(2) == 0) {
                     rgC[1] = 1020;
                     rgC[3] = 400 * game.mdSize + 1380;
+                } else {
+                    rgC[1] = 400 * game.mdSize + 1380;
+                    rgC[3] = 1020;
                 }
-                t_call_6055 = Random(2);
-                iSrc = t_call_6055;
-                lpth->pt.x = rgC[t_call_6055];
+                iSrc = Random(2);
+                lpth->pt.x = rgC[iSrc];
                 lpth->pt.y = rgC[iSrc == 0 ? 1 : 0];
                 lpth->tht.ptDest.x = rgC[iSrc + 2];
                 lpth->tht.ptDest.y = rgC[(iSrc == 0 ? 1 : 0) + 2];
-                if (game.turn >= 0x64) {
-                    if (game.turn >= 0xfa) {
-                        cRand = 2;
-                    } else {
-                        cRand = 3;
-                    }
-                } else {
+                if (game.turn < 100) {
                     cRand = 5;
+                } else if (game.turn < 250) {
+                    cRand = 3;
+                } else {
+                    cRand = 2;
                 }
-                if (lpth->tht.iWarp > 0x9) {
-                    if (lpth->tht.iWarp >= 0xb) {
-                        cRand = cRand - 1;
+                if (lpth->tht.iWarp <= 9) {
+                    cRand++;
+                } else if (lpth->tht.iWarp >= 11) {
+                    cRand--;
+                }
+                if (Random(10) < cRand) {
+                    if (Random(6) == 0) {
+                        lpth->tht.grbitTrader = 0x1000;
+                    } else {
+                        lpth->tht.grbitTrader = 0;
                     }
                 } else {
-                    cRand = cRand + 1;
-                }
-                if (Random(10) >= cRand) {
-                    grbitTrader = 0x1 << Random(13);
+                    grbitTrader = 1 << Random(13);
                     switch (grbitTrader) {
                     case 64:
                     case 128:
                     case 1024:
                     case 2048:
-                        grbitTrader = 0x1 << Random(13);
-                        if (((game.turn < 0x78 && grbitTrader == 128) || (game.turn < 0x96 && grbitTrader == 1024) ||
-                             (game.turn < 0xb4 && grbitTrader == 2048)) &&
+                        grbitTrader = 1 << Random(13);
+                        if (((game.turn < 120 && grbitTrader == 128) || (game.turn < 150 && grbitTrader == 1024) || (game.turn < 180 && grbitTrader == 2048)) &&
                             Random(2) != 0) {
                             grbitTrader = 0;
                         }
-                    default:
                     }
                     lpth->tht.grbitTrader = grbitTrader;
-                } else if (Random(6) != 0) {
-                    lpth->tht.grbitTrader = 0x0;
-                } else {
-                    lpth->tht.grbitTrader = 0x1000;
                 }
                 for (i = 0; i < game.cPlayer; i++) {
                     FSendPlrMsg2(i, 299, -6, lpth->idFull, 0);
@@ -1712,17 +1608,17 @@ void UpdatePlayerScores() {
     iScoreMax = 0;
     lScore2nd = 0;
     lScoreTot = 0;
-    gd.fGameOverMan = 0x0;
-    memset(rgcCond, 0, 0x10);
+    gd.fGameOverMan = 0;
+    memset(rgcCond, 0, 16);
     for (i = 0; i < game.cPlayer; i++) {
         rglScore[i] = CalcPlayerScore(i, &score);
         vlprgScoreX[i].score = score;
         vlprgScoreX[i].wWord = (vlprgScoreX[i].wWord & 0xffe0) | (i & 0x1f);
         vlprgScoreX[i].wWord = (vlprgScoreX[i].wWord & 0xffdf) | 0x20;
-        vlprgScoreX[i].wWord = vlprgScoreX[i].wWord & 0xc03f;
-        lScoreTot = lScoreTot + rglScore[i];
-        if (score.cPlanet == 0 && score.rgcsh[0] == 0x0 && score.rgcsh[1] == 0x0 && score.rgcsh[2] == 0x0 && rgplr[i].fDead == 0x0) {
-            rgplr[i].wFlags = (rgplr[i].wFlags & 0xfffe) | 0x1;
+        vlprgScoreX[i].wWord &= 0xc03f;
+        lScoreTot += rglScore[i];
+        if (score.cPlanet == 0 && score.rgcsh[0] == 0 && score.rgcsh[1] == 0 && score.rgcsh[2] == 0 && rgplr[i].fDead == 0) {
+            rgplr[i].wFlags = (rgplr[i].wFlags & 0xfffe) | 1;
             for (j = 0; j < game.cPlayer; j++) {
                 if (j != i) {
                     FSendPrependedPlrMsg(j, 187, -4, i | 0x30, 0, 0, 0, 0, 0, 0);
@@ -1731,73 +1627,73 @@ void UpdatePlayerScores() {
         }
         if (score.cPlanet >= MulDiv(cPlanet, GetVCVal(&game, 0, 0), 100)) {
             t_scratch_m86_5 = (vlprgScoreX[i].wWord | 0x40) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0x0;
-            vlprgScoreX[i].wWord = vlprgScoreX[i].wWord | t_scratch_m86_5;
+            vlprgScoreX[i].grbitVC = 0;
+            vlprgScoreX[i].wWord |= t_scratch_m86_5;
             if (GetVCCheck(&game, 0) != 0) {
-                rgcCond[i] = rgcCond[i] + 0x1;
+                rgcCond[i]++;
             }
         }
-        t_scratch_m88_2 = (int32_t)((uint32_t)(score.rgcsh[2] & 0x1fff) << (score.rgcsh[2] >> 0xd << 0x1));
-        if ((int32_t)t_scratch_m88_2 >= (int32_t)GetVCVal(&game, 6, 0)) {
+        t_scratch_m88_2 = (int32_t)((uint32_t)(score.rgcsh[2] & 0x1fff) << (score.rgcsh[2] >> 0xd << 1));
+        if ((int32_t)t_scratch_m88_2 >= GetVCVal(&game, 6, 0)) {
             t_scratch_m86_6 = (vlprgScoreX[i].wWord | 0x800) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0x0;
-            vlprgScoreX[i].wWord = vlprgScoreX[i].wWord | t_scratch_m86_6;
+            vlprgScoreX[i].grbitVC = 0;
+            vlprgScoreX[i].wWord |= t_scratch_m86_6;
             if (GetVCCheck(&game, 6) != 0) {
-                rgcCond[i] = rgcCond[i] + 0x1;
+                rgcCond[i]++;
             }
         }
-        if (rglScore[i] >= (int32_t)GetVCVal(&game, 3, 0)) {
+        if (rglScore[i] >= GetVCVal(&game, 3, 0)) {
             t_scratch_m86_7 = (vlprgScoreX[i].wWord | 0x100) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0x0;
-            vlprgScoreX[i].wWord = vlprgScoreX[i].wWord | t_scratch_m86_7;
+            vlprgScoreX[i].grbitVC = 0;
+            vlprgScoreX[i].wWord |= t_scratch_m86_7;
             if (GetVCCheck(&game, 3) != 0) {
-                rgcCond[i] = rgcCond[i] + 0x1;
+                rgcCond[i]++;
             }
         }
         c = 0;
         for (j = 0; j < 6; j++) {
-            t_scratch_m86_8 = (int16_t)rgplr[i].rgTech[j];
+            t_scratch_m86_8 = rgplr[i].rgTech[j];
             if (t_scratch_m86_8 >= GetVCVal(&game, 1, 0)) {
-                c = c + 1;
+                c++;
             }
         }
         if (c >= GetVCVal(&game, 2, 0)) {
             t_scratch_m86_9 = (vlprgScoreX[i].wWord | 0x80) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0x0;
-            vlprgScoreX[i].wWord = vlprgScoreX[i].wWord | t_scratch_m86_9;
+            vlprgScoreX[i].grbitVC = 0;
+            vlprgScoreX[i].wWord |= t_scratch_m86_9;
             if (GetVCCheck(&game, 1) != 0) {
-                rgcCond[i] = rgcCond[i] + 0x1;
+                rgcCond[i]++;
             }
         }
         t_scratch_m88_6 = (int32_t)(score.cResources / 1000);
-        if ((int32_t)t_scratch_m88_6 >= (int32_t)GetVCVal(&game, 5, 0)) {
+        if ((int32_t)t_scratch_m88_6 >= GetVCVal(&game, 5, 0)) {
             t_scratch_m86_10 = (vlprgScoreX[i].wWord | 0x400) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0x0;
-            vlprgScoreX[i].wWord = vlprgScoreX[i].wWord | t_scratch_m86_10;
+            vlprgScoreX[i].grbitVC = 0;
+            vlprgScoreX[i].wWord |= t_scratch_m86_10;
             if (GetVCCheck(&game, 5) != 0) {
-                rgcCond[i] = rgcCond[i] + 0x1;
+                rgcCond[i]++;
             }
         }
     }
-    if (game.cPlayer != 1) {
+    if (game.cPlayer == 1) {
+        vlprgScoreX->iRank = 1;
+    } else {
         for (i = 0; i < game.cPlayer; i++) {
-            if (rgplr[i].fDead != 0x0) {
-                cDead = cDead + 1;
+            if (rgplr[i].fDead != 0) {
+                cDead++;
             }
-            rgplr[i].wScore = 0x1;
+            rgplr[i].wScore = 1;
             for (j = 0; j < game.cPlayer; j++) {
                 if (rglScore[j] > rglScore[i]) {
-                    rgplr[i].wScore = rgplr[i].wScore + 0x1;
+                    rgplr[i].wScore++;
                 }
             }
-            if (rgplr[i].wScore != 0x1) {
-                if (rgplr[i].wScore == 0x2) {
-                    lScore2nd = rglScore[i];
-                }
-            } else {
+            if (rgplr[i].wScore == 1) {
                 iScoreMax = i;
                 lScoreMax = rglScore[i];
-                cFirst = cFirst + 1;
+                cFirst++;
+            } else if (rgplr[i].wScore == 2) {
+                lScore2nd = rglScore[i];
             }
         }
         if (cFirst > 1) {
@@ -1808,62 +1704,15 @@ void UpdatePlayerScores() {
         }
         if (game.turn >= GetVCVal(&game, 7, 0) && cFirst == 1) {
             t_scratch_m86_12 = (vlprgScoreX[iScoreMax].wWord | 0x1000) & 0x3fc0;
-            vlprgScoreX[iScoreMax].grbitVC = 0x0;
-            vlprgScoreX[iScoreMax].wWord = vlprgScoreX[iScoreMax].wWord | t_scratch_m86_12;
+            vlprgScoreX[iScoreMax].grbitVC = 0;
+            vlprgScoreX[iScoreMax].wWord |= t_scratch_m86_12;
             if (GetVCCheck(&game, 7) != 0) {
-                rgcCond[iScoreMax] = rgcCond[iScoreMax] + 0x1;
+                rgcCond[iScoreMax]++;
             }
         }
-        if (cDead + 1 < game.cPlayer) {
-            if (lScoreMax >= (int32_t)((int32_t)(lScore2nd * (int32_t)(GetVCVal(&game, 4, 0) + 100)) / 0x64)) {
-                t_scratch_m86_13 = (vlprgScoreX[iScoreMax].wWord | 0x200) & 0x3fc0;
-                vlprgScoreX[iScoreMax].grbitVC = 0x0;
-                vlprgScoreX[iScoreMax].wWord = vlprgScoreX[iScoreMax].wWord | t_scratch_m86_13;
-                if (GetVCCheck(&game, 4) != 0) {
-                    rgcCond[iScoreMax] = rgcCond[iScoreMax] + 0x1;
-                }
-            }
-            if (game.turn >= (uint16_t)GetVCVal(&game, 9, 0)) {
-                wWinners = 0x0;
-                j = GetVCVal(&game, 8, 0);
-                if (j >= 1) {
-                    for (i = game.cPlayer - 1; i >= 0; i--) {
-                        wWinners = wWinners * 0x2;
-                        if (rgcCond[i] >= j) {
-                            vlprgScoreX[i].wWord = (vlprgScoreX[i].wWord & 0xbfff) | 0x4000;
-                            wWinners = wWinners | 0x1;
-                        }
-                    }
-                    if (wWinners != 0x0) {
-                        gd.fGameOverMan = 0x1;
-                    }
-                }
-                if (gd.fGameOverMan != 0x0) {
-                    i = 0;
-                    j = 1;
-                    while (i < game.cPlayer) {
-                        wWinners2 = wWinners;
-                        if (rgplr[i].fDead == 0x0) {
-                            if ((j & wWinners) == 0x0) {
-                                imsg = 181;
-                            } else if ((j ^ wWinners) == 0x0) {
-                                imsg = 182;
-                            } else {
-                                imsg = 183;
-                                wWinners2 = wWinners2 & ~j;
-                            }
-                        } else {
-                            imsg = 184;
-                        }
-                        FSendPrependedPlrMsg(i, imsg, -4, wWinners2, 0, 0, 0, 0, 0, 0);
-                        i = i + 1;
-                        j = j * 2;
-                    }
-                }
-            }
-        } else {
-            gd.fGameOverMan = 0x1;
-            if (rgplr[iScoreMax].fDead == 0x0) {
+        if (cDead + 1 >= game.cPlayer) {
+            gd.fGameOverMan = 1;
+            if (rgplr[iScoreMax].fDead == 0) {
                 FSendPrependedPlrMsg(iScoreMax, 188, -4, 0, 0, 0, 0, 0, 0, 0);
             }
             for (i = 0; i < game.cPlayer; i++) {
@@ -1871,9 +1720,52 @@ void UpdatePlayerScores() {
                     FSendPrependedPlrMsg(i, 184, -4, 0, 0, 0, 0, 0, 0, 0);
                 }
             }
+        } else {
+            if (lScoreMax >= (int32_t)(lScore2nd * (int16_t)(GetVCVal(&game, 4, 0) + 100)) / 100) {
+                t_scratch_m86_13 = (vlprgScoreX[iScoreMax].wWord | 0x200) & 0x3fc0;
+                vlprgScoreX[iScoreMax].grbitVC = 0;
+                vlprgScoreX[iScoreMax].wWord |= t_scratch_m86_13;
+                if (GetVCCheck(&game, 4) != 0) {
+                    rgcCond[iScoreMax]++;
+                }
+            }
+            if (game.turn >= (uint16_t)GetVCVal(&game, 9, 0)) {
+                wWinners = 0;
+                j = GetVCVal(&game, 8, 0);
+                if (j >= 1) {
+                    for (i = game.cPlayer - 1; i >= 0; i--) {
+                        wWinners *= 2;
+                        if (rgcCond[i] >= j) {
+                            vlprgScoreX[i].wWord = (vlprgScoreX[i].wWord & 0xbfff) | 0x4000;
+                            wWinners |= 1;
+                        }
+                    }
+                    if (wWinners != 0) {
+                        gd.fGameOverMan = 1;
+                    }
+                }
+                if (gd.fGameOverMan != 0) {
+                    i = 0;
+                    j = 1;
+                    while (i < game.cPlayer) {
+                        wWinners2 = wWinners;
+                        if (rgplr[i].fDead != 0) {
+                            imsg = 184;
+                        } else if ((j & wWinners) == 0) {
+                            imsg = 181;
+                        } else if ((j ^ wWinners) != 0) {
+                            imsg = 183;
+                            wWinners2 &= ~j;
+                        } else {
+                            imsg = 182;
+                        }
+                        FSendPrependedPlrMsg(i, imsg, -4, wWinners2, 0, 0, 0, 0, 0, 0);
+                        i++;
+                        j *= 2;
+                    }
+                }
+            }
         }
-    } else {
-        vlprgScoreX->iRank = 1;
     }
     return;
 }
@@ -1883,20 +1775,18 @@ void CreateBackupDir() {
 
     strcpy(szBackup, szBase);
     pchT = strrchr(szBackup, 92);
-    if (pchT != 0x0) {
-        pchT = pchT + 1;
-    } else {
+    if (pchT == 0) {
         pchT = szBackup;
+    } else {
+        pchT++;
     }
     *pchT = 0;
-    if (vcBackupDirs > 1) {
-        if (vcBackupDirs > 99) {
-            _wsprintf(pchT, "backup.%03d", (uint32_t)game.turn % vcBackupDirs);
-        } else {
-            _wsprintf(pchT, "backup%d", (uint32_t)game.turn % vcBackupDirs);
-        }
-    } else {
+    if (vcBackupDirs <= 1) {
         strcpy(pchT, "backup");
+    } else if (vcBackupDirs <= 99) {
+        _wsprintf(pchT, "backup%d", (uint32_t)game.turn % vcBackupDirs);
+    } else {
+        _wsprintf(pchT, "backup.%03d", (uint32_t)game.turn % vcBackupDirs);
     }
     mkdir(szBackup);
     strcat(szBackup, "\\");
@@ -1910,43 +1800,42 @@ int16_t FPacketDecay(THING *lpth, int16_t pctRate) {
     uint16_t wDecay;
     int32_t  lDecay;
 
-    if (lpth->thp.iDecayRate > 0x0) {
-        switch (lpth->thp.iDecayRate) {
-        case 0x1:
-            iRate = 10;
-            break;
-        case 0x2:
-            iRate = 25;
-            break;
-        case 0x3:
-            iRate = 50;
-        default:
-        }
-        if (GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) != raMassAccel) {
-            iRateMin = 0xa;
-        } else {
-            iRate = (int32_t)iRate / 2;
-            iRateMin = 0x5;
-        }
-        lDecay = 0;
-        for (i = 0; i < 3; i++) {
-            if (lpth->thp.rgwtMin[i] != 0) {
-                wDecay = LOWORD((int32_t)((int32_t)((uint32_t)((int32_t)lpth->thp.rgwtMin[i] * (int32_t)iRate) * (int32_t)pctRate) / 0x2710));
-                wDecay = iRateMin <= wDecay ? wDecay : iRateMin;
-                if (lpth->thp.rgwtMin[i] <= wDecay) {
-                    wDecay = lpth->thp.rgwtMin[i];
-                }
-                lpth->thp.rgwtMin[i] = lpth->thp.rgwtMin[i] - wDecay;
-                lDecay = lDecay + (int32_t)lpth->thp.rgwtMin[i];
+    if (lpth->thp.iDecayRate <= 0) {
+        return 0;
+    }
+    switch (lpth->thp.iDecayRate) {
+    case 1:
+        iRate = 10;
+        break;
+    case 2:
+        iRate = 25;
+        break;
+    case 3:
+        iRate = 50;
+    }
+    if (GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMassAccel) {
+        iRate /= 2;
+        iRateMin = 5;
+    } else {
+        iRateMin = 10;
+    }
+    lDecay = 0;
+    for (i = 0; i < 3; i++) {
+        if (lpth->thp.rgwtMin[i] != 0) {
+            wDecay = LOWORD((int32_t)((uint32_t)(lpth->thp.rgwtMin[i] * iRate) * pctRate) / 10000);
+            wDecay = iRateMin <= wDecay ? wDecay : iRateMin;
+            if (lpth->thp.rgwtMin[i] <= wDecay) {
+                wDecay = lpth->thp.rgwtMin[i];
             }
+            lpth->thp.rgwtMin[i] -= wDecay;
+            lDecay += lpth->thp.rgwtMin[i];
         }
-        if (lDecay != 0) {
-            lpth->thp.wtMax = LOWORD((int32_t)((lDecay + 9) / 0xa));
-            return 0;
-        }
+    }
+    if (lDecay == 0) {
         FreeLpth(lpth);
         return 1;
     }
+    lpth->thp.wtMax = LOWORD((int32_t)((lDecay + 9) / 10));
     return 0;
 }
 
@@ -1963,88 +1852,84 @@ void ThingDecay() {
     int32_t  dy;
     int32_t  dx;
     uint16_t t_merge_74cc_0001;
-    int32_t  t_merge_75cf_0001;
 
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
-        if (rglpfl[ifl] == 0x0)
+        if (rglpfl[ifl] == 0)
             break;
-        lpfl->fBombed = 0x0;
+        lpfl->fBombed = 0;
     }
     lpth = lpThings;
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
-        if (lpth->ith != ithMineralPacket) {
-            if (lpth->ith == ithMinefield) {
-                fMineExpert = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMines ? 1 : 0;
-                if (lpth->thm.fDetonate != 0x0) {
-                    lDecay = lpth->thm.cMines;
-                    for (ifl = 0; ifl < cFleet; ifl++) {
-                        lpfl = rglpfl[ifl];
-                        if (rglpfl[ifl] == 0x0)
-                            break;
-                        if (lpfl->fDead == 0x0) {
-                            dx = (int32_t)(lpfl->pt.x - lpth->pt.x);
-                            dy = (int32_t)(lpfl->pt.y - lpth->pt.y);
-                            if (lpfl->fBombed == 0x0 && (uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lDecay) {
-                                FTravelThroughMineFields(lpfl, 0x0, lpth);
-                                lpfl->fBombed = 0x1;
-                            }
-                        }
-                    }
-                }
-                t_merge_74cc_0001 = fMineExpert == 0 ? 0x1 : 0x0;
-                pctDecay = (int32_t)((t_merge_74cc_0001 * 0x3 + 0x1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines) + 0x2);
-                if (pctDecay > 50) {
-                    pctDecay = 50;
-                }
-                if (lpth->thm.fDetonate != 0x0) {
-                    pctDecay = pctDecay + 25;
-                }
-                lDecay = (int32_t)((int32_t)(lpth->thm.cMines * pctDecay) / 100);
-                if (lDecay < pctDecay) {
-                    lDecay = pctDecay;
-                }
-                if (lpth->thm.iType != 0x2) {
-                    t_merge_75cf_0001 = 10 <= lDecay ? lDecay : 10;
-                    lDecay = t_merge_75cf_0001;
-                }
-                if (lDecay < lpth->thm.cMines) {
-                    lpth->thm.cMines = lpth->thm.cMines - lDecay;
-                } else {
-                    FreeLpth(lpth);
-                    lpth = lpth - 1;
-                    lpthMac = lpthMac - 1;
-                }
-            }
-        } else {
-            if (lpth->thp.iWarp != 0x0) {
-                if (FPacketDecay(lpth, 100) == 0)
-                    continue;
-            } else {
-                if (lpth->thp.fMoved != 0x0) {
-                    lpth->thp.fMoved = 0x0;
+        if (lpth->ith == ithMineralPacket) {
+            if (lpth->thp.iWarp == 0) {
+                if (lpth->thp.fMoved != 0) {
+                    lpth->thp.fMoved = 0;
                     continue;
                 }
                 lDecay = 0;
                 for (i = 0; i < 3; i++) {
                     if (lpth->thp.rgwtMin[i] != 0) {
-                        wDecay = 0xa <= (int32_t)lpth->thp.rgwtMin[i] / 10 ? (int32_t)lpth->thp.rgwtMin[i] / 10 : 0xa;
-                        lpth->thp.rgwtMin[i] = lpth->thp.rgwtMin[i] - wDecay;
+                        wDecay = 10 <= lpth->thp.rgwtMin[i] / 10 ? lpth->thp.rgwtMin[i] / 10 : 10;
+                        lpth->thp.rgwtMin[i] -= wDecay;
                         if (lpth->thp.rgwtMin[i] < 0) {
                             lpth->thp.rgwtMin[i] = 0;
                         }
-                        lDecay = lDecay + (int32_t)lpth->thp.rgwtMin[i];
+                        lDecay += lpth->thp.rgwtMin[i];
                     }
                 }
-                if (lDecay != 0) {
-                    lpth->thp.wtMax = LOWORD((int32_t)((lDecay + 9) / 0xa));
+                if (lDecay == 0) {
+                    FreeLpth(lpth);
+                } else {
+                    lpth->thp.wtMax = LOWORD((int32_t)((lDecay + 9) / 10));
                     continue;
                 }
-                FreeLpth(lpth);
+            } else if (FPacketDecay(lpth, 100) == 0) {
+                continue;
             }
-            lpth = lpth - 1;
-            lpthMac = lpthMac - 1;
+            lpth--;
+            lpthMac--;
+        } else if (lpth->ith == ithMinefield) {
+            fMineExpert = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMines ? 1 : 0;
+            if (lpth->thm.fDetonate != 0) {
+                lDecay = lpth->thm.cMines;
+                for (ifl = 0; ifl < cFleet; ifl++) {
+                    lpfl = rglpfl[ifl];
+                    if (rglpfl[ifl] == 0)
+                        break;
+                    if (lpfl->fDead == 0) {
+                        dx = (int16_t)(lpfl->pt.x - lpth->pt.x);
+                        dy = (int16_t)(lpfl->pt.y - lpth->pt.y);
+                        if (lpfl->fBombed == 0 && (uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lDecay) {
+                            FTravelThroughMineFields(lpfl, NULL, lpth);
+                            lpfl->fBombed = 1;
+                        }
+                    }
+                }
+            }
+            t_merge_74cc_0001 = fMineExpert == 0 ? 1 : 0;
+            pctDecay = (int16_t)((t_merge_74cc_0001 * 3 + 1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines) + 2);
+            if (pctDecay > 50) {
+                pctDecay = 50;
+            }
+            if (lpth->thm.fDetonate != 0) {
+                pctDecay += 25;
+            }
+            lDecay = (int32_t)(lpth->thm.cMines * pctDecay) / 100;
+            if (lDecay < pctDecay) {
+                lDecay = pctDecay;
+            }
+            if (lpth->thm.iType != 2) {
+                lDecay = 10 <= lDecay ? lDecay : 10;
+            }
+            if (lDecay >= lpth->thm.cMines) {
+                FreeLpth(lpth);
+                lpth--;
+                lpthMac--;
+            } else {
+                lpth->thm.cMines -= lDecay;
+            }
         }
     }
     return;
@@ -2058,7 +1943,7 @@ void UnmarkMineFields() {
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
         if (lpth->ith == ithMinefield) {
-            lpth->thm.grbitPlrNow = 0x0;
+            lpth->thm.grbitPlrNow = 0;
         }
     }
     return;
@@ -2082,25 +1967,25 @@ void SweepForMines() {
 
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
-        if (rglpfl[ifl] == 0x0)
+        if (rglpfl[ifl] == 0)
             break;
         cMine = CMineSweepFromLpfl(lpfl);
-        if (cMine > 0 && lpfl->fDead == 0x0) {
+        if (cMine > 0 && lpfl->fDead == 0) {
             iplr = lpfl->iplr;
-            grbitPlr = 0x1 << lpfl->iplr;
+            grbitPlr = 1 << lpfl->iplr;
             pt = lpfl->pt;
             lpth = lpThings;
             lpthMac = lpThings + cThing;
             for (; lpth < lpthMac; lpth++) {
                 if (lpth->ith == ithMinefield && lpth->iplr != iplr && FAttackPlayer(lpfl, lpth->iplr) != 0) {
-                    dx = (int32_t)(pt.x - lpth->pt.x);
-                    dy = (int32_t)(pt.y - lpth->pt.y);
+                    dx = (int16_t)(pt.x - lpth->pt.x);
+                    dy = (int16_t)(pt.y - lpth->pt.y);
                     lCur = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
                     if (lpth->thm.cMines >= (uint32_t)(dx * dx) + (uint32_t)(dy * dy)) {
-                        if (lpth->thm.iType != 0x2) {
-                            cMineCur = cMine;
-                        } else {
+                        if (lpth->thm.iType == 2) {
                             cMineCur = (int32_t)(cMine / 3);
+                        } else {
+                            cMineCur = cMine;
                         }
                         if (cMineCur < 2) {
                             cMineCur = 2;
@@ -2114,13 +1999,13 @@ void SweepForMines() {
                         FSendPlrMsg(lpfl->iPlayer, 194, 0x8000 | lpfl->id, lpfl->id, LOWORD(cMineCur), HIWORD(cMineCur), lpth->iplr, lpth->thm.iType,
                                     lpth->pt.x, lpth->pt.y);
                         FSendPlrMsg(lpth->iplr, 190, -6, lpth->idFull, LOWORD(cMineCur), HIWORD(cMineCur), lpth->thm.iType, lpth->pt.x, lpth->pt.y, 0);
-                        lpth->thm.cMines = lpth->thm.cMines - cMineCur;
+                        lpth->thm.cMines -= cMineCur;
                         if (lpth->thm.cMines <= 0) {
                             FreeLpth(lpth);
-                            lpth = lpth - 1;
-                            lpthMac = lpthMac - 1;
+                            lpth--;
+                            lpthMac--;
                         } else {
-                            lpth->thm.grbitPlr = lpth->thm.grbitPlr | 0x1 << lpfl->iPlayer;
+                            lpth->thm.grbitPlr |= 1 << lpfl->iPlayer;
                         }
                     }
                 }
@@ -2130,24 +2015,24 @@ void SweepForMines() {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->fStarbase != 0x0 && lppl->iPlayer != -1) {
+        if (lppl->fStarbase != 0 && lppl->iPlayer != -1) {
             cMine = CMineSweepFromLphul(&rglpshdefSB[lppl->iPlayer][lppl->isb].hul);
             if (cMine > 0) {
                 iplr = lppl->iPlayer;
-                grbitPlr = 0x1 << lppl->iPlayer;
+                grbitPlr = 1 << lppl->iPlayer;
                 pt = rgptPlan[lppl->id];
                 lpth = lpThings;
                 lpthMac = lpThings + cThing;
                 for (; lpth < lpthMac; lpth++) {
-                    if (lpth->ith == ithMinefield && lpth->iplr != iplr && iplr != lpth->iplr && (int16_t)rgplr[iplr].rgmdRelation[lpth->iplr] != 1) {
-                        dx = (int32_t)(pt.x - lpth->pt.x);
-                        dy = (int32_t)(pt.y - lpth->pt.y);
+                    if (lpth->ith == ithMinefield && lpth->iplr != iplr && iplr != lpth->iplr && rgplr[iplr].rgmdRelation[lpth->iplr] != 1) {
+                        dx = (int16_t)(pt.x - lpth->pt.x);
+                        dy = (int16_t)(pt.y - lpth->pt.y);
                         lCur = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
                         if (lpth->thm.cMines >= (uint32_t)(dx * dx) + (uint32_t)(dy * dy)) {
-                            if (lpth->thm.iType != 0x2) {
-                                cMineCur = cMine;
-                            } else {
+                            if (lpth->thm.iType == 2) {
                                 cMineCur = (int32_t)(cMine / 3);
+                            } else {
+                                cMineCur = cMine;
                             }
                             if (cMineCur < 2) {
                                 cMineCur = 2;
@@ -2160,13 +2045,13 @@ void SweepForMines() {
                             }
                             FSendPlrMsg(iplr, 244, lppl->id, lppl->id, LOWORD(cMineCur), HIWORD(cMineCur), lpth->iplr, lpth->thm.iType, lpth->pt.x, lpth->pt.y);
                             FSendPlrMsg(lpth->iplr, 190, -6, lpth->idFull, LOWORD(cMineCur), HIWORD(cMineCur), lpth->thm.iType, lpth->pt.x, lpth->pt.y, 0);
-                            lpth->thm.cMines = lpth->thm.cMines - cMineCur;
+                            lpth->thm.cMines -= cMineCur;
                             if (lpth->thm.cMines <= 0) {
                                 FreeLpth(lpth);
-                                lpth = lpth - 1;
-                                lpthMac = lpthMac - 1;
+                                lpth--;
+                                lpthMac--;
                             } else {
-                                lpth->thm.grbitPlr = lpth->thm.grbitPlr | 0x1 << lppl->iPlayer;
+                                lpth->thm.grbitPlr |= 1 << lppl->iPlayer;
                             }
                         }
                     }
@@ -2188,40 +2073,38 @@ void BreedColonistsInTransit() {
     int32_t       lColGainAct;
     RaceAttribute t_call_7e83;
     uint16_t      t_merge_7e9a_0001;
-    PLANET       *t_call_8058;
 
     fNoBreeders = 1;
     for (i = 0; i < game.cPlayer; i++) {
         t_call_7e83 = GetRaceStat(&rgplr[i], rsMajorAdv);
         t_merge_7e9a_0001 =
-            t_call_7e83 == raDefend ? ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)0x1 & 0xff) : ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)0x0 & 0xff);
+            t_call_7e83 == raDefend ? ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)1 & 0xff) : ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)0 & 0xff);
         grfBreeder[i] = LOBYTE(t_merge_7e9a_0001);
-        if ((int16_t)LOBYTE(t_merge_7e9a_0001) == 0x1) {
+        if ((int16_t)(int8_t)LOBYTE(t_merge_7e9a_0001) == 1) {
             fNoBreeders = 0;
         }
     }
     if (fNoBreeders == 0) {
         for (ifl = 0; ifl < cFleet; ifl++) {
             lpfl = rglpfl[ifl];
-            if (rglpfl[ifl] == 0x0)
+            if (rglpfl[ifl] == 0)
                 break;
-            if (lpfl->fDead == 0x0 && (int16_t)grfBreeder[lpfl->iPlayer] != 0 && lpfl->rgwtMin[3] != 0) {
-                lColGain = (int32_t)((int32_t)(lpfl->rgwtMin[3] * (int32_t)(int16_t)rgplr[lpfl->iPlayer].pctIdealGrowth) / 0xc8);
+            if (lpfl->fDead == 0 && (int16_t)(int8_t)grfBreeder[lpfl->iPlayer] != 0 && lpfl->rgwtMin[3] != 0) {
+                lColGain = (int32_t)(lpfl->rgwtMin[3] * (int16_t)rgplr[lpfl->iPlayer].pctIdealGrowth) / 200;
                 if (lColGain <= 0) {
                     if (Random(3) != 0)
                         continue;
                     lColGain = 1;
                 }
-                lColGainAct = ChgCargo(grobjFleet, lpfl->id, 3, lColGain, 0x0);
+                lColGainAct = ChgCargo(grobjFleet, lpfl->id, 3, lColGain, NULL);
                 if (lColGainAct > 0) {
                     FSendPlrMsg2(lpfl->iPlayer, 251, lpfl->id | 0x8000, lpfl->id, LOWORD(lColGainAct));
                 }
                 if (lColGainAct < lColGain && lpfl->idPlanet != -1) {
-                    t_call_8058 = LpplFromId(lpfl->idPlanet);
-                    lppl = t_call_8058;
-                    if (t_call_8058 != 0x0 && lppl->iPlayer == lpfl->iPlayer) {
-                        lColGain = lColGain - lColGainAct;
-                        lppl->rgwtMin[3] = lppl->rgwtMin[3] + lColGain;
+                    lppl = LpplFromId(lpfl->idPlanet);
+                    if (lppl != 0 && lppl->iPlayer == lpfl->iPlayer) {
+                        lColGain -= lColGainAct;
+                        lppl->rgwtMin[3] += lColGain;
                         FSendPlrMsg(lpfl->iPlayer, 344, lpfl->id | 0x8000, lpfl->id, LOWORD(lColGain), HIWORD(lColGain), lpfl->idPlanet, 0, 0, 0);
                     }
                 }
@@ -2267,74 +2150,72 @@ void UpdateResearchStatus(int16_t fUsePool) {
     for (i = 0; i < game.cPlayer; i++) {
         fUsePool = fUsePoolOrig;
         fGeneral = GetRaceGrbit(&rgplr[i], ibitRaceGeneralizedResearch);
-        iTechCur = (int16_t)rgplr[i].iTechCur & 0xf;
-        iTechNext = (int16_t)(rgplr[i].iTechCur >> 0x4);
+        iTechCur = rgplr[i].iTechCur & 0xf;
+        iTechNext = (int16_t)(int8_t)(rgplr[i].iTechCur >> 4);
         idPlayer = i;
-        if (rgplr[i].fDead == 0x0) {
-            cPlrAlive = cPlrAlive + 1;
+        if (rgplr[i].fDead == 0) {
+            cPlrAlive++;
         }
         do {
             fRedoItAll = 0;
             for (iT = 0; iT < 6; iT++) {
                 lSpent = rgplr[i].rgResSpent[iT];
                 fChgNow = 0;
-                if (game.fSlowTech != 0x0) {
+                if (game.fSlowTech != 0) {
                     lSpent = (int32_t)(lSpent * 2);
                 }
                 if (iT == iTechCur && fUsePool != 0 && fGeneral < 2) {
-                    if (fGeneral == 0) {
-                        lSpent = lSpent + rgplr[i].lResLastYear;
-                        rglFieldSpent[iT] = rglFieldSpent[iT] + rgplr[i].lResLastYear;
-                    } else {
+                    if (fGeneral != 0) {
                         fRedoItAll = 1;
                         fGeneral = 2;
-                        lSpent = lSpent + (int32_t)((rgplr[i].lResLastYear + 1) / 0x2);
-                        rglFieldSpent[iT] = rglFieldSpent[iT] + (int32_t)((rgplr[i].lResLastYear + 1) / 0x2);
+                        lSpent += (int32_t)((rgplr[i].lResLastYear + 1) / 2);
+                        rglFieldSpent[iT] += (int32_t)((rgplr[i].lResLastYear + 1) / 2);
                         for (iTT = 0; iTT < 6; iTT++) {
                             if (iTT != iT) {
-                                l15pct = (int32_t)((int32_t)((uint32_t)(rgplr[i].lResLastYear * 3) + 19) / 0x14);
-                                if (game.fSlowTech == 0x0) {
-                                    rgplr[i].rgResSpent[iTT] = rgplr[i].rgResSpent[iTT] + l15pct;
+                                l15pct = (int32_t)((uint32_t)(rgplr[i].lResLastYear * 3) + 19) / 20;
+                                if (game.fSlowTech != 0) {
+                                    rgplr[i].rgResSpent[iTT] += (int32_t)(l15pct / 2);
                                 } else {
-                                    rgplr[i].rgResSpent[iTT] = rgplr[i].rgResSpent[iTT] + (int32_t)(l15pct / 2);
+                                    rgplr[i].rgResSpent[iTT] += l15pct;
                                 }
-                                rglFieldSpent[iTT] = rglFieldSpent[iTT] + l15pct;
+                                rglFieldSpent[iTT] += l15pct;
                             }
                         }
+                    } else {
+                        lSpent += rgplr[i].lResLastYear;
+                        rglFieldSpent[iT] += rgplr[i].lResLastYear;
                     }
                 }
-                do {
-                    if ((int16_t)rgplr[i].rgTech[iT] >= 26 || (rgplr[i].fCrippled != 0x0 && (int16_t)rgplr[i].rgTech[iT] >= 10) ||
-                        (rgplr[i].fCheater != 0x0 && (int16_t)rgplr[i].rgTech[iT] >= 10))
-                        goto L_89f3;
-                    l = GetTechLevelCost(iT, (int16_t)rgplr[i].rgTech[iT] + 1, i);
-                    if (l > lSpent || ((int16_t)rgplr[i].rgTech[iT] >= 26 && (rgplr[i].fCrippled != 0x0 || (int16_t)rgplr[i].rgTech[iT] >= 26)))
+                while (rgplr[i].rgTech[iT] < 26 && (rgplr[i].fCrippled == 0 || rgplr[i].rgTech[iT] < 10) &&
+                       (rgplr[i].fCheater == 0 || rgplr[i].rgTech[iT] < 10)) {
+                    l = GetTechLevelCost(iT, rgplr[i].rgTech[iT] + 1, i);
+                    if (l > lSpent || (rgplr[i].rgTech[iT] >= 26 && (rgplr[i].fCrippled != 0 || rgplr[i].rgTech[iT] >= 26)))
                         goto L_89a5;
                     iTechNext2 = iTechCur;
-                    lSpent = lSpent - l;
-                    rgplr[i].rgTech[iT] = rgplr[i].rgTech[iT] + 1;
+                    lSpent -= l;
+                    rgplr[i].rgTech[iT]++;
                     TechLevel = rgplr[i].rgTech[iT];
-                    if ((int16_t)TechLevel == 26 && iTechNext == 6) {
+                    if ((int16_t)(int8_t)TechLevel == 26 && iTechNext == 6) {
                         iTechNext = 7;
                     }
                     if (iTechCur == iT && iTechNext != 6) {
-                        if (iTechNext == 7) {
+                        if (iTechNext != 7) {
+                            iTechNext2 = iTechNext;
+                        } else {
                             iTechNext2 = 0;
                             for (jj = 1; jj < 6; jj++) {
                                 if (rgplr[i].rgTech[jj] < LOBYTE((int16_t)(((uint16_t)iTechNext2 & 0xff00) | ((uint16_t)rgplr[i].rgTech[iTechNext2] & 0xff)))) {
                                     iTechNext2 = jj;
                                 }
                             }
-                        } else {
-                            iTechNext2 = iTechNext;
                         }
                         fChgNow = 1;
                     }
-                    FSendPlrMsg(i, fGeneral == 0 ? 80 : 310, -2, (int16_t)TechLevel, iT, iTechNext2, 0, 0, 0, 0);
+                    FSendPlrMsg(i, fGeneral == 0 ? 80 : 310, -2, (int16_t)(int8_t)TechLevel, iT, iTechNext2, 0, 0, 0, 0);
                     grbitCur = 1;
                     ibitCur = 0;
                     while (grbitCur != 0) {
-                        if ((grbitCur & 0xffff) != 0x0) {
+                        if ((grbitCur & 0xffff) != 0) {
                             iItem = 0;
                             part.hs.grhst = grbitCur;
                             while (1) {
@@ -2359,7 +2240,7 @@ void UpdateResearchStatus(int16_t fUsePool) {
                                             case 8:
                                             case 12:
                                             case 16:
-                                                iItem = iItem + 1;
+                                                iItem++;
                                                 break;
                                             default:
                                                 goto L_873a;
@@ -2368,72 +2249,72 @@ void UpdateResearchStatus(int16_t fUsePool) {
                                         }
                                     default:
                                     L_873a:
-                                        if (grbitCur != -32768 || iItem < 9 || iItem > 13) {
-                                            if (grbitCur != -32768 || iItem < 0 || iItem > 8) {
-                                                idm = idmRecentBreakthroughHasAlsoGivenBenefit;
-                                            } else {
-                                                idm = idmRecentBreakthroughHasAlsoTaughtHowBuild2;
-                                            }
-                                        } else {
+                                        if (grbitCur == -32768 && iItem >= 9 && iItem <= 13) {
                                             idm = idmRecentBreakthroughHasAlsoTaughtHowBuild;
+                                        } else if (grbitCur == -32768 && iItem >= 0 && iItem <= 8) {
+                                            idm = idmRecentBreakthroughHasAlsoTaughtHowBuild2;
+                                        } else {
+                                            idm = idmRecentBreakthroughHasAlsoGivenBenefit;
                                         }
-                                        iGoto = ibitCur << 0x8 | 0xc000 | iItem;
+                                        iGoto = ibitCur << 8 | 0xc000 | iItem;
                                         goto L_8798;
                                     }
                                     continue;
                                 L_8798:
                                     FSendPlrMsg(i, idm, iGoto, iT, grbitCur, iItem, 0, 0, 0, 0);
                                 }
-                                iItem = iItem + 1;
+                                iItem++;
                             }
                         }
-                        grbitCur = grbitCur * 2;
-                        ibitCur = ibitCur + 1;
+                        grbitCur *= 2;
+                        ibitCur++;
                     }
-                } while ((fUsePool == 0 && fChgNow == 0 && iTechNext != 7) || iTechNext == 6 || iT != iTechCur);
-                if (iTechNext != 7) {
-                    rgplr[idPlayer].iTechCur =
-                        LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                           ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf) & 0xff)) &
-                                0xff00) |
-                               ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf) | 0x60) & 0xff));
-                    rgplr[idPlayer].iTechCur =
-                        LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                           ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
-                                0xff00) |
-                               ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
-                    rgplr[i].rgResSpent[iT] = 0x0;
-                    iTechCur = iTechNext;
-                    iTechNext = 6;
-                } else {
-                    iTechNext = 0;
-                    for (jj = 1; jj < 6; jj++) {
-                        if (rgplr[i].rgTech[jj] < LOBYTE((int16_t)(((uint16_t)iTechNext & 0xff00) | ((uint16_t)rgplr[i].rgTech[iTechNext] & 0xff)))) {
-                            iTechNext = jj;
+                    if ((fUsePool != 0 || fChgNow != 0 || iTechNext == 7) && iTechNext != 6 && iT == iTechCur) {
+                        if (iTechNext == 7) {
+                            iTechNext = 0;
+                            for (jj = 1; jj < 6; jj++) {
+                                if (rgplr[i].rgTech[jj] < LOBYTE((int16_t)(((uint16_t)iTechNext & 0xff00) | ((uint16_t)rgplr[i].rgTech[iTechNext] & 0xff)))) {
+                                    iTechNext = jj;
+                                }
+                            }
+                            rgplr[idPlayer].iTechCur =
+                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
+                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
+                                        0xff00) |
+                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
+                            rgplr[i].rgResSpent[iT] = 0;
+                            iTechCur = iTechNext;
+                            iTechNext = 7;
+                        } else {
+                            rgplr[idPlayer].iTechCur =
+                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
+                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf) & 0xff)) &
+                                        0xff00) |
+                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf) | 0x60) & 0xff));
+                            rgplr[idPlayer].iTechCur =
+                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
+                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
+                                        0xff00) |
+                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
+                            rgplr[i].rgResSpent[iT] = 0;
+                            iTechCur = iTechNext;
+                            iTechNext = 6;
                         }
+                        if (game.fSlowTech != 0) {
+                            lSpent = (int32_t)((lSpent + 1) >> 1);
+                        }
+                        rgplr[i].rgResSpent[iTechCur] += lSpent;
+                        fUsePool = 0;
+                        fRedoItAll = 1;
+                        break;
                     }
-                    rgplr[idPlayer].iTechCur =
-                        LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                           ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
-                                0xff00) |
-                               ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
-                    rgplr[i].rgResSpent[iT] = 0x0;
-                    iTechCur = iTechNext;
-                    iTechNext = 7;
                 }
-                if (game.fSlowTech != 0x0) {
-                    lSpent = (int32_t)((lSpent + 0x1) >> 0x1);
-                }
-                rgplr[i].rgResSpent[iTechCur] = rgplr[i].rgResSpent[iTechCur] + lSpent;
-                fUsePool = 0;
-                fRedoItAll = 1;
-                goto L_89f3;
+                continue;
             L_89a5:
-                if (game.fSlowTech != 0x0) {
-                    lSpent = (int32_t)((lSpent + 0x1) >> 0x1);
+                if (game.fSlowTech != 0) {
+                    lSpent = (int32_t)((lSpent + 1) >> 1);
                 }
                 rgplr[i].rgResSpent[iT] = lSpent;
-            L_89f3:;
             }
         } while (fRedoItAll != 0);
     }
@@ -2444,14 +2325,14 @@ void UpdateResearchStatus(int16_t fUsePool) {
             if (GetRaceStat(&rgplr[i], rsMajorAdv) == raStealth) {
                 for (iT = 0; iT < 6; iT++) {
                     if (rglFieldSpent[iT] > 0) {
-                        lSpent = (int32_t)((int32_t)(rglFieldSpent[iT] / (int32_t)cPlrAlive) / 2);
+                        lSpent = (int32_t)(rglFieldSpent[iT] / cPlrAlive) / 2;
                         if (lSpent > 1) {
                             fRedoItAll = 1;
                             FSendPlrMsg2(i, 345, -2, iT, LOWORD(lSpent));
-                            if (game.fSlowTech != 0x0) {
-                                lSpent = (int32_t)((lSpent + 0x1) >> 0x1);
+                            if (game.fSlowTech != 0) {
+                                lSpent = (int32_t)((lSpent + 1) >> 1);
                             }
-                            rgplr[i].rgResSpent[iT] = rgplr[i].rgResSpent[iT] + lSpent;
+                            rgplr[i].rgResSpent[iT] += lSpent;
                         }
                     }
                 }

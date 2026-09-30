@@ -11,17 +11,17 @@ AlertSz  (utilgen)
   stats: blocks=0  labels=0
 */
 L_2160:
-    branch ini.fValidate != 0x0 ? L_21a3 : L_217c
+    branch ini.fValidate != 0 ? L_21a3 : L_217c
 
 L_217c:
-    branch ini.fLogging == 0x0 ? L_21f7 : L_218f
+    branch ini.fLogging == 0 ? L_21f7 : L_218f
 
 L_218f:
-    branch ini.fGen == 0x0 ? L_21f7 : L_21a3
+    branch ini.fGen == 0 ? L_21f7 : L_21a3
 
 L_21a3:
     call _wsprintf(szT, "Error: %s", sz) -> callresult(int16_t)
-    call OutputSz((ini.fValidate == 0x0 ? 6 : 7), szT) -> callresult(void)
+    call OutputSz((ini.fValidate == 0 ? 6 : 7), szT) -> callresult(void)
     return IDYES
 
 

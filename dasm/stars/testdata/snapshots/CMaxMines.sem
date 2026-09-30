@@ -15,7 +15,7 @@ CMaxMines  (planet)
 L_7248:
     lPopMax = CalcPlanetMaxPop(lppl->id, iplr)
     iEff = GetRaceStat(&rgplr[iplr], rsMineOperate)
-    cMax = (int32_t)((int32_t)(lPopMax * sext16to32(iEff)) / 0x64)
+    cMax = (int32_t)((int32_t)(lPopMax * sext16to32(iEff)) / 100)
     branch cMax < 10 ? L_72c0 : L_72ca
 
 

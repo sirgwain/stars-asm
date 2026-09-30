@@ -2,10 +2,12 @@ package region
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/ir"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 // Func is a function whose IR control flow has been rebuilt as a tree of
@@ -37,10 +39,13 @@ type Goto struct{ Label string }
 // node marks Goto as a region node.
 func (*Goto) node() {}
 
-// If runs Then when Cond is true and Else otherwise.
+// If runs Then when Cond is true and Else otherwise. Laid is set when Then
+// is the arm the compiler laid out to fall through from the test, which is
+// the arm the source wrote first.
 type If struct {
 	Cond       ir.Expr
 	Then, Else []Node
+	Laid       bool
 }
 
 // node marks If as a region node.
@@ -147,11 +152,26 @@ func Build(fn ir.Func) (Func, error) {
 	}
 
 	body = simplify(body, nil, nil, "")
+	// Inlining found code can turn a loop into a search loop, and hoisting
+	// a search loop's exit can leave more code with a single goto.
+	body = inlineSingleGotos(body, gotoCounts(body))
+	body = hoistSearchExits(body, nil, gotoCounts(body))
+	body = inlineSingleGotos(body, gotoCounts(body))
 	body = shapeLoops(body, gotoCounts(body))
+	body = flipGuards(body, gotoCounts(body))
 	if err := checkFlow(g, body); err != nil {
 		return Func{}, fmt.Errorf("region build %s: %w", fn.Name, err)
 	}
-	out.Body = duplicateReturns(pruneLabels(body))
+	locals := map[string]typeinfo.Type{}
+	for _, l := range fn.Locals {
+		locals[l.Name] = l.Type
+	}
+	out.Body = foldAssignments(duplicateReturns(pruneLabels(body)), locals)
+	forwardFoldedTemps(out.Body, out.Body, locals)
+	// Forwarding can leave merge temps with nothing to declare them for.
+	out.Locals = slices.DeleteFunc(slices.Clone(fn.Locals), func(l ir.Local) bool {
+		return strings.HasPrefix(l.Name, "t_merge_") && nodeVarRefs(out.Body, l.Name) == 0
+	})
 	return out, nil
 }
 

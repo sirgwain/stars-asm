@@ -5,7 +5,7 @@ void LogChangeThing(THING *lpth, THING *pthNew) {
 
 L_9908:
     fChg = 0;
-    if (gd.fGeneratingTurn != 0x0)
+    if (gd.fGeneratingTurn != 0)
         goto L_99f0;
     else
         goto L_9929;
@@ -18,8 +18,8 @@ L_9929:
     goto L_99a5;
 
 L_9952:
-    lxNew.rgdItem[i] = (int32_t)(pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]);
-    if ((int32_t)(pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0)
+    lxNew.rgdItem[i] = (int16_t)(pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]);
+    if ((int16_t)(pthNew->thp.rgwtMin[i] - lpth->thp.rgwtMin[i]) != 0)
         goto L_999c;
     else
         goto L_99a1;
@@ -28,7 +28,7 @@ L_999c:
     fChg = 1;
 
 L_99a1:
-    i = i + 1;
+    i++;
 
 L_99a5:
     if (i < 3)

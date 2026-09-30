@@ -10,14 +10,14 @@ void EnsureAis() {
 L_56bc:
     fSubmitSav = gd.fSubmit;
     fWorkDone = 0;
-    if (gd.fAisDone != 0x0)
+    if (gd.fAisDone != 0)
         goto L_5893;
     else
         goto L_56f1;
 
 L_56f1:
     fHostSav = gd.fHostMode;
-    if (gd.fHostMode != 0x0)
+    if (gd.fHostMode != 0)
         goto L_5729;
     else
         goto L_5714;
@@ -31,7 +31,7 @@ L_5729:
     goto L_5735;
 
 L_5731:
-    iPlayer = iPlayer + 1;
+    iPlayer++;
 
 L_5735:
     if (iPlayer >= game.cPlayer)
@@ -44,14 +44,14 @@ L_5740:
     goto L_5731;
 
 L_575d:
-    gd.fSubmit = 0x1;
+    gd.fSubmit = 1;
     fErrSav = fFileErrSilent;
     fFileErrSilent = 1;
     iPlayer = 0;
     goto L_5781;
 
 L_577d:
-    iPlayer = iPlayer + 1;
+    iPlayer++;
 
 L_5781:
     if (iPlayer >= game.cPlayer)
@@ -61,17 +61,17 @@ L_5781:
 
 L_578c:
     UpdateProgressGauge(MulDiv(340, iPlayer + 1, game.cPlayer));
-    if (rgmdplr[iPlayer].fAi == 0x0)
+    if (rgmdplr[iPlayer].fAi == 0)
         goto L_577d;
     else
         goto L_57c5;
 
 L_57c5:
     fWorkDone = 1;
-    gd.fGeneratingTurn = 0x1;
-    gd.fHostMode = 0x1;
+    gd.fGeneratingTurn = 1;
+    gd.fHostMode = 1;
     fOpened = FOpenFile(dtLog, iPlayer, 32);
-    gd.fGeneratingTurn = 0x0;
+    gd.fGeneratingTurn = 0;
     gd.fHostMode = fHostSav;
     if (fOpened == 0)
         goto L_582e;
@@ -101,7 +101,7 @@ L_586c:
 
 L_5881:
     fFileErrSilent = fErrSav;
-    gd.fAisDone = 0x1;
+    gd.fAisDone = 1;
 
 L_5893:
     return;

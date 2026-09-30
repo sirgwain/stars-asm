@@ -11,7 +11,7 @@ L_300c:
     goto L_3026;
 
 L_3022:
-    i = i + 1;
+    i++;
 
 L_3026:
     if (i >= cFleet)
@@ -21,7 +21,7 @@ L_3026:
 
 L_3031:
     lpfl = rglpfl[i];
-    if (rglpfl[i] != 0x0)
+    if (rglpfl[i] != 0)
         goto L_3061;
     else
         goto L_30ad;
@@ -62,13 +62,13 @@ L_311b:
     t_call_3123 = LpAlloc(sizeof(FLEET), htFleets);
     lpfl = t_call_3123;
     rglpfl[i] = t_call_3123;
-    cFleet = cFleet + 1;
-    rgplr[iPlr].cFleet = rgplr[iPlr].cFleet + 0x1;
+    cFleet++;
+    rgplr[iPlr].cFleet++;
     fmemset(lpfl, 0, sizeof(FLEET));
     lpfl->ifl = iflPrev + 1;
     lpfl->iPlayer = iPlr;
     lpfl->iplr = iPlr;
-    lpfl->det = 0x7;
+    lpfl->det = 7;
     lpfl->idPlanet = idPl;
     if (idPl == -1)
         goto L_3231;
@@ -80,16 +80,16 @@ L_3217:
 
 L_3231:
     lpfl->cord = 1;
-    lpfl->fRepOrders = 0x0;
-    lpfl->lpplord = (PLORD *)LpplAlloc(0x12, 0x3, htOrd);
-    lpfl->lpplord->iordMac = 0x1;
-    lpfl->fdirValid = 0x0;
+    lpfl->fRepOrders = 0;
+    lpfl->lpplord = (PLORD *)LpplAlloc(18, 3, htOrd);
+    lpfl->lpplord->iordMac = 1;
+    lpfl->fdirValid = 0;
     lpord = lpfl->lpplord->rgord;
     lpord->pt = lpfl->pt;
     lpord->id = lpfl->idPlanet;
-    lpord->grobj = lpfl->idPlanet == -1 ? 0x4 : 0x1;
-    lpord->iWarp = 0x0;
-    lpord->fValidTask = 0x1;
+    lpord->grobj = lpfl->idPlanet == -1 ? 4 : 1;
+    lpord->iWarp = 0;
+    lpord->fValidTask = 1;
     lpord->grTask = grTaskNone;
     if (sel.scan.ifl == -1)
         goto L_3356;
@@ -103,10 +103,10 @@ L_3346:
         goto L_3351;
 
 L_3351:
-    sel.scan.ifl = sel.scan.ifl + 1;
+    sel.scan.ifl++;
 
 L_3356:
-    gd.fFleetLinkValid = 0x0;
+    gd.fFleetLinkValid = 0;
 
 L_336b:
     return lpfl;

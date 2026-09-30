@@ -18,13 +18,13 @@ L_3c92:
 
 
 L_3ce1:
-    branch iItem < 0x10 ? L_3e21 : L_3cf8
+    branch iItem < 16 ? L_3e21 : L_3cf8
 
 
 
 L_3cf8:
-    iItem = (iItem - 0x10)
-    branch rglpshdefSB[idPlayer][iItem].fFree == 0x0 ? L_3d46 : L_3d3b
+    iItem = (iItem - 16)
+    branch rglpshdefSB[idPlayer][iItem].fFree == 0 ? L_3d46 : L_3d3b
 
 LBogus:
     szWork[0] = 0
@@ -32,7 +32,7 @@ LBogus:
 
 L_3d46:
     call fstrcpy(szWork, rglpshdefSB[idPlayer][iItem].hul.szClass) -> callresult(char *)
-    branch sel.pl.fStarbase == 0x0 ? L_3f13 : L_3d94
+    branch sel.pl.fStarbase == 0 ? L_3f13 : L_3d94
 
 L_3d94:
     iDelta = (rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - rglpshdefSB[idPlayer][iItem].hul.ihuldef)
@@ -52,7 +52,7 @@ L_3e1e:
     goto L_3f13
 
 L_3e21:
-    branch rgshdef[iItem].fFree != 0x0 ? L_3d3b : L_3e4f
+    branch rgshdef[iItem].fFree != 0 ? L_3d3b : L_3e4f
 
 L_3e4f:
     call strcpy(szWork, rgshdef[iItem].hul.szClass) -> callresult(char *)
@@ -61,12 +61,12 @@ L_3e79:
     goto L_3f13
 
 L_3e7c:
-    branch iItem < 0x12 ? L_3ed8 : L_3e93
+    branch iItem < 18 ? L_3ed8 : L_3e93
 
 
 
 L_3e93:
-    branch iItem <= 0x1a ? L_3eaa : L_3ed8
+    branch iItem <= 26 ? L_3eaa : L_3ed8
 
 
 
@@ -75,7 +75,7 @@ L_3eaa:
     goto L_3f13
 
 L_3ed8:
-    branch iItem != 0x1b ? L_3efd : L_3eea
+    branch iItem != 27 ? L_3efd : L_3eea
 
 
 L_3eea:
@@ -83,7 +83,7 @@ L_3eea:
     goto L_3f13
 
 L_3efd:
-    call CchGetString((LOWORD(iItem) + 0x7e), szWork) -> callresult(int16_t)
+    call CchGetString((LOWORD(iItem) + 126), szWork) -> callresult(int16_t)
 
 L_3f13:
     return szWork

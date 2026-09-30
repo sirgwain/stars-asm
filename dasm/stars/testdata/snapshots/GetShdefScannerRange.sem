@@ -42,17 +42,16 @@ L_5119:
     branch GetRaceStat(&rgplr[iplr], rsMajorAdv) != raNone ? L_513f : L_5139
 
 L_5139:
-    t_merge_5142_0001 = 1
+    fBuiltIn = 1
     goto L_5142
 
 L_513f:
-    t_merge_5142_0001 = 0
+    fBuiltIn = 0
 
 L_5142:
-    fBuiltIn = t_merge_5142_0001
     lBIR4 = -1.0
     lBIPR4 = -1.0
-    branch ppctDetect == 0x0 ? L_516b : L_5164
+    branch ppctDetect == 0 ? L_516b : L_5164
 
 L_5164:
     *ppctDetect = 100
@@ -73,7 +72,7 @@ L_5198:
     branch lBIR4 >= 0.0 ? L_525e : L_51b6
 
 L_51b6:
-    branch game.fTutorial == 0x0 ? L_51e3 : L_51ca
+    branch game.fTutorial == 0 ? L_51e3 : L_51ca
 
 L_51ca:
     lBIR4 = 2.56e+06
@@ -106,7 +105,7 @@ L_52ab:
     branch j >= chs ? L_5591 : L_52b6
 
 L_52b6:
-    branch lphs->cItem == 0x0 ? L_5298 : L_52cd
+    branch lphs->cItem == 0 ? L_5298 : L_52cd
 
 L_52cd:
     branch lphs->grhst != hstScanner ? L_545a : L_52d9
@@ -133,7 +132,7 @@ L_5390:
 
 L_5399:
     dRangeT = 0
-    iSteal = (iSteal | 0x1)
+    iSteal = (iSteal | 1)
     goto L_53ed
 
 L_53a8:
@@ -141,7 +140,7 @@ L_53a8:
 
 L_53b1:
     dRangeT = 120
-    iSteal = (iSteal | 0x3)
+    iSteal = (iSteal | 3)
     goto L_53ed
 
 L_53c0:
@@ -151,21 +150,20 @@ L_53c9:
     branch dRangeT != 1 ? L_53d8 : L_53d2
 
 L_53d2:
-    t_merge_53ea_0001 = 50
+    dRangeT = 50
     goto L_53ea
 
 L_53d8:
     branch dRangeT != 2 ? L_53e7 : L_53e1
 
 L_53e1:
-    t_merge_53ea_0001 = 100
+    dRangeT = 100
     goto L_53ea
 
 L_53e7:
-    t_merge_53ea_0001 = 200
+    dRangeT = 200
 
 L_53ea:
-    dRangeT = t_merge_53ea_0001
 
 LPlanScan:
     lT = (double)sext16to32(dRangeT)
@@ -219,7 +217,7 @@ L_5544:
     goto L_5482
 
 L_5554:
-    branch ppctDetect == 0x0 ? L_5298 : L_555d
+    branch ppctDetect == 0 ? L_5298 : L_555d
 
 L_555d:
     branch lphs->grhst != hstSpecialE ? L_5298 : L_556a
@@ -256,19 +254,19 @@ L_5628:
     dRange = -1
 
 L_562d:
-    branch pdPlanRange == 0x0 ? L_5674 : L_5636
+    branch pdPlanRange == 0 ? L_5674 : L_5636
 
 L_5636:
     *pdPlanRange = loword((int32_t)sqrt(sqrt(lPlanRange4)))
 
 L_5674:
-    branch piSteal == 0x0 ? L_5685 : L_567d
+    branch piSteal == 0 ? L_5685 : L_567d
 
 L_567d:
     *piSteal = iSteal
 
 L_5685:
-    branch ppctDetect == 0x0 ? L_56ac : L_568e
+    branch ppctDetect == 0 ? L_56ac : L_568e
 
 L_568e:
     branch cDetectors < 18 ? L_569c : L_5697

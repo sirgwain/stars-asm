@@ -99,6 +99,13 @@ func (b *builder) blockCode(x machine.BlockID) []Node {
 			out = append(out, &If{Cond: t.Cond})
 			return append(out, b.branch(x, tID)...)
 		}
+		// The compiler lays out "if (c) A else B" as a jump on !c to B with A
+		// falling through, so the fall-through block is the source's Then.
+		// When the jump lands on code other paths reach too, the jump itself
+		// was the Then, as in "if (c) break;", and no Then block was laid out.
+		if owner, ok := b.facts.Dom.IDom(tID); ok && owner == x && b.g.layout[fID] == b.g.layout[x]+1 {
+			return append(out, &If{Cond: Negate(t.Cond), Then: b.branch(x, fID), Else: b.branch(x, tID), Laid: true})
+		}
 		return append(out, &If{Cond: t.Cond, Then: b.branch(x, tID), Else: b.branch(x, fID)})
 	case *ir.Goto:
 		return append(out, b.branch(x, b.g.byLabel[t.Label])...)

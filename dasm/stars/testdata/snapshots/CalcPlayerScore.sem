@@ -31,7 +31,7 @@ L_58ee:
 
 L_5900:
     score.cPlanet = (score.cPlanet + 1)
-    lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 0x3e8)
+    lTemp = (int32_t)((lppl->rgwtMin[3] + 999) / 1000)
     branch lTemp <= 6 ? L_594b : L_5941
 
 
@@ -41,10 +41,10 @@ L_5941:
 
 L_594b:
     score.lScore = (score.lScore + lTemp)
-    branch lppl->fStarbase == 0x0 ? L_59ad : L_596e
+    branch lppl->fStarbase == 0 ? L_59ad : L_596e
 
 L_596e:
-    branch LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax == 0x0 ? L_59ad : L_59a9
+    branch LphuldefFromId(rglpshdefSB[iPlr][lppl->isb].hul.ihuldef)->hul.wtCargoMax == 0 ? L_59ad : L_59a9
 
 L_59a9:
     score.cStarbase = (score.cStarbase + 1)
@@ -61,7 +61,7 @@ L_59c9:
 L_59d7:
     score.lScore = (score.lScore + (int32_t)(score.cResources / 30))
     score.lScore = (score.lScore + sext16to32((3 * score.cStarbase)))
-    branch rgplr[iPlr].fDead != 0x0 ? L_5aa7 : L_5a16
+    branch rgplr[iPlr].fDead != 0 ? L_5aa7 : L_5a16
 
 L_5a16:
     i = 0
@@ -87,7 +87,7 @@ L_5a6d:
     branch iTech >= 10 ? L_5a89 : L_5a76
 
 L_5a76:
-    score.lScore = (score.lScore + sext16to32(((3 * iTech) - 0x9)))
+    score.lScore = (score.lScore + sext16to32(((3 * iTech) - 9)))
     goto L_5a9a
 
 L_5a89:
@@ -104,7 +104,7 @@ L_5aa7:
     goto L_5b77
 
 L_5aaf:
-    branch rglpshdef[iPlr][i].fFree == 0x0 ? L_5aed : L_5adc
+    branch rglpshdef[iPlr][i].fFree == 0 ? L_5aed : L_5adc
 
 L_5adc:
     rgType[i] = -1
@@ -161,14 +161,14 @@ L_5bb6:
 
 L_5bc1:
     lpfl = rglpfl[ifl]
-    branch rglpfl[ifl] != 0x0 ? L_5bf1 : L_5c93
+    branch rglpfl[ifl] != 0 ? L_5bf1 : L_5c93
 
 
 L_5bf1:
     branch lpfl->iPlayer != iPlr ? L_5bb2 : L_5c00
 
 L_5c00:
-    branch lpfl->fDead != 0x0 ? L_5bb2 : L_5c1a
+    branch lpfl->fDead != 0 ? L_5bb2 : L_5c1a
 
 L_5c1a:
     i = 0
@@ -229,7 +229,7 @@ L_5d88:
     branch i < 3 ? L_5d5f : L_5d91
 
 L_5d91:
-    branch pscore == 0x0 ? L_5daa : L_5d9a
+    branch pscore == 0 ? L_5daa : L_5d9a
 
 L_5d9a:
     *pscore = score

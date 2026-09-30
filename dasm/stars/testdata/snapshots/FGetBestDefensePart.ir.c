@@ -11,8 +11,8 @@ L_21f6:
     goto L_2250;
 
 L_221d:
-    i = i + 1;
-    part.hs.iItem = part.hs.iItem + 0x1;
+    i++;
+    part.hs.iItem++;
 
 L_2250:
     if (i >= 5)
@@ -33,7 +33,7 @@ L_2273:
         goto L_227c;
 
 L_227c:
-    i = i - 1;
+    i--;
     goto L_2288;
 
 L_2283:

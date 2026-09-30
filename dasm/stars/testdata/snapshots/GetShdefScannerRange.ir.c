@@ -15,9 +15,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     int16_t  j;
     double   lBIPR4;
     double   lRange4;
-    int16_t  t_merge_5142_0001;
     SCANNER *t_call_52ec;
-    int16_t  t_merge_53ea_0001;
 
 L_50d0:
     lRange4 = 0.0;
@@ -37,17 +35,16 @@ L_5119:
         goto L_5139;
 
 L_5139:
-    t_merge_5142_0001 = 1;
+    fBuiltIn = 1;
     goto L_5142;
 
 L_513f:
-    t_merge_5142_0001 = 0;
+    fBuiltIn = 0;
 
 L_5142:
-    fBuiltIn = t_merge_5142_0001;
     lBIR4 = -1.0;
     lBIPR4 = -1.0;
-    if (ppctDetect == 0x0)
+    if (ppctDetect == 0)
         goto L_516b;
     else
         goto L_5164;
@@ -86,7 +83,7 @@ L_5198:
         goto L_51b6;
 
 L_51b6:
-    if (game.fTutorial == 0x0)
+    if (game.fTutorial == 0)
         goto L_51e3;
     else
         goto L_51ca;
@@ -97,12 +94,12 @@ L_51ca:
     goto L_525e;
 
 L_51e3:
-    lBIPR4 = (double)(int32_t)((int16_t)rgplr[iplr].rgTech[4] * 10);
+    lBIPR4 = (double)(int16_t)(rgplr[iplr].rgTech[4] * 10);
     lBIR4 = lBIPR4 * 2.0;
-    lBIPR4 = lBIPR4 * lBIPR4;
-    lBIPR4 = lBIPR4 * lBIPR4;
-    lBIR4 = lBIR4 * lBIR4;
-    lBIR4 = lBIR4 * lBIR4;
+    lBIPR4 *= lBIPR4;
+    lBIPR4 *= lBIPR4;
+    lBIR4 *= lBIR4;
+    lBIR4 *= lBIR4;
 
 L_525e:
     lRange4 = lBIR4;
@@ -115,8 +112,8 @@ L_5272:
     goto L_52ab;
 
 L_5298:
-    j = j + 1;
-    lphs = lphs + 1;
+    j++;
+    lphs++;
 
 L_52ab:
     if (j >= chs)
@@ -125,7 +122,7 @@ L_52ab:
         goto L_52b6;
 
 L_52b6:
-    if (lphs->cItem == 0x0)
+    if (lphs->cItem == 0)
         goto L_5298;
     else
         goto L_52cd;
@@ -141,11 +138,11 @@ L_52d9:
     iScanner = lphs->iItem;
     t_call_52ec = LpscannerFromId(lphs->iItem);
     dRangeT = t_call_52ec->dRange;
-    lT = (double)(int32_t)t_call_52ec->dRange;
-    lT = lT * lT;
-    lT = lT * lT;
-    lT = lT * (double)(uint32_t)lphs->cItem;
-    lRange4 = lRange4 + lT;
+    lT = (double)t_call_52ec->dRange;
+    lT *= lT;
+    lT *= lT;
+    lT *= (double)(uint32_t)lphs->cItem;
+    lRange4 += lT;
     dRangeT = LpscannerFromId(iScanner)->grfAbilities;
     if (iScanner != 6)
         goto L_5390;
@@ -164,7 +161,7 @@ L_5390:
 
 L_5399:
     dRangeT = 0;
-    iSteal = iSteal | 0x1;
+    iSteal |= 1;
     goto LPlanScan;
 
 L_53a8:
@@ -175,7 +172,7 @@ L_53a8:
 
 L_53b1:
     dRangeT = 120;
-    iSteal = iSteal | 0x3;
+    iSteal |= 3;
     goto LPlanScan;
 
 L_53c0:
@@ -191,7 +188,7 @@ L_53c9:
         goto L_53d2;
 
 L_53d2:
-    t_merge_53ea_0001 = 50;
+    dRangeT = 50;
     goto L_53ea;
 
 L_53d8:
@@ -201,21 +198,20 @@ L_53d8:
         goto L_53e1;
 
 L_53e1:
-    t_merge_53ea_0001 = 100;
+    dRangeT = 100;
     goto L_53ea;
 
 L_53e7:
-    t_merge_53ea_0001 = 200;
+    dRangeT = 200;
 
 L_53ea:
-    dRangeT = t_merge_53ea_0001;
 
 LPlanScan:
-    lT = (double)(int32_t)dRangeT;
-    lT = lT * lT;
-    lT = lT * lT;
-    lT = lT * (double)(uint32_t)lphs->cItem;
-    lPlanRange4 = lPlanRange4 + lT;
+    lT = (double)dRangeT;
+    lT *= lT;
+    lT *= lT;
+    lT *= (double)(uint32_t)lphs->cItem;
+    lPlanRange4 += lT;
 
 L_5457:
     goto L_5298;
@@ -237,11 +233,11 @@ L_5478:
     dRangeT2 = 40;
 
 LOddBallScanners:
-    lT = (double)(int32_t)dRangeT;
-    lT = lT * lT;
-    lT = lT * lT;
-    lT = lT * (double)(uint32_t)lphs->cItem;
-    lRange4 = lRange4 + lT;
+    lT = (double)dRangeT;
+    lT *= lT;
+    lT *= lT;
+    lT *= (double)(uint32_t)lphs->cItem;
+    lRange4 += lT;
     dRangeT = dRangeT2;
     goto LPlanScan;
 
@@ -280,7 +276,7 @@ L_5544:
     goto LOddBallScanners;
 
 L_5554:
-    if (ppctDetect == 0x0)
+    if (ppctDetect == 0)
         goto L_5298;
     else
         goto L_555d;
@@ -298,7 +294,7 @@ L_556a:
         goto L_557c;
 
 L_557c:
-    cDetectors = cDetectors + lphs->cItem;
+    cDetectors += lphs->cItem;
 
 L_558e:
     goto L_5298;
@@ -329,7 +325,7 @@ L_55fd:
         goto L_561d;
 
 L_561d:
-    dRange = dRange * 2;
+    dRange *= 2;
 
 L_5625:
     goto L_562d;
@@ -338,7 +334,7 @@ L_5628:
     dRange = -1;
 
 L_562d:
-    if (pdPlanRange == 0x0)
+    if (pdPlanRange == 0)
         goto L_5674;
     else
         goto L_5636;
@@ -347,7 +343,7 @@ L_5636:
     *pdPlanRange = LOWORD((int32_t)sqrt(sqrt(lPlanRange4)));
 
 L_5674:
-    if (piSteal == 0x0)
+    if (piSteal == 0)
         goto L_5685;
     else
         goto L_567d;
@@ -356,7 +352,7 @@ L_567d:
     *piSteal = iSteal;
 
 L_5685:
-    if (ppctDetect == 0x0)
+    if (ppctDetect == 0)
         goto L_56ac;
     else
         goto L_568e;

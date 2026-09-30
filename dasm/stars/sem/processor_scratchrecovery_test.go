@@ -45,8 +45,8 @@ func TestScratchRecoveryRewritesSymbolicScratch(t *testing.T) {
 	if len(got.Effects) != 1 {
 		t.Fatalf("effects = %d, want 1", len(got.Effects))
 	}
-	if text := FormatEffect(got.Effects[0]); text != "dst = 0x7" {
-		t.Fatalf("effect = %q, want %q", text, "dst = 0x7")
+	if text := FormatEffect(got.Effects[0]); text != "dst = 7" {
+		t.Fatalf("effect = %q, want %q", text, "dst = 7")
 	}
 }
 
@@ -216,7 +216,7 @@ func TestScratchRecoveryRawStorage(t *testing.T) {
 			if len(f.RecoveredLocals) != 1 {
 				t.Fatal("address-only scratch storage was not recovered")
 			}
-		} else if got := FormatEffect(f.Blocks[0].Effects[0]); got != "return 0x7" {
+		} else if got := FormatEffect(f.Blocks[0].Effects[0]); got != "return 7" {
 			t.Fatalf("raw read = %s", got)
 		}
 	}
@@ -366,7 +366,7 @@ func TestScratchRecoveryMergedWideValue(t *testing.T) {
 				t.Fatalf("join has %d stores, want %d", got, stores)
 			}
 			if tc.merges == 1 {
-				if got, want := FormatEffect(fn.Blocks[3].Effects[0]), "t_scratch_m4 = (int32_t)(t_merge_1006_0001 * 0x2)"; got != want {
+				if got, want := FormatEffect(fn.Blocks[3].Effects[0]), "t_scratch_m4 = (int32_t)(t_merge_1006_0001 * 2)"; got != want {
 					t.Fatalf("wide assignment = %q, want %q", got, want)
 				}
 			}
@@ -420,7 +420,7 @@ func TestScratchRecoveryCFG(t *testing.T) {
 			}
 			(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
 			if tc.want == scratchInline {
-				want := "return 0x7"
+				want := "return 7"
 				if tc.equivalentScalar {
 					want = "return source"
 				}

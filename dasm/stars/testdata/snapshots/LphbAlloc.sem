@@ -12,7 +12,7 @@ LphbAlloc  (memory)
   stats: blocks=0  labels=0
 */
 L_0000:
-    lphb = 0x0
+    lphb = NULL
     cb = (cb + sizeof(HB))
     branch cb >= mphtcbAlloc[ht] ? L_0034 : L_0028
 
@@ -20,11 +20,11 @@ L_0028:
     cb = mphtcbAlloc[ht]
 
 L_0034:
-    hmem = GlobalAlloc(0x22, (uint32_t)cb)
-    branch hmem != 0x0 ? L_0082 : L_0051
+    hmem = GlobalAlloc(34, (uint32_t)cb)
+    branch hmem != 0 ? L_0082 : L_0051
 
 L_0051:
-    call AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND) -> callresult(int16_t)
+    call AlertSz(PszFormatIds(idsMemory, NULL), MB_ICONHAND) -> callresult(int16_t)
     call StarsLongJump(penvMem, -1) -> callresult(void)
 
 L_0082:

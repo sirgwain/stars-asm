@@ -30,11 +30,11 @@ L_17a7:
 
 L_17b2:
     lppl = vrglpplAi[ipl]
-    branch vrglpplAi[ipl] != 0x0 ? L_17e2 : L_1cef
+    branch vrglpplAi[ipl] != 0 ? L_17e2 : L_1cef
 
 
 L_17e2:
-    branch lppl->lpplprod != 0x0 ? L_17fc : L_17a3
+    branch lppl->lpplprod != 0 ? L_17fc : L_17a3
 
 
 L_17fc:
@@ -60,7 +60,7 @@ L_18a1:
 
 L_18c8:
     call ChangeMainObjSel(grobjPlanet, lppl->id) -> callresult(void)
-    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjMine, &etaFirst, 0x0) -> callresult(char *)
+    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjMine, &etaFirst, NULL) -> callresult(char *)
     branch etaFirst == 1 ? L_17a3 : L_1909
 
 L_1909:
@@ -72,11 +72,11 @@ L_1912:
 L_1917:
     call GetProductionCosts(lppl, &prod, rgCost, idPlayer, 1) -> callresult(void)
     cRes = sext16to32(CResourcesAtPlanet(&sel.pl, idPlayer))
-    branch sel.pl.fNoResearch != 0x0 ? L_19aa : L_1977
+    branch sel.pl.fNoResearch != 0 ? L_19aa : L_1977
 
 
 L_1977:
-    cRes = (cRes - (int32_t)((int32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 0x64))
+    cRes = (cRes - (int32_t)((int32_t)(cRes * sext16to32(sext8to16(rgplr[idPlayer].pctResearch))) / 100))
 
 L_19aa:
     branch rgCost[3] <= (int32_t)(uint32_t)(cRes * sext16to32((etaFirst - 1))) ? L_19d6 : L_17a3
@@ -113,26 +113,26 @@ L_1aaa:
 
 
 L_1ace:
-    call AddItemToQueue(0x8, LOWORD(cBuild), grobjPlanet, 0) -> callresult(void)
+    call AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0) -> callresult(void)
     call FinishProduction(1) -> callresult(void)
-    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, 0x0) -> callresult(char *)
+    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL) -> callresult(char *)
     branch etaBetterMines != -1 ? L_1b29 : L_1b23
 
 L_1b23:
     etaBetterMines = 700
 
 L_1b29:
-    sel.pl.lpplprod->rgprod[0].cItem = 0x1
+    sel.pl.lpplprod->rgprod[0].cItem = 1
     sel.pl.lpplprod->rgprod[0].iItem = iobjAlchemy
     goto L_1b9e
 
 L_1b74:
     etaBetterMines = 700
-    call AddItemToQueue(0x3, 0x1, grobjPlanet, 0) -> callresult(void)
+    call AddItemToQueue(3, 1, grobjPlanet, 0) -> callresult(void)
     call FinishProduction(1) -> callresult(void)
 
 L_1b9e:
-    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, 0x0) -> callresult(char *)
+    call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, NULL) -> callresult(char *)
     branch etaBetterAlchemy != -1 ? L_1bcf : L_1bca
 
 L_1bca:
@@ -159,7 +159,7 @@ L_1c33:
 
 
 L_1c4a:
-    sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 0x1)
+    sel.pl.lpplprod->iprodMac = (sel.pl.lpplprod->iprodMac - 1)
     call fmemmove(sel.pl.lpplprod->rgprod, &sel.pl.lpplprod->rgprod[1], (sel.pl.lpplprod->iprodMac * sizeof(PROD))) -> callresult(void *)
     goto L_17a3
 

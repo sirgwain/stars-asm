@@ -1151,48 +1151,40 @@ char *PszGetCompressedString(StringId ids) {
     char    *pszOut;
     int16_t  iOffset;
     int16_t  fHigh;
-    int16_t  t_7505;
-    uint8_t *t_7537;
 
     iNibble = 0;
-    if (ids != (int16_t)iLastStrGet) {
-        iChunk = ids >> 0x6;
-        iOffset = ids & 0x3f;
-        pch = &aSTRCmpr[aiSTRChunkOffset[iChunk]];
-        pchLen = &acSTR[iChunk * 64];
-        i = 0;
-        while (i < iOffset) {
-            iNibble = iNibble + *pchLen;
-            i = i + 1;
-            pchLen = pchLen + 1;
-        }
-        pch = pch + (iNibble >> 0x1);
-        iLen = *pchLen;
-        fHigh = (iNibble & 0x1) == 0x0 ? 1 : 0;
-        pszOut = szLastStrGet;
-        iBuild = 0;
-        while (1) {
-            t_7505 = iLen;
-            iLen = iLen - 1;
-            if (t_7505 == 0)
-                break;
-            if (fHigh == 0) {
-                t_7537 = pch;
-                pch = pch + 1;
-                i = *t_7537 & 0xf;
-            } else {
-                i = *pch >> 0x4;
-            }
-            fHigh = fHigh == 0 ? 1 : 0;
-            iBuild = iBuild + i;
-            if (i != 15) {
-                *pszOut = rgSTRLookupTable[iBuild];
-                pszOut = pszOut + 1;
-                iBuild = 0;
-            }
-        }
-        *pszOut = 0;
+    if (ids == (int16_t)(int8_t)iLastStrGet) {
         return szLastStrGet;
     }
+    iChunk = ids >> 6;
+    iOffset = ids & 0x3f;
+    pch = &aSTRCmpr[aiSTRChunkOffset[iChunk]];
+    pchLen = &acSTR[iChunk * 64];
+    i = 0;
+    while (i < iOffset) {
+        iNibble += *pchLen;
+        i++;
+        pchLen++;
+    }
+    pch += iNibble >> 1;
+    iLen = *pchLen;
+    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    pszOut = szLastStrGet;
+    iBuild = 0;
+    while (iLen-- != 0) {
+        if (fHigh != 0) {
+            i = *pch >> 4;
+        } else {
+            i = *pch++ & 0xf;
+        }
+        fHigh = fHigh == 0 ? 1 : 0;
+        iBuild += i;
+        if (i != 15) {
+            *pszOut = rgSTRLookupTable[iBuild];
+            pszOut++;
+            iBuild = 0;
+        }
+    }
+    *pszOut = 0;
     return szLastStrGet;
 }

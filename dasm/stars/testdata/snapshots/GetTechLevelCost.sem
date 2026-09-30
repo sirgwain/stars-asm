@@ -34,14 +34,14 @@ L_1e40:
     branch i >= 0 ? L_1e6a : L_1e49
 
 L_1e49:
-    lCost = (lCost + (lCost - (int32_t)(lCost sar 0x2)))
+    lCost = (lCost + (lCost - (int32_t)(lCost sar 2)))
     goto L_1e83
 
 L_1e6a:
     lCost = (int32_t)(lCost / 2)
 
 L_1e83:
-    branch game.fSlowTech == 0x0 ? L_1ea7 : L_1e93
+    branch game.fSlowTech == 0 ? L_1ea7 : L_1e93
 
 L_1e93:
     lCost = (int32_t)(lCost * 2)

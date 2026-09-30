@@ -2,14 +2,14 @@ HB *LphbAlloc(uint16_t cb, HeapType ht) {
     HGLOBAL hmem;
     HB     *lphb;
 
-    lphb = 0x0;
-    cb = cb + sizeof(HB);
+    lphb = NULL;
+    cb += sizeof(HB);
     if (cb < mphtcbAlloc[ht]) {
         cb = mphtcbAlloc[ht];
     }
-    hmem = GlobalAlloc(0x22, (uint32_t)cb);
-    if (hmem == 0x0) {
-        AlertSz(PszFormatIds(idsMemory, 0x0), MB_ICONHAND);
+    hmem = GlobalAlloc(34, (uint32_t)cb);
+    if (hmem == 0) {
+        AlertSz(PszFormatIds(idsMemory, NULL), MB_ICONHAND);
         StarsLongJump(penvMem, -1);
     }
     lphb = (HB *)GlobalLock(hmem);

@@ -12,7 +12,7 @@ L_1261:
     iAbout1st = -11;
     iAboutPartial = 0;
     SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
-    uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0);
+    uTimerId = SetTimer(hwnd, 14, 50, NULL);
     return 1;
 
 L_12a9:
@@ -22,7 +22,7 @@ L_12a9:
 
 L_12d1:
     hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
-    iAboutPartial = iAboutPartial + 2;
+    iAboutPartial += 2;
     if (iAboutPartial < dyArial8)
         goto L_130c;
     else
@@ -30,7 +30,7 @@ L_12d1:
 
 L_12f1:
     iAboutPartial = 0;
-    iAbout1st = iAbout1st + 1;
+    iAbout1st++;
     if (iAbout1st <= 78)
         goto L_130c;
     else
@@ -47,13 +47,13 @@ L_130c:
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, crButtonText);
     IntersectClipRect(hdc, 0, 0, rc.right, rc.bottom);
-    rc.top = rc.top - iAboutPartial;
+    rc.top -= iAboutPartial;
     rc.bottom = rc.top + dyArial8;
     i = iAbout1st;
     goto L_1391;
 
 L_138d:
-    i = i + 1;
+    i++;
 
 L_1391:
     if (i >= iAbout1st + 10)
@@ -90,12 +90,12 @@ L_13e3:
 L_13fa:
     rc.bottom = 1000;
     FillRect(hdc, &rc, hbrButtonFace);
-    SelectClipRgn(hdc, 0x0);
+    SelectClipRgn(hdc, NULL);
     ReleaseDC(hwnd, hdc);
     goto L_1510;
 
 L_142c:
-    if (HIWORD(lParam) != 0x6)
+    if (HIWORD(lParam) != 6)
         goto L_1510;
     else
         goto L_1448;
@@ -118,7 +118,7 @@ L_146a:
 
 L_1473:
     KillTimer(hwnd, uTimerId);
-    uTimerId = 0x0;
+    uTimerId = 0;
     EndDialog(hwnd, 1);
     return 1;
 

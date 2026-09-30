@@ -897,48 +897,40 @@ int16_t CchTutorString(char *pchOut, int16_t idt) {
     char    *pszOut;
     int16_t  iLen;
     uint8_t *pch;
-    int16_t  t_5ae7;
-    uint8_t *t_5b19;
 
     iNibble = 0;
-    if (idt != iLastTutGet) {
-        iChunk = idt >> 0x6;
-        iOffset = idt & 0x3f;
-        pch = &aTUTCmpr[aiTUTChunkOffset[iChunk]];
-        pchLen = &acTUT[iChunk * 64];
-        i = 0;
-        while (i < iOffset) {
-            iNibble = iNibble + *pchLen;
-            i = i + 1;
-            pchLen = pchLen + 1;
-        }
-        pch = pch + (iNibble >> 0x1);
-        iLen = *pchLen;
-        fHigh = (iNibble & 0x1) == 0x0 ? 1 : 0;
-        pszOut = pchOut;
-        iBuild = 0;
-        while (1) {
-            t_5ae7 = iLen;
-            iLen = iLen - 1;
-            if (t_5ae7 == 0)
-                break;
-            if (fHigh == 0) {
-                t_5b19 = pch;
-                pch = pch + 1;
-                i = *t_5b19 & 0xf;
-            } else {
-                i = *pch >> 0x4;
-            }
-            fHigh = fHigh == 0 ? 1 : 0;
-            iBuild = iBuild + i;
-            if (i != 15) {
-                *pszOut = rgTUTLookupTable[iBuild];
-                pszOut = pszOut + 1;
-                iBuild = 0;
-            }
-        }
-        *pszOut = 0;
-        return pszOut - pchOut;
+    if (idt == iLastTutGet) {
+        return strlen(pchOut);
     }
-    return strlen(pchOut);
+    iChunk = idt >> 6;
+    iOffset = idt & 0x3f;
+    pch = &aTUTCmpr[aiTUTChunkOffset[iChunk]];
+    pchLen = &acTUT[iChunk * 64];
+    i = 0;
+    while (i < iOffset) {
+        iNibble += *pchLen;
+        i++;
+        pchLen++;
+    }
+    pch += iNibble >> 1;
+    iLen = *pchLen;
+    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    pszOut = pchOut;
+    iBuild = 0;
+    while (iLen-- != 0) {
+        if (fHigh != 0) {
+            i = *pch >> 4;
+        } else {
+            i = *pch++ & 0xf;
+        }
+        fHigh = fHigh == 0 ? 1 : 0;
+        iBuild += i;
+        if (i != 15) {
+            *pszOut = rgTUTLookupTable[iBuild];
+            pszOut++;
+            iBuild = 0;
+        }
+    }
+    *pszOut = 0;
+    return pszOut - pchOut;
 }

@@ -9,8 +9,8 @@ L_1dba:
     goto L_1def;
 
 L_1dd0:
-    cTech = cTech + (int16_t)rgplr[iplr].rgTech[i];
-    i = i + 1;
+    cTech += rgplr[iplr].rgTech[i];
+    i++;
 
 L_1def:
     if (i < 6)
@@ -19,7 +19,7 @@ L_1def:
         goto L_1df8;
 
 L_1df8:
-    lCost = (int32_t)(10 * cTech) + rglTechCost[iLevel];
+    lCost = (int16_t)(10 * cTech) + rglTechCost[iLevel];
     i = GetRaceStat(&rgplr[iplr], iTech + 8) - 1;
     if (i == 0)
         goto L_1e83;
@@ -33,14 +33,14 @@ L_1e40:
         goto L_1e49;
 
 L_1e49:
-    lCost = lCost + (lCost - (int32_t)(lCost >> 0x2));
+    lCost += lCost - (int32_t)(lCost >> 2);
     goto L_1e83;
 
 L_1e6a:
     lCost = (int32_t)(lCost / 2);
 
 L_1e83:
-    if (game.fSlowTech == 0x0)
+    if (game.fSlowTech == 0)
         goto L_1ea7;
     else
         goto L_1e93;

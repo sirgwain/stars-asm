@@ -15,17 +15,15 @@ void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur) {
     if (iBest < 0) {
         iBest = -iBest;
     }
-    lMax = (int32_t)(iBest - 1);
-    if (iCur > iBest + fTwoMAs) {
-        if (iCur >= iBest + fTwoMAs + 3) {
-            hbr = hbrRed;
-        } else {
-            hbr = hbrYellow;
-        }
-    } else {
+    lMax = (int16_t)(iBest - 1);
+    if (iCur <= iBest + fTwoMAs) {
         hbr = hbrPurple;
+    } else if (iCur < iBest + fTwoMAs + 3) {
+        hbr = hbrYellow;
+    } else {
+        hbr = hbrRed;
     }
-    lCur = (int32_t)(iCur - 4);
+    lCur = (int16_t)(iCur - 4);
     l = LDrawGauge(hdc, prc, 1, &lCur, &hbr, lMax);
     iMode = SetBkMode(hdc, TRANSPARENT);
     c = _wsprintf(szWork, PszGetCompressedString(idsWarpLd), l + 4);

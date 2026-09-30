@@ -94,8 +94,7 @@ L_3c0f:
     goto L_47d5
 
 L_3c2a:
-    t_scratch_m12 = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType]
-    part.hs.iItem = t_scratch_m12
+    part.hs.iItem = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType]
     part.hs.grhst = hstMines
     call FLookupPart(&part) -> callresult(int16_t)
     GlobalPD.grPopup = grPopupComponent
@@ -131,7 +130,7 @@ L_3d86:
     branch c <= 1 ? L_3dcb : L_3d90
 
 L_3d90:
-    c = PopupMenu(hwndMine, x, y, c, 0x0, rgpsz, -1, 1)
+    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, 1)
     branch c == -1 ? L_47d5 : L_3dc2
 
 L_3dc2:
@@ -155,7 +154,7 @@ L_3dd1:
 L_3e38:
     GlobalPD.grPopup = grPopupFleet
     GlobalPD.lpfl = rglpfl[sel.scan.ifl]
-    GlobalPD.fRedDamage = (GlobalPD.lpfl->det == 0x7 ? 1 : 0)
+    GlobalPD.fRedDamage = (GlobalPD.lpfl->det == 7 ? 1 : 0)
     GlobalPD.grbit = 0xff
 
 
@@ -190,7 +189,7 @@ L_3f41:
     GlobalPD.grPopup = grPopupPlanetEnv
     GlobalPD.idPlanet = pl.id
     GlobalPD.iPlanetVar = (ht - 6)
-    branch pl.det < 0x3 ? L_3f85 : L_3f74
+    branch pl.det < 3 ? L_3f85 : L_3f74
 
 L_3f74:
     GlobalPD.iPlanVal = sext8to16(pl.rgEnvVar[GlobalPD.iPlanetVar])
@@ -200,7 +199,7 @@ L_3f85:
     GlobalPD.iPlanVal = -1
 
 L_3f8b:
-    branch pl.det < 0x3 ? L_4010 : L_3f99
+    branch pl.det < 3 ? L_4010 : L_3f99
 
 L_3f99:
     branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0 ? L_4010 : L_3fc0
@@ -274,13 +273,13 @@ L_4129:
     goto L_43d9
 
 L_4154:
-    branch (scan.grobjFull & 0x1) != 0x0 ? L_429f : L_4168
+    branch (scan.grobjFull & 1) != 0 ? L_429f : L_4168
 
 L_4168:
-    branch (scan.grobjFull & 0x2) != 0x0 ? L_42f3 : L_417c
+    branch (scan.grobjFull & 2) != 0 ? L_42f3 : L_417c
 
 L_417c:
-    branch (scan.grobjFull & 0x8) == 0x0 ? L_4192 : L_418a
+    branch (scan.grobjFull & 8) == 0 ? L_4192 : L_418a
 
 L_418a:
     i = 0
@@ -301,7 +300,7 @@ L_41b1:
 
 L_41bc:
     lpfl = rglpfl[i]
-    branch rglpfl[i] != 0x0 ? L_41ec : L_4215
+    branch rglpfl[i] != 0 ? L_41ec : L_4215
 
 
 L_41ec:
@@ -324,20 +323,20 @@ L_4220:
 
 
 L_4278:
-    branch (scan.grobjFull & 0x8) == 0x0 ? L_4291 : L_4286
+    branch (scan.grobjFull & 8) == 0 ? L_4291 : L_4286
 
 L_4286:
     i = 0
     goto L_4113
 
 L_4291:
-    branch (scan.grobjFull & 0x1) == 0x0 ? L_42f3 : L_429f
+    branch (scan.grobjFull & 1) == 0 ? L_42f3 : L_429f
 
 CheckPlanet:
     scan.grobj = grobjPlanet
     idNew = scan.idpl
     lppl = LpplFromId(idNew)
-    branch lppl != 0x0 ? L_42d5 : L_42cd
+    branch lppl != 0 ? L_42d5 : L_42cd
 
 
 L_42cd:
@@ -365,7 +364,7 @@ L_42ff:
 
 L_430a:
     lpfl = rglpfl[i]
-    branch rglpfl[i] != 0x0 ? L_433a : L_4363
+    branch rglpfl[i] != 0 ? L_433a : L_4363
 
 
 L_433a:
@@ -378,7 +377,7 @@ L_4363:
     branch i != cFleet ? L_4384 : L_436e
 
 L_436e:
-    branch (scan.grobjFull & 0x8) == 0x0 ? L_4384 : L_437c
+    branch (scan.grobjFull & 8) == 0 ? L_4384 : L_437c
 
 L_437c:
     i = 0
@@ -407,9 +406,9 @@ L_43f2:
     branch fOurs == 0 ? L_47d5 : L_440b
 
 L_440b:
-    call RedrawScanSel(0x0, 0) -> callresult(void)
+    call RedrawScanSel(NULL, 0) -> callresult(void)
     call ChangeMainObjSel(scan.grobj, idNew) -> callresult(void)
-    call RedrawScanSel(0x0, 1) -> callresult(void)
+    call RedrawScanSel(NULL, 1) -> callresult(void)
 
 L_4439:
     goto L_47d5
@@ -443,7 +442,7 @@ L_44d6:
     branch i < 9 ? L_4476 : L_44df
 
 L_44df:
-    i = PopupMenu(hwndMine, x, y, 9, 0x0, psz, iChecked, 1)
+    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, 1)
     branch i == -1 ? L_47d5 : L_4511
 
 L_4511:
@@ -451,11 +450,11 @@ L_4511:
 
 L_4525:
     cMinGrafMax = rgi[i]
-    call InvalidateRect(hwndMine, 0x0, 1) -> callresult(void)
-    branch (grbitScan & 0xf) != 0x1 ? L_47d5 : L_4557
+    call InvalidateRect(hwndMine, NULL, 1) -> callresult(void)
+    branch (grbitScan & 0xf) != 1 ? L_47d5 : L_4557
 
 L_4557:
-    call InvalidateRect(hwndScanner, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)
 
 L_456c:
     goto L_47d5
@@ -475,12 +474,12 @@ L_45b4:
     branch i <= 4 ? L_459b : L_45bd
 
 L_45bd:
-    branch pl.det < 0x3 ? L_478e : L_45cb
+    branch pl.det < 3 ? L_478e : L_45cb
 
 L_45cb:
     GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[(ht + 2)]
     GlobalPD.rgi[1] = pl.fHomeworld
-    branch pl.det <= 0x3 ? L_478e : L_4608
+    branch pl.det <= 3 ? L_478e : L_4608
 
 L_4608:
     lVal = 0
@@ -501,7 +500,7 @@ L_467c:
 
 L_4687:
     lpfl = rglpfl[ifl]
-    branch rglpfl[ifl] != 0x0 ? L_46b7 : L_476a
+    branch rglpfl[ifl] != 0 ? L_46b7 : L_476a
 
 
 L_46b7:
@@ -511,7 +510,7 @@ L_46c6:
     branch lpfl->iPlayer != idPlayer ? L_4678 : L_46d5
 
 L_46d5:
-    branch lpfl->fDead != 0x0 ? L_4678 : L_46ec
+    branch lpfl->fDead != 0 ? L_4678 : L_46ec
 
 L_46ec:
     branch lpfl->lpplord->rgord[0].grTask != grTaskMine ? L_4678 : L_4705
@@ -545,7 +544,7 @@ L_47a6:
     branch ht > htMineMinefieldType ? L_47d5 : L_47ae
 
 L_47ae:
-    tablejump (ht * 0x2) [0x0: L_47d5, 0x2: L_456f, 0x4: L_456f, 0x6: L_456f, 0x8: L_47d5, 0xa: L_443c, 0xc: L_3f41, 0xe: L_3f41, 0x10: L_3f41, 0x12: L_4085, 0x14: L_3b94, 0x16: L_3c9f, 0x18: L_3f20, 0x1a: L_3e99, 0x1c: L_3c2a]
+    tablejump (ht * 2) [0x0: L_47d5, 0x2: L_456f, 0x4: L_456f, 0x6: L_456f, 0x8: L_47d5, 0xa: L_443c, 0xc: L_3f41, 0xe: L_3f41, 0x10: L_3f41, 0x12: L_4085, 0x14: L_3b94, 0x16: L_3c9f, 0x18: L_3f20, 0x1a: L_3e99, 0x1c: L_3c2a]
 
 L_47d5:
     return

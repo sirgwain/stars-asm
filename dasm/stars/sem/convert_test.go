@@ -71,22 +71,12 @@ func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
-	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 3 {
-		t.Fatalf("effects = %#v, want one block with three effects", semFunc.Blocks)
+	// The load before the store survives as the value of n--.
+	if len(semFunc.Blocks) != 1 || len(semFunc.Blocks[0].Effects) != 1 {
+		t.Fatalf("effects = %#v, want one block with one effect", semFunc.Blocks)
 	}
-
-	gotTemp := FormatEffect(semFunc.Blocks[0].Effects[0])
-	wantTemp := "t_5c4f = n"
-	if gotTemp != wantTemp {
-		t.Fatalf("temp = %q, want %q", gotTemp, wantTemp)
-	}
-	gotStore := FormatEffect(semFunc.Blocks[0].Effects[1])
-	wantStore := "n = (n - 1)"
-	if gotStore != wantStore {
-		t.Fatalf("store = %q, want %q", gotStore, wantStore)
-	}
-	gotBranch := FormatEffect(semFunc.Blocks[0].Effects[2])
-	wantBranch := "branch t_5c4f != 0 ? L_5c81 : L_5c5e"
+	gotBranch := FormatEffect(semFunc.Blocks[0].Effects[0])
+	wantBranch := "branch n-- != 0 ? L_5c81 : L_5c5e"
 	if gotBranch != wantBranch {
 		t.Fatalf("branch = %q, want %q", gotBranch, wantBranch)
 	}
@@ -162,8 +152,8 @@ func TestConvertUnaryMachineValues(t *testing.T) {
 		op   machine.ValueOp
 		want string
 	}{
-		{name: "neg", op: machine.ValueOpNeg, want: "neg(0x7)"},
-		{name: "not", op: machine.ValueOpNot, want: "~(0x7)"},
+		{name: "neg", op: machine.ValueOpNeg, want: "neg(7)"},
+		{name: "not", op: machine.ValueOpNot, want: "~(7)"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got := converter.convertValue(machine.BinaryVal(tt.op, value, machine.ConstVal(0)))
@@ -434,7 +424,7 @@ func TestLowerMachineResolvesBitfieldExtract(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch gd.fProgressTxt == 0x0 ? L_6138 : L_6133"
+	want := "branch gd.fProgressTxt == 0 ? L_6138 : L_6133"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -489,7 +479,7 @@ func TestLowerMachineResolvesBitfieldExtractFromStorageAlias(t *testing.T) {
 	}
 
 	got := FormatEffect(semFunc.Blocks[0].Effects[0])
-	want := "branch ini.fValidate != 0x0 ? L_21a3 : L_217c"
+	want := "branch ini.fValidate != 0 ? L_21a3 : L_217c"
 	if got != want {
 		t.Fatalf("semantic effect = %q, want %q", got, want)
 	}
@@ -801,9 +791,9 @@ func TestLowerMachineResolvesWideBitfieldStores(t *testing.T) {
 	}
 
 	wants := []string{
-		"lppl->fNoResearch = 0x0",
-		"lppl->cDefenses = 0x0",
-		"lppl->iScanner = 0x1f",
+		"lppl->fNoResearch = 0",
+		"lppl->cDefenses = 0",
+		"lppl->iScanner = 31",
 		"lppl->lStarbase = 0",
 	}
 	for i, want := range wants {

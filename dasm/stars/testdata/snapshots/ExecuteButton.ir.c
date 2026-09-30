@@ -9,27 +9,17 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
     int16_t  iSel;
     uint16_t grbitSh;
     int16_t  ish;
-    int16_t  t_0ef9;
-    int16_t  t_0f36;
-    int16_t  t_0fa6;
     POINT    t_pt_0fca;
     POINT    t_pt_0fda_1;
-    int16_t  t_10c5;
-    int16_t  t_1103;
-    int16_t  t_1198;
     POINT    t_pt_11b2;
     POINT    t_pt_11c2_1;
-    int16_t  t_134d;
-    int16_t  t_138a;
-    int16_t  t_13fa;
     POINT    t_pt_141e;
     POINT    t_pt_142e_1;
-    int16_t  t_1589;
     POINT    t_pt_15ad;
     POINT    t_pt_15bd_1;
 
 L_0db6:
-    gd.fChgScanner = 0x1;
+    gd.fChgScanner = 1;
     goto L_160f;
 
 L_0dd4:
@@ -43,7 +33,7 @@ L_0de0:
     goto L_1644;
 
 L_0df2:
-    grbitNew = 0x10;
+    grbitNew = 16;
 
 LBitDiddle:
     if (fDown == 0)
@@ -52,21 +42,21 @@ LBitDiddle:
         goto L_0e00;
 
 L_0e00:
-    grbitScan = grbitScan | grbitNew;
+    grbitScan |= grbitNew;
     goto L_1644;
 
 L_0e0a:
-    grbitScan = grbitScan & ~grbitNew;
+    grbitScan &= ~grbitNew;
 
 L_0e13:
     goto L_1644;
 
 L_0e16:
-    grbitNew = 0x20;
+    grbitNew = 32;
     goto LBitDiddle;
 
 L_0e1e:
-    grbitNew = 0x80;
+    grbitNew = 128;
     goto LBitDiddle;
 
 L_0e26:
@@ -90,15 +80,15 @@ L_0e46:
     goto LBitDiddle;
 
 L_0e4e:
-    grbit = 0x1;
+    grbit = 1;
     c = 0;
-    if ((grbitScan & 0x40) != 0x0)
+    if ((grbitScan & 0x40) != 0)
         goto L_0e6c;
     else
         goto L_0e66;
 
 L_0e66:
-    grbitScanMines = 0x0;
+    grbitScanMines = 0;
 
 L_0e6c:
     i = 1278;
@@ -111,18 +101,16 @@ L_0e74:
         goto L_0e7e;
 
 L_0e7e:
-    rgid[c] = (uint32_t)(grbitScanMines == 0xf ? 0x1 : 0x0);
+    rgid[c] = (uint32_t)(grbitScanMines == 15 ? 1 : 0);
     goto L_0ecd;
 
 L_0ea7:
-    rgid[c] = (uint32_t)(grbitScanMines == 0x0 ? 0x1 : 0x0);
+    rgid[c] = (uint32_t)(grbitScanMines == 0 ? 1 : 0);
 
 L_0ecd:
     CchGetString(i, &szWork[(i - 1278) * 30 + 160]);
-    t_0ef9 = c;
-    c = c + 1;
-    rgszScan[t_0ef9] = &szWork[(i - 1278) * 30 + 160];
-    i = i + 1;
+    rgszScan[c++] = &szWork[(i - 1278) * 30 + 160];
+    i++;
 
 L_0f0d:
     if (i <= 1279)
@@ -134,19 +122,15 @@ L_0f17:
     rgid[c] = 0;
     szWork[250] = -1;
     szWork[251] = 0;
-    t_0f36 = c;
-    c = c + 1;
-    rgszScan[t_0f36] = &szWork[250];
+    rgszScan[c++] = &szWork[250];
     i = 0;
     goto L_0fba;
 
 L_0f50:
-    rgid[c] = (uint32_t)((0x1 << i & grbitScanMines) == 0x0 ? 0x0 : 0x1);
+    rgid[c] = (uint32_t)((1 << i & grbitScanMines) == 0 ? 0 : 1);
     CchGetString(i + 1280, &szWork[i * 30]);
-    t_0fa6 = c;
-    c = c + 1;
-    rgszScan[t_0fa6] = &szWork[i * 30];
-    i = i + 1;
+    rgszScan[c++] = &szWork[i * 30];
+    i++;
 
 L_0fba:
     if (i < 4)
@@ -179,34 +163,34 @@ L_101c:
         goto L_1025;
 
 L_1025:
-    grbitScanMines = 0xf;
+    grbitScanMines = 15;
     goto L_1047;
 
 L_102e:
-    grbitScanMines = 0x0;
+    grbitScanMines = 0;
 
 L_1034:
     goto L_1047;
 
 L_1037:
-    iSel = iSel - 3;
-    grbitScanMines = grbitScanMines ^ 0x1 << iSel;
+    iSel -= 3;
+    grbitScanMines ^= 1 << iSel;
 
 L_1047:
-    if (grbitScanMines == 0x0)
+    if (grbitScanMines == 0)
         goto L_1059;
     else
         goto L_1051;
 
 L_1051:
-    grbitScan = grbitScan | 0x40;
+    grbitScan |= 0x40;
     goto L_105e;
 
 L_1059:
-    grbitScan = grbitScan & 0xffbf;
+    grbitScan &= 0xffbf;
 
 L_105e:
-    InvalidateRect(hwndTb, 0x0, 1);
+    InvalidateRect(hwndTb, NULL, 1);
     goto L_1644;
 
 L_1076:
@@ -217,10 +201,8 @@ L_1076:
 L_1083:
     rgid[c] = 0;
     CchGetString(i, &szWork[(i - 1275) * 20]);
-    t_10c5 = c;
-    c = c + 1;
-    rgszScan[t_10c5] = &szWork[(i - 1275) * 20];
-    i = i + 1;
+    rgszScan[c++] = &szWork[(i - 1275) * 20];
+    i++;
 
 L_10d9:
     if (i <= 1277)
@@ -232,16 +214,14 @@ L_10e3:
     rgid[c] = 0;
     szWork[200] = -1;
     szWork[201] = 0;
-    t_1103 = c;
-    c = c + 1;
-    rgszScan[t_1103] = &szWork[200];
+    rgszScan[c++] = &szWork[200];
     ish = 0;
-    grbitSh = 0x1;
+    grbitSh = 1;
     goto L_1135;
 
 L_1125:
-    ish = ish + 1;
-    grbitSh = grbitSh * 0x2;
+    ish++;
+    grbitSh *= 2;
 
 L_1135:
     if (ish >= 16)
@@ -250,16 +230,14 @@ L_1135:
         goto L_113e;
 
 L_113e:
-    if (rgshdef[ish].fFree != 0x0)
+    if (rgshdef[ish].fFree != 0)
         goto L_1125;
     else
         goto L_115c;
 
 L_115c:
-    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0x0 ? 0x0 : 0x1);
-    t_1198 = c;
-    c = c + 1;
-    rgszScan[t_1198] = rgshdef[ish].hul.szClass;
+    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0 ? 0 : 1);
+    rgszScan[c++] = rgshdef[ish].hul.szClass;
 
 L_11a8:
     goto L_1125;
@@ -299,20 +277,20 @@ L_121b:
         goto L_1225;
 
 L_1225:
-    grbitScanShip = grbitScanShip ^ 0xffff;
+    grbitScanShip ^= 0xffff;
     goto L_1233;
 
 L_122d:
-    grbitScanShip = 0x0;
+    grbitScanShip = 0;
 
 L_1233:
-    if ((grbitScan & 0x200) != 0x0)
+    if ((grbitScan & 0x200) != 0)
         goto L_12e6;
     else
         goto L_1241;
 
 L_1241:
-    if (grbitScanShip != 0x0)
+    if (grbitScanShip != 0)
         goto LInvalS;
     else
         goto L_1248;
@@ -321,25 +299,25 @@ L_1248:
     goto L_12e6;
 
 L_1251:
-    iSel = iSel - 4;
+    iSel -= 4;
     ish = 0;
     goto L_1294;
 
 L_125e:
-    if (rgshdef[ish].fFree != 0x0)
+    if (rgshdef[ish].fFree != 0)
         goto L_1290;
     else
         goto L_127c;
 
 L_127c:
-    iSel = iSel - 1;
+    iSel--;
     if (iSel < 0)
         goto L_129d;
     else
         goto L_1290;
 
 L_1290:
-    ish = ish + 1;
+    ish++;
 
 L_1294:
     if (ish < 16)
@@ -348,24 +326,24 @@ L_1294:
         goto L_129d;
 
 L_129d:
-    grbitScanShip = grbitScanShip ^ 0x1 << ish;
-    if ((grbitScan & 0x200) != 0x0)
+    grbitScanShip ^= 1 << ish;
+    if ((grbitScan & 0x200) != 0)
         goto L_12e6;
     else
         goto L_12b7;
 
 L_12b7:
-    if ((0x1 << ish & grbitScanShip) == 0x0)
+    if ((1 << ish & grbitScanShip) == 0)
         goto L_12e6;
     else
         goto LInvalS;
 
 LInvalS:
-    grbitScan = grbitScan | 0x200;
-    InvalidateRect(hwndTb, 0x0, 1);
+    grbitScan |= 0x200;
+    InvalidateRect(hwndTb, NULL, 1);
 
 L_12e6:
-    if ((grbitScan & 0x200) == 0x0)
+    if ((grbitScan & 0x200) == 0)
         goto L_167a;
     else
         goto L_12f1;
@@ -374,7 +352,7 @@ L_12f1:
     goto L_1644;
 
 L_12fa:
-    grbit = 0x1;
+    grbit = 1;
     c = 0;
     i = 1275;
     goto L_1361;
@@ -382,10 +360,8 @@ L_12fa:
 L_130c:
     rgid[c] = 0;
     CchGetString(i, &szWork[(i - 1275) * 25 + 200]);
-    t_134d = c;
-    c = c + 1;
-    rgszScan[t_134d] = &szWork[(i - 1275) * 25 + 200];
-    i = i + 1;
+    rgszScan[c++] = &szWork[(i - 1275) * 25 + 200];
+    i++;
 
 L_1361:
     if (i <= 1277)
@@ -397,19 +373,15 @@ L_136b:
     rgid[c] = 0;
     szWork[300] = -1;
     szWork[301] = 0;
-    t_138a = c;
-    c = c + 1;
-    rgszScan[t_138a] = &szWork[300];
+    rgszScan[c++] = &szWork[300];
     i = 0;
     goto L_140e;
 
 L_13a4:
-    rgid[c] = (uint32_t)((0x1 << i & grbitScanEShip) == 0x0 ? 0x0 : 0x1);
+    rgid[c] = (uint32_t)((1 << i & grbitScanEShip) == 0 ? 0 : 1);
     CchGetString(i + 381, &szWork[i * 25]);
-    t_13fa = c;
-    c = c + 1;
-    rgszScan[t_13fa] = &szWork[i * 25];
-    i = i + 1;
+    rgszScan[c++] = &szWork[i * 25];
+    i++;
 
 L_140e:
     if (i < 8)
@@ -452,20 +424,20 @@ L_1482:
         goto L_148b;
 
 L_148b:
-    grbitScanEShip = grbitScanEShip ^ 0xff;
+    grbitScanEShip ^= 0xff;
     goto L_149a;
 
 L_1494:
-    grbitScanEShip = 0x0;
+    grbitScanEShip = 0;
 
 L_149a:
-    if ((grbitScan & 0x800) != 0x0)
+    if ((grbitScan & 0x800) != 0)
         goto L_1505;
     else
         goto L_14a8;
 
 L_14a8:
-    if (grbitScanEShip != 0x0)
+    if (grbitScanEShip != 0)
         goto LInvalE;
     else
         goto L_14af;
@@ -474,25 +446,25 @@ L_14af:
     goto L_1505;
 
 L_14b8:
-    iSel = iSel - 4;
-    grbitScanEShip = grbitScanEShip ^ 0x1 << iSel;
-    if ((grbitScan & 0x800) != 0x0)
+    iSel -= 4;
+    grbitScanEShip ^= 1 << iSel;
+    if ((grbitScan & 0x800) != 0)
         goto L_1505;
     else
         goto L_14d6;
 
 L_14d6:
-    if ((0x1 << iSel & grbitScanEShip) == 0x0)
+    if ((1 << iSel & grbitScanEShip) == 0)
         goto L_1505;
     else
         goto LInvalE;
 
 LInvalE:
-    grbitScan = grbitScan | 0x800;
-    InvalidateRect(hwndTb, 0x0, 1);
+    grbitScan |= 0x800;
+    InvalidateRect(hwndTb, NULL, 1);
 
 L_1505:
-    if ((grbitScan & 0x800) == 0x0)
+    if ((grbitScan & 0x800) == 0)
         goto L_167a;
     else
         goto L_1510;
@@ -506,12 +478,10 @@ L_1519:
     goto L_159d;
 
 L_1526:
-    rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 0x1 : 0x0);
+    rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 1 : 0);
     _wsprintf(&szWork[i * 8], PCTDPCTPCT, vrgpctZoom[i]);
-    t_1589 = c;
-    c = c + 1;
-    rgszScan[t_1589] = &szWork[i * 8];
-    i = i + 1;
+    rgszScan[c++] = &szWork[i * 8];
+    i++;
 
 L_159d:
     if (i < 9)
@@ -588,10 +558,10 @@ L_1644:
         goto L_164d;
 
 L_164d:
-    InvalidateRect(hwndScanner, 0x0, 1);
+    InvalidateRect(hwndScanner, NULL, 1);
 
 L_1662:
-    if (gd.fTutorial == 0x0)
+    if (gd.fTutorial == 0)
         goto L_167a;
     else
         goto L_1675;

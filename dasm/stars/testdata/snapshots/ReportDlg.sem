@@ -65,11 +65,11 @@ L_005f:
 L_0097:
     call ReleaseDC(hwnd, hdc) -> callresult(int16_t)
     call SortReportCache(vprptCur->irpt, vprptCur->icolSort) -> callresult(void)
-    call SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE|SWP_NOZORDER|SWP_NOREDRAW) -> callresult(int16_t)
+    call SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE|SWP_NOZORDER|SWP_NOREDRAW) -> callresult(int16_t)
     call StickyDlgPos(hwnd, &vprptCur->ptDlg, 1) -> callresult(void)
-    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, SBS_VERT|WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0)
-    vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0)
-    branch gd.fTutorial == 0x0 ? L_019b : L_0196
+    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT|WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL)
+    vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL)
+    branch gd.fTutorial == 0 ? L_019b : L_0196
 
 L_0196:
     call AdvanceTutor() -> callresult(void)
@@ -84,13 +84,13 @@ L_019b:
 
 
 L_01f3:
-    swp = 0x84
+    swp = 132
     vprptCur->irowFirst = 0
     call SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0) -> callresult(int16_t)
     goto L_02b5
 
 L_021c:
-    swp = 0x44
+    swp = 68
     branch (vprptCur->irowFirst + vprptCur->cRowsVis) <= vprptCur->cRows ? L_0273 : L_023b
 
 L_023b:
@@ -109,7 +109,7 @@ L_0273:
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL)
-    call SetWindowPos(vprptCur->hwndVScroll, 0x0, (rc.right - dx), (dyArial8 + 6), dx, (((dyArial8 + 4) * vprptCur->cRowsVis) + 1), swp) -> callresult(int16_t)
+    call SetWindowPos(vprptCur->hwndVScroll, NULL, (rc.right - dx), (dyArial8 + 6), dx, (((dyArial8 + 4) * vprptCur->cRowsVis) + 1), swp) -> callresult(int16_t)
     call SetHScrollBar() -> callresult(void)
     branch msg != WM_CREATE ? L_030b : L_0304
 
@@ -168,7 +168,7 @@ L_0416:
     branch i >= vprptCur->cFields ? L_0489 : L_0425
 
 L_0425:
-    branch (sext16to32(ibit) & vprptCur->grbitVisible) != 0x0 ? L_0442 : L_0406
+    branch (sext16to32(ibit) & vprptCur->grbitVisible) != 0 ? L_0442 : L_0406
 
 
 L_0442:
@@ -201,7 +201,7 @@ L_04c6:
     call ExecuteReportClick(pt, vprptCur->irpt, iCol, iRow) -> callresult(void)
 
 L_04e1:
-    branch gd.fTutorial == 0x0 ? L_09c8 : L_04f4
+    branch gd.fTutorial == 0 ? L_09c8 : L_04f4
 
 L_04f4:
     call AdvanceTutor() -> callresult(void)
@@ -246,7 +246,7 @@ L_0576:
     branch GET_WM_VSCROLL_CODE(wParam, lParam) > SB_BOTTOM ? L_0597 : L_057e
 
 L_057e:
-    tablejump (GET_WM_VSCROLL_CODE(wParam, lParam) * 0x2) [0x0: L_0538, 0x2: L_0531, 0x4: L_054f, 0x6: L_053f, 0x8: L_055f, 0xa: L_055f, 0xc: L_056b, 0xe: L_0529]
+    tablejump (GET_WM_VSCROLL_CODE(wParam, lParam) * 2) [0x0: L_0538, 0x2: L_0531, 0x4: L_054f, 0x6: L_053f, 0x8: L_055f, 0xa: L_055f, 0xc: L_056b, 0xe: L_0529]
 
 L_0597:
     branch iNew <= (vprptCur->cRows - vprptCur->cRowsVis) ? L_05be : L_05ad
@@ -314,7 +314,7 @@ L_06e4:
     branch GET_WM_HSCROLL_CODE(wParam, lParam) > SB_BOTTOM ? L_0705 : L_06ec
 
 L_06ec:
-    tablejump (GET_WM_HSCROLL_CODE(wParam, lParam) * 0x2) [0x0: L_06b8, 0x2: L_06b1, 0x4: L_06c6, 0x6: L_06bf, 0x8: L_06cd, 0xa: L_06cd, 0xc: L_06d9, 0xe: L_06a9]
+    tablejump (GET_WM_HSCROLL_CODE(wParam, lParam) * 2) [0x0: L_06b8, 0x2: L_06b1, 0x4: L_06c6, 0x6: L_06bf, 0x8: L_06cd, 0xa: L_06cd, 0xc: L_06d9, 0xe: L_06a9]
 
 L_0705:
     branch iNew <= vprptCur->cColScroll ? L_071e : L_0714
@@ -349,17 +349,15 @@ L_07a8:
     branch i >= vprptCur->cFields ? L_07e9 : L_07b7
 
 L_07b7:
-    branch (sext16to32(ibit) & vprptCur->grbitVisible) != 0x0 ? L_07d4 : L_0798
+    branch (sext16to32(ibit) & vprptCur->grbitVisible) != 0 ? L_07d4 : L_0798
 
 
 L_07d4:
-    t_07d4 = iNew
-    iNew = (iNew - 1)
-    branch t_07d4 > 0 ? L_0798 : L_07e9
+    branch iNew-- > 0 ? L_0798 : L_07e9
 
 L_07e9:
     vprptCur->cFieldFirst = i
-    call InvalidateRect(hwnd, 0x0, 1) -> callresult(void)
+    call InvalidateRect(hwnd, NULL, 1) -> callresult(void)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_080f:
@@ -369,7 +367,7 @@ L_0818:
     hdc = BeginPaint(hwnd, &ps)
     call DrawReport(hwnd, hdc, &ps.rcPaint) -> callresult(void)
     call EndPaint(hwnd, &ps) -> callresult(void)
-    gd.fRptSafeDraw = 0x0
+    gd.fRptSafeDraw = 0
     return 1
 
 L_0860:
@@ -377,7 +375,7 @@ L_0860:
     call GetWindowRect(hwnd, &rc) -> callresult(void)
     vprptCur->ptSize.x = (rc.right - rc.left)
     vprptCur->ptSize.y = (rc.bottom - rc.top)
-    hwndReportDlg = 0x0
+    hwndReportDlg = 0
     fBrowserValid = 0
     hmenu = GetASubMenu(hwndFrame, 4)
     goto L_08f1
@@ -411,9 +409,9 @@ L_0909:
     branch vprptCur->irpt == 3 ? L_08e6 : L_0914
 
 L_0914:
-    call CheckMenuItem(hmenu, idm, 0x0) -> callresult(int16_t)
-    vprptCur = 0x0
-    branch gd.fTutorial == 0x0 ? L_09c8 : L_093d
+    call CheckMenuItem(hmenu, idm, 0) -> callresult(int16_t)
+    vprptCur = 0
+    branch gd.fTutorial == 0 ? L_09c8 : L_093d
 
 L_093d:
     call AdvanceTutor() -> callresult(void)

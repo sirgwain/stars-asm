@@ -28,12 +28,13 @@ func newSaveCmd() *cobra.Command {
 func newSaveDumpCmd() *cobra.Command {
 	var showHex bool
 	var onlyMsgs bool
+	var onlyOrders bool
 	cmd := &cobra.Command{
 		Use:   "dump <file>...",
 		Short: "Dump the decrypted records of game files",
 		Long: `Decrypt each record of a Stars! game file and print it. The file header,
-turn messages, and player messages are decoded; other records are listed by type
-and size (use --hex to see their bytes).`,
+turn messages, player messages, waypoints, and cargo transfer orders are decoded;
+other records are listed by type and size (use --hex to see their bytes).`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			env, err := starsenv.LoadStars(starsenv.Options{InputDir: inputDir})
@@ -45,7 +46,7 @@ and size (use --hex to see their bytes).`,
 				return err
 			}
 			for _, path := range args {
-				if err := d.dump(path, showHex, onlyMsgs); err != nil {
+				if err := d.dump(path, showHex, onlyMsgs, onlyOrders); err != nil {
 					return fmt.Errorf("%s: %w", path, err)
 				}
 			}
@@ -54,15 +55,20 @@ and size (use --hex to see their bytes).`,
 	}
 	cmd.Flags().BoolVar(&showHex, "hex", false, "hex dump every decrypted record")
 	cmd.Flags().BoolVar(&onlyMsgs, "msgs", false, "only print the header and message records")
+	cmd.Flags().BoolVar(&onlyOrders, "orders", false, "only print the header, fleet context, waypoints, and cargo transfer orders")
+	cmd.MarkFlagsMutuallyExclusive("msgs", "orders")
 	return cmd
 }
 
 // saveDumper holds the exe tables and enum names used to decode game files.
 type saveDumper struct {
-	tables   savefile.Tables
-	rtNames  map[int]string
-	dtNames  map[int]string
-	msgNames map[int]string
+	tables      savefile.Tables
+	rtNames     map[int]string
+	dtNames     map[int]string
+	msgNames    map[int]string
+	taskNames   map[int]string
+	objectNames map[int]string
+	actionNames map[int]string
 }
 
 // newSaveDumper reads rgPrimes and rgcMsgArgs from stars.exe and the record,
@@ -83,7 +89,7 @@ func newSaveDumper(env *starsenv.Env) (*saveDumper, error) {
 	for _, e := range []struct {
 		name string
 		dst  *map[int]string
-	}{{"RecordType", &d.rtNames}, {"DtFileType", &d.dtNames}, {"MessageId", &d.msgNames}} {
+	}{{"RecordType", &d.rtNames}, {"DtFileType", &d.dtNames}, {"MessageId", &d.msgNames}, {"TaskType", &d.taskNames}, {"GrobjClass", &d.objectNames}, {"XferActionType", &d.actionNames}} {
 		enum := env.SDB.GetEnum(e.name)
 		if enum == nil {
 			return nil, fmt.Errorf("enum %s not found in symbol database", e.name)
@@ -120,7 +126,7 @@ func enumName(names map[int]string, v int) string {
 }
 
 // dump prints the records of one game file.
-func (d *saveDumper) dump(path string, showHex, onlyMsgs bool) error {
+func (d *saveDumper) dump(path string, showHex, onlyMsgs, onlyOrders bool) error {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -130,15 +136,49 @@ func (d *saveDumper) dump(path string, showHex, onlyMsgs bool) error {
 
 	counts := map[int]int{}
 	cMsg := 0
+	fleetID, waypoint := -1, 0
 	for _, r := range recs {
 		counts[r.Type]++
 		isMsg := r.Type == savefile.RtMsg || r.Type == savefile.RtPlrMsg || r.Type == savefile.RtMsgFilt
+		isOrder := false
+		switch r.Type {
+		case savefile.RtLogCargoXfer8, savefile.RtLogCargoXfer16, savefile.RtLogCargoXfer32,
+			savefile.RtLogFleetOrderDelete, savefile.RtLogFleetOrderInsert, savefile.RtLogFleetOrderUpdate,
+			savefile.RtLogFleetFlagBit9, savefile.RtLogFleetOrderAttrNib, savefile.RtOrderA, savefile.RtOrderB:
+			isOrder = true
+		}
+		if onlyOrders && !isOrder && r.Type != savefile.RtBOF && r.Type != savefile.RtFleetA {
+			continue
+		}
 		if onlyMsgs && !isMsg && r.Type != savefile.RtBOF {
 			continue
 		}
 		fmt.Printf("%06x  %-22s cb=%d\n", r.Offset, enumName(d.rtNames, r.Type), len(r.Data))
 		switch r.Type {
+		case savefile.RtFleetA: // FReadFleet copies the leading FLEET fields verbatim.
+			if len(r.Data) < 12 {
+				return fmt.Errorf("fleet record at 0x%x is %d bytes, want at least 12", r.Offset, len(r.Data))
+			}
+			fleetID, waypoint = int(binary.LittleEndian.Uint16(r.Data)), 0
+			fmt.Printf("        fleet=%d (raw ID; displayed fleet number=%d)\n", fleetID, (fleetID&0x1ff)+1)
+		default:
+			if !isOrder {
+				break
+			}
+			if r.Type == savefile.RtOrderA || r.Type == savefile.RtOrderB {
+				if fleetID < 0 {
+					return fmt.Errorf("waypoint record at 0x%x has no preceding fleet", r.Offset)
+				}
+				fmt.Printf("        fleet=%d waypoint=%d\n", fleetID, waypoint)
+				waypoint++
+			}
+			order, err := d.formatOrderRecord(r.Type, r.Data)
+			if err != nil {
+				return fmt.Errorf("order record at 0x%x: %w", r.Offset, err)
+			}
+			fmt.Print(order)
 		case savefile.RtBOF:
+			fleetID, waypoint = -1, 0
 			bof, err := savefile.ParseBOF(r.Data)
 			if err != nil {
 				return err
@@ -194,4 +234,111 @@ func (d *saveDumper) dump(path string, showHex, onlyMsgs bool) error {
 
 func init() {
 	rootCmd.AddCommand(newSaveCmd())
+}
+
+// formatOrderRecord decodes ORDER, RTWAYPT, RTSHIPINT, and RTXFER records
+// using their packed layouts in decompiled/structs.h.
+func (d *saveDumper) formatOrderRecord(rt int, data []byte) (string, error) {
+	var out strings.Builder
+	cargoNames := [...]string{"Ironium", "Boranium", "Germanium", "Colonists", "Fuel"}
+	switch rt {
+	case savefile.RtLogCargoXfer8, savefile.RtLogCargoXfer16, savefile.RtLogCargoXfer32:
+		if len(data) < 6 {
+			return "", fmt.Errorf("cargo transfer is %d bytes, want at least 6", len(data))
+		}
+		width := map[int]int{savefile.RtLogCargoXfer8: 1, savefile.RtLogCargoXfer16: 2, savefile.RtLogCargoXfer32: 4}[rt]
+		if data[5]&^byte(0x1f) != 0 {
+			return "", fmt.Errorf("unknown cargo mask 0x%02x", data[5])
+		}
+		fmt.Fprintf(&out, "        object1=%s id=%d object2=%s id=%d quantityBits=%d mask=0x%02x\n",
+			enumName(d.objectNames, int(data[4]&15)), binary.LittleEndian.Uint16(data),
+			enumName(d.objectNames, int(data[4]>>4)), binary.LittleEndian.Uint16(data[2:]), width*8, data[5])
+		off := 6
+		for i, name := range cargoNames {
+			if data[5]&(1<<i) == 0 {
+				continue
+			}
+			if off+width > len(data) {
+				return "", fmt.Errorf("truncated %s quantity at +0x%x", name, off)
+			}
+			var quantity int32
+			switch width {
+			case 1:
+				quantity = int32(int8(data[off]))
+			case 2:
+				quantity = int32(int16(binary.LittleEndian.Uint16(data[off:])))
+			case 4:
+				quantity = int32(binary.LittleEndian.Uint32(data[off:]))
+			}
+			unit := "kT"
+			if i == 4 {
+				unit = "mg"
+			}
+			fmt.Fprintf(&out, "        %s: object1 delta=%+d%s object2 delta=%+d%s raw=% x\n", name, quantity, unit, -int64(quantity), unit, data[off:off+width])
+			off += width
+		}
+		if off != len(data) {
+			return "", fmt.Errorf("cargo transfer has %d trailing bytes", len(data)-off)
+		}
+	case savefile.RtLogFleetOrderDelete, savefile.RtLogFleetFlagBit9, savefile.RtLogFleetOrderAttrNib:
+		want := 4
+		if rt == savefile.RtLogFleetOrderAttrNib {
+			want = 6
+		}
+		if len(data) != want {
+			return "", fmt.Errorf("record is %d bytes, want %d", len(data), want)
+		}
+		id, value := binary.LittleEndian.Uint16(data), binary.LittleEndian.Uint16(data[2:])
+		switch rt {
+		case savefile.RtLogFleetOrderDelete:
+			fmt.Fprintf(&out, "        fleet=%d delete waypoint=%d count=%d\n", id, value&0x7fff, 1+(value>>15))
+		case savefile.RtLogFleetFlagBit9:
+			fmt.Fprintf(&out, "        fleet=%d repeatOrders=%d\n", id, value)
+		case savefile.RtLogFleetOrderAttrNib:
+			fmt.Fprintf(&out, "        fleet=%d waypoint=%d task=%s\n", id, value, enumName(d.taskNames, int(binary.LittleEndian.Uint16(data[4:]))))
+		}
+	case savefile.RtLogFleetOrderInsert, savefile.RtLogFleetOrderUpdate, savefile.RtOrderA, savefile.RtOrderB:
+		if rt == savefile.RtLogFleetOrderInsert || rt == savefile.RtLogFleetOrderUpdate {
+			if len(data) > 22 {
+				return "", fmt.Errorf("waypoint edit is %d bytes, want at most 22", len(data))
+			}
+			// LogChangeFleet omits trailing zero bytes from the entire RTWAYPT.
+			var packed [22]byte
+			copy(packed[:], data)
+			fmt.Fprintf(&out, "        fleet=%d waypoint=%d\n", binary.LittleEndian.Uint16(packed[:]), int16(binary.LittleEndian.Uint16(packed[2:])))
+			data = packed[4:]
+		} else {
+			want := 18
+			if rt == savefile.RtOrderB {
+				want = 8
+			}
+			if len(data) != want {
+				return "", fmt.Errorf("waypoint is %d bytes, want %d", len(data), want)
+			}
+		}
+		flags := binary.LittleEndian.Uint16(data[6:])
+		task := int(flags & 15)
+		fmt.Fprintf(&out, "        position=(%d,%d) target=%s id=%d warp=%d task=%s validTask=%t noAutoTrack=%t\n",
+			int16(binary.LittleEndian.Uint16(data)), int16(binary.LittleEndian.Uint16(data[2:])),
+			enumName(d.objectNames, int(flags>>8&15)), int16(binary.LittleEndian.Uint16(data[4:])), flags>>4&15,
+			enumName(d.taskNames, task), flags&0x1000 != 0, flags&0x2000 != 0)
+		if len(data) == 18 {
+			switch task {
+			case 1:
+				for i, name := range cargoNames {
+					item := binary.LittleEndian.Uint16(data[8+2*i:])
+					fmt.Fprintf(&out, "        %s: action=%s quantity=%d\n", name, enumName(d.actionNames, int(item>>12)), item&0xfff)
+				}
+			case 6:
+				fmt.Fprintf(&out, "        mineYears=%d previousYears=%d\n", binary.LittleEndian.Uint16(data[8:]), binary.LittleEndian.Uint16(data[10:]))
+			case 7:
+				fmt.Fprintf(&out, "        patrolWarp=%d distance=%d\n", binary.LittleEndian.Uint16(data[8:]), binary.LittleEndian.Uint16(data[10:]))
+			case 9:
+				fmt.Fprintf(&out, "        recipientPlayer=%d\n", binary.LittleEndian.Uint16(data[8:]))
+			}
+		}
+	default:
+		return "", fmt.Errorf("unsupported order record type %d", rt)
+	}
+	return out.String(), nil
 }

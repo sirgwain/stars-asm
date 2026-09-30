@@ -31,7 +31,7 @@ L_5a16:
     goto L_5a86
 
 L_5a42:
-    branch (rgbtnXfer[i].bt & 0x4) != 0x0 ? L_5a82 : L_5a5c
+    branch (rgbtnXfer[i].bt & 4) != 0 ? L_5a82 : L_5a5c
 
 L_5a5c:
     branch PtInRect(&rgbtnXfer[i].rc, PointFrom16(pt)) != 0 ? L_5a91 : L_5a82
@@ -49,10 +49,10 @@ L_5a9c:
     return 0
 
 L_5aa2:
-    iBtn = (i sar 0x1)
+    iBtn = (i sar 1)
     btn = rgbtnXfer[i]
     iVal = (btn.iVal & 0x7f)
-    branch btn.fVisible != 0x0 ? L_5d2e : L_5adc
+    branch btn.fVisible != 0 ? L_5d2e : L_5adc
 
 L_5adc:
     branch iVal > 4 ? L_5f70 : L_5ae8
@@ -88,42 +88,39 @@ L_5b63:
 
 L_5b6e:
     ptOld = pt
-    branch btn.iSide != 0x1 ? L_5bc0 : L_5b8c
+    branch btn.iSide != 1 ? L_5bc0 : L_5b8c
 
 L_5b8c:
     branch pxfer[1].grobj != grobjThing ? L_5bc0 : L_5b9a
 
 L_5b9a:
-    cNew = (uint32_t)(pxfer[1].th.thp.wtMax * 0xa)
+    cNew = (uint32_t)(pxfer[1].th.thp.wtMax * 10)
     goto L_5c26
 
 L_5bc0:
     branch iVal != 4 ? L_5bf6 : L_5bc9
 
 L_5bc9:
-    call LGetFleetStat(&pxfer[btn.iSide].fl, 1) -> t_call_5beb
-    t_merge_5c20_0001 = t_call_5beb
+    call LGetFleetStat(&pxfer[btn.iSide].fl, 1) -> cNew
     goto L_5c20
 
 L_5bf6:
-    call LGetFleetStat(&pxfer[btn.iSide].fl, 2) -> t_call_5c18
-    t_merge_5c20_0001 = t_call_5c18
+    call LGetFleetStat(&pxfer[btn.iSide].fl, 2) -> cNew
 
 L_5c20:
-    cNew = t_merge_5c20_0001
 
 L_5c26:
     cNew = (int32_t)((int32_t)(sext16to32((pt.x - btn.rc.left)) * cNew) / sext16to32(((btn.rc.right - btn.rc.left) - 2)))
     cCur = ChgCargo(pxfer[btn.iSide].grobj, pxfer[btn.iSide].id, iVal, 0, ptroff(&pxfer[btn.iSide], 4))
     dChg = (cNew - cCur)
-    branch XferSupply(iVal, (btn.iSide == 0x0 ? dChg : neg(dChg))) != 0 ? L_5d0d : L_5b44
+    branch XferSupply(iVal, (btn.iSide == 0 ? dChg : neg(dChg))) != 0 ? L_5d0d : L_5b44
 
 
 
 
 
 L_5d0d:
-    call DrawXferDlg(hwnd, 0x0, &rc, iVal) -> callresult(void)
+    call DrawXferDlg(hwnd, NULL, &rc, iVal) -> callresult(void)
 
 L_5d23:
     goto L_5b44
@@ -133,18 +130,18 @@ L_5d26:
     goto L_5f70
 
 L_5d2e:
-    call InitBtnTrack(&btnt, hwnd, 0x0, &btn.rc, btn.bt, 80, 0, 0, 0x0) -> callresult(void)
-    branch (fkb & 0x8) == 0x0 ? L_5d88 : L_5d66
+    call InitBtnTrack(&btnt, hwnd, NULL, &btn.rc, btn.bt, 80, 0, 0, NULL) -> callresult(void)
+    branch (fkb & 8) == 0 ? L_5d88 : L_5d66
 
 L_5d66:
-    dChg = (uint32_t)((fkb & 0x4) == 0x0 ? 0x64 : 0x3e8)
+    dChg = (uint32_t)((fkb & 4) == 0 ? 100 : 1000)
     goto L_5dad
 
 
 
 
 L_5d88:
-    branch (fkb & 0x4) == 0x0 ? L_5da3 : L_5d96
+    branch (fkb & 4) == 0 ? L_5da3 : L_5d96
 
 L_5d96:
     dChg = 10
@@ -160,23 +157,22 @@ L_5dc1:
     branch mdXferDlg != mdXferShips ? L_5f01 : L_5dcb
 
 L_5dcb:
-    branch LOWORD(dChg) >= pxfer[(btn.iSide == 0x0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
+    branch LOWORD(dChg) >= pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
 
 
 
 
 L_5e10:
-    t_merge_5e4d_0001 = LOWORD(dChg)
+    i = LOWORD(dChg)
     goto L_5e4d
 
 L_5e19:
-    t_merge_5e4d_0001 = pxfer[(btn.iSide == 0x0 ? 1 : 0)].fl.rgcsh[iVal]
+    i = pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal]
 
 
 
 
 L_5e4d:
-    i = t_merge_5e4d_0001
     branch i == 0 ? L_5dad : L_5e59
 
 L_5e59:
@@ -187,7 +183,7 @@ L_5e87:
 
 L_5e8c:
     pxfer[btn.iSide].fl.rgcsh[iVal] = (pxfer[btn.iSide].fl.rgcsh[iVal] + i)
-    t_merge_5ecd_0001 = (btn.iSide == 0x0 ? 0x1 : 0x0)
+    t_merge_5ecd_0001 = (btn.iSide == 0 ? 1 : 0)
     pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i)
     call DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn) -> callresult(void)
 
@@ -204,7 +200,7 @@ L_5f0a:
     branch iVal > 4 ? L_5dad : L_5f13
 
 L_5f13:
-    branch XferSupply(iVal, (btn.iSide == 0x0 ? dChg : neg(dChg))) != 0 ? L_5f58 : L_5dad
+    branch XferSupply(iVal, (btn.iSide == 0 ? dChg : neg(dChg))) != 0 ? L_5f58 : L_5dad
 
 
 
@@ -218,6 +214,6 @@ L_5f6d:
 
 FinishUp:
     call UpdateXferBtns() -> callresult(void)
-    call DrawXferDlg(hwnd, 0x0, &rc, -2) -> callresult(void)
+    call DrawXferDlg(hwnd, NULL, &rc, -2) -> callresult(void)
     return 1
 

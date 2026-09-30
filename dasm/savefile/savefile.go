@@ -10,11 +10,22 @@ import (
 // Record types used by the dumper. The full list lives in the RecordType enum
 // in dasm/input/enums.h.
 const (
-	RtEOF     = 0
-	RtBOF     = 8
-	RtMsg     = 12
-	RtMsgFilt = 33
-	RtPlrMsg  = 40
+	RtEOF                  = 0
+	RtLogCargoXfer8        = 1
+	RtLogCargoXfer16       = 2
+	RtLogFleetOrderDelete  = 3
+	RtLogFleetOrderInsert  = 4
+	RtLogFleetOrderUpdate  = 5
+	RtBOF                  = 8
+	RtLogFleetFlagBit9     = 10
+	RtLogFleetOrderAttrNib = 11
+	RtMsg                  = 12
+	RtFleetA               = 16
+	RtOrderA               = 19
+	RtOrderB               = 20
+	RtLogCargoXfer32       = 25
+	RtMsgFilt              = 33
+	RtPlrMsg               = 40
 )
 
 // Tables holds the static data from stars.exe needed to decode a file.

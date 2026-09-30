@@ -10,14 +10,14 @@ L_3c92:
         goto L_3ce1;
 
 L_3ce1:
-    if (iItem < 0x10)
+    if (iItem < 16)
         goto L_3e21;
     else
         goto L_3cf8;
 
 L_3cf8:
-    iItem = iItem - 0x10;
-    if (rglpshdefSB[idPlayer][iItem].fFree == 0x0)
+    iItem -= 16;
+    if (rglpshdefSB[idPlayer][iItem].fFree == 0)
         goto L_3d46;
     else
         goto LBogus;
@@ -28,7 +28,7 @@ LBogus:
 
 L_3d46:
     fstrcpy(szWork, rglpshdefSB[idPlayer][iItem].hul.szClass);
-    if (sel.pl.fStarbase == 0x0)
+    if (sel.pl.fStarbase == 0)
         goto L_3f13;
     else
         goto L_3d94;
@@ -57,7 +57,7 @@ L_3e1e:
     goto L_3f13;
 
 L_3e21:
-    if (rgshdef[iItem].fFree != 0x0)
+    if (rgshdef[iItem].fFree != 0)
         goto LBogus;
     else
         goto L_3e4f;
@@ -69,13 +69,13 @@ L_3e79:
     goto L_3f13;
 
 L_3e7c:
-    if (iItem < 0x12)
+    if (iItem < 18)
         goto L_3ed8;
     else
         goto L_3e93;
 
 L_3e93:
-    if (iItem <= 0x1a)
+    if (iItem <= 26)
         goto L_3eaa;
     else
         goto L_3ed8;
@@ -85,7 +85,7 @@ L_3eaa:
     goto L_3f13;
 
 L_3ed8:
-    if (iItem != 0x1b)
+    if (iItem != 27)
         goto L_3efd;
     else
         goto L_3eea;
@@ -95,7 +95,7 @@ L_3eea:
     goto L_3f13;
 
 L_3efd:
-    CchGetString(LOWORD(iItem) + 0x7e, szWork);
+    CchGetString(LOWORD(iItem) + 126, szWork);
 
 L_3f13:
     return szWork;

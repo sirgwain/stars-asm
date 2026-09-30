@@ -15,7 +15,6 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t     iNew;
     PAINTSTRUCT ps;
     MessageId   idm;
-    int16_t     t_07d4;
 
 L_0018:
     goto L_0965;
@@ -28,7 +27,7 @@ L_0027:
     goto L_0050;
 
 L_004c:
-    i = i + 1;
+    i++;
 
 L_0050:
     if (i >= vprptCur->cFields)
@@ -38,17 +37,17 @@ L_0050:
 
 L_005f:
     dx = DxReportColHdr(vprptCur->irpt, i, szWork, hdc);
-    vprptCur->rgbdx[i] = LOBYTE((int32_t)dx / 2);
+    vprptCur->rgbdx[i] = LOBYTE(dx / 2);
     goto L_004c;
 
 L_0097:
     ReleaseDC(hwnd, hdc);
     SortReportCache(vprptCur->irpt, vprptCur->icolSort);
-    SetWindowPos(hwnd, 0x0, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
+    SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
     StickyDlgPos(hwnd, &vprptCur->ptDlg, 1);
-    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", 0x0, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
-    vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", 0x0, WS_CHILD, 0, 0, 50, 50, hwnd, 0x0, hInst, 0x0);
-    if (gd.fTutorial == 0x0)
+    vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
+    vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
+    if (gd.fTutorial == 0)
         goto L_019b;
     else
         goto L_0196;
@@ -58,7 +57,7 @@ L_0196:
 
 L_019b:
     GetClientRect(hwnd, &rc);
-    cRow = (int32_t)(rc.bottom - 36) / (dyArial8 + 4);
+    cRow = (int16_t)(rc.bottom - 36) / (dyArial8 + 4);
     vprptCur->cRowsVis = cRow >= vprptCur->cRows ? vprptCur->cRows : cRow;
     if (vprptCur->cRowsVis < vprptCur->cRows)
         goto L_021c;
@@ -66,13 +65,13 @@ L_019b:
         goto L_01f3;
 
 L_01f3:
-    swp = 0x84;
+    swp = 132;
     vprptCur->irowFirst = 0;
     SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0);
     goto L_02b5;
 
 L_021c:
-    swp = 0x44;
+    swp = 68;
     if (vprptCur->irowFirst + vprptCur->cRowsVis <= vprptCur->cRows)
         goto L_0273;
     else
@@ -100,7 +99,7 @@ L_0273:
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL);
-    SetWindowPos(vprptCur->hwndVScroll, 0x0, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
+    SetWindowPos(vprptCur->hwndVScroll, NULL, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
     SetHScrollBar();
     if (msg != WM_CREATE)
         goto L_030b;
@@ -151,14 +150,14 @@ L_03aa:
     goto L_03f1;
 
 L_03b2:
-    iRow = (int32_t)(pt.y - 2 - (dyArial8 + 4)) / (dyArial8 + 4);
+    iRow = (int16_t)(pt.y - 2 - (dyArial8 + 4)) / (dyArial8 + 4);
     if (iRow >= vprptCur->cRowsVis)
         goto L_09c8;
     else
         goto L_03e7;
 
 L_03e7:
-    iRow = iRow + vprptCur->irowFirst;
+    iRow += vprptCur->irowFirst;
 
 L_03f1:
     iCol = -1;
@@ -167,8 +166,8 @@ L_03f1:
     goto L_0416;
 
 L_0406:
-    i = i + 1;
-    ibit = ibit * 2;
+    i++;
+    ibit *= 2;
 
 L_0416:
     if (i >= vprptCur->cFields)
@@ -177,7 +176,7 @@ L_0416:
         goto L_0425;
 
 L_0425:
-    if (((int32_t)ibit & vprptCur->grbitVisible) != 0x0)
+    if ((ibit & vprptCur->grbitVisible) != 0)
         goto L_0442;
     else
         goto L_0406;
@@ -195,7 +194,7 @@ L_044b:
         goto L_045a;
 
 L_045a:
-    xCur = xCur + vprptCur->rgbdx[i] * 2;
+    xCur += vprptCur->rgbdx[i] * 2;
     if (xCur <= pt.x)
         goto L_0406;
     else
@@ -224,7 +223,7 @@ L_04c6:
     ExecuteReportClick(pt, vprptCur->irpt, iCol, iRow);
 
 L_04e1:
-    if (gd.fTutorial == 0x0)
+    if (gd.fTutorial == 0)
         goto L_09c8;
     else
         goto L_04f4;
@@ -245,19 +244,19 @@ L_0529:
     goto L_0597;
 
 L_0531:
-    iNew = iNew + 1;
+    iNew++;
     goto L_0597;
 
 L_0538:
-    iNew = iNew - 1;
+    iNew--;
     goto L_0597;
 
 L_053f:
-    iNew = iNew + (vprptCur->cRowsVis - 1);
+    iNew += vprptCur->cRowsVis - 1;
     goto L_0597;
 
 L_054f:
-    iNew = iNew - (vprptCur->cRowsVis - 1);
+    iNew -= vprptCur->cRowsVis - 1;
     goto L_0597;
 
 L_055f:
@@ -275,7 +274,7 @@ L_0576:
         goto L_057e;
 
 L_057e:
-    switch (GET_WM_VSCROLL_CODE(wParam, lParam) * 0x2) {
+    switch (GET_WM_VSCROLL_CODE(wParam, lParam) * 2) {
     case 0x0:
         goto L_0538;
     case 0x2:
@@ -322,7 +321,7 @@ L_05d7:
     vprptCur->irowFirst = iNew;
     GetClientRect(hwnd, &rc);
     rc.left = 2;
-    rc.right = rc.right - GetSystemMetrics(SM_CXVSCROLL);
+    rc.right -= GetSystemMetrics(SM_CXVSCROLL);
     rc.top = dyArial8 + 6;
     rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
     ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
@@ -342,19 +341,19 @@ L_06a9:
     goto L_0705;
 
 L_06b1:
-    iNew = iNew + 1;
+    iNew++;
     goto L_0705;
 
 L_06b8:
-    iNew = iNew - 1;
+    iNew--;
     goto L_0705;
 
 L_06bf:
-    iNew = iNew + 3;
+    iNew += 3;
     goto L_0705;
 
 L_06c6:
-    iNew = iNew - 3;
+    iNew -= 3;
     goto L_0705;
 
 L_06cd:
@@ -372,7 +371,7 @@ L_06e4:
         goto L_06ec;
 
 L_06ec:
-    switch (GET_WM_HSCROLL_CODE(wParam, lParam) * 0x2) {
+    switch (GET_WM_HSCROLL_CODE(wParam, lParam) * 2) {
     case 0x0:
         goto L_06b8;
     case 0x2:
@@ -429,8 +428,8 @@ L_0788:
     goto L_07a8;
 
 L_0798:
-    i = i + 1;
-    ibit = ibit * 2;
+    i++;
+    ibit *= 2;
 
 L_07a8:
     if (i >= vprptCur->cFields)
@@ -439,22 +438,20 @@ L_07a8:
         goto L_07b7;
 
 L_07b7:
-    if (((int32_t)ibit & vprptCur->grbitVisible) != 0x0)
+    if ((ibit & vprptCur->grbitVisible) != 0)
         goto L_07d4;
     else
         goto L_0798;
 
 L_07d4:
-    t_07d4 = iNew;
-    iNew = iNew - 1;
-    if (t_07d4 > 0)
+    if (iNew-- > 0)
         goto L_0798;
     else
         goto L_07e9;
 
 L_07e9:
     vprptCur->cFieldFirst = i;
-    InvalidateRect(hwnd, 0x0, 1);
+    InvalidateRect(hwnd, NULL, 1);
     UpdateWindow(hwnd);
 
 L_080f:
@@ -464,7 +461,7 @@ L_0818:
     hdc = BeginPaint(hwnd, &ps);
     DrawReport(hwnd, hdc, &ps.rcPaint);
     EndPaint(hwnd, &ps);
-    gd.fRptSafeDraw = 0x0;
+    gd.fRptSafeDraw = 0;
     return 1;
 
 L_0860:
@@ -472,7 +469,7 @@ L_0860:
     GetWindowRect(hwnd, &rc);
     vprptCur->ptSize.x = rc.right - rc.left;
     vprptCur->ptSize.y = rc.bottom - rc.top;
-    hwndReportDlg = 0x0;
+    hwndReportDlg = 0;
     fBrowserValid = 0;
     hmenu = GetASubMenu(hwndFrame, 4);
     goto L_08f1;
@@ -518,9 +515,9 @@ L_0909:
         goto L_0914;
 
 L_0914:
-    CheckMenuItem(hmenu, idm, 0x0);
-    vprptCur = 0x0;
-    if (gd.fTutorial == 0x0)
+    CheckMenuItem(hmenu, idm, 0);
+    vprptCur = 0;
+    if (gd.fTutorial == 0)
         goto L_09c8;
     else
         goto L_093d;

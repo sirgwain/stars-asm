@@ -30,7 +30,13 @@ type Block struct {
 type Stmt interface{ stmt() }
 type Expr interface{ expr() }
 
-type Assign struct{ Dst, Src Expr }
+// Assign stores Src in Dst. Merge marks a store that replaces a merge
+// temp's value on one incoming edge, so the stores on each path came from one
+// conditional value in the source.
+type Assign struct {
+	Dst, Src Expr
+	Merge    bool
+}
 
 func (*Assign) stmt() {}
 
@@ -119,10 +125,12 @@ type StringConst struct{ Value string }
 
 func (*StringConst) expr() {}
 
+// Unary applies Op to X, written before X, or after it when Postfix is set,
+// as in x++.
 type Unary struct {
-	Op         string
-	X          Expr
-	Functional bool
+	Op      string
+	X       Expr
+	Postfix bool
 }
 
 func (*Unary) expr() {}

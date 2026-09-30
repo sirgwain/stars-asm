@@ -226,7 +226,7 @@ L_5659:
     return -1
 
 L_5662:
-    branch hs.iItem < 0x5 ? L_5676 : L_5670
+    branch hs.iItem < 5 ? L_5676 : L_5670
 
 L_5670:
     return 0
@@ -236,10 +236,10 @@ L_5676:
     branch idPlayer == -1 ? L_609c : L_569b
 
 L_569b:
-    branch hs.iItem == 0x1 ? L_56b7 : L_56a9
+    branch hs.iItem == 1 ? L_56b7 : L_56a9
 
 L_56a9:
-    branch hs.iItem != 0x3 ? L_56de : L_56b7
+    branch hs.iItem != 3 ? L_56de : L_56b7
 
 L_56b7:
     branch GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) != 0 ? L_56de : L_56d8
@@ -248,7 +248,7 @@ L_56d8:
     return -1
 
 L_56de:
-    branch hs.iItem != 0x4 ? L_609c : L_56ec
+    branch hs.iItem != 4 ? L_609c : L_56ec
 
 L_56ec:
     branch raMajor == 8 ? L_609c : L_56f5
@@ -340,7 +340,7 @@ L_5841:
     branch hs.iItem > ispecialEAntiMatterGenerator ? L_609c : L_5849
 
 L_5849:
-    tablejump (hs.iItem * 0x2) [0x0: L_57e4, 0x2: L_609c, 0x4: L_609c, 0x6: L_57e4, 0x8: L_609c, 0xa: L_609c, 0xc: L_609c, 0xe: L_609c, 0x10: L_582c, 0x12: L_609c, 0x14: L_609c, 0x16: L_582c, 0x18: L_609c, 0x1a: L_581a, 0x1c: L_57f6, 0x1e: L_582c, 0x20: L_5808]
+    tablejump (hs.iItem * 2) [0x0: L_57e4, 0x2: L_609c, 0x4: L_609c, 0x6: L_57e4, 0x8: L_609c, 0xa: L_609c, 0xc: L_609c, 0xe: L_609c, 0x10: L_582c, 0x12: L_609c, 0x14: L_609c, 0x16: L_582c, 0x18: L_609c, 0x1a: L_581a, 0x1c: L_57f6, 0x1e: L_582c, 0x20: L_5808]
 
 L_5877:
     branch hs.iItem < ispecialMCount ? L_588b : L_5885

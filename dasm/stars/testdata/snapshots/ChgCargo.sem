@@ -26,7 +26,7 @@ L_6046:
     branch grobj != grobjOther ? L_6190 : L_604f
 
 L_604f:
-    branch pobj == 0x0 ? L_6062 : L_6058
+    branch pobj == 0 ? L_6062 : L_6058
 
 L_6058:
     ppl = pobj
@@ -61,7 +61,7 @@ L_60cc:
     return ppl->rgwtMin[iSupply]
 
 L_60e6:
-    branch (ppl->rgwtMin[iSupply] + dChg) < 0x0 ? L_6118 : L_613c
+    branch (ppl->rgwtMin[iSupply] + dChg) < 0 ? L_6118 : L_613c
 
 
 
@@ -76,7 +76,7 @@ L_6159:
 
 
 L_616b:
-    branch pobj != 0x0 ? L_64bd : L_6174
+    branch pobj != 0 ? L_64bd : L_6174
 
 L_6174:
     branch grobj == grobjOther ? L_64bd : L_617d
@@ -91,7 +91,7 @@ L_6190:
     branch grobj != grobjThing ? L_6320 : L_6199
 
 L_6199:
-    branch pobj == 0x0 ? L_61ab : L_61a2
+    branch pobj == 0 ? L_61ab : L_61a2
 
 L_61a2:
     pth = pobj
@@ -118,7 +118,7 @@ L_61ed:
     return sext16to32(pth->thp.rgwtMin[iSupply])
 
 L_6202:
-    branch (sext16to32(pth->thp.rgwtMin[iSupply]) + dChg) < 0x0 ? L_622f : L_6249
+    branch (sext16to32(pth->thp.rgwtMin[iSupply]) + dChg) < 0 ? L_622f : L_6249
 
 
 
@@ -126,7 +126,7 @@ L_622f:
     dChg = sext16to32(neg(pth->thp.rgwtMin[iSupply]))
 
 L_6249:
-    wtFree = (uint32_t)(pth->thp.wtMax * 0xa)
+    wtFree = (uint32_t)(pth->thp.wtMax * 10)
     i = 0
     goto L_6295
 
@@ -153,7 +153,7 @@ L_62f3:
 
 
 L_6305:
-    branch pobj != 0x0 ? L_64bd : L_630e
+    branch pobj != 0 ? L_64bd : L_630e
 
 L_630e:
     call FLookupThing(-1, pth) -> callresult(int16_t)
@@ -162,7 +162,7 @@ L_631d:
     goto L_64bd
 
 L_6320:
-    branch pobj == 0x0 ? L_6333 : L_6329
+    branch pobj == 0 ? L_6333 : L_6329
 
 L_6329:
     pfl = pobj
@@ -183,7 +183,7 @@ L_6364:
     return pfl->rgwtMin[iSupply]
 
 L_637e:
-    branch (pfl->rgwtMin[iSupply] + dChg) < 0x0 ? L_63b0 : L_63d4
+    branch (pfl->rgwtMin[iSupply] + dChg) < 0 ? L_63b0 : L_63d4
 
 
 
@@ -194,7 +194,7 @@ L_63d4:
     branch iSupply != 3 ? L_63f9 : L_63dd
 
 L_63dd:
-    branch pfl->det == 0x7 ? L_63f9 : L_63ef
+    branch pfl->det == 7 ? L_63f9 : L_63ef
 
 L_63ef:
     dChg = 0
@@ -203,13 +203,11 @@ L_63f9:
     branch iSupply != 4 ? L_6415 : L_6402
 
 L_6402:
-    call GetFuelFree(pfl) -> t_call_640a
-    t_merge_6425_0001 = t_call_640a
+    t_merge_6425_0001 = GetFuelFree(pfl)
     goto L_6425
 
 L_6415:
-    call GetCargoFree(pfl) -> t_call_641d
-    t_merge_6425_0001 = t_call_641d
+    t_merge_6425_0001 = GetCargoFree(pfl)
 
 L_6425:
     branch dChg < t_merge_6425_0001 ? L_643a : L_6443
@@ -217,23 +215,19 @@ L_6425:
 
 
 L_643a:
-    t_merge_646f_0001 = dChg
     goto L_646f
 
 L_6443:
     branch iSupply != 4 ? L_645f : L_644c
 
 L_644c:
-    call GetFuelFree(pfl) -> t_call_6454
-    t_merge_646f_0001 = t_call_6454
+    call GetFuelFree(pfl) -> dChg
     goto L_646f
 
 L_645f:
-    call GetCargoFree(pfl) -> t_call_6467
-    t_merge_646f_0001 = t_call_6467
+    call GetCargoFree(pfl) -> dChg
 
 L_646f:
-    dChg = t_merge_646f_0001
     pfl->rgwtMin[iSupply] = (pfl->rgwtMin[iSupply] + dChg)
 
 L_6492:
@@ -241,7 +235,7 @@ L_6492:
 
 
 L_64a4:
-    branch pobj != 0x0 ? L_64bd : L_64ad
+    branch pobj != 0 ? L_64bd : L_64ad
 
 L_64ad:
     call FLookupFleet(-1, pfl) -> callresult(int16_t)

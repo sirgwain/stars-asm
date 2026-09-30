@@ -45,17 +45,17 @@ L_af0f:
 
 L_af1a:
     lpfl = rglpfl[ifl]
-    branch rglpfl[ifl] != 0x0 ? L_af4a : L_be8d
+    branch rglpfl[ifl] != 0 ? L_af4a : L_be8d
 
 
 L_af4a:
-    branch lpfl->fDead != 0x0 ? L_af0b : L_af61
+    branch lpfl->fDead != 0 ? L_af0b : L_af61
 
 L_af61:
     branch lpfl->idPlanet == -1 ? L_af0b : L_af6e
 
 L_af6e:
-    branch lpfl->fBombed != 0x0 ? L_af0b : L_af88
+    branch lpfl->fBombed != 0 ? L_af0b : L_af88
 
 L_af88:
     lppl = &lpPlanets[lpfl->idPlanet]
@@ -68,7 +68,7 @@ L_afc2:
     branch FAttackPlayer(lpfl, lppl->iPlayer) == 0 ? L_af0b : L_afdf
 
 L_afdf:
-    branch lppl->fStarbase != 0x0 ? L_af0b : L_aff9
+    branch lppl->fStarbase != 0 ? L_af0b : L_aff9
 
 L_aff9:
     branch FCalcFleetBombDamage(lpfl, &dmgBombPeople, &dmgBombFloor, &dmgPeopleSmart, &dmgBombBldg, &pctTerra, &fMulti) == 0 ? L_af0b : L_b02a
@@ -134,7 +134,6 @@ L_b21f:
 
 
 L_b292:
-    t_merge_b2c2_0001 = (sext16to32(Random(LOWORD(cPPE))) < modKill ? 0x1 : 0x0)
     goto L_b2c2
 
 
@@ -142,7 +141,7 @@ L_b292:
 
 
 L_b2c2:
-    cKillFact = (cKillFact + (uint32_t)t_merge_b2c2_0001)
+    cKillFact = (cKillFact + (uint32_t)(sext16to32(Random(LOWORD(cPPE))) < modKill ? 1 : 0))
 
 L_b2c8:
     branch cKillFact <= lppl->cFactories ? L_b315 : L_b2f6
@@ -161,7 +160,6 @@ L_b315:
 
 
 L_b380:
-    t_merge_b3b0_0001 = (sext16to32(Random(LOWORD(cPPE))) < modKill ? 0x1 : 0x0)
     goto L_b3b0
 
 
@@ -169,7 +167,7 @@ L_b380:
 
 
 L_b3b0:
-    cKillDefenses = (cKillDefenses + (uint32_t)t_merge_b3b0_0001)
+    cKillDefenses = (cKillDefenses + (uint32_t)(sext16to32(Random(LOWORD(cPPE))) < modKill ? 1 : 0))
 
 L_b3b6:
     branch cKillDefenses <= lppl->cDefenses ? L_b3f3 : L_b3dc
@@ -226,7 +224,6 @@ L_b51f:
 
 
 L_b58c:
-    t_merge_b5b9_0001 = (sext16to32(Random(1000)) <= modKill ? 0x1 : 0x0)
     goto L_b5b9
 
 
@@ -234,7 +231,7 @@ L_b58c:
 
 
 L_b5b9:
-    cKillPeople = (cKillPeople + (uint32_t)t_merge_b5b9_0001)
+    cKillPeople = (cKillPeople + (uint32_t)(sext16to32(Random(1000)) <= modKill ? 1 : 0))
 
 L_b5bf:
     cKillPeople = (cKillPeople + cKillPeopleS)

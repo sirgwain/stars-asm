@@ -21,8 +21,8 @@ L_56dd:
     goto L_5712;
 
 L_56fe:
-    i = i + 1;
-    lpshdef = lpshdef + 1;
+    i++;
+    lpshdef++;
 
 L_5712:
     if (i >= 16)
@@ -51,14 +51,14 @@ L_576c:
         goto L_5784;
 
 L_5784:
-    pctShip10 = pctShip10 + lpshdef->hul.rghs[0].cItem;
+    pctShip10 += lpshdef->hul.rghs[0].cItem;
     if (rgiFuel[iWarp + 1] != 0)
         goto L_5852;
     else
         goto L_57b7;
 
 L_57b7:
-    pctShip10 = pctShip10 + (uint32_t)(lpshdef->hul.rghs[0].cItem * 0x2);
+    pctShip10 += (uint32_t)(lpshdef->hul.rghs[0].cItem * 2);
     if (iWarp >= 9)
         goto L_5852;
     else
@@ -71,7 +71,7 @@ L_57da:
         goto L_57f5;
 
 L_57f5:
-    pctShip10 = pctShip10 + (uint32_t)(lpshdef->hul.rghs[0].cItem * 0x3);
+    pctShip10 += (uint32_t)(lpshdef->hul.rghs[0].cItem * 3);
     if (iWarp >= 8)
         goto L_5852;
     else
@@ -84,10 +84,10 @@ L_581b:
         goto L_5836;
 
 L_5836:
-    pctShip10 = pctShip10 + (uint32_t)(lpshdef->hul.rghs[0].cItem * 0x4);
+    pctShip10 += (uint32_t)(lpshdef->hul.rghs[0].cItem * 4);
 
 L_5852:
-    pct10 = pct10 + (uint32_t)(pctShip10 * (int32_t)lpfl->rgcsh[i]);
+    pct10 += (uint32_t)(pctShip10 * lpfl->rgcsh[i]);
 
 L_587d:
     goto L_56fe;

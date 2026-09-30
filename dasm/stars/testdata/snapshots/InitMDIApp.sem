@@ -8,59 +8,59 @@ InitMDIApp  (mdi)
   stats: blocks=0  labels=0
 */
 L_0000:
-    wc.style = 0xb
-    wc.lpfnWndProc = (WNDPROC)FrameWndProc
+    wc.style = 11
+    wc.lpfnWndProc = (WNDPROC)FrameWndProc16
     wc.cbClsExtra = 0
     wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = LoadIcon(hInst, "StarsIco")
-    wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = (HBRUSH)13
     wc.lpszMenuName = "StarsMenu"
     wc.lpszClassName = szFrame
-    branch RegisterClass(&wc) != 0x0 ? L_0076 : L_0070
+    branch RegisterClass(&wc) != 0 ? L_0076 : L_0070
 
 L_0070:
     return 0
 
 L_0076:
-    wc.style = 0x20b
+    wc.style = 523
     wc.lpfnWndProc = (WNDPROC)MessageWndProc
-    wc.hIcon = 0x0
-    wc.lpszMenuName = 0x0
+    wc.hIcon = 0
+    wc.lpszMenuName = NULL
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.lpszClassName = szMessage
-    branch RegisterClass(&wc) != 0x0 ? L_00c5 : L_00bf
+    branch RegisterClass(&wc) != 0 ? L_00c5 : L_00bf
 
 L_00bf:
     return 0
 
 L_00c5:
-    wc.style = 0x20b
+    wc.style = 523
     wc.lpfnWndProc = (WNDPROC)ScannerWndProc
     wc.hbrBackground = GetStockObject(BLACK_BRUSH)
     wc.lpszClassName = szScan
-    branch RegisterClass(&wc) != 0x0 ? L_0105 : L_00ff
+    branch RegisterClass(&wc) != 0 ? L_0105 : L_00ff
 
 L_00ff:
     return 0
 
 L_0105:
-    wc.style = 0x20b
+    wc.style = 523
     wc.lpfnWndProc = (WNDPROC)MineWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.lpszClassName = szMine
-    branch RegisterClass(&wc) != 0x0 ? L_0145 : L_013f
+    branch RegisterClass(&wc) != 0 ? L_0145 : L_013f
 
 L_013f:
     return 0
 
 L_0145:
-    wc.style = 0x208
+    wc.style = 520
     wc.lpfnWndProc = (WNDPROC)TbWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.lpszClassName = szTb
-    branch RegisterClass(&wc) != 0x0 ? L_0185 : L_017f
+    branch RegisterClass(&wc) != 0 ? L_0185 : L_017f
 
 L_017f:
     return 0
@@ -69,31 +69,31 @@ L_0185:
     wc.style = 0x200
     wc.lpfnWndProc = (WNDPROC)PlanetWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.hIcon = 0x0
+    wc.hIcon = 0
     wc.lpszClassName = szPlanet
-    branch RegisterClass(&wc) != 0x0 ? L_01ca : L_01c4
+    branch RegisterClass(&wc) != 0 ? L_01ca : L_01c4
 
 L_01c4:
     return 0
 
 L_01ca:
-    wc.style = 0xa00
+    wc.style = 2560
     wc.lpfnWndProc = (WNDPROC)PopupWndProc
     wc.hbrBackground = GetStockObject(WHITE_BRUSH)
-    wc.hIcon = 0x0
+    wc.hIcon = 0
     wc.lpszClassName = szPopup
-    branch RegisterClass(&wc) != 0x0 ? L_020f : L_0209
+    branch RegisterClass(&wc) != 0 ? L_020f : L_0209
 
 L_0209:
     return 0
 
 L_020f:
-    wc.style = 0xa00
+    wc.style = 2560
     wc.lpfnWndProc = (WNDPROC)TooltipWndProc
     wc.hbrBackground = GetStockObject(WHITE_BRUSH)
-    wc.hIcon = 0x0
+    wc.hIcon = 0
     wc.lpszClassName = szTooltip
-    branch RegisterClass(&wc) != 0x0 ? L_0254 : L_024e
+    branch RegisterClass(&wc) != 0 ? L_0254 : L_024e
 
 L_024e:
     return 0
@@ -102,41 +102,41 @@ L_0254:
     wc.style = 0x200
     wc.lpfnWndProc = (WNDPROC)BrowserWndProc
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.hIcon = 0x0
+    wc.hIcon = 0
     wc.lpszClassName = szBrowser
-    branch RegisterClass(&wc) != 0x0 ? L_0299 : L_0293
+    branch RegisterClass(&wc) != 0 ? L_0299 : L_0293
 
 L_0293:
     return 0
 
 L_0299:
-    wc.style = 0x0
+    wc.style = 0
     wc.lpfnWndProc = (WNDPROC)TitleWndProc
     wc.cbClsExtra = 0
     wc.cbWndExtra = 0
     wc.hInstance = hInst
-    wc.hIcon = 0x0
-    wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
+    wc.hIcon = 0
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = GetStockObject(BLACK_BRUSH)
-    wc.lpszMenuName = 0x0
+    wc.lpszMenuName = NULL
     wc.lpszClassName = szTitle
-    branch RegisterClass(&wc) != 0x0 ? L_030c : L_0306
+    branch RegisterClass(&wc) != 0 ? L_030c : L_0306
 
 L_0306:
     return 0
 
 L_030c:
-    wc.style = 0xb
+    wc.style = 11
     wc.lpfnWndProc = (WNDPROC)ReportDlg
     wc.cbClsExtra = 0
     wc.cbWndExtra = 0
     wc.hInstance = hInst
-    wc.hIcon = 0x0
-    wc.hCursor = LoadCursor(0x0, MAKEINTRESOURCE(0x7f00))
+    wc.hIcon = 0
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
-    wc.lpszMenuName = 0x0
+    wc.lpszMenuName = NULL
     wc.lpszClassName = szReport
-    branch RegisterClass(&wc) != 0x0 ? L_037f : L_0379
+    branch RegisterClass(&wc) != 0 ? L_037f : L_0379
 
 L_0379:
     return 0

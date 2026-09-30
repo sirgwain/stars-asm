@@ -28,7 +28,7 @@ L_068d:
     goto L_06c5;
 
 L_06c1:
-    i = i + 1;
+    i++;
 
 L_06c5:
     if (i >= rgcbtlplan[idPlayer])
@@ -37,7 +37,7 @@ L_06c5:
         goto L_06d8;
 
 L_06d8:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
     goto L_06c1;
 
 L_0714:
@@ -48,8 +48,8 @@ L_0714:
     goto L_07b7;
 
 L_078a:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i));
-    i = i + 1;
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+    i++;
 
 L_07b7:
     if (i <= 413)
@@ -63,8 +63,8 @@ L_07c1:
     goto L_0820;
 
 L_07f3:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i));
-    i = i + 1;
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+    i++;
 
 L_0820:
     if (i <= 407)
@@ -74,7 +74,7 @@ L_0820:
 
 L_082a:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0);
-    if (game.fSinglePlr != 0x0)
+    if (game.fSinglePlr != 0)
         goto L_0946;
     else
         goto L_0861;
@@ -84,8 +84,8 @@ L_0861:
     goto L_0896;
 
 L_0869:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i));
-    i = i + 1;
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+    i++;
 
 L_0896:
     if (i <= 123)
@@ -98,7 +98,7 @@ L_089f:
     goto L_08ab;
 
 L_08a7:
-    i = i + 1;
+    i++;
 
 L_08ab:
     if (i >= game.cPlayer)
@@ -113,7 +113,7 @@ L_08b6:
         goto L_08c1;
 
 L_08c1:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, 0x0));
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, NULL));
 
 L_08fe:
     goto L_08a7;
@@ -126,15 +126,15 @@ L_0901:
         goto L_091d;
 
 L_091d:
-    i = i - 1;
+    i--;
 
 L_0921:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
     goto L_09a8;
 
 L_0946:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(idsEveryone));
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEveryone));
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, 0, 0);
     EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0422), 0);
 
 L_09a8:
@@ -142,8 +142,8 @@ L_09a8:
     goto L_09dd;
 
 L_09b0:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_ADDSTRING, 0x0, (LPARAM)PszGetCompressedString(i));
-    i = i + 1;
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+    i++;
 
 L_09dd:
     if (i <= 407)
@@ -155,7 +155,7 @@ L_09e7:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0);
     fDirtyPlan = 0;
-    if (gd.fTutorial == 0x0)
+    if (gd.fTutorial == 0)
         goto L_0a5c;
     else
         goto L_0a57;
@@ -178,7 +178,7 @@ L_0a6a:
         goto L_0a8b;
 
 L_0a8b:
-    idc = idc + 1;
+    idc++;
 
 L_0a8f:
     if (idc <= 1058)
@@ -193,7 +193,7 @@ L_0a99:
         goto L_0aa3;
 
 L_0aa3:
-    if (HIWORD(lParam) != 0x6)
+    if (HIWORD(lParam) != 6)
         goto L_16f8;
     else
         goto L_0abf;
@@ -251,7 +251,7 @@ L_0bb8:
         goto L_0bc2;
 
 L_0bc2:
-    btlplan.fDumpCargo = LOWORD(SendDlgItemMessage(hwnd, 1053, BM_GETCHECK, 0x0, 0));
+    btlplan.fDumpCargo = LOWORD(SendDlgItemMessage(hwnd, 1053, BM_GETCHECK, 0, 0));
     fDirtyPlan = 1;
     goto L_16f8;
 
@@ -273,7 +273,7 @@ L_0c19:
     fDirtyPlan = 0;
 
 L_0c71:
-    btlplan.fDelete = 0x1;
+    btlplan.fDelete = 1;
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
     btlplan.iplan = iPlanSelDlg;
     if (FDeleteBattlePlan(iPlanSelDlg, 1) == 0)
@@ -284,12 +284,12 @@ L_0c71:
 L_0cf7:
     LogChangeBtlplan(&btlplan);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg - 1, 0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
     i = 0;
     goto L_0d56;
 
 L_0d52:
-    i = i + 1;
+    i++;
 
 L_0d56:
     if (i >= rgcbtlplan[idPlayer])
@@ -298,7 +298,7 @@ L_0d56:
         goto L_0d69;
 
 L_0d69:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
     goto L_0d52;
 
 L_0da5:
@@ -306,7 +306,7 @@ L_0da5:
     goto LSelectName;
 
 L_0dd0:
-    btlplan.fDelete = 0x0;
+    btlplan.fDelete = 0;
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
     goto L_16f8;
 
@@ -317,7 +317,7 @@ L_0e25:
         goto L_0e2f;
 
 L_0e2f:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
     btlplan.mdTarget1 = i;
     fDirtyPlan = 1;
     goto L_16f8;
@@ -329,7 +329,7 @@ L_0e70:
         goto L_0e7a;
 
 L_0e7a:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
     btlplan.mdTarget2 = i;
     fDirtyPlan = 1;
     goto L_16f8;
@@ -341,8 +341,8 @@ L_0ec4:
         goto L_0ece;
 
 L_0ece:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
-    if (game.fSinglePlr == 0x0)
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
+    if (game.fSinglePlr == 0)
         goto L_0f0d;
     else
         goto L_0f05;
@@ -358,7 +358,7 @@ L_0f0d:
         goto L_0f1b;
 
 L_0f1b:
-    i = i + 1;
+    i++;
 
 L_0f1f:
     btlplan.iplrAttack = i;
@@ -372,7 +372,7 @@ L_0f41:
         goto L_0f4b;
 
 L_0f4b:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
     btlplan.mdTactic = i;
     fDirtyPlan = 1;
     goto L_16f8;
@@ -396,12 +396,12 @@ LRename:
 
 L_1000:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
     i = 0;
     goto L_1074;
 
 L_1070:
-    i = i + 1;
+    i++;
 
 L_1074:
     if (i >= rgcbtlplan[idPlayer])
@@ -410,7 +410,7 @@ L_1074:
         goto L_1087;
 
 L_1087:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
     goto L_1070;
 
 L_10c3:
@@ -428,7 +428,7 @@ L_1134:
         goto L_113e;
 
 L_113e:
-    if (rgcbtlplan[idPlayer] != 0xf)
+    if (rgcbtlplan[idPlayer] != 15)
         goto L_1157;
     else
         goto L_1151;
@@ -449,7 +449,7 @@ L_1161:
 
 L_11b9:
     t_11bd = rgcbtlplan[idPlayer];
-    rgcbtlplan[idPlayer] = rgcbtlplan[idPlayer] + 0x1;
+    rgcbtlplan[idPlayer]++;
     iPlanSelDlg = t_11bd;
     cLen = strlen(btlplan.szName);
     if (cLen > 27)
@@ -464,7 +464,7 @@ L_11e7:
         goto L_11ff;
 
 L_11ff:
-    if (isdigit(btlplan.szName[cLen - 2]) == 0x0)
+    if (isdigit(btlplan.szName[cLen - 2]) == 0)
         goto L_123c;
     else
         goto L_1224;
@@ -496,12 +496,12 @@ L_128b:
     btlplan.iplan = iPlanSelDlg;
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0x0, 0);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
     i = 0;
     goto L_1345;
 
 L_1341:
-    i = i + 1;
+    i++;
 
 L_1345:
     if (i >= rgcbtlplan[idPlayer])
@@ -510,7 +510,7 @@ L_1345:
         goto L_1358;
 
 L_1358:
-    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0x0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
     goto L_1341;
 
 L_1394:
@@ -525,12 +525,12 @@ L_1394:
         goto L_144e;
 
 L_144e:
-    i = i - 1;
+    i--;
 
 L_1452:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
     fDirtyPlan = 1;
-    wParam = 0x41f;
+    wParam = 1055;
     EnableWindow(GetDlgItem(hwnd, IDC_RENAME), 1);
     goto LRename;
 
@@ -541,7 +541,7 @@ L_149b:
         goto LSelectName;
 
 LSelectName:
-    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_GETCURSEL, 0x0, 0));
+    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_GETCURSEL, 0, 0));
     if (i == iPlanSelDlg)
         goto L_16f8;
     else
@@ -564,7 +564,7 @@ L_1537:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0);
-    wParam = 0x41f;
+    wParam = 1055;
     EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
     EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
@@ -575,7 +575,7 @@ L_1537:
         goto L_167c;
 
 L_167c:
-    i = i - 1;
+    i--;
 
 L_1680:
     SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
@@ -590,7 +590,7 @@ L_16a5:
         goto L_16ae;
 
 L_16ae:
-    WinHelp(hwnd, szHelpFile, 0x1, 0x439);
+    WinHelp(hwnd, szHelpFile, 1, 1081);
     return 1;
 
 L_16d5:

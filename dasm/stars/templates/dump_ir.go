@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"math"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -198,6 +200,9 @@ func formatIRStmt(stmt ir.Stmt) string {
 		if raw, ok := s.Dst.(*ir.Deref); ok && raw.Type != nil && raw.Type.Bytes() > 1 {
 			return fmt.Sprintf("RawStore%d(%s, %s);", raw.Type.Bytes()*8, formatRawAddress(raw, precLowest), formatIRExpr(s.Src, precLowest))
 		}
+		if text, ok := formatCompoundAssign(s); ok {
+			return text + ";"
+		}
 		return fmt.Sprintf("%s = %s;", formatIRExpr(s.Dst, precLowest), formatIRExpr(s.Src, precLowest))
 	case *ir.ExprStmt:
 		return formatIRExpr(s.Expr, precLowest) + ";"
@@ -223,6 +228,49 @@ func formatIRStmt(stmt ir.Stmt) string {
 	default:
 		return fmt.Sprintf("/* untranslated IR statement: %T */", stmt)
 	}
+}
+
+// compoundOps lists the binary operators that have a C compound assignment
+// form.
+var compoundOps = map[string]bool{
+	"+": true, "-": true, "*": true, "/": true, "%": true,
+	"&": true, "|": true, "^": true, "<<": true, ">>": true,
+}
+
+// formatCompoundAssign renders a = a op b as a op= b, and a = a + 1 or
+// a = a - 1 as a++ or a--, without the trailing semicolon. It applies only
+// when a is a simple lvalue, so evaluating it once instead of twice cannot
+// change behavior; C defines a op= b as a = a op b otherwise.
+func formatCompoundAssign(a *ir.Assign) (string, bool) {
+	b, ok := a.Src.(*ir.Binary)
+	if !ok || !compoundOps[b.Op] || !simpleLvalue(a.Dst) || !ir.ExprEqual(a.Dst, b.LHS) {
+		return "", false
+	}
+	if one, ok := b.RHS.(*ir.IntConst); ok && one.Value == 1 && (b.Op == "+" || b.Op == "-") && (one.Text == "" || one.Text == "1") {
+		// Postfix binds tighter than *, so a pointee is parenthesized: (*p)++.
+		return formatIRExpr(a.Dst, precPostfix) + b.Op + b.Op, true
+	}
+	return formatIRExpr(a.Dst, precLowest) + " " + b.Op + "= " + formatIRExpr(b.RHS, precLowest), true
+}
+
+// simpleLvalue reports whether e is a variable, or a field, element, or
+// pointee reached from one through constant or variable indexes only, so
+// it has no side effects and evaluates the same each time.
+func simpleLvalue(e ir.Expr) bool {
+	switch e := e.(type) {
+	case *ir.Var:
+		return true
+	case *ir.Field:
+		return simpleLvalue(e.Base)
+	case *ir.Index:
+		switch e.Index.(type) {
+		case *ir.Var, *ir.IntConst:
+			return simpleLvalue(e.Base)
+		}
+	case *ir.Deref:
+		return e.Type == nil && simpleLvalue(e.Pointer)
+	}
+	return false
 }
 
 // C operator precedence levels for formatIRExpr; a higher level binds
@@ -277,7 +325,9 @@ func formatIRExprText(expr ir.Expr) (string, int) {
 		return e.Name, precPostfix
 	case *ir.IntConst:
 		text := e.Text
-		if text == "" {
+		if text == "" && e.Value <= 9 {
+			text = fmt.Sprint(e.Value)
+		} else if text == "" {
 			text = fmt.Sprintf("0x%x", e.Value)
 		}
 		return text, signedLiteralPrec(text)
@@ -289,8 +339,8 @@ func formatIRExprText(expr ir.Expr) (string, int) {
 	case *ir.SizeOf:
 		return "sizeof(" + e.Type + ")", precPostfix
 	case *ir.Unary:
-		if e.Functional {
-			return e.Op + "(" + formatIRExpr(e.X, precLowest) + ")", precPostfix
+		if e.Postfix {
+			return formatIRExpr(e.X, precPostfix) + e.Op, precPostfix
 		}
 		return e.Op + formatUnaryOperand(e.Op, e.X), precUnary
 	case *ir.Binary:
@@ -300,6 +350,13 @@ func formatIRExprText(expr ir.Expr) (string, int) {
 		// parentheses, one in the condition does.
 		return formatIRExpr(e.Cond, precOr) + " ? " + formatIRExpr(e.Then, precLowest) + " : " + formatIRExpr(e.Else, precCond), precCond
 	case *ir.Cast:
+		if inner, ok := e.Value.(*ir.Cast); ok && inner.Type == e.Type {
+			return formatIRExprText(inner)
+		}
+		// int32_t is int on the native target, so the cast changes nothing.
+		if e.Type == "int32_t" && isCInt(e.Value) {
+			return formatIRExprText(e.Value)
+		}
 		return "(" + e.Type + ")" + formatUnaryOperand("", e.Value), precUnary
 	case *ir.Index:
 		return formatIRExpr(e.Base, precPostfix) + "[" + formatIRExpr(e.Index, precLowest) + "]", precPostfix
@@ -341,6 +398,50 @@ func formatIRExprText(expr ir.Expr) (string, int) {
 	default:
 		return fmt.Sprintf("/*expr %T*/0", expr), precPostfix
 	}
+}
+
+// promotedToInt lists the cast types whose values C promotes to int, or
+// that are int, on the native target.
+var promotedToInt = map[string]bool{
+	"int8_t": true, "uint8_t": true, "int16_t": true, "uint16_t": true, "int32_t": true,
+}
+
+// isCInt reports whether expr provably has C type int: a cast to a type
+// that promotes to int, a numeric or character literal that fits int,
+// comparisons and logical operators, and arithmetic of such operands.
+func isCInt(expr ir.Expr) bool {
+	switch e := expr.(type) {
+	case *ir.Cast:
+		return promotedToInt[e.Type]
+	case *ir.IntConst:
+		if e.Text == "" {
+			return e.Value <= math.MaxInt32
+		}
+		if strings.HasPrefix(e.Text, "'") {
+			return true
+		}
+		v, err := strconv.ParseInt(e.Text, 0, 64)
+		return err == nil && v >= math.MinInt32 && v <= math.MaxInt32
+	case *ir.Unary:
+		switch e.Op {
+		case "!":
+			return true
+		case "-", "~":
+			return isCInt(e.X)
+		}
+	case *ir.Binary:
+		switch e.Op {
+		case "==", "!=", "<", "<=", ">", ">=", "&&", "||":
+			return true
+		case "<<", ">>":
+			return isCInt(e.LHS)
+		case "+", "-", "*", "/", "%", "&", "|", "^":
+			return isCInt(e.LHS) && isCInt(e.RHS)
+		}
+	case *ir.Cond:
+		return isCInt(e.Then) && isCInt(e.Else)
+	}
+	return false
 }
 
 // signedLiteralPrec returns the precedence of a numeric literal's text: a

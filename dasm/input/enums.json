@@ -83,6 +83,7 @@
     { "kind": "field", "struct": "_hdr", "field": "rt", "enum": "RecordType" },
     { "kind": "field", "struct": "tagOFN", "field": "Flags", "enum": "OpenFileNameFlags" },
     { "kind": "field", "struct": "tagPD", "field": "Flags", "enum": "PrintDlgFlags" },
+    { "kind": "field", "struct": "tagMSG", "field": "message", "enum": "WMType" },
     { "kind": "field", "struct": "_hs", "field": "grhst", "enum": "HullSlotType" },
     { "kind": "field", "struct": "_hul", "field": "ihuldef", "enum": "HulDef" },
     { "kind": "field", "struct": "_logxfer", "field": "grobj", "enum": "GrobjClass" },
@@ -268,6 +269,7 @@
     { "kind": "param", "func": "SetDlgItemText", "param": "arg2", "enum": "ControlId" },
     { "kind": "param", "func": "SendMessage", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "PostMessage", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "DefWindowProc", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "SendDlgItemMessage", "param": "arg3", "enum": "WMType" },
     { "kind": "param", "func": "PatBlt", "param": "arg6", "enum": "PatBltRop" },
     { "kind": "param", "func": "GetSystemMetrics", "param": "arg1", "enum": "SystemMetric" },
@@ -290,6 +292,7 @@
     { "kind": "param", "func": "CreateWindowEx", "param": "arg4", "enum": "WindowStyle" },
 
     { "kind": "param", "func": "SetWindowPos", "param": "arg7", "enum": "SetWindowPosFlags" },
+    { "kind": "param", "func": "AppendMenu", "param": "arg2", "enum": "MenuFlags" },
 
     { "kind": "param", "func": "GetWindowLong", "param": "arg2", "enum": "WindowLongOffset" },
     { "kind": "param", "func": "SetWindowLong", "param": "arg2", "enum": "WindowLongOffset" },

@@ -21,7 +21,7 @@ FOpenFile  (file)
 L_4ac2:
     fSilentSav = fFileErrSilent
     ids = idsCantOpenFile
-    gd.fPartialTurn = 0x0
+    gd.fPartialTurn = 0
     fCheckMulti = (dt & 0x2000)
     fRewind = (dt & 0x1000)
     dt = (dt & 0xff)
@@ -46,25 +46,25 @@ L_4b49:
     branch hdrCur.rt != rtBOF ? L_4bc4 : L_4b81
 
 L_4b81:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4bc4 : L_4b94
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 2 ? L_4bc4 : L_4b94
 
 L_4b94:
-    branch ((*&rgbCur[8] >> 0x5) & 0x7f) < 0x31 ? L_4bc4 : L_4bac
+    branch ((*&rgbCur[8] >> 5) & 0x7f) < 49 ? L_4bc4 : L_4bac
 
 L_4bac:
-    branch ((*&rgbCur[8] >> 0x5) & 0x7f) < 0x54 ? L_4c47 : L_4bc4
+    branch ((*&rgbCur[8] >> 5) & 0x7f) < 84 ? L_4c47 : L_4bc4
 
 L_4bc4:
     branch hdrCur.rt != rtBOF ? L_4c2a : L_4bd7
 
 L_4bd7:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) > 0x2 ? L_4c15 : L_4bea
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) > 2 ? L_4c15 : L_4bea
 
 L_4bea:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 0x2 ? L_4c1b : L_4bfd
+    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 2 ? L_4c1b : L_4bfd
 
 L_4bfd:
-    branch ((*&rgbCur[8] >> 0x5) & 0x7f) <= 0x54 ? L_4c1b : L_4c15
+    branch ((*&rgbCur[8] >> 5) & 0x7f) <= 84 ? L_4c1b : L_4c15
 
 L_4c15:
     t_merge_4c1e_0001 = 0x2ca
@@ -112,7 +112,7 @@ L_4cc1:
     branch fCheckMulti == 0 ? L_4d4d : L_4cca
 
 L_4cca:
-    branch rtbof.fMulti == 0x0 ? L_4d4d : L_4cdd
+    branch rtbof.fMulti == 0 ? L_4d4d : L_4cdd
 
 L_4cdd:
     call lseek(hf, -4, 2) -> callresult(int32_t)
@@ -120,14 +120,14 @@ L_4cdd:
     branch hdrCur.rt == rtEOF ? L_4d1e : L_4d0d
 
 L_4d0d:
-    branch hdrCur.cb != 0x2 ? L_4c36 : L_4d1e
+    branch hdrCur.cb != 2 ? L_4c36 : L_4d1e
 
 L_4d1e:
     rtbof.turn = LOWORD(rgbCur)
     game.wGen = rtbof.wGen
 
 L_4d4d:
-    branch game.turn != 0x0 ? L_4d95 : L_4d57
+    branch game.turn != 0 ? L_4d95 : L_4d57
 
 L_4d57:
     branch game.turn == rtbof.turn ? L_4d95 : L_4d63
@@ -148,35 +148,35 @@ L_4db2:
     branch dt != dtHost ? L_4e11 : L_4dbb
 
 L_4dbb:
-    branch gd.fHostMode != 0x0 ? L_4e11 : L_4dcf
+    branch gd.fHostMode != 0 ? L_4e11 : L_4dcf
 
 L_4dcf:
-    branch rtbof.fInUse == 0x0 ? L_4e11 : L_4de2
+    branch rtbof.fInUse == 0 ? L_4e11 : L_4de2
 
 L_4de2:
-    branch AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, 0x0), MB_YESNO|MB_ICONQUESTION|MB_TASKMODAL) != IDYES ? L_4c36 : L_4e08
+    branch AlertSz(PszFormatIds(idsHostFileMarkedUseAnotherInstanceStars, NULL), MB_YESNO|MB_ICONQUESTION|MB_TASKMODAL) != IDYES ? L_4c36 : L_4e08
 
 L_4e08:
     goto L_4ebd
 
 L_4e11:
-    branch rtbof.fDone != 0x0 ? L_4e58 : L_4e24
+    branch rtbof.fDone != 0 ? L_4e58 : L_4e24
 
 L_4e24:
-    branch gd.fGeneratingTurn == 0x0 ? L_4e58 : L_4e34
+    branch gd.fGeneratingTurn == 0 ? L_4e58 : L_4e34
 
 L_4e34:
-    branch gd.fForceTurn != 0x0 ? L_4e58 : L_4e46
+    branch gd.fForceTurn != 0 ? L_4e58 : L_4e46
 
 L_4e46:
-    gd.fPartialTurn = 0x1
+    gd.fPartialTurn = 1
     goto L_4c36
 
 L_4e58:
     branch dt != dtLog ? L_4ebd : L_4e61
 
 L_4e61:
-    branch game.fTutorial != 0x0 ? L_4ebd : L_4e75
+    branch game.fTutorial != 0 ? L_4ebd : L_4e75
 
 L_4e75:
     branch rtbof.wGen == game.wGen ? L_4ebd : L_4e93

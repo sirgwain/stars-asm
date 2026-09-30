@@ -23,7 +23,7 @@ DrawShipCargo  (ship)
 */
 L_1a54:
     pfl = obj.pfl
-    branch ptile->fFixCtls == 0x0 ? L_1a91 : L_1a79
+    branch ptile->fFixCtls == 0 ? L_1a91 : L_1a79
 
 L_1a79:
     rgrcRef[2].top = -5
@@ -52,7 +52,7 @@ L_1b59:
     l = l2
 
 L_1b65:
-    branch ptile->fMinDraw != 0x0 ? L_1b93 : L_1b7b
+    branch ptile->fMinDraw != 0 ? L_1b93 : L_1b7b
 
 L_1b7b:
     call TextOut(hdc, xLeft, yTop, szWork, c) -> callresult(int16_t)
@@ -61,8 +61,8 @@ L_1b93:
     call SetRect(&rcGauge, (xLeft + LOWORD(l)), yTop, xRight, (yTop + dyArial8)) -> callresult(void)
     rgrcRef[2] = rcGauge
     call DrawFleetGauge(hdc, &rcGauge, pfl, 4) -> callresult(void)
-    yTop = (yTop + ((gd.fSmallTileMode == 0x0 ? 4 : 2) + dyArial8))
-    branch ptile->fMinDraw != 0x0 ? L_1c47 : L_1c1c
+    yTop = (yTop + ((gd.fSmallTileMode == 0 ? 4 : 2) + dyArial8))
+    branch ptile->fMinDraw != 0 ? L_1c47 : L_1c1c
 
 
 
@@ -76,14 +76,14 @@ L_1c47:
     rgrcRef[3] = rcGauge
     call DrawFleetGauge(hdc, &rcGauge, pfl, 5) -> callresult(void)
     yTop = (yTop + (dyArial8 + 4))
-    branch gd.fSmallTileMode != 0x0 ? L_1e6c : L_1cb6
+    branch gd.fSmallTileMode != 0 ? L_1e6c : L_1cb6
 
 L_1cb6:
     i = 0
     goto L_1d9e
 
 L_1cbe:
-    branch ptile->fMinDraw != 0x0 ? L_1d25 : L_1cd4
+    branch ptile->fMinDraw != 0 ? L_1d25 : L_1cd4
 
 L_1cd4:
     call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
@@ -102,7 +102,7 @@ L_1d9e:
     branch i <= 2 ? L_1cbe : L_1da7
 
 L_1da7:
-    branch ptile->fMinDraw != 0x0 ? L_1e20 : L_1dbd
+    branch ptile->fMinDraw != 0 ? L_1e20 : L_1dbd
 
 L_1dbd:
     call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)

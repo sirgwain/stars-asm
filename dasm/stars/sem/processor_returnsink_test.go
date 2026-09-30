@@ -52,10 +52,10 @@ func TestReturnSinkProcessorMovesMergeArmsToPredecessors(t *testing.T) {
 	if changed := (&returnSinkProcessor{}).ProcessFunc(nil, fn); !changed {
 		t.Fatal("ProcessFunc changed = false, want true")
 	}
-	if got, want := FormatEffect(fn.Blocks[1].Effects[len(fn.Blocks[1].Effects)-1]), "return 0x1"; got != want {
+	if got, want := FormatEffect(fn.Blocks[1].Effects[len(fn.Blocks[1].Effects)-1]), "return 1"; got != want {
 		t.Fatalf("first predecessor tail = %q, want %q", got, want)
 	}
-	if got, want := FormatEffect(fn.Blocks[2].Effects[len(fn.Blocks[2].Effects)-1]), "return 0x0"; got != want {
+	if got, want := FormatEffect(fn.Blocks[2].Effects[len(fn.Blocks[2].Effects)-1]), "return 0"; got != want {
 		t.Fatalf("second predecessor tail = %q, want %q", got, want)
 	}
 	if len(fn.Blocks[3].Effects) != 0 {

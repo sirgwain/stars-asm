@@ -18,7 +18,7 @@ L_1792:
     goto L_17a7;
 
 L_17a3:
-    ipl = ipl + 1;
+    ipl++;
 
 L_17a7:
     if (ipl >= vclpplAi)
@@ -28,13 +28,13 @@ L_17a7:
 
 L_17b2:
     lppl = vrglpplAi[ipl];
-    if (vrglpplAi[ipl] != 0x0)
+    if (vrglpplAi[ipl] != 0)
         goto L_17e2;
     else
         goto L_1cef;
 
 L_17e2:
-    if (lppl->lpplprod != 0x0)
+    if (lppl->lpplprod != 0)
         goto L_17fc;
     else
         goto L_17a3;
@@ -72,7 +72,7 @@ L_18a1:
 
 L_18c8:
     ChangeMainObjSel(grobjPlanet, lppl->id);
-    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjMine, &etaFirst, 0x0);
+    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjMine, &etaFirst, NULL);
     if (etaFirst == 1)
         goto L_17a3;
     else
@@ -89,24 +89,24 @@ L_1912:
 
 L_1917:
     GetProductionCosts(lppl, &prod, rgCost, idPlayer, 1);
-    cRes = (int32_t)CResourcesAtPlanet(&sel.pl, idPlayer);
-    if (sel.pl.fNoResearch != 0x0)
+    cRes = CResourcesAtPlanet(&sel.pl, idPlayer);
+    if (sel.pl.fNoResearch != 0)
         goto L_19aa;
     else
         goto L_1977;
 
 L_1977:
-    cRes = cRes - (int32_t)((int32_t)(cRes * (int32_t)(int16_t)rgplr[idPlayer].pctResearch) / 0x64);
+    cRes -= (int32_t)(cRes * (int16_t)rgplr[idPlayer].pctResearch) / 100;
 
 L_19aa:
-    if (rgCost[3] <= (int32_t)(uint32_t)(cRes * (int32_t)(etaFirst - 1)))
+    if (rgCost[3] <= (int32_t)(uint32_t)(cRes * (int16_t)(etaFirst - 1)))
         goto L_19d6;
     else
         goto L_17a3;
 
 L_19d6:
     t_scratch_m136 = (uint32_t)sel.pl.cMines;
-    cMaxBuild = (int32_t)CMaxOperableMines(&sel.pl, idPlayer, 1) - t_scratch_m136;
+    cMaxBuild = CMaxOperableMines(&sel.pl, idPlayer, 1) - t_scratch_m136;
     if (cMaxBuild < 0)
         goto L_1a34;
     else
@@ -116,7 +116,7 @@ L_1a34:
     cMaxBuild = 0;
 
 L_1a3e:
-    cResMine = (int32_t)GetRaceStat(&rgplr[idPlayer], rsMineBuild);
+    cResMine = GetRaceStat(&rgplr[idPlayer], rsMineBuild);
     if ((int32_t)(uint32_t)(cResMine * cMaxBuild) <= cRes)
         goto L_1a84;
     else
@@ -137,9 +137,9 @@ L_1aaa:
         goto L_1ace;
 
 L_1ace:
-    AddItemToQueue(0x8, LOWORD(cBuild), grobjPlanet, 0);
+    AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0);
     FinishProduction(1);
-    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, 0x0);
+    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL);
     if (etaBetterMines != -1)
         goto L_1b29;
     else
@@ -149,17 +149,17 @@ L_1b23:
     etaBetterMines = 700;
 
 L_1b29:
-    sel.pl.lpplprod->rgprod[0].cItem = 0x1;
+    sel.pl.lpplprod->rgprod[0].cItem = 1;
     sel.pl.lpplprod->rgprod[0].iItem = iobjAlchemy;
     goto L_1b9e;
 
 L_1b74:
     etaBetterMines = 700;
-    AddItemToQueue(0x3, 0x1, grobjPlanet, 0);
+    AddItemToQueue(3, 1, grobjPlanet, 0);
     FinishProduction(1);
 
 L_1b9e:
-    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, 0x0);
+    PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, NULL);
     if (etaBetterAlchemy != -1)
         goto L_1bcf;
     else
@@ -200,7 +200,7 @@ L_1c33:
         goto L_1c8f;
 
 L_1c4a:
-    sel.pl.lpplprod->iprodMac = sel.pl.lpplprod->iprodMac - 0x1;
+    sel.pl.lpplprod->iprodMac--;
     fmemmove(sel.pl.lpplprod->rgprod, &sel.pl.lpplprod->rgprod[1], sel.pl.lpplprod->iprodMac * sizeof(PROD));
     goto L_17a3;
 

@@ -20,7 +20,7 @@ L_21f6:
 
 L_221d:
     i = (i + 1)
-    part.hs.iItem = (part.hs.iItem + 0x1)
+    part.hs.iItem = (part.hs.iItem + 1)
 
 L_2250:
     branch i >= 5 ? L_2273 : L_2259

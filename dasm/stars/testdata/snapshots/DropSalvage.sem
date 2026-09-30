@@ -67,16 +67,16 @@ L_25cb:
 
 
 L_25dd:
-    branch lpth != 0x0 ? L_2657 : L_25ef
+    branch lpth != 0 ? L_2657 : L_25ef
 
 
 L_25ef:
     lpth = LpthNew(iplr, ithMineralPacket)
-    branch lpth != 0x0 ? L_2619 : L_294c
+    branch lpth != 0 ? L_2619 : L_294c
 
 
 L_2619:
-    lpth->thp.iWarp = 0x0
+    lpth->thp.iWarp = 0
     lpth->pt.x = ppt->x
     lpth->pt.y = ppt->y
     lpth->thp.idPlanet = 0x3ff
@@ -96,10 +96,10 @@ L_26cc:
     branch i < 3 ? L_265f : L_26d5
 
 L_26d5:
-    lpth->thp.wtMax = 0x0
+    lpth->thp.wtMax = 0
 
 L_26e9:
-    lpth->thp.fMoved = 0x1
+    lpth->thp.fMoved = 1
     goto L_2927
 
 L_2700:
@@ -107,29 +107,29 @@ L_2700:
     goto L_291e
 
 L_2708:
-    branch ((uint32_t)(lpth->thp.wtMax * 0xa) + rgwtMinerals[i]) <= 0x7530 ? L_2842 : L_2753
+    branch ((uint32_t)(lpth->thp.wtMax * 10) + rgwtMinerals[i]) <= 30000 ? L_2842 : L_2753
 
 
 
 L_2753:
-    wt = (30000 - (uint32_t)(lpth->thp.wtMax * 0xa))
+    wt = (30000 - (uint32_t)(lpth->thp.wtMax * 10))
     wtTotal = (wtTotal - wt)
-    lpth->thp.wtMax = 0xbb8
+    lpth->thp.wtMax = 3000
     lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(wt))
     rgwtMinerals[i] = (rgwtMinerals[i] - wt)
     lpth = LpthNew(iplr, ithMineralPacket)
-    branch lpth != 0x0 ? L_2804 : L_294c
+    branch lpth != 0 ? L_2804 : L_294c
 
 
 L_2804:
-    lpth->thp.iWarp = 0x0
+    lpth->thp.iWarp = 0
     lpth->thp.idPlanet = 0x3ff
     lpth->pt.x = ppt->x
     lpth->pt.y = ppt->y
     goto L_2900
 
 L_2842:
-    lpth->thp.wtMax = (lpth->thp.wtMax + ((rgwtMinerals[i] + 9) / 0xa))
+    lpth->thp.wtMax = (lpth->thp.wtMax + ((rgwtMinerals[i] + 9) / 10))
     lpth->thp.rgwtMin[i] = (lpth->thp.rgwtMin[i] + LOWORD(rgwtMinerals[i]))
     wtTotal = (wtTotal - rgwtMinerals[i])
     rgwtMinerals[i] = 0

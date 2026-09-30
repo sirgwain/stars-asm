@@ -92,7 +92,7 @@ L_2768:
 
 L_2788:
     *px = (*px + dx)
-    branch pxMax == 0x0 ? L_27b2 : L_2799
+    branch pxMax == 0 ? L_27b2 : L_2799
 
 L_2799:
     branch *px <= *pxMax ? L_27b2 : L_27a8

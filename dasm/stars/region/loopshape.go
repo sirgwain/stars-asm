@@ -79,7 +79,7 @@ func shapeFor(n *Loop, refs map[string]int) {
 		return
 	}
 	v, ok := post.Dst.(*ir.Var)
-	if !ok || !usesVar(n.Cond, v.Name) {
+	if !ok || varRefs(n.Cond, v.Name) == 0 {
 		return
 	}
 
@@ -197,42 +197,41 @@ func walkLoopLevel(nodes []Node, visit func(Node)) {
 	}
 }
 
-// usesVar reports whether e reads the variable name.
-func usesVar(e ir.Expr, name string) bool {
+// varRefs counts the reads of the variable name in e.
+func varRefs(e ir.Expr, name string) int {
+	count := 0
 	switch e := e.(type) {
 	case *ir.Var:
-		return e.Name == name
+		if e.Name == name {
+			count++
+		}
 	case *ir.Unary:
-		return usesVar(e.X, name)
+		count += varRefs(e.X, name)
 	case *ir.Binary:
-		return usesVar(e.LHS, name) || usesVar(e.RHS, name)
+		count += varRefs(e.LHS, name) + varRefs(e.RHS, name)
 	case *ir.Cond:
-		return usesVar(e.Cond, name) || usesVar(e.Then, name) || usesVar(e.Else, name)
+		count += varRefs(e.Cond, name) + varRefs(e.Then, name) + varRefs(e.Else, name)
 	case *ir.Cast:
-		return usesVar(e.Value, name)
+		count += varRefs(e.Value, name)
 	case *ir.Index:
-		return usesVar(e.Base, name) || usesVar(e.Index, name)
+		count += varRefs(e.Base, name) + varRefs(e.Index, name)
 	case *ir.Field:
-		return usesVar(e.Base, name)
+		count += varRefs(e.Base, name)
 	case *ir.Call:
 		for _, a := range e.Args {
-			if usesVar(a, name) {
-				return true
-			}
+			count += varRefs(a, name)
 		}
-		return usesVar(e.Target, name)
+		count += varRefs(e.Target, name)
 	case *ir.Macro:
 		for _, a := range e.Args {
-			if usesVar(a, name) {
-				return true
-			}
+			count += varRefs(a, name)
 		}
 	case *ir.AddressOf:
-		return usesVar(e.Target, name)
+		count += varRefs(e.Target, name)
 	case *ir.Deref:
-		return usesVar(e.Pointer, name)
+		count += varRefs(e.Pointer, name)
 	case *ir.PointerOffset:
-		return usesVar(e.Pointer, name) || usesVar(e.Offset, name)
+		count += varRefs(e.Pointer, name) + varRefs(e.Offset, name)
 	}
-	return false
+	return count
 }

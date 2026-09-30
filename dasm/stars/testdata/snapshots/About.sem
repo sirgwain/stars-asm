@@ -25,7 +25,7 @@ L_1261:
     iAbout1st = -11
     iAboutPartial = 0
     call SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion()) -> callresult(void)
-    uTimerId = SetTimer(hwnd, 0xe, 0x32, 0x0)
+    uTimerId = SetTimer(hwnd, 14, 50, NULL)
     return 1
 
 L_12a9:
@@ -85,12 +85,12 @@ L_13e3:
 L_13fa:
     rc.bottom = 1000
     call FillRect(hdc, &rc, hbrButtonFace) -> callresult(int16_t)
-    call SelectClipRgn(hdc, 0x0) -> callresult(int16_t)
+    call SelectClipRgn(hdc, NULL) -> callresult(int16_t)
     call ReleaseDC(hwnd, hdc) -> callresult(int16_t)
     goto L_1510
 
 L_142c:
-    branch hiword(lParam) != 0x6 ? L_1510 : L_1448
+    branch hiword(lParam) != 6 ? L_1510 : L_1448
 
 L_1448:
     call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)
@@ -104,7 +104,7 @@ L_146a:
 
 L_1473:
     call KillTimer(hwnd, uTimerId) -> callresult(int16_t)
-    uTimerId = 0x0
+    uTimerId = 0
     call EndDialog(hwnd, 1) -> callresult(void)
     return 1
 

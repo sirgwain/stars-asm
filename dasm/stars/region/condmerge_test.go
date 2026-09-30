@@ -59,7 +59,7 @@ func TestBuildShortCircuitConditions(t *testing.T) {
 				body(then, "t"), body(other, "o"),
 				testBlock(done, &ir.Return{}),
 			},
-			want: "if !x||y { o=1; } else { t=1; } return;",
+			want: "if x&&!y { t=1; } else { o=1; } return;",
 		},
 		{
 			name: "chain: (x && y) || z",

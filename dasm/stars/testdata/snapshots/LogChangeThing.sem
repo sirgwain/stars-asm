@@ -14,7 +14,7 @@ LogChangeThing  (log)
 */
 L_9908:
     fChg = 0
-    branch gd.fGeneratingTurn != 0x0 ? L_99f0 : L_9929
+    branch gd.fGeneratingTurn != 0 ? L_99f0 : L_9929
 
 L_9929:
     call memset(&lxNew, 0, sizeof(LOGXFER)) -> callresult(void *)

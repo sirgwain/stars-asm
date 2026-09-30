@@ -84,8 +84,8 @@ func TestDASM_BitfieldUpdateSnapshots(t *testing.T) {
 		from uint32
 		want string
 	}{
-		{name: "DoCyberFreighter", from: 0x3916, want: "ord.fValidTask = 0x1"},
-		{name: "GenerateWorld", from: 0x2c9d, want: "rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 0x1)"},
+		{name: "DoCyberFreighter", from: 0x3916, want: "ord.fValidTask = 1"},
+		{name: "GenerateWorld", from: 0x2c9d, want: "rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 1)"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			err := dumpFunction(fx.SDB, tc.name, fmt.Sprintf("L_%04x.sem", tc.from), func(w io.Writer, f *typeinfo.Function) {
@@ -260,5 +260,35 @@ func TestDASM_IRSnapshots(t *testing.T) {
 				t.Fatal(err)
 			}
 		})
+	}
+}
+
+// TestDASM_CargoTransferSignExtension preserves CBW/CWD when cargo quantities
+// are read through the unsigned log byte pointer and RawLoad16.
+func TestDASM_CargoTransferSignExtension(t *testing.T) {
+	fx := testfixture.Stars(t)
+	err := dumpFunction(fx.SDB, "FRunLogRecord", "cargo.ir.c", func(w io.Writer, f *typeinfo.Function) {
+		var output bytes.Buffer
+		if err := DumpFuncIR(&output, fx.Image, fx.SDB, f, DumpIROptions{
+			DumpOptions: DumpOptions{FromAddr: 0xae39, ToAddr: 0xae9d},
+			ShowIR:      true,
+		}); err != nil {
+			t.Fatal(err)
+		}
+		text := output.String()
+		for _, want := range []string{
+			"rgcXfer[i] = (int16_t)(int8_t)lpb[iLook + 6];",
+			"rgcXfer[i] = (int16_t)RawLoad16(lpb + (iLook * 2 + 6));",
+		} {
+			if !strings.Contains(text, want) {
+				t.Fatalf("missing signed cargo load %q:\n%s", want, text)
+			}
+		}
+		if _, err := w.Write(output.Bytes()); err != nil {
+			t.Fatal(err)
+		}
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }

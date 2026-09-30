@@ -16,15 +16,15 @@ HfontPrinterCreate  (utilgen)
   stats: blocks=1  labels=0
 */
 L_6aa6:
-    plf = LocalAlloc(0x40, sizeof(LOGFONT))
+    plf = LocalAlloc(64, sizeof(LOGFONT))
     call memset(plf, 0, sizeof(LOGFONT)) -> callresult(void *)
     plf->lfHeight = neg(MulDiv(iSize, GetDeviceCaps(hdc, LOGPIXELSY), 72))
     call strcpy(plf->lfFaceName, rgszArial[1]) -> callresult(char *)
     hfontNew = CreateFontIndirect(plf)
-    branch pdyFont == 0x0 ? L_6b5b : L_6b1f
+    branch pdyFont == 0 ? L_6b5b : L_6b1f
 
 L_6b1f:
-    branch hfontNew == 0x0 ? L_6b5b : L_6b28
+    branch hfontNew == 0 ? L_6b5b : L_6b28
 
 L_6b28:
     hfontSav = SelectObject(hdc, hfontNew)
