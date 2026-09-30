@@ -1,0 +1,60 @@
+name: Build and release latest stars.exe
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-24.04
+    # Finish publishing before another run can replace the rolling release.
+    concurrency:
+      group: release-latest
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake ninja-build gcc-mingw-w64-x86-64 wine
+
+      - name: Configure
+        run: cmake --preset mingw-debug
+
+      - name: Build stars.exe
+        run: |
+          cmake --build --preset mingw-debug --parallel 2
+          test -s dist/mingw-debug/bin/stars.exe
+
+      - name: Save build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stars-windows-x64-${{ github.sha }}
+          path: dist/mingw-debug/bin/stars.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish latest stars.exe
+        uses: andelf/nightly-release@5834076edc55cc05975561c9722043f072ac5c26
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: latest
+          name: Latest development build
+          prerelease: true
+          only-when-changed: false
+          body: |
+            Windows x86-64 development build with debug information.
+
+            Commit: ${{ github.sha }}
+            Build: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          files: dist/mingw-debug/bin/stars.exe
