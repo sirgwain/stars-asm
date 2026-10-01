@@ -43,6 +43,21 @@ func (e *Enum) Bytes() int {
 	return 2
 }
 
+// SignExtend returns val sign-extended from the enum's storage width: the
+// value a negative member such as -1 has when read back as a raw word.
+func (e *Enum) SignExtend(val int) int {
+	switch e.Bytes() {
+	case 1:
+		return int(int8(val))
+	case 2:
+		return int(int16(val))
+	case 4:
+		return int(int32(val))
+	default:
+		return val
+	}
+}
+
 // String returns the C type name for a declaration: the enum name where its
 // typedef fits the annotated storage, otherwise the storage type.
 func (e *Enum) String() string {
@@ -172,8 +187,15 @@ type MessagePayloadRule struct {
 type MessagePart struct {
 	Type Type
 
-	// Get is a GET_WM_* message cracker: a function of (wParam, lParam)
-	// returning Type, defined in the generated headers. It is nil where the
-	// Win32 packing matches Win16.
+	// Get is a GET_WM_* message cracker: a function of (wParam, lParam),
+	// or (hwnd, wParam, lParam) for one that compares with the receiving
+	// window, returning Type. It is nil where the Win32 packing matches
+	// Win16.
 	Get *Function
+
+	// Win32 is the cracker's definition, the expression reading the part
+	// with the Win32 packing in terms of Get's parameters, emitted as its
+	// #define in the generated headers. Crackers of different messages with
+	// the same definition read the same value.
+	Win32 string
 }

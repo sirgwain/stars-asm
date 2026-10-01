@@ -74,7 +74,7 @@ L_1a60:
     branch lppl->fStarbase == 0 ? L_1b3a : L_1ad6
 
 L_1ad6:
-    branch rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef ? L_1b3a : L_1b2c
+    branch (int16_t)rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= (int16_t)rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef ? L_1b3a : L_1b2c
 
 L_1b2c:
     call KillQueuedShips(lppl) -> callresult(void)

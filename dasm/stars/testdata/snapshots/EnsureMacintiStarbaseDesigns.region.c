@@ -32,7 +32,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
     iOld = -1;
     for (i = 1; i <= 3; i++) {
         if (rgSB[i] >= 2 &&
-            (iOld == -1 || rgSB[i] > rgSB[iOld] || (rgSB[i] == rgSB[iOld] && rglpshdefSB[idPlayer][i].turn < rglpshdefSB[idPlayer][iOld].turn))) {
+            (iOld == -1 || (int16_t)rgSB[i] > rgSB[iOld] || (rgSB[i] == rgSB[iOld] && rglpshdefSB[idPlayer][i].turn < rglpshdefSB[idPlayer][iOld].turn))) {
             iOld = i;
         }
     }

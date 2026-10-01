@@ -580,7 +580,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                             } else if (i != idPlayer) {
                                 idPlayer = -1;
                             }
-                            for (j = 0; j < rgplr[i].cshdefSB; j++) {
+                            for (j = 0; j < (int16_t)rgplr[i].cshdefSB; j++) {
                                 if (hdrCur.rt != rtShDef) {
                                     idPlayer = iplrSav;
                                     goto Corrupt;

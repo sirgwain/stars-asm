@@ -249,6 +249,15 @@ func compareDomainOperand(op CompareOp, expr Expr) (Expr, bool) {
 		typ = e.TypeInfo
 	case *SignExtend:
 		typ = e.ExprType()
+	case *Binary, *Unary, *Cond, *Merge:
+	default:
+		// semanticPeerType only answers signed integers; an unsigned or enum
+		// variable compared by a signed branch, such as a ProdItemType tested
+		// with JL against 0, is cast by its declared type. A byte was zero
+		// extended to the compared word, so it reads the same either way.
+		if declared := cExprType(expr); typ == nil && declared != nil && declared.Bytes() >= 2 {
+			typ = declared
+		}
 	}
 	want := compareDomainType(op, typ)
 	if want == typ {

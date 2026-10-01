@@ -114,7 +114,7 @@ L_7883:
         goto L_788c;
 
 L_788c:
-    if (rgSB[i] > rgSB[iOld])
+    if ((int16_t)rgSB[i] > rgSB[iOld])
         goto L_7925;
     else
         goto L_78b5;

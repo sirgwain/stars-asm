@@ -320,7 +320,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
         if (grtask == 1) {
             dxKt = 0;
             for (i = 0; i < 5; i++) {
-                if (LOWORD(GetTextExtent(hdc, vrgszUnits[i], 2)) > dxKt) {
+                if ((int16_t)LOWORD(GetTextExtent(hdc, vrgszUnits[i], 2)) > dxKt) {
                     dxKt = LOWORD(GetTextExtent(hdc, vrgszUnits[i], 2));
                 }
             }
@@ -1124,10 +1124,10 @@ void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
             ChangeScanSel(&scan, 0);
         } else {
             if (dInc != 0) {
-                for (i = 0; i < rgplr[idPlayer].cFleet && rglpfl[vlprgidFleet[i]]->id != idFleet; i++) {
+                for (i = 0; i < (int16_t)rgplr[idPlayer].cFleet && rglpfl[vlprgidFleet[i]]->id != idFleet; i++) {
                 }
                 i += dInc;
-                if (i >= rgplr[idPlayer].cFleet) {
+                if (i >= (int16_t)rgplr[idPlayer].cFleet) {
                     i = 0;
                 } else if (i < 0) {
                     i = rgplr[idPlayer].cFleet - 1;
@@ -1310,7 +1310,7 @@ void DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit) {
         c = _wsprintf(szWork, PszGetCompressedString(idsLdLdkt), l, lMax);
     }
     l = GetTextExtent(hdc, szWork, c);
-    if (LOWORD(l) < prc->right - prc->left - 3) {
+    if ((int16_t)LOWORD(l) < prc->right - prc->left - 3) {
         RcCtrTextOut(hdc, prc, szWork, c);
     }
     SetBkMode(hdc, iMode);
@@ -1580,7 +1580,7 @@ CancelSplit:
     FDeleteFleet(xfer[1].fl.id, grobjNone, 0);
     CancelMemRt(rtLogFleetSplit);
 L_5673:
-    mdXferDlg = 0xffff;
+    mdXferDlg = mdXferNone;
     return 0;
 }
 
@@ -1715,7 +1715,7 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
         }
         while (FTrackBtn(&btnt) != 0) {
             if (mdXferDlg == mdXferShips) {
-                i = LOWORD(dChg) < pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
+                i = (int16_t)LOWORD(dChg) < pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
                 if (i != 0) {
                     if (pxfer[btn.iSide].fl.rgcsh[iVal] >= 32766 - i) {
                         i = 1;

@@ -160,6 +160,8 @@ func objectAddress(base LValue, offset int, expected typeinfo.Type) Expr {
 	var address Expr
 	class := typeinfo.PtrNear
 	switch value := base.(type) {
+	case *Part:
+		return objectAddress(value.Base, offset+value.ByteOff, expected)
 	case *Deref:
 		address = value.Pointer
 		offset += value.ByteOff

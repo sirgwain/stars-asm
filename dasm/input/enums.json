@@ -481,11 +481,11 @@
     {
       "msg": "WM_COMMAND",
       "wparam": {
-        "whole": { "enum": "ControlId", "get": "GET_WM_COMMAND_ID" }
+        "whole": { "enum": "ControlId", "get": "GET_WM_COMMAND_ID", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_COMMAND_HWND" },
-        "hiword": { "cast_type": "UINT", "get": "GET_WM_COMMAND_CMD" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_COMMAND_HWND", "win32": "((HWND)(lParam))" },
+        "hiword": { "cast_type": "UINT", "get": "GET_WM_COMMAND_CMD", "win32": "HIWORD(wParam)" }
       }
     },
     {
@@ -593,11 +593,11 @@
     {
       "msg": "WM_PARENTNOTIFY",
       "wparam": {
-        "whole": { "enum": "WMType", "get": "GET_WM_PARENTNOTIFY_MSG" }
+        "whole": { "enum": "WMType", "get": "GET_WM_PARENTNOTIFY_MSG", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_PARENTNOTIFY_HWNDCHILD" },
-        "hiword": { "enum": "ControlId", "get": "GET_WM_PARENTNOTIFY_ID" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_PARENTNOTIFY_HWNDCHILD", "win32": "((HWND)(lParam))" },
+        "hiword": { "enum": "ControlId", "get": "GET_WM_PARENTNOTIFY_ID", "win32": "HIWORD(wParam)" }
       }
     },
     {
@@ -613,7 +613,7 @@
         "whole": { "cast_type": "HDC" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_CTLCOLOR_HWND" },
+        "loword": { "cast_type": "HWND", "get": "GET_WM_CTLCOLOR_HWND", "win32": "((HWND)(lParam))" },
         "hiword": { "enum": "CtlColorType" }
       },
       "result": { "cast_type": "HBRUSH" }
@@ -627,21 +627,21 @@
     {
       "msg": "WM_VSCROLL",
       "wparam": {
-        "whole": { "enum": "ScrollCode", "get": "GET_WM_VSCROLL_CODE" }
+        "whole": { "enum": "ScrollCode", "get": "GET_WM_VSCROLL_CODE", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "int16_t", "get": "GET_WM_VSCROLL_POS" },
-        "hiword": { "cast_type": "HWND", "get": "GET_WM_VSCROLL_HWND" }
+        "loword": { "cast_type": "int16_t", "get": "GET_WM_VSCROLL_POS", "win32": "((short)HIWORD(wParam))" },
+        "hiword": { "cast_type": "HWND", "get": "GET_WM_VSCROLL_HWND", "win32": "((HWND)(lParam))" }
       }
     },
     {
       "msg": "WM_HSCROLL",
       "wparam": {
-        "whole": { "enum": "ScrollCode", "get": "GET_WM_HSCROLL_CODE" }
+        "whole": { "enum": "ScrollCode", "get": "GET_WM_HSCROLL_CODE", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "int16_t", "get": "GET_WM_HSCROLL_POS" },
-        "hiword": { "cast_type": "HWND", "get": "GET_WM_HSCROLL_HWND" }
+        "loword": { "cast_type": "int16_t", "get": "GET_WM_HSCROLL_POS", "win32": "((short)HIWORD(wParam))" },
+        "hiword": { "cast_type": "HWND", "get": "GET_WM_HSCROLL_HWND", "win32": "((HWND)(lParam))" }
       }
     },
     {
@@ -713,27 +713,27 @@
     {
       "msg": "WM_MENUSELECT",
       "wparam": {
-        "whole": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_CMD" }
+        "whole": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_CMD", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_FLAGS" },
-        "hiword": { "cast_type": "HMENU", "get": "GET_WM_MENUSELECT_HMENU" }
+        "loword": { "cast_type": "UINT", "get": "GET_WM_MENUSELECT_FLAGS", "win32": "HIWORD(wParam)" },
+        "hiword": { "cast_type": "HMENU", "get": "GET_WM_MENUSELECT_HMENU", "win32": "((HMENU)(lParam))" }
       }
     },
     {
       "msg": "WM_ENTERIDLE",
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_ENTERIDLE_HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_ENTERIDLE_HWND", "win32": "((HWND)(lParam))" }
       }
     },
     {
       "msg": "WM_ACTIVATE",
       "wparam": {
-        "whole": { "cast_type": "UINT", "get": "GET_WM_ACTIVATE_STATE" }
+        "whole": { "cast_type": "UINT", "get": "GET_WM_ACTIVATE_STATE", "win32": "LOWORD(wParam)" }
       },
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_ACTIVATE_HWND" },
-        "hiword": { "cast_type": "BOOL", "get": "GET_WM_ACTIVATE_FMINIMIZED" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_ACTIVATE_HWND", "win32": "((HWND)(lParam))" },
+        "hiword": { "cast_type": "BOOL", "get": "GET_WM_ACTIVATE_FMINIMIZED", "win32": "((BOOL)HIWORD(wParam))" }
       }
     },
     {
@@ -743,6 +743,16 @@
       },
       "lparam": {
         "hiword": { "enum": "WMType" }
+      }
+    },
+    {
+      "msg": "WM_MDIACTIVATE",
+      "wparam": {
+        "whole": { "cast_type": "BOOL", "get": "GET_WM_MDIACTIVATE_FACTIVATE", "win32": "((lParam) == (LPARAM)(hwnd))", "hwnd": true }
+      },
+      "lparam": {
+        "loword": { "cast_type": "HWND", "get": "GET_WM_MDIACTIVATE_HWNDACTIVATE", "win32": "((HWND)(lParam))" },
+        "hiword": { "cast_type": "HWND", "get": "GET_WM_MDIACTIVATE_HWNDDEACT", "win32": "((HWND)(wParam))" }
       }
     },
     {
@@ -757,13 +767,13 @@
     {
       "msg": "WM_VKEYTOITEM",
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_VKEYTOITEM_HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_VKEYTOITEM_HWND", "win32": "((HWND)(lParam))" }
       }
     },
     {
       "msg": "WM_CHARTOITEM",
       "lparam": {
-        "loword": { "cast_type": "HWND", "get": "GET_WM_CHARTOITEM_HWND" }
+        "loword": { "cast_type": "HWND", "get": "GET_WM_CHARTOITEM_HWND", "win32": "((HWND)(lParam))" }
       }
     },
     {

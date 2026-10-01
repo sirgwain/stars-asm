@@ -5,13 +5,43 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-// convertCopyAddress resolves an address-valued copy operand at copy width.
-// convertCopyAddress resolves an address-valued copy operand at copy width.
-func (c *machineConverter) convertCopyAddress(value machine.Value, width int) (LValue, bool) {
-	addr, ok := value.(*machine.Address)
-	if !ok {
-		return nil, false
+// convertCopyEffect preserves the full byte range of a machine copy. Whole
+// typed objects use assignment; array slices and untyped ranges use fmemmove.
+// MOVS copies forward, which fmemmove matches unless the destination overlaps
+// the source from above; the direction flag is not modeled.
+func (c *machineConverter) convertCopyEffect(e machine.CopyEffect) Effect {
+	dst := c.convertCopyAddress(e.Dst.(*machine.Address), e.Width)
+	src := c.convertCopyAddress(e.Src.(*machine.Address), e.Width)
+	if target, ok := c.recoverExpectedValue(dst, src.ExprType()).(LValue); ok {
+		dst = target
 	}
+	source := c.recoverExpectedValue(src, dst.ExprType())
+	c.recordCopyWrite(e.Dst, e.Width)
+	if copyAssignable(dst.ExprType(), e.Width) && copyAssignable(source.ExprType(), e.Width) {
+		return &Assign{MetaInfo: e.MetaInfo, Dst: dst, Src: source}
+	}
+	move := c.ctx.sdb.GetFunction("fmemmove")
+	return &CallEffect{MetaInfo: e.MetaInfo, Call: &Call{
+		Function: move,
+		Args: []Expr{
+			objectAddress(dst, 0, move.Params[0].Type),
+			objectAddress(src, 0, move.Params[1].Type),
+			&Const{TypeInfo: move.Params[2].Type, U64: uint64(e.Width)},
+		},
+	}}
+}
+
+// copyAssignable reports whether a copy operand of type t can be expressed as
+// a C assignment spanning exactly width bytes.
+func copyAssignable(t typeinfo.Type, width int) bool {
+	if t.Bytes() != width || t.Kind() == typeinfo.KArray {
+		return false
+	}
+	return t.Kind() != typeinfo.KInt || width == 1 || width == 2 || width == 4 || width == 8
+}
+
+// convertCopyAddress resolves an address-valued copy operand at copy width.
+func (c *machineConverter) convertCopyAddress(addr *machine.Address, width int) LValue {
 	mem := copyAddressMemoryAccess(addr.Addr, width)
 	if segment, ok := mem.Seg.(*machine.FarPointer); ok {
 		if parent, ok := commonFarPointerParent(segment, mem.Base); ok {
@@ -22,18 +52,18 @@ func (c *machineConverter) convertCopyAddress(value machine.Value, width int) (L
 				if ptr.Elem.Bytes() == width {
 					if projected, ok := projectPointerAddress(pointer, offset, nil); ok {
 						target := &Deref{Pointer: projected, Width: width, TypeInfo: ptr.Elem}
-						return preferWholeStructCopy(target, width), true
+						return preferWholeStructCopy(target, width)
 					}
 				}
 				if target, ok := c.consumeAddress(AddressExpr{Base: pointer, Offset: offset, Deref: true}, width); ok {
-					return preferWholeStructCopy(target, width), true
+					return preferWholeStructCopy(target, width)
 				}
 			}
 		}
 	}
 
 	target := c.convertMemoryLValue(mem, width)
-	return preferWholeStructCopy(target, width), true
+	return preferWholeStructCopy(target, width)
 }
 
 // preferWholeStructCopy promotes an array-field projection back to its

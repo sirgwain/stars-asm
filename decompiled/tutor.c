@@ -582,7 +582,7 @@ int16_t FTutorTaskDone() {
             if (FCheckCargo(LpflFromId(2), 0, 0, 0, 25) == 0) {
                 if (FCheckSelection(grobjFleet, 2) == 0) {
                     tutor.idtBold = 89;
-                } else if (mdXferDlg == 0xffff) {
+                } else if (mdXferDlg == mdXferNone) {
                     tutor.idh = 1514;
                     tutor.idtBold = 90;
                 } else {
@@ -633,7 +633,7 @@ int16_t FTutorTaskDone() {
             }
             if (FCheckCargo(LpflFromId(3), 0, 0, 0, 210) == 0) {
                 if (FCheckSelection(grobjFleet, 3) != 0) {
-                    tutor.idtBold = mdXferDlg == 0xffff ? 110 : 111;
+                    tutor.idtBold = mdXferDlg == mdXferNone ? 110 : 111;
                 } else {
                     tutor.idtBold = 109;
                 }
@@ -739,7 +739,7 @@ int16_t FTutorTaskDone() {
         if (FCheckSelection(grobjFleet, 2) == 0) {
             tutor.idtBold = 144;
         } else {
-            tutor.idtBold = mdXferDlg == 0xffff ? 146 : 148;
+            tutor.idtBold = mdXferDlg == mdXferNone ? 146 : 148;
         }
         return 0;
     case 6:

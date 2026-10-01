@@ -114,7 +114,7 @@ void Produce() {
                                 LCantBuildP:
                                     idm = idmHasOrdersBuildPlanetaryInstallationsBeyondMaximu;
                                 LCantBuildP2:
-                                    if (cMax < lpprod->cItem) {
+                                    if (cMax < (int32_t)lpprod->cItem) {
                                         FSendPlrMsg2(lppl->iPlayer, idm, lppl->id, lppl->id, 0);
                                         if (cMax <= 0)
                                             goto RemoveFromQueue;
@@ -140,7 +140,7 @@ void Produce() {
                             if (lppl->iPlayer == -1 && lppl->lpplprod == 0)
                                 break;
                             if (mdStatus != mdProdStatComplete) {
-                                if (mdStatus < mdProdStatSome)
+                                if ((int16_t)mdStatus < mdProdStatSome)
                                     goto L_0b8e;
                                 if (prodPartial.cItem <= 0)
                                     goto L_0b9a;
@@ -422,7 +422,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
             }
             FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 5 | iItem + 0x10, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0,
                         0, 0);
-            if (lppl->fStarbase != 0 && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
+            if (lppl->fStarbase != 0 && (int16_t)rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > (int16_t)rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
                 KillQueuedShips(lppl);
             }
             iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);
@@ -1126,7 +1126,7 @@ void AutoTerraform() {
                 if (rgplr[lppl->iPlayer].rgEnvVar[i] != -1 && rgplr[lppl->iPlayer].rgEnvVar[i] != lppl->rgEnvVarOrig[i] && Random(10) == 0) {
                     if (lppl->rgwtMin[3] < 1000) {
                         t_scratch_m42_2 = Random(1000);
-                        if (t_scratch_m42_2 >= LOWORD(lppl->rgwtMin[3]))
+                        if (t_scratch_m42_2 >= (int16_t)LOWORD(lppl->rgwtMin[3]))
                             goto L_4b5c;
                     }
                     if (rgplr[lppl->iPlayer].rgEnvVar[i] < lppl->rgEnvVarOrig[i]) {
@@ -1702,7 +1702,7 @@ void UpdatePlayerScores() {
         for (i = 0; i < game.cPlayer; i++) {
             vlprgScoreX[i].turn = rgplr[i].wScore;
         }
-        if (game.turn >= GetVCVal(&game, 7, 0) && cFirst == 1) {
+        if ((int16_t)game.turn >= GetVCVal(&game, 7, 0) && cFirst == 1) {
             t_scratch_m86_12 = (vlprgScoreX[iScoreMax].wWord | 0x1000) & 0x3fc0;
             vlprgScoreX[iScoreMax].grbitVC = 0;
             vlprgScoreX[iScoreMax].wWord |= t_scratch_m86_12;
@@ -1824,7 +1824,7 @@ int16_t FPacketDecay(THING *lpth, int16_t pctRate) {
         if (lpth->thp.rgwtMin[i] != 0) {
             wDecay = LOWORD((int32_t)((uint32_t)(lpth->thp.rgwtMin[i] * iRate) * pctRate) / 10000);
             wDecay = iRateMin <= wDecay ? wDecay : iRateMin;
-            if (lpth->thp.rgwtMin[i] <= wDecay) {
+            if (lpth->thp.rgwtMin[i] <= (int16_t)wDecay) {
                 wDecay = lpth->thp.rgwtMin[i];
             }
             lpth->thp.rgwtMin[i] -= wDecay;

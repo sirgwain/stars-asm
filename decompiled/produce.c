@@ -116,7 +116,7 @@ void InitProduction(PROD *rgprod) {
     }
     t_scratch_m1a_3 = sel.pl.cFactories;
     u = CMaxFactories(&sel.pl, idPlayer) - t_scratch_m1a_3;
-    if (u > 0) {
+    if ((int16_t)u > 0) {
         rgprod[cProdGlob].cItem = LOWORD(1020 >= u ? (uint32_t)u : 1020);
         rgprod[cProdGlob].iItem = mdIdleFactory;
         rgprod[cProdGlob].grobj = grobjPlanet;
@@ -124,7 +124,7 @@ void InitProduction(PROD *rgprod) {
     }
     t_scratch_m1a_4 = sel.pl.cMines;
     u = CMaxMines(&sel.pl, idPlayer) - t_scratch_m1a_4;
-    if (u > 0) {
+    if ((int16_t)u > 0) {
         rgprod[cProdGlob].cItem = LOWORD(1020 >= u ? (uint32_t)u : 1020);
         rgprod[cProdGlob].iItem = mdIdleMine;
         rgprod[cProdGlob].grobj = grobjPlanet;
@@ -132,7 +132,7 @@ void InitProduction(PROD *rgprod) {
     }
     t_scratch_m1a_5 = sel.pl.cDefenses;
     u = CMaxDefenses(&sel.pl, idPlayer) - t_scratch_m1a_5;
-    if (u > 0) {
+    if ((int16_t)u > 0) {
         rgprod[cProdGlob].cItem = u;
         rgprod[cProdGlob].iItem = mdIdleDefense;
         rgprod[cProdGlob].grobj = grobjPlanet;
@@ -535,7 +535,7 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
         if (prod.grobj == grobjPlanet && prod.iItem == iobjAlchemy) {
             c = 1020;
         }
-        c = c >= prod.cItem ? prod.cItem : c;
+        c = c >= (int32_t)prod.cItem ? prod.cItem : c;
         if (pProdGlob[iSrc].cItem != 0x3ff) {
             pProdGlob[iSrc].cItem += c;
         }
@@ -1186,11 +1186,11 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, i
                         pl.cFactories += cBuilt;
                     }
                 }
-                if (mdStatus >= mdProdStatSome)
+                if ((int16_t)mdStatus >= mdProdStatSome)
                     break;
             }
         }
-        if (iItem < iobjMine)
+        if ((int16_t)iItem < iobjMine)
             goto L_53d7;
         for (j = 0; j < 3; j++) {
             pl.rgwtMin[j] = rgRes[j];

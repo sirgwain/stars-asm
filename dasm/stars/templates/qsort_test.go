@@ -17,7 +17,7 @@ func TestWin16QsortExecutes(t *testing.T) {
 		t.Skip("C compiler unavailable")
 	}
 	var header bytes.Buffer
-	if err := RenderWin16Defines(&header, NewWin16DefinesView(nil)); err != nil {
+	if err := RenderWin16Defines(&header, NewWin16DefinesView(nil, nil)); err != nil {
 		t.Fatal(err)
 	}
 	text := header.String()

@@ -144,7 +144,7 @@ L_b2c2:
     cKillFact = (cKillFact + (uint32_t)(sext16to32(Random(LOWORD(cPPE))) < modKill ? 1 : 0))
 
 L_b2c8:
-    branch cKillFact <= lppl->cFactories ? L_b315 : L_b2f6
+    branch cKillFact <= (int32_t)lppl->cFactories ? L_b315 : L_b2f6
 
 
 
@@ -170,7 +170,7 @@ L_b3b0:
     cKillDefenses = (cKillDefenses + (uint32_t)(sext16to32(Random(LOWORD(cPPE))) < modKill ? 1 : 0))
 
 L_b3b6:
-    branch cKillDefenses <= lppl->cDefenses ? L_b3f3 : L_b3dc
+    branch cKillDefenses <= (int32_t)lppl->cDefenses ? L_b3f3 : L_b3dc
 
 
 
@@ -179,7 +179,7 @@ L_b3dc:
 
 L_b3f3:
     cKillMine = (dmgBombBldg - (cKillFact + cKillDefenses))
-    branch cKillMine <= lppl->cMines ? L_b45c : L_b43d
+    branch cKillMine <= (int32_t)lppl->cMines ? L_b45c : L_b43d
 
 
 

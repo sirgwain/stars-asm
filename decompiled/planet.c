@@ -33,8 +33,8 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
         hwndOrderED = CreateWindow(szEdit, NULL, ES_RIGHT | WS_CHILD | WS_BORDER, 100, 100, 200, 50, hwnd, NULL, hInst, NULL);
         SendMessage(hwndOrderED, EM_LIMITTEXT, 4, 0);
         SendMessage(hwndOrderED, WM_SETFONT, (WPARAM)rghfontArial8[1], 0);
-        lpfnRealEditProc = GetWindowLong(hwndOrderED, 0xfffc);
-        SetWindowLong(hwndOrderED, 0xfffc, lpfnFakeEditProc);
+        lpfnRealEditProc = GetWindowLong(hwndOrderED, GWL_WNDPROC);
+        SetWindowLong(hwndOrderED, GWL_WNDPROC, lpfnFakeEditProc);
         hwndBattleDD = CreateWindow(szCombobox, "BattleDD", CBS_DROPDOWNLIST | WS_CHILD | WS_VSCROLL, 100, 100, 200, 80, hwnd, NULL, hInst, NULL);
         SendMessage(hwndBattleDD, WM_SETFONT, (WPARAM)rghfontArial8[1], 0);
         hwndShipDD = CreateWindow(szCombobox, "ShipDD", CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_CHILD | WS_VSCROLL, 100, 100, 200, 80, hwnd,
@@ -75,7 +75,7 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
         if (IS_WM_CTLCOLOR(message) == 0) {
             switch (message) {
             case WM_MDIACTIVATE:
-                hwndActive = wParam == 0 ? NULL : hwnd;
+                hwndActive = GET_WM_MDIACTIVATE_FACTIVATE(hwnd, wParam, lParam) == 0 ? NULL : hwnd;
                 return 0;
             case WM_GETMINMAXINFO:
                 ((MINMAXINFO *)lParam)->ptMinTrackSize.x = dxWinFrame * 2 + 198;
@@ -919,7 +919,8 @@ char *PszProductionETA(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, int16
     }
     EstimateItemProdSched(lppl, lpplprod, iItem, &iTurnBegin, &iTurnEnd);
     if (iTurnBegin == 100) {
-        if (lpplprod != 0 && lpplprod->iprodMac > iItem && lpplprod->rgprod[iItem].grobj == grobjPlanet && lpplprod->rgprod[iItem].iItem < mdIdleFactory) {
+        if (lpplprod != 0 && lpplprod->iprodMac > (int16_t)iItem && lpplprod->rgprod[iItem].grobj == grobjPlanet &&
+            lpplprod->rgprod[iItem].iItem < mdIdleFactory) {
             ids = idsUnknown2;
         } else {
             ids = idsNever;
@@ -1514,7 +1515,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
                         if (iCol != i) {
                             prgtile[iCur].iCol = iCol;
                             ReflowColumn(iCol, iCur, 1);
-                            if (iCol < i) {
+                            if ((int16_t)iCol < i) {
                                 ReflowColumn(i, iCur + 1, 1);
                             } else {
                                 ReflowColumn(i, iCur, 1);
@@ -2465,7 +2466,7 @@ int16_t CMaxOperableDefenses(PLANET *lppl, int16_t iplr, int16_t fNextYear) {
     if (cCur > 1000) {
         cCur = 1000;
     }
-    cMax = cMax >= LOWORD(cCur) ? LOWORD(cCur) : cMax;
+    cMax = cMax >= (int16_t)LOWORD(cCur) ? LOWORD(cCur) : cMax;
     if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh) {
         cMax = 0;
     }
@@ -2506,7 +2507,7 @@ int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr) {
     } else {
         cRes = LOWORD((int32_t)(lPop / iEff));
         cFact = CMaxOperableFactories(lppl, iplr, 0);
-        if (lppl->cFactories < cFact) {
+        if ((int32_t)lppl->cFactories < cFact) {
             cFact = lppl->cFactories;
         }
         iEff = GetRaceStat(&rgplr[iplr], rsFactProd);
@@ -2778,7 +2779,7 @@ int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal) {
 
     cPts = 0;
     chs = lphul->chs;
-    if (iplr != -1 && lphul->ihuldef >= ihuldefOrbitalFort && GetRaceGrbit(&rgplr[iplr], ibitRaceISB) != 0) {
+    if (iplr != -1 && (int16_t)lphul->ihuldef >= ihuldefOrbitalFort && GetRaceGrbit(&rgplr[iplr], ibitRaceISB) != 0) {
         cPts = 40;
     } else {
         cPts = 0;

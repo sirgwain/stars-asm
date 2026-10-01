@@ -192,8 +192,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256, 32, 240, 266, SWP_NOZORDER);
         FillBuildPartsLB(hwndItem, rggrbitParts[0]);
         yBuildInfoSum = 340;
-        lpfnRealListProc = GetWindowLong(hwndItem, 0xfffc);
-        SetWindowLong(hwndItem, 0xfffc, lpfnFakeListProc);
+        lpfnRealListProc = GetWindowLong(hwndItem, GWL_WNDPROC);
+        SetWindowLong(hwndItem, GWL_WNDPROC, lpfnFakeListProc);
         CheckRadioButton(hwnd, 2064, 2065, 2064);
         CheckRadioButton(hwnd, 2066, 2069, 2066);
         mdBuild = mdBuildShdef;
@@ -1270,7 +1270,7 @@ int16_t PctJammerFromHul(HUL *lphul) {
         pctHit = 100;
     }
     pctJam = (int16_t)(100 - (int16_t)(LOWORD(pctHit) + 50) / 100);
-    if (lphul->ihuldef > ihuldefOrbitalFort) {
+    if ((int16_t)lphul->ihuldef > ihuldefOrbitalFort) {
         pctJam -= (int32_t)(pctJam / 4);
     }
     if (pctJam > 95) {

@@ -202,7 +202,7 @@ L_5dc1:
         goto L_5dcb;
 
 L_5dcb:
-    if (LOWORD(dChg) >= pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal])
+    if ((int16_t)LOWORD(dChg) >= pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal])
         goto L_5e19;
     else
         goto L_5e10;

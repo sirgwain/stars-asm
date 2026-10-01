@@ -692,7 +692,7 @@ void MoveThings(int16_t fPostProd) {
                             if (lDefKilled < (int32_t)(dmgRaw / 20)) {
                                 lDefKilled = (int32_t)(dmgRaw / 20);
                             }
-                            if (lDefKilled > lppl->cDefenses) {
+                            if (lDefKilled > (int32_t)lppl->cDefenses) {
                                 lDefKilled = lppl->cDefenses;
                             }
                             if (lDefKilled == 0) {
@@ -1200,7 +1200,7 @@ void MoveFleets() {
                                 pct = (int16_t)((0x56 - iCtr) >> 1);
                                 pct = (int32_t)(pct * lpfl->rgwtMin[3]) / 100;
                                 t_merge_4c51_0001 = 1 <= pct ? pct : 1;
-                                if (lpfl->rgwtMin[3] < t_merge_4c51_0001) {
+                                if (lpfl->rgwtMin[3] < (int16_t)t_merge_4c51_0001) {
                                     pct = lpfl->rgwtMin[3];
                                 } else if (1 > pct) {
                                     pct = 1;

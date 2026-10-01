@@ -1801,7 +1801,7 @@ LShowTask:
             }
             for (i = 4; i >= 0; i--) {
                 opOrd = ord.txp.rgia[i].iAction;
-                if (opOrd + 109 > ids) {
+                if (opOrd + 109 > (int16_t)ids) {
                     ids = opOrd + 109;
                     icr = i;
                 }
@@ -1885,7 +1885,7 @@ void SortReportCache(int16_t irpt, int16_t icol) {
         switch (irpt) {
         case 1:
             vlprgidRep = vlprgidFleet;
-            for (iItem = 0; iItem < cFleet; iItem++) {
+            for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
                 lpfl = rglpfl[iItem];
                 if (rglpfl[iItem] == 0)
                     break;
@@ -1897,7 +1897,7 @@ void SortReportCache(int16_t irpt, int16_t icol) {
         case 2:
             vlprgidRep = vlprgidMisc;
             vrptBattle.fCached = 0;
-            for (iItem = 0; iItem < cFleet; iItem++) {
+            for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
                 lpfl = rglpfl[iItem];
                 if (rglpfl[iItem] == 0)
                     break;
@@ -2808,7 +2808,7 @@ void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow) {
         break;
     case 1:
         lpfl = rglpfl[vlprgidFleet[irow]];
-        if (mdXferDlg != 0xffff) {
+        if (mdXferDlg != mdXferNone) {
             MessageBeep(0);
             break;
         }
@@ -2819,7 +2819,7 @@ void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow) {
         switch (icol) {
         case 6:
         case 7:
-            if (mdXferDlg != 0xffff)
+            if (mdXferDlg != mdXferNone)
                 break;
             if (sel.fl.idPlanet != -1) {
                 TransferStuff(sel.fl.id, grobjFleet, sel.fl.idPlanet, grobjPlanet, mdXferCargo);
@@ -2876,7 +2876,7 @@ void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow) {
                 irow = irowEFleetCur;
             }
             lpfl = rglpfl[vlprgidMisc[irow]];
-            if (mdXferDlg != 0xffff) {
+            if (mdXferDlg != mdXferNone) {
                 MessageBeep(0);
             } else {
                 FFindNearestObject(lpfl->pt, grobjFleet, &scan);

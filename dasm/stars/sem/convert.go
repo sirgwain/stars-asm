@@ -128,25 +128,7 @@ func (c *machineConverter) convertEffect(effect machine.Effect) Effect {
 		c.recordMemoryWrite(e.Addr, e.Width)
 		return assign
 	case machine.CopyEffect:
-		dst := LValue(&RawValue{Value: e.Dst, TypeInfo: typeinfo.UintForWidth(e.Width)})
-		if lvalue, ok := c.convertCopyAddress(e.Dst, e.Width); ok {
-			dst = lvalue
-		}
-		src := c.convertValue(e.Src)
-		if lvalue, ok := c.convertCopyAddress(e.Src, e.Width); ok {
-			src = lvalue
-		}
-		if target, ok := c.recoverExpectedValue(dst, src.ExprType()).(LValue); ok {
-			dst = target
-		}
-		src = c.recoverExpectedValue(src, dst.ExprType())
-		assign := &Assign{
-			MetaInfo: e.MetaInfo,
-			Dst:      dst,
-			Src:      src,
-		}
-		c.recordCopyWrite(e.Dst, e.Width)
-		return assign
+		return c.convertCopyEffect(e)
 	case machine.CallEffect:
 		target, fn := c.convertCallTarget(e)
 		args := e.Args

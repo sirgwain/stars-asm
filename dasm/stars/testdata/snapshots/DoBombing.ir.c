@@ -170,7 +170,7 @@ L_b2c2:
     cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
 
 L_b2c8:
-    if (cKillFact <= lppl->cFactories)
+    if (cKillFact <= (int32_t)lppl->cFactories)
         goto L_b315;
     else
         goto L_b2f6;
@@ -194,7 +194,7 @@ L_b3b0:
     cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
 
 L_b3b6:
-    if (cKillDefenses <= lppl->cDefenses)
+    if (cKillDefenses <= (int32_t)lppl->cDefenses)
         goto L_b3f3;
     else
         goto L_b3dc;
@@ -204,7 +204,7 @@ L_b3dc:
 
 L_b3f3:
     cKillMine = dmgBombBldg - (cKillFact + cKillDefenses);
-    if (cKillMine <= lppl->cMines)
+    if (cKillMine <= (int32_t)lppl->cMines)
         goto L_b45c;
     else
         goto L_b43d;

@@ -38,7 +38,7 @@ func TestRenderWin16DefinesGuardsOnlyWin16Constants(t *testing.T) {
 		Typedef: typeinfo.U16,
 	}
 	var buf bytes.Buffer
-	if err := RenderWin16Defines(&buf, NewWin16DefinesView([]*typeinfo.Enum{messages, gameEnum})); err != nil {
+	if err := RenderWin16Defines(&buf, NewWin16DefinesView([]*typeinfo.Enum{messages, gameEnum}, nil)); err != nil {
 		t.Fatalf("RenderWin16Defines() error = %v", err)
 	}
 

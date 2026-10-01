@@ -430,33 +430,36 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
  * Win32 repacked the parameters of these messages: a handle Win16 carried
  * in a word of lParam fills lParam, and the word it displaced moved to the
  * high word of wParam. The decompiled code reads each repacked parameter
- * through the cracker named in its message rule, defined here with the
- * Win32 packing. Win32 replaced WM_CTLCOLOR with one message per control
+ * through the cracker named in its message rule, defined here from the
+ * rule's Win32 read. Win32 replaced WM_CTLCOLOR with one message per control
  * type, which IS_WM_CTLCOLOR recognizes.
  */
-#define GET_WM_ACTIVATE_STATE(wp, lp)         LOWORD(wp)
-#define GET_WM_ACTIVATE_FMINIMIZED(wp, lp)    ((BOOL)HIWORD(wp))
-#define GET_WM_ACTIVATE_HWND(wp, lp)          ((HWND)(lp))
-#define GET_WM_CHARTOITEM_HWND(wp, lp)        ((HWND)(lp))
-#define GET_WM_COMMAND_ID(wp, lp)             LOWORD(wp)
-#define GET_WM_COMMAND_CMD(wp, lp)            HIWORD(wp)
-#define GET_WM_COMMAND_HWND(wp, lp)           ((HWND)(lp))
-#define GET_WM_CTLCOLOR_HWND(wp, lp)          ((HWND)(lp))
-#define GET_WM_ENTERIDLE_HWND(wp, lp)         ((HWND)(lp))
-#define GET_WM_HSCROLL_CODE(wp, lp)           LOWORD(wp)
-#define GET_WM_HSCROLL_POS(wp, lp)            ((short)HIWORD(wp))
-#define GET_WM_HSCROLL_HWND(wp, lp)           ((HWND)(lp))
-#define GET_WM_MENUSELECT_CMD(wp, lp)         LOWORD(wp)
-#define GET_WM_MENUSELECT_FLAGS(wp, lp)       HIWORD(wp)
-#define GET_WM_MENUSELECT_HMENU(wp, lp)       ((HMENU)(lp))
-#define GET_WM_PARENTNOTIFY_MSG(wp, lp)       LOWORD(wp)
-#define GET_WM_PARENTNOTIFY_ID(wp, lp)        HIWORD(wp)
-#define GET_WM_PARENTNOTIFY_HWNDCHILD(wp, lp) ((HWND)(lp))
-#define GET_WM_VKEYTOITEM_HWND(wp, lp)        ((HWND)(lp))
-#define GET_WM_VSCROLL_CODE(wp, lp)           LOWORD(wp)
-#define GET_WM_VSCROLL_POS(wp, lp)            ((short)HIWORD(wp))
-#define GET_WM_VSCROLL_HWND(wp, lp)           ((HWND)(lp))
-#define IS_WM_CTLCOLOR(msg)                   ((msg) >= WM_CTLCOLORMSGBOX && (msg) <= WM_CTLCOLORSTATIC)
+#define GET_WM_ACTIVATE_FMINIMIZED(wParam, lParam)         ((BOOL)HIWORD(wParam))
+#define GET_WM_ACTIVATE_HWND(wParam, lParam)               ((HWND)(lParam))
+#define GET_WM_ACTIVATE_STATE(wParam, lParam)              LOWORD(wParam)
+#define GET_WM_CHARTOITEM_HWND(wParam, lParam)             ((HWND)(lParam))
+#define GET_WM_COMMAND_CMD(wParam, lParam)                 HIWORD(wParam)
+#define GET_WM_COMMAND_HWND(wParam, lParam)                ((HWND)(lParam))
+#define GET_WM_COMMAND_ID(wParam, lParam)                  LOWORD(wParam)
+#define GET_WM_CTLCOLOR_HWND(wParam, lParam)               ((HWND)(lParam))
+#define GET_WM_ENTERIDLE_HWND(wParam, lParam)              ((HWND)(lParam))
+#define GET_WM_HSCROLL_CODE(wParam, lParam)                LOWORD(wParam)
+#define GET_WM_HSCROLL_HWND(wParam, lParam)                ((HWND)(lParam))
+#define GET_WM_HSCROLL_POS(wParam, lParam)                 ((short)HIWORD(wParam))
+#define GET_WM_MDIACTIVATE_FACTIVATE(hwnd, wParam, lParam) ((lParam) == (LPARAM)(hwnd))
+#define GET_WM_MDIACTIVATE_HWNDACTIVATE(wParam, lParam)    ((HWND)(lParam))
+#define GET_WM_MDIACTIVATE_HWNDDEACT(wParam, lParam)       ((HWND)(wParam))
+#define GET_WM_MENUSELECT_CMD(wParam, lParam)              LOWORD(wParam)
+#define GET_WM_MENUSELECT_FLAGS(wParam, lParam)            HIWORD(wParam)
+#define GET_WM_MENUSELECT_HMENU(wParam, lParam)            ((HMENU)(lParam))
+#define GET_WM_PARENTNOTIFY_HWNDCHILD(wParam, lParam)      ((HWND)(lParam))
+#define GET_WM_PARENTNOTIFY_ID(wParam, lParam)             HIWORD(wParam)
+#define GET_WM_PARENTNOTIFY_MSG(wParam, lParam)            LOWORD(wParam)
+#define GET_WM_VKEYTOITEM_HWND(wParam, lParam)             ((HWND)(lParam))
+#define GET_WM_VSCROLL_CODE(wParam, lParam)                LOWORD(wParam)
+#define GET_WM_VSCROLL_HWND(wParam, lParam)                ((HWND)(lParam))
+#define GET_WM_VSCROLL_POS(wParam, lParam)                 ((short)HIWORD(wParam))
+#define IS_WM_CTLCOLOR(msg)                                ((msg) >= WM_CTLCOLORMSGBOX && (msg) <= WM_CTLCOLORSTATIC)
 
 // Win16 constants. windows.h provides most of them; the rest, such as
 // Win16-only messages and application WM_USER messages, are defined here.

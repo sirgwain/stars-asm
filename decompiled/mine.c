@@ -1471,7 +1471,7 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
         lQuan = (int32_t)(lQuan / 100);
         if (lQuanRem != 0 && gd.fGeneratingTurn != 0) {
             t_scratch_m22 = Random(100);
-            if (t_scratch_m22 < LOWORD(lQuanRem)) {
+            if (t_scratch_m22 < (int16_t)LOWORD(lQuanRem)) {
                 lQuan++;
             }
         }

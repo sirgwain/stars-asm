@@ -990,7 +990,7 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
             }
         }
         if (iMaxMines > 0) {
-            iAddMines = iMaxMines >= LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
+            iAddMines = iMaxMines >= (int16_t)LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
         } else {
             iAddMines = 0;
         }
@@ -1003,33 +1003,35 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
         if (iMaxFactories > 0) {
             if (gd.fTutorial == 0) {
                 iMaxFactories =
-                    iMaxFactories >= LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) ? LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) : iMaxFactories;
+                    iMaxFactories >= (int16_t)LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) ? LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2])) : iMaxFactories;
             } else {
-                t_merge_3493_0001 =
-                    (iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0])) ? LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0])) : iMaxFactories) >=
-                            LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))
-                        ? LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))
-                    : iMaxFactories < LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0])) ? iMaxFactories
-                                                                                      : LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]));
-                if (t_merge_3493_0001 >= LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2]))) {
+                t_merge_3493_0001 = (iMaxFactories >= (int16_t)LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                                         ? LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                                         : iMaxFactories) >= (int16_t)LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))
+                                        ? LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))
+                                    : iMaxFactories < (int16_t)LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                                        ? iMaxFactories
+                                        : LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]));
+                if (t_merge_3493_0001 >= (int16_t)LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2]))) {
                     iMaxFactories = LOWORD((int32_t)(rgResLeft[2] / rgFactCost[2]));
-                } else if ((iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
+                } else if ((iMaxFactories >= (int16_t)LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
                                 ? LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))
-                                : iMaxFactories) >= LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))) {
+                                : iMaxFactories) >= (int16_t)LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]))) {
                     iMaxFactories = LOWORD((int32_t)(rgResLeft[1] / rgFactCost[1]));
-                } else if (iMaxFactories >= LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))) {
+                } else if (iMaxFactories >= (int16_t)LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]))) {
                     iMaxFactories = LOWORD((int32_t)(rgResLeft[0] / rgFactCost[0]));
                 }
             }
         }
         if (iMaxFactories > 0) {
-            iAddFactories = iMaxFactories >= LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) : iMaxFactories;
+            iAddFactories =
+                iMaxFactories >= (int16_t)LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgFactCost[3])) : iMaxFactories;
         } else {
             iAddFactories = 0;
         }
         rgResLeft[3] -= (uint32_t)(iAddFactories * rgFactCost[3]);
         if (iMaxMines > 0) {
-            iAddMines = iMaxMines >= LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
+            iAddMines = iMaxMines >= (int16_t)LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) ? LOWORD((int32_t)(rgResLeft[3] / rgMineCost[3])) : iMaxMines;
         } else {
             iAddMines = 0;
         }
@@ -1435,7 +1437,7 @@ int16_t iAddAttackFleet(PLANET *lppl, int16_t iAttackStr, int16_t iBestDestroyer
         iMaxFactories = t_scratch_me_2 - CFactoriesOperating(lppl);
     }
     t_scratch_mc_3 = Random(100);
-    if (t_scratch_mc_3 < (iMaxMines < 100 || iMaxFactories < 100 ? 90 : 60)) {
+    if (t_scratch_mc_3 < (int16_t)(iMaxMines < 100 || iMaxFactories < 100 ? 90 : 60)) {
         return 0;
     }
     if (iBestBattle != -1 && iRand > 50) {

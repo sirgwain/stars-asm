@@ -113,7 +113,7 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		}
 
 		slog.Debug("Dumping win16defines.h", "path", definesPath)
-		if err := templates.RenderWin16Defines(f, templates.NewWin16DefinesView(sdb.Enums)); err != nil {
+		if err := templates.RenderWin16Defines(f, templates.NewWin16DefinesView(sdb.Enums, sdb.Messages)); err != nil {
 			f.Close()
 			return DumpAllResult{}, err
 		}

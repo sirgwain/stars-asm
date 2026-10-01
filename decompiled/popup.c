@@ -210,7 +210,7 @@ void DrawPopup(HWND hwnd, HDC hdc) {
             break;
         case 11:
         case 14:
-            fStarbaseMode = GlobalPD.lpshdef->hul.ihuldef < ihuldefOrbitalFort ? 0 : 1;
+            fStarbaseMode = (int16_t)GlobalPD.lpshdef->hul.ihuldef < ihuldefOrbitalFort ? 0 : 1;
             DrawSlotDlg(hwnd, hdc, &rc, -1);
             rc.top = dyArial8 + 306;
             rc.left += 6;

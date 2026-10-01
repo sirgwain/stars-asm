@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 449,
+    "temps": 450,
     "hiWords": 95,
-    "loWords": 710,
-    "branchHiWords": 31,
+    "loWords": 709,
+    "branchHiWords": 30,
     "branchLoWords": 58,
     "ir": {
-      "numStatements": 32266
+      "numStatements": 32267
     }
   },
   "functions": {
@@ -4003,7 +4003,7 @@
       "temps": 3,
       "hiWords": 1,
       "loWords": 6,
-      "branchHiWords": 2,
+      "branchHiWords": 1,
       "ir": {
         "numStatements": 105
       }
@@ -4067,12 +4067,12 @@
       }
     },
     "ScannerWndProc": {
-      "temps": 4,
+      "temps": 5,
       "hiWords": 2,
-      "loWords": 4,
+      "loWords": 3,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 141
+        "numStatements": 142
       }
     },
     "ScoreFromGiveAndTakeAndTactic": {

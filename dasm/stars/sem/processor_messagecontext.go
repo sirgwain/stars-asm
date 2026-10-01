@@ -296,27 +296,38 @@ func agreedMessagePayload(payloads []*typeinfo.MessagePayloadRule) *typeinfo.Mes
 }
 
 // agreedMessagePart returns the part every specified entry agrees on, in
-// both type and cracker, or an empty part when they conflict.
+// both type and cracker, or an empty part when they conflict. A part Win32
+// repacked takes precedence over parts it kept: a raw read of a repacked
+// word is wrong for the repacking message, such as a WM_SETCURSOR case
+// falling through into WM_COMMAND's block, so the block reads through the
+// cracker as long as every repacked part reads the same Win32 value. Of
+// crackers with the same definition, such as WM_HSCROLL's and WM_VSCROLL's,
+// the first message's is kept.
 func agreedMessagePart(parts []typeinfo.MessagePart) typeinfo.MessagePart {
-	var agreed typeinfo.MessagePart
+	var agreed, cracked typeinfo.MessagePart
+	conflict := false
 	for _, part := range parts {
 		switch {
 		case part.Type == nil:
+		case part.Get != nil:
+			if cracked.Get == nil {
+				cracked = part
+			} else if cracked.Win32 != part.Win32 || !typeinfo.Equals(cracked.Type, part.Type) {
+				return typeinfo.MessagePart{}
+			}
 		case agreed.Type == nil:
 			agreed = part
-		case !typeinfo.Equals(agreed.Type, part.Type) || crackerName(agreed.Get) != crackerName(part.Get):
-			return typeinfo.MessagePart{}
+		case !typeinfo.Equals(agreed.Type, part.Type):
+			conflict = true
 		}
 	}
-	return agreed
-}
-
-// crackerName returns a cracker's name, or "" for a part without one.
-func crackerName(get *typeinfo.Function) string {
-	if get == nil {
-		return ""
+	if cracked.Get != nil {
+		return cracked
 	}
-	return get.Name
+	if conflict {
+		return typeinfo.MessagePart{}
+	}
+	return agreed
 }
 
 // agreedMessageType returns the type every specified entry agrees on, or nil
@@ -335,17 +346,19 @@ func agreedMessageType(types []typeinfo.Type) typeinfo.Type {
 	return agreed
 }
 
-// windowProcMessageParams names the message and payload parameters of a
-// window procedure.
+// windowProcMessageParams names the window, message and payload parameters
+// of a window procedure.
 type windowProcMessageParams struct {
+	hwnd   *typeinfo.FunctionVar
 	msg    *typeinfo.FunctionVar
 	wParam *typeinfo.FunctionVar
 	lParam *typeinfo.FunctionVar
 }
 
 // windowProcParams finds the message parameter, typed with the window message
-// enum, and the wParam and lParam parameters that follow it. A message
-// handler helper has no message parameter, and may have no lParam.
+// enum, the window parameter before it, and the wParam and lParam parameters
+// that follow it. A message handler helper has no window or message
+// parameter, and may have no lParam.
 func (ctx *FuncContext) windowProcParams() (windowProcMessageParams, bool) {
 	if handler := ctx.sdb.GetMessageHandler(ctx.fs.Name); handler != nil {
 		var params windowProcMessageParams
@@ -361,10 +374,11 @@ func (ctx *FuncContext) windowProcParams() (windowProcMessageParams, bool) {
 	}
 	for i := range ctx.fs.Params {
 		enum, ok := ctx.fs.Params[i].Type.(*typeinfo.Enum)
-		if !ok || enum.Name != typeinfo.MessageEnumName || i+2 >= len(ctx.fs.Params) {
+		if !ok || enum.Name != typeinfo.MessageEnumName || i < 1 || i+2 >= len(ctx.fs.Params) {
 			continue
 		}
 		return windowProcMessageParams{
+			hwnd:   &ctx.fs.Params[i-1],
 			msg:    &ctx.fs.Params[i],
 			wParam: &ctx.fs.Params[i+1],
 			lParam: &ctx.fs.Params[i+2],
@@ -465,7 +479,17 @@ func (c *machineConverter) messagePayloadRead(value machine.Value, expected type
 		if whole && typeinfo.IsNative(expected, typeinfo.NativeIntPtr) {
 			return nil, false
 		}
-		return &Call{Function: part.Get, Args: []Expr{messageParamArg(params.wParam), messageParamArg(params.lParam)}}, true
+		args := []Expr{messageParamArg(params.wParam), messageParamArg(params.lParam)}
+		if len(part.Get.Params) == 3 {
+			// A cracker comparing with the receiving window, such as
+			// WM_MDIACTIVATE's activate flag, needs a window procedure's
+			// hwnd; a message handler helper has none to pass.
+			if params.hwnd == nil {
+				return nil, false
+			}
+			args = append([]Expr{&Local{FunctionVar: *params.hwnd}}, args...)
+		}
+		return &Call{Function: part.Get, Args: args}, true
 	}
 	if part.Type == nil || expected == nil || !typeinfo.Equals(part.Type, expected) || typeinfo.Equals(part.Type, param.Type) {
 		return nil, false

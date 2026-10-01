@@ -443,9 +443,17 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 
 // compareDomainType returns typ with the signedness of a relational
 // comparison op, or typ unchanged when op is an equality or typ is not a plain
-// integer.
+// integer. An enum compares as the integer type C declares it with, so a
+// uint16_t ProdItemType tested with JL against 0 is cast to int16_t.
 func compareDomainType(op CompareOp, typ typeinfo.Type) typeinfo.Type {
-	prim, ok := typ.(*typeinfo.Primitive)
+	declared := typ
+	if enumType, ok := typ.(*typeinfo.Enum); ok {
+		declared = enumType.Typedef
+		if enumType.Storage != nil && (declared == nil || enumType.Storage.Bytes() != declared.Bytes()) {
+			declared = enumType.Storage
+		}
+	}
+	prim, ok := declared.(*typeinfo.Primitive)
 	if !ok || prim.TypeKind != typeinfo.KInt || prim.Native != typeinfo.NativeInt {
 		return typ
 	}

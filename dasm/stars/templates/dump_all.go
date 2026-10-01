@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"slices"
 	"strings"
 	"text/template"
 
@@ -22,9 +23,19 @@ type DumpCommonView struct {
 	Modules []string
 }
 
-// Win16DefinesView lists the Win16 constants emitted to win16defines.h.
+// Win16DefinesView lists the Win16 constants and message crackers emitted
+// to win16defines.h.
 type Win16DefinesView struct {
-	Defines []DefineView
+	Defines  []DefineView
+	Crackers []CrackerView
+}
+
+// CrackerView is one message cracker emitted as a function-like #define of
+// its Win32 read.
+type CrackerView struct {
+	Name   string
+	Params string
+	Win32  string
 }
 
 // DefineView is one Win16 constant emitted as a guarded #define.
@@ -34,9 +45,10 @@ type DefineView struct {
 }
 
 // NewWin16DefinesView collects the values of every Win16 #define constant
-// family, the enums with no typedef, once each by name.
-func NewWin16DefinesView(enums []*typeinfo.Enum) Win16DefinesView {
-	var view Win16DefinesView
+// family, the enums with no typedef, once each by name, and the crackers of
+// the message rules sorted by name.
+func NewWin16DefinesView(enums []*typeinfo.Enum, messages []*typeinfo.MessageRule) Win16DefinesView {
+	view := Win16DefinesView{Crackers: messageCrackers(messages)}
 	seen := make(map[string]bool)
 	for _, e := range enums {
 		if e.Typedef != nil {
@@ -55,6 +67,35 @@ func NewWin16DefinesView(enums []*typeinfo.Enum) Win16DefinesView {
 		}
 	}
 	return view
+}
+
+// messageCrackers returns the crackers of every message rule's payload
+// parts, once each by name, sorted by name.
+func messageCrackers(messages []*typeinfo.MessageRule) []CrackerView {
+	byName := make(map[string]CrackerView)
+	for _, message := range messages {
+		for _, payload := range []*typeinfo.MessagePayloadRule{message.WParam, message.LParam} {
+			if payload == nil {
+				continue
+			}
+			for _, part := range []typeinfo.MessagePart{payload.Whole, payload.Loword, payload.Hiword} {
+				if part.Get == nil {
+					continue
+				}
+				params := make([]string, len(part.Get.Params))
+				for i, param := range part.Get.Params {
+					params[i] = param.Name
+				}
+				byName[part.Get.Name] = CrackerView{Name: part.Get.Name, Params: strings.Join(params, ", "), Win32: part.Win32}
+			}
+		}
+	}
+	crackers := make([]CrackerView, 0, len(byName))
+	for _, cracker := range byName {
+		crackers = append(crackers, cracker)
+	}
+	slices.SortFunc(crackers, func(a, b CrackerView) int { return strings.Compare(a.Name, b.Name) })
+	return crackers
 }
 
 func NewDumpSourceView(module string, globals []*typeinfo.GlobalVar, functions []*typeinfo.Function) DumpSourceView {

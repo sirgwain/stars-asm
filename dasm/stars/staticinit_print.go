@@ -62,8 +62,9 @@ func tryFormatEnumScalar(typ typeinfo.Type, v any) (string, bool) {
 }
 
 func formatEnumValue(enumType *typeinfo.Enum, val int) (string, bool) {
+	signed := enumType.SignExtend(val)
 	for _, ev := range enumType.Values {
-		if ev.Value == val {
+		if ev.Value == val || ev.Value == signed {
 			return ev.Name, true
 		}
 	}

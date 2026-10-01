@@ -133,14 +133,14 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 1;
             }
         case WM_COMMAND:
-            if (HIWORD(lParam) == 0 && wParam >= 1073 && wParam <= 1078) {
-                if (IsDlgButtonChecked(hwnd, wParam) != 0) {
-                    iResTechNow = wParam - 1073;
+            if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= 0x431 && GET_WM_COMMAND_ID(wParam, lParam) <= 0x436) {
+                if (IsDlgButtonChecked(hwnd, GET_WM_COMMAND_ID(wParam, lParam)) != 0) {
+                    iResTechNow = GET_WM_COMMAND_ID(wParam, lParam) - 1073;
                     GetClientRect(hwnd, &rc);
                     DrawResearchDlg(hwnd, NULL, &rc, 4);
                 }
             } else {
-                if (wParam == 2) {
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL) {
                     fChg = 0;
                     iResTechNext = LOWORD(SendMessage(GetDlgItem(hwnd, 0x43b), CB_GETCURSEL, 0, 0));
                     if (iResTechNext == 0) {
@@ -169,7 +169,7 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     }
                     return 1;
                 }
-                if (wParam == 118) {
+                if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
                     WinHelp(hwnd, szHelpFile, 1, 1070);
                     return 1;
                 }

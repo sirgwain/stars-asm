@@ -81,7 +81,7 @@ L_1a60:
         goto L_1ad6;
 
 L_1ad6:
-    if (rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef)
+    if ((int16_t)rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef <= (int16_t)rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef)
         goto L_1b3a;
     else
         goto L_1b2c;

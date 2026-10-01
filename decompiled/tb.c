@@ -46,12 +46,12 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 SendMessage(hwndTBRadar, CB_SETCURSEL, iSel, 0);
                 _wsprintf(szWork, PCTDPCTPCT, vpctRadarView);
                 SetWindowText(hwndTBRadar, szWork);
-                lpfnRealComboProc = GetWindowLong(hwndTBRadar, 0xfffc);
-                SetWindowLong(hwndTBRadar, 0xfffc, lpfnFakeComboProc);
+                lpfnRealComboProc = GetWindowLong(hwndTBRadar, GWL_WNDPROC);
+                SetWindowLong(hwndTBRadar, GWL_WNDPROC, lpfnFakeComboProc);
                 hwndCE = GetWindow(hwndTBRadar, GW_CHILD);
                 if (hwndCE != 0) {
-                    lpfnRealCEProc = GetWindowLong(hwndCE, 0xfffc);
-                    SetWindowLong(hwndCE, 0xfffc, lpfnFakeCEProc);
+                    lpfnRealCEProc = GetWindowLong(hwndCE, GWL_WNDPROC);
+                    SetWindowLong(hwndCE, GWL_WNDPROC, lpfnFakeCEProc);
                 }
             }
             x += dx;
@@ -643,7 +643,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
     uint32_t t_scratch_m10;
 
     fVisCur = hwndTooltip != 0 && IsWindowVisible(hwndTooltip) != 0;
-    if (ids < idsUniverseDefinitionFileSeemsMissingCorrupt || prc == 0) {
+    if ((int16_t)ids < idsUniverseDefinitionFileSeemsMissingCorrupt || prc == 0) {
         if (hwndTooltip != 0) {
             DestroyWindow(hwndTooltip);
         }

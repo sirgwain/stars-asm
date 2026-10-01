@@ -916,7 +916,7 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     uint32_t t_fields_2;
     uint32_t t_fields_3;
 
-    fStarbase = lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
+    fStarbase = (int16_t)lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
     chs = lphul->chs;
     lPow = 0;
     j = 0;
@@ -1209,14 +1209,14 @@ void MarkTechsSeen(HUL *lphul, int16_t iplr) {
     part.hs.iItem = lphul->ihuldef;
     FLookupPart(&part);
     for (iTech = 0; iTech < 6; iTech++) {
-        rgTechBattle[iTech] = LOBYTE(rgTechBattle[iTech] <= part.phul->rgTech[iTech] ? part.phul->rgTech[iTech] : rgTechBattle[iTech]);
+        rgTechBattle[iTech] = LOBYTE((int16_t)rgTechBattle[iTech] <= part.phul->rgTech[iTech] ? part.phul->rgTech[iTech] : rgTechBattle[iTech]);
     }
     for (ihs = 0; ihs < lphul->chs; ihs++) {
         if (lphul->rghs[ihs].cItem != 0) {
             part.hs = lphul->rghs[ihs];
             FLookupPart(&part);
             for (iTech = 0; iTech < 6; iTech++) {
-                rgTechBattle[iTech] = LOBYTE(rgTechBattle[iTech] <= part.pcom->rgTech[iTech] ? part.pcom->rgTech[iTech] : rgTechBattle[iTech]);
+                rgTechBattle[iTech] = LOBYTE((int16_t)rgTechBattle[iTech] <= part.pcom->rgTech[iTech] ? part.pcom->rgTech[iTech] : rgTechBattle[iTech]);
             }
             iTech = -1;
             switch (part.hs.grhst) {

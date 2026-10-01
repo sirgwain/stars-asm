@@ -367,13 +367,13 @@ void DoAutomitronAiTurn(PROD *rgprod) {
                         if (lpplHome == 0)
                             break;
                         lppl = NULL;
-                        for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            for (j = 0; j < RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                            for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
                             }
-                            if (j < RawLoad16(vlpbAiData + (i * 20 + 6)))
+                            if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
                                 break;
                         }
-                        if (i < RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
+                        if (i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
                             lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
                         }
                         IdTargetFreighter(lpfl, lppl == 0 ? lpplHome : lppl);
@@ -733,13 +733,13 @@ void DoRototillAiTurn(PROD *rgprod) {
                         if (lpplHome == 0)
                             break;
                         lppl = NULL;
-                        for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            for (j = 0; j < RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                            for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
                             }
-                            if (j < RawLoad16(vlpbAiData + (i * 20 + 6)))
+                            if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
                                 break;
                         }
-                        if (i < RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
+                        if (i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
                             lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
                         }
                         IdTargetFreighter(lpfl, lppl == 0 ? lpplHome : lppl);

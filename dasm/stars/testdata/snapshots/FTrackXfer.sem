@@ -157,7 +157,7 @@ L_5dc1:
     branch mdXferDlg != mdXferShips ? L_5f01 : L_5dcb
 
 L_5dcb:
-    branch LOWORD(dChg) >= pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
+    branch (int16_t)LOWORD(dChg) >= pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
 
 
 

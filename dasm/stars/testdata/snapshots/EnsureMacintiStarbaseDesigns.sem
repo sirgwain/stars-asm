@@ -93,7 +93,7 @@ L_7883:
     branch iOld == -1 ? L_7925 : L_788c
 
 L_788c:
-    branch rgSB[i] > rgSB[iOld] ? L_7925 : L_78b5
+    branch (int16_t)rgSB[i] > rgSB[iOld] ? L_7925 : L_78b5
 
 L_78b5:
     branch rgSB[i] != rgSB[iOld] ? L_792b : L_78de

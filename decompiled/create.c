@@ -908,7 +908,7 @@ L_15bc:
             pb = lpPlanets[iMin].rgMinConc;
             iLow = 0;
             for (j = 0; j < 3; j++) {
-                if (pb[j] < pb[iLow]) {
+                if ((int16_t)pb[j] < pb[iLow]) {
                     iLow = j;
                 }
             }
@@ -1379,7 +1379,7 @@ int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_
         rgplr[iplr].cShDef++;
         ishMac = (int16_t)(int8_t)t_46ad;
         t_call_46b8 = LpshdefT();
-        rglpshdef[iplr][ishMac] = t_call_46b8[ishdef];
+        fmemmove(rglpshdef[iplr] + ishMac, t_call_46b8 + ishdef, sizeof(SHDEF));
         rglpshdef[iplr][ishMac].wFlags = (rglpshdef[iplr][ishMac].wFlags & 0x83ff) | (ishMac & 0x1f) * 0x400;
         ishdef = ishMac;
     }
@@ -2073,7 +2073,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                     game.cPlayer = 5;
                     break;
                 }
-                if (lvlAi >= lvlAiTough && Random(6 - lvlAi) == 0) {
+                if ((int16_t)lvlAi >= lvlAiTough && Random(6 - lvlAi) == 0) {
                     game.cPlayer = 4;
                     break;
                 }
@@ -2088,11 +2088,11 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                     game.cPlayer = 5;
                     break;
                 }
-                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
+                if ((int16_t)lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 8;
                     break;
                 }
-                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
+                if ((int16_t)lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 6;
                     break;
                 }
@@ -2107,11 +2107,11 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                     game.cPlayer = 10 - Random(2);
                     break;
                 }
-                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
+                if ((int16_t)lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 13;
                     break;
                 }
-                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
+                if ((int16_t)lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 11;
                     break;
                 }
@@ -2120,9 +2120,9 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
             case 4:
                 if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 13 - Random(3);
-                } else if (lvlAi >= lvlAiTough && Random(9 - lvlAi) == 0) {
+                } else if ((int16_t)lvlAi >= lvlAiTough && Random(9 - lvlAi) == 0) {
                     game.cPlayer = 14;
-                } else if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
+                } else if ((int16_t)lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 15;
                 } else {
                     game.cPlayer = 16;

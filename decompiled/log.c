@@ -988,7 +988,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             return 0;
         case 4:
             lpfl = LpflFromId(RawLoad16(lpb));
-            if (lpfl == 0 || RawLoad16((uint8_t *)lpb + 0x2) < 0 || RawLoad16((uint8_t *)lpb + 0x2) > lpfl->cord) {
+            if (lpfl == 0 || (int16_t)RawLoad16((uint8_t *)lpb + 0x2) < 0 || (int16_t)RawLoad16((uint8_t *)lpb + 0x2) > lpfl->cord) {
                 return 0;
             }
             if (lpfl->cord == lpfl->lpplord->iordMax) {
@@ -1008,7 +1008,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl != 0 && lpfl->cord >= 0) {
                 iLook = RawLoad16((uint8_t *)lpb + 0x2);
-                if (RawLoad16((uint8_t *)lpb + 0x2) < lpfl->cord) {
+                if ((int16_t)RawLoad16((uint8_t *)lpb + 0x2) < lpfl->cord) {
                     if ((uint16_t)cb < 22) {
                         fmemset(&lpfl->lpplord->rgord[iLook], 0, sizeof(ORDER));
                     }
@@ -1054,7 +1054,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 lpfl->fRepOrders = RawLoad16((uint8_t *)lpb + 0x2);
                 return 1;
             }
-            if (lpfl->cord <= RawLoad16((uint8_t *)lpb + 0x2) || RawLoad16((uint8_t *)lpb + 0x4) >= 10)
+            if (lpfl->cord <= (int16_t)RawLoad16((uint8_t *)lpb + 0x2) || (int16_t)RawLoad16((uint8_t *)lpb + 0x4) >= 10)
                 break;
             lpfl->lpplord->rgord[RawLoad16((uint8_t *)lpb + 0x2)].grTask = RawLoad16((uint8_t *)lpb + 0x4);
             return 1;

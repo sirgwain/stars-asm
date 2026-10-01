@@ -60,7 +60,7 @@ void DoBombing() {
                     if (modKill > 0) {
                         cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
                     }
-                    if (cKillFact > lppl->cFactories) {
+                    if (cKillFact > (int32_t)lppl->cFactories) {
                         cKillFact = lppl->cFactories;
                     }
                     cKillDefenses = (uint32_t)(lppl->cDefenses * dmgBombBldg);
@@ -69,11 +69,11 @@ void DoBombing() {
                     if (modKill > 0) {
                         cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
                     }
-                    if (cKillDefenses > lppl->cDefenses) {
+                    if (cKillDefenses > (int32_t)lppl->cDefenses) {
                         cKillDefenses = lppl->cDefenses;
                     }
                     cKillMine = dmgBombBldg - (cKillFact + cKillDefenses);
-                    if (cKillMine > lppl->cMines) {
+                    if (cKillMine > (int32_t)lppl->cMines) {
                         cKillMine = lppl->cMines;
                     }
                 }

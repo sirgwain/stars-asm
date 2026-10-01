@@ -142,7 +142,7 @@ void *LpAlloc(uint16_t cb, HeapType ht) {
 HB *LphbFromLpHt(void *lp, HeapType ht) {
     HB *lphb;
 
-    if (ht < htOrd || ht >= htCount) {
+    if ((int16_t)ht < htOrd || (int16_t)ht >= htCount) {
         return NULL;
     }
     for (lphb = rglphb[ht]; lphb != 0 && ((HB *)lp <= lphb || (uint8_t *)lp >= (uint8_t *)lphb + lphb->cbBlock); lphb = lphb->lphbNext) {

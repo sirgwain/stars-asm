@@ -34,10 +34,11 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     int16_t     t_08b4;
     int32_t    *t_assign_1;
     int32_t    *t_assign_2;
+    int16_t     t_merge_0d88_0001;
 
     switch (msg) {
     case WM_MDIACTIVATE:
-        hwndActive = wParam == 0 ? NULL : hwnd;
+        hwndActive = GET_WM_MDIACTIVATE_FACTIVATE(hwnd, wParam, lParam) == 0 ? NULL : hwnd;
         break;
     case WM_CREATE:
         yScanTop = 1000;
@@ -290,8 +291,8 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         goto Default;
     case WM_HSCROLL:
     case WM_VSCROLL:
-        if (wParam <= 5) {
-            switch (wParam) {
+        if (GET_WM_HSCROLL_CODE(wParam, lParam) <= SB_THUMBTRACK) {
+            switch (GET_WM_HSCROLL_CODE(wParam, lParam)) {
             case 0:
                 d = -dScanInc;
                 break;
@@ -306,7 +307,8 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 break;
             case 4:
             case 5:
-                d = LOWORD(lParam) - (msg == WM_VSCROLL ? yScanTop : xScanTop);
+                t_merge_0d88_0001 = msg == WM_VSCROLL ? yScanTop : xScanTop;
+                d = GET_WM_HSCROLL_POS(wParam, lParam) - t_merge_0d88_0001;
                 d &= 0xfffc;
             }
         } else {

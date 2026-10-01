@@ -416,16 +416,67 @@ be disabled so the workflow can move the tag and replace the executable.
 
 ### Scaffold smoke tests
 
-The [AI regression harness](tests/scaffold/REGRESSION.md) stages Small, Medium,
-and Huge/Packed games with all six AI types. It supports a patched original
-binary in DOSBox and a `STARS_TEST_SEED` native build, preserves checkpoints at
-creation and turns 10/50/100, and compares decrypted save records with
-`save compare`.
-
 Run `make newgame` to generate the tiny test game with the compiled executable
 under Wine. Fixtures and the runner live in [`tests/scaffold/`](tests/scaffold/README.md);
 generated game files and logs go to `dist/scaffold/`. See that directory’s README
 for prerequisites, custom fixtures, and the checks performed.
+
+### Fixed-seed regression tests
+
+The [regression harness guide](tests/scaffold/REGRESSION.md) explains the seed
+patch, staging, checkpoint capture, and save comparison. The current runner
+tests universe creation and turn generation in nine Small/Normal scenarios:
+`noai`, `oneai1` through `oneai6` (each of the six AI types individually at
+Expert difficulty), `smallai4` (four AI opponents), and `smallai6` (all six).
+The initial human slot is converted to Maid AI after creation. Medium and
+Huge/Packed definitions also exist, but are not in the current default suite.
+
+Both the original Win16 executable in starsbox/DOSBox and the native executable
+under Wine use seed `12345`. Checkpoints at creation and turns 1, 10, 25, 50,
+80, and 100 capture the universe, host, and player save files. Comparison
+decrypts the saves and checks record bytes and ordering, including star
+coordinates and simulation state, excluding only clock-derived game IDs and
+encryption salts. Differences require inspection; these are strict record
+comparisons rather than a complete semantic interpretation of game state.
+
+Run these commands from the repository root. The regression runs require
+Python 3, Go, CMake, Ninja, MinGW-w64, Wine, and a registered Stars! serial in
+both environments. The original run also requires the existing starsbox
+DOSBox/Windows 3.1 setup described in the guide.
+
+**Set up and run the starsbox tests first, once, to generate the reference
+checkpoints:**
+
+```sh
+make build
+make checkpoints-starsbox
+```
+
+This stages a patched copy of the original executable and runs the scenarios
+into `starsbox/c_drive/REGTEST`. **Do not rerun this target during routine
+regression checks: it takes a long time and deletes the existing reference
+directory before rebuilding it.** Reuse those checkpoints for subsequent
+native builds. Regenerate the reference only when intentionally changing the
+fixtures, seed, or harness behavior that determines the checkpoints.
+
+After changing the decompiler, regenerate the C sources before testing them;
+the native target builds the existing sources in `decompiled/`:
+
+```sh
+make dasm-all               # Regenerate C and other decompiler output
+make checkpoints-native    # Build with the fixed seed and run under Wine
+make checkpoints-compare   # Compare against the saved starsbox checkpoints
+```
+
+`checkpoints-native` replaces `starsbox/c_drive/native`, builds the seeded
+executable in `dist/regression-build`, and rebuilds the Go CLI.
+`checkpoints-compare` reuses both checkpoint directories and overwrites
+[`regression-comparison.json`](tests/scaffold/fixtures/regression/regression-comparison.json)
+with the current per-scenario, per-turn, per-file results and mismatch details.
+It returns nonzero for differences, invalid saves, missing files, or missing
+checkpoints; the report is still written. Review the JSON diff and keep the
+updated report with intentional changes. To refresh only the comparison after
+both runs are available, run `make checkpoints-compare` alone.
 
 ## Direction
 

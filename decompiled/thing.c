@@ -140,7 +140,7 @@ void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, int16_t md) {
         c = _wsprintf(szWork, "%ld of %ldkT", l, lMax);
     }
     l = GetTextExtent(hdc, szWork, c);
-    if (LOWORD(l) < prc->right - prc->left - 3) {
+    if ((int16_t)LOWORD(l) < prc->right - prc->left - 3) {
         RcCtrTextOut(hdc, prc, szWork, c);
     }
     SetBkMode(hdc, iMode);
@@ -410,7 +410,7 @@ void DoThingInteractions(int16_t fPostMove) {
                                     if (iOffset >= 1) {
                                         iOffset = Random(2) + 1;
                                     }
-                                    shdef = LpshdefT()[iOffset + 19];
+                                    fmemmove(&shdef, LpshdefT() + (iOffset + 19), sizeof(SHDEF));
                                     ish = IshFindSimilarDesign(&shdef.hul, iplr);
                                     if (ish < 0) {
                                         do {

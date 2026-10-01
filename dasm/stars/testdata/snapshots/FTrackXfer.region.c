@@ -34,7 +34,7 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
         }
         while (FTrackBtn(&btnt) != 0) {
             if (mdXferDlg == mdXferShips) {
-                i = LOWORD(dChg) < pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
+                i = (int16_t)LOWORD(dChg) < pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
                 if (i != 0) {
                     if (pxfer[btn.iSide].fl.rgcsh[iVal] >= 32766 - i) {
                         i = 1;

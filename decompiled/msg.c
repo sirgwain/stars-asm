@@ -995,7 +995,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         crBack = SetBkColor(hdc, crButtonFace);
         cch = strlen(szMsgTitle);
         dxMax = rcMsgTitle.right - rcMsgTitle.left - 48;
-        for (; cch > 0 && LOWORD(GetTextExtent(hdc, szMsgTitle, cch)) > dxMax; cch--) {
+        for (; cch > 0 && (int16_t)LOWORD(GetTextExtent(hdc, szMsgTitle, cch)) > dxMax; cch--) {
         }
         RcCtrTextOut(hdc, &rcMsgTitle, szMsgTitle, cch);
         DecorateMsgTitleBar(hdc, &rcMsgTitle);
@@ -2580,7 +2580,7 @@ void SetFilteringGroups(MessageId idm, int16_t fSet) {
                                                            ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x39 ^ 0x3a) & 7));
         break;
     default:
-        if (idm >= idmHasLoaded && idm <= idmHasBeamed2) {
+        if ((int16_t)idm >= idmHasLoaded && (int16_t)idm <= idmHasBeamed2) {
             for (i = 43; i <= 46; i++) {
                 bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
             }
@@ -2622,18 +2622,18 @@ void SetFilteringGroups(MessageId idm, int16_t fSet) {
                                                                    ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x4c ^ 0x4d) & 7));
                 break;
             default:
-                if (idm >= idmHasBombedKillingColonists && idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto) {
+                if ((int16_t)idm >= idmHasBombedKillingColonists && (int16_t)idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto) {
                     for (i = 96; i <= 100; i++) {
                         bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
                     }
-                } else if (idm >= idmHasBombedKillingColonists2 && idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto3) {
+                } else if ((int16_t)idm >= idmHasBombedKillingColonists2 && (int16_t)idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto3) {
                     for (i = 106; i <= 110; i++) {
                         bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
                     }
                 } else if (idm == idmHasLoaded2 || idm == idmHasBeamed3) {
                     bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] & ~(1 << ((idm ^ 0x79 ^ 0x7a) & 7))) |
                                                                        ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x79 ^ 0x7a) & 7));
-                } else if (idm >= idmBattleTookPlaceDestroyedTakingDamage && idm <= idmBattleTookPlaceInvolvingRacesLostForces2) {
+                } else if ((int16_t)idm >= idmBattleTookPlaceDestroyedTakingDamage && (int16_t)idm <= idmBattleTookPlaceInvolvingRacesLostForces2) {
                     for (i = 145; i <= 168; i++) {
                         bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
                     }

@@ -1149,7 +1149,7 @@ int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
             if ((part.hs.grhst & 0x800) == 0) {
                 if ((part.hs.grhst & 0x10) != 0 && part.hs.iItem == 18) {
                     pctBC = 10;
-                    for (i = 0; i < part.hs.cItem; i++) {
+                    for (i = 0; i < (int16_t)part.hs.cItem; i++) {
                         pct += (int16_t)((100 - pct) * pctBC) / 100;
                     }
                 }
@@ -1163,7 +1163,7 @@ int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
                     FLookupPart(&part);
                     cbc += (part.hs.iItem - 4) * part.hs.cItem;
                     pctBC = part.pspecial->grAbility;
-                    for (i = 0; i < part.hs.cItem; i++) {
+                    for (i = 0; i < (int16_t)part.hs.cItem; i++) {
                         pct += (int16_t)((100 - pct) * pctBC) / 100;
                     }
                 }
@@ -1529,7 +1529,7 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
 
     dz = DzFromBrcBrc(brcSrc, brcTarget);
     dpTotal = 0;
-    if (fProximity == 0 && dz > ptok->dxyLim) {
+    if (fProximity == 0 && dz > (int16_t)ptok->dxyLim) {
         return 0;
     }
     lphul = &LpshdefFromTok(ptok)->hul;
@@ -1553,7 +1553,7 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
                         }
                         if (fOutOfRange != 0) {
                             dp = (int32_t)(dp / ((int16_t)(dz + 10) - dRange));
-                            if (dp < part.hs.cItem) {
+                            if (dp < (int16_t)part.hs.cItem) {
                                 dp = part.hs.cItem;
                             }
                         }
@@ -1577,7 +1577,7 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
                     }
                     if (fOutOfRange != 0) {
                         dp = (int32_t)(dp / ((int16_t)(dz + 10) - dRange));
-                        if (dp < part.hs.cItem) {
+                        if (dp < (int16_t)part.hs.cItem) {
                             dp = part.hs.cItem;
                         }
                     }
@@ -1656,7 +1656,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
                 *pbrc = 0xff;
                 return ptok->dMovesLeft;
             }
-            if (dz < dzBest && DpFromPtokBrcToBrc(ptok, 0, 0, ptokTarget, 0) > 0) {
+            if ((int16_t)dz < dzBest && DpFromPtokBrcToBrc(ptok, 0, 0, ptokTarget, 0) > 0) {
                 dzBest = dz;
                 *pbrc = ptokTarget->brc;
             }
@@ -2110,7 +2110,7 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
         cTorpHit = 0;
         for (i = 0; i < cTorpBase; i++) {
             t_scratch_m12 = Random(100);
-            if (t_scratch_m12 < LOWORD(pctHit)) {
+            if (t_scratch_m12 < (int16_t)LOWORD(pctHit)) {
                 cTorpHit++;
             }
         }
@@ -2263,7 +2263,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                         }
                                     } else {
                                         pctHit = part.ptorp->dHitChance;
-                                        if (ptok->pctBC >= ptokE->pctJam) {
+                                        if ((int16_t)ptok->pctBC >= ptokE->pctJam) {
                                             pctHit += (int32_t)((100 - pctHit) * (int16_t)(ptok->pctBC - ptokE->pctJam)) / 100;
                                         } else {
                                             pctHit -= (int32_t)(pctHit * (int16_t)(ptokE->pctJam - ptok->pctBC)) / 100;
@@ -2867,7 +2867,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
                         }
                         if (wtT == wt) {
                             i--;
-                            if (ptok->dMovesLeft >= j) {
+                            if ((int16_t)ptok->dMovesLeft >= j) {
                                 lpbtlrec = (BTLREC *)lpbBattleCur;
                                 lpbBattleCur += 6;
                                 lpbtlrec->itok = LOBYTE(itok);
@@ -3474,7 +3474,7 @@ void DoBombing() {
                     if (modKill > 0) {
                         cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
                     }
-                    if (cKillFact > lppl->cFactories) {
+                    if (cKillFact > (int32_t)lppl->cFactories) {
                         cKillFact = lppl->cFactories;
                     }
                     cKillDefenses = (uint32_t)(lppl->cDefenses * dmgBombBldg);
@@ -3483,11 +3483,11 @@ void DoBombing() {
                     if (modKill > 0) {
                         cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
                     }
-                    if (cKillDefenses > lppl->cDefenses) {
+                    if (cKillDefenses > (int32_t)lppl->cDefenses) {
                         cKillDefenses = lppl->cDefenses;
                     }
                     cKillMine = dmgBombBldg - (cKillFact + cKillDefenses);
-                    if (cKillMine > lppl->cMines) {
+                    if (cKillMine > (int32_t)lppl->cMines) {
                         cKillMine = lppl->cMines;
                     }
                 }

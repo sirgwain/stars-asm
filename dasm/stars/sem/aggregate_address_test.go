@@ -1,6 +1,7 @@
 package sem
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
@@ -8,6 +9,38 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/testfixture"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+// TestAggregateBufferCopyUsesByteCount preserves a complete block copy through
+// raw record bytes, including a slice starting at the beginning of the buffer.
+func TestAggregateBufferCopyUsesByteCount(t *testing.T) {
+	fx := testfixture.Stars(t)
+	ctx := mustFuncContext(t, fx, symresolve.NewResolver(fx.Image, fx.SDB), "FReadFleet")
+	buffer := fx.SDB.GetGlobal("rgbCur")
+	for _, offset := range []int{0, 4} {
+		effect := machine.CopyEffect{
+			MetaInfo: machine.Meta{BlockID: 0x3f0b, InstOff: 0x3f14},
+			Dst: machine.AddressVal(machine.MemoryAddress{
+				Seg: machine.ConstVal(uint(buffer.Addr.Seg)), Disp: int(buffer.Addr.Off) + offset, Width: 20,
+			}),
+			Src: machine.AddressVal(machine.MemoryAddress{
+				Seg: machine.ConstVal(uint(buffer.Addr.Seg)), Disp: int(buffer.Addr.Off) + 24, Width: 20,
+			}),
+			Width: 20,
+		}
+		converted := (&machineConverter{ctx: ctx}).convertEffect(effect)
+		got, ok := converted.(*CallEffect)
+		if !ok || got.Call.Name != "fmemmove" || len(got.Call.Args) != 3 {
+			t.Fatalf("offset %d: copy = %s, want a memory copy", offset, FormatEffect(converted))
+		}
+		count, ok := got.Call.Args[2].(*Const)
+		if !ok || count.U64 != 20 || !strings.Contains(FormatExpr(got.Call.Args[1]), "rgbCur[24]") {
+			t.Fatalf("offset %d: copy = %s, want 20 bytes from rgbCur[24]", offset, FormatEffect(got))
+		}
+		if strings.Contains(FormatEffect(got), "part[") {
+			t.Fatalf("offset %d: unresolved copy address: %s", offset, FormatEffect(got))
+		}
+	}
+}
 
 // TestAggregateBufferCopyRecovery verifies whole RTBOF loads are reinterpreted
 // at their recorded width while partial copies remain unresolved.
@@ -65,8 +98,8 @@ func TestAggregateCopyThroughFarPointer(t *testing.T) {
 	}
 	previous := *effect.Dst.(*machine.Address)
 	previous.Addr.Disp = 0xffee
-	loaded, ok := (&machineConverter{ctx: ctx}).convertCopyAddress(&previous, 18)
-	if !ok || FormatExpr(loaded) != "*&lpord[neg(1)]" {
+	loaded := (&machineConverter{ctx: ctx}).convertCopyAddress(&previous, 18)
+	if FormatExpr(loaded) != "*&lpord[neg(1)]" {
 		t.Fatalf("previous ORDER = %s, want a one-element backward step", FormatExpr(loaded))
 	}
 	previous.Addr.Seg = machine.LoadVal(machine.MemoryAddress{Base: machine.FrameBaseVal(), Disp: lpord.BPOffset + 2, Width: 2})

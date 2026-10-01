@@ -43,7 +43,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
             }
             FSendPlrMsg(lppl->iPlayer, idm, lppl->id, lppl->id, lppl->iPlayer << 5 | iItem + 0x10, LphuldefFromId(lpshdef->hul.ihuldef)->hul.wtCargoMax, 0, 0,
                         0, 0);
-            if (lppl->fStarbase != 0 && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
+            if (lppl->fStarbase != 0 && (int16_t)rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > (int16_t)rglpshdefSB[lppl->iPlayer][iItem].hul.ihuldef) {
                 KillQueuedShips(lppl);
             }
             iWarp = IWarpMAFromLppl(lppl, &fTwoMAs);

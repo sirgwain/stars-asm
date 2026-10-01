@@ -263,6 +263,8 @@ type messageValueJSON struct {
 	Enum     string `json:"enum"`
 	CastType string `json:"cast_type"`
 	Get      string `json:"get"`
+	Win32    string `json:"win32"`
+	HWnd     bool   `json:"hwnd"`
 }
 
 type dependentEnumRuleJSON struct {
@@ -382,22 +384,36 @@ func parseMessagePayloadJSON(message, parameter string, cfg *messagePayloadJSON,
 // Win32 repacked it, the cracker function reading it.
 func parseMessagePartJSON(message, path string, cfg *messageValueJSON, sdb *SymbolDB, resolver *typeResolver) (MessagePart, error) {
 	typ, err := parseMessageValueJSON(message, path, cfg, sdb, resolver)
-	if err != nil || cfg == nil || cfg.Get == "" {
+	if err != nil || cfg == nil {
 		return MessagePart{Type: typ}, err
+	}
+	if (cfg.Get == "") != (cfg.Win32 == "") {
+		return MessagePart{}, fmt.Errorf("message %s %s must specify both or neither of get and win32", message, path)
+	}
+	if cfg.Get == "" {
+		if cfg.HWnd {
+			return MessagePart{}, fmt.Errorf("message %s %s: hwnd requires a get cracker", message, path)
+		}
+		return MessagePart{Type: typ}, nil
 	}
 	wparam := resolver.getNamedType("WPARAM")
 	lparam := resolver.getNamedType("LPARAM")
-	if wparam == nil || lparam == nil {
-		return MessagePart{}, fmt.Errorf("message %s %s cracker %s: WPARAM and LPARAM types not registered", message, path, cfg.Get)
+	hwnd := resolver.getNamedType("HWND")
+	if wparam == nil || lparam == nil || hwnd == nil {
+		return MessagePart{}, fmt.Errorf("message %s %s cracker %s: HWND, WPARAM and LPARAM types not registered", message, path, cfg.Get)
+	}
+	params := []FunctionVar{{Name: "wParam", Type: wparam}, {Name: "lParam", Type: lparam}}
+	if cfg.HWnd {
+		params = append([]FunctionVar{{Name: "hwnd", Type: hwnd}}, params...)
 	}
 	get := &Function{
 		Name:   cfg.Get,
 		Module: OverrideModule,
 		Ret:    typ,
-		Params: []FunctionVar{{Name: "wParam", Type: wparam}, {Name: "lParam", Type: lparam}},
+		Params: params,
 		Macro:  true,
 	}
-	return MessagePart{Type: typ, Get: get}, nil
+	return MessagePart{Type: typ, Get: get, Win32: cfg.Win32}, nil
 }
 
 // parseMessageValueJSON resolves an enum or cast type for one message value.

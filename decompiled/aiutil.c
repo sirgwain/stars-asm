@@ -1567,17 +1567,17 @@ void ValidateStarbaseHistory() {
         }
         if (game.turn >= 20) {
             iWrite = 0;
-            if (RawLoad16((uint8_t *)vlpbAiData + 0x2) < 0 || RawLoad16((uint8_t *)vlpbAiData + 0x2) > 64) {
+            if ((int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) < 0 || (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) > 64) {
                 RawStore16((uint8_t *)vlpbAiData + 0x2, 0);
             }
-            for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                if (RawLoad16(vlpbAiData + (i * 20 + 6)) < 0 || RawLoad16(vlpbAiData + (i * 20 + 6)) > 8) {
+            for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                if ((int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) < 0 || (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) > 8) {
                     RawStore16(vlpbAiData + (i * 20 + 6), 0);
                 }
                 lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
                 if (lppl != 0 && lppl->iPlayer == idPlayer) {
                     if (iWrite != i) {
-                        vlpbAiData[iWrite * 20 + 4] = vlpbAiData[i * 20 + 4];
+                        fmemmove(vlpbAiData + (iWrite * 20 + 4), vlpbAiData + (i * 20 + 4), 20);
                     }
                     iWrite++;
                 }
@@ -1588,7 +1588,7 @@ void ValidateStarbaseHistory() {
                 if (vrglpplAi[ipl] == 0)
                     break;
                 if (lppl->fStarbase != 0) {
-                    for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
+                    for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
                     }
                     if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2) && i < 64) {
                         RawStore16(vlpbAiData + (i * 20 + 4), lppl->id);
@@ -1599,14 +1599,14 @@ void ValidateStarbaseHistory() {
             }
             lppl = lpPlanets;
             lpplMac = lpPlanets + cPlanet;
-            for (; lppl < lpplMac && RawLoad16((uint8_t *)vlpbAiData + 0x2) < 64; lppl++) {
+            for (; lppl < lpplMac && (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) < 64; lppl++) {
                 if (lppl->iPlayer == idPlayer && lppl->fStarbase == 0 && lppl->rgwtMin[3] >= 80) {
                     l = 0;
                     for (i = 0; i < 3; i++) {
                         l += (int32_t)((uint32_t)((uint32_t)lppl->rgMinConc[i] * (uint32_t)lppl->rgMinConc[i]) * 4) + lppl->rgwtMin[i];
                     }
                     if (l >= 7000 && lppl->cMines >= 20 && lppl->cFactories >= 20) {
-                        for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
                             id = RawLoad16(vlpbAiData + (i * 20 + 4));
                             if (id == lppl->id)
                                 break;
@@ -1619,7 +1619,7 @@ void ValidateStarbaseHistory() {
                                     break;
                             }
                         }
-                        if (i >= RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
+                        if (i >= (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
                             RawStore16(vlpbAiData + (RawLoad16((uint8_t *)vlpbAiData + 0x2) * 20 + 4), lppl->id);
                             RawStore16(vlpbAiData + (RawLoad16((uint8_t *)vlpbAiData + 0x2) * 20 + 6), 0);
                             RawStore16((uint8_t *)vlpbAiData + 0x2, RawLoad16((uint8_t *)vlpbAiData + 0x2) + 1);
@@ -1632,17 +1632,17 @@ void ValidateStarbaseHistory() {
                 if (rglpfl[ifl] == 0)
                     break;
                 if (lpfl->iPlayer == idPlayer && FIsAiTransport(lpfl) != 0) {
-                    for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                        for (j = 0; j < RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                    for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                        for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
                         }
-                        if (j < RawLoad16(vlpbAiData + (i * 20 + 6)))
+                        if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
                             break;
                     }
                     if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
                         iBest = -1;
                         lBest = 10000000;
-                        for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            if (RawLoad16(vlpbAiData + (i * 20 + 6)) < 8) {
+                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+                            if ((int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) < 8) {
                                 pt = rgptPlan[RawLoad16(vlpbAiData + (i * 20 + 4))];
                                 dx = pt.x - lpfl->pt.x;
                                 dy = pt.y - lpfl->pt.y;
@@ -1662,15 +1662,15 @@ void ValidateStarbaseHistory() {
                     }
                 }
             }
-            for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
+            for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
                 cFr = RawLoad16(vlpbAiData + (i * 20 + 6));
                 if (cFr < 4) {
-                    for (j = 0; j < RawLoad16((uint8_t *)vlpbAiData + 0x2); j++) {
+                    for (j = 0; j < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); j++) {
                         cFr2 = RawLoad16(vlpbAiData + (j * 20 + 6));
                         if (cFr2 >= cFr + 2)
                             break;
                     }
-                    if (j < RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
+                    if (j < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
                         RawStore16(vlpbAiData + (j * 20 + 6), RawLoad16(vlpbAiData + (j * 20 + 6)) - 1);
                         t_scratch_m32_5 = RawLoad16(vlpbAiData + (j * 20 + RawLoad16(vlpbAiData + (j * 20 + 6)) * 2 + 8));
                         t_569b = RawLoad16(vlpbAiData + (i * 20 + 6));
@@ -2078,7 +2078,8 @@ void MarkPlanetsUnderAttack() {
             break;
         if (lpfl->iPlayer != idPlayer && lpfl->idPlanet != -1) {
             j = lpfl->iPlayer;
-            for (i = 0; i < 16 && (lpfl->rgcsh[i] <= 0 || rglpshdef[j][i].hul.ihuldef < ihuldefMiniBomber || rglpshdef[j][i].hul.ihuldef > ihuldefB52Bomber);
+            for (i = 0; i < 16 && (lpfl->rgcsh[i] <= 0 || (int16_t)rglpshdef[j][i].hul.ihuldef < ihuldefMiniBomber ||
+                                   (int16_t)rglpshdef[j][i].hul.ihuldef > ihuldefB52Bomber);
                  i++) {
             }
             if (i != 16) {
@@ -2367,7 +2368,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
     iOld = -1;
     for (i = 1; i <= 3; i++) {
         if (rgSB[i] >= 2 &&
-            (iOld == -1 || rgSB[i] > rgSB[iOld] || (rgSB[i] == rgSB[iOld] && rglpshdefSB[idPlayer][i].turn < rglpshdefSB[idPlayer][iOld].turn))) {
+            (iOld == -1 || (int16_t)rgSB[i] > rgSB[iOld] || (rgSB[i] == rgSB[iOld] && rglpshdefSB[idPlayer][i].turn < rglpshdefSB[idPlayer][iOld].turn))) {
             iOld = i;
         }
     }
@@ -2578,7 +2579,7 @@ void QueueAiStarbases(PROD *rgprod, int16_t ishdefSBLatest) {
             } else {
                 if (lppl->iPlayer != idPlayer || ((lppl->fStarbase != 0 && lppl->isb <= 9) || lppl->rgwtMin[3] < 80 || vlpbAiPlanet[lppl->id * 16 + 2] != 0))
                     continue;
-                for (i = 0; i < RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
+                for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
                 }
                 if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2))
                     continue;
@@ -2737,11 +2738,11 @@ int16_t FQueueAiTerraforming(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCo
     if (j != -1) {
         for (i = 0; i < cProdGlob; i++) {
             if (pProdGlob[i].grobj == grobjPlanet && pProdGlob[i].iItem == mdIdleTerraform && pProdGlob[i].cItem >= 1) {
-                AddItemToQueue(pProdGlob[i].iItem, 4 >= pProdGlob[i].cItem ? pProdGlob[i].cItem : 4, grobjPlanet, 1);
+                AddItemToQueue(pProdGlob[i].iItem, 4 >= (int32_t)pProdGlob[i].cItem ? pProdGlob[i].cItem : 4, grobjPlanet, 1);
                 pProdGlob[i].cItem = 0;
                 GetProductionCosts(lppl, pProdGlob + i, rgItemCost, idPlayer, 1);
                 for (j = 0; j < 4; j++) {
-                    rgResCost[j] += (uint32_t)(rgItemCost[j] * (4 >= pProdGlob[i].cItem ? (int16_t)pProdGlob[i].cItem : 4));
+                    rgResCost[j] += (uint32_t)(rgItemCost[j] * (4 >= (int32_t)pProdGlob[i].cItem ? (int16_t)pProdGlob[i].cItem : 4));
                 }
                 return 1;
             }
@@ -2789,7 +2790,7 @@ int16_t FQueueAiDefenses(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCost) 
     int16_t j;
     PROD   *lpprod;
 
-    if (lppl->rgwtMin[3] < 1600 || (int32_t)(lppl->rgwtMin[3] / 80) <= lppl->cDefenses) {
+    if (lppl->rgwtMin[3] < 1600 || (int32_t)(lppl->rgwtMin[3] / 80) <= (int32_t)lppl->cDefenses) {
         return 0;
     }
     i = 0;

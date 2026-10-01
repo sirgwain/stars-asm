@@ -745,7 +745,7 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
         } else if (isalpha((int16_t)(int8_t)*pszFormat) != 0) {
             fPopped = isupper((int16_t)(int8_t)*pszFormat);
             iBit = fPopped == 0 ? (int16_t)(int8_t)*pszFormat - 97 : (int16_t)(int8_t)*pszFormat - 65;
-            if (iBit >= 0) {
+            if ((int16_t)iBit >= 0) {
                 for (i = iTile; i < ctile && rgtile[i].id != iBit; i++) {
                 }
                 if (i != ctile) {

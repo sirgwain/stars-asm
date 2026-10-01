@@ -29,7 +29,7 @@ int16_t FDupPlanet(PLANET *lppl, PLANET *ppl) {
     }
     if (ppl->lpplprod == 0) {
         ppl->lpplprod = (PLPROD *)LpplAlloc(4, lppl->lpplprod->iprodMax, htOrd);
-    } else if (ppl->lpplprod->iprodMax < lppl->lpplprod->iprodMac) {
+    } else if ((int16_t)ppl->lpplprod->iprodMax < lppl->lpplprod->iprodMac) {
         ppl->lpplprod = (PLPROD *)LpplReAlloc((PL *)ppl->lpplprod, lppl->lpplprod->iprodMax);
     }
     fmemcpy(ppl->lpplprod->rgprod, lppl->lpplprod->rgprod, lppl->lpplprod->iprodMac * 4);
@@ -148,7 +148,7 @@ int16_t FLookupPlanet(int16_t iPlanet, PLANET *ppl) {
                     lpPl->lpplprod = NULL;
                     goto FinishCopy;
                 }
-                if (lpPl->lpplprod->iprodMax < ppl->lpplprod->iprodMac) {
+                if ((int16_t)lpPl->lpplprod->iprodMax < ppl->lpplprod->iprodMac) {
                     lpPl->lpplprod = (PLPROD *)LpplReAlloc((PL *)lpPl->lpplprod, ppl->lpplprod->iprodMac + 2);
                 }
                 fmemcpy(lpPl->lpplprod->rgprod, ppl->lpplprod->rgprod, ppl->lpplprod->iprodMac * 4);
@@ -732,7 +732,7 @@ int16_t FDupFleet(FLEET *lpfl, FLEET *pfl) {
     pfl->lpplord = lpplordT;
     if (pfl->lpplord == 0) {
         pfl->lpplord = (PLORD *)LpplAlloc(18, lpfl->lpplord->iordMax, htOrd);
-    } else if (pfl->lpplord->iordMax < lpfl->lpplord->iordMac) {
+    } else if ((int16_t)pfl->lpplord->iordMax < lpfl->lpplord->iordMac) {
         pfl->lpplord = (PLORD *)LpplReAlloc((PL *)pfl->lpplord, lpfl->lpplord->iordMax);
     }
     fmemcpy(pfl->lpplord->rgord, lpfl->lpplord->rgord, lpfl->lpplord->iordMac * 18);
@@ -1280,7 +1280,7 @@ int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall) {
             c = CchGetString(ids, sz);
             return c;
         }
-        if (iSpeed >= LOWORD((int32_t)dbl)) {
+        if (iSpeed >= (int16_t)LOWORD((int32_t)dbl)) {
             iSpeed = 1;
         } else {
             iSpeed = (int16_t)(LOWORD((int32_t)dbl) + iSpeed - 1) / iSpeed;
@@ -1626,7 +1626,7 @@ int16_t GetPlanetScannerRange(PLANET *lppl, int16_t *pDeep) {
             if (pDeep != 0) {
                 *pDeep = 0;
             }
-        } else if (pDeep != 0 && lppl->fStarbase != 0 && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef >= ihuldefUltraStation) {
+        } else if (pDeep != 0 && lppl->fStarbase != 0 && (int16_t)rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef >= ihuldefUltraStation) {
             *pDeep = dRange / 2;
         }
     } else {
@@ -1670,7 +1670,7 @@ int16_t GetCachedFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *p
             if (dT != 2047 && dT > dRange) {
                 dRange = dT;
             }
-            if (rglpshdef[iPlr][i].dScanRange2 > dPlanRange) {
+            if ((int16_t)rglpshdef[iPlr][i].dScanRange2 > dPlanRange) {
                 dPlanRange = rglpshdef[iPlr][i].dScanRange2;
             }
             if (rglpshdef[iPlr][i].pctDetect < pctDetect) {
@@ -2572,7 +2572,7 @@ int16_t FCanBuildShdef(SHDEF *lpshdef, int16_t iplr) {
     PART    part;
 
     iplrSav = idPlayer;
-    if (lpshdef->hul.ihuldef >= ihuldefOrbitalFort) {
+    if ((int16_t)lpshdef->hul.ihuldef >= ihuldefOrbitalFort) {
         part.hs.grhst = hstSBHull;
         part.hs.iItem = lpshdef->hul.ihuldef - 32;
     } else {
