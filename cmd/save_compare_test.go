@@ -55,7 +55,7 @@ func TestDescribePlanetDifference(t *testing.T) {
 	}}
 	right := savefile.Record{Offset: left.Offset, Type: left.Type, Data: bytes.Clone(left.Data)}
 	right.Data[33] = 0x66
-	diffs := savefile.CompareRecords([]savefile.Record{left}, []savefile.Record{right})
+	diffs := savefile.CompareRecords([]savefile.Record{left}, []savefile.Record{right}, savefile.AIHistoryUnknown)
 	var out strings.Builder
 	formatRecordDifference(&out, diffs[0], false)
 	got := out.String()
@@ -71,10 +71,6 @@ func TestDescribePlanetDifference(t *testing.T) {
 
 // TestDescribeAiDataDifference identifies Cybertron packet target changes by planet.
 func TestDescribeAiDataDifference(t *testing.T) {
-	game := savefile.Record{Type: savefile.RtGame, Data: make([]byte, 64)}
-	binary.LittleEndian.PutUint16(game.Data[10:], 128)
-	player := savefile.Record{Type: savefile.RtPlr, Data: make([]byte, 8)}
-	binary.LittleEndian.PutUint16(player.Data[6:], 0x200|4<<13)
 	left := savefile.Record{Type: savefile.RtAiData, Data: make([]byte, 258)}
 	binary.LittleEndian.PutUint16(left.Data, 258)
 	for _, planet := range []int{84, 88, 94, 102} {
@@ -82,7 +78,7 @@ func TestDescribeAiDataDifference(t *testing.T) {
 	}
 	right := savefile.Record{Type: savefile.RtAiData, Data: bytes.Clone(left.Data)}
 	binary.LittleEndian.PutUint16(right.Data[2+84*2:], 0)
-	diffs := savefile.CompareRecords([]savefile.Record{game, player, left}, []savefile.Record{game, player, right})
+	diffs := savefile.CompareRecords([]savefile.Record{left}, []savefile.Record{right}, savefile.AIHistoryCyber)
 	var out strings.Builder
 	formatRecordDifference(&out, diffs[0], false)
 	got := out.String()
@@ -123,7 +119,7 @@ func TestComparisonRecords(t *testing.T) {
 	if bytes.Equal(left[2].Data, changed[2].Data) {
 		t.Fatal("coordinate change was hidden")
 	}
-	differences := savefile.CompareRecords(left, changed)
+	differences := savefile.CompareRecords(left, changed, savefile.AIHistoryUnknown)
 	if len(differences) != 1 || differences[0].Label != "STARPACK coordinates" || len(differences[0].Fields) == 0 || differences[0].Fields[0].Path != "star 0 x" {
 		t.Fatalf("missing decoded XY coordinate difference: %+v", differences)
 	}

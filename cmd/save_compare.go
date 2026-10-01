@@ -2,9 +2,12 @@ package cmd
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/savefile"
@@ -22,6 +25,7 @@ func newSaveCompareCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			tables := savefile.DefaultTables()
 			var sides [2][]savefile.Record
+			var layouts [2]savefile.AIHistoryLayout
 			for i, path := range args {
 				b, err := os.ReadFile(path)
 				if err != nil {
@@ -31,16 +35,28 @@ func newSaveCompareCmd() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("%s: %w", path, err)
 				}
-			}
-			differences := savefile.CompareRecords(sides[0], sides[1])
-			if len(differences) != 0 {
-				var out strings.Builder
-				for _, diff := range differences {
-					formatRecordDifference(&out, diff, showBytes)
+				if layouts[i], err = aiHistoryLayout(path, sides[i], tables); err != nil {
+					return fmt.Errorf("%s: %w", path, err)
 				}
+			}
+			if layouts[0] != layouts[1] {
+				return fmt.Errorf("AI history owners differ: %s uses %s layout, %s uses %s", args[0], layouts[0], args[1], layouts[1])
+			}
+			differences := savefile.CompareRecords(sides[0], sides[1], layouts[0])
+			if len(differences) == 0 {
+				fmt.Fprintln(cmd.OutOrStdout(), "MATCH (decrypted; game IDs and encryption salts excluded)")
+				return nil
+			}
+			var out strings.Builder
+			benign := true
+			for _, diff := range differences {
+				formatRecordDifference(&out, diff, showBytes)
+				benign = benign && diff.Benign
+			}
+			if !benign {
 				return fmt.Errorf("%s", strings.TrimSuffix(out.String(), "\n"))
 			}
-			fmt.Fprintln(cmd.OutOrStdout(), "MATCH (decrypted; game IDs and encryption salts excluded)")
+			fmt.Fprintf(cmd.OutOrStdout(), "MATCH with warnings: only unused storage differs (decrypted; game IDs and encryption salts excluded)\n%s", out.String())
 			return nil
 		},
 	}
@@ -73,7 +89,9 @@ func formatRecordDifference(out *strings.Builder, diff savefile.RecordDifference
 	for _, record := range diff.Right {
 		rightSize += len(record.Data)
 	}
-	if len(diff.Fields) == 0 {
+	if diff.Benign {
+		out.WriteString(" — only unused storage differs")
+	} else if len(diff.Fields) == 0 {
 		if leftSize == rightSize {
 			fmt.Fprintf(out, " — payload changed (%d bytes)", leftSize)
 		} else {
@@ -91,6 +109,9 @@ func formatRecordDifference(out *strings.Builder, diff savefile.RecordDifference
 			fmt.Fprintf(out, "  %s: %s → %s\n", field.Path, field.Before, field.After)
 		}
 	}
+	for _, field := range diff.Unused {
+		fmt.Fprintf(out, "  unused %s: %s → %s\n", field.Path, field.Before, field.After)
+	}
 	if !showBytes {
 		return
 	}
@@ -107,6 +128,52 @@ func formatRecordDifference(out *strings.Builder, diff savefile.RecordDifference
 		}
 		fmt.Fprintf(out, "  left: %x\n  right: %x\n", a.Data, b.Data)
 	}
+}
+
+// historyExt matches player history extensions (.h1-.h16).
+var historyExt = regexp.MustCompile(`(?i)^\.h([1-9]|1[0-6])$`)
+
+// aiHistoryLayout identifies a history file's rtAiData layout from the owning
+// player's companion turn file (.hN → .mN), since histories omit PLAYER records.
+// Other files and histories without a companion turn file are left undecoded.
+func aiHistoryLayout(path string, recs []savefile.Record, tables savefile.Tables) (savefile.AIHistoryLayout, error) {
+	ext := filepath.Ext(path)
+	if !historyExt.MatchString(ext) {
+		return savefile.AIHistoryUnknown, nil
+	}
+	m := "m"
+	if ext[1] == 'H' {
+		m = "M"
+	}
+	turnPath := strings.TrimSuffix(path, ext) + "." + m + ext[2:]
+	b, err := os.ReadFile(turnPath)
+	if errors.Is(err, fs.ErrNotExist) {
+		return savefile.AIHistoryUnknown, nil
+	}
+	if err != nil {
+		return savefile.AIHistoryUnknown, err
+	}
+	bof, err := savefile.ParseBOF(recs[0].Data)
+	if err != nil {
+		return savefile.AIHistoryUnknown, err
+	}
+	turn, err := savefile.ReadRecords(b, tables)
+	if err != nil {
+		return savefile.AIHistoryUnknown, fmt.Errorf("%s: %w", turnPath, err)
+	}
+	for _, r := range turn {
+		if r.Type != savefile.RtPlr {
+			continue
+		}
+		player, err := savefile.ParsePlayerHeader(r.Data)
+		if err != nil {
+			return savefile.AIHistoryUnknown, fmt.Errorf("%s: %w", turnPath, err)
+		}
+		if int16(player.IPlayer) == bof.IPlayer {
+			return savefile.AIHistoryLayoutFor(player), nil
+		}
+	}
+	return savefile.AIHistoryUnknown, fmt.Errorf("%s has no PLAYER record for player %d", turnPath, bof.IPlayer+1)
 }
 
 // comparisonRecords decrypts saves and preserves the raw star-coordinate section in XY files.

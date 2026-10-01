@@ -259,14 +259,18 @@ def compare(args):
                     proc = subprocess.run([str(cli), "save", "compare", str(files[0][filename]), str(files[1][filename])],
                                           cwd=ROOT, text=True, capture_output=True)
                     result["match"] = proc.returncode == 0
+                    if result["match"] and proc.stdout.startswith("MATCH with warnings"):
+                        result["warning"] = True
                     result["detail"] = proc.stdout + proc.stderr
                 results.append(result)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(results, indent=2) + "\n")
     failures = sum(not r.get("match", False) and "skipped" not in r for r in results)
     matches = sum(r.get("match", False) for r in results)
+    warnings = sum(r.get("warning", False) for r in results)
     skipped = sum("skipped" in r for r in results)
-    print(f"{matches} matches; {failures} differences/errors; {skipped} reference inputs skipped. Report: {args.report}")
+    print(f"{matches} matches ({warnings} with warnings); {failures} differences/errors; "
+          f"{skipped} reference inputs skipped. Report: {args.report}")
     return bool(failures)
 
 

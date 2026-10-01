@@ -28,37 +28,59 @@ func TestCyberInfoDataDecodesBits(t *testing.T) {
 
 // TestCompareRecordsReassemblesAIHistory checks changes across rtAiData chunk boundaries.
 func TestCompareRecordsReassemblesAIHistory(t *testing.T) {
-	game := Record{Type: RtGame, Data: make([]byte, 64)}
-	binary.LittleEndian.PutUint16(game.Data[10:], 3)
-	player := Record{Type: RtPlr, Data: make([]byte, 8)}
-	binary.LittleEndian.PutUint16(player.Data[6:], 0x8200)
-	left := []Record{game, player,
+	left := []Record{
 		{Type: RtAiData, Data: []byte{8, 0, 0, 0, 0}},
 		{Type: RtAiData, Data: []byte{0, 0, 0}},
 	}
-	right := []Record{game, player,
+	right := []Record{
 		{Type: RtAiData, Data: []byte{8, 0, 0, 0, 0x60}},
 		{Type: RtAiData, Data: []byte{0, 0, 0}},
 	}
-	diffs := CompareRecords(left, right)
-	if len(diffs) != 1 || diffs[0].Label != "Cybertron history" || len(diffs[0].Fields) != 1 ||
+	diffs := CompareRecords(left, right, AIHistoryCyber)
+	if len(diffs) != 1 || diffs[0].Label != "Cybertron history (CYBERINFO)" || len(diffs[0].Fields) != 1 || diffs[0].Benign ||
 		!strings.Contains(diffs[0].Fields[0].Path, "planet 1 iPktTarget") || diffs[0].Fields[0].After != "3" {
 		t.Fatalf("unexpected AI history difference: %+v", diffs)
 	}
 }
 
-// TestCompareRecordsInfersStandaloneHistory checks the guarded .hN layout fallback.
-func TestCompareRecordsInfersStandaloneHistory(t *testing.T) {
-	left := Record{Type: RtAiData, Data: []byte{6, 0, 0, 0, 0x60, 0}}
-	right := Record{Type: RtAiData, Data: []byte{6, 0, 0, 0, 0, 0}}
-	diffs := CompareRecords([]Record{left}, []Record{right})
-	if len(diffs) != 1 || diffs[0].Label != "CYBERINFO-shaped AI history (inferred layout)" ||
-		len(diffs[0].Fields) != 1 || diffs[0].Fields[0].Path != "planet 1 iPktTarget" {
-		t.Fatalf("unexpected standalone history difference: %+v", diffs)
+// aiHistFixture encodes an AIHIST with one starbase per entry of starbases.
+func aiHistFixture(starbases ...AIStarbase) []byte {
+	data := make([]byte, 4+20*len(starbases))
+	binary.LittleEndian.PutUint16(data, uint16(len(data)))
+	binary.LittleEndian.PutUint16(data[2:], uint16(len(starbases)))
+	for i, sb := range starbases {
+		entry := data[4+i*20:]
+		binary.LittleEndian.PutUint16(entry, uint16(sb.IDPlanet))
+		binary.LittleEndian.PutUint16(entry[2:], uint16(sb.CFreighter))
+		for j, id := range sb.RGFlid {
+			binary.LittleEndian.PutUint16(entry[4+j*2:], uint16(id))
+		}
 	}
-	left.Data[5] = 1
-	diffs = CompareRecords([]Record{left}, []Record{right})
-	if len(diffs) != 1 || diffs[0].Label != "" || len(diffs[0].Fields) != 0 {
-		t.Fatalf("guessed an unsupported AI layout: %+v", diffs)
+	return data
+}
+
+// TestCompareRecordsSeparatesUnusedFreighterSlots checks that AIHIST slots past
+// cFreighter on both sides are benign while active slots and counts are not.
+func TestCompareRecordsSeparatesUnusedFreighterSlots(t *testing.T) {
+	base := AIStarbase{IDPlanet: 82, CFreighter: 2, RGFlid: [8]int16{24, 25, 0x210, 0x218}}
+	stale := base
+	stale.RGFlid[2], stale.RGFlid[3] = 0x201, 0x203
+	left := []Record{{Type: RtAiData, Data: aiHistFixture(base)}}
+	diffs := CompareRecords(left, []Record{{Type: RtAiData, Data: aiHistFixture(stale)}}, AIHistoryStarbase)
+	if len(diffs) != 1 || !diffs[0].Benign || len(diffs[0].Fields) != 0 || len(diffs[0].Unused) != 2 ||
+		diffs[0].Unused[0] != (FieldChange{"starbase 0 (planet 82) rgflid[2]", "0x0210", "0x0201"}) {
+		t.Fatalf("unused slots not separated: %+v", diffs)
+	}
+	grown := stale
+	grown.CFreighter = 3
+	diffs = CompareRecords(left, []Record{{Type: RtAiData, Data: aiHistFixture(grown)}}, AIHistoryStarbase)
+	if len(diffs) != 1 || diffs[0].Benign || len(diffs[0].Fields) != 2 || len(diffs[0].Unused) != 1 ||
+		diffs[0].Fields[1] != (FieldChange{"starbase 0 (planet 82) rgflid[2]", "528", "513"}) {
+		t.Fatalf("newly active slot treated as unused: %+v", diffs)
+	}
+	diffs = CompareRecords(left, []Record{{Type: RtAiData, Data: aiHistFixture(base, base)}}, AIHistoryStarbase)
+	if len(diffs) != 1 || diffs[0].Benign || len(diffs[0].Fields) != 2 ||
+		diffs[0].Fields[1] != (FieldChange{"starbase 1", "absent", "planet 82 freighters [24 25]"}) {
+		t.Fatalf("added starbase not reported: %+v", diffs)
 	}
 }

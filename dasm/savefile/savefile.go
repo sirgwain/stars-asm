@@ -286,6 +286,91 @@ func ParseCyberInfoData(data []byte, planetCount int) (CyberInfoData, error) {
 	return result, nil
 }
 
+// AIStarbase matches AISTARBASE in structs.h. Only RGFlid[:CFreighter] is live.
+type AIStarbase struct {
+	IDPlanet   int16
+	CFreighter int16
+	RGFlid     [8]int16
+}
+
+// String summarizes the planet and its active freighter fleet IDs.
+func (sb AIStarbase) String() string {
+	return fmt.Sprintf("planet %d freighters %v", sb.IDPlanet, sb.RGFlid[:sb.CFreighter])
+}
+
+// AIHist is the written prefix of AIHIST in structs.h: its header and cStarbase entries.
+type AIHist struct {
+	CbAiHist  uint16
+	CStarbase int16
+	Starbases []AIStarbase
+}
+
+// ParseAIHist decodes a starbase AI history and applies ValidateStarbaseHistory's bounds.
+func ParseAIHist(data []byte) (AIHist, error) {
+	if len(data) < 4 {
+		return AIHist{}, fmt.Errorf("AIHIST is %d bytes, want at least 4", len(data))
+	}
+	hist := AIHist{CbAiHist: binary.LittleEndian.Uint16(data), CStarbase: int16(binary.LittleEndian.Uint16(data[2:]))}
+	if hist.CStarbase < 0 || hist.CStarbase > 64 {
+		return AIHist{}, fmt.Errorf("AIHIST cStarbase %d is outside 0..64", hist.CStarbase)
+	}
+	want := 4 + 20*int(hist.CStarbase)
+	if int(hist.CbAiHist) != want || len(data) != want {
+		return AIHist{}, fmt.Errorf("AIHIST is %d bytes with cbAiHist %d, want %d for %d starbases", len(data), hist.CbAiHist, want, hist.CStarbase)
+	}
+	hist.Starbases = make([]AIStarbase, hist.CStarbase)
+	for i := range hist.Starbases {
+		entry := data[4+i*20:]
+		sb := AIStarbase{IDPlanet: int16(binary.LittleEndian.Uint16(entry)), CFreighter: int16(binary.LittleEndian.Uint16(entry[2:]))}
+		if sb.CFreighter < 0 || sb.CFreighter > 8 {
+			return AIHist{}, fmt.Errorf("AIHIST starbase %d cFreighter %d is outside 0..8", i, sb.CFreighter)
+		}
+		for j := range sb.RGFlid {
+			sb.RGFlid[j] = int16(binary.LittleEndian.Uint16(entry[4+j*2:]))
+		}
+		hist.Starbases[i] = sb
+	}
+	return hist, nil
+}
+
+// AIHistoryLayout identifies the structure of a player's rtAiData payload.
+type AIHistoryLayout int
+
+const (
+	// AIHistoryUnknown leaves rtAiData undecoded.
+	AIHistoryUnknown AIHistoryLayout = iota
+	// AIHistoryStarbase is AIHIST, maintained by ValidateStarbaseHistory.
+	AIHistoryStarbase
+	// AIHistoryCyber is the size word plus one CYBERINFO per planet.
+	AIHistoryCyber
+)
+
+// String names the layout's structure.
+func (layout AIHistoryLayout) String() string {
+	switch layout {
+	case AIHistoryStarbase:
+		return "AIHIST"
+	case AIHistoryCyber:
+		return "CYBERINFO"
+	}
+	return "unknown"
+}
+
+// AIHistoryLayoutFor returns the rtAiData layout written by a player's AI, following
+// DoAiTurn: Cybertron (4) uses CYBERINFO; Robotoid, Turindrone, Automitron, and
+// Rototill (0-3) run ValidateStarbaseHistory; other players write no AI data.
+func AIHistoryLayoutFor(player PlayerHeader) AIHistoryLayout {
+	switch {
+	case !player.AI:
+		return AIHistoryUnknown
+	case player.AIID == 4:
+		return AIHistoryCyber
+	case player.AIID <= 3:
+		return AIHistoryStarbase
+	}
+	return AIHistoryUnknown
+}
+
 // FieldChange is one decoded value change within a record or AI history.
 type FieldChange struct {
 	Path   string
@@ -299,11 +384,16 @@ type RecordDifference struct {
 	Left   []Record
 	Right  []Record
 	Fields []FieldChange
+	// Unused holds changes in storage the game never reads, such as inactive AIHIST freighter slots.
+	Unused []FieldChange
+	// Benign is set when every difference is in Unused.
+	Benign bool
 	Label  string
 }
 
-// CompareRecords compares every record and groups consecutive rtAiData chunks.
-func CompareRecords(left, right []Record) []RecordDifference {
+// CompareRecords compares every record and groups consecutive rtAiData chunks,
+// decoding them with the history owner's layout.
+func CompareRecords(left, right []Record, layout AIHistoryLayout) []RecordDifference {
 	var differences []RecordDifference
 	for i, j := 0, 0; i < len(left) || j < len(right); {
 		if i >= len(left) || j >= len(right) {
@@ -328,7 +418,8 @@ func CompareRecords(left, right []Record) []RecordDifference {
 		}
 		diff := RecordDifference{Index: startI, Left: a, Right: b}
 		if a[0].Type == RtAiData && b[0].Type == RtAiData {
-			diff.Fields, diff.Label = cyberInfoChanges(a, b, left, right)
+			diff.Fields, diff.Unused, diff.Label = aiDataChanges(recordGroupData(a), recordGroupData(b), layout)
+			diff.Benign = len(diff.Fields) == 0 && len(diff.Unused) != 0
 		} else if a[0].Type == RtGame && b[0].Type == RtGame {
 			diff.Fields = gameChanges(a[0].Data, b[0].Data)
 		} else if a[0].Type == RtBOF && b[0].Type == RtBOF {
@@ -464,93 +555,117 @@ func sameRecordGroup(a, b []Record) bool {
 	return true
 }
 
-// cyberInfoChanges reports named CYBERINFO fields for confirmed or inferred layouts.
-func cyberInfoChanges(a, b, left, right []Record) ([]FieldChange, string) {
-	var count int
-	for _, r := range left {
-		if r.Type == RtGame {
-			game, err := ParseGame(r.Data)
-			if err == nil {
-				count = int(game.CPlanMax)
+// recordGroupData concatenates the payloads of consecutive record chunks.
+func recordGroupData(group []Record) []byte {
+	var data []byte
+	for _, r := range group {
+		data = append(data, r.Data...)
+	}
+	return data
+}
+
+// aiDataChanges decodes a reassembled rtAiData payload with the owning AI's layout.
+func aiDataChanges(a, b []byte, layout AIHistoryLayout) (fields, unused []FieldChange, label string) {
+	var err error
+	switch layout {
+	case AIHistoryStarbase:
+		label = "starbase AI history (AIHIST)"
+		fields, unused, err = aiHistChanges(a, b)
+	case AIHistoryCyber:
+		label = "Cybertron history (CYBERINFO)"
+		fields, unused, err = cyberInfoChanges(a, b)
+	default:
+		return nil, nil, "AI history (layout unknown)"
+	}
+	if err != nil {
+		return nil, nil, fmt.Sprintf("%s did not decode: %v", label, err)
+	}
+	return fields, unused, label
+}
+
+// aiHistChanges compares AIHIST entries; freighter slots inactive on both sides are unused.
+func aiHistChanges(a, b []byte) (fields, unused []FieldChange, err error) {
+	x, err := ParseAIHist(a)
+	if err != nil {
+		return nil, nil, fmt.Errorf("left: %w", err)
+	}
+	y, err := ParseAIHist(b)
+	if err != nil {
+		return nil, nil, fmt.Errorf("right: %w", err)
+	}
+	if x.CStarbase != y.CStarbase {
+		fields = append(fields, FieldChange{"cStarbase", fmt.Sprint(x.CStarbase), fmt.Sprint(y.CStarbase)})
+	}
+	n := min(len(x.Starbases), len(y.Starbases))
+	for i := 0; i < n; i++ {
+		p, q := x.Starbases[i], y.Starbases[i]
+		prefix := fmt.Sprintf("starbase %d (planet %d) ", i, p.IDPlanet)
+		if p.IDPlanet != q.IDPlanet {
+			prefix = fmt.Sprintf("starbase %d ", i)
+			fields = append(fields, FieldChange{prefix + "idPlanet", fmt.Sprint(p.IDPlanet), fmt.Sprint(q.IDPlanet)})
+		}
+		if p.CFreighter != q.CFreighter {
+			fields = append(fields, FieldChange{prefix + "cFreighter", fmt.Sprint(p.CFreighter), fmt.Sprint(q.CFreighter)})
+		}
+		active := int(max(p.CFreighter, q.CFreighter))
+		for j := range p.RGFlid {
+			if p.RGFlid[j] == q.RGFlid[j] {
+				continue
 			}
-			break
-		}
-	}
-	var aiID uint8
-	confirmed := false
-	for _, r := range left {
-		if r.Type == RtPlr {
-			player, err := ParsePlayerHeader(r.Data)
-			if err == nil && player.AI {
-				aiID, confirmed = player.AIID, true
+			path := fmt.Sprintf("%srgflid[%d]", prefix, j)
+			if j < active {
+				fields = append(fields, FieldChange{path, fmt.Sprint(p.RGFlid[j]), fmt.Sprint(q.RGFlid[j])})
+			} else {
+				unused = append(unused, FieldChange{path, fmt.Sprintf("0x%04x", uint16(p.RGFlid[j])), fmt.Sprintf("0x%04x", uint16(q.RGFlid[j]))})
 			}
 		}
 	}
-	if confirmed && aiID != 4 {
-		return nil, ""
+	for i := n; i < len(x.Starbases); i++ {
+		fields = append(fields, FieldChange{fmt.Sprintf("starbase %d", i), x.Starbases[i].String(), "absent"})
 	}
-	for _, r := range right {
-		if r.Type == RtPlr {
-			player, err := ParsePlayerHeader(r.Data)
-			if err == nil && player.AI && player.AIID != 4 {
-				return nil, ""
-			}
-		}
+	for i := n; i < len(y.Starbases); i++ {
+		fields = append(fields, FieldChange{fmt.Sprintf("starbase %d", i), "absent", y.Starbases[i].String()})
 	}
-	var ab, bb []byte
-	for _, r := range a {
-		ab = append(ab, r.Data...)
+	return fields, unused, nil
+}
+
+// cyberInfoChanges compares CYBERINFO per planet; the reserved high byte is unused.
+func cyberInfoChanges(a, b []byte) (fields, unused []FieldChange, err error) {
+	if len(a) != len(b) {
+		return nil, nil, fmt.Errorf("history is %d → %d bytes", len(a), len(b))
 	}
-	for _, r := range b {
-		bb = append(bb, r.Data...)
+	count := (len(a) - 2) / 2
+	x, err := ParseCyberInfoData(a, count)
+	if err != nil {
+		return nil, nil, fmt.Errorf("left: %w", err)
 	}
-	if count == 0 && len(ab) >= 4 && len(ab)%2 == 0 {
-		count = (len(ab) - 2) / 2
+	y, err := ParseCyberInfoData(b, count)
+	if err != nil {
+		return nil, nil, fmt.Errorf("right: %w", err)
 	}
-	label := "Cybertron history"
-	if !confirmed {
-		// Standalone .hN files omit GAME and PLAYER. Interpret the history only
-		// when its size word and every CYBERINFO reserved byte fit the layout.
-		if len(ab) != len(bb) || len(ab) < 4 || len(ab)%2 != 0 ||
-			int(binary.LittleEndian.Uint16(ab)) != len(ab) || int(binary.LittleEndian.Uint16(bb)) != len(bb) {
-			return nil, ""
-		}
-		for i := 3; i < len(ab); i += 2 {
-			if ab[i] != 0 || bb[i] != 0 {
-				return nil, ""
-			}
-		}
-		label = "CYBERINFO-shaped AI history (inferred layout)"
-	}
-	x, errX := ParseCyberInfoData(ab, count)
-	y, errY := ParseCyberInfoData(bb, count)
-	if errX != nil || errY != nil {
-		return nil, ""
-	}
-	var changes []FieldChange
 	for i := range x.Planets {
 		p, q := x.Planets[i], y.Planets[i]
 		prefix := fmt.Sprintf("planet %d ", i)
 		if p.ILstPktDir != q.ILstPktDir {
-			changes = append(changes, FieldChange{prefix + "iLstPktDir", fmt.Sprint(p.ILstPktDir), fmt.Sprint(q.ILstPktDir)})
+			fields = append(fields, FieldChange{prefix + "iLstPktDir", fmt.Sprint(p.ILstPktDir), fmt.Sprint(q.ILstPktDir)})
 		}
 		if p.FBltColony != q.FBltColony {
-			changes = append(changes, FieldChange{prefix + "fBltColony", fmt.Sprint(p.FBltColony), fmt.Sprint(q.FBltColony)})
+			fields = append(fields, FieldChange{prefix + "fBltColony", fmt.Sprint(p.FBltColony), fmt.Sprint(q.FBltColony)})
 		}
 		if p.FLaunchedPkt != q.FLaunchedPkt {
-			changes = append(changes, FieldChange{prefix + "fLaunchedPkt", fmt.Sprint(p.FLaunchedPkt), fmt.Sprint(q.FLaunchedPkt)})
+			fields = append(fields, FieldChange{prefix + "fLaunchedPkt", fmt.Sprint(p.FLaunchedPkt), fmt.Sprint(q.FLaunchedPkt)})
 		}
 		if p.IPktTarget != q.IPktTarget {
-			changes = append(changes, FieldChange{prefix + "iPktTarget", fmt.Sprint(p.IPktTarget), fmt.Sprint(q.IPktTarget)})
+			fields = append(fields, FieldChange{prefix + "iPktTarget", fmt.Sprint(p.IPktTarget), fmt.Sprint(q.IPktTarget)})
 		}
 		if p.FNeedScanPkt != q.FNeedScanPkt {
-			changes = append(changes, FieldChange{prefix + "fNeedScanPkt", fmt.Sprint(p.FNeedScanPkt), fmt.Sprint(q.FNeedScanPkt)})
+			fields = append(fields, FieldChange{prefix + "fNeedScanPkt", fmt.Sprint(p.FNeedScanPkt), fmt.Sprint(q.FNeedScanPkt)})
 		}
 		if p.Unused != q.Unused {
-			changes = append(changes, FieldChange{prefix + "unused", fmt.Sprintf("0x%02x", p.Unused), fmt.Sprintf("0x%02x", q.Unused)})
+			unused = append(unused, FieldChange{prefix + "unused", fmt.Sprintf("0x%02x", p.Unused), fmt.Sprintf("0x%02x", q.Unused)})
 		}
 	}
-	return changes, label
+	return fields, unused, nil
 }
 
 // planetTailChanges identifies the documented routing and starbase tail words.

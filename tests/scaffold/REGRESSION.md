@@ -189,6 +189,17 @@ and simulation state. It handles the `.xy` file's raw packed star coordinates
 separately from its encrypted `GAME` record. A mismatch reports the first
 differing record with its type, file offsets, sizes, and decrypted bytes.
 
+AI history (`rtAiData` in `.hN`) is decoded using the owning player's AI,
+read from the companion `.mN` beside the history. Histories omit PLAYER records.
+Cybertron histories decode as `CYBERINFO`; Robotoid, Turindrone, Automitron,
+and Rototill histories decode as `AIHIST`. Without a companion turn file, the
+history is reported only as a changed payload. Some storage is never read:
+`AIHIST` freighter slots at or past `cFreighter` on both sides (stale heap data
+moved by `ValidateStarbaseHistory`) and the reserved `CYBERINFO` byte. Changes
+there are listed as `unused ...`. If they are a file's only differences, `save compare`
+exits 0 with `MATCH with warnings`. The regression report then records
+`"match": true, "warning": true` and counts these files as warnings, not failures.
+
 This is strict record comparison, not a complete semantic interpretation. A
 reported difference needs inspection: padding or environment-specific fields
 can differ too. No additional bytes are silently discarded to make tests pass.
