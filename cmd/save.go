@@ -21,6 +21,35 @@ func newSaveCmd() *cobra.Command {
 		Long:  `Decrypt and dump Stars! game files (.xy, .hst, .m1-.m16, .x1-.x16, .h1-.h16).`,
 	}
 	cmd.AddCommand(newSaveDumpCmd())
+	cmd.AddCommand(newSaveCompareCmd())
+	cmd.AddCommand(newSaveUpdateCmd())
+	return cmd
+}
+
+// newSaveUpdateCmd returns the command that assigns Maid AI in a turn or host file.
+func newSaveUpdateCmd() *cobra.Command {
+	var ai string
+	var player int
+	cmd := &cobra.Command{
+		Use:   "update <file>",
+		Short: "Update a player turn or host file",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if ai != "maid" {
+				return fmt.Errorf("--ai must be maid")
+			}
+			if cmd.Flags().Changed("player") {
+				if player < 1 || player > 16 {
+					return fmt.Errorf("--player must be between 1 and 16")
+				}
+				return savefile.UpdatePlayerAI(args[0], player-1)
+			}
+			return savefile.UpdatePlayerAI(args[0], -1)
+		},
+	}
+	cmd.Flags().StringVar(&ai, "ai", "", "AI to assign (maid)")
+	cmd.Flags().IntVar(&player, "player", 0, "player number (1-16; required for host files)")
+	_ = cmd.MarkFlagRequired("ai")
 	return cmd
 }
 
@@ -189,7 +218,7 @@ func (d *saveDumper) dump(path string, showHex, onlyMsgs, onlyOrders bool) error
 			}
 			fmt.Printf("        magic=%q game=%08x ver=%d.%d.%d turn=%d (year %d) player=%d salt=%d dt=%s\n",
 				bof.Magic, uint32(bof.LidGame), bof.VerMajor, bof.VerMinor, bof.VerInc, bof.Turn, 2400+int(bof.Turn),
-				bof.IPlayer, bof.LSaltTime, enumName(d.dtNames, bof.Dt))
+				bof.IPlayer, bof.LSaltTime, enumName(d.dtNames, int(bof.Dt)))
 			fmt.Printf("        done=%t inUse=%t multi=%t gameOver=%t crippled=%t wGen=%d\n",
 				bof.FDone, bof.FInUse, bof.FMulti, bof.FGameOver, bof.FCrippled, bof.WGen)
 		case savefile.RtMsg:

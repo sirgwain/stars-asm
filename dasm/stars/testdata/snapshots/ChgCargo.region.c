@@ -79,7 +79,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
             if (pfl->rgwtMin[iSupply] + dChg < 0) {
                 dChg = -pfl->rgwtMin[iSupply];
             }
-            if (iSupply == 3 && pfl->det != 7) {
+            if (iSupply == 3 && pfl->det != detAll) {
                 dChg = 0;
             }
             t_merge_6425_0001 = iSupply == 4 ? GetFuelFree(pfl) : GetCargoFree(pfl);

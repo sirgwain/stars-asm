@@ -4,10 +4,10 @@
 #include <stdint.h>
 #include <windows.h>
 
-extern uint16_t     rggrbitPartsSB[8];
-extern int16_t      rgidsPartsSB[8];
-extern uint16_t     rggrbitParts[13];
-extern int16_t      rgidsParts[13];
+extern HullSlotType rggrbitPartsSB[8];
+extern StringId     rgidsPartsSB[8];
+extern HullSlotType rggrbitParts[13];
+extern StringId     rgidsParts[13];
 extern HullSlotType rghstCat[14];
 extern StringId     rgidsCat[14];
 

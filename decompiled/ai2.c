@@ -5,7 +5,10 @@ uint8_t vrgISAip[182] = {30, 31, 10, 30, 26, 4,  30, 26, 3, 30, 26, 2,  30, 0,  
                          6,  9,  8,  11, 13, 0,  0,  0,  9, 8,  10, 15, 7,  3,  6,  17, 8,  11, 13, 1,  1,  1,  17, 8,  12, 10, 6,  3,  5,  3, 7,
                          9,  20, 20, 8,  12, 10, 0,  0,  0, 0,  0,  9,  19, 11, 8,  12, 10, 6,  3,  4,  2,  7,  17, 20, 20, 8,  12, 10, 1,  1, 1,
                          1,  1,  17, 19, 11, 8,  16, 10, 8, 21, 23, 12, 8,  21, 23, 23, 23, 12, 10, 30, 10, 12, 25, 32, 8,  16, 10, 19};
-uint8_t vrgAiISResOrder[18] = {134, 100, 69, 37, 164, 4, 135, 102, 71, 40, 166, 7, 140, 109, 73, 43, 167, 10};
+uint8_t vrgAiISResOrder[18] = {aiResearchElectronics6,   aiResearchConstruction4,  aiResearchPropulsion5,   aiResearchWeapons5,       aiResearchBiotechnology4,
+                               aiResearchEnergy4,        aiResearchElectronics7,   aiResearchConstruction6, aiResearchPropulsion7,    aiResearchWeapons8,
+                               aiResearchBiotechnology6, aiResearchEnergy7,        aiResearchElectronics12, aiResearchConstruction13, aiResearchPropulsion9,
+                               aiResearchWeapons11,      aiResearchBiotechnology7, aiResearchEnergy10};
 
 void DoMaidAiTurn(PROD *rgprod) {
     int32_t rgResCost[4];
@@ -82,7 +85,7 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     cplBadGuy = 0;
     cplNegative = 0;
     cplanCol = 0;
-    iroCur = IroEnsureAi(vrgAiISResOrder, 18, &ishdefSBLatest, game.turn >= 10 ? 20 : 0);
+    iroCur = IroEnsureAi((uint8_t *)vrgAiISResOrder, 18, &ishdefSBLatest, game.turn >= 10 ? 20 : 0);
     if (game.turn > 50) {
         MergeAllShdefs(7692);
         MergeAllShdefs(64);
@@ -125,7 +128,7 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->iPlayer == -1 && lppl->det >= 3 && PctPlanetOptValue(lppl, idPlayer) > 0) {
+        if (lppl->iPlayer == -1 && lppl->det >= detSome && PctPlanetOptValue(lppl, idPlayer) > 0) {
             cplanCol++;
         }
     }
@@ -530,7 +533,7 @@ void DoRototillAiTurn(PROD *rgprod) {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->iPlayer == -1 && lppl->det >= 3 && PctPlanetOptValue(lppl, idPlayer) > 0) {
+        if (lppl->iPlayer == -1 && lppl->det >= detSome && PctPlanetOptValue(lppl, idPlayer) > 0) {
             cplanCol++;
         }
     }
@@ -538,7 +541,7 @@ void DoRototillAiTurn(PROD *rgprod) {
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
         vlpbAiPlanet[lppl->id * 16 + 9] = 1;
-        if (lppl->iPlayer == -1 && lppl->det >= 3) {
+        if (lppl->iPlayer == -1 && lppl->det >= detSome) {
             b = 0;
             for (i = 0; i < 3; i++) {
                 if (lppl->rgMinConc[i] > 66) {

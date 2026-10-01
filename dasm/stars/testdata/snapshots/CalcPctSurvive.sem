@@ -20,7 +20,7 @@ L_02f6:
     branch ppctSmart == 0 ? L_0317 : L_0308
 
 L_0308:
-    *ppctSmart = 1.0
+    *ppctSmart = (float)1.0
 
 L_0317:
     branch lppl->iPlayer == -1 ? L_0487 : L_0324
@@ -45,24 +45,24 @@ L_03b5:
     cDefenses = sext16to32(cMax)
 
 L_03bf:
-    pct = pow((1.0 - ((double)sext16to32(part.pplanetary->grAbility) / 1000.0)), (double)cDefenses)
+    pct = (float)pow((double)(1.0 - ((long double)sext16to32(part.pplanetary->grAbility) / 1000.0)), (double)cDefenses)
     branch ppctSmart == 0 ? L_047e : L_041a
 
 L_041a:
-    *ppctSmart = pow((1.0 - ((double)sext16to32(part.pplanetary->grAbility) / 2000.0)), (double)cDefenses)
+    *ppctSmart = (float)pow((double)(1.0 - ((long double)sext16to32(part.pplanetary->grAbility) / 2000.0)), (double)cDefenses)
 
 L_0470:
     goto L_047e
 
 L_0473:
-    pct = 1.0
+    pct = (float)1.0
 
 L_047e:
     idPlayer = iPlrSav
     goto L_0492
 
 L_0487:
-    pct = 1.0
+    pct = (float)1.0
 
 L_0492:
     *ppct = pct

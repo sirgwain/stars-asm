@@ -15,7 +15,7 @@ void ReadPlayerMessages() {
     fOOM = 0;
     lpb = (uint8_t *)lpMsg + imemMsgCur;
     while (hdrCur.rt == rtMsg) {
-        if (hdrCur.cb != 0 && imemMsgCur + imemMsgT < 0xffc8 - hdrCur.cb) {
+        if (hdrCur.cb != 0 && (uint16_t)(imemMsgCur + imemMsgT) < (uint16_t)(0xffc8 - hdrCur.cb)) {
             fmemmove(lpb + imemMsgT, rgbCur, hdrCur.cb);
             imemMsgT += hdrCur.cb;
         }

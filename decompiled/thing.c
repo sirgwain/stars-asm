@@ -69,7 +69,7 @@ int16_t CPlanetsInCircle(POINT16 pt, int32_t r2) {
     int16_t  dx;
     int16_t  xEnd;
 
-    r = LOWORD((int32_t)(sqrt((double)r2) + 0.9999));
+    r = LOWORD((int32_t)((long double)sqrt((double)r2) + 0.9999));
     xStart = pt.x - r;
     xEnd = pt.x + r;
     yStart = pt.y - r;
@@ -469,7 +469,7 @@ void DoThingInteractions(int16_t fPostMove) {
                 lppl = lpPlanets;
                 lpplMac = lpPlanets + cPlanet;
                 for (; lppl < lpplMac; lppl++) {
-                    if (lppl->iPlayer != -1 && lppl->fStarbase != 0 && rgplr[lppl->iPlayer].fAi != 0 && rgplr[lppl->iPlayer].lvlAi >= 2 &&
+                    if (lppl->iPlayer != -1 && lppl->fStarbase != 0 && rgplr[lppl->iPlayer].fAi != 0 && rgplr[lppl->iPlayer].lvlAi >= lvlAiTough &&
                         (1 << lppl->iPlayer & lpth->tht.grbitPlr) == 0) {
                         dx = (int16_t)(rgptPlan[lppl->id].x - pt.x);
                         if (dx > 100)
@@ -482,7 +482,7 @@ void DoThingInteractions(int16_t fPostMove) {
                                 wtNext += lppl->rgwtMin[i];
                             }
                             iplr = lppl->iPlayer;
-                            wtThreshhold = (uint32_t)(rgplr[iplr].lvlAi == 2 ? 3500 : 5000);
+                            wtThreshhold = (uint32_t)(rgplr[iplr].lvlAi == lvlAiTough ? 3500 : 5000);
                             if (wtNext >= wtThreshhold) {
                                 if (lpth->tht.grbitTrader != 0) {
                                     cTry = 50;

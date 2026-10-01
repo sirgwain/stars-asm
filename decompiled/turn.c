@@ -526,12 +526,12 @@ void MoveThings(int16_t fPostProd) {
             d = DGetDistance(ptSrc.x, ptSrc.y, ptDst.x, ptDst.y);
             dLeft = LOWORD((int32_t)d);
             if (dLeft > dRange) {
-                dxRound = ptDst.x <= ptSrc.x ? -0.5 : 0.5;
-                dyRound = ptDst.y <= ptSrc.y ? -0.5 : 0.5;
-                if (d > 0.0001 || d < -0.0001) {
-                    r = (double)dRange / d;
-                    ptSrc.x = LOWORD((int32_t)(r * (double)(int16_t)(ptDst.x - ptSrc.x) + dxRound)) + ptSrc.x;
-                    ptSrc.y = LOWORD((int32_t)(r * (double)(int16_t)(ptDst.y - ptSrc.y) + dyRound)) + ptSrc.y;
+                dxRound = (double)(ptDst.x <= ptSrc.x ? (long double)-0.5 : (long double)0.5);
+                dyRound = (double)(ptDst.y <= ptSrc.y ? (long double)-0.5 : (long double)0.5);
+                if ((long double)d > (long double)0.0001 || (long double)d < (long double)-0.0001) {
+                    r = (double)((long double)dRange / d);
+                    ptSrc.x = LOWORD((int32_t)((long double)r * (int16_t)(ptDst.x - ptSrc.x) + dxRound)) + ptSrc.x;
+                    ptSrc.y = LOWORD((int32_t)((long double)r * (int16_t)(ptDst.y - ptSrc.y) + dyRound)) + ptSrc.y;
                     if (ptSrc.x == ptDst.x && ptSrc.y == ptDst.y)
                         goto MadeItThere;
                     lpth->pt = ptSrc;
@@ -672,7 +672,7 @@ void MoveThings(int16_t fPostProd) {
                     if (lppl->iPlayer == -1)
                         goto LFreeThePacket;
                     CalcPctSurvive(lppl, &pct, NULL);
-                    dmgRaw = (int32_t)(pct * (double)dmgRaw);
+                    dmgRaw = (int32_t)((long double)pct * dmgRaw);
                     if (dmgRaw != 0 && GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
                         lColKilled = lppl->rgwtMin[3];
                         if (lColKilled != 0) {
@@ -1062,7 +1062,7 @@ void MoveFleets() {
                                         if (cKillTot > 0) {
                                             flDead.iPlayer = flSrc.iPlayer;
                                             flDead.fDead = 1;
-                                            flDead.det = 7;
+                                            flDead.det = detAll;
                                             FleetTransferCargoBalance(&flSrc, &flDead);
                                             *lpfl = flSrc;
                                             if (cKillTot == 1) {
@@ -1097,7 +1097,8 @@ void MoveFleets() {
                                     }
                                 }
                                 d = DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
-                                dTravel = dTravel < (int16_t)LOWORD((int32_t)(d + 0.9999)) ? dTravel : (int16_t)LOWORD((int32_t)(d + 0.9999));
+                                dTravel = dTravel < (int16_t)LOWORD((int32_t)((long double)d + 0.9999)) ? dTravel
+                                                                                                        : (int16_t)LOWORD((int32_t)((long double)d + 0.9999));
                                 if (dTravel > dRange) {
                                     lpfl->rgwtMin[4] = 0;
                                     wtFuelUsed = 1;
@@ -1115,7 +1116,8 @@ void MoveFleets() {
                                     t_merge_450b_0001 = 0 <= lpfl->rgwtMin[4] - wtFuelUsed ? lpfl->rgwtMin[4] - wtFuelUsed : 0;
                                     lpfl->rgwtMin[4] = t_merge_450b_0001;
                                 }
-                                if (lpfl->rgwtMin[4] == 0 && wtFuelUsed > 0 && ((d - 0.99999 >= (double)dTravel || dRange == 0) && fGotEnufFuel == 0)) {
+                                if (lpfl->rgwtMin[4] == 0 && wtFuelUsed > 0 &&
+                                    (((long double)d - 0.99999 >= (long double)dTravel || dRange == 0) && fGotEnufFuel == 0)) {
                                     i = 0;
                                     do {
                                         i++;
@@ -1142,7 +1144,7 @@ void MoveFleets() {
                                     lpfl->dirFltY = dy + 127;
                                     lpfl->iwarpFlt = lpfl->lpplord->rgord[1].iWarp;
                                 }
-                                dActTravel = (int32_t)(d - 0.99999);
+                                dActTravel = (int32_t)((long double)d - 0.99999);
                                 t_merge_47c3_0001 = dTravel < dActTravel ? LOWORD(dTravel) : LOWORD(dActTravel);
                                 dMineTravel = t_merge_47c3_0001;
                                 if (lpord[1].iWarp < 11 && FTravelThroughMineFields(lpfl, &dMineTravel, NULL) == 0) {
@@ -1163,12 +1165,12 @@ void MoveFleets() {
                                     }
                                 }
                                 if (dActTravel >= dTravel && dActTravel > 0) {
-                                    dxRound = ptEnd.x <= ptBeg.x ? -0.5 : 0.5;
-                                    dyRound = ptEnd.y <= ptBeg.y ? -0.5 : 0.5;
-                                    if (d > 0.0001 || d < -0.0001) {
-                                        r = (double)dTravel / d;
-                                        lpfl->pt.x = LOWORD((int32_t)(r * (double)(int16_t)(ptEnd.x - ptBeg.x) + dxRound)) + ptBeg.x;
-                                        lpfl->pt.y = LOWORD((int32_t)(r * (double)(int16_t)(ptEnd.y - ptBeg.y) + dyRound)) + ptBeg.y;
+                                    dxRound = (double)(ptEnd.x <= ptBeg.x ? (long double)-0.5 : (long double)0.5);
+                                    dyRound = (double)(ptEnd.y <= ptBeg.y ? (long double)-0.5 : (long double)0.5);
+                                    if ((long double)d > (long double)0.0001 || (long double)d < (long double)-0.0001) {
+                                        r = (double)((long double)dTravel / d);
+                                        lpfl->pt.x = LOWORD((int32_t)((long double)r * (int16_t)(ptEnd.x - ptBeg.x) + dxRound)) + ptBeg.x;
+                                        lpfl->pt.y = LOWORD((int32_t)((long double)r * (int16_t)(ptEnd.y - ptBeg.y) + dyRound)) + ptBeg.y;
                                         lpfl->idPlanet = -1;
                                     }
                                     if (cPass <= 0 || lpfl->dMoveLeft <= 0)
@@ -1219,7 +1221,7 @@ void MoveFleets() {
                                     lpord[1].pt = lpthDest->pt;
                                 }
                             }
-                            if (lpfl->idPlanet == -1 && FFindNearestObject(lpfl->pt, 0x81, &scan) != 0) {
+                            if (lpfl->idPlanet == -1 && FFindNearestObject(lpfl->pt, grobjPlanet | mdExact, &scan) != 0) {
                                 lpfl->idPlanet = scan.idpl;
                             }
                             lpord->pt = lpfl->pt;
@@ -1417,7 +1419,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         memset(&flDead, 0, sizeof(FLEET));
         flDead.iPlayer = flSrc.iPlayer;
         flDead.fDead = 1;
-        flDead.det = 7;
+        flDead.det = detAll;
         for (i = 0; i < 16; i++) {
             if (lpfl->rgcsh[i] > 0 &&
                 (lpthHit == 0 || lpthHit->iplr != lpfl->iPlayer ||
@@ -1465,8 +1467,8 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         dx = ptDst.x - ptSrc.x;
         dy = ptDst.y - ptSrc.y;
         t_call_5df4 = sqrt((double)((uint32_t)(dx * dx) + (uint32_t)(dy * (int16_t)(ptDst.y - ptSrc.y))));
-        dTravel = LOWORD((int32_t)(t_call_5df4 + 0.5));
-        ptAct.x = MulDiv(dx, dEnd, (int32_t)(t_call_5df4 + 0.5)) + ptSrc.x;
+        dTravel = LOWORD((int32_t)((long double)t_call_5df4 + 0.5));
+        ptAct.x = MulDiv(dx, dEnd, (int32_t)((long double)t_call_5df4 + 0.5)) + ptSrc.x;
         ptAct.y = MulDiv(dy, dEnd, dTravel) + ptSrc.y;
         if (cshDead != 0) {
             lpthSalvage = lpThings;

@@ -43,19 +43,19 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         cRow = (int16_t)(rc.bottom - 36) / (dyArial8 + 4);
         vprptCur->cRowsVis = cRow >= vprptCur->cRows ? vprptCur->cRows : cRow;
         if (vprptCur->cRowsVis >= vprptCur->cRows) {
-            swp = 132;
+            swp = SWP_NOZORDER | SWP_HIDEWINDOW;
             vprptCur->irowFirst = 0;
-            SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
         } else {
-            swp = 68;
+            swp = SWP_NOZORDER | SWP_SHOWWINDOW;
             if (vprptCur->irowFirst + vprptCur->cRowsVis > vprptCur->cRows && vprptCur->irowFirst > 0) {
                 vprptCur->irowFirst = vprptCur->cRows - vprptCur->cRowsVis;
                 if (vprptCur->irowFirst < 0) {
                     vprptCur->irowFirst = 0;
                 }
             }
-            SetScrollPos(vprptCur->hwndVScroll, 2, vprptCur->irowFirst, 0);
-            SetScrollRange(vprptCur->hwndVScroll, 2, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
         }
         dx = GetSystemMetrics(SM_CXVSCROLL);
         SetWindowPos(vprptCur->hwndVScroll, NULL, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
@@ -114,7 +114,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         AdvanceTutor();
         goto L_09c8;
     case WM_VSCROLL:
-        iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2);
+        iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL);
         iNew = iCur;
         if (GET_WM_VSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_VSCROLL_CODE(wParam, lParam)) {
@@ -155,12 +155,12 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             rc.top = dyArial8 + 6;
             rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
             ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
+            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
             UpdateWindow(hwnd);
         }
         return 0;
     case WM_HSCROLL:
-        iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+        iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
         iNew = iCur;
         if (GET_WM_HSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_HSCROLL_CODE(wParam, lParam)) {
@@ -194,8 +194,8 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             iNew = 0;
         }
         if (iNew != iCur) {
-            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1);
-            iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
             if (iNew != iCur) {
                 i = 1;
                 for (ibit = 2; i < vprptCur->cFields && ((ibit & vprptCur->grbitVisible) == 0 || iNew-- > 0); ibit *= 2) {
@@ -234,7 +234,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case 3:
             idm = 0x901;
         }
-        CheckMenuItem(hmenu, idm, 0);
+        CheckMenuItem(hmenu, idm, MF_UNCHECKED);
         vprptCur = 0;
         if (gd.fTutorial == 0)
             goto L_09c8;
@@ -286,17 +286,17 @@ void SetHScrollBar() {
     }
     vprptCur->cColScroll = 0;
     if (ccolHidden == 0) {
-        swp = 132;
+        swp = SWP_NOZORDER | SWP_HIDEWINDOW;
         vprptCur->cFieldFirst = 1;
-        SetScrollPos(vprptCur->hwndHScroll, 2, 0, 0);
+        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, 0, 0);
     } else {
-        swp = 68;
+        swp = SWP_NOZORDER | SWP_SHOWWINDOW;
         if (ccolSkipped > ccolHidden) {
             ccolSkipped = 0;
             vprptCur->cFieldFirst = 1;
         }
-        SetScrollPos(vprptCur->hwndHScroll, 2, ccolSkipped, 0);
-        SetScrollRange(vprptCur->hwndHScroll, 2, 0, ccolHidden, 1);
+        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, ccolSkipped, 0);
+        SetScrollRange(vprptCur->hwndHScroll, SB_CTL, 0, ccolHidden, 1);
         vprptCur->cColScroll = ccolHidden;
     }
     dy = GetSystemMetrics(SM_CYHSCROLL);
@@ -549,7 +549,7 @@ void DrawVCReport(HDC hdc) {
     int16_t  cch;
     int16_t  xLeft;
     int32_t  l;
-    int16_t  idsT;
+    StringId idsT;
     int16_t  vcVal;
     COLORREF t_merge_1c4c_0001;
 
@@ -561,7 +561,7 @@ void DrawVCReport(HDC hdc) {
         psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
         cch = strlen(psz);
         l = GetTextExtent(hdc, psz, cch);
-        dxDig = LOWORD((int32_t)((double)(uint32_t)LOWORD(l) / 1.4142));
+        dxDig = LOWORD((int32_t)((long double)(uint32_t)LOWORD(l) / 1.4142));
         if (rgplr[i].fInclude != 0 && rgplr[i].fDead != 0) {
             cr = 8355711;
         } else if (vlprgScoreX[i].fWinner != 0) {
@@ -634,8 +634,7 @@ void DrawVCReport(HDC hdc) {
                     yTop += dyArial8 / 2;
                 }
             }
-            ids++;
-            cch = CchGetString(ids, szWork);
+            cch = CchGetString(ids++, szWork);
             if (iPass == 1) {
                 t_merge_1c4c_0001 = i >= 7 || GetVCCheck(&game, cCur) != 0 ? 0 : 8355711;
                 SetTextColor(hdc, t_merge_1c4c_0001);
@@ -649,7 +648,7 @@ void DrawVCReport(HDC hdc) {
                 }
                 vcVal = GetVCVal(&game, cCur, 0);
                 if (i == 0) {
-                    idsT = 965;
+                    idsT = idsPlanets3;
                     vcVal = LOWORD((int32_t)(vcVal * game.cPlanMax) / 100);
                 } else {
                     idsT = ids;
@@ -711,7 +710,7 @@ void DrawScoreReport(HDC hdc) {
         psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
         cch = strlen(psz);
         l = GetTextExtent(hdc, psz, cch);
-        dx45 = LOWORD((int32_t)((double)(uint32_t)LOWORD(l) / 1.4142));
+        dx45 = LOWORD((int32_t)((long double)(uint32_t)LOWORD(l) / 1.4142));
         if (rgplr[i].fInclude != 0 && rgplr[i].fDead != 0) {
             cr = 8355711;
         } else if (vlprgScoreX[i].fWinner != 0) {
@@ -736,8 +735,7 @@ void DrawScoreReport(HDC hdc) {
     SetTextColor(hdc, 0);
     for (i = 0; i < 9; i++) {
         PatBlt(hdc, vdxScoreX + 4, yTop - dyArial8 / 4, game.cPlayer * dxDig * 5, 1, PATCOPY);
-        ids++;
-        cch = CchGetString(ids, szWork);
+        cch = CchGetString(ids++, szWork);
         SetTextColor(hdc, 0);
         RightTextOut(hdc, vdxScoreX, yTop, szWork, cch, 0);
         xLeft = 5 * dxDig + vdxScoreX + 2;
@@ -947,7 +945,7 @@ void DrawHistoryReport(HDC hdc) {
                 hpenSav = SelectObject(hdc, hpen);
                 for (j = 0; j < rgcsxPlr[i]; j++) {
                     lpsx = rgsxPlr[i] + j;
-                    if (lpsx->turn >= iYearBase && lpsx->turn <= LOWORD(cYears) + iYearBase) {
+                    if (lpsx->turn >= iYearBase && lpsx->turn <= (uint16_t)(LOWORD(cYears) + iYearBase)) {
                         dYear = lpsx->turn - iYearBase;
                         cCur = LFetchScoreXVal(lpsx, gd.iCurGraph);
                         pt.x = LOWORD((int32_t)((int32_t)((uint32_t)dYear * dx) / cYears)) + rcChart.left;
@@ -1160,7 +1158,7 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             } else {
                 lpsz = rglpshdefSB[idPlayer][lppl->isb].hul.szClass;
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, lpsz, fstrlen(lpsz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, lpsz, fstrlen(lpsz), NULL);
             break;
         case 14:
             if (lppl->idRoute == 0) {
@@ -1168,7 +1166,7 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             } else {
                 psz = PszGetPlanetName(lppl->idRoute - 1);
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 13:
             if (lppl->idFling == 0) {
@@ -1176,14 +1174,14 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             } else {
                 psz = PszGetPlanetName(lppl->idFling - 1);
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 0:
             if (sel.grobj == grobjPlanet && sel.pl.id == lppl->id) {
                 SetTextColor(hdc, 127);
             }
             psz = PszGetPlanetName(lppl->id);
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             if (lppl->fStarbase == 0)
                 break;
             rc = *prc;
@@ -1224,9 +1222,9 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             j = CMaxOperableDefenses(lppl, idPlayer, 0);
             if (i > 0) {
                 CalcPctSurvive(lppl, &pct, NULL);
-                pct = 1.0 - pct;
-                cch = _wsprintf(szT, PCTDXPCTDPCTPCT, LOWORD((int32_t)(pct * 100.0)),
-                                LOWORD((int32_t)((pct - (double)(int16_t)LOWORD((int32_t)(pct * 100.0)) / 100.0) * 10000.0)));
+                pct = (float)((long double)1.0 - pct);
+                cch = _wsprintf(szT, PCTDXPCTDPCTPCT, LOWORD((int32_t)((long double)pct * 100)),
+                                LOWORD((int32_t)((pct - (long double)(int16_t)LOWORD((int32_t)((long double)pct * 100)) / 100.0) * 10000)));
                 goto DrawPlusDef;
             }
             szT[2] = '-';
@@ -1332,14 +1330,14 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             i = lpfl->iplan;
             fstrcpy(szT, rglpbtlplan[lpfl->iplr][lpfl->iplan].szName);
             psz = szT;
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 0:
             if (sel.grobj == grobjFleet && sel.fl.id == lpfl->id) {
                 SetTextColor(hdc, 127);
             }
             psz = PszGetFleetName(lpfl->id);
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 2:
             if (lpfl->idPlanet != -1) {
@@ -1348,18 +1346,18 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
                 psz = szT;
                 _wsprintf(psz, PszGetCompressedString(idsSpaceDD), lpfl->pt.x, lpfl->pt.y);
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 3:
             psz = PszGetDestName(lpfl, hdc);
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 5:
             psz = PszGetTaskName(lpfl, &i);
             if (i != -1) {
                 SetTextColor(hdc, rgcrMinerals[i]);
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 4:
             psz = PszGetETA(hdc, lpfl, NULL);
@@ -1383,7 +1381,7 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             }
             prc->right -= 6 * dx;
             psz = rgshdef[i].hul.szClass;
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             psz = szT;
             cch = _wsprintf(psz, PCTD, lpfl->rgcsh[i]);
             chT = '+';
@@ -1434,15 +1432,15 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
             if (lpbd->pt.x == sel.scan.pt.x && lpbd->pt.y == sel.scan.pt.y) {
                 SetTextColor(hdc, 127);
             }
-            ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+            ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
             break;
         case 2:
             DrawMineralItem(hdc, prc->right - 2, prc->top, -1, (uint32_t)lpbd->cplr);
             break;
         case 1:
-            if (CBattleUnits(lpbd, 5) != 0) {
+            if (CBattleUnits(lpbd, grBuOurUnits | grBuIncludeSb) != 0) {
                 chT = 'O';
-            } else if (CBattleUnits(lpbd, 6) != 0) {
+            } else if (CBattleUnits(lpbd, grBuTheirUnits | grBuIncludeSb) != 0) {
                 chT = 'T';
             } else {
                 chT = ' ';
@@ -1506,7 +1504,7 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
                     SetTextColor(hdc, 127);
                 }
                 psz = PszGetFleetName(lpfl->id);
-                ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+                ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
                 break;
             case 2:
                 if (lpfl->idPlanet != -1) {
@@ -1515,13 +1513,13 @@ void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol
                     psz = szT;
                     _wsprintf(psz, PszGetCompressedString(idsSpaceDD), lpfl->pt.x, lpfl->pt.y);
                 }
-                ExtTextOut(hdc, prc->left, prc->top, 4, prc, psz, strlen(psz), NULL);
+                ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, psz, strlen(psz), NULL);
                 break;
             case 5:
                 i = IshdefPrimaryFromLpfl(lpfl, &j);
                 prc->right -= 6 * dx;
                 lpsz = rglpshdef[lpfl->iPlayer][i].hul.szClass;
-                ExtTextOut(hdc, prc->left, prc->top, 4, prc, lpsz, fstrlen(lpsz), NULL);
+                ExtTextOut(hdc, prc->left, prc->top, ETO_CLIPPED, prc, lpsz, fstrlen(lpsz), NULL);
                 psz = szT;
                 cch = _wsprintf(psz, PCTD, lpfl->rgcsh[i]);
                 chT = '+';
@@ -1749,7 +1747,7 @@ char *PszGetTaskName(FLEET *lpfl, int16_t *picr) {
     icr = -1;
     ord = lpfl->lpplord->rgord[0];
     *picr = -1;
-    if (ord.fValidTask != 0 && ord.grTask - 1 <= 7) {
+    if (ord.fValidTask != 0 && (uint16_t)(ord.grTask - 1) <= 7) {
         switch (ord.grTask) {
         case 1:
             for (i = 0; i < 4; i++) {
@@ -1814,7 +1812,7 @@ LShowTask:
             opOrd = ord.txp.rgia[icr].iAction;
             *picr = icr;
             fPercent = 0;
-            if (opOrd - 1 > 8)
+            if ((uint16_t)(opOrd - 1) > 8)
                 break;
             switch (opOrd) {
             case 7:
@@ -1915,7 +1913,7 @@ void SortReportCache(int16_t irpt, int16_t icol) {
             lppl = lpPlanets;
             lpplMac = lpPlanets + cPlanet;
             for (; lppl < lpplMac; lppl++) {
-                if (lppl->iPlayer == idPlayer && lppl->det == 7) {
+                if (lppl->iPlayer == idPlayer && lppl->det == detAll) {
                     rgidRep[cRows++] = iItem;
                 }
                 iItem++;
@@ -2078,22 +2076,22 @@ int ICompReport(uint16_t *pid1, uint16_t *pid2) {
                 break;
             case 8:
                 if (lppl1->cDefenses == 0) {
-                    pct1 = 0.0;
+                    pct1 = (float)0;
                 } else {
                     CalcPctSurvive(lppl1, &pct1, NULL);
-                    pct1 = 1.0 - pct1;
+                    pct1 = (float)((long double)1.0 - pct1);
                 }
                 if (lppl2->cDefenses == 0) {
-                    pct2 = 0.0;
+                    pct2 = (float)0;
                 } else {
                     CalcPctSurvive(lppl2, &pct2, NULL);
-                    pct2 = 1.0 - pct2;
+                    pct2 = (float)((long double)1.0 - pct2);
                 }
-                if (pct1 < pct2) {
+                if ((long double)pct1 < (long double)pct2) {
                     iRet = -1;
                     break;
                 }
-                if (pct1 > pct2) {
+                if ((long double)pct1 > (long double)pct2) {
                     iRet = 1;
                     break;
                 }
@@ -2304,14 +2302,14 @@ int ICompReport(uint16_t *pid1, uint16_t *pid2) {
                 iRet = strcmp(szT, psz);
                 break;
             case 1:
-                l1 = CBattleUnits(lpbd1, 5);
+                l1 = CBattleUnits(lpbd1, grBuOurUnits | grBuIncludeSb);
                 if (l1 == 0) {
-                    l1 = (int32_t)(CBattleUnits(lpbd1, 6) * 2);
+                    l1 = (int32_t)(CBattleUnits(lpbd1, grBuTheirUnits | grBuIncludeSb) * 2);
                 }
-                l2 = CBattleUnits(lpbd2, 5);
+                l2 = CBattleUnits(lpbd2, grBuOurUnits | grBuIncludeSb);
                 if (l2 != 0)
                     goto LRetDiff;
-                l2 = (int32_t)(CBattleUnits(lpbd2, 6) * 2);
+                l2 = (int32_t)(CBattleUnits(lpbd2, grBuTheirUnits | grBuIncludeSb) * 2);
                 goto LRetDiff;
             case 2:
                 l1 = (uint32_t)lpbd1->cplr;
@@ -2686,7 +2684,7 @@ void InvalidateReport(int16_t irpt, int16_t fReload) {
             vprptCur = prptSav;
             vlprgidRep = lprgidSav;
         } else if (fReload != 0 && hwndReportDlg != 0 && irpt == vprptCur->irpt) {
-            SetScrollRange(vprptCur->hwndVScroll, 2, 0, vprptCur->cRows - vprptCur->cRowsVis, 0);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 0);
             InvalidateRect(hwndReportDlg, NULL, 1);
         }
     }
@@ -2851,7 +2849,7 @@ void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow) {
             break;
         if (lpbd->pt.x != sel.scan.pt.x || lpbd->pt.y != sel.scan.pt.y) {
             scan.pt = lpbd->pt;
-            scan.grobj = 0x8f;
+            scan.grobj = grobjPlanet | grobjFleet | grobjOther | grobjThing | mdExact;
             ChangeScanSel(&scan, 0);
             CtrPointScan(scan.pt, 1);
             InvalidateReport(0, 0);
@@ -3023,14 +3021,14 @@ void DumpPlanets() {
                 itoa(game.turn - lppl->turn, &szForm[1], 10);
                 RgToStream(szForm, strlen(szForm));
                 szForm[1] = 0;
-                if (lppl->det == 7) {
+                if (lppl->det == detAll) {
                     strcpy(&szForm[1], PszFromLong((uint32_t)(lppl->rgwtMin[3] * 100), NULL));
-                } else if (lppl->iPlayer != -1 && lppl->det >= 3) {
+                } else if (lppl->iPlayer != -1 && lppl->det >= detSome) {
                     l = (uint32_t)(lppl->uPopGuess * 400);
                     strcpy(&szForm[1], PszFromLong(l, NULL));
                 }
                 RgToStream(szForm, strlen(szForm));
-                if (lppl->det < 3) {
+                if (lppl->det < detSome) {
                     szForm[1] = 0;
                 } else {
                     i = PctPlanetDesirability(lppl, idPlayer);
@@ -3038,16 +3036,16 @@ void DumpPlanets() {
                 }
                 RgToStream(szForm, strlen(szForm));
                 szForm[1] = 0;
-                if (lppl->det == 7) {
+                if (lppl->det == detAll) {
                     FillPlanetProdLB(NULL, NULL, lppl);
                     strcpy(&szForm[1], szWork);
                 }
                 RgToStream(szForm, strlen(szForm));
-                if (lppl->det == 7) {
+                if (lppl->det == detAll) {
                     CalcPctSurvive(lppl, &pct, NULL);
-                    pct = 1.0 - pct;
-                    _wsprintf(&szForm[1], "%ld\t%ld\t%d.%d%%", lppl->cMines, 0, lppl->cFactories, 0, LOWORD((int32_t)(pct * 100.0)),
-                              LOWORD((int32_t)((pct - (double)(int16_t)LOWORD((int32_t)(pct * 100.0)) / 100.0) * 10000.0)));
+                    pct = (float)((long double)1.0 - pct);
+                    _wsprintf(&szForm[1], "%ld\t%ld\t%d.%d%%", lppl->cMines, 0, lppl->cFactories, 0, LOWORD((int32_t)((long double)pct * 100)),
+                              LOWORD((int32_t)((pct - (long double)(int16_t)LOWORD((int32_t)((long double)pct * 100)) / 100.0) * 10000)));
                 } else {
                     szForm[2] = 9;
                     szForm[1] = 9;
@@ -3060,14 +3058,14 @@ void DumpPlanets() {
                 RgToStream(szForm, strlen(szForm));
                 szForm[1] = 0;
                 for (i = 0; i < 3; i++) {
-                    if (lppl->det >= 3) {
+                    if (lppl->det >= detSome) {
                         strcpy(&szForm[1], PszFromLong(lppl->rgwtMin[i], NULL));
                     }
                     RgToStream(szForm, strlen(szForm));
                 }
                 szForm[1] = 0;
                 for (i = 0; i < 3; i++) {
-                    if (lppl->det >= 4) {
+                    if (lppl->det >= detMore) {
                         EstMineralsMined(lppl, rgl, -1, 0);
                         strcpy(&szForm[1], PszFromLong(rgl[i], NULL));
                     }
@@ -3075,19 +3073,19 @@ void DumpPlanets() {
                 }
                 szForm[1] = 0;
                 for (i = 0; i < 3; i++) {
-                    if (lppl->det >= 3) {
+                    if (lppl->det >= detSome) {
                         strcpy(&szForm[1], PszFromInt(lppl->rgMinConc[i], NULL));
                     }
                     RgToStream(szForm, strlen(szForm));
                 }
-                if (lppl->det == 7) {
+                if (lppl->det == detAll) {
                     strcpy(&szForm[1], PszFromInt(CResourcesAtPlanet(lppl, idPlayer), NULL));
                 } else {
                     szForm[1] = 0;
                 }
                 RgToStream(szForm, strlen(szForm));
                 if (gd.fPerPlayerDumps != 0) {
-                    if (lppl->det >= 3) {
+                    if (lppl->det >= detSome) {
                         for (i = 0; i < 3; i++) {
                             strcpy(&szForm[1], PszCalcEnvVar(i, lppl->rgEnvVar[i]));
                             RgToStream(szForm, strlen(szForm));
@@ -3105,7 +3103,7 @@ void DumpPlanets() {
                             RgToStream(szForm, 1);
                         }
                     }
-                    if (lppl->det == 7) {
+                    if (lppl->det == detAll) {
                         strcpy(&szForm[1], PszFromInt(PctPlanetCapacity(lppl), NULL));
                         RgToStream(szForm, strlen(szForm));
                         strcpy(&szForm[1], PszFromInt(GetPlanetScannerRange(lppl, &i), NULL));
@@ -3249,9 +3247,9 @@ void DumpFleets() {
                     cch = strlen(psz) + 1;
                 }
                 RgToStream(szForm, cch);
-                if (lpfl->det == 7) {
+                if (lpfl->det == detAll) {
                     strcpy(&szForm[1], PszGetDestName(lpfl, NULL));
-                } else if (gd.fPerPlayerDumps != 0 && lpfl->det < 7 && lpfl->fdirValid != 0) {
+                } else if (gd.fPerPlayerDumps != 0 && lpfl->det < detAll && lpfl->fdirValid != 0) {
                     strcpy(&szForm[1], PszFromInt(lpfl->dirFltX, NULL));
                     strcat(szForm, ".");
                     strcat(szForm, PszFromInt(lpfl->dirFltY, NULL));
@@ -3287,7 +3285,7 @@ void DumpFleets() {
                     RgToStream(szForm, strlen(szForm));
                     if (lpfl->cord >= 2) {
                         i = lpfl->lpplord->rgord[1].iWarp;
-                    } else if (lpfl->det < 7 && lpfl->fdirValid != 0) {
+                    } else if (lpfl->det < detAll && lpfl->fdirValid != 0) {
                         i = lpfl->iwarpFlt;
                     } else {
                         i = 0;
@@ -3306,7 +3304,7 @@ void DumpFleets() {
                     RgToStream(szForm, strlen(szForm));
                     strcpy(&szForm[1], PszFromInt(i, NULL));
                     RgToStream(szForm, strlen(szForm));
-                    if (lpfl->det == 7) {
+                    if (lpfl->det == detAll) {
                         strcpy(&szForm[1], PszGetTaskName(lpfl, &i));
                     } else {
                         szForm[1] = 0;

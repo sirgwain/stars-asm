@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <windows.h>
 
-extern uint16_t mpimdgrbitBU[8];
+extern BattleUnitFlags mpimdgrbitBU[8];
 
 LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 int16_t          FIsPopupHullType(int16_t ishdef);

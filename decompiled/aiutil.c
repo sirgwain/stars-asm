@@ -1416,7 +1416,7 @@ int16_t FShouldWeBuildColonizers(int16_t *pcCol) {
     if (pcCol != 0) {
         *pcCol = 0;
     }
-    if (rgplr[idPlayer].lvlAi == 0 && (game.turn & 1) != 0) {
+    if (rgplr[idPlayer].lvlAi == lvlAiEasy && (game.turn & 1) != 0) {
         return 0;
     }
     if (game.turn < 30) {
@@ -1907,11 +1907,8 @@ int16_t IdRandomPlanetNearby(POINT16 pt, int16_t cDist, int16_t fAvoidStarbases)
             dx = abs(pt.x - rgptPlan[i].x);
             dy = abs(pt.y - rgptPlan[i].y);
             d2Cur = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
-            if (d2Cur <= lDistMax) {
-                iChance++;
-                if (Random(iChance) == 0) {
-                    idBest = i;
-                }
+            if (d2Cur <= lDistMax && Random(iChance++) == 0) {
+                idBest = i;
             }
         }
         if (idBest == -1 || cExtraAttempts-- <= 0)
@@ -2257,7 +2254,7 @@ void MoveToNearestPlanetOrEnemy(FLEET *lpfl, int16_t dEnemyRange) {
     if (lpplBest != 0 && lBest <= (int32_t)(uint32_t)(dEnemyRange * dEnemyRange)) {
         id = lpplBest->id;
     } else {
-        if (FFindNearestObject(lpfl->pt, 0x21, &scan) == 0) {
+        if (FFindNearestObject(lpfl->pt, grobjPlanet | mdNoRecurse, &scan) == 0) {
             return;
         }
         id = scan.idpl;
@@ -2302,7 +2299,7 @@ void EnsureAiStarbaseDesigns() {
                 iSetLast = i;
             }
         }
-        if (iSetLast != -1 && wTurnLast + 40 <= game.turn) {
+        if (iSetLast != -1 && (uint16_t)(wTurnLast + 40) <= game.turn) {
             iSetNew = iSetLast <= 4 ? 5 : 0;
             for (i = iSetNew; i < iSetNew + 5; i += 2) {
                 if (rglpshdefSB[idPlayer][i].fFree == 0 && rglpshdefSB[idPlayer][i].cExist > 0)
@@ -2324,7 +2321,7 @@ void EnsureAiStarbaseDesigns() {
                 iSetLast = i;
             }
         }
-        if (iSetLast != -1 && wTurnLast + 40 <= game.turn) {
+        if (iSetLast != -1 && (uint16_t)(wTurnLast + 40) <= game.turn) {
             iSetNew = iSetLast <= 4 ? 6 : 1;
             if ((rglpshdefSB[idPlayer][iSetNew].fFree != 0 || rglpshdefSB[idPlayer][iSetNew].cExist <= 0) &&
                 (rglpshdefSB[idPlayer][iSetNew + 2].fFree != 0 || rglpshdefSB[idPlayer][iSetNew + 2].cExist <= 0)) {
@@ -2399,7 +2396,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         iNew = 7;
         iOld = 4;
     }
-    if (game.turn - rglpshdefSB[idPlayer][iOld].turn < 30) {
+    if ((uint16_t)(game.turn - rglpshdefSB[idPlayer][iOld].turn) < 30) {
         j = 2;
     } else {
         j = 3;
@@ -2490,8 +2487,8 @@ int16_t FAIFling(PLANET *lppl, int32_t *rgResAvail) {
         i++;
         lpprod++;
     }
-    if (rgplr[idPlayer].lvlAi > 1 && *rgResAvail + rgResAvail[1] + rgResAvail[2] > 3000 && lppl->fStarbase != 0 && IWarpMAFromLppl(lppl, &fTwoMAs) >= 10 &&
-        Random(4) == 0) {
+    if (rgplr[idPlayer].lvlAi > lvlAiStandard && *rgResAvail + rgResAvail[1] + rgResAvail[2] > 3000 && lppl->fStarbase != 0 &&
+        IWarpMAFromLppl(lppl, &fTwoMAs) >= 10 && Random(4) == 0) {
         pt = rgptPlan[lppl->id];
         for (iT = 0; iT <= 2 && lppl->rgwtMin[iT] <= 12500; iT++) {
         }
@@ -2944,7 +2941,7 @@ int16_t CheckAiShdefStatus(int16_t ishBeg, int16_t ishEnd, uint16_t cRecyclePeri
             if (*piLatest == -1 || rgshdef[*piLatest].turn < rgshdef[i].turn) {
                 *piLatest = i;
             }
-            if (game.turn - rgshdef[i].turn > cRecyclePeriod) {
+            if ((uint16_t)(game.turn - rgshdef[i].turn) > cRecyclePeriod) {
                 if (rgshdef[i].cExist == 0) {
                     shdef = rgshdef[i];
                     shdef.fFree = 1;
@@ -2970,7 +2967,7 @@ void IncreaseAIMinefieldSizes() {
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
         if (lpth->ith == ithMinefield) {
-            cMines = (int32_t)(sqrt((double)lpth->thm.cMines) + 10.5);
+            cMines = (int32_t)((long double)sqrt((double)lpth->thm.cMines) + 10.5);
             lpth->thm.cMines = (uint32_t)(cMines * cMines);
         }
     }

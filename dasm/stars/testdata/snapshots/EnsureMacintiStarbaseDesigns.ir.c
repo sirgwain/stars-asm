@@ -277,7 +277,7 @@ L_7b15:
     iOld = 4;
 
 L_7b1f:
-    if (game.turn - rglpshdefSB[idPlayer][iOld].turn >= 30)
+    if ((uint16_t)(game.turn - rglpshdefSB[idPlayer][iOld].turn) >= 30)
         goto L_7b50;
     else
         goto L_7b48;

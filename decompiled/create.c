@@ -7,7 +7,7 @@ BTLPLAN rgbtlplanT[5] = {{
                              .mdTactic = mdTacticMaxDamageRatio,
                              .mdTarget1 = mdTargetArmedShips,
                              .mdTarget2 = mdTargetAny,
-                             .iplrAttack = 2,
+                             .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Default",
                          },
                          {
@@ -15,7 +15,7 @@ BTLPLAN rgbtlplanT[5] = {{
                              .mdTactic = mdTacticMaxDamageRatio,
                              .mdTarget1 = mdTargetStarbase,
                              .mdTarget2 = mdTargetArmedShips,
-                             .iplrAttack = 2,
+                             .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Kill Starbase",
                          },
                          {
@@ -23,25 +23,25 @@ BTLPLAN rgbtlplanT[5] = {{
                              .mdTactic = mdTacticMaxNetDamage,
                              .mdTarget1 = mdTargetArmedShips,
                              .mdTarget2 = mdTargetBombersFreighters,
-                             .iplrAttack = 2,
+                             .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Max-Defense",
                          },
                          {
                              .iplan = 3,
                              .mdTactic = mdTacticDisengageIfChallenged,
                              .mdTarget1 = mdTargetUnarmedShips,
-                             .iplrAttack = 2,
+                             .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Sniper",
                          },
                          {
                              .iplan = 4,
                              .mdTarget1 = mdTargetAny,
-                             .iplrAttack = 2,
+                             .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Chicken",
                          }};
 PLAYER  vrgplrComp[6][4] = {{{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -55,7 +55,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -69,7 +69,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -83,7 +83,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -97,7 +97,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             }},
                             {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -111,7 +111,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -125,7 +125,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -139,7 +139,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -153,7 +153,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             }},
                             {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -167,7 +167,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -181,7 +181,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -195,7 +195,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -209,7 +209,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             }},
                             {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -223,7 +223,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -237,7 +237,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -251,7 +251,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -265,7 +265,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             }},
                             {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -279,7 +279,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -293,7 +293,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -307,7 +307,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -321,7 +321,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             }},
                             {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -335,7 +335,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -349,7 +349,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -363,7 +363,7 @@ PLAYER  vrgplrComp[6][4] = {{{
                             },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 7,
                                  .wMdPlr = 7,
                                  .lSalt = -1,
@@ -381,7 +381,7 @@ void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) {
     *lpbtlplan = rgbtlplanT[iplan];
     lpbtlplan->iplr = iplr;
     if (game.fSinglePlr != 0 && iplan == 0) {
-        lpbtlplan->iplrAttack = 3;
+        lpbtlplan->iplrAttack = iplrAttackEveryone;
     }
     return;
 }
@@ -575,7 +575,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     while (i < cPlanMax) {
         lppl->id = i;
         lppl->iPlayer = -1;
-        lppl->det = 7;
+        lppl->det = detAll;
         lppl->iScanner = 31;
         if (game.fNoRandom == 0) {
             lppl->fArtifact = (uint32_t)(Random(3) == 0 ? 1 : 0) & 1;
@@ -777,7 +777,7 @@ L_15bc:
             rgplr[i].rgResSpent[j] = 0;
         }
         t_call_1734 = GetRaceStat(&rgplr[i], rsMajorAdv);
-        if (t_call_1734 - 1 <= 8) {
+        if ((uint16_t)(t_call_1734 - 1) <= 8) {
             switch (t_call_1734) {
             case 2:
                 rgplr[i].rgTech[1] = 6;
@@ -865,7 +865,7 @@ L_15bc:
         }
         if (rgplr[i].fAi != 0) {
             iT = 50;
-            if (rgplr[i].lvlAi >= 3) {
+            if (rgplr[i].lvlAi >= lvlAiExpert) {
                 lpPlanets[iMin].rgwtMin[3] += (int32_t)(lpPlanets[iMin].rgwtMin[3] / 10);
             }
         }
@@ -897,7 +897,7 @@ L_15bc:
             for (j = 0; j < 3; j++) {
                 pl[j] += ktLeft;
             }
-            if (rgplr[i].fAi == 0 || rgplr[i].lvlAi < 2)
+            if (rgplr[i].fAi == 0 || rgplr[i].lvlAi < lvlAiTough)
                 break;
         case 1:
             if (iT > 0 && iT < 3) {
@@ -1764,9 +1764,9 @@ void CreateTutorWorld() {
     rgplr[0] = vrgplrDef[0];
     CchGetString(idsHumanoid, rgplr[0].szName);
     _wsprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
-    rgplr[1] = *LpplrComp(1, 0);
+    rgplr[1] = *LpplrComp(1, lvlAiEasy);
     rgplr[1].fAi = 1;
-    rgplr[1].lvlAi = 0;
+    rgplr[1].lvlAi = lvlAiEasy;
     rgplr[1].idAi = 1;
     CchGetString(idsBerserker, rgplr[1].szName);
     Randomize(1234567890);
@@ -2052,7 +2052,7 @@ Cancel:
     return;
 }
 
-void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
+void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
     int16_t i;
     int16_t c;
     uint8_t ch;
@@ -2062,67 +2062,67 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
         if (iStepMaxSoFar < 1) {
             switch (game.mdSize) {
             case 0:
-                if (lvlAi == 3 && Random(3) == 0) {
+                if (lvlAi == lvlAiExpert && Random(3) == 0) {
                     game.cPlayer = 3;
                     break;
                 }
                 game.cPlayer = 2;
                 break;
             case 1:
-                if (lvlAi == 3 && Random(4) == 0) {
+                if (lvlAi == lvlAiExpert && Random(4) == 0) {
                     game.cPlayer = 5;
                     break;
                 }
-                if (lvlAi >= 2 && Random(6 - lvlAi) == 0) {
+                if (lvlAi >= lvlAiTough && Random(6 - lvlAi) == 0) {
                     game.cPlayer = 4;
                     break;
                 }
                 game.cPlayer = 3;
                 break;
             case 2:
-                if (lvlAi == 3 && Random(10) == 0) {
+                if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 9;
                     break;
                 }
-                if (lvlAi == 3 && Random(10) == 0) {
+                if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 5;
                     break;
                 }
-                if (lvlAi >= 2 && Random(7 - lvlAi) == 0) {
+                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 8;
                     break;
                 }
-                if (lvlAi >= 2 && Random(7 - lvlAi) == 0) {
+                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 6;
                     break;
                 }
                 game.cPlayer = 7;
                 break;
             case 3:
-                if (lvlAi == 3 && Random(10) == 0) {
+                if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = Random(2) + 14;
                     break;
                 }
-                if (lvlAi == 3 && Random(10) == 0) {
+                if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 10 - Random(2);
                     break;
                 }
-                if (lvlAi >= 2 && Random(7 - lvlAi) == 0) {
+                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 13;
                     break;
                 }
-                if (lvlAi >= 2 && Random(7 - lvlAi) == 0) {
+                if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 11;
                     break;
                 }
                 game.cPlayer = 12;
                 break;
             case 4:
-                if (lvlAi == 3 && Random(10) == 0) {
+                if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 13 - Random(3);
-                } else if (lvlAi >= 2 && Random(9 - lvlAi) == 0) {
+                } else if (lvlAi >= lvlAiTough && Random(9 - lvlAi) == 0) {
                     game.cPlayer = 14;
-                } else if (lvlAi >= 2 && Random(7 - lvlAi) == 0) {
+                } else if (lvlAi >= lvlAiTough && Random(7 - lvlAi) == 0) {
                     game.cPlayer = 15;
                 } else {
                     game.cPlayer = 16;
@@ -2130,7 +2130,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
             }
             i = 1;
             switch (lvlAi) {
-            case 0:
+            case lvlAiEasy:
                 while (i < game.cPlayer) {
                     if (i < (int16_t)(game.cPlayer + 1) / 3 + 1) {
                         vrgplrTypeNew[i++] = 11;
@@ -2143,7 +2143,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
                     }
                 }
                 break;
-            case 1:
+            case lvlAiStandard:
                 while (i < game.cPlayer) {
                     if (i < (int16_t)((game.cPlayer + 5) * 2) / 7 + 1) {
                         vrgplrTypeNew[i++] = 39;
@@ -2160,7 +2160,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
                     }
                 }
                 break;
-            case 2:
+            case lvlAiTough:
                 while (i < game.cPlayer) {
                     if (i < (int16_t)((game.cPlayer + 5) * 2) / 7 + 1) {
                         vrgplrTypeNew[i++] = 83;
@@ -2177,7 +2177,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
                     }
                 }
                 break;
-            case 3:
+            case lvlAiExpert:
                 while (i < game.cPlayer) {
                     if (i < (int16_t)(game.cPlayer + 1) / 3 + 1) {
                         vrgplrTypeNew[i++] = 99;
@@ -2301,7 +2301,7 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         rcGBox.bottom = 1000;
         ExpandRc(&rcGBox, -dyArial8, 0);
         c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
-        dy = DrawText(hdc, szWork, c, &rcGBox, 2064);
+        dy = DrawText(hdc, szWork, c, &rcGBox, DT_WORDBREAK | DT_NOPREFIX);
         SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00D3), NULL, rcGBox.left, rcGBox.top + dy + dyArial8 / 2, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         rcGBox.bottom = rcGBox.top + dy + dyArial8 * 2;
         ExpandRc(&rcGBox, dyArial8, dyArial8 >> 1);
@@ -2681,7 +2681,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
             iChecked = (iCurVal & 3) == 0 ? 8 : 0;
             AppendMenu(hmenuPopup, iChecked, 0x3a9b, PszGetCompressedString(idsPlayer));
-            tpm = message == WM_LBUTTONDOWN ? 0 : 2;
+            tpm = message == WM_LBUTTONDOWN ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
             TrackPopupMenu(hmenuPopup, 4 | tpm, pt.x, pt.y, 0, hwnd, NULL);
             DestroyMenu(hmenuPopup);
             for (i = 0; i < 6; i++) {
@@ -2972,7 +2972,7 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             }
             if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_U16_0x0123 && GET_WM_COMMAND_ID(wParam, lParam) <= 0x129) {
                 i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
-                SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + (GET_WM_COMMAND_ID(wParam, lParam) - 291 < 2 ? 0 : 1), i);
+                SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + ((uint16_t)(GET_WM_COMMAND_ID(wParam, lParam) - 291) < 2 ? 0 : 1), i);
                 DrawNewGame3(hwnd, NULL, 8);
             }
         }
@@ -3036,8 +3036,7 @@ void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw) {
             xLeft = rcCBox.left;
             yTop = rcCBox.bottom + 6 + (int16_t)(3 * dyArial8) / 2;
         }
-        ids++;
-        cch = CchGetString(ids, szWork);
+        cch = CchGetString(ids++, szWork);
         if (iDraw == -1) {
             TextOut(hdc, xLeft, yTop, szWork, cch);
         }
@@ -3132,7 +3131,7 @@ void SetNGWTitle(HWND hwnd, int16_t iStep) {
     return;
 }
 
-PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
+PLAYER *LpplrComp(int16_t idAi, AiLevel lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
 
 void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
     pgame->rgvc[vc] = LOBYTE((pgame->rgvc[vc] & 0x7f) | (fChecked == 0 ? 0 : 0x80));

@@ -6,7 +6,7 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
     int16_t cMax;
 
     if (ppctSmart != 0) {
-        *ppctSmart = 1.0;
+        *ppctSmart = (float)1.0;
     }
     if (lppl->iPlayer != -1 && lppl->cDefenses != 0) {
         iPlrSav = idPlayer;
@@ -17,16 +17,16 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
             if (cMax < cDefenses) {
                 cDefenses = cMax;
             }
-            pct = pow(1.0 - (double)part.pplanetary->grAbility / 1000.0, (double)cDefenses);
+            pct = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 1000.0), (double)cDefenses);
             if (ppctSmart != 0) {
-                *ppctSmart = pow(1.0 - (double)part.pplanetary->grAbility / 2000.0, (double)cDefenses);
+                *ppctSmart = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 2000.0), (double)cDefenses);
             }
         } else {
-            pct = 1.0;
+            pct = (float)1.0;
         }
         idPlayer = iPlrSav;
     } else {
-        pct = 1.0;
+        pct = (float)1.0;
     }
     *ppct = pct;
     return;

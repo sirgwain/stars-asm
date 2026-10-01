@@ -154,7 +154,7 @@ L_3dd1:
 L_3e38:
     GlobalPD.grPopup = grPopupFleet
     GlobalPD.lpfl = rglpfl[sel.scan.ifl]
-    GlobalPD.fRedDamage = (GlobalPD.lpfl->det == 7 ? 1 : 0)
+    GlobalPD.fRedDamage = (GlobalPD.lpfl->det == detAll ? 1 : 0)
     GlobalPD.grbit = 0xff
 
 
@@ -189,7 +189,7 @@ L_3f41:
     GlobalPD.grPopup = grPopupPlanetEnv
     GlobalPD.idPlanet = pl.id
     GlobalPD.iPlanetVar = (ht - 6)
-    branch pl.det < 3 ? L_3f85 : L_3f74
+    branch pl.det < detSome ? L_3f85 : L_3f74
 
 L_3f74:
     GlobalPD.iPlanVal = sext8to16(pl.rgEnvVar[GlobalPD.iPlanetVar])
@@ -199,7 +199,7 @@ L_3f85:
     GlobalPD.iPlanVal = -1
 
 L_3f8b:
-    branch pl.det < 3 ? L_4010 : L_3f99
+    branch pl.det < detSome ? L_4010 : L_3f99
 
 L_3f99:
     branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0 ? L_4010 : L_3fc0
@@ -474,12 +474,12 @@ L_45b4:
     branch i <= 4 ? L_459b : L_45bd
 
 L_45bd:
-    branch pl.det < 3 ? L_478e : L_45cb
+    branch pl.det < detSome ? L_478e : L_45cb
 
 L_45cb:
     GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[(ht + 2)]
     GlobalPD.rgi[1] = pl.fHomeworld
-    branch pl.det <= 3 ? L_478e : L_4608
+    branch pl.det <= detSome ? L_478e : L_4608
 
 L_4608:
     lVal = 0

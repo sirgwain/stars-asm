@@ -33,7 +33,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     pt = PointTo16(t_pt_0c9b_1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
-    if (GlobalPD.grPopup - 1 <= 13) {
+    if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
         switch (GlobalPD.grPopup) {
         case 1:
             psz = PszGetCompressedString(idsMineralConcentration0000000kt);

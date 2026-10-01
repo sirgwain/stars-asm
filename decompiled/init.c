@@ -634,7 +634,7 @@ void ReadIniSettings() {
     if (uDateCur < uDateInstalled) {
         uDateInstalled = uDateCur;
     }
-    gd.fTrialPeriodOver = uDateCur < uDateInstalled + 21 ? 0 : 1;
+    gd.fTrialPeriodOver = uDateCur < (uint16_t)(uDateInstalled + 21) ? 0 : 1;
     CchGetString(idsFonts, szSection);
     for (i = 0; i < 4; i++) {
         CchGetString(i + 197, szEntry);

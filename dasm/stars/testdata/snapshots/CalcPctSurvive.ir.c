@@ -12,7 +12,7 @@ L_02f6:
         goto L_0308;
 
 L_0308:
-    *ppctSmart = 1.0;
+    *ppctSmart = (float)1.0;
 
 L_0317:
     if (lppl->iPlayer == -1)
@@ -46,27 +46,27 @@ L_03b5:
     cDefenses = cMax;
 
 L_03bf:
-    pct = pow(1.0 - (double)part.pplanetary->grAbility / 1000.0, (double)cDefenses);
+    pct = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 1000.0), (double)cDefenses);
     if (ppctSmart == 0)
         goto L_047e;
     else
         goto L_041a;
 
 L_041a:
-    *ppctSmart = pow(1.0 - (double)part.pplanetary->grAbility / 2000.0, (double)cDefenses);
+    *ppctSmart = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 2000.0), (double)cDefenses);
 
 L_0470:
     goto L_047e;
 
 L_0473:
-    pct = 1.0;
+    pct = (float)1.0;
 
 L_047e:
     idPlayer = iPlrSav;
     goto L_0492;
 
 L_0487:
-    pct = 1.0;
+    pct = (float)1.0;
 
 L_0492:
     *ppct = pct;

@@ -210,7 +210,7 @@ L_7b15:
     iOld = 4
 
 L_7b1f:
-    branch (game.turn - rglpshdefSB[idPlayer][iOld].turn) >= 30 ? L_7b50 : L_7b48
+    branch (uint16_t)(game.turn - rglpshdefSB[idPlayer][iOld].turn) >= 30 ? L_7b50 : L_7b48
 
 L_7b48:
     j = 2

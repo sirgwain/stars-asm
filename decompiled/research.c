@@ -541,7 +541,7 @@ int16_t FTrackResearchDlg(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     return 1;
 }
 
-int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
+int32_t GetTechLevelCost(TechFieldType iTech, int16_t iLevel, int16_t iplr) {
     int32_t lCost;
     int16_t i;
     int16_t cTech;
@@ -607,7 +607,7 @@ INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         hwndBrowser = 0;
         fBrowserValid = 0;
         hmenu = GetASubMenu(hwndFrame, 5);
-        CheckMenuItem(hmenu, 0x100, 0);
+        CheckMenuItem(hmenu, 0x100, MF_UNCHECKED);
         break;
     default:
         if (IS_WM_CTLCOLOR(message) == 0) {
@@ -657,7 +657,7 @@ INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     hwndBrowser = 0;
                     fBrowserValid = 0;
                     hmenu = GetASubMenu(hwndFrame, 5);
-                    CheckMenuItem(hmenu, 0x100, 0);
+                    CheckMenuItem(hmenu, 0x100, MF_UNCHECKED);
                     EndDialog(hwnd, 1);
                     if (gd.fTutorial != 0) {
                         AdvanceTutor();
@@ -1160,7 +1160,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 c = CchGetString(idsEnemyFleetsOrbitingPlanetCanDetectedD, szT);
                 c = _wsprintf(szWork, szT, i);
             }
-            dyText = DrawText(hdc, szWork, c, &rcData, 2064);
+            dyText = DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             rcData.top += (dyArial8 >> 1) + dyText;
             i = ppart->pscanner->grfAbilities;
             if (i == 0) {
@@ -1180,7 +1180,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 c = CchGetString(ids, szWork);
                 ids = idsScannerRequiresPrimaryRacialTraitSuperStealth;
             }
-            dyText = DrawText(hdc, szWork, c, &rcData, 2064);
+            dyText = DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             break;
         case hstHull:
             ExpandRc(&rcData, -4, -4);
@@ -1350,7 +1350,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
         LShieldDisp:
             c = CchGetString(idsT, szWork);
             rcData.top += dyArial8 + 4;
-            DrawText(hdc, szWork, c, &rcData, 2064);
+            DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             break;
         case hstArmor:
             ExpandRc(&rcData, -4, -4);
@@ -1374,13 +1374,13 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 c = CchGetString(idsPartAlsoActs100dpShield20Cloak, szWork);
                 rcData.top += dyArial8 + 4;
                 SelectObject(hdc, rghfontArial8[0]);
-                DrawText(hdc, szWork, c, &rcData, 2064);
+                DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             }
             break;
         LArmDisp:
             c = CchGetString(idsT, szWork);
             rcData.top += dyArial8 + 4;
-            DrawText(hdc, szWork, c, &rcData, 2064);
+            DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             break;
         case hstBeam:
             ExpandRc(&rcData, -4, -4);
@@ -1412,22 +1412,22 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 SelectObject(hdc, rghfontArial7[0]);
                 if ((ppart->pbeam->grfAbilities & 1) != 0) {
                     c = CchGetString(idsWeaponWillDamageShieldsHasEffectArmor, szWork);
-                    rcData.top += DrawText(hdc, szWork, c, &rcData, 2064);
+                    rcData.top += DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
                 }
                 if ((ppart->pbeam->grfAbilities & 2) != 0) {
                     c = CchGetString(idsWeaponHitsTargetsRangeEachTimeFired, szWork);
-                    rcData.top += DrawText(hdc, szWork, c, &rcData, 2064);
+                    rcData.top += DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
                     c = _wsprintf(szWork, PszGetCompressedString(idsWeaponAlsoMakesExcellentMineSweeperCapable), ppart->pbeam->dp * 16);
-                    DrawText(hdc, szWork, c, &rcData, 2064);
+                    DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
                 }
                 SelectObject(hdc, rghfontArial8[0]);
             } else if (ppart->hs.iItem == ibeamMultiContainedMunition) {
                 ids = idsOriginPartUnknown;
                 c = CchGetString(idsPartAlsoActs10CloakIncreasesTorpedo, szWork);
                 SelectObject(hdc, rghfontArial7[0]);
-                rcData.top += DrawText(hdc, szWork, c, &rcData, 2064);
+                rcData.top += DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
                 c = CchGetString(idsWeaponCanAlsoBombPlanets2Colonists, szWork);
-                DrawText(hdc, szWork, c, &rcData, 2064);
+                DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             }
             switch (ppart->hs.iItem) {
             case ibeamMiniGun:
@@ -1822,7 +1822,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
             rcData.top += dyArial8;
             SelectObject(hdc, rghfontArial7[0]);
             c = CchGetString(idsNumbersParenthesisFleetsContainingShipRamScoop, szWork);
-            DrawText(hdc, szWork, c, &rcData, 2064);
+            DrawText(hdc, szWork, c, &rcData, DT_WORDBREAK | DT_NOPREFIX);
             break;
         case hstMining:
             ExpandRc(&rcData, -4, -4);
@@ -1992,7 +1992,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
             }
             t_merge_6561_0001 = l == -1 ? 127 : 0;
             SetTextColor(hdc, t_merge_6561_0001);
-            DrawText(hdc, szWork, c, &rcT, 2064);
+            DrawText(hdc, szWork, c, &rcT, DT_WORDBREAK | DT_NOPREFIX);
             if (l == -1) {
                 SetTextColor(hdc, 0);
             }

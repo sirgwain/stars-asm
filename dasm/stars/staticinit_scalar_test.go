@@ -54,6 +54,27 @@ func TestDecodeInitializerEnumArray(t *testing.T) {
 	}
 }
 
+// TestDecodeInitializerByteEnumArray verifies packed enum globals retain byte storage.
+func TestDecodeInitializerByteEnumArray(t *testing.T) {
+	enumType := typeinfo.EnumWithStorageSize(&typeinfo.Enum{
+		Name: "AiResearchTarget",
+		Values: []typeinfo.EnumValue{
+			{Name: "aiResearchPropulsion2", Value: 66},
+			{Name: "aiResearchConstruction3", Value: 99},
+		},
+		Typedef: typeinfo.U16,
+	}, typeinfo.U8)
+	arrayType := &typeinfo.Array{Elem: enumType, Count: 2}
+
+	init, ok := decodeInitializer(nil, nil, initLocation{}, arrayType, []byte{66, 99})
+	if !ok {
+		t.Fatal("decodeInitializer() failed")
+	}
+	if got, want := FormatInitializerC(nil, init), "{ aiResearchPropulsion2, aiResearchConstruction3 }"; got != want {
+		t.Fatalf("FormatInitializerC() = %q, want %q", got, want)
+	}
+}
+
 func TestFormatInitializerEnumFlags(t *testing.T) {
 	enumType := &typeinfo.Enum{
 		Name:     "HullSlotType",

@@ -1016,7 +1016,13 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 			if g == nil {
 				return fmt.Errorf("unable to find global %s", rule.Name)
 			}
-			g.Type = EnumWithStorageSize(typ, g.Type)
+			if array, ok := g.Type.(*Array); ok {
+				annotated := *array
+				annotated.Elem = EnumWithStorageSize(typ, array.Elem)
+				g.Type = &annotated
+			} else {
+				g.Type = EnumWithStorageSize(typ, g.Type)
+			}
 			continue
 		}
 

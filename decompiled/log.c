@@ -46,7 +46,7 @@ void LogChangeShDef(SHDEF *lpshdefNew) {
             WriteMemRt(27, 2, rgb);
         } else {
             RawStore16(rgb, (RawLoad16(rgb) & 0xfff0) | 1);
-            lpshdefNew->det = 7;
+            lpshdefNew->det = detAll;
             pb = &rgb[2];
             WriteRtShDef(lpshdefNew, &pb);
             WriteMemRt(27, pb - rgb, rgb);
@@ -1429,13 +1429,13 @@ int16_t FWriteHistFile(int16_t iPlayer) {
     i = 0;
     lppl = lpPlanets;
     while (i < cPlanet) {
-        WritePlanet(lppl, lppl->det < 3 ? 0xf : rtPlanetB, 1);
+        WritePlanet(lppl, lppl->det < detSome ? 0xf : rtPlanetB, 1);
         i++;
         lppl++;
     }
     WriteRt(rtMsgFilt, cbbitfMsg, bitfMsgFiltered);
     for (i = 0; i < game.cPlayer; i++) {
-        if (i != iPlayer && rgplr[i].det != 0) {
+        if (i != iPlayer && rgplr[i].det != detNone) {
             WriteRtPlr(&rgplr[i], NULL);
         }
     }

@@ -29,7 +29,7 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     lpfl->ifl = iflPrev + 1;
     lpfl->iPlayer = iPlr;
     lpfl->iplr = iPlr;
-    lpfl->det = 7;
+    lpfl->det = detAll;
     lpfl->idPlanet = idPl;
     if (idPl != -1) {
         lpfl->pt = rgptPlan[idPl];

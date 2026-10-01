@@ -17,8 +17,8 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     double   lRange4;
     SCANNER *t_call_52ec;
 
-    lRange4 = 0.0;
-    lPlanRange4 = 0.0;
+    lRange4 = (double)0;
+    lPlanRange4 = (double)0;
     fHasScanner = 0;
     iSteal = 0;
     cDetectors = 0;
@@ -33,17 +33,17 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
         case ihuldefScout:
         case ihuldefDestroyer:
         case ihuldefFrigate:
-            if (lBIR4 < 0.0) {
+            if ((long double)lBIR4 < (long double)0) {
                 if (game.fTutorial != 0) {
                     lBIR4 = 2.56e+06;
                     lBIPR4 = 160000.0;
                 } else {
                     lBIPR4 = (double)(int16_t)(rgplr[iplr].rgTech[4] * 10);
-                    lBIR4 = lBIPR4 * 2.0;
-                    lBIPR4 *= lBIPR4;
-                    lBIPR4 *= lBIPR4;
-                    lBIR4 *= lBIR4;
-                    lBIR4 *= lBIR4;
+                    lBIR4 = (double)((long double)lBIPR4 * 2);
+                    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+                    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+                    lBIR4 = (double)((long double)lBIR4 * lBIR4);
+                    lBIR4 = (double)((long double)lBIR4 * lBIR4);
                 }
             }
             lRange4 = lBIR4;
@@ -61,10 +61,10 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
                 t_call_52ec = LpscannerFromId(lphs->iItem);
                 dRangeT = t_call_52ec->dRange;
                 lT = (double)t_call_52ec->dRange;
-                lT *= lT;
-                lT *= lT;
-                lT *= (double)(uint32_t)lphs->cItem;
-                lRange4 += lT;
+                lT = (double)((long double)lT * lT);
+                lT = (double)((long double)lT * lT);
+                lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+                lRange4 = (double)((long double)lRange4 + lT);
                 dRangeT = LpscannerFromId(iScanner)->grfAbilities;
                 switch (iScanner) {
                 case 6:
@@ -110,24 +110,24 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
                 goto L_5298;
             }
             lT = (double)dRangeT;
-            lT *= lT;
-            lT *= lT;
-            lT *= (double)(uint32_t)lphs->cItem;
-            lRange4 += lT;
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+            lRange4 = (double)((long double)lRange4 + lT);
             dRangeT = dRangeT2;
         LPlanScan:
             lT = (double)dRangeT;
-            lT *= lT;
-            lT *= lT;
-            lT *= (double)(uint32_t)lphs->cItem;
-            lPlanRange4 += lT;
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+            lPlanRange4 = (double)((long double)lPlanRange4 + lT);
         }
     L_5298:
         j++;
         lphs++;
     }
-    if (lRange4 > 0.0 || fHasScanner != 0) {
-        dRange = LOWORD((int32_t)sqrt(sqrt(lRange4)));
+    if ((long double)lRange4 > (long double)0 || fHasScanner != 0) {
+        dRange = LOWORD((int32_t)sqrt((double)sqrt(lRange4)));
         if (iplr != -1 && GetRaceGrbit(&rgplr[iplr], ibitRaceNoAdvScanner) != 0) {
             dRange *= 2;
         }
@@ -135,7 +135,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
         dRange = -1;
     }
     if (pdPlanRange != 0) {
-        *pdPlanRange = LOWORD((int32_t)sqrt(sqrt(lPlanRange4)));
+        *pdPlanRange = LOWORD((int32_t)sqrt((double)sqrt(lPlanRange4)));
     }
     if (piSteal != 0) {
         *piSteal = iSteal;

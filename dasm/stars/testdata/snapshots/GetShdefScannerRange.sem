@@ -31,8 +31,8 @@ GetShdefScannerRange  (util)
     LOddBallScanners: L_5482
 */
 L_50d0:
-    lRange4 = 0.0
-    lPlanRange4 = 0.0
+    lRange4 = (double)0
+    lPlanRange4 = (double)0
     fHasScanner = 0
     iSteal = 0
     cDetectors = 0
@@ -69,7 +69,7 @@ L_518c:
     branch lpshdef->hul.ihuldef != ihuldefFrigate ? L_5272 : L_5198
 
 L_5198:
-    branch lBIR4 >= 0.0 ? L_525e : L_51b6
+    branch (long double)lBIR4 >= (long double)0 ? L_525e : L_51b6
 
 L_51b6:
     branch game.fTutorial == 0 ? L_51e3 : L_51ca
@@ -81,11 +81,11 @@ L_51ca:
 
 L_51e3:
     lBIPR4 = (double)sext16to32((sext8to16(rgplr[iplr].rgTech[4]) * 10))
-    lBIR4 = (lBIPR4 * 2.0)
-    lBIPR4 = (lBIPR4 * lBIPR4)
-    lBIPR4 = (lBIPR4 * lBIPR4)
-    lBIR4 = (lBIR4 * lBIR4)
-    lBIR4 = (lBIR4 * lBIR4)
+    lBIR4 = (double)((long double)lBIPR4 * 2)
+    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4)
+    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4)
+    lBIR4 = (double)((long double)lBIR4 * lBIR4)
+    lBIR4 = (double)((long double)lBIR4 * lBIR4)
 
 L_525e:
     lRange4 = lBIR4
@@ -116,10 +116,10 @@ L_52d9:
     call LpscannerFromId(lphs->iItem) -> t_call_52ec
     dRangeT = t_call_52ec->dRange
     lT = (double)sext16to32(t_call_52ec->dRange)
-    lT = (lT * lT)
-    lT = (lT * lT)
-    lT = (lT * (double)(uint32_t)lphs->cItem)
-    lRange4 = (lRange4 + lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem)
+    lRange4 = (double)((long double)lRange4 + lT)
     dRangeT = LpscannerFromId(iScanner)->grfAbilities
     branch iScanner != 6 ? L_5390 : L_5385
 
@@ -167,10 +167,10 @@ L_53ea:
 
 LPlanScan:
     lT = (double)sext16to32(dRangeT)
-    lT = (lT * lT)
-    lT = (lT * lT)
-    lT = (lT * (double)(uint32_t)lphs->cItem)
-    lPlanRange4 = (lPlanRange4 + lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem)
+    lPlanRange4 = (double)((long double)lPlanRange4 + lT)
 
 L_5457:
     goto L_5298
@@ -187,10 +187,10 @@ L_5478:
 
 LOddBallScanners:
     lT = (double)sext16to32(dRangeT)
-    lT = (lT * lT)
-    lT = (lT * lT)
-    lT = (lT * (double)(uint32_t)lphs->cItem)
-    lRange4 = (lRange4 + lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * lT)
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem)
+    lRange4 = (double)((long double)lRange4 + lT)
     dRangeT = dRangeT2
     goto L_53ed
 
@@ -232,13 +232,13 @@ L_558e:
     goto L_5298
 
 L_5591:
-    branch lRange4 > 0.0 ? L_55b8 : L_55af
+    branch (long double)lRange4 > (long double)0 ? L_55b8 : L_55af
 
 L_55af:
     branch fHasScanner == 0 ? L_5628 : L_55b8
 
 L_55b8:
-    dRange = loword((int32_t)sqrt(sqrt(lRange4)))
+    dRange = loword((int32_t)sqrt((double)sqrt(lRange4)))
     branch iplr == -1 ? L_562d : L_55fd
 
 L_55fd:
@@ -257,7 +257,7 @@ L_562d:
     branch pdPlanRange == 0 ? L_5674 : L_5636
 
 L_5636:
-    *pdPlanRange = loword((int32_t)sqrt(sqrt(lPlanRange4)))
+    *pdPlanRange = loword((int32_t)sqrt((double)sqrt(lPlanRange4)))
 
 L_5674:
     branch piSteal == 0 ? L_5685 : L_567d

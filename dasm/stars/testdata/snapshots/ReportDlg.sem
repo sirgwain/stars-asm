@@ -84,13 +84,13 @@ L_019b:
 
 
 L_01f3:
-    swp = 132
+    swp = SWP_NOZORDER|SWP_HIDEWINDOW
     vprptCur->irowFirst = 0
-    call SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0) -> callresult(int16_t)
+    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0) -> callresult(int16_t)
     goto L_02b5
 
 L_021c:
-    swp = 68
+    swp = SWP_NOZORDER|SWP_SHOWWINDOW
     branch (vprptCur->irowFirst + vprptCur->cRowsVis) <= vprptCur->cRows ? L_0273 : L_023b
 
 L_023b:
@@ -104,8 +104,8 @@ L_026a:
     vprptCur->irowFirst = 0
 
 L_0273:
-    call SetScrollPos(vprptCur->hwndVScroll, 2, vprptCur->irowFirst, 0) -> callresult(int16_t)
-    call SetScrollRange(vprptCur->hwndVScroll, 2, 0, (vprptCur->cRows - vprptCur->cRowsVis), 1) -> callresult(void)
+    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0) -> callresult(int16_t)
+    call SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, (vprptCur->cRows - vprptCur->cRowsVis), 1) -> callresult(void)
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL)
@@ -210,7 +210,7 @@ L_04f9:
     goto L_09c8
 
 L_04fc:
-    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2)
+    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL)
     iNew = iCur
     goto L_0576
 
@@ -271,14 +271,14 @@ L_05d7:
     rc.top = (dyArial8 + 6)
     rc.bottom = (((dyArial8 + 4) * vprptCur->cRowsVis) + rc.top)
     call ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &rc, &rc) -> callresult(void)
-    call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1) -> callresult(int16_t)
+    call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1) -> callresult(int16_t)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_0673:
     return 0
 
 L_067c:
-    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2)
+    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL)
     iNew = iCur
     goto L_06e4
 
@@ -332,8 +332,8 @@ L_072c:
     branch iNew == iCur ? L_080f : L_0737
 
 L_0737:
-    call SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1) -> callresult(int16_t)
-    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2)
+    call SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1) -> callresult(int16_t)
+    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL)
     branch iNew == iCur ? L_080f : L_0788
 
 L_0788:
@@ -409,7 +409,7 @@ L_0909:
     branch vprptCur->irpt == 3 ? L_08e6 : L_0914
 
 L_0914:
-    call CheckMenuItem(hmenu, idm, 0) -> callresult(int16_t)
+    call CheckMenuItem(hmenu, idm, MF_UNCHECKED) -> callresult(int16_t)
     vprptCur = 0
     branch gd.fTutorial == 0 ? L_09c8 : L_093d
 

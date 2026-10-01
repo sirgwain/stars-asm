@@ -650,7 +650,7 @@ void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
             rc.bottom = 3 * dyArial8 + rc.top;
             SelectObject(hdc, hbrButtonFace);
             PatBlt(hdc, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, PATCOPY);
-            DrawText(hdc, szWork, cch, &rc, 16);
+            DrawText(hdc, szWork, cch, &rc, DT_WORDBREAK);
         }
     }
     SetBkMode(hdc, bkMode);
@@ -875,7 +875,7 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 
 void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t  dxItem;
-    int16_t  idsT;
+    StringId idsT;
     int16_t  fMacintosh;
     int16_t  yTop;
     int16_t  bt;
@@ -921,7 +921,7 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
             yTop += (int16_t)(5 * dyArial8) / 2;
         }
         if (fMacintosh != 0 && ids == idsOneResourceGeneratedEachYearEvery) {
-            idsT = 260;
+            idsT = idsAnnualResourcesPlanetValueSqrtPopulationEnergy;
         } else {
             idsT = ids;
         }
@@ -957,7 +957,7 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
         }
         if (iDraw == -1) {
             if (fMacintosh != 0 && ids == idsColonists) {
-                idsT = 261;
+                idsT = idsMsg0261;
             } else {
                 idsT = ids;
             }
@@ -1096,7 +1096,7 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         ExpandRc(&rc, -dyArial8 - 2, -(dyArial8 >> 1));
         rc.top += 4;
-        DrawText(hdc, szT, cch, &rc, 16);
+        DrawText(hdc, szT, cch, &rc, DT_WORDBREAK);
         rcCargo = rc;
         EndPaint(hwnd, &ps);
         return 1;
@@ -1194,7 +1194,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         cch = CchGetString(cColDrop + 320, szWork);
         ExpandRc(&rc, -dyArial8 - 2, -(dyArial8 >> 1));
         rc.top += 4;
-        DrawText(hdc, szWork, cch, &rc, 16);
+        DrawText(hdc, szWork, cch, &rc, DT_WORDBREAK);
         EndPaint(hwnd, &ps);
         return 1;
     }
@@ -1632,7 +1632,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
     int16_t pctTerra;
 
     plrT = rgplr[0];
-    lInnate = 0.0;
+    lInnate = (double)0;
     fTotalTerra = GetRaceGrbit(pplr, ibitRaceTT);
     rgplr[0] = *pplr;
     rgDelta[2] = 0;
@@ -1673,7 +1673,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                 rgSteps[i] = 11;
             }
         }
-        l3 = 0.0;
+        l3 = (double)0;
         for (i = 0; i < rgSteps[0]; i++) {
             if (i == 0 || rgSteps[0] <= 1) {
                 iTry = rgBase[0];
@@ -1693,7 +1693,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                 iTry = pplr->rgEnvVar[0] - iDelta;
             }
             pl.rgEnvVar[0] = LOBYTE(iTry);
-            l2 = 0.0;
+            l2 = (double)0;
             for (j = 0; j < rgSteps[1]; j++) {
                 if (j == 0 || rgSteps[1] <= 1) {
                     iTry = rgBase[1];
@@ -1756,26 +1756,26 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                 } else {
                     l1 = (uint32_t)(l1 * 11);
                 }
-                l2 = (double)l1 + l2;
+                l2 = (double)((long double)l1 + l2);
             }
             if (pplr->rgEnvVar[1] >= 0) {
-                l2 = l2 * (double)rgInc[1] / 100.0;
+                l2 = (double)((long double)l2 * rgInc[1] / 100);
             } else {
-                l2 *= 11.0;
+                l2 = (double)((long double)l2 * 11);
             }
-            l3 += l2;
+            l3 = (double)((long double)l3 + l2);
         }
         if (pplr->rgEnvVar[0] >= 0) {
-            l3 = l3 * (double)rgInc[0] / 100.0;
+            l3 = (double)((long double)l3 * rgInc[0] / 100);
         } else {
-            l3 *= 11.0;
+            l3 = (double)((long double)l3 * 11);
         }
-        lInnate += l3;
+        lInnate = (double)((long double)lInnate + l3);
     }
     if (pplr != rgplr) {
         rgplr[0] = plrT;
     }
-    return (int32_t)(lInnate / 10.0 + 0.5);
+    return (int32_t)((long double)lInnate / 10.0 + 0.5);
 }
 
 void InvalidateAdvPtsRect(HWND hwnd) {
@@ -1914,7 +1914,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     ofn.lpstrDefExt = "r1";
     ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_NOREADONLYRETURN;
     if (GetSaveFileName(&ofn) != 0) {
-        if (FCreateFile(5, -1, szFile) == 0) {
+        if (FCreateFile(dtRace, -1, szFile) == 0) {
             AlertSz(PszFormatIds(idsStarsUnableSaveRaceDataFilePlease, NULL), MB_ICONHAND);
             return 0;
         }

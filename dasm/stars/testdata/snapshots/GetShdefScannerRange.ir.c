@@ -18,8 +18,8 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     SCANNER *t_call_52ec;
 
 L_50d0:
-    lRange4 = 0.0;
-    lPlanRange4 = 0.0;
+    lRange4 = (double)0;
+    lPlanRange4 = (double)0;
     fHasScanner = 0;
     iSteal = 0;
     cDetectors = 0;
@@ -77,7 +77,7 @@ L_518c:
         goto L_5198;
 
 L_5198:
-    if (lBIR4 >= 0.0)
+    if ((long double)lBIR4 >= (long double)0)
         goto L_525e;
     else
         goto L_51b6;
@@ -95,11 +95,11 @@ L_51ca:
 
 L_51e3:
     lBIPR4 = (double)(int16_t)(rgplr[iplr].rgTech[4] * 10);
-    lBIR4 = lBIPR4 * 2.0;
-    lBIPR4 *= lBIPR4;
-    lBIPR4 *= lBIPR4;
-    lBIR4 *= lBIR4;
-    lBIR4 *= lBIR4;
+    lBIR4 = (double)((long double)lBIPR4 * 2);
+    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+    lBIR4 = (double)((long double)lBIR4 * lBIR4);
+    lBIR4 = (double)((long double)lBIR4 * lBIR4);
 
 L_525e:
     lRange4 = lBIR4;
@@ -139,10 +139,10 @@ L_52d9:
     t_call_52ec = LpscannerFromId(lphs->iItem);
     dRangeT = t_call_52ec->dRange;
     lT = (double)t_call_52ec->dRange;
-    lT *= lT;
-    lT *= lT;
-    lT *= (double)(uint32_t)lphs->cItem;
-    lRange4 += lT;
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+    lRange4 = (double)((long double)lRange4 + lT);
     dRangeT = LpscannerFromId(iScanner)->grfAbilities;
     if (iScanner != 6)
         goto L_5390;
@@ -208,10 +208,10 @@ L_53ea:
 
 LPlanScan:
     lT = (double)dRangeT;
-    lT *= lT;
-    lT *= lT;
-    lT *= (double)(uint32_t)lphs->cItem;
-    lPlanRange4 += lT;
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+    lPlanRange4 = (double)((long double)lPlanRange4 + lT);
 
 L_5457:
     goto L_5298;
@@ -234,10 +234,10 @@ L_5478:
 
 LOddBallScanners:
     lT = (double)dRangeT;
-    lT *= lT;
-    lT *= lT;
-    lT *= (double)(uint32_t)lphs->cItem;
-    lRange4 += lT;
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * lT);
+    lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+    lRange4 = (double)((long double)lRange4 + lT);
     dRangeT = dRangeT2;
     goto LPlanScan;
 
@@ -300,7 +300,7 @@ L_558e:
     goto L_5298;
 
 L_5591:
-    if (lRange4 > 0.0)
+    if ((long double)lRange4 > (long double)0)
         goto L_55b8;
     else
         goto L_55af;
@@ -312,7 +312,7 @@ L_55af:
         goto L_55b8;
 
 L_55b8:
-    dRange = LOWORD((int32_t)sqrt(sqrt(lRange4)));
+    dRange = LOWORD((int32_t)sqrt((double)sqrt(lRange4)));
     if (iplr == -1)
         goto L_562d;
     else
@@ -340,7 +340,7 @@ L_562d:
         goto L_5636;
 
 L_5636:
-    *pdPlanRange = LOWORD((int32_t)sqrt(sqrt(lPlanRange4)));
+    *pdPlanRange = LOWORD((int32_t)sqrt((double)sqrt(lPlanRange4)));
 
 L_5674:
     if (piSteal == 0)

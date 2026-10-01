@@ -40,7 +40,7 @@ HB *LphbReAlloc(HB *lphb) {
     cbCur = lphb->cbBlock;
     cbGrow = mphtcbAlloc[lphb->ht];
     if (cbCur < 0xffdc) {
-        if (cbCur > 0xffdc - cbGrow) {
+        if (cbCur > (uint16_t)(0xffdc - cbGrow)) {
             cbGrow = 0xffdc - cbCur;
         }
         GlobalUnlock(hmem);
@@ -121,7 +121,7 @@ void *LpAlloc(uint16_t cb, HeapType ht) {
                     }
                     cbItem = lpb - lpbPrev - 2;
                     RawStore16(lpbPrev, cbItem | 1);
-                    if (cbItem + 2 >= cb) {
+                    if ((uint16_t)(cbItem + 2) >= cb) {
                         RawStore16(lpbPrev, RawLoad16(lpbPrev) & 0xfffe);
                         lpbPrev += 2;
                         lphb->cbFree -= cbItem + 2;

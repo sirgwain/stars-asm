@@ -1,4 +1,4 @@
-int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
+int32_t GetTechLevelCost(TechFieldType iTech, int16_t iLevel, int16_t iplr) {
     int32_t lCost;
     int16_t i;
     int16_t cTech;

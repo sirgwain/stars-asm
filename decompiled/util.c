@@ -91,7 +91,7 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
     int16_t cMax;
 
     if (ppctSmart != 0) {
-        *ppctSmart = 1.0;
+        *ppctSmart = (float)1.0;
     }
     if (lppl->iPlayer != -1 && lppl->cDefenses != 0) {
         iPlrSav = idPlayer;
@@ -102,16 +102,16 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
             if (cMax < cDefenses) {
                 cDefenses = cMax;
             }
-            pct = pow(1.0 - (double)part.pplanetary->grAbility / 1000.0, (double)cDefenses);
+            pct = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 1000.0), (double)cDefenses);
             if (ppctSmart != 0) {
-                *ppctSmart = pow(1.0 - (double)part.pplanetary->grAbility / 2000.0, (double)cDefenses);
+                *ppctSmart = (float)pow((double)(1.0 - (long double)part.pplanetary->grAbility / 2000.0), (double)cDefenses);
             }
         } else {
-            pct = 1.0;
+            pct = (float)1.0;
         }
         idPlayer = iPlrSav;
     } else {
-        pct = 1.0;
+        pct = (float)1.0;
     }
     *ppct = pct;
     return;
@@ -499,9 +499,9 @@ int16_t FCalcFleetBombDamage(FLEET *lpfl, int32_t *pdmgPeople, int32_t *pdmgPeop
                         } else if (part.hs.cItem > 0) {
                             if (part.pbomb->dDmgBldg == 0) {
                                 cIter = (uint32_t)(part.hs.cItem * lpfl->rgcsh[ishdef]);
-                                dmgT = 1.0 - (double)part.pbomb->dDmgCol / 1000.0;
+                                dmgT = (double)(1.0 - (long double)part.pbomb->dDmgCol / 1000.0);
                                 while (cIter-- > 0) {
-                                    dmgSmart *= dmgT;
+                                    dmgSmart = (double)((long double)dmgSmart * dmgT);
                                 }
                             } else {
                                 *pdmgPeople += (uint32_t)((uint32_t)(part.hs.cItem * lpfl->rgcsh[ishdef]) * part.pbomb->dDmgCol);
@@ -535,7 +535,7 @@ int16_t FCalcFleetBombDamage(FLEET *lpfl, int32_t *pdmgPeople, int32_t *pdmgPeop
             lpfl = NULL;
         }
     }
-    *pdmgPeopleSmart = (int32_t)(1000.0 - dmgSmart * 1000.0 + 0.5);
+    *pdmgPeopleSmart = (int32_t)(1000.0 - (long double)dmgSmart * 1000.0 + 0.5);
     if (*pdmgPeopleSmart >= 1000) {
         *pdmgPeopleSmart = 1000;
     }
@@ -1041,7 +1041,7 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     lpfl->ifl = iflPrev + 1;
     lpfl->iPlayer = iPlr;
     lpfl->iplr = iPlr;
-    lpfl->det = 7;
+    lpfl->det = detAll;
     lpfl->idPlanet = idPl;
     if (idPl != -1) {
         lpfl->pt = rgptPlan[idPl];
@@ -1331,7 +1331,7 @@ char *PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
     int32_t d2;
 
     fStarted = 0;
-    d = (int32_t)(DGetDistance(x1, y1, x2, y2) * 100.0 + 0.5);
+    d = (int32_t)((long double)DGetDistance(x1, y1, x2, y2) * 100.0 + 0.5);
     d2 = (int32_t)(d / 100);
     d -= (uint32_t)(d2 * 100);
     if (dyArial8 <= 14) {
@@ -1352,8 +1352,8 @@ double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
     dy = (int16_t)(y2 - y1);
     l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
     t_call_404f = sqrt((double)l);
-    __fac = t_call_404f;
-    return t_call_404f;
+    __fac = (double)t_call_404f;
+    return (long double)t_call_404f;
 }
 
 int16_t FFindNearestObject(POINT16 pt, GrobjClass grobj, SCAN *pscan) {
@@ -1541,7 +1541,7 @@ void UpdateShdefCost(SHDEF *lpshdef) {
     uint32_t rgMin[3];
     PART     part;
 
-    if (lpshdef->det == 7) {
+    if (lpshdef->det == detAll) {
         fWeakArmor = GetRaceGrbit(&rgplr[idPlayer], ibitRaceRegeneratingShields) == 0 ? 0 : 1;
     } else {
         fWeakArmor = 0;
@@ -1750,8 +1750,8 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     double   lRange4;
     SCANNER *t_call_52ec;
 
-    lRange4 = 0.0;
-    lPlanRange4 = 0.0;
+    lRange4 = (double)0;
+    lPlanRange4 = (double)0;
     fHasScanner = 0;
     iSteal = 0;
     cDetectors = 0;
@@ -1766,17 +1766,17 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
         case ihuldefScout:
         case ihuldefDestroyer:
         case ihuldefFrigate:
-            if (lBIR4 < 0.0) {
+            if ((long double)lBIR4 < (long double)0) {
                 if (game.fTutorial != 0) {
                     lBIR4 = 2.56e+06;
                     lBIPR4 = 160000.0;
                 } else {
                     lBIPR4 = (double)(int16_t)(rgplr[iplr].rgTech[4] * 10);
-                    lBIR4 = lBIPR4 * 2.0;
-                    lBIPR4 *= lBIPR4;
-                    lBIPR4 *= lBIPR4;
-                    lBIR4 *= lBIR4;
-                    lBIR4 *= lBIR4;
+                    lBIR4 = (double)((long double)lBIPR4 * 2);
+                    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+                    lBIPR4 = (double)((long double)lBIPR4 * lBIPR4);
+                    lBIR4 = (double)((long double)lBIR4 * lBIR4);
+                    lBIR4 = (double)((long double)lBIR4 * lBIR4);
                 }
             }
             lRange4 = lBIR4;
@@ -1794,10 +1794,10 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
                 t_call_52ec = LpscannerFromId(lphs->iItem);
                 dRangeT = t_call_52ec->dRange;
                 lT = (double)t_call_52ec->dRange;
-                lT *= lT;
-                lT *= lT;
-                lT *= (double)(uint32_t)lphs->cItem;
-                lRange4 += lT;
+                lT = (double)((long double)lT * lT);
+                lT = (double)((long double)lT * lT);
+                lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+                lRange4 = (double)((long double)lRange4 + lT);
                 dRangeT = LpscannerFromId(iScanner)->grfAbilities;
                 switch (iScanner) {
                 case 6:
@@ -1843,24 +1843,24 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
                 goto L_5298;
             }
             lT = (double)dRangeT;
-            lT *= lT;
-            lT *= lT;
-            lT *= (double)(uint32_t)lphs->cItem;
-            lRange4 += lT;
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+            lRange4 = (double)((long double)lRange4 + lT);
             dRangeT = dRangeT2;
         LPlanScan:
             lT = (double)dRangeT;
-            lT *= lT;
-            lT *= lT;
-            lT *= (double)(uint32_t)lphs->cItem;
-            lPlanRange4 += lT;
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * lT);
+            lT = (double)((long double)lT * (uint32_t)lphs->cItem);
+            lPlanRange4 = (double)((long double)lPlanRange4 + lT);
         }
     L_5298:
         j++;
         lphs++;
     }
-    if (lRange4 > 0.0 || fHasScanner != 0) {
-        dRange = LOWORD((int32_t)sqrt(sqrt(lRange4)));
+    if ((long double)lRange4 > (long double)0 || fHasScanner != 0) {
+        dRange = LOWORD((int32_t)sqrt((double)sqrt(lRange4)));
         if (iplr != -1 && GetRaceGrbit(&rgplr[iplr], ibitRaceNoAdvScanner) != 0) {
             dRange *= 2;
         }
@@ -1868,7 +1868,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
         dRange = -1;
     }
     if (pdPlanRange != 0) {
-        *pdPlanRange = LOWORD((int32_t)sqrt(sqrt(lPlanRange4)));
+        *pdPlanRange = LOWORD((int32_t)sqrt((double)sqrt(lPlanRange4)));
     }
     if (piSteal != 0) {
         *piSteal = iSteal;
@@ -2085,7 +2085,7 @@ void DrawABunchOfStars(HDC hdc, RECT *prc) {
             rcOut.right = rcOut.left + 1;
             rcOut.bottom = rcOut.top + 1;
             SetBkColor(hdc, rgcrDrawStars[iClr]);
-            ExtTextOut(hdc, 0, 0, 2, &rcOut, NULL, 0, NULL);
+            ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rcOut, NULL, 0, NULL);
         }
     }
     for (iClr = 0; iClr < 4; iClr++) {
@@ -2096,12 +2096,12 @@ void DrawABunchOfStars(HDC hdc, RECT *prc) {
             rcOut.right = rcOut.left + 3;
             rcOut.bottom = rcOut.top + 3;
             SetBkColor(hdc, rgcrDrawStars2b[iClr]);
-            ExtTextOut(hdc, 0, 0, 2, &rcOut, NULL, 0, NULL);
+            ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rcOut, NULL, 0, NULL);
             SetBkColor(hdc, rgcrDrawStars2a[iClr]);
             InflateRect(&rcOut, -1, 0);
-            ExtTextOut(hdc, 0, 0, 2, &rcOut, NULL, 0, NULL);
+            ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rcOut, NULL, 0, NULL);
             InflateRect(&rcOut, 1, -1);
-            ExtTextOut(hdc, 0, 0, 2, &rcOut, NULL, 0, NULL);
+            ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rcOut, NULL, 0, NULL);
         }
     }
     PopRandom();
@@ -2234,20 +2234,20 @@ int16_t FMatchTarget(FLEET *lpflTarget, int16_t mdTarget, int16_t fExact) {
 }
 
 void ValidateWaypoints() {
-    int16_t mdTarget;
-    FLEET  *lpflTarget;
-    int16_t ifl2;
-    int32_t wt;
-    FLEET  *lpflMatch;
-    int32_t wtMatch;
-    ORDER  *lpord;
-    int16_t ifl;
-    THING  *lpth;
-    FLEET  *lpfl;
-    int16_t cFound;
-    int16_t iord;
-    FLEET  *lpfl2;
-    int16_t iplrHi;
+    MdTarget mdTarget;
+    FLEET   *lpflTarget;
+    int16_t  ifl2;
+    int32_t  wt;
+    FLEET   *lpflMatch;
+    int32_t  wtMatch;
+    ORDER   *lpord;
+    int16_t  ifl;
+    THING   *lpth;
+    FLEET   *lpfl;
+    int16_t  cFound;
+    int16_t  iord;
+    FLEET   *lpfl2;
+    int16_t  iplrHi;
 
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
@@ -2457,7 +2457,7 @@ int16_t FCanFleetUseStargates(FLEET *lpfl, POINT16 ptSrc, POINT16 ptDst) {
     int16_t t_call_78d1;
 
     fUncertain = 0;
-    if (FFindNearestObject(ptDst, 0x81, &scan) == 0) {
+    if (FFindNearestObject(ptDst, grobjPlanet | mdExact, &scan) == 0) {
         return 0;
     }
     lpplDst = LpplFromId(scan.idpl);
@@ -2474,7 +2474,7 @@ int16_t FCanFleetUseStargates(FLEET *lpfl, POINT16 ptSrc, POINT16 ptDst) {
     }
     lpplSrc = NULL;
     fSrcPlanet = 0;
-    if (FFindNearestObject(ptSrc, 0x81, &scan) != 0) {
+    if (FFindNearestObject(ptSrc, grobjPlanet | mdExact, &scan) != 0) {
         fSrcPlanet = 1;
         lpplSrc = LpplFromId(scan.idpl);
         if (lpplSrc != 0 && lpfl->iPlayer == lpplSrc->iPlayer) {

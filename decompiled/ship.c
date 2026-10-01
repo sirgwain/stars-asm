@@ -40,7 +40,7 @@ void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj) {
         rgrcRef[12].top = -5;
         rgrcRef[12].bottom = -6;
         GetClientRect(hwndShipLB, &rcT);
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         dyShipLB = (dyArial8 + 2) * (gd.fSmallTileMode == 0 ? 4 : 3);
         dWrong = dyShipLB - (rcT.bottom - rcT.top);
         if (dxShipLB == xRight - xLeft && dWrong >= 0 && dWrong < dyArial8) {
@@ -220,7 +220,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
         dxRight = xRight - xLeft;
         rgrcRef[5].top = -5;
         rgrcRef[5].bottom = -6;
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         if (rgdxOrderDD[0] == dxRight) {
             swp |= 1;
         } else {
@@ -244,7 +244,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
         case 6:
         case 7:
         case 9:
-            swp = 20;
+            swp = SWP_NOZORDER | SWP_NOACTIVATE;
             switch (grtask) {
             case 1:
                 dxRight2 = dxRight - dyShipDD + 2;
@@ -258,7 +258,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
                 cch = strlen(psz);
                 SetRect(&rc, xLeft, yTop + 4, xLeft + dxT, yBot);
                 FillRect(hdc, &rc, hbrButtonFace);
-                DrawText(hdc, psz, cch, &rc, 0x800);
+                DrawText(hdc, psz, cch, &rc, DT_NOPREFIX);
                 dxRight2 = dxRight - dxT - 2;
                 xLeft += dxT + 2;
                 break;
@@ -271,7 +271,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
                 dxT = LOWORD(GetTextExtent(hdc, psz, cch)) + 2;
                 SetRect(&rc, xLeft, yTop + 4, xLeft + dxT, yBot);
                 FillRect(hdc, &rc, hbrButtonFace);
-                DrawText(hdc, szT, cch, &rc, 0x800);
+                DrawText(hdc, szT, cch, &rc, DT_NOPREFIX);
                 dxRight2 = dxRight - dxT - 2;
                 xLeft += dxT + 2;
                 break;
@@ -298,7 +298,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
             SelectObject(hdc, rghfontArial8[1]);
             psz = PszGetCompressedString(idsWarpFactor);
             cch = strlen(psz);
-            DrawText(hdc, psz, cch, &rcT, 0x800);
+            DrawText(hdc, psz, cch, &rcT, DT_NOPREFIX);
             rcT.left += dxT + 2;
             rgrcRef[18] = rcT;
             DrawFleetGauge(hdc, &rcT, NULL, 7);
@@ -333,7 +333,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
             SelectObject(hdc, rghfontArial8[1]);
             edWid = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN99999Kt), 9));
             dxRight -= edWid + 8;
-            swp = 20;
+            swp = SWP_NOZORDER | SWP_NOACTIVATE;
             if (rgdxOrderDD[2] == dxRight) {
                 swp |= 1;
             } else {
@@ -355,7 +355,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
                 i = 5;
             }
             psz = vrgszUnits[i];
-            swp = 20;
+            swp = SWP_NOZORDER | SWP_NOACTIVATE;
             if (dxOrderED == edWid - dxKt) {
                 swp |= 1;
             } else {
@@ -367,7 +367,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
             SetRect(&rc, xRight - dxKt - 1, yTop + 2, xRight - 1, yBot);
             FillRect(hdc, &rc, hbrButtonFace);
             if (fActive != 0) {
-                DrawText(hdc, psz, 2, &rc, 0x800);
+                DrawText(hdc, psz, 2, &rc, DT_NOPREFIX);
             }
         } else {
             ShowWindow(rghwndOrderDD[2], SW_HIDE);
@@ -385,7 +385,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
             SetTextColor(hdc, 127);
             SetRect(&rc, xLeft, yTopMsg, xRight, yBot + 2);
             SelectObject(hdc, rghfontArial7[0]);
-            DrawText(hdc, psz, strlen(psz), &rc, 2064);
+            DrawText(hdc, psz, strlen(psz), &rc, DT_WORDBREAK | DT_NOPREFIX);
             SetTextColor(hdc, crButtonText);
             break;
         case 6:
@@ -435,7 +435,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
                         SelectObject(hdc, rghfontArial8[0]);
                         dyCur = dyArial8;
                     }
-                    if (lppl->det <= 1) {
+                    if (lppl->det <= detMinimal) {
                         ids = 243;
                         goto ShowString;
                     }
@@ -466,7 +466,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
             SetTextColor(hdc, ids == 229 ? crButtonText : 127);
             psz = PszGetCompressedString(ids);
             SetRect(&rc, xLeft, yTopMsg, xRight, yBot + 2);
-            DrawText(hdc, psz, strlen(psz), &rc, 2064);
+            DrawText(hdc, psz, strlen(psz), &rc, DT_WORDBREAK | DT_NOPREFIX);
         DoneMine:
             SetTextColor(hdc, crButtonText);
         }
@@ -477,7 +477,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
         SetTextColor(hdc, ids == idsNoteShipsFleetWillDismantledProvideSupplies ? crButtonText : 127);
         SetRect(&rc, xLeft, yTopMsg, xRight, yBot + 2);
         SelectObject(hdc, rghfontArial7[0]);
-        DrawText(hdc, psz, strlen(psz), &rc, 2064);
+        DrawText(hdc, psz, strlen(psz), &rc, DT_WORDBREAK | DT_NOPREFIX);
         SetTextColor(hdc, crButtonText);
     }
     return;
@@ -652,7 +652,7 @@ void DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj) {
         xRight = rc.right - 4;
         yTop = rc.top + 3;
         GetClientRect(hwndFleetCompLB, &rcT);
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         dyFleetCompLB = (dyArial8 + 2) * (gd.fSmallTileMode == 0 ? 5 : 3);
         dyWrong = dyFleetCompLB - (rcT.bottom - rcT.top);
         if (dxFleetCompLB == xRight - xLeft && dyWrong >= 0 && dyWrong < dyArial8) {
@@ -671,7 +671,7 @@ void DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj) {
         if (ptile->fMinDraw == 0) {
             TextOut(hdc, xLeft, yTop + 4, szWork, c);
         }
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         if (dxBattleDD == xRight - xLeft - dxLabel) {
             swp |= 1;
         } else {
@@ -1120,7 +1120,7 @@ void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
             }
             pt = lpfl->pt;
             scan.pt = lpfl->pt;
-            scan.grobj = 0x83;
+            scan.grobj = grobjPlanet | grobjFleet | mdExact;
             ChangeScanSel(&scan, 0);
         } else {
             if (dInc != 0) {
@@ -1140,7 +1140,7 @@ void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
             idNew = lpflT->id;
             pt = lpflT->pt;
             scan.pt = lpflT->pt;
-            scan.grobj = 0x82;
+            scan.grobj = grobjFleet | mdExact;
             ChangeScanSel(&scan, 0);
             RedrawScanSel(NULL, 0);
             ChangeMainObjSel(grobjFleet, idNew);
@@ -1181,7 +1181,7 @@ int32_t LGetFleetStat(FLEET *lpfl, int16_t grStat) {
     int32_t l;
 
     l = 0;
-    if (lpfl->det != 7) {
+    if (lpfl->det != detAll) {
         return 32000;
     }
     for (i = 0; i < 16; i++) {
@@ -1864,7 +1864,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
             if (pfl->rgwtMin[iSupply] + dChg < 0) {
                 dChg = -pfl->rgwtMin[iSupply];
             }
-            if (iSupply == 3 && pfl->det != 7) {
+            if (iSupply == 3 && pfl->det != detAll) {
                 dChg = 0;
             }
             t_merge_6425_0001 = iSupply == 4 ? GetFuelFree(pfl) : GetCargoFree(pfl);
@@ -2510,7 +2510,7 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
         if (fRightBtn != 0) {
             iChecked = -1;
             lpord = &sel.fl.lpplord->rgord[sel.iwpAct];
-            FFindNearestObject(lpord->pt, 0x8f, &scan);
+            FFindNearestObject(lpord->pt, grobjPlanet | grobjFleet | grobjOther | grobjThing | mdExact, &scan);
             if (scan.idpl != -1) {
                 rgid[0] = scan.idpl;
             } else {
@@ -2991,7 +2991,7 @@ void DeleteCurWayPoint(int16_t fBackup) {
         }
         RedrawScanSel(NULL, 0);
         FLookupFleet(-1, &sel.fl);
-        FFindNearestObject(sel.fl.lpplord->rgord[sel.iwpAct].pt, 0x8f, &scan);
+        FFindNearestObject(sel.fl.lpplord->rgord[sel.iwpAct].pt, grobjPlanet | grobjFleet | grobjOther | grobjThing | mdExact, &scan);
         sel.iwpAct = -2;
         ChangeScanSel(&scan, 1);
         if ((grbitScan & 0x80) != 0) {
@@ -3086,7 +3086,7 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
         } else {
             lpord = &lpfl->lpplord->rgord[iOrd];
             d = DGetDistance(lpord->pt.x, lpord->pt.y, lpord[1].pt.x, lpord[1].pt.y);
-            dTravel = (int16_t)LOWORD((int32_t)(d + 0.9999));
+            dTravel = (int16_t)LOWORD((int32_t)((long double)d + 0.9999));
         }
     }
     lFuel = 0;
@@ -3108,7 +3108,7 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
                         if (wtMass < 200 || (lT < 500000 && wtMass < 4000) || (lT < 100000 && wtMass < 20000)) {
                             lFuel += (int32_t)(wtMass * lT) / 2000;
                         } else {
-                            lFuel = (int32_t)((double)lT * (double)wtMass / 2000.0) + lFuel;
+                            lFuel = (int32_t)((long double)lT * wtMass / 2000.0) + lFuel;
                         }
                     }
                 } else if (rgieff[i] > iEffCur && rgieff[i] < iEffNext) {
@@ -3216,10 +3216,10 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo) {
     for (i = 0; i < iwp; i++) {
         iWarp = lpord[i + 1].iWarp;
         if (iWarp > 0 && iWarp < 11) {
-            dbl = DGetDistance(lpord[i].pt.x, lpord[i].pt.y, lpord[i + 1].pt.x, lpord[i + 1].pt.y) + 0.99999;
+            dbl = (double)((long double)DGetDistance(lpord[i].pt.x, lpord[i].pt.y, lpord[i + 1].pt.x, lpord[i + 1].pt.y) + 0.99999);
             dist = LOWORD((int32_t)dbl);
-            dbl = dbl / (double)iWarp / (double)iWarp;
-            cYears = LOWORD((int32_t)(dbl + 0.9999));
+            dbl = (double)((long double)dbl / iWarp / iWarp);
+            cYears = LOWORD((int32_t)((long double)dbl + 0.9999));
             l = EstFuelUse(lpfl, i, iWarp, -1, 0);
         } else {
             cYears = 1;
@@ -3394,7 +3394,7 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
     for (i = 0; i < 2; i++) {
         if (rgFuelCapacity[i] != 0) {
             if (rgpflNew[i]->rgwtMin[4] > 45000 || rgFuelCapLoss[i] > 45000) {
-                lChg = (int32_t)((double)rgpflNew[i]->rgwtMin[4] * (double)rgFuelCapLoss[i] / (double)rgFuelCapacity[i]);
+                lChg = (int32_t)((long double)rgpflNew[i]->rgwtMin[4] * rgFuelCapLoss[i] / rgFuelCapacity[i]);
             } else {
                 lChg = (int32_t)((int32_t)(rgpflNew[i]->rgwtMin[4] * rgFuelCapLoss[i]) / rgFuelCapacity[i]);
             }
@@ -3406,7 +3406,7 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
                 wtCargoTot += rgpflNew[i]->rgwtMin[j];
             }
             if (wtCargoTot > 45000 || rgCargoCapLoss[i] > 45000) {
-                wtCargoXfer = (int32_t)((double)wtCargoTot * (double)rgCargoCapLoss[i] / (double)rgCargoCapacity[i]);
+                wtCargoXfer = (int32_t)((long double)wtCargoTot * rgCargoCapLoss[i] / rgCargoCapacity[i]);
             } else {
                 wtCargoXfer = (int32_t)((int32_t)(wtCargoTot * rgCargoCapLoss[i]) / rgCargoCapacity[i]);
             }
@@ -3414,7 +3414,7 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
             if (wtCargoXfer != 0 && wtCargoTot != 0) {
                 for (j = 0; j <= 3; j++) {
                     if (rgpflNew[i]->rgwtMin[j] > 45000 || wtCargoXfer > 45000) {
-                        l = (int32_t)((double)rgpflNew[i]->rgwtMin[j] * (double)wtCargoXfer / (double)wtCargoTot);
+                        l = (int32_t)((long double)rgpflNew[i]->rgwtMin[j] * wtCargoXfer / wtCargoTot);
                     } else {
                         l = (int32_t)((int32_t)(rgpflNew[i]->rgwtMin[j] * wtCargoXfer) / wtCargoTot);
                     }
@@ -3631,7 +3631,7 @@ void FleetOrdersChangeTarget(FLEET *lpflOld) {
                     if (fChg == 0) {
                         pt = lpflOld->pt;
                         lpflOld->pt.x++;
-                        if (FFindNearestObject(pt, 0x83, &scan) == 0) {
+                        if (FFindNearestObject(pt, grobjPlanet | grobjFleet | mdExact, &scan) == 0) {
                             grobj = grobjOther;
                             id = iord;
                         } else if ((scan.grobjFull & 2) != 0) {

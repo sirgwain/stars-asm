@@ -103,7 +103,7 @@ L_3bb7:
     lpfl->fDead = 1;
 
 L_3bcb:
-    if (lpfl->det < 4)
+    if (lpfl->det < detMore)
         goto L_3cc0;
     else
         goto L_3bdd;
@@ -164,7 +164,7 @@ L_3cb7:
     goto L_3c73;
 
 L_3cc0:
-    if (lpfl->det >= 7)
+    if (lpfl->det >= detAll)
         goto L_3d11;
     else
         goto L_3cd2;

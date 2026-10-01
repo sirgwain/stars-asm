@@ -83,6 +83,72 @@ func nativeCompareOperands(op CompareOp, lhs, rhs Expr) (Expr, Expr, bool) {
 	return lhs, rhs, changed
 }
 
+// simplifyFloatCast removes exact intermediate floating promotions and casts
+// to an expression's existing floating type. Narrowing conversions remain:
+// (float)(double)extended can round differently from (float)extended.
+func simplifyFloatCast(e *Cast) (Expr, bool) {
+	if e.TypeInfo.Kind() != typeinfo.KFloat && e.TypeInfo.Kind() != typeinfo.KInt {
+		return e, false
+	}
+	changed := false
+	for {
+		inner, ok := e.Value.(*Cast)
+		if !ok || !exactFloatPromotion(cExprType(inner.Value), inner.TypeInfo) {
+			break
+		}
+		copy := *e
+		copy.Value = inner.Value
+		e = &copy
+		changed = true
+	}
+	if e.TypeInfo.Kind() == typeinfo.KFloat && typeinfo.Equals(e.TypeInfo, cExprType(e.Value)) {
+		return e.Value, true
+	}
+	return e, changed
+}
+
+// simplifyFloatOperands removes exact operand promotions supplied by C's usual
+// arithmetic conversions. At least one operand retains the operation's precision
+// so extended arithmetic never becomes a double calculation. Double constants
+// such as 0.3 retain their original value rather than becoming 0.3L.
+func simplifyFloatOperands(e *Binary) (Expr, Expr, bool) {
+	want, ok := e.TypeInfo.(*typeinfo.Primitive)
+	if !ok || want.TypeKind != typeinfo.KFloat || (e.Op != OpAdd && e.Op != OpSub && e.Op != OpMul && e.Op != OpDiv) {
+		return e.LHS, e.RHS, false
+	}
+	lhs, rhs := e.LHS, e.RHS
+	if cast, ok := rhs.(*Cast); ok && typeinfo.Equals(cExprType(lhs), want) &&
+		typeinfo.Equals(cast.TypeInfo, want) && exactFloatPromotion(cExprType(cast.Value), want) {
+		rhs = cast.Value
+	}
+	if cast, ok := lhs.(*Cast); ok && typeinfo.Equals(cExprType(rhs), want) &&
+		typeinfo.Equals(cast.TypeInfo, want) && exactFloatPromotion(cExprType(cast.Value), want) {
+		lhs = cast.Value
+	}
+	return lhs, rhs, lhs != e.LHS || rhs != e.RHS
+}
+
+// exactFloatPromotion reports whether converting have to want preserves every
+// source value, so an enclosing conversion can consume the source directly.
+func exactFloatPromotion(have, want typeinfo.Type) bool {
+	if want.Kind() != typeinfo.KFloat {
+		return false
+	}
+	source, ok := have.(*typeinfo.Primitive)
+	if !ok {
+		return false
+	}
+	switch source.TypeKind {
+	case typeinfo.KFloat:
+		return source.Size <= want.Bytes()
+	case typeinfo.KInt:
+		return source.Native == typeinfo.NativeInt &&
+			(source.Size <= 4 && want.Bytes() >= 8 || source.Size <= 8 && want.Bytes() == 10)
+	default:
+		return false
+	}
+}
+
 // nativeWideOperands casts the operands of a 32-bit division, remainder or
 // right shift lowered from a compiler helper whose signedness C would not
 // choose from the operand types. __aFldiv(__aFulmul(a, b), c) is a signed
@@ -164,10 +230,18 @@ func signednessCast(expr Expr, want typeinfo.Type) Expr {
 // compiler emitted JB/JBE/JA/JAE; in native C, 16-bit operands promote to
 // int and 0xffc8 is an int, so imemMsgCur + 20 <= 0xffc8 would compare
 // signed. Constants are left to resolve-const-types, which types them for
-// the branch.
+// the branch. A narrower sum, difference or product compared unsigned is cast
+// to its unsigned width when C promotes its operands to int (see
+// promotesToInt): the machine wrapped it, so game.turn - shdef.turn > 20 with
+// JBE compared 0xffff, where native C would compare -1.
 func compareDomainOperand(op CompareOp, expr Expr) (Expr, bool) {
 	if _, ok := expr.(*Const); ok {
 		return nil, false
+	}
+	if bin, ok := expr.(*Binary); ok && op.Unsigned() && (bin.Op == OpAdd || bin.Op == OpSub || bin.Op == OpMul) && promotesToInt(bin) {
+		if prim, ok := bin.ExprType().(*typeinfo.Primitive); ok && prim.TypeKind == typeinfo.KInt && prim.Size < 4 {
+			return castTo(expr, typeinfo.UintForWidth(prim.Size)), true
+		}
 	}
 	typ := semanticPeerType(expr)
 	switch e := expr.(type) {
@@ -181,6 +255,31 @@ func compareDomainOperand(op CompareOp, expr Expr) (Expr, bool) {
 		return nil, false
 	}
 	return castTo(expr, want), true
+}
+
+// promotesToInt reports whether C evaluates the integer arithmetic expr as int
+// because every operand is narrower than int: a constant that fits in int, or
+// an 8- or 16-bit integer or enum. Win16 int-width typedefs such as UINT,
+// which the native headers declare 32 bits wide, 32-bit integers, handles and
+// pointers keep C arithmetic at 32 bits or wider.
+func promotesToInt(expr Expr) bool {
+	switch e := expr.(type) {
+	case *Const:
+		return e.Fixup == nil && e.U64 <= 0x7fffffff
+	case *Binary:
+		return (e.Op == OpAdd || e.Op == OpSub || e.Op == OpMul) && promotesToInt(e.LHS) && promotesToInt(e.RHS)
+	}
+	switch typ := cExprType(expr).(type) {
+	case *typeinfo.Primitive:
+		switch typ.Name {
+		case "int", "unsigned", "INT", "UINT", "BOOL":
+			return false
+		}
+		return typ.TypeKind == typeinfo.KInt && typ.Native == typeinfo.NativeInt && typ.Size < 4
+	case *typeinfo.Enum:
+		return typ.Size < 4
+	}
+	return false
 }
 
 // widenedFieldAllOnes returns -1 for a 16-bit 0xffff constant compared with

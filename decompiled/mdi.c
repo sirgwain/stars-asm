@@ -1280,7 +1280,7 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
         case 0xb3:
             hmenu = GetASubMenu(hwnd, 1);
             gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
-            CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? 0 : 8);
+            CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
             RefitFrameChildren();
             break;
         case 0xd5:
@@ -1449,7 +1449,7 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
         case 0x98d:
             hmenu = GetASubMenu(hwnd, 1);
             grbitScan ^= 0x2000;
-            CheckMenuItem(hmenu, 2445, (grbitScan & 0x2000) == 0 ? 0 : 8);
+            CheckMenuItem(hmenu, 2445, (grbitScan & 0x2000) == 0 ? MF_UNCHECKED : MF_CHECKED);
             gd.fChgScanner = 1;
             if ((grbitScan & 0x1400) == 0)
                 break;
@@ -1560,7 +1560,7 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
                     iPassCnt--;
                     if (iPassCnt > 0) {
                         HideProgressGauge();
-                        if (GetAsyncKeyState(16) >= 0 || GetAsyncKeyState(17) >= 0)
+                        if (GetAsyncKeyState(VK_SHIFT) >= 0 || GetAsyncKeyState(VK_CONTROL) >= 0)
                             continue;
                     }
                 }
@@ -1845,14 +1845,14 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
             }
             hmenu = GetASubMenu(hwnd, 1);
             hmenu = GetSubMenu(hmenu, 3);
-            CheckMenuItem(hmenu, iScanZoom + 4, 0x400);
+            CheckMenuItem(hmenu, iScanZoom + 4, MF_BYPOSITION);
             GetClientRect(hwndScanner, &rc);
             rc.right = ScanToPt(rc.right) >> 1;
             rc.bottom = ScanToPt(rc.bottom) >> 1;
             dx = xScanTop;
             dy = dGalInv - yScanTop;
             iScanZoom = GET_WM_COMMAND_ID(wParam, 0) - 3905;
-            CheckMenuItem(hmenu, iScanZoom + 4, 1032);
+            CheckMenuItem(hmenu, iScanZoom + 4, MF_CHECKED | MF_BYPOSITION);
             DrawMenuBar(hwnd);
             SetScanScrollBars(hwndScanner);
             InvalidateRect(hwndScanner, NULL, 1);
@@ -1907,46 +1907,54 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
 }
 
 void InitializeMenu(HMENU hmenu) {
-    int16_t cMenu;
-    int16_t i;
-    HMENU   hmenuSub;
+    int16_t  cMenu;
+    int16_t  i;
+    HMENU    hmenuSub;
+    uint16_t t_merge_548d_0001;
+    uint16_t t_merge_5502_0001;
+    uint16_t t_merge_5539_0001;
+    uint16_t t_merge_5570_0001;
 
     if (hmenu == 0) {
         hmenu = GetMenu(hwndFrame);
     }
     hmenuSub = GetASubMenu(hwndFrame, 0);
     for (i = 4300; i <= 4308; i++) {
-        DeleteMenu(hmenuSub, i, 0);
+        DeleteMenu(hmenuSub, i, MF_BYCOMMAND);
     }
     for (i = 0; i < 9 && (int16_t)(int8_t)vrgszMRU[i * 256] != 0; i++) {
         szWork[0] = '&';
         szWork[1] = LOBYTE(i + 49);
         szWork[2] = ' ';
         fstrcpy(&szWork[3], vrgszMRU + 256 * i);
-        InsertMenu(hmenuSub, i + 9, 0x400, i + 4300, szWork);
+        InsertMenu(hmenuSub, i + 9, MF_BYPOSITION, i + 4300, szWork);
     }
-    EnableMenuItem(hmenu, 106, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? 0 : 3);
-    EnableMenuItem(hmenu, 105, (int16_t)(int8_t)szBase[0] == 0 ? 3 : 0);
-    EnableMenuItem(hmenu, 270, (int16_t)(int8_t)szBase[0] != 0 && (game.fSinglePlr == 0 || lSaltCur > 0) ? 0 : 3);
-    EnableMenuItem(hmenu, 2014, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? 0 : 3);
-    EnableMenuItem(hmenu, 3803, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? 0 : 3);
+    t_merge_548d_0001 = (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+    EnableMenuItem(hmenu, 106, t_merge_548d_0001);
+    EnableMenuItem(hmenu, 105, (int16_t)(int8_t)szBase[0] == 0 ? MF_GRAYED | MF_DISABLED : MF_ENABLED);
+    t_merge_5502_0001 = (int16_t)(int8_t)szBase[0] != 0 && (game.fSinglePlr == 0 || lSaltCur > 0) ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+    EnableMenuItem(hmenu, 270, t_merge_5502_0001);
+    t_merge_5539_0001 = (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+    EnableMenuItem(hmenu, 2014, t_merge_5539_0001);
+    t_merge_5570_0001 = (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+    EnableMenuItem(hmenu, 3803, t_merge_5570_0001);
     hmenu = GetASubMenu(hwndFrame, 1);
-    CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? 0 : 8);
-    CheckMenuItem(hmenu, 2445, (grbitScan & 0x2000) == 0 ? 0 : 8);
+    CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
+    CheckMenuItem(hmenu, 2445, (grbitScan & 0x2000) == 0 ? MF_UNCHECKED : MF_CHECKED);
     if (hwndScanner == 0) {
-        EnableMenuItem(GetMenu(hwndFrame), 1, 1027);
+        EnableMenuItem(GetMenu(hwndFrame), 1, MF_GRAYED | MF_DISABLED | MF_BYPOSITION);
     } else {
-        EnableMenuItem(GetMenu(hwndFrame), 1, 0x400);
+        EnableMenuItem(GetMenu(hwndFrame), 1, MF_BYPOSITION);
         hmenu = GetASubMenu(hwndFrame, 1);
         hmenu = GetSubMenu(hmenu, 3);
-        CheckMenuItem(hmenu, iScanZoom + 4, 1032);
+        CheckMenuItem(hmenu, iScanZoom + 4, MF_CHECKED | MF_BYPOSITION);
         cMenu = GetMenuItemCount(hmenu);
         for (i = 0; i < cMenu; i++) {
-            EnableMenuItem(hmenu, i, 0x400);
+            EnableMenuItem(hmenu, i, MF_BYPOSITION);
         }
         hmenu = GetASubMenu(hwndFrame, 1);
         hmenu = GetSubMenu(hmenu, 4);
-        CheckMenuItem(hmenu, iWindowLayout, 1032);
+        CheckMenuItem(hmenu, iWindowLayout, MF_CHECKED | MF_BYPOSITION);
     }
     DrawMenuBar(hwndFrame);
     return;
@@ -2230,7 +2238,7 @@ void BringUpHostDlg() {
                 if (iPassCnt == 0)
                     break;
                 iPassCnt--;
-            } while (GetAsyncKeyState(16) >= 0 && GetAsyncKeyState(17) >= 0);
+            } while (GetAsyncKeyState(VK_SHIFT) >= 0 && GetAsyncKeyState(VK_CONTROL) >= 0);
             iPassCnt = 0;
             HideProgressGauge();
         }
@@ -2593,7 +2601,7 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             t_pt_6fa5_1 = PointFrom16(pt);
             ClientToScreen(hwnd, &t_pt_6fa5_1);
             pt = PointTo16(t_pt_6fa5_1);
-            tpm = message == WM_LBUTTONDOWN ? 0 : 2;
+            tpm = message == WM_LBUTTONDOWN ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
             TrackPopupMenu(hmenuPopup, 4 | tpm, pt.x, pt.y, 0, hwnd, NULL);
             DestroyMenu(hmenuPopup);
             iRet = -1;
@@ -2623,13 +2631,13 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             case IDCANCEL:
             case IDC_HOST_AUTO_GENERATE:
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HOST_GENERATE_NOW) {
-                    if (GetAsyncKeyState(16) < 0) {
-                        if (GetAsyncKeyState(17) < 0) {
+                    if (GetAsyncKeyState(VK_SHIFT) < 0) {
+                        if (GetAsyncKeyState(VK_CONTROL) < 0) {
                             iPassCnt = 999;
                         } else {
                             iPassCnt = 9;
                         }
-                    } else if (GetAsyncKeyState(17) < 0) {
+                    } else if (GetAsyncKeyState(VK_CONTROL) < 0) {
                         iPassCnt = 99;
                     } else {
                         iPassCnt = 0;
@@ -3179,7 +3187,7 @@ void RefitFrameChildren() {
         hmenu = GetASubMenu(hwndFrame, 1);
         hmenu = GetSubMenu(hmenu, 4);
         for (i = 130; i <= 132; i++) {
-            CheckMenuItem(hmenu, i, i - 130 == iWindowLayout ? 8 : 0);
+            CheckMenuItem(hmenu, i, i - 130 == iWindowLayout ? MF_CHECKED : MF_UNCHECKED);
         }
     }
     return;

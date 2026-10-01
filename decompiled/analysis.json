@@ -7,7 +7,7 @@
     "branchHiWords": 31,
     "branchLoWords": 58,
     "ir": {
-      "numStatements": 32288
+      "numStatements": 32266
     }
   },
   "functions": {
@@ -714,7 +714,7 @@
     },
     "DrawDiamond": {
       "ir": {
-        "numStatements": 34
+        "numStatements": 25
       }
     },
     "DrawDlgLBEntireItem": {
@@ -787,7 +787,7 @@
       "temps": 5,
       "loWords": 13,
       "ir": {
-        "numStatements": 421
+        "numStatements": 416
       }
     },
     "DrawMineralItem": {
@@ -804,7 +804,7 @@
     "DrawNewGame3": {
       "loWords": 3,
       "ir": {
-        "numStatements": 56
+        "numStatements": 55
       }
     },
     "DrawPlanShip": {
@@ -819,7 +819,7 @@
     },
     "DrawPlanetMinSum": {
       "ir": {
-        "numStatements": 51
+        "numStatements": 50
       }
     },
     "DrawPlanetPrintDot": {
@@ -845,13 +845,13 @@
     "DrawPlanetStarbase": {
       "loWords": 1,
       "ir": {
-        "numStatements": 99
+        "numStatements": 98
       }
     },
     "DrawPlanetStats": {
       "loWords": 4,
       "ir": {
-        "numStatements": 107
+        "numStatements": 105
       }
     },
     "DrawPlanetXferSide": {
@@ -954,7 +954,7 @@
       "temps": 2,
       "loWords": 3,
       "ir": {
-        "numStatements": 61
+        "numStatements": 60
       }
     },
     "DrawSelectionArrow": {
@@ -1033,7 +1033,7 @@
       "temps": 1,
       "loWords": 7,
       "ir": {
-        "numStatements": 86
+        "numStatements": 85
       }
     },
     "DrawXferDlg": {
@@ -2741,7 +2741,7 @@
     },
     "IdRandomPlanetNearby": {
       "ir": {
-        "numStatements": 13
+        "numStatements": 12
       }
     },
     "IdTargetArmada": {

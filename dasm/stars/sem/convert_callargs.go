@@ -58,6 +58,13 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 
 // convertValueTyped converts one machine value with an optional expected call type.
 func (c *machineConverter) convertValueTyped(value machine.Value, expected typeinfo.Type) Expr {
+	if load, ok := value.(*machine.Load); ok {
+		// A load read before a later write to its storage uses the temp
+		// captured ahead of that write, as in f(x++).
+		if temp := c.tempByLoad[load.ID]; temp != nil && c.staleLoad(load) {
+			return temp
+		}
+	}
 	if read, ok := c.messagePayloadRead(value, expected); ok {
 		return read
 	}

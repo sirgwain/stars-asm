@@ -1270,6 +1270,12 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #ifndef VK_RETURN
 #define VK_RETURN 0x000D
 #endif
+#ifndef VK_SHIFT
+#define VK_SHIFT 0x0010
+#endif
+#ifndef VK_CONTROL
+#define VK_CONTROL 0x0011
+#endif
 #ifndef VK_ESCAPE
 #define VK_ESCAPE 0x001B
 #endif
@@ -1897,6 +1903,111 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #ifndef OPAQUE
 #define OPAQUE 0x0002
 #endif
+#ifndef R2_BLACK
+#define R2_BLACK 0x0001
+#endif
+#ifndef R2_NOTMERGEPEN
+#define R2_NOTMERGEPEN 0x0002
+#endif
+#ifndef R2_MASKNOTPEN
+#define R2_MASKNOTPEN 0x0003
+#endif
+#ifndef R2_NOTCOPYPEN
+#define R2_NOTCOPYPEN 0x0004
+#endif
+#ifndef R2_MASKPENNOT
+#define R2_MASKPENNOT 0x0005
+#endif
+#ifndef R2_NOT
+#define R2_NOT 0x0006
+#endif
+#ifndef R2_XORPEN
+#define R2_XORPEN 0x0007
+#endif
+#ifndef R2_NOTMASKPEN
+#define R2_NOTMASKPEN 0x0008
+#endif
+#ifndef R2_MASKPEN
+#define R2_MASKPEN 0x0009
+#endif
+#ifndef R2_NOTXORPEN
+#define R2_NOTXORPEN 0x000A
+#endif
+#ifndef R2_NOP
+#define R2_NOP 0x000B
+#endif
+#ifndef R2_MERGENOTPEN
+#define R2_MERGENOTPEN 0x000C
+#endif
+#ifndef R2_COPYPEN
+#define R2_COPYPEN 0x000D
+#endif
+#ifndef R2_MERGEPENNOT
+#define R2_MERGEPENNOT 0x000E
+#endif
+#ifndef R2_MERGEPEN
+#define R2_MERGEPEN 0x000F
+#endif
+#ifndef R2_WHITE
+#define R2_WHITE 0x0010
+#endif
+#ifndef DT_CENTER
+#define DT_CENTER 0x0001
+#endif
+#ifndef DT_RIGHT
+#define DT_RIGHT 0x0002
+#endif
+#ifndef DT_VCENTER
+#define DT_VCENTER 0x0004
+#endif
+#ifndef DT_BOTTOM
+#define DT_BOTTOM 0x0008
+#endif
+#ifndef DT_WORDBREAK
+#define DT_WORDBREAK 0x0010
+#endif
+#ifndef DT_SINGLELINE
+#define DT_SINGLELINE 0x0020
+#endif
+#ifndef DT_EXPANDTABS
+#define DT_EXPANDTABS 0x0040
+#endif
+#ifndef DT_TABSTOP
+#define DT_TABSTOP 0x0080
+#endif
+#ifndef DT_NOCLIP
+#define DT_NOCLIP 0x0100
+#endif
+#ifndef DT_EXTERNALLEADING
+#define DT_EXTERNALLEADING 0x0200
+#endif
+#ifndef DT_CALCRECT
+#define DT_CALCRECT 0x0400
+#endif
+#ifndef DT_NOPREFIX
+#define DT_NOPREFIX 0x0800
+#endif
+#ifndef DT_INTERNAL
+#define DT_INTERNAL 0x1000
+#endif
+#ifndef ETO_GRAYED
+#define ETO_GRAYED 0x0001
+#endif
+#ifndef ETO_OPAQUE
+#define ETO_OPAQUE 0x0002
+#endif
+#ifndef ETO_CLIPPED
+#define ETO_CLIPPED 0x0004
+#endif
+#ifndef SB_HORZ
+#define SB_HORZ 0x0000
+#endif
+#ifndef SB_VERT
+#define SB_VERT 0x0001
+#endif
+#ifndef SB_CTL
+#define SB_CTL 0x0002
+#endif
 #ifndef SRCCOPY
 #define SRCCOPY 0xCC0020
 #endif
@@ -1962,6 +2073,12 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #endif
 #ifndef MF_SEPARATOR
 #define MF_SEPARATOR 0x0800
+#endif
+#ifndef MF_UNCHECKED
+#define MF_UNCHECKED 0x0000
+#endif
+#ifndef MF_ENABLED
+#define MF_ENABLED 0x0000
 #endif
 #ifndef TPM_LEFTBUTTON
 #define TPM_LEFTBUTTON 0x0000

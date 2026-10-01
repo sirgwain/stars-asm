@@ -10,7 +10,8 @@ import (
 // nativeCastsProcessor adds the casts a native Win32 compile needs where a
 // value passes into an argument, assignment or return of a type it only
 // converted to implicitly under the original compiler. It runs after
-// addresses, fields and constants have their final types.
+// addresses, fields and constants have their final types. It also simplifies
+// exact floating promotions, preserving casts that round an x87 result.
 type nativeCastsProcessor struct {
 	ctx *FuncContext
 }
@@ -104,17 +105,21 @@ func nativeFieldAddressArg(arg Expr, param typeinfo.Type) (*FieldAccess, typeinf
 
 // rewriter casts assignment sources to their destination's type, return
 // values to the function's return type, call arguments to their parameter
-// types, and compared pointers to a common type.
+// types, and compared pointers to a common type, and simplifies floating casts.
 func (p *nativeCastsProcessor) rewriter() *semRewriter {
 	return &semRewriter{
 		expr: func(w *semRewriter, expr Expr) (Expr, bool, bool) {
 			switch expr.(type) {
-			case *Compare, *Binary:
+			case *Compare, *Binary, *Cast:
 			default:
 				return nil, false, false
 			}
 			next, changed := w.rewriteExprChildren(expr)
 			switch e := next.(type) {
+			case *Cast:
+				if value, ok := simplifyFloatCast(e); ok {
+					return value, true, true
+				}
 			case *Compare:
 				if lhs, rhs, ok := nativeCompareOperands(e.Op, e.LHS, e.RHS); ok {
 					cast := *e
@@ -122,6 +127,11 @@ func (p *nativeCastsProcessor) rewriter() *semRewriter {
 					return &cast, true, true
 				}
 			case *Binary:
+				if lhs, rhs, ok := simplifyFloatOperands(e); ok {
+					arithmetic := *e
+					arithmetic.LHS, arithmetic.RHS = lhs, rhs
+					return &arithmetic, true, true
+				}
 				if lhs, rhs, ok := nativePointerDifference(e); ok {
 					diff := *e
 					diff.LHS, diff.RHS = lhs, rhs

@@ -29,7 +29,7 @@ int16_t          FCheckFleetName(int16_t id, StringId ids);
 int16_t          FCheckSummary(GrobjClass grobj, int16_t id);
 int16_t          FCheckSelection(GrobjClass grobj, int16_t id);
 int16_t          FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter);
-int16_t          FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct);
+int16_t          FCheckResearch(TechFieldType iTech, TechFieldType iTechNext, int16_t pct);
 int16_t          FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp);
 int16_t          FCheckPlanetRoute(int16_t idpl, int16_t idplRoute);
 int16_t          FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears);

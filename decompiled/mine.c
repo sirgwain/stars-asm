@@ -283,7 +283,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
         c = _wsprintf(szWork, szT, cShip);
         TextOut(hdc, prc->left + 86, yTop, szWork, c);
         yTop += dyArial8 + 2;
-        if (lpfl->det == 7 || lpfl->det == 4) {
+        if (lpfl->det == detAll || lpfl->det == detMore) {
             cMass = WtFromLpfl(lpfl);
             c = CchGetString(idsFuel2, szT);
             l = GetTextExtent(hdc, szT, c);
@@ -309,7 +309,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
         c = _wsprintf(szWork, szT, cMass);
         TextOut(hdc, prc->left + 86, yTop, szWork, c);
         yTop += dyArial8 + 2;
-        if (lpfl->det == 7) {
+        if (lpfl->det == detAll) {
             lpord = lpfl->lpplord->rgord;
             if (lpfl->cord > 1) {
                 lpord++;
@@ -469,7 +469,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             SetRect(&rc, xLeft, yTop, prc->right - 8, prc->bottom - 8);
             if ((1 << idPlayer & lpth->tht.grbitPlr) == 0) {
                 psz = PszGetCompressedString(idsTraderRequestsInterestedPartiesSendFleetLeast);
-                yTop += DrawText(hdc, psz, strlen(psz), &rc, 2064) + 8;
+                yTop += DrawText(hdc, psz, strlen(psz), &rc, DT_WORDBREAK | DT_NOPREFIX) + 8;
             }
             cch = _wsprintf(szWork, PszGetCompressedString(idsTraderTravelingWarpD), lpth->tht.iWarp);
             TextOut(hdc, xLeft, yTop, szWork, cch);
@@ -559,7 +559,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 SelectObject(hdcMem, hbmpSav);
                 DeleteDC(hdcMem);
             }
-            if (pl.det >= 3) {
+            if (pl.det >= detSome) {
                 c = CchGetString((fShortLabels == 0 ? 1 : 0) + 548, szWork);
                 dx = LOWORD(GetTextExtent(hdc, szWork, c));
                 SetTextColor(hdc, crButtonText);
@@ -584,7 +584,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             if (pl.iPlayer != -1) {
                 strcpy(szT, PszGetCompressedString((fShortLabels == 0 ? 1 : 0) + 546));
             }
-            if (pl.det == 7) {
+            if (pl.det == detAll) {
                 c = strlen(szT);
                 c += CommaFormatLong(&szT[c], (uint32_t)(pl.rgwtMin[3] * 100));
                 RightTextOut(hdc, xR, yCur, szT, c, 0);
@@ -592,7 +592,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 c = CchGetString(idsUninhabited, szT);
                 RightTextOut(hdc, xR, yCur, szT, c, 0);
             } else {
-                if (pl.det >= 3) {
+                if (pl.det >= detSome) {
                     l = (int32_t)(pl.uPopGuess * 4);
                     strcpy(szWork, szT);
                     c = strlen(szT);
@@ -643,7 +643,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 iMax = rgplr[idPlayer].rgEnvVarMax[i];
                 iCur = pl.rgEnvVar[i];
                 RightTextOut(hdc, xL - 2, yCur + dy, fShortLabels == 0 ? rgszPlanetAttr[i] : rgszPlanetAttrAbbr[i], 0, 0);
-                if (pl.det >= 3) {
+                if (pl.det >= detSome) {
                     psz = PszCalcEnvVar(i, iCur);
                     c = strlen(psz);
                     SelectObject(hdc, rghfontArial8[0]);
@@ -652,7 +652,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 SelectObject(hdc, rghfontArial8[1]);
                 SelectObject(hdc, rghbrPlanetAttr[i][0]);
                 PatBlt(hdc, xL + 2 + MulDiv(iMin, dx, 100), yCur + 2, MulDiv(iMax - iMin, dx, 100), dyRow - 3, PATCOPY);
-                if (pl.det >= 3) {
+                if (pl.det >= detSome) {
                     SelectObject(hdc, rghbrPlanetAttr[i][1]);
                     pt.x = xL + 2 + MulDiv(pl.rgEnvVarOrig[i], dx, 100);
                     pt.y = dyRow / 2 + yCur;
@@ -668,13 +668,11 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                     xBeg = xL + 2 + MulDiv(iCur, dx, 100);
                     while (1) {
                         PatBlt(hdc, xBeg, yTop, 1, 1, PATCOPY);
-                        yTop++;
-                        PatBlt(hdc, xBeg + c - 1, yTop, 1, 1, PATCOPY);
+                        PatBlt(hdc, xBeg + c - 1, yTop++, 1, 1, PATCOPY);
                         if (yTop > yBot)
                             break;
                         PatBlt(hdc, xBeg, yBot, 1, 1, PATCOPY);
-                        yBot--;
-                        PatBlt(hdc, xBeg + c - 1, yBot, 1, 1, PATCOPY);
+                        PatBlt(hdc, xBeg + c - 1, yBot--, 1, 1, PATCOPY);
                         xBeg--;
                         c += 2;
                     }
@@ -786,7 +784,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 if (dx != 0) {
                     FillRect(hdc, &rcGauge, rghbrMinSum[i][0]);
                 }
-                if (pl.det >= 3) {
+                if (pl.det >= detSome) {
                     for (iPass = 0; iPass < 2; iPass++) {
                         SelectObject(hdc, rghbrMinSum[i][iPass]);
                         yTop = yCur + 4;
@@ -794,13 +792,10 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                         c = 1;
                         xBeg = xL + 1 + iPass + MulDiv(100 >= pl.rgMinConc[i] ? pl.rgMinConc[i] : 100, dxBar - 8, 100);
                         while (1) {
-                            yTop++;
-                            PatBlt(hdc, xBeg, yTop, c, 1, PATCOPY);
+                            PatBlt(hdc, xBeg, yTop++, c, 1, PATCOPY);
                             if (yTop > yBot)
                                 break;
-                            xBeg--;
-                            yBot--;
-                            PatBlt(hdc, xBeg, yBot, c, 1, PATCOPY);
+                            PatBlt(hdc, xBeg--, yBot--, c, 1, PATCOPY);
                             c += 2;
                         }
                     }
@@ -978,7 +973,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             } else {
                 GlobalPD.grPopup = grPopupFleet;
                 GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-                GlobalPD.fRedDamage = GlobalPD.lpfl->det == 7 ? 1 : 0;
+                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
                 GlobalPD.grbit = 0xff;
             }
             Popup(hwndMine, x, y);
@@ -1005,12 +1000,12 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.grPopup = grPopupPlanetEnv;
             GlobalPD.idPlanet = pl.id;
             GlobalPD.iPlanetVar = ht - 6;
-            if (pl.det >= 3) {
+            if (pl.det >= detSome) {
                 GlobalPD.iPlanVal = pl.rgEnvVar[GlobalPD.iPlanetVar];
             } else {
                 GlobalPD.iPlanVal = -1;
             }
-            if (pl.det >= 3 && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
+            if (pl.det >= detSome && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
                 GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar];
                 GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar];
                 if (GlobalPD.iPlanMin == -1) {
@@ -1151,10 +1146,10 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             for (i = 1; i <= 4; i++) {
                 GlobalPD.rgi[i] = -1;
             }
-            if (pl.det >= 3) {
+            if (pl.det >= detSome) {
                 GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[ht + 2];
                 GlobalPD.rgi[1] = pl.fHomeworld;
-                if (pl.det > 3) {
+                if (pl.det > detSome) {
                     lVal = 0;
                     GlobalPD.rgi[2] = pl.rgwtMin[ht - 1];
                     EstMineralsMined(&pl, rglQuan, -1, 0);
@@ -1256,11 +1251,8 @@ void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbr) {
     xCur = xCtr - 1;
     hbrSav = SelectObject(hdc, hbrButtonHilite);
     while (yTop <= yBot) {
-        yTop++;
-        PatBlt(hdc, xCur, yTop, 2, 1, PATCOPY);
-        xCur--;
-        yBot--;
-        PatBlt(hdc, xCur, yBot, 2, 1, PATCOPY);
+        PatBlt(hdc, xCur, yTop++, 2, 1, PATCOPY);
+        PatBlt(hdc, xCur--, yBot--, 2, 1, PATCOPY);
     }
     SelectObject(hdc, hbrButtonShadow);
     PatBlt(hdc, xCtr, prc->top, 1, 1, PATCOPY);
@@ -1269,11 +1261,8 @@ void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbr) {
     yBot = prc->bottom - 2;
     xCur = xCtr;
     while (yTop <= yBot) {
-        yTop++;
-        PatBlt(hdc, xCur, yTop, 2, 1, PATCOPY);
-        xCur++;
-        yBot--;
-        PatBlt(hdc, xCur, yBot, 2, 1, PATCOPY);
+        PatBlt(hdc, xCur, yTop++, 2, 1, PATCOPY);
+        PatBlt(hdc, xCur++, yBot--, 2, 1, PATCOPY);
     }
     yTop = prc->top + 4;
     yBot = prc->bottom - 5;
@@ -1281,11 +1270,8 @@ void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbr) {
     dx = 1;
     SelectObject(hdc, hbr);
     while (yTop <= yBot) {
-        yTop++;
-        PatBlt(hdc, xCur, yTop, dx, 1, PATCOPY);
-        xCur--;
-        yBot--;
-        PatBlt(hdc, xCur, yBot, dx, 1, PATCOPY);
+        PatBlt(hdc, xCur, yTop++, dx, 1, PATCOPY);
+        PatBlt(hdc, xCur--, yBot--, dx, 1, PATCOPY);
         dx += 2;
     }
     SelectObject(hdc, hbrSav);

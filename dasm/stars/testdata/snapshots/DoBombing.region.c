@@ -33,19 +33,19 @@ void DoBombing() {
             if (lppl->iPlayer != lpfl->iPlayer && lppl->iPlayer != -1 && FAttackPlayer(lpfl, lppl->iPlayer) != 0 && lppl->fStarbase == 0 &&
                 FCalcFleetBombDamage(lpfl, &dmgBombPeople, &dmgBombFloor, &dmgPeopleSmart, &dmgBombBldg, &pctTerra, &fMulti) != 0) {
                 CalcPctSurvive(lppl, &pctSuccess, &pctSmart);
-                if (pctSuccess < 1.0) {
+                if ((long double)pctSuccess < (long double)1.0) {
                     if (dmgBombPeople > 0) {
-                        dmgBombPeople = (int32_t)((double)dmgBombPeople * pctSuccess + 0.5);
+                        dmgBombPeople = (int32_t)((long double)dmgBombPeople * pctSuccess + 0.5);
                     }
                     if (dmgBombFloor > 0) {
-                        dmgBombFloor = (int32_t)((double)dmgBombFloor * pctSuccess + 0.5);
+                        dmgBombFloor = (int32_t)((long double)dmgBombFloor * pctSuccess + 0.5);
                     }
                     if (dmgPeopleSmart > 0) {
-                        dmgPeopleSmart = (int32_t)((double)dmgPeopleSmart * pctSmart + 0.5);
+                        dmgPeopleSmart = (int32_t)((long double)dmgPeopleSmart * pctSmart + 0.5);
                     }
                     if (dmgBombBldg > 0) {
-                        pctSuccessHalf = 1.0 - (1.0 - pctSuccess) / 2.0;
-                        dmgBombBldg = (int32_t)((double)dmgBombBldg * pctSuccessHalf + 0.5);
+                        pctSuccessHalf = (double)(1.0 - ((long double)1.0 - pctSuccess) / 2.0);
+                        dmgBombBldg = (int32_t)((long double)dmgBombBldg * pctSuccessHalf + 0.5);
                     }
                 }
                 cPPE = lppl->cMines + lppl->cFactories + (uint32_t)lppl->cDefenses;
@@ -113,7 +113,7 @@ void DoBombing() {
                 }
                 if (pctTerra > 0) {
                     pctTot = 0;
-                    pctTerra -= (int32_t)((1.0 - pctSuccess) * (double)pctTerra / 2.0);
+                    pctTerra -= (int32_t)(((long double)1.0 - pctSuccess) * pctTerra / 2);
                     if (pctTerra > 500) {
                         pctTerra = 500;
                     }
@@ -148,28 +148,29 @@ void DoBombing() {
                             idmDst++;
                         }
                         if (cKillPeople > 0) {
-                            if (pctSuccess != 1.0) {
+                            if ((long double)pctSuccess != (long double)1.0) {
                                 idmSrc += 5;
                                 idmDst += 5;
                                 FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE),
-                                            (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
+                                            (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0);
                                 FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE),
-                                            (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
+                                            (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0);
                                 goto L_be65;
                             }
                         } else {
                             idmSrc -= 2;
                             idmDst -= 2;
-                            if (pctSuccess == 1.0) {
+                            if ((long double)pctSuccess == (long double)1.0) {
                                 FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0);
                                 FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0);
                                 goto L_be65;
                             }
                             idmSrc += 5;
                             idmDst += 5;
-                            FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0,
-                                        0, 0);
-                            FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0);
+                            FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE),
+                                        (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0, 0);
+                            FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000),
+                                        0, 0, 0);
                             goto L_be65;
                         }
                     } else {

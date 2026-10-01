@@ -32,7 +32,7 @@
 ;       block 0018:2785  len=0x4B
 ;         int32_t          l              [BP-0x30]
 ;     block 0018:2DD5  len=0xE6
-;       int16_t          iEnv           [BP-0x16]
+;       EnvType          iEnv           [BP-0x16]
 ;     block 0018:2EC1  len=0x28
 ;       PART             part           [BP-0x1c]
 ;

@@ -68,7 +68,7 @@ L_311b:
     lpfl->ifl = iflPrev + 1;
     lpfl->iPlayer = iPlr;
     lpfl->iplr = iPlr;
-    lpfl->det = 7;
+    lpfl->det = detAll;
     lpfl->idPlanet = idPl;
     if (idPl == -1)
         goto L_3231;

@@ -583,48 +583,60 @@ func TestScratchRecoveryAdjacentSlotsStaySeparate(t *testing.T) {
 	}
 }
 
-// TestScratchRecoveryF80 types extended-real spills that must survive an
-// ordering barrier by the float they hold, and removes simple extended staging.
+// TestScratchRecoveryF80 preserves arithmetic precision across an ordering
+// barrier, keeps narrower values exact, and removes simple extended staging.
 func TestScratchRecoveryF80(t *testing.T) {
-	for _, barrier := range []bool{false, true} {
-		source := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "real", Type: typeinfo.Double}}
-		slot := scratchTestSlot(-16, typeinfo.F80)
-		effects := []Effect{&Assign{Dst: slot, Src: source}}
-		if barrier {
-			effects = append(effects, &CallEffect{Call: &Call{Function: &typeinfo.Function{Name: "UpdateReal", Ret: typeinfo.U16}}})
-		}
-		effects = append(effects, &Return{Value: &Cast{Value: slot, To: "double", TypeInfo: typeinfo.Double}})
-		f := Func{Blocks: []Block{{ID: 1, Effects: effects}}}
-		(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
-		if barrier {
-			tmp, ok := f.Blocks[0].Effects[0].(*Assign).Dst.(*Temp)
-			if !ok || tmp.TypeInfo != typeinfo.Double {
-				t.Fatalf("extended spill temp = %#v, want double", f.Blocks[0].Effects[0])
+	sources := []Expr{
+		&Global{GlobalVar: &typeinfo.GlobalVar{Name: "real", Type: typeinfo.Double}},
+		&Binary{TypeInfo: typeinfo.F80, Op: OpMul,
+			LHS: &Cast{Value: &Global{GlobalVar: &typeinfo.GlobalVar{Name: "count", Type: typeinfo.I32}}, To: "long double", TypeInfo: typeinfo.F80},
+			RHS: &Cast{Value: &FloatConst{TypeInfo: typeinfo.Double, F64: 0.3}, To: "long double", TypeInfo: typeinfo.F80}},
+	}
+	for _, source := range sources {
+		for _, barrier := range []bool{false, true} {
+			slot := scratchTestSlot(-16, typeinfo.F80)
+			effects := []Effect{&Assign{Dst: slot, Src: source}}
+			if barrier {
+				effects = append(effects, &CallEffect{Call: &Call{Function: &typeinfo.Function{Name: "UpdateReal", Ret: typeinfo.U16}}})
 			}
-			if ret := f.Blocks[0].Effects[2].(*Return).Value.(*Cast); ret.Value != tmp {
-				t.Fatalf("extended spill reload = %#v, want temp", ret.Value)
+			effects = append(effects, &Return{Value: &Cast{Value: slot, To: "double", TypeInfo: typeinfo.Double}})
+			f := Func{Blocks: []Block{{ID: 1, Effects: effects}}}
+			(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
+			if barrier {
+				tmp, ok := f.Blocks[0].Effects[0].(*Assign).Dst.(*Temp)
+				if !ok || !typeinfo.Equals(tmp.TypeInfo, source.ExprType()) {
+					t.Fatalf("extended spill temp = %#v, want %v", f.Blocks[0].Effects[0], source.ExprType())
+				}
+				if ret := f.Blocks[0].Effects[2].(*Return).Value.(*Cast); ret.Value != tmp {
+					t.Fatalf("extended spill reload = %#v, want temp", ret.Value)
+				}
+			} else if len(f.Blocks[0].Effects) != 1 {
+				t.Fatal("simple extended staging survived")
 			}
-		} else if len(f.Blocks[0].Effects) != 1 {
-			t.Fatal("simple extended staging survived")
 		}
 	}
 }
 
-// TestScratchRecoveryFloatRounding retains the narrowing store conversion when
-// x87 staging is inlined and the stored float is subsequently widened again.
+// TestScratchRecoveryFloatRounding retains float and double store rounding
+// when extended x87 staging is inlined and subsequently widened again.
 func TestScratchRecoveryFloatRounding(t *testing.T) {
-	slot := scratchTestSlot(-8, typeinfo.U32)
-	f := Func{Blocks: []Block{{ID: 1, Effects: []Effect{
-		&Assign{MetaInfo: machine.Meta{InstOp: asm.OpFSTP}, Dst: slot, Src: &FloatConst{TypeInfo: typeinfo.Double, F64: 1.00000001}},
-		&Return{Value: &Cast{Value: slot, To: "double", TypeInfo: typeinfo.Double}},
-	}}}}
-	(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
-	if len(f.Blocks[0].Effects) != 1 {
-		t.Fatal("simple floating-point staging was retained")
-	}
-	outer := f.Blocks[0].Effects[0].(*Return).Value.(*Cast)
-	inner, ok := outer.Value.(*Cast)
-	if !ok || inner.ExprType().Kind() != typeinfo.KFloat || inner.ExprType().Bytes() != 4 {
-		t.Fatal("float store rounding was lost")
+	for _, width := range []int{4, 8} {
+		slot := scratchTestSlot(-16, scratchTypeForWidth(width))
+		product := &Binary{TypeInfo: typeinfo.F80, Op: OpMul,
+			LHS: &Cast{Value: &Const{TypeInfo: typeinfo.I32, U64: 800}, To: "long double", TypeInfo: typeinfo.F80},
+			RHS: &Cast{Value: &FloatConst{TypeInfo: typeinfo.Double, F64: 0.3}, To: "long double", TypeInfo: typeinfo.F80}}
+		f := Func{Blocks: []Block{{ID: 1, Effects: []Effect{
+			&Assign{MetaInfo: machine.Meta{InstOp: asm.OpFSTP}, Dst: slot, Src: product},
+			&Return{Value: &Cast{Value: slot, To: "long double", TypeInfo: typeinfo.F80}},
+		}}}}
+		(&scratchRecoveryProcessor{}).ProcessFunc(nil, &f)
+		if len(f.Blocks[0].Effects) != 1 {
+			t.Fatal("simple floating-point staging was retained")
+		}
+		outer := f.Blocks[0].Effects[0].(*Return).Value.(*Cast)
+		inner, ok := outer.Value.(*Cast)
+		if !ok || inner.ExprType().Kind() != typeinfo.KFloat || inner.ExprType().Bytes() != width || inner.Value != product {
+			t.Fatalf("width %d store rounding was lost: %#v", width, outer.Value)
+		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "common.h"
 
-uint16_t mpimdgrbitBU[8] = {8, 8, 16, 32, 128, 64, 8, 8};
+BattleUnitFlags mpimdgrbitBU[8] = {grBuClassOther, grBuClassOther, grBuClassFight, grBuClassBomber,
+                                   grBuClassFrig,  grBuClassCap,   grBuClassOther, grBuClassOther};
 
 LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
@@ -79,7 +80,7 @@ void DrawPopup(HWND hwnd, HDC hdc) {
     bkMode = SetBkMode(hdc, OPAQUE);
     hfontSav = SelectObject(hdc, rghfontArial8[1]);
     GetClientRect(hwnd, &rc);
-    if (GlobalPD.grPopup - 1 <= 13) {
+    if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
         switch (GlobalPD.grPopup) {
         case 1:
             CtrTextOut(hdc, rc.right >> 1, 4, rgszMinerals[GlobalPD.rgi[0]], 0);
@@ -262,7 +263,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     pt = PointTo16(t_pt_0c9b_1);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
-    if (GlobalPD.grPopup - 1 <= 13) {
+    if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
         switch (GlobalPD.grPopup) {
         case 1:
             psz = PszGetCompressedString(idsMineralConcentration0000000kt);
@@ -510,9 +511,9 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
         }
     }
     if (fRightBtn != 0) {
-        tpm = 2;
+        tpm = TPM_RIGHTBUTTON;
     } else {
-        tpm = 0;
+        tpm = TPM_LEFTBUTTON;
     }
     TrackPopupMenu(hmenuPopup, tpm, pt.x, pt.y, 0, hwndFrame, NULL);
     DestroyMenu(hmenuPopup);
@@ -724,7 +725,7 @@ POINT16 PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint) {
         SelectObject(hdc, rghfontArial8[1]);
         DxStreamTextOut(hdc, &x, y, PszGetPlanetName(GlobalPD.idPlanet), 0, fPrint);
         SelectObject(hdc, rghfontArial8[0]);
-        if (pl.det >= 3) {
+        if (pl.det >= detSome) {
             DxStreamTextOut(hdc, &x, y, PszGetCompressedString(idsApproximately), 0, fPrint);
             SelectObject(hdc, rghfontArial8[1]);
             _wsprintf(szWork, "%d00", pl.uPopGuess * 4);
@@ -748,7 +749,7 @@ POINT16 PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint) {
     }
     x = 4;
     y += dyArial8;
-    if (pl.det >= 3) {
+    if (pl.det >= detSome) {
         lMax = CalcPlanetMaxPop(GlobalPD.idPlanet, idPlayer);
         pctDesire = PctPlanetDesirability(&pl, idPlayer);
         if (pctDesire < 0) {

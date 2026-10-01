@@ -767,7 +767,7 @@ void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_
         FillRect(hdc, &rc, hbrButtonFace);
     } else if (dxErase > 0 && dx > dxErase) {
         SetRect(&rc, x - dxErase, y, x, y + dyArial8);
-        ExtTextOut(hdc, x - dx, y, 6, &rc, psz, cLen, NULL);
+        ExtTextOut(hdc, x - dx, y, ETO_OPAQUE | ETO_CLIPPED, &rc, psz, cLen, NULL);
         return;
     }
     TextOut(hdc, x - dx, y, psz, cLen);
@@ -811,21 +811,21 @@ void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen) {
             if (dy < dyEstFont) {
                 plf->lfHeight += 2 <= (int16_t)(dyEstFont - dy) / 2 ? (int16_t)(dyEstFont - dy) / 2 : 2;
             } else {
-                angle = atan2((double)(int16_t)(dy - dyEstFont), (double)dx);
-                rotate = angle / 3.141592654 * 1800.0 + 0.5;
+                angle = (double)atan2((double)(int16_t)(dy - dyEstFont), (double)dx);
+                rotate = (double)((long double)angle / 3.141592654 * 1800.0 + 0.5);
                 plf->lfEscapement = LOWORD((int32_t)rotate);
                 hfont = CreateFontIndirect(plf);
                 hfontSav = SelectObject(hdc, hfont);
                 l = GetTextExtent(hdc, psz, cLen);
                 dxText = LOWORD(l);
                 dyText = HIWORD(l);
-                dsin = sin(angle);
-                dcos = cos(angle);
-                dxFlat = LOWORD((int32_t)(dcos * (double)dxText + dsin * (double)dyText));
-                dyFlat = LOWORD((int32_t)(dsin * (double)dxText + dcos * (double)dyText));
+                dsin = (double)sin(angle);
+                dcos = (double)cos(angle);
+                dxFlat = LOWORD((int32_t)((long double)dcos * dxText + (long double)dsin * dyText));
+                dyFlat = LOWORD((int32_t)((long double)dsin * dxText + (long double)dcos * dyText));
                 if (dxFlat + 8 <= dx && dyFlat + 8 <= dy) {
                     xStart = (int16_t)(dx - dxFlat) / 2 + prc->left;
-                    yStart = prc->bottom - (int16_t)(dy - dyFlat) / 2 - LOWORD((int32_t)(dcos * (double)dyText));
+                    yStart = prc->bottom - (int16_t)(dy - dyFlat) / 2 - LOWORD((int32_t)((long double)dcos * dyText));
                     TextOut(hdc, xStart, yStart, psz, cLen);
                     SelectObject(hdc, hfontSav);
                     DeleteObject(hfont);
@@ -1766,7 +1766,7 @@ int16_t FIntersectCircleLine(POINT16 ptL1, POINT16 ptL2, POINT16 ptC, int32_t r2
     dx2 = (uint32_t)(dx * dx);
     dy2 = (uint32_t)(dy * dy);
     if (dxdy > 500000 || dx2 > 500000 || dy2 > 500000) {
-        dxI = ((double)dxdy * (double)(int16_t)(ptC.y - ptL1.y) + (double)dx2 * (double)ptC.x + (double)dy2 * (double)ptL1.x) / (double)(dx2 + dy2);
+        dxI = (double)(((long double)dxdy * (int16_t)(ptC.y - ptL1.y) + (long double)dx2 * ptC.x + (long double)dy2 * ptL1.x) / (dx2 + dy2));
         xI = (int32_t)dxI;
     } else {
         xI = (int32_t)((int32_t)((uint32_t)(dxdy * (int16_t)(ptC.y - ptL1.y)) + (uint32_t)(dx2 * ptC.x) + (uint32_t)(dy2 * ptL1.x)) / (dx2 + dy2));

@@ -45,7 +45,7 @@ int16_t FReadFleet(FLEET *lpfl) {
     if (cish == 0) {
         lpfl->fDead = 1;
     }
-    if (lpfl->det >= 4) {
+    if (lpfl->det >= detMore) {
         us = RawLoad16(pb);
         pb += 2;
         i = 0;
@@ -69,7 +69,7 @@ int16_t FReadFleet(FLEET *lpfl) {
             us >>= 2;
         }
     }
-    if (lpfl->det < 7) {
+    if (lpfl->det < detAll) {
         lpfl->dirLong = RawLoad32(pb);
         pb += 4;
         lpfl->wtFleet = RawLoad32(pb);

@@ -7,6 +7,7 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestHandleX87BinaryPopUsesStackOperands preserves stack order and register precision.
 func TestHandleX87BinaryPopUsesStackOperands(t *testing.T) {
 	st := newValueState()
 	ctx := &extractor{}
@@ -18,8 +19,84 @@ func TestHandleX87BinaryPopUsesStackOperands(t *testing.T) {
 	if got, want := st.fpd, 1; got != want {
 		t.Fatalf("fp depth = %d, want %d", got, want)
 	}
-	if got, want := st.peekFP(0).String(), "(1 + 0)"; got != want {
+	if got, want := st.peekFP(0).String(), "((long double)1 + (long double)0)"; got != want {
 		t.Fatalf("ST(0) = %s, want %s", got, want)
+	}
+	if got := st.peekFP(0).(*Binary).Type; got != typeinfo.F80 {
+		t.Fatalf("register result type = %v, want long double", got)
+	}
+}
+
+// TestHandleX87IntegerArithmeticPrecision retains extended integer conversion
+// and chained arithmetic until __ftol consumes the register value.
+func TestHandleX87IntegerArithmeticPrecision(t *testing.T) {
+	st := seedEntryState(ctxForGraphTest())
+	st.writeReg(asm.RegBP, st.readReg(asm.RegSP))
+	ctx := &extractor{}
+	source := memOperandForTest(asm.RegBP, -4, 4)
+	st.writeOperand(0x1000, OperandDst, source, ConstVal(800))
+	ctx.handleX87(st, x87Inst(asm.OpFILD, asm.Operand{}, source), Meta{})
+	if got := st.peekFP(0).(*Cast).To; got != typeinfo.F80 {
+		t.Fatalf("FILD type = %v, want long double", got)
+	}
+	st.pushFP(FloatConstVal(0.3))
+	ctx.handleX87(st, x87Inst(asm.OpFMULP, x87Operand(1), x87Operand(-1)), Meta{})
+	product := st.peekFP(0).(*Binary)
+	st.pushFP(FloatConstVal(0.15))
+	ctx.handleX87(st, x87Inst(asm.OpFSUBP, x87Operand(1), x87Operand(-1)), Meta{})
+	result := st.peekFP(0).(*Binary)
+	if product.Type != typeinfo.F80 || result.Type != typeinfo.F80 {
+		t.Fatalf("intermediate types = %v, %v, want extended", product.Type, result.Type)
+	}
+	helper := &typeinfo.Function{Name: "__ftol", Ret: typeinfo.I32, Conv: typeinfo.CCCdecl}
+	effects := ctx.handleCALLF(st, asm.DecodedInst{Op: asm.OpCALLF}, &InstCall{Target: helper}, nil, Meta{})
+	if got := effects[0].(CallEffect).Args[0]; got != Value(result) {
+		t.Fatalf("__ftol operand = %v, want unrounded %v", got, result)
+	}
+}
+
+// TestHandleX87StoreRounding preserves the destination format at memory and
+// call-argument stores, while FST retains the unrounded value in ST(0).
+func TestHandleX87StoreRounding(t *testing.T) {
+	for _, width := range []int{4, 8, 10} {
+		for _, outgoing := range []bool{false, true} {
+			st := seedEntryState(ctxForGraphTest())
+			st.writeReg(asm.RegBP, st.readReg(asm.RegSP))
+			ctx := &extractor{}
+			st.pushFP(FloatConstVal(800))
+			st.pushFP(FloatConstVal(0.3))
+			ctx.handleX87(st, x87Inst(asm.OpFMULP, x87Operand(1), x87Operand(-1)), Meta{})
+			register := st.peekFP(0)
+			base := asm.RegBP
+			if outgoing {
+				base = asm.RegSP
+			}
+			dst := memOperandForTest(base, -16, width)
+			effects := ctx.handleX87(st, x87Inst(asm.OpFST, dst, asm.Operand{}), Meta{InstOp: asm.OpFST})
+			var stored Value
+			if outgoing {
+				stored = st.fpCallSlots[0].value
+			} else {
+				stored = effects[0].(StoreEffect).Src
+			}
+			if width == 10 {
+				if stored != register {
+					t.Fatalf("extended store changed register value: %v", stored)
+				}
+			} else {
+				cast, ok := stored.(*Cast)
+				if !ok || cast.To.Kind() != typeinfo.KFloat || cast.To.Bytes() != width || cast.Value != register {
+					t.Fatalf("width %d store = %v, want narrowing float cast", width, stored)
+				}
+			}
+			if st.peekFP(0) != register {
+				t.Fatal("FST rounded the register value")
+			}
+			ctx.handleX87(st, x87Inst(asm.OpFSTP, dst, asm.Operand{}), Meta{InstOp: asm.OpFSTP})
+			if st.fpd != 0 {
+				t.Fatal("FSTP retained the register value")
+			}
+		}
 	}
 }
 
@@ -56,7 +133,10 @@ func TestHandleCALLFFtolConsumesX87(t *testing.T) {
 				st.outgoingStackBytes = 8
 				st.fpCallSlots = []fpCallSlot{{depth: 8, value: FloatConstVal(0.5)}}
 				calls := ctx.handleCALLF(st, asm.DecodedInst{Op: asm.OpCALLF, Mnemonic: "CALLF"}, &InstCall{Target: callee}, nil, Meta{InstOff: 0x1000})
-				operand = calls[0].(CallEffect).Result
+				if st.peekFP(0).(*Cast).Value != calls[0].(CallEffect).Result {
+					t.Fatal("floating call return lost its register promotion")
+				}
+				operand = st.peekFP(0)
 			case "arithmetic":
 				st.pushFP(FloatConstVal(7))
 				ctx.handleX87(st, x87Inst(asm.OpFLD1, asm.Operand{}, asm.Operand{}), Meta{})

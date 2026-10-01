@@ -295,6 +295,8 @@
         "VK_BACK",
         "VK_TAB",
         "VK_RETURN",
+        "VK_SHIFT",
+        "VK_CONTROL",
         "VK_ESCAPE",
         "VK_SPACE",
         "VK_PRIOR",
@@ -550,6 +552,24 @@
       "members": ["TRANSPARENT", "OPAQUE"]
     },
     {
+      "name": "Rop2",
+      "members": ["R2_BLACK", "R2_NOTMERGEPEN", "R2_MASKNOTPEN", "R2_NOTCOPYPEN", "R2_MASKPENNOT", "R2_NOT", "R2_XORPEN", "R2_NOTMASKPEN", "R2_MASKPEN", "R2_NOTXORPEN", "R2_NOP", "R2_MERGENOTPEN", "R2_COPYPEN", "R2_MERGEPENNOT", "R2_MERGEPEN", "R2_WHITE"]
+    },
+    {
+      "name": "DrawTextFlags",
+      "kind": "flags",
+      "members": ["DT_CENTER", "DT_RIGHT", "DT_VCENTER", "DT_BOTTOM", "DT_WORDBREAK", "DT_SINGLELINE", "DT_EXPANDTABS", "DT_TABSTOP", "DT_NOCLIP", "DT_EXTERNALLEADING", "DT_CALCRECT", "DT_NOPREFIX", "DT_INTERNAL"]
+    },
+    {
+      "name": "ExtTextOutFlags",
+      "kind": "flags",
+      "members": ["ETO_GRAYED", "ETO_OPAQUE", "ETO_CLIPPED"]
+    },
+    {
+      "name": "ScrollBarId",
+      "members": ["SB_HORZ", "SB_VERT", "SB_CTL"]
+    },
+    {
       "name": "BitBltRop",
       "members": ["SRCCOPY", "SRCPAINT", "SRCAND", "SRCINVERT", "SRCERASE", "NOTSRCCOPY", "NOTSRCERASE", "MERGECOPY", "MERGEPAINT", "PATPAINT"]
     },
@@ -570,6 +590,16 @@
         "MF_BYPOSITION",
         "MF_SEPARATOR"
       ]
+    },
+    {
+      "name": "MenuCheckFlags",
+      "kind": "flags",
+      "members": ["MF_UNCHECKED", "MF_CHECKED", "MF_BYPOSITION"]
+    },
+    {
+      "name": "MenuEnableFlags",
+      "kind": "flags",
+      "members": ["MF_ENABLED", "MF_GRAYED", "MF_DISABLED", "MF_BYPOSITION"]
     },
     {
       "name": "TrackPopupMenuFlags",

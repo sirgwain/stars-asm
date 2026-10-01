@@ -154,9 +154,9 @@ HWND         rghwndBtnSplash[4] = {0};
 HWND         rghwndBtn[13] = {0};
 HWND         rghwndMsgBtn[4] = {0};
 HWND         rghwndOrderDD[3] = {0};
-HullSlotType rgmapBuildBmps[21] = {hstEnabled,  hstEngine,    hstScanner, hstShield, hstWeapon,   hstSome,        hstSpecialEM,
-                                   hstScanSpec, hstBomb,      hstShArm,   hstArmor,  hstMining,   hstScanSpecArm, hstShWeap,
-                                   hstMines,    hstSpecialSB, hstSomeSB,  6400,      hstSpecialE, hstSpecialM,    hstShSpec};
+HullSlotType rgmapBuildBmps[21] = {hstEnabled,  hstEngine,    hstScanner, hstShield,   hstWeapon,   hstSome,        hstSpecialEM,
+                                   hstScanSpec, hstBomb,      hstShArm,   hstArmor,    hstMining,   hstScanSpecArm, hstShWeap,
+                                   hstMines,    hstSpecialSB, hstSomeSB,  hstSpecMine, hstSpecialE, hstSpecialM,    hstShSpec};
 INI          ini = {0};
 LOGXFER      lx = {0};
 LOGXFERF     lxf = {0};
@@ -172,7 +172,7 @@ PLAYER       rgplr[16] = {0};
 PLAYER       vplr = {0};
 PLAYER       vrgplrDef[7] = {{
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 15,
                                  .iPlrBmp = 1,
                                  .wMdPlr = 15,
@@ -185,7 +185,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 103,
                                  .iPlrBmp = 12,
                                  .wMdPlr = 103,
@@ -199,7 +199,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 39,
                                  .iPlrBmp = 4,
                                  .wMdPlr = 39,
@@ -213,7 +213,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 207,
                                  .iPlrBmp = 25,
                                  .wMdPlr = 207,
@@ -227,7 +227,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 47,
                                  .iPlrBmp = 5,
                                  .wMdPlr = 47,
@@ -241,7 +241,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 151,
                                  .iPlrBmp = 18,
                                  .wMdPlr = 151,
@@ -255,7 +255,7 @@ PLAYER       vrgplrDef[7] = {{
                        },
                              {
                                  .iPlayer = -1,
-                                 .det = 7,
+                                 .det = detAll,
                                  .reserved = 255,
                                  .iPlrBmp = 31,
                                  .wMdPlr = 255,

@@ -36,10 +36,10 @@ block L_50d0:
   effects:
     50dd  store[2] ss:[bp-0x4a] = 0x0
     50e0  store[2] ss:[bp-0x48] = 0x0
-    50e8  store[8] qword [bp-lRange4] = (double)load(dword ss:[bp-0x4a])
+    50e8  store[8] qword [bp-lRange4] = (double)(long double)load(dword ss:[bp-0x4a])
     50f1  store[2] ss:[bp-0x4a] = 0x0
     50f4  store[2] ss:[bp-0x48] = 0x0
-    50fc  store[8] qword [bp-lPlanRange4] = (double)load(dword ss:[bp-0x4a])
+    50fc  store[8] qword [bp-lPlanRange4] = (double)(long double)load(dword ss:[bp-0x4a])
     5101  store[2] [bp-fHasScanner] = 0x0
     5106  store[2] [bp-iSteal] = 0x0
     510b  store[2] [bp-cDetectors] = 0x0
@@ -71,8 +71,8 @@ block L_5142:
   succs: L_5164, L_516b
   effects:
     5142  store[2] [bp-fBuiltIn] = merge(Join: L_5142, (L_5139:0x1, L_513f:0x0))
-    514b  store[8] qword [bp-lBIR4] = -1
-    5156  store[8] qword [bp-lBIPR4] = -1
+    514b  store[8] qword [bp-lBIR4] = (double)(long double)-1
+    5156  store[8] qword [bp-lBIPR4] = (double)(long double)-1
     515f  branch load([bp+ppctDetect]) == 0x0 ? L_516b : L_5164
 
 block L_5164:
@@ -117,7 +117,7 @@ block L_5198:
   effects:
     519c  store[2] ss:[bp-0x4a] = 0x0
     519f  store[2] ss:[bp-0x48] = 0x0
-    51b1  branch load(qword [bp-lBIR4]) >= (double)load(dword ss:[bp-0x4a]) ? L_525e : L_51b6
+    51b1  branch (long double)load(qword [bp-lBIR4]) >= (long double)load(dword ss:[bp-0x4a]) ? L_525e : L_51b6
 
 block L_51b6:
   insts 92..98  off 0x51b6..0x51c6
@@ -131,8 +131,8 @@ block L_51ca:
   preds: L_51b6
   succs: L_525e
   effects:
-    51d0  store[8] qword [bp-lBIR4] = 2.56e+06
-    51db  store[8] qword [bp-lBIPR4] = 160000
+    51d0  store[8] qword [bp-lBIR4] = (double)(long double)2.56e+06
+    51db  store[8] qword [bp-lBIPR4] = (double)(long double)160000
     51e0  goto L_525e
 
 block L_51e3:
@@ -142,22 +142,22 @@ block L_51e3:
   effects:
     51f8  store[2] ss:[bp-0x4a] = loword((sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([bp+iplr]))))+0x1e])) * 0xa))
     51fb  store[2] ss:[bp-0x48] = signhiword(loword((sext8to16(load(byte ds:[(0x59a2 + loword((0xc0 * load([bp+iplr]))))+0x1e])) * 0xa)))
-    5203  store[8] qword [bp-lBIPR4] = (double)load(dword ss:[bp-0x4a])
+    5203  store[8] qword [bp-lBIPR4] = (double)(long double)load(dword ss:[bp-0x4a])
     520c  store[2] ss:[bp-0x4a] = 0x2
     520f  store[2] ss:[bp-0x48] = 0x0
-    5221  store[8] qword [bp-lBIR4] = (load@5217/src(qword [bp-lBIPR4]) * (double)load(dword ss:[bp-0x4a]))
-    522f  store[8] qword [bp-lBIPR4] = (load@5227/src(qword [bp-lBIPR4]) * load@522b/src(qword [bp-lBIPR4]))
-    523d  store[8] qword [bp-lBIPR4] = (load@5235/src(qword [bp-lBIPR4]) * load@5239/src(qword [bp-lBIPR4]))
-    524b  store[8] qword [bp-lBIR4] = (load@5243/src(qword [bp-lBIR4]) * load@5247/src(qword [bp-lBIR4]))
-    5259  store[8] qword [bp-lBIR4] = (load@5251/src(qword [bp-lBIR4]) * load@5255/src(qword [bp-lBIR4]))
+    5221  store[8] qword [bp-lBIR4] = (double)((long double)load(qword [bp-lBIPR4]) * (long double)load(dword ss:[bp-0x4a]))
+    522f  store[8] qword [bp-lBIPR4] = (double)((long double)load(qword [bp-lBIPR4]) * (long double)load(qword [bp-lBIPR4]))
+    523d  store[8] qword [bp-lBIPR4] = (double)((long double)load(qword [bp-lBIPR4]) * (long double)load(qword [bp-lBIPR4]))
+    524b  store[8] qword [bp-lBIR4] = (double)((long double)load(qword [bp-lBIR4]) * (long double)load(qword [bp-lBIR4]))
+    5259  store[8] qword [bp-lBIR4] = (double)((long double)load(qword [bp-lBIR4]) * (long double)load(qword [bp-lBIR4]))
 
 block L_525e:
   insts 178..189  off 0x525e..0x5271
   preds: L_5198, L_51ca, L_51e3
   succs: L_5272
   effects:
-    5263  store[8] qword [bp-lRange4] = load(qword [bp-lBIR4])
-    526d  store[8] qword [bp-lPlanRange4] = load(qword [bp-lBIPR4])
+    5263  store[8] qword [bp-lRange4] = (double)(long double)load(qword [bp-lBIR4])
+    526d  store[8] qword [bp-lPlanRange4] = (double)(long double)load(qword [bp-lBIPR4])
 
 block L_5272:
   insts 190..201  off 0x5272..0x5297
@@ -210,13 +210,13 @@ block L_52d9:
     52fc  store[2] [bp-dRangeT] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34])
     5300  store[2] ss:[bp-0x4a] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34])
     5303  store[2] ss:[bp-0x48] = signhiword(load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x34]))
-    530b  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
-    5319  store[8] qword [bp-lT] = (load@5311/src(qword [bp-lT]) * load@5315/src(qword [bp-lT]))
-    5327  store[8] qword [bp-lT] = (load@531f/src(qword [bp-lT]) * load@5323/src(qword [bp-lT]))
+    530b  store[8] qword [bp-lT] = (double)(long double)load(dword ss:[bp-0x4a])
+    5319  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
+    5327  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
     533e  store[2] ss:[bp-0x4a] = ((load@532f/src(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
     5341  store[2] ss:[bp-0x48] = 0x0
-    5353  store[8] qword [bp-lT] = (load@5349/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
-    5361  store[8] qword [bp-lRange4] = (load(qword [bp-lRange4]) + load@535d/src(qword [bp-lT]))
+    5353  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(dword ss:[bp-0x4a]))
+    5361  store[8] qword [bp-lRange4] = (double)((long double)load(qword [bp-lRange4]) + (long double)load(qword [bp-lT]))
     5369  call LpscannerFromId(load@5366/src([bp-iScanner])) -> callresult(SCANNER *)
     5379  store[2] [bp-dRangeT] = load(farseg(callresult(SCANNER *)):[faroff(callresult(SCANNER *))+0x36])
     5380  branch load@537c/dst([bp-iScanner]) != 0x6 ? L_5390 : L_5385
@@ -315,13 +315,13 @@ block LPlanScan:
   effects:
     53f1  store[2] ss:[bp-0x4a] = load([bp-dRangeT])
     53f4  store[2] ss:[bp-0x48] = signhiword(load([bp-dRangeT]))
-    53fc  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
-    540a  store[8] qword [bp-lT] = (load@5402/src(qword [bp-lT]) * load@5406/src(qword [bp-lT]))
-    5418  store[8] qword [bp-lT] = (load@5410/src(qword [bp-lT]) * load@5414/src(qword [bp-lT]))
+    53fc  store[8] qword [bp-lT] = (double)(long double)load(dword ss:[bp-0x4a])
+    540a  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
+    5418  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
     542f  store[2] ss:[bp-0x4a] = ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
     5432  store[2] ss:[bp-0x48] = 0x0
-    5444  store[8] qword [bp-lT] = (load@543a/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
-    5452  store[8] qword [bp-lPlanRange4] = (load(qword [bp-lPlanRange4]) + load@544e/src(qword [bp-lT]))
+    5444  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(dword ss:[bp-0x4a]))
+    5452  store[8] qword [bp-lPlanRange4] = (double)((long double)load(qword [bp-lPlanRange4]) + (long double)load(qword [bp-lT]))
 
 block L_5457:
   insts 382..382  off 0x5457..0x5459
@@ -359,13 +359,13 @@ block LOddBallScanners:
   effects:
     5486  store[2] ss:[bp-0x4a] = load([bp-dRangeT])
     5489  store[2] ss:[bp-0x48] = signhiword(load([bp-dRangeT]))
-    5491  store[8] qword [bp-lT] = (double)load(dword ss:[bp-0x4a])
-    549f  store[8] qword [bp-lT] = (load@5497/src(qword [bp-lT]) * load@549b/src(qword [bp-lT]))
-    54ad  store[8] qword [bp-lT] = (load@54a5/src(qword [bp-lT]) * load@54a9/src(qword [bp-lT]))
+    5491  store[8] qword [bp-lT] = (double)(long double)load(dword ss:[bp-0x4a])
+    549f  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
+    54ad  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(qword [bp-lT]))
     54c4  store[2] ss:[bp-0x4a] = ((load(farseg(load(dword [bp-lphs])):[faroff(load(dword [bp-lphs]))+0x2]) >> 0x8) & 0xff)
     54c7  store[2] ss:[bp-0x48] = 0x0
-    54d9  store[8] qword [bp-lT] = (load@54cf/src(qword [bp-lT]) * (double)load(dword ss:[bp-0x4a]))
-    54e7  store[8] qword [bp-lRange4] = (load(qword [bp-lRange4]) + load@54e3/src(qword [bp-lT]))
+    54d9  store[8] qword [bp-lT] = (double)((long double)load(qword [bp-lT]) * (long double)load(dword ss:[bp-0x4a]))
+    54e7  store[8] qword [bp-lRange4] = (double)((long double)load(qword [bp-lRange4]) + (long double)load(qword [bp-lT]))
     54ef  store[2] [bp-dRangeT] = load([bp-dRangeT2])
     54f2  goto L_53ed
 
@@ -457,7 +457,7 @@ block L_5591:
   effects:
     5595  store[2] ss:[bp-0x4a] = 0x0
     5598  store[2] ss:[bp-0x48] = 0x0
-    55aa  branch load(qword [bp-lRange4]) > (double)load(dword ss:[bp-0x4a]) ? L_55b8 : L_55af
+    55aa  branch (long double)load(qword [bp-lRange4]) > (long double)load(dword ss:[bp-0x4a]) ? L_55b8 : L_55af
 
 block L_55af:
   insts 511..512  off 0x55af..0x55b4
@@ -472,8 +472,8 @@ block L_55b8:
   succs: L_55fd, L_562d
   effects:
     55c7  call sqrt(words(load([bp-lRange4+0x6]), load([bp-lRange4+0x4]), load([bp-lRange4+0x2]), load([bp-lRange4]))) -> callresult(double)
-    55dd  call sqrt(callresult(double)) -> callresult(double)
-    55ec  call __ftol(callresult(double)) -> callresult(int32_t)
+    55dd  call sqrt((double)(long double)callresult(double)) -> callresult(double)
+    55ec  call __ftol((long double)callresult(double)) -> callresult(int32_t)
     55f1  store[2] [bp-dRange] = loword(callresult(int32_t))
     55f8  branch load([bp+iplr]) == 0xffff ? L_562d : L_55fd
 
@@ -519,8 +519,8 @@ block L_5636:
   succs: L_5674
   effects:
     5645  call sqrt(words(load([bp-lPlanRange4+0x6]), load([bp-lPlanRange4+0x4]), load([bp-lPlanRange4+0x2]), load([bp-lPlanRange4]))) -> callresult(double)
-    565b  call sqrt(callresult(double)) -> callresult(double)
-    566a  call __ftol(callresult(double)) -> callresult(int32_t)
+    565b  call sqrt((double)(long double)callresult(double)) -> callresult(double)
+    566a  call __ftol((long double)callresult(double)) -> callresult(int32_t)
     5672  store[2] ds:[load([bp+pdPlanRange])] = loword(callresult(int32_t))
 
 block L_5674:

@@ -336,8 +336,15 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "native-cybertron",
+			Purpose: "Repair Cybertron recycle writes for absent designs, whose index -1 corrupted a dead pointer in the Win16 stack layout.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &nativeCybertronProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "native-casts",
-			Purpose: "Cast values the original compiler converted implicitly for the native compile.",
+			Purpose: "Cast values the original compiler converted implicitly for the native compile, and simplify exact floating promotions.",
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &nativeCastsProcessor{ctx: ctx}
 			},

@@ -441,13 +441,13 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
         for (iSrc = 0; iSrc < cProdGlob && (pProdGlob[iSrc].cItem == 0 || lSel-- != 0); iSrc++) {
         }
         prod = pProdGlob[iSrc];
-        if ((GetAsyncKeyState(17) & 0xfffe) != 0) {
-            if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+        if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
+            if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
                 prod.cItem = LOWORD(prod.cItem < 1020 ? (uint32_t)prod.cItem : 1020);
             } else {
                 prod.cItem = LOWORD(prod.cItem < 100 ? (uint32_t)prod.cItem : 100);
             }
-        } else if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+        } else if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
             prod.cItem = LOWORD(prod.cItem < 10 ? (uint32_t)prod.cItem : 10);
         } else {
             prod.cItem = 1;
@@ -521,13 +521,13 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
         for (iSrc = 0; iSrc < cProdGlob && ((uint32_t)pProdGlob[iSrc].grobj != prod.grobj || (uint32_t)pProdGlob[iSrc].iItem != prod.iItem); iSrc++) {
         }
         fRefillSrc = pProdGlob[iSrc].cItem == 0 ? 1 : 0;
-        if ((GetAsyncKeyState(17) & 0xfffe) != 0) {
-            if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+        if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
+            if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
                 c = 1020;
             } else {
                 c = 100;
             }
-        } else if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+        } else if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
             c = 10;
         } else {
             c = 1;
@@ -632,7 +632,7 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     case IDC_NEXT:
         c = GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT ? 1 : -1;
         FinishProduction(1);
-        if (GetKeyState(16) < 0) {
+        if (GetKeyState(VK_SHIFT) < 0) {
             SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT ? 1 : 0));
         } else {
             SelectAdjPlanet(c, 0);
@@ -1096,19 +1096,19 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
 }
 
 void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, int16_t *piFirst, int16_t *piLast) {
-    int32_t cResearch;
-    PLANET  pl;
-    int32_t rglQuan[3];
-    int16_t cBuilt;
-    PROD    prodPartial;
-    int16_t mdStatus;
-    int16_t i;
-    int16_t j;
-    int16_t iPass;
-    int16_t fAlchemy;
-    int16_t iMac;
-    int32_t rgRes[4];
-    PROD   *lpprod;
+    int32_t    cResearch;
+    PLANET     pl;
+    int32_t    rglQuan[3];
+    int16_t    cBuilt;
+    PROD       prodPartial;
+    mdProdStat mdStatus;
+    int16_t    i;
+    int16_t    j;
+    int16_t    iPass;
+    int16_t    fAlchemy;
+    int16_t    iMac;
+    int32_t    rgRes[4];
+    PROD      *lpprod;
 
     if (lpplprod == 0) {
         lpplprod = lppl->lpplprod;
@@ -1153,19 +1153,19 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, i
                     }
                     lpprod->cItem = 1020;
                 }
-                cBuilt = CBuildProdItem(&pl, lpprod, i == -1 ? NULL : &prodPartial, rgRes, fAlchemy, &mdStatus, 0);
+                cBuilt = CBuildProdItem(&pl, lpprod, i == -1 ? NULL : &prodPartial, rgRes, fAlchemy, (int16_t *)&mdStatus, 0);
                 if (iItem == i) {
                     if (cBuilt > 0 && *piFirst == 0) {
                         *piFirst = iPass;
                     }
                     switch (mdStatus) {
-                    case 2:
+                    case mdProdStatSkippedAuto:
                         if (*piFirst == 0)
                             goto LCleanUp;
                         *piLast = iPass - 1;
                         goto LCleanUp;
-                    case 0:
-                    case 1:
+                    case mdProdStatComplete:
+                    case mdProdStatCompleteAuto:
                         *piLast = iPass;
                         goto LCleanUp;
                     default:
@@ -1186,7 +1186,7 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, ProdItemType iItem, i
                         pl.cFactories += cBuilt;
                     }
                 }
-                if (mdStatus >= 5)
+                if (mdStatus >= mdProdStatSome)
                     break;
             }
         }

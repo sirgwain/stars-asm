@@ -168,7 +168,7 @@ func (ctx *extractor) handleCALLF(st *state, inst asm.DecodedInst, call *InstCal
 	result := &CallResult{Target: target, Type: target.Ret, InstOff: meta.InstOff}
 	if isFloatType(target.Ret) {
 		st.killFP()
-		st.pushFP(result)
+		st.pushFP(extendedFPValue(result))
 		st.writeReg(asm.RegAX, WordVal(result, WordLow))
 		st.writeReg(asm.RegDX, UnknownVal("floatret"))
 		return []Effect{CallEffect{MetaInfo: meta, Target: target, Args: args, Result: result}}
@@ -445,13 +445,13 @@ func (ctx *extractor) handleX87(st *state, inst asm.DecodedInst, meta Meta) []Ef
 	case asm.OpWAIT:
 		return nil
 	case asm.OpFILD:
-		st.pushFP(CastVal(st.readOperand(inst.Off, OperandSrc, inst.Src), typeinfo.Double))
+		st.pushFP(CastVal(st.readOperand(inst.Off, OperandSrc, inst.Src), typeinfo.F80))
 	case asm.OpFLD1:
-		st.pushFP(FloatConstVal(1.0))
+		st.pushFP(extendedFPValue(FloatConstVal(1.0)))
 	case asm.OpFLDZ:
-		st.pushFP(FloatConstVal(0.0))
+		st.pushFP(extendedFPValue(FloatConstVal(0.0)))
 	case asm.OpFLD:
-		st.pushFP(ctx.fpOperandValue(st, inst.Off, OperandSrc, inst.Src))
+		st.pushFP(extendedFPValue(ctx.fpOperandValue(st, inst.Off, OperandSrc, inst.Src)))
 	case asm.OpFXCH:
 		st.swapFP(x87Index(inst.Src, 1))
 	case asm.OpFADD:
@@ -548,13 +548,24 @@ func (ctx *extractor) handleFST(st *state, inst asm.DecodedInst, meta Meta, pop 
 	if top == nil {
 		top = UnknownVal("fp")
 	}
+	stored := top
+	if inst.Dst.Kind == asm.OKMem {
+		// Memory stores round to their destination format; FST leaves the
+		// unrounded register value available for subsequent arithmetic.
+		switch inst.Dst.Width() {
+		case 4:
+			stored = CastVal(top, &typeinfo.Primitive{TypeKind: typeinfo.KFloat, Name: "float", Size: 4})
+		case 8:
+			stored = CastVal(top, typeinfo.Double)
+		}
+	}
 
 	if trackAsStackSlot(st, inst.Dst) {
 		if inst.Dst.Kind == asm.OKMem {
 			st.fpCallSlots = append(st.fpCallSlots, fpCallSlot{
 				depth: st.outgoingStackBytes,
 				disp:  inst.Dst.Mem.Disp,
-				value: top,
+				value: stored,
 			})
 		}
 		if pop {
@@ -563,14 +574,14 @@ func (ctx *extractor) handleFST(st *state, inst asm.DecodedInst, meta Meta, pop 
 		return nil
 	}
 
-	mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, top)
+	mem, isMem := st.writeOperand(inst.Off, OperandDst, inst.Dst, stored)
 	if pop {
 		st.popFP()
 	}
 	if !isMem {
 		return nil
 	}
-	return []Effect{StoreEffect{MetaInfo: meta, Addr: mem, Src: top, Width: inst.Dst.Width()}}
+	return []Effect{StoreEffect{MetaInfo: meta, Addr: mem, Src: stored, Width: inst.Dst.Width()}}
 }
 
 // hiddenBufferFPReturnValue recognizes FLD [reg] after a floating-point call return.
@@ -628,8 +639,26 @@ func (ctx *extractor) handleFPBinary(st *state, inst asm.DecodedInst, op ValueOp
 	st.setFP(0, fpBinaryResult(op, dst, src, reversed))
 }
 
-// fpBinaryResult returns the symbolic x87 binary operation result, typed as
-// double like the source arithmetic whose operands x87 loads convert to double.
+// extendedFPValue promotes an x87 operand without narrowing extended results.
+// Keeping register loads extended also prevents merged stack values from
+// choosing a narrower type from a literal or memory load on one incoming edge.
+func extendedFPValue(value Value) Value {
+	switch v := value.(type) {
+	case *Cast:
+		if typeinfo.Equals(v.To, typeinfo.F80) {
+			return value
+		}
+	case *Binary:
+		if typeinfo.Equals(v.Type, typeinfo.F80) {
+			return value
+		}
+	}
+	return CastVal(value, typeinfo.F80)
+}
+
+// fpBinaryResult preserves the extended precision of x87 register arithmetic.
+// Cast both operands so native C evaluates the operation at that precision;
+// memory stores apply their own narrowing conversions in handleFST.
 func fpBinaryResult(op ValueOp, dst, src Value, reversed bool) Value {
 	if dst == nil || src == nil {
 		return UnknownVal("fp")
@@ -638,10 +667,10 @@ func fpBinaryResult(op ValueOp, dst, src Value, reversed bool) Value {
 	if reversed {
 		lhs, rhs = src, dst
 	}
-	result := BinaryResult(op, lhs, rhs)
+	result := BinaryResult(op, extendedFPValue(lhs), extendedFPValue(rhs))
 	if binary, ok := result.(*Binary); ok {
 		typed := *binary
-		typed.Type = typeinfo.Double
+		typed.Type = typeinfo.F80
 		return &typed
 	}
 	return result

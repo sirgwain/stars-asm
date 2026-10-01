@@ -29,7 +29,7 @@ L_9983:
         goto L_9991;
 
 L_9991:
-    if (imemMsgCur + imemMsgT >= 0xffc8 - hdrCur.cb)
+    if ((uint16_t)(imemMsgCur + imemMsgT) >= (uint16_t)(0xffc8 - hdrCur.cb))
         goto L_99d7;
     else
         goto L_99ab;

@@ -14,6 +14,28 @@ file(GLOB STARS_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/decompiled/*.c"
 )
 
+# Deterministic regression builds replace only WinMain's initial RNG seed.
+# Keep the checked-in generated source intact so regeneration needs no patch.
+set(STARS_TEST_SEED "" CACHE STRING "Fixed startup RNG seed for regression tests (empty uses the clock)")
+if(NOT STARS_TEST_SEED STREQUAL "")
+    if(NOT STARS_TEST_SEED MATCHES "^(0|[1-9][0-9]*)$" OR STARS_TEST_SEED GREATER 4294967295)
+        message(FATAL_ERROR "STARS_TEST_SEED must be a decimal uint32")
+    endif()
+    set(STARS_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/decompiled/stars.c")
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${STARS_MAIN}")
+    file(READ "${STARS_MAIN}" STARS_MAIN_TEXT)
+    string(REGEX MATCHALL "Randomize2\\(GetTickCount\\(\\)\\)" STARS_SEED_CALLS "${STARS_MAIN_TEXT}")
+    list(LENGTH STARS_SEED_CALLS STARS_SEED_CALL_COUNT)
+    if(NOT STARS_SEED_CALL_COUNT EQUAL 1)
+        message(FATAL_ERROR "Expected exactly one startup Randomize2(GetTickCount()) call in stars.c")
+    endif()
+    string(REPLACE "Randomize2(GetTickCount())" "Randomize2(${STARS_TEST_SEED}u)"
+        STARS_MAIN_TEXT "${STARS_MAIN_TEXT}")
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/stars-seeded.c" "${STARS_MAIN_TEXT}")
+    list(REMOVE_ITEM STARS_SOURCES "${STARS_MAIN}")
+    list(APPEND STARS_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/stars-seeded.c")
+endif()
+
 add_executable(stars WIN32
     ${STARS_SOURCES}
     decompiled/res/stars.rc

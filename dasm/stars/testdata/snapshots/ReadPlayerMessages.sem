@@ -30,7 +30,7 @@ L_9983:
     branch hdrCur.cb == 0 ? L_99d7 : L_9991
 
 L_9991:
-    branch (imemMsgCur + imemMsgT) >= (0xffc8 - hdrCur.cb) ? L_99d7 : L_99ab
+    branch (uint16_t)(imemMsgCur + imemMsgT) >= (uint16_t)(0xffc8 - hdrCur.cb) ? L_99d7 : L_99ab
 
 L_99ab:
     call fmemmove(&lpb[imemMsgT], rgbCur, hdrCur.cb) -> callresult(void *)

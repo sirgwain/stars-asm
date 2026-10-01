@@ -149,7 +149,7 @@ L_3dd1:
 L_3e38:
     GlobalPD.grPopup = grPopupFleet;
     GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-    GlobalPD.fRedDamage = GlobalPD.lpfl->det == 7 ? 1 : 0;
+    GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
     GlobalPD.grbit = 0xff;
 
 L_3e84:
@@ -178,7 +178,7 @@ L_3f41:
     GlobalPD.grPopup = grPopupPlanetEnv;
     GlobalPD.idPlanet = pl.id;
     GlobalPD.iPlanetVar = ht - 6;
-    if (pl.det < 3)
+    if (pl.det < detSome)
         goto L_3f85;
     else
         goto L_3f74;
@@ -191,7 +191,7 @@ L_3f85:
     GlobalPD.iPlanVal = -1;
 
 L_3f8b:
-    if (pl.det < 3)
+    if (pl.det < detSome)
         goto NoTerra;
     else
         goto L_3f99;
@@ -562,7 +562,7 @@ L_45b4:
         goto L_45bd;
 
 L_45bd:
-    if (pl.det < 3)
+    if (pl.det < detSome)
         goto L_478e;
     else
         goto L_45cb;
@@ -570,7 +570,7 @@ L_45bd:
 L_45cb:
     GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[ht + 2];
     GlobalPD.rgi[1] = pl.fHomeworld;
-    if (pl.det <= 3)
+    if (pl.det <= detSome)
         goto L_478e;
     else
         goto L_4608;

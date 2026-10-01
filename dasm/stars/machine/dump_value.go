@@ -460,6 +460,8 @@ func dumpType(typ typeinfo.Type) string {
 		return "typeinfo.I32"
 	case typeinfo.Double:
 		return "typeinfo.Double"
+	case typeinfo.F80:
+		return "typeinfo.F80"
 	case typeinfo.LpStr:
 		return "typeinfo.LpStr"
 	default:

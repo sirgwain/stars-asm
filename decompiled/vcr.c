@@ -117,7 +117,7 @@ BTLDATA *BtlDataGet(int16_t i) {
     return NULL;
 }
 
-int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU) {
+int32_t CBattleUnits(BTLDATA *lpbd, BattleUnitFlags grbitBU) {
     TOK    *lptok;
     int16_t ctok;
     int32_t lUnits;
@@ -499,9 +499,9 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
 L_16d3:
-    if (GetAsyncKeyState(17) < 0) {
+    if (GetAsyncKeyState(VK_CONTROL) < 0) {
         dStep = 100;
-    } else if (GetAsyncKeyState(16) < 0) {
+    } else if (GetAsyncKeyState(VK_SHIFT) < 0) {
         dStep = 10;
     } else {
         dStep = 1;

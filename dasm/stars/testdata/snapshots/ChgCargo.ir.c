@@ -247,7 +247,7 @@ L_63d4:
         goto L_63dd;
 
 L_63dd:
-    if (pfl->det == 7)
+    if (pfl->det == detAll)
         goto L_63f9;
     else
         goto L_63ef;

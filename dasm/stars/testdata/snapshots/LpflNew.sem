@@ -59,7 +59,7 @@ L_311b:
     lpfl->ifl = (iflPrev + 1)
     lpfl->iPlayer = iPlr
     lpfl->iplr = iPlr
-    lpfl->det = 7
+    lpfl->det = detAll
     lpfl->idPlanet = idPl
     branch idPl == -1 ? L_3231 : L_3217
 

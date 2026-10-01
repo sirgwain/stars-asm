@@ -194,7 +194,7 @@ L_63d4:
     branch iSupply != 3 ? L_63f9 : L_63dd
 
 L_63dd:
-    branch pfl->det == 7 ? L_63f9 : L_63ef
+    branch pfl->det == detAll ? L_63f9 : L_63ef
 
 L_63ef:
     dChg = 0

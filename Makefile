@@ -114,3 +114,22 @@ clean:
 DEF ?= tests/scaffold/fixtures/newgame/tiny/game.def
 newgame:
 	tests/scaffold/newgame.sh "$(DEF)"
+
+# generate new starsbox checkpoints (takes a LONG time)
+checkpoints-starsbox:
+	rm -rf starsbox/c_drive/REGTEST
+	python3 tests/scaffold/regression.py prepare --engine dosbox --seed 12345 --exe starsbox/c_drive/STARS/stars.exe --work starsbox/c_drive/REGTEST
+	python3 tests/scaffold/regression.py run --work starsbox/c_drive/REGTEST
+
+# generate new native checkpoints
+checkpoints-native:
+	rm -rf starsbox/c_drive/native 
+	cmake --preset mingw-debug -B dist/regression-build -DSTARS_TEST_SEED=12345
+	cmake --build dist/regression-build
+	make build
+
+	python3 tests/scaffold/regression.py prepare --engine native --seed 12345 --exe dist/regression-build/bin/stars.exe --work starsbox/c_drive/native
+	python3 tests/scaffold/regression.py run --work starsbox/c_drive/native
+
+checkpoints-compare:
+	python3 tests/scaffold/regression.py compare starsbox/c_drive/REGTEST starsbox/c_drive/native

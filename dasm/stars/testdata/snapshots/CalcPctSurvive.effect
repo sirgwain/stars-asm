@@ -27,7 +27,7 @@ block L_0308:
   preds: L_02f6
   succs: L_0317
   effects:
-    0313  store[4] dword ds:[load([bp+ppctSmart])] = 1
+    0313  store[4] dword ds:[load([bp+ppctSmart])] = (float)(long double)1
 
 block L_0317:
   insts 17..19  off 0x0317..0x0320
@@ -100,8 +100,8 @@ block L_03bf:
   effects:
     03da  store[2] ss:[bp-0x1e] = load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34])
     03dd  store[2] ss:[bp-0x1c] = signhiword(load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]))
-    03fe  call pow((1 - ((double)load(dword ss:[bp-0x1e]) / 1000)), (double)load(dword [bp-cDefenses])) -> callresult(double)
-    040c  store[4] dword [bp-pct] = callresult(double)
+    03fe  call pow((double)((long double)1 - ((long double)load(dword ss:[bp-0x1e]) / (long double)1000)), (double)(long double)load(dword [bp-cDefenses])) -> callresult(double)
+    040c  store[4] dword [bp-pct] = (float)(long double)callresult(double)
     0415  branch load([bp+ppctSmart]) == 0x0 ? L_047e : L_041a
 
 block L_041a:
@@ -111,8 +111,8 @@ block L_041a:
   effects:
     0435  store[2] ss:[bp-0x1e] = load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34])
     0438  store[2] ss:[bp-0x1c] = signhiword(load(farseg(load(dword [bp-part+0x4])):[faroff(load(dword [bp-part+0x4]))+0x34]))
-    0459  call pow((1 - ((double)load(dword ss:[bp-0x1e]) / 2000)), (double)load(dword [bp-cDefenses])) -> callresult(double)
-    046c  store[4] dword ds:[load([bp+ppctSmart])] = callresult(double)
+    0459  call pow((double)((long double)1 - ((long double)load(dword ss:[bp-0x1e]) / (long double)2000)), (double)(long double)load(dword [bp-cDefenses])) -> callresult(double)
+    046c  store[4] dword ds:[load([bp+ppctSmart])] = (float)(long double)callresult(double)
 
 block L_0470:
   insts 164..164  off 0x0470..0x0472
@@ -126,7 +126,7 @@ block L_0473:
   preds: L_0345
   succs: L_047e
   effects:
-    0479  store[4] dword [bp-pct] = 1
+    0479  store[4] dword [bp-pct] = (float)(long double)1
 
 block L_047e:
   insts 171..173  off 0x047e..0x0486
@@ -141,11 +141,11 @@ block L_0487:
   preds: L_0317, L_033d
   succs: L_0492
   effects:
-    048d  store[4] dword [bp-pct] = 1
+    048d  store[4] dword [bp-pct] = (float)(long double)1
 
 block L_0492:
   insts 180..193  off 0x0492..0x04a5
   preds: L_047e, L_0487
   effects:
-    049c  store[4] dword ds:[load([bp+ppct])] = load(dword [bp-pct])
+    049c  store[4] dword ds:[load([bp+ppct])] = (float)(long double)load(dword [bp-pct])
     04a5  return

@@ -550,7 +550,7 @@ int16_t FFleetHasTeeth(FLEET *lpfl) {
     int16_t ishdef;
 
     for (ishdef = 0; ishdef < 16; ishdef++) {
-        if (lpfl->rgcsh[ishdef] != 0 && FHullHasTeeth(&rglpshdef[lpfl->iplr][ishdef].hul) != 0 && rglpshdef[lpfl->iplr][ishdef].det == 7) {
+        if (lpfl->rgcsh[ishdef] != 0 && FHullHasTeeth(&rglpshdef[lpfl->iplr][ishdef].hul) != 0 && rglpshdef[lpfl->iplr][ishdef].det == detAll) {
             return 1;
         }
     }
@@ -779,8 +779,8 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
         if (lpflCur->fDead == 0) {
             iplrCur = lpflCur->iPlayer;
             grfPlayer |= 1 << iplrCur;
-            if (rglpbtlplan[lpflCur->iplr][lpflCur->iplan].mdTarget1 != mdTargetNone && rglpbtlplan[lpflCur->iplr][lpflCur->iplan].iplrAttack != 0 &&
-                FFleetHasTeeth(lpflCur) != 0) {
+            if (rglpbtlplan[lpflCur->iplr][lpflCur->iplan].mdTarget1 != mdTargetNone &&
+                rglpbtlplan[lpflCur->iplr][lpflCur->iplan].iplrAttack != iplrAttackNobody && FFleetHasTeeth(lpflCur) != 0) {
                 fAttack = 1;
                 iplrAttack = rglpbtlplan[iplrCur][lpflCur->iplan].iplrAttack;
                 if (rglpbtlplan[lpflCur->iplr][lpflCur->iplan].mdTarget1 == mdTargetNone) {
@@ -1240,7 +1240,7 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit) {
             }
             switch (part.hs.grhst) {
             case hstSpecialE:
-                if (part.hs.iItem - 4 > 11)
+                if ((uint16_t)(part.hs.iItem - 4) > 11)
                     break;
                 switch (part.hs.iItem) {
                 case 8:
@@ -1604,7 +1604,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
     int16_t  dzNonSapper;
     uint8_t  dz;
     int16_t  iplr;
-    uint16_t mdTarget;
+    MdTarget mdTarget;
     uint8_t  dzBest;
     int16_t  itokLook;
     int16_t  iplrTarget;
@@ -1652,7 +1652,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
             if (ptokTarget->dMovesLeft >= ptok->dMovesLeft) {
                 dz++;
             }
-            if (dz <= dzMax && (ptokTarget->dpShield > 0 || dzNonSapper == ptok->dxyLim || dz <= dzNonSapper + ptok->dMovesLeft)) {
+            if (dz <= dzMax && (ptokTarget->dpShield > 0 || dzNonSapper == ptok->dxyLim || dz <= (uint16_t)(dzNonSapper + ptok->dMovesLeft))) {
                 *pbrc = 0xff;
                 return ptok->dMovesLeft;
             }
@@ -1668,7 +1668,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
 }
 
 int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
-    uint16_t mdTarget;
+    MdTarget mdTarget;
     int16_t  iplr;
     int16_t  iplrLook;
     TOK      tok;
@@ -1676,14 +1676,14 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
 
     iplr = ptok->iplr;
     mdTarget = ptok->mdTarget1;
-    if (mdTarget == 0) {
+    if (mdTarget == mdTargetNone) {
         return 0;
     }
     for (itokLook = 0; itokLook < vctok; itokLook++) {
         iplrLook = vrgtok[itokLook].iplr;
         if (iplrLook != iplr && (1 << iplrLook & grfAttack) != 0) {
             tok = vrgtok[itokLook];
-            if (tok.fActive != 0 && mdTarget - 1 <= 6) {
+            if (tok.fActive != 0 && (uint16_t)(mdTarget - 1) <= 6) {
                 switch (mdTarget) {
                 case 3:
                 case 4:
@@ -1691,17 +1691,17 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
                 case 6:
                 case 7:
                     switch (mdTarget) {
-                    case 3:
-                    case 6:
-                    case 7:
+                    case mdTargetArmedShips:
+                    case mdTargetFuelTransports:
+                    case mdTargetFreighters:
                         if (tok.mdTarget0 != mdTarget)
                             continue;
                         break;
-                    case 5:
+                    case mdTargetUnarmedShips:
                         if (tok.mdTarget0 < mdTarget)
                             continue;
                         break;
-                    case 4:
+                    case mdTargetBombersFreighters:
                         if (tok.mdTarget0 != 4 && tok.mdTarget0 != 7)
                             continue;
                     }
@@ -1881,36 +1881,36 @@ int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t md
 }
 
 int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack) {
-    uint16_t iplr;
-    int16_t  xMax;
-    int16_t  dz;
-    int32_t  scoreBest;
-    uint8_t  brc;
-    int32_t  rgscoreNear[3][3];
-    int32_t  score;
-    int16_t  cBest;
-    int16_t  yMin;
-    int16_t  dy;
-    int16_t  mdTactic;
-    int16_t  y;
-    uint8_t  brcOOR;
-    int16_t  i;
-    int16_t  yCur;
-    uint8_t  brcBest;
-    int16_t  dzAwayBest;
-    int16_t  yMax;
-    int16_t  dx;
-    int16_t  xCur;
-    int16_t  fPrimary;
-    int32_t  dp;
-    int16_t  dzAway;
-    int16_t  x;
-    int32_t  lLow;
-    int16_t  cLow;
-    int16_t  fXMajor;
-    POINT16  rgptDeltas[2];
-    int16_t  t_scratch_m5c_3;
-    int16_t  t_scratch_m66;
+    uint16_t     iplr;
+    int16_t      xMax;
+    int16_t      dz;
+    int32_t      scoreBest;
+    uint8_t      brc;
+    int32_t      rgscoreNear[3][3];
+    int32_t      score;
+    int16_t      cBest;
+    int16_t      yMin;
+    int16_t      dy;
+    BattleTactic mdTactic;
+    int16_t      y;
+    uint8_t      brcOOR;
+    int16_t      i;
+    int16_t      yCur;
+    uint8_t      brcBest;
+    int16_t      dzAwayBest;
+    int16_t      yMax;
+    int16_t      dx;
+    int16_t      xCur;
+    int16_t      fPrimary;
+    int32_t      dp;
+    int16_t      dzAway;
+    int16_t      x;
+    int32_t      lLow;
+    int16_t      cLow;
+    int16_t      fXMajor;
+    POINT16      rgptDeltas[2];
+    int16_t      t_scratch_m5c_3;
+    int16_t      t_scratch_m66;
 
     iplr = ptok->iplr;
     dp = 0;
@@ -1950,7 +1950,7 @@ int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack) {
                 dx = abs(dx);
                 dy = abs(dy);
                 score = ScoreGuessBattleDamage(ptok, brc, fPrimary, grfAttack);
-                if (mdTactic == 0) {
+                if (mdTactic == mdTacticDisengage) {
                     for (i = 0; i < vctok; i++) {
                         if (vrgtok[i].brc == brc && vrgtok[i].iplr == iplr) {
                             score += 2;
@@ -2337,7 +2337,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 if (dpMain < 65536 && dp < 65536) {
                                     lValue = (int32_t)((int32_t)(dpMain * dp) / dpT);
                                 } else {
-                                    lValue = (int32_t)((double)dpMain * (double)dp / (double)dpT);
+                                    lValue = (int32_t)((long double)dpMain * dp / dpT);
                                 }
                                 dpMain = dpMain - 1 < lValue ? dpMain - 1 : lValue;
                             } else {
@@ -2442,7 +2442,7 @@ void KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t 
         if (lpfl->fDead == 0) {
             flDead.iPlayer = flSrc.iPlayer;
             flDead.fDead = 1;
-            flDead.det = 7;
+            flDead.det = detAll;
             FleetTransferCargoBalance(&flSrc, &flDead);
         }
         if (fFallout != 0) {
@@ -3447,19 +3447,19 @@ void DoBombing() {
             if (lppl->iPlayer != lpfl->iPlayer && lppl->iPlayer != -1 && FAttackPlayer(lpfl, lppl->iPlayer) != 0 && lppl->fStarbase == 0 &&
                 FCalcFleetBombDamage(lpfl, &dmgBombPeople, &dmgBombFloor, &dmgPeopleSmart, &dmgBombBldg, &pctTerra, &fMulti) != 0) {
                 CalcPctSurvive(lppl, &pctSuccess, &pctSmart);
-                if (pctSuccess < 1.0) {
+                if ((long double)pctSuccess < (long double)1.0) {
                     if (dmgBombPeople > 0) {
-                        dmgBombPeople = (int32_t)((double)dmgBombPeople * pctSuccess + 0.5);
+                        dmgBombPeople = (int32_t)((long double)dmgBombPeople * pctSuccess + 0.5);
                     }
                     if (dmgBombFloor > 0) {
-                        dmgBombFloor = (int32_t)((double)dmgBombFloor * pctSuccess + 0.5);
+                        dmgBombFloor = (int32_t)((long double)dmgBombFloor * pctSuccess + 0.5);
                     }
                     if (dmgPeopleSmart > 0) {
-                        dmgPeopleSmart = (int32_t)((double)dmgPeopleSmart * pctSmart + 0.5);
+                        dmgPeopleSmart = (int32_t)((long double)dmgPeopleSmart * pctSmart + 0.5);
                     }
                     if (dmgBombBldg > 0) {
-                        pctSuccessHalf = 1.0 - (1.0 - pctSuccess) / 2.0;
-                        dmgBombBldg = (int32_t)((double)dmgBombBldg * pctSuccessHalf + 0.5);
+                        pctSuccessHalf = (double)(1.0 - ((long double)1.0 - pctSuccess) / 2.0);
+                        dmgBombBldg = (int32_t)((long double)dmgBombBldg * pctSuccessHalf + 0.5);
                     }
                 }
                 cPPE = lppl->cMines + lppl->cFactories + (uint32_t)lppl->cDefenses;
@@ -3527,7 +3527,7 @@ void DoBombing() {
                 }
                 if (pctTerra > 0) {
                     pctTot = 0;
-                    pctTerra -= (int32_t)((1.0 - pctSuccess) * (double)pctTerra / 2.0);
+                    pctTerra -= (int32_t)(((long double)1.0 - pctSuccess) * pctTerra / 2);
                     if (pctTerra > 500) {
                         pctTerra = 500;
                     }
@@ -3562,28 +3562,29 @@ void DoBombing() {
                             idmDst++;
                         }
                         if (cKillPeople > 0) {
-                            if (pctSuccess != 1.0) {
+                            if ((long double)pctSuccess != (long double)1.0) {
                                 idmSrc += 5;
                                 idmDst += 5;
                                 FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE),
-                                            (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
+                                            (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0);
                                 FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE),
-                                            (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0);
+                                            (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0);
                                 goto L_be65;
                             }
                         } else {
                             idmSrc -= 2;
                             idmDst -= 2;
-                            if (pctSuccess == 1.0) {
+                            if ((long double)pctSuccess == (long double)1.0) {
                                 FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0);
                                 FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0);
                                 goto L_be65;
                             }
                             idmSrc += 5;
                             idmDst += 5;
-                            FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0,
-                                        0, 0);
-                            FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0);
+                            FSendPlrMsg(lpfl->iPlayer, idmSrc, lpfl->id | 0x8000, lpfl->id, lppl->id, LOWORD(cPPE),
+                                        (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0, 0);
+                            FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000),
+                                        0, 0, 0);
                             goto L_be65;
                         }
                     } else {

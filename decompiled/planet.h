@@ -26,7 +26,7 @@ HCURSOR          ClickInPlanetOrders(POINT16 pt, int16_t sks, int16_t fCursor, i
 void             EnsureTileSize(int16_t fSmallTiles);
 void             ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw);
 int16_t          IBestTerraform(PLANET *lppl, int16_t fHelp);
-char            *PszCalcEnvVar(int16_t iEnv, int16_t iVar);
+char            *PszCalcEnvVar(EnvType iEnv, int16_t iVar);
 char            *PszCalcGravity(int16_t iGravity);
 void             HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate);
 void             DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate);

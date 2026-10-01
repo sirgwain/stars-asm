@@ -187,7 +187,7 @@ void SatisfyOrders(int16_t iPass) {
                                             amountWP = lpthWP->thp.rgwtMin[j];
                                         }
                                     }
-                                    if (action - 1 <= 8) {
+                                    if ((uint16_t)(action - 1) <= 8) {
                                         switch (action) {
                                         case 5:
                                         case 6:
@@ -236,7 +236,7 @@ void SatisfyOrders(int16_t iPass) {
                                         goto L_67b6;
                                     }
                                 L_7b4e:
-                                    if (action - 1 <= 8) {
+                                    if ((uint16_t)(action - 1) <= 8) {
                                         switch (action) {
                                         case 9:
                                             amount = amountWP - amountEdit;

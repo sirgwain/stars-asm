@@ -1,5 +1,9 @@
 # Scaffold smoke tests
 
+For Small, Medium, and Huge/Packed games with all six AI types, fixed seeds,
+DOSBox/native runners, and comparisons at turns 0/10/50/100, see
+[the regression guide](REGRESSION.md).
+
 These tests exercise the compiled game under Wine. Go unit tests and decompiler
 snapshots remain alongside their packages and run with `make test`.
 

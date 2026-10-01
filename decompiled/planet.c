@@ -163,13 +163,13 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
                     }
                 } else {
                     if (GET_WM_COMMAND_HWND(wParam, lParam) == rghwndBtn[4] && GET_WM_COMMAND_CMD(wParam, lParam) == 0) {
-                        if (GetKeyState(16) < 0) {
+                        if (GetKeyState(VK_SHIFT) < 0) {
                             SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, 0));
                         } else {
                             SelectAdjPlanet(-1, 0);
                         }
                     } else if (GET_WM_COMMAND_HWND(wParam, lParam) == rghwndBtn[5] && GET_WM_COMMAND_CMD(wParam, lParam) == 0) {
-                        if (GetKeyState(16) < 0) {
+                        if (GetKeyState(VK_SHIFT) < 0) {
                             SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, 1));
                         } else {
                             SelectAdjPlanet(1, 0);
@@ -383,8 +383,7 @@ void DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj) {
             yTop += dyArial8;
         }
         hbrSav = SelectObject(hdc, hbrButtonHilite);
-        yTop++;
-        PatBlt(hdc, rc.left, yTop, rc.right - rc.left, 1, PATCOPY);
+        PatBlt(hdc, rc.left, yTop++, rc.right - rc.left, 1, PATCOPY);
         SelectObject(hdc, hbrSav);
         SetRect(&rgrcRef[7], xLeft, yTop, xRight, dyArial8 * 2 + yTop);
         if (ptile->fMinDraw == 0) {
@@ -498,8 +497,7 @@ void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj) {
         RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
         yTop += dyArial8;
         hbrSav = SelectObject(hdc, hbrButtonHilite);
-        yTop++;
-        PatBlt(hdc, rc.left, yTop, rc.right - rc.left, 1, PATCOPY);
+        PatBlt(hdc, rc.left, yTop++, rc.right - rc.left, 1, PATCOPY);
         SelectObject(hdc, hbrSav);
         if (ptile->fMinDraw == 0) {
             SelectObject(hdc, rghfontArial8[1]);
@@ -540,8 +538,7 @@ void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj) {
         RightTextOut(hdc, xRight, yTop, szWork, c, dxRight);
         yTop += dyArial8;
         hbrSav = SelectObject(hdc, hbrButtonHilite);
-        yTop++;
-        PatBlt(hdc, rc.left, yTop, rc.right - rc.left, 1, PATCOPY);
+        PatBlt(hdc, rc.left, yTop++, rc.right - rc.left, 1, PATCOPY);
         SelectObject(hdc, hbrSav);
         if (ptile->fMinDraw == 0) {
             SelectObject(hdc, rghfontArial8[1]);
@@ -581,9 +578,9 @@ void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj) {
         }
         if (dRange != 0) {
             CalcPctSurvive(&sel.pl, &pct, NULL);
-            pct = 1.0 - pct;
-            c = _wsprintf(szWork, PCTDXPCTDPCTPCT, LOWORD((int32_t)(pct * 100.0)),
-                          LOWORD((int32_t)((pct - (double)(int16_t)LOWORD((int32_t)(pct * 100.0)) / 100.0) * 10000.0)));
+            pct = (float)((long double)1.0 - pct);
+            c = _wsprintf(szWork, PCTDXPCTDPCTPCT, LOWORD((int32_t)((long double)pct * 100)),
+                          LOWORD((int32_t)((pct - (long double)(int16_t)LOWORD((int32_t)((long double)pct * 100)) / 100.0) * 10000)));
         } else {
             c = CchGetString(GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMacintosh ? idsN : idsNone4, szWork);
             psz = szWork;
@@ -724,8 +721,7 @@ void DrawPlanetStarbase(HDC hdc, TILE *ptile, OBJ obj) {
                 SetTextColor(hdc, crForeSav);
             }
             hbrSav = SelectObject(hdc, hbrButtonHilite);
-            yTop++;
-            PatBlt(hdc, rc.left, yTop, rc.right - rc.left, 1, PATCOPY);
+            PatBlt(hdc, rc.left, yTop++, rc.right - rc.left, 1, PATCOPY);
             SelectObject(hdc, hbrSav);
             SelectObject(hdc, rghfontArial8[1]);
             SetRect(&rgrcRef[16], xLeft, yTop, xRight, yTop + dyArial8);
@@ -847,7 +843,7 @@ void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj) {
         yTop = rc.top;
         yTop += 4;
         GetClientRect(hwndPlanetProdLB, &rcT);
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         dyPlanetProdLB = (dyArial8 + 2) * (gd.fSmallTileMode == 0 ? 5 : 3);
         dyWrong = dyPlanetProdLB - (rcT.bottom - rcT.top);
         if (dxPlanetProdLB == xRight - xLeft && dyWrong >= 0 && dyWrong < dyArial8) {
@@ -1074,7 +1070,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
         xLeft = rc.left + 4;
         xRight = rc.right - 4;
         yTop = rc.top + 2;
-        swp = 20;
+        swp = SWP_NOZORDER | SWP_NOACTIVATE;
         if (dxShipDD == xRight - xLeft) {
             swp |= 1;
         } else {
@@ -1107,7 +1103,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
         rgrcRef[1].bottom = -6;
         rgrcRef[4].top = -5;
         rgrcRef[4].bottom = -6;
-        fUnknown = fObjIsThing == 0 && xf.fl.det != 7;
+        fUnknown = fObjIsThing == 0 && xf.fl.det != detAll;
         if (gd.fSmallTileMode == 0) {
             if (fDoneDrawing == 0 && fUnknown == 0) {
                 SelectObject(hdc, rghfontArial8[1]);
@@ -1341,9 +1337,9 @@ void SelectAdjPlanet(int16_t dInc, int16_t idPlanet) {
         for (; i < cPlanet && lpPl->id != idPlanet; lpPl++) {
             i++;
         }
-        if (i == cPlanet || lpPl->det != 7) {
+        if (i == cPlanet || lpPl->det != detAll) {
             scan.pt = rgptPlan[idPlanet];
-            scan.grobj = 0x81;
+            scan.grobj = grobjPlanet | mdExact;
             ChangeScanSel(&scan, 0);
         } else {
             if (dInc != 0) {
@@ -1363,7 +1359,7 @@ void SelectAdjPlanet(int16_t dInc, int16_t idPlanet) {
                 return;
             }
             scan.pt = rgptPlan[idPlanet];
-            scan.grobj = 0x81;
+            scan.grobj = grobjPlanet | mdExact;
             ChangeScanSel(&scan, 0);
             RedrawScanSel(NULL, 0);
             ChangeMainObjSel(grobjPlanet, idPlanet);
@@ -1719,9 +1715,9 @@ HCURSOR ClickInPlanetOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fR
 }
 
 void EnsureTileSize(int16_t fSmallTiles) {
-    int16_t iMul;
-    int16_t i;
-    int16_t grobjSav;
+    int16_t    iMul;
+    int16_t    i;
+    GrobjClass grobjSav;
 
     if (fSmallTiles != gd.fSmallTileMode) {
         gd.fSmallTileMode = fSmallTiles;
@@ -1885,15 +1881,15 @@ int16_t IBestTerraform(PLANET *lppl, int16_t fHelp) {
     return iBest;
 }
 
-char *PszCalcEnvVar(int16_t iEnv, int16_t iVar) {
+char *PszCalcEnvVar(EnvType iEnv, int16_t iVar) {
     switch (iEnv) {
-    case 0:
+    case Gravity:
     default:
         return PszCalcGravity(iVar);
-    case 1:
+    case Temperature:
         _wsprintf(szWork, "%d%cC", iVar * 4 - 200, 186);
         break;
-    case 2:
+    case Radiation:
         _wsprintf(szWork, "%dmR", iVar);
     }
     return szWork;
@@ -2284,7 +2280,7 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr) {
     if (pctNeg != 0) {
         return -LOWORD(pctNeg);
     }
-    pctPos = (int32_t)(sqrt((double)pctPos / 3.0) + 0.9);
+    pctPos = (int32_t)((long double)sqrt((double)((long double)pctPos / 3.0)) + 0.9);
     pctPos = (int32_t)(pctPos * pctMod) / 10000;
     return LOWORD(pctPos);
 }
@@ -2506,7 +2502,7 @@ int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr) {
         if (pctVal < 25) {
             pctVal = 25;
         }
-        cRes = LOWORD((int32_t)(sqrt((double)lPop * (double)iEnergy / (double)iEff) * (double)pctVal / 10.0 + 0.999));
+        cRes = LOWORD((int32_t)((long double)sqrt((double)((long double)lPop * iEnergy / iEff)) * pctVal / 10 + 0.999));
     } else {
         cRes = LOWORD((int32_t)(lPop / iEff));
         cFact = CMaxOperableFactories(lppl, iplr, 0);
@@ -2537,7 +2533,7 @@ int16_t IWarpMAFromLppl(PLANET *lppl, int16_t *pfTwo) {
     if (lppl->iPlayer == -1 || lppl->fStarbase == 0) {
         return 0;
     }
-    if (lppl->iPlayer != idPlayer && idPlayer != -1 && rglpshdefSB[lppl->iPlayer][lppl->isb].det != 7) {
+    if (lppl->iPlayer != idPlayer && idPlayer != -1 && rglpshdefSB[lppl->iPlayer][lppl->isb].det != detAll) {
         return 0;
     }
     lphul = &rglpshdefSB[lppl->iPlayer][lppl->isb].hul;

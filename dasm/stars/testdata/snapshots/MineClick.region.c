@@ -76,7 +76,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             } else {
                 GlobalPD.grPopup = grPopupFleet;
                 GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-                GlobalPD.fRedDamage = GlobalPD.lpfl->det == 7 ? 1 : 0;
+                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
                 GlobalPD.grbit = 0xff;
             }
             Popup(hwndMine, x, y);
@@ -103,12 +103,12 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.grPopup = grPopupPlanetEnv;
             GlobalPD.idPlanet = pl.id;
             GlobalPD.iPlanetVar = ht - 6;
-            if (pl.det >= 3) {
+            if (pl.det >= detSome) {
                 GlobalPD.iPlanVal = pl.rgEnvVar[GlobalPD.iPlanetVar];
             } else {
                 GlobalPD.iPlanVal = -1;
             }
-            if (pl.det >= 3 && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
+            if (pl.det >= detSome && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
                 GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar];
                 GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar];
                 if (GlobalPD.iPlanMin == -1) {
@@ -249,10 +249,10 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             for (i = 1; i <= 4; i++) {
                 GlobalPD.rgi[i] = -1;
             }
-            if (pl.det >= 3) {
+            if (pl.det >= detSome) {
                 GlobalPD.rgi[3] = (uint32_t)pl.rgpctMinLevel[ht + 2];
                 GlobalPD.rgi[1] = pl.fHomeworld;
-                if (pl.det > 3) {
+                if (pl.det > detSome) {
                     lVal = 0;
                     GlobalPD.rgi[2] = pl.rgwtMin[ht - 1];
                     EstMineralsMined(&pl, rglQuan, -1, 0);

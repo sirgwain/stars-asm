@@ -425,7 +425,7 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
                 }
                 flDead.iPlayer = flSrc.iPlayer;
                 flDead.fDead = 1;
-                flDead.det = 7;
+                flDead.det = detAll;
                 FleetTransferCargoBalance(&flSrc, &flDead);
             }
             *lpfl = flSrc;
@@ -539,7 +539,7 @@ void KillUsedWaypoints() {
                         }
                         DeleteWpFar(lpfl, 1, fRep);
                         if (lpfl->cord == 1) {
-                            if (lpfl->lpplord->rgord[0].grTask - 1 <= 7) {
+                            if ((uint16_t)(lpfl->lpplord->rgord[0].grTask - 1) <= 7) {
                                 switch (lpfl->lpplord->rgord[0].grTask) {
                                 case 1:
                                 case 2:
@@ -625,7 +625,7 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     lpord->pt = rgptPlan[lppl->idRoute - 1];
     lpord->fValidTask = 1;
     iWarp = IFindIdealWarp(lpfl, 0);
-    dTravel = (int32_t)(DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999);
+    dTravel = (int32_t)((long double)DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999);
     if (lppl->iPlayer == lpplRoute->iPlayer && lppl->fStarbase != 0 && lpplRoute->fStarbase != 0) {
         isbsDst = IStargateFromLppl(lpplRoute);
         isbsSrc = IStargateFromLppl(lppl);
@@ -995,13 +995,13 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
                     fUseFloat = 1;
                 }
                 if (fUseFloat != 0) {
-                    dcPts += (double)cPtsCur * (double)wtFleetCur;
+                    dcPts = (double)(dcPts + (long double)cPtsCur * wtFleetCur);
                 } else {
                     cPts += (uint32_t)(cPtsCur * wtFleetCur);
                 }
             }
             if (fUseFloat != 0) {
-                dwtFleet += (double)wtFleetCur;
+                dwtFleet = (double)((long double)dwtFleet + wtFleetCur);
             } else {
                 wtFleet += wtFleetCur;
             }
@@ -1013,7 +1013,7 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
     if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) != raStealth) {
         if (fUseFloat != 0) {
             for (i = 0; i <= 3; i++) {
-                dwtFleet += (double)lpfl->rgwtMin[i];
+                dwtFleet = (double)((long double)dwtFleet + lpfl->rgwtMin[i]);
             }
         } else {
             for (i = 0; i <= 3; i++) {
@@ -1022,7 +1022,7 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
         }
     }
     if (fUseFloat != 0) {
-        cPts = (int32_t)(dcPts / dwtFleet);
+        cPts = (int32_t)((long double)dcPts / dwtFleet);
     } else {
         cPts = (int32_t)(cPts / wtFleet);
     }

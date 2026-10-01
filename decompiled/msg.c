@@ -1055,10 +1055,10 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         L_6903:
             SetTextColor(hdc, crButtonText);
             rcActual = rc;
-            DrawText(hdc, lpsz, fstrlen(lpsz), &rcActual, 3088);
+            DrawText(hdc, lpsz, fstrlen(lpsz), &rcActual, DT_WORDBREAK | DT_CALCRECT | DT_NOPREFIX);
             if (rcActual.bottom <= rc.bottom && rcActual.right <= rc.right) {
                 ShowWindow(hwndMsgScroll, SW_HIDE);
-                DrawText(hdc, lpsz, fstrlen(lpsz), &rc, 2064);
+                DrawText(hdc, lpsz, fstrlen(lpsz), &rc, DT_WORDBREAK | DT_NOPREFIX);
             } else {
                 SetWindowText(hwndMsgScroll, lpsz);
                 ExpandRc(&rc, 4, 4);
@@ -1316,7 +1316,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             FFinishPlrMsgEntry(-1);
             goto SetupNewMsg;
         }
-        if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+        if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
             iMsgCur = -1;
             i = IMsgNext(0);
         } else {
@@ -1334,7 +1334,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         if (gd.fSendMsgMode != 0) {
             FFinishPlrMsgEntry(1);
         } else {
-            if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+            if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
                 iMsgCur = cMsg + vcmsgplrIn;
                 i = IMsgPrev(0);
             } else {
@@ -2003,7 +2003,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pchT = rgszMineField[*pParams];
                     goto FinishString;
                 case 80:
-                    if ((double)(int16_t)((int16_t)*pParams / 100) >= 10.0) {
+                    if ((long double)(int16_t)((int16_t)*pParams / 100) >= (long double)10.0) {
                         c = _wsprintf(pch, PCTDPCTPCT, (int16_t)*pParams / 100);
                     } else {
                         c = _wsprintf(pch, PCTDXPCTDPCTPCT, (int16_t)*pParams / 100, *pParams - (int16_t)*pParams / 100 * 100);
@@ -2210,7 +2210,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, 0);
     cch = CchGetString((int16_t)(int8_t)szWork[200] + 1226, szT);
-    DrawText(hdc, szT, cch, &rcEdit, 2064);
+    DrawText(hdc, szT, cch, &rcEdit, DT_WORDBREAK | DT_NOPREFIX);
     EndPaint(hwnd, &ps);
     return 1;
 }
@@ -2391,7 +2391,7 @@ void ReadPlayerMessages() {
     fOOM = 0;
     lpb = (uint8_t *)lpMsg + imemMsgCur;
     while (hdrCur.rt == rtMsg) {
-        if (hdrCur.cb != 0 && imemMsgCur + imemMsgT < 0xffc8 - hdrCur.cb) {
+        if (hdrCur.cb != 0 && (uint16_t)(imemMsgCur + imemMsgT) < (uint16_t)(0xffc8 - hdrCur.cb)) {
             fmemmove(lpb + imemMsgT, rgbCur, hdrCur.cb);
             imemMsgT += hdrCur.cb;
         }

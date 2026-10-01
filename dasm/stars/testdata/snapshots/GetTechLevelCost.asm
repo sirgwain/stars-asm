@@ -1,8 +1,8 @@
 ; GetTechLevelCost  (research)
 ;   addr: 001c:1dba  len=252
-;   sig:  int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr)
+;   sig:  int32_t GetTechLevelCost(TechFieldType iTech, int16_t iLevel, int16_t iplr)
 ;   params:
-;     int16_t          iTech          [BP+0x6]
+;     TechFieldType    iTech          [BP+0x6]
 ;     int16_t          iLevel         [BP+0x8]
 ;     int16_t          iplr           [BP+0xa]
 ;   locals:

@@ -10,7 +10,8 @@ uint8_t  vrgMacAip[248] = {8,  4,  4,  4,  17, 18, 19, 8,  3,  3,  14, 17, 18, 1
                            4,  3,  3,  5,  9,  20, 19, 8,  14, 10, 33, 33, 33, 33, 33, 17, 20, 19, 8,  40, 24, 41, 42, 42, 42, 42, 24, 41, 43, 43, 43,
                            43, 24, 41, 42, 42, 44, 16, 37, 8,  13, 12, 3,  3,  2,  10, 8,  37, 12, 1,  1,  11, 9,  8,  13, 12, 4,  4,  7,  10, 8,  11,
                            12, 0,  0,  0,  17, 8,  9,  9,  3,  3,  33, 33, 10, 17, 10, 6,  7,  20, 8,  10, 10, 7,  5,  20, 20, 4,  4,  19, 4,  2,  3};
-uint8_t  vrgAiMacintiResOrder[8] = {3, 66, 20, 113, 84, 52, 119, 55};
+uint8_t  vrgAiMacintiResOrder[8] = {aiResearchEnergy3,      aiResearchPropulsion2, aiResearchEnergy20,       aiResearchConstruction17,
+                                    aiResearchPropulsion20, aiResearchWeapons20,   aiResearchConstruction23, aiResearchWeapons23};
 
 void DoMacintiAiTurn(PROD *rgprod) {
     int16_t  iLatestCargo;
@@ -77,7 +78,7 @@ void DoMacintiAiTurn(PROD *rgprod) {
 
     iAiLvl = rgplr[idPlayer].lvlAi;
     iPlanet = rgplr[idPlayer].idPlanetHome;
-    iroCur = IroEnsureAi(vrgAiMacintiResOrder, 8, NULL, 15);
+    iroCur = IroEnsureAi((uint8_t *)vrgAiMacintiResOrder, 8, NULL, 15);
     if (game.turn < 40 || (rgshdef[7].fFree == 0 && rgshdef[7].hul.ihuldef == ihuldefColonyShip)) {
         fUsingTempColonizer = 1;
         if (FLookupPartX(&part, 1, 15) == 1 && rgshdef[7].cExist == 0) {
@@ -179,7 +180,7 @@ L_03c3:
     } else {
         iLatestColony = 1;
     }
-    if (iLatestColony == 1 && fUsingTempColonizer != 0 && game.turn - rgshdef[1].turn > 5) {
+    if (iLatestColony == 1 && fUsingTempColonizer != 0 && (uint16_t)(game.turn - rgshdef[1].turn) > 5) {
         rgRecycleShdef[7] = 2;
     }
     lpb = vlpbAiPlanet + 14;
@@ -731,7 +732,7 @@ void EnsureMacintiShdefs() {
 
     for (ish = 14; ish <= 15; ish++) {
         if (rgshdef[ish].fFree != 0) {
-            fAdvanced = rgplr[idPlayer].lvlAi < 2 ? 0 : 1;
+            fAdvanced = rgplr[idPlayer].lvlAi < lvlAiTough ? 0 : 1;
             if ((fAdvanced == 0 || ish != 15 || rgplr[idPlayer].rgTech[3] >= 15) &&
                 FCreateAiShdef(ish, 24 - (fAdvanced == 0 ? 1 : 0), &vrgMacAip[vrgMacIshAip[fAdvanced + 21]]) == 0 && ish == 14) {
                 if (fAdvanced != 0) {
@@ -764,7 +765,7 @@ void EnsureMacintiShdefs() {
         FChangeAiShdef(&shdef, 2);
     }
     for (ish = 2; ish <= 4; ish++) {
-        if (rgshdef[ish].fFree != 0 && (ish == 2 || game.turn - rgshdef[ish - 1].turn > 20)) {
+        if (rgshdef[ish].fFree != 0 && (ish == 2 || (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 20)) {
             for (i = 0; i < 5 && FCreateAiShdef(ish, 7, &vrgMacAip[vrgMacIshAip[Random(4) + 25]]) == 0; i++) {
             }
         }
@@ -779,7 +780,7 @@ void EnsureMacintiShdefs() {
         FCreateAiShdef(1, 15, &vrgMacAip[vrgMacIshAip[20]]);
     }
     for (ish = 5; ish <= 7; ish++) {
-        if (rgshdef[ish].fFree != 0 && (ish == 5 || (rgshdef[ish - 1].fFree == 0 && game.turn - rgshdef[ish - 1].turn > 20))) {
+        if (rgshdef[ish].fFree != 0 && (ish == 5 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 20))) {
             shBase = ish == 5 ? 11 : 15;
             if (ish == 7) {
                 shBase = Random(2) == 0 ? 15 : 11;
@@ -792,12 +793,12 @@ void EnsureMacintiShdefs() {
     }
     for (ish = 8; ish <= 9; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 14 &&
-            ((ish == 8 || (rgshdef[ish - 1].fFree == 0 && game.turn - rgshdef[ish - 1].turn > 15)) &&
+            ((ish == 8 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 15)) &&
              FCreateAiShdef(ish, 9, &vrgMacAip[vrgMacIshAip[19]]) == 0)) {
             FCreateAiShdef(ish, 19, &vrgMacAip[vrgMacIshAip[ish == 8 ? 8 : 9]]);
         }
     }
-    if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > 1 && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
+    if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > lvlAiStandard && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
         rgplr[idPlayer].rgTech[4] >= 5 && rgplr[idPlayer].rgTech[3] >= 6 && rgplr[idPlayer].rgTech[2] >= 6 && rgplr[idPlayer].rgTech[0] >= 6) {
         shdef = rgshdef[0];
         shdef.fFree = 1;
@@ -1039,14 +1040,14 @@ void TargetMacArmada(FLEET *lpfl) {
         lppl = LpplFromId(lpfl->idPlanet);
         if (lppl->iPlayer == idPlayer) {
             if ((cshWar < vrgAiArmadaPotency[0] || cshBomb < vrgAiArmadaPotency[2]) &&
-                (rgplr[idPlayer].lvlAi <= 1 || (cshWar <= vrgAiArmadaPotency[0] * 2 && cshWar < 60) ||
+                (rgplr[idPlayer].lvlAi <= lvlAiStandard || (cshWar <= vrgAiArmadaPotency[0] * 2 && cshWar < 60) ||
                  (Random(10) >= 5 && (cshWar <= vrgAiArmadaPotency[0] * 3 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7)))) {
                 return;
             }
         } else if (cshWar < vrgAiArmadaPotency[1] || cshBomb < vrgAiArmadaPotency[3]) {
             ClearAiCurrentTask(lpfl, 0);
-            if (rgplr[idPlayer].lvlAi <= 1 || ((cshWar <= vrgAiArmadaPotency[0] * 2 || Random(10) >= 5) &&
-                                               (cshWar <= vrgAiArmadaPotency[0] * 4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
+            if (rgplr[idPlayer].lvlAi <= lvlAiStandard || ((cshWar <= vrgAiArmadaPotency[0] * 2 || Random(10) >= 5) &&
+                                                           (cshWar <= vrgAiArmadaPotency[0] * 4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
                 lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
                 goto TargetEveryArmada;
             }

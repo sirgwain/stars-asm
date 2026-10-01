@@ -684,7 +684,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                 itb = 9;
                 break;
             case 48:
-                if (GetKeyState(16) < 0) {
+                if (GetKeyState(VK_SHIFT) < 0) {
                     itb = 17;
                 } else {
                     itb = 11;

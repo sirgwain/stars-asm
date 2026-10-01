@@ -29,10 +29,10 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
         pbStore = rgb;
     }
     if (pplr->fDead != 0) {
-        pplr->det = 7;
+        pplr->det = detAll;
     }
     memmove(pbStore, pplr, sizeof(PLAYER));
-    if (pplr->det == 7) {
+    if (pplr->det == detAll) {
         for (i = 15; i >= 0 && pplr->rgmdRelation[i] == 0; i--) {
         }
         i++;
@@ -75,7 +75,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     RawStore16(rgb, lpshdef->wFlags);
     rgb[6] = lpshdef->hul.chs;
     rgb[3] = LOBYTE(lpshdef->hul.ibmp);
-    if (lpshdef->det == 7) {
+    if (lpshdef->det == detAll) {
         RawStore16(&rgb[4], lpshdef->hul.dp);
         RawStore32(&rgb[7], lpshdef->turn | ((uint32_t)lpshdef->cBuilt & 0xffff) << 0x10);
         RawStore32(&rgb[11], ((uint32_t)lpshdef->cBuilt >> 0x10 & 0xffff) | ((uint32_t)lpshdef->cExist & 0xffff) << 0x10);
@@ -87,7 +87,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
         RawStore16(&rgb[4], lpshdef->hul.wtEmpty);
         pb = &rgb[6];
     }
-    if (lpshdef->det == 7) {
+    if (lpshdef->det == detAll) {
         fstrcpy(szHulName, lpshdef->hul.szClass);
     } else {
         fstrcpy(szHulName, LphuldefFromId(lpshdef->hul.ihuldef)->hul.szClass);
@@ -128,7 +128,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     int16_t  fRet;
     PLANET  *lpplT;
     SCAN     scan;
-    int16_t  mdTarget;
+    MdTarget mdTarget;
     FLEET   *lpflTarget;
     POINT16  pt;
     int32_t  dy;
@@ -160,7 +160,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                 } else {
                     lpord = lpfl->lpplord->rgord;
                     if (lpord->grobj == grobjFleet) {
-                        if (FFindNearestObject(lpord->pt, 0x81, &scan) != 0) {
+                        if (FFindNearestObject(lpord->pt, grobjPlanet | mdExact, &scan) != 0) {
                             lpord->grobj = grobjPlanet;
                             lpord->id = scan.idpl;
                         } else {
@@ -289,7 +289,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                 }
                                 lpord[iord].grobj = grobjOther;
                                 lpord[iord].id = iord;
-                                if (FFindNearestObject(lpord[iord].pt, 0x81, &scan) != 0) {
+                                if (FFindNearestObject(lpord[iord].pt, grobjPlanet | mdExact, &scan) != 0) {
                                     lpord[iord].grobj = grobjPlanet;
                                     lpord[iord].id = scan.idpl;
                                 }
@@ -339,15 +339,15 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         lpplT = lpPlanets;
         while (i < cPlanet) {
             if (lpplT->fInclude != 0) {
-                if (lpplT->det == 7) {
+                if (lpplT->det == detAll) {
                     WritePlanet(lpplT, rtPlanet, 0);
                     if (lpplT->lpplprod != 0) {
                         WriteRt(rtProdQ, lpplT->lpplprod->iprodMac * 4, lpplT->lpplprod->rgprod);
                     }
-                } else if (lpplT->det == 2) {
+                } else if (lpplT->det == detObscure) {
                     pl = *lpplT;
                     lpplT->fStarbase = 0;
-                    lpplT->det = 3;
+                    lpplT->det = detSome;
                     WritePlanet(lpplT, rtPlanetB, 0);
                     *lpplT = pl;
                 } else {
@@ -538,10 +538,10 @@ void WriteBattles(int16_t iPlayer) {
                                 if (lpfl->fInclude == 0) {
                                     rgplr[lpfl->iPlayer].cFleet = rgplr[lpfl->iPlayer].cFleet + 1;
                                     lpfl->fInclude = 1;
-                                    lpfl->det = 0;
+                                    lpfl->det = detNone;
                                 }
-                                if (lpfl->det < 3) {
-                                    lpfl->det = 3;
+                                if (lpfl->det < detSome) {
+                                    lpfl->det = detSome;
                                 }
                             }
                         }
@@ -634,7 +634,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     RawStore16(rgb, (RawLoad16(rgb) & 0xf800) | (lppl->id & 0x7ff));
     RawStore16(rgb, (RawLoad16(rgb) & 0x7ff) | (lppl->iPlayer & 0x1f) << 0xb);
     RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xff80) | (lppl->det & 0x7f));
-    if (rt == rtPlanetB && lppl->det > 3) {
+    if (rt == rtPlanetB && lppl->det > detSome) {
         RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xff80) | ((fHistory == 0 ? 4 : 3) & 0x7f));
     }
     RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xfeff) | (lppl->fInclude & 1) << 8);
@@ -683,7 +683,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
             bMask = 3;
             i = 0;
             while (i < 4) {
-                if ((i != 3 || lppl->det >= 7) && lppl->rgwtMin[i] > 0) {
+                if ((i != 3 || lppl->det >= detAll) && lppl->rgwtMin[i] > 0) {
                     if (lppl->rgwtMin[i] <= 255) {
                         *pbBase |= LOBYTE(bMask & 0x55);
                         *pb++ = LOBYTE(LOWORD(lppl->rgwtMin[i]));
@@ -786,7 +786,7 @@ void WriteFleet(FLEET *lpfl) {
         }
         pb = (uint8_t *)pus;
     }
-    if (lpfl->det >= 4) {
+    if (lpfl->det >= detMore) {
         fByte = 0;
         grMask = 3;
         pus = (uint16_t *)pb;
@@ -794,7 +794,7 @@ void WriteFleet(FLEET *lpfl) {
         us = 0;
         i = 0;
         while (i < 5) {
-            if (lpfl->rgwtMin[i] > 0 && (lpfl->det == 7 || (i != 4 && i != 3))) {
+            if (lpfl->rgwtMin[i] > 0 && (lpfl->det == detAll || (i != 4 && i != 3))) {
                 if (lpfl->rgwtMin[i] <= 255) {
                     us |= grMask & 0x155;
                     *pb = LOBYTE(LOWORD(lpfl->rgwtMin[i]));
@@ -815,7 +815,7 @@ void WriteFleet(FLEET *lpfl) {
         }
         *pus = us;
     }
-    if (lpfl->det < 7) {
+    if (lpfl->det < detAll) {
         wt = 0;
         RawStore16(pb, lpfl->dirFltX | lpfl->dirFltY << 8);
         RawStore16((uint8_t *)pb + 0x2,
@@ -832,7 +832,7 @@ void WriteFleet(FLEET *lpfl) {
         RawStore16(pb, LOWORD(wt));
         RawStore16((uint8_t *)pb + 0x2, HIWORD(wt));
         pb += 4;
-        WriteRt(0x11, pb - rgb, rgb);
+        WriteRt(rtFleetB, pb - rgb, rgb);
     } else {
         grMask = 1;
         us = 0;
@@ -889,7 +889,7 @@ void MarkFleet(FLEET *lpfl, int16_t det) {
     if (lpfl->fInclude == 0) {
         lpshdef = rglpshdef[lpfl->iPlayer];
         lpfl->fInclude = 1;
-        lpfl->det = 0;
+        lpfl->det = detNone;
         lpfl->fdirValid = 1;
         rgplr[lpfl->iPlayer].cFleet = rgplr[lpfl->iPlayer].cFleet + 1;
         for (i = 0; i < 16; i++) {
@@ -939,7 +939,7 @@ void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
 
     if (lppl->fInclude == 0) {
         lppl->fInclude = 1;
-        lppl->det = 0;
+        lppl->det = detNone;
         rgplr[iPlr].cPlanet++;
     }
     if (lppl->det < det) {
@@ -953,11 +953,11 @@ void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
         lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
         if (lpshdef->fInclude == 0) {
             lpshdef->fInclude = 1;
-            lpshdef->det = 0;
+            lpshdef->det = detNone;
             rgplr[lppl->iPlayer].cshdefSB = rgplr[lppl->iPlayer].cshdefSB + 1;
         }
-        if (lpshdef->det < 3) {
-            lpshdef->det = 3;
+        if (lpshdef->det < detSome) {
+            lpshdef->det = detSome;
         }
     }
     return;
@@ -1245,7 +1245,7 @@ void SetVisPFInit(int16_t iPlr) {
     for (; lppl < lpplMac; lppl++) {
         if (iPlr == -1 || iPlr == lppl->iPlayer) {
             lppl->fInclude = 1;
-            lppl->det = 7;
+            lppl->det = detAll;
             if (iPlr != -1) {
                 rgplr[iPlr].cPlanet++;
             }
@@ -1264,7 +1264,7 @@ void SetVisPFInit(int16_t iPlr) {
         lpfl->fMark = 0;
         if ((iPlr == -1 || iPlr == lpfl->iPlayer) && lpfl->fDead == 0) {
             lpfl->fInclude = 1;
-            lpfl->det = 7;
+            lpfl->det = detAll;
             rgplr[lpfl->iPlayer].cFleet = rgplr[lpfl->iPlayer].cFleet + 1;
             for (j = 0; j < 16; j++) {
                 if (lpfl->rgcsh[j] != 0) {
@@ -1365,7 +1365,7 @@ void SetVisPFFleets(int16_t iPlr) {
                     if (rglpfl[j] == 0)
                         break;
                     if (lpfl2->fDead == 0) {
-                        if ((iSteal & 1) != 0 && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y && (lpfl2->fInclude == 0 || lpfl2->det < 4)) {
+                        if ((iSteal & 1) != 0 && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y && (lpfl2->fInclude == 0 || lpfl2->det < detMore)) {
                             MarkFleet(lpfl2, 4);
                         }
                         if (lpfl2->fInclude == 0) {
@@ -1450,7 +1450,7 @@ void SetVisPFFleets(int16_t iPlr) {
                     lppl = lpPlanets;
                     lpplMac = lpPlanets + cPlanet;
                     for (; lppl < lpplMac; lppl++) {
-                        if (lppl->fInclude == 0 || lppl->det < 3) {
+                        if (lppl->fInclude == 0 || lppl->det < detSome) {
                             dx = abs(rgptPlan[lppl->id].x - pt.x);
                             if (dx <= iRadius) {
                                 dy = abs(rgptPlan[lppl->id].y - pt.y);
@@ -1635,7 +1635,7 @@ void SetVisPFPlanets(int16_t iPlr) {
                 lppl2 = lpPlanets;
                 lpplMac2 = lpPlanets + cPlanet;
                 for (; lppl2 < lpplMac2; lppl2++) {
-                    if ((lppl2->fInclude == 0 || lppl2->det < 3) && lppl2->fStarbase != 0 && StargateRangeFromLppl(lppl2, 0, 0) != 0) {
+                    if ((lppl2->fInclude == 0 || lppl2->det < detSome) && lppl2->fStarbase != 0 && StargateRangeFromLppl(lppl2, 0, 0) != 0) {
                         if (iRadius < 10000) {
                             dx = abs(rgptPlan[lppl2->id].x - pt.x);
                             if (dx > iRadius)
@@ -1673,7 +1673,7 @@ void SetVisPFPlanets(int16_t iPlr) {
                 lppl2 = lpPlanets;
                 lpplMac2 = lpPlanets + cPlanet;
                 for (; lppl2 < lpplMac2; lppl2++) {
-                    if (lppl2->fInclude == 0 || lppl2->det < 3) {
+                    if (lppl2->fInclude == 0 || lppl2->det < detSome) {
                         dx = abs(rgptPlan[lppl2->id].x - pt.x);
                         if (dx <= iRadius) {
                             dy = abs(rgptPlan[lppl2->id].y - pt.y);
@@ -1804,7 +1804,7 @@ void SetVisPFThings(int16_t iPlr) {
                 lppl2 = lpPlanets;
                 lpplMac2 = lpPlanets + cPlanet;
                 for (; lppl2 < lpplMac2; lppl2++) {
-                    if (lppl2->fInclude == 0 || lppl2->det < 3) {
+                    if (lppl2->fInclude == 0 || lppl2->det < detSome) {
                         dx = abs(rgptPlan[lppl2->id].x - pt.x);
                         if (dx <= iRadius) {
                             dy = abs(rgptPlan[lppl2->id].y - pt.y);

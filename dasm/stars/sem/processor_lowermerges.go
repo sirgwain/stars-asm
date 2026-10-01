@@ -19,7 +19,7 @@ type mergeEdge struct {
 
 // ProcessFunc lowers every semantic merge expression to edge-assigned temps.
 func (p *lowerMergesProcessor) ProcessFunc(result *Result, f *Func) bool {
-	p.nextBlockID = firstSyntheticMergeBlockID(f)
+	p.nextBlockID = firstSyntheticBlockID(f)
 
 	changed := false
 	for {
@@ -269,8 +269,8 @@ func insertBeforeTerminator(effects []Effect, inserts []Effect) []Effect {
 	}
 }
 
-// firstSyntheticMergeBlockID returns the starting ID for merge edge blocks.
-func firstSyntheticMergeBlockID(f *Func) machine.BlockID {
+// firstSyntheticBlockID returns an unused ID for an inserted semantic block.
+func firstSyntheticBlockID(f *Func) machine.BlockID {
 	id := machine.BlockID(0xf0000000)
 	for semFuncHasBlock(f, id) || f.CFG != nil && f.CFG.Block(id) != nil {
 		id++

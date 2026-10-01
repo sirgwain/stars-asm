@@ -18,7 +18,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   cSize;
     int16_t   rgwt[3];
     int32_t   l;
-    int16_t   iEnv;
+    EnvType   iEnv;
     PART      part;
     uint16_t  t_scratch_m16_3;
     uint16_t  t_scratch_m16_4;

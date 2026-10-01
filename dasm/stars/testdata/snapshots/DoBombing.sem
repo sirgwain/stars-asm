@@ -75,7 +75,7 @@ L_aff9:
 
 L_b02a:
     call CalcPctSurvive(lppl, &pctSuccess, &pctSmart) -> callresult(void)
-    branch pctSuccess >= 1.0 ? L_b14e : L_b055
+    branch (long double)pctSuccess >= (long double)1.0 ? L_b14e : L_b055
 
 L_b055:
     branch dmgBombPeople <= 0 ? L_b08a : L_b06c
@@ -83,7 +83,7 @@ L_b055:
 
 
 L_b06c:
-    dmgBombPeople = (int32_t)(((double)dmgBombPeople * pctSuccess) + 0.5)
+    dmgBombPeople = (int32_t)(((long double)dmgBombPeople * pctSuccess) + 0.5)
 
 L_b08a:
     branch dmgBombFloor <= 0 ? L_b0bf : L_b0a1
@@ -91,7 +91,7 @@ L_b08a:
 
 
 L_b0a1:
-    dmgBombFloor = (int32_t)(((double)dmgBombFloor * pctSuccess) + 0.5)
+    dmgBombFloor = (int32_t)(((long double)dmgBombFloor * pctSuccess) + 0.5)
 
 L_b0bf:
     branch dmgPeopleSmart <= 0 ? L_b0f4 : L_b0d6
@@ -99,7 +99,7 @@ L_b0bf:
 
 
 L_b0d6:
-    dmgPeopleSmart = (int32_t)(((double)dmgPeopleSmart * pctSmart) + 0.5)
+    dmgPeopleSmart = (int32_t)(((long double)dmgPeopleSmart * pctSmart) + 0.5)
 
 L_b0f4:
     branch dmgBombBldg <= 0 ? L_b14e : L_b10b
@@ -107,8 +107,8 @@ L_b0f4:
 
 
 L_b10b:
-    pctSuccessHalf = (1.0 - ((1.0 - pctSuccess) / 2.0))
-    dmgBombBldg = (int32_t)(((double)dmgBombBldg * pctSuccessHalf) + 0.5)
+    pctSuccessHalf = (double)(1.0 - (((long double)1.0 - pctSuccess) / 2.0))
+    dmgBombBldg = (int32_t)(((long double)dmgBombBldg * pctSuccessHalf) + 0.5)
 
 L_b14e:
     cPPE = ((lppl->cMines + lppl->cFactories) + (uint32_t)lppl->cDefenses)
@@ -302,7 +302,7 @@ L_b7d1:
 
 L_b7e8:
     pctTot = 0
-    pctTerra = (pctTerra - (int32_t)(((1.0 - pctSuccess) * (double)pctTerra) / 2.0))
+    pctTerra = (pctTerra - (int32_t)((((long double)1.0 - pctSuccess) * pctTerra) / 2))
     branch pctTerra <= 500 ? L_b84b : L_b841
 
 
@@ -413,7 +413,7 @@ L_ba98:
 
 
 L_baaf:
-    branch pctSuccess != 1.0 ? L_bb47 : L_bac4
+    branch (long double)pctSuccess != (long double)1.0 ? L_bb47 : L_bac4
 
 GenericBombMsg:
     call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), 0, 0, 0) -> callresult(int16_t)
@@ -423,8 +423,8 @@ GenericBombMsg:
 L_bb47:
     idmSrc = (idmSrc + 5)
     idmDst = (idmDst + 5)
-    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0) -> callresult(int16_t)
-    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cKillPeople), LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0) -> callresult(int16_t)
 
 L_bc07:
     goto L_be65
@@ -432,7 +432,7 @@ L_bc07:
 L_bc0a:
     idmSrc = (idmSrc - 2)
     idmDst = (idmDst - 2)
-    branch pctSuccess != 1.0 ? L_bca4 : L_bc27
+    branch (long double)pctSuccess != (long double)1.0 ? L_bca4 : L_bc27
 
 L_bc27:
     call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), 0, 0, 0, 0) -> callresult(int16_t)
@@ -442,8 +442,8 @@ L_bc27:
 L_bca4:
     idmSrc = (idmSrc + 5)
     idmDst = (idmDst + 5)
-    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0) -> callresult(int16_t)
-    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)((1.0 - pctSuccess) * 10000.0), 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lpfl->iPlayer, idmSrc, (lpfl->id | 0x8000), lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmDst, lppl->id, lpfl->id, lppl->id, LOWORD(cPPE), (int32_t)(((long double)1.0 - pctSuccess) * 10000), 0, 0, 0) -> callresult(int16_t)
 
 L_bd5e:
     goto L_be65

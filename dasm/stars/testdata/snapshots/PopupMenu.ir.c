@@ -309,11 +309,11 @@ L_1892:
         goto L_189b;
 
 L_189b:
-    tpm = 2;
+    tpm = TPM_RIGHTBUTTON;
     goto L_18a8;
 
 L_18a3:
-    tpm = 0;
+    tpm = TPM_LEFTBUTTON;
 
 L_18a8:
     TrackPopupMenu(hmenuPopup, tpm, pt.x, pt.y, 0, hwndFrame, NULL);

@@ -416,6 +416,12 @@ be disabled so the workflow can move the tag and replace the executable.
 
 ### Scaffold smoke tests
 
+The [AI regression harness](tests/scaffold/REGRESSION.md) stages Small, Medium,
+and Huge/Packed games with all six AI types. It supports a patched original
+binary in DOSBox and a `STARS_TEST_SEED` native build, preserves checkpoints at
+creation and turns 10/50/100, and compares decrypted save records with
+`save compare`.
+
 Run `make newgame` to generate the tiny test game with the compiled executable
 under Wine. Fixtures and the runner live in [`tests/scaffold/`](tests/scaffold/README.md);
 generated game files and logs go to `dist/scaffold/`. See that directory’s README

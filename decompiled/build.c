@@ -1,9 +1,11 @@
 #include "common.h"
 
-uint16_t     rggrbitPartsSB[8] = {2620, 8, 16, 2048, 512, 4, 32, 48};
-int16_t      rgidsPartsSB[8] = {1087, 1088, 1089, 1091, 1096, 1099, 1103, 1104};
-uint16_t     rggrbitParts[13] = {6655, 8, 16, 64, 2048, 1, 4096, 256, 128, 2, 4, 32, 48};
-int16_t      rgidsParts[13] = {1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1098, 1099, 1103, 1104};
+HullSlotType rggrbitPartsSB[8] = {hstEnabledSB, hstArmor, hstBeam, hstSpecialE, hstSpecialSB, hstShield, hstTorp, hstWeapon};
+StringId     rgidsPartsSB[8] = {idsAll, idsArmor3, idsBeamWeapons, idsElectrical, idsOrbital, idsShields3, idsTorpedoes, idsWeapons2};
+HullSlotType rggrbitParts[13] = {hstEnabled, hstArmor,  hstBeam,    hstBomb,   hstSpecialE, hstEngine, hstSpecialM,
+                                 hstMines,   hstMining, hstScanner, hstShield, hstTorp,     hstWeapon};
+StringId     rgidsParts[13] = {idsAll,        idsArmor3,       idsBeamWeapons, idsBombs,    idsElectrical, idsEngines, idsMechanical,
+                               idsMineLayers, idsMiningRobots, idsScanners,    idsShields3, idsTorpedoes,  idsWeapons2};
 HullSlotType rghstCat[14] = {hstWeapon, hstSpecialEM, hstArmor,  hstBeam,     hstBomb,     hstEngine, hstMines,
                              hstMining, hstScanner,   hstShield, hstSpecialE, hstSpecialM, hstTorp,   hstSpecialSB};
 StringId     rgidsCat[14] = {idsWeapons2,     idsDevices,  idsArmor3,   idsBeamWeapons, idsBombs,      idsEngines,   idsMineLayers,
@@ -417,7 +419,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         }
                         fmemset(lpshdef, 0, sizeof(SHDEF));
                         lpshdef->hul = LphuldefFromId(j)->hul;
-                        lpshdef->det = 7;
+                        lpshdef->det = detAll;
                         fmemset(lpshdef->hul.rghs, 0, 64);
                     }
                     CheckRadioButton(hwnd, 2066, 2069, 2066);
@@ -606,7 +608,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     }
                 } else if (mdBuild == mdBuildEnemyShdef) {
                     lpshdefBuild = NthValidEnemyShdef(LOWORD(lSel));
-                    if (lpshdefBuild->det != 7) {
+                    if (lpshdefBuild->det != detAll) {
                         i = lpshdefBuild->hul.ihuldef;
                     }
                 } else {
@@ -1567,11 +1569,11 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     uint32_t t_fields_2;
 
     GetClientRect(hwndSlotDlg, &rc);
-    if ((GetAsyncKeyState(17) & 0xfffe) != 0) {
+    if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
         if (iSrc < 0) {
             hsSrc.cItem = 100;
         }
-    } else if ((GetAsyncKeyState(16) & 0xfffe) != 0) {
+    } else if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
         if (iSrc < 0 || hsSrc.cItem > 4) {
             hsSrc.cItem = 4;
         }
@@ -1627,7 +1629,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     if (fNoModify == 0) {
         hsDst.grhst = hsSrc.grhst;
         hsDst.iItem = hsSrc.iItem;
-        cNew = hsDst.cItem + hsSrc.cItem >= hsHul.cItem ? hsHul.cItem : hsDst.cItem + hsSrc.cItem;
+        cNew = (uint16_t)(hsDst.cItem + hsSrc.cItem) >= hsHul.cItem ? hsHul.cItem : hsDst.cItem + hsSrc.cItem;
         if (iSrc >= 0) {
             lpshdefBuild->hul.rghs[iSrc].cItem -= cNew - hsDst.cItem;
         }

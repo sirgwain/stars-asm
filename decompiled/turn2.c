@@ -1,23 +1,23 @@
 #include "common.h"
 
 void Produce() {
-    int32_t   lResCur;
-    int16_t   cMax;
-    int32_t   rgResAvail[4];
-    int16_t   iprodCur;
-    int16_t   mdStatus;
-    int16_t   cBuilt;
-    int16_t   fNoResearch;
-    PLANET   *lppl;
-    int16_t   i;
-    MessageId idm;
-    PROD      prodPartial;
-    int16_t   fPrevProdIsAlch;
-    int16_t   fAutoBuildDone;
-    int32_t   lResearchTake;
-    PROD     *lpprod;
-    PLANET   *lpplMac;
-    int16_t   cMax2;
+    int32_t    lResCur;
+    int16_t    cMax;
+    int32_t    rgResAvail[4];
+    int16_t    iprodCur;
+    mdProdStat mdStatus;
+    int16_t    cBuilt;
+    int16_t    fNoResearch;
+    PLANET    *lppl;
+    int16_t    i;
+    MessageId  idm;
+    PROD       prodPartial;
+    int16_t    fPrevProdIsAlch;
+    int16_t    fAutoBuildDone;
+    int32_t    lResearchTake;
+    PROD      *lpprod;
+    PLANET    *lpplMac;
+    int16_t    cMax2;
 
     MineMinerals();
     for (i = 0; i < game.cPlayer; i++) {
@@ -129,8 +129,8 @@ void Produce() {
                                 continue;
                             }
                             prodPartial.cItem = 0;
-                            cBuilt = CBuildProdItem(lppl, lpprod, &prodPartial, rgResAvail, fPrevProdIsAlch, &mdStatus, 0);
-                            if (fAutoBuildDone != 0 && (mdStatus == 3 || mdStatus == 4)) {
+                            cBuilt = CBuildProdItem(lppl, lpprod, &prodPartial, rgResAvail, fPrevProdIsAlch, (int16_t *)&mdStatus, 0);
+                            if (fAutoBuildDone != 0 && (mdStatus == mdProdStatSomeAuto || mdStatus == mdProdStatNoneAuto)) {
                                 fAutoBuildDone = 0;
                             }
                             if (cBuilt > 0 && FBuildObject(lppl, lpprod->grobj, lpprod->iItem, cBuilt, rgResAvail) == 0 &&
@@ -139,8 +139,8 @@ void Produce() {
                             }
                             if (lppl->iPlayer == -1 && lppl->lpplprod == 0)
                                 break;
-                            if (mdStatus != 0) {
-                                if (mdStatus < 5)
+                            if (mdStatus != mdProdStatComplete) {
+                                if (mdStatus < mdProdStatSome)
                                     goto L_0b8e;
                                 if (prodPartial.cItem <= 0)
                                     goto L_0b9a;
@@ -397,7 +397,7 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     int16_t   cSize;
     int16_t   rgwt[3];
     int32_t   l;
-    int16_t   iEnv;
+    EnvType   iEnv;
     PART      part;
     uint16_t  t_scratch_m16_3;
     uint16_t  t_scratch_m16_4;
@@ -812,7 +812,7 @@ void DropColonists() {
                 FLookupPlanet(idPlanet, &pl);
                 iplrOldOwner = pl.iPlayer;
                 CalcPctSurvive(&pl, &pctSurvive, NULL);
-                pctSurvive += (1.0 - pctSurvive) / 4.0;
+                pctSurvive = (float)(pctSurvive + ((long double)1.0 - pctSurvive) / 4.0);
                 for (lpcdLook = lpcdCur; lpcdLook < lpcdMax; lpcdLook++) {
                     if (idPlanet == lpcdLook->idPlanetDst) {
                         if (GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv) == raMacintosh && (lpcdLook->fCanColonize == 0 || pl.iPlayer != -1)) {
@@ -831,7 +831,7 @@ void DropColonists() {
                             } else {
                                 lPower = 110;
                             }
-                            lPower = (int32_t)((double)((int32_t)(lpcdLook->cColonist * lPower) / 100) * pctSurvive);
+                            lPower = (int32_t)((long double)((int32_t)(lpcdLook->cColonist * lPower) / 100) * pctSurvive);
                             cPowerTot += lPower;
                             rgcPower[lpcdLook->idPlr] = rgcPower[lpcdLook->idPlr] + lPower;
                         }
@@ -848,11 +848,11 @@ void DropColonists() {
                     if (lDefensePower > cPowerTot) {
                         for (i = 0; i < 16; i++) {
                             if (rgcCol[i] != 0) {
-                                if (pctSurvive == 1.0) {
+                                if ((long double)pctSurvive == (long double)1.0) {
                                     FSendPlrMsg(i, 0, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, pl.iPlayer | 0x30, 0, 0, 0);
                                     FSendPlrMsg(pl.iPlayer, 3, pl.id, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), i | 0x30, 0, 0, 0);
                                 } else {
-                                    FSendPlrMsg(i, 1, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, (int32_t)((1.0 - pctSurvive) * 10000.0),
+                                    FSendPlrMsg(i, 1, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), pl.id, (int32_t)(((long double)1.0 - pctSurvive) * 10000),
                                                 pl.iPlayer | 0x30, 0, 0);
                                     FSendPlrMsg(pl.iPlayer, 4, pl.id, pl.id, LOWORD(rgcCol[i]), HIWORD(rgcCol[i]), i | 0x30, 0, 0, 0);
                                 }
@@ -1162,7 +1162,7 @@ void RemoteTerraforming() {
     int16_t ifl;
     FLEET  *lpfl;
     int16_t cDone;
-    int16_t iEnv;
+    EnvType iEnv;
     int16_t cAllowed;
     int32_t ipct;
     int16_t pctNew;
@@ -1294,7 +1294,7 @@ void UpdateGuesses() {
                 lppl->uDefGuess = 0;
             } else {
                 CalcPctSurvive(lppl, &pct, NULL);
-                l = 100 - (int32_t)(pct * 100.0 + 0.5) + 4;
+                l = 100 - (int32_t)((long double)pct * 100.0 + 0.5) + 4;
                 l = (int32_t)(l / 6);
                 if (l < 1) {
                     l = 1;

@@ -13,7 +13,20 @@ func decodeEnumInitializer(typ *typeinfo.Enum, buf []byte) (*Initializer, bool) 
 	if len(buf) < typ.Bytes() {
 		return nil, false
 	}
-	return &Initializer{Kind: InitScalar, Type: typ, Scalar: uint64(binary.LittleEndian.Uint16(buf[:2]))}, true
+	var value uint64
+	switch typ.Bytes() {
+	case 1:
+		value = uint64(buf[0])
+	case 2:
+		value = uint64(binary.LittleEndian.Uint16(buf))
+	case 4:
+		value = uint64(binary.LittleEndian.Uint32(buf))
+	case 8:
+		value = binary.LittleEndian.Uint64(buf)
+	default:
+		return nil, false
+	}
+	return &Initializer{Kind: InitScalar, Type: typ, Scalar: value}, true
 }
 
 // decodeScalarInitializer decodes a scalar (int/bool/float) from buf using typ.

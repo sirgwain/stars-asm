@@ -301,7 +301,10 @@ func (c *machineConverter) convertValue(value machine.Value) Expr {
 	case *machine.ImportConst:
 		return &Const{TypeInfo: typeinfo.U16, U64: uint64(v.Val), Origin: v.Origin, Fixup: v.Fixup}
 	case *machine.FloatConst:
-		return &FloatConst{TypeInfo: &typeinfo.Primitive{TypeKind: typeinfo.KFloat, Name: "float", Size: 4}, F64: v.Val}
+		// Resolved binary32 constants are exactly represented by v.Val too.
+		// Native C emits an unsuffixed double literal; register arithmetic
+		// promotes that original value to extended precision explicitly.
+		return &FloatConst{TypeInfo: typeinfo.Double, F64: v.Val}
 	case *machine.CallResult:
 		if call := c.inlineCalls[machineCallResultKey{target: v.Target, instOff: v.InstOff}]; call != nil {
 			return call

@@ -7,7 +7,7 @@
 void             BattleVCR(int16_t iBattle);
 int16_t          CBattles();
 BTLDATA         *BtlDataGet(int16_t i);
-int32_t          CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU);
+int32_t          CBattleUnits(BTLDATA *lpbd, BattleUnitFlags grbitBU);
 int32_t          CBattleKills(BTLDATA *lpbd, int16_t fOurDead);
 int32_t          LdpFromItokDv(int16_t itok, DV *lpdv);
 int16_t          SetVCRBoard(int16_t iStep);

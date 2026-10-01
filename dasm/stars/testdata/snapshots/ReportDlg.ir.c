@@ -65,13 +65,13 @@ L_019b:
         goto L_01f3;
 
 L_01f3:
-    swp = 132;
+    swp = SWP_NOZORDER | SWP_HIDEWINDOW;
     vprptCur->irowFirst = 0;
-    SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0);
+    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
     goto L_02b5;
 
 L_021c:
-    swp = 68;
+    swp = SWP_NOZORDER | SWP_SHOWWINDOW;
     if (vprptCur->irowFirst + vprptCur->cRowsVis <= vprptCur->cRows)
         goto L_0273;
     else
@@ -94,8 +94,8 @@ L_026a:
     vprptCur->irowFirst = 0;
 
 L_0273:
-    SetScrollPos(vprptCur->hwndVScroll, 2, vprptCur->irowFirst, 0);
-    SetScrollRange(vprptCur->hwndVScroll, 2, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
+    SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL);
@@ -235,7 +235,7 @@ L_04f9:
     goto L_09c8;
 
 L_04fc:
-    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2);
+    iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL);
     iNew = iCur;
     goto L_0576;
 
@@ -325,14 +325,14 @@ L_05d7:
     rc.top = dyArial8 + 6;
     rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
     ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
+    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
     UpdateWindow(hwnd);
 
 L_0673:
     return 0;
 
 L_067c:
-    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+    iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
     iNew = iCur;
     goto L_06e4;
 
@@ -415,8 +415,8 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1);
-    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+    iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
     if (iNew == iCur)
         goto L_080f;
     else
@@ -515,7 +515,7 @@ L_0909:
         goto L_0914;
 
 L_0914:
-    CheckMenuItem(hmenu, idm, 0);
+    CheckMenuItem(hmenu, idm, MF_UNCHECKED);
     vprptCur = 0;
     if (gd.fTutorial == 0)
         goto L_09c8;

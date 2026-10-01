@@ -3,6 +3,79 @@
 
 typedef enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount } HeapType;
 
+typedef enum AiLevel {
+    lvlAiEasy = 0,
+    lvlAiStandard = 1,
+    lvlAiTough = 2,
+    lvlAiExpert = 3,
+    lvlAiRandom = 4,
+} AiLevel;
+
+typedef enum DetType {
+    detNone = 0,
+    detMinimal = 1,
+    detObscure = 2,
+    detSome = 3,
+    detMore = 4,
+    detAll = 7,
+} DetType;
+
+typedef enum MineralType {
+    Ironium = 0,
+    Boranium = 1,
+    Germanium = 2,
+    Resources = 3,
+    Colonists = 3,
+    Fuel = 4,
+} MineralType;
+
+typedef enum EnvType {
+    Gravity = 0,
+    Temperature = 1,
+    Radiation = 2,
+} EnvType;
+
+typedef enum TechFieldType {
+    Energy = 0,
+    Weapons = 1,
+    Propulsion = 2,
+    Construction = 3,
+    Electronics = 4,
+    Biotechnology = 5,
+    TechFieldCount = 6,
+} TechFieldType;
+
+typedef enum BattleUnitFlags {
+    grBuOurUnits = 0x0001,
+    grBuTheirUnits = 0x0002,
+    grBuIncludeSb = 0x0004,
+    grBuClassOther = 0x0008,
+    grBuClassFight = 0x0010,
+    grBuClassBomber = 0x0020,
+    grBuClassCap = 0x0040,
+    grBuClassFrig = 0x0080,
+    grBuClassAll = 0x00F8,
+} BattleUnitFlags;
+
+typedef enum AttackWho {
+    iplrAttackNobody = 0,
+    iplrAttackEnemies = 1,
+    iplrAttackNeutralsEnemies = 2,
+    iplrAttackEveryone = 3,
+    iplrAttackPlayer = 4,
+} AttackWho;
+
+typedef enum mdProdStat {
+    mdProdStatComplete = 0,
+    mdProdStatCompleteAuto = 1,
+    mdProdStatSkippedAuto = 2,
+    mdProdStatSomeAuto = 3,
+    mdProdStatNoneAuto = 4,
+    mdProdStatSome = 5,
+    mdProdStatBlockedDiff = 6,
+    mdProdStatBlockedSame = 7,
+} mdProdStat;
+
 typedef enum GrPopupType {
     grPopupMineral = 1,
     grPopupPlayer = 2,
@@ -52,6 +125,7 @@ typedef enum DtFileType {
     dtHost = 2,
     dtTurn = 3,
     dtHist = 4,
+    dtRace = 5,
 } DtFileType;
 
 typedef enum RaceGrbit {
@@ -112,6 +186,10 @@ typedef enum GrobjClass {
     grobjFleet = 0x2,
     grobjOther = 0x4,
     grobjThing = 0x8,
+    mdNoRecurse = 0x0020,
+    mdScanRadius = 0x0040,
+    mdExact = 0x0080,
+    mdRecurseMask = mdNoRecurse | mdExact,
 } GrobjClass;
 
 typedef enum HullSlotType {
@@ -138,10 +216,11 @@ typedef enum HullSlotType {
     hstScanSpec = hstScanner | hstSpecialE | hstSpecialM,
     hstShWeap = hstShield | hstBeam | hstTorp,
     hstSomeSB = hstSpecialSB | hstSpecialE,
-    hstSpecMine = hstSpecialE | hstMines,
+    hstSpecMine = hstSpecialEM | hstMines,
     hstShSpec = hstShield | hstSpecialE | hstSpecialM,
     hstScanSpecArm = hstScanner | hstArmor | hstSpecialE | hstSpecialM,
     hstEnabled = 0x19FF,
+    hstEnabledSB = hstShield | hstArmor | hstWeapon | hstSpecialSB | hstSpecialE,
     hstSome = 0x193E,
 
 } HullSlotType;
@@ -3036,6 +3115,7 @@ typedef enum RecordType {
     rtPlanet = 13,
     rtPlanetB = 14,
     rtFleetA = 16,
+    rtFleetB = 17,
     rtOrderA = 19, /* other order-like record type seen in decompile */
     rtOrderB = 20, // waypoint only
     rtString = 21, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
@@ -3685,5 +3765,86 @@ typedef enum GrfWeapon {
     bitFMissile = 0x0008,
     bitFDeflected = 0x0080,
 } GrfWeapon;
+
+
+// AI research targets pack the tech field in the upper three bits and level in the lower five.
+typedef enum AiResearchTarget {
+    aiResearchEnergy2 = (0 << 5) | 2,
+    aiResearchEnergy3 = (0 << 5) | 3,
+    aiResearchEnergy4 = (0 << 5) | 4,
+    aiResearchEnergy6 = (0 << 5) | 6,
+    aiResearchEnergy7 = (0 << 5) | 7,
+    aiResearchEnergy9 = (0 << 5) | 9,
+    aiResearchEnergy10 = (0 << 5) | 10,
+    aiResearchEnergy14 = (0 << 5) | 14,
+    aiResearchEnergy15 = (0 << 5) | 15,
+    aiResearchEnergy18 = (0 << 5) | 18,
+    aiResearchEnergy20 = (0 << 5) | 20,
+    aiResearchEnergy22 = (0 << 5) | 22,
+    aiResearchEnergy23 = (0 << 5) | 23,
+    aiResearchEnergy26 = (0 << 5) | 26,
+    aiResearchWeapons3 = (1 << 5) | 3,
+    aiResearchWeapons5 = (1 << 5) | 5,
+    aiResearchWeapons6 = (1 << 5) | 6,
+    aiResearchWeapons7 = (1 << 5) | 7,
+    aiResearchWeapons8 = (1 << 5) | 8,
+    aiResearchWeapons10 = (1 << 5) | 10,
+    aiResearchWeapons11 = (1 << 5) | 11,
+    aiResearchWeapons14 = (1 << 5) | 14,
+    aiResearchWeapons15 = (1 << 5) | 15,
+    aiResearchWeapons17 = (1 << 5) | 17,
+    aiResearchWeapons20 = (1 << 5) | 20,
+    aiResearchWeapons23 = (1 << 5) | 23,
+    aiResearchWeapons24 = (1 << 5) | 24,
+    aiResearchWeapons26 = (1 << 5) | 26,
+    aiResearchPropulsion2 = (2 << 5) | 2,
+    aiResearchPropulsion5 = (2 << 5) | 5,
+    aiResearchPropulsion6 = (2 << 5) | 6,
+    aiResearchPropulsion7 = (2 << 5) | 7,
+    aiResearchPropulsion8 = (2 << 5) | 8,
+    aiResearchPropulsion9 = (2 << 5) | 9,
+    aiResearchPropulsion12 = (2 << 5) | 12,
+    aiResearchPropulsion13 = (2 << 5) | 13,
+    aiResearchPropulsion16 = (2 << 5) | 16,
+    aiResearchPropulsion17 = (2 << 5) | 17,
+    aiResearchPropulsion20 = (2 << 5) | 20,
+    aiResearchPropulsion22 = (2 << 5) | 22,
+    aiResearchPropulsion26 = (2 << 5) | 26,
+    aiResearchConstruction3 = (3 << 5) | 3,
+    aiResearchConstruction4 = (3 << 5) | 4,
+    aiResearchConstruction6 = (3 << 5) | 6,
+    aiResearchConstruction10 = (3 << 5) | 10,
+    aiResearchConstruction13 = (3 << 5) | 13,
+    aiResearchConstruction16 = (3 << 5) | 16,
+    aiResearchConstruction17 = (3 << 5) | 17,
+    aiResearchConstruction18 = (3 << 5) | 18,
+    aiResearchConstruction20 = (3 << 5) | 20,
+    aiResearchConstruction21 = (3 << 5) | 21,
+    aiResearchConstruction23 = (3 << 5) | 23,
+    aiResearchConstruction24 = (3 << 5) | 24,
+    aiResearchConstruction26 = (3 << 5) | 26,
+    aiResearchElectronics3 = (4 << 5) | 3,
+    aiResearchElectronics5 = (4 << 5) | 5,
+    aiResearchElectronics6 = (4 << 5) | 6,
+    aiResearchElectronics7 = (4 << 5) | 7,
+    aiResearchElectronics9 = (4 << 5) | 9,
+    aiResearchElectronics10 = (4 << 5) | 10,
+    aiResearchElectronics12 = (4 << 5) | 12,
+    aiResearchElectronics16 = (4 << 5) | 16,
+    aiResearchElectronics17 = (4 << 5) | 17,
+    aiResearchElectronics19 = (4 << 5) | 19,
+    aiResearchElectronics21 = (4 << 5) | 21,
+    aiResearchElectronics26 = (4 << 5) | 26,
+    aiResearchBiotechnology3 = (5 << 5) | 3,
+    aiResearchBiotechnology4 = (5 << 5) | 4,
+    aiResearchBiotechnology6 = (5 << 5) | 6,
+    aiResearchBiotechnology7 = (5 << 5) | 7,
+    aiResearchBiotechnology9 = (5 << 5) | 9,
+    aiResearchBiotechnology10 = (5 << 5) | 10,
+    aiResearchBiotechnology11 = (5 << 5) | 11,
+    aiResearchBiotechnology12 = (5 << 5) | 12,
+    aiResearchBiotechnology18 = (5 << 5) | 18,
+    aiResearchBiotechnology26 = (5 << 5) | 26,
+} AiResearchTarget;
 
 #endif

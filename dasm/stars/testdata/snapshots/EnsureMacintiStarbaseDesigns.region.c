@@ -61,7 +61,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         iNew = 7;
         iOld = 4;
     }
-    if (game.turn - rglpshdefSB[idPlayer][iOld].turn < 30) {
+    if ((uint16_t)(game.turn - rglpshdefSB[idPlayer][iOld].turn) < 30) {
         j = 2;
     } else {
         j = 3;

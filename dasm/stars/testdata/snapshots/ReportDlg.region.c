@@ -39,19 +39,19 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         cRow = (int16_t)(rc.bottom - 36) / (dyArial8 + 4);
         vprptCur->cRowsVis = cRow >= vprptCur->cRows ? vprptCur->cRows : cRow;
         if (vprptCur->cRowsVis >= vprptCur->cRows) {
-            swp = 132;
+            swp = SWP_NOZORDER | SWP_HIDEWINDOW;
             vprptCur->irowFirst = 0;
-            SetScrollPos(vprptCur->hwndVScroll, 2, 0, 0);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
         } else {
-            swp = 68;
+            swp = SWP_NOZORDER | SWP_SHOWWINDOW;
             if (vprptCur->irowFirst + vprptCur->cRowsVis > vprptCur->cRows && vprptCur->irowFirst > 0) {
                 vprptCur->irowFirst = vprptCur->cRows - vprptCur->cRowsVis;
                 if (vprptCur->irowFirst < 0) {
                     vprptCur->irowFirst = 0;
                 }
             }
-            SetScrollPos(vprptCur->hwndVScroll, 2, vprptCur->irowFirst, 0);
-            SetScrollRange(vprptCur->hwndVScroll, 2, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
         }
         dx = GetSystemMetrics(SM_CXVSCROLL);
         SetWindowPos(vprptCur->hwndVScroll, NULL, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
@@ -110,7 +110,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         AdvanceTutor();
         goto L_09c8;
     case WM_VSCROLL:
-        iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2);
+        iCur = GetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL);
         iNew = iCur;
         if (GET_WM_VSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_VSCROLL_CODE(wParam, lParam)) {
@@ -151,12 +151,12 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             rc.top = dyArial8 + 6;
             rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
             ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), 2, iNew, 1);
+            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
             UpdateWindow(hwnd);
         }
         return 0;
     case WM_HSCROLL:
-        iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+        iCur = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
         iNew = iCur;
         if (GET_WM_HSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_HSCROLL_CODE(wParam, lParam)) {
@@ -190,8 +190,8 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             iNew = 0;
         }
         if (iNew != iCur) {
-            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2, iNew, 1);
-            iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), 2);
+            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
             if (iNew != iCur) {
                 i = 1;
                 for (ibit = 2; i < vprptCur->cFields && ((ibit & vprptCur->grbitVisible) == 0 || iNew-- > 0); ibit *= 2) {
@@ -230,7 +230,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case 3:
             idm = 0x901;
         }
-        CheckMenuItem(hmenu, idm, 0);
+        CheckMenuItem(hmenu, idm, MF_UNCHECKED);
         vprptCur = 0;
         if (gd.fTutorial == 0)
             goto L_09c8;

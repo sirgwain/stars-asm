@@ -28,7 +28,7 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     shdef.wFlags = lprt->wFlags;
     shdef.hul.chs = lprt->chs;
     shdef.hul.ibmp = lprt->ibmp;
-    if (shdef.det == 7) {
+    if (shdef.det == detAll) {
         shdef.hul.dp = lprt->dp;
         shdef.turn = lprt->turn;
         shdef.cBuilt = lprt->cBuilt;
@@ -60,7 +60,7 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     if (ishdef >= 16) {
         ishdef -= 16;
     }
-    if (shdef.det == 7 || lpshdef[ishdef].fFree != 0 || lpshdef[ishdef].det < 7) {
+    if (shdef.det == detAll || lpshdef[ishdef].fFree != 0 || lpshdef[ishdef].det < detAll) {
         lpshdef[ishdef] = shdef;
     } else if (shdef.hul.ihuldef != lpshdef[ishdef].hul.ihuldef || shdef.hul.ibmp != lpshdef[ishdef].hul.ibmp) {
         lpshdef[ishdef] = shdef;
@@ -68,7 +68,7 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     if (idPlayer != -1) {
         UpdateShdefCost(lpshdef + ishdef);
     }
-    if (lpshdef[ishdef].det == 7) {
+    if (lpshdef[ishdef].det == detAll) {
         lphul = &lpshdef[ishdef].hul;
         lphulBase = &LphuldefFromId(lphul->ihuldef)->hul;
         wt = (uint32_t)lphulBase->wtEmpty;
@@ -111,7 +111,7 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
 
     pplrRaw = (PLAYER *)pbIn;
     memset(pplr, 0, sizeof(PLAYER));
-    if (pplrRaw->det == 7) {
+    if (pplrRaw->det == detAll) {
         memmove(pplr, pbIn, 112);
         memmove(pplr->rgmdRelation, pbIn + 113, pbIn[112]);
         iOff = 112 + pbIn[112] + 1;
@@ -244,7 +244,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                                 goto CorruptHist;
                             if (lppl->iPlayer == iPlayer) {
                                 lppl->iPlayer = -1;
-                                lppl->det = 3;
+                                lppl->det = detSome;
                             }
                             ReadRt();
                             i++;
@@ -732,7 +732,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                     for (; lppl < lpplMac; lppl++) {
                         if (lppl->iPlayer == iPlayer) {
                             lppl->iPlayer = -1;
-                            lppl->det = 3;
+                            lppl->det = detSome;
                             if (lppl->lpplprod != 0) {
                                 FreePl((PL *)lppl->lpplprod);
                                 lppl->lpplprod = NULL;
@@ -961,7 +961,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
             lppl->uGuesses = RawLoad16(pb);
             pb += 2;
         }
-        if (lppl->det <= 3)
+        if (lppl->det <= detSome)
             goto LFinishBRecord;
         if ((RawLoad16(&rgbCur[2]) >> 0xd & 1) != 0) {
             bMask = *pb;
@@ -1022,7 +1022,7 @@ LFinishBRecord:
     } else if (fFirstYear != 0) {
         if (lppl->iPlayer != -1) {
             FSendPlrMsg2XGen(0, 170, lppl->id, lppl->id, lppl->iPlayer | 0x30);
-        } else if (lppl->det <= 1) {
+        } else if (lppl->det <= detMinimal) {
             FSendPlrMsg2XGen(0, 173, lppl->id, lppl->id, 0);
         } else if (GetRaceStat(&rgplr[iPlayer], rsMajorAdv) == raTerra) {
             pctOpt = PctPlanetOptValue(lppl, iPlayer);
@@ -1095,7 +1095,7 @@ int16_t FReadFleet(FLEET *lpfl) {
     if (cish == 0) {
         lpfl->fDead = 1;
     }
-    if (lpfl->det >= 4) {
+    if (lpfl->det >= detMore) {
         us = RawLoad16(pb);
         pb += 2;
         i = 0;
@@ -1119,7 +1119,7 @@ int16_t FReadFleet(FLEET *lpfl) {
             us >>= 2;
         }
     }
-    if (lpfl->det < 7) {
+    if (lpfl->det < detAll) {
         lpfl->dirLong = RawLoad32(pb);
         pb += 4;
         lpfl->wtFleet = RawLoad32(pb);

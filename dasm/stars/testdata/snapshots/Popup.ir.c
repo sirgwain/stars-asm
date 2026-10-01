@@ -225,7 +225,7 @@ L_11e5:
     goto L_1225;
 
 L_11f5:
-    if (GlobalPD.grPopup - 1 > 13)
+    if ((uint16_t)(GlobalPD.grPopup - 1) > 13)
         goto L_1225;
     else
         goto L_1200;

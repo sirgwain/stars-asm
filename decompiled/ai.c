@@ -1,7 +1,12 @@
 #include "common.h"
 
-uint8_t vrgAiRobotoidResOrder[36] = {66, 99,  35, 100, 2, 131, 70, 37,  102, 164, 133, 6,   39,  106, 6,   135, 42, 73,
-                                     76, 109, 46, 112, 9, 138, 80, 170, 15,  52,  84,  144, 172, 56,  147, 120, 22, 122};
+uint8_t vrgAiRobotoidResOrder[36] = {
+    aiResearchPropulsion2,     aiResearchConstruction3,   aiResearchWeapons3,      aiResearchConstruction4,  aiResearchEnergy2,      aiResearchElectronics3,
+    aiResearchPropulsion6,     aiResearchWeapons5,        aiResearchConstruction6, aiResearchBiotechnology4, aiResearchElectronics5, aiResearchEnergy6,
+    aiResearchWeapons7,        aiResearchConstruction10,  aiResearchEnergy6,       aiResearchElectronics7,   aiResearchWeapons10,    aiResearchPropulsion9,
+    aiResearchPropulsion12,    aiResearchConstruction13,  aiResearchWeapons14,     aiResearchConstruction16, aiResearchEnergy9,      aiResearchElectronics10,
+    aiResearchPropulsion16,    aiResearchBiotechnology10, aiResearchEnergy15,      aiResearchWeapons20,      aiResearchPropulsion20, aiResearchElectronics16,
+    aiResearchBiotechnology12, aiResearchWeapons24,       aiResearchElectronics19, aiResearchConstruction24, aiResearchEnergy22,     aiResearchConstruction26};
 uint8_t vrgTDAip[141] = {8,  31, 8,  26, 0,  37, 8,  0,  0,  0,  9,  18, 11, 8,  1,  1,  11, 9, 18, 11, 8,  37, 15, 7,  4,  6,  9,  8,
                          11, 13, 0,  0,  0,  9,  8,  37, 15, 7,  3,  6,  17, 8,  11, 13, 1,  1, 1,  17, 8,  12, 37, 6,  3,  5,  3,  7,
                          9,  20, 20, 8,  12, 37, 0,  0,  0,  0,  0,  9,  19, 11, 8,  12, 37, 6, 3,  4,  2,  7,  17, 20, 20, 8,  12, 37,
@@ -146,7 +151,7 @@ void DoRobotoidAiTurn(PROD *rgprod) {
 
     iAiLvl = rgplr[idPlayer].lvlAi;
     iPlanet = rgplr[idPlayer].idPlanetHome;
-    iroCur = IroEnsureAi(vrgAiRobotoidResOrder, 36, &ishdefSBLatest, game.turn >= 10 ? 15 : 0);
+    iroCur = IroEnsureAi((uint8_t *)vrgAiRobotoidResOrder, 36, &ishdefSBLatest, game.turn >= 10 ? 15 : 0);
     if (game.turn > 50) {
         MergeAllShdefs(1788);
         MergeAllShdefs(1);
@@ -561,7 +566,7 @@ void EnsureRobotoidShdefs() {
 
     for (ish = 11; ish <= 13; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[2] >= 2 && rgplr[idPlayer].rgTech[3] >= (ish - 11) * 3 + 4 &&
-            (ish == 11 || game.turn - rgshdef[ish - 1].turn > 14)) {
+            (ish == 11 || (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 14)) {
             if (rgplr[idPlayer].rgTech[3] < 10) {
                 FCreateAiShdef(ish, 11, &vrgRobAip[vrgRobIshAip[ish == 11 ? 14 : 15]]);
             } else {
@@ -584,7 +589,7 @@ void EnsureRobotoidShdefs() {
     }
     for (ish = 2; ish <= 5; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 10 && rgplr[idPlayer].rgTech[3] >= 10 && rgplr[idPlayer].rgTech[2] >= 9 &&
-            rgplr[idPlayer].rgTech[0] >= 6 && (ish == 2 || (rgshdef[ish - 1].fFree == 0 && game.turn - rgshdef[ish - 1].turn > 12))) {
+            rgplr[idPlayer].rgTech[0] >= 6 && (ish == 2 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 12))) {
             shBase = (ish - 2 & 1) == 0 ? 0 : 4;
             for (i = 0; i < 5 && FCreateAiShdef(ish, 31, &vrgRobAip[vrgRobIshAip[Random(4) + shBase]]) == 0; i++) {
             }
@@ -593,7 +598,7 @@ void EnsureRobotoidShdefs() {
     for (ish = 6; ish <= 7; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[5] >= 4 && rgplr[idPlayer].rgTech[4] >= 10 && rgplr[idPlayer].rgTech[3] >= 12 &&
             rgplr[idPlayer].rgTech[2] >= 12 && rgplr[idPlayer].rgTech[0] >= 6 && rgplr[idPlayer].rgTech[1] >= 15 &&
-            (ish == 6 || (rgshdef[ish - 1].fFree == 0 && game.turn - rgshdef[ish - 1].turn > 20))) {
+            (ish == 6 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 20))) {
             shBase = ish == 6 ? 27 : 31;
             for (i = 0; i < 5 && FCreateAiShdef(ish, 9, &vrgRobAip[vrgRobIshAip[Random(4) + shBase]]) == 0; i++) {
             }
@@ -601,12 +606,12 @@ void EnsureRobotoidShdefs() {
     }
     for (ish = 9; ish <= 10; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 14 &&
-            ((ish == 9 || (rgshdef[ish - 1].fFree == 0 && game.turn - rgshdef[ish - 1].turn > 15)) &&
+            ((ish == 9 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 15)) &&
              FCreateAiShdef(ish, 9, &vrgRobAip[vrgRobIshAip[36]]) == 0)) {
             FCreateAiShdef(ish, 19, &vrgRobAip[vrgRobIshAip[ish == 9 ? 24 : 25]]);
         }
     }
-    if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > 1 && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
+    if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > lvlAiStandard && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
         rgplr[idPlayer].rgTech[4] >= 5 && rgplr[idPlayer].rgTech[3] >= 6 && rgplr[idPlayer].rgTech[2] >= 6 && rgplr[idPlayer].rgTech[0] >= 6) {
         shdef = rgshdef[0];
         shdef.fFree = 1;
@@ -674,14 +679,14 @@ int16_t IdTargetArmada(FLEET *lpfl) {
                 XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, LOWORD(cCol));
                 FLookupFleet(lpfl->id, &sel.fl);
             }
-        } else if (rgplr[idPlayer].lvlAi <= 1 || (cshWar <= vrgAiArmadaPotency[0] * 2 && cshWar < 60) ||
+        } else if (rgplr[idPlayer].lvlAi <= lvlAiStandard || (cshWar <= vrgAiArmadaPotency[0] * 2 && cshWar < 60) ||
                    (Random(10) >= 5 && (cshWar <= vrgAiArmadaPotency[0] * 3 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
             return 0;
         }
     } else if (cshWar < vrgAiArmadaPotency[1] || cshBomb < vrgAiArmadaPotency[3]) {
         ClearAiCurrentTask(lpfl, 0);
-        if (rgplr[idPlayer].lvlAi <= 1 || ((cshWar <= vrgAiArmadaPotency[0] * 2 || Random(10) >= 5) &&
-                                           (cshWar <= vrgAiArmadaPotency[0] * 4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
+        if (rgplr[idPlayer].lvlAi <= lvlAiStandard || ((cshWar <= vrgAiArmadaPotency[0] * 2 || Random(10) >= 5) &&
+                                                       (cshWar <= vrgAiArmadaPotency[0] * 4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
             lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
             goto TargetEveryArmada;
         }
@@ -951,7 +956,7 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
-        if (lppl->iPlayer == -1 && lppl->det >= 3 && PctPlanetOptValue(lppl, idPlayer) > 0) {
+        if (lppl->iPlayer == -1 && lppl->det >= detSome && PctPlanetOptValue(lppl, idPlayer) > 0) {
             cplanCol++;
         }
     }
@@ -959,7 +964,7 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
         vlpbAiPlanet[lppl->id * 16 + 9] = 1;
-        if (lppl->iPlayer == -1 && lppl->det >= 3) {
+        if (lppl->iPlayer == -1 && lppl->det >= detSome) {
             b = 0;
             for (i = 0; i < 3; i++) {
                 if (lppl->rgMinConc[i] > 66) {

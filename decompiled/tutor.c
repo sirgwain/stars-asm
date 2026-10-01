@@ -70,7 +70,7 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         StickyDlgPos(hwnd, &ptStickyTutorDlg, 0);
         tutor.hwnd = 0;
         hmenu = GetASubMenu(hwndFrame, 5);
-        CheckMenuItem(hmenu, 2501, 0);
+        CheckMenuItem(hmenu, 2501, MF_UNCHECKED);
         EndDialog(hwnd, 1);
         EndTutor(1);
         return 1;
@@ -351,7 +351,7 @@ void SaveGameState() {
     if (gd.fToolbar == 0) {
         hmenu = GetASubMenu(hwndFrame, 1);
         gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
-        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? 0 : 8);
+        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
     tutor.icolFSort = vrptFleet.icolSort;
@@ -380,7 +380,7 @@ void RestoreGameState() {
     if (gd.fToolbar != tutor.fTBVis) {
         hmenu = GetASubMenu(hwndFrame, 1);
         gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
-        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? 0 : 8);
+        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
     if (vrptFleet.icolSort != tutor.icolFSort) {
@@ -449,7 +449,7 @@ int16_t FTutorTaskDone() {
             } else if (FCheckSelection(grobjFleet, 5) != 0 && tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
                 tutor.idtBold = 34;
             } else {
-                if (FCheckResearch(1, 6, 15) != 0) {
+                if (FCheckResearch(Weapons, TechFieldCount, 15) != 0) {
                     tutor.idtBold = 39;
                     tutor.fTurnDone = 1;
                     return 1;
@@ -880,7 +880,7 @@ int16_t FTutorTaskDone() {
                 return 0;
             }
             tutor.fNoErrors = 1;
-            if (FCheckResearch(1, 6, 30) != 0) {
+            if (FCheckResearch(Weapons, TechFieldCount, 30) != 0) {
                 tutor.fNoErrors = 0;
                 return 1;
             }
@@ -912,7 +912,7 @@ int16_t FTutorTaskDone() {
                 }
                 return 0;
             }
-            if (FCheckResearch(1, 6, 30) == 0) {
+            if (FCheckResearch(Weapons, TechFieldCount, 30) == 0) {
                 tutor.idtBold = 228;
                 return 0;
             }
@@ -946,7 +946,7 @@ int16_t FTutorTaskDone() {
             return 1;
         }
         tutor.fNoErrors = 1;
-        if (FCheckResearch(1, 3, 30) == 0) {
+        if (FCheckResearch(Weapons, Construction, 30) == 0) {
             tutor.idtBold = pctResGlob == -1 ? 232 : 236;
             tutor.fNoErrors = 0;
             return 0;
@@ -1064,7 +1064,7 @@ int16_t FTutorTaskDone() {
         case 280:
             if (LpplFromId(13)->lpplprod->iprodMac < 2 || FCheckQueue(13, 0, grobjPlanet, 8, 70, 0) == 0) {
                 tutor.idtBold = 280;
-            } else if (FCheckResearch(3, 5, 30) == 0) {
+            } else if (FCheckResearch(Construction, Biotechnology, 30) == 0) {
                 tutor.idtBold = pctResGlob == -1 ? 281 : 282;
             } else {
                 if (FCheckSelection(grobjFleet, 8) != 0) {
@@ -1157,7 +1157,7 @@ int16_t FTutorTaskDone() {
                 tutor.idtBold = 322;
                 return 0;
             }
-            if (FCheckResearch(5, 2, 30) == 0) {
+            if (FCheckResearch(Biotechnology, Propulsion, 30) == 0) {
                 tutor.idtBold = 324;
                 return 0;
             }
@@ -1336,7 +1336,7 @@ int16_t FTutorTaskDone() {
             tutor.idtBold = lpplProdGlob == 0 ? 380 : 381;
             return 0;
         }
-        if (FCheckResearch(2, 3, 30) == 0) {
+        if (FCheckResearch(Propulsion, Construction, 30) == 0) {
             tutor.idtBold = 382;
             return 0;
         }
@@ -1450,7 +1450,7 @@ int16_t FTutorTaskDone() {
             tutor.idtBold = 416;
             return 0;
         }
-        if (FCheckResearch(3, 1, 30) == 0) {
+        if (FCheckResearch(Construction, Weapons, 30) == 0) {
             tutor.idtBold = 417;
             return 0;
         }
@@ -1543,7 +1543,7 @@ int16_t FTutorTaskDone() {
                 tutor.idtBold = 448;
                 return 0;
             }
-            if (FCheckResearch(1, 2, 30) == 0) {
+            if (FCheckResearch(Weapons, Propulsion, 30) == 0) {
                 tutor.idtBold = 449;
                 return 0;
             }
@@ -1754,7 +1754,7 @@ int16_t FTutorTaskDone() {
                 }
                 return 0;
             }
-            if (FCheckMessages(6, 0xffff, 0) == 0 || FCheckResearch(2, 3, 30) == 0) {
+            if (FCheckMessages(6, 0xffff, 0) == 0 || FCheckResearch(Propulsion, Construction, 30) == 0) {
                 tutor.idtBold = 508;
                 return 0;
             }
@@ -2008,7 +2008,7 @@ int16_t FTutorTaskDone() {
                 tutor.idtBold = 569;
                 return 0;
             }
-            if (FCheckResearch(3, 0, 30) == 0) {
+            if (FCheckResearch(Construction, Energy, 30) == 0) {
                 tutor.idtBold = 570;
                 return 0;
             }
@@ -2432,7 +2432,7 @@ int16_t FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter) {
     return 1;
 }
 
-int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
+int16_t FCheckResearch(TechFieldType iTech, TechFieldType iTechNext, int16_t pct) {
     if ((rgplr[0].iTechCur & 0xf) == iTech && rgplr[0].iTechCur >> 4 == iTechNext && rgplr[0].pctResearch == pct) {
         return 1;
     }
@@ -2501,9 +2501,9 @@ int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute) {
 }
 
 int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
-    FLEET  *lpfl;
-    int16_t idhSav;
-    int16_t grobj;
+    FLEET     *lpfl;
+    int16_t    idhSav;
+    GrobjClass grobj;
 
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
@@ -2511,7 +2511,7 @@ int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
         return 0;
     }
     tutor.idh = 1528;
-    grobj = (id & 0x8000) == 0 ? 1 : 2;
+    grobj = (id & 0x8000) == 0 ? grobjPlanet : grobjFleet;
     if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, 6, 0xffff) == 0) {
         return 0;
     }
@@ -2549,9 +2549,9 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
 }
 
 int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, uint16_t iPlan, uint16_t iDist) {
-    FLEET  *lpfl;
-    int16_t idhSav;
-    int16_t grobj;
+    FLEET     *lpfl;
+    int16_t    idhSav;
+    GrobjClass grobj;
 
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
@@ -2559,7 +2559,7 @@ int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, u
         return 0;
     }
     tutor.idh = 3095;
-    grobj = (id & 0x8000) == 0 ? 1 : 2;
+    grobj = (id & 0x8000) == 0 ? grobjPlanet : grobjFleet;
     if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, 7, iWarp) == 0) {
         return 0;
     }
@@ -2864,7 +2864,7 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
         t_merge_81d4_0001 = 0;
         break;
     case 3:
-        if (game.turn - 13 > 16)
+        if ((uint16_t)(game.turn - 13) > 16)
             goto NoCustom;
         switch (game.turn) {
         case 14:
