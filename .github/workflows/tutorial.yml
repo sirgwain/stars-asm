@@ -1,0 +1,38 @@
+name: Stars tutorial (Wine + AutoHotkey v2)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tutorial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      STARS_TUTORIAL_SERIAL: ${{ vars.STARS_TUTORIAL_SERIAL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Wine, MinGW and virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wine64 wine mingw-w64 cmake ninja-build xvfb
+      - name: Walk every tutorial year
+        run: xvfb-run -a -s '-screen 0 1600x1200x24' make tutorial
+      - name: Check unfinished turn rejection
+        if: success() || failure()
+        run: xvfb-run -a -s '-screen 0 1600x1200x24' make tutorial-reject
+      - name: Retain diagnostic reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutorial-results
+          path: |
+            dist/scaffold/tutorial/*/result.json
+            dist/scaffold/tutorial/*/results.xml
+            dist/scaffold/tutorial/*/events.jsonl
+            dist/scaffold/tutorial/*/metadata.json
+            dist/scaffold/tutorial/*/year-*.txt
+            dist/scaffold/tutorial/*/game/coverage.json
+            dist/scaffold/tutorial/*/last-state.txt
+            dist/scaffold/tutorial/*/windows.txt
+            dist/scaffold/tutorial/*/wine.log
+            dist/scaffold/tutorial/*/screenshots/*
