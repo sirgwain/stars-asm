@@ -561,7 +561,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
                 dx = 0;
             }
         }
-        grUsed[dx >> 3] = grUsed[dx >> 3] | LOBYTE(bitTbl[dx & 7]);
+        grUsed[dx >> 3] = grUsed[dx >> 3] | bitTbl[dx & 7];
         rgidPlan[i] = dx;
     }
     cPlanet = cPlanMax;
@@ -581,17 +581,17 @@ int16_t GenerateWorld(int16_t fBatchMode) {
         lppl->det = detAll;
         lppl->iScanner = 31;
         if (game.fNoRandom == 0) {
-            lppl->fArtifact = (uint32_t)(Random(3) == 0 ? 1 : 0) & 1;
+            lppl->fArtifact = (uint32_t)(Random(3) == 0) & 1;
         }
-        lppl->rgEnvVar[0] = LOBYTE(Random(90) + 1);
-        lppl->rgEnvVar[0] += LOBYTE(Random(10));
+        lppl->rgEnvVar[0] = Random(90) + 1;
+        lppl->rgEnvVar[0] += Random(10);
         lppl->rgEnvVarOrig[0] = lppl->rgEnvVar[0];
-        lppl->rgEnvVar[1] = LOBYTE(Random(90) + 1);
-        lppl->rgEnvVar[1] += LOBYTE(Random(10));
+        lppl->rgEnvVar[1] = Random(90) + 1;
+        lppl->rgEnvVar[1] += Random(10);
         lppl->rgEnvVarOrig[1] = lppl->rgEnvVar[1];
         t_call_0a1b = Random(99);
-        lppl->rgEnvVarOrig[2] = LOBYTE(t_call_0a1b + 1);
-        lppl->rgEnvVar[2] = LOBYTE(t_call_0a1b + 1);
+        lppl->rgEnvVarOrig[2] = t_call_0a1b + 1;
+        lppl->rgEnvVar[2] = t_call_0a1b + 1;
         if (game.fTutorial != 0) {
             if (i != 5) {
                 if (i == 11) {
@@ -611,9 +611,9 @@ int16_t GenerateWorld(int16_t fBatchMode) {
             } else {
                 lppl->rgwtMin[j] = 0;
                 t_scratch_m116_2 = Random(45);
-                lppl->rgMinConc[j] = LOBYTE(Random(45) + t_scratch_m116_2 + 31);
+                lppl->rgMinConc[j] = Random(45) + t_scratch_m116_2 + 31;
                 if (lppl->rgEnvVar[2] >= 90) {
-                    lppl->rgMinConc[j] += LOBYTE(Random(99 - lppl->rgMinConc[j]) / 2);
+                    lppl->rgMinConc[j] += Random(99 - lppl->rgMinConc[j]) / 2;
                 }
             }
             lppl->rgpctMinLevel[j] = 0;
@@ -631,12 +631,12 @@ int16_t GenerateWorld(int16_t fBatchMode) {
             if (iT >= 9) {
                 jj = Random(30);
                 j = Random(3);
-                lppl->rgMinConc[j] = LOBYTE(jj + 1);
+                lppl->rgMinConc[j] = jj + 1;
             } else {
                 for (iT++; iT < 16; iT *= 2) {
                     jj = Random(30);
                     j = Random(3);
-                    lppl->rgMinConc[j] = LOBYTE(jj + 1);
+                    lppl->rgMinConc[j] = jj + 1;
                 }
             }
         }
@@ -780,48 +780,46 @@ L_15bc:
             rgplr[i].rgResSpent[j] = 0;
         }
         t_call_1734 = GetRaceStat(&rgplr[i], rsMajorAdv);
-        if ((uint16_t)(t_call_1734 - 1) <= 8) {
-            switch (t_call_1734) {
-            case raAttack:
-                rgplr[i].rgTech[1] = 6;
-                rgplr[i].rgTech[2] = 1;
-                rgplr[i].rgTech[0] = 1;
-                break;
-            case raMines:
-                rgplr[i].rgTech[2] = 2;
-                rgplr[i].rgTech[5] = 2;
-                break;
-            case raStealth:
-                rgplr[i].rgTech[4] = 5;
-                break;
-            case raMassAccel:
-                rgplr[i].rgTech[0] = 4;
-                break;
-            case raStargate:
-                rgplr[i].rgTech[2] = 5;
-                rgplr[i].rgTech[3] = 5;
-                break;
-            case raTerra:
-                rgplr[i].rgTech[5] = 6;
-                rgplr[i].rgTech[3] = 2;
-                rgplr[i].rgTech[0] = 1;
-                rgplr[i].rgTech[1] = 1;
-                rgplr[i].rgTech[2] = 1;
-                break;
-            case raMacintosh:
-                rgplr[i].rgTech[0] = 1;
-                break;
-            case raNone:
-                for (j = 0; j < 6; j++) {
-                    rgplr[i].rgTech[j] = 3;
-                }
+        switch (t_call_1734) {
+        case raAttack:
+            rgplr[i].rgTech[1] = 6;
+            rgplr[i].rgTech[2] = 1;
+            rgplr[i].rgTech[0] = 1;
+            break;
+        case raMines:
+            rgplr[i].rgTech[2] = 2;
+            rgplr[i].rgTech[5] = 2;
+            break;
+        case raStealth:
+            rgplr[i].rgTech[4] = 5;
+            break;
+        case raMassAccel:
+            rgplr[i].rgTech[0] = 4;
+            break;
+        case raStargate:
+            rgplr[i].rgTech[2] = 5;
+            rgplr[i].rgTech[3] = 5;
+            break;
+        case raTerra:
+            rgplr[i].rgTech[5] = 6;
+            rgplr[i].rgTech[3] = 2;
+            rgplr[i].rgTech[0] = 1;
+            rgplr[i].rgTech[1] = 1;
+            rgplr[i].rgTech[2] = 1;
+            break;
+        case raMacintosh:
+            rgplr[i].rgTech[0] = 1;
+            break;
+        case raNone:
+            for (j = 0; j < 6; j++) {
+                rgplr[i].rgTech[j] = 3;
             }
         }
         if (GetRaceGrbit(&rgplr[i], ibitRaceTech3) != 0) {
-            iTechMin = (GetRaceStat(&rgplr[i], rsMajorAdv) == raNone ? 1 : 0) + 3;
+            iTechMin = (GetRaceStat(&rgplr[i], rsMajorAdv) == raNone) + 3;
             for (j = 0; j < 6; j++) {
                 if (rgplr[i].rgTech[j] < iTechMin && GetRaceStat(&rgplr[i], j + 8) == 0) {
-                    rgplr[i].rgTech[j] = LOBYTE(iTechMin);
+                    rgplr[i].rgTech[j] = iTechMin;
                 }
             }
         }
@@ -854,9 +852,9 @@ L_15bc:
         for (j = 0; j < 3; j++) {
             lpPlanets[iMin].rgwtMin[j] = lpPlanets->rgwtMin[j];
             if (gd.fTutorial != 0) {
-                lpPlanets[iMin].rgMinConc[j] = LOBYTE(25 <= lpPlanets->rgMinConc[j] ? lpPlanets->rgMinConc[j] : 25);
+                lpPlanets[iMin].rgMinConc[j] = 25 <= lpPlanets->rgMinConc[j] ? lpPlanets->rgMinConc[j] : 25;
             } else {
-                lpPlanets[iMin].rgMinConc[j] = LOBYTE(30 <= lpPlanets->rgMinConc[j] ? lpPlanets->rgMinConc[j] : 30);
+                lpPlanets[iMin].rgMinConc[j] = 30 <= lpPlanets->rgMinConc[j] ? lpPlanets->rgMinConc[j] : 30;
             }
         }
         lpPlanets[iMin].iScanner = 0;
@@ -915,10 +913,10 @@ L_15bc:
                     iLow = j;
                 }
             }
-            pb[iLow] += LOBYTE(ktLeft);
+            pb[iLow] += ktLeft;
             ktLeft = (int16_t)(ktLeft + 1) / 2;
             for (j = 0; j < 3; j++) {
-                pb[j] += LOBYTE(ktLeft);
+                pb[j] += ktLeft;
             }
             break;
         case 2:
@@ -935,7 +933,7 @@ L_15bc:
             lpPlanets[iMin].cFactories = 0;
             lpPlanets[iMin].cDefenses = 0;
         }
-        rgplr[i].iPlayer = LOBYTE(i);
+        rgplr[i].iPlayer = i;
         rgplr[i].idPlanetHome = iMin;
         if (rgplr[i].rgEnvVarMax[0] == -1) {
             iT = Random(99) + 1;
@@ -943,29 +941,29 @@ L_15bc:
             iT = rgplr[i].rgEnvVarMin[0] + (int16_t)(rgplr[i].rgEnvVarMax[0] - rgplr[i].rgEnvVarMin[0]) / 2;
         }
         t_scratch_m116_15 = iT;
-        lpPlanets[iMin].rgEnvVarOrig[0] = LOBYTE(t_scratch_m116_15);
-        lpPlanets[iMin].rgEnvVar[0] = LOBYTE(t_scratch_m116_15);
+        lpPlanets[iMin].rgEnvVarOrig[0] = t_scratch_m116_15;
+        lpPlanets[iMin].rgEnvVar[0] = t_scratch_m116_15;
         if (rgplr[i].rgEnvVarMax[1] == -1) {
             iT = Random(99) + 1;
         } else {
             iT = rgplr[i].rgEnvVarMin[1] + (int16_t)(rgplr[i].rgEnvVarMax[1] - rgplr[i].rgEnvVarMin[1]) / 2;
         }
         t_scratch_m116_17 = iT;
-        lpPlanets[iMin].rgEnvVarOrig[1] = LOBYTE(t_scratch_m116_17);
-        lpPlanets[iMin].rgEnvVar[1] = LOBYTE(t_scratch_m116_17);
+        lpPlanets[iMin].rgEnvVarOrig[1] = t_scratch_m116_17;
+        lpPlanets[iMin].rgEnvVar[1] = t_scratch_m116_17;
         if (rgplr[i].rgEnvVarMax[2] == -1) {
             iT = Random(99) + 1;
         } else {
             iT = rgplr[i].rgEnvVarMin[2] + (int16_t)(rgplr[i].rgEnvVarMax[2] - rgplr[i].rgEnvVarMin[2]) / 2;
         }
         t_scratch_m116_19 = iT;
-        lpPlanets[iMin].rgEnvVarOrig[2] = LOBYTE(t_scratch_m116_19);
-        lpPlanets[iMin].rgEnvVar[2] = LOBYTE(t_scratch_m116_19);
+        lpPlanets[iMin].rgEnvVarOrig[2] = t_scratch_m116_19;
+        lpPlanets[iMin].rgEnvVar[2] = t_scratch_m116_19;
         if (rgplr[i].fAi == 0) {
             rgplr[i].pctResearch = 15;
         }
-        rgplr[i].iTechCur = LOBYTE(rgplr[i].iTechCur & 0xfff0);
-        rgplr[i].iTechCur = LOBYTE((rgplr[i].iTechCur & 0xff0f) | 0x60);
+        rgplr[i].iTechCur &= 0xfff0;
+        rgplr[i].iTechCur = (rgplr[i].iTechCur & 0xff0f) | 0x60;
         rgplr[i].lResLastYear = 0;
         rgplr[i].wScore = 0;
         for (j = 0; j < game.cPlayer; j++) {
@@ -1133,8 +1131,8 @@ L_15bc:
         while (PctPlanetDesirability(lpplPicked, i) < 10 && cFit++ < 100) {
             for (j = 0; j < 3; j++) {
                 t_call_361d = Random(97);
-                lpplPicked->rgEnvVarOrig[j] = LOBYTE(t_call_361d + 2);
-                lpplPicked->rgEnvVar[j] = LOBYTE(t_call_361d + 2);
+                lpplPicked->rgEnvVarOrig[j] = t_call_361d + 2;
+                lpplPicked->rgEnvVar[j] = t_call_361d + 2;
             }
         }
         if (cFit >= 100) {
@@ -1833,7 +1831,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
         case 211:
             memset(vrgplrTypeNew, 0, 16);
             if (game.turn < 7) {
-                vrgplrTypeNew[0] = LOBYTE((game.turn & 0xff) << 2 | 1);
+                vrgplrTypeNew[0] = game.turn << 2 | 1;
             } else {
                 vrgplrTypeNew[0] = 2;
                 *vrgszFileNew = 0;
@@ -1847,7 +1845,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
             game.fSlowTech = 0;
             game.fBBSPlay = 0;
             game.fNoRandom = 0;
-            game.fAisBand = lvlAi == 3 ? 1 : 0;
+            game.fAisBand = lvlAi == 3;
             game.fVisScores = 0;
             CchGetString(5 * lvlAi + 459 + game.mdSize, game.szName);
             if (mdRet == 1072) {
@@ -1863,7 +1861,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     }
     for (i = 0; i < game.cPlayer; i++) {
         if (rgplr[i].fInclude != 0) {
-            vrgplrTypeNew[i] = LOBYTE(i << 2 | 2);
+            vrgplrTypeNew[i] = i << 2 | 2;
             vrgplrNew[i] = rgplr[i];
             vrgszFileNew[i * 13] = 0;
         } else {
@@ -2751,7 +2749,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         }
     L_9367:
         if (iNewVal != -1 && iNewVal != iCurVal) {
-            vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
+            vrgplrTypeNew[iDiamond] = iNewVal;
             if (iNewVal == 0) {
                 while (1) {
                     iDiamond++;
@@ -2764,7 +2762,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     iDiamond--;
                     if (iDiamond < 0 || vrgplrTypeNew[iDiamond] != 0)
                         break;
-                    vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
+                    vrgplrTypeNew[iDiamond] = iNewVal;
                 }
             }
             InvalidateRect(hwnd, NULL, 1);
@@ -2906,7 +2904,7 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         SetNGWTitle(hwnd, 3);
         for (i = 0; i < 7; i++) {
             t_call_9a24 = GetDlgItem(hwnd, i + 291);
-            SendMessage(t_call_9a24, BM_SETCHECK, GetVCCheck(&game, (i < 2 ? 0 : 1) + i), 0);
+            SendMessage(t_call_9a24, BM_SETCHECK, GetVCCheck(&game, (i >= 2) + i), 0);
             if (fRCWReadOnly != 0) {
                 EnableWindow(GetDlgItem(hwnd, i + 291), 0);
             }
@@ -2939,7 +2937,7 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         }
         if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_VC_OWNS_PLANETS && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_VC_HIGHEST_SCORE) {
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
-            SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + ((uint16_t)(GET_WM_COMMAND_ID(wParam, lParam) - 291) < 2 ? 0 : 1), i);
+            SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + ((uint16_t)(GET_WM_COMMAND_ID(wParam, lParam) - 291) >= 2), i);
             DrawNewGame3(hwnd, NULL, 8);
         }
     }
@@ -3090,7 +3088,7 @@ void SetNGWTitle(HWND hwnd, int16_t iStep) {
 PLAYER *LpplrComp(AiRace idAi, AiLevel lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
 
 void SetVCCheck(GAME *pgame, VictoryCondition vc, int16_t fChecked) {
-    pgame->rgvc[vc] = LOBYTE((pgame->rgvc[vc] & 0x7f) | (fChecked == 0 ? 0 : 0x80));
+    pgame->rgvc[vc] = (pgame->rgvc[vc] & 0x7f) | (fChecked == 0 ? 0 : 0x80);
     return;
 }
 
@@ -3109,12 +3107,12 @@ int16_t SetVCVal(GAME *pgame, VictoryCondition vc, int16_t val) {
     } else if (val > vrgvcMax[vc]) {
         val = vrgvcMax[vc];
     }
-    pgame->rgvc[vc] = LOBYTE((pgame->rgvc[vc] & 0x80) | (val & 0xff));
+    pgame->rgvc[vc] = (pgame->rgvc[vc] & 0x80) | val;
     if (vc == vcMeetsNumCriteria) {
         cur = GetVCVal(pgame, vcMeetsNumCriteria, 0);
         if (cur != val) {
             val = cur;
-            pgame->rgvc[8] = LOBYTE((pgame->rgvc[8] & 0x80) | (cur & 0xff));
+            pgame->rgvc[8] = (pgame->rgvc[8] & 0x80) | cur;
         }
     }
     return val;

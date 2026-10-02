@@ -79,7 +79,7 @@ void LogChangeName(GrobjClass grobj, int16_t id, char *szName) {
             lpfl->lpszName = LpAlloc(strlen(szName) + 1, htString);
             fstrcpy(lpfl->lpszName, szName);
             if (FCompressUserString(szName, &rtchgname.rgb[1], &cOut) != 0) {
-                rtchgname.rgb[0] = LOBYTE(cOut);
+                rtchgname.rgb[0] = cOut;
             } else {
                 rtchgname.rgb[0] = 0;
                 strcpy(&rtchgname.rgb[1], szName);
@@ -397,18 +397,18 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
     }
     if (grbit != 0) {
         prt = (RTXFER *)rgbuf;
-        prt->grobj1 = (uint32_t)plx1->grobj & 0xf;
-        prt->grobj2 = (uint32_t)plx2->grobj & 0xf;
+        prt->grobj1 = plx1->grobj & 0xf;
+        prt->grobj2 = plx2->grobj & 0xf;
         prt->id1 = plx1->id;
         prt->id2 = plx2->id;
-        prt->grbitItems = LOBYTE(grbit);
+        prt->grbitItems = grbit;
         cb = 6;
         iOff = 0;
         if (iBiggest <= 127) {
             rt = 1;
             for (i = 0; i < 5; i++) {
                 if (rgQuan[i] != 0) {
-                    prt->rgcQuan[iOff++] = LOBYTE(LOWORD(rgQuan[i]));
+                    prt->rgcQuan[iOff++] = rgQuan[i];
                     cb++;
                 }
             }
@@ -457,8 +457,8 @@ void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2) {
     }
     if (grbit != 0) {
         prt = (RTXFERF *)&rgbuf;
-        prt->grobj1 = (uint32_t)plxf1->grobj & 0xf;
-        prt->grobj2 = (uint32_t)plxf2->grobj & 0xf;
+        prt->grobj1 = plxf1->grobj & 0xf;
+        prt->grobj2 = plxf2->grobj & 0xf;
         prt->id1 = plxf1->id;
         prt->id2 = plxf2->id;
         prt->grbitItems = grbit;
@@ -611,7 +611,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                         }
                     }
                     fmemmove(lppl->lpplprod->rgprod, ((RTCHGPRODQ *)lpb)->rgprod, i * 4);
-                    lppl->lpplprod->iprodMac = LOBYTE(i);
+                    lppl->lpplprod->iprodMac = i;
                     return 1;
                 }
                 if (lppl->lpplprod == 0) {
@@ -661,7 +661,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             if (lpth == 0 || lpth->ith != ithMinefield) {
                 return 0;
             }
-            lpth->thm.fDetonate = LOBYTE(((RTLOGTHING *)lpb)->fDetonate);
+            lpth->thm.fDetonate = ((RTLOGTHING *)lpb)->fDetonate;
             return 1;
         case rtLogShDef:
             i = ((RTCHGSHDEF *)lpb)->ishdef;
@@ -784,7 +784,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                                         lpcdT->idPlr = rgxf[0].fl.iPlayer;
                                         lpcdT->idPlanetDst = rgxf[1].fl.id;
                                         lpcdT->cColonist = 0;
-                                        lpcdT->fCanColonize = rgxf[1].fl.iPlayer == -1 ? 0 : 1;
+                                        lpcdT->fCanColonize = rgxf[1].fl.iPlayer != -1;
                                         cColDrop++;
                                     }
                                     lpcdT->cColonist -= cXfer;
@@ -961,13 +961,13 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             if (lpfl != 0 && lpfl->cord > 0) {
                 iLook = ((RTSHIPINT *)lpb)->i & 0x7fff;
                 if ((((RTSHIPINT *)lpb)->i & 0x7fff) < lpfl->cord) {
-                    fExtra = (((RTSHIPINT *)lpb)->i & 0x8000) == 0 ? 0 : 1;
+                    fExtra = (((RTSHIPINT *)lpb)->i & 0x8000) != 0;
                     if (fExtra != 0 && iLook + 1 >= lpfl->cord) {
                         return 0;
                     }
                     fmemmove(&lpfl->lpplord->rgord[iLook], &lpfl->lpplord->rgord[iLook + fExtra + 1], (lpfl->cord - iLook - fExtra - 1) * sizeof(ORDER));
                     lpfl->cord -= fExtra + 1;
-                    lpfl->lpplord->iordMac -= LOBYTE(fExtra + 1);
+                    lpfl->lpplord->iordMac -= fExtra + 1;
                     return 1;
                 }
             }
@@ -1029,7 +1029,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             lpfl = LpflFromId(((RTSHIPINT *)lpb)->id);
             if (lpfl == 0)
                 break;
-            lpfl->iplan = LOBYTE(((RTSHIPINT *)lpb)->i);
+            lpfl->iplan = ((RTSHIPINT *)lpb)->i;
             return 1;
         case rtLogFleetFlagBit9:
         case rtLogFleetOrderAttrNib:

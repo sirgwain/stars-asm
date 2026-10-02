@@ -83,20 +83,8 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
         TutorError(idsTutorialDontHaveCorrectShipSelectedShip);
         return 0;
     case tutsbAccept:
-        if ((uint16_t)(game.turn - 13) > 16)
-            break;
         switch (game.turn) {
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 18:
-        case 19:
-        case 21:
-        case 23:
-        case 24:
-        case 26:
-        case 28:
+        default:
             goto NoCustom;
         case 13:
             hs.grhst = hstScanner;

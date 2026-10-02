@@ -193,7 +193,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             if (c == 2 && (scan.grobjFull & grobjPlanet) != 0) {
                 c = 1;
             }
-            fSep = c == 0 ? 1 : 0;
+            fSep = c == 0;
             lpth = lpThings;
             lpthMac = lpThings + cThing;
             for (; lpth < lpthMac; lpth++) {
@@ -322,32 +322,30 @@ int16_t PtToScan(int16_t d) {
     if (iScanZoom == zoom100) {
         return d;
     }
-    if ((uint16_t)(iScanZoom + 4) <= 8) {
-        switch (iScanZoom) {
-        case zoom400:
-            d *= 4;
-            break;
-        case zoom200:
-            d *= 2;
-            break;
-        case zoom50:
-            d >>= 1;
-            break;
-        case zoom25:
-            d >>= 2;
-            break;
-        case zoom38:
-            d = ((d << 1) + d) >> 3;
-            break;
-        case zoom75:
-            d = ((d << 1) + d) >> 2;
-            break;
-        case zoom125:
-            d = ((d << 2) + d) >> 2;
-            break;
-        case zoom150:
-            d = ((d << 1) + d) >> 1;
-        }
+    switch (iScanZoom) {
+    case zoom400:
+        d *= 4;
+        break;
+    case zoom200:
+        d *= 2;
+        break;
+    case zoom50:
+        d >>= 1;
+        break;
+    case zoom25:
+        d >>= 2;
+        break;
+    case zoom38:
+        d = ((d << 1) + d) >> 3;
+        break;
+    case zoom75:
+        d = ((d << 1) + d) >> 2;
+        break;
+    case zoom125:
+        d = ((d << 2) + d) >> 2;
+        break;
+    case zoom150:
+        d = ((d << 1) + d) >> 1;
     }
     return d;
 }
@@ -356,32 +354,30 @@ int16_t ScanToPt(int16_t d) {
     if (iScanZoom == zoom100) {
         return d;
     }
-    if ((uint16_t)(iScanZoom + 4) <= 8) {
-        switch (iScanZoom) {
-        case zoom400:
-            d >>= 2;
-            break;
-        case zoom200:
-            d >>= 1;
-            break;
-        case zoom50:
-            d *= 2;
-            break;
-        case zoom25:
-            d *= 4;
-            break;
-        case zoom38:
-            d = (int16_t)(d * 8) / 3;
-            break;
-        case zoom75:
-            d = (int16_t)(d * 4) / 3;
-            break;
-        case zoom125:
-            d = (int16_t)(d * 4) / 5;
-            break;
-        case zoom150:
-            d = (int16_t)(d * 2) / 3;
-        }
+    switch (iScanZoom) {
+    case zoom400:
+        d >>= 2;
+        break;
+    case zoom200:
+        d >>= 1;
+        break;
+    case zoom50:
+        d *= 2;
+        break;
+    case zoom25:
+        d *= 4;
+        break;
+    case zoom38:
+        d = (int16_t)(d * 8) / 3;
+        break;
+    case zoom75:
+        d = (int16_t)(d * 4) / 3;
+        break;
+    case zoom125:
+        d = (int16_t)(d * 4) / 5;
+        break;
+    case zoom150:
+        d = (int16_t)(d * 2) / 3;
     }
     return d;
 }
@@ -725,7 +721,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
         for (j = 0; j < 3; j++) {
             if ((j != 0 || (grbitScanMines & 1) != 0) && (j != 1 || (grbitScanMines & 2) != 0) && (j != 2 || (grbitScanMines & 0xc) != 0)) {
                 for (i = 0; i < 3; i++) {
-                    for (fDetonating = 0; fDetonating <= (i == 0 ? 1 : 0); fDetonating++) {
+                    for (fDetonating = 0; fDetonating <= (i == 0); fDetonating++) {
                         SetBrushOrg(hdc, ptOrigin.x, ptOrigin.y);
                         SelectObject(hdc, rghbrPat[i]);
                         SetTextColor(hdc, fDetonating == 0 ? rgcrScanMine[j] : 16711935);
@@ -733,7 +729,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
                         lpthMac = lpThings + cThing;
                         for (; lpth < lpthMac; lpth++) {
                             if (lpth->ith == ithMinefield && lpth->thm.iType == i && (j != 0 || lpth->iplr == idPlayer) &&
-                                (j < 1 || (lpth->iplr != idPlayer && (rgplr[idPlayer].rgmdRelation[lpth->iplr] == 1 ? 1 : 0) != (j == 2 ? 1 : 0)))) {
+                                (j < 1 || (lpth->iplr != idPlayer && (rgplr[idPlayer].rgmdRelation[lpth->iplr] == 1) != (j == 2)))) {
                                 if (j == 2 && (grbitScanMines & 0xc) != 0xc) {
                                     if (rgplr[idPlayer].rgmdRelation[lpth->iplr] == 0) {
                                         if ((grbitScanMines & 4) == 0)
@@ -885,22 +881,20 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     GetClientRect(hwndScanner, &rc);
     ExcludeClipRect(hdc, 0, rc.bottom - dySBar, rc.right, rc.bottom);
     memset(rgWhatsHere, 0, 999);
-    if ((uint16_t)(iScanZoom + 1) <= 5) {
-        switch (iScanZoom) {
-        case zoom400:
-            SelectObject(hdc, rghfontArial10[1]);
-            break;
-        case zoom200:
-            SelectObject(hdc, rghfontArial8[1]);
-            break;
-        case zoom100:
-        case zoom125:
-        case zoom150:
-            SelectObject(hdc, rghfontArial8[0]);
-            break;
-        case zoom75:
-            SelectObject(hdc, rghfontArial6[0]);
-        }
+    switch (iScanZoom) {
+    case zoom400:
+        SelectObject(hdc, rghfontArial10[1]);
+        break;
+    case zoom200:
+        SelectObject(hdc, rghfontArial8[1]);
+        break;
+    case zoom100:
+    case zoom125:
+    case zoom150:
+        SelectObject(hdc, rghfontArial8[0]);
+        break;
+    case zoom75:
+        SelectObject(hdc, rghfontArial6[0]);
     }
     crFore = SetTextColor(hdc, 0xffffff);
     crBack = SetBkColor(hdc, 0);
@@ -964,8 +958,8 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
                 if (rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef == ihuldefOrbitalFort) {
                     fStarbase = 2;
                 }
-                fMA = IWarpMAFromLppl(lppl, NULL) <= 0 ? 0 : 1;
-                fStargate = IStargateFromLppl(lppl) == -1 ? 0 : 1;
+                fMA = IWarpMAFromLppl(lppl, NULL) > 0;
+                fStargate = IStargateFromLppl(lppl) != -1;
             } else {
                 fMA = 0;
                 fStargate = 0;
@@ -1034,8 +1028,8 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
                     break;
                 case scanViewSurfaceMinerals:
                 case scanViewMineralConc:
-                    fConc = mdScanBase == scanViewMineralConc ? 1 : 0;
-                    iOff = iScanZoom >= zoom100 ? 0 : 1;
+                    fConc = mdScanBase == scanViewMineralConc;
+                    iOff = iScanZoom < zoom100;
                     if (lppl->det < detMore && (fConc == 0 || lppl->det < detSome))
                         goto LNormalScannerMode;
                     xOut = pt.x - vrgScanPO[iOff][0];
@@ -1190,11 +1184,11 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
                 if (pt.x >= xMin && pt.x < xMax && pt.y >= yMin && pt.y < yMax) {
                     pt.x = PtToScan(xOff + pt.x);
                     pt.y = PtToScan(yOff - pt.y);
-                    yBmp = lpflT->iPlayer == idPlayer ? 0 : 1;
+                    yBmp = lpflT->iPlayer != idPlayer;
                     fSelected = lpflT->pt.x == ptSelMain.x && lpflT->pt.y == ptSelMain.y;
                     if (idP != -1) {
                         if (rgWhatsHere[idP] != 3 && rgWhatsHere[idP] != yBmp + 1 && mdScanBase <= scanViewMineralConc) {
-                            rgWhatsHere[idP] += LOBYTE(yBmp + 1);
+                            rgWhatsHere[idP] += yBmp + 1;
                             yBmp = rgWhatsHere[idP] - 1;
                             if (fSelected != 0) {
                                 BitBlt(hdc, pt.x - 9, pt.y - 9, 19, 19, hdcMem, 29, 69, SRCAND);
@@ -1898,7 +1892,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw) {
             strcpy(szBuf, PszGetDistance(pt.x, pt.y, pt2.x, pt2.y));
             for (psz = szBuf; *psz != ' '; psz++) {
             }
-            CchGetString((rc.right < 350 ? 0 : 1) + 1366, psz + 1);
+            CchGetString((rc.right >= 350) + 1366, psz + 1);
             if (psbar == 0 || psbar->pscan == 0) {
                 CchGetString(idsFrom, psz + strlen(psz));
                 strcat(psz + 8, PszGetLocName(sel.grobj, sel.id, pt2.x, pt2.y));
@@ -2520,7 +2514,7 @@ int16_t FHandleWayPointDrag(POINT16 pt) {
         }
         GetClientRect(hwndScanner, &rc);
         if (fDup != 0) {
-            fDel = AlertSz(PszFormatIds(idsSureWantDeleteCurrentWaypoint, NULL), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) == IDYES ? 1 : 0;
+            fDel = AlertSz(PszFormatIds(idsSureWantDeleteCurrentWaypoint, NULL), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL) == IDYES;
             if ((grbitScan & grbitScanFleetPaths) != 0) {
                 hpenSav = SelectObject(hdc, hpenStarbase);
                 MoveTo(hdc, rgpt[2].x, rgpt[2].y);
@@ -2546,7 +2540,7 @@ int16_t FHandleWayPointDrag(POINT16 pt) {
             DrawScanXorLines(hdc, rgpt, cpt);
             if (fDel == 0)
                 goto Done;
-            DeleteCurWayPoint(fDup == 1 ? 1 : 0);
+            DeleteCurWayPoint(fDup == 1);
             goto Done;
         }
         if ((grbitScan & grbitScanFleetPaths) != 0) {
@@ -2758,7 +2752,7 @@ int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs) {
     int16_t i;
     int16_t fFound;
 
-    fFound = sel.grobj == grobjFleet ? 0 : 1;
+    fFound = sel.grobj != grobjFleet;
     for (i = 0; i < cFleet; i++) {
         lpfl = rglpfl[i];
         if (rglpfl[i] == 0)
@@ -2820,7 +2814,7 @@ INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         }
                     }
                     StickyDlgPos(hwnd, &ptStickyFindDlg, 0);
-                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                     return 1;
                 case IDC_HELP:
                     WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhFindPlanetOrFleet);
@@ -2870,10 +2864,10 @@ int16_t FSelectSz(char *szName) {
         for (; *pch == ' '; pch++) {
         }
         if (*pch >= '1' && *pch <= '9') {
-            ifl = *pch - 48;
+            ifl = *pch - '0';
             pch++;
             while (isdigit(*pch) != 0) {
-                ifl = 10 * ifl + *pch - 48;
+                ifl = 10 * ifl + *pch - '0';
                 pch++;
                 if (ifl > 512)
                     goto LNotAFleetId;

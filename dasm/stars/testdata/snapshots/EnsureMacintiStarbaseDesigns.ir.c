@@ -252,7 +252,7 @@ L_7a8b:
     goto L_7ad8;
 
 L_7a93:
-    rgSB[i] = LOBYTE(rglpshdefSB[idPlayer][i].fFree == 0 ? 0 : 1);
+    rgSB[i] = rglpshdefSB[idPlayer][i].fFree != 0;
     i++;
 
 L_7ad8:
@@ -303,7 +303,7 @@ L_7b62:
         goto L_7b70;
 
 L_7b70:
-    rgSB[i] = LOBYTE(j);
+    rgSB[i] = j;
     goto L_7b5e;
 
 L_7b80:

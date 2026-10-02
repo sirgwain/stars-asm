@@ -27,7 +27,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
     }
     lpb = pb;
     lpmt = (MSGTURN *)lpb;
-    lpmt->iPlr = (uint32_t)iPlr & 0xf;
+    lpmt->iPlr = iPlr & 0xf;
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0;
     lpmt->msghdr.wGoto = iObj;
@@ -49,13 +49,13 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
             RawStore16(lpb, *pi);
             lpb += 2;
         } else {
-            *lpb = LOBYTE(*pi);
+            *lpb = *pi;
             lpb++;
         }
         i++;
         pi++;
         grbit *= 2;
     }
-    lpmt->cbParams = (uint32_t)(lpb - lpbBase) & 0xf;
+    lpmt->cbParams = lpb - lpbBase & 0xf;
     return lpb - pb;
 }

@@ -76,7 +76,7 @@ L_75fc:
     j++;
 
 L_7601:
-    if (j >= (vprptCur->irpt == rptFleets ? 1 : 0) + 3)
+    if (j >= (vprptCur->irpt == rptFleets) + 3)
         goto L_764b;
     else
         goto L_7623;
@@ -222,21 +222,21 @@ L_7970:
         goto L_79a2;
 
 L_79a2:
-    vprptCur->fAscending = iRet == 0 ? 1 : 0;
+    vprptCur->fAscending = iRet == 0;
     goto L_7a5c;
 
 L_79bf:
-    vprptCur->iSubsort = (int16_t)(iRet - 2) % (cSubsort + 3 + (vprptCur->irpt == rptFleets ? 1 : 0));
-    if (vprptCur->iSubsort <= (vprptCur->irpt == rptFleets ? 1 : 0) + 3)
+    vprptCur->iSubsort = (int16_t)(iRet - 2) % (cSubsort + 3 + (vprptCur->irpt == rptFleets));
+    if (vprptCur->iSubsort <= (vprptCur->irpt == rptFleets) + 3)
         goto L_7a3c;
     else
         goto L_7a1c;
 
 L_7a1c:
-    vprptCur->iSubsort = (vprptCur->irpt == rptFleets ? 1 : 0) + 3;
+    vprptCur->iSubsort = (vprptCur->irpt == rptFleets) + 3;
 
 L_7a3c:
-    vprptCur->fAscending = iRet >= cSubsort + 2 ? 0 : 1;
+    vprptCur->fAscending = iRet < cSubsort + 2;
 
 L_7a5c:
     SortReportCache(vprptCur->irpt, icol);

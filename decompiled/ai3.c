@@ -376,8 +376,8 @@ void DoMacintiAiTurn(PROD *rgprod) {
     if (j > 50) {
         j = 50;
     }
-    vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE((int16_t)(j & 0xff) / 2);
+    vrgAiArmadaPotency[0] = j;
+    vrgAiArmadaPotency[1] = (int16_t)(j & 0xff) / 2;
     j = 6;
     if (game.turn > 115) {
         j += (uint32_t)(game.turn - 100) / 22;
@@ -385,8 +385,8 @@ void DoMacintiAiTurn(PROD *rgprod) {
     if (j > 12) {
         j = 12;
     }
-    vrgAiArmadaPotency[2] = LOBYTE(j);
-    vrgAiArmadaPotency[3] = LOBYTE(3 >= j / 2 - 1 ? j / 2 - 1 : 3);
+    vrgAiArmadaPotency[2] = j;
+    vrgAiArmadaPotency[3] = 3 >= j / 2 - 1 ? j / 2 - 1 : 3;
     memset(rgRecycleShdef, 0, 16);
     if (game.turn < 120) {
         cRecyclePeriod = 50;
@@ -527,7 +527,7 @@ L_03c3:
             if (lppl->fStarbase != 0) {
                 i++;
             }
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE(i);
+            vlpbAiPlanet[lppl->id * 16 + 10] = i;
             vlpbAiPlanet[lppl->id * 16 + 9] = 1;
         }
     }
@@ -667,7 +667,7 @@ L_03c3:
                     }
                     for (i = 0; i <= 2 && lppl->rgwtMin[i] >= 5000; i++) {
                     }
-                    fTonsOfMinerals = i == 2 ? 1 : 0;
+                    fTonsOfMinerals = i == 2;
                     if (iLatestBomber != -1 && cFlArmadas < 140 && (cFlArmadas < 60 || cRes > 2000)) {
                         id = lppl->id;
                         if (cFlArmadas <= 110 || Random(3) != 0) {
@@ -1006,9 +1006,9 @@ void EnsureMacintiShdefs() {
 
     for (ish = 14; ish <= 15; ish++) {
         if (rgshdef[ish].fFree != 0) {
-            fAdvanced = rgplr[idPlayer].lvlAi < lvlAiTough ? 0 : 1;
+            fAdvanced = rgplr[idPlayer].lvlAi >= lvlAiTough;
             if ((fAdvanced == 0 || ish != 15 || rgplr[idPlayer].rgTech[3] >= 15) &&
-                FCreateAiShdef(ish, 24 - (fAdvanced == 0 ? 1 : 0), (uint8_t *)&vrgMacAip[vrgMacIshAip[fAdvanced + 0x15]]) == 0 && ish == 14) {
+                FCreateAiShdef(ish, 24 - (fAdvanced == 0), (uint8_t *)&vrgMacAip[vrgMacIshAip[fAdvanced + 0x15]]) == 0 && ish == 14) {
                 if (fAdvanced != 0) {
                     FCreateAiShdef(ish, ihuldefMiner, (uint8_t *)&vrgMacAip[vrgMacIshAip[22]]);
                 } else {

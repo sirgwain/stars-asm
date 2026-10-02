@@ -40,8 +40,8 @@ L_06d8:
 
 L_0714:
     SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
-    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
     i = 408;
     goto L_07b7;
 
@@ -414,8 +414,8 @@ L_10c3:
     SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
 
 L_10e5:
-    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
     goto L_16f8;
 
 L_1134:
@@ -560,8 +560,8 @@ L_1537:
     SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
     SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
     wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET;
-    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
     SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0);
     i = btlplan.iplrAttack;
     if (i < idPlayer + 4)

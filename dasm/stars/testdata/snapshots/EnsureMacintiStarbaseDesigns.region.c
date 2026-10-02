@@ -52,7 +52,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         }
     }
     for (i = 4; i < 10; i++) {
-        rgSB[i] = LOBYTE(rglpshdefSB[idPlayer][i].fFree == 0 ? 0 : 1);
+        rgSB[i] = rglpshdefSB[idPlayer][i].fFree != 0;
     }
     if (rglpshdefSB[idPlayer][4].turn >= rglpshdefSB[idPlayer][7].turn) {
         iNew = 4;
@@ -67,7 +67,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         j = 3;
     }
     for (i = iOld; i < iOld + 3; i++) {
-        rgSB[i] = LOBYTE(j);
+        rgSB[i] = j;
     }
     i = rglpshdefSB[idPlayer][iNew].hul.ihuldef - 32;
     if (i < 4) {

@@ -159,7 +159,7 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
             if (c == 2) {
                 c = 1;
             }
-            fSep = c == 0 ? 1 : 0;
+            fSep = c == 0;
             lpth = lpThings;
             lpthMac = lpThings + cThing;
             for (; lpth < lpthMac; lpth++) {

@@ -139,7 +139,7 @@ L_161d:
     branch rgids != 0 ? L_1649 : L_1626
 
 L_1626:
-    fCheckedCur = (i == iChecked ? 1 : 0)
+    fCheckedCur = i == iChecked
     fChecked = (fChecked | fCheckedCur)
     goto L_165e
 

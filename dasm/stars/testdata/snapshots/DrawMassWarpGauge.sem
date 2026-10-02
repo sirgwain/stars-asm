@@ -19,7 +19,7 @@ DrawMassWarpGauge  (planet)
   stats: blocks=0  labels=0
 */
 L_2afa:
-    fTwoMAs = (iBest >= 0 ? 0 : 1)
+    fTwoMAs = iBest < 0
     call SelectObject(hdc, rghfontArial8[1]) -> callresult(HGDIOBJ)
     branch iCur >= 5 ? L_2b32 : L_2b2d
 

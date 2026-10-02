@@ -154,7 +154,7 @@ L_161d:
         goto L_1626;
 
 L_1626:
-    fCheckedCur = i == iChecked ? 1 : 0;
+    fCheckedCur = i == iChecked;
     fChecked |= fCheckedCur;
     goto L_165e;
 

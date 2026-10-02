@@ -491,7 +491,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                                 lppl->lpplprod = (PLPROD *)LpplAlloc(4, hdrCur.cb / 4 + 2, htOrd);
                             }
                             fmemmove(lppl->lpplprod->rgprod, rgbCur, hdrCur.cb);
-                            lppl->lpplprod->iprodMac = LOBYTE(hdrCur.cb / 4);
+                            lppl->lpplprod->iprodMac = hdrCur.cb / 4;
                             ReadRt();
                         }
                         if (cPlanetHist == 0) {
@@ -641,7 +641,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                         cThing = 0;
                     }
                     if (hdrCur.rt == rtThing) {
-                        fHist = cThing <= 0 ? 0 : 1;
+                        fHist = cThing > 0;
                         cThingFile = RawLoad16(rgbCur);
                         cThingAlloc = 10 <= cThingFile ? cThingFile : 10;
                         if (lpThings == 0) {
@@ -787,7 +787,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                             }
                             i = CBattles();
                             if (i > 0) {
-                                FSendPlrMsg2XGen(1, (i <= 1 ? 0 : 1) + 339, gotoBattleReport, i, 0);
+                                FSendPlrMsg2XGen(1, (i > 1) + 339, gotoBattleReport, i, 0);
                             }
                         }
                     }
@@ -837,7 +837,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                         CchGetString(idsFile1, szEntry);
                         psz = &szEntry[strlen(szEntry) - 1];
                         for (i = 0; i < 9; i++) {
-                            *psz = LOBYTE(i + 49);
+                            *psz = i + '1';
                             fstrcpy(szT, vrgszMRU + 256 * i);
                             WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
                         }
@@ -923,7 +923,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
                 lppl->rgpctMinLevel[i] = 0;
             }
             i++;
-            bMask = LOBYTE(bMask >> 2);
+            bMask >>= 2;
         }
         i = 0;
         while (i < 3) {
@@ -977,7 +977,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
                     pb += 4;
                 }
                 i++;
-                bMask = LOBYTE(bMask >> 2);
+                bMask >>= 2;
             }
         }
         if (hdrCur.rt == rtPlanetB)
@@ -1148,7 +1148,7 @@ int16_t FReadFleet(FLEET *lpfl) {
             lpord->fNoAutoTrack = 0;
             lpord++;
         }
-        lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
+        lpfl->lpplord->iordMac = lpfl->cord;
         if (lpfl->idPlanet != -1) {
             if (lpfl->idPlanet > game.cPlanMax) {
                 lpfl->idPlanet = -1;
@@ -1270,7 +1270,7 @@ void PromptSaveGame() {
     fRet = DialogBox(hInst, game.fSinglePlr == 0 ? MAKEINTRESOURCE(IDD_SAVE_TURN1) : MAKEINTRESOURCE(IDD_SAVE_TURN2), hwndFrame, lpProc);
     FreeProcInstance(lpProc);
     if (fRet != 0) {
-        gd.fSubmit = fRet == -1 ? 1 : 0;
+        gd.fSubmit = fRet == -1;
         FWriteLogFile(szBase, idPlayer);
         FWriteHistFile(idPlayer);
     }
@@ -1438,7 +1438,7 @@ void FileError(MessageId ids) {
 
 void GetFileStatus(int16_t dt, int16_t iPlayer) {
     SetSzWorkFromDt(dt, iPlayer);
-    gd.fReadOnly = access(szWork, 2) == 0 ? 0 : 1;
+    gd.fReadOnly = access(szWork, 2) != 0;
     return;
 }
 
@@ -1551,7 +1551,7 @@ int16_t FNewTurnAvail(int16_t idPlayer) {
     fNew = FOpenFile(8195, idPlayer, 32);
     if (fNew != 0) {
         StreamClose();
-        fNew = game.turn <= turnOld ? 0 : 1;
+        fNew = game.turn > turnOld;
     }
     game.turn = turnOld;
     game.wGen = wGenOld;
@@ -1652,7 +1652,7 @@ void StreamOpen(char *szFile, MdOpenFlags mdOpen) {
     uint32_t dwTickCur;
 
     dwTick = 0;
-    fNoErr = (mdOpen & 0x4000) == 0 ? 0 : 1;
+    fNoErr = (mdOpen & 0x4000) != 0;
     mdOpen &= 0xbfff;
     while (1) {
         hf = OpenFile(szFile, &of, mdOpen);

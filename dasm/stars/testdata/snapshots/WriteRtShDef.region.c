@@ -4,10 +4,10 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     uint8_t *pb;
     int16_t  cOut;
 
-    ((RTSHDEF *)rgb)->ihuldef = LOBYTE(lpshdef->hul.ihuldef);
+    ((RTSHDEF *)rgb)->ihuldef = lpshdef->hul.ihuldef;
     ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags;
     ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs;
-    ((RTSHDEF *)rgb)->ibmp = LOBYTE(lpshdef->hul.ibmp);
+    ((RTSHDEF *)rgb)->ibmp = lpshdef->hul.ibmp;
     if (lpshdef->det == detAll) {
         ((RTSHDEF *)rgb)->dp = lpshdef->hul.dp;
         ((RTSHDEF *)rgb)->turn = lpshdef->turn;
@@ -27,7 +27,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     }
     cOut = 31;
     if (szHulName[0] != 0 && FCompressUserString(szHulName, pb + 1, &cOut) != 0) {
-        *pb = LOBYTE(cOut);
+        *pb = cOut;
         pb += 1 + cOut;
     } else {
         strcpy(pb + 1, szHulName);

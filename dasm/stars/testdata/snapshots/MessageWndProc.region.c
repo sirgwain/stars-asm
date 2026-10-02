@@ -246,10 +246,10 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             goto Default;
         }
     ZoomBox:
-        fViewFilteredMsg = fViewFilteredMsg == 0 ? 1 : 0;
+        fViewFilteredMsg = fViewFilteredMsg == 0;
         if (iMsgCur >= 0) {
             t_scratch_m30 = 1 << (IdmGetMessageN(iMsgCur) & 7);
-            if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) == 0 ? 0 : 1) == fViewFilteredMsg)
+            if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) != 0) == fViewFilteredMsg)
                 goto L_626c;
         }
         i = IMsgNext(fViewFilteredMsg);
@@ -265,8 +265,8 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         if (iMsgCur < 0)
             break;
         idm = IdmGetMessageN(iMsgCur);
-        fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0 ? 0 : 1;
-        SetFilteringGroups(idm, fSet == 0 ? 1 : 0);
+        fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) != 0;
+        SetFilteringGroups(idm, fSet == 0);
         DirtyGame(1);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
@@ -391,7 +391,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         } else {
             viInRe = 0;
         }
-        gd.fSendMsgMode = gd.fSendMsgMode == 0 ? 1 : 0;
+        gd.fSendMsgMode = gd.fSendMsgMode == 0;
         InvalidateRect(hwndMessage, NULL, 1);
         SetMsgTitle(hwnd);
         SetFocus(hwndMsgEdit);

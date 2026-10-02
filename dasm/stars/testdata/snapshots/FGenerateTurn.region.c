@@ -71,14 +71,14 @@ int16_t FGenerateTurn() {
         gd.fRetryOpens = 1;
         imemMsgCur = 0;
         for (i = 0; i < game.cPlayer; i++) {
-            mpiplr2[i] = LOBYTE(i);
+            mpiplr2[i] = i;
         }
         for (i = 0; i < game.cPlayer; i++) {
             j = Random(game.cPlayer - i) + i;
             if (j != i) {
                 idCur = mpiplr2[j];
                 mpiplr2[j] = mpiplr2[i];
-                mpiplr2[i] = LOBYTE(idCur);
+                mpiplr2[i] = idCur;
             }
         }
         for (i = 0; i < game.cPlayer; i++) {
@@ -112,7 +112,7 @@ int16_t FGenerateTurn() {
         for (i = 0; i < game.cPlayer; i++) {
             if (rgplr[i].fCheater != 0) {
                 j = IPlrAlsoCheater(i);
-                FSendPlrMsg2(i, (j == -1 ? 0 : 1) + 0x100, gotoSerialNumber, j, 0);
+                FSendPlrMsg2(i, (j != -1) + 0x100, gotoSerialNumber, j, 0);
                 if (game.turn > 10 && (game.turn & 7) == (i & 7)) {
                     FSendPlrMsg2(i, idmFleetCaptainsHaveStagedStrikeDemandFree, gotoSerialNumber, 0, 0);
                 }
@@ -289,8 +289,8 @@ int16_t FGenerateTurn() {
                     dRange = GetShdefScannerRange(rglpshdef[i] + j, i, &dPlanRange, &pctDetect, &iSteal);
                     rglpshdef[i][j].dScanRange = dRange;
                     rglpshdef[i][j].dScanRange2 = dPlanRange;
-                    rglpshdef[i][j].pctDetect = LOBYTE(pctDetect);
-                    rglpshdef[i][j].iSteal = LOBYTE(iSteal);
+                    rglpshdef[i][j].pctDetect = pctDetect;
+                    rglpshdef[i][j].iSteal = iSteal;
                     if (FCanBuildShdef(rglpshdef[i] + j, i) == 0) {
                         rglpshdef[i][j].wFlags = (rglpshdef[i][j].wFlags & 0x7fff) | 0x8000;
                     }

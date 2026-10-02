@@ -78,7 +78,7 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             rtlt.idFull = lpThings[sel.scan.ith].idFull;
             rtlt.fDetonate = fDetonate;
             WriteMemRt(rtThing, 4, &rtlt);
-            lpThings[sel.scan.ith].thm.fDetonate = LOBYTE(fDetonate);
+            lpThings[sel.scan.ith].thm.fDetonate = fDetonate;
             break;
         default:
         Default:
@@ -363,7 +363,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             ibmp = lpth->thm.iType;
             break;
         case ithMineralPacket:
-            ibmp = (lpth->thp.iWarp == 0 ? 0 : 1) + 3;
+            ibmp = (lpth->thp.iWarp != 0) + 3;
             break;
         case ithMysteryTrader:
             ibmp = 6;
@@ -483,7 +483,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             c = _wsprintf(szWork, szT, LOWORD((int32_t)sqrt((double)lpth->thm.cMines)), lpth->thm.cMines);
             TextOut(hdc, xLeft, yTop, szWork, c);
             yTop += dyArial8 + 2;
-            t_merge_1d8c_0001 = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMines ? 0 : 1;
+            t_merge_1d8c_0001 = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) != raMines;
             pctDecay = (int16_t)((t_merge_1d8c_0001 * 3 + 1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines) + 2);
             if (pctDecay > 50) {
                 pctDecay = 50;
@@ -519,9 +519,9 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             if (GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raTerra && pl.iPlayer != -1 &&
                 (idPlayer == pl.iPlayer || rgplr[idPlayer].rgmdRelation[pl.iPlayer] == 1)) {
                 for (c = 0; c < 3; c++) {
-                    rgplr[idPlayer].rgEnvVar[c] = LOBYTE((int16_t)(((uint16_t)c & 0xff00) | ((uint16_t)rgplr[pl.iPlayer].rgEnvVar[c] & 0xff)));
-                    rgplr[idPlayer].rgEnvVarMin[c] = LOBYTE((int16_t)(((uint16_t)c & 0xff00) | ((uint16_t)rgplr[pl.iPlayer].rgEnvVarMin[c] & 0xff)));
-                    rgplr[idPlayer].rgEnvVarMax[c] = LOBYTE((int16_t)(((uint16_t)c & 0xff00) | ((uint16_t)rgplr[pl.iPlayer].rgEnvVarMax[c] & 0xff)));
+                    rgplr[idPlayer].rgEnvVar[c] = rgplr[pl.iPlayer].rgEnvVar[c];
+                    rgplr[idPlayer].rgEnvVarMin[c] = rgplr[pl.iPlayer].rgEnvVarMin[c];
+                    rgplr[idPlayer].rgEnvVarMax[c] = rgplr[pl.iPlayer].rgEnvVarMax[c];
                 }
             }
             SelectObject(hdc, rghfontArial8[0]);
@@ -552,7 +552,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                 DeleteDC(hdcMem);
             }
             if (pl.det >= detSome) {
-                c = CchGetString((fShortLabels == 0 ? 1 : 0) + 548, szWork);
+                c = CchGetString((fShortLabels == 0) + 548, szWork);
                 dx = LOWORD(GetTextExtent(hdc, szWork, c));
                 SetTextColor(hdc, crButtonText);
                 TextOut(hdc, xL, yCur, szWork, c);
@@ -574,7 +574,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             }
             SetTextColor(hdc, crButtonText);
             if (pl.iPlayer != -1) {
-                strcpy(szT, PszGetCompressedString((fShortLabels == 0 ? 1 : 0) + 546));
+                strcpy(szT, PszGetCompressedString((fShortLabels == 0) + 546));
             }
             if (pl.det == detAll) {
                 c = strlen(szT);
@@ -951,14 +951,14 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 }
                 GlobalPD.grPopup = grPopupShdef;
                 GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
-                GlobalPD.fHideCounts = idPlayer == lpfl->iPlayer ? 0 : 1;
+                GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer;
                 GlobalPD.fShowDamage = 0;
                 GlobalPD.fToken = 0;
                 GlobalPD.fSummary = 1;
             } else {
                 GlobalPD.grPopup = grPopupFleet;
                 GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
+                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll;
                 GlobalPD.grbit = 0xff;
             }
             Popup(hwndMine, x, y);
@@ -967,7 +967,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.grPopup = grPopupShdef;
             lppl = LpplFromId(sel.scan.idpl);
             GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
-            GlobalPD.fHideCounts = idPlayer == lppl->iPlayer ? 0 : 1;
+            GlobalPD.fHideCounts = idPlayer != lppl->iPlayer;
             GlobalPD.fShowDamage = 1;
             GlobalPD.fToken = 0;
             GlobalPD.fSummary = 1;
@@ -1031,7 +1031,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 scan.ifl = i;
                 scan.grobj = grobjFleet;
                 idNew = rglpfl[i]->id;
-                fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                fOurs = rglpfl[i]->iPlayer == idPlayer;
                 goto ChangeIt;
             }
             if ((scan.grobjFull & grobjThing) != 0) {
@@ -1050,7 +1050,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 scan.grobj = grobjFleet;
                 scan.ifl = i;
                 idNew = rglpfl[i]->id;
-                fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                fOurs = rglpfl[i]->iPlayer == idPlayer;
                 goto ChangeIt;
             }
             i = 0;
@@ -1082,7 +1082,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             if (lppl == 0) {
                 fOurs = 0;
             } else {
-                fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+                fOurs = lppl->iPlayer == idPlayer;
             }
         ChangeIt:
             if (fOurs == 0 || sel.grobj != grobjFleet) {
@@ -1200,7 +1200,7 @@ void SetMineralTitleBar(HWND hwnd) {
                  GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMines;
     }
     if (fVisCB != 0) {
-        SendMessage(hwndMineCB, BM_SETCHECK, lpThings[sel.scan.ith].thm.fDetonate == 0 ? 0 : 1, 0);
+        SendMessage(hwndMineCB, BM_SETCHECK, lpThings[sel.scan.ith].thm.fDetonate != 0, 0);
     }
     GetClientRect(hwnd, &rc);
     SetWindowPos(hwndMineCB, NULL, 80, rc.bottom - dyArial8 * 2, rc.right - 88, dyArial8 + 4, (fVisCB == 0 ? 0x80 : 0x40) | 4);
@@ -1342,7 +1342,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
     if (c == 2 && sel.scan.idpl != -1) {
         c = 1;
     }
-    fSep = c == 0 ? 1 : 0;
+    fSep = c == 0;
     lpth = lpThings;
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
@@ -1370,7 +1370,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             }
             scan.ifl = i;
             idNew = id;
-            fOurs = lpfl->iPlayer == idPlayer ? 1 : 0;
+            fOurs = lpfl->iPlayer == idPlayer;
         } else if ((rgid[i] & 0x20000000) != 0) {
             scan.grobj = grobjThing;
             lpth = lpThings;
@@ -1384,7 +1384,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             scan.grobj = grobjPlanet;
             idNew = sel.scan.idpl;
             lppl = LpplFromId(idNew);
-            fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+            fOurs = lppl->iPlayer == idPlayer;
         }
         ChangeScanSel(&scan, 2);
         if (fOurs != 0) {
@@ -1413,7 +1413,7 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
     int16_t ifl;
     FLEET  *lpfl;
 
-    fRemote = cMines == -1 ? 0 : 1;
+    fRemote = cMines != -1;
     fMacintosh = lppl->iPlayer != -1 && GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh;
     if (cMines == -1) {
         if (lppl->iPlayer == -1 || lppl->rgwtMin[3] == 0) {
@@ -1479,7 +1479,7 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
                     if (lLeft >= lLevel) {
                         lLeft = lLevel - 1;
                     }
-                    lppl->rgpctMinLevel[i] = LOBYTE(LOWORD(lLeft));
+                    lppl->rgpctMinLevel[i] = lLeft;
                     if (lLeft == 0) {
                         lppl->rgMinConc[i]--;
                     }

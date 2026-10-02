@@ -34,13 +34,13 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
         }
         while (FTrackBtn(&btnt) != 0) {
             if (mdXferDlg == mdXferShips) {
-                i = (int16_t)LOWORD(dChg) < pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
+                i = (int16_t)LOWORD(dChg) < pxfer[btn.iSide == 0].fl.rgcsh[iVal] ? LOWORD(dChg) : pxfer[btn.iSide == 0].fl.rgcsh[iVal];
                 if (i != 0) {
                     if (pxfer[btn.iSide].fl.rgcsh[iVal] >= 32766 - i) {
                         i = 1;
                     }
                     pxfer[btn.iSide].fl.rgcsh[iVal] = pxfer[btn.iSide].fl.rgcsh[iVal] + i;
-                    t_merge_5ecd_0001 = btn.iSide == 0 ? 1 : 0;
+                    t_merge_5ecd_0001 = btn.iSide == 0;
                     pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] -= i;
                     DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn);
                 }

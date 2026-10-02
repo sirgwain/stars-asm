@@ -58,7 +58,7 @@ void DoBombing() {
                     modKill = (int32_t)(cKillFact % cPPE);
                     cKillFact = (int32_t)(cKillFact / cPPE);
                     if (modKill > 0) {
-                        cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
+                        cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill);
                     }
                     if (cKillFact > (int32_t)lppl->cFactories) {
                         cKillFact = lppl->cFactories;
@@ -67,7 +67,7 @@ void DoBombing() {
                     modKill = (int32_t)(cKillDefenses % cPPE);
                     cKillDefenses = (int32_t)(cKillDefenses / cPPE);
                     if (modKill > 0) {
-                        cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
+                        cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill);
                     }
                     if (cKillDefenses > (int32_t)lppl->cDefenses) {
                         cKillDefenses = lppl->cDefenses;
@@ -86,7 +86,7 @@ void DoBombing() {
                     modKill = (int32_t)(cKillPeople % 1000);
                     cKillPeople = (int32_t)(cKillPeople / 1000);
                     if (modKill > 0) {
-                        cKillPeople += (uint32_t)(Random(1000) <= modKill ? 1 : 0);
+                        cKillPeople += (uint32_t)(Random(1000) <= modKill);
                     }
                     cKillPeople += cKillPeopleS;
                     if (dmgBombPeople > 0 && cKillPeople <= 0) {
@@ -123,13 +123,13 @@ void DoBombing() {
                             if (dChg >= pctTerra) {
                                 dChg = LOWORD(pctTerra);
                             }
-                            lppl->rgEnvVar[i] -= LOBYTE(dChg);
+                            lppl->rgEnvVar[i] -= dChg;
                             pctTot += dChg;
                         } else if (dChg < 0) {
                             if ((int16_t)-dChg >= pctTerra) {
                                 dChg = -LOWORD(pctTerra);
                             }
-                            lppl->rgEnvVar[i] -= LOBYTE(dChg);
+                            lppl->rgEnvVar[i] -= dChg;
                             pctTot += -dChg;
                         }
                     }

@@ -167,7 +167,7 @@ L_b292:
     goto L_b2c2;
 
 L_b2c2:
-    cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
+    cKillFact += (uint32_t)(Random(LOWORD(cPPE)) < modKill);
 
 L_b2c8:
     if (cKillFact <= (int32_t)lppl->cFactories)
@@ -191,7 +191,7 @@ L_b380:
     goto L_b3b0;
 
 L_b3b0:
-    cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill ? 1 : 0);
+    cKillDefenses += (uint32_t)(Random(LOWORD(cPPE)) < modKill);
 
 L_b3b6:
     if (cKillDefenses <= (int32_t)lppl->cDefenses)
@@ -259,7 +259,7 @@ L_b58c:
     goto L_b5b9;
 
 L_b5b9:
-    cKillPeople += (uint32_t)(Random(1000) <= modKill ? 1 : 0);
+    cKillPeople += (uint32_t)(Random(1000) <= modKill);
 
 L_b5bf:
     cKillPeople += cKillPeopleS;
@@ -369,7 +369,7 @@ L_b8ae:
     dChg = LOWORD(pctTerra);
 
 L_b8b7:
-    lppl->rgEnvVar[i] -= LOBYTE(dChg);
+    lppl->rgEnvVar[i] -= dChg;
     pctTot += dChg;
     goto L_b92c;
 
@@ -389,7 +389,7 @@ L_b8fc:
     dChg = -LOWORD(pctTerra);
 
 L_b90c:
-    lppl->rgEnvVar[i] -= LOBYTE(dChg);
+    lppl->rgEnvVar[i] -= dChg;
     pctTot += -dChg;
 
 L_b92c:

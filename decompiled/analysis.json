@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 238,
+    "temps": 237,
     "hiWords": 91,
-    "loWords": 676,
+    "loWords": 657,
     "branchHiWords": 30,
     "branchLoWords": 53,
     "ir": {
-      "numStatements": 31945
+      "numStatements": 31944
     }
   },
   "functions": {
@@ -344,7 +344,7 @@
       }
     },
     "CheckWeapons": {
-      "loWords": 4,
+      "loWords": 1,
       "ir": {
         "numStatements": 71
       }
@@ -1173,7 +1173,6 @@
       }
     },
     "EstMineralsMined": {
-      "loWords": 1,
       "branchLoWords": 1,
       "ir": {
         "numStatements": 50
@@ -1719,7 +1718,7 @@
     "FGetSystemColors": {
       "temps": 1,
       "hiWords": 2,
-      "loWords": 4,
+      "loWords": 2,
       "ir": {
         "numStatements": 40
       }
@@ -2038,7 +2037,6 @@
     },
     "FSerialAndEnvFromSz": {
       "temps": 2,
-      "loWords": 1,
       "ir": {
         "numStatements": 48
       }
@@ -2298,7 +2296,6 @@
     },
     "FormatSerialAndEnv": {
       "temps": 2,
-      "loWords": 1,
       "ir": {
         "numStatements": 45
       }
@@ -2377,7 +2374,6 @@
     },
     "GetDiskSerialNumber": {
       "hiWords": 1,
-      "loWords": 4,
       "ir": {
         "numStatements": 36
       }
@@ -3029,7 +3025,7 @@
       }
     },
     "LogMakeValidXfer": {
-      "loWords": 2,
+      "loWords": 1,
       "ir": {
         "numStatements": 61
       }
@@ -3562,7 +3558,6 @@
       }
     },
     "ProjectedResearchSpending": {
-      "loWords": 1,
       "ir": {
         "numStatements": 12
       }
@@ -3899,10 +3894,9 @@
       }
     },
     "RelationsDlg": {
-      "temps": 1,
       "loWords": 3,
       "ir": {
-        "numStatements": 47
+        "numStatements": 46
       }
     },
     "RemoteTerraforming": {
@@ -4161,7 +4155,7 @@
       }
     },
     "SetVCRBoard": {
-      "loWords": 2,
+      "loWords": 1,
       "ir": {
         "numStatements": 35
       }
@@ -4212,7 +4206,7 @@
       }
     },
     "ShipCommandProc": {
-      "loWords": 10,
+      "loWords": 8,
       "branchLoWords": 8,
       "ir": {
         "numStatements": 151
@@ -4543,7 +4537,7 @@
     },
     "WriteFleet": {
       "hiWords": 2,
-      "loWords": 4,
+      "loWords": 3,
       "ir": {
         "numStatements": 72
       }
@@ -4566,7 +4560,7 @@
     },
     "WritePlanet": {
       "hiWords": 1,
-      "loWords": 3,
+      "loWords": 2,
       "ir": {
         "numStatements": 65
       }

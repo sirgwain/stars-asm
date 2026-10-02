@@ -94,7 +94,7 @@ void SatisfyOrders(int16_t iPass) {
                         lpflWP = LpflFromId(ord.id);
                         idWP |= 0x8000;
                         xWP = 0xffff;
-                        fHasPermission = lpfl->iPlayer == lpflWP->iPlayer ? 1 : 0;
+                        fHasPermission = lpfl->iPlayer == lpflWP->iPlayer;
                         if (fHasPermission == 0) {
                             GetFleetScannerRange(lpfl, NULL, NULL, &fHasPermission);
                             if (fHasPermission == 0)
@@ -187,56 +187,51 @@ void SatisfyOrders(int16_t iPass) {
                                             amountWP = lpthWP->thp.rgwtMin[j];
                                         }
                                     }
-                                    if ((uint16_t)(action - 1) <= 8) {
-                                        switch (action) {
-                                        case iActionFillPercent:
-                                        case iActionWaitPercent:
-                                            if (iLoad == 0)
-                                                continue;
-                                            if (j == 4) {
-                                                amount = LGetFleetStat(lpfl, 1);
-                                            } else {
-                                                amount = LGetFleetStat(lpfl, 2);
-                                            }
-                                            amount = 2000000 < amount ? 2000000 : amount;
-                                            if (amount < 65536) {
-                                                amountEdit = (uint32_t)((uint32_t)(amount * ord.txp.rgia[j].cQuan) / 100);
-                                            } else {
-                                                amountEdit = (uint32_t)((int32_t)(amount / 100) * ord.txp.rgia[j].cQuan);
-                                            }
-                                            amountEdit -= lpfl->rgwtMin[j];
-                                            if (amountEdit >= 0)
-                                                goto L_7b4e;
-                                            amountEdit = 0;
-                                            goto L_7b4e;
-                                        case iActionLoadExact:
-                                            if (iLoad == 0)
-                                                continue;
-                                            amountEdit = ord.txp.rgia[j].cQuan;
-                                            goto L_7b4e;
-                                        case iActionUnloadExact:
-                                            if (iLoad != 0)
-                                                continue;
-                                        case iActionSetAmount:
-                                        case iActionSetWaypoint:
-                                            amountEdit = ord.txp.rgia[j].cQuan;
-                                            goto L_7b4e;
-                                        case iActionLoadAll:
-                                            if (iLoad == 0)
-                                                continue;
-                                        case iActionLoadDunnage:
-                                            amountEdit = amountWP;
-                                            goto L_7b4e;
-                                        case iActionUnloadAll:
-                                            if (iLoad != 0)
-                                                continue;
-                                            amountEdit = lpfl->rgwtMin[j];
-                                            goto L_7b4e;
+                                    switch (action) {
+                                    case iActionFillPercent:
+                                    case iActionWaitPercent:
+                                        if (iLoad == 0)
+                                            continue;
+                                        if (j == 4) {
+                                            amount = LGetFleetStat(lpfl, 1);
+                                        } else {
+                                            amount = LGetFleetStat(lpfl, 2);
                                         }
-                                        goto L_67b6;
-                                    }
-                                L_7b4e:
-                                    if ((uint16_t)(action - 1) <= 8) {
+                                        amount = 2000000 < amount ? 2000000 : amount;
+                                        if (amount < 65536) {
+                                            amountEdit = (uint32_t)((uint32_t)(amount * ord.txp.rgia[j].cQuan) / 100);
+                                        } else {
+                                            amountEdit = (uint32_t)((int32_t)(amount / 100) * ord.txp.rgia[j].cQuan);
+                                        }
+                                        amountEdit -= lpfl->rgwtMin[j];
+                                        if (amountEdit >= 0)
+                                            goto L_7b4e;
+                                        amountEdit = 0;
+                                        goto L_7b4e;
+                                    case iActionLoadExact:
+                                        if (iLoad == 0)
+                                            continue;
+                                        amountEdit = ord.txp.rgia[j].cQuan;
+                                        goto L_7b4e;
+                                    case iActionUnloadExact:
+                                        if (iLoad != 0)
+                                            continue;
+                                    case iActionSetAmount:
+                                    case iActionSetWaypoint:
+                                        amountEdit = ord.txp.rgia[j].cQuan;
+                                        goto L_7b4e;
+                                    case iActionLoadAll:
+                                        if (iLoad == 0)
+                                            continue;
+                                    case iActionLoadDunnage:
+                                        amountEdit = amountWP;
+                                        goto L_7b4e;
+                                    case iActionUnloadAll:
+                                        if (iLoad != 0)
+                                            continue;
+                                        amountEdit = lpfl->rgwtMin[j];
+                                    default:
+                                    L_7b4e:
                                         switch (action) {
                                         case iActionSetWaypoint:
                                             amount = amountWP - amountEdit;
@@ -295,8 +290,10 @@ void SatisfyOrders(int16_t iPass) {
                                         case iActionUnloadExact:
                                             amount = (uint32_t)lpfl->rgwtMin[j] < (uint32_t)amountEdit ? lpfl->rgwtMin[j] : amountEdit;
                                             goto Unload;
+                                        default:
+                                            continue;
                                         }
-                                        goto L_67b6;
+                                        break;
                                     Unload:
                                         if (iLoad != 0)
                                             continue;
@@ -346,72 +343,76 @@ void SatisfyOrders(int16_t iPass) {
                                         ord.txp.rgia[j].iAction = iActionNone;
                                         continue;
                                     Load:
-                                        if (iLoad != 0 && amount != 0) {
-                                            if (j == 4) {
-                                                l = GetFuelFree(lpfl);
-                                            } else {
-                                                l = GetCargoFree(lpfl);
+                                        if (iLoad == 0 || amount == 0)
+                                            continue;
+                                        if (j == 4) {
+                                            l = GetFuelFree(lpfl);
+                                        } else {
+                                            l = GetCargoFree(lpfl);
+                                        }
+                                        amount = l < amount ? l : amount;
+                                        if (fHasPermission == 0 || ord.grobj == grobjOther) {
+                                            if (j == 4 && fOptFuel != 0) {
+                                                amount = 0;
+                                                continue;
                                             }
-                                            amount = l < amount ? l : amount;
-                                            if (fHasPermission == 0 || ord.grobj == grobjOther) {
-                                                if (j == 4 && fOptFuel != 0) {
-                                                    amount = 0;
+                                            if (iPass == 4)
+                                                goto L_733a;
+                                            fDone = 0;
+                                            continue;
+                                        }
+                                        if (fStealing != 0 && (j == 3 || j == 4)) {
+                                            fDone = 1;
+                                        }
+                                        if (amount == 0) {
+                                            if (action != iActionWaitPercent)
+                                                continue;
+                                            if (j == 4) {
+                                                fDone = 0;
+                                                continue;
+                                            }
+                                            fFulfilled = 0;
+                                            continue;
+                                        }
+                                        l = amount < amountWP ? amount : amountWP;
+                                        l2 = ChgCargo(ord.grobj, ord.id, j, -l, NULL);
+                                        if (l2 != 0) {
+                                            l = ChgCargo(grobjFleet, lpfl->id, j, -l2, NULL);
+                                            if (l != 0) {
+                                                if (ord.grobj == grobjFleet && lpfl->iPlayer != lpflWP->iPlayer) {
+                                                    FSendPlrMsg(lpfl->iPlayer, idmHasStolen, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j,
+                                                                idWP & 0x7fff, 0, 0);
                                                 } else {
-                                                    if (iPass == 4)
-                                                        goto L_733a;
-                                                    fDone = 0;
-                                                }
-                                            } else {
-                                                if (fStealing != 0 && (j == 3 || j == 4)) {
-                                                    fDone = 1;
-                                                }
-                                                if (amount != 0) {
-                                                    l = amount < amountWP ? amount : amountWP;
-                                                    l2 = ChgCargo(ord.grobj, ord.id, j, -l, NULL);
-                                                    if (l2 != 0) {
-                                                        l = ChgCargo(grobjFleet, lpfl->id, j, -l2, NULL);
-                                                        if (l != 0) {
-                                                            if (ord.grobj == grobjFleet && lpfl->iPlayer != lpflWP->iPlayer) {
-                                                                FSendPlrMsg(lpfl->iPlayer, idmHasStolen, lpfl->id | 0x8000, lpfl->id, LOWORD(l), HIWORD(l), j,
-                                                                            idWP & 0x7fff, 0, 0);
-                                                            } else {
-                                                                FSendPlrMsg(lpfl->iPlayer, j == 3 ? idmHasBeamed : idmHasLoaded, lpfl->id | 0x8000, lpfl->id,
-                                                                            LOWORD(l), HIWORD(l), j, xWP, idWP, 0);
-                                                            }
-                                                        }
-                                                    }
-                                                    if ((fFueling != 0 || fMining != 0) && amount != -l2) {
-                                                        l = amount + l2;
-                                                        l2 = ChgCargo(grobjPlanet, pl.id, j, -l, NULL);
-                                                        if (l2 != 0) {
-                                                            l = ChgCargo(grobjFleet, lpfl->id, j, -l2, NULL);
-                                                            if (fMining != 0) {
-                                                                FSendPlrMsg(lpfl->iPlayer, idmHasLoadedMiningRobotsWorking, lpfl->id | 0x8000, lpfl->id,
-                                                                            LOWORD(l), HIWORD(l), j, lpflWP->id, pl.id, 0);
-                                                            } else {
-                                                                FSendPlrMsg(lpfl->iPlayer, j == 3 ? idmHasBeamed : idmHasLoaded, lpfl->id | 0x8000, lpfl->id,
-                                                                            LOWORD(l), HIWORD(l), j, xWP, pl.id, 0);
-                                                            }
-                                                        } else {
-                                                            l = 0;
-                                                        }
-                                                    }
-                                                    if (amount != l && action == iActionWaitPercent) {
-                                                        fFulfilled = 0;
-                                                    }
-                                                    if (l != 0 && action == iActionLoadDunnage && j == 4) {
-                                                        wtOptimalFuel = l;
-                                                    }
-                                                } else if (action == iActionWaitPercent) {
-                                                    if (j == 4) {
-                                                        fDone = 0;
-                                                    } else {
-                                                        fFulfilled = 0;
-                                                    }
+                                                    FSendPlrMsg(lpfl->iPlayer, j == 3 ? idmHasBeamed : idmHasLoaded, lpfl->id | 0x8000, lpfl->id, LOWORD(l),
+                                                                HIWORD(l), j, xWP, idWP, 0);
                                                 }
                                             }
                                         }
+                                        if ((fFueling != 0 || fMining != 0) && amount != -l2) {
+                                            l = amount + l2;
+                                            l2 = ChgCargo(grobjPlanet, pl.id, j, -l, NULL);
+                                            if (l2 != 0) {
+                                                l = ChgCargo(grobjFleet, lpfl->id, j, -l2, NULL);
+                                                if (fMining != 0) {
+                                                    FSendPlrMsg(lpfl->iPlayer, idmHasLoadedMiningRobotsWorking, lpfl->id | 0x8000, lpfl->id, LOWORD(l),
+                                                                HIWORD(l), j, lpflWP->id, pl.id, 0);
+                                                } else {
+                                                    FSendPlrMsg(lpfl->iPlayer, j == 3 ? idmHasBeamed : idmHasLoaded, lpfl->id | 0x8000, lpfl->id, LOWORD(l),
+                                                                HIWORD(l), j, xWP, pl.id, 0);
+                                                }
+                                            } else {
+                                                l = 0;
+                                            }
+                                        }
+                                        if (amount != l && action == iActionWaitPercent) {
+                                            fFulfilled = 0;
+                                        }
+                                        if (l == 0 || action != iActionLoadDunnage || j != 4)
+                                            continue;
+                                        wtOptimalFuel = l;
+                                        continue;
                                     }
+                                    goto L_67b6;
                                 }
                             }
                             if (fOptFuel != 0 && iLoad != 0 && fDunnage != 1) {
@@ -698,7 +699,7 @@ void SatisfyOrders(int16_t iPass) {
                                             }
                                             lpth->pt = lpfl->pt;
                                             lpth->thm.cMines = cMine;
-                                            lpth->thm.iType = LOBYTE(j);
+                                            lpth->thm.iType = j;
                                         }
                                         FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, LOWORD(cMine), HIWORD(cMine), 0, 0, 0, 0);
                                     }

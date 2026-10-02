@@ -235,8 +235,8 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     if (j > 50) {
         j = 50;
     }
-    vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE((int16_t)(j & 0xff) / 2);
+    vrgAiArmadaPotency[0] = j;
+    vrgAiArmadaPotency[1] = (int16_t)(j & 0xff) / 2;
     j = 6;
     if (game.turn > 115) {
         j += (uint32_t)(game.turn - 100) / 22;
@@ -244,8 +244,8 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     if (j > 12) {
         j = 12;
     }
-    vrgAiArmadaPotency[2] = LOBYTE(j);
-    vrgAiArmadaPotency[3] = LOBYTE(3 >= j / 2 - 1 ? j / 2 - 1 : 3);
+    vrgAiArmadaPotency[2] = j;
+    vrgAiArmadaPotency[3] = 3 >= j / 2 - 1 ? j / 2 - 1 : 3;
     memset(rgRecycleShdef, 0, 16);
     if (game.turn < 120) {
         cRecyclePeriod = 50;
@@ -272,7 +272,7 @@ void DoAutomitronAiTurn(PROD *rgprod) {
     for (; lppl < lpplMac; lppl++) {
         vlpbAiPlanet[lppl->id * 16 + 9] = 1;
         if (lppl->iPlayer != idPlayer && lppl->iPlayer != -1) {
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE((lppl->fStarbase & 0xff) + 1);
+            vlpbAiPlanet[lppl->id * 16 + 10] = lppl->fStarbase + 1;
             if (PctPlanetOptValue(lppl, idPlayer) > 0) {
                 vlpbAiPlanet[lppl->id * 16 + 3] = 1;
             }
@@ -682,9 +682,9 @@ void DoRototillAiTurn(PROD *rgprod) {
                 if (lppl->rgMinConc[i] > 66) {
                     bT = 75;
                 } else {
-                    bT = LOBYTE((int16_t)lppl->rgMinConc[i] / 2);
+                    bT = (int16_t)lppl->rgMinConc[i] / 2;
                 }
-                b += LOBYTE(bT);
+                b += bT;
             }
             if ((b & 0x80) != 0) {
                 b = 127;
@@ -692,7 +692,7 @@ void DoRototillAiTurn(PROD *rgprod) {
             vlpbAiPlanet[lppl->id * 16 + 1] = b;
         }
         if (lppl->iPlayer != idPlayer && lppl->iPlayer != -1) {
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE((lppl->fStarbase & 0xff) + 1);
+            vlpbAiPlanet[lppl->id * 16 + 10] = lppl->fStarbase + 1;
             if (PctPlanetOptValue(lppl, idPlayer) > 0) {
                 vlpbAiPlanet[lppl->id * 16 + 3] = 1;
             }

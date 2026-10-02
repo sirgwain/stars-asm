@@ -147,8 +147,8 @@ CheckBox:
 
 L_6116:
     idm = IdmGetMessageN(iMsgCur);
-    fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0 ? 0 : 1;
-    SetFilteringGroups(idm, fSet == 0 ? 1 : 0);
+    fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) != 0;
+    SetFilteringGroups(idm, fSet == 0);
     DirtyGame(1);
     if (gd.fTutorial == 0)
         goto L_61a0;
@@ -170,7 +170,7 @@ L_61c3:
         goto ZoomBox;
 
 ZoomBox:
-    fViewFilteredMsg = fViewFilteredMsg == 0 ? 1 : 0;
+    fViewFilteredMsg = fViewFilteredMsg == 0;
     if (iMsgCur < 0)
         goto L_623f;
     else
@@ -178,7 +178,7 @@ ZoomBox:
 
 L_61ec:
     t_scratch_m30 = 1 << (IdmGetMessageN(iMsgCur) & 7);
-    if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) == 0 ? 0 : 1) == fViewFilteredMsg)
+    if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) != 0) == fViewFilteredMsg)
         goto L_626c;
     else
         goto L_623f;
@@ -274,7 +274,7 @@ L_6374:
     viInRe = 0;
 
 L_637a:
-    gd.fSendMsgMode = gd.fSendMsgMode == 0 ? 1 : 0;
+    gd.fSendMsgMode = gd.fSendMsgMode == 0;
     InvalidateRect(hwndMessage, NULL, 1);
     SetMsgTitle(hwnd);
     SetFocus(hwndMsgEdit);

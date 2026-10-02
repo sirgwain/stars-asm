@@ -485,6 +485,11 @@
     { "kind": "param", "func": "PostMessage", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "DefWindowProc", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "SendDlgItemMessage", "param": "arg3", "enum": "WMType" },
+    { "kind": "param", "func": "CallWindowProc", "param": "arg3", "enum": "WMType" },
+    { "kind": "param", "func": "DefDlgProc", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "DefFrameProc", "param": "arg3", "enum": "WMType" },
+    { "kind": "param", "func": "DefMDIChildProc", "param": "arg2", "enum": "WMType" },
+    { "kind": "param", "func": "PostAppMessage", "param": "arg2", "enum": "WMType" },
     { "kind": "param", "func": "PatBlt", "param": "arg6", "enum": "PatBltRop" },
     { "kind": "param", "func": "GetSystemMetrics", "param": "arg1", "enum": "SystemMetric" },
 

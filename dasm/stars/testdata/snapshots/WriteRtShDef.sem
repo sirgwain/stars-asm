@@ -14,10 +14,10 @@ WriteRtShDef  (save)
   stats: blocks=0  labels=0
 */
 L_574e:
-    ((RTSHDEF *)rgb)->ihuldef = lobyte(lpshdef->hul.ihuldef)
+    ((RTSHDEF *)rgb)->ihuldef = lpshdef->hul.ihuldef
     ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags
     ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs
-    ((RTSHDEF *)rgb)->ibmp = lobyte(lpshdef->hul.ibmp)
+    ((RTSHDEF *)rgb)->ibmp = lpshdef->hul.ibmp
     branch lpshdef->det != detAll ? L_5816 : L_5794
 
 L_5794:
@@ -52,7 +52,7 @@ L_5893:
     branch FCompressUserString(szHulName, &pb[1], &cOut) == 0 ? L_58d5 : L_58bd
 
 L_58bd:
-    *pb = lobyte(cOut)
+    *pb = cOut
     pb = &pb[(1 + cOut)]
     goto L_5907
 

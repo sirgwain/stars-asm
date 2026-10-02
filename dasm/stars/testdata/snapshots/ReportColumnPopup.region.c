@@ -44,7 +44,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
         strcpy(rgsz[cItems], rgsz[cItems - 1]);
         rgsz[cItems - 1][0] = 0;
         cItems++;
-        for (j = 0; j < (vprptCur->irpt == rptFleets ? 1 : 0) + 3; j++) {
+        for (j = 0; j < (vprptCur->irpt == rptFleets) + 3; j++) {
             strcpy(rgsz[cItems], rgszMinerals[j]);
             cItems++;
         }
@@ -109,13 +109,13 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
             vfAscendingPrev = vprptCur->fAscending;
             vprptCur->icolSort = icol;
             if (cSubsort == 0) {
-                vprptCur->fAscending = iRet == 0 ? 1 : 0;
+                vprptCur->fAscending = iRet == 0;
             } else {
-                vprptCur->iSubsort = (int16_t)(iRet - 2) % (cSubsort + 3 + (vprptCur->irpt == rptFleets ? 1 : 0));
-                if (vprptCur->iSubsort > (vprptCur->irpt == rptFleets ? 1 : 0) + 3) {
-                    vprptCur->iSubsort = (vprptCur->irpt == rptFleets ? 1 : 0) + 3;
+                vprptCur->iSubsort = (int16_t)(iRet - 2) % (cSubsort + 3 + (vprptCur->irpt == rptFleets));
+                if (vprptCur->iSubsort > (vprptCur->irpt == rptFleets) + 3) {
+                    vprptCur->iSubsort = (vprptCur->irpt == rptFleets) + 3;
                 }
-                vprptCur->fAscending = iRet >= cSubsort + 2 ? 0 : 1;
+                vprptCur->fAscending = iRet < cSubsort + 2;
             }
             SortReportCache(vprptCur->irpt, icol);
         } else if (iRet == iHide) {

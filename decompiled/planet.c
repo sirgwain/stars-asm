@@ -83,7 +83,7 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
             case WM_LBUTTONDBLCLK:
             case WM_RBUTTONDOWN:
                 SetFocus(hwndFrame);
-                PlanetClick(LOWORD(lParam), HIWORD(lParam), wParam, message == WM_RBUTTONDOWN ? 1 : 0);
+                PlanetClick(LOWORD(lParam), HIWORD(lParam), wParam, message == WM_RBUTTONDOWN);
                 return 0;
             case WM_SETCURSOR:
                 hcs = 0;
@@ -274,8 +274,8 @@ void DrawPlanShip(HDC hdc, TileBits grbit) {
         hfontSav = SelectObject(hdc, rghfontArial8[0]);
         crBack = SetBkColor(hdc, crButtonFace);
         crFore = SetTextColor(hdc, crButtonText);
-        fErase = (grbit & tileErase) == 0 ? 0 : 1;
-        fMin = (grbit & tileMinimized) == 0 ? 0 : 1;
+        fErase = (grbit & tileErase) != 0;
+        fMin = (grbit & tileMinimized) != 0;
         for (i = 0; i < ctile; i++) {
             if ((grbit & ptile[i].grbit) != 0) {
                 ptile[i].fErase = fErase;
@@ -775,7 +775,7 @@ void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur) {
     int32_t lCur;
     int32_t l;
 
-    fTwoMAs = iBest >= 0 ? 0 : 1;
+    fTwoMAs = iBest < 0;
     SelectObject(hdc, rghfontArial8[1]);
     if (iCur < 5) {
         iCur = 5;
@@ -1076,7 +1076,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
         ShowWindow(hwndShipDD, SW_SHOW);
         yTop += dyShipDD + 3;
         lSel = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
-        EnableWindow(rghwndBtn[0], lSel == -1 ? 0 : 1);
+        EnableWindow(rghwndBtn[0], lSel != -1);
         if (lSel == -1) {
             fDoneDrawing = 1;
             fUnknown = 1;
@@ -1092,7 +1092,7 @@ void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj) {
         if (fDoneDrawing != 0) {
             EnableWindow(rghwndBtn[1], 0);
         } else {
-            fObjIsThing = xf.grobj == grobjThing ? 1 : 0;
+            fObjIsThing = xf.grobj == grobjThing;
             EnableWindow(rghwndBtn[1], fObjIsThing == 0 && xf.fl.iPlayer == idPlayer);
         }
         rgrcRef[1].top = -5;
@@ -1185,7 +1185,7 @@ void ChangeMainObjSel(GrobjClass grobjNew, int16_t iObjSel) {
     FLEET  *lpfl;
 
     idSkip = -1;
-    fSameType = grobjNew == sel.grobj ? 1 : 0;
+    fSameType = grobjNew == sel.grobj;
     if (fAi == 0 || fSameType == 0 || iObjSel != sel.id) {
         InvalidateReport(sel.grobj == grobjPlanet ? rptPlanets : rptFleets, 0);
         if (grobjNew == grobjPlanet) {
@@ -1221,7 +1221,7 @@ void ChangeMainObjSel(GrobjClass grobjNew, int16_t iObjSel) {
             if (sel.fl.idPlanet == -1 || (sel.fl.idPlanet != sel.pl.id && FLookupPlanet(sel.fl.idPlanet, &sel.pl) == 0)) {
                 sel.pl.id = -1;
             }
-            sel.grobjFull = (sel.pl.id == -1 ? 0 : 1) | 2;
+            sel.grobjFull = (sel.pl.id != -1) | 2;
             sel.iwpAct = 0;
             if (fAi == 0) {
                 FillOrdersLB();
@@ -1294,7 +1294,7 @@ void FillShipDD(int16_t idSkip) {
         if ((idSkip == -1 && sel.id == lpfl->idPlanet) || (idSkip != -1 && lpfl->id != idSkip && lpfl->pt.x == sel.fl.pt.x && lpfl->pt.y == sel.fl.pt.y)) {
             PszGetFleetName(lpfl->id);
             memmove(&szWork[1], szWork, 50);
-            szWork[0] = LOBYTE(lpfl->iPlayer == idPlayer ? 32 : 120);
+            szWork[0] = lpfl->iPlayer == idPlayer ? 32 : 120;
             SendMessage(hwndShipDD, CB_ADDSTRING, 0, (LPARAM)szWork);
         }
     }
@@ -1304,7 +1304,7 @@ void FillShipDD(int16_t idSkip) {
         if (lpth->ith == ithMineralPacket && lpth->pt.x == ptSel.x && lpth->pt.y == ptSel.y) {
             PszGetThingName(lpth->idFull);
             memmove(&szWork[1], szWork, 50);
-            szWork[0] = LOBYTE(lpth->iplr == idPlayer ? 32 : 120);
+            szWork[0] = lpth->iplr == idPlayer ? 32 : 120;
             SendMessage(hwndShipDD, CB_ADDSTRING, 0, (LPARAM)szWork);
         }
     }
@@ -1472,7 +1472,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn) {
                     while (FTrackBtn(&btnt) != 0) {
                     }
                     if (btnt.fDown != 0) {
-                        prgtile[i].fPopped = prgtile[i].fPopped == 0 ? 1 : 0;
+                        prgtile[i].fPopped = prgtile[i].fPopped == 0;
                         ReflowColumn(prgtile[i].iCol, i, 1);
                     }
                 } else {
@@ -1602,7 +1602,7 @@ HCURSOR ClickInPlanetOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fR
         }
         GlobalPD.grPopup = grPopupPlanetIndustry;
         GlobalPD.idPlan = sel.pl.id;
-        GlobalPD.fFactory = pt.y < rgrcRef[7].top + dyArial8 ? 0 : 1;
+        GlobalPD.fFactory = pt.y >= rgrcRef[7].top + dyArial8;
         if (GlobalPD.fFactory != 0) {
             GlobalPD.cMax = CMaxFactories(&sel.pl, idPlayer);
             GlobalPD.cCur = sel.pl.cFactories;
@@ -1854,13 +1854,13 @@ int16_t IBestTerraform(PLANET *lppl, int16_t fHelp) {
             continue;
         }
         iSave = lppl->rgEnvVar[i];
-        lppl->rgEnvVar[i] = LOBYTE(iEnv);
+        lppl->rgEnvVar[i] = iEnv;
         pctT = PctPlanetDesirability(lppl, iPlr) - pctCur;
         if (pctT < 0) {
             pctT = -pctT;
         }
         rgpctBest[i] = (int16_t)(100 * pctT) / abs(iSave - iEnv) + 1;
-        lppl->rgEnvVar[i] = LOBYTE(iSave);
+        lppl->rgEnvVar[i] = iSave;
     }
     iSave = 0;
     for (i = 1; i < 3; i++) {
@@ -2040,7 +2040,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         ich = 7;
     } else {
         ich = 6;
-        if ((psz[1] - 0x20 & 2) != 0) {
+        if ((psz[1] - ' ' & 2) != 0) {
             fItalic = 1;
         }
     }
@@ -2060,7 +2060,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         SelectObject(hdc, hfntSav);
     }
     if (ich >= 6) {
-        if ((psz[ich - 5] - 0x20 & 2) != 0) {
+        if ((psz[ich - 5] - ' ' & 2) != 0) {
             if (psz[ich - 1] == '*') {
                 ich = CchGetString(idsNeeded, szT);
                 goto LRightOut;
@@ -2074,7 +2074,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         }
         strncpy(&szT[ich], psz + (ichT + fFleet), 6 - ichT);
         ich += 6 - ichT;
-        if (fFleet == 0 && (psz[fDoubleDraw + 1] - 0x20 & 1) != 0) {
+        if (fFleet == 0 && (psz[fDoubleDraw + 1] - ' ' & 1) != 0) {
             szT[ich++] = '%';
         }
     LRightOut:
@@ -2098,7 +2098,7 @@ void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl) {
     int16_t etaLast;
     int16_t etaFirst;
 
-    fMinimal = lppl == 0 ? 0 : 1;
+    fMinimal = lppl != 0;
     if (fMinimal == 0) {
         lppl = &sel.pl;
         if (hwnd == 0) {
@@ -2216,13 +2216,13 @@ int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr) {
                 iNewVal = rgplr[iPlr].rgEnvVar[i] <= rgMin[i] ? rgMin[i] : rgplr[iPlr].rgEnvVar[i];
             }
             if (iNewVal != -1) {
-                lppl->rgEnvVar[i] = LOBYTE(iNewVal);
+                lppl->rgEnvVar[i] = iNewVal;
             }
         }
     }
     pctDesire = PctPlanetDesirability(lppl, idPlayer);
     for (i = 0; i < 3; i++) {
-        lppl->rgEnvVar[i] = LOBYTE(rgiValSav[i]);
+        lppl->rgEnvVar[i] = rgiValSav[i];
     }
     return pctDesire;
 }
@@ -2824,7 +2824,7 @@ int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal) {
         return (cScore >> 6) + 0x58;
     }
     if (cScore < 1000) {
-        return (cScore < 768 ? 0 : 1) + 96;
+        return (cScore >= 768) + 96;
     }
     return 98;
 }

@@ -23,7 +23,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         SelectObject(hdc, rghfontArial8[1]);
         for (i = 0; i < vprptCur->cFields; i++) {
             dx = DxReportColHdr(vprptCur->irpt, i, szWork, hdc);
-            vprptCur->rgbdx[i] = LOBYTE(dx / 2);
+            vprptCur->rgbdx[i] = dx / 2;
         }
         ReleaseDC(hwnd, hdc);
         SortReportCache(vprptCur->irpt, vprptCur->icolSort);
@@ -101,7 +101,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         if (iCol == -1)
             goto L_09c8;
         if (iRow == -1) {
-            ReportColumnPopup(pt, iCol, msg == WM_RBUTTONDOWN ? 1 : 0);
+            ReportColumnPopup(pt, iCol, msg == WM_RBUTTONDOWN);
         } else {
             ExecuteReportClick(pt, vprptCur->irpt, iCol, iRow);
         }

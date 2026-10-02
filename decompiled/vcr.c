@@ -273,7 +273,7 @@ int16_t SetVCRBoard(int16_t iStep) {
             }
         }
         if (vlpbrVCR < (BTLREC *)vlpbdVCRNext) {
-            vrgtok[vlpbrVCR->itok].brc = LOBYTE(((uint16_t)LOWORD(vlpbdVCRNext) & 0xff00) | ((uint16_t)vlpbrVCR->brcDest & 0xff));
+            vrgtok[vlpbrVCR->itok].brc = vlpbrVCR->brcDest;
             vbrcVCRFocus = vrgtok[vlpbrVCR->itok].brc;
             viVCRFocus = vlpbrVCR->itok;
             vrgtok[vlpbrVCR->itok].wFlags = (vrgtok[vlpbrVCR->itok].wFlags & 0xfc1f) | (vlpbrVCR->dzDis & 0x1f) * 0x20;
@@ -390,7 +390,7 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             ReleaseDC(hwnd, hdc);
             if (gd.fVCRTimer != 0) {
                 KillTimer(hwnd, 2668);
-                gd.fVCRTimer = SetTimer(hwnd, 2668, 570 - 120 * viSpeedVCR, NULL) == 0 ? 0 : 1;
+                gd.fVCRTimer = SetTimer(hwnd, 2668, 570 - 120 * viSpeedVCR, NULL) != 0;
             }
             return 1;
         }
@@ -405,14 +405,14 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
             GlobalPD.fShowDamage = 1;
             GlobalPD.fToken = 1;
-            GlobalPD.fHideCounts = vrgtok[viVCRFocus].iplr == idPlayer ? 0 : 1;
+            GlobalPD.fHideCounts = vrgtok[viVCRFocus].iplr != idPlayer;
             Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
             return 0;
         }
         if (pt.x < 0 || pt.y < 0 || pt.x >= 10 || pt.y >= 10) {
             return 0;
         }
-        brc = LOBYTE((pt.y & 0xf) << 4 | (pt.x & 0xf));
+        brc = (pt.y & 0xf) << 4 | (pt.x & 0xf);
         if (message == WM_RBUTTONDOWN) {
             iSel = PopupVCRMenu(hwnd, LOWORD(lParam), HIWORD(lParam), brc);
             if (iSel < 0) {
@@ -513,7 +513,7 @@ L_16d3:
         iStep = -1;
         break;
     case 2:
-        gd.fVCRTimer = SetTimer(hwnd, 2668, 570 - 120 * viSpeedVCR, NULL) == 0 ? 0 : 1;
+        gd.fVCRTimer = SetTimer(hwnd, 2668, 570 - 120 * viSpeedVCR, NULL) != 0;
     case 3:
         goto NextBtn;
     case 4:
@@ -529,7 +529,7 @@ NextBtn:
     if (iStep > vcStepVCR) {
         iStep = vcStepVCR;
     }
-    fAnimate = viSpeedVCR >= 4 ? 0 : 1;
+    fAnimate = viSpeedVCR < 4;
 L_1807:
     SetVCRBoard(iStep);
     DrawVCR(NULL, -2, -1);
@@ -626,7 +626,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     char   *t_merge_2766_0001;
     uint8_t t_merge_2d54_0001;
 
-    fCreatedDC = hdc == 0 ? 1 : 0;
+    fCreatedDC = hdc == 0;
     if (fCreatedDC != 0) {
         hdc = GetDC(hwndVCRDlg);
     }
@@ -930,7 +930,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10, 1, dxyVCRSquare + 2, BLACKNESS);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10 + dxyVCRSquare + 1, (dxyVCRSquare + 3) * y + 10, 1, dxyVCRSquare + 2, BLACKNESS);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10 + dxyVCRSquare + 1, dxyVCRSquare + 2, 1, BLACKNESS);
-            DrawFleetBitmap(NULL, hdc, (dxyVCRSquare + 3) * x + 11, (dxyVCRSquare + 3) * y + 11, 0, ibmp, ctok, dxyVCRSquare >= 64 ? 0 : 1, ibmpRace, csh);
+            DrawFleetBitmap(NULL, hdc, (dxyVCRSquare + 3) * x + 11, (dxyVCRSquare + 3) * y + 11, 0, ibmp, ctok, dxyVCRSquare < 64, ibmpRace, csh);
         } else {
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10, dxyVCRSquare + 2, dxyVCRSquare + 2, BLACKNESS);
         }
@@ -1177,7 +1177,7 @@ void AnimateAttack(HDC hdc) {
         LFinishUp:;
         } while (iHit < vlpbrVCR->ctok);
         for (iFrame = 0; iFrame < vlpbrVCR->ctok; iFrame++) {
-            fKill = vlpbrVCR->rgkill[iFrame].cshKill <= 0 ? 0 : 1;
+            fKill = vlpbrVCR->rgkill[iFrame].cshKill > 0;
             ptokAttack = vrgtok + vlpbrVCR->rgkill[iFrame].itok;
             ptDest.x = (ptokAttack->brc & 0xf) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;
             ptDest.y = (ptokAttack->brc >> 4) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;
@@ -1206,7 +1206,7 @@ int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {
     c = 0;
     iChecked = -1;
     psz = rgch;
-    fAttack = brc == vrgtok[vlpbrVCR->itokAttack].brc ? 1 : 0;
+    fAttack = brc == vrgtok[vlpbrVCR->itokAttack].brc;
     for (i = 0; i < vlpbdVCR->ctok; i++) {
         if (vrgtok[i].brc == brc && vrgtok[i].csh > 0) {
             if (PszPlayerName(vrgtok[i].iplr, 0, 0, 0, 0, NULL) != szWork) {
@@ -1255,10 +1255,10 @@ void EnableVCRButtons() {
     int16_t i;
 
     for (i = 161; i < 163; i++) {
-        EnableWindow(GetDlgItem(hwndVCRDlg, i), viStepVCRCur <= -1 ? 0 : 1);
+        EnableWindow(GetDlgItem(hwndVCRDlg, i), viStepVCRCur > -1);
     }
     for (i = 163; i < 166; i++) {
-        EnableWindow(GetDlgItem(hwndVCRDlg, i), viStepVCRCur >= vcStepVCR ? 0 : 1);
+        EnableWindow(GetDlgItem(hwndVCRDlg, i), viStepVCRCur < vcStepVCR);
     }
     if (viStepVCRCur == -1) {
         SetFocus(GetDlgItem(hwndVCRDlg, IDC_VCR_PLAY_PAUSE));

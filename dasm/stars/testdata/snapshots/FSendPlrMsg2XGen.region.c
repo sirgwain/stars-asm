@@ -14,7 +14,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     pb = rgb;
     pmsghdr = (MSGHDR *)pb;
     pmsghdr->iMsg = iMsg;
-    bitfMsgSent[iMsg >> 3] = LOBYTE((bitfMsgSent[iMsg >> 3] & ~(1 << (iMsg & 7))) | 1 << (iMsg & 7));
+    bitfMsgSent[iMsg >> 3] = (bitfMsgSent[iMsg >> 3] & ~(1 << (iMsg & 7))) | 1 << (iMsg & 7);
     pmsghdr->grWord = 0;
     pmsghdr->wGoto = iObj;
     pb += 4;
@@ -29,7 +29,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
             RawStore16(pb, *pi);
             pb += 2;
         } else {
-            *pb = LOBYTE(*pi);
+            *pb = *pi;
             pb++;
         }
         i++;

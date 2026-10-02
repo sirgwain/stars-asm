@@ -29,24 +29,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return 0;
     }
     lpT = lpCmdLine;
-L_0121:
     while (*lpT != 0) {
-        while (1) {
-            switch (*lpT) {
-            case ' ':
-                lpT++;
-                continue;
-            case '-':
-            case '/':
-                goto L_0164;
-            default:
-                goto L_0517;
-            }
-            goto L_0121;
+        for (; *lpT == ' '; lpT++) {
         }
-    L_0164:
-        for (lpT++; *lpT != 0 && *lpT != ' '; lpT++) {
-            if ((uint16_t)(*lpT - 65) <= 55) {
+        if (*lpT == '-' || *lpT == '/') {
+            for (lpT++; *lpT != 0 && *lpT != ' '; lpT++) {
                 switch (*lpT) {
                 case 'W':
                 case 'w':
@@ -54,29 +41,20 @@ L_0121:
                     break;
                 case 'D':
                 case 'd':
-                    lpT++;
-                    while (1) {
+                    for (lpT++; *lpT != 0 && *lpT != ' '; lpT++) {
                         switch (*lpT) {
                         case 'F':
                         case 'f':
                             ini.fDumpFleets = 1;
-                            goto L_0231;
+                            break;
                         case 'P':
                         case 'p':
                             ini.fDumpPlanets = 1;
-                            goto L_0231;
+                            break;
                         case 'M':
                         case 'm':
                             ini.fDumpMap = 1;
-                        default:
-                        L_0231:
-                            lpT++;
-                            continue;
-                        case 0:
-                        case ' ':
-                            break;
                         }
-                        break;
                     }
                     lpT--;
                     break;
@@ -86,7 +64,7 @@ L_0121:
                     i = 0;
                     while (lpT[1] >= '0' && lpT[1] <= '9') {
                         lpT++;
-                        i = 10 * i + *lpT - 48;
+                        i = 10 * i + *lpT - '0';
                         if (i > 1000) {
                             i = 1000;
                             for (; lpT[1] >= '0' && lpT[1] <= '9'; lpT++) {
@@ -142,7 +120,7 @@ L_0121:
                     break;
                 case 'C':
                 case 'c':
-                    ini.fCmdLine = szBase[0] == 0 ? 0 : 1;
+                    ini.fCmdLine = szBase[0] != 0;
                     break;
                 case 'P':
                 case 'p':
@@ -158,18 +136,17 @@ L_0121:
                     lSaltLast = LSaltFromSz(szPassLast);
                 }
             }
+        } else {
+            pch = szBase;
+            while (*lpT != 0 && *lpT != ' ') {
+                *pch = *lpT;
+                lpT++;
+                pch++;
+            }
+            *pch = 0;
+            ini.fStartupFile = 1;
+            ini.fCmdLine = 1;
         }
-        continue;
-    L_0517:
-        pch = szBase;
-        while (*lpT != 0 && *lpT != ' ') {
-            *pch = *lpT;
-            lpT++;
-            pch++;
-        }
-        *pch = 0;
-        ini.fStartupFile = 1;
-        ini.fCmdLine = 1;
     }
     PostMessage(hwndFrame, WM_STARS_STARTUP, 0, 0);
     while (GetMessage(&msg, NULL, 0, 0) != 0) {
@@ -285,16 +262,16 @@ int16_t FGetSystemColors() {
     dyWinFrame = GetSystemMetrics(SM_CYFRAME);
     if (hdibPlaque != 0) {
         lpbi = (BITMAPINFO *)GlobalLock(hdibPlaque);
-        lpbi->bmiColors[249].rgbRed = LOBYTE(LOWORD(crButtonFace));
-        lpbi->bmiColors[249].rgbGreen = LOBYTE(LOWORD(crButtonFace) >> 8);
-        lpbi->bmiColors[249].rgbBlue = LOBYTE(HIWORD(crButtonFace));
+        lpbi->bmiColors[249].rgbRed = crButtonFace;
+        lpbi->bmiColors[249].rgbGreen = LOWORD(crButtonFace) >> 8;
+        lpbi->bmiColors[249].rgbBlue = HIWORD(crButtonFace);
         GlobalUnlock(hdibPlaque);
     }
     if (hdibToolbar != 0) {
         lpbi = (BITMAPINFO *)GlobalLock(hdibToolbar);
-        lpbi->bmiColors[253].rgbRed = LOBYTE(LOWORD(crButtonFace));
-        lpbi->bmiColors[253].rgbGreen = LOBYTE(LOWORD(crButtonFace) >> 8);
-        lpbi->bmiColors[253].rgbBlue = LOBYTE(HIWORD(crButtonFace));
+        lpbi->bmiColors[253].rgbRed = crButtonFace;
+        lpbi->bmiColors[253].rgbGreen = LOWORD(crButtonFace) >> 8;
+        lpbi->bmiColors[253].rgbBlue = HIWORD(crButtonFace);
         GlobalUnlock(hdibToolbar);
     }
     hdc = GetDC(NULL);
@@ -611,7 +588,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     } else if (iMsg == WM_KEYUP && hwndTb != 0 && (iKey == VK_ESCAPE || iKey == VK_RETURN)) {
         hwndF = GetParent(GetFocus());
         if (hwndF == hwndTb || GetParent(hwndF) == hwndTb) {
-            TerminateToolbarFocus(iKey == VK_ESCAPE ? 1 : 0);
+            TerminateToolbarFocus(iKey == VK_ESCAPE);
         }
     }
     if (iKey == VK_SHIFT && hwndScanner != 0) {
@@ -688,7 +665,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                     itb = tbPlanetNames;
                 }
             }
-            ExecuteButton(itb, FIsButtonDown(itb) == 0 ? 1 : 0);
+            ExecuteButton(itb, FIsButtonDown(itb) == 0);
             InvalidateRect(hwndTb, NULL, 0);
             return 1;
         }

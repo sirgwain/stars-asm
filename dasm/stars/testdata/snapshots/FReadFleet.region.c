@@ -107,7 +107,7 @@ int16_t FReadFleet(FLEET *lpfl) {
             lpord->fNoAutoTrack = 0;
             lpord++;
         }
-        lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
+        lpfl->lpplord->iordMac = lpfl->cord;
         if (lpfl->idPlanet != -1) {
             if (lpfl->idPlanet > game.cPlanMax) {
                 lpfl->idPlanet = -1;

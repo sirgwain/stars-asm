@@ -431,8 +431,8 @@ void DoCyberAiTurn(PROD *rgprod) {
     if (j > 50) {
         j = 50;
     }
-    vrgAiCyberArmadaPotency[0] = LOBYTE(j);
-    vrgAiCyberArmadaPotency[1] = LOBYTE((int16_t)(j & 0xff) / 2);
+    vrgAiCyberArmadaPotency[0] = j;
+    vrgAiCyberArmadaPotency[1] = (int16_t)(j & 0xff) / 2;
     j = 6;
     if (game.turn > 115) {
         j += (uint32_t)(game.turn - 100) / 22;
@@ -440,8 +440,8 @@ void DoCyberAiTurn(PROD *rgprod) {
     if (j > 12) {
         j = 12;
     }
-    vrgAiCyberArmadaPotency[2] = LOBYTE(j);
-    vrgAiCyberArmadaPotency[3] = LOBYTE(3 >= j / 2 - 1 ? j / 2 - 1 : 3);
+    vrgAiCyberArmadaPotency[2] = j;
+    vrgAiCyberArmadaPotency[3] = 3 >= j / 2 - 1 ? j / 2 - 1 : 3;
     memset(rgRecycleShdef, 0, 16);
     if (game.turn < 120) {
         cRecyclePeriod = 50;
@@ -513,7 +513,7 @@ void DoCyberAiTurn(PROD *rgprod) {
             if (lppl->fStarbase != 0) {
                 i++;
             }
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE(i);
+            vlpbAiPlanet[lppl->id * 16 + 10] = i;
             vlpbAiPlanet[lppl->id * 16 + 9] = 1;
         } else if (lppl->iPlayer == idPlayer && lppl->fStarbase != 0) {
             switch (lppl->isb) {
@@ -619,7 +619,7 @@ void DoCyberAiTurn(PROD *rgprod) {
                 }
                 if (iStrDef > 0) {
                     lpciPlanTemp[lpfl->idPlanet].fDefended = 1;
-                    lpciPlanTemp[lpfl->idPlanet].fNeedDefenders = iStrDef >= iAttackStr * 2 ? 0 : 1;
+                    lpciPlanTemp[lpfl->idPlanet].fNeedDefenders = iStrDef < iAttackStr * 2;
                 }
             } else {
                 for (i = 4; i <= 13 && lpfl->rgcsh[i] <= 0; i++) {
@@ -792,7 +792,7 @@ void DoCyberAiTurn(PROD *rgprod) {
                         iLatestBattle = -1;
                     }
                     iBuilt = iAddAttackFleet(lppl, iAttackStr, iLatestDestroyer, iLatestBattle, iSBDef);
-                    fWrite |= iBuilt == 0 ? 0 : 1;
+                    fWrite |= iBuilt != 0;
                     if (iBuilt == 1) {
                         cFlArmadas++;
                     }
@@ -1027,7 +1027,7 @@ void DoCyberPackets() {
                     lpciPlanDst = (CYBERINFO *)(vlpbAiData + (idPlanDst * 2 + 2));
                     if (lpciPlanDst->iPktTarget == 0 && FAddPacketToQueue(lppl) != 0) {
                         lpciPlanDst->iPktTarget = 3;
-                        lpciPlan->fLaunchedPkt = lpciPlan->fNeedScanPkt == 0 ? 1 : 0;
+                        lpciPlan->fLaunchedPkt = lpciPlan->fNeedScanPkt == 0;
                         fWrite = 1;
                     } else {
                         lpciPlan->fLaunchedPkt = 0;
@@ -1430,7 +1430,7 @@ void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
             FMoveToNearestStarbase(lpfl, 0);
             FLookupFleet(lpfl->id, &sel.fl);
         } else {
-            fDropOff = lpfl->rgwtMin[3] <= 0 ? 0 : 1;
+            fDropOff = lpfl->rgwtMin[3] > 0;
         }
         if (fDropOff != 0) {
             lpplDst = LpplFindClosestEnum(lpplCur, FEnumDropOffStage1);

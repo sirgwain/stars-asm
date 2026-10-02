@@ -267,10 +267,10 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
                 lppl->rgwtMin[i] = 0;
                 t_scratch_m16_6 = Random(50);
                 t_call_2d26 = Random(50);
-                lppl->rgEnvVarOrig[i] = LOBYTE(t_call_2d26 + 1 + t_scratch_m16_6);
-                lppl->rgEnvVar[i] = LOBYTE(t_call_2d26 + 1 + t_scratch_m16_6);
+                lppl->rgEnvVarOrig[i] = t_call_2d26 + 1 + t_scratch_m16_6;
+                lppl->rgEnvVar[i] = t_call_2d26 + 1 + t_scratch_m16_6;
                 t_scratch_m16_7 = Random(40);
-                lppl->rgMinConc[i] = LOBYTE(Random(40) + 25 + t_scratch_m16_7);
+                lppl->rgMinConc[i] = Random(40) + 25 + t_scratch_m16_7;
             }
             return 1;
         case iobjMinTerraform:
@@ -286,8 +286,8 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
                     } else if (99 < cAllowed) {
                         cAllowed = 99;
                     }
-                    lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
-                    FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
+                    lppl->rgEnvVar[iEnv] = cAllowed;
+                    FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i > 0, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
                 }
             }
             return 1;

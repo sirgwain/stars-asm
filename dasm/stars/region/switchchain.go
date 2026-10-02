@@ -19,6 +19,12 @@ const minSwitchCases = 3
 // contain no call, because the switch evaluates it once instead of once per
 // test. Heads are tried in reverse postorder, so a chain is found from its
 // first test. fn is not modified.
+//
+// A chain stays within one loop. Tests that start a loop and leave it, as
+// MSC compiles while (*lpT != 0 && *lpT != ' '), are the loop's condition
+// rather than cases, so a chain of the switch inside the loop starts after
+// them; and a loop's test never takes in the tests after the loop, as
+// while (*lpT == ' ') lpT++; if (*lpT == '-' || ...) does.
 func recoverSwitches(fn ir.Func, g *Graph) ir.Func {
 	preds := map[string]int{}
 	index := map[string]int{}
@@ -26,18 +32,23 @@ func recoverSwitches(fn ir.Func, g *Graph) ir.Func {
 		index[block.Label] = i
 		preds[block.Label] = len(g.Predecessors(block.ID))
 	}
+	facts := NewFacts(g)
 
 	blocks := slices.Clone(fn.Blocks)
 	removed := map[string]bool{}
-	for _, id := range Dominators(g).Order {
+	loopTests := map[string]bool{}
+	for _, id := range facts.Dom.Order {
 		if id == ExitID {
 			continue
 		}
 		head := &blocks[g.layout[id]]
-		if removed[head.Label] || len(head.Stmts) == 0 {
+		if removed[head.Label] || loopTests[head.Label] || len(head.Stmts) == 0 {
 			continue
 		}
-		sw, used := switchChain(head, blocks, index, preds, removed)
+		if loopConditionTests(head, blocks, index, preds, facts, loopTests) {
+			continue
+		}
+		sw, used := switchChain(head, blocks, index, preds, removed, facts)
 		if sw == nil {
 			continue
 		}
@@ -55,7 +66,7 @@ func recoverSwitches(fn ir.Func, g *Graph) ir.Func {
 // switchChain follows the chain of equality tests that starts with head's
 // final IfGoto. It returns the SwitchGoto for the chain and the labels of the
 // blocks it absorbs, or nil when the chain is too short.
-func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds map[string]int, removed map[string]bool) (*ir.SwitchGoto, []string) {
+func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds map[string]int, removed map[string]bool, facts *Facts) (*ir.SwitchGoto, []string) {
 	test, ok := head.Stmts[len(head.Stmts)-1].(*ir.IfGoto)
 	if !ok {
 		return nil, nil
@@ -74,7 +85,7 @@ func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds 
 			break
 		}
 		b := &blocks[i]
-		if len(b.Stmts) != 1 {
+		if len(b.Stmts) != 1 || facts.Innermost[b.ID] != facts.Innermost[head.ID] {
 			break
 		}
 		test, ok := b.Stmts[0].(*ir.IfGoto)
@@ -95,6 +106,46 @@ func switchChain(head *ir.Block, blocks []ir.Block, index map[string]int, preds 
 		return nil, nil
 	}
 	return &ir.SwitchGoto{Index: e, Cases: cases, Default: next}, used
+}
+
+// loopConditionTests reports whether head starts its loop with equality
+// tests that leave it, the loop's condition, and marks them in skip so no
+// chain takes them as cases. The tests run from head along not-equal edges
+// while each leaves the loop to the same block, as while (*lpT != 0 &&
+// *lpT != ' ') does, so a switch inside the loop is found from the first
+// test after them.
+func loopConditionTests(head *ir.Block, blocks []ir.Block, index map[string]int, preds map[string]int, facts *Facts, skip map[string]bool) bool {
+	loop := facts.LoopByHeader[head.ID]
+	if loop == nil {
+		return false
+	}
+	test, ok := head.Stmts[len(head.Stmts)-1].(*ir.IfGoto)
+	if !ok {
+		return false
+	}
+	e, _, exit, next, ok := equalityTest(test)
+	if !ok {
+		return false
+	}
+	if i, ok := index[exit]; !ok || loop.Body[blocks[i].ID] {
+		return false
+	}
+	for {
+		i, ok := index[next]
+		if !ok || skip[next] || preds[next] != 1 || len(blocks[i].Stmts) != 1 {
+			return true
+		}
+		test, ok := blocks[i].Stmts[0].(*ir.IfGoto)
+		if !ok {
+			return true
+		}
+		e2, _, eq2, next2, ok := equalityTest(test)
+		if !ok || !ir.ExprEqual(e, e2) || eq2 != exit {
+			return true
+		}
+		skip[next] = true
+		next = next2
+	}
 }
 
 // equalityTest matches an IfGoto on E == k or E != k, where k is an integer

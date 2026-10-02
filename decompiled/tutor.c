@@ -51,7 +51,7 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (fRet == 0) {
                 return 0;
             }
-            tutor.fAutoComplete = fRet == 2506 ? 1 : 0;
+            tutor.fAutoComplete = fRet == 2506;
             PostMessage(hwndFrame, WM_STARS_CONTINUE, fRet, 0);
             return 0;
         case IDCANCEL:
@@ -279,7 +279,7 @@ void AdvanceTutor() {
     tutor.fChange = 0;
     idtT = tutor.idtBold;
     fTaskDone = FTutorTaskDone();
-    fRedraw = idtT == tutor.idtBold ? 0 : 1;
+    fRedraw = idtT != tutor.idtBold;
     if (fTaskDone == 0) {
         if (fRedraw == 0) {
             return;
@@ -351,7 +351,7 @@ void SaveGameState() {
     vrgZipProd[0].fValid = vrgZipProd[4].fValid;
     if (gd.fToolbar == 0) {
         hmenu = GetASubMenu(hwndFrame, menuView);
-        gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
+        gd.fToolbar = gd.fToolbar == 0;
         CheckMenuItem(hmenu, IDM_VIEW_TOOLBAR, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
@@ -377,10 +377,10 @@ void RestoreGameState() {
     vrgZipProd[4].zpq1 = vrgZipProd[0].zpq1;
     vrgZipProd[4].fValid = vrgZipProd[0].fValid;
     vrgZipProd[0].zpq1 = tutor.zpq;
-    vrgZipProd[0].fValid = LOBYTE(tutor.fValidQ);
+    vrgZipProd[0].fValid = tutor.fValidQ;
     if (gd.fToolbar != tutor.fTBVis) {
         hmenu = GetASubMenu(hwndFrame, menuView);
-        gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
+        gd.fToolbar = gd.fToolbar == 0;
         CheckMenuItem(hmenu, IDM_VIEW_TOOLBAR, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
@@ -2460,7 +2460,7 @@ int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, 
             } else {
                 tutor.idh = idhFleetWaypointsTile;
                 if (iWarp != 0xffff) {
-                    fRet = ord.iWarp == iWarp ? 1 : 0;
+                    fRet = ord.iWarp == iWarp;
                 } else {
                     fRet = 1;
                 }
@@ -2841,20 +2841,8 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
         TutorError(idsTutorialDontHaveCorrectShipSelectedShip);
         return 0;
     case tutsbAccept:
-        if ((uint16_t)(game.turn - 13) > 16)
-            break;
         switch (game.turn) {
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 18:
-        case 19:
-        case 21:
-        case 23:
-        case 24:
-        case 26:
-        case 28:
+        default:
             goto NoCustom;
         case 13:
             hs.grhst = hstScanner;

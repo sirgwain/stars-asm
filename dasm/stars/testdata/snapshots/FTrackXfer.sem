@@ -157,7 +157,7 @@ L_5dc1:
     branch mdXferDlg != mdXferShips ? L_5f01 : L_5dcb
 
 L_5dcb:
-    branch (int16_t)LOWORD(dChg) >= pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal] ? L_5e19 : L_5e10
+    branch (int16_t)LOWORD(dChg) >= pxfer[btn.iSide == 0].fl.rgcsh[iVal] ? L_5e19 : L_5e10
 
 
 
@@ -167,7 +167,7 @@ L_5e10:
     goto L_5e4d
 
 L_5e19:
-    i = pxfer[(btn.iSide == 0 ? 1 : 0)].fl.rgcsh[iVal]
+    i = pxfer[btn.iSide == 0].fl.rgcsh[iVal]
 
 
 
@@ -183,7 +183,7 @@ L_5e87:
 
 L_5e8c:
     pxfer[btn.iSide].fl.rgcsh[iVal] = (pxfer[btn.iSide].fl.rgcsh[iVal] + i)
-    t_merge_5ecd_0001 = (btn.iSide == 0 ? 1 : 0)
+    t_merge_5ecd_0001 = btn.iSide == 0
     pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] = (pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] - i)
     call DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn) -> callresult(void)
 

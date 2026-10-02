@@ -135,8 +135,7 @@ DoInt:
     goto L_8f4d;
 
 L_87d7:
-    pchT =
-        PszPlayerName(*pParams & 0xf, *pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
+    pchT = PszPlayerName(*pParams & 0xf, *pszFormat == 'L', (*pParams & 0x10) != 0, (*pParams & 0x20) != 0, (*pParams & 0xc0) >> 6, NULL);
     goto FinishString;
 
 L_8850:
@@ -424,13 +423,13 @@ L_8eba:
     goto L_8f4d;
 
 L_8ecd:
-    if ((uint16_t)(*pszFormat - 69) > 53)
+    if ((uint16_t)(*pszFormat - 'E') > 53)
         goto L_8eba;
     else
         goto L_8ed8;
 
 L_8ed8:
-    switch ((*pszFormat - 69) * 2) {
+    switch ((*pszFormat - 'E') * 2) {
     case 0x0:
         goto L_8767;
     case 0x2:

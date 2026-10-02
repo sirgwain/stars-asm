@@ -31,8 +31,8 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
         }
         SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
-        EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-        EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+        EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+        EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
         for (i = 408; i <= 413; i++) {
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
         }
@@ -152,8 +152,8 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 }
                 SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
             }
-            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
             break;
         case IDC_BATTLE_PLAN_COPY:
             if (rgcbtlplan[idPlayer] == 15) {
@@ -211,8 +211,8 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
             wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET;
-            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0);
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0);
             i = btlplan.iplrAttack;
             if (i >= idPlayer + 4) {

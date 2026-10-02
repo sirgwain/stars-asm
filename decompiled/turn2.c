@@ -160,7 +160,7 @@ void Produce() {
                             fmemmove(lppl->lpplprod + (1 + (iprodCur - fPrevProdIsAlch)), lppl->lpplprod + (1 + (iprodCur + 1)),
                                      (lppl->lpplprod->iprodMac - iprodCur - 1) * 4);
                         }
-                        lppl->lpplprod->iprodMac -= LOBYTE(fPrevProdIsAlch + 1);
+                        lppl->lpplprod->iprodMac -= fPrevProdIsAlch + 1;
                         iprodCur -= fPrevProdIsAlch + 1;
                     L_0b8e:
                         iprodCur++;
@@ -646,10 +646,10 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
                 lppl->rgwtMin[i] = 0;
                 t_scratch_m16_6 = Random(50);
                 t_call_2d26 = Random(50);
-                lppl->rgEnvVarOrig[i] = LOBYTE(t_call_2d26 + 1 + t_scratch_m16_6);
-                lppl->rgEnvVar[i] = LOBYTE(t_call_2d26 + 1 + t_scratch_m16_6);
+                lppl->rgEnvVarOrig[i] = t_call_2d26 + 1 + t_scratch_m16_6;
+                lppl->rgEnvVar[i] = t_call_2d26 + 1 + t_scratch_m16_6;
                 t_scratch_m16_7 = Random(40);
-                lppl->rgMinConc[i] = LOBYTE(Random(40) + 25 + t_scratch_m16_7);
+                lppl->rgMinConc[i] = Random(40) + 25 + t_scratch_m16_7;
             }
             return 1;
         case iobjMinTerraform:
@@ -665,8 +665,8 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
                     } else if (99 < cAllowed) {
                         cAllowed = 99;
                     }
-                    lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
-                    FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
+                    lppl->rgEnvVar[iEnv] = cAllowed;
+                    FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i > 0, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
                 }
             }
             return 1;
@@ -935,7 +935,7 @@ void DropColonists() {
                             }
                         }
                     } else {
-                        FSendPlrMsg2(iMax, (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh ? 1 : 0) + 10, pl.id, pl.id, 0);
+                        FSendPlrMsg2(iMax, (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh) + 10, pl.id, pl.id, 0);
                     }
                     if (iMax != -1) {
                         cpq = rgplr[iMax].zpq1.cpq;
@@ -956,7 +956,7 @@ void DropColonists() {
                                 }
                             }
                             if (iDst > 0) {
-                                pl.lpplprod->iprodMac = LOBYTE(iDst);
+                                pl.lpplprod->iprodMac = iDst;
                                 t_call_4159 = LpplFromId(pl.id);
                                 t_call_4159->lpplprod = pl.lpplprod;
                             } else {
@@ -1115,7 +1115,7 @@ void AutoTerraform() {
 
     fTerra = 0;
     for (i = 0; i < game.cPlayer; i++) {
-        rgp[i] = GetRaceStat(&rgplr[i], rsMajorAdv) == raTerra ? 1 : 0;
+        rgp[i] = GetRaceStat(&rgplr[i], rsMajorAdv) == raTerra;
         if (rgp[i] != 0) {
             fTerra = 1;
         }
@@ -1146,9 +1146,9 @@ void AutoTerraform() {
                 if (FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, 1) != 0) {
                     for (i = 0; i < 3; i++) {
                         if (rgMin[i] != -1) {
-                            lppl->rgEnvVar[i] = LOBYTE(rgMin[i]);
+                            lppl->rgEnvVar[i] = rgMin[i];
                         } else if (rgMax[i] != -1) {
-                            lppl->rgEnvVar[i] = LOBYTE(rgMax[i]);
+                            lppl->rgEnvVar[i] = rgMax[i];
                         }
                     }
                     i = PctPlanetDesirability(lppl, lppl->iPlayer);
@@ -1196,12 +1196,11 @@ void RemoteTerraforming() {
                         } else if (99 < cAllowed) {
                             cAllowed = 99;
                         }
-                        lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
+                        lppl->rgEnvVar[iEnv] = cAllowed;
                         cDone++;
                     }
                     pctNew = PctPlanetDesirability(lppl, lppl->iPlayer);
-                    FSendPlrMsg(lpfl->iPlayer, (fHelp == 0 ? 346 : 300) + (pctCur == pctNew ? 1 : 0), lpfl->id | 0x8000, lpfl->id, lppl->id, pctCur, pctNew, 0,
-                                0, 0);
+                    FSendPlrMsg(lpfl->iPlayer, (fHelp == 0 ? 346 : 300) + (pctCur == pctNew), lpfl->id | 0x8000, lpfl->id, lppl->id, pctCur, pctNew, 0, 0, 0);
                     if (lpfl->iPlayer != lppl->iPlayer && pctNew != pctCur) {
                         FSendPlrMsg(lppl->iPlayer, fHelp == 0 ? idmHasDegradedValue : idmHasImprovedValue, lppl->id, lpfl->id, lppl->id, pctCur, pctNew, 0, 0,
                                     0);
@@ -1264,7 +1263,7 @@ void UpdatePopulations() {
             }
         }
         if (lppl->iPlayer != -1 && lppl->rgwtMin[3] == 0) {
-            fMac = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh ? 1 : 0;
+            fMac = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh;
             FSendPlrMsg2(lppl->iPlayer, (lPopChg < 0 ? 35 : 64) + fMac, lppl->id, lppl->id, 0);
             UninhabitPlanet(lppl);
         }
@@ -1383,7 +1382,7 @@ void MeteorStrike() {
                 if (iConc > 200) {
                     iConc = 200;
                 }
-                lppl->rgMinConc[rgAffect[i]] = LOBYTE(iConc);
+                lppl->rgMinConc[rgAffect[i]] = iConc;
             }
             for (i = 0; i < 3; i++) {
                 lppl->rgwtMin[i] += (int32_t)(rgQuan[i] >> 4);
@@ -1402,14 +1401,14 @@ void MeteorStrike() {
                 } else if (j > 99) {
                     j = 99;
                 }
-                lppl->rgEnvVar[i] = LOBYTE(j);
+                lppl->rgEnvVar[i] = j;
                 j = lppl->rgEnvVarOrig[i] + iT;
                 if (j < 1) {
                     j = 1;
                 } else if (j > 99) {
                     j = 99;
                 }
-                lppl->rgEnvVarOrig[i] = LOBYTE(j);
+                lppl->rgEnvVarOrig[i] = j;
             }
             TossNonAutoBuildItems(lppl);
         }
@@ -1432,7 +1431,7 @@ void TossNonAutoBuildItems(PLANET *lppl) {
             }
         }
         if (iDst > 0) {
-            lppl->lpplprod->iprodMac = LOBYTE(iDst);
+            lppl->lpplprod->iprodMac = iDst;
         } else {
             FreePl((PL *)lppl->lpplprod);
             lppl->lpplprod = NULL;
@@ -1467,14 +1466,14 @@ void PlanetaryClimateChange() {
             } else if (j > 99) {
                 j = 99;
             }
-            lppl->rgEnvVar[i] = LOBYTE(j);
+            lppl->rgEnvVar[i] = j;
             j = lppl->rgEnvVarOrig[i] + iT;
             if (j < 1) {
                 j = 1;
             } else if (j > 99) {
                 j = 99;
             }
-            lppl->rgEnvVarOrig[i] = LOBYTE(j);
+            lppl->rgEnvVarOrig[i] = j;
             TossNonAutoBuildItems(lppl);
         }
     }
@@ -1493,7 +1492,7 @@ void DiscoverNewMinerals() {
                 FSendPlrMsg(lppl->iPlayer, idmSurveyorsHaveDiscoveredPreviouslyUnknownDepositS, lppl->id, lppl->id, i, 0, 0, 0, 0, 0);
             }
             if (lppl->rgMinConc[i] < 180) {
-                lppl->rgMinConc[i] += LOBYTE(Random(15) + 5);
+                lppl->rgMinConc[i] += Random(15) + 5;
             }
         }
     }
@@ -1537,9 +1536,9 @@ void MysteryTrader() {
                 }
                 iSrc = Random(2);
                 lpth->pt.x = rgC[iSrc];
-                lpth->pt.y = rgC[iSrc == 0 ? 1 : 0];
+                lpth->pt.y = rgC[iSrc == 0];
                 lpth->tht.ptDest.x = rgC[iSrc + 2];
-                lpth->tht.ptDest.y = rgC[(iSrc == 0 ? 1 : 0) + 2];
+                lpth->tht.ptDest.y = rgC[(iSrc == 0) + 2];
                 if (game.turn < 100) {
                     cRand = 5;
                 } else if (game.turn < 250) {
@@ -1876,7 +1875,7 @@ void ThingDecay() {
             lpth--;
             lpthMac--;
         } else if (lpth->ith == ithMinefield) {
-            fMineExpert = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMines ? 1 : 0;
+            fMineExpert = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv) == raMines;
             if (lpth->thm.fDetonate != 0) {
                 lDecay = lpth->thm.cMines;
                 for (ifl = 0; ifl < cFleet; ifl++) {
@@ -1893,7 +1892,7 @@ void ThingDecay() {
                     }
                 }
             }
-            pctDecay = (int16_t)(((fMineExpert == 0 ? 1 : 0) * 3 + 1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines) + 2);
+            pctDecay = (int16_t)(((fMineExpert == 0) * 3 + 1) * CPlanetsInCircle(lpth->pt, lpth->thm.cMines) + 2);
             if (pctDecay > 50) {
                 pctDecay = 50;
             }
@@ -2066,7 +2065,7 @@ void BreedColonistsInTransit() {
         t_call_7e83 = GetRaceStat(&rgplr[i], rsMajorAdv);
         t_merge_7e9a_0001 =
             t_call_7e83 == raDefend ? ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)1 & 0xff) : ((uint16_t)t_call_7e83 & 0xff00) | ((uint16_t)0 & 0xff);
-        grfBreeder[i] = LOBYTE(t_merge_7e9a_0001);
+        grfBreeder[i] = t_merge_7e9a_0001;
         if ((int16_t)(int8_t)LOBYTE(t_merge_7e9a_0001) == 1) {
             fNoBreeders = 0;
         }
@@ -2267,25 +2266,13 @@ void UpdateResearchStatus(int16_t fUsePool) {
                                     iTechNext = jj;
                                 }
                             }
-                            rgplr[idPlayer].iTechCur =
-                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
-                                        0xff00) |
-                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
+                            rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xf0) | iTechNext;
                             rgplr[i].rgResSpent[iT] = 0;
                             iTechCur = iTechNext;
                             iTechNext = 7;
                         } else {
-                            rgplr[idPlayer].iTechCur =
-                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf) & 0xff)) &
-                                        0xff00) |
-                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf) | 0x60) & 0xff));
-                            rgplr[idPlayer].iTechCur =
-                                LOBYTE(((uint16_t)(((uint16_t)(((uint16_t)(192 * idPlayer) & 0xff00) | ((uint16_t)rgplr[idPlayer].iTechCur & 0xff)) & 0xff00) |
-                                                   ((uint16_t)(rgplr[idPlayer].iTechCur & 0xf0) & 0xff)) &
-                                        0xff00) |
-                                       ((uint16_t)((rgplr[idPlayer].iTechCur & 0xf0) | LOBYTE(iTechNext)) & 0xff));
+                            rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xf) | 0x60;
+                            rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xf0) | iTechNext;
                             rgplr[i].rgResSpent[iT] = 0;
                             iTechCur = iTechNext;
                             iTechNext = 6;
@@ -2343,9 +2330,9 @@ int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp) {
     plrSav = rgplr[lppl->iPlayer];
     rgplr[lppl->iPlayer] = rgplr[iplr];
     for (i = 0; i < 3; i++) {
-        rgplr[lppl->iPlayer].rgEnvVar[i] = LOBYTE((int16_t)(((uint16_t)i & 0xff00) | ((uint16_t)plrSav.rgEnvVar[i] & 0xff)));
-        rgplr[lppl->iPlayer].rgEnvVarMin[i] = LOBYTE((int16_t)(((uint16_t)i & 0xff00) | ((uint16_t)plrSav.rgEnvVarMin[i] & 0xff)));
-        rgplr[lppl->iPlayer].rgEnvVarMax[i] = LOBYTE((int16_t)(((uint16_t)i & 0xff00) | ((uint16_t)plrSav.rgEnvVarMax[i] & 0xff)));
+        rgplr[lppl->iPlayer].rgEnvVar[i] = plrSav.rgEnvVar[i];
+        rgplr[lppl->iPlayer].rgEnvVarMin[i] = plrSav.rgEnvVarMin[i];
+        rgplr[lppl->iPlayer].rgEnvVarMax[i] = plrSav.rgEnvVarMax[i];
     }
     iBest = IBestTerraform(lppl, fHelp);
     rgplr[lppl->iPlayer] = plrSav;

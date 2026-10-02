@@ -37,7 +37,7 @@ L_0050:
 
 L_005f:
     dx = DxReportColHdr(vprptCur->irpt, i, szWork, hdc);
-    vprptCur->rgbdx[i] = LOBYTE(dx / 2);
+    vprptCur->rgbdx[i] = dx / 2;
     goto L_004c;
 
 L_0097:
@@ -216,7 +216,7 @@ L_0495:
         goto L_049e;
 
 L_049e:
-    ReportColumnPopup(pt, iCol, msg == WM_RBUTTONDOWN ? 1 : 0);
+    ReportColumnPopup(pt, iCol, msg == WM_RBUTTONDOWN);
     goto L_04e1;
 
 L_04c6:

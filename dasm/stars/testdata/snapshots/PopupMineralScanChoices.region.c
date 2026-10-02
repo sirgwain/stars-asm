@@ -40,7 +40,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
     if (c == 2 && sel.scan.idpl != -1) {
         c = 1;
     }
-    fSep = c == 0 ? 1 : 0;
+    fSep = c == 0;
     lpth = lpThings;
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
@@ -68,7 +68,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             }
             scan.ifl = i;
             idNew = id;
-            fOurs = lpfl->iPlayer == idPlayer ? 1 : 0;
+            fOurs = lpfl->iPlayer == idPlayer;
         } else if ((rgid[i] & 0x20000000) != 0) {
             scan.grobj = grobjThing;
             lpth = lpThings;
@@ -82,7 +82,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             scan.grobj = grobjPlanet;
             idNew = sel.scan.idpl;
             lppl = LpplFromId(idNew);
-            fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+            fOurs = lppl->iPlayer == idPlayer;
         }
         ChangeScanSel(&scan, 2);
         if (fOurs != 0) {

@@ -70,7 +70,7 @@ void InitProduction(PROD *rgprod) {
     } else {
         i = 0;
     }
-    lpplProdGlob->iprodMac = LOBYTE(i);
+    lpplProdGlob->iprodMac = i;
     cProdGlob = 0;
     pProdGlob = rgprod;
     memset(rgprod, 0, 64 * sizeof(PROD));
@@ -504,7 +504,7 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
         prod = lpplProdGlob->rgprod[lSel];
         for (iSrc = 0; iSrc < cProdGlob && ((uint32_t)pProdGlob[iSrc].grobj != prod.grobj || (uint32_t)pProdGlob[iSrc].iItem != prod.iItem); iSrc++) {
         }
-        fRefillSrc = pProdGlob[iSrc].cItem == 0 ? 1 : 0;
+        fRefillSrc = pProdGlob[iSrc].cItem == 0;
         if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
             if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
                 c = 1020;
@@ -577,7 +577,7 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
                     iDst++;
                 }
             }
-            lpplprodT->iprodMac = LOBYTE(iDst);
+            lpplprodT->iprodMac = iDst;
             FreePl((PL *)lpplProdGlob);
             lpplProdGlob = lpplprodT;
             sel.pl.fNoResearch = vrgZipProd[lParam].fNoResearch;
@@ -610,14 +610,14 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     case IDCANCEL:
         hwndProdDlg = 0;
         StickyDlgPos(hwnd, &ptStickyProduceDlg, 0);
-        EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+        EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
         break;
     case IDC_BACK:
     case IDC_NEXT:
         c = GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT ? 1 : -1;
         FinishProduction(1);
         if (GetKeyState(VK_SHIFT) < 0) {
-            SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT ? 1 : 0));
+            SelectAdjPlanet(0, IdFindAdjStarbase(sel.pl.id, GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT));
         } else {
             SelectAdjPlanet(c, 0);
         }
@@ -794,7 +794,7 @@ void FillProdSrcLB(HWND hwndLB, int16_t mdFill) {
             psz = PszNameProdItem(pProdGlob + i);
             strcpy(&szT[6], psz);
             if (pProdGlob[i].grobj == grobjFleet) {
-                szT[0] = LOBYTE(pProdGlob[i].iItem < iobjPacketGerm ? 42 : 35);
+                szT[0] = pProdGlob[i].iItem < iobjPacketGerm ? 42 : 35;
             } else if (pProdGlob[i].iItem < mdIdleFactory) {
                 szT[0] = 'I';
                 strcat(&szT[6], " (Auto Build)");
@@ -1305,7 +1305,7 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             case IDOK:
             case IDCANCEL:
                 StickyDlgPos(hwnd, &ptStickyZipProdDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 vyZPDStatic = -1;
                 if (gd.fTutorial != 0) {
                     AdvanceTutor();
@@ -1351,8 +1351,8 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                                 break;
                         }
                     }
-                    vrgZipProd[iResTechNow].cpq = LOBYTE(cpq);
-                    vrgZipProd[iResTechNow].fNoResearch = LOBYTE(sel.pl.fNoResearch);
+                    vrgZipProd[iResTechNow].cpq = cpq;
+                    vrgZipProd[iResTechNow].fNoResearch = sel.pl.fNoResearch;
                     FillZipProdLB(hwnd, &vrgZipProd[iResTechNow]);
                 }
                 EnableZipProdBtns(hwnd, iResTechNow);

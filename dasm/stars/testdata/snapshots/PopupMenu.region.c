@@ -56,7 +56,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
             hmenuSub = CreatePopupMenu();
             for (i += 2; i < cString && rgsz[i] != 0; i++) {
                 if (rgids == 0) {
-                    fCheckedCur = i == iChecked ? 1 : 0;
+                    fCheckedCur = i == iChecked;
                     fChecked |= fCheckedCur;
                 } else {
                     fCheckedCur = LOWORD(rgids[i]);

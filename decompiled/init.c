@@ -314,7 +314,7 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
                     } else {
                         if (*pch < '0' || *pch > '9')
                             goto NoRc;
-                        rg[i] = 10 * rg[i] + (*pch - 48);
+                        rg[i] = 10 * rg[i] + (*pch - '0');
                     }
                     j++;
                     pch++;
@@ -327,8 +327,8 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
             rc.top = rg[1];
             rc.right = rg[2];
             rc.bottom = rg[3];
-            fMaximized = szWork[0] == 'M' ? 1 : 0;
-            fMinimized = szWork[0] == 'I' ? 1 : 0;
+            fMaximized = szWork[0] == 'M';
+            fMinimized = szWork[0] == 'I';
             fInitalized = 1;
         }
         goto L_11ec;
@@ -338,7 +338,7 @@ NoRc:
     rc.right = -32768;
     rc.bottom = 0;
     rc.top = 0;
-    fMaximized = ids == idsMain ? 1 : 0;
+    fMaximized = ids == idsMain;
     fMinimized = 0;
     fInitalized = 0;
 L_11ec:
@@ -428,7 +428,7 @@ void ReadIniSettings() {
     vfs.dy2MinWant = (vfs.dy2MinWant <= 10 ? 10 : vfs.dy2MinWant) >= 2000 ? 2000 : vfs.dy2MinWant > 10 ? vfs.dy2MinWant : 10;
     CchGetString(idsToolbar, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    gd.fToolbar = i == 0 ? 0 : 1;
+    gd.fToolbar = i != 0;
     CchGetString(idsGlobalsettings, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, " ", szWork, 40, szIniFile);
     if (cch != 28) {
@@ -462,7 +462,7 @@ void ReadIniSettings() {
             ini.grobjSel = 4;
         }
         if (szWork[1] >= 'B' && szWork[1] <= 'Q') {
-            ini.idPlayer = szWork[1] - 66;
+            ini.idPlayer = szWork[1] - 'B';
         } else {
             ini.grobjSel = 0;
         }
@@ -479,9 +479,9 @@ void ReadIniSettings() {
     for (i = 0; i < cch; i++) {
         ini.lid = (int32_t)(ini.lid * 16);
         if (szWork[i] >= '0' && szWork[i] <= '9') {
-            ini.lid += (int16_t)(szWork[i] - 48);
+            ini.lid += (int16_t)(szWork[i] - '0');
         } else if (szWork[i] >= 'a' && szWork[i] <= 'f') {
-            ini.lid += (int16_t)(szWork[i] - 87);
+            ini.lid += (int16_t)(szWork[i] - 'W');
         }
     }
     CchGetString(idsScanzoom, szEntry);
@@ -536,7 +536,7 @@ void ReadIniSettings() {
     }
     psz = &szEntry[strlen(szEntry) - 1];
     for (i = 0; i < 9; i++) {
-        *psz = LOBYTE(i + 49);
+        *psz = i + '1';
         cch = GetPrivateProfileString(szSection, szEntry, ".", vrgszMRU + 256 * i, 256, szIniFile);
         if (cch < 4) {
             vrgszMRU[i * 256] = 0;
@@ -559,13 +559,13 @@ void ReadIniSettings() {
     GetPrivateProfileString(szSection, szEntry, "", vszDefPass, 16, szIniFile);
     CchGetString(idsProgress, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    gd.fProgressTxt = w == 0 ? 0 : 1;
+    gd.fProgressTxt = w != 0;
     CchGetString(idsNewreports, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    gd.fPerPlayerDumps = w == 0 ? 0 : 1;
+    gd.fPerPlayerDumps = w != 0;
     CchGetString(idsNohostnames, szEntry);
     w = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    gd.fNoHostNames = w == 0 ? 0 : 1;
+    gd.fNoHostNames = w != 0;
     CchGetString(idsBackups, szEntry);
     vcBackupDirs = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
     if (vcBackupDirs < 1 || vcBackupDirs > 999) {
@@ -575,28 +575,28 @@ void ReadIniSettings() {
     vrptPlanet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportplansort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    vrptPlanet.fAscending = (i & 0x100) == 0 ? 0 : 1;
+    vrptPlanet.fAscending = (i & 0x100) != 0;
     i &= 0xff;
     vrptPlanet.icolSort = i;
     CchGetString(idsReportfleetfld, szEntry);
     vrptFleet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportfleetsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    vrptFleet.fAscending = (i & 0x100) == 0 ? 0 : 1;
+    vrptFleet.fAscending = (i & 0x100) != 0;
     i &= 0xff;
     vrptFleet.icolSort = i;
     CchGetString(idsReportefleetfld, szEntry);
     vrptEFleet.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportefltsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    vrptEFleet.fAscending = (i & 0x100) == 0 ? 0 : 1;
+    vrptEFleet.fAscending = (i & 0x100) != 0;
     i &= 0xff;
     vrptEFleet.icolSort = i;
     CchGetString(idsReportbtlfld, szEntry);
     vrptBattle.grbitVisible = (uint32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
     CchGetString(idsReportbtlsort, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-    vrptBattle.fAscending = (i & 0x100) == 0 ? 0 : 1;
+    vrptBattle.fAscending = (i & 0x100) != 0;
     i &= 0xff;
     vrptBattle.icolSort = i;
     CchGetString(idsReportdefgraph, szEntry);
@@ -618,7 +618,7 @@ void ReadIniSettings() {
     if (uDateCur < uDateInstalled) {
         uDateInstalled = uDateCur;
     }
-    gd.fTrialPeriodOver = uDateCur < (uint16_t)(uDateInstalled + 21) ? 0 : 1;
+    gd.fTrialPeriodOver = uDateCur >= (uint16_t)(uDateInstalled + 21);
     CchGetString(idsFonts, szSection);
     for (i = 0; i < 4; i++) {
         CchGetString(i + 197, szEntry);
@@ -633,7 +633,7 @@ void ReadIniSettings() {
     for (i = 0; i < 4; i++) {
         strcpy(szEntry, szSection);
         psz = &szEntry[strlen(szEntry)];
-        *psz = LOBYTE(i + 49);
+        *psz = i + '1';
         psz[1] = 0;
         GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
         cch = strlen(szWork);
@@ -646,15 +646,15 @@ void ReadIniSettings() {
             if (iPass >= 20) {
                 psz = szWork;
                 for (iPass = 0; iPass < 5; iPass++) {
-                    vrgZip[i].txp.rgia[iPass].iAction = *psz - 97;
+                    vrgZip[i].txp.rgia[iPass].iAction = *psz - 'a';
                     psz++;
-                    vrgZip[i].txp.rgia[iPass].cQuan = *psz - 97;
-                    psz++;
-                    vrgZip[i].txp.rgia[iPass].cQuan =
-                        ((uint32_t)(*psz - 0x61) & 0xfff) << 4 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
+                    vrgZip[i].txp.rgia[iPass].cQuan = *psz - 'a';
                     psz++;
                     vrgZip[i].txp.rgia[iPass].cQuan =
-                        ((uint32_t)(*psz - 0x61) & 0xff) << 8 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
+                        ((uint32_t)(*psz - 'a') & 0xfff) << 4 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
+                    psz++;
+                    vrgZip[i].txp.rgia[iPass].cQuan =
+                        ((uint32_t)(*psz - 'a') & 0xff) << 8 | (vrgZip[i].txp.rgia[iPass].cQuan | vrgZip[i].txp.rgia[iPass].iAction << 0xc);
                     psz++;
                 }
                 strcpy(vrgZip[i].szName, psz);
@@ -667,13 +667,13 @@ void ReadIniSettings() {
         strcpy(szEntry, szSection);
         psz = &szEntry[strlen(szEntry)];
         *psz++ = 'P';
-        *psz = LOBYTE(i + 49);
+        *psz = i + '1';
         psz[1] = 0;
         GetPrivateProfileString(szSection, szEntry, "", szWork, 80, szIniFile);
         cch = strlen(szWork);
         if (cch >= 3 && cch <= 64) {
             psz = szWork;
-            cpq = psz[1] - 97;
+            cpq = psz[1] - 'a';
             if (cpq >= 0 && cpq <= 12) {
                 iPass = 0;
                 for (; iPass < cpq * 4 + 2 && *psz >= 'a' && *psz <= 'p'; psz++) {
@@ -682,18 +682,18 @@ void ReadIniSettings() {
                 if (iPass >= cpq * 4 + 2 && strlen(psz) <= 12) {
                     strcpy(vrgZipProd[i].szName, psz);
                     psz = szWork;
-                    vrgZipProd[i].fNoResearch = LOBYTE(*psz == 'a' ? 0 : 1);
+                    vrgZipProd[i].fNoResearch = *psz != 'a';
                     vrgZipProd[i].fValid = 1;
-                    vrgZipProd[i].cpq = LOBYTE(cpq);
+                    vrgZipProd[i].cpq = cpq;
                     psz += 2;
                     for (iPass = 0; iPass < cpq; iPass++) {
-                        vrgZipProd[i].rgpq[iPass].w = *psz - 97;
+                        vrgZipProd[i].rgpq[iPass].w = *psz - 'a';
                         psz++;
-                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 0x61) * 0x10;
+                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 'a') * 0x10;
                         psz++;
-                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 0x61) * 0x100;
+                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 'a') * 0x100;
                         psz++;
-                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 0x61) * 0x1000;
+                        vrgZipProd[i].rgpq[iPass].w |= (*psz - 'a') * 0x1000;
                         psz++;
                         if (vrgZipProd[i].rgpq[iPass].cQuan > 1020) {
                             vrgZipProd[i].rgpq[iPass].cQuan = 1;
@@ -728,7 +728,7 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
             }
         } else if (isalpha(*pszFormat) != 0) {
             fPopped = isupper(*pszFormat);
-            iBit = fPopped == 0 ? *pszFormat - 97 : *pszFormat - 65;
+            iBit = fPopped == 0 ? *pszFormat - 'a' : *pszFormat - 'A';
             if ((int16_t)iBit >= 0) {
                 for (i = iTile; i < ctile && rgtile[i].id != iBit; i++) {
                 }

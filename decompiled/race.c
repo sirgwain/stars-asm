@@ -346,7 +346,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             InvalidateAdvPtsRect(hwnd);
             i = GetRaceStat(pplr, rsUseLeftover);
             SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_SETCURSEL, i, 0);
-            EnableWindow(GetDlgItem(hwnd, IDC_NEXT), GET_WM_COMMAND_ID(wParam, lParam) == IDC_RACE_RANDOM ? 0 : 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEXT), GET_WM_COMMAND_ID(wParam, lParam) != IDC_RACE_RANDOM);
             vplr.iPlrBmp = pplr->iPlrBmp;
             GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &rc);
             ScreenToClient(hwnd, (POINT *)&rc.right);
@@ -423,7 +423,7 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         for (i = 0; i < 3; i++) {
             SetWindowPos(GetDlgItem(hwnd, i + 291), NULL, 3 * dy + dxLabel + 6, vrgrcRCW[5 * i + 3].top, dxMiddle - 6 * dy - 12, dy, SWP_NOZORDER);
-            CheckDlgButton(hwnd, i + 291, vplr.rgEnvVarMax[i] >= 0 ? 0 : 1);
+            CheckDlgButton(hwnd, i + 291, vplr.rgEnvVarMax[i] < 0);
         }
         cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
         t_scratch_m30 = LOWORD(GetTextExtent(hdc, "15%", 3));
@@ -699,9 +699,9 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
                 dShift = 100 - dWidth;
             }
             if (vplr.rgEnvVarMax[i] != dShift + dWidth) {
-                vplr.rgEnvVarMin[i] = LOBYTE(dShift - dWidth);
-                vplr.rgEnvVarMax[i] = LOBYTE(dShift + dWidth);
-                vplr.rgEnvVar[i] = LOBYTE(vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2);
+                vplr.rgEnvVarMin[i] = dShift - dWidth;
+                vplr.rgEnvVarMax[i] = dShift + dWidth;
+                vplr.rgEnvVar[i] = vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2;
                 DrawRace2(hwnd, NULL, 1 << i);
             }
         }
@@ -745,40 +745,40 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
     }
     while (FTrackBtn(&btnt) != 0) {
         if (irc == 15 || irc == 16) {
-            iMin = LOBYTE(vplr.pctIdealGrowth + dShift);
+            iMin = vplr.pctIdealGrowth + dShift;
             t_merge_2587_0001 = 20 < (1 <= iMin ? iMin : 1) ? 20 : 1 > iMin ? 1 : iMin;
-            iMin = LOBYTE(t_merge_2587_0001);
+            iMin = t_merge_2587_0001;
             if (iMin != vplr.pctIdealGrowth) {
                 vplr.pctIdealGrowth = iMin;
                 DrawRace2(hwnd, btnt.hdc, 8);
             }
         } else {
-            iMin = LOBYTE(vplr.rgEnvVarMin[i] - (dWidth - dShift));
-            iMax = LOBYTE(vplr.rgEnvVarMax[i] + (dWidth + dShift));
+            iMin = vplr.rgEnvVarMin[i] - (dWidth - dShift);
+            iMax = vplr.rgEnvVarMax[i] + (dWidth + dShift);
             if (iMax > 100) {
-                iMin -= LOBYTE(iMax - 100);
+                iMin -= iMax - 100;
                 iMax = 100;
             }
             if (iMin < 0) {
-                iMax = LOBYTE(100 >= iMax - iMin ? iMax - iMin : 100);
+                iMax = 100 >= iMax - iMin ? iMax - iMin : 100;
                 iMin = 0;
             }
             dx = iMax - iMin;
             if (dx < 20) {
                 dx = (0x14 - dx) >> 1;
-                iMin -= LOBYTE(dx);
-                iMax += LOBYTE(dx);
+                iMin -= dx;
+                iMax += dx;
             }
             if (vplr.rgEnvVarMin[i] != iMin || vplr.rgEnvVarMax[i] != iMax) {
                 vplr.rgEnvVarMin[i] = iMin;
                 vplr.rgEnvVarMax[i] = iMax;
-                vplr.rgEnvVar[i] = LOBYTE(vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2);
+                vplr.rgEnvVar[i] = vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2;
                 DrawRace2(hwnd, btnt.hdc, 1 << i);
             }
         }
     }
     if (irc < 15) {
-        vplr.rgEnvVar[i] = LOBYTE(vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2);
+        vplr.rgEnvVar[i] = vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2;
     }
     return 1;
 }
@@ -868,7 +868,7 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
 
     fCreatedDC = 0;
     bt = fRCWReadOnly == 0 ? 0 : 4;
-    fMacintosh = GetRaceStat(&vplr, rsMajorAdv) == raMacintosh ? 1 : 0;
+    fMacintosh = GetRaceStat(&vplr, rsMajorAdv) == raMacintosh;
     if (hdc == 0) {
         fCreatedDC = 1;
         hdc = GetDC(hwnd);
@@ -1000,7 +1000,7 @@ int16_t SetRaceStat(PLAYER *pplr, RaceStat iStat, int16_t iVal) {
     if (iVal > rgRaceStatMax[iStat]) {
         iVal = rgRaceStatMax[iStat];
     }
-    pplr->rgAttr[iStat] = LOBYTE(iVal);
+    pplr->rgAttr[iStat] = iVal;
     return iVal;
 }
 
@@ -1274,7 +1274,7 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 EnableWindow(GetDlgItem(hwnd, i), 0);
             }
         }
-        t_merge_3c78_0001 = GetRaceStat(&vplr, rsMajorAdv) == raNone ? 1 : 0;
+        t_merge_3c78_0001 = GetRaceStat(&vplr, rsMajorAdv) == raNone;
         _wsprintf(szWork, PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech), t_merge_3c78_0001 + 3);
         SetWindowText(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), szWork);
         SendMessage(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceTech3), 0);
@@ -1338,7 +1338,7 @@ void BoundsCheckPlayer(PLAYER *pplr) {
                 pplr->fHacker = 1;
             }
             if (pplr->rgEnvVar[i] != pplr->rgEnvVarMin[i] + (int16_t)(pplr->rgEnvVarMax[i] - pplr->rgEnvVarMin[i]) / 2) {
-                pplr->rgEnvVar[i] = LOBYTE(pplr->rgEnvVarMin[i] + (int16_t)(pplr->rgEnvVarMax[i] - pplr->rgEnvVarMin[i]) / 2);
+                pplr->rgEnvVar[i] = pplr->rgEnvVarMin[i] + (int16_t)(pplr->rgEnvVarMax[i] - pplr->rgEnvVarMin[i]) / 2;
                 pplr->fHacker = 1;
             }
         }
@@ -1650,7 +1650,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                 rgDelta[0] = iDelta;
                 iTry = pplr->rgEnvVar[0] - iDelta;
             }
-            pl.rgEnvVar[0] = LOBYTE(iTry);
+            pl.rgEnvVar[0] = iTry;
             l2 = (double)0;
             for (j = 0; j < rgSteps[1]; j++) {
                 if (j == 0 || rgSteps[1] <= 1) {
@@ -1670,7 +1670,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                     rgDelta[1] = iDelta;
                     iTry = pplr->rgEnvVar[1] - iDelta;
                 }
-                pl.rgEnvVar[1] = LOBYTE(iTry);
+                pl.rgEnvVar[1] = iTry;
                 l1 = 0;
                 for (k = 0; k < rgSteps[2]; k++) {
                     if (k == 0 || rgSteps[2] <= 1) {
@@ -1690,7 +1690,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                         rgDelta[2] = iDelta;
                         iTry = pplr->rgEnvVar[2] - iDelta;
                     }
-                    pl.rgEnvVar[2] = LOBYTE(iTry);
+                    pl.rgEnvVar[2] = iTry;
                     pctDesire = PctPlanetDesirability(&pl, 0);
                     iDelta = rgDelta[0] + rgDelta[1] + rgDelta[2];
                     if (iDelta > pctTerra) {
@@ -1918,36 +1918,36 @@ void CreateRandomRace(PLAYER *pplr) {
             pplr->rgEnvVarMin[i] = -1;
             pplr->rgEnvVar[i] = -1;
         }
-        pplr->pctIdealGrowth = LOBYTE(Random(4) + 2);
+        pplr->pctIdealGrowth = Random(4) + 2;
     } else if (iVal < 7) {
         for (i = 0; i < 3; i++) {
             pplr->rgEnvVar[i] = 50;
             pplr->rgEnvVarMin[i] = 0;
             pplr->rgEnvVarMax[i] = 100;
         }
-        pplr->pctIdealGrowth = LOBYTE(Random(4) + 3);
+        pplr->pctIdealGrowth = Random(4) + 3;
     } else if (iVal < 9) {
         for (i = 0; i < 3; i++) {
             j = Random(2);
             if (i == 2 && pplr->rgEnvVar[0] == pplr->rgEnvVar[1]) {
-                j = pplr->rgEnvVar[0] == 0 ? 0 : 1;
+                j = pplr->rgEnvVar[0] != 0;
             }
             if (j == 0) {
                 pplr->rgEnvVar[i] = 50;
                 pplr->rgEnvVarMin[i] = 0;
                 pplr->rgEnvVarMax[i] = 100;
             } else {
-                pplr->pctIdealGrowth = LOBYTE(Random(4) + 2);
+                pplr->pctIdealGrowth = Random(4) + 2;
             }
         }
-        pplr->pctIdealGrowth = LOBYTE(Random(5) + 2);
+        pplr->pctIdealGrowth = Random(5) + 2;
     } else {
         for (i = 0; i < 3; i++) {
             j = Random(40) * 2 + 20;
             k = Random(100 - j + 1);
-            pplr->rgEnvVar[i] = LOBYTE(j / 2 + k);
-            pplr->rgEnvVarMin[i] = LOBYTE(k);
-            pplr->rgEnvVarMax[i] = LOBYTE(k + j);
+            pplr->rgEnvVar[i] = j / 2 + k;
+            pplr->rgEnvVarMin[i] = k;
+            pplr->rgEnvVarMax[i] = k + j;
         }
         if (iVal < 12) {
             i = Random(3);
@@ -1962,11 +1962,11 @@ void CreateRandomRace(PLAYER *pplr) {
         } else if (iVal < 17) {
             i = Random(3);
             j = Random(81);
-            pplr->rgEnvVar[i] = LOBYTE(j + 10);
-            pplr->rgEnvVarMin[i] = LOBYTE(j);
-            pplr->rgEnvVarMax[i] = LOBYTE(j + 20);
+            pplr->rgEnvVar[i] = j + 10;
+            pplr->rgEnvVarMin[i] = j;
+            pplr->rgEnvVarMax[i] = j + 20;
         }
-        pplr->pctIdealGrowth = LOBYTE(Random(9) + 7);
+        pplr->pctIdealGrowth = Random(9) + 7;
     }
     iVal = Random(3);
     for (i = 8; i <= 13; i++) {
@@ -1986,11 +1986,11 @@ void CreateRandomRace(PLAYER *pplr) {
         for (i = 0; i <= 6; i++) {
             pplr->rgAttr[i] = vrgplrDef[0].rgAttr[i];
         }
-        pplr->rgAttr[7] = LOBYTE(Random(5));
+        pplr->rgAttr[7] = Random(5);
     } else {
         for (i = 0; i <= 7; i++) {
             t_scratch_m16 = Random(rgRaceStatMax[i] + 1 - rgRaceStatMin[i]);
-            pplr->rgAttr[i] = LOBYTE(rgRaceStatMin[i] + t_scratch_m16);
+            pplr->rgAttr[i] = rgRaceStatMin[i] + t_scratch_m16;
         }
     }
     if (strcmp(pplr->szName, PszGetCompressedString(idsRandom2)) == 0) {
@@ -2017,14 +2017,14 @@ void CreateRandomRace(PLAYER *pplr) {
                     dAwayNew = -cPts <= cPts - 50 ? cPts - 50 : -cPts;
                     if (dAwayNew < dAwayCur)
                         continue;
-                    pplr->rgAttr[i + 8] = LOBYTE(j);
+                    pplr->rgAttr[i + 8] = j;
                 }
                 if (j < 2) {
                     pplr->rgAttr[i + 8] = pplr->rgAttr[i + 8] + 1;
                     cPts = CAdvantagePoints(pplr);
                     dAwayNew = -cPts <= cPts - 50 ? cPts - 50 : -cPts;
                     if (dAwayNew >= dAwayCur) {
-                        pplr->rgAttr[i + 8] = LOBYTE(j);
+                        pplr->rgAttr[i + 8] = j;
                     }
                 }
             } else if (iVal < 6) {
@@ -2056,27 +2056,27 @@ void CreateRandomRace(PLAYER *pplr) {
             } else if (Random(2) != 0) {
                 j = pplr->pctIdealGrowth;
                 if (j > 1) {
-                    pplr->pctIdealGrowth = LOBYTE(j - 1);
+                    pplr->pctIdealGrowth = j - 1;
                     cPts = CAdvantagePoints(pplr);
                     dAwayNew = -cPts <= cPts - 50 ? cPts - 50 : -cPts;
                     if (dAwayNew < dAwayCur)
                         continue;
                 }
                 if (j < 15) {
-                    pplr->pctIdealGrowth = LOBYTE(j + 1);
+                    pplr->pctIdealGrowth = j + 1;
                     cPts = CAdvantagePoints(pplr);
                     dAwayNew = -cPts <= cPts - 50 ? cPts - 50 : -cPts;
                     if (dAwayNew < dAwayCur)
                         continue;
                 }
-                pplr->pctIdealGrowth = LOBYTE(j);
+                pplr->pctIdealGrowth = j;
             } else {
                 iVal = Random(3);
                 if (pplr->rgEnvVar[iVal] < 0) {
                     j = Random(31);
-                    pplr->rgEnvVar[iVal] = LOBYTE(j + 35);
-                    pplr->rgEnvVarMin[iVal] = LOBYTE(j);
-                    pplr->rgEnvVarMax[iVal] = LOBYTE(j + 70);
+                    pplr->rgEnvVar[iVal] = j + 35;
+                    pplr->rgEnvVarMin[iVal] = j;
+                    pplr->rgEnvVarMax[iVal] = j + 70;
                     cPts = CAdvantagePoints(pplr);
                     dAwayNew = -cPts <= cPts - 50 ? cPts - 50 : -cPts;
                     if (dAwayNew >= dAwayCur) {

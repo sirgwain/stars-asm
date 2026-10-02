@@ -59,7 +59,7 @@ L_0050:
 
 L_005f:
     dx = DxReportColHdr(vprptCur->irpt, i, szWork, hdc)
-    vprptCur->rgbdx[i] = lobyte((sext16to32(dx) / 2))
+    vprptCur->rgbdx[i] = (sext16to32(dx) / 2)
     goto L_004c
 
 L_0097:
@@ -191,7 +191,7 @@ L_0495:
     branch iRow != -1 ? L_04c6 : L_049e
 
 L_049e:
-    call ReportColumnPopup(pt, iCol, (msg == WM_RBUTTONDOWN ? 1 : 0)) -> callresult(void)
+    call ReportColumnPopup(pt, iCol, msg == WM_RBUTTONDOWN) -> callresult(void)
     goto L_04e1
 
 

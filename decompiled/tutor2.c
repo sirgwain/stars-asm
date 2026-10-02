@@ -914,7 +914,7 @@ int16_t CchTutorString(char *pchOut, TutorId idt) {
     }
     pch += iNibble >> 1;
     iLen = *pchLen;
-    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    fHigh = (iNibble & 1) == 0;
     pszOut = pchOut;
     iBuild = 0;
     while (iLen-- != 0) {
@@ -923,7 +923,7 @@ int16_t CchTutorString(char *pchOut, TutorId idt) {
         } else {
             i = *pch++ & 0xf;
         }
-        fHigh = fHigh == 0 ? 1 : 0;
+        fHigh = fHigh == 0;
         iBuild += i;
         if (i != 15) {
             *pszOut = rgTUTLookupTable[iBuild];

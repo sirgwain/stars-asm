@@ -188,7 +188,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             if (c == 2 && (scan.grobjFull & grobjPlanet) != 0) {
                 c = 1;
             }
-            fSep = c == 0 ? 1 : 0;
+            fSep = c == 0;
             lpth = lpThings;
             lpthMac = lpThings + cThing;
             for (; lpth < lpthMac; lpth++) {

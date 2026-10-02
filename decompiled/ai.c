@@ -648,8 +648,8 @@ void DoRobotoidAiTurn(PROD *rgprod) {
     if (j > 50) {
         j = 50;
     }
-    vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE((int16_t)(j & 0xff) / 2);
+    vrgAiArmadaPotency[0] = j;
+    vrgAiArmadaPotency[1] = (int16_t)(j & 0xff) / 2;
     j = 6;
     if (game.turn > 115) {
         j += (uint32_t)(game.turn - 100) / 22;
@@ -657,8 +657,8 @@ void DoRobotoidAiTurn(PROD *rgprod) {
     if (j > 12) {
         j = 12;
     }
-    vrgAiArmadaPotency[2] = LOBYTE(j);
-    vrgAiArmadaPotency[3] = LOBYTE(3 >= j / 2 - 1 ? j / 2 - 1 : 3);
+    vrgAiArmadaPotency[2] = j;
+    vrgAiArmadaPotency[3] = 3 >= j / 2 - 1 ? j / 2 - 1 : 3;
     memset(rgRecycleShdef, 0, 16);
     if (game.turn < 120) {
         cRecyclePeriod = 50;
@@ -712,7 +712,7 @@ void DoRobotoidAiTurn(PROD *rgprod) {
             if (lppl->fStarbase != 0) {
                 i++;
             }
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE(i);
+            vlpbAiPlanet[lppl->id * 16 + 10] = i;
             vlpbAiPlanet[lppl->id * 16 + 9] = 1;
         }
     }
@@ -771,7 +771,7 @@ void DoRobotoidAiTurn(PROD *rgprod) {
                 }
                 for (i = 0; i <= 2 && lppl->rgwtMin[i] >= 5000; i++) {
                 }
-                fTonsOfMinerals = i == 2 ? 1 : 0;
+                fTonsOfMinerals = i == 2;
                 if (iLatestBomber != -1) {
                     id = lppl->id;
                     for (ifl = 0; ifl < cFleet; ifl++) {
@@ -1405,8 +1405,8 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
     if (j > 50) {
         j = 50;
     }
-    vrgAiArmadaPotency[0] = LOBYTE(j);
-    vrgAiArmadaPotency[1] = LOBYTE((int16_t)(j & 0xff) / 2);
+    vrgAiArmadaPotency[0] = j;
+    vrgAiArmadaPotency[1] = (int16_t)(j & 0xff) / 2;
     j = 6;
     if (game.turn > 115) {
         j += (uint32_t)(game.turn - 100) / 22;
@@ -1414,8 +1414,8 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
     if (j > 12) {
         j = 12;
     }
-    vrgAiArmadaPotency[2] = LOBYTE(j);
-    vrgAiArmadaPotency[3] = LOBYTE(3 >= j / 2 - 1 ? j / 2 - 1 : 3);
+    vrgAiArmadaPotency[2] = j;
+    vrgAiArmadaPotency[3] = 3 >= j / 2 - 1 ? j / 2 - 1 : 3;
     memset(rgRecycleShdef, 0, 16);
     if (game.turn < 120) {
         cRecyclePeriod = 50;
@@ -1455,9 +1455,9 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
                 if (lppl->rgMinConc[i] > 66) {
                     bT = 75;
                 } else {
-                    bT = LOBYTE((int16_t)lppl->rgMinConc[i] / 2);
+                    bT = (int16_t)lppl->rgMinConc[i] / 2;
                 }
-                b += LOBYTE(bT);
+                b += bT;
             }
             if ((b & 0x80) != 0) {
                 b = 127;
@@ -1466,10 +1466,10 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
             cplMiners++;
         }
         if (lppl->iPlayer != idPlayer && lppl->iPlayer != -1) {
-            vlpbAiPlanet[lppl->id * 16 + 10] = LOBYTE((lppl->fStarbase & 0xff) + 1);
+            vlpbAiPlanet[lppl->id * 16 + 10] = lppl->fStarbase + 1;
             pct = PctPlanetOptValue(lppl, idPlayer);
             if (pct > 0) {
-                vlpbAiPlanet[lppl->id * 16 + 3] = LOBYTE(pct);
+                vlpbAiPlanet[lppl->id * 16 + 3] = pct;
                 cplBadGuy++;
             }
         } else if (lppl->iPlayer == idPlayer) {
@@ -1478,7 +1478,7 @@ void DoTurinDroneAiTurn(PROD *rgprod) {
                 vlpbAiPlanet[lppl->id * 16 + 2] = 1;
             } else if (lppl->fStarbase == 0 || lppl->rgwtMin[3] < 200) {
                 ChangeMainObjSel(grobjPlanet, lppl->id);
-                sel.pl.fNoResearch = lppl->rgwtMin[3] < 200 ? 1 : 0;
+                sel.pl.fNoResearch = lppl->rgwtMin[3] < 200;
                 if ((uint32_t)sel.pl.fNoResearch != lppl->fNoResearch) {
                     FLookupPlanet(-1, &sel.pl);
                 }

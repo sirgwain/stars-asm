@@ -548,10 +548,10 @@ L_2cf2:
     lppl->rgwtMin[i] = 0
     t_scratch_m16_6 = Random(50)
     call Random(50) -> t_call_2d26
-    lppl->rgEnvVarOrig[i] = lobyte(((t_call_2d26 + 1) + t_scratch_m16_6))
-    lppl->rgEnvVar[i] = lobyte(((t_call_2d26 + 1) + t_scratch_m16_6))
+    lppl->rgEnvVarOrig[i] = ((t_call_2d26 + 1) + t_scratch_m16_6)
+    lppl->rgEnvVar[i] = ((t_call_2d26 + 1) + t_scratch_m16_6)
     t_scratch_m16_7 = Random(40)
-    lppl->rgMinConc[i] = lobyte(((Random(40) + 25) + t_scratch_m16_7))
+    lppl->rgMinConc[i] = ((Random(40) + 25) + t_scratch_m16_7)
     i = (i + 1)
 
 L_2d9c:
@@ -592,8 +592,8 @@ L_2e4a:
 L_2e50:
 
 L_2e53:
-    lppl->rgEnvVar[iEnv] = lobyte(cAllowed)
-    call FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, (i <= 0 ? 0 : 1), iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
+    lppl->rgEnvVar[iEnv] = cAllowed
+    call FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i > 0, iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 
 
 

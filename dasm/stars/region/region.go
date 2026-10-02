@@ -131,6 +131,10 @@ func Build(fn ir.Func) (Func, error) {
 	if g, err = NewGraph(&fn); err != nil {
 		return Func{}, err
 	}
+	fn = foldTableGuards(fn, g)
+	if g, err = NewGraph(&fn); err != nil {
+		return Func{}, err
+	}
 	fn = recoverSwitches(fn, g)
 	if g, err = NewGraph(&fn); err != nil {
 		return Func{}, err

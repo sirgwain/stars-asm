@@ -30,110 +30,108 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     ClientToScreen16(hwnd, &pt);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
-    if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
-        switch (GlobalPD.grPopup) {
-        case grPopupMineral:
-            psz = PszGetCompressedString(idsMineralConcentration0000000kt);
-            dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
-            dy = 3 * dyArial8 + 8;
-            if (GlobalPD.rgi[4] < 0)
-                break;
-            dy += dyArial8;
+    switch (GlobalPD.grPopup) {
+    case grPopupMineral:
+        psz = PszGetCompressedString(idsMineralConcentration0000000kt);
+        dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
+        dy = 3 * dyArial8 + 8;
+        if (GlobalPD.rgi[4] < 0)
             break;
-        case grPopupPlayer:
-            SelectObject(hdc, rghfontArial8[1]);
-            psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
-            dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
-            dx2 = LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8;
-            if (dx2 > dx) {
-                dx = dx2;
-            }
-            dy = dyArial8 * 2 + 8;
-            break;
-        case grPopupFleet:
-            dxR = 0;
-            dxDamage = 0;
-            dy = dyArial8 + 8;
-            SelectObject(hdc, rghfontArial8[1]);
-            psz = PszGetCompressedString(idsShipName);
-            dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
-            SelectObject(hdc, rghfontArial8[0]);
-            for (i = 0; i < 16; i++) {
-                if (GlobalPD.lpfl->rgcsh[i] > 0 && (GlobalPD.grbit == 0 || FIsPopupHullType(i) != 0)) {
-                    dy += dyArial8;
-                    DecorateHullName(GlobalPD.lpfl->iplr, i, szTB);
-                    lpsz = szTB;
-                    dx = LOWORD(GetTextExtent(hdc, lpsz, fstrlen(lpsz)));
-                    dxL = dxL <= dx ? dx : dxL;
-                    c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i]);
-                    dx = LOWORD(GetTextExtent(hdc, szWork, c));
-                    dxR = dxR <= dx ? dx : dxR;
-                    if (GlobalPD.fRedDamage != 0 && (GlobalPD.lpfl->rgdv[i].dp >> 7 & 0x1ff) != 0 && dxDamage == 0) {
-                        psz = PszGetCompressedString(idsN9999999);
-                        dxDamage = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4;
-                    }
+        dy += dyArial8;
+        break;
+    case grPopupPlayer:
+        SelectObject(hdc, rghfontArial8[1]);
+        psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
+        dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
+        dx2 = LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8;
+        if (dx2 > dx) {
+            dx = dx2;
+        }
+        dy = dyArial8 * 2 + 8;
+        break;
+    case grPopupFleet:
+        dxR = 0;
+        dxDamage = 0;
+        dy = dyArial8 + 8;
+        SelectObject(hdc, rghfontArial8[1]);
+        psz = PszGetCompressedString(idsShipName);
+        dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
+        SelectObject(hdc, rghfontArial8[0]);
+        for (i = 0; i < 16; i++) {
+            if (GlobalPD.lpfl->rgcsh[i] > 0 && (GlobalPD.grbit == 0 || FIsPopupHullType(i) != 0)) {
+                dy += dyArial8;
+                DecorateHullName(GlobalPD.lpfl->iplr, i, szTB);
+                lpsz = szTB;
+                dx = LOWORD(GetTextExtent(hdc, lpsz, fstrlen(lpsz)));
+                dxL = dxL <= dx ? dx : dxL;
+                c = _wsprintf(szWork, PCTD, GlobalPD.lpfl->rgcsh[i]);
+                dx = LOWORD(GetTextExtent(hdc, szWork, c));
+                dxR = dxR <= dx ? dx : dxR;
+                if (GlobalPD.fRedDamage != 0 && (GlobalPD.lpfl->rgdv[i].dp >> 7 & 0x1ff) != 0 && dxDamage == 0) {
+                    psz = PszGetCompressedString(idsN9999999);
+                    dxDamage = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 4;
                 }
             }
-            if (dy == dyArial8 + 8) {
-                psz = PszGetCompressedString(idsShipName);
-                dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
-            }
-            GlobalPD.dxDamage = dxDamage;
-            dx = dxL + dxR + 16 + dxDamage;
-            break;
-        case grPopupUnknownObj:
-            SelectObject(hdc, rghfontArial8[1]);
-            dy = dyArial8 * 4 + 8;
-            psz = PszGetCompressedString(idsPlanet);
-            dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
-            psz = PszGetPlanetName(sel.scan.idpl);
-            SelectObject(hdc, rghfontArial8[0]);
-            dxName = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
-            dxCoord = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4));
-            dx += dxName <= dxCoord ? dxCoord : dxName;
-            break;
-        case grPopupPlanetEnv:
-            ptT = PtDisplayPlanetStateInfo(hdc, 0);
-            goto SetDxDy;
-        case grPopupShipOrders:
-            ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
-            goto SetDxDy;
-        case grPopupPlanet:
-            ptT = PtDisplayPlanetPopInfo(hdc, 0);
-            goto SetDxDy;
-        case grPopupResources:
-            ptT = PtDisplayResourceInfo(hdc, 200, 0);
-            goto SetDxDy;
-        case grPopupPlanetIndustry:
-            ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
-            goto SetDxDy;
-        case grPopupComponent:
-            dx = (dyArial8 <= 14 ? 0 : 40) + 344;
-            dy = dyArial10 + 72 + 12 * dyArial8 + 6;
-            break;
-        case grPopupString:
-            ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
-            goto SetDxDy;
-        case grPopupShdef:
-        case grPopupShdefSB:
-            mdBuild = GlobalPD.grPopup == grPopupShdef ? mdBuildShdef : mdBuildHuldef;
-            lpshdefBuild = GlobalPD.lpshdef;
-            UpdateSlotGlobals();
-            dx = 340;
-            dy = dyArial8 + 306 + 6 * dyArial8 + 8;
-            if (gd.mdScreenSize <= 0 || GlobalPD.grPopup != grPopupShdef)
-                break;
-            dy += 3 * dyArial8;
-            break;
-        case grPopupUnknown:
-            dx = 120;
-            dy = 80;
         }
-        goto L_1225;
-    SetDxDy:
-        dx = ptT.x + 2;
-        dy = ptT.y + 2;
+        if (dy == dyArial8 + 8) {
+            psz = PszGetCompressedString(idsShipName);
+            dxL = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
+        }
+        GlobalPD.dxDamage = dxDamage;
+        dx = dxL + dxR + 16 + dxDamage;
+        break;
+    case grPopupUnknownObj:
+        SelectObject(hdc, rghfontArial8[1]);
+        dy = dyArial8 * 4 + 8;
+        psz = PszGetCompressedString(idsPlanet);
+        dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
+        psz = PszGetPlanetName(sel.scan.idpl);
+        SelectObject(hdc, rghfontArial8[0]);
+        dxName = LOWORD(GetTextExtent(hdc, psz, strlen(psz)));
+        dxCoord = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4));
+        dx += dxName <= dxCoord ? dxCoord : dxName;
+        break;
+    case grPopupPlanetEnv:
+        ptT = PtDisplayPlanetStateInfo(hdc, 0);
+        goto SetDxDy;
+    case grPopupShipOrders:
+        ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
+        goto SetDxDy;
+    case grPopupPlanet:
+        ptT = PtDisplayPlanetPopInfo(hdc, 0);
+        goto SetDxDy;
+    case grPopupResources:
+        ptT = PtDisplayResourceInfo(hdc, 200, 0);
+        goto SetDxDy;
+    case grPopupPlanetIndustry:
+        ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
+        goto SetDxDy;
+    case grPopupComponent:
+        dx = (dyArial8 <= 14 ? 0 : 40) + 344;
+        dy = dyArial10 + 72 + 12 * dyArial8 + 6;
+        break;
+    case grPopupString:
+        ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
+        goto SetDxDy;
+    case grPopupShdef:
+    case grPopupShdefSB:
+        mdBuild = GlobalPD.grPopup == grPopupShdef ? mdBuildShdef : mdBuildHuldef;
+        lpshdefBuild = GlobalPD.lpshdef;
+        UpdateSlotGlobals();
+        dx = 340;
+        dy = dyArial8 + 306 + 6 * dyArial8 + 8;
+        if (gd.mdScreenSize <= 0 || GlobalPD.grPopup != grPopupShdef)
+            break;
+        dy += 3 * dyArial8;
+        break;
+    case grPopupUnknown:
+        dx = 120;
+        dy = 80;
     }
+    goto L_1225;
+SetDxDy:
+    dx = ptT.x + 2;
+    dy = ptT.y + 2;
 L_1225:
     SelectObject(hdc, hfontSav);
     ReleaseDC(hwnd, hdc);

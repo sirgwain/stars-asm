@@ -202,7 +202,7 @@ L_5dc1:
         goto L_5dcb;
 
 L_5dcb:
-    if ((int16_t)LOWORD(dChg) >= pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal])
+    if ((int16_t)LOWORD(dChg) >= pxfer[btn.iSide == 0].fl.rgcsh[iVal])
         goto L_5e19;
     else
         goto L_5e10;
@@ -212,7 +212,7 @@ L_5e10:
     goto L_5e4d;
 
 L_5e19:
-    i = pxfer[btn.iSide == 0 ? 1 : 0].fl.rgcsh[iVal];
+    i = pxfer[btn.iSide == 0].fl.rgcsh[iVal];
 
 L_5e4d:
     if (i == 0)
@@ -231,7 +231,7 @@ L_5e87:
 
 L_5e8c:
     pxfer[btn.iSide].fl.rgcsh[iVal] = pxfer[btn.iSide].fl.rgcsh[iVal] + i;
-    t_merge_5ecd_0001 = btn.iSide == 0 ? 1 : 0;
+    t_merge_5ecd_0001 = btn.iSide == 0;
     pxfer[t_merge_5ecd_0001].fl.rgcsh[iVal] -= i;
     DrawXferDlg(hwnd, btnt.hdc, &rc, iBtn);
 

@@ -153,9 +153,9 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
                 if (iResTechNow != (rgplr[idPlayer].iTechCur & 0xf) || iResTechNext != rgplr[idPlayer].iTechCur >> 4 ||
                     pctResGlob != rgplr[idPlayer].pctResearch) {
-                    rgplr[idPlayer].pctResearch = LOBYTE(pctResGlob);
-                    rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | iResTechNow);
-                    rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xff0f) | iResTechNext * 0x10);
+                    rgplr[idPlayer].pctResearch = pctResGlob;
+                    rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xfff0) | iResTechNow;
+                    rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xff0f) | iResTechNext * 0x10;
                     i = rgplr[idPlayer].iTechCur * 256 + pctResGlob;
                     WriteMemRt(rtLogResearch, 2, &i);
                     fChg = 1;
@@ -268,7 +268,7 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw) {
                     }
                 }
                 grbitCur = hstEngine;
-                rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | iResTechNow);
+                rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xfff0) | iResTechNow;
                 for (; grbitCur != hstNone; grbitCur *= 2) {
                     if ((grbitCur & (hstEngine | hstScanner | hstShield | hstArmor | hstBeam | hstTorp | hstBomb | hstMining | hstMines | hstSpecialSB |
                                      hstSBHull | hstSpecialE | hstSpecialM | hstTerra | hstHull | hstPlanetary)) != 0) {
@@ -308,7 +308,7 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw) {
                 }
             }
         TooManyToFinish:
-            rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | iTechSav);
+            rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xfff0) | iTechSav;
             SetTextColor(hdc, 0);
         }
     }
@@ -653,7 +653,7 @@ INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                 case IDC_BROWSER_COMPONENT_CATEGORY:
                     if (GET_WM_COMMAND_CMD(wParam, lParam) != 1)
                         break;
-                    fShowAll = IsDlgButtonChecked(hwnd, IDC_BROWSER_AVAILABLE_ONLY) == 0 ? 1 : 0;
+                    fShowAll = IsDlgButtonChecked(hwnd, IDC_BROWSER_AVAILABLE_ONLY) == 0;
                     lSel = SendMessage(GetDlgItem(hwnd, IDC_BROWSER_COMPONENT_CATEGORY), CB_GETCURSEL, 0, 0);
                     if (lSel < 0)
                         break;
@@ -676,11 +676,11 @@ INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     iItemStart = vpartBrowser.hs.iItem;
                     cIter = 0;
                     lSel = SendMessage(GetDlgItem(hwnd, IDC_BROWSER_COMPONENT_CATEGORY), CB_GETCURSEL, 0, 0);
-                    fAllHsts = lSel == 0 ? 1 : 0;
+                    fAllHsts = lSel == 0;
                     for (i = 0; i < 17 && vpartBrowser.hs.grhst != rggrbitBrParts[i]; i++) {
                     }
                     iStart = i;
-                    fShowAll = IsDlgButtonChecked(hwnd, IDC_BROWSER_AVAILABLE_ONLY) == 0 ? 1 : 0;
+                    fShowAll = IsDlgButtonChecked(hwnd, IDC_BROWSER_AVAILABLE_ONLY) == 0;
                     iOff = GET_WM_COMMAND_ID(wParam, lParam) == IDC_NEXT ? 1 : -1;
                     while (1) {
                         t_scratch_m4a = iOff + (vpartBrowser.hs.iItem | vpartBrowser.hs.cItem << 8) & 0xff;
@@ -1867,7 +1867,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 c = CchGetString(idsShieldCoverageVsDefenseQuan, szWork);
                 CtrTextOut(hdc, ((rcData.right - rcData.left) >> 1) + rcData.left, rcData.top, szWork, c);
                 rcData.top += dyArial8;
-                cch = LOBYTE(CchGetString(idsNum, szT));
+                cch = CchGetString(idsNum, szT);
                 dxStr = LOWORD(GetTextExtent(hdc, szT, cch));
                 dxQuan = (int16_t)(rcData.right - rcData.left - dxStr - 10) / 5;
                 dyPct = (int16_t)(rcData.bottom - rcData.top - dyArial8 - 8) / 5;
@@ -1876,10 +1876,10 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 x = rcData.left + dxStr;
                 y = rcData.bottom - dyArial8 - 4 - 5 * dyPct;
                 SetTextColor(hdc, 8323072);
-                cch = LOBYTE(CchGetString(idsStandard, szWork));
+                cch = CchGetString(idsStandard, szWork);
                 RightTextOut(hdc, rcData.right, rcData.bottom - 3 - 3 * dyArial8, szWork, cch, 0);
                 SetTextColor(hdc, 127);
-                cch = LOBYTE(CchGetString(idsSmart, szWork));
+                cch = CchGetString(idsSmart, szWork);
                 RightTextOut(hdc, rcData.right, rcData.bottom - 4 - dyArial8 * 2, szWork, cch, 0);
                 pct = 100;
                 SetTextColor(hdc, 0);
@@ -1896,7 +1896,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 dxDigit = LOWORD(GetTextExtent(hdc, "0", 1));
                 ch = '0';
                 for (i = 0; i <= 5; i++) {
-                    cch = LOBYTE(_wsprintf(szWork, PCTD, 20 * i));
+                    cch = _wsprintf(szWork, PCTD, 20 * i);
                     t_merge_6105_0001 = i == 0 ? dxDigit >> 1 : i == 5 ? (int16_t)(3 * dxDigit) / 2 : dxDigit;
                     TextOut(hdc, x - t_merge_6105_0001, y, szWork, cch);
                     if (i > 0) {
@@ -1989,7 +1989,7 @@ int32_t ProjectedResearchSpending(int32_t pct) {
 
     lSpend = 0;
     pctSav = rgplr[idPlayer].pctResearch;
-    rgplr[idPlayer].pctResearch = LOBYTE(LOWORD(pct));
+    rgplr[idPlayer].pctResearch = pct;
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {

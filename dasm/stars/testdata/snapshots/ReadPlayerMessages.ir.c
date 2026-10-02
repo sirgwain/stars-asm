@@ -49,7 +49,7 @@ L_99df:
 
 L_99fa:
     lpmh = (MSGHDR *)lpb;
-    bitfMsgSent[lpmh->iMsg >> 3] = LOBYTE((bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7));
+    bitfMsgSent[lpmh->iMsg >> 3] = (bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7);
     cMsg++;
     u = lpmh->grWord;
     lpb += 4;
@@ -58,7 +58,7 @@ L_99fa:
     goto L_9abf;
 
 L_9a98:
-    lpb += 1 + ((u & 1) == 1 ? 1 : 0);
+    lpb += 1 + ((u & 1) == 1);
     u >>= 1;
     i++;
 

@@ -167,8 +167,8 @@ CheckBox:
 
 L_6116:
     idm = IdmGetMessageN(iMsgCur)
-    fSet = ((bitfMsgFiltered[(idm sar 3)] & (1 << (idm & 7))) == 0 ? 0 : 1)
-    call SetFilteringGroups(idm, (fSet == 0 ? 1 : 0)) -> callresult(void)
+    fSet = (bitfMsgFiltered[(idm sar 3)] & (1 << (idm & 7))) != 0
+    call SetFilteringGroups(idm, fSet == 0) -> callresult(void)
     call DirtyGame(1) -> callresult(void)
     branch gd.fTutorial == 0 ? L_61a0 : L_619b
 
@@ -190,7 +190,7 @@ L_61c3:
     branch ht != htMsgZoom ? L_628f : L_61cc
 
 ZoomBox:
-    fViewFilteredMsg = (fViewFilteredMsg == 0 ? 1 : 0)
+    fViewFilteredMsg = fViewFilteredMsg == 0
     branch iMsgCur < 0 ? L_623f : L_61ec
 
 
@@ -198,7 +198,7 @@ ZoomBox:
 
 L_61ec:
     t_scratch_m30 = (1 << (IdmGetMessageN(iMsgCur) & 7))
-    branch ((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) sar 3)] & t_scratch_m30) == 0 ? 0 : 1) == fViewFilteredMsg ? L_626c : L_623f
+    branch (bitfMsgFiltered[(IdmGetMessageN(iMsgCur) sar 3)] & t_scratch_m30) != 0 == fViewFilteredMsg ? L_626c : L_623f
 
 
 
@@ -271,7 +271,7 @@ L_6374:
     viInRe = 0
 
 L_637a:
-    gd.fSendMsgMode = (gd.fSendMsgMode == 0 ? 1 : 0)
+    gd.fSendMsgMode = gd.fSendMsgMode == 0
     call InvalidateRect(hwndMessage, NULL, 1) -> callresult(void)
     call SetMsgTitle(hwnd) -> callresult(void)
     call SetFocus(hwndMsgEdit) -> callresult(HWND)

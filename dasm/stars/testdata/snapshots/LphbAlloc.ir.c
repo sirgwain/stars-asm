@@ -31,7 +31,7 @@ L_0082:
     lphb->cbSlop = cb - sizeof(HB);
     lphb->cbFree = cb - sizeof(HB);
     lphb->ibTop = sizeof(HB);
-    lphb->ht = LOBYTE(ht);
+    lphb->ht = ht;
     lphb->lphbNext = rglphb[ht];
     rglphb[ht] = lphb;
 

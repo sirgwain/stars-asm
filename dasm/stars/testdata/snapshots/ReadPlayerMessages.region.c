@@ -25,13 +25,13 @@ void ReadPlayerMessages() {
     lpbMax = lpb + imemMsgT;
     while (lpb < lpbMax) {
         lpmh = (MSGHDR *)lpb;
-        bitfMsgSent[lpmh->iMsg >> 3] = LOBYTE((bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7));
+        bitfMsgSent[lpmh->iMsg >> 3] = (bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7);
         cMsg++;
         u = lpmh->grWord;
         lpb += 4;
         iMax = rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
-            lpb += 1 + ((u & 1) == 1 ? 1 : 0);
+            lpb += 1 + ((u & 1) == 1);
             u >>= 1;
         }
     }

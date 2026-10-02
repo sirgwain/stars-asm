@@ -1168,7 +1168,7 @@ char *PszGetCompressedString(StringId ids) {
     }
     pch += iNibble >> 1;
     iLen = *pchLen;
-    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    fHigh = (iNibble & 1) == 0;
     pszOut = szLastStrGet;
     iBuild = 0;
     while (iLen-- != 0) {
@@ -1177,7 +1177,7 @@ char *PszGetCompressedString(StringId ids) {
         } else {
             i = *pch++ & 0xf;
         }
-        fHigh = fHigh == 0 ? 1 : 0;
+        fHigh = fHigh == 0;
         iBuild += i;
         if (i != 15) {
             *pszOut = rgSTRLookupTable[iBuild];

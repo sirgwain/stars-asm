@@ -55,9 +55,9 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             for (i = 1278; i <= 1279; i++) {
                 if (i == 1278) {
-                    rgid[c] = (uint32_t)(grbitScanMines == 15 ? 1 : 0);
+                    rgid[c] = (uint32_t)(grbitScanMines == 15);
                 } else {
-                    rgid[c] = (uint32_t)(grbitScanMines == 0 ? 1 : 0);
+                    rgid[c] = (uint32_t)(grbitScanMines == 0);
                 }
                 CchGetString(i, &szWork[(i - 1278) * 30 + 160]);
                 rgszScan[c++] = &szWork[(i - 1278) * 30 + 160];
@@ -67,7 +67,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             szWork[251] = 0;
             rgszScan[c++] = &szWork[250];
             for (i = 0; i < 4; i++) {
-                rgid[c] = (uint32_t)((1 << i & grbitScanMines) == 0 ? 0 : 1);
+                rgid[c] = (uint32_t)((1 << i & grbitScanMines) != 0);
                 CchGetString(i + 1280, &szWork[i * 30]);
                 rgszScan[c++] = &szWork[i * 30];
             }
@@ -106,7 +106,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             grbitSh = 1;
             while (ish < 16) {
                 if (rgshdef[ish].fFree == 0) {
-                    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0 ? 0 : 1);
+                    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) != 0);
                     rgszScan[c++] = rgshdef[ish].hul.szClass;
                 }
                 ish++;
@@ -159,7 +159,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             szWork[301] = 0;
             rgszScan[c++] = &szWork[300];
             for (i = 0; i < 8; i++) {
-                rgid[c] = (uint32_t)((1 << i & grbitScanEShip) == 0 ? 0 : 1);
+                rgid[c] = (uint32_t)((1 << i & grbitScanEShip) != 0);
                 CchGetString(i + 381, &szWork[i * 25]);
                 rgszScan[c++] = &szWork[i * 25];
             }
@@ -193,7 +193,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
         case tbZoomMenu:
             c = 0;
             for (i = 0; i < 9; i++) {
-                rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 1 : 0);
+                rgid[c] = (uint32_t)(iScanZoom + 4 == i);
                 _wsprintf(&szWork[i * 8], PCTDPCTPCT, vrgpctZoom[i]);
                 rgszScan[c++] = &szWork[i * 8];
             }

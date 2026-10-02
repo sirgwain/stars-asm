@@ -105,6 +105,9 @@ func TestDASM_RecoverySnapshots(t *testing.T) {
 		{name: "InitInstance", want: []string{"hAccel = LoadAccelerators(", "if (hAccel == 0)", "hAccelTitle = LoadAccelerators(", "if (hAccelTitle == 0)"}, absent: []string{"t_call_"}, once: "MAKEINTRESOURCE(IDA_MAIN)"},
 		{name: "SetVisPFPlanets", want: []string{"rgStargateRange[i] = StargateRangeFromLppl(NULL, iPlr, i);", "if (rgStargateRange[i] > 0)"}, absent: []string{"t_call_"}, once: "StargateRangeFromLppl(NULL, iPlr, i)"},
 		{name: "FGenerateTurn", want: []string{"rglpshdef[i][ish].hul.rghs[0].cItem = 1;"}, absent: []string{"t_fields_"}},
+		{name: "WinMain", want: []string{"for (; *lpT == ' '; lpT++)", "if (*lpT == '-' || *lpT == '/')", "for (lpT++; *lpT != 0 && *lpT != ' '; lpT++) {", "case 'F':", "i = 10 * i + *lpT - '0';", "ini.fCmdLine = szBase[0] != 0;"}, absent: []string{"goto ", "(uint16_t)(*lpT", "? 0 : 1"}},
+		{name: "FillBuildPartsLB", want: []string{"sz[1] = i + 'A';", "sz[2] = part.pcom->ibmp % 26 + 'A';"}, absent: []string{"LOBYTE"}},
+		{name: "FakeListProc", want: []string{"CallWindowProc(lpfnRealListProc, hwnd, WM_LBUTTONDOWN, wParam, lParam);", "1 << (szWork[0] - 'A')"}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			if err := dumpFunction(fx.SDB, tc.name, "region.c", func(w io.Writer, f *typeinfo.Function) {

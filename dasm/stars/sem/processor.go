@@ -383,6 +383,21 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "simplify-booleans",
+			Purpose: "Write boolean ternaries and comparisons of booleans with 0 as the comparisons they are.",
+			Sem:     func(*FuncContext) SemBlockProcessor { return &simplifyBooleansProcessor{} },
+		},
+		{
+			Name:    "byte-stores",
+			Purpose: "Drop the low-byte projection from values stored into byte storage, which the store truncates the same way.",
+			Sem:     func(*FuncContext) SemBlockProcessor { return &byteStoresProcessor{} },
+		},
+		{
+			Name:    "char-arithmetic",
+			Purpose: "Write the printable constants of character arithmetic as character literals.",
+			Sem:     func(*FuncContext) SemBlockProcessor { return &charArithmeticProcessor{} },
+		},
+		{
 			Name:    "recover-field-copies",
 			Purpose: "Recover complete aggregate copies from declared field copies and merge edges.",
 			Func:    func(*FuncContext) SemFuncProcessor { return &fieldCopiesProcessor{} },

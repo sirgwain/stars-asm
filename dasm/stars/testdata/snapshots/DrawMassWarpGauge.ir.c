@@ -8,7 +8,7 @@ void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur) {
     int32_t l;
 
 L_2afa:
-    fTwoMAs = iBest >= 0 ? 0 : 1;
+    fTwoMAs = iBest < 0;
     SelectObject(hdc, rghfontArial8[1]);
     if (iCur >= 5)
         goto L_2b32;

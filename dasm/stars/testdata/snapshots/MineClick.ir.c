@@ -140,7 +140,7 @@ L_3dcb:
 L_3dd1:
     GlobalPD.grPopup = grPopupShdef;
     GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
-    GlobalPD.fHideCounts = idPlayer == lpfl->iPlayer ? 0 : 1;
+    GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer;
     GlobalPD.fShowDamage = 0;
     GlobalPD.fToken = 0;
     GlobalPD.fSummary = 1;
@@ -149,7 +149,7 @@ L_3dd1:
 L_3e38:
     GlobalPD.grPopup = grPopupFleet;
     GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-    GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
+    GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll;
     GlobalPD.grbit = 0xff;
 
 L_3e84:
@@ -160,7 +160,7 @@ L_3e99:
     GlobalPD.grPopup = grPopupShdef;
     lppl = LpplFromId(sel.scan.idpl);
     GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
-    GlobalPD.fHideCounts = idPlayer == lppl->iPlayer ? 0 : 1;
+    GlobalPD.fHideCounts = idPlayer != lppl->iPlayer;
     GlobalPD.fShowDamage = 1;
     GlobalPD.fToken = 0;
     GlobalPD.fSummary = 1;
@@ -361,7 +361,7 @@ L_4220:
     scan.ifl = i;
     scan.grobj = grobjFleet;
     idNew = rglpfl[i]->id;
-    fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+    fOurs = rglpfl[i]->iPlayer == idPlayer;
     goto ChangeIt;
 
 L_4278:
@@ -394,7 +394,7 @@ L_42cd:
     goto ChangeIt;
 
 L_42d5:
-    fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+    fOurs = lppl->iPlayer == idPlayer;
 
 L_42f0:
     goto ChangeIt;
@@ -451,7 +451,7 @@ L_4384:
     scan.grobj = grobjFleet;
     scan.ifl = i;
     idNew = rglpfl[i]->id;
-    fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+    fOurs = rglpfl[i]->iPlayer == idPlayer;
 
 ChangeIt:
     if (fOurs == 0)

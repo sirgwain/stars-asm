@@ -250,7 +250,7 @@ int16_t FCreateAiShdef(int16_t ishdef, HulDef ihul, uint8_t *rgaip) {
         part.hs.cItem = lphul->rghs[ihs].cItem;
         shdef.hul.rghs[ihs] = part.hs;
     }
-    shdef.hul.chs = LOBYTE(ihs);
+    shdef.hul.chs = ihs;
     shdef.fFree = 0;
     if (ishdef < 0) {
         shdefBuild = shdef;
@@ -391,7 +391,7 @@ int16_t FChangeAiShdef(SHDEF *pshdef, int16_t ishdef) {
         if (ishdef >= 16) {
             rgplr[idPlayer].cshdefSB += iDir;
         } else {
-            rgplr[idPlayer].cShDef += LOBYTE(iDir);
+            rgplr[idPlayer].cShDef += iDir;
         }
     } else if (lpshdefBase[ishdefWork].fFree == 0) {
         lpshdefBase[ishdefWork].wFlags = (lpshdefBase[ishdefWork].wFlags & 0xfdff) | 0x200;
@@ -512,7 +512,7 @@ int16_t IdNearestColonizablePlanet(FLEET *lpflCol, THING **plpthWorm) {
     lpb = vlpbAiPlanet + 15;
     i = 0;
     while (i < game.cPlanMax) {
-        *lpb = LOBYTE(iVal);
+        *lpb = iVal;
         i++;
         lpb += 16;
     }
@@ -530,7 +530,7 @@ int16_t IdNearestColonizablePlanet(FLEET *lpflCol, THING **plpthWorm) {
         } else {
             iVal = 0;
         }
-        vlpbAiPlanet[lppl->id * 16 + 15] = LOBYTE(iVal);
+        vlpbAiPlanet[lppl->id * 16 + 15] = iVal;
     }
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
@@ -1058,7 +1058,7 @@ int16_t IdTargetFreighter(FLEET *lpflFr, PLANET *lpplHome) {
             iWorst = i;
         }
     }
-    fNeedy = lWorst < (int32_t)(lWorst2 >> 1) ? 1 : 0;
+    fNeedy = lWorst < (int32_t)(lWorst2 >> 1);
     if (lWorst < (int32_t)(lWorst2 >> 2)) {
         fNeedy++;
     }
@@ -1340,7 +1340,7 @@ int16_t FMoveAiFleet(FLEET *lpfl, ORDER *pord, int16_t fAppend) {
     }
     sel.fl.lpplord->rgord[iord] = *pord;
     sel.fl.cord = iord + 1;
-    sel.fl.lpplord->iordMac = LOBYTE(iord + 1);
+    sel.fl.lpplord->iordMac = iord + 1;
     return FLookupFleet(-1, &sel.fl);
 }
 
@@ -1386,7 +1386,7 @@ void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, AddItemMod
             lpplProdGlob->iprodMac++;
         }
         if (fSingle != 0) {
-            FinishProduction(cItem == 0 ? 0 : 1);
+            FinishProduction(cItem != 0);
         }
     }
     return;
@@ -1403,7 +1403,7 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
         *pishdefSBLatest = IshdefAiSBLatest();
         ValidateStarbaseHistory();
     }
-    rgplr[idPlayer].pctResearch = LOBYTE(pct);
+    rgplr[idPlayer].pctResearch = pct;
     for (i = 0; i < 6 && rgplr[idPlayer].rgTech[i] >= 24; i++) {
     }
     if (i == 6) {
@@ -1414,9 +1414,9 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
     for (i = 0; i < cRes; i++) {
         ilvl = rgplr[idPlayer].rgTech[lpbRes[i] >> 5];
         if (ilvl < (lpbRes[i] & 0x1f)) {
-            rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | lpbRes[i] >> 5);
+            rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xfff0) | lpbRes[i] >> 5;
             if (i < cRes - 1 && ilvl + 1 == (lpbRes[i] & 0x1f)) {
-                rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xff0f) | (lpbRes[i + 1] >> 5) * 0x10);
+                rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xff0f) | (lpbRes[i + 1] >> 5) * 0x10;
             }
             pctTech = rgplr[idPlayer].pctResearch + rgplr[idPlayer].iTechCur * 256;
             WriteMemRt(rtLogResearch, 2, &pctTech);
@@ -1430,7 +1430,7 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
         }
     }
     if ((rgplr[idPlayer].iTechCur & 0xf) != iSmallest) {
-        rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xfff0) | iSmallest);
+        rgplr[idPlayer].iTechCur = (rgplr[idPlayer].iTechCur & 0xfff0) | iSmallest;
         if ((rgplr[idPlayer].iTechCur & 0xf) == 0x1a) {
             rgplr[idPlayer].pctResearch = 0;
         }
@@ -2472,7 +2472,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         }
     }
     for (i = 4; i < 10; i++) {
-        rgSB[i] = LOBYTE(rglpshdefSB[idPlayer][i].fFree == 0 ? 0 : 1);
+        rgSB[i] = rglpshdefSB[idPlayer][i].fFree != 0;
     }
     if (rglpshdefSB[idPlayer][4].turn >= rglpshdefSB[idPlayer][7].turn) {
         iNew = 4;
@@ -2487,7 +2487,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
         j = 3;
     }
     for (i = iOld; i < iOld + 3; i++) {
-        rgSB[i] = LOBYTE(j);
+        rgSB[i] = j;
     }
     i = rglpshdefSB[idPlayer][iNew].hul.ihuldef - 32;
     if (i < 4) {

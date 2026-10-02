@@ -292,14 +292,14 @@ INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
                     pch = szValue;
                     dw = 0;
                     for (; isdigit(*pch) != 0; pch++) {
-                        dw = (uint32_t)(dw * 10) + (int16_t)(*pch - 48);
+                        dw = (uint32_t)(dw * 10) + (int16_t)(*pch - '0');
                     }
                     if (dw == 0) {
                         return 1;
                     }
                     Randomize(dw);
                 }
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             }
         } else if (HIWORD(lParam) == 6) {
@@ -384,7 +384,7 @@ void XorFileBuf(char *rgb, int16_t cb) {
         pch = (char *)pl;
         lPrev = LGetNextFileXor();
         while (cb-- != 0) {
-            *pch ^= LOBYTE((int16_t)(int8_t)LOBYTE(LOWORD(lPrev) & 0xff));
+            *pch ^= (int16_t)(int8_t)LOBYTE(LOWORD(lPrev) & 0xff);
             lPrev = (int32_t)(lPrev >> 8);
             pch++;
         }
@@ -426,7 +426,7 @@ char *PszGetCompressedPlanet(int16_t id) {
     }
     pch += iNibble >> 1;
     iLen = *pchLen;
-    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    fHigh = (iNibble & 1) == 0;
     pszOut = szLastGet;
     iBuild = 0;
     fCap = 1;
@@ -436,7 +436,7 @@ char *PszGetCompressedPlanet(int16_t id) {
         } else {
             i = *pch++ & 0xf;
         }
-        fHigh = fHigh == 0 ? 1 : 0;
+        fHigh = fHigh == 0;
         iBuild += i;
         if (i != 15) {
             *pszOut = rgPNLookupTable[iBuild];
@@ -566,8 +566,8 @@ char *PszFromLongK(int32_t l, int16_t *pcch) {
     int16_t t_240b;
     int16_t t_2427;
 
-    fLarge = l < 10000 ? 0 : 1;
-    fExtraLarge = l < 1000000 ? 0 : 1;
+    fLarge = l >= 10000;
+    fExtraLarge = l >= 1000000;
     if (fExtraLarge != 0) {
         l = (int32_t)((l + 500000) / 0xf4240);
         if (l > 999) {
@@ -940,7 +940,7 @@ int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *r
     FrameRect(hdc, &rc, hbrWindowText);
     ExpandRc(&rc, -1, -1);
     if (cTot > 0) {
-        fHuge = cTot < 10000000 ? 0 : 1;
+        fHuge = cTot >= 10000000;
         if (fHuge != 0) {
             cTot = (int32_t)(cTot / 1000);
         }
@@ -1004,7 +1004,7 @@ void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase) {
 
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText) {
     pbtnt->hwnd = hwnd;
-    pbtnt->fCreatedDC = hdc == 0 ? 1 : 0;
+    pbtnt->fCreatedDC = hdc == 0;
     if (hdc == 0) {
         hdc = GetDC(hwnd);
     }
@@ -1375,10 +1375,10 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
         }
         while (cNyb-- != 0) {
             if (fHalf == 0) {
-                *pchOut = LOBYTE((iNyb & 0xf) * 0x10);
+                *pchOut = (iNyb & 0xf) * 0x10;
                 fHalf = 1;
             } else {
-                *pchOut |= LOBYTE(iNyb & 0xf);
+                *pchOut |= iNyb & 0xf;
                 pchOut++;
                 fHalf = 0;
                 if (pchOut - szWork >= 0x400) {
@@ -1418,7 +1418,7 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
         } else {
             iNyb = *szIn >> 4 & 0xf;
         }
-        fHalf = fHalf == 0 ? 1 : 0;
+        fHalf = fHalf == 0;
         if (iNyb >= 11) {
             if (fHalf != 0) {
                 iNyb |= (*szIn & 0xf) << 4;
@@ -1427,7 +1427,7 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
             } else {
                 iNyb |= *szIn & 0xf0;
             }
-            fHalf = fHalf == 0 ? 1 : 0;
+            fHalf = fHalf == 0;
             if ((iNyb & 0xf) == 0xf) {
                 if (fHalf != 0) {
                     iNyb |= (*szIn & 0xf) << 8;
@@ -1436,10 +1436,10 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
                 } else {
                     iNyb |= (*szIn & 0xf0) << 4;
                 }
-                fHalf = fHalf == 0 ? 1 : 0;
+                fHalf = fHalf == 0;
             }
         }
-        *pchOut = LOBYTE(ChFromNybble(iNyb));
+        *pchOut = ChFromNybble(iNyb);
         pchOut++;
         if (pchOut - szWork > *pcOut) {
             return 0;
@@ -1916,7 +1916,7 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         break;
                     }
                 }
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_HELP:
                 WinHelp(hwnd, szHelpFile, HELP_CONTEXT, 1089);
@@ -1980,7 +1980,7 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         }
                     }
                 }
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_HELP:
                 WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhChangePassword);
@@ -2011,7 +2011,7 @@ uint32_t GetDiskSerialNumber() {
     CchGetString(idsC, fn);
     for (i = 0; i < 2; i++) {
         drive = i + 2;
-        fn[0] = LOBYTE(drive + 65);
+        fn[0] = drive + 'A';
         l = 0;
         uDate = 0;
         if (GetDriveType(i + 2) == 3 && dos_findfirst(fn, 8, &fi) == 0) {
@@ -2032,20 +2032,20 @@ uint32_t GetDiskSerialNumber() {
             uDate = 0xc57a;
             l = 1504107685;
         }
-        vrgbEnvCur[iWork++] = LOBYTE(LOWORD(l) & 0xff);
-        vrgbEnvCur[iWork++] = LOBYTE(LOWORD((int32_t)(l >> 8)) & 0xff);
-        vrgbEnvCur[iWork++] = LOBYTE(HIWORD(l) & 0xff);
+        vrgbEnvCur[iWork++] = l;
+        vrgbEnvCur[iWork++] = l >> 8;
+        vrgbEnvCur[iWork++] = HIWORD(l);
         if (i == 0) {
-            vrgbEnvCur[iWork++] = LOBYTE(LOWORD((int32_t)(l >> 0x18)) & 0xff);
+            vrgbEnvCur[iWork++] = l >> 0x18;
         }
-        vrgbEnvCur[iWork++] = LOBYTE(uDate & 0xff);
+        vrgbEnvCur[iWork++] = uDate;
         if (i == 0) {
-            vrgbEnvCur[iWork++] = LOBYTE(uDate >> 8 & 0xff);
+            vrgbEnvCur[iWork++] = uDate >> 8;
         }
     }
     uDefault = 0;
     for (i = 0; i < 2; i++) {
-        uDefault = LOBYTE(uDefault * 16);
+        uDefault *= 16;
         if (GetDriveType(i + 2) != 3) {
             l = 1;
         } else {
@@ -2058,7 +2058,7 @@ uint32_t GetDiskSerialNumber() {
             if (l > 15) {
                 l = 15;
             }
-            uDefault += LOBYTE(LOWORD(l) & 0xf & 0xff);
+            uDefault += l & 0xf;
         }
     }
     vrgbEnvCur[iWork++] = uDefault;
@@ -2156,7 +2156,7 @@ void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly) {
     int16_t c;
     char    szT[8];
 
-    fNumOnly = iNumOnly <= 0 ? 0 : 1;
+    fNumOnly = iNumOnly > 0;
     if (hwndProgressGauge != 0) {
         if (hdcOrig == 0) {
             hdc = GetDC(hwndProgressGauge);
@@ -2223,17 +2223,7 @@ char *PszGetLine(char **ppszBeg) {
     for (psz = *ppszBeg; *psz == ' '; psz++) {
     }
     pszStart = psz;
-    while (1) {
-        switch (*psz) {
-        default:
-            psz++;
-            continue;
-        case 0:
-        case '\n':
-        case '\r':
-            break;
-        }
-        break;
+    for (; *psz != 0 && *psz != '\n' && *psz != '\r'; psz++) {
     }
     if (*psz == '\r' && psz[1] == '\n') {
         *ppszBeg = psz + 2;
@@ -2258,7 +2248,7 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
         }
         if (*psz != ' ') {
             fValid = 1;
-            lNum = (uint32_t)(lNum * 10) + (int16_t)(*psz - 48);
+            lNum = (uint32_t)(lNum * 10) + (int16_t)(*psz - '0');
         } else if (fValid != 0) {
             pl[iRead++] = lNum;
             lNum = 0;

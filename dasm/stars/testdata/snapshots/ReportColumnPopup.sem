@@ -71,7 +71,7 @@ L_75fc:
     j = (j + 1)
 
 L_7601:
-    branch j >= ((vprptCur->irpt == rptFleets ? 1 : 0) + 3) ? L_764b : L_7623
+    branch j >= (vprptCur->irpt == rptFleets + 3) ? L_764b : L_7623
 
 
 
@@ -188,15 +188,15 @@ L_7970:
     branch cSubsort != 0 ? L_79bf : L_79a2
 
 L_79a2:
-    vprptCur->fAscending = (iRet == 0 ? 1 : 0)
+    vprptCur->fAscending = iRet == 0
     goto L_7a5c
 
 
 
 
 L_79bf:
-    vprptCur->iSubsort = (sext16to32((iRet - 2)) % ((cSubsort + 3) + (vprptCur->irpt == rptFleets ? 1 : 0)))
-    branch vprptCur->iSubsort <= ((vprptCur->irpt == rptFleets ? 1 : 0) + 3) ? L_7a3c : L_7a1c
+    vprptCur->iSubsort = (sext16to32((iRet - 2)) % ((cSubsort + 3) + vprptCur->irpt == rptFleets))
+    branch vprptCur->iSubsort <= (vprptCur->irpt == rptFleets + 3) ? L_7a3c : L_7a1c
 
 
 
@@ -205,13 +205,13 @@ L_79bf:
 
 
 L_7a1c:
-    vprptCur->iSubsort = ((vprptCur->irpt == rptFleets ? 1 : 0) + 3)
+    vprptCur->iSubsort = (vprptCur->irpt == rptFleets + 3)
 
 
 
 
 L_7a3c:
-    vprptCur->fAscending = (iRet >= (cSubsort + 2) ? 0 : 1)
+    vprptCur->fAscending = iRet < (cSubsort + 2)
 
 
 

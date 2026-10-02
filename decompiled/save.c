@@ -37,7 +37,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
         }
         i++;
         pb = pbStore + 112;
-        *pb++ = LOBYTE(i);
+        *pb++ = i;
         memmove(pb, pplr->rgmdRelation, i);
         pb += i;
     } else {
@@ -45,7 +45,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
     }
     cOut = 31;
     if (pplr->szName[0] != 0 && FCompressUserString(pplr->szName, pb + 1, &cOut) != 0) {
-        *pb = LOBYTE(cOut);
+        *pb = cOut;
         pb += 1 + cOut;
     } else {
         strcpy(pb + 1, pplr->szName);
@@ -54,7 +54,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
     }
     cOut = 31;
     if (pplr->szNames[0] != 0 && FCompressUserString(pplr->szNames, pb + 1, &cOut) != 0) {
-        *pb = LOBYTE(cOut);
+        *pb = cOut;
         pb += 1 + cOut;
     } else {
         strcpy(pb + 1, pplr->szNames);
@@ -71,10 +71,10 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     uint8_t *pb;
     int16_t  cOut;
 
-    ((RTSHDEF *)rgb)->ihuldef = LOBYTE(lpshdef->hul.ihuldef);
+    ((RTSHDEF *)rgb)->ihuldef = lpshdef->hul.ihuldef;
     ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags;
     ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs;
-    ((RTSHDEF *)rgb)->ibmp = LOBYTE(lpshdef->hul.ibmp);
+    ((RTSHDEF *)rgb)->ibmp = lpshdef->hul.ibmp;
     if (lpshdef->det == detAll) {
         ((RTSHDEF *)rgb)->dp = lpshdef->hul.dp;
         ((RTSHDEF *)rgb)->turn = lpshdef->turn;
@@ -94,7 +94,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     }
     cOut = 31;
     if (szHulName[0] != 0 && FCompressUserString(szHulName, pb + 1, &cOut) != 0) {
-        *pb = LOBYTE(cOut);
+        *pb = cOut;
         pb += 1 + cOut;
     } else {
         strcpy(pb + 1, szHulName);
@@ -630,7 +630,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     ((RTPLANET *)rgb)->fStarbase = lppl->fStarbase;
     ((RTPLANET *)rgb)->fHomeworld = lppl->fHomeworld;
     ((RTPLANET *)rgb)->fFirstYear = lppl->fFirstYear;
-    ((RTPLANET *)rgb)->fRouting = lppl->idRoute == 0 ? 0 : 1;
+    ((RTPLANET *)rgb)->fRouting = lppl->idRoute != 0;
     pbBase = (uint8_t *)(((RTPLANET *)rgb) + 1);
     pb = pbBase;
     if (((RTPLANET *)rgb)->det > detMinimal) {
@@ -639,11 +639,11 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
         i = 0;
         while (i < 3) {
             if (lppl->rgpctMinLevel[i] > 0) {
-                *pbBase |= LOBYTE(bMask & 0x55);
+                *pbBase |= bMask & 0x55;
                 *pb++ = lppl->rgpctMinLevel[i];
             }
             i++;
-            bMask = LOBYTE(bMask * 4);
+            bMask *= 4;
         }
         i = 0;
         while (i < 3) {
@@ -674,21 +674,21 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
             while (i < 4) {
                 if ((i != 3 || lppl->det >= detAll) && lppl->rgwtMin[i] > 0) {
                     if (lppl->rgwtMin[i] <= 255) {
-                        *pbBase |= LOBYTE(bMask & 0x55);
-                        *pb++ = LOBYTE(LOWORD(lppl->rgwtMin[i]));
+                        *pbBase |= bMask & 0x55;
+                        *pb++ = lppl->rgwtMin[i];
                     } else if (lppl->rgwtMin[i] > 65535) {
-                        *pbBase |= LOBYTE(bMask & 0xff);
+                        *pbBase |= bMask;
                         RawStore16(pb, LOWORD(lppl->rgwtMin[i]));
                         RawStore16((uint8_t *)pb + 0x2, HIWORD(lppl->rgwtMin[i]));
                         pb += 4;
                     } else {
-                        *pbBase |= LOBYTE(bMask & 0xaa);
+                        *pbBase |= bMask & 0xaa;
                         RawStore16(pb, LOWORD(lppl->rgwtMin[i]));
                         pb += 2;
                     }
                 }
                 i++;
-                bMask = LOBYTE(bMask * 4);
+                bMask *= 4;
             }
             if (*pbBase == 0) {
                 pb = pbBase;
@@ -720,7 +720,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
         }
     }
     if (lppl->fStarbase != 0) {
-        *pb = LOBYTE(lppl->isb);
+        *pb = lppl->isb;
         pb++;
     }
     if (fHistory != 0) {
@@ -762,7 +762,7 @@ void WriteFleet(FLEET *lpfl) {
     if (fByte != 0) {
         for (i = 0; i < 16; i++) {
             if (lpfl->rgcsh[i] > 0) {
-                *pb++ = LOBYTE(lpfl->rgcsh[i]);
+                *pb++ = lpfl->rgcsh[i];
             }
         }
     } else {
@@ -785,7 +785,7 @@ void WriteFleet(FLEET *lpfl) {
             if (lpfl->rgwtMin[i] > 0 && (lpfl->det == detAll || (i != 4 && i != 3))) {
                 if (lpfl->rgwtMin[i] <= 255) {
                     us |= grMask & 0x155;
-                    *pb = LOBYTE(LOWORD(lpfl->rgwtMin[i]));
+                    *pb = lpfl->rgwtMin[i];
                     pb++;
                 } else if (lpfl->rgwtMin[i] > 65535) {
                     us |= grMask & 0x3ff;
@@ -842,7 +842,7 @@ void WriteFleet(FLEET *lpfl) {
         }
         pb = (uint8_t *)pus;
         *pb++ = lpfl->iplan;
-        *pb++ = LOBYTE(lpfl->cord);
+        *pb++ = lpfl->cord;
         WriteRt(rtFleetA, pb - rgb, rgb);
         WriteOrders(lpfl);
         if (lpfl->lpszName != 0) {
@@ -859,7 +859,7 @@ void WriteRtString(char *lpsz) {
     if (lpsz != 0 && *lpsz != 0) {
         cOut = 31;
         if (FCompressUserString(lpsz, &rgb[1], &cOut) != 0) {
-            rgb[0] = LOBYTE(cOut);
+            rgb[0] = cOut;
         } else {
             fstrcpy(&rgb[1], lpsz);
             rgb[0] = 0;
@@ -906,7 +906,7 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog) {
         fstrcpy(szPlanName, lpbtlplan->szName);
         cOut = 31;
         if (szPlanName[0] != 0 && FCompressUserString(szPlanName, pb + 1, &cOut) != 0) {
-            *pb = LOBYTE(cOut);
+            *pb = cOut;
             pb += 1 + cOut;
         } else {
             strcpy(pb + 1, szPlanName);
@@ -1108,7 +1108,7 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, MdMark mdMark, int16_t f) {
                         lseek(hf, (int16_t)-(hdrCur.cb + 2), 1);
                         SetFileSeeds(lSeedSav1, lSeedSav2);
                         WriteRt(rtPlr, hdrCur.cb, rgbCur);
-                        fChange = dt == dtTurn ? 1 : 0;
+                        fChange = dt == dtTurn;
                         rtbof.fDone = 0;
                     }
                 default:
@@ -1290,7 +1290,7 @@ void SetVisPFInit(int16_t iPlr) {
             lpth->thp.fInclude = 0;
             break;
         case ithWormhole:
-            lpth->thw.fInclude = iPlr == -1 ? 1 : 0;
+            lpth->thw.fInclude = iPlr == -1;
             break;
         case ithMysteryTrader:
             lpth->tht.fInclude = 1;

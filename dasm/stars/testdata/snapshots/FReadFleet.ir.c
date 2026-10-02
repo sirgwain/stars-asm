@@ -263,7 +263,7 @@ L_3f0b:
     goto L_3eaf;
 
 L_3f33:
-    lpfl->lpplord->iordMac = LOBYTE(lpfl->cord);
+    lpfl->lpplord->iordMac = lpfl->cord;
     if (lpfl->idPlanet == -1)
         goto L_3fdb;
     else

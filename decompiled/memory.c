@@ -20,7 +20,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht) {
     lphb->cbSlop = cb - sizeof(HB);
     lphb->cbFree = cb - sizeof(HB);
     lphb->ibTop = sizeof(HB);
-    lphb->ht = LOBYTE(ht);
+    lphb->ht = ht;
     lphb->lphbNext = rglphb[ht];
     rglphb[ht] = lphb;
     return lphb;
@@ -203,7 +203,7 @@ void FreeLp(void *lp, HeapType ht) {
 
 PL *LpplReAlloc(PL *lppl, uint16_t cAlloc) {
     lppl = LpReAlloc(lppl, lppl->cbItem * cAlloc + 4, lppl->ht);
-    lppl->iMax = LOBYTE(cAlloc);
+    lppl->iMax = cAlloc;
     return lppl;
 }
 
@@ -211,7 +211,7 @@ PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht) {
     PL *lppl;
 
     lppl = LpAlloc(cbItem * cAlloc + 4, ht);
-    lppl->iMax = LOBYTE(cAlloc);
+    lppl->iMax = cAlloc;
     lppl->iMac = 0;
     lppl->fMark = 0;
     lppl->cbItem = cbItem;

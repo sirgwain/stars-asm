@@ -210,7 +210,7 @@ L_3f0b:
     goto L_3eaf
 
 L_3f33:
-    lpfl->lpplord->iordMac = lobyte(lpfl->cord)
+    lpfl->lpplord->iordMac = lpfl->cord
     branch lpfl->idPlanet == -1 ? L_3fdb : L_3f52
 
 L_3f52:

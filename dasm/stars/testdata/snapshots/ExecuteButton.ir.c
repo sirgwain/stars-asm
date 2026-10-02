@@ -93,11 +93,11 @@ L_0e74:
         goto L_0e7e;
 
 L_0e7e:
-    rgid[c] = (uint32_t)(grbitScanMines == 15 ? 1 : 0);
+    rgid[c] = (uint32_t)(grbitScanMines == 15);
     goto L_0ecd;
 
 L_0ea7:
-    rgid[c] = (uint32_t)(grbitScanMines == 0 ? 1 : 0);
+    rgid[c] = (uint32_t)(grbitScanMines == 0);
 
 L_0ecd:
     CchGetString(i, &szWork[(i - 1278) * 30 + 160]);
@@ -119,7 +119,7 @@ L_0f17:
     goto L_0fba;
 
 L_0f50:
-    rgid[c] = (uint32_t)((1 << i & grbitScanMines) == 0 ? 0 : 1);
+    rgid[c] = (uint32_t)((1 << i & grbitScanMines) != 0);
     CchGetString(i + 1280, &szWork[i * 30]);
     rgszScan[c++] = &szWork[i * 30];
     i++;
@@ -225,7 +225,7 @@ L_113e:
         goto L_115c;
 
 L_115c:
-    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0 ? 0 : 1);
+    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) != 0);
     rgszScan[c++] = rgshdef[ish].hul.szClass;
 
 L_11a8:
@@ -364,7 +364,7 @@ L_136b:
     goto L_140e;
 
 L_13a4:
-    rgid[c] = (uint32_t)((1 << i & grbitScanEShip) == 0 ? 0 : 1);
+    rgid[c] = (uint32_t)((1 << i & grbitScanEShip) != 0);
     CchGetString(i + 381, &szWork[i * 25]);
     rgszScan[c++] = &szWork[i * 25];
     i++;
@@ -461,7 +461,7 @@ L_1519:
     goto L_159d;
 
 L_1526:
-    rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 1 : 0);
+    rgid[c] = (uint32_t)(iScanZoom + 4 == i);
     _wsprintf(&szWork[i * 8], PCTDPCTPCT, vrgpctZoom[i]);
     rgszScan[c++] = &szWork[i * 8];
     i++;

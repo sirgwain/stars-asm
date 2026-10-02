@@ -116,14 +116,14 @@ L_0e74:
     branch i != 1278 ? L_0ea7 : L_0e7e
 
 L_0e7e:
-    rgid[c] = (uint32_t)(grbitScanMines == 15 ? 1 : 0)
+    rgid[c] = (uint32_t)grbitScanMines == 15
     goto L_0ecd
 
 
 
 
 L_0ea7:
-    rgid[c] = (uint32_t)(grbitScanMines == 0 ? 1 : 0)
+    rgid[c] = (uint32_t)grbitScanMines == 0
 
 
 
@@ -145,7 +145,7 @@ L_0f17:
     goto L_0fba
 
 L_0f50:
-    rgid[c] = (uint32_t)(((1 << i) & grbitScanMines) == 0 ? 0 : 1)
+    rgid[c] = (uint32_t)((1 << i) & grbitScanMines) != 0
     call CchGetString((i + 1280), &szWork[(i * 30)]) -> callresult(int16_t)
     rgszScan[c++] = &szWork[(i * 30)]
     i = (i + 1)
@@ -230,7 +230,7 @@ L_113e:
     branch rgshdef[ish].fFree != 0 ? L_1125 : L_115c
 
 L_115c:
-    rgid[c] = (uint32_t)((grbitSh & grbitScanShip) == 0 ? 0 : 1)
+    rgid[c] = (uint32_t)(grbitSh & grbitScanShip) != 0
     rgszScan[c++] = rgshdef[ish].hul.szClass
 
 
@@ -333,7 +333,7 @@ L_136b:
     goto L_140e
 
 L_13a4:
-    rgid[c] = (uint32_t)(((1 << i) & grbitScanEShip) == 0 ? 0 : 1)
+    rgid[c] = (uint32_t)((1 << i) & grbitScanEShip) != 0
     call CchGetString((i + 381), &szWork[(i * 25)]) -> callresult(int16_t)
     rgszScan[c++] = &szWork[(i * 25)]
     i = (i + 1)
@@ -403,7 +403,7 @@ L_1519:
     goto L_159d
 
 L_1526:
-    rgid[c] = (uint32_t)((iScanZoom + 4) == i ? 1 : 0)
+    rgid[c] = (uint32_t)(iScanZoom + 4) == i
     call _wsprintf(&szWork[(i * 8)], PCTDPCTPCT, vrgpctZoom[i]) -> callresult(int16_t)
     rgszScan[c++] = &szWork[(i * 8)]
     i = (i + 1)

@@ -1156,10 +1156,10 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             goto Default;
         }
     ZoomBox:
-        fViewFilteredMsg = fViewFilteredMsg == 0 ? 1 : 0;
+        fViewFilteredMsg = fViewFilteredMsg == 0;
         if (iMsgCur >= 0) {
             t_scratch_m30 = 1 << (IdmGetMessageN(iMsgCur) & 7);
-            if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) == 0 ? 0 : 1) == fViewFilteredMsg)
+            if (((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m30) != 0) == fViewFilteredMsg)
                 goto L_626c;
         }
         i = IMsgNext(fViewFilteredMsg);
@@ -1175,8 +1175,8 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         if (iMsgCur < 0)
             break;
         idm = IdmGetMessageN(iMsgCur);
-        fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0 ? 0 : 1;
-        SetFilteringGroups(idm, fSet == 0 ? 1 : 0);
+        fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) != 0;
+        SetFilteringGroups(idm, fSet == 0);
         DirtyGame(1);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
@@ -1301,7 +1301,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         } else {
             viInRe = 0;
         }
-        gd.fSendMsgMode = gd.fSendMsgMode == 0 ? 1 : 0;
+        gd.fSendMsgMode = gd.fSendMsgMode == 0;
         InvalidateRect(hwndMessage, NULL, 1);
         SetMsgTitle(hwnd);
         SetFocus(hwndMsgEdit);
@@ -1389,7 +1389,7 @@ void SetMsgTitle(HWND hwnd) {
             SetWindowPos(rghwndMsgBtn[3], NULL, rc.right - 50, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
             rc.top += dyShipDD + 3;
             SetWindowPos(hwndMsgEdit, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_SHOWWINDOW);
-            EnableWindow(rghwndMsgBtn[0], iMsgSendCur <= 0 ? 0 : 1);
+            EnableWindow(rghwndMsgBtn[0], iMsgSendCur > 0);
             EnableWindow(rghwndMsgBtn[1], 1);
             EnableWindow(rghwndMsgBtn[2], 1);
             lpmp = vlpmsgplrOut;
@@ -1422,8 +1422,8 @@ void SetMsgTitle(HWND hwnd) {
                 CchGetString(idsYearDCMessagesNone, szT);
                 _wsprintf(szWork, szT, game.turn + 2400, ch);
             }
-            EnableWindow(rghwndMsgBtn[0], IMsgPrev(0) == -1 ? 0 : 1);
-            EnableWindow(rghwndMsgBtn[2], IMsgNext(0) == -1 ? 0 : 1);
+            EnableWindow(rghwndMsgBtn[0], IMsgPrev(0) != -1);
+            EnableWindow(rghwndMsgBtn[2], IMsgNext(0) != -1);
             if (iMsgCur >= cMsg) {
                 EnableWindow(rghwndMsgBtn[1], 1);
             } else {
@@ -1485,7 +1485,7 @@ void SetMsgTitle(HWND hwnd) {
                     mdMsgObj = mdMsgObjNone;
                 }
             L_77c1:
-                EnableWindow(rghwndMsgBtn[1], mdMsgObj == mdMsgObjNone ? 0 : 1);
+                EnableWindow(rghwndMsgBtn[1], mdMsgObj != mdMsgObjNone);
             }
         }
         strcpy(szMsgTitle, szWork);
@@ -1515,7 +1515,7 @@ int16_t IMsgNext(int16_t fFilteredOnly) {
             }
             return -1;
         }
-    } while ((((bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0 ? 1 : 0) ^ fFilteredOnly) == 0);
+    } while ((((bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0) ^ fFilteredOnly) == 0);
     return i;
 }
 
@@ -1539,7 +1539,7 @@ int16_t IMsgPrev(int16_t fFilteredOnly) {
             return -1;
         }
         idm = IdmGetMessageN(i);
-    } while ((((bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0 ? 1 : 0) ^ fFilteredOnly) == 0);
+    } while ((((bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) == 0) ^ fFilteredOnly) == 0);
     return i;
 }
 
@@ -1714,7 +1714,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
     }
     lpb = pb;
     lpmt = (MSGTURN *)lpb;
-    lpmt->iPlr = (uint32_t)iPlr & 0xf;
+    lpmt->iPlr = iPlr & 0xf;
     lpmt->msghdr.iMsg = iMsg;
     lpmt->msghdr.grWord = 0;
     lpmt->msghdr.wGoto = iObj;
@@ -1736,14 +1736,14 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
             RawStore16(lpb, *pi);
             lpb += 2;
         } else {
-            *lpb = LOBYTE(*pi);
+            *lpb = *pi;
             lpb++;
         }
         i++;
         pi++;
         grbit *= 2;
     }
-    lpmt->cbParams = (uint32_t)(lpb - lpbBase) & 0xf;
+    lpmt->cbParams = lpb - lpbBase & 0xf;
     return lpb - pb;
 }
 
@@ -1763,7 +1763,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     pb = rgb;
     pmsghdr = (MSGHDR *)pb;
     pmsghdr->iMsg = iMsg;
-    bitfMsgSent[iMsg >> 3] = LOBYTE((bitfMsgSent[iMsg >> 3] & ~(1 << (iMsg & 7))) | 1 << (iMsg & 7));
+    bitfMsgSent[iMsg >> 3] = (bitfMsgSent[iMsg >> 3] & ~(1 << (iMsg & 7))) | 1 << (iMsg & 7);
     pmsghdr->grWord = 0;
     pmsghdr->wGoto = iObj;
     pb += 4;
@@ -1778,7 +1778,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
             RawStore16(pb, *pi);
             pb += 2;
         } else {
-            *pb = LOBYTE(*pi);
+            *pb = *pi;
             pb++;
         }
         i++;
@@ -1834,7 +1834,7 @@ int16_t FGetNMsgbig(MessageId iMsg, MSGBIG *pmb) {
             if (iMsg == idmColonistsDroppedMassacredGroundTroops) {
                 pmb->rgParam[i] = (u & 1) == 0 ? *lpb : RawLoad16(lpb);
             }
-            lpb += 1 + ((u & 1) == 1 ? 1 : 0);
+            lpb += 1 + ((u & 1) == 1);
             u >>= 1;
         }
         if ((int16_t)iMsg-- <= idmColonistsDroppedMassacredGroundTroops)
@@ -1877,248 +1877,223 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
             *pch++ = *pszFormat;
         } else {
             pszFormat++;
-            if ((uint16_t)(*pszFormat - 69) <= 53) {
+            switch (*pszFormat) {
+            case 'w':
+                strcpy(pch, szWork);
+                pch += strlen(szWork);
+                break;
+            case 'f':
+            case 'h':
+            case 'r':
+            case 't':
+            case 'y':
+                strcpy(pch, szBase);
+                pch += strlen(szBase);
                 switch (*pszFormat) {
-                case 'w':
-                    strcpy(pch, szWork);
-                    pch += strlen(szWork);
-                    break;
                 case 'f':
-                case 'h':
-                case 'r':
-                case 't':
-                case 'y':
-                    strcpy(pch, szBase);
-                    pch += strlen(szBase);
-                    switch (*pszFormat) {
-                    case 'f':
-                        if (idPlayer != -1) {
-                            c = _wsprintf(pch, ".x%d", idPlayer + 1);
-                            goto DoInt;
-                        }
-                    case 't':
-                        if (idPlayer != -1) {
-                            c = _wsprintf(pch, ".m%d", idPlayer + 1);
-                            goto DoInt;
-                        }
-                    case 'h':
-                        strcat(pch, ".hst");
-                        pch += 4;
-                        break;
-                    case 'r':
-                        c = _wsprintf(pch, ".h%d", idPlayer + 1);
+                    if (idPlayer != -1) {
+                        c = _wsprintf(pch, ".x%d", idPlayer + 1);
                         goto DoInt;
-                    case 'y':
-                        strcat(pch, ".xy");
-                        pch += 3;
                     }
+                case 't':
+                    if (idPlayer != -1) {
+                        c = _wsprintf(pch, ".m%d", idPlayer + 1);
+                        goto DoInt;
+                    }
+                case 'h':
+                    strcat(pch, ".hst");
+                    pch += 4;
                     break;
-                case 'e':
-                    pchT = rgszPlanetAttr[*pParams];
-                    goto FinishString;
-                case 'E':
-                    pchT = PszCalcEnvVar((uint16_t)*pParams >> 8 & 0xff & 0xff, *pParams & 0xff);
-                    goto FinishString;
-                case 'I':
-                    pchT = PszGetCompressedString(*pParams + 1348);
-                    goto FinishString;
-                case 'i':
-                    c = _wsprintf(pch, PCTD, *pParams);
+                case 'r':
+                    c = _wsprintf(pch, ".h%d", idPlayer + 1);
                     goto DoInt;
-                case 'L':
-                case 'l':
-                    pchT = PszPlayerName(*pParams & 0xf, *pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1,
-                                         (*pParams & 0xc0) >> 6, NULL);
-                    goto FinishString;
-                case 'Z':
-                    w = *pParams;
-                    if (w == 0)
-                        break;
-                    if ((w - 1 & w) == 0) {
-                        c = 0;
-                        for (; (w & 1) == 0; w >>= 1) {
-                            c++;
-                        }
-                        pchT = PszPlayerName(c, 0, 1, 1, 0, NULL);
-                        goto FinishString;
-                    }
-                    cOut = 0;
-                    i = 0;
-                    while (i < game.cPlayer) {
-                        if ((w & 1) != 0) {
-                            if (cOut > 0) {
-                                if ((w & 0xfffe) != 0) {
-                                    *pch++ = ',';
-                                    *pch++ = ' ';
-                                } else {
-                                    pch += CchGetString(idsAnd, pch);
-                                }
-                            }
-                            pchT = PszPlayerName(i, 0, 1, 1, 0, NULL);
-                            strcpy(pch, pchT);
-                            pch += strlen(pchT);
-                            cOut++;
-                        }
-                        i++;
-                        w >>= 1;
-                    }
-                    goto DoNothing;
-                case 'S':
-                    if (*pParams == idPlayer)
-                        goto DoNothing;
-                    CchGetString(idsOf2, szBuf);
-                    pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL);
-                    strcat(szBuf, pchT);
-                    strcat(szBuf, PszGetCompressedString(idsOrigin));
-                    pchT = szBuf;
-                    goto FinishString;
-                case 'm':
-                    iMineral = *pParams;
-                    pchT = rgszMinerals[iMineral];
-                    goto FinishString;
-                case 'M':
-                    pchT = rgszMineField[*pParams];
-                    goto FinishString;
-                case 'P':
-                    if ((long double)(int16_t)(*pParams / 100) >= (long double)10.0) {
-                        c = _wsprintf(pch, PCTDPCTPCT, *pParams / 100);
-                    } else {
-                        c = _wsprintf(pch, PCTDXPCTDPCTPCT, *pParams / 100, *pParams - *pParams / 100 * 100);
-                    }
-                    pch += c;
-                    pParams++;
-                    break;
-                case 'p':
-                DoPlanet:
-                    pchT = PszGetPlanetName(*pParams);
-                    goto FinishString;
-                case 'X':
-                DoNothing:
-                    pParams++;
-                    break;
-                case 'F':
-                    pchT = PszFleetNameFromWord(*pParams);
-                    goto FinishString;
-                case 's':
-                DoFleet:
-                    w = *pParams | 0x8000;
-                    pchT = PszGetFleetName(w);
-                    goto FinishString;
-                case 'j':
-                    pchT = PszGetCompressedString(*pParams + 84);
-                    goto FinishString;
-                case 'k':
-                    part.hs.grhst = *pParams;
-                    pParams++;
-                    part.hs.iItem = *pParams;
-                    if (FLookupPart(&part) <= 0) {
-                    }
-                    fstrcpy(pch, part.pcom->szName);
-                    pch += fstrlen(part.pcom->szName);
-                    pParams++;
-                    break;
-                case 'g':
-                LThingName:
-                    pchT = PszGetThingName(*pParams);
-                    goto FinishString;
-                case 'G':
-                    w = *pParams;
-                    c = CchGetString(w + 1250, pch);
-                    pch += c;
-                    pParams++;
-                    break;
-                case 'n':
-                    if (*pParams == -2) {
-                        pParams++;
-                        goto LThingName;
-                    }
-                    if (*pParams != -1) {
-                        pchT = PszGetLocName(grobjNone, -1, *pParams, pParams[1]);
-                        pParams++;
-                        goto FinishString;
-                    }
-                    pParams++;
-                case 'o':
-                    if ((*pParams & 0x8000) != 0)
-                        goto DoFleet;
-                    goto DoPlanet;
-                case 'O':
-                    w = (uint16_t)*pParams >> 9 & 0xf;
-                    pchT = PszPlayerName(w, 0, 0, 0, 0, NULL);
-                    goto FinishString;
-                case 'u':
-                    c = _wsprintf(pch, "%u", *pParams);
-                    pch += c;
-                    pParams++;
-                    break;
-                case 'U':
-                case 'V':
-                case 'v':
-                    l = (int32_t)((uint32_t)pParams[1] << 0x10) | (uint32_t)*pParams;
-                    pParams += 2;
-                    c = _wsprintf(pch, PCTLD, l);
-                    pch += c;
-                    if (*pszFormat == 'v')
-                        break;
-                    if (*pszFormat == 'V') {
-                        iMineral = *pParams;
-                    }
-                    pchT = vrgszUnits[iMineral];
-                    strcpy(pch, pchT);
-                    pch += strlen(pchT);
-                    break;
-                case 'z':
-                    c = *pParams >> 5;
-                    w = *pParams & 0x1f;
-                    if (w >= 16) {
-                        lpshdef = rglpshdefSB[c] + (w - 16);
-                    } else {
-                        lpshdef = rglpshdef[c] + w;
-                    }
-                    if (c != idPlayer) {
-                        pchT = PszPlayerName(c, 0, 0, 1, 0, NULL);
-                        _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass);
-                    } else {
-                        fstrcpy(pch, lpshdef->hul.szClass);
-                    }
-                    pch += strlen(pch);
-                    pParams++;
-                    break;
-                case 'H':
-                case 'J':
-                case 'K':
-                case 'N':
-                case 'Q':
-                case 'R':
-                case 'T':
-                case 'W':
-                case 'Y':
-                case '[':
-                case '\\':
-                case ']':
-                case '^':
-                case '_':
-                case '`':
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'q':
-                case 'x':
-                    goto L_8eba;
+                case 'y':
+                    strcat(pch, ".xy");
+                    pch += 3;
                 }
-                continue;
-            DoInt:
+                break;
+            case 'e':
+                pchT = rgszPlanetAttr[*pParams];
+                goto FinishString;
+            case 'E':
+                pchT = PszCalcEnvVar((uint16_t)*pParams >> 8 & 0xff & 0xff, *pParams & 0xff);
+                goto FinishString;
+            case 'I':
+                pchT = PszGetCompressedString(*pParams + 1348);
+                goto FinishString;
+            case 'i':
+                c = _wsprintf(pch, PCTD, *pParams);
+                goto DoInt;
+            case 'L':
+            case 'l':
+                pchT = PszPlayerName(*pParams & 0xf, *pszFormat == 'L', (*pParams & 0x10) != 0, (*pParams & 0x20) != 0, (*pParams & 0xc0) >> 6, NULL);
+                goto FinishString;
+            case 'Z':
+                w = *pParams;
+                if (w == 0)
+                    break;
+                if ((w - 1 & w) == 0) {
+                    c = 0;
+                    for (; (w & 1) == 0; w >>= 1) {
+                        c++;
+                    }
+                    pchT = PszPlayerName(c, 0, 1, 1, 0, NULL);
+                    goto FinishString;
+                }
+                cOut = 0;
+                i = 0;
+                while (i < game.cPlayer) {
+                    if ((w & 1) != 0) {
+                        if (cOut > 0) {
+                            if ((w & 0xfffe) != 0) {
+                                *pch++ = ',';
+                                *pch++ = ' ';
+                            } else {
+                                pch += CchGetString(idsAnd, pch);
+                            }
+                        }
+                        pchT = PszPlayerName(i, 0, 1, 1, 0, NULL);
+                        strcpy(pch, pchT);
+                        pch += strlen(pchT);
+                        cOut++;
+                    }
+                    i++;
+                    w >>= 1;
+                }
+                goto DoNothing;
+            case 'S':
+                if (*pParams == idPlayer)
+                    goto DoNothing;
+                CchGetString(idsOf2, szBuf);
+                pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL);
+                strcat(szBuf, pchT);
+                strcat(szBuf, PszGetCompressedString(idsOrigin));
+                pchT = szBuf;
+                goto FinishString;
+            case 'm':
+                iMineral = *pParams;
+                pchT = rgszMinerals[iMineral];
+                goto FinishString;
+            case 'M':
+                pchT = rgszMineField[*pParams];
+                goto FinishString;
+            case 'P':
+                if ((long double)(int16_t)(*pParams / 100) >= (long double)10.0) {
+                    c = _wsprintf(pch, PCTDPCTPCT, *pParams / 100);
+                } else {
+                    c = _wsprintf(pch, PCTDXPCTDPCTPCT, *pParams / 100, *pParams - *pParams / 100 * 100);
+                }
                 pch += c;
                 pParams++;
-                continue;
-            FinishString:
+                break;
+            case 'p':
+            DoPlanet:
+                pchT = PszGetPlanetName(*pParams);
+                goto FinishString;
+            case 'X':
+            DoNothing:
+                pParams++;
+                break;
+            case 'F':
+                pchT = PszFleetNameFromWord(*pParams);
+                goto FinishString;
+            case 's':
+            DoFleet:
+                w = *pParams | 0x8000;
+                pchT = PszGetFleetName(w);
+                goto FinishString;
+            case 'j':
+                pchT = PszGetCompressedString(*pParams + 84);
+                goto FinishString;
+            case 'k':
+                part.hs.grhst = *pParams;
+                pParams++;
+                part.hs.iItem = *pParams;
+                if (FLookupPart(&part) <= 0) {
+                }
+                fstrcpy(pch, part.pcom->szName);
+                pch += fstrlen(part.pcom->szName);
+                pParams++;
+                break;
+            case 'g':
+            LThingName:
+                pchT = PszGetThingName(*pParams);
+                goto FinishString;
+            case 'G':
+                w = *pParams;
+                c = CchGetString(w + 1250, pch);
+                pch += c;
+                pParams++;
+                break;
+            case 'n':
+                if (*pParams == -2) {
+                    pParams++;
+                    goto LThingName;
+                }
+                if (*pParams != -1) {
+                    pchT = PszGetLocName(grobjNone, -1, *pParams, pParams[1]);
+                    pParams++;
+                    goto FinishString;
+                }
+                pParams++;
+            case 'o':
+                if ((*pParams & 0x8000) != 0)
+                    goto DoFleet;
+                goto DoPlanet;
+            case 'O':
+                w = (uint16_t)*pParams >> 9 & 0xf;
+                pchT = PszPlayerName(w, 0, 0, 0, 0, NULL);
+                goto FinishString;
+            case 'u':
+                c = _wsprintf(pch, "%u", *pParams);
+                pch += c;
+                pParams++;
+                break;
+            case 'U':
+            case 'V':
+            case 'v':
+                l = (int32_t)((uint32_t)pParams[1] << 0x10) | (uint32_t)*pParams;
+                pParams += 2;
+                c = _wsprintf(pch, PCTLD, l);
+                pch += c;
+                if (*pszFormat == 'v')
+                    break;
+                if (*pszFormat == 'V') {
+                    iMineral = *pParams;
+                }
+                pchT = vrgszUnits[iMineral];
                 strcpy(pch, pchT);
                 pch += strlen(pchT);
-                goto DoNothing;
+                break;
+            case 'z':
+                c = *pParams >> 5;
+                w = *pParams & 0x1f;
+                if (w >= 16) {
+                    lpshdef = rglpshdefSB[c] + (w - 16);
+                } else {
+                    lpshdef = rglpshdef[c] + w;
+                }
+                if (c != idPlayer) {
+                    pchT = PszPlayerName(c, 0, 0, 1, 0, NULL);
+                    _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass);
+                } else {
+                    fstrcpy(pch, lpshdef->hul.szClass);
+                }
+                pch += strlen(pch);
+                pParams++;
+                break;
+            default:
+                *pch++ = *pszFormat;
             }
-        L_8eba:
-            *pch++ = *pszFormat;
+            continue;
+        DoInt:
+            pch += c;
+            pParams++;
+            continue;
+        FinishString:
+            strcpy(pch, pchT);
+            pch += strlen(pchT);
+            goto DoNothing;
         }
     }
     *pch = 0;
@@ -2158,7 +2133,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
                                 break;
                             }
                         }
-                        EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                        EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                         return 1;
                     case IDC_HELP:
                         WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhCopyProtection);
@@ -2241,7 +2216,7 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
             switch (RawLoad16((uint8_t *)lpb + 0x1) & 0x1ff) {
             case 0x8f:
                 w = RawLoad16((uint8_t *)lpb + 0x1) >> 9 & 0x7f;
-                lpbT = lpb + (((w & 1) == 1 ? 1 : 0) + 6);
+                lpbT = lpb + (((w & 1) == 1) + 6);
                 w = (w & 2) == 0 ? *lpbT : RawLoad16(lpbT);
                 goto LLookupPlanet;
             case 7:
@@ -2378,13 +2353,13 @@ void ReadPlayerMessages() {
     lpbMax = lpb + imemMsgT;
     while (lpb < lpbMax) {
         lpmh = (MSGHDR *)lpb;
-        bitfMsgSent[lpmh->iMsg >> 3] = LOBYTE((bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7));
+        bitfMsgSent[lpmh->iMsg >> 3] = (bitfMsgSent[lpmh->iMsg >> 3] & ~(1 << (lpmh->iMsg & 7))) | 1 << (lpmh->iMsg & 7);
         cMsg++;
         u = lpmh->grWord;
         lpb += 4;
         iMax = rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
-            lpb += 1 + ((u & 1) == 1 ? 1 : 0);
+            lpb += 1 + ((u & 1) == 1);
             u >>= 1;
         }
     }
@@ -2514,7 +2489,7 @@ char *PszGetCompressedMessage(MessageId idm) {
     }
     pch += iNibble >> 1;
     iLen = *pchLen;
-    fHigh = (iNibble & 1) == 0 ? 1 : 0;
+    fHigh = (iNibble & 1) == 0;
     pszOut = szLastMsgGet;
     iBuild = 0;
     while (iLen-- != 0) {
@@ -2523,7 +2498,7 @@ char *PszGetCompressedMessage(MessageId idm) {
         } else {
             i = *pch++ & 0xf;
         }
-        fHigh = fHigh == 0 ? 1 : 0;
+        fHigh = fHigh == 0;
         iBuild += i;
         if (i != 15) {
             *pszOut = rgMSGLookupTable[iBuild];
@@ -2538,81 +2513,81 @@ char *PszGetCompressedMessage(MessageId idm) {
 void SetFilteringGroups(MessageId idm, int16_t fSet) {
     int16_t i;
 
-    fSet = fSet == 0 ? 1 : 0;
-    bitfMsgFiltered[idm >> 3] = LOBYTE((bitfMsgFiltered[idm >> 3] & ~(1 << (idm & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (idm & 7));
+    fSet = fSet == 0;
+    bitfMsgFiltered[idm >> 3] = (bitfMsgFiltered[idm >> 3] & ~(1 << (idm & 7))) | (fSet == 0) << (idm & 7);
     switch (idm) {
     case idmHaveBuiltFactory:
     case idmHaveBuiltFactories:
-        bitfMsgFiltered[(idm ^ 0x35 ^ 0x36) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x35 ^ 0x36) >> 3] & ~(1 << ((idm ^ 0x35 ^ 0x36) & 7))) |
-                                                           ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x35 ^ 0x36) & 7));
+        bitfMsgFiltered[(idm ^ 0x35 ^ 0x36) >> 3] =
+            (bitfMsgFiltered[(idm ^ 0x35 ^ 0x36) >> 3] & ~(1 << ((idm ^ 0x35 ^ 0x36) & 7))) | (fSet == 0) << ((idm ^ 0x35 ^ 0x36) & 7);
         break;
     case idmHaveBuiltMine:
     case idmHaveBuiltMines:
-        bitfMsgFiltered[(idm ^ 0x37 ^ 0x38) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x37 ^ 0x38) >> 3] & ~(1 << ((idm ^ 0x37 ^ 0x38) & 7))) |
-                                                           ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x37 ^ 0x38) & 7));
+        bitfMsgFiltered[(idm ^ 0x37 ^ 0x38) >> 3] =
+            (bitfMsgFiltered[(idm ^ 0x37 ^ 0x38) >> 3] & ~(1 << ((idm ^ 0x37 ^ 0x38) & 7))) | (fSet == 0) << ((idm ^ 0x37 ^ 0x38) & 7);
         break;
     case idmHaveBuiltDefenseOutpost:
     case idmHaveBuiltDefenseOutposts:
-        bitfMsgFiltered[(idm ^ 0x39 ^ 0x3a) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x39 ^ 0x3a) >> 3] & ~(1 << ((idm ^ 0x39 ^ 0x3a) & 7))) |
-                                                           ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x39 ^ 0x3a) & 7));
+        bitfMsgFiltered[(idm ^ 0x39 ^ 0x3a) >> 3] =
+            (bitfMsgFiltered[(idm ^ 0x39 ^ 0x3a) >> 3] & ~(1 << ((idm ^ 0x39 ^ 0x3a) & 7))) | (fSet == 0) << ((idm ^ 0x39 ^ 0x3a) & 7);
         break;
     default:
         if ((int16_t)idm >= idmHasLoaded && (int16_t)idm <= idmHasBeamed2) {
             for (i = 43; i <= 46; i++) {
-                bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
+                bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (fSet == 0) << (i & 7);
             }
         } else {
             switch (idm) {
             case idmStarbaseHasBuiltNew:
             case idmStarbaseHasBuiltNewShips:
-                bitfMsgFiltered[(idm ^ 0x2f ^ 0x30) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x2f ^ 0x30) >> 3] & ~(1 << ((idm ^ 0x2f ^ 0x30) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x2f ^ 0x30) & 7));
+                bitfMsgFiltered[(idm ^ 0x2f ^ 0x30) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x2f ^ 0x30) >> 3] & ~(1 << ((idm ^ 0x2f ^ 0x30) & 7))) | (fSet == 0) << ((idm ^ 0x2f ^ 0x30) & 7);
                 break;
             case idmSuccessfullyTransferred:
             case idmSuccessfullyTransferred2:
-                bitfMsgFiltered[(idm ^ 0x42 ^ 0x43) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x42 ^ 0x43) >> 3] & ~(1 << ((idm ^ 0x42 ^ 0x43) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x42 ^ 0x43) & 7));
+                bitfMsgFiltered[(idm ^ 0x42 ^ 0x43) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x42 ^ 0x43) >> 3] & ~(1 << ((idm ^ 0x42 ^ 0x43) & 7))) | (fSet == 0) << ((idm ^ 0x42 ^ 0x43) & 7);
                 break;
             case idmSuccessfullyReceived:
             case idmSuccessfullyReceived2:
-                bitfMsgFiltered[(idm ^ 0x44 ^ 0x45) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x44 ^ 0x45) >> 3] & ~(1 << ((idm ^ 0x44 ^ 0x45) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x44 ^ 0x45) & 7));
+                bitfMsgFiltered[(idm ^ 0x44 ^ 0x45) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x44 ^ 0x45) >> 3] & ~(1 << ((idm ^ 0x44 ^ 0x45) & 7))) | (fSet == 0) << ((idm ^ 0x44 ^ 0x45) & 7);
                 break;
             case idmAttemptedTransferSuccessfullyReceived:
             case idmAttemptedTransferColonistsSuccessfullyReceivedRe:
-                bitfMsgFiltered[(idm ^ 0x46 ^ 0x47) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x46 ^ 0x47) >> 3] & ~(1 << ((idm ^ 0x46 ^ 0x47) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x46 ^ 0x47) & 7));
+                bitfMsgFiltered[(idm ^ 0x46 ^ 0x47) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x46 ^ 0x47) >> 3] & ~(1 << ((idm ^ 0x46 ^ 0x47) & 7))) | (fSet == 0) << ((idm ^ 0x46 ^ 0x47) & 7);
                 break;
             case idmReceivedHoweverSentRemainderLostSpace:
             case idmReceivedHoweverColonistsSentRemainsOtherColonist:
-                bitfMsgFiltered[(idm ^ 0x48 ^ 0x49) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x48 ^ 0x49) >> 3] & ~(1 << ((idm ^ 0x48 ^ 0x49) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x48 ^ 0x49) & 7));
+                bitfMsgFiltered[(idm ^ 0x48 ^ 0x49) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x48 ^ 0x49) >> 3] & ~(1 << ((idm ^ 0x48 ^ 0x49) & 7))) | (fSet == 0) << ((idm ^ 0x48 ^ 0x49) & 7);
                 break;
             case idmAttemptedTransferNoneSuccessfullyReceived:
             case idmAttemptedTransferNoneColonistsSuccessfullyReceiv:
-                bitfMsgFiltered[(idm ^ 0x4a ^ 0x4b) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x4a ^ 0x4b) >> 3] & ~(1 << ((idm ^ 0x4a ^ 0x4b) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x4a ^ 0x4b) & 7));
+                bitfMsgFiltered[(idm ^ 0x4a ^ 0x4b) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x4a ^ 0x4b) >> 3] & ~(1 << ((idm ^ 0x4a ^ 0x4b) & 7))) | (fSet == 0) << ((idm ^ 0x4a ^ 0x4b) & 7);
                 break;
             case idmAttemptedReceiveHoweverLostDeepSpace:
             case idmAttemptedReceiveHoweverNoneColonistsSuccessfully:
-                bitfMsgFiltered[(idm ^ 0x4c ^ 0x4d) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x4c ^ 0x4d) >> 3] & ~(1 << ((idm ^ 0x4c ^ 0x4d) & 7))) |
-                                                                   ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x4c ^ 0x4d) & 7));
+                bitfMsgFiltered[(idm ^ 0x4c ^ 0x4d) >> 3] =
+                    (bitfMsgFiltered[(idm ^ 0x4c ^ 0x4d) >> 3] & ~(1 << ((idm ^ 0x4c ^ 0x4d) & 7))) | (fSet == 0) << ((idm ^ 0x4c ^ 0x4d) & 7);
                 break;
             default:
                 if ((int16_t)idm >= idmHasBombedKillingColonists && (int16_t)idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto) {
                     for (i = 96; i <= 100; i++) {
-                        bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
+                        bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (fSet == 0) << (i & 7);
                     }
                 } else if ((int16_t)idm >= idmHasBombedKillingColonists2 && (int16_t)idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto3) {
                     for (i = 106; i <= 110; i++) {
-                        bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
+                        bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (fSet == 0) << (i & 7);
                     }
                 } else if (idm == idmHasLoaded2 || idm == idmHasBeamed3) {
-                    bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] = LOBYTE((bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] & ~(1 << ((idm ^ 0x79 ^ 0x7a) & 7))) |
-                                                                       ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << ((idm ^ 0x79 ^ 0x7a) & 7));
+                    bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] =
+                        (bitfMsgFiltered[(idm ^ 0x79 ^ 0x7a) >> 3] & ~(1 << ((idm ^ 0x79 ^ 0x7a) & 7))) | (fSet == 0) << ((idm ^ 0x79 ^ 0x7a) & 7);
                 } else if ((int16_t)idm >= idmBattleTookPlaceDestroyedTakingDamage && (int16_t)idm <= idmBattleTookPlaceInvolvingRacesLostForces2) {
                     for (i = 145; i <= 168; i++) {
-                        bitfMsgFiltered[i >> 3] = LOBYTE((bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | ((fSet == 0 ? 1 : 0) == 0 ? 0 : 1) << (i & 7));
+                        bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (fSet == 0) << (i & 7);
                     }
                 }
             }

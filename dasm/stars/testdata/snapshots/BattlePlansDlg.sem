@@ -48,8 +48,8 @@ L_06d8:
 
 L_0714:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
-    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
-    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0) -> callresult(int16_t)
     i = 408
     goto L_07b7
 
@@ -335,8 +335,8 @@ L_10c3:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0) -> callresult(LRESULT)
 
 L_10e5:
-    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
-    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0) -> callresult(int16_t)
     goto L_16f8
 
 
@@ -448,8 +448,8 @@ L_1537:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
     wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET
-    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
-    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), (iPlanSelDlg <= 0 ? 0 : 1)) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg > 0) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg > 0) -> callresult(int16_t)
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0) -> callresult(LRESULT)
     i = btlplan.iplrAttack
     branch i < (idPlayer + 4) ? L_1680 : L_167c

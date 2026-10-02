@@ -69,14 +69,14 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 }
                 GlobalPD.grPopup = grPopupShdef;
                 GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
-                GlobalPD.fHideCounts = idPlayer == lpfl->iPlayer ? 0 : 1;
+                GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer;
                 GlobalPD.fShowDamage = 0;
                 GlobalPD.fToken = 0;
                 GlobalPD.fSummary = 1;
             } else {
                 GlobalPD.grPopup = grPopupFleet;
                 GlobalPD.lpfl = rglpfl[sel.scan.ifl];
-                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll ? 1 : 0;
+                GlobalPD.fRedDamage = GlobalPD.lpfl->det == detAll;
                 GlobalPD.grbit = 0xff;
             }
             Popup(hwndMine, x, y);
@@ -85,7 +85,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.grPopup = grPopupShdef;
             lppl = LpplFromId(sel.scan.idpl);
             GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
-            GlobalPD.fHideCounts = idPlayer == lppl->iPlayer ? 0 : 1;
+            GlobalPD.fHideCounts = idPlayer != lppl->iPlayer;
             GlobalPD.fShowDamage = 1;
             GlobalPD.fToken = 0;
             GlobalPD.fSummary = 1;
@@ -149,7 +149,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 scan.ifl = i;
                 scan.grobj = grobjFleet;
                 idNew = rglpfl[i]->id;
-                fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                fOurs = rglpfl[i]->iPlayer == idPlayer;
                 goto ChangeIt;
             }
             if ((scan.grobjFull & grobjThing) != 0) {
@@ -168,7 +168,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 scan.grobj = grobjFleet;
                 scan.ifl = i;
                 idNew = rglpfl[i]->id;
-                fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
+                fOurs = rglpfl[i]->iPlayer == idPlayer;
                 goto ChangeIt;
             }
             i = 0;
@@ -200,7 +200,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             if (lppl == 0) {
                 fOurs = 0;
             } else {
-                fOurs = lppl->iPlayer == idPlayer ? 1 : 0;
+                fOurs = lppl->iPlayer == idPlayer;
             }
         ChangeIt:
             if (fOurs == 0 || sel.grobj != grobjFleet) {

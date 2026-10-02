@@ -530,7 +530,7 @@ int16_t FCalcFleetBombDamage(FLEET *lpfl, int32_t *pdmgPeople, int32_t *pdmgPeop
     if (*pdmgPeopleSmart >= 1000) {
         *pdmgPeopleSmart = 1000;
     }
-    *pfMulti = cfl <= 1 ? 0 : 1;
+    *pfMulti = cfl > 1;
     if (*pdmgPeople != 0 || *pdmgPeopleMin != 0 || *pdmgPeopleSmart != 0 || *pdmgBldg != 0 || *ppctTerra != 0) {
         return 1;
     }
@@ -1072,7 +1072,7 @@ FLEET *LpflNewSplit(FLEET *pfl) {
         lpflNew->lpplord = (PLORD *)LpplReAlloc((PL *)lpflNew->lpplord, pfl->lpplord->iordMax);
     }
     fmemcpy(lpflNew->lpplord->rgord, pfl->lpplord->rgord, iordMac * 18);
-    lpflNew->lpplord->iordMac = LOBYTE(iordMac);
+    lpflNew->lpplord->iordMac = iordMac;
     lpflNew->cord = pfl->cord;
     LogSplitFleet(pfl->id);
     return lpflNew;
@@ -1533,7 +1533,7 @@ void UpdateShdefCost(SHDEF *lpshdef) {
     PART     part;
 
     if (lpshdef->det == detAll) {
-        fWeakArmor = GetRaceGrbit(&rgplr[idPlayer], ibitRaceRegeneratingShields) == 0 ? 0 : 1;
+        fWeakArmor = GetRaceGrbit(&rgplr[idPlayer], ibitRaceRegeneratingShields) != 0;
     } else {
         fWeakArmor = 0;
     }
@@ -2099,7 +2099,7 @@ int32_t LongFromSerialCh(char ch) {
     int32_t l;
 
     if (ch >= 'A' && ch <= 'Z') {
-        l = (int16_t)(ch - 65);
+        l = (int16_t)(ch - 'A');
     } else {
         l = (int16_t)(ch - 22);
     }
@@ -2266,7 +2266,7 @@ void ValidateWaypoints() {
                 lpfl->lpplord->rgord[0].pt.y = dGal + 1000;
             }
             if (lpfl->cord > 1 || lpfl->fMark != 0) {
-                iord = lpfl->fMark == 0 ? 1 : 0;
+                iord = lpfl->fMark == 0;
                 lpord = &lpfl->lpplord->rgord[iord];
                 while (iord < lpfl->cord) {
                     if (lpord->grobj == grobjThing) {

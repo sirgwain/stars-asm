@@ -114,7 +114,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             case IDCANCEL:
                 hwndZipOrderDlg = 0;
                 StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 if (gd.fTutorial != 0) {
                     AdvanceTutor();
                 }
@@ -207,7 +207,7 @@ INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                         GetDlgItemText(hwnd, IDC_EDIT1, szWork, 14);
                     }
                     StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
-                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                     return 1;
                 case IDC_HELP:
                     WinHelp(hwnd, szHelpFile, HELP_CONTEXT, (uint32_t)(hwndZipOrderDlg == 0 ? 1106 : 3103));
@@ -252,7 +252,7 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     FStringFitsScreen(szWork, 160);
                 }
                 StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_EDIT1:
                 if (GET_WM_COMMAND_CMD(wParam, lParam) == 0x400 && fInEditUpdate == 0) {
@@ -348,7 +348,7 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
                     if (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raStargate) {
                         pctKill = 0;
                     } else {
-                        pctKill = LOBYTE(rgpct[ishdef] / 3);
+                        pctKill = rgpct[ishdef] / 3;
                     }
                     dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
                     if (flSrc.rgdv[ishdef].dp != 0) {
@@ -537,28 +537,23 @@ void KillUsedWaypoints() {
                         }
                         DeleteWpFar(lpfl, 1, fRep);
                         if (lpfl->cord == 1) {
-                            if ((uint16_t)(lpfl->lpplord->rgord[0].grTask - 1) <= 7) {
-                                switch (lpfl->lpplord->rgord[0].grTask) {
-                                case grTaskXfer:
-                                case grTaskColonize:
-                                case grTaskMine:
-                                case grTaskScrap:
-                                case grTaskLayMines:
-                                case grTaskPatrol:
-                                    break;
-                                case grTaskAutoRoute:
-                                    if (lpfl->idPlanet != -1) {
-                                        lppl = LpplFromId(lpfl->idPlanet);
-                                        if (lppl->iPlayer == lpfl->iPlayer && lppl->idRoute != 0)
-                                            break;
-                                    }
-                                case grTaskMerge:
-                                    goto L_1cc6;
+                            switch (lpfl->lpplord->rgord[0].grTask) {
+                            case grTaskXfer:
+                            case grTaskColonize:
+                            case grTaskMine:
+                            case grTaskScrap:
+                            case grTaskLayMines:
+                            case grTaskPatrol:
+                                break;
+                            case grTaskAutoRoute:
+                                if (lpfl->idPlanet != -1) {
+                                    lppl = LpplFromId(lpfl->idPlanet);
+                                    if (lppl->iPlayer == lpfl->iPlayer && lppl->idRoute != 0)
+                                        break;
                                 }
-                                continue;
+                            default:
+                                FSendPlrMsg(lpfl->iPlayer, idmHasCompletedAssignedOrders, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                             }
-                        L_1cc6:
-                            FSendPlrMsg(lpfl->iPlayer, idmHasCompletedAssignedOrders, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                         }
                     }
                 }
@@ -895,7 +890,7 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     int32_t lPow;
     PART    part;
 
-    fStarbase = (int16_t)lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
+    fStarbase = (int16_t)lphul->ihuldef >= ihuldefOrbitalFort;
     chs = lphul->chs;
     lPow = 0;
     j = 0;
@@ -1020,7 +1015,7 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
         return (cScore >> 6) + 0x58;
     }
     if (cScore < 1000) {
-        return (cScore < 768 ? 0 : 1) + 96;
+        return (cScore >= 768) + 96;
     }
     return 98;
 }
@@ -1137,7 +1132,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                     return 1;
                 }
                 StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_HELP:
                 WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhMergeFleetsDialog);
@@ -1145,8 +1140,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             case IDC_MERGE_FLEETS_SELECT_ALL:
             case IDC_MERGE_FLEETS_UNSELECT_ALL:
                 for (i = 0; i < vcflMerge; i++) {
-                    SendMessage(GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST), LB_SETSEL, GET_WM_COMMAND_ID(wParam, lParam) == IDC_MERGE_FLEETS_SELECT_ALL ? 1 : 0,
-                                i);
+                    SendMessage(GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST), LB_SETSEL, GET_WM_COMMAND_ID(wParam, lParam) == IDC_MERGE_FLEETS_SELECT_ALL, i);
                 }
                 return 1;
             }
@@ -1170,14 +1164,14 @@ void MarkTechsSeen(HUL *lphul, int16_t iplr) {
     part.hs.iItem = lphul->ihuldef;
     FLookupPart(&part);
     for (iTech = 0; iTech < 6; iTech++) {
-        rgTechBattle[iTech] = LOBYTE((int16_t)rgTechBattle[iTech] <= part.phul->rgTech[iTech] ? part.phul->rgTech[iTech] : rgTechBattle[iTech]);
+        rgTechBattle[iTech] = (int16_t)rgTechBattle[iTech] <= part.phul->rgTech[iTech] ? part.phul->rgTech[iTech] : rgTechBattle[iTech];
     }
     for (ihs = 0; ihs < lphul->chs; ihs++) {
         if (lphul->rghs[ihs].cItem != 0) {
             part.hs = lphul->rghs[ihs];
             FLookupPart(&part);
             for (iTech = 0; iTech < 6; iTech++) {
-                rgTechBattle[iTech] = LOBYTE((int16_t)rgTechBattle[iTech] <= part.pcom->rgTech[iTech] ? part.pcom->rgTech[iTech] : rgTechBattle[iTech]);
+                rgTechBattle[iTech] = (int16_t)rgTechBattle[iTech] <= part.pcom->rgTech[iTech] ? part.pcom->rgTech[iTech] : rgTechBattle[iTech];
             }
             iTech = -1;
             switch (part.hs.grhst) {
@@ -1231,7 +1225,7 @@ void MarkTechsSeen(HUL *lphul, int16_t iplr) {
                 }
             }
             if (iTech != -1 && rgTechTrader[iTech] < 25) {
-                rgTechTrader[iTech] += LOBYTE(part.hs.cItem);
+                rgTechTrader[iTech] += part.hs.cItem;
                 if (rgTechTrader[iTech] > 25) {
                     rgTechTrader[iTech] = 25;
                 }

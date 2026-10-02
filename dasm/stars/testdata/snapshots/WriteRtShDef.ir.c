@@ -5,10 +5,10 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     int16_t  cOut;
 
 L_574e:
-    ((RTSHDEF *)rgb)->ihuldef = LOBYTE(lpshdef->hul.ihuldef);
+    ((RTSHDEF *)rgb)->ihuldef = lpshdef->hul.ihuldef;
     ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags;
     ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs;
-    ((RTSHDEF *)rgb)->ibmp = LOBYTE(lpshdef->hul.ibmp);
+    ((RTSHDEF *)rgb)->ibmp = lpshdef->hul.ibmp;
     if (lpshdef->det != detAll)
         goto L_5816;
     else
@@ -55,7 +55,7 @@ L_5893:
         goto L_58bd;
 
 L_58bd:
-    *pb = LOBYTE(cOut);
+    *pb = cOut;
     pb += 1 + cOut;
     goto L_5907;
 

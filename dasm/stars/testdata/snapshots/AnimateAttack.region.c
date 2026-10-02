@@ -205,7 +205,7 @@ void AnimateAttack(HDC hdc) {
         LFinishUp:;
         } while (iHit < vlpbrVCR->ctok);
         for (iFrame = 0; iFrame < vlpbrVCR->ctok; iFrame++) {
-            fKill = vlpbrVCR->rgkill[iFrame].cshKill <= 0 ? 0 : 1;
+            fKill = vlpbrVCR->rgkill[iFrame].cshKill > 0;
             ptokAttack = vrgtok + vlpbrVCR->rgkill[iFrame].itok;
             ptDest.x = (ptokAttack->brc & 0xf) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;
             ptDest.y = (ptokAttack->brc >> 4) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;

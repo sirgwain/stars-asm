@@ -317,7 +317,7 @@ void DoThingInteractions(int16_t fPostMove) {
                             cPlrTrueMaxTech = rgplr[lpfl->iPlayer].fCrippled == 0 ? 26 : 10;
                             for (i = 0; i < 6 && rgplr[lpfl->iPlayer].rgTech[i] >= cPlrTrueMaxTech; i++) {
                             }
-                            fMaxTech = i == 6 ? 1 : 0;
+                            fMaxTech = i == 6;
                             grbitPlrTrader = rgplr[lpfl->iPlayer].grbitTrader;
                             iplr = lpfl->iPlayer;
                             if ((1 << iplr & lpth->tht.grbitPlr) != 0) {
@@ -406,7 +406,7 @@ void DoThingInteractions(int16_t fPostMove) {
                                     idm = IdmGiveTraderPart(grbitTrader, iplr, &iGoto);
                                     FSendPlrMsg2(lpfl->iplr, idm, iGoto, WFromLpfl(lpfl), 0);
                                 } else if (rgplr[iplr].fAi == 0) {
-                                    iOffset = Random(4 - (game.turn <= 100 ? 0 : 1));
+                                    iOffset = Random(4 - (game.turn > 100));
                                     if (iOffset >= 1) {
                                         iOffset = Random(2) + 1;
                                     }
